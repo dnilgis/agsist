@@ -9,6 +9,10 @@
 #   - the weekly futures refresh: Monday after the close, --snapshot-prices
 #     freezes Dec 2027 corn and Nov 2027 soybean closes from data/prices.json
 #     into data/arc-plc-prices.json (the 2027 price center), then rebuilds.
+#   - every run that builds (not --check) also copies the current October
+#     average of Dec 2026 corn / Nov 2026 soybeans from data/harvest-prices.json
+#     (the file /harvest-price-tracker reads) into the snapshot, and the pages
+#     print the date it runs through. Weekly is the schedule; no new cron.
 #   - the calendar: the signup copy is written for the build date, so the
 #     day after each deadline (Dec 12, 2026 and Mar 16, 2027) gets a run.
 #

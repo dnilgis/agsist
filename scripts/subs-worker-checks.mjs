@@ -258,6 +258,76 @@ t = await sig('both@farm.com');
 r = await call('/unsubscribe?e=both@farm.com&t=' + t, 'POST');
 A(!store.has('sub:both@farm.com') && !store.has('note:both@farm.com'), 'the daily unsubscribe also stops the notices');
 
+// v5.28: rainyear:<YYYY>:<county FIPS>, the January full-year rain email
+{
+  const now = new Date(), cy = now.getUTCFullYear(), jan = now.getUTCMonth() === 0;
+  r = await call('/notice', 'POST', { email: 'Rain@Example.com', topic: 'rainyear:' + cy + ':19169', source: 'page:rain/iowa/story-county', daily: true, zip: '50010' });
+  j = await r.json();
+  A(r.status === 200 && j.ok === true && j.topic === 'rainyear:' + cy + ':19169' && j.daily === true, 'rainyear: this year and a county FIPS is stored');
+  A(note('rain@example.com').t['rainyear:' + cy + ':19169'].src === 'page:rain/iowa/story-county', 'rainyear: keeps the page it came from');
+  A(rec('rain@example.com').zip === '50010', 'rainyear with daily:true: on the daily list with its ZIP');
+  for (const [tp, why] of [['rainyear:' + (cy - 2) + ':19169', 'a year two back'], ['rainyear:' + (cy + 1) + ':19169', 'next year'],
+      ['rainyear:' + cy + ':99001', 'no such state'], ['rainyear:' + cy + ':03001', 'state code 03'], ['rainyear:' + cy + ':19000', 'a state, not a county'],
+      ['rainyear:' + cy + ':1916', 'four digits'], ['rainyear:' + cy, 'no county'], ['rainyear:' + cy + ':19169:x', 'extra part']]) {
+    r = await call('/notice', 'POST', { email: 'rainbad@example.com', topic: tp });
+    A(r.status === 400 && (await r.json()).ok === false, 'rainyear refuses ' + why);
+  }
+  r = await call('/notice', 'POST', { email: 'rainbad@example.com', topic: 'rainyear:' + (cy - 1) + ':19169' });
+  A(r.status === (jan ? 200 : 400), 'rainyear: last year only during January');
+  A(!store.has('note:rainbad@example.com') || jan, 'a refused rainyear stores nothing');
+  r = await call('/notice-list?token=tok&topic=rainyear:');
+  const RL = await r.json();
+  A(RL.length >= 1 && RL.every(x => x.topic.startsWith('rainyear:')) && RL.some(x => x.email === 'rain@example.com'), '/notice-list?topic=rainyear: (prefix)');
+  r = await call('/notice-mark?token=tok', 'POST', { email: 'rain@example.com', topic: 'rainyear:' + cy + ':19169' });
+  A((await r.json()).ok === true && Number.isFinite(note('rain@example.com').t['rainyear:' + cy + ':19169'].sent), 'rainyear: /notice-mark records sent');
+  store.set('note:old@example.com', JSON.stringify({ ts: 1, t: { 'rainyear:2020:19169': { ts: 1, src: 'x' } } }));
+  r = await call('/notice-mark?token=tok', 'POST', { email: 'old@example.com', topic: 'rainyear:2020:19169' });
+  A((await r.json()).ok === true && Number.isFinite(note('old@example.com').t['rainyear:2020:19169'].sent), 'rainyear: /notice-mark takes any year');
+}
+
+// v5.29: prf:<grid>, an email each time RMA posts a final index on that grid
+{
+  r = await call('/notice', 'POST', { email: 'Grid@Example.com', topic: 'prf:30452', source: 'page:prf/wisconsin/barron-county', daily: false, after: '2026-06' });
+  j = await r.json();
+  A(r.status === 200 && j.ok === true && j.topic === 'prf:30452' && j.daily === false, 'prf: a real grid id is stored');
+  A(note('grid@example.com').t['prf:30452'].after === '2026-06' && note('grid@example.com').t['prf:30452'].src === 'page:prf/wisconsin/barron-county', 'prf: keeps after and the page');
+  A(!store.has('sub:grid@example.com'), 'prf without daily: not on the daily list');
+  r = await call('/notice', 'POST', { email: 'grid@example.com', topic: 'prf:30452', after: '2026-09' });
+  A(r.status === 200 && note('grid@example.com').t['prf:30452'].after === '2026-06', 'prf asked again: the first after stays');
+  for (const [tp, why] of [['prf:6195', 'under the lowest grid'], ['prf:34942', 'over the highest grid'], ['prf:030452', 'a leading zero'],
+      ['prf:30452.5', 'not a whole number'], ['prf:', 'no grid'], ['prf:30452:x', 'extra part'], ['prf:H0420', 'a Hawaii grid'],
+      ['prf:6020', 'column 19, west of the 48 states'], ['prf:30300', 'column 299'], ['prf:-30452', 'a sign']]) {
+    r = await call('/notice', 'POST', { email: 'gridbad@example.com', topic: tp });
+    A(r.status === 400 && (await r.json()).ok === false, 'prf refuses ' + why);
+  }
+  A(!store.has('note:gridbad@example.com'), 'a refused prf topic stores nothing');
+  r = await call('/notice', 'POST', { email: 'grid2@example.com', topic: 'prf:6196', after: '2026-13' });
+  A(r.status === 200 && !('after' in note('grid2@example.com').t['prf:6196']), 'prf: a bad after is dropped, the ask still stands');
+  r = await call('/notice', 'POST', { email: 'grid3@example.com', topic: 'prf:34941' });
+  A(r.status === 200, 'prf: the highest grid id');
+  r = await call('/notice-list?token=tok&topic=prf:');
+  let PL = await r.json();
+  const g1 = PL.find(x => x.email === 'grid@example.com');
+  A(PL.length === 3 && PL.every(x => x.topic.startsWith('prf:')) && g1 && g1.after === '2026-06' && !('iv' in g1), '/notice-list?topic=prf: with after');
+  r = await call('/notice-mark?token=tok', 'POST', { email: 'grid@example.com', topic: 'prf:30452' });
+  A(r.status === 400, 'prf: /notice-mark needs the interval');
+  r = await call('/notice-mark?token=tok', 'POST', { email: 'grid@example.com', topic: 'prf:30452', interval: '2026-7' });
+  A(r.status === 400, 'prf: /notice-mark refuses a bad interval');
+  r = await call('/notice-mark?token=tok', 'POST', { email: 'grid@example.com', topic: 'prf:30452', interval: '2026-07' });
+  A((await r.json()).ok === true && note('grid@example.com').t['prf:30452'].iv === '2026-07' && Number.isFinite(note('grid@example.com').t['prf:30452'].sent), 'prf: the mark records the interval and sent');
+  r = await call('/notice-mark?token=tok', 'POST', { email: 'grid@example.com', topic: 'prf:30452', interval: '2026-05' });
+  A(note('grid@example.com').t['prf:30452'].iv === '2026-07', 'prf: iv never moves back');
+  r = await call('/notice-mark?token=tok', 'POST', { email: 'grid3@example.com', topic: 'prf:34941', interval: '2026-06', quiet: true });
+  A(note('grid3@example.com').t['prf:34941'].iv === '2026-06' && !note('grid3@example.com').t['prf:34941'].sent, 'prf: a quiet mark keeps iv, sets no sent');
+  r = await call('/notice-list?token=tok&topic=prf:&unsent=1');
+  PL = await r.json();
+  A(PL.some(x => x.email === 'grid3@example.com' && x.iv === '2026-06') && !PL.some(x => x.email === 'grid@example.com'), '/notice-list returns iv; unsent leaves out the mailed one');
+  r = await call('/notice-mark?token=tok', 'POST', { email: 'gone@example.com', topic: 'prf:30452', interval: '2026-07' });
+  A((await r.json()).skipped === true, 'prf: a stopped address is skipped');
+  r = await call('/notice-mark?token=tok', 'POST', { email: 'rain@example.com', topic: 'rainyear:' + new Date().getUTCFullYear() + ':19169', interval: 'junk' });
+  A((await r.json()).ok === true, 'other topics ignore an interval field, as before');
+}
+
 // ───────────────────────── v5.13 hardening ─────────────────────────
 // Each block gets its own store, so the counts above are not disturbed.
 const fresh = (extra = {}) => { const st = new Map(), meta = new Map(), opts = new Map(), log = { get: 0, list: [] };

@@ -1368,7 +1368,7 @@ def seed_scorecard(today):
     seeds["pb:pb-bt-line"] = (f"{_pb_date(ba.get('first'))} to {_pb_date(ba.get('last'))}. {line}" if ba else "Backtest not computed yet.")
     seeds["pb:pb-bt-luck"] = luck
     seeds["pb:pb-bt-base"] = (f"Always saying down: {_pb_rate(ba.get('fell_rate'))}. Always saying up: {_pb_rate(ba.get('rose_rate'))} "
-                              f"({_pb_n(ba.get('moves_of'))} windows)." if ba and ba.get("moves_of") else "")
+                              f"({_pb_n(ba.get('moves_of'))} weekly calls)." if ba and ba.get("moves_of") else "")
     lt = d.get("latest") or {}
     lc = lt.get("calls") or []
     seeds["pb:pb-latest-when"] = (f"Made at the {_pb_date(lt['date'])} close." if lt.get("date") else
@@ -2631,6 +2631,19 @@ def futures_hero_seeds(page, prices, now=None):
             out["nc"] = '<div class="nc-line" id="nc-line">' + h + "</div>"
         else:
             out["nc"] = '<div class="nc-line" id="nc-line" style="display:none"></div>'
+        # corn beside beans (2026-10-17: "corn and soybean prices today" 1,118 weight landed here
+        # and the phone's first screen showed soybeans only). Same quote the corn page leads with.
+        cq = q.get("corn-nearby") if (q.get("corn-nearby") or {}).get("close") is not None else q.get("corn")
+        if cq and cq.get("close") is not None:
+            h = "Corn " + _e(_ticker_label(cq, "")) + ": <strong>$" + grain_dollars(cq) + "</strong>"
+            cp = cq.get("pctChange")
+            if cp is not None and not cq.get("roll"):
+                h += (' <span class="' + ("up" if cp >= 0 else "dn") + '">(' + pricefmt.pct(cp) + ")</span>")
+            stp = quote_stamp(cq)
+            out["cornline"] = ('<div class="nc-line" id="corn-line">' + h + (" &middot; " + _e(stp) if stp else "") +
+                               ' &middot; <a href="/corn-futures-prices">Corn futures</a></div>')
+        else:
+            out["cornline"] = '<div class="nc-line" id="corn-line" style="display:none"></div>'
     elif page.startswith("wheat"):
         n = q.get("wheat-nearby")
         hq = n if (n and n.get("close") is not None) else q.get("wheat")
@@ -2646,16 +2659,36 @@ def futures_hero_seeds(page, prices, now=None):
         else:
             out["bench"] = '<div class="benchline" id="benchline" style="display:none"></div>'
     elif page.startswith("cattle"):
-        le = q.get("cattle") or {}
-        if le.get("close") is not None and le.get("pctChange") is not None:
-            net = le.get("netChange")
-            hu = (net or 0) >= 0
-            txt = (("\u25b2 +" if hu else "\u25bc \u2212") + (("$" + _fixed(abs(float(net)), 2) + " ") if net is not None else "")
-                   + "(" + ("+" if hu else "\u2212") + _fixed(abs(float(le["pctChange"])), 2) + "%)")
-            out["chg"] = _chg_seed((txt, "up" if hu else "dn"))
-        else:
-            out["chg"] = ""
+        # feeder and live cattle are both headline prices (2026-10-17): each its change,
+        # its contract month and its own settle / last-trade stamp
+        for key, chg_tag, ct_tag, st_tag in (("cattle", "chg", "lect", "lestamp"), ("feeders", "gfchg", "gfct", "gfstamp")):
+            le = q.get(key) or {}
+            if le.get("close") is not None and le.get("pctChange") is not None:
+                net = le.get("netChange")
+                hu = (net or 0) >= 0
+                txt = (("\u25b2 +" if hu else "\u25bc \u2212") + (("$" + _fixed(abs(float(net)), 2) + " ") if net is not None else "")
+                       + "(" + ("+" if hu else "\u2212") + _fixed(abs(float(le["pctChange"])), 2) + "%)")
+                out[chg_tag] = _chg_seed((txt, "up" if hu else "dn"))
+            else:
+                out[chg_tag] = ""
+            out[ct_tag] = _e(_ticker_label(le, ""))
+            out[st_tag] = _e(quote_stamp(le))
     return out
+
+
+def quote_stamp(q):
+    """One quote's stamp, the baked twin of components/price-local.js stamp() for the
+    two cases a seed can know: "Oct 16 settle", or "Last trade" (the page script adds
+    the time). '' for a quote with neither."""
+    q = q or {}
+    if q.get("close") is None:
+        return ""
+    if q.get("close_kind") == "settle":
+        d = _iso_date(q.get("settle_date") or q.get("close_date"))
+        return (_md(d) + " settle") if d else ""
+    if q.get("close_kind") == "last":
+        return "Last trade"
+    return ""
 
 
 def moved_seed(page, today):
@@ -2783,6 +2816,9 @@ def seed_futures_pages(prices, today):
             live, flabel = quote_state(quotes.get("cattle"), fetched, "cattle")
             flabel = flabel or today
             t, c1 = seed_between(t, "px", "$" + lc)
+            if gf:
+                t, c4 = seed_between(t, "gfpx", "$" + gf)
+                c1 = c1 or c4
             note = ("Live cattle " + state_words(live)[0] + (" at" if live is False else " near") + " <strong>$" + lc + "</strong>" + stale
                     + ((" &middot; feeders near $" + gf) if gf else "")
                     + " &middot; $/cwt &middot; as of " + flabel

@@ -447,6 +447,34 @@ jobs:
         continue-on-error: true
         run: python scripts/critique_briefing.py
 
+      # ── GATE 2f ── fact check (2026-10-17, Sig approved). A careful reviewer
+      # model reads the draft against the exact inputs the generator used
+      # (its saved message with the locked table and news digest, prices.json,
+      # daily-edge.json, wasde.json, the calendar) and returns structured
+      # findings. A high-severity finding whose quote is really in the draft
+      # stops the job here, before GATE 2, the commit and the send; the next
+      # morning cron regenerates. It never edits daily.json. Its own failure
+      # (no key, API error, refusal) is a warning and exit 0, so an outage at
+      # Anthropic never stops a briefing the code gates pass.
+      # Sig, Oct 17 2026: Opus 5.5, and report mode (log, never block) for a
+      # calibration week; then switch the default below to 'block'. A repo
+      # variable FACT_CHECK_MODEL / FACT_CHECK_MODE overrides either default.
+      - name: GATE 2f, fact check against the source data
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FACT_CHECK_MODEL: ${{ vars.FACT_CHECK_MODEL || 'claude-opus-5-5' }}
+          # The selftest checks the defaults, so it runs with both overrides cleared (a set model broke it on Oct 18).
+          # Pinned to report (Sig, Oct 17: log only for a calibration week, review Oct 24). A repo variable
+          # can no longer switch it to block by accident; change this line when Sig says block.
+          FACT_CHECK_MODE: report
+        run: |
+          echo "fact check: model=$FACT_CHECK_MODEL mode=$FACT_CHECK_MODE"
+          if ! FACT_CHECK_MODE= FACT_CHECK_MODEL= python scripts/test_fact_check.py > /tmp/fc-selftest.txt 2>&1; then
+            grep -v '^::' /tmp/fc-selftest.txt | tail -25 | while IFS= read -r l; do echo "::error title=fact check selftest::$l"; done
+            exit 1
+          fi
+          python scripts/fact_check_briefing.py
+
       # v4.2 (Phase 2 C7): post-critic ops alert. Reads daily.json's
       # critic_pass.final_scores; emails sig@farmers1st.com if any rule
       # scored below 7, if rewrites were applied, or if the critic step

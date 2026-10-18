@@ -301,5 +301,141 @@
   }
  ],
  "states": [],
- "note": "TEST FIXTURE built from the made-up sample in scripts/fetch_cattle_auction.py (ROW_FIX), not real prices."
+ "note": "TEST FIXTURE built from the made-up sample in scripts/fetch_cattle_auction.py (ROW_FIX), not real prices. own: test barns USDA does not report; the Withee and Stratford ranges are what parse_own reads from the real saved pages (own-withee-wi.html, own-stratford-wi.html, fetched Oct 17 2026); Zumbrota is a barn not read yet.",
+ "own": [
+  {
+   "id": "withee-wi",
+   "name": "Premier Livestock & Auctions",
+   "town": "Withee",
+   "state": "WI",
+   "lat": 44.95,
+   "lon": -90.6,
+   "sale": "Feeder cattle the 1st, 2nd and 3rd Tuesday",
+   "site": "https://premierlivestockandauctions.com/market-reports/",
+   "sales": [
+    {
+     "date": "2026-10-13",
+     "receipts": 1080,
+     "ranges": [
+      {
+       "sex": "heifers",
+       "lo": 200,
+       "hi": 400,
+       "plo": 350.0,
+       "phi": 540.0
+      },
+      {
+       "sex": "heifers",
+       "lo": 400,
+       "hi": 600,
+       "plo": 300.0,
+       "phi": 430.0
+      },
+      {
+       "sex": "heifers",
+       "lo": 600,
+       "hi": 900,
+       "plo": 255.0,
+       "phi": 340.0
+      },
+      {
+       "sex": "steers",
+       "lo": 200,
+       "hi": 400,
+       "plo": 375.0,
+       "phi": 600.0
+      },
+      {
+       "sex": "steers",
+       "lo": 400,
+       "hi": 600,
+       "plo": 310.0,
+       "phi": 470.0
+      },
+      {
+       "sex": "steers",
+       "lo": 600,
+       "hi": 900,
+       "plo": 235.0,
+       "phi": 389.0
+      }
+     ],
+     "note": "One report for the Oct 6 and Oct 13 sales (835 and 245 head)",
+     "source_url": "https://premierlivestockandauctions.com/market-reports/"
+    }
+   ],
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-16T12:00:00Z"
+   }
+  },
+  {
+   "id": "stratford-wi",
+   "name": "Equity Livestock",
+   "town": "Stratford",
+   "state": "WI",
+   "lat": 44.8,
+   "lon": -90.08,
+   "sale": "Feeder cattle Wed",
+   "site": "https://www.equitycoop.com/index.cfm?show=10&mid=303",
+   "sales": [
+    {
+     "date": "2026-10-16",
+     "receipts": null,
+     "ranges": [
+      {
+       "sex": "heifers",
+       "lo": 400,
+       "hi": 600,
+       "plo": 300.0,
+       "phi": 340.0
+      },
+      {
+       "sex": "heifers",
+       "lo": 600,
+       "hi": 800,
+       "plo": 250.0,
+       "phi": 315.0
+      },
+      {
+       "sex": "steers",
+       "lo": 400,
+       "hi": 600,
+       "plo": 300.0,
+       "phi": 415.0
+      },
+      {
+       "sex": "steers",
+       "lo": 600,
+       "hi": 800,
+       "plo": 250.0,
+       "phi": 345.0
+      }
+     ],
+     "source_url": "https://www.equitycoop.com/index.cfm?show=10&mid=303"
+    }
+   ],
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-16T12:00:00Z"
+   }
+  },
+  {
+   "id": "zumbrota-mn",
+   "name": "Central Livestock Association",
+   "town": "Zumbrota",
+   "state": "MN",
+   "lat": 44.29,
+   "lon": -92.67,
+   "sale": "Feeder cattle every Mon at 1 PM, plus special feeder sales",
+   "status": {
+    "ok": false,
+    "note": "needs first read",
+    "checked": "2026-10-16T12:00:00Z"
+   },
+   "site": "https://www.centrallivestock.com/zumbrota-market-report.html"
+  }
+ ]
 }

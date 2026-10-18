@@ -1,0 +1,1534 @@
+{
+ "note": "One map for the Next block at the end of each page (components/next-links.js). Keys are paths without .html. 2 or 3 links each, every one a real page (test/fresh-visitor.test.mjs). signup false: the page gets no AGSIST Daily ask.",
+ "ask": "Email me the markets and my top local bid, every weekday morning",
+ "pages": {
+  "/": {
+   "links": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    },
+    {
+     "href": "/markets",
+     "text": "Commodity prices today",
+     "why": "Every futures price on one board"
+    },
+    {
+     "href": "/daily",
+     "text": "Today's briefing",
+     "why": "The markets in a few minutes, every weekday"
+    }
+   ]
+  },
+  "/usda-calendar": {
+   "links": [
+    {
+     "href": "/conditions",
+     "text": "Crop ratings and harvest progress",
+     "why": "This week's USDA numbers by state"
+    },
+    {
+     "href": "/whats-priced-in",
+     "text": "What's priced in",
+     "why": "What the trade expects before each report"
+    },
+    {
+     "href": "/conditions-yield",
+     "text": "2026 crop size forecasts",
+     "why": "Every forecast in one place"
+    }
+   ]
+  },
+  "/usda-quick-stats": {
+   "links": [
+    {
+     "href": "/conditions-yield",
+     "text": "2026 crop size forecasts",
+     "why": "Every forecast in one place"
+    },
+    {
+     "href": "/usda-calendar",
+     "text": "USDA report calendar",
+     "why": "When the next report comes out"
+    },
+    {
+     "href": "/yield/iowa",
+     "text": "State yield history",
+     "why": "Iowa and every other state, year by year"
+    }
+   ]
+  },
+  "/corn-futures-prices": {
+   "links": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    },
+    {
+     "href": "/breakeven",
+     "text": "Break-even calculator",
+     "why": "Your cost per bushel by county"
+    },
+    {
+     "href": "/basis",
+     "text": "Basis vs normal",
+     "why": "Is your local basis strong or weak for the date?"
+    }
+   ]
+  },
+  "/soybean-futures-prices": {
+   "links": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    },
+    {
+     "href": "/conditions",
+     "text": "Crop ratings and harvest progress",
+     "why": "This week's USDA numbers by state"
+    },
+    {
+     "href": "/breakeven",
+     "text": "Break-even calculator",
+     "why": "Your cost per bushel by county"
+    }
+   ]
+  },
+  "/cattle-futures-prices": {
+   "links": [
+    {
+     "href": "/cattle-auction-prices",
+     "text": "Sale barn prices",
+     "why": "What calves and cattle brought at local auctions"
+    },
+    {
+     "href": "/lrp",
+     "text": "LRP livestock price insurance",
+     "why": "Set a floor under cattle or hogs"
+    },
+    {
+     "href": "/cot",
+     "text": "Fund positions",
+     "why": "Which way the big funds are betting"
+    }
+   ]
+  },
+  "/wheat-futures-prices": {
+   "links": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    },
+    {
+     "href": "/usda-calendar",
+     "text": "USDA report calendar",
+     "why": "When the next report comes out"
+    },
+    {
+     "href": "/cot",
+     "text": "Fund positions",
+     "why": "Which way the big funds are betting"
+    }
+   ]
+  },
+  "/cash-bids": {
+   "links": [
+    {
+     "href": "/store-or-sell",
+     "text": "Sell now or store?",
+     "why": "The carry against your storage cost"
+    },
+    {
+     "href": "/basis",
+     "text": "Basis vs normal",
+     "why": "Is your local basis strong or weak for the date?"
+    },
+    {
+     "href": "/cash-bid-index",
+     "text": "Cash Bid Index",
+     "why": "Monthly national cash price"
+    }
+   ]
+  },
+  "/grain-bin-calculator": {
+   "links": [
+    {
+     "href": "/store-or-sell",
+     "text": "Sell now or store?",
+     "why": "The carry against your storage cost"
+    },
+    {
+     "href": "/grain-shrink",
+     "text": "Grain shrink",
+     "why": "What drying costs you in bushels"
+    },
+    {
+     "href": "/grain-emc",
+     "text": "Grain EMC",
+     "why": "When to run aeration fans"
+    }
+   ]
+  },
+  "/crop-tour": {
+   "links": [
+    {
+     "href": "/conditions-yield",
+     "text": "2026 crop size forecasts",
+     "why": "Every forecast in one place"
+    },
+    {
+     "href": "/usda-calendar",
+     "text": "USDA report calendar",
+     "why": "When the next report comes out"
+    },
+    {
+     "href": "/conditions",
+     "text": "Crop ratings and harvest progress",
+     "why": "This week's USDA numbers by state"
+    }
+   ]
+  },
+  "/cot": {
+   "links": [
+    {
+     "href": "/store-or-sell",
+     "text": "Sell now or store?",
+     "why": "The carry against your storage cost"
+    },
+    {
+     "href": "/basis",
+     "text": "Basis vs normal",
+     "why": "Is your local basis strong or weak for the date?"
+    },
+    {
+     "href": "/breakeven",
+     "text": "Break-even calculator",
+     "why": "Your cost per bushel by county"
+    }
+   ]
+  },
+  "/hail-map": {
+   "links": [
+    {
+     "href": "/hail/",
+     "text": "Hail by state",
+     "why": "County rankings and storm days"
+    },
+    {
+     "href": "/rain-radar",
+     "text": "Rain on your field",
+     "why": "Radar totals at your address"
+    },
+    {
+     "href": "/rain",
+     "text": "Rain by county",
+     "why": "This year against normal"
+    }
+   ]
+  },
+  "/markets": {
+   "links": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    },
+    {
+     "href": "/cattle-futures-prices",
+     "text": "Cattle futures today"
+    },
+    {
+     "href": "/fertilizer",
+     "text": "Fertilizer prices",
+     "why": "Posted co-op prices"
+    }
+   ]
+  },
+  "/yield-estimator": {
+   "links": [
+    {
+     "href": "/conditions-yield",
+     "text": "2026 crop size forecasts",
+     "why": "Every forecast in one place"
+    },
+    {
+     "href": "/usda-quick-stats",
+     "text": "USDA crop numbers",
+     "why": "State production and yields"
+    },
+    {
+     "href": "/store-or-sell",
+     "text": "Sell now or store?",
+     "why": "The carry against your storage cost"
+    }
+   ]
+  },
+  "/fertilizer": {
+   "links": [
+    {
+     "href": "/nutrient-removal",
+     "text": "Nutrient removal value",
+     "why": "What your crop took off the field"
+    },
+    {
+     "href": "/manure-value",
+     "text": "Manure value",
+     "why": "Nutrients in manure at today's prices"
+    },
+    {
+     "href": "/urea",
+     "text": "Urea loss risk",
+     "why": "Volatilization risk this week"
+    }
+   ]
+  },
+  "/gdu-calculator": {
+   "links": [
+    {
+     "href": "/planting-date",
+     "text": "Planting date",
+     "why": "Yield by planting date"
+    },
+    {
+     "href": "/yield-estimator",
+     "text": "Yield estimator",
+     "why": "Count ears and kernels in your field"
+    },
+    {
+     "href": "/conditions",
+     "text": "Crop ratings and harvest progress",
+     "why": "This week's USDA numbers by state"
+    }
+   ]
+  },
+  "/rent": {
+   "links": [
+    {
+     "href": "/farmland-atlas",
+     "text": "Farmland Atlas",
+     "why": "Land values and sales by county"
+    },
+    {
+     "href": "/cash-lease",
+     "text": "Cash lease form",
+     "why": "A plain written lease"
+    },
+    {
+     "href": "/custom-rates",
+     "text": "Custom rates",
+     "why": "What custom work costs by state"
+    }
+   ]
+  },
+  "/spray": {
+   "links": [
+    {
+     "href": "/rain-radar",
+     "text": "Rain on your field",
+     "why": "Radar totals at your address"
+    },
+    {
+     "href": "/urea",
+     "text": "Urea loss risk",
+     "why": "Volatilization risk this week"
+    },
+    {
+     "href": "/gdu-calculator",
+     "text": "GDU calculator",
+     "why": "Heat units since planting"
+    }
+   ]
+  },
+  "/breakeven": {
+   "links": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    },
+    {
+     "href": "/store-or-sell",
+     "text": "Sell now or store?",
+     "why": "The carry against your storage cost"
+    },
+    {
+     "href": "/arc-plc",
+     "text": "ARC or PLC",
+     "why": "Which program pays more on your base acres"
+    }
+   ]
+  },
+  "/farm-bill": {
+   "links": [
+    {
+     "href": "/arc-plc",
+     "text": "ARC or PLC",
+     "why": "Which program pays more on your base acres"
+    },
+    {
+     "href": "/commodity-loan",
+     "text": "Commodity loan calculator",
+     "why": "What a CCC loan pays on stored grain"
+    },
+    {
+     "href": "/prf",
+     "text": "PRF pasture insurance",
+     "why": "Rainfall index insurance by grid"
+    }
+   ]
+  },
+  "/milk-prices": {
+   "links": [
+    {
+     "href": "/hay-prices",
+     "text": "Hay prices",
+     "why": "USDA prices by state"
+    },
+    {
+     "href": "/cattle-futures-prices",
+     "text": "Cattle futures today"
+    },
+    {
+     "href": "/cot",
+     "text": "Fund positions",
+     "why": "Which way the big funds are betting"
+    }
+   ]
+  },
+  "/cattle-auction-prices": {
+   "links": [
+    {
+     "href": "/cattle-futures-prices",
+     "text": "Cattle futures today"
+    },
+    {
+     "href": "/lrp",
+     "text": "LRP livestock price insurance",
+     "why": "Set a floor under cattle or hogs"
+    },
+    {
+     "href": "/hay-prices",
+     "text": "Hay prices",
+     "why": "USDA prices by state"
+    }
+   ]
+  },
+  "/tariffs": {
+   "links": [
+    {
+     "href": "/soybean-futures-prices",
+     "text": "Soybean futures today"
+    },
+    {
+     "href": "/corn-futures-prices",
+     "text": "Corn futures today"
+    },
+    {
+     "href": "/farm-bill",
+     "text": "Farm bill",
+     "why": "What changed and when"
+    }
+   ]
+  },
+  "/arc-plc": {
+   "links": [
+    {
+     "href": "/farm-bill",
+     "text": "Farm bill",
+     "why": "What changed and when"
+    },
+    {
+     "href": "/breakeven",
+     "text": "Break-even calculator",
+     "why": "Your cost per bushel by county"
+    },
+    {
+     "href": "/harvest-price-tracker",
+     "text": "Harvest price tracker",
+     "why": "Where the crop insurance harvest price is headed"
+    }
+   ]
+  },
+  "/urea": {
+   "links": [
+    {
+     "href": "/fertilizer",
+     "text": "Fertilizer prices",
+     "why": "Posted co-op prices"
+    },
+    {
+     "href": "/spray",
+     "text": "Spray advisory",
+     "why": "Wind and rain for the next days"
+    },
+    {
+     "href": "/fall-nitrogen",
+     "text": "Soil temp for fall anhydrous",
+     "why": "Is it cold enough yet?"
+    }
+   ]
+  },
+  "/fast-facts": {
+   "links": [
+    {
+     "href": "/tools",
+     "text": "All tools"
+    },
+    {
+     "href": "/nutrient-removal",
+     "text": "Nutrient removal value",
+     "why": "What your crop took off the field"
+    },
+    {
+     "href": "/grain-bin-calculator",
+     "text": "Grain bin calculator",
+     "why": "Bushels in a bin"
+    }
+   ]
+  },
+  "/elevators": {
+   "links": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    },
+    {
+     "href": "/basis",
+     "text": "Basis vs normal",
+     "why": "Is your local basis strong or weak for the date?"
+    },
+    {
+     "href": "/list-your-elevator",
+     "text": "List your elevator",
+     "why": "Add or fix your bids"
+    }
+   ]
+  },
+  "/drought-monitor": {
+   "links": [
+    {
+     "href": "/rain",
+     "text": "Rain by county",
+     "why": "This year against normal"
+    },
+    {
+     "href": "/prf",
+     "text": "PRF pasture insurance",
+     "why": "Rainfall index insurance by grid"
+    },
+    {
+     "href": "/hay-prices",
+     "text": "Hay prices",
+     "why": "USDA prices by state"
+    }
+   ]
+  },
+  "/conditions": {
+   "links": [
+    {
+     "href": "/conditions-yield",
+     "text": "2026 crop size forecasts",
+     "why": "Every forecast in one place"
+    },
+    {
+     "href": "/yield-estimator",
+     "text": "Yield estimator",
+     "why": "Count ears and kernels in your field"
+    },
+    {
+     "href": "/usda-calendar",
+     "text": "USDA report calendar",
+     "why": "When the next report comes out"
+    }
+   ]
+  },
+  "/daily": {
+   "links": [
+    {
+     "href": "/archive",
+     "text": "Briefing archive",
+     "why": "Every past Daily"
+    },
+    {
+     "href": "/usda-calendar",
+     "text": "USDA report calendar",
+     "why": "When the next report comes out"
+    },
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    }
+   ]
+  },
+  "/planting-date": {
+   "links": [
+    {
+     "href": "/gdu-calculator",
+     "text": "GDU calculator",
+     "why": "Heat units since planting"
+    },
+    {
+     "href": "/yield-estimator",
+     "text": "Yield estimator",
+     "why": "Count ears and kernels in your field"
+    },
+    {
+     "href": "/conditions",
+     "text": "Crop ratings and harvest progress",
+     "why": "This week's USDA numbers by state"
+    }
+   ]
+  },
+  "/about": {
+   "links": [
+    {
+     "href": "/editorial-standards",
+     "text": "Editorial standards",
+     "why": "How numbers are checked"
+    },
+    {
+     "href": "/data-sources",
+     "text": "Data sources",
+     "why": "Where every number comes from"
+    },
+    {
+     "href": "/contact",
+     "text": "Contact",
+     "why": "Questions, corrections, ideas"
+    }
+   ]
+  },
+  "/tools": {
+   "links": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    },
+    {
+     "href": "/breakeven",
+     "text": "Break-even calculator",
+     "why": "Your cost per bushel by county"
+    },
+    {
+     "href": "/store-or-sell",
+     "text": "Sell now or store?",
+     "why": "The carry against your storage cost"
+    }
+   ]
+  },
+  "/conditions-yield": {
+   "links": [
+    {
+     "href": "/conditions",
+     "text": "Crop ratings and harvest progress",
+     "why": "This week's USDA numbers by state"
+    },
+    {
+     "href": "/usda-calendar",
+     "text": "USDA report calendar",
+     "why": "When the next report comes out"
+    },
+    {
+     "href": "/corn-futures-prices",
+     "text": "Corn futures today"
+    }
+   ]
+  },
+  "/cash-lease": {
+   "links": [
+    {
+     "href": "/rent/",
+     "text": "Cash rent by state",
+     "why": "NASS county rents"
+    },
+    {
+     "href": "/custom-rates",
+     "text": "Custom rates",
+     "why": "What custom work costs by state"
+    },
+    {
+     "href": "/farmland-atlas",
+     "text": "Farmland Atlas",
+     "why": "Land values and sales by county"
+    }
+   ]
+  },
+  "/whats-priced-in": {
+   "links": [
+    {
+     "href": "/usda-calendar",
+     "text": "USDA report calendar",
+     "why": "When the next report comes out"
+    },
+    {
+     "href": "/corn-futures-prices",
+     "text": "Corn futures today"
+    },
+    {
+     "href": "/soybean-futures-prices",
+     "text": "Soybean futures today"
+    }
+   ]
+  },
+  "/terms": {
+   "links": [
+    {
+     "href": "/data-sources",
+     "text": "Data sources",
+     "why": "Where every number comes from"
+    },
+    {
+     "href": "/tools",
+     "text": "All tools"
+    },
+    {
+     "href": "/contact",
+     "text": "Contact",
+     "why": "Questions, corrections, ideas"
+    }
+   ],
+   "signup": false
+  },
+  "/status": {
+   "links": [
+    {
+     "href": "/data-sources",
+     "text": "Data sources",
+     "why": "Where every number comes from"
+    },
+    {
+     "href": "/changelog",
+     "text": "What's new",
+     "why": "Recent changes"
+    },
+    {
+     "href": "/contact",
+     "text": "Contact",
+     "why": "Questions, corrections, ideas"
+    }
+   ],
+   "signup": false
+  },
+  "/pod-counts": {
+   "links": [
+    {
+     "href": "/yield-estimator",
+     "text": "Yield estimator",
+     "why": "Count ears and kernels in your field"
+    },
+    {
+     "href": "/conditions",
+     "text": "Crop ratings and harvest progress",
+     "why": "This week's USDA numbers by state"
+    },
+    {
+     "href": "/store-or-sell",
+     "text": "Sell now or store?",
+     "why": "The carry against your storage cost"
+    }
+   ]
+  },
+  "/contact": {
+   "links": [
+    {
+     "href": "/about",
+     "text": "About AGSIST",
+     "why": "Who builds this and why"
+    },
+    {
+     "href": "/editorial-standards",
+     "text": "Editorial standards",
+     "why": "How numbers are checked"
+    },
+    {
+     "href": "/tools",
+     "text": "All tools"
+    }
+   ],
+   "signup": false
+  },
+  "/basis": {
+   "links": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    },
+    {
+     "href": "/store-or-sell",
+     "text": "Sell now or store?",
+     "why": "The carry against your storage cost"
+    },
+    {
+     "href": "/basis-map",
+     "text": "Basis map",
+     "why": "Basis across the country"
+    }
+   ]
+  },
+  "/hail": {
+   "links": [
+    {
+     "href": "/hail-map",
+     "text": "Hail map",
+     "why": "Did hail hit your place?"
+    },
+    {
+     "href": "/rain-radar",
+     "text": "Rain on your field",
+     "why": "Radar totals at your address"
+    },
+    {
+     "href": "/rain",
+     "text": "Rain by county",
+     "why": "This year against normal"
+    }
+   ]
+  },
+  "/data-sources": {
+   "links": [
+    {
+     "href": "/editorial-standards",
+     "text": "Editorial standards",
+     "why": "How numbers are checked"
+    },
+    {
+     "href": "/status",
+     "text": "Status",
+     "why": "How fresh each feed is"
+    },
+    {
+     "href": "/about",
+     "text": "About AGSIST",
+     "why": "Who builds this and why"
+    }
+   ]
+  },
+  "/developer": {
+   "links": [
+    {
+     "href": "/data-sources",
+     "text": "Data sources",
+     "why": "Where every number comes from"
+    },
+    {
+     "href": "/tools",
+     "text": "All tools"
+    },
+    {
+     "href": "/contact",
+     "text": "Contact",
+     "why": "Questions, corrections, ideas"
+    }
+   ],
+   "signup": false
+  },
+  "/field-scout": {
+   "links": [
+    {
+     "href": "/rain-radar",
+     "text": "Rain on your field",
+     "why": "Radar totals at your address"
+    },
+    {
+     "href": "/farmland-atlas",
+     "text": "Farmland Atlas",
+     "why": "Land values and sales by county"
+    },
+    {
+     "href": "/gdu-calculator",
+     "text": "GDU calculator",
+     "why": "Heat units since planting"
+    }
+   ]
+  },
+  "/changelog": {
+   "links": [
+    {
+     "href": "/tools",
+     "text": "All tools"
+    },
+    {
+     "href": "/data-sources",
+     "text": "Data sources",
+     "why": "Where every number comes from"
+    },
+    {
+     "href": "/contact",
+     "text": "Contact",
+     "why": "Questions, corrections, ideas"
+    }
+   ]
+  },
+  "/sponsor": {
+   "links": [
+    {
+     "href": "/about",
+     "text": "About AGSIST",
+     "why": "Who builds this and why"
+    },
+    {
+     "href": "/sponsor-apply",
+     "text": "Apply to sponsor"
+    },
+    {
+     "href": "/contact",
+     "text": "Contact",
+     "why": "Questions, corrections, ideas"
+    }
+   ],
+   "signup": false
+  },
+  "/scorecard": {
+   "links": [
+    {
+     "href": "/breakeven",
+     "text": "Break-even calculator",
+     "why": "Your cost per bushel by county"
+    },
+    {
+     "href": "/store-or-sell",
+     "text": "Sell now or store?",
+     "why": "The carry against your storage cost"
+    },
+    {
+     "href": "/daily",
+     "text": "Today's briefing",
+     "why": "The markets in a few minutes, every weekday"
+    }
+   ]
+  },
+  "/farmland-atlas": {
+   "links": [
+    {
+     "href": "/rent/",
+     "text": "Cash rent by state",
+     "why": "NASS county rents"
+    },
+    {
+     "href": "/custom-rates",
+     "text": "Custom rates",
+     "why": "What custom work costs by state"
+    },
+    {
+     "href": "/cash-lease",
+     "text": "Cash lease form",
+     "why": "A plain written lease"
+    }
+   ]
+  },
+  "/foreign-land": {
+   "links": [
+    {
+     "href": "/farmland-atlas",
+     "text": "Farmland Atlas",
+     "why": "Land values and sales by county"
+    },
+    {
+     "href": "/rent/",
+     "text": "Cash rent by state",
+     "why": "NASS county rents"
+    },
+    {
+     "href": "/land-tenure",
+     "text": "Who owns farmland",
+     "why": "Land tenure by state"
+    }
+   ]
+  },
+  "/accessibility": {
+   "links": [
+    {
+     "href": "/contact",
+     "text": "Contact",
+     "why": "Questions, corrections, ideas"
+    },
+    {
+     "href": "/about",
+     "text": "About AGSIST",
+     "why": "Who builds this and why"
+    },
+    {
+     "href": "/tools",
+     "text": "All tools"
+    }
+   ],
+   "signup": false
+  },
+  "/archive": {
+   "links": [
+    {
+     "href": "/daily",
+     "text": "Today's briefing",
+     "why": "The markets in a few minutes, every weekday"
+    },
+    {
+     "href": "/news",
+     "text": "The Wire",
+     "why": "Farm news, sorted"
+    },
+    {
+     "href": "/editorial-standards",
+     "text": "Editorial standards",
+     "why": "How numbers are checked"
+    }
+   ]
+  },
+  "/prf": {
+   "links": [
+    {
+     "href": "/prf/how-prf-works",
+     "text": "How PRF works",
+     "why": "Grids, intervals and payments in plain terms"
+    },
+    {
+     "href": "/drought-monitor",
+     "text": "Drought monitor",
+     "why": "This week by county"
+    },
+    {
+     "href": "/hay-prices",
+     "text": "Hay prices",
+     "why": "USDA prices by state"
+    }
+   ],
+   "signup": false
+  },
+  "/harvest-price-tracker": {
+   "links": [
+    {
+     "href": "/corn-futures-prices",
+     "text": "Corn futures today"
+    },
+    {
+     "href": "/soybean-futures-prices",
+     "text": "Soybean futures today"
+    },
+    {
+     "href": "/arc-plc",
+     "text": "ARC or PLC",
+     "why": "Which program pays more on your base acres"
+    }
+   ]
+  },
+  "/privacy": {
+   "links": [
+    {
+     "href": "/terms",
+     "text": "Terms"
+    },
+    {
+     "href": "/editorial-standards",
+     "text": "Editorial standards",
+     "why": "How numbers are checked"
+    },
+    {
+     "href": "/contact",
+     "text": "Contact",
+     "why": "Questions, corrections, ideas"
+    }
+   ],
+   "signup": false
+  },
+  "/rain": {
+   "links": [
+    {
+     "href": "/rain-radar",
+     "text": "Rain on your field",
+     "why": "Radar totals at your address"
+    },
+    {
+     "href": "/rain-print",
+     "text": "Rain Print",
+     "why": "Your farm's year of rain, printed"
+    },
+    {
+     "href": "/drought-monitor",
+     "text": "Drought monitor",
+     "why": "This week by county"
+    }
+   ]
+  },
+  "/cash-bid-index": {
+   "links": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    },
+    {
+     "href": "/basis",
+     "text": "Basis vs normal",
+     "why": "Is your local basis strong or weak for the date?"
+    },
+    {
+     "href": "/corn-futures-prices",
+     "text": "Corn futures today"
+    }
+   ]
+  },
+  "/combine-loss": {
+   "links": [
+    {
+     "href": "/harvest-or-wait",
+     "text": "Harvest now or wait?",
+     "why": "Field drydown against drying cost"
+    },
+    {
+     "href": "/grain-emc",
+     "text": "Grain EMC",
+     "why": "When to run aeration fans"
+    },
+    {
+     "href": "/grain-shrink",
+     "text": "Grain shrink",
+     "why": "What drying costs you in bushels"
+    }
+   ]
+  },
+  "/commodity-loan": {
+   "links": [
+    {
+     "href": "/store-or-sell",
+     "text": "Sell now or store?",
+     "why": "The carry against your storage cost"
+    },
+    {
+     "href": "/arc-plc",
+     "text": "ARC or PLC",
+     "why": "Which program pays more on your base acres"
+    },
+    {
+     "href": "/grain-bin-calculator",
+     "text": "Grain bin calculator",
+     "why": "Bushels in a bin"
+    }
+   ]
+  },
+  "/custom-rates": {
+   "links": [
+    {
+     "href": "/rent/",
+     "text": "Cash rent by state",
+     "why": "NASS county rents"
+    },
+    {
+     "href": "/cash-lease",
+     "text": "Cash lease form",
+     "why": "A plain written lease"
+    },
+    {
+     "href": "/breakeven",
+     "text": "Break-even calculator",
+     "why": "Your cost per bushel by county"
+    }
+   ]
+  },
+  "/editorial-standards": {
+   "links": [
+    {
+     "href": "/data-sources",
+     "text": "Data sources",
+     "why": "Where every number comes from"
+    },
+    {
+     "href": "/archive",
+     "text": "Briefing archive",
+     "why": "Every past Daily"
+    },
+    {
+     "href": "/daily",
+     "text": "Today's briefing",
+     "why": "The markets in a few minutes, every weekday"
+    }
+   ]
+  },
+  "/fall-nitrogen": {
+   "links": [
+    {
+     "href": "/fertilizer",
+     "text": "Fertilizer prices",
+     "why": "Posted co-op prices"
+    },
+    {
+     "href": "/nutrient-removal",
+     "text": "Nutrient removal value",
+     "why": "What your crop took off the field"
+    },
+    {
+     "href": "/urea",
+     "text": "Urea loss risk",
+     "why": "Volatilization risk this week"
+    }
+   ]
+  },
+  "/farm-anniversary-gifts": {
+   "links": [
+    {
+     "href": "/rain-print",
+     "text": "Rain Print",
+     "why": "Your farm's year of rain, printed"
+    },
+    {
+     "href": "/gifts-for-farmers",
+     "text": "Gifts for farmers"
+    },
+    {
+     "href": "/farmer-retirement-gifts",
+     "text": "Farmer retirement gifts"
+    }
+   ],
+   "signup": false
+  },
+  "/farmer-retirement-gifts": {
+   "links": [
+    {
+     "href": "/rain-print",
+     "text": "Rain Print",
+     "why": "Your farm's year of rain, printed"
+    },
+    {
+     "href": "/gifts-for-farmers",
+     "text": "Gifts for farmers"
+    },
+    {
+     "href": "/farm-anniversary-gifts",
+     "text": "Farm anniversary gifts"
+    }
+   ],
+   "signup": false
+  },
+  "/gifts-for-farmers": {
+   "links": [
+    {
+     "href": "/rain-print",
+     "text": "Rain Print",
+     "why": "Your farm's year of rain, printed"
+    },
+    {
+     "href": "/rain-gauge",
+     "text": "Rain gauge",
+     "why": "Waitlist for the first batch"
+    },
+    {
+     "href": "/farmer-retirement-gifts",
+     "text": "Farmer retirement gifts"
+    }
+   ],
+   "signup": false
+  },
+  "/grain-emc": {
+   "links": [
+    {
+     "href": "/grain-bin-calculator",
+     "text": "Grain bin calculator",
+     "why": "Bushels in a bin"
+    },
+    {
+     "href": "/grain-shrink",
+     "text": "Grain shrink",
+     "why": "What drying costs you in bushels"
+    },
+    {
+     "href": "/store-or-sell",
+     "text": "Sell now or store?",
+     "why": "The carry against your storage cost"
+    }
+   ]
+  },
+  "/grain-shrink": {
+   "links": [
+    {
+     "href": "/grain-emc",
+     "text": "Grain EMC",
+     "why": "When to run aeration fans"
+    },
+    {
+     "href": "/grain-bin-calculator",
+     "text": "Grain bin calculator",
+     "why": "Bushels in a bin"
+    },
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    }
+   ]
+  },
+  "/harvest-or-wait": {
+   "links": [
+    {
+     "href": "/combine-loss",
+     "text": "Combine loss check",
+     "why": "Count kernels behind the combine"
+    },
+    {
+     "href": "/grain-shrink",
+     "text": "Grain shrink",
+     "why": "What drying costs you in bushels"
+    },
+    {
+     "href": "/grain-emc",
+     "text": "Grain EMC",
+     "why": "When to run aeration fans"
+    }
+   ]
+  },
+  "/hay-prices": {
+   "links": [
+    {
+     "href": "/cattle-auction-prices",
+     "text": "Sale barn prices",
+     "why": "What calves and cattle brought at local auctions"
+    },
+    {
+     "href": "/drought-monitor",
+     "text": "Drought monitor",
+     "why": "This week by county"
+    },
+    {
+     "href": "/prf",
+     "text": "PRF pasture insurance",
+     "why": "Rainfall index insurance by grid"
+    }
+   ]
+  },
+  "/list-your-elevator": {
+   "links": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    },
+    {
+     "href": "/elevators",
+     "text": "Elevator directory"
+    },
+    {
+     "href": "/contact",
+     "text": "Contact",
+     "why": "Questions, corrections, ideas"
+    }
+   ],
+   "signup": false
+  },
+  "/lrp": {
+   "links": [
+    {
+     "href": "/cattle-futures-prices",
+     "text": "Cattle futures today"
+    },
+    {
+     "href": "/cattle-auction-prices",
+     "text": "Sale barn prices",
+     "why": "What calves and cattle brought at local auctions"
+    },
+    {
+     "href": "/hay-prices",
+     "text": "Hay prices",
+     "why": "USDA prices by state"
+    }
+   ]
+  },
+  "/manure-value": {
+   "links": [
+    {
+     "href": "/fertilizer",
+     "text": "Fertilizer prices",
+     "why": "Posted co-op prices"
+    },
+    {
+     "href": "/nutrient-removal",
+     "text": "Nutrient removal value",
+     "why": "What your crop took off the field"
+    },
+    {
+     "href": "/custom-rates",
+     "text": "Custom rates",
+     "why": "What custom work costs by state"
+    }
+   ]
+  },
+  "/news": {
+   "links": [
+    {
+     "href": "/daily",
+     "text": "Today's briefing",
+     "why": "The markets in a few minutes, every weekday"
+    },
+    {
+     "href": "/archive",
+     "text": "Briefing archive",
+     "why": "Every past Daily"
+    },
+    {
+     "href": "/markets",
+     "text": "Commodity prices today",
+     "why": "Every futures price on one board"
+    }
+   ]
+  },
+  "/nutrient-removal": {
+   "links": [
+    {
+     "href": "/fertilizer",
+     "text": "Fertilizer prices",
+     "why": "Posted co-op prices"
+    },
+    {
+     "href": "/manure-value",
+     "text": "Manure value",
+     "why": "Nutrients in manure at today's prices"
+    },
+    {
+     "href": "/fall-nitrogen",
+     "text": "Soil temp for fall anhydrous",
+     "why": "Is it cold enough yet?"
+    }
+   ]
+  },
+  "/prf-sponsor": {
+   "links": [
+    {
+     "href": "/prf",
+     "text": "PRF pasture insurance",
+     "why": "Rainfall index insurance by grid"
+    },
+    {
+     "href": "/sponsor",
+     "text": "Advertise",
+     "why": "Sponsor slots and prices"
+    },
+    {
+     "href": "/contact",
+     "text": "Contact",
+     "why": "Questions, corrections, ideas"
+    }
+   ],
+   "signup": false
+  },
+  "/rain-gauge": {
+   "links": [
+    {
+     "href": "/rain-print",
+     "text": "Rain Print",
+     "why": "Your farm's year of rain, printed"
+    },
+    {
+     "href": "/rain",
+     "text": "Rain by county",
+     "why": "This year against normal"
+    },
+    {
+     "href": "/rain-radar",
+     "text": "Rain on your field",
+     "why": "Radar totals at your address"
+    }
+   ],
+   "signup": false
+  },
+  "/rain-print-business": {
+   "links": [
+    {
+     "href": "/rain-print",
+     "text": "Rain Print",
+     "why": "Your farm's year of rain, printed"
+    },
+    {
+     "href": "/gifts-for-farmers",
+     "text": "Gifts for farmers"
+    },
+    {
+     "href": "/contact",
+     "text": "Contact",
+     "why": "Questions, corrections, ideas"
+    }
+   ],
+   "signup": false
+  },
+  "/rain-print": {
+   "links": [
+    {
+     "href": "/rain",
+     "text": "Rain by county",
+     "why": "This year against normal"
+    },
+    {
+     "href": "/rain-gauge",
+     "text": "Rain gauge",
+     "why": "Waitlist for the first batch"
+    },
+    {
+     "href": "/rain-print-business",
+     "text": "Rain Print for business",
+     "why": "Prints for customers, delivered"
+    }
+   ],
+   "signup": false
+  },
+  "/rain-radar": {
+   "links": [
+    {
+     "href": "/rain",
+     "text": "Rain by county",
+     "why": "This year against normal"
+    },
+    {
+     "href": "/hail-map",
+     "text": "Hail map",
+     "why": "Did hail hit your place?"
+    },
+    {
+     "href": "/spray",
+     "text": "Spray advisory",
+     "why": "Wind and rain for the next days"
+    }
+   ]
+  },
+  "/store-or-sell": {
+   "links": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    },
+    {
+     "href": "/commodity-loan",
+     "text": "Commodity loan calculator",
+     "why": "What a CCC loan pays on stored grain"
+    },
+    {
+     "href": "/grain-bin-calculator",
+     "text": "Grain bin calculator",
+     "why": "Bushels in a bin"
+    }
+   ]
+  },
+  "/glossary": {
+   "links": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me",
+     "why": "What elevators near your ZIP pay today"
+    },
+    {
+     "href": "/markets",
+     "text": "Commodity prices today",
+     "why": "Every futures price on one board"
+    },
+    {
+     "href": "/usda-calendar",
+     "text": "USDA report calendar",
+     "why": "When the next report comes out"
+    }
+   ]
+  }
+ }
+}

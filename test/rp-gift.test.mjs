@@ -451,7 +451,7 @@ test("rp-gift.html: the card's words (station, marked days, full year, card numb
   assert.equal((h.match(/once the full year is in\./g) || []).length, 6, "both January lines on the small cards, and the 8 x 10's what's-coming lines");
   assert.match(h, /Your ' \+ s\.year \+ ' print comes in January, once the full year is in\./);
   assert.match(h, /framed12x18: \['A print of the whole year in a 13 x 19 black frame with a white mat and glass, ready to hang\.', 'It ships in January, once the full year is in\.'\]/);
-  assert.match(h, /print12x18: \['A print of the whole year on 13 x 19 matte paper\.', 'It ships in January, once the full year is in\.'\]/);
+  assert.match(h, /print12x18: \['A print of the whole year on 13 x 19 heavy, textured cotton fine-art paper\.', 'It ships in January, once the full year is in\.'\]/);
   assert.match(h, /digital: \['The 12 x 18 digital file of the whole year, to print anywhere\.', 'It comes by email in January, once the full year is in\.'\]/);
   assert.equal((h.match(/class="foot">Card ' \+ String\(C\.no/g) || []).length, 3, "every foot says Card 0017 (the small cards' two and the 8 x 10's)");
   assert.doesNotMatch(h, /class="foot">No\. /);
@@ -539,7 +539,8 @@ test("previewArt: the card's print so far, through the last reported day, the mo
   const later = r.svg.match(/<g data-rp="later" aria-hidden="true"><rect x="([\d.]+)" y="[\d.]+" width="([\d.]+)"[^>]*\/>([\s\S]*?)<\/g>/);
   assert.ok(later, "the months still to come are washed pale");
   const x0 = +later[1], x1 = x0 + +later[2];
-  assert.ok(Math.abs(x0 - (196 + 282 * (1680 - 196) / 365)) < 0.01 && Math.abs(x1 - 1680) < 0.01, "from the day after Oct 9 to Dec 31 on the full calendar: " + x0 + " to " + x1);
+  // (Staircase A2 clean, 2026-10-17: the chart runs from 196 to 1590, the line ends' words to its right)
+  assert.ok(Math.abs(x0 - (196 + 282 * (1590 - 196) / 365)) < 0.01 && Math.abs(x1 - 1590) < 0.01, "from the day after Oct 9 to Dec 31 on the full calendar: " + x0 + " to " + x1);
   assert.match(later[3].replace(/<[^>]+>/g, "|"), /The rest of 2026\|+arrives in January/, "with the words in it");
   assert.ok(r.svg.indexOf('data-rp="later"') < r.svg.indexOf('data-rp="band"'), "the band stays on top of the wash");
   assert.match(r.svg, />Planted</, "a date already past is on it");

@@ -22,6 +22,8 @@ The contract a basis is quoted against is named ("vs Dec '26"), never priced.
 WHAT IS SHOWN (every rule must hold for a row to print)
   - row: stale false, sourceStatus "ok", USD, a US state
   - board in index.json with status "ok" and health "live"
+    (or: board and row "skipped", i.e. not asked this pass, with its last
+    successful read within SB.HELD_SKIP_HOURS; see held_skip())
   - pricedAt within FRESH_HOURS (72 h) of the snapshot -- the same window the
     state basis pages use, so a board unchanged over a weekend still counts
   - delivery not expired: periodPast false, the month window not behind the
@@ -435,10 +437,11 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             drops[k] += 1
             bd["why"][k] += 1
 
-        if b.get("stale") is not False or b.get("sourceStatus") != "ok":
+        held = SB.held_skip(b, src, gen)   # skipped this pass, read within HELD_SKIP_HOURS
+        if not held and (b.get("stale") is not False or b.get("sourceStatus") != "ok"):
             no("stale_or_unconfirmed")
             continue
-        if src.get("status") != "ok" or src.get("health") != "live":
+        if not held and (src.get("status") != "ok" or src.get("health") != "live"):
             no("board_not_live")
             continue
         if pt is None or (gen - pt).total_seconds() > FRESH_HOURS * 3600:
@@ -1331,11 +1334,6 @@ def answer_picks(boards):
     return out
 
 
-def _mon_word(dm, snap_ct):
-    y, m = int(dm[:4]), int(dm[5:7])
-    return MONTH_ABBR[m - 1] + ("" if y == snap_ct.year else f" {y}")
-
-
 def _basis_plain(r, vs=True):
     if r["basis"] is None:
         return ""
@@ -1352,10 +1350,25 @@ def _posted_days(rows):
     return f"{a} to {MONTH_ABBR[b[0] - 1] + ' ' if b[0] != ds[0][0] else ''}{b[1]}"
 
 
+def _deliv_phrase(r, first):
+    """The delivery the board itself prints in its Delivery column (r["label"]),
+    not the month AGSIST files it under: an ADM board's "New crop 2026" row was
+    filed as Oct and the answer said "for Oct delivery" over a table with no
+    Oct row (accuracy pass, 2026-10-17)."""
+    lab = re.sub(r"\s+", " ", str(r.get("label") or "")).strip()
+    if not lab:
+        return ""
+    if lab.lower().startswith("by "):
+        return " for delivery by " + lab[3:]
+    return f" for {lab}" + (" delivery" if first else "")
+
+
 def answer_sentence(picks, snap_ct, n=ANSWER_CROPS, basis=True):
-    """"Top bid: corn $4.14 at CDR Farms LLC for Oct delivery (basis -65c) and
-    soybeans $12.04 for Oct (basis -70c), posted Oct 14." Every number is a
-    posted one that prints in the table below it."""
+    """"Nearest-delivery bid: corn $4.14 at CDR Farms LLC for Oct 2026 delivery
+    (basis -65c) and soybeans $12.04 for New crop 2026 (basis -70c), posted
+    Oct 14." The pick is the highest bid in the NEAREST delivery period
+    (answer_picks), not the highest on the board, so it is called that. Every
+    number and delivery label is one the table below prints."""
     cs = [c for c in CROPS if c in picks][:n]
     if not cs:
         return ""
@@ -1365,12 +1378,12 @@ def answer_sentence(picks, snap_ct, n=ANSWER_CROPS, basis=True):
         p = f"{CROP_LABEL[c].lower()} {cash_c(r['cash'])}"
         if name != prev:
             p += f" at {name}"
-        p += f" for {_mon_word(r['dm'], snap_ct)}" + (" delivery" if i == 0 else "")
+        p += _deliv_phrase(r, i == 0)
         if basis and r["basis"] is not None:
             p += f" (basis {_basis_plain(r)})"
         parts.append(p)
         prev = name
-    return (f"Top {'bids' if len(cs) > 1 else 'bid'}: " + " and ".join(parts)
+    return (f"Nearest-delivery {'bids' if len(cs) > 1 else 'bid'}: " + " and ".join(parts)
             + f", posted {_posted_days([picks[c][0] for c in cs])}.")
 
 
@@ -1443,11 +1456,11 @@ def faq_pairs(t, picks, cmp_lines, near, center, snap_ct):
     crop = CROP_LABEL[c].lower()
     r, name = picks[c]
     qs = []
-    a1 = (f"The top {crop} bid we read in {place} is {cash_c(r['cash'])} a bushel at {name} for "
-          f"{_mon_word(r['dm'], snap_ct)} delivery, posted {_posted_days([r])}. Call the elevator to confirm before you haul.")
+    a1 = (f"The nearest-delivery {crop} bid we read in {place} is {cash_c(r['cash'])} a bushel at {name}"
+          f"{_deliv_phrase(r, True)}, posted {_posted_days([r])}. Call the elevator to confirm before you haul.")
     qs.append((f"What is {crop} paying in {town} today?", a1))
     if r["basis"] is not None:
-        a2 = f"{name} posts {crop} basis of {_basis_plain(r)} for {_mon_word(r['dm'], snap_ct)} delivery."
+        a2 = f"{name} posts {crop} basis of {_basis_plain(r)}{_deliv_phrase(r, True)}."
         a2 += "".join(" " + x["faq"] for x in cmp_lines if x["crop"] == c)
     else:
         a2 = f"{name} does not post a basis with its {crop} bid, only the cash price."
@@ -1698,8 +1711,17 @@ def build_town_page(t, ctx):
         if indexable else []
     hist_html = history_box(t, live_b, ctx["hist"](st)) if indexable and ctx.get("hist") else ""
     answer_html = f'<p class="cbt-answer">{esc(answer)}</p>' if answer else ""
+    # the dated lead paragraph (scripts/stories_bids.py): stable facts only, never a price
+    story_facts, story_html = None, ""
+    if indexable:
+        import stories_bids as SBX
+        hm = re.search(r"Basis since ([A-Z][a-z]{2} \d{1,2})<", hist_html or "")
+        story_facts = SBX.town_facts(t, live_b, crops, picks, cmp_lines, hm and hm.group(1), sname, NEAR_MI, CROPS, CROP_LABEL,
+                                     snap_ct, near_text, head_name)
+        story_html = SBX.TOWN.story_html((ctx.get("stories") or {}).get("town"), f"{st.lower()}/{t['slug']}", story_facts)
     if any_hold:
-        hold_note = (" A &ldquo;Hold to&rdquo; line is the elevator&rsquo;s best later posted bid minus its nearest one, "
+        hold_note = (" A &ldquo;Hold to&rdquo; line names the later month this elevator posts that comes out best once "
+                     "storage and interest are taken off: its posted carry (that month&rsquo;s bid minus the nearest one), "
                      "net of " + esc(storesell.cost_note(storesell.with_defaults({}), None)[:-1]) +
                      f"; put in your own costs on <a href=\"{ss}\">Store or sell</a>.")
     if qs:
@@ -1727,7 +1749,7 @@ def build_town_page(t, ctx):
   <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/{ssl}/" style="color:var(--text-muted)">{esc(sname)}</a> &rsaquo; <b style="color:var(--text)">{esc(t['name'])}</b></p>
   <h1>Cash grain bids in {esc(place)} today</h1>
   {answer_html}
-  {intro}
+  {story_html}{intro}
   {'' if indexable else near_html}
   {jump}
   {''.join(secs[:1])}
@@ -1745,7 +1767,7 @@ def build_town_page(t, ctx):
   {known_html}
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
   posted bid board directly; no third-party bid feed is used for the bids on this page. A bid shows only if the board was
-  confirmed on the latest read, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
+  read successfully in the last {SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="{esc(live)}">live page</a>
   has the newest board and nearby elevators. Basis is cash minus the futures contract named under it.{near_note}{hold_note}{HIST_NOTE if hist_html else ''}</div>
   <p class="cbt-sub">{' &middot; '.join(links)}</p>
@@ -1753,7 +1775,7 @@ def build_town_page(t, ctx):
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
             "elevators": len(live_b), "quiet": len(quiet), "rows": nrows, "crops": crops,
             "latest": max(times) if times else None, "title": title, "desc": desc, "tops": tops,
-            "share": share}
+            "share": share, "story_facts": story_facts}
     h = head(title, desc, path, jsonld, indexable, share)
     if box:
         sheet = '  <link rel="stylesheet" href="/components/asof.css?v=1">\n'
@@ -1931,7 +1953,7 @@ def top_bid_table(g, near, town_paths):
                    f'<td class="n">{money_basis(r["basis"])}{con}</td></tr>')
     n = len([r for r in rs if r["start"] == first])
     ym_ = f"{MONTH_ABBR[int(first[5:7]) - 1]} {first[:4]}"
-    return (f'<h3>{SB.CROP_LABEL[g]}: top {len(top)} of {n} bids for {ym_} delivery</h3>'
+    return (f'<h3>{SB.CROP_LABEL[g]}: top {len(top)} of {n} bids at the nearest delivery, starting {ym_}</h3>'
             f'<div class="cbt-scroll"><table class="cbt-t"><thead><tr><th>Elevator</th><th>Delivery</th>'
             f'<th class="n">Cash</th><th class="n">Basis</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div>')
 
@@ -2226,8 +2248,8 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   {lst}
   {quiet_html}
   <div class="cbt-note"><b>How these numbers are made.</b> Source: the AGSIST elevator network (dnilgis/bids),
-  boards read directly; no third-party bid feed is used on this page. A bid counts only if its board was confirmed
-  live on the latest read and its price was posted within {FRESH_HOURS} hours, long enough that a board unchanged
+  boards read directly; no third-party bid feed is used on this page. A bid counts only if its board was read
+  successfully in the last {SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, and its price was posted within {FRESH_HOURS} hours, long enough that a board unchanged
   over a weekend still counts on Monday. Specialty bids (white, organic, non-GMO, high-oleic, identity-preserved)
   are left out of the basis. A middle number needs at least {BM.MIN_STAT} elevators on the same futures month.{wow_note}
   Prices move through the day; call the elevator before you haul.</div>
@@ -2238,6 +2260,69 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
     return head(title, desc, path, jsonld, indexable, share) + body + page_end(ftr, table=bool(near)), {
         "state": st, "path": path, "indexable": indexable, "towns": len(live), "quiet": len(quiet),
         "elevators": n_el, "latest": max((m["latest"] for m in live), default=None)}
+
+
+STATES_HUB = "states.html"   # /cash-bids/states: never index.html (that would capture /cash-bids)
+
+
+def build_states_hub(smetas, ctx):
+    """/cash-bids/states (2026-10-18 menu, "Bids by state"): every state with a
+    network board, with the towns and elevators that have a current bid, from
+    the same state_counts() numbers the state pages print. A state with no
+    current bid is listed apart, never with a zero passed off as a price."""
+    path = "/cash-bids/states"
+    live = sorted((m for m in smetas if m["indexable"]), key=lambda m: STATE_NAMES[m["state"]])
+    quiet = sorted((m for m in smetas if not m["indexable"]), key=lambda m: STATE_NAMES[m["state"]])
+    n_el = sum(m["elevators"] for m in live)
+    n_tw = sum(m["towns"] for m in live)
+    title = "Cash Grain Bids by State | AGSIST"
+    desc = (f"Cash grain bids by state: {n_el} elevators with a current bid in {n_tw} towns across "
+            f"{len(live)} states, read from each elevator's own bid board.")[:160]
+    latest = max((m["latest"] for m in live if m["latest"]), default=None)
+
+    def li(m):
+        sname = STATE_NAMES[m["state"]]
+        return (f'<li><a href="{m["path"]}">{esc(sname)}</a> <span class="cbt-mut">&middot; '
+                f'{m["elevators"]} elevator{"s" if m["elevators"] != 1 else ""} in {m["towns"]} '
+                f'town{"s" if m["towns"] != 1 else ""}</span></li>')
+    lst = (f'<ul class="cbt-list">{"".join(li(m) for m in live)}</ul>' if live else
+           '<div class="cbt-note"><b>No current bid.</b> No elevator the AGSIST network reads has a bid we '
+           'could confirm right now.</div>')
+    quiet_html = ""
+    if quiet:
+        quiet_html = ('<h2>States with no current bid</h2><p class="cbt-sub">The network reads a board here, but '
+                      'none has a bid it could confirm right now.</p><p class="cbt-cloud">'
+                      + " &middot; ".join(f'<a href="{m["path"]}">{esc(STATE_NAMES[m["state"]])}</a>' for m in quiet)
+                      + "</p>")
+    crumbs = breadcrumb([("AGSIST", f"{SITE}/"), ("Cash bids", f"{SITE}/cash-bids"), ("By state", f"{SITE}{path}")])
+    items = [{"@type": "ListItem", "position": i + 1, "name": f"{STATE_NAMES[m['state']]} cash grain bids",
+              "url": f"{SITE}{m['path']}"} for i, m in enumerate(live)]
+    graph = [crumbs, {"@type": "ItemList", "@id": f"{SITE}{path}#states", "name": "Cash grain bids by state",
+                      "numberOfItems": len(items), "itemListElement": items}]
+    jsonld = {"@context": "https://schema.org", "@graph": graph}
+    hdr, ftr = ctx["chrome"]
+    stamp = f'<p class="cbt-sub">{asof_time(latest)}</p>' if latest else ""
+    body = f"""
+<body>
+{hdr}
+<main class="cbt-wrap" id="main">
+  <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <b style="color:var(--text)">By state</b></p>
+  <h1>Cash grain bids by state</h1>
+  <p class="cbt-sub">Every state where the AGSIST network reads an elevator&rsquo;s own bid board, with how many
+  elevators and towns have a current bid. This is the network&rsquo;s sample, not every elevator in a state; the
+  <a href="/cash-bids">cash bids page</a> finds the ones nearest your ZIP.</p>
+  {stamp}
+  <h2 id="states">{len(live)} state{'s' if len(live) != 1 else ''} with a current bid</h2>
+  {lst}
+  {quiet_html}
+  <div class="cbt-note"><b>How these counts are made.</b> An elevator counts when its board was read
+  successfully in the last {SB.HELD_SKIP_HOURS} hours and it posted a price within {FRESH_HOURS} hours; a town
+  counts when it has one. The same counts are on each state&rsquo;s page and in
+  <a href="/data/{COUNTS_FILE}">data/{COUNTS_FILE}</a>. Call the elevator before you haul.</div>
+  <p class="cbt-sub" style="margin-top:18px"><a href="/cash-bids">Cash bids by ZIP</a> &middot; <a href="/basis#by-state">Basis in every state, vs normal</a> &middot; <a href="/cash-bid-index">Cash Bid Index</a></p>
+"""
+    return head(title, desc, path, jsonld, bool(live)) + body + page_end(ftr), {
+        "path": path, "indexable": bool(live), "latest": latest or ctx["snap_ct"]}
 
 
 LIVE_PAGE = "cash-bids.html"
@@ -2282,6 +2367,112 @@ def stamp_live_page(path, metas, counts=None):
     return text or LIVE_SHARE_GENERIC["og:description"]
 
 
+# ---------------------------------------------------------------- /cash-bids: who is covered
+# 2026-10-17 search-terms check: company-name searches ("new coop cash bids" 1,633, "agtegra cash
+# bids" 1,016, "new coop grain bids" 938, "ias cash grain bids" 468, "adm cash bids" 421, "alcivia
+# cash bids" 401; Search Console + Bing) landed on /cash-bids and saw no company named on the first
+# screen. These are the companies searched by name, in that order (IAS = Innovative Ag Services).
+# Only a company with a page this run is named; Cargill posts no board we read and is never named.
+SEARCHED_COMPANIES = ("new-cooperative", "agtegra", "adm", "alcivia", "innovative-ag-services",
+                      "farmward-cooperative", "cooperative-producers", "frontier-ag", "nexus-cooperative",
+                      "mercer-landmark")
+CO_NAMED = 5
+CO_LINE = re.compile(r"(<!--CO-LINE-->)(.*?)(<!--/CO-LINE-->)", re.S)
+CO_FAQ = re.compile(r"(<!--CO-FAQ-->)(.*?)(<!--/CO-FAQ-->)", re.S)
+CO_FAQ_Q = "Do you show my elevator’s bids?"
+
+
+def coverage_line(companies):
+    """The line under the /cash-bids heading: the companies searched by name that have a page,
+    topped up by the most current locations, then how many more. -> html ('' with none)."""
+    by = {m["slug"]: m for m in companies}
+    named = [by[s] for s in SEARCHED_COMPANIES if s in by][:CO_NAMED]
+    for m in sorted(companies, key=lambda m: (-m["live"], m["short"].lower())):
+        if len(named) >= CO_NAMED:
+            break
+        if m not in named:
+            named.append(m)
+    if not named:
+        return ""
+    more = len(companies) - len(named)
+    links = ", ".join(f'<a href="{esc(m["path"])}">{esc(m["short"])}</a>' for m in named)
+    tail = (f" and {more:,} more elevator compan{'ies' if more != 1 else 'y'}" if more else "")
+    return f'Bids from {links}{tail}. <a href="/cash-bids/company/">Bids by company &rarr;</a>'
+
+
+def coverage_faq(companies, counts):
+    """(html, text) answering "Do you show my elevator's bids?" from data/elevator-counts.json.
+    Each count is printed only when the file has it; None when it has neither block."""
+    b = (counts or {}).get("bids") or {}
+    c = (counts or {}).get("coverage") or {}
+    parts = []
+    if c.get("read") and c.get("elevators"):
+        parts.append(f"On its latest full pass the AGSIST network read {c['read']:,} bid boards, out of "
+                     f"{c['elevators']:,} elevators it keeps track of.")
+    if b.get("elevators") and b.get("towns"):
+        parts.append(f"{b['elevators']:,} elevators in {b['towns']:,} towns have a current bid on these pages.")
+    if not parts:
+        return None
+    from build_company_pages import COMPANY_MIN
+    n = len(companies)
+    co_t = (f" {n:,} companies with {COMPANY_MIN} or more locations have their own page, every location on one page."
+            if n else "")
+    lead = ("Maybe. AGSIST reads the bids elevators post online, so an elevator that does not post them is not here. ")
+    end_t = (" Type your ZIP at the top of this page to see which ones post near you. If you run an elevator, List your elevator puts "
+             "your bids on AGSIST free. If you farm and your elevator posts bids online but is missing, send its bid "
+             "page to sig@farmers1st.com.")
+    text = lead + " ".join(parts) + co_t + end_t
+    co_h = (f' {n:,} companies with {COMPANY_MIN} or more locations have <a href="/cash-bids/company/">their own page</a>, every '
+            f"location on one page." if n else "")
+    html = (esc(lead) + esc(" ".join(parts)) + co_h +
+            ' Type your ZIP at the top of this page to see which ones post near you. If you run an elevator, '
+            '<a href="/list-your-elevator">List your elevator</a> puts your bids on AGSIST free. If you farm and your '
+            'elevator posts bids online but is missing, send its bid page to '
+            '<a href="mailto:sig@farmers1st.com?subject=Missing%20elevator">sig@farmers1st.com</a>.')
+    return html, text
+
+
+def stamp_live_coverage(path, companies, counts):
+    """Bake the companies line and the "my elevator" FAQ (visible and JSON-LD) into /cash-bids.
+    Markers missing: warned, nothing written. No company and no counts: the text already there
+    stays (an old number is replaced only by a new one). -> True when the file changed."""
+    if not os.path.exists(path):
+        return False
+    with open(path, encoding="utf-8") as f:
+        html = f.read()
+    out = html
+    line = coverage_line(companies or [])
+    if line:
+        if CO_LINE.search(out):
+            out = CO_LINE.sub(lambda m: m.group(1) + line + m.group(3), out, count=1)
+        else:
+            print(f"[cash-bid-pages] {path} has no CO-LINE markers; companies line not written")
+    faq = coverage_faq(companies or [], counts)
+    if faq:
+        fh, ft = faq
+        if CO_FAQ.search(out):
+            out = CO_FAQ.sub(lambda m: m.group(1) + fh + m.group(3), out, count=1)
+            mm = re.search(r'(<script type="application/ld\+json">)(.*?)(</script>)', out, re.S)
+            try:
+                doc = json.loads(mm.group(2)) if mm else None
+            except ValueError:
+                doc = None
+            faqp = next((g for g in (doc or {}).get("@graph", []) if g.get("@type") == "FAQPage"), None)
+            if faqp is not None:
+                qs = [q for q in faqp["mainEntity"] if q.get("name") != CO_FAQ_Q]
+                at = next((i + 1 for i, q in enumerate(qs) if q.get("name") == "Which elevators are covered?"), len(qs))
+                qs.insert(at, {"@type": "Question", "name": CO_FAQ_Q, "acceptedAnswer": {"@type": "Answer", "text": ft}})
+                faqp["mainEntity"] = qs
+                out = out[:mm.start(2)] + json.dumps(doc, ensure_ascii=False) + out[mm.end(2):]
+        else:
+            print(f"[cash-bid-pages] {path} has no CO-FAQ markers; coverage answer not written")
+    if out != html:
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(out)
+        return True
+    return False
+
+
 def write_sitemap(path, entries):
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
@@ -2305,7 +2496,8 @@ def _hist_lookup(hist_dir):
 
 
 def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None, now=None, check_age=True,
-              min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None, directory=None, hist_dir=None):
+              min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None, directory=None, hist_dir=None,
+              companies_out=None):
     """data_dir: where data/state-basis/<ST>.json and data/basis-states.json
     go (None = not written). hub: /basis page to bake the state ranking into.
     directory: the bids network's data/directory.json, for the unread
@@ -2358,6 +2550,10 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     # one page per company with COMPANY_MIN or more boards in towns; each board
     # learns its page first, so its town page can link it
     import build_company_pages as CO
+    import stories_core as SKX
+    import stories_bids as SBX
+    ctx["stories"] = {"town": SKX.load(SBX.TOWN, os.path.join(root, SBX.TOWN.STORE)),
+                      "company": SKX.load(SBX.COMPANY, os.path.join(root, SBX.COMPANY.STORE))}
     companies = CO.group(towns, {s_["id"]: s_ for s_ in index.get("sources") or [] if s_.get("id")})
     for co in companies.values():
         for _, bd in co["locs"]:
@@ -2388,8 +2584,19 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
         with open(os.path.join(tmp, url_slug(STATE_NAMES[st]), "index.html"), "w", encoding="utf-8") as f:
             f.write(page)
         smetas.append(sm)
+    hub_page, hub_meta = build_states_hub(smetas, ctx)
+    with open(os.path.join(tmp, STATES_HUB), "w", encoding="utf-8") as f:
+        f.write(hub_page)
+    ctx["towns"] = towns             # a company with no current bid lists elevators near it
     cmetas, cindex = CO.write_all(companies, ctx, tmp)
+    if companies_out is not None:      # /cash-bids names them (stamp_live_coverage)
+        companies_out.extend(cmetas)
     assert not os.path.exists(os.path.join(tmp, "index.html")), "cash-bids/index.html would capture /cash-bids"
+    if os.environ.get("STORY_FACTS_OUT"):     # the facts each page states, for a stories batch (scripts/stories_bids.py)
+        with open(os.environ["STORY_FACTS_OUT"], "w", encoding="utf-8") as f:
+            json.dump({"town": {f"{m['state'].lower()}/{m['slug']}": m["story_facts"] for m in metas if m.get("story_facts")},
+                       "company": {m["slug"]: m["story_facts"] for m in cmetas if m.get("story_facts")}},
+                      f, ensure_ascii=False, separators=(",", ":"))
     # swap in: towns that no longer have any network board disappear with the old tree
     shutil.rmtree(out_dir, ignore_errors=True)
     os.replace(tmp, out_dir)
@@ -2424,7 +2631,8 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
             json.dump(doc, f, separators=(",", ":"))
         if hub:
             stamp_basis_hub(hub, doc)
-    entries = [(SITE + m["path"], m["latest"]) for m in smetas if m["indexable"]]
+    entries = [(SITE + hub_meta["path"], hub_meta["latest"])] if hub_meta["indexable"] else []
+    entries += [(SITE + m["path"], m["latest"]) for m in smetas if m["indexable"]]
     entries += [(SITE + m["path"], m["latest"]) for m in metas if m["indexable"]]
     if cindex["indexable"]:
         entries.append((SITE + cindex["path"], cindex["latest"] or gen))
@@ -2613,11 +2821,19 @@ def selftest():
         # THE ANSWER FIRST (2026-10-15): one sentence from the table's own numbers,
         # the same sentence in the meta description, then the table, then the
         # state line, then the hold box
-        ans = ("Top bids: corn $3.95 at Op kept for Oct delivery (basis \u221225\u00a2 vs Dec &#x27;26) and "
-               "soybeans $9.85 at Op n0 for Oct (basis \u221235\u00a2 vs Nov &#x27;26), posted Oct 7.")
-        short = ("Top bids: corn $3.95 at Op kept for Oct delivery and soybeans $9.85 at Op n0 for Oct, posted Oct 7.")
+        # the delivery named is the label the board prints (accuracy pass 2026-10-17:
+        # "for Oct delivery" stood over an ADM table whose rows read "New crop 2026"),
+        # and the pick is the nearest delivery's best bid, so it is not called the top bid
+        ans = ("Nearest-delivery bids: corn $3.95 at Op kept for delivery by Oct 9 (basis \u221225\u00a2 vs Dec &#x27;26) and "
+               "soybeans $9.85 at Op n0 for Oct 2026 (basis \u221235\u00a2 vs Nov &#x27;26), posted Oct 7.")
+        short = ("Nearest-delivery bids: corn $3.95 at Op kept for delivery by Oct 9 and soybeans $9.85 at Op n0 for Oct 2026, posted Oct 7.")
         a_html = re.search(r'<p class="cbt-answer">(.*?)</p>', fr).group(1)
         assert a_html in (ans, short), a_html
+        assert "<td>By Oct 9</td><td class=\"n\">$3.95</td>" in fr and "<td>Oct 2026</td><td class=\"n\">$9.85</td>" in fr, \
+            "each delivery the answer names is the table row its price sits on"
+        nc = {"label": "New crop 2026", "dm": "2026-10"}
+        assert _deliv_phrase(nc, True) == " for New crop 2026 delivery" and _deliv_phrase(nc, False) == " for New crop 2026"
+        assert "Top bid" not in a_html
         dsc = re.search(r'<meta name="description" content="([^"]*)">', fr).group(1)
         assert dsc.startswith("Fremont, NE cash bids. ") and a_html in dsc and len(html_unescape(dsc)) <= DESC_MAX, dsc
         for v in re.findall(r"\$(\d+\.\d\d)", a_html):
@@ -2638,7 +2854,7 @@ def selftest():
         vis = re.search(r'<div class="cbt-faq">(.*?)</div>', fr).group(1)
         assert re.findall(r"<h3>(.*?)</h3><p>(.*?)</p>", vis) == [(esc(q["name"]), esc(q["acceptedAnswer"]["text"]))
                                                                    for q in faq], "FAQ and JSON-LD word for word"
-        assert faq[0]["acceptedAnswer"]["text"].startswith("The top corn bid we read in Fremont, NE is $3.95 a bushel at Op kept")
+        assert faq[0]["acceptedAnswer"]["text"].startswith("The nearest-delivery corn bid we read in Fremont, NE is $3.95 a bushel at Op kept for delivery by Oct 9")
         assert "That is 6\u00bd\u00a2 stronger than the Nebraska middle" in faq[1]["acceptedAnswer"]["text"]
         assert faq[2]["acceptedAnswer"]["text"] == ("The nearest other elevator with a current bid is Op st in Hooper, NE, "
                                                     "13 miles straight-line from the elevators in Fremont. It posted "
@@ -2677,6 +2893,12 @@ def selftest():
         # elevator list (the state page covers every network elevator) but links to no town page
         assert "Op fac (Lincolnway Energy)" in ia and "lincolnway-energy" not in ia
         assert not os.path.exists(os.path.join(out, "index.html"))
+        # /cash-bids/states: every state page linked, with its counts; the menu's "Bids by state"
+        sh = open(os.path.join(out, STATES_HUB)).read()
+        assert 'href="/cash-bids/iowa/"' in sh and 'href="/cash-bids/nebraska/"' in sh, "states hub links each state"
+        assert re.search(r'href="/cash-bids/iowa/">Iowa</a> <span class="cbt-mut">&middot; \d+ elevators? in \d+ towns?', sh)
+        assert '<link rel="canonical" href="https://agsist.com/cash-bids/states">' in sh and "static-nav:header" in sh
+        assert "—" not in sh, "no em dash on the states hub"
         ne = open(os.path.join(out, "nebraska", "index.html")).read()
         assert 'href="/cash-bids/nebraska/fremont"' in ne and 'href="/cash-bids/iowa/"' in ne
         assert '<meta property="og:title" content="Nebraska cash bids and basis">' in ne
@@ -2729,12 +2951,44 @@ def selftest():
         assert stamp_live_page(lp, [x for x in metas if not x["indexable"]]) == LIVE_SHARE_GENERIC["og:description"]
         assert open(lp).read() == f"<head>{gen_tags}</head>"
         assert stamp_live_page(os.path.join(td, "missing.html"), metas) is None
+        # the companies line and the "my elevator" answer (stamp_live_coverage)
+        cos_t = [{"slug": "adm", "path": "/cash-bids/company/adm", "short": "ADM", "live": 9, "locations": 9},
+                 {"slug": "acme-co-op", "path": "/cash-bids/company/acme-co-op", "short": "Acme Co-op", "live": 40,
+                  "locations": 40},
+                 {"slug": "zed", "path": "/cash-bids/company/zed", "short": "Zed & Sons", "live": 1, "locations": 3}]
+        ln = coverage_line(cos_t)
+        assert ln.index(">ADM<") < ln.index(">Acme Co-op<") < ln.index(">Zed &amp; Sons<"), ln   # searched first, then size
+        assert "more elevator" not in ln and "cargill" not in ln.lower(), ln
+        six = cos_t + [{"slug": f"c{i}", "path": f"/cash-bids/company/c{i}", "short": f"C{i}", "live": i, "locations": 3}
+                       for i in range(4)]
+        assert "and 2 more elevator companies." in coverage_line(six), coverage_line(six)
+        assert coverage_line([]) == ""
+        cnt = {"bids": {"elevators": 1743, "towns": 1369}, "coverage": {"read": 1845, "elevators": 8403}}
+        fh, ft = coverage_faq(cos_t, cnt)
+        assert "read 1,845 bid boards, out of 8,403 elevators" in ft and "1,743 elevators in 1,369 towns" in ft, ft
+        assert "3 companies with 3 or more locations" in ft and 'href="/list-your-elevator"' in fh, fh
+        assert coverage_faq(cos_t, {}) is None and "\u2014" not in fh and "\u2014" not in ft
+        ld0 = {"@context": "https://schema.org", "@graph": [{"@type": "FAQPage", "mainEntity": [
+            {"@type": "Question", "name": "Which elevators are covered?", "acceptedAnswer": {"@type": "Answer", "text": "x"}},
+            {"@type": "Question", "name": "Last?", "acceptedAnswer": {"@type": "Answer", "text": "y"}}]}]}
+        cp = os.path.join(td, "cov.html")
+        with open(cp, "w") as f:
+            f.write(f'<script type="application/ld+json">{json.dumps(ld0)}</script><p><!--CO-LINE-->old<!--/CO-LINE--></p>'
+                    f'<div><!--CO-FAQ-->old<!--/CO-FAQ--></div>')
+        assert stamp_live_coverage(cp, cos_t, cnt) is True
+        ch = open(cp).read()
+        assert "old" not in ch and ch.count("1,845") == 2, ch
+        ldq = [q["name"] for q in json.loads(re.search(r'json">(.*?)</script>', ch).group(1))["@graph"][0]["mainEntity"]]
+        assert ldq == ["Which elevators are covered?", CO_FAQ_Q, "Last?"], ldq
+        assert stamp_live_coverage(cp, cos_t, cnt) is False          # same data: unchanged, no duplicate question
+        assert stamp_live_coverage(cp, [], None) is False and "1,845" in open(cp).read()   # no data: old text stays
         locs = re.findall(r"<loc>(.*?)</loc>", open(sm).read())
         assert "https://agsist.com/cash-bids/nebraska/fremont" in locs and "https://agsist.com/cash-bids/nebraska/" in locs
         for k in ("not_a_network_board", "not_us_or_not_usd", "price_older_than_cutoff", "stale_or_unconfirmed",
                   "delivery_expired_or_undated", "implied_futures_disagrees", "other_crop"):
             assert drops.get(k), (k, drops)
-        assert len(new) == 6, new
+        assert len(new) == 7 and "https://agsist.com/cash-bids/states" in new, new   # 6 pages + the states hub
+        assert "https://agsist.com/cash-bids/states" in locs, "the states hub is in the sitemap"
         try:
             build_all(merged, index, {"zips": {}}, out_dir=out + "3", now=parse_ts("2026-10-07T19:00:00Z"))
             raise AssertionError("built without the town table")
@@ -2834,9 +3088,19 @@ def _selftest_answer():
     pk = answer_picks([a, b])
     assert pk["corn"][0]["cash"] == 4.12 and pk["corn"][1] == "Beta Co-op", \
         "the nearest month's best regular bid: never the non-GMO premium, never a later month"
-    assert answer_sentence(pk, snap) == ("Top bids: corn $4.12 at Beta Co-op for Oct delivery (basis \u221258\u00a2 vs "
-                                         "Dec '26) and soybeans $10.01 for Oct (basis \u221270\u00a2), posted Oct 6."), \
+    assert answer_sentence(pk, snap) == ("Nearest-delivery bids: corn $4.12 at Beta Co-op for Oct 2026 delivery "
+                                         "(basis \u221258\u00a2 vs Dec '26) and soybeans $10.01 for Oct 2026 "
+                                         "(basis \u221270\u00a2), posted Oct 6."), \
         answer_sentence(pk, snap)
+    # the Deerfield, MO case: the board row reads "New crop 2026" (filed under Oct)
+    # and a later row pays more; the answer names the row's own label and does
+    # not call the nearest bid the top one
+    adm = {"operator": "ADM", "city": "Town", "rows": [
+        dict(row("soybeans", 12.71, 0.10, nov), label="New crop 2026"),
+        dict(row("soybeans", 13.04, 0.15, ("ZS", 2, 2027), dm="2027-03"), label="Mar 2027")]}
+    s_adm = answer_sentence(answer_picks([adm]), snap)
+    assert s_adm.startswith("Nearest-delivery bid: soybeans $12.71 at ADM for New crop 2026 delivery"), s_adm
+    assert "for Oct" not in s_adm and "13.04" not in s_adm and "Top" not in s_adm, s_adm
     pk2 = dict(pk, corn=(dict(pk["corn"][0], priced=t1), "Alpha Grain"))
     assert answer_sentence(pk2, snap).endswith("posted Oct 6 to 7."), answer_sentence(pk2, snap)
     sen, dsc = answer_and_desc(pk, snap, "Longname Township Junction, WI")
@@ -3000,16 +3264,19 @@ def main():
     except Exception as e:  # noqa: BLE001
         print(f"[cash-bid-pages] data/directory.json unreadable ({e}); town pages list no unread elevators")
         directory = None
+    cos = []
     metas, smetas, _, new = build_all(merged, index, zip_towns, out_dir=a.out, root=a.root, sitemap=a.sitemap,
                                       check_age=not a.ignore_age, zip_coord=zip_centroids(base), prev_doc=prev,
                                       data_dir=os.path.join(a.root, "data"), hub=os.path.join(a.root, HUB_PAGE),
-                                      directory=directory, hist_dir=os.path.join(a.root, "data", "basis-sparklines"))
+                                      directory=directory, hist_dir=os.path.join(a.root, "data", "basis-sparklines"),
+                                      companies_out=cos)
     try:
         with open(os.path.join(a.root, "data", COUNTS_FILE), encoding="utf-8") as f:
             counts = json.load(f)
     except (OSError, ValueError):
         counts = None
     stamp_live_page(os.path.join(a.root, LIVE_PAGE), metas, counts)
+    stamp_live_coverage(os.path.join(a.root, LIVE_PAGE), cos, counts)
     if a.print_new:
         with open(a.print_new, "w") as f:
             f.write("".join(u + "\n" for u in new))

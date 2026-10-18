@@ -78,7 +78,8 @@ test("the serial is maker-only: never in the share link, only behind ?maker=1, n
   assert.ok(!/serial/.test(RP.toParams({ ...FULL, serial: "12" })));
   assert.ok(!("serial" in RP.normalize({ ...FULL, serial: "12" })));
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(S, /return MAKER && m && \+m\[1\] > 0 \? 'No\. ' \+ String\(\+m\[1\]\)\.padStart\(4, '0'\) : '';/);
+  // serial=0 is "No. 0000", Sig's own test prints (Oct 17, 2026); still only behind ?maker=1
+  assert.match(S, /return MAKER && m \? 'No\. ' \+ String\(\+m\[1\]\)\.padStart\(4, '0'\) : '';/);
   const draw = S.slice(S.indexOf("function drawCanvas("), S.indexOf("function toBlob("));
   assert.equal((draw.match(/o\.serial = SERIAL/g) || []).length, 1, "one place sets it");
   assert.ok(draw.indexOf("o.serial = SERIAL") > draw.indexOf("kind === 'digital'"), "and it is the print branch, after the digital one");
@@ -156,12 +157,19 @@ test("the normals: month normals only with the switch on; what usual means where
     assert.ok(off.some((t) => /usual year/.test(t)) && off.some((t) => t.includes("A usual year: NOAA’s 30-year normal")), style + ": a usual year is defined where it is printed");
     const none = texts(ART.render(input(days, { style, ov: null })));
     assert.ok(!none.some((t) => /usual/i.test(t)), style + ": no comparison, no usual wording at all");
-    assert.ok(on.some((t) => /^usual \d/.test(t)), style + ": on shows the month normals");
+    if (style === "r2") assert.ok(on.some((t) => /^usual \d/.test(t)), style + ": on shows the month normals");
+    // Staircase A2 clean (Sig, 2026-10-17): the usual total is the light gray number under each month, and the foot line says so
+    else {
+      const months = /<g data-rp="months">(.*?)<\/g>/.exec(ART.render(input(days, { style, showNormals: true })))[1];
+      assert.equal([...months.matchAll(/font-size="11" fill="#A3A8B0"/g)].length, 12, style + ": on shows the twelve month normals, 11 u light gray");
+      assert.ok(!/fill="#A3A8B0"/.test(/<g data-rp="months">(.*?)<\/g>/.exec(ART.render(input(days, { style })))[1]), style + ": off shows none");
+      assert.ok(on.some((t) => t.includes("the usual month total is the gray number under each month")), style + ": and the foot line says what they are");
+    }
     assert.ok(on.some((t) => t.includes("A usual year: NOAA’s 30-year normal")), style + ": and names them");
   }
   const t = texts(ART.render(input(days, { style: "r1" })));
-  assert.ok(t.includes(((days.length - 10) * 0.09).toFixed(2) + " in"), "a usual year counts only the days the station recorded");
-  assert.ok(!t.includes((days.length * 0.09).toFixed(2) + " in"));
+  assert.ok(t.some((x) => x.startsWith(((days.length - 10) * 0.09).toFixed(2) + " in ")), "a usual year counts only the days the station recorded");
+  assert.ok(!t.some((x) => x.startsWith((days.length * 0.09).toFixed(2) + " in")));
 });
 
 test("R2: a snow day shows above the line only; its water still counts in the total", () => {
@@ -175,7 +183,8 @@ test("R2: a snow day shows above the line only; its water still counts in the to
 });
 
 // the x of every red (accent) bar or riser on the sheet
-const redXs = (svg) => [...svg.matchAll(/<(rect|line)\b[^>]*(?:fill|stroke)="#A8321E"[^>]*>/g)].map((m) => {
+// (Staircase A2 clean, 2026-10-17: its red is #B23A2E)
+const redXs = (svg) => [...svg.matchAll(/<(rect|line)\b[^>]*(?:fill|stroke)="#(?:A8321E|B23A2E)"[^>]*>/g)].map((m) => {
   const a = (k) => +(new RegExp(k + '="([-\\d.]+)"').exec(m[0]) || [])[1];
   return m[1] === "line" ? a("x1") : a("x") + a("width") / 2;
 });
@@ -188,7 +197,7 @@ test("the biggest rain is a rain day: a bigger snow day is never the red mark, i
   assert.equal(E.wi, 100);
   assert.equal(E.wetText, "Biggest rain: 0.80 in\u0001Apr 11\u0002", "the day rides after the amount, in gray (2026-10-15)");
   assert.equal(I.D.max.doy, 40, "the page's Wettest day stat still names the snow day (it is the most water)");
-  for (const [style, x0, x1, half] of [["r1", 196, 1680, 0], ["r2", 205, 1690, 0.5]]) {
+  for (const [style, x0, x1, half] of [["r1", 196, 1590, 0], ["r2", 205, 1690, 0.5]]) {
     const svg = ART.render(input(days, { style })), w = (x1 - x0) / 365, xs = redXs(svg);
     assert.ok(xs.length >= 1, style + ": the red mark is drawn");
     assert.ok(!xs.some((x) => Math.abs(x - (x0 + (40 + half) * w)) < w * 1.5), style + ": nothing red on the snow day: " + xs.join(","));
@@ -205,15 +214,16 @@ test("the biggest rain is a rain day: a bigger snow day is never the red mark, i
 test("Staircase: snow is drawn above the line only, nothing under the zero axis (Sig, 2026-10-13)", () => {
   const days = year(2025, (i) => (i < 60 && i % 5 === 0 ? { p: "0.40", s: 5 } : i % 9 === 0 ? { p: "0.20" } : { p: "0.00" }));
   for (const showNormals of [false, true]) {
-    const svg = ART.render(input(days, { style: "r1", showNormals })), PB = showNormals ? 782 : 828;
+    const svg = ART.render(input(days, { style: "r1", showNormals })), PB = 716;
     assert.ok(/stroke="#8DB6D8"/.test(svg), "the snow steps are on the staircase, in ice blue");
     const under = [...svg.matchAll(/<rect x="[-\d.]+" y="([-\d.]+)"[^>]*>/g)].filter((m) => +m[1] > PB && +m[1] < PB + 60);
     assert.equal(under.length, 0, "no snow lane under the axis");
     assert.ok(!texts(svg).includes("snow"), "and no lane name");
-    assert.ok(texts(svg).some((t) => /light blue: snow/.test(t)), "the facts line says which color is snow");
+    assert.ok(texts(svg).some((t) => /Snow: [\d.]+ in, the light blue steps/.test(t)), "the foot line gives the snow total and says which color is snow");
   }
   // one plain sentence on the small line says which mark is which, in both styles
-  const say = { r1: "Dark blue steps are rain, light blue steps are snow", r2: "Light blue above the ground is snow, dark bars below it are rain" };
+  // (Staircase A2 clean, 2026-10-17: the foot line gives the snow total as "the light blue steps")
+  const say = { r1: "the light blue steps", r2: "Light blue above the ground is snow, dark bars below it are rain" };
   for (const style of ["r1", "r2"]) {
     assert.ok(texts(ART.render(input(days, { style }))).some((t) => t.includes(say[style])), style + ": " + say[style]);
     assert.ok(!texts(ART.render(input(year(2025, () => ({ s: null })), { style }))).some((t) => t.includes(say[style])), style + ": not without a snow record");
@@ -225,19 +235,19 @@ test("Staircase with nothing to compare says the total once; no scale number sit
   const bare = texts(ART.render(input(days, { style: "r1", ov: null, ovNote: "" })));
   const T = RP.derive(days).total.toFixed(2);
   assert.equal(bare.filter((t) => t.includes(T)).length, 1, "the headline says it, no key row repeats it: " + bare.filter((t) => t.includes(T)).join(" | "));
-  assert.ok(!bare.some((t) => /^your year/.test(t)), "no key row");
-  assert.ok(bare.some((t) => /^Days with rain/.test(t)), "the facts line stays");
+  assert.ok(!bare.some((t) => / this year$/.test(t)), "no key row");
+  assert.ok(bare.some((t) => /Days with rain/.test(t)), "the facts stay, in the foot line");
   const cmp = texts(ART.render(input(days, { style: "r1" })));
-  assert.ok(cmp.some((t) => /^your year/.test(t)), "with a comparison the key row keys both lines");
+  assert.ok(cmp.some((t) => / this year$/.test(t)) && cmp.some((t) => / a usual year$/.test(t)), "with a comparison the key row keys both lines");
   for (const ov of [null, undefined]) {
     const svg = ART.render(input(days, ov === null ? { style: "r1", ov: null, ovNote: "" } : { style: "r1" }));
     const head = /<g data-rp="head"><rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/.exec(svg).slice(1).map(Number);
-    const ticks = [...svg.matchAll(/<text x="182" y="([\d.]+)"[^>]*text-anchor="end"[^>]*>([^<]*)<\/text>/g)].map((m) => ({ y: +m[1] - 5, s: m[2] }));
+    // A2 clean: the scale's numbers 13 u at x 184, every gridline with its number, none beside the header; the unit is in the header's figures
+    const ticks = [...svg.matchAll(/<text x="184" y="([\d.]+)"[^>]*font-size="13"[^>]*text-anchor="end"[^>]*>([^<]*)<\/text>/g)].map((m) => ({ y: +m[1] - 4.5, s: m[2] }));
     assert.ok(ticks.length >= 2, "the scale has numbers");
     for (const t of ticks) if (t.s !== "0") assert.ok(!(t.y >= head[1] - 8 && t.y <= head[1] + head[3] + 8), "no number beside the headline box: " + t.s);
-    const units = ticks.filter((t) => / in$/.test(t.s));
-    assert.equal(units.length, 1, "the unit is on one number");
-    assert.equal(units[0].y, Math.min(...ticks.map((t) => t.y)), "the highest one drawn");
+    const grid = [...svg.matchAll(/<line x1="196" y1="([\d.]+)" x2="1590" y2="[\d.]+" stroke="#EEF0F2" stroke-width="0.7"\/>/g)].map((m) => +m[1]);
+    assert.ok(grid.length >= 1 && grid.every((gy) => ticks.some((t) => Math.abs(t.y - gy) < 0.01)), "no gridline without its number");
   }
 });
 
@@ -259,10 +269,12 @@ test("the verdict: about usual within 3%, nothing on a usual year under an inch,
   assert.equal(v(dbl, ov(1)), "100% more than a usual year");
   // the usual year's number counts only the days the station sent: the key says so
   const gappy = year(2025, (i) => (i >= 10 && i < 20 ? { p: "M" } : {}));
-  assert.ok(texts(ART.render(input(gappy, { style: "r1" }))).includes("a usual year, same days"));
-  assert.ok(texts(ART.render(input(year(2025), { style: "r1" }))).includes("a usual year"));
+  // A2 clean: the usual figure and its words are one line of the key row ("37.73 in a usual year")
+  const keyU = (d) => texts(ART.render(input(d, { style: "r1" }))).filter((t) => /^[\d.]+ in a usual year/.test(t));
+  assert.deepEqual(keyU(gappy).map((t) => t.replace(/^[\d.]+ in /, "")), ["a usual year, same days"]);
+  assert.deepEqual(keyU(year(2025)).map((t) => t.replace(/^[\d.]+ in /, "")), ["a usual year"]);
   const onlyS = year(2025, (i) => (i === 30 ? { p: "S" } : i === 31 ? { p: "0.50A" } : {}));
-  assert.ok(texts(ART.render(input(onlyS, { style: "r1" }))).includes("a usual year"), "an S day's normal is kept, so it is the whole year");
+  assert.deepEqual(keyU(onlyS).map((t) => t.replace(/^[\d.]+ in /, "")), ["a usual year"], "an S day's normal is kept, so it is the whole year");
 });
 
 test("Roots: a snow record's label sits up in the snow; marker lines keep clear of the month words", () => {
@@ -381,7 +393,7 @@ test("the page offers the two styles, the dedication and both switches, and load
   const i = (s) => html.indexOf(s);
   assert.ok(i("/components/rp-short.js") > 0 && i("/components/rain-print-art.js") > 0);
   assert.ok(i("/components/rp-short.js") < i("/components/rain-print.js?v=") && i("/components/rain-print-art.js") < i("/components/rain-print.js?v="));
-  assert.match(html, /\/components\/rain-print\.js\?v=46"/);
+  assert.match(html, /\/components\/rain-print\.js\?v=51"/);
   for (const f of ["rp-fraunces-opsz.woff2", "rp-fraunces-opsz-400i.woff2", "rp-plex-sans-var.woff2", "rp-plex-sans-400i.woff2"]) {
     assert.ok(html.includes("/fonts/" + f), "the page declares " + f);
     assert.ok(readFileSync(ROOT + "components/rain-print.js", "utf8").includes("/fonts/" + f), "and the export inlines " + f);
@@ -425,13 +437,18 @@ test("the buyer's name is the biggest words on the sheet, in the serif, in both 
     const t = sized(ART.render(I)), nm = t.find((x) => x.s === name);
     assert.ok(nm, style + ": the name is printed as typed: " + name);
     assert.match(nm.fam, /Fraunces/, style + ": in the serif");
-    for (const x of t) if (x !== nm) assert.ok(x.size < nm.size, `${style} ${name}${logo ? " +logo" : ""}: "${x.s}" (${x.size}) is smaller than the name (${nm.size})`);
-    if (name === "Lund") assert.equal(nm.size, 78, style + ": a short name at 78 u");
+    // Staircase A2 clean (Sig, 2026-10-17): the year as large as the name, everything else smaller
+    const yr = style === "r1" ? t.find((x) => x.s === "2025" && x.rp === "title") : null;
+    if (yr) assert.equal(yr.size, nm.size, style + ": the year as large as the name");
+    for (const x of t) if (x !== nm && x !== yr) assert.ok(x.size < nm.size, `${style} ${name}${logo ? " +logo" : ""}: "${x.s}" (${x.size}) is smaller than the name (${nm.size})`);
+    if (name === "Lund") assert.equal(nm.size, style === "r1" ? 64 : 78, style + ": a short name at " + (style === "r1" ? 64 : 78) + " u");
   }
-  // with no name, Staircase's year is the headline (place 50 over year 100)
+  // with no name, Staircase's year is the headline, still the biggest words, the place under it
   const bare = sized(ART.render(input(year(2025), { style: "r1", name: "" })));
-  assert.equal(bare.find((x) => x.s === "2025" && x.rp === "title").size, 100);
-  assert.equal(bare.find((x) => x.s === "Chetek, Wisconsin").size, 50);
+  const by = bare.find((x) => x.s === "2025" && x.rp === "title");
+  assert.equal(by.size, 64);
+  for (const x of bare) if (x !== by) assert.ok(x.size < by.size, "with no name the year is the biggest: " + x.s);
+  assert.equal(bare.find((x) => x.s === "Chetek, Wisconsin").size, 22);
 });
 
 test("Staircase: what a usual year is goes to the foot line, the header keeps the facts; months in ink at 17 u under the axis", () => {
@@ -439,17 +456,19 @@ test("Staircase: what a usual year is goes to the foot line, the header keeps th
   const note = t.find((x) => x.s.includes("A usual year: NOAA’s 30-year normal"));
   assert.equal(note.rp, "foot");
   assert.ok(!t.some((x) => x.rp === "head" && /NOAA/.test(x.s)), "not in the header");
-  const jan = /<text x="[\d.]+" y="([\d.]+)"[^>]*font-size="17" fill="#1E2125"[^>]*>JAN<\/text>/.exec(svg);
-  assert.ok(jan, "JAN at 17 u in ink");
-  assert.ok(+jan[1] - 790 <= 46, "tucked under the axis: " + jan[1]);
+  // A2 clean (Sig, 2026-10-17): month names 11 u tracked gray, totals 14 u tabular in ink
+  const jan = /<text x="[\d.]+" y="([\d.]+)"[^>]*font-size="11" fill="#8A8F98"[^>]*letter-spacing[^>]*>JAN<\/text>/.exec(svg);
+  assert.ok(jan, "JAN at 11 u, tracked, gray");
+  assert.ok(+jan[1] - 716 <= 30, "tucked under the axis: " + jan[1]);
+  assert.match(svg, /font-size="14" fill="#1F2328"[^>]*style="font-variant-numeric:tabular-nums lining-nums"/, "month totals 14 u tabular in ink");
   assert.match(svg, /stroke="#2B5C8A" stroke-width="4.6" stroke-linejoin="round"/, "the staircase at 4.6 u");
-  assert.match(svg, /stroke="#5E6475" stroke-width="2.2" stroke-dasharray="9 6"/, "the usual line at 2.2 u");
+  assert.match(svg, /stroke="#5E6475" stroke-width="1.5" stroke-dasharray="6 5"/, "the usual line at 1.5 u");
 });
 
 test("Staircase: no gridline stub to the left of the header box", () => {
   const svg = ART.render(input(year(2025), { style: "r1" }));
   const head = /<g data-rp="head"><rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/.exec(svg).slice(1).map(Number);
-  const grid = [...svg.matchAll(/<line x1="([\d.]+)" y1="([\d.]+)" x2="[\d.]+" y2="[\d.]+" stroke="#E4E6E1"/g)].map((m) => [+m[1], +m[2]]);
+  const grid = [...svg.matchAll(/<line x1="([\d.]+)" y1="([\d.]+)" x2="[\d.]+" y2="[\d.]+" stroke="#EEF0F2"/g)].map((m) => [+m[1], +m[2]]);
   assert.ok(grid.length >= 2);
   for (const [x1, y1] of grid) if (y1 >= head[1] && y1 <= head[1] + head[3]) assert.ok(x1 >= head[0] + head[2] - 0.01, "a gridline at the header's height starts at its right edge: " + x1);
 });
@@ -461,8 +480,10 @@ test("the reader's dates read clearly: Staircase on the line beside the dot, Roo
     for (const l of ["Planted", "Wedding"]) {
       const m = new RegExp('<g data-rp="mark:\\d">.*?<text x="[\\d.]+" y="([\\d.]+)"[^>]*font-weight="(\\d+)" font-style="(\\w+)" font-size="([\\d.]+)" fill="([^"]+)"[^>]*>' + l + "<tspan[^>]*>[^<]*</tspan></text>").exec(svg);
       assert.ok(m, style + ": " + l);
-      assert.equal(m[3], "normal", style + ": upright"); assert.equal(m[5], "#1E2125", style + ": in ink"); assert.ok(+m[4] >= 20, style + ": " + m[4] + " u");
-      if (style === "r1") assert.ok(+m[1] < 790, "r1: on the chart, above the axis: " + m[1]);
+      // Staircase A2 clean (Sig, 2026-10-17): a marked day is 15 u Medium in ink, the one dark voice on the chart
+      assert.equal(m[3], "normal", style + ": upright"); assert.equal(m[5], style === "r1" ? "#1F2328" : "#1E2125", style + ": in ink");
+      if (style === "r1") { assert.equal(+m[4], 15, "r1: 15 u"); assert.equal(m[2], "500", "r1: Medium"); } else assert.ok(+m[4] >= 20, style + ": " + m[4] + " u");
+      if (style === "r1") assert.ok(+m[1] < 716, "r1: on the chart, above the axis: " + m[1]);
     }
   }
 });
@@ -506,8 +527,9 @@ test("Roots: the rain and snow scales fit the year, bars 0.85 of a day, one foot
 const markText = (svg, k) => { const m = new RegExp('<g data-rp="mark:' + k + '">.*?(<text[^>]*>(?:[^<]|</?tspan[^>]*>)*</text>)').exec(svg); return m && m[1]; };
 test("a marked day prints its date after its words: same line, 3-letter month, gray, normal weight, 17 u Staircase / 16 u Roots", () => {
   const markers = [{ doy: 140, label: "Planted corn" }, { doy: 4, label: "Wedding" }, { doy: 280, label: "First frost" }];
-  for (const [style, size] of [["r1", 17], ["r2", 16]]) {
-    const svg = ART.render(input(year(2025), { style, markers }));
+  // Staircase A2 clean: the date 15 u gray (#8A8F98) after 15 u words; Roots 16 u in #5E6475
+  for (const [style, size] of [["r1", 15], ["r2", 16]]) {
+    const svg = ART.render(input(year(2025), { style, markers })), gray = style === "r1" ? "#8A8F98" : "#5E6475";
     const want = { "Planted corn": "May 21", Wedding: "Jan 5", "First frost": "Oct 8" }, sizes = new Set();
     for (let k = 0; k < 3; k++) {
       const t = markText(svg, k);
@@ -517,7 +539,7 @@ test("a marked day prints its date after its words: same line, 3-letter month, g
       assert.equal(tsp[4], " " + want[words[1]], style + ": " + words[1]);
       // Staircase's row under the months (19 u words, when the line has no clean spot) takes 16 u too
       const own = +/font-size="([\d.]+)"/.exec(t)[1];
-      assert.equal(+tsp[1], own === 19 ? 16 : size, style + ": date size after " + own + " u words"); assert.equal(tsp[2], "400"); assert.equal(tsp[3], "#5E6475");
+      assert.equal(+tsp[1], own === 19 ? 16 : size, style + ": date size after " + own + " u words"); assert.equal(tsp[2], "400"); assert.equal(tsp[3], gray);
       if (own !== 19) sizes.add(+tsp[1]);
     }
     assert.ok(sizes.has(size), style + ": at least one on the chart at " + size + " u");
@@ -589,12 +611,13 @@ test("a remarkable day's date and the biggest rain's date print gray, after the 
     for (const [words, date] of [["Biggest snow: 8.0 in", "Feb 3"], ["Wettest week: 3.10 in", "Apr 28 to May 4"], ["First frost: 28°F", "Oct 4"]]) {
       if (skipped.includes(words)) continue;
       const esc = words.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const m = new RegExp(">" + esc + '<tspan font-size="([\\d.]+)" font-weight="400" fill="#5E6475"> ' + date + "</tspan></text>").exec(svg);
+      // (Staircase A2 clean: a station fact is a 12 u footnote, its date in #8A8F98)
+      const m = new RegExp(">" + esc + '<tspan font-size="([\\d.]+)" font-weight="400" fill="#(?:5E6475|8A8F98)"> ' + date + "</tspan></text>").exec(svg);
       assert.ok(m, style + ": " + words + " then the gray " + date);
       assert.ok(+m[1] >= 11, style + ": the date at production size");
     }
     assert.ok(skipped.length <= 1, style + ": skipped " + skipped.join("; "));
-    assert.ok(/>Biggest rain: 2\.24 in<tspan[^>]*font-weight="400" fill="#5E6475"> Jun 26<\/tspan><\/text>/.test(svg), style + ": the biggest rain's day in the same gray");
+    assert.ok(/>Biggest rain: 2\.24 in<tspan[^>]*font-weight="400" fill="#(?:5E6475|8A8F98)"> Jun 26<\/tspan><\/text>/.test(svg), style + ": the biggest rain's day in the same gray");
     assert.ok(t.some((x) => x.includes("Biggest rain: 2.24 in Jun 26")) && !t.some((x) => x.includes("in, Jun 26")), style + ": no comma");
   }
 });

@@ -1,0 +1,929 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "23001": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 15",
+     "in": "1.80",
+     "label": "biggest single day"
+    },
+    "county": "Androscoggin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Poland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.48",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.89",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jun 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.41",
+    "usual_in": "37.03",
+    "vs_usual": {
+     "diff_in": "9.62",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.69",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5d3abaaef030c373",
+   "sid": "176856 2",
+   "story": "Through Oct 13, the weather station in Poland had its wettest month in May at 5.69 inches, and its biggest single day came on May 15 with 1.80 inches. The longest dry stretch ran 10 days, Jun 30 to Jul 9, with nothing in the gauge, not even a trace. That puts the year 2.48 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "23003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 11",
+     "in": "1.63",
+     "label": "biggest single day"
+    },
+    "county": "Aroostook County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "31 miles from the middle of the county",
+    "gauge_where": "in Caribou",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.50",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "30.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Jul 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.12",
+    "usual_in": "31.39",
+    "vs_usual": {
+     "diff_in": "0.27",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.04",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bf044fcb14c118e4",
+   "sid": "14607 1",
+   "story": "Through Oct 13, the weather station in Caribou sits about where a usual year would, 0.27 inches less. May was the wettest month at 5.04 inches, and the biggest single day came early, 1.63 inches on Mar 11. The longest dry stretch ran 7 days, Jul 23 to Jul 29. On the days both years reported, this year has 0.50 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "23005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 16",
+     "in": "1.38",
+     "label": "biggest single day"
+    },
+    "county": "Cumberland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Gray",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.95",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "29.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Jul 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.30",
+    "usual_in": "37.65",
+    "vs_usual": {
+     "diff_in": "10.35",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.49",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2764b2e97911324b",
+   "sid": "173295 2",
+   "story": "Through Oct 13, the weather station in Gray had its wettest month in May with 5.49 inches. The biggest single day was Mar 16 at 1.38 inches. The longest dry stretch ran 6 days, Jul 23 to Jul 28. On the days both years reported, that is 2.95 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "23007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 15",
+     "in": "1.50",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "2 miles northwest of Rangeley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.21",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "27.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Apr 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.87",
+    "usual_in": "31.82",
+    "vs_usual": {
+     "diff_in": "3.95",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.05",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b7680ae1efcb3263",
+   "sid": "177039 2",
+   "story": "Through Oct 13, the weather station 2 miles northwest of Rangeley shows June as the wettest month at 6.05 inches. The biggest single day was Jun 15 at 1.50 inches. The station sits 3.95 inches less than a usual year, yet on the days both years reported it has 0.21 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "23009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 17",
+     "in": "2.45",
+     "label": "biggest one-day reading"
+    },
+    "county": "Hancock County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.4 miles east-southeast of Mariaville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.95",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jun 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 9"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 88,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.49",
+    "usual_in": "34.72",
+    "vs_usual": {
+     "diff_in": "4.23",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.49",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4b4dba2a92288772",
+   "sid": "US1MEHN0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles east-southeast of Mariaville has caught 30.49 inches, 4.23 less than a usual year. September was the wettest month at 5.49 inches, and the biggest one-day reading was 2.45 inches on Mar 17. The gauge went 10 days in a row with nothing from Jun 30 to Jul 9. Still, that is 1.95 inches more than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "23011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "1.91",
+     "label": "biggest single day"
+    },
+    "county": "Kennebec County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Waterville Treatment Plt",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.83",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jun 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.57",
+    "usual_in": "32.48",
+    "vs_usual": {
+     "diff_in": "2.91",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.47",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e4c40367b12d3d69",
+   "sid": "179151 2",
+   "story": "Through Oct 13, the weather station in Waterville Treatment Plt had its wettest month in June with 6.47 inches, and the biggest single day came Jun 22 with 1.91 inches. Then it shut off. The gauge sat empty 11 days in a row, Jun 29 to Jul 9. On the days both years reported, this year is 0.83 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "23013": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 15",
+     "in": "2.40",
+     "label": "biggest one-day reading"
+    },
+    "county": "Knox County",
+    "days_in_year_so_far": 286,
+    "days_missing": 15,
+    "days_reported": 271,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1 mile north-northwest of West Rockport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "7.75",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 30"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 67,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.16",
+    "usual_in": "39.06",
+    "vs_usual": {
+     "diff_in": "12.90",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.69",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f2b69e586833ab6c",
+   "sid": "179593 2",
+   "story": "Through Oct 13, the weather station 1 mile north-northwest of West Rockport had May as its wettest month at 7.69 inches. The biggest one-day reading came May 15 with 2.40 inches. The gauge then went 13 days in a row with nothing in it, from Aug 18 to Aug 30. On the days both years reported, this year is 7.75 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "23015": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 14",
+     "in": "1.79",
+     "label": "biggest single day"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Wiscasset Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Jul 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.16",
+    "usual_in": "34.17",
+    "vs_usual": {
+     "diff_in": "9.01",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.37",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c07e3345dd27b27e",
+   "sid": "94623 1",
+   "story": "Through Oct 13, the weather station at Wiscasset Airport has caught 25.16 inches, 9.01 inches less than a usual year. May did most of the work at 6.37 inches, and the biggest single day came May 14 with 1.79 inches. The longest stretch with nothing in the gauge ran 8 days, Jul 2 to Jul 9.",
+   "through": "2026-10-13"
+  },
+  "23017": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 15",
+     "in": "1.64",
+     "label": "biggest single day"
+    },
+    "county": "Oxford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "23 miles from the middle of the county",
+    "gauge_where": "in Hartford",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.35",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Jul 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.93",
+    "usual_in": "38.89",
+    "vs_usual": {
+     "diff_in": "7.96",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.05",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3cc9620778ac84f9",
+   "sid": "173570 2",
+   "story": "Through Oct 13, the weather station in Hartford had May as its wettest month at 5.05 inches. The biggest single day came May 15 with 1.64 inches. The longest dry stretch ran 7 days, Jul 3 to Jul 9, with nothing in the gauge. That leaves the station 3.35 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "23019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "1.35",
+     "label": "biggest single day"
+    },
+    "county": "Penobscot County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "at Millinocket Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.54",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "27.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "May 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.31",
+    "usual_in": "32.42",
+    "vs_usual": {
+     "diff_in": "5.11",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.17",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dd407f0658d42531",
+   "sid": "14610 1",
+   "story": "Through Oct 13, the weather station at Millinocket Municipal Airport has caught most of its rain in June, with 5.17 inches that month. The biggest single day came on Jun 18 at 1.35 inches. The longest dry stretch ran 7 days, from May 18 to May 24, with not even a trace in the gauge. On the days both years reported, this year is 0.54 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "23021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "1.60",
+     "label": "biggest single day"
+    },
+    "county": "Piscataquis County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "29 miles from the middle of the county",
+    "gauge_where": "at Greenville Municipal Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "May 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.70",
+    "usual_in": "33.10",
+    "vs_usual": {
+     "diff_in": "4.40",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.67",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5c2112e57c5db03c",
+   "sid": "94626 1",
+   "story": "Through Oct 13, the weather station at Greenville Municipal Airport has caught 28.70 inches, 4.40 inches less than a usual year. June was the wettest month at 5.67 inches. The biggest single day came Aug 3 with 1.60 inches. The longest dry stretch ran 8 days, May 16 to May 23, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "23023": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 15",
+     "in": "2.44",
+     "label": "biggest single day"
+    },
+    "county": "Sagadahoc County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Bath",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.11",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.48",
+    "usual_in": "36.11",
+    "vs_usual": {
+     "diff_in": "6.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.66",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e460f85aee8ab49e",
+   "sid": "170409 2",
+   "story": "Through Oct 13, the weather station in Bath has 29.48 inches, 6.63 less than a usual year. May was the wettest month at 6.66 inches, and 2.44 of that came on May 15, the biggest single day. The longest dry stretch ran 9 days, Jan 29 to Feb 6. On the days both years reported, that is 2.11 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "23025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "2.33",
+     "label": "biggest one-day reading"
+    },
+    "county": "Somerset County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "30 miles from the middle of the county",
+    "gauge_where": "in Bingham Wyman",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "0.49",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 26,
+     "through": "Oct 13",
+     "total_in": "24.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 10"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 78,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.21",
+    "usual_in": "34.92",
+    "vs_usual": {
+     "diff_in": "7.71",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.02",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e06d0213964d201e",
+   "sid": "170600 2",
+   "story": "Through Oct 13, the weather station in Bingham Wyman had its wettest month in June at 5.02 inches. The biggest one-day reading came Jun 19 with 2.33 inches. The longest dry stretch ran 14 days, Jan 28 to Feb 10, with nothing in the gauge. On the days both years reported, this year is 0.49 inches behind 2025.",
+   "through": "2026-10-13"
+  },
+  "23027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 28",
+     "in": "1.84",
+     "label": "biggest single day"
+    },
+    "county": "Waldo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "2.9 miles north of Winterport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "3.57",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "32.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jun 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.76",
+    "usual_in": "36.23",
+    "vs_usual": {
+     "diff_in": "8.47",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.39",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0f87bc986f18f0cc",
+   "sid": "US1MEWL0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.9 miles north of Winterport has caught 27.76 inches, 8.47 inches less than a usual year. September was the wettest month at 5.39 inches, and the biggest single day came Sep 28 with 1.84 inches. The gauge went 10 days in a row with nothing from Jun 30 to Jul 9. On the days both years reported, 2026 is 3.57 inches behind 2025.",
+   "through": "2026-10-13"
+  },
+  "23029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 17",
+     "in": "1.52",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Grand Lake Stream",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.67",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.53",
+    "usual_in": "33.23",
+    "vs_usual": {
+     "diff_in": "6.70",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.42",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eca3adf3acb7f7cb",
+   "sid": "173261 2",
+   "story": "Through Oct 13, the weather station in Grand Lake Stream has caught 26.53 inches, 6.70 inches less than a usual year. May was the wettest month at 4.42 inches, and the biggest single day was 1.52 inches on Mar 17. The longest dry stretch ran 14 days, Jan 28 to Feb 10, with not even a trace. On the days both years reported, this year is 4.67 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "23031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 28",
+     "in": "2.25",
+     "label": "biggest single day"
+    },
+    "county": "York County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Hollis",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.31",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "May 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Maine",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.34",
+    "usual_in": "39.23",
+    "vs_usual": {
+     "diff_in": "7.89",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.29",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c53a366d40e88ced",
+   "sid": "173862 2",
+   "story": "Through Oct 13, the weather station in Hollis had May as its wettest month at 7.29 inches. The biggest single day came late, 2.25 inches on Sep 28. The longest dry stretch ran 8 days, May 17 to May 24, with nothing in the gauge, not even a trace. Against last year it sits 1.31 inches less than 2025 at this point.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "ME"
+}

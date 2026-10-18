@@ -1,0 +1,5243 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "17001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 10",
+     "in": "2.78",
+     "label": "biggest single day"
+    },
+    "county": "Adams County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Quincy Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "13.24",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.05",
+    "usual_in": "30.45",
+    "vs_usual": {
+     "diff_in": "5.60",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.89",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f6108d953895b0c0",
+   "sid": "93989 1",
+   "story": "Through Oct 13, the weather station at Quincy Regional Airport got most of its year in June, with 10.89 inches that month. The biggest single day was Jun 10 at 2.78 inches. Then the gauge sat empty 20 days in a row, Aug 20 to Sep 8. On the days both years reported, that is 13.24 inches more than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "17003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "4.72",
+     "label": "biggest one-day reading"
+    },
+    "county": "Alexander County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "less than a mile north of Cairo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "9.29",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "51.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 9"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.55",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.03",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5eb9d70d41247398",
+   "sid": "US1ILAL0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north of Cairo had 42.55 inches. June was the wettest month at 9.03 inches, and the biggest one-day reading came Aug 20 with 4.72 inches. The gauge went 15 days in a row with nothing in it, from Jan 26 to Feb 9. On the days both years reported, this year is 9.29 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "17007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 16",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Boone County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "less than a mile north of Capron",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.65",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.38",
+    "usual_in": "32.38",
+    "vs_usual": {
+     "diff_in": "8.00",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.67",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "16e7f6c1da11564f",
+   "sid": "US1ILBN0014 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north of Capron has caught 13.65 inches more than it had by this day in 2025. April did most of the work with 9.67 inches, the wettest month. The biggest single day came Mar 16 at 2.12 inches. The longest dry stretch ran 11 days, Feb 7 to Feb 17, with not even a trace.",
+   "through": "2026-10-13"
+  },
+  "17011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "2.16",
+     "label": "biggest single day"
+    },
+    "county": "Bureau County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "less than a mile north-northeast of La Moille",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "11.57",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "22.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.32",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f1cfa8d95fe455ad",
+   "sid": "US1ILBU0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge near La Moille had 11.57 inches more than 2025 on the days both years reported. The biggest single day was Jun 22, at 2.16 inches. The longest dry stretch ran 14 days, Feb 6 to Feb 19, without so much as a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "17013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.21",
+     "label": "biggest one-day reading"
+    },
+    "county": "Calhoun County",
+    "days_in_year_so_far": 286,
+    "days_missing": 11,
+    "days_reported": 275,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "3.9 miles south of Hardin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 265,
+      "diff_in": "0.24",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 18,
+     "through": "Oct 13",
+     "total_in": "28.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jan 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.94",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.95",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a1ac1f6b59e52c8d",
+   "sid": "US1ILCH0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.9 miles south of Hardin shows April as the wettest month, with 5.95 inches. The biggest one-day reading was 2.21 inches on Apr 28. The longest dry stretch ran 15 days, Jan 31 to Feb 14, with not even a trace in the gauge. On the days both years reported, this year sits 0.24 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "17015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "2.97",
+     "label": "biggest single day"
+    },
+    "county": "Carroll County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Mount Carroll",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "7.27",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "29.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.68",
+    "usual_in": "33.50",
+    "vs_usual": {
+     "diff_in": "3.18",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.41",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "69d09338afcbcd9d",
+   "sid": "115901 2",
+   "story": "Through Oct 13, the weather station in Mount Carroll had its wettest month in September at 8.41 inches. The biggest single day was Sep 19 with 2.97 inches. On the days both years reported, this year is 7.27 inches more than last year. The gauge also went 16 days with nothing in it, Feb 4 to Feb 19.",
+   "through": "2026-10-13"
+  },
+  "17017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "3.64",
+     "label": "biggest single day"
+    },
+    "county": "Cass County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5.3 miles north-northeast of Arenzville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "9.64",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "25.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.55",
+    "usual_in": "33.31",
+    "vs_usual": {
+     "diff_in": "2.24",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.93",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c8280c4c5cc50907",
+   "sid": "US1ILCS0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.3 miles north-northeast of Arenzville caught 8.93 inches in April, its wettest month. The biggest single day was Aug 15 at 3.64 inches. Then it went 20 days in a row with nothing in the gauge, Aug 21 to Sep 9. On the days both years reported, this year is 9.64 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "17019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "3.51",
+     "label": "biggest single day"
+    },
+    "county": "Champaign County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3 miles south of Champaign",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "17.62",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.91",
+    "usual_in": "33.31",
+    "vs_usual": {
+     "diff_in": "4.60",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.45",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cc12e1742a282d23",
+   "sid": "118740 2",
+   "story": "Through Oct 13, the weather station 3 miles south of Champaign has caught 17.62 inches more than it had by this day in 2025. August was the wettest month at 9.45 inches, and the biggest single day was Aug 14 with 3.51 inches. The gauge has now gone 11 days in a row with nothing in it, not even a trace, from Oct 3 to Oct 13.",
+   "through": "2026-10-13"
+  },
+  "17021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "3.39",
+     "label": "biggest single day"
+    },
+    "county": "Christian County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2 miles southeast of Taylorville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.43",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.72",
+    "usual_in": "33.87",
+    "vs_usual": {
+     "diff_in": "1.15",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.63",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "34cce6e641e366fb",
+   "sid": "118491 2",
+   "story": "Through Oct 13, the weather station 2 miles southeast of Taylorville has caught 32.72 inches, 1.15 inches less than a usual year. June did most of the work with 8.63 inches, and the biggest single day was Apr 28 at 3.39 inches. That puts this year 6.43 inches ahead of last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "17023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 10",
+     "in": "2.65",
+     "label": "biggest single day"
+    },
+    "county": "Clark County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Casey",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.90",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.78",
+    "usual_in": "36.25",
+    "vs_usual": {
+     "diff_in": "1.47",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.23",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6fdb2b6ffc6cba85",
+   "sid": "111329 2",
+   "story": "Through Oct 13, the weather station in Casey has caught 5.90 inches more than it had at this point last year. June was the wettest month at 7.23 inches, and the biggest single day was Jul 10 with 2.65 inches. Then the gauge went 20 days in a row with nothing in it, not even a trace, from Aug 21 to Sep 9.",
+   "through": "2026-10-13"
+  },
+  "17025": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "3.25",
+     "label": "biggest single day"
+    },
+    "county": "Clay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Flora",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.69",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.35",
+    "usual_in": "38.14",
+    "vs_usual": {
+     "diff_in": "1.21",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.58",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dfe84a99223b0203",
+   "sid": "113106 2",
+   "story": "Through Oct 13, the station in Flora has the year running 1.21 inches more than a usual year. May was the wettest month at 7.58 inches, and 3.25 inches of that came on May 19, the biggest single day. The longest dry stretch was 12 days, Feb 3 to Feb 14. On the days both years reported, this year is 3.69 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "17027": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 18",
+     "in": "2.40",
+     "label": "biggest single day"
+    },
+    "county": "Clinton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Carlyle Reservoir",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.28",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.43",
+    "usual_in": "36.93",
+    "vs_usual": {
+     "diff_in": "7.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.83",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b1bed0623c99d16a",
+   "sid": "111290 2",
+   "story": "Through Oct 13, the weather station in Carlyle Reservoir has caught 29.43 inches, 7.50 inches less than a usual year. May was the wettest month at 5.83 inches, and May 18 brought the biggest single day at 2.40 inches. The gauge went 19 days in a row with nothing from Jan 27 to Feb 14. Last year it had 2.28 inches more by this date.",
+   "through": "2026-10-13"
+  },
+  "17029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "3.80",
+     "label": "biggest single day"
+    },
+    "county": "Coles County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Mattoon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.73",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.05",
+    "usual_in": "32.89",
+    "vs_usual": {
+     "diff_in": "4.16",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.20",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1058e39446259f97",
+   "sid": "115430 2",
+   "story": "Through Oct 13, the station in Mattoon had June as the wettest month at 10.20 inches. The biggest single day came Jun 22 with 3.80 inches. That is 11.73 inches more than last year by this day. The longest dry stretch ran 19 days, Jan 27 to Feb 14, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "17031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 2",
+     "in": "2.66",
+     "label": "biggest one-day reading"
+    },
+    "county": "Cook County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "1.3 miles north-northeast of Oak Park",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.97",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "29.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 122,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.91",
+    "usual_in": "32.82",
+    "vs_usual": {
+     "diff_in": "7.09",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.75",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f5e15baee431dd20",
+   "sid": "US1ILCK0074 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles north-northeast of Oak Park has caught 39.91 inches, 7.09 more than a usual year. August was the wettest month at 6.75 inches, and the biggest one-day reading came Aug 2 with 2.66. Since Oct 3 the gauge has sat empty, 11 days in a row through Oct 13 and still going. On the days both years reported, that is 9.97 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "2.45",
+     "label": "biggest single day"
+    },
+    "county": "Crawford County",
+    "days_in_year_so_far": 285,
+    "days_missing": 7,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Hutsonville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "4.71",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "39.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Illinois",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "33.63",
+    "usual_in": "36.95",
+    "vs_usual": {
+     "diff_in": "3.32",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.87",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bc793d4b1f56d1fd",
+   "sid": "114317 2",
+   "story": "Through Oct 12, the station in Hutsonville had its wettest month in June at 6.87 inches, and its biggest single day came Jun 22 with 2.45 inches. It went 13 days in a row with nothing in the gauge, Aug 28 to Sep 9. On the days both years reported, this year has 4.71 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "17035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "2.41",
+     "label": "biggest single day"
+    },
+    "county": "Cumberland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Neoga",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "10.76",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "24.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.30",
+    "usual_in": "34.35",
+    "vs_usual": {
+     "diff_in": "0.95",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.48",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e77c1c30016e1d8a",
+   "sid": "116024 2",
+   "story": "Through Oct 13, the weather station in Neoga had its wettest month in June with 8.48 inches. The biggest single day came Jun 22 with 2.41 inches. Then it went 20 days in a row with nothing in the gauge, from Aug 21 to Sep 9. On the days both years reported, this year is 10.76 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 20",
+     "in": "2.51",
+     "label": "biggest one-day reading"
+    },
+    "county": "DeKalb County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southwest of Cortland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.13",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 109,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.99",
+    "usual_in": "29.45",
+    "vs_usual": {
+     "diff_in": "2.54",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.01",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "abe2944823e05153",
+   "sid": "US1ILDK0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south-southwest of Cortland has caught 31.99 inches, 11.13 inches more than it had by this day in 2025. September did most of the work with 7.01 inches, and the biggest one-day reading came Sep 20 at 2.51 inches. The longest dry stretch was 11 days, Feb 7 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "17039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "2.42",
+     "label": "biggest single day"
+    },
+    "county": "De Witt County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile west-southwest of Clinton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.10",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.48",
+    "usual_in": "33.78",
+    "vs_usual": {
+     "diff_in": "2.30",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.56",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c1aa0aab07a3ea25",
+   "sid": "US1ILDW0007 6",
+   "story": "Through Oct 13, the gauge less than a mile west-southwest of Clinton had its wettest month in June with 7.56 inches. The biggest single day came Jun 18 with 2.42 inches. Before that it went 12 days in a row with nothing in the gauge, from May 26 to Jun 6. That still puts this year 8.10 inches more than last year through the same day.",
+   "through": "2026-10-13"
+  },
+  "17041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.83",
+     "label": "biggest single day"
+    },
+    "county": "Douglas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Tuscola",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.78",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.28",
+    "usual_in": "32.61",
+    "vs_usual": {
+     "diff_in": "5.67",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.16",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f0a02b043122182a",
+   "sid": "118684 2",
+   "story": "Through Oct 13, the weather station in Tuscola has 13.78 inches more than it had by this day last year. June was the wettest month at 9.16 inches, and the biggest single day was Apr 28 with 2.83 inches. The longest dry stretch ran 13 days, from Aug 28 to Sep 9, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "17043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "2.19",
+     "label": "biggest single day"
+    },
+    "county": "DuPage County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2.0 miles north-northeast of Wheaton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.78",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.12",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Feb 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 122,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.90",
+    "usual_in": "32.63",
+    "vs_usual": {
+     "diff_in": "7.27",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.26",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5e8a66ad0bbdd1df",
+   "sid": "US1ILDP0132 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.0 miles north-northeast of Wheaton has caught 13.78 inches more than it had by this day in 2025. June was the wettest month at 7.26 inches. The biggest single day came Jul 3 with 2.19 inches. The longest dry stretch ran 9 days, Feb 9 to Feb 17, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "17045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "2.78",
+     "label": "biggest single day"
+    },
+    "county": "Edgar County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Paris",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "16.86",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 17,
+     "through": "Oct 13",
+     "total_in": "20.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.13",
+    "usual_in": "34.02",
+    "vs_usual": {
+     "diff_in": "6.11",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.01",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9e116cb54222359f",
+   "sid": "116610 2",
+   "story": "Through Oct 13, the weather station in Paris had its wettest month in June with 10.01 inches, and its biggest single day came Jun 18 with 2.78 inches. Then it went 20 days in a row with nothing in the gauge, from Aug 21 to Sep 9. On the days both years reported, this year is 16.86 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 5",
+     "in": "2.91",
+     "label": "biggest one-day reading"
+    },
+    "county": "Edwards County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile southwest of Albion",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "9.49",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "43.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.79",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.04",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5461703b92d9208b",
+   "sid": "US1ILEW0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Albion has caught 33.79 inches. March was the wettest month at 7.04 inches, and Mar 5 brought the biggest one-day reading at 2.91 inches. From Aug 21 to Sep 9 the gauge went 20 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 9.49 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "17049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 27",
+     "in": "4.29",
+     "label": "biggest single day"
+    },
+    "county": "Effingham County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Effingham",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.67",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 120,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.84",
+    "usual_in": "35.70",
+    "vs_usual": {
+     "diff_in": "7.14",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.87",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c530ccf25a8e93f2",
+   "sid": "112685 2",
+   "story": "Through Oct 13, the station in Effingham has 11.67 inches more than it had at this point last year. June was the wettest month at 7.87 inches. The biggest single day came Jul 27 with 4.29 inches. The longest dry stretch ran 19 days, Jan 27 to Feb 14, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "17055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 5",
+     "in": "1.90",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1.1 miles north-northwest of Christopher",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "8.19",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "35.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jan 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.14",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.75",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "631b88127f11d15b",
+   "sid": "US1ILFK0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.1 miles north-northwest of Christopher has caught 27.14 inches. March was the wettest month at 5.75 inches, and the biggest single day came Mar 5 with 1.90 inches. The gauge went 15 days in a row with nothing from Jan 31 to Feb 14. On the days both years reported, that's 8.19 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "17057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "5.66",
+     "label": "biggest single day"
+    },
+    "county": "Fulton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Canton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "21.93",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "22.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 137,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.24",
+    "usual_in": "32.34",
+    "vs_usual": {
+     "diff_in": "11.90",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "344b8ae3ca95e4cf",
+   "sid": "111250 2",
+   "story": "Through Oct 13, the weather station in Canton had its biggest single day on Aug 15, with 5.66 inches in the gauge. The longest dry stretch ran 12 days, Feb 1 to Feb 12, with nothing in the gauge, not even a trace. On the days both years reported, this year is 21.93 inches more than 2025. That puts it 11.90 inches more than a usual year.",
+   "through": "2026-10-13"
+  },
+  "17059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 27",
+     "in": "2.90",
+     "label": "biggest single day"
+    },
+    "county": "Gallatin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3 miles west-southwest of Shawneetown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "13.77",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "43.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.18",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.94",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "be395dc771056345",
+   "sid": "117860 2",
+   "story": "Through Oct 13, the weather station 3 miles west-southwest of Shawneetown has 29.18 inches for the year. July was the wettest month at 6.94 inches, and the biggest single day came Jul 27 with 2.90 inches. On the days both years reported, that is 13.77 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "17061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "1.82",
+     "label": "biggest single day"
+    },
+    "county": "Greene County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1 mile east of White Hall",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "5.31",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "21.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.07",
+    "usual_in": "32.14",
+    "vs_usual": {
+     "diff_in": "5.07",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.39",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fa83a5afe0a6f4c3",
+   "sid": "119241 2",
+   "story": "Through Oct 13, the weather station 1 mile east of White Hall had its wettest month in April at 6.39 inches. The biggest single day came Apr 28 with 1.82 inches. The longest dry stretch ran 19 days, Jan 27 to Feb 14, with not even a trace in the gauge. On the days both years reported, this year has 5.31 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "2.09",
+     "label": "biggest single day"
+    },
+    "county": "Grundy County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2.5 miles south-southeast of Morris",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "19.02",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "25.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 139,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.23",
+    "usual_in": "32.65",
+    "vs_usual": {
+     "diff_in": "12.58",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.96",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "36b5d344259db22c",
+   "sid": "US1ILGY0020 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles south-southeast of Morris has caught 45.23 inches, 12.58 more than a usual year. June did most of the work at 10.96 inches, and the biggest single day was 2.09 inches on Aug 1. On the days both years reported, that is 19.02 inches more than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "17065": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Hamilton County",
+    "days_in_year_so_far": 285,
+    "days_missing": 2,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "4.9 miles west of Mcleansboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "6.88",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 12",
+     "total_in": "33.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "26.35",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.01",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0c4c95a4974baf05",
+   "sid": "US1ILHM0003 6",
+   "story": "Through Oct 12, the volunteer rain gauge 4.9 miles west of Mcleansboro had its wettest month in March, with 5.01 inches. The longest dry stretch ran 19 days, Jan 27 to Feb 14, with not even a trace in the gauge. On the days both years reported, this year is 6.88 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "17067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "2.71",
+     "label": "biggest single day"
+    },
+    "county": "Hancock County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in Augusta",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.48",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.82",
+    "usual_in": "33.79",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "9.31",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9553112db27ce76b",
+   "sid": "110330 2",
+   "story": "Through Oct 13, the weather station in Augusta has caught about what it does in a usual year. June did most of the work at 9.31 inches, and the biggest single day was Jun 22 with 2.71 inches. Then it shut off for 20 days in a row, from Aug 21 to Sep 9, with not even a trace in the gauge. That still puts it 7.48 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "17071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "2.63",
+     "label": "biggest one-day reading"
+    },
+    "county": "Henderson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Gladstone",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "12.54",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "25.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 126,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.13",
+    "usual_in": "31.14",
+    "vs_usual": {
+     "diff_in": "7.99",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.12",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c7747c632b49dbb0",
+   "sid": "113455 2",
+   "story": "Through Oct 13, the weather station in Gladstone had its wettest month in June at 9.12 inches. The biggest one-day reading was 2.63 inches on Aug 13. On the days both years reported, this year is 12.54 inches more than last year. The gauge also went 25 days in a row with nothing in it, from Jan 26 to Feb 19.",
+   "through": "2026-10-13"
+  },
+  "17073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "2.20",
+     "label": "biggest single day"
+    },
+    "county": "Henry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "1 mile east of Kewanee",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "15.34",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "25.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jul 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.04",
+    "usual_in": "32.90",
+    "vs_usual": {
+     "diff_in": "8.14",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.44",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2ba66bb3cbfb3565",
+   "sid": "114710 2",
+   "story": "Through Oct 13, the weather station 1 mile east of Kewanee had more rain than last year by 15.34 inches on the days both years reported. June was the wettest month at 9.44 inches. The biggest single day came Aug 1 with 2.20 inches. The gauge also went 13 days in a row with nothing, Jul 6 to Jul 18.",
+   "through": "2026-10-13"
+  },
+  "17075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "2.14",
+     "label": "biggest single day"
+    },
+    "county": "Iroquois County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "6.9 miles west-northwest of Watseka",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "2.56",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "28.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.15",
+    "usual_in": "33.41",
+    "vs_usual": {
+     "diff_in": "2.26",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.88",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e6fb84be528a0244",
+   "sid": "US1ILIR0014 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.9 miles west-northwest of Watseka had its wettest month in August at 8.88 inches. The biggest single day came Aug 14 with 2.14 inches. The longest dry stretch ran 11 days, Feb 7 to Feb 17, with nothing in the gauge. On the days both years reported, this year is 2.56 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 11",
+     "in": "4.35",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "less than a mile east-southeast of De Soto",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.78",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.95",
+    "usual_in": "35.98",
+    "vs_usual": {
+     "diff_in": "8.03",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.62",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4210c73deecb0074",
+   "sid": "US1ILJK0014 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east-southeast of De Soto has caught 27.95 inches, 8.03 inches less than a usual year. July was the wettest month with 7.62 inches, and 4.35 inches of that came on Jul 11 alone. Then the gauge sat empty for 15 days in a row, Sep 13 to Sep 27. Last year at this point it had 9.78 inches more.",
+   "through": "2026-10-13"
+  },
+  "17079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "3.20",
+     "label": "biggest single day"
+    },
+    "county": "Jasper County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Newton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.74",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.10",
+    "usual_in": "36.62",
+    "vs_usual": {
+     "diff_in": "1.48",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.36",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ff3e9bdd0a431ad4",
+   "sid": "116157 2",
+   "story": "Through Oct 13, the station in Newton had 38.10 inches, 1.48 more than a usual year. June did most of the work at 11.36 inches, and the biggest rain came Apr 27 with 3.20. Then it shut off for 13 days in a row, Aug 27 to Sep 8, with nothing in the gauge. On the days both years reported, that is 5.74 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "17081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "1.83",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "1.7 miles north-northeast of Belle Rive",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "12.64",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "37.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 66,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.62",
+    "usual_in": "37.51",
+    "vs_usual": {
+     "diff_in": "12.89",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.07",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "11803a88d6fd4ac0",
+   "sid": "US1ILJF0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge north-northeast of Belle Rive has caught 24.62 inches, 12.89 inches less than a usual year. April was the wettest month at 5.07 inches, and the biggest single day came Apr 28 with 1.83 inches. The longest dry stretch ran 19 days, Sep 13 to Oct 1, with not even a trace. On the days both years reported, that is 12.64 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "17085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "3.06",
+     "label": "biggest single day"
+    },
+    "county": "Jo Daviess County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "3 miles north-northeast of Stockton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.52",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "22.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.60",
+    "usual_in": "32.91",
+    "vs_usual": {
+     "diff_in": "0.31",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.91",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "08a344c593e96cfb",
+   "sid": "118293 2",
+   "story": "Through Oct 13, the weather station 3 miles north-northeast of Stockton sits about where a usual year would, 0.31 inches less. September did most of the work at 7.91 inches, and Sep 19 alone brought 3.06. On the days both years reported, that is 10.52 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 11",
+     "in": "4.63",
+     "label": "biggest one-day reading"
+    },
+    "county": "Johnson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "5.3 miles north-northwest of Vienna",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.79",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "52.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.43",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.80",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6078fc64ec043ccd",
+   "sid": "US1ILJH0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.3 miles north-northwest of Vienna has caught 38.43 inches. July was the wettest month at 10.80 inches, and the biggest one-day reading came Jul 11 with 4.63 inches. From Sep 12 to Oct 1 the gauge went 20 days in a row without even a trace. That puts this year 13.79 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "17091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "1.94",
+     "label": "biggest single day"
+    },
+    "county": "Kankakee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Kankakee",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "6.14",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "28.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.94",
+    "usual_in": "34.46",
+    "vs_usual": {
+     "diff_in": "1.48",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.71",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e3ae3c28a5fb72f8",
+   "sid": "114603 2",
+   "story": "Through Oct 13, the weather station in Kankakee had June as its wettest month at 7.71 inches. The biggest single day was Jun 9 with 1.94 inches. The longest dry stretch ran 14 days, Feb 4 to Feb 17, with nothing in the gauge. On the days both years reported, this year is 6.14 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "4.25",
+     "label": "biggest single day"
+    },
+    "county": "Kendall County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "5.0 miles south-southeast of Oswego",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "17.57",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 135,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.89",
+    "usual_in": "32.62",
+    "vs_usual": {
+     "diff_in": "11.27",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.61",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e223a42351a93451",
+   "sid": "US1ILKD0024 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.0 miles south-southeast of Oswego had caught 43.89 inches. August was the wettest month at 8.61 inches, and Aug 1 alone brought 4.25 inches, the biggest single day. On the days both years reported, that is 17.57 inches more than 2025. The longest dry stretch ran 15 days, Feb 3 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "17095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "2.51",
+     "label": "biggest single day"
+    },
+    "county": "Knox County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Knoxville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.82",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.38",
+    "usual_in": "34.44",
+    "vs_usual": {
+     "diff_in": "4.94",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.22",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "35d8d03043699a50",
+   "sid": "US1ILKX0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northwest of Knoxville has caught 12.82 inches more than it had by this day in 2025. August did most of the work at 9.22 inches, and Aug 14 alone brought 2.51. The longest spell with nothing in the gauge was 10 days, Feb 3 to Feb 12.",
+   "through": "2026-10-13"
+  },
+  "17097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 15",
+     "in": "2.34",
+     "label": "biggest single day"
+    },
+    "county": "Lake County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.6 miles west of Gurnee",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.30",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jul 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 122,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.16",
+    "usual_in": "33.00",
+    "vs_usual": {
+     "diff_in": "7.16",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.71",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7cc715befca6c68e",
+   "sid": "US1ILLK0042 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles west of Gurnee has 15.30 inches more than it had by this day last year. April did most of the work with 9.71 inches, and the biggest single day came Apr 15 with 2.34 inches. The gauge also went 17 days in a row with nothing in it, from Jul 11 to Jul 27.",
+   "through": "2026-10-13"
+  },
+  "17099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "LaSalle County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "4 miles southwest of Ottawa",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "17.83",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 136,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.53",
+    "usual_in": "29.85",
+    "vs_usual": {
+     "diff_in": "10.68",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.86",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5d4a168d42446c05",
+   "sid": "116526 2",
+   "story": "Through Oct 13, the weather station 4 miles southwest of Ottawa had caught 17.83 inches more than it had by this day last year. June did most of the work at 9.86 inches, and Jun 11 brought the biggest single day at 2.10 inches. The longest dry stretch was 14 days, Feb 4 to Feb 17, without even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "17101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "3.28",
+     "label": "biggest single day"
+    },
+    "county": "Lawrence County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Lawrenceville Vincennes International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "0.67",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "37.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.08",
+    "usual_in": "33.34",
+    "vs_usual": {
+     "diff_in": "4.74",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.01",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d781822b06a47e37",
+   "sid": "13809 1",
+   "story": "Through Oct 13, the weather station at Lawrenceville Vincennes International Airport had its biggest single day on Apr 27 with 3.28 inches. June was the wettest month at 8.01 inches. Then the station went 13 days in a row with nothing in it, from Aug 27 to Sep 8. On the days both years reported, this year has 0.67 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "17103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "3.56",
+     "label": "biggest single day"
+    },
+    "county": "Lee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Dixon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.79",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.54",
+    "usual_in": "34.32",
+    "vs_usual": {
+     "diff_in": "6.22",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.90",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "da7a232cf3134fd0",
+   "sid": "112348 2",
+   "story": "Through Oct 13, the weather station in Dixon had 40.54 inches, 6.22 inches more than a usual year. August did most of the work with 9.90 inches, and Aug 1 alone put 3.56 inches in the gauge. The longest dry stretch was 16 days, Feb 4 to Feb 19. That is 12.79 inches more than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "17105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 9",
+     "in": "1.66",
+     "label": "biggest single day"
+    },
+    "county": "Livingston County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "2 miles southeast of Streator",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.52",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.14",
+    "usual_in": "32.91",
+    "vs_usual": {
+     "diff_in": "3.23",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.66",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dab270cebca09e82",
+   "sid": "118353 2",
+   "story": "Through Oct 13, the weather station 2 miles southeast of Streator has caught 13.52 inches more than it did by this day last year. June did the heavy lifting with 8.66 inches, the wettest month so far. The biggest single day came early, 1.66 inches on Jan 9. It also went 16 days in a row without a trace, Feb 4 to Feb 19.",
+   "through": "2026-10-13"
+  },
+  "17107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "2.70",
+     "label": "biggest single day"
+    },
+    "county": "Logan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Lincoln",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.72",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.45",
+    "usual_in": "32.64",
+    "vs_usual": {
+     "diff_in": "1.19",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.42",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e01f537c62ea564c",
+   "sid": "115079 2",
+   "story": "Through Oct 13, the weather station in Lincoln has June as the wettest month at 7.42 inches. The biggest single day came Apr 27 with 2.70 inches. Right before June got going, the gauge sat empty 11 days in a row, May 25 to Jun 4. It is 1.72 inches more than last year by now, and still 1.19 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "17109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "5.41",
+     "label": "biggest single day"
+    },
+    "county": "McDonough County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3.5 miles northeast of Colchester",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "18.87",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 122,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.14",
+    "usual_in": "33.59",
+    "vs_usual": {
+     "diff_in": "7.55",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.11",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3a8a063ae431244e",
+   "sid": "US1ILMCD007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.5 miles northeast of Colchester had 41.14 inches, 7.55 inches more than a usual year. June was the wettest month at 10.11 inches, and the biggest single day came Aug 15 with 5.41 inches. Last year by this date the gauge had 22.27 inches, so this year is 18.87 inches more. The longest dry stretch ran 17 days, Feb 3 to Feb 19, without even a trace.",
+   "through": "2026-10-13"
+  },
+  "17111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 12",
+     "in": "2.53",
+     "label": "biggest single day"
+    },
+    "county": "McHenry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5 miles northwest of Woodstock",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.22",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.64",
+    "usual_in": "32.54",
+    "vs_usual": {
+     "diff_in": "8.10",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.73",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "60faa32593bcaeb1",
+   "sid": "119480 2",
+   "story": "Through Oct 13, the weather station 5 miles northwest of Woodstock has 40.64 inches, 8.10 inches more than a usual year. April did most of the work with 10.73 inches, and the biggest single day was 2.53 inches on Jun 12. That puts this year 13.22 inches ahead of last year at the same point, when the gauge had 27.42 inches.",
+   "through": "2026-10-13"
+  },
+  "17113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "5.10",
+     "label": "biggest single day"
+    },
+    "county": "McLean County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2.7 miles northeast of Bloomington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.41",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 136,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.47",
+    "usual_in": "33.46",
+    "vs_usual": {
+     "diff_in": "12.01",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.28",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "61344f3c35517851",
+   "sid": "US1ILMCL017 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.7 miles northeast of Bloomington had most of its year show up in August, with 13.28 inches that month. The biggest single day came Aug 15 at 5.10 inches. That puts the gauge 12.41 inches ahead of where it stood last year on the same day. The longest run with nothing in it was 11 days, Feb 7 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "17115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 3",
+     "in": "2.48",
+     "label": "biggest single day"
+    },
+    "county": "Macon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Decatur",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "10.94",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "24.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.65",
+    "usual_in": "32.59",
+    "vs_usual": {
+     "diff_in": "3.06",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.77",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0b83bf11619414d8",
+   "sid": "112193 2",
+   "story": "Through Oct 13, the weather station in Decatur had most of its year front loaded. March was the wettest month at 8.77 inches, and the biggest single day came Mar 3 with 2.48 inches. Then it shut off for 17 days in a row, Aug 23 to Sep 8, with not even a trace in the gauge. On the days both years reported, that is 10.94 inches more than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "17117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 26",
+     "in": "3.31",
+     "label": "biggest one-day reading"
+    },
+    "county": "Macoupin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "1 mile east of Mt Olive",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "9.20",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "28.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 110,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.25",
+    "usual_in": "33.99",
+    "vs_usual": {
+     "diff_in": "3.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.55",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f34b18514b9d79a9",
+   "sid": "115917 2",
+   "story": "Through Oct 13, the weather station 1 mile east of Mt Olive had 37.25 inches, 3.26 more than a usual year. June was the wettest month at 7.55 inches, and the biggest one-day reading was 3.31 inches on Jul 26. Then the gauge went 18 days in a row with nothing, from Aug 23 to Sep 9. On the days both years reported, that is 9.20 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17119": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "2.97",
+     "label": "biggest single day"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2 miles west of Edwardsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.61",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.61",
+    "usual_in": "37.17",
+    "vs_usual": {
+     "diff_in": "0.56",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.04",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1f802cd5e9c0dd71",
+   "sid": "112679 2",
+   "story": "Through Oct 13, the weather station 2 miles west of Edwardsville has run close to a usual year, 0.56 inches less. June was the wettest month at 7.04 inches, and the biggest single day came May 19 with 2.97 inches. The gauge went 14 days in a row with nothing at all, Feb 1 to Feb 14. That leaves this year 1.61 inches less than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "17121": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "4.92",
+     "label": "biggest single day"
+    },
+    "county": "Marion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Salem",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "2.40",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "38.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.43",
+    "usual_in": "36.55",
+    "vs_usual": {
+     "diff_in": "0.12",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.93",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "79043b4064d38260",
+   "sid": "117636 2",
+   "story": "Through Oct 13, the weather station in Salem sits about where a usual year would, just 0.12 inches less. May did most of the work at 8.93 inches, and 4.92 of that came on May 19 alone. Then the gauge went 14 days with nothing from Aug 23 to Sep 5. On the days both years reported, that is 2.40 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "17123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "1.97",
+     "label": "biggest one-day reading"
+    },
+    "county": "Marshall County",
+    "days_in_year_so_far": 285,
+    "days_missing": 16,
+    "days_reported": 269,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Lacon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "0.97",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 12",
+     "total_in": "27.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 88,
+    "state": "Illinois",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "26.21",
+    "usual_in": "29.91",
+    "vs_usual": {
+     "diff_in": "3.70",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.87",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "241ab8351df7844a",
+   "sid": "114805 2",
+   "story": "Through Oct 12, the weather station in Lacon had its wettest month in June, with 7.87 inches. The biggest one-day reading came on Jun 11 at 1.97 inches. The longest dry stretch ran 14 days, Feb 4 to Feb 17, with nothing in the gauge. On the days both years reported, this year sits 0.97 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "17127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 10",
+     "in": "3.97",
+     "label": "biggest single day"
+    },
+    "county": "Massac County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2.9 miles north-northeast of Metropolis",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.89",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "58.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.60",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "11.13",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7af4d4d1073c0be6",
+   "sid": "US1ILMC0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.9 miles north-northeast of Metropolis had 47.60 inches. July was the wettest month at 11.13 inches, and the biggest single day was Jul 10 with 3.97 inches. Then it went 19 days in a row with nothing in the gauge, from Sep 13 to Oct 1. On the days both years reported, that is 10.89 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "17129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "2.95",
+     "label": "biggest single day"
+    },
+    "county": "Menard County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "4 miles southwest of Athens",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "9.62",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 19,
+     "through": "Oct 13",
+     "total_in": "25.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.90",
+    "usual_in": "31.09",
+    "vs_usual": {
+     "diff_in": "7.81",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.33",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a938729903b0adc9",
+   "sid": "110306 2",
+   "story": "Through Oct 13, the weather station 4 miles southwest of Athens had June as its wettest month at 11.33 inches, and the biggest single day came Jun 9 with 2.95 inches. Then it quit. The gauge went 18 days in a row with nothing in it, from Aug 23 to Sep 9. On the days both years reported, this year is 9.62 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "2.97",
+     "label": "biggest one-day reading"
+    },
+    "county": "Mercer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "in Aledo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "16.23",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "27.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 29"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 138,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.23",
+    "usual_in": "32.81",
+    "vs_usual": {
+     "diff_in": "12.42",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.91",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "857c9c80d48d7499",
+   "sid": "110072 2",
+   "story": "Through Oct 13, the weather station in Aledo had its wettest month in August with 12.91 inches. The biggest one-day reading came Aug 14 at 2.97 inches. The longest dry stretch ran 10 days, May 20 to May 29, with nothing in the gauge. On the days both years reported, this year is 16.23 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 5",
+     "in": "2.74",
+     "label": "biggest one-day reading"
+    },
+    "county": "Monroe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "3.7 miles east-northeast of Fults",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "0.83",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "29.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.24",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.12",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "89e3baabd3682348",
+   "sid": "US1ILMO0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.7 miles east-northeast of Fults had its wettest month in March at 6.12 inches. The biggest one-day reading came Mar 5 with 2.74 inches. The longest dry stretch ran 14 days, Feb 1 to Feb 14, with nothing in the gauge, not even a trace. On the days both years reported, this year is 0.83 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17135": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "4.40",
+     "label": "biggest single day"
+    },
+    "county": "Montgomery County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Hillsboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "8.98",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 12",
+     "total_in": "27.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Illinois",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "36.64",
+    "usual_in": "33.50",
+    "vs_usual": {
+     "diff_in": "3.14",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.63",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c5717c8015392344",
+   "sid": "114108 2",
+   "story": "Through Oct 12, the weather station in Hillsboro had its biggest single day on Apr 27 with 4.40 inches. June was the wettest month at 8.63 inches. Then it went 17 days in a row with nothing in the gauge, from Aug 23 to Sep 8. On the days both years reported, that is 8.98 inches more than last year.",
+   "through": "2026-10-12"
+  },
+  "17137": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "3.90",
+     "label": "biggest single day"
+    },
+    "county": "Morgan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "2 miles east of Jacksonville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.01",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.52",
+    "usual_in": "32.54",
+    "vs_usual": {
+     "diff_in": "2.98",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.16",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8ebcb1efa60e4445",
+   "sid": "114442 2",
+   "story": "Through Oct 13, the weather station 2 miles east of Jacksonville has 12.01 inches more than it had by this day in 2025. June was the wettest month at 9.16 inches. The biggest single day came Aug 15 with 3.90 inches. Then the gauge sat empty for 17 days in a row, Aug 24 to Sep 9, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "17139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 4",
+     "in": "2.92",
+     "label": "biggest single day"
+    },
+    "county": "Moultrie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Lovington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.33",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 119,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.17",
+    "usual_in": "32.18",
+    "vs_usual": {
+     "diff_in": "5.99",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.56",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8b11b838448c578c",
+   "sid": "115219 2",
+   "story": "Through Oct 13, the weather station in Lovington has 14.33 inches more than it had by this day last year. June was the wettest month at 8.56 inches, and the biggest single day came Mar 4 with 2.92 inches. It also went 18 days in a row with nothing in the gauge, from Aug 23 to Sep 9.",
+   "through": "2026-10-13"
+  },
+  "17141": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 12",
+     "in": "2.73",
+     "label": "biggest single day"
+    },
+    "county": "Ogle County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Oregon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.86",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 120,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.55",
+    "usual_in": "32.14",
+    "vs_usual": {
+     "diff_in": "6.41",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.74",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0a0b64855f3bf541",
+   "sid": "116490 2",
+   "story": "Through Oct 13, the weather station in Oregon has caught 13.86 inches more than it had by this day last year. June did most of the work at 8.74 inches, and Jun 12 alone brought 2.73. The longest dry stretch ran 16 days, Feb 4 to Feb 19, without even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "17143": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "3.44",
+     "label": "biggest single day"
+    },
+    "county": "Peoria County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "3.4 miles west-northwest of Peoria",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "17.23",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Jul 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.00",
+    "usual_in": "32.57",
+    "vs_usual": {
+     "diff_in": "4.43",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.97",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9582f30318af6ba9",
+   "sid": "US1ILPR0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.4 miles west-northwest of Peoria had June as its wettest month at 8.97 inches. The biggest single day came Jun 11 with 3.44 inches. The longest dry run was 8 days, Jul 13 to Jul 20. Last year at this point the gauge had 19.77 inches, so 2026 is 17.23 inches more.",
+   "through": "2026-10-13"
+  },
+  "17147": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "Piatt County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Cisco",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.24",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.94",
+    "usual_in": "31.62",
+    "vs_usual": {
+     "diff_in": "2.32",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.12",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "60678e07cfac0cb1",
+   "sid": "111655 2",
+   "story": "Through Oct 13, the weather station in Cisco has caught 11.24 inches more than it had by this day last year, when it sat at 22.70. June was the wettest month at 7.12 inches, and the biggest single day was Jun 18 with 2.35 inches. The longest dry stretch ran 14 days, Feb 1 to Feb 14, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "17151": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "3.13",
+     "label": "biggest one-day reading"
+    },
+    "county": "Pope County",
+    "days_in_year_so_far": 286,
+    "days_missing": 25,
+    "days_reported": 261,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "in Smithland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 242,
+      "diff_in": "7.54",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 19,
+     "through": "Oct 13",
+     "total_in": "48.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 117,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.03",
+    "usual_in": "35.19",
+    "vs_usual": {
+     "diff_in": "5.84",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "76a6deab24a06c92",
+   "sid": "118020 2",
+   "story": "Through Oct 13, the weather station in Smithland has had 41.03 inches, 5.84 more than a usual year. The biggest one-day reading came Jun 28 at 3.13 inches. Then the gauge sat empty 19 days in a row, Sep 13 to Oct 1. On the days both years reported, this year is 7.54 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "17153": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "2.70",
+     "label": "biggest one-day reading"
+    },
+    "county": "Pulaski County",
+    "days_in_year_so_far": 286,
+    "days_missing": 18,
+    "days_reported": 268,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Olmsted",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 244,
+      "diff_in": "14.62",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 25,
+     "through": "Oct 13",
+     "total_in": "46.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 10"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 98,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.56",
+    "usual_in": "36.21",
+    "vs_usual": {
+     "diff_in": "0.65",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.67",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cd024431ac31c8d4",
+   "sid": "113580 2",
+   "story": "Through Oct 13, the weather station in Olmsted is close to a usual year, 0.65 inches less. June was the wettest month at 8.67 inches, and the biggest one-day reading came Aug 1 with 2.70 inches. On the days both years reported, this year is 14.62 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "17155": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 4",
+     "in": "4.66",
+     "label": "biggest single day"
+    },
+    "county": "Putnam County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Hennepin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "13.83",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 126,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.02",
+    "usual_in": "31.73",
+    "vs_usual": {
+     "diff_in": "8.29",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.08",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "33c339220c06553f",
+   "sid": "114012 2",
+   "story": "Through Oct 13, the weather station in Hennepin had its wettest month in July at 8.08 inches. The biggest single day was Jul 4, with 4.66 inches in the gauge. On the days both years reported, this year is 13.83 inches more than last year. The longest dry stretch ran 12 days, Feb 6 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "17157": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 26",
+     "in": "2.61",
+     "label": "biggest one-day reading"
+    },
+    "county": "Randolph County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Chester",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.46",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 5,
+    "pct_of_usual": 88,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.54",
+    "usual_in": "34.77",
+    "vs_usual": {
+     "diff_in": "4.23",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.19",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "55361161987b121f",
+   "sid": "111491 2",
+   "story": "Through Oct 13, the station in Chester had its wettest month in March at 6.19 inches. The biggest rain came Jun 26 with 2.61 inches. Then it went 14 days with nothing in the gauge, Aug 27 to Sep 9. On the days both years reported, that is 1.46 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "17159": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "3.28",
+     "label": "biggest one-day reading"
+    },
+    "county": "Richland County",
+    "days_in_year_so_far": 279,
+    "days_missing": 2,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1.5 miles northeast of Olney",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 274,
+      "diff_in": "4.77",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 6",
+     "total_in": "38.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 6",
+    "through_iso": "2026-10-06",
+    "total_in": "33.82",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.93",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "59c70cd3cacafdf1",
+   "sid": "US1ILRC0006 6",
+   "story": "Through Oct 6, the gauge 1.5 miles northeast of Olney had caught 33.82 inches. May was the wettest month at 6.93 inches, and the biggest rain came Apr 28 with 3.28 inches. On the days both years reported, this year ran 4.77 inches less than 2025.",
+   "through": "2026-10-06"
+  },
+  "17161": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 17",
+     "in": "1.90",
+     "label": "biggest single day"
+    },
+    "county": "Rock Island County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Moline Quad City International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.12",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.19",
+    "usual_in": "32.30",
+    "vs_usual": {
+     "diff_in": "4.89",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.37",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3a03f9409d821bfd",
+   "sid": "14923 1",
+   "story": "Through Oct 13, the weather station at Moline Quad City International Airport had 9.12 inches more than last year on the same days. September was the wettest month at 7.37 inches. The biggest single day was Jun 17 with 1.90 inches. The gauge went 15 days in a row with nothing in it, from Feb 4 to Feb 18.",
+   "through": "2026-10-13"
+  },
+  "17163": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "2.05",
+     "label": "biggest single day"
+    },
+    "county": "St. Clair County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1.5 miles south-southeast of Mascoutah",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "2.67",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "31.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.40",
+    "usual_in": "36.45",
+    "vs_usual": {
+     "diff_in": "1.05",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.23",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5acc6437f82ff93b",
+   "sid": "US1ILSC0026 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.5 miles south-southeast of Mascoutah caught its most in April, 6.23 inches. The biggest single day was May 19 with 2.05 inches. From Aug 26 to Sep 9 it went 15 days in a row with nothing in the gauge, not even a trace. On the days both years reported, that is 2.67 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "17165": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 7",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Saline County",
+    "days_in_year_so_far": 285,
+    "days_missing": 2,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "4.6 miles north-northeast of Harrisburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "15.14",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 12",
+     "total_in": "44.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "29.68",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.05",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3040a5dddd052816",
+   "sid": "US1ILSL0001 6",
+   "story": "Through Oct 12, the volunteer rain gauge 4.6 miles north-northeast of Harrisburg had 29.68 inches. July was the wettest month at 6.05 inches, and the biggest single day was Jul 7 with 2.12 inches. That is 15.14 inches less than last year on the days both years reported.",
+   "through": "2026-10-12"
+  },
+  "17167": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.78",
+     "label": "biggest single day"
+    },
+    "county": "Sangamon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.4 miles east-southeast of Chatham",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "12.98",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "21.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.74",
+    "usual_in": "33.75",
+    "vs_usual": {
+     "diff_in": "0.99",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.30",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "db0d5583943fc718",
+   "sid": "US1ILSG0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles east-southeast of Chatham had June as the wettest month at 9.30 inches. The biggest single day was Apr 28 with 2.78 inches. Then the gauge sat empty for 18 days in a row, Aug 23 to Sep 9. On the days both years reported, this year is 12.98 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17169": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 16",
+     "in": "2.24",
+     "label": "biggest single day"
+    },
+    "county": "Schuyler County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "4.1 miles northeast of Rushville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.69",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.64",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.55",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1246fc7384de04f6",
+   "sid": "US1ILSY0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.1 miles northeast of Rushville has caught 30.64 inches, 6.69 more than by this day last year. June was the wettest month at 8.55 inches. Then the gauge sat empty for 20 days in a row, Aug 21 to Sep 9, and took its biggest single day soon after, 2.24 inches on Sep 16.",
+   "through": "2026-10-13"
+  },
+  "17173": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "4.03",
+     "label": "biggest single day"
+    },
+    "county": "Shelby County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Shelbyville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.56",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "24.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.24",
+    "usual_in": "32.97",
+    "vs_usual": {
+     "diff_in": "1.27",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.91",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8b749a9013474fb2",
+   "sid": "117876 2",
+   "story": "Through Oct 13, the weather station in Shelbyville had June as the wettest month at 8.91 inches. The biggest single day was Jun 9 with 4.03 inches. Then the gauge sat empty for 18 days in a row, from Aug 23 to Sep 9. On the days both years reported, this year is 9.56 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17177": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 15",
+     "in": "2.29",
+     "label": "biggest single day"
+    },
+    "county": "Stephenson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Freeport Wastewater",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.53",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "22.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.15",
+    "usual_in": "32.54",
+    "vs_usual": {
+     "diff_in": "0.61",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.92",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ec52ac5aee1c4ce8",
+   "sid": "113262 2",
+   "story": "Through Oct 13, the weather station in Freeport Wastewater has run about usual, but April carried a lot of it. April was the wettest month at 8.92 inches, and the biggest single day came Apr 15 with 2.29 inches. On the days both years reported, this year is 10.53 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "17179": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "2.72",
+     "label": "biggest single day"
+    },
+    "county": "Tazewell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1 mile south of Morton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "16.50",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "22.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.45",
+    "usual_in": "31.64",
+    "vs_usual": {
+     "diff_in": "7.81",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.08",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e2c7157d3e5a5bc0",
+   "sid": "US1ILTZ0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1 mile south of Morton had June as its wettest month at 10.08 inches, and the biggest single day came Jun 11 with 2.72 inches. The longest dry stretch ran 10 days, Feb 3 to Feb 12, with nothing in the gauge, not even a trace. On the days both years reported, this year is 16.50 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17181": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 11",
+     "in": "3.51",
+     "label": "biggest single day"
+    },
+    "county": "Union County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "4.1 miles east-northeast of Cobden",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.48",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.09",
+    "usual_in": "39.94",
+    "vs_usual": {
+     "diff_in": "4.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.91",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fdb0fafa54d4aadb",
+   "sid": "US1ILUN0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.1 miles east-northeast of Cobden has caught 35.09 inches, 4.85 inches less than a usual year. July was the wettest month at 6.91 inches, and 3.51 inches of that came on Jul 11 alone. The gauge then went 15 days with nothing from Sep 13 to Sep 27. Last year at this point it had 8.48 inches more.",
+   "through": "2026-10-13"
+  },
+  "17183": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "4.87",
+     "label": "biggest single day"
+    },
+    "county": "Vermilion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Danville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "23.26",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "25.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 140,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.32",
+    "usual_in": "34.60",
+    "vs_usual": {
+     "diff_in": "13.72",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.98",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1f775dd40229f9d2",
+   "sid": "112140 2",
+   "story": "Through Oct 13, the weather station in Danville has had a wet year, and most of it came in August. That month put 13.98 inches in the gauge, with 4.87 inches on Aug 14 alone. The longest dry stretch ran 19 days, Jan 27 to Feb 14. On the days both years reported, this year is 23.26 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17185": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.11",
+     "label": "biggest single day"
+    },
+    "county": "Wabash County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "4.2 miles northwest of Mount Carmel",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "4.10",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "39.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.94",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.77",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5531c654630643df",
+   "sid": "US1ILWB0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.2 miles northwest of Mount Carmel has caught 35.94 inches. June was the wettest month at 10.77 inches, and the biggest single day was Apr 28 with 2.11 inches. From Jan 28 to Feb 14 it went 18 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year has 4.10 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "17187": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "4.03",
+     "label": "biggest one-day reading"
+    },
+    "county": "Warren County",
+    "days_in_year_so_far": 286,
+    "days_missing": 16,
+    "days_reported": 270,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "4 miles northwest of Monmouth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 253,
+      "diff_in": "15.32",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 20,
+     "through": "Oct 13",
+     "total_in": "24.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 7,
+    "pct_of_usual": 128,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.06",
+    "usual_in": "31.41",
+    "vs_usual": {
+     "diff_in": "8.65",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "edfcc135de23f094",
+   "sid": "115772 2",
+   "story": "Through Oct 13, the weather station 4 miles northwest of Monmouth had 40.06 inches, 8.65 inches more than a usual year. The biggest one-day reading was 4.03 inches on Aug 14. The gauge also went 25 days in a row with nothing in it, from Jan 26 to Feb 19. On the days both years reported, this year is 15.32 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "17189": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.66",
+     "label": "biggest one-day reading"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "2.3 miles southwest of Okawville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "0.42",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "33.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 99,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.06",
+    "usual_in": "34.27",
+    "vs_usual": {
+     "diff_in": "0.21",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.12",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d74738cfbdf05c33",
+   "sid": "US1ILWS0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.3 miles southwest of Okawville sits about where a usual year would, 0.21 inches less. May was the wettest month at 6.12 inches, and the biggest one-day reading was 2.66 inches on Jun 28. Then the gauge went 15 days in a row with nothing in it, from Aug 26 to Sep 9. On the days both years reported, this year is 0.42 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "17191": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "1.77",
+     "label": "biggest one-day reading"
+    },
+    "county": "Wayne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Ene Fairfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "13.65",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "39.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 74,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.57",
+    "usual_in": "35.91",
+    "vs_usual": {
+     "diff_in": "9.34",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.05",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "87c74732fb5a6fd1",
+   "sid": "112931 2",
+   "story": "Through Oct 13, the weather station in Ene Fairfield has 26.57 inches, 9.34 inches less than a usual year. March was the wettest month at 5.05 inches, and the biggest one-day reading was 1.77 inches on Jun 28. The gauge then went 18 days in a row with nothing in it, from Aug 23 to Sep 9. On the days both years reported, this year is 13.65 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "17193": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.28",
+     "label": "biggest one-day reading"
+    },
+    "county": "White County",
+    "days_in_year_so_far": 286,
+    "days_missing": 11,
+    "days_reported": 275,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "3.0 miles east of Crossville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "8.48",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "41.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.08",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.25",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2bcdfac9bb25c785",
+   "sid": "US1ILWH0004 6",
+   "story": "Through Oct 13, the gauge 3.0 miles east of Crossville had its wettest month in July, with 6.25 inches. The biggest one-day reading was 2.28 inches on Jun 28. From Aug 22 to Sep 5 it went 15 days in a row with nothing in it, not even a trace. On the days both years reported, this year has come in 8.48 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "17195": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 20",
+     "in": "2.65",
+     "label": "biggest single day"
+    },
+    "county": "Whiteside County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3.2 miles east of Morrison",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.67",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.10",
+    "usual_in": "33.81",
+    "vs_usual": {
+     "diff_in": "4.29",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.50",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "595e76f2c3d02794",
+   "sid": "US1ILWD0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.2 miles east of Morrison has caught 12.67 inches more than it had by this day last year. September did most of the work with 9.50 inches, and the biggest single day came on Sep 20 at 2.65 inches. The longest stretch with nothing in the gauge ran 16 days, from Feb 4 to Feb 19.",
+   "through": "2026-10-13"
+  },
+  "17197": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "2.56",
+     "label": "biggest single day"
+    },
+    "county": "Will County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1.9 miles southeast of Manhattan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "17.17",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.93",
+    "usual_in": "34.41",
+    "vs_usual": {
+     "diff_in": "8.52",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.22",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eb7198e61dd450db",
+   "sid": "US1ILWL0099 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.9 miles southeast of Manhattan had caught 17.17 inches more than it did by this day last year. June did most of the work at 9.22 inches. The biggest single day came Apr 4 with 2.56 inches. Before that the gauge sat empty 12 days in a row, Feb 21 to Mar 4.",
+   "through": "2026-10-13"
+  },
+  "17199": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 11",
+     "in": "4.34",
+     "label": "biggest one-day reading"
+    },
+    "county": "Williamson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "8.0 miles south-southwest of Marion",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "6.86",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "41.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 92,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.05",
+    "usual_in": "38.30",
+    "vs_usual": {
+     "diff_in": "3.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.21",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9401244bc96bc229",
+   "sid": "US1ILWM0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.0 miles south-southwest of Marion had its wettest month in July at 7.21 inches. Close to 4.34 inches of that came on Jul 11, the biggest one-day reading of the year. Then it quit for a while, with 13 days in a row of nothing in the gauge from Aug 28 to Sep 9. On the days both years reported, this year is 6.86 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "17201": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "2.63",
+     "label": "biggest single day"
+    },
+    "county": "Winnebago County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Rockford Greater Rockford Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.17",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.15",
+    "usual_in": "31.54",
+    "vs_usual": {
+     "diff_in": "0.39",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.40",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "92dc5b1da60bda97",
+   "sid": "94822 1",
+   "story": "Through Oct 13, the weather station at Rockford Greater Rockford Airport has this year running close to a usual year, just 0.39 inches less. September did most of the work with 7.40 inches, and the biggest single day came Sep 19 with 2.63 inches. That puts the gauge 8.17 inches more than last year at this point. The longest dry stretch was 10 days, Feb 7 to Feb 16, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "17203": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 9",
+     "in": "1.85",
+     "label": "biggest single day"
+    },
+    "county": "Woodford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Minonk",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.26",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Illinois",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.86",
+    "usual_in": "30.94",
+    "vs_usual": {
+     "diff_in": "0.92",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.30",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "33a9bfce8dd6f55e",
+   "sid": "115712 2",
+   "story": "Through Oct 13, the weather station in Minonk had its wettest month in June at 6.30 inches. The biggest single day came early, 1.85 inches on Jan 9. On the days both years reported, this year is running 5.26 inches more than last year, and 0.92 inches more than a usual year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "IL"
+}

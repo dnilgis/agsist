@@ -106,7 +106,7 @@ test("the gift offer sits above the Pay button, and the review sheet carries the
   assert.ok(HTML.indexOf('id="rp-gift-pre"') > 0 && HTML.indexOf('id="rp-gift-pre"') < HTML.indexOf('id="rp-pay"'), "gift line before Pay");
   for (const id of ["rp-pg-on", "rp-pg-to", "rp-pg-msg", "rp-pg-deliver", "rp-pg-addr", "rp-pg-email", "rp-pg-name", "rp-pg-me", "rp-pg-sum"])
     assert.ok(HTML.indexOf(`id="${id}"`) > HTML.indexOf('id="rp-proof"'), id + " is on the review sheet");
-  assert.match(JS, /gift: true, gift_to:/, "posted with the order form's gift fields");
+  assert.match(JS, /if \(januaryGift\(\)\) x\.gift_january = true; else x\.gift = true;/, "posted with the order form's gift fields (this year's print as gift_january)");
   assert.match(JS, /\$\('ro-isgift'\)\.checked = \$\('rp-pg-on'\)\.checked/, "the sheet's tick is the order form's tick");
   const pre = HTML.match(/<p class="rp-note rp-gift-pre"[^>]*>([^<]*)/)[1];
   assert.ok(!/\u2014/.test(HTML.match(/id="rp-pgift"[\s\S]*?<\/div>\s*<\/div>/)[0] + pre), "no em dashes");
@@ -179,4 +179,57 @@ test("a gift that can't be saved keeps the buyer on the sheet with a way on", { 
     assert.equal(stripe.length, 0, "not sent to Stripe without the gift");
     assert.equal(await page.locator("#rp-proof-msg a").count(), 1, "a link to checkout is offered");
   }, { posts, stripe, formFail: true });
+});
+
+/* Sig, 2026-10-18: the page must not rely on Stripe for gift details. This
+   year's print as a gift (made in January) asks who it's for and the card
+   note on the page, and Pay posts them (gift_january) before checkout. */
+test("this year's gift: no line says Stripe asks for the gift details", () => {
+  assert.ok(!/At checkout you can say who it|add their name and your note at checkout|Payment Link asks who it's for/.test(JS), "no line leaves the gift to Stripe");
+  assert.match(JS, /\$\('rp-gift-fields'\)\.hidden = false;/, "the step 3 boxes always show");
+  assert.match(JS, /function pgOffered\(\) \{ return canOrder\(\) && !\(GIFT && GIFT\.usable\); \}/, "the review sheet offers the gift for this year's print too");
+  assert.match(HTML, /At checkout, Stripe asks for the shipping address again\. Use the same one: theirs\./, "the same-address line stays until Sig turns Stripe's field off");
+});
+
+test("at 390: this year's gift carries who it's for and the card note from step 3 to the sheet, posts them, then opens Stripe", { skip, timeout: 90000 }, async () => {
+  const posts = [], stripe = [];
+  await withPage(async (page, base, errors) => {
+    await page.goto(base + "/rain-print.html");
+    await idle(page);
+    await page.fill("#rp-place", "Chetek, WI");
+    await page.selectOption("#rp-year", "2026");
+    await page.press("#rp-place", "Enter");
+    await page.waitForTimeout(300);
+    await idle(page);
+    assert.equal(await page.isVisible("#rp-gift"), true, "the Christmas box shows for this year");
+    assert.equal(await page.isVisible("#rp-gift-to"), true, "who it's for is asked on the page");
+    assert.equal(await page.isVisible("#rp-gift-msg"), true, "the card note is asked on the page");
+    assert.ok(!/at checkout/i.test(await page.textContent("#rp-gift-cardnote")));
+    await page.fill("#rp-gift-to", "Mom");
+    await page.fill("#rp-gift-msg", "For the dry year.");
+    await page.click("#rp-pay");
+    if (await page.isVisible("#rp-noname-go")) await page.click("#rp-noname-go");
+    await page.waitForSelector("#rp-proof[open]");
+    assert.equal(await page.isVisible("#rp-pgift"), true, "the sheet offers the gift");
+    assert.equal(await page.isChecked("#rp-pg-on"), true, "ticked, since step 3 was filled in");
+    assert.equal(await page.inputValue("#rp-pg-to"), "Mom");
+    assert.equal(await page.inputValue("#rp-pg-msg"), "For the dry year.");
+    assert.equal(await page.textContent("#rp-pg-msg-l"), "A message for the gift card (optional)");
+    await page.fill("#rp-pg-to", "Mom and Dad");
+    assert.equal(await page.inputValue("#rp-gift-to"), "Mom and Dad", "the two boxes stay in step");
+    await page.fill("#rp-pg-addr", "Ole Lindquist, 1 Main St, Chetek, WI 54728");
+    await page.fill("#rp-pg-name", "Sig");
+    await page.fill("#rp-pg-me", "buyer@example.com");
+    assert.match((await page.textContent("#rp-pg-sum")).replace(/\s+/g, " "), /Note on the gift card ?For the dry year/);
+    await page.check("#rp-proof-ok");
+    await page.click("#rp-proof-order");
+    await page.waitForFunction(() => /stripe/.test(document.body.textContent) || location.host === "buy.stripe.com", null, { timeout: 15000 });
+    assert.equal(posts.length, 1, "one order post, before checkout");
+    const p = posts[0];
+    assert.equal(p.kind, "rain-print-order"); assert.equal(p.gift_january, true); assert.equal(p.gift, undefined);
+    assert.equal(p.gift_to, "Mom and Dad"); assert.equal(p.gift_message, "For the dry year.");
+    assert.match(p.notes, /Make it after January 1, once the full year is in\./);
+    assert.equal(stripe.length, 1, "then checkout");
+    assert.deepEqual(errors, []);
+  }, { posts, stripe });
 });

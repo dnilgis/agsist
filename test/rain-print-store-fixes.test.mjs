@@ -44,8 +44,9 @@ test("the framed mockup is open under Pay, tagged Mockup, not inside What you ge
   assert.equal(fig.length, 1, "one mockup picture");
   assert.match(fig[0], /<span class="rp-ex-tag" aria-hidden="true">Mockup<\/span>/);
   assert.match(fig[0], /alt="Mockup: a framed Rain Print in a black frame/, "the mockup is an older render: its alt names no size");
-  assert.match(fig[0], /<figcaption>Mockup of a framed print\. Photos of real prints coming soon\.<\/figcaption>/);
-  assert.match(fig[0], /loading="lazy"/, "it doesn't hold up the page");
+  assert.match(fig[0], /<figcaption>Mockup of a framed print\. Photos with the white mat coming soon\.<\/figcaption>/);
+  // 2026-10-17 (gift-buyers panel): lazy left it blank on a phone under Pay; eager, and low priority so it doesn't hold up the page
+  assert.match(fig[0], /loading="eager" fetchpriority="low" decoding="async"/, "it loads, and doesn't hold up the page");
   const at = HTML.indexOf('<figure class="rp-onwall"');
   const box = HTML.match(/<details class="rp-box-d">[\s\S]*?<\/details>/)[0];
   assert.ok(!/rp-onwall/.test(box), "not hidden in the collapsed box");

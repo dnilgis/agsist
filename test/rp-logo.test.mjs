@@ -110,7 +110,8 @@ test("the logo and its color round-trip through the design code, the query strin
     assert.equal(RP.decodeCode(Buffer.from("2|Chetek, WI|1|2025|" + k + "|").toString("base64url")), null, k);
   // the worker takes the same key field (rp-short, the gift card lock)
   const W = read("workers/subs-worker.js");
-  assert.match(W, /\/\^\[a-z0-9\]\{5\}\(\?:\[ic\]\[0-9a-hjkmnp-tv-z\]\{12\}\)\?\$\//);
+  // (v5.27, 2026-10-17: then the units letter and the options after a ~)
+  assert.match(W, /\/\^\[a-z0-9\]\{5\}\(\?:\[ic\]\[0-9a-hjkmnp-tv-z\]\{12\}\)\?\[A-H\]\?\(\?:~/);
   // a typical design with a logo still goes to Stripe as the code itself
   assert.ok(RP.encodeCode({ ...FULL, logo: "k3j9m2p7q8rs" }).length <= 200);
 });
@@ -155,14 +156,14 @@ test("the logo sits beside the name block in both styles, about an inch, clear o
     assert.ok(lg.h <= 104 && lg.w <= 260 && (lg.h >= 90 || lg.w >= 239), tag + " size " + JSON.stringify(lg));
     assert.ok(Math.abs(lg.w / lg.h - w / h) < 0.02, tag + " keeps its shape");
     assert.ok(lg.x >= 60 && lg.y >= 60 && lg.x + lg.w <= 1740 && lg.y + lg.h <= 1140, tag + " inside the safe margin");
-    // place: R1 at the foot, R2 at the top, at the left margin
-    assert.equal(lg.x, 120, tag);
-    assert.ok(style === "r1" ? lg.y > 940 : lg.y < 200, tag + " y " + lg.y);
+    // place: R1 at the foot on the chart's one left edge (A2 clean, 2026-10-17), R2 at the top at the left margin
+    assert.equal(lg.x, style === "r1" ? 196 : 120, tag);
+    assert.ok(style === "r1" ? lg.y > 790 : lg.y < 200, tag + " y " + lg.y);
     for (const b of textBoxes(svg)) assert.ok(!hit(lg, b), tag + " overlaps words: " + b.t);
     const q = /<g data-rp="qr"><g aria-hidden="true"><rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/.exec(svg);
     assert.ok(!hit(lg, { x: +q[1], y: +q[2], w: +q[3], h: +q[4] }), tag + " QR");
     // the chart: R1 from its top line to the month row, R2 from the snow scale to the deepest rain
-    const chart = style === "r1" ? { x: 196, y: 160, w: 1484, h: 700 } : { x: 205, y: 380, w: 1485, h: 620 };
+    const chart = style === "r1" ? { x: 196, y: 104, w: 1394, h: 675 } : { x: 205, y: 380, w: 1485, h: 620 };
     assert.ok(!hit(lg, chart), tag + " chart");
     // text sizes and the name's own fit still hold
     for (const m of svg.matchAll(/font-size="([\d.]+)"/g)) assert.ok(+m[1] >= 11, tag + " text " + m[1]);
@@ -193,7 +194,8 @@ test("the page: the upload under the name, its help line, the color switch, the 
   const H = read("rain-print.html"), E = read("components/rain-print.js");
   // 2026-10-14 (the approved flow): the logo is one of the folded options under "More options", after the words
   assert.ok(H.indexOf('id="rp-ded"') < H.indexOf('class="rp-dates"') && H.indexOf('class="rp-dates"') < H.indexOf('id="rp-more"') && H.indexOf('id="rp-more"') < H.indexOf('id="rp-logo"'), "in More options, after the name, the line and the days");
-  assert.match(H, /<summary>More options: compare, station, normals, remarkable days, logo<\/summary>/);
+  // (2026-10-17: crop, temperatures and history joined the list)
+  assert.match(H, /<summary>More options: compare, station, normals, remarkable days, crop, temperatures, history, logo<\/summary>/);
   assert.match(H, />Add a logo \(optional\)</);
   assert.match(H, /Your farm or business logo\. It prints small, next to the name\. A big, clear file prints best\./);
   assert.match(H, /value="1" checked><span>Ink color<\/span>/);
@@ -201,7 +203,11 @@ test("the page: the upload under the name, its help line, the color switch, the 
   assert.match(H, /id="rp-logo-remove" hidden>Remove</);
   assert.match(H, />Logo for the prints \(optional\)</);   // no separate note card (Sig, 2026-10-17)
   const i = (s) => H.indexOf(s);
-  assert.ok(i("/components/rp-logo.js?v=") > 0 && i("/components/rp-logo.js?v=") < i("/components/rain-print.js?v="), "loaded before the engine");
+  // 2026-10-17 (speed panel): the engine loads rp-logo.js when a logo is first wanted (a ?logo= link or the file picker)
+  assert.ok(i("/components/rp-logo.js?v=") < 0, "not loaded up front on /rain-print");
+  assert.match(E, /sc\.src = '\/components\/rp-logo\.js\?v=2';/, "the engine loads it on demand");
+  assert.match(E, /if \(!root\.AgRpLogo\) \{\n\s+LOGO = \{ id: id, state: 'loading'[\s\S]{0,200}logoReady\(\)\.then/, "a design with a logo waits for it");
+  assert.match(E, /logoReady\(\)\.then\(function \(ok\) \{ if \(ok\) pickLogo\(f\[0\]\)/, "a picked file waits for it");
   assert.match(read("rp-gift.html"), /\/components\/rp-logo\.js\?v=2/);
   assert.match(E, /list\.push\(\['Logo', esc\(rows\['Logo'\]\) \+ \(la \? '<img class="rp-plogo"/);
   assert.match(E, /return 'added, ' \+ \(ST\.logoInk/);

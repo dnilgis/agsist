@@ -330,7 +330,7 @@ def make_title(name, title_crops, y0, y1):
     return f"{name} Crop Yields | AGSIST"
 
 
-def make_desc(name, stats, crops, y0, y1):
+def make_desc(name, stats, crops, y0, y1, counties=True, ten=True):
     rng = yrs_plain(y0, y1)
     latest = [(c, stats[c]) for c in crops]
     same_year = len({s["last"] for _, s in latest}) == 1
@@ -339,9 +339,14 @@ def make_desc(name, stats, crops, y0, y1):
     else:
         bits = ", ".join(f"{CROP_LC[c]} {num(s['latest'])} ({s['last']})" for c, s in latest) + " bu/ac"
     lc = crops_phrase(crops).lower()
-    cands = [
-        f"{name} {lc} yield by year, USDA NASS {rng}. Latest {bits}. Highs, lows, 5- and 10-year averages, trend and top counties.",
+    # name only what the page shows: no county list, no 10-year average, no mention
+    avgs = "5- and 10-year averages" if ten else "5-year averages"
+    cands = ([
+        f"{name} {lc} yield by year, USDA NASS {rng}. Latest {bits}. Highs, lows, {avgs}, trend and top counties.",
         f"{name} {lc} yield by year, USDA NASS {rng}. Latest {bits}. Highs, lows, averages, trend, top counties.",
+    ] if counties else [
+        f"{name} {lc} yield by year, USDA NASS {rng}. Latest {bits}. Highs, lows, {avgs} and trend.",
+    ]) + [
         f"{name} yield by year, USDA NASS {rng}. Latest {bits}. Highs, lows, averages and trend.",
         f"{name} yield by year, USDA NASS {rng}. Latest {bits}.",
     ]
@@ -509,7 +514,10 @@ def build_state_page(name, inp, ctx):
     indexable = any(stats.get(c, {}).get("n", 0) >= MIN_INDEX_YEARS for c in ("corn", "soy"))
     title_crops = [c for c in crops if stats[c]["n"] >= MIN_INDEX_YEARS] or crops
     title = make_title(name, title_crops, y0, y1)
-    desc = make_desc(name, stats, title_crops, y0, y1)
+    has_acres = any(c in ACRES and name in inp["acres"][c]["rows"] for c in crops)
+    cty_html = county_section(st, name, inp, stats.get("corn"), root)
+    has_ten = any((stats[c].get("avg10") or {}).get("value") is not None for c in title_crops)
+    desc = make_desc(name, stats, title_crops, y0, y1, counties=bool(cty_html), ten=has_ten)
     path = f"/yield/{sl}"
     updated = max((inp[c]["updated"] or "") for c in crops)
 
@@ -561,6 +569,8 @@ def build_state_page(name, inp, ctx):
         if miss:
             gaps.append(f"{CROP_LC[c]}: {', '.join(str(y) for y in miss)}")
     gap_txt = (" Years inside the window with no NASS state figure: " + "; ".join(gaps) + ".") if gaps else ""
+    cty_note = (" County figures are NASS county corn yields, all practices, as carried by the AGSIST Farmland Atlas."
+                if cty_html else "")
     wheat_note = ""
     if "wheat" in crops:
         wheat_note = (" Wheat here is <b>winter wheat</b> only (NASS &ldquo;WHEAT, WINTER&rdquo;); spring wheat and durum "
@@ -592,18 +602,17 @@ def build_state_page(name, inp, ctx):
   <div class="yl-hero">{cards}</div>
   {season_html}
   <h2 id="by-year">{esc(name)} yield by year</h2>
-  <p class="yl-sub">Newest first. Bushels per acre; planted acres in millions. Source: USDA NASS Quick Stats, state level.
+  <p class="yl-sub">Newest first. Bushels per acre{"; planted acres in millions" if has_acres else ""}. Source: USDA NASS Quick Stats, state level.
   n/a means NASS published no figure for that year; &ldquo;pending&rdquo; means NASS has not yet released that
   crop year&rsquo;s annual estimate (corn and soybeans come out in January).</p>
   {year_table(st, name, inp, crops, y0, y1t)}
-  {county_section(st, name, inp, stats.get("corn"), root)}
-  <div class="yl-note"><b>How these numbers are made.</b> Yields and planted acres are USDA NASS Quick Stats state
+  {cty_html}
+  <div class="yl-note"><b>How these numbers are made.</b> Yields{" and planted acres" if has_acres else ""} are USDA NASS Quick Stats state
   estimates, pulled with the reference period pinned to the full year, so in-season monthly forecasts never enter
   the table. Highest and lowest are over the published years shown, not all-time records. Averages are plain means
   of the published years in the stated window, printed with how many years they rest on (withheld below
   {MIN_AVG_N[5]} of 5 or {MIN_AVG_N[10]} of 10). The trend is an ordinary least-squares line through every published
-  year (at least {MIN_TREND_N}); it describes the past window and is not a forecast. County figures are NASS county
-  corn yields, all practices, as carried by the AGSIST Farmland Atlas.{gap_txt}{wheat_note}</div>
+  year (at least {MIN_TREND_N}); it describes the past window and is not a forecast.{cty_note}{gap_txt}{wheat_note}</div>
   <p class="yl-links yl-sub">Related: {' &middot; '.join(links)}.</p>
   <h2>Yield by year in other states</h2>
   <p class="yl-cloud">{cloud}</p>

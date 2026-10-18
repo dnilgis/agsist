@@ -1,0 +1,3705 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "40001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "2.69",
+     "label": "biggest one-day reading"
+    },
+    "county": "Adair County",
+    "days_in_year_so_far": 285,
+    "days_missing": 19,
+    "days_reported": 266,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "less than a mile north of Bunch",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 264,
+      "diff_in": "6.30",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 12",
+     "total_in": "45.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jul 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 17"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 90,
+    "state": "Oklahoma",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "33.04",
+    "usual_in": "36.68",
+    "vs_usual": {
+     "diff_in": "3.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.95",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "47ff4ff6df53dcfa",
+   "sid": "US1OKAD0002 6",
+   "story": "Through Oct 12, the volunteer rain gauge less than a mile north of Bunch has caught 33.04 inches, 3.64 inches less than a usual year. June was the wettest month with 8.95 inches, and the biggest one-day reading was 2.69 inches on Apr 4. The gauge then went 18 days in a row with nothing in it, from Jul 31 to Aug 17. On the days both years reported, 2026 is running 6.30 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "40003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "1.51",
+     "label": "biggest single day"
+    },
+    "county": "Alfalfa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "1 mile south-southeast of Helena",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.15",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.89",
+    "usual_in": "27.36",
+    "vs_usual": {
+     "diff_in": "6.47",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.49",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "97a36031516c1adf",
+   "sid": "344019 2",
+   "story": "Through Oct 13, the weather station 1 mile south-southeast of Helena went 26 days in a row with nothing in the gauge, from Mar 7 to Apr 1. Then it caught 1.51 inches on Apr 2, the biggest single day of the year. June was the wettest month at 5.49 inches. The station has 10.15 inches less than it had at this point in 2025.",
+   "through": "2026-10-13"
+  },
+  "40005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 2",
+     "in": "3.43",
+     "label": "biggest single day"
+    },
+    "county": "Atoka County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "24 miles from the middle of the county",
+    "gauge_where": "4 miles east-northeast of Daisy",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "17.58",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "55.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.47",
+    "usual_in": "40.65",
+    "vs_usual": {
+     "diff_in": "3.18",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.88",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cd715390da4e5598",
+   "sid": "342354 2",
+   "story": "Through Oct 13, the weather station 4 miles east-northeast of Daisy has 37.47 inches, 3.18 inches less than a usual year. June was the wettest month at 7.88 inches. Then the gauge sat empty 34 days in a row, Jul 18 to Aug 20, and the biggest single day came late, 3.43 inches on Oct 2. Last year at this point it had 17.58 inches more.",
+   "through": "2026-10-13"
+  },
+  "40007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "1.62",
+     "label": "biggest single day"
+    },
+    "county": "Beaver County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "6.1 miles south-southeast of Turpin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.25",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.78",
+    "usual_in": "18.60",
+    "vs_usual": {
+     "diff_in": "4.82",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.32",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9e16abdf7eb03924",
+   "sid": "US1OKBV0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.1 miles south-southeast of Turpin has 5.25 inches less than it had by this day last year. August was the wettest month at 3.32 inches, and the biggest single day came Sep 30 with 1.62 inches. The longest dry stretch ran 23 days, Feb 16 to Mar 10, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "40009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 26",
+     "in": "1.38",
+     "label": "biggest single day"
+    },
+    "county": "Beckham County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Sayre",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.68",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "17.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 43,
+     "from": "Jul 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 50,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.27",
+    "usual_in": "22.39",
+    "vs_usual": {
+     "diff_in": "11.12",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.23",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2fc4b7bb7d14a5b3",
+   "sid": "347952 2",
+   "story": "Through Oct 13, the weather station in Sayre has caught 11.27 inches, 11.12 inches less than a usual year. June was the wettest month with 4.23 inches, and the biggest single day came Jun 26 with 1.38 inches. Then the gauge sat empty for 43 days in a row, Jul 14 to Aug 25. Last year at this point it had 6.68 inches more.",
+   "through": "2026-10-13"
+  },
+  "40011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 12",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Blaine County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "in Geary",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.14",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 64,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.50",
+    "usual_in": "25.87",
+    "vs_usual": {
+     "diff_in": "9.37",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.38",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1c6fd233829bdc27",
+   "sid": "343497 2",
+   "story": "Through Oct 13, the weather station in Geary has caught 16.50 inches, 11.14 inches less than it had by this day last year. June was the wettest month at 4.38 inches, and the biggest single day was 2.12 inches on Jul 12. The gauge also went 23 days in a row with nothing in it, from Feb 16 to Mar 10.",
+   "through": "2026-10-13"
+  },
+  "40013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 15",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Bryan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "2.5 miles northwest of Durant",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.36",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.19",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6dfcc5f18d8f3305",
+   "sid": "US1OKBR0004 6",
+   "story": "Through Oct 13, the gauge 2.5 miles northwest of Durant had caught 27.36 inches. June was the wettest month at 6.19 inches. The biggest single day was Feb 15 with 2.00 inches. Before that, the gauge went 16 days in a row from Jan 26 to Feb 10 with nothing in it, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "40015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 6",
+     "in": "2.11",
+     "label": "biggest single day"
+    },
+    "county": "Caddo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "in Apache",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "15.71",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 57,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.97",
+    "usual_in": "27.85",
+    "vs_usual": {
+     "diff_in": "11.88",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.91",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "80b42317e6a5353a",
+   "sid": "340260 2",
+   "story": "Through Oct 13, the weather station in Apache has seen most of its year come in June. June brought 5.91 inches, and Jun 6 alone put 2.11 inches in the gauge. From Mar 12 to Mar 31 it went 20 days in a row with nothing, not even a trace. On the days both years reported, that is 15.71 inches less than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "40017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "1.50",
+     "label": "biggest single day"
+    },
+    "county": "Canadian County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "9.6 miles south-southwest of Calumet",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.40",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 52,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.41",
+    "usual_in": "29.50",
+    "vs_usual": {
+     "diff_in": "14.09",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.60",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "56a4349314637294",
+   "sid": "US1OKCN0034 6",
+   "story": "Through Oct 13, the volunteer rain gauge 9.6 miles south-southwest of Calumet had caught 15.41 inches, 14.09 inches less than a usual year. June was the wettest month at 4.60 inches, and the biggest single day was 1.50 inches on Apr 4. The gauge went 16 days in a row with nothing in it, from Feb 16 to Mar 3. Last year by this date it had 14.40 inches more.",
+   "through": "2026-10-13"
+  },
+  "40019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "3.87",
+     "label": "biggest single day"
+    },
+    "county": "Carter County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Ardmore",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.94",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.87",
+    "usual_in": "30.63",
+    "vs_usual": {
+     "diff_in": "0.24",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.00",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e7625426b2a3c911",
+   "sid": "340292 2",
+   "story": "Through Oct 13, the weather station in Ardmore had its wettest month in October, with 7.00 inches, and 3.87 inches of that came on Oct 1, the biggest single day of the year. Before that it went 21 days in a row with nothing in the gauge, from Mar 12 to Apr 1. The total sits at 30.87 inches, 10.94 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "40021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 12",
+     "in": "4.61",
+     "label": "biggest single day"
+    },
+    "county": "Cherokee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3.9 miles north of Hulbert",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "9.73",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "51.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.49",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "17.85",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a7d5711ad366ac6e",
+   "sid": "US1OKCH0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.9 miles north of Hulbert had 17.85 inches in June alone, its wettest month. The biggest single day was Jun 12 with 4.61 inches. Before that, the gauge sat empty for 21 days in a row, Mar 12 to Apr 1. On the days both years reported, this year is 9.73 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "40025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 24",
+     "in": "3.40",
+     "label": "biggest single day"
+    },
+    "county": "Cimarron County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "2.8 miles east-southeast of Felt",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "0.66",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "14.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 67,
+     "from": "Jan 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.73",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.71",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ad725c69c7c6c4a7",
+   "sid": "US1OKCM0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.8 miles east-southeast of Felt had 13.73 inches. It went 67 days in a row with nothing in it, from Jan 31 to Apr 7. September was the wettest month at 4.71 inches, and 3.40 of that came on Sep 24. On the days both years reported, that is 0.66 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "40027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 14",
+     "in": "3.13",
+     "label": "biggest single day"
+    },
+    "county": "Cleveland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "3 miles south-southeast of Norman",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "18.44",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 61,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.38",
+    "usual_in": "31.56",
+    "vs_usual": {
+     "diff_in": "12.18",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.92",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "82928c32d0c66531",
+   "sid": "346386 2",
+   "story": "Through Oct 13, the weather station 3 miles south-southeast of Norman has 19.38 inches, 12.18 inches less than a usual year. Last year by this day it had 37.82 inches, so 2026 is 18.44 inches behind. June was the wettest month at 4.92 inches, and 3.13 of that came on Jun 14. The longest dry stretch ran 16 days, Feb 16 to Mar 3, without even a trace.",
+   "through": "2026-10-13"
+  },
+  "40029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "3.20",
+     "label": "biggest single day"
+    },
+    "county": "Coal County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "4 miles southwest of Lehigh",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.02",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.00",
+    "usual_in": "35.71",
+    "vs_usual": {
+     "diff_in": "1.71",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.38",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "23f2c1efa1d9668f",
+   "sid": "345108 2",
+   "story": "Through Oct 13, the weather station 4 miles southwest of Lehigh had June as its wettest month at 9.38 inches. Then it went 21 days with nothing in the gauge, from Jul 18 to Aug 7. The biggest single day came late, 3.20 inches on Oct 1. That still leaves the year 3.02 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "40031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 3",
+     "in": "2.85",
+     "label": "biggest single day"
+    },
+    "county": "Comanche County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Lawton Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "13.88",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "31.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Aug 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.18",
+    "usual_in": "22.96",
+    "vs_usual": {
+     "diff_in": "5.78",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.57",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5525f6b824aadc5b",
+   "sid": "03950 1",
+   "story": "Through Oct 13, the weather station at Lawton Municipal Airport has caught most of its rain in April, with 6.57 inches that month. The biggest single day was Apr 3 at 2.85 inches. From Aug 1 to Aug 21 it went 21 days in a row with nothing in the gauge, not even a trace. On the days both years reported, that is 13.88 inches less than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "40033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "2.37",
+     "label": "biggest single day"
+    },
+    "county": "Cotton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "10 miles west of Duncan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "16.50",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 51,
+     "from": "Aug 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.33",
+    "usual_in": "26.00",
+    "vs_usual": {
+     "diff_in": "7.67",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.79",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "332e1daf6d98f9d6",
+   "sid": "342668 2",
+   "story": "Through Oct 13, the weather station 10 miles west of Duncan had most of its year come early. April was the wettest month at 5.79 inches, and the biggest single day was 2.37 inches on Apr 4. Then the gauge went 51 days in a row with nothing in it, not even a trace, from Aug 2 to Sep 21. That leaves this year 16.50 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "40035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 14",
+     "in": "3.81",
+     "label": "biggest one-day reading"
+    },
+    "county": "Craig County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "8.6 miles east-southeast of Vinita",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "9.58",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "50.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.20",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "15.01",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3a7709f934fabea2",
+   "sid": "US1OKCG0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.6 miles east-southeast of Vinita had 15.01 inches in June alone, its wettest month. The biggest one-day reading came Jun 14 at 3.81 inches. Earlier, the gauge went 21 days in a row with nothing, from Mar 12 to Apr 1. On the days both years reported, that is 9.58 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "40037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "3.03",
+     "label": "biggest one-day reading"
+    },
+    "county": "Creek County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "less than a mile southwest of Drumright",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "7.66",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "36.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jul 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 17"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.20",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "11.20",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "589fc0846bd91f30",
+   "sid": "US1OKCK0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Drumright had 11.20 inches in June, its wettest month, and the biggest one-day reading was 3.03 inches on Jun 22. Then it went 22 days in a row with nothing in the gauge, not even a trace, from Jul 27 to Aug 17. On the days both years reported, this year is 7.66 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "40039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "2.20",
+     "label": "biggest single day"
+    },
+    "county": "Custer County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "in Weatherford",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "12.14",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "26.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 48,
+     "from": "Jul 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 58,
+    "state": "Oklahoma",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "14.70",
+    "usual_in": "25.50",
+    "vs_usual": {
+     "diff_in": "10.80",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.60",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b0c74b8ebdb6c2b3",
+   "sid": "349422 2",
+   "story": "Through Oct 12, the weather station in Weatherford had 14.70 inches, 12.14 inches less than last year by this day. June was the wettest month at 4.60 inches. Then the gauge went 48 days in a row with nothing in it, from Jul 25 to Sep 10. The biggest single day came late, 2.20 inches on Oct 1.",
+   "through": "2026-10-12"
+  },
+  "40041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 14",
+     "in": "3.56",
+     "label": "biggest single day"
+    },
+    "county": "Delaware County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3.3 miles north-northeast of Jay",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "11.42",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.12",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jul 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.70",
+    "usual_in": "39.35",
+    "vs_usual": {
+     "diff_in": "1.65",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "13.34",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "18583db0cc5581ff",
+   "sid": "US1OKDL0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.3 miles north-northeast of Jay has June as its wettest month by a long way, with 13.34 inches. The biggest single day came Jun 14 at 3.56 inches. Then it shut off, with 18 days in a row of nothing in the gauge from Jul 20 to Aug 6. On the days both years reported, this year sits 11.42 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "40043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 4",
+     "in": "2.87",
+     "label": "biggest single day"
+    },
+    "county": "Dewey County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "in Leedey",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "15.40",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Jul 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 60,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.41",
+    "usual_in": "22.46",
+    "vs_usual": {
+     "diff_in": "9.05",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.74",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2c76ebde2d03a70d",
+   "sid": "345090 2",
+   "story": "Through Oct 13, the weather station in Leedey had June as its wettest month at 6.74 inches, and the biggest single day came Jun 4 with 2.87 inches. Then the gauge sat empty for 34 days in a row, Jul 25 to Aug 27. On the days both years reported, this year is 15.40 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "40045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 24",
+     "in": "1.80",
+     "label": "biggest single day"
+    },
+    "county": "Ellis County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3 miles northeast of Arnett",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.14",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 64,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.68",
+    "usual_in": "21.34",
+    "vs_usual": {
+     "diff_in": "7.66",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.88",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dcd2b02d901dba50",
+   "sid": "340332 2",
+   "story": "Through Oct 13, the weather station 3 miles northeast of Arnett had 13.68 inches, 7.66 less than a usual year. September was the wettest month at 4.88 inches, and the biggest rain was 1.80 inches on Jun 24. The gauge stayed empty 34 days in a row, Mar 7 to Apr 9. On the days both years reported, that is 10.14 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "40047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "1.61",
+     "label": "biggest one-day reading"
+    },
+    "county": "Garfield County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Enid",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "9.33",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 76,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.39",
+    "usual_in": "28.03",
+    "vs_usual": {
+     "diff_in": "6.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.57",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e36783d47b3c01d9",
+   "sid": "342912 2",
+   "story": "Through Oct 13, the weather station in Enid had June as its wettest month at 8.57 inches, and its biggest one-day reading came Jun 22 with 1.61 inches. The longest dry stretch ran 19 days, Jan 26 to Feb 13, with not even a trace in the gauge. On the days both years reported, this year sits 9.33 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "40049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "3.94",
+     "label": "biggest single day"
+    },
+    "county": "Garvin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "3 miles southwest of Elmore City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.42",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.21",
+    "usual_in": "31.60",
+    "vs_usual": {
+     "diff_in": "4.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.30",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c18ac433e7466fd8",
+   "sid": "342872 2",
+   "story": "Through Oct 13, the weather station 3 miles southwest of Elmore City has 11.42 inches less than it had by this day last year. April was the wettest month at 6.30 inches, and that came right after 21 days in a row with nothing in the gauge, from Mar 12 to Apr 1. The biggest single day was Oct 1, with 3.94 inches.",
+   "through": "2026-10-13"
+  },
+  "40051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 12",
+     "in": "2.17",
+     "label": "biggest single day"
+    },
+    "county": "Grady County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Chickasha",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "18.06",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 33,
+     "from": "Aug 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 49,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.03",
+    "usual_in": "30.44",
+    "vs_usual": {
+     "diff_in": "15.41",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.97",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c2a0adec31b0cbfa",
+   "sid": "341750 2",
+   "story": "Through Oct 13, the weather station in Chickasha had 15.03 inches, 15.41 inches less than a usual year. April was the wettest month at 3.97 inches, and the biggest single day was 2.17 inches on Jul 12. From Aug 9 to Sep 10 the gauge went 33 days in a row with nothing in it, not even a trace. Last year at this point it had 18.06 inches more.",
+   "through": "2026-10-13"
+  },
+  "40053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "2.67",
+     "label": "biggest single day"
+    },
+    "county": "Grant County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "3 miles southeast of Jefferson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.71",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.70",
+    "usual_in": "28.94",
+    "vs_usual": {
+     "diff_in": "5.24",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.85",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "db506173bfd18ae5",
+   "sid": "344573 2",
+   "story": "Through Oct 13, the weather station 3 miles southeast of Jefferson has caught 23.70 inches, 5.24 inches less than a usual year. June did most of the work with 9.85 inches, and the biggest single day was 2.67 inches on Jun 19. The longest dry stretch ran 19 days, Jan 26 to Feb 13. On the days both years reported, that is 7.71 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "40055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 26",
+     "in": "1.93",
+     "label": "biggest single day"
+    },
+    "county": "Greer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Willow",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.26",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 43,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 55,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.61",
+    "usual_in": "24.55",
+    "vs_usual": {
+     "diff_in": "10.94",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.22",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c0bf2639e4475b6a",
+   "sid": "349668 2",
+   "story": "Through Oct 13, the weather station in Willow has caught 13.61 inches, 5.26 inches less than last year by this day. June did most of the work with 6.22 inches, and Jun 26 was the biggest single day at 1.93 inches. From Feb 16 to Mar 30 the gauge went 43 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "40057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 24",
+     "in": "1.55",
+     "label": "biggest single day"
+    },
+    "county": "Harmon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "6 miles northwest of Vinson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "6.08",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "21.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 64,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.66",
+    "usual_in": "24.65",
+    "vs_usual": {
+     "diff_in": "8.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.84",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "943e6a8bea0813ec",
+   "sid": "349213 2",
+   "story": "Through Oct 13, the weather station 6 miles northwest of Vinson has 15.66 inches, 8.99 less than a usual year. June was the wettest month at 5.84 inches, and the biggest single day was 1.55 inches on Jun 24. Then the gauge sat empty for 34 days in a row, Jul 18 to Aug 20. On the days both years reported, this year is 6.08 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "40063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "5.16",
+     "label": "biggest single day"
+    },
+    "county": "Hughes County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "3.6 miles west-southwest of Holdenville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "7.56",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "37.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.19",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.60",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "94a0bea37a1dc7e2",
+   "sid": "US1OKHG0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.6 miles west-southwest of Holdenville has caught 30.19 inches. April did most of the work with 9.60 inches, and 5.16 of that came on Apr 4 alone. The gauge went 19 days in a row with nothing in it from Jan 26 to Feb 13. On the days both years reported, that is 7.56 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "40065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 2",
+     "in": "1.80",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 285,
+    "days_missing": 8,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "8.2 miles north of Olustee",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "6.08",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 12",
+     "total_in": "22.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 33,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Oklahoma",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "16.81",
+    "usual_in": "22.98",
+    "vs_usual": {
+     "diff_in": "6.17",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.69",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0f2ed12378e8433e",
+   "sid": "US1OKJC0003 6",
+   "story": "Through Oct 12, the volunteer rain gauge 8.2 miles north of Olustee had its wettest month in June at 3.69 inches. The biggest single day came late, 1.80 inches on Oct 2. Before that, the gauge went 33 days in a row with nothing in it, not even a trace, from Feb 16 to Mar 20. On the days both years reported, that is 6.08 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "40069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "3.32",
+     "label": "biggest single day"
+    },
+    "county": "Johnston County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "4 miles west of Coleman",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.68",
+    "usual_in": "32.41",
+    "vs_usual": {
+     "diff_in": "3.27",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.64",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dae26568520f35fb",
+   "sid": "342011 2",
+   "story": "Through Oct 13, the weather station 4 miles west of Coleman had its wettest month in April with 8.64 inches. That came right after the longest dry stretch, 21 days in a row with nothing in the gauge from Mar 12 to Apr 1. The biggest single day was Oct 1 at 3.32 inches. The station sits 3.27 inches more than a usual year.",
+   "through": "2026-10-13"
+  },
+  "40071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 25",
+     "in": "4.36",
+     "label": "biggest single day"
+    },
+    "county": "Kay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Ponca City Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "3.91",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "28.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.14",
+    "usual_in": "28.99",
+    "vs_usual": {
+     "diff_in": "5.15",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "16.66",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "659c51c6283cc7ef",
+   "sid": "13969 1",
+   "story": "Through Oct 13, the weather station at Ponca City Municipal Airport has caught 34.14 inches, 5.15 more than a usual year. June did most of the work with 16.66 inches, and Jun 25 alone brought 4.36. The longest dry stretch ran 17 days, Feb 15 to Mar 3. On the days both years reported, this year is 3.91 inches ahead of 2025.",
+   "through": "2026-10-13"
+  },
+  "40073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 27",
+     "in": "3.00",
+     "label": "biggest single day"
+    },
+    "county": "Kingfisher County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Kingfisher",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 33,
+     "from": "Aug 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 69,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.22",
+    "usual_in": "30.90",
+    "vs_usual": {
+     "diff_in": "9.68",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.83",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "db7c4bb495bfb085",
+   "sid": "344861 2",
+   "story": "Through Oct 13, the weather station in Kingfisher had caught 21.22 inches, 9.68 inches less than a usual year. June was the wettest month at 6.83 inches, and 3.00 of that came on Jun 27 alone. Then the gauge sat empty for 33 days in a row, from Aug 9 to Sep 10, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "40075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 6",
+     "in": "1.48",
+     "label": "biggest single day"
+    },
+    "county": "Kiowa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Roosevelt",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.87",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 45,
+     "from": "Feb 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 49,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.55",
+    "usual_in": "25.46",
+    "vs_usual": {
+     "diff_in": "12.91",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.29",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5437bacb857547dc",
+   "sid": "347727 2",
+   "story": "Through Oct 13, the weather station in Roosevelt had 12.55 inches, 12.91 inches less than a usual year. June was the wettest month at 4.29 inches, and the biggest single day was Jun 6 with 1.48 inches. From Feb 15 to Mar 31 the gauge went 45 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 9.87 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "40081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 6",
+     "in": "2.11",
+     "label": "biggest single day"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "3 miles north of Stroud",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.63",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.58",
+    "usual_in": "30.28",
+    "vs_usual": {
+     "diff_in": "4.70",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.39",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9adcce45f86033ee",
+   "sid": "348563 2",
+   "story": "Through Oct 13, the weather station 3 miles north of Stroud has 25.58 inches, 4.70 less than a usual year. June carried the load with 9.39 inches, and the biggest single day was 2.11 on Jun 6. The gauge went 19 days in a row with nothing, Jan 26 to Feb 13. Last year at this point it had 15.63 inches more.",
+   "through": "2026-10-13"
+  },
+  "40083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 5",
+     "in": "1.95",
+     "label": "biggest single day"
+    },
+    "county": "Logan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "1 mile southeast of Mulhall",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.60",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 64,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.47",
+    "usual_in": "30.29",
+    "vs_usual": {
+     "diff_in": "10.82",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.67",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "00e923b0c53831d1",
+   "sid": "346110 2",
+   "story": "Through Oct 13, the weather station 1 mile southeast of Mulhall has caught 19.47 inches, 15.60 less than it had by this day last year. June was the wettest month at 5.67 inches. The biggest single day came Jul 5 with 1.95. The gauge went 16 days in a row with nothing, not even a trace, from Feb 16 to Mar 3.",
+   "through": "2026-10-13"
+  },
+  "40087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "2.68",
+     "label": "biggest single day"
+    },
+    "county": "McClain County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "6.7 miles west of Purcell",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "22.72",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 61,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.68",
+    "usual_in": "32.11",
+    "vs_usual": {
+     "diff_in": "12.43",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.04",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1b5ff95d3f1721dd",
+   "sid": "US1OKMC0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.7 miles west of Purcell has 19.68 inches, 12.43 inches less than a usual year. The gauge went 21 days in a row with nothing in it, from Mar 12 to Apr 1. Then April came in at 7.04 inches for the wettest month, with the biggest single day of 2.68 inches on Apr 4. Last year the same gauge had 42.40 inches by this date, so this year is 22.72 inches less.",
+   "through": "2026-10-13"
+  },
+  "40093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 6",
+     "in": "1.49",
+     "label": "biggest single day"
+    },
+    "county": "Major County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1 mile south-southwest of Orienta",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.99",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.30",
+    "usual_in": "24.01",
+    "vs_usual": {
+     "diff_in": "7.71",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.86",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1f657ab2f2ac693b",
+   "sid": "346751 2",
+   "story": "Through Oct 13, the weather station 1 mile south-southwest of Orienta has caught 16.30 inches, 7.71 less than a usual year. June was the wettest month at 5.86 inches, and the biggest single day was 1.49 on Jun 6. The gauge went 26 days without a drop from Mar 7 to Apr 1. Last year at this point it had 9.99 more.",
+   "through": "2026-10-13"
+  },
+  "40095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "3.10",
+     "label": "biggest single day"
+    },
+    "county": "Marshall County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Madill",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.55",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.60",
+    "usual_in": "32.58",
+    "vs_usual": {
+     "diff_in": "1.98",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.38",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7bbaf1d54496e5e4",
+   "sid": "345468 2",
+   "story": "Through Oct 13, the weather station in Madill has the year 5.55 inches behind last year. June was the wettest month at 6.38 inches. The biggest single day came late, 3.10 inches on Oct 1. Before that, the gauge went 21 days in a row with nothing in it, from Mar 12 to Apr 1.",
+   "through": "2026-10-13"
+  },
+  "40097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 7",
+     "in": "2.81",
+     "label": "biggest single day"
+    },
+    "county": "Mayes County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Spavinaw",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.75",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.36",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.61",
+    "usual_in": "37.87",
+    "vs_usual": {
+     "diff_in": "4.26",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.66",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "721bba87b8d9c827",
+   "sid": "348380 2",
+   "story": "Through Oct 13, the weather station in Spavinaw has caught 33.61 inches, 4.26 inches less than a usual year. June did most of the work with 10.66 inches, and Jun 7 was the biggest single day at 2.81 inches. The longest dry stretch ran 16 days, from Mar 12 to Mar 27. Last year at this point the gauge had 11.75 inches more.",
+   "through": "2026-10-13"
+  },
+  "40099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.72",
+     "label": "biggest one-day reading"
+    },
+    "county": "Murray County",
+    "days_in_year_so_far": 281,
+    "days_missing": 16,
+    "days_reported": 265,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "4 miles north-northeast of Sulphur",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 261,
+      "diff_in": "9.82",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 8",
+     "total_in": "37.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 88,
+    "state": "Oklahoma",
+    "through": "Oct 8",
+    "through_iso": "2026-10-08",
+    "total_in": "27.16",
+    "usual_in": "30.97",
+    "vs_usual": {
+     "diff_in": "3.81",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.74",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5f2edc01089028ef",
+   "sid": "348570 2",
+   "story": "Through Oct 8, the weather station 4 miles north-northeast of Sulphur had its wettest month in June with 7.74 inches, and the biggest one-day reading came Jun 23 at 2.72 inches. Before that it went 21 days in a row with nothing in the gauge, Mar 11 to Mar 31. On the days both years reported, this year is 9.82 inches less than last year.",
+   "through": "2026-10-08"
+  },
+  "40101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 6",
+     "in": "1.98",
+     "label": "biggest single day"
+    },
+    "county": "Muskogee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Muskogee Davis Field",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "15.04",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Aug 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.75",
+    "usual_in": "34.40",
+    "vs_usual": {
+     "diff_in": "8.65",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.84",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2ed1c77c56eb9ff0",
+   "sid": "93953 1",
+   "story": "Through Oct 13, the station at Muskogee Davis Field has 25.75 inches. June was the wettest month at 8.84 inches, and the biggest single day came Jun 6 with 1.98 inches. From Aug 1 to Aug 16 the gauge went 16 days in a row without even a trace. On the days both years reported, that is 15.04 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "40103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 27",
+     "in": "4.62",
+     "label": "biggest single day"
+    },
+    "county": "Noble County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Perry",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.99",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.70",
+    "usual_in": "30.54",
+    "vs_usual": {
+     "diff_in": "3.16",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.36",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e47842b9579245f2",
+   "sid": "347012 2",
+   "story": "Through Oct 13, the weather station in Perry had a lot of its year come in June. June brought 11.36 inches, and 4.62 of that fell on Jun 27 alone. Then the gauge sat empty for 18 days in a row, Aug 23 to Sep 9. On the days both years reported, this year is 1.99 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "40109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 5",
+     "in": "2.25",
+     "label": "biggest single day"
+    },
+    "county": "Oklahoma County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in Oklahoma City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "18.80",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 64,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.10",
+    "usual_in": "31.51",
+    "vs_usual": {
+     "diff_in": "11.41",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.80",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5bbd2e8d7efae97f",
+   "sid": "346659 2",
+   "story": "Through Oct 13, the weather station in Oklahoma City has 20.10 inches, 11.41 inches less than a usual year. April was the wettest month at 5.80 inches, and that came right after 21 days in a row with nothing in the gauge, Mar 12 to Apr 1. The biggest single day was 2.25 inches on Jul 5. Last year by this date the station had 38.90 inches, so this year is 18.80 inches less.",
+   "through": "2026-10-13"
+  },
+  "40113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 25",
+     "in": "3.02",
+     "label": "biggest single day"
+    },
+    "county": "Osage County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "23 miles from the middle of the county",
+    "gauge_where": "at Bartlesville Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "15.75",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.68",
+    "usual_in": "33.51",
+    "vs_usual": {
+     "diff_in": "5.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.66",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d742964717adcceb",
+   "sid": "03959 1",
+   "story": "Through Oct 13, the weather station at Bartlesville Municipal Airport had 27.68 inches, 5.83 inches less than a usual year. June did most of the work with 9.66 inches, and the biggest single day was 3.02 inches on Jun 25. The longest dry stretch ran 18 days, Jan 26 to Feb 12, with not even a trace. On the days both years reported, this year is 15.75 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "40115": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "4.02",
+     "label": "biggest one-day reading"
+    },
+    "county": "Ottawa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "3.7 miles east-northeast of Miami",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.70",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "39.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jan 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 23"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.01",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "13.81",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ea70ab8a4f0be476",
+   "sid": "US1OKOT0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.7 miles east-northeast of Miami had 13.81 inches in June, the wettest month by a good stretch. The biggest one-day reading was 4.02 inches on May 19. The longest dry stretch ran 14 days, Jan 10 to Jan 23, with not even a trace in the gauge. On the days both years reported, this year sits 0.70 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "40117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "5.10",
+     "label": "biggest single day"
+    },
+    "county": "Pawnee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Ralston",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.21",
+    "usual_in": "31.40",
+    "vs_usual": {
+     "diff_in": "2.81",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.40",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "589e099b7789b8da",
+   "sid": "347390 2",
+   "story": "Through Oct 13, the weather station in Ralston had 34.21 inches, 2.81 inches more than a usual year. June did most of the work with 12.40 inches, and Jun 22 alone put 5.10 inches in the gauge. Before that came 21 days in a row with nothing at all, from Mar 12 to Apr 1.",
+   "through": "2026-10-13"
+  },
+  "40119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "2.56",
+     "label": "biggest single day"
+    },
+    "county": "Payne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "2 miles west of Stillwater",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.39",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.18",
+    "usual_in": "30.72",
+    "vs_usual": {
+     "diff_in": "4.54",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.70",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8149234a473b5940",
+   "sid": "348501 2",
+   "story": "Through Oct 13, the weather station 2 miles west of Stillwater had its wettest month in June with 7.70 inches. The biggest single day came Jun 22 with 2.56 inches. From Mar 8 to Mar 27 the gauge went 20 days in a row with nothing in it, not even a trace. That leaves this year 4.39 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "40121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 6",
+     "in": "3.08",
+     "label": "biggest single day"
+    },
+    "county": "Pittsburg County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Mcalester Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "14.36",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "43.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.10",
+    "usual_in": "33.74",
+    "vs_usual": {
+     "diff_in": "5.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.51",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7a5719f82498764e",
+   "sid": "93950 1",
+   "story": "Through Oct 13, the weather station at Mcalester Regional Airport has its biggest single day on Jun 6, at 3.08 inches. June was the wettest month with 6.51 inches. The longest dry stretch ran 15 days, from Mar 12 to Mar 26. On the days both years reported, this year is 14.36 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "40123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "3.93",
+     "label": "biggest one-day reading"
+    },
+    "county": "Pontotoc County",
+    "days_in_year_so_far": 281,
+    "days_missing": 24,
+    "days_reported": 257,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile north-northwest of Ada",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 252,
+      "diff_in": "2.53",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 8",
+     "total_in": "43.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 6,
+    "pct_of_usual": 113,
+    "state": "Oklahoma",
+    "through": "Oct 8",
+    "through_iso": "2026-10-08",
+    "total_in": "34.86",
+    "usual_in": "30.75",
+    "vs_usual": {
+     "diff_in": "4.11",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.68",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5d946e34de943c47",
+   "sid": "US1OKPN0006 6",
+   "story": "Through Oct 8, the volunteer rain gauge less than a mile north-northwest of Ada has had a lopsided year. It went 21 days in a row with nothing in it, from Mar 12 to Apr 1. Then it caught 3.93 inches on Apr 4, and April finished as the wettest month at 8.68 inches. On the days both years reported, this year is 2.53 inches less than last year.",
+   "through": "2026-10-08"
+  },
+  "40125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "2.03",
+     "label": "biggest single day"
+    },
+    "county": "Pottawatomie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Shawnee",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "16.10",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 64,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.45",
+    "usual_in": "33.46",
+    "vs_usual": {
+     "diff_in": "12.01",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.83",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0d89e69c69c40973",
+   "sid": "348110 2",
+   "story": "Through Oct 13, the weather station in Shawnee had 21.45 inches, 12.01 less than a usual year. April was the wettest month at 5.83 inches, and the biggest single day came Apr 4 with 2.03. The gauge went 20 days in a row without a trace, Jan 26 to Feb 14. Last year by this day it had 37.55 inches, so this year is 16.10 less.",
+   "through": "2026-10-13"
+  },
+  "40127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "3.70",
+     "label": "biggest single day"
+    },
+    "county": "Pushmataha County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "23 miles from the middle of the county",
+    "gauge_where": "5 miles northwest of Antlers",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.43",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.31",
+    "usual_in": "36.67",
+    "vs_usual": {
+     "diff_in": "1.64",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.94",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9ce06cec98fe068c",
+   "sid": "340257 2",
+   "story": "Through Oct 13, the weather station 5 miles northwest of Antlers had June as its wettest month at 11.94 inches, and its biggest single day came Jun 23 with 3.70 inches. Then it went 29 days in a row with nothing in the gauge, from Aug 22 to Sep 19. On the days both years reported, that is 5.43 inches less than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "40129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 6",
+     "in": "1.35",
+     "label": "biggest single day"
+    },
+    "county": "Roger Mills County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1 mile west-southwest of Cheyenne",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "17.69",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.56",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "2.89",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "efa1390ca744f829",
+   "sid": "341738 2",
+   "story": "Through Oct 13, the weather station 1 mile west-southwest of Cheyenne has 10.56 inches. The biggest single day was Mar 6 at 1.35 inches, and then the gauge sat empty for 26 days in a row, Mar 7 to Apr 1. September was the wettest month at 2.89 inches. On the days both years reported, that is 17.69 inches less than 2025 had by this point.",
+   "through": "2026-10-13"
+  },
+  "40131": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 22",
+     "in": "4.94",
+     "label": "biggest single day"
+    },
+    "county": "Rogers County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "7.5 miles west of Claremore",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "19.30",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "52.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.44",
+    "usual_in": "36.68",
+    "vs_usual": {
+     "diff_in": "1.24",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.26",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3a4f8a8568289279",
+   "sid": "US1OKRG0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.5 miles west of Claremore had June as its wettest month at 10.26 inches. The biggest single day was May 22 with 4.94 inches. The longest dry stretch ran 14 days, Feb 16 to Mar 1. On the days both years reported, this year is 19.30 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "40133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "2.94",
+     "label": "biggest single day"
+    },
+    "county": "Seminole County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Seminole",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "14.55",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jul 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.03",
+    "usual_in": "35.61",
+    "vs_usual": {
+     "diff_in": "8.58",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.05",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ccc788eeed31a655",
+   "sid": "348042 2",
+   "story": "Through Oct 13, the weather station in Seminole had its wettest month in April with 8.05 inches, and the biggest single day came Apr 4 with 2.94 inches. From Jul 20 to Aug 7 it went 19 days in a row with nothing in the gauge, not even a trace. On the days both years reported, that is 14.55 inches less than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "40135": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 7",
+     "in": "3.05",
+     "label": "biggest single day"
+    },
+    "county": "Sequoyah County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "5.3 miles east-northeast of Vian",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "16.66",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "50.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.44",
+    "usual_in": "40.10",
+    "vs_usual": {
+     "diff_in": "6.66",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.79",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a03c9cc4046eaf94",
+   "sid": "US1OKSQ0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.3 miles east-northeast of Vian has caught 16.66 inches less than it had by this day last year. June was the wettest month at 8.79 inches, and Jun 7 brought the biggest single day with 3.05 inches. The longest dry stretch ran 16 days, Mar 17 to Apr 1, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "40137": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "2.52",
+     "label": "biggest single day"
+    },
+    "county": "Stephens County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "1 mile west-southwest of Marlow",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "20.52",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Aug 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 63,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.14",
+    "usual_in": "30.28",
+    "vs_usual": {
+     "diff_in": "11.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.97",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7d1800280837d679",
+   "sid": "345581 2",
+   "story": "Through Oct 13, the weather station 1 mile west-southwest of Marlow had its wettest month in April with 5.97 inches, and its biggest single day was Apr 4 at 2.52 inches. Then it went 39 days in a row with nothing in the gauge, not even a trace, from Aug 2 to Sep 9. That leaves the station 20.52 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "40139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "0.99",
+     "label": "biggest single day"
+    },
+    "county": "Texas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Guymon Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "6.78",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "15.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 59,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.19",
+    "usual_in": "15.54",
+    "vs_usual": {
+     "diff_in": "6.35",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.10",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6af77ce9a26e82aa",
+   "sid": "03030 1",
+   "story": "Through Oct 13, the weather station at Guymon Municipal Airport has caught 9.19 inches, 6.35 inches less than a usual year. September was the wettest month at 3.10 inches, and the biggest single day came Sep 30 with 0.99 inches. The gauge went 17 days in a row with nothing from Jan 27 to Feb 12. On the days both years reported, this year sits 6.78 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "40141": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 6",
+     "in": "1.84",
+     "label": "biggest single day"
+    },
+    "county": "Tillman County",
+    "days_in_year_so_far": 276,
+    "days_missing": 9,
+    "days_reported": 267,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "6.0 miles south-southwest of Frederick",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "16.44",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 3",
+     "total_in": "29.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 35,
+     "from": "Jul 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 62,
+    "state": "Oklahoma",
+    "through": "Oct 3",
+    "through_iso": "2026-10-03",
+    "total_in": "13.01",
+    "usual_in": "21.10",
+    "vs_usual": {
+     "diff_in": "8.09",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.10",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3373b3f4b025dcad",
+   "sid": "US1OKTN0002 6",
+   "story": "Through Oct 3, the volunteer rain gauge 6.0 miles south-southwest of Frederick has 13.01 inches, 8.09 inches less than a usual year. June was the wettest month at 4.10 inches, and the biggest single day was 1.84 inches on Jun 6. Then the gauge went 35 days in a row with nothing in it, not even a trace, from Jul 19 to Aug 22. On the days both years reported, this year is 16.44 inches less than last year.",
+   "through": "2026-10-03"
+  },
+  "40143": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 6",
+     "in": "2.72",
+     "label": "biggest single day"
+    },
+    "county": "Tulsa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Tulsa Richard L Jones Jr Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.55",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.22",
+    "usual_in": "34.78",
+    "vs_usual": {
+     "diff_in": "0.44",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "11.11",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fce38e45960da64f",
+   "sid": "53908 1",
+   "story": "Through Oct 13, the weather station at Tulsa Richard L Jones Jr Airport had June as its wettest month at 11.11 inches, and the biggest single day came Jun 6 with 2.72 inches. The longest dry stretch ran 16 days, from Mar 11 to Mar 26, with nothing in the gauge, not even a trace. That puts the year 3.55 inches less than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "40147": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "3.69",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5.6 miles north of Ochelata",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "13.23",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "46.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.27",
+    "usual_in": "36.37",
+    "vs_usual": {
+     "diff_in": "3.10",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.28",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b10d1375368b6b1f",
+   "sid": "US1OKWS0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.6 miles north of Ochelata had its wettest month in April with 10.28 inches, and the biggest single day came Apr 2 at 3.69 inches. The longest dry stretch ran 19 days, Jan 26 to Feb 13, with nothing in the gauge, not even a trace. On the days both years reported, this year is 13.23 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "40149": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 13",
+     "in": "2.90",
+     "label": "biggest single day"
+    },
+    "county": "Washita County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "at Clinton-Sherman Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "13.60",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "27.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jul 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 67,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.73",
+    "usual_in": "20.56",
+    "vs_usual": {
+     "diff_in": "6.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.98",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1b3d34fb7a08325c",
+   "sid": "03932 1",
+   "story": "Through Oct 13, the weather station at Clinton-Sherman Airport had 13.73 inches, 6.83 less than a usual year. The biggest single day came right at the end, 2.90 inches on Oct 13. June was the wettest month at 2.98 inches, and the gauge went 19 days in a row with nothing from Jul 19 to Aug 6. On the days both years reported, that is 13.60 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "40151": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "1.17",
+     "label": "biggest single day"
+    },
+    "county": "Woods County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "1 mile west of Alva",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "16.03",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 35,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 66,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.20",
+    "usual_in": "26.19",
+    "vs_usual": {
+     "diff_in": "8.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.10",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "050bae88d77e10b7",
+   "sid": "340193 2",
+   "story": "Through Oct 13, the weather station 1 mile west of Alva had 17.20 inches, 16.03 inches less than last year by the same day. June was the wettest month at 6.10 inches, and the biggest single day was 1.17 inches on Jun 22. From Mar 8 to Apr 11 the gauge went 35 days in a row without even a trace.",
+   "through": "2026-10-13"
+  },
+  "40153": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "2.06",
+     "label": "biggest single day"
+    },
+    "county": "Woodward County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "3 miles east-northeast of Fargo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.42",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 69,
+    "state": "Oklahoma",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.20",
+    "usual_in": "20.58",
+    "vs_usual": {
+     "diff_in": "6.38",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.56",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bd78f47676f176ce",
+   "sid": "343070 2",
+   "story": "Through Oct 13, the weather station 3 miles east-northeast of Fargo has 14.20 inches, 6.38 inches less than a usual year. June was the wettest month at 4.56 inches, and the biggest single day came Jun 22 with 2.06. The gauge went 34 days in a row with nothing from Mar 7 to Apr 9. This year is 8.42 inches less than last year to the same day.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "OK"
+}

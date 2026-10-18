@@ -51,15 +51,16 @@ test("indexable, canonical, in the sitemap, with Article, FAQPage and Breadcrumb
 test("Christmas dates come from data/rain-print.json, never from the page", () => {
   const months = "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec";
   assert.ok(!new RegExp("\\b(" + months + ")[a-z]* \\d{1,2}\\b").test(ARTICLE), "no month-day date written into the page");
-  assert.ok(!/\b20\d\d\b/.test(ARTICLE), "no year written into the article");
+  // photo file names (img/photos/...-2025-...) are not words a reader sees; alt text and captions are still checked
+  assert.ok(!/\b20\d\d\b/.test(ARTICLE.replace(/\/img\/photos\/[\w.-]+/g, "")), "no year written into the article");
   assert.match(HTML, /fetch\('\/data\/rain-print\.json'/);
   assert.match(HTML, /P\.xmasLine\(cfg, today\)/);
-  assert.match(HTML, /rain-print-promo\.js\?v=4" defer/);
+  assert.match(HTML, /rain-print-promo\.js\?v=5" defer/);
   // the shared line, against the shipped file
   const short = (iso) => P.xmasLine({ print_christmas_cutoff: iso, framed_christmas_cutoff: iso }, iso.slice(0, 4) + "-10-02").match(/by (\w+ \d+)/)[1];
   const pc = short(J.print_christmas_cutoff), fc = short(J.framed_christmas_cutoff);
   const y = J.print_christmas_cutoff.slice(0, 4);
-  assert.equal(P.xmasLine(J, y + "-11-15"), "For Christmas delivery, order a print by " + pc + " or a framed print by " + fc + ".");
+  assert.equal(P.xmasLine(J, y + "-11-15"), "For Christmas delivery, order a framed print by " + fc + ", a print by " + pc + ".");
   assert.equal(P.xmasLine(J, y + "-10-01").startsWith("For Christmas delivery"), true, "Oct 1 counts");
   assert.equal(P.xmasLine(J, y + "-09-30"), "", "nothing before October");
   assert.equal(P.xmasLine(J, y + "-12-26"), "", "nothing after Christmas");
@@ -117,9 +118,9 @@ test("Sig, 2026-10-14: a business logo may go on the print; shipping covers the 
 test("the Rain Print section links the page in words people search for and says only what is true of the example (2026-10-15)", () => {
   const sec = HTML.slice(HTML.indexOf('<section class="gf-rp"'), HTML.indexOf("</section>", HTML.indexOf('<section class="gf-rp"')));
   assert.match(sec, /<a href="\/rain-print">a custom rainfall print of that year<\/a>/, "a plain-text link with the search words");
-  // the thumbnail is the real 2012 Ames example (img/rain-print-thumb.jpg), so the caption cannot call it made up; no year in the article (the Christmas test)
+  // the picture is a real photo of Sig's framed test print (img/photos/, 2026-10-18), so the caption cannot call it made up
   assert.ok(!/made up/i.test(sec), "the example is real NOAA data");
-  assert.match(sec, /<figcaption>An example: Ames, Iowa, in the drought year, from NOAA records\.<\/figcaption>/);
+  assert.match(sec, /<figcaption>My test print of Chetek, Wisconsin, framed in black and hung on a wall\. It is shown without the white mat that comes with a framed print\.<\/figcaption>/);
   // the page marks up to five days (rain-print.html, Mark a day)
   assert.match(readFileSync(ROOT + "rain-print.html", "utf8"), /You can mark up to 5 days/);
   assert.match(sec, /mark up to five days/);

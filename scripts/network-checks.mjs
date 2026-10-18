@@ -65,7 +65,10 @@ const NAMES = ["classify", "netZipCoord", "netDistanceMi", "netPlacesWithin",
                "readTimeOnly",
                /* netRowsFrom attaches an elevator's own portal info through
                   portalInfo() (2026-10-13, the elevator portal). */
-               "portalInfo"];
+               "portalInfo",
+               /* netRowsFrom counts a board skipped this pass and read within
+                  6 h as read (heldSkip, 2026-10-17). */
+               "heldSkip"];
 const sources = {};
 for (const n of NAMES) {
   sources[n] = lift(n);
@@ -103,6 +106,7 @@ const body = NAMES.map((n) => sources[n]).join("\n") +
   `\nvar NET_INHERIT=${constOf("NET_INHERIT")};` +
   `\nvar US_STATES_OK=${constOf("US_STATES_OK")};` +
   `\nvar NET_LEGAL=${constOf("NET_LEGAL")};` +
+  `\nvar HELD_SKIP_H=${constOf("HELD_SKIP_H")};` +
   `\nvar NET_DEBUG=false;function netLog(){}` +
   `\nreturn {${NAMES.join(",")}};`;
 const F = new Function(...Object.keys(sandbox), body);
@@ -185,6 +189,33 @@ eq(rows[1].category, "soybeans", "the soybean row was misfiled");
    "best soybean bid" against a per-bushel price. */
 eq(N.netRowsFrom({ operator: "X", bids: [{ commodity: "Soybean Meal", cash: 300 }] }, 1)[0].category,
    "other", "soybean meal was classified as soybeans and would win on price");
+/* A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17). A row skipped this
+   pass whose board was read within HELD_SKIP_H hours is not stale and carries
+   its own board times; refused, broken, or a skip read too long ago, stays
+   stale ("board not reached"). Times are relative to now: the page measures
+   from the reader's clock. */
+eq(constOf("HELD_SKIP_H"), "6", "the held-skip window is 6 hours, as in scripts/fetch_bids.py");
+{
+  const ago = (h) => new Date(Date.now() - h * 3600e3).toISOString();
+  const base = { operator: "NEW Cooperative, Inc.", city: "Afton", state: "IA", commodity: "Corn", crop: "corn",
+                 cash: 4.39, basis: -0.35, delivery: "Oct 2026", stale: true };
+  const sh = { operator: "NEW Cooperative, Inc.", city: "Afton", state: "IA", pricedAt: ago(30), checkedAt: ago(0.1),
+               bids: [
+                 { ...base, sourceStatus: "skipped", checkedAt: ago(0.6), pricedAt: ago(27) },
+                 { ...base, cash: 4.40, sourceStatus: "skipped", checkedAt: ago(6.5), pricedAt: ago(27) },
+                 { ...base, cash: 4.41, sourceStatus: "refused", checkedAt: ago(0.2), pricedAt: ago(27) },
+                 { ...base, cash: 4.42, sourceStatus: "broken", checkedAt: ago(0.2), pricedAt: ago(27) },
+               ] };
+  const hr = N.netRowsFrom(sh, 3);
+  const by = (c) => hr.find((r) => r.cashPrice === c);
+  eq(by(4.39).stale, false, "a board skipped this pass and read 36 min ago was drawn as not reached");
+  eq(by(4.39).held, true, "a held row is not flagged held");
+  eq(by(4.39).asOf, sh.bids[0].pricedAt, "a held row borrowed the shard's time instead of its own");
+  eq(by(4.40).stale, true, "a skip last read 6.5 h ago was drawn as current");
+  eq(by(4.41).stale, true, "a refused board was drawn as current");
+  eq(by(4.42).stale, true, "a broken board was drawn as current");
+  eq(rows[0].held, false, "a plain live row is flagged held");
+}
 eq(N.netRowsFrom(null, 1).length, 0, "a missing shard threw instead of returning nothing");
 eq(N.netRowsFrom({ bids: null }, 1).length, 0, "a malformed shard threw instead of returning nothing");
 

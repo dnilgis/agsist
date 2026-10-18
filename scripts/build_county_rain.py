@@ -48,6 +48,7 @@ sys.path.insert(0, HERE)
 import county_rain as R  # noqa: E402
 import build_prf_states as S  # noqa: E402  boot() and text_of()
 import inject_static_nav as nav  # noqa: E402
+import county_stories as CS  # noqa: E402
 
 ROOT = R.ROOT
 MAX_KB = 25
@@ -149,7 +150,7 @@ def last_year_words(c, L, year):
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
 RP_SNOW_MISS_OK = 10 # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
-PRINT_JS = '<script src="/components/rain-county-print.js?v=16" defer></script>'
+PRINT_JS = '<script src="/components/rain-county-print.js?v=18" defer></script>'
 
 
 def rp_prices():
@@ -406,6 +407,8 @@ FOOT = """  </main>
 # "Want a better rain gauge? Sig is designing one. Get updates."). County
 # pages keep their Rain Print block and nothing else.
 GAUGE_SLOT = '<p class="rp-promo" data-rain-print-promo="gauge" hidden></p>'
+# rain.html only: glossary marks and the Next block (data/next-links.json)
+FOOT_NAT = FOOT.replace("</body>", '  <script src="/components/glossary.js?v=1" defer></script>\n  <script src="/components/next-links.js?v=1" defer></script>\n</body>')
 FOOT_GAUGE = FOOT.replace('  <script src="/components/loader.js?v=19" defer></script>\n',
                           '  <script src="/components/loader.js?v=19" defer></script>\n  <script src="/components/rain-print-promo.js?v=4" defer></script>\n')
 
@@ -418,6 +421,27 @@ def crumbs_ld(items):
 # One plain link to /rain-print itself, inside the same promo block (still one promo a page), so the 2,700 county
 # pages also point at the bare page with the words people search for (head to head, 2026-10-15).
 RP_ANY_YEAR = 'Want another year, like the drought or the year you married? <a href="/rain-print">Rainfall art of any town and year</a>.'
+
+
+def radar_line(st, name, stw):
+    """One line to /rain-radar (NOAA MRMS radar and gauge estimate) at the
+    county's station. MRMS covers the lower 48 only, so none in AK or HI."""
+    ll = stw.get("ll")
+    if st in ("AK", "HI") or not ll:
+        return ""
+    q = urllib.parse.urlencode({"lat": f"{ll[1]:.3f}", "lon": f"{ll[0]:.3f}", "label": f"{name}, near the {stw.get('name') or 'county'} gauge"})
+    return f'<p class="rc-radar"><a href="/rain-radar?{e(q)}">Rain on your field in the last 7 days, from radar</a></p>'
+
+
+def year_ask(name, year, fips):
+    """One email in January with this county's full-year rain (subs worker v5.28,
+    topic rainyear:<year>:<fips>, mailed by scripts/send_rain_year.py from
+    county-rain.yml once the finished year is fetched). components/signup-ask.js
+    draws it; the morning briefing box starts ticked and can be unticked."""
+    return (f'<div data-signup-ask="Email me {e(name)}&rsquo;s full {year} rain total in January." '
+            f'data-topic="rainyear:{year}:{fips}" data-daily="on" '
+            f'data-ok="Done. One email in January, once NOAA has all of {year} for {e(name)}." '
+            f'data-note="One email: the year&rsquo;s total against a usual year, and a link to the month by month page."></div>')
 
 
 def county_page(ctx):
@@ -515,7 +539,7 @@ def county_page(ctx):
     if c.get("dry") and c["dry"][0] >= 2:
         n, a, b = c["dry"]
         still = (b == asof and not done)
-        facts.append(f"<li><b>Longest dry stretch:</b> {n} days in a row with the gauge at zero, {short_date(a)} to {short_date(b)}"
+        facts.append(f"<li><b>Longest dry stretch:</b> {n} days in a row with nothing in the gauge, not even a trace, {short_date(a)} to {short_date(b)}"
                      + (f", still going as of {short_date(asof)}" if still else "") + ".</li>")
     if c.get("last"):
         L = c["last"]
@@ -542,7 +566,7 @@ def county_page(ctx):
                  + (f"It reported {c['reported']} of the {c['days']} days from Jan 1 to {short_date(asof)}; "
                     f"{'the one day' if miss == 1 else 'the ' + str(miss) + ' days'} with no report count as unknown, not as dry."
                     if miss else f"It reported every one of the {c['days']} days from Jan 1 to {short_date(asof)}.")
-                 + " Rain here means everything the gauge caught: rain, and snow melted down to water. A trace counts as zero."
+                 + " Rain here means everything the gauge caught: rain, and snow melted down to water. A trace, too little to measure, adds nothing to the totals, but it ends a dry stretch: something fell that day."
                  + (" It is read once a day, usually in the morning, and each reading is filed under the day it was read, "
                     "so an evening storm can show up on the next day." if morning_read(stw) else ""))
     usual_p = (f"Usual means {norm_words}, added up over the same {c['reported']} days the {noun} reported, so a missing day counts on neither side.{norm_note}"
@@ -563,7 +587,10 @@ def county_page(ctx):
             more.append((f"{label} {e(name)}", f"/{top}/{st_slug}/{ctx['slug']}"))
     more_html = " &middot; ".join(f'<a href="{h}">{t}</a>' for t, h in more)
     rp = rain_print_href(c, st, year)
-    ship = "" if done else f"Prints of {year} ship in January, once the full year is in."
+    # Oct 1 to Dec 24 (by the page's own as-of day): the gift card is the Christmas answer for this year's print
+    xmas = not done and f"{year}-10-01" <= c["as_of"] <= f"{year}-12-24"
+    ship = "" if done else (f"Give it for Christmas: a gift card to put under the tree now, the {year} print in January." if xmas
+                            else f"Prints of {year} ship in January, once the full year is in.")
     miss_note = ""
     if miss > RP_MISS_BLOCK:
         # rain_print_href leaves the station off: say why the print draws another
@@ -612,11 +639,13 @@ def county_page(ctx):
     <p class="rc-asof">{'All of ' + str(year) + ', Jan 1 to Dec 31' if whole else (str(year) + ', Jan 1 to ' + short_date(asof) + ', the last day reported' if done else 'As of ' + long_date(asof) + ', the latest day this ' + noun + ' has reported')}</p>
     <h1>{h1}</h1>
     <p class="rc-answer">{ans.replace(inches_word(c['total']), '<b>' + inches_word(c['total']) + '</b>', 1)}</p>
-    <dl class="rc-figs">{figs_html}</dl>
+    {('<p class="rc-story">' + e(ctx['story']) + '</p>' + chr(10) + '    ') if ctx.get('story') else ''}<dl class="rc-figs">{figs_html}</dl>
+    {radar_line(st, name, stw)}
     {chart(c, year, name, noun, ready)}
     {sell}
     <h2>Month by month</h2>
     {table}
+    {year_ask(name, year, fips) if not done else ''}
     {('<h2>' + str(year) + (' in' if done else ' so far in') + ' ' + e(name) + '</h2>' + facts_html) if facts_html else ''}
     <h2>The station, and what usual means</h2>
     <p>{station_p}</p>
@@ -648,7 +677,9 @@ def middle(cs):
     if not p:
         return None
     k = len(p) // 2
-    return p[k] if len(p) % 2 else round((p[k - 1] + p[k]) / 2)
+    # an even count's median is the midpoint, kept to the half: round() made 92.5 into 92, and then
+    # "half above 92%" was off by one county (Florida, 2026-10-18)
+    return p[k] if len(p) % 2 else (p[k - 1] + p[k]) / 2
 
 
 def state_page(st, d, pages, none_rows):
@@ -668,7 +699,9 @@ def state_page(st, d, pages, none_rows):
             + ("." if done else f", through {short_date(asofs[-1])}"
                + (f" ({early} {'station stops' if early == 1 else 'stations stop'} earlier; each {u1} page gives its own last day)." if early else ".")))
     if mid is not None:
-        lede += f" Half the {un} are above {mid}% of a usual year{'' if done else ' to date'} and half below."
+        n_pct = sum(1 for c in cs.values() if c["pct"] is not None)
+        who = f"the {un}" if n_pct == len(cs) else f"the {n_pct} {un} with a NOAA usual year"
+        lede += f" Half {who} are above {mid:g}% of a usual year{'' if done else ' to date'} and half below."
     wettest = max(cs.items(), key=lambda kv: kv[1]["total"])
     driest = min(cs.items(), key=lambda kv: kv[1]["total"])
     desc = (f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} {un}, from weather stations: inches, percent of usual and the station. "
@@ -738,7 +771,7 @@ def hub_page(files, built):
         last = max(c["as_of"] for c in d["counties"].values())
         u1, un = unit(st)
         rows.append(f'<li><a href="/rain/{R.slug(R.STATES[st])}">{e(R.STATES[st])}</a> <small>{len(d["counties"])} {un if len(d["counties"]) != 1 else u1}'
-                    + (f", typical {u1} {mid}% of usual" if mid is not None else "") + f", {d['year']} through {short_date(last)}</small></li>")
+                    + (f", typical {u1} {mid:g}% of usual" if mid is not None else "") + f", {d['year']} through {short_date(last)}</small></li>")
     title = f"How Much Rain Did Your County Get in {yw}? | AGSIST" if done else "How Much Rain Has Your County Had This Year? | AGSIST"
     sofar = "" if done else "so far "
     yin = "in " + yw if yw[0].isdigit() else yw
@@ -768,7 +801,7 @@ def hub_page(files, built):
     <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws it from the same NOAA records.</p>
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.</p>
   </div>
-{FOOT}"""
+{FOOT_NAT}"""
     return nav.render(page, "rain.html", nav.block("header"), nav.block("footer"))
 
 
@@ -819,6 +852,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
     NB = NB if NB is not None else R.neighbors()
     files = load(data_dir)
     daily = load_daily(data_dir, files)
+    stories = CS.load_stories(data_dir)   # data/rain/stories/<st>.json: dated stories, same station, at most 35 days old
     pages = {}   # fips -> (name, href, total text)
     for st, d in files.items():
         for fips, c in d["counties"].items():
@@ -840,7 +874,8 @@ def build(data_dir, C=None, NB=None, img_root=None):
                      pages[f][2] + ("" if pages[f][3] == c["as_of"] else f" to {short_date(pages[f][3])}")) for f in nb[:4]]
             body = county_page({"c": c, "st": st, "fips": fips, "year": d["year"], "d": d, "slug": C[fips]["slug"],
                                 "nbrs": nbrs, "n_ok": c.get("n_ok", 1), "alt": alt,
-                                "day": daily.get(st, {}).get(fips)})
+                                "day": daily.get(st, {}).get(fips),
+                                "story": CS.story_for(stories.get(st, {}).get(fips), CS.page_now(c, d))})
             body = nav.fill_fonts(body)
             rel = f"rain/{st_slug}/{C[fips]['slug']}.html"
             if len(body.encode()) > MAX_KB * 1024:
@@ -936,7 +971,9 @@ def selftest():
                 except ValueError as x:
                     fails.append(f"{rel}: JSON-LD does not parse ({x})")
             ok(body.count("<title>") == 1 and '<link rel="canonical"' in body, f"{rel}: title and canonical")
-            ok("today" not in S.text_of(re.sub(r"<script.*?</script>", "", body, flags=re.S)).lower(), f"{rel}: never says today")
+            # the site menu's "Today's briefing" link is not the page speaking; check the page's own text
+            own = re.sub(r"<!-- static-nav:(header|footer).*?<!-- /static-nav:\1 -->", "", body, flags=re.S)
+            ok("today" not in S.text_of(re.sub(r"<script.*?</script>", "", own, flags=re.S)).lower(), f"{rel}: never says today")
         d = json.load(open(os.path.join(data, "ia.json")))
         c = d["counties"]["19169"]
         ok(f"{c['total']:.2f} inches of rain have fallen so far in 2026 at the weather station 8 miles west-southwest of Ames, Story County, through Oct 12." in story,
@@ -963,6 +1000,16 @@ def selftest():
         sell_blk = story.split('class="rc-sell"')[1].split("</div>")[0]
         ok(f'<p class="rc-fine">{RP_ANY_YEAR}</p>' in sell_blk and story.count('href="/rain-print"') == 1,
            "one plain link to the bare /rain-print, inside the same promo block")
+        # the January full-year email (subs worker v5.28): one ask, under the month table, box ticked
+        ok(story.count("data-signup-ask=") == 1 and 'data-topic="rainyear:2026:19169" data-daily="on"' in story,
+           "one rainyear ask for this county and year, morning briefing box ticked")
+        ok(story.index("<h2>Month by month</h2>") < story.index('data-topic="rainyear:') < story.index("<h2>The station"),
+           "the ask sits under the month by month table")
+        ok("Email me Story County&rsquo;s full 2026 rain total in January." in story and "once NOAA has all of 2026" in story,
+           "the ask says what comes and when")
+        fin = county_page({"c": dict(c, as_of="2026-12-31"), "st": "IA", "fips": "19169", "year": 2026, "d": dict(d, edate="2026-12-31"),
+                           "slug": "story-county", "nbrs": [], "n_ok": 1})
+        ok("data-signup-ask" not in fin, "a finished year has no ask (the email is about the year so far)")
         # no daily file for the state: the plain chart, the plain line, no script
         nod = county_page({"c": c, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
         ok('id="rc-print"' not in nod and "rain-county-print.js" not in nod and "rc-sell-lead" not in nod and ">Make yours</a>" in nod,
@@ -978,7 +1025,7 @@ def selftest():
         lyw = S.text_of(re.sub(r"<script(?! type=.application/ld).*?</script>", "", lyh, flags=re.S))
         ok(not re.search(r"2\.8 inches|\bahead\b|\bbehind\b", lyw), "last year's gaps are not counted as rain this year had")
         ok("(it missed 28 days)" in lyw and "On the 257 days both years reported, 2026 had about the same as 2025." in lyw, "last year's gaps said, and the comparison on common days")
-        ok("ship in January" in story, "this year's prints ship in January")
+        ok("Give it for Christmas: a gift card to put under the tree now, the 2026 print in January." in story, "this year's print before Christmas: the gift card now, the print in January")
         ok('"@type":"FAQPage"' in story and '"@type":"Dataset"' in story and '"@type":"BreadcrumbList"' in story, "structured data")
         ok("As of Oct 12, 2026" in story, "as-of date shown")
         ok('<svg viewBox' in story and 'class="rc-us"' in story, "chart with the usual line")
@@ -1009,7 +1056,7 @@ def selftest():
         wl = build(dl)
         la, lh = wl["rain/louisiana.html"], wl["rain.html"]
         ok(f"{len(lj['counties'])} Louisiana parishes have a weather station inside the parish" in la, "Louisiana: parishes in the lede")
-        ok('<th scope="col">Parish</th>' in la and "<h2>Parishes without a page</h2>" in la and "Half the parishes are above" in S.text_of(la), "Louisiana: parish in the table and lists")
+        ok('<th scope="col">Parish</th>' in la and "<h2>Parishes without a page</h2>" in la and re.search(r"Half the (\d+ )?parishes( with a NOAA usual year)? are above", S.text_of(la)), "Louisiana: parish in the table and lists")
         ok(not re.search(r"Louisiana counties|\d+ counties", S.text_of(la) + S.text_of(lh)), "Louisiana is never counted in counties")
         ok("parishes, typical parish" in lh, "hub row counts parishes")
         ok("caught under 40% of what the parishes around it typically caught" in la and "every county around it" not in la, "held footnote fits both holds")

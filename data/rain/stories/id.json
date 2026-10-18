@@ -1,0 +1,2332 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "16001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 22",
+     "in": "0.87",
+     "label": "biggest single day"
+    },
+    "county": "Ada County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Boise Air Terminal",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.13",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "9.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Jul 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.88",
+    "usual_in": "8.27",
+    "vs_usual": {
+     "diff_in": "0.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.87",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "da0c3946ef6f2bd2",
+   "sid": "24131 1",
+   "story": "Through Oct 13, the weather station in Boise Air Terminal had most of its year come in April, with 3.87 inches that month. The biggest single day was Apr 22 at 0.87 inches. The gauge then sat empty for 23 days in a row from Jul 23 to Aug 14. That leaves the station 1.13 inches behind last year and 0.39 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "16003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 23",
+     "in": "0.81",
+     "label": "biggest one-day reading"
+    },
+    "county": "Adams County",
+    "days_in_year_so_far": 285,
+    "days_missing": 11,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "3.6 miles west-northwest of Mccall",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "2.59",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 12",
+     "total_in": "19.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Jul 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 13"
+    },
+    "multi_day_reports": 5,
+    "pct_of_usual": null,
+    "state": "Idaho",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "14.69",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "3.67",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bdf4e13f21bfff50",
+   "sid": "US1IDAM0002 6",
+   "story": "Through Oct 12, the volunteer rain gauge 3.6 miles west-northwest of Mccall has caught 14.69 inches. February was the wettest month at 3.67 inches. From Jul 21 to Aug 13 the gauge sat empty 24 days in a row, not even a trace. On the days both years reported, this year is 2.59 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "16005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "1.38",
+     "label": "biggest single day"
+    },
+    "county": "Bannock County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "in Downey",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.55",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "8.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.95",
+    "usual_in": "12.92",
+    "vs_usual": {
+     "diff_in": "2.97",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.97",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cc4fef37d3b6a38e",
+   "sid": "102667 2",
+   "story": "Through Oct 13, the weather station in Downey had its wettest month in October at 1.97 inches, and most of that came on Oct 12 with 1.38 inches, the biggest single day of the year. The longest dry stretch ran 16 days, Mar 16 to Mar 31, with not even a trace in the gauge. The total sits 2.97 inches less than a usual year, but 1.55 inches more than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "16007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 15",
+     "in": "1.10",
+     "label": "biggest single day"
+    },
+    "county": "Bear Lake County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Bern",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.32",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "12.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.40",
+    "usual_in": "13.79",
+    "vs_usual": {
+     "diff_in": "1.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.96",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fb1ceae71cf02697",
+   "sid": "100803 2",
+   "story": "Through Oct 13, the weather station in Bern had its wettest month in September at 1.96 inches. The biggest single day came Jul 15 with 1.10 inches. From Jan 9 to Jan 28 the gauge went 20 days in a row with nothing in it, not even a trace. On the days both years reported, 2026 is 0.32 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "16011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "1.15",
+     "label": "biggest single day"
+    },
+    "county": "Bingham County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "28 miles from the middle of the county",
+    "gauge_where": "in Aberdeen",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.62",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Jan 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.40",
+    "usual_in": "7.39",
+    "vs_usual": {
+     "diff_in": "1.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.31",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f6f338abf5eb299f",
+   "sid": "100010 2",
+   "story": "Through Oct 13, the weather station in Aberdeen had October as its wettest month at 1.31 inches, and 1.15 inches of that came on Oct 12, the biggest single day. Earlier on, the gauge went 34 days in a row with nothing in it, from Jan 6 to Feb 8. On the days both years reported, this year sits 0.62 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "16013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "0.70",
+     "label": "biggest single day"
+    },
+    "county": "Blaine County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southeast of Bellevue",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "2.83",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "8.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 33,
+     "from": "Jan 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 44,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.58",
+    "usual_in": "12.57",
+    "vs_usual": {
+     "diff_in": "6.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.73",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bbd77b3703b12df9",
+   "sid": "US1IDBN0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south-southeast of Bellevue had caught 5.58 inches, 6.99 inches less than a usual year. April was the wettest month at 1.73 inches, and the biggest single day came Apr 2 with 0.70 inches. The gauge went 33 days in a row with nothing in it, from Jan 7 to Feb 8. On the days both years reported, this year is 2.83 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "16015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "1.24",
+     "label": "biggest single day"
+    },
+    "county": "Boise County",
+    "days_in_year_so_far": 278,
+    "days_missing": 0,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Centerville Cooper Dr",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "8.70",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 5",
+     "total_in": "20.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 64,
+     "from": "Jul 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 63,
+    "state": "Idaho",
+    "through": "Oct 5",
+    "through_iso": "2026-10-05",
+    "total_in": "11.77",
+    "usual_in": "18.57",
+    "vs_usual": {
+     "diff_in": "6.80",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.85",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fea1d8adb4ef8b69",
+   "sid": "101636 2",
+   "story": "Through Oct 5, the weather station in Centerville Cooper Dr had its wettest month in April at 3.85 inches. The biggest single day was Feb 24 with 1.24 inches. Then it went 64 days in a row with nothing in the gauge, from Jul 1 to Sep 2. On the days both years reported, that is 8.70 inches less than 2025 had.",
+   "through": "2026-10-05"
+  },
+  "16017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "1.22",
+     "label": "biggest single day"
+    },
+    "county": "Bonner County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "13.9 miles northeast of Sandpoint",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "1.20",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "19.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jul 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.86",
+    "usual_in": "26.48",
+    "vs_usual": {
+     "diff_in": "7.62",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.69",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4dfe0cf2b798a081",
+   "sid": "US1IDBR0027 6",
+   "story": "Through Oct 13, the volunteer rain gauge 13.9 miles northeast of Sandpoint has 18.86 inches, 7.62 inches less than a usual year. March was the wettest month at 3.69 inches, and the biggest single day was 1.22 inches on Sep 8. From Jul 19 to Aug 12 the gauge went 25 days in a row without even a trace. On the days both years reported, this year has 1.20 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "16019": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 31",
+     "in": "1.58",
+     "label": "biggest single day"
+    },
+    "county": "Bonneville County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "11.7 miles northeast of Idaho Falls",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.33",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "9.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jan 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.39",
+    "usual_in": "11.64",
+    "vs_usual": {
+     "diff_in": "2.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.74",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a4f1ccab070b5ea1",
+   "sid": "US1IDBV0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 11.7 miles northeast of Idaho Falls had caught 9.39 inches, 2.25 inches less than a usual year. May was the wettest month at 1.74 inches, and 1.58 inches of that came on May 31 alone. Even so, this year sits 0.33 inches more than last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "16021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "0.95",
+     "label": "biggest single day"
+    },
+    "county": "Boundary County",
+    "days_in_year_so_far": 285,
+    "days_missing": 13,
+    "days_reported": 272,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Naples",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "1.66",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 12",
+     "total_in": "14.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jul 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Idaho",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "13.66",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "2.57",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c9bea49dd44ab017",
+   "sid": "US1IDBD0005 6",
+   "story": "Through Oct 12, the volunteer rain gauge less than a mile northwest of Naples shows September as the wettest month at 2.57 inches. The biggest single day came Sep 8 with 0.95 inches. Before that the gauge went 22 days in a row with nothing in it, not even a trace, from Jul 19 to Aug 9. On the days both years reported, this year is 1.66 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "16023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "0.90",
+     "label": "biggest one-day reading"
+    },
+    "county": "Butte County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Howe",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 44,
+     "from": "Jun 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 75,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.60",
+    "usual_in": "6.17",
+    "vs_usual": {
+     "diff_in": "1.57",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.11",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dd45e7893f29a425",
+   "sid": "104384 2",
+   "story": "Through Oct 13, the weather station in Howe has 4.60 inches, which is 1.57 inches less than a usual year. September was the wettest month at 1.11 inches. The biggest one-day reading was 0.90 inches on Oct 11. Before that, the gauge went 44 days in a row with nothing in it, not even a trace, from Jun 30 to Aug 12.",
+   "through": "2026-10-13"
+  },
+  "16025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "0.63",
+     "label": "biggest one-day reading"
+    },
+    "county": "Camas County",
+    "days_in_year_so_far": 285,
+    "days_missing": 2,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Fairfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 265,
+      "diff_in": "3.46",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 18,
+     "through": "Oct 12",
+     "total_in": "8.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 31,
+     "from": "Jan 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 7"
+    },
+    "multi_day_reports": 7,
+    "pct_of_usual": 53,
+    "state": "Idaho",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "5.57",
+    "usual_in": "10.49",
+    "vs_usual": {
+     "diff_in": "4.92",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.77",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f5fc0289b4b82751",
+   "sid": "103108 2",
+   "story": "Through Oct 12, the weather station in Fairfield has caught 5.57 inches, 4.92 inches less than a usual year. April was the wettest month at 1.77 inches, and the biggest one-day reading came Apr 1 at 0.63. The gauge went 31 days in a row with nothing in it, from Jan 8 to Feb 7. On the days both years reported, this year is 3.46 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "16027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 27",
+     "in": "0.91",
+     "label": "biggest single day"
+    },
+    "county": "Canyon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "7.3 miles west-southwest of Caldwell",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "1.43",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "8.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "Apr 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.84",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "2.28",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5930c78cc141d15c",
+   "sid": "US1IDCY0026 6",
+   "story": "Through Oct 13, the volunteer rain gauge outside Caldwell had its wettest month in April at 2.28 inches. Then it went 46 days in a row with nothing in it, not even a trace, from Apr 24 to Jun 8. The biggest single day came after that, 0.91 inches on Jun 27. On the days both years reported, this year sits 1.43 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "16029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 18",
+     "in": "0.83",
+     "label": "biggest single day"
+    },
+    "county": "Caribou County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.3 miles west-southwest of Soda Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.74",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.61",
+    "usual_in": "15.69",
+    "vs_usual": {
+     "diff_in": "3.08",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.65",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4f874fd04ddd7b14",
+   "sid": "US1IDCR0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge west-southwest of Soda Springs had August as its wettest month at 2.65 inches. The biggest single day came Sep 18 with 0.83 inches. The gauge went 16 days in a row with nothing in it, from Mar 16 to Mar 31. On the days both years reported, that is 0.74 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "16031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "0.57",
+     "label": "biggest single day"
+    },
+    "county": "Cassia County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "at Burley Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.54",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 63,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.01",
+    "usual_in": "7.97",
+    "vs_usual": {
+     "diff_in": "2.96",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "0.99",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6054a0f554cabc67",
+   "sid": "24133 1",
+   "story": "Through Oct 13, the weather station at Burley Municipal Airport had nothing to brag about. April was the wettest month at 0.99 inches, and the biggest single day was 0.57 inches on Feb 24. The gauge went 16 days in a row without even a trace, from Mar 15 to Mar 30. That leaves the year 0.54 inches behind 2025 on the same dates.",
+   "through": "2026-10-13"
+  },
+  "16033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 29",
+     "in": "1.30",
+     "label": "biggest single day"
+    },
+    "county": "Clark County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "in Crab Creek",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "1.80",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "15.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Mar 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Idaho",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "17.70",
+    "usual_in": "21.14",
+    "vs_usual": {
+     "diff_in": "3.44",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.60",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "92210f8969bfb635",
+   "sid": "USS0011E37S 6",
+   "story": "Through Oct 10, the weather station in Crab Creek had its wettest month in August with 3.60 inches. The biggest single day was Jun 29 at 1.30 inches. From Mar 6 to Mar 31 it went 26 days in a row with nothing in the gauge, not even a trace. That still leaves the station 1.80 inches more than 2025 had by Oct 10.",
+   "through": "2026-10-10"
+  },
+  "16035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 13",
+     "in": "1.77",
+     "label": "biggest single day"
+    },
+    "county": "Clearwater County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Pierce",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Jul 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.33",
+    "usual_in": "29.94",
+    "vs_usual": {
+     "diff_in": "0.61",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.38",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0475144da7ce38c3",
+   "sid": "107046 2",
+   "story": "Through Oct 13, the weather station in Pierce had 29.33 inches, 0.61 less than a usual year. March was the wettest month at 7.38 inches, and the biggest single day came Mar 13 with 1.77 inches. Then it quit. From Jul 31 to Sep 2 the gauge went 34 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "16037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 27",
+     "in": "1.36",
+     "label": "biggest single day"
+    },
+    "county": "Custer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "at Challis Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.72",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 30,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.58",
+    "usual_in": "5.58",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "1.95",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9b5b1a46b9679959",
+   "sid": "04114 1",
+   "story": "Through Oct 13, the weather station at Challis Airport shows a year that looks about usual on paper but did not come in evenly. June was the wettest month at 1.95 inches, and 1.36 inches of that fell on Jun 27 alone. The gauge went 30 days in a row with nothing in it, from Jan 9 to Feb 7. That is 0.72 inches less than last year through the same day.",
+   "through": "2026-10-13"
+  },
+  "16039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 2",
+     "in": "0.40",
+     "label": "biggest single day"
+    },
+    "county": "Elmore County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "28 miles from the middle of the county",
+    "gauge_where": "2.0 miles west of Hammett",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.07",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "May 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 56,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "3.99",
+    "usual_in": "7.15",
+    "vs_usual": {
+     "diff_in": "3.16",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.15",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e036abf203e2f046",
+   "sid": "US1IDEL0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.0 miles west of Hammett has caught 3.99 inches, 3.16 inches less than a usual year. April was the wettest month at 1.15 inches, and the biggest single day was 0.40 inches on Jan 2. From May 2 to May 25 the gauge went 24 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 2.07 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "16041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 2",
+     "in": "1.27",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 281,
+    "days_missing": 1,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Preston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "0.65",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 8",
+     "total_in": "9.78",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Idaho",
+    "through": "Oct 8",
+    "through_iso": "2026-10-08",
+    "total_in": "10.43",
+    "usual_in": "13.28",
+    "vs_usual": {
+     "diff_in": "2.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.29",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fa6af24a3440936a",
+   "sid": "107346 2",
+   "story": "Through Oct 8, the weather station in Preston has March as its wettest month at 2.29 inches. Most of that came on Mar 2, the biggest single day at 1.27 inches. Then the gauge sat empty for 24 days in a row, Mar 7 to Mar 30. On the days both years reported, this year is 0.65 inches more than 2025.",
+   "through": "2026-10-08"
+  },
+  "16043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 29",
+     "in": "0.90",
+     "label": "biggest single day"
+    },
+    "county": "Fremont County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Island Park",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "0.60",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 10",
+     "total_in": "16.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Idaho",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "17.80",
+    "usual_in": "20.72",
+    "vs_usual": {
+     "diff_in": "2.92",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.80",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1e33c4554b93478f",
+   "sid": "USS0011E10S 6",
+   "story": "Through Oct 10, the weather station in Island Park had its wettest month in April at 3.80 inches. Right before that it went 21 days in a row with nothing in the gauge, from Mar 11 to Mar 31. The biggest single day was 0.90 inches on Jun 29. On the days both years reported, this year has 0.60 inches more than last year.",
+   "through": "2026-10-10"
+  },
+  "16045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 13",
+     "in": "1.16",
+     "label": "biggest single day"
+    },
+    "county": "Gem County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "2 miles east of Emmett",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "0.53",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "10.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 33,
+     "from": "Apr 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Idaho",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "10.59",
+    "usual_in": "9.15",
+    "vs_usual": {
+     "diff_in": "1.44",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.71",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "37d8ffab00a14898",
+   "sid": "102942 2",
+   "story": "Through Oct 10, the weather station 2 miles east of Emmett had most of its year come in April, with 4.71 inches that month. The biggest single day was Apr 13 at 1.16 inches. Then it shut off, and the gauge went 33 days in a row with nothing from Apr 24 to May 26. The year sits 0.53 inches more than last year at this point.",
+   "through": "2026-10-10"
+  },
+  "16049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "1.27",
+     "label": "biggest single day"
+    },
+    "county": "Idaho County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "32 miles from the middle of the county",
+    "gauge_where": "less than a mile southwest of Grangeville",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jul 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.77",
+    "usual_in": "20.49",
+    "vs_usual": {
+     "diff_in": "4.72",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.31",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "168fa967cbee03e5",
+   "sid": "US1IDID0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Grangeville had 15.77 inches, 4.72 inches less than a usual year. March was the wettest month at 3.31 inches. The biggest single day came Sep 4 with 1.27 inches. Before that, the gauge went 19 days in a row with nothing in it, not even a trace, from Jul 25 to Aug 12.",
+   "through": "2026-10-13"
+  },
+  "16053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "0.68",
+     "label": "biggest single day"
+    },
+    "county": "Jerome County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Jerome County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.91",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "4.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 50,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "3.56",
+    "usual_in": "7.15",
+    "vs_usual": {
+     "diff_in": "3.59",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "0.84",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "086eb92ae8157f41",
+   "sid": "04110 1",
+   "story": "Through Oct 13, the weather station at Jerome County Airport has caught 3.56 inches, 50 percent of a usual year. February was the wettest month at 0.84 inches, and most of that came Feb 24, the biggest single day at 0.68 inches. The longest dry stretch ran 16 days, Mar 15 to Mar 30, with not even a trace. That is 0.91 inches less than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "16055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "0.89",
+     "label": "biggest single day"
+    },
+    "county": "Kootenai County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "1.5 miles east-northeast of Athol",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 266,
+      "diff_in": "0.09",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "15.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 32,
+     "from": "Jul 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.63",
+    "usual_in": "19.84",
+    "vs_usual": {
+     "diff_in": "3.21",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.07",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8dd64b30b8cea411",
+   "sid": "US1IDKT0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.5 miles east-northeast of Athol has its wettest month in April at 3.07 inches. The biggest single day came Apr 2 with 0.89 inches. Then it went 32 days in a row with nothing in the gauge, Jul 19 to Aug 19. On the days both years reported, this year is 0.09 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "16057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 13",
+     "in": "1.48",
+     "label": "biggest single day"
+    },
+    "county": "Latah County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Moscow U of I",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "6.11",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "12.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jul 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Idaho",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "19.05",
+    "usual_in": "19.01",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.70",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d7b7f357b75a0dc6",
+   "sid": "106152 2",
+   "story": "Through Oct 11, the weather station in Moscow U of I is running about usual for a usual year, but last year it had 6.11 inches less by this date. March did most of the work at 5.70 inches, and the biggest single day was 1.48 inches on Mar 13. Then the gauge went 22 days in a row with nothing in it, from Jul 25 to Aug 15.",
+   "through": "2026-10-11"
+  },
+  "16059": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Lemhi County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in Salmon-Ksra",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 274,
+      "diff_in": "0.37",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "7.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 47,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 24"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 102,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.55",
+    "usual_in": "7.41",
+    "vs_usual": {
+     "diff_in": "0.14",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "2.08",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "55f895ad4d9ec9ef",
+   "sid": "94180 1",
+   "story": "Through Oct 13, the weather station in Salmon-Ksra had its wettest month in June, with 2.08 inches. Early on it went 47 days in a row with nothing in the gauge, not even a trace, from Jan 9 to Feb 24. On the days both years reported, this year is 0.37 inches ahead of 2025.",
+   "through": "2026-10-13"
+  },
+  "16061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 4",
+     "in": "1.39",
+     "label": "biggest single day"
+    },
+    "county": "Lewis County",
+    "days_in_year_so_far": 279,
+    "days_missing": 0,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "in Kamiah",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 153,
+    "state": "Idaho",
+    "through": "Oct 6",
+    "through_iso": "2026-10-06",
+    "total_in": "26.96",
+    "usual_in": "17.59",
+    "vs_usual": {
+     "diff_in": "9.37",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.55",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "949c4df9d90c43e2",
+   "sid": "104793 2",
+   "story": "Through Oct 6, the weather station in Kamiah had 26.96 inches, 9.37 more than a usual year. March did most of the work at 6.55 inches, and the biggest single day came Mar 4 with 1.39. Then it shut off. From Jul 24 to Aug 12 the gauge went 20 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-06"
+  },
+  "16063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 1",
+     "in": "0.72",
+     "label": "biggest single day"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Richfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.59",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "4.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "Feb 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 45,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "3.32",
+    "usual_in": "7.44",
+    "vs_usual": {
+     "diff_in": "4.12",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.30",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ce1956815d6a15a2",
+   "sid": "107673 2",
+   "story": "Through Oct 13, the weather station in Richfield had its wettest month in January, with 1.30 inches. The biggest single day came Jan 1 at 0.72 inches. From Feb 25 to Apr 11 the gauge went 46 days in a row with nothing in it, not even a trace. That leaves the station 1.59 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "16065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 17",
+     "in": "1.34",
+     "label": "biggest single day"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Rexburg Madison County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.19",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "8.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.96",
+    "usual_in": "9.60",
+    "vs_usual": {
+     "diff_in": "0.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.81",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c0b852e8dcca2c1c",
+   "sid": "94194 1",
+   "story": "Through Oct 13, the station at Rexburg Madison County Airport says September was the wettest month at 1.81 inches, and 1.34 inches of that came on Sep 17 alone. The longest dry stretch ran 15 days, Mar 16 to Mar 30, with not even a trace in the gauge. On the days both years reported, this year sits 0.19 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "16067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "0.60",
+     "label": "biggest single day"
+    },
+    "county": "Minidoka County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "less than a mile west-northwest of Paul",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.34",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "May 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.87",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "0.87",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6ebc4f7bd041f880",
+   "sid": "US1IDMN0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west-northwest of Paul has caught 4.87 inches, 1.34 inches less than last year by this day. February was the wettest month at 0.87 inches. The biggest single day came late, 0.60 inches on Oct 12. The longest dry stretch ran 25 days from May 15 to Jun 8 with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "16069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 4",
+     "in": "0.86",
+     "label": "biggest single day"
+    },
+    "county": "Nez Perce County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "at Lewiston Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.75",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.74",
+    "usual_in": "9.80",
+    "vs_usual": {
+     "diff_in": "0.94",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "2.81",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6ef4ac5b87ee2e4b",
+   "sid": "24149 1",
+   "story": "Through Oct 13, the weather station at Lewiston Airport had 3.75 inches more than last year, when it had 6.99 by this day. March did a lot of the work at 2.81 inches, and the biggest single day was Mar 4 with 0.86. Then the gauge sat empty 22 days in a row, from Jul 24 to Aug 14.",
+   "through": "2026-10-13"
+  },
+  "16071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "1.26",
+     "label": "biggest one-day reading"
+    },
+    "county": "Oneida County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "4.0 miles north-northeast of Holbrook",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "2.72",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 22,
+     "through": "Oct 13",
+     "total_in": "8.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 54,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.47",
+    "usual_in": "11.95",
+    "vs_usual": {
+     "diff_in": "5.48",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.71",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "55fbcae22357a6f5",
+   "sid": "US1IDON0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Holbrook got its wettest month in October, with 1.71 inches. Most of that came on Oct 12, the biggest rain of the year at 1.26 inches. From Mar 7 to Mar 31 the gauge went 25 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 2.72 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "16073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "0.66",
+     "label": "biggest single day"
+    },
+    "county": "Owyhee County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "52 miles from the middle of the county",
+    "gauge_where": "10 miles west of Murphy",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "2.73",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 10",
+     "total_in": "8.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 42,
+     "from": "Jul 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "Idaho",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "5.52",
+    "usual_in": "8.07",
+    "vs_usual": {
+     "diff_in": "2.55",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.82",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3084df20ee5a0b53",
+   "sid": "04127 1",
+   "story": "Through Oct 10, the weather station 10 miles west of Murphy has 5.52 inches, 2.55 inches less than a usual year. April was the wettest month at 1.82 inches, and the biggest single day was 0.66 inches on Feb 24. The gauge went 42 days in a row with nothing in it, not even a trace, from Jul 23 to Sep 2. On the days both years reported, that is 2.73 inches less than 2025.",
+   "through": "2026-10-10"
+  },
+  "16075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 13",
+     "in": "0.87",
+     "label": "biggest single day"
+    },
+    "county": "Payette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Payette",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 35,
+     "from": "Apr 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.26",
+    "usual_in": "8.00",
+    "vs_usual": {
+     "diff_in": "0.74",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.04",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "36b40e615d149c2d",
+   "sid": "106891 2",
+   "story": "Through Oct 13, the weather station in Payette had 7.26 inches, 0.74 inches less than a usual year. April carried most of it with 3.04 inches, and the biggest single day came Apr 13 with 0.87 inches. Then the gauge went dry for 35 days in a row, Apr 23 to May 27, without even a trace.",
+   "through": "2026-10-13"
+  },
+  "16077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.20",
+     "label": "biggest single day"
+    },
+    "county": "Power County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "at Pocatello Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.73",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "8.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.86",
+    "usual_in": "9.18",
+    "vs_usual": {
+     "diff_in": "2.32",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.64",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4c70cc9484df1624",
+   "sid": "24156 1",
+   "story": "Through Oct 13, the weather station at Pocatello Regional Airport had October as its wettest month at 1.64 inches, and most of that came on Oct 11 with 1.20 inches, the biggest single day. The longest dry stretch ran 23 days, Mar 8 to Mar 30, with not even a trace. The station sits 1.73 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "16079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 13",
+     "in": "1.36",
+     "label": "biggest single day"
+    },
+    "county": "Shoshone County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "3 miles east-southeast of Prichard",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "0.20",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "24.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 27,
+     "from": "Jul 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.88",
+    "usual_in": "30.28",
+    "vs_usual": {
+     "diff_in": "5.40",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.07",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f50837c337914b48",
+   "sid": "107357 2",
+   "story": "Through Oct 13, the weather station 3 miles east-southeast of Prichard sits 5.40 inches less than a usual year. March did the heavy lifting with 6.07 inches, and the biggest single day was Apr 13 at 1.36 inches. Then the gauge went 27 days in a row with nothing in it, from Jul 19 to Aug 14. On the days both years reported, this year is 0.20 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "16081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "1.02",
+     "label": "biggest single day"
+    },
+    "county": "Teton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "3.4 miles north-northeast of Driggs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 263,
+      "diff_in": "1.38",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 18,
+     "through": "Oct 13",
+     "total_in": "13.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.59",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "2.59",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fe6ab751e5c21094",
+   "sid": "US1IDTT0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.4 miles north-northeast of Driggs had September as its wettest month at 2.59 inches. The biggest single day came Jul 22 with 1.02 inches. The gauge went 13 days in a row with nothing in it, not even a trace, from May 1 to May 13. On the days both years reported, this year is 1.38 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "16083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "0.58",
+     "label": "biggest single day"
+    },
+    "county": "Twin Falls County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "at Twin Falls Sun Valley Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.07",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "4.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 60,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.68",
+    "usual_in": "7.76",
+    "vs_usual": {
+     "diff_in": "3.08",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.39",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f4e583de6026ff1d",
+   "sid": "94178 1",
+   "story": "Through Oct 13, the weather station at Twin Falls Sun Valley Regional Airport has 4.68 inches, 3.08 inches less than a usual year. April was the wettest month at 1.39 inches, and the biggest single day was 0.58 inches on Feb 24. The gauge went 19 days in a row with nothing from Jan 9 to Jan 27. Last year was close, with this year 0.07 inches less than 2025 through the same day.",
+   "through": "2026-10-13"
+  },
+  "16085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 9",
+     "in": "1.25",
+     "label": "biggest single day"
+    },
+    "county": "Valley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Yellowpine",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.61",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Jul 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Idaho",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.31",
+    "usual_in": "17.14",
+    "vs_usual": {
+     "diff_in": "0.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.16",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f7760b61e2f160cd",
+   "sid": "109950 2",
+   "story": "Through Oct 13, the weather station in Yellowpine had its wettest month in April with 3.16 inches. The biggest single day came Feb 9 at 1.25 inches. From Jul 21 to Aug 13 the gauge went 24 days in a row with nothing in it, not even a trace. That leaves the year 0.61 inches behind last year on the same days.",
+   "through": "2026-10-13"
+  },
+  "16087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 22",
+     "in": "0.90",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "in Van Wyck",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Apr 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Idaho",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "14.30",
+    "usual_in": "18.23",
+    "vs_usual": {
+     "diff_in": "3.93",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.90",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "11ae61aa953645a2",
+   "sid": "USS0016E14S 6",
+   "story": "Through Oct 10, the weather station in Van Wyck had 3.93 inches less than a usual year. April was the wettest month at 3.90 inches, and the biggest single day came Apr 22 with 0.90 inches. Then the gauge went dry. It caught nothing, not even a trace, for 26 days in a row from Apr 23 to May 18.",
+   "through": "2026-10-10"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "ID"
+}

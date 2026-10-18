@@ -6,6 +6,8 @@ search (never on page load):
 
   data/search-index.json      pages, states, towns, counties, futures
   data/search-elevators.json  elevator names + town (loaded on first search)
+  data/search-places.json     towns with no bid page, each pointing at the
+                              nearest town page (loaded last)
 
 WHERE EACH PART COMES FROM (nothing is fetched; every entry points at a page
 that exists in this checkout)
@@ -24,6 +26,12 @@ that exists in this checkout)
   elevators names on the town pages (bid boards and "no current bid" lists),
             then data/elevator-directory.json facilities in a town with a page
             (or a ZIP, linked to the live /cash-bids?zip= search)
+  places    towns with no town page of their own, named in data/zip-grid.json,
+            the town points in data/elevator-coverage.json, or a CoCoRaHS rain
+            station name in data/rain/<st>.json ("Chetek, 10.6 mi E": the
+            town is put back 10.6 mi west of the gauge). Each links to the
+            nearest town page whose town point is known, or to the state's
+            bid page when none is within PLACE_MAX_MI.
 
 No price, basis or other number is put in the index: titles are plain names,
 so a result never shows a stale figure.
@@ -40,6 +48,7 @@ import glob
 import gzip
 import html
 import json
+import math
 import os
 import re
 import sys
@@ -47,8 +56,10 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT_MAIN = "data/search-index.json"
 OUT_ELEV = "data/search-elevators.json"
+OUT_PLACES = "data/search-places.json"
 MAX_MAIN_GZ = 150 * 1024
 MAX_ELEV_GZ = 150 * 1024
+MAX_PLACES_GZ = 100 * 1024
 
 STATES = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California",
@@ -112,6 +123,7 @@ PAGES = [
     ("/drought-monitor", "Drought monitor", "Weekly drought map", "drought dry monitor map rain weather"),
     ("/rain-print", "Rain Print", "Your farm's rainfall year as wall art", "rain print rainfall precipitation year poster wall art gift noaa station farm name"),
     ("/rain", "Rain by county", "Rain so far this year, every county", "rain rainfall precipitation county year to date normal dry wet noaa"),
+    ("/rain-radar", "Rain on your field (radar)", "Radar rain at your spot, last 24 hours to this month", "rain radar field farm how much rain last night 24 hours week month rainfall mrms noaa gauge my spot"),
     ("/conditions", "Crop conditions", "Good to excellent by state", "crop conditions ratings good excellent progress"),
     ("/crop-tour", "Crop tour", "Pro Farmer tour results", "crop tour pro farmer yield"),
     ("/conditions-yield", "2026 crop size", "Every yield forecast, side by side", "crop size yield forecast estimate usda ratings conditions predict nowcast"),
@@ -370,6 +382,102 @@ def build_elevators(by_town, boards):
     return out
 
 
+PLACE_MAX_MI = 60
+COMPASS = {d: i * 22.5 for i, d in enumerate(
+    "N NNE NE ENE E ESE SE SSE S SSW SW WSW W WNW NW NNW".split())}
+PLACE_OK = re.compile(r"^[A-Za-z][A-Za-z .'-]{1,38}$")
+# elevator rows name sites as well as towns ("At Bin Fob Butler"); only these
+# are screened for site words, since a real town can be Black River Falls
+PLACE_BAD = re.compile(r"\b(bin|bins|fob|terminal|elevator|plant|mill|yard|rail|dock|station|airport|"
+                       r"county|co|inc|llc|annex|site|shed|facility|office|unit|location)\b", re.I)
+
+
+def miles(a, b):
+    r = math.pi / 180
+    x = (math.sin((b[0] - a[0]) * r / 2) ** 2
+         + math.cos(a[0] * r) * math.cos(b[0] * r) * math.sin((b[1] - a[1]) * r / 2) ** 2)
+    return 3958.8 * 2 * math.asin(math.sqrt(x))
+
+
+def place_name(s, strict=False):
+    s = clean(s)
+    if not PLACE_OK.match(s) or (strict and PLACE_BAD.search(s)):
+        return ""
+    if s.isupper() or s.islower():
+        s = " ".join(w[:1].upper() + w[1:].lower() for w in s.split(" "))
+    return s
+
+
+def town_points():
+    """(town_lower, ST) -> [(lat, lon)], from the sources named above.
+    Rain station towns are put back from the gauge's distance and bearing."""
+    pts = {}
+
+    def add(name, st, lat, lon, src):
+        n = place_name(name, strict=(src == "elevator"))
+        if n and st in STATES and isinstance(lat, (int, float)) and isinstance(lon, (int, float)):
+            pts.setdefault((n.lower(), st), (n, lat, lon, src))
+
+    try:
+        for z in json.loads(rd("data/zip-grid.json")):
+            name, _, st = (z.get("label") or "").rpartition(", ")
+            add(name, st, z.get("lat"), z.get("lng"), "zip")
+    except (OSError, ValueError):
+        pass
+    try:
+        for p in json.loads(rd("data/elevator-coverage.json")).get("places") or []:
+            if p.get("p") != "town":
+                continue
+            for a in p.get("a") or []:
+                add(a[1] if len(a) > 1 else "", p.get("s"), p.get("y"), p.get("x"), "elevator")
+    except (OSError, ValueError):
+        pass
+    for f in sorted(glob.glob(os.path.join(ROOT, "data", "rain", "*.json"))):
+        try:
+            d = json.loads(rd(os.path.relpath(f, ROOT)))
+        except (OSError, ValueError):
+            continue
+        st = (d.get("state") or os.path.basename(f)[:2]).upper()
+        for c in (d.get("counties") or {}).values():
+            stn = (c or {}).get("station") or {}
+            m = re.match(r"^(.+?), ([\d.]+) mi ([NSEW]{1,3})$", stn.get("name") or "")
+            ll = stn.get("ll") or []
+            if stn.get("net") != "cocorahs" or not m or m.group(3) not in COMPASS or len(ll) != 2:
+                continue
+            dist, brg = float(m.group(2)), math.radians(COMPASS[m.group(3)])
+            lat = ll[1] - dist * math.cos(brg) / 69.0
+            lon = ll[0] - dist * math.sin(brg) / (69.0 * math.cos(math.radians(ll[1])))
+            add(m.group(1), st, round(lat, 3), round(lon, 3), "rain")
+    return pts
+
+
+def build_places(by_town):
+    """Towns with no town page -> the nearest town page (or the state bid page)."""
+    pts = town_points()
+    targets = []
+    for (town, st), url in by_town.items():
+        p = pts.get((town, st))
+        if p:
+            targets.append(((p[1], p[2]), "%s, %s" % (p[0], st), url))
+    if not targets:
+        return []
+    hubs = {abbr: "/cash-bids/%s/" % slug for slug, abbr in SLUG_TO_ABBR.items()
+            if exists("cash-bids/%s/index.html" % slug)}
+    out = []
+    for (key, st), (name, lat, lon, _) in sorted(pts.items(), key=lambda kv: (kv[0][1], kv[0][0])):
+        if (key, st) in by_town:
+            continue
+        here = (lat, lon)
+        near = min(targets, key=lambda t: (t[0][0] - lat) ** 2 + ((t[0][1] - lon) * math.cos(math.radians(lat))) ** 2)
+        if miles(here, near[0]) <= PLACE_MAX_MI:
+            out.append([6, "%s, %s" % (name, st), "Nearest town with bids: %s" % near[1], near[2],
+                        "%s %s" % (st.lower(), STATES[st].lower())])
+        elif st in hubs:
+            out.append([6, "%s, %s" % (name, st), "Bids across %s" % STATES[st], hubs[st],
+                        "%s %s" % (st.lower(), STATES[st].lower())])
+    return out
+
+
 def dumps(obj):
     return json.dumps(obj, ensure_ascii=False, separators=(",", ":"), sort_keys=False)
 
@@ -380,7 +488,8 @@ def build(warn):
     elev = build_elevators(by_town, boards)
     main = {"note": "Built by scripts/build_search_index.py. Do not edit.", "v": 1, "items": items}
     el = {"note": "Built by scripts/build_search_index.py. Do not edit.", "v": 1, "items": elev}
-    return dumps(main) + "\n", dumps(el) + "\n"
+    pl = {"note": "Built by scripts/build_search_index.py. Do not edit.", "v": 1, "items": build_places(by_town)}
+    return dumps(main) + "\n", dumps(el) + "\n", dumps(pl) + "\n"
 
 
 def main():
@@ -388,8 +497,8 @@ def main():
     ap.add_argument("--check", action="store_true", help="fail if the committed files differ")
     args = ap.parse_args()
     warn = lambda m: print("search-index: " + m, file=sys.stderr)  # noqa: E731
-    main_s, elev_s = build(warn)
-    files = ((OUT_MAIN, main_s, MAX_MAIN_GZ), (OUT_ELEV, elev_s, MAX_ELEV_GZ))
+    main_s, elev_s, places_s = build(warn)
+    files = ((OUT_MAIN, main_s, MAX_MAIN_GZ), (OUT_ELEV, elev_s, MAX_ELEV_GZ), (OUT_PLACES, places_s, MAX_PLACES_GZ))
     bad = False
     for path, s, cap in files:  # check both before writing either
         gz = len(gzip.compress(s.encode("utf-8"), 9))

@@ -334,8 +334,13 @@ const rpsGet = (id, h = {}) => w.fetch(new Request('https://x.dev/rp-short/' + i
 const rpsKeys = () => [...store.keys()].filter(k => k.startsWith('rps:'));
 const codeA = b64u('1|Chetek, WI|471667 2|2025|snna|The Olson Farm|3k|Planted|8b|Harvest done');
 const codeB = b64u('1|Ames, IA|130200 2|2024|wpsa|');
+// v5.27: a design with the units letter and the 2026-10-17 options (corn May 1 to Oct 20, drawings, frost, hottest and coldest)
+const codeOpt = b64u('2|Ames, IA|130200 2|2012|spnad~c3d85pft|The Olson Farm|3d|Planted|85|Harvest done');
+const codeLoc = b64u('2|Hanley, SK||2025|spnadB~ft|');
 A(rp.design_code.length && b64u('1|Chetek WI|123|2025|sp0a|') === rp.design_code, 'test helper builds the same codes the page does');
 
+for (const [c, why] of [[codeOpt, 'options after ~'], [codeLoc, 'the units letter']]) { r = await rps({ code: c }); j = await r.json(); A(r.status === 200 && j.ok === true, 'rp-short v5.27: takes a code with ' + why); }
+r = await rps({ code: b64u('2|Ames, IA||2012|spnad~x|') }); A(r.status === 400, 'rp-short v5.27: an unknown option letter is refused');
 r = await rps({ code: codeA }); j = await r.json();
 A(r.status === 200 && j.ok === true && j.id === want(codeA).slice(0, 5), 'rp-short: id is the first 5 of Crockford base32 of SHA-256 ' + j.id);
 A(/^[0-9A-HJKMNP-TV-Z]{5}$/.test(j.id), 'rp-short: id has no I L O U');

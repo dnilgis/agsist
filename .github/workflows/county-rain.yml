@@ -48,6 +48,7 @@ jobs:
         run: |
           python scripts/fetch_county_rain.py --selftest
           python scripts/build_county_rain.py --selftest
+          python scripts/send_rain_year.py --selftest
 
       # The script stops itself at 40 minutes (each state is one or two calls,
       # each call has a timeout and three retries). A state that fails keeps
@@ -101,6 +102,26 @@ jobs:
             sleep $((20 * i))
           done
           echo "push failed after 5 attempts"; exit 1
+
+      # The January full-year rain email (subs worker v5.28, topic
+      # rainyear:<year>:<fips>, asked on the county rain pages). January only,
+      # after the finished year is committed, so the email and the page match.
+      # Each address is mailed once (marked after the send); later Mondays in
+      # January catch late stations. No new schedule: it rides this one.
+      - name: Rain year emails (January only)
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          REPLY_TO: ${{ secrets.REPLY_TO }}
+        run: |
+          if [ "$(TZ=America/Chicago date +%m)" != "01" ]; then echo "not January: no rain year emails"; exit 0; fi
+          python3 scripts/send_rain_year.py --send
 
       - name: Say which state failed
         if: steps.fetch.outcome == 'failure'

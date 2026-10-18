@@ -1,0 +1,3514 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "46005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 18",
+     "in": "2.03",
+     "label": "biggest single day"
+    },
+    "county": "Beadle County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Huron Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.97",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.07",
+    "usual_in": "20.83",
+    "vs_usual": {
+     "diff_in": "0.76",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.72",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f22494668ab0cfde",
+   "sid": "14936 1",
+   "story": "Through Oct 13, the weather station at Huron Regional Airport had September as its wettest month at 4.72 inches. The biggest single day came Sep 18 with 2.03 inches. The longest dry stretch ran 13 days, Feb 4 to Feb 16, with nothing in the gauge. That puts the station 0.97 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "46007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 29",
+     "in": "1.61",
+     "label": "biggest single day"
+    },
+    "county": "Bennett County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "13.5 miles west of Martin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 266,
+      "diff_in": "4.30",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "16.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 28,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.34",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "3.35",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ed137f65ff2fae60",
+   "sid": "US1SDBN0020 6",
+   "story": "Through Oct 13, the volunteer rain gauge 13.5 miles west of Martin caught 3.35 inches in June, its wettest month. The biggest single day came Jun 29 with 1.61 inches. The gauge went 28 days in a row with nothing, from Jan 1 to Jan 28. On the days both years reported, this year sits 4.30 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "46009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "2.04",
+     "label": "biggest single day"
+    },
+    "county": "Bon Homme County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Tyndall",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.21",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jul 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.56",
+    "usual_in": "23.38",
+    "vs_usual": {
+     "diff_in": "2.82",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.80",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c9094fabf02885ef",
+   "sid": "14973 1",
+   "story": "Through Oct 13, the weather station in Tyndall has had a lopsided year. September brought 9.80 inches, and the biggest single day was 2.04 inches on Sep 8. Before that, the gauge went 19 days in a row with nothing in it, from Jul 4 to Jul 22. The station is 6.21 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "46011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.77",
+     "label": "biggest single day"
+    },
+    "county": "Brookings County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southwest of Brookings",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.87",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "24.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "May 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.00",
+    "usual_in": "21.94",
+    "vs_usual": {
+     "diff_in": "2.94",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.81",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c3ecf4cd04a76f95",
+   "sid": "US1SDBK0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge just south-southwest of Brookings had its wettest month in June at 4.81 inches, and the biggest single day came Jun 28 with 2.77 inches. The gauge went 16 days in a row with nothing from May 2 to May 17. On the days both years reported, this year sits 5.87 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "46013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 8",
+     "in": "2.68",
+     "label": "biggest one-day reading"
+    },
+    "county": "Brown County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "2 miles northwest of Westport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.49",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 104,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.51",
+    "usual_in": "19.67",
+    "vs_usual": {
+     "diff_in": "0.84",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.93",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fb5283a1d878865b",
+   "sid": "399138 2",
+   "story": "Through Oct 13, the weather station 2 miles northwest of Westport has 20.51 inches, 0.84 inches more than a usual year. July did most of the work at 6.93 inches, and the biggest one-day reading came Jul 8 at 2.68 inches. Still, that is 0.49 inches less than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "46017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Buffalo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "3 miles north-northeast of Gann Valley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "5.59",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "15.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 33,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.14",
+    "usual_in": "20.96",
+    "vs_usual": {
+     "diff_in": "0.18",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "4.72",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d58ffdd1a3b59481",
+   "sid": "393211 2",
+   "story": "Through Oct 13, the weather station north of Gann Valley had its wettest month in July at 4.72 inches, and 3.30 inches of that came on Jul 3, the biggest single day. Earlier on, the gauge went 33 days in a row with nothing in it, from Feb 2 to Mar 6. On the days both years reported, it has caught 5.59 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "46019": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 31",
+     "in": "1.49",
+     "label": "biggest single day"
+    },
+    "county": "Butte County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "5.3 miles east-northeast of Newell",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.14",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.87",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "2.45",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dcb3ffe8f9fb8dc5",
+   "sid": "US1SDBT0023 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.3 miles east-northeast of Newell has caught 9.87 inches, 11.14 inches less than it had by this day last year. May was the wettest month at 2.45 inches, and the biggest single day came May 31 with 1.49 inches. That same month also held the longest dry stretch, 11 days in a row with nothing in the gauge from May 6 to May 16.",
+   "through": "2026-10-13"
+  },
+  "46021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 28",
+     "in": "2.75",
+     "label": "biggest single day"
+    },
+    "county": "Campbell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in Pollock",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.30",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.33",
+    "usual_in": "16.03",
+    "vs_usual": {
+     "diff_in": "0.70",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.88",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "79cbb362da0ace68",
+   "sid": "396712 2",
+   "story": "Through Oct 13, the weather station in Pollock had its wettest month in September, with 4.88 inches. Most of that came on Sep 28, the biggest single day at 2.75 inches. Before that the gauge sat empty for 14 days in a row, Aug 16 to Aug 29. This year is 4.30 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "46023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "1.33",
+     "label": "biggest single day"
+    },
+    "county": "Charles Mix County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "30 miles from the middle of the county",
+    "gauge_where": "2 miles northeast of Academy",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.47",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.94",
+    "usual_in": "21.79",
+    "vs_usual": {
+     "diff_in": "3.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.22",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "13ebb1fc2730682a",
+   "sid": "390043 2",
+   "story": "Through Oct 13, the weather station 2 miles northeast of Academy had June as its wettest month at 5.22 inches. The biggest single day came Jul 3 with 1.33 inches. The gauge went 24 days in a row with nothing in it, not even a trace, from Feb 2 to Feb 25. That leaves the station 3.47 inches less than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "46025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 4",
+     "in": "1.08",
+     "label": "biggest single day"
+    },
+    "county": "Clark County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Clark",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "12.65",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "27.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "May 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.96",
+    "usual_in": "21.23",
+    "vs_usual": {
+     "diff_in": "6.27",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.88",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4676512a4de619be",
+   "sid": "391740 2",
+   "story": "Through Oct 13, the weather station in Clark has caught 6.27 inches less than a usual year. June was the wettest month at 3.88 inches, and the biggest single day was Jun 4 with 1.08 inches. From May 2 to May 17 the gauge went 16 days in a row with nothing in it, not even a trace. On the days both years reported, this year sits 12.65 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "46027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "Clay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "6 miles southeast of Centerville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.20",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jul 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.62",
+    "usual_in": "23.87",
+    "vs_usual": {
+     "diff_in": "3.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.98",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "974c0a9f20649068",
+   "sid": "391579 2",
+   "story": "Through Oct 13, the weather station 6 miles southeast of Centerville had its wettest month in September at 4.98 inches. The biggest single day was Apr 27 with 2.10 inches. From Jul 4 to Jul 23 it went 20 days in a row with nothing in the gauge, not even a trace. That still leaves the station 0.20 inches more than last year at this point, and 3.25 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "46029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 18",
+     "in": "1.42",
+     "label": "biggest single day"
+    },
+    "county": "Codington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Watertown Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.20",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.97",
+    "usual_in": "20.35",
+    "vs_usual": {
+     "diff_in": "4.38",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.04",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "83244783b1ca0238",
+   "sid": "14946 1",
+   "story": "Through Oct 13, the weather station at Watertown Regional Airport has 15.97 inches, 11.20 inches less than it had by this day last year. July was the wettest month at 5.04 inches. The biggest single day came Sep 18 with 1.42 inches. The longest dry stretch ran 12 days, Feb 5 to Feb 16, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "46031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "1.25",
+     "label": "biggest single day"
+    },
+    "county": "Corson County",
+    "days_in_year_so_far": 284,
+    "days_missing": 1,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "6 miles southeast of Mc Intosh",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "10.83",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "22.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Jul 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "South Dakota",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "11.81",
+    "usual_in": "15.43",
+    "vs_usual": {
+     "diff_in": "3.62",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.52",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "515e3662fba7fd65",
+   "sid": "395381 2",
+   "story": "Through Oct 11, the weather station 6 miles southeast of Mc Intosh had 11.81 inches, 3.62 inches less than a usual year. September was the wettest month at 2.52 inches. The gauge went 24 days in a row with nothing, from Jul 3 to Jul 26. On the days both years reported, that is 10.83 inches less than 2025.",
+   "through": "2026-10-11"
+  },
+  "46033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 20",
+     "in": "2.09",
+     "label": "biggest single day"
+    },
+    "county": "Custer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "at Custer County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.52",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "15.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.07",
+    "usual_in": "18.12",
+    "vs_usual": {
+     "diff_in": "1.05",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.23",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0ccfb83a651bd77b",
+   "sid": "94032 1",
+   "story": "Through Oct 13, the weather station at Custer County Airport had its wettest month in July with 4.23 inches. The biggest single day came Sep 20, when 2.09 inches went in the gauge. That puts the year 1.52 inches more than last year at this point, but still 1.05 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "46035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 5",
+     "in": "3.77",
+     "label": "biggest single day"
+    },
+    "county": "Davison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "at Mitchell Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.42",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.52",
+    "usual_in": "19.23",
+    "vs_usual": {
+     "diff_in": "2.71",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.38",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ba613c6a2bdad899",
+   "sid": "94950 1",
+   "story": "Through Oct 13, the weather station at Mitchell Airport has 16.52 inches, 2.71 inches less than a usual year. September did most of the work with 7.38 inches, and 3.77 of that came on Sep 5 alone. The gauge sat empty 13 days in a row from Jul 9 to Jul 21. Last year at this point it had 0.42 inches more.",
+   "through": "2026-10-13"
+  },
+  "46037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 8",
+     "in": "3.57",
+     "label": "biggest single day"
+    },
+    "county": "Day County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in Andover",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "7.92",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 19,
+     "through": "Oct 13",
+     "total_in": "24.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.92",
+    "usual_in": "21.27",
+    "vs_usual": {
+     "diff_in": "4.35",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.49",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cde5a8a6f0a87b8f",
+   "sid": "390120 2",
+   "story": "Through Oct 13, the weather station in Andover has 16.92 inches, 4.35 inches less than a usual year. July did most of the work with 6.49 inches, and 3.57 of that came on Jul 8 alone. On the days both years reported, this year is 7.92 inches behind last year. The longest dry run was 14 days, Feb 4 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "46039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 4",
+     "in": "2.46",
+     "label": "biggest single day"
+    },
+    "county": "Deuel County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "6.1 miles southwest of Gary",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "11.82",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "30.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jul 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.25",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.40",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "69f067dc4776378c",
+   "sid": "US1SDDL0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.1 miles southwest of Gary has caught 18.25 inches. June was the wettest month at 4.40 inches, and 2.46 of that came on Jun 4, the biggest single day. The gauge went 14 days in a row with nothing, not even a trace, from Jul 12 to Jul 25. On the days both years reported, that's 11.82 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "46043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 5",
+     "in": "2.24",
+     "label": "biggest single day"
+    },
+    "county": "Douglas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "10.2 miles west of Dimock",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.25",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.88",
+    "usual_in": "22.39",
+    "vs_usual": {
+     "diff_in": "3.51",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.65",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c9e7e8dabf849a85",
+   "sid": "US1SDDG0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 10.2 miles west of Dimock had its wettest month in September at 6.65 inches. The biggest single day came Sep 5 with 2.24 inches. That still left the gauge 3.51 inches less than a usual year, and 0.25 inches less than last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "46045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "1.04",
+     "label": "biggest single day"
+    },
+    "county": "Edmunds County",
+    "days_in_year_so_far": 285,
+    "days_missing": 8,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "in Bowdle",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "11.95",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "24.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Apr 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "South Dakota",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "12.18",
+    "usual_in": "17.89",
+    "vs_usual": {
+     "diff_in": "5.71",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.49",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ee6df1ddb1975a2b",
+   "sid": "390834 2",
+   "story": "Through Oct 12, the weather station in Bowdle had its wettest month in June at 2.49 inches, and its biggest single day came Jun 8 with 1.04 inches. It also went 17 days in a row with nothing in the gauge, from Apr 30 to May 16. On the days both years reported, this year is 11.95 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "46047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 20",
+     "in": "1.77",
+     "label": "biggest single day"
+    },
+    "county": "Fall River County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Hot Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.59",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "12.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.85",
+    "usual_in": "16.97",
+    "vs_usual": {
+     "diff_in": "5.12",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.72",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cfb2c4e2add346e4",
+   "sid": "394007 2",
+   "story": "Through Oct 13, the weather station in Hot Springs has been light. September was the wettest month at 2.72 inches, and 1.77 of that came on Sep 20, the biggest single day. The longest dry stretch ran 22 days, Jan 1 to Jan 22, with nothing in the gauge. On the days both years reported, this year sits 0.59 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "46049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "3.04",
+     "label": "biggest one-day reading"
+    },
+    "county": "Faulk County",
+    "days_in_year_so_far": 278,
+    "days_missing": 4,
+    "days_reported": 274,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Faulkton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 264,
+      "diff_in": "2.38",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 5",
+     "total_in": "22.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 106,
+    "state": "South Dakota",
+    "through": "Oct 5",
+    "through_iso": "2026-10-05",
+    "total_in": "20.08",
+    "usual_in": "18.87",
+    "vs_usual": {
+     "diff_in": "1.21",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.62",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c785e88810972c3b",
+   "sid": "392927 2",
+   "story": "Through Oct 5, the weather station in Faulkton has run 1.21 inches more than a usual year. September was the wettest month at 4.62 inches, and the biggest one-day reading came Jul 31 at 3.04 inches. Feb 2 to Feb 17 went 16 days in a row with nothing in the gauge. On the days both years reported, this year sits 2.38 inches less than last year.",
+   "through": "2026-10-05"
+  },
+  "46051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 8",
+     "in": "1.62",
+     "label": "biggest single day"
+    },
+    "county": "Grant County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Milbank",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.66",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 62,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.91",
+    "usual_in": "22.55",
+    "vs_usual": {
+     "diff_in": "8.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.93",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "924026869175c490",
+   "sid": "395531 2",
+   "story": "Through Oct 13, the weather station in Milbank has caught 13.91 inches, 8.64 less than a usual year. Last year by this day it had 27.57, so this year is 13.66 inches less. July was the wettest month at 3.93 inches, and the biggest single day was 1.62 inches on Jul 8. The longest dry stretch ran 14 days, Feb 4 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "46053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.45",
+     "label": "biggest single day"
+    },
+    "county": "Gregory County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Gregory",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.53",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.11",
+    "usual_in": "23.70",
+    "vs_usual": {
+     "diff_in": "3.59",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.30",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "940a41f45fc3ae69",
+   "sid": "393452 2",
+   "story": "Through Oct 13, the weather station in Gregory had its wettest month in June with 6.30 inches. The biggest single day came Jun 28 at 2.45 inches. The longest dry stretch ran 24 days, Feb 2 to Feb 25, with nothing in the gauge. On the days both years reported, this year is 0.53 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "46055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "1.20",
+     "label": "biggest single day"
+    },
+    "county": "Haakon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "5 miles northeast of Milesville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.50",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.20",
+    "usual_in": "17.93",
+    "vs_usual": {
+     "diff_in": "4.73",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.65",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4a128c14dea9caa4",
+   "sid": "395544 2",
+   "story": "Through Oct 13, the weather station 5 miles northeast of Milesville has caught 13.20 inches, 4.73 inches less than a usual year. July was the wettest month at 2.65 inches, and the biggest single day was 1.20 inches on Jul 30. Last year at this point the gauge had 27.70 inches, so this year sits 14.50 inches behind it.",
+   "through": "2026-10-13"
+  },
+  "46057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 4",
+     "in": "2.98",
+     "label": "biggest single day"
+    },
+    "county": "Hamlin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Castlewood",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.33",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.98",
+    "usual_in": "21.95",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.63",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "41bc8f316c4a507e",
+   "sid": "391520 2",
+   "story": "Through Oct 13, the weather station in Castlewood has caught about what a usual year brings. July was the wettest month at 6.63 inches, even with 16 days in a row of nothing in the gauge from Jul 10 to Jul 25. The biggest single day was 2.98 inches on Jun 4. All told, that is 9.33 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "46059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 5",
+     "in": "1.45",
+     "label": "biggest single day"
+    },
+    "county": "Hand County",
+    "days_in_year_so_far": 277,
+    "days_missing": 12,
+    "days_reported": 265,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Miller",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 240,
+      "diff_in": "7.52",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 26,
+     "through": "Oct 4",
+     "total_in": "19.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 27,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 67,
+    "state": "South Dakota",
+    "through": "Oct 4",
+    "through_iso": "2026-10-04",
+    "total_in": "12.71",
+    "usual_in": "18.92",
+    "vs_usual": {
+     "diff_in": "6.21",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.22",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eb1506c4e1d03270",
+   "sid": "395561 2",
+   "story": "Through Oct 4, the weather station in Miller had its wettest month in June at 4.22 inches, and its biggest single day came Jun 5 with 1.45 inches. From Feb 2 to Feb 28 it went 27 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 7.52 inches less than last year.",
+   "through": "2026-10-04"
+  },
+  "46063": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "1.23",
+     "label": "biggest single day"
+    },
+    "county": "Harding County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Buffalo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "7.05",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 16,
+     "through": "Oct 13",
+     "total_in": "16.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jul 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.27",
+    "usual_in": "12.21",
+    "vs_usual": {
+     "diff_in": "2.94",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.30",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0dd8d0a4875ab325",
+   "sid": "94037 1",
+   "story": "Through Oct 13, the weather station in Buffalo had its wettest month in June at 2.30 inches. The biggest single day came May 30 with 1.23 inches. From Jul 5 to Jul 25 it went 21 days in a row with nothing in the gauge, not even a trace. On the days both years reported, that is 7.05 inches less than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "46065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "1.48",
+     "label": "biggest single day"
+    },
+    "county": "Hughes County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "at Pierre Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.21",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.65",
+    "usual_in": "17.94",
+    "vs_usual": {
+     "diff_in": "0.29",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.08",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dd200c8a0b45ace0",
+   "sid": "24025 1",
+   "story": "Through Oct 13, the weather station at Pierre Regional Airport has caught 17.65 inches, 0.29 less than a usual year. June did most of the work with 5.08 inches, and the biggest single day was 1.48 on Jun 21. Last year at this point the gauge had 3.21 inches more.",
+   "through": "2026-10-13"
+  },
+  "46067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "1.88",
+     "label": "biggest single day"
+    },
+    "county": "Hutchinson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Menno",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.34",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 69,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.35",
+    "usual_in": "22.22",
+    "vs_usual": {
+     "diff_in": "6.87",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.93",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4c828733daefb2ad",
+   "sid": "395481 2",
+   "story": "Through Oct 13, the weather station in Menno has caught 15.35 inches, 6.87 inches less than a usual year. September did most of the work with 5.93 inches, and the biggest single day was 1.88 inches on Sep 8. Last year at this point the gauge had 21.69 inches, so this year sits 6.34 inches behind it. The longest dry stretch ran 21 days, Feb 4 to Feb 24, without even a trace.",
+   "through": "2026-10-13"
+  },
+  "46069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.05",
+     "label": "biggest single day"
+    },
+    "county": "Hyde County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "8.5 miles north of Holabird",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.97",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 62,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.97",
+    "usual_in": "19.45",
+    "vs_usual": {
+     "diff_in": "7.48",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.72",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b59a06b054e1a4ab",
+   "sid": "US1SDHY0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.5 miles north of Holabird has caught 11.97 inches, 7.48 less than a usual year. June was the wettest month at 3.72 inches, and the biggest single day was 1.05 inches on Sep 29. Last year at this point the gauge had 18.94 inches, so this year sits 6.97 inches behind it.",
+   "through": "2026-10-13"
+  },
+  "46071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "1.23",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "2.8 miles west-northwest of Kadoka",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.05",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "22.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.94",
+    "usual_in": "17.88",
+    "vs_usual": {
+     "diff_in": "1.94",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.67",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ad96d754b182189b",
+   "sid": "US1SDJK0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.8 miles west-northwest of Kadoka has caught 15.94 inches, 1.94 less than a usual year. July was the wettest month at 3.67 inches, and the biggest single day was Aug 13 with 1.23. The gauge went 24 days in a row with nothing, Feb 2 to Feb 25. On the days both years reported, this year is 7.05 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "46073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "Jerauld County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Wessington Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.26",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Apr 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.39",
+    "usual_in": "22.93",
+    "vs_usual": {
+     "diff_in": "0.54",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.45",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f0b49404d38bd7cf",
+   "sid": "399070 2",
+   "story": "Through Oct 13, the weather station in Wessington Springs has caught 22.39 inches, 0.54 inches less than a usual year. June was the wettest month at 6.45 inches, and the biggest single day came Aug 13 with 2.10 inches. The gauge went 20 days in a row with nothing in it from Apr 5 to Apr 24. That still puts this year 1.26 inches more than last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "46075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 3",
+     "in": "2.40",
+     "label": "biggest single day"
+    },
+    "county": "Jones County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Murdo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.36",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.40",
+    "usual_in": "19.44",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.56",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a8757e56248f6608",
+   "sid": "395891 2",
+   "story": "Through Oct 13, the weather station in Murdo is sitting about usual for the year. June was the wettest month at 5.56 inches, and 2.40 inches of that came on Jun 3, the biggest single day. The longest dry stretch ran 17 days, Feb 2 to Feb 18, with not even a trace in the gauge. Against last year, that is 0.36 inches less than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "46077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "3.39",
+     "label": "biggest single day"
+    },
+    "county": "Kingsbury County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in De Smet",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.72",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.05",
+    "usual_in": "23.28",
+    "vs_usual": {
+     "diff_in": "1.23",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.66",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e365ebc12f5bbfef",
+   "sid": "392302 2",
+   "story": "Through Oct 13, the weather station in De Smet had 22.05 inches, 1.23 inches less than a usual year. June was the wettest month at 4.66 inches, but the biggest single day came Jul 31 with 3.39 inches. The longest dry stretch ran 14 days, Mar 18 to Mar 31. Last year at this point the gauge had 28.77 inches, so this year sits 6.72 inches less.",
+   "through": "2026-10-13"
+  },
+  "46079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "Lake County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "2 miles southeast of Madison",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.87",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "May 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.29",
+    "usual_in": "23.90",
+    "vs_usual": {
+     "diff_in": "1.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.29",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2565dc4360e5ecaa",
+   "sid": "395090 2",
+   "story": "Through Oct 13, the weather station 2 miles southeast of Madison has caught 22.29 inches, 1.61 inches less than a usual year. September was the wettest month at 5.29 inches, and the biggest single day was 2.35 inches on Jul 31. The gauge went 17 days in a row with nothing from May 1 to May 17. Still, that is 1.87 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "46081": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 22",
+     "in": "1.68",
+     "label": "biggest single day"
+    },
+    "county": "Lawrence County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Lead",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.97",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 65,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.32",
+    "usual_in": "26.75",
+    "vs_usual": {
+     "diff_in": "9.43",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.21",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d94b59aa9131c023",
+   "sid": "394834 2",
+   "story": "Through Oct 13, the weather station in Lead has caught 10.97 inches less than it had by this day last year. June was the wettest month at 3.21 inches. The biggest single day was May 22, with 1.68 inches. The longest dry stretch ran 12 days, Aug 1 to Aug 12, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "46083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.92",
+     "label": "biggest single day"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Canton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.76",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "17.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jul 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.46",
+    "usual_in": "24.80",
+    "vs_usual": {
+     "diff_in": "0.66",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.02",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7cf81e55b96e1846",
+   "sid": "391392 2",
+   "story": "Through Oct 13, the weather station in Canton had 25.46 inches, 0.66 more than a usual year. September did most of the work at 8.02 inches, the wettest month. The biggest single day was 2.92 inches on Jun 28, and then the gauge sat empty for 14 days in a row, Jul 6 to Jul 19. Last year at this point it had 17.70 inches, so this year is 7.76 more.",
+   "through": "2026-10-13"
+  },
+  "46085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 3",
+     "in": "2.31",
+     "label": "biggest single day"
+    },
+    "county": "Lyman County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "in Kennebec",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.99",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.26",
+    "usual_in": "18.77",
+    "vs_usual": {
+     "diff_in": "0.51",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.85",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0821adf4d5db50b5",
+   "sid": "394516 2",
+   "story": "Through Oct 13, the weather station in Kennebec, less than a mile from the middle of the county, had 18.26 inches. June was the wettest month at 4.85 inches, and the biggest single day was Jun 3 with 2.31 inches. The longest dry stretch ran 26 days from Feb 4 to Mar 1 with nothing in the gauge. That is 1.99 inches less than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "46087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "2.52",
+     "label": "biggest single day"
+    },
+    "county": "McCook County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "5.8 miles northwest of Montrose",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.00",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.20",
+    "usual_in": "23.77",
+    "vs_usual": {
+     "diff_in": "4.57",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.21",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "12a589a94fb80880",
+   "sid": "US1SDMC0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.8 miles northwest of Montrose has caught 19.20 inches, 2.00 inches less than last year by the same day. September was the wettest month at 5.21 inches. The biggest single day was Jul 31 with 2.52 inches. The gauge went 16 days in a row with nothing in it, from Mar 17 to Apr 1.",
+   "through": "2026-10-13"
+  },
+  "46089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "1.69",
+     "label": "biggest single day"
+    },
+    "county": "McPherson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "in Eureka",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.54",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Apr 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.78",
+    "usual_in": "18.27",
+    "vs_usual": {
+     "diff_in": "0.49",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.77",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0eb5b5ec647067b0",
+   "sid": "392797 2",
+   "story": "Through Oct 13, the weather station in Eureka has 17.78 inches, 0.49 inches less than a usual year. August was the wettest month at 4.77 inches, and the biggest single day came Aug 13 with 1.69 inches. The gauge went 20 days in a row with nothing from Apr 28 to May 17. That puts this year 3.54 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "46091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 8",
+     "in": "2.33",
+     "label": "biggest single day"
+    },
+    "county": "Marshall County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Britton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.40",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.63",
+    "usual_in": "21.77",
+    "vs_usual": {
+     "diff_in": "4.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.69",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6d99dbcdbb27fea4",
+   "sid": "391049 2",
+   "story": "Through Oct 13, the weather station in Britton had 14.40 inches less than it had by this day in 2025. July was the wettest month at 3.69 inches, and 2.33 inches of that came on Jul 8. The longest dry stretch ran 13 days, Feb 5 to Feb 17, with not even a trace in the gauge. The year sits 4.14 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "46093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "1.82",
+     "label": "biggest single day"
+    },
+    "county": "Meade County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "3 miles east-southeast of Elm Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.93",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Aug 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.70",
+    "usual_in": "16.65",
+    "vs_usual": {
+     "diff_in": "1.95",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.22",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0533bc2a2726ec9d",
+   "sid": "392647 2",
+   "story": "Through Oct 13, the weather station 3 miles east-southeast of Elm Springs had its wettest month in May at 3.22 inches. The biggest single day came Aug 12 with 1.82 inches. Then the gauge went 25 days in a row with nothing in it, not even a trace, from Aug 20 to Sep 13. That leaves the year 3.93 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "46095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 3",
+     "in": "2.73",
+     "label": "biggest single day"
+    },
+    "county": "Mellette County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in Wood",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.73",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "19.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "South Dakota",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "17.58",
+    "usual_in": "18.39",
+    "vs_usual": {
+     "diff_in": "0.81",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.09",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cc0f2839a5f2de7f",
+   "sid": "399442 2",
+   "story": "Through Oct 11, the weather station in Wood had its wettest month in June with 6.09 inches. The biggest single day came Jun 3 at 2.73 inches. The longest dry stretch ran 22 days from Feb 4 to Feb 25 with nothing in the gauge, not even a trace. Against last year at this point, it is 1.73 inches less.",
+   "through": "2026-10-11"
+  },
+  "46097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "1.76",
+     "label": "biggest single day"
+    },
+    "county": "Miner County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Howard",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.06",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.34",
+    "usual_in": "23.50",
+    "vs_usual": {
+     "diff_in": "5.16",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.60",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "51cee9c540c0ed3b",
+   "sid": "394037 2",
+   "story": "Through Oct 13, the weather station in Howard has 18.34 inches, 5.16 inches less than a usual year. June was the wettest month at 4.60 inches, and the biggest single day came Jun 28 with 1.76 inches. The longest dry stretch ran 16 days, Feb 2 to Feb 17, with not even a trace. Last year by this date the gauge had 22.40 inches, so this year is 4.06 inches less.",
+   "through": "2026-10-13"
+  },
+  "46099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 1",
+     "in": "1.81",
+     "label": "biggest single day"
+    },
+    "county": "Minnehaha County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Sioux Falls Foss Field",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.69",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.90",
+    "usual_in": "24.65",
+    "vs_usual": {
+     "diff_in": "5.75",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.79",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "608aaa1b45b606ed",
+   "sid": "14944 1",
+   "story": "Through Oct 13, the weather station at Sioux Falls Foss Field has 5.75 inches less than a usual year. September was the wettest month at 5.79 inches, and the biggest single day was Jul 1 with 1.81 inches. The longest dry stretch ran 10 days, Jul 9 to Jul 18. It is still 0.69 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "46101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "3.90",
+     "label": "biggest single day"
+    },
+    "county": "Moody County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Flandreau",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.13",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.97",
+    "usual_in": "25.51",
+    "vs_usual": {
+     "diff_in": "2.54",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.73",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ad948e2123a43dbe",
+   "sid": "392984 2",
+   "story": "Through Oct 13, the station in Flandreau had most of its year come in September, with 8.73 inches that month. The biggest single day was Sep 7 at 3.90 inches. Before that it went 16 days in a row with nothing in the gauge, Mar 17 to Apr 1. On the days both years reported, 2026 has 0.13 inches more than 2025, and 2.54 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "46102": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "1.64",
+     "label": "biggest single day"
+    },
+    "county": "Oglala Lakota County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "at Pine Ridge Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "1.65",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "12.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.80",
+    "usual_in": "14.98",
+    "vs_usual": {
+     "diff_in": "4.18",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.32",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cde40a4d5f005e4a",
+   "sid": "94039 1",
+   "story": "Through Oct 13, the weather station at Pine Ridge Airport has 10.80 inches, 4.18 inches less than a usual year. May was the wettest month at 3.32 inches, and May 30 brought the biggest single day at 1.64 inches. The longest dry stretch ran 15 days, Feb 4 to Feb 18. On the days both years reported, this year is 1.65 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "46103": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 21",
+     "in": "1.84",
+     "label": "biggest single day"
+    },
+    "county": "Pennington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "at Rapid City Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.81",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "17.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Sep 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.25",
+    "usual_in": "15.92",
+    "vs_usual": {
+     "diff_in": "4.67",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.85",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3dd5075df6b9bbed",
+   "sid": "24090 1",
+   "story": "Through Oct 13, the weather station at Rapid City Regional Airport had 11.25 inches, 4.67 inches less than a usual year. May was the wettest month at 3.85 inches, and 1.84 of that came on May 21, the biggest single day. The longest dry stretch ran 12 days, Sep 29 to Oct 10. On the days both years reported, this year is 5.81 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "46105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "1.36",
+     "label": "biggest single day"
+    },
+    "county": "Perkins County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "35 miles from the middle of the county",
+    "gauge_where": "in Lemmon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.30",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jul 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.87",
+    "usual_in": "16.12",
+    "vs_usual": {
+     "diff_in": "0.25",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "3.60",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "81c52838a8f64e64",
+   "sid": "24052 1",
+   "story": "Through Oct 13, the weather station in Lemmon had August as its wettest month at 3.60 inches, and the biggest single day came Aug 14 with 1.36 inches. The gauge went 13 days in a row with nothing from Jul 4 to Jul 16. On the days both years reported, this year is 7.30 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "46109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "2.89",
+     "label": "biggest single day"
+    },
+    "county": "Roberts County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Sisseton Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.07",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jan 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.01",
+    "usual_in": "20.51",
+    "vs_usual": {
+     "diff_in": "2.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.20",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e6399c6bfccf064d",
+   "sid": "94993 1",
+   "story": "Through Oct 13, the weather station at Sisseton Municipal Airport had a lot of its year come in July. That month put 8.20 inches in the gauge, and Jul 30 alone gave 2.89 inches, the biggest single day. The total sits 5.07 inches less than last year at this point. The longest dry stretch ran 14 days, Jan 2 to Jan 15.",
+   "through": "2026-10-13"
+  },
+  "46111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "2.14",
+     "label": "biggest one-day reading"
+    },
+    "county": "Sanborn County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "less than a mile west-southwest of Woonsocket",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "1.70",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "19.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.32",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.42",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f21e111432d6500e",
+   "sid": "US1SDSB0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge west-southwest of Woonsocket had its wettest month in August at 4.42 inches, and its biggest one-day reading came Aug 13 with 2.14 inches. The longest dry stretch ran 15 days, Feb 5 to Feb 19, with not even a trace. On the days both years reported, that is 1.70 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "46117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "1.66",
+     "label": "biggest single day"
+    },
+    "county": "Stanley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "less than a mile southeast of Fort Pierre",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "4.47",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "21.78",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Apr 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.50",
+    "usual_in": "18.17",
+    "vs_usual": {
+     "diff_in": "0.67",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.37",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2aae7e3dd5ef4339",
+   "sid": "US1SDST0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southeast of Fort Pierre had its wettest month in June at 4.37 inches. The biggest single day came Jul 31 with 1.66 inches. From Apr 30 to May 16 it went 17 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year ran 4.47 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "46119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "1.30",
+     "label": "biggest single day"
+    },
+    "county": "Sully County",
+    "days_in_year_so_far": 277,
+    "days_missing": 5,
+    "days_reported": 272,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "4 miles northwest of Onida",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "5.90",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 4",
+     "total_in": "19.12",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "South Dakota",
+    "through": "Oct 4",
+    "through_iso": "2026-10-04",
+    "total_in": "13.22",
+    "usual_in": "18.08",
+    "vs_usual": {
+     "diff_in": "4.86",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.50",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "be0802f26914cf3f",
+   "sid": "396292 2",
+   "story": "Through Oct 4, the weather station 4 miles northwest of Onida has caught 13.22 inches, 4.86 inches less than a usual year. September was the wettest month at 3.50 inches, and the biggest single day was 1.30 inches on Aug 13. On the days both years reported, this year is 5.90 inches behind last year.",
+   "through": "2026-10-04"
+  },
+  "46121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "1.87",
+     "label": "biggest single day"
+    },
+    "county": "Todd County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "14 miles south of Mission",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.87",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Apr 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.76",
+    "usual_in": "20.31",
+    "vs_usual": {
+     "diff_in": "1.55",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.83",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8c54e52429051915",
+   "sid": "395638 2",
+   "story": "Through Oct 13, the weather station 14 miles south of Mission had 18.76 inches, 1.55 inches less than a usual year. June was the wettest month at 4.83 inches, and the biggest single day came Jul 31 with 1.87 inches. The gauge went 18 days in a row with nothing, from Apr 30 to May 17. It also sits 0.87 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "46123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 4",
+     "in": "2.05",
+     "label": "biggest single day"
+    },
+    "county": "Tripp County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "1.7 miles southwest of Hamill",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "1.83",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "15.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.02",
+    "usual_in": "22.07",
+    "vs_usual": {
+     "diff_in": "5.05",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.14",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "848140b486780639",
+   "sid": "US1SDTP0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.7 miles southwest of Hamill has caught 17.02 inches, 5.05 inches less than a usual year. June was the wettest month at 5.14 inches, and the biggest single day came Jun 4 with 2.05 inches. On the days both years reported, this year is 1.83 inches more than 2025. The longest dry stretch ran 24 days, Feb 1 to Feb 24, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "46125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "1.78",
+     "label": "biggest single day"
+    },
+    "county": "Turner County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Marion",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "1.06",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 10",
+     "total_in": "24.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "South Dakota",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "24.02",
+    "usual_in": "23.19",
+    "vs_usual": {
+     "diff_in": "0.83",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.54",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eacf8332bdb4c7e1",
+   "sid": "395228 2",
+   "story": "Through Oct 10, the weather station in Marion has caught 24.02 inches, 0.83 more than a usual year. September did most of the work at 7.54 inches, and the biggest single day was Sep 8 with 1.78. The longest dry stretch ran 13 days, May 2 to May 14. On the days both years reported, this year is 1.06 inches less than last year.",
+   "through": "2026-10-10"
+  },
+  "46127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "1.65",
+     "label": "biggest single day"
+    },
+    "county": "Union County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "2.1 miles west-northwest of Jefferson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "5.54",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "25.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.72",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d49097df56b3de0f",
+   "sid": "US1SDUN0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Jefferson had caught 19.72 inches. The biggest single day was Jul 3 at 1.65 inches. The longest dry stretch ran 14 days, Feb 6 to Feb 19, without so much as a trace. On the days both years reported, that is 5.54 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "46129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "2.56",
+     "label": "biggest single day"
+    },
+    "county": "Walworth County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "at Mobridge Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.65",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.76",
+    "usual_in": "16.12",
+    "vs_usual": {
+     "diff_in": "0.36",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "4.85",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "44d708628228a22c",
+   "sid": "94052 1",
+   "story": "Through Oct 13, the weather station at Mobridge Municipal Airport has caught 15.76 inches, about usual. July did most of the work with 4.85 inches, and 2.56 of that came on Jul 30 alone. The longest dry stretch ran 14 days, Feb 3 to Feb 16. Last year by this date the gauge had 22.41 inches, so this year is 6.65 inches less.",
+   "through": "2026-10-13"
+  },
+  "46135": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 23",
+     "in": "1.02",
+     "label": "biggest single day"
+    },
+    "county": "Yankton County",
+    "days_in_year_so_far": 285,
+    "days_missing": 3,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Yankton Municipal Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Sep 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 53,
+    "state": "South Dakota",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "13.15",
+    "usual_in": "24.70",
+    "vs_usual": {
+     "diff_in": "11.55",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.57",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6c01523d67e4362b",
+   "sid": "94911 1",
+   "story": "Through Oct 12, the station at Yankton Municipal Airport has gone 13 days in a row with nothing in the gauge, not even a trace, from Sep 30 to Oct 12. That came right after September, the wettest month at 3.57 inches. The biggest single day was 1.02 inches on Jul 23. All told the year sits at 13.15 inches, 11.55 inches less than a usual year.",
+   "through": "2026-10-12"
+  },
+  "46137": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 18",
+     "in": "1.02",
+     "label": "biggest single day"
+    },
+    "county": "Ziebach County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "15 miles south-southeast of Dupree",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "16.89",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 38,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "South Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.66",
+    "usual_in": "17.18",
+    "vs_usual": {
+     "diff_in": "4.52",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.57",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0f662e8cbe2e11a4",
+   "sid": "392446 2",
+   "story": "Through Oct 13, the weather station 15 miles south-southeast of Dupree had 12.66 inches, 4.52 inches less than a usual year. August was the wettest month at 2.57 inches, and the biggest single day was 1.02 inches on Sep 18. The gauge went 38 days in a row with nothing from Feb 1 to Mar 10. On the days both years reported, that is 16.89 inches less than last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "SD"
+}

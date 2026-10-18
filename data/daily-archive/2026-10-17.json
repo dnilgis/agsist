@@ -391,5 +391,11 @@
   "market_closed": true,
   "market_status_reason": "weekend",
   "otp_week_ahead": true,
-  "first_published_at": "2026-10-17T10:54:24.050396+00:00"
+  "first_published_at": "2026-10-17T10:54:24.050396+00:00",
+  "corrections": [
+    {
+      "date": "2026-10-18",
+      "text": "Equatorial Guinea's drop from 140,000 to 20,000 barrels a day is 86%, not 85%, and it is a large fall for that country, though a small amount of oil worldwide."
+    }
+  ]
 }

@@ -93,8 +93,43 @@ def mesh_dates():
     return out
 
 
-def _new_rec(src):
-    return {"n": 0, "max": 0.0, "dmg": 0, "states": {}, "reports": [], "src": src}
+def _new_rec(src, rule=None):
+    return {"n": 0, "max": 0.0, "dmg": 0, "states": {}, "reports": [], "src": src,
+            "rule": rule}
+
+
+# How the day's reports were grouped (fetch_hail.DAY_RULE). "spc-12z" is the
+# Storm Prediction Center's convective day; None is the old UTC calendar day
+# that files pulled before 2026-10-17 still carry. The page says which.
+SPC_RULE = "spc-12z"
+DAY_RULE_LINE = {
+    SPC_RULE: ("A storm day runs 7 a.m. to 7 a.m. Central (12:00 to 12:00 UTC), as the Storm "
+               "Prediction Center counts it, so an evening storm stays on the day it fell."),
+    None: ("These reports are grouped by UTC calendar day, 7 p.m. Central the evening before to "
+           "7 p.m. Central this day, so an evening storm in the central states can show on the "
+           "next day's page. The next archive pull regroups them to the Storm Prediction "
+           "Center's 7 a.m. to 7 a.m. Central storm day."),
+}
+SWATH_DAY_LINE = ("The radar swath covers the UTC calendar day, 7 p.m. Central the evening before "
+                  "to 7 p.m. Central this day.")
+
+
+def moved_stub(d, dest):
+    """Short noindex page sending an old day address to the storm day that now
+    holds its reports (storm days run 12Z to 12Z since Oct 17, 2026)."""
+    nd = nice_date(d)
+    return (f'<!DOCTYPE html>\n<html lang="en" data-theme="dark">\n<head>\n<meta charset="utf-8">\n'
+            f'<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+            f'<title>Hail {esc(nd)}: moved | AGSIST</title>\n<meta name="robots" content="noindex,follow">\n'
+            f'<link rel="canonical" href="https://agsist.com{dest}">\n'
+            f'<meta http-equiv="refresh" content="0; url={dest}">\n</head>\n<body>\n'
+            f'<main style="max-width:600px;margin:0 auto;padding:3rem 1rem;font-family:Inter,system-ui,sans-serif;text-align:center">\n'
+            f'<p>Storm days now run 7 a.m. to 7 a.m. Central, as the Storm Prediction Center counts them, so the reports once listed for {esc(nd)} are on a neighboring storm day.</p>\n'
+            f'<p><a href="{dest}" style="font-weight:600">Go there &rarr;</a></p>\n</main>\n</body>\n</html>\n')
+
+
+def day_rule_line(rule):
+    return DAY_RULE_LINE.get(rule if rule == SPC_RULE else None)
 
 
 def _add_report(rec, lat, lon, mag, st, city=None):
@@ -130,6 +165,8 @@ def load_day_index():
     days = {}
     if not os.path.isdir(HAIL_DIR):
         return days
+    man = _read_json(os.path.join(HAIL_DIR, "manifest.json")) or {}
+    rules = man.get("day_rules") or {}
     for f in sorted(os.listdir(HAIL_DIR)):
         m = re.match(r"events-(\d{4})\.json$", f)
         if not m:
@@ -141,11 +178,10 @@ def load_day_index():
         for e in d.get("ev", []):
             md = str(e[3]).replace("/", "-")
             date = year + "-" + md
-            rec = days.setdefault(date, _new_rec("events-" + year + ".json"))
+            rec = days.setdefault(date, _new_rec("events-" + year + ".json", rules.get(year)))
             st = e[4] if len(e) > 4 and e[4] else None
             _add_report(rec, e[0], e[1], e[2], st)
 
-    man = _read_json(os.path.join(HAIL_DIR, "manifest.json")) or {}
     recent = _read_json(os.path.join(HAIL_DIR, "recent.json")) or {}
     vintage = man.get("generated")
     rgen, rdays = recent.get("generated"), recent.get("days")
@@ -157,10 +193,19 @@ def load_day_index():
             rstart = None
         if rstart:
             lo = max(vintage, rstart)
+            if recent.get("day_rule") == SPC_RULE:
+                # a storm day runs to 12Z the next morning, so the day before
+                # the yearly pull is cut short in the yearly file; recent.json
+                # (pulled daily) holds it whole
+                try:
+                    lo = max((datetime.strptime(vintage, "%Y-%m-%d")
+                              - timedelta(days=1)).strftime("%Y-%m-%d"), rstart)
+                except ValueError:
+                    pass
             # every date in [lo, rgen] is now read from recent.json, even if empty
             dt = datetime.strptime(lo, "%Y-%m-%d")
             while dt.strftime("%Y-%m-%d") <= rgen:
-                days[dt.strftime("%Y-%m-%d")] = _new_rec("recent.json")
+                days[dt.strftime("%Y-%m-%d")] = _new_rec("recent.json", recent.get("day_rule"))
                 dt += timedelta(days=1)
             for r in recent.get("reports", []):
                 date = r.get("date")
@@ -272,6 +317,7 @@ def day_figures(rec, counties):
         "unmatched": sum(1 for r in reps if not r["county"]),
         "has_city": any(r["city"] for r in reps),
         "src": rec["src"] if rec else None, "vintage": rec.get("vintage") if rec else None,
+        "rule": rec.get("rule") if rec else None,
     }
 
 
@@ -552,6 +598,8 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         "<div class=\"he-stat\"><div class=\"v\">" + str(fig["n_states"]) + "</div><div class=\"l\">states reporting</div></div>"
         + ("<div class=\"he-stat\"><div class=\"v\">" + f"{mesh_max:.2f}″" + "</div><div class=\"l\">radar-estimated max</div></div>" if has_swath and mesh_max else "")
         + "</div>\n"
+        + "<p class=\"he-note\">" + esc(day_rule_line(fig["rule"]))
+        + (" " + esc(SWATH_DAY_LINE) if has_swath else "") + "</p>\n"
         + swath_cta + "\n"
         + figures_html(nd, fig) +
         "<p><a href=\"/hail-map\" style=\"color:var(--brand,#d4a23f)\">Check any address against this storm on the hail map &rarr;</a></p>\n"
@@ -665,7 +713,7 @@ def hub_html(dates_meta, today):
         + season_recap_html(dates_meta) + jump +
         "<table><thead><tr><th>Storm day</th><th class=\"num\">Reports</th><th class=\"num\">Largest</th><th>Record</th></tr></thead><tbody>"
         + rows + "</tbody></table>\n"
-        "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"" + asset_url("/components/loader.js") + "\" defer></script>\n</body>\n</html>\n")
+        "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"" + asset_url("/components/loader.js") + "\" defer></script>\n<script src=\"/components/glossary.js?v=1\" defer></script>\n<script src=\"/components/next-links.js?v=1\" defer></script>\n</body>\n</html>\n")
 
 
 def main():
@@ -708,6 +756,27 @@ def main():
         if prev != html:
             open(path, "w", encoding="utf-8").write(html)
             made += 1
+    # A day page left over from an older grouping (UTC days before Oct 17,
+    # 2026) whose day no longer qualifies: its reports now sit on a neighbor
+    # storm day. Keep the address working with a short moved stub to that day
+    # (or the hub), never a stale page that says the old rule.
+    qset = set(qualifying)
+    stubbed = 0
+    for fn in sorted(os.listdir(OUT_DIR)):
+        mday = re.fullmatch(r"(\d{4}-\d{2}-\d{2})\.html", fn)
+        if not mday or mday.group(1) in qset:
+            continue
+        d = mday.group(1)
+        dd = datetime.strptime(d, "%Y-%m-%d").date()
+        near = [x.isoformat() for x in (dd - timedelta(days=1), dd + timedelta(days=1)) if x.isoformat() in qset]
+        dest = f"/hail/{near[0]}" if near else "/hail/"
+        stub = moved_stub(d, dest)
+        path = os.path.join(OUT_DIR, fn)
+        if open(path, encoding="utf-8").read() != stub:
+            open(path, "w", encoding="utf-8").write(stub)
+            stubbed += 1
+    if stubbed:
+        print(f"storm pages: {stubbed} old day pages now point to their storm day")
     hp = os.path.join(OUT_DIR, "index.html")
     hprev = open(hp).read() if os.path.exists(hp) else None
     hold = re.search(r'"dateModified":"(\d{4}-\d{2}-\d{2})"', hprev or "")

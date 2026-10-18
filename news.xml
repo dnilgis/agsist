@@ -48,22 +48,6 @@
       <source url="https://agsist.com/news.xml">USDA NASS Crop Progress</source>
     </item>
     <item>
-      <title>December corn down 3.8% on the day</title>
-      <link>https://agsist.com/corn-futures-prices</link>
-      <description>Settled $5.02, -20 cents on the session.</description>
-      <guid isPermaLink="false">agsist-news-px:2026-10-01:corn-dec:move</guid>
-      <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
-      <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
-    </item>
-    <item>
-      <title>Wheat down 2.5% on the day</title>
-      <link>https://agsist.com/wheat-futures-prices</link>
-      <description>Settled $6.77, -17.5 cents on the session.</description>
-      <guid isPermaLink="false">agsist-news-px:2026-10-01:wheat:move</guid>
-      <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
-      <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
-    </item>
-    <item>
       <title>Wheat down 2.7% on the day</title>
       <link>https://agsist.com/wheat-futures-prices</link>
       <description>Settled $6.76, -18.5 cents on the session.</description>
@@ -77,7 +61,7 @@
       <description>Trade looked for 1.918 B bu; USDA printed 2.095 B bu — +9.2% versus the survey.</description>
       <guid isPermaLink="false">agsist-news-wasde:2026-09-30:Corn stocks, all positions, Sept 1</guid>
       <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-      <source url="https://agsist.com/news.xml">USDA WASDE, graded against the pre-report survey</source>
+      <source url="https://agsist.com/news.xml">USDA, graded against the pre-report survey</source>
     </item>
     <item>
       <title>December corn down 3.2% on the day</title>

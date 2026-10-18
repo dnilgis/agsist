@@ -1,0 +1,215 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "15001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "6.82",
+     "label": "biggest single day"
+    },
+    "county": "Hawaii County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "32 miles from the middle of the county",
+    "gauge_where": "at Hilo International Airport 87",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 5,
+     "from": "Jan 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 145,
+    "state": "Hawaii",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "126.95",
+    "usual_in": "87.67",
+    "vs_usual": {
+     "diff_in": "39.28",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "20.85",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dae9d71435fdb9ec",
+   "sid": "21504 1",
+   "story": "Through Oct 13, the weather station at Hilo International Airport 87 has caught 126.95 inches, 39.28 more than a usual year. August did the heavy lifting with 20.85 inches, and Aug 15 alone put 6.82 in the gauge. The longest the gauge sat empty was 5 days, Jan 25 to Jan 29.",
+   "through": "2026-10-13"
+  },
+  "15003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 13",
+     "in": "5.51",
+     "label": "biggest single day"
+    },
+    "county": "Honolulu County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Honolulu International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "14.25",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "9.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Sep 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 219,
+    "state": "Hawaii",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.95",
+    "usual_in": "10.96",
+    "vs_usual": {
+     "diff_in": "12.99",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.61",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cb2114c2c6789be6",
+   "sid": "22521 1",
+   "story": "Through Oct 13, the weather station at Honolulu International Airport had most of its year in March, with 13.61 inches that month. The biggest single day was Mar 13 at 5.51 inches. The longest dry stretch ran 6 days, Sep 9 to Sep 14. On the days both years reported, this year is 14.25 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "15007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 13",
+     "in": "5.24",
+     "label": "biggest single day"
+    },
+    "county": "Kauai County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "1.9 miles west-southwest of Kapaa",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 261,
+      "diff_in": "31.51",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 25,
+     "through": "Oct 13",
+     "total_in": "53.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": null,
+    "multi_day_reports": 0,
+    "pct_of_usual": 175,
+    "state": "Hawaii",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "94.85",
+    "usual_in": "54.29",
+    "vs_usual": {
+     "diff_in": "40.56",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "15.99",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "901be339714960f6",
+   "sid": "US1HIKI0019 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.9 miles west-southwest of Kapaa has caught 94.85 inches, 40.56 inches more than a usual year. March did most of the work at 15.99 inches, and the biggest single day came Mar 13 with 5.24 inches. On the days both years reported, 2026 is 31.51 inches ahead of 2025.",
+   "through": "2026-10-13"
+  },
+  "15009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 13",
+     "in": "7.40",
+     "label": "biggest single day"
+    },
+    "county": "Maui County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "at Kahului Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 275,
+    "state": "Hawaii",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.29",
+    "usual_in": "11.03",
+    "vs_usual": {
+     "diff_in": "19.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "21.11",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "975f516ebfaa43c5",
+   "sid": "22516 1",
+   "story": "Through Oct 13, the weather station at Kahului Airport has caught 30.29 inches, 19.26 more than a usual year. Most of it came in March, with 21.11 inches that month. The biggest single day was Mar 13 at 7.40 inches. That came right after the longest dry stretch, 13 days in a row with nothing in the gauge from Feb 26 to Mar 10.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "HI"
+}

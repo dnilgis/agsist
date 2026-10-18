@@ -1,0 +1,540 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "33001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "2.17",
+     "label": "biggest one-day reading"
+    },
+    "county": "Belknap County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Lakeport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "3.49",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "28.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Jul 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 14"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 90,
+    "state": "New Hampshire",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.47",
+    "usual_in": "34.82",
+    "vs_usual": {
+     "diff_in": "3.35",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.13",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e11481847ffdd003",
+   "sid": "274480 2",
+   "story": "Through Oct 13, the weather station in Lakeport has caught 31.47 inches, 3.35 inches less than a usual year. May was the wettest month at 6.13 inches, and the biggest one-day reading was 2.17 inches on Aug 3. The gauge went 12 days in a row with nothing from Jul 3 to Jul 14. On the days both years reported, that is 3.49 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "33003": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 15",
+     "in": "3.33",
+     "label": "biggest single day"
+    },
+    "county": "Carroll County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Tamworth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.43",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jul 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "New Hampshire",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.61",
+    "usual_in": "39.40",
+    "vs_usual": {
+     "diff_in": "0.21",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "9.85",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d7dab9769062401d",
+   "sid": "278614 2",
+   "story": "Through Oct 13, the weather station in Tamworth has caught 39.61 inches, about usual and 0.21 inches more than a usual year. May did most of the talking at 9.85 inches, with 3.33 inches on May 15 alone. The longest dry stretch ran 11 days, Jul 4 to Jul 14. That is 6.43 inches more than 2025 had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "33005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "3.23",
+     "label": "biggest single day"
+    },
+    "county": "Cheshire County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in Jaffrey Silver Ranch Airpark",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.27",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "New Hampshire",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.17",
+    "usual_in": "36.97",
+    "vs_usual": {
+     "diff_in": "1.80",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.94",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "688a347e818a180f",
+   "sid": "274304 2",
+   "story": "Through Oct 13, the weather station in Jaffrey Silver Ranch Airpark had July as its wettest month at 5.94 inches. Most of that came on Jul 30, when the gauge caught 3.23 inches, the biggest single day of the year. That same month also held the longest dry stretch, 10 days in a row with nothing at all from Jul 9 to Jul 18. The station sits 1.27 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "33007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 8",
+     "in": "2.98",
+     "label": "biggest single day"
+    },
+    "county": "Coos County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Berlin Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "4.03",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "24.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Apr 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "New Hampshire",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.62",
+    "usual_in": "29.21",
+    "vs_usual": {
+     "diff_in": "0.59",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.27",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1d76f13a28c601b3",
+   "sid": "94700 1",
+   "story": "Through Oct 13, the weather station at Berlin Regional Airport had June as its wettest month at 6.27 inches. The biggest single day came Aug 8 with 2.98 inches. The longest dry stretch ran 6 days, Apr 24 to Apr 29, with nothing in the gauge. On the days both years reported, this year is 4.03 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "33009": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "2.42",
+     "label": "biggest single day"
+    },
+    "county": "Grafton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "24 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southeast of Bristol",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.69",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Apr 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "New Hampshire",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.51",
+    "usual_in": "35.09",
+    "vs_usual": {
+     "diff_in": "2.58",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.64",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "896a519bbc3f94b0",
+   "sid": "US1NHGR0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Bristol had 32.51 inches, 2.58 inches less than a usual year. May carried the year with 7.64 inches, and 2.42 of that came on May 30 alone. The longest dry stretch ran 8 days, Apr 22 to Apr 29. Still, that is 1.69 inches more than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "33011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "1.55",
+     "label": "biggest single day"
+    },
+    "county": "Hillsborough County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "in Massabesic Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "7.28",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "32.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "New Hampshire",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.41",
+    "usual_in": "32.78",
+    "vs_usual": {
+     "diff_in": "6.37",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.34",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "72cef97d97714eb3",
+   "sid": "275211 2",
+   "story": "Through Oct 13, the weather station in Massabesic Lake had caught 26.41 inches, 6.37 inches less than a usual year. September was the wettest month at 4.34 inches. The biggest single day was 1.55 inches on Jun 23. On the days both years reported, this year has 7.28 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "33013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 17",
+     "in": "1.05",
+     "label": "biggest single day"
+    },
+    "county": "Merrimack County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "at Concord Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.06",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "New Hampshire",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.21",
+    "usual_in": "32.19",
+    "vs_usual": {
+     "diff_in": "2.98",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.08",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "680b6d6cbf591d9e",
+   "sid": "14745 1",
+   "story": "Through Oct 13, the weather station at Concord Municipal Airport has caught 29.21 inches, 2.98 inches less than a usual year. May was the wettest month at 6.08 inches. The biggest single day came Sep 17 with 1.05 inches. That is 2.06 inches less than last year had by this day.",
+   "through": "2026-10-13"
+  },
+  "33015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 4",
+     "in": "1.72",
+     "label": "biggest single day"
+    },
+    "county": "Rockingham County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in West Hampstead",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.15",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "New Hampshire",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.31",
+    "usual_in": "35.81",
+    "vs_usual": {
+     "diff_in": "3.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.90",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8529f46255713f22",
+   "sid": "279278 2",
+   "story": "Through Oct 13, the weather station in West Hampstead had its wettest month in July with 4.90 inches. The biggest single day came Aug 4 at 1.72 inches. The longest dry stretch ran 9 days from Jan 29 to Feb 6 with nothing in the gauge, not even a trace. That still left this year 1.15 inches more than 2025 on the same days, but 3.50 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "33019": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 15",
+     "in": "1.27",
+     "label": "biggest single day"
+    },
+    "county": "Sullivan County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Newport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.06",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "29.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "New Hampshire",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "30.00",
+    "usual_in": "32.18",
+    "vs_usual": {
+     "diff_in": "2.18",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.51",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5b3558ce18f021b2",
+   "sid": "275868 2",
+   "story": "Through Oct 12, the weather station in Newport has caught 30.00 inches, 2.18 inches less than a usual year. May was the wettest month at 5.51 inches, and the biggest single day came on May 15 with 1.27 inches. The longest dry stretch ran 9 days, Jan 29 to Feb 6, with not even a trace in the gauge. Against last year it's about a wash, 0.06 inches more than 2025 by this date.",
+   "through": "2026-10-12"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "NH"
+}

@@ -840,15 +840,7 @@ def snapshot_prices(root="."):
     """Freeze the futures the scenarios are centered on, so a build is reproducible."""
     pj = _read(root, "data/prices.json")
     hp = _read(root, "data/harvest-prices.json")
-    snap = {"taken": pj.get("fetched"), "harvest": {}, "futures": {}}
-    lab = {"Corn": "corn", "Soybeans": "soybeans"}
-    for c in hp.get("commodities", []):
-        k = lab.get(c.get("label"))
-        h = c.get("harvest") or {}
-        if k and h.get("running_avg"):
-            # days: the settles in the series, the one count every page uses
-            snap["harvest"][k] = {"contract": c.get("contract"), "price": h["running_avg"], "days": len(h.get("series") or []),
-                                  "of": h.get("days_total"), "status": h.get("status"), "updated": hp.get("updated")}
+    snap = {"taken": pj.get("fetched"), "harvest": harvest_block(hp), "futures": {}}
     for k, key in (("corn", "corn-dec27"), ("soybeans", "beans-nov27")):
         q = (pj.get("quotes") or {}).get(key)
         if q and q.get("close"):
@@ -860,6 +852,46 @@ def snapshot_prices(root="."):
         json.dump(snap, f, indent=1)
         f.write("\n")
     return snap
+
+
+def harvest_block(hp):
+    """The Dec 2026 corn / Nov 2026 soybean October average so far, from data/harvest-prices.json
+    (the file /harvest-price-tracker reads), shaped for the snapshot."""
+    out = {}
+    lab = {"Corn": "corn", "Soybeans": "soybeans"}
+    for c in (hp or {}).get("commodities", []):
+        k = lab.get(c.get("label"))
+        h = c.get("harvest") or {}
+        if k and h.get("running_avg"):
+            # days: the settles in the series, the one count every page uses
+            out[k] = {"contract": c.get("contract"), "price": h["running_avg"], "days": len(h.get("series") or []),
+                      "of": h.get("days_total"), "status": h.get("status"), "updated": hp.get("updated")}
+    return out
+
+
+def refresh_harvest(root="."):
+    """Every build that writes (not --check) takes the current October average from
+    data/harvest-prices.json, so the county pages match /harvest-price-tracker on the day
+    they are built. The futures half of the snapshot stays as --snapshot-prices froze it.
+    A harvest file older than the snapshot's, or one with fewer settles, is ignored."""
+    sp = os.path.join(root, SNAPSHOT)
+    hpp = os.path.join(root, "data/harvest-prices.json")
+    if not (os.path.exists(sp) and os.path.exists(hpp)):
+        return False
+    snap = _read(root, SNAPSHOT)
+    new = harvest_block(_read(root, "data/harvest-prices.json"))
+    old = snap.get("harvest") or {}
+    if not new or new == old:
+        return False
+    for k, h in new.items():
+        o = old.get(k) or {}
+        if o.get("contract") == h.get("contract") and ((h.get("updated") or "") < (o.get("updated") or "") or (h.get("days") or 0) < (o.get("days") or 0)):
+            return False
+    snap["harvest"] = {**old, **new}
+    with open(sp, "w") as f:
+        json.dump(snap, f, indent=1)
+        f.write("\n")
+    return True
 
 
 def snapshot_problem(snap, today, max_days=SNAP_MAX_DAYS):
@@ -882,7 +914,7 @@ def signup_copy(today):
     st = {py: ("upcoming" if today < dt.date.fromisoformat(YEAR_INFO[py]["open"]) else
                "open" if today <= dt.date.fromisoformat(YEAR_INFO[py]["close"]) else "closed") for py in YEARS}
     c6, o7, c7 = nice_date(a["close"]), nice_date(b["open"]), nice_date(b["close"])
-    sign = ("Sign", "Every owner and operator on the farm signs.")
+    sign = ("Sign", "Producers with a share in the crop sign. FSA says a landowner with no share interest, such as a cash-rent landlord, cannot enroll.")
     bring = ("Bring", "Bring the farm&rsquo;s FSA-156EZ. It lists the base acres and PLC yields.")
     if st[2026] != "closed":
         items = [(nice_date(a["close"], False), f"2026 signup ends {c6}."),
@@ -1499,7 +1531,7 @@ def head(title, desc, path, jsonld, indexable=True, fonts="", og_title=None, og_
 </head>"""
 
 
-def tail(ftr, calc=False, math=False):
+def tail(ftr, calc=False, math=False, hub=False):
     s = f"""{ftr}
 <script src="/components/asof.js?v={ASOF_V}" defer></script>
 <script src="/components/loader.js?v={LOADER_V}" defer></script>
@@ -1510,6 +1542,8 @@ def tail(ftr, calc=False, math=False):
         s += f'\n<script src="/components/arc-plc.js?v={CALC_V}" defer></script>'
     if math:
         s += f'\n<script src="/components/arc-plc-math.js?v={CALC_V}" defer></script>'
+    if hub:  # glossary marks and the Next block (data/next-links.json), hub page only
+        s += '\n<script src="/components/glossary.js?v=1" defer></script>\n<script src="/components/next-links.js?v=1" defer></script>'
     return s + "\n</body>\n</html>\n"
 
 
@@ -1660,6 +1694,12 @@ def faq_items(D):
          "No. ARC-IC covers the whole farm on your own yields, where ARC-CO and PLC go crop by crop. Checking it needs your own yields "
          "for each crop and every farm you would put in ARC-IC in the state, combined into one ARC-IC farm. Two free tools run it: "
          "Texas A&M AFPC's 2026 ARC-IC Decision Aid and farmdoc's Farm Bill What-If Tool."),
+        ("If I pick ARC-CO, do I have to turn in my yields to FSA?",
+         "No. ARC-CO pays on county yields and national prices, not your farm's numbers, so USDA's rule says you do not give FSA "
+         "any extra yield or price data to get paid. Your own yields come in only if you pick ARC-IC."),
+        ("Do I have to carry crop insurance to get ARC or PLC?",
+         "No. USDA's rule says crop insurance is not required for ARC or PLC, but your election can change what insurance you can buy. "
+         "One catch for cotton: enroll seed cotton base in ARC or PLC and that farm's planted cotton acres cannot get STAX."),
         ("Can I buy SCO if I pick ARC?",
          "Under the 2025 law, yes: SCO is no longer tied to your ARC or PLC election. For 2026 the coverage up to 90% is sold as ECO; "
          "SCO itself goes to 90% in 2027. Confirm the details for your crop with your crop insurance agent."),
@@ -1669,6 +1709,9 @@ def faq_items(D):
         ("When do the payments come?",
          "After the marketing year ends and USDA publishes the season-average price: after October 1, 2027 for 2026 crops and after "
          "October 1, 2028 for 2027 crops."),
+        ("Is there a deadline for the payment eligibility paperwork after I sign up?",
+         "Yes. FSA's rule says every payment eligibility document for a 2026 contract is due by March 1, 2028. Miss it and the "
+         "payment does not issue: FSA treats it as forfeited, not denied."),
         ("What is the ARC/PLC payment limit?",
          "$155,000 per person or legal entity in the 2025 law, adjusted for inflation; USDA put 2025 at $160,000. The 2026 and 2027 figures "
          "are not out. The limit is per person across all crops and farms."),
@@ -1771,7 +1814,7 @@ def method_html(D):
                 f'<div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th><th>Crop</th><th class="num">ERP</th><th class="num">Final MYA</th>'
                 f'<th class="num">PLC rate</th><th class="num">PLC $/base ac</th><th class="num">ARC-CO $/base ac</th></tr></thead><tbody>{rows}</tbody></table></div>'
                 f'<p class="ap-small">PLC: ERP minus the final season-average price (NASS), never below the loan rate, times FSA&rsquo;s {bt["plc_py"]} national average PLC yield '
-                f'(corn {bt["nat_py"]["corn"]:.1f}, soybeans {bt["nat_py"]["soybeans"]:.1f}, wheat {bt["nat_py"]["wheat"]:.1f} bu, weighted by enrolled base) times 85%. 2019 to 2024 use the '
+                f'(corn {bt["nat_py"]["corn"]:.2f}, soybeans {bt["nat_py"]["soybeans"]:.2f}, wheat {bt["nat_py"]["wheat"]:.2f} bu, weighted by enrolled base) times 85%. 2019 to 2024 use the '
                 f'2018 law (statutory $3.70, $8.40, $5.50; 85% escalator); 2025 the 2025 law. ARC-CO: FSA&rsquo;s county payment rates from its program year files '
                 f'({", ".join(str(y) for y in have)}), irrigated and non-irrigated averaged equally where FSA splits a county, weighted by each county&rsquo;s enrolled base, times 85%. '
                 f'Every county rate in those files was recomputed from the file&rsquo;s own yields and prices and matched FSA&rsquo;s to the cent '
@@ -1780,7 +1823,7 @@ def method_html(D):
     c6, s6, c7, s7, w6 = y6["corn"]["scen"], y6["soybeans"]["scen"], y7["corn"]["scen"], y7["soybeans"]["scen"], y6["wheat"]["scen"]
     corn_sd = sd1(v for v in c6["ratios"].values()) if c6.get("ratios") else None
     def altp(sc):
-        return (f'{usd(sc["alt"])} ({esc(sc.get("alt_contract") or "")} October average so far, {usd(sc["alt_fut"])} over {sc.get("alt_days")} of {sc.get("alt_of")} trading days, '
+        return (f'{usd(sc["alt"])} ({esc(sc.get("alt_contract") or "")} October average{(" through " + nice_date(sc["alt_date"], False)) if sc.get("alt_date") else " so far"}, {usd(sc["alt_fut"])} over {sc.get("alt_days")} of {sc.get("alt_of")} trading days, '
                 f'times {sc["oct_mean"]:.3f}: from {yrs[0]} to {yrs[-1]}, the years with FSA county yields that the scenarios use, the final season-average price averaged '
                 f'{sc["oct_mean"]:.3f} times that year&rsquo;s October average of the harvest contract, RMA&rsquo;s harvest price)') if sc.get("alt") else "not available"
     return f"""<h2 id="method">How the ARC or PLC verdict is figured</h2>
@@ -1951,9 +1994,9 @@ def build_main(D, ch):
   <ul class="ap-list">
     <li><b>Each crop, each farm number.</b> You elect ARC-CO or PLC crop by crop on each FSA farm. Run them one at a time.</li>
     <li><b>Rented ground.</b> On a cash lease the tenant gets the payment unless agreed otherwise. On a share lease landlord and tenant split it by share and both sign.</li>
-    <li><b>10 base acres.</b> A farm with 10 or fewer total base acres gets no payment, unless the producer is socially disadvantaged, limited resource, a veteran or a beginning farmer.</li>
+    <li><b>10 base acres.</b> No payment when the farm&rsquo;s base acres, added to the base on the other farms where you hold an enrolled share, come to 10 acres or less (7 CFR 1412.51), unless you are a socially disadvantaged, limited resource, veteran or beginning farmer.</li>
     <li><b>Income rule.</b> The $900,000 average adjusted gross income limit still applies to ARC and PLC. The new exception for those with 75% of gross income from farming covers certain conservation and disaster programs, not ARC or PLC.</li>
-    <li><b>Payment limit.</b> Per person across all crops and farms, not per farm. Sequestration (5.7% lately) comes off before the limit.</li>
+    <li><b>Payment limit.</b> Per person across all crops and farms, not per farm. Peanuts carry a separate limit of their own. Sequestration (5.7% lately) comes off before the limit.</li>
     <li><b>ARC-IC.</b> A third choice, for the whole farm. <a href="#arc-ic">What it takes to check it</a>.</li>
   </ul>
 
@@ -1992,7 +2035,7 @@ def build_main(D, ch):
   <p class="ap-small">Related: <a href="/farm-bill">Farm bill tracker</a> &middot; <a href="/breakeven">Break-even calculator</a> &middot; <a href="/harvest-price-tracker">Harvest price and pre-sell</a></p>
 </main>
 """
-    return head(title, desc, "/arc-plc", jsonld, True, fonts, og_title=og_title) + body + tail(ftr, calc=True), {
+    return head(title, desc, "/arc-plc", jsonld, True, fonts, og_title=og_title) + body + tail(ftr, calc=True, hub=True), {
         "title": title, "desc": desc, "og_title": og_title, "faq": [q for q, _ in faq]}
 
 
@@ -2238,6 +2281,13 @@ def why_text(v, cd, by, py):
             f"protects against a deep price drop. ARC-CO is capped at {usd(max_arc)} per base acre but also pays when the county&rsquo;s "
             f"yield is short; it paid something in {short} of the {v['n']} past-year scenarios. With prices centered at {XC.pf(cd, center)}, "
             f"PLC is expected to pay {usd_pay(v['plc'])} and ARC-CO {usd_pay(v['arc'])} per base acre.")
+
+
+def practice_split(es):
+    """True when FSA gives this crop separate irrigated and non-irrigated benchmarks in the county.
+    Then the title and description name the practice: the one benchmark shown is not the county's only one."""
+    ds = {e["d"] for e in es if e.get("by")}
+    return "irr" in ds and "non" in ds
 
 
 def default_entries(es):
@@ -2596,12 +2646,17 @@ def trigger_html(cd, e, LY):
     if not r:
         return ""
     p, n, _t = r
+    # A line at or over the benchmark printed as a floored whole number read "under 41 bu ... above the
+    # 41.00 bu benchmark" (Childress Co., TX, 2026-10-18): print it floored to a tenth there instead.
+    ns = f"{n:,}"
+    if n >= e["by"]:
+        ns = f"{math.floor(round(_t * 10, 6)) / 10:,.1f}"
     cen = cd["scen"]["center"]
     src = ("USDA&rsquo;s price outlook" if (cd.get("scen") or {}).get("kind") != "fut" else "the futures-based price")
     at = (f"at {src}, {XC.pf(cd, cen)}" if p == cen else f"at the {XC.pf(cd, p)} loan rate ({src} is under it)")
     u = XC.UNIT[cd["unit"]]["short"]
-    over = (f" That is above the {XC.yf(cd, e['by'])} benchmark, so at that price it pays even on a normal crop." if n >= e["by"] else "")
-    return (f'<p class="ap-trig">ARC-CO pays here for {LY} if the county yield comes in under <b>{n:,} {u}</b> {at}.{over}</p>'
+    over = (f" That is above the {XC.yf(cd, e['by'])} benchmark, so at that price it pays even on a normal crop." if _t > e["by"] else "")
+    return (f'<p class="ap-trig">ARC-CO pays here for {LY} if the county yield comes in under <b>{ns} {u}</b> {at}.{over}</p>'
             f'<p class="ap-small ap-trig-m">90% of the {XC.yf(cd, e["by"])} benchmark &times; the {XC.pf(cd, cd["bp"]["value"])} benchmark price, '
             f'divided by {XC.pf(cd, p)}.</p>')
 
@@ -2734,7 +2789,7 @@ def math_globals(D, ks):
              "why": sc_.get("why") or "",
              "hub": (f'{XC.XCROPS[k].get("note", "")} <a href="{XC.hub_path(k)}">All {esc(CROP_LC[k])} counties</a>.' if k in XC.XCROPS else "")}
         if k in ("corn", "soybeans") and sc_.get("alt"):
-            x["alt"] = (f"{CROP_LC[k].capitalize()}: USDA {usd(sc_['center'])}; futures-based {usd(sc_['alt'])} ({esc(sc_.get('alt_contract') or '')} October average so far, "
+            x["alt"] = (f"{CROP_LC[k].capitalize()}: USDA {usd(sc_['center'])}; futures-based {usd(sc_['alt'])} ({esc(sc_.get('alt_contract') or '')} October average{(' through ' + nice_date(sc_['alt_date'], False)) if sc_.get('alt_date') else ' so far'}, "
                         f"{usd(sc_['alt_fut'])} over {sc_.get('alt_days')} of {sc_.get('alt_of')} trading days, times {sc_['oct_mean']:.3f}: from {min(sc_['ratios'])} to {max(sc_['ratios'])}, "
                         f"the final season-average price averaged {sc_['oct_mean']:.3f} times that year&rsquo;s October average of the harvest contract).")
         if k in ("corn", "soybeans") and (y7.get(k) or {}).get("scen"):
@@ -2894,13 +2949,23 @@ def county_page(st, S, c, D, ch):
     head_v = typical_html(c, lead, D, cname)[1] if official and lead else None
     if official and lead:
         le = next((c["k"][lead][i] for i in default_entries(c["k"][lead]) if c["k"][lead][i]["by"]), None)
+        if head_v and head_v[1] in c["k"][lead]:
+            # the title names the practice the headline verdict is for (Childress Co., TX: the
+            # non-irrigated card has no verdict, so the headline is irrigated wheat), 2026-10-18
+            le = head_v[1]
         cdl = y6[lead]
         lab = XC.XCROPS[lead].get("short", cdl["label"]) if lead in XC.XCROPS else cdl["label"]
-        if le and le["d"] == "irr":
-            lab = "Irrigated " + lab.lower()
+        split = practice_split(c["k"][lead])
+        if le and (le["d"] == "irr" or split):
+            lab = DLABEL[le["d"]] + " " + lab.lower()
         by_txt = (f"{le['by']:.1f} bu" if cdl["unit"] == "bu" else f"{le['by']:,.0f} lb") if le else ""
         title = county_title(cname, st, lab, LY, by_txt)
         bm = f"FSA {LY if LY == '2026' else '2026'} ARC-CO benchmark {XC.yf(cdl, le['by'], 1)}" if le else "FSA ARC-CO benchmarks"
+        if le and split:
+            # the other practice's benchmark beside it, so neither number reads as the county's only one
+            oth = next((e for e in c["k"][lead] if e["by"] and e["d"] in ("irr", "non") and e["d"] != le["d"]), None)
+            if oth:
+                bm += f" ({XC.yf(cdl, oth['by'], 1)} {DLABEL[oth['d']].lower()})"
         if head_v:
             vv = head_v[0]
             desc = (f"{cname}, {name} {lab.lower()}: {bm}. Typical farm {head_v[2]}: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs "
@@ -2908,6 +2973,9 @@ def county_page(st, S, c, D, ch):
             if len(desc) > 155:
                 desc = (f"{cname}, {st} {lab.lower()}: {bm}. {head_v[2]}: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs "
                         f"{usd_pay(vv['arc'])} ARC-CO per base acre.")
+            if len(desc) > 155 and split:
+                desc = (f"{cname}, {st} {lab.lower()}: {bm.replace(' ARC-CO benchmark', ' benchmark')}. {head_v[2]}: {VWORD[vv['verdict']]}, est. "
+                        f"{usd_pay(vv['plc'])} PLC vs {usd_pay(vv['arc'])} ARC per base acre.")
             if len(desc) > 155:
                 desc = f"{cname}, {st}: {VWORD[vv['verdict']]} for {lab.lower()} in {head_v[2]}, est. {usd_pay(vv['plc'])} PLC vs {usd_pay(vv['arc'])} ARC-CO per base acre."
         else:
@@ -3239,6 +3307,8 @@ def budget_problems(out):
 
 
 def main_build(root=".", check=False):
+    if not check:
+        refresh_harvest(root)
     inp = load_inputs(root)
     bad = None if check else snapshot_problem(inp["snap"], build_date())
     if bad:
@@ -3601,6 +3671,10 @@ def selftest():
         ck("2027 long grain rice fixed at 0.169 whatever the 2025 price; sorghum waits on its final 2025 price",
            c27.get("rice_long", {}).get("erp", {}).get("erp") == 0.169 and c27["rice_long"]["bp"]["value"] == 0.169 and "sorghum" in p27, str(p27.get("sorghum")))
     # 65 characters with the yield, so the yield goes first; a longer name then takes "Co."
+    ck("practice split: both irrigated and non-irrigated benchmarks -> the title names the practice",
+       practice_split([{"d": "irr", "by": 238.96}, {"d": "non", "by": 187.38}])
+       and not practice_split([{"d": "all", "by": 203.4}]) and not practice_split([{"d": "irr", "by": 230.0}])
+       and not practice_split([{"d": "irr", "by": 230.0}, {"d": "non", "by": None}]))
     ck("title: Pottawattamie drops the yield, Prince George's takes Co.",
        county_title("Pottawattamie County", "IA", "Corn", "2026", "203.4 bu") == "Pottawattamie County, IA ARC or PLC 2026: Corn Benchmark"
        and county_title("Prince George's County", "MD", "Soybeans", "2026", "45.1 bu") == "Prince George's Co., MD ARC or PLC 2026: Soybeans Benchmark")

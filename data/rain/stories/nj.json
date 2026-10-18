@@ -1,0 +1,1212 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "34001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "3.06",
+     "label": "biggest single day"
+    },
+    "county": "Atlantic County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Atlantic City International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.79",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "40.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.24",
+    "usual_in": "35.63",
+    "vs_usual": {
+     "diff_in": "1.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.56",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e8275ad696b10227",
+   "sid": "93730 1",
+   "story": "Through Oct 13, the weather station at Atlantic City International Airport had 34.24 inches, 1.39 less than a usual year. August did most of the work with 8.56 inches, and Aug 20 alone brought 3.06. The longest dry stretch ran 12 days, May 29 to Jun 9. That puts it 5.79 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "34003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "2.24",
+     "label": "biggest single day"
+    },
+    "county": "Bergen County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Teterboro Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.83",
+    "usual_in": "36.22",
+    "vs_usual": {
+     "diff_in": "2.61",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.23",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e37431e8b92a3d11",
+   "sid": "94741 1",
+   "story": "Through Oct 13, the weather station at Teterboro Airport had 38.83 inches, 2.61 inches more than a usual year. August was the wettest month at 8.23 inches. The biggest single day came late, 2.24 inches on Oct 11. The longest run with nothing in the gauge was 6 days, Jan 28 to Feb 2.",
+   "through": "2026-10-13"
+  },
+  "34005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "2.79",
+     "label": "biggest single day"
+    },
+    "county": "Burlington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Philadelphia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.40",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.51",
+    "usual_in": "36.23",
+    "vs_usual": {
+     "diff_in": "5.28",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.27",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3b2a2c418e3472a2",
+   "sid": "286964 2",
+   "story": "Through Oct 13, the weather station in Philadelphia, 12 miles from the middle of the county, had 41.51 inches for the year. September was the wettest month at 8.27 inches. The biggest single day came late, with 2.79 inches on Oct 12. That puts this year 3.40 inches more than last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "34007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "2.43",
+     "label": "biggest one-day reading"
+    },
+    "county": "Camden County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "4 miles southwest of Somerdale",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "7.29",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "30.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 101,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.89",
+    "usual_in": "37.58",
+    "vs_usual": {
+     "diff_in": "0.31",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.50",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8118072f63ef346b",
+   "sid": "288173 2",
+   "story": "Through Oct 13, the weather station 4 miles southwest of Somerdale sits about where a usual year would, 0.31 inches more. September was the wettest month at 7.50 inches. The biggest one-day reading came just the day before, 2.43 inches on Oct 12. On the days both years reported, that is 7.29 inches more than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "34009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 12",
+     "in": "2.72",
+     "label": "biggest one-day reading"
+    },
+    "county": "Cape May County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "less than a mile north-northwest of Woodbine",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 258,
+      "diff_in": "1.82",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 19,
+     "through": "Oct 13",
+     "total_in": "36.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 102,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.14",
+    "usual_in": "35.39",
+    "vs_usual": {
+     "diff_in": "0.75",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.97",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "62744bac5750f054",
+   "sid": "US1NJCM0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north-northwest of Woodbine has caught 36.14 inches, 0.75 more than a usual year. July did most of the work at 7.97 inches, and the biggest one-day reading came Jul 12 at 2.72. The gauge also went 20 days in a row with nothing in it, from Jan 27 to Feb 15. On the days both years reported, this year is 1.82 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "34011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 21",
+     "in": "2.43",
+     "label": "biggest single day"
+    },
+    "county": "Cumberland County",
+    "days_in_year_so_far": 284,
+    "days_missing": 1,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "1.7 miles southwest of Upper Deerfield Twp",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "1.16",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "34.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "New Jersey",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "35.36",
+    "usual_in": "36.77",
+    "vs_usual": {
+     "diff_in": "1.41",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.48",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "de3c52163ccf2a79",
+   "sid": "US1NJCD0001 6",
+   "story": "Through Oct 11, the volunteer rain gauge 1.7 miles southwest of Upper Deerfield Twp has caught 35.36 inches, 1.41 inches less than a usual year. August did most of the work with 7.48 inches, and Aug 21 brought the biggest single day at 2.43 inches. The gauge stayed bone dry for 20 days from Jan 27 to Feb 15. On the days both years reported, this year is 1.16 inches more than last year.",
+   "through": "2026-10-11"
+  },
+  "34013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 13",
+     "in": "4.29",
+     "label": "biggest single day"
+    },
+    "county": "Essex County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Caldwell Essex County Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.90",
+    "usual_in": "34.33",
+    "vs_usual": {
+     "diff_in": "2.57",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.43",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1a784d566725964f",
+   "sid": "54743 1",
+   "story": "Through Oct 13, the weather station at Caldwell Essex County Airport has caught 36.90 inches, 2.57 inches more than a usual year. September did most of the talking with 7.43 inches, and 4.29 of that came on Sep 13 alone. The longest dry stretch ran 9 days, Jan 28 to Feb 5, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "34015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 28",
+     "in": "2.36",
+     "label": "biggest single day"
+    },
+    "county": "Gloucester County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "2.7 miles west of Franklin Twp",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "6.74",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.36",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.55",
+    "usual_in": "41.34",
+    "vs_usual": {
+     "diff_in": "2.79",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.42",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c3fe82be5d8302e6",
+   "sid": "US1NJGL0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.7 miles west of Franklin Twp had its wettest month in July with 7.42 inches. The biggest single day came Aug 28 at 2.36 inches. The longest dry stretch ran 11 days, Jan 27 to Feb 6, with not even a trace in the gauge. On the days both years reported, this year is 6.74 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "34017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 19",
+     "in": "2.78",
+     "label": "biggest single day"
+    },
+    "county": "Hudson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Harrison",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.11",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.21",
+    "usual_in": "39.60",
+    "vs_usual": {
+     "diff_in": "5.61",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.18",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "38e2ebbb16b113c9",
+   "sid": "283704 2",
+   "story": "Through Oct 13, the weather station in Harrison had its wettest month in August with 11.18 inches. The biggest single day came Jul 19 at 2.78 inches. On the days both years reported, this year ran 10.11 inches more than 2025. The longest dry stretch was 9 days, Apr 8 to Apr 16, with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "34019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "3.25",
+     "label": "biggest single day"
+    },
+    "county": "Hunterdon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "less than a mile north of Frenchtown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "1.44",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "34.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.51",
+    "usual_in": "40.04",
+    "vs_usual": {
+     "diff_in": "2.53",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.21",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "571743ece2ac064d",
+   "sid": "US1NJHN0031 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north of Frenchtown has caught the most in August, at 8.21 inches for the month. The biggest single day came just before that, with 3.25 inches on Jul 29. The longest dry stretch ran 9 days, from Jan 29 to Feb 6. On the days both years reported, this year is 1.44 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "34021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.14",
+     "label": "biggest single day"
+    },
+    "county": "Mercer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "1.7 miles southeast of Pennington",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.70",
+    "usual_in": "39.78",
+    "vs_usual": {
+     "diff_in": "0.08",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.05",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b8c5782ed81928b7",
+   "sid": "US1NJMC0049 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.7 miles southeast of Pennington sits at about a usual year, 0.08 inches less. August was the wettest month with 8.05 inches. The biggest single day was Jun 23 at 2.14 inches. The gauge went 12 days in a row with nothing in it, from Apr 7 to Apr 18.",
+   "through": "2026-10-13"
+  },
+  "34023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 10",
+     "in": "3.22",
+     "label": "biggest single day"
+    },
+    "county": "Middlesex County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "3 miles southeast of New Brunswick",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.67",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.10",
+    "usual_in": "39.27",
+    "vs_usual": {
+     "diff_in": "2.83",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.21",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "43564dfea7475374",
+   "sid": "286055 2",
+   "story": "Through Oct 13, the station 3 miles southeast of New Brunswick has 42.10 inches, 8.67 inches more than it had by this day in 2025. August was the wettest month at 9.21 inches. The biggest single day came Jul 10 with 3.22 inches. Back in April it went 13 days in a row with nothing in the gauge, from Apr 7 to Apr 19.",
+   "through": "2026-10-13"
+  },
+  "34025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 27",
+     "in": "3.73",
+     "label": "biggest single day"
+    },
+    "county": "Monmouth County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Long Branch-Oakhurst",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.99",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.38",
+    "usual_in": "41.07",
+    "vs_usual": {
+     "diff_in": "2.31",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.76",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7dd7e853f9aa9b7f",
+   "sid": "284987 2",
+   "story": "Through Oct 13, the weather station in Long Branch-Oakhurst had 43.38 inches, 2.31 more than a usual year. September did most of the lifting with 10.76 inches, and Sep 27 alone brought 3.73. On the days both years reported, that is 9.99 inches more than 2025 had by this point.",
+   "through": "2026-10-13"
+  },
+  "34027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "2.96",
+     "label": "biggest single day"
+    },
+    "county": "Morris County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile northeast of Mine Hill Twp",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "17.19",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "36.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 134,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "54.79",
+    "usual_in": "40.75",
+    "vs_usual": {
+     "diff_in": "14.04",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.58",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "506db4ad66d7c4ed",
+   "sid": "US1NJMS0023 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northeast of Mine Hill Twp had 54.79 inches, 14.04 more than a usual year. August was the wettest month at 11.58 inches, and the biggest single day came Jul 29 with 2.96. On the days both years reported, this year is 17.19 inches more than last year. The longest dry stretch ran 9 days, Jan 29 to Feb 6.",
+   "through": "2026-10-13"
+  },
+  "34029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 27",
+     "in": "3.62",
+     "label": "biggest single day"
+    },
+    "county": "Ocean County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "less than a mile southwest of Point Pleasant Beach",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.35",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.26",
+    "usual_in": "38.33",
+    "vs_usual": {
+     "diff_in": "3.93",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.09",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bfca06cf54b93db6",
+   "sid": "US1NJOC0013 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Point Pleasant Beach had 42.26 inches, 3.93 more than a usual year. September did most of the talking with 10.09 inches, and 3.62 of that came on Sep 27, the biggest single day. The longest dry stretch was only 6 days, Feb 8 to Feb 13. That's 4.35 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "34031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "3.04",
+     "label": "biggest single day"
+    },
+    "county": "Passaic County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "less than a mile west-northwest of Little Falls Twp",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.28",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.15",
+    "usual_in": "39.69",
+    "vs_usual": {
+     "diff_in": "4.46",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.79",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "919ad8ff54381ddf",
+   "sid": "US1NJPS0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west-northwest of Little Falls Twp has caught 13.28 inches more than it had by this day last year. July was the wettest month at 8.79 inches, and the biggest single day came Jul 29 with 3.04 inches. The longest dry stretch ran 9 days, Jan 29 to Feb 6, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "34033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 10",
+     "in": "4.06",
+     "label": "biggest single day"
+    },
+    "county": "Salem County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Woodstown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "5.88",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.83",
+    "usual_in": "38.01",
+    "vs_usual": {
+     "diff_in": "1.18",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.06",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ac99968c8137b15f",
+   "sid": "US1NJSL0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northwest of Woodstown had its wettest month in July at 8.06 inches. The biggest single day came Jul 10 with 4.06 inches. The longest dry stretch ran 13 days, Apr 7 to Apr 19, with not even a trace in the gauge. On the days both years reported, this year is 5.88 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "34035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "2.21",
+     "label": "biggest single day"
+    },
+    "county": "Somerset County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "less than a mile west of Manville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.95",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.10",
+    "usual_in": "38.42",
+    "vs_usual": {
+     "diff_in": "3.32",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.82",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b55b38d50f9dc623",
+   "sid": "US1NJSM0068 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west of Manville had its biggest single day just the day before, 2.21 inches on Oct 12. July was the wettest month at 6.82 inches. The longest dry stretch ran 10 days, Apr 8 to Apr 17, with not even a trace. Still, the gauge sits 1.95 inches ahead of last year at this point.",
+   "through": "2026-10-13"
+  },
+  "34037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "1.95",
+     "label": "biggest single day"
+    },
+    "county": "Sussex County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "3.2 miles southeast of Hardyston Twp",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "8.17",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "29.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Jun 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.38",
+    "usual_in": "39.92",
+    "vs_usual": {
+     "diff_in": "2.54",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.02",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9373066cc5251bbc",
+   "sid": "US1NJSS0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.2 miles southeast of Hardyston Twp had its biggest single day just the day before, 1.95 inches on Oct 12. July was the wettest month at 6.02 inches. On the days both years reported, this year is 8.17 inches ahead of last year, though it still sits 2.54 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "34039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 18",
+     "in": "2.38",
+     "label": "biggest single day"
+    },
+    "county": "Union County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Newark Liberty International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.56",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "May 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.12",
+    "usual_in": "36.93",
+    "vs_usual": {
+     "diff_in": "0.19",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "10.19",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "25a11759d4f0631b",
+   "sid": "14734 1",
+   "story": "Through Oct 13, the weather station at Newark Liberty International Airport, 8 miles from the middle of the county, had 37.12 inches, just 0.19 more than a usual year. August carried a lot of it with 10.19 inches. The biggest single day was Jul 18 at 2.38 inches. Last year by this date the gauge had 26.56 inches, so this year is 10.56 inches more.",
+   "through": "2026-10-13"
+  },
+  "34041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "4.84",
+     "label": "biggest single day"
+    },
+    "county": "Warren County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "1.6 miles south of Greenwich Twp",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.20",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.89",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "New Jersey",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.09",
+    "usual_in": "39.97",
+    "vs_usual": {
+     "diff_in": "4.88",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.37",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "315a33e32129c30d",
+   "sid": "US1NJWR0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles south of Greenwich Twp had its wettest month in July with 7.37 inches. Most of that came on Jul 29, the biggest single day at 4.84 inches. The longest dry stretch ran 11 days, Jan 27 to Feb 6, with not even a trace in the gauge. That still leaves the gauge 4.88 inches less than a usual year, but 1.20 inches more than 2025 to the same day.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "NJ"
+}

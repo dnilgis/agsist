@@ -5,6 +5,12 @@
  * each with its latest USDA-reported sale by 100 lb class: head, weighted
  * average $/cwt, range, $/head, and the change from that barn's prior sale.
  *
+ * Barns USDA does not report (`own` in the data file: the Wisconsin and
+ * Minnesota barns, Equity markets and the like) are listed nearest first with
+ * their sale day and a link to their own report. A barn-posted price range
+ * shows only after the fetch's parser for it was checked against a saved
+ * report; until then the card says so and shows no number.
+ *
  * Until the data file exists the page keeps its "prices load after the first
  * USDA read" box. Nothing here invents or fills a number.
  *
@@ -40,6 +46,18 @@
       .sort(function (x, y) { return x.mi - y.mi; });
     var close = list.filter(function (x) { return x.mi <= within; });
     return { list: (close.length ? close : list.slice(0, 3)).slice(0, max), far: !close.length };
+  }
+  /* barns USDA does not report: those within `within` miles, nearest first, at most max */
+  function nearOwn(own, here, max, within) {
+    return (own || []).filter(function (b) { return isFinite(b.lat) && isFinite(b.lon); })
+      .map(function (b) { return { barn: b, mi: miles(here, b) }; })
+      .filter(function (x) { return x.mi <= within; })
+      .sort(function (x, y) { return x.mi - y.mi; }).slice(0, max);
+  }
+  /* a barn-posted sale's ranges for one sex, lightest first; [] without one */
+  function ownRanges(b, sex) {
+    var s0 = b && b.sales && b.sales[0];
+    return s0 && s0.ranges ? s0.ranges.filter(function (r) { return r.sex === sex; }).sort(function (x, y) { return x.lo - y.lo; }) : [];
   }
   /* rows for one sex|grade of a barn's latest sale, with the change from the
    * prior sale when that sale is recent and both have enough head */
@@ -77,7 +95,25 @@
   }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
-  var api = { miles: miles, daysBetween: daysBetween, nearest: nearest, classRows: classRows, money: money, signed: signed,
+  /* The no-ZIP first line (2026-10-17 search-terms check: "cattle prices today" 655, "feeder calf
+   * prices today" 109 saw no price before a ZIP). The USDA state summaries already in the data
+   * file, largest receipts first, sales within STALE_DAYS of today: for one sex|grade, the 500 and
+   * 700 lb classes (or whichever of 300 to 800 the report has, lightest first). Pure. */
+  var GLANCE_N = 3, GLANCE_CLS = [500, 700];
+  function glance(states, key, todayIso) {
+    return (states || []).filter(function (b) {
+      return hasSales(b) && daysBetween(b.sales[0].date, todayIso) <= STALE_DAYS && daysBetween(b.sales[0].date, todayIso) >= 0 &&
+        (b.sales[0].classes || {})[key];
+    }).sort(function (a, b) { return (b.sales[0].receipts || 0) - (a.sales[0].receipts || 0) || (a.state < b.state ? -1 : 1); })
+      .slice(0, GLANCE_N).map(function (b) {
+        var rows = classRows(b, key), pick = rows.filter(function (r) { return GLANCE_CLS.indexOf(r.cls) >= 0; });
+        if (!pick.length) pick = rows.slice(0, 2);
+        return { state: b.state, date: b.sales[0].date, receipts: b.sales[0].receipts || 0, source_url: b.source_url,
+          cells: pick.map(function (r) { return { cls: r.cls, cwt: r.cwt, head: r.head }; }) };
+      }).filter(function (g) { return g.cells.length; });
+  }
+
+  var api = { nearOwn: nearOwn, ownRanges: ownRanges, glance: glance, GLANCE_N: GLANCE_N, miles: miles, daysBetween: daysBetween, nearest: nearest, classRows: classRows, money: money, signed: signed,
     niceDate: niceDate, hasSales: hasSales, CLASSES: CLASSES, PRIOR_DAYS: PRIOR_DAYS, MIN_HEAD: MIN_HEAD, NEAR_MILES: NEAR_MILES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgSaleBarn = api;
@@ -126,28 +162,76 @@
     return h;
   }
 
+  function ownCard(b, mi) {
+    var rs = ownRanges(b, S.sex), s0 = b.sales && b.sales[0];
+    var h = '<section class="sb-card sb-own"><header><h3>' + esc(b.name) + '</h3><p class="sb-where">' + esc(b.town) + ', ' + esc(b.state) +
+      (mi != null ? ' &middot; ' + Math.round(mi) + ' mi' : '') + '</p></header>';
+    if (b.sale) h += '<p class="sb-sale">Sale day: ' + esc(b.sale) + '</p>';
+    if (s0 && rs.length) {
+      h += '<p class="sb-sale">Barn report of <b>' + niceDate(s0.date) + '</b>' + (s0.receipts ? ' &middot; ' + s0.receipts.toLocaleString('en-US') + ' head' : '') + '</p>' +
+        (s0.note ? '<p class="sb-src">' + esc(s0.note) + '.</p>' : '');
+      h += '<div class="sb-tw"><table class="sb-t"><thead><tr><th scope="col">Weight<small>lb</small></th><th scope="col">Range<small>$/cwt</small></th></tr></thead><tbody>';
+      rs.forEach(function (r) { h += '<tr><th scope="row">' + r.lo + '-' + r.hi + '</th><td>' + r.plo.toFixed(2) + '-' + r.phi.toFixed(2) + '</td></tr>'; });
+      h += '</tbody></table></div><p class="sb-src">Posted by the barn, not USDA: a low and high, no average or head count by class. <a href="' + esc(s0.source_url || b.site) + '" rel="noopener">The barn&#x27;s report</a></p>';
+    } else {
+      h += '<p class="sb-none">Prices: USDA does not report this barn, and AGSIST has not read and checked its own report yet, so no price is shown here.</p>' +
+        '<p class="sb-src">' + (b.site ? '<a href="' + esc(b.site) + '" rel="noopener">See the barn&#x27;s own report</a>' : 'Ask the barn for its latest market report.') + '</p>';
+    }
+    return h + '</section>';
+  }
+
+  var ST = { AL: 'Alabama', AR: 'Arkansas', CO: 'Colorado', FL: 'Florida', GA: 'Georgia', IA: 'Iowa', ID: 'Idaho', IL: 'Illinois',
+    IN: 'Indiana', KS: 'Kansas', KY: 'Kentucky', MN: 'Minnesota', MO: 'Missouri', MS: 'Mississippi', MT: 'Montana', NC: 'North Carolina', ND: 'North Dakota',
+    NE: 'Nebraska', NM: 'New Mexico', OK: 'Oklahoma', OR: 'Oregon', SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas',
+    UT: 'Utah', VA: 'Virginia', WA: 'Washington', WI: 'Wisconsin', WY: 'Wyoming' };
+  function renderGlance(states) {
+    var el = $('sb-glance');
+    if (!el) return;
+    var g = S.here || S.state ? [] : glance(states, S.sex + '|' + S.grade, today());
+    if (!g.length) { el.hidden = true; el.innerHTML = ''; return; }
+    var who = 'Medium and Large ' + S.grade + ' ' + (S.sex === 'steers' ? 'steers' : 'heifers');
+    el.innerHTML = '<p class="sb-gh"><b>Cattle prices today:</b> biggest USDA state auction reports, ' + esc(who) + ', $/cwt</p><ul>' +
+      g.map(function (x) {
+        return '<li><b>' + esc(ST[x.state] || x.state) + '</b>, report of ' + esc(niceDate(x.date).replace(/, \d{4}$/, '')) + ' (' + x.receipts.toLocaleString('en-US') + ' head): ' +
+          x.cells.map(function (c) { return c.cls + '-' + (c.cls + 99) + ' lb <b>$' + c.cwt.toFixed(2) + '</b>'; }).join(' &middot; ') + '</li>';
+      }).join('') + '</ul>';
+    el.hidden = false;
+  }
+
   function render() {
     var out = $('sb-results'), D = S.data;
     if (!D) return;
-    var barns = (D.barns || []).filter(hasSales), states = (D.states || []).filter(hasSales);
+    var barns = (D.barns || []).filter(hasSales), states = (D.states || []).filter(hasSales), own = D.own || [];
     if (!barns.length && !states.length) return;
+    renderGlance(states);
     $('sb-empty').hidden = true;
     var h = '';
     if (S.state) {
       var inState = barns.filter(function (b) { return b.state === S.state; });
       var sum = states.filter(function (b) { return b.state === S.state; });
+      var ownIn = own.filter(function (b) { return b.state === S.state; });
       sum.concat(inState).forEach(function (b) { h += card(b, S.here ? miles(S.here, b) : null); });
-      $('sb-head').textContent = inState.length || sum.length ? 'Barns in ' + S.state : 'No barn on file in ' + S.state + ' yet';
+      if (ownIn.length) {
+        h += '<h3 class="sb-ownh">' + esc(ST[S.state] || S.state) + ' barns USDA does not report</h3>';
+        ownIn.forEach(function (b) { h += ownCard(b, S.here ? miles(S.here, b) : null); });
+      }
+      $('sb-head').textContent = inState.length || sum.length || ownIn.length ? 'Barns in ' + S.state : 'No barn on file in ' + S.state + ' yet';
     } else if (S.here) {
       var n = nearest(barns, S.here, MAX_NEAR, NEAR_MILES);
       n.list.forEach(function (x) { h += card(x.barn, x.mi); });
+      var no = nearOwn(own, S.here, MAX_NEAR, NEAR_MILES);
+      if (no.length) {
+        h += '<h3 class="sb-ownh">Near you, not in a USDA report</h3>';
+        no.forEach(function (x) { h += ownCard(x.barn, x.mi); });
+      }
       $('sb-head').textContent = n.far ? 'No barn on file within ' + NEAR_MILES + ' miles of ' + S.label + '. The closest:' : 'Nearest barns to ' + S.label;
     } else {
       $('sb-head').textContent = 'Enter a ZIP or pick a state';
     }
     out.innerHTML = h;
     var latest = barns.concat(states).map(function (b) { return b.sales[0].date; }).sort().pop();
-    $('sb-asof').textContent = barns.length + ' barns with a sale on file. Newest sale ' + niceDate(latest) + '. Checked ' + niceDate(String(D.updated).slice(0, 10)) + '.';
+    $('sb-asof').textContent = barns.length + ' barns with a sale on file' + (own.length ? ', and ' + own.length + ' more listed that USDA does not report' : '') +
+      '. Newest sale ' + niceDate(latest) + '. Checked ' + niceDate(String(D.updated).slice(0, 10)) + '.';
   }
 
   function byZip() {
@@ -200,6 +284,7 @@
       S.data = d;
       var st = {}, sel = $('sb-state');
       (d.barns || []).concat(d.states || []).forEach(function (b) { if (hasSales(b)) st[b.state] = 1; });
+      (d.own || []).forEach(function (b) { if (/^[A-Z]{2}$/.test(b.state || '')) st[b.state] = 1; });
       Object.keys(st).sort().forEach(function (k) { var o = document.createElement('option'); o.value = k; o.textContent = k; sel.appendChild(o); });
       $('sb-controls').hidden = false;
       if (S.state && st[S.state]) sel.value = S.state; else S.state = '';

@@ -1,0 +1,3194 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "12001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "2.96",
+     "label": "biggest single day"
+    },
+    "county": "Alachua County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1.7 miles southeast of Gainesville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.80",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.12",
+    "usual_in": "47.75",
+    "vs_usual": {
+     "diff_in": "10.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.30",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b4fad1117fd80373",
+   "sid": "US1FLAL0026 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.7 miles southeast of Gainesville had 37.12 inches, 10.63 less than a usual year. August did most of the work with 10.30 inches, and the biggest single day was Aug 3 at 2.96. The gauge went 17 days in a row with nothing from Mar 18 to Apr 3. That leaves it 1.80 inches less than 2025 at this point.",
+   "through": "2026-10-13"
+  },
+  "12003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 4",
+     "in": "4.15",
+     "label": "biggest single day"
+    },
+    "county": "Baker County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "4.9 miles south-southwest of Macclenny",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.66",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "40.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.87",
+    "usual_in": "45.81",
+    "vs_usual": {
+     "diff_in": "3.94",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.84",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9cfc603a5cae8328",
+   "sid": "US1FLBK0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.9 miles south-southwest of Macclenny has caught most of its year late. October is already the wettest month at 10.84 inches, and Oct 4 brought the biggest single day at 4.15 inches. Back in spring the gauge went 22 days in a row with nothing in it, from Apr 9 to Apr 30. Even so, it sits 1.66 inches more than last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "12005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 5",
+     "in": "5.44",
+     "label": "biggest single day"
+    },
+    "county": "Bay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "at Northwest Florida Beaches International Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "53.79",
+    "usual_in": "47.96",
+    "vs_usual": {
+     "diff_in": "5.83",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.60",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "984958f7d6268764",
+   "sid": "73805 1",
+   "story": "Through Oct 13, October is the wettest month at the weather station at Northwest Florida Beaches International Airport, with 13.60 inches. The biggest single day came Oct 5 at 5.44 inches. Earlier the gauge went 19 days in a row with nothing in it, not even a trace, from Mar 17 to Apr 4. That puts the year at 53.79 inches, 5.83 more than a usual year.",
+   "through": "2026-10-13"
+  },
+  "12009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 9",
+     "in": "2.67",
+     "label": "biggest single day"
+    },
+    "county": "Brevard County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.4 miles west of Palm Shores",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.99",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.51",
+    "usual_in": "45.47",
+    "vs_usual": {
+     "diff_in": "3.96",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.11",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6f054ddcf2bce53f",
+   "sid": "US1FLBV0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles west of Palm Shores had its wettest month in June at 10.11 inches. The biggest single day came late, 2.67 inches on Oct 9. The gauge sat dry 10 days in a row from Jan 17 to Jan 26. It is 2.99 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "12011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "2.47",
+     "label": "biggest single day"
+    },
+    "county": "Broward County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "at Fort Lauderdale International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "9.51",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "44.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "54.02",
+    "usual_in": "50.43",
+    "vs_usual": {
+     "diff_in": "3.59",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "22.34",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0041485d0b146995",
+   "sid": "12849 1",
+   "story": "Through Oct 13, the weather station at Fort Lauderdale International Airport had its wettest month in September, with 22.34 inches. The biggest single day was Sep 23, at 2.47 inches. On the days both years reported, 2026 has 9.51 inches more than 2025 did.",
+   "through": "2026-10-13"
+  },
+  "12015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 12",
+     "in": "3.69",
+     "label": "biggest single day"
+    },
+    "county": "Charlotte County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Punta Gorda Charlotte County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "7.92",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.96",
+    "usual_in": "45.56",
+    "vs_usual": {
+     "diff_in": "1.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.31",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "66833a4eed70df45",
+   "sid": "12812 1",
+   "story": "Through Oct 13, the weather station at Punta Gorda Charlotte County Airport had June as its wettest month at 8.31 inches, with the biggest single day on Jun 12 at 3.69 inches. The longest dry stretch ran 22 days, Apr 10 to May 1, with nothing in the gauge, not even a trace. On the days both years reported, this year has 7.92 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "12017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 7",
+     "in": "3.02",
+     "label": "biggest single day"
+    },
+    "county": "Citrus County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.6 miles north of Hernando",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.44",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "37.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Apr 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.53",
+    "usual_in": "48.73",
+    "vs_usual": {
+     "diff_in": "4.20",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.03",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4d7d41908915babe",
+   "sid": "US1FLCT0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles north of Hernando had its wettest month in May at 9.03 inches. The biggest single day came late, 3.02 inches on Oct 7. Before that, the gauge went 16 days in a row with nothing from Apr 11 to Apr 26. On the days both years reported, this year is 7.44 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "12019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 4",
+     "in": "2.87",
+     "label": "biggest single day"
+    },
+    "county": "Clay County",
+    "days_in_year_so_far": 284,
+    "days_missing": 1,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "3.5 miles east-northeast of Keystone Heights",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "5.66",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "38.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Florida",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "43.88",
+    "usual_in": "46.68",
+    "vs_usual": {
+     "diff_in": "2.80",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.11",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2a9e781f7b146ae8",
+   "sid": "US1FLCY0007 6",
+   "story": "Through Oct 11, the volunteer rain gauge east-northeast of Keystone Heights had its wettest month in August with 10.11 inches. The biggest single day came late, 2.87 inches on Oct 4. Back in spring it went 21 days in a row with nothing in the gauge, Apr 10 to Apr 30. On the days both years reported, this year is 5.66 inches more than last year.",
+   "through": "2026-10-11"
+  },
+  "12023": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 24",
+     "in": "2.21",
+     "label": "biggest single day"
+    },
+    "county": "Columbia County",
+    "days_in_year_so_far": 284,
+    "days_missing": 12,
+    "days_reported": 272,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "7.9 miles south-southwest of Lake City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "3.58",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "36.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Apr 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Florida",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "39.89",
+    "usual_in": "46.68",
+    "vs_usual": {
+     "diff_in": "6.79",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.28",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5edc998abd753f9b",
+   "sid": "US1FLCB0012 6",
+   "story": "Through Oct 11, the volunteer rain gauge 7.9 miles south-southwest of Lake City had its wettest month in August, with 9.28 inches. The longest dry stretch ran 18 days, Apr 9 to Apr 26, with nothing in the gauge. On the days both years reported, this year has caught 3.58 inches more than 2025.",
+   "through": "2026-10-11"
+  },
+  "12027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 9",
+     "in": "3.31",
+     "label": "biggest single day"
+    },
+    "county": "DeSoto County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "1 mile west of Lake Suzy",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.33",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.70",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.83",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "75018cc3eff200b9",
+   "sid": "US1FLDS0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1 mile west of Lake Suzy has caught 45.70 inches. July was the wettest month at 9.83 inches, and the biggest single day came late, 3.31 inches on Oct 9. Before that it went 23 days with nothing in the gauge, from Apr 10 to May 2. On the days both years reported, that is 3.33 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "12031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 6",
+     "in": "5.91",
+     "label": "biggest single day"
+    },
+    "county": "Duval County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Jacksonville Craig Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.69",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "48.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Apr 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "50.83",
+    "usual_in": "43.93",
+    "vs_usual": {
+     "diff_in": "6.90",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "17.08",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "36bf72185823803c",
+   "sid": "53860 1",
+   "story": "Through Oct 13, the weather station at Jacksonville Craig Municipal Airport has caught 17.08 inches in October alone, the wettest month of the year so far. The biggest single day was Oct 6 with 5.91 inches. Back in the spring it went 15 days in a row with nothing in the gauge, from Apr 11 to Apr 25. The year sits 2.69 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "12033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 4",
+     "in": "5.14",
+     "label": "biggest single day"
+    },
+    "county": "Escambia County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "at Pensacola Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.28",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "57.79",
+    "usual_in": "55.90",
+    "vs_usual": {
+     "diff_in": "1.89",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.53",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aa4b49ff433d43dc",
+   "sid": "13899 1",
+   "story": "Through Oct 13, the weather station at Pensacola Regional Airport had October as its wettest month, with 11.53 inches. The biggest single day was Oct 4 at 5.14 inches. Back in spring the gauge went 19 days in a row with nothing in it, from Mar 17 to Apr 4. That puts the year 8.28 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "12035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 3",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "Flagler County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "1.9 miles north-northeast of Palm Coast",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.37",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Apr 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.91",
+    "usual_in": "44.99",
+    "vs_usual": {
+     "diff_in": "3.08",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.48",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6425c85607788fe7",
+   "sid": "US1FLFL0032 6",
+   "story": "Through Oct 13, the volunteer rain gauge north-northeast of Palm Coast shows 3.08 inches less than a usual year, but 2.37 inches more than 2025 had by the same day. May was the wettest month at 6.48 inches. The biggest single day came Jun 3 with 2.35 inches. From Apr 11 to Apr 26 the gauge went 16 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "12037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 5",
+     "in": "7.49",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "at Apalachicola Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "9.20",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "46.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Apr 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 126,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "54.57",
+    "usual_in": "43.20",
+    "vs_usual": {
+     "diff_in": "11.37",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "15.34",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f54e7c4b88ea07aa",
+   "sid": "12832 1",
+   "story": "Through Oct 13, the weather station at Apalachicola Airport has caught 54.57 inches, 11.37 more than a usual year. October is the wettest month at 15.34 inches, and 7.49 of that came on Oct 5, the biggest single day. The gauge also sat empty 23 days in a row from Apr 9 to May 1. On the days both years reported, this year is 9.20 inches ahead of last year.",
+   "through": "2026-10-13"
+  },
+  "12039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 6",
+     "in": "8.33",
+     "label": "biggest single day"
+    },
+    "county": "Gadsden County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "5.1 miles south-southwest of Havana",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "6.44",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "42.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.20",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "13.54",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9e961a6bed0a2f31",
+   "sid": "US1FLGD0007 6",
+   "story": "Through Oct 13, the wettest month at the gauge is October with 13.54 inches, and 8.33 inches of that fell on Oct 6, the biggest single day. The longest dry stretch ran 16 days, Apr 10 to Apr 25, without even a trace. On the days both years reported, this year has 6.44 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "12041": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 24",
+     "in": "2.23",
+     "label": "biggest single day"
+    },
+    "county": "Gilchrist County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "7.0 miles east of Trenton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "4.20",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "40.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Apr 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.04",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.17",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9bfe5f6f25550d4e",
+   "sid": "US1FLGC0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.0 miles east of Trenton has caught 36.04 inches. August was the wettest month at 9.17 inches, and the biggest single day was May 24 with 2.23 inches. The gauge went 14 days in a row with nothing, Apr 11 to Apr 24. On the days both years reported, that is 4.20 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "12043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 7",
+     "in": "1.98",
+     "label": "biggest single day"
+    },
+    "county": "Glades County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "in Muse",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.70",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.47",
+    "usual_in": "51.28",
+    "vs_usual": {
+     "diff_in": "8.81",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.54",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7b9a6c0e35138ae2",
+   "sid": "086048 2",
+   "story": "Through Oct 13, the weather station in Muse had its wettest month in September with 11.54 inches. The biggest single day was Apr 7 at 1.98 inches, and right after it came 22 days in a row with nothing in the gauge, from Apr 11 to May 2. That leaves the year 4.70 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "12047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "Hamilton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of White Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "3.78",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "39.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.87",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.11",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b82d2cd0a3b20a58",
+   "sid": "US1FLHM0005 6",
+   "story": "Through Oct 13, August was the wettest month at the volunteer rain gauge less than a mile northwest of White Springs, with 9.11 inches. The biggest single day came Sep 7 at 2.35 inches. The gauge also went 20 days in a row with nothing in it, from Apr 10 to Apr 29. On the days both years reported, it caught 3.78 inches more than in 2025.",
+   "through": "2026-10-13"
+  },
+  "12049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 27",
+     "in": "1.91",
+     "label": "biggest single day"
+    },
+    "county": "Hardee County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Wauchula",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.58",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "41.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Florida",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "37.73",
+    "usual_in": "46.40",
+    "vs_usual": {
+     "diff_in": "8.67",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.83",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7f7dccfc2db8a1e9",
+   "sid": "089401 2",
+   "story": "Through Oct 12, the weather station in Wauchula had its wettest month in September at 7.83 inches. The biggest single day was Aug 27 with 1.91 inches. The gauge went 22 days in a row with nothing in it, from Apr 11 to May 2. That puts it 3.58 inches less than last year at this point.",
+   "through": "2026-10-12"
+  },
+  "12051": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 24",
+     "in": "3.46",
+     "label": "biggest single day"
+    },
+    "county": "Hendry County",
+    "days_in_year_so_far": 280,
+    "days_missing": 0,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Devils Garden",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "6.51",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 7",
+     "total_in": "44.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Florida",
+    "through": "Oct 7",
+    "through_iso": "2026-10-07",
+    "total_in": "38.30",
+    "usual_in": "47.52",
+    "vs_usual": {
+     "diff_in": "9.22",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.05",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b3d96a171aca1411",
+   "sid": "082298 2",
+   "story": "Through Oct 7, the weather station in Devils Garden had May as its wettest month at 7.05 inches. The biggest single day came May 24 with 3.46 inches. Its longest dry stretch ran 13 days, Apr 8 to Apr 20, with nothing in the gauge, not even a trace. That leaves it 6.51 inches less than last year by the same day.",
+   "through": "2026-10-07"
+  },
+  "12053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 9",
+     "in": "3.11",
+     "label": "biggest single day"
+    },
+    "county": "Hernando County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Brooksville Hernando County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "21.80",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "52.55",
+    "usual_in": "46.48",
+    "vs_usual": {
+     "diff_in": "6.07",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "14.46",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2c10a7a24c198013",
+   "sid": "12818 1",
+   "story": "Through Oct 13, the weather station at Brooksville Hernando County Airport had 52.55 inches, 6.07 more than a usual year. August did most of the work at 14.46 inches, and the biggest single day was 3.11 inches on Sep 9. It went 22 days with nothing in the gauge from Apr 10 to May 1. That is 21.80 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "12055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 21",
+     "in": "4.06",
+     "label": "biggest single day"
+    },
+    "county": "Highlands County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "4.8 miles northwest of Lake Placid",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.59",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Apr 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 56,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.01",
+    "usual_in": "48.01",
+    "vs_usual": {
+     "diff_in": "21.00",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.35",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "965c729614b508da",
+   "sid": "US1FLHL0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.8 miles northwest of Lake Placid has caught 27.01 inches, 21.00 inches less than a usual year. September was the wettest month at 9.35 inches, and Sep 21 brought the biggest single day at 4.06 inches. The longest dry stretch ran 15 days, Apr 11 to Apr 25. On the days both years reported, this year is 4.59 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "12057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "3.48",
+     "label": "biggest single day"
+    },
+    "county": "Hillsborough County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile east-northeast of Riverview",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.07",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.53",
+    "usual_in": "49.41",
+    "vs_usual": {
+     "diff_in": "6.88",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.59",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2fb1c22705114120",
+   "sid": "US1FLHB0114 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east-northeast of Riverview had its wettest month in July with 11.59 inches. The biggest single day came on Jul 31 at 3.48 inches. Earlier on, the gauge went 16 days in a row with nothing, from Mar 18 to Apr 2. Even running 6.88 inches less than a usual year, it still sits 5.07 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "12061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 9",
+     "in": "3.48",
+     "label": "biggest single day"
+    },
+    "county": "Indian River County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "at Vero Beach International Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Mar 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "52.53",
+    "usual_in": "45.26",
+    "vs_usual": {
+     "diff_in": "7.27",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.68",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1b99d456fa828832",
+   "sid": "12843 1",
+   "story": "Through Oct 13, the weather station at Vero Beach International Airport had 52.53 inches, 7.27 more than a usual year. July was the wettest month at 9.68 inches. The biggest single day came Apr 9 with 3.48 inches. The longest dry stretch ran 7 days, from Mar 21 to Mar 27.",
+   "through": "2026-10-13"
+  },
+  "12063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "3.98",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southeast of Alford",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "16.96",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "36.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "52.14",
+    "usual_in": "53.05",
+    "vs_usual": {
+     "diff_in": "0.91",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "13.01",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e19747c91125d747",
+   "sid": "US1FLJK0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Alford had gone 25 days in a row without even a trace, from Apr 7 to May 1. Then May came in as the wettest month at 13.01 inches. On the days both years reported, this year sits 16.96 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "12065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 17",
+     "in": "3.58",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "4.3 miles east-northeast of Monticello",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.56",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Apr 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.71",
+    "usual_in": "48.71",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.27",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "25a1671b5775302c",
+   "sid": "US1FLJF0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.3 miles east-northeast of Monticello sits right at a usual year with 48.71 inches. May was the wettest month at 8.27 inches, and the biggest single day came Mar 17 with 3.58 inches. The gauge went 17 days in a row with nothing from Apr 9 to Apr 25. That is 6.56 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "12067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "3.31",
+     "label": "biggest single day"
+    },
+    "county": "Lafayette County",
+    "days_in_year_so_far": 278,
+    "days_missing": 3,
+    "days_reported": 275,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Mayo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "4.05",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 5",
+     "total_in": "40.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Florida",
+    "through": "Oct 5",
+    "through_iso": "2026-10-05",
+    "total_in": "44.58",
+    "usual_in": "47.42",
+    "vs_usual": {
+     "diff_in": "2.84",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.64",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "168188de4462e7fd",
+   "sid": "085539 2",
+   "story": "Through Oct 5, the weather station in Mayo had its wettest month in August at 9.64 inches. The biggest single day came Sep 7 with 3.31 inches. Before that, the gauge went 23 days in a row without even a trace, from Apr 10 to May 2. On the days both years reported, this year is 4.05 inches more than last year.",
+   "through": "2026-10-05"
+  },
+  "12069": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 23",
+     "in": "2.95",
+     "label": "biggest single day"
+    },
+    "county": "Lake County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Leesburg Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.35",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.36",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.71",
+    "usual_in": "38.69",
+    "vs_usual": {
+     "diff_in": "2.98",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.86",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3132a148b2599703",
+   "sid": "12819 1",
+   "story": "Through Oct 13, the weather station at Leesburg Municipal Airport has its wettest month in May at 7.86 inches, and the biggest single day came May 23 with 2.95 inches. Before that it went 14 days in a row with nothing in the gauge, Apr 10 to Apr 23. The year sits 2.98 inches less than a usual year but 5.35 inches more than 2025 at this point.",
+   "through": "2026-10-13"
+  },
+  "12071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 1",
+     "in": "2.20",
+     "label": "biggest single day"
+    },
+    "county": "Lee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "at Fort Myers Page Field Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.31",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.60",
+    "usual_in": "52.32",
+    "vs_usual": {
+     "diff_in": "15.72",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.70",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "02305306b394405e",
+   "sid": "12835 1",
+   "story": "Through Oct 13, the weather station at Fort Myers Page Field Airport had 36.60 inches, 15.72 inches less than a usual year. July was the wettest month at 9.70 inches, and the biggest single day came Jul 1 with 2.20 inches. The longest dry stretch ran 10 days, Jan 16 to Jan 25. Last year to the same day, the gauge had 36.91 inches, so 2026 sits 0.31 inches less.",
+   "through": "2026-10-13"
+  },
+  "12073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "4.75",
+     "label": "biggest single day"
+    },
+    "county": "Leon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5.2 miles east of Tallahassee",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.13",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "46.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.85",
+    "usual_in": "48.94",
+    "vs_usual": {
+     "diff_in": "1.09",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "9.37",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0edd5514c4482764",
+   "sid": "US1FLLN0047 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.2 miles east of Tallahassee had its biggest single day on Oct 10, with 4.75 inches. July was the wettest month at 9.37 inches. The gauge went 16 days in a row with nothing in it, from Apr 10 to Apr 25. That puts this year 1.13 inches more than last year on the same days.",
+   "through": "2026-10-13"
+  },
+  "12075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "5.22",
+     "label": "biggest one-day reading"
+    },
+    "county": "Levy County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "6.7 miles southwest of Archer",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "0.53",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "46.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 2"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.37",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "15.29",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b43c010f9e9cba45",
+   "sid": "US1FLLV0019 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.7 miles southwest of Archer had August as its wettest month at 15.29 inches. The biggest one-day reading came Aug 3 with 5.22 inches. Before that, the gauge went 22 days in a row with nothing in it, from Apr 11 to May 2. On the days both years reported, this year ran 0.53 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "12081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 8",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Manatee County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "5 miles east-southeast of Bradenton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "8.79",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "35.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Florida",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "44.49",
+    "usual_in": "50.76",
+    "vs_usual": {
+     "diff_in": "6.27",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.86",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a4ab2c7f4f54aab5",
+   "sid": "080945 2",
+   "story": "Through Oct 11, the weather station 5 miles east-southeast of Bradenton has caught 44.49 inches, 6.27 inches less than a usual year. July was the wettest month at 9.86 inches, and the biggest single day came late, 3.30 inches on Oct 8. The gauge went 24 days in a row with nothing from Apr 8 to May 1. Still, that is 8.79 inches more than 2025 had by this day.",
+   "through": "2026-10-11"
+  },
+  "12083": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 24",
+     "in": "2.72",
+     "label": "biggest single day"
+    },
+    "county": "Marion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "6.0 miles south-southeast of Belleview",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 263,
+      "diff_in": "6.95",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 23,
+     "through": "Oct 13",
+     "total_in": "32.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.82",
+    "usual_in": "46.54",
+    "vs_usual": {
+     "diff_in": "5.72",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.80",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "196e097473450eb4",
+   "sid": "US1FLMR0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.0 miles south-southeast of Belleview has caught 40.82 inches, 5.72 less than a usual year. October is the wettest month so far at 7.80 inches. The biggest single day was May 24 at 2.72. On the days both years reported, this year is 6.95 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "12085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 9",
+     "in": "2.96",
+     "label": "biggest single day"
+    },
+    "county": "Martin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 20,
+    "days_reported": 266,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Stuart",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 265,
+      "diff_in": "8.97",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "35.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.68",
+    "usual_in": "47.12",
+    "vs_usual": {
+     "diff_in": "4.44",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.23",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2e0599ef56c84d69",
+   "sid": "088620 2",
+   "story": "Through Oct 13, the weather station in Stuart had its wettest month in October, with 10.23 inches so far. The biggest single day was Oct 9 at 2.96 inches. On the days both years reported, this year is 8.97 inches more than 2025, even while the total sits 4.44 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "12086": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 4",
+     "in": "3.67",
+     "label": "biggest single day"
+    },
+    "county": "Miami-Dade County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "2.4 miles southwest of Sunset",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "6.18",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "54.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.63",
+    "usual_in": "55.80",
+    "vs_usual": {
+     "diff_in": "7.17",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.84",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "78bdd59cbb7df5a5",
+   "sid": "US1FLMD0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.4 miles southwest of Sunset had its wettest month in September at 10.84 inches. The biggest single day came Jun 4 with 3.67 inches. The longest dry stretch ran 11 days, Feb 7 to Feb 17, with nothing in the gauge. On the days both years reported, this year has 6.18 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "12087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 16",
+     "in": "2.14",
+     "label": "biggest single day"
+    },
+    "county": "Monroe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "45 miles from the middle of the county",
+    "gauge_where": "at Marathon Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.51",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 66,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.72",
+    "usual_in": "32.71",
+    "vs_usual": {
+     "diff_in": "10.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.98",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7a7895c8291ea323",
+   "sid": "12896 1",
+   "story": "Through Oct 13, the weather station at Marathon Airport had its wettest month in September with 4.98 inches. The biggest single day was Mar 16 at 2.14 inches, right after a 13 day dry stretch from Feb 17 to Mar 1 with nothing in the gauge. This year is 10.51 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "12089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 24",
+     "in": "3.05",
+     "label": "biggest single day"
+    },
+    "county": "Nassau County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "2.4 miles south of Fernandina Beach",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.33",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Apr 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "50.52",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.99",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6d3767b22f5717ab",
+   "sid": "US1FLNS0021 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.4 miles south of Fernandina Beach has caught 50.52 inches. October is the wettest month so far at 9.99 inches, and that is with the month not done yet. The biggest single day was Sep 24 at 3.05 inches. That puts this year 5.33 inches more than last year at this point, and the gauge did go 16 days with nothing in it from Apr 11 to Apr 26.",
+   "through": "2026-10-13"
+  },
+  "12095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 13",
+     "in": "2.60",
+     "label": "biggest single day"
+    },
+    "county": "Orange County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Orlando Executive Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.05",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "40.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.64",
+    "usual_in": "46.03",
+    "vs_usual": {
+     "diff_in": "11.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.75",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9fafb6b25b76e587",
+   "sid": "12841 1",
+   "story": "Through Oct 13, the weather station at Orlando Executive Airport has 34.64 inches, 11.39 inches less than a usual year. August was the wettest month at 8.75 inches, but the biggest single day came earlier, 2.60 inches on Jul 13. The gauge went 15 days in a row with nothing from Apr 10 to Apr 24. Last year at this point it had 6.05 inches more.",
+   "through": "2026-10-13"
+  },
+  "12097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 8",
+     "in": "4.00",
+     "label": "biggest one-day reading"
+    },
+    "county": "Osceola County",
+    "days_in_year_so_far": 286,
+    "days_missing": 14,
+    "days_reported": 272,
+    "gauge": "weather station",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "in Kissimmee",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "4.41",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "47.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Apr 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 97,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.37",
+    "usual_in": "43.78",
+    "vs_usual": {
+     "diff_in": "1.41",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.93",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8344bb6e71297ffa",
+   "sid": "084625 2",
+   "story": "Through Oct 13, the weather station in Kissimmee has 42.37 inches, 1.41 inches less than a usual year. July was the wettest month at 6.93 inches, but the biggest one-day reading came late, 4.00 inches on Oct 8. The gauge went 15 days in a row with nothing from Apr 11 to Apr 25. On the days both years reported, this year is 4.41 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "12099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 18",
+     "in": "5.02",
+     "label": "biggest single day"
+    },
+    "county": "Palm Beach County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "4.2 miles north-northwest of Aberdeen",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.27",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "48.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "61.68",
+    "usual_in": "57.36",
+    "vs_usual": {
+     "diff_in": "4.32",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "18.28",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ad900d46326db24b",
+   "sid": "US1FLPB0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.2 miles north-northwest of Aberdeen had most of its year come late. September brought 18.28 inches, and 5.02 inches of that fell on Sep 18, the biggest single day. The longest dry stretch ran 9 days, from Feb 7 to Feb 15. That puts this year 13.27 inches ahead of last year at this point.",
+   "through": "2026-10-13"
+  },
+  "12101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 8",
+     "in": "3.73",
+     "label": "biggest single day"
+    },
+    "county": "Pasco County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3.4 miles northeast of Lutz",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "5.91",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "40.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.03",
+    "usual_in": "52.69",
+    "vs_usual": {
+     "diff_in": "5.66",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.03",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0a587b4e0933551b",
+   "sid": "US1FLPS0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.4 miles northeast of Lutz has caught 47.03 inches, 5.66 inches less than a usual year. August was the wettest month at 10.03 inches. The biggest single day came late, 3.73 inches on Oct 8. On the days both years reported, this year is 5.91 inches ahead of last year.",
+   "through": "2026-10-13"
+  },
+  "12103": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 23",
+     "in": "2.60",
+     "label": "biggest single day"
+    },
+    "county": "Pinellas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "at St Petersburg Clearwater International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.23",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Apr 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.29",
+    "usual_in": "47.89",
+    "vs_usual": {
+     "diff_in": "4.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.25",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7db5f7ed7c795734",
+   "sid": "12873 1",
+   "story": "Through Oct 13, the weather station at St Petersburg Clearwater International Airport has 11.23 inches more than last year by this day. August was the wettest month at 11.25 inches. The biggest single day was May 23 with 2.60 inches. The gauge went 18 days in a row with nothing in it, from Apr 9 to Apr 26.",
+   "through": "2026-10-13"
+  },
+  "12105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 26",
+     "in": "2.55",
+     "label": "biggest single day"
+    },
+    "county": "Polk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Winter Haven Gilbert Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.02",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.78",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.80",
+    "usual_in": "40.93",
+    "vs_usual": {
+     "diff_in": "0.87",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "10.37",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cce7f021918a3fe9",
+   "sid": "12876 1",
+   "story": "Through Oct 13, the weather station at Winter Haven Gilbert Airport has caught 41.80 inches, 0.87 more than a usual year. July was the wettest month at 10.37 inches, and the biggest single day was 2.55 inches on Aug 26. The gauge went 15 days in a row with nothing from Apr 10 to Apr 24. That is 12.02 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "12107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 14",
+     "in": "2.90",
+     "label": "biggest single day"
+    },
+    "county": "Putnam County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3.5 miles north-northwest of East Palatka",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.25",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.73",
+    "usual_in": "48.28",
+    "vs_usual": {
+     "diff_in": "9.55",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.87",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1e2a59813e208831",
+   "sid": "US1FLPT0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.5 miles north-northwest of East Palatka had June as its wettest month at 7.87 inches. The biggest single day came Jun 14 with 2.90 inches. From Apr 10 to Apr 24 the gauge went 15 days in a row with nothing in it, not even a trace. That leaves the year 4.25 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "12109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 6",
+     "in": "2.81",
+     "label": "biggest single day"
+    },
+    "county": "St. Johns County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "4 miles northeast of Hastings",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.11",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "48.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Apr 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.84",
+    "usual_in": "48.87",
+    "vs_usual": {
+     "diff_in": "8.03",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.61",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "94f08bbed51875f3",
+   "sid": "083874 2",
+   "story": "Through Oct 13, the weather station 4 miles northeast of Hastings had its biggest single day on Oct 6 with 2.81 inches. September was the wettest month at 6.61 inches. The longest dry stretch ran 16 days, Apr 11 to Apr 26, with not even a trace in the gauge. That leaves the year 8.11 inches less than last year, and 8.03 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "12111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 7",
+     "in": "4.59",
+     "label": "biggest single day"
+    },
+    "county": "St. Lucie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "5.6 miles west of Tradition",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.08",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "53.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "54.83",
+    "usual_in": "50.40",
+    "vs_usual": {
+     "diff_in": "4.43",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.46",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "969592c63dbab08a",
+   "sid": "US1FLSL0017 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.6 miles west of Tradition had its wettest month in April with 10.46 inches. The biggest single day came Apr 7 with 4.59 inches. The longest dry stretch ran 11 days, Jan 5 to Jan 15, with nothing in the gauge. That puts the year 1.08 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "12115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 8",
+     "in": "3.07",
+     "label": "biggest single day"
+    },
+    "county": "Sarasota County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "4.7 miles north-northeast of North Port",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.57",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Apr 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "52.49",
+    "usual_in": "51.60",
+    "vs_usual": {
+     "diff_in": "0.89",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "9.07",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a118615b4e31bbde",
+   "sid": "US1FLSS0015 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.7 miles north-northeast of North Port has 52.49 inches, 0.89 more than a usual year. July was the wettest month at 9.07 inches, and the biggest single day came late, 3.07 inches on Oct 8. It went 24 days in a row with nothing in the gauge from Apr 9 to May 2. That is 10.57 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "12117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 4",
+     "in": "3.45",
+     "label": "biggest single day"
+    },
+    "county": "Seminole County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Orlando Sanford Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.87",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.28",
+    "usual_in": "43.77",
+    "vs_usual": {
+     "diff_in": "2.49",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.72",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c9f42a4e9e7636d5",
+   "sid": "12854 1",
+   "story": "Through Oct 13, the weather station at Orlando Sanford Airport had July as its wettest month at 9.72 inches. The biggest single day was Jul 4 with 3.45 inches. The gauge went 15 days in a row with nothing from Apr 10 to Apr 24. That still leaves the station 1.87 inches more than last year by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "12119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 5",
+     "in": "3.59",
+     "label": "biggest one-day reading"
+    },
+    "county": "Sumter County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "4.3 miles south-southwest of Lady Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "10.42",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "25.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Apr 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 2"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 82,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.91",
+    "usual_in": "43.75",
+    "vs_usual": {
+     "diff_in": "7.84",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.71",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1019d9242296e9c2",
+   "sid": "US1FLST0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.3 miles south-southwest of Lady Lake had its wettest month in July at 9.71 inches, and the biggest one-day reading came Jul 5 at 3.59 inches. The longest dry stretch ran 23 days, Apr 10 to May 2, with not even a trace in the gauge. On the days both years reported, this year is 10.42 inches more than last year, even while it sits 7.84 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "12121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "2.67",
+     "label": "biggest single day"
+    },
+    "county": "Suwannee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "less than a mile south of Suwannee Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "3.50",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "44.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.94",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.68",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2ab34af339945289",
+   "sid": "US1FLSW0014 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south of Suwannee Springs had its wettest month in August with 7.68 inches. The biggest single day came Sep 7 at 2.67 inches. From Apr 9 to Apr 29 it went 21 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 3.50 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "12123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 25",
+     "in": "3.40",
+     "label": "biggest single day"
+    },
+    "county": "Taylor County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Perry",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.57",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "48.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 37,
+     "from": "Mar 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.01",
+    "usual_in": "48.59",
+    "vs_usual": {
+     "diff_in": "1.58",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.75",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1299372e427b3978",
+   "sid": "087025 2",
+   "story": "Through Oct 13, the weather station in Perry had its wettest month in October, with 11.75 inches. Before that it went 37 days in a row with nothing in the gauge, not even a trace, from Mar 26 to May 1. On the days both years reported, this year sits 1.57 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "12127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 3",
+     "in": "2.79",
+     "label": "biggest single day"
+    },
+    "county": "Volusia County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "2.9 miles west-southwest of Port Orange",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.43",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "59.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Apr 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "52.13",
+    "usual_in": "46.54",
+    "vs_usual": {
+     "diff_in": "5.59",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.77",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eebfcc13293e5993",
+   "sid": "US1FLVL0044 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.9 miles west-southwest of Port Orange has caught 52.13 inches, 5.59 inches more than a usual year. July was the wettest month at 9.77 inches, and the biggest single day came late, 2.79 inches on Oct 3. The longest dry stretch ran 15 days, Apr 11 to Apr 25. Last year was wetter still, with this year 7.43 inches less than 2025 to the same day.",
+   "through": "2026-10-13"
+  },
+  "12129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 17",
+     "in": "3.93",
+     "label": "biggest one-day reading"
+    },
+    "county": "Wakulla County",
+    "days_in_year_so_far": 286,
+    "days_missing": 25,
+    "days_reported": 261,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1 mile south of Crawfordville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 241,
+      "diff_in": "11.09",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 20,
+     "through": "Oct 13",
+     "total_in": "42.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "May 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "57.64",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "11.09",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7327601847dd604c",
+   "sid": "US1FLWK0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1 mile south of Crawfordville has caught 57.64 inches. October is the wettest month so far at 11.09 inches. The biggest rain came Mar 17 at 3.93 inches. On the days both years reported, this year is running 11.09 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "12131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "6.44",
+     "label": "biggest single day"
+    },
+    "county": "Walton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "4.1 miles north-northwest of De Funiak Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "16.96",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "50.12",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "67.08",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "14.46",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a8bf51188e96eaf8",
+   "sid": "US1FLWT0022 6",
+   "story": "Through Oct 13, the volunteer rain gauge north-northwest of De Funiak Springs has caught 67.08 inches. June was the wettest month at 14.46 inches, and the biggest single day came late, 6.44 inches on Oct 10. The longest dry stretch ran 15 days, Mar 17 to Mar 31. On the days both years reported, that is 16.96 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "12133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "4.56",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "10.6 miles west-southwest of Vernon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "5.75",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "52.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "Florida",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "59.54",
+    "usual_in": "53.70",
+    "vs_usual": {
+     "diff_in": "5.84",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.69",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8e85bdf22d97d8d3",
+   "sid": "US1FLWS0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 10.6 miles west-southwest of Vernon has caught 59.54 inches, 5.84 more than a usual year. May was the wettest month at 11.69 inches, and the biggest single day came late, 4.56 inches on Oct 10. Before all that, the gauge sat empty 19 days in a row from Mar 18 to Apr 5. On the days both years reported, this year is 5.75 inches ahead of last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "FL"
+}

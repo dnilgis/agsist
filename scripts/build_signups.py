@@ -4,7 +4,8 @@
 Run by .github/workflows/sponsor-report.yml right after build_audience.py,
 with the same LIST_URL + LIST_TOKEN. It reads the subs worker's token-gated
 /list?format=json (one row per address: src, zip, ts) and /notice-list (one
-row per address and one-time notice topic: rent:<st>, arcplc:<date>, rain-gauge) and
+row per address and one-time notice topic: rent:<st>, arcplc:<date>, rain-gauge,
+rainyear:<year>:<fips>, prf:<grid>) and
 writes how many came from each page ask, how many gave a ZIP, the last 30
 days by day, and the notice sign-ups by topic. /seo-report shows it.
 
@@ -46,6 +47,21 @@ def clean_src(s):
     return s or "(none)"
 
 
+def kind_of(src):
+    """One line per kind of ask, so a set of thousands of pages reads as one count:
+    town:<state>/<town> -> town, company:<slug> -> company, page:rain/<st>/<county>
+    -> page:rain (county rain pages), page:arc-plc/... -> page:arc-plc; a single
+    page keeps its own name."""
+    if ":" not in src:
+        return src
+    head, rest = src.split(":", 1)
+    if head in ("town", "company", "state"):
+        return head
+    if head == "page" and "/" in rest:
+        return "page:" + rest.split("/", 1)[0]
+    return src
+
+
 def build(records, notices, today):
     """records: [{zip, src, ts, reports}] (subscribers.fetch). notices: the
     /notice-list rows [{topic, ts, sent}] or None when that route failed."""
@@ -66,6 +82,12 @@ def build(records, notices, today):
             daily[d] = daily.get(d, 0) + 1
             if d >= d7:
                 b["last7"] += 1
+    kinds = {}
+    for b in by.values():
+        k = kind_of(b["src"])
+        g = kinds.setdefault(k, {"kind": k, "total": 0, "last7": 0, "last30": 0})
+        for f in ("total", "last7", "last30"):
+            g[f] += b[f]
     out = {
         "schema": 1,
         "asOf": today.isoformat(),
@@ -75,6 +97,7 @@ def build(records, notices, today):
         "withZip": with_zip,
         "reportDays": reports,
         "bySource": sorted(by.values(), key=lambda x: (-x["last30"], -x["total"], x["src"])),
+        "byKind": sorted(kinds.values(), key=lambda x: (-x["last30"], -x["total"], x["kind"])),
         "daily": [{"d": (d30 + timedelta(days=i)).isoformat(), "n": daily.get(d30 + timedelta(days=i), 0)}
                   for i in range(DAYS)],
     }
@@ -91,6 +114,8 @@ def build(records, notices, today):
             if d and d7 <= d <= today:
                 t["last7"] += 1
             sub = topic.split(":", 1)[1] if ":" in topic else ""
+            if kind == "rainyear":
+                sub = sub.split(":", 1)[0]          # by year; the county list would be thousands of lines
             if sub:
                 t["detail"][sub[:20]] = t["detail"].get(sub[:20], 0) + 1
         out["notices"] = sorted(nt.values(), key=lambda x: -x["total"])
@@ -128,6 +153,7 @@ def main():
           % (out["subscribers"], how, len(out["bySource"]), out["withZip"],
              sum(b["last7"] for b in out["bySource"])))
     # counts only, as annotations so they can be read without the log (page names and numbers, never an address)
+    print("::notice title=signups by kind::" + "; ".join("%s %d (7d %d)" % (k["kind"], k["total"], k["last7"]) for k in out["byKind"][:25]))
     print("::notice title=signups by page::" + "; ".join("%s %d (7d %d)" % (b["src"], b["total"], b["last7"]) for b in out["bySource"][:25]))
     for t in out.get("notices") or []:
         print("::notice title=notice list %s::%d total, %d last 7 days, %d sent%s" % (
@@ -157,10 +183,22 @@ def selftest():
     notes = [{"email": "a@x.com", "topic": "rent:wi", "ts": ms(2026, 10, 11), "sent": None},
              {"email": "b@x.com", "topic": "rent:ia", "ts": ms(2026, 9, 1), "sent": 1},
              {"email": "c@x.com", "topic": "arcplc:2026-12-11", "ts": ms(2026, 10, 12), "sent": None},
-             {"email": "d@x.com", "topic": "rain-gauge", "ts": ms(2026, 10, 13), "sent": None, "zip": "54728", "note": "n"}]
+             {"email": "d@x.com", "topic": "rain-gauge", "ts": ms(2026, 10, 13), "sent": None, "zip": "54728", "note": "n"},
+             {"email": "f@x.com", "topic": "rainyear:2026:19169", "ts": ms(2026, 10, 12), "sent": None},
+             {"email": "g@x.com", "topic": "rainyear:2026:55005", "ts": ms(2026, 10, 12), "sent": None},
+             # v5.29: prf:<grid> recurs; sent = mailed at least once
+             {"email": "e@x.com", "topic": "prf:30452", "ts": ms(2026, 10, 10), "sent": 1, "after": "2026-06", "iv": "2026-07"},
+             {"email": "f@x.com", "topic": "prf:30452", "ts": ms(2026, 9, 1), "sent": None, "after": "2026-06"},
+             {"email": "g@x.com", "topic": "prf:14538", "ts": ms(2026, 10, 11), "sent": None}]
+    recs = recs + [{"email": "h@x.com", "zip": "50010", "src": "company:agtegra", "ts": ms(2026, 10, 11), "reports": True},
+                   {"email": "i@x.com", "zip": None, "src": "page:rain/iowa/story-county", "ts": ms(2026, 10, 10), "reports": True},
+                   {"email": "j@x.com", "zip": None, "src": "page:rain/wisconsin/barron-county", "ts": ms(2026, 10, 2), "reports": True}]
     o = build(recs, notes, today)
     s = {b["src"]: b for b in o["bySource"]}
-    t(o["subscribers"] == 5 and o["withZip"] == 2 and o["reportDays"] == 4, "totals, ZIPs and report-day opt-ins")
+    t(o["subscribers"] == 8 and o["withZip"] == 3 and o["reportDays"] == 7, "totals, ZIPs and report-day opt-ins")
+    k = {x["kind"]: x for x in o["byKind"]}
+    t(k["page:rain"] == {"kind": "page:rain", "total": 2, "last7": 1, "last30": 2} and k["company"]["total"] == 1
+      and k["page:cash-bids"]["total"] == 2, "signups by kind: county rain pages and company pages as one line each")
     t(s["page:cash-bids"] == {"src": "page:cash-bids", "total": 2, "last7": 1, "last30": 2}, "per-page windows")
     t(s["home-hero"]["last30"] == 0 and s["home-hero"]["total"] == 1, "older signups count in total only")
     t(s["(none)"]["total"] == 1, "a missing source is counted, not dropped")
@@ -169,7 +207,10 @@ def selftest():
     n = {x["topic"]: x for x in o["notices"]}
     t(n["rent"]["total"] == 2 and n["rent"]["sent"] == 1 and n["rent"]["detail"] == {"wi": 1, "ia": 1}, "rent notices by state")
     t(n["arcplc"]["last7"] == 1, "ARC/PLC notices")
+    t(n["prf"]["total"] == 3 and n["prf"]["last7"] == 2 and n["prf"]["sent"] == 1
+      and n["prf"]["detail"] == {"30452": 2, "14538": 1}, "PRF grid index notices by grid")
     t(n["rain-gauge"]["total"] == 1 and n["rain-gauge"]["detail"] == {}, "rain gauge waiting list: a count only")
+    t(n["rainyear"]["total"] == 2 and n["rainyear"]["detail"] == {"2026": 2}, "rain year emails by year, not by county")
     t("54728" not in json.dumps(o) and "d@x.com" not in json.dumps(o), "no ZIP, note or address from the notice list in the output")
     t("notices" not in build(recs, None, today), "a failed notice list leaves the section out")
     t("@" not in json.dumps(o), "no address in the output")

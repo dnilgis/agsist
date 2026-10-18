@@ -504,7 +504,16 @@ def tally(D, k):
     return t
 
 
-def hub_faq(D, k):
+CALLS = ("plc", "arc", "close", "lean_plc", "lean_arc", "none")
+VORDER = ("plc", "lean_plc", "close", "lean_arc", "arc", "none", "withheld")
+
+
+def all_withheld(t6):
+    """True when the 2026 tally has rows but not one typical-farm verdict."""
+    return bool(t6) and not any(t6.get(w) for w in CALLS)
+
+
+def hub_faq(D, k, B=None):
     x = XCROPS[k]
     c6 = D["years"]["2026"]["crops"][k]
     c7 = D["years"]["2027"]["crops"].get(k)
@@ -528,9 +537,16 @@ def hub_faq(D, k):
                   f"At {strip(sc['usda_src'])}'s projected 2026/27 price of {pf(c6, sc['center'])}{u}, PLC would pay " + ("nothing for 2026" if r == 0 else f"a 2026 rate of {pf(c6, r)}{u}")
                   + f". FSA's own table of {nice(D['_xtab_date'])} shows " + ("no payment" if not c6['fsa_plc_p'] else f"{pf(c6, c6['fsa_plc_p'])}{u}") + f" at {pf(c6, c6['fsa_proj'])}. "
                   f"The real rate is set by the final season-average price, published after the marketing year ({c6['my']}) ends."))
-    q.append((f"Should I pick ARC or PLC for {x['lc']}?",
-              f"We do not give a pick for {x['lc']} yet. " + strip(sc.get("why", "")) + " The county pages show FSA's official benchmark, where each "
-              f"program pays more by price, and the calculator runs your own PLC yield and price."))
+    t6 = tally(D, k).get("2026", {})
+    if t6 and not all_withheld(t6) and B is not None:
+        # Same condition and the same counts as the verdict line on the page.
+        ans = ("It depends on the county and the farm. Typical-farm verdicts for 2026 across the county pages: "
+               + ", ".join(f"{B.VWORD[w]} {t6.get(w, 0):,}" for w in VORDER if t6.get(w))
+               + ". Open your county's page for its verdict and FSA's official benchmark; the calculator runs your own PLC yield and price.")
+    else:
+        ans = (f"We do not give a pick for {x['lc']} yet. " + strip(sc.get("why", "")) + " The county pages show FSA's official benchmark, where each "
+               f"program pays more by price, and the calculator runs your own PLC yield and price.")
+    q.append((f"Should I pick ARC or PLC for {x['lc']}?", ans))
     q.append((f"Where do I find my county's {x['lc']} ARC-CO benchmark yield?",
               f"FSA's 2026 county file lists {x['lc']} benchmarks for {sum(len(cs) for _st, _S, cs in crop_counties(D, k)):,} counties; each one has a "
               f"page here. A county FSA does not list has no {x['lc']} benchmark; ask the county FSA office."))
@@ -561,7 +577,7 @@ def hub_page(B, D, k, ch):
             f"FSA county benchmarks for {n_c:,} counties. Signup ends Dec 11.")
     if len(desc) > 155:
         desc = f"{x['label']} 2026 ERP {pf(c6, c6['erp']['erp'])}{u}, ARC-CO price {pf(c6, c6['bp']['value'])}. FSA benchmarks for {n_c:,} counties."
-    faq = hub_faq(D, k)
+    faq = hub_faq(D, k, B)
     upd = D["updated"][:10]
     jsonld = [
         {"@context": "https://schema.org", "@type": "FAQPage",
@@ -596,10 +612,9 @@ def hub_page(B, D, k, ch):
     verdict_p = (f"<p><b>No ARC or PLC pick for {esc(x['lc'])} yet.</b> {sc.get('why', '')} "
                  f"Across {n6:,} county and practice combinations, every typical-farm verdict is withheld"
                  + (f" ({mism:,} have no typical farm because FSA&rsquo;s county average PLC yield is above the benchmark)" if mism else "")
-                 + ". The county pages still give the benchmark and where each program pays more by price.</p>") if t6 and not any(
-        t6.get(w) for w in ("plc", "arc", "close", "lean_plc", "lean_arc", "none")) else ""
+                 + ". The county pages still give the benchmark and where each program pays more by price.</p>") if all_withheld(t6) else ""
     if not verdict_p and t6:
-        verdict_p = ("<p><b>Typical-farm verdicts, 2026:</b> " + ", ".join(f"{B.VWORD[w]} {t6.get(w, 0):,}" for w in ("plc", "lean_plc", "close", "lean_arc", "arc", "none", "withheld") if t6.get(w))
+        verdict_p = ("<p><b>Typical-farm verdicts, 2026:</b> " + ", ".join(f"{B.VWORD[w]} {t6.get(w, 0):,}" for w in VORDER if t6.get(w))
                      + ".</p>")
     quick = f"""<div class="ap-quick" id="quick-answer">
     <p><b>Quick answer.</b> The 2026 PLC effective reference price for {esc(x['lc'])} is <b>{pf(c6, c6['erp']['erp'])}{u}</b> (FSA). PLC pays when the national

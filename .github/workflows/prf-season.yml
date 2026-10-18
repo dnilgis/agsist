@@ -1,0 +1,199 @@
+name: PRF interval so far
+
+# The "This interval so far" card on /prf and the PRF county pages reads
+# data/prf/now/<ST>.json, written by scripts/fetch_prf_season.py from NOAA
+# CPC's real-time daily gauge analysis (0.25 degree, CONUS), the same daily
+# rain RMA's Rainfall Index is built from.
+#
+# Daily at 14:23 UTC (Sig approved Oct 17, 2026), plus dispatch modes below.
+#   mode=probe     save directory listings, one daily file and the RMA source
+#                  notes to the raw branch (data/prf-season-raw/), nothing else
+#   mode=build     fetch the open intervals and commit data/prf/now/
+#   mode=backtest  rebuild past intervals from CPC and compare with RMA's final
+#                  index; the result goes to the raw branch and the job log
+#
+on:
+  schedule:
+    - cron: '23 14 * * *'   # daily, after NCEI posts its daily grids (3 days behind); Sig approved Oct 17, 2026
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "probe | probe2 | probe3 | build | backtest | prelim"
+        required: true
+        default: probe
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prf-season
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Selftest
+        run: |
+          if [ -f scripts/fetch_prf_season.py ]; then python scripts/fetch_prf_season.py --selftest; fi
+
+      - name: Probe
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'probe' }}
+        run: |
+          D=data/prf-season-raw/probe
+          mkdir -p "$D"
+          get() { curl -sS -L -m 90 -A "agsist.com PRF tracker (sig@farmers1st.com)" -o "$D/$1" -w "$1 %{http_code} %{size_download} %{url_effective}\n" "$2" >> "$D/status.txt" 2>>"$D/errors.txt" || echo "$1 FAILED" >> "$D/status.txt"; }
+          C=https://ftp.cpc.ncep.noaa.gov/precip/CPC_UNI_PRCP/GAUGE_CONUS
+          get cpc-root.html "$C/"
+          get cpc-rt.html "$C/RT/"
+          get cpc-rt-2026.html "$C/RT/2026/"
+          get cpc-rt-2025.html "$C/RT/2025/"
+          get cpc-docs.html "$C/DOCU/"
+          get cpc-v1.html "$C/V1.0/"
+          F=PRCP_CU_GAUGE_V1.0CONUS_0.25deg.lnx.20261015.RT
+          get sample.bin "$C/RT/2026/$F"
+          get sample.bin.gz "$C/RT/2026/$F.gz"
+          get psl-rt.html https://downloads.psl.noaa.gov/Datasets/cpc_us_precip/RT/
+          get psl-root.html https://downloads.psl.noaa.gov/Datasets/cpc_us_precip/
+          get psl-page.html https://psl.noaa.gov/data/gridded/data.unified.daily.conus.html
+          get rma-source-news.html "https://www.rma.usda.gov/news-events/news/2026/washington-dc/usda-risk-management-agency-upgrades-rainfall-data-source"
+          get rma-processing-2027.pdf "https://www.rma.usda.gov/sites/default/files/2026-06/Rainfall%20Indexa%20Data%202027%20and%20Beyond%20Rainfall%20Index%20Processing.pdf"
+          get rma-ri-page.html "https://www.rma.usda.gov/policy-procedure/insurance-plans/pasture-rangeland-forage"
+          # the index service also returns the interval rain in mm: one grid, one call, to compare later
+          get rma-api-30025.json "https://public-rma.fpac.usda.gov/apps/PrfWebApi/PrfExternalIndexes/GetIndexValues?intervalType=BiMonthly&sampleYearMinimum=2024&sampleYearMaximum=2026&gridId=30025"
+          sudo apt-get -qq install -y poppler-utils >/dev/null 2>&1 || true
+          [ -s "$D/rma-processing-2027.pdf" ] && pdftotext -layout "$D/rma-processing-2027.pdf" "$D/rma-processing-2027.txt" || true
+          ls -la "$D"; cat "$D/status.txt"; cat "$D/errors.txt" || true
+          bash scripts/push_raw.sh "prf-season probe" "$D"
+
+      - name: Probe 2 (NCEI files and RMA's CPC-era index record)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'probe2' }}
+        run: |
+          D=data/prf-season-raw/probe2
+          mkdir -p "$D"
+          get() { curl -sS -L -m 300 -A "agsist.com PRF tracker (sig@farmers1st.com)" -o "$D/$1" -w "$1 %{http_code} %{size_download} %{url_effective}\n" "$2" >> "$D/status.txt" 2>>"$D/errors.txt" || echo "$1 FAILED" >> "$D/status.txt"; }
+          C=https://ftp.cpc.ncep.noaa.gov/precip/CPC_UNI_PRCP/GAUGE_CONUS/DOCU
+          get cpc-readme.txt "$C/PRCP_CU_GAUGE_V1.0CONUS_0.25deg.README"
+          get cpc-rt.ctl "$C/PRCP_CU_GAUGE_V1.0CONUS_0.25deg.lnx.RT.ctl"
+          N=https://www.ncei.noaa.gov/pub/data/cirs/usda
+          get ncei-usda.html "$N/"
+          get ncei-monthly.html "$N/monthly/"
+          get ncei-final.html "$N/monthly/final/"
+          get ncei-prelim.html "$N/monthly/prelim/"
+          get ncei-daily.html "$N/daily/"
+          get ncei-readme.txt "$N/README.txt"
+          get ncei-202608.csv "$N/monthly/final/202608.usda.csv"
+          get ncei-dg.html "https://www.ncei.noaa.gov/pub/data/daily-grids/"
+          get rma-viri.html "https://pubfs-rma.fpac.usda.gov/pub/Miscellaneous_Files/VI_RI_Data/index.html"
+          python3 - "$D" <<'PY'
+          import re, sys, os
+          d = sys.argv[1]
+          for f in sorted(os.listdir(d)):
+              if f.endswith(".html"):
+                  t = open(os.path.join(d, f), errors="replace").read()
+                  print("==", f, re.findall(r'href="([^"?]+)"', t)[:80])
+          PY
+          cat "$D/status.txt"
+          bash scripts/push_raw.sh "prf-season probe2" "$D"
+
+      - name: Probe 3 (NCEI daily and initial files)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'probe3' }}
+        run: |
+          D=data/prf-season-raw/probe3
+          mkdir -p "$D"
+          get() { curl -sS -L -m 300 -A "agsist.com PRF tracker (sig@farmers1st.com)" -o "$D/$1" -w "$1 %{http_code} %{size_download} %{url_effective}\n" "$2" >> "$D/status.txt" 2>>"$D/errors.txt" || echo "$1 FAILED" >> "$D/status.txt"; }
+          N=https://www.ncei.noaa.gov/monitoring-content/data/us/usda
+          get readme.docx "$N/Readme.docx"
+          get m-initial.html "$N/monthly/initial/"
+          get d-final.html "$N/daily/final/"
+          get d-is.html "$N/daily/initial-synced/"
+          get d-iu.html "$N/daily/initial-unsynced/"
+          python3 - "$D" "$N" <<'PY'
+          import re, sys, os, urllib.request
+          d, base = sys.argv[1], sys.argv[2]
+          picks = {}
+          for f, sub in (("m-initial.html", "monthly/initial/"), ("d-final.html", "daily/final/"), ("d-is.html", "daily/initial-synced/"), ("d-iu.html", "daily/initial-unsynced/")):
+              p = os.path.join(d, f)
+              if not os.path.exists(p):
+                  continue
+              hrefs = [h for h in re.findall(r'href="([^"?]+)"', open(p, errors="replace").read()) if not h.startswith("/") and h != "../"]
+              print("==", sub, len(hrefs), hrefs[:6], hrefs[-6:])
+              picks[sub] = hrefs
+          # one level down where the listing is folders, then the newest file
+          for sub, hrefs in picks.items():
+              if not hrefs:
+                  continue
+              last = hrefs[-1]
+              url = base + "/" + sub + last
+              if last.endswith("/"):
+                  t = urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "agsist"}), timeout=120).read().decode("utf-8", "replace")
+                  inner = [h for h in re.findall(r'href="([^"?]+)"', t) if not h.startswith("/") and h != "../"]
+                  print("   ", sub + last, len(inner), inner[:4], inner[-4:])
+                  open(os.path.join(d, sub.replace("/", "_") + last.strip("/") + ".html"), "w").write(t)
+                  if not inner:
+                      continue
+                  url = url + inner[-1]
+              raw = urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "agsist"}), timeout=300).read()
+              name = sub.replace("/", "_") + os.path.basename(url)
+              open(os.path.join(d, name), "wb").write(raw)
+              print("    saved", url, len(raw))
+          PY
+          cat "$D/status.txt"
+          bash scripts/push_raw.sh "prf-season probe3" "$D"
+
+      - name: Backtest (collect)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'backtest' }}
+        timeout-minutes: 45
+        env:
+          PYTHONUNBUFFERED: "1"
+          PRF_SEASON_CACHE: /tmp/cpc
+        run: |
+          python scripts/fetch_prf_season.py --backtest-collect data/prf-season-raw/backtest
+          gzip -9 -n -k data/prf-season-raw/backtest/backtest-rows.json
+          bash scripts/push_raw.sh "prf-season backtest" data/prf-season-raw/backtest
+
+      - name: Preliminary against month file (collect)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'prelim' }}
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python scripts/fetch_prf_season.py --prelim-collect data/prf-season-raw/backtest
+          bash scripts/push_raw.sh "prf-season prelim" data/prf-season-raw/backtest
+
+      # A source that fails writes nothing: the script refuses a file it
+      # cannot check, and the card keeps showing the last good one with its date.
+      - name: Build
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'build') }}
+        timeout-minutes: 20
+        env:
+          PYTHONUNBUFFERED: "1"
+          PRF_SEASON_SAVE: data/prf-season-raw/initial
+        run: |
+          python scripts/fetch_prf_season.py
+          python scripts/fetch_prf_season.py --check
+          python scripts/check_site_budget.py
+          # NCEI keeps only last month's preliminary file; keep each one to check it against the final
+          if [ -d data/prf-season-raw/initial ]; then bash scripts/push_raw.sh "prf-season initial month" data/prf-season-raw/initial || true; fi
+
+      - name: Commit
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'build') }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/prf/now
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          THRU=$(python -c "import json;print(json.load(open('data/prf/now/TX.json'))['through'])")
+          git commit -q -m "data: prf interval so far (NCEI daily grids through $THRU)"
+          BR="${GITHUB_REF_NAME}"
+          for i in 1 2 3 4 5; do
+            git rebase --abort 2>/dev/null || true
+            if git pull -q --rebase origin "$BR" && git push -q origin "HEAD:$BR"; then exit 0; fi
+            sleep $((20 * i))
+          done
+          echo "push failed after 5 attempts"; exit 1

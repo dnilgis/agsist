@@ -1,0 +1,4679 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "31001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "2.90",
+     "label": "biggest single day"
+    },
+    "county": "Adams County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2.0 miles west-northwest of Hastings",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.54",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.82",
+    "usual_in": "23.92",
+    "vs_usual": {
+     "diff_in": "5.90",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.94",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "afd00e2cd2a28198",
+   "sid": "US1NEAD0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.0 miles west-northwest of Hastings has caught 7.54 inches more than it did by this day last year. August was the wettest month at 6.94 inches, and the biggest single day was Sep 25 with 2.90 inches. The gauge also went 16 days in a row with nothing in it, from Mar 17 to Apr 1.",
+   "through": "2026-10-13"
+  },
+  "31003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 30",
+     "in": "3.42",
+     "label": "biggest single day"
+    },
+    "county": "Antelope County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Oakdale",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "2.47",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "21.36",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jul 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.87",
+    "usual_in": "24.64",
+    "vs_usual": {
+     "diff_in": "0.77",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.49",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ce27c8fd8510ed8b",
+   "sid": "256135 2",
+   "story": "Through Oct 13, the weather station in Oakdale had its biggest single day on Jun 30 with 3.42 inches. Then it went 19 days in a row with nothing in the gauge, from Jul 4 to Jul 22. September was the wettest month at 5.49 inches. On the days both years reported, this year is 2.47 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "31005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "1.37",
+     "label": "biggest single day"
+    },
+    "county": "Arthur County",
+    "days_in_year_so_far": 282,
+    "days_missing": 1,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "in Arthur",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "3.70",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 9",
+     "total_in": "17.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Nebraska",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "13.61",
+    "usual_in": "18.82",
+    "vs_usual": {
+     "diff_in": "5.21",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.24",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fec986958160f897",
+   "sid": "250365 2",
+   "story": "Through Oct 9, the weather station in Arthur has caught 3.70 inches less than last year on the days both years reported. June was the wettest month at 4.24 inches, and the biggest single day came Jun 23 with 1.37 inches. The longest dry stretch ran 16 days, from Mar 17 to Apr 1, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-09"
+  },
+  "31007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 25",
+     "in": "0.79",
+     "label": "biggest single day"
+    },
+    "county": "Banner County",
+    "days_in_year_so_far": 283,
+    "days_missing": 11,
+    "days_reported": 272,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "9.1 miles southwest of Harrisburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 261,
+      "diff_in": "7.88",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 10",
+     "total_in": "13.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "May 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Nebraska",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "5.75",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "1.26",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ab99f82849330cab",
+   "sid": "US1NEBA0003 6",
+   "story": "Through Oct 10, the gauge 9.1 miles southwest of Harrisburg has caught 5.75 inches. It went 21 days in a row with nothing in it, May 31 to Jun 20, and then the biggest single day came on Jun 25 with 0.79 inches. August was the wettest month at 1.26 inches. On the days both years reported, that is 7.88 inches less than 2025.",
+   "through": "2026-10-10"
+  },
+  "31011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "1.50",
+     "label": "biggest single day"
+    },
+    "county": "Boone County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Albion",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.55",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.69",
+    "usual_in": "24.21",
+    "vs_usual": {
+     "diff_in": "1.52",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.86",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "08262fb27b21126b",
+   "sid": "250070 2",
+   "story": "Through Oct 13, the weather station in Albion had 9.55 inches less than it had by the same day last year. September was the wettest month at 5.86 inches. The biggest single day came Jun 21 with 1.50 inches. The gauge went 18 days in a row with nothing in it, from Feb 2 to Feb 19.",
+   "through": "2026-10-13"
+  },
+  "31013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "3.04",
+     "label": "biggest single day"
+    },
+    "county": "Box Butte County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "at Alliance Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.37",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.98",
+    "usual_in": "13.99",
+    "vs_usual": {
+     "diff_in": "1.01",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.74",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "912649afc7a56717",
+   "sid": "24044 1",
+   "story": "Through Oct 13, the weather station at Alliance Municipal Airport had caught 12.98 inches, 1.01 inches less than a usual year. August did most of the work with 4.74 inches, and 3.04 of that came on Aug 15 alone. The longest dry stretch ran 10 days, Jan 3 to Jan 12. Last year at this point the gauge had 0.37 inches more.",
+   "through": "2026-10-13"
+  },
+  "31017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "3.00",
+     "label": "biggest single day"
+    },
+    "county": "Brown County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "24 miles from the middle of the county",
+    "gauge_where": "14.21 miles northeast of Brewster",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "3.96",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "21.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.07",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.67",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1bd9c8c9ea07e4ca",
+   "sid": "US1Brow5512 6",
+   "story": "Through Oct 13, the volunteer rain gauge 14.21 miles northeast of Brewster had 18.07 inches. June was the wettest month at 5.67 inches, and 3.00 of that came on Jun 21 alone. The gauge sat empty 18 days in a row from Feb 2 to Feb 19. On the days both years reported, that is 3.96 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "31019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "1.70",
+     "label": "biggest single day"
+    },
+    "county": "Buffalo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "4 miles northeast of Kearney",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.91",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.49",
+    "usual_in": "22.79",
+    "vs_usual": {
+     "diff_in": "3.30",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.59",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1c4d2de0d1ea56c8",
+   "sid": "254335 2",
+   "story": "Through Oct 13, the weather station 4 miles northeast of Kearney had 19.49 inches, 3.30 inches less than a usual year. September was the wettest month at 3.59 inches, and the biggest single day came Sep 25 with 1.70 inches. The gauge went 14 days in a row with nothing from Mar 19 to Apr 1. By this day last year it had 4.91 inches more.",
+   "through": "2026-10-13"
+  },
+  "31021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "1.99",
+     "label": "biggest single day"
+    },
+    "county": "Burt County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Tekamah Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "4.90",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "28.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.52",
+    "usual_in": "25.02",
+    "vs_usual": {
+     "diff_in": "1.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.45",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bc822f8da03c3e67",
+   "sid": "94978 1",
+   "story": "Through Oct 13, the weather station at Tekamah Municipal Airport caught its most in September, 6.45 inches. The biggest single day came Aug 14 with 1.99 inches. The gauge went 14 days in a row with nothing from Mar 18 to Mar 31. On the days both years reported, this year is 4.90 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "31023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Butler County",
+    "days_in_year_so_far": 277,
+    "days_missing": 0,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Surprise",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Nebraska",
+    "through": "Oct 4",
+    "through_iso": "2026-10-04",
+    "total_in": "25.93",
+    "usual_in": "24.32",
+    "vs_usual": {
+     "diff_in": "1.61",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.80",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9c010098417922ca",
+   "sid": "258328 2",
+   "story": "Through Oct 4, the weather station in Surprise had September as its wettest month at 5.80 inches. The biggest single day came Oct 1 with 2.12 inches. The longest dry stretch ran 16 days, Feb 2 to Feb 17, with nothing in the gauge, not even a trace. That leaves the station 1.61 inches more than a usual year.",
+   "through": "2026-10-04"
+  },
+  "31025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 28",
+     "in": "2.75",
+     "label": "biggest single day"
+    },
+    "county": "Cass County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "3.4 miles west-southwest of Elmwood",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "3.50",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "29.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.36",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.96",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6cb4079454c7c52b",
+   "sid": "US1NECA0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge west-southwest of Elmwood caught 7.96 inches in September, its wettest month. The biggest single day was Jul 28 with 2.75 inches. The longest dry stretch ran 14 days, Feb 6 to Feb 19. On the days both years reported, this year has 3.50 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "31029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 24",
+     "in": "1.32",
+     "label": "biggest single day"
+    },
+    "county": "Chase County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Imperial Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.87",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.66",
+    "usual_in": "16.08",
+    "vs_usual": {
+     "diff_in": "4.42",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.38",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aea4069302162252",
+   "sid": "24091 1",
+   "story": "Through Oct 13, the weather station at Imperial Municipal Airport had July as its wettest month at 3.38 inches. The biggest single day was Jun 24, with 1.32 inches. Last year the gauge had 21.53 inches by Oct 13, so this year sits 9.87 inches less.",
+   "through": "2026-10-13"
+  },
+  "31031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 3",
+     "in": "1.16",
+     "label": "biggest single day"
+    },
+    "county": "Cherry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "29 miles from the middle of the county",
+    "gauge_where": "1 mile northeast of Kilgore",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "6.90",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "23.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.89",
+    "usual_in": "20.42",
+    "vs_usual": {
+     "diff_in": "2.53",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.56",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "12a9464e5743e344",
+   "sid": "254432 2",
+   "story": "Through Oct 13, the weather station 1 mile northeast of Kilgore has 17.89 inches, 2.53 inches less than a usual year. August was the wettest month at 4.56 inches, and the biggest single day was 1.16 inches on Jun 3. The longest dry stretch ran 19 days, Feb 1 to Feb 19, with not even a trace. On the days both years reported, this year sits 6.90 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "31033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 6",
+     "in": "1.74",
+     "label": "biggest single day"
+    },
+    "county": "Cheyenne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "8.1 miles south-southeast of Sidney",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.01",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.40",
+    "usual_in": "15.84",
+    "vs_usual": {
+     "diff_in": "4.44",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.27",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9e1778bea63df449",
+   "sid": "US10chey028 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.1 miles south-southeast of Sidney has caught 11.40 inches, 4.44 inches less than a usual year. July was the wettest month at 3.27 inches. The biggest single day came Sep 6 with 1.74 inches. That still leaves the gauge 2.01 inches behind where it stood on this day last year.",
+   "through": "2026-10-13"
+  },
+  "31035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Clay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "in Clay Center",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.24",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Mar 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.30",
+    "usual_in": "26.14",
+    "vs_usual": {
+     "diff_in": "0.16",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.66",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6f7898329374d86a",
+   "sid": "251684 2",
+   "story": "Through Oct 13, the weather station in Clay Center had a lot of its year come in June. June brought 7.66 inches, and Jun 21 alone put 3.30 inches in the gauge. Earlier it went 20 days in a row with nothing from Mar 13 to Apr 1. On the days both years reported, this year has 2.24 inches less than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "31039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "2.48",
+     "label": "biggest single day"
+    },
+    "county": "Cuming County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in West Point",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.83",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.57",
+    "usual_in": "27.37",
+    "vs_usual": {
+     "diff_in": "2.80",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.87",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8df91c30c772b61e",
+   "sid": "259200 2",
+   "story": "Through Oct 13, the weather station in West Point has caught 9.83 inches less than it had by this day last year. August was the wettest month at 4.87 inches, and 2.48 of that came on Aug 13, the biggest single day. The gauge also went 16 days in a row with nothing in it, from Mar 17 to Apr 1.",
+   "through": "2026-10-13"
+  },
+  "31041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "2.21",
+     "label": "biggest single day"
+    },
+    "county": "Custer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Broken Bow Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.41",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "20.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.57",
+    "usual_in": "21.06",
+    "vs_usual": {
+     "diff_in": "1.51",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.81",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8c2170888f2f5ff9",
+   "sid": "94946 1",
+   "story": "Through Oct 13, the weather station at Broken Bow Municipal Airport has caught 22.57 inches. August did the heavy lifting with 6.81 inches, and the biggest single day was Jun 20 at 2.21 inches. The longest dry stretch ran 14 days, Feb 5 to Feb 18, with not even a trace. On the days both years reported, this year is 2.41 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "31043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "2.62",
+     "label": "biggest one-day reading"
+    },
+    "county": "Dakota County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Emerson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "6.58",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "26.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 32,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 5"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 79,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.03",
+    "usual_in": "25.29",
+    "vs_usual": {
+     "diff_in": "5.26",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.27",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ff956b8b738cfbd4",
+   "sid": "252715 2",
+   "story": "Through Oct 13, the weather station in Emerson has caught 20.03 inches, 5.26 inches less than a usual year. August did the heavy lifting with 6.27 inches, and 2.62 of that came on Aug 13. The gauge sat empty 32 days in a row from Feb 2 to Mar 5. On the days both years reported, that is 6.58 inches less than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "31045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "1.10",
+     "label": "biggest single day"
+    },
+    "county": "Dawes County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "3 miles southwest of Chadron",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.31",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "17.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.93",
+    "usual_in": "16.69",
+    "vs_usual": {
+     "diff_in": "3.76",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.34",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "34e89bc1556fcaec",
+   "sid": "251575 2",
+   "story": "Through Oct 13, the weather station 3 miles southwest of Chadron had 12.93 inches, 3.76 less than a usual year. September was the wettest month at 3.34 inches, and the biggest single day was 1.10 inches on Aug 13. The longest dry stretch ran 14 days, Feb 5 to Feb 18. Last year the gauge was 4.31 inches ahead of this one by now.",
+   "through": "2026-10-13"
+  },
+  "31051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "2.30",
+     "label": "biggest single day"
+    },
+    "county": "Dixon County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "3 miles northwest of Wakefield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "6.55",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "26.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 32,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Nebraska",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "19.51",
+    "usual_in": "26.82",
+    "vs_usual": {
+     "diff_in": "7.31",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.19",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5442938af8e16aa1",
+   "sid": "258915 2",
+   "story": "Through Oct 11, the weather station 3 miles northwest of Wakefield has 6.55 inches less than it had by this day last year. August was the wettest month at 4.19 inches, and the biggest single day was Aug 13 with 2.30 inches. The gauge went 32 days in a row with nothing in it, not even a trace, from Feb 2 to Mar 5.",
+   "through": "2026-10-11"
+  },
+  "31053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "2.88",
+     "label": "biggest single day"
+    },
+    "county": "Dodge County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Fremont",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "4.71",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "34.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.33",
+    "usual_in": "26.87",
+    "vs_usual": {
+     "diff_in": "2.46",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.06",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "230e3f8ace2e85a3",
+   "sid": "253050 2",
+   "story": "Through Oct 13, the weather station in Fremont shows September as the wettest month at 8.06 inches. The biggest single day came Aug 13 with 2.88 inches. The gauge also went 14 days in a row without a trace, from Feb 6 to Feb 19. On the days both years reported, this year is 4.71 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "31055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "4.22",
+     "label": "biggest single day"
+    },
+    "county": "Douglas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Valley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.19",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "31.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.32",
+    "usual_in": "29.30",
+    "vs_usual": {
+     "diff_in": "4.02",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.85",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3d4f77e25a771b1c",
+   "sid": "258795 2",
+   "story": "Through Oct 13, the weather station in Valley had its wettest month in September, with 11.85 inches. The biggest single day came Sep 30 at 4.22 inches. The longest dry stretch ran 14 days, Feb 5 to Feb 18, with not even a trace in the gauge. On the days both years reported, this year is 2.19 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "31057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "1.00",
+     "label": "biggest single day"
+    },
+    "county": "Dundy County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "6.0 miles northwest of Parks",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "7.60",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "18.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 60,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.59",
+    "usual_in": "17.65",
+    "vs_usual": {
+     "diff_in": "7.06",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.92",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2c482d17df01d1c6",
+   "sid": "US10dund010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.0 miles northwest of Parks has caught 10.59 inches, 7.06 inches less than a usual year. May was the wettest month at 2.92 inches, and the biggest single day was 1.00 inch on Aug 15. The gauge went 25 days in a row with nothing from Mar 8 to Apr 1. On the days both years reported, that is 7.60 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "31059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "3.05",
+     "label": "biggest single day"
+    },
+    "county": "Fillmore County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "2.1 miles west-southwest of Tobias",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "5.32",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "25.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.60",
+    "usual_in": "27.97",
+    "vs_usual": {
+     "diff_in": "2.63",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.84",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d78422ae366e08d6",
+   "sid": "US10fill006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.1 miles west-southwest of Tobias has caught 30.60 inches, 2.63 more than a usual year. September was the wettest month at 7.84 inches, and the biggest single day came Oct 1 with 3.05. The gauge sat empty for 13 days in a row from Jul 10 to Jul 22. On the days both years reported, that is 5.32 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "31061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "3.28",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 12,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "4.5 miles south-southeast of Hildreth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "0.56",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "23.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.94",
+    "usual_in": "24.57",
+    "vs_usual": {
+     "diff_in": "1.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.43",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f86054e514d7329c",
+   "sid": "US10fran002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.5 miles south-southeast of Hildreth has caught 22.94 inches, 1.63 inches less than a usual year. September did most of the work with 5.43 inches, and 3.28 of that came on Sep 25 alone. The gauge sat empty for 19 days in a row from Mar 12 to Mar 30. On the days both years reported, this year is 0.56 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "31063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "1.52",
+     "label": "biggest single day"
+    },
+    "county": "Frontier County",
+    "days_in_year_so_far": 282,
+    "days_missing": 9,
+    "days_reported": 273,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "less than a mile north-northwest of Maywood",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "2.85",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 9",
+     "total_in": "20.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Feb 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Nebraska",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "15.42",
+    "usual_in": "19.51",
+    "vs_usual": {
+     "diff_in": "4.09",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.52",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c8b21ab041342597",
+   "sid": "US10fron007 6",
+   "story": "Through Oct 9, the volunteer rain gauge less than a mile north-northwest of Maywood had a 34 day run with nothing in it, not even a trace, from Feb 27 to Apr 1. May was the wettest month at 3.52 inches. The biggest single day came Aug 15 with 1.52 inches. On the days both years reported, that is 2.85 inches less than last year.",
+   "through": "2026-10-09"
+  },
+  "31065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "1.93",
+     "label": "biggest single day"
+    },
+    "county": "Furnas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "less than a mile southeast of Beaver City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.35",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "18.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Mar 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.20",
+    "usual_in": "21.45",
+    "vs_usual": {
+     "diff_in": "5.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.07",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7c97be028506111c",
+   "sid": "US10furn014 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southeast of Beaver City had its wettest month in September, with 4.07 inches. The biggest single day came Jun 9 at 1.93 inches. Before that, the gauge went 29 days in a row with nothing in it, not even a trace, from Mar 4 to Apr 1. On the days both years reported, this year is 2.35 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "31067": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 17",
+     "in": "3.50",
+     "label": "biggest single day"
+    },
+    "county": "Gage County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1 mile north of Beatrice",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "7.38",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "24.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.60",
+    "usual_in": "27.82",
+    "vs_usual": {
+     "diff_in": "3.78",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.00",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "40537a919e047a3f",
+   "sid": "250622 2",
+   "story": "Through Oct 13, the weather station 1 mile north of Beatrice had May as its wettest month at 8.00 inches, and 3.50 of that came on May 17, the biggest single day. The longest dry stretch ran 16 days, Mar 17 to Apr 1. On the days both years reported, that is 7.38 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "31069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 18",
+     "in": "2.06",
+     "label": "biggest single day"
+    },
+    "county": "Garden County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "25 miles from the middle of the county",
+    "gauge_where": "5.8 miles south-southeast of Lakeside",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.94",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.40",
+    "usual_in": "16.45",
+    "vs_usual": {
+     "diff_in": "2.05",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.21",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5a85efed05c72379",
+   "sid": "US10gard010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.8 miles south-southeast of Lakeside has 14.40 inches, 2.05 inches less than a usual year. June was the wettest month at 4.21 inches, and the biggest single day came Sep 18 with 2.06 inches. The gauge went 17 days in a row with nothing in it, from Mar 17 to Apr 2. On the days both years reported, this year is 4.94 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "31071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 13",
+     "in": "2.55",
+     "label": "biggest single day"
+    },
+    "county": "Garfield County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "8 miles west-northwest of Ericson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "7.60",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "34.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.80",
+    "usual_in": "23.65",
+    "vs_usual": {
+     "diff_in": "2.15",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.77",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c539390d7d2ab894",
+   "sid": "252770 2",
+   "story": "Through Oct 13, the station near Ericson had June as its wettest month at 6.77 inches. The biggest single day came Jun 13, with 2.55 inches in the gauge. On the days both years reported, this year has 7.60 inches less than last year, so 2025 still has the edge.",
+   "through": "2026-10-13"
+  },
+  "31073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "1.16",
+     "label": "biggest single day"
+    },
+    "county": "Gosper County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "8 miles south of Elwood",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.76",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "17.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.71",
+    "usual_in": "20.86",
+    "vs_usual": {
+     "diff_in": "5.15",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.71",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d422e1e79b1040dc",
+   "sid": "252690 2",
+   "story": "Through Oct 13, the weather station 8 miles south of Elwood had 15.71 inches, 5.15 inches less than a usual year. September was the wettest month at 3.71 inches, and the biggest single day was 1.16 inches on Sep 25. The gauge went 14 days in a row with nothing from Mar 19 to Apr 1. Last year at this point it had 1.76 inches more.",
+   "through": "2026-10-13"
+  },
+  "31075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 30",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "Grant County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "5 miles east-northeast of Whitman",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.83",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "14.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.24",
+    "usual_in": "17.07",
+    "vs_usual": {
+     "diff_in": "1.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.81",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "344654588a0bf19d",
+   "sid": "94079 1",
+   "story": "Through Oct 13, the weather station 5 miles east-northeast of Whitman has its wettest month in August at 4.81 inches. The biggest single day was Jun 30 with 2.10 inches. The gauge went 18 days in a row with nothing in it, Feb 1 to Feb 18. That still comes to 0.83 inches more than 2025 by this day, though it sits 1.83 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "31077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 18",
+     "in": "3.20",
+     "label": "biggest single day"
+    },
+    "county": "Greeley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "4.0 miles east of Scotia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.20",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.14",
+    "usual_in": "23.78",
+    "vs_usual": {
+     "diff_in": "4.36",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.47",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "27ac3cd9bea8c215",
+   "sid": "US10gree004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.0 miles east of Scotia had most of its year come in August, with 9.47 inches that month. The biggest single day was Aug 18 at 3.20 inches. Back on Feb 4 through Feb 19 it went 16 days in a row without even a trace. Even at 4.36 inches more than a usual year, it still sits 1.20 inches less than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "31079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "2.81",
+     "label": "biggest single day"
+    },
+    "county": "Hall County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "at Grand Island Central NE Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.95",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.83",
+    "usual_in": "23.67",
+    "vs_usual": {
+     "diff_in": "3.16",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.72",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1b806fbc15037520",
+   "sid": "14935 1",
+   "story": "Through Oct 13, the weather station at Grand Island Central NE Regional Airport has 26.83 inches, 3.16 inches more than a usual year. September was the wettest month at 5.72 inches. The biggest single day was Jul 29 with 2.81 inches. That puts the gauge 2.95 inches ahead of 2025 at this point.",
+   "through": "2026-10-13"
+  },
+  "31081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "2.14",
+     "label": "biggest single day"
+    },
+    "county": "Hamilton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 27,
+    "days_reported": 259,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "less than a mile east-northeast of Hampton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 259,
+      "diff_in": "10.22",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 124,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.72",
+    "usual_in": "23.11",
+    "vs_usual": {
+     "diff_in": "5.61",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c7e982b633fb4c17",
+   "sid": "US10hami002 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Hampton had its biggest single day on Sep 25 with 2.14 inches. It also went 20 days in a row with nothing in it, not even a trace, from Jan 31 to Feb 19. On the days both years reported, this year is 10.22 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "31083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "3.29",
+     "label": "biggest single day"
+    },
+    "county": "Harlan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "2 miles west of Orleans",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.19",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.66",
+    "usual_in": "22.83",
+    "vs_usual": {
+     "diff_in": "0.83",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.53",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "80f4c392cc5e2784",
+   "sid": "256365 2",
+   "story": "Through Oct 13, the weather station 2 miles west of Orleans had 23.66 inches, 0.83 more than a usual year. September did most of the work with 6.53 inches, and 3.29 of that came on Sep 25 alone. The gauge sat empty for 21 days from Mar 12 to Apr 1. That's 5.19 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "31085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 24",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "Hayes County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "1 mile northwest of Hayes Center",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.44",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.30",
+    "usual_in": "19.51",
+    "vs_usual": {
+     "diff_in": "3.21",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.52",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a329e38e3a552bfd",
+   "sid": "24020 1",
+   "story": "Through Oct 13, the weather station 1 mile northwest of Hayes Center has 9.44 inches less than last year had by this day. May was the wettest month at 3.52 inches, and the biggest single day was Jun 24 with 2.10 inches. The gauge went 25 days in a row with nothing in it, not even a trace, from Mar 8 to Apr 1.",
+   "through": "2026-10-13"
+  },
+  "31087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "2.08",
+     "label": "biggest single day"
+    },
+    "county": "Hitchcock County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1 mile north of Trenton Dam",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "4.12",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Feb 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.61",
+    "usual_in": "18.14",
+    "vs_usual": {
+     "diff_in": "0.53",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.30",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9a8fac73c92bd85d",
+   "sid": "258628 2",
+   "story": "Through Oct 13, the weather station 1 mile north of Trenton Dam got most of its help in June, with 6.30 inches that month. The biggest single day was 2.08 inches on Jun 21. Earlier it went 34 days in a row with nothing in the gauge, from Feb 27 to Apr 1. On the days both years reported, that is 4.12 inches less than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "31089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 4",
+     "in": "1.98",
+     "label": "biggest single day"
+    },
+    "county": "Holt County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in O'neill",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "5.39",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "23.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.61",
+    "usual_in": "22.63",
+    "vs_usual": {
+     "diff_in": "4.02",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.94",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "41d513f3dacb419f",
+   "sid": "256290 2",
+   "story": "Through Oct 13, the weather station in O'neill had its wettest month in June at 4.94 inches, and its biggest single day came Jun 4 with 1.98 inches. The longest dry stretch ran 16 days, Mar 17 to Apr 1, with nothing in the gauge. On the days both years reported, this year is 5.39 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "31093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "3.12",
+     "label": "biggest single day"
+    },
+    "county": "Howard County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Saint Paul",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.12",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "26.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "Nebraska",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "27.74",
+    "usual_in": "24.08",
+    "vs_usual": {
+     "diff_in": "3.66",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.96",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "88714080fffdcb79",
+   "sid": "257515 2",
+   "story": "Through Oct 12, the weather station in Saint Paul has caught 27.74 inches, 3.66 more than a usual year. September was the wettest month at 4.96 inches. The biggest single day came Jun 21 with 3.12 inches. That's 1.12 inches more than last year by this date.",
+   "through": "2026-10-12"
+  },
+  "31095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 9",
+     "in": "2.39",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "7 miles south of Fairbury",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.30",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "24.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 120,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.33",
+    "usual_in": "28.66",
+    "vs_usual": {
+     "diff_in": "5.67",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.76",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b260f3d46e68a81f",
+   "sid": "252820 2",
+   "story": "Through Oct 13, the weather station 7 miles south of Fairbury had a wet July, with 7.76 inches for the month. The biggest single day came Jul 9 at 2.39 inches. The longest dry stretch ran 16 days, Mar 17 to Apr 1. On the days both years reported, that is 10.30 inches more than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "31097": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "2.28",
+     "label": "biggest single day"
+    },
+    "county": "Johnson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "2.0 miles north-northwest of Elk Creek",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "3.40",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "30.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.59",
+    "usual_in": "29.59",
+    "vs_usual": {
+     "diff_in": "5.00",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.61",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bfe76c1c2fd5f1eb",
+   "sid": "US10john021 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.0 miles north-northwest of Elk Creek had its wettest month in September with 7.61 inches. The biggest single day came May 19 with 2.28 inches. The gauge went 16 days in a row with nothing in it, from Mar 17 to Apr 1. On the days both years reported, that is 3.40 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "31099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "2.22",
+     "label": "biggest one-day reading"
+    },
+    "county": "Kearney County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Minden",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.93",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 106,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.22",
+    "usual_in": "22.80",
+    "vs_usual": {
+     "diff_in": "1.42",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.04",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "caf0103493ed19d5",
+   "sid": "255565 2",
+   "story": "Through Oct 13, the weather station in Minden had its wettest month in September with 5.04 inches. The biggest one-day reading came Sep 25 at 2.22 inches. Earlier on, the gauge went 21 days in a row with nothing in it, Mar 12 to Apr 1. On the days both years reported, this year is 1.93 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "31101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "1.73",
+     "label": "biggest single day"
+    },
+    "county": "Keith County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Kingsley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.82",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Jan 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.74",
+    "usual_in": "17.59",
+    "vs_usual": {
+     "diff_in": "1.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.08",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "55031797c5135b00",
+   "sid": "254455 2",
+   "story": "Through Oct 13, the weather station in Kingsley has caught 2.82 inches less than it had by this day last year. June was the wettest month at 4.08 inches. The biggest single day came Aug 15 with 1.73 inches. Earlier on, the gauge went 24 days in a row with nothing in it, from Jan 25 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "31103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 2",
+     "in": "2.87",
+     "label": "biggest single day"
+    },
+    "county": "Keya Paha County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "23 miles from the middle of the county",
+    "gauge_where": "9.0 miles west-southwest of Naper",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "1.90",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "18.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.57",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.18",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4f9276601e33d65c",
+   "sid": "US1NEKP0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 9.0 miles west-southwest of Naper caught 6.18 inches in September, its wettest month. The biggest single day was Sep 2 at 2.87 inches. The gauge also went 24 days in a row with nothing, from Feb 2 to Feb 25. On the days both years reported, this year is 1.90 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "31105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "1.52",
+     "label": "biggest single day"
+    },
+    "county": "Kimball County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "15 miles south of Bushnell",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.28",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.63",
+    "usual_in": "15.05",
+    "vs_usual": {
+     "diff_in": "3.42",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.90",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "de5b9877742d5764",
+   "sid": "251361 2",
+   "story": "Through Oct 13, the weather station 15 miles south of Bushnell had its wettest month in August, with 3.90 inches. The biggest single day came Aug 13, at 1.52 inches. On the days both years reported, this year sits 7.28 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "31107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "3.56",
+     "label": "biggest single day"
+    },
+    "county": "Knox County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "less than a mile north-northwest of Crofton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.50",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.61",
+    "usual_in": "24.42",
+    "vs_usual": {
+     "diff_in": "4.81",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.20",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f39cb725867ddd9c",
+   "sid": "US10knox004 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north-northwest of Crofton had July as its wettest month at 5.20 inches, and 3.56 of that came on Jul 3, the biggest single day. The gauge went 24 days in a row with nothing in it, not even a trace, from Feb 2 to Feb 25. On the days both years reported, this year ran 9.50 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "31109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "6.15",
+     "label": "biggest single day"
+    },
+    "county": "Lancaster County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Lincoln Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.82",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 139,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.84",
+    "usual_in": "25.78",
+    "vs_usual": {
+     "diff_in": "10.06",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.49",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3458ba3fa30e7f35",
+   "sid": "14939 1",
+   "story": "Through Oct 13, the weather station at Lincoln Airport had September as its wettest month at 11.49 inches. The biggest single day was Sep 30 with 6.15 inches. That is 12.82 inches more than last year to the same day. Back in March it went 16 days in a row with nothing in the gauge, Mar 16 to Mar 31.",
+   "through": "2026-10-13"
+  },
+  "31111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "1.79",
+     "label": "biggest single day"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at North Platte Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.52",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.74",
+    "usual_in": "19.28",
+    "vs_usual": {
+     "diff_in": "4.54",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.55",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1a6688f86521c72c",
+   "sid": "24023 1",
+   "story": "Through Oct 13, the weather station at North Platte Regional Airport has 14.74 inches, 4.54 inches less than a usual year. July was the wettest month at 3.55 inches, and 1.79 inches of that came on Jul 29. The longest dry stretch ran 14 days, Feb 5 to Feb 18. Last year at this point the gauge had 22.26 inches, so this year is 7.52 inches behind it.",
+   "through": "2026-10-13"
+  },
+  "31113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 10",
+     "in": "1.12",
+     "label": "biggest single day"
+    },
+    "county": "Logan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "5 miles west of Stapleton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "6.45",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.21",
+    "usual_in": "21.24",
+    "vs_usual": {
+     "diff_in": "6.03",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.56",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9a13e5c4ad2e9b42",
+   "sid": "258133 2",
+   "story": "Through Oct 13, the weather station 5 miles west of Stapleton had 15.21 inches, 6.03 inches less than a usual year. June was the wettest month at 3.56 inches, and the biggest single day was 1.12 inches on Jul 10. The gauge went 17 days in a row with nothing from Mar 16 to Apr 1. On the days both years reported, this year is 6.45 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "31117": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 31",
+     "in": "1.82",
+     "label": "biggest single day"
+    },
+    "county": "McPherson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "11.3 miles east-northeast of Tryon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "5.60",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 15,
+     "through": "Oct 13",
+     "total_in": "21.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.25",
+    "usual_in": "22.41",
+    "vs_usual": {
+     "diff_in": "5.16",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.28",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1a33ac88f876bb45",
+   "sid": "US1NEMP0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 11.3 miles east-northeast of Tryon had its wettest month in July with 4.28 inches. The biggest single day was May 31 at 1.82 inches. The longest dry stretch ran 17 days, Mar 16 to Apr 1, with nothing in the gauge, not even a trace. On the days both years reported, this year sits 5.60 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "31119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Norfolk Karl Stefan Memorial Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.28",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jul 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.59",
+    "usual_in": "23.90",
+    "vs_usual": {
+     "diff_in": "2.31",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.80",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "96855a0a0d7ab864",
+   "sid": "14941 1",
+   "story": "Through Oct 13, the weather station at Norfolk Karl Stefan Memorial Airport had 21.59 inches, 2.31 inches less than a usual year. August was the wettest month at 5.80 inches, and 3.30 of that came on Aug 13. The gauge went 18 days with nothing from Jul 4 to Jul 21. Last year at this point it had 5.28 inches more.",
+   "through": "2026-10-13"
+  },
+  "31125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "2.74",
+     "label": "biggest single day"
+    },
+    "county": "Nance County",
+    "days_in_year_so_far": 285,
+    "days_missing": 8,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "9.2 miles northeast of Palmer",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "0.18",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 12",
+     "total_in": "25.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Nebraska",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "26.40",
+    "usual_in": "22.83",
+    "vs_usual": {
+     "diff_in": "3.57",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.49",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4a56b34c5735c380",
+   "sid": "US10nanc003 6",
+   "story": "Through Oct 12, the volunteer rain gauge 9.2 miles northeast of Palmer had its wettest month in May, with 5.49 inches. The biggest single day came Jun 21, when it caught 2.74 inches. On the days both years reported, this year has had 0.18 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "31127": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 18",
+     "in": "2.94",
+     "label": "biggest single day"
+    },
+    "county": "Nemaha County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5 miles east-southeast of Auburn",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.87",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.32",
+    "usual_in": "28.07",
+    "vs_usual": {
+     "diff_in": "2.25",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.45",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a13152c9c7e368f1",
+   "sid": "250435 2",
+   "story": "Through Oct 13, the weather station 5 miles east-southeast of Auburn had 30.32 inches, 2.25 inches more than a usual year. April was the wettest month at 6.45 inches. The gauge went 11 days in a row with nothing from May 6 to May 16, then caught 2.94 inches on May 18, the biggest single day. That still leaves this year 2.87 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "31129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "3.45",
+     "label": "biggest single day"
+    },
+    "county": "Nuckolls County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Superior",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "4.55",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.14",
+    "usual_in": "24.32",
+    "vs_usual": {
+     "diff_in": "2.82",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.58",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9ec061adfac77b45",
+   "sid": "258320 2",
+   "story": "Through Oct 13, the weather station in Superior had its wettest month in September at 5.58 inches. The biggest single day came on Oct 1 with 3.45 inches. Back in spring the gauge went 21 days in a row with nothing in it, from Mar 12 to Apr 1. On the days both years reported, that is 4.55 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "31131": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 17",
+     "in": "2.60",
+     "label": "biggest single day"
+    },
+    "county": "Otoe County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Syracuse",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "8.61",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 16,
+     "through": "Oct 12",
+     "total_in": "24.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Apr 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Nebraska",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "33.26",
+    "usual_in": "28.26",
+    "vs_usual": {
+     "diff_in": "5.00",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.86",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "abb745b6b1c25a29",
+   "sid": "258395 2",
+   "story": "Through Oct 12, the weather station in Syracuse went 17 days in a row with nothing in the gauge, from Apr 30 to May 16. Then it caught 2.60 inches on May 17, the biggest single day so far. September was the wettest month at 7.86 inches. On the days both years reported, this year is 8.61 inches more than last year.",
+   "through": "2026-10-12"
+  },
+  "31133": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "2.50",
+     "label": "biggest single day"
+    },
+    "county": "Pawnee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "4 miles north of Table Rock",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.57",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.05",
+    "usual_in": "29.73",
+    "vs_usual": {
+     "diff_in": "3.32",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.45",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8921ead1ec2ab977",
+   "sid": "258410 2",
+   "story": "Through Oct 13, the weather station 4 miles north of Table Rock had September as its wettest month at 7.45 inches. The biggest single day was May 19 with 2.50 inches. Earlier on, the gauge went 21 days in a row with nothing in it, from Mar 12 to Apr 1. That still left the year 2.57 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "31137": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "2.17",
+     "label": "biggest single day"
+    },
+    "county": "Phelps County",
+    "days_in_year_so_far": 282,
+    "days_missing": 0,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Holdrege",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "2.10",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 9",
+     "total_in": "25.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Nebraska",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "23.29",
+    "usual_in": "24.60",
+    "vs_usual": {
+     "diff_in": "1.31",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.77",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b519f53a7696a2ea",
+   "sid": "253910 2",
+   "story": "Through Oct 9, the weather station in Holdrege has 23.29 inches, 1.31 inches less than a usual year. September was the wettest month at 4.77 inches, and the biggest single day came Oct 1 with 2.17 inches. The longest dry stretch ran 21 days, Mar 12 to Apr 1, with not even a trace in the gauge. That puts this year 2.10 inches behind last year at this point.",
+   "through": "2026-10-09"
+  },
+  "31139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "2.59",
+     "label": "biggest single day"
+    },
+    "county": "Pierce County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Pierce",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.59",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.28",
+    "usual_in": "24.94",
+    "vs_usual": {
+     "diff_in": "2.66",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.70",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8144182aaac3e35f",
+   "sid": "256720 2",
+   "story": "Through Oct 13, the weather station in Pierce had its wettest month in September at 4.70 inches. The biggest single day was Jul 31 with 2.59 inches. From Feb 5 to Mar 5 it went 29 days in a row with nothing in the gauge. That leaves this year 3.59 inches less than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "31141": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "2.59",
+     "label": "biggest single day"
+    },
+    "county": "Platte County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "3 miles northeast of Columbus",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.45",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "30.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.91",
+    "usual_in": "25.25",
+    "vs_usual": {
+     "diff_in": "2.66",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.64",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1dca9fb7f02429c4",
+   "sid": "251825 2",
+   "story": "Through Oct 13, the weather station 3 miles northeast of Columbus has 27.91 inches, 2.66 more than a usual year. September was the wettest month at 6.64 inches, and the biggest single day was 2.59 inches on Aug 14. The gauge stayed dry 16 days in a row from Feb 1 to Feb 16. On the days both years reported, that is 2.45 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "31143": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 17",
+     "in": "2.18",
+     "label": "biggest single day"
+    },
+    "county": "Polk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Osceola",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.20",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.93",
+    "usual_in": "25.22",
+    "vs_usual": {
+     "diff_in": "2.71",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.32",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9144a2cf95d29853",
+   "sid": "256375 2",
+   "story": "Through Oct 13, the weather station in Osceola had May as its wettest month at 6.32 inches. The biggest single day came May 17 with 2.18 inches. The gauge went 18 days in a row with nothing, Feb 2 to Feb 19. That puts the year 4.20 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "31145": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Red Willow County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "4.6 miles north-northwest of Mccook",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.66",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.29",
+    "usual_in": "20.53",
+    "vs_usual": {
+     "diff_in": "0.24",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "4.26",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "572e53f72fa5bf54",
+   "sid": "US10red_019 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.6 miles north-northwest of Mccook caught 3.30 inches on Jul 3, its biggest single day of the year. August was the wettest month at 4.26 inches. Earlier on, the gauge sat empty for 39 days in a row, Feb 22 to Apr 1, not even a trace. All told it is 1.66 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "31147": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 14",
+     "in": "2.83",
+     "label": "biggest single day"
+    },
+    "county": "Richardson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2 miles southwest of Shubert",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.20",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.00",
+    "usual_in": "30.07",
+    "vs_usual": {
+     "diff_in": "4.93",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.65",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a38d3abc12275376",
+   "sid": "257800 2",
+   "story": "Through Oct 13, the weather station 2 miles southwest of Shubert had September as its wettest month at 9.65 inches, and the biggest single day came Sep 14 with 2.83 inches. Early on it went 19 days with nothing in the gauge, from Jan 26 to Feb 13. Even so, the year is 3.20 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "31151": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "3.62",
+     "label": "biggest single day"
+    },
+    "county": "Saline County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3 miles east of Friend",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.08",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.12",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Apr 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 122,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.04",
+    "usual_in": "25.54",
+    "vs_usual": {
+     "diff_in": "5.50",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.01",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "03052fd44d8c7e0a",
+   "sid": "253065 2",
+   "story": "Through Oct 13, the weather station 3 miles east of Friend had 31.04 inches, 5.50 more than a usual year. September was the wettest month at 6.01 inches, and the biggest single day came Oct 1 with 3.62. The gauge also sat empty 17 days in a row from Apr 30 to May 16. Even so, this year is 1.08 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "31153": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "7.32",
+     "label": "biggest single day"
+    },
+    "county": "Sarpy County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "10.5 miles west-southwest of Omaha",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "13.05",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "26.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jan 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 137,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.99",
+    "usual_in": "29.23",
+    "vs_usual": {
+     "diff_in": "10.76",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.55",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3d6c576284d59aa9",
+   "sid": "US1NESY0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6 miles from the middle of the county caught 7.32 inches on Oct 1 alone. September was the wettest month at 8.55 inches. On the days both years reported, this year has 13.05 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "31155": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "5.10",
+     "label": "biggest single day"
+    },
+    "county": "Saunders County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "6 miles south of Mead",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "3.15",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Apr 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.10",
+    "usual_in": "26.53",
+    "vs_usual": {
+     "diff_in": "6.57",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.15",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e85c6bee478db937",
+   "sid": "255362 2",
+   "story": "Through Oct 13, the weather station 6 miles south of Mead has caught 33.10 inches, 6.57 more than a usual year. September was the wettest month at 7.15 inches, and the biggest single day came Oct 1 with 5.10. The gauge went 17 days in a row with nothing from Apr 29 to May 15. On the days both years reported, that is 3.15 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "31157": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 27",
+     "in": "1.75",
+     "label": "biggest single day"
+    },
+    "county": "Scotts Bluff County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1 mile east of Scottsbluff",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.37",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.28",
+    "usual_in": "14.00",
+    "vs_usual": {
+     "diff_in": "2.72",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.99",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "64fc160b91009ab9",
+   "sid": "257667 2",
+   "story": "Through Oct 13, the weather station 1 mile east of Scottsbluff had 11.28 inches, 2.72 inches less than a usual year. June was the wettest month at 3.99 inches, and 1.75 of that came on Jun 27, the biggest single day. The gauge went 17 days in a row with nothing from Mar 16 to Apr 1. Last year at this point it had 5.37 inches more.",
+   "through": "2026-10-13"
+  },
+  "31159": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "4.45",
+     "label": "biggest single day"
+    },
+    "county": "Seward County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Seward",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.33",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.59",
+    "usual_in": "25.40",
+    "vs_usual": {
+     "diff_in": "4.19",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.25",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3bcbabf1f748d998",
+   "sid": "257715 2",
+   "story": "Through Oct 13, the weather station in Seward has caught 29.59 inches, 4.19 more than a usual year. September was the wettest month at 5.25 inches. The biggest single day came Oct 1, with 4.45 inches in the gauge. That leaves this year 3.33 inches more than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "31161": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 4",
+     "in": "1.40",
+     "label": "biggest single day"
+    },
+    "county": "Sheridan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "less than a mile south of Rushville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "3.06",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "17.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.97",
+    "usual_in": "17.80",
+    "vs_usual": {
+     "diff_in": "3.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.03",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9d6acd05885d0e3b",
+   "sid": "US10sher032 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south of Rushville had its wettest month in July at 3.03 inches. The biggest single day came Jul 4 with 1.40 inches. From Mar 17 to Apr 2 it went 17 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 3.06 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "31163": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "3.87",
+     "label": "biggest single day"
+    },
+    "county": "Sherman County",
+    "days_in_year_so_far": 286,
+    "days_missing": 13,
+    "days_reported": 273,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "2.2 miles northwest of Rockville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "0.83",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.26",
+    "usual_in": "23.26",
+    "vs_usual": {
+     "diff_in": "2.00",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.31",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6d2ea450243babfa",
+   "sid": "US10shem003 6",
+   "story": "Through Oct 13, the gauge 2.2 miles northwest of Rockville had June as its wettest month at 5.31 inches. Most of that came on Jun 21, the biggest single day, with 3.87 inches. On the days both years reported, this year sits 0.83 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "31165": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "1.71",
+     "label": "biggest single day"
+    },
+    "county": "Sioux County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "20 miles south-southeast of Harrison",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.25",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "17.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.56",
+    "usual_in": "14.31",
+    "vs_usual": {
+     "diff_in": "3.75",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.58",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "160a068b7b166bbc",
+   "sid": "94077 1",
+   "story": "Through Oct 13, the weather station 20 miles south-southeast of Harrison had 7.25 inches less than it did by this day last year. August was the wettest month at 3.58 inches, and the biggest single day was Aug 15 with 1.71 inches. The longest dry stretch ran 16 days, Mar 16 to Mar 31, with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "31167": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "3.25",
+     "label": "biggest single day"
+    },
+    "county": "Stanton County",
+    "days_in_year_so_far": 284,
+    "days_missing": 4,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "7 miles northeast of Stanton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 266,
+      "diff_in": "7.74",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 14,
+     "through": "Oct 11",
+     "total_in": "25.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Nebraska",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "20.76",
+    "usual_in": "22.75",
+    "vs_usual": {
+     "diff_in": "1.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.02",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bf7d670129647a54",
+   "sid": "258117 2",
+   "story": "Through Oct 11, the weather station 7 miles northeast of Stanton had 20.76 inches, 1.99 inches less than a usual year. August was the wettest month at 6.02 inches, and 3.25 of that came on Aug 13 alone. The gauge stayed dry for 16 days in a row from Mar 17 to Apr 1. On the days both years reported, this year is 7.74 inches less than last year.",
+   "through": "2026-10-11"
+  },
+  "31169": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "4.37",
+     "label": "biggest single day"
+    },
+    "county": "Thayer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "in Hebron",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.30",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.43",
+    "usual_in": "27.57",
+    "vs_usual": {
+     "diff_in": "6.86",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.00",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "610cf940d145240b",
+   "sid": "253735 2",
+   "story": "Through Oct 13, the weather station in Hebron had its wettest month in September at 7.00 inches. The biggest single day came after that, 4.37 inches on Oct 1. Earlier on it went 16 days in a row with nothing in the gauge, Mar 17 to Apr 1. That puts it 6.30 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "31171": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "1.57",
+     "label": "biggest single day"
+    },
+    "county": "Thomas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "less than a mile east of Thedford",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "2.29",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "21.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.20",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.95",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aaa593445c82e434",
+   "sid": "US10thom002 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east of Thedford has caught 19.20 inches. August was the wettest month at 4.95 inches, and the biggest single day was 1.57 inches on Jun 21. The gauge went 18 days in a row with nothing, not even a trace, from Feb 2 to Feb 19. On the days both years reported, that is 2.29 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "31175": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 17",
+     "in": "1.97",
+     "label": "biggest single day"
+    },
+    "county": "Valley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Ord Evelyn Sharp Field",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.14",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.74",
+    "usual_in": "21.51",
+    "vs_usual": {
+     "diff_in": "1.23",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.87",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "96582f25ae8520fd",
+   "sid": "94958 1",
+   "story": "Through Oct 13, the weather station at Ord Evelyn Sharp Field has 22.74 inches, 1.23 inches more than a usual year. June was the wettest month at 5.87 inches, and the biggest single day came Aug 17 with 1.97 inches. The longest dry run was 16 days, Feb 1 to Feb 16, with not even a trace in the gauge. Last year had 2.14 inches more by this date.",
+   "through": "2026-10-13"
+  },
+  "31177": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "2.14",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile north-northwest of Blair",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.17",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "39.80",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.63",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.65",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "afb8d2f67f3e8f0b",
+   "sid": "US1NEWS0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north-northwest of Blair has caught 29.63 inches. September was the wettest month at 7.65 inches, and the biggest single day was 2.14 inches on Oct 1. On the days both years reported, that is 10.17 inches less than last year. The longest dry stretch ran 14 days, Feb 6 to Feb 19, with not even a trace.",
+   "through": "2026-10-13"
+  },
+  "31179": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "2.85",
+     "label": "biggest single day"
+    },
+    "county": "Wayne County",
+    "days_in_year_so_far": 279,
+    "days_missing": 6,
+    "days_reported": 273,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "6.35 miles west-southwest of Carroll",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "7.85",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 6",
+     "total_in": "28.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 64,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Nebraska",
+    "through": "Oct 6",
+    "through_iso": "2026-10-06",
+    "total_in": "23.68",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "556f3344cc597a7d",
+   "sid": "US1Wayn4120 6",
+   "story": "Through Oct 6, the volunteer rain gauge near Carroll went 64 days in a row with nothing in it, from Jan 1 to Mar 5. The biggest single day came Aug 13 with 2.85 inches. On the days both years reported, this year sits 7.85 inches less than 2025.",
+   "through": "2026-10-06"
+  },
+  "31181": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "2.23",
+     "label": "biggest single day"
+    },
+    "county": "Webster County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "4.3 miles east of Red Cloud",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.93",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.90",
+    "usual_in": "23.93",
+    "vs_usual": {
+     "diff_in": "3.03",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.10",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9dab82ecb9f43400",
+   "sid": "US10webs013 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.3 miles east of Red Cloud has caught 20.90 inches, 3.03 inches less than a usual year. September was the wettest month at 4.10 inches, and the biggest single day came Sep 25 with 2.23 inches. The gauge went 21 days in a row with nothing from Mar 12 to Apr 1. That is 2.93 inches less than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "31183": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "3.97",
+     "label": "biggest single day"
+    },
+    "county": "Wheeler County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "11.9 miles south of Ewing",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "11.75",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "30.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jul 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.23",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.69",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b1533fe648770609",
+   "sid": "US1NEWH0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 11.9 miles south of Ewing has been bone dry for 19 days in a row, from Jul 3 to Jul 21. Then Jul 31 brought 3.97 inches, the biggest single day of the year. June was the wettest month at 4.69 inches. On the days both years reported, this year is running 11.75 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "31185": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "York County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "3 miles north of York",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.22",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "May 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Nebraska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.90",
+    "usual_in": "26.36",
+    "vs_usual": {
+     "diff_in": "4.54",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.66",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "18bec59506973ed5",
+   "sid": "259513 2",
+   "story": "Through Oct 13, the weather station 3 miles north of York has caught 30.90 inches, 10.22 inches more than it had by this day last year. June was the wettest month at 6.66 inches. The biggest single day came Sep 25 with 2.35 inches. It also went 16 days in a row without a trace in the gauge, from May 1 to May 16.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "NE"
+}

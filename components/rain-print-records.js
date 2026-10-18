@@ -31,7 +31,7 @@
  *   be full and settled (drier by more than 0.10 in for "wettest"). A partial year
  *   whose recorded sum already beats the year by more than 0.10 in counts as the
  *   year it is "since"; any other partial or empty year stops the claim there
- *   ("Wetter than any year since <the year after>"). At least 19 settled years,
+ *   ("Wettest year from <the year after> to <the year>"). At least 19 settled years,
  *   and 30 full years at the station up to the year, or nothing is said.
  *   Month: ranked against the same calendar month in the station's own full
  *   months up to the year (no later years). Needs 30 full instances. Remarkable
@@ -258,11 +258,16 @@
     if (nFull < MIN_FULL) return 'only ' + nFull + ' full years on record up to ' + T;
     // "driest": this year's own missing days could hold rain; the margin grows by what they could (panel 3 D5)
     var mT = (dim(T, 1) === 29 ? 366 : 365) - o.ok, rate = o.ok ? o.sum / o.ok : 0;
-    var c = chain(H, first, T, o.sum, dir, dir === 'low' ? BAND_YEAR + mT * rate * 3 : BAND_YEAR), sup = dir === 'high' ? 'Wettest' : 'Driest', cmp = dir === 'high' ? 'Wetter' : 'Drier';
+    var c = chain(H, first, T, o.sum, dir, dir === 'low' ? BAND_YEAR + mT * rate * 3 : BAND_YEAR), sup = dir === 'high' ? 'Wettest' : 'Driest';
     if (c.E < MIN_SETTLED) return 'not remarkable: ' + c.E + ' years settled before ' + (c.type === 'since' ? c.at + ' had ' + (dir === 'high' ? 'more' : 'less') : c.type === 'broken' ? c.at + ' could not be compared' : 'the record starts') + ', ' + MIN_SETTLED + ' needed';
+    /* 2026-10-17 (farm-buyers panel): "Wetter than any year since 1938" read
+       as "1938 was wetter" when 1938 is where the record starts. A claim that
+       runs to the record's start says so; one stopped by a patchy year names
+       both ends of the years it beat. */
     var label = c.type === 'since' ? sup + ' year since ' + c.at
       : c.type === 'start' && c.E + 1 >= START_MIN ? sup + ' year on record here, back to ' + first
-      : cmp + ' than any year since ' + (c.type === 'start' ? first : c.at + 1);
+      : c.type === 'start' ? sup + ' year in this station\u2019s record, back to ' + first
+      : sup + ' year from ' + (c.at + 1) + ' to ' + T;
     return { date: T + '-01-01', span: { from: T + '-01-01', to: T + '-12-31' }, label: label, value: o.sum, unit: 'in',
       basis: { form: c.type, year: c.type === 'since' ? c.at : null, refValue: c.type === 'since' ? H[c.at].sum : null, settled: c.E, fullYears: nFull, first: first } };
   }

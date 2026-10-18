@@ -662,9 +662,9 @@ def render_nights(data, ph, sst, today):
         # sentence; by now the national number is on the page.
         lead = render_progress(prog, data, ph, today).replace(
             "These are state samples, not a national yield: Pro Farmer's national "
-            "number is acreage-weighted and posts at the end of the week.",
+            "number blends the tour with weather, maturity and history and posts at the end of the week.",
             "These are state samples, not a national yield; Pro Farmer's national "
-            "number is acreage-weighted.")
+            "number blends the tour with weather, maturity and history.")
         return lead + render_nights_table(data, sst, prog)
     nxt = next_night(data, today)
     for nt in data["nights"]:
@@ -915,7 +915,7 @@ def render_progress(prog, data, ph, today):
         body = (f'<b>{prog["posted"]} of {prog["expected"]}</b> state corn figures are in'
                 + tail
                 + ' These are state samples, not a national yield: Pro Farmer\'s national '
-                  'number is acreage-weighted and posts at the end of the week.')
+                  'number blends the tour with weather, maturity and history and posts at the end of the week.')
     return f'<p class="ct-lead ct-progress">{body}</p>'
 
 
@@ -1269,8 +1269,9 @@ PAPER_CARD = (
     '<div class="ct-paper"><a class="ct-paper-a" href="/pod-counts">'
     '<span class="ct-paper-k">Working paper</span>'
     '<span class="ct-paper-t">Do pod counts predict soybean yield?</span>'
-    '<span class="ct-paper-d">The tour counts pods and never publishes a bean '
-    'yield. We measured what those counts actually predict, against USDA&rsquo;s '
+    '<span class="ct-paper-d">The tour counts pods and publishes no state bean '
+    'yield; Pro Farmer\'s only bean yield is a national one, at the end of the '
+    'week. We measured what those counts actually predict, against USDA&rsquo;s '
     'final state numbers, and what the rule of thumb everyone repeats '
     'gets wrong.</span>'
     '<span class="ct-paper-go">Read it &rarr;</span></a></div>')

@@ -65,11 +65,11 @@ test("wettest year since: the first full year that had more, every year between 
   assert.equal(r.f.basis.refValue, r.f.value + 1);
 });
 
-test("a patchy year stops the claim: wetter than any year since the year after it", () => {
+test("a patchy year stops the claim: wettest from the year after it to this year", () => {
   const p = por({ from: "1950-01-01", to: "2025-12-31", bump: (y) => (y === 2025 ? 20 : 0),
     gone: (d) => d >= "2000-03-01" && d < "2000-04-10" });
   const r = one(hist(p, 2025), "wetYear");
-  assert.equal(r.f.label, "Wetter than any year since 2001");
+  assert.equal(r.f.label, "Wettest year from 2001 to 2025");
   assert.equal(r.f.basis.form, "broken");
 });
 
@@ -82,7 +82,7 @@ test("a patchy year whose recorded total is already higher is the year it is sin
 
 test("too close to call (within 0.10 in) stops the claim the year after", () => {
   const p = por({ from: "1950-01-01", to: "2025-12-31", bump: (y) => (y === 2025 ? 20 : y === 1993 ? 19.95 : 0) });
-  assert.equal(one(hist(p, 2025), "wetYear").f.label, "Wetter than any year since 1994");
+  assert.equal(one(hist(p, 2025), "wetYear").f.label, "Wettest year from 1994 to 2025");
 });
 
 test("fewer than 19 settled years: not said", () => {
@@ -99,11 +99,11 @@ test("short record: fewer than 30 full years, withheld", () => {
   assert.equal(r.why, "only 27 full years on record up to 2025");
 });
 
-test("on record here only with 50 or more years, all settled; shorter says since the start", () => {
+test("on record here only with 50 or more years, all settled; shorter says in the station.s record, back to its start", () => {
   const long = por({ from: "1950-01-01", to: "2025-12-31", bump: (y) => (y === 2025 ? 20 : 0) });
   assert.equal(one(hist(long, 2025), "wetYear").f.label, "Wettest year on record here, back to 1950");
   const mid = por({ from: "1990-01-01", to: "2025-12-31", bump: (y) => (y === 2025 ? 20 : 0) });
-  assert.equal(one(hist(mid, 2025), "wetYear").f.label, "Wetter than any year since 1990");
+  assert.equal(one(hist(mid, 2025), "wetYear").f.label, "Wettest year in this station\u2019s record, back to 1990");
 });
 
 test("no look-ahead: a 1990 print ignores a wetter 2019", () => {
@@ -311,7 +311,7 @@ test("D5 (2026-10-14): 'driest' leaves room for what this year's missing days co
   const r = one(hist(p, 2025), "dryYear");
   assert.ok(r.f, "still remarkable: " + r.why);
   assert.ok(!/on record/.test(r.f.label), "0.80 in drier than 1990 is inside what 10 missing days could hold: " + r.f.label);
-  assert.equal(r.f.label, "Drier than any year since 1991");
+  assert.equal(r.f.label, "Driest year from 1991 to 2025");
   // with every day in, the same gap is a record
   const full = one(hist(por({ from: "1950-01-01", to: "2025-12-31", june: (y) => (y === 2025 ? 0 : y === 1990 ? 0.0267 : 0.08) }), 2025), "dryYear");
   assert.match(full.f.label, /^Driest year on record here/);

@@ -45,6 +45,6 @@ test("hand case: net long at 81.4 reads 'high side, not crowded'; crowded long a
 });
 
 test("the panel script and its loader were re-versioned", () => {
-  assert.match(ANA, /cot-market\.js\?v=2/);
-  assert.match(readFileSync(new URL("../cot.html", import.meta.url), "utf8"), /cot-analysis\.js\?v=2/);
+  assert.match(ANA, /cot-market\.js\?v=3/);
+  assert.match(readFileSync(new URL("../cot.html", import.meta.url), "utf8"), /cot-analysis\.js\?v=3/);
 });

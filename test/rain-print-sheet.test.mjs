@@ -27,8 +27,8 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (f) => readFileSync(ROOT + f, "utf8");
 const ctx = { TextEncoder, TextDecoder, URLSearchParams, btoa, atob };
 ctx.window = ctx;
-for (const f of ["components/qr.js", "components/rain-print.js", "components/rain-print-records.js"]) vm.runInNewContext(read(f), ctx);
-const RP = ctx.RainPrint, REC = ctx.AgRainRecords;
+for (const f of ["components/qr.js", "components/rain-print.js", "components/rain-print-records.js", "components/gdu-stages.js", "components/rain-print-extras.js"]) vm.runInNewContext(read(f), ctx);
+const RP = ctx.RainPrint, REC = ctx.AgRainRecords, XT = ctx.AgRainExtras;
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
@@ -130,6 +130,81 @@ test("every mark on the print stays inside the mat's safe window: both styles, f
       assert.ok(i.x1 > i.x0 && i.y1 > i.y0, "something was drawn: " + tag);
       assert.ok(i.x0 >= s.x - 1e-6 && i.y0 >= s.y - 1e-6 && i.x1 <= s.x + s.w + 1e-6 && i.y1 <= s.y + s.h + 1e-6, "inside the safe window " + JSON.stringify(s) + ": " + tag);
       if (r.k.logo) assert.ok(r.logoAt, "the logo was drawn: " + tag);
+    }
+  } finally { await browser.close(); srv.close(); }
+});
+
+/* The 2026-10-17 options (Sig): each one, and all at once, in both styles, inside the safe window,
+   with every text at 11 u or more and every line at 0.7 u or more. Temperatures are the saved answer
+   for Ames Municipal Airport (2012); the usual year's temperatures (2 F cooler) and the 40 history
+   threads (the year scaled 0.6 to 1.6 times) are made up for the layout only, and said so here. */
+function optionsInput(base, style, o) {
+  const ex = JSON.parse(read("data/rain-print-examples/2012-ames-ia.json"));
+  const tq = ex.requests.find((r) => r.url.includes("StnData?sid=94989"));
+  const rows = answerOf(tq).data, td = XT.tempDays(rows, 2012);
+  const tdN = XT.normalTemps(rows.map((r) => [r[0], r[4] === "M" ? "M" : String(+r[4] - 2), r[5] === "M" ? "M" : String(+r[5] - 2)]), 2012);
+  const marks = [{ date: "2012-05-01", label: "Planted corn" }, { date: "2012-07-04", label: "Our wedding!" }, { date: "2012-10-20", label: "Harvest done" }];
+  const s = RP.normalize(Object.assign({ place: "Ames, IA", year: 2012, style, markers: marks }, o));
+  const found = REC.find({ year: 2012, daily: { data: rows }, dailyElems: ["pcpn", "avgt", "snow", "maxt", "mint"] }, { kinds: RP.TEMP_KINDS });
+  const crop = RP.cropInput(s, td, s.ghost ? tdN : null);
+  const cum = []; let c = 0; base.days.forEach((d) => { c += d.v || 0; cum.push(c); });
+  const full = Array.from({ length: 40 }, (_, k) => ({ year: 1972 + k, total: +(c * (0.6 + k / 39)).toFixed(2), cum: cum.map((v) => v * (0.6 + k / 39)) })).concat([{ year: 2012, total: +c.toFixed(2), cum }]);
+  return Object.assign({}, base, { style, markers: RP.markersOn(marks, 2012, base.D.n), crop, records: RP.withoutTemp(base.records, s),
+    temp: RP.tempInput(s, td, found, { same: false, name: "Ames Municipal Airport", words: "3.1 mi away" }, !!crop),
+    hist: s.hist && style === "r1" ? RP.histInput(full, 2012) : null });
+}
+test("every 2026-10-17 option stays inside the safe window, both styles, at production sizes", { skip }, async () => {
+  const base = amesInput();
+  const CROP = { crop: "corn", cropPlant: "2012-05-01", cropHarvest: "2012-10-20" };
+  const opts = { cropLabels: CROP, cropPlants: { ...CROP, plants: true }, cropGhost: { ...CROP, plants: true, ghost: true }, soy: { crop: "soy", cropPlant: "2012-05-01", cropHarvest: "2012-10-20", plants: true, ghost: true },
+    frost: { frost: true }, heat: { heat: true }, ribbon: { ribbon: true }, hist: { hist: true }, all: { ...CROP, plants: true, ghost: true, frost: true, heat: true, ribbon: true, hist: true } };
+  const cases = [];
+  for (const style of ["r1", "r2"]) for (const [k, o] of Object.entries(opts)) cases.push({ k, style, I: optionsInput(base, style, o) });
+  const srv = createServer((req, res) => {
+    const u = new URL(req.url, "http://x"), f = normalize(join(ROOT, decodeURIComponent(u.pathname)));
+    if (!f.startsWith(ROOT) || !existsSync(f) || u.pathname === "/") { res.writeHead(u.pathname === "/" ? 200 : 404, { "content-type": "text/html" }); res.end("<!doctype html><title>t</title>"); return; }
+    res.writeHead(200, { "content-type": { ".js": "text/javascript; charset=utf-8", ".woff2": "font/woff2" }[extname(f)] || "application/octet-stream" }); res.end(readFileSync(f));
+  });
+  await new Promise((ok) => srv.listen(0, "127.0.0.1", ok));
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const page = await browser.newPage(), errors = [];
+    page.on("pageerror", (e) => errors.push(String(e)));
+    await page.goto("http://127.0.0.1:" + srv.address().port + "/");
+    await page.addStyleTag({ content: [["Fraunces", "300 600", "normal", "rp-fraunces-opsz"], ["Fraunces", "400", "italic", "rp-fraunces-opsz-400i"], ["IBM Plex Sans", "300 600", "normal", "rp-plex-sans-var"], ["IBM Plex Sans", "400", "italic", "rp-plex-sans-400i"]]
+      .map(([f, w, s, file]) => `@font-face{font-family:'${f}';font-weight:${w};font-style:${s};src:url(/fonts/${file}.woff2) format('woff2')}`).join("") });
+    for (const f of ["components/qr.js", "components/rain-print.js", "components/rain-print-art.js"]) await page.addScriptTag({ url: "/" + f });
+    await page.evaluate(() => Promise.all(["300 40px 'Fraunces'", "600 52px 'Fraunces'", "italic 400 21px 'Fraunces'", "400 16px 'IBM Plex Sans'", "500 16px 'IBM Plex Sans'"].map((f) => document.fonts.load(f))));
+    const results = await page.evaluate(async (cases) => {
+      const RP = window.RainPrint, A = window.AgRainArt, B = RP.sheetBoxes(), PPI = 40, out = [];
+      for (const c of cases) {
+        const I = Object.assign({}, c.I, { place: "Ames, Iowa", name: "The Lindquist Home Farms", dedication: "For Dad, his 40th crop on the home place. Love, Kate",
+          qr: { matrix: RP.standardMatrix(), serial: "No. 0001" }, gauge: "Weather station: Ames, IA, 2.0 mi from Ames", px: [Math.round(B.art.w * PPI), Math.round(B.art.h * PPI)] });
+        const svg = A.render(I);
+        const img = new Image(); img.src = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" })); await img.decode();
+        const cv = document.createElement("canvas"); cv.width = Math.round(B.sheet.w * PPI); cv.height = Math.round(B.sheet.h * PPI);
+        const x = cv.getContext("2d"); x.fillStyle = "#FFFFFF"; x.fillRect(0, 0, cv.width, cv.height);
+        x.drawImage(img, Math.round(B.art.x * PPI), Math.round(B.art.y * PPI), Math.round(B.art.w * PPI), Math.round(B.art.h * PPI));
+        const d = x.getImageData(0, 0, cv.width, cv.height).data;
+        let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1;
+        for (let yy = 0; yy < cv.height; yy++) for (let xx = 0; xx < cv.width; xx++) { const i = (yy * cv.width + xx) * 4; if (d[i] < 245 || d[i + 1] < 245 || d[i + 2] < 245) { if (xx < x0) x0 = xx; if (xx > x1) x1 = xx; if (yy < y0) y0 = yy; if (yy > y1) y1 = yy; } }
+        const doc = new DOMParser().parseFromString(svg, "image/svg+xml");
+        const sizes = [...doc.querySelectorAll("text,tspan")].map((t) => +t.getAttribute("font-size")).filter((v) => v > 0);
+        const strokes = [...doc.querySelectorAll("[stroke-width]")].filter((e) => e.getAttribute("stroke") !== "none" && e.getAttribute("stroke") !== "#FFFFFF").map((e) => +e.getAttribute("stroke-width"));
+        const groups = [...doc.querySelectorAll("g[data-rp]")].map((g) => g.getAttribute("data-rp"));
+        out.push({ k: c.k, style: c.style, ink: { x0: x0 / PPI, y0: y0 / PPI, x1: (x1 + 1) / PPI, y1: (y1 + 1) / PPI }, safe: B.safe, minText: Math.min(...sizes), minStroke: Math.min(...strokes), groups });
+      }
+      return out;
+    }, cases.map((c) => ({ k: c.k, style: c.style, I: JSON.parse(JSON.stringify(c.I)) })));
+    assert.deepEqual(errors, []);
+    for (const r of results) {
+      const s = r.safe, i = r.ink, tag = r.style + " " + r.k + " ink " + JSON.stringify(i);
+      assert.ok(i.x0 >= s.x - 1e-6 && i.y0 >= s.y - 1e-6 && i.x1 <= s.x + s.w + 1e-6 && i.y1 <= s.y + s.h + 1e-6, "inside the safe window " + JSON.stringify(s) + ": " + tag);
+      assert.ok(r.minText >= 11, tag + ": text at 11 u or more (" + r.minText + ")");
+      assert.ok(r.minStroke >= 0.7, tag + ": lines at 0.7 u or more (" + r.minStroke + ")");
+      const want = { cropLabels: "crop", cropPlants: "crop", cropGhost: "crop", soy: "crop", frost: "frost:0", ribbon: "ribbon", hist: r.style === "r1" ? "hist" : null, all: "crop" }[r.k];
+      if (want) assert.ok(r.groups.includes(want), tag + ": draws " + want);
+      if (r.k === "all") for (const g of ["ribbon", "frost:0"].concat(r.style === "r1" ? ["hist"] : [])) assert.ok(r.groups.includes(g), tag + ": with " + g);
     }
   } finally { await browser.close(); srv.close(); }
 });

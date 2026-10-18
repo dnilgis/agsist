@@ -1,0 +1,3206 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "36001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "6.20",
+     "label": "biggest single day"
+    },
+    "county": "Albany County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Alcove",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "6.02",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "29.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 105,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.36",
+    "usual_in": "33.65",
+    "vs_usual": {
+     "diff_in": "1.71",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.76",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "57d92ec617be942d",
+   "sid": "300063 2",
+   "story": "Through Oct 13, the weather station in Alcove had a big July. July brought 11.76 inches, and 6.20 of that came on Jul 29 alone, the biggest single day of the year. The longest dry stretch ran 10 days, Jan 28 to Feb 6, with not even a trace in the gauge. On the days both years reported, this year is 6.02 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "36003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 6",
+     "in": "2.69",
+     "label": "biggest single day"
+    },
+    "county": "Allegany County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Angelica",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.82",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.55",
+    "usual_in": "32.08",
+    "vs_usual": {
+     "diff_in": "5.47",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.27",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e6027544b8e910ba",
+   "sid": "300183 2",
+   "story": "Through Oct 13, the weather station in Angelica has caught 37.55 inches, 5.47 more than a usual year. April was the wettest month at 7.27 inches. The biggest single day came Jul 6 with 2.69 inches. That is 9.82 inches more than last year had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "36007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "1.90",
+     "label": "biggest single day"
+    },
+    "county": "Broome County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Binghamton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.57",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.41",
+    "usual_in": "33.70",
+    "vs_usual": {
+     "diff_in": "2.71",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.91",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c360b1f7eb05e6fe",
+   "sid": "04725 1",
+   "story": "Through Oct 13, the weather station in Binghamton had 36.41 inches, 2.71 more than a usual year. March was the wettest month at 5.91 inches. The biggest single day came Jul 29 with 1.90 inches, not long after the gauge sat empty for 10 days in a row from Jul 8 to Jul 17. That is 2.57 inches more than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "36009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "1.88",
+     "label": "biggest single day"
+    },
+    "county": "Cattaraugus County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Little Valley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "5.70",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "32.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.83",
+    "usual_in": "38.41",
+    "vs_usual": {
+     "diff_in": "0.58",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.18",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2679a7ee95508a7b",
+   "sid": "304808 2",
+   "story": "Through Oct 13, the weather station in Little Valley has caught most of its rain early and late. April was the wettest month at 8.18 inches, and the biggest single day was Sep 3 with 1.88 inches. The gauge went 12 days in a row with nothing, from May 26 to Jun 6. On the days both years reported, that is 5.70 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "36011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "1.76",
+     "label": "biggest single day"
+    },
+    "county": "Cayuga County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Auburn",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.90",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Sep 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.69",
+    "usual_in": "34.42",
+    "vs_usual": {
+     "diff_in": "5.27",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.20",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5fcda8a979bd068c",
+   "sid": "300321 2",
+   "story": "Through Oct 13, the weather station in Auburn had its wettest month in April at 8.20 inches. The biggest single day was Sep 3 with 1.76 inches, and then the gauge sat empty 6 days in a row from Sep 4 to Sep 9. That puts this year 8.90 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "36013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "1.50",
+     "label": "biggest single day"
+    },
+    "county": "Chautauqua County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "24 miles from the middle of the county",
+    "gauge_where": "in Silver Creek",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.22",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.50",
+    "usual_in": "32.80",
+    "vs_usual": {
+     "diff_in": "2.70",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.38",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fa2541a88e62d094",
+   "sid": "307750 2",
+   "story": "Through Oct 13, the weather station in Silver Creek had its wettest month in April with 7.38 inches. The biggest single day came Apr 1 at 1.50 inches. The longest dry stretch ran 11 days, May 26 to Jun 5, with nothing in the gauge, not even a trace. That puts the station 9.22 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "36015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 19",
+     "in": "1.45",
+     "label": "biggest single day"
+    },
+    "county": "Chemung County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Elmira",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.03",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 105,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.27",
+    "usual_in": "30.67",
+    "vs_usual": {
+     "diff_in": "1.60",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.27",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f0e4b996d06aad44",
+   "sid": "302610 2",
+   "story": "Through Oct 13, the weather station in Elmira had its wettest month in April at 5.27 inches. The biggest single day came Jul 19 with 1.45 inches. The longest dry stretch ran 11 days, May 27 to Jun 6, with not even a trace in the gauge. On the days both years reported, this year is 4.03 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "36017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "2.69",
+     "label": "biggest single day"
+    },
+    "county": "Chenango County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Greene",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.63",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "May 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.90",
+    "usual_in": "35.61",
+    "vs_usual": {
+     "diff_in": "4.29",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.94",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b0bfaeb4686241c4",
+   "sid": "303444 2",
+   "story": "Through Oct 13, the weather station in Greene had July as the wettest month at 6.94 inches. The biggest single day came Sep 3 with 2.69 inches. The gauge went 16 days in a row with nothing in it, from May 27 to Jun 11. That puts the year 5.63 inches ahead of 2025 at this point.",
+   "through": "2026-10-13"
+  },
+  "36019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 13",
+     "in": "2.56",
+     "label": "biggest single day"
+    },
+    "county": "Clinton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "at Plattsburgh International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "7.83",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "17.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Apr 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.03",
+    "usual_in": "24.19",
+    "vs_usual": {
+     "diff_in": "0.84",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.88",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "08fbb09499e82f20",
+   "sid": "64776 1",
+   "story": "Through Oct 13, the weather station at Plattsburgh International Airport saved its biggest single day for last, 2.56 inches on Oct 13. June was the wettest month with 4.88 inches. On the days both years reported, this year is running 7.83 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "36023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 19",
+     "in": "2.66",
+     "label": "biggest single day"
+    },
+    "county": "Cortland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "1.8 miles east of Willet",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.69",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.96",
+    "usual_in": "37.48",
+    "vs_usual": {
+     "diff_in": "1.48",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.45",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "554d3aada0515b0c",
+   "sid": "US1NYCR0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.8 miles east of Willet had 1.69 inches more than it did by the same day in 2025. July was the wettest month at 8.45 inches. The gauge sat empty for 9 days in a row from Jul 10 to Jul 18, then caught 2.66 inches on Jul 19, the biggest single day of the year.",
+   "through": "2026-10-13"
+  },
+  "36025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 15",
+     "in": "1.62",
+     "label": "biggest single day"
+    },
+    "county": "Delaware County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Walton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.37",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jun 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.21",
+    "usual_in": "39.29",
+    "vs_usual": {
+     "diff_in": "2.92",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.71",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5e0d5ee61e3bab1f",
+   "sid": "308932 2",
+   "story": "Through Oct 13, the weather station in Walton had its wettest month in July at 6.71 inches. The biggest single day was Jun 15 with 1.62 inches, and that came right after the longest dry stretch, 10 days with nothing in the gauge from Jun 2 to Jun 11. The year sits 2.92 inches more than a usual year, yet still 0.37 inches less than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "36027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 26",
+     "in": "1.71",
+     "label": "biggest single day"
+    },
+    "county": "Dutchess County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "2.5 miles northeast of Millbrook",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.17",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "38.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.73",
+    "usual_in": "38.56",
+    "vs_usual": {
+     "diff_in": "3.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.00",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "57ad3ec39b2daff1",
+   "sid": "US1NYDT0032 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles northeast of Millbrook had July as its wettest month at 7.00 inches. That same July held its longest dry stretch, 10 days in a row with nothing in the gauge from Jul 9 to Jul 18. The biggest single day came early, 1.71 inches on Jan 26. On the days both years reported, this year ran 4.17 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "36029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "3.04",
+     "label": "biggest single day"
+    },
+    "county": "Erie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "at Buffalo Niagara International Airpor",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.82",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.76",
+    "usual_in": "31.20",
+    "vs_usual": {
+     "diff_in": "4.56",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.33",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "afa8de4c2e3802ca",
+   "sid": "14733 1",
+   "story": "Through Oct 13, the weather station at Buffalo Niagara International Airport has caught 14.82 inches more than it had by the same day in 2025. March was the wettest month at 6.33 inches. The biggest single day came Sep 3, with 3.04 inches in the gauge. The longest dry stretch was 8 days, Jul 10 to Jul 17, and that was about as long as it went without.",
+   "through": "2026-10-13"
+  },
+  "36031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 24",
+     "in": "1.10",
+     "label": "biggest one-day reading"
+    },
+    "county": "Essex County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "24 miles from the middle of the county",
+    "gauge_where": "in Newcomb",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "3.14",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Apr 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 28"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 100,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.80",
+    "usual_in": "34.77",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.00",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "27f35170efbc644c",
+   "sid": "305714 2",
+   "story": "Through Oct 13, the weather station in Newcomb had its wettest month in July, with 6.00 inches. The biggest reading in one day came on Aug 24, at 1.10 inches. On the days both years reported, this year has 3.14 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "36033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 15",
+     "in": "1.81",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "in Malone",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.95",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Apr 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.76",
+    "usual_in": "31.60",
+    "vs_usual": {
+     "diff_in": "4.16",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.07",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "17934175ea211d6d",
+   "sid": "304996 2",
+   "story": "Through Oct 13, the weather station in Malone had 35.76 inches, 4.16 more than a usual year. June was the wettest month at 8.07 inches, and the biggest single day came Jun 15 with 1.81. The longest dry stretch was 8 days, Apr 21 to Apr 28. That is 8.95 inches more than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "36035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "2.17",
+     "label": "biggest one-day reading"
+    },
+    "county": "Fulton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "7 miles northwest of Gloversville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "3.69",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "35.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 98,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.64",
+    "usual_in": "39.56",
+    "vs_usual": {
+     "diff_in": "0.92",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.93",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9cfd460cf15b6bf7",
+   "sid": "303322 2",
+   "story": "Through Oct 13, the weather station 7 miles northwest of Gloversville has run close to a usual year, 0.92 inches less. March was the wettest month at 5.93 inches. The gauge went 11 days in a row with nothing from Jul 8 to Jul 18, then took the biggest one-day reading of 2.17 inches on Jul 29. On the days both years reported, this year is 3.69 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "36037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 19",
+     "in": "2.03",
+     "label": "biggest single day"
+    },
+    "county": "Genesee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "1 mile east of Le Roy",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.62",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.39",
+    "usual_in": "29.08",
+    "vs_usual": {
+     "diff_in": "2.31",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.87",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2f0f86ad7dce17ad",
+   "sid": "304684 2",
+   "story": "Through Oct 13, the weather station 1 mile east of Le Roy had 11.62 inches more than last year at this point. April was the wettest month at 5.87 inches. The biggest single day was Jul 19 with 2.03 inches. From May 26 to Jun 15 the gauge went 21 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "36039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "5.18",
+     "label": "biggest single day"
+    },
+    "county": "Greene County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "3.4 miles east of Freehold",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.26",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Jul 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.31",
+    "usual_in": "34.98",
+    "vs_usual": {
+     "diff_in": "2.33",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.98",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "00f782a5f9b07075",
+   "sid": "US1NYGR0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.4 miles east of Freehold had its year mostly in July. July put 11.98 inches in the gauge, and 5.18 of that came on Jul 29 alone. The longest run with nothing in it was 7 days, Jul 12 to Jul 18, right before all that. On the days both years reported, 2026 is 4.26 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "36041": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 25",
+     "in": "1.42",
+     "label": "biggest single day"
+    },
+    "county": "Hamilton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "2 miles southwest of Indian Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.08",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 5,
+     "from": "Apr 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.88",
+    "usual_in": "33.99",
+    "vs_usual": {
+     "diff_in": "8.11",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.89",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a46112919b57b4d2",
+   "sid": "304102 2",
+   "story": "Through Oct 13, the weather station 2 miles southwest of Indian Lake had May as its wettest month at 4.89 inches. The biggest single day came in that month too, 1.42 inches on May 25. The longest dry stretch ran only 5 days, Apr 24 to Apr 28. Even so, the gauge sits 6.08 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "36043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "1.71",
+     "label": "biggest one-day reading"
+    },
+    "county": "Herkimer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "3.3 miles northeast of Schuyler",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "0.06",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "34.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Sep 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 27"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.95",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.08",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f95e290967a00354",
+   "sid": "US1NYHR0024 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.3 miles northeast of Schuyler had its wettest month in March at 5.08 inches. The biggest one-day reading came right after, 1.71 inches on Apr 1. The longest dry stretch ran 6 days, Sep 22 to Sep 27. On the days both years reported, this year is 0.06 inches less than last year, about as close as it gets.",
+   "through": "2026-10-13"
+  },
+  "36045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 24",
+     "in": "2.16",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Watertown International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.80",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Apr 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 130,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.75",
+    "usual_in": "28.18",
+    "vs_usual": {
+     "diff_in": "8.57",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.16",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "19abd41c39fc6772",
+   "sid": "94790 1",
+   "story": "Through Oct 13, the weather station at Watertown International Airport has caught 9.80 inches more than it had by the same day in 2025. April was the wettest month at 5.16 inches, and it also held the longest dry stretch, 8 days with nothing in the gauge from Apr 20 to Apr 27. The biggest single day came Aug 24 with 2.16 inches.",
+   "through": "2026-10-13"
+  },
+  "36049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "1.36",
+     "label": "biggest single day"
+    },
+    "county": "Lewis County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Chases Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.32",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Apr 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.73",
+    "usual_in": "34.10",
+    "vs_usual": {
+     "diff_in": "2.37",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.58",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c29f5ad0b000ddb3",
+   "sid": "301388 2",
+   "story": "Through Oct 13, the weather station in Chases Lake had its wettest month in April at 5.58 inches. That same April also held the longest dry stretch, 8 days in a row with nothing in the gauge from Apr 22 to Apr 29. The biggest single day came Jul 22 at 1.36 inches. All told the gauge has caught 1.32 inches less than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "36051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 7",
+     "in": "1.45",
+     "label": "biggest single day"
+    },
+    "county": "Livingston County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Dansville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.61",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.80",
+    "usual_in": "25.17",
+    "vs_usual": {
+     "diff_in": "3.63",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.60",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0b225e6342364064",
+   "sid": "301974 2",
+   "story": "Through Oct 13, the weather station in Dansville had 28.80 inches, 3.63 more than a usual year. April was the wettest month at 6.60 inches. The biggest single day came Jul 7 with 1.45 inches, and then the gauge sat empty for 11 days in a row, Jul 8 to Jul 18. That is 8.61 inches more than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "36053": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 25",
+     "in": "2.01",
+     "label": "biggest single day"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Oneida",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "0.66",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "32.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.93",
+    "usual_in": "36.31",
+    "vs_usual": {
+     "diff_in": "4.38",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.63",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3cdba25e47f534bc",
+   "sid": "US1NYMD0022 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northwest of Oneida had its wettest month in April with 5.63 inches. The biggest single day was May 25 at 2.01 inches. The longest run with nothing in the gauge was 7 days, Jul 9 to Jul 15. On the days both years reported, this year is 0.66 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "36055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 18",
+     "in": "3.01",
+     "label": "biggest single day"
+    },
+    "county": "Monroe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "at Frederick Douglass Greater Rochester International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.39",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 126,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.08",
+    "usual_in": "27.79",
+    "vs_usual": {
+     "diff_in": "7.29",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.89",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ddcbad9ae4eb66e2",
+   "sid": "14768 1",
+   "story": "Through Oct 13, the weather station at Frederick Douglass Greater Rochester International Airport had 10.39 inches more than last year by this date. March was the wettest month at 5.89 inches, and the biggest single day was Jul 18 with 3.01 inches. The longest run with nothing in the gauge was 8 days, May 29 to Jun 5.",
+   "through": "2026-10-13"
+  },
+  "36057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "1.73",
+     "label": "biggest single day"
+    },
+    "county": "Montgomery County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "less than a mile southeast of Fort Plain",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.67",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.60",
+    "usual_in": "32.86",
+    "vs_usual": {
+     "diff_in": "3.26",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.62",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "62f7a05acc2a5118",
+   "sid": "US1NYMG0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southeast of Fort Plain had July as its wettest month at 4.62 inches. That came even with a dry stretch of 10 days in a row from Jul 9 to Jul 18 with nothing in the gauge. The biggest single day was Aug 3 at 1.73 inches. Against last year, the gauge is 0.67 inches ahead of 2025 on the same days.",
+   "through": "2026-10-13"
+  },
+  "36059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 21",
+     "in": "2.87",
+     "label": "biggest single day"
+    },
+    "county": "Nassau County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Syosset",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "10.04",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "27.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.38",
+    "usual_in": "36.79",
+    "vs_usual": {
+     "diff_in": "1.41",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.61",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "405e411d00a9de8d",
+   "sid": "308577 2",
+   "story": "Through Oct 13, the weather station in Syosset had its wettest month in August with 7.61 inches, and the biggest single day came Aug 21 at 2.87 inches. The longest dry stretch ran 11 days, Jan 27 to Feb 6, with nothing in the gauge. On the days both years reported, this year is 10.04 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "36061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "2.87",
+     "label": "biggest single day"
+    },
+    "county": "New York County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "in Ny City Central Park",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.71",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Jan 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.65",
+    "usual_in": "39.04",
+    "vs_usual": {
+     "diff_in": "0.39",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.64",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "28bc9ac12ce4ef85",
+   "sid": "94728 1",
+   "story": "Through Oct 13, the weather station in Ny City Central Park has had 0.39 inches less than a usual year, which is about usual. August did most of the work at 8.64 inches, and Aug 20 alone brought 2.87 inches. That puts this year 6.71 inches more than last year at the same point. The longest dry stretch was only 6 days, Jan 19 to Jan 24.",
+   "through": "2026-10-13"
+  },
+  "36063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "4.60",
+     "label": "biggest single day"
+    },
+    "county": "Niagara County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "4 miles northeast of Sanborn",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "19.47",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 140,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.77",
+    "usual_in": "30.48",
+    "vs_usual": {
+     "diff_in": "12.29",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.72",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d5d8172a7638181b",
+   "sid": "307425 2",
+   "story": "Through Oct 13, the weather station 4 miles northeast of Sanborn has 42.77 inches, 12.29 more than a usual year. August was the wettest month at 7.72 inches, and 4.60 of that came on Aug 3 alone. The longest dry stretch ran 11 days, May 26 to Jun 5. That is 19.47 inches more than this time last year.",
+   "through": "2026-10-13"
+  },
+  "36065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "2.09",
+     "label": "biggest single day"
+    },
+    "county": "Oneida County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "4 miles north of Westmoreland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.46",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Jul 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.20",
+    "usual_in": "39.35",
+    "vs_usual": {
+     "diff_in": "5.15",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.13",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f1e4798d926a7153",
+   "sid": "309248 2",
+   "story": "Through Oct 13, the weather station 4 miles north of Westmoreland had its wettest month in April, with 6.13 inches. The biggest single day came early, 2.09 inches on Apr 1. The longest dry stretch was 7 days, Jul 12 to Jul 18. That leaves the gauge 1.46 inches less than 2025 at the same point.",
+   "through": "2026-10-13"
+  },
+  "36067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 31",
+     "in": "1.96",
+     "label": "biggest single day"
+    },
+    "county": "Onondaga County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Syracuse Hancock International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.29",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.91",
+    "usual_in": "31.08",
+    "vs_usual": {
+     "diff_in": "0.17",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.96",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "584af81ad7a7ec37",
+   "sid": "14771 1",
+   "story": "Through Oct 13, the weather station at Syracuse Hancock International Airport has March as the wettest month at 5.96 inches. The biggest single day came Mar 31 with 1.96 inches. The longest dry stretch ran 7 days, Jul 8 to Jul 14, with nothing in the gauge, not even a trace. This year has 3.29 inches more than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "36069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 19",
+     "in": "1.68",
+     "label": "biggest single day"
+    },
+    "county": "Ontario County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "3 miles south of Canandaigua",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.54",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.26",
+    "usual_in": "28.23",
+    "vs_usual": {
+     "diff_in": "4.03",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.14",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4cdafb152f2aa85b",
+   "sid": "301152 2",
+   "story": "Through Oct 13, the weather station 3 miles south of Canandaigua has caught 9.54 inches more than it had by this day last year. April was the wettest month at 6.14 inches. The biggest single day came Jul 19 with 1.68 inches. The longest dry stretch ran 11 days, May 26 to Jun 5, without so much as a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "36071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 7",
+     "in": "2.70",
+     "label": "biggest single day"
+    },
+    "county": "Orange County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "3.2 miles west-northwest of Warwick",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "1.44",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "36.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.02",
+    "usual_in": "37.09",
+    "vs_usual": {
+     "diff_in": "0.93",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.30",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ee4d68b23685a27d",
+   "sid": "US1NYOR0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.2 miles west-northwest of Warwick had July as its wettest month at 8.30 inches, and the biggest single day came on Jul 7 with 2.70 inches. Before that, the gauge went 12 days in a row with nothing in it, from May 26 to Jun 6. On the days both years reported, this year is 1.44 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "36073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 18",
+     "in": "2.45",
+     "label": "biggest single day"
+    },
+    "county": "Orleans County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Albion",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "22.81",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Sep 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 153,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.83",
+    "usual_in": "27.94",
+    "vs_usual": {
+     "diff_in": "14.89",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.83",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "602b6e6cddc1fb0b",
+   "sid": "300055 2",
+   "story": "Through Oct 13, the weather station in Albion had 42.83 inches, 14.89 more than a usual year. August was the wettest month at 7.83 inches, and the biggest single day was Jul 18 with 2.45. The gauge stayed dry 10 days in a row from Sep 18 to Sep 27. Last year at this point it had 20.02 inches, so this year is 22.81 more.",
+   "through": "2026-10-13"
+  },
+  "36075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "1.64",
+     "label": "biggest single day"
+    },
+    "county": "Oswego County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "2 miles south-southeast of Palermo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.74",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.80",
+    "usual_in": "35.58",
+    "vs_usual": {
+     "diff_in": "0.78",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.75",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5db4e4ad2e3b8661",
+   "sid": "306376 2",
+   "story": "Through Oct 13, the weather station 2 miles south-southeast of Palermo had its wettest month in March at 6.75 inches. The biggest single day came Apr 1 with 1.64 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with not even a trace in the gauge. That leaves this year 1.74 inches less than last year through the same day.",
+   "through": "2026-10-13"
+  },
+  "36077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 31",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "Otsego County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Cooperstown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "0.37",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "35.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.45",
+    "usual_in": "37.69",
+    "vs_usual": {
+     "diff_in": "1.24",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.18",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1879a15ba0eb3b19",
+   "sid": "301752 2",
+   "story": "Through Oct 13, the weather station in Cooperstown had its wettest month in March at 6.18 inches, and its biggest single day came on Mar 31 with 2.10 inches. The gauge then went 10 days in a row with nothing in it, from Jul 8 to Jul 17. On the days both years reported, this year is 0.37 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "36079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "8.22",
+     "label": "biggest one-day reading"
+    },
+    "county": "Putnam County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "4.2 miles east-southeast of Beacon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "10.65",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "40.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 135,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "51.64",
+    "usual_in": "38.35",
+    "vs_usual": {
+     "diff_in": "13.29",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "17.14",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2e2c2f5f060c5aae",
+   "sid": "US1NYPT0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.2 miles east-southeast of Beacon had its wettest month in July with 17.14 inches. The biggest one-day reading came Jul 29 at 8.22 inches. On the days both years reported, this year is 10.65 inches more than last year. The longest dry stretch ran 10 days, Jan 28 to Feb 6, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "36081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "2.75",
+     "label": "biggest single day"
+    },
+    "county": "Queens County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Jfk International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.24",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Oct 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.19",
+    "usual_in": "34.16",
+    "vs_usual": {
+     "diff_in": "1.03",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.50",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7e67e3df986c5239",
+   "sid": "94789 1",
+   "story": "Through Oct 13, the weather station at Jfk International Airport has caught 8.24 inches more than it had by this day in 2025. August was the wettest month at 7.50 inches, and the biggest single day was Aug 3 with 2.75 inches. The longest dry stretch ran 6 days, Oct 5 to Oct 10, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "36083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "2.79",
+     "label": "biggest single day"
+    },
+    "county": "Rensselaer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in Buskirk",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.62",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Jan 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.41",
+    "usual_in": "34.15",
+    "vs_usual": {
+     "diff_in": "1.74",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.81",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c43fc63605648b24",
+   "sid": "301068 2",
+   "story": "Through Oct 13, the weather station in Buskirk caught most of its rain in July, 6.81 inches for the wettest month. The biggest single day was Jul 29 at 2.79 inches. The longest dry stretch ran 8 days, Jan 30 to Feb 6, with nothing in the gauge. That leaves the year 3.62 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "36087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "3.22",
+     "label": "biggest single day"
+    },
+    "county": "Rockland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Stony Point",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.63",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.86",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.73",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b66f93e2a5e8045b",
+   "sid": "US1NYRL0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northwest of Stony Point had 45.86 inches, 8.63 inches more than last year by the same day. July did most of the work with 10.73 inches. The biggest single day was Jul 29 at 3.22 inches. That came after the longest dry stretch, 10 days with nothing in the gauge from Jul 9 to Jul 18.",
+   "through": "2026-10-13"
+  },
+  "36089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 15",
+     "in": "1.89",
+     "label": "biggest single day"
+    },
+    "county": "St. Lawrence County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "less than a mile southwest of Hannawa Falls",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "7.27",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "27.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Apr 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.38",
+    "usual_in": "35.22",
+    "vs_usual": {
+     "diff_in": "0.16",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.71",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f140525ae27fa19a",
+   "sid": "US1NYSL0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Hannawa Falls had 35.38 inches, 0.16 more than a usual year. June was the wettest month at 5.71 inches, and the biggest single day was Jun 15 with 1.89. The longest dry stretch ran 9 days, Apr 21 to Apr 29. On the days both years reported, this year has 7.27 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "36091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "5.11",
+     "label": "biggest one-day reading"
+    },
+    "county": "Saratoga County",
+    "days_in_year_so_far": 286,
+    "days_missing": 18,
+    "days_reported": 268,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "4 miles southwest of Saratoga Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 261,
+      "diff_in": "0.55",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "35.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 5,
+    "pct_of_usual": 99,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.33",
+    "usual_in": "34.51",
+    "vs_usual": {
+     "diff_in": "0.18",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.95",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5e52fb61fc31b1d4",
+   "sid": "307484 2",
+   "story": "Through Oct 13, the weather station 4 miles southwest of Saratoga Springs sits about usual, 0.18 inches less than a usual year. July was the wettest month at 6.95 inches, and 5.11 of that came on Jul 29 alone, the biggest one-day reading. The longest dry stretch ran 11 days, Jan 27 to Feb 6. On the days both years reported, this year is 0.55 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "36093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "3.03",
+     "label": "biggest single day"
+    },
+    "county": "Schenectady County",
+    "days_in_year_so_far": 276,
+    "days_missing": 8,
+    "days_reported": 268,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "4.2 miles south-southwest of Pattersonville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 253,
+      "diff_in": "3.91",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 16,
+     "through": "Oct 3",
+     "total_in": "32.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Jul 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "New York",
+    "through": "Oct 3",
+    "through_iso": "2026-10-03",
+    "total_in": "29.29",
+    "usual_in": "32.43",
+    "vs_usual": {
+     "diff_in": "3.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.91",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "830f6b1bceb1003d",
+   "sid": "US1NYSC0017 6",
+   "story": "Through Oct 3, the volunteer rain gauge 4.2 miles south-southwest of Pattersonville had its year mostly in July. That month put 8.91 inches in the gauge, and 3.03 inches of it came on Jul 29, the biggest single day. The same month also held the longest dry stretch, 7 days with nothing from Jul 12 to Jul 18. On the days both years reported, this year is 3.91 inches less than last year.",
+   "through": "2026-10-03"
+  },
+  "36099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "1.90",
+     "label": "biggest one-day reading"
+    },
+    "county": "Seneca County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3.8 miles east-southeast of Romulus",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "5.01",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "25.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.20",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.50",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "75de8ae7cbf35a64",
+   "sid": "US1NYSN0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.8 miles east-southeast of Romulus had caught 31.20 inches. April was the wettest month at 6.50 inches, and the biggest one-day reading was 1.90 inches on Apr 1. The gauge went 11 days in a row with nothing in it, from May 27 to Jun 6. On the days both years reported, this year is 5.01 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "36101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 8",
+     "in": "1.45",
+     "label": "biggest single day"
+    },
+    "county": "Steuben County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "4.7 miles south of Savona",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "6.57",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "24.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.39",
+    "usual_in": "30.32",
+    "vs_usual": {
+     "diff_in": "1.07",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.50",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bf881377a38f5175",
+   "sid": "US1NYST0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.7 miles south of Savona sits 1.07 inches more than a usual year. April was the wettest month at 5.50 inches. The biggest single day came Aug 8 with 1.45 inches, and the gauge stayed empty for 12 days in a row from May 26 to Jun 6. On the days both years reported, this year is 6.57 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "36103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "3.27",
+     "label": "biggest single day"
+    },
+    "county": "Suffolk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "at Islip-Li Macarthur Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.64",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Oct 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.07",
+    "usual_in": "35.55",
+    "vs_usual": {
+     "diff_in": "6.52",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.76",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9a2dc3441a9411e9",
+   "sid": "04781 1",
+   "story": "Through Oct 13, the weather station at Islip-Li Macarthur Airport has caught 42.07 inches, 14.64 more than it had by this day last year. September did most of the work with 8.76 inches. The biggest single day came Aug 20 with 3.27. The longest run with nothing in the gauge was 6 days, Oct 5 to Oct 10.",
+   "through": "2026-10-13"
+  },
+  "36107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "1.78",
+     "label": "biggest single day"
+    },
+    "county": "Tioga County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "2.8 miles east-southeast of Apalachin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "3.72",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "29.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.40",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.93",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2aca55371319e02e",
+   "sid": "US1NYTG0034 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.8 miles east-southeast of Apalachin had its wettest month in March, with 4.93 inches. The biggest single day came Aug 3, at 1.78 inches. On the days both years reported, this year has 3.72 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "36109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "2.04",
+     "label": "biggest single day"
+    },
+    "county": "Tompkins County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Ithaca Cornell",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.36",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.86",
+    "usual_in": "30.65",
+    "vs_usual": {
+     "diff_in": "3.21",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.69",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "755d3e5f5f8360e9",
+   "sid": "304174 2",
+   "story": "Through Oct 13, the weather station in Ithaca Cornell had April as the wettest month at 6.69 inches. The biggest single day came Jul 29 with 2.04 inches. The longest dry stretch ran 11 days, May 27 to Jun 6, with nothing in the gauge. That puts this year 5.36 inches more than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "36111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "3.84",
+     "label": "biggest one-day reading"
+    },
+    "county": "Ulster County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "2.6 miles north-northeast of Highland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "4.07",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "38.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.22",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "11.24",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d73bffd559e630e3",
+   "sid": "US1NYUL0039 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.6 miles north-northeast of Highland had 35.22 inches. July carried the year with 11.24 inches, and the biggest one-day reading was 3.84 inches on Jul 22. The longest dry stretch ran 9 days, Jan 29 to Feb 6. On the days both years reported, this year is 4.07 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "36113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "2.96",
+     "label": "biggest single day"
+    },
+    "county": "Warren County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "at Glens Falls/Floyd Bennett Memorial Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.65",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.32",
+    "usual_in": "30.08",
+    "vs_usual": {
+     "diff_in": "1.76",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.09",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9f3d64da6423a638",
+   "sid": "14750 1",
+   "story": "Through Oct 13, the weather station at Glens Falls/Floyd Bennett Memorial Airport had July as its wettest month at 5.09 inches. The biggest single day came Jul 29 with 2.96 inches. The longest dry stretch ran 10 days, Jan 28 to Feb 6, with nothing in the gauge. The year sits 0.65 inches more than last year by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "36115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "2.55",
+     "label": "biggest one-day reading"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 20,
+    "days_reported": 266,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "4.2 miles southwest of Cambridge",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Jan 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 5"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.33",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.03",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0e4bc4b0ae954feb",
+   "sid": "US1NYWS0015 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.2 miles southwest of Cambridge has caught 34.33 inches. July was the wettest month at 7.03 inches, and the biggest one-day reading came Jul 30 at 2.55 inches. The longest dry stretch ran 8 days, Jan 29 to Feb 5, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "36117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "1.75",
+     "label": "biggest single day"
+    },
+    "county": "Wayne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "1.6 miles northwest of Palmyra",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.32",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "22.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.79",
+    "usual_in": "29.53",
+    "vs_usual": {
+     "diff_in": "2.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.39",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d28c7d9ddf44f08a",
+   "sid": "US1NYWN0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles northwest of Palmyra has caught 9.32 inches more than last year, on the days both years reported. April was the wettest month at 5.39 inches. The biggest single day came Sep 3 with 1.75 inches. The longest dry stretch ran 10 days, Jul 8 to Jul 17, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "36119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 7",
+     "in": "2.14",
+     "label": "biggest single day"
+    },
+    "county": "Westchester County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "less than a mile north of South Salem",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.51",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.98",
+    "usual_in": "38.73",
+    "vs_usual": {
+     "diff_in": "4.25",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.23",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "53a6e044216e1007",
+   "sid": "US1NYWC0022 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north of South Salem has caught 10.51 inches more than it had by this day in 2025. July did most of the work at 9.23 inches, and the biggest single day came Jul 7 with 2.14 inches. The longest dry stretch was 9 days, Jan 29 to Feb 6, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "36121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "1.82",
+     "label": "biggest single day"
+    },
+    "county": "Wyoming County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "3 miles west of Wyoming",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.98",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 122,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.40",
+    "usual_in": "33.14",
+    "vs_usual": {
+     "diff_in": "7.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.01",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3b46087d856a55a0",
+   "sid": "309593 2",
+   "story": "Through Oct 13, the weather station 3 miles west of Wyoming had its wettest month in April at 7.01 inches. The biggest single day was Apr 1 at 1.82 inches. From May 27 to Jun 5 it went 10 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 10.98 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "36123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 18",
+     "in": "1.34",
+     "label": "biggest single day"
+    },
+    "county": "Yates County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Penn Yan Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "New York",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.99",
+    "usual_in": "24.36",
+    "vs_usual": {
+     "diff_in": "1.37",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.21",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3d9af38084bc9333",
+   "sid": "54778 1",
+   "story": "Through Oct 13, the weather station at Penn Yan Airport had its wettest month in March, with 4.21 inches. The gauge went 8 days in a row with nothing in it, from Jul 10 to Jul 17. The next day, Jul 18, it caught 1.34 inches, the biggest single day so far. All told it sits 1.37 inches less than a usual year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "NY"
+}

@@ -45,8 +45,10 @@ def fetch_year(year):
     zipped shapefile. (geojson is NOT a valid value here — it returns HTTP 422.)
     We use CSV and read columns by name so we adapt to IEM's exact headers.
     """
-    sts = "%d-01-01T00:00Z" % year
-    ets = "%d-01-01T00:00Z" % (year + 1)
+    # Storm days that START in `year`: Jan 1 12Z through Jan 1 12Z of the next
+    # year, so Dec 31's evening storms stay in this year's file.
+    sts = "%d-01-01T%02d:00Z" % (year, DAY_START_UTC_HOUR)
+    ets = "%d-01-01T%02d:00Z" % (year + 1, DAY_START_UTC_HOUR)
     url = "%s?wfo=ALL&sts=%s&ets=%s&fmt=csv" % (IEM, sts, ets)
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
@@ -79,9 +81,16 @@ def mag_of(row):
     if v in (None, "", "M"):
         return None
     try:
-        return float(v)
+        m = float(v)
     except (TypeError, ValueError):
         return None
+    # The US record stone is 8.0 in (Vivian, SD, 2010). A bigger "hail size" is
+    # a mis-filed report (a 65.0 in Goodlett, TX entry was a wind gust in mph),
+    # so it counts as size unknown, not as a giant stone.
+    return m if 0 < m <= MAX_HAIL_IN else None
+
+
+MAX_HAIL_IN = 8.0
 
 
 def intensity(mag):
@@ -139,20 +148,46 @@ def events_year(rows, year):
     return ev
 
 
-def _date_of(row):
-    # Prefer the human-formatted valid2; IEM serves it year-first but with
-    # SLASHES ("2026/01/03 18:22") — normalize to dashes so every consumer
-    # (lookup, Field Scout, hail-vigor correlation) compares dates safely.
-    v2 = _get(row, "valid2", "valid_2")
-    if v2 and len(v2) >= 10:
-        d = v2[:10].replace("/", "-")
-        if len(d) == 10 and d[4] == "-" and d[7] == "-":
-            return d
-        return None
-    v = _get(row, "valid")
-    if v and len(v) >= 8 and v[:8].isdigit():
-        return "%s-%s-%s" % (v[:4], v[4:6], v[6:8])
+# Storm day: the Storm Prediction Center's convective day, 12:00 UTC to
+# 12:00 UTC, labeled by the date it starts (7 a.m. to 7 a.m. Central daylight
+# time). IEM's "valid" and "valid2" are UTC. Grouping by the UTC calendar date
+# (what this did until 2026-10-17) put every evening storm in the central and
+# mountain zones on the NEXT day's page: the 3.00 inch Coleman County, Texas
+# stone of 8:01 pm CDT May 21, 2024 (01:01 UTC May 22) showed on May 22.
+DAY_RULE = "spc-12z"
+DAY_START_UTC_HOUR = 12
+
+
+def _valid_utc(row):
+    """The report time as an aware UTC datetime, or None when it cannot be read."""
+    v = (_get(row, "valid") or "").strip()
+    if len(v) >= 12 and v[:12].isdigit():
+        try:
+            return datetime.strptime(v[:12], "%Y%m%d%H%M").replace(tzinfo=timezone.utc)
+        except ValueError:
+            pass
+    # valid2 is year-first with SLASHES ("2026/01/03 18:22"), also UTC
+    v2 = (_get(row, "valid2", "valid_2") or "").strip().replace("/", "-").replace("T", " ")
+    if len(v2) >= 16:
+        try:
+            return datetime.strptime(v2[:16], "%Y-%m-%d %H:%M").replace(tzinfo=timezone.utc)
+        except ValueError:
+            pass
     return None
+
+
+def storm_day(t_utc):
+    """YYYY-MM-DD of the SPC convective day (12Z to 12Z) holding UTC time t_utc."""
+    return (t_utc - timedelta(hours=DAY_START_UTC_HOUR)).strftime("%Y-%m-%d")
+
+
+def _date_of(row):
+    # Storm day as YYYY-MM-DD with dashes, so every consumer (lookup, Field
+    # Scout, hail-vigor correlation, the storm-day pages) compares dates
+    # safely. A report with no readable time gets None: a bare date cannot be
+    # placed in a 12Z-to-12Z day, and guessing would move it a day.
+    t = _valid_utc(row)
+    return storm_day(t) if t else None
 
 
 def fetch_recent():
@@ -207,17 +242,11 @@ _MONTHS = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 
 
 def _month_of(row):
-    v = _get(row, "valid")
-    if v and len(v) >= 6 and v[:6].isdigit():
-        m = int(v[4:6])
+    d = _date_of(row)
+    if d:
+        m = int(d[5:7])
         if 1 <= m <= 12:
             return m
-    v2 = _get(row, "valid2", "valid_2")
-    if v2 and len(v2) >= 7:
-        try:
-            return int(v2[5:7])
-        except ValueError:
-            pass
     return None
 
 
@@ -293,6 +322,44 @@ def finalize_counties(acc, years, per_state=12, end_iso=None):
     return by_state
 
 
+def state_totals(events_by_year, years):
+    """True statewide totals, not the top-12 county subtotal the ranked table
+    carries. Read from the dated events files ([lat, lon, mag, "MM-DD", ST]),
+    so a year whose fetch failed still counts from the file it kept.
+    {ST: {"total": n, "dmg": n at DAMAGING_IN or larger, "months": [12 ints, Jan..Dec]}}"""
+    out = {}
+    for y in years:
+        for e in events_by_year.get(y) or []:
+            if len(e) < 5:
+                continue
+            st = str(e[4] or "").upper()
+            if st not in VALID_ST:
+                continue
+            rec = out.setdefault(st, {"total": 0, "dmg": 0, "months": [0] * 12})
+            rec["total"] += 1
+            m = e[2]
+            if isinstance(m, (int, float)) and DAMAGING_IN <= m <= MAX_HAIL_IN:
+                rec["dmg"] += 1
+            try:
+                mo = int(str(e[3])[:2])
+            except ValueError:
+                mo = 0
+            if 1 <= mo <= 12:
+                rec["months"][mo - 1] += 1
+    return out
+
+
+def load_events(years):
+    ev = {}
+    for y in years:
+        try:
+            with open("%s/events-%d.json" % (OUT_DIR, y)) as fh:
+                ev[y] = json.load(fh).get("ev") or []
+        except (OSError, ValueError):
+            ev[y] = []
+    return ev
+
+
 def existing_count(year):
     path = "%s/%d.json" % (OUT_DIR, year)
     if not os.path.exists(path):
@@ -317,7 +384,7 @@ def refresh_recent_only():
     with open(RECENT_PATH, "w") as fh:
         json.dump({
             "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-            "days": RECENT_DAYS, "count": len(recent), "reports": recent,
+            "days": RECENT_DAYS, "day_rule": DAY_RULE, "count": len(recent), "reports": recent,
         }, fh, separators=(",", ":"))
     mpath = "%s/manifest.json" % OUT_DIR
     try:
@@ -326,6 +393,7 @@ def refresh_recent_only():
     except (OSError, ValueError):
         manifest = {}
     manifest["recent_days"] = RECENT_DAYS
+    manifest["recent_day_rule"] = DAY_RULE
     manifest["recent_count"] = len(recent)
     manifest["recent_generated"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     with open(mpath, "w") as fh:
@@ -341,6 +409,15 @@ def main():
     this_year = datetime.now(timezone.utc).year
     years = list(range(this_year - YEARS_BACK + 1, this_year + 1))
     counts = {}
+    # Which day rule each year's events file was built with. A year whose
+    # fetch fails keeps its old file, so it keeps its old rule too (absent =
+    # the old UTC calendar day); the storm-day pages print the rule per file.
+    try:
+        with open("%s/manifest.json" % OUT_DIR) as fh:
+            old_rules = json.load(fh).get("day_rules") or {}
+    except (OSError, ValueError):
+        old_rules = {}
+    day_rules = {}
     cty_acc = {}          # cross-year county accumulator
     cty_years = []        # years that actually contributed to the tally
 
@@ -353,6 +430,8 @@ def main():
             if keep is not None:
                 print("[%d] keeping existing file (%d reports)" % (y, keep), file=sys.stderr)
                 counts[str(y)] = keep
+                if old_rules.get(str(y)):
+                    day_rules[str(y)] = old_rules[str(y)]
             else:
                 counts[str(y)] = 0
             continue
@@ -368,11 +447,14 @@ def main():
         if not pts and existing_count(y):
             print("[%d] parsed 0 reports but a good file exists — keeping it" % y, file=sys.stderr)
             counts[str(y)] = existing_count(y)
+            if old_rules.get(str(y)):
+                day_rules[str(y)] = old_rules[str(y)]
             continue
 
         tally_counties(rows, cty_acc)
         cty_years.append(y)
         counts[str(y)] = len(pts)
+        day_rules[str(y)] = DAY_RULE
         with open("%s/%d.json" % (OUT_DIR, y), "w") as fh:
             json.dump({"year": y, "count": len(pts), "points": pts}, fh, separators=(",", ":"))
         ev = events_year(rows, y)
@@ -390,6 +472,8 @@ def main():
                 "years": cty_years,
                 "damaging_in": DAMAGING_IN,
                 "states": by_state,
+                # Every report in the state, not just the 12 ranked counties.
+                "state_totals": state_totals(load_events(cty_years), cty_years),
             }, fh, separators=(",", ":"))
         print("[counties] ranked counties for %d states" % len(by_state))
     else:
@@ -406,9 +490,12 @@ def main():
     # than claim a refresh that did not happen.
     recent_count = None
     recent_generated = None
+    recent_rule = None
     try:
         with open("%s/manifest.json" % OUT_DIR) as fh:
-            recent_generated = json.load(fh).get("recent_generated")
+            _old = json.load(fh)
+            recent_generated = _old.get("recent_generated")
+            recent_rule = _old.get("recent_day_rule")
     except (OSError, ValueError):
         pass
     try:
@@ -416,7 +503,7 @@ def main():
         with open(RECENT_PATH, "w") as fh:
             json.dump({
                 "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-                "days": RECENT_DAYS, "count": len(recent), "reports": recent,
+                "days": RECENT_DAYS, "day_rule": DAY_RULE, "count": len(recent), "reports": recent,
             }, fh, separators=(",", ":"))
         recent_count = len(recent)
         recent_generated = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -429,6 +516,8 @@ def main():
         "years": years,
         "counts": counts,
         "recent_days": RECENT_DAYS,
+        "day_rules": day_rules,
+        "recent_day_rule": DAY_RULE if recent_count is not None else recent_rule,
         "recent_count": recent_count,
         "recent_generated": recent_generated,
     }

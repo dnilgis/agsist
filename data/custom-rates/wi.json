@@ -1,0 +1,535 @@
+{
+ "state": "WI",
+ "name": "Wisconsin",
+ "slug": "wisconsin",
+ "survey": "Custom Rates for 2024 Wisconsin Farm Operations (2024 Wisconsin Custom Rate Survey)",
+ "publisher": "University of Wisconsin-Madison Division of Extension",
+ "survey_year": 2024,
+ "collected": "Online survey launched March 2025; 161 respondents who performed, hired or knew 2024 custom rates in Wisconsin",
+ "sources": [
+  {
+   "url": "https://juneau.extension.wisc.edu/files/2025/06/Custom-Rates-for-2024-Wisconsin-Farm-Operations-.pdf",
+   "ref": "cr-wi-2024-pdf"
+  }
+ ],
+ "spread": "minmax",
+ "spread_label": "lowest to highest answer",
+ "includes": "The custom rates reported in this survey include fuel cost unless otherwise stated. Average is the simple average of all reported rates; Range is the minimum and maximum reported values.",
+ "range_note": "The range is the lowest and highest answer. Rows whose unit or grouping the report leaves unclear (the baling lines in the forage table, the seeding sub-rows and the first corn harvest line) are left out.",
+ "rows": [
+  {
+   "s": "Land tillage",
+   "o": "Chisel plowing",
+   "u": "acre",
+   "a": 21.69,
+   "n": 16,
+   "lo": 12.0,
+   "hi": 30.0,
+   "k": "chisel"
+  },
+  {
+   "s": "Land tillage",
+   "o": "Disk with ripper",
+   "u": "acre",
+   "a": 21.92,
+   "n": 12,
+   "lo": 10.0,
+   "hi": 30.0
+  },
+  {
+   "s": "Land tillage",
+   "o": "Disking with harrow or cultipacker",
+   "u": "acre",
+   "a": 21.88,
+   "n": 8,
+   "lo": 16.0,
+   "hi": 30.0
+  },
+  {
+   "s": "Land tillage",
+   "o": "Field cultivating",
+   "u": "acre",
+   "a": 17.8,
+   "n": 20,
+   "lo": 10.0,
+   "hi": 30.0,
+   "k": "field-cult"
+  },
+  {
+   "s": "Land tillage",
+   "o": "Vertical tillage",
+   "u": "acre",
+   "a": 21.02,
+   "n": 21,
+   "lo": 14.0,
+   "hi": 30.0,
+   "k": "vertical-till"
+  },
+  {
+   "s": "Land tillage",
+   "o": "Finishing disk",
+   "u": "acre",
+   "a": 20.46,
+   "n": 11,
+   "lo": 10.0,
+   "hi": 29.1,
+   "k": "disk-tandem"
+  },
+  {
+   "s": "Land tillage",
+   "o": "Offset disk",
+   "u": "acre",
+   "a": 20.33,
+   "n": 6,
+   "lo": 15.0,
+   "hi": 27.0
+  },
+  {
+   "s": "Land tillage",
+   "o": "Row cultivating",
+   "u": "acre",
+   "a": 19.22,
+   "n": 8,
+   "lo": 12.0,
+   "hi": 40.0
+  },
+  {
+   "s": "Land tillage",
+   "o": "Row cultivating with fertilizer",
+   "u": "acre",
+   "a": 22.39,
+   "n": 7,
+   "lo": 15.0,
+   "hi": 50.0
+  },
+  {
+   "s": "Land tillage",
+   "o": "Subsoiling (16-20 inches deep)",
+   "u": "acre",
+   "a": 26.22,
+   "n": 10,
+   "lo": 18.0,
+   "hi": 35.0,
+   "k": "subsoil"
+  },
+  {
+   "s": "Land tillage",
+   "o": "Strip tillage",
+   "u": "acre",
+   "a": 29.9,
+   "n": 10,
+   "lo": 18.0,
+   "hi": 50.0,
+   "k": "strip-till"
+  },
+  {
+   "s": "Drilling",
+   "o": "Drilling alfalfa, conventional",
+   "u": "acre",
+   "a": 18.57,
+   "n": 15,
+   "lo": 10.0,
+   "hi": 28.0
+  },
+  {
+   "s": "Drilling",
+   "o": "Drilling soybeans, conventional",
+   "u": "acre",
+   "a": 19.15,
+   "n": 17,
+   "lo": 13.0,
+   "hi": 26.0,
+   "k": "drill-soy"
+  },
+  {
+   "s": "Drilling",
+   "o": "Drilling small grains, conventional",
+   "u": "acre",
+   "a": 20.41,
+   "n": 16,
+   "lo": 10.0,
+   "hi": 32.0,
+   "k": "drill-smallgrain"
+  },
+  {
+   "s": "Drilling",
+   "o": "Drilling alfalfa, no-till",
+   "u": "acre",
+   "a": 22.71,
+   "n": 14,
+   "lo": 14.0,
+   "hi": 30.0
+  },
+  {
+   "s": "Drilling",
+   "o": "Drilling soybeans, no-till",
+   "u": "acre",
+   "a": 22.4,
+   "n": 21,
+   "lo": 15.0,
+   "hi": 30.0,
+   "k": "drill-soy-notill"
+  },
+  {
+   "s": "Drilling",
+   "o": "Drilling small grains, no-till",
+   "u": "acre",
+   "a": 22.75,
+   "n": 24,
+   "lo": 15.0,
+   "hi": 32.0
+  },
+  {
+   "s": "Planting",
+   "o": "Planting corn (with fertilizer), conventional",
+   "u": "acre",
+   "a": 24.99,
+   "n": 31,
+   "lo": 18.0,
+   "hi": 35.0,
+   "k": "plant-row-fert"
+  },
+  {
+   "s": "Planting",
+   "o": "Planting corn (without fertilizer), conventional",
+   "u": "acre",
+   "a": 23.36,
+   "n": 14,
+   "lo": 14.0,
+   "hi": 35.0,
+   "k": "plant-row"
+  },
+  {
+   "s": "Planting",
+   "o": "Planting alfalfa, clover, etc., conventional",
+   "u": "acre",
+   "a": 21.73,
+   "n": 11,
+   "lo": 15.0,
+   "hi": 28.0
+  },
+  {
+   "s": "Planting",
+   "o": "Planting corn (with fertilizer), no-till",
+   "u": "acre",
+   "a": 25.02,
+   "n": 26,
+   "lo": 17.0,
+   "hi": 33.0,
+   "k": "plant-notill"
+  },
+  {
+   "s": "Planting",
+   "o": "Planting corn (without fertilizer), no-till",
+   "u": "acre",
+   "a": 22.54,
+   "n": 12,
+   "lo": 14.0,
+   "hi": 28.0
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Bulk dry fertilizer, broadcast",
+   "u": "acre",
+   "a": 8.9,
+   "n": 43,
+   "lo": 5.75,
+   "hi": 17.0,
+   "k": "fert-dry"
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Liquid fertilizer, broadcast",
+   "u": "acre",
+   "a": 9.0,
+   "n": 11,
+   "lo": 4.5,
+   "hi": 10.5,
+   "k": "fert-liquid"
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Liquid side-dressing with drop nozzles",
+   "u": "acre",
+   "a": 13.35,
+   "n": 20,
+   "lo": 8.0,
+   "hi": 17.5
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Lime application",
+   "u": "acre",
+   "a": 17.14,
+   "n": 7,
+   "lo": 12.0,
+   "hi": 31.0
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Lime application",
+   "u": "ton",
+   "a": 20.41,
+   "n": 11,
+   "lo": 5.0,
+   "hi": 65.0,
+   "k": "lime-ton"
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Fungicide, ground application",
+   "u": "acre",
+   "a": 11.9,
+   "n": 41,
+   "lo": 8.0,
+   "hi": 20.0
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Herbicide, boom sprayer",
+   "u": "acre",
+   "a": 11.48,
+   "n": 42,
+   "lo": 6.75,
+   "hi": 40.0,
+   "k": "spray-ground"
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Herbicide, broadcast or banded (only)",
+   "u": "acre",
+   "a": 9.66,
+   "n": 8,
+   "lo": 6.75,
+   "hi": 11.5
+  },
+  {
+   "s": "Harvesting and combining (flat rate)",
+   "o": "Combining corn",
+   "u": "acre",
+   "a": 38.39,
+   "n": 46,
+   "lo": 26.0,
+   "hi": 76.0,
+   "k": "combine-corn"
+  },
+  {
+   "s": "Harvesting and combining (flat rate)",
+   "o": "Combining soybeans",
+   "u": "acre",
+   "a": 37.13,
+   "n": 46,
+   "lo": 26.0,
+   "hi": 55.0,
+   "k": "combine-soy"
+  },
+  {
+   "s": "Harvesting and combining (flat rate)",
+   "o": "Combining small grains from swath",
+   "u": "acre",
+   "a": 39.17,
+   "n": 6,
+   "lo": 32.0,
+   "hi": 46.0
+  },
+  {
+   "s": "Harvesting and combining (flat rate)",
+   "o": "Combining small grains, straight",
+   "u": "acre",
+   "a": 36.8,
+   "n": 30,
+   "lo": 26.0,
+   "hi": 46.0,
+   "k": "combine-smallgrain"
+  },
+  {
+   "s": "Harvesting and combining (flat rate)",
+   "o": "Harvest corn (combine, grain cart, haul local to farm)",
+   "u": "acre",
+   "a": 47.36,
+   "n": 14,
+   "lo": 35.0,
+   "hi": 65.0,
+   "k": "harvest-haul-corn"
+  },
+  {
+   "s": "Harvesting and combining (flat rate)",
+   "o": "Harvest soybeans (combine, grain cart, haul local to farm)",
+   "u": "acre",
+   "a": 47.07,
+   "n": 14,
+   "lo": 35.0,
+   "hi": 65.0,
+   "k": "harvest-haul-soy"
+  },
+  {
+   "s": "Harvesting and combining (flat rate)",
+   "o": "Harvest wheat (combine, grain cart, haul local to farm)",
+   "u": "acre",
+   "a": 46.5,
+   "n": 8,
+   "lo": 38.0,
+   "hi": 65.0
+  },
+  {
+   "s": "Harvesting and combining (flat rate)",
+   "o": "Corn stalks, large bales",
+   "u": "bale",
+   "a": 13.9,
+   "n": 5,
+   "lo": 10.5,
+   "hi": 17.0
+  },
+  {
+   "s": "Forage harvesting",
+   "o": "Mowing hay",
+   "u": "acre",
+   "a": 16.2,
+   "n": 10,
+   "lo": 13.0,
+   "hi": 22.0,
+   "k": "mow-hay"
+  },
+  {
+   "s": "Forage harvesting",
+   "o": "Mowing and conditioning hay",
+   "u": "acre",
+   "a": 15.42,
+   "n": 19,
+   "lo": 10.0,
+   "hi": 20.0,
+   "k": "mow-cond"
+  },
+  {
+   "s": "Forage harvesting",
+   "o": "Raking hay",
+   "u": "acre",
+   "a": 9.46,
+   "n": 12,
+   "lo": 4.0,
+   "hi": 16.0,
+   "k": "rake"
+  },
+  {
+   "s": "Forage harvesting",
+   "o": "Tedding hay",
+   "u": "acre",
+   "a": 10.57,
+   "n": 10,
+   "lo": 5.5,
+   "hi": 18.0,
+   "k": "ted"
+  },
+  {
+   "s": "Forage harvesting",
+   "o": "Windrowing hay",
+   "u": "acre",
+   "a": 12.58,
+   "n": 6,
+   "lo": 10.0,
+   "hi": 17.5
+  },
+  {
+   "s": "Forage harvesting",
+   "o": "Chopping only",
+   "u": "hour",
+   "a": 789.79,
+   "n": 7,
+   "lo": 300.0,
+   "hi": 1100.0
+  },
+  {
+   "s": "Forage harvesting",
+   "o": "Self-propelled chopper",
+   "u": "hour",
+   "a": 887.4,
+   "n": 5,
+   "lo": 707.0,
+   "hi": 1000.0
+  },
+  {
+   "s": "Forage harvesting",
+   "o": "Trucking, 1 man 1 truck",
+   "u": "hour",
+   "a": 132.74,
+   "n": 5,
+   "lo": 113.7,
+   "hi": 150.0
+  },
+  {
+   "s": "Crop hauling and trucking",
+   "o": "Hauling corn (average maximum one-way trip 22 miles)",
+   "u": "bushel",
+   "a": 0.17,
+   "n": 32,
+   "lo": 0.08,
+   "hi": 0.29,
+   "k": "haul-grain-bu"
+  },
+  {
+   "s": "Crop hauling and trucking",
+   "o": "Hauling soybeans (average maximum one-way trip 21.69 miles)",
+   "u": "bushel",
+   "a": 0.18,
+   "n": 27,
+   "lo": 0.1,
+   "hi": 0.29
+  },
+  {
+   "s": "Crop hauling and trucking",
+   "o": "Hauling wheat (average maximum one-way trip 20.83 miles)",
+   "u": "bushel",
+   "a": 0.18,
+   "n": 15,
+   "lo": 0.1,
+   "hi": 0.25
+  },
+  {
+   "s": "Crop hauling and trucking",
+   "o": "Extra charge per 10 miles over base mileage, corn",
+   "u": "bushel",
+   "a": 0.05,
+   "n": 6,
+   "lo": 0.02,
+   "hi": 0.1
+  },
+  {
+   "s": "Miscellaneous",
+   "o": "Corn drying",
+   "u": "bushel",
+   "a": 0.1,
+   "n": 6,
+   "lo": 0.02,
+   "hi": 0.2
+  },
+  {
+   "s": "Miscellaneous",
+   "o": "Corn drying",
+   "u": "point per bushel",
+   "a": 0.06,
+   "n": 8,
+   "lo": 0.04,
+   "hi": 0.07,
+   "k": "dry-corn-pt"
+  },
+  {
+   "s": "Miscellaneous",
+   "o": "Liquid manure applied by drag line",
+   "u": "1,000 gallon",
+   "a": 14.9,
+   "n": 10,
+   "lo": 10.0,
+   "hi": 30.0,
+   "k": "manure-dragline"
+  },
+  {
+   "s": "Miscellaneous",
+   "o": "Skid steer loader rental",
+   "u": "hour",
+   "a": 50.83,
+   "n": 6,
+   "lo": 35.0,
+   "hi": 85.0
+  }
+ ]
+}

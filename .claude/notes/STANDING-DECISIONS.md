@@ -124,3 +124,18 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - (Oct 17, Sig) No "Gifts" menu group for now.
 - (Oct 17, Sig) Farmland Atlas gets recorded farm sales (IL, WI) with unusually large sales noted; no buyer or seller names on indexed atlas pages.
 - (Oct 17, Sig) Daily briefing gets a second, stronger fact-check pass (newest strongest model) that can block the send. New daily-site-check.yml approved: once a day, runs the number check and staleness checks, keeps one GitHub issue "Daily site check" updated.
+- (Oct 17, Sig) PRF "this interval so far" (NCEI nClimGrid, RMA's source) approved to run daily at 14:23 UTC.
+- (Oct 17, Sig) Daily briefing fact check: Opus 5.5, report-only for a week (review Oct 24), then decide on block.
+- (Oct 17, Sig) Rain Print serials: No. 0000 is Sig's own test prints (?maker=1&serial=0, real QR); orders count from 1; No. 0001 is his wife's.
+- (Oct 17, Sig) The box letter carries a discount code for the next print; off until Sig sets the Stripe code (data/rain-print.json letter_offer).
+- (Oct 17, Sig) More email signups wherever a reader has a reason to want an email; every ask must have a real sender.
+- (Oct 17, Sig) Bid boards skipped on a pass count for 6 h after their last good read, everywhere (pages, ZIP search, homepage card).
+- (Oct 17, Sig) The bids repo is attached to Claude Code sessions; fixes there are fine to push (npm test first, author dnilgis).
+- (Oct 18, Sig) Rain Print: shipping damage or loss replaced free, same serial; phone 715-797-2428 on Rain Print and business pages;
+  email stays sig@farmers1st.com; paper is heavy textured cotton fine-art paper (no brand on the site; dye inks, no archival claim);
+  framed prints get a white mat (mats arrive Mon Oct 19); Stripe address field stays on; prices unchanged this Christmas; business
+  sample = order one at regular price, credited on 10+; footer Sponsor link hidden on Rain Print pages.
+- (Oct 18, Sig) Menu: full redesign approved (Prices | Livestock | Field | Money & Land | Daily, ZIP chip, signup footer, Bids by state
+  page). Phone bottom bar and footer state links deferred.
+- (Oct 18, Sig) Spend the expiring API credits: stories for PRF/Atlas/town/co-op pages, accuracy passes (top pages and every set),
+  elevator website classifier for bids coverage, tool FAQ gaps, first-time visitor read. Monthly story refreshes are OK.

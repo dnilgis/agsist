@@ -24,7 +24,7 @@
   // Component cache version. Bump on every chrome deploy so browsers fetch the
   // new header/footer; between deploys the files cache normally (no refetch /
   // no nav-flash on each page navigation).
-  var CV = '56'; // v56 2026-10-17: high-contrast menu button (forced-colors styles in header.html); v55 2026-10-17: Cash Bid Index in the menu and footer; v54 2026-10-16: Editorial standards in the footer; v53 2026-10-16: Fall anhydrous soil temp and Harvest now or wait in the menu and footer; v52 2026-10-16: Combine loss check and CCC loan calculator in the menu and footer; v51 2026-10-16: Sale barn prices in the menu and footer under Markets; v50 2026-10-16: Hay prices in the menu and footer under Markets; v49 2026-10-16: Nutrient removal value in the menu and footer, grain shrink separator in the no-script menu; v48 2026-10-16: Grain shrink in the menu and footer; v47 2026-10-15: Harvest price tracker named in full and moved to Markets, after Milk (Sig could not find it); v46 2026-10-15: LRP livestock price insurance in the menu and footer; v45 2026-10-15: Grain EMC in the menu and footer; v44 2026-10-14: Manure value and Fast Facts reference tables in the menu and footer; v43 2026-10-13: Rain by county in the menu and footer; v42 2026-10-13: Rain Print and the rain gauge page in the menu and footer; v41 2026-10-12: craft pass, service worker registers from loader.js; v40 2026-10-12: icons on Corn, Soybeans, Wheat, Cattle, Milk and the footer's last four links; v39 2026-10-11: signup-ask.js?v=6 (optional ZIP on Daily asks, one-time notice asks); v38 2026-10-11: menu label Harvest price; v37 2026-10-11: footer supporter strip hidden until a supporter is active, bottom-row Advertise link; v36 2026-10-10: the menu grouped by question, phone drawer folds each question; v35 2026-10-09: ARC or PLC short-answer pages; v34 2026-10-09: ARC or PLC link in the menu and footer; v33 2026-10-09: ARC/PLC calculator; v32 2026-10-09: plainer copy in shared components; v31 2026-10-09: signup wording, card tokens; v30 2026-10-09: one look, variable fonts; v29 2026-10-09: no-jump layout and loading states kit; v28 2026-10-09: menu shows Farmland Atlas once, footer keeps Cash Rent by State; v27 2026-10-09: instant pages, prerender-safe analytics, Updated stamps; v26 2026-10-09: header search button; v25 2026-10-09: em-dash cleanup and link fixes; v24 2026-10-08: footer sponsor pill no longer overlaps on phones; v23 2026-10-08: footer link columns fold into <details> on phones (closed at 700px and under)
+  var CV = '62'; // v62 2026-10-18: the full new menu (Prices | Livestock | Field | Money & Land | Daily, short noun subheads, ZIP chip "Bids near <town>", Free daily email button, phone panel with search, My place row, every group open, Rain Print card; footer band with the daily email and Rain Print line, columns Prices | Livestock | Field | Money & Land | Work with us | About; "Harvest tools moved to Field" note until Nov 1); v61 2026-10-18: menu fixes round 1 (search.js takes a ZIP, drops near me/price words, finds towns with no page; drawer focus trap, aria-modal, focus back to the menu button; aria-controls on dropdowns; footer column names are spans, not <h2> in <summary>; Pod counts, Drought monitor, Planting date, Field Scout and Urea loss risk in the menu; Rain Print for business in the footer; phone header theme switch moved into the menu); v60 2026-10-17: signup-ask.js?v=8 (passes data-after for PRF grid notices); v59 2026-10-17: signup-ask.js?v=7 (briefing box ticked on alert asks); v58 2026-10-17: Custom rates in the menu and footer under Money & Land; v57 2026-10-17: Rain on your field (radar) in the menu and footer under Crop & Field; v56 2026-10-17: high-contrast menu button (forced-colors styles in header.html); v55 2026-10-17: Cash Bid Index in the menu and footer; v54 2026-10-16: Editorial standards in the footer; v53 2026-10-16: Fall anhydrous soil temp and Harvest now or wait in the menu and footer; v52 2026-10-16: Combine loss check and CCC loan calculator in the menu and footer; v51 2026-10-16: Sale barn prices in the menu and footer under Markets; v50 2026-10-16: Hay prices in the menu and footer under Markets; v49 2026-10-16: Nutrient removal value in the menu and footer, grain shrink separator in the no-script menu; v48 2026-10-16: Grain shrink in the menu and footer; v47 2026-10-15: Harvest price tracker named in full and moved to Markets, after Milk (Sig could not find it); v46 2026-10-15: LRP livestock price insurance in the menu and footer; v45 2026-10-15: Grain EMC in the menu and footer; v44 2026-10-14: Manure value and Fast Facts reference tables in the menu and footer; v43 2026-10-13: Rain by county in the menu and footer; v42 2026-10-13: Rain Print and the rain gauge page in the menu and footer; v41 2026-10-12: craft pass, service worker registers from loader.js; v40 2026-10-12: icons on Corn, Soybeans, Wheat, Cattle, Milk and the footer's last four links; v39 2026-10-11: signup-ask.js?v=6 (optional ZIP on Daily asks, one-time notice asks); v38 2026-10-11: menu label Harvest price; v37 2026-10-11: footer supporter strip hidden until a supporter is active, bottom-row Advertise link; v36 2026-10-10: the menu grouped by question, phone drawer folds each question; v35 2026-10-09: ARC or PLC short-answer pages; v34 2026-10-09: ARC or PLC link in the menu and footer; v33 2026-10-09: ARC/PLC calculator; v32 2026-10-09: plainer copy in shared components; v31 2026-10-09: signup wording, card tokens; v30 2026-10-09: one look, variable fonts; v29 2026-10-09: no-jump layout and loading states kit; v28 2026-10-09: menu shows Farmland Atlas once, footer keeps Cash Rent by State; v27 2026-10-09: instant pages, prerender-safe analytics, Updated stamps; v26 2026-10-09: header search button; v25 2026-10-09: em-dash cleanup and link fixes; v24 2026-10-08: footer sponsor pill no longer overlaps on phones; v23 2026-10-08: footer link columns fold into <details> on phones (closed at 700px and under)
                  // v22 2026-09-19: the Farmland Atlas link restored to the Land group, drawer and footer (the 9/13 upload dropped it)
                  // v21 2026-09-13: Farmland Atlas link in the Land group of the header, the drawer and the footer
                  // v20 2026-09-05: sponsor-metrics.js loaded sitewide; footer sponsor card measured on the MRC rule
@@ -137,6 +137,11 @@
       // Set ARIA attributes on first load
       trigger.setAttribute('aria-haspopup', 'true');
       trigger.setAttribute('aria-expanded', 'false');
+      var panel = dd.querySelector('.nav-panel');
+      if (panel) {
+        if (!panel.id) panel.id = (dd.id || 'dd') + '-panel';
+        trigger.setAttribute('aria-controls', panel.id);
+      }
 
       trigger.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -150,9 +155,22 @@
         if (!wasOpen) {
           dd.classList.add('open');
           trigger.setAttribute('aria-expanded', 'true');
+          fitPanel(panel);
         }
       });
+      // A click inside an open panel (the signup box, the moved note) keeps it open.
+      if (panel) panel.addEventListener('click', function (e) { e.stopPropagation(); });
     });
+
+    // An open panel stays inside the window: wide three-column panels under
+    // the right-hand buttons would run off the edge on a laptop screen.
+    function fitPanel(panel) {
+      if (!panel) return;
+      panel.style.marginLeft = '';
+      var r = panel.getBoundingClientRect(), vw = document.documentElement.clientWidth || window.innerWidth;
+      var over = r.right - (vw - 16);
+      if (over > 0) panel.style.marginLeft = (-Math.min(over, Math.max(0, r.left - 16))) + 'px';
+    }
 
     document.addEventListener('click', function () {
       document.querySelectorAll('.nav-dd').forEach(function (d) {
@@ -184,7 +202,36 @@
     if (dr) {
       dr.setAttribute('aria-hidden', 'true');
       dr.setAttribute('inert', '');
+      dr.setAttribute('aria-modal', 'true');
     }
+
+    // Focus stays inside the open drawer (2026-10-18): Tab from the last
+    // control goes to the first, Shift+Tab from the first to the last. Links
+    // inside a folded question are skipped, as the browser skips them.
+    function drFocusables() {
+      if (!dr) return [];
+      return Array.prototype.filter.call(dr.querySelectorAll('a[href], button, summary, input, select, [tabindex]:not([tabindex="-1"])'), function (el) {
+        if (el.disabled) return false;
+        var d = el.closest('details');
+        if (d && !d.open && el.tagName !== 'SUMMARY') return false;
+        if (el.tagName === 'SUMMARY' && d && d.parentElement && d.parentElement.closest('details:not([open])')) return false;
+        return el.offsetParent !== null || el.getClientRects().length > 0;
+      });
+    }
+    if (dr) dr.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab' || !dr.classList.contains('open')) return;
+      var f = drFocusables();
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1], at = document.activeElement;
+      if (e.shiftKey && (at === first || !dr.contains(at))) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && (at === last || !dr.contains(at))) { e.preventDefault(); first.focus(); }
+    });
+    // A click or a focus that lands outside the open drawer comes back in.
+    document.addEventListener('focusin', function (e) {
+      if (!dr || !dr.classList.contains('open') || dr.contains(e.target)) return;
+      var f = drFocusables();
+      if (f.length) f[0].focus();
+    });
 
     function openDr() {
       if (dr) {
@@ -205,7 +252,8 @@
       document.documentElement.classList.add('drawer-open');
     }
 
-    function closeDr() {
+    function closeDr(leaveFocus) {
+      var wasOpen = !!(dr && dr.classList.contains('open'));
       if (dr) {
         dr.classList.remove('open');
         dr.setAttribute('aria-hidden', 'true');
@@ -219,28 +267,42 @@
       }
       document.body.style.overflow = '';
       document.documentElement.classList.remove('drawer-open');
+      // Hand focus back to the menu button, so a keyboard reader is where they were.
+      if (wasOpen && leaveFocus !== true && ham && ham.offsetParent !== null) ham.focus();
     }
 
     window.closeDr = closeDr;
 
     var sb = document.getElementById('srch-btn');
     if (sb) sb.addEventListener('click', openSearch);
+    // The phone panel's search box: close the panel first (its focus trap
+    // would pull focus back from the search sheet), then open the sheet.
+    var dsb = document.getElementById('draw-srch');
+    if (dsb) dsb.addEventListener('click', function () { closeDr(true); openSearch(); });
     if (ham) ham.addEventListener('click', openDr);
-    if (dc)  dc.addEventListener('click', closeDr);
-    if (ov)  ov.addEventListener('click', closeDr);
+    if (dc)  dc.addEventListener('click', function () { closeDr(); });
+    if (ov)  ov.addEventListener('click', function () { closeDr(); });
 
     // ── Active nav link highlight ─────────────────────────────────
-    var path = window.location.pathname.replace(/\/$/, '') || '/';
-    document.querySelectorAll('[data-nav-link], .nav-panel a, .drawer-link, .draw-item').forEach(function (a) {
-      var href = (a.getAttribute('href') || '').replace(/\/$/, '') || '/';
-      var active = (href === path) || (href !== '/' && path.startsWith(href));
-      if (active) {
-        a.classList.add('active'); a.setAttribute('aria-current', 'page');
-        // Drawer questions start folded; the one holding this page starts open.
-        var q = a.closest ? a.closest('details.draw-q') : null;
-        if (q) q.open = true;
-      }
+    // The page itself, else the longest menu link it sits under
+    // (/cash-bids/iowa/ames is under /cash-bids). A link counts only on a
+    // whole path part, so /rain does not light up on /rain-print.
+    var path = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+    var navLinks = document.querySelectorAll('[data-nav-link], .nav-panel a, .drawer-link, .draw-item');
+    var best = '';
+    navLinks.forEach(function (a) {
+      var href = (a.getAttribute('href') || '').split(/[?#]/)[0].replace(/\/$/, '') || '/';
+      if (href !== '/' && (href === path || path.indexOf(href + '/') === 0) && href.length > best.length) best = href;
     });
+    if (best) navLinks.forEach(function (a) {
+      var href = (a.getAttribute('href') || '').split(/[?#]/)[0].replace(/\/$/, '') || '/';
+      if (href === best) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
+    });
+
+    initPlace();
+    initMoved();
+    initEmailButton();
+    try { if (window.AgsistSignup && window.AgsistSignup.scan) window.AgsistSignup.scan(); } catch (e) {}
 
     // ── Keyboard: Escape closes drawer/dropdowns ──────────────────
     document.addEventListener('keydown', function (e) {
@@ -262,6 +324,166 @@
 
     // ── Call any page-level post-nav hook ─────────────────────────
     if (typeof window.onNavReady === 'function') window.onNavReady();
+  }
+
+  // ── Saved place: the ZIP chip and the phone panel's My place row (2026-10-18) ──
+  // Reads the keys the pages already use: agsist-wx-loc (geo.js: zip, state,
+  // county, lat, lon, label "Town, ST"), else agsist_user_zip (the harvest
+  // tools, futures pages), else agsist_zip (cash bids, the Daily box). Saving
+  // a ZIP here writes all three, the way geo.js saves a typed ZIP, so bids,
+  // rain, rent and the signup box pick it up. The town comes from the same
+  // ZIP lookup geo.js uses (Open-Meteo); nothing else is sent anywhere.
+  function byId(id) { return document.getElementById(id); }
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  var ST_CODE = { alabama: 'AL', alaska: 'AK', arizona: 'AZ', arkansas: 'AR', california: 'CA', colorado: 'CO', connecticut: 'CT', delaware: 'DE', 'district of columbia': 'DC', florida: 'FL', georgia: 'GA', hawaii: 'HI', idaho: 'ID', illinois: 'IL', indiana: 'IN', iowa: 'IA', kansas: 'KS', kentucky: 'KY', louisiana: 'LA', maine: 'ME', maryland: 'MD', massachusetts: 'MA', michigan: 'MI', minnesota: 'MN', mississippi: 'MS', missouri: 'MO', montana: 'MT', nebraska: 'NE', nevada: 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ', 'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC', 'north dakota': 'ND', ohio: 'OH', oklahoma: 'OK', oregon: 'OR', pennsylvania: 'PA', 'rhode island': 'RI', 'south carolina': 'SC', 'south dakota': 'SD', tennessee: 'TN', texas: 'TX', utah: 'UT', vermont: 'VT', virginia: 'VA', washington: 'WA', 'west virginia': 'WV', wisconsin: 'WI', wyoming: 'WY' };
+  // States with a /rent/<state> page (no Alaska, Hawaii or Rhode Island page).
+  var RENT_ST = {};
+  for (var stName in ST_CODE) if (!/^(alaska|hawaii|rhode island|district of columbia)$/.test(stName)) RENT_ST[ST_CODE[stName]] = stName.replace(/ /g, '-');
+  function readPlace() {
+    var o = null;
+    try { o = JSON.parse(lsGet('agsist-wx-loc') || 'null'); } catch (e) { o = null; }
+    if (o && /^\d{5}$/.test(String(o.zip || ''))) {
+      var town = String(o.label || '').split(',')[0].trim();
+      if (/\d/.test(town) || town.length > 28) town = '';
+      return { zip: String(o.zip), state: /^[A-Z]{2}$/.test(String(o.state || '')) ? o.state : '', town: town };
+    }
+    var z = String(lsGet('agsist_user_zip') || lsGet('agsist_zip') || '');
+    return /^\d{5}$/.test(z) ? { zip: z, state: '', town: '' } : null;
+  }
+  function paintPlace() {
+    var p = readPlace(), where = p ? (p.town || p.zip) : '';
+    var t = byId('zip-chip-t'), chip = byId('zip-chip');
+    if (t) t.textContent = p ? 'Bids near ' + where : 'Set your ZIP';
+    if (chip) chip.setAttribute('aria-label', p ? 'Bids near ' + (p.town ? p.town + ', ZIP ' + p.zip : 'ZIP ' + p.zip) + '. Change your ZIP' : 'Set your ZIP');
+    var bids = byId('dp-bids'), rent = byId('dp-rent'), dz = byId('dp-zip');
+    if (bids) bids.setAttribute('href', p ? '/cash-bids?zip=' + p.zip : '/cash-bids');
+    if (rent) rent.setAttribute('href', p && RENT_ST[p.state] ? '/rent/' + RENT_ST[p.state] + '#your-ground' : '/rent/');
+    if (dz) dz.textContent = p ? where + (p.town ? ' ' + p.zip : '') : 'no ZIP set';
+    var go = byId('zip-go'), links = byId('zip-links');
+    if (go) { go.setAttribute('href', p ? '/cash-bids?zip=' + p.zip : '/cash-bids'); go.textContent = p ? 'See bids near ' + where + ' →' : ''; }
+    if (links) links.hidden = !p;
+  }
+  function saveZip(z, done) {
+    var prior = null;
+    try { prior = JSON.parse(lsGet('agsist-wx-loc') || 'null'); } catch (e) { prior = null; }
+    fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + z + '&count=1&language=en&format=json&countryCode=US')
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) {
+        var r = d && d.results && d.results[0];
+        if (!r || typeof r.latitude !== 'number' || typeof r.longitude !== 'number') { done(false, 'none'); return; }
+        // As geo.js: Open-Meteo can give the ZIP as the name; then no town is printed rather than a wrong one.
+        var isZip = /^\d+$/.test(String(r.name || '').trim());
+        var st = ST_CODE[String(r.admin1 || '').trim().toLowerCase()] || '';
+        var city = isZip ? '' : String(r.name || '');
+        var rec = { lat: r.latitude, lon: r.longitude, label: city ? city + (st ? ', ' + st : '') : z, ts: Date.now(),
+                    zip: z, state: st, county: prior && prior.zip === z ? (prior.county || '') : '', zipTyped: true };
+        lsSet('agsist-wx-loc', JSON.stringify(rec));
+        lsSet('agsist_zip', z); lsSet('agsist_user_zip', z);
+        done(true);
+      })
+      .catch(function () { done(false, 'net'); });
+  }
+  function initPlace() {
+    paintPlace();
+    var chip = byId('zip-chip'), pop = byId('zip-pop'), f = byId('zip-f'), inp = byId('zip-in'), m = byId('zip-m'), clr = byId('zip-clear');
+    if (!chip || !pop || !f || !inp) return;
+    function open() {
+      document.querySelectorAll('.nav-dd.open').forEach(function (d) { d.classList.remove('open'); var t = d.querySelector('.nav-btn'); if (t) t.setAttribute('aria-expanded', 'false'); });
+      var p = readPlace();
+      inp.value = p ? p.zip : '';
+      if (m) m.textContent = '';
+      pop.hidden = false; chip.setAttribute('aria-expanded', 'true');
+      setTimeout(function () { inp.focus(); if (inp.select) inp.select(); }, 0);
+    }
+    function close(back) {
+      if (pop.hidden) return;
+      pop.hidden = true; chip.setAttribute('aria-expanded', 'false');
+      if (back) chip.focus();
+    }
+    chip.addEventListener('click', function (e) { e.stopPropagation(); if (pop.hidden) open(); else close(true); });
+    pop.addEventListener('click', function (e) { e.stopPropagation(); });
+    document.addEventListener('click', function () { close(false); });
+    document.querySelectorAll('.nav-btn').forEach(function (b) { b.addEventListener('click', function () { close(false); }); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pop.hidden) close(true); });
+    pop.addEventListener('focusout', function (e) { var to = e.relatedTarget; if (to && !pop.contains(to) && to !== chip) close(false); });
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var z = String(inp.value || '').replace(/\D/g, '');
+      if (!/^\d{5}$/.test(z)) { if (m) m.textContent = 'Type a 5-digit ZIP.'; inp.focus(); return; }
+      var p = readPlace();
+      if (p && p.zip === z && p.town) { lsSet('agsist_zip', z); lsSet('agsist_user_zip', z); paintPlace(); if (m) m.textContent = 'Saved: ' + p.town + ' ' + z + '.'; return; }
+      if (m) m.textContent = 'Looking up ' + z + '…';
+      saveZip(z, function (ok, why) {
+        if (!ok) { if (m) m.textContent = why === 'net' ? 'The ZIP lookup did not answer. Nothing was saved; try again in a minute.' : 'Couldn’t find ZIP ' + z + '. Check the number.'; return; }
+        paintPlace();
+        var q = readPlace();
+        if (m) m.textContent = 'Saved: ' + ((q && q.town) ? q.town + ' ' : '') + z + '. Bids, rain and rent pages start there.';
+      });
+    });
+    if (clr) clr.addEventListener('click', function () {
+      lsDel('agsist-wx-loc'); lsDel('agsist_zip'); lsDel('agsist_user_zip');
+      paintPlace(); inp.value = ''; if (m) m.textContent = 'Your ZIP is cleared from this browser.'; inp.focus();
+    });
+    window.addEventListener('storage', paintPlace);
+    window.addEventListener('focus', paintPlace);
+  }
+
+  // "Harvest tools moved to Field": a one-line note in the Money & Land menu
+  // for two weeks after the Oct 18 menu (until the data-until date, Central
+  // time), until the reader closes it.
+  function initMoved() {
+    var KEY = 'agsist_nav_moved_x', off = lsGet(KEY) === '1', now = Date.now();
+    var notes = document.querySelectorAll('[data-nav-moved]');
+    Array.prototype.forEach.call(notes, function (p) {
+      var end = Date.parse((p.getAttribute('data-until') || '2026-11-01') + 'T00:00:00-05:00');
+      if (off || !(now < end)) { p.hidden = true; return; }
+      p.hidden = false;
+      var x = p.querySelector('.nav-moved-x');
+      if (x) x.addEventListener('click', function () {
+        lsSet(KEY, '1');
+        var next = p.parentNode && p.parentNode.querySelector('a[href]');
+        Array.prototype.forEach.call(notes, function (q) { q.hidden = true; });
+        if (next) next.focus();
+      });
+    });
+  }
+
+  function signedUp() {
+    try { return lsGet('agsist_subscribed') === '1' || /(^|;\s*)agsist_subscribed=/.test(document.cookie); } catch (e) { return false; }
+  }
+  // Free daily email: opens the Daily panel at its signup box. A subscriber
+  // sees neither the button nor the menu's signup boxes.
+  function initEmailButton() {
+    if (signedUp()) {
+      document.querySelectorAll('#topnav [data-signup-hide], #drawer [data-signup-hide]').forEach(function (el) { el.hidden = true; });
+      return;
+    }
+    var b = byId('nav-email'), dd = byId('dd-daily');
+    if (!b || !dd) return;
+    b.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var t = dd.querySelector('.nav-btn');
+      if (!dd.classList.contains('open') && t) t.click();
+      setTimeout(function () { var inp = dd.querySelector('.nav-ask input[type="email"]'); if (inp) inp.focus(); }, 60);
+    });
+  }
+
+  // Rain Print pages hide the footer's /sponsor link in their own styles (no
+  // sponsor on those pages, Sig 2026-10-15). That rule is written against
+  // #site-footer, which holds the no-script footer until the live one replaces
+  // it, so it is read there first (pageHidesSponsor, before the swap); the
+  // live footer's sponsor links (Advertise, PRF sponsor: data-sponsor-link)
+  // and the supporter strip then go too.
+  function pageHidesSponsor() {
+    var a = document.querySelector('#site-footer a[href^="/sponsor"]');
+    try { return !!a && window.getComputedStyle(a).display === 'none'; } catch (e) { return false; }
+  }
+  function footerSponsorHide(hide) {
+    var foot = document.querySelector('footer.footer');
+    if (!foot || !hide) return;
+    foot.querySelectorAll('[data-sponsor-link], #footer-adspace').forEach(function (a) { a.style.setProperty('display', 'none', 'important'); });
   }
 
   // Footer Ad Space showcase. Live lifetime view counter (Cloudflare Worker + KV)
@@ -465,7 +687,11 @@
   document.addEventListener('DOMContentLoaded', function () {
     injectAnalytics();
     loadComponent('site-header', '/components/header.html', initNav);
-    loadComponent('site-footer', '/components/footer.html', function () { foldFooter(); renderSupporters(); });
+    var noSponsor = pageHidesSponsor();
+    loadComponent('site-footer', '/components/footer.html', function () {
+      foldFooter(); renderSupporters(); footerSponsorHide(noSponsor);
+      try { if (window.AgsistSignup && window.AgsistSignup.scan) window.AgsistSignup.scan(); } catch (e) {}
+    });
     fillPageRibbons();
     loadSponsorMetrics();
     (function () { if (!document.querySelector('link[href*="/components/states.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = BASE + '/components/states.css?v=2'; document.head.appendChild(l); } if (!window.AgStates && !document.querySelector('script[src*="/components/states.js"]')) { var j = document.createElement('script'); j.src = BASE + '/components/states.js?v=1'; j.async = true; document.head.appendChild(j); } })(); // loading, empty, error and stale states kit (components/states.css + states.js), on every page
@@ -725,7 +951,7 @@
 (function () {
   if (window.AgsistSignup || document.querySelector('script[src*="/components/signup-ask.js"]')) return;
   var s = document.createElement('script');
-  s.src = '/components/signup-ask.js?v=6';
+  s.src = '/components/signup-ask.js?v=8';
   s.async = true;
   (document.head || document.documentElement).appendChild(s);
 })();

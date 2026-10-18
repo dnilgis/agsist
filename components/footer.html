@@ -34,6 +34,10 @@
   /* css/home.css (under 900px) makes .footer-col a flex column and its links
      inline-flex; a flex <details> does not stack them, so the column is a
      block and each link a full row, which is how they rendered before. */
+  /* 2026-10-18: the column name is a span, not an <h2>: a heading inside
+     <summary> is read out oddly, and on wide screens it looked like a button.
+     Same look as the old .footer-col h2 in styles.css. */
+  .footer-col .footer-h{display:block;line-height:1.65;font-family:var(--font-mono);font-size:0.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);margin-bottom:.45rem;}
   footer details.footer-col{display:block;}
   footer details.footer-col > a{display:flex!important;}
   .footer summary{display:block;list-style:none;}
@@ -48,7 +52,7 @@
     footer.footer .footer-cols{display:block!important;columns:auto;gap:0;padding-bottom:0;margin-bottom:0;}
     footer details.footer-col{display:block;margin:0;border-bottom:1px solid var(--border);}
     footer details.footer-col > summary{display:flex;align-items:center;justify-content:space-between;min-height:44px;cursor:pointer;}
-    footer details.footer-col > summary h2{margin:0;color:var(--text-dim);}
+    footer details.footer-col > summary .footer-h{margin:0;color:var(--text-dim);}
     footer details.footer-col > summary::after{content:'';width:.5rem;height:.5rem;margin-right:.3rem;border-right:2px solid var(--text-dim);border-bottom:2px solid var(--text-dim);transform:translateY(-25%) rotate(45deg);transition:transform .15s;}
     footer details.footer-col[open] > summary::after{transform:translateY(25%) rotate(-135deg);}
     footer details.footer-col > summary:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
@@ -59,6 +63,19 @@
     .footer .footer-legal{justify-content:center;row-gap:0;}
   }
   @media (prefers-reduced-motion:reduce){footer details.footer-col > summary::after{transition:none;}}
+  /* 2026-10-18 footer: a top band (the daily email, email + optional ZIP, and one Rain Print line),
+     then Prices | Livestock | Field | Money & Land | Work with us | About. */
+  .footer-band{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:.6rem 2rem;align-items:start;padding:1rem 0 1.2rem;margin-bottom:1.1rem;border-bottom:1px solid var(--border)}
+  .footer-band-ask .sa-ask{margin:0}
+  .footer-band-side p{margin:.2rem 0 .5rem;font-size:.86rem;line-height:1.5}
+  .footer-band-side a{color:var(--text-dim);text-decoration:none}
+  .footer-band-side a:hover{color:var(--brand)}
+  .footer-band-rp a{color:var(--text)}
+  .footer-band-rp b{color:var(--brand)}
+  .footer-band-daily .footer-sep{margin:0 .45rem;color:var(--text-muted)}
+  footer.footer .footer-cols{grid-template-columns:repeat(6,minmax(0,1fr))}
+  @media (max-width:1100px){footer.footer .footer-cols{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media (max-width:700px){.footer-band{grid-template-columns:1fr;padding:.6rem 0 .8rem;margin-bottom:.4rem}}
 </style>
 <footer class="footer">
   <div class="footer-inner">
@@ -77,87 +94,103 @@
       </div>
       <div class="footer-status"><span class="status-dot"></span><span>Data refreshed through the trading session</span></div>
     </div>
+    <div class="footer-band">
+      <div class="footer-band-ask"><div data-signup-ask="AGSIST Daily: the markets and your top local bid, free, every weekday morning" data-source="footer"></div></div>
+      <div class="footer-band-side">
+        <p class="footer-band-daily"><a href="/daily">Today&rsquo;s briefing</a><span class="footer-sep">&middot;</span><a href="/news">The Wire</a><span class="footer-sep">&middot;</span><a href="/archive">Archive</a></p>
+        <p class="footer-band-rp"><a href="/rain-print"><b>Rain Print:</b> your farm&rsquo;s year of rain, framed &rarr;</a></p>
+      </div>
+    </div>
     <div class="footer-cols">
       <details class="footer-col" open>
-        <summary><h2>Markets</h2></summary>
+        <summary><span class="footer-h">Prices</span></summary>
         <a href="/cash-bids"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Cash bids near me</a>
-        <a href="/cash-bid-index"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Cash Bid Index (monthly)</a>
+        <a href="/cash-bids/states"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Bids by state</a>
+        <a href="/basis"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Basis vs normal</a>
+        <a href="/cash-bid-index"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Cash Bid Index</a>
+        <a href="/fertilizer"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-leaf"/></svg>Fertilizer prices</a>
         <a href="/corn-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-corn"/></svg>Corn</a>
         <a href="/soybean-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bean"/></svg>Soybeans</a>
         <a href="/wheat-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wheat"/></svg>Wheat</a>
-        <a href="/cattle-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-beef"/></svg>Cattle</a>
-        <a href="/milk-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-milk"/></svg>Milk</a>
-        <a href="/hay-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Hay prices</a>
-        <a href="/cattle-auction-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Sale barn prices</a>
         <a href="/harvest-price-tracker"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trending-up"/></svg>Harvest price tracker</a>
-        <a href="/basis"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Basis: your state, vs normal</a>
         <a href="/markets"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-candlestick"/></svg>All markets</a>
-        <a href="/usda-calendar"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg>USDA report calendar</a>
-        <a href="/whats-priced-in"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-dices"/></svg>What&rsquo;s priced in (trade vs USDA, graded)</a>
-        <a href="/usda-quick-stats"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-database"/></svg>USDA crop data by state</a>
-        <a href="/cot"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Fund positioning (COT)</a>
+        <a href="/usda-calendar"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg>USDA calendar</a>
+        <a href="/whats-priced-in"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-dices"/></svg>What&rsquo;s priced in</a>
+        <a href="/conditions"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Crop progress</a>
+        <a href="/conditions-yield"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg>Crop size</a>
+        <a href="/crop-tour"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Crop tour</a>
+        <a href="/cot"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Fund positions (COT)</a>
         <a href="/tariffs"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-landmark"/></svg>Tariffs and trade</a>
+        <a href="/usda-quick-stats"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-database"/></svg>USDA crop data by state</a>
+        <a href="/scorecard"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clipboard-check"/></svg>Prediction bot</a>
         <a href="/elevators"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>For elevators</a>
       </details>
       <details class="footer-col" open>
-        <summary><h2>Crop &amp; Field</h2></summary>
-        <a href="/crop-tour"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Crop tour</a>
-        <a href="/conditions-yield"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg>2026 crop size: every forecast</a>
-        <a href="/conditions"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Crop ratings and harvest progress</a>
-        <a href="/yield-estimator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-package"/></svg>Yield estimator</a>
-        <a href="/hail-map"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-hail"/></svg>Hail map</a>
-        <a href="/rain-print"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain Print: a year of rain, printed</a>
-        <a href="/rain"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Rain by county</a>
-        <a href="/rain-gauge"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-test-tube"/></svg>Rain gauge (in the works)</a>
-        <a href="/spray"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-spray-can"/></svg>Spray advisory</a>
-        <a href="/gdu-calculator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-thermometer"/></svg>GDU calculator</a>
-        <a href="/fertilizer"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-leaf"/></svg>Fertilizer prices</a>
-        <a href="/fall-nitrogen"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-leaf"/></svg>Fall anhydrous soil temp</a>
+        <summary><span class="footer-h">Livestock</span></summary>
+        <a href="/cattle-auction-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-beef"/></svg>Sale barn prices</a>
+        <a href="/cattle-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-candlestick"/></svg>Cattle futures</a>
+        <a href="/milk-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-milk"/></svg>Milk</a>
+        <a href="/hay-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Hay</a>
+        <a href="/lrp"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>LRP</a>
+        <a href="/prf"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>PRF</a>
         <a href="/manure-value"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Manure value</a>
-        <a href="/nutrient-removal"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Nutrient removal value</a>
-        <a href="/tools"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calculator"/></svg>All tools</a>
-        <a href="/pod-counts"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg>Pod counts vs yield</a>
         <a href="/drought-monitor"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Drought monitor</a>
-        <a href="/urea"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flask-conical"/></svg>Urea loss risk</a>
-        <a href="/field-scout"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-satellite"/></svg>Field Scout</a>
+      </details>
+      <details class="footer-col" open>
+        <summary><span class="footer-h">Field</span></summary>
+        <a href="/rain-radar"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain on your field</a>
+        <a href="/rain"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Rain by county</a>
+        <a href="/hail-map"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-hail"/></svg>Hail map</a>
+        <a href="/spray"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-spray-can"/></svg>Spray advisory</a>
+        <a href="/fall-nitrogen"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-thermometer"/></svg>Soil temp (fall anhydrous)</a>
+        <a href="/rain-print"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain Print</a>
+        <a href="/rain-gauge"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-test-tube"/></svg>Rain gauge waitlist</a>
+        <a href="/gdu-calculator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-thermometer"/></svg>GDU</a>
         <a href="/planting-date"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar-days"/></svg>Planting date</a>
+        <a href="/urea"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flask-conical"/></svg>Urea loss</a>
+        <a href="/nutrient-removal"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Nutrient removal</a>
+        <a href="/field-scout"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-satellite"/></svg>Field Scout</a>
+        <a href="/yield-estimator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-package"/></svg>Yield estimator</a>
+        <a href="/pod-counts"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg>Pod counts</a>
+        <a href="/harvest-or-wait"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tractor"/></svg>Harvest now or wait</a>
+        <a href="/grain-emc"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-thermometer"/></svg>Grain drying (EMC)</a>
+        <a href="/grain-shrink"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Grain shrink</a>
+        <a href="/grain-bin-calculator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Bin calculator</a>
+        <a href="/combine-loss"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tractor"/></svg>Combine loss</a>
+        <a href="/tools"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calculator"/></svg>All tools</a>
         <a href="/fast-facts"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book-open"/></svg>Fast Facts reference tables</a>
       </details>
       <details class="footer-col" open>
-        <summary><h2>Money &amp; Land</h2></summary>
-        <a href="/store-or-sell"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Sell now or store?</a>
-        <a href="/breakeven"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scale"/></svg>Break-even</a>
-        <a href="/grain-bin-calculator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Grain bin calculator</a>
-        <a href="/grain-emc"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-thermometer"/></svg>Grain EMC: fans on or off</a>
-        <a href="/grain-shrink"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Grain shrink: wet or too dry</a>
-        <a href="/harvest-or-wait"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Harvest now or wait</a>
-        <a href="/combine-loss"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Combine loss check</a>
-        <a href="/commodity-loan"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>CCC loan calculator</a>
-        <a href="/rent/"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Cash rent by state and county</a>
+        <summary><span class="footer-h">Money &amp; Land</span></summary>
+        <a href="/rent/"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Cash rent</a>
         <a href="/farmland-atlas"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Farmland Atlas</a>
+        <a href="/custom-rates"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Custom rates</a>
+        <a href="/cash-lease"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scroll-text"/></svg>Lease form</a>
         <a href="/arc-plc"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calculator"/></svg>ARC or PLC</a>
-        <a href="/prf"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>PRF pasture insurance</a>
-        <a href="/lrp"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-beef"/></svg>LRP livestock price insurance</a>
+        <a href="/prf"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>PRF</a>
+        <a href="/lrp"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-beef"/></svg>LRP</a>
         <a href="/farm-bill"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scroll-text"/></svg>Farm bill</a>
-        <a href="/cash-lease"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scroll-text"/></svg>Cash lease form</a>
+        <a href="/store-or-sell"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Sell or store</a>
+        <a href="/breakeven"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scale"/></svg>Break-even</a>
+        <a href="/commodity-loan"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>CCC loan</a>
         <a href="/foreign-land"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-landmark"/></svg>Foreign-owned land</a>
       </details>
       <details class="footer-col" open>
-        <summary><h2>Daily</h2></summary>
-        <a href="/daily"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-newspaper"/></svg>AGSIST Daily</a>
-        <a href="/news"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-newspaper"/></svg>The Wire</a>
-        <a href="/archive"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-archive"/></svg>Briefing archive</a>
-        <a href="/scorecard"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clipboard-check"/></svg>Prediction bot</a>
+        <summary><span class="footer-h">Work with us</span></summary>
+        <a href="/sponsor" data-sponsor-link onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'footer_work'})"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Advertise</a>
+        <a href="/rain-print-business"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain Print for business</a>
+        <a href="/prf-sponsor" data-sponsor-link><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>PRF sponsor</a>
+        <a href="/rain-gauge"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-test-tube"/></svg>Rain gauge waitlist</a>
+        <a href="/developer"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-terminal"/></svg>Embeds</a>
       </details>
       <details class="footer-col" open>
-        <summary><h2>AGSIST</h2></summary>
+        <summary><span class="footer-h">About</span></summary>
         <a href="/about"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book-open"/></svg>About</a>
         <a href="/editorial-standards"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book-open"/></svg>Editorial standards</a>
-        <a href="/contact"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg>Contact</a>
         <a href="/data-sources"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>Data sources</a>
-        <a href="/status"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>System status</a>
+        <a href="/contact"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg>Contact</a>
+        <a href="/status"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>Status</a>
         <a href="/changelog"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scroll-text"/></svg>What&rsquo;s new</a>
-        <a href="/developer"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-terminal"/></svg>Embeds and data feeds</a>
       </details>
     </div>
 
@@ -172,7 +205,6 @@
     <div class="footer-bottom">
       <div class="footer-legal">
         <span>© 2026 AGSIST</span><span class="footer-sep">·</span>
-        <a href="/sponsor" onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'footer_legal'})">Advertise</a><span class="footer-sep">·</span>
         <a href="/privacy">Privacy</a><span class="footer-sep">·</span>
         <a href="/accessibility">Accessibility</a><span class="footer-sep">·</span>
         <a href="/terms">Terms</a>

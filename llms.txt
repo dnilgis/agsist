@@ -84,6 +84,7 @@ specific page. Each daily briefing has a permanent dated URL.
 - [Break-Even Calculator](https://agsist.com/breakeven): cost per bushel and profit per acre, with what-if tables
 - [Harvest Price Tracker](https://agsist.com/harvest-price-tracker): the RMA projected and harvest prices that set Revenue Protection guarantees, what your guarantee is worth, and how many bushels you can safely pre-sell
 - [Grain Bin Calculator](https://agsist.com/grain-bin-calculator): bushels in a bin and moisture shrink
+- [Rain on Your Field (Radar)](https://agsist.com/rain-radar): rain in the last 24 hours, 3 days, 7 days and this month at any spot in the lower 48, from NOAA MRMS radar corrected with rain gauges, updated four times a day; checked against 1,175 NOAA co-op gauges
 - [Grain EMC Calculator](https://agsist.com/grain-emc): when to run aeration fans for corn, soybeans or wheat: drying wet grain (against its own moisture), cooling (outside air 10 F or more under the grain) or holding dry grain, hour by hour for 3 days at your ZIP; printable corn, soybean and wheat EMC charts from published equations
 - [Grain Shrink Calculator](https://agsist.com/grain-shrink): what wet corn, soybeans, wheat or sorghum nets after the elevator's shrink and drying charges, and the bushels and dollars given away delivering below base moisture (soybeans under 13%); at your bid, a ZIP's nearest posted bid, or a labeled state estimate
 - [Harvest now or wait](https://agsist.com/harvest-or-wait): Corn drying cost now vs after field drydown, against the field loss you expect; break-even loss when you do not know it
@@ -96,6 +97,7 @@ specific page. Each daily briefing has a permanent dated URL.
 
 ## My ground and programs
 
+- [Custom Farm Rates by State](https://agsist.com/custom-rates): what hired combining, planting, spraying, tillage, hauling and baling cost, as each state's university or state survey published it (average, range, unit, survey year, link): Iowa, Kansas, Nebraska, North Dakota, Wisconsin, Indiana, Ohio, Missouri, Oklahoma; one page per state at /custom-rates/<state>
 - [Cash Rent by State](https://agsist.com/rent/): USDA county cash rent for every published state, one page per state at /rent/<state>
 - [Farmland Atlas](https://agsist.com/farmland-atlas): every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>
 - [Compare Counties](https://agsist.com/farmland-atlas/compare): up to three counties side by side
@@ -121,6 +123,7 @@ specific page. Each daily briefing has a permanent dated URL.
 ## About this site
 
 - [Data Sources](https://agsist.com/data-sources): where every number comes from
+- [Farm Market Glossary](https://agsist.com/glossary): plain definitions of basis, cash bid, futures, settle, nearby, carry, WASDE, ending stocks, managed money, NASS, RMA, FSA, CRP, cwt, shrink and other words the site uses
 - [Status](https://agsist.com/status): whether each data feed is current right now
 - [Embed Tools and Data Feeds](https://agsist.com/developer): embeddable GDU and ARC or PLC widgets, and the open JSON feeds
 - [Changelog](https://agsist.com/changelog): dated list of site changes

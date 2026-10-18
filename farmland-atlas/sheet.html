@@ -219,7 +219,7 @@ function nextDoor(){
   var c=A.counties[F], nb=(NB[F]||[]).filter(function(g){return A.counties[g];});
   if(!nb.length) return '<p class="note">This county shares no border with another county on the map.</p>';
   var rows=[F].concat(nb.sort(function(a,b){ var x=A.counties[a], y=A.counties[b]; return (x.state+x.name)<(y.state+y.name)?-1:1; }));
-  var cols=[['Dry rent','nonirr',M.rent,money],['Irr. rent','irr',M.irr,money],['Land value',null,M.value,money],['Corn yield',null,M.yld,f1],['Claims per $100',null,M.cost,usd2]]
+  var cols=[['Dry rent','nonirr',M.rent,money],['Irr. rent','irr',M.irr,money],['Land value',null,M.value,money],['Corn yield, median',null,M.yld,f1],['Claims per $100',null,M.cost,usd2]]
     .filter(function(k){ return rows.some(function(f){ var v=k[2](A.counties[f]); return v!=null&&!isNaN(v); }); });
   var yr=function(k,g){ return k[1]?get(g,'rent',k[1],'year'):null; };
   var h='<table><thead><tr><th>County</th>'+cols.map(function(k){return '<th>'+esc(k[0])+'</th>';}).join('')+'</tr></thead><tbody>';

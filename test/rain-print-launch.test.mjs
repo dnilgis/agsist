@@ -57,7 +57,7 @@ test("one name for the $19 product, curly apostrophes in FAQ titles, no 'made-up
   const G = readFileSync(ROOT + "gifts-for-farmers.html", "utf8"), P = readFileSync(ROOT + "components/rain-print-promo.js", "utf8"), C = readFileSync(ROOT + "rp-gift.html", "utf8");
   assert.match(G, /<li>Digital file <b>\$<span data-gf-price="digital">/);
   for (const [n, t] of [["rain-print", HTML], ["gifts", G], ["gift card", C]]) assert.ok(!/print files?\b[^.]{0,40}\$19|Print file <b>|print file of the whole year|A print file is/.test(t), n + ": the $19 product is the Digital file");
-  assert.match(HTML, /<li>A PNG and a PDF, 12 x 18 in at 300 dpi, no watermark<\/li>/, "the file says its types (2026-10-15)");
+  assert.match(HTML, /<li>A PNG and a PDF of the picture alone, 12 x 18 in at 300 dpi, no watermark; it fits a 12 x 18 frame<\/li>/, "the file says its types (2026-10-15)");
   const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   const faq = ld["@graph"].find((g) => g["@type"] === "FAQPage").mainEntity.map((q) => q.name);
   const shown = [...HTML.matchAll(/<details><summary>([^<]*)<\/summary>/g)].map((m) => m[1].replace(/&rsquo;/g, "\u2019").replace(/&ldquo;/g, "\u201c").replace(/&rdquo;/g, "\u201d"));
@@ -212,7 +212,8 @@ test("the print names the gauge and distance, and counts gaps only past 3 missin
 test("R2: no unexplained dots at the ground line; R1 says what light blue is", () => {
   const days = year(2025, (i) => (i % 5 === 1 ? { p: "T" } : i < 60 && i % 9 === 0 ? { s: 4 } : {}));
   assert.ok(!/r="1\.3"/.test(ART.render(input(days, { style: "r2" }))), "trace dots are gone");
-  assert.ok(texts(ART.render(input(days, { style: "r1" }))).some((x) => /light blue: snow/.test(x.t)));
+  // (Staircase A2 clean, 2026-10-17: the foot line's snow total says it, "the light blue steps")
+  assert.ok(texts(ART.render(input(days, { style: "r1" }))).some((x) => /the light blue steps/.test(x.t)));
 });
 
 test("two records on one day print as one label", () => {
@@ -268,11 +269,12 @@ test("the page head: unique title, real prices, FAQ and breadcrumb, a Rain Print
   const types = ld["@graph"].map((g) => g["@type"]);
   for (const t of ["Product", "FAQPage", "BreadcrumbList"]) assert.ok(types.includes(t), t);
   const prod = ld["@graph"].find((g) => g["@type"] === "Product");
-  // the share card first (with the ?v=<hash> scripts/build_share_images.py gives it, the same URL as og:image),
+  // Sig's photo of a real framed print first (2026-10-18, test/rain-print-photos.test.mjs), then the share card
+  // (with the ?v=<hash> scripts/build_share_images.py gives it, the same URL as og:image),
   // then the two example prints drawn from real NOAA years (test/rain-print-examples.test.mjs)
   const og = HTML.match(/property="og:image"\s+content="([^"]+)"/)[1];
   assert.match(og, /^https:\/\/agsist\.com\/img\/og\/rain-print\.jpg\?v=[0-9a-f]{8}$/);
-  assert.deepEqual(prod.image, [og, "https://agsist.com/img/rain-print-example-2012-ames-ia.jpg", "https://agsist.com/img/rain-print-example-1993-des-moines-ia.jpg"]);
+  assert.deepEqual(prod.image, ["https://agsist.com/img/photos/rain-print-photo-chetek-2025-1600.jpg", og, "https://agsist.com/img/rain-print-example-2012-ames-ia.jpg", "https://agsist.com/img/rain-print-example-1993-des-moines-ia.jpg"]);
   assert.deepEqual(prod.offers.map((o) => o.price), [String(J.digital), String(J.print12x18), String(J.framed12x18)]);
   assert.ok(!prod.aggregateRating && !prod.review, "no made-up ratings");
   for (const k of ['property="og:image"', 'name="twitter:image"']) assert.match(HTML, new RegExp(k + "\\s+content=\"https://agsist.com/img/og/rain-print.jpg\\?v=[0-9a-f]{8}\""));
@@ -295,7 +297,8 @@ test("Rain Print and the rain gauge list are in the menus and footer at launch (
     assert.ok(/href="\/rain-gauge"/.test(t), f + " links the rain gauge page");
   }
   const h = readFileSync(ROOT + "components/header.html", "utf8");
-  assert.equal((h.match(/href="\/rain-print"/g) || []).length, 2, "the desktop menu and the phone drawer, once each");
+  // 2026-10-18 menu: Field > Weather on desktop and in the phone panel, plus the phone panel's Rain Print card
+  assert.equal((h.match(/href="\/rain-print"/g) || []).length, 3, "desktop menu once; phone panel: Field and the Rain Print card");
   assert.ok(/<symbol id="i-cloud-rain"/.test(h) && /<symbol id="i-test-tube"/.test(h), "their icons are in the sprite");
 });
 
@@ -344,7 +347,8 @@ test("the proof view and the order summary are on the page", () => {
   assert.match(S, /workers\.dev\/where', \{ credentials: 'omit' \}/, "from the worker's /where, no cookies");
   assert.match(S, /if \(!mine\(\)\) runSample\(\)/, "no answer: the sample, never over a town the reader typed");
   // 2026-10-14 (Sig): example words are gray hints only, shown on a new visit's print at the top and never in the design
-  assert.match(S, /if \(!ST\.place\) \{ ST\.cmp = 'normal'; ST\.normals = true; ST\.records = true; SHOW_EX = !PAID; \}/, "a new visit: empty boxes, remarkable days on (Sig, 2026-10-15)");
+  // and from 2026-10-17 (Sig) the frost marks and the hottest and coldest day are on for a new visit too
+  assert.match(S, /if \(!ST\.place\) \{ ST\.cmp = 'normal'; ST\.normals = true; ST\.records = true; ST\.frost = true; ST\.heat = true; SHOW_EX = !PAID; \}/, "a new visit: empty boxes, remarkable days, frost and the hottest and coldest day on (Sig, 2026-10-15 and 10-17)");
   assert.ok(!/withExample|exampleLeft|clearExample|EX_OK/.test(S), "no example guard, no bounce, no Clear the example");
   assert.match(S, /name: ex \? EXAMPLE\.name : ST\.name/, "the example is drawn only where asked (the preview at the top)");
   assert.match(S, /PROOF_VIEW = PICK === 'framed12x18' \? 'framed' : 'print';/, "the sheet shows what step 3 picked");
@@ -418,21 +422,22 @@ test("prints ship flat between chipboard, never rolled; the framed one has a whi
   assert.doesNotMatch(HTML, /no mat|trim it to size|a little bigger than 12 x 18/);
   assert.ok(!/stock frame/.test(HTML), "a black frame, not a 'stock' one (2026-10-15)");
   // the box picture is a render of an older layout: it says so, and it keeps its shape
-  assert.match(HTML, /<figcaption>Mockup of a framed print\. Photos of real prints coming soon\.<\/figcaption>/);
+  assert.match(HTML, /<figcaption>Mockup of a framed print\. Photos with the white mat coming soon\.<\/figcaption>/);
+  assert.ok(!/Photos of real prints coming soon/.test(HTML), "the promise of photos is gone (Sig, 2026-10-18)");
   assert.match(HTML, /\.rp-onwall img\{display:block;width:100%;height:auto\}/);
 });
 
-test("refund and reprint wording: Sig's terms, $15 to reprint a lost or damaged print", () => {
+test("refund and reprint wording: Sig's terms, a lost or damaged print replaced free (Sig, 2026-10-18; was $15)", () => {
   const faq = HTML.match(/<details><summary>What if something[\s\S]*?<\/details>/)[0];
   assert.match(faq, /refund you in full/);
   assert.match(faq, /reprint it free/, "a print that differs from the OK'd proof is Sig's error: free");
   // 2026-10-14 (panel 3, T3): a photo for damage only; a lost parcel is a tracking matter
-  assert.match(faq, /If it arrives damaged, glass included, send a photo\. If tracking shows it lost, write to me\. Either way I&rsquo;ll reprint or reframe it for \$15, with the same serial number/);
-  assert.ok(!/damaged[^.]*reprint it free/.test(faq), "damage is no longer reprinted free");
-  assert.equal(J.reprint_fee, 15, "Sig set $15 (2026-10-14)");
+  assert.match(faq, /If it arrives damaged, glass included, send a photo\. If tracking shows it lost, write to me\. Either way I&rsquo;ll reprint or reframe it free, with the same serial number/);
+  assert.ok(!/\$15|reframe it for \$/.test(HTML), "no fee for a lost or damaged print anywhere on the page");
+  assert.equal(J.reprint_fee, undefined, "no fee in the data file (Sig, 2026-10-18)");
   assert.ok(!/small fee/.test(HTML), "the amount, not 'a small fee'");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(S, /typeof j\.reprint_fee === 'number' && j\.reprint_fee > 0\) \{[\s\S]{0,600}function \(\) \{ return 'reframe it for ' \+ money\(j\.reprint_fee\) \+ ', with'; \}/);
+  assert.ok(!/reprint_fee/.test(S), "the script no longer rewrites a fee into the FAQ");
   assert.match(J.gift_delivery, /^A \{year\} print ships in January \{next\}/);
 });
 
@@ -501,7 +506,7 @@ test("one promise for the digital file and the gift card: within 1 business day"
 
 test("station words are honest and the same everywhere", () => {
   assert.match(HTML, /<option value="">Nearest with a good record<\/option>/);
-  assert.match(HTML, /<p class="rp-lede">Type a town and a year, and I draw every rain and snow the nearest weather station caught\. A gift for a farmer, or for the year you married or a child was born\. Drawing it is free\.<\/p>/);
+  assert.match(HTML, /<p class="rp-lede">A framed print of the farm&rsquo;s year of rain, from the gauge nearest it\. Type a town and a year, and I draw every rain and snow the nearest weather station caught\. A gift for a farmer, or for the year you married or a child was born\. Drawing it is free\.<\/p>/);
   assert.match(HTML, /A morning reading is filed under the day it was read/);
   assert.ok(!/Rain gauge/.test(S2), "the page says Weather station, not Rain gauge");
   assert.match(S2, /'Weather station: ' \+ gaugeHtml\(m\)/);
@@ -553,13 +558,13 @@ test("type, keyboard and screen reader fixes", () => {
 
 test("copy batch: size, proof, business words", () => {
   // the size and "hung sideways" moved from the up-close paragraph to the FAQ (2026-10-14); the up-close view keeps the size
-  assert.match(HTML, /It&rsquo;s printed on 13 x 19 inch matte paper, hung sideways,/);
+  assert.match(HTML, /It&rsquo;s printed on 13 x 19 inch heavy, textured cotton fine-art paper, hung sideways,/);
   assert.match(HTML, /On the paper the picture is 16\.5 x 11 in, on a 13 x 19 sheet\./);
   // the maker's note is one plain line (2026-10-15, Sig: the quote was "a bit much"); the byline stays on the page
   assert.match(HTML, /<p class="rp-p rp-sig">I print each one myself in Chetek, Wisconsin, and send you a proof first\. Sig<\/p>/);
   assert.ok(!/<blockquote>|crop adviser in Chetek/.test(HTML), "no big quote");
   assert.match(HTML, /<p class="rp-byline">By <a href="\/about">Sigurd Lindquist<\/a>, CCA<\/p>/);
-  assert.match(HTML, /<p>Yes\. At checkout, give their name, your note and their address\. I ship the print with your note printed at the top of the letter in the box, at no charge\./, "the gift FAQ says what the page does now (no separate card, Sig 2026-10-17)");
+  assert.match(HTML, /<p>Yes\. Before you pay, tick This is a gift and give their name, your note and their address\. I ship the print with your note printed at the top of the letter in the box, at no charge\./, "the gift FAQ says what the page does now (no separate card, Sig 2026-10-17)");
   assert.ok(!/above the prices|price card/.test(HTML), "no FAQ points at the old price cards");
   assert.match(HTML, /Once you OK the proof sheet, I print them/);
   assert.match(S2, /'Rain Print order'/);

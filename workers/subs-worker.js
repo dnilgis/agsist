@@ -5,6 +5,36 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.29 (2026-10-17): PRF GRID INDEX NOTICE. /notice takes one more topic,
+ *   prf:<grid id> (an email each time USDA RMA posts a final PRF index for a
+ *   pair of months on that grid, from /prf and the PRF county pages). The id
+ *   is a whole number, no leading zero, 6196 to 34941, on RMA's quarter-degree
+ *   lattice over the 48 states (row 20 to 116, column 21 to 251 of 300).
+ *   This topic recurs, so it keeps two more fields:
+ *     after  "YYYY-II" (II = 01 Jan-Feb .. 11 Nov-Dec), the newest final
+ *            interval the page showed when the reader asked; optional, kept
+ *            from the first ask only;
+ *     iv     the newest interval mailed (or skipped as already out),
+ *            written by POST /notice-mark {email, topic, interval, quiet?}.
+ *            A prf topic needs interval there; iv never moves back. quiet:true
+ *            records iv without setting sent (nothing was mailed).
+ *   /notice-list returns after and iv on the rows that have them.
+ *   scripts/send_prf_notice.py mails it from prf.yml. Every other topic and
+ *   route answers exactly as before. No new binding and no new secret.
+ * v5.28 (2026-10-17): RAIN YEAR NOTICE. /notice takes one more topic,
+ *   rainyear:<YYYY>:<county FIPS> (one email in January with that county's
+ *   full-year rain, from the county rain pages, /rain/<state>/<county>). The
+ *   year must be this year (or last year during January); the FIPS is 5
+ *   digits with a real state code. /notice-mark and /notice-unsubscribe take
+ *   any year. scripts/send_rain_year.py mails it from county-rain.yml.
+ *   Every other topic and route answers exactly as before. No new binding
+ *   and no new secret.
+ * v5.27 (2026-10-17): RAIN PRINT OPTIONS IN SHORT LINKS. POST /rp-short takes a design
+ *   code whose key field carries the units-and-language letter (A to H, 2026-10-16)
+ *   and the 2026-10-17 options after a ~ (crop and its two days, plant drawings,
+ *   a usual year, history, frost, hottest and coldest, the temperature band); both
+ *   were refused before, so those designs had no short link. Every other route
+ *   answers as before.
  * v5.26 (2026-10-15): RAIN PRINT GIFT CARDS. POST /rp-gift/redeem compares a
  *   locked card's design with the design the buyer sends after expanding an
  *   RPS-<id> reference (a design past 300 letters goes as its short id) from
@@ -273,7 +303,8 @@
  *     GET asks, POST removes every notice, or the one topic.
  *   GET  /notice-list?token=[&topic=rent:wi | rent: | arcplc:][&unsent=1]
  *     [{email, topic, ts, src, sent}] for the job that mails a notice.
- *   POST /notice-mark?token=  {email, topic}: records the notice as sent.
+ *   POST /notice-mark?token=  {email, topic}: records the notice as sent (v5.29: a prf
+ *     topic also takes interval and quiet; see v5.29).
  *   GET  /count gains notice (addresses) and notices {topic: n}.
  *   POST /unsubscribe (the daily) also removes note:<email>, so its "No more
  *   emails" stays true. No new binding and no new secret.
@@ -746,9 +777,37 @@ async function subAll(env) {
 const NOTE_MAX = 20;
 const NOTE_TEXT_MAX = 280;   // v5.18: the rain-gauge note, one line
 const RENT_STATES = new Set(("al ak az ar ca co ct de fl ga hi id il in ia ks ky la me md ma mi mn ms mo mt ne nv nh nj nm ny nc nd oh ok or pa ri sc sd tn tx ut vt va wa wv wi wy").split(" "));
+// v5.28: rainyear:<YYYY>:<county FIPS>, the January full-year rain email.
+const RAIN_ST_FIPS = new Set([1, 2, 4, 5, 6, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+  27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 44, 45, 46, 47, 48, 49, 50, 51, 53, 54, 55, 56]);
+// v5.29: prf:<grid>, RMA's PRF grid id. Grids are row x 300 + column + 1 on
+// NOAA's quarter-degree boxes from 20N 130W; the 48 states' 13,414 grids run
+// 6196 to 34941, rows 20 to 116, columns 21 to 251 (data/prf, crop year 2027).
+const PRF_MIN = 6196, PRF_MAX = 34941;
+function prfGridOk(s) {
+  if (!/^[1-9]\d{3,4}$/.test(s)) return false;
+  const g = +s, row = Math.floor((g - 1) / 300), col = (g - 1) % 300;
+  return g >= PRF_MIN && g <= PRF_MAX && row >= 20 && row <= 116 && col >= 21 && col <= 251;
+}
+// "YYYY-II": a year and RMA's interval, 01 (Jan-Feb) to 11 (Nov-Dec)
+function prfInterval(v) {
+  const s = String(v == null ? "" : v).trim();
+  const m = /^(\d{4})-(0[1-9]|1[01])$/.exec(s);
+  if (!m || +m[1] < 1948 || +m[1] > new Date().getUTCFullYear() + 1) return null;
+  return s;
+}
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();
   if (t === "rain-gauge") return t;
+  const pg = /^prf:(\d+)$/.exec(t);
+  if (pg) return prfGridOk(pg[1]) ? t : null;
+  let ry = /^rainyear:(\d{4}):(\d{5})$/.exec(t);
+  if (ry) {
+    if (!RAIN_ST_FIPS.has(+ry[2].slice(0, 2)) || ry[2].slice(2) === "000") return null;
+    if (anyDate) return t;
+    const now = new Date(), cy = now.getUTCFullYear(), y = +ry[1];
+    return y === cy || (y === cy - 1 && now.getUTCMonth() === 0) ? t : null;
+  }
   let m = /^rent:([a-z]{2})$/.exec(t);
   if (m) return RENT_STATES.has(m[1]) ? t : null;
   m = /^arcplc:(\d{4})-(\d{2})-(\d{2})$/.exec(t);
@@ -1001,7 +1060,8 @@ function rpsCodeOk(code) {
   if (v2 && (f.length - 6) % 2 && !f.pop().trim()) return false;   // the dedication, when there is one
   if ((f.length - 6) % 2) return false;
   if (!f[1].trim()) return false;
-  if (!(v2 ? /^[a-z0-9]{5}(?:[ic][0-9a-hjkmnp-tv-z]{12})?$/ : /^[a-z0-9]{4}$/).test(f[4])) return false;   // v5.23: + a logo
+  // v5.23: + a logo; v5.27: + the units-and-language letter and the options after a ~ (components/rain-print.js optCode)
+  if (!(v2 ? /^[a-z0-9]{5}(?:[ic][0-9a-hjkmnp-tv-z]{12})?[A-H]?(?:~(?:[cs][0-9a-z]{4})?p?g?h?f?t?r?)?$/ : /^[a-z0-9]{4}$/).test(f[4])) return false;
   const year = parseInt(f[3], 10);
   if (!(year >= 1850 && year <= 2200) || String(year) !== f[3]) return false;
   for (let i = 6; i + 1 < f.length; i += 2) {
@@ -1571,6 +1631,11 @@ async function handle(req, env) {
         if (z) r.t[topic].zip = z;
         if (nt) r.t[topic].note = nt;
       }
+      // v5.29: a prf topic keeps the newest interval the page showed, from the first ask
+      if (topic.startsWith("prf:") && !r.t[topic].after) {
+        const af = prfInterval(b.after);
+        if (af) r.t[topic].after = af;
+      }
       await env.SUBS.put("note:" + email, JSON.stringify(r));
       const daily = subBool(b.daily) === true;
       if (daily) await putSub(env, email, src, b.zip, b.reports);
@@ -1815,6 +1880,8 @@ async function handle(req, env) {
           const row = { email: k.slice(5), topic, ts: v && v.ts || null, src: v && v.src || "", sent: v && v.sent || null };
           if (v && v.zip) row.zip = v.zip;     // v5.18: rain-gauge only
           if (v && v.note) row.note = v.note;
+          if (v && v.after) row.after = v.after;   // v5.29: prf only
+          if (v && v.iv) row.iv = v.iv;
           out.push(row);
         }
       }
@@ -1829,8 +1896,15 @@ async function handle(req, env) {
       if (!EMAIL_RE.test(email) || !topic) return json({ ok: false, error: "bad args" }, 400);
       let r = null;
       try { r = JSON.parse(await env.SUBS.get("note:" + email)); } catch (e) { r = null; }
+      // v5.29: a prf topic recurs; the mark carries the interval it was for
+      const iv = topic.startsWith("prf:") ? prfInterval(b.interval) : null;
+      if (topic.startsWith("prf:") && !iv) return json({ ok: false, error: "bad args" }, 400);
       if (!r || !r.t || !(topic in r.t)) return json({ ok: true, skipped: true });   // stopped while the job ran
-      r.t[topic].sent = Date.now();
+      if (iv) {
+        const cur = r.t[topic];
+        if (!cur.iv || iv > cur.iv) cur.iv = iv;
+        if (b.quiet !== true) cur.sent = Date.now();
+      } else r.t[topic].sent = Date.now();
       await env.SUBS.put("note:" + email, JSON.stringify(r));
       return json({ ok: true });
     }

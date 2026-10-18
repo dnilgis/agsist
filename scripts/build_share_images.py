@@ -144,8 +144,10 @@ LINES = {
     "gdu-calculator": ("GDU calculator", "Growing degree units from your planting date, with real weather."),
     "grain-bin-calculator": ("Grain bins", "Bin size to bushels, moisture shrink and what the grain is worth."),
     "grain-emc": ("Grain EMC", "Drying, cooling or holding corn, soybeans and wheat: which hours to run fans where you are."),
+    "rain-radar": ("Rain on your field", "Rain in the last 24 hours, 3 days and 7 days at any spot, from NOAA radar and gauges."),
     "harvest-or-wait": ("Harvest or wait", "Drying bill now vs after field drydown, against the field loss you expect."),
     "editorial-standards": ("Editorial standards", "How the AGSIST Daily is made, where the numbers come from, and how corrections work."),
+    "custom-rates": ("Custom rates", "Nine state surveys: the average, range, unit and year for each job, with the source."),
     "grain-shrink": ("Grain shrink", "Corn, soybeans, wheat and sorghum: shrink, drying charges and overdry loss at your bid."),
     "hay-prices": ("Hay prices", "Alfalfa and other hay, dollars a ton, every state USDA publishes."),
     "hail-map": ("Hail map", "Hail swaths and ground reports for any US address, by storm day."),
@@ -155,6 +157,7 @@ LINES = {
     "planting-date": ("Planting", "Soil temperature, frost odds and the yield cost of each week's delay."),
     "pod-counts": ("Pod counts", "What the crop tour's soybean pod counts actually predict."),
     "prf-sponsor": ("PRF sponsor", "One business per state on the PRF state and county pages."),
+    "glossary": ("Glossary", "Basis, WASDE, settle, carry and other farm market words in plain terms."),
     "privacy": ("Privacy", "What the site collects, who handles it and how long it is kept."),
     "scorecard": ("Scorecard", "The prediction bot's calls, graded by code against the closes."),
     "sponsor": ("Sponsor", "A footer spot, your own page, or the daily briefing."),
@@ -613,20 +616,20 @@ def state_names():
 
 # ------------------------------------------------------------------ product cards
 
-RP_ART = "scripts/cardart/rain-print-2012-ames-ia.jpg"   # scripts/render_rain_print_card_art.mjs
+RP_PHOTO = "img/photos/rain-print-photo-chetek-2025-1600.jpg"   # Sig's photo of a framed test print (scripts/process_photo.py)
 
 
 def card_rain_print():
-    """A real Rain Print, drawn by components/rain-print-art.js from the saved
-    NOAA answers for Ames, Iowa, 2012 (data/rain-print-examples), framed on a
-    wall. The price is the unframed print's, from data/rain-print.json."""
+    """Sig's photo of a real framed test print, Chetek, Wisconsin, 2025 (the
+    close-up /rain-print leads with). The price is the unframed print's, from
+    data/rain-print.json. The engine-drawn Ames card art stays in scripts/cardart."""
     price = js("data/rain-print.json")["print12x18"]
     sub = "Prints from $" + f"{float(price):,.2f}".replace(".00", "")
     return {"kind": "PRINT", "args": dict(
-        art_path=os.path.join(ROOT, RP_ART), head="A year of rain on your farm, framed.", sub=sub,
-        note="Example: Ames, Iowa, 2012", path="/rain-print", layout="side"),
-        "alt": f"An example Rain Print in a black frame: every rain and snow of 2012 at Ames, Iowa, from NOAA "
-               f"records, stepping up across the months below a usual year. A year of rain on your farm, framed. {sub}."}
+        art_path=os.path.join(ROOT, RP_PHOTO), photo=True, head="A year of rain on your farm, framed.", sub=sub,
+        note="A real test print: Chetek, Wisconsin, 2025", path="/rain-print", layout="side"),
+        "alt": f"A framed test Rain Print of Chetek, Wisconsin, 2025, photographed on a wall: each day's rain hangs below "
+               f"the line, snow above, from NOAA records. A year of rain on your farm, framed. {sub}."}
 
 
 def card_rain_gauge():

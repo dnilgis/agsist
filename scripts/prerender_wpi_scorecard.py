@@ -518,7 +518,7 @@ def wins_badge(r):
     out = ""
     if wins:
         out += (u'<span class="as-wins" title="Closest of everyone on record for that metric, '
-                u'and closer to the print than the trade consensus.">%d\u00d7 closest, beat '
+                u'and closer to the print than the trade consensus. A midpoint we worked out from a published range does not count.">%d\u00d7 closest, beat '
                 u'trade</span>' % wins)
     only = (r.get("closest_n") or 0) - wins
     if only > 0:
@@ -618,9 +618,9 @@ def board_tbl(rows, building, min_n=3, cls=None, ord_min=None):
         lead = (u'<div class="as-err" style="margin-bottom:.6rem">Nobody has %d scored calls in '
                 u'this group yet. Building records below.</div>' % min_n)
     elif len(rows) == 1:
-        lead = (u'<div class="as-err" style="margin-bottom:.6rem">A ranking needs at least two '
-                u'forecasters with %d scored calls in the same group. One has cleared that so '
-                u'far, so this board shows records, not places.</div>' % min_n)
+        lead = (u'<div class="as-err" style="margin-bottom:.6rem">A finishing order needs at least two '
+                u'forecasters with %d scored calls each in the same group. One forecaster has %d or more '
+                u'so far, so this board shows records, not places.</div>' % (ord_min, min_n))
     elif not ordinals:
         lead = (u'<div class="as-err" style="margin-bottom:.6rem">Listed by average error, with '
                 u'no places. This page prints a finishing order only once every forecaster above '

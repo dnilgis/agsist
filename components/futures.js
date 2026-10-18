@@ -22,6 +22,10 @@ var MONTH_TIPS={
   soybean:['January is South American harvest pressure season. Watch Brazil crop estimates closely','February marks peak South American harvest; US basis is typically under competitive export pressure','March is a transition month as South American exports compete while US planting plans take shape','April brings corn/bean ratio decisions and early US planting weather focus','May builds new-crop weather premium as US soybean planting accelerates','June: pod-set weather can move prices hard from one forecast to the next','July crop condition scores increasingly lock in the price range for the remainder of the season','August pod-fill conditions are critical: dry weather now can move prices fast','September: harvest starts and new-crop supply begins to reach the market','October is peak US harvest supply; see the seasonal chart for how recent years actually traded this month','November post-harvest: South American planting underway, watch early growing season weather','December: early South American weather starts to shape next year\'s global supply'],
   wheat:['January: winter wheat is dormant; the Southern Hemisphere harvest sets the supply picture','February: winter wheat begins to break dormancy; cold stress is the risk to watch','March: global supply questions build ahead of Northern Hemisphere planting','April frost risk premium can add volatility as winter wheat breaks dormancy and heads out','May is pre-harvest season: wheat is heading, quality risk keeps buyers attentive','June: SRW harvest begins and new-crop supply arrives; see the seasonal chart for how recent years traded','July is peak harvest; combines roll across the Northern Hemisphere','August is the post-harvest recovery window; old crop clears and new positions begin building','September: global buyers restock after the Northern Hemisphere harvest','October: winter wheat goes in, and stand establishment and early crop reports lead','November: wheat goes dormant and the year\'s global supply gets clearer','December Southern Hemisphere harvest updates and year-end fund positioning drive market direction']
 };
+/* One set of words for where a price sits in its 52-week range, used by every line
+   on the page: quartiles at 25 and 75, halves at 50. "Mid-range" is not one of them
+   (it was printed at the 74th percentile, audit N13, Oct 17). */
+function bandOf(pct){return pct<25?'lower quartile':pct<50?'lower half':pct<75?'upper half':'upper quartile';}
 function zoneOf(pct){return pct<25?'lower quartile: historically a weak pricing window':pct<50?'lower half':pct<75?'upper half':'upper quartile: near recent highs';}
 
 var CROPS={
@@ -96,6 +100,8 @@ var CROPS={
     labels:function(lbl,nearby){
       setTxt('hero-contract',lbl);
       setTxt('lbl-beans',nearby?lbl+' (ZS)':'Most-active (ZS)');
+      /* the range is the hero contract's own 52 weeks: name that contract, as corn does (audit N13, Oct 17) */
+      setTxt('rng-lbl','52-Week Range: Soybeans '+(nearby?lbl:'most-active (ZS)'));
     },
     rollNote:'Front-month contract just rolled to the next month; day-change comparisons span two contracts until the new month has a clean close.',
     pricedWord:'new crop',
@@ -116,6 +122,15 @@ var CROPS={
         ncEl.innerHTML=ncHtml;
         ncEl.style.display='';
       }else if(ncEl){ncEl.style.display='none';}
+      /* corn beside beans (2026-10-17 search-terms check: "corn and soybean prices today"); the corn page's own hero quote, with its stamp */
+      var cEl=document.getElementById('corn-line'),cq=(q['corn-nearby']&&q['corn-nearby'].close!=null)?q['corn-nearby']:q.corn;
+      if(cEl&&cq&&cq.close!=null){
+        var cH='Corn '+(contractLabel(cq)||'')+': <strong>'+grain$(cq.close)+'</strong>';
+        if(cq.pctChange!=null&&!cq.roll)cH+=' <span class="'+(cq.pctChange>=0?'up':'dn')+'">('+AG.px.pct(cq.pctChange)+')</span>';
+        var cS=window.AgPxStamp&&AgPxStamp.html?AgPxStamp.html(cq,data&&data.fetched):'';
+        cEl.innerHTML=cH+(cS?' &middot; '+cS:'')+' &middot; <a href="/corn-futures-prices">Corn futures</a>';
+        cEl.style.display='';
+      }
       renderRatio(data,function(r){return r<2.4?'Corn favored: soybeans historically the weaker per-acre choice':r<2.6?'Neutral: an even acre split is common at these levels':'Beans favored: soybeans historically earn more per acre';});
       var BC=boardCrush(q,front),cw=document.getElementById('crush-card');
       if(BC){
@@ -983,13 +998,9 @@ function computeScorecard(){
   // composite descriptive situation (NOT a recommendation)
   var sit='';
   if(be){
-    if(be.diff>=0&&p.pct>=70)sit='Above breakeven · upper range';
-    else if(be.diff>=0&&p.pct>=40)sit='Above breakeven · mid-range';
-    else if(be.diff>=0)sit='Above breakeven · weak range';
-    else if(p.pct<25)sit='Below breakeven · lower quartile';
-    else sit='Below breakeven';
+    sit=(be.diff>=0?'Above':'Below')+' breakeven · '+bandOf(p.pct);
   }else{
-    sit=p.pct>=75?'Upper range':p.pct<25?'Lower range':'Mid-range';
+    sit=bandOf(p.pct).charAt(0).toUpperCase()+bandOf(p.pct).slice(1);
   }
   return {factors:factors,situation:sit,rp:rp,priceCents:(fq?fq.close:null),be:be,basis:basis};
 }
@@ -1123,18 +1134,18 @@ function buildActionLine(mr){
   var lines=[];
 
   if(hasB){
-    if(diff>=0&&pct>=70){
-      lines.push('You are <strong>above breakeven and price is in the upper third</strong> of its 52-week range. Historically a window where scaling-in forward sales (HTAs, futures hedges, or floor strategies) protects margin without committing all bushels.');
-    }else if(diff>=0&&pct>=40){
-      lines.push('You are <strong>above breakeven in mid-range</strong>. Mixed setup. If you need to price bushels for cash flow, partial sales lock in margin; if you can wait, the seasonal calendar may give a better window.');
-    }else if(diff>=0&&pct<40){
-      lines.push('You are <strong>above breakeven but price is weak</strong> in its 52-week range. If you can wait, waiting has often paid at this level. Prices this low in the range have tended to bounce, and selling hard at the bottom rarely works out.');
+    if(diff>=0&&pct>=75){
+      lines.push('You are <strong>above breakeven and price is in the upper quartile</strong> of its 52-week range. Historically a window where scaling-in forward sales (HTAs, futures hedges, or floor strategies) protects margin without committing all bushels.');
+    }else if(diff>=0&&pct>=25){
+      lines.push('You are <strong>above breakeven, with price in the '+bandOf(pct)+'</strong> of its 52-week range. Mixed setup. If you need to price bushels for cash flow, partial sales lock in margin; if you can wait, the seasonal calendar may give a better window.');
+    }else if(diff>=0&&pct<25){
+      lines.push('You are <strong>above breakeven but price is in the lower quartile</strong> of its 52-week range. If you can wait, waiting has often paid at this level. Prices this low in the range have tended to bounce, and selling hard at the bottom rarely works out.');
     }else if(diff<0&&pct<25){
       lines.push('Below breakeven and in the <strong>lower quartile</strong> of the 52-week range. Patience setup: selling here locks in losses. Hold what you can store and watch for any catalyst that breaks the pattern.');
-    }else if(diff<0&&pct<60){
-      lines.push('Below breakeven in mid-range. <strong>No forward-selling opportunity at these levels</strong>. Focus on protecting downside (puts) rather than locking in losses through cash sales.');
+    }else if(diff<0&&pct<75){
+      lines.push('Below breakeven, with price in the '+bandOf(pct)+' of its 52-week range. <strong>No forward-selling opportunity at these levels</strong>. Focus on protecting downside (puts) rather than locking in losses through cash sales.');
     }else if(diff<0){
-      lines.push('Below breakeven but price is in the upper portion of its range, a <strong>tight market</strong>. Check whether you can trim your costs (input timing, basis) before you decide these prices are out of reach.');
+      lines.push('Below breakeven but price is in the upper quartile of its range, a <strong>tight market</strong>. Check whether you can trim your costs (input timing, basis) before you decide these prices are out of reach.');
     }
   }else{
     // No breakeven entered: give a generic price-only frame
@@ -1143,7 +1154,7 @@ function buildActionLine(mr){
     }else if(pct<25){
       lines.push('Price is in the <strong>lower quartile</strong> of its 52-week range. Historically a weak pricing window; selling here locks in losses for most operations. Enter your cost of production above to see how far below your breakeven you are.');
     }else{
-      lines.push('Price is mid-range. Add your cost of production above to see what it means for your margin.');
+      lines.push('Price is in the '+bandOf(pct)+' of its 52-week range. Add your cost of production above to see what it means for your margin.');
     }
   }
 
@@ -1773,7 +1784,12 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
   var pw=W-mL-mR,ph=H-mT-mB;
   function x(i){return mL+(pts.length===1?pw/2:(i/(pts.length-1))*pw);}
   function y(p){return mT+ph-((p-minP)/(maxP-minP))*ph;}
-  var s=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'];
+  /* The label is built from the same points the chart draws, so a screen
+     reader hears what a sighted reader sees. */
+  var aria='Futures price by contract month, dollars per bushel: '+pts.map(function(p){
+    return p.label+' '+(isGrain?AG.px.priceDollars(p.price,{style:'slash',dollar:false}):p.price.toFixed(2))+(p.tag?' ('+p.tag+')':'');
+  }).join(', ').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  var s=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+aria+'">'];
   var path='';
   pts.forEach(function(p,i){path+=(i===0?'M':'L')+x(i)+','+y(p.price);});
   s.push('<path d="'+path+'" style="stroke:var(--gold,#d4a23f)" stroke-width="2" fill="none"/>');

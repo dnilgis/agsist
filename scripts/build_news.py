@@ -352,6 +352,48 @@ def quote_session(v, fetch_day, fetch_settled):
     return cd, False
 
 
+def prior_settle(v, day):
+    """The last settle dated before `day` in the quote's settle history
+    (fetch_prices v3.7 "settles": {date: settle}), else its previous close
+    when that is a settle from an earlier day, else None."""
+    st = (v or {}).get("settles")
+    if isinstance(st, dict) and day:
+        older = sorted(k for k in st if str(k)[:10] < day and isinstance(st[k], (int, float)))
+        if older:
+            return float(st[older[-1]])
+    pd, pk = (v or {}).get("prev_date"), (v or {}).get("prev_kind")
+    if pd and day and str(pd)[:10] < day and pk == "settle" and isinstance(v.get("open"), (int, float)):
+        return float(v["open"])
+    return None
+
+
+_FRAC = {"\u00bc": 0.25, "\u00bd": 0.5, "\u00be": 0.75}
+
+
+def _num(t, scale=1):
+    """A printed price or change to cents: "5.02" (dollars, scale 100), "-20",
+    "\u221219\u00be". A trailing quarter glyph is a fraction of a cent."""
+    m = re.match(r"\s*([-\u2212+]?)(\d+(?:\.\d+)?)([\u00bc\u00bd\u00be]?)", t)
+    if not m:
+        return None
+    x = float(m.group(2)) * scale + _FRAC.get(m.group(3), 0)
+    return -x if m.group(1) in ("-", "\u2212") else x
+
+
+def move_base(detail):
+    """(close, previous close) in cents from a move item's detail, as
+    published ("Settled $5.02, -20 cents on the session." or "Closed $4.80\u00bd,
+    \u221219\u00be\u00a2 on the session."), or None."""
+    m = re.match(r"(?:Settled|Closed) \$([^,]+), ([^ ]+)", str(detail or ""))
+    if not m:
+        return None
+    c, n = _num(m.group(1), 100), _num(m.group(2).replace("\u00a2", ""))
+    if c is None or n is None:
+        return None
+    c = round(c, 4)
+    return c, round(c - n, 4)
+
+
 def board(out, state, held):
     d = load("prices.json")
     q = (d or {}).get("quotes") or {}
@@ -373,6 +415,20 @@ def board(out, state, held):
             continue
         seen_quotes.append(sig)
         close, pct = v.get("close"), v.get("pctChange")
+        nc = v.get("netChange")
+        # EACH SESSION AGAINST ITS OWN PRIOR SETTLE. Yahoo's change is against
+        # whatever previous close it held, and on the evening of 30 September
+        # 2026 that was still Sep 29's: the Wire filed "Oct 1, December corn
+        # $5.02, -20 cents" beside "Sep 30, $5.05, -16.5", two moves from one
+        # base. With the file's settle history (fetch_prices settles), the
+        # change is the close less the last settle dated before this session;
+        # a quote whose previous close is not from an earlier day is no move.
+        base = prior_settle(v, day)
+        if base is not None and close is not None:
+            nc = round(close - base, 4)
+            pct = 100.0 * nc / base if base else None
+        elif v.get("prev_date") and day and str(v["prev_date"])[:10] >= day:
+            nc = pct = None
         hi, lo = v.get("wk52_hi"), v.get("wk52_lo")
         # See PX_BREAKOUT_FRACTION. `band` is the contract's own 52-week spread,
         # so a penny break on a $1.46 range is withheld and a dime is not, and a
@@ -442,7 +498,6 @@ def board(out, state, held):
             held.append(f"{name}: {pct:+.1f}% on a trade, waiting for the settle")
             continue
         direction = "up" if pct > 0 else "down"
-        nc = v.get("netChange")
         detail = f"Settled {cents(close)}" if close is not None else "Settled"
         if nc is not None:
             detail += f", {pricefmt.move(nc, sign=True)} on the session"
@@ -545,6 +600,22 @@ def tidy(items):
         if len(group) > 1:
             keep = next((i for i in group if i["id"].split(":")[2] in NAMED), group[0])
             drop.update(id(i) for i in group if i is not keep)
+    # ONE BASE, TWO DAYS. A move dated the next day that is measured from the
+    # same previous close as the day before, at a different close, is not that
+    # day's move: it is the earlier session again, read later (Sep 30 and
+    # "Oct 1" 2026, corn and wheat, both from Sep 29's settle). Withdrawn.
+    moves = {}
+    for i in out:
+        p = str(i.get("id", "")).split(":")
+        if len(p) == 4 and p[0] == "px" and p[3] == "move" and id(i) not in drop:
+            mb = move_base(i.get("detail"))
+            if mb:
+                moves.setdefault(p[2], []).append((p[1], mb, i))
+    for rows in moves.values():
+        rows.sort(key=lambda r: r[0])
+        for (d1, (c1, b1), _a), (d2, (c2, b2), b) in zip(rows, rows[1:]):
+            if d2 > d1 and abs(b2 - b1) <= 0.75 and abs(c2 - c1) > 0.01:
+                drop.add(id(b))
     return [i for i in out if id(i) not in drop]
 
 
@@ -986,6 +1057,42 @@ def _selftest():
              _it("px:2026-10-09:corn:move", "Corn down 3.9% on the day", "Settled $4.80, -19.75 cents on the session.")]
     check([i["id"] for i in tidy(_dup9)] == ["px:2026-10-09:corn-dec:move"],
           "the same move in two wordings keeps the named contract")
+    # ONE BASE, TWO DAYS: the stored Sep 30 / "Oct 1" 2026 pairs. Both Oct 1
+    # items were measured from Sep 29's settle (5.05 + 16.5 = 5.02 + 20 =
+    # 521.5 to 522; 6.76 + 18.5 = 6.77 + 17.5 = 694.5 to 694.5). From Sep 30's
+    # settles, Oct 1 moved -3 and +1 cents: not items. Withdrawn.
+    _sep = [_it("px:2026-10-01:corn-dec:move", "December corn down 3.8% on the day", "Settled $5.02, -20 cents on the session."),
+            _it("px:2026-10-01:wheat:move", "Wheat down 2.5% on the day", "Settled $6.77, -17.5 cents on the session."),
+            _it("px:2026-09-30:wheat:move", "Wheat down 2.7% on the day", "Settled $6.76, -18.5 cents on the session."),
+            _it("px:2026-09-30:corn-dec:move", "December corn down 3.2% on the day", "Settled $5.05, -16.5 cents on the session.")]
+    check(move_base("Settled $5.02, -20 cents on the session.") == (502.0, 522.0), "move_base reads the decimal wording")
+    check(move_base("Closed $4.80\u00bd, \u221219\u00be\u00a2 on the session.") == (480.5, 500.25), "move_base reads the fraction wording")
+    check([i["id"] for i in tidy(_sep)] == ["px:2026-09-30:wheat:move", "px:2026-09-30:corn-dec:move"],
+          "a next-day move from the same previous close is withdrawn")
+    _wk = [_it("px:2026-10-08:wheat:move", "Wheat down 2.3% on the day", "Settled $6.70, -16 cents on the session."),
+           _it("px:2026-10-07:wheat:move", "Wheat down 2.6% on the day", "Settled $6.86, -18.25 cents on the session.")]
+    check(len(tidy(_wk)) == 2, "two real moves on two days, each from its own base, both stay")
+    # board(): the change is the close less the prior session's settle, not
+    # Yahoo's change against an older previous close.
+    _q1 = {"fetched": "2026-10-02T05:00:00Z", "quotes": {"corn-dec": {
+        "close": 502.25, "open": 522.0, "netChange": -19.75, "pctChange": -3.78, "close_date": "2026-10-01",
+        "close_kind": "settle", "wk52_hi": 549.75, "wk52_lo": 425.75,
+        "settles": {"2026-09-29": 522.0, "2026-09-30": 505.0, "2026-10-01": 502.25}}}}
+    globals()["load"] = lambda n: _q1 if n == "prices.json" else None
+    _o, _h = [], []
+    board(_o, {}, _h)
+    check(not [i for i in _o if i["id"].endswith(":move")], "Oct 1 from Sep 30's 505 is -2.75 cents: no move item")
+    _q1["quotes"]["corn-dec"].update(close=485.0, netChange=-37.0, pctChange=-7.1)
+    _o = []
+    board(_o, {}, [])
+    _m = [i for i in _o if i["id"].endswith(":move")]
+    check(len(_m) == 1 and "down 4.0%" in _m[0]["headline"] and "\u221220\u00a2" in _m[0]["detail"],
+          "the move is figured from the prior settle: %r" % (_m[0] if _m else None))
+    _q1["quotes"]["corn-dec"].pop("settles")
+    _q1["quotes"]["corn-dec"].update(prev_date="2026-10-01", prev_kind="settle")
+    _o = []
+    board(_o, {}, [])
+    check(not [i for i in _o if i["id"].endswith(":move")], "a previous close from the same day is no base")
 
     # THE USDA ITEM FOLLOWS THE GRADES. The real Oct 9 shape: the Wire wrote
     # "All 2 scored figures" when two were graded; the page then graded seven,

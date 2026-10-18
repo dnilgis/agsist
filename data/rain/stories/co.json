@@ -1,0 +1,3655 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "08001": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 6",
+     "in": "0.73",
+     "label": "biggest single day"
+    },
+    "county": "Adams County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "30 miles from the middle of the county",
+    "gauge_where": "6.2 miles north-northeast of Thornton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "4.15",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "10.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 47,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.10",
+    "usual_in": "12.98",
+    "vs_usual": {
+     "diff_in": "6.88",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.00",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "98bff1c1077309c6",
+   "sid": "US1COAD0216 6",
+   "story": "Through Oct 13, the volunteer rain gauge north-northeast of Thornton had May as its wettest month at 2.00 inches. The biggest single day came May 6 with 0.73 inches. The longest stretch with nothing in the gauge ran 18 days, Jan 27 to Feb 13. On the days both years reported, this year is 4.15 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "08003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "0.59",
+     "label": "biggest single day"
+    },
+    "county": "Alamosa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "1 mile west of Waverly",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.26",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.64",
+    "usual_in": "6.79",
+    "vs_usual": {
+     "diff_in": "2.15",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.33",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e0eb5f5e0da5a9fe",
+   "sid": "058860 2",
+   "story": "Through Oct 13, the weather station 1 mile west of Waverly had 4.64 inches, 2.15 inches less than a usual year. September did most of the work with 2.33 inches, and the biggest single day was 0.59 inches on Sep 29. The gauge stayed bone empty for 24 days in a row from Mar 8 to Mar 31. Last year had 1.26 inches more by this date.",
+   "through": "2026-10-13"
+  },
+  "08005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 16",
+     "in": "1.61",
+     "label": "biggest single day"
+    },
+    "county": "Arapahoe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "26 miles from the middle of the county",
+    "gauge_where": "3.3 miles south of Aurora",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.28",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "17.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.99",
+    "usual_in": "16.13",
+    "vs_usual": {
+     "diff_in": "5.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.07",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "16acc45d067b1e5f",
+   "sid": "US1COAR0273 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.3 miles south of Aurora had 10.99 inches, 5.14 inches less than a usual year. August was the wettest month at 3.07 inches, and 1.61 of that came on Aug 16 alone. Last year at this point the gauge had 17.27 inches, so 2026 is 6.28 inches behind it.",
+   "through": "2026-10-13"
+  },
+  "08007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.56",
+     "label": "biggest one-day reading"
+    },
+    "county": "Archuleta County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "4.7 miles east of Pagosa Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.10",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.76",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.56",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3f3157e3438e3311",
+   "sid": "US1COAU0049 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.7 miles east of Pagosa Springs had caught 16.76 inches, 0.10 inches less than last year by the same day. September was the wettest month at 6.56 inches, and the biggest single day came Sep 29 with 1.56 inches. Earlier on, the gauge went 24 days in a row with nothing in it, not even a trace, from Mar 8 to Mar 31.",
+   "through": "2026-10-13"
+  },
+  "08009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "1.67",
+     "label": "biggest single day"
+    },
+    "county": "Baca County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Springfield Comanche National Grassland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.46",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "13.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Feb 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.02",
+    "usual_in": "13.66",
+    "vs_usual": {
+     "diff_in": "2.36",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.88",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "076886098c2767d7",
+   "sid": "03028 1",
+   "story": "Through Oct 13, the weather station in Springfield Comanche National Grassland had its wettest month in September with 5.88 inches. The biggest single day came early, 1.67 inches on Apr 2. Before that it went 29 days in a row with nothing in the gauge, Feb 14 to Mar 14. On the days both years reported, that is 2.46 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "08011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "4.50",
+     "label": "biggest single day"
+    },
+    "county": "Bent County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Las Animas",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.64",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 28,
+     "from": "Feb 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 147,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.88",
+    "usual_in": "12.18",
+    "vs_usual": {
+     "diff_in": "5.70",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.55",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4427993960677050",
+   "sid": "054834 2",
+   "story": "Through Oct 13, the weather station in Las Animas had a lot of its year come at once. October is the wettest month at 4.55 inches, and 4.50 of that fell on Oct 1, the biggest single day. Earlier on, the gauge went 28 days in a row with nothing in it, from Feb 15 to Mar 14. That puts 2026 at 6.64 inches more than 2025 had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "08013": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 6",
+     "in": "1.06",
+     "label": "biggest single day"
+    },
+    "county": "Boulder County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "1.8 miles northwest of Boulder",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.30",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "14.89",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 53,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.59",
+    "usual_in": "18.24",
+    "vs_usual": {
+     "diff_in": "8.65",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.65",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0ae4de313f1f1ec5",
+   "sid": "US1COBO0465 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.8 miles northwest of Boulder has caught 9.59 inches, 8.65 inches less than a usual year. May did most of the work with 3.65 inches, and 1.06 of that came on May 6. The gauge sat empty 18 days in a row from Jan 27 to Feb 13. Last year at this point it had 5.30 inches more.",
+   "through": "2026-10-13"
+  },
+  "08014": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 6",
+     "in": "0.83",
+     "label": "biggest one-day reading"
+    },
+    "county": "Broomfield County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "3.2 miles north-northeast of Broomfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "9.05",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 15,
+     "through": "Oct 13",
+     "total_in": "15.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Sep 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 43,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.21",
+    "usual_in": "14.37",
+    "vs_usual": {
+     "diff_in": "8.16",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.65",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "246e4d30c3655e24",
+   "sid": "US1COBR0032 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.2 miles north-northeast of Broomfield had its wettest month in May with 2.65 inches, and its biggest one-day reading was 0.83 inches on May 6. The gauge has had nothing in it, not even a trace, for 14 days in a row from Sep 30 to Oct 13, and that stretch is still going. On the days both years reported, this year is 9.05 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "08015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "0.55",
+     "label": "biggest single day"
+    },
+    "county": "Chaffee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2 miles south of Buena Vista",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.69",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 67,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.71",
+    "usual_in": "8.56",
+    "vs_usual": {
+     "diff_in": "2.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.88",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c1790c6475354fee",
+   "sid": "051071 2",
+   "story": "Through Oct 13, the weather station 2 miles south of Buena Vista has 5.71 inches, 2.85 inches less than a usual year. September was the wettest month at 1.88 inches, and the biggest single day came Sep 25 with 0.55. The gauge went 19 days in a row with nothing, from Jan 26 to Feb 13. On the days both years reported, this year is 0.69 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "08017": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 28",
+     "in": "1.91",
+     "label": "biggest single day"
+    },
+    "county": "Cheyenne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "less than a mile west-northwest of Cheyenne Wells",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.70",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.51",
+    "usual_in": "15.71",
+    "vs_usual": {
+     "diff_in": "0.20",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "3.55",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f32d086584af5da3",
+   "sid": "US1COCH0031 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west-northwest of Cheyenne Wells shows 4.70 inches less than last year at this point. May was the wettest month at 3.55 inches, and 1.91 inches of that came on May 28, the biggest single day. The longest dry stretch ran 25 days, from Mar 8 to Apr 1, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "08019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "1.34",
+     "label": "biggest single day"
+    },
+    "county": "Clear Creek County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "6.5 miles west-southwest of Evergreen",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "2.96",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.71",
+    "usual_in": "19.59",
+    "vs_usual": {
+     "diff_in": "2.88",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.32",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0fcef9dd8adb5188",
+   "sid": "US1COCC0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.5 miles west-southwest of Evergreen sat 2.88 inches less than a usual year. August did the heavy lifting at 5.32 inches, with the biggest single day on Aug 14 at 1.34 inches. On the days both years reported, this year is 2.96 inches less than 2025. The gauge also went 12 days in a row with nothing in it, from Apr 3 to Apr 14.",
+   "through": "2026-10-13"
+  },
+  "08021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "0.69",
+     "label": "biggest single day"
+    },
+    "county": "Conejos County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "2.9 miles east-northeast of Capulin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "1.51",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "7.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 65,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.54",
+    "usual_in": "8.55",
+    "vs_usual": {
+     "diff_in": "3.01",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.58",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8d65383e7d8c737f",
+   "sid": "US1COCN0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge east-northeast of Capulin had caught 2.58 inches in September alone, the wettest month by a long way this year. The biggest single day was Sep 29 at 0.69 inches. Back in spring it went 25 days in a row with nothing in the gauge, Mar 8 to Apr 1. On the days both years reported, that is 1.51 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "08025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 21",
+     "in": "1.54",
+     "label": "biggest single day"
+    },
+    "county": "Crowley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "4 miles west of Ordway",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.59",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 27,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.37",
+    "usual_in": "10.23",
+    "vs_usual": {
+     "diff_in": "1.14",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.99",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "50d84cdce6ba44c1",
+   "sid": "056131 2",
+   "story": "Through Oct 13, the weather station 4 miles west of Ordway had its wettest month in September with 3.99 inches. The biggest single day came Sep 21 with 1.54 inches. Back in spring the gauge went 27 days in a row with nothing in it, from Mar 16 to Apr 11. Even so, the year sits 0.59 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "08027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "1.01",
+     "label": "biggest single day"
+    },
+    "county": "Custer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Westcliffe",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": null,
+      "dir": "about the same",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "8.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.29",
+    "usual_in": "11.77",
+    "vs_usual": {
+     "diff_in": "3.48",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.45",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "26488b7b891a866a",
+   "sid": "058931 2",
+   "story": "Through Oct 13, the weather station in Westcliffe had 8.29 inches, 3.48 inches less than a usual year. September was the wettest month at 2.45 inches, and the biggest single day came Sep 30 with 1.01 inches. The longest dry stretch ran 18 days, Jan 27 to Feb 13, with not even a trace. It's about the same as last year at this point.",
+   "through": "2026-10-13"
+  },
+  "08029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 15",
+     "in": "0.66",
+     "label": "biggest single day"
+    },
+    "county": "Delta County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "7.1 miles west-northwest of Hotchkiss",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "2.66",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "6.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.75",
+    "usual_in": "11.27",
+    "vs_usual": {
+     "diff_in": "2.52",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.02",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cc1dcd2c7239551d",
+   "sid": "US1CODL0026 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.1 miles west-northwest of Hotchkiss had its wettest month in September at 2.02 inches, and its biggest single day came Sep 15 with 0.66 inches. Back in March it went 24 days in a row with nothing in the gauge, Mar 8 to Mar 31. On the days both years reported, that is 2.66 inches more than last year, though still 2.52 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "08031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 26",
+     "in": "0.92",
+     "label": "biggest single day"
+    },
+    "county": "Denver County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "less than a mile east of Denver",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.15",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 61,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.98",
+    "usual_in": "14.82",
+    "vs_usual": {
+     "diff_in": "5.84",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.37",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9ac7d4e762a63617",
+   "sid": "US1CODN0175 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east of Denver has caught 8.98 inches, 5.84 less than a usual year. May was the wettest month at 2.37 inches. The biggest single day came late, 0.92 inches on Sep 26. Last year by this date the gauge had 2.15 inches more.",
+   "through": "2026-10-13"
+  },
+  "08033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 20",
+     "in": "1.02",
+     "label": "biggest single day"
+    },
+    "county": "Dolores County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "28 miles from the middle of the county",
+    "gauge_where": "12.4 miles south-southwest of Dove Creek",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.62",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "8.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.20",
+    "usual_in": "12.21",
+    "vs_usual": {
+     "diff_in": "2.01",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.56",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "84d995bb60e57a93",
+   "sid": "US1CODR0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 12.4 miles south-southwest of Dove Creek had 10.20 inches, 2.01 inches less than a usual year. September was the wettest month at 2.56 inches, and the biggest single day was 1.02 inches on Jul 20. The gauge went 24 days in a row with nothing from Mar 8 to Mar 31. On the days both years reported, that is 1.62 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "08035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "1.37",
+     "label": "biggest single day"
+    },
+    "county": "Douglas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3.5 miles south-southeast of Sedalia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.90",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "12.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 67,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.75",
+    "usual_in": "15.99",
+    "vs_usual": {
+     "diff_in": "5.24",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.49",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2455cd331daff981",
+   "sid": "US1CODG0228 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.5 miles south-southeast of Sedalia had its wettest month in May with 2.49 inches. The biggest single day came Jul 30 at 1.37 inches. The gauge went 15 days in a row with nothing in it, not even a trace, from Mar 17 to Mar 31. It sits at 1.90 inches less than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "08037": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 5",
+     "in": "0.96",
+     "label": "biggest one-day reading"
+    },
+    "county": "Eagle County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "less than a mile west-northwest of Vail",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "2.31",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "15.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Apr 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 26"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 69,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.78",
+    "usual_in": "20.07",
+    "vs_usual": {
+     "diff_in": "6.29",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.20",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "20535bd43c493d61",
+   "sid": "US1COEG0021 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west-northwest of Vail had 13.78 inches, 6.29 inches less than a usual year. April was the wettest month at 2.20 inches, even with 8 days in a row of nothing from Apr 19 to Apr 26. The biggest one-day reading was 0.96 inches on May 5. On the days both years reported, this year came in 2.31 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "08039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "1.69",
+     "label": "biggest single day"
+    },
+    "county": "Elbert County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "6.1 miles southwest of Deer Trail",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.88",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "15.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.49",
+    "usual_in": "16.03",
+    "vs_usual": {
+     "diff_in": "3.54",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.51",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1286a95c1a4033ba",
+   "sid": "US1COEL0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.1 miles southwest of Deer Trail has caught 12.49 inches, 3.54 less than a usual year. August did most of the work at 4.51 inches, and the biggest single day was 1.69 inches on Aug 15. The longest dry stretch ran 16 days, Feb 5 to Feb 20. That is 2.88 inches less than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "08041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 24",
+     "in": "0.80",
+     "label": "biggest single day"
+    },
+    "county": "El Paso County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "at Colorado Springs Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.35",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "14.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Oct 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 56,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.27",
+    "usual_in": "14.88",
+    "vs_usual": {
+     "diff_in": "6.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.46",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7de11afa917abb39",
+   "sid": "93037 1",
+   "story": "Through Oct 13, the weather station at Colorado Springs Municipal Airport has 8.27 inches, 6.61 inches less than a usual year. July was the wettest month at 1.46 inches, and the biggest single day came Jul 24 with 0.80. The gauge then went 12 days in a row with nothing, Oct 1 to Oct 12. Last year by this date it had 14.62, so 2026 sits 6.35 inches behind.",
+   "through": "2026-10-13"
+  },
+  "08043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 25",
+     "in": "1.44",
+     "label": "biggest single day"
+    },
+    "county": "Fremont County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Canon City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.60",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 62,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.57",
+    "usual_in": "12.17",
+    "vs_usual": {
+     "diff_in": "4.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.96",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3b46be11f89e5918",
+   "sid": "051294 2",
+   "story": "Through Oct 13, the weather station in Canon City had 7.57 inches, 4.60 less than a usual year. July was the wettest month at 1.96 inches, and 1.44 of that fell on Jul 25 alone. The longest dry stretch ran 25 days, Mar 8 to Apr 1, with not even a trace in the gauge. Last year at this point the station had 13.17 inches, so this year is 5.60 less.",
+   "through": "2026-10-13"
+  },
+  "08045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 31",
+     "in": "0.81",
+     "label": "biggest single day"
+    },
+    "county": "Garfield County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3 miles east-northeast of Rifle",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.45",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "7.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.07",
+    "usual_in": "10.57",
+    "vs_usual": {
+     "diff_in": "1.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.97",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a7d9c1485ca446eb",
+   "sid": "057033 2",
+   "story": "Through Oct 13, the weather station 3 miles east-northeast of Rifle has caught 9.07 inches, 1.50 less than a usual year. September was the wettest month at 1.97 inches, and the biggest single day was 0.81 on Aug 31. The gauge went 20 days in a row with nothing from Mar 7 to Mar 26. Still, that is 1.45 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "08047": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 6",
+     "in": "1.20",
+     "label": "biggest one-day reading"
+    },
+    "county": "Gilpin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 13,
+    "days_reported": 273,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.1 miles south-southwest of Rollinsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "1.24",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "18.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 12"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.31",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "3.56",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bb4dd0b416d54415",
+   "sid": "US1COGL0017 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.1 miles south-southwest of Rollinsville had 3.56 inches in August, its wettest month. The biggest one-day reading was 1.20 inches on May 6. Then it went 11 days in a row with nothing in the gauge, not even a trace, from Oct 2 to Oct 12. On the days both years reported, this year sits 1.24 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "08049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 7",
+     "in": "0.56",
+     "label": "biggest single day"
+    },
+    "county": "Grand County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "24 miles from the middle of the county",
+    "gauge_where": "in Winter Park",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.00",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 60,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.45",
+    "usual_in": "20.90",
+    "vs_usual": {
+     "diff_in": "8.45",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.17",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "24d63daf0749098b",
+   "sid": "059175 2",
+   "story": "Through Oct 13, the weather station in Winter Park has 12.45 inches, 8.00 inches less than it had by this day last year. April was the wettest month at 2.17 inches. The biggest single day was Mar 7 with 0.56 inches. The longest dry stretch ran 16 days, May 30 to Jun 14, without even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "08051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "0.86",
+     "label": "biggest single day"
+    },
+    "county": "Gunnison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in Crested Butte",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "0.14",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "14.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 28,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.66",
+    "usual_in": "18.43",
+    "vs_usual": {
+     "diff_in": "3.77",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.33",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dbaf5a4778868975",
+   "sid": "051959 2",
+   "story": "Through Oct 13, the weather station in Crested Butte has 14.66 inches, 3.77 inches less than a usual year. September was the wettest month at 3.33 inches. The gauge went 28 days in a row with nothing in it, from May 28 to Jun 24. On the days both years reported, this year has 0.14 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "08053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 25",
+     "in": "1.24",
+     "label": "biggest single day"
+    },
+    "county": "Hinsdale County",
+    "days_in_year_so_far": 282,
+    "days_missing": 0,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "1 mile north-northeast of Lake City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "1.30",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 9",
+     "total_in": "10.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "May 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Colorado",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "11.75",
+    "usual_in": "13.78",
+    "vs_usual": {
+     "diff_in": "2.03",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.48",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0c18806f1eece6e8",
+   "sid": "054736 2",
+   "story": "Through Oct 9, the weather station 1 mile north-northeast of Lake City had July as its wettest month at 3.48 inches, and the biggest single day was 1.24 inches on Jul 25. Before that it went 26 days in a row with nothing in the gauge, from May 20 to Jun 14. On the days both years reported, this year is 1.30 inches more than last year, even while it runs 2.03 inches less than a usual year.",
+   "through": "2026-10-09"
+  },
+  "08055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "1.09",
+     "label": "biggest single day"
+    },
+    "county": "Huerfano County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "11.5 miles west of Walsenburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "3.39",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "12.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 54,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.26",
+    "usual_in": "17.00",
+    "vs_usual": {
+     "diff_in": "7.74",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.28",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8f668121138894c0",
+   "sid": "US1COHF0041 6",
+   "story": "Through Oct 13, the volunteer rain gauge 11.5 miles west of Walsenburg had its wettest month in May at 2.28 inches. The biggest single day came late, 1.09 inches on Oct 1. The longest dry stretch ran 18 days, Jan 27 to Feb 13, with not even a trace. On the days both years reported, this year is 3.39 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "08057": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 18",
+     "in": "1.21",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Walden",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.43",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "7.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "May 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.81",
+    "usual_in": "10.22",
+    "vs_usual": {
+     "diff_in": "1.41",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.59",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3018bac625b06278",
+   "sid": "058756 2",
+   "story": "Through Oct 13, the weather station in Walden had its wettest month in May, with 2.59 inches. The biggest single day came May 18 at 1.21 inches. Right after that, the gauge went 25 days in a row with nothing, not even a trace, from May 31 to Jun 24. The year still sits 1.43 inches ahead of last year at this point, though 1.41 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "08059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 25",
+     "in": "2.30",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Evergreen",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.05",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.85",
+    "usual_in": "16.38",
+    "vs_usual": {
+     "diff_in": "1.53",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.24",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "54a758d3d455f028",
+   "sid": "052790 2",
+   "story": "Through Oct 13, the weather station in Evergreen has 4.05 inches less than it had by this day in 2025. June was the wettest month at 3.24 inches, and 2.30 of that came on Jun 25 alone. The gauge went 15 days in a row with nothing in it, not even a trace, from Mar 17 to Mar 31.",
+   "through": "2026-10-13"
+  },
+  "08061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 24",
+     "in": "1.53",
+     "label": "biggest one-day reading"
+    },
+    "county": "Kiowa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile east of Eads",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "4.45",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "15.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 75,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.85",
+    "usual_in": "14.44",
+    "vs_usual": {
+     "diff_in": "3.59",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.59",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "60646dd22db34b87",
+   "sid": "US1COKW0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east of Eads has caught 10.85 inches, 3.59 inches less than a usual year. September was the wettest month at 3.59 inches, and the biggest one-day reading was 1.53 inches on Sep 24. The gauge went 39 days in a row with nothing in it, from Feb 22 to Apr 1. On the days both years reported, this year is 4.45 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "08063": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 6",
+     "in": "0.64",
+     "label": "biggest single day"
+    },
+    "county": "Kit Carson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "in Burlington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.41",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 65,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.29",
+    "usual_in": "17.38",
+    "vs_usual": {
+     "diff_in": "6.09",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.75",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6211f63747cb1e18",
+   "sid": "051121 2",
+   "story": "Through Oct 13, the weather station in Burlington had 11.29 inches, 6.09 inches less than a usual year. Last year by this day it had 21.70, so this year is 10.41 inches behind it. May was the wettest month at 2.75 inches, and the biggest single day was 0.64 on May 6. The gauge went 18 days in a row with nothing, from Jan 27 to Feb 13.",
+   "through": "2026-10-13"
+  },
+  "08065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "0.63",
+     "label": "biggest single day"
+    },
+    "county": "Lake County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "at Leadville Lake County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.62",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "10.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Sep 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 69,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.70",
+    "usual_in": "11.24",
+    "vs_usual": {
+     "diff_in": "3.54",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.68",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7fe3da5e242b4ec7",
+   "sid": "93009 1",
+   "story": "Through Oct 13, the weather station at Leadville Lake County Airport has caught 7.70 inches, 3.54 inches less than a usual year. September was the wettest month at 1.68 inches, even with 10 days in a row of nothing in the gauge from Sep 3 to Sep 12. On the days both years reported, this year has 2.62 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "08067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 17",
+     "in": "1.75",
+     "label": "biggest single day"
+    },
+    "county": "La Plata County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "at Durango La Plata County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.56",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "10.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 38,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.78",
+    "usual_in": "10.78",
+    "vs_usual": {
+     "diff_in": "1.00",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.20",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f40bf83e8ed2e4ea",
+   "sid": "93005 1",
+   "story": "Through Oct 13, the weather station at Durango La Plata County Airport has 11.78 inches, 1.00 more than a usual year. Most of it came in September, which brought 6.20 inches, and the biggest single day was Sep 17 with 1.75. Before that the gauge sat empty for 38 days in a row, Feb 21 to Mar 30. This year is 1.56 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "08069": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 6",
+     "in": "1.41",
+     "label": "biggest single day"
+    },
+    "county": "Larimer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "5.6 miles northwest of Fort Collins",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.78",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "14.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 65,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.82",
+    "usual_in": "15.10",
+    "vs_usual": {
+     "diff_in": "5.28",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.27",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "807e827ac0a16428",
+   "sid": "US1COLR1038 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.6 miles northwest of Fort Collins had its wettest month in May at 4.27 inches. The biggest single day came in that month too, 1.41 inches on May 6. The longest stretch with nothing in the gauge ran 17 days, Mar 16 to Apr 1. The year sits 4.78 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "08073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 16",
+     "in": "1.72",
+     "label": "biggest single day"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "in Karval",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.26",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "12.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 27,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.70",
+    "usual_in": "12.98",
+    "vs_usual": {
+     "diff_in": "0.28",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "3.17",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c1e6dae9effe62f6",
+   "sid": "054444 2",
+   "story": "Through Oct 13, the weather station in Karval had its wettest month in August at 3.17 inches, and the biggest single day came Aug 16 with 1.72 inches. Before that it went 27 days in a row with nothing in the gauge, from May 30 to Jun 25. On the days both years reported, this year is 0.26 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "08075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 4",
+     "in": "3.05",
+     "label": "biggest single day"
+    },
+    "county": "Logan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "5 miles west-southwest of Leroy",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "3.13",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.32",
+    "usual_in": "15.57",
+    "vs_usual": {
+     "diff_in": "2.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.51",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dfc66cdfa0b227fc",
+   "sid": "054945 2",
+   "story": "Through Oct 13, the weather station 5 miles west-southwest of Leroy had 13.32 inches, 2.25 inches less than a usual year. July was the wettest month at 4.51 inches, and 3.05 of that came on Jul 4 alone. The gauge stayed dry for 22 days from Jan 1 to Jan 22. On the days both years reported, this year is 3.13 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "08077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 14",
+     "in": "0.40",
+     "label": "biggest single day"
+    },
+    "county": "Mesa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "at Grand Junction Walker Field",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.02",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.96",
+    "usual_in": "7.29",
+    "vs_usual": {
+     "diff_in": "2.33",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.58",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e5162d7d0eea621c",
+   "sid": "23066 1",
+   "story": "Through Oct 13, the weather station at Grand Junction Walker Field had its wettest month in September at 1.58 inches. The biggest single day was 0.40 inches on Apr 14. From Mar 7 to Mar 25 it went 19 days in a row with nothing in the gauge, not even a trace. That leaves the year 1.02 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "08079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 28",
+     "in": "1.30",
+     "label": "biggest single day"
+    },
+    "county": "Mineral County",
+    "days_in_year_so_far": 277,
+    "days_missing": 2,
+    "days_reported": 275,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Creede Water Treatment",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "3.47",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 4",
+     "total_in": "7.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 43,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Colorado",
+    "through": "Oct 4",
+    "through_iso": "2026-10-04",
+    "total_in": "10.71",
+    "usual_in": "12.10",
+    "vs_usual": {
+     "diff_in": "1.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.52",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d83fe7a022ced087",
+   "sid": "051948 2",
+   "story": "Through Oct 4, the weather station in Creede Water Treatment got 4.52 inches in September, its wettest month, and the biggest single day was 1.30 inches on Sep 28. It went 43 days in a row with nothing in the gauge, from Jan 1 to Feb 12. On the days both years reported, this year has 3.47 inches more than 2025.",
+   "through": "2026-10-04"
+  },
+  "08081": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 5",
+     "in": "0.87",
+     "label": "biggest single day"
+    },
+    "county": "Moffat County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "37 miles from the middle of the county",
+    "gauge_where": "at Craig Moffat County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.95",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "7.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jan 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.61",
+    "usual_in": "11.42",
+    "vs_usual": {
+     "diff_in": "0.81",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.46",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8a8d112d0c5df78a",
+   "sid": "24046 1",
+   "story": "Through Oct 13, the weather station at Craig Moffat County Airport had its wettest month in April at 2.46 inches. The biggest single day was May 5 with 0.87 inches. The longest dry stretch ran 13 days, Jan 10 to Jan 22, with not even a trace in the gauge. This year is 2.95 inches more than last year at this point, though still 0.81 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "08083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 13",
+     "in": "1.04",
+     "label": "biggest single day"
+    },
+    "county": "Montezuma County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Cortez Montezuma County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.93",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "7.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.66",
+    "usual_in": "9.52",
+    "vs_usual": {
+     "diff_in": "0.14",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "4.04",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7b6f22af22757c9f",
+   "sid": "93069 1",
+   "story": "Through Oct 13, the weather station at Cortez Montezuma County Airport sits about at a usual year, 0.14 inches more. September did most of the work with 4.04 inches, and the biggest single day came last, 1.04 inches on Oct 13. The gauge also went 24 days in a row with nothing, Mar 7 to Mar 30. That still puts this year 1.93 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "08085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 16",
+     "in": "1.42",
+     "label": "biggest single day"
+    },
+    "county": "Montrose County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "at Montrose Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.96",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "4.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.42",
+    "usual_in": "6.75",
+    "vs_usual": {
+     "diff_in": "0.67",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.01",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "301fa2e7fd8cde84",
+   "sid": "93013 1",
+   "story": "Through Oct 13, the weather station at Montrose Regional Airport had a quiet spell and then a big month. September brought 3.01 inches, and 1.42 of that came on Sep 16 alone. Before that, the gauge sat empty 23 days in a row from Mar 8 to Mar 30. The year is 2.96 inches more than last year at this point, when 2025 had 4.46.",
+   "through": "2026-10-13"
+  },
+  "08087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 25",
+     "in": "0.85",
+     "label": "biggest single day"
+    },
+    "county": "Morgan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "2.5 miles south-southwest of Hillrose",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.68",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 63,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.02",
+    "usual_in": "14.38",
+    "vs_usual": {
+     "diff_in": "5.36",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.50",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "70056c5399300e57",
+   "sid": "US1COMR0081 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles south-southwest of Hillrose has caught 9.02 inches, 7.68 inches less than it had by this day last year. August was the wettest month at 2.50 inches. The biggest single day was Jun 25 with 0.85 inches. The longest dry stretch ran 17 days, Jan 27 to Feb 12, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "08089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "1.81",
+     "label": "biggest single day"
+    },
+    "county": "Otero County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "17 miles west-southwest of La Junta",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.89",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "9.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Apr 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.35",
+    "usual_in": "11.79",
+    "vs_usual": {
+     "diff_in": "1.44",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.21",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2f85cf049ced2b47",
+   "sid": "03063 1",
+   "story": "Through Oct 13, the weather station 17 miles west-southwest of La Junta had September as its wettest month at 3.21 inches. Sep 30 alone put 1.81 inches in the gauge, the biggest single day of the year. Back in spring it went 25 days in a row with nothing at all, from Apr 2 to Apr 26. Still, it is 0.89 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "08091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 24",
+     "in": "0.59",
+     "label": "biggest single day"
+    },
+    "county": "Ouray County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Ridgway",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.24",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "9.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.93",
+    "usual_in": "13.01",
+    "vs_usual": {
+     "diff_in": "3.08",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.11",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8cd2e979ca5d7e3c",
+   "sid": "057020 2",
+   "story": "Through Oct 13, the weather station in Ridgway had 9.93 inches, 3.08 inches less than a usual year. September was the wettest month with 2.11 inches, and the biggest single day was 0.59 inches on Jan 24. The gauge went 24 days in a row with nothing in it from Mar 8 to Mar 31. That still puts this year 0.24 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "08093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 28",
+     "in": "1.51",
+     "label": "biggest single day"
+    },
+    "county": "Park County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "26 miles from the middle of the county",
+    "gauge_where": "5.5 miles west of Guffey",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.00",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.97",
+    "usual_in": "14.13",
+    "vs_usual": {
+     "diff_in": "0.16",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "3.75",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "54d66f2dde0d57e6",
+   "sid": "US1COPK0067 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.5 miles west of Guffey sat 0.16 inches less than a usual year. July did most of the work with 3.75 inches, and the biggest single day came Jul 28 at 1.51 inches. The gauge went 18 days in a row with nothing in it, Jan 27 to Feb 13. That still leaves 2.00 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "08095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "1.84",
+     "label": "biggest single day"
+    },
+    "county": "Phillips County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Holyoke",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.96",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "21.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Colorado",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "13.06",
+    "usual_in": "16.26",
+    "vs_usual": {
+     "diff_in": "3.20",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.22",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2a8466f81bdfa9df",
+   "sid": "054082 2",
+   "story": "Through Oct 12, the weather station in Holyoke has caught 13.06 inches, 3.20 less than a usual year. May was the wettest month at 3.22 inches, and the biggest single day was 1.84 inches on Aug 15. The gauge went 21 days in a row with nothing, from Mar 12 to Apr 1. Last year at this point it had 7.96 more.",
+   "through": "2026-10-12"
+  },
+  "08097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 26",
+     "in": "0.67",
+     "label": "biggest single day"
+    },
+    "county": "Pitkin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Aspen Pitkin County Airport Sardy Field",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.83",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "8.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jan 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 54,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.62",
+    "usual_in": "12.32",
+    "vs_usual": {
+     "diff_in": "5.70",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.64",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6085371dbfc5eec6",
+   "sid": "93073 1",
+   "story": "Through Oct 13, the weather station at Aspen Pitkin County Airport Sardy Field has 6.62 inches, 5.70 inches less than a usual year. April was the wettest month at 1.64 inches, and the biggest single day was Apr 26 with 0.67 inches. The gauge went 13 days in a row with nothing, Jan 10 to Jan 22. On the days both years reported, this year is 1.83 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "08099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "2.17",
+     "label": "biggest single day"
+    },
+    "county": "Prowers County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "at Lamar Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.87",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "14.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 139,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.12",
+    "usual_in": "12.35",
+    "vs_usual": {
+     "diff_in": "4.77",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.50",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "afe411b73375db76",
+   "sid": "03013 1",
+   "story": "Through Oct 13, the weather station at Lamar Municipal Airport had its wettest month in September at 4.50 inches. The biggest single day came Sep 30 with 2.17 inches. The longest dry stretch ran 17 days, Jan 27 to Feb 12, with not even a trace in the gauge. On the days both years reported, that is 2.87 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "08101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 24",
+     "in": "1.93",
+     "label": "biggest single day"
+    },
+    "county": "Pueblo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "4.7 miles southeast of Pueblo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.16",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "12.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.19",
+    "usual_in": "14.48",
+    "vs_usual": {
+     "diff_in": "2.29",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.18",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5c10c49d8a0adbd6",
+   "sid": "US1COPU0103 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.7 miles southeast of Pueblo had its biggest single day on Jun 24 with 1.93 inches. July was the wettest month at 2.18 inches. The longest dry stretch ran 18 days, Jan 27 to Feb 13, with nothing in the gauge, not even a trace. The year sits 0.16 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "08103": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 17",
+     "in": "0.68",
+     "label": "biggest single day"
+    },
+    "county": "Rio Blanco County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "at Meeker Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.26",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.37",
+    "usual_in": "12.24",
+    "vs_usual": {
+     "diff_in": "1.87",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.13",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "441637705fa8de19",
+   "sid": "94050 1",
+   "story": "Through Oct 13, the weather station at Meeker Airport had its wettest month in April with 2.13 inches. The biggest single day was May 17 at 0.68 inches. The longest dry stretch ran 15 days, Jan 26 to Feb 9, with nothing in the gauge. On the days both years reported, 2026 is 1.26 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "08105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "0.67",
+     "label": "biggest single day"
+    },
+    "county": "Rio Grande County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Del Norte",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.36",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "8.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 28,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.22",
+    "usual_in": "9.21",
+    "vs_usual": {
+     "diff_in": "1.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.03",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b88e43a4d3318f77",
+   "sid": "US1CORG0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northwest of Del Norte had its wettest month in September at 3.03 inches. The biggest single day came late in that month, 0.67 inches on Sep 29. Before that the gauge went 28 days in a row with nothing in it, not even a trace, from May 28 to Jun 24. On the days both years reported, this year is 1.36 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "08107": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 6",
+     "in": "1.10",
+     "label": "biggest single day"
+    },
+    "county": "Routt County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "2.5 miles north of Steamboat Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "3.90",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "12.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Jun 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.46",
+    "usual_in": "20.50",
+    "vs_usual": {
+     "diff_in": "4.04",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.90",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "916bc8ef9b8285fc",
+   "sid": "US1CORT0052 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles north of Steamboat Springs caught most of its year in May, with 3.90 inches that month and the biggest single day at 1.10 inches on May 6. Then it went 23 days in a row with nothing in the gauge, not even a trace, from Jun 2 to Jun 24. Still, on the days both years reported, this year has 3.90 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "08109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "0.64",
+     "label": "biggest single day"
+    },
+    "county": "Saguache County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "5.6 miles west-southwest of La Garita",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.41",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "9.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.65",
+    "usual_in": "9.52",
+    "vs_usual": {
+     "diff_in": "2.87",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.59",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b1cc1014789bb8b9",
+   "sid": "US1COSA0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.6 miles west-southwest of La Garita had 6.65 inches, 2.87 less than a usual year. September did most of the work with 2.59 inches, and the biggest single day was 0.64 on Sep 29. The gauge went 24 days in a row with nothing at all, Mar 8 to Mar 31. Last year it had 9.06 by now, so this year is 2.41 inches behind.",
+   "through": "2026-10-13"
+  },
+  "08111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 17",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "San Juan County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Beartown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "3.60",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "24.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 31,
+     "from": "May 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Colorado",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "28.00",
+    "usual_in": "29.00",
+    "vs_usual": {
+     "diff_in": "1.00",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.40",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1027f9c79b10fb11",
+   "sid": "USS0007M32S 6",
+   "story": "Through Oct 10, the weather station in Beartown has had its wettest month in September, with 8.40 inches. The biggest single day came Sep 17 at 2.00 inches. Before that, the gauge went 31 days in a row with nothing in it, from May 24 to Jun 23. That still leaves the year 3.60 inches ahead of 2025 at this point.",
+   "through": "2026-10-10"
+  },
+  "08113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 14",
+     "in": "0.66",
+     "label": "biggest one-day reading"
+    },
+    "county": "San Miguel County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "22.8 miles southwest of Redvale",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.72",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "May 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 14"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.66",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "1.83",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a326e535052d7eba",
+   "sid": "US1COSM0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 22.8 miles southwest of Redvale had 7.66 inches. September was the wettest month at 1.83 inches, and the biggest one-day reading came Sep 14 at 0.66. The gauge went 26 days in a row with nothing in it, from May 20 to Jun 14. On the days both years reported, that is 0.72 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "08115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "2.13",
+     "label": "biggest single day"
+    },
+    "county": "Sedgwick County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "5 miles south of Sedgwick",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "8.25",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "18.80",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 67,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.66",
+    "usual_in": "16.01",
+    "vs_usual": {
+     "diff_in": "5.35",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.87",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aafc277e39519209",
+   "sid": "057515 2",
+   "story": "Through Oct 13, the weather station 5 miles south of Sedgwick has July as its wettest month at 2.87 inches, and 2.13 inches of that came on Jul 3 alone. The gauge went 18 days in a row with nothing in it, from Feb 1 to Feb 18. On the days both years reported, this year sits 8.25 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "08117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "0.69",
+     "label": "biggest single day"
+    },
+    "county": "Summit County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "1 mile east of Dillon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.99",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "10.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "May 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.99",
+    "usual_in": "12.59",
+    "vs_usual": {
+     "diff_in": "3.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.92",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b268d53453899762",
+   "sid": "03005 1",
+   "story": "Through Oct 13, the weather station 1 mile east of Dillon had its wettest month in July with 1.92 inches, and its biggest single day was Jul 30 at 0.69 inches. The longest dry stretch ran 15 days, May 31 to Jun 14, with nothing in the gauge, not even a trace. That leaves the year 1.99 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "08119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 20",
+     "in": "1.08",
+     "label": "biggest single day"
+    },
+    "county": "Teller County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "5.1 miles northwest of Cripple Creek",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.09",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.87",
+    "usual_in": "16.23",
+    "vs_usual": {
+     "diff_in": "3.36",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.60",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ab899360bf0ec7a0",
+   "sid": "US1COTL0016 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.1 miles northwest of Cripple Creek has 12.87 inches, 3.36 inches less than a usual year. July was the wettest month at 3.60 inches, and the biggest single day came Jul 20 with 1.08 inches. The gauge went 18 days in a row with nothing in it, from Jan 27 to Feb 13. This year is running 4.09 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "08121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 25",
+     "in": "3.22",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "4 miles east of Akron",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.28",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 31,
+     "from": "Aug 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.69",
+    "usual_in": "14.72",
+    "vs_usual": {
+     "diff_in": "0.97",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.39",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e778a13b3614eab7",
+   "sid": "050109 2",
+   "story": "Through Oct 13, the weather station 4 miles east of Akron had a lot of its year come in June. That month brought 5.39 inches, and 3.22 of it fell on Jun 25 alone. Then the gauge went 31 days in a row with nothing in it, from Aug 20 to Sep 19. Even so, this year sits 4.28 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "08123": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 6",
+     "in": "0.64",
+     "label": "biggest one-day reading"
+    },
+    "county": "Weld County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "1.7 miles east-southeast of Greeley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "11.28",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "16.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 20"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 42,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.49",
+    "usual_in": "13.09",
+    "vs_usual": {
+     "diff_in": "7.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.10",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e8a8569dfc303266",
+   "sid": "US1COWE0424 6",
+   "story": "Through Oct 13, the volunteer rain gauge east-southeast of Greeley had its wettest month in May with 2.10 inches, and its biggest one-day reading came May 6 at 0.64 inches. It went 25 days in a row with nothing in the gauge, not even a trace, from Jan 27 to Feb 20. On the days both years reported, this year is 11.28 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "08125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 25",
+     "in": "1.41",
+     "label": "biggest single day"
+    },
+    "county": "Yuma County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "4 miles east-northeast of Vernon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.45",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Colorado",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.28",
+    "usual_in": "16.51",
+    "vs_usual": {
+     "diff_in": "4.23",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.54",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7689b068bfdf7543",
+   "sid": "058613 2",
+   "story": "Through Oct 13, the weather station 4 miles east-northeast of Vernon has 12.28 inches, 4.23 inches less than a usual year. May was the wettest month at 3.54 inches, and the biggest single day was 1.41 inches on Jun 25. Last year at this point the gauge had 18.73 inches, so this year is 6.45 inches behind it.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "CO"
+}

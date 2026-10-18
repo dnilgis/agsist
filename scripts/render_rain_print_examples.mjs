@@ -64,7 +64,9 @@ try {
     const page = await context.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(String(e)));
-    await page.goto(base + ex.link.replace("/rain-print?", "/rain-print.html?"));
+    // frost marks and the hottest and coldest day (on for a story link since 2026-10-17) read a temperature station the saved
+    // answers don't hold, so the examples are drawn without them: the A2 clean Staircase itself, nothing made up
+    await page.goto(base + ex.link.replace("/rain-print?", "/rain-print.html?") + "&frost=0&heat=0");
     // drawn, the normal in, the full record read and the remarkable days loaded
     await page.waitForFunction(() => {
       const st = document.getElementById("rp-status").textContent;

@@ -1,0 +1,5075 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "47001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "3.15",
+     "label": "biggest single day"
+    },
+    "county": "Anderson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Oak Ridge",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "1.28",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "44.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.22",
+    "usual_in": "43.69",
+    "vs_usual": {
+     "diff_in": "0.47",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.15",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e3a4881a74645bcf",
+   "sid": "53868 1",
+   "story": "Through Oct 13, the weather station in Oak Ridge sits 0.47 inches less than a usual year, about usual. May was the wettest month at 7.15 inches, even with 9 days in a row of nothing in the gauge from May 12 to May 20. The biggest single day came Jun 28 with 3.15 inches. On the days both years reported, this year is 1.28 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "3.40",
+     "label": "biggest single day"
+    },
+    "county": "Bedford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "3.1 miles east-southeast of Shelbyville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "11.47",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "48.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.46",
+    "usual_in": "45.04",
+    "vs_usual": {
+     "diff_in": "7.58",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.15",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "023afbd0fc1291aa",
+   "sid": "US1TNBF0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.1 miles east-southeast of Shelbyville has 37.46 inches, 7.58 inches less than a usual year. May was the wettest month at 7.15 inches, and the biggest single day was 3.40 inches on Jun 23. The gauge went 15 days in a row with nothing from Mar 18 to Apr 1. On the days both years reported, that is 11.47 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 15",
+     "in": "1.75",
+     "label": "biggest one-day reading"
+    },
+    "county": "Benton County",
+    "days_in_year_so_far": 278,
+    "days_missing": 15,
+    "days_reported": 263,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "8.2 miles south of Camden",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 256,
+      "diff_in": "14.39",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 5",
+     "total_in": "41.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 5",
+    "through_iso": "2026-10-05",
+    "total_in": "25.28",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "84b6adba96b8e520",
+   "sid": "US1TNBN0007 6",
+   "story": "Through Oct 5, the volunteer rain gauge 8.2 miles south of Camden has caught 25.28 inches. The biggest one-day reading came Feb 15 at 1.75 inches. From Mar 17 to Apr 4 the gauge went 19 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 14.39 inches less than 2025.",
+   "through": "2026-10-05"
+  },
+  "47007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "1.98",
+     "label": "biggest single day"
+    },
+    "county": "Bledsoe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Pikeville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.82",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "48.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.01",
+    "usual_in": "44.45",
+    "vs_usual": {
+     "diff_in": "11.44",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.07",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "db90147cdf463e23",
+   "sid": "407184 2",
+   "story": "Through Oct 13, the weather station in Pikeville has caught 15.82 inches less than it had by this day last year. May was the wettest month at 7.07 inches. The biggest single day came early, 1.98 inches on Jan 25. The longest run with nothing in the gauge was 9 days, Aug 22 to Aug 30.",
+   "through": "2026-10-13"
+  },
+  "47009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "1.99",
+     "label": "biggest single day"
+    },
+    "county": "Blount County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Knoxville Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.06",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.12",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.06",
+    "usual_in": "41.09",
+    "vs_usual": {
+     "diff_in": "4.03",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.39",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a1564a5e8c41c057",
+   "sid": "13891 1",
+   "story": "Through Oct 13, the weather station at Knoxville Airport had its wettest month in August with 5.39 inches. Then it went 14 days in a row with nothing in the gauge, from Aug 22 to Sep 4. The biggest single day was Jun 28 at 1.99 inches. That leaves the year 2.06 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "47011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 24",
+     "in": "3.18",
+     "label": "biggest single day"
+    },
+    "county": "Bradley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "3.0 miles east-southeast of Cleveland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "5.73",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "42.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.02",
+    "usual_in": "45.72",
+    "vs_usual": {
+     "diff_in": "7.70",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.09",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b02c9316f5071a0a",
+   "sid": "US1TNBR0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.0 miles east-southeast of Cleveland had 38.02 inches, 7.70 inches less than a usual year. August was the wettest month at 6.09 inches, and the biggest single day came Sep 24 with 3.18 inches. The gauge went 18 days without even a trace from Mar 18 to Apr 4. On the days both years reported, this year ran 5.73 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "47015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "1.56",
+     "label": "biggest single day"
+    },
+    "county": "Cannon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1 mile west-northwest of Woodbury",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "17.92",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "50.12",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.85",
+    "usual_in": "45.82",
+    "vs_usual": {
+     "diff_in": "13.97",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.98",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b944c5d4850c79ce",
+   "sid": "409866 2",
+   "story": "Through Oct 13, the weather station 1 mile west-northwest of Woodbury had its wettest month in May at 4.98 inches. The biggest single day was Apr 28 with 1.56 inches. The gauge went 18 days in a row with nothing in it, from Mar 18 to Apr 4. On the days both years reported, that is 17.92 inches less than 2025 had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "47017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 12",
+     "in": "2.28",
+     "label": "biggest single day"
+    },
+    "county": "Carroll County",
+    "days_in_year_so_far": 283,
+    "days_missing": 9,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "less than a mile west-southwest of Atwood",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "13.92",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 10",
+     "total_in": "51.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Tennessee",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "34.92",
+    "usual_in": "41.24",
+    "vs_usual": {
+     "diff_in": "6.32",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.35",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5b81efa1134fb697",
+   "sid": "US1TNCR0006 6",
+   "story": "Through Oct 10, the volunteer rain gauge less than a mile west-southwest of Atwood went 14 days in a row with nothing in it, from Aug 28 to Sep 10. Then it caught 2.28 inches on Sep 12, the biggest single day so far. July was the wettest month at 7.35 inches. On the days both years reported, this year sits 13.92 inches less than 2025.",
+   "through": "2026-10-10"
+  },
+  "47019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "1.92",
+     "label": "biggest one-day reading"
+    },
+    "county": "Carter County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Elizabethton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.27",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 84,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.07",
+    "usual_in": "39.15",
+    "vs_usual": {
+     "diff_in": "6.08",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.63",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6881ba3b1d3288ed",
+   "sid": "402806 2",
+   "story": "Through Oct 13, the weather station in Elizabethton had June as its wettest month at 5.63 inches, and its biggest one-day reading came Jun 28 with 1.92 inches. The longest dry stretch ran 14 days, from Aug 23 to Sep 5, with nothing in the gauge, not even a trace. That leaves the station 2.27 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "47021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "2.32",
+     "label": "biggest single day"
+    },
+    "county": "Cheatham County",
+    "days_in_year_so_far": 284,
+    "days_missing": 1,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "6.3 miles east-northeast of Ashland City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "13.11",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "45.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "32.61",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.34",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6117cd75a08aafe0",
+   "sid": "US1TNCH0032 6",
+   "story": "Through Oct 11, the volunteer rain gauge 6.3 miles east-northeast of Ashland City caught 8.34 inches in July, its wettest month. The biggest single day was Jul 22 at 2.32 inches. Then it went 14 days in a row with nothing in the gauge, Aug 28 to Sep 10. On the days both years reported, that is 13.11 inches less than 2025 had.",
+   "through": "2026-10-11"
+  },
+  "47023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "2.31",
+     "label": "biggest one-day reading"
+    },
+    "county": "Chester County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "6.1 miles south-southwest of Henderson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "13.67",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "47.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 27"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.33",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.20",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8491e3b10338f664",
+   "sid": "US1TNCS0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.1 miles south-southwest of Henderson has caught 34.33 inches. June was the wettest month at 6.20 inches, and the biggest one-day reading came Jun 8 at 2.31 inches. The longest dry stretch ran 10 days, Mar 18 to Mar 27, with not even a trace. On the days both years reported, this year is 13.67 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 21",
+     "in": "1.61",
+     "label": "biggest single day"
+    },
+    "county": "Claiborne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Tazewell",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.97",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.36",
+    "usual_in": "43.77",
+    "vs_usual": {
+     "diff_in": "9.41",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.44",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "afac3d6fdb58b72a",
+   "sid": "408868 2",
+   "story": "Through Oct 13, the weather station in Tazewell has caught 7.97 inches less than it had by this day last year. July was the wettest month at 5.44 inches, and the biggest single day was 1.61 inches on Aug 21. The longest dry stretch ran 14 days, from Mar 22 to Apr 4, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "47027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.45",
+     "label": "biggest single day"
+    },
+    "county": "Clay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "less than a mile north-northeast of Celina",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "16.92",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "50.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.80",
+    "usual_in": "43.53",
+    "vs_usual": {
+     "diff_in": "9.73",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.07",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e4e1bf710689dcf1",
+   "sid": "US1TNCY0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north-northeast of Celina has caught 33.80 inches, 9.73 inches less than a usual year. May was the wettest month at 7.07 inches, and the biggest single day was Jun 28 with 2.45 inches. From Mar 18 to Apr 4 the gauge went 18 days in a row with nothing in it, not even a trace. Last year at this point it had 50.72 inches, so this year is 16.92 inches behind.",
+   "through": "2026-10-13"
+  },
+  "47029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.21",
+     "label": "biggest single day"
+    },
+    "county": "Cocke County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1 mile northwest of Newport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "2.74",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "36.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.66",
+    "usual_in": "37.36",
+    "vs_usual": {
+     "diff_in": "1.30",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.88",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "92c6fa3568100fdf",
+   "sid": "406534 2",
+   "story": "Through Oct 13, the weather station 1 mile northwest of Newport has run a little wetter than a usual year. May was the wettest month at 5.88 inches, and the biggest single day came Jun 28 with 2.21 inches. The gauge then went 14 days in a row with nothing in it, from Aug 22 to Sep 4. On the days both years reported, 2026 is 2.74 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "47031": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Coffee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "6.5 miles east-northeast of Manchester",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.71",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "51.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.83",
+    "usual_in": "45.52",
+    "vs_usual": {
+     "diff_in": "7.69",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.53",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3770a105c1bb389f",
+   "sid": "US1TNCF0032 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.5 miles east-northeast of Manchester has caught 13.71 inches less than it had by this day in 2025. May was the wettest month at 7.53 inches, and the biggest single day came May 7 with 2.12 inches. The longest dry stretch ran 18 days, Mar 18 to Apr 4, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "47033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 15",
+     "in": "2.99",
+     "label": "biggest single day"
+    },
+    "county": "Crockett County",
+    "days_in_year_so_far": 284,
+    "days_missing": 8,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1 mile north of Alamo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "15.37",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 11",
+     "total_in": "49.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Tennessee",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "33.28",
+    "usual_in": "39.78",
+    "vs_usual": {
+     "diff_in": "6.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.46",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2a446d7e14e716e2",
+   "sid": "400049 2",
+   "story": "Through Oct 11, the weather station 1 mile north of Alamo had its wettest month in June at 6.46 inches. The biggest single day came early, 2.99 inches on Feb 15. The gauge then went 15 days in a row with nothing from Aug 10 to Aug 24. On the days both years reported, this year sits 15.37 inches less than last year.",
+   "through": "2026-10-11"
+  },
+  "47035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 12",
+     "in": "2.53",
+     "label": "biggest single day"
+    },
+    "county": "Cumberland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Crossville Memorial Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "6.92",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "44.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.44",
+    "usual_in": "45.50",
+    "vs_usual": {
+     "diff_in": "8.06",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.75",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7cd814e94912b820",
+   "sid": "03847 1",
+   "story": "Through Oct 13, the weather station at Crossville Memorial Airport has 37.44 inches, 8.06 inches less than a usual year. July was the wettest month at 8.75 inches, and the biggest single day was 2.53 inches on Sep 12. The gauge went 10 days in a row with nothing from Apr 6 to Apr 15. On the days both years reported, this year is 6.92 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "47037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "1.92",
+     "label": "biggest single day"
+    },
+    "county": "Davidson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Nashville International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "18.20",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.12",
+    "usual_in": "40.29",
+    "vs_usual": {
+     "diff_in": "11.17",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.59",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cfdfdb80564fe75c",
+   "sid": "13897 1",
+   "story": "Through Oct 13, the weather station at Nashville International Airport had 29.12 inches, 18.20 inches less than last year by the same day. July was the wettest month at 6.59 inches. The biggest single day came early, 1.92 inches on Jan 25. From Mar 19 to Apr 3 the gauge went 16 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "47039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "2.95",
+     "label": "biggest single day"
+    },
+    "county": "Decatur County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "in Decaturville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.89",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "46.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.64",
+    "usual_in": "44.41",
+    "vs_usual": {
+     "diff_in": "12.77",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.82",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "42ca8d311ff90ca4",
+   "sid": "402390 2",
+   "story": "Through Oct 13, the weather station in Decaturville has caught 14.89 inches less than it had by this day last year. July was the wettest month at 5.82 inches. The biggest single day came early, 2.95 inches on Jan 25. The longest dry stretch ran 11 days, from Mar 17 to Mar 27, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "47041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 11",
+     "in": "1.57",
+     "label": "biggest single day"
+    },
+    "county": "DeKalb County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "4.9 miles west-southwest of Smithville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "20.52",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 12",
+     "total_in": "47.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 58,
+    "state": "Tennessee",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "27.61",
+    "usual_in": "47.72",
+    "vs_usual": {
+     "diff_in": "20.11",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.70",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "71f166642063698f",
+   "sid": "US1TNDK0001 6",
+   "story": "Through Oct 12, the volunteer rain gauge 4.9 miles west-southwest of Smithville has had July as its wettest month at 4.70 inches, and its biggest single day came Jul 11 with 1.57 inches. It went 16 days in a row with nothing in it, not even a trace, from Mar 20 to Apr 4. On the days both years reported, this year is 20.52 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "47043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.18",
+     "label": "biggest single day"
+    },
+    "county": "Dickson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Dickson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "6.97",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "45.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.68",
+    "usual_in": "42.59",
+    "vs_usual": {
+     "diff_in": "3.91",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.03",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c1ee769687818432",
+   "sid": "402489 2",
+   "story": "Through Oct 13, the weather station in Dickson had its wettest month in July, with 11.03 inches. The biggest single day came Apr 28 at 2.18 inches. Earlier the gauge went 17 days in a row with nothing in it, Mar 17 to Apr 2. On the days both years reported, that is 6.97 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 15",
+     "in": "5.05",
+     "label": "biggest single day"
+    },
+    "county": "Dyer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "7.7 miles east of Dyersburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "7.92",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "61.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Aug 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "53.77",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.95",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f08398d96b7b3cbc",
+   "sid": "US1TNDY0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.7 miles east of Dyersburg had 53.77 inches for the year. July was the wettest month at 10.95 inches, and the biggest single day came Feb 15 with 5.05 inches. The gauge went 18 days in a row with nothing from Aug 2 to Aug 19. On the days both years reported, that is 7.92 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "47047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 9",
+     "in": "3.53",
+     "label": "biggest single day"
+    },
+    "county": "Fayette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.3 miles east of Somerville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "9.99",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Sep 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.91",
+    "usual_in": "43.44",
+    "vs_usual": {
+     "diff_in": "4.53",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.43",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4da6184df547b239",
+   "sid": "US1TNFY0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles east of Somerville had its wettest month in May at 7.43 inches. The biggest single day came Aug 9 with 3.53 inches. Then it went 18 days in a row with nothing in the gauge, from Sep 14 to Oct 1. On the days both years reported, that is 9.99 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "3.00",
+     "label": "biggest one-day reading"
+    },
+    "county": "Fentress County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "12.9 miles south of Jamestown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "11.48",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "49.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 88,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.14",
+    "usual_in": "43.36",
+    "vs_usual": {
+     "diff_in": "5.22",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.95",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a98b23f61c2ddc1a",
+   "sid": "US1TNFN0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 12.9 miles south of Jamestown has been running 5.22 inches less than a usual year. June was the wettest month at 6.95 inches, and the biggest one-day reading came Jun 28 with 3.00 inches. From Aug 24 to Sep 5 the gauge went 13 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 11.48 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47051": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "2.29",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile west of Winchester",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.19",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.78",
+    "usual_in": "47.88",
+    "vs_usual": {
+     "diff_in": "11.10",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.86",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "340da02465e98eed",
+   "sid": "US1TNFK0015 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west of Winchester has been 11.10 inches short of a usual year. May was the wettest month at 6.86 inches, and the biggest single day came May 7 with 2.29 inches. The gauge went 15 days in a row with nothing in it, from Mar 18 to Apr 1. It is also 7.19 inches less than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "47053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 9",
+     "in": "3.23",
+     "label": "biggest one-day reading"
+    },
+    "county": "Gibson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Milan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "8.39",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 14,
+     "through": "Oct 13",
+     "total_in": "45.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 11"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 87,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.43",
+    "usual_in": "43.08",
+    "vs_usual": {
+     "diff_in": "5.65",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.76",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c2a3b1544bb6137b",
+   "sid": "406012 2",
+   "story": "Through Oct 13, the weather station in Milan had its wettest month in July at 7.76 inches. The biggest one-day reading came Aug 9 at 3.23 inches. Then the gauge went 13 days in a row with nothing, not even a trace, from Aug 30 to Sep 11. On the days both years reported, this year is 8.39 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 6",
+     "in": "3.20",
+     "label": "biggest one-day reading"
+    },
+    "county": "Giles County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Pulaski Wastewater",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "12.55",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "53.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Sep 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 21"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 90,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.66",
+    "usual_in": "45.28",
+    "vs_usual": {
+     "diff_in": "4.62",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.21",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "934c4413b699f93b",
+   "sid": "407459 2",
+   "story": "Through Oct 13, the weather station in Pulaski Wastewater had its wettest month in July at 11.21 inches. The biggest one-day reading came Jul 6 at 3.20 inches. Later the station went 15 days in a row with nothing at all, Sep 7 to Sep 21. On the days both years reported, this year has 12.55 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "47057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 26",
+     "in": "2.34",
+     "label": "biggest one-day reading"
+    },
+    "county": "Grainger County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "7.0 miles south-southwest of Rutledge",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "4.79",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "35.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.63",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.67",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "acb840322f552532",
+   "sid": "US1TNGR0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.0 miles south-southwest of Rutledge had its wettest month in June at 8.67 inches. The biggest one-day reading was 2.34 inches on Feb 26. The longest dry stretch ran 9 days, Apr 8 to Apr 16, with nothing in the gauge. On the days both years reported, this year is 4.79 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "47059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 23",
+     "in": "2.38",
+     "label": "biggest one-day reading"
+    },
+    "county": "Greene County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "1 mile northwest of Baileyton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 264,
+      "diff_in": "1.47",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 22,
+     "through": "Oct 13",
+     "total_in": "36.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 100,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.56",
+    "usual_in": "36.63",
+    "vs_usual": {
+     "diff_in": "0.07",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.74",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7709d9b1448440b9",
+   "sid": "US1TNGN0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1 mile northwest of Baileyton sits right about at a usual year, 0.07 inches less. July did most of the work at 7.74 inches, with the biggest one-day reading of 2.38 inches on Jul 23. Then the gauge went 14 days with nothing in it, not even a trace, from Aug 23 to Sep 5. On the days both years reported, this year is 1.47 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47061": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 21",
+     "in": "2.26",
+     "label": "biggest single day"
+    },
+    "county": "Grundy County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Coalmont",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "15.17",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "56.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Tennessee",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "40.86",
+    "usual_in": "49.85",
+    "vs_usual": {
+     "diff_in": "8.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.57",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "001e70511277837f",
+   "sid": "401887 2",
+   "story": "Through Oct 12, the weather station in Coalmont has 15.17 inches less than it had by this day last year. May was the wettest month at 8.57 inches, and the biggest single day came May 21 with 2.26 inches. Then the gauge went 14 days in a row with nothing in it, not even a trace, from Aug 22 to Sep 4.",
+   "through": "2026-10-12"
+  },
+  "47063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.16",
+     "label": "biggest single day"
+    },
+    "county": "Hamblen County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Morristown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.98",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.76",
+    "usual_in": "37.52",
+    "vs_usual": {
+     "diff_in": "2.76",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.33",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5881935c622c9ba1",
+   "sid": "406272 2",
+   "story": "Through Oct 13, the weather station in Morristown had its wettest month in June with 5.33 inches, and its biggest single day came Jun 28 with 2.16 inches. Then it went 15 days in a row with nothing in the gauge, from Aug 22 to Sep 5. On the days both years reported, that comes to 2.98 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "47065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 20",
+     "in": "1.64",
+     "label": "biggest single day"
+    },
+    "county": "Hamilton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Chattanooga Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.31",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.34",
+    "usual_in": "42.90",
+    "vs_usual": {
+     "diff_in": "8.56",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.05",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2cc5804782b04d5f",
+   "sid": "13882 1",
+   "story": "Through Oct 13, the weather station at Chattanooga Airport had 34.34 inches, 8.56 inches less than a usual year. May was the wettest month at 6.05 inches, and the biggest single day was 1.64 inches on Jul 20. The gauge then went 21 days in a row with nothing in it, from Aug 22 to Sep 11. Last year at this point it had 13.31 inches more.",
+   "through": "2026-10-13"
+  },
+  "47067": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Hancock County",
+    "days_in_year_so_far": 286,
+    "days_missing": 23,
+    "days_reported": 263,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "9.5 miles west-southwest of Sneedville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 251,
+      "diff_in": "1.02",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 15,
+     "through": "Oct 13",
+     "total_in": "44.78",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 27"
+    },
+    "multi_day_reports": 7,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.14",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "81bb9285a5850a4d",
+   "sid": "US1TNHC0005 6",
+   "story": "Through Oct 13, the longest the gauge went with nothing in it, not even a trace, was 10 days, from Mar 18 to Mar 27. On the 251 days both years reported, this year has 1.02 inches more than 2025. The total so far is 42.14 inches.",
+   "through": "2026-10-13"
+  },
+  "47069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "2.94",
+     "label": "biggest one-day reading"
+    },
+    "county": "Hardeman County",
+    "days_in_year_so_far": 284,
+    "days_missing": 8,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Bolivar Water Works",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "17.10",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 11",
+     "total_in": "50.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 11"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 78,
+    "state": "Tennessee",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "33.11",
+    "usual_in": "42.59",
+    "vs_usual": {
+     "diff_in": "9.48",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.42",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ae0e53f366e05bd0",
+   "sid": "400876 2",
+   "story": "Through Oct 11, the weather station in Bolivar Water Works had May as its wettest month at 8.42 inches. The biggest one-day reading was 2.94 inches on Apr 29. From Aug 24 to Sep 11 the gauge went 19 days in a row with nothing in it, not even a trace. On the days both years reported, that is 17.10 inches less than last year.",
+   "through": "2026-10-11"
+  },
+  "47071": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Hardin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 22,
+    "days_reported": 264,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "9.6 miles south-southeast of Savannah",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 27"
+    },
+    "multi_day_reports": 6,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.30",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.98",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0e92c36ccf8e1956",
+   "sid": "US1TNHN0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 9.6 miles south-southeast of Savannah has caught 41.30 inches. May was the wettest month at 7.98 inches. The longest dry stretch ran 11 days, Mar 17 to Mar 27, with nothing in the gauge, not even a trace. The gauge reported on 264 of 286 days, so a few days are missing from that total.",
+   "through": "2026-10-13"
+  },
+  "47073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "1.90",
+     "label": "biggest one-day reading"
+    },
+    "county": "Hawkins County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "3.4 miles north-northeast of Church Hill",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "0.42",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "36.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 96,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.14",
+    "usual_in": "38.49",
+    "vs_usual": {
+     "diff_in": "1.35",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.65",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9d079481204adfe9",
+   "sid": "US1TNHK0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.4 miles north-northeast of Church Hill had its wettest month in July at 6.65 inches. The biggest one-day reading was 1.90 inches on Jun 28. Then it went 13 days in a row with nothing in the gauge, not even a trace, from Aug 24 to Sep 5. On the days both years reported, this year is 0.42 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "47075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "2.42",
+     "label": "biggest single day"
+    },
+    "county": "Haywood County",
+    "days_in_year_so_far": 286,
+    "days_missing": 24,
+    "days_reported": 262,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "8.8 miles east of Stanton",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.83",
+    "usual_in": "39.64",
+    "vs_usual": {
+     "diff_in": "7.81",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.14",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "da8e6d9cc093d448",
+   "sid": "US1TNHW0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.8 miles east of Stanton sat 7.81 inches less than a usual year. May was the wettest month at 6.14 inches. The biggest single day came Apr 29 with 2.42 inches. The longest dry stretch ran 12 days, Sep 13 to Sep 24, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "47079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 13",
+     "in": "3.02",
+     "label": "biggest single day"
+    },
+    "county": "Henry County",
+    "days_in_year_so_far": 284,
+    "days_missing": 1,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "3 miles east-southeast of Paris",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "15.75",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 11",
+     "total_in": "52.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Tennessee",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "37.20",
+    "usual_in": "42.81",
+    "vs_usual": {
+     "diff_in": "5.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.51",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "88d86cb357ba5b17",
+   "sid": "406977 2",
+   "story": "Through Oct 11, the weather station 3 miles east-southeast of Paris had its wettest month in July at 7.51 inches. The biggest single day came Jun 13 with 3.02 inches. From Aug 28 to Sep 9 it went 13 days in a row with nothing in the gauge, not even a trace. On the days both years reported, that is 15.75 inches less than 2025 had by this point.",
+   "through": "2026-10-11"
+  },
+  "47081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "2.41",
+     "label": "biggest one-day reading"
+    },
+    "county": "Hickman County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1.6 miles northeast of Centerville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 266,
+      "diff_in": "9.41",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "43.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 27"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.67",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.97",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4601b1797325255e",
+   "sid": "US1TNHM0019 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles northeast of Centerville did most of its work in July, with 9.97 inches for the month. The biggest one-day reading came Jul 22 at 2.41 inches. The longest dry stretch ran 10 days, Mar 18 to Mar 27, with not even a trace in the gauge. On the days both years reported, this year sits 9.41 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 4",
+     "in": "2.15",
+     "label": "biggest single day"
+    },
+    "county": "Houston County",
+    "days_in_year_so_far": 284,
+    "days_missing": 1,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "3.0 miles south of Tennessee Ridge",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Tennessee",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "41.15",
+    "usual_in": "42.50",
+    "vs_usual": {
+     "diff_in": "1.35",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "12.97",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6c6e6d6f507e3910",
+   "sid": "US1TNHT0004 6",
+   "story": "Through Oct 11, the volunteer rain gauge 3.0 miles south of Tennessee Ridge had July as its wettest month by a good margin, with 12.97 inches. The biggest single day came Jul 4 at 2.15 inches. The longest dry stretch ran 16 days, from Mar 20 to Apr 4, with nothing in the gauge, not even a trace. All told the gauge sits at 41.15 inches, 1.35 inches less than a usual year.",
+   "through": "2026-10-11"
+  },
+  "47087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 18",
+     "in": "2.41",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "5.2 miles southwest of Hilham",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.02",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.14",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a6b2953d86834a49",
+   "sid": "US1TNJC0017 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.2 miles southwest of Hilham had caught 39.02 inches. May was the wettest month at 7.14 inches. The biggest single day came Jul 18 with 2.41 inches. The longest dry stretch ran 16 days, Mar 17 to Apr 1, without even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "47089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 26",
+     "in": "2.26",
+     "label": "biggest one-day reading"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 13,
+    "days_reported": 273,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "2.0 miles northeast of White Pine",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 266,
+      "diff_in": "0.71",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "36.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 12"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 102,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.88",
+    "usual_in": "37.23",
+    "vs_usual": {
+     "diff_in": "0.65",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f67d25290179d9f0",
+   "sid": "US1TNJF0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.0 miles northeast of White Pine had its biggest one-day reading on Feb 26 at 2.26 inches. It went 20 days in a row with nothing in it, not even a trace, from Aug 24 to Sep 12. On the days both years reported, 2026 is 0.71 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "47091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.02",
+     "label": "biggest single day"
+    },
+    "county": "Johnson County",
+    "days_in_year_so_far": 281,
+    "days_missing": 1,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Mountain City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "1.70",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 8",
+     "total_in": "43.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Tennessee",
+    "through": "Oct 8",
+    "through_iso": "2026-10-08",
+    "total_in": "41.62",
+    "usual_in": "38.15",
+    "vs_usual": {
+     "diff_in": "3.47",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.36",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b156a04dc49ab821",
+   "sid": "406292 2",
+   "story": "Through Oct 8, the weather station in Mountain City had its wettest month in August at 8.36 inches. Right after that it went 13 days with nothing in the gauge, from Aug 24 to Sep 5. The biggest single day was Jun 28 at 2.02 inches. On the days both years reported, this year sits 1.70 inches less than last year.",
+   "through": "2026-10-08"
+  },
+  "47093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.22",
+     "label": "biggest single day"
+    },
+    "county": "Knox County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "5.5 miles west of Knoxville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.04",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "43.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.93",
+    "usual_in": "44.43",
+    "vs_usual": {
+     "diff_in": "0.50",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.76",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9bec208ba77c4402",
+   "sid": "US1TNKX0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.5 miles west of Knoxville has 44.93 inches, 0.50 more than a usual year. June was the wettest month at 7.76 inches, and the biggest single day was Jun 23 with 2.22. The longest dry stretch ran 14 days, Aug 23 to Sep 5, with nothing in the gauge. On the days both years reported, this year is 1.04 inches more than last.",
+   "through": "2026-10-13"
+  },
+  "47097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 6",
+     "in": "1.77",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lauderdale County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "1.9 miles south of Gates",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "24.10",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "52.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.12",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.74",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b24401fd308e0fc3",
+   "sid": "US1TNLD0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.9 miles south of Gates has 28.12 inches for the year. July was the wettest month at 5.74 inches, and the biggest one-day reading was 1.77 inches on Jul 6. The gauge then went 14 days in a row with nothing, from Aug 28 to Sep 10. On the days both years reported, that is 24.10 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 26",
+     "in": "2.59",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lawrence County",
+    "days_in_year_so_far": 286,
+    "days_missing": 26,
+    "days_reported": 260,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "5.2 miles northeast of Loretto",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 243,
+      "diff_in": "5.90",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 17,
+     "through": "Oct 13",
+     "total_in": "50.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Sep 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 91,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.23",
+    "usual_in": "41.87",
+    "vs_usual": {
+     "diff_in": "3.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.49",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2d11ccdece379074",
+   "sid": "US1TNLR0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.2 miles northeast of Loretto has caught 38.23 inches, 3.64 inches less than a usual year. May was the wettest month at 7.49 inches, and the biggest one-day reading was 2.59 inches on Jul 26. The gauge then went 11 days in a row with nothing in it, from Sep 22 to Oct 2. On the days both years reported, this year is 5.90 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "2.59",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lewis County",
+    "days_in_year_so_far": 286,
+    "days_missing": 18,
+    "days_reported": 268,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2.2 miles southeast of Hohenwald",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 258,
+      "diff_in": "18.14",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "55.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 25"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.23",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "12.27",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0d5ebc6eaf9c9208",
+   "sid": "US1TNLS0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.2 miles southeast of Hohenwald caught 12.27 inches in July, its wettest month. The biggest one-day reading came Jul 22 at 2.59 inches. The longest dry stretch ran 9 days, Mar 17 to Mar 25, with not even a trace in the gauge. On the days both years reported, this year is 18.14 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "47103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "3.69",
+     "label": "biggest single day"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "8.6 miles south of Fayetteville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "14.00",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "54.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.76",
+    "usual_in": "46.58",
+    "vs_usual": {
+     "diff_in": "5.82",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.97",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e9f184464860b8e3",
+   "sid": "US1TNLC0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.6 miles south of Fayetteville had its wettest month in May, with 7.97 inches. That same May also held the longest dry stretch, 13 days in a row with nothing in the gauge from May 8 to May 20. On the days both years reported, 2026 sits 14.00 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "47105": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "3.39",
+     "label": "biggest single day"
+    },
+    "county": "Loudon County",
+    "days_in_year_so_far": 282,
+    "days_missing": 0,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Lenoir City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "7.81",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 9",
+     "total_in": "39.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Mar 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Tennessee",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "47.73",
+    "usual_in": "43.20",
+    "vs_usual": {
+     "diff_in": "4.53",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.79",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "38c0f20b9da154c4",
+   "sid": "405158 2",
+   "story": "Through Oct 9, the weather station in Lenoir City had May as the wettest month at 9.79 inches. The biggest single day came May 30 with 3.39 inches. The longest dry stretch ran 11 days, Mar 23 to Apr 2, with nothing in the gauge. That puts the year 7.81 inches more than last year at this point.",
+   "through": "2026-10-09"
+  },
+  "47107": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "2.85",
+     "label": "biggest one-day reading"
+    },
+    "county": "McMinn County",
+    "days_in_year_so_far": 286,
+    "days_missing": 23,
+    "days_reported": 263,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Athens",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 252,
+      "diff_in": "8.73",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "42.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 17"
+    },
+    "multi_day_reports": 9,
+    "pct_of_usual": 72,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.71",
+    "usual_in": "43.92",
+    "vs_usual": {
+     "diff_in": "12.21",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.29",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "038468fbb51e9368",
+   "sid": "400284 2",
+   "story": "Through Oct 13, the weather station in Athens has caught 31.71 inches, 12.21 inches less than a usual year. May did most of the work with 7.29 inches, and the biggest one-day reading came May 30 at 2.85 inches. The gauge stayed bone dry for 12 days in a row from Apr 6 to Apr 17. On the days both years reported, this year sits 8.73 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "47109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "2.32",
+     "label": "biggest one-day reading"
+    },
+    "county": "McNairy County",
+    "days_in_year_so_far": 286,
+    "days_missing": 12,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "7.5 miles northeast of Bethel Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 254,
+      "diff_in": "17.03",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 20,
+     "through": "Oct 13",
+     "total_in": "49.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.33",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.46",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e9caa451e79edf97",
+   "sid": "US1TNMN0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.5 miles northeast of Bethel Springs had 35.33 inches. July was the wettest month at 8.46 inches, and the biggest one-day reading came Jul 22 with 2.32 inches. Then the gauge went 20 days in a row with nothing in it, not even a trace, from Sep 13 to Oct 2. On the days both years reported, this year is 17.03 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 16",
+     "in": "2.26",
+     "label": "biggest single day"
+    },
+    "county": "Macon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "4.5 miles southeast of Lafayette",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.60",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "48.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.85",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.18",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d2dbb36a5c367acc",
+   "sid": "US1TNMC0016 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.5 miles southeast of Lafayette has caught 34.85 inches, 13.60 inches less than last year by this day. May was the wettest month at 5.18 inches, and the biggest single day was Mar 16 with 2.26 inches. The gauge went 15 days in a row with nothing in it, not even a trace, from Aug 22 to Sep 5.",
+   "through": "2026-10-13"
+  },
+  "47113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "1.89",
+     "label": "biggest single day"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Jackson Mckellar- Sipes Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.68",
+    "usual_in": "42.49",
+    "vs_usual": {
+     "diff_in": "10.81",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.38",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "08d0eca0c61f8369",
+   "sid": "03811 1",
+   "story": "Through Oct 13, the weather station at Jackson Mckellar- Sipes Airport had 31.68 inches, 10.81 inches less than a usual year. July was the wettest month at 6.38 inches. The biggest single day was Apr 28 with 1.89 inches. The longest dry stretch ran 15 days from Aug 27 to Sep 10 with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "47115": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 22",
+     "in": "2.40",
+     "label": "biggest single day"
+    },
+    "county": "Marion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Monteagle",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.26",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "55.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.66",
+    "usual_in": "52.53",
+    "vs_usual": {
+     "diff_in": "8.87",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.41",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "de3e26b6de1c37b6",
+   "sid": "93876 1",
+   "story": "Through Oct 13, the weather station in Monteagle had May as its wettest month at 7.41 inches, and the biggest single day came May 22 with 2.40 inches. The longest dry stretch ran 19 days, Mar 17 to Apr 4, with nothing in the gauge, not even a trace. That leaves the year 12.26 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "47117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.09",
+     "label": "biggest single day"
+    },
+    "county": "Marshall County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "5.1 miles southwest of Lewisburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "12.59",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "53.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.41",
+    "usual_in": "46.15",
+    "vs_usual": {
+     "diff_in": "5.74",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.96",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a5283c2a7ce72b19",
+   "sid": "US1TNML0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.1 miles southwest of Lewisburg has caught 40.41 inches, 5.74 less than a usual year. June was the wettest month at 7.96 inches, and the biggest single day came Jun 23 with 2.09. The gauge sat empty 19 days in a row from Mar 17 to Apr 4. On the days both years reported, this year is 12.59 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "47119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "2.40",
+     "label": "biggest single day"
+    },
+    "county": "Maury County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "1.2 miles south-southwest of Columbia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "11.37",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Sep 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.46",
+    "usual_in": "44.48",
+    "vs_usual": {
+     "diff_in": "8.02",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.99",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "726803407baba393",
+   "sid": "US1TNMY0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.2 miles south-southwest of Columbia has 36.46 inches, 8.02 inches less than a usual year. May was the wettest month at 6.99 inches, and the biggest single day was 2.40 inches on Jul 22. The gauge went 14 days in a row with nothing from Sep 7 to Sep 20. On the days both years reported, this year sits 11.37 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 26",
+     "in": "1.95",
+     "label": "biggest single day"
+    },
+    "county": "Meigs County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "7 miles northeast of Decatur",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "0.43",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "41.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.55",
+    "usual_in": "44.82",
+    "vs_usual": {
+     "diff_in": "1.27",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.81",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a22ea781a3f47802",
+   "sid": "402388 2",
+   "story": "Through Oct 13, the weather station 7 miles northeast of Decatur had its wettest month in July at 9.81 inches. The biggest single day came early, 1.95 inches on Jan 26. Then it went 18 days in a row with nothing in the gauge, Mar 18 to Apr 4. On the days both years reported, this year is 0.43 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "47123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 26",
+     "in": "2.90",
+     "label": "biggest one-day reading"
+    },
+    "county": "Monroe County",
+    "days_in_year_so_far": 285,
+    "days_missing": 16,
+    "days_reported": 269,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "less than a mile north of Madisonville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 250,
+      "diff_in": "11.15",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 20,
+     "through": "Oct 12",
+     "total_in": "44.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 12"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "35.61",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.38",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3b993d5530ebd5ee",
+   "sid": "US1TNMR0016 6",
+   "story": "Through Oct 12, the volunteer rain gauge less than a mile north of Madisonville has caught 35.61 inches. May was the wettest month at 7.38 inches. From Aug 22 to Sep 12 the gauge went 22 days in a row with nothing in it, and the biggest reading for a single day came after that, 2.90 inches on Sep 26. On the days both years reported, this year sits 11.15 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "47125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 5",
+     "in": "2.32",
+     "label": "biggest single day"
+    },
+    "county": "Montgomery County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Clarksville Outlaw Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "23.03",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "47.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 67,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.31",
+    "usual_in": "36.38",
+    "vs_usual": {
+     "diff_in": "12.07",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.80",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "53b6568bd18aad7a",
+   "sid": "03894 1",
+   "story": "Through Oct 13, the weather station at Clarksville Outlaw Airport has caught a good share of its rain in July, 8.80 inches. The biggest single day was Jul 5 at 2.32 inches. The gauge went 14 days in a row without even a trace, Mar 19 to Apr 1. On the days both years reported, that is 23.03 inches less than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "47127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.90",
+     "label": "biggest single day"
+    },
+    "county": "Moore County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Lynchburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.84",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "54.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.37",
+    "usual_in": "48.67",
+    "vs_usual": {
+     "diff_in": "10.30",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.23",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "02fbfe0c15f001a4",
+   "sid": "405525 2",
+   "story": "Through Oct 13, the weather station in Lynchburg had 15.84 inches less than it had by this day last year, when it stood at 54.21. June was the wettest month at 6.23 inches, and the biggest single day was Jun 23 with 2.90. The gauge went 13 days in a row with nothing in it, not even a trace, from Mar 20 to Apr 1.",
+   "through": "2026-10-13"
+  },
+  "47129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 2",
+     "in": "2.63",
+     "label": "biggest single day"
+    },
+    "county": "Morgan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "9.0 miles west of Oliver Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.32",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "52.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.94",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.82",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "79329a76f16b3b53",
+   "sid": "US1TNMG0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 9.0 miles west of Oliver Springs had its wettest month in July at 5.82 inches, and its biggest single day was Aug 2 with 2.63 inches. It went 18 days in a row with nothing in the gauge, from Mar 18 to Apr 4. On the days both years reported, this year is 9.32 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 10",
+     "in": "2.83",
+     "label": "biggest single day"
+    },
+    "county": "Obion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1.4 miles south-southeast of Union City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "24.88",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 18,
+     "through": "Oct 13",
+     "total_in": "60.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Sep 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.60",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "11.37",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1227f1244c788004",
+   "sid": "US1TNOB0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles south-southeast of Union City had 38.60 inches for the year. May was the wettest month at 11.37 inches, and the biggest single day was 2.83 inches on Jul 10. The longest dry stretch ran 10 days, Sep 12 to Sep 21. On the days both years reported, that is 24.88 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "3.26",
+     "label": "biggest single day"
+    },
+    "county": "Overton County",
+    "days_in_year_so_far": 276,
+    "days_missing": 0,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "4.1 miles west-southwest of Livingston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "11.61",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 3",
+     "total_in": "47.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Tennessee",
+    "through": "Oct 3",
+    "through_iso": "2026-10-03",
+    "total_in": "36.01",
+    "usual_in": "46.08",
+    "vs_usual": {
+     "diff_in": "10.07",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.13",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3af70d98f47f316f",
+   "sid": "US1TNOV0008 6",
+   "story": "Through Oct 3, the volunteer rain gauge 4.1 miles west-southwest of Livingston has 36.01 inches, 10.07 inches less than a usual year. May was the wettest month at 7.13 inches, and the biggest single day was 3.26 inches on Jun 28. The gauge went 16 days in a row with nothing in it, from Mar 17 to Apr 1. On the days both years reported, this year is 11.61 inches less than last year.",
+   "through": "2026-10-03"
+  },
+  "47137": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "5.27",
+     "label": "biggest one-day reading"
+    },
+    "county": "Pickett County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Byrdstown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "7.02",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "43.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 84,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.82",
+    "usual_in": "43.64",
+    "vs_usual": {
+     "diff_in": "6.82",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.38",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1391a01eeb1f7140",
+   "sid": "401310 2",
+   "story": "Through Oct 13, the weather station in Byrdstown had its wettest month in June at 9.38 inches, and 5.27 inches of that came on Jun 28. The longest dry stretch ran 15 days, from Mar 18 to Apr 1, with nothing in the gauge. On the days both years reported, this year has 7.02 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "47139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "2.62",
+     "label": "biggest one-day reading"
+    },
+    "county": "Polk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2.3 miles east-southeast of Benton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "13.80",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "56.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 7,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.56",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.29",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5bb637ff730c9277",
+   "sid": "US1TNPK0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.3 miles east-southeast of Benton had 42.56 inches. May was the wettest month at 7.29 inches. The biggest one-day reading was 2.62 inches on Aug 12, and then the gauge went 12 days in a row with nothing from Aug 25 to Sep 5. On the days both years reported, this year is 13.80 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47141": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.64",
+     "label": "biggest single day"
+    },
+    "county": "Putnam County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "3.3 miles south-southwest of Cookeville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.74",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "47.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.19",
+    "usual_in": "47.26",
+    "vs_usual": {
+     "diff_in": "2.07",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.10",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c5af47bf5194ca6d",
+   "sid": "US1TNPM0031 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.3 miles south-southwest of Cookeville had July as its wettest month at 9.10 inches. The biggest single day was Apr 28 with 2.64 inches. From Aug 22 to Sep 5 it went 15 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 2.74 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47143": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 16",
+     "in": "3.00",
+     "label": "biggest single day"
+    },
+    "county": "Rhea County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "2 miles southeast of Dayton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.62",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.67",
+    "usual_in": "45.81",
+    "vs_usual": {
+     "diff_in": "9.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.55",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f877131f28653eee",
+   "sid": "402360 2",
+   "story": "Through Oct 13, the weather station 2 miles southeast of Dayton had its biggest single day on Mar 16 with 3.00 inches. May was the wettest month at 6.55 inches. The gauge went 16 days in a row with nothing, from Jan 26 to Feb 10. On the days both years reported, this year is 5.62 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "47145": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.30",
+     "label": "biggest single day"
+    },
+    "county": "Roane County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Kingston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.67",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "40.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.63",
+    "usual_in": "46.36",
+    "vs_usual": {
+     "diff_in": "6.73",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.18",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7a052f04da8c417c",
+   "sid": "404871 2",
+   "story": "Through Oct 13, the weather station in Kingston had its wettest month in May at 6.18 inches. The biggest single day came Jun 23 with 2.30 inches. The gauge went 11 days in a row with nothing in it, from Mar 17 to Mar 27. That leaves the year 0.67 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "47147": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 26",
+     "in": "1.92",
+     "label": "biggest single day"
+    },
+    "county": "Robertson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "2.6 miles north of Cedar Hill",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "20.77",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "51.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.51",
+    "usual_in": "40.88",
+    "vs_usual": {
+     "diff_in": "10.37",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.49",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6255beef5e711a60",
+   "sid": "US1TNRB0016 6",
+   "story": "Through Oct 13, the volunteer rain gauge north of Cedar Hill had its wettest month in May at 6.49 inches, and its biggest single day came May 26 with 1.92 inches. The longest dry stretch ran 19 days, Aug 22 to Sep 9, with not even a trace in the gauge. On the days both years reported, this year is 20.77 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47149": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 8",
+     "in": "2.68",
+     "label": "biggest single day"
+    },
+    "county": "Rutherford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "8.7 miles east of Murfreesboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "17.70",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "52.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.39",
+    "usual_in": "45.03",
+    "vs_usual": {
+     "diff_in": "10.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.94",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8c4cae0fc544c4fc",
+   "sid": "US1TNRD0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.7 miles east of Murfreesboro had 17.70 inches less than last year on the days both years reported. August was the wettest month at 6.94 inches, and the biggest single day was Aug 8 with 2.68 inches. The longest dry stretch ran 10 days, Sep 13 to Sep 22, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "47151": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "4.09",
+     "label": "biggest single day"
+    },
+    "county": "Scott County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Oneida",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "11.64",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.99",
+    "usual_in": "46.19",
+    "vs_usual": {
+     "diff_in": "9.20",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.85",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c25f3c4baaefea47",
+   "sid": "406829 2",
+   "story": "Through Oct 13, the weather station in Oneida had its wettest month in June, at 7.85 inches. The biggest single day came Jun 28, when the gauge caught 4.09 inches. On the days both years reported, the station has 11.64 inches less than 2025 had by this point.",
+   "through": "2026-10-13"
+  },
+  "47153": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 25",
+     "in": "2.41",
+     "label": "biggest one-day reading"
+    },
+    "county": "Sequatchie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "2.3 miles south-southeast of Dunlap",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "10.44",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 77,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.26",
+    "usual_in": "45.72",
+    "vs_usual": {
+     "diff_in": "10.46",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.81",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "464b8c23b5935af7",
+   "sid": "US1TNSQ0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.3 miles south-southeast of Dunlap has caught 35.26 inches, 10.46 inches less than a usual year. May did most of the work with 8.81 inches, and the biggest one-day reading was 2.41 inches on May 25. The gauge then went 13 days in a row with nothing in it, not even a trace, from Aug 24 to Sep 5. On the days both years reported, this year is 10.44 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "47155": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 29",
+     "in": "3.16",
+     "label": "biggest one-day reading"
+    },
+    "county": "Sevier County",
+    "days_in_year_so_far": 286,
+    "days_missing": 14,
+    "days_reported": 272,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "2 miles southwest of Gatlinburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 263,
+      "diff_in": "4.24",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "50.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 7,
+    "pct_of_usual": 103,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.71",
+    "usual_in": "45.57",
+    "vs_usual": {
+     "diff_in": "1.14",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.91",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0fc250349f164d03",
+   "sid": "403420 2",
+   "story": "Through Oct 13, the weather station 2 miles southwest of Gatlinburg had June as its wettest month at 8.91 inches. The biggest one-day reading came Jun 29 with 3.16 inches. The longest dry stretch ran 10 days, Apr 7 to Apr 16, with nothing in the gauge. On the days both years reported, this year has 4.24 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47157": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "2.62",
+     "label": "biggest single day"
+    },
+    "county": "Shelby County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Memphis",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "18.10",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "57.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Sep 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.10",
+    "usual_in": "44.20",
+    "vs_usual": {
+     "diff_in": "5.10",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.67",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "921dacd9162e81cd",
+   "sid": "53828 1",
+   "story": "Through Oct 13, the weather station in Memphis has 18.10 inches less than it had at this point in 2025. June was the wettest month at 8.67 inches, and the biggest single day was Apr 29 with 2.62. Then it quit. From Sep 14 to Oct 2 the gauge went 19 days in a row without a trace.",
+   "through": "2026-10-13"
+  },
+  "47159": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "1.57",
+     "label": "biggest single day"
+    },
+    "county": "Smith County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "1.4 miles east-northeast of Gordonsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "4.69",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "39.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Sep 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.70",
+    "usual_in": "44.72",
+    "vs_usual": {
+     "diff_in": "10.02",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.22",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fa5aae6ae8024874",
+   "sid": "US1TNSM0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge east-northeast of Gordonsville has caught 34.70 inches, 10.02 inches less than a usual year. July did most of the work with 8.22 inches. The biggest single day came back on Jan 25 at 1.57 inches. From Sep 14 to Oct 2 the gauge went 19 days in a row without even a trace, and on the days both years reported, that's 4.69 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47161": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 23",
+     "in": "1.92",
+     "label": "biggest one-day reading"
+    },
+    "county": "Stewart County",
+    "days_in_year_so_far": 285,
+    "days_missing": 9,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "1 mile west of Dover",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 86,
+    "state": "Tennessee",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "35.96",
+    "usual_in": "42.03",
+    "vs_usual": {
+     "diff_in": "6.07",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.01",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4cde5a332ae72624",
+   "sid": "402589 2",
+   "story": "Through Oct 12, the weather station 1 mile west of Dover has 35.96 inches, 6.07 inches less than a usual year. July was the wettest month at 10.01 inches. The biggest one-day reading came May 23 with 1.92 inches. The longest dry stretch ran 16 days, Mar 18 to Apr 2, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-12"
+  },
+  "47163": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 3",
+     "in": "1.55",
+     "label": "biggest single day"
+    },
+    "county": "Sullivan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Bristol Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.81",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.89",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.08",
+    "usual_in": "35.61",
+    "vs_usual": {
+     "diff_in": "1.53",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.36",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d10dae92df0f2e0f",
+   "sid": "13877 1",
+   "story": "Through Oct 13, the weather station at Bristol Airport had June as its wettest month at 5.36 inches. The biggest single day came late, 1.55 inches on Oct 3. The gauge went 12 days in a row with nothing from Aug 23 to Sep 3. That leaves the year 4.81 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "47165": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "2.44",
+     "label": "biggest single day"
+    },
+    "county": "Sumner County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "2.9 miles northeast of Hendersonville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "12.19",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "47.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Tennessee",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "35.69",
+    "usual_in": "42.99",
+    "vs_usual": {
+     "diff_in": "7.30",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.12",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d1c3fb5d3d9070ec",
+   "sid": "US1TNSR0011 6",
+   "story": "Through Oct 11, the volunteer rain gauge 2.9 miles northeast of Hendersonville has caught 35.69 inches, 7.30 inches less than a usual year. May was the wettest month at 8.12 inches, and the biggest single day came Jul 22 with 2.44 inches. The longest dry stretch ran 10 days, Mar 18 to Mar 27, with nothing in the gauge. Last year at this point it had 12.19 inches more.",
+   "through": "2026-10-11"
+  },
+  "47167": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.70",
+     "label": "biggest one-day reading"
+    },
+    "county": "Tipton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 12,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "3.2 miles east-southeast of Atoka",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "19.53",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "50.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 76,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.52",
+    "usual_in": "41.61",
+    "vs_usual": {
+     "diff_in": "10.09",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.52",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2e1c2aef5a39e6a0",
+   "sid": "US1TNTP0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.2 miles east-southeast of Atoka has been running dry. June was the wettest month at 6.52 inches, and the biggest one-day reading came Jun 23 with 2.70 inches. Then the gauge sat empty for 20 days in a row, Sep 13 to Oct 2, not even a trace. On the days both years reported, that is 19.53 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47171": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 11",
+     "in": "2.33",
+     "label": "biggest single day"
+    },
+    "county": "Unicoi County",
+    "days_in_year_so_far": 279,
+    "days_missing": 0,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1 mile west of Erwin",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Tennessee",
+    "through": "Oct 6",
+    "through_iso": "2026-10-06",
+    "total_in": "39.40",
+    "usual_in": "38.53",
+    "vs_usual": {
+     "diff_in": "0.87",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "10.20",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7be3aa25747c415b",
+   "sid": "402934 2",
+   "story": "Through Oct 6, the weather station 1 mile west of Erwin had 39.40 inches, 0.87 more than a usual year. July did most of the lifting at 10.20 inches, and the biggest single day came in that month, 2.33 inches on Jul 11. The longest dry stretch was 10 days, Apr 7 to Apr 16, without even a trace in the gauge.",
+   "through": "2026-10-06"
+  },
+  "47173": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "3.05",
+     "label": "biggest single day"
+    },
+    "county": "Union County",
+    "days_in_year_so_far": 285,
+    "days_missing": 1,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile east of Maynardville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "2.41",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "40.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Tennessee",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "42.91",
+    "usual_in": "42.29",
+    "vs_usual": {
+     "diff_in": "0.62",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.93",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6d51064ca27e327a",
+   "sid": "US1TNUN0003 6",
+   "story": "Through Oct 12, the volunteer rain gauge less than a mile east of Maynardville sits about where a usual year would, 0.62 inches more. July was the wettest month at 8.93 inches, and the biggest single day was 3.05 inches on Jun 28. The longest dry stretch ran 13 days from Mar 23 to Apr 4. On the days both years reported, this year is 2.41 inches more than 2025.",
+   "through": "2026-10-12"
+  },
+  "47175": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.36",
+     "label": "biggest single day"
+    },
+    "county": "Van Buren County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "6.6 miles south of Spencer",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "15.57",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "54.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.42",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.89",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "59770b22a8ae7d24",
+   "sid": "US1TNVB0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.6 miles south of Spencer has 39.42 inches. That is 15.57 inches less than 2025 on the days both years reported. July was the wettest month at 6.89 inches, and the biggest single day was 2.36 inches on Jun 23. The gauge went 13 days in a row with nothing in it, from Aug 24 to Sep 5.",
+   "through": "2026-10-13"
+  },
+  "47177": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.30",
+     "label": "biggest one-day reading"
+    },
+    "county": "Warren County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "1.9 miles south-southwest of Morrison",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 263,
+      "diff_in": "8.44",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 21,
+     "through": "Oct 13",
+     "total_in": "46.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 83,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.43",
+    "usual_in": "47.28",
+    "vs_usual": {
+     "diff_in": "7.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.11",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f9a17ce825fbfb17",
+   "sid": "US1TNWR0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.9 miles south-southwest of Morrison had its wettest month in May at 8.11 inches. The biggest one-day reading came Jun 23 at 2.30 inches. The gauge went 16 days in a row with nothing in it, from Mar 20 to Apr 4. On the days both years reported, this year is 8.44 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "47179": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 15",
+     "in": "1.68",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2.5 miles south-southwest of Jonesborough",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.35",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.11",
+    "usual_in": "38.84",
+    "vs_usual": {
+     "diff_in": "0.27",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.51",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3daecf9374c550e9",
+   "sid": "US1TNWS0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles south-southwest of Jonesborough has caught 39.11 inches, 0.27 more than a usual year. June was the wettest month at 7.51 inches, and the biggest single day was Jun 15 with 1.68. The longest dry stretch ran 10 days, Apr 7 to Apr 16, with not even a trace. On the days both years reported, this year is 4.35 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "47181": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.70",
+     "label": "biggest single day"
+    },
+    "county": "Wayne County",
+    "days_in_year_so_far": 284,
+    "days_missing": 2,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Waynesboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "1.31",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 11",
+     "total_in": "43.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Tennessee",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "41.72",
+    "usual_in": "48.21",
+    "vs_usual": {
+     "diff_in": "6.49",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.40",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "16acf2da8e596e7a",
+   "sid": "409502 2",
+   "story": "Through Oct 11, the weather station in Waynesboro had its wettest month in June at 9.40 inches, and the biggest single day came Jun 23 with 2.70 inches. Then the gauge sat empty for 20 days in a row, from Sep 13 to Oct 2. On the days both years reported, this year is 1.31 inches less than 2025.",
+   "through": "2026-10-11"
+  },
+  "47183": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 23",
+     "in": "2.16",
+     "label": "biggest single day"
+    },
+    "county": "Weakley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Dresden",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.28",
+    "usual_in": "40.59",
+    "vs_usual": {
+     "diff_in": "7.31",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.95",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "59b09752746cecac",
+   "sid": "402600 2",
+   "story": "Through Oct 13, the station in Dresden had May as its wettest month at 7.95 inches. The biggest single day came May 23 with 2.16 inches. From Mar 17 to Apr 2 the gauge went 17 days in a row with nothing in it, not even a trace. All told it sits 7.31 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "47185": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "1.38",
+     "label": "biggest single day"
+    },
+    "county": "White County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Sparta Wastewater",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "13.77",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.41",
+    "usual_in": "46.20",
+    "vs_usual": {
+     "diff_in": "12.79",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.47",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "75f0cd29f6dea8e6",
+   "sid": "408522 2",
+   "story": "Through Oct 13, the weather station in Sparta Wastewater had its wettest month in May, at 5.47 inches. The gauge went 13 days in a row with nothing in it, from Mar 20 to Apr 1. On the days both years reported, this year sits 13.77 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "47187": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 22",
+     "in": "2.02",
+     "label": "biggest single day"
+    },
+    "county": "Williamson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southwest of Brentwood",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "12.00",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "47.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Sep 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.81",
+    "usual_in": "42.81",
+    "vs_usual": {
+     "diff_in": "7.00",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.88",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "942a5859192f109f",
+   "sid": "US1TNWL0018 6",
+   "story": "Through Oct 13, the volunteer rain gauge just south-southwest of Brentwood has caught 35.81 inches, 7.00 inches less than a usual year. July carried the year with 11.88 inches. Then the gauge sat empty for 21 days in a row, Sep 12 to Oct 2. On the days both years reported, that is 12.00 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "47189": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "3.31",
+     "label": "biggest single day"
+    },
+    "county": "Wilson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Lebanon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "13.20",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "45.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Tennessee",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.45",
+    "usual_in": "43.66",
+    "vs_usual": {
+     "diff_in": "11.21",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.18",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "85a59fec2aaf181d",
+   "sid": "405108 2",
+   "story": "Through Oct 13, the weather station in Lebanon caught its most in July, 7.18 inches. The biggest single day was Aug 1 with 3.31 inches. The longest dry stretch ran 16 days, Mar 20 to Apr 4, with nothing in the gauge. On the days both years reported, this year sits 13.20 inches less than last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "TN"
+}

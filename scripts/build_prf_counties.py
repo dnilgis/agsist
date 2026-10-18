@@ -250,6 +250,19 @@ def page(ctx):
     ]
     ldh = "".join('<script type="application/ld+json">' + json.dumps(x, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/") + "</script>" for x in ld)
     exh = example_html(fx.get("example"), cy, y0, y1, many, ng)
+    # "This interval so far" (components/prf-now.js): the numbers come from
+    # data/prf/now/<ST>.json when the reader opens the page, never baked here.
+    ex_g = (fx.get("example") or {}).get("grid")
+    now_g = ex_g if ex_g in grids else grids[len(grids) // 2]
+    now = (f'<section class="prf-now" id="prf-now" data-st="{stc}" data-grids="{",".join(str(g) for g in grids)}" data-grid="{now_g}" aria-labelledby="prf-now-h">'
+           f'<h2 id="prf-now-h">This interval so far</h2>'
+           f'<p class="pn-sub">Where {"a grid in " if many else "the grid in "}{e(name)} stands in the pairs of months still open, before RMA&rsquo;s final index. Preliminary.</p>'
+           f'<p class="pn-pick" data-pn-pick hidden></p>'
+           f'<div data-pn-body><p class="pn-held">Rain so far loads from NOAA&rsquo;s rain data when the page opens.</p></div></section>'
+           f'<script src="/components/prf-now.js?v=1" defer></script>'
+           # the grid index email (components/prf-notice.js, worker topic prf:<grid>): follows the card's grid
+           f'<div class="prf-notice" data-prf-notice data-grid="{now_g}" hidden></div>'
+           f'<script src="/components/prf-notice.js?v=1" defer></script>')
     sod = (f'<p class="prf-note">{stn} has the native sod rule: native sod broken in recent years gets 65% of the protection and 50 points less of USDA&rsquo;s share. '
            f'The values here are for land the rule does not touch.</p>') if stc in S.SOD else ""
     return f"""<!DOCTYPE html>
@@ -290,7 +303,7 @@ def page(ctx):
     <p class="page-kicker">Crop year {cy} &middot; sign-up deadline {sales}</p>
     <h1>PRF insurance in {e(full)}: {cy} grids, values and record</h1>
     <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. USDA&rsquo;s {cy} files offer it in {e(name)} on {ng} {'grid' if ng == 1 else 'grids'}: {g_list}. It pays when precipitation in the grid over two months you choose comes in under a set share of normal.</p>
-    <p><a class="btn btn-primary prf-cta" href="{calc}" rel="nofollow">Open the PRF calculator</a></p>
+    {ctx.get("story", "")}<p><a class="btn btn-primary prf-cta" href="{calc}" rel="nofollow">Open the PRF calculator</a></p>
     <p class="prf-spon-band prf-spon-line" data-prf-spon="county" data-prf-st="{stc}" data-prf-name="{e(stn)}"><span class="prf-spon-tag">For businesses</span> <a href="/prf-sponsor?state={stc}">Sponsor PRF in {e(stn)} &rarr;</a></p>
     <dl class="prf-figs prf-st-figs">
       <div><dt>Grids</dt><dd>{ng}</dd></div>
@@ -303,6 +316,7 @@ def page(ctx):
     <p class="prf-fine">USDA&rsquo;s {cy} county base values, the same on every grid in the county. Protection per acre is the value times your coverage level times a productivity factor of 60 to 150: grazing at 90% and 100 is {money2(prot)} an acre.</p>
     {exh}
     {sod}
+    {now}
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>
     <p>At 90% coverage{', across the ' + str(ng) + ' grids that touch the county: first the middle of the ' + str(ng) + ' for that pair of months (it can be a different grid in each row), then the lowest and highest' if many else ''}. The premium is the full rate per $100 of protection; USDA pays {subrow}. Normal is the grid&rsquo;s average precipitation for those months. A year counts, of the {ny} from {y0} to {y1}, when the grid&rsquo;s index for those months came in under 90% of normal, which is when a 90% policy pays.</p>
@@ -331,7 +345,7 @@ def page(ctx):
     <div class="prf-faq">{faq_html}</div>
     </div>
 
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {S.long_date(meta['built'][:10])}. The index record is what USDA publishes for {cy}; policies in past years were paid on their own rates and data.</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and sends no one to any agent; its one email box sends a grid&rsquo;s final index when USDA posts it. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {S.long_date(meta['built'][:10])}. The index record is what USDA publishes for {cy}; policies in past years were paid on their own rates and data.</p>
     {('<nav class="prf-links prf-st-links" aria-label="PRF next door"><b>PRF next door:</b> ' + nb_html + '</nav>') if nb_html else ''}
     <p class="prf-fine">{more}</p>
     {rain}
@@ -365,6 +379,10 @@ def main():
     if os.path.exists(p):
         NB = json.load(open(p))["counties"]
     states = sorted(meta["states"], key=lambda s: s["name"])
+    # the dated lead paragraph (scripts/stories_prf.py): only where a kept story's facts are this page's now
+    import stories_core as SK
+    import stories_prf as SP
+    STORIES = SK.load(SP)
     # every county's name and URL first, for the next-door links
     where, loaded = county_urls(meta, ATL)
     want = {}
@@ -386,8 +404,11 @@ def main():
                 if os.path.exists(os.path.join(ROOT, top, st_slug, sl + ".html")):
                     links.append((f"{e(n)} in the {label}" if label == "Farmland Atlas" else f"{label} in {e(n)}", f"/{top}/{st_slug}/{sl}"))
             links.append(("PRF calculator", "/prf"))
+            story = ""
+            if STORIES:
+                story = SP.story_html(STORIES, st["st"], fips, SP.county_facts(meta, cf, st, sd, code, c, cf["counties"][fips], n), meta["built"][:10])
             body = page({"meta": meta, "cf": cf, "st": st, "sd": sd, "code": code, "c": c, "fx": cf["counties"][fips], "name": n,
-                         "slug": sl, "st_slug": st_slug, "nbrs": nbrs, "links": links, "BOOT": BOOT})
+                         "slug": sl, "st_slug": st_slug, "nbrs": nbrs, "links": links, "BOOT": BOOT, "story": story})
             body = nav.fill_fonts(body)
             size = len(body.encode())
             if size > MAX_KB * 1024:

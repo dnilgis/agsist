@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 94,
- "with_known_cadence": 94,
+ "count": 95,
+ "with_known_cadence": 95,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -225,6 +225,7 @@
    ],
    "touched_by": [
     "cash-bid-pages",
+    "Daily site check",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
    ],
    "cadence": "1 launch every day at about 7pm Central",
@@ -534,6 +535,7 @@
     "county rain",
     "Cron health",
     "Fetch Crop Progress",
+    "Daily site check",
     "Generate Daily Briefing",
     "Dairy prices",
     "Fetch Export Sales",
@@ -593,6 +595,7 @@
     "county rain",
     "Cron health",
     "Fetch Crop Progress",
+    "Daily site check",
     "Dairy prices",
     "Fetch Export Sales",
     "Bake farm-bill page",
@@ -624,6 +627,25 @@
    "max_gap_hours": 127.7,
    "quiet": "weekly",
    "why_quiet": "USDA Crop Progress is a Monday afternoon release, in season only."
+  },
+  {
+   "path": "data/custom-rates/index.json",
+   "pages": [
+    "custom-rates.html"
+   ],
+   "written_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
   },
   {
    "path": "data/daily-archive/index.json",
@@ -667,6 +689,7 @@
     "Generate Daily Briefing"
    ],
    "touched_by": [
+    "Daily site check",
     "Generate Daily Briefing",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Morning brief \u2014 email Sigurd",
@@ -737,6 +760,7 @@
    ],
    "written_by": [],
    "touched_by": [
+    "API jobs (one-time)",
     "cash-bid-pages",
     "Rebuild Feed Manifest"
    ],
@@ -777,6 +801,7 @@
   {
    "path": "data/elevator-counts.json",
    "pages": [
+    "cash-bids.html",
     "index.html",
     "sponsor-kit.html"
    ],
@@ -790,6 +815,7 @@
     "Fetch COT Data",
     "county rain",
     "Fetch Crop Progress",
+    "Daily site check",
     "Dairy prices",
     "Bake farm-bill page",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
@@ -845,6 +871,7 @@
     "Coverage map \u2014 the elevator directory, drawn"
    ],
    "touched_by": [
+    "cash-bid-pages",
     "conditions",
     "Coverage map \u2014 the elevator directory, drawn",
     "Fetch Crop Progress",
@@ -955,6 +982,7 @@
     "Fetch COT Data",
     "county rain",
     "Fetch Crop Progress",
+    "Daily site check",
     "Dairy prices",
     "Bake farm-bill page",
     "Fertilizer co-op posted prices",
@@ -1080,6 +1108,7 @@
     "Fetch COT Data",
     "county rain",
     "Fetch Crop Progress",
+    "Daily site check",
     "Dairy prices",
     "Bake farm-bill page",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
@@ -1762,7 +1791,8 @@
    "path": "data/prf/meta.json",
    "pages": [
     "index.html",
-    "prf-sponsor.html"
+    "prf-sponsor.html",
+    "prf.html"
    ],
    "written_by": [
     "prf"
@@ -1930,6 +1960,7 @@
     "Cattle cash prices",
     "conditions",
     "Fetch Crop Progress",
+    "Daily site check",
     "Generate Daily Briefing",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",

@@ -597,7 +597,7 @@
           yoy: 'each past year&rsquo;s price change' }[sc.kind] || 'past price changes';
         h += '<p class="ap-small">Scenarios: ' + sc.center_label + ', ' + pm(sc.center) + ', moved by ' + how + ', ' +
           v.rows[0].t + ' to ' + v.rows[v.rows.length - 1].t + ' (' + v.n + ' years), paired with ' + ysrc + '.' +
-          (sc.alt != null ? ' Futures-based start for comparison: ' + pm(sc.alt) + ' (' + esc(sc.alt_contract || '') + ' October average so far, ' + sc.alt_days + ' of ' + sc.alt_of + ' days, &times; ' + sc.oct_mean.toFixed(3) + ').' : '') +
+          (sc.alt != null ? ' Futures-based start for comparison: ' + pm(sc.alt) + ' (' + esc(sc.alt_contract || '') + ' October average ' + (/^\d{4}-\d\d-\d\d/.test(sc.alt_date || '') ? 'through ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+sc.alt_date.slice(5, 7) - 1] + ' ' + (+sc.alt_date.slice(8, 10)) : 'so far') + ', ' + sc.alt_days + ' of ' + sc.alt_of + ' days, &times; ' + sc.oct_mean.toFixed(3) + ').' : '') +
           ' Pick: the gap is more than ' + (v.t ? v.t.toFixed(2) : '') + ' times its standard error, at least ' + money(MIN_GAP) + ', and the leader paid more in at least ' + MIN_WINS +
           ' years. Leans: at least ' + money(LEAN_GAP) + ' and one standard error, leader ahead in at least ' + MIN_WINS + ' years. SCO can now go with either program, so it is no reason to pick PLC. <a href="/arc-plc#method">Method and back-test</a>.</p>';
       }

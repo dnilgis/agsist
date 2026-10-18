@@ -1,0 +1,2950 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "22001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "3.53",
+     "label": "biggest single day"
+    },
+    "county": "Acadia Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "2 miles northeast of Crowley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "10.94",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "51.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.69",
+    "usual_in": "50.68",
+    "vs_usual": {
+     "diff_in": "8.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "13.23",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "946a84f88e969797",
+   "sid": "162212 2",
+   "story": "Through Oct 13, the weather station 2 miles northeast of Crowley had its wettest month in May, with 13.23 inches. The biggest single day was Jan 25, at 3.53 inches. The gauge then went 19 days in a row with nothing in it, from Mar 17 to Apr 4. On the days both years reported, this year is 10.94 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22003": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 12",
+     "in": "4.45",
+     "label": "biggest single day"
+    },
+    "county": "Allen Parish",
+    "days_in_year_so_far": 285,
+    "days_missing": 9,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Oberlin Fire Tower",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "9.87",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 12",
+     "total_in": "46.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Louisiana",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "37.19",
+    "usual_in": "47.02",
+    "vs_usual": {
+     "diff_in": "9.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.23",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "097fb181407a835b",
+   "sid": "166938 2",
+   "story": "Through Oct 12, the weather station in Oberlin Fire Tower had most of its year come in May, with 11.23 inches that month and 4.45 inches on May 12 alone. Before that it went 20 days in a row with nothing in the gauge, from Feb 16 to Mar 7. On the days both years reported, that is 9.87 inches less than 2025 had by this point.",
+   "through": "2026-10-12"
+  },
+  "22005": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 2",
+     "in": "2.73",
+     "label": "biggest single day"
+    },
+    "county": "Ascension Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Dutchtown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "11.22",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "44.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Sep 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "56.14",
+    "usual_in": "54.20",
+    "vs_usual": {
+     "diff_in": "1.94",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "17.31",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "802dbcefa9de8c95",
+   "sid": "162688 2",
+   "story": "Through Oct 13, the weather station in Dutchtown had its wettest month in May at 17.31 inches, and its biggest single day came May 2 with 2.73 inches. The longest dry stretch ran 16 days, from Sep 16 to Oct 1, with nothing in the gauge. On the days both years reported, this year is 11.22 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "22007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 5",
+     "in": "2.95",
+     "label": "biggest single day"
+    },
+    "county": "Assumption Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "4 miles southwest of Donaldsonville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "2.75",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "45.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.40",
+    "usual_in": "50.72",
+    "vs_usual": {
+     "diff_in": "2.32",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "14.01",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e8aa11491def0cd2",
+   "sid": "162534 2",
+   "story": "Through Oct 13, the weather station 4 miles southwest of Donaldsonville had 48.40 inches, 2.32 inches less than a usual year. May carried the year with 14.01 inches, and the biggest single day was 2.95 inches on Apr 5. The gauge went 13 days in a row with nothing from Mar 17 to Mar 29. On the days both years reported, that is 2.75 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "22009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 17",
+     "in": "3.85",
+     "label": "biggest one-day reading"
+    },
+    "county": "Avoyelles Parish",
+    "days_in_year_so_far": 285,
+    "days_missing": 28,
+    "days_reported": 257,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Bunkie",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 253,
+      "diff_in": "13.29",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 12",
+     "total_in": "50.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Sep 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 83,
+    "state": "Louisiana",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "35.67",
+    "usual_in": "43.03",
+    "vs_usual": {
+     "diff_in": "7.36",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "13.14",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e9d74d8d6e213d86",
+   "sid": "161287 2",
+   "story": "Through Oct 12, the weather station in Bunkie got most of its year in June, with 13.14 inches that month and the biggest one-day reading of 3.85 inches on Jun 17. Then it went 23 days in a row with nothing in the gauge, from Sep 9 to Oct 1. On the days both years reported, that is 13.29 inches less than 2025 had by now.",
+   "through": "2026-10-12"
+  },
+  "22011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 14",
+     "in": "4.09",
+     "label": "biggest single day"
+    },
+    "county": "Beauregard Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "5.0 miles southeast of Ragley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "13.41",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "54.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.16",
+    "usual_in": "49.20",
+    "vs_usual": {
+     "diff_in": "8.04",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.70",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6d4aeaa80fb6c36e",
+   "sid": "US1LABG0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.0 miles southeast of Ragley has 41.16 inches, 8.04 inches less than a usual year. May was the wettest month at 9.70 inches, and the biggest single day was 4.09 inches on Jul 14. The gauge went 17 days in a row with nothing in it, from Mar 17 to Apr 2. On the days both years reported, this year is 13.41 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "22013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "3.23",
+     "label": "biggest single day"
+    },
+    "county": "Bienville Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in Arcadia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.60",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "48.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.37",
+    "usual_in": "42.84",
+    "vs_usual": {
+     "diff_in": "9.47",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.43",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6d423af17f42cdb6",
+   "sid": "160277 2",
+   "story": "Through Oct 13, the weather station in Arcadia had its wettest month in June with 11.43 inches. The biggest single day came Jun 20 at 3.23 inches. From Sep 15 to Oct 4 the gauge went 20 days in a row with nothing in it, not even a trace. That leaves the year 15.60 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "22015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "3.04",
+     "label": "biggest single day"
+    },
+    "county": "Bossier Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in Plain Dealing",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.49",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.46",
+    "usual_in": "40.18",
+    "vs_usual": {
+     "diff_in": "11.72",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.10",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "00d24bae35dbd93d",
+   "sid": "167344 2",
+   "story": "Through Oct 13, the weather station in Plain Dealing had caught 28.46 inches, 11.72 inches less than a usual year. June did most of the work with 10.10 inches, and Jun 20 alone brought 3.04 inches. From Feb 16 to Mar 7 the gauge went 20 days in a row with nothing in it, not even a trace. Last year by this day it had 38.95 inches, so this year sits 10.49 inches behind.",
+   "through": "2026-10-13"
+  },
+  "22017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 4",
+     "in": "2.65",
+     "label": "biggest single day"
+    },
+    "county": "Caddo Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Shreveport Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.73",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "50.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.72",
+    "usual_in": "39.73",
+    "vs_usual": {
+     "diff_in": "5.01",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.42",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a763d41f548faee9",
+   "sid": "13957 1",
+   "story": "Through Oct 13, the weather station at Shreveport Airport has 34.72 inches, 15.73 inches less than last year by this day. June was the wettest month at 7.42 inches. The biggest single day came late, 2.65 inches on Oct 4. The longest dry stretch ran 16 days, Mar 16 to Mar 31, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "22019": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 11",
+     "in": "2.62",
+     "label": "biggest single day"
+    },
+    "county": "Calcasieu Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "2 miles north-northwest of Moss Bluff",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.97",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "51.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.77",
+    "usual_in": "55.46",
+    "vs_usual": {
+     "diff_in": "12.69",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "12.05",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b910a199cc732b00",
+   "sid": "166434 2",
+   "story": "Through Oct 13, the weather station 2 miles north-northwest of Moss Bluff has 42.77 inches, 12.69 inches less than a usual year. May did most of the work with 12.05 inches, and the biggest single day came on May 11 with 2.62 inches. Before that, the gauge went 18 days in a row with nothing, from Mar 16 to Apr 2. That is also 8.97 inches less than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "22021": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 9",
+     "in": "2.21",
+     "label": "biggest one-day reading"
+    },
+    "county": "Caldwell Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Columbia Lock",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "21.53",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "48.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 3"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 63,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.77",
+    "usual_in": "45.46",
+    "vs_usual": {
+     "diff_in": "16.69",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.10",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ad9ab26b520e5681",
+   "sid": "161979 2",
+   "story": "Through Oct 13, the weather station in Columbia Lock had its wettest month in May at 9.10 inches, and its biggest one-day reading came May 9 at 2.21 inches. From Mar 17 to Apr 3 it went 18 days in a row with nothing in the gauge. On the days both years reported, that is 21.53 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "22023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 22",
+     "in": "3.80",
+     "label": "biggest single day"
+    },
+    "county": "Cameron Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "27 miles from the middle of the county",
+    "gauge_where": "7 miles southwest of Lake Arthur",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "17.51",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "49.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Jul 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.49",
+    "usual_in": "47.05",
+    "vs_usual": {
+     "diff_in": "11.56",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.25",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "78b0f115f2685ec5",
+   "sid": "165065 2",
+   "story": "Through Oct 13, the weather station 7 miles southwest of Lake Arthur had its wettest month in May at 9.25 inches, and its biggest single day came back on Jan 22 with 3.80 inches. The longest run with nothing in the gauge was 12 days, from Jul 25 to Aug 5. On the days both years reported, this year is 17.51 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 17",
+     "in": "5.70",
+     "label": "biggest single day"
+    },
+    "county": "Catahoula Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "29 miles from the middle of the county",
+    "gauge_where": "in Red River Lock",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "4.39",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "48.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.96",
+    "usual_in": "37.98",
+    "vs_usual": {
+     "diff_in": "6.98",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "16.30",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b4cf3158b065286c",
+   "sid": "167729 2",
+   "story": "Through Oct 13, the weather station in Red River Lock had June as the wettest month at 16.30 inches. The biggest single day was Jun 17 with 5.70 inches. From Feb 16 to Mar 7 it went 20 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 4.39 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "5.15",
+     "label": "biggest single day"
+    },
+    "county": "Claiborne Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1 mile north of Homer",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "15.66",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "51.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Sep 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.31",
+    "usual_in": "42.96",
+    "vs_usual": {
+     "diff_in": "6.65",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "14.59",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "df8f9116398fb9b2",
+   "sid": "164355 2",
+   "story": "Through Oct 13, the weather station 1 mile north of Homer had a lopsided year. June brought 14.59 inches, and 5.15 of that came on Jun 23. Then the gauge went 25 days in a row with nothing in it, from Sep 9 to Oct 3. On the days both years reported, that is 15.66 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "4.37",
+     "label": "biggest one-day reading"
+    },
+    "county": "De Soto Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in Logansport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "6.90",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "38.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Sep 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 77,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.52",
+    "usual_in": "40.78",
+    "vs_usual": {
+     "diff_in": "9.26",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.98",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c78e01c170cf1e2b",
+   "sid": "165522 2",
+   "story": "Through Oct 13, the weather station in Logansport had most of its rain early. January was the wettest month at 6.98 inches, and 4.37 inches of that came on Jan 25, the biggest one-day reading. From Sep 9 to Oct 1 the gauge went 23 days in a row with nothing in it, not even a trace. On the days both years reported, that is 6.90 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22033": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 9",
+     "in": "3.79",
+     "label": "biggest single day"
+    },
+    "county": "East Baton Rouge Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2.2 miles southeast of Central",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "1.30",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "46.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.06",
+    "usual_in": "51.65",
+    "vs_usual": {
+     "diff_in": "3.59",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "14.59",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0467dcb869e88c00",
+   "sid": "US1LAEB0031 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.2 miles southeast of Central caught most of its year in May, with 14.59 inches that month and 3.79 inches on May 9 alone. Before that it went 18 days without even a trace, Mar 13 to Mar 30. On the days both years reported, this year is 1.30 inches more than last year, and 3.59 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "22037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 17",
+     "in": "4.04",
+     "label": "biggest one-day reading"
+    },
+    "county": "East Feliciana Parish",
+    "days_in_year_so_far": 282,
+    "days_missing": 4,
+    "days_reported": 278,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "3.6 miles north-northeast of Jackson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "10.79",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 9",
+     "total_in": "46.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "55.52",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "12.15",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ab1b9e43c435daa9",
+   "sid": "US1LAEF0007 6",
+   "story": "Through Oct 9, the volunteer rain gauge 3.6 miles north-northeast of Jackson has caught 55.52 inches. May was the wettest month at 12.15 inches, and the biggest one-day reading came Jun 17 at 4.04 inches. The gauge went 11 days in a row with nothing from Apr 8 to Apr 18. On the days both years reported, that is 10.79 inches more than last year.",
+   "through": "2026-10-09"
+  },
+  "22041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "3.66",
+     "label": "biggest single day"
+    },
+    "county": "Franklin Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 28,
+    "days_reported": 258,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "5 miles south-southeast of Winnsboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 243,
+      "diff_in": "3.44",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 17,
+     "through": "Oct 13",
+     "total_in": "42.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.25",
+    "usual_in": "41.10",
+    "vs_usual": {
+     "diff_in": "3.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.16",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fb5cb5199b62950a",
+   "sid": "169806 2",
+   "story": "Through Oct 13, the weather station 5 miles south-southeast of Winnsboro had 37.25 inches, 3.85 inches less than a usual year. May was the wettest month at 9.16 inches, and the biggest single day came Jun 20 with 3.66 inches. The gauge went 15 days in a row with nothing from Feb 18 to Mar 4. On the days both years reported, this year is 3.44 inches behind 2025.",
+   "through": "2026-10-13"
+  },
+  "22043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 30",
+     "in": "3.22",
+     "label": "biggest single day"
+    },
+    "county": "Grant Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "7.2 miles northwest of Colfax",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "7.27",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "43.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Sep 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.47",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.60",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "907212eaa1eba04b",
+   "sid": "US1LAGR0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.2 miles northwest of Colfax had its wettest month in June at 9.60 inches. The biggest single day came Apr 30 with 3.22 inches. Then it went 25 days in a row with nothing in the gauge, from Sep 9 to Oct 3. On the days both years reported, that is 7.27 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22045": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 2",
+     "in": "2.95",
+     "label": "biggest single day"
+    },
+    "county": "Iberia Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5 miles northwest of Jeanerette",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.72",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "52.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Sep 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.53",
+    "usual_in": "53.59",
+    "vs_usual": {
+     "diff_in": "7.06",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "16.82",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dd97e394b1cd1e70",
+   "sid": "164674 2",
+   "story": "Through Oct 13, the weather station 5 miles northwest of Jeanerette had a lot of its year come in May, with 16.82 inches that month. The biggest single day was May 2 at 2.95 inches. Then it went 14 days in a row with nothing in the gauge, Sep 17 to Sep 30. On the days both years reported, that is 5.72 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "22047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 8",
+     "in": "4.65",
+     "label": "biggest single day"
+    },
+    "county": "Iberville Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "2 miles north of Plaquemine",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.61",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "56.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "55.33",
+    "usual_in": "49.85",
+    "vs_usual": {
+     "diff_in": "5.48",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.83",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b769ec63799291ee",
+   "sid": "167366 2",
+   "story": "Through Oct 13, the weather station 2 miles north of Plaquemine had its biggest single day on Mar 8 with 4.65 inches. Then it went 16 days in a row with nothing in the gauge, from Mar 15 to Mar 30. May was the wettest month at 12.83 inches. On the days both years reported, that is 2.61 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Jackson Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "2.5 miles east of Quitman",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "6.99",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "46.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.17",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "11.35",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "087af0865496f36c",
+   "sid": "US1LAJC0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles east of Quitman has caught 39.17 inches. June was the wettest month at 11.35 inches, and the biggest day was Jun 20 with 3.30. The gauge went 19 days with nothing in it, not even a trace, from Feb 16 to Mar 6. On the days both years reported, that comes to 6.99 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "22051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "7.75",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "at New Orleans Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "10.68",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "42.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "53.95",
+    "usual_in": "51.92",
+    "vs_usual": {
+     "diff_in": "2.03",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.31",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c805db8af7903073",
+   "sid": "12916 1",
+   "story": "Through Oct 13, the weather station at New Orleans Airport had June as its wettest month at 13.31 inches, and 7.75 inches of that came on Jun 18 alone. The longest dry stretch ran 10 days, Feb 5 to Feb 14. On the days both years reported, the station caught 10.68 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "22053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "2.39",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson Davis Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Jennings",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.83",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "51.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.36",
+    "usual_in": "51.01",
+    "vs_usual": {
+     "diff_in": "9.65",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.64",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6ce407a54186d78e",
+   "sid": "164700 2",
+   "story": "Through Oct 13, the weather station in Jennings had May as its wettest month at 10.64 inches. The biggest single day came Sep 23 with 2.39 inches. From Mar 17 to Apr 1 the gauge went 16 days in a row with nothing in it, not even a trace. Against last year, the station is 9.83 inches behind where 2025 stood on Oct 13.",
+   "through": "2026-10-13"
+  },
+  "22055": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 1",
+     "in": "2.85",
+     "label": "biggest single day"
+    },
+    "county": "Lafayette Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Lafayette Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "13.81",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "60.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.05",
+    "usual_in": "50.24",
+    "vs_usual": {
+     "diff_in": "3.19",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.56",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "275b911ad606780b",
+   "sid": "13976 1",
+   "story": "Through Oct 13, the weather station at Lafayette Regional Airport had most of its year come in May. That month put 11.56 inches in the gauge, and 2.85 of that fell on May 1, the biggest single day so far. Before that it went 16 days in a row with nothing at all, Mar 17 to Apr 1. On the days both years reported, this year sits 13.81 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "22057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "5.36",
+     "label": "biggest single day"
+    },
+    "county": "Lafourche Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "25 miles from the middle of the county",
+    "gauge_where": "4 miles southeast of Thibodaux",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.32",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "46.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.67",
+    "usual_in": "59.34",
+    "vs_usual": {
+     "diff_in": "12.67",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "12.48",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7486b314ab06ea70",
+   "sid": "169013 2",
+   "story": "Through Oct 13, the weather station 4 miles southeast of Thibodaux had most of its year come in June, with 12.48 inches that month. The biggest single day was Jun 18 at 5.36 inches. The longest dry stretch ran 13 days, Mar 17 to Mar 29, with nothing in the gauge. That leaves the year 0.32 inches more than last year at this point, and 12.67 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "22059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 16",
+     "in": "4.81",
+     "label": "biggest one-day reading"
+    },
+    "county": "La Salle Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 15,
+    "days_reported": 271,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "4.4 miles west-southwest of Trout",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "18.24",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 14,
+     "through": "Oct 13",
+     "total_in": "56.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 4"
+    },
+    "multi_day_reports": 14,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.47",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4258a690f2a7b3b3",
+   "sid": "US1LALS0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.4 miles west-southwest of Trout has caught 37.47 inches. The biggest one-day reading was 4.81 inches on Jun 16. The gauge went 15 days in a row with nothing in it, not even a trace, from Feb 18 to Mar 4. On the days both years reported, this year is 18.24 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22061": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Lincoln Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 13,
+    "days_reported": 273,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "5.4 miles east-northeast of Ruston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 263,
+      "diff_in": "14.43",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 14,
+     "through": "Oct 13",
+     "total_in": "45.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 4"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.87",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.10",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1a2f61212e9488bd",
+   "sid": "US1LALN0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.4 miles east-northeast of Ruston had June as its wettest month, with 10.10 inches. Then it went 20 days in a row with nothing in the gauge, not even a trace, from Sep 15 to Oct 4. On the days both years reported, this year is 14.43 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "4.41",
+     "label": "biggest single day"
+    },
+    "county": "Livingston Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Livingston",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 121,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "66.80",
+    "usual_in": "55.17",
+    "vs_usual": {
+     "diff_in": "11.63",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "14.40",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "67a0098c8acda805",
+   "sid": "165438 2",
+   "story": "Through Oct 13, the weather station in Livingston had 66.80 inches, 11.63 inches more than a usual year. May was the wettest month at 14.40 inches. The biggest single day came Jun 18 with 4.41 inches. The longest dry stretch ran 17 days, Mar 17 to Apr 2, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "22065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "1.94",
+     "label": "biggest single day"
+    },
+    "county": "Madison Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "at Tallulah Vicksburg Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "11.31",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "41.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.79",
+    "usual_in": "41.35",
+    "vs_usual": {
+     "diff_in": "11.56",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.32",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6f1a7d5abeb8acb4",
+   "sid": "03996 1",
+   "story": "Through Oct 13, the weather station at Tallulah Vicksburg Regional Airport had June as its wettest month at 7.32 inches, and the biggest single day came Jun 20 with 1.94 inches. The longest dry stretch ran 16 days, from Mar 16 to Mar 31, with nothing in the gauge. On the days both years reported, this year is 11.31 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "22069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "2.86",
+     "label": "biggest single day"
+    },
+    "county": "Natchitoches Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Natchitoches",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.29",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "46.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Sep 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.74",
+    "usual_in": "42.84",
+    "vs_usual": {
+     "diff_in": "12.10",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.70",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "33aa31cda5118508",
+   "sid": "166584 2",
+   "story": "Through Oct 13, the weather station in Natchitoches has caught 15.29 inches less than it had by this day last year. May was the wettest month at 7.70 inches, and the biggest single day was Jun 21 with 2.86 inches. Then the gauge went 23 days in a row with nothing in it, not even a trace, from Sep 9 to Oct 1.",
+   "through": "2026-10-13"
+  },
+  "22071": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 25",
+     "in": "3.72",
+     "label": "biggest single day"
+    },
+    "county": "Orleans Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at New Orleans Lakefront Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "9.20",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "42.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Sep 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 67,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.31",
+    "usual_in": "49.54",
+    "vs_usual": {
+     "diff_in": "16.23",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.29",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f8f3220989bfa6df",
+   "sid": "53917 1",
+   "story": "Through Oct 13, the weather station at New Orleans Lakefront Airport had a lot of its year land in May, with 11.29 inches that month. The biggest single day was May 25 at 3.72 inches. Later on it went 15 days with nothing in the gauge, from Sep 17 to Oct 1. On the days both years reported, this year is 9.20 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22073": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 29",
+     "in": "4.26",
+     "label": "biggest single day"
+    },
+    "county": "Ouachita Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in West Monroe",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.84",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Aug 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.49",
+    "usual_in": "43.17",
+    "vs_usual": {
+     "diff_in": "8.68",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.21",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "77713ce8d798c549",
+   "sid": "169631 2",
+   "story": "Through Oct 13, the weather station in West Monroe had its wettest month in May with 8.21 inches, and 4.26 inches of that came on May 29 alone. Then it went 23 days in a row with nothing in the gauge, from Aug 31 to Sep 22. The station sits 9.84 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "22075": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 24",
+     "in": "2.84",
+     "label": "biggest single day"
+    },
+    "county": "Plaquemines Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "39 miles from the middle of the county",
+    "gauge_where": "1.6 miles north-northeast of Belle Chasse",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "2.30",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.66",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "13.61",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f7d5cf437cdb83e9",
+   "sid": "US1LAPL0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge north-northeast of Belle Chasse caught most of its year in May, with 13.61 inches that month. The biggest single day was May 24 at 2.84 inches. The longest dry stretch ran 12 days, Mar 18 to Mar 29, with nothing in the gauge. On the days both years reported, that is 2.30 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 16",
+     "in": "3.43",
+     "label": "biggest single day"
+    },
+    "county": "Pointe Coupee Parish",
+    "days_in_year_so_far": 281,
+    "days_missing": 3,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "5 miles northeast of New Roads",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "2.85",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 8",
+     "total_in": "50.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Louisiana",
+    "through": "Oct 8",
+    "through_iso": "2026-10-08",
+    "total_in": "49.55",
+    "usual_in": "45.66",
+    "vs_usual": {
+     "diff_in": "3.89",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.40",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9c9c11bb9f2a7e42",
+   "sid": "166686 2",
+   "story": "Through Oct 8, the weather station 5 miles northeast of New Roads had 49.55 inches, 3.89 more than a usual year. May was the wettest month at 10.40 inches, and the biggest single day was 3.43 inches on Jun 16. The gauge went 15 days in a row with nothing, Mar 17 to Mar 31. On the days both years reported, this year is 2.85 inches less than 2025.",
+   "through": "2026-10-08"
+  },
+  "22079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 11",
+     "in": "2.90",
+     "label": "biggest single day"
+    },
+    "county": "Rapides Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "3 miles west-northwest of Boyce",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Sep 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.36",
+    "usual_in": "46.11",
+    "vs_usual": {
+     "diff_in": "4.75",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.63",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d33753866ad004af",
+   "sid": "161232 2",
+   "story": "Through Oct 13, the weather station 3 miles west-northwest of Boyce had 41.36 inches, 4.75 inches less than a usual year. June was the wettest month at 8.63 inches. The biggest single day came Mar 11 with 2.90 inches. Then the gauge sat empty 23 days in a row, Sep 8 to Sep 30, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "22081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "3.65",
+     "label": "biggest single day"
+    },
+    "county": "Red River Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "1.7 miles east-southeast of Martin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "17.59",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Sep 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.82",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.29",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8247c225b857c0e7",
+   "sid": "US1LARR0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.7 miles east-southeast of Martin has caught 26.82 inches, which is 17.59 inches less than it had by this day last year. June did most of the work with 8.29 inches, and Jun 21 alone brought 3.65. Then the gauge sat empty for 23 days in a row, from Sep 9 to Oct 1.",
+   "through": "2026-10-13"
+  },
+  "22085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 14",
+     "in": "2.31",
+     "label": "biggest single day"
+    },
+    "county": "Sabine Parish",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "25 miles from the middle of the county",
+    "gauge_where": "in Toledo Bend Lake",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jul 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Louisiana",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "31.42",
+    "usual_in": "43.52",
+    "vs_usual": {
+     "diff_in": "12.10",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.08",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "93221bafbb1d138c",
+   "sid": "169074 2",
+   "story": "Through Oct 12, the weather station in Toledo Bend Lake has caught 31.42 inches, 12.10 inches less than a usual year. May was the wettest month at 9.08 inches. The biggest single day came Jul 14 with 2.31 inches, and then the gauge sat empty for 21 days in a row, Jul 15 to Aug 4, not even a trace.",
+   "through": "2026-10-12"
+  },
+  "22089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "5.77",
+     "label": "biggest single day"
+    },
+    "county": "St. Charles Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile west of St Rose",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "2.53",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "58.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "56.53",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "12.91",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3bd87ecef83d9f09",
+   "sid": "US1LASC0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west of St Rose had June as its wettest month at 12.91 inches. The biggest single day came Jun 18 with 5.77 inches. The longest dry stretch ran 14 days, Mar 17 to Mar 30, with nothing in the gauge. On the days both years reported, this year sits 2.53 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22099": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 1",
+     "in": "3.29",
+     "label": "biggest single day"
+    },
+    "county": "St. Martin Parish",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "13 miles southeast of Lafayette",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "14.58",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "58.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Louisiana",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "43.98",
+    "usual_in": "53.70",
+    "vs_usual": {
+     "diff_in": "9.72",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "13.80",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ea3ad1cdecfb29cb",
+   "sid": "53960 1",
+   "story": "Through Oct 10, the weather station 13 miles southeast of Lafayette had a big May and not much else. May brought 13.80 inches, and May 1 alone put down 3.29. From Sep 13 to Sep 30 the gauge went 18 days in a row without even a trace. The station sits 14.58 inches behind last year at this point.",
+   "through": "2026-10-10"
+  },
+  "22101": {
+   "facts": {
+    "biggest_day": null,
+    "county": "St. Mary Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 27,
+    "days_reported": 259,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "1.8 miles north of Baldwin",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 3"
+    },
+    "multi_day_reports": 13,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.28",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "14.18",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "86f3ce80fc52d394",
+   "sid": "US1LAMY0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.8 miles north of Baldwin has caught 48.28 inches this year. May did most of the work at 14.18 inches, the wettest month by a good margin. The longest dry stretch ran 15 days, Feb 17 to Mar 3, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "22103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "5.44",
+     "label": "biggest single day"
+    },
+    "county": "St. Tammany Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Slidell Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "7.22",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "36.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.20",
+    "usual_in": "51.24",
+    "vs_usual": {
+     "diff_in": "7.04",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.94",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d03d3e94507f59c3",
+   "sid": "53865 1",
+   "story": "Through Oct 13, the weather station at Slidell Airport had 44.20 inches, 7.04 inches less than a usual year. May was the wettest month at 11.94 inches, and the biggest single day was Jun 18 with 5.44 inches. The longest dry stretch ran 12 days, Mar 17 to Mar 28. On the days both years reported, this year is 7.22 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "22105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 27",
+     "in": "4.09",
+     "label": "biggest single day"
+    },
+    "county": "Tangipahoa Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "4.9 miles east of Ponchatoula",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "16.79",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.78",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "54.57",
+    "usual_in": "52.31",
+    "vs_usual": {
+     "diff_in": "2.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "14.61",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "88e7ed16d9629602",
+   "sid": "US1LATG0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.9 miles east of Ponchatoula has caught 16.79 inches more than it had by this day last year. May did most of the work at 14.61 inches, the wettest month. The biggest single day came Aug 27 with 4.09 inches. The longest dry stretch ran 13 days, Mar 17 to Mar 29, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "22109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "3.55",
+     "label": "biggest one-day reading"
+    },
+    "county": "Terrebonne Parish",
+    "days_in_year_so_far": 285,
+    "days_missing": 11,
+    "days_reported": 274,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3 miles north of Dulac",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 274,
+      "diff_in": "9.53",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "36.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 84,
+    "state": "Louisiana",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "46.22",
+    "usual_in": "54.73",
+    "vs_usual": {
+     "diff_in": "8.51",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.58",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a06b8254323d764b",
+   "sid": "162673 2",
+   "story": "Through Oct 12, the weather station 3 miles north of Dulac had its wettest month in July at 8.58 inches. The biggest one-day reading was 3.55 inches on Jun 18. On the days both years reported, this year is 9.53 inches more than 2025, even while it runs 8.51 inches less than a usual year.",
+   "through": "2026-10-12"
+  },
+  "22111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 14",
+     "in": "2.02",
+     "label": "biggest single day"
+    },
+    "county": "Union Parish",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "26 miles north of Monroe",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "20.18",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "48.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 61,
+    "state": "Louisiana",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "27.88",
+    "usual_in": "46.01",
+    "vs_usual": {
+     "diff_in": "18.13",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.26",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a9cc178e2960f6b5",
+   "sid": "53961 1",
+   "story": "Through Oct 10, the weather station 26 miles north of Monroe has caught 27.88 inches, 20.18 inches less than it had by this day last year. January was the wettest month at 5.26 inches. The biggest single day came Jul 14 with 2.02 inches. The longest dry stretch ran 18 days, Mar 16 to Apr 2, without even a trace in the gauge.",
+   "through": "2026-10-10"
+  },
+  "22113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "3.95",
+     "label": "biggest single day"
+    },
+    "county": "Vermilion Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in Abbeville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.61",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "42.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.03",
+    "usual_in": "53.16",
+    "vs_usual": {
+     "diff_in": "12.13",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.76",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8ae0980a94a75374",
+   "sid": "160007 2",
+   "story": "Through Oct 13, the weather station in Abbeville got its wettest month in May at 8.76 inches. The biggest single day came early, 3.95 inches on Jan 25. From Mar 18 to Apr 4 the gauge went 18 days in a row with nothing, not even a trace. On the days both years reported, that comes to 1.61 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 8",
+     "in": "3.08",
+     "label": "biggest single day"
+    },
+    "county": "Vernon Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Leesville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.95",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jul 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.80",
+    "usual_in": "44.96",
+    "vs_usual": {
+     "diff_in": "8.16",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.56",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0f3b93d6cafa8924",
+   "sid": "165266 2",
+   "story": "Through Oct 13, the weather station in Leesville had its wettest month in May with 9.56 inches. The biggest single day came Mar 8 at 3.08 inches. From Jul 16 to Aug 4 it went 20 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year sits 1.95 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "22117": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 9",
+     "in": "3.98",
+     "label": "biggest one-day reading"
+    },
+    "county": "Washington Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "9.4 miles south-southwest of Franklinton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.15",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "48.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 6"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.53",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "12.72",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cae43c73c86ce577",
+   "sid": "US1LAWS0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 9.4 miles south-southwest of Franklinton had its wettest month in May, with 12.72 inches. The biggest one-day reading came May 9 at 3.98 inches. Then it went 14 days in a row with nothing in the gauge, Jul 24 to Aug 6. On the days both years reported, 2026 is 1.15 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "22121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 8",
+     "in": "7.38",
+     "label": "biggest one-day reading"
+    },
+    "county": "West Baton Rouge Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1.6 miles north-northeast of Addis",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 3"
+    },
+    "multi_day_reports": 11,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "57.89",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "16.21",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8ca8c7b8d2dc8f5b",
+   "sid": "US1LAWB0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles north-northeast of Addis has caught 57.89 inches. May did most of the work at 16.21 inches, the wettest month. The biggest one-day reading came Mar 8 at 7.38 inches, not long after the gauge went 16 days in a row with nothing in it, from Feb 16 to Mar 3.",
+   "through": "2026-10-13"
+  },
+  "22123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 12",
+     "in": "1.78",
+     "label": "biggest single day"
+    },
+    "county": "West Carroll Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.9 miles east of Oak Grove",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "18.11",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "48.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.29",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.09",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "43882ce3bf6a973b",
+   "sid": "US1LAWC0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.9 miles east of Oak Grove had 18.11 inches less than it did by this day last year. January was the wettest month at 6.09 inches. The biggest single day was Mar 12 with 1.78 inches, and then the gauge went 17 days in a row with nothing in it, from Mar 17 to Apr 2.",
+   "through": "2026-10-13"
+  },
+  "22125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 17",
+     "in": "4.96",
+     "label": "biggest one-day reading"
+    },
+    "county": "West Feliciana Parish",
+    "days_in_year_so_far": 282,
+    "days_missing": 13,
+    "days_reported": 269,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile east of Wakefield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "11.83",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 9",
+     "total_in": "45.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "53.68",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "13.16",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bfd67712c0e6f53e",
+   "sid": "US1LAWF0006 6",
+   "story": "Through Oct 9, the volunteer rain gauge less than a mile east of Wakefield has 53.68 inches. May was the wettest month at 13.16 inches, and the biggest one-day reading was 4.96 inches on Jun 17. On the days both years reported, that's 11.83 inches more than 2025 had by this point.",
+   "through": "2026-10-09"
+  },
+  "22127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "3.27",
+     "label": "biggest single day"
+    },
+    "county": "Winn Parish",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "7.1 miles south-southwest of Atlanta",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "13.38",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "49.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 38,
+     "from": "Sep 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Louisiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.97",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.43",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "feb4411027ac2a47",
+   "sid": "US1LAWP0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.1 miles south-southwest of Atlanta has caught 35.97 inches. June was the wettest month at 8.43 inches, and the biggest single day was Jun 20 with 3.27 inches. Since Sep 6 the gauge has gone 38 days in a row with nothing in it, not even a trace, and that stretch is still going. On the days both years reported, this year is 13.38 inches less than last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "LA"
+}

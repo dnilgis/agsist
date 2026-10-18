@@ -22,6 +22,7 @@
  *
  *   node --test test/rain-print-solid.test.mjs
  */
+import { makerFlag } from "./fixtures/rp-maker.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
@@ -141,6 +142,7 @@ async function withPage(fn, opts = {}) {
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const ctx = await browser.newContext({ viewport: { width: opts.width || 1280, height: opts.height || 900 }, serviceWorkers: "block" });
+    await makerFlag(ctx);   // Sig's browser: maker mode is gated (fixtures/rp-maker.mjs)
     await ctx.clock.setFixedTime(new Date(opts.time || "2026-10-14T17:00:00Z"));
     const log = { stripe: [] };
     await mocks(ctx, opts, log);
@@ -447,7 +449,7 @@ test("D1: a gauge stuck at 0.00 for months against a wet normal is found; a real
   assert.equal(RP.stuckRun(days(365, (i) => (i >= 120 && i < 200 && i % 10 === 0 ? { flag: "T" } : i % 4 === 0 ? { v: 0.3 } : {})), wet), null, "a trace breaks the run");
   assert.equal(RP.stuckRun(stuck, null), null, "no normal, no check");
   const S2 = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(S2, /records: ST\.records && !STUCK \? recordsFor\(\) : \[\]/);
+  assert.match(S2, /records: ST\.records && !STUCK \? withoutTemp\(recordsFor\(\), ST\) : \[\]/);
   assert.match(S2, /showDry: showDry\(DATA\.d\) && !STUCK/);
   assert.match(S2, /The gauge may have been stuck, so the print leaves off the dry stretch and the remarkable days\./);
 });
@@ -544,12 +546,13 @@ test("T2: the privacy page is true today: Rain Print links, logos, orders, gift 
   assert.ok(!/gauge-lab/.test(P));
 });
 
-test("Sig, 2026-10-14: the page shows $15 to reprint after the prices load (not a backreference's '5')", { skip }, async () => {
+test("Sig, 2026-10-18: a lost or damaged print is replaced free, and an old fee in the prices file changes nothing", { skip }, async () => {
   for (const prices of [null, { reprint_fee: 20 }]) await withPage(async (page, base) => {
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
     await settle(page);
     const faq = await page.evaluate(() => [...document.querySelectorAll("details")].find((d) => /What if something/.test(d.textContent)).textContent);
-    assert.match(faq, prices ? /reframe it for \$20, with the same serial number/ : /reframe it for \$15, with the same serial number/);
+    assert.match(faq, /reprint or reframe it free, with the same serial number/);
+    assert.ok(!/\$\d/.test(faq), "no dollar amount");
   }, { prices });
 });

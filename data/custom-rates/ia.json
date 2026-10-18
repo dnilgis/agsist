@@ -1,0 +1,1364 @@
+{
+ "state": "IA",
+ "name": "Iowa",
+ "slug": "iowa",
+ "survey": "2026 Iowa Farm Custom Rate Survey (Ag Decision Maker File A3-10, FM 1698, revised March 2026)",
+ "publisher": "Iowa State University Extension and Outreach",
+ "survey_year": 2026,
+ "collected": "survey sent to 1,122 people in early February 2026; 205 responses, 4,698 rates; rates expected to be charged or paid in 2026",
+ "sources": [
+  {
+   "url": "https://www.extension.iastate.edu/agdm/crops/pdf/a3-10.pdf",
+   "ref": "cr-ia-a3-10"
+  }
+ ],
+ "spread": "trimmed",
+ "spread_label": "range without the single lowest and highest answer",
+ "includes": "All rates include fuel, repairs, depreciation, interest, operator labor, and all other machinery costs for the tractor and implement, unless otherwise noted. Diesel assumed at $2.89 a gallon (February 2026).",
+ "range_note": "The range leaves out the single lowest and highest answer, as the survey reports it.",
+ "rows": [
+  {
+   "s": "Tillage",
+   "o": "Chopping cornstalks",
+   "u": "acre",
+   "a": 14.55,
+   "n": 32,
+   "lo": 8.0,
+   "hi": 20.0
+  },
+  {
+   "s": "Tillage",
+   "o": "Moldboard plowing",
+   "u": "acre",
+   "a": 20.1,
+   "n": 17,
+   "lo": 14.0,
+   "hi": 24.0,
+   "k": "moldboard"
+  },
+  {
+   "s": "Tillage",
+   "o": "Chisel plowing",
+   "u": "acre",
+   "a": 20.75,
+   "n": 37,
+   "lo": 10.0,
+   "hi": 28.0,
+   "k": "chisel"
+  },
+  {
+   "s": "Tillage",
+   "o": "Disk/chiseling",
+   "u": "acre",
+   "a": 23.0,
+   "n": 58,
+   "lo": 10.0,
+   "hi": 34.0,
+   "k": "disk-chisel"
+  },
+  {
+   "s": "Tillage",
+   "o": "Vertical tillage",
+   "u": "acre",
+   "a": 22.15,
+   "n": 79,
+   "lo": 12.0,
+   "hi": 30.0,
+   "k": "vertical-till"
+  },
+  {
+   "s": "Tillage",
+   "o": "Strip tillage, without fertilizer application",
+   "u": "acre",
+   "a": 23.2,
+   "n": 20,
+   "lo": 15.0,
+   "hi": 30.0,
+   "k": "strip-till"
+  },
+  {
+   "s": "Tillage",
+   "o": "Strip tillage, with dry bulk fertilizer, banded, no materials",
+   "u": "acre",
+   "a": 29.65,
+   "n": 21,
+   "lo": 17.0,
+   "hi": 40.0
+  },
+  {
+   "s": "Tillage",
+   "o": "Strip tillage, with liquid fertilizer, knifed, no materials",
+   "u": "acre",
+   "a": 28.15,
+   "n": 16,
+   "lo": 17.0,
+   "hi": 39.0
+  },
+  {
+   "s": "Tillage",
+   "o": "Strip tillage, with anhydrous fertilizer, no materials",
+   "u": "acre",
+   "a": 28.35,
+   "n": 18,
+   "lo": 17.0,
+   "hi": 37.0
+  },
+  {
+   "s": "Tillage",
+   "o": "Subsoiling (8 to 15 inches deep)",
+   "u": "acre",
+   "a": 25.2,
+   "n": 36,
+   "lo": 13.0,
+   "hi": 35.0,
+   "k": "subsoil"
+  },
+  {
+   "s": "Tillage",
+   "o": "V-ripping (over 15 inches deep)",
+   "u": "acre",
+   "a": 27.2,
+   "n": 28,
+   "lo": 15.0,
+   "hi": 40.0
+  },
+  {
+   "s": "Tillage",
+   "o": "V-ripping with tandem disk",
+   "u": "acre",
+   "a": 26.1,
+   "n": 48,
+   "lo": 12.25,
+   "hi": 40.0
+  },
+  {
+   "s": "Tillage",
+   "o": "Disking, tandem",
+   "u": "acre",
+   "a": 19.8,
+   "n": 59,
+   "lo": 10.0,
+   "hi": 30.0,
+   "k": "disk-tandem"
+  },
+  {
+   "s": "Tillage",
+   "o": "Disking, heavy or offset",
+   "u": "acre",
+   "a": 23.75,
+   "n": 22,
+   "lo": 16.0,
+   "hi": 30.0
+  },
+  {
+   "s": "Tillage",
+   "o": "Harrowing or dragging",
+   "u": "acre",
+   "a": 12.8,
+   "n": 23,
+   "lo": 7.0,
+   "hi": 18.0
+  },
+  {
+   "s": "Tillage",
+   "o": "Soil finishing",
+   "u": "acre",
+   "a": 19.8,
+   "n": 52,
+   "lo": 10.0,
+   "hi": 33.0
+  },
+  {
+   "s": "Tillage",
+   "o": "Field cultivating",
+   "u": "acre",
+   "a": 19.2,
+   "n": 82,
+   "lo": 7.6,
+   "hi": 32.0,
+   "k": "field-cult"
+  },
+  {
+   "s": "Tillage",
+   "o": "Rock picking",
+   "u": "acre",
+   "a": 18.5,
+   "n": 23,
+   "lo": 10.0,
+   "hi": 30.0
+  },
+  {
+   "s": "Tillage",
+   "o": "Cultivating, conventional",
+   "u": "acre",
+   "a": 17.45,
+   "n": 18,
+   "lo": 12.0,
+   "hi": 20.0
+  },
+  {
+   "s": "Tillage",
+   "o": "Cultivating, ridge-till",
+   "u": "acre",
+   "a": 17.35,
+   "n": 8,
+   "lo": 15.0,
+   "hi": 18.75
+  },
+  {
+   "s": "Tillage",
+   "o": "Rotary hoeing",
+   "u": "acre",
+   "a": 12.85,
+   "n": 28,
+   "lo": 8.0,
+   "hi": 17.0
+  },
+  {
+   "s": "Tillage",
+   "o": "Land rolling",
+   "u": "acre",
+   "a": 9.75,
+   "n": 56,
+   "lo": 4.0,
+   "hi": 18.0,
+   "k": "land-roll"
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Planting, with fertilizer and insecticide attachments",
+   "u": "acre",
+   "a": 29.6,
+   "n": 47,
+   "lo": 16.0,
+   "hi": 50.0,
+   "k": "plant-row-fert"
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Planting, without attachments",
+   "u": "acre",
+   "a": 26.5,
+   "n": 69,
+   "lo": 15.0,
+   "hi": 38.0,
+   "k": "plant-row"
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Planting, with splitters and attachments",
+   "u": "acre",
+   "a": 28.5,
+   "n": 49,
+   "lo": 13.0,
+   "hi": 47.0
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Planting, with high-speed planter",
+   "u": "acre",
+   "a": 31.25,
+   "n": 71,
+   "lo": 14.0,
+   "hi": 56.0
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Planting, no-till planter",
+   "u": "acre",
+   "a": 29.1,
+   "n": 76,
+   "lo": 15.0,
+   "hi": 46.0,
+   "k": "plant-notill"
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Planting, no-till planter with splitters",
+   "u": "acre",
+   "a": 30.0,
+   "n": 58,
+   "lo": 16.0,
+   "hi": 45.0
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Planting, ridge till planter",
+   "u": "acre",
+   "a": 28.45,
+   "n": 7,
+   "lo": 24.0,
+   "hi": 34.0
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Extra charge for seed shut-offs",
+   "u": "acre",
+   "a": 3.75,
+   "n": 70,
+   "lo": 0.5,
+   "hi": 10.0
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Extra charge for variable rate seeding",
+   "u": "acre",
+   "a": 3.9,
+   "n": 52,
+   "lo": 1.0,
+   "hi": 10.0
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Extra charge for GPS use, if used for analytics",
+   "u": "acre",
+   "a": 3.65,
+   "n": 45,
+   "lo": 1.0,
+   "hi": 10.0
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Seed tender",
+   "u": "acre",
+   "a": 5.05,
+   "n": 51,
+   "lo": 2.0,
+   "hi": 10.0
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Drilling soybean",
+   "u": "acre",
+   "a": 22.0,
+   "n": 33,
+   "lo": 14.0,
+   "hi": 28.0,
+   "k": "drill-soy"
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Drilling soybean, no-till",
+   "u": "acre",
+   "a": 24.15,
+   "n": 40,
+   "lo": 15.0,
+   "hi": 32.0,
+   "k": "drill-soy-notill"
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Drilling grass seed",
+   "u": "acre",
+   "a": 21.8,
+   "n": 36,
+   "lo": 10.0,
+   "hi": 30.0
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Drilling small grain",
+   "u": "acre",
+   "a": 19.45,
+   "n": 30,
+   "lo": 10.0,
+   "hi": 27.0,
+   "k": "drill-smallgrain"
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Seeding grass, broadcast with tractor",
+   "u": "acre",
+   "a": 15.65,
+   "n": 19,
+   "lo": 8.0,
+   "hi": 25.0
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Seeding grass, broadcast with ATV",
+   "u": "acre",
+   "a": 18.65,
+   "n": 16,
+   "lo": 10.0,
+   "hi": 30.0
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Aerial seeding of cover crop",
+   "u": "acre",
+   "a": 14.7,
+   "n": 25,
+   "lo": 10.0,
+   "hi": 18.0
+  },
+  {
+   "s": "Planting, Drilling, and Seeding",
+   "o": "Drilling cover crop seed",
+   "u": "acre",
+   "a": 19.05,
+   "n": 39,
+   "lo": 9.0,
+   "hi": 25.0
+  },
+  {
+   "s": "Spraying (materials not included)",
+   "o": "Ground, broadcast, not incorporated, tractor",
+   "u": "acre",
+   "a": 8.5,
+   "n": 35,
+   "lo": 5.0,
+   "hi": 14.0,
+   "k": "spray-tractor"
+  },
+  {
+   "s": "Spraying (materials not included)",
+   "o": "Ground, incorporated, tractor",
+   "u": "acre",
+   "a": 12.3,
+   "n": 10,
+   "lo": 7.0,
+   "hi": 18.0
+  },
+  {
+   "s": "Spraying (materials not included)",
+   "o": "Ground, broadcast, not incorporated, self-propelled",
+   "u": "acre",
+   "a": 9.35,
+   "n": 121,
+   "lo": 5.0,
+   "hi": 18.0,
+   "k": "spray-ground"
+  },
+  {
+   "s": "Spraying (materials not included)",
+   "o": "Ground, broadcast, self-propelled tall-crop",
+   "u": "acre",
+   "a": 11.15,
+   "n": 65,
+   "lo": 6.0,
+   "hi": 20.0
+  },
+  {
+   "s": "Spraying (materials not included)",
+   "o": "Ground, banded, tractor",
+   "u": "acre",
+   "a": 12.2,
+   "n": 8,
+   "lo": 8.5,
+   "hi": 16.0
+  },
+  {
+   "s": "Spraying (materials not included)",
+   "o": "Ground, road ditches",
+   "u": "hour",
+   "a": 90.45,
+   "n": 40,
+   "lo": 25.0,
+   "hi": 145.0
+  },
+  {
+   "s": "Spraying (materials not included)",
+   "o": "Aerial",
+   "u": "acre",
+   "a": 12.0,
+   "n": 54,
+   "lo": 9.0,
+   "hi": 18.0,
+   "k": "spray-aerial"
+  },
+  {
+   "s": "Spraying (materials not included)",
+   "o": "Drone",
+   "u": "acre",
+   "a": 12.5,
+   "n": 47,
+   "lo": 8.0,
+   "hi": 16.0,
+   "k": "spray-drone"
+  },
+  {
+   "s": "Fertilizer Application (materials not included)",
+   "o": "Dry bulk fertilizer, applied",
+   "u": "acre",
+   "a": 8.15,
+   "n": 59,
+   "lo": 4.0,
+   "hi": 13.5,
+   "k": "fert-dry"
+  },
+  {
+   "s": "Fertilizer Application (materials not included)",
+   "o": "Liquid fertilizer, spraying",
+   "u": "acre",
+   "a": 9.45,
+   "n": 35,
+   "lo": 5.0,
+   "hi": 15.0,
+   "k": "fert-liquid"
+  },
+  {
+   "s": "Fertilizer Application (materials not included)",
+   "o": "Liquid fertilizer, side dressing",
+   "u": "acre",
+   "a": 14.1,
+   "n": 38,
+   "lo": 9.0,
+   "hi": 20.0
+  },
+  {
+   "s": "Fertilizer Application (materials not included)",
+   "o": "Liquid fertilizer, high clearance, drop hose, Y spray nozzle",
+   "u": "acre",
+   "a": 13.25,
+   "n": 26,
+   "lo": 8.0,
+   "hi": 20.0
+  },
+  {
+   "s": "Fertilizer Application (materials not included)",
+   "o": "Anhydrous, injecting, with tool bar",
+   "u": "acre",
+   "a": 15.55,
+   "n": 79,
+   "lo": 7.0,
+   "hi": 28.0,
+   "k": "nh3"
+  },
+  {
+   "s": "Fertilizer Application (materials not included)",
+   "o": "Anhydrous, injecting, without tool bar",
+   "u": "acre",
+   "a": 13.45,
+   "n": 42,
+   "lo": 8.0,
+   "hi": 20.0
+  },
+  {
+   "s": "Fertilizer Application (materials not included)",
+   "o": "Anhydrous, side dressing",
+   "u": "acre",
+   "a": 13.55,
+   "n": 15,
+   "lo": 8.0,
+   "hi": 18.0
+  },
+  {
+   "s": "Fertilizer Application (materials not included)",
+   "o": "Spreading lime",
+   "u": "ton",
+   "a": 8.3,
+   "n": 31,
+   "lo": 5.0,
+   "hi": 14.0,
+   "k": "lime-ton"
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Corn combining",
+   "u": "acre",
+   "a": 46.05,
+   "n": 119,
+   "lo": 25.0,
+   "hi": 80.0,
+   "k": "combine-corn"
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Corn combining, with chopper head",
+   "u": "acre",
+   "a": 50.6,
+   "n": 61,
+   "lo": 25.0,
+   "hi": 80.0
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Corn combining, added charge for corn reel (downed corn)",
+   "u": "acre",
+   "a": 12.55,
+   "n": 34,
+   "lo": 5.0,
+   "hi": 30.0
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Soybean combining",
+   "u": "acre",
+   "a": 43.05,
+   "n": 94,
+   "lo": 24.0,
+   "hi": 70.0,
+   "k": "combine-soy"
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Soybean combining, with air reel",
+   "u": "acre",
+   "a": 47.0,
+   "n": 21,
+   "lo": 26.0,
+   "hi": 70.0
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Soybean combining, with draper head",
+   "u": "acre",
+   "a": 48.2,
+   "n": 95,
+   "lo": 24.0,
+   "hi": 80.0
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Small grain combining",
+   "u": "acre",
+   "a": 47.0,
+   "n": 13,
+   "lo": 35.0,
+   "hi": 65.0,
+   "k": "combine-smallgrain"
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Complete harvesting (combine, grain cart, haul to farm storage), Corn",
+   "u": "acre",
+   "a": 82.0,
+   "n": 67,
+   "lo": 40.0,
+   "hi": 175.0,
+   "k": "harvest-haul-corn"
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Complete harvesting (combine, grain cart, haul to farm storage), Soybean",
+   "u": "acre",
+   "a": 77.4,
+   "n": 68,
+   "lo": 32.0,
+   "hi": 175.0,
+   "k": "harvest-haul-soy"
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Added charge for GPS mapping",
+   "u": "acre",
+   "a": 3.95,
+   "n": 46,
+   "lo": 1.0,
+   "hi": 8.0
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Picking ear corn",
+   "u": "acre",
+   "a": 49.7,
+   "n": 19,
+   "lo": 30.0,
+   "hi": 100.0
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Drying corn (includes fuel, electricity, labor), continuous flow dryer",
+   "u": "point per bushel",
+   "a": 0.055,
+   "n": 21,
+   "lo": 0.025,
+   "hi": 0.09,
+   "k": "dry-corn-pt"
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Drying corn (includes fuel, electricity, labor), bin dryer",
+   "u": "point per bushel",
+   "a": 0.05,
+   "n": 10,
+   "lo": 0.025,
+   "hi": 0.06
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Handling grain by auger",
+   "u": "bushel",
+   "a": 0.085,
+   "n": 37,
+   "lo": 0.02,
+   "hi": 0.16
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Hauling grain, grain cart, corn",
+   "u": "acre",
+   "a": 9.25,
+   "n": 72,
+   "lo": 3.0,
+   "hi": 22.0,
+   "k": "grain-cart"
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Hauling grain, grain cart, soybean",
+   "u": "acre",
+   "a": 8.1,
+   "n": 72,
+   "lo": 2.0,
+   "hi": 19.0
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Hauling grain, to farm storage, wagon",
+   "u": "bushel",
+   "a": 0.095,
+   "n": 28,
+   "lo": 0.04,
+   "hi": 0.15
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Hauling grain, farm storage to market, wagon",
+   "u": "bushel",
+   "a": 0.125,
+   "n": 27,
+   "lo": 0.05,
+   "hi": 0.24
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Hauling grain, to market, truck, (5 miles, 1-way trip)",
+   "u": "bushel",
+   "a": 0.135,
+   "n": 96,
+   "lo": 0.06,
+   "hi": 0.5
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Hauling grain, to market, truck, (25 miles, 1-way trip)",
+   "u": "bushel",
+   "a": 0.2,
+   "n": 97,
+   "lo": 0.09,
+   "hi": 0.35,
+   "k": "haul-grain-bu"
+  },
+  {
+   "s": "Harvesting, Drying, and Hauling Grain",
+   "o": "Hauling grain, to market, truck, (100 miles, 1-way trip)",
+   "u": "bushel",
+   "a": 0.405,
+   "n": 46,
+   "lo": 0.18,
+   "hi": 0.65
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Hay mowing",
+   "u": "acre",
+   "a": 15.45,
+   "n": 20,
+   "lo": 9.5,
+   "hi": 21.0,
+   "k": "mow-hay"
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Hay mowing/conditioning",
+   "u": "acre",
+   "a": 17.3,
+   "n": 31,
+   "lo": 10.0,
+   "hi": 25.0,
+   "k": "mow-cond"
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Hay raking",
+   "u": "acre",
+   "a": 9.9,
+   "n": 24,
+   "lo": 7.5,
+   "hi": 15.0,
+   "k": "rake"
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Hay merging",
+   "u": "acre",
+   "a": 12.4,
+   "n": 5,
+   "lo": 8.0,
+   "hi": 13.0
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Hay tedding",
+   "u": "acre",
+   "a": 11.85,
+   "n": 12,
+   "lo": 8.0,
+   "hi": 15.0,
+   "k": "ted"
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Swathing hay or small grain",
+   "u": "acre",
+   "a": 18.0,
+   "n": 5,
+   "lo": 15.0,
+   "hi": 22.0,
+   "k": "swath"
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Hay baling, small square bales",
+   "u": "bale",
+   "a": 1.0,
+   "n": 16,
+   "lo": 0.5,
+   "hi": 1.5,
+   "k": "bale-smallsq"
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Hay baling, large square bales",
+   "u": "bale",
+   "a": 14.9,
+   "n": 7,
+   "lo": 13.0,
+   "hi": 18.0,
+   "k": "bale-largesq"
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Hay baling, large round bales without wrap",
+   "u": "bale",
+   "a": 13.15,
+   "n": 11,
+   "lo": 10.0,
+   "hi": 20.0,
+   "k": "bale-round"
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Hay baling, large round bales with wrap",
+   "u": "bale",
+   "a": 15.75,
+   "n": 39,
+   "lo": 12.0,
+   "hi": 20.0,
+   "k": "bale-round-net"
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Straw or corn stalk baling, large round or square bales without wrap",
+   "u": "bale",
+   "a": 14.5,
+   "n": 8,
+   "lo": 10.0,
+   "hi": 20.0
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Straw or corn stalk baling, large round or square bales with wrap",
+   "u": "bale",
+   "a": 16.85,
+   "n": 31,
+   "lo": 12.0,
+   "hi": 20.0
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Moving large round bales to storage",
+   "u": "bale",
+   "a": 3.25,
+   "n": 11,
+   "lo": 1.5,
+   "hi": 5.0
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Haul round bales by truck or trailer",
+   "u": "bale / loaded mile",
+   "a": 0.29,
+   "n": 6,
+   "lo": 0.18,
+   "hi": 0.38
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Haul round bales by truck or trailer",
+   "u": "hour",
+   "a": 118.0,
+   "n": 5,
+   "lo": 90.0,
+   "hi": 150.0
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Silage chopping",
+   "u": "hour / head row",
+   "a": 77.4,
+   "n": 5,
+   "lo": 50.0,
+   "hi": 98.0
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Silage chopping",
+   "u": "ton",
+   "a": 9.2,
+   "n": 10,
+   "lo": 7.0,
+   "hi": 12.0
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Filling silage bags",
+   "u": "foot of bag",
+   "a": 11.3,
+   "n": 8,
+   "lo": 9.0,
+   "hi": 15.0
+  },
+  {
+   "s": "Harvesting Forages",
+   "o": "Earlage or snaplage, chopping",
+   "u": "acre",
+   "a": 84.75,
+   "n": 8,
+   "lo": 65.0,
+   "hi": 100.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Removing snow (loader)",
+   "u": "hour",
+   "a": 114.05,
+   "n": 34,
+   "lo": 50.0,
+   "hi": 200.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Removing snow (blade)",
+   "u": "hour / foot of blade",
+   "a": 14.25,
+   "n": 7,
+   "lo": 12.5,
+   "hi": 16.7
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Removing snow (blower)",
+   "u": "hour / foot of blower",
+   "a": 16.95,
+   "n": 13,
+   "lo": 4.15,
+   "hi": 27.8
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Tub grinding hay",
+   "u": "hour",
+   "a": 273.9,
+   "n": 9,
+   "lo": 100.0,
+   "hi": 425.0,
+   "k": "tub-grind"
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Spreading liquid manure, injected",
+   "u": "1,000 gallon",
+   "a": 18.15,
+   "n": 16,
+   "lo": 11.0,
+   "hi": 29.0,
+   "k": "manure-inject"
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Applying liquid manure with drag line",
+   "u": "1,000 gallon",
+   "a": 16.85,
+   "n": 9,
+   "lo": 12.5,
+   "hi": 21.0,
+   "k": "manure-dragline"
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Loading, spreading solid manure",
+   "u": "ton",
+   "a": 7.2,
+   "n": 7,
+   "lo": 5.0,
+   "hi": 9.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Power washing",
+   "u": "hour",
+   "a": 78.85,
+   "n": 13,
+   "lo": 50.0,
+   "hi": 100.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Building fence, barbed (no materials)",
+   "u": "hour",
+   "a": 42.7,
+   "n": 7,
+   "lo": 35.0,
+   "hi": 50.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Scouting crops",
+   "u": "acre",
+   "a": 6.65,
+   "n": 13,
+   "lo": 4.0,
+   "hi": 9.5
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "GPS grid soil testing",
+   "u": "acre",
+   "a": 7.95,
+   "n": 18,
+   "lo": 3.0,
+   "hi": 12.5
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Managing stored grain",
+   "u": "bushel",
+   "a": 0.08,
+   "n": 12,
+   "lo": 0.03,
+   "hi": 0.12
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Vacuuming grain",
+   "u": "bushel",
+   "a": 0.12,
+   "n": 29,
+   "lo": 0.05,
+   "hi": 0.2
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Livestock hauling with semi-truck",
+   "u": "loaded mile",
+   "a": 4.7,
+   "n": 9,
+   "lo": 3.5,
+   "hi": 5.75
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Bulldozing",
+   "u": "hour / foot of blade",
+   "a": 17.55,
+   "n": 16,
+   "lo": 12.0,
+   "hi": 22.5
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Trenching",
+   "u": "foot",
+   "a": 1.6,
+   "n": 5,
+   "lo": 1.25,
+   "hi": 2.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Tiling, tiling machine (excluding materials)",
+   "u": "foot",
+   "a": 1.7,
+   "n": 7,
+   "lo": 1.05,
+   "hi": 2.3
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Tiling, tile plow (excluding materials)",
+   "u": "foot",
+   "a": 1.15,
+   "n": 12,
+   "lo": 0.5,
+   "hi": 1.75
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Backhoeing",
+   "u": "hour",
+   "a": 129.35,
+   "n": 23,
+   "lo": 70.0,
+   "hi": 200.0,
+   "k": "backhoe"
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Clearing land",
+   "u": "hour",
+   "a": 161.65,
+   "n": 15,
+   "lo": 100.0,
+   "hi": 225.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Building ponds",
+   "u": "hour",
+   "a": 161.65,
+   "n": 6,
+   "lo": 125.0,
+   "hi": 210.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Chain sawing",
+   "u": "hour",
+   "a": 89.15,
+   "n": 18,
+   "lo": 50.0,
+   "hi": 120.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Welding machinery",
+   "u": "hour",
+   "a": 83.85,
+   "n": 15,
+   "lo": 40.0,
+   "hi": 110.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Mowing CRP or pasture",
+   "u": "acre",
+   "a": 27.05,
+   "n": 47,
+   "lo": 12.0,
+   "hi": 50.0,
+   "k": "mow-crp"
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Controlled burning of grass, CRP, pasture",
+   "u": "acre",
+   "a": 33.35,
+   "n": 25,
+   "lo": 20.0,
+   "hi": 60.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Mowing fence rows, ditches",
+   "u": "hour",
+   "a": 103.2,
+   "n": 45,
+   "lo": 20.0,
+   "hi": 150.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Mowing lawns",
+   "u": "hour",
+   "a": 56.65,
+   "n": 30,
+   "lo": 20.0,
+   "hi": 100.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Chopping brush",
+   "u": "acre",
+   "a": 105.55,
+   "n": 18,
+   "lo": 25.0,
+   "hi": 200.0
+  },
+  {
+   "s": "Miscellaneous Services",
+   "o": "Using truck scale",
+   "u": "load weighed",
+   "a": 11.15,
+   "n": 8,
+   "lo": 5.0,
+   "hi": 19.25
+  },
+  {
+   "s": "Custom Farming (tillage, planting, pest control, harvesting, hauling to farm, no drying)",
+   "o": "Custom farming, corn",
+   "u": "acre",
+   "a": 177.85,
+   "n": 64,
+   "lo": 74.5,
+   "hi": 375.0,
+   "k": "custom-farm-corn"
+  },
+  {
+   "s": "Custom Farming (tillage, planting, pest control, harvesting, hauling to farm, no drying)",
+   "o": "Custom farming, soybean",
+   "u": "acre",
+   "a": 161.7,
+   "n": 63,
+   "lo": 65.0,
+   "hi": 353.0,
+   "k": "custom-farm-soy"
+  },
+  {
+   "s": "Custom Farming (tillage, planting, pest control, harvesting, hauling to farm, no drying)",
+   "o": "Custom farming, small grain",
+   "u": "acre",
+   "a": 186.15,
+   "n": 13,
+   "lo": 70.0,
+   "hi": 290.0
+  },
+  {
+   "s": "Farm Labor Wages for Operating Machinery",
+   "o": "Spraying or harvesting",
+   "u": "hour",
+   "a": 24.45,
+   "n": 81,
+   "lo": 15.0,
+   "hi": 40.0
+  },
+  {
+   "s": "Farm Labor Wages for Operating Machinery",
+   "o": "Other operations",
+   "u": "hour",
+   "a": 22.95,
+   "n": 105,
+   "lo": 15.0,
+   "hi": 40.0
+  },
+  {
+   "s": "Bin Rental Rates",
+   "o": "Storing grain, bin rental",
+   "u": "bushel / month",
+   "a": 0.03,
+   "n": 22,
+   "lo": 0.01,
+   "hi": 0.06
+  },
+  {
+   "s": "Bin Rental Rates",
+   "o": "Storing grain, bin rental",
+   "u": "bushel / year",
+   "a": 0.19,
+   "n": 45,
+   "lo": 0.1,
+   "hi": 0.45
+  },
+  {
+   "s": "Machinery Rental Rates",
+   "o": "Tractor",
+   "u": "horsepower / hour",
+   "a": 0.34,
+   "n": 18,
+   "lo": 0.14,
+   "hi": 0.5
+  },
+  {
+   "s": "Machinery Rental Rates",
+   "o": "Corn head for combine",
+   "u": "acre",
+   "a": 11.6,
+   "n": 11,
+   "lo": 5.0,
+   "hi": 20.0
+  },
+  {
+   "s": "Machinery Rental Rates",
+   "o": "Soybean head for combine",
+   "u": "acre",
+   "a": 13.45,
+   "n": 9,
+   "lo": 5.0,
+   "hi": 20.0
+  },
+  {
+   "s": "Machinery Rental Rates",
+   "o": "Grain cart with auger, corn",
+   "u": "acre",
+   "a": 6.7,
+   "n": 7,
+   "lo": 6.0,
+   "hi": 12.0
+  },
+  {
+   "s": "Machinery Rental Rates",
+   "o": "Grain cart with auger, soybean",
+   "u": "acre",
+   "a": 5.85,
+   "n": 6,
+   "lo": 5.0,
+   "hi": 10.0
+  },
+  {
+   "s": "Machinery Rental Rates",
+   "o": "Grain truck (semi)",
+   "u": "bushel / round trip",
+   "a": 0.2,
+   "n": 5,
+   "lo": 0.18,
+   "hi": 0.22
+  },
+  {
+   "s": "Machinery Rental Rates",
+   "o": "Grain auger",
+   "u": "bushel",
+   "a": 0.08,
+   "n": 7,
+   "lo": 0.05,
+   "hi": 0.12
+  },
+  {
+   "s": "Machinery Rental Rates",
+   "o": "Grain vacuum",
+   "u": "bushel",
+   "a": 0.1,
+   "n": 8,
+   "lo": 0.07,
+   "hi": 0.13
+  },
+  {
+   "s": "Machinery Rental Rates",
+   "o": "Skid loader",
+   "u": "hour",
+   "a": 97.5,
+   "n": 8,
+   "lo": 80.0,
+   "hi": 120.0
+  },
+  {
+   "s": "Machinery Rental Rates",
+   "o": "Dry bulk fertilizer applicator",
+   "u": "acre",
+   "a": 7.05,
+   "n": 8,
+   "lo": 5.0,
+   "hi": 9.0
+  },
+  {
+   "s": "Machinery Rental Rates",
+   "o": "Anhydrous fertilizer applicator",
+   "u": "acre",
+   "a": 9.5,
+   "n": 8,
+   "lo": 3.0,
+   "hi": 15.0
+  }
+ ]
+}

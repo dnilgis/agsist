@@ -1164,8 +1164,16 @@ def read_ok(text, d, flag):
         or a different number for that period;
       - prints a rent that is the half-dollar rounded down (the page rounds
         half up, so $36.50 is $37, and two answers on one page is one too many).
-    Each rule is a class of error found in the shipped reads on 2026-09-25."""
+    Each rule is a class of error found in the shipped reads on 2026-09-25.
+    Two more from the 2026-10-18 accuracy pass:
+      - hands the county's whole indemnity total to one cause ("heat and
+        drought paid out $169.1 million" when that is every cause together);
+      - blames one year's low yield on drought or a dry summer when the record
+        shows that year's April to September rain at 105% of normal or more and
+        no week of severe drought, or on flooding or rain when it shows 90% or less."""
     t = text
+    if read_cause_total(t, d) or read_year_cause_wrong(t, d):
+        return False
     if flag and re.search(r"land value|census value|land and buildings", t, re.I):
         return False
     m = re.search(r"loss ratio[^.;]*?(\d{4})\D{1,3}(\d{4})[^.;]*?(\d+\.\d+)", t, re.I)
@@ -1189,6 +1197,53 @@ def read_ok(text, d, flag):
         if int(n_) in halves and (int(n_) + 1) not in halves:
             return False
     return True
+
+
+CAUSE_RE = r"(?:heat and drought|excess moisture and flood(?:ing)?|hail|freeze and frost|wind)"
+
+
+def _usd_m(x):
+    """The read's money form (scripts/atlas_reads.py usd_m)."""
+    if abs(x) >= 1e9:
+        return f"${x / 1e9:,.2f} billion"
+    if abs(x) >= 1e6:
+        return f"${x / 1e6:,.1f} million"
+    return "$" + f"{int(round(x)):,}"
+
+
+def read_cause_total(t, d):
+    """True when a cause is the subject of the county's whole indemnity total."""
+    lo = d.get("loss") or {}
+    tot = lo.get("total_indemnity")
+    if not tot or max((lo.get("share_all") or {}).values() or [0]) >= 0.995:
+        return False
+    m = re.escape(_usd_m(tot))
+    return bool(re.search(CAUSE_RE + r"(?: claims)?(?: have| has)? (?:paid|paid out|paying out|drove|driven|caused|pulled|claimed) " + m, t, re.I))
+
+
+def read_year_cause_wrong(t, d):
+    """True when a sentence ties a year to a weather cause the record contradicts."""
+    cl = d.get("climate") or {}
+    n, g = cl.get("gs_normal_in"), cl.get("gs_series") or {}
+    dr = (d.get("drought") or {}).get("series") or {}
+    if not n:
+        return False
+    for s in re.findall(r"(?:[^.]|\.\d)+\.?", t):
+        m = re.search(r"\b(?:when|after|as|amid|during|because)\b[^.]*?\b(drought|dry|flood|flooding|rain|wet)\b", s, re.I)
+        if not m:
+            continue
+        after = re.match(r"\D{0,14}\b((?:19|20)\d\d)\b", s[m.end(1):])
+        yrs = [after.group(1)] if after else re.findall(r"\b(?:19|20)\d\d\b", s[:m.start(1)])
+        if not yrs or yrs[-1] not in g:
+            continue
+        y = yrs[-1]
+        pct = 100.0 * g[y] / n
+        cause = m.group(1).lower()
+        if cause in ("drought", "dry") and pct >= 105 and not (dr.get(y) or {}).get("d2"):
+            return True
+        if cause in ("flood", "flooding", "rain", "wet") and pct <= 90:
+            return True
+    return False
 
 
 def lede(W, f, rec, first_year=None):
@@ -1504,7 +1559,7 @@ def county_page(W, f, d, stamp):
         S4 += bars_svg(closed, "Loss ratio by crop year: claims paid over total premium", lambda v: rh(v, 2), ref=1.0, ref_label="1.00: claims equal premium", every=5)
         S4 += ('<p class="note">Claims paid divided by total premium (the farmer share plus the federal subsidy), each closed crop year since %s. '
                'Above the dashed line, the county\'s insurance book paid out more than it took in.%s</p>' % (
-                   S.get("first_year"), (" %s, still open, is left out." % S["partial_year"]) if S.get("partial_year") else ""))
+                   min(closed) if closed else S.get("first_year"), (" %s, still open, is left out." % S["partial_year"]) if S.get("partial_year") else ""))
         if lc is not None:
             S4 += fact("Claims paid per $100 of coverage, %d–%d" % (S["last10"]["from"], S["last10"]["to"]), usd2(lc))
         if get(S, "last10", "ratio") is not None:
@@ -1512,7 +1567,8 @@ def county_page(W, f, d, stamp):
         if S.get("loss_ratio_all") is not None:
             S4 += fact("Loss ratio, %s–%s" % (S["first_year"], S["last_year"]), rh(S["loss_ratio_all"], 2), "%s paid" % musd(S["total_indemnity"]))
         if S.get("years_over_one") is not None:
-            S4 += fact("Years claims exceeded premium", "%s of %s" % (S["years_over_one"], S["years_with_ratio"]))
+            S4 += fact("Years claims exceeded premium", "%s of %s" % (S["years_over_one"], S["years_with_ratio"]),
+                       ("crop years %s–%s with a loss ratio" % (min(closed), max(closed))) if closed and len(closed) == S["years_with_ratio"] else None)
         if S.get("worst_year"):
             S4 += fact("Worst year", str(S["worst_year"]["year"]), "ratio %s" % rh(S["worst_year"]["ratio"], 2))
     else:
@@ -1622,7 +1678,7 @@ def county_page(W, f, d, stamp):
     if nb:
         rows = [f] + sorted(nb, key=lambda g: (W.C[g]["state"], W.label[g]))
         cols = [("Dry rent", "rent", money, "nonirr"), ("Irr. rent", "irr", money, "irr"), ("Land value", "value", money, None),
-                ("Corn yield", "yld", f1, None), ("Claims per $100", "cost", usd2, None)]
+                ("Corn yield, median", "yld", f1, None), ("Claims per $100", "cost", usd2, None)]
         cols = [k for k in cols if any(W.m(k[1], g) is not None for g in rows)]
         ND = "<h2>Next door</h2><div class=\"tw\"><table><thead><tr><th scope=\"col\">County</th>" + "".join("<th scope=\"col\">%s</th>" % esc(k[0]) for k in cols) + "</tr></thead><tbody>"
         for g in rows:
@@ -1645,11 +1701,18 @@ def county_page(W, f, d, stamp):
             md = v[(n - 1) // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2
             med += "<td>%s%s</td>" % (esc(k[2](md)), (" <small>%d co.</small>" % n) if n < 3 else "")
         ND += '<tr class="med"><td>Median next door</td>%s</tr></tbody></table></div>' % med
-        ND += '<p class="note">Counties that share a stretch of boundary. An older rent carries its year and stays out of the median.</p>'
+        ND += '<p class="note">Counties that share a stretch of boundary. A rent from an older survey year carries its year and stays out of the median; one more than three survey years old shows n/a.</p>'
 
     # ---- assemble
     read_html = ""
     rd = W.reads.get(f)
+    # the dated lead paragraph (scripts/stories_atlas.py): when one prints, the older read steps aside
+    story_html = ""
+    if getattr(W, "stories", None):
+        import stories_atlas as SA
+        story_html = SA.story_html(W.stories, W, f, d)
+    if story_html:
+        rd = None
     if rd and rd.get("text") and rd.get("sha") == c.get("sha") and read_ok(rd["text"], d, fl):
         read_html = '<div class="read"><p style="margin:0">%s</p></div>' % esc(rd["text"].replace(" \u2014 ", ", ").replace("\u2014", ", "))
     if W.TEN and W.farm_acres(f) is not None and W.farm_acres(f) < 10000:
@@ -1680,7 +1743,7 @@ def county_page(W, f, d, stamp):
 <div class="kick">Farmland Atlas · county record</div>
 <h1>{esc(lab)}, {esc(stn)}</h1>
 <p class="sub">{esc(desc)} County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp)}.</p>
-{warn}<div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
+{story_html}{warn}<div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
 <div class="act">
   <a href="/farmland-atlas#{esc(f)}">Open on the map</a>
   <a href="/farmland-atlas/compare#{esc(f)}">Compare</a>
@@ -1695,7 +1758,7 @@ def county_page(W, f, d, stamp):
 <div class="cite"><code>{esc(cite)}</code><br>Every figure is a county average from the sources named below. Rent ranks count every county with a published rent in the same survey year, within the state (the same counties as the state rent page); other ranks count counties with 10,000 acres or more in farms. Methods: <a href="/farmland-atlas/methods">how each figure is built</a>. Downloads: <a href="/farmland-atlas/data">all counties, CSV</a>.</div>
 <details><summary>Sources, dates and arithmetic</summary>
 <p>"Figures as of" is the date this page's numbers last changed; it moves only when a figure on the page does. Source files and their retrieval dates are listed on the <a href="/farmland-atlas/data">data page</a>.</p>
-<p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields, trend fitted here over every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A dash means the record does not carry the figure or the source withheld it; the reason is printed beside it.</p></details>
+<p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 {prev_next}
 </main>
 <script type="application/json" id="{csv_id}">{rec_json}</script>
@@ -1836,7 +1899,7 @@ def state_page(W, st):
 <h2>Every county</h2>
 <div class="tw"><table id="t"><thead><tr><th class="s" scope="col">County</th><th class="s" scope="col">Dry rent</th><th class="s" scope="col">Irr. rent</th><th class="s" scope="col">Land value</th><th class="s" scope="col">Median corn yield</th><th class="s" scope="col">Claims per $100</th><th class="s" scope="col">Drought weeks</th></tr></thead><tbody>{rows}</tbody></table></div>
 <noscript><p class="note">The county table is built from the map above, which needs JavaScript. Every county on the map is a link, and the CSV download has every row.</p></noscript>
-<p class="note">Rent is dollars per acre, NASS county survey; an older year is shown beside the figure. Land value is the census of agriculture estimate; a star marks a value flagged to read with care. Corn yield is the median of published years. Claims per $100 of coverage are the last ten closed crop years. Drought weeks are the share of weeks since 2000 with half the county or more in D2 drought or worse. A dash means the source withheld the figure or the record does not carry it.</p>
+<p class="note">Rent is dollars per acre, NASS county survey; an older year is shown beside the figure. Land value is the census of agriculture estimate; a star marks a value flagged to read with care. Corn yield is the median of published years. Claims per $100 of coverage are the last ten closed crop years. Drought weeks are the share of weeks since 2000 with half the county or more in D2 drought or worse. n/a means the source withheld the figure or the record does not carry it.</p>
 </main>
 <script>
 (function(){{
@@ -2000,6 +2063,9 @@ def write(path, text):
 def build(root=".", out_root=None, only=None, quiet=False):
     """Writes everything. Returns (urls, problems)."""
     W = World(root)
+    import stories_core as SK
+    import stories_atlas as SA
+    W.stories = SK.load(SA, os.path.join(root, SA.STORE))
     out_root = out_root or root
     problems, urls = [], []
     recs = {}

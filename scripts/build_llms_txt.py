@@ -138,6 +138,7 @@ PAGES = [
         ("/harvest-price-tracker", "Harvest Price Tracker",
          "the RMA projected and harvest prices that set Revenue Protection guarantees, what your guarantee is worth, and how many bushels you can safely pre-sell"),
         ("/grain-bin-calculator", "Grain Bin Calculator", "bushels in a bin and moisture shrink"),
+        ("/rain-radar", "Rain on Your Field (Radar)", "rain in the last 24 hours, 3 days, 7 days and this month at any spot in the lower 48, from NOAA MRMS radar corrected with rain gauges, updated four times a day; checked against 1,175 NOAA co-op gauges"),
         ("/grain-emc", "Grain EMC Calculator", "when to run aeration fans for corn, soybeans or wheat: drying wet grain (against its own moisture), cooling (outside air 10 F or more under the grain) or holding dry grain, hour by hour for 3 days at your ZIP; printable corn, soybean and wheat EMC charts from published equations"),
         ("/grain-shrink", "Grain Shrink Calculator", "what wet corn, soybeans, wheat or sorghum nets after the elevator's shrink and drying charges, and the bushels and dollars given away delivering below base moisture (soybeans under 13%); at your bid, a ZIP's nearest posted bid, or a labeled state estimate"),
         ("/harvest-or-wait", "Harvest now or wait", "Corn drying cost now vs after field drydown, against the field loss you expect; break-even loss when you do not know it"),
@@ -149,6 +150,7 @@ PAGES = [
         ("/cattle-auction-prices", "Sale Barn Prices", "feeder steer and heifer prices by 100 lb weight class (Medium and Large 1 and 1-2), weighted average $/cwt and $/head with head counts, at USDA-reported sale barns and state auction summaries near a ZIP"),
     ]),
     ("My ground and programs", [
+        ("/custom-rates", "Custom Farm Rates by State", "what hired combining, planting, spraying, tillage, hauling and baling cost, as each state's university or state survey published it (average, range, unit, survey year, link): Iowa, Kansas, Nebraska, North Dakota, Wisconsin, Indiana, Ohio, Missouri, Oklahoma; one page per state at /custom-rates/<state>"),
         ("/rent/", "Cash Rent by State", "USDA county cash rent for every published state, one page per state at /rent/<state>"),
         ("/farmland-atlas", "Farmland Atlas",
          "every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>"),
@@ -176,6 +178,7 @@ PAGES = [
     ]),
     ("About this site", [
         ("/data-sources", "Data Sources", "where every number comes from"),
+        ("/glossary", "Farm Market Glossary", "plain definitions of basis, cash bid, futures, settle, nearby, carry, WASDE, ending stocks, managed money, NASS, RMA, FSA, CRP, cwt, shrink and other words the site uses"),
         ("/status", "Status", "whether each data feed is current right now"),
         ("/developer", "Embed Tools and Data Feeds", "embeddable GDU and ARC or PLC widgets, and the open JSON feeds"),
         ("/changelog", "Changelog", "dated list of site changes"),
@@ -193,7 +196,7 @@ OMIT = {
 }
 
 # Generated page sets: a URL under one of these is covered by its set's line.
-SET_RE = re.compile(r"^/(daily|hail|hail-map|rent|yield|basis|cash-bids|arc-plc|farmland-atlas|embed|prf)/.+")
+SET_RE = re.compile(r"^/(daily|hail|hail-map|rent|yield|basis|cash-bids|arc-plc|farmland-atlas|embed|prf|custom-rates)/.+")
 
 
 def url_file(path, root=REPO):

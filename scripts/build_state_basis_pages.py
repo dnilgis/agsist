@@ -27,6 +27,8 @@ slips through either gate.
 WHAT COUNTS AS A FRESH NETWORK BID (all must hold)
   - row: sourceStatus "ok", stale false, currency USD, a US state
   - board in index.json with status "ok" and health "live"
+    (or: board and row "skipped", i.e. not asked this pass, with its last
+    successful read within HELD_SKIP_HOURS; see held_skip())
   - row pricedAt within FRESH_HOURS (72 h) of the snapshot's `generated` time.
     72 h, not 24: a board that did not move over a weekend is still Friday's
     posted price on Monday morning, and Friday 14:00 -> Monday 13:00 is 71 h.
@@ -78,6 +80,7 @@ except Exception:  # pragma: no cover
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_bids import _net_get_json, BIDS_NETWORK_BASE  # noqa: E402  (network reader only)
+from fetch_bids import held_skip_row, HELD_SKIP_HOURS as _FB_HELD_SKIP_HOURS  # noqa: E402  (one rule)
 import pricefmt  # noqa: E402  (cash as posted, basis in cents, "Dec '26": twin of components/util.js AG.px)
 from basis_method import (  # noqa: E402  (the one state-basis method)
     CROP_ORDER, MIN_STAT, SANITY, match_key, median, state_basis)
@@ -134,6 +137,24 @@ def parse_ts(s):
         return dt.datetime.fromisoformat(str(s).replace("Z", "+00:00")).astimezone(dt.timezone.utc)
     except ValueError:
         return None
+
+
+# A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17). The row rule and its
+# reasons live in scripts/fetch_bids.py held_skip_row(), one copy for the ZIP
+# feed and these pages; here the board's index record must say skipped too.
+# Taking only rows read on the latest pass left NEW Cooperative at 0 of 66
+# locations and Landus at 5 of 48 on almost every rebuild.
+HELD_SKIP_HOURS = _FB_HELD_SKIP_HOURS
+
+
+def held_skip(b, src, gen):
+    """True when row b's board was skipped this pass (not asked, nothing known
+    wrong) and last read successfully within HELD_SKIP_HOURS of gen."""
+    if not src or src.get("status") != "skipped" or src.get("health") != "skipped":
+        return False
+    if isinstance(b, dict) and not b.get("checkedAt") and src.get("checkedAt"):
+        b = dict(b, checkedAt=src["checkedAt"])
+    return held_skip_row(b, gen)
 
 
 def fmt_ct(t, with_date=True):
@@ -453,10 +474,11 @@ def fresh_rows(merged, index, stats=None):
         if b.get("via") != "scrape":
             drop("not_scraped")
             continue
-        if b.get("stale") is not False or b.get("sourceStatus") != "ok":
+        held = held_skip(b, src, gen)
+        if not held and (b.get("stale") is not False or b.get("sourceStatus") != "ok"):
             drop("stale_or_unconfirmed")
             continue
-        if src.get("status") != "ok" or src.get("health") != "live":
+        if not held and (src.get("status") != "ok" or src.get("health") != "live"):
             drop("board_not_live")
             continue
         if (b.get("currency") or "") != "USD":
@@ -933,8 +955,8 @@ def build_state_page(st, rows_all, summ, ctx):
   <a href="/cash-bids">/cash-bids</a> at that ZIP for every delivery month. {wow_note}</p>
   {table}
   <div class="bs-note"><b>How these numbers are made.</b> Source: the AGSIST elevator network (dnilgis/bids),
-  boards read directly; no third-party bid feed is used on this page. A bid counts only if its board was confirmed
-  live on the latest read and its price was posted within {FRESH_HOURS} hours of the snapshot, long enough
+  boards read directly; no third-party bid feed is used on this page. A bid counts only if its board was read
+  successfully in the last {HELD_SKIP_HOURS} hours and did not fail on the latest pass, and its price was posted within {FRESH_HOURS} hours of the snapshot, long enough
   that a board unchanged over a weekend still counts on Monday. Specialty bids (white, organic, non-GMO, high-oleic,
   identity-preserved) are excluded. Medians and ranges are printed only with at least {MIN_STAT} elevators on the
   same futures contract. Prices are a snapshot as of {fmt_ct(gen)} and will have moved since; call the elevator

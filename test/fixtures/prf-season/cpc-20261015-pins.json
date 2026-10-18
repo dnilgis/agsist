@@ -1,0 +1,17 @@
+{
+ "what": "Values read from CPC's RT file for 2026-10-15 (sample.bin on the raw branch, data/prf-season-raw/probe/), mm: rain in tenths of a mm / 10. Pinned so a decoder change that moves a box fails.",
+ "land": 13626,
+ "mm": {
+  "30025": 0.0,
+  "30152": 0.0,
+  "14538": 1.594681,
+  "13937": 11.248138,
+  "6196": 3.29859,
+  "34941": 2.903583,
+  "1": null,
+  "36000": null,
+  "16923": 136.152161,
+  "16924": 123.535083,
+  "16922": 120.576208
+ }
+}
