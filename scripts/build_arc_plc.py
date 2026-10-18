@@ -2088,6 +2088,13 @@ def pending_note(D):
             f'no current benchmark, trigger yield or break-even in bushels. {ASK}</p></div>')
 
 
+def pending_word(py):
+    """A blank in FSA's history: "not yet" only for a program year whose ARC-CO payments are still to
+    come (program year X pays from October of X+1); an older closed year FSA left blank says so.
+    Waynesboro city, VA, 2021 read "not yet" in a file dated 2023 (sets pass, 2026-10-18)."""
+    return "not yet" if int(py) >= int(lead_year()) - 1 else "none in FSA file"
+
+
 def hist_table(e, cd=None):
     hist = [h for h in e.get("hist", []) if h["py"] != 2026]
     if not hist:
@@ -2096,8 +2103,8 @@ def hist_table(e, cd=None):
     u = XC.UNIT[cd["unit"]]["short"]
     rows = "".join(
         f'<tr><td>{h["py"]}</td><td class="num">{h["by"]:,.2f}</td><td class="num">{XC.pf(cd, h["bp"]) if h["bp"] else "n/a"}</td>'
-        f'<td class="num">{"not yet" if h["ay"] is None else format(h["ay"], ".2f")}</td>'
-        f'<td class="num">{("none" if h["pay"] == 0 else usd(h["pay"])) if h["pay"] is not None else "not yet"}</td></tr>' for h in hist)
+        f'<td class="num">{pending_word(h["py"]) if h["ay"] is None else format(h["ay"], ".2f")}</td>'
+        f'<td class="num">{("none" if h["pay"] == 0 else usd(h["pay"])) if h["pay"] is not None else pending_word(h["py"])}</td></tr>' for h in hist)
     return (f'<h3>FSA history, {esc(ent_label(e).lower())}</h3><div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th>'
             f'<th class="num">Benchmark</th><th class="num">Price</th><th class="num">County yield</th><th class="num">ARC-CO $/ac</th></tr></thead>'
             f'<tbody>{rows}</tbody></table></div><p class="ap-small">Program year; benchmark yield in {u}/acre; benchmark price $/{u}; actual county '
@@ -2207,7 +2214,8 @@ def state_page(st, S, D, ch, nav_states):
                           "url": f"{SITE}{path}", "isAccessibleForFree": True, "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
                           "isBasedOn": FSA_DATA, "dateModified": D["updated"][:10],
                           "spatialCoverage": {"@type": "Place", "name": f"{name}, United States"},
-                          "variableMeasured": ["ARC-CO benchmark yield (bu/acre)", "ARC-CO benchmark revenue ($/acre)"]})
+                          "variableMeasured": ["ARC-CO benchmark yield (bushels per acre, or pounds per acre for peanuts, rice, pulses, seed cotton and most oilseeds)",
+                                               "ARC-CO benchmark revenue ($/acre)"]})
         if table_src:
             jsonld[0]["distribution"] = {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": f"{SITE}{table_src}"}
     others = " &middot; ".join(f'<a href="/arc-plc/{x["slug"]}">{esc(x["n"])}</a>' for x in nav_states if x["slug"] != sl)
@@ -2649,7 +2657,9 @@ def trigger_html(cd, e, LY):
     # A line at or over the benchmark printed as a floored whole number read "under 41 bu ... above the
     # 41.00 bu benchmark" (Childress Co., TX, 2026-10-18): print it floored to a tenth there instead.
     ns = f"{n:,}"
-    if n >= e["by"]:
+    # and "under 52 bu ... above the 52.13 bu benchmark" (Newton Co., MO barley, 52.93): the tenth whenever
+    # the line is over the benchmark, so the two numbers never read the wrong way round (sets pass, 2026-10-18)
+    if n >= e["by"] or _t > e["by"]:
         ns = f"{math.floor(round(_t * 10, 6)) / 10:,.1f}"
     cen = cd["scen"]["center"]
     src = ("USDA&rsquo;s price outlook" if (cd.get("scen") or {}).get("kind") != "fut" else "the futures-based price")
@@ -2902,7 +2912,7 @@ def key_numbers_html(c, D, cname):
         for e in es:
             lab = cd["label"] + ("" if e["d"] == "all" and not e.get("sub") else ", " + ent_label(e).lower())
             hist = {h["py"]: h for h in e.get("hist", [])}
-            pays = "".join(f'<td>{("none" if hist[y]["pay"] == 0 else usd(hist[y]["pay"])) if y in hist and hist[y]["pay"] is not None else ("not yet" if y in hist else "not in file")}</td>' for y in hy)
+            pays = "".join(f'<td>{("none" if hist[y]["pay"] == 0 else usd(hist[y]["pay"])) if y in hist and hist[y]["pay"] is not None else (pending_word(y) if y in hist else "not in file")}</td>' for y in hy)
             e7 = f"{XC.pf(y7[k], y7[k]['erp']['erp'])}{XC.per(cd)}" if k in y7 else "not set yet"
             rows.append(f'<tr><th scope="row">{esc(lab)}</th><td>{XC.yf(cd, e["by"]) if e["by"] else "not loaded"}</td>'
                         f'<td>{XC.pf(cd, cd["erp"]["erp"])}{XC.per(cd)}</td><td>{e7}</td>'
@@ -2958,7 +2968,8 @@ def county_page(st, S, c, D, ch):
         split = practice_split(c["k"][lead])
         if le and (le["d"] == "irr" or split):
             lab = DLABEL[le["d"]] + " " + lab.lower()
-        by_txt = (f"{le['by']:.1f} bu" if cdl["unit"] == "bu" else f"{le['by']:,.0f} lb") if le else ""
+        # rounded half up like every other yield on the page: 54.05 is 54.1 in the title too, not the float's 54.0
+        by_txt = XC.yf(cdl, le["by"], 1 if cdl["unit"] == "bu" else 0) if le else ""
         title = county_title(cname, st, lab, LY, by_txt)
         bm = f"FSA {LY if LY == '2026' else '2026'} ARC-CO benchmark {XC.yf(cdl, le['by'], 1)}" if le else "FSA ARC-CO benchmarks"
         if le and split:
@@ -3681,6 +3692,14 @@ def selftest():
     ck("title: always 60 or fewer with 'ARC or PLC'", all(len(t) <= 60 and "ARC or PLC" in t for t in (
         county_title("Prince of Wales-Hyder Census Area", "AK", "Medium and short grain rice", "2027", "7,000 lb"),
         county_title("Story County", "IA", "Corn", "2026", "203.4 bu"))))
+    # the 2026-10-18 page-set pass
+    _cd = {"unit": "bu", "dp": 2, "bp": {"value": 6.43}, "loan": 2.2, "scen": {"center": 5.70, "kind": "wasde"}}
+    _h = trigger_html(_cd, {"by": 52.13}, "2026")     # 0.9 x 52.13 x 6.43 / 5.70 = 52.93
+    ck("trigger over the benchmark prints its tenth, never 'under 52 ... above 52.13'", "<b>52.9 bu</b>" in _h and "above the 52.13 bu benchmark" in _h, _h)
+    _h = trigger_html(dict(_cd, bp={"value": 6.98}, scen={"center": 6.30, "kind": "wasde"}), {"by": 63.11}, "2026")   # 62.93, under 63.11
+    ck("trigger under the benchmark stays floored to a whole bushel", "<b>62 bu</b>" in _h and "above the" not in _h, _h)
+    ck("title yield rounds half up like the page (54.05 -> 54.1)", XC.yf({"unit": "bu"}, 54.05, 1) == "54.1 bu")
+    ck("a closed program year FSA left blank is not 'not yet'", pending_word(2021) == "none in FSA file" and pending_word(int(lead_year()) - 1) == "not yet")
     print(f"\n{'FAIL' if fails else 'OK'}: {len(fails)} failure(s)")
     return 1 if fails else 0
 
