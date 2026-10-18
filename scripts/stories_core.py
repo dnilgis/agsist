@@ -106,7 +106,7 @@ def short_date(iso):
 
 
 def canon(x):
-    return str(x).replace(",", "").replace("$", "").strip()
+    return str(x).replace(",", "").replace("$", "").replace("%", "").replace("\u2212", "").lstrip("+").strip()
 
 
 def forms(printed, kind):
@@ -181,24 +181,25 @@ def clauses(sent):
     return out
 
 
-def nearest(rx, text, pos):
-    """The match of rx in text nearest to pos (a match after pos wins a tie)."""
+def nearest(rx, text, pos, end=None):
+    """The match of rx in text nearest to the span pos..end (a match after it wins a tie)."""
+    end = pos if end is None else end
     best = None
     for m in re.finditer(rx, text):
-        d = (m.start() - pos) if m.start() >= pos else (pos - m.end())
-        if best is None or d < best[0] or (d == best[0] and m.start() >= pos):
+        d = (m.start() - end) if m.start() >= end else (pos - m.end())
+        if best is None or d < best[0] or (d == best[0] and m.start() >= end):
             best = (d, m.group(0))
     return best and best[1]
 
 
-def bound(rx, cl, se, pos, prev):
+def bound(rx, cl, se, pos, prev, end=None):
     """What a number at pos (in sentence se, clause cl=(start, text)) refers to, of
     one class (a pair of months, a year, a grid): the nearest in its own clause;
     else the last one before it in its sentence; else the last in the sentence
     before ('It came in under 90% in 21 of 75 years'); else the first after it."""
     cs, ct = cl
     if re.search(rx, ct):
-        return nearest(rx, ct, pos - cs)
+        return nearest(rx, ct, pos - cs, (end or pos) - cs)
     before = list(re.finditer(rx, se[:pos]))
     if before:
         return before[-1].group(0)
@@ -307,9 +308,9 @@ def check(story, spec, extra=None, facts=None):
             for c in cands:
                 fine = True
                 for k, want in list(c["near"].items()) + list(c["opt"].items()):
-                    got = bound(classes[k], cl, se, a, prev)
-                    if got is None and k in c["opt"]:
-                        continue
+                    if k in c["opt"] and not re.search(classes[k], se):
+                        continue    # an optional tie is checked only when its sentence names one
+                    got = bound(classes[k], cl, se, a, prev if k not in c["opt"] else "", b)
                     if got != want:
                         fine = False
                         break

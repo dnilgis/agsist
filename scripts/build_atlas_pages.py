@@ -1608,6 +1608,13 @@ def county_page(W, f, d, stamp):
     # ---- assemble
     read_html = ""
     rd = W.reads.get(f)
+    # the dated lead paragraph (scripts/stories_atlas.py): when one prints, the older read steps aside
+    story_html = ""
+    if getattr(W, "stories", None):
+        import stories_atlas as SA
+        story_html = SA.story_html(W.stories, W, f, d)
+    if story_html:
+        rd = None
     if rd and rd.get("text") and rd.get("sha") == c.get("sha") and read_ok(rd["text"], d, fl):
         read_html = '<div class="read"><p style="margin:0">%s</p></div>' % esc(rd["text"].replace(" \u2014 ", ", ").replace("\u2014", ", "))
     if W.TEN and W.farm_acres(f) is not None and W.farm_acres(f) < 10000:
@@ -1638,7 +1645,7 @@ def county_page(W, f, d, stamp):
 <div class="kick">Farmland Atlas · county record</div>
 <h1>{esc(lab)}, {esc(stn)}</h1>
 <p class="sub">{esc(desc)} County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp)}.</p>
-{warn}<div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
+{story_html}{warn}<div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
 <div class="act">
   <a href="/farmland-atlas#{esc(f)}">Open on the map</a>
   <a href="/farmland-atlas/compare#{esc(f)}">Compare</a>
@@ -1958,6 +1965,9 @@ def write(path, text):
 def build(root=".", out_root=None, only=None, quiet=False):
     """Writes everything. Returns (urls, problems)."""
     W = World(root)
+    import stories_core as SK
+    import stories_atlas as SA
+    W.stories = SK.load(SA, os.path.join(root, SA.STORE))
     out_root = out_root or root
     problems, urls = [], []
     recs = {}
