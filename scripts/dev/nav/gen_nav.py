@@ -440,7 +440,7 @@ BRAND = """      <div class="footer-brand">
         .ftlg-l{display:none}
         [data-theme="light"] .ftlg-l{display:inline-block}
         [data-theme="light"] .ftlg-d{display:none}</style>
-        <a class="footer-logo" href="/" aria-label="AGSIST home"><img class="ftlg-d" src="/img/logo-agsist-ondark.svg" alt="AGSIST" width="317" height="148"><img class="ftlg-l" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="317" height="148"></a>
+        <span class="footer-logo"><img class="ftlg-d" src="/img/logo-agsist-ondark.svg" alt="AGSIST" width="317" height="148"><img class="ftlg-l" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="317" height="148"></span>
         <p class="footer-tagline">Free agricultural prices, tools &amp; news. Built in Chetek, Wisconsin.</p>
       </div>
 """
