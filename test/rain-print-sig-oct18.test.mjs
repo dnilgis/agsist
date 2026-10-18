@@ -54,7 +54,10 @@ test("4. no Sponsor or Advertise link on Rain Print pages, done in the page", ()
   }
   // the live footer's link and strip are what that rule matches
   const foot = read("components/footer.html");
-  assert.match(foot, /<a href="\/sponsor"[^>]*>Advertise<\/a><span class="footer-sep">/);
+  // 2026-10-18 footer: Advertise sits under Work with us; the PRF sponsor link there is marked so
+  // loader.js hides it wherever the page hides /sponsor (test/nav-full-oct18.test.mjs checks it in a browser)
+  assert.match(foot, /<a href="\/sponsor" data-sponsor-link[^>]*>(?:<svg[^>]*>.*?<\/svg>)?Advertise<\/a>/);
+  assert.match(foot, /<a href="\/prf-sponsor" data-sponsor-link>/);
   assert.match(foot, /id="footer-adspace"/);
   assert.ok(!/href="\/sponsor/.test(GIFT), "the gift card page has no footer or sponsor link");
 });
