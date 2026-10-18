@@ -158,7 +158,7 @@ window.__fsRead = function (FSX) {
 
   // ── Parcel, owner, transfers, sold land, flood and wetlands: field-scout-land.js,
   // fetched only when a field is picked (it is not on the first screen).
-  var FS_LAND_SRC='/field-scout-land.js?v=4', _landP=null, LAND=null;
+  var FS_LAND_SRC='/field-scout-land.js?v=5', _landP=null, LAND=null;
   function loadLand(poly){
     if(LAND) LAND.clear();
     if(!_landP) _landP=new Promise(function(ok, no){
