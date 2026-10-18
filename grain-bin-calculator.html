@@ -206,6 +206,7 @@
     <nav class="breadcrumb"><a href="/">Home</a> &rarr; <a href="/tools">Tools</a> → Grain bin calculator</nav>
     <div class="calc-title"><h1>Grain bin calculator</h1></div>
     <p class="gb-byline">By <a href="/about">Sigurd Lindquist</a>, CCA &middot; Updated <time datetime="2026-10-16">Oct 16, 2026</time></p>
+    <p class="gb-intro" style="font-size:.95rem;color:var(--text-dim);line-height:1.5;margin:.2rem 0 .8rem">Type how wide your bin is (diameter) and how tall the wall is up to where the roof starts (eave height). It shows how many bushels the bin holds and what they weigh, and with a price, what the grain is worth after drying shrink. It starts with a 30 by 24 ft bin.</p>
     <div class="grid-2">
 
       <!-- INPUT PANEL -->
@@ -240,7 +241,7 @@
             </div>
             <div class="input-grid cols-2">
               <div><label for="floorIn">Aeration floor (in)</label><input type="number" id="floorIn" value="0" min="0" step="1" inputmode="numeric" oninput="calc()"></div>
-              <div style="display:flex;align-items:flex-end;padding-bottom:2px"><span class="field-hint" style="margin:0">Grain sits on top of it. GSI&rsquo;s chart counts a 12 in floor.</span></div>
+              <div style="display:flex;align-items:flex-end;padding-bottom:2px"><span class="field-hint" style="margin:0">The raised floor the fan blows air up through. Measure its height off the concrete; leave 0 if your bin has none. One big bin maker&rsquo;s chart counts a 12 in floor.</span></div>
             </div>
           </div>
 
