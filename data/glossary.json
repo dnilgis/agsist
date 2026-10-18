@@ -1,0 +1,514 @@
+{
+ "note": "One shared glossary. components/glossary.js marks the first use of each term inside a page's main content; scripts/build_glossary.py writes /glossary from this file. match: JavaScript regex sources (flags in 'flags', default 'i'); when a pattern has a group 1, only that part is marked. Definitions stay short and plain, no em dashes.",
+ "updated": "2026-10-18",
+ "terms": [
+  {
+   "id": "basis",
+   "term": "Basis",
+   "q": "What is basis?",
+   "match": [
+    "(?<!\\b(?:a|daily|weekly|monthly|regular|yearly|per-acre|case-by-case|same|first-come)\\s)\\b(basis)\\b(?!\\s+points?)"
+   ],
+   "short": "The gap between a local cash price and the futures price. \"40 under Dec\" means the elevator pays 40 cents a bushel less than December futures.",
+   "long": "Basis is cash price minus futures price. It moves with local supply, freight and what nearby buyers need. It is often weakest (most under) at harvest, when everyone is hauling, and firms up when grain gets scarce nearby. A good basis for your area is one that is stronger than your area usually sees for that time of year.",
+   "see": [
+    {
+     "href": "/basis",
+     "text": "Basis vs normal"
+    }
+   ]
+  },
+  {
+   "id": "cash-bid",
+   "term": "Cash bid",
+   "q": "What is a cash bid?",
+   "match": [
+    "\\b(cash bids?)\\b"
+   ],
+   "short": "The price an elevator or processor posts to buy your grain, in dollars per bushel. It is the futures price plus or minus basis.",
+   "long": "A cash bid is what a buyer says it will pay for grain delivered to it, for a stated delivery period. Bids change during the day as futures move, and each buyer sets its own basis. Always confirm with the buyer before you haul.",
+   "see": [
+    {
+     "href": "/cash-bids",
+     "text": "Cash bids near me"
+    }
+   ]
+  },
+  {
+   "id": "futures",
+   "term": "Futures",
+   "q": "What are futures?",
+   "match": [
+    "\\b(futures)\\b"
+   ],
+   "short": "Contracts traded on an exchange to buy or sell a set amount of grain or livestock in a set month. Their price is the board price local bids are built from.",
+   "long": "A futures contract is a standard deal for a set amount (5,000 bushels for corn, soybeans and wheat on the Chicago Board of Trade) to be delivered in a set month. Most are closed out before delivery. Farmers mostly use the futures price as the reference that cash bids are quoted against.",
+   "see": [
+    {
+     "href": "/markets",
+     "text": "Commodity prices today"
+    }
+   ],
+   "source": {
+    "href": "https://www.cmegroup.com/markets/agriculture/grains/corn.contractSpecs.html",
+    "text": "CME Group corn contract specs"
+   }
+  },
+  {
+   "id": "settle",
+   "term": "Settle",
+   "q": "What is the settle?",
+   "match": [
+    "\\b(settle(?:ment price)?)\\b(?!\\s+(?:in|down|up|on|for|with|into))"
+   ],
+   "short": "The official end-of-day price the exchange sets for a futures contract after the close.",
+   "long": "The settle (or settlement price) is set by the exchange after trading ends for the day. AGSIST says settle only when it has that price. Before it is posted, pages say last trade instead.",
+   "see": [
+    {
+     "href": "/markets",
+     "text": "Commodity prices today"
+    }
+   ]
+  },
+  {
+   "id": "nearby",
+   "term": "Nearby",
+   "q": "What does nearby mean in futures?",
+   "match": [
+    "\\b(nearby)(?=\\s+(?:futures|contract|month|Dec|Nov|Mar|May|Jul|Sep|Jan|Feb|Apr|Jun|Aug|Oct))",
+    "\\b(Nearby)\\b"
+   ],
+   "flags": "",
+   "short": "The futures month closest to delivery that is still trading. In October, nearby corn is the December contract.",
+   "long": "Nearby means the front futures month. When a month stops trading, the next one becomes the nearby. That is why a corn price in October is labeled December: the September contract is done and December is next.",
+   "see": [
+    {
+     "href": "/corn-futures-prices",
+     "text": "Corn futures"
+    }
+   ]
+  },
+  {
+   "id": "carry",
+   "term": "Carry",
+   "q": "What is the carry?",
+   "match": [
+    "\\b(?:the|a|full|big|wide|market|strong|small)\\s+(carry)\\b",
+    "\\b(carry)\\s+(?:market|spread|to)\\b"
+   ],
+   "short": "How much more a later futures month pays than a nearer one. A big carry pays you to store grain; a small one does not.",
+   "long": "Carry is the price gap between a later futures month and a nearer one, for example March corn over December. When the later month is higher, the market is paying to store grain. Compare the carry to what storage costs you before you hold.",
+   "see": [
+    {
+     "href": "/store-or-sell",
+     "text": "Sell now or store?"
+    }
+   ]
+  },
+  {
+   "id": "cwt",
+   "term": "cwt",
+   "q": "What does cwt mean?",
+   "match": [
+    "\\b(cwt)\\b"
+   ],
+   "short": "Hundredweight: 100 pounds. Cattle, hog and milk prices are quoted in dollars per cwt.",
+   "long": "A hundredweight (cwt) is 100 pounds. A $240 per cwt feeder steer price is $2.40 a pound, so a 750 lb steer at that price brings $1,800.",
+   "see": [
+    {
+     "href": "/cattle-futures-prices",
+     "text": "Cattle futures"
+    }
+   ]
+  },
+  {
+   "id": "managed-money",
+   "term": "Managed money",
+   "q": "What is managed money?",
+   "match": [
+    "\\b(managed money)\\b"
+   ],
+   "short": "The CFTC's name for hedge funds and other large money managers trading futures. Their net position shows which way they are betting.",
+   "long": "Managed money is one of the trader groups in the CFTC's weekly Commitments of Traders report. Net long means they hold more contracts that gain if prices rise than contracts that gain if prices fall. Net short is the reverse. It is a read on crowding, not a price forecast.",
+   "see": [
+    {
+     "href": "/cot",
+     "text": "Fund positions (COT)"
+    }
+   ],
+   "source": {
+    "href": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
+    "text": "CFTC Commitments of Traders"
+   }
+  },
+  {
+   "id": "ending-stocks",
+   "term": "Ending stocks",
+   "q": "What are ending stocks?",
+   "match": [
+    "\\b(ending stocks)\\b",
+    "\\b(carryout)\\b"
+   ],
+   "short": "The grain USDA expects to be left over at the end of the marketing year, before the next crop is counted. Also called carryout.",
+   "long": "Ending stocks (carryout) are what is left after a year's use and exports. USDA updates its estimate every month in the WASDE. More left over usually weighs on price; less usually supports it.",
+   "see": [
+    {
+     "href": "/whats-priced-in",
+     "text": "What's priced in"
+    }
+   ],
+   "source": {
+    "href": "https://www.usda.gov/oce/commodity-markets/wasde",
+    "text": "USDA WASDE"
+   }
+  },
+  {
+   "id": "the-trade",
+   "term": "The trade",
+   "q": "Who is \"the trade\"?",
+   "match": [
+    "\\b(the trade)(?=\\s+(?:expects?|expected|estimates?|guess|guessed|average|was|is|had|thinks?|thought|wanted|looked|sees?|saw)\\b)",
+    "\\b(trade estimates?|trade guess)\\b"
+   ],
+   "short": "Market analysts and traders as a group. \"The trade expected\" usually means the average of analyst guesses before a report.",
+   "long": "Before a USDA report, news services survey analysts and publish the average guess. Prices tend to react to how far the report lands from that guess, not to the number itself.",
+   "see": [
+    {
+     "href": "/whats-priced-in",
+     "text": "What's priced in"
+    }
+   ]
+  },
+  {
+   "id": "wasde",
+   "term": "WASDE",
+   "q": "What is the WASDE report?",
+   "match": [
+    "\\b(WASDE)\\b"
+   ],
+   "flags": "",
+   "short": "World Agricultural Supply and Demand Estimates: USDA's monthly report on crop supply, use and ending stocks, released at noon Eastern.",
+   "long": "The WASDE comes out once a month at noon Eastern. It sets USDA's numbers for production, use, exports and ending stocks for the U.S. and the world, and it is the report that most often moves grain prices on the day.",
+   "see": [
+    {
+     "href": "/usda-calendar",
+     "text": "USDA report calendar"
+    }
+   ],
+   "source": {
+    "href": "https://www.usda.gov/oce/commodity-markets/wasde",
+    "text": "USDA WASDE"
+   }
+  },
+  {
+   "id": "nass",
+   "term": "NASS",
+   "q": "What is NASS?",
+   "match": [
+    "\\b(NASS)\\b"
+   ],
+   "flags": "",
+   "short": "National Agricultural Statistics Service: the part of USDA that surveys farmers and publishes crop, livestock and price numbers.",
+   "long": "NASS runs the farmer surveys behind Crop Progress, crop production forecasts, cash rents, prices received and the Census of Agriculture. Its numbers are in the Quick Stats database.",
+   "see": [
+    {
+     "href": "/usda-quick-stats",
+     "text": "USDA crop numbers"
+    }
+   ],
+   "source": {
+    "href": "https://www.nass.usda.gov/Publications/Reports_By_Release_Day/index.php",
+    "text": "NASS reports by release day"
+   }
+  },
+  {
+   "id": "rma",
+   "term": "RMA",
+   "q": "What is RMA?",
+   "match": [
+    "\\b(RMA)\\b"
+   ],
+   "flags": "",
+   "short": "Risk Management Agency: the part of USDA that runs federal crop insurance, including PRF and LRP.",
+   "long": "RMA sets the rules, prices and premium subsidies for federal crop and livestock insurance. Policies are sold and serviced by private insurance agents.",
+   "see": [
+    {
+     "href": "/prf",
+     "text": "PRF"
+    },
+    {
+     "href": "/lrp",
+     "text": "LRP"
+    }
+   ],
+   "source": {
+    "href": "https://www.rma.usda.gov/",
+    "text": "USDA RMA"
+   }
+  },
+  {
+   "id": "fsa",
+   "term": "FSA",
+   "q": "What is FSA?",
+   "match": [
+    "\\b(FSA)\\b"
+   ],
+   "flags": "",
+   "short": "Farm Service Agency: the part of USDA with county offices that run farm programs such as ARC/PLC, commodity loans and CRP.",
+   "long": "FSA has an office in most farm counties. That is where you sign up for ARC or PLC, take a commodity loan, enroll in CRP and file acreage reports.",
+   "see": [
+    {
+     "href": "/arc-plc",
+     "text": "ARC or PLC"
+    },
+    {
+     "href": "/commodity-loan",
+     "text": "Commodity loan"
+    }
+   ],
+   "source": {
+    "href": "https://www.fsa.usda.gov/resources/programs/arc-plc",
+    "text": "FSA ARC/PLC"
+   }
+  },
+  {
+   "id": "crp",
+   "term": "CRP",
+   "q": "What is CRP?",
+   "match": [
+    "\\b(CRP)\\b"
+   ],
+   "flags": "",
+   "short": "Conservation Reserve Program: an FSA program that pays a yearly rent to keep land out of crops under a 10 to 15 year contract.",
+   "long": "CRP land is planted to grass or trees for the length of the contract, and FSA pays an annual rental payment for it. Land coming out of CRP can go back to crops or pasture.",
+   "see": [
+    {
+     "href": "/farm-bill",
+     "text": "Farm bill"
+    }
+   ]
+  },
+  {
+   "id": "cca",
+   "term": "CCA",
+   "q": "What is a CCA?",
+   "match": [
+    "\\b(CCA)\\b"
+   ],
+   "flags": "",
+   "short": "Certified Crop Adviser: a credential from the American Society of Agronomy for advisers who pass exams, show field experience and keep up continuing education.",
+   "long": "Sigurd Lindquist, who builds AGSIST, is a Certified Crop Adviser. The credential requires passing the international and state exams, years of experience and ongoing education credits, and following a code of ethics.",
+   "see": [
+    {
+     "href": "/about",
+     "text": "About AGSIST"
+    }
+   ],
+   "source": {
+    "href": "https://www.certifiedcropadviser.org/",
+    "text": "Certified Crop Adviser program"
+   }
+  },
+  {
+   "id": "noaa",
+   "term": "NOAA",
+   "q": "What is NOAA?",
+   "match": [
+    "\\b(NOAA)\\b"
+   ],
+   "flags": "",
+   "short": "National Oceanic and Atmospheric Administration: the federal agency over the National Weather Service and the weather station records.",
+   "long": "NOAA runs the National Weather Service, the radar network and the climate records (through its National Centers for Environmental Information). Rain, hail and normals on AGSIST come from NOAA data.",
+   "see": [
+    {
+     "href": "/rain",
+     "text": "Rain by county"
+    }
+   ],
+   "source": {
+    "href": "https://www.ncei.noaa.gov/products/land-based-station/us-climate-normals",
+    "text": "NOAA climate normals"
+   }
+  },
+  {
+   "id": "crop-progress",
+   "term": "Crop Progress",
+   "q": "What is the Crop Progress report?",
+   "match": [
+    "\\b(Crop Progress)\\b"
+   ],
+   "flags": "",
+   "short": "USDA NASS's weekly report, Mondays at 4 p.m. Eastern from April to late November, on planting and harvest pace and crop ratings by state.",
+   "long": "It gives the share of each crop planted, emerged or harvested, and the share rated good or excellent, by state.",
+   "see": [
+    {
+     "href": "/conditions",
+     "text": "Crop ratings and harvest progress"
+    }
+   ],
+   "source": {
+    "href": "https://www.nass.usda.gov/Publications/Reports_By_Release_Day/index.php",
+    "text": "NASS reports by release day"
+   }
+  },
+  {
+   "id": "black-layer",
+   "term": "Black layer",
+   "q": "What is black layer in corn?",
+   "match": [
+    "\\b(black layer)\\b"
+   ],
+   "short": "The dark layer that forms where a corn kernel attaches to the cob when it stops filling. It marks physiological maturity.",
+   "long": "Once black layer forms, the kernel has its full dry weight and will not gain more. From there corn only dries down in the field.",
+   "see": [
+    {
+     "href": "/gdu-calculator",
+     "text": "GDU calculator"
+    }
+   ]
+  },
+  {
+   "id": "shrink",
+   "term": "Shrink",
+   "q": "What is grain shrink?",
+   "match": [
+    "\\b(shrink)\\b"
+   ],
+   "short": "The weight lost when grain is dried and handled: the water taken out plus a small handling loss. Buyers charge it as a shrink factor.",
+   "long": "Water shrink is the weight of the water removed in drying. Handling shrink (sometimes called invisible shrink) is dry matter lost as broken kernels and fines, and it varies from buyer to buyer.",
+   "see": [
+    {
+     "href": "/grain-shrink",
+     "text": "Grain shrink calculator"
+    }
+   ],
+   "source": {
+    "href": "https://www.agry.purdue.edu/ext/corn/news/timeless/WaterShrink.html",
+    "text": "Purdue: grain shrink"
+   }
+  },
+  {
+   "id": "nowcast",
+   "term": "Nowcast",
+   "q": "What is a nowcast?",
+   "match": [
+    "\\b(nowcasts?)\\b"
+   ],
+   "short": "An estimate of where a number stands now, built from the data out so far. AGSIST's yield nowcast is our own model, not a USDA figure.",
+   "long": "A nowcast estimates the final number before the final report is out, from the data available so far. On AGSIST each nowcast is labeled as our own estimate, with its method on the page.",
+   "see": [
+    {
+     "href": "/conditions-yield",
+     "text": "2026 crop size forecasts"
+    }
+   ]
+  },
+  {
+   "id": "net-30",
+   "term": "Net 30",
+   "q": "What does net 30 mean?",
+   "match": [
+    "\\b(net 30)\\b"
+   ],
+   "short": "Invoice terms: the bill is due 30 days after the invoice date.",
+   "long": "Net 30 means you pay the full invoice within 30 days of its date. Business Rain Print orders are invoiced net 30.",
+   "see": [
+    {
+     "href": "/rain-print-business",
+     "text": "Rain Print for business"
+    }
+   ]
+  },
+  {
+   "id": "cbot",
+   "term": "CBOT",
+   "q": "What is CBOT?",
+   "match": [
+    "\\b(CBOT)\\b"
+   ],
+   "flags": "",
+   "short": "Chicago Board of Trade: the exchange, part of CME Group, where corn, soybean and Chicago wheat futures trade.",
+   "long": "CBOT is part of CME Group. Live cattle, feeder cattle and lean hogs trade on the Chicago Mercantile Exchange, also part of CME Group.",
+   "see": [
+    {
+     "href": "/markets",
+     "text": "Commodity prices today"
+    }
+   ]
+  },
+  {
+   "id": "cftc",
+   "term": "CFTC",
+   "q": "What is the CFTC?",
+   "match": [
+    "\\b(CFTC)\\b"
+   ],
+   "flags": "",
+   "short": "Commodity Futures Trading Commission: the federal agency that oversees futures markets and publishes the weekly Commitments of Traders report.",
+   "long": "The Commitments of Traders report shows who holds futures positions as of Tuesday, released Friday afternoon. AGSIST's fund positioning page reads it.",
+   "see": [
+    {
+     "href": "/cot",
+     "text": "Fund positions (COT)"
+    }
+   ],
+   "source": {
+    "href": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
+    "text": "CFTC Commitments of Traders"
+   }
+  },
+  {
+   "id": "open-interest",
+   "term": "Open interest",
+   "q": "What is open interest?",
+   "match": [
+    "\\b(open interest)\\b"
+   ],
+   "short": "The number of futures contracts still open: not yet closed out or delivered.",
+   "long": "Open interest rises when new buyers and sellers open positions and falls when they close them. AGSIST compares fund positions to open interest so years of different market size line up.",
+   "see": [
+    {
+     "href": "/cot",
+     "text": "Fund positions (COT)"
+    }
+   ]
+  },
+  {
+   "id": "marketing-year",
+   "term": "Marketing year",
+   "q": "What is the marketing year?",
+   "match": [
+    "\\b(marketing year)\\b"
+   ],
+   "short": "The 12 months USDA uses to track a crop's sales and use. Corn and soybeans start Sept 1; wheat starts June 1.",
+   "long": "USDA counts a crop's use from its marketing year start: September 1 for corn and soybeans and June 1 for wheat. Prices and ending stocks are stated for the marketing year, like 2026/27.",
+   "see": [
+    {
+     "href": "/usda-calendar",
+     "text": "USDA report calendar"
+    }
+   ]
+  },
+  {
+   "id": "aph",
+   "term": "APH",
+   "q": "What is APH?",
+   "match": [
+    "\\b(APH)\\b"
+   ],
+   "flags": "",
+   "short": "Actual Production History: your average yield from past years, used to set your crop insurance guarantee.",
+   "long": "APH is the average of 4 to 10 years of your yield records. Your insurance guarantee is your APH times the coverage level you pick.",
+   "see": [
+    {
+     "href": "/harvest-price-tracker",
+     "text": "Harvest price tracker"
+    }
+   ],
+   "source": {
+    "href": "https://www.rma.usda.gov/",
+    "text": "USDA RMA"
+   }
+  }
+ ]
+}
