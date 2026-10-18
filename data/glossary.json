@@ -23,7 +23,7 @@
    "term": "Cash bid",
    "q": "What is a cash bid?",
    "match": [
-    "\\b(cash bids?)\\b"
+    "\\b(cash bids?)\\b(?!\\s+Index)"
    ],
    "short": "The price an elevator or processor posts to buy your grain, in dollars per bushel. It is the futures price plus or minus basis.",
    "long": "A cash bid is what a buyer says it will pay for grain delivered to it, for a stated delivery period. Bids change during the day as futures move, and each buyer sets its own basis. Always confirm with the buyer before you haul.",

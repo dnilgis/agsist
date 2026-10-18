@@ -259,7 +259,8 @@
         <div class="cal-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> USDA REPORT SCHEDULE</div>
         <h1 class="cal-h1">USDA Report <span>Calendar</span></h1>
         <p class="cal-sub page-lede">Every USDA report date and release time, and which ones tend to move corn and soybeans. Brazil and Canada crop reports are listed too.</p>
-        <p class="cal-next-wasde"><!--BAKE:next-wasde--><strong>Next WASDE: Tuesday, Nov 10, 2026, at noon ET (11 a.m. CT).</strong> 2026 WASDE dates: Jan 12, Feb 10, Mar 10, Apr 9, May 12, Jun 11, Jul 10, Aug 12, Sep 11, Oct 9, Nov 10, Dec 10.<!--/BAKE--></p>
+        <p class="cal-next-wasde"><!--BAKE:next-wasde--><strong>Next WASDE: Tuesday, Nov 10, 2026, at noon ET (11 a.m. CT).</strong> 2026 WASDE dates: Jan 12, Feb 10, Mar 10, Apr 9, May 12, Jun 11, Jul 10, Aug 12, Sep 11, Oct 9, Nov 10, Dec 10.<!--/BAKE--> WASDE is USDA&rsquo;s monthly world supply and demand estimate, the report that most often moves grain prices.</p>
+        <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.4rem 0 0">By <a href="/about">Sigurd Lindquist, CCA</a>. Dates: USDA NASS, WASDE and ESMIS release calendars, linked at the bottom.</p>
       </div>
       <div class="cal-countdown" aria-live="polite">
         <div class="cal-cd-label"><span class="live-dot"></span> NEXT USDA REPORT</div>
@@ -285,6 +286,7 @@
       <aside class="ya" data-your-state="calendar" data-v="1" hidden></aside><script src="/components/your-state.js?v=1" defer></script>
 
       <h2 class="cal-section-head" style="margin-top:1.5rem">2026 USDA Report Schedule</h2>
+      <p style="font-size:.85rem;color:var(--text-dim);margin:.2rem 0 .7rem">The tag on each report (LOW to HIGH) is a rough read on how much that report tends to move prices the day it comes out.</p>
       <div class="cal-nav" role="group" aria-label="Filter reports">
         <button class="cal-filter active" onclick="filterReports('all',this)">All Reports</button>
         <button class="cal-filter" onclick="filterReports('wasde',this)">WASDE</button>
@@ -350,7 +352,7 @@
         </div>
         <div class="cal-exp-card">
           <h3 style="color:#4ade80"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Crop Progress</h3>
-          <p>Weekly condition ratings (Excellent/Good/Fair/Poor/VP) and planting or harvest progress by state. Released Mondays at 4:00 PM ET (Tuesday after a Monday holiday) from the first Monday in April through the Monday after Thanksgiving (Nov 30 in 2026).</p>
+          <p>Weekly condition ratings (Excellent/Good/Fair/Poor/VP) and planting or harvest progress by state. Released Mondays at 4:00 PM ET (Tuesday after a Monday holiday) from the first Monday in April through the Monday after Thanksgiving (Nov 30 in 2026). The numbers by state land on our <a href="/conditions">crop ratings and harvest progress</a> page.</p>
           <div class="cal-exp-imp"><div class="imp-dots"><div class="imp-dot f low"></div><div class="imp-dot f low"></div><div class="imp-dot"></div><div class="imp-dot"></div><div class="imp-dot"></div></div><span class="imp-lbl low">LOW-MOD</span><span class="cal-exp-imp-note">&middot; Summer G/E ratings move prices most</span></div>
         </div>
         <div class="cal-exp-card">
@@ -480,7 +482,7 @@
     {date:'2026-12-23',name:'Quarterly Hogs and Pigs',type:'livestock',time:'3:00 PM ET',desc:'December 1 hog inventory, breeding herd and pig crop, NASS. One of four a year.',link:'/cattle-futures-prices',linkText:'Livestock futures'},
     {date:'2026-12-23',name:'Cold Storage',type:'livestock',time:'3:00 PM ET',desc:'Month-end stocks of beef, pork, poultry, butter and cheese in cold storage, NASS',link:'/milk-prices',linkText:'Milk prices'},
     /* FSA signup dates, not market reports: USDA notice of Sept 15, 2026 (FSA_SRC). */
-    {date:'2026-11-02',name:'2027 ARC/PLC signup opens',type:'fsa',time:'All Day',desc:'FSA signup for the 2027 crop year opens. It runs to Mar 15, 2027.',link:'/arc-plc'},
+    {date:'2026-11-02',name:'2027 ARC/PLC signup opens',type:'fsa',time:'All Day',desc:'Signup opens at your county FSA (Farm Service Agency) office for the 2027 crop year. This is where you choose ARC or PLC, the two programs that can pay when crop prices or revenue fall. It runs to Mar 15, 2027.',link:'/arc-plc'},
     {date:'2026-12-11',name:'2026 ARC/PLC signup deadline',type:'fsa',time:'All Day',desc:'Last day to sign 2026 ARC or PLC at your FSA office. No election means you keep your 2025 choice but get no 2026 payment.',link:'/arc-plc'},
     {date:'2027-03-15',name:'2027 ARC/PLC signup deadline',type:'fsa',time:'All Day',desc:'Last day to sign 2027 ARC or PLC at your FSA office.',link:'/arc-plc'},
   ];
