@@ -67,7 +67,7 @@
   }
 
   /* the glossary marks ride along, so a page needs only this one tag */
-  var PRE = /\b(basis|cash bids?|futures|settle|nearby|carry|carryout|cwt|managed money|ending stocks|the trade|trade (?:estimates?|guess)|WASDE|NASS|RMA|FSA|CRP|CCA|NOAA|crop progress|black layer|shrink|nowcasts?|net 30|CBOT|CFTC|open interest|marketing year|APH)\b/i;
+  var PRE = /\b(basis|cash bids?|futures|settle(?:ment)?|nearby|carry|carryout|cwt|managed money|ending stocks|the trade|trade (?:estimates?|guess)|WASDE|NASS|RMA|FSA|CRP|CCA|NOAA|crop progress|black layer|shrink|nowcasts?|net 30|CBOT|CFTC|open interest|marketing year|APH)\b/i;
   function glossary() {
     if (window.AgsistGlossary || doc.querySelector('script[src*="/components/glossary.js"]')) return;
     var top = doc.querySelector('[data-glossary-root]') || doc.querySelector('main');
