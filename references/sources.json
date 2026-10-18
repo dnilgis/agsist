@@ -1948,6 +1948,22 @@
     {"id": "cr-oh-2024-pdf", "kind": "pdf",
      "url": "https://farmoffice.osu.edu/sites/aglaw/files/site-library/farmmgtpdf/Ohio%20Farm%20Custom%20Rate_Nov%202024.pdf",
      "title": "Ohio Farm Custom Rates 2024 (OSU Extension, PDF on the Farm Office site)",
-     "why": "/custom-rates: custom farm work rates by state from the published survey (operation, unit, average, range, survey year)"}
+     "why": "/custom-rates: custom farm work rates by state from the published survey (operation, unit, average, range, survey year)"},
+    {"id": "land-in-sdf-stats", "kind": "html",
+     "url": "https://www.stats.indiana.edu/topic/sdf.asp",
+     "title": "Property Sales Disclosure Data (STATS Indiana)",
+     "why": "Field Scout land card: Indiana sales disclosure files (free yearly ZIPs, weekly current year); terms of use and file links"},
+    {"id": "land-ne-sales-file-reg", "kind": "pdf",
+     "url": "https://revenue.nebraska.gov/sites/default/files/doc/legal/regs/pad/Chapter12_Sales_File.pdf",
+     "title": "Nebraska Property Assessment Division regulations, Chapter 12 Sales File",
+     "why": "Field Scout land card salesNote NE: who may get the state sales file and how (public query by request)"},
+    {"id": "land-ne-statewide-parcels", "kind": "html",
+     "url": "https://giscat.ne.gov/Enterprise/rest/services/TaxParcels2023/FeatureServer/0?f=pjson",
+     "title": "Nebraska OCIO statewide tax parcels 2023 (layer description)",
+     "why": "discover.refused: the layer's own words limit it to official, internal use by the State"},
+    {"id": "land-mn-metro-parcels", "kind": "html",
+     "url": "https://gisdata.mn.gov/dataset/us-mn-state-metrogis-plan-regonal-parcels-2024",
+     "title": "Metro Regional Parcel Dataset (Year End 2024), Minnesota Geospatial Commons",
+     "why": "Field Scout land card: Twin Cities parcel owners; license and which counties share owner names"}
 ]
 }

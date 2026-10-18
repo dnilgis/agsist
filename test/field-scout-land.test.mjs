@@ -136,14 +136,14 @@ test("a state without a free parcel service gets a designed empty state, never a
   assert.doesNotMatch(e.title + e.body, /estimat|likely|probabl/i);
 });
 
-test("the registry: only the checker marks a service verified; MN, IA and IL are searched", () => {
+test("the registry: only the checker marks a service verified; MN, IA, IL and the Oct 18 states are searched", () => {
   for (const [st, list] of Object.entries(REG.statewide)) for (const s of list) {
     assert.ok(!s.verified || s.checked_utc, `${st} ${s.id} verified without a check`);
     assert.match(s.url, /^https:\/\//);
     assert.ok(s.fields && s.fields.pid && s.fields.owner, `${s.id} names its parcel and owner fields`);
   }
   for (const [fips, list] of Object.entries(REG.counties || {})) for (const s of list) assert.ok(!s.verified || s.checked_utc, fips);
-  assert.deepEqual(REG.discover.states.slice().sort(), ["IA", "IL", "MN"]);
+  assert.deepEqual(REG.discover.states.slice().sort(), ["IA", "IL", "IN", "KS", "MI", "MN", "MO", "ND", "NE", "OH", "SD"]);
 });
 
 test("transfer files turn into rows with $/acre and the town's place", () => {
@@ -167,7 +167,7 @@ test("lazy: the land card is not on Field Scout's first screen and loads by vers
   assert.doesNotMatch(read("field-scout.html"), /field-scout-land\.js/);
   assert.match(read("field-scout-read.js"), /var FS_LAND_SRC='\/field-scout-land\.js\?v=\d+'/);
   assert.match(read("field-scout-read.js"), /section\('land',ICONS\.rent,'Parcel, Owner &amp; Sales','fs-land'\)/);
-  assert.match(read("field-scout.js"), /FS_READ_SRC='\/field-scout-read\.js\?v=5'/);
+  assert.match(read("field-scout.js"), /FS_READ_SRC='\/field-scout-read\.js\?v=6'/);
 });
 
 test("the land report is one shared page with a query parameter, kept out of search", () => {
