@@ -24,6 +24,13 @@ name: API jobs (one-time)
 # (data/prf-stories, data/atlas-stories, data/cash-bids-stories/towns or
 # /companies) and rebuilds the pages.
 #
+# Unread elevators' own sites (scripts/elevsites_job.py, build=elevsites,
+# run=elevsites-2026-10): the input is built here from the newest caps/ folder
+# on the public bids repo's `elevsites` branch (capture.yml there, save=elevsites).
+# Sonnet, capped at $35. After collect, every answer is checked against the
+# saved pages and the ranked to-do lands on raw as apijobs/<run>/elevsites/
+# todo.json and todo.md. Nothing reaches a page or a bids manifest.
+#
 #   mode=estimate  count tokens and print the worst-case cost, spend nothing
 #   mode=submit    estimate, refuse over $20, refuse if apijobs/<run>/batch.json
 #                  is already on raw, submit one batch, then wait and collect
@@ -49,7 +56,7 @@ on:
         description: "How long collect waits for the batch to end"
         default: "120"
       build:
-        description: "county-stories | prf-stories | atlas-stories | town-stories | company-stories to build the input here (estimate and submit); empty to read it from raw"
+        description: "county-stories | prf-stories | atlas-stories | town-stories | company-stories | elevsites to build the input here (estimate and submit); empty to read it from raw"
         default: ""
 
 permissions:
@@ -71,7 +78,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Selftest
-        run: python scripts/api_jobs.py selftest
+        run: python scripts/api_jobs.py selftest && python scripts/elevsites_job.py selftest
       - name: Get the input and any earlier batch record from raw
         if: ${{ github.event_name == 'workflow_dispatch' }}
         env:
@@ -89,6 +96,9 @@ jobs:
               town-stories|company-stories)
                 STORY_FACTS_OUT=/tmp/cb-facts.json python scripts/build_cash_bid_pages.py --out /tmp/cb-pages --sitemap /tmp/cb-sitemap.xml
                 STORY_FACTS=/tmp/cb-facts.json python scripts/stories_core.py bundle "${B%-stories}" "$D/input/bundle.json" ;;
+              elevsites)
+                git clone -q --depth 1 --branch elevsites https://github.com/dnilgis/bids.git /tmp/bids-elevsites
+                python scripts/elevsites_job.py bundle /tmp/bids-elevsites "$D/input/bundle.json" ;;
               *) echo "::error::unknown build $B"; exit 1 ;;
             esac
             cp "$D/input/bundle.json" /tmp/bundle.json
@@ -137,4 +147,14 @@ jobs:
             bash scripts/push_raw.sh "apijobs $APIJOBS_RUN stories" "apijobs/$APIJOBS_RUN/stories" "apijobs/$APIJOBS_RUN/rejected.json"
           else
             echo "no county stories in this run"
+          fi
+      - name: Check the elevator site answers and write the to-do
+        if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        run: |
+          R="apijobs/$APIJOBS_RUN/results.json"
+          if [ -f "$R" ] && python -c "import json,sys; sys.exit(0 if json.load(open('/tmp/bundle.json')).get('elevsite') else 1)"; then
+            python scripts/elevsites_job.py collect /tmp/bundle.json "$R" "apijobs/$APIJOBS_RUN/elevsites"
+            bash scripts/push_raw.sh "apijobs $APIJOBS_RUN elevsites to-do" "apijobs/$APIJOBS_RUN/elevsites"
+          else
+            echo "no elevator site answers in this run"
           fi
