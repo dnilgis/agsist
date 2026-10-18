@@ -1,0 +1,161 @@
+{
+ "about": "Pointer pages left where a generated page dropped out of its set (scripts/pointer_pages.py). path: file; to: where it sends readers; since: date retired.",
+ "pointers": {
+  "rain/alabama/houston-county.html": {
+   "to": "/rain/alabama",
+   "since": "2026-10-14"
+  },
+  "rain/alabama/walker-county.html": {
+   "to": "/rain/alabama",
+   "since": "2026-10-14"
+  },
+  "rain/alaska/yakutat-city-and-borough.html": {
+   "to": "/rain/alaska",
+   "since": "2026-10-14"
+  },
+  "rain/arkansas/arkansas-county.html": {
+   "to": "/rain/arkansas",
+   "since": "2026-10-15"
+  },
+  "rain/arkansas/bradley-county.html": {
+   "to": "/rain/arkansas",
+   "since": "2026-10-14"
+  },
+  "rain/arkansas/crawford-county.html": {
+   "to": "/rain/arkansas",
+   "since": "2026-10-15"
+  },
+  "rain/arkansas/desha-county.html": {
+   "to": "/rain/arkansas",
+   "since": "2026-10-14"
+  },
+  "rain/arkansas/poinsett-county.html": {
+   "to": "/rain/arkansas",
+   "since": "2026-10-15"
+  },
+  "rain/georgia/bacon-county.html": {
+   "to": "/rain/georgia",
+   "since": "2026-10-14"
+  },
+  "rain/georgia/murray-county.html": {
+   "to": "/rain/georgia",
+   "since": "2026-10-14"
+  },
+  "rain/georgia/newton-county.html": {
+   "to": "/rain/georgia",
+   "since": "2026-10-15"
+  },
+  "rain/idaho/benewah-county.html": {
+   "to": "/rain/idaho",
+   "since": "2026-10-15"
+  },
+  "rain/kentucky/green-county.html": {
+   "to": "/rain/kentucky",
+   "since": "2026-10-15"
+  },
+  "rain/kentucky/wayne-county.html": {
+   "to": "/rain/kentucky",
+   "since": "2026-10-14"
+  },
+  "rain/michigan/bay-county.html": {
+   "to": "/rain/michigan",
+   "since": "2026-10-15"
+  },
+  "rain/mississippi/copiah-county.html": {
+   "to": "/rain/mississippi",
+   "since": "2026-10-14"
+  },
+  "rain/mississippi/jefferson-county.html": {
+   "to": "/rain/mississippi",
+   "since": "2026-10-15"
+  },
+  "rain/missouri/dallas-county.html": {
+   "to": "/rain/missouri",
+   "since": "2026-10-14"
+  },
+  "rain/missouri/holt-county.html": {
+   "to": "/rain/missouri",
+   "since": "2026-10-15"
+  },
+  "rain/missouri/oregon-county.html": {
+   "to": "/rain/missouri",
+   "since": "2026-10-14"
+  },
+  "rain/missouri/ozark-county.html": {
+   "to": "/rain/missouri",
+   "since": "2026-10-14"
+  },
+  "rain/missouri/ripley-county.html": {
+   "to": "/rain/missouri",
+   "since": "2026-10-14"
+  },
+  "rain/missouri/worth-county.html": {
+   "to": "/rain/missouri",
+   "since": "2026-10-15"
+  },
+  "rain/new-york/schoharie-county.html": {
+   "to": "/rain/new-york",
+   "since": "2026-10-15"
+  },
+  "rain/oklahoma/love-county.html": {
+   "to": "/rain/oklahoma",
+   "since": "2026-10-14"
+  },
+  "rain/oklahoma/mccurtain-county.html": {
+   "to": "/rain/oklahoma",
+   "since": "2026-10-15"
+  },
+  "rain/south-carolina/allendale-county.html": {
+   "to": "/rain/south-carolina",
+   "since": "2026-10-14"
+  },
+  "rain/south-carolina/calhoun-county.html": {
+   "to": "/rain/south-carolina",
+   "since": "2026-10-14"
+  },
+  "rain/south-carolina/marion-county.html": {
+   "to": "/rain/south-carolina",
+   "since": "2026-10-14"
+  },
+  "rain/south-dakota/aurora-county.html": {
+   "to": "/rain/south-dakota",
+   "since": "2026-10-14"
+  },
+  "rain/south-dakota/brule-county.html": {
+   "to": "/rain/south-dakota",
+   "since": "2026-10-15"
+  },
+  "rain/south-dakota/dewey-county.html": {
+   "to": "/rain/south-dakota",
+   "since": "2026-10-15"
+  },
+  "rain/texas/anderson-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-10-14"
+  },
+  "rain/texas/concho-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-10-14"
+  },
+  "rain/texas/crane-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-10-14"
+  },
+  "rain/texas/crockett-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-10-14"
+  },
+  "rain/texas/delta-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-10-14"
+  },
+  "rain/texas/kent-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-10-14"
+  },
+  "rain/texas/san-augustine-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-10-14"
+  }
+ }
+}
