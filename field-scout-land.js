@@ -244,6 +244,8 @@
     }
     var ids = (pick('pid') || []).concat(pick('pid2') || []);
     var owner = pick('owner');
+    // an owner split into name parts (first, middle, last) reads as one name on one line
+    if (F.owner_parts) { var parts = pick('owner_parts'); owner = parts ? [parts.join(' ')] : null; }
     var p = {
       ids: ids, id: ids[0] || null,
       owner: owner ? owner.filter(function (v, i, s) { return s.indexOf(v) === i; }) : null,

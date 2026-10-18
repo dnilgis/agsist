@@ -1040,9 +1040,17 @@
   "states": [
    "MN",
    "IA",
-   "IL"
+   "IL",
+   "ND",
+   "SD",
+   "NE",
+   "IN",
+   "OH",
+   "KS",
+   "MO",
+   "MI"
   ],
-  "note": "probe_land_services.py --discover searches ArcGIS Online for public parcel layers each county publishes, keeps only government publishers with a parcel number field and an owner field that answer a test query from a web page, and writes them under counties. Statewide candidates are checked first. Candidates are services found by hand; each is checked the same way and added only when it passes. Iowa counties are also looked up in the Big Ten Academic Alliance geoportal's record of each county's parcel service.",
+  "note": "probe_land_services.py --discover searches ArcGIS Online for public parcel layers each county publishes, keeps only government publishers with a parcel number field and an owner field that answer a test query from a web page, and writes them under counties. Statewide candidates are checked first. Candidates are services found by hand; each is checked the same way and added only when it passes. Iowa counties are also looked up in the Big Ten Academic Alliance geoportal's record of each county's parcel service. Oct 18: also searched in ND, SD, NE, IN, OH, KS, MO and MI; Minnesota counties are also looked up in MnGeo's per-county folders (us_mn_co_<county>) and the gisdata.mn.gov catalog; refused lists services whose own terms forbid public reuse, which are never checked or added.",
   "statewide_candidates": {
    "MN": [
     {
@@ -1063,6 +1071,51 @@
      "name": "Illinois statewide parcels",
      "search": "Illinois statewide parcels",
      "about": "https://clearinghouse.isgs.illinois.edu/"
+    }
+   ],
+   "ND": [
+    {
+     "name": "North Dakota statewide parcels",
+     "search": "North Dakota parcels owner"
+    }
+   ],
+   "SD": [
+    {
+     "name": "South Dakota statewide parcels",
+     "search": "South Dakota parcels owner"
+    }
+   ],
+   "IN": [
+    {
+     "name": "Indiana statewide parcels (IndianaMap)",
+     "search": "Parcel Boundaries of Indiana",
+     "about": "https://www.indianamap.org/"
+    }
+   ],
+   "OH": [
+    {
+     "name": "Ohio statewide parcels (OGRIP)",
+     "search": "Ohio statewide parcels OGRIP"
+    }
+   ],
+   "KS": [
+    {
+     "name": "Kansas statewide parcels (DASC)",
+     "search": "Kansas statewide parcels DASC",
+     "about": "https://www.kansasgis.org/"
+    }
+   ],
+   "MO": [
+    {
+     "name": "Missouri statewide parcels",
+     "search": "Missouri parcels owner county",
+     "about": "https://msdis.missouri.edu/"
+    }
+   ],
+   "MI": [
+    {
+     "name": "Michigan statewide parcels",
+     "search": "Michigan parcels owner county equalization"
     }
    ]
   },
@@ -1227,6 +1280,135 @@
       "https://rockgis.rockfordil.gov/arcgissvr/rest/services/Parcel_Ownership/MapServer/0: no parcel number and owner fields by name (fields: OBJECTID, PrimaryPIN, PIN, DashPIN, AltParcelNumber, ParcelYear, LOPHouseNumber, LOPHouseNbrSuffix, LOPPrefixDirectional, LOPStreetName, LOPStreetSuffix, LOPPostDirectional, LOPCommunityName, LegalDesc, TownshipName, OwnerLastName, OwnerFirstName, OwnerMiddleInit, OwnerSuffix, OwnerAddress1, OwnerAddress2, OwnerCity, OwnerState, OwnerZip, TaxpayerLastName, TaxpayerFirstName, TaxpayerMiddleInit, TaxpayerSuffix, TaxpayerAddress1, TaxpayerAddress2, TaxpayerCity, TaxpayerState, TaxpayerZip, OptOut, GlobalID, OwnerLastChange, Shape, Shape.STArea(), Shape.STLength())"
      ]
     }
+   },
+   {
+    "st": "MN",
+    "id": "mn-metro",
+    "partial": true,
+    "name": "Twin Cities seven-county parcels (Metropolitan Council regional parcel dataset)",
+    "by": "Metropolitan Council (MetroGIS regional parcels from Anoka, Carver, Dakota, Hennepin, Ramsey, Scott and Washington counties)",
+    "url": "https://arcgis.metc.state.mn.us/data1/rest/services/parcels/Parcels/FeatureServer",
+    "about": "https://gisdata.mn.gov/dataset/us-mn-state-metrogis-plan-regonal-parcels-2024",
+    "terms": "MetroGIS regional parcels: owner and taxpayer names exist for many but not all of the seven counties (dataset metadata); license on the gisdata.mn.gov page, not read yet"
+   },
+   {
+    "st": "MN",
+    "fips": "27109",
+    "by": "Olmsted County, Minnesota",
+    "url": "https://public.gis.olmstedcounty.gov/arcgis/rest/services",
+    "about": "https://public.gis.olmstedcounty.gov/arcgis/rest/services/Parcels_Addressing/MapServer",
+    "terms": "terms not read yet; the probe checks only that it is public, free and lets a web page read it"
+   },
+   {
+    "st": "MN",
+    "fips": "27141",
+    "by": "Sherburne County, Minnesota",
+    "url": "https://gis.co.sherburne.mn.us/arcgis/rest/services",
+    "about": "https://gis.co.sherburne.mn.us/arcgis/rest/services/Basemap_Tile/MapServer/23",
+    "terms": "terms not read yet; the probe checks only that it is public, free and lets a web page read it"
+   },
+   {
+    "st": "MN",
+    "fips": "27049",
+    "by": "Goodhue County, Minnesota (GCUG parcels, weekly)",
+    "url": "https://publicmaps.co.goodhue.mn.us/arcgis/rest/services/GCUGGIS/PI_Labels/MapServer",
+    "about": "https://publicmaps.co.goodhue.mn.us/arcgis/rest/services/GCUGGIS/PI_Labels/MapServer/1/iteminfo",
+    "terms": "terms not read yet; the probe checks only that it is public, free and lets a web page read it"
+   },
+   {
+    "st": "MN",
+    "fips": "27057",
+    "by": "Hubbard County, Minnesota",
+    "url": "https://gis.co.hubbard.mn.us/arcgis/rest/services/OpenData/TaxParcels/MapServer",
+    "about": "https://gis.co.hubbard.mn.us/arcgis/rest/services/OpenData/TaxParcels/MapServer",
+    "terms": "terms not read yet; the probe checks only that it is public, free and lets a web page read it (the directory showed a login link; the probe says if it is open)"
+   },
+   {
+    "st": "MN",
+    "fips": "27061",
+    "by": "Itasca County, Minnesota (hosted by MnGeo)",
+    "url": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_co_itasca/plan_parcels/FeatureServer",
+    "about": "https://gisdata.mn.gov/dataset/us-mn-co-itasca-plan-parcels",
+    "terms": "license on the gisdata.mn.gov dataset page, not read yet"
+   },
+   {
+    "st": "SD",
+    "fips": "46099",
+    "by": "Minnehaha County, South Dakota",
+    "url": "https://gis.minnehahacounty.gov/minnemap/rest/services/Parcels/MapServer",
+    "about": "https://gis.minnehahacounty.gov/minnemap/rest/services/Parcels/MapServer/info/iteminfo",
+    "terms": "terms not read yet; the probe checks only that it is public, free and lets a web page read it"
+   },
+   {
+    "st": "MI",
+    "fips": "26139",
+    "by": "Ottawa County, Michigan",
+    "url": "https://gis.miottawa.org/arcgis/rest/services/HostedServices/ParcelsPublic/FeatureServer",
+    "about": "https://gis.miottawa.org/arcgis/rest/services/HostedServices/ParcelsPublic/FeatureServer/info/iteminfo",
+    "terms": "item license: 'For use in public applications' (search snippet of the item info; read the item before relying)"
+   },
+   {
+    "st": "MI",
+    "fips": "26081",
+    "by": "Kent County, Michigan",
+    "url": "https://gis.kentcountymi.gov/agisprod/rest/services/Open_Data_Kent_Co_Parcels/FeatureServer",
+    "about": "https://gis.kentcountymi.gov/agisprod/rest/services/Open_Data_Kent_Co_Parcels/FeatureServer",
+    "terms": "county open data service; terms not read yet; the probe checks only that it is public, free and lets a web page read it"
+   },
+   {
+    "st": "KS",
+    "id": "ks-orka",
+    "partial": true,
+    "name": "Kansas ORKA statewide property layer (DASC, partly complete)",
+    "by": "Kansas Data Access and Support Center (DASC), Kansas Geological Survey",
+    "url": "https://services.kgs.ku.edu/arcgis/rest/services/ORKA/KS_ORKA_Extras/MapServer",
+    "about": "https://www.kansasgis.org/",
+    "terms": "terms not read yet; the probe checks only that it is public, free and lets a web page read it"
+   },
+   {
+    "st": "IN",
+    "id": "in-statewide",
+    "name": "Indiana parcel boundaries 2024 (Indiana Geographic Information Office)",
+    "by": "Indiana Geographic Information Office",
+    "url": "https://gisdata.in.gov/server/rest/services/Hosted/Parcel_Boundaries_of_Indiana_2024/FeatureServer",
+    "about": "https://gisdata.in.gov/server/rest/services/Hosted/Parcel_Boundaries_of_Indiana_2024/FeatureServer/info/iteminfo",
+    "terms": "IndianaMap public data; the statewide layer may carry no owner field, in which case the probe says so and it is not used"
+   }
+  ],
+  "service_roots": {
+   "MN": [
+    {
+     "url": "https://enterprise.gisdata.mn.gov/aghost/rest/services",
+     "folder_prefix": "us_mn_co_",
+     "terms": "Minnesota Geospatial Commons: each county dataset carries its own license on its gisdata.mn.gov page"
+    }
+   ]
+  },
+  "ckan": {
+   "MN": [
+    {
+     "url": "https://gisdata.mn.gov/api/3/action/package_search",
+     "q": "plan-parcels",
+     "name_rx": "^us-mn-co-([a-z-]+?)-plan-parcels",
+     "page": "https://gisdata.mn.gov/dataset/{name}"
+    }
+   ]
+  },
+  "refused": [
+   {
+    "url": "https://giscat.ne.gov/Enterprise/rest/services/TaxParcels2023",
+    "why": "Nebraska OCIO statewide parcels: compiled 'for official, internal use by the State of Nebraska' (layer description), not for public reuse",
+    "seen": "2026-10-18"
+   },
+   {
+    "url": "https://giscat.ne.gov/Enterprise/rest/services/HistoricalParcels",
+    "why": "Nebraska OCIO historical parcels (2018 to 2022): same internal-use statewide file",
+    "seen": "2026-10-18"
+   },
+   {
+    "url": "https://gisweb.wycokck.org/arcgis/rest/services/UGMAPS/UGMAPS_4_V03_Owner_Names",
+    "why": "Wyandotte County KS owner names: use is subject to the county's data transmittal and confidentiality agreement",
+    "seen": "2026-10-18"
    }
   ]
  },
@@ -1254,13 +1436,45 @@
     "t": "Illinois Geospatial Data Clearinghouse",
     "url": "https://clearinghouse.isgs.illinois.edu/"
    }
+  ],
+  "NE": [
+   {
+    "t": "Nebraska county assessors (Property Assessment Division)",
+    "url": "https://revenue.nebraska.gov/PAD"
+   }
+  ],
+  "IN": [
+   {
+    "t": "IndianaMap",
+    "url": "https://www.indianamap.org/"
+   }
+  ],
+  "KS": [
+   {
+    "t": "Kansas Data Access and Support Center (DASC)",
+    "url": "https://www.kansasgis.org/"
+   }
+  ],
+  "MO": [
+   {
+    "t": "Missouri Spatial Data Information Service",
+    "url": "https://msdis.missouri.edu/"
+   }
   ]
  },
  "countyLinks": {},
  "salesNote": {
   "MN": "Minnesota sales are filed on the state's electronic Certificate of Real Estate Value (eCRV). The state sends its bulk copy only on request, so we do not hold it; the state's free eCRV search shows one sale at a time.",
   "IA": "Iowa sales are filed as a declaration of value with the county recorder and assessor. We have not found a free statewide copy.",
-  "IL": "Illinois sales come from the state's MyDec transfer declarations (PTAX-203) on the Illinois open data portal."
+  "IL": "Illinois sales come from the state's MyDec transfer declarations (PTAX-203) on the Illinois open data portal.",
+  "IN": "Indiana sales are filed on the state sales disclosure form. The state publishes them free by year (STATS Indiana, from the Department of Local Government Finance); we add them once the file's columns are read and checked.",
+  "NE": "Nebraska sales go on the Real Estate Transfer Statement (Form 521) and into the state sales file, which the public gets by request for a fee. We do not hold it.",
+  "KS": "Kansas sale prices on the Certificate of Value are confidential by state law; county appraisers do not publish them.",
+  "SD": "South Dakota sales are kept by each county's Director of Equalization; a few counties post yearly sales lists.",
+  "ND": "North Dakota sales are kept by each county's tax director; we have not found a free statewide file.",
+  "OH": "Ohio sales are kept by each county auditor; many post transfer lists, one county at a time.",
+  "MI": "Michigan sales are kept by each local assessor and county equalization office; we have not found a free statewide file.",
+  "MO": "Missouri does not require sale prices to be disclosed, so most counties have none to publish."
  },
  "coverage": {
   "WI": {
