@@ -1020,7 +1020,7 @@ def top_nearby(rows):
     page; on a tie the newer posting."""
     out = {}
     for c in CROPS:
-        rs = [r for r in rows if r["crop"] == c and r.get("dm") and not r.get("odd")]
+        rs = [r for r in rows if r["crop"] == c and r.get("dm") and not r.get("odd") and not restricted(r)]
         if rs:
             m = min(r["dm"] for r in rs)
             best = max((r for r in rs if r["dm"] == m), key=lambda r: (r["cash"], r["priced"]))
@@ -1394,16 +1394,37 @@ def head_name(bd, with_town=True):
     return f"{op} ({city}, {town})"
 
 
+# A bid not every farmer can sell into: River Country Co-op's "HAR 26- contract
+# and feed only", "New Crop 26- CONTRACT ONLY". The table prints it as posted;
+# the answer and the share card never headline it.
+RESTRICTED_RE = re.compile(r"\b(?:contracts?|feed(?:\s+usage)?|members?)(?:\s*(?:and|&|or|/|,)\s*"
+                           r"(?:contracts?|feed(?:\s+usage)?|members?))*\s+only\b", re.I)
+FAR_OPEN_MONTHS = 10          # the nearest open bid this much later than a restricted one is said so
+
+
+def restricted(r):
+    return bool(RESTRICTED_RE.search(f'{r.get("label") or ""} {r.get("commodity") or ""}'))
+
+
+def _mi(dm):
+    return int(dm[:4]) * 12 + int(dm[5:7]) - 1
+
+
 def answer_picks(boards):
     """{crop: (row, elevator name)}: per elevator the commodity it posts most
     (a non-GMO premium is never the headline corn price), its nearest delivery
     month and the highest cash there; then across elevators the nearest month
-    and the highest cash in it. On a tie the newer posting, then the name."""
+    and the highest cash in it. On a tie the newer posting, then the name.
+    A restricted bid (contract, feed or members only) is skipped; when that
+    leaves the nearest open bid FAR_OPEN_MONTHS or more past it, the row comes
+    back as a copy with "open_far": True so the answer says so."""
     out = {}
     for c in CROPS:
         cands = []
+        closed = [r["dm"] for bd in boards for r in bd["rows"]
+                  if r["crop"] == c and not r.get("odd") and restricted(r)]
         for bd in boards:
-            rs = [r for r in bd["rows"] if r["crop"] == c and not r.get("odd")]
+            rs = [r for r in bd["rows"] if r["crop"] == c and not r.get("odd") and not restricted(r)]
             if not rs:
                 continue
             com = Counter(r["commodity"].lower() for r in rs).most_common(1)[0][0]
@@ -1415,6 +1436,8 @@ def answer_picks(boards):
             m = min(r["dm"] for r, _ in cands)
             cands = sorted((x for x in cands if x[0]["dm"] == m), key=lambda x: x[1].lower())
             out[c] = max(cands, key=lambda x: (x[0]["cash"], x[0]["priced"]))
+            if closed and _mi(m) - _mi(min(closed)) >= FAR_OPEN_MONTHS:
+                out[c] = (dict(out[c][0], open_far=True), out[c][1])
     return out
 
 
@@ -1459,10 +1482,14 @@ def answer_sentence(picks, snap_ct, n=ANSWER_CROPS, basis=True):
     parts, prev = [], None
     for i, c in enumerate(cs):
         r, name = picks[c]
-        p = f"{CROP_LABEL[c].lower()} {cash_c(r['cash'])}"
+        if r.get("open_far"):
+            p = f"{CROP_LABEL[c].lower()}: the nearest open bid is{_deliv_phrase(r, False)}, {cash_c(r['cash'])}"
+        else:
+            p = f"{CROP_LABEL[c].lower()} {cash_c(r['cash'])}"
         if name != prev:
             p += f" at {name}"
-        p += _deliv_phrase(r, i == 0)
+        if not r.get("open_far"):
+            p += _deliv_phrase(r, i == 0)
         if basis and r["basis"] is not None:
             p += f" (basis {_basis_plain(r)})"
         parts.append(p)
@@ -1542,7 +1569,8 @@ def faq_pairs(t, picks, cmp_lines, near, center, snap_ct, latest=None):
     crop = CROP_LABEL[c].lower()
     r, name = picks[c]
     qs = []
-    a1 = (f"The nearest-delivery {crop} bid we read in {place} is {cash_c(r['cash'])} a bushel at {name}"
+    a1 = (f"The nearest{' open' if r.get('open_far') else '-delivery'} {crop} bid we read in {place} is "
+          f"{cash_c(r['cash'])} a bushel at {name}"
           f"{_deliv_phrase(r, True)}, posted {_posted_days([r])}. Call the elevator to confirm before you haul.")
     today = latest is None or latest.astimezone(CT).date() == snap_ct.date()
     qs.append((f"What is {crop} paying in {town} today?" if today else f"What is the latest {crop} bid in {town}?",
@@ -3240,6 +3268,7 @@ def selftest():
     _selftest_place()
     _selftest_share()
     _selftest_best()
+    _selftest_restricted()
     # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
     for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
                   (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
@@ -3477,6 +3506,42 @@ def _selftest_best():
         {"crop": "corn", "period": "2026-10", "period_feed": "2027-10", "cash": 4.75, "odd": {"via": "nearby"}},
         {"crop": "corn", "period": "2026-11", "cash": 4.70, "odd": None}]}}}}
     assert odd_keys(tw) == {("a", "corn", "2027-10", 4.75)}, "keyed by the feed's own period"
+
+
+def _selftest_restricted():
+    """Contract-, feed- or members-only bids stay in the table but never set the
+    answer or the share price (River Country Co-op, Sheldon WI, Oct 18 2026)."""
+    snap = parse_ts("2026-10-18T22:00:00Z").astimezone(CT)
+    pt = parse_ts("2026-10-16T18:31:00Z")
+
+    def row(crop, cash, basis, con, dm, label):
+        return {"crop": crop, "commodity": crop.title(), "dm": dm, "period": dm, "cash": cash, "basis": basis,
+                "contract": con, "priced": pt, "label": label}
+    for lab in ("Harvest 2026, contract and feed only", "Harvest 2026, contract and feed usage only",
+                "New crop 2026- CONTRACT ONLY", "Oct 2026 members only", "Oct 2026 feed only"):
+        assert restricted({"label": lab}), lab
+    for lab in ("Harvest 2026", "Oct 2026", "Contract Oct 2026", "Feed Mill Oct 2026"):
+        assert not restricted({"label": lab}), lab
+    rc = {"operator": "River Country Co-op", "city": "Sheldon", "town": "Sheldon", "rows": [
+        row("corn", 4.05, -0.69, ("ZC", 11, 2026), "2026-10", "Harvest 2026"),
+        row("soybeans", 11.67, -0.94, ("ZS", 10, 2026), "2026-10", "Harvest 2026, contract and feed only"),
+        row("soybeans", 11.41, -0.99, ("ZS", 10, 2027), "2027-09", "Harvest 2027")]}
+    pk = answer_picks([rc])
+    assert pk["soybeans"][0]["cash"] == 11.41 and pk["soybeans"][0]["open_far"], pk
+    assert not pk["corn"][0].get("open_far")
+    sen = answer_sentence(pk, snap)
+    assert sen == ("Nearest-delivery bids: corn $4.05 at River Country Co-op for Harvest 2026 delivery "
+                   "(basis \u221269\u00a2 vs Dec '26) and soybeans: the nearest open bid is for Harvest 2027, $11.41 "
+                   "(basis \u221299\u00a2 vs Nov '27), posted Oct 16."), sen
+    assert "11.67" not in sen
+    assert top_nearby(rc["rows"])["soybeans"][0] == 11.41
+    assert "open_far" not in rc["rows"][2], "the table's own row is not changed"
+    # an open bid a month after the restricted one: an ordinary answer
+    rc2 = dict(rc, rows=rc["rows"][:2] + [row("soybeans", 11.70, -0.90, ("ZS", 10, 2026), "2026-11", "Nov 2026")])
+    p2 = answer_picks([rc2])["soybeans"][0]
+    assert p2["cash"] == 11.70 and not p2.get("open_far")
+    q = faq_pairs({"name": "Sheldon", "state": "WI"}, {"soybeans": pk["soybeans"]}, [], [], None, snap, pt)
+    assert q[0][1].startswith("The nearest open soybeans bid we read in Sheldon, WI is $11.41"), q[0][1]
 
 
 def _selftest_known():
