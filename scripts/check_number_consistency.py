@@ -503,8 +503,8 @@ def _fixture(td):
     w("data/cot.json", {"updated": "2026-10-16"})
     w("data/crop-progress.json", {"updated": "2026-10-15"})
     w("data/elevator-counts.json", {"bids": {"elevators": 1724, "towns": 1361}})
-    w("cash-bids.html", '<meta property="og:description" content="Find local cash grain bids by ZIP. The AGSIST network has '
-                        'current bids from 1,724 elevators across 1,361 towns. Updated Oct 17, 9:27 am CT.">')
+    w("cash-bids.html", '<meta property="og:description" content="Grain prices at local elevators near you: '
+                        'current bids from 1,724 elevators across 1,361 towns, by ZIP, free. Updated Oct 17, 9:27 am CT.">')
     return r
 
 

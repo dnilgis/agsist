@@ -2327,10 +2327,10 @@ def build_states_hub(smetas, ctx):
 
 LIVE_PAGE = "cash-bids.html"
 LIVE_SHARE_GENERIC = {
-    "og:description": "Find local cash grain bids by ZIP: corn, soybean and wheat elevator prices, basis, and the "
-                      "Worth the Drive net-revenue tool.",
-    "twitter:description": "Local cash grain bids by ZIP: corn, soybean, wheat elevator prices today + Worth the "
-                           "Drive net revenue tool."}
+    "og:description": "Grain prices at local elevators near you: corn, soybean and wheat cash bids and basis by ZIP. "
+                      "Free, and every bid shows when it was posted.",
+    "twitter:description": "Grain prices at local elevators near you: corn, soybean and wheat cash bids and basis by ZIP. "
+                           "Free, and every bid shows when it was posted."}
 
 
 def stamp_live_page(path, metas, counts=None):
@@ -2350,8 +2350,10 @@ def stamp_live_page(path, metas, counts=None):
         # the count from data/elevator-counts.json (state_counts) when given
         n_el = counts["bids"]["elevators"] if counts else sum(m["elevators"] for m in live)
         n_tw = counts["bids"]["towns"] if counts else len(live)
-        text = (f"Find local cash grain bids by ZIP. The AGSIST network has current bids from {n_el:,} "
-                f"elevator{'s' if n_el != 1 else ''} across {n_tw:,} town{'s' if n_tw != 1 else ''}. "
+        # 2026-10-18: "grain prices at local elevators" (226 impressions, position 5, 2 clicks): its words
+        # lead. scripts/check_number_consistency.py reads "current bids from N elevators across N towns".
+        text = (f"Grain prices at local elevators near you: current bids from {n_el:,} "
+                f"elevator{'s' if n_el != 1 else ''} across {n_tw:,} town{'s' if n_tw != 1 else ''}, by ZIP, free. "
                 f"Updated {fmt_share_time(max(m['latest'] for m in live))} CT.")   # time zone named (2026-10-17 audit N11)
     out = html
     for key, generic in LIVE_SHARE_GENERIC.items():
