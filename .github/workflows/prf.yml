@@ -179,7 +179,7 @@ jobs:
           PY
             echo "changed=1" >> "$GITHUB_ENV"
           fi
-          git add -A data/prf prf.html prf img/og/prf.jpg sitemap.xml sitemap-prf.xml
+          git add -A data/prf data/pointers prf.html prf img/og/prf.jpg sitemap.xml sitemap-prf.xml
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           C=$(python - <<'PY'
           import json

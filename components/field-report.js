@@ -48,13 +48,24 @@
         var reg = x[0] || {}, sales = x[1] || { rows: [], files: [] };
         var home = sales.files.filter(function (f) { return f.fips === co.fips; })[0] || sales.files[0];
         var noSales = miss('We do not hold ' + esc(co.st) + ' transfer records yet. ' + esc(((reg.salesNote || {})[co.abbr]) || 'Sales are public at the county recorder.'));
-        // comps: market sales, last 5 years, within 25 miles, newest first
+        // comps: the filters the reader set in Field Scout (cf=), else market sales of 10 acres or
+        // more within 25 miles in the last 3 years. The median of every match; the 10 nearest listed.
         if (sales.rows.length) {
-          var since = new Date(); since.setFullYear(since.getFullYear() - 5);
-          var list = F.filterComps(sales.rows, { since: since.toISOString().slice(0, 10), maxMi: 25, minAc: 10, sort: 'date', dir: 'desc' }, c);
+          var cf = /[?&]cf=([^&#]+)/.exec(location.search), f = null;
+          try { f = cf ? F.decodeFilter(decodeURIComponent(cf[1])) : null; } catch (e) { f = null; }
+          var mine = !!f;
+          if (!f) { var since = new Date(); since.setFullYear(since.getFullYear() - 3); f = { maxMi: 25, minAc: 10, since: since.toISOString().slice(0, 10) }; }
+          f.sort = 'mi'; f.dir = 'asc';
+          var list = F.filterComps(sales.rows, f, c);
           var med = F.medianPpa(list);
-          set('frp-comps', (med ? '<p><span class="fl-big">' + F.fmtMoney(med.ppa) + '/ac</span> middle of ' + med.n + ' market sales of 10 acres or more within 25 miles, last 5 years.</p>' : miss('Fewer than 3 market sales of 10 acres or more within 25 miles in the last 5 years; no middle price shown.')) +
-            F.compsTable(list, 20) + miss(esc(home.source) + '. Price covers the whole sale, buildings included unless the class is bare land. Miles run to the center of the town where the sale was filed. Sales on several parcels whose acres are uncertain are left out.'));
+          var thru = sales.files.map(function (x) { var v = x.coverage || {}; return v.filed_to || v.to || ''; }).sort().pop();
+          var srcs = {}; sales.files.forEach(function (x) { srcs[x.source] = x.links || []; });
+          var srcHTML = Object.keys(srcs).map(function (k) { return esc(k) + (srcs[k].length ? ': ' + srcs[k].map(function (l) { return '<a href="' + esc(l.url) + '">' + esc(l.t) + '</a> (' + esc(l.url.replace(/^https?:\/\//, '')) + ')'; }).join(', ') : ''); }).join('. ');
+          set('frp-comps', '<p class="fl-note"><b>Recorded sales in our data, through ' + F.fmtDate(thru) + '; not an appraisal.</b> ' + (mine ? 'Your Field Scout filters: ' : 'Defaults: ') + esc(F.filterText(f)) + '.</p>' +
+            (med ? '<p><span class="fl-big">' + F.fmtMoney(med.ppa) + '/ac</span> middle of ' + med.n + ' sales with known acres that match.</p>' : miss('Fewer than 3 matching sales with known acres; no middle price shown.')) +
+            (list.length ? '<p class="fl-note">The ' + Math.min(10, list.length) + ' nearest of ' + list.length + ' matching sales:</p>' : '') +
+            F.compsTable(list, 10, { src: true }) +
+            miss('Price covers the whole sale, buildings included unless the class is bare land. Miles run to the center of the town where the sale was filed, not to the parcel. Sales on several parcels whose acres are uncertain are listed without $/acre and left out of the middle. Sources: ' + srcHTML + '.'));
           if (med) drawSum([['County', co.name + ', ' + co.abbr], ['Nearby sales, middle $/ac', F.fmtMoney(med.ppa)]]);
         } else set('frp-comps', noSales);
 
@@ -67,7 +78,7 @@
           return;
         }
         (function tryNext(i) {
-          if (i >= svcs.length) { set('frp-parcel', miss(esc(svcs[0].name) + ' did not answer. Reload in a minute.')); set('frp-hist', ''); return; }
+          if (i >= svcs.length) { set('frp-parcel', miss(esc(svcs[0].name) + ' did not answer. Reload in a minute.')); set('frp-hist', miss('Without the parcel number from the parcel map we cannot pick this field\u2019s transfers out of the county record. Reload in a minute.')); return; }
           F.queryParcels(svcs[i], pts).then(function (ps) {
             ps = F.shareInParcels(pts, ps).slice(0, 12);
             if (!ps.length) { set('frp-parcel', miss('No parcel came back for this outline from ' + esc(svcs[i].name) + '.')); set('frp-hist', ''); return; }

@@ -43,6 +43,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import build_prf_states as S  # noqa: E402  shared helpers: long_date, money2, slug, boot, text_of
 import inject_static_nav as nav  # noqa: E402
+import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
 
 D = os.path.join(ROOT, "data", "prf")
@@ -171,7 +172,9 @@ def page(ctx):
         return f'{f(r["mid"])}<br><span class="prf-th-s">{f(r["low"])}&ndash;{f(r["high"]).lstrip("$")}</span>'
     iv_rows = []
     for i, r in enumerate(fx["intervals"]):
-        iv_rows.append(f'<tr><th scope="row"><abbr title="{S.LONG_IV[i]}">{SHORT_IV[i]}</abbr></th>'
+        # a row priced on fewer grids than the county has says how many (Madera: 4 rows on 3 of 19)
+        few = (f'<br><span class="prf-th-s">{r["n"]} of {ng} grids</span>' if ng > 1 and r.get("n") and r["n"] < ng else "")
+        iv_rows.append(f'<tr><th scope="row"><abbr title="{S.LONG_IV[i]}">{SHORT_IV[i]}</abbr>{few}</th>'
                        f'<td>{("%.2f in" % r["normal_in"]) if r["normal_in"] is not None else "&mdash;"}</td>'
                        f'<td>{rng(r["rate"], money2)}</td><td>{rng(r["below"], str)}</td></tr>')
     many = ng > 1
@@ -207,6 +210,13 @@ def page(ctx):
     # Each cell's middle is the median of the county's grids for that pair of months (and year),
     # so the middle can be a different grid from row to row; say so rather than "the middle grid".
     mid_word = f"the middle of the {ng} grids" if many else "the grid"
+    # a pair of months not every grid prices: its middle is of the grids that price it
+    all_n = all((r.get("n") or 0) in (0, ng) for r in fx["intervals"])
+
+    def mid_of(i):
+        n = fx["intervals"][i].get("n") or 0
+        return mid_word if (not many or n == ng) else f"the middle of the {n} grids that price those months"
+    mid_any = mid_word if all_n else "the middle of the grids that price each pair of months"
     ex = fx.get("example")
     faq = [
         (f"When is the PRF deadline in {name} for {cy}?",
@@ -218,11 +228,13 @@ def page(ctx):
          f"It depends on the grid, the months, the coverage level and your productivity factor. USDA&rsquo;s {cy} county base value is {money2(gz)} an acre for grazing"
          f"{', ' + money2(hy) + ' for non-irrigated hay' if hy is not None else ''}. At 90% coverage and a productivity factor of 100, grazing land is protected for "
          f"{money2(prot)} an acre, and the full premium runs {money2(cheap[1]) if cheap else '&mdash;'} to {money2(dear[1]) if dear else '&mdash;'} per $100 of protection "
-         f"depending on the months, on {mid_word}. USDA pays 51% to 59% of the premium. "
+         + (f"depending on the months, on {mid_word}. " if all_n or not (cheap and dear) else
+            f"depending on the months: {S.LONG_IV[cheap[0]]} on {mid_of(cheap[0])}, {S.LONG_IV[dear[0]]} on {mid_of(dear[0])}. ")
+         + "USDA pays 51% to 59% of the premium. "
          + (f"In the example above, 100 acres of grazing at 90% with half in April to May and half in June to July, you pay ${ex['you_acre']:.2f} an acre on grid {ex['grid']}. " if ex else "")
          + "The calculator gives the figure for your acres and months."),
         (f"How often has PRF paid in {name}?",
-         f"At 90% coverage a pair of months pays when the index comes in under 90% of normal. Over {y0} to {y1}, on {mid_word}, that happened in "
+         f"At 90% coverage a pair of months pays when the index comes in under 90% of normal. Over {y0} to {y1}, on {mid_any}, that happened in "
          f"{min(r['below']['mid'] for r in fx['intervals'] if r['below'])} to {max(r['below']['mid'] for r in fx['intervals'] if r['below'])} of {ny} years, depending on the months. "
          + (f"Run at {cy} rates, $1 of full premium at 90% would have paid back a middle ${pb:.2f} across the county&rsquo;s grids and months. " if pb is not None else "")
          + "That is the past record, not a forecast."),
@@ -319,7 +331,7 @@ def page(ctx):
     {now}
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>
-    <p>At 90% coverage{', across the ' + str(ng) + ' grids that touch the county: first the middle of the ' + str(ng) + ' for that pair of months (it can be a different grid in each row), then the lowest and highest' if many else ''}. The premium is the full rate per $100 of protection; USDA pays {subrow}. Normal is the grid&rsquo;s average precipitation for those months. A year counts, of the {ny} from {y0} to {y1}, when the grid&rsquo;s index for those months came in under 90% of normal, which is when a 90% policy pays.</p>
+    <p>At 90% coverage{(', across the ' + str(ng) + ' grids that touch the county: first the middle of the ' + str(ng) + ' for that pair of months (it can be a different grid in each row), then the lowest and highest') if many and all_n else (', across the grids that touch the county that price each pair of months (' + str(ng) + ' in all; a row priced on fewer says how many): first the middle grid for that pair of months (it can be a different grid in each row), then the lowest and highest') if many else ''}. The premium is the full rate per $100 of protection; USDA pays {subrow}. Normal is the grid&rsquo;s average precipitation for those months. A year counts, of the {ny} from {y0} to {y1}, when the grid&rsquo;s index for those months came in under 90% of normal, which is when a 90% policy pays.</p>
     <div class="prf-scroll" tabindex="0" role="region" aria-label="Each pair of months, scrolls sideways"><table class="prf-t prf-sub-t prf-iv-t"><caption class="prf-sr">Each pair of months in {e(full)} at 90% coverage</caption><thead><tr><th scope="col">Months</th><th scope="col">Normal</th><th scope="col">Premium per $100</th><th scope="col">Years under 90%</th></tr></thead><tbody>{''.join(iv_rows)}</tbody></table></div>
     <p>{('The wettest pair of months here is ' + S.LONG_IV[wet[0]] + f' ({wet[1]:.2f} in on {mid_word}) and the driest is ' + S.LONG_IV[dry[0]] + f' ({dry[1]:.2f} in). ') if wet and dry else ''}{('Coverage costs least in ' + S.LONG_IV[cheap[0]] + ' and most in ' + S.LONG_IV[dear[0]] + '. ') if cheap and dear and cheap[0] != dear[0] else ''}The months to insure are the ones when a dry spell costs you grass or hay, not the cheapest ones.</p>
 
@@ -437,11 +449,17 @@ def main():
                 rel = os.path.join(S.slug(st["name"]), fn)
                 if fn.endswith(".html") and rel not in want:
                     stale.append(rel)
+    # a county that left USDA's files stays as a pointer to its state page (scripts/pointer_pages.py)
+    def prf_parent(rel):
+        st_slug = rel.split("/")[1]
+        return [(f"/prf/{st_slug}", PP.label(st_slug)), ("/prf", "PRF")]
+    changed, orphans = PP.settle(ROOT, "prf", ["prf/" + r.replace(os.sep, "/") for r in stale], prf_parent, check=check)
+    stale = [r for r in stale if "prf/" + r.replace(os.sep, "/") in orphans]
     have_sm = open(SITEMAP, encoding="utf-8").read() if os.path.exists(SITEMAP) else None
     if check:
         if have_sm != sm:
             bad.append("sitemap-prf.xml")
-        bad += stale
+        bad += stale + changed
         if bad:
             print("PRF county pages out of date:", ", ".join(bad[:5]), "... run python3 scripts/build_prf_counties.py")
             return 1
@@ -452,7 +470,7 @@ def main():
     if have_sm != sm:
         open(SITEMAP, "w", encoding="utf-8").write(sm)
     print(f"{len(want)} county pages written to prf/<state>/, {total / 1048576:.1f} MB, largest {max(len(b.encode()) for b in want.values()) // 1024} KB; "
-          f"{len(stale)} stale removed; sitemap-prf.xml {len(urls)} URLs")
+          f"{len(stale)} stale removed, {len(changed)} pointers written; sitemap-prf.xml {len(urls)} URLs")
     return 0
 
 

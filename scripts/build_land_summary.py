@@ -300,7 +300,11 @@ def leaks(summary_text, files):
 
 
 def states_on_disk():
-    return sorted(os.path.basename(d).upper() for d in glob.glob(os.path.join(LAND, "*")) if os.path.isdir(d) and glob.glob(os.path.join(d, "[0-9]*.json")))
+    """States with transfer files AND a checked source entry above. A new state's files (Indiana,
+    Oct 18) get no Atlas summary until its deed types and acres are checked against the market-sale
+    rule and it is added to SOURCES."""
+    return sorted(os.path.basename(d).upper() for d in glob.glob(os.path.join(LAND, "*"))
+                  if os.path.isdir(d) and glob.glob(os.path.join(d, "[0-9]*.json")) and os.path.basename(d).upper() in SOURCES)
 
 
 def main(argv):

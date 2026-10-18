@@ -60,65 +60,6 @@
    "story": "Through Oct 13, the weather station at Dillon Airport has 5.36 inches, 3.48 less than a usual year. June was the wettest month at 1.73 inches, and 1.17 of that came on Jun 27, the biggest single day. The longest dry stretch ran 16 days, Jan 24 to Feb 8. On the days both years reported, this year has 0.99 inches more than 2025.",
    "through": "2026-10-13"
   },
-  "30003": {
-   "facts": {
-    "biggest_day": {
-     "date": "Apr 3",
-     "in": "1.97",
-     "label": "biggest single day"
-    },
-    "county": "Big Horn County",
-    "days_in_year_so_far": 286,
-    "days_missing": 1,
-    "days_reported": 285,
-    "gauge": "weather station",
-    "gauge_from_middle": "27 miles from the middle of the county",
-    "gauge_where": "in Busby",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 285,
-      "diff_in": "4.66",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "16.59",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 47,
-     "from": "Jun 28",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Aug 13"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 88,
-    "state": "Montana",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "11.81",
-    "usual_in": "13.48",
-    "vs_usual": {
-     "diff_in": "1.67",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "2.84",
-     "month": "April"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "add37585cdaa1384",
-   "sid": "241297 2",
-   "story": "Through Oct 13, the station in Busby had most of its year come early. April was the wettest month at 2.84 inches, and 1.97 of that fell on Apr 3, the biggest single day. Then the gauge went 47 days in a row with nothing in it, from Jun 28 to Aug 13. On the days both years reported, that is 4.66 inches less than 2025.",
-   "through": "2026-10-13"
-  },
   "30005": {
    "facts": {
     "biggest_day": {
@@ -2357,65 +2298,6 @@
    "story": "Through Oct 13, the weather station 29 miles east-northeast of Wolf Point had its wettest month in June at 5.11 inches. The biggest single day came Jun 27 with 2.14 inches. Then the gauge went 20 days in a row with nothing, not even a trace, from Sep 21 to Oct 10. That still puts this year 0.60 inches ahead of last year.",
    "through": "2026-10-13"
   },
-  "30087": {
-   "facts": {
-    "biggest_day": {
-     "date": "Sep 19",
-     "in": "1.68",
-     "label": "biggest single day"
-    },
-    "county": "Rosebud County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "4 miles from the middle of the county",
-    "gauge_where": "in Forsyth",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 285,
-      "diff_in": "0.71",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 1,
-     "through": "Oct 13",
-     "total_in": "14.66",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 12,
-     "from": "Jan 8",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Jan 19"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 102,
-    "state": "Montana",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "14.29",
-    "usual_in": "14.04",
-    "vs_usual": {
-     "diff_in": "0.25",
-     "dir": "more",
-     "word": "about usual"
-    },
-    "wettest_month": {
-     "in": "2.38",
-     "month": "September"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "b5fa633aed334235",
-   "sid": "243098 2",
-   "story": "Through Oct 13, the weather station in Forsyth has a year that looks about usual on paper. September did most of the talking with 2.38 inches, and 1.68 inches of that came on Sep 19, the biggest single day so far. On the days both years reported, 2026 is 0.71 inches behind last year at the same gauge.",
-   "through": "2026-10-13"
-  },
   "30089": {
    "facts": {
     "biggest_day": {
@@ -2946,65 +2828,6 @@
    "sid": "243947 2",
    "story": "Through Oct 7, the weather station 11 miles northwest of Harlowton went 15 days in a row with nothing in the gauge, not even a trace, from Jan 25 to Feb 8. Then it caught 2.40 inches on Feb 9, the biggest single day of the year so far. That made February the wettest month at 2.70 inches. On the days both years reported, this year sits 0.34 inches less than last year.",
    "through": "2026-10-07"
-  },
-  "30111": {
-   "facts": {
-    "biggest_day": {
-     "date": "Sep 18",
-     "in": "1.65",
-     "label": "biggest single day"
-    },
-    "county": "Yellowstone County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "16 miles from the middle of the county",
-    "gauge_where": "at Billings International Airport",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "2.89",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "16.06",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 11,
-     "from": "Aug 1",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Aug 11"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 106,
-    "state": "Montana",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "13.17",
-    "usual_in": "12.44",
-    "vs_usual": {
-     "diff_in": "0.73",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "4.63",
-     "month": "September"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "e7a556ab524910f7",
-   "sid": "24033 1",
-   "story": "Through Oct 13, the weather station at Billings International Airport has 13.17 inches, 0.73 inches more than a usual year. September did most of the work with 4.63 inches, and the biggest single day was 1.65 inches on Sep 18. That still leaves this year 2.89 inches less than 2025 at the same point.",
-   "through": "2026-10-13"
   }
  },
  "made": "2026-10-17T23:43:38Z",

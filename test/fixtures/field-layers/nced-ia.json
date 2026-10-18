@@ -1,0 +1,39 @@
+{
+ "_note": "Built by hand in the shape of the documented answer (the sandbox cannot reach the service). Replace with the copy scripts/probe_field_layers.py saves (raw branch, data/land-raw/layers/) once land-data.yml task=layers runs.",
+ "body": {
+  "features": [
+   {
+    "attributes": {
+     "eholdtype": "Federal",
+     "sitename": "SYNTHETIC NAME NEVER SHOWN"
+    },
+    "geometry": {
+     "rings": [
+      [
+       [
+        -93.501,
+        42.0627
+       ],
+       [
+        -93.494,
+        42.0627
+       ],
+       [
+        -93.494,
+        42.065
+       ],
+       [
+        -93.501,
+        42.065
+       ],
+       [
+        -93.501,
+        42.0627
+       ]
+      ]
+     ]
+    }
+   }
+  ]
+ }
+}

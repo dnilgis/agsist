@@ -233,65 +233,6 @@
    "story": "Through Oct 13, the weather station in Beech Mountain had its biggest one-day reading on Oct 11 at 4.00 inches. July was the wettest month at 7.63 inches. The longest dry stretch ran 12 days, from Apr 7 to Apr 18, with not even a trace in the gauge. The year sits 2.60 inches less than last year at this point.",
    "through": "2026-10-13"
   },
-  "37013": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 20",
-     "in": "2.63",
-     "label": "biggest single day"
-    },
-    "county": "Beaufort County",
-    "days_in_year_so_far": 286,
-    "days_missing": 1,
-    "days_reported": 285,
-    "gauge": "weather station",
-    "gauge_from_middle": "14 miles from the middle of the county",
-    "gauge_where": "4 miles west of Washington Wwtp",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 285,
-      "diff_in": "2.94",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "36.25",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 14,
-     "from": "May 9",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "May 22"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 76,
-    "state": "North Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "33.31",
-    "usual_in": "44.08",
-    "vs_usual": {
-     "diff_in": "10.77",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "9.77",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "86c143da83ae3293",
-   "sid": "319100 2",
-   "story": "Through Oct 13, the weather station 4 miles west of Washington Wwtp has caught 33.31 inches, 10.77 inches less than a usual year. July did most of the work with 9.77 inches, and the biggest single day was 2.63 inches on Jul 20. The gauge went 14 days in a row with nothing from May 9 to May 22. On the days both years reported, this year sits 2.94 inches less than last year.",
-   "through": "2026-10-13"
-  },
   "37015": {
    "facts": {
     "biggest_day": {
@@ -467,53 +408,6 @@
    "hash": "bae31bd65525b1fd",
    "sid": "317813 2",
    "story": "Through Oct 13, the weather station in Shallotte had its wettest month in October with 5.40 inches, and 4.19 of that came on Oct 4 alone. Before that it went 19 days in a row with nothing in the gauge, from Apr 7 to Apr 25. The station sits 9.75 inches behind last year at this point, and 22.44 inches less than a usual year.",
-   "through": "2026-10-13"
-  },
-  "37021": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 24",
-     "in": "3.10",
-     "label": "biggest single day"
-    },
-    "county": "Buncombe County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "4 miles from the middle of the county",
-    "gauge_where": "5.6 miles north-northwest of Asheville",
-    "last_year": null,
-    "longest_dry_stretch": {
-     "days": 13,
-     "from": "Aug 24",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 5"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 91,
-    "state": "North Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "33.90",
-    "usual_in": "37.33",
-    "vs_usual": {
-     "diff_in": "3.43",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "8.56",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "0c82bf93ed391ebb",
-   "sid": "US1NCBC0001 6",
-   "story": "Through Oct 13, the volunteer rain gauge 5.6 miles north-northwest of Asheville had 33.90 inches, 3.43 inches less than a usual year. July did most of the work with 8.56 inches, and Jul 24 alone put 3.10 inches in the gauge. Then it shut off. From Aug 24 to Sep 5 the gauge went 13 days in a row without even a trace.",
    "through": "2026-10-13"
   },
   "37023": {
@@ -810,65 +704,6 @@
    "sid": "US1NCCS0002 6",
    "story": "Through Oct 13, the volunteer rain gauge 11.2 miles north of Mebane had 23.66 inches, 15.12 inches less than a usual year. July was the wettest month at 6.69 inches, and the biggest single day came Jul 21 with 1.79. The gauge went 19 days in a row with nothing in it, not even a trace, from May 29 to Jun 16. On the days both years reported, that is 24.52 inches less than last year.",
    "through": "2026-10-13"
-  },
-  "37035": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 23",
-     "in": "3.92",
-     "label": "biggest one-day reading"
-    },
-    "county": "Catawba County",
-    "days_in_year_so_far": 284,
-    "days_missing": 0,
-    "days_reported": 284,
-    "gauge": "weather station",
-    "gauge_from_middle": "11 miles from the middle of the county",
-    "gauge_where": "in Oxford Hydro Station",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 276,
-      "diff_in": "4.49",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 8,
-     "through": "Oct 11",
-     "total_in": "40.68",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 13,
-     "from": "May 9",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "May 21"
-    },
-    "multi_day_reports": 1,
-    "pct_of_usual": 102,
-    "state": "North Carolina",
-    "through": "Oct 11",
-    "through_iso": "2026-10-11",
-    "total_in": "37.75",
-    "usual_in": "36.99",
-    "vs_usual": {
-     "diff_in": "0.76",
-     "dir": "more",
-     "word": "about usual"
-    },
-    "wettest_month": {
-     "in": "11.04",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "eeb2e1608ea36061",
-   "sid": "311990 2",
-   "story": "Through Oct 11, the weather station in Oxford Hydro Station, 11 miles from the middle of the county, sits 0.76 inches more than a usual year. July did most of the work with 11.04 inches, and the biggest one-day reading came Jul 23 at 3.92 inches. The longest dry stretch ran 13 days, May 9 to May 21. On the days both years reported, this year is 4.49 inches less than 2025.",
-   "through": "2026-10-11"
   },
   "37037": {
    "facts": {
@@ -1279,61 +1114,6 @@
    "story": "Through Oct 13, the weather station at Fayetteville Regional Airport Grannis Field had its wettest month in July at 5.35 inches. The biggest single day was Aug 27 with 1.98 inches. From Apr 6 to Apr 24 the gauge went 19 days in a row with nothing in it, not even a trace. That leaves 2026 at 3.84 inches less than 2025 to the same day.",
    "through": "2026-10-13"
   },
-  "37053": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 25",
-     "in": "3.37",
-     "label": "biggest single day"
-    },
-    "county": "Currituck County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "13 miles from the middle of the county",
-    "gauge_where": "in Grandy",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "2.29",
-      "dir": "more",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "33.01",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 13,
-     "from": "Apr 7",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 19"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": null,
-    "state": "North Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "35.30",
-    "usual_in": null,
-    "vs_usual": null,
-    "wettest_month": {
-     "in": "11.40",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "a5f308bbd0f4fb01",
-   "sid": "313567 2",
-   "story": "Through Oct 13, the weather station in Grandy has caught 35.30 inches this year. July did most of the work with 11.40 inches, and the biggest single day was Jul 25 at 3.37 inches. The gauge went 13 days in a row with nothing at all, from Apr 7 to Apr 19. That puts this year 2.29 inches more than last year to the same day.",
-   "through": "2026-10-13"
-  },
   "37055": {
    "facts": {
     "biggest_day": {
@@ -1556,65 +1336,6 @@
    "hash": "5b41a36539271697",
    "sid": "319026 2",
    "story": "Through Oct 13, the weather station 1 mile southeast of Wallace has 26.67 inches, 19.28 inches less than a usual year. August was the wettest month at 5.73 inches. The biggest single day came May 25 with 1.75 inches. The longest dry stretch ran 19 days, Mar 18 to Apr 5, with nothing in the gauge, not even a trace.",
-   "through": "2026-10-13"
-  },
-  "37063": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 7",
-     "in": "2.27",
-     "label": "biggest single day"
-    },
-    "county": "Durham County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "4 miles from the middle of the county",
-    "gauge_where": "1.2 miles northwest of Durham",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "13.88",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "43.13",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 10,
-     "from": "Mar 18",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Mar 27"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 72,
-    "state": "North Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "29.25",
-    "usual_in": "40.81",
-    "vs_usual": {
-     "diff_in": "11.56",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "11.07",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "7fa4a3daa8cdc42f",
-   "sid": "US1NCDH0006 6",
-   "story": "Through Oct 13, the volunteer rain gauge 1.2 miles northwest of Durham had caught 29.25 inches. July did most of the work with 11.07 inches, and the biggest single day was Jul 7 at 2.27 inches. The longest run with nothing in the gauge was 10 days, Mar 18 to Mar 27. That is 13.88 inches less than last year had by the same day.",
    "through": "2026-10-13"
   },
   "37065": {
@@ -2298,65 +2019,6 @@
    "story": "Through Oct 13, the weather station 1 mile northeast of Hendersonville has caught 45.49 inches, 1.55 less than a usual year. The biggest one-day reading came late, 5.88 inches on Oct 11. May was the wettest month at 8.53 inches. That still puts this year 5.36 inches ahead of last year to the same day.",
    "through": "2026-10-13"
   },
-  "37091": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 8",
-     "in": "4.10",
-     "label": "biggest single day"
-    },
-    "county": "Hertford County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "8 miles from the middle of the county",
-    "gauge_where": "in Murfreesboro",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "7.22",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "36.76",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 17,
-     "from": "Jan 1",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Jan 17"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 72,
-    "state": "North Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "29.54",
-    "usual_in": "40.84",
-    "vs_usual": {
-     "diff_in": "11.30",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "8.33",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "c7a22e0042ce4073",
-   "sid": "315996 2",
-   "story": "Through Oct 13, the weather station in Murfreesboro had 29.54 inches, 11.30 less than a usual year. July did most of the work with 8.33 inches, and 4.10 of that came on Jul 8 alone. The gauge started the year empty, with 17 days in a row of nothing from Jan 1 to Jan 17. Last year at this point it had 7.22 inches more.",
-   "through": "2026-10-13"
-  },
   "37093": {
    "facts": {
     "biggest_day": {
@@ -2587,65 +2249,6 @@
    "hash": "dcd5072e94cce820",
    "sid": "312200 2",
    "story": "Through Oct 13, the weather station in Cullowhee had its wettest month in July at 6.92 inches, and the biggest single day came Jul 18 with 2.35 inches. The longest dry stretch ran 12 days, May 9 to May 20, with nothing in the gauge, not even a trace. That leaves the year 0.47 inches more than last year at this point and 4.25 inches less than a usual year.",
-   "through": "2026-10-13"
-  },
-  "37101": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 13",
-     "in": "3.71",
-     "label": "biggest single day"
-    },
-    "county": "Johnston County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "7 miles from the middle of the county",
-    "gauge_where": "4.6 miles east-southeast of Clayton",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "1.31",
-      "dir": "more",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "35.27",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 16,
-     "from": "Apr 7",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 22"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 88,
-    "state": "North Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "36.58",
-    "usual_in": "41.49",
-    "vs_usual": {
-     "diff_in": "4.91",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "13.45",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "eae519b19b7b5ceb",
-   "sid": "US1NCJH0020 6",
-   "story": "Through Oct 13, the volunteer rain gauge 4.6 miles east-southeast of Clayton has caught 36.58 inches, 4.91 inches less than a usual year. July did most of the work with 13.45 inches, and Jul 13 alone brought 3.71 inches. The gauge went 16 days without a drop from Apr 7 to Apr 22. Even so, it is 1.31 inches more than 2025 had by this day.",
    "through": "2026-10-13"
   },
   "37105": {
@@ -3179,65 +2782,6 @@
    "story": "Through Oct 13, the volunteer rain gauge 2.1 miles northeast of Whispering Pines had 15.22 inches less than it did by this day last year. July was the wettest month at 7.31 inches, and the biggest single day came Aug 4 with 3.25 inches. From Apr 7 to Apr 25 the gauge went 19 days in a row with nothing in it, not even a trace.",
    "through": "2026-10-13"
   },
-  "37127": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 13",
-     "in": "2.52",
-     "label": "biggest single day"
-    },
-    "county": "Nash County",
-    "days_in_year_so_far": 285,
-    "days_missing": 1,
-    "days_reported": 284,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "2 miles from the middle of the county",
-    "gauge_where": "3.2 miles west of Nashville",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 284,
-      "diff_in": "5.80",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 12",
-     "total_in": "36.99",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 15,
-     "from": "May 28",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Jun 11"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 77,
-    "state": "North Carolina",
-    "through": "Oct 12",
-    "through_iso": "2026-10-12",
-    "total_in": "31.19",
-    "usual_in": "40.63",
-    "vs_usual": {
-     "diff_in": "9.44",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "8.69",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "db62a368b55067f7",
-   "sid": "US1NCNS0002 6",
-   "story": "Through Oct 12, the volunteer rain gauge 3.2 miles west of Nashville has caught most of its year in July, with 8.69 inches in that wettest month. The biggest single day came Jul 13 at 2.52 inches. Before that, the gauge sat empty for 15 days in a row from May 28 to Jun 11. On the days both years reported, that is 5.80 inches less than last year.",
-   "through": "2026-10-12"
-  },
   "37129": {
    "facts": {
     "biggest_day": {
@@ -3350,65 +2894,6 @@
    "hash": "68ad1845cda46666",
    "sid": "US1NCON0020 6",
    "story": "Through Oct 13, the volunteer rain gauge 4.9 miles southeast of Hubert has caught 29.80 inches, 15.52 inches less than a usual year. June was the wettest month at 4.10 inches. The longest dry stretch ran 13 days, Apr 7 to Apr 19. On the days both years reported, this year is 16.66 inches behind last year.",
-   "through": "2026-10-13"
-  },
-  "37135": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 23",
-     "in": "3.76",
-     "label": "biggest one-day reading"
-    },
-    "county": "Orange County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "6 miles from the middle of the county",
-    "gauge_where": "5.6 miles north-northwest of Hillsborough",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 283,
-      "diff_in": "14.19",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 3,
-     "through": "Oct 13",
-     "total_in": "42.85",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 14,
-     "from": "May 28",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Jun 10"
-    },
-    "multi_day_reports": 1,
-    "pct_of_usual": 73,
-    "state": "North Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "29.11",
-    "usual_in": "40.03",
-    "vs_usual": {
-     "diff_in": "10.92",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "10.02",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "243f484b2fa95258",
-   "sid": "US1NCOR0044 6",
-   "story": "Through Oct 13, the volunteer rain gauge 5.6 miles north-northwest of Hillsborough has caught 29.11 inches, 10.92 inches less than a usual year. July did most of the work with 10.02 inches, and the biggest one-day reading was 3.76 inches on Jul 23. The gauge went 14 days in a row with nothing from May 28 to Jun 10. On the days both years reported, this year sits 14.19 inches less than last year.",
    "through": "2026-10-13"
   },
   "37137": {
@@ -4044,65 +3529,6 @@
    "story": "Through Oct 13, the weather station 2 miles northwest of Reidsville had 20.58 inches, 17.97 inches less than a usual year. July was the wettest month at 4.61 inches, and the biggest single day came back on Feb 16 with 1.40 inches. The gauge went 19 days in a row with nothing in it, Apr 7 to Apr 25. On the days both years reported, that is 17.31 inches less than 2025 had by now.",
    "through": "2026-10-13"
   },
-  "37159": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 7",
-     "in": "2.40",
-     "label": "biggest single day"
-    },
-    "county": "Rowan County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "5 miles from the middle of the county",
-    "gauge_where": "less than a mile west-northwest of Faith",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 285,
-      "diff_in": "1.71",
-      "dir": "more",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 1,
-     "through": "Oct 13",
-     "total_in": "32.49",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 19,
-     "from": "Apr 7",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 25"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 91,
-    "state": "North Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "34.20",
-    "usual_in": "37.39",
-    "vs_usual": {
-     "diff_in": "3.19",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "9.21",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "e43746233fccf39a",
-   "sid": "US1NCRW0016 6",
-   "story": "Through Oct 13, the volunteer rain gauge less than a mile west-northwest of Faith has caught 34.20 inches, 3.19 inches less than a usual year. July did most of the work with 9.21 inches, and Jul 7 brought the biggest single day at 2.40 inches. The gauge also went 19 days in a row with nothing in it, not even a trace, from Apr 7 to Apr 25. On the days both years reported, that is 1.71 inches more than last year.",
-   "through": "2026-10-13"
-  },
   "37161": {
    "facts": {
     "biggest_day": {
@@ -4655,65 +4081,6 @@
    "story": "Through Oct 13, the volunteer rain gauge 2.5 miles north-northeast of Henderson went 20 days in a row with nothing in it, not even a trace, from Mar 29 to Apr 17. It has caught 29.72 inches so far, 7.61 inches less than a usual year. The gauge reported on 275 of the 286 days.",
    "through": "2026-10-13"
   },
-  "37183": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 21",
-     "in": "2.41",
-     "label": "biggest single day"
-    },
-    "county": "Wake County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "6 miles from the middle of the county",
-    "gauge_where": "3.6 miles north-northeast of Raleigh",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "9.79",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "35.14",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 14,
-     "from": "May 28",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Jun 10"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 64,
-    "state": "North Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "25.35",
-    "usual_in": "39.89",
-    "vs_usual": {
-     "diff_in": "14.54",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "11.65",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "5e928be265a4234a",
-   "sid": "US1NCWK0203 6",
-   "story": "Through Oct 13, the volunteer rain gauge north-northeast of Raleigh has caught 25.35 inches, 14.54 inches less than a usual year. July did most of the work with 11.65 inches, and the biggest single day was Jul 21 at 2.41. The gauge went 14 days with nothing in it from May 28 to Jun 10. By this day last year it had 35.14 inches, so 2026 is 9.79 inches behind.",
-   "through": "2026-10-13"
-  },
   "37185": {
    "facts": {
     "biggest_day": {
@@ -4771,65 +4138,6 @@
    "hash": "cb9cb7224d9855bb",
    "sid": "US1NCWR0007 6",
    "story": "Through Oct 13, the volunteer rain gauge 5.0 miles north of Norlina had 17.91 inches, 19.75 inches less than a usual year. July was the wettest month at 2.95 inches, and the biggest single day was 1.33 inches on Aug 22. The gauge went 13 days in a row with nothing in it, May 29 to Jun 10. On the days both years reported, this year is 19.12 inches less than 2025.",
-   "through": "2026-10-13"
-  },
-  "37187": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 29",
-     "in": "3.10",
-     "label": "biggest single day"
-    },
-    "county": "Washington County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "6 miles from the middle of the county",
-    "gauge_where": "5 miles east of Plymouth",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "1.06",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "38.29",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 11,
-     "from": "Apr 8",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 18"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 82,
-    "state": "North Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "37.23",
-    "usual_in": "45.23",
-    "vs_usual": {
-     "diff_in": "8.00",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "10.79",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "34fa5f3cdf1d20a3",
-   "sid": "316853 2",
-   "story": "Through Oct 13, the weather station 5 miles east of Plymouth has caught 37.23 inches, 8.00 inches less than a usual year. July did most of the work with 10.79 inches, and the biggest single day came Jul 29 at 3.10 inches. The gauge went 11 days in a row with nothing from Apr 8 to Apr 18. That puts this year 1.06 inches less than last year at this point.",
    "through": "2026-10-13"
   },
   "37189": {
@@ -5007,65 +4315,6 @@
    "hash": "9d03247ec54d7205",
    "sid": "316256 2",
    "story": "Through Oct 13, the weather station in North Wilkesboro had its wettest month in August, with 8.77 inches. The biggest single day was Oct 11, with 3.10 inches in the gauge. On the days both years reported, 2026 is 3.82 inches more than 2025.",
-   "through": "2026-10-13"
-  },
-  "37195": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 23",
-     "in": "2.12",
-     "label": "biggest single day"
-    },
-    "county": "Wilson County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "2 miles from the middle of the county",
-    "gauge_where": "3 miles southwest of Wilson",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "5.45",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "33.51",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 19,
-     "from": "Apr 6",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 24"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 67,
-    "state": "North Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "28.06",
-    "usual_in": "41.70",
-    "vs_usual": {
-     "diff_in": "13.64",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "8.17",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "44cfa11edfeca14d",
-   "sid": "319476 2",
-   "story": "Through Oct 13, the weather station 3 miles southwest of Wilson has caught 28.06 inches, 13.64 inches less than a usual year. July did most of the work with 8.17 inches, and the biggest single day came Jul 23 at 2.12 inches. The gauge went 19 days in a row with nothing in it, not even a trace, from Apr 6 to Apr 24. That leaves this year 5.45 inches behind last year to the same day.",
    "through": "2026-10-13"
   },
   "37197": {

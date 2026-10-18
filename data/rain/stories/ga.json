@@ -1,65 +1,6 @@
 {
  "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
  "counties": {
-  "13007": {
-   "facts": {
-    "biggest_day": {
-     "date": "May 22",
-     "in": "2.42",
-     "label": "biggest single day"
-    },
-    "county": "Baker County",
-    "days_in_year_so_far": 283,
-    "days_missing": 5,
-    "days_reported": 278,
-    "gauge": "weather station",
-    "gauge_from_middle": "2 miles from the middle of the county",
-    "gauge_where": "8 miles west of Newton",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 278,
-      "diff_in": "11.23",
-      "dir": "more",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 10",
-     "total_in": "29.65",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 12,
-     "from": "Mar 21",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 1"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 97,
-    "state": "Georgia",
-    "through": "Oct 10",
-    "through_iso": "2026-10-10",
-    "total_in": "40.84",
-    "usual_in": "41.98",
-    "vs_usual": {
-     "diff_in": "1.14",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "10.97",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "55dbcb6c64543802",
-   "sid": "63828 1",
-   "story": "Through Oct 10, the weather station 8 miles west of Newton had most of its year come in May, with 10.97 inches that month. The biggest single day was May 22 at 2.42 inches. Earlier on, the gauge went 12 days in a row with nothing from Mar 21 to Apr 1. On the days both years reported, this year is 11.23 inches more than 2025.",
-   "through": "2026-10-10"
-  },
   "13009": {
    "facts": {
     "biggest_day": {
@@ -3152,61 +3093,6 @@
    "story": "Through Oct 13, the volunteer rain gauge 6.8 miles east-northeast of Macon has caught 35.52 inches, 4.35 inches less than a usual year. July was the wettest month at 5.76 inches, and the biggest one-day reading was 2.80 inches on Aug 7. The gauge went 22 days in a row with nothing in it, from Apr 7 to Apr 28. On the days both years reported, that is 7.15 inches less than last year.",
    "through": "2026-10-13"
   },
-  "13173": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 1",
-     "in": "1.74",
-     "label": "biggest single day"
-    },
-    "county": "Lanier County",
-    "days_in_year_so_far": 286,
-    "days_missing": 17,
-    "days_reported": 269,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "5 miles from the middle of the county",
-    "gauge_where": "4.8 miles west of Lakeland",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 260,
-      "diff_in": "3.20",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 11,
-     "through": "Oct 13",
-     "total_in": "38.91",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 9,
-     "from": "Mar 26",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 3"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": null,
-    "state": "Georgia",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "35.96",
-    "usual_in": null,
-    "vs_usual": null,
-    "wettest_month": {
-     "in": "10.24",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "7847f8c67dfffd85",
-   "sid": "US1GALN0003 6",
-   "story": "Through Oct 13, the volunteer rain gauge 4.8 miles west of Lakeland had 35.96 inches. May did most of the work at 10.24 inches, the wettest month. The biggest single day was Jun 1 with 1.74 inches. On the days both years reported, this year is 3.20 inches less than last year.",
-   "through": "2026-10-13"
-  },
   "13175": {
    "facts": {
     "biggest_day": {
@@ -4434,65 +4320,6 @@
    "story": "Through Oct 11, the volunteer rain gauge less than a mile south-southeast of Newington has caught 23.85 inches, 17.78 inches less than a usual year. June was the wettest month at 4.96 inches, and the biggest single day was 1.72 inches on Aug 2. The gauge went 19 days in a row with nothing in it, not even a trace, from Apr 7 to Apr 25. On the days both years reported, that is 13.62 inches less than last year.",
    "through": "2026-10-11"
   },
-  "13253": {
-   "facts": {
-    "biggest_day": {
-     "date": "Oct 6",
-     "in": "6.80",
-     "label": "biggest single day"
-    },
-    "county": "Seminole County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "11 miles from the middle of the county",
-    "gauge_where": "17.7 miles south of Donalsonville",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 281,
-      "diff_in": "20.74",
-      "dir": "more",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 5,
-     "through": "Oct 13",
-     "total_in": "35.12",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 18,
-     "from": "Apr 8",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 25"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 119,
-    "state": "Georgia",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "56.06",
-    "usual_in": "47.18",
-    "vs_usual": {
-     "diff_in": "8.88",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "13.84",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "c050121910d1af72",
-   "sid": "US1GASM0002 6",
-   "story": "Through Oct 13, the volunteer rain gauge 17.7 miles south of Donalsonville has caught 56.06 inches, 8.88 more than a usual year. May did most of the work at 13.84 inches, and the biggest single day came late, 6.80 inches on Oct 6. On the days both years reported, that is 20.74 inches more than last year. The longest dry stretch ran 18 days, Apr 8 to Apr 25.",
-   "through": "2026-10-13"
-  },
   "13255": {
    "facts": {
     "biggest_day": {
@@ -4811,65 +4638,6 @@
    "sid": "US1GATE0004 6",
    "story": "Through Oct 11, the volunteer rain gauge 6.6 miles southeast of Mcrae had May as its wettest month at 10.30 inches. The biggest single day came Jun 20 with 2.57 inches. The longest dry stretch ran 15 days, Mar 18 to Apr 1, with nothing in the gauge. That puts the year 1.95 inches more than last year at this point.",
    "through": "2026-10-11"
-  },
-  "13275": {
-   "facts": {
-    "biggest_day": {
-     "date": "May 13",
-     "in": "3.96",
-     "label": "biggest single day"
-    },
-    "county": "Thomas County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "4 miles from the middle of the county",
-    "gauge_where": "5.1 miles east-southeast of Thomasville",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "13.05",
-      "dir": "more",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "32.59",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 11,
-     "from": "Mar 18",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Mar 28"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 104,
-    "state": "Georgia",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "45.64",
-    "usual_in": "44.03",
-    "vs_usual": {
-     "diff_in": "1.61",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "10.65",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "20509c1986d557dc",
-   "sid": "US1GATH0004 6",
-   "story": "Through Oct 13, the volunteer rain gauge 5.1 miles east-southeast of Thomasville had caught 13.05 inches more than it had by the same day in 2025. May did most of the work, the wettest month at 10.65 inches, and May 13 alone brought 3.96 inches, the biggest single day. The longest dry stretch ran 11 days, Mar 18 to Mar 28, with nothing in the gauge.",
-   "through": "2026-10-13"
   },
   "13277": {
    "facts": {

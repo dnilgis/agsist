@@ -1,0 +1,173 @@
+{
+ "about": "Pointer pages left where a generated page dropped out of its set (scripts/pointer_pages.py). path: file; to: where it sends readers; since: date retired.",
+ "pointers": {
+  "cash-bids/indiana/ladoga.html": {
+   "to": "/cash-bids/indiana/",
+   "since": "2026-10-16"
+  },
+  "cash-bids/montana/circle.html": {
+   "to": "/cash-bids/montana/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/avoca.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/bellwood.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/bennet.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/brainard.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/bruno.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/burr.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/cedar-bluffs.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/ceresco.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/cook.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/duncan.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/dwight.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/eagle.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/elk-creek.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/elmwood.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/greenwood.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/manley.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/mead.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/murdock.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/nebraska-city.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/north-bend.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/osceola.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/otoe.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/palmyra.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/plattsmouth.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/prague.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/schuyler.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/silver-creek.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/syracuse.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/tecumseh.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/walton.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/waverly.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/weston.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/north-dakota/bottineau.html": {
+   "to": "/cash-bids/north-dakota/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/north-dakota/kramer.html": {
+   "to": "/cash-bids/north-dakota/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/north-dakota/lansford.html": {
+   "to": "/cash-bids/north-dakota/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/north-dakota/newburg.html": {
+   "to": "/cash-bids/north-dakota/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/north-dakota/souris.html": {
+   "to": "/cash-bids/north-dakota/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/north-dakota/westhope.html": {
+   "to": "/cash-bids/north-dakota/",
+   "since": "2026-10-13"
+  },
+  "cash-bids/ohio/saint-marys.html": {
+   "to": "/cash-bids/ohio/",
+   "since": "2026-10-15"
+  },
+  "cash-bids/wisconsin/ixonia.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-10-10"
+  }
+ }
+}

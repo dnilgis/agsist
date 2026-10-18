@@ -1,0 +1,68 @@
+{
+ "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
+ "items": [
+  {
+   "id": "2026-10-18-menu",
+   "date": "2026-10-18",
+   "title": "New menu and ZIP chip",
+   "line": "The menu is now Prices, Livestock, Field, Money & Land and Daily. Save your ZIP once and the header chip takes you to bids near your town.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-10-18-stories",
+   "date": "2026-10-18",
+   "title": "County stories",
+   "line": "Short written stories on 2,632 county rain pages, 2,876 PRF county pages and 2,902 Farmland Atlas county pages, each dated and checked against our numbers.",
+   "link": "/rain"
+  },
+  {
+   "id": "2026-10-18-glossary",
+   "date": "2026-10-18",
+   "title": "Glossary",
+   "line": "27 market and farm program terms in plain words. A dotted underline on a page opens the short meaning.",
+   "link": "/glossary"
+  },
+  {
+   "id": "2026-10-18-photos",
+   "date": "2026-10-18",
+   "title": "Real Rain Print photos",
+   "line": "The Rain Print pages now show photos of real framed prints.",
+   "link": "/rain-print"
+  },
+  {
+   "id": "2026-10-18-states",
+   "date": "2026-10-18",
+   "title": "Bids by state",
+   "line": "Every state with cash bids on one page, with the towns and elevators in each.",
+   "link": "/cash-bids/states"
+  },
+  {
+   "id": "2026-10-18-elevators",
+   "date": "2026-10-18",
+   "title": "More elevators",
+   "line": "Cash bids now come from 1,869 elevator locations, up from 1,763 on Oct 16.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-10-18-prf-email",
+   "date": "2026-10-18",
+   "title": "PRF grid index email",
+   "line": "Pick your PRF grid and get an email when its rainfall index posts.",
+   "link": "/prf"
+  },
+  {
+   "id": "2026-10-17-sale-barns",
+   "date": "2026-10-17",
+   "title": "More sale barns",
+   "line": "88 sale barns from USDA reports plus 20 read from their own reports, including Premier Livestock in Withee, WI.",
+   "link": "/cattle-auction-prices"
+  },
+  {
+   "id": "2026-10-17-rain-year-email",
+   "date": "2026-10-17",
+   "title": "January county rain total email",
+   "line": "On any county rain page, ask for that county's full-year rain total by email in January.",
+   "link": "/rain"
+  }
+ ]
+}

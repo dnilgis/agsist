@@ -49,6 +49,7 @@ test("every shipped county page is small and has its answer in the HTML", () => 
     for (const f of readdirSync(dir + "/" + st)) {
       const rel = `rain/${st}/${f}`;
       const html = readFileSync(ROOT + rel, "utf8");
+      if (html.includes('name="agsist-pointer"')) continue;   // a county that left the data (test/pointer-pages.test.mjs)
       assert.ok(html.length < 25 * 1024, rel + " is over 25 KB");
       assert.match(html, /<p class="rc-answer"><b>\d+\.\d\d inch(es)?<\/b> of rain/, rel + " has no answer up top");
       assert.ok(!html.includes("—") && !html.includes("&mdash;"), rel + " has an em dash");

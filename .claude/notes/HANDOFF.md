@@ -1,4 +1,4 @@
-# AGSIST handoff: start here (updated Oct 16, 2026)
+# AGSIST handoff: start here (updated Oct 18, 2026, evening)
 
 Read this, then `.claude/notes/STANDING-DECISIONS.md` (Sig's rules), then `CLAUDE.md` (the 1 GB / 150 KB page budget).
 This file is public (the repo and Pages serve it). Nothing private goes in it.
@@ -15,10 +15,15 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
 2. Changed a component's JS or CSS? Bump its `?v=` everywhere it loads AND `sw.js` CACHE_VERSION (+1, with a note).
    Menu or footer change: also `CV` in components/loader.js. Rain Print engine: the ENGINE pin in
    components/rain-county-print.js must match (a test checks), then bump its ?v= in scripts/build_county_rain.py and rebuild county pages.
-3. `scripts/dev/checks.sh` must print `FAILS=0`. Never push on a fail, never weaken a test.
+3. `scripts/dev/checks.sh` must print `FAILS=0`. Never push on a fail, never weaken a test. Use a SHORT TMPDIR
+   (`TMPDIR=/tmp/ld/ckNN`): Chromium crashes at launch under the long scratchpad path. Read EVERY failure, nested subtests too:
+   `grep -E "^\s*not ok" $TMPDIR/agsist-checks/nt.out` (Oct 18: a top-level-only grep hid two real failures). Known flaky under load,
+   rerun alone: rain-print-buy-path "review sheet keeps the tick", fresh-visitor, gdu-calculator-h2h, nav-full-oct18.
+   New data files change data/feeds.json: rebuild it (`python3 scripts/build_feeds.py`) and commit, or feeds-guard fails.
 4. `scripts/dev/push.sh <working-branch>` pushes to main (merges are authorized) and mirrors the working branch.
-- Workflows: dispatch with the REST API (`gh workflow` uses GraphQL and is blocked):
+- Workflows: `gh workflow run <file>.yml -R dnilgis/agsist --ref main -f x=y` works (Oct 18). Fallback, the REST API:
   `gh api -X POST repos/dnilgis/agsist/actions/workflows/<file>.yml/dispatches -f ref=main [-F 'inputs[x]=y']`.
+  land-data.yml has one concurrency slot: a second dispatch while one runs replaces any pending one. Queue them one at a time.
   Read results through annotations: `gh api repos/dnilgis/agsist/check-runs/<job id>/annotations`.
 - The sandbox cannot reach USDA, RMA, NOAA (RCC-ACIS) or most co-op sites. GitHub runners can: fetch there.
 - Helpers: write a brief file first (rules in `.claude/notes/helper-rules.md`), one helper per worktree, never two in the same one.
@@ -149,3 +154,45 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
   basis history B2B (check DTN/Barchart redistribution terms first); county risk sheet (drought ~doubles crop insurance loss ratio,
   60,859 county-years). Elevators need FIPS + permanent IDs for data joins. Sig asked to start: awaiting his go.
 - Bids repo: coverage1 (+26 boards, 16 WI) and elevsites merged; capture/dtn-probe/discover dispatched Oct 18.
+
+## State on Oct 18 (evening, cache v179, loader CV 64)
+- Live today, on top of the night list above:
+  - Footer on one six-column grid (scripts/dev/nav/gen_nav.py). New bottom line wording: "Data refreshed through the trading session.
+    For information, not financial advice. Where the numbers come from" (Sig has not checked it yet).
+  - Next block as cards; each page reads only data/next/<path>.json (scripts/build_next_links.py --check). glossary.js loads on idle.
+  - Homepage "What's new" card baked from data/whats-new.json (scripts/build_whats_new.py --check); add an entry per launch.
+  - Field Scout: sale detail panel (location, owners, everything we have), sales in the printed parcel report, "On and Around This Field"
+    card (field-scout-layers.js: soil, FEMA flood, NWI wetlands, 3DEP slope, feedlots, OSM power lines, USGS wind/solar, NCED easements).
+    The layer services were never seen answering from the sandbox: land-data.yml task=layers-discover ran Oct 18 (raw branch);
+    swap the saved answers in as fixtures and fix any field names that are off (feedlot size, NCED holder, USPVDB path).
+  - Free comp report: comp-report.html (noindex, one shared page, query params), buttons in Field Scout. Owner, soil and crop history
+    were not reachable from the sandbox: check them on the live site. Pitch to appraisers / Farm Credit / lenders for links.
+  - Indiana land sales live (Sig, Oct 18: public record, names in Field Scout and the comp report only, never indexed pages):
+    31,528 farm sales 10+ acres, 92 counties, filed 2022-2026 (data/land/in). A refused yearly file is now skipped, not fatal.
+    Illinois 65,727. MN still request-only (eCRV email).
+  - About page rewritten in Sig's voice: who pays for it ("The monthly bill has a comma in it"), the old Amish schoolhouse, ways to help.
+    Sig removed the truck-payment line. Keep the comma line only while it is true.
+  - Titles/descriptions rewritten for low-click searches (fx/ctr1: cash bids, bin calculator, yield calculator, rent hub + 47 state rent
+    titles with the median, hail map). Re-measure clicks in Search Console around Nov 15.
+  - Pointer pages: a generated page that drops out of its set leaves a ~650-byte noindex page that forwards to its state page
+    (scripts/pointer_pages.py, manifests data/pointers/<set>.json, check_seo.py holds them to hard rules). 91 backfilled.
+  - Accuracy sets fixes (fx/accsetsfix): ~98 of 138 leads real, fixed at the builders/validators; dropped 431 rain, 52 Atlas, 40 PRF
+    stories that failed the stricter validators (no new spend). Six pages had no usable answer (max_tokens), not rerun.
+  - Sponsor report job was red Oct 18 04:49-17:30 (two sponsor checks still expected the old footer). Fixed; checks.sh now runs
+    sponsor-checks.mjs, test_sponsor_portal.py and test_rate_card.py.
+- Search Console (Oct 11 export): 3,076 indexed, 4,830 "Discovered, not indexed" (crawl budget: links and internal links fix it),
+  176 crawled not indexed. Google clicks per 28 days: 54 (May) -> 722 (Aug) -> 1,313 (Sep) -> 2,080 (Oct 15). Bing ~2,400 steady.
+  ~20 referring domains (Teucrium, MSN, The Combine Forum, Farmonaut, Landcore, HN); links are the main lever.
+- Subscribers 146 on Oct 18 (flat today).
+- API spend this chat, about $142 (credits: $99 expiring Oct 28 is used; the rest comes out of the $172 expiring Nov 19).
+  Research round 2 outputs on raw: apijobs/elevsites-2026-10-r2 (439-company to-do), apijobs/schedules-2026-10 (111 shrink/drying/storage
+  schedules from 53 elevators, quotes verified), apijobs/landsrc-2026-10 (county sale sources: weak, 6 of 702).
+- Not built / open, carry forward:
+  - dnilgis/bids: "Sept Oct Nov 26" delivery period is read as 2027 (bug in the bids reader).
+  - Net elevator price tool (the schedules data is now there) and county risk sheet: strategy ideas, awaiting Sig's go.
+  - Oct 24: ask Sig about fact-check block mode (evidence: Oct 18 Daily said "Friday's (Oct 23) $227.55 close", the session was Oct 16).
+    A correction line for that slip was suggested, not yet run.
+  - Monthly story refresh around Nov 15 (rain, PRF, Atlas, towns, co-ops).
+  - Rain Print: matted test prints Monday Oct 19; Stripe promotion code for the letter line; gauge "hose clamps vs clips" wording.
+  - Westfield / ZIP 44410 check Mon Oct 19. Barchart device token (~120 elevators). MN eCRV email. Nebraska fee file. California rent.
+  - Gift guide press packet (offered). Comp report pitch email + contact list (offered).

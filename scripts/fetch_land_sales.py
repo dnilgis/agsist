@@ -19,10 +19,17 @@ Sources (free and public only; a state is built only once its files read cleanly
       then --from DIR/build WI builds. Grantor and grantee names are in the public file.
   MN  Minnesota Department of Revenue, eCRV. The bulk Weekly Sales Extract is sent only
       on request; not built.
-  Probe only (Oct 18; saved by --probe, no parser until the saved columns are read):
   IN  Indiana sales disclosure forms (Department of Local Government Finance), yearly ZIP
       files of five tab-delimited tables on STATS Indiana (Indiana Business Research Center),
-      the current year cumulative and refreshed weekly. Free, no login.
+      the current year cumulative and refreshed weekly. Free, no login. The newest six years
+      (2021 on, the current layout); farm forms only (a parcel in class 100 to 199); forms with no
+      valuable consideration, trades, partial interests, charity or government transfers and
+      short sales left out; quitclaims, sheriff sales, court orders, partitions, easements and
+      family discounts kept and named so the land card's market-sale test leaves them out of comps.
+      Buyer and seller names from the contact table (never the preparer, an address or a phone).
+      Towns are the parcel's postal city, placed at its ZIP's Census centroid (in_places).
+      Kept under 8 MB (data/ is near its budget): 10+ acre sales first, then the oldest year.
+  Probe only (Oct 18; saved by --probe, no parser until the saved columns are read):
   IA  Scott County Assessor's agricultural sales list (Excel), one county.
   SD  County Directors of Equalization that post yearly ag sales lists (Douglas, Gregory).
   OH  County auditor sales reports (Pickaway), one county at a time.
@@ -112,13 +119,17 @@ STATES = {
 STATES.update({
     "IN": {
         "name": "Indiana", "fips": "18",
-        "probe_only": "the sales disclosure files are saved by --probe; the five-table layout (SALEDISC, SALEPARCEL, ...) is joined only once the saved columns and the metadata workbook are read",
+        # Built (Oct 18): in_table joins SALEDISC, SALEPARCEL and SALECONTAC, read against the saved SDF_2026.zip.
         "source": "Indiana Department of Local Government Finance, sales disclosure forms, from STATS Indiana (Indiana Business Research Center)",
         "short": "Indiana sales disclosure",
         "pages": ["https://www.stats.indiana.edu/topic/sdf.asp"],
-        "links": [{"t": "Indiana sales disclosure data (STATS Indiana)", "url": "https://www.stats.indiana.edu/topic/sdf.asp"}],
-        "since_note": "Indiana's sales disclosure data starts in the late 1990s; older sales are with the county assessor.",
-        "terms": "free download, no login; publisher terms not read yet",
+        "links": [{"t": "Indiana sales disclosure data (STATS Indiana)", "url": "https://www.stats.indiana.edu/topic/sdf.asp"},
+                  {"t": "Indiana DLGF sales disclosure search", "url": "https://www.in.gov/dlgf/assessments/sales-disclosure-form-information/"}],
+        "since_note": "Our Indiana copy starts with 2021 forms (STATS Indiana's current file layout); older forms are in its legacy files and at the county assessor.",
+        "terms": "free download, no login; STATS Indiana says the data are made available for research through a DLGF and IBRC partnership; no written reuse terms found (not checked from here: the sandbox cannot open the site)",
+        # data/ has its 300 MB budget (264 MB published on Oct 18): Indiana's files stay under 8 MB, trimmed
+        # like Wisconsin (10+ acre sales first, then the oldest filing year) when they would not fit.
+        "max_mb": 8,
     },
     "IA": {
         "name": "Iowa", "fips": "19",
@@ -145,10 +156,60 @@ STATES.update({
         "links": [],
         "terms": "county public pages; terms not read yet",
     },
+    # Phase 1 of nationwide coverage (Oct 18): statewide free files named by state agencies, saved by
+    # the probe so each layout and its terms are read before a parser exists. Farm acres order.
+    "FL": {
+        "name": "Florida", "fips": "12",
+        "probe_only": "Florida DOR's Sale Data File (SDF) and NAL roll, one file per county; saved to read the layout (land use codes 50 to 69 are agricultural) first",
+        "source": "Florida Department of Revenue, Property Tax Oversight, Sale Data File", "short": "Florida sale data file",
+        "pages": ["https://floridarevenue.com/property/Pages/DataPortal_RequestAssessmentRollGISData.aspx"],
+        "links": [], "terms": "public data portal; confidential owners removed by the state; terms not read yet",
+    },
+    "NY": {
+        "name": "New York", "fips": "36",
+        "probe_only": "ORPTS SalesWeb (RP-5217 transfer reports, outside New York City), ten years, downloadable per search; saved to read whether a bulk file exists and its terms",
+        "source": "New York State Office of Real Property Tax Services, SalesWeb (Form RP-5217)", "short": "New York RP-5217 sale",
+        "pages": ["https://www.tax.ny.gov/research/property/assess/sales/salesweb.htm"],
+        "links": [], "terms": "state public search; bulk download not confirmed; terms not read yet",
+    },
+    "MD": {
+        "name": "Maryland", "fips": "24",
+        "probe_only": "SDAT sales as published by the Maryland Department of Planning (parcel data and sales, GIS format); saved to read the layout first",
+        "source": "Maryland Department of Planning, parcel and sales data from SDAT", "short": "Maryland SDAT sale",
+        "pages": ["https://planning.maryland.gov/MSDC/Pages/91_property_mapping/parcel-data.aspx"],
+        "links": [], "terms": "state public data; terms not read yet",
+    },
+    "VT": {
+        "name": "Vermont", "fips": "50",
+        "probe_only": "Vermont Department of Taxes weekly property transfer tax return data (last five years, new layout since 2020); saved to read the layout first",
+        "source": "Vermont Department of Taxes, property transfer tax returns", "short": "Vermont transfer tax return",
+        "pages": ["https://tax.vermont.gov/data-and-statistics/ptt"],
+        "links": [], "terms": "state public data; the weekly file is linked from the state's page; terms not read yet",
+    },
+    "NJ": {
+        "name": "New Jersey", "fips": "34",
+        "probe_only": "Division of Taxation SR-1A sales file (fixed width, layout published); saved to find the file and read the layout first",
+        "source": "New Jersey Division of Taxation, SR-1A sales data", "short": "New Jersey SR-1A sale",
+        "pages": [],
+        "links": [], "terms": "layout public; where the data file is posted not confirmed; terms not read yet",
+    },
+    "CT": {
+        "name": "Connecticut", "fips": "09",
+        "probe_only": "OPM Real Estate Sales listing on data.ct.gov (sales of $2,000 or more since 2001, by grand list year); no farm class or acres, so likely vacant land only; saved to read the columns first",
+        "source": "Connecticut Office of Policy and Management, Real Estate Sales", "short": "Connecticut real estate sale",
+        "pages": [], "links": [], "terms": "state open data portal; license not given on the catalog listing",
+    },
 })
 PROBE_ONLY_DOCS = {
     "IN": ["https://www.in.gov/dlgf/assessments/sales-disclosure-form-information/"],
     "NE": ["https://revenue.nebraska.gov/sites/default/files/doc/legal/regs/pad/Chapter12_Sales_File.pdf"],
+    "IN": ["https://www.stats.indiana.edu/about/sdf.asp"],
+    "FL": ["https://floridarevenue.com/property/dataportal/Documents/PTO%20Data%20Portal/User%20Guides/2026%20Users%20guide%20and%20quick%20reference/2026_NAL_SDF_NAP_Users_Guide.pdf"],
+    "NY": ["https://www.tax.ny.gov/pdf/ORPTS/SalesDataFlowchartHandout.pdf",
+           "https://data.ny.gov/api/catalog/v1?q=real%20property%20sales&limit=20"],
+    "MD": ["https://opendata.maryland.gov/api/catalog/v1?q=sales&limit=20"],
+    "NJ": ["https://nj.gov/treasury/taxation/pdf/lpt/SR1Afilelayout.pdf"],
+    "CT": ["https://data.ct.gov/api/catalog/v1?q=real%20estate%20sales&limit=20"],
 }
 
 # Column names seen on state transfer files, compared with letters and digits only. The first
@@ -178,6 +239,8 @@ COLS = {
     "ac1": ["ACRESLINE1"],
     # Wisconsin: the sum of every parcel's acres above zero, used only to trim to 10+ acre sales (never published)
     "acany": ["ACRESANYPARCEL"],
+    # Indiana: the parcel's postal ZIP, used only to place its town (in_places)
+    "zip": ["ZIP"],
     "exempt": ["EXEMPTION", "EXEMPTIONNUMBER", "EXEMPTNUMBER", "FEEEXEMPT", "EXEMPTIONCODE", "TRANSFERFEEEXEMPTION", "TRANSFEREXEMPTIONNUMBER"],
 }
 WI_CONVEYANCE = {"1": "Warranty Deed", "2": "Land Contract", "3": "Quit Claim Deed", "4": "Other"}
@@ -367,6 +430,7 @@ def parse_rows(tables):
                 "ac1": parse_num(g("ac1")) if "ac1" in m else None,
                 "acany": parse_num(g("acany")) if "acany" in m else None,
                 "exempt": 1 if ex and not re.match(r"^(0|N|NO|NONE|FALSE)$", ex, re.I) else 0,
+                "zip": g("zip", 5) if "zip" in m else None,
             })
     return recs, rep
 
@@ -509,8 +573,9 @@ def build(st, recs, gaz, now, prior=None, months=None):
         total += len(s)
         files.append((fips, s))
         index.append({"fips": fips, "name": c["name"], "lat": c["lat"], "lng": c["lng"], "n": len(rs), "from": rs[-1]["date"], "to": rs[0]["date"]})
-    if total > MAX_STATE_MB * 1048576:
-        raise OverCap("%s: %.1f MB of county files, over the %d MB cap; not written (raise it in this file on purpose)" % (st, total / 1048576, MAX_STATE_MB))
+    cap = min(MAX_STATE_MB, cfg.get("max_mb") or MAX_STATE_MB)
+    if total > cap * 1048576:
+        raise OverCap("%s: %.1f MB of county files, over the %d MB cap; not written (raise it in this file on purpose)" % (st, total / 1048576, cap))
     os.makedirs(os.path.join(OUT, st.lower()), exist_ok=True)
     for fips, s in files:
         with open(os.path.join(OUT, st.lower(), fips + ".json"), "w") as f:
@@ -669,7 +734,7 @@ def probe(states):
                     J = json.loads(blob)
                     for r in (J.get("results") or [])[:40] if isinstance(J, dict) else []:
                         R = r.get("resource") or {}
-                        if re.search(r"PTAX|MyDec|Transfer Declaration", R.get("name") or "", re.I):
+                        if re.search(r"PTAX|MyDec|Transfer Declaration|Real Estate Sales|Property Sales|Sales|Transfer", R.get("name") or "", re.I):
                             log.append("  dataset %s %r updated %s; %d columns" % (R.get("id"), R.get("name"), R.get("data_updated_at"), len(R.get("columns_field_name") or [])))
                     if isinstance(J, dict) and J.get("columns"):            # a Socrata view: every column
                         log.append("  columns: " + " ".join("%s(%s)" % (c.get("fieldName"), c.get("dataTypeName")) for c in J["columns"]))
@@ -796,6 +861,264 @@ def fetch_il():
 
 # ── Wisconsin eRETR XML (DOR's "Real Estate Historical Data" monthly report) ──────────────
 # Codes are DOR's own, from the report's schema (MTA_RETR_Export.xsd, Aug 6, 2026).
+# ── Indiana sales disclosure forms (DLGF, on STATS Indiana) ─────────────────────────────────
+# Read against the saved SDF_2026.zip (raw branch, Oct 18 probe) and its SDF_File_Parsing_MetaData.xlsx:
+# five tab-delimited tables, double quotes around every field; SALEDISC and SALECONTAC are UTF-16,
+# SALEPARCEL is a one-byte code page. SALEDISC is one row per form (SDF_ID), SALEPARCEL one row per
+# parcel on it, SALECONTAC the buyer (B), seller (S) and preparer (P). Money is "Format 12.2" with the
+# decimal point left out (E1_Sales_Price 76000000 is $760,000.00; the state disclosure fee, $20,
+# reads 2000) and acres are "Format 8.4" the same way (P2_9_Acreage 358100 is 35.81 acres). in_scale
+# checks both on every file before a number is written. Property class codes (CODELIST 1):
+# 100 to 199 agricultural (120 timber), 3xx industrial, 4xx commercial, 5xx residential.
+IN_PAGE = "https://www.stats.indiana.edu/topic/sdf.asp"
+IN_YEARS = 6            # SDF_<year>.zip files in the 2021-on layout: the current year and the five before it
+IN_ZCTA = "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2024_Gazetteer/2024_Gaz_zcta_national.zip"
+IN_NEED = {"SALEDISC": ["SDF_ID", "County_Name", "B1_Valuable_Consider", "C7_Conveyance_Date", "E1_Sales_Price", "E2_PersProp",
+                        "P3_1_Disclosure_Fee", "P3_7_Fee_Collected", "P2_14_Date_Received"],
+           "SALEPARCEL": ["SDF_ID", "A1_Parcel_Number", "P2_6_Prop_Class_Code", "P2_9_Acreage", "A4_Improvement", "A5_City", "A5_ZipCode",
+                          "A7_Legal_Description"],
+           "SALECONTAC": ["SDF_ID", "Contact_Type", "Name", "Company"]}
+
+
+def in_text(blob):
+    if blob[:2] in (b"\xff\xfe", b"\xfe\xff"):
+        return blob.decode("utf-16")
+    if blob[:3] == b"\xef\xbb\xbf":
+        return blob[3:].decode("utf-8")
+    return blob.decode("cp1252", errors="replace")
+
+
+def in_tables(blob):
+    """{table name: list of dict rows} out of one SDF_<year>.zip (only the three tables we read)."""
+    z = zipfile.ZipFile(io.BytesIO(blob))
+    out = {}
+    for n in z.namelist():
+        t = os.path.splitext(os.path.basename(n))[0].upper()
+        if t in IN_NEED:
+            rd = csv.DictReader(io.StringIO(in_text(z.read(n)), newline=""), delimiter="\t")
+            out[t] = list(rd)
+            miss = [c for c in IN_NEED[t] if c not in (rd.fieldnames or [])]
+            if miss:
+                raise ValueError("%s: columns not found by name: %s" % (n, ", ".join(miss)))
+    for t in IN_NEED:
+        if t not in out:
+            raise ValueError("table %s not in the file" % t)
+    return out
+
+
+def in_scale(T):
+    """The implied decimals, checked on the file itself, or a reason to refuse it. The state fee is
+    $20 on every form that owes it, so the fee column's most common value is 2000 when two decimals
+    are left out; farm parcels run a few acres to a few hundred, so their median raw acreage sits
+    between 10,000 and 3,000,000 when four are."""
+    fees = {}
+    for d in T["SALEDISC"]:
+        if d.get("P3_7_Fee_Collected") == "Y":
+            fees[d.get("P3_1_Disclosure_Fee")] = fees.get(d.get("P3_1_Disclosure_Fee"), 0) + 1
+    top = max(fees, key=fees.get) if fees else None
+    if top != "2000" or fees[top] < 0.8 * sum(fees.values()):
+        n = sum(fees.values())
+        return "the disclosure fee does not read as $20 in cents (of %d forms: %s)" % (
+            n, ", ".join("%r %.0f%%" % (k, 100.0 * v / n) for k, v in sorted(fees.items(), key=lambda kv: -kv[1])[:4]))
+    ac = sorted(v for v in (parse_num(p.get("P2_9_Acreage")) for p in T["SALEPARCEL"] if re.match(r"^1\d\d$", p.get("P2_6_Prop_Class_Code") or "")) if v)
+    if len(ac) < 5 or not (10000 <= ac[len(ac) // 2] <= 3000000):
+        return "farm parcel acres do not read as four implied decimals (%d parcels, median %s)" % (len(ac), ac[len(ac) // 2] if ac else None)
+    return None
+
+
+def in_class(code, improved):
+    """Indiana class code as the land card's classes: farm 4, timber 6, farm buildings 7 (an improved
+    farm parcel), and 1, 2, 3 for residential, commercial, industrial parcels on the same form."""
+    c = (code or "").strip()
+    if not re.match(r"^\d\d\d$", c):
+        return None
+    if c[0] == "1":
+        return ["6" if c == "120" else "4"] + (["7"] if improved else [])
+    return [{"5": "1", "4": "2", "3": "3"}.get(c[0])] if c[0] in "345" else None
+
+
+def in_county(d, names):
+    """The county by its state number (County_ID, 01 Adams to 92 Whitley, alphabetical), whose FIPS
+    code is 18000 + 2n - 1; the typed County_Name varies ("Carrol", "BOONE COUNTY")."""
+    cid = (d.get("County_ID") or "").strip()
+    if not re.match(r"^\d{1,2}$", cid) or not 1 <= int(cid) <= 92 or (d.get("SDF_ID") or "")[1:3] not in (cid.zfill(2), ""):
+        return None
+    return names.get("18%03d" % (2 * int(cid) - 1))
+
+
+def in_county_check(T, names):
+    """Refuse a file whose county numbers do not agree with its county names on almost every form."""
+    n = ok = 0
+    for d in T["SALEDISC"]:
+        c = in_county(d, names)
+        nm = key(re.sub(r"\s+COUNTY$", "", (d.get("County_Name") or "").upper()))
+        if nm:
+            n += 1
+            ok += bool(c) and (key(c) == nm or key(c)[:5] == nm[:5])
+    return None if n and ok >= 0.95 * n else "county numbers and names disagree on %d of %d forms" % (n - ok, n)
+
+
+def in_conv(d):
+    """What kind of sale the form says it was, in the words the land card's market-sale test reads
+    (quitclaim, sheriff, foreclosure, partition, easement and related-party sales are not comps)."""
+    y = lambda k: (d.get(k) or "").strip().upper() == "Y"
+    bits = ["Quitclaim Deed" if y("C3_Quitclaim") else "Sale"]
+    for k, w in (("B5_Land_Contract", "Land Contract"), ("C4_Auction", "Auction"), ("B2_Buyer_Adjacent", "Buyer Owns Adjacent Land"),
+                 ("C1_Sheriff_Sale", "Sheriff Or Tax Sale"), ("B8_Court_Order", "Court Order Or Foreclosure"),
+                 ("B9_Partition", "Partition"), ("B7_Easement", "Easement Or Right-Of-Way")):
+        if y(k):
+            bits.append(w)
+    if (parse_num(d.get("E4_Relationship_Discount")) or 0) > 0:
+        bits.append("Related Parties")
+    return ", ".join(bits)
+
+
+def in_drop(d):
+    """Forms that are not a sale of a whole property for money, left out of Indiana's files:
+    no valuable consideration (B1), a trade (B4), a partial interest (B6), a transfer to a charity
+    or government (B10), a short sale (C2)."""
+    y = lambda k: (d.get(k) or "").strip().upper() == "Y"
+    if not y("B1_Valuable_Consider"):
+        return "no valuable consideration"
+    for k, w in (("B4_Trade", "trade"), ("B6_Partial_Interest", "partial interest"), ("B10_Charity", "charity or government"), ("C2_Short_Sale", "short sale")):
+        if y(k):
+            return w
+    return None
+
+
+def in_table(files, rep=None):
+    """files: [(name, zip blob)]. One table with our column names, farm forms only: a form is kept
+    when any parcel on it carries an agricultural class (100 to 199). The price is the real estate's:
+    Sales Price less the personal property in it. Acres are the whole form's when every parcel gives
+    its own acres once (no parcel over a section); a form that is one of several for one sale, or any
+    other doubt, leaves them blank and keeps the first parcel's figure as reported. rep counts what
+    was left out and why."""
+    rep = rep if rep is not None else {}
+    head = ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
+            "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED",
+            "ACRESLINE1", "ZIP"]
+    yield head
+    seen = set()
+    names = {v["fips"]: v["name"] for v in county_index("IN").values()}
+    # A yearly file that fails a check is left out and named in rep; the other years still build.
+    # Only when every file is refused is there nothing to build, and that raises.
+    refused = []
+    for name, blob in files:
+        try:
+            T = in_tables(blob)
+            why = in_scale(T) or in_county_check(T, names)
+        except (ValueError, zipfile.BadZipFile) as e:
+            why = str(e)
+        if why:
+            refused.append("%s refused: %s" % (name, why))
+            rep["file refused: %s (%s)" % (name, why)] = 1
+            if len(refused) == len(files):
+                raise ValueError("; ".join(refused))
+            continue
+        par, who = {}, {}
+        for p in T["SALEPARCEL"]:
+            par.setdefault(p["SDF_ID"], []).append(p)
+        for c in T["SALECONTAC"]:
+            if c.get("Contact_Type") in ("B", "S"):
+                nm = clean(c.get("Name") or c.get("Company"), 80)
+                if nm:
+                    who.setdefault((c["SDF_ID"], c["Contact_Type"]), []).append(nm)
+        for d in T["SALEDISC"]:
+            sid = d["SDF_ID"]
+            ps = par.get(sid) or []
+            cls = []
+            for p in ps:
+                for c in in_class(p.get("P2_6_Prop_Class_Code"), (p.get("A4_Improvement") or "").upper() == "Y") or []:
+                    if c and c not in cls:
+                        cls.append(c)
+            if not ({"4", "6"} & set(cls)):
+                rep["not_farm"] = rep.get("not_farm", 0) + 1
+                continue
+            cls.sort(key=lambda c: (c not in ("4", "6"), c))
+            dw = in_drop(d)
+            if dw:
+                rep["dropped " + dw] = rep.get("dropped " + dw, 0) + 1
+                continue
+            if sid in seen:              # a form can come back in a later year's file; one copy
+                continue
+            seen.add(sid)
+            e1, e2 = parse_num(d.get("E1_Sales_Price")), parse_num(d.get("E2_PersProp")) or 0
+            if not e1:     # Section G (commercial and industrial) carries its own price and personal property
+                e1 = parse_num(d.get("G1_Sales_Price"))
+                e2 = (parse_num(d.get("G12_PersProp")) or 0) + (parse_num(d.get("G13_IntangiblePersProp")) or 0)
+            if not e1 or e1 <= 0:
+                rep["dropped no price on the form"] = rep.get("dropped no price on the form", 0) + 1
+                continue
+            price = "%.2f" % ((e1 - min(e2, e1)) / 100.0)
+            county = in_county(d, names)
+            if not county:
+                rep["dropped county number not read"] = rep.get("dropped county number not read", 0) + 1
+                continue
+            pins = [(p.get("A1_Parcel_Number") or "").strip() for p in ps]
+            acs = [parse_num(p.get("P2_9_Acreage")) for p in ps]
+            acs = [a / 10000.0 if a is not None else None for a in acs]
+            n = max(len(ps), int(parse_num(d.get("C9_Num_Parcels")) or 0), 1)
+            several = (d.get("C6_Multiple_Forms") or "").strip().upper() == "Y"
+            sure = (not several and len(ps) == n and all(pins) and len(set(pins)) == len(pins)
+                    and all(a and 0 < a <= 640 for a in acs)
+                    and not (len(acs) > 1 and len(set(acs)) == 1 and acs[0] > 40))   # one tract's figure on every parcel
+            ac = round(sum(acs), 4) if sure else None
+            if several:
+                n = max(n, 2)            # the price may cover parcels on another form: no $/acre
+            first = ps[0] if ps else {}
+            a1 = acs[0] if acs and acs[0] and 0 < acs[0] <= 20000 else None
+            yield [sid, d.get("C7_Conveyance_Date") or d.get("P2_13_Date_Sale") or "", price, "" if ac is None else str(ac), " ".join(cls),
+                   in_conv(d), pins[0] if pins else "", clean(first.get("A5_City"), 40).upper(), county,
+                   clean(first.get("A7_Legal_Description"), LEGAL_MAX), "; ".join(who.get((sid, "S"), [])), "; ".join(who.get((sid, "B"), [])),
+                   "", str(n), d.get("P2_14_Date_Received") or "", "" if a1 is None or n == 1 else str(round(a1, 4)),
+                   (first.get("A5_ZipCode") or "")[:5]]
+
+
+def in_places(recs, zcta_blob):
+    """{county fips: {muni_key(city): (City, lat, lng)}}: Indiana forms give the parcel's postal city
+    and ZIP, not its township, so a town is placed at the Census centroid of its most common ZIP in
+    that county, and only when that centroid is within 30 miles of the county's center (a mailing
+    ZIP far away is not a location). Otherwise the town is listed with no place."""
+    import math
+    z = zipfile.ZipFile(io.BytesIO(zcta_blob))
+    rd = csv.reader(io.StringIO(z.read(z.namelist()[0]).decode("latin-1")), delimiter="\t")
+    hdr = [h.strip() for h in next(rd)]
+    ix = {h: i for i, h in enumerate(hdr)}
+    zc = {r[ix["GEOID"]].strip(): (float(r[ix["INTPTLAT"]]), float(r[ix["INTPTLONG"]])) for r in rd}
+    cix = county_index("IN")
+    tally = {}
+    for r in recs:
+        c = cix.get(key(re.sub(r"\s+COUNTY$", "", r["county"].upper())))
+        if c and r.get("muni") and r.get("zip"):
+            t = tally.setdefault(c["fips"], {}).setdefault(r["muni"], {})
+            t[r["zip"]] = t.get(r["zip"], 0) + 1
+    out = {}
+    for fips, towns in tally.items():
+        c = next(v for v in cix.values() if v["fips"] == fips)
+        for town, zips in towns.items():
+            zp = max(zips, key=zips.get)
+            hit = zc.get(zp)
+            if hit:
+                mi = 3959 * 2 * math.asin(math.sqrt(math.sin(math.radians(hit[0] - c["lat"]) / 2) ** 2 + math.cos(math.radians(c["lat"]))
+                                                    * math.cos(math.radians(hit[0])) * math.sin(math.radians(hit[1] - c["lng"]) / 2) ** 2))
+                if mi > 30:
+                    hit = None
+            out.setdefault(fips, {})[muni_key(town)] = (town.title(), round(hit[0], 4) if hit else None, round(hit[1], 4) if hit else None)
+    return out
+
+
+def fetch_in():
+    """The newest IN_YEARS yearly files listed on the STATS Indiana page: [(name, blob)]."""
+    html = fetch(IN_PAGE).decode("utf-8", errors="replace")
+    links = [u for u in file_links(IN_PAGE, html) if re.search(r"/SDF_\d{4}\.zip$", u, re.I)]
+    links.sort(key=lambda u: re.search(r"(\d{4})\.zip$", u).group(1), reverse=True)
+    out = []
+    for u in links[:IN_YEARS]:
+        out.append((os.path.basename(u), fetch(u, timeout=600)))
+        time.sleep(2)
+    return out
+
+
 WI_COUNTY = dict(enumerate(["Adams", "Ashland", "Barron", "Bayfield", "Brown", "Buffalo", "Burnett", "Calumet", "Chippewa", "Clark",
                             "Columbia", "Crawford", "Dane", "Dodge", "Door", "Douglas", "Dunn", "Eau Claire", "Florence", "Fond du Lac",
                             "Forest", "Grant", "Green", "Green Lake", "Iowa", "Iron", "Jackson", "Jefferson", "Juneau", "Kenosha",
@@ -1077,7 +1400,19 @@ def run(states, from_dir=None, merge=False):
         if STATES[st].get("probe_only"):
             print("::notice::%s transfers not built yet: %s" % (st, STATES[st]["probe_only"]))
             continue
-        if STATES[st].get("socrata") and not from_dir:
+        if st == "IN":
+            try:
+                files = ([(n, open(os.path.join(from_dir, n), "rb").read()) for n in sorted(os.listdir(from_dir)) if re.match(r"^SDF_\d{4}\.zip$", n, re.I)]
+                         if from_dir else fetch_in())
+                irep = {}
+                tables.append(list(in_table(files, irep)))
+                print("%s: %d yearly files (%s); left out: %s" % (st, len(files), ", ".join(n for n, _ in files),
+                                                                  ", ".join("%s %d" % kv for kv in sorted(irep.items())) or "none"))
+            except Exception as e:  # noqa: BLE001
+                print("::warning::%s sales disclosure files not read: %s" % (st, e))
+                bad += 1
+                continue
+        elif STATES[st].get("socrata") and not from_dir:
             try:
                 decls, extra, multi = fetch_il()
             except Exception as e:  # noqa: BLE001
@@ -1127,14 +1462,14 @@ def run(states, from_dir=None, merge=False):
             months = read_now | had
         if st == "WI":
             recs = wi_dedupe(recs)
-        gaz = gazetteer(STATES[st]["fips"], gzblob)
+        gaz = in_places(recs, fetch(IN_ZCTA, timeout=300)) if st == "IN" else gazetteer(STATES[st]["fips"], gzblob)
         trims = []
         while True:
             try:
                 res = build(st, recs, gaz, now, prior, months)
                 break
             except OverCap as e:
-                cut, why = trim(recs, trims) if st == "WI" else (None, None)
+                cut, why = trim(recs, trims) if st in ("WI", "IN") else (None, None)
                 if cut is None:
                     raise SystemExit(str(e))
                 print("::warning::%s; trimmed: %s (%d rows left of %d)" % (e, why, len(cut), len(recs)))
@@ -1244,8 +1579,52 @@ def selftest():
     ck("IL: related-party sales say so", il[1]["conv"].endswith("Related Parties"))
     ck("IL: township as the place", il[0]["muni"] == "ABINGTON" and muni_key(il[0]["muni"]) == ("T", "ABINGTON"))
     ck("MN is not built from a guess", bool(STATES["MN"].get("request_only")))
-    ck("probe-only states (IN, IA, SD, OH) are never built before their parser exists",
-       all(STATES[x].get("probe_only") and STATES[x].get("pages") for x in ("IN", "IA", "SD", "OH")))
+    ck("probe-only states (IA, SD, OH) are never built before their parser exists",
+       all(STATES[x].get("probe_only") and STATES[x].get("pages") for x in ("IA", "SD", "OH")))
+    ck("phase 1 statewide sources (FL, NY, MD, VT, NJ, CT) are saved by the probe and never built",
+       all(STATES[x].get("probe_only") and (STATES[x]["pages"] or PROBE_ONLY_DOCS.get(x)) for x in ("FL", "NY", "MD", "VT", "NJ", "CT")))
+    # Indiana sales disclosure forms: a synthetic file in the real SDF_<year>.zip shape
+    # (test/fixtures/land-sales/make_in_sdf_sample.py writes it with the real column titles)
+    sys.path.insert(0, os.path.join(ROOT, "test", "fixtures", "land-sales"))
+    import make_in_sdf_sample as MK
+    inz = open(os.path.join(ROOT, "test", "fixtures", "land-sales", "in-sdf-sample.zip"), "rb").read()
+    ck("IN: the saved fixture is what its maker writes", len(list(in_table([("a.zip", inz)]))) == len(list(in_table([("b.zip", MK.make())]))))
+    irep = {}
+    ins, inr = parse_rows([iter(list(in_table([("SDF_2026.zip", inz)], irep)))])
+    ib = {r["doc"][-2:]: r for r in ins}
+    ck("IN: built, not probe-only", not STATES["IN"].get("probe_only") and STATES["IN"]["max_mb"] <= 8)
+    ck("IN: farm forms only (any parcel class 100 to 199); a house lot is left out", irep.get("not_farm") == 1 and "03" not in ib)
+    ck("IN: no valuable consideration and a partial interest are left out, and counted",
+       irep.get("dropped no valuable consideration") == 1 and irep.get("dropped partial interest") == 1 and "04" not in ib and "10" not in ib)
+    ck("IN: money read with two implied decimals, personal property taken out", ib["01"]["price"] == 400000 and ib["02"]["price"] == 490000)
+    ck("IN: acres read with four implied decimals and summed over the form's parcels", ib["01"]["acres"] == 40 and ib["02"]["acres"] == 40 and ib["02"]["np"] == 2)
+    ck("IN: one of several forms for a sale: acres blank, first parcel's acres kept as reported", ib["06"]["acres"] is None and ib["06"]["np"] == 2 and ib["06"]["ac1"] == 80)
+    ck("IN: one tract's acres on every parcel is uncertain", ib["07"]["acres"] is None and ib["07"]["ac1"] == 80)
+    ck("IN: county from its state number, not the typed name (Carrol, ADAMS COUNTY)", ib["05"]["county"] == "Carroll" and ib["02"]["county"] == "Adams"
+       and ib["07"]["county"] == "Whitley")
+    ck("IN: classes as the land card reads them (farm 4, timber 6, improved farm 7, commercial 2)",
+       ib["01"]["cls"] == "4" and ib["02"]["cls"] == "4 7" and ib["08"]["cls"] == "6" and ib["09"]["cls"] == "4 2")
+    ck("IN: quitclaim and a family discount read as non-market words", ib["05"]["conv"] == "Quitclaim Deed, Related Parties"
+       and ib["02"]["conv"] == "Sale, Land Contract" and ib["08"]["conv"] == "Sale, Auction, Buyer Owns Adjacent Land")
+    ck("IN: a commercial-section price is read when the residential one is blank", ib["09"]["price"] == 300000)
+    ck("IN: buyer and seller names only, never the preparer", ib["01"]["grantor"] == "SYNTHETIC SELLER" and ib["01"]["grantee"] == "SYNTHETIC BUYER")
+    ck("IN: conveyance and received dates", ib["01"]["date"] == "2026-03-01" and ib["01"]["rec"] == "2026-04-01")
+    for args, what in (((1, 10000), "fee in dollars"), ((100, 1), "acres in whole acres")):
+        try:
+            list(in_table([("bad.zip", MK.make(*args))]))
+            ck("IN: a file whose %s is refused" % what, False)
+        except ValueError:
+            ck("IN: a file whose %s is refused" % what, True)
+    mrep = {}
+    mixed = list(in_table([("SDF_2021.zip", MK.make(1, 10000)), ("SDF_2026.zip", MK.make())], mrep))
+    ck("IN: a refused year is left out and named; the good year still builds",
+       len(mixed) == len(list(in_table([("b.zip", MK.make())]))) and any(k.startswith("file refused: SDF_2021.zip") for k in mrep))
+    zb = io.BytesIO()
+    with zipfile.ZipFile(zb, "w") as zz:
+        zz.writestr("z.txt", "GEOID\tALAND\tINTPTLAT\tINTPTLONG\n46711\t1\t41.10\t-85.45\n46999\t1\t39.00\t-87.00\n")
+    pl = in_places([{"county": "Whitley", "muni": "SAMPLETOWN", "zip": "46711"}, {"county": "Adams", "muni": "FARAWAY", "zip": "46999"}], zb.getvalue())
+    ck("IN: a town is placed at its ZIP's centroid only when it is near the county",
+       pl["18183"][muni_key("SAMPLETOWN")] == ("Sampletown", 41.1, -85.45) and pl["18001"][muni_key("FARAWAY")][1] is None)
     ck("a county PDF sales list is a file link only where the state asks for PDFs",
        file_links("https://x.org/a/", '<a href="s2025.pdf">x</a><a href="s.csv">y</a>') == ["https://x.org/a/s.csv"]
        and file_links("https://x.org/a/", '<a href="s2025.pdf">x</a>', STATES["SD"]["files_rx"]) == ["https://x.org/a/s2025.pdf"])

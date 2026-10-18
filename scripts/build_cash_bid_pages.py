@@ -87,6 +87,7 @@ import sys
 from collections import Counter, defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import build_state_basis_pages as SB  # noqa: E402  (helpers + the network reader, one copy)
 import basis_method as BM  # noqa: E402  (the one state-basis method)
 import pricefmt  # noqa: E402  (cash as posted: twin of components/util.js AG.px.cash)
@@ -929,7 +930,8 @@ def asof_time(t):
     ("Updated 7:10 pm", "Updated yesterday 4:10 pm") and greys it with a
     plain age once it is not from today."""
     iso = t.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    return f'<time class="asof" data-asof="bids" datetime="{iso}">Updated {fmt_share_time(t)}</time>'
+    # the zone named in the file: Wray, CO and Delphos, OH read a Central clock with no label (sets pass, 2026-10-18)
+    return f'<time class="asof" data-asof="bids" datetime="{iso}">Updated {fmt_share_time(t)} CT</time>'
 
 
 def top_nearby(rows):
@@ -1660,7 +1662,7 @@ def build_town_page(t, ctx):
         share = (f"{place} cash bids",
                  (f"Top bids for nearest delivery: {txt} at {n} elevator{'s' if n != 1 else ''}. " if txt else
                   f"Bids from {n} elevator{'s' if n != 1 else ''}; call before you haul. ")
-                 + f"Updated {fmt_share_time(when or latest)}.")
+                 + f"Updated {fmt_share_time(when or latest)} CT.")
         n_in = n - n_near
         who = (f'<b>{n_in}</b> elevator{"s" if n_in != 1 else ""} in {esc(place)}' if n_in else "")
         if n_near:
@@ -1893,8 +1895,11 @@ def basis_section(st, summ, prev_gen):
         blocks.append(basis_stat(g, head0, prev_gen))
         for c in cons[1:]:
             if "median" in c:
-                notes.append(f"{SB.CROP_LABEL[g]} vs {contract_label(c['contract'])}: middle {money_basis(c['median'])}, "
-                             f"n = {c['n']}. Kept apart: a basis against one month does not compare with another.")
+                # the exchange named, as the headline names it: Montana's MW and MWO spring wheat are both "Dec '26"
+                # and read as the same month kept apart from itself (sets pass, 2026-10-18)
+                ex_ = SB.EXCHANGE.get(c["contract"][0], "")
+                notes.append(f"{SB.CROP_LABEL[g]} vs {contract_label(c['contract'])}{(' ' + ex_) if ex_ else ''}: middle {money_basis(c['median'])}, "
+                             f"n = {c['n']}. Kept apart: a basis against one futures contract does not compare with another.")
             else:
                 notes.append(f"{SB.CROP_LABEL[g]}: {c['n']} {_plural(c['n'], 'elevator')} "
                              f"{'prices' if c['n'] == 1 else 'price'} against "
@@ -2162,7 +2167,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
         share = (f"{sname} cash bids and basis",
                  f"Bids from {n_el} elevator{'s' if n_el != 1 else ''} across {len(live)} {sname} "
                  f"town{'s' if len(live) != 1 else ''}. " + (f"Top bid for nearest delivery: {top_txt}. " if top_txt else "")
-                 + f"Updated {fmt_share_time(when or max(m['latest'] for m in live))}.")
+                 + f"Updated {fmt_share_time(when or max(m['latest'] for m in live))} CT.")
     items = []
     for m in live:
         cl = ", ".join(CROP_LABEL[c].lower() for c in CROPS if c in m["crops"])
@@ -2327,10 +2332,10 @@ def build_states_hub(smetas, ctx):
 
 LIVE_PAGE = "cash-bids.html"
 LIVE_SHARE_GENERIC = {
-    "og:description": "Find local cash grain bids by ZIP: corn, soybean and wheat elevator prices, basis, and the "
-                      "Worth the Drive net-revenue tool.",
-    "twitter:description": "Local cash grain bids by ZIP: corn, soybean, wheat elevator prices today + Worth the "
-                           "Drive net revenue tool."}
+    "og:description": "Grain prices at local elevators near you: corn, soybean and wheat cash bids and basis by ZIP. "
+                      "Free, and every bid shows when it was posted.",
+    "twitter:description": "Grain prices at local elevators near you: corn, soybean and wheat cash bids and basis by ZIP. "
+                           "Free, and every bid shows when it was posted."}
 
 
 def stamp_live_page(path, metas, counts=None):
@@ -2350,8 +2355,10 @@ def stamp_live_page(path, metas, counts=None):
         # the count from data/elevator-counts.json (state_counts) when given
         n_el = counts["bids"]["elevators"] if counts else sum(m["elevators"] for m in live)
         n_tw = counts["bids"]["towns"] if counts else len(live)
-        text = (f"Find local cash grain bids by ZIP. The AGSIST network has current bids from {n_el:,} "
-                f"elevator{'s' if n_el != 1 else ''} across {n_tw:,} town{'s' if n_tw != 1 else ''}. "
+        # 2026-10-18: "grain prices at local elevators" (226 impressions, position 5, 2 clicks): its words
+        # lead. scripts/check_number_consistency.py reads "current bids from N elevators across N towns".
+        text = (f"Grain prices at local elevators near you: current bids from {n_el:,} "
+                f"elevator{'s' if n_el != 1 else ''} across {n_tw:,} town{'s' if n_tw != 1 else ''}, by ZIP, free. "
                 f"Updated {fmt_share_time(max(m['latest'] for m in live))} CT.")   # time zone named (2026-10-17 audit N11)
     out = html
     for key, generic in LIVE_SHARE_GENERIC.items():
@@ -2495,6 +2502,18 @@ def _hist_lookup(hist_dir):
     return get
 
 
+def cash_parent(rel, pre=OUT_DIR):
+    """Where a dropped cash-bids page points: a town at its state page, a company at the company
+    list, a state at the states list; the hub /cash-bids last."""
+    parts = rel.split("/")
+    hub = [("/" + pre, "cash bids")]
+    if len(parts) == 3 and parts[1] == "company":
+        return [(f"/{pre}/company/", "elevator companies")] + hub
+    if len(parts) == 3 and parts[2] != "index.html":
+        return [(f"/{pre}/{parts[1]}/", PP.label(parts[1]))] + hub
+    return [(f"/{pre}/states", "cash bids by state")] + hub
+
+
 def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None, now=None, check_age=True,
               min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None, directory=None, hist_dir=None,
               companies_out=None):
@@ -2558,10 +2577,15 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     for co in companies.values():
         for _, bd in co["locs"]:
             bd["company_path"], bd["company_short"] = co["path"], co["short"]
-    before = set()
+    before, before_real = set(), set()
     if os.path.isdir(out_dir):
         for dp, _, fs in os.walk(out_dir):
-            before |= {os.path.relpath(os.path.join(dp, f), out_dir) for f in fs if f.endswith(".html")}
+            for f in fs:
+                if f.endswith(".html"):
+                    rel = os.path.relpath(os.path.join(dp, f), out_dir)
+                    before.add(rel)
+                    if not PP.is_pointer(os.path.join(dp, f)):
+                        before_real.add(rel)
     tmp = out_dir.rstrip("/") + ".tmp"
     shutil.rmtree(tmp, ignore_errors=True)
     os.makedirs(tmp)
@@ -2597,14 +2621,30 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
             json.dump({"town": {f"{m['state'].lower()}/{m['slug']}": m["story_facts"] for m in metas if m.get("story_facts")},
                        "company": {m["slug"]: m["story_facts"] for m in cmetas if m.get("story_facts")}},
                       f, ensure_ascii=False, separators=(",", ":"))
-    # swap in: towns that no longer have any network board disappear with the old tree
+    # a town, state or company page this run did not write (no network board there now) stays as a
+    # pointer to its parent page (scripts/pointer_pages.py), never a 404: carry the old file into the
+    # new tree, swap, then turn it into a pointer (an old pointer keeps its date)
+    built = set()
+    for dp, _, fs in os.walk(tmp):
+        built |= {os.path.relpath(os.path.join(dp, f), tmp) for f in fs if f.endswith(".html")}
+    gone = sorted(before - built)
+    for rel in gone:
+        os.makedirs(os.path.dirname(os.path.join(tmp, rel)), exist_ok=True)
+        shutil.copyfile(os.path.join(out_dir, rel), os.path.join(tmp, rel))
     shutil.rmtree(out_dir, ignore_errors=True)
     os.replace(tmp, out_dir)
+    site_root = os.path.dirname(out_dir.rstrip("/")) or "."
+    pre = os.path.basename(out_dir.rstrip("/"))
+    _, orphans = PP.settle(site_root, OUT_DIR, [pre + "/" + r.replace(os.sep, "/") for r in gone],
+                           lambda r: cash_parent(r, pre))
+    for r in orphans:
+        os.remove(os.path.join(site_root, r))
     after = set()
     for dp, _, fs in os.walk(out_dir):
-        after |= {os.path.relpath(os.path.join(dp, f), out_dir) for f in fs if f.endswith(".html")}
+        after |= {os.path.relpath(os.path.join(dp, f), out_dir) for f in fs
+                  if f.endswith(".html") and not PP.is_pointer(os.path.join(dp, f))}
     new_urls = []
-    for rel in sorted(after - before):
+    for rel in sorted(after - before_real):
         u = "/" + OUT_DIR + "/" + rel.replace(os.sep, "/")
         u = u[:-len("index.html")] if u.endswith("/index.html") else u[:-5]
         new_urls.append(SITE + u)
@@ -2811,10 +2851,10 @@ def selftest():
         share = re.search(r'<meta property="og:description" content="([^"]*)">', fr).group(1)
         assert share == re.search(r'<meta name="twitter:description" content="([^"]*)">', fr).group(1)
         assert share.startswith("Top bids for nearest delivery: corn $3.95, soybeans $9.85 at "), share
-        assert share.endswith("Updated Oct 7, 12:00 pm."), share
+        assert share.endswith("Updated Oct 7, 12:00 pm CT."), share
         assert "<title>Cash Grain Bids in Fremont, NE Today | AGSIST</title>" in fr, "search title unchanged"
         # each board's posted time is the site's "Updated" stamp, re-rendered and aged by asof.js
-        assert '<time class="asof" data-asof="bids" datetime="2026-10-07T17:00:00Z">Updated Oct 7, 12:00 pm</time>' in fr
+        assert '<time class="asof" data-asof="bids" datetime="2026-10-07T17:00:00Z">Updated Oct 7, 12:00 pm CT</time>' in fr
         assert '/components/asof.js?v=1' in fr and '/components/asof.css?v=1' in fr
         for v in re.findall(r"\$(\d+\.\d\d)", share):
             assert f"${v}</td>" in fr, f"share price {v} is not on the page"
@@ -2911,7 +2951,7 @@ def selftest():
         assert "read as a misread board and left out" in ne and 'data-state-table="NE"' in ne
         assert "/components/state-bids.js?v=2" in ne and "/basis/" not in ne
         assert re.search(r'<meta name="twitter:description" content="Bids from \d+ elevators across 2 Nebraska towns\. '
-                         r'Top bid for nearest delivery: corn \$3\.95, soybeans \$9\.85\. Updated Oct 7, 12:00 pm\.">',
+                         r'Top bid for nearest delivery: corn \$3\.95, soybeans \$9\.85\. Updated Oct 7, 12:00 pm CT\.">',
                          ne), ne[:3000]
         # the data the state table and /basis read: written only when asked, from the same method
         dd, hubp = os.path.join(td, "data"), os.path.join(td, "basis.html")
@@ -2997,6 +3037,16 @@ def selftest():
         # a rebuild from the same snapshot writes the same bytes and nothing new
         _, _, _, new2 = build_all(merged, index, ZT, out_dir=out, root=".", min_towns=0, now=parse_ts("2026-10-07T20:00:00Z"))
         assert new2 == [] and open(os.path.join(out, "nebraska", "fremont.html")).read() == fr
+        # a town that loses its last board leaves a pointer to its state page, kept on later runs
+        with open(os.path.join(out, "iowa", "old-town.html"), "w") as f:
+            f.write("<title>a real town page from an earlier run</title>")
+        for _ in range(2):
+            _, _, _, new3 = build_all(merged, index, ZT, out_dir=out, root=".", min_towns=0, now=parse_ts("2026-10-07T20:00:00Z"))
+            pt = open(os.path.join(out, "iowa", "old-town.html")).read()
+            assert PP.pointer_target(pt) == "/cash-bids/iowa/" and "Old Town is now covered on the" in pt, pt
+            assert new3 == [], new3
+        assert PP.load(td, "cash-bids")["cash-bids/iowa/old-town.html"]["to"] == "/cash-bids/iowa/"
+        assert len(pt.encode()) <= PP.MAX_BYTES and 'content="noindex, follow"' in pt
         try:
             build_all(merged, index, ZT, out_dir=out, min_towns=0, now=parse_ts("2026-10-08T03:00:00Z"))
             raise AssertionError("stale snapshot built")
@@ -3067,6 +3117,13 @@ def selftest():
     assert "rain-print-promo.js" in page_end("", promo=True) and "rain-print-promo.js" not in page_end("")
     import build_company_pages as CO      # the company pages, built inside build_all()
     CO.selftest()
+    # sets pass 2026-10-18: two spring wheat contracts that both read "Dec '26" are told apart by exchange
+    _sm = {"wheat_hrs": {"contracts": [{"contract": ("MWO", 11, 2026), "median": -0.725, "n": 4, "lo": -0.85, "hi": -0.6},
+                                       {"contract": ("MW", 11, 2026), "median": -0.8, "n": 3}],
+                         "rows": [], "no_contract": [], "suspect": []}}
+    _bs = basis_section("MT", _sm, None)
+    _bs = _bs if isinstance(_bs, str) else " ".join(x for x in _bs if isinstance(x, str)) if isinstance(_bs, (list, tuple)) else str(_bs)
+    assert "vs Dec '26 MIAX spring wheat: middle" in _bs and "one futures contract does not compare" in _bs, _bs[:600]
     print("selftest OK")
 
 

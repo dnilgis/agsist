@@ -250,7 +250,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
          ("By reported hail over " + per + ", the most active counties in " + name +
           " are " + ", ".join(r["county"] for r in rows[:3]) + "." if rows else
           name + " has recorded relatively few hail reports in " + per + ".") +
-         " Reports track population and spotter coverage as well as storms, so rural corridors can be under-counted; the persistent leaders on this table are real hail geography."),
+         " Reports track population and spotter coverage as well as storms, so rural corridors can be under-counted. The table adds up " + per + " in one total per county, so it does not show whether a county leads year after year."),
         ("When is hail season in " + name + "?",
          ("Reported hail in " + name + " peaks around " + peak_full + ". " if peak_full else
           "Hail in " + name + " follows the severe-thunderstorm season. ") +

@@ -22,6 +22,9 @@ Warnings (printed, never fail):
   * a URL is listed twice across the sitemaps
 
 Skipped by design: dot folders and components/ (partials with no <head>).
+Pointer pages (a generated page that dropped out of its set, scripts/pointer_pages.py)
+are hard-checked: under 1.5 KB, noindex, follow, canonical and an instant refresh
+to one real parent page, and listed in data/pointers.
 Redirect stubs (meta refresh) and noindex pages (embed/, sponsor-kit,
 sponsor-report, arc-plc/sheet, seo-report) only have to keep one title,
 parse their JSON-LD, and stay out of the sitemaps.
@@ -39,6 +42,9 @@ import os
 import re
 import sys
 import time
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import pointer_pages as PP  # noqa: E402  the pointer marker and the manifest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ORIGIN = "https://agsist.com"
@@ -124,6 +130,7 @@ def inspect(root, rel):
     robots = ""
     desc = None
     refresh = False
+    pointer = None
     for t in RE_META.findall(head_scan):
         a = attrs(t)
         name = a.get("name", "").lower()
@@ -132,7 +139,9 @@ def inspect(root, rel):
         elif name == "description":
             desc = re.sub(r"\s+", " ", a.get("content", "")).strip()
         elif a.get("http-equiv", "").lower() == "refresh":
-            refresh = True
+            refresh = a.get("content", "")
+        elif name == PP.MARKER:
+            pointer = a.get("content", "")
     canon = []
     for t in RE_LINK.findall(head_scan):
         a = attrs(t)
@@ -151,7 +160,37 @@ def inspect(root, rel):
         "desc": desc,
         "canon": canon,
         "ld_bad": ld_bad,
+        "pointer": pointer,
+        "robots": robots.strip(),
+        "bytes": len(raw),
     }
+
+
+def pointer_errors(rel, p, info, manifest):
+    """A pointer page (scripts/pointer_pages.py) is held to its own rules, never fewer: small,
+    noindex, one canonical and an instant refresh to the same parent, a parent that is a real
+    page (no chains, no 404), and a line in data/pointers."""
+    to = p["pointer"]
+    out = []
+    if p["bytes"] > PP.MAX_BYTES:
+        out.append(f"pointer page is {p['bytes']} bytes, over {PP.MAX_BYTES}")
+    if "noindex" not in p["robots"] or "follow" not in p["robots"].replace("nofollow", ""):
+        out.append(f"pointer page robots is {p['robots']!r}, not 'noindex, follow'")
+    if p["canon"] != [ORIGIN + to]:
+        out.append(f"pointer canonical {p['canon']} is not {ORIGIN + to}")
+    if (p["refresh"] or "").replace(" ", "") != "0;url=" + to:
+        out.append(f"pointer refresh {p['refresh']!r} is not an instant refresh to {to}")
+    tgt = url_to_file(ORIGIN + to, ROOT_OF[0]) if to.startswith("/") else None
+    if tgt is None:
+        out.append(f"pointer target {to} has no page behind it")
+    elif tgt in info and (info[tgt]["pointer"] is not None or info[tgt]["refresh"]):
+        out.append(f"pointer target {to} is itself a pointer or redirect")
+    if manifest.get(rel, {}).get("to") != to:
+        out.append(f"pointer to {to} is not in data/pointers (or listed with another target)")
+    return out
+
+
+ROOT_OF = [ROOT]
 
 
 def read_sitemaps(root):
@@ -172,6 +211,7 @@ def read_sitemaps(root):
 
 
 def check(root=ROOT):
+    ROOT_OF[0] = root
     errors, warnings = [], []
     excused = []
     sitemaps = read_sitemaps(root)
@@ -195,6 +235,12 @@ def check(root=ROOT):
     info = {}
     for rel in pages(root):
         info[rel] = inspect(root, rel)
+    manifest = PP.load_all(root)
+    for rel in sorted(manifest):
+        if rel not in info:
+            errors.append(f"{rel}: listed in data/pointers but there is no such page")
+        elif info[rel]["pointer"] is None and info[rel]["bytes"] <= PP.MAX_BYTES:
+            errors.append(f"{rel}: listed in data/pointers but is not a pointer page")
 
     def err(rel, msg):
         if rel in EXCEPTIONS:
@@ -207,7 +253,10 @@ def check(root=ROOT):
     no_desc = []
     for rel in sorted(info):
         p = info[rel]
-        stub = p["refresh"]
+        stub = bool(p["refresh"])
+        if p["pointer"] is not None:
+            for m in pointer_errors(rel, p, info, manifest):
+                err(rel, m)
         if (p["noindex"] or stub) and rel in in_sitemap:
             err(rel, f"is {'a redirect stub' if stub else 'noindex'} but listed in {in_sitemap[rel]}")
         if stub:
@@ -327,6 +376,25 @@ def selftest():
         ok("c.html: no meta description" in ws, "missing description warns")
         ok("b.html: indexable but in no sitemap" in ws, "missing from sitemap warns")
         ok(not any("ni.html: has no canonical" in e for e in r["errors"]), "noindex pages need no canonical")
+
+        # pointer pages: a good one passes, each broken rule is caught
+        import json as _j
+        w("ptr.html", PP.page("/a", "Ptr", "A"))
+        w("data/pointers/t.json", _j.dumps({"pointers": {"ptr.html": {"to": "/a", "since": "2026-10-18"},
+                                                       "p2.html": {"to": "/stub", "since": "2026-10-18"},
+                                                       "missing.html": {"to": "/a", "since": "2026-10-18"}}}))
+        w("p2.html", PP.page("/stub", "P2", "Stub"))
+        w("p3.html", PP.page("/a", "P3", "A").replace("noindex, follow", "index, follow"))
+        w("p4.html", PP.page("/nowhere", "P4", "x").replace('href="https://agsist.com/nowhere"', 'href="https://agsist.com/a"'))
+        r = check(d)
+        es = "\n".join(r["errors"])
+        ok(not any(e.startswith("ptr.html") for e in r["errors"]), f"good pointer passes: {es}")
+        ok("p2.html: pointer target /stub is itself a pointer or redirect" in es, "pointer chain caught")
+        ok("p3.html: pointer page robots" in es and "p3.html: pointer to /a is not in data/pointers" in es, "indexable or unlisted pointer caught")
+        ok("p4.html: pointer canonical" in es and "p4.html: pointer target /nowhere has no page" in es, "canonical mismatch and dead target caught")
+        ok("missing.html: listed in data/pointers but there is no such page" in es, "manifest row with no page caught")
+        for f in ("ptr.html", "p2.html", "p3.html", "p4.html", "data/pointers/t.json"):
+            os.remove(os.path.join(d, f))
 
         EXCEPTIONS["e.html"] = "2026-10-11: test"
         try:

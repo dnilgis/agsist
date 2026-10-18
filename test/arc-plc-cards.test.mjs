@@ -29,10 +29,12 @@ const unesc = (s) => s.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&
 const STATES = {};
 const stateFile = (st) => STATES[st] || (STATES[st] = JSON.parse(readFileSync(ROOT + `data/arc-plc/${st}.json`, "utf8")));
 
+// a county that left the data is a pointer page (scripts/pointer_pages.py, test/pointer-pages.test.mjs)
+const isPointer = (rel) => readFileSync(ROOT + rel, "utf8").includes('name="agsist-pointer"');
 function countyPages() {
   const out = [];
   for (const sd of readdirSync(ROOT + "arc-plc", { withFileTypes: true }).filter((x) => x.isDirectory())) {
-    for (const f of readdirSync(ROOT + "arc-plc/" + sd.name)) if (f.endsWith(".html") && !f.endsWith("-sheet.html")) out.push(`${sd.name}/${f}`);
+    for (const f of readdirSync(ROOT + "arc-plc/" + sd.name)) if (f.endsWith(".html") && !f.endsWith("-sheet.html") && !isPointer(`arc-plc/${sd.name}/${f}`)) out.push(`${sd.name}/${f}`);
   }
   return out;
 }
@@ -127,8 +129,9 @@ test("trigger line on every card with a price outlook: floor(90% x benchmark x b
       const raw = 0.9 * ent.by * cd.bp.value / Math.max(cen, cd.loan);
       const whole = Math.floor(Math.round(raw * 1e6) / 1e6);
       // at or over the benchmark the line is floored to a tenth, so "under 41 bu ... above the 41.00 bu
-      // benchmark" cannot print (Childress Co., TX, 2026-10-18); still floored, so "under N" stays true
-      const want = whole >= ent.by ? Math.floor(Math.round(raw * 10 * 1e6) / 1e6) / 10 : whole;
+      // benchmark" cannot print (Childress Co., TX, 2026-10-18); nor "under 52 bu ... above the 52.13 bu"
+      // (Newton Co., MO barley, sets pass 2026-10-18); still floored, so "under N" stays true
+      const want = whole >= ent.by || raw > ent.by ? Math.floor(Math.round(raw * 10 * 1e6) / 1e6) / 10 : whole;
       const got = +/under <b>([\d,.]+) (?:bu|lb)<\/b>/.exec(trig)[1].replace(/,/g, "");
       assert.equal(got, want, `${p} ${k}: ${got} vs ${want}`);
       assert.ok(got <= raw + 1e-9, `${p} ${k}: floored`);
@@ -156,6 +159,7 @@ test("verdict first: the main page's quick answer comes before the deadlines and
   let crops = 0;
   for (const f of readdirSync(ROOT + "arc-plc").filter((x) => x.endsWith(".html"))) {
     const h = readFileSync(ROOT + "arc-plc/" + f, "utf8");
+    if (h.includes('name="agsist-pointer"')) continue;
     if (!h.includes('id="quick-answer"') || !h.includes('class="ap-dead"')) continue;
     assert.ok(h.indexOf('id="quick-answer"') < h.indexOf("data-arcfind") && h.indexOf('id="quick-answer"') < h.indexOf('class="ap-dead"'), `${f}: quick answer first`);
     crops++;

@@ -1,65 +1,6 @@
 {
  "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
  "counties": {
-  "45001": {
-   "facts": {
-    "biggest_day": {
-     "date": "May 7",
-     "in": "2.66",
-     "label": "biggest one-day reading"
-    },
-    "county": "Abbeville County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "6 miles from the middle of the county",
-    "gauge_where": "in Antreville",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "10.11",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "46.57",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 15,
-     "from": "Mar 18",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 1"
-    },
-    "multi_day_reports": 2,
-    "pct_of_usual": 98,
-    "state": "South Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "36.46",
-    "usual_in": "37.12",
-    "vs_usual": {
-     "diff_in": "0.66",
-     "dir": "less",
-     "word": "about usual"
-    },
-    "wettest_month": {
-     "in": "9.71",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "2067b40bfd9a56a5",
-   "sid": "380204 2",
-   "story": "Through Oct 13, the weather station in Antreville has caught 36.46 inches, 10.11 inches less than it had by this day last year. May did most of the work at 9.71 inches, and the biggest one-day reading came May 7 with 2.66 inches. Before that the gauge sat empty for 15 days in a row, from Mar 18 to Apr 1, not even a trace.",
-   "through": "2026-10-13"
-  },
   "45003": {
    "facts": {
     "biggest_day": {
@@ -638,65 +579,6 @@
    "story": "Through Oct 13, the weather station in Manning had its biggest single day of the year on Oct 11 with 2.90 inches. August was the wettest month at 7.43 inches. From Mar 18 to Apr 5 the gauge went 19 days in a row with nothing in it, not even a trace. The year sits 3.78 inches behind last year at this point.",
    "through": "2026-10-13"
   },
-  "45029": {
-   "facts": {
-    "biggest_day": {
-     "date": "Sep 20",
-     "in": "3.95",
-     "label": "biggest single day"
-    },
-    "county": "Colleton County",
-    "days_in_year_so_far": 286,
-    "days_missing": 1,
-    "days_reported": 285,
-    "gauge": "weather station",
-    "gauge_from_middle": "1 mile from the middle of the county",
-    "gauge_where": "1 mile southwest of Walterboro",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 284,
-      "diff_in": "17.45",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 1,
-     "through": "Oct 13",
-     "total_in": "50.59",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 21,
-     "from": "Apr 5",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 25"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 78,
-    "state": "South Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "33.12",
-    "usual_in": "42.72",
-    "vs_usual": {
-     "diff_in": "9.60",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "9.45",
-     "month": "September"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "c7acefb74d1f9309",
-   "sid": "388922 2",
-   "story": "Through Oct 13, the weather station 1 mile southwest of Walterboro sat 9.60 inches less than a usual year. September did most of the work at 9.45 inches, and 3.95 of that came on Sep 20. The gauge went 21 days in a row with nothing from Apr 5 to Apr 25. On the days both years reported, this year is 17.45 inches less than last year.",
-   "through": "2026-10-13"
-  },
   "45031": {
    "facts": {
     "biggest_day": {
@@ -809,65 +691,6 @@
    "hash": "e6b82a41e41718a2",
    "sid": "US1SCDL0009 6",
    "story": "Through Oct 13, the volunteer rain gauge less than a mile north-northeast of Latta caught 13.50 inches less than it had by this day last year. August was the wettest month at 4.62 inches. The biggest one-day reading was 1.66 inches on Jul 26. From Apr 7 to Apr 25 it went 19 days in a row with nothing in the gauge, not even a trace.",
-   "through": "2026-10-13"
-  },
-  "45035": {
-   "facts": {
-    "biggest_day": {
-     "date": "Feb 27",
-     "in": "2.40",
-     "label": "biggest single day"
-    },
-    "county": "Dorchester County",
-    "days_in_year_so_far": 286,
-    "days_missing": 4,
-    "days_reported": 282,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "16 miles from the middle of the county",
-    "gauge_where": "1 mile south-southeast of Reevesville",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 280,
-      "diff_in": "15.13",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 2,
-     "through": "Oct 13",
-     "total_in": "43.95",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 15,
-     "from": "May 9",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "May 23"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 69,
-    "state": "South Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "29.29",
-    "usual_in": "42.59",
-    "vs_usual": {
-     "diff_in": "13.30",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "6.37",
-     "month": "February"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "6824b19ce412ec18",
-   "sid": "US1SCDC0018 6",
-   "story": "Through Oct 13, the volunteer rain gauge 1 mile south-southeast of Reevesville has caught most of its rain early. February was the wettest month at 6.37 inches, and the biggest single day came Feb 27 with 2.40 inches. The longest dry stretch ran 15 days, May 9 to May 23, with nothing in the gauge, not even a trace. On the days both years reported, this year is 15.13 inches less than last year.",
    "through": "2026-10-13"
   },
   "45037": {
@@ -1029,65 +852,6 @@
    "hash": "8cdfdddb772df053",
    "sid": "13744 1",
    "story": "Through Oct 13, the weather station at Florence Regional Airport has a short year on its hands, 8.02 inches less than a usual year. August did the heavy lifting at 6.59 inches, and Aug 16 alone brought 2.61 inches, the biggest single day. The gauge went 19 days in a row with nothing at all from Apr 6 to Apr 24. It is 5.33 inches behind last year at this point too.",
-   "through": "2026-10-13"
-  },
-  "45043": {
-   "facts": {
-    "biggest_day": {
-     "date": "Aug 5",
-     "in": "2.42",
-     "label": "biggest one-day reading"
-    },
-    "county": "Georgetown County",
-    "days_in_year_so_far": 286,
-    "days_missing": 3,
-    "days_reported": 283,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "11 miles from the middle of the county",
-    "gauge_where": "6.0 miles south of Georgetown",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 281,
-      "diff_in": "11.88",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 2,
-     "through": "Oct 13",
-     "total_in": "45.63",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 13,
-     "from": "Apr 14",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 26"
-    },
-    "multi_day_reports": 4,
-    "pct_of_usual": 72,
-    "state": "South Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "33.44",
-    "usual_in": "46.40",
-    "vs_usual": {
-     "diff_in": "12.96",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "11.91",
-     "month": "August"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "b26e7fe56e9a59d0",
-   "sid": "US1SCGT0004 6",
-   "story": "Through Oct 13, the volunteer rain gauge 6.0 miles south of Georgetown has 33.44 inches, 12.96 inches less than a usual year. August did most of the work at 11.91 inches, and the biggest one-day reading was 2.42 inches on Aug 5. The gauge went 13 days in a row with nothing from Apr 14 to Apr 26. On the days both years reported, this year is 11.88 inches less than 2025.",
    "through": "2026-10-13"
   },
   "45047": {
@@ -1434,65 +1198,6 @@
    "hash": "c194c46c327de246",
    "sid": "US1SCLN0002 6",
    "story": "Through Oct 13, the volunteer rain gauge 3.5 miles east-northeast of Fort Mill had 32.32 inches. May was the wettest month at 7.51 inches, and the biggest one-day reading was 3.51 inches on Jul 24. The gauge went 19 days in a row with nothing in it, not even a trace, from Apr 7 to Apr 25. On the days both years reported, that is 3.79 inches less than last year.",
-   "through": "2026-10-13"
-  },
-  "45059": {
-   "facts": {
-    "biggest_day": {
-     "date": "Oct 11",
-     "in": "3.67",
-     "label": "biggest one-day reading"
-    },
-    "county": "Laurens County",
-    "days_in_year_so_far": 286,
-    "days_missing": 5,
-    "days_reported": 281,
-    "gauge": "weather station",
-    "gauge_from_middle": "7 miles from the middle of the county",
-    "gauge_where": "in Clinton",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 279,
-      "diff_in": "4.84",
-      "dir": "more",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 2,
-     "through": "Oct 13",
-     "total_in": "37.24",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 19,
-     "from": "Apr 7",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 25"
-    },
-    "multi_day_reports": 2,
-    "pct_of_usual": 117,
-    "state": "South Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "42.08",
-    "usual_in": "35.93",
-    "vs_usual": {
-     "diff_in": "6.15",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "11.39",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "edd2464c532fcdcb",
-   "sid": "381814 2",
-   "story": "Through Oct 13, the weather station in Clinton has caught 6.15 inches more than a usual year. May did most of the work with 11.39 inches, the wettest month. Before that the gauge sat empty for 19 days in a row, Apr 7 to Apr 25. The biggest one-day reading came late, 3.67 inches on Oct 11, and on the days both years reported, 2026 is 4.84 inches ahead of 2025.",
    "through": "2026-10-13"
   },
   "45061": {
@@ -1949,65 +1654,6 @@
    "hash": "19f30d4b5e28f24f",
    "sid": "US1SCRC0030 6",
    "story": "Through Oct 13, the volunteer rain gauge 3.9 miles north-northeast of Hopkins went 39 days in a row with nothing in it, from Mar 18 to Apr 25. May was the wettest month at 6.11 inches, and the biggest single day was 2.98 inches on Jul 7. On the days both years reported, this year has 9.83 inches less than last year.",
-   "through": "2026-10-13"
-  },
-  "45081": {
-   "facts": {
-    "biggest_day": {
-     "date": "Oct 11",
-     "in": "2.99",
-     "label": "biggest single day"
-    },
-    "county": "Saluda County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "2 miles from the middle of the county",
-    "gauge_where": "less than a mile north-northeast of Saluda",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "6.23",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "41.06",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 19,
-     "from": "Apr 7",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 25"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 92,
-    "state": "South Carolina",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "34.83",
-    "usual_in": "37.99",
-    "vs_usual": {
-     "diff_in": "3.16",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "10.48",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "e0f978adaade2d70",
-   "sid": "US1SCSL0009 6",
-   "story": "Through Oct 13, the volunteer rain gauge less than a mile north-northeast of Saluda has caught most of its year in May, with 10.48 inches that month. The biggest single day came late, 2.99 inches on Oct 11. Before that May rain, the gauge went 19 days in a row with nothing in it, from Apr 7 to Apr 25. That puts the year 6.23 inches less than last year at this point.",
    "through": "2026-10-13"
   },
   "45085": {

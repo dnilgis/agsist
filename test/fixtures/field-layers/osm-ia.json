@@ -1,0 +1,53 @@
+{
+ "_note": "Built by hand in the shape of the documented answer (the sandbox cannot reach the service). Replace with the copy scripts/probe_field_layers.py saves (raw branch, data/land-raw/layers/) once land-data.yml task=layers runs.",
+ "body": {
+  "version": 0.6,
+  "elements": [
+   {
+    "type": "way",
+    "id": 1,
+    "tags": {
+     "power": "line",
+     "voltage": "161000;69000"
+    },
+    "geometry": [
+     {
+      "lat": 42.06904637681159,
+      "lon": -93.55
+     },
+     {
+      "lat": 42.06904637681159,
+      "lon": -93.45
+     }
+    ]
+   },
+   {
+    "type": "way",
+    "id": 2,
+    "tags": {
+     "power": "line"
+    },
+    "geometry": [
+     {
+      "lat": 42.018321739130435,
+      "lon": -93.55
+     },
+     {
+      "lat": 42.018321739130435,
+      "lon": -93.45
+     }
+    ]
+   },
+   {
+    "type": "node",
+    "id": 3,
+    "lat": 42.03281449275362,
+    "lon": -93.4976,
+    "tags": {
+     "power": "substation",
+     "voltage": "69000"
+    }
+   }
+  ]
+ }
+}

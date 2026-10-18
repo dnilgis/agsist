@@ -1056,7 +1056,7 @@
   // touch or key press, or when a field is picked. The print report, boundary
   // export and note photos are field-scout-extras.js, fetched on their buttons.
   // Both reach this file's variables through FSX (getters, so always the live value).
-  var FS_READ_SRC='/field-scout-read.js?v=6', FS_EXTRAS_SRC='/field-scout-extras.js?v=1';
+  var FS_READ_SRC='/field-scout-read.js?v=7', FS_EXTRAS_SRC='/field-scout-extras.js?v=1';
   var RM=null, XM=null, _rmP=null, _xmP=null;
   var FSX=Object.defineProperties({}, {
     map:{get:function(){ return map; }, set:function(v){ map=v; }},
@@ -1138,10 +1138,17 @@
   function renderPassTimeline(){ if(RM) return RM.renderPassTimeline(); }   // no read yet, nothing to replay
   function scrubTo(){ if(RM) return RM.scrubTo.apply(null, arguments); return fsLate(loadRead, 'scrubTo', arguments); }
   function toggleHail(){ if(RM) return RM.toggleHail.apply(null, arguments); return fsLate(loadRead, 'toggleHail', arguments); }
-  function runAll(poly){
-    if(RM) return RM.runAll(poly);
+  // What's on and around this field (flood, wetlands, slope, energy, feedlots, easements): its own file
+  var FS_LAYERS_SRC='/field-scout-layers.js?v=1', _lyP=null, LY=null;
+  function loadLayers(poly){
     var g=fieldGen;
-    return loadRead().then(function(M){ if(g===fieldGen) M.runAll(poly); },
+    if(!_lyP) _lyP=fsScript(FS_LAYERS_SRC, '__fsLayers').then(function(f){ LY=LY||f(FSX); return LY; }, function(e){ _lyP=null; throw e; });
+    _lyP.then(function(M){ if(g===fieldGen) M.run(poly); }, function(){});
+  }
+  function runAll(poly){
+    if(RM){ var out=RM.runAll(poly); loadLayers(poly); return out; }
+    var g=fieldGen;
+    return loadRead().then(function(M){ if(g===fieldGen){ M.runAll(poly); loadLayers(poly); } },
       function(){ flashHint('The field read did not load. Check the connection and tap the field again.', 7000); });
   }
   function soilShare(){ return RM.soilShare.apply(null, arguments); }        // extras only, after the read

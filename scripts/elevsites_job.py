@@ -68,6 +68,8 @@ def prompt(e):
         if p.get("skipped"):
             parts.append(f"Not saved: {p['skipped']}")
             continue
+        if p.get("pdf"):
+            parts.append("(a PDF; its text below)")
         if p.get("error") or p.get("navError"):
             parts.append(f"Load problem: {p.get('error') or p.get('navError')}")
         parts.append(f"Title: {p.get('title') or '(none)'}")
@@ -125,23 +127,32 @@ def seed_companies(list_txt):
     return out
 
 
-def build_bundle(caps):
-    wl = json.load(open(os.path.join(caps, "worklist.json")))
-    comp = {c["company"]: c for c in wl["companies"]}
-    seeds = seed_companies(open(os.path.join(caps, "list.txt")).read())
+def load_pages(caps, text_cap=None):
+    """Every page captured under caps/: digest fields the jobs read, keyed by URL."""
     pages = {}
-    for idx in glob.glob(os.path.join(caps, "*", "index.json")):
+    for idx in sorted(glob.glob(os.path.join(caps, "*", "index.json"))):
         shard = os.path.dirname(idx)
         for row in json.load(open(idx)):
             dg = os.path.join(shard, row["slug"], "digest.json")
             d = json.load(open(dg)) if os.path.exists(dg) and not row.get("skipped") else {}
+            status = d.get("httpStatus") or row.get("httpStatus")
+            bad = isinstance(status, int) and status >= 400
             pages[row["pageUrl"]] = {"url": row["pageUrl"], "parent": row.get("parent"), "skipped": row.get("skipped"),
-                                     "navError": d.get("navError") or row.get("navError"), "error": d.get("error") or row.get("error"),
-                                     "title": d.get("title", ""), "text": d.get("text", ""), "links": trim_links(d.get("links", [])),
+                                     "navError": d.get("navError") or row.get("navError"),
+                                     "error": d.get("error") or row.get("error") or (f"HTTP {status}" if bad else None),
+                                     "title": d.get("title", ""), "text": "" if bad else d.get("text", ""),
+                                     "links": [] if bad else trim_links(d.get("links", [])),
                                      "scripts": d.get("scripts", []), "iframes": d.get("iframes", []),
                                      "responseHosts": dict(sorted(d.get("responseHosts", {}).items(), key=lambda x: -x[1])[:25]),
                                      "pdfLinks": d.get("pdfLinks", []), "facebook": d.get("facebook", []),
+                                     "pdf": bool(d.get("pdf") or row.get("pdf")), "probe": bool(row.get("probe")),
                                      "looksLikeBoard": bool(d.get("looksLikeBoard")), "fixture": f"{os.path.relpath(shard, caps)}/{row['slug']}" if row.get("kept") else None}
+    return pages
+
+
+def group_by_seed(caps, pages):
+    """Pages per listed key (the comment after each list.txt URL), following parents back to the listed page."""
+    seeds = seed_companies(open(os.path.join(caps, "list.txt")).read())
     by = {}
     for url, p in pages.items():
         root = url
@@ -151,10 +162,18 @@ def build_bundle(caps):
         c = seeds.get(root) or seeds.get(url)
         if c:
             by.setdefault(c, []).append(p)
+    for ps in by.values():
+        ps.sort(key=lambda p: (p.get("parent") is not None, p.get("probe", False), p["url"]))
+    return by
+
+
+def build_bundle(caps):
+    wl = json.load(open(os.path.join(caps, "worklist.json")))
+    comp = {c["company"]: c for c in wl["companies"]}
+    by = group_by_seed(caps, load_pages(caps))
     rows = []
     for c, ps in by.items():
         meta = comp.get(c, {"company": c})
-        ps.sort(key=lambda p: (p.get("parent") is not None, p["url"]))
         live = [p for p in ps if p.get("text")]
         per = max(MIN_PAGE_TEXT, TEXT_BUDGET // max(1, len(live)))
         for p in ps:
@@ -163,7 +182,10 @@ def build_bundle(caps):
                      "upperMidwest": meta.get("upperMidwest", 0), "states": meta.get("states", {}),
                      "towns": meta.get("towns", [])[:40], "alsoRead": bool(meta.get("alsoRead")), "pages": ps})
     rows.sort(key=lambda r: (-(r["upperMidwest"] > 0), -r["realRows"], r["company"]))
-    return {"job": "elevsites", "caps": os.path.basename(caps), "elevsite": rows}
+    out = {"job": "elevsites", "caps": os.path.basename(caps), "elevsite": rows}
+    if os.environ.get("ELEVSITES_MERGE_WITH"):
+        out["mergeWith"] = re.sub(r"[^a-zA-Z0-9_-]", "", os.environ["ELEVSITES_MERGE_WITH"])
+    return out
 
 
 # ── collect ───────────────────────────────────────────────────────────────
@@ -230,6 +252,11 @@ def collect(bundle, results):
         a.update(realRows=e["realRows"], upperMidwest=e["upperMidwest"], states=e["states"], alsoRead=e.get("alsoRead", False),
                  result=it.get("result", "missing"))
         rows.append(a)
+    return ranked_todo(rows, {"job": "elevsites", "caps": bundle.get("caps"), "batch": results.get("batch_id"),
+                              "actual_cost_usd": results.get("actual_cost_usd")})
+
+
+def ranked_todo(rows, head):
     plats = {}
     for r in rows:
         k = r["platform"] if r["has_cash_bids"] == "yes" else ("unclear" if r["has_cash_bids"] == "unclear" else "no bids")
@@ -243,12 +270,27 @@ def collect(bundle, results):
                        "upperMidwestRows": sum(r["upperMidwest"] for r in rs), "items": rs})
     order = lambda g: (g["platform"] in ("unclear", "no bids"), g["platform"] not in EXISTING_READER, -g["upperMidwestRows"], -g["rows"])
     ranked.sort(key=order)
-    return {"job": "elevsites", "caps": bundle.get("caps"), "batch": results.get("batch_id"),
-            "actual_cost_usd": results.get("actual_cost_usd"),
-            "counts": {"companies": len(rows), "yes": sum(r["has_cash_bids"] == "yes" for r in rows),
-                       "no": sum(r["has_cash_bids"] == "no" for r in rows), "unclear": sum(r["has_cash_bids"] == "unclear" for r in rows),
-                       "flagged": sum(bool(r["flags"]) for r in rows)},
-            "platforms": ranked}
+    return dict(head, counts={"companies": len(rows), "yes": sum(r["has_cash_bids"] == "yes" for r in rows),
+                              "no": sum(r["has_cash_bids"] == "no" for r in rows), "unclear": sum(r["has_cash_bids"] == "unclear" for r in rows),
+                              "flagged": sum(bool(r["flags"]) for r in rows)},
+                platforms=ranked)
+
+
+def merge(v1, v2):
+    """Round two's answers in place of round one's for the companies it re-read; the same ranking."""
+    new = {r["company"]: dict(r, round=2) for g in v2["platforms"] for r in g["items"] if r.get("result") == "succeeded"}
+    rows, changed = [], {}
+    for g in v1["platforms"]:
+        for r in g["items"]:
+            n = new.get(r["company"])
+            if n:
+                key = f"{r['has_cash_bids']} -> {n['has_cash_bids']}"
+                changed[key] = changed.get(key, 0) + 1
+            rows.append(n or dict(r, round=1))
+    t = ranked_todo(rows, {"job": "elevsites", "caps": f"{v1.get('caps')} + {v2.get('caps')}", "batch": f"{v1.get('batch')} + {v2.get('batch')}",
+                           "actual_cost_usd": round((v1.get("actual_cost_usd") or 0) + (v2.get("actual_cost_usd") or 0), 4)})
+    t["round2"] = {"reread": len(new), "changed": changed}
+    return t
 
 
 def markdown(todo):
@@ -258,6 +300,8 @@ def markdown(todo):
          f"({c['flagged']} answers had something dropped by the checks). Batch {todo.get('batch')}, cost ${todo.get('actual_cost_usd')}.",
          "", "Every answer was checked against the saved pages: a bid page URL must be one we saved or saw linked, the quote must be "
          "in the saved text, and town names not in the text are dropped. These are findings for a person, not manifests.", "",
+         *([f"Round two re-read {todo['round2']['reread']} of the unclear companies (deeper capture): "
+            + ", ".join(f"{k}: {v}" for k, v in sorted(todo['round2']['changed'].items())), ""] if todo.get("round2") else []),
          "| Platform | Next step | Companies | Unread rows | Upper Midwest rows |", "|---|---|---|---|---|"]
     for g in todo["platforms"]:
         L.append(f"| {g['platform']} | {g['action']} | {g['companies']} | {g['rows']} | {g['upperMidwestRows']} |")
@@ -297,6 +341,14 @@ def selftest():
     assert todo["platforms"][0]["platform"] == "dtn" and todo["platforms"][0]["action"].startswith("point existing reader")
     assert todo["counts"]["yes"] == 1 and "| dtn |" in markdown(todo)
     assert all(p in PLATFORMS for p in EXISTING_READER)
+    # round two: a re-read answer replaces round one's, the rest stay, the ranking is the same
+    v1 = collect({"elevsite": [e, dict(e, company="OTHER CO")], "caps": "c1"},
+                 {"batch_id": "b1", "actual_cost_usd": 1.0, "items": {cid_of("OTHER CO"): {"result": "succeeded", "parsed": dict(good, has_cash_bids="unclear")}}})
+    assert v1["counts"]["unclear"] == 2
+    m = merge(v1, todo)
+    assert m["counts"] == {"companies": 2, "yes": 1, "no": 0, "unclear": 1, "flagged": 2}, m["counts"]
+    assert m["round2"] == {"reread": 1, "changed": {"unclear -> yes": 1}} and m["actual_cost_usd"] == 2.0
+    assert "Round two re-read 1" in markdown(m)
     print("elevsites selftest ok")
 
 
@@ -313,6 +365,12 @@ if __name__ == "__main__":
         open(a[2], "w").write(text)
         print(f"redacted {n} secret-looking string(s) from the captures")
         print(f"::notice title=elevsites bundle::{len(b['elevsite'])} companies from {b['caps']}")
+    elif a[0] == "merge":
+        t = merge(json.load(open(a[1])), json.load(open(a[2])))
+        os.makedirs(a[3], exist_ok=True)
+        json.dump(t, open(os.path.join(a[3], "todo-v2.json"), "w"), indent=1)
+        open(os.path.join(a[3], "todo-v2.md"), "w").write(markdown(t))
+        print(f"::notice title=elevsites to-do v2::{t['counts']} {t['round2']}")
     elif a[0] == "collect":
         todo = collect(json.load(open(a[1])), json.load(open(a[2])))
         os.makedirs(a[3], exist_ok=True)
@@ -320,4 +378,4 @@ if __name__ == "__main__":
         open(os.path.join(a[3], "todo.md"), "w").write(markdown(todo))
         print(f"::notice title=elevsites to-do::{todo['counts']}")
     else:
-        sys.exit("modes: selftest | bundle CAPS_CLONE OUT | collect BUNDLE RESULTS DIR")
+        sys.exit("modes: selftest | bundle CAPS_CLONE OUT | collect BUNDLE RESULTS DIR | merge V1_TODO V2_TODO DIR")

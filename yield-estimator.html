@@ -15,8 +15,8 @@
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 
-<title>Soybean &amp; Corn Yield Calculator: Pod and Ear Count | AGSIST</title>
-<meta name="description" content="Free soybean yield calculator (pod count) and corn yield estimator (ear count): bushels per acre from your own field counts before harvest. No login.">
+<title>Soybean Yield Calculator: Pod Count to Bu/Acre, Free | AGSIST</title>
+<meta name="description" content="Free soybean yield calculator: 132,000 plants, 30 pods, 2.5 seeds per pod and 3,000 seeds/lb is 55 bu/acre. Type your own pod counts. Corn ear counts too.">
 <meta name="keywords" content="corn yield estimator, soybean yield estimator, field yield estimate, ear count yield calculator, yield check corn, pre-harvest yield estimate, kernel row yield, pod count soybean yield">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -24,8 +24,8 @@
 <meta property="og:type"         content="website">
 <meta property="og:site_name"    content="AGSIST">
 <meta property="og:locale"       content="en_US">
-<meta property="og:title"        content="Soybean &amp; Corn Yield Calculator | AGSIST">
-<meta property="og:description"  content="Soybean yield from pod counts and corn yield from ear counts: bushels per acre from your own field counts. Free.">
+<meta property="og:title"        content="Soybean Yield Calculator: Pod Count to Bu/Acre, Free | AGSIST">
+<meta property="og:description"  content="Soybean yield from pod counts: 132,000 plants, 30 pods, 2.5 seeds per pod and 3,000 seeds/lb is 55 bu/acre. Corn from ear counts too. Free, no login.">
 <meta property="og:url"          content="https://agsist.com/yield-estimator">
 <meta property="og:image"        content="https://agsist.com/img/og/yield-estimator.jpg?v=ac98c70f">
 <meta property="og:image:alt" content="Soybean and corn yield calculator. Bushels per acre from your own ear and pod counts.">
@@ -34,8 +34,8 @@
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
-<meta name="twitter:title"       content="Soybean &amp; Corn Yield Calculator | AGSIST">
-<meta name="twitter:description" content="Soybean yield from pod counts and corn yield from ear counts: bushels per acre from your own field counts. Free.">
+<meta name="twitter:title"       content="Soybean Yield Calculator: Pod Count to Bu/Acre, Free | AGSIST">
+<meta name="twitter:description" content="Soybean yield from pod counts: 132,000 plants, 30 pods, 2.5 seeds per pod and 3,000 seeds/lb is 55 bu/acre. Corn from ear counts too. Free, no login.">
 <meta name="twitter:image"       content="https://agsist.com/img/og/yield-estimator.jpg?v=ac98c70f">
 <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-17: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set and the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string), and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
@@ -204,7 +204,7 @@
   <div class="ye-hero">
     <div class="ye-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Pre-harvest field estimate</div>
     <h1>Soybean and corn<br>yield calculator</h1>
-    <p class="page-lede">Soybean and corn bushels per acre from your own field counts: pod counts for soybeans, ear counts for corn.</p>
+    <p class="page-lede">Free soybean yield calculator: type plants per acre, pods per plant and seeds per pod for bushels per acre before harvest. Corn works from ear counts.</p>
     <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">By <a href="/about">Sigurd Lindquist, CCA</a>. Data: your own field counts, run through the yield component method university extension publishes.</p>
     <details class="ye-more"><summary>When to count, and how accurate it is</summary>
       <p>Count corn from the milk stage (R3) on and soybeans at R6 to R7, the same ear-count and kernel-count math crop tour scouts run in August. Sample at least 5 locations per field, 10 ears or plants each. The calculator averages up to 10 sites and lists each one.</p>
@@ -492,7 +492,7 @@ if(FALL){
   var kk=document.querySelector('.ye-hero .ye-eyebrow');
   if(kk&&kk.lastChild&&kk.lastChild.nodeType===3)kk.lastChild.nodeValue=' Field estimate: count before you cut';
   var ld=document.querySelector('.ye-hero .page-lede');
-  if(ld)ld.textContent='Harvest is on: a field estimate from your own counts in rows you have not cut yet, pod counts for soybeans and ear counts for corn, to set beside the yield monitor.';
+  if(ld)ld.textContent='Harvest is on: a field estimate from your own counts in rows you have not cut yet, to set beside the yield monitor. This free soybean yield calculator works from pod counts; corn works from ear counts.';
 }
 
 /* TAB SYSTEM */
@@ -772,7 +772,6 @@ calcBean();
 })();
 </script>
 
-  <script src="/components/glossary.js?v=1" defer></script>
-  <script src="/components/next-links.js?v=1" defer></script>
+  <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

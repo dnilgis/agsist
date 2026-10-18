@@ -414,53 +414,6 @@
    "story": "Through Oct 13, the weather station 1 mile north-northwest of West Rockport had May as its wettest month at 7.69 inches. The biggest one-day reading came May 15 with 2.40 inches. The gauge then went 13 days in a row with nothing in it, from Aug 18 to Aug 30. On the days both years reported, this year is 7.75 inches less than 2025.",
    "through": "2026-10-13"
   },
-  "23015": {
-   "facts": {
-    "biggest_day": {
-     "date": "May 14",
-     "in": "1.79",
-     "label": "biggest single day"
-    },
-    "county": "Lincoln County",
-    "days_in_year_so_far": 286,
-    "days_missing": 7,
-    "days_reported": 279,
-    "gauge": "weather station",
-    "gauge_from_middle": "10 miles from the middle of the county",
-    "gauge_where": "at Wiscasset Airport",
-    "last_year": null,
-    "longest_dry_stretch": {
-     "days": 8,
-     "from": "Jul 2",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Jul 9"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 74,
-    "state": "Maine",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "25.16",
-    "usual_in": "34.17",
-    "vs_usual": {
-     "diff_in": "9.01",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "6.37",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "c07e3345dd27b27e",
-   "sid": "94623 1",
-   "story": "Through Oct 13, the weather station at Wiscasset Airport has caught 25.16 inches, 9.01 inches less than a usual year. May did most of the work at 6.37 inches, and the biggest single day came May 14 with 1.79 inches. The longest stretch with nothing in the gauge ran 8 days, Jul 2 to Jul 9.",
-   "through": "2026-10-13"
-  },
   "23017": {
    "facts": {
     "biggest_day": {
@@ -518,65 +471,6 @@
    "hash": "3cc9620778ac84f9",
    "sid": "173570 2",
    "story": "Through Oct 13, the weather station in Hartford had May as its wettest month at 5.05 inches. The biggest single day came May 15 with 1.64 inches. The longest dry stretch ran 7 days, Jul 3 to Jul 9, with nothing in the gauge. That leaves the station 3.35 inches less than last year at this point.",
-   "through": "2026-10-13"
-  },
-  "23019": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 18",
-     "in": "1.35",
-     "label": "biggest single day"
-    },
-    "county": "Penobscot County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "17 miles from the middle of the county",
-    "gauge_where": "at Millinocket Municipal Airport",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 284,
-      "diff_in": "0.54",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 2,
-     "through": "Oct 13",
-     "total_in": "27.83",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 7,
-     "from": "May 18",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "May 24"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 84,
-    "state": "Maine",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "27.31",
-    "usual_in": "32.42",
-    "vs_usual": {
-     "diff_in": "5.11",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "5.17",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "dd407f0658d42531",
-   "sid": "14610 1",
-   "story": "Through Oct 13, the weather station at Millinocket Municipal Airport has caught most of its rain in June, with 5.17 inches that month. The biggest single day came on Jun 18 at 1.35 inches. The longest dry stretch ran 7 days, from May 18 to May 24, with not even a trace in the gauge. On the days both years reported, this year is 0.54 inches less than 2025.",
    "through": "2026-10-13"
   },
   "23021": {

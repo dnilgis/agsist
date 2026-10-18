@@ -698,15 +698,12 @@ try {
        hero, and usually counts first); whichever runs first counts it. */
     try{if(!sessionStorage.getItem('agsist_visit_counted')){sessionStorage.setItem('agsist_visit_counted','1');var n=parseInt(localStorage.getItem('agsist_visits')||'0',10)+1;localStorage.setItem('agsist_visits',String(n));}}catch(e){}
     if(isSignedUp())return;
-    var visits=(function(){try{return parseInt(localStorage.getItem('agsist_visits')||'0',10);}catch(e){return 0;}})();
-    // Jul 2026: email_signup fired once in 28 days — the compact one-field
-    // signup now shows to EVERY non-subscriber, high on the page under the
-    // briefing (it used to hide until visit #25, buried at the bottom).
-    if(!isDismissed('agsist_signup_compact_dismissed')){var el2=document.getElementById('signup-compact');if(el2)el2.style.display='flex';}
-    /* The Daily email links to /#signup: show the band for that visit
-       whatever the count, and bring it into view. */
+    /* Oct 18 (re-score 8): one email ask on the homepage, not three. The
+       hero line under the bids is the ask and the site footer carries the
+       daily band; the compact bar opens only from the bids card link
+       (bids-homepage.js) and the big band only for /#signup links. */
     var toSignup=/^#signup(-full)?$/.test(location.hash);
-    if(visits<=24||toSignup){var el=document.getElementById('signup-full');if(el){el.style.display='block';if(toSignup)setTimeout(function(){try{el.scrollIntoView({block:'start'});}catch(e){}},0);}}
+    if(toSignup){var el=document.getElementById('signup-full');if(el){el.style.display='block';if(toSignup)setTimeout(function(){try{el.scrollIntoView({block:'start'});}catch(e){}},0);}}
   })();
   var btnCompactDismiss=document.getElementById('btn-compact-dismiss');if(btnCompactDismiss)btnCompactDismiss.addEventListener('click',function(){setDismissed('agsist_signup_compact_dismissed');var el=document.getElementById('signup-compact');if(el)el.style.display='none';var m=document.getElementById('main');if(m&&m.focus){try{m.focus({preventScroll:true});}catch(e){}}});
   function showSignupSuccess(formId,icon,headline,sub){var formEl=document.getElementById(formId);if(!formEl)return;formEl.innerHTML='<div style="text-align:center;padding:.9rem 0"><div style="font-size:1.882rem;margin-bottom:.4rem">'+icon+'</div><div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.25rem">'+headline+'</div><div style="font-size:.824rem;color:var(--text-muted);line-height:1.5">'+sub+'</div></div>';formEl.style.display='block';}

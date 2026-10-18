@@ -1004,65 +1004,6 @@
    "story": "Through Oct 13, the volunteer rain gauge 2.0 miles northeast of Sandy had its wettest month in August with 2.57 inches. The biggest single day came Aug 14 at 0.93 inches. The longest dry stretch ran 24 days, Mar 8 to Mar 31, with nothing in the gauge, not even a trace. Against last year, the gauge has 0.11 inches more than 2025 had through Oct 13.",
    "through": "2026-10-13"
   },
-  "49037": {
-   "facts": {
-    "biggest_day": {
-     "date": "Sep 30",
-     "in": "0.84",
-     "label": "biggest single day"
-    },
-    "county": "San Juan County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "27 miles from the middle of the county",
-    "gauge_where": "in Bluff",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 285,
-      "diff_in": "0.45",
-      "dir": "more",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 1,
-     "through": "Oct 13",
-     "total_in": "5.01",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 25,
-     "from": "Mar 7",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Mar 31"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 96,
-    "state": "Utah",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "5.46",
-    "usual_in": "5.71",
-    "vs_usual": {
-     "diff_in": "0.25",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "2.18",
-     "month": "September"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "124b4e51ff9bc4dc",
-   "sid": "420788 2",
-   "story": "Through Oct 13, the weather station in Bluff had most of its rain late. September brought 2.18 inches, and the biggest single day was Sep 30 at 0.84. Before that, the gauge went 25 days in a row with nothing, Mar 7 to Mar 31. On the days both years reported, this year has 0.45 inches more than last year.",
-   "through": "2026-10-13"
-  },
   "49039": {
    "facts": {
     "biggest_day": {
