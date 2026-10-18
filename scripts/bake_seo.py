@@ -49,7 +49,7 @@ import argparse
 import json
 import re
 import sys
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -119,7 +119,25 @@ def build_ctx(today):
         "basis": _load("transport/basis.json"),
         "fertilizer": _load("fertilizer-prices.json"),
         "dairy": _load("dairy-data.json"),
+        "cal_reports": cal_reports(),
     }
+
+
+# The REPORTS list in usda-calendar.html is the page's own schedule. The
+# crop-report title and the two time/date FAQs read it, so a date the page
+# moves is a date the snippet moves with it.
+_CAL_ROW = re.compile(r"\{date:'(\d{4}-\d\d-\d\d)',name:'([^']*)',type:'([^']*)'(?:,tag:'[^']*')?,time:'([^']*)'")
+
+
+def cal_reports(text=None):
+    """[{date, name, type, time}] from usda-calendar.html's REPORTS, or None."""
+    try:
+        t = text if text is not None else (REPO / "usda-calendar.html").read_text(encoding="utf-8")
+    except OSError:
+        return None
+    rows = [{"date": date.fromisoformat(d), "name": n, "type": ty, "time": tm}
+            for d, n, ty, tm in _CAL_ROW.findall(t)]
+    return rows or None
 
 
 # ---------------------------------------------------------------- builders
@@ -128,6 +146,34 @@ def build_ctx(today):
 
 WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 WASDE_TIME = "noon ET (11 a.m. CT)"      # usda-calendar.html: every WASDE row is 12:00 PM ET
+
+
+def next_crop_report(c):
+    """(day, [report names]) for the next Crop Production on the page's own
+    schedule, with every other USDA report the page lists at noon ET that
+    day (the WASDE first), or None. On report day, once the WASDE has
+    printed (next_wasde moved past today), that day is done and the next
+    one is next, the same rule as the WASDE title."""
+    rows = c.get("cal_reports") or []
+    today, w = c["today"], c.get("next_wasde")
+    days = sorted({r["date"] for r in rows if r["name"] == "Crop Production"
+                   and r["type"] == "supply" and r["date"] >= today})
+    if days and days[0] == today and w and w > today:
+        days = days[1:]
+    if not days:
+        return None
+    d = days[0]
+    same = [r for r in rows if r["date"] == d and r["time"] == "12:00 PM ET"
+            and r["type"] not in ("intl", "fsa", "outlook")]
+    if not any(r["name"] == "Crop Production" for r in same):
+        raise ValueError(f"Crop Production on {d} is not at 12:00 PM ET on the page")
+    names = [r["name"] for r in same if r["type"] == "wasde"]
+    names += [r["name"] for r in same if r["type"] != "wasde" and r["name"] not in names]
+    return d, names
+
+
+def _and(xs):
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
 
 
 def seo_usda_calendar(c):
@@ -142,6 +188,25 @@ def seo_usda_calendar(c):
                 f"at {WASDE_TIME}, Crop Production, Grain Stocks, Crop Progress.")
     if w < c["today"]:
         raise ValueError(f"next_wasde returned {w}, already in the past")
+    when = "today" if w == c["today"] else WEEKDAYS[w.weekday()]
+    # 2026-10-18 (Search Console, Jul to Oct 14): "next usda crop report" and
+    # "what time" queries got no direct answer; the title and description
+    # named the WASDE only. When the next WASDE comes with Crop Production
+    # on the page's own schedule, both are named, and the description gives
+    # the release time and the weekly Crop Progress time.
+    cr = next_crop_report(c)
+    if cr and cr[0] == w:
+        import usda_dates
+        title = f"USDA Report Dates {w.year}: Next WASDE & Crop Production {MONTHS[w.month - 1][:3]} {w.day}{SUFFIX}"
+        head = (f"Next USDA crop report: {_and(cr[1])}, {when}, {mdY(w)}, at {WASDE_TIME}.")
+        tails = []
+        if usda_dates.next_crop_progress(c["today"]):
+            tails.append(" Crop Progress Mondays 4 p.m. ET. Every date on one calendar.")
+            tails.append(" Crop Progress Mondays 4 p.m. ET.")
+        tails += [" Every USDA report date on one calendar.", ""]
+        for tail in tails:
+            if len(head + tail) <= DESC_MAX:
+                return title, head + tail
     # RETITLED 2026-10-11 from "Next WASDE: Nov 10, 2026 | USDA Report
     # Calendar". Over Jul 10-Oct 7 that title held position 7.4 on 46,503
     # impressions at 0.20% CTR, and the queries Search Console names are
@@ -157,10 +222,91 @@ def seo_usda_calendar(c):
     # and wrong every day after until the next bake (none on weekends), and
     # "wasde report today" (30 impressions) asks for the time, which never
     # goes stale.
-    when = "today" if w == c["today"] else WEEKDAYS[w.weekday()]
     return (f"WASDE & USDA Report Dates {w.year}: Next WASDE {MONTHS[w.month - 1][:3]} {w.day}{SUFFIX}",
             f"The next WASDE report is {when}, {mdY(w)}, at {WASDE_TIME}. Every "
             f"USDA report date on one calendar: WASDE, Crop Production, Grain Stocks.")
+
+
+# Two FAQ answers on /usda-calendar are baked here, in the visible <details>
+# AND the FAQPage JSON-LD, from the same string (render_faq_html.py --check
+# compares them). The questions are the words people search.
+Q_NEXT_CROP = "When is the next USDA crop report?"
+Q_TIMES = "What time do USDA reports come out?"
+
+
+def faq_next_crop(c):
+    import usda_dates
+    today = c["today"]
+    cr = next_crop_report(c)
+    w = c.get("next_wasde")
+    if cr:
+        d, names = cr
+        when = "today" if d == today else WEEKDAYS[d.weekday()]
+        many = len(names) > 1
+        out = (f"USDA's next crop report{'s' if many else ''}, {_and(names)}, come{'' if many else 's'} out "
+               f"{when}, {mdY(d)}, at 12:00 p.m. ET (11 a.m. CT).")
+    elif w:
+        when = "today" if w == today else WEEKDAYS[w.weekday()]
+        out = (f"The next USDA crop numbers come with the WASDE, {when}, {mdY(w)}, at 12:00 p.m. ET "
+               f"(11 a.m. CT). No more Crop Production reports are on this year's calendar.")
+    else:
+        return ("Every crop report on this year's USDA calendar is out. The next dates go on this "
+                "page when USDA posts next year's calendar.")
+    cp = usda_dates.next_crop_progress(today)
+    last = usda_dates.CROP_PROGRESS_LAST.get(today.year)
+    if cp and last:
+        out += f" Crop Progress comes out Mondays at 4:00 p.m. ET through {mdY(last)}."
+    return out
+
+
+# report -> the time the answer prints for it; checked against the page's
+# schedule on every bake, so the FAQ cannot drift from the calendar below it
+_NOON = ("WASDE", "Crop Production", "Grain Stocks", "Prospective Plantings", "Acreage")
+_THREE = ("Cattle on Feed", "Quarterly Hogs and Pigs", "Milk Production", "Cold Storage")
+
+
+def faq_report_times(c):
+    import usda_dates
+    rows = c.get("cal_reports") or []
+    if not rows:
+        raise ValueError("no schedule rows read from usda-calendar.html")
+
+    def times(nm):
+        return {r["time"] for r in rows if r["name"] == nm or r["name"].startswith(nm + " (")}
+    for names, want in ((_NOON, "12:00 PM ET"), (_THREE, "3:00 PM ET")):
+        for nm in names:
+            got = times(nm)
+            if not got:
+                raise ValueError(f"{nm} is not on the page's schedule")
+            if got != {want}:
+                raise ValueError(f"{nm} is at {sorted(got)} on the page, the FAQ says {want}")
+    if usda_dates.CROP_PROGRESS_TIME_CT != "3:00 PM CT" or usda_dates.EXPORT_SALES_TIME_CT != "7:30 AM CT":
+        raise ValueError("Crop Progress or Export Sales time changed in usda_dates.py")
+    return ("The big crop reports come out at 12:00 p.m. ET (11 a.m. CT): WASDE, Crop Production, "
+            "Grain Stocks, Prospective Plantings and Acreage. Cattle on Feed, Hogs and Pigs, Milk "
+            "Production and Cold Storage come out at 3:00 p.m. ET (2 p.m. CT), the time NASS uses "
+            "for most of its other reports. Crop Progress is out Mondays at 4:00 p.m. ET (3 p.m. CT) "
+            "in season, and Export Sales Thursdays at 8:30 a.m. ET. Source: the NASS 2026 release "
+            "calendar and USDA's WASDE schedule.")
+
+
+FAQ_BAKE = {
+    "usda-calendar.html": [(Q_NEXT_CROP, faq_next_crop), (Q_TIMES, faq_report_times)],
+}
+
+
+def bake_faq_answer(text, q, ans):
+    """(text, ok). Sets question q's answer in the FAQPage JSON-LD and in the
+    visible <details> to ans. ok is False unless each is found exactly once."""
+    if any(ch in ans for ch in '"<>&\\') or any(ch in q for ch in '"<>&\\'):
+        raise ValueError(f"FAQ text needs escaping, refusing: {ans!r}")
+    ld = re.compile(r'("name":\s*"' + re.escape(q) + r'",\s*"acceptedAnswer":\s*\{\s*"@type":\s*"Answer",\s*"text":\s*")((?:[^"\\]|\\.)*)(")')
+    vis = re.compile(r'(<summary>' + re.escape(q) + r'</summary><div class="agf-a">)(.*?)(</div></details>)', re.S)
+    if len(ld.findall(text)) != 1 or len(vis.findall(text)) != 1:
+        return text, False
+    text = ld.sub(lambda m: m.group(1) + ans + m.group(3), text)
+    text = vis.sub(lambda m: m.group(1) + ans + m.group(3), text)
+    return text, True
 
 
 def body_usda_calendar(c):
@@ -696,9 +842,13 @@ def _known_trade(q):
     return q.get("close_kind") is not None or q.get("prev_source") == "recorded settle"
 
 
-MARKETS_PLAIN = ("Ag Markets Today: Grain and Livestock Futures" + SUFFIX,
-                 "Corn, soybean, wheat, cattle and crude futures on one board, refreshed every "
-                 "15 min in session, with cash bids and USDA dates. Free.")
+# 2026-10-18: "CBOT" leads. Search Console, Jul to Oct 14: "cbot live" 281
+# impressions at 9.2 and "c bot live" 99 at 7.0, no clicks, while the title
+# was a date line ("Ag Markets Oct 16") with no CBOT in it. The description
+# says delayed or settle, never "live": quotes are 15 minutes behind.
+MARKETS_PLAIN = ("CBOT Grain Prices Today: Corn, Soybeans, Wheat" + SUFFIX,
+                 "Corn, soybean, wheat, cattle and crude futures on one board, 15-minute delayed "
+                 "in session, with settles, cash bids and USDA dates. Free.")
 
 
 def make_futures(page):
@@ -785,7 +935,7 @@ def seo_markets(c):
     day = f"{MONTHS[cd.month - 1][:3]} {cd.day}"
     title = None
     for n in (3, 2, 1):
-        cand = (f"Ag Markets {day}: " + ", ".join(f"{nm} {px}" for _, nm, px, _ in grains[:n]) + SUFFIX)
+        cand = (f"CBOT Grain Prices {day}: " + ", ".join(f"{nm} {px}" for _, nm, px, _ in grains[:n]) + SUFFIX)
         if len(cand) <= TITLE_MAX:
             title = cand
             break
@@ -794,7 +944,7 @@ def seo_markets(c):
     head = (f"Settles {mdY(cd)}: " +
             ", ".join(f"{nm.lower() if i else nm}{(' ' + ct) if ct else ''} {px}"
                       for i, (_, nm, px, ct) in enumerate(picks)) + ".")
-    tail = " Futures every 15 min, free."
+    tail = " Quotes 15-min delayed, free."
     desc = head + tail if len(head + tail) <= DESC_MAX else head
     while len(desc) > DESC_MAX and len(picks) > 1:   # shed the least-searched quote
         picks = picks[:-1]
@@ -1205,6 +1355,18 @@ def run(today, dry=False, only=None):
                 print(f"  body  {re.sub(r'<[^>]+>', '', inner)}")
             if bad:
                 skipped.append((page, bad)); continue
+        if page in FAQ_BAKE:
+            bad = None
+            for q, ffn in FAQ_BAKE[page]:
+                try:
+                    out, ok = bake_faq_answer(out, q, ffn(ctx))
+                except Exception as exc:                      # noqa: BLE001
+                    bad = f"FAQ builder raised: {exc}"; break
+                if not ok:
+                    bad = f"FAQ {q!r} not found once in JSON-LD and page; refusing to half-update"; break
+                print(f"  faq   {q}")
+            if bad:
+                skipped.append((page, bad)); continue
         if page in DATE_MODIFIED:
             iso = DATE_MODIFIED[page](ctx)
             if iso:
@@ -1297,6 +1459,56 @@ def selftest():
     ck("past the date table: only reports the page lists", "Cattle on Feed" not in _nd, _nd)
     ck("past the date table: no next date is claimed",
        "Next" not in _nt and "next" not in _nd and not re.search(r"\d{4}", _nt + _nd), _nt + " / " + _nd)
+
+    print("\nusda calendar: next crop report and report times, from the page's schedule")
+    _cr_rows = cal_reports()
+    ck("the page's REPORTS list parses", _cr_rows and len(_cr_rows) > 40, len(_cr_rows or []))
+    cctx = dict(ctx, cal_reports=_cr_rows, today=date(2026, 10, 18), next_wasde=date(2026, 11, 10))
+    ct, cd = seo_usda_calendar(cctx)
+    ck("when Crop Production comes with the WASDE, the title names both",
+       ct == "USDA Report Dates 2026: Next WASDE & Crop Production Nov 10" + SUFFIX, ct)
+    ck("...and the description gives weekday, date and noon ET",
+       cd.startswith("Next USDA crop report: WASDE and Crop Production, Tuesday, Nov 10, 2026, at noon ET (11 a.m. CT).")
+       and "4 p.m. ET" in cd and len(cd) <= DESC_MAX, cd)
+    for _m, _d in ((1, 12), (12, 10)):
+        _w = date(2026, _m, _d)
+        _x = seo_usda_calendar(dict(cctx, today=_w - timedelta(days=3), next_wasde=_w))
+        ck(f"every month fits the caps ({_w})", check(_x[0], _x[1], "usda-calendar.html"), _x)
+    _off = seo_usda_calendar(dict(cctx, today=date(2026, 12, 7), next_wasde=date(2026, 12, 10)))[1]
+    ck("out of Crop Progress season the description names no Crop Progress", "Crop Progress" not in _off, _off)
+    _noc = seo_usda_calendar(dict(cctx, cal_reports=[r for r in _cr_rows if r["name"] != "Crop Production"]))
+    ck("no Crop Production that day: the WASDE-only title stands",
+       _noc[0].startswith("WASDE & USDA Report Dates 2026") and _noc[0].endswith("Next WASDE Nov 10" + SUFFIX), _noc)
+    fa = faq_next_crop(dict(cctx, today=date(2026, 10, 18), next_wasde=date(2026, 11, 10)))
+    ck("next crop report FAQ: Nov 10 at noon ET, from the page",
+       "WASDE and Crop Production, come out Tuesday, Nov 10, 2026, at 12:00 p.m. ET (11 a.m. CT)." in fa
+       and "Mondays at 4:00 p.m. ET through Nov 30, 2026" in fa, fa)
+    fa = faq_next_crop(dict(cctx, today=date(2026, 11, 10), next_wasde=date(2026, 12, 10)))
+    ck("after the Nov 10 print the next is Dec 10", "Thursday, Dec 10, 2026" in fa and "Nov 10" not in fa, fa)
+    fa = faq_next_crop(dict(cctx, today=date(2026, 11, 10), next_wasde=date(2026, 11, 10)))
+    ck("on report day before the print it says today", "come out today, Nov 10, 2026" in fa, fa)
+    fa = faq_next_crop(dict(cctx, today=date(2026, 12, 20), next_wasde=None))
+    ck("past the table no date is claimed", not re.search(r"\d", fa), fa)
+    ft = faq_report_times(cctx)
+    ck("times FAQ: noon, 3 p.m., 4 p.m. and 8:30 a.m. ET",
+       all(x in ft for x in ("12:00 p.m. ET", "3:00 p.m. ET", "4:00 p.m. ET", "8:30 a.m. ET")), ft)
+    _moved = [dict(r, time="3:00 PM ET") if r["name"] == "Crop Production" else r for r in _cr_rows]
+    try:
+        faq_report_times(dict(cctx, cal_reports=_moved))
+        ck("a time the page changes makes the times FAQ refuse", False)
+    except ValueError:
+        ck("a time the page changes makes the times FAQ refuse", True)
+    _ft_page = (REPO / "usda-calendar.html").read_text(encoding="utf-8")
+    for _q in (Q_NEXT_CROP, Q_TIMES):
+        ck(f"the page carries {_q!r} once in JSON-LD and once visible",
+           bake_faq_answer(_ft_page, _q, "x" * 30)[1])
+    try:
+        bake_faq_answer(_ft_page, Q_TIMES, 'He said "noon"')
+        ck("an answer that needs escaping is refused", False)
+    except ValueError:
+        ck("an answer that needs escaping is refused", True)
+    for _a in (fa, ft):
+        ck("no em dash in a baked FAQ", "\u2014" not in _a, _a)
 
     print("\nusda calendar: the visible next-WASDE line")
     import usda_dates as _ud
@@ -1730,7 +1942,7 @@ def selftest():
         "fetched": "2026-10-16T18:46:22Z",
         "quotes": {"corn": {"close": 474.25, "close_kind": "last", "close_date": "2026-10-16"}}}))
     ck("a board with no settle on file: markets title and description carry no number",
-       mk_nt == MARKETS_PLAIN and not re.search(r"\d", mk_nt[0] + mk_nt[1].replace("15 min", "")), mk_nt)
+       mk_nt == MARKETS_PLAIN and not re.search(r"\d", mk_nt[0] + mk_nt[1].replace("15-minute", "")), mk_nt)
     ck("a v3.6 previous close taken from the afternoon trade is never baked",
        settled_close({"close": 1260.5, "netChange": -3.75, "close_date": "2026-10-16",
                       "prev_date": "2026-10-15", "prev_source": "recorded settle"},
@@ -1754,13 +1966,18 @@ def selftest():
                             "prev_date": "2026-10-13", "contract": "Dec '26"},
                    "beans": dict(beans_am, contract="Nov '26")}}))
     ck("a morning run dates the board by the last finished session",
-       mk[0].startswith("Ag Markets Oct 13: Corn $4.82¾, Soybeans $12.83¾") and "%" not in mk[0] + mk[1],
+       mk[0].startswith("CBOT Grain Prices Oct 13: Corn $4.82¾, Soybeans $12.83¾") and "%" not in mk[0] + mk[1],
        mk)
 
     print("\ndata pages: dated by the data, silent when it is old")
     t, d = seo_markets(ctx)
     ck("markets title carries the data's date and the corn price",
-       t.startswith("Ag Markets Aug 14: Corn $4.59"), t)
+       t.startswith("CBOT Grain Prices Aug 14: Corn $4.59"), t)
+    ck("markets title names CBOT, the word people search", t.startswith("CBOT "), t)
+    ck("markets description says delayed, never live",
+       "delayed" in d and "live" not in d.lower().replace("live cattle", ""), d)
+    ck("the plain markets fallback says delayed, never live",
+       "delayed" in MARKETS_PLAIN[1] and "live" not in (MARKETS_PLAIN[0] + MARKETS_PLAIN[1]).lower(), MARKETS_PLAIN)
     ck("markets description dates the quotes", "Aug 14, 2026" in d, d)
     ck("markets is skipped when the price file is a week old",
        seo_markets(dict(ctx, today=date(2026, 8, 24))) is None)
