@@ -98,7 +98,7 @@ def _story_p(S, store, pid, f):
         return ""
     s = K.story_for(S, K.lookup(store, S, pid), f, f["as_of_iso"])
     import html
-    return f'<p class="cbt-sub cbt-story">{html.escape(s, quote=False)}</p>' if s else ""
+    return f'<p class="cbt-sub cbt-story" style="margin-bottom:12px">{html.escape(s, quote=False)}</p>' if s else ""
 
 
 # ---------------------------------------------------------------- the two sets
@@ -381,7 +381,7 @@ def selftest():
         kept, rej = K.collect(T, bd, res, t)
         ok(kept == 1 and not rej, f"collect keeps the good one {rej}")
         store = K.load(T, t)
-        ok(T.story_html(store, "ia/hubbard", f).startswith('<p class="cbt-sub cbt-story">As of Oct 17,'), "the story prints")
+        ok(T.story_html(store, "ia/hubbard", f).startswith('<p class="cbt-sub cbt-story" style="margin-bottom:12px">As of Oct 17,'), "the story prints")
         g = dict(f, as_of="Nov 22", as_of_iso="2026-11-22")
         ok(T.story_html(store, "ia/hubbard", g) == "", "36 days on: no story")
         g = dict(f, as_of="Oct 25", as_of_iso="2026-10-25")
