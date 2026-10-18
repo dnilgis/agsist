@@ -153,7 +153,7 @@ STYLES_V = "24"
 LOADER_V = "19"
 ASOF_V = "1"
 QR_V = "10"   # components/qr.js on its own (10: an alphanumeric mode for the Rain Print standard code, 2026-10-14)
-CALC_V = "11"   # 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
+CALC_V = "12"   # 12: borrowed-spread wording (sized to corn's October swings), 2026-10-18; 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2026))   # years with both an FSA county yield and a price change; 2025 counts once its final MYA is out
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap, at least 1 SE, and MIN_WINS winning years
@@ -489,7 +489,7 @@ def verdict_line(v):
         return f"Neither expected to pay ({nums})."
     if w_ == "close":
         return f"Close, either one: about {usd(abs(v['diff']))} apart, too small or too uncertain to call ({nums})."
-    note = (" Capped at Leans: this crop borrows corn&rsquo;s price swings." if v.get("borrowed") and w_.startswith("lean_") else "") + \
+    note = (" Capped at Leans: this crop&rsquo;s price spread is sized to corn&rsquo;s October swings." if v.get("borrowed") and w_.startswith("lean_") else "") + \
            (" Not a clear pick: a futures-based price start gives a different call." if v.get("alt_down") else "")
     if w_.startswith("lean_"):
         side = w_[5:]
@@ -1803,7 +1803,7 @@ def method_html(D):
                 f'<div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th><th>Crop</th><th class="num">ERP</th><th class="num">Final MYA</th>'
                 f'<th class="num">PLC rate</th><th class="num">PLC $/base ac</th><th class="num">ARC-CO $/base ac</th></tr></thead><tbody>{rows}</tbody></table></div>'
                 f'<p class="ap-small">PLC: ERP minus the final season-average price (NASS), never below the loan rate, times FSA&rsquo;s {bt["plc_py"]} national average PLC yield '
-                f'(corn {bt["nat_py"]["corn"]:.1f}, soybeans {bt["nat_py"]["soybeans"]:.1f}, wheat {bt["nat_py"]["wheat"]:.1f} bu, weighted by enrolled base) times 85%. 2019 to 2024 use the '
+                f'(corn {bt["nat_py"]["corn"]:.2f}, soybeans {bt["nat_py"]["soybeans"]:.2f}, wheat {bt["nat_py"]["wheat"]:.2f} bu, weighted by enrolled base) times 85%. 2019 to 2024 use the '
                 f'2018 law (statutory $3.70, $8.40, $5.50; 85% escalator); 2025 the 2025 law. ARC-CO: FSA&rsquo;s county payment rates from its program year files '
                 f'({", ".join(str(y) for y in have)}), irrigated and non-irrigated averaged equally where FSA splits a county, weighted by each county&rsquo;s enrolled base, times 85%. '
                 f'Every county rate in those files was recomputed from the file&rsquo;s own yields and prices and matched FSA&rsquo;s to the cent '
@@ -1983,9 +1983,9 @@ def build_main(D, ch):
   <ul class="ap-list">
     <li><b>Each crop, each farm number.</b> You elect ARC-CO or PLC crop by crop on each FSA farm. Run them one at a time.</li>
     <li><b>Rented ground.</b> On a cash lease the tenant gets the payment unless agreed otherwise. On a share lease landlord and tenant split it by share and both sign.</li>
-    <li><b>10 base acres.</b> A farm with 10 or fewer total base acres gets no payment, unless the producer is socially disadvantaged, limited resource, a veteran or a beginning farmer.</li>
+    <li><b>10 base acres.</b> No payment when the farm&rsquo;s base acres, added to the base on the other farms where you hold an enrolled share, come to 10 acres or less (7 CFR 1412.51), unless you are a socially disadvantaged, limited resource, veteran or beginning farmer.</li>
     <li><b>Income rule.</b> The $900,000 average adjusted gross income limit still applies to ARC and PLC. The new exception for those with 75% of gross income from farming covers certain conservation and disaster programs, not ARC or PLC.</li>
-    <li><b>Payment limit.</b> Per person across all crops and farms, not per farm. Sequestration (5.7% lately) comes off before the limit.</li>
+    <li><b>Payment limit.</b> Per person across all crops and farms, not per farm. Peanuts carry a separate limit of their own. Sequestration (5.7% lately) comes off before the limit.</li>
     <li><b>ARC-IC.</b> A third choice, for the whole farm. <a href="#arc-ic">What it takes to check it</a>.</li>
   </ul>
 
@@ -2445,7 +2445,7 @@ def gap_line(v, lc, y, cd, by=None):
         if ow == 0:
             t += f" {WORD[other]} did not come out ahead in any of the {v['n']} price years we ran."
         if v.get("borrowed"):
-            t += f" {lc[0].upper() + lc[1:]} {'borrow' if lc.endswith('s') else 'borrows'} corn&rsquo;s price swings, so {'they stop' if lc.endswith('s') else 'it stops'} at Leans."
+            t += f" {lc[0].upper() + lc[1:]} {'have' if lc.endswith('s') else 'has'} a price spread sized to corn&rsquo;s October swings, so {'they stop' if lc.endswith('s') else 'it stops'} at Leans."
         if v.get("alt_down"):
             t += " A futures-based price start gives a different answer, so it stops at Leans."
         return t
@@ -2635,12 +2635,17 @@ def trigger_html(cd, e, LY):
     if not r:
         return ""
     p, n, _t = r
+    # A line at or over the benchmark printed as a floored whole number read "under 41 bu ... above the
+    # 41.00 bu benchmark" (Childress Co., TX, 2026-10-18): print it floored to a tenth there instead.
+    ns = f"{n:,}"
+    if n >= e["by"]:
+        ns = f"{math.floor(round(_t * 10, 6)) / 10:,.1f}"
     cen = cd["scen"]["center"]
     src = ("USDA&rsquo;s price outlook" if (cd.get("scen") or {}).get("kind") != "fut" else "the futures-based price")
     at = (f"at {src}, {XC.pf(cd, cen)}" if p == cen else f"at the {XC.pf(cd, p)} loan rate ({src} is under it)")
     u = XC.UNIT[cd["unit"]]["short"]
-    over = (f" That is above the {XC.yf(cd, e['by'])} benchmark, so at that price it pays even on a normal crop." if n >= e["by"] else "")
-    return (f'<p class="ap-trig">ARC-CO pays here for {LY} if the county yield comes in under <b>{n:,} {u}</b> {at}.{over}</p>'
+    over = (f" That is above the {XC.yf(cd, e['by'])} benchmark, so at that price it pays even on a normal crop." if _t > e["by"] else "")
+    return (f'<p class="ap-trig">ARC-CO pays here for {LY} if the county yield comes in under <b>{ns} {u}</b> {at}.{over}</p>'
             f'<p class="ap-small ap-trig-m">90% of the {XC.yf(cd, e["by"])} benchmark &times; the {XC.pf(cd, cd["bp"]["value"])} benchmark price, '
             f'divided by {XC.pf(cd, p)}.</p>')
 
@@ -2933,6 +2938,10 @@ def county_page(st, S, c, D, ch):
     head_v = typical_html(c, lead, D, cname)[1] if official and lead else None
     if official and lead:
         le = next((c["k"][lead][i] for i in default_entries(c["k"][lead]) if c["k"][lead][i]["by"]), None)
+        if head_v and head_v[1] in c["k"][lead]:
+            # the title names the practice the headline verdict is for (Childress Co., TX: the
+            # non-irrigated card has no verdict, so the headline is irrigated wheat), 2026-10-18
+            le = head_v[1]
         cdl = y6[lead]
         lab = XC.XCROPS[lead].get("short", cdl["label"]) if lead in XC.XCROPS else cdl["label"]
         split = practice_split(c["k"][lead])

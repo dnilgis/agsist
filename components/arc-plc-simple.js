@@ -86,7 +86,7 @@
       var side = w.slice(5), other = side === 'plc' ? 'arc' : 'plc';
       var t = WORD[side] + ' comes out about $' + v.whole + ' more per base acre, but that swings from year to year.';
       if (v.f & 32) t += ' ' + WORD[other] + ' did not come out ahead in any of the ' + v.n + ' price years we ran.';
-      if (v.f & 1) t += ' ' + lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'borrow' : 'borrows') + ' corn' + RS + 's price swings, so ' + (pl ? 'they stop' : 'it stops') + ' at Leans.';
+      if (v.f & 1) t += ' ' + lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'have' : 'has') + ' a price spread sized to corn' + RS + 's October swings, so ' + (pl ? 'they stop' : 'it stops') + ' at Leans.';
       if (v.f & 2) t += ' A futures-based price start gives a different answer, so it stops at Leans.';
       return t;
     }
