@@ -22,7 +22,7 @@
   <url><loc>https://agsist.com/lrp/record</loc><lastmod>2026-10-15</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/gdu-calculator</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/planting-date</loc><lastmod>2026-10-18</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://agsist.com/yield-estimator</loc><lastmod>2026-10-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://agsist.com/yield-estimator</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/field-scout</loc><lastmod>2026-10-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/tools</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/arc-plc</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -99,7 +99,7 @@
   <url><loc>https://agsist.com/usda-quick-stats</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cot</loc><lastmod>2026-10-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/drought-monitor</loc><lastmod>2026-10-18</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/hail-map</loc><lastmod>2026-10-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/hail-map</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/harvest-price-tracker</loc><lastmod>2026-10-17</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/whats-priced-in</loc><lastmod>2026-10-18</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
 
@@ -109,7 +109,7 @@
   <url><loc>https://agsist.com/archive</loc><lastmod>2026-10-18</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
 
   <!-- Info -->
-  <url><loc>https://agsist.com/about</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/about</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/data-sources</loc><lastmod>2026-10-17</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/privacy</loc><lastmod>2026-10-15</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://agsist.com/terms</loc><lastmod>2026-10-15</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>

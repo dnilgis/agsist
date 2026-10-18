@@ -20,6 +20,15 @@
           saved pages and writes a ranked to-do. Sonnet, not Opus: naming the
           vendor from script and frame hosts and spotting a bid table is
           plain reading, and every answer is checked against the copy anyway.
+  schedule For each elevator company, the saved pages naming shrink, drying,
+          discounts or storage (bids capture pick=schedule, PDFs as text;
+          scripts/schedules_job.py bundle). The model copies each schedule out
+          with its quote; schedules_job.py collect drops every number that is
+          not written in its quote. Opus: reading numbers out of tables.
+  landsrc For each corn-belt county, the saved pages of its own site (bids
+          capture pick=land; scripts/landsrc_job.py bundle). The model says
+          whether sales are free, in what format, with price, acres, class,
+          and on what terms; landsrc_job.py collect checks and ranks. Sonnet.
 
 Input: apijobs/<run>/input/bundle.json on the raw branch (never deployed),
 built outside Actions from a local render. Every output lands in
@@ -54,10 +63,14 @@ OUT = f"apijobs/{RUN}"
 COST_CAP = 20.0      # dollars, search and alt together; submit refuses above the worst case
 STORY_CAP = 45.0     # dollars, county stories (Sig: well under $50); added when a bundle has stories
 ELEVSITE_CAP = 35.0  # dollars, the unread elevators' sites (Sig, Oct 18: capped at $35)
-MAX_TOKENS = {"search": 12000, "alt": 3000, "story": 1000, "elevsite": 2500}
+SCHEDULE_CAP = 20.0  # dollars, discount and drying schedules (Oct 18 research round two)
+LANDSRC_CAP = 20.0   # dollars, county land sale sources (Oct 18 research round two)
+# APIJOBS_CAP lowers a run's cap below the job caps (elevsites round two: $12); it never raises one.
+RUN_CAP = float(os.environ["APIJOBS_CAP"]) if re.fullmatch(r"\d+(\.\d+)?", os.environ.get("APIJOBS_CAP", "")) else None
+MAX_TOKENS = {"search": 12000, "alt": 3000, "story": 1000, "elevsite": 2500, "schedule": 5000, "landsrc": 2000}
 SET_STORY_MAX_TOKENS = 700   # the other story sets: a story is about 150 tokens; 700 keeps a 3,070-page batch under STORY_CAP
-EFFORT = {"search": "medium", "alt": "low", "story": "low", "elevsite": "low"}
-KINDS = ("search", "alt", "story", "elevsite")
+EFFORT = {"search": "medium", "alt": "low", "story": "low", "elevsite": "low", "schedule": "low", "landsrc": "low"}
+KINDS = ("search", "alt", "story", "elevsite", "schedule", "landsrc")
 # Claude Sonnet 5.5 list prices per million tokens, halved for the Batches API.
 PRICE_IN = 2.00 / 2
 PRICE_OUT = 10.00 / 2
@@ -181,13 +194,14 @@ def set_story_params(e):
 
 
 def custom_id(kind, name):
-    return ({"search": "s_", "alt": "a_", "story": "c_", "elevsite": "e_"}[kind] + re.sub(r"[^a-zA-Z0-9_-]", "_", name))[:64]
+    return ({"search": "s_", "alt": "a_", "story": "c_", "elevsite": "e_", "schedule": "d_", "landsrc": "l_"}[kind]
+            + re.sub(r"[^a-zA-Z0-9_-]", "_", name))[:64]
 
 
 # c: county rain stories; p, f, t, o: the PRF, Atlas, town and company stories (stories_core.cid_of)
 def kind_of(cid):
     return {"s": "search", "a": "alt", "c": "story", "p": "story", "f": "story", "t": "story", "o": "story",
-            "e": "elevsite"}.get(cid[:1], "alt")
+            "e": "elevsite", "d": "schedule", "l": "landsrc"}.get(cid[:1], "alt")
 
 
 def requests_of(bundle):
@@ -207,6 +221,14 @@ def requests_of(bundle):
         import elevsites_job as EJ
         out.append(("elevsite", EJ.cid_of(e["company"]), e["company"],
                     EJ.params(e, model_of("elevsite"), MAX_TOKENS["elevsite"], EFFORT["elevsite"])))
+    for e in bundle.get("schedule", []):
+        import schedules_job as SJ
+        out.append(("schedule", SJ.cid_of(e["company"]), e["company"],
+                    SJ.params(e, model_of("schedule"), MAX_TOKENS["schedule"], EFFORT["schedule"])))
+    for e in bundle.get("landsrc", []):
+        import landsrc_job as LJ
+        out.append(("landsrc", LJ.cid_of(e["key"]), e["key"],
+                    LJ.params(e, model_of("landsrc"), MAX_TOKENS["landsrc"], EFFORT["landsrc"])))
     return out
 
 
@@ -240,7 +262,10 @@ def cost_of(u, model=MODEL):
 
 
 def model_of(kind):
-    return STORY_MODEL if kind == "story" else MODEL
+    # APIJOBS_SCHEDULE_MODEL=claude-sonnet-5-5 is the fallback if an Opus schedule batch would go over its cap
+    if kind == "schedule" and os.environ.get("APIJOBS_SCHEDULE_MODEL") in PRICES:
+        return os.environ["APIJOBS_SCHEDULE_MODEL"]
+    return STORY_MODEL if kind in ("story", "schedule") else MODEL
 
 
 def worst_case(kind, n_in, max_out=None):
@@ -250,14 +275,17 @@ def worst_case(kind, n_in, max_out=None):
 
 
 def cap_of(bundle):
-    return ((COST_CAP if bundle.get("search") or bundle.get("alt") else 0.0) + (STORY_CAP if bundle.get("story") else 0.0)
-            + (ELEVSITE_CAP if bundle.get("elevsite") else 0.0))
+    cap = ((COST_CAP if bundle.get("search") or bundle.get("alt") else 0.0) + (STORY_CAP if bundle.get("story") else 0.0)
+           + (ELEVSITE_CAP if bundle.get("elevsite") else 0.0) + (SCHEDULE_CAP if bundle.get("schedule") else 0.0)
+           + (LANDSRC_CAP if bundle.get("landsrc") else 0.0))
+    return min(cap, RUN_CAP) if RUN_CAP is not None else cap
 
 
 def estimate(bundle):
     rows, total, per = [], 0.0, {k: 0.0 for k in KINDS}
     # story and elevsite requests: tokens per character, the highest seen in each kind's sample
-    ratio, counted = {"story": 0.0, "elevsite": 0.0}, {"story": 0, "elevsite": 0}
+    ratio = {"story": 0.0, "elevsite": 0.0, "schedule": 0.0, "landsrc": 0.0}
+    counted = {k: 0 for k in ratio}
     for kind, cid, name, p in requests_of(bundle):
         if kind in ratio and counted[kind] >= STORY_SAMPLE and ratio[kind]:
             n = int(len(json.dumps(p)) * ratio[kind] * 1.1) + 1    # 10% over the worst sampled ratio
@@ -276,9 +304,10 @@ def estimate(bundle):
         total += c; per[kind] += c
         print(f"{cid}: {n} input tokens, worst case ${c:.3f}", flush=True)
     print(f"::notice title=API jobs estimate::worst case ${total:.2f} (search ${per['search']:.2f}, alt ${per['alt']:.2f}, "
-          f"story ${per['story']:.2f}, elevsite ${per['elevsite']:.2f}) for {len(rows)} requests (cap ${cap_of(bundle):.0f})", flush=True)
+          f"story ${per['story']:.2f}, elevsite ${per['elevsite']:.2f}, schedule ${per['schedule']:.2f}, landsrc ${per['landsrc']:.2f}) "
+          f"for {len(rows)} requests (cap ${cap_of(bundle):.0f})", flush=True)
     os.makedirs(OUT, exist_ok=True)
-    json.dump({"run": RUN, "worst_case_usd": round(total, 2), "per_job_usd": {k: round(v, 2) for k, v in per.items()},
+    json.dump({"run": RUN, "worst_case_usd": round(total, 2), "cap_usd": cap_of(bundle), "per_job_usd": {k: round(v, 2) for k, v in per.items()},
                "rows": rows}, open(f"{OUT}/estimate.json", "w"), indent=1)
     return total
 
@@ -436,6 +465,24 @@ def selftest():
                       json.dumps({"custom_id": "e_X", "result": {"type": "succeeded", "message": {"stop_reason": "end_turn",
                                   "usage": {"input_tokens": 1000, "output_tokens": 100}, "content": [{"type": "text", "text": '```json\n{"platform": "dtn"}\n```'}]}}}))
     assert o3["items"]["e_X"]["parsed"]["platform"] == "dtn" and abs(o3["per_job_usd"]["elevsite"] - 0.0015) < 1e-9
+    # discount schedules (Opus, $20) and county land sources (Sonnet, $20): own prefixes, own caps; APIJOBS_CAP only lowers
+    import schedules_job as SJ
+    import landsrc_job as LJ
+    sc = {"company": "R:Test Coop", "names": ["Test Coop"], "read": True, "pages": [{"url": "https://t.com/d.pdf", "pdf": True, "text": "Shrink 1.4%"}]}
+    ls = {"fips": "19169", "name": "Story", "state": "IA", "key": "19169 Story County, IA", "pages": [{"url": "https://s.gov/", "text": "Assessor"}]}
+    rr = requests_of({"schedule": [sc], "landsrc": [ls]})
+    assert [(r[0], r[1]) for r in rr] == [("schedule", "d_R_Test_Coop"), ("landsrc", "l_19169_Story_County__IA")], rr
+    assert rr[0][3]["model"] == STORY_MODEL and rr[0][3]["system"] == SJ.SYSTEM and "Shrink 1.4%" in rr[0][3]["messages"][0]["content"]
+    assert rr[1][3]["model"] == MODEL and rr[1][3]["system"] == LJ.SYSTEM and kind_of("d_x") == "schedule" and kind_of("l_x") == "landsrc"
+    assert cap_of({"schedule": [sc]}) == SCHEDULE_CAP == 20.0 and cap_of({"landsrc": [ls]}) == LANDSRC_CAP == 20.0
+    # worst case: 250 companies with a schedule page at 9,000 input tokens (Opus), 900 counties at 7,000 (Sonnet)
+    assert 250 * worst_case("schedule", 9000) < SCHEDULE_CAP and 900 * worst_case("landsrc", 7000) < LANDSRC_CAP
+    global RUN_CAP
+    old, RUN_CAP = RUN_CAP, 12.0
+    assert cap_of({"elevsite": [el]}) == 12.0 and cap_of({"landsrc": [ls]}) == 12.0
+    RUN_CAP = 100.0
+    assert cap_of({"elevsite": [el]}) == ELEVSITE_CAP
+    RUN_CAP = old
     print("selftest ok")
 
 

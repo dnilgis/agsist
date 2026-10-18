@@ -726,7 +726,9 @@ def rent_desc(name, yr, s):
     m, n, plabel = money(s["median"]), s["n"], TYPE_LABEL[s["primary"]]
     others = [(t, s["other"][t]) for t in ("nonirr", "irr", "pasture") if t in s["other"]]
     crop_only = [(t, o) for t, o in others if t != "pasture"]
-    leads = (f"{name} farmland cash rent {yr}: median {m}/acre ({plabel}) across {n} counties",
+    # 2026-10-18 search-terms check: "cash rents by county per acre" (262 impressions, position 4.3),
+    # "usda cash rent by county" (91), "indiana cash rent by county per acre": the searcher's words lead.
+    leads = (f"{name} cash rent by county {yr}: median {m}/acre ({plabel}) across {n} counties",
              f"{name} cash rent {yr}: {plabel} {m}/acre, median of {n} counties")
     tails = (f" Every county's USDA rate, history to {s['y0']}.", " Every county's USDA rate.", "")
     for keep in ((others, crop_only) if crop_only and len(crop_only) < len(others) else (others,)):
@@ -737,6 +739,23 @@ def rent_desc(name, yr, s):
                     if len(lead + mid + "." + tail) <= 160:
                         return lead + mid + "." + tail
     return (leads[1] + ".")[:160]
+
+
+TITLE_MAX = 68   # with " | AGSIST"; the same ceiling scripts/bake_seo.py uses
+
+
+def rent_title(name, yr, s):
+    """The state title: the searched words, then the lead median with its kind when
+    it is not dryland (California's $437 is irrigated and says so). Drops words
+    from the end until it fits; never a figure without its label."""
+    m = money(s["median"])
+    kind = {"irr": " Irrigated", "pasture": " Pasture"}.get(s["primary"], "")
+    for t in (f"{name} Cash Rent by County {yr}: {m}/Acre{kind or ' Median'}",
+              f"{name} Cash Rent by County {yr}: {m}/Acre{kind}" if kind else None,
+              f"{name} Cash Rent by County {yr}"):
+        if t and len(t + " | AGSIST") <= TITLE_MAX:
+            return t
+    return f"{name} Cash Rent by County {yr}"
 
 
 def faq_html(faq):
@@ -752,7 +771,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
     sl = slug(name)
     yr = s["yr"]
     plabel = TYPE_LABEL[s["primary"]]
-    title = f"{name} Cash Rent by County {yr}"
+    title = rent_title(name, yr, s)
     desc = rent_desc(name, yr, s)
     pas = s["other"].get("pasture")
     hi_s = ", ".join(f"{n} ({money(v)})" for n, v in s["hi"][:3])
@@ -870,8 +889,8 @@ def build_state_page(st, d, s, all_states, aslug=None):
 <main class="rs-wrap">
   <p class="sub" style="margin-top:14px"><a href="/rent/" style="color:var(--text-muted)">Cash Rent by State</a> &rsaquo; <b>{name}</b></p>
   <h1>{name} Cash Rent by County, {yr}</h1>
-  <p class="sub">Every USDA-published county cash rental rate in {name}, from the NASS Cash Rents
-  Survey. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
+  <p class="sub">{name} cash rent by county, per acre per year: every USDA-published county rate, free, from
+  the NASS Cash Rents Survey. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
   {hero}
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside {name} county cash rents. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-{st.lower()}&amp;utm_source=rent-{sl}&amp;utm_medium=slot">Put your name here &rarr;</a></aside>{ground_html}
   <h2>Every published county, {yr}</h2>
@@ -1110,8 +1129,12 @@ def build_hub(states, stats, generated):
     # the headline compares like with like: dryland cropland medians only
     medians = sorted(((s["dry"]["median"], st) for st, s in stats.items() if s["dry"]), reverse=True)
     no_dry = sorted((st for st, s in stats.items() if not s["dry"]), key=lambda x: STATE_NAMES[x])
-    desc = (f"USDA county cash rent for cropland and pasture in all {len(states)} published states, {yr}: median $/acre, "
-            f"change vs {yr-1}, every county's rate one click deep.")[:160]
+    hi_, lo_ = medians[0], medians[-1]
+    desc = (f"USDA cash rent by county per acre, {yr}, free: every published county in {len(states)} states. "
+            f"Dryland state medians run {money(hi_[0])}/acre ({STATE_NAMES[hi_[1]]}) to {money(lo_[0])} ({STATE_NAMES[lo_[1]]}).")
+    if len(desc) > 160:
+        desc = (f"USDA cash rent by county per acre, {yr}, free: cropland and pasture for every published county "
+                f"in {len(states)} states.")
     # pasture rental rates by county: state medians of the published county pasture rents
     pmeds = sorted((type_med(stats[x], "pasture")[0], x) for x in states if type_med(stats[x], "pasture")[0] is not None)
     hub_faq = list(HUB_FAQ)
@@ -1122,6 +1145,16 @@ def build_hub(states, stats, generated):
                                  f"{money(pmeds[0][0])} an acre in {STATE_NAMES[pmeds[0][1]]} to {money(pmeds[-1][0])} in "
                                  f"{STATE_NAMES[pmeds[-1][1]]}, across {len(pmeds)} states. The Pasture column above has each "
                                  "state's median; open a state for every county's pasture rate and its history.")})
+    if len(medians) >= 3:
+        mid_ = med([v for v, _ in medians])
+        mo = lambda v: money(round(v / 12, 2))
+        # "how much does farmland rent for per acre per month" (61 impressions, position 14.5)
+        hub_faq.insert(1, {"q": "How much does farmland rent for per acre per month?",
+                           "a": (f"Farmland cash rent is quoted per acre per year, not per month. Divided by 12, the {yr} USDA "
+                                 f"dryland cropland rents run from {money(hi_[0])} an acre a year in {STATE_NAMES[hi_[1]]} "
+                                 f"(about {mo(hi_[0])} a month) to {money(lo_[0])} in {STATE_NAMES[lo_[1]]} (about {mo(lo_[0])} a month). "
+                                 f"The middle of the {len(medians)} state medians is {money(mid_)} a year, about {mo(mid_)} a month. "
+                                 "These are state medians of county averages; pick your state above for your county's rate.")})
     jsonld = {"@context": "https://schema.org", "@graph": [
         {"@type": "CollectionPage", "name": f"Cash Rent by State, {yr}",
          "url": f"{SITE}/rent/", "isAccessibleForFree": True,
@@ -1146,13 +1179,13 @@ def build_hub(states, stats, generated):
               '<label for="rh-st">Your county&rsquo;s rent per acre: pick your state</label>'
               f'<span class="rh-fr"><select id="rh-st" name="st"><option value="">Choose a state</option>{opts}</select>'
               '<button type="submit">Show counties</button></span></form>')
-    page = head(f"Cash Rent by State {yr}: Every County\u2019s USDA Rate", desc, "/rent/", jsonld) + f"""
+    page = head(f"USDA Cash Rent by County {yr}: Per Acre, {len(states)} States", desc, "/rent/", jsonld) + f"""
 <body>
 <div id="site-header"></div>
 <main class="rs-wrap">
   <h1>Cash Rent by State, {yr}</h1>
-  <p class="sub">Pick a state for every published county&rsquo;s USDA cash rental rate, history to 2008, and the
-  statutory lease-termination deadline where the state has one.
+  <p class="sub">USDA cash rent by county, per acre per year, free: pick a state for every published county&rsquo;s
+  {yr} rate, history to 2008, and the statutory lease-termination deadline where the state has one.
   <span id="rs-seed"><!--SEED:renthub-->{seed}<!--/SEED--></span></p>
   {finder}
   {atlas_line("/farmland-atlas")}
