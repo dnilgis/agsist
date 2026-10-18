@@ -7,7 +7,9 @@ name: Land data (parcel services + transfers)
 #    Only this marks a service verified. Coverage counts print as annotations.
 #  - transfers: scripts/fetch_land_sales.py builds data/land/<st>/<county fips>.json from
 #    the state's own public transfer data (IL MyDec open data; WI eRETR monthly reports; MN eCRV
-#    once a free file is reachable). It refuses a state whose columns it cannot find by name.
+#    once a free file is reachable). Probe also saves sources not built yet (Oct 18: Indiana sales
+#    disclosure files, Scott County IA ag sales, South Dakota and Ohio county sales lists, Nebraska's
+#    sales file rules); each gets a parser only after its saved columns are read. It refuses a state whose columns it cannot find by name.
 #    Wisconsin's files come from DOR's public My Tax Account screen, which needs a browser:
 #    scripts/wi_retr_browser.py opens it in headless Chromium (one session, one file at a time,
 #    a pause between files) and reads each month's XML report as it arrives.
@@ -27,7 +29,7 @@ on:
         type: boolean
         default: false
       task:
-        description: "services, discover (services + county search), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch)"
+        description: "services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch)"
         type: string
         default: "services"
   # Sig approved Oct 17, 2026: monthly on the 3rd
@@ -84,13 +86,14 @@ jobs:
           git -c user.name="AGSIST Bot" -c user.email=bot@agsist.com commit -qm "WI RETR explore $(date -u +%FT%TZ)"
           git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "HEAD:$B"
       - name: Check parcel services
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'services' || inputs.task == 'discover' || inputs.task == 'all') }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'services' || inputs.task == 'discover' || startsWith(inputs.task, 'discover:') || inputs.task == 'all') }}
         run: |
-          if [ "${{ inputs.task }}" = "discover" ] || [ "${{ inputs.task }}" = "all" ]; then
-            python scripts/probe_land_services.py --discover
-          else
-            python scripts/probe_land_services.py
-          fi
+          T="${{ inputs.task }}"
+          case "$T" in
+            discover:*) python scripts/probe_land_services.py "--discover=$(echo "${T#discover:}" | tr -cd 'A-Za-z,')" ;;
+            discover|all) python scripts/probe_land_services.py --discover ;;
+            *) python scripts/probe_land_services.py ;;
+          esac
       - name: Build transfers
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
         run: python scripts/fetch_land_sales.py MN IL || echo "::warning::no state's transfers were written"

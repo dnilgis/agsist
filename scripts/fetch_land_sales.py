@@ -19,6 +19,15 @@ Sources (free and public only; a state is built only once its files read cleanly
       then --from DIR/build WI builds. Grantor and grantee names are in the public file.
   MN  Minnesota Department of Revenue, eCRV. The bulk Weekly Sales Extract is sent only
       on request; not built.
+  Probe only (Oct 18; saved by --probe, no parser until the saved columns are read):
+  IN  Indiana sales disclosure forms (Department of Local Government Finance), yearly ZIP
+      files of five tab-delimited tables on STATS Indiana (Indiana Business Research Center),
+      the current year cumulative and refreshed weekly. Free, no login.
+  IA  Scott County Assessor's agricultural sales list (Excel), one county.
+  SD  County Directors of Equalization that post yearly ag sales lists (Douglas, Gregory).
+  OH  County auditor sales reports (Pickaway), one county at a time.
+  Not free: NE (state sales file, public queries by request for a fee), KS and MO (sale
+  prices are not public record). Their notes are in data/land/parcel-services.json salesNote.
 
   python3 scripts/fetch_land_sales.py --probe [WI MN]   save the data pages, the file
         links they list and the head of the first files to data/land-raw/sales/ (the
@@ -96,6 +105,50 @@ STATES = {
         "links": [{"t": "Minnesota eCRV", "url": "https://www.revenue.state.mn.us/electronic-certificate-real-estate-value-ecrv"}],
         "since_note": "Minnesota's eCRV began in 2014; older certificates and deeds are at the county recorder.",
     },
+}
+
+# Sources saved by --probe but never built: the parser for each is written against the saved copy,
+# and run() refuses them until then (probe_only says why).
+STATES.update({
+    "IN": {
+        "name": "Indiana", "fips": "18",
+        "probe_only": "the sales disclosure files are saved by --probe; the five-table layout (SALEDISC, SALEPARCEL, ...) is joined only once the saved columns and the metadata workbook are read",
+        "source": "Indiana Department of Local Government Finance, sales disclosure forms, from STATS Indiana (Indiana Business Research Center)",
+        "short": "Indiana sales disclosure",
+        "pages": ["https://www.stats.indiana.edu/topic/sdf.asp"],
+        "links": [{"t": "Indiana sales disclosure data (STATS Indiana)", "url": "https://www.stats.indiana.edu/topic/sdf.asp"}],
+        "since_note": "Indiana's sales disclosure data starts in the late 1990s; older sales are with the county assessor.",
+        "terms": "free download, no login; publisher terms not read yet",
+    },
+    "IA": {
+        "name": "Iowa", "fips": "19",
+        "probe_only": "one county's agricultural sales list (Scott County Assessor); no statewide free file",
+        "source": "Scott County, Iowa Assessor, agricultural sales", "short": "Scott County IA ag sales",
+        "pages": ["https://www.scottcountyiowa.com/assessor/agricultural-sales"],
+        "links": [{"t": "Scott County Assessor agricultural sales", "url": "https://www.scottcountyiowa.com/assessor/agricultural-sales"}],
+        "terms": "county public page; terms not read yet",
+    },
+    "SD": {
+        "name": "South Dakota", "fips": "46",
+        "probe_only": "county Directors of Equalization post yearly ag sales lists (often PDF); saved to read the layout first",
+        "source": "South Dakota county Directors of Equalization, agricultural sales lists", "short": "South Dakota county sales list",
+        "pages": ["https://douglas.sdcounties.org/director-of-equalization/", "https://gregory.sdcounties.org/?p=19"],
+        "files_rx": r"\.(zip|csv|xlsx|txt|pdf)(\?|$)",
+        "links": [],
+        "terms": "county public pages; terms not read yet",
+    },
+    "OH": {
+        "name": "Ohio", "fips": "39",
+        "probe_only": "county auditor sales reports, one county at a time; saved to read the layout first",
+        "source": "Ohio county auditors, sales reports", "short": "Ohio county auditor sales",
+        "pages": ["https://auditor.pickawaycountyohio.gov/SalesReport"],
+        "links": [],
+        "terms": "county public pages; terms not read yet",
+    },
+})
+PROBE_ONLY_DOCS = {
+    "IN": ["https://www.in.gov/dlgf/assessments/sales-disclosure-form-information/"],
+    "NE": ["https://revenue.nebraska.gov/sites/default/files/doc/legal/regs/pad/Chapter12_Sales_File.pdf"],
 }
 
 # Column names seen on state transfer files, compared with letters and digits only. The first
@@ -516,10 +569,10 @@ PROBE_DOCS = {
 }
 
 
-def file_links(page_url, html):
+def file_links(page_url, html, rx=r"\.(zip|csv|xlsx|txt)(\?|$)"):
     out = []
     for h in re.findall(r'href="([^"]+)"', html, re.I):
-        if re.search(r"\.(zip|csv|xlsx|txt)(\?|$)", h, re.I):
+        if re.search(rx, h, re.I):
             u = urllib.parse.urljoin(page_url, h.replace("&amp;", "&"))
             if u not in out:
                 out.append(u)
@@ -539,7 +592,7 @@ def probe(states):
                 log.append("%s page %s: %s" % (st, pg, e))
                 continue
             open(os.path.join(d, "page%d.html" % i), "wb").write(strip_scripts(html.encode()))
-            links = file_links(pg, html)
+            links = file_links(pg, html, STATES[st].get("files_rx") or r"\.(zip|csv|xlsx|txt)(\?|$)")
             open(os.path.join(d, "page%d-links.txt" % i), "w").write("\n".join(links) + "\n")
             every = sorted(set(urllib.parse.urljoin(pg, h.replace("&amp;", "&")) for h in re.findall(r'href="([^"#]+)"', html, re.I)))
             open(os.path.join(d, "page%d-alllinks.txt" % i), "w").write("\n".join(every) + "\n")
@@ -556,13 +609,21 @@ def probe(states):
                     continue
                 name = os.path.basename(urllib.parse.urlparse(u).path) or "file%d" % j
                 open(os.path.join(d, name), "wb").write(blob[:30_000_000])
+                if blob[:4] == b"%PDF":       # a county sales list as PDF: keep its text beside it to read the layout
+                    try:
+                        import subprocess
+                        subprocess.run(["pdftotext", "-layout", os.path.join(d, name), os.path.join(d, name + ".txt")], timeout=120, check=False)
+                        log.append("  %s: PDF, %d bytes; text saved" % (u, len(blob)))
+                    except Exception:  # noqa: BLE001
+                        log.append("  %s: PDF, %d bytes; no pdftotext" % (u, len(blob)))
+                    continue
                 try:
                     rows = list(zip(range(6), read_table(name, blob)))
                     hdr = rows[0][1] if rows else []
                     log.append("  %s: %d bytes; header %s; we read %s" % (u, len(blob), hdr, sorted(map_columns(hdr))))
                 except Exception as e:  # noqa: BLE001
                     log.append("  %s: %d bytes; could not read: %s" % (u, len(blob), e))
-        for j, u in enumerate(PROBE_DOCS.get(st, [])):
+        for j, u in enumerate(PROBE_DOCS.get(st, []) + PROBE_ONLY_DOCS.get(st, [])):
             try:
                 blob = fetch(u)
             except Exception as e:  # noqa: BLE001
@@ -1013,6 +1074,9 @@ def run(states, from_dir=None, merge=False):
         if STATES[st].get("request_only"):
             print("::notice::%s transfers not built: %s" % (st, STATES[st]["request_only"]))
             continue
+        if STATES[st].get("probe_only"):
+            print("::notice::%s transfers not built yet: %s" % (st, STATES[st]["probe_only"]))
+            continue
         if STATES[st].get("socrata") and not from_dir:
             try:
                 decls, extra, multi = fetch_il()
@@ -1080,7 +1144,7 @@ def run(states, from_dir=None, merge=False):
         print("::notice::%s" % summary(st, recs, trims))
         print("::notice::%s transfers: %d rows in %d counties (%.2f MB); names %s; %d rows with no county match; files %d, rows read %d, not farm %d"
               % (st, res["rows"], res["counties"], res["mb"], "in the data" if res["names"] else "not in the data", res["unplaced"], rep["files"], rep["rows"], rep["not_farm"]))
-    return 1 if bad and bad == len([s for s in states if not STATES[s].get("request_only")]) else 0
+    return 1 if bad and bad == len([s for s in states if not STATES[s].get("request_only") and not STATES[s].get("probe_only")]) else 0
 
 
 def selftest():
@@ -1180,6 +1244,11 @@ def selftest():
     ck("IL: related-party sales say so", il[1]["conv"].endswith("Related Parties"))
     ck("IL: township as the place", il[0]["muni"] == "ABINGTON" and muni_key(il[0]["muni"]) == ("T", "ABINGTON"))
     ck("MN is not built from a guess", bool(STATES["MN"].get("request_only")))
+    ck("probe-only states (IN, IA, SD, OH) are never built before their parser exists",
+       all(STATES[x].get("probe_only") and STATES[x].get("pages") for x in ("IN", "IA", "SD", "OH")))
+    ck("a county PDF sales list is a file link only where the state asks for PDFs",
+       file_links("https://x.org/a/", '<a href="s2025.pdf">x</a><a href="s.csv">y</a>') == ["https://x.org/a/s.csv"]
+       and file_links("https://x.org/a/", '<a href="s2025.pdf">x</a>', STATES["SD"]["files_rx"]) == ["https://x.org/a/s2025.pdf"])
     # Wisconsin eRETR monthly XML (DOR's Real Estate Historical Data report), a synthetic file in its shape
     fx3 = os.path.join(ROOT, "test", "fixtures", "land-sales", "wi-retr-sample.xml")
     rets = list(wi_returns(open(fx3, "rb")))
@@ -1293,7 +1362,7 @@ if __name__ == "__main__":
     if "--selftest" in a:
         sys.exit(selftest())
     if "--probe" in a:
-        sys.exit(probe([x for x in a if x in STATES or x in PROBE_DOCS] or sorted(set(STATES) | set(PROBE_DOCS))))
+        sys.exit(probe([x for x in a if x in STATES or x in PROBE_DOCS or x in PROBE_ONLY_DOCS] or sorted(set(STATES) | set(PROBE_DOCS) | set(PROBE_ONLY_DOCS))))
     sts = [x for x in a if x in STATES] or ["WI", "MN", "IL"]
     fd = a[a.index("--from") + 1] if "--from" in a else None
     sys.exit(run(sts, fd, "--merge" in a))
