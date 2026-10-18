@@ -86,6 +86,12 @@
     .cal-nav{display:flex;gap:.5rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:.85rem 0 .75rem;}
     .cal-nav::-webkit-scrollbar{display:none;}
     .cal-filter{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.42rem .85rem;border:2px solid var(--border);border-radius:var(--r20);background:var(--surface);color:var(--text-dim);cursor:pointer;white-space:nowrap;flex-shrink:0;min-height:44px;display:inline-flex;align-items:center;transition:border-color .15s,background-color .15s,color .15s;}
+    .cal-grow{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0 0 .6rem;font-size:.85rem;color:var(--text-dim)}
+    .cal-grow>span:first-child{font-weight:600;color:var(--text);margin-right:.2rem}
+    .cal-gb{font:inherit;font-size:.85rem;min-height:36px;padding:.3rem .75rem;border:1px solid var(--border);border-radius:999px;background:none;color:var(--text);cursor:pointer}
+    .cal-gb[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
+    .cal-gb:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+    .cal-grow-n{font-size:.8rem;color:var(--text-muted)}
     .cal-filter.active{background:var(--gold-fill,var(--gold));color:#000;border-color:var(--gold);}
     .cal-filter:hover:not(.active){border-color:var(--gold);color:var(--gold);}
     .cal-legend{display:flex;flex-wrap:wrap;gap:.55rem;margin-bottom:1.1rem;}
@@ -280,6 +286,12 @@
 
       <h2 class="cal-section-head" style="margin-top:1.5rem">2026 USDA Report Schedule</h2>
       <p style="font-size:.85rem;color:var(--text-dim);margin:.2rem 0 .7rem">The tag on each report (LOW to HIGH) is a rough read on how much that report tends to move prices the day it comes out.</p>
+      <div class="cal-grow" role="group" aria-labelledby="cal-grow-l"><span id="cal-grow-l">What I grow or raise</span>
+        <button type="button" class="cal-gb" data-grow="all" aria-pressed="true">Everything</button>
+        <button type="button" class="cal-gb" data-grow="grain" aria-pressed="false">Grain</button>
+        <button type="button" class="cal-gb" data-grow="stock" aria-pressed="false">Livestock &amp; dairy</button>
+        <span class="cal-grow-n" id="cal-grow-n" role="status"></span>
+      </div>
       <div class="cal-nav" role="group" aria-label="Filter reports">
         <button class="cal-filter active" onclick="filterReports('all',this)">All Reports</button>
         <button class="cal-filter" onclick="filterReports('wasde',this)">WASDE</button>
@@ -596,11 +608,28 @@
   }
 
   let showPast=false, activeFilter='all';
+  /* What I grow or raise (re-score 8, Oct 18): saved on this device. Grain
+     hides the livestock and dairy reports; Livestock & dairy keeps those plus
+     WASDE (it carries the meat and milk tables), the Outlook Forum and FSA
+     signups. The next-report card at the top still counts every report. */
+  var GROW_STOCK={livestock:1,wasde:1,outlook:1,fsa:1};
+  var grow='all';
+  try{var _g=localStorage.getItem('agsist-cal-grow');if(_g==='grain'||_g==='stock')grow=_g;}catch(e){}
+  function growOk(r){return grow==='all'||(grow==='grain'?r.type!=='livestock':!!GROW_STOCK[r.type]);}
+  function setGrow(v,save){
+    grow=v;
+    document.querySelectorAll('.cal-gb').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-grow')===v?'true':'false');});
+    var n=document.getElementById('cal-grow-n');
+    if(n)n.textContent=v==='all'?'':(v==='grain'?'Livestock and dairy reports hidden. Saved on this device.':'Crop-only reports hidden. Saved on this device.');
+    if(save){try{if(v==='all')localStorage.removeItem('agsist-cal-grow');else localStorage.setItem('agsist-cal-grow',v);}catch(e){}}
+  }
+  document.querySelectorAll('.cal-gb').forEach(function(b){b.addEventListener('click',function(){setGrow(b.getAttribute('data-grow'),true);renderCalendar();});});
+  setGrow(grow,false);
   var nextTarget=null;
 
   function renderCalendar(){
     const container=document.getElementById('cal-container');
-    const filtered=activeFilter==='all'?REPORTS:REPORTS.filter(r=>r.type===activeFilter);
+    const filtered=(activeFilter==='all'?REPORTS:REPORTS.filter(r=>r.type===activeFilter)).filter(growOk);
     const groups=groupByMonth(filtered);
     const nowMo=today.getMonth(), nowYr=today.getFullYear();
 
@@ -727,7 +756,6 @@
   function tickCountdown(){if(!nextTarget)return;if(Date.now()>=nextTarget.getTime()){renderCalendar();return;}var c=fmtCountdown(nextTarget);var nn=document.getElementById('next-num'),nu=document.getElementById('next-unit');if(nn)nn.textContent=c.num;if(nu)nu.textContent=c.unit;}
   setInterval(tickCountdown,1000);
   </script>
-  <script src="/components/glossary.js?v=1" defer></script>
-  <script src="/components/next-links.js?v=2" defer></script>
+  <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>
