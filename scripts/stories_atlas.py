@@ -31,7 +31,7 @@ sys.path.insert(0, HERE)
 import stories_core as K  # noqa: E402
 
 NAME, PREFIX = "atlas", "f"
-STORE = os.path.join("data", "atlas", "stories")
+STORE = os.path.join("data", "atlas-stories")
 VOLATILE = ("as_of", "as_of_iso")
 MAX_AGE = None
 

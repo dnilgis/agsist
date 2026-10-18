@@ -11,7 +11,7 @@ the town cash bid pages and the co-op company pages. Each set is its own module
   facts_all()       [(id, facts)] for every page, built by the page's own code
   spec(f)           the validator's rules for one page's facts (see check())
   extra(s, m, f)    set-only checks on the story (s) and its masked text (m)
-  STORE, path_of()  where the kept stories live (data/<set>/stories/<group>.json)
+  STORE, path_of()  where the kept stories live (data/prf-stories, data/atlas-stories, data/cash-bids-stories/...)
   VOLATILE          fact keys the page cannot rebuild at build time (the
                     snapshot day, a preliminary figure); stored with the story
   MAX_AGE           days a story may show after its own "As of" day (None: no limit)

@@ -10,7 +10,9 @@
   story   For each county rain page, the facts the page states (built by
           scripts/county_stories.py, in Actions, from data/rain). The model
           writes 2 to 4 plain sentences; county_stories.py collect checks every
-          claim against the facts before anything reaches a page.
+          claim against the facts before anything reaches a page. The same for
+          the PRF county, Farmland Atlas county, town cash bid and co-op
+          company pages: rows that carry "set" (scripts/stories_core.py).
 
 Input: apijobs/<run>/input/bundle.json on the raw branch (never deployed),
 built outside Actions from a local render. Every output lands in
@@ -45,6 +47,7 @@ OUT = f"apijobs/{RUN}"
 COST_CAP = 20.0      # dollars, search and alt together; submit refuses above the worst case
 STORY_CAP = 45.0     # dollars, county stories (Sig: well under $50); added when a bundle has stories
 MAX_TOKENS = {"search": 12000, "alt": 3000, "story": 1000}
+SET_STORY_MAX_TOKENS = 700   # the other story sets: a story is about 150 tokens; 700 keeps a 3,070-page batch under STORY_CAP
 EFFORT = {"search": "medium", "alt": "low", "story": "low"}
 # Claude Sonnet 5.5 list prices per million tokens, halved for the Batches API.
 PRICE_IN = 2.00 / 2
@@ -156,12 +159,25 @@ def story_params(e):
     }
 
 
+def set_story_params(e):
+    """A story for one page of another set (scripts/stories_core.py: prf, atlas, town, company)."""
+    import stories_core as K
+    S = K.set_of(e["set"])
+    return {
+        "model": STORY_MODEL, "max_tokens": SET_STORY_MAX_TOKENS,
+        "thinking": {"type": "adaptive"}, "output_config": {"effort": EFFORT["story"]},
+        "system": S.SYSTEM,
+        "messages": [{"role": "user", "content": S.prompt(e["facts"])}],
+    }
+
+
 def custom_id(kind, name):
     return ({"search": "s_", "alt": "a_", "story": "c_"}[kind] + re.sub(r"[^a-zA-Z0-9_-]", "_", name))[:64]
 
 
+# c: county rain stories; p, f, t, o: the PRF, Atlas, town and company stories (stories_core.cid_of)
 def kind_of(cid):
-    return {"s": "search", "a": "alt", "c": "story"}.get(cid[:1], "alt")
+    return {"s": "search", "a": "alt", "c": "story", "p": "story", "f": "story", "t": "story", "o": "story"}.get(cid[:1], "alt")
 
 
 def requests_of(bundle):
@@ -172,6 +188,10 @@ def requests_of(bundle):
     for e in bundle.get("alt", []):
         out.append(("alt", custom_id("alt", e["id"]), e["id"], alt_params(e)))
     for e in bundle.get("story", []):
+        if e.get("set"):
+            import stories_core as K
+            out.append(("story", K.cid_of(K.set_of(e["set"]), e["id"]), f"{e['set']}:{e['id']}", set_story_params(e)))
+            continue
         out.append(("story", custom_id("story", f"{e['st']}_{e['fips']}"), f"{e['st']}:{e['fips']}", story_params(e)))
     return out
 
@@ -209,10 +229,10 @@ def model_of(kind):
     return STORY_MODEL if kind == "story" else MODEL
 
 
-def worst_case(kind, n_in):
+def worst_case(kind, n_in, max_out=None):
     """Upper bound for one request: the prompt once, full max_tokens of output."""
     pi, po = PRICES[model_of(kind)][:2]
-    return (n_in * pi + MAX_TOKENS[kind] * po) / 1e6
+    return (n_in * pi + (max_out or MAX_TOKENS[kind]) * po) / 1e6
 
 
 def cap_of(bundle):
@@ -235,7 +255,7 @@ def estimate(bundle):
             except SystemExit as err:
                 print(f"::warning::count_tokens failed for {cid} ({err}); using characters / 3", flush=True)
                 n = len(json.dumps(p)) // 3
-        c = worst_case(kind, n)
+        c = worst_case(kind, n, p.get("max_tokens"))
         rows.append({"custom_id": cid, "job": kind, "input_tokens": n, "worst_case_usd": round(c, 4)})
         total += c; per[kind] += c
         print(f"{cid}: {n} input tokens, worst case ${c:.3f}", flush=True)
@@ -373,6 +393,18 @@ def selftest():
         "stop_reason": "end_turn", "usage": {"input_tokens": 1000, "output_tokens": 100},
         "content": [{"type": "text", "text": '```json\n{"story": "x"}\n```'}]}}}))
     assert o2["items"]["c_IA_19169"]["parsed"]["story"] == "x" and abs(o2["per_job_usd"]["story"] - 0.003) < 1e-9
+    # the other story sets: one request per page, the set's own rules and facts, the same model and cap
+    pf = {"county": "Kent County", "state": "Delaware", "crop_year": 2027, "as_of": "Oct 12", "as_of_iso": "2026-10-12", "grids": 8}
+    gr = requests_of({"story": [{"set": "prf", "id": "DE:10001", "hash": "h", "facts": pf},
+                                {"set": "town", "id": "ia/hubbard", "hash": "h", "facts": {"town": "Hubbard", "state_code": "IA", "as_of": "Oct 17"}}]})
+    assert [(r[0], r[1], r[2]) for r in gr] == [("story", "p_DE_10001", "prf:DE:10001"), ("story", "t_ia_hubbard", "town:ia/hubbard")], gr
+    assert gr[0][3]["model"] == STORY_MODEL and "PRF" in gr[0][3]["system"] and "Kent County" in gr[0][3]["messages"][0]["content"]
+    assert "as_of_iso" not in gr[0][3]["messages"][0]["content"] and kind_of("p_DE_10001") == kind_of("o_adm") == "story"
+    assert cap_of({"story": [{"set": "prf"}]}) == STORY_CAP
+    # every set's full batch stays under its cap at the worst case (the facts measured on Oct 18, 2026)
+    for n_pages, n_in in ((3070, 2600), (3148, 1300), (1500, 900), (120, 1500)):
+        assert n_pages * worst_case("story", n_in, SET_STORY_MAX_TOKENS) < STORY_CAP, (n_pages, n_in)
+    assert gr[0][3]["max_tokens"] == SET_STORY_MAX_TOKENS
     print("selftest ok")
 
 

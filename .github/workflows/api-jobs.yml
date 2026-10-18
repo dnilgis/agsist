@@ -15,6 +15,15 @@ name: API jobs (one-time)
 # and rebuilds the pages. At most one run a month (Sig's OK each time); use a new
 # run name each time, e.g. stories-2026-10.
 #
+# The other story sets (scripts/stories_core.py) work the same way, one batch per
+# set and run: build=prf-stories, atlas-stories, town-stories or company-stories,
+# run=<set>-2026-10. Their facts are built here from main (PRF and Atlas from the
+# committed data; town and company from a full cash bid build off the live
+# network, the same build cash-bid-pages.yml runs). Kept stories land on raw as
+# apijobs/<run>/stories/<group>.json; the lead copies them to the set's store
+# (data/prf-stories, data/atlas-stories, data/cash-bids-stories/towns or
+# /companies) and rebuilds the pages.
+#
 #   mode=estimate  count tokens and print the worst-case cost, spend nothing
 #   mode=submit    estimate, refuse over $20, refuse if apijobs/<run>/batch.json
 #                  is already on raw, submit one batch, then wait and collect
@@ -40,7 +49,7 @@ on:
         description: "How long collect waits for the batch to end"
         default: "120"
       build:
-        description: "county-stories to build the input from data/rain here (estimate and submit); empty to read it from raw"
+        description: "county-stories | prf-stories | atlas-stories | town-stories | company-stories to build the input here (estimate and submit); empty to read it from raw"
         default: ""
 
 permissions:
@@ -65,13 +74,23 @@ jobs:
         run: python scripts/api_jobs.py selftest
       - name: Get the input and any earlier batch record from raw
         if: ${{ github.event_name == 'workflow_dispatch' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git fetch -q --depth 1 origin raw
           D="apijobs/$APIJOBS_RUN"
           mkdir -p "$D"
-          if [ "${{ inputs.build }}" = "county-stories" ] && [ "${{ inputs.mode }}" != "collect" ]; then
+          B="${{ inputs.build }}"
+          if [ -n "$B" ] && [ "${{ inputs.mode }}" != "collect" ]; then
             mkdir -p "$D/input"
-            python scripts/county_stories.py bundle "$D/input/bundle.json"
+            case "$B" in
+              county-stories) python scripts/county_stories.py bundle "$D/input/bundle.json" ;;
+              prf-stories|atlas-stories) python scripts/stories_core.py bundle "${B%-stories}" "$D/input/bundle.json" ;;
+              town-stories|company-stories)
+                STORY_FACTS_OUT=/tmp/cb-facts.json python scripts/build_cash_bid_pages.py --out /tmp/cb-pages --sitemap /tmp/cb-sitemap.xml
+                STORY_FACTS=/tmp/cb-facts.json python scripts/stories_core.py bundle "${B%-stories}" "$D/input/bundle.json" ;;
+              *) echo "::error::unknown build $B"; exit 1 ;;
+            esac
             cp "$D/input/bundle.json" /tmp/bundle.json
           else
             git show "FETCH_HEAD:$D/input/bundle.json" > /tmp/bundle.json
@@ -79,7 +98,7 @@ jobs:
           git show "FETCH_HEAD:$D/batch.json" > "$D/batch.json" 2>/dev/null || rm -f "$D/batch.json"
           ls -la "$D" /tmp/bundle.json
       - name: Save the built input to raw
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.build == 'county-stories' && inputs.mode != 'collect' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.build != '' && inputs.mode != 'collect' }}
         run: bash scripts/push_raw.sh "apijobs $APIJOBS_RUN input" "apijobs/$APIJOBS_RUN/input/bundle.json"
       - name: Estimate
         if: ${{ inputs.mode == 'estimate' }}
@@ -105,11 +124,15 @@ jobs:
       - name: Save results to raw
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
         run: bash scripts/push_raw.sh "apijobs $APIJOBS_RUN results" "apijobs/$APIJOBS_RUN/batch-status.json" "apijobs/$APIJOBS_RUN/results.json" "apijobs/$APIJOBS_RUN/results-raw.jsonl"
-      - name: Check the county stories against their facts
+      - name: Check the stories against their facts
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
         run: |
           R="apijobs/$APIJOBS_RUN/results.json"
-          if [ -f "$R" ] && python -c "import json,sys; sys.exit(0 if json.load(open('/tmp/bundle.json')).get('story') else 1)"; then
+          SET=$(python -c "import json; print(json.load(open('/tmp/bundle.json')).get('set') or '')")
+          if [ -f "$R" ] && [ -n "$SET" ]; then
+            python scripts/stories_core.py collect "$SET" /tmp/bundle.json "$R" "apijobs/$APIJOBS_RUN/stories" "apijobs/$APIJOBS_RUN/rejected.json"
+            bash scripts/push_raw.sh "apijobs $APIJOBS_RUN stories" "apijobs/$APIJOBS_RUN/stories" "apijobs/$APIJOBS_RUN/rejected.json"
+          elif [ -f "$R" ] && python -c "import json,sys; sys.exit(0 if json.load(open('/tmp/bundle.json')).get('story') else 1)"; then
             python scripts/county_stories.py collect /tmp/bundle.json "$R" "apijobs/$APIJOBS_RUN/stories" "apijobs/$APIJOBS_RUN/rejected.json"
             bash scripts/push_raw.sh "apijobs $APIJOBS_RUN stories" "apijobs/$APIJOBS_RUN/stories" "apijobs/$APIJOBS_RUN/rejected.json"
           else

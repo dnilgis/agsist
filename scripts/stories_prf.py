@@ -31,7 +31,7 @@ sys.path.insert(0, HERE)
 import stories_core as K  # noqa: E402
 
 NAME, PREFIX = "prf", "p"
-STORE = os.path.join("data", "prf", "stories")
+STORE = os.path.join("data", "prf-stories")      # not under data/prf: prf.yml rebuilds that folder from scratch
 VOLATILE = ("as_of", "as_of_iso", "preliminary")
 MAX_AGE = 35
 LONG_IV = ["January to February", "February to March", "March to April", "April to May", "May to June", "June to July",
