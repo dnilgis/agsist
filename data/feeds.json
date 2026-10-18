@@ -85,6 +85,7 @@
     "cash-rent"
    ],
    "touched_by": [
+    "Accuracy pass",
     "ARC/PLC refresh",
     "cash-bid-pages",
     "cash-rent",
@@ -149,6 +150,7 @@
     "farmland-atlas"
    ],
    "touched_by": [
+    "Accuracy pass",
     "farmland-atlas",
     "State yield pages"
    ],
@@ -760,6 +762,7 @@
    ],
    "written_by": [],
    "touched_by": [
+    "Accuracy pass",
     "API jobs (one-time)",
     "cash-bid-pages",
     "Rebuild Feed Manifest"
@@ -783,6 +786,7 @@
     "Drought county week"
    ],
    "touched_by": [
+    "Accuracy pass",
     "Drought county week"
    ],
    "cadence": "2 launches on a fixed schedule at about 8am, 9am Central",
@@ -871,6 +875,7 @@
     "Coverage map \u2014 the elevator directory, drawn"
    ],
    "touched_by": [
+    "cash-bid-pages",
     "conditions",
     "Coverage map \u2014 the elevator directory, drawn",
     "Fetch Crop Progress",
@@ -1797,6 +1802,7 @@
     "prf"
    ],
    "touched_by": [
+    "Accuracy pass",
     "climate indices",
     "prf",
     "seasonal models"
@@ -2233,6 +2239,7 @@
     "Build State Stats (USDA NASS)"
    ],
    "touched_by": [
+    "Accuracy pass",
     "ARC/PLC refresh",
     "cash-bid-pages",
     "Fetch COT Data",
@@ -2373,6 +2380,7 @@
     "tenure"
    ],
    "touched_by": [
+    "Accuracy pass",
     "farmland-atlas-pages",
     "farmland-atlas",
     "Hail data refresh",

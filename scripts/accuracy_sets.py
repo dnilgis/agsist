@@ -43,7 +43,7 @@ TEXT_CHARS = 20000    # page text sent per page
 DATA_CHARS = 22000    # data slice sent per page, all files together
 REF_CHARS = 4500      # per reference excerpt
 REFS_CHARS = 10000    # all reference excerpts for a set
-MAX_TOKENS = 6000     # model output per page (thinking included); the errors list is short
+MAX_TOKENS = 5500     # model output per page (thinking included); the errors list is short
 EFFORT = "medium"
 SEED = "accsets-1"
 
