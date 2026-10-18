@@ -484,7 +484,7 @@ class World:
             return (self.ytrend.get(f) or {}).get("v")
         if key == "yld":
             n = get(c, "yield", "n")
-            return None if (n is not None and n < 15) else get(c, "yield", "median")
+            return None if (n is not None and n < YLD_MIN_N) else get(c, "yield", "median")
         if key == "cost":
             x = get(c, "sob", "loss_cost_last10")
             return None if x is None else x * 100
@@ -661,7 +661,7 @@ def flat_record(W, f, d=None):
         rec["years_loss_over_1"] = S.get("years_over_one")
     Dr = d.get("drought") or {}
     if ok(Dr):
-        rec["d2_week_share_pct"] = get(Dr, "weeks", "share_d2_pct")
+        rec["d2_week_share_pct"] = d2_share(Dr)
     H = d.get("heat") or {}
     jul = get(H, "months", "jul") if ok(H) else None
     if jul:
@@ -1113,7 +1113,7 @@ def key(label, val, unit, sub, s, fm, state):
 
 
 # ------------------------------------------------------------- county page
-def read_ok(text, d, flag):
+def read_ok(text, d, flag, year=None):
     """The written read is model prose, checked against the record before it is
     printed under AGSIST's name. It is dropped from the static page (the record
     above it still stands) when it:
@@ -1128,9 +1128,11 @@ def read_ok(text, d, flag):
         drought paid out $169.1 million" when that is every cause together);
       - blames one year's low yield on drought or a dry summer when the record
         shows that year's April to September rain at 105% of normal or more and
-        no week of severe drought, or on flooding or rain when it shows 90% or less."""
+        no week of severe drought, or on flooding or rain when it shows 90% or less.
+    And the classes from the 2026-10-18 page-set pass (accuracy-pass/sets-2026-10
+    on the raw branch), each named in read_wrong()."""
     t = text
-    if read_cause_total(t, d) or read_year_cause_wrong(t, d):
+    if read_cause_total(t, d) or read_year_cause_wrong(t, d) or read_wrong(t, d, year):
         return False
     if flag and re.search(r"land value|census value|land and buildings", t, re.I):
         return False
@@ -1202,6 +1204,139 @@ def read_year_cause_wrong(t, d):
         if cause in ("flood", "flooding", "rain", "wet") and pct <= 90:
             return True
     return False
+
+
+SOB_GATE = "$1,000,000"   # scripts/atlas_layers_p1.py MIN_RATIO_PREMIUM: a crop year under it carries no ratio
+YLD_MIN_N = 15            # published years before a county's corn median goes in a comparison table or the map
+
+
+def d2_share(Dr):
+    """The share of weeks in D2 or worse, from the counts (the stored share is
+    already rounded to 0.1, and rounding it again printed 10.46% as 11%)."""
+    wk = (Dr or {}).get("weeks") or {}
+    if wk.get("d2") is not None and wk.get("counted"):
+        return round(100.0 * wk["d2"] / wk["counted"], 2)
+    return wk.get("share_d2_pct")
+
+CHANGE_RE = r"\b(?:climb\w*|ris(?:e|en|es|ing)|rose|gr[eo]w\w*|gain\w*|increas\w*|improv\w*|trend\w* (?:up|upward|down|downward|higher|lower)|fall\w*|fell|declin\w*|drop\w*|slipp\w*|sliding|decreas\w*|moved? (?:up|down)|warm\w*|cool\w*|down|up)\b"
+
+
+def _sents(t):
+    return [s for s in re.findall(r"(?:[^.]|\.\d)+\.?", t) if s.strip()]
+
+
+def _f1(x):
+    return "%.1f" % x if x is not None else None
+
+
+def read_wrong(t, d, year=None):
+    """The reasons a written read says more than its record, [] when none.
+    One rule a class, each from the 2026-10-18 page-set pass (138 leads,
+    accuracy-pass/sets-2026-10): the read is dropped and the record stands."""
+    bad = []
+    Y, R, V = d.get("yield") or {}, d.get("rent") or {}, d.get("value") or {}
+    Lo, Wt, H = d.get("loss") or {}, d.get("water") or {}, ((d.get("heat") or {}).get("months") or {}).get("jul") or {}
+    sl, ci = Y.get("slope"), Y.get("slope_ci95")
+    med = Y.get("median")
+    jt = H.get("trend") or {}
+    rc = R.get("nonirr_change10") or {}
+    vc = V.get("change") or {}
+    sh = (Wt.get("irrigated_share_2022") or {})
+    gw = Wt.get("groundwater_share_2015") or {}
+    for s in _sents(t):
+        low = s.lower()
+        yieldy = re.search(r"\b(?:corn|yields?|bushels?)\b", low)
+        # a yield trend called a climb or a fall when its 95% interval spans zero
+        if yieldy and re.search(r"(?:bushels?|bu)(?: per acre| an acre| a acre|/ac)? (?:a|per|each) year", low) and re.search(CHANGE_RE, low):
+            if sl is None or ci is None or abs(sl) <= ci:
+                bad.append("yield trend inside its 95% interval")
+        # a July-low trend the record calls no clear direction
+        if re.search(r"\bjuly\b|\bnight\w*\b|\blows\b", low) and re.search(r"per decade|a decade|each decade", low) and re.search(CHANGE_RE, low):
+            if not jt or jt.get("direction") in (None, "no clear direction") or (jt.get("ci95_per_decade") is not None and abs(jt.get("per_decade") or 0) <= jt["ci95_per_decade"]):
+                bad.append("July-low trend with no clear direction")
+        # warmer nights are not a drier county
+        if re.search(r"\bdr(?:ying|ied) out\b|\bdrier\b|\bgetting dry\b|\bdrying\b", low):
+            bad.append("drying the record does not measure")
+        # years before a series starts
+        if re.search(r"\bjuly\b|\bnight\w*\b|\blows\b", low) and H.get("series"):
+            first = min(int(k) for k in H["series"])
+            if any(int(y) < first for y in re.findall(r"\b(1[89]\d\d|20\d\d)\b", s)):
+                bad.append("a year before the July-low series starts")
+        # the median called an average, a typical year or the fitted trend
+        if med is not None:
+            mf = _f1(med)
+            forms_ = {mf} | ({mf[:-2]} if mf.endswith(".0") else set())
+            if any(re.search(r"(?<![\d.])" + re.escape(x) + r"(?![\d])", s) for x in forms_) and "median" not in low and \
+                    re.search(r"\baverag\w*|\btrend\w*|\btypical\w*|\busual\w*|\bnormal\w*|\bmean\b", low):
+                bad.append("the median called an average or a trend")
+        # an all-practice county yield called irrigated (or dryland)
+        if yieldy and re.search(r"\d+(?:\.\d)?\s*(?:bushels|bu)\b", low) and re.search(r"(?<!non-)\birrigated (?:ground|land|acres|corn|fields)|on irrigated\b|\bdryland (?:corn|yields?)\b", low):
+            bad.append("an all-practice yield called irrigated or dryland")
+        # a change on the wrong base year
+        for c in (rc, vc):
+            if c.get("pct") is None:
+                continue
+            p = "%.1f" % abs(c["pct"])
+            for m in re.finditer(r"(?<![\d.])" + re.escape(p) + r"\s*(?:%|percent)", s):
+                # the base the change is put on: "up 17.4 percent from 2010", "35.6 percent since 2017"
+                b = re.match(r"[^,;]{0,12}?\b(?:from|since)\s+((?:19|20)\d\d)\b", s[m.end():])
+                if b and int(b.group(1)) not in (c.get("from_year"), c.get("to_year")):
+                    bad.append("a change put on the wrong base year")
+        # rent and land value set against each other over different spans
+        if re.search(r"\boutpac\w*|\boutstrip\w*|\boutran\b|\boutgr[eo]w\w*|\bfaster than\b|\bslower than\b|\blagg\w*|\bkept pace\b|\bkeeping pace\b|\bahead of\b|\boutrun\w*", low):
+            bad.append("rent and land value compared over different spans")
+        # "most" beside a share under half
+        if re.search(r"(?<!the )\bmost\b|\bmajority\b|\bbulk\b|\bmostly\b", low) and not re.search(r"\bmostly (?:dry|dryland|non-irrigated|unirrigated|rain-?fed)\b|\bmost\b[^.]{0,30}\b(?:dryland|not irrigated|non-irrigated|rain-?fed)\b", low):
+            ps = [float(x) for x in re.findall(r"(\d+(?:\.\d+)?)\s*(?:%|percent)", s)]
+            mm = re.search(r"(?<!the )\bmost\b|\bmajority\b|\bbulk\b|\bmostly\b", low)
+            # the share that "most" names: the first one after it, close by ("most ... payouts at 38 percent")
+            nx = re.search(r"(\d+(?:\.\d+)?)\s*(?:%|percent)", s[mm.end():mm.end() + 70])
+            if nx and float(nx.group(1)) < 50:
+                bad.append("'most' for a share under half")
+            if not ps and re.search(r"heat and drought|excess moisture|hail|freeze|wind", low):
+                top = max((Lo.get("share_all") or {}).values() or [0])
+                if top < 0.5:
+                    bad.append("'most' for a cause under half")
+        # a period's share put on the whole span's total indemnity
+        tot = Lo.get("total_indemnity")
+        if tot:
+            whole = {int(round(v * 100)) for v in (Lo.get("share_all") or {}).values() if v is not None}
+            for m in re.finditer(r"(\d+)\s*(?:%|percent) of the " + re.escape(_usd_m(tot)), s):
+                if int(m.group(1)) not in whole:
+                    bad.append("a period's share put on the whole span's total")
+        # "held" for a rent that moved in between
+        if re.search(r"\brent", low) and re.search(r"\bheld\b|\bsteady\b|\bflat\b|\bunchanged\b|\bstayed\b|\bunmoved\b", low):
+            ser = [v for k, v in (R.get("series_nonirr") or {}).items() if rc.get("from_year") and rc["from_year"] <= int(k) <= (rc.get("to_year") or 9999) and v is not None]
+            if len(set(ser)) > 1 or not ser:
+                bad.append("'held' for a rent that moved")
+        # "no" irrigated cropland, or "all" surface water, against a record with some
+        if re.search(r"\bno\b[^.]{0,30}\birrigat\w*|\bnone\b[^.]{0,30}\birrigat\w*|\bnot irrigated at all\b", low) and (sh.get("irrigated_acres") or 0) > 0:
+            bad.append("no irrigated ground when the census shows some")
+        if re.search(r"\ball\b[^.]{0,40}\bsurface\b|\bentirely\b[^.]{0,30}\bsurface\b", low) and (gw.get("gw_mgd") or 0) > 0:
+            bad.append("all surface water when some is groundwater")
+        if re.search(r"\ball\b[^.]{0,40}\bgroundwater\b|\bentirely\b[^.]{0,30}\bgroundwater\b", low) and gw.get("share") is not None and gw["share"] < 0.995:
+            bad.append("all groundwater when some is surface water")
+        # a "last N years" the record does not give
+        for n_ in re.findall(r"\b(?:past|last)\s+(\d+)\s+(?:crop\s+|closed\s+(?:crop\s+)?)?years\b", low):
+            if int(n_) != 10:
+                bad.append("a 'last N years' the record does not give")
+        if re.search(r"\bof the (?:last|past) \d+\b", low):
+            bad.append("a count of years the record does not give")
+        # a worst year with no year beside it
+        if re.search(r"\bworst year\b", low):
+            known = {str((Y.get("worst") or {}).get("year")), str(((d.get("sob") or {}).get("worst_year") or {}).get("year")),
+                     str(((d.get("drought") or {}).get("worst_year") or {}).get("year"))}
+            if not any(y in known for y in re.findall(r"\b(?:19|20)\d\d\b", s)):
+                bad.append("a worst year the record does not give")
+        # "this year" on an older survey
+        if re.search(r"\bthis year\b", low) and re.search(r"\brent", low):
+            ry = (R.get("nonirr") or {}).get("year")
+            if year is None or ry != year:
+                bad.append("'this year' on an older survey")
+        # a cause the record does not carry
+        if re.search(r"\ba sign that\b|\bwhich helps?\b|\bhelps? (?:manage|offset|explain|cushion|protect)\b|\bthanks to\b|\bdue to\b|\bbecause\b|\bshifted the risk\b|\bowing to\b", low):
+            bad.append("a cause the record does not carry")
+    return sorted(set(bad))
 
 
 def lede(W, f, rec, first_year=None):
@@ -1456,7 +1591,9 @@ def county_page(W, f, d, stamp):
         S1 += fwith("Rent as a share of corn gross", "%s (%s)" % (rr["pw"], rr["pwy"]))
     if rr:
         S1 += ('<p class="note">Share of gross is a past year, all observed: that year\'s rent, that year\'s county corn yield of the same practice and the '
-               'state price received, USDA NASS. Rent per bushel uses this year\'s rent over the 14-yr trend. The calculator below starts from that trend and lets you put in your own yield and price.</p>')
+               'state price received, USDA NASS. %s</p>' % (
+                   ("Rent per bushel uses this year\'s rent over the %s. The calculator below starts from that trend and lets you put in your own yield and price." % CY.label_trend(yt["ty"]).split(" (")[0])
+                   if ytv is not None else "Rent per bushel is withheld here: it needs the county trend, and the trend is withheld (see the corn yield section). The calculator below takes your own yield and price."))
     if f in W.rent_fips:
         S1 += ('<div class="act rcw"><button type="button" id="rc-open" data-st="%s" data-fips="%s" aria-expanded="false">Rent share calculator and history</button></div>'
                '<div id="rc-box" hidden></div>' % (esc(W.rent_st.get(f, st)), esc(f)))
@@ -1485,7 +1622,10 @@ def county_page(W, f, d, stamp):
         S2 += survey_facts(ss, stn)
         S2 += ('<p class="note">The census value is this county\'s, from %s. The survey figures are the %s average for %d, from the USDA NASS Land Values report. '
                'NASS publishes that survey by state, not by county, so this page does not scale one into the other.</p>'
-               % (V.get("latest_year") if ok(V) else "the census", esc(stn), ss["year"]))
+               % (V.get("latest_year") if ok(V) else "the census", esc(stn), ss["year"])).replace(
+                   "The census value is this county\'s, from %s." % V.get("latest_year"),
+                   ("The census value is this county\'s, from %s." % V.get("latest_year")) if ok(V) and V.get("latest") is not None else
+                   ("NASS withheld this county\'s %s census value; the census figures shown are this county\'s own." % V.get("latest_year") if ok(V) else "This county has no census value here."))
     S2 += uni_survey_note(W, st)
 
     S3 = "<h2>Corn yield</h2>"
@@ -1515,9 +1655,10 @@ def county_page(W, f, d, stamp):
         per = {int(k): v for k, v in (S.get("per_year") or {}).items() if v.get("ratio") is not None}
         closed = {y: v["ratio"] for y, v in per.items() if not per[y].get("partial")}
         S4 += bars_svg(closed, "Loss ratio by crop year: claims paid over total premium", lambda v: rh(v, 2), ref=1.0, ref_label="1.00: claims equal premium", every=5)
-        S4 += ('<p class="note">Claims paid divided by total premium (the farmer share plus the federal subsidy), each closed crop year since %s. '
+        S4 += ('<p class="note">Claims paid divided by total premium (the farmer share plus the federal subsidy), each closed crop year since %s '
+               'with at least %s of premium; a year under that has no bar and no ratio. '
                'Above the dashed line, the county\'s insurance book paid out more than it took in.%s</p>' % (
-                   min(closed) if closed else S.get("first_year"), (" %s, still open, is left out." % S["partial_year"]) if S.get("partial_year") else ""))
+                   min(closed) if closed else S.get("first_year"), SOB_GATE, (" %s, still open, is left out." % S["partial_year"]) if S.get("partial_year") else ""))
         if lc is not None:
             S4 += fact("Claims paid per $100 of coverage, %d–%d" % (S["last10"]["from"], S["last10"]["to"]), usd2(lc))
         if get(S, "last10", "ratio") is not None:
@@ -1526,9 +1667,11 @@ def county_page(W, f, d, stamp):
             S4 += fact("Loss ratio, %s–%s" % (S["first_year"], S["last_year"]), rh(S["loss_ratio_all"], 2), "%s paid" % musd(S["total_indemnity"]))
         if S.get("years_over_one") is not None:
             S4 += fact("Years claims exceeded premium", "%s of %s" % (S["years_over_one"], S["years_with_ratio"]),
-                       ("crop years %s–%s with a loss ratio" % (min(closed), max(closed))) if closed and len(closed) == S["years_with_ratio"] else None)
-        if S.get("worst_year"):
-            S4 += fact("Worst year", str(S["worst_year"]["year"]), "ratio %s" % rh(S["worst_year"]["ratio"], 2))
+                       "crop years with at least %s of premium" % SOB_GATE)
+        # a worst year out of one or two gated years is not a worst year: the same gate as the count above
+        if S.get("worst_year") and S.get("years_over_one") is not None:
+            S4 += fact("Worst year", str(S["worst_year"]["year"]), "ratio %s, of the %s crop years with at least %s of premium" % (
+                rh(S["worst_year"]["ratio"], 2), S["years_with_ratio"], SOB_GATE))
     else:
         S4 += fwith("Premium and payouts", why(S))
     if ok(Lo) and Lo.get("share_all"):
@@ -1544,7 +1687,7 @@ def county_page(W, f, d, stamp):
         S5 += '<p class="note">Weeks per year, U.S. Drought Monitor, with half the county or more in D2 (severe) drought or worse.%s</p>' % (
             (" No bar for %s: the Atlas copy of that year is incomplete, so it is left out of every total here." % " or ".join(map(str, miss))) if miss else "")
         wk = Dr.get("weeks") or {}
-        S5 += fact("D2 or worse for half the county, %s" % years_covered(Dr["first_year"], Dr["last_full_year"], miss), "%s of %s weeks" % (fmt(wk.get("d2"), 0), fmt(wk.get("counted"), 0)), "%s%% of weeks" % fmt(wk.get("share_d2_pct"), 0))
+        S5 += fact("D2 or worse for half the county, %s" % years_covered(Dr["first_year"], Dr["last_full_year"], miss), "%s of %s weeks" % (fmt(wk.get("d2"), 0), fmt(wk.get("counted"), 0)), "%s%% of weeks" % fmt(d2_share(Dr), 0))
         if wk.get("d2") and Dr.get("worst_year"):
             S5 += fact("Year with the most D2+ weeks", str(Dr["worst_year"]["year"]), "%s weeks" % Dr["worst_year"]["d2"])
         if Dr.get("last5"):
@@ -1587,7 +1730,7 @@ def county_page(W, f, d, stamp):
                 S6 += fact(label, "none reported")
             elif x.get("share") is not None:
                 s0 = x["acres"] / Pr["cropland"] if Pr.get("cropland") else x["share"]
-                S6 += fact(label, ("under 1%" if 0 < s0 < 0.005 else pct(x["share"], 0)) + " of cropland", "%s ac" % fmt(x["acres"], 0))
+                S6 += fact(label, ("under 1%" if 0 < s0 < 0.005 else pct(s0, 0)) + " of cropland", "%s ac" % fmt(x["acres"], 0))
     elif Pr.get("status"):
         S6 += fwith("Tile drainage and tillage", why(Pr))
     if ok(Cr):
@@ -1600,7 +1743,8 @@ def county_page(W, f, d, stamp):
                        ("%s%% of harvested cropland + CRP" % fmt(Cr["share_of_cropland"]["pct"], 1)) if get(Cr, "share_of_cropland", "pct") is not None else None)
         if Cr.get("expiring_next3"):
             x = Cr["expiring_next3"]
-            S6 += fact("CRP expiring FY%s–%s" % (x["from"], x["to"]), fmt(x["acres"], 0) + " ac", "%s%% of enrolled acres" % fmt(x["share_of_enrolled_pct"], 0) if x.get("share_of_enrolled_pct") is not None else None)
+            ce = (100.0 * x["acres"] / Cr["latest"]["acres"]) if x.get("acres") is not None and get(Cr, "latest", "acres") else x.get("share_of_enrolled_pct")
+            S6 += fact("CRP expiring FY%s–%s" % (x["from"], x["to"]), fmt(x["acres"], 0) + " ac", "%s%% of enrolled acres" % fmt(ce, 0) if ce is not None else None)
         if get(Cr, "rate", "usd_per_acre") is not None:
             S6 += fact("CRP average rental payment, FY%s" % Cr["rate"]["year"], money(Cr["rate"]["usd_per_acre"]) + "/ac", "all contracts in force, old ones included; not today's offer")
     elif Cr.get("status"):
@@ -1659,7 +1803,8 @@ def county_page(W, f, d, stamp):
             md = v[(n - 1) // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2
             med += "<td>%s%s</td>" % (esc(k[2](md)), (" <small>%d co.</small>" % n) if n < 3 else "")
         ND += '<tr class="med"><td>Median next door</td>%s</tr></tbody></table></div>' % med
-        ND += '<p class="note">Counties that share a stretch of boundary. A rent from an older survey year carries its year and stays out of the median; one more than three survey years old shows n/a.</p>'
+        ND += '<p class="note">Counties that share a stretch of boundary. A rent from an older survey year carries its year and stays out of the median; one more than three survey years old shows n/a.%s</p>' % (
+            " The corn median here needs %d published years, so a county with fewer shows n/a even where its own page gives a median." % YLD_MIN_N if any(k[1] == "yld" for k in cols) else "")
 
     # ---- assemble
     read_html = ""
@@ -1671,7 +1816,7 @@ def county_page(W, f, d, stamp):
         story_html = SA.story_html(W.stories, W, f, d)
     if story_html:
         rd = None
-    if rd and rd.get("text") and rd.get("sha") == c.get("sha") and read_ok(rd["text"], d, fl):
+    if rd and rd.get("text") and rd.get("sha") == c.get("sha") and read_ok(rd["text"], d, fl, RL):
         read_html = '<div class="read"><p style="margin:0">%s</p></div>' % esc(rd["text"].replace(" \u2014 ", ", ").replace("\u2014", ", "))
     if W.TEN and W.farm_acres(f) is not None and W.farm_acres(f) < 10000:
         fa = W.farm_acres(f)
@@ -1716,7 +1861,7 @@ def county_page(W, f, d, stamp):
 <div class="cite"><code>{esc(cite)}</code><br>Every figure is a county average from the sources named below. Rent ranks count every county with a published rent in the same survey year, within the state (the same counties as the state rent page); other ranks count counties with 10,000 acres or more in farms. Methods: <a href="/farmland-atlas/methods">how each figure is built</a>. Downloads: <a href="/farmland-atlas/data">all counties, CSV</a>.</div>
 <details><summary>Sources, dates and arithmetic</summary>
 <p>"Figures as of" is the date this page's numbers last changed; it moves only when a figure on the page does. Source files and their retrieval dates are listed on the <a href="/farmland-atlas/data">data page</a>.</p>
-<p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
+<p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Claims paid per $100 of coverage: claims divided by liability (the insured value), times 100, same source. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 {prev_next}
 </main>
 <script type="application/json" id="{csv_id}">{rec_json}</script>
@@ -2161,6 +2306,46 @@ def selftest():
     check("read gate: wrong loss ratio period", not read_ok("the loss ratio over 2017-2026 stands at 0.51.", d0, None) and read_ok("the loss ratio over 2016-2025 stands at 0.56.", d0, None))
     check("read gate: half dollar rounded down", not read_ok("rent runs $36 per acre", d0, None) and read_ok("rent runs $37 per acre", d0, None))
     check("read gate: flagged land value", not read_ok("against a census land value of $3,293 per acre", d0, {"dir": "rose"}) and read_ok("against a census land value of $3,293 per acre", d0, None))
+    # the 2026-10-18 page-set pass: one planted read per class, each against a record that says otherwise
+    dr = {"yield": {"median": 153.6, "slope": 2.584, "slope_ci95": 3.528, "worst": {"year": 2012, "value": 110.0}},
+          "rent": {"nonirr": {"year": 2025, "value": 101.0}, "nonirr_change10": {"from_year": 2016, "to_year": 2026, "from": 31.0, "to": 65.5, "pct": 111.3},
+                   "series_nonirr": {"2016": 32.0, "2019": 25.0, "2026": 32.0}},
+          "value": {"change": {"pct": 29.2, "from_year": 2017, "to_year": 2022}},
+          "water": {"irrigated_share_2022": {"harvested_acres": 34925.0, "irrigated_acres": 10518.0, "share": 0.301},
+                    "groundwater_share_2015": {"gw_mgd": 0.59, "total_mgd": 170.92, "share": 0.003}},
+          "loss": {"first_year": 1989, "last_year": 2025, "total_indemnity": 3969561, "share_all": {"heat_drought": 0.683, "wet": 0.2},
+                   "periods": {"1989-1999": {"heat_drought_share": 0.632}}},
+          "heat": {"months": {"jul": {"series": {"1925": 50.0}, "trend": {"per_decade": 0.4, "ci95_per_decade": 0.4, "direction": "no clear direction"}}}},
+          "sob": {"worst_year": {"year": 2024, "ratio": 1.83}}}
+    planted_reads = {
+        "trend inside its interval": "Corn yields here have climbed 2.6 bushels per acre a year from 2008 to 2025.",
+        "median as average": "Corn yields averaged 153.6 bushels per acre from 2008 to 2022.",
+        "median as fitted trend": "Corn here yields 153.6 bushels per acre on the fitted trend.",
+        "all-practice yield as irrigated": "Corn yields on irrigated ground ran 187.2 bushels per acre.",
+        "wrong base year": "Non-irrigated rent was $66 per acre in 2026, up 111.3 percent from 2010.",
+        "outpacing over other spans": "Land value rose 29.2 percent from 2017 to 2022, outpacing the rent growth.",
+        "most for 30 percent": "Most of the county's cropland is irrigated, 30 percent.",
+        "period share on the total": "From 1989-1999, they were 63 percent of the $4.0 million in indemnities paid over the full span.",
+        "drying out": "The county has been drying out, with July nightly lows warming at 0.33 F per decade since 1976.",
+        "July trend with no direction": "July nightly lows have moved up 0.4 F per decade since 1976.",
+        "year before the series": "No July since 1900 has seen average nightly lows at or above 70 degrees.",
+        "held for a rent that moved": "Non-irrigated rent has held at $32 per acre from 2016 to 2026.",
+        "no irrigated cropland": "No cropland here is irrigated.",
+        "all surface water": "Only 30 percent of harvested cropland is irrigated, and all of that water comes from surface sources.",
+        "last N years": "Heat and drought have driven the claims over the past 25 years.",
+        "N of the last M": "The loss ratio was 0.88, meaning ten of the last 34 crop years paid out more than premiums.",
+        "this year on an older rent": "Cash rent is $101 per acre this year.",
+        "a cause not in the record": "Claims fell to 12 percent in 2020-2025, a sign that irrigation has shifted the risk.",
+        "worst year not in the record": "The worst year for crop insurance was the flood losses paid out since 1989.",
+    }
+    for k_, t_ in planted_reads.items():
+        check("read gate (sets pass): " + k_, read_wrong(t_, dr, 2026) != [] and not read_ok(t_, dr, None, 2026))
+    for t_ in ("Corn yields have a median of 153.6 bushels per acre from 2008 to 2025, and 2012 was the worst year at 110.",
+               "Non-irrigated rent was $66 per acre in 2026, up 111.3 percent from 2016.",
+               "The county is mostly dryland, with 30 percent of harvested cropland irrigated.",
+               "Heat and drought made up 68 percent of the $4.0 million paid since 1989."):
+        check("read gate (sets pass) passes a true read: " + t_, read_wrong(t_, dr, 2026) == [])
+    check("drought share rounds once", d2_share({"weeks": {"d2": 142, "counted": 1357, "share_d2_pct": 10.5}}) == 10.46 and fmt(d2_share({"weeks": {"d2": 142, "counted": 1357}}), 0) == "10")
     check("slugify", slugify("St. Louis City") == "st-louis-city" and slugify("Lower Ct River Valley") == "lower-ct-river-valley")
     check("recent yield", recent_yield({"last_year": 2025, "hist": {"2021": 200, "2022": 100, "2023": 210, "2024": 220, "2025": 230}}, 2026)["avg"] == 210.0)
     # state survey beside the census: newer only, named as the state's, change hand worked
