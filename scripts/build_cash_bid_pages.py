@@ -1720,7 +1720,8 @@ def build_town_page(t, ctx):
                                      snap_ct, near_text, head_name)
         story_html = SBX.TOWN.story_html((ctx.get("stories") or {}).get("town"), f"{st.lower()}/{t['slug']}", story_facts)
     if any_hold:
-        hold_note = (" A &ldquo;Hold to&rdquo; line is the elevator&rsquo;s best later posted bid minus its nearest one, "
+        hold_note = (" A &ldquo;Hold to&rdquo; line names the later month this elevator posts that comes out best once "
+                     "storage and interest are taken off: its posted carry (that month&rsquo;s bid minus the nearest one), "
                      "net of " + esc(storesell.cost_note(storesell.with_defaults({}), None)[:-1]) +
                      f"; put in your own costs on <a href=\"{ss}\">Store or sell</a>.")
     if qs:
@@ -1952,7 +1953,7 @@ def top_bid_table(g, near, town_paths):
                    f'<td class="n">{money_basis(r["basis"])}{con}</td></tr>')
     n = len([r for r in rs if r["start"] == first])
     ym_ = f"{MONTH_ABBR[int(first[5:7]) - 1]} {first[:4]}"
-    return (f'<h3>{SB.CROP_LABEL[g]}: top {len(top)} of {n} bids for {ym_} delivery</h3>'
+    return (f'<h3>{SB.CROP_LABEL[g]}: top {len(top)} of {n} bids at the nearest delivery, starting {ym_}</h3>'
             f'<div class="cbt-scroll"><table class="cbt-t"><thead><tr><th>Elevator</th><th>Delivery</th>'
             f'<th class="n">Cash</th><th class="n">Basis</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div>')
 
