@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 18 Oct 2026 03:52:50 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 18 Oct 2026 15:24:47 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn slips 3¾¢ to $4.74¼; crude gains 3.5% to $101</title>
+      <link>https://agsist.com/daily/2026-10-18</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-18</guid>
+      <pubDate>Sun, 18 Oct 2026 15:24:25 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Corn closed Friday at $4.74¼, down 3¾ cents, while soybeans held at $12.61¼ and wheat lost 9½ cents. Crude was the big mover, up 3.5% to $101.41 as Iran war supply worries carry into 2027.
+• Grains ease into the weekend
+• Cattle firm, packers in focus
+Read more: https://agsist.com/daily/2026-10-18</description>
+    </item>
     <item>
       <title>Corn and beans break lower; crude tops $101 on tight supply</title>
       <link>https://agsist.com/daily/2026-10-17</link>
@@ -362,18 +373,6 @@ Action: Unpriced new-crop beans: hold through the weekend. A Monday settle above
 • BEANS WAIT FOR XI
 • CATTLE HOLD; FEEDERS SLIP
 Read more: https://agsist.com/daily/2026-09-18</description>
-    </item>
-    <item>
-      <title>Farm bill moves; export sales print at 7:30</title>
-      <link>https://agsist.com/daily/2026-09-17</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-17</guid>
-      <pubDate>Thu, 17 Sep 2026 11:08:41 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>The Senate Ag Committee broke its August deadlock Wednesday, advancing Farm Bill 2.0 on a 12-11 vote -- the first real legislative movement since the Aug 6 party-line failure. Beans settled at $13.26, off 3.5 cents, leaving the Nov contract a dime short of the level that would have triggered new-crop pricing for most operations.
-Action: New-crop beans: if Export Sales top 600K MT and Nov '26 closes above $13.42, price the first 10%.
-• EXPORT SALES IN FOCUS
-• CRUDE EASES; DIESEL STORY DEEPENS
-Read more: https://agsist.com/daily/2026-09-17</description>
     </item>
   </channel>
 </rss>
