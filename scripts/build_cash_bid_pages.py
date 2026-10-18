@@ -379,6 +379,43 @@ def portal_html(pi, snap):
 
 
 # ---------------------------------------------------------------- selection
+# A year the network had to guess (the label names months, no year) can land a
+# year off: Michigan Agricultural Commodities' "Oct/Nov27" was read as Oct 2026
+# on a Dec '27 contract, Westfield's "SEP/OCT/NOV 26" as Sep 2027 on Nov '26.
+# The futures month a board prices a delivery against falls from two months
+# before the delivery starts to eleven after; outside that, the guessed year is
+# moved one year the way that puts the contract inside, and a row that fits
+# neither way is dropped. A year the board wrote (10/01/2026, Jan 27) is never
+# moved: Stratton prices Aug 2027 corn off Dec '26 on purpose.
+YEAR_GUESS_VIA = {"month-inferred-year", "month-pair-inferred-year"}
+CON_BEFORE, CON_AFTER = 2, 11
+
+
+def _shift_period(p, k):
+    return re.sub(r"(\d{4})(?=-\d{2})", lambda m: str(int(m.group(1)) + k), p)
+
+
+def checked_period(b, con):
+    """The row's period, moved a year when its year was guessed and the
+    futures month says it is off; None when no year fits."""
+    p = str(b.get("period") or "")
+    via = b.get("periodVia")
+    m = re.fullmatch(r"(\d{4})-(\d{2})(?:/(\d{4})-(\d{2}))?", p)
+    if not m or not con:
+        return b.get("period")
+    wrap = via == "month-pair" and m.group(4) and int(m.group(2)) > int(m.group(4))
+    if via not in YEAR_GUESS_VIA and not wrap:
+        return b.get("period")
+    ci = con[2] * 12 + con[1]
+    def fits(k):
+        start = (int(m.group(1)) + k) * 12 + int(m.group(2)) - 1
+        return start - CON_BEFORE <= ci <= start + CON_AFTER
+    for k in (0, -1, 1):
+        if fits(k):
+            return _shift_period(p, k) if k else b.get("period")
+    return None
+
+
 def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed=None):
     """-> (towns, drops, unplaced). towns: {(ST, town_key): {...}} with every
     board that has posted rows in that town and, per board, the rows that may
@@ -460,17 +497,23 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
         if not lo <= cash <= hi:
             no("cash_outside_sanity_band")
             continue
-        if b.get("periodPast") or delivery_month(b.get("period"), crop, snap_ct) is None \
+        con = parse_contract(b.get("futuresMonth"), crop if crop in ("corn", "soybeans") else
+                             ("corn" if crop == "sorghum" else crop), gen.year, b.get("commodity"))
+        period = checked_period(b, con)
+        if period is None:
+            no("delivery_year_did_not_check_out")
+            continue
+        if period != b.get("period"):
+            b = dict(b, period=period, periodPast=False)
+        if b.get("periodPast") or delivery_month(period, crop, snap_ct) is None \
                 or dated_label_past(b, snap_ct):
             no("delivery_expired_or_undated")
             continue
         basis = b.get("basis")
         basis = round(float(basis), 4) if isinstance(basis, (int, float)) else None
-        con = parse_contract(b.get("futuresMonth"), crop if crop in ("corn", "soybeans") else
-                             ("corn" if crop == "sorghum" else crop), gen.year, b.get("commodity"))
         bd["rows"].append({
             "crop": crop, "commodity": (b.get("commodity") or "").strip(), "label": delivery_label(b),
-            "dm": delivery_month(b.get("period"), crop, snap_ct), "period": str(b.get("period") or ""),
+            "dm": delivery_month(period, crop, snap_ct), "period": str(period or ""),
             "cash": round(float(cash), 4), "basis": basis, "contract": con, "priced": pt,
             "source": sid, "via": b.get("via")})
     return towns, drops, unplaced
@@ -1262,6 +1305,7 @@ WHY = {"stale_or_unconfirmed": "board not confirmed on the latest read",
        "price_older_than_cutoff": f"no price posted in the last {FRESH_HOURS} hours",
        "delivery_expired_or_undated": "only expired delivery periods posted",
        "implied_futures_disagrees": "posted figures did not check out",
+       "delivery_year_did_not_check_out": "posted figures did not check out",
        "cash_outside_sanity_band": "posted figures did not check out"}
 
 
@@ -3108,6 +3152,7 @@ def selftest():
         assert delivery_label(dict(cdr, delivery=d)) != d[:3] + " 2026", d
     _selftest_known()
     _selftest_answer()
+    _selftest_delivery_year()
     # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
     for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
                   (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
@@ -3207,6 +3252,51 @@ def _selftest_answer():
     assert fr.index("cbt-hist\"") > fr.index('id="bid-email"'), "after the email box, with the other cards"
     assert "cb-basis-hist.js" not in ia and "Basis since" not in ia, "no logged change in the state: no box"
 
+
+
+def _selftest_delivery_year():
+    """A guessed delivery year is checked against the futures month; a year
+    the board wrote is never moved (Oct 18, 2026 snapshot cases)."""
+    gen = "2026-10-18T22:00:00Z"
+    srcs, bids = [], []
+
+    def add(sid, st, city, crop, delivery, period, via, fm, cash, basis):
+        if sid not in {s["id"] for s in srcs}:
+            srcs.append({"id": sid, "operator": sid, "status": "ok", "health": "live",
+                         "checkedAt": "2026-10-18T21:00:00Z"})
+        bids.append({"place": sid, "source": sid, "operator": sid, "city": city, "state": st, "currency": "USD",
+                     "crop": crop, "commodity": crop.title(), "delivery": delivery, "period": period,
+                     "periodVia": via, "periodPast": False, "cash": cash, "basis": basis,
+                     "basisUnit": "per-bushel", "futuresMonth": fm, "via": "scrape", "stale": False,
+                     "sourceStatus": "ok", "pricedAt": "2026-10-18T13:00:00Z"})
+    add("cameron", "MO", "Cameron", "corn", "December January", "2026-12", "month-inferred-year", "Mar 27", 4.40, -0.46)
+    add("cameron", "MO", "Cameron", "corn", "Sept Oct Nov 26", "2027-09", "month-inferred-year", "Dec 26", 4.32, -0.42)
+    add("cortland", "OH", "Cortland", "soybeans", "SEP/OCT/NOV 26", "2027-09/2027-10", "month-pair-inferred-year",
+        "@S6X", 11.9625, -0.65)
+    add("cortland", "OH", "Cortland", "soybeans", "JAN 27", "2027-01", "month-year", "@S7F", 12.4075, -0.35)
+    add("newaygo", "MI", "Newaygo", "corn", "Oct/Nov27", "2026-10", "month-inferred-year", "ZCZ27", 4.41, -0.65)
+    add("newaygo", "MI", "Newaygo", "corn", "Oct/Nov 26", "2026-10/2026-11", "month-pair", "ZCZ26", 4.24, -0.50)
+    add("chs", "MN", "Ada", "soybeans", "DEC-JAN 2027", "2027-12/2028-01", "month-pair", "ZSF27", 12.10, -0.60)
+    add("stratton", "CO", "Burlington", "corn", "08/01/2027", "2027-08", "us-date", "ZCZ26", 4.50, -0.20)
+    add("stratton", "CO", "Burlington", "corn", "Oct", "2026-10", "month-inferred-year", "ZCZ29", 4.30, -0.40)
+    zt = {"zips": {"64429": ["Cameron", "MO"], "44410": ["Cortland", "OH"], "49337": ["Newaygo", "MI"],
+                   "56510": ["Ada", "MN"], "80807": ["Burlington", "CO"]}}
+    towns, drops, _ = select({"generated": gen, "bids": bids}, {"sources": srcs}, known_towns(zt))
+    got = {(t["state"], r["crop"], r["label"]): (r["period"], r["dm"])
+           for t in towns.values() for bd in t["boards"].values() for r in bd["rows"]}
+    assert got[("MO", "corn", "December January")] == ("2026-12", "2026-12"), got
+    assert ("MO", "corn", "Sept Oct Nov 26") not in got, "Sep 2026 has passed: off the page, not filed under 2027"
+    assert got[("OH", "soybeans", "SEP/OCT/NOV 26")] == ("2026-09/2026-10", "2026-10"), got
+    assert got[("OH", "soybeans", "Jan 2027")] == ("2027-01", "2027-01"), got
+    assert got[("MI", "corn", "Oct/Nov27")] == ("2027-10", "2027-10"), got
+    assert got[("MI", "corn", "Oct/Nov 26")] == ("2026-10/2026-11", "2026-11"), got
+    assert got[("MN", "soybeans", "DEC-JAN 2027")] == ("2026-12/2027-01", "2027-01"), got
+    assert got[("CO", "corn", "Aug 2027")] == ("2027-08", "2027-08"), "a year the board wrote is never moved"
+    assert ("CO", "corn", "Oct 2026") not in got and drops["delivery_year_did_not_check_out"] == 1, (got, drops)
+    bd = towns[("CO", "burlington")]["boards"]["stratton"]
+    assert bd["why"]["delivery_year_did_not_check_out"] == 1
+    assert checked_period({"period": "2026-10", "periodVia": "month-inferred-year"}, None) == "2026-10", \
+        "no futures month: nothing to check against"
 
 
 def _selftest_known():
