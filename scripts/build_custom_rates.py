@@ -524,7 +524,11 @@ def faq_main(docs, idx):
           ("Which states are covered?",
            "States with a public survey read for this page: " + names + ". " + " ".join(NOT_COVERED[k] for k in sorted(NOT_COVERED))),
           ("Why do the same jobs differ between states?",
-           "The surveys were taken in different years, ask about the job in different words (combine only, or combine, cart and haul), and hear from different people. Some print the lowest and highest answer, Iowa leaves out the single lowest and highest, Purdue prints a one standard deviation band and Oklahoma prints no range. Compare the wording before you compare the numbers.")]
+           "The surveys were taken in different years, ask about the job in different words (combine only, or combine, cart and haul), and hear from different people. Some print the lowest and highest answer, Iowa leaves out the single lowest and highest, Purdue prints a one standard deviation band and Oklahoma prints no range. Compare the wording before you compare the numbers."),
+          ("What does custom grain hauling cost per bushel?",
+           "Kansas's 2026 survey prices hauling from the field to the farm or the nearest elevator. Corn averaged 23.9 cents a bushel, plus 5.5 cents a bushel a mile past 16 miles. Soybeans averaged 24.2 cents a bushel, plus 5.6 cents a bushel a mile past 18 miles."),
+          ("Do custom combiners charge extra for a big corn crop?",
+           "Some do. In Kansas's 2026 survey, harvesters who charge a base rate averaged $35.27 an acre for corn, plus $0.279 a bushel on yield over 69 bushels an acre. Those who charge one flat rate with no yield charge averaged $41.87 an acre.")]
     return qs
 
 
