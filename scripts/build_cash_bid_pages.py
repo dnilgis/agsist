@@ -675,8 +675,10 @@ def listing_link(e, z=""):
 def known_section(t, known, z=""):
     """'Also in <town>, bids not read yet': the roster's unread elevators in
     this town that are not already a board on the page. '' when there are none."""
-    ops = {op_key(b["operator"], t["name"]) for b in t["boards"].values()} - {""}
-    ks = [e for e in known if op_key(e["name"], t["name"]) not in ops]
+    def key(n):         # a name that is all town and trade words ("Garden City Co-op") keeps its town
+        return op_key(n, t["name"]) or op_key(n)
+    ops = {key(b["operator"]) for b in t["boards"].values()} - {""}
+    ks = [e for e in known if key(e["name"]) not in ops]
     if not ks:
         return ""
     lis = "".join(f'<li>{esc(e["name"])} <a href="{esc(listing_link(e, z))}" style="color:var(--gold);border:0;'
@@ -3473,6 +3475,9 @@ def _selftest_place():
     assert head_name({"operator": "", "city": "Ackney", "branch": "", "town": "Ackley"}) == "Ackney"
     assert op_key("Heartland Co-op") == op_key("Heartland Coop") == op_key("Heartland Cooperative") \
         == op_key("Heartland Co op") == "heartland"
+    gc = {"name": "Garden City", "boards": {"p": {"operator": "Garden City Co-op"}}}
+    assert known_section(gc, [{"id": "reg:KS|x|gardencity", "name": "The Garden City Co-op, Inc.",
+                               "town": "Garden City", "state": "KS"}]) == "", "the board already on the page"
     sec = board_section(pl, parse_ts(gen).astimezone(CT))[0]
     assert '<div class="loc">Pine Lake</div>' in sec and "Ackney" not in sec, sec[:400]
     assert near_text(dict(ty, how="zip")) == "Ackley, IA 50601"
