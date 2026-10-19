@@ -35,6 +35,7 @@ LIVESTOCK = [
             ("/cattle-futures-prices", "Cattle futures", "i-chart-candlestick"),
             ("/milk-prices", "Milk", "i-milk"),
             ("/hay-prices", "Hay", "i-sprout"),
+            ("/haymow", "The Haymow", "i-warehouse"),
             ("/lrp", "LRP", "i-shield-check"),
             ("/prf", "PRF", "i-shield-check"),
             ("/manure-value", "Manure value", "i-sprout"),
@@ -76,6 +77,17 @@ MONEY = [
                  ("/commodity-loan", "CCC loan", "i-banknote")]),
 ]
 SIGNUP = ("SIGNUP", "Get it by email", None)
+# A short line under a link's name, in the menu and the phone panel only (not the footer
+# or the no-script copies). 2026-10-18 (Sig: "add it to the menu"): The Haymow.
+SUBLINE = {"/haymow": "Hay for sale and wanted"}
+
+
+def name_html(it):
+    sub = SUBLINE.get(it[0])
+    if not sub:
+        return it[1]
+    return f'<span class="nav-two"><span>{it[1]}</span><span class="nav-sub">{sub}</span></span>'
+
 DAILY = [
     (None, [("/daily", "Today&rsquo;s briefing", "i-sunrise"),
             SIGNUP,
@@ -112,7 +124,7 @@ def desk_link(it):
         return f'            <div class="nav-q nav-q-ask">{it[1]}</div>\n            {signup_box("desk")}\n'
     cls = ' class="all"' if len(it) > 3 else ""
     arrow = " &rarr;" if len(it) > 3 else ""
-    return f'            <a href="{it[0]}"{cls}>{ic(it[2])}{it[1]}{arrow}</a>\n'
+    return f'            <a href="{it[0]}"{cls}>{ic(it[2])}{name_html(it)}{arrow}</a>\n'
 
 
 def desktop():
@@ -153,7 +165,7 @@ def drawer_group(gid, name, icon, subs):
                 continue
             cls = "draw-item draw-all" if len(it) > 3 else "draw-item"
             arrow = " &rarr;" if len(it) > 3 else ""
-            links.append(f'      <a href="{it[0]}" class="{cls}">{ic(it[2])}{it[1]}{arrow}</a>\n')
+            links.append(f'      <a href="{it[0]}" class="{cls}">{ic(it[2])}{name_html(it)}{arrow}</a>\n')
         out.append('    <div class="draw-links">\n' + "".join(links) + '    </div>\n')
         out.append(ask)
     out.append('  </section>\n')
@@ -253,6 +265,10 @@ STYLE = r"""<style>
 .nav-panel .nav-moved{grid-column:1/-1}
 .nav-q{padding:.55rem 1.1rem .2rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
 .nav-panel a{padding:.5rem 1.1rem}
+/* A link with a short line under its name (The Haymow: "Hay for sale and wanted"). */
+.nav-two{display:flex;flex-direction:column;gap:.1rem;line-height:1.2;min-width:0}
+.nav-sub{font-size:.74rem;font-weight:400;color:var(--text-muted);white-space:normal}
+.nav-panel .nav-sub{white-space:nowrap}
 #dd-daily-panel{left:auto;right:0;min-width:300px}
 .nav-ask{padding:.2rem 1.1rem .5rem;max-width:300px}
 .nav-ask .sa-ask{margin:0}

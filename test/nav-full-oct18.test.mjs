@@ -23,6 +23,10 @@ const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not foun
 
 const header = read("components/header.html"), footer = read("components/footer.html");
 const text = (s) => s.replace(/<svg[\s\S]*?<\/svg>/g, "").replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&rsquo;/g, "’").replace(/&rarr;/g, "→").replace(/\s+/g, " ").trim();
+// A link's name without its short line underneath (The Haymow: "Hay for sale and wanted"); the line is checked on its own.
+const SUB_RE = /<span class="nav-sub">[^<]*<\/span>/;
+const linkName = (s) => text(s.replace(SUB_RE, ""));
+const SUBLINES = { "/haymow": "Hay for sale and wanted" };
 
 // The approved outline, labels exact.
 const MENU = {
@@ -32,7 +36,7 @@ const MENU = {
     Reports: [["/usda-calendar", "USDA calendar"], ["/whats-priced-in", "What’s priced in"], ["/conditions", "Crop progress"], ["/conditions-yield", "Crop size"], ["/crop-tour", "Crop tour"], ["/cot", "Fund positions (COT)"], ["/tariffs", "Tariffs and trade"]],
   }],
   livestock: ["Livestock", {
-    "": [["/cattle-auction-prices", "Sale barn prices"], ["/cattle-futures-prices", "Cattle futures"], ["/milk-prices", "Milk"], ["/hay-prices", "Hay"], ["/lrp", "LRP"], ["/prf", "PRF"], ["/manure-value", "Manure value"], ["/drought-monitor", "Drought monitor"]],
+    "": [["/cattle-auction-prices", "Sale barn prices"], ["/cattle-futures-prices", "Cattle futures"], ["/milk-prices", "Milk"], ["/hay-prices", "Hay"], ["/haymow", "The Haymow"], ["/lrp", "LRP"], ["/prf", "PRF"], ["/manure-value", "Manure value"], ["/drought-monitor", "Drought monitor"]],
   }],
   field: ["Field", {
     Weather: [["/rain-radar", "Rain on your field"], ["/rain", "Rain by county"], ["/hail-map", "Hail map"], ["/spray", "Spray advisory"], ["/fall-nitrogen", "Soil temp (fall anhydrous)"], ["/rain-print", "Rain Print"], ["/rain-gauge", "Rain gauge waitlist"]],
@@ -64,8 +68,10 @@ test("desktop menu: five groups in order, short noun subheads, every label exact
     const heads = [...p.matchAll(/<div class="nav-q">([^<]*)<\/div>/g)].map((m) => m[1]);
     assert.deepEqual(heads, Object.keys(subs).filter(Boolean), `${name} subheads`);
     assert.ok(!heads.some((h) => /\?/.test(h)), "no question headings");
-    const links = [...p.matchAll(/<a href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)].map((m) => [m[1], text(m[2])]);
+    const all = [...p.matchAll(/<a href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)];
+    const links = all.map((m) => [m[1], linkName(m[2])]);
     assert.deepEqual(links, Object.values(subs).flat(), `${name} links`);
+    for (const m of all) assert.equal((m[2].match(/<span class="nav-sub">([^<]*)<\/span>/) || [])[1], SUBLINES[m[1]], `${m[1]} short line`);
   }
   // Daily's inline signup box, and the right-hand actions in order
   assert.match(deskPanel("daily"), /<div class="nav-q nav-q-ask">Get it by email<\/div>\s*<div class="nav-ask" data-signup-hide><div data-signup-ask="[^"]+" data-source="menu-desk"/);
@@ -87,8 +93,10 @@ test("phone panel: search, My place, the five groups open with subheads, a Rain 
   for (const [id, [name, subs]] of Object.entries(MENU)) {
     const a = drawer.indexOf(`id="dg-${id}"`), sec = drawer.slice(a, drawer.indexOf("</section>", a));
     assert.equal(text(sec.slice(sec.indexOf(">") + 1, sec.indexOf("</h2>"))), name);
-    const links = [...sec.matchAll(/<a href="([^"]+)" class="draw-item[^"]*">([\s\S]*?)<\/a>/g)].map((m) => [m[1], text(m[2])]);
+    const all = [...sec.matchAll(/<a href="([^"]+)" class="draw-item[^"]*">([\s\S]*?)<\/a>/g)];
+    const links = all.map((m) => [m[1], linkName(m[2])]);
     assert.deepEqual(links, Object.values(subs).flat(), `${name} in the phone panel`);
+    for (const m of all) assert.equal((m[2].match(/<span class="nav-sub">([^<]*)<\/span>/) || [])[1], SUBLINES[m[1]], `${m[1]} short line in the phone panel`);
   }
   assert.match(drawer, /<a href="\/rain-print" class="draw-rp"><span class="draw-rp-k">Rain Print<\/span><span class="draw-rp-t">Your farm&rsquo;s year of rain, framed<\/span>/);
 });
@@ -257,7 +265,7 @@ test("phone: one tap on the menu shows every group's links; desktop panels stay 
     const hidden = await pg.evaluate(() => [...document.querySelectorAll("#drawer .draw-grp a.draw-item")].filter((a) => !a.getClientRects().length).map((a) => a.getAttribute("href")));
     assert.deepEqual(hidden, [], "every group link is shown without another tap");
     const n = await pg.evaluate(() => document.querySelectorAll("#drawer .draw-grp a.draw-item").length);
-    assert.equal(n, 5 + 5 + 7 + 8 + 7 + 7 + 6 + 4 + 4 + 3 + 3);
+    assert.equal(n, 5 + 5 + 7 + 9 + 7 + 7 + 6 + 4 + 4 + 3 + 3, "Livestock has 9 since The Haymow (2026-10-18)");
     assert.ok(await pg.evaluate(() => document.getElementById("drawer").scrollWidth <= 390), "no sideways scroll in the panel");
     // the moved note shows before Nov 1 and stays closed once dismissed
     assert.ok(await pg.isVisible("#drawer .nav-moved"));
