@@ -175,6 +175,29 @@ test("print choices: the link form round-trips, defaults stay out of the link", 
   for (const v of ["week", "fingerprint,more", "sentence,sources"]) assert.equal(P.printParam(P.parsePrint(v)), v);
 });
 
+test("the printed QR: shortest link that reopens the same report, smallest symbol, pinned", () => {
+  globalThis.window = globalThis.window || globalThis;
+  require(ROOT + "components/qr.js");
+  const Q = globalThis.AgQR;
+  const chetek = P.qrLink({ fips: "55005", zip: "54728" });
+  assert.equal(chetek, "HTTPS://AGSIST.COM/here?f=55005&z=54728");
+  assert.equal(P.qrLink({ fips: "17019" }), "HTTPS://AGSIST.COM/here?f=17019");
+  assert.equal(P.qrLink({ fips: "55005", at: { lat: 45.31413, lng: -91.651 } }), "HTTPS://AGSIST.COM/here?f=55005&a=45.3141,-91.6510");
+  assert.equal(P.qrLink({ fips: "55005", zip: "54728", print: { parts: ["week"], more: true } }), "HTTPS://AGSIST.COM/here?f=55005&z=54728&p=66");
+  // no tracking, no label, nothing but the place and the print choice
+  assert.doesNotMatch(P.qrLink({ fips: "55005", zip: "54728", q: "Chetek, WI" }), /utm|q=|for=/);
+  // the short keys reopen the same report
+  const back = P.parseQuery("?f=55005&z=54728&p=66");
+  assert.deepEqual([back.fips, back.zip, back.print], ["55005", "54728", { parts: ["week"], more: true }]);
+  assert.deepEqual(P.parseQuery("?f=55005&a=45.3141,-91.6510").at, { lat: 45.3141, lng: -91.651 });
+  for (let n = 1; n < 128; n++) { const c = P.printFromCode(n); if (n & 63) assert.equal(P.printCode(c), n); }
+  // module counts at level M, byte mode: version 3 (29 x 29) for a ZIP or a county, version 4 (33) with a print choice or a point
+  assert.equal(Q.matrix(chetek).length, 29);
+  assert.equal(Q.matrix(P.qrLink({ fips: "17019" })).length, 29);
+  assert.equal(Q.matrix(P.qrLink({ fips: "55005", zip: "54728", print: { parts: ["week"], more: true } })).length, 33);
+  assert.equal(Q.matrix(P.qrLink({ fips: "55005", at: { lat: 45.31413, lng: -91.651 } })).length, 33);
+});
+
 test("this week on the site's own files", () => {
   const r = P.rainSoFar(J("data/rain/wi.json"), "55005");
   assert.equal(r.status, "ok"); assert.ok(r.inches > 0 && r.normal > 0); assert.match(r.through, /^\d{4}-\d{2}-\d{2}$/);

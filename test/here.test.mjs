@@ -229,6 +229,8 @@ test("print report: the panel drops parts from the printed sheet, More detail pr
     assert.equal(await pg.$$eval(".pd-r:not(.pd-ax)", (r) => r.length), 17);
     assert.equal(await pg.$$eval(".pc-t", (t) => t.length), 6);
     for (const t of await pg.$$eval(".pc-t .pc-s", (x) => x.map((e) => e.textContent))) assert.ok(t.length > 8, "source and years under each headline figure: " + t);
+    assert.equal(await pg.$$eval(".pc-qr svg rect, .pc-qr svg path", (n) => n.length > 0), true);
+    assert.equal(await pg.textContent("#h-pr-qr"), "This report, live and up to date: agsist.com/here?f=55005&z=54728");
     await pg.emulateMedia({ media: "screen" });
     // untick This week and the long view, tick More detail
     await pg.uncheck('#h-pr-box input[value="week"]');

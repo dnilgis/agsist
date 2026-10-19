@@ -70,6 +70,30 @@
     if (!parts.length) parts = PRINT_PARTS.slice();
     return { parts: PRINT_PARTS.filter(function (p) { return parts.indexOf(p) >= 0; }), more: more };
   }
+  /* The print choice as one number for the QR link: bit i = PRINT_PARTS[i] on, 64 = more. */
+  function printCode(choice) {
+    var n = 0;
+    PRINT_PARTS.forEach(function (p, i) { if (choice && choice.parts && choice.parts.indexOf(p) >= 0) n |= 1 << i; });
+    if (!n) n = 63;
+    if (choice && choice.more) n |= 64;
+    return n;
+  }
+  function printFromCode(n) {
+    var parts = PRINT_PARTS.filter(function (p, i) { return n & (1 << i); });
+    return { parts: parts.length ? parts : PRINT_PARTS.slice(), more: !!(n & 64) };
+  }
+  /* The link the printed QR code carries: the shortest that reopens the same report.
+     Uppercase scheme and host (QR stores them the same; phones read them the same), the
+     case-sensitive path as is, short keys, no label, no tracking. place: { fips, zip, at, print }. */
+  function qrLink(place) {
+    if (!place || !place.fips) return '';
+    var q = ['f=' + place.fips];
+    if (place.zip) q.push('z=' + place.zip);
+    else if (place.at) q.push('a=' + (+place.at.lat).toFixed(4) + ',' + (+place.at.lng).toFixed(4));
+    var n = printCode(place.print);
+    if (n !== 63) q.push('p=' + n);
+    return 'HTTPS://AGSIST.COM/here?' + q.join('&');
+  }
   /* The &print= value for a choice; '' when it is the default (everything, no more detail). */
   function printParam(choice) {
     var parts = PRINT_PARTS.filter(function (p) { return choice && choice.parts && choice.parts.indexOf(p) >= 0; });
@@ -89,11 +113,13 @@
       var i = kv.indexOf('='), k = decodeURIComponent((i < 0 ? kv : kv.slice(0, i)).replace(/\+/g, ' ')), v = '';
       try { v = i < 0 ? '' : decodeURIComponent(kv.slice(i + 1).replace(/\+/g, ' ')); } catch (e) { v = ''; }
       v = v.trim();
+      // f z a p: the short keys the printed QR code carries (smallest symbol; see qrLink)
       if (k === 'q') out.q = v.slice(0, 80);
-      else if (k === 'fips' && /^\d{5}$/.test(v) && FIPS_ST[v.slice(0, 2)]) out.fips = v;
-      else if (k === 'zip' && /^\d{5}$/.test(v)) out.zip = v;
-      else if (k === 'at') out.at = parsePoint(v);
+      else if ((k === 'fips' || k === 'f') && /^\d{5}$/.test(v) && FIPS_ST[v.slice(0, 2)]) out.fips = v;
+      else if ((k === 'zip' || k === 'z') && /^\d{5}$/.test(v)) out.zip = v;
+      else if (k === 'at' || k === 'a') out.at = parsePoint(v);
       else if (k === 'print') out.print = parsePrint(v);
+      else if (k === 'p') out.print = /^\d{1,3}$/.test(v) ? printFromCode(+v) : parsePrint(v);
       // &for= (the old role chips, removed Oct 19) and any other key: ignored
     });
     return out;
@@ -469,7 +495,7 @@
 
   return {
     SECTIONS: SECTIONS, PRINT_PARTS: PRINT_PARTS, STATES: STATES, FIPS_ST: FIPS_ST, MIN_RANK_N: MIN_RANK_N,
-    deeper: deeper, parsePrint: parsePrint, printParam: printParam, parseQuery: parseQuery, parsePoint: parsePoint, classify: classify,
+    deeper: deeper, parsePrint: parsePrint, printParam: printParam, printCode: printCode, printFromCode: printFromCode, qrLink: qrLink, parseQuery: parseQuery, parsePoint: parsePoint, classify: classify,
     splitState: splitState, normName: normName, stateFromName: stateFromName, findCounty: findCounty,
     countyInState: countyInState, countyAt: countyAt, stateOf: stateOf, rankIn: rankIn, profile: profile,
     sentence: sentence, fmt: fmt, fmtShort: fmtShort, ordinal: ordinal, miles: miles, rainSoFar: rainSoFar,

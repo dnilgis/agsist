@@ -447,8 +447,10 @@
     if (S.print.more) [].forEach.call(document.querySelectorAll('#h-place details.h-tbl'), function (d) { if (!d.open) { d.open = true; opened.push(d); } });
   }
   function buildQr() {
-    var url = location.origin.indexOf('agsist.com') >= 0 ? location.href : 'https://agsist.com' + location.pathname.replace(/\.html$/, '') + location.search;
-    var qr = $('h-pr-qr1'), end = $('h-pr-qr'), bare = esc(url.replace(/^https?:\/\//, ''));
+    var w = S.where || {}, p = S.prof;
+    if (!p) return;
+    var url = P.qrLink({ fips: p.fips, zip: w.zip, at: w.lat != null && !w.center && !w.zip ? { lat: w.lat, lng: w.lng } : null, print: S.print });
+    var qr = $('h-pr-qr1'), end = $('h-pr-qr'), bare = esc(url.replace(/^HTTPS:\/\/AGSIST\.COM/, 'agsist.com'));
     if (qr && qr.getAttribute('data-url') !== url) {
       var svg = '';
       try { svg = window.AgQR ? window.AgQR.svg(url, 'QR code for this page') : ''; } catch (e) { svg = ''; }
