@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-19",
+      "date_display": "Monday, October 19, 2026",
+      "headline": "Crude down 3% to $98.41 on Trump-Putin diesel deal; grains flat",
+      "teaser": "Crude slips 3% on a diesel supply deal while corn and beans hold flat at the start of the week.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-10-19",
+      "market_closed": false
+    },
+    {
       "date": "2026-10-18",
       "date_display": "Sunday, October 18, 2026",
       "headline": "Corn slips 3¾¢ to $4.74¼; crude gains 3.5% to $101",
@@ -2514,6 +2525,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-18T15:24:34.685443+00:00",
-  "count": 219
+  "updated": "2026-10-19T10:47:41.941402+00:00",
+  "count": 220
 }
