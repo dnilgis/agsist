@@ -106,8 +106,11 @@ def build(records, notices, today):
         for n in notices:
             topic = str(n.get("topic") or "")
             kind = topic.split(":", 1)[0] or "(none)"
-            t = nt.setdefault(kind, {"topic": kind, "total": 0, "last7": 0, "sent": 0, "detail": {}})
+            t = nt.setdefault(kind, {"topic": kind, "total": 0, "last7": 0, "sent": 0, "detail": {}, "from": {}})
             t["total"] += 1
+            # where the ask was (2026-10-19: rainyear comes from county rain pages and from Rain Print)
+            fk = kind_of(clean_src(n.get("src")))
+            t["from"][fk] = t["from"].get(fk, 0) + 1
             if n.get("sent"):
                 t["sent"] += 1
             d = day_of(n.get("ts"))
@@ -185,7 +188,7 @@ def selftest():
              {"email": "c@x.com", "topic": "arcplc:2026-12-11", "ts": ms(2026, 10, 12), "sent": None},
              {"email": "d@x.com", "topic": "rain-gauge", "ts": ms(2026, 10, 13), "sent": None, "zip": "54728", "note": "n"},
              {"email": "f@x.com", "topic": "rainyear:2026:19169", "ts": ms(2026, 10, 12), "sent": None},
-             {"email": "g@x.com", "topic": "rainyear:2026:55005", "ts": ms(2026, 10, 12), "sent": None},
+             {"email": "g@x.com", "topic": "rainyear:2026:55005", "ts": ms(2026, 10, 12), "sent": None, "src": "page:rain-print"},
              # v5.29: prf:<grid> recurs; sent = mailed at least once
              {"email": "e@x.com", "topic": "prf:30452", "ts": ms(2026, 10, 10), "sent": 1, "after": "2026-06", "iv": "2026-07"},
              {"email": "f@x.com", "topic": "prf:30452", "ts": ms(2026, 9, 1), "sent": None, "after": "2026-06"},
@@ -211,6 +214,7 @@ def selftest():
       and n["prf"]["detail"] == {"30452": 2, "14538": 1}, "PRF grid index notices by grid")
     t(n["rain-gauge"]["total"] == 1 and n["rain-gauge"]["detail"] == {}, "rain gauge waiting list: a count only")
     t(n["rainyear"]["total"] == 2 and n["rainyear"]["detail"] == {"2026": 2}, "rain year emails by year, not by county")
+    t(n["rainyear"]["from"] == {"(none)": 1, "page:rain-print": 1}, "rain year emails by where the ask was (Rain Print counted apart)")
     t("54728" not in json.dumps(o) and "d@x.com" not in json.dumps(o), "no ZIP, note or address from the notice list in the output")
     t("notices" not in build(recs, None, today), "a failed notice list leaves the section out")
     t("@" not in json.dumps(o), "no address in the output")

@@ -1604,7 +1604,28 @@
     return out;
   }
 
-  var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
+  /* EMAIL ME WHEN THE YEAR IS FINISHED (2026-10-19, board Bet 1). The county
+     the town lookup put the place in (Open-Meteo's admin2, "Barron County" or
+     "Barron"), matched to one county in that state's data/rain/<st>.json, the
+     same file the county rain pages and scripts/send_rain_year.py read. Exactly
+     one match gives its FIPS; none, or more than one, gives '' and the page
+     asks nothing (no guess). */
+  function countyKey(s) {
+    return String(s || '').toLowerCase().replace(/&/g, ' and ').replace(/\bst\.?\s+/g, 'saint ').replace(/\bste\.?\s+/g, 'sainte ')
+      .replace(/\s+(county|parish|borough|census area|city and borough|municipality)$/, '').replace(/[^a-z]/g, '');
+  }
+  function countyFips(admin2, counties) {
+    var k = countyKey(admin2), hit = '';
+    if (!k || !counties || typeof counties !== 'object') return '';
+    for (var f in counties) {
+      if (!/^\d{5}$/.test(f) || !counties[f] || countyKey(counties[f].name) !== k) continue;
+      if (hit) return '';
+      hit = f;
+    }
+    return hit;
+  }
+
+  var api = { countyFips: countyFips, encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, SHEET: SHEET, sheetBoxes: sheetBoxes, safeInArt: safeInArt, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
@@ -2807,7 +2828,66 @@
     syncExtrasUi();
   }
 
+  /* EMAIL ME WHEN <YEAR> IS FINISHED (2026-10-19, board Bet 1). Once a print
+     of this year (the year still going) is drawn for a US town whose county the
+     town lookup named, one quiet card under Pay offers the county rain pages'
+     own January notice: topic rainyear:<year>:<fips>, POST /notice (subs worker
+     v5.28), mailed by scripts/send_rain_year.py, which adds one line for a
+     Rain Print ask (source page:rain-print). components/signup-ask.js draws
+     the form, as on the county pages. A past year, the sample, a Canadian
+     town, a town with no county named, a county with no row in
+     data/rain/<st>.json, a gift card being used and Sig's maker view ask
+     nothing. Analytics: rain_print_year_signup {daily: 0|1}, nothing else (no
+     address, no design code, no place). */
+  var YA = { key: '', inp: '', st: {} };
+  function yearAskOff() {
+    var w = $('rp-yearask');
+    YA.key = ''; YA.inp = '';
+    if (w) { w.hidden = true; w.innerHTML = ''; }
+  }
+  function rainCounties(st) {
+    if (!YA.st[st]) {
+      YA.st[st] = root.fetch('/data/rain/' + st + '.json').then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+        .then(function (j) { return j && j.counties && typeof j.counties === 'object' ? j.counties : null; })
+        .catch(function () { delete YA.st[st]; return null; });
+    }
+    return YA.st[st];
+  }
+  function syncYearAsk(my) {
+    var w = $('rp-yearask');
+    if (!w) return;
+    var st = META ? String(META.stateAbbr || '').toLowerCase() : '';
+    var ok = !!(DATA && !BLOCKED && !SAMPLE && !MAKER && META && !META.ca && !META.approx && META.county && /^[a-z]{2}$/.test(st)
+      && ST.year === CURRENT_YEAR && !(typeof GIFT !== 'undefined' && GIFT && GIFT.usable) && typeof root.fetch === 'function');
+    if (!ok) { yearAskOff(); return; }
+    var key = ST.year + '|' + META.place + '|' + META.county;
+    if (key === YA.key) return;
+    yearAskOff();
+    YA.key = key; YA.inp = ST.year + '|' + ST.place;
+    var y = ST.year;
+    rainCounties(st).then(function (cs) {
+      if (YA.key !== key || my !== reqToken) return;
+      var fips = countyFips(META.county, cs);
+      if (!fips) return;
+      var name = cs[fips].name;
+      w.innerHTML = '<div data-signup-ask="Email me when ' + y + ' is finished." data-topic="rainyear:' + y + ':' + fips + '" data-source="page:rain-print"'
+        + ' data-ok="' + esc('Done. One email in January, once NOAA has all of ' + y + ' for ' + name + '.') + '"'
+        + ' data-note="' + esc('One email: ' + name + '’s full ' + y + ' rain total, and word that the whole year can be printed.') + '"></div>';
+      var el = w.firstChild, daily = false;
+      w.hidden = false;
+      // signup-ask.js not in yet: its own scan mounts the card when it loads
+      if (root.AgsistSignup && typeof root.AgsistSignup.mount === 'function') root.AgsistSignup.mount(el);
+      if (el.hidden) { w.hidden = true; return; }   // already asked for in this browser
+      el.addEventListener('submit', function () { var d = el.querySelector('.sa-d input'); daily = !!(d && d.checked); }, true);
+      if (typeof root.MutationObserver === 'function') new root.MutationObserver(function (ms, ob) {
+        if (!el.getAttribute('data-sa-done')) return;
+        ob.disconnect();
+        ga('rain_print_year_signup', { daily: daily ? 1 : 0 });
+      }).observe(el, { attributes: true, attributeFilter: ['data-sa-done'] });
+    });
+  }
   function blockPrint(msg) {
+    yearAskOff();
     BLOCKED = msg;
     PREVIEW = null; SETTLE = false; NOART = '';
     art.innerHTML = '<p class="rp-placeholder">Too many days missing at this station for a fair print.</p>';
@@ -2860,6 +2940,7 @@
   function failDraw(err) {
     DATA = null; META = null; PREVIEW = null; SETTLE = false; NOART = ''; EXT = null; NORM30 = null;
     BLOCKED = 'failed';
+    yearAskOff();
     art.innerHTML = EMPTY_ART;
     art.classList.add('rp-empty');
     $('rp-stats-wrap').hidden = true;
@@ -2962,6 +3043,8 @@
     if (e) { KEEP_URL = false; SHOW_EX = false; }
     if (e && e.type === 'submit' && !preset) NEAR = '';
     ST = next;
+    // another town or year: the last draw's email card goes until this one is drawn
+    if (YA.inp && YA.inp !== ST.year + '|' + ST.place) yearAskOff();
     if (ST.records) recordsReady();
     $('rp-buy-note').textContent = ''; BUY_NOTE_CODE = ''; $('rp-noname').hidden = true;
     // a note about the last draw's station is about that draw only
@@ -3131,7 +3214,7 @@
       sel.value = chosen.sid;
       var caM = !!(chosen.ca || (CA() && CA().isSid(chosen.sid)));
       var stateAbbr = caM ? String(g.prov || picked.meta.state || '').toUpperCase() : abbrFor((g.admin1 || '').toLowerCase()) || picked.meta.state || '';
-      META = { approx: !!g.approx, name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr, year: ST.year, km: chosen.km, place: g.name + ', ' + (stateAbbr || g.admin1), city: g.name, sid: chosen.sid, why: autoPick ? why : null, lat: g.latitude, lon: g.longitude };
+      META = { approx: !!g.approx, name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr, year: ST.year, km: chosen.km, place: g.name + ', ' + (stateAbbr || g.admin1), city: g.name, sid: chosen.sid, why: autoPick ? why : null, lat: g.latitude, lon: g.longitude, county: caM || g.approx ? '' : String(g.admin2 || '') };
       // a Canadian print: its province, its source (ECCC or CoCoRaHS) and a postal lookup for the credits; the toggles show
       if (caM) { META.ca = true; META.prov = stateAbbr.toLowerCase(); META.src = picked.meta.src || chosen.src || ''; META.postal = g.postal || ''; }
       syncCa();
@@ -3147,6 +3230,7 @@
         DATA = null; PREVIEW = null; SETTLE = false;
         NOART = (picked.days.length ? 'This station only has ' + ST.year + ' through ' + longDate(picked.days[picked.days.length - 1].date) + ', too little to draw a fair preview. ' : 'No days of ' + ST.year + ' have come in from this station yet. ') +
           'You can still order it as a gift. The full-year print is drawn and sent in January.';
+        yearAskOff();
         renderNoArt();
         setStatus('No preview yet, but you can still order it.');
         throw 'noart';
@@ -3189,6 +3273,7 @@
       if (SAMPLE) setStatus(EMPTY_STATUS);
       else {
         ga('rain_print_draw', { style: ST.style, near: NEAR && ST.place === NEAR ? 1 : 0, year_kind: yearMode(ST.year, TODAY) || 'done' });
+        syncYearAsk(my);
         // a phone: the keyboard goes once the print is drawn, so the town box doesn't hold the page (2026-10-15)
         if (phone() && doc.activeElement === $('rp-place')) try { $('rp-place').blur(); } catch (err) {}
         if (e && !e.auto && !artShown) showArt();
