@@ -47,15 +47,10 @@ OUT_DIR = "rent"
 SITE = "https://agsist.com"
 
 
-def _page_rate():
-    """The open ribbon's price, from the one rate card (scripts/stamp_rates.py
-    writes the same text into every other page)."""
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "rate-card.json")) as f:
-        t = next(x for x in json.load(f)["tiers"] if x["id"] == "page")
-    return "$%d/mo &middot; first month free" % t["price_month"]
-
-
-PAGE_RATE = _page_rate()
+# The open sponsor ribbon is an empty aside with only its slot id (Sig,
+# 2026-10-19: no price text in an unsold slot). components/loader.js fills it
+# when the slot is sold; the pitch lives in data/sponsor-slots.json
+# (scripts/stamp_rates.py writes the same form into every other page).
 
 STATE_NAMES = {
     "AL": "Alabama", "AR": "Arkansas", "AZ": "Arizona", "CA": "California",
@@ -900,7 +895,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   <p class="sub">{name} cash rent by county, per acre per year: every USDA-published county rate, free, from
   the NASS Cash Rents Survey. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
   {hero}
-  <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside {name} county cash rents. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-{st.lower()}&amp;utm_source=rent-{sl}&amp;utm_medium=slot">Put your name here &rarr;</a></aside>{ground_html}
+  <aside class="ag-sponsor-ribbon" data-slot="rent-{st.lower()}"></aside>{ground_html}
   <h2 id="counties" style="scroll-margin-top:80px">Every published county, {yr}</h2>
   <p class="sub">Tap a column heading to sort. Greyed values are the county&rsquo;s most recent published year where {yr}
   wasn&rsquo;t published.{other_types} Each county name opens its Farmland Atlas record (land value, yield, insurance
@@ -1198,7 +1193,7 @@ def build_hub(states, stats, generated):
   {finder}
   {atlas_line("/farmland-atlas")}
   {tile_html}
-  <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Your name on the cash rent page for every state. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-hub&amp;utm_source=rent-hub&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <aside class="ag-sponsor-ribbon" data-slot="rent-hub"></aside>
   <div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr><th>State</th><th title="non-irrigated cropland, median of published counties">Non-irrigated</th><th>YoY</th><th>Counties</th><th title="irrigated cropland, shown apart">Irrigated</th><th title="permanent pasture, shown apart">Pasture</th></tr></thead>
   <tbody>{"".join(rows)}</tbody></table></div>
   <p class="sub">&ldquo;Rent&rdquo; here means non-irrigated (dryland) cropland: the median of every county NASS published in

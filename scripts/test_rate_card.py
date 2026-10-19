@@ -88,6 +88,28 @@ def main():
     check(r.returncode == 0, "every ribbon's price matches the card (scripts/stamp_rates.py --check)",
           (r.stdout + r.stderr).strip()[-300:])
 
+    print("\nan unsold page ribbon carries no price and no text, only its slot id (Sig, 2026-10-19)")
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import stamp_rates
+    ribbons, bad = 0, []
+    for p in stamp_rates.pages():
+        s = p.read_text(encoding="utf-8")
+        for m in re.finditer(r'<aside class="ag-sponsor-ribbon"([^>]*)>(.*?)</aside>', s, re.S):
+            ribbons += 1
+            if m.group(2).strip() or not re.search(r'\sdata-slot="[a-z0-9-]+"', m.group(1)):
+                bad.append(str(p.relative_to(ROOT)))
+        if 'class="ag-sponsor-ribbon"' in s and re.search(r"first month free|data-rate=", s, re.I) \
+                and p.name not in ("sponsor.html", "sponsor-apply.html"):
+            bad.append(str(p.relative_to(ROOT)) + " (price text)")
+    check(ribbons >= 75, "the ribbons are still found (%d)" % ribbons, ribbons)
+    check(not bad, "every unsold ribbon is an empty aside with data-slot", bad[:6])
+    slots = json.loads((ROOT / "data" / "sponsor-slots.json").read_text())["slots"]
+    check(len(slots) == ribbons and all(e.get("pitch") for e in slots),
+          "every slot keeps its pitch in data/sponsor-slots.json", "%d slots, %d ribbons" % (len(slots), ribbons))
+    loader = (ROOT / "components" / "loader.js").read_text()
+    fill = loader[loader.index("function fillPageRibbons"):loader.index("function loadSponsorMetrics")]
+    check("getAttribute('data-slot')" in fill, "loader.js reads the slot from data-slot, so a sold slot still fills")
+
     print("\nthe supporter cap is the one the strip renders")
     sup = next((t for t in tiers if t["id"] == "supporter"), None)
     if sup and SUPPORTERS.exists():
