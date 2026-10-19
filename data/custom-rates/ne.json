@@ -431,8 +431,7 @@
    "a": 50.7,
    "n": 30,
    "lo": 25.0,
-   "hi": 82.0,
-   "k": "combine-corn"
+   "hi": 82.0
   },
   {
    "s": "Harvesting grains and soybeans",
@@ -450,7 +449,8 @@
    "a": 49.29,
    "n": 42,
    "lo": 30.0,
-   "hi": 82.0
+   "hi": 82.0,
+   "k": "combine-corn"
   },
   {
    "s": "Harvesting grains and soybeans",

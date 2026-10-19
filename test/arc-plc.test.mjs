@@ -183,7 +183,7 @@ test("a one-cent band reads 'at $X', and every band prints", () => {
 test("every county page's answers equal the calculator's math on the state file: each crop card, all three PLC-yield buttons, both years", (t) => {
   if (!D.fsa) return t.skip("no FSA file");
   const states = {};
-  let pages = 0, seen = 0, calls = 0;
+  let pages = 0, seen = 0, calls = 0, withheld = 0;
   const unq = (x) => x.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'");
   for (const sd of readdirSync(ROOT + "arc-plc", { withFileTypes: true }).filter((x) => x.isDirectory())) {
     for (const f of readdirSync(ROOT + "arc-plc/" + sd.name)) {
@@ -222,6 +222,13 @@ test("every county page's answers equal the calculator's math on the state file:
           if (v === "mismatch") { assert.ok(+py > e.by, `${f} ${k} ${y} ${lv}: PLC yield ${py} above benchmark ${e.by}`); continue; }
           const r = A.typical(cd, +py, e);
           assert.equal(r.verdict, v, `${f} ${k} ${d} ${y} ${lv}: page says ${v}, calculator ${r.verdict}`);
+          // money audit 3 (2026-10-19): a borrowed spread's dollars are withheld, so its card carries "-", never cents;
+          // only a crop whose scenario is marked nousd, and the calculator agrees it is borrowed
+          if (pc === "-" || ac === "-") {
+            assert.ok(cd.scen.nousd && r.borrowed && pc === "-" && ac === "-", `${f} ${k} ${y} ${lv}: no cents only on a withheld, borrowed spread`);
+            withheld++; continue;
+          }
+          assert.ok(!(cd.scen.nousd && r.borrowed), `${f} ${k} ${y} ${lv}: a withheld spread must not carry cents`);
           if (r.n) { assert.equal(A.cents(r.plc), +pc, `${f} ${k} ${y} ${lv} PLC`); assert.equal(A.cents(r.arc), +ac, `${f} ${k} ${y} ${lv} ARC-CO`); calls++; }
         }
       }
@@ -230,6 +237,7 @@ test("every county page's answers equal the calculator's math on the state file:
   }
   assert.ok(pages >= 2700, `only ${pages} county pages read; the pages have moved`);
   assert.ok(calls >= 20000, `only ${calls} answers re-derived; the cards have moved`);
+  assert.ok(withheld >= 100, `only ${withheld} withheld answers seen; the borrowed-spread cards have moved`);
 });
 
 test("Use my location: point in polygon on a fixture, and Chippewa's coordinates land on Chippewa County, WI", () => {

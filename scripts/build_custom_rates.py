@@ -191,6 +191,8 @@ def validate(meta, rows, where="tsv"):
         errs.append("%s: spread must be one of %s" % (where, ", ".join(SPREADS)))
     if not re.fullmatch(r"20\d\d", meta.get("survey_year", "")):
         errs.append("%s: survey_year must be a year" % where)
+    if meta.get("rate_year") and not re.fullmatch(r"20\d\d", meta["rate_year"]):
+        errs.append("%s: rate_year must be a year" % where)
     for u in ("url", "url2"):
         if meta.get(u) and not meta[u].startswith("https://"):
             errs.append("%s: %s must be https" % (where, u))
@@ -301,7 +303,16 @@ def state_doc(meta, rows):
          "includes": meta["includes"], "range_note": meta["range_note"], "rows": rows}
     if meta.get("withheld"):
         d["withheld"] = meta["withheld"]
+    # rate_year: the year the rates were charged, when a survey says it is not its own year
+    # (Missouri's April 2023 G302 asked about 2022 rates; money audit 6, 2026-10-19)
+    if meta.get("rate_year"):
+        d["rate_year"] = int(meta["rate_year"])
     return d
+
+
+def year_label(s):
+    """How a state's year reads beside a rate: '2022 rates' when the survey names the rate year, else its survey year."""
+    return "%d rates" % s["rate_year"] if s.get("rate_year") else "%d" % s["year"]
 
 
 def index_doc(docs):
@@ -311,6 +322,7 @@ def index_doc(docs):
         d = docs[st]
         nb = [x for x in BORDERS.get(st, "").split() if x in docs]
         states.append({"st": st, "name": d["name"], "slug": d["slug"], "year": d["survey_year"],
+                       **({"rate_year": d["rate_year"], "yl": "%d rates" % d["rate_year"]} if d.get("rate_year") else {}),
                        "survey": d["survey"], "publisher": d["publisher"], "url": d["sources"][0]["url"],
                        "rows": len(d["rows"]), "spread": d["spread"], "neighbors": nb})
     common = {}
@@ -428,7 +440,7 @@ def state_page(d, idx):
             body.append('<tr><th scope="row">%s%s</th><td class="av">%s <small>%s</small><span class="rgm">%s</span></td><td class="rg">%s</td><td>%d</td></tr>' % (
                 esc(r["o"]), note, money(r["a"], r["u"]), esc(unit_label(r["u"])), ("range " + rg) if "lo" in r else "", rg, r["n"]))
     me = next(s for s in idx["states"] if s["st"] == st)
-    nb = ", ".join('<a href="/custom-rates/%s">%s (%d)</a>' % (s["slug"], esc(s["name"]), s["year"]) for s in idx["states"] if s["st"] in me["neighbors"])
+    nb = ", ".join('<a href="/custom-rates/%s">%s (%s)</a>' % (s["slug"], esc(s["name"]), year_label(s)) for s in idx["states"] if s["st"] in me["neighbors"])
     others = " &middot; ".join('<a href="/custom-rates/%s">%s</a>' % (s["slug"], esc(s["name"])) for s in idx["states"] if s["st"] != st)
     srcl = " and ".join('<a href="%s" rel="nofollow">%s</a>' % (esc(s["url"]), "the survey" if i == 0 else "the second part") for i, s in enumerate(d["sources"]))
     faq_html = "".join('<details><summary>%s</summary><p>%s</p></details>' % (esc(q), esc(a)) for q, a in faq)
@@ -510,9 +522,9 @@ def faq_main(docs, idx):
         for s in idx["states"]:
             r = next((x for x in docs[s["st"]]["rows"] if x.get("k") == k), None)
             if r:
-                out.append("%s %s (%d survey, %d answers)" % (s["name"], money(r["a"], r["u"]), s["year"], r["n"]))
+                out.append("%s %s (%s%d survey, %d answers)" % (s["name"], money(r["a"], r["u"]), ("%d rates, " % s["rate_year"]) if s.get("rate_year") else "", s["year"], r["n"]))
         return out
-    names = ", ".join("%s (%d)" % (s["name"], s["year"]) for s in idx["states"])
+    names = ", ".join("%s (%s)" % (s["name"], year_label(s)) for s in idx["states"])
     qs = [("What does custom combining cost per acre?",
            "Survey averages for combining corn, per acre: " + "; ".join(line("combine-corn")) + ". Soybeans: " + "; ".join(line("combine-soy")) +
            ". Some surveys price combining alone and some include the grain cart and hauling, so check the wording in each state's table. Rates are survey averages; your local custom operator may charge more or less."),
@@ -546,7 +558,7 @@ def summary_block(docs, idx):
         for k in ("combine-corn", "combine-soy", "plant-row", "spray-ground"):
             r = by.get(k)
             cells.append("<td>%s</td>" % (("%s<small>/%s</small>" % (money(r["a"], r["u"]), "ac" if r["u"] == "acre" else esc(r["u"]))) if r else "<span class=\"na\">not in survey</span>"))
-        rows.append('<tr><th scope="row"><a href="/custom-rates/%s">%s</a> <small>%d</small></th>%s</tr>' % (s["slug"], esc(s["name"]), s["year"], "".join(cells)))
+        rows.append('<tr><th scope="row"><a href="/custom-rates/%s">%s</a> <small>%s</small></th>%s</tr>' % (s["slug"], esc(s["name"]), year_label(s), "".join(cells)))
     return ("\n      <div class=\"cr-tw\"><table class=\"cr-t cr-sum\">\n        <caption>State survey averages. Each state's own wording and full table are on its page.</caption>\n"
             "        <thead><tr><th scope=\"col\">State, survey year</th><th scope=\"col\">Combine corn</th><th scope=\"col\">Combine soybeans</th><th scope=\"col\">Plant, no fertilizer</th><th scope=\"col\">Spray, ground</th></tr></thead>\n"
             "        <tbody>\n        " + "\n        ".join(rows) + "\n        </tbody>\n      </table></div>\n"

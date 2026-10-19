@@ -34,7 +34,8 @@ const HTML = readFileSync(ROOT + "breakeven.html", "utf8");
 const JS = readFileSync(ROOT + "components/breakeven.js", "utf8");
 const obj = (name) => { const m = new RegExp("var " + name + "=(\\{[\\s\\S]*?\\});\\n").exec(HTML) || new RegExp("var " + name + "=(\\{[^;]*\\});").exec(HTML); return Function("return " + m[1])(); };
 const CD = obj("CROP_DEFAULTS"), BUD = obj("BUDGETS"), FERT = obj("FERT");
-const fertAt = (crop, y) => { const lb = FERT.r[crop].map((x) => Math.round(y * x)); return Math.round(lb[0] * FERT.n + lb[1] * FERT.p + lb[2] * FERT.k); };
+/* corn N is flat (FERT.nf.corn = [lb, $/lb, form], money audit 1, 2026-10-19); P and K follow the yield */
+const fertAt = (crop, y) => { const nf = FERT.nf && FERT.nf[crop]; const lb = FERT.r[crop].map((x) => Math.round(y * x)); if (nf) lb[0] = nf[0]; return Math.round(lb[0] * (nf ? nf[1] : FERT.n) + lb[1] * FERT.p + lb[2] * FERT.k); };
 const IA = JSON.parse(readFileSync(ROOT + "data/breakeven/IA.json", "utf8"));
 const STORY = IA.c.find((c) => c.n === "Story");
 
@@ -223,8 +224,9 @@ test("every cost line says where it came from; a budget region swaps the budget 
     const { pg, errors } = await open(browser, port);
     for (const id of ["seed", "chemicals", "insurance", "machinery", "labor", "overhead"]) assert.equal(await txt(pg, "#src-" + id), "From farmdoc\u2019s 2027 budget, northern Illinois (Aug 2026).", id);
     assert.equal(await txt(pg, "#src-land"), "farmdoc\u2019s 2027 budget: northern Illinois average cash rent.");
-    // A2809 removal (2026-10-17, scripts/crop_removal.py): 237 x 0.38 = 90 lb P2O5, 237 x 0.29 = 69 lb K2O
-    assert.match(await txt(pg, "#src-fertilizer"), /^213 lb N, 90 lb P₂O₅, 69 lb K₂O for 237 bu at co-op prices posted through [A-Z][a-z]{2} \d+, 2026\. Follows your yield\.$/);
+    // A2809 removal (2026-10-17, scripts/crop_removal.py): 237 x 0.38 = 90 lb P2O5, 237 x 0.29 = 69 lb K2O.
+    // N: A2809 Table 6.1 after soybeans at the posted ratio, 120 lb on Oct 19, 2026 (was 0.90 x 237 = 213, money audit 1).
+    assert.match(await txt(pg, "#src-fertilizer"), new RegExp("^" + FERT.nf.corn[0] + " lb N \\(A2809 rate after soybeans at posted prices, the same at any yield\\), 90 lb P₂O₅, 69 lb K₂O for 237 bu at co-op prices posted through [A-Z][a-z]{2} \\d+, 2026\\. P and K follow your yield\\.$"));
     assert.match(await txt(pg, "#be-region-note"), /farmdoc daily, Illinois Crop Budgets for 2027, Table 1 \(Aug 2026 release, published Sep 1, 2026\)/);
     await type(pg, "#seed", "120");
     assert.equal(await txt(pg, "#src-seed"), "Your number.");

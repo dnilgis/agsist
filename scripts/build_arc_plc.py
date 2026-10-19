@@ -86,7 +86,9 @@ files are fetched by .github/workflows/fetch-fsa-arcplc.yml into data/fsa/.
      historical irrigated percentage, not by what it plants [FSA24][APPX].
    Payment limit [ALA][FR26][DTNL]: $155,000 per person or legal entity,
      indexed to CPI-U; USDA put 2025 at $160,000; the rule's own example shows
-     $164,000 (factor 1.059). 2026 and 2027 not announced. Members of LLCs and
+     $164,000 (factor 1.059) for 2026, printed as "by the rule's own method;
+     FSA posts the official figure" (FR26 says its example does not set the
+     limit; money audit 5, 2026-10-19). Members of LLCs and
      S corporations who are actively engaged each get a limit under the 2025
      law [CCF][UMN]. Sequestration: 5.7% on recent payments [SEQ].
    AGI: $900,000 average AGI limit still applies to ARC and PLC; the 75%-of-
@@ -154,7 +156,7 @@ STYLES_V = "24"
 LOADER_V = "19"
 ASOF_V = "1"
 QR_V = "11"   # components/qr.js on its own (10: an alphanumeric mode for the Rain Print standard code, 2026-10-14; 11: mixed mode and versions to 40 for the printed report QRs, 2026-10-19)
-CALC_V = "11"   # 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
+CALC_V = "12"   # 12: no expected dollars where the price swings are borrowed from corn, county-yield wording (money audit 3); 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2026))   # years with both an FSA county yield and a price change; 2025 counts once its final MYA is out
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap, at least 1 SE, and MIN_WINS winning years
@@ -249,6 +251,9 @@ PARAMS = {
     "erp_pct": 0.88, "erp_cap_pct": 1.15,
     "arc_guarantee_pct": 0.90, "arc_max_pct": 0.12, "payment_acres_pct": 0.85,
     "payment_limit_base": 155000, "payment_limit_2025": 160000, "sequestration_recent_pct": 0.057,
+    # FR 2026-00313's worked example: $155,000 x 319.205 / 301.3742 (CPI-U) = 1.059 -> $164,000. Not the official
+    # figure (the rule says its example does not establish it); FSA posts that. Printed as the rule's own method.
+    "payment_limit_2026_rule": 164000,
 }
 YEAR_INFO = {
     2026: {"open": "2026-09-16", "close": "2026-12-11", "pay_after": "2027-10-01",
@@ -484,6 +489,8 @@ def verdict_line(v):
                 "Type a price in the calculator to see the dollars.")
     if w_ == "pending":
         return "Waiting on USDA&rsquo;s closing 2025 season-average price, which sets the 2027 reference price."
+    if v.get("nousd"):
+        return verdict_line_borrowed(v)
     nums = (f"expected {usd_pay(v['plc'])} PLC vs {usd_pay(v['arc'])} ARC-CO per base acre; PLC paid more in {v['plc_wins']} of "
             f"{v['n']} past-year scenarios, ARC-CO in {v['arc_wins']}")
     if w_ == "none":
@@ -499,6 +506,51 @@ def verdict_line(v):
         tail_ = (f"{WORD[other]} did not pay more in any of the {v['n']} years, but the gap is within the normal swing" if ow == 0 else
                  f"but the gap is within the normal swing, so {WORD[other]} is a defensible choice")
         return f"Leans {WORD[side]}: expected about {usd(abs(v['diff']))} more per base acre; {tail_} ({nums}).{note}"
+    return f"Pick {WORD[w_]} ({nums}).{note}"
+
+
+# 2026-10-19 money audit 3: a crop with no October futures history of its own
+# borrows its price spread (scen "nousd"): 2026 wheat and the smaller crops with
+# enough years stretch their own price changes to corn's October SD
+# (yoy_scaled); the rest use corn's swings outright (corn_oct). Near the
+# reference price most of an expected payment comes from that spread (Sumner
+# Co., KS wheat: $6.76 expected PLC, $1.56 of it with no spread at all), so the
+# dollars are withheld everywhere, page source included (data-t, the Lower and
+# Higher packs and the math file carry no cents for them), and the call, the
+# year counts, the trigger yield and the PLC price line stay. A typed price is
+# the reader's own and shows its dollars as before.
+BOR_NOTE = "no dollar figure, because the price swings are borrowed from corn&rsquo;s"
+
+
+def bor_why(lc, few=False):
+    """The plain reason the dollars are not printed, for crop lc. few: too few years of the crop's own
+    prices, so it runs on corn's swings outright (corn_oct); else its own changes sized to corn's."""
+    pl = lc.endswith("s")
+    its, has = ("their", "have") if pl else ("its", "has")
+    if few:
+        return (f"{lc[0].upper() + lc[1:]} {has} too few years of {its} own prices in FSA&rsquo;s tables, so {its} price swings are corn&rsquo;s, "
+                f"and the expected dollars would rest on them. We do not print them.")
+    return (f"{lc[0].upper() + lc[1:]} {has} no October futures history of {its} own on file, so "
+            f"{its} price swings are borrowed from corn&rsquo;s, and the expected dollars would rest on them. We do not print them.")
+
+
+def verdict_line_borrowed(v):
+    """verdict_line for a borrowed spread: the call and the year counts, no dollars."""
+    w_ = v["verdict"]
+    nums = f"PLC paid more in {v['plc_wins']} of {v['n']} past-year scenarios, ARC-CO in {v['arc_wins']}; {BOR_NOTE}"
+    if w_ == "none":
+        return f"Neither expected to pay ({nums})."
+    if w_ == "close":
+        return f"Close, either one: too small or too uncertain to call ({nums})."
+    note = (" Capped at Leans: this crop borrows corn&rsquo;s price swings." if w_.startswith("lean_") else "") + \
+           (" Not a clear pick: a futures-based price start gives a different call." if v.get("alt_down") else "")
+    if w_.startswith("lean_"):
+        side = w_[5:]
+        other = "arc" if side == "plc" else "plc"
+        ow = v["arc_wins"] if side == "plc" else v["plc_wins"]
+        tail_ = (f"{WORD[other]} did not pay more in any of the {v['n']} years, but the gap is within the normal swing" if ow == 0 else
+                 f"the gap is within the normal swing, so {WORD[other]} is a defensible choice")
+        return f"Leans {WORD[side]}: {tail_} ({nums}).{note}"
     return f"Pick {WORD[w_]} ({nums}).{note}"
 
 
@@ -1070,9 +1122,9 @@ def price_scen(inp, k, py):
     """Price scenarios for crop k, program year py: {center, ratios {year: multiplier}, kind, ...}.
 
     2026, every crop: the center is USDA&rsquo;s projected 2026/27 season-average
-      price (the October WASDE). The crop is mostly harvested, so the county
-      yield is a normal crop (fix: every scenario year at the benchmark) and only
-      the price moves.
+      price (the October WASDE). County yields come out months after harvest,
+      so until a reader types one the county yield is a normal crop (fix: every
+      scenario year at the benchmark) and only the price moves.
     2026 spread, corn and soybeans: each past year&rsquo;s final MYA / that year&rsquo;s
       October futures average (RMA harvest price), scaled to mean 1: how far the
       season-average price ended from October futures. alt: the futures-implied
@@ -1112,8 +1164,10 @@ def price_scen(inp, k, py):
             return out
         corn = oct_spread(inp, "corn")
         if corn and len(yoy) >= MIN_SCEN:
+            # nousd (money audit 3, 2026-10-19): corn's October spread stretched onto wheat, whose
+            # marketing year began June 1; the expected dollars rest on it, so they are withheld
             return {**base, "kind": "yoy_scaled", "center": wp, "ratios": rescale_to(yoy, sd1(corn[2].values())), "fix": True,
-                    "borrowed": True, "center_label": lab26}
+                    "borrowed": True, "nousd": True, "center_label": lab26}
         return None
     if py == 2027 and k in snap.get("futures", {}) and len(hist) >= 10:
         fu = snap["futures"][k]
@@ -1254,7 +1308,7 @@ def compute(inp):
                 own = sx["ratios"]
                 # too few years of its own price changes: borrow corn's October spread; enough: its own, rescaled to corn's
                 rat = rescale_to(own, sd1(corn_oct[2].values())) if len(own) >= MIN_SCEN else dict(corn_oct[2])
-                cd["scen"] = {**sx, "kind": "yoy_scaled" if len(own) >= MIN_SCEN else "corn_oct", "ratios": rat, "fix": True, "borrowed": True,
+                cd["scen"] = {**sx, "kind": "yoy_scaled" if len(own) >= MIN_SCEN else "corn_oct", "ratios": rat, "fix": True, "borrowed": True, "nousd": True,
                               "own_years": len(own), "why": ""}
             else:
                 cd["scen"] = sx
@@ -1327,8 +1381,13 @@ def typical_eval(cd, py, e):
     if sc["kind"] == "noprice":
         return {"verdict": "noprice", "n": 0}
     dy = 1.0 if sc.get("fix") else e["dy"]
-    return scen_eval(cd["erp"]["erp"], cd["bp"]["value"], cd["loan"], py, [(1.0, e["by"], dy)], sc["center"], sc["ratios"],
-                     borrowed=bool(sc.get("borrowed")), alt=sc.get("alt"))
+    v = scen_eval(cd["erp"]["erp"], cd["bp"]["value"], cd["loan"], py, [(1.0, e["by"], dy)], sc["center"], sc["ratios"],
+                  borrowed=bool(sc.get("borrowed")), alt=sc.get("alt"))
+    if sc.get("nousd") and v.get("borrowed"):
+        v["nousd"] = True
+        if sc.get("kind") == "corn_oct":
+            v["bor_few"] = True
+    return v
 
 
 def add_other_crops(inp, years, primary):
@@ -1714,8 +1773,8 @@ def faq_items(D):
          "Yes. FSA's rule says every payment eligibility document for a 2026 contract is due by March 1, 2028. Miss it and the "
          "payment does not issue: FSA treats it as forfeited, not denied."),
         ("What is the ARC/PLC payment limit?",
-         "$155,000 per person or legal entity in the 2025 law, adjusted for inflation; USDA put 2025 at $160,000. The 2026 and 2027 figures "
-         "are not out. The limit is per person across all crops and farms."),
+         "$155,000 per person or legal entity in the 2025 law, adjusted for inflation; USDA put 2025 at $160,000. For 2026 it is $164,000 by "
+         "the rule's own method; FSA posts the official figure. The limit is per person across all crops and farms."),
     ]
 
 
@@ -1837,8 +1896,10 @@ def method_html(D):
     a clear pick drops to Leans. A study of corn found WASDE and futures-based forecasts about equally accurate ({src_link('HOFF15')}).</li>
     <li><b>2026 spread for wheat and the smaller crops.</b> None of them has its own October futures history on file. Wheat uses its own year-to-year price changes,
     scaled to average 1 and then to the size of corn&rsquo;s October swings (standard deviation {corn_sd * 100:.1f}%). The smaller crops have too few years in FSA&rsquo;s
-    price tables, so they use corn&rsquo;s October swings. Because the spread is borrowed, their call stops at Leans.</li>
-    <li><b>2026 county yield.</b> The 2026 crop is mostly harvested, so every scenario year uses a normal crop: the county&rsquo;s FSA benchmark yield. Only the price moves.
+    price tables, so they use corn&rsquo;s October swings. Because the spread is borrowed, their call stops at Leans and their expected dollars are not printed:
+    near the reference price most of an expected payment comes from the spread, and this one is not the crop&rsquo;s own (wheat&rsquo;s marketing year also began June 1,
+    so less of its price is still open in October than corn&rsquo;s swings imply). Type a price in the calculator to see the dollars at that price.</li>
+    <li><b>2026 county yield.</b> USDA puts out county yields months after harvest, so until then every scenario year assumes a normal crop: the county&rsquo;s FSA benchmark yield. Only the price moves.
     In the calculator, type the county yield if you know it and the 2026 call uses it.</li>
     <li><b>2027 price, corn and soybeans.</b> Start: {c7['center_label']}: {usd(c7['center'])} corn; soybeans {s7['center_label']}: {usd(s7['center'])}. Spread: each past year&rsquo;s change in the
     final season-average price, scaled to average 1, because 2027 is a whole year out.</li>
@@ -1849,7 +1910,7 @@ def method_html(D):
     <li><b>The call.</b> With at least {MIN_SCEN} years: <b>Pick</b> when the expected gap is more than t times its standard error (t from Student&rsquo;s t for the number of years,
     2.26 for 10 and 2.23 for 11), at least {usd(MIN_GAP)} per base acre, and the leading program paid more in at least {MIN_WINS} of the years; <b>Leans</b> when the gap is at least
     {usd(LEAN_GAP)} and at least one standard error, and the leader paid more in at least {MIN_WINS} years; otherwise <b>close, either one</b>. When both expected payments round
-    to $0: <b>neither expected to pay</b>. Expected dollars are always shown beside the call.</li>
+    to $0: <b>neither expected to pay</b>. Expected dollars are shown beside the call, except for the 2026 crops whose spread is borrowed (above): there the call stands and the dollars are not printed.</li>
     <li><b>Typical farm</b> (county pages): FSA&rsquo;s county average PLC yield and FSA&rsquo;s official benchmark. That PLC yield covers all practices, irrigated and not, so the
     irrigated answer is labeled as using it. Where it is above a practice&rsquo;s benchmark, no typical answer is given for that practice. The county page&rsquo;s Lower and Higher
     buttons use 85% and 115% of it.</li>
@@ -1977,7 +2038,7 @@ def build_main(D, ch):
     <li><b>New base acres:</b> up to 30 million, from 2019 to 2023 plantings, cut 3.69% on the new acres only. New base takes the farm&rsquo;s existing PLC yield for that crop, or the county average PLC yield if the farm has none.</li>
     <li><b>2025 only:</b> farms got the higher of ARC-CO or PLC automatically. That does not carry into 2026 or 2027.</li>
     <li><b>SCO:</b> no longer tied to the ARC/PLC election; for 2026 the band to 90% is sold as ECO, and SCO goes to 90% in 2027. Ask your crop insurance agent.</li>
-    <li><b>Payment limit:</b> $155,000 per person, indexed (2025: $160,000). Actively engaged members of LLCs and S corporations can each carry a limit.</li>
+    <li><b>Payment limit:</b> $155,000 per person, indexed (2025: $160,000; 2026: $164,000 by the rule&rsquo;s own method, FSA posts the official figure). Actively engaged members of LLCs and S corporations can each carry a limit.</li>
     <li><b>Signup moved:</b> the 2026 window opened Sept 16, 2026, later than the usual spring signup.</li>
   </ul>
 
@@ -1997,7 +2058,7 @@ def build_main(D, ch):
     <li><b>Rented ground.</b> On a cash lease the tenant gets the payment unless agreed otherwise. On a share lease landlord and tenant split it by share and both sign.</li>
     <li><b>10 base acres.</b> No payment when the farm&rsquo;s base acres, added to the base on the other farms where you hold an enrolled share, come to 10 acres or less (7 CFR 1412.51), unless you are a socially disadvantaged, limited resource, veteran or beginning farmer.</li>
     <li><b>Income rule.</b> The $900,000 average adjusted gross income limit still applies to ARC and PLC. The new exception for those with 75% of gross income from farming covers certain conservation and disaster programs, not ARC or PLC.</li>
-    <li><b>Payment limit.</b> Per person across all crops and farms, not per farm. Peanuts carry a separate limit of their own. Sequestration (5.7% lately) comes off before the limit.</li>
+    <li><b>Payment limit.</b> Per person across all crops and farms, not per farm. Peanuts carry a separate limit of their own. Sequestration (5.7% on recent payments) also comes off; ask your FSA office how it meets the limit for your farm.</li>
     <li><b>ARC-IC.</b> A third choice, for the whole farm. <a href="#arc-ic">What it takes to check it</a>.</li>
   </ul>
 
@@ -2290,7 +2351,8 @@ def why_text(v, cd, by, py):
     return (f"PLC pays on any season-average price below {XC.pf(cd, erp)}, up to {usd(max_plc)} per base acre at the {XC.pf(cd, loan)} loan rate, so it "
             f"protects against a deep price drop. ARC-CO is capped at {usd(max_arc)} per base acre but also pays when the county&rsquo;s "
             f"yield is short; it paid something in {short} of the {v['n']} past-year scenarios. With prices centered at {XC.pf(cd, center)}, "
-            f"PLC is expected to pay {usd_pay(v['plc'])} and ARC-CO {usd_pay(v['arc'])} per base acre.")
+            + (f"the expected payments are not printed. {bor_why(cd['label'].lower(), (cd.get('scen') or {}).get('kind') == 'corn_oct')}"
+               if v.get("nousd") else f"PLC is expected to pay {usd_pay(v['plc'])} and ARC-CO {usd_pay(v['arc'])} per base acre."))
 
 
 def practice_split(es):
@@ -2369,8 +2431,10 @@ def quick_county(c, D):
             if v["verdict"] in NOCALL:
                 items.append(f"<li><b>{esc(lab)}:</b> {VWORD[v['verdict']].lower()}.</li>")
             else:
-                items.append(f"<li><b>{esc(lab)}:</b> {VWORD[v['verdict']]} (est. {usd_pay(v['plc'])} PLC vs {usd_pay(v['arc'])} ARC-CO per base acre; "
-                             f"PLC more in {v['plc_wins']} of {v['n']} past-year scenarios, ARC-CO in {v['arc_wins']}).</li>")
+                est = "" if v.get("nousd") else f"est. {usd_pay(v['plc'])} PLC vs {usd_pay(v['arc'])} ARC-CO per base acre; "
+                items.append(f"<li><b>{esc(lab)}:</b> {VWORD[v['verdict']]} ({est}"
+                             f"PLC more in {v['plc_wins']} of {v['n']} past-year scenarios, ARC-CO in {v['arc_wins']}"
+                             + (f"; {BOR_NOTE}" if v.get("nousd") else "") + ").</li>")
             break
     if not items:
         return ""
@@ -2454,8 +2518,21 @@ def avg_verb(lc):
 
 
 def gap_line(v, lc, y, cd, by=None):
-    """The card's one plain sentence, whole dollars per base acre."""
+    """The card's one plain sentence, whole dollars per base acre (none when the spread is borrowed)."""
     w = v["verdict"]
+    if v.get("nousd") and (w in ("plc", "arc", "close") or w.startswith("lean_")):
+        if w == "close":
+            return f"Too close to call. {bor_why(lc, v.get('bor_few'))}"
+        side = w[5:] if w.startswith("lean_") else w
+        other = "arc" if side == "plc" else "plc"
+        ow = v["arc_wins"] if side == "plc" else v["plc_wins"]
+        t = f"{WORD[side]} leads across the {v['n']} price years we ran, but that swings from year to year."
+        if ow == 0:
+            t += f" {WORD[other]} did not come out ahead in any of them."
+        t += " " + bor_why(lc, v.get("bor_few")) + (" So it stops at Leans." if w.startswith("lean_") else "")
+        if v.get("alt_down"):
+            t += " A futures-based price start gives a different answer, so it stops at Leans."
+        return t
     if w in ("plc", "arc"):
         return f"{WORD[w]} comes out about ${whole(v['diff'])} more per base acre."
     if w.startswith("lean_"):
@@ -2589,20 +2666,21 @@ def level_tag(c, k, i, e, LY, OY, nm):
     parts = []
     for y in (LY, OY):
         v = c["levels"][(k, i, y)][nm]
-        parts.append(f'{y}:{v["verdict"]}:{cents(v.get("plc") or 0)}:{cents(v.get("arc") or 0)}')
+        # withheld dollars (nousd) leave no cents in the page source either
+        parts.append(f'{y}:{v["verdict"]}:-:-' if v.get("nousd") else f'{y}:{v["verdict"]}:{cents(v.get("plc") or 0)}:{cents(v.get("arc") or 0)}')
     return f' data-k="{k}" data-e="{e["d"]}{":" + esc(e["sub"]) if e.get("sub") else ""}" data-py="{c["levels"][(k, i, LY)][nm]["py"]}" data-t="{"|".join(parts)}"'
 
 
 def lv_flags(v):
     """What gap_line decides from the unrounded gap, as bits, so components/arc-plc-simple.js can write the
     same sentence for the Lower and Higher buttons: 1 borrowed, 2 futures start disagrees, 4 under a dollar
-    (cents()), 8 under MIN_GAP, 16 PLC leads, 32 the other program won no year (Leans)."""
+    (cents()), 8 under MIN_GAP, 16 PLC leads, 32 the other program won no year (Leans), 64 no dollars (nousd), 128 too few years of its own prices (corn's swings outright)."""
     w = v["verdict"]
     if w not in ("plc", "arc", "close") and not w.startswith("lean_"):
         return 0
     d_ = v.get("diff") or 0
     f = (1 if v.get("borrowed") else 0) | (2 if v.get("alt_down") else 0) | (4 if cents(abs(d_)) < 100 else 0)
-    f |= (8 if abs(d_) < MIN_GAP else 0) | (16 if d_ > 0 else 0)
+    f |= (8 if abs(d_) < MIN_GAP else 0) | (16 if d_ > 0 else 0) | (64 if v.get("nousd") else 0) | (128 if v.get("bor_few") else 0)
     if w.startswith("lean_") and (v["arc_wins"] if w[5:] == "plc" else v["plc_wins"]) == 0:
         f |= 32
     return f
@@ -2613,7 +2691,7 @@ def lv_pack(v, v7, vo):
     verdict, the other practice's verdict ('' when the card has none)."""
     w = v["verdict"]
     call = w in ("plc", "arc", "close") or w.startswith("lean_")
-    return ",".join(str(x) for x in (w, whole(v["diff"]) if call else 0, lv_flags(v), v.get("n", 0) if call else 0,
+    return ",".join(str(x) for x in (w, whole(v["diff"]) if call and not v.get("nousd") else 0, lv_flags(v), v.get("n", 0) if call else 0,
                                      v7["verdict"], vo["verdict"] if vo else ""))
 
 
@@ -2769,7 +2847,8 @@ def vpack(v):
     """One typical-farm verdict, compact, for components/arc-plc-math.js:
     [verdict] or [verdict, n] (withheld) or
     [verdict, PLC cents, ARC-CO cents, PLC wins, ARC-CO wins, n, |gap| cents, years ARC-CO paid, flags 1 borrowed 2 futures start
-    disagrees 4 gap under a dollar (cents()), |gap| in whole dollars (whole(), rounded once from the unrounded gap)]."""
+    disagrees 4 gap under a dollar (cents()) 8 no dollars (nousd) 16 too few years of its own prices, |gap| in whole dollars (whole(), rounded once from the unrounded gap)].
+    Withheld dollars (nousd) pack null for PLC, ARC-CO, |gap| and whole dollars: the file carries no figure the page will not print."""
     if not v:
         return None
     w_ = v["verdict"]
@@ -2777,9 +2856,12 @@ def vpack(v):
         return [w_]
     if w_ == "withheld":
         return [w_, v.get("n", 0)]
-    return [w_, _cents2(v["plc"]), _cents2(v["arc"]), v["plc_wins"], v["arc_wins"], v["n"], int(round(rnd(abs(v["diff"]), 2) * 100)),
-            sum(1 for r in v["rows"] if r["arc"] > 0), (1 if v.get("borrowed") else 0) | (2 if v.get("alt_down") else 0) | (4 if cents(abs(v["diff"])) < 100 else 0),
-            whole(v["diff"])]
+    nu = bool(v.get("nousd"))
+    return [w_, None if nu else _cents2(v["plc"]), None if nu else _cents2(v["arc"]), v["plc_wins"], v["arc_wins"], v["n"],
+            None if nu else int(round(rnd(abs(v["diff"]), 2) * 100)),
+            sum(1 for r in v["rows"] if r["arc"] > 0), (1 if v.get("borrowed") else 0) | (2 if v.get("alt_down") else 0) | (4 if cents(abs(v["diff"])) < 100 else 0)
+            | (8 if nu else 0) | (16 if v.get("bor_few") else 0),
+            None if nu else whole(v["diff"])]
 
 
 def _n(v):
@@ -2986,15 +3068,23 @@ def county_page(st, S, c, D, ch):
                 bm += f" ({XC.yf(cdl, oth['by'], 1)} {DLABEL[oth['d']].lower()})"
         if head_v:
             vv = head_v[0]
-            desc = (f"{cname}, {name} {lab.lower()}: {bm}. Typical farm {head_v[2]}: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs "
-                    f"{usd_pay(vv['arc'])} ARC-CO per base acre. Run your numbers.")
-            if len(desc) > 155:
+            if vv.get("nousd"):
+                # money audit 3: no expected dollars where the price swings are borrowed from corn's
+                desc = (f"{cname}, {name} {lab.lower()}: {bm}. Typical farm {head_v[2]}: {VWORD[vv['verdict']]}. Run your numbers.")
+                if len(desc) > 155:
+                    desc = f"{cname}, {st} {lab.lower()}: {bm}. {head_v[2]}: {VWORD[vv['verdict']]}."
+                if len(desc) > 155:
+                    desc = f"{cname}, {st}: {VWORD[vv['verdict']]} for {lab.lower()} in {head_v[2]}. Run your own numbers."
+            else:
+                desc = (f"{cname}, {name} {lab.lower()}: {bm}. Typical farm {head_v[2]}: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs "
+                        f"{usd_pay(vv['arc'])} ARC-CO per base acre. Run your numbers.")
+            if len(desc) > 155 and not vv.get("nousd"):
                 desc = (f"{cname}, {st} {lab.lower()}: {bm}. {head_v[2]}: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs "
                         f"{usd_pay(vv['arc'])} ARC-CO per base acre.")
-            if len(desc) > 155 and split:
+            if len(desc) > 155 and split and not vv.get("nousd"):
                 desc = (f"{cname}, {st} {lab.lower()}: {bm.replace(' ARC-CO benchmark', ' benchmark')}. {head_v[2]}: {VWORD[vv['verdict']]}, est. "
                         f"{usd_pay(vv['plc'])} PLC vs {usd_pay(vv['arc'])} ARC per base acre.")
-            if len(desc) > 155:
+            if len(desc) > 155 and not vv.get("nousd"):
                 desc = f"{cname}, {st}: {VWORD[vv['verdict']]} for {lab.lower()} in {head_v[2]}, est. {usd_pay(vv['plc'])} PLC vs {usd_pay(vv['arc'])} ARC-CO per base acre."
         else:
             bits = [f"{CROP_LC[k]}{'' if e['d'] == 'all' else ' ' + DLABEL[e['d']].lower()} {XC.yf(y6[k], e['by'], 1)}" for k in order for e in c["k"].get(k, []) if e["by"]]
@@ -3632,6 +3722,27 @@ def selftest():
     ck("$0.49 vs $0.20 -> neither; $0.50 vs $0 -> not neither", scen_call(0.49, 0.20, 0.29, 0.1, 3, 0, 10) == "none"
        and scen_call(0.50, 0, 0.5, 0.1, 3, 0, 10) == "close")
     ck("borrowed spread caps a Pick at Leans", scen_call(10, 0, 10, 1, 8, 0, 10, borrowed=True) == "lean_plc")
+    # money audit 3 (2026-10-19), Sumner Co., KS non-irrigated wheat 2026 as the build had it: expected $6.76 PLC vs
+    # $6.64 ARC-CO on a spread borrowed from corn ($1.56 PLC with no spread at all). The call stays, the dollars go.
+    sv = {"verdict": "close", "plc": 6.7625, "arc": 6.6431, "diff": 0.1194, "plc_wins": 3, "arc_wins": 3, "n": 11, "borrowed": True,
+          "nousd": True, "rows": [{"arc": 1}] * 6 + [{"arc": 0}] * 5}
+    ck("borrowed: verdict line keeps the call and year counts, prints no dollars",
+       verdict_line(sv) == ("Close, either one: too small or too uncertain to call (PLC paid more in 3 of 11 past-year scenarios, ARC-CO in 3; "
+                            "no dollar figure, because the price swings are borrowed from corn&rsquo;s).") and "$" not in verdict_line(sv))
+    ck("borrowed: the card gives the reason, no dollars",
+       gap_line(sv, "wheat", "2026", {}) == ("Too close to call. Wheat has no October futures history of its own on file, so its price swings are "
+                                             "borrowed from corn&rsquo;s, and the expected dollars would rest on them. We do not print them."))
+    sl = dict(sv, verdict="lean_plc", diff=4.2, plc_wins=7, arc_wins=0)
+    ck("an unmarked verdict prints dollars", "$" in verdict_line(dict(sv, nousd=False)))
+    ck("too few years: the reason says corn's swings outright",
+       gap_line(dict(sv, bor_few=True), "barley", "2026", {}) == ("Too close to call. Barley has too few years of its own prices in FSA&rsquo;s tables, "
+                                                                 "so its price swings are corn&rsquo;s, and the expected dollars would rest on them. We do not print them."))
+    ck("borrowed lean: leader named, no dollars, stops at Leans",
+       "$" not in gap_line(sl, "dry peas", "2026", {}) and "Dry peas have no October futures history of their own" in gap_line(sl, "dry peas", "2026", {})
+       and gap_line(sl, "dry peas", "2026", {}).endswith("So it stops at Leans.") and "$" not in verdict_line(sl))
+    own = dict(sv, borrowed=False, nousd=False)
+    ck("a crop's own spread still prints its dollars", "$6.76 PLC vs $6.64 ARC-CO" in verdict_line(own)
+       and gap_line(own, "wheat", "2026", {}) == "They come out less than $1 apart per base acre.")
     # futures-center downgrade, by hand: ERP 4, BP 5, loan 2, PLC yield 100, benchmark 100, normal crop every year.
     # USDA start $3.00: prices 3.00 2.94 3.06 3.00 2.97 3.03 3.00 3.00 -> PLC (4 - p) x 85: mean 85; ARC capped 60 x .85 = 51 every year:
     # gap 34, SE about 1.2 -> Pick PLC. Futures start $4.50: PLC 0; ARC 7.65 (at $4.41) and 3.825 (at $4.455), mean 1.43 -> ARC leads: Pick drops to Leans.

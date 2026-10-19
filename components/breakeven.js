@@ -52,10 +52,16 @@
     var r = region(); if (!r) return '';
     return 'from farmdoc\u2019s 2027 budget, ' + r.name + ' (Aug 2026)';
   }
+  /* Corn N is flat (FERT.nf.corn = [lb an acre, $/lb of that N form, form]): the
+     A2809 Table 6.1 MRTN rate after soybeans at the posted N:corn ratio,
+     baked by scripts/bake_fert_defaults.py. P and K follow the yield. No
+     flat corn rate baked: no corn default. */
   function fertFor(c, y) {
     if (!FERT || !FERT.r || !FERT.r[c] || !(y > 0)) return null;
-    var rr = FERT.r[c], lb = [Math.round(y * rr[0]), Math.round(y * rr[1]), Math.round(y * rr[2])];
-    return { usd: Math.round(lb[0] * FERT.n + lb[1] * FERT.p + lb[2] * FERT.k), lb: lb };
+    var nf = FERT.nf && FERT.nf[c];
+    if (c === 'corn' && !nf) return null;
+    var rr = FERT.r[c], lb = [nf ? nf[0] : Math.round(y * rr[0]), Math.round(y * rr[1]), Math.round(y * rr[2])];
+    return { usd: Math.round(lb[0] * (nf ? nf[1] : FERT.n) + lb[1] * FERT.p + lb[2] * FERT.k), lb: lb, flat: !!nf };
   }
   function setSrc(id, k, t) { SRC[id] = { k: k, t: t || '' }; }
   function defaultSrc(c) {
@@ -78,7 +84,7 @@
       if (s.k === 'user') t = 'Your number.';
       else if (s.k === 'fert') {
         var f = fertFor(c, y);
-        t = f ? (c === 'soybeans' ? '' : f.lb[0] + ' lb N, ') + f.lb[1] + ' lb P\u2082O\u2085, ' + f.lb[2] + ' lb K\u2082O for ' + Math.round(y) + ' bu at co-op prices posted through ' + day(FERT.asof) + '. Follows your yield.' : '';
+        t = f ? (c === 'soybeans' ? '' : f.lb[0] + ' lb N' + (f.flat ? ' (A2809 rate after soybeans at posted prices, the same at any yield)' : '') + ', ') + f.lb[1] + ' lb P\u2082O\u2085, ' + f.lb[2] + ' lb K\u2082O for ' + Math.round(y) + ' bu at co-op prices posted through ' + day(FERT.asof) + '. ' + (f.flat ? 'P and K follow your yield.' : 'Follows your yield.') : '';
       } else if (s.t) t = (/^farmdoc/.test(s.t) ? s.t : s.t.charAt(0).toUpperCase() + s.t.slice(1)) + '.';
       else if (id === 'basis' && basisAssumed()) t = 'Basis 0 assumed; enter yours (your elevator\u2019s bid minus futures).';
       /* a state median carries its link to /basis */

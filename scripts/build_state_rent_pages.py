@@ -282,6 +282,12 @@ def state_stats(d):
         return round(100 * (now - then) / then, 1), len(pairs)
 
     yoy, yoy_n = matched_delta(yr_latest - 1)
+    # the two medians behind yoy, so the page can say the change is the state
+    # median's, not a typical county's (money audit 7, 2026-10-19: Iowa's median
+    # went $270 -> $266, -1.5%, while the middle county's own change was 0.0%)
+    yp = [(c["rent"][primary][str(yr_latest)], c["rent"][primary][str(yr_latest - 1)]) for c in counties
+          if str(yr_latest) in c["rent"].get(primary, {}) and str(yr_latest - 1) in c["rent"].get(primary, {})]
+    yoy_med = (med([p[1] for p in yp]), med([p[0] for p in yp])) if yoy is not None else None
     # the dryland figures on their own, whatever leads: the /rent hub compares
     # states on dryland only, so a state led by irrigated rent still has one
     dry = None
@@ -333,7 +339,7 @@ def state_stats(d):
         "other": other, "dry": dry,
         "yr": yr_latest, "primary": primary, "have_types": have_types,
         "coverage": coverage, "n": len(cur), "median": med(list(cur.values())),
-        "yoy": yoy, "yoy_n": yoy_n, "dec": dec, "dec_n": dec_n,
+        "yoy": yoy, "yoy_n": yoy_n, "yoy_med": yoy_med, "dec": dec, "dec_n": dec_n,
         "hi": ranked[:5], "lo": ranked[-5:][::-1] if len(ranked) >= 5 else [],
         "hist": hist, "counties": counties,
         "y0": min(all_years) if all_years else yr_latest,
@@ -791,8 +797,9 @@ def build_state_page(st, d, s, all_states, aslug=None):
                + other_crop_line(name, yr, s)
                + " The county mean is a survey reference point, not a rate card.")},
         {"q": f"How much did {name} cash rent change from {yr-1} to {yr}?",
-         "a": (f"Comparing the same {s['yoy_n']} counties published in both years, the median {plabel} rent moved "
-               f"{'+' if s['yoy'] and s['yoy'] >= 0 else ''}{s['yoy']}% year over year."
+         "a": (f"Comparing the same {s['yoy_n']} counties published in both years, the median {plabel} rent went from "
+               f"{money(s['yoy_med'][0])} to {money(s['yoy_med'][1])}, {'+' if s['yoy'] and s['yoy'] >= 0 else ''}{s['yoy']}% year over year. "
+               f"That is the change in the state median, not in a typical county: each county's own rent moved its own way."
                if s["yoy"] is not None else
                "Too few counties were published in both years for a clean year-over-year figure.")},
         {"q": f"Why is my {name} county not listed?",
@@ -840,7 +847,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
     ]}
     seed = (f"{s['n']} {name} counties with a published {yr} {plabel} rent &middot; "
             f"median {money(s['median'])}/acre"
-            + (f" &middot; {'+' if s['yoy'] >= 0 else ''}{s['yoy']}% vs {yr-1} (matched counties)" if s["yoy"] is not None else "")
+            + (f" &middot; state median {'+' if s['yoy'] >= 0 else ''}{s['yoy']}% vs {yr-1} (same counties), not a typical county&rsquo;s change" if s["yoy"] is not None else "")
             + f" &middot; data refreshed {esc(d.get('generated', ''))}")
     other_types = ""
     if len(s["have_types"]) > 1:
@@ -870,14 +877,14 @@ def build_state_page(st, d, s, all_states, aslug=None):
     <div style="font-family:'JetBrains Mono',monospace;font-size:3.6rem;font-weight:800;line-height:1;color:{vc}">{money(s['median'])}</div>
     <div>
       <div style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:800;letter-spacing:.05em;color:{vc}">{vw}</div>
-      <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median {name} county paid <b style="color:{vc}">{money(s['median'])} an acre</b> for {plabel} in {yr}{f", <b style='color:{vc}'>{'+' if s['yoy']>=0 else ''}{s['yoy']}&#37; vs {yr-1}</b> across the same {s['yoy_n']} counties" if s['yoy'] is not None else ""}. Highest county: {esc(s['hi'][0][0])} at {money(s['hi'][0][1])}.{other_crop_line(name, yr, s)} Every county is in the table below.</div>{sa_line}
+      <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median {name} county paid <b style="color:{vc}">{money(s['median'])} an acre</b> for {plabel} in {yr}.{f" Across the same {s['yoy_n']} counties the state median went from {money(s['yoy_med'][0])} to {money(s['yoy_med'][1])}, <b style='color:{vc}'>{'+' if s['yoy']>=0 else ''}{s['yoy']}&#37; vs {yr-1}</b>: the change in the median, not in a typical county." if s['yoy'] is not None else ""} Highest county: {esc(s['hi'][0][0])} at {money(s['hi'][0][1])}.{other_crop_line(name, yr, s)} Every county is in the table below.</div>{sa_line}
       <div class="rs-rel">These are the {yr} county rents, the newest NASS has put out{f" (released {COUNTY_RENT_RELEASED[yr]})" if yr in COUNTY_RENT_RELEASED else ""}. NASS says county rents come out in late August every year, and they have every year since 2019; the {yr + 1} date is not on its calendar yet.</div>
     </div>
   </div>
   {atlas_line(atlas_state_href(st))}{arc_line(st)}
   <div class="rs-hero">
     <div class="rs-stat"><div class="v">{money(s['median'])}</div><div class="l">median rent /ac &middot; {yr}</div><div class="s">{plabel}, {s['n']} counties</div></div>
-    <div class="rs-stat">{delta_html(s['yoy'], s['yoy_n'], f'vs {yr-1}')}</div>
+    <div class="rs-stat">{delta_html(s['yoy'], s['yoy_n'], f'state median vs {yr-1}')}</div>
     <div class="rs-stat">{delta_html(s['dec'], s['dec_n'], f'vs {yr-9}')}</div>
     <div class="rs-stat"><div class="v">{money(s['hi'][0][1]) if s['hi'] else '-'}</div><div class="l">top county</div><div class="s">{esc(s['hi'][0][0]) if s['hi'] else ''}</div></div>{sa_tile}
   </div>

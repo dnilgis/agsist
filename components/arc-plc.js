@@ -470,7 +470,7 @@
       var both = prSel.value === 'both' && es.length > 1;
       $('ap-y-l').textContent = both ? 'Expected county yield, % of each benchmark' : 'Expected ' + year + ' county yield (' + U() + '/acre)';
       $('ap-y-hint').textContent = String(year) === '2026' ?
-        'County average, not your farm. The 2026 crop is mostly harvested: left at the benchmark, the 2026 call figures a normal crop; type the county yield if you know it and the call uses it.' :
+        'County average, not your farm. County yields come out months after harvest: left at the benchmark, the 2026 call assumes a normal crop; type the county yield if you know it and the call uses it.' :
         'County average, not your farm. It sets the one-price check and where the programs cross; the 2027 call uses the county\u2019s own yields from past years.';
       var c0 = yc(), pick = both ? null : es[parseInt(prSel.value, 10) || 0];
       var bh = $('ap-by-hint');
@@ -543,16 +543,19 @@
     function vline(Y, v) {
       if (v.verdict === 'withheld') return '<b>' + Y + ': not enough history to say.</b> ' + v.n + ' past years with both a price and a county yield; we need ' + MIN_SCEN + '.' + (why ? ' ' + why : '');
       if (v.verdict === 'noprice') return '<b>' + Y + ': no ' + Y + ' price yet.</b> There is no ' + Y + ' price outlook for this crop we can check against past years, so no call. Type a price to see the dollars at that price.';
-      var nums = 'Expected ' + pay$(v.plc) + ' PLC vs ' + pay$(v.arc) + ' ARC-CO per base acre; PLC paid more in ' + v.plcWins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arcWins + '.';
+      /* a borrowed spread (sc.nousd): the call and the year counts, no dollars (money audit 3, 2026-10-19) */
+      var B = v.nousd;
+      var nums = B ? 'PLC paid more in ' + v.plcWins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arcWins + '. No dollar figure: this crop borrows corn&rsquo;s price swings, and the expected dollars would rest on them. Type a price to see the dollars at that price.' :
+        'Expected ' + pay$(v.plc) + ' PLC vs ' + pay$(v.arc) + ' ARC-CO per base acre; PLC paid more in ' + v.plcWins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arcWins + '.';
       if (v.verdict === 'none') return '<b>' + Y + ': neither expected to pay.</b> ' + nums;
-      if (v.verdict === 'close') return '<b>' + Y + ': close, either one.</b> About ' + money(Math.abs(v.diff)) + ' apart, too small or too uncertain to call. ' + nums;
+      if (v.verdict === 'close') return '<b>' + Y + ': close, either one.</b> ' + (B ? 'Too small or too uncertain to call. ' : 'About ' + money(Math.abs(v.diff)) + ' apart, too small or too uncertain to call. ') + nums;
       var note = (v.borrowed && v.verdict.indexOf('lean_') === 0 ? ' Capped at Leans: this crop borrows corn&rsquo;s price swings.' : '') +
         (v.altDown ? ' Not a clear pick: a futures-based price start gives a different call.' : '');
       if (v.verdict.indexOf('lean_') === 0) {
         var side = v.verdict.slice(5), other = side === 'plc' ? 'arc' : 'plc', ow = side === 'plc' ? v.arcWins : v.plcWins;
-        return '<b>' + Y + ': ' + VW[v.verdict] + ': expected about ' + money(Math.abs(v.diff)) + ' more per base acre; ' +
+        return '<b>' + Y + ': ' + VW[v.verdict] + ': ' + (B ? '' : 'expected about ' + money(Math.abs(v.diff)) + ' more per base acre; ') +
           (ow === 0 ? WORD[other] + ' did not pay more in any of the ' + v.n + ' years, but the gap is within the normal swing.' :
-            'but the gap is within the normal swing, so ' + WORD[other] + ' is a defensible choice.') + '</b> ' + nums + note;
+            (B ? 'the gap' : 'but the gap') + ' is within the normal swing, so ' + WORD[other] + ' is a defensible choice.') + '</b> ' + nums + note;
       }
       return '<b>' + Y + ': ' + VW[v.verdict] + '.</b> ' + nums + note;
     }
@@ -574,6 +577,7 @@
         }
         var cy = { erp: cr.erp.erp, bp: cr.bp.value, loan: cr.loan, py: c.py, parts: parts };
         var v = sc.kind === 'noprice' ? { verdict: 'noprice', n: 0 } : scenarios(cy, sc.center, sc.ratios, null, { borrowed: !!sc.borrowed, alt: sc.alt });
+        if (sc.nousd && v.borrowed) v.nousd = true;
         why = sc.why || '';
         if (Y === year) cur = { v: v, cr: cr, cy: cy, sc: sc };
         h += '<div class="ap-verdict ' + vcls(v.verdict) + (Y === year ? ' ap-cur' : '') + '"><p>' + vline(Y, v) + '</p></div>';
@@ -584,13 +588,13 @@
         var paid = v.rows.filter(function (r) { return r.arc > 0; }).length;
         h += '<p><b>Why.</b> PLC pays on any season-average price below ' + pm(cy.erp) + ', up to ' + money(maxP) + ' per base acre at the ' + pm(cy.loan) +
           ' loan rate, so it protects against a deep price drop. ARC-CO is capped at ' + money(maxA) + ' per base acre but also pays when the county&rsquo;s yield is short; it paid something in ' +
-          paid + ' of the ' + v.n + ' past-year scenarios. With prices centered at ' + pm(sc.center) + ', PLC is expected to pay ' + pay$(v.plc) + ' and ARC-CO ' + pay$(v.arc) + ' per base acre.</p>';
+          paid + ' of the ' + v.n + ' past-year scenarios. With prices centered at ' + pm(sc.center) + ', ' + (v.nousd ? 'the expected payments are not printed: this crop borrows corn&rsquo;s price swings.' : 'PLC is expected to pay ' + pay$(v.plc) + ' and ARC-CO ' + pay$(v.arc) + ' per base acre.') + '</p>';
         if (c.price != null) {
           var u = scenarios(cy, sc.center, sc.ratios, c.price);
           h += '<p>At your ' + pm(c.price) + ' price, across the same ' + u.n + ' years: PLC ' + pay$(u.plc) + ' vs ARC-CO ' + pay$(u.arc) +
             ' per base acre; PLC more in ' + u.plcWins + ', ARC-CO in ' + u.arcWins + '. ' + (u.verdict === 'withheld' ? '' : VW[u.verdict] + ' at that price.') + '</p>';
         }
-        var ysrc = sc.fix ? (yTyped ? 'the county yield you typed, every year (the ' + year + ' crop is harvested)' : 'a normal county crop (the benchmark) every year, since the ' + year + ' crop is mostly harvested') :
+        var ysrc = sc.fix ? (yTyped ? 'the county yield you typed, every year (the ' + year + ' crop is harvested)' : 'a normal county crop (the benchmark) every year, since county yields come out months after harvest') :
           (c.parts.some(function (p) { return p.dsrc === 'state'; }) ? 'the state average for this crop and practice (the county has too few years)' : 'this county&rsquo;s FSA yields') + ' in the same year';
         var how = { oct: 'how far each past year&rsquo;s season-average price ended from its October futures (scaled to average 1)', fut: 'each past year&rsquo;s price change, scaled to average 1',
           yoy_scaled: 'each past year&rsquo;s price change, scaled to average 1 and to the size of corn&rsquo;s October swings', corn_oct: 'corn&rsquo;s October swings (this crop has too few years of its own price history)',
@@ -607,7 +611,7 @@
       var tot = base ? per * base : 0, lim = D.params.payment_limit_2025;
       return '<div class="ap-card"><span class="k">' + k + '</span><span class="v">' + v + '</span><span class="s">' + sub +
         (base ? '<br>' + pay$(tot, 0) + ' on ' + n$(base) + ' base acres, before the 5.7% sequestration cut' : '') + '</span>' +
-        (tot > lim ? '<span class="s ap-warn">If you pick ' + k + ', this alone is over ' + money(lim, 0) + ', USDA’s 2025 limit (' + year + ' not announced). The limit is per person across all crops and farms; actively engaged LLC and S corporation members can each carry one.</span>' : '') + '</div>';
+        (tot > lim ? '<span class="s ap-warn">If you pick ' + k + ', this alone is over ' + money(lim, 0) + ', USDA’s 2025 limit (' + (String(year) === '2026' && D.params.payment_limit_2026_rule ? '2026: ' + money(D.params.payment_limit_2026_rule, 0) + ' by the rule’s own method; FSA posts the official figure' : 'FSA posts the ' + year + ' figure') + '). The limit is per person across all crops and farms; actively engaged LLC and S corporation members can each carry one.</span>' : '') + '</div>';
     }
     function grid(c) {
       var g = c.crop.grid, cols = [0.8, 0.9, 1, 1.1], sc = c.scale || 100, rows = [Math.round(c.loan * sc) / sc];

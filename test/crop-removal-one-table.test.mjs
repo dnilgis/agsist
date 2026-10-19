@@ -50,7 +50,29 @@ test("/breakeven bakes the table and says so", () => {
   assert.deepEqual(m[2].split(",").map(Number).slice(1), A2809.soybeans);
   assert.deepEqual(m[3].split(",").map(Number).slice(1), A2809.wheat);
   assert.doesNotMatch(be, /0\.37 lb P|0\.24 lb K|0\.37 and 0\.24/);
-  assert.match(be, /0\.90, 0\.38 and 0\.29 lb a bushel/);
+  assert.match(be, /P and K: 0\.38 and 0\.29 lb a bushel/);
+});
+
+/* 2026-10-19 money audit 1: /breakeven priced corn N at 0.90 lb a bushel
+ * (213 lb on 237 bu), a rate with no source, beside "UW A2809". A2809's own
+ * Table 6.1 (components/a2809.js, the table /fast-facts prints) gives corn
+ * after soybeans on high-yield loamy soil 120 lb at a 0.10 N:corn ratio.
+ * On the page of Oct 19, 2026: anhydrous $832.10 / 1,640 = $0.5074 a lb of N
+ * against Dec '27 $5.0675 = 0.100, the 0.10 column, 120 lb, flat. */
+test("/breakeven corn N is the A2809 Table 6.1 rate at the baked ratio, not per bushel", () => {
+  const be = read("breakeven.html");
+  const A = require("../components/a2809.js");
+  const r = /r:\{corn:\[([\d.]+),/.exec(be);
+  assert.ok(r, "FERT.r.corn");
+  assert.equal(Number(r[1]), 0, "no per-bushel corn N");
+  const nf = /nf:\{corn:\[(\d+),([\d.]+),'(\w+)'\]\},cf:\{usd:([\d.]+),/.exec(be);
+  assert.ok(nf, "FERT.nf.corn and FERT.cf");
+  const want = A.nRate({ row: "hi_soy", ratio: Number(nf[2]) / Number(nf[4]) });
+  assert.equal(Number(nf[1]), want.rate, "the flat rate is a2809.js nRate at the baked ratio");
+  assert.match(be, new RegExp("N: " + want.rate + " lb an acre, the rate with the most return to N in UW A2809 Table 6\\.1 for corn after soybeans"));
+  assert.doesNotMatch(be, /0\.90, 0\.38 and 0\.29|213 lb N/);
+  // the real case
+  assert.equal(A.nRate({ row: "hi_soy", ratio: 0.5074 / 5.0675 }).rate, 120);
 });
 
 test("the shared price file's programs are priced at the table", () => {
