@@ -1025,6 +1025,65 @@ def has_sales(W, st):
     return st in SALES_SOURCES and os.path.exists(os.path.join(W.root, "data", "land", st.lower(), "summary.json")) and sales_v(W.root)
 
 
+_MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+def _sday(iso):
+    return "%s %d, %s" % (_MON[int(iso[5:7]) - 1], int(iso[8:10]), iso[:4])
+
+
+def _sspan(w):
+    return "%s %s to %s %s" % (_MON[int(w[0][5:7]) - 1], w[0][:4], _MON[int(w[1][5:7]) - 1], w[1][:4])
+
+
+def sales_summary(W, st):
+    """data/land/<st>/summary.json (name-free), read once per state; None without one."""
+    cache = W.__dict__.setdefault("_sales_sum", {})
+    if st not in cache:
+        cache[st] = None
+        if has_sales(W, st):
+            try:
+                cache[st] = json.load(open(os.path.join(W.root, "data", "land", st.lower(), "summary.json"), encoding="utf-8"))
+            except Exception:
+                cache[st] = None
+    return cache[st]
+
+
+def sales_tile(W, f, st):
+    """The recorded-sales headline tile (Sig, Oct 19, 2026), the same words as AtlasSales.tile in
+    components/atlas-sales.js (test/atlas-sales-tile.test.mjs compares them on every IL and WI
+    county). The median is the one the "Recorded farm sales" block leads with: market sales of
+    min_acres+ acres with known acres in the last 12 months. Under min_n: n/a with the count and
+    the reason. No names, parcel ids or document numbers: the summary carries none.
+    -> {label, val, unit, sub, through} or None when the state has no published summary."""
+    sm = sales_summary(W, st)
+    if not sm or not sm.get("windows"):
+        return None
+    c = (sm.get("counties") or {}).get(f)
+    N, A = sm.get("min_n") or 5, sm.get("min_acres") or 20
+    t = {"label": "Median sale price, %d+ acres" % A, "val": None, "unit": "/ac", "through": sm["through"]}
+    thru = "sales dated through " + _sday(sm["through"])
+    if not c:
+        t["sub"] = "no %s file on hand for this county yet" % sm["record"]
+    elif c.get("med"):
+        n = c["med"]["n"]
+        t["val"] = money(c["med"]["med"])
+        t["sub"] = "%d recorded market sale%s, %s; %s" % (n, "" if n == 1 else "s", _sspan(sm["windows"]["cur"]), thru)
+    else:
+        k = c.get("k12") or 0
+        t["sub"] = "not shown: %d recorded market sale%s of %d+ acres in %s, a median needs %d; %s" % (
+            k, "" if k == 1 else "s", A, _sspan(sm["windows"]["cur"]), N, thru)
+    return t
+
+
+def sales_key(t):
+    """The tile in key() markup, full width under the others, marked for atlas-sales.js to redraw
+    from the file it reads (so a newer summary never sits beside an older tile)."""
+    vv = "<small>n/a</small>" if t["val"] is None else esc(t["val"]) + "<small>%s</small>" % esc(t["unit"])
+    return ('<div class="k" style="grid-column:1/-1" data-as-tile="%s"><div class="t">%s</div><div class="v">%s</div><div class="s">%s</div></div>'
+            % (esc(t["through"]), esc(t["label"]), vv, esc(t["sub"])))
+
+
 def sales_block(W, f, lab, st):
     if not has_sales(W, st):
         return ""
@@ -1566,8 +1625,15 @@ def county_page(W, f, d, stamp):
         if s_ and not s_.get("none"):
             s_["latest"] = RL
     keys = ""
-    keys += key("Cash rent, non-irrigated", money(rv["value"]) if rv else None, "/ac",
-                (str(rv["year"]) + " county average") if rv else ("no dry rent published" if ri else why(R)), st_rent, money, st)
+    # the neighbor table's rule on the dry tile too (Sig, Oct 19, 2026): a rent more than three
+    # survey years old shows n/a with its last year (134 counties, 2009 to 2022, on the 2026 file),
+    # and no state comparison or rent per bushel is drawn from it
+    rv_old = bool(rv and RL and rv.get("year") and rv["year"] < RL - 3)
+    if rv_old:
+        keys += key("Cash rent, non-irrigated", None, "/ac", "last published %s, more than three survey years old" % rv["year"], None, money, st)
+    else:
+        keys += key("Cash rent, non-irrigated", money(rv["value"]) if rv else None, "/ac",
+                    (str(rv["year"]) + " county average") if rv else ("no dry rent published" if ri else why(R)), st_rent, money, st)
     if ri:
         # the neighbor table's rule: a rent more than three survey years old shows n/a
         # with its year (phone audit Oct 19, 2026: Marathon WI led with a 2011 irrigated rent)
@@ -1583,7 +1649,7 @@ def county_page(W, f, d, stamp):
     keys += key("Land and buildings", money(V["latest"]) if ok(V) and V.get("latest") is not None else None, "/ac", vsub, st_val, money, st)
     rtv = get(V, "rent_to_value", "pct")
     if not ri:
-        if rtv is None and rpb is not None:
+        if rtv is None and rpb is not None and not rv_old:
             keys += key("Dry rent per bushel of corn", usd2(rpb), "", "%s ÷ %s bu, %s" % (
                 money(rv["value"]), f1(ytv), CY.label_trend(yt["ty"])), None, None, st)
         else:
@@ -1616,6 +1682,9 @@ def county_page(W, f, d, stamp):
                 st_cost, usd2, st)
     keys += key("Farmland rented", pct(rs, 0) if rs is not None else None, "",
                 "2022 census, rented from others" if rs is not None else ("suppressed by NASS" if W.TEN else "tenure file missing"), st_rent_, lambda v: pct(v, 0), st)
+    stile = sales_tile(W, f, st)
+    if stile:
+        keys += sales_key(stile)
 
     # ---- sections
     S1 = ""
@@ -2293,6 +2362,10 @@ def build(root=".", out_root=None, only=None, quiet=False):
             # sitemap lastmod (2026-10-06). Hash the figures, not the markup.
             # the rent share of corn gross is a figure on the page too (not a CSV column)
             fig = dict(flat_record(W, f, d), rent_share=W.rrev.get(f))
+            # the recorded-sales tile is a figure on the page too (Oct 19, 2026)
+            st_ = sales_tile(W, f, W.C[f]["state"])
+            if st_:
+                fig["sales_tile"] = [st_["val"], st_["sub"]]
             h = hashlib.sha1(json.dumps(fig, sort_keys=True,
                                         default=str).encode("utf-8")).hexdigest()[:12]
             date = prev[f][1] if f in prev and prev[f][0] == h else W.built

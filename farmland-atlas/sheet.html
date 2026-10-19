@@ -27,6 +27,7 @@ h1{font-size:19pt;line-height:1.1;margin:2px 0 3px;font-weight:800}
 .qr{text-align:center;font-size:6.5pt;color:var(--mute);width:92px}
 .qr svg{width:84px;height:84px;display:block;margin:0 auto 2px}
 .keys{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:9px 0 8px}
+.keys.k7{grid-template-columns:repeat(7,minmax(0,1fr))}
 .k{border:1px solid var(--rule);border-radius:5px;padding:5px 6px}
 .k .t{font-size:7.4pt;color:var(--dim);line-height:1.2;min-height:2.4em}
 .k .v{font-size:12.5pt;font-weight:800;margin:1px 0 1px;white-space:nowrap}
@@ -63,7 +64,7 @@ td .yr{color:#50595c;font-size:7pt;font-weight:400}
 .empty{padding:40px 10px;text-align:center;color:var(--dim);font-size:11pt}
 @media screen and (max-width:860px){
   .paper{width:auto;min-height:0;margin:0;padding:16px;box-shadow:none;font-size:10.5pt}
-  .keys{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .keys,.keys.k7{grid-template-columns:repeat(2,minmax(0,1fr))}
   .cols{grid-template-columns:minmax(0,1fr);gap:0}.cols>div{overflow-x:auto}
   .hd{grid-template-columns:1fr}.qr{display:none}
   .k .t,.k .s,.note,th,td .yr,.ft{font-size:8.5pt}
@@ -90,7 +91,7 @@ td .yr{color:#50595c;font-size:7pt;font-weight:400}
 </div>
 <main class="paper" id="paper"></main>
 <script src="/farmland-atlas/qr.js"></script>
-<script src="/components/atlas-sales.js?v=ea35518a"></script>
+<script src="/components/atlas-sales.js?v=c3fa7673"></script>
 <script>
 (function(){
 'use strict';
@@ -258,18 +259,26 @@ function render(){
   var ylast=(ok(Y)&&Y.hist&&Y.last_year&&!(RENT_LATEST&&Y.last_year<RENT_LATEST-3)&&Y.hist[Y.last_year]!=null)?[Y.last_year,Y.hist[Y.last_year]]:null;
   var ysub=[]; if(ylast) ysub.push(ylast[0]+' county yield '+f1(ylast[1])); if(ry5) ysub.push(ry5.from+'-'+String(ry5.to).slice(2)+' average '+f1(ry5.avg));
   var valSub=ok(V)?(fl?V.latest_year+' census · read with care: '+flagWords(fl,true):V.latest_year+': what operators guessed land and buildings were worth'):why(V);
-  h+='<section class="keys">'
-    +key('Cash rent, non-irrigated', rv?money(rv.value):null,'/ac', rv?rv.year+' county average':(ri?'no dry rent published':why(R)), rv?stat('rent',st,F):null, money)
-    +(ri?key('Cash rent, irrigated', money(ri.value),'/ac', ri.year+' county average', stat('irr',st,F), money)
+  // Sig, Oct 19, 2026, as on the county page: a rent tile more than three survey years old shows n/a with
+  // its last year, and no state comparison or rent per bushel comes from it; the recorded-sales tile
+  // (IL, WI) is AtlasSales.tile, the same words the county page bakes
+  var old_=function(r){ return !!(r&&r.year&&RENT_LATEST&&r.year<RENT_LATEST-3); }, rvOld=old_(rv), riOld=old_(ri);
+  var stile=SALES&&window.AtlasSales?window.AtlasSales.tile(SALES,F):null;
+  h+='<section class="keys'+(stile?' k7':'')+'">'
+    +(rvOld?key('Cash rent, non-irrigated', null,'/ac', 'last published '+rv.year+', more than three survey years old', null, money)
+      :key('Cash rent, non-irrigated', rv?money(rv.value):null,'/ac', rv?rv.year+' county average':(ri?'no dry rent published':why(R)), rv?stat('rent',st,F):null, money))
+    +(ri?(riOld?key('Cash rent, irrigated', null,'/ac', 'last published '+ri.year+', more than three survey years old', null, money)
+        :key('Cash rent, irrigated', money(ri.value),'/ac', ri.year+' county average', stat('irr',st,F), money))
         :key('Land and buildings', ok(V)&&V.latest!=null?money(V.latest):null,'/ac', valSub, ok(V)&&!fl?stat('value',st,F):null, money))
     +(ri?key('Land and buildings', ok(V)&&V.latest!=null?money(V.latest):null,'/ac', valSub, ok(V)&&!fl?stat('value',st,F):null, money)
-        :(get(V,'rent_to_value','pct')==null&&rpb!=null?key('Dry rent per bushel of corn', usd2(rpb),'', money(rv.value)+' ÷ '+f1(ytv)+' bu, '+ytl, null, null)
+        :(get(V,'rent_to_value','pct')==null&&rpb!=null&&!rvOld?key('Dry rent per bushel of corn', usd2(rpb),'', money(rv.value)+' ÷ '+f1(ytv)+' bu, '+ytl, null, null)
         :key('Rent as % of land value', get(V,'rent_to_value','pct')!=null?rh(V.rent_to_value.pct,2)+'%':null,'', get(V,'rent_to_value','pct')!=null?money(V.rent_to_value.rent)+' dry rent ÷ '+money(V.rent_to_value.value)+' land and buildings, both '+V.rent_to_value.year:'not shown'+(get(V,'rent_to_value','status')?': '+why(V.rent_to_value):''), null, null)))
     +(ytv!=null?key('Corn yield, '+ytl, f1(ytv),' bu/ac', PRAC[yt.b]+' trend'+(ysub.length?' · '+ysub.join(' · ')+' (all practices)':''), stat('trend',st,F), f1)
       :ry5?key('Corn yield, '+ry5.from+'-'+String(ry5.to).slice(2)+' average', f1(ry5.avg),' bu/ac', 'high and low dropped'+(irrHigh?' · irrigated and dryland combined':'')+(yt.w?' · rent-per-bushel trend withheld: '+yt.w:''), null, f1)
       :key('Corn yield', ok(Y)&&!(RENT_LATEST&&Y.last_year<RENT_LATEST-3)?f1(Y.median):null,' bu/ac', ok(Y)?Y.first_year+'-'+Y.last_year+' median, '+Y.n+' published years':why(Y), null, f1))
     +key('Claims paid per $100 of coverage', lc!=null?usd2(lc):null,'', lc!=null?S.last10.from+'–'+S.last10.to+', closed crop years':(ok(S)?'under the premium floor for a figure':why(S)), lc!=null?stat('cost',st,F):null, usd2)
     +key('Farmland rented', rs!=null?pct(rs,0):null,'', rs!=null?'2022 census, rented from others':(TEN?'suppressed by NASS':'the census tenure file did not load'), rs!=null?stat('rented',st,F):null, function(v){return pct(v,0);})
+    +(stile?key(stile.label, stile.val, stile.unit, stile.sub, null, null):'')
     +'</section>';
 
   // left column

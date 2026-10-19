@@ -1,0 +1,322 @@
+{
+ "note": "Real county entries from data/land/{wi,il}/summary.json (fetched 2026-10-18): Dane WI (median), Florence WI (no sales of 20+ acres), Alexander IL (4 sales, under 5), McLean IL. The tile test reads these.",
+ "states": {
+  "WI": {
+   "fetched": "2026-10-18",
+   "kinds": "agricultural, forest and undeveloped classes",
+   "min_acres": 20,
+   "min_n": 5,
+   "record": "Wisconsin DOR Real Estate Transfer Returns (RETR)",
+   "since_note": "Wisconsin DOR's public download holds the last five years of returns; older ones are in DOR's property search and at the county Register of Deeds.",
+   "state": "WI",
+   "state_med": {
+    "med": 7375,
+    "n": 1589,
+    "q1": 4599,
+    "q3": 10502
+   },
+   "through": "2026-09-30",
+   "url": "https://www.revenue.wi.gov/Pages/ERETR/data-home.aspx",
+   "who": "Wisconsin Department of Revenue",
+   "windows": {
+    "cur": [
+     "2025-10-01",
+     "2026-09-30"
+    ],
+    "prev": [
+     "2024-10-01",
+     "2025-09-30"
+    ],
+    "w24": [
+     "2024-10-01",
+     "2026-09-30"
+    ]
+   },
+   "counties": {
+    "55025": {
+     "a24": 123,
+     "from": "2021-01-12",
+     "k12": 42,
+     "k12p": 14,
+     "k24": 56,
+     "large": [
+      [
+       "2026-02-27",
+       221.4,
+       3300000,
+       14905,
+       "Vermont town"
+      ],
+      [
+       "2026-06-15",
+       168.0,
+       3000000,
+       17857,
+       "Montrose town"
+      ],
+      [
+       "2026-03-13",
+       153.68,
+       2135000,
+       13893,
+       "York town"
+      ]
+     ],
+     "med": {
+      "med": 14399,
+      "n": 42,
+      "q1": 10872,
+      "q3": 22471
+     },
+     "medp": {
+      "med": 18777,
+      "n": 14,
+      "q1": 9250,
+      "q3": 65239
+     },
+     "n12": 88,
+     "n12p": 89,
+     "name": "Dane",
+     "nout": 6,
+     "out": [
+      [
+       "2025-05-07",
+       22.3,
+       4328000,
+       194081,
+       "DeForest village",
+       1
+      ],
+      [
+       "2025-06-17",
+       39.0,
+       6000000,
+       153846,
+       "Verona city",
+       1
+      ],
+      [
+       "2026-03-02",
+       40.0,
+       3750000,
+       93750,
+       "Verona town",
+       1
+      ],
+      [
+       "2025-06-17",
+       32.0,
+       2778510,
+       86828,
+       "Verona city",
+       1
+      ]
+     ],
+     "r24": {
+      "hi": 46825,
+      "lo": -11615,
+      "med": 14842,
+      "n": 56,
+      "q1": 10300,
+      "q3": 24910
+     },
+     "to": "2026-09-30",
+     "u12": 11,
+     "u12p": 43,
+     "why_chg": "acres unknown on 11 of 88 market sales in the last 12 months and 43 of 89 in the 12 before"
+    },
+    "55037": {
+     "a24": 0,
+     "from": "2021-01-28",
+     "k12": 0,
+     "k12p": 0,
+     "k24": 0,
+     "n12": 0,
+     "n12p": 1,
+     "name": "Florence",
+     "to": "2026-09-29",
+     "u12": 0,
+     "u12p": 1
+    }
+   }
+  },
+  "IL": {
+   "fetched": "2026-10-18",
+   "kinds": "farm parcels (Line 8, farm use)",
+   "min_acres": 20,
+   "min_n": 5,
+   "record": "Illinois PTAX-203 (MyDec) transfer declarations",
+   "since_note": "Illinois' MyDec file starts in 2014; older declarations are with the county clerk and recorder.",
+   "state": "IL",
+   "state_med": {
+    "med": 10725,
+    "n": 1576,
+    "q1": 7393,
+    "q3": 14460
+   },
+   "through": "2026-09-30",
+   "url": "https://data.illinois.gov/d/it54-y4c6",
+   "who": "Illinois Department of Revenue",
+   "windows": {
+    "cur": [
+     "2025-10-01",
+     "2026-09-30"
+    ],
+    "prev": [
+     "2024-10-01",
+     "2025-09-30"
+    ],
+    "w24": [
+     "2024-10-01",
+     "2026-09-30"
+    ]
+   },
+   "counties": {
+    "17003": {
+     "a24": 12,
+     "from": "2018-03-02",
+     "k12": 4,
+     "k12p": 5,
+     "k24": 9,
+     "large": [
+      [
+       "2024-12-31",
+       377.18,
+       226000,
+       599,
+       "T17S R1W"
+      ],
+      [
+       "2024-12-13",
+       173.0,
+       980000,
+       5665,
+       "T17S R2W"
+      ],
+      [
+       "2024-10-08",
+       172.08,
+       525000,
+       3051,
+       "T17S R2W"
+      ]
+     ],
+     "medp": {
+      "med": 1600,
+      "n": 5,
+      "q1": 1600,
+      "q3": 3051
+     },
+     "n12": 10,
+     "n12p": 11,
+     "name": "Alexander",
+     "nout": 0,
+     "out": [],
+     "r24": {
+      "hi": 8110,
+      "lo": -2306,
+      "med": 3051,
+      "n": 9,
+      "q1": 1600,
+      "q3": 4204
+     },
+     "to": "2026-09-25",
+     "u12": 5,
+     "u12p": 4
+    },
+    "17113": {
+     "a24": 92,
+     "from": "2017-05-26",
+     "k12": 27,
+     "k12p": 47,
+     "k24": 74,
+     "large": [
+      [
+       "2025-08-28",
+       318.95,
+       4374000,
+       13714,
+       "Martin township"
+      ],
+      [
+       "2025-09-25",
+       210.0,
+       3535242,
+       16834,
+       "Bellflower township"
+      ],
+      [
+       "2025-02-19",
+       206.0,
+       3700000,
+       17961,
+       "Lexington township"
+      ]
+     ],
+     "med": {
+      "med": 15000,
+      "n": 27,
+      "q1": 14256,
+      "q3": 16875
+     },
+     "medp": {
+      "med": 15300,
+      "n": 47,
+      "q1": 13703,
+      "q3": 16917
+     },
+     "n12": 48,
+     "n12p": 69,
+     "name": "McLean",
+     "nout": 5,
+     "out": [
+      [
+       "2024-12-27",
+       20.0,
+       1000000,
+       50000,
+       "Gridley township",
+       1
+      ],
+      [
+       "2026-01-20",
+       30.54,
+       1052500,
+       34463,
+       "Money Creek township",
+       1
+      ],
+      [
+       "2026-07-16",
+       83.04,
+       625000,
+       7526,
+       "Lexington township",
+       -1
+      ],
+      [
+       "2026-04-09",
+       101.39,
+       836468,
+       8250,
+       "Money Creek township",
+       -1
+      ]
+     ],
+     "r24": {
+      "hi": 21836,
+      "lo": 8832,
+      "med": 15218,
+      "n": 74,
+      "q1": 13708,
+      "q3": 16959
+     },
+     "to": "2026-10-16",
+     "u12": 19,
+     "u12p": 6,
+     "why_chg": "acres unknown on 19 of 48 market sales in the last 12 months and 6 of 69 in the 12 before"
+    }
+   }
+  }
+ }
+}
