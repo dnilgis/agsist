@@ -165,6 +165,28 @@ def rp_prices():
         return None
 
 
+def rp_cutoffs():
+    """(framed, print) Christmas order-by days (YYYY-MM-DD) from data/rain-print.json, or None."""
+    try:
+        j = json.load(open(os.path.join(ROOT, "data", "rain-print.json"), encoding="utf-8"))
+        f, p = j["framed_christmas_cutoff"], j["print_christmas_cutoff"]
+        return (f, p) if all(isinstance(x, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", x) for x in (f, p)) else None
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def xmas_last_by(today, year, cut):
+    """"Last year, by Christmas" (2026-10-19, board B, Sig: "yeah fix please"): from Oct 1 of the page's
+    year through the later of the two Christmas cutoffs in data/rain-print.json, last year's print still
+    arrives by Christmas. Returns the order-by words ("framed by Dec 9, or as a print by Dec 10"), or "" when
+    the offer is off (a finished year, no dates, the dates for another year, or both dates passed)."""
+    if not cut or cut[0][:4] != str(year) or cut[1][:4] != str(year) or today < f"{year}-10-01":
+        return ""
+    f_ok, p_ok = today <= cut[0], today <= cut[1]
+    return (f"framed by {short_date(cut[0])}, or as a print by {short_date(cut[1])}" if f_ok and p_ok
+            else f"as a print by {short_date(cut[1])}" if p_ok else f"framed by {short_date(cut[0])}" if f_ok else "")
+
+
 def print_ready(c, day):
     """The county page draws its year as a Rain Print (components/rain-county-print.js)
     when the state's daily file has this county's days and the engine would draw them."""
@@ -197,6 +219,19 @@ def rain_print_href(c, st, year):
     q = {"place": place, "year": year}
     if (c.get("missing") or 0) <= RP_MISS_BLOCK:
         q["station"] = re.sub(r"[^A-Za-z0-9 ]", "", c["station"]["sid"]).strip()[:16]
+    ll = c["station"].get("ll")
+    if ll:
+        q["ll"] = f"{ll[1]:.4f},{ll[0]:.4f}"
+    return "/rain-print?" + urllib.parse.urlencode(q)
+
+
+def rain_print_href_last(c, st, year):
+    """Last year's print from the county page: the same town and spot (ll=), no station, so Rain Print
+    picks the nearest station with a good record for that year (this year's gauge may have missed more
+    of it). No style=, so it opens as every hand-written link does: compared with the 30-year normal,
+    the normals and the remarkable days on (components/rain-print.js fromParams)."""
+    town = R.station_town(c["station"]["raw"])
+    q = {"place": f"{town[:32 - len(st) - 2].rstrip()}, {st}", "year": year}
     ll = c["station"].get("ll")
     if ll:
         q["ll"] = f"{ll[1]:.4f},{ll[0]:.4f}"
@@ -599,9 +634,18 @@ def county_page(ctx):
     so_far = "" if done else " so far"
     lead_print = (f'<span id="rc-sell-lead" hidden>This is {e(name)}&rsquo;s {year}{so_far}, drawn as a Rain Print. '
                   f'Put your name and dates on it{price}.</span>') if ready else ""
-    lead_plain = (f'<span class="rc-sell-plain">Get {e(name)}&rsquo;s {year} {"rain and snow" if snow == "drawn" else "rain"} drawn as a Rain Print, '
+    # Oct 1 to the Christmas cutoffs: two buttons in the one promo block, last year by Christmas and this year in January
+    last_by = "" if done else xmas_last_by(c["as_of"], year, rp_cutoffs())
+    lead_plain = (f'<span class="rc-sell-plain">Get {e(name)}&rsquo;s {"" if last_by else str(year) + " "}{"rain and snow" if snow == "drawn" else "rain"} drawn as a Rain Print, '
                   f'with your name and dates{price}.</span>')
-    sell = (f'<div class="rc-sell"><p>{lead_print}{lead_plain} <a class="btn btn-primary" href="{e(rp)}">Make yours</a></p>'
+    if last_by:
+        sell_btns = (f'</p><p class="rc-two"><a class="btn btn-primary" href="{e(rain_print_href_last(c, st, year - 1))}">Last year, by Christmas</a> '
+                     f'<a class="btn" href="{e(rp)}">This year, in January</a></p>')
+        ship = (f"Last year&rsquo;s print ({year - 1}) comes by Christmas if you order it {last_by}. "
+                f"This year&rsquo;s ({year}) is a gift card to put under the tree now, the print in January.")
+    else:
+        sell_btns = f' <a class="btn btn-primary" href="{e(rp)}">Make yours</a></p>'
+    sell = (f'<div class="rc-sell"><p>{lead_print}{lead_plain}{sell_btns}'
             + (f'<p class="rc-fine">{(ship + " " + miss_note).strip()}</p>' if (ship or miss_note) else "")
             + f'<p class="rc-fine">{RP_ANY_YEAR}</p>' + "</div>"
             + (PRINT_JS if ready else ""))
@@ -956,6 +1000,17 @@ def selftest():
         if not c:
             fails.append(m)
     fx = os.path.join(ROOT, "test", "fixtures", "rain")
+    # "Last year, by Christmas" reads the Christmas cutoffs from data/rain-print.json; the fixtures are 2026, so the
+    # checks below hold 2026's dates (Dec 9 framed, Dec 10 print) whatever next year's file says
+    rj = json.load(open(os.path.join(ROOT, "data", "rain-print.json"), encoding="utf-8"))
+    ok(rp_cutoffs() == (rj["framed_christmas_cutoff"], rj["print_christmas_cutoff"]), "the cutoffs are read from data/rain-print.json")
+    real_cutoffs = globals()["rp_cutoffs"]
+    globals()["rp_cutoffs"] = lambda: ("2026-12-09", "2026-12-10")
+    ok(xmas_last_by("2026-09-30", 2026, rp_cutoffs()) == "" and xmas_last_by("2026-10-01", 2026, rp_cutoffs()) == "framed by Dec 9, or as a print by Dec 10"
+       and xmas_last_by("2026-12-09", 2026, rp_cutoffs()) == "framed by Dec 9, or as a print by Dec 10"
+       and xmas_last_by("2026-12-10", 2026, rp_cutoffs()) == "as a print by Dec 10" and xmas_last_by("2026-12-11", 2026, rp_cutoffs()) == ""
+       and xmas_last_by("2027-10-12", 2027, rp_cutoffs()) == "" and xmas_last_by("2026-10-12", 2026, None) == "",
+       "last year by Christmas: Oct 1 through the later cutoff, each date while it is ahead, nothing for another year's dates")
     with tempfile.TemporaryDirectory() as t:
         data = os.path.join(t, "data")
         for st, ed in (("IA", "2026-10-12"), ("KS", "2026-10-12"), ("DE", "2024-12-31")):
@@ -1007,14 +1062,24 @@ def selftest():
            "the cross-sell line under the print names the county and the prices from data/rain-print.json")
         # 2026-10-19 rule change: "rain and snow" only where the print draws snow; Story's
         # fixture station keeps no snowfall record, so the line says rain
-        ok("Get Story County&rsquo;s 2026 rain drawn as a Rain Print" in story and '>Make yours</a>' in story, "the plain line and button, for no JS")
+        # Oct 12, before the Christmas cutoffs: the plain line names no year, and two buttons choose it (2026-10-19, board B)
+        ok("Get Story County&rsquo;s rain drawn as a Rain Print" in story and ">Last year, by Christmas</a>" in story
+           and ">This year, in January</a>" in story and ">Make yours</a>" not in story, "the plain line and the two buttons, for no JS")
         snowy = [b for r, b in want.items() if r.startswith("rain/") and "Light blue is snow" in b]
         ok(all("rain and snow drawn as a Rain Print" in b for b in snowy)
            and not any("rain and snow drawn as a Rain Print" in b for r, b in want.items() if r.startswith("rain/") and "Light blue is snow" not in b and 'id="rc-print"' in b),
            f"the plain line says rain and snow exactly where the print draws snow ({len(snowy)} pages draw it)")
         ok(story.index('id="rc-print"') < story.index('class="rc-sell"') < story.index("<h2>Month by month</h2>"), "the line sits right under the print")
-        ok("rc-cta" not in story and story.count('href="/rain-print?') == 1, "one Rain Print promo on the page")
         sell_blk = story.split('class="rc-sell"')[1].split("</div>")[0]
+        ok("rc-cta" not in story and story.count('href="/rain-print?') == 2 and sell_blk.count('href="/rain-print?') == 2,
+           "one Rain Print promo on the page: both year buttons are inside its one block")
+        ok('<a class="btn btn-primary" href="/rain-print?place=Ames%2C+IA&amp;year=2025&amp;ll=' in sell_blk
+           and '<a class="btn" href="/rain-print?place=Ames%2C+IA&amp;year=2026&amp;station=130203+2' in sell_blk
+           and sell_blk.index("year=2025") < sell_blk.index("year=2026"),
+           "last year first, with no station (Rain Print picks the nearest good 2025 record) and no style=, so it opens as a hand link")
+        ok("Last year&rsquo;s print (2025) comes by Christmas if you order it framed by Dec 9, or as a print by Dec 10. "
+           "This year&rsquo;s (2026) is a gift card to put under the tree now, the print in January." in sell_blk,
+           "the dates come from data/rain-print.json, and this year's gift card stays")
         ok(f'<p class="rc-fine">{RP_ANY_YEAR}</p>' in sell_blk and story.count('href="/rain-print"') == 1,
            "one plain link to the bare /rain-print, inside the same promo block")
         # the January full-year email (subs worker v5.28): one ask, under the month table, Daily box not pre-ticked
@@ -1030,7 +1095,7 @@ def selftest():
         ok("data-signup-ask" not in fin, "a finished year has no ask (the email is about the year so far)")
         # no daily file for the state: the plain chart, the plain line, no script
         nod = county_page({"c": c, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
-        ok('id="rc-print"' not in nod and "rain-county-print.js" not in nod and "rc-sell-lead" not in nod and ">Make yours</a>" in nod,
+        ok('id="rc-print"' not in nod and "rain-county-print.js" not in nod and "rc-sell-lead" not in nod and ">Last year, by Christmas</a>" in nod,
            "without the county's days: the plain chart and the plain line only")
         ok(f'<p class="rc-fine">{RP_ANY_YEAR}</p>' in nod, "the plain link is there without the county's days too")
         short = county_page({"c": dict(c, days=45), "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1,
@@ -1043,7 +1108,16 @@ def selftest():
         lyw = S.text_of(re.sub(r"<script(?! type=.application/ld).*?</script>", "", lyh, flags=re.S))
         ok(not re.search(r"2\.8 inches|\bahead\b|\bbehind\b", lyw), "last year's gaps are not counted as rain this year had")
         ok("(it missed 28 days)" in lyw and "On the 257 days both years reported, 2026 had about the same as 2025." in lyw, "last year's gaps said, and the comparison on common days")
-        ok("Give it for Christmas: a gift card to put under the tree now, the 2026 print in January." in story, "this year's print before Christmas: the gift card now, the print in January")
+        ok("the print in January." in story and "Give it for Christmas" not in story, "this year's print before Christmas: the gift card now, the print in January")
+        # Dec 10: framed has passed, a print still makes it; Dec 11 on: back to one button and today's words
+        d10 = county_page({"c": dict(c, as_of="2026-12-10"), "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
+        ok("comes by Christmas if you order it as a print by Dec 10." in d10 and "framed by Dec 9" not in d10, "Dec 10: only the print's date")
+        d11 = county_page({"c": dict(c, as_of="2026-12-11"), "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
+        ok(">Last year, by Christmas</a>" not in d11 and ">Make yours</a>" in d11 and d11.count('href="/rain-print?') == 1
+           and "Give it for Christmas: a gift card to put under the tree now, the 2026 print in January." in d11,
+           "past both cutoffs: one button and the gift card line, as before")
+        s30 = county_page({"c": dict(c, as_of="2026-09-30"), "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
+        ok(">Make yours</a>" in s30 and "by Christmas" not in s30 and "Get Story County&rsquo;s 2026 rain drawn" in s30, "before October: no Christmas offer")
         ok('"@type":"FAQPage"' in story and '"@type":"Dataset"' in story and '"@type":"BreadcrumbList"' in story, "structured data")
         ok("As of Oct 12, 2026" in story, "as-of date shown")
         ok('<svg viewBox' in story and 'class="rc-us"' in story, "chart with the usual line")
@@ -1210,6 +1284,7 @@ def selftest():
     _mid = _vs[:]
     _mid[100:111] = ["M"] * 11
     ok(print_snow({"p": sf["vilas_wi"]["p"], "s": R.pack_days(_mid)}, 2026) == "gaps", "gaps before the last snowfall value still count")
+    globals()["rp_cutoffs"] = real_cutoffs
     for f in fails:
         print("FAIL", f)
     print("county rain pages selftest:", "ok" if not fails else f"{len(fails)} failure(s)")

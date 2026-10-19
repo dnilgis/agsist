@@ -339,7 +339,7 @@ test("P7, P8: the Christmas box on Dec 10 and after Dec 25, and the gifts page a
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
     await settle(page);
-    assert.equal(await page.textContent("#rp-xmas-top"), "For Christmas: order a print by Dec 10. A framed print ordered now ships after Christmas.");
+    assert.equal(await page.textContent("#rp-xmas-top"), "For Christmas: last year (2025), or any past year, comes by Christmas if you order it as a print by Dec 10 (framed now ships after Christmas). This year (2026) is a gift card now, the print in January.");
   }, { time: "2026-12-10T18:00:00Z", upto: "2026-12-01" });
   await withPage(async (page, base) => {
     await page.goto(base + "/rain-print.html?" + q(MINE));

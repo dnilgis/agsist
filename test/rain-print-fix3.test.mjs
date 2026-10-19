@@ -257,7 +257,7 @@ test("(a): a design of this year says the gift card now, the print in January, a
   await withPage(async (page, base, errors) => {
     await drawAmes(page, base, "2026");
     await page.waitForFunction(() => !document.getElementById("rp-xmas-top").hidden, null, { timeout: 10000 });
-    assert.equal(await page.textContent("#rp-xmas-top"), "For Christmas: a gift card now, the print in January.");
+    assert.equal(await page.textContent("#rp-xmas-top"), "For Christmas: this year (2026) is a gift card now, the print in January. Last year (2025) comes by Christmas if you order it framed by Dec 9, or as a print by Dec 10.");
     await openSheet(page);
     assert.equal(await page.textContent("#rp-proof-when"), "Arrives in January, once the year is done. A gift card for under the tree comes by email within 1 business day.");
     assert.deepEqual(errors, []);

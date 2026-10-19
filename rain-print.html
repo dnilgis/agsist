@@ -98,6 +98,8 @@
   .rp-prices{display:flex;flex-wrap:wrap;gap:.15rem 1.1rem;margin:0 0 .3rem;font-size:var(--fs-sm);color:var(--text-dim)}
   .rp-prices b{color:var(--text);font-family:var(--font-mono);font-variant-numeric:tabular-nums}
   .rp-xmas-top{margin:0;font-size:var(--fs-sm);font-weight:600;color:var(--brand);line-height:1.45}
+  .rp-xmas-alt{margin:.15rem 0 0;font-size:var(--fs-sm)}
+  .rp-xmas-alt[hidden]{display:none}
   /* "Paid, thank you": the page Stripe sends a buyer back to */
   .rp-paid{margin:0 0 1rem;padding:14px 16px;border:1px solid var(--green);border-left-width:4px;border-radius:var(--r-md);background:var(--surface);line-height:1.55}
   .rp-paid:focus{outline:none}
@@ -610,6 +612,7 @@
       <p class="rp-lede">A framed print of the farm&rsquo;s year of rain, from the gauge nearest it. Type a town and a year, and I draw every rain and snow the nearest weather station caught. A gift for a farmer, or for the year you married or a child was born. Drawing it is free.</p>
       <p class="rp-prices" id="rp-prices"><span><b data-price="framed12x18">$89</b> framed</span><span><b data-price="print12x18">$45</b> print</span><span><b data-price="digital">$19</b> digital file</span><span>Shipping included</span></p>
       <p class="rp-xmas-top" id="rp-xmas-top" hidden></p>
+      <p class="rp-xmas-alt" id="rp-xmas-alt" hidden><button type="button" class="rp-linkbtn" id="rp-xmas-last">Make it last year, by Christmas</button></p>
       <p class="rp-start"><a class="btn btn-primary" id="rp-start" href="#rp-place">Make yours, free</a></p>
       <figure class="rp-photo" id="rp-photo"><picture><source type="image/webp" srcset="/img/photos/rain-print-photo-chetek-2025-800.webp 800w, /img/photos/rain-print-photo-chetek-2025-1600.webp 1348w" sizes="(min-width: 900px) 360px, 100vw"><img src="/img/photos/rain-print-photo-chetek-2025-800.jpg" srcset="/img/photos/rain-print-photo-chetek-2025-800.jpg 800w, /img/photos/rain-print-photo-chetek-2025-1600.jpg 1348w" sizes="(min-width: 900px) 360px, 100vw" width="1348" height="1011" loading="eager" decoding="async" alt="Framed Rain Print of Chetek, Wisconsin, 2025, photographed on a wall: daily rain below the line, snow above, 32.27 in."></picture><figcaption>A Rain Print of Chetek, Wisconsin, 2025, framed in Chetek. This test print is shown without its white mat.</figcaption></figure>
     </div>

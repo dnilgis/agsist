@@ -2687,17 +2687,28 @@
   function syncXmas() {
     var J = OJ().j || {}, pc = J.print_christmas_cutoff, fc = J.framed_christmas_cutoff;
     // no dates (a Canadian design: no Christmas promise unless data/rain-print.json canada sets one): no Christmas lines
+    $('rp-xmas-alt').hidden = true;
     if (!/^\d{4}-\d{2}-\d{2}$/.test(pc || '') || !/^\d{4}-\d{2}-\d{2}$/.test(fc || '')) { $('rp-xmas-top').hidden = true; $('rp-xmas-why').hidden = true; return; }
     var top = $('rp-xmas-top'), why = $('rp-xmas-why'), late = TODAY > pc && TODAY > fc;
     if (TODAY > pc.slice(0, 4) + '-12-25' || TODAY < pc.slice(0, 4) + '-10-01') { top.hidden = true; return; }
     // one product past its date and the other not: say which (2026-10-14, panel 3)
     var lateMail = ' Too late for the mail? The digital file comes by email in 1 business day, or give the gift card now and the print after Christmas.';
-    top.textContent = giftMode() && canOrder() ? 'For Christmas: a gift card now, the print in January.'
-      : late ? 'For Christmas: past years ordered now ship after Christmas.' + lateMail
-      : TODAY <= pc && TODAY <= fc ? 'For Christmas: order framed by ' + shortDate(fc) + ', a print by ' + shortDate(pc) + '.'
-      : TODAY <= pc ? 'For Christmas: order a print by ' + shortDate(pc) + '. A framed print ordered now ships after Christmas.'
-      : 'For Christmas: order framed by ' + shortDate(fc) + '. A print ordered now ships after Christmas.';
+    var gift = giftMode() && canOrder(), ly = CURRENT_YEAR - 1;
+    /* "Last year, by Christmas" beside "This year, in January" (2026-10-19, board B: a county link opened this
+       year's print and nobody said last year still comes by Christmas). While a cutoff is ahead the first screen
+       names both; a drawn design of this year gets one tap to last year. After the cutoffs, the words as before. */
+    var by = TODAY <= pc && TODAY <= fc ? 'framed by ' + shortDate(fc) + ', or as a print by ' + shortDate(pc)
+      : TODAY <= pc ? 'as a print by ' + shortDate(pc) + ' (framed now ships after Christmas)'
+      : 'framed by ' + shortDate(fc) + ' (a print now ships after Christmas)';
+    var thisYr = 'This year (' + CURRENT_YEAR + ') is a gift card now, the print in January.';
+    top.textContent = late ? (gift ? 'For Christmas: a gift card now, the print in January.' : 'For Christmas: past years ordered now ship after Christmas.' + lateMail)
+      : gift ? 'For Christmas: ' + thisYr.charAt(0).toLowerCase() + thisYr.slice(1) + ' Last year (' + ly + ') comes by Christmas if you order it ' + by + '.'
+      : 'For Christmas: last year (' + ly + '), or any past year, comes by Christmas if you order it ' + by + '. ' + thisYr;
     top.hidden = false;
+    if (!late && gift && ST.place && !(GIFT && GIFT.lock)) {
+      $('rp-xmas-last').textContent = 'Make it ' + ly + ', by Christmas';
+      $('rp-xmas-alt').hidden = false;
+    }
     if (Number.isInteger(J.ship_business_days) && J.transit_business_days) {
       why.textContent = 'The Christmas dates allow ' + (J.proof_business_days === 1 ? 'a business day' : J.proof_business_days + ' business days') + ' for the proof, ' +
         (J.approve_business_days === 1 ? 'one' : J.approve_business_days) + ' for you to OK it, ' + J.ship_business_days + ' to ship and the time in the mail, to arrive by Dec 24.';
@@ -3090,8 +3101,11 @@
     if (!preset) $('rp-pick').hidden = true;
     showBuy(!!DATA);
     var g, chosen, picked, autoPick = false, why = null, artShown = false, readErr = null, seen = SNOW_SEEN[ST.year] = SNOW_SEEN[ST.year] || {};
-    // the county page's station location, on the first draw of its own link only
-    var ll = LINK_LL && LINK_LL.place === ST.place && ST.station ? LINK_LL : null;
+    /* the county page's station location, for its own link's town only. A link
+       with no station (last year's print from a county page, 2026-10-19, or a
+       station that missed too many days) searches around that spot too, so a
+       station town the lookup can't find still draws, from the nearest good record. */
+    var ll = LINK_LL && LINK_LL.place === ST.place ? LINK_LL : null;
     var done = function () { if (my === reqToken) { art.removeAttribute('aria-busy'); DRAWING = false; go.disabled = go.hasAttribute('data-gift-lock'); sel.disabled = STATIONS.length < 2 || sel.hasAttribute('data-gift-lock'); showBuy(canOrder()); } };
     // the town lookup starts now, beside rain-print.json, not after it (2026-10-15)
     var geoEarly = ST.place ? geocode(ST.place).then(function (h) { return { h: h }; }, function (x) { return { x: x }; }) : null;
@@ -4917,6 +4931,13 @@
     try { p.focus({ preventScroll: true }); } catch (e) { p.focus(); }
     try { p.select(); } catch (e) {}
     ga('rain_print_shared_own', {});
+  });
+  // last year, by Christmas: the same town, last year, drawn now (the station is picked again for that year)
+  $('rp-xmas-last').addEventListener('click', function () {
+    if (GIFT && GIFT.lock) return;
+    $('rp-year').value = String(CURRENT_YEAR - 1);
+    ga('rain_print_last_year', { from: 'top' });
+    run({ type: 'submit', preventDefault: function () {} });
   });
   $('rp-another').addEventListener('click', function () {
     var y = $('rp-year');
