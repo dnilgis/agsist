@@ -64,3 +64,25 @@ test("P2: cattle change below one tick reads unch (page and seed agree)", () => 
   assert.deepEqual([...ctx.f(cases[1])], ["unch", "nc"]);
   assert.equal(ctx.f(cases[4])[1], "dn");
 });
+
+test("P3: homepage rows name a date or kind that differs from the badge", () => {
+  const src = read("components/home.js");
+  const fn = src.match(/var MN3=[\s\S]*?\nfunction dtNote\(k,q\)\{[\s\S]*?\n\}/)[0];
+  const d = fx("prices-sun-oct18.json");
+  const ctx = { D: d };
+  vm.runInNewContext(fn + "\nthis.f=dtNote;", ctx);
+  const q = d.quotes;
+  assert.equal(ctx.f("cattle", q["cattle-nearby"]), "");
+  assert.equal(ctx.f("crude", q.crude), "Last trade Oct 16");
+  assert.equal(ctx.f("gold", q.gold), "Last trade Oct 16");
+  assert.equal(ctx.f("dollar", q.dollar), "As of Oct 18");
+  assert.equal(ctx.f("bitcoin", q.bitcoin), "As of Oct 19");
+  assert.equal(ctx.f("feeders", { ...q["feeders-nearby"], stale: true }), "Oct 16 settle, not updated this run");
+  d.stale_keys = ["cattle"];
+  assert.equal(ctx.f("cattle", q["cattle-nearby"]), "Oct 16 settle, not updated this run");
+  // in session: crude is a last trade like corn, same day, no note
+  d.stale_keys = [];
+  q["corn-nearby"] = { close: 470, close_kind: "last", close_date: "2026-10-19" };
+  assert.equal(ctx.f("crude", { ...q.crude, close_date: "2026-10-19" }), "");
+  assert.equal(ctx.f("cattle", q["cattle-nearby"]), "Oct 16 settle");
+});

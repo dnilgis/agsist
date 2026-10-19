@@ -1098,6 +1098,8 @@ html[data-theme="light"] #daily-teaser-sponsor:not(.empty-state){color:var(--ad-
 #f-prices .r7-nm{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:8px;row-gap:0;min-width:0}
 #f-prices .r7-n{font:600 .824rem/1.35 Inter,system-ui,sans-serif;color:var(--text)}
 #f-prices .r7-cm{font:500 .765rem/1.35 "JetBrains Mono",monospace;color:var(--text-muted);white-space:nowrap}
+#f-prices .r7-dt{font:500 .706rem/1.35 Inter,system-ui,sans-serif;color:var(--text-muted);white-space:nowrap}
+.t-dt{font-size:.706rem;color:var(--text-muted);margin-left:.3rem;white-space:nowrap}
 #f-prices .r7-last{display:flex;justify-content:flex-end;align-items:baseline;gap:6px;min-width:0;white-space:nowrap}
 #f-prices .r7-led .pc-price{font:600 1rem/1.2 "JetBrains Mono",monospace!important;letter-spacing:0!important;margin:0!important;color:var(--text);overflow:visible;font-variant-numeric:tabular-nums}
 #f-prices .r7-led .pc-price:empty::before{font-size:.765rem}

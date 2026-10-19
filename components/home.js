@@ -1522,6 +1522,29 @@ function noQuoteNote(){
     setT(nt,'No quote on file, not shown: '+off.join(', ')+'.');
   });
 }
+/* P3 2026-10-19: a row whose price is from another day or another kind
+   than the badge over the ticker (the corn front month) says so: crude,
+   natural gas and the metals are last trades, the dollar and the 10-year
+   carry their own date. A quote this run did not refresh says that too.
+   '' when the row matches the badge. */
+var MN3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function md(iso){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||'');return m?MN3[+m[2]-1]+' '+(+m[3]):'';}
+function dtNote(k,q){
+  if(!D||!D.quotes||!q||q.close==null)return '';
+  var B=D.quotes['corn-nearby']||D.quotes.corn;if(!B)return '';
+  var stale=q.stale===true||(D.stale_keys||[]).indexOf(k)>-1;
+  var qd=q.settle_date&&q.close_kind==='settle'?q.settle_date:q.close_date,bd=B.settle_date&&B.close_kind==='settle'?B.settle_date:B.close_date;
+  if(!stale&&(q.close_kind||null)===(B.close_kind||null)&&qd===bd)return '';
+  var dl=md(qd),t=q.close_kind==='settle'?(dl?dl+' settle':'Settle'):q.close_kind==='last'?'Last trade'+(dl?' '+dl:''):(dl?'As of '+dl:'');
+  if(stale)t+=(t?', ':'')+'not updated this run';
+  return t;
+}
+function setDt(host,cls,t,before){
+  if(!host)return false;var e=host.querySelector('.'+cls);
+  if(!t){if(e){e.parentNode.removeChild(e);return true;}return false;}
+  if(!e){e=document.createElement('span');e.className=cls;if(before&&before.parentNode===host)host.insertBefore(e,before);else host.appendChild(e);}
+  if(e.textContent!==t){e.textContent=t;return true;}return false;
+}
 function renderRow(row){
   var k=row.getAttribute('data-r7k'),c=CFG[k],q=c&&c.own&&D?ownQ(k):Q[k];
   var hasQ=quoted(k);if(hasQ!==null)row.classList.toggle('r7-noq',!hasQ);
@@ -1531,6 +1554,7 @@ function renderRow(row){
   var src=source(k)||{label:null,rq:q},rq=c.cm?q:src.rq;
   var st=spreadTxt(k,c.cm||src.label);
   setT(row.querySelector('.r7-cm'),(c.cm||src.label||'Front month')+(st?' \u00b7 '+st:''));
+  setDt(row.querySelector('.r7-nm'),'r7-dt',dtNote(k,c.own&&D?q:((D&&D.quotes&&D.quotes[k])||q)));
   if(c.g){var pp=row.querySelector('.pc-price');if(plainQ(pp,q.close))setQ(pp,q.close);}
   var ch=chg(k,q),ce=row.querySelector('.r7-chg'),pe=row.querySelector('.r7-pct');
   if(ch){setT(ce,ch.t);ce.className='r7-chg '+ch.c;setT(pe,ch.p);pe.className='r7-pct '+ch.c;}
@@ -1569,6 +1593,11 @@ function renderTicker(){
   [['corn-dec','Corn deferred','Corn '],['beans-nov','Soybeans deferred','Soybeans ']].forEach(function(d){
     var lb=cmByTicker(Q[d[0]]);if(!lb)return;
     qa('.prices-strip [data-sym="'+d[0]+'"] .t-label').forEach(function(e){if(e.textContent===d[1]){e.textContent=d[2]+lb;ch=true;}});
+  });
+  /* P3: the date note on a ticker tile that differs from the badge */
+  if(D&&D.quotes)qa('.prices-strip .t-item[data-sym]').forEach(function(it){
+    var k=it.getAttribute('data-sym'),q=(CFG[k]&&CFG[k].own)?ownQ(k):(D.quotes[k]||Q[k]);
+    if(setDt(it,'t-dt',dtNote(k,q),it.querySelector('.t-chg')))ch=true;
   });
   /* WAVE3-L: a ticker tile with no quote is skipped, not shown as a dash. */
   qa('.prices-strip .t-item[data-sym]').forEach(function(it){var h=quoted(it.getAttribute('data-sym'));if(h===null)return;
