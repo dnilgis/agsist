@@ -3460,7 +3460,7 @@
     $('rp-gift-line').textContent = 'It\u2019s a gift? Say so on the order form, with their name and your note.';
     $('rp-gift-line').hidden = giftOff || link;
     $('rp-gift-pre').innerHTML = PICK === 'digital' ? 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name and your note. I send the note with the file, and no prices go with it.'
-      : 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name, your note and their address. I print your note at the top of the letter in the box, free, and no prices go in the box.';
+      : 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name and your note; Stripe asks where to ship it. I print your note at the top of the letter in the box, free, and no prices go in the box.';
     $('rp-gift-pre').hidden = giftOff || !link || !canOrder();
     $('rp-another-wrap').hidden = !canOrder() || !!(GIFT && GIFT.usable);
     pgSync();
@@ -3661,7 +3661,7 @@
         btn.disabled = false;
         ga('rain_print_gift_save', { result: 'fail', choice: id });
         var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
-        proofSay('The gift details didn\u2019t save just now. Tap Pay to try again, or <a href="' + esc(u) + '">go to checkout</a> and write their name, your note and their address to ' + ORDER_TO + '.', true);
+        proofSay('The gift details didn\u2019t save just now. Tap Pay to try again, or <a href="' + esc(u) + '">go to checkout</a> and write their name and your note to ' + ORDER_TO + '.', true);
       });
       return;
     }
@@ -3951,13 +3951,16 @@
     $('rp-pgift').hidden = !offered;
     $('rp-pg-box').hidden = !on;
     $('rp-pg-msg-l').textContent = januaryGift() ? 'A message for the gift card (optional)' : file ? 'Your note, sent with the file (optional)' : 'Your note, printed at the top of the letter in the box (optional)';
-    $('rp-pg-addr-wrap').hidden = file;
+    /* The address is Stripe's (2026-10-19, board B: the same address typed twice on a phone was a quit point;
+       Sig keeps Stripe's shipping field on, 2026-10-18). With a payment link the sheet asks no address and says
+       where it goes; the order post says it is at checkout. Without one, the order form path, it is asked here. */
+    var stripeShips = !file && !!payLink(PICK);
+    $('rp-pg-addr-wrap').hidden = file || stripeShips;
+    $('rp-pg-ship').hidden = !stripeShips;
+    $('rp-pg-ship').textContent = 'Where it ships: at checkout, Stripe asks for the shipping address. Give ' + (theirs ? 'theirs.' : 'yours.');
     $('rp-pg-addr-l').textContent = (theirs ? 'Their address' : 'Your address') + ' (name, street, town, ' + (caOrder() ? 'province, postal code' : 'state, ZIP') + ')';
     $('rp-pg-email-wrap').hidden = !(file && theirs);
     $('rp-pg-me-l').textContent = file ? 'Your email' : 'Your email, for the proof';
-    /* Until Stripe's address is filled in from this box, it asks again: the
-       buyer is told once, right under the box (2026-10-17, panels). */
-    $('rp-pg-addr-hint').textContent = 'At checkout, Stripe asks for the shipping address again. Use the same one' + (theirs ? ': theirs.' : '.');
     $('rp-pg-line').textContent = (file ? 'No prices go with it.' : 'No prices go in the box.') + ' These come to me with your order; at checkout, Stripe takes the payment.';
     var sum = $('rp-pg-sum');
     sum.hidden = !on;
@@ -3969,10 +3972,12 @@
   }
   // the gift as an order post, or {bad: [field id, words]}
   function pgOrder(ref) {
-    var file = PICK === 'digital', theirs = pgTheirs();
+    var file = PICK === 'digital', theirs = pgTheirs(), stripeShips = !file && !!payLink(PICK);
     var x = {
       name: cleanText($('rp-pg-name').value, 80), email: $('rp-pg-me').value.trim(), choice: PICK,
-      address: file ? '' : $('rp-pg-addr').value.trim().slice(0, 600),
+      // the worker wants an address for a print (subs-worker formClean); with a payment link it is the one given at Stripe checkout
+      address: file ? '' : stripeShips ? ('The shipping address given at Stripe checkout' + (ref ? ', reference ' + ref : '') + (theirs ? ' (theirs)' : ' (the buyer\u2019s)')).slice(0, 600)
+        : $('rp-pg-addr').value.trim().slice(0, 600),
       design_url: designUrl(ST), design_code: orderCode(), page: '/rain-print',
       gift_to: cleanText($('rp-pg-to').value, GIFT_TO_MAX), gift_deliver: theirs ? 'recipient' : 'buyer',
       gift_email: file && theirs ? $('rp-pg-email').value.trim() : '',
@@ -3985,7 +3990,7 @@
       (x.gift_january ? ' Make it after January 1, once the full year is in.' : '') +
       (PROOF_OK === encodeCode(ST) ? ' Proof checked on the page: yes.' : ' Proof checked on the page: no.')).slice(0, 2000);
     var bad = !x.gift_to ? ['rp-pg-to', 'Say who the gift is for, or untick \u201cThis is a gift\u201d.']
-      : !file && x.address.length < 10 ? ['rp-pg-addr', theirs ? 'Add their address for the print.' : 'Add your address for the print.']
+      : !file && !stripeShips && x.address.length < 10 ? ['rp-pg-addr', theirs ? 'Add their address for the print.' : 'Add your address for the print.']
       : file && theirs && !EMAIL_RE.test(x.gift_email) ? ['rp-pg-email', 'Add their email for the file, or choose Me under Send it to.']
       : !x.name ? ['rp-pg-name', 'Add your name.']
       : !EMAIL_RE.test(x.email) ? ['rp-pg-me', 'Add your email, so I can send you the proof.'] : null;
@@ -4073,7 +4078,7 @@
     var el = $('rp-gift-checkout'), linked = PRODUCTS.filter(function (id) { return payLink(id); });
     var t = '';
     if (giftTicked() && linked.length) {
-      t = 'Before you pay, the next screen asks their name, your note and their address.';
+      t = 'Before you pay, the next screen asks their name and your note.';
       if (linked.length < PRODUCTS.length) {
         var names = linked.map(function (id) { return CHOICE[id].replace(/^Digital/, 'digital'); });
         t = 'For the ' + names.join(' and the ') + ', y' + t.slice(1) + ' The others take your note on the order form.';
