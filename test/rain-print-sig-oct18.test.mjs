@@ -92,6 +92,6 @@ test("copy: no em dashes in the new lines, and every page loads the bumped engin
     const h = id === "rp-call" ? RP : BIZ, m = h.match(new RegExp('id="' + id + '">[^\\n]*'));
     assert.ok(m && !/—/.test(m[0]), id);
   }
-  for (const [n, h] of PAGES) assert.match(h, /\/components\/rain-print\.js\?v=51"/, n);
-  assert.match(read("components/rain-county-print.js"), /ENGINE = '\/components\/rain-print\.js\?v=51'/);
+  for (const [n, h] of PAGES) assert.match(h, /\/components\/rain-print\.js\?v=52"/, n);
+  assert.match(read("components/rain-county-print.js"), /ENGINE = '\/components\/rain-print\.js\?v=52'/);
 });

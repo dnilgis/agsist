@@ -235,7 +235,7 @@ def build_state(src, st, year, edate, C, fetched):
         if fips not in mine:
             continue
         seen += 1
-        summ, why = R.summarize(year, dates, vals, norms, edate)
+        summ, why = R.summarize(year, dates, vals, norms, edate, snows if snow_col else None)
         lon, lat = meta["ll"][0], meta["ll"][1]
         c = mine[fips]
         mi = R.miles(c["lat"], c["lon"], lat, lon)
@@ -266,7 +266,7 @@ def build_state(src, st, year, edate, C, fetched):
                 x["summary"], x["why"] = None, f"stuck at 0.00 {dates[i]} to {dates[j]}"
     picked, none = {}, {}
     for fips, c in sorted(mine.items()):
-        ok = sorted(R.mark_mountain([x for x in cands.get(fips, []) if x["summary"]]), key=R.rank_key)
+        ok = R.pick_order(R.mark_mountain([x for x in cands.get(fips, []) if x["summary"]]), st, c["lat"], year)
         if ok:
             picked[fips] = dict(ok[0], n_ok=len(ok))
         else:
@@ -325,7 +325,7 @@ def build_state(src, st, year, edate, C, fetched):
         daily[fips] = daily_rec(x["vals"][:s["days"]], x["snows"][:s["days"]])
     return {"schema": SCHEMA, "state": st, "year": int(year), "edate": edate, "fetched": fetched,
             "normals": ("1991-2020" if period else "current") if has_norm else None,
-            "pick": 2,   # mountain sites ranked last (county_rain.mark_mountain); the pages say so
+            "pick": 3,   # 2: mountain sites ranked last (county_rain.mark_mountain); 3: and a full snowfall record (county_rain.pick_order); the pages say so
             "source": "NOAA daily records through RCC-ACIS (MultiStnData)",
             "stations_in_counties": seen, "counties": out, "none": none, "_daily": daily}
 
@@ -666,7 +666,42 @@ def selftest():
     ok(_pick([_hi, _lo1, _lo2, _near[1]]) == "LOW ONE", f"a station far above the county's others is picked last: {_pick([_hi, _lo1, _lo2, _near[1]])}")
     _lo1["meta"]["elev"] = 5900
     ok(_pick([_hi, _lo1, _near[1]]) == "HIGH CAMP", "a station only a little higher keeps the usual order")
-    ok(build_state(_Src([_val]), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z").get("pick") == 2, "the data file says which pick rule it used")
+    ok(build_state(_Src([_val]), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z").get("pick") == 3, "the data file says which pick rule it used")
+    # Sig's rule (2026-10-15): where snow is normal, a station with full rain AND
+    # snowfall records beats a nearer gauge whose snowfall has gaps, within 10 mi
+    # farther or twice as far. Story County IA style: the real Ames 1.5 NNE
+    # CoCoRaHS days (95 snowfall gaps, 7.8 mi from the middle) against a co-op
+    # farther out that keeps both (its rain is the gauge's, its snowfall whole).
+    _sx = json.load(open(os.path.join(ROOT, "test", "fixtures", "rain-snow", "days.json")))["story_ia"]
+    _ap, _as = R.unpack_days(_sx["p"]), R.unpack_days(_sx["s"])
+    _cs = [x if R.parse_pcpn(x)[0] is not None else "0.0" for x in _as]
+    _ST = {"19169": {"st": "IA", "name": "Story County", "slug": "story-county", "lat": 42.04, "lon": -93.46, "reach": 40}}
+
+    def _st_row(name, sid, mi, p, sn, nrm="0.08", st="19169"):
+        return {"meta": {"name": name, "sids": [sid], "ll": [-93.46, 42.04 + mi / 69.0], "county": st, "elev": 950},
+                "data": [[p[i], nrm, sn[i]] for i in range(len(p))]}
+
+    def _st_pick(rows, C=_ST, st="IA"):
+        o = build_state(_Src(rows), st, 2026, _sx["as_of"], C, "2026-10-14T00:00:00Z")
+        return next(iter(o["counties"].values()), {}).get("station", {}).get("raw")
+    _gauge = _st_row("AMES 1.5 NNE", "US1IASR0002 6", 7.8, _ap, _as)
+    ok(_st_pick([_gauge, _st_row("COOP 14 N", "130000 2", 14.0, _ap, _cs)]) == "COOP 14 N",
+       "Story IA: a co-op 14 mi out with rain and snowfall beats the 7.8 mi gauge with snowfall gaps")
+    ok(_st_pick([_gauge, _st_row("COOP 30 N", "130000 2", 30.0, _ap, _cs)]) == "AMES 1.5 NNE",
+       "past 10 mi farther and twice as far, the nearer gauge stays")
+    ok(_st_pick([_gauge, _st_row("COOP 14 N", "130000 2", 14.0, _ap, _cs, nrm="M")]) == "AMES 1.5 NNE",
+       "NOAA normals still come before the snowfall record")
+    _gappy = ["M" if 40 <= i < 51 else x for i, x in enumerate(_ap)]
+    ok(_st_pick([_gauge, _st_row("COOP 14 N", "130000 2", 14.0, _gappy, _cs)]) == "AMES 1.5 NNE",
+       "a co-op with 11 rain days missing is not a full record of both")
+    ok(_st_pick([_gauge, _st_row("COOP 14 N", "130000 2", 14.0, _ap, ["M"] * 200 + _cs[200:])]) == "AMES 1.5 NNE",
+       "a co-op whose snowfall has gaps too is no better")
+    _TX = {"48001": {"st": "TX", "name": "Hot County", "slug": "hot-county", "lat": 29.0, "lon": -97.0, "reach": 40}}
+    ok(_st_pick([dict(_gauge, meta=dict(_gauge["meta"], county="48001", ll=[-97.0, 29.0 + 7.8 / 69])),
+                 dict(_st_row("COOP 14 N", "410000 2", 14.0, _ap, _cs), meta={"name": "COOP 14 N", "sids": ["410000 2"], "ll": [-97.0, 29.0 + 14 / 69], "county": "48001"})],
+                C=_TX, st="TX") == "AMES 1.5 NNE", "where snow is not normal, the nearer gauge stays")
+    ok(R.snow_state(_ap, _as, 2026) == "gaps" and R.snow_state(_ap, _cs, 2026) == "drawn" and R.snow_state(_ap, ["M"] * len(_ap), 2026) == "none",
+       "snow_state on the Story days")
     # snowfall comes in the third column and is packed beside the rain
     _sn = {"meta": _val["meta"], "data": [[r[0], r[1], "1.5" if i == 3 else "T" if i == 4 else "0.0"] for i, r in enumerate(_val["data"])]}
     _o = build_state(_Src([_sn]), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z")
@@ -730,6 +765,18 @@ def selftest():
     _files["KY"]["counties"].update({"9": _t(4.11), "10": _t(29.5), "11": _t(23.2), "12": _t(4.36), "13": _t(2.85), "14": _t(22.5)})
     _held = hold_outliers(_files, _files, {"1": ["2", "3", "4"], "5": ["6", "7", "8"], "9": ["10", "11", "12", "13", "14"]})
     ok(_held == ["1"], f"no-normal gauge far under its neighbors' totals held; dry country and a rain shadow kept: {_held}")
+    # a dry run counts an A total of 0.00 as dry and ends on a day snow fell,
+    # as Rain Print's derive does (2026-10-19: Allerton IA, Wayne County, Feb 7
+    # 0.00A then 12 days at 0.00 is 13 days; the page said 12)
+    _fx = json.load(open(os.path.join(ROOT, "test", "fixtures", "rain-snow", "days.json")))["wayne_ia"]
+    _wp, _ws = R.unpack_days(_fx["p"]), R.unpack_days(_fx["s"])
+    _wd = R.days_of(2026, "2026-01-01", len(_wp))
+    s, _ = R.summarize(2026, _wd, _wp, None, _fx["as_of"], _ws)
+    ok(s and s["dry"] == [13, "2026-02-07", "2026-02-19"], f"Allerton's dry run takes in the 0.00A day: {s and s['dry']}")
+    s, _ = R.summarize(2026, d14, ["0.20"] + ["0.00"] * 13, None, "2026-01-14", ["0.0"] * 6 + ["1.5"] + ["0.0"] * 7)
+    ok(s and s["dry"] == [7, "2026-01-08", "2026-01-14"], f"a day snow fell ends a dry run: {s and s['dry']}")
+    s, _ = R.summarize(2026, d14, ["0.20"] + ["0.00"] * 13, None, "2026-01-14")
+    ok(s and s["dry"] == [13, "2026-01-02", "2026-01-14"], f"no snowfall record: zeros are dry: {s and s['dry']}")
     # 0.00 for 60 days or more is refused outright, with or without a normal
     d70 = R.days_of(2026, "2026-01-01", 70)
     s, why = R.summarize(2026, d70, ["0.00"] * 70, None, "2026-03-11")

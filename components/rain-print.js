@@ -503,6 +503,31 @@
   }
   // A day whose own amount nobody knows: unrecorded, or rolled into a later A total.
   function unknownDay(x) { return x.v === null || x.v === undefined || x.flag === 'S'; }
+  /* Snowfall over the year's days: {miss: reported days with no snowfall value,
+     tot: inches}. A day with no precipitation report is already a gap; it doesn't
+     also count against snowfall (panel 3 D2). In a year still going (the days end
+     before Dec 31), the days after the station's last snowfall value are not
+     counted as missing: those values have not come in yet, as the rain's own
+     trailing days have not (2026-10-19: Eagle River WI, 70.0 in of snow, missed
+     only Oct 1 to 13 and one March day, and drew none). The same count serves
+     derive and snowStateOf, and scripts/build_county_rain.py print_snow mirrors it. */
+  function snowCount(days) {
+    days = days || [];
+    var n = days.length, end = n, last = n ? String(days[n - 1] && days[n - 1].date || '') : '';
+    var has = function (x) { return x && x.s !== null && x.s !== undefined; };
+    if (last && !/-12-31$/.test(last)) {
+      var k = n - 1;
+      while (k >= 0 && !has(days[k])) k--;
+      if (k >= 0) end = k + 1;
+    }
+    var miss = 0, tot = 0;
+    for (var i = 0; i < end; i++) {
+      var x = days[i];
+      if (!x || x.v === null || x.v === undefined) continue;
+      if (has(x)) tot += x.s; else miss++;
+    }
+    return { miss: miss, tot: tot };
+  }
   function derive(days) {
     var n = days.length, month = Array(12).fill(0), mdays = Array(12).fill(0), monthValid = Array(12).fill(0);
     var total = 0, wet = 0, missing = 0, trace = 0, unsplit = 0, max = { v: 0, date: '', doy: -1 }, maxRain = { v: 0, date: '', doy: -1 };
@@ -543,9 +568,7 @@
     var maxDay = Math.max.apply(null, [0].concat(days.map(function (x) { return x.v || 0; })));
     // Snowfall prints only when the station kept a snowfall record nearly every day
     // (at most MISS_OK days without one) and some snow fell; otherwise it is left off.
-    var snowTotal = 0, snowMissing = 0;
-    // a day with no precipitation report is already a gap; it doesn't also count against snowfall (panel 3 D2)
-    days.forEach(function (x) { if (x.v === null || x.v === undefined) return; if (x.s === null || x.s === undefined) snowMissing++; else snowTotal += x.s; });
+    var sc = snowCount(days), snowTotal = sc.tot, snowMissing = sc.miss;
     var snow = snowMissing <= MISS_OK && snowTotal >= 0.1 ? Math.round(snowTotal * 10) / 10 : null;
     var hot = { v: null, date: '', doy: -1 }, cold = { v: null, date: '', doy: -1 };
     days.forEach(function (x) {
@@ -1174,8 +1197,7 @@
   function snowStateOf(days) {
     days = days || [];
     if (!days.length) return 'unknown';
-    var miss = 0, tot = 0;
-    days.forEach(function (x) { if (x.v === null || x.v === undefined) return; if (x.s === null || x.s === undefined) miss++; else tot += x.s; });
+    var c = snowCount(days), miss = c.miss, tot = c.tot;
     return miss <= MISS_OK ? (tot >= 0.1 ? 'full' : 'none') : 'unknown';
   }
   /* Where snow is not normal (a normal under about 2 in a year), a station
@@ -1587,7 +1609,7 @@
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
-    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
+    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
     cropInput: cropInput, tempInput: tempInput, histInput: histInput, withoutTemp: withoutTemp, tempStationOk: tempStationOk, tempWords: tempWords, TEMP_KINDS: TEMP_KINDS, HIST_MIN: HIST_MIN, TEMP_GAP_OK: TEMP_GAP_OK, OPT_FLAGS: OPT_FLAGS };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;

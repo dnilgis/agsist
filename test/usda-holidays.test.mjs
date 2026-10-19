@@ -91,3 +91,21 @@ test("the strip's holiday rule gives the dates /usda-calendar lists", () => {
   vm.runInNewContext(src + "\nthis.out=[2025,2026].flatMap(holidays).sort();", ctx);
   assert.deepEqual([...ctx.out], page);
 });
+
+/* Oct 19: Export Sales in a week with a federal holiday Mon to Wed says Thursday or Friday, the same
+   words the Daily uses (Columbus Day 2026: the report came out Fri Oct 16). */
+test("Columbus Day week: the Export Sales card says Thu or Fri", () => {
+  const cards = strip("2026-10-13T15:00:00Z");
+  assert.ok(cards.some((c) => /^Oct 15 Export Sales 8:30 AM ET · Thu or Fri, holiday week$/.test(c)), cards.join(" | "));
+});
+test("Veterans Day on a Wednesday (Nov 11, 2026): Export Sales says Thu or Fri", () => {
+  const cards = strip("2026-11-09T15:00:00Z");
+  assert.ok(cards.some((c) => /^Nov 12 Export Sales 8:30 AM ET · Thu or Fri, holiday week$/.test(c)), cards.join(" | "));
+});
+test("an ordinary week: Export Sales is plain Thursday", () => {
+  const cards = strip("2026-10-19T15:00:00Z");
+  assert.ok(cards.some((c) => /^Oct 22 Export Sales 8:30 AM ET$/.test(c)), cards.join(" | "));
+});
+test("the calendar page says Thursday or Friday in a holiday week", () => {
+  assert.match(CAL, /Thursday or Friday\. FAS often releases it a day late in a holiday week\./);
+});

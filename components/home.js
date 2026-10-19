@@ -597,11 +597,14 @@ try {
     var events=[];
     for(var i=-4;i<28;i++){
       var dd=new Date(Date.UTC(nowEt.y,nowEt.mo-1,nowEt.d+i)),wd=dd.getUTCDay(),di=iso(dd.getUTCFullYear(),dd.getUTCMonth()+1,dd.getUTCDate());
-      var mon=new Date(dd.getTime()-((wd+6)%7)*864e5),holWk=!!HOL[iso(mon.getUTCFullYear(),mon.getUTCMonth()+1,mon.getUTCDate())];
+      /* a federal holiday Mon to Wed of this week (Columbus Day, Veterans Day on a Wednesday): FAS often
+         puts Export Sales out Friday, so its card says Thu or Fri, the same words as the Daily (Oct 19) */
+      var mon=new Date(dd.getTime()-((wd+6)%7)*864e5),holWk=false;
+      for(var k=0;k<3;k++){var hk=new Date(mon.getTime()+k*864e5);if(HOL[iso(hk.getUTCFullYear(),hk.getUTCMonth()+1,hk.getUTCDate())])holWk=true;}
       weekly.forEach(function(r){if(r.wd!==wd)return;if(r.season&&!r.season(di))return;
         var hol=!!HOL[di],rd=hol?nextBiz(di):di,p=rd.split('-'),y=+p[0],mo=+p[1],da=+p[2],at=etToUtc(y,mo,da,r.h,r.mi);
         if(at<=now)return;
-        events.push({name:r.name,day:rd,mo:mo,da:da,at:at,moved:hol?di:null,time:clock(r.h,r.mi)+(hol?' · moved from '+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][wd]+' '+months[dd.getUTCMonth()]+' '+dd.getUTCDate()+', holiday':holWk?' · may shift':'')});});
+        events.push({name:r.name,day:rd,mo:mo,da:da,at:at,moved:hol?di:null,time:clock(r.h,r.mi)+(hol?' · moved from '+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][wd]+' '+months[dd.getUTCMonth()]+' '+dd.getUTCDate()+', holiday':holWk&&r.name==='Export Sales'?' · Thu or Fri, holiday week':holWk?' · may shift':'')});});
     }
     function render(list,note){
       list.sort(function(a,b){return a.at-b.at;});

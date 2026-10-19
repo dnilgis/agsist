@@ -42,6 +42,8 @@ The hay board (worker v5.30, agsist.com/haymow) rides the same run: new
 posts, and posts held by the screen or hidden by three reports, go to Sig in
 one more email (public text only, never the poster's phone or email), then
 POST /hay/admin/mark. The hay admin routes take the token as a Bearer header.
+Each post links to it on the Haymow desk (agsist.com/haymow-admin#<id>, the
+token pasted there once, never in the link), with the curl line under it.
 
 The Actions log gets counts only, never a name, address or phone.
 
@@ -466,6 +468,7 @@ HAY_PRODUCT = {"alfalfa": "Alfalfa", "grass": "Grass hay", "mixed": "Mixed hay",
 HAY_BALE = {"small-square": "small squares", "large-square": "large squares", "round": "rounds", "wrapped": "wrapped bales", "bulk": "bulk"}
 HAY_WHY = {"held": "held by the screen", "reports": "hidden by reports", "sig": "hidden by you"}
 HAY_ID_RE = re.compile(r"[0-9a-hjkmnp-tv-z]{10}")
+HAY_DESK = "https://agsist.com/haymow-admin"
 
 
 def hay_worker(base, path, tok, body=None, **q):
@@ -518,6 +521,7 @@ def hay_rows(p):
         rows.append(("Reports", "%d (%s)" % (len(reps), ", ".join(reps))))
     if HAY_ID_RE.fullmatch(str(p.get("id") or "")):
         rows.append(("Id", p["id"]))
+        rows.append(("On the desk", "%s#%s" % (HAY_DESK, p["id"])))
         act = "clear" if st != "live" else "hide"
         rows.append(("To %s" % act, "curl -X POST -H \"Authorization: Bearer $LIST_TOKEN\" -H \"Content-Type: application/json\" "
                      "-d '{\"id\":\"%s\"}' $LIST_URL/hay/admin/%s" % (p["id"], act)))
@@ -545,10 +549,12 @@ def hay_build(posts, to, fn="AGSIST", fa=""):
         text.extend("%s: %s" % r for r in rows)
         text.append("")
         hb.append('<h3 style="font-size:15px;margin:18px 0 6px">%s</h3><table style="font-size:14px;line-height:1.5;border-collapse:collapse">' % e(head))
-        hb.extend('<tr><td style="color:#6b6b6b;padding:2px 12px 2px 0;vertical-align:top">%s</td><td>%s</td></tr>' % (e(a), e(b)) for a, b in rows)
+        hb.extend('<tr><td style="color:#6b6b6b;padding:2px 12px 2px 0;vertical-align:top">%s</td><td>%s</td></tr>' % (
+            e(a), ('<a href="%s">%s</a>' % (e(b), e(b))) if a == "On the desk" else e(b)) for a, b in rows)
         hb.append("</table>")
     foot = ("Live posts are on agsist.com/haymow already. Phones and emails are not in this email; "
-            "GET /hay/admin/list with the list token shows them.")
+            "the Haymow desk (agsist.com/haymow-admin) shows one post's when you ask, and hides, clears "
+            "or marks posts. GET /hay/admin/list with the list token shows them too.")
     text.append(foot)
     m.set_content("\n".join(text) + "\n\n-- \n" + ADDRESS + "\n")
     m.add_alternative('<div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:20px 16px;color:#1a1a1a;background:#fff">'
@@ -960,6 +966,10 @@ def selftest():
        "hay/admin/clear", "hay/admin/hide")), t)
     ck("hay: html escaped", "Barn &lt;kept&gt;." in h and "<kept>" not in h, h)
     ck("hay: the token is never written out", "tok123" not in t and "$LIST_TOKEN" in t)
+    ck("hay: each post links to the desk, the curl line kept", "On the desk: https://agsist.com/haymow-admin#a1b2c3d4e5" in t and
+       "On the desk: https://agsist.com/haymow-admin#f6g7h8j9k0" in t and t.count("curl -X POST") == 2 and "agsist.com/haymow-admin)" in t, t)
+    ck("hay: the desk link is a link in the html", '<a href="https://agsist.com/haymow-admin#a1b2c3d4e5">' in h, h)
+    ck("hay: no token in a desk link", not re.search(r"haymow-admin[^\s\"<]*token", t + h))
     hcalls, hsent = [], []
 
     def hf(base, path, tok, body=None, **q):

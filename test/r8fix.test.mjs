@@ -109,7 +109,7 @@ test("homepage: one email ask; the compact bar and big band no longer open by th
   assert.doesNotMatch(js, /isDismissed\('agsist_signup_compact_dismissed'\)\)\{var el2=document\.getElementById\('signup-compact'\);if\(el2\)el2\.style\.display='flex'/);
   assert.doesNotMatch(js, /visits<=24/);
   assert.match(js, /if\(toSignup\)\{var el=document\.getElementById\('signup-full'\)/);
-  assert.match(read("index.html"), /\/components\/home\.js\?v=9"/);
+  assert.match(read("index.html"), /\/components\/home\.js\?v=10"/);
 });
 
 test("USDA calendar: What I grow or raise, saved on this device", () => {
