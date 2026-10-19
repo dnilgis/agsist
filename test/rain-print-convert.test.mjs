@@ -132,7 +132,8 @@ test("arriveBy: the hand-worked dates, and the same sum as the Christmas cutoffs
 });
 
 test("the more-than-one question is on the page and in FAQPage, and the new words have no em dash", () => {
-  assert.match(HTML, /<details><summary>Can I order more than one\?<\/summary><p>Yes\. Make one, order it, then change the town or the year/);
+  // 2026-10-19 (board B): one tap after checkout for the next one
+  assert.match(HTML, /<details><summary>Can I order more than one\?<\/summary><p>Yes\. Make one and pay for it\. When checkout brings you back here, tap Make another for someone else: the town, year and style stay and the words clear for the next one\. Or change the town or the year/);
   assert.match(HTML, /"name": "Can I order more than one\?"/);
   assert.ok(!/\u2014|&mdash;/.test(HTML), "no em dash on the page");
   const js = readFileSync(ROOT + "components/rain-print.js", "utf8");
@@ -218,7 +219,7 @@ test("paid: a way to order another from the same words, and the business card na
     await drawn(page);
     await page.waitForTimeout(600);
     const box = await page.innerText("#rp-paid");
-    assert.match(box, /One for each of the kids, or for the home farm and the rented ground\? Each is its own order, with its own proof\.\s+Same words, another town or year or Make another$/);
+    assert.match(box, /One for each of the kids, or for the home farm and the rented ground\? Each is its own order, with its own proof\.\s+Make another for someone else\s+Same words, another town or year or Make another$/);
     await page.click("#rp-paid-again");
     await page.waitForTimeout(700);
     assert.equal(await page.evaluate(() => document.activeElement.id), "rp-year", "the year box, ready for the next one");
@@ -232,4 +233,43 @@ test("paid: a way to order another from the same words, and the business card na
     assert.equal(sub, `Elevators, co-ops, ag lenders, seed dealers. From ${t.min} prints: $${t.framed12x18} framed, $${t.print12x18} a print, delivered.`);
     assert.deepEqual(errors, []);
   });
+});
+
+/* 2026-10-19 (board B): two gifts were two whole orders from scratch. Stripe Payment Links take one design a
+   checkout, so after the paid return one tap starts the next: town, year, station and style kept, words cleared. */
+test("paid: Make another for someone else keeps the town, year and style, clears the words, and checks out again", { skip }, async () => {
+  await withPage(async (page, base, errors, stripe) => {
+    await page.goto(base + "/rain-print.html?" + new URLSearchParams({ place: "Chetek, WI", year: "2012", station: "471667 2", style: "r2", name: "Olson", dedication: "For Dad", m1: "2012-05-08Planted" }));
+    await drawn(page);
+    const r = await checkout(page, "framed12x18");
+    assert.equal(r.stage, "stripe");
+    await page.goto(base + "/rain-print.html?paid=framed12x18&s=cs_test_a1b2c3d4e5f6");
+    await page.waitForFunction(() => !document.getElementById("rp-paid").hidden);
+    await drawn(page);
+    await page.waitForTimeout(600);
+    assert.equal(await page.isVisible("#rp-paid-other"), true);
+    await page.click("#rp-paid-other");
+    await page.waitForTimeout(700);
+    assert.equal(await page.evaluate(() => document.activeElement.id), "rp-name", "one tap, and the name box is ready");
+    assert.equal(await page.inputValue("#rp-place"), "Chetek, WI");
+    assert.equal(await page.inputValue("#rp-year"), "2012");
+    assert.equal(await page.$eval('input[name="rp-style"]:checked', (x) => x.value), "r2", "the style stays");
+    assert.equal(await page.inputValue("#rp-name"), "", "the name clears");
+    assert.equal(await page.inputValue("#rp-ded"), "", "the line clears");
+    assert.equal(await page.inputValue("#rp-m1l"), "", "the marked days clear");
+    assert.ok(!(await page.$eval("#rp-art svg", (el) => el.textContent)).includes("Olson"), "the print up top lost the old name");
+    await page.fill("#rp-name", "Hansen");
+    await page.waitForTimeout(500);
+    const ev = await events(page);
+    assert.equal(ev.filter((e) => e[0] === "rain_print_another_person").length, 1);
+    assert.ok(!JSON.stringify(ev).includes("Hansen"), "no words in any event");
+    const r2 = await checkout(page, "framed12x18");
+    assert.equal(r2.stage, "stripe", "the second checkout opens");
+    assert.deepEqual(errors, []);
+  });
+});
+
+test("the review sheet's gift box says how the second gift goes", () => {
+  assert.match(HTML, /<p class="rp-note" id="rp-pg-two">Two gifts\? Pay for this one\. When checkout brings you back here, tap Make another for someone else: the same town, year and style, new words\.<\/p>/);
+  assert.ok(HTML.indexOf('id="rp-pg-two"') > HTML.indexOf('id="rp-pg-box"') && HTML.indexOf('id="rp-pg-two"') < HTML.indexOf('id="rp-proof-go"'), "inside the gift box, shown once it is ticked");
 });

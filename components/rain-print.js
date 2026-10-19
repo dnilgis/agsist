@@ -3582,13 +3582,29 @@
      make another. The address bar loses paid= and s= (a reload or a share
      shows no thank-you), and Analytics gets one purchase per checkout session. */
   var PAID_FIRED = false;
+  /* A second gift (2026-10-19, board B: "order one, then the next" lost the second). Stripe Payment Links sell one
+     design per checkout, so the next one is one tap: the same town, year, station and style, the words cleared
+     (the name, the line under it, the marked days, who it's for and the note), the name box ready to type. */
+  function anotherForSomeone(from, choice) {
+    var s = readInputs(ST.year);
+    s.place = ST.place; s.year = ST.year; s.station = ST.station;
+    s.name = ''; s.dedication = ''; s.markers = [];
+    writeInputs(s);
+    ['rp-pg-to', 'rp-pg-msg', 'rp-gift-to', 'rp-gift-msg', 'ro-gift-to', 'ro-gift-msg', 'ro-gift-email', 'rp-pg-email'].forEach(function (id) { var el = $(id); if (el) el.value = ''; });
+    restyle();
+    ga('rain_print_another_person', { from: from, choice: choice || PICK });
+    try { $('rp-design').scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {}
+    try { $('rp-name').focus({ preventScroll: true }); } catch (e) {}
+  }
   function showPaid(p, sv, fire) {
     var box = $('rp-paid'), lines = paidText({ choice: p.choice, today: TODAY, prices: PRICES, saved: sv });
     box.innerHTML = '<h2>Paid. Thank you.</h2>' + lines.map(function (t) { return '<p>' + esc(t).replace('sig@farmers1st.com', '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>') + '</p>'; }).join('') +
       // more than one (2026-10-16): one for each of the kids, or the home farm and the rented ground
       '<p>One for each of the kids, or for the home farm and the rented ground? Each is its own order, with its own proof.</p>' +
+      (sv ? '<p><button type="button" class="btn btn-primary rp-paid-other" id="rp-paid-other">Make another for someone else</button></p>' : '') +
       '<p>' + (sv ? '<button type="button" class="rp-linkbtn" id="rp-paid-again">Same words, another town or year</button> or ' : '') + '<a href="/rain-print" id="rp-paid-new">Make another</a></p>';
     box.hidden = false;
+    if (sv) $('rp-paid-other').addEventListener('click', function () { anotherForSomeone('paid', p.choice); });
     if (sv) $('rp-paid-again').addEventListener('click', function () {
       ga('rain_print_again', { choice: p.choice });
       try { $('rp-where').scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {}
