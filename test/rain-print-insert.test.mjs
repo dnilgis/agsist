@@ -214,15 +214,18 @@ test("What's in the box: the public block, the sample letter and the FAQ, word f
 const OFFER = { code: "rain10", dollars_off: 10, expires: "2027-12-31" };
 const OFFER_WORDS = "Want one for another year or another farm? Use code RAIN10 for $10 off at agsist.com/rain-print. Good through December 31, 2027.";
 
-test("the code line: off while data/rain-print.json letter_offer has no code", () => {
+test("the code line: on with Sig's Stripe code NEXTPRINT, $10 off print and framed, through Dec 31, 2027 (Sig, 2026-10-19)", () => {
   const J = JSON.parse(read("data/rain-print.json"));
-  assert.deepEqual(J.letter_offer, { code: "", dollars_off: 0, expires: "" }, "ships switched off until Sig sets the code");
+  assert.deepEqual(J.letter_offer, { code: "NEXTPRINT", dollars_off: 10, expires: "2027-12-31" }, "the Stripe promotion code Sig made Oct 18 (coupon Next Rain Print, $10 off once)");
   assert.ok(J._letter_offer.includes("Allow promotion codes"), "the note says what to turn on in Stripe");
+  assert.equal(INS.offerLine(J.letter_offer, "2027-01-10"), "Want one for another year or another farm? Use code NEXTPRINT for $10 off at agsist.com/rain-print. Good through December 31, 2027.");
+  assert.equal(INS.offerLine(J.letter_offer, "2028-01-01"), "", "no line after it ends");
   for (const st of ["r1", "r2"]) {
     const m = make(st, { offer: J.letter_offer, today: "2027-01-10" });
-    assert.ok(!m.svg.includes('data-rp="offer"'), st + ": no code line");
-    assert.doesNotMatch(letterTexts(m.svg).join(" "), /Use code|\$/);
+    assert.ok(m.svg.includes('data-rp="offer"'), st + ": the code line");
   }
+  // an empty code still prints nothing (the switch Sig used until Oct 19)
+  assert.equal(INS.offerLine({ code: "", dollars_off: 0, expires: "" }, "2027-01-10"), "");
   // anything it cannot read prints nothing
   for (const bad of [null, {}, { code: "", dollars_off: 10, expires: "2027-12-31" }, { code: "RAIN10", dollars_off: 0, expires: "2027-12-31" },
     { code: "RAIN10", dollars_off: "10", expires: "2027-12-31" }, { code: "RAIN10", dollars_off: 9.5, expires: "2027-12-31" },
