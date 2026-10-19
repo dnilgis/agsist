@@ -191,14 +191,13 @@ test("company page box: its own ZIP field, the Daily by ZIP and the 25 mi price 
   const page = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="/components/styles.css"><link rel="stylesheet" href="/components/cb-signup.css?v=2"></head><body><main>
 <input type="hidden" id="co-zip" value=""><div id="bid-email" data-bid-alerts data-zip-input="co-zip" data-source="company:acme-co-op" data-crops="corn soybeans wheat"></div>
-</main><script src="/components/cb-signup.js?v=3" defer></script></body></html>`;
+</main><script src="/components/cb-signup.js?v=2" defer></script></body></html>`;
   const srv = await serve({ "/company-test.html": page }), port = srv.address().port, posts = [];
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const pg = await open(browser, port, "/company-test.html", posts);
     await pg.locator(".cbs-zip").waitFor();
-    assert.equal(await pg.locator(".cbs-d").isChecked(), false, "morning bids box starts empty (Sig, 2026-10-19)");
-    await pg.locator(".cbs-d").check();
+    assert.equal(await pg.locator(".cbs-d").isChecked(), true, "morning bids box ticked: the box's main offer (Sig, 2026-10-19)");
     await pg.locator(".cbs-zip").fill("50830");
     await pg.locator(".cbs-price").fill("4.50");
     await pg.locator(".cbs-em").fill("reader@example.com");

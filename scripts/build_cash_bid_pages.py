@@ -1057,7 +1057,7 @@ def breadcrumb(items):
 # per town page; the page carries only the placeholder tag. Bump ?v= on any
 # change to either file.
 SIGNUP_CSS = '  <link rel="stylesheet" href="/components/cb-signup.css?v=2">\n'
-SIGNUP_JS = '<script src="/components/cb-signup.js?v=3" defer></script>\n'
+SIGNUP_JS = '<script src="/components/cb-signup.js?v=2" defer></script>\n'
 
 
 # Rain Print, one quiet line on each town page in the gift season (Sig, 2026-10-16:

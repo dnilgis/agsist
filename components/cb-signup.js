@@ -23,8 +23,6 @@
    /cash-bids passes data-zip-input="cb-zip" instead of data-zip: the box
    shows its own ZIP field, filled from the search box.
    A reader already on the Daily (agsist_subscribed) sees only the price alert.
-   Neither box starts ticked for a new reader (Sig, 2026-10-19: no ask
-   pre-ticks the Daily); pressing Email me with neither asks for one.
 
    Analytics: gaEvent('bid_alert_submit', ...) on a valid submit and
    gaEvent('bid_alert_ok', ...) for each part the service accepted. No
@@ -123,7 +121,7 @@
     var h = '<section class="cbs" aria-labelledby="' + id + '-h">'
       + '<h2 class="cbs-h" id="' + id + '-h">' + (place ? 'Get ' + esc(place) + ' bids by email' : 'Get the bids near you by email') + '</h2>'
       + '<form class="cbs-f" novalidate>'
-      + '<div class="cbs-opt"' + (onDaily ? ' hidden' : '') + '><label class="cbs-ck"><input type="checkbox" class="cbs-d">'
+      + '<div class="cbs-opt"' + (onDaily ? ' hidden' : '') + '><label class="cbs-ck"><input type="checkbox" class="cbs-d"' + (onDaily ? '' : ' checked') + '>'
       + '<span>Every morning: the top corn and soybean bids within 50 mi of <span class="cbs-where">' + near + '</span></span></label></div>'
       + '<div class="cbs-opt"><label class="cbs-ck" for="' + id + '-p"><input type="checkbox" class="cbs-p" id="' + id + '-p"' + (onDaily ? ' checked' : '') + '>'
       + '<span>Tell me when</span></label>'

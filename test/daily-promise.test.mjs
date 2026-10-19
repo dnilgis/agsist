@@ -7,6 +7,11 @@
  *   2. No email ask pre-ticks "also send me the Daily": no checkbox that
  *      signs a reader up for the Daily starts checked, and no data-daily="on"
  *      is left to ask for one.
+ *      One exemption, exactly one box: the town and company bid email box
+ *      (components/cb-signup.js, class cbs-d, drawn on cash bid town and
+ *      company pages and /cash-bids). "Get <town> bids by email" is the main
+ *      offer of that box, not an "also send me the Daily" add-on, so it stays
+ *      pre-ticked (Sig, 2026-10-19: his rule covers only add-on Daily boxes).
  *
  * Scanned: every tracked .html page (except the dated issues under daily/,
  * whose datelines are facts about one issue), components/*.js and *.html,
@@ -79,6 +84,9 @@ export function clockFindings(f, s) {
   }
   return bad;
 }
+/* The one main-offer box that may start ticked (see the header, rule 2):
+   the cbs-d box in components/cb-signup.js and nowhere else. */
+const MAIN_OFFER = (f, tag) => f === "components/cb-signup.js" && /class=\\?["']cbs-d["'\\]/.test(tag);
 /* A checkbox that starts checked with the Daily in its label. */
 export function pretickFindings(f, s) {
   const bad = [];
@@ -88,6 +96,7 @@ export function pretickFindings(f, s) {
   let m;
   while ((m = re.exec(v))) {
     const tag = m[0], after = v.slice(re.lastIndex, re.lastIndex + 200).split(/<\/label>/i)[0];
+    if (MAIN_OFFER(f, tag)) continue;
     if (/\bchecked\b/.test(tag) && /\bdaily\b|morning briefing|every morning|each morning/i.test(after)) bad.push((tag + after).slice(0, 200));
   }
   return bad;
@@ -111,6 +120,8 @@ test("no ask pre-ticks the Daily box", () => {
   assert.deepEqual(bad, [], "a Daily box starts empty; the reader ticks it (Sig, 2026-10-19)");
   const sa = read("components/signup-ask.js");
   assert.ok(!/getAttribute\('data-daily'\)/.test(sa), "signup-ask.js reads no attribute that ticks the box");
+  assert.ok(read("components/cb-signup.js").includes(`class="cbs-d"' + (onDaily ? '' : ' checked')`),
+    "the bid email box's main offer (cbs-d) starts ticked for a reader not on the Daily (Sig, 2026-10-19)");
 });
 
 test("the guards catch the copies Sig asked to change (real Oct 19 cases)", () => {
@@ -132,7 +143,12 @@ test("the guards catch the copies Sig asked to change (real Oct 19 cases)", () =
   assert.equal(T("components/prf-notice.js", `      + ' data-topic="prf:' + grid + '" data-daily="on"' + (after ? ' data-after="' + after + '"' : '')`), 1);
   assert.equal(T("scripts/build_county_rain.py", `            f'data-topic="rainyear:{year}:{fips}" data-daily="on" '`), 1);
   assert.equal(T("components/homepage-extras.js", `'<label class="sa-optin"><input type="checkbox" class="we-optin" checked> Also send me AGSIST Daily, free, every morning</label>'`), 1);
-  assert.equal(T("components/cb-signup.js", `'<div class="cbs-opt"><label class="cbs-ck"><input type="checkbox" class="cbs-d"' + (onDaily ? '' : ' checked') + '>' + '<span>Every morning: the top corn and soybean bids within 50 mi</span></label></div>'`), 1);
+  const CBS_D = `'<div class="cbs-opt"><label class="cbs-ck"><input type="checkbox" class="cbs-d"' + (onDaily ? '' : ' checked') + '>' + '<span>Every morning: the top corn and soybean bids within 50 mi</span></label></div>'`;
+  assert.equal(T("components/cb-signup.js", CBS_D), 0, "the bid email box's main offer stays ticked (Sig, 2026-10-19)");
+  assert.equal(T("components/homepage-extras.js", CBS_D), 1, "the exemption covers cb-signup.js only");
+  assert.equal(T("components/cb-signup.js", CBS_D.replace("cbs-d", "cbs-x")), 1, "the exemption covers the cbs-d box only");
+  assert.equal(T("components/cb-signup.js", `'<label class="sa-optin"><input type="checkbox" class="we-optin" checked> Also send me AGSIST Daily, free, every morning</label>'`), 1,
+    "an add-on Daily box in cb-signup.js is still caught");
   assert.equal(T("components/cb-signup.js", `'<input type="checkbox" class="cbs-p" id="' + id + '-p"' + (onDaily ? ' checked' : '') + '>' + '<span>Tell me when</span></label>'`), 0, "the price alert box is not the Daily");
 });
 
