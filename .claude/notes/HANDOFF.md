@@ -1,6 +1,7 @@
 # AGSIST handoff: start here (updated Oct 18, 2026, evening)
 
 Read this, then `.claude/notes/STANDING-DECISIONS.md` (Sig's rules), then `CLAUDE.md` (the 1 GB / 150 KB page budget).
+Audits: use the audit-loop skill (.claude/skills/audit-loop) and log every finding in `.claude/notes/FINDINGS.md`.
 This file is public (the repo and Pages serve it). Nothing private goes in it.
 
 ## Who and what
@@ -21,6 +22,9 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
    rerun alone: rain-print-buy-path "review sheet keeps the tick", fresh-visitor, gdu-calculator-h2h, nav-full-oct18.
    New data files change data/feeds.json: rebuild it (`python3 scripts/build_feeds.py`) and commit, or feeds-guard fails.
 4. `scripts/dev/push.sh <working-branch>` pushes to main (merges are authorized) and mirrors the working branch.
+   Oct 18 collision: shipping from a helper worktree force-pushed the working branch and dropped commits made only there.
+   push.sh now merges origin/<working-branch> into HEAD first and never force-pushes. Rule: commit notes and decisions in the
+   tree you ship from, or merge the working branch into it before shipping; never `git push -f` anywhere.
 - Workflows: `gh workflow run <file>.yml -R dnilgis/agsist --ref main -f x=y` works (Oct 18). Fallback, the REST API:
   `gh api -X POST repos/dnilgis/agsist/actions/workflows/<file>.yml/dispatches -f ref=main [-F 'inputs[x]=y']`.
   land-data.yml has one concurrency slot: a second dispatch while one runs replaces any pending one. Queue them one at a time.
@@ -171,7 +175,7 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
     31,528 farm sales 10+ acres, 92 counties, filed 2022-2026 (data/land/in). A refused yearly file is now skipped, not fatal.
     Illinois 65,727. MN still request-only (eCRV email).
   - About page rewritten in Sig's voice: who pays for it ("The monthly bill has a comma in it"), the old Amish schoolhouse, ways to help.
-    Sig removed the truck-payment line. Keep the comma line only while it is true.
+    Sig removed the truck-payment line. Oct 18: the comma line now reads "Some months the bill has come close to needing a comma." (Sig: more honest).
   - Titles/descriptions rewritten for low-click searches (fx/ctr1: cash bids, bin calculator, yield calculator, rent hub + 47 state rent
     titles with the median, hail map). Re-measure clicks in Search Console around Nov 15.
   - Pointer pages: a generated page that drops out of its set leaves a ~650-byte noindex page that forwards to its state page

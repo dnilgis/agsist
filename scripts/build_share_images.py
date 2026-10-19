@@ -150,6 +150,7 @@ LINES = {
     "custom-rates": ("Custom rates", "Nine state surveys: the average, range, unit and year for each job, with the source."),
     "grain-shrink": ("Grain shrink", "Corn, soybeans, wheat and sorghum: shrink, drying charges and overdry loss at your bid."),
     "hay-prices": ("Hay prices", "Alfalfa and other hay, dollars a ton, every state USDA publishes."),
+    "haymow": ("The Haymow", "Hay, straw and forage people have or need, nearest first. Post free. No fees, no cut."),
     "hail-map": ("Hail map", "Hail swaths and ground reports for any US address, by storm day."),
     "list-your-elevator": ("Elevators", "Post your elevator's cash bids free, where farmers already look."),
     "nutrient-removal": ("Nutrient removal", "P and K hauled off in stalks, straw, silage and hay, in dollars."),

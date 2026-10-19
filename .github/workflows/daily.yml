@@ -473,7 +473,26 @@ jobs:
             grep -v '^::' /tmp/fc-selftest.txt | tail -25 | while IFS= read -r l; do echo "::error title=fact check selftest::$l"; done
             exit 1
           fi
+          # the selftest's fixture findings land in the same file; the save step below must see only this run's
+          rm -f "$RUNNER_TEMP/fact-check.json"
           python scripts/fact_check_briefing.py
+
+      # 2026-10-18: keep every run's fact check. fact_check_briefing.py writes
+      # $RUNNER_TEMP/fact-check.json and the runner threw it away, so the Oct 24
+      # review of report vs block had nothing to read. One file per run on the
+      # raw branch (never deployed): daily-fact-check/<CT date>-<run id>-<attempt>.json.
+      # Runs when the fact check failed too; never fails the job.
+      - name: Save the fact check to the raw branch
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: |
+          f="$RUNNER_TEMP/fact-check.json"
+          if [ ! -s "$f" ]; then echo "::warning::no fact-check.json from this run; nothing saved"; exit 0; fi
+          d="daily-fact-check/$(TZ=America/Chicago date +%F)-${{ github.run_id }}-${{ github.run_attempt }}.json"
+          mkdir -p daily-fact-check && cp "$f" "$d"
+          bash scripts/push_raw.sh "daily fact check" "$d" || echo "::warning::fact check not saved to raw (the briefing is unaffected)"
+          rm -rf daily-fact-check
+          exit 0
 
       # v4.2 (Phase 2 C7): post-critic ops alert. Reads daily.json's
       # critic_pass.final_scores; emails sig@farmers1st.com if any rule

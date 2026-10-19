@@ -170,6 +170,24 @@ def _carry_dates(cont, f, data, key, fields=("close_date","prev_date")):
         if key not in sk:
             sk.append(key)
         return True
+    # 2026-10-18: the alias now carries its source's close, so it carries the
+    # source's freshness too. A stale tag left by an earlier repair (the Oct 16
+    # file: hogs repaired from the dead Oct '26, then re-repaired at generation
+    # to a fresh Dec '26 66.875) made a fresh price read as a stale one.
+    if f.get("stale"):
+        cont["stale"] = True
+        cont["stale_since"] = f.get("stale_since") or cont.get("stale_since")
+        cont["stale_reason"] = "repaired-from-stale-source"
+        sk = data.setdefault("stale_keys", [])
+        if key not in sk:
+            sk.append(key)
+        return True
+    if cont.get("stale"):
+        for k in ("stale", "stale_since", "stale_reason"):
+            cont.pop(k, None)
+        sk = data.get("stale_keys")
+        if isinstance(sk, list) and key in sk:
+            sk.remove(key)
     return False
 
 def run(data, today=None, repair=False):

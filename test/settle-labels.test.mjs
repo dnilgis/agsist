@@ -39,6 +39,7 @@ for (const [script, ok] of [
   ['contract_calendar.py', /^SELFTEST OK$/m],
   ['test_nearby.py', /^SELFTEST OK$/m],
   ['test_settle_words.py', /^PASS$/m],
+  ['test_daily_timing.py', /^PASS$/m],
 ]) {
   test(`${script} passes`, () => {
     const out = runPy(script);

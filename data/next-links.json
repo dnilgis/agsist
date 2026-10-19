@@ -1530,6 +1530,25 @@
     }
    ]
   },
+  "/haymow": {
+   "links": [
+    {
+     "href": "/hay-prices",
+     "text": "Hay prices",
+     "why": "USDA prices by state"
+    },
+    {
+     "href": "/cattle-auction-prices",
+     "text": "Sale barn prices",
+     "why": "What calves and cattle brought at local auctions"
+    },
+    {
+     "href": "/drought-monitor",
+     "text": "Drought monitor",
+     "why": "This week by county"
+    }
+   ]
+  },
   "/here": {
    "links": [
     {
