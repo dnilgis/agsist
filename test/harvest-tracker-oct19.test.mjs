@@ -146,6 +146,8 @@ test("in a browser at 390: Iowa, Georgia and Texas read right", { skip, timeout:
       assert.ok(your.includes(`${ser.length} /${corn.harvest.days_total} trading days counted, ${left} trading day${left === 1 ? "" : "s"} left · December CBOT corn contract`), your.slice(0, 300));
       assert.match(await pg.$eval("#pd-verdict-h", (x) => x.textContent), /^Your corn and soybean prices are being set right now\.$/);
     }
+    if (corn.harvest.status === "running") assert.match(your, /would revise up \d+\.\d%: figured at the \$\d+\.\d\d \/bu running harvest price\./);
+    assert.doesNotMatch(your, /, to \$\d+\.\d\d \/bu\./, "the $/bu figure is a price, never called the guarantee");
     assert.doesNotMatch(your, /Day \d+ \/\d+|\bguarantee(?= \$|<)| \$[\d.]+ guarantee/, "a $/bu price is the projected price");
     assert.match(your, /against the projected price/i);
     // 12: Iowa corn's two tags sit close: one above the track
@@ -172,7 +174,7 @@ test("in a browser at 390: Iowa, Georgia and Texas read right", { skip, timeout:
     await pick(pg, "GA");
     const ga = await pg.$eval("#pd-your", (x) => x.innerText.replace(/\s+/g, " "));
     assert.match(ga, /window closed Aug 31 · September CBOT corn contract/);
-    assert.match(ga, /Your revenue guarantee revised up \d+\.\d%, to \$\d+\.\d\d \/bu\./);
+    assert.match(ga, /Your revenue guarantee revised up \d+\.\d%: it is now figured at the \$\d+\.\d\d \/bu harvest price\./);
     assert.doesNotMatch(ga, /If the window closed today/);
     assert.match(ga, /January 2027 CBOT soybeans/);
     // 16: Texas's options are told apart by the sales closing date

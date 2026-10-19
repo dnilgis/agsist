@@ -791,8 +791,8 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     // or unreleased window is "if it closed today"
     var mean = up
       ? (sw==='final'
-          ? 'Your revenue guarantee revised up <b>'+upPct+'%</b>, to <b class="pd-num">'+upTo+'</b>.'
-          : 'If the window closed today your revenue guarantee would revise up <b>'+upPct+'%</b>, to <b class="pd-num">'+upTo+'</b>.')+
+          ? 'Your revenue guarantee revised up <b>'+upPct+'%</b>: it is now figured at the <b class="pd-num">'+upTo+'</b> harvest price.'
+          : 'If the window closed today your revenue guarantee would revise up <b>'+upPct+'%</b>: figured at the <b class="pd-num">'+upTo+'</b> '+(sw==='running'?'running':'last posted')+' harvest price.')+
         (g.h>2*g.p?' The harvest price counts only up to 200% of the projected price.':'')
       : 'A '+sw+' average below the projected price does not cut your '+
         'guarantee: it stays figured at the <b class="pd-num">'+money(g.p,unitOf(g))+per(g)+'</b> projected price. '+
