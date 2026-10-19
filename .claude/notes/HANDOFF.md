@@ -1,7 +1,7 @@
 # AGSIST handoff: start here (updated Oct 18, 2026, evening)
 
 Read this, then `.claude/notes/STANDING-DECISIONS.md` (Sig's rules), then `CLAUDE.md` (the 1 GB / 150 KB page budget).
-Audits: use the audit-loop skill (.claude/skills/audit-loop) and log every finding in `.claude/notes/FINDINGS.md`.
+Audits: use the audit-loop skill (.claude/skills/audit-loop) and log every finding in `.claude/notes/FINDINGS.md`. Any panel, roundtable or board: .claude/skills/panel-review (the standard; logs to `.claude/notes/BOARD.md`).
 This file is public (the repo and Pages serve it). Nothing private goes in it.
 
 ## Who and what
