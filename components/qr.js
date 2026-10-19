@@ -22,7 +22,7 @@
        2026-10-19 for the printed reports (components/print-qr.js).
      AgQR.matrix(text, null, 'mixed', maxVer), AgQR.svg(text, label, maxVer, 'mixed')
        alphanumeric segments where the text allows, bytes between, fewest bits
-       (the short report links, HTTPS://AGSIST.COM/Q?...). */
+       (a full link where only parts are upper case and digits). */
 (function (w) {
   'use strict';
   if (w.AgQR) return;
@@ -173,7 +173,7 @@
   /* Mixed mode (2026-10-19, for the printed reports' short links): runs of QR
      alphanumeric letters go as alphanumeric segments, the rest as bytes. Every
      cut-off for how short an alphanumeric run may be is tried and the fewest
-     bits kept, so HTTPS://AGSIST.COM/Q?H*... pays one byte segment for the "?". */
+     bits kept. A text that is all alphanumeric comes out as one alphanumeric segment. */
   function mixedSegs(text, ver) {
     var s = String(text), runs = [], i;
     for (i = 0; i < s.length; i++) {

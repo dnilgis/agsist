@@ -72,7 +72,7 @@ test("print-qr.js: 0.85 in up to version 15, grows to keep 0.01 in squares up to
   assert.doesNotMatch(PQ.html("x".repeat(998), "agsist.com/x"), /<svg/, "too long: no code, the address in words");
   assert.match(PQ.CSS, /^\.agpq\{display:none;/, "hidden on screen");
   assert.match(PQ.CSS, /@media print\{\.agpq\{display:block\}\}/, "shown in print");
-  assert.doesNotMatch(read("components/print-qr.js") + read("components/qr.js") + read("components/report-link.js") + read("Q.html"), /—/, "no em dashes");
+  assert.doesNotMatch(read("components/print-qr.js") + read("components/qr.js") + read("components/report-link.js") + read("404.html").split("<!-- Short links")[1].split("</script>\n")[1], /—/, "no em dashes");
 });
 
 test("one QR encoder: the three report pages load components/qr.js (v=11) before print-qr.js and their own script", () => {
@@ -91,21 +91,25 @@ const EX = {
   land: "https://agsist.com/field-report?f=" + encodeURIComponent(FIELD),
   hailDay: "https://agsist.com/hail-map?lat=42.0300&lon=-93.6200&mi=10&day=2025-03-14",
   hail5y: "https://agsist.com/hail-map?lat=42.0300&lon=-93.6200&mi=25",
+  here: "https://agsist.com/here?f=55005&z=54728",
 };
+const pathOf = (t) => t.slice("HTTPS://AGSIST.COM".length);
 test("short links: exact text and the module count pinned for a real example of each report (full link in byte mode in brackets)", () => {
   const want = {
-    comp: ["HTTPS://AGSIST.COM/Q?CP+4529750-9170250+0+500+500+0+0-500K55005T261019", 33, 57],
-    compParcel: ["HTTPS://AGSIST.COM/Q?CI036-0400-11-000*K55005T261019", 29, 45],
-    land: ["HTTPS://AGSIST.COM/Q?LP+4529750-9170250+0+500+500+0+0-500", 33, 45],
-    hailDay: ["HTTPS://AGSIST.COM/Q?H+42.03-93.62D250314", 29, 37],
-    hail5y: ["HTTPS://AGSIST.COM/Q?H+42.03-93.62R25", 29, 33],
+    comp: ["HTTPS://AGSIST.COM/C/P4529750-9170250+0+500+500+0+0-500K55005T26292", 33, 57],
+    compParcel: ["HTTPS://AGSIST.COM/C/I036-0400-11-000*K55005T26292", 29, 45],
+    land: ["HTTPS://AGSIST.COM/F/P4529750-9170250+0+500+500+0+0-500", 29, 45],
+    hailDay: ["HTTPS://AGSIST.COM/S/42.03-93.62D25073", 25, 37],
+    hail5y: ["HTTPS://AGSIST.COM/S/42.03-93.62R25", 25, 33],
+    here: ["HTTPS://AGSIST.COM/H/55005/54728", 25, 29],
   };
   for (const k of Object.keys(EX)) {
     const t = PQ.text(EX[k]);
     assert.equal(t, want[k][0], k);
     assert.equal(Q.matrix(t, null, "mixed", 40).length, want[k][1], k + ": modules");
+    assert.equal(Q.matrix(t, null, "alnum", 40).length, want[k][1], k + ": all of it alphanumeric");
     assert.equal(Q.matrix(EX[k], null, null, 40).length, want[k][2], k + ": the full link would be");
-    assert.equal(RL.full(t.slice(t.indexOf("?"))), EX[k], k + ": /Q opens the exact report");
+    assert.equal(RL.full(pathOf(t)), EX[k], k + ": 404.html opens the exact report");
   }
 });
 
@@ -117,25 +121,29 @@ test("short links: every setting goes and comes back; anything the short form ca
     "https://agsist.com/field-report?f=" + encodeURIComponent(longField(30)) + "&cf=" + encodeURIComponent("mi:25,ac:10,s:2023-10-19,c:4.5M,a:1"),
     "https://agsist.com/hail-map?lat=-12.5000&lon=130.1234&mi=5"]) {
     const t = RL.short(u);
-    assert.ok(t && /^HTTPS:\/\/AGSIST\.COM\/Q\?[0-9A-Z+\-.*:]+$/.test(t), u + " -> " + t);
-    assert.equal(RL.full("?" + t.split("?")[1]), u, "back: " + t);
-    assert.equal(RL.full("?" + t.split("?")[1].toLowerCase() + "&fbclid=abc"), u, "lower case and an app's extra parameter still open it");
+    assert.ok(t && /^HTTPS:\/\/AGSIST\.COM\/[CFSH]\/[0-9A-Z+\-.*:\/]+$/.test(t), u + " -> " + t);
+    assert.equal(RL.full(pathOf(t)), u, "back: " + t);
+    assert.equal(RL.full(pathOf(t).toLowerCase() + "?fbclid=abc"), u, "lower case and an app's extra parameter still open it");
+    assert.equal(RL.full("https://agsist.com" + pathOf(t)), u, "the whole address reads the same");
   }
   // every comp setting, through the page's own reader
   const P = CR.parseParams(many.slice(many.indexOf("?")), "2026-10-18"), t = RL.short(CR.reportUrl(P));
-  assert.equal(CR.toQuery(CR.parseParams(RL.full("?" + t.split("?")[1]).split("?")[1], "2027-05-01")), CR.toQuery(P));
+  assert.equal(CR.toQuery(CR.parseParams(RL.full(pathOf(t)).split("?")[1], "2027-05-01")), CR.toQuery(P));
+  for (const d of ["2024-01-01", "2024-02-29", "2024-12-31", "2025-03-14", "2099-12-31"]) {
+    const h = "https://agsist.com/hail-map?lat=42.0300&lon=-93.6200&mi=10&day=" + d;
+    assert.equal(RL.full(pathOf(RL.short(h))), h, "day of the year both ways: " + d);
+  }
   for (const u of ["https://agsist.com/comp-report?pid=abc 1&fips=55005&r=25&from=2023-10-19&to=2026-10-19&amin=10&n=15&sort=mi",
     "https://agsist.com/comp-report?lat=40.12&lon=-88.2&r=25&from=2023-10-19&to=2026-10-19&amin=10&n=15&sort=mi",
     "https://agsist.com/comp-report?lat=40.12000&lon=-88.20000&r=25&from=1999-10-19&to=2026-10-19&amin=10&n=15&sort=mi",
     "https://agsist.com/field-report?f=" + encodeURIComponent(FIELD) + "&cf=" + encodeURIComponent("c:4.5m"),
     "https://agsist.com/rain-print?d=x"]) assert.equal(RL.short(u), null, u);
-  assert.equal(RL.full("?Cjunk"), null);
-  assert.equal(RL.full("?H+42.03"), null);
-  assert.equal(RL.full(""), null);
-  const q = read("Q.html");
-  assert.match(q, /<meta name="robots" content="noindex, nofollow">/);
-  assert.match(q, /location\.replace\(u\.slice\('https:\/\/agsist\.com'\.length\)\)/, "opens on this site only");
-  for (const sm of fs.readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) assert.doesNotMatch(read(sm), /agsist\.com\/Q\b/, "not in a sitemap");
+  for (const bad of ["/C/junk", "/S/42.03", "/S/42.03-93.62D25400", "/H/5500/54728", "/X/1", "/c", "/cash-bids/iowa", "/r", ""]) assert.equal(RL.full(bad), null, bad);
+  // 404.html: the route runs first in <head>, before the theme script and analytics, and stops the page
+  const h = read("404.html"), r = h.indexOf('<script src="/components/report-link.js?v=1"></script>');
+  assert.ok(r > 0 && r < h.indexOf("agsist-theme-early") && r < h.indexOf("gtag"), "route before anything else runs");
+  assert.match(h, /if\(u&&u\.indexOf\('https:\/\/agsist\.com\/'\)===0\)\{if\(window\.stop\)window\.stop\(\);location\.replace\(u\.slice\(18\)\);\}/, "opens on this site only, the 404 page stopped");
+  for (const k of "CFSH") assert.ok(!fs.existsSync(join(ROOT, k)) && !fs.existsSync(join(ROOT, k + ".html")) && !fs.existsSync(join(ROOT, k.toLowerCase())), k + "/ is not a real page or folder, so it reaches 404.html");
 });
 
 // ---------------------------------------------------------------- the links
@@ -194,7 +202,7 @@ function serve() {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
     if (!path.extname(p) && fs.existsSync(path.join(ROOT, p + ".html"))) p += ".html";   // GitHub Pages serves /comp-report as comp-report.html
     const f = path.normalize(path.join(ROOT, p));
-    if (!f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
+    if (!f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404, { "content-type": "text/html" }); res.end(fs.readFileSync(join(ROOT, "404.html"))); return; }
     res.writeHead(200, { "content-type": types[path.extname(f)] || "application/octet-stream" });
     res.end(fs.readFileSync(f));
   });
@@ -213,14 +221,14 @@ async function open(browser, port, url) {
   await pg.goto(`http://127.0.0.1:${port}${url}`, { waitUntil: "load" });
   return { pg, ctx, errs };
 }
-/* the encoder was handed the short link (in mixed mode); /Q turns it back into the page's own address */
+/* the encoder was handed the short link (in mixed mode); 404.html turns it back into the page's own address */
 async function checkBlock(pg, want) {
   const got = await pg.evaluate(() => ({ inn: window.__qrIn, data: [...document.querySelectorAll(".agpq")].map((e) => [e.getAttribute("data-qr"), e.getAttribute("data-url")]), svg: !!document.querySelector(".agpq svg") }));
   const t = RL.short(want);
   assert.ok(t, "a short link for " + want);
   assert.deepEqual(got.inn, [t + " mixed"], "what the encoder drew");
   assert.deepEqual(got.data, [[t, want]]);
-  assert.equal(RL.full("?" + t.split("?")[1]), want, "the short link reads back to this page's address");
+  assert.equal(RL.full(pathOf(t)), want, "the short link reads back to this page's address");
   assert.ok(got.svg);
   assert.match(await pg.textContent(".agpq"), /Scan to open this report on agsist\.com/);
   return t;
@@ -228,11 +236,17 @@ async function checkBlock(pg, want) {
 /* open the short link the way a phone does and see where it lands */
 async function viaQ(browser, port, t, landPath) {
   const ctx = await browser.newContext({ serviceWorkers: "block" });
-  await ctx.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
+  const seen = [];
+  await ctx.route("**/*", (r) => { seen.push(r.request().url()); return r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort(); });
   const pg = await ctx.newPage();
-  await pg.goto(`http://127.0.0.1:${port}/Q?` + t.split("?")[1]);
+  const first = await pg.goto(`http://127.0.0.1:${port}` + pathOf(t));
+  assert.equal(first.status(), 404, "served by 404.html, as GitHub Pages does");
   await pg.waitForURL((u) => u.pathname === landPath, { timeout: 10000 });
   const at = await pg.evaluate(() => "https://agsist.com" + location.pathname + location.search);
+  const before = seen.slice(0, seen.findIndex((u) => new URL(u).pathname === landPath));
+  assert.deepEqual(before.filter((u) => !u.startsWith(`http://127.0.0.1:${port}`)), [], "nothing leaves the site before the report opens (no analytics of the path)");
+  assert.equal(new URL(before[0]).pathname, pathOf(t).split("?")[0]);
+  assert.equal(new URL(before[1]).pathname, "/components/report-link.js", "the route script is the first thing the 404 page loads");
   await ctx.close();
   return at;
 }
@@ -277,10 +291,10 @@ test("in Chromium: the Hail History Report printout carries the QR of the spot, 
     await pop.evaluate(() => { window.print = () => {}; }).catch(() => {});
     await pop.waitForSelector(".agpq svg", { timeout: 10000 });
     const want = "https://agsist.com/hail-map" + q, t = RL.short(want);
-    assert.equal(t, "HTTPS://AGSIST.COM/Q?H+42.03-93.62R25D250614");
+    assert.equal(t, "HTTPS://AGSIST.COM/S/42.03-93.62R25D25165");
     assert.deepEqual(await pg.evaluate(() => window.__qrIn), [t + " mixed"], "what the encoder drew");
     assert.equal(await pop.$eval(".agpq", (e) => e.getAttribute("data-qr")), t);
-    assert.equal(await pop.$eval(".agpq svg", (e) => e.getAttribute("viewBox")), "0 0 37 37", "29 x 29 modules and the margin");
+    assert.equal(await pop.$eval(".agpq svg", (e) => e.getAttribute("viewBox")), "0 0 37 37", "29 x 29 modules and the margin (radius and a date: 41 letters, version 3)");
     assert.match(await pop.textContent(".agpq"), /Scan to open this report on agsist\.com\s*agsist\.com\/hail-map$/);
     assert.match(await pop.textContent("body"), /Radius: 25 miles/);
     assert.deepEqual(errs, []);
