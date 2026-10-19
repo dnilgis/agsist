@@ -129,6 +129,11 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
 - Sig: API credits (expiring Oct 28 and Nov 19), MN eCRV email, Westfield / ZIP 44410 check (Mon Oct 19 reminder), "hose clamps vs clips".
 
 
+## Evening Oct 19 (sw v202)
+- Flash Grain audit (4 reviewers + adversary) fixed and live (dnilgis/flashgrain#1): contract calendar data/cbot.json, expired contracts dashed and off the feed, admin roll card (Fall 26 beans FND Oct 30), /offers page for the DTN portal. dnilgis/bids#3: Flash Grain withdraws at 2 h (maxAgeH). Jeff: ask DTN about a widget, a direct login link, and moving the portal off www.flashgrains.com before that domain moves.
+- Monetization board doc: https://claude.ai/code/artifact/6434041d-1dd5-471c-aa36-bee52fde5f76 . Verdict: business Rain Prints in person before Nov 20. Fixes shipped as ship11 (dnilgis/agsist#3).
+- Pushes to main from this sandbox are blocked by the permission check; ship through a PR and the GitHub merge tool.
+
 ## Late Oct 19 (sw v201)
 - Shipped after noon: location only on tap; "every morning" Daily wording, no pre-ticked add-on boxes (the cash bid town box keeps its main offer ticked); shared Rain Print link shows the print first; Atlas recorded-sales tile (IL, WI) and rent-age rule; layout shift fixed on /fertilizer and the homepage; phone header placeholder 62px sitewide (styles.css v26); USDA calendar keeps the Oct 11 title (re-measure Nov 15, do not touch before); empty unsold sponsor slots; underlined source links; about sameAs farmers1st.com + lokedrone.com; Missouri custom rates 2025 (G302 March 2026) as a numbers-only source.
 - Held back: Bet 3 test results and code at raw:tested-archive/2026-10-19 (Sig reads before publishing).
