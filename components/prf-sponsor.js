@@ -22,6 +22,10 @@
  * anything. The pages ship the unsold offer in plain HTML; this swaps it.
  * If the file cannot be read, the offer stays: the figures never depend on it.
  *
+ * On /prf a sold state's sponsor also prints on the one-page sheet (#prf-spon-p,
+ * renderPrint): labelled Sponsor, name, phone, website, the line and the
+ * disclosure. Unsold prints nothing.
+ *
  * A sponsor never changes a number or "What the numbers would pick": this
  * file draws one labelled box and touches nothing else.
  *
@@ -93,6 +97,17 @@
       (sp.line ? ' ' + esc(sp.line) : '') + (sp.phone ? ' <span class="prf-spon-tel">' + esc(sp.phone) + '</span>.' : '') + ' ' + ask(n) + noSay + '</span>' + visit(sp, n, kind);
   }
 
+  /* The /prf print sheet (Sig, Oct 18): a sold state's sponsor prints, labelled Sponsor, with the
+     name, phone and website, the short line, and the standing disclosure. Unsold prints nothing.
+     No logo (one ink, one page), no price, no link to click on paper. */
+  function site(url) { return String(url).replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/$/, ''); }
+  function renderPrint(sp) {
+    var contact = [sp.phone ? esc(sp.phone) : '', esc(site(sp.url))].filter(Boolean).join(' &middot; ');
+    return '<span class="psp-tag">Sponsor</span><span class="psp-copy"><span class="psp-name">' + esc(sp.name) + '</span>' +
+      (sp.line ? ' ' + esc(sp.line) : '') + ' <span class="psp-contact">' + contact + '</span>' +
+      ' <span class="psp-no">A sponsor has no say over any figure here.</span></span>';
+  }
+
   function show(el, sp, stName, kind) {
     el.className = 'ag-sponsor-ribbon ag-sponsor-ribbon--sold prf-spon prf-spon-' + kind;
     el.setAttribute('data-sponsor-slot', 'prf-' + kind + ':' + sp.st);
@@ -101,7 +116,7 @@
     el.hidden = false;
   }
 
-  var api = { pick: pick, render: render, esc: esc, today: today, LINE_MAX: LINE_MAX };
+  var api = { pick: pick, render: render, renderPrint: renderPrint, esc: esc, today: today, LINE_MAX: LINE_MAX };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgPrfSponsor = api;
 
@@ -131,7 +146,7 @@
   /* /prf: prf.js says which state the grid's county is in, on every render.
      The "For businesses" band under the intro then links to /prf-sponsor
      with that state ticked (2026-10-13; moved up 2026-10-14). */
-  var box = doc.getElementById('prf-spon');
+  var box = doc.getElementById('prf-spon'), pbox = doc.getElementById('prf-spon-p');
   var offer = doc.querySelector ? doc.querySelector('a[data-prf-offer]') : null;
   if (box) {
     var asked = '';
@@ -145,6 +160,7 @@
         var sp = pick(d, st, today());
         if (sp) show(box, sp, dt.stName || st, 'tool');
         else { box.hidden = true; box.innerHTML = ''; box.className = 'prf-spon'; box.removeAttribute('data-sponsor-slot'); }
+        if (pbox) { pbox.innerHTML = sp ? renderPrint(sp) : ''; pbox.hidden = !sp; }
       });
     });
   }

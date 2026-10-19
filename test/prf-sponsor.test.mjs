@@ -100,11 +100,11 @@ test("the sold block: labelled Sponsor, rel=sponsored, asks readers to support t
 
 /* The browser half, run against a small fake page. */
 let offerLink = null;
-function fakePage(els, box, data) {
+function fakePage(els, box, data, pbox = null) {
   const handlers = {};
   const doc = {
     querySelectorAll: (q) => (q === "[data-prf-spon]" ? els : []),
-    getElementById: (id) => (id === "prf-spon" ? box : null),
+    getElementById: (id) => (id === "prf-spon" ? box : id === "prf-spon-p" ? pbox : null),
     querySelector: (q) => (q === "a[data-prf-offer]" ? offerLink : null),
     addEventListener: (t, f) => { handlers[t] = f; },
   };
@@ -156,6 +156,40 @@ test("/prf: the sponsor of the reader's state beside the result, gone for an uns
   assert.match(box.innerHTML, /PRF in Nebraska is sponsored by Example Ag Lending/);
 });
 
+/* The /prf print sheet (Sig, Oct 18): a sold state prints its sponsor box; unsold prints nothing. */
+const toolBox = () => { const b = el({}); b.hidden = true; b.innerHTML = ""; b.removeAttribute = function (k) { delete this.attrs[k]; }; return b; };
+const PRINT_FIX = { KS: { name: "Prairie Range Test Agency", url: "https://www.example.org/prf/", line: "Range and hay coverage for Kansas ranches.", phone: "620-555-0142", through: "2099-12-31" } };
+test("print sheet: a sold state prints its sponsor, labelled, with name, phone, website, line and the disclosure", () => {
+  const h = SP.renderPrint(SP.pick(PRINT_FIX, "KS", "2026-10-18"));
+  assert.ok(h.startsWith('<span class="psp-tag">Sponsor</span>'), "labelled Sponsor first");
+  for (const t of ["Prairie Range Test Agency", "620-555-0142", "example.org/prf", "Range and hay coverage for Kansas ranches.", "A sponsor has no say over any figure here."]) assert.ok(h.includes(t), t);
+  assert.doesNotMatch(h, /<a |<img |https?:/, "paper: no link, no logo, no scheme");
+  assert.ok(!PRICE.test(h) && !/price|founding/i.test(h));
+  const bad = SP.renderPrint({ name: "<b>x</b>", url: "https://example.org", line: "<script>1</script>", phone: "" });
+  assert.ok(!bad.includes("<b>x") && !bad.includes("<script>"), "escaped");
+});
+
+test("print sheet on /prf: the box fills for a sold state and empties, hidden, for an unsold one", async () => {
+  const box = el({}); box.hidden = true; box.innerHTML = ""; box.removeAttribute = function (k) { delete this.attrs[k]; };
+  const pbox = el({}); pbox.hidden = true; pbox.innerHTML = "";
+  const p = fakePage([], box, PRINT_FIX, pbox);
+  p.fire({ grid: 1, st: "KS", stName: "Kansas" }); await tick(); await tick();
+  assert.equal(pbox.hidden, false);
+  assert.match(pbox.innerHTML, /^<span class="psp-tag">Sponsor<\/span>.*Prairie Range Test Agency.*620-555-0142.*example\.org\/prf.*A sponsor has no say over any figure here\./s);
+  p.fire({ grid: 2, st: "NE", stName: "Nebraska" }); await tick(); await tick();
+  assert.equal(pbox.hidden, true, "unsold prints nothing");
+  assert.equal(pbox.innerHTML, "");
+  const lapsed = el({}); lapsed.hidden = true; lapsed.innerHTML = "";
+  const q = fakePage([], toolBox(), { KS: { ...PRINT_FIX.KS, through: "2000-01-01" } }, lapsed);
+  q.fire({ grid: 3, st: "KS", stName: "Kansas" }); await tick(); await tick();
+  assert.equal(lapsed.hidden, true, "a lapsed sale prints nothing");
+  assert.equal(lapsed.innerHTML, "");
+  const ff = el({}); ff.hidden = true; ff.innerHTML = "";
+  const r = fakePage([], toolBox(), { KS: { ...PRINT_FIX.KS, name: "Farmers First Agency" } }, ff);
+  r.fire({ grid: 4, st: "KS", stName: "Kansas" }); await tick(); await tick();
+  assert.equal(ff.hidden, true, "never Farmers First");
+});
+
 test("the shipped data file is valid and holds no test sponsor", () => {
   const raw = readFileSync(ROOT + "data/prf-sponsors.json", "utf8");
   const d = JSON.parse(raw);
@@ -181,7 +215,7 @@ test("the shipped data file is valid and holds no test sponsor", () => {
 
 const STATE_PAGES = meta.states.map((s) => ({ st: s, rel: "prf/" + slug(s.name) + ".html" }));
 
-const JS_TAG = '<script src="/components/prf-sponsor.js?v=3" defer></script>';
+const JS_TAG = '<script src="/components/prf-sponsor.js?v=4" defer></script>';
 const BAND_BAD = /founding|sponsor-apply|states? left|slots? left|only \d+|\d+ (states?|slots?) (open|left)/i;
 
 test("every state page offers its slot near the top, once, with no price", () => {
@@ -248,7 +282,7 @@ test("/prf: the offer band under the intro and above the tool, the sponsor box b
   const box = h.indexOf('<aside class="prf-spon" id="prf-spon" hidden></aside>');
   assert.ok(box > h.indexOf('id="prf-answer"') && box < h.indexOf('id="prf-optimize"'), "the sponsor box sits beside the result, outside the panel");
   assert.ok(h.indexOf("prf-sponsor.js") < h.indexOf("/components/prf.js"), "prf-sponsor.js must listen before prf.js renders");
-  assert.ok(h.includes('<script src="/components/prf-sponsor.js?v=3" defer></script>'));
+  assert.ok(h.includes('<script src="/components/prf-sponsor.js?v=4" defer></script>'));
   assert.ok(!/founding/i.test(h));
   assert.ok(readFileSync(ROOT + "components/prf.js", "utf8").includes("st: S.st, stName:"), "prf.js names the state in prf:grid");
 });

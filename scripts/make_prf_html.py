@@ -325,7 +325,7 @@ payment              = interval protection
   </main>
   <div id="site-footer"></div>
   <script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/prf-sponsor.js?v=3" defer></script>
+  <script src="/components/prf-sponsor.js?v=4" defer></script>
   <script src="/components/prf-math.js?v=2" defer></script>
   <script src="/components/qr.js?v=10" defer></script>
   <script src="/components/prf.js?v=7" defer></script>
