@@ -518,7 +518,7 @@
          often pushes Export Sales to Friday, but not always, so the row keeps
          Thursday and says it may slip, the way the homepage strip does. */
       let wkHol='';
-      for(let b=1;b<=3&&!hol;b++){const d=new Date(cur.getTime()-b*86400000),di=isoUTC(d);if(FED_HOLIDAYS.has(di)){wkHol=' Holiday week ('+movedNote(di).replace(/^ Moved from | for the federal holiday\.$/g,'')+'): USDA may release it a day late.';break;}}
+      for(let b=1;b<=3&&!hol;b++){const d=new Date(cur.getTime()-b*86400000),di=isoUTC(d);if(FED_HOLIDAYS.has(di)){wkHol=' Holiday week ('+movedNote(di).replace(/^ Moved from | for the federal holiday\.$/g,'')+'): Thursday or Friday. FAS often releases it a day late in a holiday week.';break;}}
       REPORTS.push({date:hol?nextBizDay(iso):iso,name:'Export Sales',type:'export',time:'8:30 AM ET',moved:hol,desc:'Weekly net export sales (corn, soybeans, wheat), USDA FAS.'+(hol?movedNote(iso):wkHol)});
       cur.setUTCDate(cur.getUTCDate()+7);
     }

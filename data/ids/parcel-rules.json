@@ -1,0 +1,41 @@
+{
+ "schema": "agsist-parcel-keys/1",
+ "key": "<5-digit county fips>:<normalized parcel number>",
+ "code": "scripts/build_ids.py parcel_key(); data/ids/parcel-key.js parcelKey() (tested to agree)",
+ "states": {
+  "IL": "Letters and digits, upper case: a county's PINs are fixed width, so dashes, dots and spaces are layout only. Cook County (17031): a 14-digit PIN ending in a 0000 unit is the 10-digit PIN.",
+  "IN": "Digits of the 18-digit state parcel number. A 17-digit number gets its dropped leading zero back only when that makes the first two digits the county's number, (county fips + 1) / 2.",
+  "WI": "Each run of digits without leading zeros, letters kept, joined with '-': counties write the same parcel with and without zero padding.",
+  "other": "Letters and digits, upper case."
+ },
+ "repeat_sales": {
+  "as_of": "2026-10-18",
+  "rule": "market sales by FSLand.saleRows + FSLand.marketSale (field-scout-land.js), one row per sale; a parcel sold 2+ times by that rule",
+  "by_state": {
+   "IL": {
+    "county_files": 102,
+    "market_sales": 33855,
+    "with_parcel_key": 33851,
+    "parcels": 32217,
+    "parcels_sold_2plus": 1509,
+    "sales_on_those": 3143
+   },
+   "IN": {
+    "county_files": 92,
+    "market_sales": 23447,
+    "with_parcel_key": 23447,
+    "parcels": 21975,
+    "parcels_sold_2plus": 1385,
+    "sales_on_those": 2857
+   },
+   "WI": {
+    "county_files": 72,
+    "market_sales": 17307,
+    "with_parcel_key": 17307,
+    "parcels": 16784,
+    "parcels_sold_2plus": 503,
+    "sales_on_those": 1026
+   }
+  }
+ }
+}
