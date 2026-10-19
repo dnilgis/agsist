@@ -265,7 +265,7 @@ def selftest_windows():
                 {"d": "2026-10-05", "s": 12.9}, {"d": "2026-10-06", "s": 99.0}]
         return settled_only(bars, t)
     d = {}
-    assert update_windows(d, rma, today, fetch=fake)
+    assert update_windows(d, rma, today, fetch=fake, prices_for=lambda: None)
     ws = d["windows"]
     keys = [w["key"] for w in ws]
     assert keys == ["ZCZ26.CBT|2026-09-01|2026-09-30", "ZSX26.CBT|2026-10-01|2026-10-31"], keys
@@ -280,17 +280,199 @@ def selftest_windows():
     # after the window ends it finalizes; a later failed fetch keeps the final
     d2 = {"windows": [dict(sb)]}
     update_windows(d2, rma, date(2026, 11, 2), fetch=lambda *a: [
-        {"d": "2026-10-01", "s": 12.0}, {"d": "2026-10-30", "s": 13.0}])
+        {"d": "2026-10-01", "s": 12.0}, {"d": "2026-10-30", "s": 13.0}], prices_for=lambda: None)
     f = [w for w in d2["windows"] if w["ticker"] == "ZSX26.CBT"][0]
     assert f["status"] == "final" and f["price"] == 12.5 and f["running_avg"] is None, f
 
     def down(*a):
         raise RuntimeError("down")
-    update_windows(d2, rma, date(2026, 11, 3), fetch=down)
+    update_windows(d2, rma, date(2026, 11, 3), fetch=down, prices_for=lambda: None)
     assert [w for w in d2["windows"] if w["ticker"] == "ZSX26.CBT"][0]["price"] == 12.5
+    # 2026-10-19 audit: a county window takes the CBOT settle on file too, like the main legs
+    # (Friday Oct 16 Nov beans: Yahoo's 12.605 afternoon close, the settle 12.6125)
+    pj = {"quotes": {"beans-nov": {"ticker": "ZSX26.CBT", "settles_v": 2, "settles": {"2026-10-16": 1261.25}}}}
+    d3 = {}
+    update_windows(d3, rma, date(2026, 10, 17), prices_for=lambda: pj, fetch=lambda *a: [
+        {"d": "2026-10-15", "s": 12.63}, {"d": "2026-10-16", "s": 12.605, "p": True}])
+    w3 = [w for w in d3["windows"] if w["ticker"] == "ZSX26.CBT"][0]
+    assert w3["series"][-1]["s"] == 12.6125 and "p" not in w3["series"][-1], w3["series"]
+    assert w3["running_avg"] == cents((12.63 + 12.6125) / 2), w3
+
+
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+          "October", "November", "December"]
+
+
+def _join(names):
+    names = list(names)
+    return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
+
+
+def _window_words(s, e, mid=True):
+    """'in August', 'mid-August to mid-September' (or, mid=False, 'January 15 to February 14')."""
+    a, b = date.fromisoformat(s), date.fromisoformat(e)
+    if a.day == 1 and b.day == calendar.monthrange(b.year, b.month)[1] and (a.year, a.month) == (b.year, b.month):
+        return "in " + MONTHS[a.month - 1]
+    if mid and a.day == 15 and b.day == 14 and (b.month - a.month) % 12 == 1:
+        return "mid-" + MONTHS[a.month - 1] + " to mid-" + MONTHS[b.month - 1]
+    return MONTHS[a.month - 1] + " " + str(a.day) + " to " + MONTHS[b.month - 1] + " " + str(b.day)
+
+
+def _crop_rows(rma, crop):
+    yr = (rma or {}).get("crop_year")
+    return [x for x in (rma or {}).get("rows", [])
+            if x.get("crop") == crop and x.get("practice") == "Conventional" and x.get("year") == yr
+            and (x.get("type") or "All").startswith("All") and x.get("h_start") and x.get("p_start")]
+
+
+def _split(rows, key, default):
+    """{value: [states whose every row has it]}, plus [states with it on some rows only], for every
+    value of key(row) that is not the default."""
+    by = {}
+    for x in rows:
+        by.setdefault(x["state"], set()).add(key(x))
+    full, part = {}, set()
+    for st, vals in sorted(by.items()):
+        odd = vals - {default}
+        if not odd:
+            continue
+        if len(vals) == 1:
+            full.setdefault(next(iter(odd)), []).append(st)
+        else:
+            part.add(st)
+    return full, sorted(part)
+
+
+def exception_texts(rma):
+    """The states off the Corn Belt's calendar, from data/rma-prices.json (Oct 19 audit: the FAQ
+    said "every trading day in February" for every state; Georgia corn is January 15 to February 14
+    on the September contract). Generated here every run so a list can never drift from RMA's file.
+    None when the file has no corn and soybean rows. Keys: proj (projected-price windows and
+    contracts), harv (harvest windows), more (the harvest months by crop, for the verdict drawer
+    and the section note)."""
+    yr = (rma or {}).get("crop_year")
+    corn, soy = _crop_rows(rma, "Corn"), _crop_rows(rma, "Soybeans")
+    if not yr or not corn or not soy:
+        return None
+    feb = (str(yr) + "-02-01", str(yr) + "-02-%02d" % calendar.monthrange(yr, 2)[1])
+    octw = (str(yr) + "-10-01", str(yr) + "-10-31")
+
+    def contract(x):
+        return (x.get("h_mon"), x.get("h_yr"))
+
+    # projected: windows and contracts
+    pw, pw_part = _split(corn, lambda x: (x["p_start"], x["p_end"]), feb)
+    bits = []
+    for (s, e), sts in sorted(pw.items(), key=lambda kv: -len(kv[1])):
+        bits.append("averaged " + _window_words(s, e, mid=False).replace("in ", "across ", 1) + " in "
+                    + str(len(sts)) + " state" + ("s" if len(sts) > 1 else "") + " (" + _join(sts) + ")")
+    corn_proj = ("corn&rsquo;s projected price is " + "; ".join(bits)) if bits else ""
+    if pw_part:
+        corn_proj += (", and on earlier dates in part of " + _join(pw_part)) if corn_proj else ""
+    cc, cc_part = _split(corn, contract, ("December", yr))
+    sc, sc_part = _split(soy, contract, ("November", yr))
+
+    def on_contract(groups, part, crop_word):
+        out = []
+        for (mon, cy), sts in sorted(groups.items(), key=lambda kv: -len(kv[1])):
+            out.append(_join(sts + (["part of " + _join(part)] if part and len(groups) == 1 else []))
+                       + " price " + crop_word + " on the " + mon + (" " + str(cy) if cy != yr else "")
+                       + " contract")
+        return "; ".join(out)
+    parts = [p for p in (corn_proj, on_contract(cc, cc_part, "corn"), on_contract(sc, sc_part, "soybeans")) if p]
+    if len(parts) > 1:
+        parts[-1] = "and " + parts[-1]
+    proj = ("The exceptions: " + "; ".join(parts) + ".") if parts else ""
+
+    def harvest_months(rows, word, contract_default):
+        hw, hw_part = _split(rows, lambda x: (x["h_start"], x["h_end"]), octw)
+        groups = []       # (states, window words, tail); whole states first, then split ones
+        for (s, e), sts in sorted(hw.items(), key=lambda kv: kv[0]):
+            tail = ""
+            cons = {contract(x) for x in rows if x["state"] in sts}
+            if len(cons) == 1 and next(iter(cons)) != contract_default:
+                mon, cy = next(iter(cons))
+                if cy != yr:
+                    tail = ", on the " + mon + " " + str(cy) + " contract"
+            groups.append((_join(sts), _window_words(s, e), tail))
+        for st in hw_part:
+            ms = sorted({date.fromisoformat(x["h_start"]).month for x in rows if x["state"] == st})
+            groups.append((st, "in " + " or ".join(MONTHS[m - 1] for m in ms),
+                           ", by the county's sales closing date"))
+        # the first group carries the verb; the rest lean on it
+        return "; ".join(sts + (" discover " if i == 0 else " ") + ww + tail
+                         for i, (sts, ww, tail) in enumerate(groups))
+    hc = harvest_months(corn, "", ("December", yr))
+    hs = harvest_months(soy, "", ("November", yr))
+    more = ("Corn: " + hc + "." if hc else "") + (" Soybeans: " + hs + "." if hs else "")
+    harv = ("Outside the Corn Belt the window moves. " + more) if more else ""
+    return {"proj": proj, "harv": harv.strip(), "more": more.strip()}
+
+
+def stamp_exceptions(src, rma):
+    """Fill every SEED:hpx-<key> marker from exception_texts, then rebuild the FAQPage JSON-LD from
+    the visible FAQ (scripts/bake_faq.py), so the structured data says what the page says."""
+    t = exception_texts(rma)
+    if not t:
+        return src
+    for k, v in t.items():
+        src = re.sub(r"<!--SEED:hpx-" + k + r"-->.*?<!--/SEED:hpx-" + k + r"-->",
+                     lambda m: "<!--SEED:hpx-" + k + "-->" + v + "<!--/SEED:hpx-" + k + "-->", src, flags=re.S)
+    sys.path.insert(0, str(REPO / "scripts"))
+    import bake_faq
+    new, _ = bake_faq.rebuild(src)
+    return new if new is not None else src
+
+
+def selftest_exceptions():
+    """The real 2026 corn and soybean windows (data/rma-prices.json, Oct 19), one row per window set."""
+    def r(st, crop, ps, pe, hs, he, mon, hy):
+        return {"year": 2026, "crop": crop, "type": "All", "practice": "Conventional", "state": st,
+                "p_start": ps, "p_end": pe, "h_start": hs, "h_end": he, "h_mon": mon, "h_yr": hy}
+    rows = []
+    for st in ["Iowa", "Illinois"]:
+        rows += [r(st, "Corn", "2026-02-01", "2026-02-28", "2026-10-01", "2026-10-31", "December", 2026),
+                 r(st, "Soybeans", "2026-02-01", "2026-02-28", "2026-10-01", "2026-10-31", "November", 2026)]
+    for st in ["Alabama", "Florida", "Georgia", "Louisiana", "South Carolina"]:
+        rows.append(r(st, "Corn", "2026-01-15", "2026-02-14", "2026-08-01", "2026-08-31", "September", 2026))
+    for st in ["Arkansas", "Mississippi"]:
+        rows.append(r(st, "Corn", "2026-01-15", "2026-02-14", "2026-08-15", "2026-09-14", "December", 2026))
+    rows.append(r("North Carolina", "Corn", "2026-01-15", "2026-02-14", "2026-09-01", "2026-09-30", "December", 2026))
+    for st in ["Arizona", "California", "Nevada"]:
+        rows.append(r(st, "Corn", "2026-01-15", "2026-02-14", "2026-10-01", "2026-10-31", "December", 2026))
+    rows.append(r("Oklahoma", "Corn", "2026-02-01", "2026-02-28", "2026-09-01", "2026-09-30", "December", 2026))
+    rows += [r("Texas", "Corn", "2025-12-15", "2026-01-14", "2026-08-01", "2026-08-31", "September", 2026),
+             r("Texas", "Corn", "2026-01-01", "2026-01-31", "2026-09-01", "2026-09-30", "December", 2026),
+             r("Texas", "Corn", "2026-02-01", "2026-02-28", "2026-09-01", "2026-09-30", "December", 2026)]
+    for st in ["Idaho", "Michigan", "Oregon", "Washington"]:
+        rows.append(r(st, "Corn", "2026-02-01", "2026-02-28", "2026-11-01", "2026-11-30", "December", 2026))
+    for st in ["Alabama", "Florida", "Georgia", "North Carolina", "South Carolina"]:
+        rows.append(r(st, "Soybeans", "2026-01-15", "2026-02-14", "2026-11-01", "2026-11-30", "January", 2027))
+    for st in ["Delaware", "Maryland", "Oklahoma", "Virginia", "West Virginia"]:
+        rows.append(r(st, "Soybeans", "2026-02-01", "2026-02-28", "2026-11-01", "2026-11-30", "January", 2027))
+    rows += [r("Texas", "Soybeans", "2025-12-15", "2026-01-14", "2026-09-01", "2026-09-30", "November", 2026),
+             r("Texas", "Soybeans", "2026-01-15", "2026-02-14", "2026-10-01", "2026-10-31", "November", 2026)]
+    t = exception_texts({"crop_year": 2026, "rows": rows})
+    assert "January 15 to February 14 in 11 states (Alabama, Arizona, Arkansas, California, Florida, Georgia, " \
+           "Louisiana, Mississippi, Nevada, North Carolina and South Carolina)" in t["proj"], t["proj"]
+    assert "Alabama, Florida, Georgia, Louisiana, South Carolina and part of Texas price corn on the September contract" \
+        in t["proj"], t["proj"]
+    assert ("Alabama, Delaware, Florida, Georgia, Maryland, North Carolina, Oklahoma, South Carolina, Virginia and "
+            "West Virginia price soybeans on the January 2027 contract") in t["proj"], t["proj"]
+    assert "Texas in September or October, by the county's sales closing date" in t["more"], t["more"]
+    assert t["more"].startswith("Corn: Alabama, Florida, Georgia, Louisiana and South Carolina discover in August; "
+                                "Arkansas and Mississippi mid-August to mid-September;"), t["more"]
+    assert "Idaho, Michigan, Oregon and Washington in November" in t["more"]
+    assert "Texas in August or September, by the county's sales closing date" in t["more"], t["more"]
+    assert "Iowa" not in t["proj"] + t["more"] and "—" not in t["proj"] + t["more"]
+    assert exception_texts({"crop_year": 2026, "rows": []}) is None
+    pg = ('<p><!--SEED:hpx-more-->old<!--/SEED:hpx-more--></p><i><!--SEED:hpx-more-->x<!--/SEED:hpx-more--></i>')
+    out = stamp_exceptions(pg, {"crop_year": 2026, "rows": rows})
+    assert out.count("Soybeans: Alabama") == 2 and "old" not in out, out
 
 
 def selftest():
+    selftest_exceptions()
     s = with_running_avg([{"d": "2026-10-01", "s": 5.0225}, {"d": "2026-10-02", "s": 4.9725}])
     assert [p["a"] for p in s] == [5.02, 5.0], s
     # the last stamp equals the old one-shot formula
@@ -367,6 +549,12 @@ def selftest():
     ser = [{"d": "2026-10-19", "s": 12.5, "p": True}]
     assert apply_settles(ser, st)[0].get("p") is True, "a day with no settle on file stays provisional"
     selftest_windows()
+    # February sessions from the exchange calendar: 19 in 2026, 20 in leap-year 2028 (Presidents Day off)
+    assert _trading_days(date(2026, 2, 1), date(2026, 2, 28)) == 19
+    assert _trading_days(date(2028, 2, 1), date(2028, 2, 29)) == 20
+    rolled = {"crop_year": 2027, "commodities": [{"label": "Corn", "harvest": {"status": "final"}}]}
+    assert roll_crop_year(rolled, date(2028, 1, 5)) and rolled["commodities"][0]["projected"]["days_total"] == 20, rolled
+    assert rolled["commodities"][0]["harvest"]["days_total"] == _trading_days(date(2028, 10, 1), date(2028, 10, 31))
     print("selftest ok")
     return 0
 
@@ -450,13 +638,14 @@ def window_candidates(rma, today):
     return list(out.values())
 
 
-def update_windows(d, rma, today, fetch=None):
+def update_windows(d, rma, today, fetch=None, prices_for=None):
     """Rebuild d["windows"]: our own settled-only average for each county-level
     harvest window (see window_candidates). Each is rebuilt from exchange data
     every run, like the main legs. A failure on one window is logged and stored
     with its reason; it never stops the main legs or writes a made-up figure.
     Returns True if anything changed."""
     fetch = fetch or range_settlements
+    prices = (prices_for or load_prices)()
     old = {w["key"]: w for w in d.get("windows", []) if isinstance(w, dict) and "key" in w}
     new = []
     for c in window_candidates(rma, today):
@@ -488,6 +677,9 @@ def update_windows(d, rma, today, fetch=None):
             new.append(w)
             continue
         series = [p for p in series if c["start"] <= p["d"] <= c["end"]]
+        # 2026-10-19 audit: the main legs swapped in the CBOT settles from prices.json and the
+        # county windows did not, so a Friday bar stayed Yahoo's afternoon close here
+        apply_settles(series, exchange_settles(c["ticker"], prices))
         if not series:
             w.update(status="pending", price=None, running_avg=None, series=[], days_counted=0)
             new.append(w)
@@ -520,13 +712,13 @@ def roll_crop_year(d, today):
     for c in d["commodities"]:
         mon = "Dec" if c["label"] == "Corn" else "Nov"
         c["contract"] = mon + " '" + yy
+        # both from the exchange calendar (scripts/contract_calendar.py), never
+        # hardcoded: February has Presidents Day and 19 or 20 sessions (2028, a
+        # leap year, has 20); October 2026 has 22
+        y = today.year
         c["projected"] = {"status": "pending", "price": None, "window": "February",
-                          "series": [], "days_total": 19}
-        # ~trading days in October of the new crop year: weekdays (no CME
-        # grain holidays fall in October). Computed, not hardcoded — Oct 2026
-        # has 22, other years 21-23.
-        oct_days = sum(1 for dd in range(1, 32)
-                       if date(today.year, 10, dd).weekday() < 5)
+                          "series": [], "days_total": _trading_days(date(y, 2, 1), date(y, 2, calendar.monthrange(y, 2)[1]))}
+        oct_days = _trading_days(date(y, 10, 1), date(y, 10, 31))
         c["harvest"] = {"status": "pending", "price": None, "running_avg": None,
                         "window": "October", "series": [], "days_counted": 0,
                         "days_total": oct_days}
@@ -675,8 +867,7 @@ def method_note(d):
         src += (" (" + _md(ser[-1]["d"]) + " is Yahoo&rsquo;s afternoon close, not yet the settle)")
     return ('<div class="method-note"><b>Method</b> &middot; Running average of the contract&rsquo;s daily settles '
             'across RMA&rsquo;s window so far, the same math RMA uses for the final harvest price. &middot; '
-            '<b>Sources</b> &middot; ' + src + '; USDA RMA Price Discovery for the window and the official price. '
-            '&middot; Reviewed by Sigurd Lindquist, CCA</div>')
+            '<b>Sources</b> &middot; ' + src + '; USDA RMA Price Discovery for the window and the official price.</div>')
 
 
 # The page's title, description and H1 carry the running number while a
@@ -752,6 +943,10 @@ def seed_page(d, today):
     if not pat.search(src):
         raise RuntimeError("SEED:hpcards markers missing from page")
     out = pat.sub(lambda _: block, src, count=1)
+    try:
+        out = stamp_exceptions(out, json.loads(RMA.read_text()))
+    except (OSError, ValueError) as e:
+        print("rma-prices.json unreadable, exception lists left as they are: " + str(e), file=sys.stderr)
     out = re.sub(r'("dateModified":\s*")(\d{4}-\d{2}-\d{2})(")',
                  lambda m: m.group(1) + today.isoformat() + m.group(3), out)
     if out != orig:
@@ -794,5 +989,11 @@ def main():
     return 0
 
 
+def bake_only():
+    """Re-seed the page from the data files on disk, no download (after a page or copy change)."""
+    print("page " + ("rewritten" if seed_page(json.loads(DATA.read_text()), today_central()) else "already in sync"))
+    return 0
+
+
 if __name__ == "__main__":
-    sys.exit(selftest() if "--selftest" in sys.argv else main())
+    sys.exit(selftest() if "--selftest" in sys.argv else bake_only() if "--bake" in sys.argv else main())
