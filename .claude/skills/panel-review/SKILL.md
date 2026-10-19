@@ -78,3 +78,4 @@ before relying on it.
 - 2026-10-19 board (Field Scout, Atlas, /here): 6 seats agreed unprompted the bottleneck is return visits (about 98%
   of users new), not data. Two seats cited a missing data/ids/ that was on an unshipped branch: brief must list
   branches. The economist seat caught an unadjusted claim in our own HANDOFF.
+- 2026-10-19 overnight audits: run at most 4 helpers at once (disk filled, timing tests flaked at load 30+); one merge helper per batch with one full check run.

@@ -129,6 +129,12 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
 - Sig: API credits (expiring Oct 28 and Nov 19), MN eCRV email, Westfield / ZIP 44410 check (Mon Oct 19 reminder), "hose clamps vs clips".
 
 
+## State on Oct 19 (noon, sw v200)
+- Shipped Oct 18-19 (9 batches): /here first screen + elevators vs neighbors + designed print report; QR on every printed report via short links (404.html routes /C /F /S /H; smallest codes); Rain Print Jan email ask, maker guard when NOAA fails, shared ?d= link shows the print first, letter NEXTPRINT $10 off a print or framed print through 2027-12-31; daily bid snapshots on raw (bids-daily/, plus 93-day backfill Jun 9-Oct 16); return rate in audience.json, Rain Print funnel in the morning email only; trend significance gate (stories_core trend_unbacked); breakeven N 120 lb (A2809); ARC/PLC 2026 dollars withheld for 21 borrowed-spread crops; AI/SEO fixes (llms.txt byline, settle wording, cross-county links, FAQ on state bid pages); signup, phone and accessibility fixes; location only on tap; "every morning" Daily wording; Atlas recorded-sales tile (IL, WI) and rent-age rule.
+- Board doc: https://claude.ai/code/artifact/2294249d-329b-4042-95fe-e231295ade15 . Bet 3 results (scratchpad only, not public) wait for Sig: drought +0.24 loss ratio per 10 weeks D2+ held up; condition x yield coin flip; July+Aug rain small; gauge vs PRF grid agree 88%; IL deeds vs survey not enough history.
+- Open: fertilizer page layout shift 0.59 and homepage with saved ZIP 0.19 (pre-existing); grain-emc heat cells and a11y misc; link underlines / small-type floor / breadcrumbs (Sig); USDA calendar title (Sig); hidden "$29/mo" text on 77 pages (Sig); Person.url/sameAs (Sig); /markets reseed in prices.yml (Sig); Missouri G302 2025 rates, FSA payment limit, CCA loan rate, NASS 2015/2018 rent (browser checks); Stripe $19 test purchase and STRIPE_READ_KEY (Sig); private repo move (reminder Thu Oct 22).
+- Lesson: at most 4 helpers at once; each full check run ~1 h; one combined check per batch; clean worktrees as they finish (disk filled once).
+
 ## State on Oct 18 (early, cache v167)
 - Live: PRF grid index email (/notice prf:<grid>, worker v5.29, send_prf_notice.py in prf.yml Wednesdays); sale barns 88 AMS + 20 own-report
   barns, 6 with checked prices (Premier Withee, Equity Altoona/Stratford/Lomira/Sparta, Lanesboro); Rock Creek waits on a two-column PDF
