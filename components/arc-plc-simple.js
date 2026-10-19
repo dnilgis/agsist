@@ -81,6 +81,18 @@
   function tier(w) { var s = shapeOf(w); return '<span class="ap-tier ap-tier-' + s + '"><svg class="ap-ic" viewBox="0 0 16 16" aria-hidden="true"><use href="#api-' + s + '"/></svg>' + TIER[s] + '</span>'; }
   function gapLine(v, c) {
     var w = v.w, lc = c.lc, y = c.ly, pl = /s$/.test(lc);
+    /* 2026 wheat's borrowed spread (flag 64): no dollars (gap_line in the build script, money audit 3, 2026-10-19) */
+    if ((v.f & 64) && (w === 'plc' || w === 'arc' || w === 'close' || w.indexOf('lean_') === 0)) {
+      var bw = lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'have' : 'has') + ' no October futures history of ' + (pl ? 'their' : 'its') + ' own on file, so ' +
+        (pl ? 'their' : 'its') + ' price swings are borrowed from corn' + RS + 's, and the expected dollars would rest on them. We do not print them.';
+      if (w === 'close') return 'Too close to call. ' + bw;
+      var bs = w.indexOf('lean_') === 0 ? w.slice(5) : w, bo = bs === 'plc' ? 'arc' : 'plc';
+      var bt = WORD[bs] + ' leads across the ' + v.n + ' price years we ran, but that swings from year to year.';
+      if (v.f & 32) bt += ' ' + WORD[bo] + ' did not come out ahead in any of them.';
+      bt += ' ' + bw + (w.indexOf('lean_') === 0 ? ' So it stops at Leans.' : '');
+      if (v.f & 2) bt += ' A futures-based price start gives a different answer, so it stops at Leans.';
+      return bt;
+    }
     if (w === 'plc' || w === 'arc') return WORD[w] + ' comes out about $' + v.whole + ' more per base acre.';
     if (w.indexOf('lean_') === 0) {
       var side = w.slice(5), other = side === 'plc' ? 'arc' : 'plc';
