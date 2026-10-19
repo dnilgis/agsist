@@ -340,6 +340,11 @@
   @media (max-width:899px){.rp-start{display:block}.rp-start .btn{width:100%}}
   .rp-another{margin:.2rem 0 .4rem;font-size:var(--fs-sm)}
   .rp-another[hidden]{display:none}
+  /* the year-finished email card (2026-10-19): the step column is narrow at every width, so the label stays on its own line */
+  .rp-yearask[hidden]{display:none}
+  .rp-yearask .sa-ask{margin:.9rem 0 .4rem}
+  .rp-yearask .sa-f{grid-template-columns:minmax(0,1fr) auto}
+  .rp-yearask .sa-l{grid-column:1/-1}.rp-yearask .sa-in{grid-column:1}.rp-yearask .sa-b{grid-column:2}
   .rp-pg-box .field>.rp-pg-hint{display:block;margin:0;font-weight:400;color:var(--text-muted)}
   .rp-pay-wrap .rp-gift-pre{margin:0 0 .5rem}
   .rp-pgift{border-top:1px solid var(--border);padding-top:10px}
@@ -768,6 +773,8 @@
             <p class="rp-another" id="rp-another-wrap" hidden><button type="button" class="rp-linkbtn" id="rp-another">Make another: same town, a different year</button></p>
             <p class="rp-note" id="rp-buy-note" aria-live="polite"></p>
           </div>
+          <!-- 2026-10-19: a print of this year, drawn: "Email me when <year> is finished" (rainyear notice, components/rain-print.js syncYearAsk). Under Pay, so Pay never moves. -->
+          <div class="rp-yearask" id="rp-yearask" hidden></div>
           <!-- 2026-10-16: the framed picture sits open under Pay (it used to hide inside What you get), so a phone's Pay
                button stays where it was. It is a render, labeled so, until Sig sends photos of real prints. -->
           <figure class="rp-onwall" id="rp-onwall"><div class="rp-onwall-i"><picture><source type="image/webp" srcset="/img/rain-print-wall-shop.webp"><img src="/img/rain-print-wall-shop.jpg" width="800" height="505" loading="eager" fetchpriority="low" decoding="async" alt="Mockup: a framed Rain Print in a black frame on the painted steel wall of a farm shop."></picture><span class="rp-ex-tag" aria-hidden="true">Mockup</span></div><figcaption>Mockup of a framed print. Photos with the white mat coming soon.</figcaption></figure>
@@ -1046,7 +1053,7 @@
   <script src="/components/rp-short.js?v=5" defer></script>
   <script src="/components/rp-canada.js?v=2" defer></script>
   <script src="/components/rain-print-art.js?v=16" defer></script>
-  <script src="/components/rain-print.js?v=52" defer></script>
+  <script src="/components/rain-print.js?v=53" defer></script>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/rp-gift.js?v=5" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>

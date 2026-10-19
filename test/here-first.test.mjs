@@ -121,9 +121,9 @@ test("rain-county-print.js mounts any figure; the county page mounts its own; ve
   const js = read("components/rain-county-print.js");
   assert.match(js, /mount: mount/);
   assert.match(js, /var own = doc && doc\.getElementById\('rc-print'\);\s*if \(own\) mount\(own\);/);
-  assert.match(read("components/here.js"), /RCP = '\/components\/rain-county-print\.js\?v=20'/);
-  assert.match(read("scripts/build_county_rain.py"), /rain-county-print\.js\?v=20/);
-  assert.match(read("rain/wisconsin/barron-county.html"), /rain-county-print\.js\?v=20/);
+  assert.match(read("components/here.js"), /RCP = '\/components\/rain-county-print\.js\?v=21'/);
+  assert.match(read("scripts/build_county_rain.py"), /rain-county-print\.js\?v=21/);
+  assert.match(read("rain/wisconsin/barron-county.html"), /rain-county-print\.js\?v=21/);
 });
 
 test("what's unusual here: own past only, the rule's numbers, nothing when nothing passes", () => {

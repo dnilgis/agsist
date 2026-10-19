@@ -24,6 +24,11 @@ left waiting for an email that cannot come. February and later: nothing.
 The numbers are build_county_rain.py's own sentences (answer(), compare()),
 so the email never says anything the page does not.
 
+Rain Print asks too (2026-10-19): after a print of the year still going is
+drawn, /rain-print offers the same topic with source page:rain-print. That
+email carries one more line, that the full-year print can be made now, and
+links the county's own rain page; a county page sign-up's email is unchanged.
+
     python3 scripts/send_rain_year.py                 # dry run: counts and a preview, sends nothing
     python3 scripts/send_rain_year.py --send          # the real thing (county-rain.yml passes this)
     python3 scripts/send_rain_year.py --year 2026 --any-day   # that year outside January (still needs the finished data)
@@ -59,6 +64,7 @@ UTM = "utm_source=rain_year&utm_medium=email"
 LATE_DAY = 20          # from Jan 20, a late station is mailed with its last day; a county with no page gets a plain note
 TOPIC_RE = re.compile(r"rainyear:(\d{4}):(\d{5})")
 SRC_RE = re.compile(r"page:(rain/[a-z0-9-]+/[a-z0-9-]+)")
+RP_SRC = "page:rain-print"   # the ask under Pay on /rain-print (2026-10-19): one more line, the print can be made now
 
 
 # ---------------------------------------------------------------- data
@@ -96,6 +102,14 @@ def page_url(src, st, repo):
     return "%s/rain?%s" % (SITE, UTM)
 
 
+def rp_county_src(fips, st, cmap):
+    """A Rain Print ask names no page: its county's rain page, as a county page ask would."""
+    info = (cmap() or {}).get(fips) if cmap else None
+    if info and info.get("slug") and st in R.STATES:
+        return "page:rain/%s/%s" % (R.slug(R.STATES[st]), info["slug"])
+    return ""
+
+
 def state_of(fips, data, cmap):
     if fips in data:
         return data[fips][0]
@@ -130,7 +144,11 @@ def make_parts(data, cmap, repo):
             ans = plain(BCR.answer(c, full, year, True))
             subject = "%s: %s inches of rain in %d" % (full, BCR.inch(c["total"]), year)
             paras = [[(ans, None)]]
-            page = page_url(src, st, repo)
+            if src == RP_SRC:
+                rp0 = "%s/rain-print?%s" % (SITE, UTM)
+                paras.append([("You asked on Rain Print. All of %d is in now, so the full-year print can be made: "
+                               "type your town, pick %d and order it here: " % (year, year), None), (rp0, rp0)])
+            page = page_url(src if src != RP_SRC else rp_county_src(fips, st, cmap), st, repo)
             paras.append([("Month by month, the biggest rain and how the station was picked: ", None), (page, page)])
             rp = SITE + BCR.rain_print_href(c, st, year)
             paras.append([("The same year drawn as a Rain Print: ", None), (rp, rp)])
@@ -340,6 +358,17 @@ def selftest():
     ck("links the county page it was asked on", SITE + "/rain/iowa/story-county?" + UTM in txt)
     ck("links the Rain Print for that place and year", SITE + "/rain-print?place=Ames%2C+IA&year=2026" in txt)
     ck("one email, said so", "There won't be another for this county and year." in txt)
+    ck("a county page ask gets no Rain Print ask line", "You asked on Rain Print" not in txt)
+    mr = SN.render(T, RP_SRC, "a@example.com", "https://w.dev", "sec", date(2027, 1, 4), "news@agsist.com", None, tmp)
+    tr = mr.get_body(("plain",)).get_content()
+    ck("a Rain Print ask: one more line, the full-year print can be made now",
+       "You asked on Rain Print. All of 2026 is in now, so the full-year print can be made: type your town, pick 2026 and order it here: "
+       + SITE + "/rain-print?" + UTM in tr and tr.count("You asked on Rain Print") == 1 and mr["Subject"] == m["Subject"], tr[:600])
+    cm["19169"]["slug"] = "story-county"
+    tr2 = SN.render(T, RP_SRC, "a@example.com", "https://w.dev", "sec", date(2027, 1, 4), "news@agsist.com", None, tmp).get_body(("plain",)).get_content()
+    ck("a Rain Print ask links its county's rain page", SITE + "/rain/iowa/story-county?" + UTM in tr2, tr2[:600])
+    del cm["19169"]["slug"]
+    ck("a Rain Print ask, county slug unknown: the state page", SITE + "/rain/iowa?" + UTM in tr)
     ck("unsubscribe stops this topic", "topic=rainyear%3A2026%3A19169" in txt and m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click")
     low = (txt + htm).lower()
     ck("no em or en dash, no hype", not any(x in txt + htm for x in ("—", "–", "&mdash;", "&ndash;"))
