@@ -695,12 +695,14 @@ details.fold[hidden]{display:none}
     /* chaos-1: expired contracts roll off (components/price-local.js roll) */
     if(window.AgPxStamp&&AgPxStamp.roll)d.quotes=q=AgPxStamp.roll(q);
     /* the 52-week range must belong to the contract shown: use the dated contract (it carries its own range) and name it; else say continuous series */
-    var nLE=q['cattle-nearby'],nGF=q['feeders-oct26'];
+    /* 2026-10-19 (P5): feeders from feeders-nearby and its own contract, as
+       live cattle reads cattle-nearby. It was hardcoded to feeders-oct26,
+       which stops trading Oct 29 and would have stayed on the page. */
+    var nLE=q['cattle-nearby'],nGF=q['feeders-nearby'];
     var le=(nLE&&nLE.close!=null&&nLE.wk52_lo!=null)?nLE:q.cattle,gf=(nGF&&nGF.close!=null&&nGF.wk52_lo!=null)?nGF:q.feeders;
-    var gfm=/-([a-z]{3})(\d\d)$/.exec('feeders-oct26');
     var lbL=$('le-rng-lbl'),lbG=$('gf-rng-lbl');
     if(lbL)lbL.textContent=(le===nLE&&nLE.contract)?'52-Week Range \u00b7 '+nLE.contract+' contract':'52-Week Range \u00b7 continuous series';
-    if(lbG)lbG.textContent=(gf===nGF&&gfm)?'52-Week Range \u00b7 '+gfm[1].charAt(0).toUpperCase()+gfm[1].slice(1)+" '"+gfm[2]+' contract':'52-Week Range \u00b7 continuous series';
+    if(lbG)lbG.textContent=(gf===nGF&&nGF.contract)?'52-Week Range \u00b7 '+nGF.contract+' contract':'52-Week Range \u00b7 continuous series';
     setQuote('le',le);setQuote('gf',gf);
     /* chaos-1: an old settle greys the cards, as the stamp does */
     var lea=le&&le.close_kind==='settle'&&window.AgPxStamp&&AgPxStamp.settleAge?AgPxStamp.settleAge(le.settle_date||le.close_date):null;

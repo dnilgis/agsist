@@ -99,3 +99,11 @@ test("P4: /markets board age is its oldest settle", async () => {
   assert.equal(P.boardAge({ corn: s("2026-10-21"), beans: s("2026-10-21") }, null, now).stale, false);
   assert.match(read("markets.html"), /'oldest settle '\+ba\.oldestLabel/);
 });
+
+test("P5: cattle page reads feeders-nearby and labels the range by its contract", () => {
+  const h = read("cattle-futures-prices.html");
+  const code = h.replace(/\/\*[\s\S]*?\*\//g, "");
+  assert.doesNotMatch(code, /feeders-oct26/);
+  assert.match(code, /nGF=q\['feeders-nearby'\]/);
+  assert.match(code, /'52-Week Range \\u00b7 '\+nGF\.contract\+' contract'/);
+});
