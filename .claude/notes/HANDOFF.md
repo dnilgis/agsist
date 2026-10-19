@@ -42,6 +42,10 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
   (data/atlas/raw/*, except drought.json which stays on main) and every probe capture (data/*-raw/, data/drought/probe/).
   Workflows save them with scripts/push_raw.sh; farmland-atlas.yml unpacks them with scripts/pull_raw.sh. The paths are in
   .gitignore on main. Local Atlas build: `bash scripts/pull_raw.sh data/atlas/raw`. data/fsa stays on main (arc-plc --check reads it).
+  Daily cash bid snapshots (Bet 7, Oct 19): fetch_bids.yml saves every row of the day's bids (cash, basis, futures, posted time,
+  permanent elevator id) to raw as bids-daily/YYYY/YYYY-MM-DD.json.gz, first run at or after 15:00 CT each weekday, about 200 KB a day.
+  Read: `git fetch origin raw` then `python3 scripts/bid_snapshots.py list` / `load <day> --rows`. Take or replace a day now:
+  dispatch fetch_bids.yml with bid_snapshot=true. Backfill from git history: `bid_snapshots.py backfill --from-git` (opt-in, full clone).
 - TODO-SIG.md: Sig's own to-do list; the morning report email shows it.
 - Subscriber counts: the subscriber-count skill (counts only, never an address). sponsor-report.yml also prints
   signups by page and the rent / rain-gauge notice lists as job annotations.

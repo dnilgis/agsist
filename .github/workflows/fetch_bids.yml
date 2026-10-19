@@ -69,6 +69,11 @@ on:
         type: boolean
         required: false
         default: false
+      bid_snapshot:
+        description: 'Save today''s bid snapshot to the raw branch now (replaces today''s file)'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
@@ -290,6 +295,35 @@ jobs:
           git commit -m "Update grain bids + basis map + basis history $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git pull --rebase origin main
           git push
+
+      # 2026-10-19 (Sig, Bet 7): ONE FULL CASH BID SNAPSHOT A TRADING DAY, ON RAW.
+      # Cash prices leave main within days (only basis changes are kept), so
+      # the first run at or after 15:00 Central on a weekday (CBOT grains
+      # close 13:20 CT; boards post their after-close bids by then) saves
+      # every row of bids-full.json, compacted, to the raw branch:
+      # bids-daily/YYYY/YYYY-MM-DD.json.gz (never deployed). Later runs that
+      # day see the file on raw and skip; a failed push is retried by the next
+      # run. bid_snapshot=true takes it now and replaces the day's file.
+      # AFTER the commit, and every failure is a warning: this never costs
+      # the bids their update. Reader: scripts/bid_snapshots.py.
+      - name: Daily bid snapshot to the raw branch
+        if: github.event.inputs.dry_run != 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOW: ${{ github.event.inputs.bid_snapshot }}
+        run: |
+          day=$(python3 scripts/bid_snapshots.py due) || { echo "::warning::bid snapshot: due check failed"; exit 0; }
+          [ "$NOW" = "true" ] && day=$(TZ=America/Chicago date +%F)
+          [ -n "$day" ] || { echo "bid snapshot: not in the window (weekdays from 15:00 CT)"; exit 0; }
+          f="bids-daily/${day:0:4}/${day}.json.gz"
+          if [ "$NOW" != "true" ] && gh api -X GET "repos/$GITHUB_REPOSITORY/contents/$f?ref=raw" --silent >/dev/null 2>&1; then
+            echo "bid snapshot: $f is already on raw"; exit 0
+          fi
+          python3 scripts/bid_snapshots.py build --from bids-full.json --day "$day" \
+            || { echo "::warning::bid snapshot for $day not built (the bids update is unaffected)"; exit 0; }
+          bash scripts/push_raw.sh "bid snapshot $day" "$f" \
+            || echo "::warning::bid snapshot for $day not saved to raw; the next run today retries (the bids update is unaffected)"
 
       # A live key that returns nothing is a paid feed that stopped working
       # while the site stayed green on the network alone. Turn the run red

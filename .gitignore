@@ -13,6 +13,10 @@ bids-full.json
 # bids-full.json: written and read inside one job, never committed.
 barchart-raw.json
 
+# Daily cash bid snapshots: built in the fetch_bids job and saved to the raw
+# branch (scripts/bid_snapshots.py, scripts/push_raw.sh), never to main.
+/bids-daily/
+
 # private, never published (Sig, 2026-10-12)
 data/signups.json
 data/seo-opportunities.json
