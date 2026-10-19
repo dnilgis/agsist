@@ -78,6 +78,8 @@
       .fl-p,.cr-tiles div,.cr-held,.cr-stmt{background:#fff!important;border-color:#999!important}
       .crp h2,.crp h3{break-after:avoid}.crp h2{margin-top:1rem}.fl-p,.cr-tbl tbody.cr-c,.cr-q tr,.cr-tiles{break-inside:avoid}
       .cr-pg{break-before:page}
+      /* the QR back to this exact report, top right of page 1 (components/print-qr.js) */
+      .cr-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.25in}.cr-top>div:first-child{flex:1;min-width:0}
       .cr-tbl{font-size:8.5pt}.cr-tbl tr.cr-d td{font-size:7.5pt}.cr-leg{font-size:7pt}
       .cr-svg{max-height:7.4in;width:auto;max-width:100%;margin:0 auto}
       a{color:#000!important;text-decoration:none}.cr-made{color:#333!important}
@@ -111,8 +113,8 @@
   <main id="main" tabindex="-1">
     <article class="crp">
       <p class="breadcrumb no-print" style="font-size:.8rem;margin:0"><a href="/field-scout">Field Scout</a> / Comparable sales report</p>
-      <h1 id="cr-h">Comparable sales report</h1>
-      <p class="by">Prepared <span id="cr-date"></span> &middot; free, no sign-up</p>
+      <div class="cr-top"><div><h1 id="cr-h">Comparable sales report</h1>
+      <p class="by">Prepared <span id="cr-date"></span> &middot; free, no sign-up</p></div><div id="cr-pq"></div></div>
       <div class="crp-act"><button type="button" id="cr-print">Print or save as PDF</button><button type="button" id="cr-csv">Download comps (CSV)</button><a id="cr-back" href="/field-scout">Field Scout</a></div>
       <div id="cr-none" class="cr-held" hidden><b>No subject on this link.</b> <span id="cr-none-why"></span> This report is made from <a href="/field-scout">Field Scout</a>: pick or trace a field there, then tap "Comparable sales report" under Sold land nearby, or tap a sale and use the same button in its panel.</div>
       <div id="cr-body" hidden>
@@ -153,6 +155,9 @@
 </div>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/field-scout-land.js?v=7" defer></script>
-  <script src="/components/comp-report.js?v=2" defer></script>
+  <script src="/components/qr.js?v=11" defer></script>
+  <script src="/components/report-link.js?v=1" defer></script>
+  <script src="/components/print-qr.js?v=1" defer></script>
+  <script src="/components/comp-report.js?v=3" defer></script>
 </body>
 </html>

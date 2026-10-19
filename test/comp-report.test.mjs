@@ -275,7 +275,7 @@ test("one shared noindex page, not in a sitemap, no per-parcel files, no em dash
   assert.match(h, /Recorded sales from public records\. Not an appraisal; no adjustments made\./);
   assert.match(h, /Made with AGSIST \(free\)/);
   assert.match(h, /@page\{size:letter/);
-  assert.match(h, /components\/comp-report\.js\?v=2/);
+  assert.match(h, /components\/comp-report\.js\?v=3/);
   for (const sm of readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) assert.doesNotMatch(read(sm), /comp-report/);
   assert.ok(!existsSync(join(ROOT, "comp-report")), "no folder of per-parcel report files");
   for (const f of ["comp-report.html", "components/comp-report.js"]) assert.ok(!read(f).includes("—"), f + " has an em dash");

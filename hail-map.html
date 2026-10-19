@@ -636,6 +636,9 @@
   <script src="/vendor/leaflet-1.9.4/leaflet.js"></script>
   <script src="/vendor/leaflet.heat-0.2.0/leaflet-heat.js"></script>
   <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/qr.js?v=11" defer></script>
+  <script src="/components/report-link.js?v=1" defer></script>
+  <script src="/components/print-qr.js?v=1" defer></script>
   <script>
   (function(){
     'use strict';
@@ -724,6 +727,11 @@
       var qp=new URLSearchParams(location.search);
       var qs=(qp.get('state')||'').toUpperCase();
       if(qs && STATE_BBOX[qs]){ var bb=STATE_BBOX[qs]; map.fitBounds([[bb[1],bb[0]],[bb[3],bb[2]]]); }
+      /* A report link (the printed QR, Copy link) also carries the radius and the date of
+         loss, so it opens the same report: mi= one of the radius chips, day= a real date. */
+      var qmi=+qp.get('mi'); if([5,10,25].indexOf(qmi)>=0) lookupMi=qmi;
+      var qday=String(qp.get('day')||''), qdm=/^(\d{4})-(\d{2})-(\d{2})$/.exec(qday);
+      if(qdm){ var qdd=new Date(Date.UTC(+qdm[1],+qdm[2]-1,+qdm[3])); if(qdd.getUTCMonth()===+qdm[2]-1 && qdd.getUTCDate()===+qdm[3]){ lookupDay=qday; var qdt=document.getElementById('hm-lq-date'); if(qdt) qdt.value=qday; } }
       if(qp.get('lat')&&qp.get('lon')){ var la=+qp.get('lat'), lo=+qp.get('lon');
         if(isFinite(la)&&isFinite(lo)){ map.setView([la,lo],9); setTimeout(function(){ runLookup(la,lo,null); },400); } }
       // HOUSE SLOT, COUNTED AS A HOUSE SLOT. #hm-sponsor says "Sponsor this
@@ -923,6 +931,11 @@
        that still catches the town-level imprecision of an LSR. */
     var lookupMi = 10;
     var lookupDay = '';
+    /* THE REPORT LINK (2026-10-19): the spot, the radius and the date of loss, so
+       the printed QR and Copy link open the same report. */
+    function reportLink(L,origin){
+      return (origin||'https://agsist.com')+'/hail-map?lat='+L.lat.toFixed(4)+'&lon='+L.lon.toFixed(4)+'&mi='+lookupMi+(L.day?'&day='+L.day:'');
+    }
     /* THE DAYS THE ARCHIVE DOES NOT HAVE YET. The event files come from a
        monthly rebuild; recent.json (the last-30-days layer) is refreshed every
        morning. Its reports dated after the archive's last day join the lookup,
@@ -1495,7 +1508,7 @@
       var pl=document.getElementById('hm-point-link');
       if(pl) pl.addEventListener('click', function(){
         if(!lastLookup) return;
-        var u=location.origin+'/hail-map?lat='+lastLookup.lat.toFixed(4)+'&lon='+lastLookup.lon.toFixed(4);
+        var u=reportLink(lastLookup,location.origin);
         (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){ pl.textContent='Copied'; setTimeout(function(){ pl.innerHTML='<svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Copy link'; },1600); }).catch(function(){ prompt('Link:',u); });
       });
       var pr=document.getElementById('hm-point-print');
@@ -1504,12 +1517,14 @@
         ga('hm_report_print',{});
         var L=lastLookup;
         var rows=L.ev.map(function(e){ return '<tr><td>'+esc(e.date)+(e.pre?' (preliminary)':'')+'</td><td>'+(e.mag!=null?e.mag.toFixed(2)+'&Prime;':'n/a')+'</td><td>'+e.mi.toFixed(1)+' mi</td><td>'+esc(e.place)+'</td></tr>'; }).join('');
+        var qrUrl=reportLink(L), qr='';
+        try{ if(window.AgPrintQR) qr=window.AgPrintQR.html(qrUrl,'agsist.com/hail-map',{screen:true}); }catch(e){ qr=''; }
         var w=window.open('','_blank');
         if(!w){ banner('Allow pop-ups to print the report.'); return; }
-        w.document.write('<!DOCTYPE html><html><head><title>Hail History Report</title><style>body{font-family:Georgia,serif;color:#1a1a1a;max-width:720px;margin:2rem auto;padding:0 1rem}h1{font-size:1.4rem;border-bottom:2px solid #6b5a13;padding-bottom:.4rem}table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:1rem}th,td{border-bottom:1px solid #ccc;text-align:left;padding:.35rem .5rem}th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}.meta{color:#555;font-size:.85rem}.foot{margin-top:1.5rem;font-size:.75rem;color:#666;border-top:1px solid #ccc;padding-top:.6rem;line-height:1.5}</style></head><body>'+
-          '<h1>Hail History Report</h1>'+
+        w.document.write('<!DOCTYPE html><html><head><title>Hail History Report</title><style>body{font-family:Georgia,serif;color:#1a1a1a;max-width:720px;margin:2rem auto;padding:0 1rem}h1{font-size:1.4rem;border-bottom:2px solid #6b5a13;padding-bottom:.4rem}table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:1rem}th,td{border-bottom:1px solid #ccc;text-align:left;padding:.35rem .5rem}th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}.meta{color:#555;font-size:.85rem}.foot{margin-top:1.5rem;font-size:.75rem;color:#666;border-top:1px solid #ccc;padding-top:.6rem;line-height:1.5}.hd{display:flex;justify-content:space-between;align-items:flex-start;gap:.25in}.hd>div:first-child{flex:1;min-width:0}'+(window.AgPrintQR?window.AgPrintQR.CSS:'')+'</style></head><body>'+
+          '<div class="hd"><div><h1>Hail History Report</h1>'+
           '<p class="meta">Location: '+esc(L.label?L.label+' ':'')+'('+L.lat.toFixed(4)+', '+L.lon.toFixed(4)+')'+
-          ' &middot; Radius: '+lookupMi+' miles &middot; Window: '+(L.day?fmtDate(L.day):'last '+(manifest&&manifest.years?manifest.years.length:5)+' years')+' &middot; Generated '+new Date().toLocaleDateString()+'</p>'+
+          ' &middot; Radius: '+lookupMi+' miles &middot; Window: '+(L.day?fmtDate(L.day):'last '+(manifest&&manifest.years?manifest.years.length:5)+' years')+' &middot; Generated '+new Date().toLocaleDateString()+'</p></div>'+qr+'</div>'+
           '<p><strong>'+L.ev.length+'</strong> NWS hail reports on <strong>'+L.nDays+'</strong> distinct days'+(L.day?'':' ('+(L.nDays/yrSpan()).toFixed(1)+'/yr average)')+'. Largest reported stone: <strong>'+(L.maxMag?L.maxMag.toFixed(2)+'&Prime;':'none recorded')+'</strong>.</p>'+
           ((L.swaths&&L.swaths.hits&&L.swaths.hits.length)?('<h2 style="font-size:1.05rem;margin-top:1.2rem">Radar-estimated swaths at this point (NOAA MRMS MESH)</h2><ul>'+L.swaths.hits.map(function(h){ return '<li>'+esc(h.d)+', inside the &ge;'+h.band+'&Prime; estimated band</li>'; }).join('')+'</ul><p style="font-size:.85rem;color:#555">Radar estimates, not measurements; checked against '+L.swaths.checked+' archived storm days.</p>'):'')+
           '<table><thead><tr><th>Date</th><th>Size</th><th>Distance</th><th>Near</th></tr></thead><tbody>'+rows+'</tbody></table>'+
