@@ -133,3 +133,63 @@ test("form-post.js (panel 3 F11): the Formspree copy after a slow worker says it
   t.fn();
   await assert.rejects(within(p, 1000), /not sent/);
 });
+
+// 2026-10-19 (Sig, monetization board seat C): a business quote carries the customer list, and the page says
+// "your list stays with me". It goes to the AGSIST worker or nowhere: never to Formspree.
+test("form-post.js: a business quote (customer list) never goes to Formspree on any worker failure", async () => {
+  const failures = {
+    "404": async () => ({ ok: false, status: 404, json: async () => ({}) }),
+    "503": async () => ({ ok: false, status: 503, json: async () => ({}) }),
+    "unknown form": async () => ({ ok: false, status: 400, json: async () => ({ ok: false, error: "unknown form" }) }),
+    "200 without ok": async () => ({ ok: true, status: 200, json: async () => ({}) }),
+    "network": async () => { throw new Error("offline"); },
+  };
+  for (const [why, f] of Object.entries(failures)) {
+    const F = formPost(f);
+    const err = await within(F.post("rain-print-business", { towns: "The Olson Farm, Chetek, WI 2025" }, { towns: "x" }), 1000).then(() => null, (e) => e);
+    assert.ok(err, why + ": rejects");
+    assert.equal(err.workerOnly, true, why);
+    assert.equal(err.slow, false, why);
+    assert.ok(!F.calls.some((u) => /formspree/.test(u)), why + ": nothing to Formspree");
+  }
+  // a silent worker: rejects after 12 s with slow set, still no Formspree
+  const F = formPost(hung);
+  const p = F.post("rain-print-business", { towns: "Chetek, WI 2025" }).then(() => null, (e) => e);
+  await new Promise((r) => setImmediate(r));
+  F.timers.find((x) => x.ms === 12000).fn();
+  const err = await within(p, 1000);
+  assert.equal(err && err.slow, true);
+  assert.ok(!F.calls.some((u) => /formspree/.test(u)));
+  // the worker taking it is still a send
+  const ok = formPost(async () => ({ ok: true, status: 200, json: async () => ({ ok: true }) }));
+  assert.deepEqual({ ...(await ok.post("rain-print-business", { towns: "x" })) }, { ok: true, via: "worker" });
+});
+
+test("form-post.js: every other caller's kind keeps the Formspree fallback", async () => {
+  const kinds = ["rain-print-order", "claim", "sponsor-feedback", "elevator-listing", "prf-sponsor", "atlas-feedback"];
+  for (const k of kinds) {
+    const F = formPost(async () => ({ ok: false, status: 404, json: async () => ({}) }));
+    assert.deepEqual({ ...(await within(F.post(k, { a: 1 }), 1000)) }, { ok: true, via: "formspree" }, k);
+  }
+  const only = Object.keys(formPost(async () => ({})).post.WORKER_ONLY);
+  assert.deepEqual(only, ["rain-print-business"], "only the list-carrying kind is worker-only");
+  // every kind a page posts through form-post.js: only rain-print-business carries a customer list
+  const callers = ["components/prf-sponsor-page.js", "components/list-elevator.js", "components/rp-business.js", "components/rain-print.js", "elevators.html", "sponsor-report.html"];
+  const posted = new Set();
+  for (const c of callers) for (const m of read(c).matchAll(/send\('([a-z-]+)'/g)) posted.add(m[1]);
+  assert.ok(posted.has("rain-print-business") && posted.has("rain-print-order"), [...posted].join(","));
+});
+
+test("rp-business.js: a failed or silent send keeps the form filled and says to call or try again", () => {
+  const js = read("components/rp-business.js");
+  const fail = js.slice(js.indexOf("}).catch(function (err) {"), js.indexOf("}).then(function () { sending = false;"));
+  assert.ok(fail.length > 100, "the failure branch");
+  assert.match(fail, /That didn’t send\./);
+  assert.match(fail, /' Call or text <a href="tel:\+17157972428">' \+ PHONE \+ '<\/a>, or try again\.<\/b>/);
+  assert.match(js, /var PHONE = '715-797-2428';/);
+  assert.doesNotMatch(fail, /reset\(\)/, "the list stays in the page");
+  assert.doesNotMatch(js, /formspree\.io/i, "the business page never posts to Formspree itself");
+  const html = read("rain-print-business.html");
+  assert.match(html, /<b>Your list stays with me\.<\/b>/);
+  assert.match(html, /\/components\/form-post\.js\?v=([5-9]|\d\d)"/, "the worker-only rule reaches readers past cached copies");
+});

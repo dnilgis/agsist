@@ -16,6 +16,10 @@
  * in the towns box for the buyer to check; nothing is uploaded until they
  * send. Over the form's 8,000 characters, the page says to email the file.
  *
+ * The request goes to the AGSIST worker only, never to Formspree (form-post.js
+ * WORKER_ONLY, 2026-10-19): a failed or silent worker leaves the form filled in
+ * and says to call or text Sig, or try again.
+ *
  * Analytics: rain_print_business {result, product, qty, placement:'landing'},
  * rp_business_cta {cta}, rp_business_template, rp_business_csv {result}.
  */
@@ -24,6 +28,7 @@
   var doc = root.document;
   var $ = function (id) { return doc.getElementById(id); };
   var ORDER_TO = 'sig@farmers1st.com';
+  var PHONE = '715-797-2428';
   var LOGO_LINK = 'https://agsist-subs.dnilgis.workers.dev/rp-logo/';
   var EMAIL_RE = /^[^\s@,;<>"]+@[^\s@,;<>"]+\.[A-Za-z]{2,}$/;
   var TOWNS_MAX = 8000;
@@ -220,13 +225,20 @@
       $('rb-form').reset(); syncShip(); syncTier(); csvMsg('');
       LOGO_ASK++; LOGO = null; syncLogo(); logoMsg('');
       try { out.firstChild.focus(); } catch (err) {}
-    }).catch(function () {
-      ga('rain_print_business', { result: 'fail', product: x.product, qty: qn, placement: 'landing' });
+    }).catch(function (err) {
+      /* The list never goes to Formspree (form-post.js WORKER_ONLY, Sig 2026-10-19): when the worker fails or
+         goes quiet, everything stays filled in on the page and the reader calls or sends again. A worker that
+         only went quiet may still have it, so that case says so. Email to Sig stays as a second way. */
+      var slow = !!(err && err.slow);
+      ga('rain_print_business', { result: slow ? 'slow' : 'fail', product: x.product, qty: qn, placement: 'landing' });
       var body = asText(x);
       var href = 'mailto:' + ORDER_TO + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
-      out.innerHTML = '<div class="rbz-out rbz-bad"><p><b>That didn’t go through, so nothing was sent.</b></p><p>Email it to ' + ORDER_TO + ' instead. The request is written out below.</p>' +
+      out.innerHTML = '<div class="rbz-out rbz-bad" id="rb-fail" tabindex="-1"><p><b>' + (slow ? 'That may not have sent.' : 'That didn’t send.') +
+        ' Call or text <a href="tel:+17157972428">' + PHONE + '</a>, or try again.</b></p>' +
+        '<p>Everything you typed is still in the form above.' + (slow ? ' If it went through after all, I’ll catch the repeat.' : '') + '</p>' +
+        '<p>Or email it to ' + ORDER_TO + '. The request is written out below.</p>' +
         '<p><a class="rbz-ghost" id="rb-mail" href="' + esc(href) + '">Email the request</a></p><textarea readonly rows="7" aria-label="Your quote request, as text">' + esc(body) + '</textarea></div>';
-      try { $('rb-mail').focus(); } catch (err) {}
+      try { $('rb-fail').focus(); } catch (e2) {}
     }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
   }
 
