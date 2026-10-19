@@ -1997,7 +1997,7 @@ def build_main(D, ch):
     <li><b>Rented ground.</b> On a cash lease the tenant gets the payment unless agreed otherwise. On a share lease landlord and tenant split it by share and both sign.</li>
     <li><b>10 base acres.</b> No payment when the farm&rsquo;s base acres, added to the base on the other farms where you hold an enrolled share, come to 10 acres or less (7 CFR 1412.51), unless you are a socially disadvantaged, limited resource, veteran or beginning farmer.</li>
     <li><b>Income rule.</b> The $900,000 average adjusted gross income limit still applies to ARC and PLC. The new exception for those with 75% of gross income from farming covers certain conservation and disaster programs, not ARC or PLC.</li>
-    <li><b>Payment limit.</b> Per person across all crops and farms, not per farm. Peanuts carry a separate limit of their own. Sequestration (5.7% lately) comes off before the limit.</li>
+    <li><b>Payment limit.</b> Per person across all crops and farms, not per farm. Peanuts carry a separate limit of their own. Sequestration (5.7% on recent payments) also comes off; ask your FSA office how it meets the limit for your farm.</li>
     <li><b>ARC-IC.</b> A third choice, for the whole farm. <a href="#arc-ic">What it takes to check it</a>.</li>
   </ul>
 
