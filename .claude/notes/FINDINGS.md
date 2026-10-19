@@ -6,6 +6,20 @@ Sig decided: <what> / refuted: <why> / open.
 
 | Date | Area | Finding | Verdict | Reach |
 | --- | --- | --- | --- | --- |
+| 2026-10-19 | Breakeven | Corn N default 213 lb/ac (unsourced 0.90 lb/bu) vs cited A2809 120 after soybeans; +$62/ac, +26c/bu | fixed (fx/nightmoney, batch 5): 120 lb, $4.92 to $4.58 | /breakeven |
+| 2026-10-19 | ARC/PLC | 2026 expected dollars rested on corn's price spread for 21 other crops (about 3/4 of Sumner KS wheat's $6.76) | fixed: withheld with reason, 2,570 pages | arc-plc/ |
+| 2026-10-19 | ARC/PLC | Sequestration "before the limit" stated as fact; payment limit "not out" | fixed: order clause removed; "$164,000 by the rule's own method" | /arc-plc |
+| 2026-10-19 | Custom rates / rent | NE irrigated row in comparison; MO labeled 2023 with 2022 rates; IA median change read as typical county | fixed | custom-rates, cash-rent |
+| 2026-10-19 | CCC loan | No interest rate until Nov 1; FSA unreachable from runners | Sig: browser check | /commodity-loan |
+| 2026-10-19 | llms.txt / AI | Called Sig a crop insurance agent; false licensed-feed line; town and rain sets missing; --check blind to them | fixed (fx/nightseo) | llms.txt |
+| 2026-10-19 | Futures pages | "Refreshed in session" over Friday settles on a Sunday | fixed: "Settle Oct 16" | 3 pages |
+| 2026-10-19 | Homepage / fertilizer | Prices JS-only, empty for crawlers | Sig decides (seed dated settles) | 2 pages |
+| 2026-10-19 | SEO | Fertilizer title lost "Prices"; county sets never linked to the same county's rain page; /test/ fixtures served; caps differ by builder; 34 JSON-LD names stale | fixed | about 12,800 pages |
+| 2026-10-19 | SEO | USDA calendar title overridden by Crop Production branch 6 months a year | Sig decides | /usda-calendar |
+| 2026-10-19 | SEO | Hidden "$29/mo" sponsor text read by crawlers on 77 pages | Sig decides | 77 pages |
+| 2026-10-19 | SEO | PRF pages templated; SEO report missing | refuted: county stories already there; report removed on purpose Oct 12 | |
+| 2026-10-19 | Atlas reads | 535 stored map reads stated trends whose range crosses zero (Adams CO "falling 2.3 bu a year") | fixed: significance gate in stories_core, reads marked for recheck; 738 other reads fail page checks (open) | /farmland-atlas |
+| 2026-10-19 | Traffic | Two GA4 files disagree 9,493 vs 5,848: different filters (country, server towns, path folding), not a bug | explained (fx/returns) | |
 | 2026-10-19 | Harvest price tracker | Panel (farmer, statistician, plain language) done; expert pending. Every number recomputes exactly; issues: closed windows say "if the window closed today", projected price labeled "guarantee", no trigger yield ("will I collect"), county windows skip the exchange-settle swap, hero cards never refresh, three day counts, no print CSS | open (adversary next) | 1 page, Oct traffic peak |
 | 2026-10-19 | Farmland Atlas | 10 counties recomputed: all headline numbers, ranks and withholding match raw; small: sheet rounds no-till twice (Barron 31% vs 30%), years-over-premium counted on rounded ratio (Fresno 10 vs 11), tie years, "0%" for nonzero, sheet rank note, decimals | open (adversary) | 2,902 pages, minor |
 | 2026-10-19 | Rain pages / Rain Print | All 2,691 county totals recompute with zero mismatches; station pick ignores the both-records rule (about 1,049 northern counties draw no snow), late-Oct missing snowfall wipes winter (Vilas WI 70 in), all-zero snow reads "under 0.1 in", dry-run A-day mismatch, "rain and snow drawn" wording | open (adversary) | about 1,000 county pages, Rain Print buyers |
