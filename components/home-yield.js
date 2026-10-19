@@ -396,13 +396,6 @@
             var tr=trading(dayT),age=(Date.now()-F.getTime())/60000;
             var read='Read at '+hm(F)+', '+lbl(dayT)+', '+p.year+'.';
             var day=tr&&m>=510&&m<800, night=(m>=1140&&trading(dayT+DY))||(m<465&&tr);
-            if(day||night){
-              if(age<=45)return{t:'Delayed 15 min',live:true,title:'Futures prices delayed about 15 minutes. '+read};
-              var n=ct(new Date()),same=(+n.year===+p.year&&+n.month===+p.month&&+n.day===+p.day);
-              return{t:'As of '+(same?hm(F):lbl(dayT)),live:false,title:read};
-            }
-            if(tr&&m>=800&&m<815)return{t:'As of '+hm(F),live:false,title:'The day session closed at 1:20 PM CT; closing prices may not be final yet. '+read};
-            if(tr&&m>=465&&m<510)return{t:'Pre-open',live:false,title:'Overnight session closed, day session not open yet. '+read};
             /* 2026-10-17: after the bell Yahoo's bar is the LAST TRADE until
                late evening, then the settle (fetch_prices v3.7 RESTATED_BY).
                The file says which (close_kind); only a settle is labeled one.
@@ -410,11 +403,23 @@
                1:46 PM trade; CBOT settled $12.61 1/4. */
             var qs=data.quotes||{},cq=qs['corn-nearby']||qs.corn||{};
             var hn=holName(dayT);
+            /* 2026-10-19 (P1): the settle check comes before the session
+               check. Sunday 7:31 PM CT is inside the overnight session, but the
+               file held the Oct 16 settles and the badge said "Delayed 15 min".
+               "Delayed" is said only for a last trade read in session (not
+               an evening file holding the day's last trade, settled:true). */
             if(cq.close_kind==='settle'&&cq.close_date){
               var sd=Date.parse(cq.close_date+'T00:00:00Z'),sy=new Date(sd).getUTCFullYear();
               /* chaos-1: a settle from another year names it */
               return{t:'Settle '+lbl(sd)+(sy!==+ct(new Date()).year?', '+sy:''),live:false,title:(hn?'Markets closed for '+hn+'. ':'')+'Settles for '+lbl(sd)+', '+new Date(sd).getUTCFullYear()+' (the CME settle as Yahoo Finance posts it). '+read};
             }
+            if(day||night){
+              if(age<=45&&cq.close_kind==='last'&&!cq.settled)return{t:'Delayed 15 min',live:true,title:'Futures prices delayed about 15 minutes. '+read};
+              var n=ct(new Date()),same=(+n.year===+p.year&&+n.month===+p.month&&+n.day===+p.day);
+              return{t:'As of '+(same?hm(F):lbl(dayT)),live:false,title:read};
+            }
+            if(tr&&m>=800&&m<815)return{t:'As of '+hm(F),live:false,title:'The day session closed at 1:20 PM CT; closing prices may not be final yet. '+read};
+            if(tr&&m>=465&&m<510)return{t:'Pre-open',live:false,title:'Overnight session closed, day session not open yet. '+read};
             if(cq.close_kind==='last'||(tr&&m>=815&&m<1410)){
               var n2=ct(new Date()),same2=(+n2.year===+p.year&&+n2.month===+p.month&&+n2.day===+p.day);
               return{t:'As of '+(same2?hm(F):lbl(dayT)),live:false,title:'Last trades. The day session closed at 1:20 PM CT; the settles post late in the evening. '+read};}
