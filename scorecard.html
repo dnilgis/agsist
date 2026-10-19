@@ -118,7 +118,7 @@
     <div class="pb-page">
       <nav class="pb-bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> › Prediction bot scorecard</nav>
       <h1>Prediction bot scorecard</h1>
-      <p class="pb-plain" id="pb-plain"><!--SEED:pb:pb-plain-->In plain words: replayed on history since 2013, the bot&rsquo;s rule was right 47.6% of the time, no better than a coin flip. I publish its calls anyway, graded by code, so you can hold any market call to the same test. The 4 open calls are not graded until Nov 2, 2026, on that day&rsquo;s close only.<!--/SEED--></p>
+      <p class="pb-plain" id="pb-plain"><!--SEED:pb:pb-plain-->In plain words: replayed on history since 2013, the bot&rsquo;s rule was right 47.6% of the time, no better than a coin flip. I publish its calls anyway, graded by code, so you can hold any market call to the same test. The 8 open calls are not graded until Nov 2, 2026 or later, on that day&rsquo;s close only.<!--/SEED--></p>
       <p class="pb-sub page-lede">A simple statistical bot calls whether corn, soybeans, Chicago wheat and KC wheat will close higher or lower about four weeks out, one call per crop after each weekly CFTC report. Code grades every call against Yahoo Finance daily closes, and nobody picks which calls count. The timing rules, and why the four Oct 5 entry prices were set by hand, are under How the arithmetic works.</p>
 
       <noscript><p><strong>This page needs JavaScript to read the record.</strong> The raw file is <a href="/data/predictions.json">/data/predictions.json</a>.</p></noscript>
@@ -127,8 +127,8 @@
         <section class="pb-box" id="pb-live" aria-labelledby="pb-live-tag">
           <div class="pb-box-tag" id="pb-live-tag">Live record</div>
           <p class="pb-verdict" id="pb-live-verdict"><!--SEED:pb:pb-live-verdict-->Not enough calls yet.<!--/SEED--></p>
-          <p id="pb-live-line"><!--SEED:pb:pb-live-line-->0 graded so far. A rate is shown from 40 graded calls and 30 non-overlapping windows. Record as of Oct 17, 2026.<!--/SEED--></p>
-          <p id="pb-live-luck"><!--SEED:pb:pb-live-luck-->4 calls are waiting for their grading day. The first live calls are made at the Oct 5, 2026 close and graded four weeks later.<!--/SEED--></p>
+          <p id="pb-live-line"><!--SEED:pb:pb-live-line-->0 graded so far. A rate is shown from 40 graded calls and 30 non-overlapping windows. Record as of Oct 19, 2026.<!--/SEED--></p>
+          <p id="pb-live-luck"><!--SEED:pb:pb-live-luck-->8 calls are waiting for their grading day. The first live calls are made at the Oct 5, 2026 close and graded four weeks later.<!--/SEED--></p>
         </section>
         <section class="pb-box" id="pb-bt" aria-labelledby="pb-bt-tag">
           <div class="pb-box-tag" id="pb-bt-tag">Backtest</div>
@@ -141,10 +141,10 @@
       <p class="pb-note">The two boxes are kept apart on purpose. The backtest is the rule replayed on 2013&ndash;2026 history. The live record is calls made in public before the outcome was known. Adding them together would let old history prop up the live number.</p>
 
       <h2>Latest calls</h2>
-      <p id="pb-latest-when" class="pb-note"><!--SEED:pb:pb-latest-when-->Made at the Oct 5, 2026 close.<!--/SEED--></p>
+      <p id="pb-latest-when" class="pb-note"><!--SEED:pb:pb-latest-when-->Made at the Oct 19, 2026 close.<!--/SEED--></p>
       <div class="pb-wrap"><table class="pb-table" id="pb-latest" aria-describedby="pb-latest-when">
         <thead><tr><th scope="col">Crop</th><th scope="col">Call</th><th scope="col">Contract</th><th scope="col" class="num">Entry close</th><th scope="col">Grades on</th><th scope="col">Where it stands (not graded)</th><th scope="col">Why</th></tr></thead>
-        <tbody><!--SEED:pb:latest--><tr><td>Corn</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$4.9725</td><td>Nov 2, 2026</td><td>$4.78 on Oct 15, 19.25 cents under entry: right side so far</td><td>The bot’s own rule: funds in the top tenth of 3 years (97th percentile of the last 156 reports)</td></tr><tr><td>Soybeans</td><td><span class="pb-down">Down</span></td><td>Nov '26</td><td class="num">$12.8075</td><td>Nov 2, 2026</td><td>$12.63 on Oct 15, 17.75 cents under entry: right side so far</td><td>The bot’s own rule: funds in the top tenth of 3 years (96th percentile of the last 156 reports)</td></tr><tr><td>Chicago wheat</td><td><span class="pb-up">Up</span></td><td>Dec '26</td><td class="num">$6.9225</td><td>Nov 2, 2026</td><td>$6.70 on Oct 15, 22.25 cents under entry: wrong side so far</td><td>13-week trend up (+2.5% over 13 weeks). Funds at the 87th percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides</td></tr><tr><td>KC wheat</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$7.4225</td><td>Nov 2, 2026</td><td>$7.13 on Oct 15, 29.25 cents under entry: right side so far</td><td>The bot’s own rule: funds in the top tenth of 3 years (92nd percentile of the last 156 reports)</td></tr><!--/SEED--></tbody>
+        <tbody><!--SEED:pb:latest--><tr><td>Corn</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$4.6675</td><td>Nov 17, 2026</td><td>Shows after the bot’s next run</td><td>13-week trend down (-0.8% over 13 weeks). Funds at the 86th percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides</td></tr><tr><td>Soybeans</td><td><span class="pb-down">Down</span></td><td>Jan '27</td><td class="num">$12.6825</td><td>Nov 17, 2026</td><td>Shows after the bot’s next run</td><td>The bot’s own rule: funds in the top tenth of 3 years (97th percentile of the last 156 reports)</td></tr><tr><td>Chicago wheat</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$6.56</td><td>Nov 17, 2026</td><td>Shows after the bot’s next run</td><td>13-week trend down (-5.5% over 13 weeks). Funds at the 84th percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides</td></tr><tr><td>KC wheat</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$6.995</td><td>Nov 17, 2026</td><td>Shows after the bot’s next run</td><td>13-week trend down (-5.6% over 13 weeks). Funds at the 87th percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides</td></tr><!--/SEED--></tbody>
       </table></div>
       <p class="pb-note">Where it stands is the latest close of the same contract, read by the bot after each run. It is not a grade: a call is graded on its grading day&rsquo;s close only, and nothing in that column is ever counted.</p>
       <!-- re-score 8: each call next to the reader's own cash price (state median basis, only with a saved state) -->
@@ -191,7 +191,7 @@
           <dt>Raw files</dt>
           <dd><a href="/data/predictions.json">/data/predictions.json</a> (calls, record, rule) and <a href="/data/predictions-backtest.json">/data/predictions-backtest.json</a> (every backtest call). Code: <code>scripts/prediction_bot.py</code>; its selftests carry hand-worked answers.</dd>
           <dt>Last changed</dt>
-          <dd id="pb-updated"><!--SEED:pb:pb-updated-->2026-10-17 00:45:27 UTC<!--/SEED--></dd>
+          <dd id="pb-updated"><!--SEED:pb:pb-updated-->2026-10-19 23:05:31 UTC<!--/SEED--></dd>
         </dl>
       </details>
 
