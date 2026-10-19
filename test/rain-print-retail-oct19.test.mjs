@@ -174,3 +174,14 @@ test("1: /rain-print's first screen names both while the cutoffs are ahead; a dr
     assert.deepEqual(errors, []);
   }, { time: "2026-12-11T17:00:00Z" });
 });
+
+// ---------------------------------------------------------------- 4. the wall picture stays labeled
+
+test("4: the framed-on-the-wall picture is a mockup and says so, three ways, and nothing claims a photo of it", () => {
+  const H = readFileSync(ROOT + "rain-print.html", "utf8");
+  const fig = H.match(/<figure class="rp-onwall" id="rp-onwall">[\s\S]*?<\/figure>/)[0];
+  assert.match(fig, /alt="Mockup: a framed Rain Print/, "the alt text");
+  assert.match(fig, /<span class="rp-ex-tag" aria-hidden="true">Mockup<\/span>/, "the tag on the picture");
+  assert.match(fig, /<figcaption>Mockup of a framed print\./, "the caption");
+  assert.ok(!/photo of a customer|customer photo|real photo/i.test(fig), "no claim of a real photo");
+});
