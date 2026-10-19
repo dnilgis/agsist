@@ -238,10 +238,11 @@ test("5, 6, 7: the card's Christmas date carries its condition; above Pay, the p
     await page.check('input[name="rp-pproduct"][value="framed12x18"]');
     // 7, (e), (m): the gift address note under Their address, and no second instruction elsewhere
     await page.check("#rp-pg-on");
-    assert.equal(await page.textContent("#rp-pg-addr-hint"), "At checkout, Stripe asks for the shipping address again. Use the same one: theirs.");
+    assert.equal(await page.textContent("#rp-pg-ship"), "Where it ships: at checkout, Stripe asks for the shipping address. Give theirs.");
+    assert.equal(await page.isVisible("#rp-pg-addr"), false, "no address box: Stripe takes it (2026-10-19)");
     assert.ok(!/give the same one/.test(await page.textContent("#rp-pg-line")), "said once");
     await page.selectOption("#rp-pg-deliver", "buyer");
-    assert.equal(await page.textContent("#rp-pg-addr-hint"), "At checkout, Stripe asks for the shipping address again. Use the same one.");
+    assert.equal(await page.textContent("#rp-pg-ship"), "Where it ships: at checkout, Stripe asks for the shipping address. Give yours.");
     await page.click("#rp-proof-close");
     assert.equal(await page.isHidden("#rp-gift-line"), true, "the caption under the mockup is gone when checkout takes the gift");
     assert.match(await page.textContent("#rp-gift-pre"), /^A gift\? On the next screen, before you pay, tick This is a gift/);
@@ -257,7 +258,7 @@ test("(a): a design of this year says the gift card now, the print in January, a
   await withPage(async (page, base, errors) => {
     await drawAmes(page, base, "2026");
     await page.waitForFunction(() => !document.getElementById("rp-xmas-top").hidden, null, { timeout: 10000 });
-    assert.equal(await page.textContent("#rp-xmas-top"), "For Christmas: a gift card now, the print in January.");
+    assert.equal(await page.textContent("#rp-xmas-top"), "For Christmas: this year (2026) is a gift card now, the print in January. Last year (2025) comes by Christmas if you order it framed by Dec 9, or as a print by Dec 10.");
     await openSheet(page);
     assert.equal(await page.textContent("#rp-proof-when"), "Arrives in January, once the year is done. A gift card for under the tree comes by email within 1 business day.");
     assert.deepEqual(errors, []);

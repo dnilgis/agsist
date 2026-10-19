@@ -463,7 +463,8 @@ test("a link's station draws even when the station list misses it, or the page s
   assert.ok(!/within about 40 miles/.test(S2 + HTML), "no distance the station box doesn't keep");
   // county links carry the station's own place (?ll=lat,lon): the search centers there, distances stay from the town
   assert.match(S2, /return stations\(ll \? ll\.lat : g\.latitude, ll \? ll\.lon : g\.longitude, ST\.year\)/);
-  assert.match(S2, /var ll = LINK_LL && LINK_LL\.place === ST\.place && ST\.station \? LINK_LL : null;/, "only on that link's own first town");
+  // 2026-10-19: a station-less county link (last year's print) searches there too (test/rain-print-retail-oct19.test.mjs)
+  assert.match(S2, /var ll = LINK_LL && LINK_LL\.place === ST\.place \? LINK_LL : null;/, "only on that link's own town");
   assert.match(S2, /if \(ll && err !== 'stale'\) return llTown\(ll\);/, "a town the lookup doesn't know still draws its station");
   assert.match(S2, /if \(m\.approx\) return 'near ' \+ m\.city;/, "and claims no distance it doesn't know");
 });
@@ -564,7 +565,7 @@ test("copy batch: size, proof, business words", () => {
   assert.match(HTML, /<p class="rp-p rp-sig">I print each one myself in Chetek, Wisconsin, and send you a proof first\. Sig<\/p>/);
   assert.ok(!/<blockquote>|crop adviser in Chetek/.test(HTML), "no big quote");
   assert.match(HTML, /<p class="rp-byline">By <a href="\/about">Sigurd Lindquist<\/a>, CCA<\/p>/);
-  assert.match(HTML, /<p>Yes\. Before you pay, tick This is a gift and give their name, your note and their address\. I ship the print with your note printed at the top of the letter in the box, at no charge\./, "the gift FAQ says what the page does now (no separate card, Sig 2026-10-17)");
+  assert.match(HTML, /<p>Yes\. Before you pay, tick This is a gift and give their name and your note, then their address at checkout\. I ship the print with your note printed at the top of the letter in the box, at no charge\./, "the gift FAQ says what the page does now (no separate card, Sig 2026-10-17)");
   assert.ok(!/above the prices|price card/.test(HTML), "no FAQ points at the old price cards");
   assert.match(HTML, /Once you OK the proof sheet, I print them/);
   assert.match(S2, /'Rain Print order'/);

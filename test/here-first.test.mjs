@@ -230,7 +230,7 @@ test("bids-network exports the index and a checked shard getter; versions bumped
   assert.match(read("components/bids-homepage.js"), /bids-network\.js\?v=7/);
   assert.match(read("here.html"), /place\.js\?v=4/);
   assert.match(read("here.html"), /here\.js\?v=6/);
-  assert.match(read("here.html"), /rain-county\.css\?v=4/);
+  assert.match(read("here.html"), /rain-county\.css\?v=5/);   // v5: the month table fits a phone (2026-10-19)
 });
 
 // ---------------------------------------------------------------- in a browser

@@ -21,7 +21,11 @@ test("every county rain page carries one plain link to the bare /rain-print insi
       const sell = h.split('class="rc-sell"')[1].split("</div>")[0];
       assert.match(sell, /<a href="\/rain-print">Rainfall art of any town and year<\/a>/, f);
       assert.equal(h.split('href="/rain-print"').length - 1, 1, f);
-      assert.equal(h.split('href="/rain-print?').length - 1, 1, "still one drawn-place button: " + f);
+      // one drawn-place button, or, Oct 1 to the Christmas cutoffs, two (last year by Christmas, this year in
+      // January, 2026-10-19), and every one of them inside the one promo block
+      const drawnLinks = h.split('href="/rain-print?').length - 1;
+      assert.ok(drawnLinks === 1 || (drawnLinks === 2 && sell.includes(">Last year, by Christmas</a>") && sell.includes(">This year, in January</a>")), "drawn-place buttons: " + f);
+      assert.equal(sell.split('href="/rain-print?').length - 1, drawnLinks, "all inside the promo block: " + f);
       n++;
     }
   }
