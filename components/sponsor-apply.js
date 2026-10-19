@@ -5,7 +5,7 @@
  *   pages offered   data/sponsor-slots.json (scripts/stamp_rates.py reads the ribbons)
  *   pages taken     data/page-sponsors.json (sold page slots)
  *   footer room     data/supporters.json (active supporters against its cap)
- *   sponsor slot   data/sponsors.json (a founding deal on file means it is spoken for)
+ *   sponsor slot   data/sponsors.json (a Daily sponsor deal on file means it is spoken for)
  * The preview is drawn by window.AgsistSlots in components/loader.js, the same
  * code that draws a sold ribbon or footer card on the live site.
  *
@@ -43,9 +43,9 @@
       S.supFull = r[3].cap ? act >= r[3].cap : false;
     }
     S.fndReserved = !!(r[4] && (r[4].sponsors || []).some(function (s) {
-      return s && s.active !== false && s.billing && s.billing.tier === 'founding';
+      return s && s.active !== false && s.billing && s.billing.tier === 'daily';
     }));
-    ['page', 'supporter', 'founding'].forEach(function (t) {
+    ['page', 'supporter', 'daily'].forEach(function (t) {
       var el = form.querySelector('[data-price="' + t + '"]');
       if (el) el.innerHTML = price(t) ? price(t) + ' &middot; first month free' : '-';
     });

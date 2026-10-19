@@ -73,7 +73,7 @@ def main():
               "$%d (%s) appears on sponsor.html" % (p, t["id"]),
               "not found — the card and the pitch have drifted")
 
-    fnd = next((t for t in tiers if t["id"] == "founding"), None)
+    fnd = next((t for t in tiers if t["id"] == "daily"), None)
     if fnd and fnd.get("year_equivalent"):
         yr = fnd["year_equivalent"]
         check(yr == fnd["price_month"] * 12,

@@ -257,6 +257,28 @@ def main():
         if v is not None:
             check(bsr.licensed_states(v) is not None, "a typed licensed-states list is valid US codes")
 
+    # ---- NO CONTACT IN ANY PUBLIC FILE (Oct 19) -----------------------------
+    # Every file in the repo is published. A sponsor's contact person, phone,
+    # email or invoice address never goes into data/sponsors.json, a baked
+    # portal file, or the portal page; Sig keeps them in his own email.
+    print("\nno contact or invoice address in a public file")
+    for sp_ in conf.get("sponsors", []):
+        check("contact" not in sp_, "data/sponsors.json carries no contact")
+        b_ = sp_.get("billing") or {}
+        check(not any(k in b_ for k in bsr.PRIVATE_BILLING_KEYS), "and no invoice contact in its billing")
+    got = bsr.portal_extras({"contact": "x", "billing": {"tier": "page", "invoice_contact": "y", "invoice_to": "z", "email": "e"}})
+    check("contact" not in got and got.get("billing") == {"tier": "page"},
+          "the builder drops a typed contact and invoice address", got)
+    check(bsr.portal_extras({"billing": {"invoice_contact": "y"}}).get("billing") is None,
+          "billing with only an invoice address writes nothing")
+    for f_ in sorted((ROOT / "data" / "sponsors").glob("*.json")):
+        d_ = json.loads(f_.read_text())
+        check("contact" not in d_ and not any(k in (d_.get("billing") or {}) for k in bsr.PRIVATE_BILLING_KEYS),
+              "%s carries no contact or invoice address" % f_.name)
+    check("d.contact" not in html and "invoice_contact" not in html, "the portal page prints no contact field")
+    tiers_ = [t["id"] for t in json.loads((ROOT / "data" / "rate-card.json").read_text())["tiers"]]
+    check("founding" not in tiers_ and "daily" in tiers_, "the Daily tier is called daily, never founding", tiers_)
+
     print()
     if FAILED:
         print("FAILED (%d): %s" % (len(FAILED), "; ".join(FAILED)))
