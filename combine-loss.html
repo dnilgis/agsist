@@ -31,8 +31,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=24" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=24">
+  <link rel="preload" href="/components/styles.css?v=25" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=25">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -50,7 +50,7 @@
     .cl-seg{display:flex;width:100%;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:0 0 .7rem}
     .cl-seg button{flex:1 1 0;min-height:48px;padding:0 .4rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.95rem;font-weight:700;cursor:pointer}
     .cl-seg button+button{border-left:1px solid var(--border)}
-    .cl-seg button[aria-pressed="true"]{background:var(--gold);color:#111}
+    .cl-seg button[aria-pressed="true"]{background:var(--gold-fill);color:#111}
     .cl-lab{font-size:.82rem;color:var(--text-muted);margin:.2rem 0 .3rem}
     .cl-in{display:flex;flex-wrap:wrap;gap:.6rem .9rem;margin:0 0 .6rem;align-items:flex-end}
     .cl-in label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;color:var(--text-muted)}
@@ -62,11 +62,11 @@
     .cl-count h2{margin:0 0 .5rem;font-size:1rem}
     .cl-tally{display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:.5rem;align-items:stretch}
     .cl-tally button{min-height:72px;border:1px solid var(--border);border-radius:12px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-size:1.5rem;font-weight:800;cursor:pointer;touch-action:manipulation}
-    .cl-tally button.plus{background:var(--gold);color:#111;border-color:var(--gold);font-size:2rem}
+    .cl-tally button.plus{background:var(--gold-fill);color:#111;border-color:var(--gold-fill);font-size:2rem}
     .cl-tally input{width:100%;min-height:72px;text-align:center;border:1px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700}
     .cl-row{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0;align-items:center}
     .cl-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
-    .cl-btn.go{background:var(--gold);color:#111;border-color:var(--gold)}
+    .cl-btn.go{background:var(--gold-fill);color:#111;border-color:var(--gold-fill)}
     .cl-btn.sm{min-height:36px;padding:0 .7rem;font-size:.85rem;font-weight:600}
     .cl-spots{font-family:'JetBrains Mono',monospace;font-size:.86rem;color:var(--text-muted);margin:.5rem 0 0}
     .cl-spots:empty{display:none}

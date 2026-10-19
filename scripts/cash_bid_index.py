@@ -551,9 +551,12 @@ def table_html(ed, crop):
                  f'<td colspan="{6 if has_chg else 5}" class="cbi-few">fewer than {MIN_STATE_N} elevators each: {names}</td></tr>')
     more = sum(1 for r in c["states"].values() if r.get("avg_cash") is not None) - PHONE_ROWS + (1 if few else 0)
     tid = f'cbi-mt-{esc(ed["month"])}-{crop}'
-    tog = f'<input type="checkbox" class="cbi-mt" id="{tid}">' if more > 0 else ""
+    # a11y 2026-10-19: the box keeps its own name (its label is hidden once ticked
+    # and on a wide screen), and is not drawn at all where it does nothing (over 600px)
+    tog = f'<input type="checkbox" class="cbi-mt" id="{tid}" aria-label="Show all states ({more} more)">' if more > 0 else ""
     lab = f'<label class="cbi-ml" for="{tid}">Show all states ({more} more)</label>' if more > 0 else ""
-    return ('<div class="cbi-tg">' + tog + f'<div class="cbi-tw"><table class="cbi-t"><caption>{CROP_NAME[crop]}, {esc(ed["label"])}</caption>'
+    return ('<div class="cbi-tg">' + tog + f'<div class="cbi-tw" tabindex="0" role="region" aria-label="{CROP_NAME[crop]}, {esc(ed["label"])}, by state (scrolls sideways)">'
+            f'<table class="cbi-t"><caption>{CROP_NAME[crop]}, {esc(ed["label"])}</caption>'
             f'<thead>{head}</thead><tbody>{body}</tbody></table></div>' + lab + '</div>')
 
 
@@ -628,7 +631,7 @@ CSS = """
 .cbi-mt:checked~.cbi-ml{display:none}
 }
 .cbi-mt{position:absolute;opacity:0;width:1px;height:1px}
-@media (min-width:601px){.cbi-ml{display:none}}
+@media (min-width:601px){.cbi-ml,.cbi-mt{display:none}}
 """
 
 
@@ -720,8 +723,8 @@ def page_html(editions):
   {early}
   <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   {fonts}
-  <link rel="preload" href="/components/styles.css?v=24" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=24">
+  <link rel="preload" href="/components/styles.css?v=25" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=25">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">

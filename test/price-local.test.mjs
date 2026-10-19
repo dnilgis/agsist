@@ -138,8 +138,8 @@ test("grain futures pages: key table up, labeled folds, FAQ kept, scripts in ord
     const ld = JSON.parse(/<script type="application\/ld\+json">(\{"@context": "https:\/\/schema.org", "@graph".*?)<\/script>/.exec(h)[1]);
     const faq = ld["@graph"].find((x) => x["@type"] === "FAQPage");
     for (const q of faq.mainEntity) assert.ok(h.includes(q.name.replace(/&/g, "&amp;")) || h.includes(q.name), page + " FAQ: " + q.name);
-    assert.ok(h.indexOf("components/price-local.js?v=4") > 0 && h.indexOf("components/price-local.js?v=4") < h.indexOf("components/futures.js?v=21"), page + ": stamp helper before futures.js");
-    assert.ok(!h.includes("futures.js?v=13") && !h.includes("futures.js?v=14") && !h.includes("futures.js?v=15") && !h.includes("futures.js?v=16") && !h.includes("futures.js?v=17") && !h.includes("futures.js?v=18") && !h.includes("futures.js?v=19") && !h.includes("futures.js?v=20") && !h.includes("price-local.js?v=2"));
+    assert.ok(h.indexOf("components/price-local.js?v=4") > 0 && h.indexOf("components/price-local.js?v=4") < h.indexOf("components/futures.js?v=22"), page + ": stamp helper before futures.js");
+    assert.ok(!h.includes("futures.js?v=13") && !h.includes("futures.js?v=14") && !h.includes("futures.js?v=15") && !h.includes("futures.js?v=16") && !h.includes("futures.js?v=17") && !h.includes("futures.js?v=18") && !h.includes("futures.js?v=19") && !h.includes("futures.js?v=20") && !h.includes("futures.js?v=21") && !h.includes("price-local.js?v=2"));
     assert.match(h, /matchMedia\('\(min-width:900px\)'\)\.matches\)document\.querySelectorAll\('details\.fold\[data-wide-open\]'\)/);
   }
 });
@@ -174,7 +174,7 @@ test("no em dashes in the new code and copy", () => {
 test("wide tables carry their column names for the phone cards", () => {
   const cbi = read("cash-bid-index.html");
   for (const l of ["Elevators", "Avg cash", "Median", "Avg basis", "Bids raised / cut", "Basis firmer / weaker"]) assert.ok(cbi.includes(`data-l="${l}"`), l);
-  assert.match(cbi, /<input type="checkbox" class="cbi-mt" id="cbi-mt-[\d-]+-corn">/);
+  assert.match(cbi, /<input type="checkbox" class="cbi-mt" id="cbi-mt-[\d-]+-corn" aria-label="Show all states \(\d+ more\)">/);
   assert.match(cbi, /\.cbi-mt:checked~\.cbi-tw tr\.cbi-more\{display:grid\}/);
   const L = require(join(ROOT, "field-scout-land.js"));
   const t = L.compsTable([{ date: "2026-09-04", ppa: 10000, acres: 40, price: 400000, mi: 0.3, muniName: "Gridley township", cls: "" }]);

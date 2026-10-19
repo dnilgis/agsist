@@ -153,7 +153,7 @@ try {
       var ageNote=daysOld==null?'pending':daysOld<=13?'current':'<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> '+daysOld+'d old';
       var _cs=window.AgAsOf?AgAsOf.html(data.updated,'usda'):'';
       dateEl.innerHTML=(_cs?'Positions as of '+_cDisp+(daysOld!=null&&daysOld>=14?' ('+ageNote+')':'')+' \u00b7 '+_cs:'As of '+_cDisp+' ('+ageNote+')')+' \u00b7 CFTC <span id="cot-countdown" style="color:var(--gold);font-weight:700"></span>';
-      if(daysOld!=null&&daysOld>=14){dateEl.style.color='#f0913a';}
+      if(daysOld!=null&&daysOld>=14){dateEl.style.color='var(--orange)';}
       (function(){
         /* 2026-09-25 audit: this counted to Friday 21:30 UTC, two hours after the 3:30pm ET release in summer (19:30 UTC) and one hour after it in winter (20:30 UTC). CFTC publishes at 3:30pm New York time; ask the browser what New York's clock says instead of fixing a UTC hour. */
         function nx(now){for(var i=0;i<9;i++){var d=new Date(now+i*86400000);if(d.getUTCDay()!==5)continue;var t=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate(),20,30,0);var h=+new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',hourCycle:'h23'}).format(new Date(t));if(h===16)t-=3600000;if(t>now)return t;}return now+604800000;}

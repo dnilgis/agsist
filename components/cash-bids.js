@@ -1260,6 +1260,16 @@ function renderEarnings(){
   gaEvent('earnings_shown',{commodity:best.cat,net_gain:Math.round(best.net)});
 }
 
+/* THE BASIS TONE IS NOT COLOR ALONE (a11y 2026-10-19). In light theme the
+   green and the red are the same lightness, and a screen reader hears no
+   color at all, so a toned basis also carries an arrow and the words. Both
+   writers use it: the bid rows in renderResults and the Best cards. */
+function basisMark(cls){
+  if(/\bbz-up\b/.test(cls||''))return '<span class="bz-mk" aria-hidden="true">\u25B2</span><span class="sr-only"> stronger than the middle of this search</span>';
+  if(/\bbz-dn\b/.test(cls||''))return '<span class="bz-mk" aria-hidden="true">\u25BC</span><span class="sr-only"> weaker than the middle of this search</span>';
+  return '';
+}
+
 /* THE BASIS COLOURS GET A KEY ON THE PAGE, not only behind the BASIS button.
    Green and red are not the sign of the basis: cb-glance.js toneFn colours a
    basis against the middle of the boards in this search for the same crop and
@@ -1340,7 +1350,7 @@ function renderBestBids(elevators){
       var ago=bbcAgo(best.asOf);
       html+='<div class="bbc-pricecol"><div class="bbc-comm">'+commTxt+'</div>';
       html+='<div class="bbc-price">'+(top.rk.remark?escH(cbRank.priceText(top.rk,fmtPx)):'$'+fmtPx(pp))+'</div>';
-      html+='<div class="bbc-basis '+((_btone&&_btone(best))||'flat')+'">basis '+bf.str+'</div></div>';
+      html+='<div class="bbc-basis '+((_btone&&_btone(best))||'flat')+'">basis '+bf.str+basisMark(_btone&&_btone(best))+'</div></div>';
       html+='<div class="bbc-body">';
       html+='<div class="bbc-name" title="'+escH(topElev.facility)+'">'+escH(topElev.facility)+'</div>';
       if(cs||topElev.distance!=null)html+='<span class="bbc-city bbc-where">'+escH(cs)+(topElev.distance!=null?(cs?'\u00a0\u00b7 ':'')+'<span class="bbc-dist">'+topElev.distance.toFixed(0)+' mi</span>':'')+'</span>';
@@ -1827,7 +1837,7 @@ function renderBids(bids,keepLimit){
         var bhi='';
         if(bhSym(bid)&&bid.deliveryMonth){_bhRows.push({bid:bid,elev:elev});bhi=' data-bh-i="'+(_bhRows.length-1)+'"';}
         if(bf.odd)gradeHtml+='<span class="bid-grade bid-odd"'+(bid._odd?' title="'+escH(oddTitle(bid._odd))+'"':'')+'>Unusual basis, call before you haul</span>';
-        html+='<div class="bid-row'+(bi>=3?' bid-xtra':'')+'"'+bhi+'><span class="bid-del-cell">'+delHtml+ctag+'</span><span class="bid-cash">'+cs2+'</span><span class="bid-basis '+((!perTon&&_tone&&_tone(bid))||bf.cls)+'">'+bf.str+'</span>'+gradeHtml+'</div>';
+        html+='<div class="bid-row'+(bi>=3?' bid-xtra':'')+'"'+bhi+'><span class="bid-del-cell">'+delHtml+ctag+'</span><span class="bid-cash">'+cs2+'</span><span class="bid-basis '+((!perTon&&_tone&&_tone(bid))||bf.cls)+'">'+bf.str+basisMark(!perTon&&_tone&&_tone(bid))+'</span>'+gradeHtml+'</div>';
       });
       if(catBids.length>3)html+='<button class="bid-more" type="button" aria-expanded="false">+'+(catBids.length-3)+' more months &#9662;</button>';
       html+='</div></div>';

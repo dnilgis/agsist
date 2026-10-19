@@ -622,7 +622,7 @@ function fetchWeather(lat, lon, label, known) {
         var u = calcUrea(tempF, humid, wind, precip);
         var uPalette = {frozen:'91,163,224', low:'62,207,110', moderate:'230,176,66', high:'240,145,58', extreme:'240,96,96'};
         var uLabels  = {frozen:'Below 32\u00B0F now', low:'Low', moderate:'Moderate', high:'High', extreme:'Extreme'};
-        var uColors  = {frozen:'var(--blue)', low:'var(--green)', moderate:'var(--gold)', high:'#f0913a', extreme:'var(--red)'};
+        var uColors  = {frozen:'var(--blue)', low:'var(--green)', moderate:'var(--gold)', high:'var(--orange)', extreme:'var(--red)'};
         var sEl = document.getElementById('wx-urea-score');
         var bEl = document.getElementById('wx-urea-badge');
         if (sEl) { sEl.textContent = u.score; sEl.style.color = uColors[u.level]; }
@@ -830,7 +830,7 @@ function updateWidgetPreviews(tempF, humid, wind, pop) {
   var uPalette = {frozen:'91,163,224', low:'62,207,110', moderate:'230,176,66', high:'240,145,58', extreme:'240,96,96'};
   var uLbls    = {frozen:'Below freezing now: low risk', low:'Low Risk', moderate:'Moderate Risk', high:'High Risk', extreme:'Extreme Risk'};
   var uRecs    = {frozen:'Air below 32\u00B0F right now; risk rises as it warms', low:'Favorable for application', moderate:'Consider NBPT stabilizer', high:'Use stabilizer or wait', extreme:'Do not apply without stabilizer'};
-  var uColors  = {frozen:'var(--blue)', low:'var(--green)', moderate:'var(--gold)', high:'#f0913a', extreme:'var(--red)'};
+  var uColors  = {frozen:'var(--blue)', low:'var(--green)', moderate:'var(--gold)', high:'var(--orange)', extreme:'var(--red)'};
   var uSc = document.getElementById('wsp-urea-score');
   var uBd = document.getElementById('wsp-urea-badge');
   var uRc = document.getElementById('wsp-urea-rec');

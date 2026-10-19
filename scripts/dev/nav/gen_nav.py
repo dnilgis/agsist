@@ -310,7 +310,7 @@ STYLE = r"""<style>
 @media (max-width:1360px){.nav-btn .nav-ic{display:none}.nav-btn{padding:.45rem .6rem}}
 @media (max-width:1100px){.nav-email{display:none}.zip-chip{max-width:150px}}
 @media (max-width:1060px){.nav-btn{padding:.45rem .42rem;font-size:.8rem}.zip-chip{max-width:136px}.zip-chip svg{display:none}.nav-logo{margin-right:.75rem}}
-@media (max-width:960px){.zip-chip{max-width:44vw}}
+@media (max-width:60em){.zip-chip{max-width:44vw}}
 @media (max-width:420px){.nav-inner{padding-left:12px;padding-right:12px}.nav-logo{margin-right:8px}.nav-logo img{height:40px}.nav-actions{gap:.35rem}.zip-chip{max-width:40vw;padding:0 .55rem}
   .zip-pop{position:fixed;top:72px;left:12px;right:12px;width:auto}}
 /* Phone menu panel: search, My place, the five groups open (subheads, no folds), a Rain Print card. */
@@ -348,7 +348,7 @@ STYLE = r"""<style>
 html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{display:none!important}
 /* 2026-10-18 menu fixes: on phones the theme switch took 73 of 390 px of the
    header. It lives in the menu panel there ("Display mode"); wide screens keep it. */
-@media (max-width:960px){#theme-btn{display:none}}
+@media (max-width:60em){#theme-btn{display:none}}
 /* High contrast (forced colors, 2026-10-17 field audit): the menu bars and the theme switch are drawn
    with background colors, which forced colors removes, so the menu button showed as an empty box.
    Here they take the system's text colors. */

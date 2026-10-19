@@ -62,7 +62,7 @@
           var n=Math.round((new Date(cp.report_date+'T12:00:00')-new Date(_wkEnd+'T12:00:00'))/6048e5);
           if(n>=1)wk.innerHTML='Ratings week ending '+_wkTxt(_wkEnd)+', '+(n===1?'one week':n+' weeks')+' behind Crop Progress ('+_wkTxt(cp.report_date)+')'+_age;
         }).catch(function(){});
-        if(_daysOld!=null&&_daysOld>=14){wk.style.color='#f0913a';}
+        if(_daysOld!=null&&_daysOld>=14){wk.style.color='var(--orange)';}
       }
       var yr=document.getElementById('nc-years');
       if(yr&&d.crops.corn)yr.textContent=d.crops.corn.backtest_years;
@@ -432,7 +432,7 @@
         }
         if(window.AgAsOf)AgAsOf.set(_pa,data.fetched,'prices');
         else{_pa.textContent=_mins<2?'• Live now':_mins<60?'• Updated '+_mins+' min ago':_mins<2880?'• Updated '+Math.round(_mins/60)+'h ago':'• Updated '+Math.round(_mins/1440)+'d ago';
-        _pa.style.color=_mins>60?'#f0913a':_mins>30?'var(--gold)':'var(--text-muted)';}
+        _pa.style.color=_mins>60?'var(--orange)':_mins>30?'var(--gold)':'var(--text-muted)';}
       }
     }
     // Wire sparklines if geo.js hasn't already — REMOVED (sparklines disabled)

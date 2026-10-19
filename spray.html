@@ -13,8 +13,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=24" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=24">
+  <link rel="preload" href="/components/styles.css?v=25" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=25">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/util.js?v=17"></script>
 <script src="/components/asof.js?v=1"></script>
@@ -1265,7 +1265,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
       <div class="fade-up" style="margin-bottom:2rem">
         <h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg></span> Rain-free period by herbicide class</h2>
         <p style="font-size:.82rem;color:var(--text-dim);line-height:1.7;margin-bottom:.9rem">How long a product needs on the leaf before rain. The times come from product labels and two extension tables: Michigan State&rsquo;s 2025 Weed Control Guide (Table 11) and the University of Arkansas soybean herbicide chart. Where they disagree I show both. Checked October 2026. Your product label is the authority.</p>
-        <div class="rfp-table-wrap">
+        <div class="rfp-table-wrap" tabindex="0" role="region" aria-label="Rain-free period by herbicide class (scrolls sideways)">
           <table class="rfp-table">
             <thead><tr><th>Herbicide class / example products</th><th>Minimum Rain-Free</th><th>Source</th><th>Notes</th></tr></thead>
             <tbody>
@@ -1688,7 +1688,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <div class="fold-body">
         <div class="mix-card" id="section-nozzles">
           <div class="nozzle-card-sub">Droplet size classification follows ASABE S572.3. Always verify against the specific product label.</div>
-          <div class="nozzle-table-wrap">
+          <div class="nozzle-table-wrap" tabindex="0" role="region" aria-label="Nozzle types and droplet size (scrolls sideways)">
             <table class="nozzle-table">
               <thead><tr><th scope="col">Nozzle Type</th><th scope="col">Droplet Size</th><th scope="col">Drift Risk</th><th scope="col">Coverage</th><th scope="col">Best For</th><th scope="col">Dicamba Approved</th></tr></thead>
               <tbody>
@@ -1809,7 +1809,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 <!-- /static-nav:footer -->
 </div>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/geo.js?v=28" defer></script>
+<script src="/components/geo.js?v=29" defer></script>
 <script>
 (function(){
   'use strict';

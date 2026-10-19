@@ -2636,8 +2636,8 @@ def futures_hero_seeds(page, prices, now=None):
             if cd.get("roll"):
                 chg = '<span id="nc-chg" class="roll">(contract roll)</span>'
             elif pc is not None:
-                net = cd.get("netChange") or 0
-                chg = '<span id="nc-chg" class="' + ("up" if net >= 0 else "dn") + '">(' + pricefmt.pct(pc) + ")</span>"
+                t, c = _pct_chip(cd)
+                chg = '<span id="nc-chg" class="' + c + '">' + t + "</span>"
             else:
                 chg = '<span id="nc-chg"></span>'
             out["nc"] = ('<div class="nc-glance" id="nc-glance"><span id="nc-lbl">' + _ticker_label(cd, "Dec") + '</span> new crop: <strong id="nc-price">$' +
@@ -2656,7 +2656,8 @@ def futures_hero_seeds(page, prices, now=None):
             h = _ticker_label(nq, "Nov") + " new crop: <strong>$" + grain_dollars(nq) + "</strong>"
             np_ = nq.get("pctChange")
             if np_ is not None and not nq.get("roll"):
-                h += (' <span class="' + ("up" if np_ >= 0 else "dn") + '">(' + pricefmt.pct(np_) + ")</span>")
+                t, c = _pct_chip(nq)
+                h += ' <span class="' + c + '">' + t + "</span>"
             out["nc"] = '<div class="nc-line" id="nc-line">' + h + "</div>"
         else:
             out["nc"] = '<div class="nc-line" id="nc-line" style="display:none"></div>'
@@ -2667,7 +2668,8 @@ def futures_hero_seeds(page, prices, now=None):
             h = "Corn " + _e(_ticker_label(cq, "")) + ": <strong>$" + grain_dollars(cq) + "</strong>"
             cp = cq.get("pctChange")
             if cp is not None and not cq.get("roll"):
-                h += (' <span class="' + ("up" if cp >= 0 else "dn") + '">(' + pricefmt.pct(cp) + ")</span>")
+                t, c = _pct_chip(cq)
+                h += ' <span class="' + c + '">' + t + "</span>"
             stp = quote_stamp(cq)
             out["cornline"] = ('<div class="nc-line" id="corn-line">' + h + (" &middot; " + _e(stp) if stp else "") +
                                ' &middot; <a href="/corn-futures-prices">Corn futures</a></div>')
@@ -2700,6 +2702,18 @@ def futures_hero_seeds(page, prices, now=None):
             out[ct_tag] = _e(_ticker_label(le, ""))
             out[st_tag] = _e(quote_stamp(le))
     return out
+
+
+def _pct_chip(q):
+    """A percent-only change chip, ("(+0.12%)", "up"): a move that rounds to no
+    quarter cent is ("(unch)", "nc"), as pricefmt.change does for the hero. With
+    no net change, a percent that prints 0.00 is unch. Twin of pctChip() in
+    components/futures.js."""
+    net, pc = q.get("netChange"), q.get("pctChange")
+    flat = pricefmt.quarters(net) == 0 if net is not None else float(_fixed(abs(float(pc)), 2)) == 0
+    if flat:
+        return ("(unch)", "nc")
+    return ("(" + pricefmt.pct(pc) + ")", "up" if float(net if net is not None else pc) > 0 else "dn")
 
 
 def _cwt_chg(q):

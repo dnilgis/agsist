@@ -12,7 +12,7 @@
 .h-box{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 .4rem}
 .h-box input{flex:1 1 15rem;min-width:0;font:inherit;font-size:16px;min-height:46px;padding:0 .8rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text)}
 .h-box button,.h-alt button,.h-alt summary{font:inherit;font-size:.95rem;min-height:46px;padding:0 1rem;border-radius:10px;cursor:pointer}
-.h-box button{background:var(--gold);color:#111;border:1px solid var(--gold);font-weight:700}
+.h-box button{background:var(--gold-fill);color:#111;border:1px solid var(--gold-fill);font-weight:700}
 .h-alt{display:flex;flex-wrap:wrap;gap:.5rem;align-items:flex-start;margin:0 0 .6rem}
 .h-alt button,.h-alt summary{background:var(--surface);color:var(--text);border:1px solid var(--border);display:inline-flex;align-items:center}
 .h-alt summary{list-style:none}.h-alt summary::-webkit-details-marker{display:none}
@@ -22,7 +22,7 @@
 .h-status.err{color:var(--red,#d9534f)}
 .h-chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0 .6rem}
 .h-chip{font:inherit;font-size:.86rem;min-height:40px;padding:0 .75rem;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text);cursor:pointer}
-.h-chip[aria-pressed="true"]{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
+.h-chip[aria-pressed="true"]{background:var(--gold-fill);color:#111;border-color:var(--gold-fill);font-weight:700}
 .h-svg{width:100%;height:auto;display:block;max-height:70vh}
 .h-svg path{fill:var(--surface);stroke:var(--text-muted);stroke-width:.6;cursor:pointer;vector-effect:non-scaling-stroke}
 .h-svg path:hover,.h-svg path:focus{fill:var(--gold);outline:none}
@@ -82,7 +82,7 @@ html.h-has .h-land{display:none}
 .h-links a{display:inline-flex;align-items:center;min-height:32px}
 .h-pr{margin:.4rem 0 0}
 .h-pr>button,#h-pr-go{font:inherit;font-size:.92rem;min-height:44px;padding:0 1rem;border-radius:10px;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--border)}
-#h-pr-go{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700;margin-top:.5rem}
+#h-pr-go{background:var(--gold-fill);color:#111;border-color:var(--gold-fill);font-weight:700;margin-top:.5rem}
 .h-pr-box{border:1px solid var(--border);border-radius:10px;padding:.7rem .85rem;margin:.5rem 0 0;background:var(--surface);max-width:34rem}
 .h-pr-box fieldset{border:0;margin:0;padding:0}
 .h-pr-box legend{font-size:.86rem;font-weight:700;color:var(--text);margin:0 0 .3rem}

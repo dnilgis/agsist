@@ -54,7 +54,7 @@ test("markup: aria-modal drawer, aria-controls on every dropdown, no heading in 
   }
   assert.doesNotMatch(footer, /<summary>\s*<h\d/);
   assert.equal((footer.match(/<summary><span class="footer-h">/g) || []).length, 6, "Prices, Livestock, Field, Money & Land, Work with us, About (2026-10-18)");
-  assert.match(header, /@media \(max-width:960px\)\{#theme-btn\{display:none\}\}/);
+  assert.match(header, /@media \(max-width:60em\)\{#theme-btn\{display:none\}\}/);
   assert.ok(header.includes('id="theme-btn-d"'), "the drawer keeps its own switch");
   for (const f of ["components/header.html", "components/footer.html", "components/search.js"]) {
     // what a reader sees: older code comments aside

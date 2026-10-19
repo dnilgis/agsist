@@ -355,7 +355,7 @@ def head(title, desc, url, ld, og_title=None, extra="", img=None):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
-  <link rel="stylesheet" href="/components/styles.css?v=24">
+  <link rel="stylesheet" href="/components/styles.css?v=25">
   {CSS}
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
