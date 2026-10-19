@@ -4543,7 +4543,7 @@
     if (INS_P) return INS_P;
     INS_P = new Promise(function (res) {
       var sc = doc.createElement('script');
-      sc.src = '/components/rp-insert.js?v=3';
+      sc.src = '/components/rp-insert.js?v=4';
       sc.onload = function () { res(!!root.AgRpInsert); };
       sc.onerror = function () { INS_P = null; res(false); };
       doc.head.appendChild(sc);
