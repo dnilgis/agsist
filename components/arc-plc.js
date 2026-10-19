@@ -543,7 +543,7 @@
     function vline(Y, v) {
       if (v.verdict === 'withheld') return '<b>' + Y + ': not enough history to say.</b> ' + v.n + ' past years with both a price and a county yield; we need ' + MIN_SCEN + '.' + (why ? ' ' + why : '');
       if (v.verdict === 'noprice') return '<b>' + Y + ': no ' + Y + ' price yet.</b> There is no ' + Y + ' price outlook for this crop we can check against past years, so no call. Type a price to see the dollars at that price.';
-      /* 2026 wheat's borrowed spread (sc.nousd): the call and the year counts, no dollars (money audit 3, 2026-10-19) */
+      /* a borrowed spread (sc.nousd): the call and the year counts, no dollars (money audit 3, 2026-10-19) */
       var B = v.nousd;
       var nums = B ? 'PLC paid more in ' + v.plcWins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arcWins + '. No dollar figure: this crop borrows corn&rsquo;s price swings, and the expected dollars would rest on them. Type a price to see the dollars at that price.' :
         'Expected ' + pay$(v.plc) + ' PLC vs ' + pay$(v.arc) + ' ARC-CO per base acre; PLC paid more in ' + v.plcWins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arcWins + '.';

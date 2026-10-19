@@ -154,7 +154,10 @@ test("every county page: its math file renders, and the page's FAQ and cards say
         const [y, w, pc, ac] = part.split(":");
         const p = rec.v[k][i][y];
         assert.equal(p[0], w, `${f} ${k} ${y}: card ${w}, math ${p[0]}`);
-        if (p.length > 2) {
+        if (p.length > 2 && (pc === "-" || p[1] === null)) {
+          // money audit 3 (2026-10-19): withheld dollars (flag 8) carry no cents in either place, and only there
+          assert.ok(pc === "-" && ac === "-" && p[1] === null && p[2] === null && (p[8] & 8), `${f} ${k} ${y}: withheld in both or neither: card ${pc}/${ac}, math ${p[1]}/${p[2]}`);
+        } else if (p.length > 2) {
           // the card carries cents() of the payment, the math the cents usd() prints; they differ only on a half cent
           assert.ok(Math.abs(p[1] - +pc) <= 1 && Math.abs(p[2] - +ac) <= 1, `${f} ${k} ${y}: card ${pc}/${ac}, math ${p[1]}/${p[2]}`);
         }

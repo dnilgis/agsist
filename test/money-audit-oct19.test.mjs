@@ -41,14 +41,41 @@ test("3: Sumner Co., KS 2026 wheat keeps its call and prints no expected dollars
   // what does not rest on the spread stays: the PLC price line and the trigger yield
   assert.match(t, /PLC only pays if wheat averages under \$6\.35 a bushel for 2026\./);
   assert.match(t, /ARC-CO pays here for 2026 if the county yield comes in under 43 bu at USDA’s price outlook, \$6\.30\./);
-  // a crop on its own spread still prints dollars (Story Co., IA oats)
-  assert.match(text(read("arc-plc/iowa/story-county.html")), /comes out about \$\d+ more per base acre/);
+  // a crop on its own spread still prints dollars (Sumner corn, October futures of its own)
+  assert.match(t, /Corn · non-irrigated Either one Close ARC-CO comes out about \$2 more per base acre/);
+  // and the page source carries no cents for the withheld card (data-t and the Lower / Higher packs)
+  const tag = /<article class="ap-crop" id="crop-wheat"([^>]*)>[\s\S]*?data-t="([^"]+)"/.exec(h);
+  assert.ok(tag, "wheat card");
+  assert.match(tag[2], /^2026:close:-:-\|/);
+  for (const lv of ["lower", "higher"]) assert.match(tag[1], new RegExp(`data-${lv}="[\\d.]+;2026:[a-z_]+:-:-\\|`), lv);
 });
 
-test("3: only 2026 wheat is marked, and the browser's words drop the dollars on that mark", () => {
+test("3: every borrowed 2026 spread is withheld: Cass Co., ND barley (too few years of its own prices)", () => {
+  /* Before (Oct 19 build): "ARC-CO comes out about $11 more per base acre, but that swings from year to year. ...
+     Barley borrows corn's price swings, so it stops at Leans." Barley has too few years in FSA's tables, so it ran on corn's
+     October swings outright (scen kind corn_oct). */
+  const h = read("arc-plc/north-dakota/cass-county.html"), t = text(h);
+  assert.match(t, /Barley ARC-CO Leans ARC-CO leads across the 11 price years we ran, but that swings from year to year\. PLC did not come out ahead in any of them\. Barley has too few years of its own prices in FSA’s tables, so its price swings are corn’s, and the expected dollars would rest on them\. We do not print them\. So it stops at Leans\./);
+  assert.doesNotMatch(t, /about \$11 more per base acre/);
+  const card = /<article class="ap-crop" id="crop-barley"([^>]*)>[\s\S]*?data-t="([^"]+)" data-lv="same" data-p="([^"]+)"/.exec(h);
+  assert.ok(card, "barley card");
+  assert.equal(card[2], "2026:lean_arc:-:-|2027:noprice:0:0");
+  assert.match(card[3], /^lean_arc,0,/, "no whole-dollar gap in the pack");
+  assert.doesNotMatch(card[1], /2026:[a-z_]+:\d/, "Lower and Higher carry no cents");
+  // the math file: null where the cents were (verdict, PLC, ARC-CO, wins, wins, n, |gap|, years ARC paid, flags, whole)
+  const ND = JSON.parse(read("data/arc-plc/math/ND.json"));
+  const rec = ND.c["38017"];   // Cass County, ND
+  const pk = rec ? rec.v.barley[0]["2026"] : null;
+  assert.ok(pk, "Cass barley pack");
+  assert.deepEqual([pk[0], pk[1], pk[2], pk[6], pk[9], pk[8] & 8, pk[8] & 16], ["lean_arc", null, null, null, null, 8, 16]);
   const D = JSON.parse(read("data/arc-plc.json"));
-  assert.equal(D.years["2026"].crops.wheat.scen.nousd, true);
+  const marked = Object.entries(D.years["2026"].crops).filter(([, c]) => c.scen && c.scen.nousd).map(([k]) => k);
+  assert.ok(marked.includes("barley") && marked.includes("seed_cotton") && marked.includes("oats") && marked.includes("mustard") && marked.includes("wheat"), marked.join(" "));
+  for (const [k, c] of Object.entries(D.years["2026"].crops)) if (c.scen && c.scen.borrowed) assert.ok(c.scen.nousd, `${k}: borrowed but not withheld`);
   for (const k of ["corn", "soybeans"]) assert.ok(!D.years["2026"].crops[k].scen.nousd, k);
+});
+
+test("3: the browser's words drop the dollars on the mark", () => {
   const ctx = { window: {} };
   for (const f of ["components/arc-plc.js", "components/arc-plc-math.js"]) vm.runInNewContext(read(f), ctx);
   const M = ctx.window.AgArcMath;
@@ -57,6 +84,8 @@ test("3: only 2026 wheat is marked, and the browser's words drop the dollars on 
   const line = M.verdictLine(v, { min_scen: 8 });
   assert.equal(line, "Close, either one: too small or too uncertain to call (PLC paid more in 3 of 11 past-year scenarios, ARC-CO in 3; no dollar figure, because the price swings are borrowed from corn&rsquo;s).");
   assert.match(M.verdictLine(M.unpack(["close", 676, 664, 3, 3, 11, 12, 6, 1 | 4, 0]), { min_scen: 8 }), /expected \$6\.76 PLC vs \$6\.64 ARC-CO/, "without the mark the dollars print");
+  // the packs as the build now writes them: null cents
+  assert.doesNotMatch(M.verdictLine(M.unpack(["lean_arc", null, null, 0, 8, 11, null, 8, 1 | 8 | 16, null]), { min_scen: 8 }), /\$|null|NaN/);
 });
 
 test("3: the 2026 yield line says county yields come later, not that a harvested crop is normal", () => {

@@ -81,10 +81,13 @@
   function tier(w) { var s = shapeOf(w); return '<span class="ap-tier ap-tier-' + s + '"><svg class="ap-ic" viewBox="0 0 16 16" aria-hidden="true"><use href="#api-' + s + '"/></svg>' + TIER[s] + '</span>'; }
   function gapLine(v, c) {
     var w = v.w, lc = c.lc, y = c.ly, pl = /s$/.test(lc);
-    /* 2026 wheat's borrowed spread (flag 64): no dollars (gap_line in the build script, money audit 3, 2026-10-19) */
+    /* a borrowed spread (flag 64; 128: too few years of its own prices): no dollars (gap_line in the build script, money audit 3, 2026-10-19) */
     if ((v.f & 64) && (w === 'plc' || w === 'arc' || w === 'close' || w.indexOf('lean_') === 0)) {
-      var bw = lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'have' : 'has') + ' no October futures history of ' + (pl ? 'their' : 'its') + ' own on file, so ' +
-        (pl ? 'their' : 'its') + ' price swings are borrowed from corn' + RS + 's, and the expected dollars would rest on them. We do not print them.';
+      var bw = (v.f & 128) ?
+        lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'have' : 'has') + ' too few years of ' + (pl ? 'their' : 'its') + ' own prices in FSA' + RS + 's tables, so ' +
+          (pl ? 'their' : 'its') + ' price swings are corn' + RS + 's, and the expected dollars would rest on them. We do not print them.' :
+        lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'have' : 'has') + ' no October futures history of ' + (pl ? 'their' : 'its') + ' own on file, so ' +
+          (pl ? 'their' : 'its') + ' price swings are borrowed from corn' + RS + 's, and the expected dollars would rest on them. We do not print them.';
       if (w === 'close') return 'Too close to call. ' + bw;
       var bs = w.indexOf('lean_') === 0 ? w.slice(5) : w, bo = bs === 'plc' ? 'arc' : 'plc';
       var bt = WORD[bs] + ' leads across the ' + v.n + ' price years we ran, but that swings from year to year.';

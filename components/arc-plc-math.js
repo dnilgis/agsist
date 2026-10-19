@@ -48,10 +48,13 @@
   function cents(x) { return Math.floor(x * 100 + 0.5); }
   function usd(v, k) { return '$' + fmt(v, k == null ? 2 : k); }
   function usdC(c) { return c === 0 ? '$0' : usd(c / 100); }   /* the build's usd_pay, from cents it figured */
-  /* the build's BOR_NOTE and bor_why(): no dollars for 2026 wheat, whose price swings are borrowed from corn's */
+  /* the build's BOR_NOTE and bor_why(): no dollars for a 2026 crop whose price spread is borrowed (nousd); few: too few
+     years of its own prices, so it runs on corn's swings outright */
   var BOR_NOTE = 'no dollar figure, because the price swings are borrowed from corn&rsquo;s';
-  function borWhy(lc) {
+  function borWhy(lc, few) {
     var pl = /s$/.test(lc);
+    if (few) return lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'have' : 'has') + ' too few years of ' + (pl ? 'their' : 'its') + ' own prices in FSA&rsquo;s tables, so ' +
+      (pl ? 'their' : 'its') + ' price swings are corn&rsquo;s, and the expected dollars would rest on them. We do not print them.';
     return lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'have' : 'has') + ' no October futures history of ' + (pl ? 'their' : 'its') + ' own on file, so ' +
       (pl ? 'their' : 'its') + ' price swings are borrowed from corn&rsquo;s, and the expected dollars would rest on them. We do not print them.';
   }
@@ -93,7 +96,7 @@
     if (p[0] === 'withheld') { v.n = p[1] || 0; return v; }
     if (p.length < 3) return v;
     v.plc = p[1]; v.arc = p[2]; v.plc_wins = p[3]; v.arc_wins = p[4]; v.n = p[5]; v.diff = p[6]; v.short = p[7];
-    v.borrowed = !!(p[8] & 1); v.alt_down = !!(p[8] & 2); v.under1 = !!(p[8] & 4); v.nousd = !!(p[8] & 8); v.whole = p[9];
+    v.borrowed = !!(p[8] & 1); v.alt_down = !!(p[8] & 2); v.under1 = !!(p[8] & 4); v.nousd = !!(p[8] & 8); v.few = !!(p[8] & 16); v.whole = p[9];
     return v;
   }
   function low1(t) { return /^(ARC|PLC)/.test(t) ? t : t.charAt(0).toLowerCase() + t.slice(1); }
@@ -107,7 +110,7 @@
     if (w_ === 'noprice') return 'No 2027 price yet: there is no 2027 price outlook for this crop we can check against past years, so no call. ' +
       'Type a price in the calculator to see the dollars.';
     if (w_ === 'pending') return 'Waiting on USDA&rsquo;s closing 2025 season-average price, which sets the 2027 reference price.';
-    /* 2026 wheat's borrowed spread (nousd): the call and the year counts, no dollars
+    /* a borrowed spread (nousd): the call and the year counts, no dollars
        (verdict_line_borrowed in the build script, money audit 3, 2026-10-19) */
     var B = v.nousd;
     var nums = B ? 'PLC paid more in ' + v.plc_wins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arc_wins + '; ' + BOR_NOTE :
@@ -133,7 +136,7 @@
     return 'PLC pays on any season-average price below ' + pf(cd, cy.erp) + ', up to ' + usd(maxPlc) + ' per base acre at the ' + pf(cd, cy.loan) + ' loan rate, so it ' +
       'protects against a deep price drop. ARC-CO is capped at ' + usd(maxArc) + ' per base acre but also pays when the county&rsquo;s ' +
       'yield is short; it paid something in ' + v.short + ' of the ' + v.n + ' past-year scenarios. With prices centered at ' + pf(cd, cy.cen) + ', ' +
-      (v.nousd ? 'the expected payments are not printed. ' + borWhy(cd.lab.toLowerCase()) :
+      (v.nousd ? 'the expected payments are not printed. ' + borWhy(cd.lab.toLowerCase(), v.few) :
         'PLC is expected to pay ' + usdC(v.plc) + ' and ARC-CO ' + usdC(v.arc) + ' per base acre.');
   }
   function shortWord(v) {
@@ -276,7 +279,7 @@
         [LY, OY].forEach(function (y) {
           var v = verdictOf(rec, k, i, y);
           if (!v) return;
-          var pay = NOCALL[v.verdict] ? function () { return 'none'; } : usdC;
+          var pay = NOCALL[v.verdict] ? function () { return 'none'; } : v.nousd ? function () { return 'not printed'; } : usdC;
           rows.push('<tr><td>' + esc(g.c[k].lab) + '</td><td>' + DLABEL[es[i].d] + '</td><td>' + y + '</td><td class="num">' + pay(v.plc || 0) + '</td>' +
             '<td class="num">' + pay(v.arc || 0) + '</td><td>' + shortWord(v) + '</td></tr>');
         });
