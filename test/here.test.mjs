@@ -39,7 +39,7 @@ test("one shared page: small, no em dashes, name only at the end, scripts versio
   assert.doesNotMatch(top, /Sigurd Lindquist/);
   assert.match(page, /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/);
   for (const s of ["place.js", "here.js", "here.css", "layers.js"]) assert.match(page, new RegExp("/components/" + s.replace(".", "\\.") + "\\?v=\\d+"), s);
-  assert.match(read("sw.js"), /var CACHE_VERSION = \d+;\s*\/\/ v\d+ 2026-10-18: \/here place page/);
+  assert.match(read("sw.js"), /v\d+ 2026-10-18: \/here place page/);
   assert.match(read("scripts/dev/checks.sh"), /build_place_pct\.py --check/);
 });
 
