@@ -288,8 +288,9 @@
     var srcs = p.cols.map(function (c) { return '<b>' + esc(c.short) + '</b> ' + esc(c.source || '') + ', ' + esc(c.years || ''); }).join('; ');
     $('h-pr-cover').innerHTML =
       '<div class="pc-head"><span class="pc-brand">AGSIST</span><span>One place, all its numbers</span><span id="h-pr-date">' + esc(printedOn()) + '</span></div>' +
-      '<h2 class="pc-name">' + esc(p.name) + ', ' + esc(p.stName) + '</h2>' +
-      '<p class="pc-from">' + (from ? 'From ' + esc(from) + '. ' : '') + 'County figures. Ranks are among ' + esc(p.stName) + ' counties that carry the figure, never among fields.</p>' +
+      '<div class="pc-top"><div><h2 class="pc-name">' + esc(p.name) + ', ' + esc(p.stName) + '</h2>' +
+      '<p class="pc-from">' + (from ? 'From ' + esc(from) + '. ' : '') + 'County figures. Ranks are among ' + esc(p.stName) + ' counties that carry the figure, never among fields.</p></div>' +
+      '<div class="pc-qr" id="h-pr-qr1"></div></div>' +
       '<p class="pc-sent h-part-sentence-pr">' + esc(p.sentence) + '</p>' +
       '<div class="pc-fp"><div class="pc-tiles">' + tiles + '</div>' +
       '<h3 class="pc-h">Where ' + esc(p.name) + ' sits among ' + esc(p.stName) + ' counties</h3>' +
@@ -297,7 +298,7 @@
       '<p class="pc-key">Black dot: top or bottom tenth of the state. n/a: the source does not publish it here. Sources: ' + srcs + '. Farmland Atlas county files of ' + esc(mdy(p.atlasGenerated)) + '.</p></div>';
     var st = $('h-pr-page');
     if (!st) { st = document.createElement('style'); st.id = 'h-pr-page'; document.head.appendChild(st); }
-    st.textContent = '@media print{@page{@top-right{content:"' + (p.name + ', ' + p.st).replace(/["\\]/g, '') + '"}}}';
+    st.textContent = '@media print{@page{@top-right{content:"' + (p.name + ', ' + p.st).replace(/["\\]/g, '') + '"}}@page:first{@top-right{content:none}}}';
   }
 
   function drawUnusual(p) {
@@ -447,13 +448,14 @@
   }
   function buildQr() {
     var url = location.origin.indexOf('agsist.com') >= 0 ? location.href : 'https://agsist.com' + location.pathname.replace(/\.html$/, '') + location.search;
-    var qr = $('h-pr-qr');
+    var qr = $('h-pr-qr1'), end = $('h-pr-qr'), bare = esc(url.replace(/^https?:\/\//, ''));
     if (qr && qr.getAttribute('data-url') !== url) {
       var svg = '';
       try { svg = window.AgQR ? window.AgQR.svg(url, 'QR code for this page') : ''; } catch (e) { svg = ''; }
-      qr.innerHTML = (svg ? svg : '') + '<p>Scan for this page, live: ' + esc(url.replace(/^https?:\/\//, '')) + '</p>';
+      qr.innerHTML = svg ? svg + '<p>Scan for the live page</p>' : '';
       qr.setAttribute('data-url', url);
     }
+    if (end) end.innerHTML = '<p>This report, live and up to date: ' + bare + '</p>';
   }
   function afterPrint() { opened.forEach(function (d) { d.open = false; }); opened = []; }
   function wirePrint() {
