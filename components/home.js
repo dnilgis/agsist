@@ -1826,6 +1826,10 @@ try {
 })();
 } catch (e) { blockFailed(e); }
 /* ---- 2026-10-16: no location after a few seconds ----
+   2026-10-19 (Sig): never ask for the location on load. With no saved place
+   this box shows at once, worded as an offer ("See the bids near you."),
+   with a "Use my location" button; "Your location did not come through."
+   only follows a tap that got no location (geo.js requestGeo).
    A reader who neither allows nor blocks the browser's location question
    used to sit on "Detecting your location..." and gray rows for the life of
    the page (geo.js only hears back on allow or deny). After NOLOC_MS with no
@@ -1877,9 +1881,11 @@ try {
     if(txt&&!/Detecting/.test(txt.textContent||''))return;
     try{if(typeof window._signalBidsGeoFailed==='function')window._signalBidsGeoFailed();}catch(e){}
     try{var wl=document.getElementById('wx-loading');if(wl&&/Detecting/.test(wl.textContent||'')&&typeof window.showZipEntry==='function')window.showZipEntry();}catch(e){}
-    area.innerHTML='<div class="hn" id="bids-noloc"><p class="hn-h">Your location did not come through.</p>'
-      +'<p class="hn-p">Type your ZIP for the nearest elevators, or pick a state to see its basis now.</p>'
+    var bar=document.getElementById('bids-geo-bar');if(bar)bar.style.display='none';
+    area.innerHTML='<div class="hn" id="bids-noloc"><p class="hn-h">See the bids near you.</p>'
+      +'<p class="hn-p">Type your ZIP or use your location for the nearest elevators, or pick a state to see its basis now.</p>'
       +'<div class="hn-pick"><button type="button" class="hn-zip">Enter ZIP</button>'
+      +'<button type="button" class="hn-loc">Use my location</button>'
       +'<label class="hn-sl"><span class="visually-hidden">State</span><select class="hn-sel" disabled><option value="">Pick a state</option></select></label></div>'
       +'<div class="hn-out" aria-live="polite"></div></div>';
     var box=area.querySelector('.hn'),sel=box.querySelector('.hn-sel'),doc=null;
@@ -1889,6 +1895,14 @@ try {
       if(typeof window.agsistOpenZip==='function'){window.agsistOpenZip();return;}
       var row=document.getElementById('bids-zip-row'),z=document.getElementById('bids-zip');
       if(row)row.style.display='block';if(z)z.focus();
+    });
+    /* 2026-10-19 (Sig): the browser is asked only on this tap. geo.js
+       draws the bids over this box when a place lands, and says so here
+       when none does. */
+    box.querySelector('.hn-loc').addEventListener('click',function(){
+      if(typeof window.requestGeo!=='function'){box.querySelector('.hn-h').textContent='Location is not ready yet. Type your ZIP.';return;}
+      box.querySelector('.hn-h').textContent='Waiting for your location\u2026';
+      window.requestGeo();
     });
     sel.addEventListener('change',function(){
       var v=sel.value;
@@ -1909,7 +1923,12 @@ try {
       var out=box.querySelector('.hn-out');if(out)out.innerHTML='<p class="hn-fine">State basis did not load. Your ZIP still works.</p>';
     });
   }
-  function arm(){setTimeout(fallback,NOLOC_MS);}
+  /* 2026-10-19 (Sig): nothing asks for the location on load any more, so a
+     first visit with no saved place gets this box at once (home.js runs
+     before first paint, so the card never shows the gray rows first). A
+     saved place keeps the old wait, for a lookup that stalls. */
+  function savedPlace(){try{var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');return !!(l&&((l.lat&&l.lon)||/^\d{5}$/.test(String(l.zip||''))));}catch(e){return false;}}
+  function arm(){if(!savedPlace())fallback();else setTimeout(fallback,NOLOC_MS);}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',arm);else arm();
 })();
 } catch (e) { blockFailed(e); }

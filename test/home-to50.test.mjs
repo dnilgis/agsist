@@ -4,7 +4,8 @@
  *      location question used to sit on "Detecting your location..." and gray
  *      rows forever. After 6 s the cash bid card says so, offers the ZIP box
  *      and a state pick that prints that state's median basis from
- *      data/basis-states.json. Numbers checked by hand below.
+ *      data/basis-states.json. Numbers checked by hand below. Since Oct 19
+ *      (Sig: never ask on load) the box shows at once on a first visit.
  *   2. Byline on the first screen.
  *   3. "Also today" line in the briefing strip, hidden when the briefing is
  *      not today's.
@@ -109,9 +110,10 @@ test("no location: the bid card offers the ZIP box and a state basis, numbers as
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const { pg, errors } = await open(browser, port, { routes: { "/data/basis-states.json": BASIS } });
-    // Headless Chromium leaves the location question unanswered, as a reader who ignores it does.
+    // Sig, Oct 19: the location is never asked on load, so a first visit gets this box at once,
+    // worded as an offer; "did not come through" follows only a failed tap (test/geo-ask-on-tap.test.mjs).
     await pg.waitForSelector("#bids-noloc", { timeout: 15000 });
-    assert.match(await pg.textContent("#bids-noloc .hn-h"), /location did not come through/);
+    assert.match(await pg.textContent("#bids-noloc .hn-h"), /See the bids near you/);
     assert.equal(await pg.$$eval("#bids-list-area .bids-skeleton", (x) => x.length), 0, "skeleton rows gone");
     const opts = await pg.$$eval("#bids-noloc .hn-sel option", (o) => o.map((x) => x.value));
     assert.deepEqual(opts, ["", "IA", "KS", "UT"], "states come from the file, sorted by name");

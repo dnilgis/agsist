@@ -690,16 +690,9 @@ setInterval(function(){
   var st=window.AGSIST_STATE;
   if(st&&st.weather&&st.weather.lat!=null)_runEnhancements(st.weather.lat,st.weather.lon,st);
 },2500);
-// Fallback: browser geolocation after 3.5s if geo.js hasn't resolved
-setTimeout(function(){
-  if(_lastEnhLat!=null)return;
-  if(!navigator.geolocation)return;
-  navigator.geolocation.getCurrentPosition(
-    function(pos){_runEnhancements(pos.coords.latitude,pos.coords.longitude,null);},
-    function(){},
-    {timeout:8000,maximumAge:300000}
-  );
-},3500);
+// 2026-10-19 (Sig): no browser geolocation fallback here. It asked for the
+// location 3.5 s after load; the page now asks only when the reader taps
+// "Use my location" (geo.js requestGeo), and waitForGeo above picks that up.
 // Planting dates — render immediately with national default; loadWeatherEnhancements overrides with state-specific once geo resolves
 (function(){applyPlantingDates(null,null);})();
 })();
