@@ -1335,6 +1335,33 @@ TAGS = [
 EXPECT_TAGS = 6
 
 
+# The page's JSON-LD WebPage "name" follows the title too (night SEO audit, Oct 19, 2026): it was
+# typed once and drifted, e.g. cattle-futures-prices named "Live Cattle & Feeder Cattle Futures
+# Prices Today" under a title that leads with feeders and carries the settles. Only a WebPage node,
+# and only its own "name": a flat nested object before it (an author) is stepped over whole, so a
+# name inside it, or in a breadcrumb list, is never touched.
+_LD_NAME = re.compile(r'("@type":\s*"WebPage"(?:[^{}]|\{[^{}]*\})*?"name":\s*")((?:[^"\\]|\\.)*)(")')
+
+
+def stamp_ld_name(text, title):
+    """(text, n): the WebPage name in each JSON-LD block set to the title without the suffix."""
+    name = (title or "")
+    if name.endswith(SUFFIX):
+        name = name[:-len(SUFFIX)]
+    if not name:
+        return text, 0
+    val = json.dumps(name, ensure_ascii=False)[1:-1].replace("</", "<\\/")
+    n = 0
+
+    def blk(m):
+        nonlocal n
+        new, c = _LD_NAME.subn(lambda mm: mm.group(1) + val + mm.group(3), m.group(2))
+        n += c
+        return m.group(1) + new + m.group(3)
+    out = re.sub(r'(<script type="application/ld\+json">)(.*?)(</script>)', blk, text, flags=re.S)
+    return out, n
+
+
 def stamp(text, title, desc, owns=frozenset({"title", "desc"})):
     vals = {"title": esc(title or ""), "desc": esc(desc or ""), "alt": esc(title or "")}
     n = 0
@@ -1344,6 +1371,8 @@ def stamp(text, title, desc, owns=frozenset({"title", "desc"})):
         new, cnt = pat.subn(lambda m: m.group(1) + vals[which] + m.group(3), text, count=1)
         if cnt:
             text, n = new, n + 1
+    if "title" in owns:
+        text, _ = stamp_ld_name(text, title)   # not counted: a page may have no WebPage node
     return text, n
 
 
@@ -1681,6 +1710,21 @@ def selftest():
     _o, _n = stamp(alt_html, "Corn 54%", "D", frozenset({"title", "desc", "alt"}))
     ck("og:image:alt follows the title on pages that own it",
        _n == 7 and 'og:image:alt" content="Corn 54%"' in _o and "57%" not in _o, _o)
+    _ld = ('<title>Old | AGSIST</title><script type="application/ld+json">{"@context": "https://schema.org", "@graph": '
+           '[{"@type": "WebPage", "@id": "https://agsist.com/x#webpage", "name": "Old typed name | AGSIST", "breadcrumb": '
+           '{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home"}]}}]}</script>')
+    _lo, _ = stamp(_ld, 'CME Feeder Cattle Futures $343.625 & "Live" | AGSIST', "D", frozenset({"title"}))
+    _lj = json.loads(re.search(r'json">(.*?)</script>', _lo).group(1))["@graph"][0]
+    ck("the JSON-LD WebPage name follows the title (suffix off), breadcrumb names untouched",
+       _lj["name"] == 'CME Feeder Cattle Futures $343.625 & "Live"'
+       and _lj["breadcrumb"]["itemListElement"][0]["name"] == "Home", _lo)
+    _lq = ('<script type="application/ld+json">{"@type":"WebPage","author":{"@type":"Person","name":"Sigurd Lindquist"},'
+           '"name":"Old"}</script>')
+    _lqo = stamp_ld_name(_lq, "New title | AGSIST")[0]
+    ck("an author object before the name is stepped over, the author's name kept",
+       '"name":"Sigurd Lindquist"' in _lqo and '"name":"New title"}' in _lqo, _lqo)
+    ck("a page that does not own its title keeps its JSON-LD name",
+       "Old typed name" in stamp(_ld, "New", "D", frozenset({"desc"}))[0])
     ck("og:image:alt left alone on pages that do not own it",
        "57%" in stamp(alt_html, "Corn 54%", "D")[0])
     ck("conditions stays quiet out of season",

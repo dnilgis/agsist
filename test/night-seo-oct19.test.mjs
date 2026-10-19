@@ -7,7 +7,7 @@
  *   node --test test/night-seo-oct19.test.mjs */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 
@@ -31,4 +31,31 @@ test("freshness.yml: IndexNow ping after its push, only for what it pushed", () 
   assert.match(step, /if: steps\.commit\.outputs\.pushed == '1'/);
   assert.match(step, /continue-on-error: true/);
   assert.match(step, /indexnow_submit\.py --changed \$files/);
+});
+
+/* SEO #8: hand pages' JSON-LD page name is the title (without " | AGSIST"). 34 had drifted when
+ * titles were rewritten. bake_seo.py stamps the name on the pages whose titles it bakes;
+ * scripts/build_glossary.py reads the page's title. A WebApplication's name is the tool's name
+ * and is not held to the title. */
+test("root pages: the JSON-LD WebPage name matches the title", () => {
+  const strip = (t) => t.replace(/\s*\|\s*AGSIST$/, "");
+  const ent = (s) => s.replace(/&rsquo;/g, "\u2019").replace(/&lsquo;/g, "\u2018").replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+  const bad = [];
+  for (const f of readdirSync(ROOT).filter((x) => x.endsWith(".html"))) {
+    const s = read(f);
+    if (/name="robots" content="[^"]*noindex/.test(s) || /http-equiv="refresh"/.test(s)) continue;
+    const tm = /<title>([\s\S]*?)<\/title>/.exec(s);
+    if (!tm) continue;
+    const title = strip(ent(tm[1]).trim());
+    for (const b of s.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+      let d; try { d = JSON.parse(b[1]); } catch { continue; }
+      const nodes = Array.isArray(d) ? d : (d["@graph"] || [d]);
+      for (const n of nodes) {
+        if (n && ["WebPage", "AboutPage", "ContactPage", "CollectionPage"].includes(n["@type"]) && n.name && strip(n.name) !== title) {
+          bad.push(`${f}: "${n.name}" vs title "${title}"`);
+        }
+      }
+    }
+  }
+  assert.deepEqual(bad, []);
 });
