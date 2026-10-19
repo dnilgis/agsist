@@ -104,7 +104,7 @@
   --glow-gold:  none;
   --glow-card:  0 2px 12px rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.2);
   --glow-lift:  0 1px 0 rgba(255,255,255,.025) inset, 0 24px 60px -30px rgba(0,0,0,.7);
-  --base: 17px;
+  --base: 106.25%;  /* 17px at the browser default 16px, and it grows with a reader who sets a larger default font (a11y 2026-10-19; 17px ignored it) */
   --sp-xs: .35rem; --sp-sm: .65rem; --sp-md: 1rem; --sp-lg: 1.5rem;
   --sp-xl: 2rem; --sp-2xl: 3rem;
   --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
@@ -254,7 +254,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .hamburger.open .h-bar:nth-child(1) { transform: translateY(7px) rotate(45deg) }
 .hamburger.open .h-bar:nth-child(2) { opacity: 0 }
 .hamburger.open .h-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg) }
-@media (max-width: 960px) { .nav-menu { display: none } .hamburger { display: flex } }
+@media (max-width: 60em) { .nav-menu { display: none } .hamburger { display: flex } }  /* em, not px: 960px at the default font, and it folds sooner for a reader with a larger default font (--base grows with it), so the menu never overruns the ZIP chip */
 
 /* ── DRAWER ───────────────────────────────────────────────────────── */
 .drawer { position: fixed; inset: 0 0 0 auto; width: min(320px, 90vw); background: var(--surface); border-left: 2px solid var(--brand); z-index: 500; overflow-y: auto; transform: translateX(100%); transition: transform .25s cubic-bezier(.4,0,.2,1) }
@@ -862,7 +862,7 @@ html.sa-subbed [data-signup-ask]:not([data-sa-done]){display:none}
 .nav-btn:hover .nav-ic,.nav-dd.open > .nav-btn .nav-ic{opacity:1}
 .draw-lbl{display:flex;align-items:center}
 .draw-lbl-ic{width:15px;height:15px;flex:0 0 auto;margin-right:.4rem;opacity:.9}
-@media (max-width: 960px){ .nav-ic{display:none} }
+@media (max-width: 60em){ .nav-ic{display:none} }
 
 /* ── Numerals ─────────────────────────────────────────────────────────────
    Measured 2026-08-16: not one element on the site used tabular figures, and
