@@ -40,9 +40,11 @@ RETURNS AND THE RAIN PRINT FUNNEL
 90 days) and weekly cohorts, the share of each week's new readers active again
 on a later day within 14 days, withheld under COHORT_MIN new readers. GA4's
 caveats (cookies, two devices, consent, blocking) are written into the file.
-"rain_print_funnel" counts the events the Rain Print page sends, by week and
-for the last 7 days: event names only, never a parameter. Both use the same US
-and server-town filter, and each fails on its own and keeps its last copy.
+funnel_section() counts the events the Rain Print page sends, by week and for
+the last 7 days: event names only, never a parameter. It is NOT written to
+data/audience.json (the file is public; Sig, 2026-10-19): morning_report.py
+calls it in its own job and the counts go only into Sig's email. Both use the
+same US and server-town filter; returns fails on its own and keeps its last copy.
 
 WHAT IT DOES NOT DO
 
@@ -389,6 +391,9 @@ def returns_section(ga, F, rg):
 
 
 # ── the Rain Print funnel ─────────────────────────────────────────────────
+# NOT written to data/audience.json, which is public (Sig, 2026-10-19: no
+# Rain Print numbers in a committed file until he decides). morning_report.py
+# calls funnel_section() in its own job; the counts go only into his email.
 # Event names only, counted on /rain-print* pages. No event parameter is read:
 # the design code, the Stripe session and the town never leave GA4. The events
 # are the ones components/rain-print.js and components/signup-ask.js send.
@@ -535,8 +540,8 @@ def merge_series(ga_days, g_days, b_days, start, end):
     return out
 
 
-def build(today, prev, ga=None, gsc=None, bing=None, email=None, errors=None, returns=None, funnel=None):
-    """prev: the previous file (or {}). ga/gsc/bing/returns/funnel: section dicts
+def build(today, prev, ga=None, gsc=None, bing=None, email=None, errors=None, returns=None):
+    """prev: the previous file (or {}). ga/gsc/bing/returns: section dicts
     or None when that source was not available this run. Anything None is
     carried from prev, with its own "through" date on it."""
     rg = ranges(today)
@@ -598,14 +603,14 @@ def build(today, prev, ga=None, gsc=None, bing=None, email=None, errors=None, re
             out["email"] = prev["email"]
         src["email"] = dict(src.get("email") or {}, ok=False, error=(errors or {}).get("email", "not configured"))
 
-    for key, fresh in (("returns", returns), ("rain_print_funnel", funnel)):
-        if fresh is not None:
-            out[key] = fresh
-            src[key] = {"ok": True, "through": fresh["through"], "fetched": now}
-        else:
-            if key in prev:
-                out[key] = prev[key]
-            src[key] = dict(src.get(key) or {}, ok=False, error=(errors or {}).get(key, "not configured"))
+    if returns is not None:
+        out["returns"] = returns
+        src["returns"] = {"ok": True, "through": returns["through"], "fetched": now}
+    else:
+        if "returns" in prev:
+            out["returns"] = prev["returns"]
+        src["returns"] = dict(src.get("returns") or {}, ok=False, error=(errors or {}).get("returns", "not configured"))
+    src.pop("rain_print_funnel", None)      # never in this public file
 
     # Carried from the exports, with their own dates, until Bing has an API for them.
     if "ai" in prev:
@@ -654,20 +659,17 @@ def main():
             log("::warning::GA4 failed, keeping the previous figures: " + errors["ga4"])
         if ga:
             # Each on its own: a refused cohort request must not cost the totals.
-            for key, fn in (("returns", returns_section), ("rain_print_funnel", funnel_section)):
-                try:
-                    extra[key] = fn(GA4(prop, BetaAnalyticsDataClient(credentials=c)), f_readers(ga["servers"]["towns"]), rg)
-                except Exception as e:  # noqa: BLE001
-                    errors[key] = "%s: %s" % (type(e).__name__, str(e)[:300])
-                    log("::warning::%s failed, keeping the previous figures: %s" % (key, errors[key]))
-            if "returns" in extra:
+            # The Rain Print funnel is not pulled here: it never goes in this public file.
+            try:
+                extra["returns"] = returns_section(GA4(prop, BetaAnalyticsDataClient(credentials=c)),
+                                                   f_readers(ga["servers"]["towns"]), rg)
                 w = [x for x in extra["returns"]["cohorts"]["weeks"] if x["share"] is not None]
                 log("returns: %d of %d cohort weeks printable" % (len(w), len(extra["returns"]["cohorts"]["weeks"])))
-            if "rain_print_funnel" in extra:
-                log("rain print funnel: %d draws in 7 days" % extra["rain_print_funnel"]["last7"]["counts"]["rain_print_draw"])
+            except Exception as e:  # noqa: BLE001
+                errors["returns"] = "%s: %s" % (type(e).__name__, str(e)[:300])
+                log("::warning::returns failed, keeping the previous figures: " + errors["returns"])
         else:
             errors.setdefault("returns", "not pulled: the main GA4 pull failed")
-            errors.setdefault("rain_print_funnel", "not pulled: the main GA4 pull failed")
     if info:
         try:
             from google.auth.transport.requests import AuthorizedSession
@@ -704,8 +706,7 @@ def main():
     if not any((ga, gsc, bing, email is not None)):
         log("::warning::no source was reachable or configured -- data/audience.json left exactly as it was")
         return 0
-    out = build(today, prev, ga, gsc, bing, email, errors,
-                returns=extra.get("returns"), funnel=extra.get("rain_print_funnel"))
+    out = build(today, prev, ga, gsc, bing, email, errors, returns=extra.get("returns"))
     OUT.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
     log("wrote data/audience.json")
     return 0
@@ -981,9 +982,12 @@ def selftest():
       "no event parameter, transaction id or full URL is ever asked for")
     t(fn["stripe"] is None, "no Stripe figure is invented here")
 
-    o6 = build(date(2026, 10, 19), {}, g, None, None, None, returns=ret, funnel=fn)
-    t(o6["returns"] is ret and o6["sources"]["returns"]["ok"] and o6["rain_print_funnel"] is fn, "returns and the funnel go into the file")
-    o7 = build(date(2026, 10, 20), o6, g, None, None, None, {"returns": "boom"}, funnel=fn)
+    o6 = build(date(2026, 10, 19), {"rain_print_funnel": fn, "sources": {"rain_print_funnel": {"ok": True}}}, g, None, None, None, returns=ret)
+    t(o6["returns"] is ret and o6["sources"]["returns"]["ok"], "returns go into the file")
+    t("rain_print_funnel" not in o6 and "rain_print_funnel" not in o6["sources"]
+      and "rain_print" not in json.dumps(o6) and "purchase" not in json.dumps(o6),
+      "no Rain Print funnel number reaches the public file, even one an older file carried")
+    o7 = build(date(2026, 10, 20), o6, g, None, None, None, {"returns": "boom"})
     t(o7["returns"] == ret and o7["sources"]["returns"]["ok"] is False and o7["sources"]["returns"]["error"] == "boom"
       and o7["returns"]["through"] == "2026-10-17",
       "a failed returns pull keeps the last one, with its own through date, and says it failed")

@@ -25,7 +25,9 @@ skim over coffee. Run by .github/workflows/morning-report.yml.
   Traffic            data/audience.json: the latest day it has, the last 7
                      days, the top 3 pages, the 14-day return share of the
                      newest whole weekly cohort (with its n, or why it is
-                     withheld) and the Rain Print funnel for 7 days.
+                     withheld) and the Rain Print funnel for 7 days, read
+                     from GA4 here (GA4_PROPERTY_ID, GA4_SERVICE_ACCOUNT) and
+                     never written to a file; left out of a dry run.
   To-dos             the unchecked lines of TODO-SIG.md.
 
 COUNTS ONLY. No subscriber or customer address, name or message ever goes into
@@ -168,7 +170,9 @@ class Report:
 class Sources:
     """Every outside read goes through here, so the selftest can hand in fixtures."""
 
-    def __init__(self, gh_token="", bids_token="", list_url="", list_token="", stripe_key="", root=ROOT):
+    def __init__(self, gh_token="", bids_token="", list_url="", list_token="", stripe_key="", root=ROOT,
+                 ga4_prop="", ga4_cred="", dry=False):
+        self.ga4_prop, self.ga4_cred, self.dry = (ga4_prop or "").strip(), (ga4_cred or "").strip(), dry
         self.gh_token, self.bids_token = gh_token, bids_token
         u = urllib.parse.urlsplit((list_url or "").strip())
         self.list_base = "%s://%s" % (u.scheme, u.netloc) if u.scheme and u.netloc else ""
@@ -204,6 +208,20 @@ class Sources:
     def file(self, rel):
         with open(os.path.join(self.root, rel), encoding="utf-8") as f:
             return f.read()
+
+    def rain_print_funnel(self, towns, now):
+        """The Rain Print funnel straight from GA4, in this job only: it is
+        never written to a file (data/audience.json is public). Same US and
+        server-town filter as audience.json, the towns read from it."""
+        if not (self.ga4_prop and self.ga4_cred):
+            raise LookupError("GA4 not set up for this job")
+        import build_audience as BA
+        from google.analytics.data_v1beta import BetaAnalyticsDataClient
+        from google.oauth2 import service_account
+        c = service_account.Credentials.from_service_account_info(
+            json.loads(self.ga4_cred), scopes=["https://www.googleapis.com/auth/analytics.readonly"])
+        return BA.funnel_section(BA.GA4(self.ga4_prop, BetaAnalyticsDataClient(credentials=c)),
+                                 BA.f_readers(towns), BA.ranges(now.date()))
 
 
 # ───────────────────────────── sections ─────────────────────────────
@@ -619,11 +637,12 @@ def short_day(iso):
     return "%s %d" % (t.strftime("%b"), t.day)
 
 
-def returns_lines(a):
-    """Two lines from build_audience.py's returns and rain_print_funnel
-    sections: the newest whole cohort's 14-day return share with its n (or the
-    reason it is withheld), and the Rain Print funnel for the last 7 days.
-    Counts only; a carried (stale) section says how old it is."""
+def returns_lines(a, fn=None):
+    """The newest whole cohort's 14-day return share with its n (or the reason
+    it is withheld), from audience.json's returns section; and the Rain Print
+    funnel for the last 7 days, `fn` as build_audience.funnel_section() returns
+    it (read live, never from a file). Counts only; a stale returns section
+    says how old it is."""
     out, src = [], a.get("sources") or {}
 
     def stale(key, sec):
@@ -640,14 +659,13 @@ def returns_lines(a):
                        % (("%.1f" % (100 * w["share"])).rstrip("0").rstrip("."), num(w["newReaders"]), span, stale("returns", ret)))
         else:
             out.append("Came back within 14 days, readers first seen %s: withheld, %s%s." % (span, w.get("withheld") or "no share", stale("returns", ret)))
-    fn = a.get("rain_print_funnel") or {}
+    fn = fn or {}
     l7 = fn.get("last7") or {}
     c, p = l7.get("counts") or {}, l7.get("people") or {}
     if c:
-        out.append("Rain Print, 7 days to %s: %s draws (%s people), %s email signups, %s paid back from Stripe, %s order forms sent (GA4 events)%s."
+        out.append("Rain Print, 7 days to %s: %s draws (%s people), %s email signups, %s paid back from Stripe, %s order forms sent (GA4 events)."
                    % (short_day(l7["end"]), num(c.get("rain_print_draw", 0)), num(p.get("rain_print_draw", 0)),
-                      num(c.get("email_signup", 0)), num(c.get("purchase", 0)), num(c.get("rain_print_order", 0)),
-                      stale("rain_print_funnel", fn)))
+                      num(c.get("email_signup", 0)), num(c.get("purchase", 0)), num(c.get("rain_print_order", 0))))
     return out
 
 
@@ -671,7 +689,17 @@ def sec_traffic(src, now, rep):
                 top = ", ".join("%s %s" % (p.get("path"), num(p.get("views"))) for p in pages[:3])
                 lines.append("Top pages, %s: %s." % ({"7d": "7 days", "28d": "28 days"}[rid], top))
                 break
-        lines.extend(returns_lines(a))
+        fn, fn_line = None, None
+        if src.dry:
+            fn_line = "Rain Print funnel: left out of a dry run (the Actions log is public)."
+        else:
+            try:
+                fn = src.rain_print_funnel(((a.get("servers") or {}).get("towns") or []), now)
+            except Exception as e:                         # noqa: BLE001
+                fn_line = "Rain Print funnel: %s." % (str(e) if isinstance(e, LookupError) else "could not be read (%s)" % why(e))
+        lines.extend(returns_lines(a, fn))
+        if fn_line:
+            lines.append(fn_line)
         if not lines:
             lines.append("data/audience.json has no traffic numbers.")
     except Exception as e:                                 # noqa: BLE001
@@ -851,7 +879,8 @@ def main():
         return gate()
     dry = env("DRY_RUN") == "1"
     src = Sources(gh_token=env("GITHUB_TOKEN", ""), bids_token=env("BIDS_READ_TOKEN", ""), list_url=env("LIST_URL", ""),
-                  list_token=env("LIST_TOKEN", ""), stripe_key=env("STRIPE_READ_KEY", ""))
+                  list_token=env("LIST_TOKEN", ""), stripe_key=env("STRIPE_READ_KEY", ""),
+                  ga4_prop=env("GA4_PROPERTY_ID", ""), ga4_cred=env("GA4_SERVICE_ACCOUNT", ""), dry=dry)
     to = env("REPORT_TO") or env("FORMS_TO") or env("SPONSOR_TO") or "sig@farmers1st.com"
     fn, fa = env("FROM_NAME", "AGSIST"), env("FROM_ADDR") or env("SMTP_USER") or ""
     snap_path = env("SNAPSHOT", os.path.join(ROOT, ".morning-report", "counts.json"))
@@ -889,6 +918,7 @@ class Fake(Sources):
         super().__init__(gh_token="t", bids_token=bids_token, list_url="https://w.dev", list_token="k", stripe_key=stripe_key)
         self.ghd, self.wd, self.ud, self.fd, self.sd, self.broken = gh or {}, worker or {}, urls or {}, files or {}, stripe, set(broken)
         self.asked = []
+        self.funnel = None
 
     def _pick(self, table, key, kind):
         self.asked.append((kind, key))
@@ -917,6 +947,14 @@ class Fake(Sources):
         if "stripe" in self.broken:
             raise urllib.error.HTTPError("https://api.stripe.com/x", 401, "no", {}, None)
         return self.sd
+
+    def rain_print_funnel(self, towns, now):
+        self.asked.append(("ga4-funnel", tuple(t.get("city") for t in towns)))
+        if "ga4" in self.broken:
+            raise urllib.error.HTTPError("https://analyticsdata.googleapis.com/x", 403, "no", {}, None)
+        if self.funnel is None:
+            raise LookupError("GA4 not set up for this job")
+        return self.funnel
 
     def file(self, rel):
         self.asked.append(("file", rel))
@@ -1206,27 +1244,50 @@ def selftest():
         ck("only dated integer counts are read", load_snap(p) == {"2026-10-14": {"alerts": 3}}, load_snap(p))
         ck("a missing file is empty", load_snap(os.path.join(d, "none.json")) == {})
 
-    # returns and the Rain Print funnel (build_audience.py), two lines at most
+    # returns (audience.json) and the Rain Print funnel (GA4, live, never a file), two lines at most
     aud = {"returns": {"through": "2026-10-17", "cohorts": {"weeks": [
                {"week": "2026-09-14", "end": "2026-09-20", "newReaders": 40, "returned": 6, "share": None, "withheld": "x"},
                {"week": "2026-09-28", "end": "2026-10-04", "newReaders": 1150, "returned": 207, "share": 0.18, "withheld": None}]}},
-           "rain_print_funnel": {"through": "2026-10-17", "last7": {"start": "2026-10-11", "end": "2026-10-17",
-               "counts": {"rain_print_draw": 1240, "email_signup": 3, "purchase": 1, "rain_print_order": 2},
-               "people": {"rain_print_draw": 310}}},
-           "sources": {"returns": {"ok": True}, "rain_print_funnel": {"ok": False}}}
-    rl = returns_lines(aud)
-    ck("returns: the newest whole cohort, share with its n", rl[0] ==
-       "Came back within 14 days: 18% of 1,150 new readers first seen Sep 28-Oct 4 (GA4, cookie-based estimate).", rl)
-    ck("funnel: draws, signups, paid, order forms, 7 days; a stale pull says so", rl[1] ==
+           "servers": {"towns": [{"region": "Virginia", "city": "Ashburn"}]},
+           "sources": {"returns": {"ok": False}}}
+    FN = {"through": "2026-10-17", "last7": {"start": "2026-10-11", "end": "2026-10-17",
+          "counts": {"rain_print_draw": 1240, "email_signup": 3, "purchase": 1, "rain_print_order": 2},
+          "people": {"rain_print_draw": 310}}}
+    rl = returns_lines(aud, FN)
+    ck("returns: the newest whole cohort, share with its n; a stale pull says so", rl[0] ==
+       "Came back within 14 days: 18% of 1,150 new readers first seen Sep 28-Oct 4 (GA4, cookie-based estimate)"
+       " (last pulled through 2026-10-17).", rl)
+    ck("funnel: draws, signups, paid, order forms, 7 days", rl[1] ==
        "Rain Print, 7 days to Oct 17: 1,240 draws (310 people), 3 email signups, 1 paid back from Stripe, "
-       "2 order forms sent (GA4 events) (last pulled through 2026-10-17).", rl)
+       "2 order forms sent (GA4 events).", rl)
+    aud["sources"]["returns"]["ok"] = True
     aud["returns"]["cohorts"]["weeks"].reverse()
     aud["returns"]["cohorts"]["weeks"][-1]["withheld"] = "40 new readers that week, under the 100 needed to print a share"
     rl = returns_lines(aud)
-    ck("a withheld cohort prints its reason and n, never a share",
-       rl[0] == "Came back within 14 days, readers first seen Sep 14-20: withheld, 40 new readers that week, "
-                "under the 100 needed to print a share." and "%" not in rl[0], rl)
+    ck("a withheld cohort prints its reason and n, never a share; no funnel, no funnel line",
+       rl == ["Came back within 14 days, readers first seen Sep 14-20: withheld, 40 new readers that week, "
+              "under the 100 needed to print a share."], rl)
     ck("no returns section: no lines", returns_lines({}) == [])
+
+    def traffic(f):
+        r = Report()
+        sec_traffic(f, now, r)
+        return [ln for t_, ls in r.sections for ln in ls]
+    f = Fake(files={"data/audience.json": json.dumps(aud)})
+    f.funnel = FN
+    tl = traffic(f)
+    ck("the email asks GA4 for the funnel with audience.json's server towns",
+       ("ga4-funnel", ("Ashburn",)) in f.asked and "1,240 draws (310 people)" in str(tl), (f.asked, tl))
+    f = Fake(files={"data/audience.json": json.dumps(aud)})
+    f.dry = True
+    tl = traffic(f)
+    ck("a dry run (public Actions log) never asks for or prints the funnel",
+       not any(k == "ga4-funnel" for k, _ in f.asked) and "left out of a dry run" in str(tl) and "draws" not in str(tl), tl)
+    tl = traffic(Fake(files={"data/audience.json": json.dumps(aud)}))
+    ck("no GA4 secrets: one line says so", "Rain Print funnel: GA4 not set up for this job." in str(tl), tl)
+    tl = traffic(Fake(files={"data/audience.json": json.dumps(aud)}, broken={"ga4"}))
+    ck("GA4 refusing: one line, the rest still builds", "Rain Print funnel: could not be read (HTTP 403)." in str(tl)
+       and "Came back within 14 days" in str(tl), tl)
 
     print()
     if fails:

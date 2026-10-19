@@ -106,8 +106,14 @@ jobs:
           path: .morning-report
           key: morning-report-counts-${{ github.run_id }}
           restore-keys: morning-report-counts-
+      # The Rain Print funnel is read from GA4 here and goes only into the
+      # email: it is never written to a file (data/audience.json is public).
+      - name: Install the GA4 client
+        run: pip install --quiet google-analytics-data==0.23.3 google-auth==2.62.0
       - name: Build and send
         env:
+          GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+          GA4_SERVICE_ACCOUNT: ${{ secrets.GA4_SERVICE_ACCOUNT }}
           GITHUB_TOKEN: ${{ github.token }}
           BIDS_READ_TOKEN: ${{ secrets.BIDS_READ_TOKEN }}
           STRIPE_READ_KEY: ${{ secrets.STRIPE_READ_KEY }}
