@@ -125,7 +125,7 @@ test("1: county pages offer last year by Christmas beside this year in January, 
   const asOf = /As of (\w+ \d+, \d{4}), the latest day/.exec(h);
   // the shipped page carries the offer only while its as-of day is before the later cutoff
   if (asOf && new Date(asOf[1] + " 12:00 UTC").toISOString().slice(0, 10) <= [J.framed_christmas_cutoff, J.print_christmas_cutoff].sort()[1]) {
-    assert.match(sell, /<a class="btn btn-primary" href="\/rain-print\?place=Boone%2C\+IA&amp;year=2025&amp;ll=[^"]+">Last year, by Christmas<\/a> <a class="btn" href="\/rain-print\?place=Boone%2C\+IA&amp;year=2026&amp;station=[^"]+">This year, in January<\/a>/);
+    assert.match(sell, /<a class="btn btn-primary" href="\/rain-print\?place=Boone%2C\+IA&amp;year=2025&amp;ll=[^"]+">Last year, by Christmas<\/a> <a class="btn btn-secondary" href="\/rain-print\?place=Boone%2C\+IA&amp;year=2026&amp;station=[^"]+">This year, in January<\/a>/);
     assert.ok(!/year=2025[^"]*station=/.test(sell), "last year's link names no station: Rain Print picks a good 2025 record");
     assert.ok(!/style=/.test(sell), "hand links: they open with the normals and the remarkable days on");
     assert.match(sell, /comes by Christmas if you order it framed by Dec 9, or as a print by Dec 10\. This year&rsquo;s \(2026\) is a gift card/);

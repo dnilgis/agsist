@@ -640,7 +640,7 @@ def county_page(ctx):
                   f'with your name and dates{price}.</span>')
     if last_by:
         sell_btns = (f'</p><p class="rc-two"><a class="btn btn-primary" href="{e(rain_print_href_last(c, st, year - 1))}">Last year, by Christmas</a> '
-                     f'<a class="btn" href="{e(rp)}">This year, in January</a></p>')
+                     f'<a class="btn btn-secondary" href="{e(rp)}">This year, in January</a></p>')
         ship = (f"Last year&rsquo;s print ({year - 1}) comes by Christmas if you order it {last_by}. "
                 f"This year&rsquo;s ({year}) is a gift card to put under the tree now, the print in January.")
     else:
@@ -1074,7 +1074,7 @@ def selftest():
         ok("rc-cta" not in story and story.count('href="/rain-print?') == 2 and sell_blk.count('href="/rain-print?') == 2,
            "one Rain Print promo on the page: both year buttons are inside its one block")
         ok('<a class="btn btn-primary" href="/rain-print?place=Ames%2C+IA&amp;year=2025&amp;ll=' in sell_blk
-           and '<a class="btn" href="/rain-print?place=Ames%2C+IA&amp;year=2026&amp;station=130203+2' in sell_blk
+           and '<a class="btn btn-secondary" href="/rain-print?place=Ames%2C+IA&amp;year=2026&amp;station=130203+2' in sell_blk
            and sell_blk.index("year=2025") < sell_blk.index("year=2026"),
            "last year first, with no station (Rain Print picks the nearest good 2025 record) and no style=, so it opens as a hand link")
         ok("Last year&rsquo;s print (2025) comes by Christmas if you order it framed by Dec 9, or as a print by Dec 10. "

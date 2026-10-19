@@ -92,3 +92,5 @@
 .rc-sell p { margin: 0 0 .4rem; }
 .rc-sell .btn { display: inline-block; margin: .3rem .3rem 0 0; vertical-align: middle; }
 .rc-sell .rc-fine { margin: .5rem 0 0; }
+/* the second year button (last year by Christmas, this year in January): an outline that reads as a button */
+.rc-sell .btn-secondary { border-color: var(--text-muted); }
