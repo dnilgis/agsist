@@ -92,6 +92,10 @@
     else if (place.at) q.push('a=' + (+place.at.lat).toFixed(4) + ',' + (+place.at.lng).toFixed(4));
     var n = printCode(place.print);
     if (n !== 63) q.push('p=' + n);
+    // the common case goes as a short path (404.html routes /H/ back here, components/report-link.js):
+    // all QR letters-and-digits, 25 x 25 instead of 29 x 29 (Sig, Oct 19: smallest QR always)
+    if (q.length === 1) return 'HTTPS://AGSIST.COM/H/' + place.fips;
+    if (q.length === 2 && place.zip) return 'HTTPS://AGSIST.COM/H/' + place.fips + '/' + place.zip;
     return 'HTTPS://AGSIST.COM/here?' + q.join('&');
   }
   /* The &print= value for a choice; '' when it is the default (everything, no more detail). */

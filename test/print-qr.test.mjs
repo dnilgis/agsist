@@ -77,7 +77,7 @@ test("print-qr.js: 0.85 in up to version 15, grows to keep 0.01 in squares up to
 
 test("one QR encoder: the three report pages load components/qr.js (v=11) before print-qr.js and their own script", () => {
   for (const [page, own] of [["comp-report.html", "/components/comp-report.js?v="], ["field-report.html", "/components/field-report.js?v="], ["hail-map.html", "<script>"]]) {
-    const h = read(page), a = h.indexOf('<script src="/components/qr.js?v=11" defer></script>'), r = h.indexOf('<script src="/components/report-link.js?v=1" defer></script>'), b = h.indexOf('<script src="/components/print-qr.js?v=1" defer></script>');
+    const h = read(page), a = h.indexOf('<script src="/components/qr.js?v=11" defer></script>'), r = h.indexOf('<script src="/components/report-link.js?v=2" defer></script>'), b = h.indexOf('<script src="/components/print-qr.js?v=1" defer></script>');
     assert.ok(a > 0 && r > a && b > r, page + " loads qr.js, report-link.js, then print-qr.js");
     if (own !== "<script>") assert.ok(h.indexOf(own) > b, page + " loads its own script after");
     assert.doesNotMatch(h, /qrcode-generator|farmland-atlas\/qr\.js|api\.qrserver|chart\.googleapis/, page + ": no second QR library or outside service");
@@ -140,7 +140,7 @@ test("short links: every setting goes and comes back; anything the short form ca
     "https://agsist.com/rain-print?d=x"]) assert.equal(RL.short(u), null, u);
   for (const bad of ["/C/junk", "/S/42.03", "/S/42.03-93.62D25400", "/H/5500/54728", "/X/1", "/c", "/cash-bids/iowa", "/r", ""]) assert.equal(RL.full(bad), null, bad);
   // 404.html: the route runs first in <head>, before the theme script and analytics, and stops the page
-  const h = read("404.html"), r = h.indexOf('<script src="/components/report-link.js?v=1"></script>');
+  const h = read("404.html"), r = h.indexOf('<script src="/components/report-link.js?v=2"></script>');
   assert.ok(r > 0 && r < h.indexOf("agsist-theme-early") && r < h.indexOf("gtag"), "route before anything else runs");
   assert.match(h, /if\(u&&u\.indexOf\('https:\/\/agsist\.com\/'\)===0\)\{if\(window\.stop\)window\.stop\(\);location\.replace\(u\.slice\(18\)\);\}/, "opens on this site only, the 404 page stopped");
   for (const k of "CFSH") assert.ok(!fs.existsSync(join(ROOT, k)) && !fs.existsSync(join(ROOT, k + ".html")) && !fs.existsSync(join(ROOT, k.toLowerCase())), k + "/ is not a real page or folder, so it reaches 404.html");

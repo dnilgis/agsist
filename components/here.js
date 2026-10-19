@@ -453,7 +453,7 @@
     var qr = $('h-pr-qr1'), end = $('h-pr-qr'), bare = esc(url.replace(/^HTTPS:\/\/AGSIST\.COM/, 'agsist.com'));
     if (qr && qr.getAttribute('data-url') !== url) {
       var svg = '';
-      try { svg = window.AgQR ? window.AgQR.svg(url, 'QR code for this page') : ''; } catch (e) { svg = ''; }
+      try { svg = window.AgQR ? window.AgQR.svg(url, 'QR code for this page', 10, 'mixed') : ''; } catch (e) { svg = ''; }
       qr.innerHTML = svg ? svg + '<p>Scan for the live page</p>' : '';
       qr.setAttribute('data-url', url);
     }

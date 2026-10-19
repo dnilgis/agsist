@@ -180,8 +180,8 @@ test("the printed QR: shortest link that reopens the same report, smallest symbo
   require(ROOT + "components/qr.js");
   const Q = globalThis.AgQR;
   const chetek = P.qrLink({ fips: "55005", zip: "54728" });
-  assert.equal(chetek, "HTTPS://AGSIST.COM/here?f=55005&z=54728");
-  assert.equal(P.qrLink({ fips: "17019" }), "HTTPS://AGSIST.COM/here?f=17019");
+  assert.equal(chetek, "HTTPS://AGSIST.COM/H/55005/54728", "the short path 404.html routes back (Oct 19: smallest QR)");
+  assert.equal(P.qrLink({ fips: "17019" }), "HTTPS://AGSIST.COM/H/17019");
   assert.equal(P.qrLink({ fips: "55005", at: { lat: 45.31413, lng: -91.651 } }), "HTTPS://AGSIST.COM/here?f=55005&a=45.3141,-91.6510");
   assert.equal(P.qrLink({ fips: "55005", zip: "54728", print: { parts: ["week"], more: true } }), "HTTPS://AGSIST.COM/here?f=55005&z=54728&p=66");
   // no tracking, no label, nothing but the place and the print choice
@@ -191,11 +191,18 @@ test("the printed QR: shortest link that reopens the same report, smallest symbo
   assert.deepEqual([back.fips, back.zip, back.print], ["55005", "54728", { parts: ["week"], more: true }]);
   assert.deepEqual(P.parseQuery("?f=55005&a=45.3141,-91.6510").at, { lat: 45.3141, lng: -91.651 });
   for (let n = 1; n < 128; n++) { const c = P.printFromCode(n); if (n & 63) assert.equal(P.printCode(c), n); }
-  // module counts at level M, byte mode: version 3 (29 x 29) for a ZIP or a county, version 4 (33) with a print choice or a point
-  assert.equal(Q.matrix(chetek).length, 29);
-  assert.equal(Q.matrix(P.qrLink({ fips: "17019" })).length, 29);
-  assert.equal(Q.matrix(P.qrLink({ fips: "55005", zip: "54728", print: { parts: ["week"], more: true } })).length, 33);
-  assert.equal(Q.matrix(P.qrLink({ fips: "55005", at: { lat: 45.31413, lng: -91.651 } })).length, 33);
+  // module counts at level M, the mode here.js draws with (mixed: letters-and-digits runs packed tight):
+  // version 2 (25 x 25) for a ZIP or a county (was 29 in byte mode), 29 with a print choice, 33 with a point
+  const M = (u) => Q.matrix(u, null, "mixed", 10).length;
+  assert.equal(M(chetek), 25);
+  assert.equal(M(P.qrLink({ fips: "17019" })), 25);
+  assert.equal(M(P.qrLink({ fips: "55005", zip: "54728", print: { parts: ["week"], more: true } })), 29);
+  assert.equal(M(P.qrLink({ fips: "55005", at: { lat: 45.31413, lng: -91.651 } })), 33);
+  // the short paths go back to the same page through 404.html
+  const RL = require(ROOT + "components/report-link.js");
+  assert.equal(RL.full("/H/55005/54728"), "https://agsist.com/here?f=55005&z=54728");
+  assert.equal(RL.full("/h/17019"), "https://agsist.com/here?f=17019");
+  assert.equal(RL.short("https://agsist.com/here?f=17019"), "HTTPS://AGSIST.COM/H/17019");
 });
 
 test("this week on the site's own files", () => {

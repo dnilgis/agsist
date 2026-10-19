@@ -13,7 +13,7 @@
                        L classes, Z every deed type, N how many, D newest first
      F/ land report    P outline, S the Field Scout filters (cf=)
      S/ hail report    +lat-lon (4 places), R miles, D date of loss
-     H/ place page     <county FIPS>/<ZIP> (/here?f=&z=)
+     H/ place page     <county FIPS>[/<ZIP>] (/here?f=[&z=])
 
    Numbers: an outline is whole numbers of 1/100000 degree, each with its sign, the first
    point as it is (no + on the first number) and every next one as the step from the one
@@ -123,6 +123,7 @@
   }
   function shortHere(q) {   // /here?f=<county FIPS>&z=<ZIP>, nothing else
     var keys = Object.keys(q).sort().join(',');
+    if (keys === 'f' && /^\d{5}$/.test(q.f)) return 'H/' + q.f;
     return keys === 'f,z' && /^\d{5}$/.test(q.f) && /^\d{5}$/.test(q.z) ? 'H/' + q.f + '/' + q.z : null;
   }
   function short(u) {
@@ -192,7 +193,7 @@
     if (!m) return null;
     var kind = m[1].toUpperCase(), body = m[2].toUpperCase();
     if (kind === 'S') return fullHail(body);
-    if (kind === 'H') { var h = /^(\d{5})\/(\d{5})\/?$/.exec(body); return h ? HOST + '/here?f=' + h[1] + '&z=' + h[2] : null; }
+    if (kind === 'H') { var h = /^(\d{5})(?:\/(\d{5}))?\/?$/.exec(body); return h ? HOST + '/here?f=' + h[1] + (h[2] ? '&z=' + h[2] : '') : null; }
     if (kind === 'C' || kind === 'F') return full(kind + body);
     return null;
   }
