@@ -60,6 +60,38 @@ test("hand-checked numbers from the surveys", () => {
   assert.ok(doc("ok").rows.every((r) => r.lo == null && r.hi == null));
 });
 
+test("Missouri is G302 revised March 2026: 2025 rates, average, median, range and count as printed", () => {
+  const mo = doc("mo");
+  assert.equal(mo.rate_year, 2025);
+  assert.equal(mo.survey_year, 2026);
+  assert.equal(mo.sources[0].url, "https://extension.missouri.edu/publications/g302");
+  assert.match(mo.collected, /^2025 rates \(survey fall 2025 to winter 2026, published March 2026\)/);
+  const pick = (o, u) => { const r = row(mo, o, u); return [r.a, r.md, r.lo, r.hi, r.n]; };
+  // read off the guide (Tables 3, 4, 5 and 7)
+  assert.deepEqual(pick("Corn, combine without grain cart"), [47.56, 40, 35, 95, 9]);
+  assert.deepEqual(pick("Corn, combine with grain cart"), [47.95, 50, 35, 60, 22]);
+  assert.deepEqual(pick("Soybean, combine without grain cart"), [42.33, 40, 35, 60, 9]);
+  assert.deepEqual(mo.rows.filter((r) => r.k === "plant-notill").map((r) => [r.s, r.a, r.md, r.lo, r.hi, r.n]), [["Planting, no-till", 26.65, 26, 15, 35, 23]]);
+  assert.deepEqual(pick("Spray with row crop sprayer"), [9.42, 9.43, 4, 12, 20]);
+  assert.deepEqual(pick("Round bale with net wrap, over 1,000 pound bales"), [18.87, 20, 10, 35, 15]);
+  assert.deepEqual(pick("Cut, rake and bale small square bales", "percent of crop"), [58, 60, 20, 75, 9]);
+  const keyed = Object.fromEntries(mo.rows.filter((r) => r.k).map((r) => [r.k, r.o]));
+  assert.equal(keyed["combine-corn"], "Corn, combine without grain cart", "combine only, like the other states' combine-corn");
+  assert.equal(keyed["spray-ground"], "Spray with row crop sprayer");
+  assert.ok(!keyed["spray-tractor"] && !keyed["backhoe"] && !keyed["spray-aerial"], "jobs the 2026 guide does not price the same way stay out of the comparison");
+  // Table 9: the guide's anecdotal medians, only a median and labeled as such
+  const t9 = mo.rows.filter((r) => r.p === "median-only");
+  assert.equal(t9.length, 12);
+  assert.deepEqual(t9.map((r) => [r.o, r.md, r.u]).slice(0, 2), [["Applying chemicals with selective targeting (Greeneye)", 14, "acre"], ["Aerial spray application over cropland", 13, "acre"]]);
+  assert.ok(t9.every((r) => r.s === "Anecdotal medians, few answers"));
+  const h = read("custom-rates/missouri.html");
+  assert.match(h, /<td class="av"><span class="na">no average printed<\/span><span class="mdn">median \$13\.00 per acre, few answers<\/span><\/td><td class="rg">not printed<\/td>/);
+  assert.match(h, /\$47\.56 <small>per acre<\/small><span class="mdn">median \$40\.00<\/span>/);
+  assert.match(h, /58% <small>of the crop<\/small>/);
+  assert.match(h, /average, median and lowest to highest answer/);
+  assert.doesNotMatch(h, /2022|\$43\.29/, "nothing left from the April 2023 guide");
+});
+
 test("every state file is sane and the index matches", () => {
   const files = readdirSync(join(ROOT, "data/custom-rates")).filter((f) => f !== "index.json");
   assert.deepEqual(files.map((f) => f.slice(0, 2).toUpperCase()).sort(), idx.states.map((s) => s.st).sort());
@@ -68,8 +100,14 @@ test("every state file is sane and the index matches", () => {
     assert.equal(d.survey_year, s.year);
     assert.ok(d.sources[0].url.startsWith("https://"), s.st);
     for (const r of d.rows) {
+      if (r.p === "median-only") {
+        // the survey printed only a median (Missouri G302 Table 9): nothing else is made up, and it never enters the comparison
+        assert.ok(r.md > 0 && r.a == null && r.n == null && r.lo == null && r.hi == null && !r.k, `${s.st} ${r.o} median only`);
+        continue;
+      }
       assert.ok(r.a > 0 && Number.isInteger(r.n) && r.n > 0, `${s.st} ${r.o}`);
       if (r.lo != null) assert.ok(r.lo <= r.a && r.a <= r.hi, `${s.st} ${r.o} average inside its range`);
+      if (r.md != null && r.lo != null) assert.ok(r.lo <= r.md && r.md <= r.hi, `${s.st} ${r.o} median inside its range`);
     }
     for (const nb of s.neighbors) assert.ok(idx.borders[s.st].includes(nb) && idx.states.some((x) => x.st === nb));
   }
@@ -128,6 +166,7 @@ test("search finds jobs by the words farmers use", () => {
   assert.equal(money(46.05, "acre"), "$46.05");
   assert.equal(money(0.135, "bushel"), "$0.135");
   assert.equal(money(0.2, "bushel"), "$0.20");
+  assert.equal(money(58, "percent of crop"), "58%");
 });
 
 const PW = "/home/user/node_modules/playwright/index.mjs";
@@ -172,6 +211,21 @@ test("browser: saved location picks the state, only that state's file loads, no 
       await sp.goto(base + "/custom-rates/iowa", { waitUntil: "networkidle" });
       const [sw2, cw2] = await sp.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
       assert.ok(sw2 <= cw2, `state page no sideways scroll at ${w}`);
+      // Missouri: medians and the median-only rows fit, in the app and on its page
+      for (const u of ["/custom-rates?st=MO", "/custom-rates/missouri"]) {
+        const mp = await ctx.newPage();
+        await mp.goto(base + u, { waitUntil: "networkidle" });
+        if (u.includes("?")) {
+          await mp.waitForSelector("#cr-body tr");
+          const body = await mp.textContent("#cr-body");
+          assert.match(body, /no average printed/);
+          assert.match(body, /median \$40\.00/);
+          assert.match(await mp.textContent("#cr-cap"), /average, median and lowest to highest answer/);
+        }
+        const [sw3, cw3] = await mp.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
+        assert.ok(sw3 <= cw3, `${u} no sideways scroll at ${w}: ${sw3} > ${cw3}`);
+        await mp.close();
+      }
       await ctx.close();
     }
   } finally {

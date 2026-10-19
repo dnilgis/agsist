@@ -11,7 +11,10 @@
  *   4. The 2026 payment limit: $164,000 by the rule's own method, not "not out",
  *      and never called official.
  *   5. Nebraska's comparison "Combine corn" is the dryland line ($49.29, 42
- *      answers), not irrigated ($50.70); Missouri's G302 (April 2023) is 2022 rates.
+ *      answers), not irrigated ($50.70); Missouri's G302 reads as its rate year
+ *      (2022 rates for the April 2023 guide; 2025 rates since the March 2026
+ *      guide replaced it, Oct 19: corn combining without grain cart, $47.56,
+ *      9 answers, G302 Table 5).
  *   6. Iowa rent: -1.5% is the change in the state median ($270 to $266).
  *
  *   node --test test/money-audit-oct19.test.mjs
@@ -100,15 +103,16 @@ test("4: the 2026 payment limit is the rule's own figure, not official and not '
   assert.doesNotMatch(h, /official 2026 (payment )?limit of \$164,000/);
 });
 
-test("5: Nebraska compares on dryland corn; Missouri reads as 2022 rates", () => {
+test("5: Nebraska compares on dryland corn; Missouri reads as its rate year (2025 rates)", () => {
   const ne = JSON.parse(read("data/custom-rates/ne.json"));
   const c = ne.rows.filter((r) => r.k === "combine-corn");
   assert.equal(c.length, 1);
   assert.deepEqual([c[0].o, c[0].a, c[0].n], ["Combining dryland corn, flat rate", 49.29, 42]);
   assert.ok(ne.rows.some((r) => r.o === "Combining irrigated corn, flat rate" && r.a === 50.7 && !r.k), "the irrigated line stays in the table");
   const h = read("custom-rates.html");
-  assert.match(h, /<a href="\/custom-rates\/missouri">Missouri<\/a> <small>2022 rates<\/small>/);
-  assert.match(h, /Missouri \$43\.29 \(2022 rates, 2023 survey, 17 answers\)/);
+  assert.match(h, /<a href="\/custom-rates\/missouri">Missouri<\/a> <small>2025 rates<\/small>/);
+  assert.match(h, /Missouri \$47\.56 \(2025 rates, 2026 survey, 9 answers\)/);
+  assert.doesNotMatch(h, /2022 rates|\$43\.29/, "the April 2023 guide's numbers are gone");
   assert.match(h, /Nebraska \$49\.29 \(2026 survey, 42 answers\)/);
   assert.doesNotMatch(h, /Nebraska \$50\.70/);
 });

@@ -31,6 +31,7 @@
 
   function money(v, u) {
     if (v == null) return '';
+    if (u === 'percent of crop') return v.toFixed(2).replace(/\.?0+$/, '') + '%';
     if (v < 1 && SMALL[u]) {
       var s = v.toFixed(3).replace(/0+$/, '');
       if (s.split('.')[1].length < 2) s = v.toFixed(2);
@@ -39,7 +40,7 @@
     if (v >= 1000) return '$' + Math.round(v).toLocaleString('en-US');
     return '$' + v.toFixed(2);
   }
-  function unitLabel(u) { return 'per ' + (ULAB[u] || u); }
+  function unitLabel(u) { return u === 'percent of crop' ? 'of the crop' : 'per ' + (ULAB[u] || u); }
   function rangeText(lo, hi, u) { return lo == null ? 'not printed' : money(lo, u) + ' to ' + money(hi, u); }
 
   /* ---- search ---- */
@@ -149,13 +150,22 @@
     d.rows.forEach(function (r) {
       if (!matches(q, rowText(r, idx))) return;
       if (r.s !== last) { html.push('<tr class="sec"><th colspan="4" scope="colgroup">' + esc(r.s) + '</th></tr>'); last = r.s; }
+      shown++;
+      if (r.p === 'median-only') {
+        // the survey printed only a median, from few answers: no average, range or count is shown
+        html.push('<tr><th scope="row">' + esc(r.o) + '</th><td class="av"><span class="na">no average printed</span>' +
+          '<span class="mdn">median ' + money(r.md, r.u) + ' ' + esc(unitLabel(r.u)) + ', few answers</span></td>' +
+          '<td class="rg">not printed</td><td><span class="na">not printed</span></td></tr>');
+        return;
+      }
       var rg = rangeText(r.lo, r.hi, r.u);
       html.push('<tr><th scope="row">' + esc(r.o) + (r.p === 'cents' ? ' <small>(printed in cents)</small>' : '') + '</th>' +
-        '<td class="av">' + money(r.a, r.u) + ' <small>' + esc(unitLabel(r.u)) + '</small><span class="rgm">' + (r.lo == null ? '' : 'range ' + rg) + '</span></td>' +
+        '<td class="av">' + money(r.a, r.u) + ' <small>' + esc(unitLabel(r.u)) + '</small>' + (r.md == null ? '' : '<span class="mdn">median ' + money(r.md, r.u) + '</span>') +
+        '<span class="rgm">' + (r.lo == null ? '' : 'range ' + rg) + '</span></td>' +
         '<td class="rg">' + rg + '</td><td>' + r.n + '</td></tr>');
-      shown++;
     });
-    $('cr-cap').textContent = d.name + ', ' + d.survey_year + ': average and ' + d.spread_label + ' for each job. Answers = how many reported that job.';
+    var med = d.rows.some(function (r) { return r.md != null; }) ? ', median' : '';
+    $('cr-cap').textContent = d.name + ', ' + (d.rate_year ? d.rate_year + ' rates' : d.survey_year) + ': average' + med + ' and ' + d.spread_label + ' for each job. Answers = how many reported that job.';
     $('cr-body').innerHTML = html.join('') || '<tr><td colspan="4" class="na" style="text-align:left">No ' + esc(d.name) + ' job matches "' + esc(q) + '". Try one word, like combine, plant, spray, haul or bale.</td></tr>';
     $('cr-count').textContent = q ? shown + ' of ' + d.rows.length + ' jobs match "' + q + '".' : d.rows.length + ' jobs in the ' + d.survey_year + ' ' + d.name + ' survey.';
     renderCompare();

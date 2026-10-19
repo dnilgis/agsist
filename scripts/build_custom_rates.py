@@ -22,6 +22,10 @@ Writes:
   python3 scripts/build_custom_rates.py --verify-refs
         # every row's numbers must sit together on one line of the saved source
         # text (git show origin/references:refs/<ref>.txt); run after editing a TSV
+        # (CR_REFS_REV=<rev> reads a references commit not pushed yet). A survey that
+        # prints a median gets an "md" column, checked in printed order; a row the
+        # survey printed as a median alone is printed=median-only (no average,
+        # range or count, never in the comparison)
 """
 import html
 import json
@@ -49,6 +53,7 @@ UNITS = {
     "foot", "foot of bag", "head", "head / day", "cwt", "gross bushel", "pivot", "metered hour",
     "bushel / month", "bushel / year", "bushel / round trip", "horsepower / hour", "hour / head row",
     "hour / foot of blade", "hour / foot of blower", "bale / loaded mile", "load weighed",
+    "pound", "linear foot", "percent of crop",
 }
 
 # The few jobs farmers ask about most, under one name, so the page can set
@@ -141,6 +146,9 @@ UNIT_LABEL = {"1,000 gallon": "1,000 gallons", "head / day": "head a day", "bush
               "horsepower / hour": "horsepower-hour", "hour / head row": "hour per row of head",
               "hour / foot of blade": "hour per foot of blade", "hour / foot of blower": "hour per foot of blower",
               "bale / loaded mile": "bale per loaded mile", "point per bushel": "bushel per point"}
+# A survey's "median only" rows (Missouri G302 Table 9: too few answers to print an
+# average, range or count; the guide calls them anecdotal)
+MEDIAN_ONLY = "median-only"
 
 
 def slug(name):
@@ -203,33 +211,49 @@ def validate(meta, rows, where="tsv"):
     for r in rows:
         at = "%s:%d" % (where, r["_line"])
         try:
-            avg, lo, hi = num(r["avg"]), num(r["lo"]), num(r["hi"])
+            avg, lo, hi, md = num(r["avg"]), num(r["lo"]), num(r["hi"]), num(r.get("md", ""))
         except ValueError as e:
             errs.append("%s: %s" % (at, e))
             continue
-        if not re.fullmatch(r"\d+", r["n"].strip()):
-            errs.append("%s: n must be a whole number" % at)
-            continue
-        n = int(r["n"])
         printed = r.get("printed", "").strip()
-        if printed not in ("", "cents"):
-            errs.append("%s: printed must be blank or cents" % at)
+        if printed not in ("", "cents", MEDIAN_ONLY):
+            errs.append("%s: printed must be blank, cents or %s" % (at, MEDIAN_ONLY))
             continue
-        if avg is None or avg <= 0:
-            errs.append("%s: average missing" % at)
-            continue
-        if (lo is None) != (hi is None):
-            errs.append("%s: range needs both ends" % at)
-            continue
-        if lo is not None and not (lo <= avg <= hi):
-            errs.append("%s: average %s outside its range %s-%s" % (at, avg, lo, hi))
-            continue
-        if lo is not None and meta.get("spread") == "none":
-            errs.append("%s: a range on a survey marked spread none" % at)
-            continue
-        if n < 1:
-            errs.append("%s: no answers" % at)
-            continue
+        if printed == MEDIAN_ONLY:
+            # the survey printed a median and nothing else: no average, range or count is made up
+            if md is None or md <= 0:
+                errs.append("%s: a median-only row needs its median" % at)
+                continue
+            if avg is not None or lo is not None or hi is not None or r["n"].strip():
+                errs.append("%s: a median-only row carries no average, range or count" % at)
+                continue
+            if r["key"].strip():
+                errs.append("%s: a median-only row never goes in the comparison" % at)
+                continue
+            n = None
+        else:
+            if not re.fullmatch(r"\d+", r["n"].strip()):
+                errs.append("%s: n must be a whole number" % at)
+                continue
+            n = int(r["n"])
+            if avg is None or avg <= 0:
+                errs.append("%s: average missing" % at)
+                continue
+            if (lo is None) != (hi is None):
+                errs.append("%s: range needs both ends" % at)
+                continue
+            if lo is not None and not (lo <= avg <= hi):
+                errs.append("%s: average %s outside its range %s-%s" % (at, avg, lo, hi))
+                continue
+            if md is not None and lo is not None and not (lo <= md <= hi):
+                errs.append("%s: median %s outside its range %s-%s" % (at, md, lo, hi))
+                continue
+            if lo is not None and meta.get("spread") == "none":
+                errs.append("%s: a range on a survey marked spread none" % at)
+                continue
+            if n < 1:
+                errs.append("%s: no answers" % at)
+                continue
         u = r["unit"].strip()
         if u not in UNITS:
             errs.append("%s: unknown unit %r" % (at, u))
@@ -259,7 +283,12 @@ def validate(meta, rows, where="tsv"):
         if key:
             seen_keys.add(key)
         scale = 0.01 if printed == "cents" else 1.0
-        row = {"s": sec, "o": op, "u": u, "a": round(avg * scale, 4), "n": n}
+        if printed == MEDIAN_ONLY:
+            row = {"s": sec, "o": op, "u": u, "md": round(md * scale, 4)}
+        else:
+            row = {"s": sec, "o": op, "u": u, "a": round(avg * scale, 4), "n": n}
+            if md is not None:
+                row["md"] = round(md * scale, 4)
         if lo is not None:
             row["lo"], row["hi"] = round(lo * scale, 4), round(hi * scale, 4)
         if key:
@@ -304,7 +333,8 @@ def state_doc(meta, rows):
     if meta.get("withheld"):
         d["withheld"] = meta["withheld"]
     # rate_year: the year the rates were charged, when a survey says it is not its own year
-    # (Missouri's April 2023 G302 asked about 2022 rates; money audit 6, 2026-10-19)
+    # (Missouri's G302 revised March 2026 asked fall 2025 to winter 2026 about 2025 rates;
+    # the April 2023 guide before it was 2022 rates; money audit 6, 2026-10-19)
     if meta.get("rate_year"):
         d["rate_year"] = int(meta["rate_year"])
     return d
@@ -341,6 +371,8 @@ def index_doc(docs):
 def money(v, unit):
     if v is None:
         return ""
+    if unit == "percent of crop":
+        return ("%.2f" % v).rstrip("0").rstrip(".") + "%"
     if v < 1 and unit in ("bushel", "point per bushel", "gross bushel", "bushel / month", "bushel / year",
                           "bushel / round trip", "horsepower / hour", "bale / loaded mile", "bale"):
         s = ("%.3f" % v).rstrip("0")
@@ -353,6 +385,8 @@ def money(v, unit):
 
 
 def unit_label(u):
+    if u == "percent of crop":
+        return "of the crop"
     return "per " + UNIT_LABEL.get(u, u)
 
 
@@ -436,9 +470,14 @@ def state_page(d, idx):
         body.append('<tr class="sec"><th colspan="4" scope="colgroup">%s</th></tr>' % esc(sec))
         for r in rows:
             note = " <small>(printed in cents)</small>" if r.get("p") == "cents" else ""
+            if r.get("p") == MEDIAN_ONLY:
+                body.append('<tr><th scope="row">%s</th><td class="av"><span class="na">no average printed</span><span class="mdn">median %s %s, few answers</span></td><td class="rg">not printed</td><td><span class="na">not printed</span></td></tr>' % (
+                    esc(r["o"]), money(r["md"], r["u"]), esc(unit_label(r["u"]))))
+                continue
             rg = range_text(r, r["u"])
-            body.append('<tr><th scope="row">%s%s</th><td class="av">%s <small>%s</small><span class="rgm">%s</span></td><td class="rg">%s</td><td>%d</td></tr>' % (
-                esc(r["o"]), note, money(r["a"], r["u"]), esc(unit_label(r["u"])), ("range " + rg) if "lo" in r else "", rg, r["n"]))
+            mdn = ('<span class="mdn">median %s</span>' % money(r["md"], r["u"])) if "md" in r else ""
+            body.append('<tr><th scope="row">%s%s</th><td class="av">%s <small>%s</small>%s<span class="rgm">%s</span></td><td class="rg">%s</td><td>%d</td></tr>' % (
+                esc(r["o"]), note, money(r["a"], r["u"]), esc(unit_label(r["u"])), mdn, ("range " + rg) if "lo" in r else "", rg, r["n"]))
     me = next(s for s in idx["states"] if s["st"] == st)
     nb = ", ".join('<a href="/custom-rates/%s">%s (%s)</a>' % (s["slug"], esc(s["name"]), year_label(s)) for s in idx["states"] if s["st"] in me["neighbors"])
     others = " &middot; ".join('<a href="/custom-rates/%s">%s</a>' % (s["slug"], esc(s["name"])) for s in idx["states"] if s["st"] != st)
@@ -469,7 +508,7 @@ def state_page(d, idx):
   <meta name="twitter:image" content="{og}">
   <script>try{{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}}catch(e){{}}</script>
   <link rel="stylesheet" href="/components/styles.css?v=25">
-  <link rel="stylesheet" href="/components/custom-rates.css?v=2">
+  <link rel="stylesheet" href="/components/custom-rates.css?v=3">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <script type="application/ld+json">{ld}</script>
 </head>
@@ -479,12 +518,12 @@ def state_page(d, idx):
   <main id="main" tabindex="-1">
     <article class="cr">
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/custom-rates">Custom rates</a> &rarr; {name}</nav>
-      <h1>{name} custom rates, {yr} survey</h1>
+      <h1>{name} custom rates, {yr} survey{ofr}</h1>
       <p class="by">Numbers from {pub}</p>
       <p class="cr-lede">What farmers and custom operators in {name} said they charged or paid for custom work, as the {survey} printed it. Rates are survey averages; your local custom operator may charge more or less.</p>
       <p class="cr-actions"><a class="cr-btn go" href="/custom-rates?st={st}">Search jobs and compare neighbors</a></p>
       <div class="cr-tw"><table class="cr-t cr-full">
-        <caption>{name}, {yr}: average and {spread} for each job. Answers = how many reported that job.</caption>
+        <caption>{name}, {capyr}: average{med} and {spread} for each job. Answers = how many reported that job.</caption>
         <thead><tr><th scope="col">Job</th><th scope="col">Average</th><th scope="col" class="rg">Range</th><th scope="col">Answers</th></tr></thead>
         <tbody>
 {body}
@@ -508,7 +547,9 @@ def state_page(d, idx):
            ld=json.dumps(ld, separators=(",", ":"), ensure_ascii=False).replace("</", "<\\/"), name=esc(name), yr=yr,
            pub=esc(d["publisher"]), survey=esc(d["survey"]), st=st, spread=esc(d["spread_label"]),
            body="\n".join(body), collected=esc(d["collected"].rstrip(".")), includes=esc(d["includes"]),
-           range_note=esc(d["range_note"]), withheld=withheld, srcl=srcl, nb=nb or "none yet",
+           range_note=esc(d["range_note"]), withheld=withheld, med=", median" if any("md" in r for r in d["rows"]) else "",
+           ofr=(" of %d rates" % d["rate_year"]) if d.get("rate_year") else "",
+           capyr=("%d rates" % d["rate_year"]) if d.get("rate_year") else yr, srcl=srcl, nb=nb or "none yet",
            faq=faq_html, others=others)
 
 
@@ -620,11 +661,14 @@ def verify_refs(src_dir=SRC):
     """Each row's printed numbers must appear together on one line of the saved survey text."""
     states, errs = load_states(src_dir)
     cache, bad = {}, []
+    # CR_REFS_REV: read the saved sources from another git revision (a local
+    # references commit not pushed yet); the default is the pushed branch
+    rev = os.environ.get("CR_REFS_REV") or "origin/references"
 
     def text(ref):
         if ref not in cache:
             try:
-                cache[ref] = subprocess.run(["git", "-C", ROOT, "show", "origin/references:refs/%s.txt" % ref],
+                cache[ref] = subprocess.run(["git", "-C", ROOT, "show", "%s:refs/%s.txt" % (rev, ref)],
                                             capture_output=True, check=True).stdout.decode("utf-8", "replace")
             except subprocess.CalledProcessError:
                 cache[ref] = None
@@ -638,21 +682,41 @@ def verify_refs(src_dir=SRC):
             out.add(float(t))
         return out
 
+    def seq(s):
+        s = s.replace(",", "").replace("$", "")
+        return [float(t) for t in re.findall(r"\d+(?:\.\d+)?", s)]
+
+    def in_order(want, got):
+        it = iter(got)
+        return all(any(w == g for g in it) for w in want)
+
     for st, (meta, clean, raw) in states.items():
-        lines = {}
+        lines, raws, seqs = {}, {}, {}
         for k in ("ref", "ref2"):
             if meta.get(k):
                 t = text(meta[k])
                 if t is None:
-                    bad.append("%s: refs/%s.txt is not on origin/references (git fetch origin references)" % (st, meta[k]))
-                    lines[k] = []
+                    bad.append("%s: refs/%s.txt is not on %s (git fetch origin references)" % (st, meta[k], rev))
+                    lines[k], raws[k] = [], []
                 else:
                     lines[k] = [toks(l) for l in t.splitlines()]
+                    raws[k] = [re.sub(r"\s+", " ", l.lower()) for l in t.splitlines()]
+                    seqs[k] = [seq(l) for l in t.splitlines()]
         for r in raw:
             k = "ref2" if r.get("src", "").strip() == "2" else "ref"
-            want = {float(r[c].replace(",", "")) for c in ("avg", "lo", "hi") if r[c].strip()}
-            want.add(float(r["n"]))
-            if not any(want <= L for L in lines.get(k, [])):
+            want = {float(r[c].replace(",", "")) for c in ("avg", "md", "lo", "hi") if r.get(c, "").strip()}
+            if r["n"].strip():
+                want.add(float(r["n"]))
+            hits = [i for i, L in enumerate(lines.get(k, [])) if want <= L]
+            if r.get("md", "").strip() and r["n"].strip():
+                # a survey that prints a median: average, median, low, high and count, in that order
+                order = [float(r[c].replace(",", "")) for c in ("avg", "md", "lo", "hi", "n") if r.get(c, "").strip()]
+                hits = [i for i in hits if in_order(order, seqs[k][i])]
+            if r.get("printed", "").strip() == MEDIAN_ONLY:
+                # one number alone proves little: the line must also carry the job's name
+                head = re.sub(r"\s+", " ", r["operation"].lower())[:14]
+                hits = [i for i in hits if head in raws[k][i]]
+            if not hits:
                 bad.append("%s line %d (%s): %s not found together on one line of refs/%s.txt" % (st, r["_line"], r["operation"], sorted(want), meta.get(k)))
     return errs + bad
 
@@ -699,6 +763,28 @@ def selftest():
     m, rows, e = parse_tsv(head.replace("minmax", "none") + "\n" + cols + "\n\tH\tX\tacre\t20\t10\t30\t3")
     c, e2 = validate(m, rows)
     ok(e2 and "spread none" in e2[0], "range on a no-range survey refused")
+    cols_md = "key\tsection\toperation\tunit\tavg\tmd\tlo\thi\tn\tprinted"
+
+    def run_md(lines):
+        m, rows, e = parse_tsv(head + "\n" + cols_md + "\n" + "\n".join(lines))
+        c, e2 = validate(m, rows)
+        return c, e + e2
+
+    c, e = run_md(["combine-corn\tH\tCorn\tacre\t47.56\t40.00\t35.00\t95.00\t9"])
+    ok(not e and c[0]["a"] == 47.56 and c[0]["md"] == 40 and c[0]["n"] == 9, "median kept beside the average: %s" % e)
+    c, e = run_md(["\tH\tX\tacre\t20\t40\t10\t30\t3"])
+    ok(e and "median 40.0 outside" in e[0], "median outside range refused")
+    c, e = run_md(["\tA\tFence removal\tfoot\t\t1.25\t\t\t\tmedian-only"])
+    ok(not e and c[0] == {"s": "A", "o": "Fence removal", "u": "foot", "md": 1.25, "p": "median-only"}, "median-only row has no average, range or count: %s %s" % (c, e))
+    c, e = run_md(["\tA\tX\tfoot\t2\t1.25\t\t\t\tmedian-only"])
+    ok(e and "carries no average" in e[0], "median-only row with an average refused")
+    c, e = run_md(["\tA\tX\tfoot\t\t1.25\t\t\t4\tmedian-only"])
+    ok(e and "carries no average" in e[0], "median-only row with a count refused")
+    c, e = run_md(["spray-aerial\tA\tX\tacre\t\t13\t\t\t\tmedian-only"])
+    ok(e and "comparison" in e[0], "median-only row never keyed into the comparison")
+    c, e = run_md(["\tA\tX\tfoot\t\t\t\t\t\tmedian-only"])
+    ok(e and "needs its median" in e[0], "median-only row without a median refused")
+    ok(money(58, "percent of crop") == "58%" and unit_label("percent of crop") == "of the crop", "share of the crop prints as a percent")
     ok(money(0.135, "bushel") == "$0.135" and money(0.2, "bushel") == "$0.20" and money(46.05, "acre") == "$46.05"
        and money(15005, "mile") == "$15,005", "money formats")
     d = {"state": "IA", "name": "Iowa", "survey_year": 2026, "survey": "S", "publisher": "P", "includes": "I",
@@ -717,6 +803,9 @@ def selftest():
     ia = docs.get("IA")
     ok(ia and any(r["o"] == "Corn combining" and r["a"] == 46.05 and r["lo"] == 25 and r["hi"] == 80 and r["n"] == 119 for r in ia["rows"]),
        "Iowa 2026 corn combining is $46.05 ($25-$80, 119), as A3-10 page 3 prints it")
+    mo = docs.get("MO")
+    ok(mo and mo.get("rate_year") == 2025 and any(r.get("k") == "combine-corn" and r["a"] == 47.56 and r["md"] == 40 and r["lo"] == 35 and r["hi"] == 95 and r["n"] == 9 for r in mo["rows"]),
+       "Missouri 2025 corn combining without grain cart is $47.56 (median $40, $35-$95, 9), as G302 (March 2026) Table 5 prints it")
     print("selftest: %d failed" % len(fails))
     for x in fails:
         print("  FAIL", x)
