@@ -875,7 +875,8 @@ def _edge_facts(daily):
     return daily_edge.shown(daily.get("edge"))
 
 
-def edge_html(daily, camp=None):
+def edge_html(daily):
+    camp = campaign_of(daily)
     facts = _edge_facts(daily)
     out = ""
     if facts:
@@ -898,7 +899,8 @@ def edge_html(daily, camp=None):
     return out
 
 
-def edge_text(daily, camp=None):
+def edge_text(daily):
+    camp = campaign_of(daily)
     L = []
     facts = _edge_facts(daily)
     if facts:
@@ -959,7 +961,7 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
                     'padding:4px 0 4px 12px;font-family:%s;font-size:16px;line-height:1.55;color:%s" '
                     'class="ink"><strong>%s</strong> %s%s</td></tr></table></td></tr>'
                     % (GOLD, SANS, INK, e(take_label), e(take), ""))
-    _edge = edge_html(daily, camp)
+    _edge = edge_html(daily)
     if _edge:
         body.append(_edge)
     _clock = clock_html(daily, today, camp)
@@ -1108,7 +1110,7 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
         take = strip_md(daily.get("the_takeaway"))
         if take:
             L += ["", "THE TAKEAWAY: " + take]
-    L += edge_text(daily, camp)
+    L += edge_text(daily)
     L += clock_text(daily, today, camp)
     # Same slot as the HTML part, same rule: real active sponsor only, never
     # the house ad. A multipart message whose text half quietly drops the
