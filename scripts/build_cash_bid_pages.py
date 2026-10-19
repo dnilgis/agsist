@@ -627,7 +627,8 @@ def op_key(name, town=""):
     name, taken out: "Bartlett Grain Company- St. Joseph" and "Bartlett Grain
     Company, LLC" in Saint Joseph are one operator there. For telling an unread
     roster entry apart from another one, or from a board already on the page."""
-    s = OP_NOISE.sub(" ", (name or "").lower())
+    # "Co-op" first: OP_NOISE's "co" would leave "op" ("Heartland Co-op" vs "Heartland Coop")
+    s = OP_NOISE.sub(" ", re.sub(r"\bco\s?-?\s?op\b", "coop", (name or "").lower()))
     for w in re.findall(r"[a-z0-9]+", (town or "").lower()):
         for v in {w, TOWN_ALT.get(w, w)}:
             s = re.sub(rf"\b{v}\b", " ", s)
@@ -3470,6 +3471,8 @@ def _selftest_place():
     assert head_name(fac) == "Linn Coop Oil Company (Ingredion, Cedar Rapids)", head_name(fac)
     assert branch_name({"city": "Creston 1"}, {}, "Creston", {"creston": "Creston"}) == "Creston 1"
     assert head_name({"operator": "", "city": "Ackney", "branch": "", "town": "Ackley"}) == "Ackney"
+    assert op_key("Heartland Co-op") == op_key("Heartland Coop") == op_key("Heartland Cooperative") \
+        == op_key("Heartland Co op") == "heartland"
     sec = board_section(pl, parse_ts(gen).astimezone(CT))[0]
     assert '<div class="loc">Pine Lake</div>' in sec and "Ackney" not in sec, sec[:400]
     assert near_text(dict(ty, how="zip")) == "Ackley, IA 50601"
