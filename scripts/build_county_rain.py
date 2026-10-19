@@ -307,9 +307,11 @@ PICK_RULE_2 = ("Mountain snow sites, and stations far above the rest in the coun
                "since their rain is not what the farms below get. Then the pick goes to one with NOAA normals, "
                "then the most days reported, then the one nearest the middle of the county.")
 # "pick": 3 (2026-10-19): Sig's rule, a full record of rain and snowfall (county_rain.pick_order)
-PICK_RULE_3 = (PICK_RULE_2 + " Where snow is normal and that station's snowfall record has gaps, "
-               "the nearest one that keeps a full record of both rain and snowfall is picked instead, "
-               "if it is no more than 10 miles farther or twice as far.")
+PICK_RULE_3 = ("Mountain snow sites, and stations far above the rest in the county, come last, "
+               "since their rain is not what the farms below get. Then the pick goes to one with NOAA normals. "
+               "Where snow is normal, a station that keeps a full record of both rain and snowfall comes next, "
+               "over a nearer one whose snowfall record has gaps, if it is no more than 10 miles farther or twice as far. "
+               "Then the most days reported, then the one nearest the middle of the county.")
 
 
 def morning_read(stw):
@@ -1086,7 +1088,7 @@ def selftest():
         ok("no gauge has 30 years" not in story, "a co-op station's normal is its own")
         # the pick rule the page states is the one the data file says the fetch used
         for pk, words in ((None, "The pick goes to one with NOAA normals first"), (2, "Mountain snow sites, and stations far above the rest in the county, come last"),
-                          (3, "the nearest one that keeps a full record of both rain and snowfall is picked instead")):
+                          (3, "a station that keeps a full record of both rain and snowfall comes next")):
             dp = {k: v for k, v in d.items() if k != "pick"}
             if pk:
                 dp["pick"] = pk
