@@ -172,6 +172,7 @@ except ImportError:
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PRICES_PATH = REPO_ROOT / "data" / "prices.json"
+EXPORT_SALES_PATH = REPO_ROOT / "data" / "export-sales.json"
 OUTPUT_PATH = REPO_ROOT / "data" / "daily.json"
 QUOTE_POOL_PATH = REPO_ROOT / "data" / "quote-pool.json"
 DAILY_QUOTE_ENABLED = False   # 2026-10-09: off; the pool's attributions are unsourced (see main)
@@ -303,6 +304,12 @@ COMMODITY_LABELS = {
 }
 
 GRAIN_KEYS = {"corn", "corn-dec", "beans", "beans-nov", "wheat", "oats"}
+LIVESTOCK_KEYS = {"cattle", "feeders", "hogs"}   # CME: day session only, 8:30 a.m. to 1:05 p.m. CT
+INDEX_KEYS = {"sp500", "dollar", "treasury10"}   # cash indexes: they close, they do not settle
+STALE_NAMES = {"cattle": "live cattle", "feeders": "feeder", "hogs": "hogs", "milk": "milk",
+               "crude": "crude", "natgas": "natural gas", "meal": "meal", "soyoil": "soybean oil",
+               "corn": "corn", "beans": "soybeans", "wheat": "wheat", "oats": "oats",
+               "dollar": "dollar", "sp500": "s&p"}
 
 # v4.5: rebuilt against the 2026-07-18 probe-feeds run (probe_feeds.py, from the
 # real Actions runner IP — the only vantage point that matters). Findings:
@@ -412,7 +419,10 @@ USDA recurring report release times (use these exact day/time pairings):
                           though markets trade), releases Tuesday 3:00 PM CT.
                           The NEXT WEEKLY RELEASES line below gives the exact day.
   - WASDE:                Monthly, around the 9th-12th, 11:00 AM CT.
-  - Weekly Export Sales:  Every Thursday, 7:30 AM CT.
+  - Weekly Export Sales:  Thursday, 7:30 AM CT. In a week with a federal
+                          holiday Monday to Wednesday (Columbus Day, Veterans
+                          Day) FAS often releases it Friday instead.
+                          The NEXT WEEKLY RELEASES line below gives the day.
   - Cattle on Feed:       Monthly, third or fourth Friday, 2:00 PM CT.
   - Quarterly Stocks:     Jan/Mar/Jun/Sep, 11:00 AM CT.
   - Prospective Plantings: Late March (around Mar 31), 11:00 AM CT.
@@ -421,12 +431,47 @@ USDA recurring report release times (use these exact day/time pairings):
 
 CME settlement times (relevant for "Friday's close" framing):
   - CBOT grain: 1:20 PM CT
-  - CME livestock: 1:00 PM CT
+  - CME livestock: 1:05 PM CT
   - NYMEX crude: 1:30 PM CT
 
 If a watch_list item references one of these releases, the day-of-week and
 time MUST match this table. Never invent alternate release times.
 """
+
+
+def export_sales_holiday_week(day):
+    """(thursday, holiday) when a federal holiday falls Monday to Wednesday of
+    the week containing `day` and Thursday itself is not one, else None.
+    2026-10-12 was Columbus Day; that week's Export Sales came Friday Oct 16.
+    usda_dates.export_sales_date() still names Thursday (its selftest pins it;
+    changing the rule is Sig's call), so the prompt hedges instead."""
+    import usda_dates
+    mon = day - timedelta(days=day.weekday())
+    thu = mon + timedelta(days=3)
+    if usda_dates.federal_holiday_name(thu) or usda_dates.federal_holiday_name(thu + timedelta(days=1)):
+        return None
+    for i in range(3):
+        d = mon + timedelta(days=i)
+        if usda_dates.federal_holiday_name(d):
+            return thu, d
+    return None
+
+
+def export_sales_landed(thursday, path=None):
+    """Has the release due the week of `thursday` landed in data/export-sales.json?
+    That release covers the week ending the Thursday before, which is what the
+    file's report_date holds. False when the file or the date is missing: the
+    hedged line is the safe one."""
+    try:
+        with open(path or EXPORT_SALES_PATH) as f:
+            rd = str(json.load(f).get("report_date") or "")[:10]
+    except Exception:
+        return False
+    return bool(rd) and rd >= (thursday - timedelta(days=7)).isoformat()
+
+
+def _md_words(d):
+    return "%s, %s %d" % (d.strftime("%A"), d.strftime("%b"), d.day)
 
 
 def weekly_release_line(today=None):
@@ -447,11 +492,34 @@ def weekly_release_line(today=None):
         parts.append("Crop Progress: %s, %s" % (usda_dates.describe_release(cp, normal),
                                                 usda_dates.CROP_PROGRESS_TIME_CT))
     es = usda_dates.export_sales_date(ref)
-    if es < today:
+    hw = export_sales_holiday_week(ref)
+    if hw:
+        # 2026-10-18: Columbus Day week's report came Friday Oct 16, and the
+        # prompt had said Thursday. Hedge until the file shows it landed; do not
+        # move on to next week before then.
+        thu, hol = hw
+        fri = thu + timedelta(days=1)
+        why = "federal holiday %s %s %d, %s" % (hol.strftime("%a"), hol.strftime("%b"), hol.day,
+                                                usda_dates.federal_holiday_name(hol))
+        if export_sales_landed(thu):
+            if today >= thu:
+                es = usda_dates.export_sales_date(ref + timedelta(days=7))
+        elif today <= thu:
+            parts.append("Weekly Export Sales: %s or %s, %s (%s; FAS often releases a day late in a "
+                         "holiday week); write 'Thursday or Friday' with both dates, never Thursday alone"
+                         % (_md_words(thu), _md_words(fri), usda_dates.EXPORT_SALES_TIME_CT, why))
+            es = None
+        elif today == fri:
+            parts.append("Weekly Export Sales: %s, %s (a day late after the %s; this week's report was "
+                         "not on file as of this run)" % (_md_words(fri), usda_dates.EXPORT_SALES_TIME_CT, why))
+            es = None
+    if es is None:
+        pass
+    elif es < today:
         # 2026-10-17: a Friday issue got no line, and its watch list said "Thursday"
         # for a release six days out. Name next week's, with its date.
         es = usda_dates.export_sales_date(ref + timedelta(days=7))
-    if es >= today:
+    if es is not None and es >= today:
         normal = es - timedelta(days=es.weekday()) + timedelta(days=3)
         parts.append("Weekly Export Sales: %s, %s" % (usda_dates.describe_release(es, normal),
                                                       usda_dates.EXPORT_SALES_TIME_CT))
@@ -722,6 +790,16 @@ def load_prices():
     fetched = data.get("fetched", "")
     quotes = _resolve_front_month(data)  # repair roll-splice contamination before locking prices
     price_lines = []; locked_prices = {}; locked_changes = {}; surprises = []
+    # 2026-10-18: the session the board belongs to, so a quote from an EARLIER
+    # session is said to be one. CME livestock has no overnight session: at a
+    # 10:46Z pull its price is the prior session's settle, and the Oct 15 issue
+    # wrote "from Wednesday's $224.62 settle" for Tuesday's $224.625.
+    try:
+        import market_board as _mb
+        _qs = _mb.quote_session(fetched)
+        _qs = _qs.isoformat() if _qs else None
+    except Exception:
+        _qs = None
     for key, label in COMMODITY_LABELS.items():
         q = quotes.get(key)
         if not q or q.get("close") is None: continue
@@ -764,18 +842,47 @@ def load_prices():
         # no price pull ran from 18:46 to 04:54 UTC) and was told those were settles:
         # "WTI crude rose 1.3% to $99.25" while /markets later showed the 4 p.m. trade,
         # $101.41 +3.51%. Same file, different hour; now the Daily says which hour.
-        kind = q.get("close_kind") or "last"
+        cdate = q.get("close_date"); pdate = q.get("prev_date")
+        stale = bool(q.get("stale"))
+        # 2026-10-18: a quote from a session before the board's (livestock at a
+        # morning pull, a market that did not trade) is that session's price.
+        # Unmarked, it is the settle: the bar of a finished session. Only a
+        # quote fetch_prices marks "last" stays a last trade.
+        prior = bool(_qs and cdate and str(cdate)[:10] < _qs and not stale)
+        kind = q.get("close_kind") or ("settle" if prior else "last")
         locked_changes[key]["kind"] = kind
         if kind == "last":
             locked_changes[key]["at"] = q.get("close_time") or fetched
+        locked_changes[key]["date"] = cdate
+        locked_changes[key]["prev_date"] = pdate
+        if stale:
+            locked_changes[key]["stale"] = True
         arrow = "UP" if pct > 0 else ("DN" if pct < 0 else "FLAT")
         # Name the month for the products whose key is the front month
         # (fetch_prices.pin_continuous), so "Lean Hogs" is never a dead month.
         mon = q.get("contract") if key in ("cattle", "feeders", "hogs", "milk") else None
-        line = f"  {label}{(' ' + mon) if mon else ''}: {price_str} ({arrow} {chg_str})"
-        if kind == "last":
+        if stale:
+            # A quote the fetch could not refresh: its change is old news, and
+            # "flat" would be a claim about a market nobody read today.
+            _sd = _session_words(cdate) if cdate else ""
+            _done = q.get("close_kind") == "settle" or (
+                not q.get("close_kind") and _qs and cdate and str(cdate)[:10] < _qs)
+            line = (f"  {label}{(' ' + mon) if mon else ''}: {price_str} [STALE: last "
+                    + (("close" if key in INDEX_KEYS else "settle") if _done else "price")
+                    + (f" {_sd}" if _sd else " unknown") + "; report no move]")
+        else:
+            line = f"  {label}{(' ' + mon) if mon else ''}: {price_str} ({arrow} {chg_str})"
+        if stale:
+            pass
+        elif kind == "last":
             _at = _ct_hm(q.get("close_time") or fetched)
             line += " [last trade" + (" as of " + _at if _at else "") + ", not the settle]"
+        elif kind == "settle" and prior:
+            _sd, _pd = _session_words(cdate), _session_words(pdate) if pdate else ""
+            _w = "close" if key in INDEX_KEYS else "settle"
+            line += (f" [{_w} {_sd}" + (f", change vs {_pd} {_w}" if _pd else "")
+                     + ("; livestock has no overnight session" if key in LIVESTOCK_KEYS else "")
+                     + "]")
         elif kind == "settle":
             line += " [settle]"
         wk52_hi = q.get("wk52_hi"); wk52_lo = q.get("wk52_lo")
@@ -786,7 +893,7 @@ def load_prices():
                 line += f" [52wk: {position:.0f}% from low]"
         price_lines.append(line)
         threshold = SURPRISE_THRESHOLDS.get(key, 2.0)
-        if abs(pct) >= threshold:
+        if abs(pct) >= threshold and not stale:
             surprises.append({"commodity": label, "key": key, "price": price_str,
                 "pct_change": pct, "direction": "up" if pct > 0 else "down",
                 "surprise_magnitude": round(abs(pct) / threshold, 1)})
@@ -1772,9 +1879,21 @@ def get_usda_release_today():
         # including Columbus Day, when CME trades and the market-status check
         # above says "open" (2026-10-11: this used to announce Crop Progress
         # on Monday Oct 12 and nothing on Tuesday Oct 13).
+        _hw = export_sales_holiday_week(today.date())
+        _late = _hw and not export_sales_landed(_hw[0])
         for name, at, moved in usda_dates.weekly_releases(today.date()):
-            releases.append("%s, %s%s" % (name, at, " (moved from %s, %s)" % (
-                moved.strftime("%A"), usda_dates.federal_holiday_name(moved)) if moved else ""))
+            note = (" (moved from %s, %s)" % (moved.strftime("%A"), usda_dates.federal_holiday_name(moved))
+                    if moved else "")
+            if _late and "Export Sales" in name:
+                # a Monday-to-Wednesday federal holiday: FAS often releases Friday
+                note += (" (or Friday: FAS often releases a day late after the %s %s federal holiday; "
+                         "say Thursday or Friday)"
+                         % (_hw[1].strftime("%A"), usda_dates.federal_holiday_name(_hw[1])))
+            releases.append("%s, %s%s" % (name, at, note))
+        if _late and today.date() == _hw[0] + timedelta(days=1):
+            releases.append("USDA Weekly Export Sales, %s (a day late after the %s %s federal holiday; "
+                            "not on file as of this run)" % (usda_dates.EXPORT_SALES_TIME_CT,
+                            _hw[1].strftime("%A"), usda_dates.federal_holiday_name(_hw[1])))
 
     # Monthly: Cattle on Feed (3rd or 4th Friday). Hardcoded 2026 dates:
     cof_2026 = {"01-23", "02-20", "03-20", "04-24", "05-22",
@@ -2275,18 +2394,26 @@ def _frac_price(v):
     if f == 4: w += 1; f = 0
     return f"${w / 100:.2f}" + ("", "\u00bc", "\u00bd", "\u00be")[f]
 
-def quote_timing(fetched_iso, market_status=None, locked_changes=None):
+def quote_timing(fetched_iso, market_status=None, locked_changes=None, locked_prices=None):
     """When the board's numbers are from, and whether they are settlements.
     settled is True on a closed day (weekend/holiday), when the fetch is on a
     later calendar day than the quote session, or at/after the CBOT grain
     close. Otherwise the quotes are live: 'overnight' before 8:30 a.m. CT,
     'intraday' after. prev_settles maps each locked key to its previous
-    settle (the feed's `open`, which holds the prior close)."""
+    settle (the feed's `open`, which holds the prior close).
+
+    2026-10-18: per quote, not one session for the whole board. `own` maps a
+    key whose lock is a settle, or whose date is before the quote session
+    (CME livestock at a morning pull), to {date, prev_date, kind, price};
+    `stale` maps a quote the fetch could not refresh to its date; `prev_dates`
+    holds each previous settle's own date where the lock carries one."""
     out = {"settled": True, "phase": "settle", "as_of": "", "quote_session": None,
-           "prev_session": None, "prev_settles": {}}
+           "prev_session": None, "prev_settles": {}, "prev_dates": {}, "own": {}, "stale": {}}
     for k, v in (locked_changes or {}).items():
         if isinstance(v, dict) and v.get("prev") is not None:
             out["prev_settles"][k] = float(v["prev"])
+            if v.get("prev_date"):
+                out["prev_dates"][k] = str(v["prev_date"])[:10]
     try:
         dt = datetime.fromisoformat(str(fetched_iso).replace("Z", "+00:00"))
         from zoneinfo import ZoneInfo
@@ -2300,6 +2427,19 @@ def quote_timing(fetched_iso, market_status=None, locked_changes=None):
         qs, ps = ct.date(), None
     out["quote_session"], out["prev_session"] = qs, ps
     out["as_of"] = ct.strftime("%-I:%M %p").replace("AM", "a.m.").replace("PM", "p.m.") + " CT"
+    _qs = qs.isoformat() if qs is not None else None
+    for k, v in (locked_changes or {}).items():
+        if not isinstance(v, dict):
+            continue
+        d = str(v.get("date") or "")[:10] or None
+        if v.get("stale"):
+            out["stale"][k] = d
+            continue
+        if v.get("kind") == "settle" or (d and _qs and d < _qs):
+            px = (locked_prices or {}).get(k)
+            out["own"][k] = {"date": d, "prev_date": out["prev_dates"].get(k),
+                             "kind": v.get("kind"),
+                             "price": float(px) if isinstance(px, (int, float)) else None}
     # fetch_prices v3.7 says per quote whether the price is the settle. A
     # last trade after the bell is not a settle either (2026-10-17: Yahoo's
     # bar holds the last trade until late evening). Any grain benchmark still
@@ -2323,25 +2463,72 @@ def quote_timing(fetched_iso, market_status=None, locked_changes=None):
         out["phase"] = "overnight" if hm < DAY_OPEN_CT else "intraday"
     return out
 
+def _timing_px(k, v):
+    """A price the way the prompt prints it: grain in the pit's fractions,
+    livestock to the tick (pricefmt.cash, the site's one rule), the rest to the cent."""
+    if k in GRAIN_KEYS:
+        return _frac_price(v)
+    if k in LIVESTOCK_KEYS:
+        return pricefmt.cash(v)
+    return f"{v:,.2f}"
+
+
 def price_timing_block(timing):
     """The prompt's statement of when the prices are from. Empty when settled."""
     if not timing or timing.get("settled"):
         return ""
     ps = timing.get("prev_session")
     psl = (ps.strftime("%a %b ") + str(ps.day)) if ps else "the previous session"
-    lines = []
+    pss = ps.isoformat() if ps else None
+    own = timing.get("own") or {}
+    stale = timing.get("stale") or {}
+    pdates = timing.get("prev_dates") or {}
+    lines, own_lines, stale_lines = [], [], []
     for k, label in COMMODITY_LABELS.items():
+        if k in stale:
+            sd = _session_words(stale[k]) if stale[k] else ""
+            stale_lines.append(f"  {label}: no fresh quote, last price from "
+                               f"{sd or 'an earlier session'}; report no move, never call it flat or unchanged")
+            continue
         v = timing["prev_settles"].get(k)
+        if k in own:
+            o = own[k]
+            d, pd = o.get("date"), o.get("prev_date")
+            px = o.get("price")
+            sw = "close" if k in INDEX_KEYS else "settle"
+            word = ("CLOSED" if k in INDEX_KEYS else "SETTLED") if o.get("kind") == "settle" else "LAST TRADE"
+            head = f"  {label}: {word} {_session_words(d) if d else 'an earlier session'}"
+            if px is not None:
+                head += f" at {_timing_px(k, px)}"
+            if v is not None:
+                head += (f" vs {_session_words(pd) + ' ' if pd else 'the previous '}{sw} "
+                         f"{_timing_px(k, v)}")
+            if k in LIVESTOCK_KEYS:
+                head += " (livestock has no overnight session)"
+            own_lines.append(head)
+            continue
         if v is None: continue
-        lines.append(f"  {label}: " + (_frac_price(v) if k in GRAIN_KEYS else f"{v:,.2f}"))
+        pd = pdates.get(k)
+        tag = f" ({_session_words(pd)})" if pd and pss and pd != pss else ""
+        lines.append(f"  {label}: " + _timing_px(k, v) + tag)
     session = ("The exchange settle for today is not posted yet. "
                if timing.get("phase") == "last trade" else "The day session has not closed. ")
-    return (f"PRICE TIMING (HARD RULE): the prices above are {timing['phase'].upper()} quotes, "
-            f"as of {timing['as_of']}, NOT settlements. {session}"
-            f"NEVER write that any of them 'closed', 'settled' or 'finished' at a price; say "
-            f"'overnight', 'trading at', 'sits at' or 'as of {timing['as_of']}'. The change "
-            f"column is measured against the previous settle. The PREVIOUS SETTLES ({psl}), "
-            f"which are the only prices you may call a close or a settle:\n" + "\n".join(lines))
+    rest = (" except the ones listed under OWN SESSION and STALE below" if (own_lines or stale_lines) else "")
+    out = (f"PRICE TIMING (HARD RULE): the prices above are {timing['phase'].upper()} quotes, "
+           f"as of {timing['as_of']}, NOT settlements{rest}. {session}"
+           f"NEVER write that any of them 'closed', 'settled' or 'finished' at a price; say "
+           f"'overnight', 'trading at', 'sits at' or 'as of {timing['as_of']}'. The change "
+           f"column is measured against the previous settle. The PREVIOUS SETTLES ({psl}), "
+           f"which are the only prices you may call a close or a settle:\n" + "\n".join(lines))
+    if own_lines:
+        out += ("\nOWN SESSION (HARD RULE): these quotes are from the session named on each line, "
+                "not today's trading. Name that day when you cite one (\"Wednesday's settle\"), "
+                "and name the previous settle by ITS day, never the board's. A SETTLED price may be "
+                "called a close or a settle, and a CLOSED index its close; a LAST TRADE may not:\n" + "\n".join(own_lines))
+    if stale_lines:
+        out += ("\nSTALE (HARD RULE): the fetch could not refresh these; their change is not today's. "
+                "Leave them out or say the quote was not available:\n" + "\n".join(stale_lines))
+    return out
 
 _CLOSE_CLAIM_RE = re.compile(
     r"\b(closed|closing|settled|settling|finished)\b"
@@ -2357,7 +2544,11 @@ def close_claims_on_live_quotes(text, timing, bare=True):
     looks ahead, and "watch today's close against $4.70" is fine there."""
     if not timing or timing.get("settled"):
         return []
-    prevs = list(timing.get("prev_settles", {}).values())
+    prevs = [v for k, v in timing.get("prev_settles", {}).items() if k not in (timing.get("stale") or {})]
+    # a quote from its own session that is that session's settle (livestock at
+    # a morning pull) may be called one
+    prevs += [o["price"] for o in (timing.get("own") or {}).values()
+              if o.get("kind") == "settle" and o.get("price") is not None]
     bad = []
     for m in _CLOSE_CLAIM_RE.finditer(text or ""):
         x = float(m.group(3))
@@ -2398,7 +2589,8 @@ def call_claude(price_data, surprises, news_block, seasonal_ctx, todays_quote, p
         surprise_block = "No overnight surprises. Quiet days deserve quiet briefings (RULE 6). Fewer sections if warranted."
 
     locked_table = price_data.get("price_block", "Price data unavailable")
-    _timing = quote_timing(price_data.get("fetched", ""), market_status, price_data.get("locked_changes"))
+    _timing = quote_timing(price_data.get("fetched", ""), market_status, price_data.get("locked_changes"),
+                           price_data.get("locked_prices"))
     _tb = price_timing_block(_timing)
     if _tb:
         locked_table += "\n\n" + _tb
@@ -2626,6 +2818,14 @@ def validate_briefing(briefing, locked_prices, timing=None):
         for _c in close_claims_on_live_quotes(_d, timing, bare=False):
             warnings.append(f"Live quote called a close: \"{_c}\" (watch list) -- the board is {timing['phase']} "
                             f"as of {timing['as_of']}; only a previous settle may be called closed/settled")
+    # 2026-10-18: a quote the fetch could not refresh has no move today. "Hogs
+    # sat flat at $75.55" (Oct 16) read a preserved quote as a quiet market.
+    for _k in sorted((timing or {}).get("stale") or {}):
+        _nm = STALE_NAMES.get(_k) or COMMODITY_LABELS.get(_k, _k).lower()
+        for _m in re.finditer(r"\b" + re.escape(_nm) + r"\b[^.;]{0,60}?\b(flat|unchanged|steady|unch)\b",
+                              full_text, re.I):
+            warnings.append(f"Stale quote called flat: \"{_m.group(0)}\" -- {_k} was not refreshed this run; "
+                            f"report no move")
     em = full_text.count("\u2014"); en = full_text.count("\u2013")
     if em: warnings.append(f"Em dash {em}x")
     if en: warnings.append(f"En dash {en}x")
@@ -2679,7 +2879,7 @@ def validate_briefing(briefing, locked_prices, timing=None):
     # non-blocking: enforce_budget already clamped the fields, the retired
     # fields are stripped, and the lede rule is a prose heuristic the critic
     # owns (Rule 3).
-    NON_BLOCKING = ("not in prices.json", "Em dash", "En dash",
+    NON_BLOCKING = ("not in prices.json", "Em dash", "En dash", "Stale quote called flat",
                     "Geo scope", "Quote attribution filler",
                     "Field cap", "Retired field", "Lede deferral", "Action missing",
                     "Section count")
@@ -5452,7 +5652,8 @@ def main():
     print(f"  Word count: {_wc_total} (target {briefing_cut.TARGET_WORDS}, ceiling {briefing_cut.HARD_CEILING})")
 
     locked_prices = price_data.get("locked_prices", {})
-    _timing = quote_timing(price_data.get("fetched", ""), market_status, price_data.get("locked_changes"))
+    _timing = quote_timing(price_data.get("fetched", ""), market_status, price_data.get("locked_changes"),
+                           price_data.get("locked_prices"))
     if not _timing.get("settled"):
         print(f"  Quote timing: {_timing['phase']} as of {_timing['as_of']} (not settlements)")
     is_clean, val_warnings = validate_briefing(briefing, locked_prices, _timing)

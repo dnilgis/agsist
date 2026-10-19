@@ -1,0 +1,481 @@
+/* /here: one box, one page about a place (Oct 18, 2026).
+   Type a ZIP, a town, a county, or coordinates, or tap a map; get the county's
+   numbers on one page. The numbers come from components/place.js; this file
+   finds the county, fetches only what the page shows, and draws it.
+
+   What loads for one place: data/atlas/pct/<ST>.json (the state's ranked
+   figures), data/atlas/counties/<fips>.json (the county's own record),
+   data/layers.json (source names), then the This week files. The county map
+   (data/atlas/counties.geo.json) loads only for a map pick or a coordinate.
+
+   URL: ?q= &fips= &zip= &at=lat,lng &for=<role>. The role chip is kept in the
+   URL and in localStorage (agsist-here-for). */
+(function () {
+  'use strict';
+  var P = window.AgPlace, L = window.AGLayers;
+  if (!P) return;
+  var GEO_API = 'https://geocoding-api.open-meteo.com/v1/search';
+  var LS_ROLE = 'agsist-here-for', LS_ZIP = 'agsist_user_zip';
+  var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var S = { seq: 0, where: null, prof: null, county: null, pct: null, role: null, week: {} };
+  var memo = {};
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  function track(n, p) { try { if (typeof gtag === 'function') gtag('event', n, p || {}); } catch (e) {} }
+  function getJSON(u, ms) {
+    if (memo[u]) return memo[u];
+    var p = new Promise(function (ok) {
+      var done = false, t = setTimeout(function () { if (!done) { done = true; ok(null); } }, ms || 12000);
+      fetch(u).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+        .then(function (j) { if (!done) { done = true; clearTimeout(t); ok(j); } });
+    });
+    memo[u] = p.then(function (j) { if (j == null) delete memo[u]; return j; });
+    return memo[u];
+  }
+  function getText(u) {
+    return fetch(u).then(function (r) { return r.ok ? r.text() : null; }).catch(function () { return null; });
+  }
+  function mdy(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
+    return m ? MONTHS[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : '';
+  }
+  function money(v) { return v == null ? '' : '$' + Number(v).toFixed(2); }
+  function cents(v) { if (v == null) return ''; var c = Math.round(v * 100); return (c < 0 ? '−' : '+') + Math.abs(c) + '¢'; }
+  function say(msg, err) { var el = $('h-status'); if (!el) return; el.textContent = msg || ''; el.className = 'h-status' + (err ? ' err' : ''); }
+  function sayHtml(html, err) { var el = $('h-status'); if (!el) return; el.innerHTML = html || ''; el.className = 'h-status' + (err ? ' err' : ''); }
+
+  /* ── finding the county ───────────────────────────────────────── */
+  function geocode(name) {
+    return fetch(GEO_API + '?name=' + encodeURIComponent(name) + '&count=10&language=en&format=json&countryCode=US')
+      .then(function (r) { if (!r.ok) throw new Error('geo ' + r.status); return r.json(); })
+      .then(function (d) { return (d && d.results) || []; });
+  }
+  function stFile(st) { return getJSON('/data/atlas/pct/' + st + '.json'); }
+  function geoFile() { return getJSON('/data/atlas/counties.geo.json', 30000); }
+  function pointToCounty(lat, lng) {
+    return geoFile().then(function (g) { return g ? P.countyAt(g, lat, lng) : null; });
+  }
+  /* A geocoder row to a county: the county name it gives, matched in the state's file; else the point. */
+  function rowToCounty(r) {
+    var st = P.stateFromName(r.admin1);
+    var at = { lat: r.latitude, lng: r.longitude };
+    if (!st) return Promise.resolve(null);
+    return stFile(st).then(function (pct) {
+      var f = pct && r.admin2 ? P.countyInState(pct, r.admin2) : null;
+      return f || pointToCounty(at.lat, at.lng);
+    });
+  }
+
+  function go(text, how) {
+    var c = P.classify(text);
+    var my = ++S.seq;
+    $('h-choices').innerHTML = '';
+    if (c.kind === 'empty') { say('Type a ZIP, a town and state, a county, or coordinates.', true); return Promise.resolve(false); }
+    track('here_find', { by: how || c.kind });
+    if (c.kind === 'zip') return byZip(c.zip, my);
+    if (c.kind === 'point') return byPoint(c.at, my, null);
+    if (c.kind === 'county') return byCounty(c.name, c.st, my);
+    return byTown(c.name, c.st, my, text);
+  }
+  function byZip(zip, my, extra) {
+    say('Looking up ZIP ' + zip + '…');
+    return geocode(zip).then(function (res) {
+      if (my !== S.seq) return false;
+      var r = res.filter(function (x) { return (x.postcodes || []).indexOf(zip) >= 0; })[0] || res[0];
+      if (!r) throw new Error('no zip');
+      return rowToCounty(r).then(function (f) {
+        if (my !== S.seq) return false;
+        if (!f) throw new Error('no county');
+        return open(f, { zip: zip, lat: r.latitude, lng: r.longitude, label: r.name + ', ' + (P.stateFromName(r.admin1) || ''), how: 'zip' }, my, extra);
+      });
+    }).catch(function () {
+      if (my !== S.seq) return false;
+      /* The place lookup did not answer: the ZIP table the cash bid search uses, then the county map. */
+      var net = window.AGSIST_BIDS_NET;
+      var c = net && net.zipCoord ? net.zipCoord(zip) : Promise.resolve(null);
+      return c.then(function (pt) {
+        if (my !== S.seq) return false;
+        if (!pt) { say('No ZIP ' + zip + ' in the place lookup. Try the town and state, or the county.', true); return false; }
+        return pointToCounty(pt.lat, pt.lon).then(function (f) {
+          if (my !== S.seq) return false;
+          if (!f) { say('ZIP ' + zip + ' did not land in a county we have. Try the town and state.', true); return false; }
+          return open(f, { zip: zip, lat: pt.lat, lng: pt.lon, label: 'ZIP ' + zip, how: 'zip' }, my, extra);
+        });
+      });
+    });
+  }
+  function byPoint(at, my, label, extra) {
+    say('Finding the county at ' + at.lat.toFixed(4) + ', ' + at.lng.toFixed(4) + '…');
+    return pointToCounty(at.lat, at.lng).then(function (f) {
+      if (my !== S.seq) return false;
+      if (!f) { say('That point is not inside a US county we have. The county figures cover the 50 states.', true); return false; }
+      return open(f, { lat: at.lat, lng: at.lng, point: true, label: label || (at.lat.toFixed(4) + ', ' + at.lng.toFixed(4)), how: 'point' }, my, extra);
+    });
+  }
+  function byCounty(name, st, my) {
+    say('Looking up ' + name + (st ? ', ' + st : '') + '…');
+    return getJSON('/data/atlas/pct/index.json').then(function (idx) {
+      if (my !== S.seq) return false;
+      if (!idx) { say('The county list did not load. Try again in a minute.', true); return false; }
+      var hits = P.findCounty(idx, name, st);
+      if (!hits.length) { say('No county called “' + name + '”' + (st ? ' in ' + P.STATES[st] : '') + '. Check the spelling, or type a town or ZIP.', true); return false; }
+      if (hits.length === 1) return open(hits[0].fips, { label: hits[0].name + ', ' + hits[0].st, how: 'county' }, my);
+      choose(hits.map(function (h) { return { text: h.name + ', ' + h.st, fips: h.fips }; }), 'More than one “' + name + '”. Pick yours:');
+      return false;
+    });
+  }
+  function byTown(name, st, my, typed) {
+    say('Looking up ' + typed + '…');
+    return geocode(name).then(function (res) {
+      if (my !== S.seq) return false;
+      if (st) res = res.filter(function (r) { return P.stateFromName(r.admin1) === st; });
+      var seen = {}, uniq = [];
+      res.forEach(function (r) { var k = r.admin1 + '|' + (r.admin2 || r.name); if (!seen[k] && P.stateFromName(r.admin1)) { seen[k] = 1; uniq.push(r); } });
+      if (!uniq.length) { say('No place called “' + name + '”' + (st ? ' in ' + P.STATES[st] : '') + '. Try a ZIP, or the county.', true); return false; }
+      if (uniq.length === 1) return townOpen(uniq[0], my);
+      choose(uniq.slice(0, 8).map(function (r) { return { text: r.name + ', ' + (r.admin2 ? r.admin2 + ', ' : '') + P.stateFromName(r.admin1), row: r }; }), 'More than one “' + name + '”. Pick yours:');
+      return false;
+    }).catch(function () {
+      if (my !== S.seq) return false;
+      say('The place lookup did not answer. Type the county (“Barron County, WI”), coordinates, or pick on the map.', true);
+      return false;
+    });
+  }
+  function townOpen(r, my) {
+    return rowToCounty(r).then(function (f) {
+      if (my !== S.seq) return false;
+      if (!f) { say('That town did not land in a county we have.', true); return false; }
+      return open(f, { lat: r.latitude, lng: r.longitude, label: r.name + ', ' + P.stateFromName(r.admin1), how: 'town' }, my);
+    });
+  }
+  function choose(list, lead) {
+    say(lead);
+    var box = $('h-choices');
+    box.innerHTML = list.map(function (c, i) { return '<button type="button" class="h-chip" data-i="' + i + '">' + esc(c.text) + '</button>'; }).join('');
+    box.onclick = function (e) {
+      var b = e.target.closest('button[data-i]'); if (!b) return;
+      var c = list[+b.getAttribute('data-i')], my = ++S.seq;
+      box.innerHTML = '';
+      if (c.fips) open(c.fips, { label: c.text, how: 'county' }, my); else townOpen(c.row, my);
+    };
+  }
+
+  /* ── one county ───────────────────────────────────────────────── */
+  function open(fips, where, my, extra) {
+    var st = P.stateOf(fips);
+    if (!st) { say('That is not a county code we know.', true); return Promise.resolve(false); }
+    say('Reading the county figures…');
+    return Promise.all([stFile(st), getJSON('/data/atlas/counties/' + fips + '.json'), getJSON('/data/layers.json')]).then(function (a) {
+      if (my != null && my !== S.seq) return false;
+      var pct = a[0], county = a[1], reg = null;
+      try { reg = a[2] && L ? L.load(a[2]) : null; } catch (e) { reg = null; }
+      var prof = pct ? P.profile(pct, fips, reg) : null;
+      if (!prof) { say('The county figures did not load. Refresh in a minute.', true); return false; }
+      where = where || {};
+      if (where.lat == null && prof.center) { where.lat = prof.center.lat; where.lng = prof.center.lng; where.center = true; }
+      S.where = where; S.prof = prof; S.county = county; S.pct = pct; S.week = {};
+      if (where.zip) lsSet(LS_ZIP, where.zip);
+      say('');
+      render();
+      writeUrl(extra);
+      loadWeek(fips, my);
+      return true;
+    });
+  }
+  function writeUrl(extra) {
+    var w = S.where || {}, p = S.prof, q = [];
+    if (!p) return;
+    q.push('fips=' + p.fips);
+    if (w.zip) q.push('zip=' + w.zip);
+    else if (w.lat != null && !w.center) q.push('at=' + (+w.lat).toFixed(4) + ',' + (+w.lng).toFixed(4));
+    if (w.how === 'town' && w.label) q.push('q=' + encodeURIComponent(w.label));
+    if (S.role) q.push('for=' + S.role);
+    try { history.replaceState(null, '', location.pathname + '?' + q.join('&')); } catch (e) {}
+  }
+
+  /* ── drawing ──────────────────────────────────────────────────── */
+  function placeLink(p) {
+    var s = P.stSlug(p.st), out = [];
+    if (p.flags.indexOf('a') >= 0) out.push(['/farmland-atlas/' + s + '/' + p.slug, 'Farmland Atlas']);
+    if (p.flags.indexOf('r') >= 0) out.push(['/rain/' + s + '/' + p.slug, 'Rain this year']);
+    if (p.flags.indexOf('p') >= 0) out.push(['/prf/' + s + '/' + p.slug, 'PRF pasture insurance']);
+    if (p.flags.indexOf('c') >= 0) out.push(['/arc-plc/' + s + '/' + p.slug, 'ARC or PLC']);
+    out.push(['/rent/' + s, P.STATES[p.st] + ' cash rent']);
+    return out;
+  }
+  function render() {
+    var p = S.prof, w = S.where;
+    document.documentElement.classList.add('h-has');
+    $('h-title').textContent = p.name + ', ' + p.stName;
+    document.title = p.name + ', ' + p.st + ': the numbers in one place | AGSIST';
+    var from = w.zip ? 'ZIP ' + w.zip + (w.label && w.label !== 'ZIP ' + w.zip ? ' (' + w.label + ')' : '') : w.how === 'town' ? w.label : w.point ? 'the point ' + w.label : null;
+    $('h-where').innerHTML = (from ? 'From ' + esc(from) + ', in ' + esc(p.name) + '. ' : '') + 'County figures; ranks are among ' + esc(p.stName) + ' counties that carry the figure, never among fields.';
+    $('h-sent').textContent = p.sentence;
+    $('h-sent-src').innerHTML = 'Every number in that line is in the table below with its source and year. Farmland Atlas county files of ' + esc(mdy(p.atlasGenerated)) + '.';
+    $('h-links').innerHTML = placeLink(p).map(function (l) { return '<a href="' + l[0] + '">' + esc(l[1]) + '</a>'; }).join('') ;
+    var nb = p.neighbors.filter(function (n) { return n.name; });
+    $('h-nb').innerHTML = nb.length ? 'Next door: ' + nb.map(function (n) { return '<a href="?fips=' + n.fips + (S.role ? '&for=' + S.role : '') + '" data-fips="' + n.fips + '">' + esc(n.name) + '</a>'; }).join(' · ') : '';
+    drawFingerprint(p);
+    drawUnusual(p);
+    drawLong(S.county);
+    drawWeek();
+    applyRole();
+    $('h-place').hidden = false;
+    if ($('h-map-box').open) drawMap();
+  }
+
+  function drawFingerprint(p) {
+    var cols = p.cols, have = cols.filter(function (c) { return c.pos != null; }).length;
+    $('h-fp-h').textContent = 'How ' + p.name + ' ranks in ' + p.stName;
+    var strip = cols.map(function (c) {
+      var h = c.pos == null ? 0 : Math.max(3, Math.round(c.pos * 100));
+      var cls = 'fp-c' + (c.band ? ' fp-' + c.band : '') + (c.pos == null ? ' fp-na' : '');
+      var tip = c.label + ': ' + (c.value == null ? 'not available' : P.fmt(c.value, c) + (c.words ? ', ' + c.words : ''));
+      return '<button type="button" class="' + cls + '" data-i="' + c.i + '" aria-label="' + esc(tip) + '"><span class="fp-bar"><span class="fp-fill" style="height:' + h + '%"></span></span><span class="fp-l">' + esc(c.short) + '</span></button>';
+    }).join('');
+    $('h-fp').innerHTML = strip;
+    $('h-fp').setAttribute('aria-label', 'Where ' + p.name + ' sits among ' + p.stName + ' counties on ' + have + ' figures. Each column runs from the lowest county at the bottom to the highest at the top. The same numbers are in the table below.');
+    $('h-fp-d').textContent = 'Tap a column for its number. Gold: top or bottom tenth of ' + p.stName + ' counties. Gray outline: not available here.';
+    $('h-fp').onclick = function (e) {
+      var b = e.target.closest('button[data-i]'); if (!b) return;
+      var c = p.cols[+b.getAttribute('data-i')];
+      $('h-fp-d').textContent = c.label + ': ' + (c.value == null ? 'not available. ' + (c.reason || '') : P.fmt(c.value, c) + (c.words ? ', ' + c.words : '') + '. ' + (c.source || '') + ', ' + c.years + '.');
+    };
+    $('h-fp-t').innerHTML = '<thead><tr><th scope="col">Figure</th><th scope="col">Here</th><th scope="col">Where it sits in ' + esc(p.stName) + '</th><th scope="col">Source</th></tr></thead><tbody>' +
+      cols.map(function (c) {
+        var here = c.value == null ? '<span class="h-na">Not available</span>' + (c.other ? ' (' + esc(P.fmt(c.other.value, c)) + ' in ' + esc(c.other.year) + ')' : '') : esc(P.fmt(c.value, c));
+        var where = c.value == null ? esc(c.reason || '') : esc(c.words || '') + (c.band ? ' <span class="h-flag">' + (c.band === 'top' ? 'top tenth' : 'bottom tenth') + '</span>' : '');
+        var src = c.source ? (c.sourceUrl ? '<a href="' + esc(c.sourceUrl) + '" rel="noopener">' + esc(c.source) + '</a>' : esc(c.source)) : '';
+        return '<tr><th scope="row">' + esc(c.label) + '</th><td>' + here + '</td><td>' + where + '</td><td>' + src + ', ' + esc(c.years) + '</td></tr>';
+      }).join('') + '</tbody>';
+  }
+
+  function drawUnusual(p) {
+    var list = p.unusual, any = list.some(function (u) { return u.unusual; });
+    var lead = !list.length ? 'Too few neighboring counties carry the same figures to compare.' :
+      any ? 'The figures that sit furthest from the counties next door (the middle value across those that carry it):' :
+        'Nothing here sits far from its neighbors by our rule. The three biggest gaps:';
+    $('h-un').innerHTML = '<p>' + esc(lead) + '</p>' + (list.length ? '<ul class="h-un">' + list.map(function (u) {
+      return '<li><b>' + esc(u.label) + '</b>: ' + esc(P.fmtShort(u.value, u.col)) + ' here, ' + esc(P.fmtShort(u.nb, u.col)) + ' across ' + u.nbN + ' neighboring counties' +
+        (u.dir === 'same' ? '.' : ', ' + u.dir + ' than its neighbors.') + (u.unusual ? ' <span class="h-flag">unusual</span>' : '') + '</li>';
+    }).join('') + '</ul>' : '') +
+      '<p class="h-src">The rule: a gap counts as unusual when it is at least one national middle-half width (the spread of the middle 50% of US counties) from the neighbors’ middle value, with 3 or more neighbors carrying the figure. Same sources and years as the table above.</p>';
+  }
+
+  function drawLong(county) {
+    var rows = P.longView(county), box = $('h-long');
+    if (!rows.length) { box.innerHTML = '<p class="h-na">Not available: the county record has too few years of yield, rent, drought or insurance figures to draw.</p>'; return; }
+    var y0 = Infinity, y1 = -Infinity;
+    rows.forEach(function (r) { r.pts.forEach(function (p) { if (p[0] < y0) y0 = p[0]; if (p[0] > y1) y1 = p[0]; }); });
+    var W = 600, H = 46, span = Math.max(1, y1 - y0 + 1), bw = W / span;
+    box.innerHTML = rows.map(function (r) {
+      var max = 0, min = Infinity, hi = null, lo = null;
+      r.pts.forEach(function (p) { if (p[1] > max) { max = p[1]; hi = p; } if (p[1] < min) { min = p[1]; lo = p; } });
+      var bars = r.pts.map(function (p) {
+        var h = max > 0 ? Math.max(1, p[1] / max * H) : 1;
+        return '<rect x="' + ((p[0] - y0) * bw + 0.5).toFixed(1) + '" y="' + (H - h).toFixed(1) + '" width="' + Math.max(1, bw - 1).toFixed(1) + '" height="' + h.toFixed(1) + '"' + (p === hi ? ' class="hi"' : '') + '><title>' + p[0] + ': ' + p[1] + '</title></rect>';
+      }).join('');
+      var u = r.unit === '$/ac' ? function (v) { return '$' + Math.round(v); } : function (v) { return String(v); };
+      return '<div class="lv-row"><div class="lv-h"><b>' + esc(r.label) + '</b> <span>' + esc(r.unit) + ', ' + r.pts[0][0] + '-' + r.pts[r.pts.length - 1][0] + '. High ' + esc(u(hi[1])) + ' (' + hi[0] + '), low ' + esc(u(lo[1])) + ' (' + lo[0] + '). ' + (r.partial ? r.partial + ' is the year so far. ' : '') + esc(r.source) + '.</span></div>' +
+        '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" class="lv-svg" aria-hidden="true">' + bars + '</svg></div>';
+    }).join('') + '<div class="lv-ax" aria-hidden="true"><span>' + y0 + '</span><span>' + y1 + '</span></div>' +
+      '<details class="h-tbl"><summary>The years, as a table</summary><div class="h-tw"><table><thead><tr><th scope="col">Year</th>' + rows.map(function (r) { return '<th scope="col">' + esc(r.label) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      (function () { var out = ''; for (var y = y1; y >= y0; y--) { out += '<tr><th scope="row">' + y + '</th>' + rows.map(function (r) { var p = r.pts.filter(function (x) { return x[0] === y; })[0]; return '<td>' + (p ? esc(p[1]) : '') + '</td>'; }).join('') + '</tr>'; } return out; })() +
+      '</tbody></table></div></details>';
+  }
+
+  /* ── this week ────────────────────────────────────────────────── */
+  var TILES = [['bids', 'Best bids nearby'], ['basis', 'Basis vs normal'], ['rain', 'Rain so far this year'], ['drought', 'Drought this week'], ['hail', 'Hail, last 30 days'], ['usda', 'Next USDA report']];
+  function drawWeek() {
+    $('h-week').innerHTML = TILES.map(function (t) {
+      return '<div class="wk" id="wk-' + t[0] + '"><h3>' + t[1] + '</h3><div class="wk-b">' + (S.week[t[0]] || '<span class="wk-wait">Reading…</span>') + '</div></div>';
+    }).join('');
+  }
+  function tile(id, html) { S.week[id] = html; var el = $('wk-' + id); if (el) el.querySelector('.wk-b').innerHTML = html; }
+  function na(why) { return '<p class="h-na">Not available: ' + esc(why) + '.</p>'; }
+  function loadWeek(fips, my) {
+    var p = S.prof, st = p.st, w = S.where;
+    function mine() { return S.prof && S.prof.fips === fips; }
+    getJSON('/data/rain/' + st.toLowerCase() + '.json').then(function (f) {
+      if (!mine()) return;
+      var r = P.rainSoFar(f, fips);
+      tile('rain', r.status !== 'ok' ? na(r.why) : '<p class="wk-n">' + r.inches.toFixed(2) + ' in</p><p>' + (r.pct != null ? r.pct + '% of the ' + esc(r.normals) + ' normal (' + r.normal.toFixed(2) + ' in) for Jan 1 to ' + esc(mdy(r.through).replace(/, \d{4}$/, '')) : 'no normal for this date') + '.</p><p class="h-src">County average of NOAA daily station records, through ' + esc(mdy(r.through)) + '.' + (p.flags.indexOf('r') >= 0 ? ' <a href="/rain/' + P.stSlug(st) + '/' + p.slug + '">The whole year</a>' : '') + '</p>');
+    });
+    getJSON('/data/drought/county-week.json').then(function (f) {
+      if (!mine()) return;
+      var d = P.droughtNow(f, fips);
+      if (d.status !== 'ok') { tile('drought', na(d.why)); return; }
+      var lead = d.worst < 0 ? 'None' : d.worstPct.toFixed(0) + '% in ' + d.worstWords.split(' ')[0];
+      tile('drought', '<p class="wk-n">' + esc(lead) + '</p><p>' + (d.worst < 0 ? 'No part of the county is dry or in drought on the map of ' + esc(mdy(d.valid)) + '.' :
+        d.worstPct.toFixed(0) + '% of the county in ' + esc(d.worstWords) + ' or worse on the map of ' + esc(mdy(d.valid)) + '. In drought (D1 or worse): ' + d.d1.toFixed(0) + '% now, ' + (d.d1FourAgo == null ? 'no map' : d.d1FourAgo.toFixed(0) + '%') + ' four weeks earlier.') +
+        '</p><p class="h-src">U.S. Drought Monitor county statistics (NDMC, University of Nebraska-Lincoln). <a href="/drought-monitor">Drought map</a></p>');
+    });
+    getJSON('/data/hail/recent.json').then(function (f) {
+      if (!mine()) return;
+      var h = P.hailNear(f, w.lat, w.lng);
+      if (h.status !== 'ok') { tile('hail', na(h.why)); return; }
+      var at = w.center ? 'the county center' : 'this spot';
+      tile('hail', '<p class="wk-n">' + (h.n ? h.n + ' report' + (h.n === 1 ? '' : 's') : 'None') + '</p><p>' + (h.n ? 'National Weather Service hail reports within ' + h.radius + ' miles of ' + at + ' in the last ' + h.days + ' days. Biggest ' + h.biggest.toFixed(2) + ' in; latest ' + esc(mdy(h.latest.date)) + ', ' + esc(h.latest.city) + ' ' + esc(h.latest.st) + '.' :
+        'No National Weather Service hail report within ' + h.radius + ' miles of ' + at + ' in the last ' + h.days + ' days. A missing report is not proof of no hail.') + '</p><p class="h-src">NWS storm reports through ' + esc(mdy(h.through)) + '. <a href="/hail-map?lat=' + (+w.lat).toFixed(4) + '&lon=' + (+w.lng).toFixed(4) + '">Five years of hail here</a></p>');
+    });
+    Promise.all([getJSON('/data/transport/basis.json'), getJSON('/data/basis-states.json')]).then(function (a) {
+      if (!mine()) return;
+      var out = [];
+      ['corn', 'soybeans'].forEach(function (crop) {
+        var b = P.stateBasis(a[1], st, crop), n = P.basisVsNormal(a[0], st, crop === 'corn' ? 'Corn' : 'Soybeans');
+        var line = '<p><b>' + (crop === 'corn' ? 'Corn' : 'Soybeans') + '</b>: ';
+        line += b.status === 'ok' ? 'middle basis ' + Math.abs(Math.round(b.median * 100)) + '¢ ' + (b.median < 0 ? 'under' : 'over') + ' ' + esc(b.label) + ' futures at ' + b.n + ' ' + esc(P.STATES[st]) + ' elevators we read' : 'state middle basis not available (' + esc(b.why) + ')';
+        line += n.status === 'ok' ? '. USDA’s ' + esc(n.region) + ' region: ' + cents(n.latest) + ' against a 5-year normal of ' + cents(n.normal) + ' for the week of ' + esc(mdy(n.week)) + ', ' + Math.abs(Math.round(n.delta * 100)) + '¢ ' + (n.delta < 0 ? 'weaker' : 'stronger') + ' than normal.' : '. Against normal: not available, ' + esc(n.why) + '.';
+        out.push(line + '</p>');
+      });
+      var asOf = a[1] && a[1].generated ? mdy(a[1].generated) : '';
+      tile('basis', out.join('') + '<p class="h-src">State medians: AGSIST network elevators' + (asOf ? ', ' + esc(asOf) : '') + '. Normal: USDA AgTransport regional elevator basis. <a href="/basis">Basis vs normal</a></p>');
+    });
+    getText('/usda-calendar.ics').then(function (t) {
+      if (!mine()) return;
+      var r = P.nextReport(t, new Date());
+      if (!r) { tile('usda', na('the report calendar did not load')); return; }
+      var et = r.at.toLocaleString('en-US', { timeZone: 'America/New_York', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+      tile('usda', '<p class="wk-n">' + esc(r.name) + '</p><p>' + esc(et) + ' ET.</p><p class="h-src">From the <a href="/usda-calendar">USDA report calendar</a>. Weekly Crop Progress and Export Sales are not in this list.</p>');
+    });
+    loadBids(fips, w);
+  }
+  function loadBids(fips, w) {
+    var net = window.AGSIST_BIDS_NET, lat = +w.lat, lng = +w.lng;
+    function draw(snap, live) {
+      if (!S.prof || S.prof.fips !== fips) return;
+      var b = P.bestBids(snap, lat, lng, 50), out = [];
+      ['corn', 'soybeans', 'wheat'].forEach(function (c) {
+        var o = b[c]; if (!o || !o.best) return;
+        var name = c === 'corn' ? 'Corn' : c === 'soybeans' ? 'Soybeans' : 'Wheat';
+        out.push('<p><b>' + name + ' ' + money(o.best.price) + '</b> at ' + esc(o.best.facility) + (o.best.town ? ', ' + esc(o.best.town) : '') + ' ' + esc(o.best.st) + ', ' + o.best.mi + ' mi' + (o.best.delivery ? ' (' + esc(o.best.delivery) + ')' : '') + (o.n === 1 ? '. The only one within 50 mi' : '. Best of ' + o.n + ' within 50 mi') + (o.left_out ? ', ' + o.left_out + ' left out as misread or far off the rest' : '') + '.</p>');
+      });
+      var from = w.center ? 'the county center' : w.zip ? 'ZIP ' + w.zip : 'this spot';
+      var when = snap && snap.fetched ? mdy(snap.fetched) : '';
+      tile('bids', (out.length ? out.join('') : na('no elevator we read posts a corn, soybean or wheat bid within 50 miles of ' + from)) +
+        '<p class="h-src">Distances from ' + esc(from) + '. ' + (live ? 'Elevator boards AGSIST reads' : 'The site’s saved bid file (a sample, not every elevator)') + (when ? ', ' + esc(when) : '') + '. <a href="' + (w.zip ? '/cash-bids?zip=' + w.zip : '/cash-bids') + '">All bids near here</a></p>');
+    }
+    var live = net && net.snapshot && isFinite(lat) && isFinite(lng) ? net.snapshot(lat, lng, { radiusMi: 50 }) : Promise.resolve(null);
+    live.then(function (snap) {
+      if (snap && snap.bids && snap.bids.length) { draw(snap, true); return; }
+      getJSON('/data/bids.json').then(function (f) { draw(f, false); });
+    });
+  }
+
+  /* ── roles ────────────────────────────────────────────────────── */
+  function drawRoles() {
+    $('h-roles').innerHTML = P.ROLES.map(function (r) { return '<button type="button" class="h-chip" data-role="' + r.id + '" aria-pressed="' + (S.role === r.id) + '">' + esc(r.label) + '</button>'; }).join('');
+    $('h-roles').onclick = function (e) {
+      var b = e.target.closest('button[data-role]'); if (!b) return;
+      var id = b.getAttribute('data-role');
+      S.role = S.role === id ? null : id;
+      lsSet(LS_ROLE, S.role);
+      track('here_role', { role: S.role || 'none' });
+      drawRoles(); applyRole(); writeUrl();
+    };
+  }
+  function applyRole() {
+    var host = $('h-sections');
+    P.order(S.role).forEach(function (id) { var el = $('h-sec-' + id); if (el) host.appendChild(el); });
+    var t = S.prof ? P.tool(S.role, { fips: S.prof.fips, st: S.prof.st, slug: S.prof.slug, flags: S.prof.flags, lat: S.where.lat, lng: S.where.lng, zip: S.where.zip, point: !!S.where.point && !S.where.center }) : null;
+    var box = $('h-tool');
+    box.innerHTML = t ? '<a class="h-tool" href="' + esc(t.href) + '">' + esc(t.text) + ' →</a>' : '';
+    box.hidden = !t;
+  }
+
+  /* ── the map ──────────────────────────────────────────────────── */
+  function proj(features) {
+    var x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    function each(g, fn) { (g.type === 'MultiPolygon' ? g.coordinates : [g.coordinates]).forEach(function (poly) { poly.forEach(function (ring) { ring.forEach(fn); }); }); }
+    features.forEach(function (f) { each(f.geometry, function (p) { if (p[0] < x0) x0 = p[0]; if (p[0] > x1) x1 = p[0]; if (p[1] < y0) y0 = p[1]; if (p[1] > y1) y1 = p[1]; }); });
+    var k = Math.cos((y0 + y1) / 2 * Math.PI / 180), W = 600, sx = W / Math.max(1e-6, (x1 - x0) * k), H = Math.round((y1 - y0) * sx);
+    function path(g) {
+      return (g.type === 'MultiPolygon' ? g.coordinates : [g.coordinates]).map(function (poly) {
+        return poly.map(function (ring) { return 'M' + ring.map(function (p) { return ((p[0] - x0) * k * sx).toFixed(1) + ',' + ((y1 - p[1]) * sx).toFixed(1); }).join('L') + 'Z'; }).join('');
+      }).join('');
+    }
+    return { W: W, H: Math.max(1, H), path: path, x0: x0, y1: y1, k: k, sx: sx };
+  }
+  function drawMap(st) {
+    var box = $('h-map');
+    if (st === undefined) st = S.prof && S.prof.st;
+    if (!st) {
+      box.innerHTML = '<p class="h-src">Loading the state map…</p>';
+      getJSON('/data/us-states.geo.json').then(function (g) {
+        if (!g) { box.innerHTML = na('the state map did not load'); return; }
+        var fs = g.features.filter(function (f) { var s = f.properties && f.properties.postal; return f.properties.iso_a2 === 'US' && P.STATES[s] && s !== 'AK' && s !== 'HI'; });
+        var pr = proj(fs);
+        box.innerHTML = '<p class="h-src">Tap a state, then a county. Alaska and Hawaii: type the county.</p><svg viewBox="0 0 ' + pr.W + ' ' + pr.H + '" class="h-svg" role="group" aria-label="US states">' +
+          fs.map(function (f) { var s = f.properties.postal; return '<path d="' + pr.path(f.geometry) + '" data-st="' + s + '" tabindex="0" role="button" aria-label="' + esc(P.STATES[s]) + '"><title>' + esc(P.STATES[s]) + '</title></path>'; }).join('') + '</svg>';
+        box.onclick = function (e) { var t = e.target.closest('[data-st]'); if (t) drawMap(t.getAttribute('data-st')); };
+        box.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { var t = e.target.closest('[data-st]'); if (t) { e.preventDefault(); drawMap(t.getAttribute('data-st')); } } };
+      });
+      return;
+    }
+    box.innerHTML = '<p class="h-src">Loading the ' + esc(P.STATES[st]) + ' county map…</p>';
+    geoFile().then(function (g) {
+      if (!g) { box.innerHTML = na('the county map did not load'); return; }
+      var fs = g.features.filter(function (f) { return f.properties && f.properties.st === st; });
+      var pr = proj(fs), cur = S.prof && S.prof.fips;
+      box.innerHTML = '<p class="h-src">' + esc(P.STATES[st]) + ': tap a county. <button type="button" class="h-lnk" data-us="1">All states</button></p><svg viewBox="0 0 ' + pr.W + ' ' + pr.H + '" class="h-svg" role="group" aria-label="' + esc(P.STATES[st]) + ' counties">' +
+        fs.map(function (f) { return '<path d="' + pr.path(f.geometry) + '" data-fips="' + f.id + '" tabindex="0" role="button"' + (f.id === cur ? ' class="cur"' : '') + ' aria-label="' + esc(f.properties.name) + '"><title>' + esc(f.properties.name) + '</title></path>'; }).join('') + '</svg>';
+      function pick(t) { var f = t.getAttribute('data-fips'); track('here_find', { by: 'map' }); open(f, { how: 'county' }, ++S.seq); window.scrollTo({ top: $('h-title').getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' }); }
+      box.onclick = function (e) {
+        if (e.target.closest('[data-us]')) { drawMap(null); return; }
+        var t = e.target.closest('[data-fips]'); if (t) pick(t);
+      };
+      box.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { var t = e.target.closest('[data-fips]'); if (t) { e.preventDefault(); pick(t); } } };
+    });
+  }
+
+  /* ── start ────────────────────────────────────────────────────── */
+  function start() {
+    var q = P.parseQuery(location.search);
+    S.role = q.role || (function () { var r = lsGet(LS_ROLE); return P.role(r) ? r : null; })();
+    drawRoles();
+    $('h-form').addEventListener('submit', function (e) { e.preventDefault(); go($('h-q').value); });
+    $('h-locate').addEventListener('click', function () {
+      if (!navigator.geolocation) { say('This browser does not share a location. Type a ZIP or town.', true); return; }
+      say('Asking the browser for your location…');
+      var my = ++S.seq;
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        if (my !== S.seq) return;
+        track('here_find', { by: 'location' });
+        byPoint({ lat: pos.coords.latitude, lng: pos.coords.longitude }, my, 'your location');
+      }, function () { if (my === S.seq) say('The browser did not share a location. Type a ZIP or town.', true); }, { timeout: 12000, maximumAge: 600000 });
+    });
+    $('h-map-box').addEventListener('toggle', function () { if ($('h-map-box').open && !$('h-map').firstChild) drawMap(); });
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[data-fips]');
+      if (!a) return;
+      e.preventDefault();
+      open(a.getAttribute('data-fips'), { how: 'county' }, ++S.seq);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    var my = ++S.seq;
+    if (q.fips) {
+      var w = { how: q.q ? 'town' : 'county', label: q.q || null };
+      if (q.zip) { w.zip = q.zip; w.how = 'zip'; }
+      if (q.at) { w.lat = q.at.lat; w.lng = q.at.lng; w.point = !q.q; if (!q.q) w.label = q.at.lat.toFixed(4) + ', ' + q.at.lng.toFixed(4); }
+      if (q.zip && !q.at) {
+        /* a ZIP link: the county is in the link; the ZIP's own point comes from the bid search's ZIP table when it answers */
+        var net = window.AGSIST_BIDS_NET;
+        $('h-q').value = q.zip;
+        (net && net.zipCoord ? net.zipCoord(q.zip) : Promise.resolve(null)).then(function (pt) {
+          if (pt) { w.lat = pt.lat; w.lng = pt.lon; }
+          open(q.fips, w, my);
+        });
+        return;
+      }
+      if (q.q) $('h-q').value = q.q;
+      open(q.fips, w, my);
+    } else if (q.zip) { $('h-q').value = q.zip; byZip(q.zip, my); }
+    else if (q.at) byPoint(q.at, my, null);
+    else if (q.q) { $('h-q').value = q.q; go(q.q, 'link'); }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  window.AgHere = { go: go, open: open, state: S };
+})();
