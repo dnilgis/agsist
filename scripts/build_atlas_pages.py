@@ -1271,6 +1271,19 @@ def d2_share(Dr):
         return 100.0 * wk["d2"] / wk["counted"]
     return wk.get("share_d2_pct")
 
+def worst_words(w):
+    """"2016", or "2016 (tied with 2014, 2015)" when other years had as many D2 weeks."""
+    t = w.get("tied") or []
+    return str(w["year"]) + ((" (tied with %s)" % ", ".join(map(str, t))) if t else "")
+
+
+def d2_share_words(Dr):
+    """"11%", or "under 1%" when some weeks counted but the share rounds to 0
+    (a county with 3 of 1,357 weeks read "0% of weeks")."""
+    wk = (Dr or {}).get("weeks") or {}
+    t = fmt(d2_share(Dr), 0)
+    return "under 1%" if (wk.get("d2") or 0) > 0 and t == "0" else t + "%"
+
 CHANGE_RE = r"\b(?:climb\w*|ris(?:e|en|es|ing)|rose|gr[eo]w\w*|gain\w*|increas\w*|improv\w*|trend\w* (?:up|upward|down|downward|higher|lower)|fall\w*|fell|declin\w*|drop\w*|slipp\w*|sliding|decreas\w*|moved? (?:up|down)|warm\w*|cool\w*|down|up)\b"
 
 
@@ -1558,7 +1571,7 @@ def county_page(W, f, d, stamp):
             keys += key("Dry rent per bushel of corn", usd2(rpb), "", "%s ÷ %s bu, %s" % (
                 money(rv["value"]), f1(ytv), CY.label_trend(yt["ty"])), None, None, st)
         else:
-            keys += key("Rent as % of land value", (fmt(rtv, 2) + "%") if rtv is not None else None, "",
+            keys += key("Rent as % of land value", ("%.2f%%" % rtv) if rtv is not None else None, "",
                         ("%s dry rent ÷ %s land and buildings, both %s" % (money(V["rent_to_value"]["rent"]), money(V["rent_to_value"]["value"]), V["rent_to_value"]["year"]))
                         if rtv is not None else "not shown" + ((": " + why(V["rent_to_value"])) if get(V, "rent_to_value", "status") else ""), None, None, st)
     ysub = []
@@ -1579,7 +1592,9 @@ def county_page(W, f, d, stamp):
                     "%s published years, all practices" % Y.get("n") + ((" · rent-per-bushel trend withheld: " + yt["w"]) if yt.get("w") else ""), None, f1, st)
     else:
         stop = CY.ends_early(Y.get("last_year"), RL) if ok(Y) else None
-        keys += key("Corn yield", None, " bu/ac", yt.get("w") or stop or (why(Y) if not ok(Y) else "no recent county yields"), None, f1, st)
+        # the yield layer's own reason first (2026-10-19): a withheld yield read
+        # "rent-per-bushel trend withheld: ..." when the yield itself was the gap
+        keys += key("Corn yield", None, " bu/ac", why(Y) if not ok(Y) else (yt.get("w") or stop or "no recent county yields"), None, f1, st)
     keys += key("Claims paid per $100 of coverage", usd2(lc) if lc is not None else None, "",
                 ("%d–%d, closed crop years" % (S["last10"]["from"], S["last10"]["to"])) if lc is not None else ("under the premium floor for a figure" if ok(S) else why(S)),
                 st_cost, usd2, st)
@@ -1665,7 +1680,7 @@ def county_page(W, f, d, stamp):
                 S2 += fact("Change %s to %s" % (x["from_year"], x["to_year"]), sgn(x["pct"], 1) + "%", "%s a year, nominal" % (sgn(x["cagr_pct"], 1) + "%"))
             if rtv is not None:
                 x = V["rent_to_value"]
-                S2 += fact("Dry cropland rent ÷ census value, %s" % x["year"], fmt(x["pct"], 2) + "%",
+                S2 += fact("Dry cropland rent ÷ census value, %s" % x["year"], "%.2f%%" % x["pct"],
                            "%s ÷ %s%s" % (money(x["rent"]), money(x["value"]), ("; cropland %s%% of land in farms" % x["cropland_share_pct"]) if x.get("cropland_share_pct") is not None else ""))
             elif get(V, "rent_to_value", "status"):
                 S2 += fwith("Dry rent ÷ census value", why(V["rent_to_value"]))
@@ -1744,9 +1759,9 @@ def county_page(W, f, d, stamp):
         S5 += '<p class="note">Weeks per year, U.S. Drought Monitor, with half the county or more in D2 (severe) drought or worse.%s</p>' % (
             (" No bar for %s: the Atlas copy of that year is incomplete, so it is left out of every total here." % " or ".join(map(str, miss))) if miss else "")
         wk = Dr.get("weeks") or {}
-        S5 += fact("D2 or worse for half the county, %s" % years_covered(Dr["first_year"], Dr["last_full_year"], miss), "%s of %s weeks" % (fmt(wk.get("d2"), 0), fmt(wk.get("counted"), 0)), "%s%% of weeks" % fmt(d2_share(Dr), 0))
+        S5 += fact("D2 or worse for half the county, %s" % years_covered(Dr["first_year"], Dr["last_full_year"], miss), "%s of %s weeks" % (fmt(wk.get("d2"), 0), fmt(wk.get("counted"), 0)), "%s of weeks" % d2_share_words(Dr))
         if wk.get("d2") and Dr.get("worst_year"):
-            S5 += fact("Year with the most D2+ weeks", str(Dr["worst_year"]["year"]), "%s weeks" % Dr["worst_year"]["d2"])
+            S5 += fact("Year with the most D2+ weeks", worst_words(Dr["worst_year"]), "%s weeks" % Dr["worst_year"]["d2"])
         if Dr.get("last5"):
             l5m = [y for y in miss if Dr["last5"]["from"] <= y <= Dr["last5"]["to"]]
             S5 += fact("Last five full years, %s" % years_covered(Dr["last5"]["from"], Dr["last5"]["to"], l5m), "%s weeks" % fmt(Dr["last5"]["d2"], 0))
@@ -2422,6 +2437,8 @@ def selftest():
     class _R:
         root = "."
     check("state hub rent history starts at the file's first year", rent_first_year(_R, "NV") == 2009 and rent_first_year(_R, "IA") == 2008)
+    check("drought share under 1%", d2_share_words({"weeks": {"d2": 3, "counted": 1357}}) == "under 1%"
+          and d2_share_words({"weeks": {"d2": 0, "counted": 1357}}) == "0%" and d2_share_words({"weeks": {"d2": 142, "counted": 1357}}) == "10%")
     check("drought share rounds once", fmt(d2_share({"weeks": {"d2": 142, "counted": 1357, "share_d2_pct": 10.5}}), 0) == "10"
           and fmt(d2_share({"weeks": {"d2": 156, "counted": 1357, "share_d2_pct": 11.5}}), 0) == "11")     # 11.496%
     check("slugify", slugify("St. Louis City") == "st-louis-city" and slugify("Lower Ct River Valley") == "lower-ct-river-valley")

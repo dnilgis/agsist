@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/util.js?v=20"></script>
 <script src="/components/asof.js?v=1"></script>
-<script src="/components/price-local.js?v=3"></script>
+<script src="/components/price-local.js?v=4"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -669,6 +669,15 @@ details.fold[hidden]{display:none}
   function $(i){return document.getElementById(i);}
   function cwt(v){return AG.px.cash(v);} /* livestock to the tick: $343.625, $227.55 (components/util.js) */
   function cwtN(v){return AG.px.cash(Math.abs(v),{dollar:false});}
+  /* Change in $/cwt, three ways (2026-10-19): a move below one tick (0.025)
+     is "unch", class nc, as pricefmt.change does for grain. Twin of
+     seed_static.py _cwt_chg. */
+  function chgCwt(q){
+    var net=q.netChange;
+    if(net!=null&&Math.round(Math.abs(net)/0.025)===0)return['unch','nc'];
+    var up=(net!=null?net:q.pctChange)>=0;
+    return[(up?'▲ +':'▼ −')+(net!=null?'$'+cwtN(net)+' ':'')+'('+(up?'+':'−')+Math.abs(q.pctChange).toFixed(2)+'%)',up?'up':'dn'];
+  }
   function setRange(pre,q){
     if(q.wk52_lo==null||q.wk52_hi==null||q.wk52_hi<=q.wk52_lo)return;
     var rp=Math.min(100,Math.max(0,(q.close-q.wk52_lo)/(q.wk52_hi-q.wk52_lo)*100));
@@ -678,8 +687,7 @@ details.fold[hidden]{display:none}
   function setQuote(pre,q){
     if(!q||q.close==null)return;
     $(pre+'-price').innerHTML=cwt(q.close)+' <span class="u">/cwt</span>';
-    if(q.pctChange!=null){var up=q.netChange>=0;var e=$(pre+'-chg');e.className='ct-chg '+(up?'up':'dn');
-      e.textContent=(up?'▲ +':'▼ −')+(q.netChange!=null?'$'+cwtN(q.netChange)+' ':'')+'('+(up?'+':'−')+Math.abs(q.pctChange).toFixed(2)+'%)';} /* dollars first, percent second — reader request 2026-07-20 */
+    if(q.pctChange!=null){var c=chgCwt(q),e=$(pre+'-chg');e.className='ct-chg '+c[1];e.textContent=c[0];} /* dollars first, percent second — reader request 2026-07-20 */
     setRange(pre,q);
   }
   var pricesP=fetch('/data/prices.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('prices '+r.status);return r.json();}).then(function(d){
@@ -687,12 +695,14 @@ details.fold[hidden]{display:none}
     /* chaos-1: expired contracts roll off (components/price-local.js roll) */
     if(window.AgPxStamp&&AgPxStamp.roll)d.quotes=q=AgPxStamp.roll(q);
     /* the 52-week range must belong to the contract shown: use the dated contract (it carries its own range) and name it; else say continuous series */
-    var nLE=q['cattle-nearby'],nGF=q['feeders-oct26'];
+    /* 2026-10-19 (P5): feeders from feeders-nearby and its own contract, as
+       live cattle reads cattle-nearby. It was hardcoded to feeders-oct26,
+       which stops trading Oct 29 and would have stayed on the page. */
+    var nLE=q['cattle-nearby'],nGF=q['feeders-nearby'];
     var le=(nLE&&nLE.close!=null&&nLE.wk52_lo!=null)?nLE:q.cattle,gf=(nGF&&nGF.close!=null&&nGF.wk52_lo!=null)?nGF:q.feeders;
-    var gfm=/-([a-z]{3})(\d\d)$/.exec('feeders-oct26');
     var lbL=$('le-rng-lbl'),lbG=$('gf-rng-lbl');
     if(lbL)lbL.textContent=(le===nLE&&nLE.contract)?'52-Week Range \u00b7 '+nLE.contract+' contract':'52-Week Range \u00b7 continuous series';
-    if(lbG)lbG.textContent=(gf===nGF&&gfm)?'52-Week Range \u00b7 '+gfm[1].charAt(0).toUpperCase()+gfm[1].slice(1)+" '"+gfm[2]+' contract':'52-Week Range \u00b7 continuous series';
+    if(lbG)lbG.textContent=(gf===nGF&&nGF.contract)?'52-Week Range \u00b7 '+nGF.contract+' contract':'52-Week Range \u00b7 continuous series';
     setQuote('le',le);setQuote('gf',gf);
     /* chaos-1: an old settle greys the cards, as the stamp does */
     var lea=le&&le.close_kind==='settle'&&window.AgPxStamp&&AgPxStamp.settleAge?AgPxStamp.settleAge(le.settle_date||le.close_date):null;
@@ -703,7 +713,7 @@ details.fold[hidden]{display:none}
     // hero prices: feeder cattle and live cattle, same size, each with its own stamp
     function heroQ(q,px,ch,stp,ct){
       var hp=$(px);if(hp&&q&&q.close!=null)hp.textContent=cwt(q.close);
-      var hc=$(ch);if(hc&&q&&q.pctChange!=null){var hu=q.netChange>=0;hc.textContent=(hu?'▲ +':'▼ −')+(q.netChange!=null?'$'+cwtN(q.netChange)+' ':'')+'('+(hu?'+':'−')+Math.abs(q.pctChange).toFixed(2)+'%)';hc.className='ph-chg '+(hu?'up':'dn');}else if(hc){hc.textContent='';hc.classList.remove('sk');}
+      var hc=$(ch);if(hc&&q&&q.pctChange!=null){var hcc=chgCwt(q);hc.textContent=hcc[0];hc.className='ph-chg '+hcc[1];}else if(hc){hc.textContent='';hc.classList.remove('sk');}
       var hs=$(stp);if(hs&&q&&window.AgPxStamp)hs.innerHTML=AgPxStamp.html(q,d.fetched);
       var hn=$(ct),lab=q&&q.ticker&&window.AgPxStamp&&AgPxStamp.label?AgPxStamp.label(q.ticker):'';if(hn&&lab)hn.textContent=lab;
     }

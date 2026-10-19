@@ -264,7 +264,7 @@ function render(){
         :key('Land and buildings', ok(V)&&V.latest!=null?money(V.latest):null,'/ac', valSub, ok(V)&&!fl?stat('value',st,F):null, money))
     +(ri?key('Land and buildings', ok(V)&&V.latest!=null?money(V.latest):null,'/ac', valSub, ok(V)&&!fl?stat('value',st,F):null, money)
         :(get(V,'rent_to_value','pct')==null&&rpb!=null?key('Dry rent per bushel of corn', usd2(rpb),'', money(rv.value)+' ÷ '+f1(ytv)+' bu, '+ytl, null, null)
-        :key('Rent as % of land value', get(V,'rent_to_value','pct')!=null?fmt(V.rent_to_value.pct,2)+'%':null,'', get(V,'rent_to_value','pct')!=null?money(V.rent_to_value.rent)+' dry rent ÷ '+money(V.rent_to_value.value)+' land and buildings, both '+V.rent_to_value.year:'not shown'+(get(V,'rent_to_value','status')?': '+why(V.rent_to_value):''), null, null)))
+        :key('Rent as % of land value', get(V,'rent_to_value','pct')!=null?rh(V.rent_to_value.pct,2)+'%':null,'', get(V,'rent_to_value','pct')!=null?money(V.rent_to_value.rent)+' dry rent ÷ '+money(V.rent_to_value.value)+' land and buildings, both '+V.rent_to_value.year:'not shown'+(get(V,'rent_to_value','status')?': '+why(V.rent_to_value):''), null, null)))
     +(ytv!=null?key('Corn yield, '+ytl, f1(ytv),' bu/ac', PRAC[yt.b]+' trend'+(ysub.length?' · '+ysub.join(' · ')+' (all practices)':''), stat('trend',st,F), f1)
       :ry5?key('Corn yield, '+ry5.from+'-'+String(ry5.to).slice(2)+' average', f1(ry5.avg),' bu/ac', 'high and low dropped'+(irrHigh?' · irrigated and dryland combined':'')+(yt.w?' · rent-per-bushel trend withheld: '+yt.w:''), null, f1)
       :key('Corn yield', ok(Y)&&!(RENT_LATEST&&Y.last_year<RENT_LATEST-3)?f1(Y.median):null,' bu/ac', ok(Y)?Y.first_year+'-'+Y.last_year+' median, '+Y.n+' published years':why(Y), null, f1))
@@ -291,7 +291,7 @@ function render(){
     if(fl) L+=fw('Read with care', 'the '+V.latest_year+' census value '+flagWords(fl)+'. The census counts buildings and small residential farms, so no change, ratio or rank is shown');
     var earlier=Object.keys(vs).filter(function(y){return +y!==V.latest_year&&vs[y]&&vs[y].per_acre!=null;}).sort();
     if(V.change&&V.change.pct!=null) L+=fct('Change '+V.change.from_year+' to '+V.change.to_year, sgn(V.change.pct,1)+'%', sgn(V.change.cagr_pct,1)+'% a year, nominal');
-    if(get(V,'rent_to_value','pct')!=null) L+=fct('Dry cropland rent ÷ census value, '+V.rent_to_value.year, fmt(V.rent_to_value.pct,2)+'%', money(V.rent_to_value.rent)+' ÷ '+money(V.rent_to_value.value)+(V.rent_to_value.cropland_share_pct!=null?'; cropland '+V.rent_to_value.cropland_share_pct+'% of land in farms':'')+'; value includes buildings, pasture, woods');
+    if(get(V,'rent_to_value','pct')!=null) L+=fct('Dry cropland rent ÷ census value, '+V.rent_to_value.year, rh(V.rent_to_value.pct,2)+'%', money(V.rent_to_value.rent)+' ÷ '+money(V.rent_to_value.value)+(V.rent_to_value.cropland_share_pct!=null?'; cropland '+V.rent_to_value.cropland_share_pct+'% of land in farms':'')+'; value includes buildings, pasture, woods');
     else if(get(V,'rent_to_value','status')&&!fl) L+=fw('Dry rent ÷ census value', why(V.rent_to_value));
   } else L+=fw('Land value', why(V));
   if(SALES&&window.AtlasSales) L+=window.AtlasSales.sheetHTML(SALES,F,fct,fw);
@@ -327,8 +327,8 @@ function render(){
     var wk=Dr.weeks||{};
     // a finished year the record is short of is named, never skipped quietly (the 2024 hole, 2026-10-16)
     var drm=(function(Dr){if(Dr.missing_years)return Dr.missing_years.map(Number);var s=Dr.series||{},o=[];if(!Dr.first_year||!Dr.last_full_year||!Dr.series)return o;for(var y=+Dr.first_year;y<=+Dr.last_full_year;y++){if(!s[y]||s[y].maps<40)o.push(y);}return o;})(Dr), exc=function(a,b){var m=drm.filter(function(y){return y>=a&&y<=b;});return a+'–'+b+(m.length?' except '+m.join(', '):'');};
-    Rt+=fct('Weeks with half the county or more in D2 (severe) drought or worse, '+exc(Dr.first_year,Dr.last_full_year), fmt(wk.d2,0)+' of '+fmt(wk.counted,0), fmt(wk.share_d2_pct,0)+'% of weeks'+(drm.length?'; '+drm.join(', ')+' left out, incomplete in the Atlas copy':''));
-    if(wk.d2&&Dr.worst_year) Rt+=fopt2('Year with the most D2+ weeks', Dr.worst_year.year+'', Dr.worst_year.d2+' weeks');
+    Rt+=fct('Weeks with half the county or more in D2 (severe) drought or worse, '+exc(Dr.first_year,Dr.last_full_year), fmt(wk.d2,0)+' of '+fmt(wk.counted,0), (function(){var sh=wk.d2!=null&&wk.counted?100*wk.d2/wk.counted:wk.share_d2_pct,t=fmt(sh,0);return wk.d2>0&&t==='0'?'under 1%':t+'%';})()+' of weeks'+(drm.length?'; '+drm.join(', ')+' left out, incomplete in the Atlas copy':''));
+    if(wk.d2&&Dr.worst_year) Rt+=fopt2('Year with the most D2+ weeks', Dr.worst_year.year+(Dr.worst_year.tied&&Dr.worst_year.tied.length?' (tied with '+Dr.worst_year.tied.join(', ')+')':''), Dr.worst_year.d2+' weeks');
     if(Dr.last5) Rt+=fopt('Last five full years, '+exc(Dr.last5.from,Dr.last5.to), fmt(Dr.last5.d2,0)+' weeks');
   } else Rt+=fw('Drought', why(Dr));
   if(ok(d.heat)&&jr){
@@ -351,7 +351,7 @@ function render(){
     else Rt+=fw('Harvested cropland irrigated, 2022', why(sh)).replace('class="f','class="opt f');
   }
   if(ok(Pr)){
-    var p=function(label,x){ if(!x) return; if(x.reported===false) Rt+=fct(label,'none reported'); else if(x.share!=null){ var s0=Pr.cropland?x.acres/Pr.cropland:x.share; Rt+=fct(label, (s0>0&&s0<0.005?'under 1%':pct(x.share,0))+' of cropland', fmt(x.acres,0)+' ac'); } };
+    var p=function(label,x){ if(!x) return; if(x.reported===false) Rt+=fct(label,'none reported'); else if(x.share!=null){ var s0=Pr.cropland?x.acres/Pr.cropland:x.share; Rt+=fct(label, (s0>0&&s0<0.005?'under 1%':pct(s0,0))+' of cropland', fmt(x.acres,0)+' ac'); } };
     p('Drained by tile, 2022',Pr.tile);
     p('Farmed no-till, 2022',Pr.notill); p('Cover crops, 2022',Pr.cover);
   }
@@ -374,7 +374,7 @@ function render(){
   h+='<footer class="ft"><b>Sources:</b> USDA NASS Cash Rents Survey and county yields; Census of Agriculture 2012, 2017, 2022; USDA RMA Summary of Business and Cause of Loss, 1989 on (the open crop year left out); U.S. Drought Monitor; NOAA nClimDiv; USGS water use 2015; EIA Form 860'
     +(SALES&&SALES.counties&&SALES.counties[F]?'; '+SALES.record+' ('+SALES.who+')':'')
     +(ok(Wl)?'; '+(Wl.register||'Nebraska DNR and Kansas DWR registers'):'')+(ok(C)?'; USDA FSA CRP statistics':'')
-    +(ok(d.frost)?'; NOAA nClimGrid daily county averages':'')+(ok(d.storms)?'; NOAA Storm Events':'')+'. '+(TEN?'Ranks count counties with 10,000 acres or more in farms, in the same survey year for rent; a state median is the median of its county figures. ':'No ranks: the census tenure file did not load. ')
+    +(ok(d.frost)?'; NOAA nClimGrid daily county averages':'')+(ok(d.storms)?'; NOAA Storm Events':'')+'. '+(TEN?'Rent ranks count every county with a published rent in the same survey year, within the state (the same counties as the state rent page); other ranks count counties with 10,000 acres or more in farms. A state median is the median of its county figures. ':'No ranks: the census tenure file did not load. ')
     +pulled()
     +'<b>One field, not the county:</b> agsist.com/field-scout · '
     +'<b>Method:</b> agsist.com/farmland-atlas/methods · <b>Live county record:</b> '+esc(url.replace('https://',''))+' · Printed '+esc(new Date().toISOString().slice(0,10))+'.</footer>';

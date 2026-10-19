@@ -133,7 +133,7 @@
         if(last)rows.push(d.last_full_year+': '+last.d2+' of '+last.maps+' weekly maps');
         if(w.counted)rows.push(d.first_year+'\u2013'+d.last_full_year+exc+': '+n(w.d2)+' of '+n(w.counted)+' weekly maps ('+w.share_d2_pct+'%)'+(w.d3!=null?'; '+n(w.d3)+' of them at D3 or worse':''));
         if(miss.length)rows.push(miss.join(', ')+' left out: the Atlas copy of that year is incomplete, so it is in no total here');
-        if(wy&&wy.d2>0)rows.push('Worst year: '+wy.year+', '+wy.d2+' weeks');
+        if(wy&&wy.d2>0)rows.push('Worst year: '+wy.year+', '+wy.d2+' weeks'+(wy.tied&&wy.tied.length?' (tied with '+wy.tied.join(', ')+')':''));
         var built=c.generated?new Date(c.generated).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}):'';
         out.innerHTML='<strong>'+esc(h[1])+'</strong>'+wkb+'<div style="font-weight:700;margin:.1rem 0 .15rem">Since 2000</div>Weeks with at least half the county in D2 or worse:'
           +'<ul style="margin:.3rem 0 .4rem;padding-left:1.1rem">'+rows.map(function(r){return '<li>'+esc(r)+'</li>';}).join('')+'</ul>'

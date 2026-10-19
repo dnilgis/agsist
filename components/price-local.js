@@ -199,14 +199,23 @@
     return '<time class="px-stamp' + (a && a.old ? ' is-stale' : '') + '" datetime="' + esc(dt) + '"' + (a && a.old ? ' data-stale=""' : '') +
       (fetched ? ' title="Price file read ' + esc(clock(fetched, now)) + '"' : '') + '>' + esc(s) + (a && a.stale ? '<span class="asof-note"> &middot; ' + esc(a.note) + '</span>' : '') + '</time>';
   }
-  /* The age of a whole board: the newest settle on it (as board() names it). */
+  /* The age of a whole board: its OLDEST settle (2026-10-19, P4). The newest
+     one let a board with one card days behind look current. Adds oldest and
+     newest (ISO days) so the caller can say which. */
   function boardAge(quotes, keys, now) {
-    var st = '';
+    var lo = '', hi = '';
     (keys || Object.keys(quotes || {})).forEach(function (k) {
       var q = quotes && quotes[k];
-      if (q && q.close != null && q.close_kind === 'settle') { var d = q.settle_date || q.close_date || ''; if (d > st) st = d; }
+      if (q && q.close != null && q.close_kind === 'settle') {
+        var d = q.settle_date || q.close_date || '';
+        if (!d) return;
+        if (!lo || d < lo) lo = d;
+        if (d > hi) hi = d;
+      }
     });
-    return st ? settleAge(st, now) : null;
+    var a = lo ? settleAge(lo, now) : null;
+    if (a) { a.oldest = lo; a.newest = hi; a.oldestLabel = isoDay(lo, now); }
+    return a;
   }
 
   /* ---- the state line ---- */
