@@ -147,7 +147,7 @@
      under the 4.5:1 body text needs. Text gold (--gold, --brand) is #8a6514 (4.7-5.3:1);
      solid fills use --gold-fill/--brand-fill #a87d1e, where the #0a0c0d label reads 5.4:1 (it
      would drop to 3.7:1 on the darker gold). Tints keep --gold-rgb. */
-  --green: #2e7d4f; --green-rgb:46,125,79; --brand: #8a6514; --brand-fill: #a87d1e; --brand-rgb: 168,125,30; --gold: #8a6514; --gold-fill: #a87d1e; --gold-rgb: 168,125,30; --orange: #9a5a1a; --risk-mod: #8a6514; --risk-high: #9a5a1a;
+  --green: #2e7d4f; --green-rgb:46,125,79; --brand: #8a6514; --brand-fill: #a87d1e; --brand-rgb: 168,125,30; --gold: #8a6514; --gold-fill: #a87d1e; --gold-rgb: 168,125,30; --orange: #9a5a1a; --blue: #2a6390; --risk-mod: #8a6514; --risk-high: #9a5a1a;
   /* --card was never defined, so cards written var(--card,#161b14) (changelog,
      status, spray, breakeven, cattle) rendered near-black in light mode. Dark
      mode keeps those fallbacks; light mode gets the light surfaces. */
@@ -212,6 +212,10 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 
 /* ── NAV ──────────────────────────────────────────────────────────── */
 .nav { position: sticky; top: 0; z-index: 400; background: rgba(14,14,12,.92); backdrop-filter: blur(12px) saturate(1.2); -webkit-backdrop-filter: blur(12px) saturate(1.2); border-bottom: 2px solid var(--brand); transition: box-shadow .2s, background .25s; }
+/* Daily archive pages carry their CSS frozen at publish time, with the tag blue
+   hard-coded (#5aa0d2, 2.2:1 on its light tint). Light theme takes the token,
+   #2a6390 (a11y 2026-10-19); new pages and /daily use var(--blue) themselves. */
+[data-theme="light"] :is(.dv3-thread-day, .dv3-sec-vs-icon, .dv3-tmyk-label) { color: var(--blue) }
 [data-theme="light"] .nav { background: rgba(255,255,255,.95); border-bottom-color: var(--brand); }
 .nav.scrolled { box-shadow: 0 1px 8px rgba(0,0,0,.15) }
 .nav-inner { max-width: 1400px; margin: 0 auto; padding: 0 var(--sp-lg); height: 72px; display: flex; align-items: center; gap: 0; overflow: visible }

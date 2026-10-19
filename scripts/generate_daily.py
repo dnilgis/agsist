@@ -4297,7 +4297,7 @@ a.dv3-quote{{color:inherit;text-decoration:none}}a.dv3-quote:hover .dv3-quote-na
 @media(max-width:640px){{.dv3-takeaway-text{{font-size:1rem}}}}
 /* v4.3: per-section vs_yesterday continuity chip */
 .dv3-sec-vs{{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);margin:0 0 .55rem;padding:.3rem .55rem;background:rgba(74,143,186,.04);border-left:2px solid rgba(74,143,186,.32);border-radius:0 4px 4px 0}}
-.dv3-sec-vs-icon{{color:#5aa0d2;font-size:.72rem;flex-shrink:0}}
+.dv3-sec-vs-icon{{color:var(--blue);font-size:.72rem;flex-shrink:0}}
 .dv3-sec-vs-text{{font-weight:600;letter-spacing:.01em}}
 /* v4.4: per-section catalyst (driver) chip */
 .dv3-sec-catalyst{{display:flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-dim);margin:0 0 .55rem;padding:.35rem .6rem;background:rgba(218,165,32,.05);border-left:2px solid rgba(218,165,32,.4);border-radius:0 4px 4px 0;flex-wrap:wrap}}
@@ -4349,7 +4349,7 @@ a.dv3-quote{{color:inherit;text-decoration:none}}a.dv3-quote:hover .dv3-quote-na
 /* WEEKLY THREAD chapter marker, sits above the lead */
 .dv3-thread{{display:flex;align-items:center;gap:.65rem;padding:.45rem .85rem;background:rgba(74,143,186,.06);border:1px solid rgba(74,143,186,.20);border-radius:6px;margin-bottom:1rem;flex-wrap:wrap}}
 .dv3-thread--anchor{{background:rgba(74,143,186,.10);border-color:rgba(74,143,186,.32)}}
-.dv3-thread-day{{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5aa0d2;white-space:nowrap;padding:.18rem .5rem;background:rgba(74,143,186,.08);border-radius:3px}}
+.dv3-thread-day{{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);white-space:nowrap;padding:.18rem .5rem;background:rgba(74,143,186,.08);border-radius:3px}}
 .dv3-thread-q{{font-size:.86rem;font-weight:600;color:var(--text);line-height:1.4;flex:1;min-width:200px}}
 
 /* YESTERDAY'S CALL, sits between sponsor and sections */

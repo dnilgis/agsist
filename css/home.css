@@ -554,7 +554,7 @@
 }
 /* v4.3: per-section vs_yesterday continuity chip */
 .daily-sec-vs{display:flex;align-items:center;gap:.4rem;font-family:"JetBrains Mono",monospace;font-size:.824rem;color:var(--text-muted);margin:.4rem 0 .6rem;padding:.3rem .55rem;background:rgba(74,143,186,.04);border-left:2px solid rgba(74,143,186,.32);border-radius:0 4px 4px 0}
-.daily-sec-vs-icon{color:#5aa0d2;font-size:.824rem;flex-shrink:0}
+.daily-sec-vs-icon{color:var(--blue);font-size:.824rem;flex-shrink:0}
 .daily-sec-vs-text{font-weight:600;letter-spacing:.01em;line-height:1.4}
 /* v4.4: per-section catalyst (driver) chip — names the news/data driving this move */
 .daily-sec-catalyst{display:flex;align-items:center;gap:.45rem;font-family:"JetBrains Mono",monospace;font-size:.824rem;color:var(--text-dim);margin:.4rem 0 .55rem;padding:.35rem .6rem;background:rgba(var(--gold-rgb),.05);border-left:2px solid rgba(var(--gold-rgb),.4);border-radius:0 4px 4px 0;flex-wrap:wrap}
