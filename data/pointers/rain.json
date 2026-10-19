@@ -21,10 +21,6 @@
    "to": "/rain/arkansas",
    "since": "2026-10-14"
   },
-  "rain/arkansas/crawford-county.html": {
-   "to": "/rain/arkansas",
-   "since": "2026-10-15"
-  },
   "rain/arkansas/desha-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-10-14"
@@ -33,9 +29,21 @@
    "to": "/rain/arkansas",
    "since": "2026-10-15"
   },
+  "rain/california/san-benito-county.html": {
+   "to": "/rain/california",
+   "since": "2026-10-19"
+  },
+  "rain/florida/lafayette-county.html": {
+   "to": "/rain/florida",
+   "since": "2026-10-19"
+  },
   "rain/georgia/bacon-county.html": {
    "to": "/rain/georgia",
    "since": "2026-10-14"
+  },
+  "rain/georgia/dawson-county.html": {
+   "to": "/rain/georgia",
+   "since": "2026-10-19"
   },
   "rain/georgia/murray-county.html": {
    "to": "/rain/georgia",
@@ -49,6 +57,14 @@
    "to": "/rain/idaho",
    "since": "2026-10-15"
   },
+  "rain/idaho/lewis-county.html": {
+   "to": "/rain/idaho",
+   "since": "2026-10-19"
+  },
+  "rain/illinois/richland-county.html": {
+   "to": "/rain/illinois",
+   "since": "2026-10-19"
+  },
   "rain/kentucky/green-county.html": {
    "to": "/rain/kentucky",
    "since": "2026-10-15"
@@ -57,9 +73,17 @@
    "to": "/rain/kentucky",
    "since": "2026-10-14"
   },
+  "rain/maryland/talbot-county.html": {
+   "to": "/rain/maryland",
+   "since": "2026-10-19"
+  },
   "rain/michigan/bay-county.html": {
    "to": "/rain/michigan",
    "since": "2026-10-15"
+  },
+  "rain/minnesota/cottonwood-county.html": {
+   "to": "/rain/minnesota",
+   "since": "2026-10-19"
   },
   "rain/mississippi/copiah-county.html": {
    "to": "/rain/mississippi",
@@ -68,6 +92,14 @@
   "rain/mississippi/jefferson-county.html": {
    "to": "/rain/mississippi",
    "since": "2026-10-15"
+  },
+  "rain/mississippi/panola-county.html": {
+   "to": "/rain/mississippi",
+   "since": "2026-10-19"
+  },
+  "rain/mississippi/tishomingo-county.html": {
+   "to": "/rain/mississippi",
+   "since": "2026-10-19"
   },
   "rain/missouri/dallas-county.html": {
    "to": "/rain/missouri",
@@ -93,17 +125,33 @@
    "to": "/rain/missouri",
    "since": "2026-10-15"
   },
+  "rain/montana/petroleum-county.html": {
+   "to": "/rain/montana",
+   "since": "2026-10-19"
+  },
+  "rain/nevada/douglas-county.html": {
+   "to": "/rain/nevada",
+   "since": "2026-10-19"
+  },
   "rain/new-york/schoharie-county.html": {
    "to": "/rain/new-york",
    "since": "2026-10-15"
+  },
+  "rain/north-dakota/sheridan-county.html": {
+   "to": "/rain/north-dakota",
+   "since": "2026-10-19"
+  },
+  "rain/ohio/auglaize-county.html": {
+   "to": "/rain/ohio",
+   "since": "2026-10-19"
   },
   "rain/oklahoma/love-county.html": {
    "to": "/rain/oklahoma",
    "since": "2026-10-14"
   },
-  "rain/oklahoma/mccurtain-county.html": {
-   "to": "/rain/oklahoma",
-   "since": "2026-10-15"
+  "rain/oregon/tillamook-county.html": {
+   "to": "/rain/oregon",
+   "since": "2026-10-19"
   },
   "rain/south-carolina/allendale-county.html": {
    "to": "/rain/south-carolina",
@@ -129,6 +177,14 @@
    "to": "/rain/south-dakota",
    "since": "2026-10-15"
   },
+  "rain/tennessee/overton-county.html": {
+   "to": "/rain/tennessee",
+   "since": "2026-10-19"
+  },
+  "rain/tennessee/unicoi-county.html": {
+   "to": "/rain/tennessee",
+   "since": "2026-10-19"
+  },
   "rain/texas/anderson-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
@@ -149,6 +205,10 @@
    "to": "/rain/texas",
    "since": "2026-10-14"
   },
+  "rain/texas/hudspeth-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-10-19"
+  },
   "rain/texas/kent-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
@@ -156,6 +216,18 @@
   "rain/texas/san-augustine-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
+  },
+  "rain/virginia/appomattox-county.html": {
+   "to": "/rain/virginia",
+   "since": "2026-10-19"
+  },
+  "rain/virginia/dickenson-county.html": {
+   "to": "/rain/virginia",
+   "since": "2026-10-19"
+  },
+  "rain/virginia/richmond-county.html": {
+   "to": "/rain/virginia",
+   "since": "2026-10-19"
   }
  }
 }
