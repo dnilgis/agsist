@@ -23,7 +23,9 @@ skim over coffee. Run by .github/workflows/morning-report.yml.
                      maker link agsist.com/rain-print?d=<ref>&maker=1. Never
                      the buyer's email, name or address.
   Traffic            data/audience.json: the latest day it has, the last 7
-                     days, the top 3 pages.
+                     days, the top 3 pages, the 14-day return share of the
+                     newest whole weekly cohort (with its n, or why it is
+                     withheld) and the Rain Print funnel for 7 days.
   To-dos             the unchecked lines of TODO-SIG.md.
 
 COUNTS ONLY. No subscriber or customer address, name or message ever goes into
@@ -612,6 +614,43 @@ def rain_print_paid(src, now):
     return [scrub(line) for line in out]
 
 
+def short_day(iso):
+    t = datetime.strptime(iso, "%Y-%m-%d")
+    return "%s %d" % (t.strftime("%b"), t.day)
+
+
+def returns_lines(a):
+    """Two lines from build_audience.py's returns and rain_print_funnel
+    sections: the newest whole cohort's 14-day return share with its n (or the
+    reason it is withheld), and the Rain Print funnel for the last 7 days.
+    Counts only; a carried (stale) section says how old it is."""
+    out, src = [], a.get("sources") or {}
+
+    def stale(key, sec):
+        s = src.get(key) or {}
+        return "" if s.get("ok", True) else " (last pulled through %s)" % sec.get("through", "?")
+    ret = a.get("returns") or {}
+    wk = ((ret.get("cohorts") or {}).get("weeks") or [])
+    if wk:
+        w = wk[-1]
+        a_, b_ = short_day(w["week"]), short_day(w["end"])
+        span = "%s-%s" % (a_, b_.split()[1] if a_.split()[0] == b_.split()[0] else b_)
+        if isinstance(w.get("share"), (int, float)):
+            out.append("Came back within 14 days: %s%% of %s new readers first seen %s (GA4, cookie-based estimate)%s."
+                       % (("%.1f" % (100 * w["share"])).rstrip("0").rstrip("."), num(w["newReaders"]), span, stale("returns", ret)))
+        else:
+            out.append("Came back within 14 days, readers first seen %s: withheld, %s%s." % (span, w.get("withheld") or "no share", stale("returns", ret)))
+    fn = a.get("rain_print_funnel") or {}
+    l7 = fn.get("last7") or {}
+    c, p = l7.get("counts") or {}, l7.get("people") or {}
+    if c:
+        out.append("Rain Print, 7 days to %s: %s draws (%s people), %s email signups, %s paid back from Stripe, %s order forms sent (GA4 events)%s."
+                   % (short_day(l7["end"]), num(c.get("rain_print_draw", 0)), num(p.get("rain_print_draw", 0)),
+                      num(c.get("email_signup", 0)), num(c.get("purchase", 0)), num(c.get("rain_print_order", 0)),
+                      stale("rain_print_funnel", fn)))
+    return out
+
+
 def sec_traffic(src, now, rep):
     lines = []
     try:
@@ -632,6 +671,7 @@ def sec_traffic(src, now, rep):
                 top = ", ".join("%s %s" % (p.get("path"), num(p.get("views"))) for p in pages[:3])
                 lines.append("Top pages, %s: %s." % ({"7d": "7 days", "28d": "28 days"}[rid], top))
                 break
+        lines.extend(returns_lines(a))
         if not lines:
             lines.append("data/audience.json has no traffic numbers.")
     except Exception as e:                                 # noqa: BLE001
@@ -1165,6 +1205,28 @@ def selftest():
             f.write('{"2026-10-14": {"daily": "jane@x.com", "alerts": 3}, "junk": 1}')
         ck("only dated integer counts are read", load_snap(p) == {"2026-10-14": {"alerts": 3}}, load_snap(p))
         ck("a missing file is empty", load_snap(os.path.join(d, "none.json")) == {})
+
+    # returns and the Rain Print funnel (build_audience.py), two lines at most
+    aud = {"returns": {"through": "2026-10-17", "cohorts": {"weeks": [
+               {"week": "2026-09-14", "end": "2026-09-20", "newReaders": 40, "returned": 6, "share": None, "withheld": "x"},
+               {"week": "2026-09-28", "end": "2026-10-04", "newReaders": 1150, "returned": 207, "share": 0.18, "withheld": None}]}},
+           "rain_print_funnel": {"through": "2026-10-17", "last7": {"start": "2026-10-11", "end": "2026-10-17",
+               "counts": {"rain_print_draw": 1240, "email_signup": 3, "purchase": 1, "rain_print_order": 2},
+               "people": {"rain_print_draw": 310}}},
+           "sources": {"returns": {"ok": True}, "rain_print_funnel": {"ok": False}}}
+    rl = returns_lines(aud)
+    ck("returns: the newest whole cohort, share with its n", rl[0] ==
+       "Came back within 14 days: 18% of 1,150 new readers first seen Sep 28-Oct 4 (GA4, cookie-based estimate).", rl)
+    ck("funnel: draws, signups, paid, order forms, 7 days; a stale pull says so", rl[1] ==
+       "Rain Print, 7 days to Oct 17: 1,240 draws (310 people), 3 email signups, 1 paid back from Stripe, "
+       "2 order forms sent (GA4 events) (last pulled through 2026-10-17).", rl)
+    aud["returns"]["cohorts"]["weeks"].reverse()
+    aud["returns"]["cohorts"]["weeks"][-1]["withheld"] = "40 new readers that week, under the 100 needed to print a share"
+    rl = returns_lines(aud)
+    ck("a withheld cohort prints its reason and n, never a share",
+       rl[0] == "Came back within 14 days, readers first seen Sep 14-20: withheld, 40 new readers that week, "
+                "under the 100 needed to print a share." and "%" not in rl[0], rl)
+    ck("no returns section: no lines", returns_lines({}) == [])
 
     print()
     if fails:
