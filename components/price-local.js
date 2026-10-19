@@ -279,6 +279,18 @@
     if (!l.length) return '';
     return l.join('<br>') + ' <a href="/cash-bids">Bids near you &rarr;</a>';
   }
+  /* The line's shape before its numbers: the same words with typical-width
+     figures, for a reader with a saved state, so the page holds the space
+     the line will take (2026-10-19 phone audit: the homepage moved down
+     70 to 170px when it arrived). The page shows it hidden (.pl-wait). */
+  function placeholder(st, crops) {
+    var l = [];
+    (crops || []).forEach(function (crop) {
+      var c = (CROPS[crop] || [])[0];
+      if (c && NAMES[st]) l.push('<b>' + esc(NAMES[st]) + ' ' + c[1] + ':</b> median basis <b>00¢ under</b> ' + (crop === 'soybeans' ? 'Nov' : 'Dec') + " '00 futures, about <b>$0.00</b> cash on the Oct 00 settle. <span class=\"pl-s\">000 elevators, Oct 00.</span>");
+    });
+    return l.length ? l.join('<br>') + ' <a href="/cash-bids" tabindex="-1">Bids near you &rarr;</a>' : '';
+  }
   /* a local bid from the futures basis card -> one line */
   function nearLine(b) {
     if (!b || !(b.price > 0) || !b.place) return '';
@@ -287,11 +299,23 @@
   }
 
   var api = { stamp: stamp, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
-    deadFrom: deadFrom, expired: expired, roll: roll, html: html, clock: clock, readState: readState, zipState: zipState, label: label, cell: cell, lines: lines, build: build, nearLine: nearLine, NAMES: NAMES };
+    deadFrom: deadFrom, expired: expired, roll: roll, html: html, clock: clock, readState: readState, zipState: zipState, label: label, cell: cell, lines: lines, build: build, nearLine: nearLine, placeholder: placeholder, NAMES: NAMES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgPxStamp = api;
   var doc = root.document;
   if (!doc) return;
+  /* <p class="pl-line" data-state-bid ...> then <script>AgPxStamp.reserve(that p)</script>:
+     with a saved state, the line holds its space from the first paint (hidden, aria-hidden). */
+  api.reserve = function (el) {
+    var st = '', h;
+    try { st = readState(root.localStorage); } catch (e) { st = ''; }
+    if (!el || !st || !(h = placeholder(st, String(el.getAttribute('data-state-bid') || '').split(/\s+/)))) return;
+    el.innerHTML = h; el.className += ' pl-wait'; el.setAttribute('aria-hidden', 'true'); el.hidden = false;
+  };
+  function settle(el, h) {
+    el.classList.remove('pl-wait'); el.removeAttribute('aria-hidden');
+    if (h) { el.innerHTML = h; el.hidden = false; } else { el.hidden = true; el.innerHTML = ''; }
+  }
 
   function get(u) { return fetch(u, { cache: 'default' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   function prices() {
@@ -316,7 +340,7 @@
       if (!h) return;
       Array.prototype.forEach.call(els, function (el) {
         if (String(el.getAttribute('data-state-bid')).split(/\s+/).indexOf(b.key) < 0) return;
-        near[b.key] = 1; el.innerHTML = h; el.hidden = false; el.setAttribute('data-src', 'nearest');
+        near[b.key] = 1; settle(el, h); el.setAttribute('data-src', 'nearest');
       });
     });
     Promise.all([get('/data/basis-states.json'), prices()]).then(function (r) {
@@ -324,7 +348,8 @@
         if (el.getAttribute('data-src') === 'nearest') return;
         var crops = String(el.getAttribute('data-state-bid') || '').split(/\s+/).filter(Boolean);
         var h = build(r[0], r[1], st, crops);
-        if (h) { el.innerHTML = h; el.hidden = false; el.setAttribute('data-src', 'state'); }
+        if (h) { settle(el, h); el.setAttribute('data-src', 'state'); }
+        else if (el.classList.contains('pl-wait')) settle(el, '');
       });
     });
   }

@@ -12,10 +12,10 @@
   <link rel="stylesheet" href="/components/styles.css?v=25">
   <link rel="stylesheet" href="/components/asof.css?v=1">
   <script src="/components/asof.js?v=1"></script>
-  <script src="/components/price-local.js?v=4"></script>
+  <script src="/components/price-local.js?v=5"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=2">
-<link rel="stylesheet" href="/css/home.css?v=24">
+<link rel="stylesheet" href="/css/home.css?v=25">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
      well after a deferred script would finish — so defer is free here.
@@ -327,7 +327,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <div class="s7-adrow s7-adrow--hb" style="display:none"><a class="teaser-sponsor" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"></a></div>
   </section>
   <!-- no saved ZIP: hide the bid cells now, before the parser stops for the script below and the page paints with them (they used to vanish after first paint and the row rewrapped) -->
-  <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
+  <!-- 2026-10-19: with a saved state, the state line holds its space from the first paint (components/price-local.js reserve(); test/cls-oct19.test.mjs). In this script, not one of its own: a script between here and the hero is a point where the browser may paint. -->
+  <script>try{AgPxStamp.reserve(document.querySelector('#hero-band .pl-line'));}catch(e){}try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
   <!-- signup-ask.js stays a plain script here: it fills #hb-ask above before the first paint. Deferred, the ask arrived after paint and pushed the page down (CLS 0.009 to 0.042, 2026-10-12). -->
   <script src="/components/signup-ask.js?v=9"></script>
 <section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-10-19" aria-label="AGSIST Daily Briefing" aria-expanded="false">
@@ -427,6 +428,44 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </div>
   </div>
 </section>
+<!-- "Also today" runs here, right after the strip, so the line is in the first paint; from components/home.js
+     it arrived after paint and the strip grew 25px under the page (2026-10-19 phone audit, test/cls-oct19.test.mjs). -->
+<script>
+/* ---- 2026-10-16: "Also today" under the briefing strip ----
+   The strip shows one teaser line. The briefing's other section titles
+   (same text bake_homepage.py writes and hydrateDaily refreshes) go on one
+   more line, so the first screen says what else happened today without a
+   tap. A title already in the headline or teaser is left out. The line hides
+   when home-season.js marks the teaser stale or the briefing is not today's. */
+try {
+(function(){
+  var hero=document.getElementById('daily-hero'),teaser=document.getElementById('daily-teaser');
+  if(!hero||!teaser)return;
+  function todayCT(){try{return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago'}).format(new Date());}catch(e){return '';}}
+  window.__agsistAlsoToday=function(titles,head){
+    var h=String(head||'').toLowerCase(),seen={};
+    return titles.map(function(t){return String(t||'').replace(/\s+/g,' ').trim();}).filter(function(t){
+      var k=t.toLowerCase();if(!t||seen[k]||h.indexOf(k)>=0)return false;seen[k]=1;return true;
+    }).slice(0,3);
+  };
+  function build(){
+    var line=document.getElementById('teaser-also');
+    var pv=document.getElementById('daily-teaser-text');
+    var stale=pv&&pv.getAttribute('data-s7')==='hidden-stale';
+    var bd=hero.getAttribute('data-briefing-date')||'',td=todayCT();
+    var titles=[];for(var i=1;i<=4;i++){var e=document.getElementById('daily-section-'+i+'-title');if(e)titles.push(e.textContent);}
+    var hl=document.getElementById('daily-headline');
+    var list=window.__agsistAlsoToday(titles,(hl?hl.textContent:'')+' '+(pv?pv.textContent:''));
+    if(stale||!list.length||(bd&&td&&bd!==td)){if(line)line.hidden=true;return;}
+    if(!line){line=document.createElement('span');line.id='teaser-also';line.className='teaser-also';teaser.appendChild(line);}
+    line.hidden=false;
+    line.textContent='Also today: '+list.join(' · ');
+  }
+  function go(){build();setTimeout(build,2500);setTimeout(build,8000);}
+  build();if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();
+})();
+} catch (e) {}
+</script>
 <!-- 2026-10-06: the homepage sponsor slot. /sponsor sells "above the fold on the
      homepage", and the briefing's own sponsor box sits inside a fold that starts
      closed. This strip sits under the briefing teaser, outside the fold, on
@@ -1659,7 +1698,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/cb-myelev.js?v=3" defer></script>
 <script src="/components/homepage-extras.js?v=16" defer></script>
 <script src="/components/home-yield.js?v=7" defer></script>
-<script src="/components/home.js?v=13"></script>
+<script src="/components/home.js?v=14"></script>
 <script src="/components/home-planting.js?v=2" defer></script>
 <script src="/components/home-season.js?v=7" defer></script>
 <script src="/components/next-links.js?v=3" defer></script>

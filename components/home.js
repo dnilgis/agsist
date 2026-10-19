@@ -1932,38 +1932,5 @@ try {
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',arm);else arm();
 })();
 } catch (e) { blockFailed(e); }
-/* ---- 2026-10-16: "Also today" under the briefing strip ----
-   The strip shows one teaser line. The briefing's other section titles
-   (same text bake_homepage.py writes and hydrateDaily refreshes) go on one
-   more line, so the first screen says what else happened today without a
-   tap. A title already in the headline or teaser is left out. The line hides
-   when home-season.js marks the teaser stale or the briefing is not today's. */
-try {
-(function(){
-  var hero=document.getElementById('daily-hero'),teaser=document.getElementById('daily-teaser');
-  if(!hero||!teaser)return;
-  function todayCT(){try{return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago'}).format(new Date());}catch(e){return '';}}
-  window.__agsistAlsoToday=function(titles,head){
-    var h=String(head||'').toLowerCase(),seen={};
-    return titles.map(function(t){return String(t||'').replace(/\s+/g,' ').trim();}).filter(function(t){
-      var k=t.toLowerCase();if(!t||seen[k]||h.indexOf(k)>=0)return false;seen[k]=1;return true;
-    }).slice(0,3);
-  };
-  function build(){
-    var line=document.getElementById('teaser-also');
-    var pv=document.getElementById('daily-teaser-text');
-    var stale=pv&&pv.getAttribute('data-s7')==='hidden-stale';
-    var bd=hero.getAttribute('data-briefing-date')||'',td=todayCT();
-    var titles=[];for(var i=1;i<=4;i++){var e=document.getElementById('daily-section-'+i+'-title');if(e)titles.push(e.textContent);}
-    var hl=document.getElementById('daily-headline');
-    var list=window.__agsistAlsoToday(titles,(hl?hl.textContent:'')+' '+(pv?pv.textContent:''));
-    if(stale||!list.length||(bd&&td&&bd!==td)){if(line)line.hidden=true;return;}
-    if(!line){line=document.createElement('span');line.id='teaser-also';line.className='teaser-also';teaser.appendChild(line);}
-    line.hidden=false;
-    line.textContent='Also today: '+list.join(' · ');
-  }
-  function go(){build();setTimeout(build,2500);setTimeout(build,8000);}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();
-})();
-} catch (e) { blockFailed(e); }
+/* "Also today" under the briefing strip: index.html, right after the strip (2026-10-19). */
 })();

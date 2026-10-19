@@ -99,7 +99,10 @@ test("the fertility bill prices from the shared list, with the math checked by h
 
 test("the page wires the two files in and draws nothing for a missing one", () => {
   assert.match(HTML, /<script src="\/components\/fert-sources\.js\?v=\d+"><\/script>/);
-  assert.match(HTML, /<section id="fert-coops" aria-labelledby="fert-coops-h" hidden><\/section>/);
+  // 2026-10-19 (CLS): the co-op section opens baked from the committed file (or hidden and empty when it has
+  // nothing; test/fert-coops.test.mjs), and the page hides it when the file fails to load
+  assert.match(HTML, /<!--BAKE:fert-cards--><section id="fert-coops" aria-labelledby="fert-coops-h"( hidden><\/section>|>[\s\S]+?<\/section>)<!--\/BAKE-->/);
+  assert.ok(HTML.includes("else{top.hidden=true;top.innerHTML='';}"), "a missing co-op file draws nothing");
   for (const f of ["fertilizer-coops", "fertilizer-prices"]) assert.ok(HTML.includes(`getJ('/data/${f}.json')`), f);
   assert.match(HTML, /function getJ\(u\)\{return fetch\(u\)\.then\(function\(r\)\{return r\.ok\?r\.json\(\):null;\}\)\.catch\(function\(\)\{return null;\}\);\}/,
     "a missing file is quiet, not an error");
