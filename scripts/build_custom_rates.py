@@ -22,8 +22,10 @@ Writes:
   python3 scripts/build_custom_rates.py --verify-refs
         # every row's numbers must sit together on one line of the saved source
         # text (git show origin/references:refs/<ref>.txt); run after editing a TSV
-        # (CR_REFS_REV=<rev> reads a references commit not pushed yet). A survey that
-        # prints a median gets an "md" column, checked in printed order; a row the
+        # A survey whose license forbids reposting (Missouri G302) is marked
+        # "numbers_only" in its TSV: no copy is stored anywhere public, the typed
+        # rows plus the page link and publication date are the record, and this
+        # check skips it and says so. A survey that prints a median gets an "md" column, checked in printed order; a row the
         # survey printed as a median alone is printed=median-only (no average,
         # range or count, never in the comparison)
 """
@@ -41,7 +43,7 @@ PAGES = os.path.join(ROOT, "custom-rates")
 MAIN = os.path.join(ROOT, "custom-rates.html")
 PAGE_KB = 60  # each state page; the site cap for a generated page is 150
 
-META_REQ = ("state", "name", "survey", "publisher", "survey_year", "collected", "url", "ref", "spread", "includes", "range_note")
+META_REQ = ("state", "name", "survey", "publisher", "survey_year", "collected", "url", "spread", "includes", "range_note")
 SPREADS = {
     "minmax": "lowest to highest answer",
     "trimmed": "range without the single lowest and highest answer",
@@ -204,6 +206,15 @@ def validate(meta, rows, where="tsv"):
     for u in ("url", "url2"):
         if meta.get(u) and not meta[u].startswith("https://"):
             errs.append("%s: %s must be https" % (where, u))
+    if meta.get("numbers_only"):
+        # no stored copy may exist (the publisher forbids reposting): the record is the link,
+        # the publication date and the typed rows
+        if meta.get("ref") or meta.get("ref2"):
+            errs.append("%s: a numbers_only source keeps no saved copy (drop ref)" % where)
+        if not re.fullmatch(r"20\d\d-\d\d(-\d\d)?", meta.get("published", "")):
+            errs.append("%s: numbers_only needs published: YYYY-MM" % where)
+    elif not meta.get("ref"):
+        errs.append("%s: missing meta ref" % where)
     for k, v in meta.items():
         if "—" in v:
             errs.append("%s: em dash in %s" % (where, k))
@@ -323,7 +334,8 @@ def load_states(src_dir=SRC):
 
 
 def state_doc(meta, rows):
-    srcs = [{"url": meta["url"], "ref": meta["ref"]}]
+    srcs = [{"url": meta["url"], "numbers_only": True, "published": meta["published"]} if meta.get("numbers_only")
+            else {"url": meta["url"], "ref": meta["ref"]}]
     if meta.get("url2"):
         srcs.append({"url": meta["url2"], "ref": meta.get("ref2", "")})
     d = {"state": meta["state"], "name": meta["name"], "slug": slug(meta["name"]), "survey": meta["survey"],
@@ -661,9 +673,7 @@ def verify_refs(src_dir=SRC):
     """Each row's printed numbers must appear together on one line of the saved survey text."""
     states, errs = load_states(src_dir)
     cache, bad = {}, []
-    # CR_REFS_REV: read the saved sources from another git revision (a local
-    # references commit not pushed yet); the default is the pushed branch
-    rev = os.environ.get("CR_REFS_REV") or "origin/references"
+    rev = "origin/references"
 
     def text(ref):
         if ref not in cache:
@@ -690,7 +700,12 @@ def verify_refs(src_dir=SRC):
         it = iter(got)
         return all(any(w == g for g in it) for w in want)
 
-    for st, (meta, clean, raw) in states.items():
+    for st, (meta, clean, raw) in sorted(states.items()):
+        if meta.get("numbers_only"):
+            mo = sum(1 for r in raw if r.get("printed", "").strip() == MEDIAN_ONLY)
+            print("  %s: skipped, numbers-only source (%s); %d rows typed from %s (%d full, %d median only), published %s, no stored copy to compare" % (
+                st, meta["numbers_only"], len(raw), meta["url"], len(raw) - mo, mo, meta["published"]))
+            continue
         lines, raws, seqs = {}, {}, {}
         for k in ("ref", "ref2"):
             if meta.get(k):
@@ -784,6 +799,16 @@ def selftest():
     ok(e and "comparison" in e[0], "median-only row never keyed into the comparison")
     c, e = run_md(["\tA\tX\tfoot\t\t\t\t\t\tmedian-only"])
     ok(e and "needs its median" in e[0], "median-only row without a median refused")
+    no = head.replace("# ref: r", "# numbers_only: license forbids reposting\n# published: 2026-03")
+    m, rows, e = parse_tsv(no + "\n" + cols + "\n\tH\tX\tacre\t20\t\t\t3")
+    c, e2 = validate(m, rows)
+    ok(not e2 and state_doc(m, c)["sources"][0] == {"url": "https://x.edu/a.pdf", "numbers_only": True, "published": "2026-03"}, "numbers-only source keeps link and date, no ref: %s" % e2)
+    m, rows, e = parse_tsv(no + "\n# ref: r\n" + cols + "\n\tH\tX\tacre\t20\t\t\t3")
+    ok(any("keeps no saved copy" in x for x in validate(m, rows)[1]), "numbers-only source with a stored copy refused")
+    m, rows, e = parse_tsv(no.replace("# published: 2026-03", "") + "\n" + cols + "\n\tH\tX\tacre\t20\t\t\t3")
+    ok(any("published" in x for x in validate(m, rows)[1]), "numbers-only source needs its publication date")
+    m, rows, e = parse_tsv(head.replace("# ref: r", "") + "\n" + cols + "\n\tH\tX\tacre\t20\t\t\t3")
+    ok(any("missing meta ref" in x for x in validate(m, rows)[1]), "any other source still needs its saved copy")
     ok(money(58, "percent of crop") == "58%" and unit_label("percent of crop") == "of the crop", "share of the crop prints as a percent")
     ok(money(0.135, "bushel") == "$0.135" and money(0.2, "bushel") == "$0.20" and money(46.05, "acre") == "$46.05"
        and money(15005, "mile") == "$15,005", "money formats")

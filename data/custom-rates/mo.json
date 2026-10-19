@@ -9,7 +9,8 @@
  "sources": [
   {
    "url": "https://extension.missouri.edu/publications/g302",
-   "ref": "cr-mo-g302-2026"
+   "numbers_only": true,
+   "published": "2026-03"
   }
  ],
  "spread": "minmax",

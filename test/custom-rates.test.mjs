@@ -37,6 +37,7 @@ test("every row's numbers sit together on one line of the saved survey (when the
   if (!has) return t.skip("origin/references not fetched");
   const r = spawnSync("python3", ["scripts/build_custom_rates.py", "--verify-refs"], { cwd: ROOT });
   assert.equal(r.status, 0, r.stdout.toString().slice(-2000));
+  assert.match(r.stdout.toString(), /MO: skipped, numbers-only source/, "the skip is said out loud");
 });
 
 test("hand-checked numbers from the surveys", () => {
@@ -65,6 +66,8 @@ test("Missouri is G302 revised March 2026: 2025 rates, average, median, range an
   assert.equal(mo.rate_year, 2025);
   assert.equal(mo.survey_year, 2026);
   assert.equal(mo.sources[0].url, "https://extension.missouri.edu/publications/g302");
+  // MU does not allow reposting G302: numbers and a link only, no stored copy (Sig, Oct 19)
+  assert.deepEqual(mo.sources, [{ url: "https://extension.missouri.edu/publications/g302", numbers_only: true, published: "2026-03" }]);
   assert.match(mo.collected, /^2025 rates \(survey fall 2025 to winter 2026, published March 2026\)/);
   const pick = (o, u) => { const r = row(mo, o, u); return [r.a, r.md, r.lo, r.hi, r.n]; };
   // read off the guide (Tables 3, 4, 5 and 7)
