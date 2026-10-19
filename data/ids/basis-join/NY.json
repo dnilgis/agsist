@@ -1,0 +1,1 @@
+{"schema":"agsist-basis-join/1","state":"NY","from":"data/ids/elevators.json generated 2026-10-18","rule":"elevId -> its one basis-history key (ST|FACILITY|CITY in data/basis/<ST>.json); ids with two or more keys are in multi and left out. scripts/build_basis_join.py","k":{"ednm1e0h05":"NY|ADM|BUFFALO","egbh456txy":"NY|AGREX INC.|WNYE"},"multi":{}}

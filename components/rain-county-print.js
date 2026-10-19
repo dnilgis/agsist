@@ -27,10 +27,11 @@
 (function (root) {
   'use strict';
   var doc = root.document;
-  var fig = doc && doc.getElementById('rc-print');
-  root.AgRainCountyPrint = { unpack: unpack, daysOf: daysOf, usualOf: usualOf };   // for test/rain-county-print.test.mjs
-  if (!fig || !fig.dataset) return;
-  var D = fig.dataset;
+  /* mount(fig): the same drawing for any figure carrying these data- fields (2026-10-19:
+     /here draws the nearest county station's year with it). It resolves true once the
+     print is drawn, false when it is not (the plain chart stays). The county page's own
+     #rc-print mounts itself, as before. */
+  root.AgRainCountyPrint = { unpack: unpack, daysOf: daysOf, usualOf: usualOf, mount: mount };   // for test/rain-county-print.test.mjs
   var ART = '/components/rain-print-art.js?v=16', ENGINE = '/components/rain-print.js?v=52';
   var MISS_BLOCK = 31, MIN_DAYS = 60;
   var FONTS = [
@@ -115,68 +116,78 @@
     return { normal: daily.slice(), daily: daily, cum: cum, total: run };
   }
 
-  var state = null;   // {RP, days, d, preview, ov}
-  function draw(style) {
-    var A = root.AgRainArt, S = state, year = +D.year;
-    var svg = A.render({
-      style: style, year: year, place: D.place, name: '', dedication: '',
-      days: S.days, D: S.d, showDry: S.RP.showDry(S.d), axisLen: S.preview ? (isLeap(year) ? 366 : 365) : S.d.n,
-      ov: S.ov, ovNote: S.ov ? (D.norm === '1991-2020' ? 'Usual: NOAA 1991 to 2020 normals, on the days reported' : 'Usual: NOAA 30-year normals, on the days reported') : '',
-      showNormals: !!S.ov, markers: [], records: [], qr: null,
-      preview: S.preview ? { last: S.days[S.days.length - 1].date } : null,
-      gauge: D.gauge || '', logo: null, watermark: false, bleed: 0, idPrefix: 'rc'
-    });
-    var box = fig.querySelector('.rc-print-art');
-    box.innerHTML = svg;
-    var el = box.querySelector('svg');
-    if (el) { el.removeAttribute('width'); el.removeAttribute('height'); }
-    fig.querySelectorAll('button[data-style]').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-style') === style ? 'true' : 'false'); });
-  }
+  function mount(fig) {
+    if (!fig || !fig.dataset) return Promise.resolve(false);
+    var D = fig.dataset;
+    var state = null;   // {RP, days, d, preview, ov}
+    function draw(style) {
+      var A = root.AgRainArt, S = state, year = +D.year;
+      var svg = A.render({
+        style: style, year: year, place: D.place, name: '', dedication: '',
+        days: S.days, D: S.d, showDry: S.RP.showDry(S.d), axisLen: S.preview ? (isLeap(year) ? 366 : 365) : S.d.n,
+        ov: S.ov, ovNote: S.ov ? (D.norm === '1991-2020' ? 'Usual: NOAA 1991 to 2020 normals, on the days reported' : 'Usual: NOAA 30-year normals, on the days reported') : '',
+        showNormals: !!S.ov, markers: [], records: [], qr: null,
+        preview: S.preview ? { last: S.days[S.days.length - 1].date } : null,
+        gauge: D.gauge || '', logo: null, watermark: false, bleed: 0, idPrefix: 'rc'
+      });
+      var box = fig.querySelector('.rc-print-art');
+      box.innerHTML = svg;
+      var el = box.querySelector('svg');
+      if (el) { el.removeAttribute('width'); el.removeAttribute('height'); }
+      fig.querySelectorAll('button[data-style]').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-style') === style ? 'true' : 'false'); });
+    }
 
-  function go() {
-    Promise.all([
-      fetch('/data/rain/daily/' + D.st + '.json').then(function (r) { if (!r.ok) throw new Error('no days'); return r.json(); }),
-      script(ART, function () { return !!root.AgRainArt; }).then(function () { return script(ENGINE, function () { return !!root.RainPrint; }); }),
-      fonts()
-    ]).then(function (res) {
-      var j = res[0], RP = root.RainPrint, year = +D.year;
-      var rec = j && j.counties && j.counties[D.fips];
-      if (!rec || +j.year !== year) return;
-      var days = daysOf(RP, year, rec), d = RP.derive(days);
-      // the print must be this page's year: the same days, the same total
-      if (days.length !== +D.days || Math.abs(d.total - +D.total) > 0.011) return;
-      if (d.missing > MISS_BLOCK || days.length < MIN_DAYS) return;
-      state = { RP: RP, days: days, d: d, preview: days.length < (isLeap(year) ? 366 : 365), ov: usualOf(days, D.mn, D.usual) };
-      draw('r1');
-      fig.classList.add('rc-print-on');
-      var cap = fig.querySelector('.rc-cap-print'), old = fig.querySelector('.rc-cap-chart');
-      if (cap) cap.hidden = false;
-      if (old) old.hidden = true;
-      var tg = fig.querySelector('.rc-print-styles');
-      if (tg) {
-        tg.hidden = false;
-        tg.addEventListener('click', function (e) {
-          var b = e.target.closest('[data-style]');
-          if (b) draw(b.getAttribute('data-style'));
-          var z = e.target.closest('.rc-zoom');
-          if (z) {
-            var on = fig.classList.toggle('rc-print-zoom');
-            z.setAttribute('aria-pressed', on ? 'true' : 'false');
-            z.textContent = on ? 'Fit to screen' : 'Up close';
-          }
-        });
+    function go() {
+      return Promise.all([
+        fetch('/data/rain/daily/' + D.st + '.json').then(function (r) { if (!r.ok) throw new Error('no days'); return r.json(); }),
+        script(ART, function () { return !!root.AgRainArt; }).then(function () { return script(ENGINE, function () { return !!root.RainPrint; }); }),
+        fonts()
+      ]).then(function (res) {
+        var j = res[0], RP = root.RainPrint, year = +D.year;
+        var rec = j && j.counties && j.counties[D.fips];
+        if (!rec || +j.year !== year) return false;
+        var days = daysOf(RP, year, rec), d = RP.derive(days);
+        // the print must be this page's year: the same days, the same total
+        if (days.length !== +D.days || Math.abs(d.total - +D.total) > 0.011) return false;
+        if (d.missing > MISS_BLOCK || days.length < MIN_DAYS) return false;
+        state = { RP: RP, days: days, d: d, preview: days.length < (isLeap(year) ? 366 : 365), ov: usualOf(days, D.mn, D.usual) };
+        draw('r1');
+        fig.classList.add('rc-print-on');
+        var cap = fig.querySelector('.rc-cap-print'), old = fig.querySelector('.rc-cap-chart');
+        if (cap) cap.hidden = false;
+        if (old) old.hidden = true;
+        var tg = fig.querySelector('.rc-print-styles');
+        if (tg) {
+          tg.hidden = false;
+          tg.addEventListener('click', function (e) {
+            var b = e.target.closest('[data-style]');
+            if (b) draw(b.getAttribute('data-style'));
+            var z = e.target.closest('.rc-zoom');
+            if (z) {
+              var on = fig.classList.toggle('rc-print-zoom');
+              z.setAttribute('aria-pressed', on ? 'true' : 'false');
+              z.textContent = on ? 'Fit to screen' : 'Up close';
+            }
+          });
+        }
+        var lead = doc.getElementById('rc-sell-lead'), plain = doc.querySelector('.rc-sell-plain');
+        if (lead) { lead.hidden = false; if (plain) plain.hidden = true; }
+        return true;
+      }).catch(function () { return false; /* the plain chart stays */ });
+    }
+    return new Promise(function (done) {
+      function run() { go().then(done, function () { done(false); }); }
+      if ('IntersectionObserver' in root) {
+        var io = new root.IntersectionObserver(function (es) {
+          if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); run(); }
+        }, { rootMargin: '400px 0px' });
+        io.observe(fig);
+      } else {
+        run();
       }
-      var lead = doc.getElementById('rc-sell-lead'), plain = doc.querySelector('.rc-sell-plain');
-      if (lead) { lead.hidden = false; if (plain) plain.hidden = true; }
-    }).catch(function () { /* the plain chart stays */ });
+    });
   }
 
-  if ('IntersectionObserver' in root) {
-    var io = new root.IntersectionObserver(function (es) {
-      if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); go(); }
-    }, { rootMargin: '400px 0px' });
-    io.observe(fig);
-  } else {
-    go();
-  }
+  var own = doc && doc.getElementById('rc-print');
+  if (own) mount(own);
 })(typeof window !== 'undefined' ? window : this);

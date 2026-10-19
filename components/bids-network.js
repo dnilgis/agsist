@@ -414,7 +414,18 @@
     return get('data/' + id + '.json');
   }
 
+  /* One place's shard (merged/<slug>.json, named by the index's `shard`), for a page that needs a
+     row's contract (futuresMonth). 2026-10-19: /here's elevator comparison. */
+  function shard(path) {
+    if (!/^merged\/[a-z0-9][a-z0-9._-]{0,160}\.json$/i.test(String(path || ''))) return Promise.resolve(null);
+    return get(path);
+  }
+
   window.AGSIST_BIDS_NET = {
+    /* The whole live index (every place, with its permanent elevId), for a page that must
+       compare places without the per-crop price pick snapshot() makes (2026-10-19, /here). */
+    index: index,
+    shard: shard,
     reachable: reachable,
     status: status,
     reset: reset,
