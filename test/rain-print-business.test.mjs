@@ -162,3 +162,23 @@ test("the 'Questions? Call or text' line is not pulled up under the title", () =
   assert.ok(top && Number(top[1]) >= 0, "top margin is not negative: " + rule[1]);
   assert.match(MAIN, /<h1>[^<]+<\/h1>\s*<p class="rbz-call" id="rbz-call">/);
 });
+
+// 2026-10-19 (board seat C: "no picture of the box letter with a business note"). The code renders the real
+// letter (components/rp-insert.js), so the sample is rendered by scripts/render_rp_business_letter.mjs from the
+// saved 2012 Ames NOAA answers; the proof sheet and a logo print have no renderer and wait for Sig's photos.
+test("the sample box letter with a business note: the real letter, small, captioned as a sample", () => {
+  const fig = MAIN.match(/<figure class="rbz-fig rbz-fig-letter" id="rbz-letter">([\s\S]*?)<\/figure>/);
+  assert.ok(fig, "the figure");
+  const img = fig[1].match(/<img [^>]*>/)[0];
+  assert.match(img, /src="\/img\/rain-print-business-letter-sample\.webp" width="600" height="776" loading="lazy"/);
+  assert.match(img, /25\.52 inches, 32% less than usual/, "the alt's numbers are the Ames example's (test/rain-print-insert.test.mjs)");
+  assert.match(fig[1], /This sample uses the 2012 Ames example and a sample note/);
+  const buf = readFileSync(ROOT + "img/rain-print-business-letter-sample.webp");
+  assert.equal(buf.toString("ascii", 0, 4), "RIFF"); assert.equal(buf.toString("ascii", 8, 12), "WEBP");
+  assert.ok(buf.length <= 60 * 1024, "small: " + buf.length);
+  const script = readFileSync(ROOT + "scripts/render_rp_business_letter.mjs", "utf8");
+  assert.match(script, /components\/rp-insert\.js/);
+  assert.match(script, /2012-ames-ia\.json/);
+  assert.ok(!/—|archival|\$\d/.test(script.match(/export const NOTE = "([^"]*)"/)[1]), "the sample note follows the box rules");
+  assert.doesNotMatch(MAIN, /proof-sheet-sample|logo-sample/, "no made-up proof sheet or logo picture");
+});
