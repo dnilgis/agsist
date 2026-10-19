@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-17T00:45:27Z",
+ "updated": "2026-10-19T23:05:31Z",
  "rules": {
   "version": "bot-v1.1",
   "registered": "2026-10-03",
@@ -40,107 +40,83 @@
   }
  ],
  "latest": {
-  "date": "2026-10-05",
+  "date": "2026-10-19",
   "calls": [
    {
-    "id": "corn-2026-09-29",
+    "id": "corn-2026-10-13",
     "crop": "corn",
-    "made": "2026-10-05",
-    "exit_day": "2026-11-02",
+    "made": "2026-10-19",
+    "exit_day": "2026-11-17",
     "direction": "down",
-    "signal": "crowded_long",
-    "cot_pct": 97.4,
-    "cot_report": "2026-09-29",
-    "trend_pct": 3.93,
+    "signal": "trend_down",
+    "cot_pct": 85.9,
+    "cot_report": "2026-10-13",
+    "trend_pct": -0.77,
     "contract": "Dec '26",
     "ticker": "ZCZ26.CBT",
-    "entry": 497.25,
-    "target": 497.0,
+    "entry": 466.75,
+    "target": 466.5,
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null,
-    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 496.5, a bar that already held evening trades. 497.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 497.25 (read 497.5 that evening).",
-    "entry_final": true,
-    "mark": {
-     "date": "2026-10-15",
-     "close": 478.0
-    }
+    "graded_on": null
    },
    {
-    "id": "beans-2026-09-29",
+    "id": "beans-2026-10-13",
     "crop": "beans",
-    "made": "2026-10-05",
-    "exit_day": "2026-11-02",
+    "made": "2026-10-19",
+    "exit_day": "2026-11-17",
     "direction": "down",
     "signal": "crowded_long",
-    "cot_pct": 96.2,
-    "cot_report": "2026-09-29",
-    "trend_pct": 2.24,
-    "contract": "Nov '26",
-    "ticker": "ZSX26.CBT",
-    "entry": 1280.75,
-    "target": 1280.5,
+    "cot_pct": 96.8,
+    "cot_report": "2026-10-13",
+    "trend_pct": -2.65,
+    "contract": "Jan '27",
+    "ticker": "ZSF27.CBT",
+    "entry": 1268.25,
+    "target": 1268.0,
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null,
-    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 1279.25, a bar that already held evening trades. 1281.0 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 1280.75 (read 1281.0 that evening).",
-    "entry_final": true,
-    "mark": {
-     "date": "2026-10-15",
-     "close": 1263.0
-    }
+    "graded_on": null
    },
    {
-    "id": "wheat-2026-09-29",
+    "id": "wheat-2026-10-13",
     "crop": "wheat",
-    "made": "2026-10-05",
-    "exit_day": "2026-11-02",
-    "direction": "up",
-    "signal": "trend_up",
-    "cot_pct": 87.2,
-    "cot_report": "2026-09-29",
-    "trend_pct": 2.48,
+    "made": "2026-10-19",
+    "exit_day": "2026-11-17",
+    "direction": "down",
+    "signal": "trend_down",
+    "cot_pct": 84.0,
+    "cot_report": "2026-10-13",
+    "trend_pct": -5.54,
     "contract": "Dec '26",
     "ticker": "ZWZ26.CBT",
-    "entry": 692.25,
-    "target": 692.5,
+    "entry": 656.0,
+    "target": 655.75,
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null,
-    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 690.5, a bar that already held evening trades. 691.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 692.25 (read 691.5 that evening).",
-    "entry_final": true,
-    "mark": {
-     "date": "2026-10-15",
-     "close": 670.0
-    }
+    "graded_on": null
    },
    {
-    "id": "kcwheat-2026-09-29",
+    "id": "kcwheat-2026-10-13",
     "crop": "kcwheat",
-    "made": "2026-10-05",
-    "exit_day": "2026-11-02",
+    "made": "2026-10-19",
+    "exit_day": "2026-11-17",
     "direction": "down",
-    "signal": "crowded_long",
-    "cot_pct": 92.3,
-    "cot_report": "2026-09-29",
-    "trend_pct": 4.27,
+    "signal": "trend_down",
+    "cot_pct": 86.5,
+    "cot_report": "2026-10-13",
+    "trend_pct": -5.57,
     "contract": "Dec '26",
     "ticker": "KEZ26.CBT",
-    "entry": 742.25,
-    "target": 742.0,
+    "entry": 699.5,
+    "target": 699.25,
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null,
-    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 740.0, a bar that already held evening trades. 742.25 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT.",
-    "entry_final": true,
-    "mark": {
-     "date": "2026-10-15",
-     "close": 713.0
-    }
+    "graded_on": null
    }
   ]
  },
@@ -453,11 +429,11 @@
    }
   },
   "tests_in_family": 0,
-  "open": 4,
+  "open": 8,
   "ungradeable": 0
  },
  "action_label": "BOT CALL",
- "action_text": "Bot call, Oct 5 close, 4 weeks out: corn $4.97¼ down, soybeans $12.80¾ down, Chicago wheat $6.92¼ up, KC wheat $7.42¼ down. Backtest: no edge.",
+ "action_text": "Bot call, Oct 19 close, 4 weeks out: corn $4.66¾ down, soybeans $12.68¼ down, Chicago wheat $6.56 down, KC wheat $6.99½ down. Backtest: no edge.",
  "calls": [
   {
    "id": "corn-2026-09-29",
@@ -480,8 +456,8 @@
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 496.5, a bar that already held evening trades. 497.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 497.25 (read 497.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-15",
-    "close": 478.0
+    "date": "2026-10-19",
+    "close": 466.75
    }
   },
   {
@@ -505,8 +481,8 @@
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 1279.25, a bar that already held evening trades. 1281.0 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 1280.75 (read 1281.0 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-15",
-    "close": 1263.0
+    "date": "2026-10-19",
+    "close": 1253.0
    }
   },
   {
@@ -530,8 +506,8 @@
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 690.5, a bar that already held evening trades. 691.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 692.25 (read 691.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-15",
-    "close": 670.0
+    "date": "2026-10-19",
+    "close": 656.0
    }
   },
   {
@@ -555,9 +531,85 @@
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 740.0, a bar that already held evening trades. 742.25 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT.",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-15",
-    "close": 713.0
+    "date": "2026-10-19",
+    "close": 699.5
    }
+  },
+  {
+   "id": "corn-2026-10-13",
+   "crop": "corn",
+   "made": "2026-10-19",
+   "exit_day": "2026-11-17",
+   "direction": "down",
+   "signal": "trend_down",
+   "cot_pct": 85.9,
+   "cot_report": "2026-10-13",
+   "trend_pct": -0.77,
+   "contract": "Dec '26",
+   "ticker": "ZCZ26.CBT",
+   "entry": 466.75,
+   "target": 466.5,
+   "status": "open",
+   "exit": null,
+   "outcome": null,
+   "graded_on": null
+  },
+  {
+   "id": "beans-2026-10-13",
+   "crop": "beans",
+   "made": "2026-10-19",
+   "exit_day": "2026-11-17",
+   "direction": "down",
+   "signal": "crowded_long",
+   "cot_pct": 96.8,
+   "cot_report": "2026-10-13",
+   "trend_pct": -2.65,
+   "contract": "Jan '27",
+   "ticker": "ZSF27.CBT",
+   "entry": 1268.25,
+   "target": 1268.0,
+   "status": "open",
+   "exit": null,
+   "outcome": null,
+   "graded_on": null
+  },
+  {
+   "id": "wheat-2026-10-13",
+   "crop": "wheat",
+   "made": "2026-10-19",
+   "exit_day": "2026-11-17",
+   "direction": "down",
+   "signal": "trend_down",
+   "cot_pct": 84.0,
+   "cot_report": "2026-10-13",
+   "trend_pct": -5.54,
+   "contract": "Dec '26",
+   "ticker": "ZWZ26.CBT",
+   "entry": 656.0,
+   "target": 655.75,
+   "status": "open",
+   "exit": null,
+   "outcome": null,
+   "graded_on": null
+  },
+  {
+   "id": "kcwheat-2026-10-13",
+   "crop": "kcwheat",
+   "made": "2026-10-19",
+   "exit_day": "2026-11-17",
+   "direction": "down",
+   "signal": "trend_down",
+   "cot_pct": 86.5,
+   "cot_report": "2026-10-13",
+   "trend_pct": -5.57,
+   "contract": "Dec '26",
+   "ticker": "KEZ26.CBT",
+   "entry": 699.5,
+   "target": 699.25,
+   "status": "open",
+   "exit": null,
+   "outcome": null,
+   "graded_on": null
   }
  ],
  "skipped": [
@@ -592,9 +644,9 @@
   "after_holiday": null
  },
  "backtest": {
-  "computed": "2026-10-17T00:45:27Z",
+  "computed": "2026-10-19T23:05:31Z",
   "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
-  "source_built": "append 2026-10-13",
+  "source_built": "rebuild 2006–2026",
   "cutoff": "2026-10-02",
   "rules_version": "bot-v1.1",
   "rules_tested": 1,
@@ -967,8 +1019,8 @@
    "fewer than 156 prior reports": 624,
    "report held back by a federal shutdown (release date unknown)": 116,
    "exit close missing or not yet known": 16,
-   "entry close missing": 8,
-   "exit after the backtest cutoff": 4
+   "exit after the backtest cutoff": 8,
+   "entry close missing": 4
   },
   "calls_file": "data/predictions-backtest.json"
  }
