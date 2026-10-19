@@ -12,7 +12,7 @@
 .cr-lede{color:var(--text)!important}
 .cr-actions{margin:.2rem 0 1rem}
 .cr-btn{display:inline-flex;align-items:center;min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--surface));color:var(--text)!important;font:inherit;font-weight:700;text-decoration:none!important;cursor:pointer}
-.cr-btn.go{background:var(--gold);color:#111!important;border-color:var(--gold)}
+.cr-btn.go{background:var(--gold-fill);color:#111!important;border-color:var(--gold-fill)}
 .cr-pick{display:flex;flex-wrap:wrap;gap:.6rem .9rem;align-items:flex-end;margin:0 0 .8rem}
 .cr-pick label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;color:var(--text-muted);flex:1 1 12rem;min-width:0}
 .cr-pick select,.cr-pick input{width:100%;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:1rem;box-sizing:border-box}
