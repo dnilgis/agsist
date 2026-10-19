@@ -38,6 +38,11 @@ waiting list (GET /notice-list?topic=rain-gauge) and counts rows by their ts.
 If either read fails the line says the counts could not be read and the
 digest still goes. scripts/morning_report.py uses the same counter.
 
+The hay board (worker v5.30, agsist.com/haymow) rides the same run: new
+posts, and posts held by the screen or hidden by three reports, go to Sig in
+one more email (public text only, never the poster's phone or email), then
+POST /hay/admin/mark. The hay admin routes take the token as a Bearer header.
+
 The Actions log gets counts only, never a name, address or phone.
 
     python3 scripts/form_digest.py              (needs LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS)
@@ -452,6 +457,141 @@ def run(base, tok, to, dry, send, fetch=worker, top=None):
     return 0, log
 
 
+# ───────────────────────────── hay board (worker v5.30) ─────────────────────────────
+# New hay board posts, and posts newly held by the screen or hidden by three
+# reports, ride the same run: one more email when there is something, then
+# POST /hay/admin/mark. Public text only: never the poster's phone or email.
+HAY_PRODUCT = {"alfalfa": "Alfalfa", "grass": "Grass hay", "mixed": "Mixed hay", "straw": "Straw", "corn-stalks": "Corn stalks",
+               "baleage": "Baleage or haylage", "other": "Other"}
+HAY_BALE = {"small-square": "small squares", "large-square": "large squares", "round": "rounds", "wrapped": "wrapped bales", "bulk": "bulk"}
+HAY_WHY = {"held": "held by the screen", "reports": "hidden by reports", "sig": "hidden by you"}
+HAY_ID_RE = re.compile(r"[0-9a-hjkmnp-tv-z]{10}")
+
+
+def hay_worker(base, path, tok, body=None, **q):
+    """The hay admin routes take the token as a Bearer header only."""
+    url = "%s/%s%s" % (base, path, ("?" + urllib.parse.urlencode(q)) if q else "")
+    data = json.dumps(body).encode() if body is not None else None
+    req = urllib.request.Request(url, data=data, method="POST" if data else "GET",
+                                 headers={"Content-Type": "application/json", "User-Agent": "agsist-form-digest",
+                                          "Authorization": "Bearer " + tok})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.loads(r.read().decode())
+
+
+def hay_line(p):
+    """One post in plain words, public fields only."""
+    kind = "For sale" if p.get("kind") == "sale" else "Wanted"
+    bits = [HAY_PRODUCT.get(p.get("product"), str(p.get("product") or ""))]
+    if p.get("cutting"):
+        bits.append({"1": "1st", "2": "2nd", "3": "3rd"}.get(str(p["cutting"]), str(p["cutting"]) + "th") + " cutting")
+    if p.get("count") is not None:
+        bits.append("%s %s" % (p["count"], HAY_BALE.get(p.get("bale"), "bales")))
+    elif p.get("bale"):
+        bits.append(HAY_BALE.get(p["bale"], p["bale"]))
+    if p.get("price") is not None:
+        bits.append("$%s a %s" % (("%.2f" % p["price"]).rstrip("0").rstrip("."), p.get("unit") or "bale"))
+    if p.get("weight"):
+        bits.append("%s lb bales" % p["weight"])
+    return "%s: %s" % (kind, ", ".join(b for b in bits if b))
+
+
+def hay_rows(p):
+    rows = [("Post", hay_line(p)), ("Where", ("%s (%s)" % (p.get("place"), p.get("zip"))) if p.get("place") else "ZIP %s" % p.get("zip", ""))]
+    test = ", ".join("%s %s" % (k.upper(), p[k]) for k in ("rfv", "rfq", "cp") if p.get(k) is not None)
+    if test:
+        rows.append(("Test", test))
+    d = p.get("delivery")
+    rows.append(("Delivery", "Yes" if d == "yes" else ("No" if d in (None, "", "no") else "Up to %s miles" % d)))
+    if p.get("note"):
+        rows.append(("Note", p["note"]))
+    if p.get("name"):
+        rows.append(("Name", p["name"]))
+    st = p.get("status")
+    if st != "live":
+        why = HAY_WHY.get(p.get("why_hidden"), HAY_WHY["held"] if st == "held" else "hidden")
+        if p.get("why_hidden") in ("repeated text", "all caps"):
+            why = "held by the screen (%s)" % p["why_hidden"]
+        rows.append(("Status", "Not shown: " + why))
+    reps = [r.get("why", "other") for r in p.get("reports") or [] if isinstance(r, dict)]
+    if reps:
+        rows.append(("Reports", "%d (%s)" % (len(reps), ", ".join(reps))))
+    if HAY_ID_RE.fullmatch(str(p.get("id") or "")):
+        rows.append(("Id", p["id"]))
+        act = "clear" if st != "live" else "hide"
+        rows.append(("To %s" % act, "curl -X POST -H \"Authorization: Bearer $LIST_TOKEN\" -H \"Content-Type: application/json\" "
+                     "-d '{\"id\":\"%s\"}' $LIST_URL/hay/admin/%s" % (p["id"], act)))
+    return rows
+
+
+def hay_build(posts, to, fn="AGSIST", fa=""):
+    new = [p for p in posts if not p.get("n")]
+    flagged = [p for p in posts if p.get("status") != "live"]
+    parts = []
+    if new:
+        parts.append("%d new post%s" % (len(new), "" if len(new) == 1 else "s"))
+    if flagged:
+        parts.append("%d not shown" % len(flagged))
+    m = EmailMessage()
+    m["Subject"] = "The Haymow: " + ", ".join(parts)
+    m["From"] = formataddr((fn, fa))
+    m["To"] = to
+    m["Message-ID"] = make_msgid(domain=(fa.split("@", 1)[1] if "@" in fa else "agsist.com"))
+    text, hb, e = [], [], H.escape
+    for p in sorted(posts, key=lambda x: x.get("ts") or 0):
+        head = "%s, %s" % ("New Haymow post" if not p.get("n") else "Haymow post not shown", when(p.get("ts") or 0))
+        rows = hay_rows(p)
+        text.append(head)
+        text.extend("%s: %s" % r for r in rows)
+        text.append("")
+        hb.append('<h3 style="font-size:15px;margin:18px 0 6px">%s</h3><table style="font-size:14px;line-height:1.5;border-collapse:collapse">' % e(head))
+        hb.extend('<tr><td style="color:#6b6b6b;padding:2px 12px 2px 0;vertical-align:top">%s</td><td>%s</td></tr>' % (e(a), e(b)) for a, b in rows)
+        hb.append("</table>")
+    foot = ("Live posts are on agsist.com/haymow already. Phones and emails are not in this email; "
+            "GET /hay/admin/list with the list token shows them.")
+    text.append(foot)
+    m.set_content("\n".join(text) + "\n\n-- \n" + ADDRESS + "\n")
+    m.add_alternative('<div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:20px 16px;color:#1a1a1a;background:#fff">'
+                      '%s<p style="font-size:13px;color:#6b6b6b;margin-top:20px">%s<br>%s</p></div>' % ("".join(hb), e(foot), e(ADDRESS)), subtype="html")
+    return m
+
+
+def hay_run(base, tok, to, dry, send, fetch=hay_worker):
+    """Returns (exit code, log lines). Counts only in the log."""
+    log = []
+    try:
+        r = fetch(base, "hay/admin/list", tok, new="1")
+    except urllib.error.HTTPError as ex:
+        if ex.code == 404:
+            log.append("worker has no /hay/admin/list yet (deploy workers/subs-worker.js v5.30); hay board skipped")
+            return 0, log
+        log.append("hay list failed: HTTP %d" % ex.code)
+        return 1, log
+    except Exception as ex:                                # noqa: BLE001
+        log.append("hay list failed: %s" % type(ex).__name__)
+        return 1, log
+    posts = r.get("posts") if isinstance(r, dict) else None
+    if not isinstance(posts, list):
+        log.append("hay list answered something unexpected")
+        return 1, log
+    posts = [p for p in posts if isinstance(p, dict) and HAY_ID_RE.fullmatch(str(p.get("id") or ""))]
+    log.append("hay board: %d new, %d not shown" % (sum(1 for p in posts if not p.get("n")), sum(1 for p in posts if p.get("status") != "live")))
+    if not posts or dry:
+        return 0, log
+    try:
+        send(hay_build(posts, to))
+    except Exception as ex:                                # noqa: BLE001
+        log.append("hay send failed (%s); left unmarked for the next run" % type(ex).__name__)
+        return 1, log
+    try:
+        r = fetch(base, "hay/admin/mark", tok, {"ids": [p["id"] for p in posts]})
+        log.append("hay mailed %d; marked %s" % (len(posts), r.get("marked") if isinstance(r, dict) else "?"))
+    except Exception as ex:                                # noqa: BLE001
+        log.append("hay mailed %d; mark failed (%s), the next run may repeat them" % (len(posts), type(ex).__name__))
+        return 1, log
+    return 0, log
+
+
 def main():
     if "--selftest" in sys.argv:
         return selftest()
@@ -483,7 +623,10 @@ def main():
     code, log = run(base, tok, to, dry, send, top=lambda: last24(base, tok, worker))
     for line in log:
         print(line)
-    return code
+    hcode, hlog = hay_run(base, tok, to, dry, send)
+    for line in hlog:
+        print(line)
+    return code or hcode
 
 
 # ───────────────────────────── selftest ─────────────────────────────
@@ -797,6 +940,56 @@ def selftest():
     bad = build([dict(rp, logo="<b>x</b>")], "s").get_body(("html",)).get_content()
     ck("a bad logo id is no link", "<b>x</b>" not in bad and "rp-logo/&lt;" not in bad and "does not look right" in bad)
     ck("no logo, no Logo: line", "Logo:" not in build([rp], "s").get_body(("plain",)).get_content())
+
+
+    print("\nhay board (worker v5.30)")
+    hp = {"id": "a1b2c3d4e5", "kind": "sale", "zip": "54728", "place": "Chetek, WI", "product": "alfalfa", "cutting": "2",
+          "bale": "large-square", "count": 120, "price": 85.0, "unit": "bale", "weight": 1200, "rfv": 165, "cp": 19.5,
+          "delivery": 50, "note": "Barn <kept>.", "name": "Lindquist Farm", "phone": "715-555-0100", "email": "seller@example.com",
+          "ts": ts, "status": "live", "reports": [], "n": 0}
+    hh = dict(hp, id="f6g7h8j9k0", kind="wanted", status="hidden", why_hidden="reports", n=1,
+              reports=[{"why": "spam", "ts": ts}, {"why": "scam", "ts": ts}, {"why": "spam", "ts": ts}])
+    ck("hay: plain line", hay_line(hp) == "For sale: Alfalfa, 2nd cutting, 120 large squares, $85 a bale, 1200 lb bales", hay_line(hp))
+    m = hay_build([hp, hh], "sig@x.com")
+    t = m.get_body(("plain",)).get_content()
+    h = m.get_body(("html",)).get_content()
+    ck("hay: subject counts", m["Subject"] == "The Haymow: 1 new post, 1 not shown", m["Subject"])
+    ck("hay: no phone or email in the mail", "715-555-0100" not in t + h and "seller@example.com" not in t + h and m["Reply-To"] is None, t)
+    ck("hay: public text, status and reports", all(x in t for x in ("Where: Chetek, WI (54728)", "Test: RFV 165, CP 19.5",
+       "Delivery: Up to 50 miles", "Note: Barn <kept>.", "Status: Not shown: hidden by reports", "Reports: 3 (spam, scam, spam)",
+       "hay/admin/clear", "hay/admin/hide")), t)
+    ck("hay: html escaped", "Barn &lt;kept&gt;." in h and "<kept>" not in h, h)
+    ck("hay: the token is never written out", "tok123" not in t and "$LIST_TOKEN" in t)
+    hcalls, hsent = [], []
+
+    def hf(base, path, tok, body=None, **q):
+        hcalls.append((path, body, q))
+        if path == "hay/admin/list":
+            return {"ok": True, "posts": [hp, hh, {"id": "<bad>"}]}
+        return {"ok": True, "marked": len(body["ids"])}
+    code, log = hay_run("https://w.dev", "tok123", "s", False, hsent.append, hf)
+    ck("hay: one mail, marks what it sent", code == 0 and len(hsent) == 1 and hcalls[0][2] == {"new": "1"} and
+       hcalls[-1][0] == "hay/admin/mark" and hcalls[-1][1] == {"ids": ["a1b2c3d4e5", "f6g7h8j9k0"]}, hcalls)
+    ck("hay: log counts only", log[0] == "hay board: 1 new, 1 not shown" and not any("@" in x or "715" in x or "Lindquist" in x for x in log), log)
+    hcalls.clear(); hsent.clear()
+    code, log = hay_run("https://w.dev", "t", "s", True, hsent.append, hf)
+    ck("hay: dry run sends and marks nothing", code == 0 and not hsent and [c[0] for c in hcalls] == ["hay/admin/list"])
+
+    def h404(base, path, tok, body=None, **q):
+        raise urllib.error.HTTPError("https://w.dev/hay/admin/list", 404, "x", {}, None)
+    code, log = hay_run("https://w.dev", "t", "s", False, hsent.append, h404)
+    ck("hay: an older worker is skipped cleanly", code == 0 and "v5.30" in log[0] and not hsent, log)
+
+    def hnone(base, path, tok, body=None, **q):
+        return {"ok": True, "posts": []}
+    code, log = hay_run("https://w.dev", "t", "s", False, hsent.append, hnone)
+    ck("hay: nothing new, no mail", code == 0 and not hsent)
+
+    def hboom(m):
+        raise smtplib.SMTPException("x")
+    hcalls.clear()
+    code, log = hay_run("https://w.dev", "t", "s", False, hboom, hf)
+    ck("hay: send fails, nothing marked", code == 1 and [c[0] for c in hcalls] == ["hay/admin/list"])
 
     if fails:
         print("%d FAILED: %s" % (len(fails), "; ".join(fails)))
