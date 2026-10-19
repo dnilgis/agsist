@@ -197,3 +197,19 @@ test("the Christmas line is the shared one from the same cutoffs, hidden until f
     "For Christmas delivery, order a framed print by Dec 9, a print by Dec 10.");
   assert.equal(P.xmasLine(cfg, "2026-07-01"), "");
 });
+test("Oct 19: \"For my customers\" sits beside \"6 or more\" on both forms and rides in the note, with no bulk promise", () => {
+  for (const n of [1, 2]) {
+    assert.match(main, new RegExp(`name="count-${n}" value="6\\+"><span>6 or more</span></label>\\s*<label><input type="checkbox" id="rg-biz-${n}" name="customers" value="yes"[^>]*><span>For my customers</span></label>`));
+    assert.ok(!new RegExp(`id="rg-biz-${n}"[^>]*checked`).test(main), "never pre-ticked");
+  }
+  const fn = page.match(/function noteFor\(count, use, biz\) \{[\s\S]*?\n    \}/);
+  assert.ok(fn);
+  const noteFor = new Function(fn[0] + "; return noteFor;")();
+  assert.equal(noteFor("6+", "", true), "Gauges: 6+. For my customers");
+  assert.equal(noteFor("", "seed dealer", true), "For my customers. Use: seed dealer");
+  assert.equal(noteFor("1", "", false), "Gauges: 1");
+  assert.ok(noteFor("6+", "x".repeat(400), true).length <= 280);
+  assert.match(page, /var note = noteFor\(count, use, biz\);/);
+  assert.match(page, /for_customers: biz \? 'yes' : 'no'/);
+  assert.ok(!/bulk|wholesale|volume (price|discount)|dealer price|discount/i.test(text(main)), "no bulk order or dealer price promised");
+});

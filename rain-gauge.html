@@ -91,6 +91,7 @@
   .rg-seg span{display:inline-flex;align-items:center;min-height:var(--btn-h);padding:.3rem .95rem;border:1px solid var(--border-2);border-radius:var(--r-sm);font-size:var(--fs-sm);font-weight:600;color:var(--text-dim);cursor:pointer;background:var(--bg)}
   .rg-seg input:checked+span{background:var(--brand-fill);border-color:var(--brand-fill);color:#0a0c0d}
   .rg-seg input:focus-visible+span{outline:2px solid var(--gold);outline-offset:2px}
+  .rg-biz-x{margin:.4rem 0 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
   .rg-go-row{margin:1rem 0 0}
   .rg-go{min-width:14rem}
   @media(max-width:520px){.rg-go{width:100%}}
@@ -228,7 +229,8 @@
               <label><input type="radio" name="count-1" value="1"><span>1</span></label>
               <label><input type="radio" name="count-1" value="2-5"><span>2 to 5</span></label>
               <label><input type="radio" name="count-1" value="6+"><span>6 or more</span></label>
-            </div></fieldset>
+              <label><input type="checkbox" id="rg-biz-1" name="customers" value="yes" aria-describedby="rg-biz-x-1"><span>For my customers</span></label>
+            </div><p class="rg-biz-x" id="rg-biz-x-1">Pick it if you sell to or work for farmers. I&rsquo;m counting that interest for later; the first batch is for people trying it early.</p></fieldset>
             <label class="field rg-use"><span>What would you use it for? <i>(optional)</i></span><input type="text" id="rg-use-1" name="use" maxlength="200" placeholder="A few fields, rented ground"></label>
           </div>
           <div class="rg-hp" aria-hidden="true"><label for="rg-gotcha-1">Leave this empty</label><input type="text" id="rg-gotcha-1" name="_gotcha" tabindex="-1" autocomplete="off"></div>
@@ -390,7 +392,8 @@
               <label><input type="radio" name="count-2" value="1"><span>1</span></label>
               <label><input type="radio" name="count-2" value="2-5"><span>2 to 5</span></label>
               <label><input type="radio" name="count-2" value="6+"><span>6 or more</span></label>
-            </div></fieldset>
+              <label><input type="checkbox" id="rg-biz-2" name="customers" value="yes" aria-describedby="rg-biz-x-2"><span>For my customers</span></label>
+            </div><p class="rg-biz-x" id="rg-biz-x-2">Pick it if you sell to or work for farmers. I&rsquo;m counting that interest for later; the first batch is for people trying it early.</p></fieldset>
             <label class="field rg-use"><span>What would you use it for? <i>(optional)</i></span><input type="text" id="rg-use-2" name="use" maxlength="200" placeholder="A few fields, rented ground"></label>
           </div>
           <div class="rg-hp" aria-hidden="true"><label for="rg-gotcha-2">Leave this empty</label><input type="text" id="rg-gotcha-2" name="_gotcha" tabindex="-1" autocomplete="off"></div>
@@ -455,8 +458,9 @@
   (function () {
     'use strict';
     // Same worker, topic and fields as before (workers/subs-worker.js /notice).
-    // The worker keeps email, zip and one note line of 280; how many gauges and
-    // what for go into that note so the worker does not change.
+    // The worker keeps email, zip and one note line of 280; how many gauges,
+    // "For my customers" (Oct 19: counts business interest) and what for go
+    // into that note so the worker does not change.
     var EP = 'https://agsist-subs.dnilgis.workers.dev/notice';
     var KEY = 'agsist_notices';
     var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -470,9 +474,10 @@
       m.textContent = text; m.className = 'rg-msg ok'; m.hidden = false;
       f.querySelectorAll('input,button').forEach(function (i) { i.disabled = true; });
     }
-    function noteFor(count, use) {
+    function noteFor(count, use, biz) {
       var parts = [];
       if (count) parts.push('Gauges: ' + count);
+      if (biz) parts.push('For my customers');
       if (use) parts.push('Use: ' + use.replace(/\s+/g, ' '));
       return parts.join('. ').slice(0, 280);
     }
@@ -488,11 +493,12 @@
         var email = $('rg-email').value.trim();
         var zip = zipIn.value.trim(), use = $('rg-use').value.trim();
         var c = f.querySelector('input[name="count-' + n + '"]:checked'), count = c ? c.value : '';
+        var biz = !!$('rg-biz').checked;
         if (!EMAIL_RE.test(email)) { say('That email does not look right. Check it and try again.', false); $('rg-email').focus(); return; }
         if (zip && !/^\d{5}$/.test(zip)) { say('A ZIP is five digits. Fix it or leave it blank.', false); zipIn.focus(); return; }
         var body = { email: email, topic: 'rain-gauge', source: 'rain-gauge', _gotcha: $('rg-gotcha').value };
         if (zip) body.zip = zip;
-        var note = noteFor(count, use);
+        var note = noteFor(count, use, biz);
         if (note) body.note = note;
         go.disabled = true;
         // a silent worker gives up after 12 s instead of leaving the button stuck (2026-10-14, panel 3 F4)
@@ -509,7 +515,7 @@
             if (res.ok) {
               done();
               forms.forEach(function (g) { lock(g, g === f ? 'Thanks. You are on the waitlist. You will hear from me when the first batch is ready.' : 'You are on the waitlist.'); });
-              try { if (typeof window.gtag === 'function') window.gtag('event', 'notice_signup', { topic: 'rain-gauge', source: 'rain-gauge', form: n === '1' ? 'top' : 'bottom' }); } catch (e) {}
+              try { if (typeof window.gtag === 'function') window.gtag('event', 'notice_signup', { topic: 'rain-gauge', source: 'rain-gauge', form: n === '1' ? 'top' : 'bottom', for_customers: biz ? 'yes' : 'no' }); } catch (e) {}
             } else {
               go.disabled = false;
               say(res.status === 429 && res.error === 'busy today' ? 'Lots of people are signing up today. Try again tomorrow, or write to me through /contact.'
