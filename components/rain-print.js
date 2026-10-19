@@ -1350,8 +1350,9 @@
       var years = yearFrom && yearTo ? (parseInt(yearTo, 10) - parseInt(yearFrom, 10) + 1) : 0;
       var ext = { maxDaily: maxDaily, maxMonthly: maxMonthly, maxAnnual: maxAnnual, avgByDate: avgByDate, yearFrom: yearFrom, yearTo: yearTo, years: years, maxTemp: maxTemp, minTemp: minTemp, rows: j.data };
       EXT_CACHE.set(sid, ext);
+      LOAD_FAIL.delete('por|' + sid);
       return ext;
-    });
+    }).then(null, function (err) { if (err && err.retry) LOAD_FAIL.add('por|' + sid); throw err; });
   }
   // NOAA's 30-year normal for each date, from ACIS's own normal element (period
   // not verified live, so never printed). A station without a normals product
@@ -1372,8 +1373,9 @@
       var byDate = new Map();
       j.data.forEach(function (row) { var v = parsePcpn(row[1]).v; if (v !== null) byDate.set(row[0].slice(5), v); });
       NORM_CACHE.set(key, byDate);
+      LOAD_FAIL.delete('norm|' + key);
       return byDate;
-    });
+    }).then(null, function (err) { if (err && err.retry) LOAD_FAIL.add('norm|' + key); throw err; });
   }
 
   // the place on the print, the state written out: "Chetek, Wisconsin"
@@ -1685,6 +1687,25 @@
 
   var ST = fromParams(root.location.search);
   var EXT_WAIT = false, NORM_WAIT = false, BUY_NOTE_CODE = '', XMAS_OFF = true;
+  /* A NOAA ask that failed or timed out (its error carries retry), keyed
+     'norm|sid|year' and 'por|sid' (2026-10-19, Rain Print audit: a 500 or a
+     15 s timeout on the normal read as "This station has no NOAA normal" and
+     the maker file, the digital file and the order all went out without the
+     line). A station with no normal (ACIS's error reply) has no retry flag and
+     is not listed: that print is fine as it is. */
+  var LOAD_FAIL = new Set();
+  /* -> what the design asks for that didn't load, in words, or ''. While it is
+     set, ordering and the maker's files stay shut until Draw brings it in. */
+  function loadFail() {
+    if (!DATA || !META || SAMPLE) return '';
+    var porOut = !(EXT && EXT.rows) && !EXT_WAIT && LOAD_FAIL.has('por|' + META.sid);
+    if (ST.cmp === 'normal' && !NORM30 && !NORM_WAIT && LOAD_FAIL.has('norm|' + META.sid + '|' + ST.year)) return 'The usual-year line didn\u2019t load.';
+    if (ST.cmp === 'station' && porOut) return 'The station history didn\u2019t load, so the usual-year line is missing.';
+    if (ST.records && !PREVIEW && root.AgRainRecords && porOut) return 'The station history didn\u2019t load, so the remarkable days are missing.';
+    if (wantHist() && FULL_CACHE.has(META.sid) && FULL_CACHE.get(META.sid) === null && LOAD_FAIL.has('por|' + META.sid)) return 'The station history didn\u2019t load, so the years strip is missing.';
+    if (wantTemp() && TEMP && TEMP.failed) return 'The temperature records didn\u2019t load.';
+    return '';
+  }
   var DATA = null, META = null, EXT = null, NORM30 = null, STATIONS = [], PRICES = null, PRICES_P = null, BLOCKED = '', DRAWING = false;
   var SNOW_SEEN = {};   // {year: {sid: 'full'|'none'|'unknown'}}: each station's snowfall year once its days are read (the station list's words)
   /* This year only. PREVIEW: {last: ISO date of the last recorded day, yearLen}
@@ -1988,7 +2009,7 @@
     }).then(function (best) {
       if (TEMP_KEY !== key) return;
       TEMP = best || { none: 'No weather station near ' + town + ' kept daily highs and lows for ' + year + ', so frost, the hottest and coldest day, crop stages and the temperature band are off.' };
-    }).then(null, function () { if (TEMP_KEY === key) { TEMP = { none: 'The temperature records didn’t load just now, so frost, the hottest and coldest day, crop stages and the temperature band are off. Try again in a minute.' }; TEMP_KEY = ''; } });
+    }).then(null, function () { if (TEMP_KEY === key) { TEMP = { none: 'The temperature records didn’t load just now, so frost, the hottest and coldest day, crop stages and the temperature band are off. Try again in a minute.', failed: true }; TEMP_KEY = ''; } });
   }
   function tempFound() {
     if (!TEMP || !TEMP.td || !root.AgRainRecords) return [];
@@ -2590,7 +2611,8 @@
   function showBuy(on) {
     on = on && !SAMPLE;
     // Before anything of the reader's is drawn the buttons stay live and point at the town box; a station with too many gaps turns them off.
-    var off = !!BLOCKED || DRAWING;
+    var lost = loadFail();
+    var off = !!BLOCKED || DRAWING || !!lost;
     $('rp-buy').classList.toggle('rp-off', off);
     $('rp-pay').disabled = off; $('rp-bar-go').disabled = off;
     // why the buttons are off, in words, by the buttons
@@ -2598,7 +2620,8 @@
     if (why) {
       why.textContent = DRAWING ? 'Drawing your print. Ordering opens when it is done.'
         : BLOCKED === 'failed' ? 'Ordering is off until your print draws. See the message by the town box above.'
-        : BLOCKED ? 'Ordering is off: this station is missing too many days for a fair print. Pick another station or year above.' : '';
+        : BLOCKED ? 'Ordering is off: this station is missing too many days for a fair print. Pick another station or year above.'
+        : lost ? 'Ordering is off: ' + lost.charAt(0).toLowerCase() + lost.slice(1) + ' Press Draw again.' : '';
       why.hidden = !why.textContent;
     }
     $('rp-dl').disabled = !on || !DATA;
@@ -2708,7 +2731,7 @@
       if (ST.cmp === 'station' && EXT) return L('A usual year here means this station\u2019s own average, ', 'Ici, une année normale est la moyenne de cette station, ') + EXT.yearFrom + L(' to ', ' à ') + EXT.yearTo + L(', counted only on the days it reported.', ', comptée seulement les jours où elle a fait un relevé.');
       return '';
     }
-    if (ST.cmp === 'normal') return 'A usual year here means NOAA\u2019s 30-year normal for this station, counted only on the days it reported.';
+    if (ST.cmp === 'normal') return NORM30 || NORM_WAIT ? 'A usual year here means NOAA\u2019s 30-year normal for this station, counted only on the days it reported.' : '';
     if (ST.cmp === 'station' && EXT) return 'A usual year here means this station\u2019s own average, ' + EXT.yearFrom + ' to ' + EXT.yearTo + ', counted only on the days it reported.';
     return '';
   }
@@ -2804,9 +2827,10 @@
       (usualWords() ? esc(usualWords()) + ' ' : '') +
       'Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ' +
       (ST.records && PREVIEW ? ' Remarkable days are marked once the year is over.' : '') +
-      (ST.records && !PREVIEW && root.AgRainRecords && !EXT_WAIT && !(EXT && EXT.rows) ? ' The station history didn’t load, so the year and month records are left off.' : '') +
+      (ST.records && !PREVIEW && root.AgRainRecords && !EXT_WAIT && !(EXT && EXT.rows) ? ' The station history didn’t load, so the year and month records are left off.' + (LOAD_FAIL.has('por|' + m.sid) ? ' Press Draw again.' : '') : '') +
       (ST.records && SKIPPED.length ? ' Left off the print for space: ' + esc(SKIPPED.join(', ')) + '.' : '') +
-      (ST.cmp !== 'none' && !OV && !(EXT_WAIT && ST.cmp === 'station') && !(NORM_WAIT && ST.cmp === 'normal') ? ' <b>' + (ST.cmp === 'normal' ? 'This station has no NOAA normal, so there’s no comparison line.' : 'The station history didn’t load, so there’s no comparison line.') + '</b>' : '');
+      (ST.cmp !== 'none' && !OV && !(EXT_WAIT && ST.cmp === 'station') && !(NORM_WAIT && ST.cmp === 'normal') ? ' <b>' + (ST.cmp === 'normal' ? (LOAD_FAIL.has('norm|' + m.sid + '|' + ST.year) ? 'The usual-year line didn’t load. Press Draw again.' : 'This station has no NOAA normal, so there’s no comparison line.')
+        : 'The station history didn’t load, so there’s no comparison line.' + (LOAD_FAIL.has('por|' + m.sid) ? ' Press Draw again.' : '')) + '</b>' : '');
     var rows = [
       [PREVIEW ? 'Precipitation so far' : 'Precipitation', f2(D.total) + ' in (rain and melted snow)'],
       ['Snowfall', D.snow !== null && D.snow !== undefined ? D.snow.toFixed(1) + ' in' : 'no full snowfall record at this station'], ['Days with rain or snow', D.wet], ['Longest dry stretch', D.dryMax.len + ' days'],
@@ -3025,8 +3049,9 @@
       else next.station = fromUrlStation;
     }
     /* Nothing changed since the print that is up (Draw pressed again, the
-       same year picked again): nothing to do. */
-    if (!preset && e && DATA && META && !SAMPLE && !BLOCKED && !DRAWING && next.station === META.sid &&
+       same year picked again): nothing to do. Unless part of it didn't load
+       (loadFail): then Draw is how the reader asks for it again. */
+    if (!preset && e && DATA && META && !SAMPLE && !BLOCKED && !DRAWING && !loadFail() && next.station === META.sid &&
         next.place === ST.place && next.year === ST.year && encodeCode(next) === encodeCode(ST)) {
       // the print is already this one: on a phone the keyboard still goes, as after a draw
       if (phone() && doc.activeElement === $('rp-place')) try { $('rp-place').blur(); } catch (err) {}
@@ -3307,7 +3332,8 @@
     if (META.ca && FR()) { setStatus('Dessiné à partir des relevés de ' + META.name + '.' + (PREVIEW ? ' Aperçu jusqu’au ' + PREVIEW.last.slice(8).replace(/^0/, '') + ' ' + ((root.AgRainArt && root.AgRainArt.MON_FR) || MON3)[+PREVIEW.last.slice(5, 7) - 1] + '.' : '')); return; }
     setStatus('Drawn from the records at ' + stationSaid(META, true) + '.' +
       (PREVIEW ? ' Preview through ' + longDate(PREVIEW.last) + '.' : '') +
-      (EXT_WAIT && ST.records && !PREVIEW ? ' Still reading the station\u2019s full history for the remarkable days\u2026' : ''));
+      (EXT_WAIT && ST.records && !PREVIEW ? ' Still reading the station\u2019s full history for the remarkable days\u2026' : '') +
+      (loadFail() ? ' ' + loadFail() + ' Press Draw again.' : ''));
   }
   function restyle(soon) {
     var next = readInputs();
@@ -3444,6 +3470,9 @@
     // a logo still saving has no id yet, and one that didn't load isn't on the print
     if (LOGO && LOGO.state === 'saving') return 'The logo is still saving. Tap again in a moment.';
     if (ST.logo && LOGO && LOGO.state === 'missing') return 'The logo didn\u2019t load, so it isn\u2019t on the print. Remove it or choose the file again, then order.';
+    // the usual-year line, the station history or the temperatures failed to load: the order would go without them
+    var lost = loadFail();
+    if (lost) return lost + ' Press Draw again, then order.';
     return '';
   }
   // the note under the step 3 button
@@ -4418,8 +4447,17 @@
     put(x + 'trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF\n');
     return new Blob(parts, { type: 'application/pdf' });
   }
+  /* No maker file or letter while something the design asks for didn't load
+     (loadFail): the file would go out without it. The watermarked preview is
+     not an order and still saves. */
+  function lostMsg() {
+    var lost = loadFail();
+    if (lost) makerMsg('No file saved: ' + lost + ' Press Draw again, then make the file.');
+    return !!lost;
+  }
   function exportFile(kind, fmt, btn) {
     if (!DATA || BLOCKED) return;
+    if (kind !== 'preview' && lostMsg()) return;
     var was = btn.textContent, out = $('rp-dl-note');
     btn.disabled = true; btn.textContent = 'Making the file…';
     /* Sig's test print (2026-10-14): the 13 x 19 sheet PDF with the standard code to
@@ -4427,13 +4465,13 @@
        no worker call, no serial, so it works when the link service doesn't. */
     if (btn.getAttribute('data-qr') === 'standard') {
       var tname = slug() + '-' + kind + '-test-print-standard-code';
-      logoGate().then(function (ok) { return extrasGate().then(function () { return ok; }); }).then(function (ok) { if (!ok) throw 'logo'; return drawCanvas(kind, null); }).then(function (c) {
+      logoGate().then(function (ok) { return extrasGate().then(function () { return ok; }); }).then(function (ok) { if (!ok) throw 'logo'; if (lostMsg()) throw 'lost'; return drawCanvas(kind, null); }).then(function (c) {
         return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
           saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, SHEET), tname + '.pdf');
           out.textContent = 'Test print PDF saved, with the standard code (it opens the Rain Print page, not this design). Not for an order. ' + SHEET_WORDS + ', ' + c.width + ' x ' + c.height + ' px.';
           ga('rain_print_download', { kind: 'test', fmt: 'pdf' });
         });
-      }).then(null, function (e) { out.textContent = e === 'logo' ? 'The logo didn\u2019t load, so no file was saved. Try again in a minute.' : 'This browser couldn\u2019t make the file. Try it on a computer.'; })
+      }).then(null, function (e) { if (e === 'lost') return; out.textContent = e === 'logo' ? 'The logo didn\u2019t load, so no file was saved. Try again in a minute.' : 'This browser couldn\u2019t make the file. Try it on a computer.'; })
         .then(function () { btn.disabled = false; btn.textContent = was; });
       return;
     }
@@ -4458,8 +4496,8 @@
     var qrNote = function (msg) { return kind === 'preview' ? msg : msg + ' QR: ' + qrLink + '.'; };
     makerMsg('');
     // the logo is drawn from its data URL, so it is in the file at full size; a file waits for it (NO_LOGO when it never comes)
-    var NO_LOGO = {};
-    var go = function (f) { return gate.then(function () { if (kind !== 'preview' && !own) throw NO_QR; return logoGate(); }).then(function (ok) { return extrasGate().then(function () { return ok; }); }).then(function (ok) { if (!ok) throw NO_LOGO; return f(); }); };
+    var NO_LOGO = {}, LOST = {};
+    var go = function (f) { return gate.then(function () { if (kind !== 'preview' && !own) throw NO_QR; return logoGate(); }).then(function (ok) { return extrasGate().then(function () { return ok; }); }).then(function (ok) { if (!ok) throw NO_LOGO; if (kind !== 'preview' && lostMsg()) throw LOST; return f(); }); };
     if (fmt === 'svg') {
       job = go(function () { return fontCss(); }).then(function (css) { return new Blob([buildSvg({ fontCss: css, px: ['18in', '12in'], qrMatrix: own })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return qrNote('SVG saved.'); });
     } else {
@@ -4480,6 +4518,7 @@
     }
     job.then(function (msg) { out.textContent = msg; ga('rain_print_download', { kind: kind, fmt: fmt }); },
       function (e) {
+        if (e === LOST) { out.textContent = ''; return; }
         if (e === NO_QR) {
           out.textContent = '';
           makerMsg('The link service didn\u2019t give this print its own short link (it may be busy), so no file was saved. An order file never uses the standard code. Try again in a minute; for a sample, use Test print PDF (standard code).', btn);
@@ -4535,6 +4574,7 @@
   function insertFile(btn) {
     var out = $('rp-dl-note');
     if (!DATA || BLOCKED) return;
+    if (lostMsg()) return;
     if (PREVIEW) { out.textContent = 'The letter is made from the full year, like the print. Make it in January once the year is in.'; return; }
     if (META && META.ca && FR()) { out.textContent = 'The letter is in English only for now.'; return; }
     var was = btn.textContent, note = $('rp-ins-gift') ? $('rp-ins-gift').value : '', from = $('rp-ins-from') ? $('rp-ins-from').value : '';
