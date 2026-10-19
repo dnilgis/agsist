@@ -3686,10 +3686,12 @@
     var el = $('rp-pending');
     if (!el) return;
     var n = readInputs(), t = '';
-    if (DRAWING && DATA && ST.place && ST.year) t = 'Drawing ' + ST.place + ', ' + ST.year + '\u2026';
+    // a design link's own first draw says nothing here: the headline under the print would jump for a moment
+    if (DRAWING && DATA && ST.place && ST.year) t = FROM_LINK && !SHARED_SEEN ? '' : 'Drawing ' + ST.place + ', ' + ST.year + '\u2026';
     else if (n.place && ((SAMPLE && n.place) || (!SAMPLE && ST.place && (n.place !== ST.place || n.year !== ST.year)))) t = 'Not drawn yet: ' + n.place + ', ' + (n.year || '') + '. Press Draw my year.';
     el.textContent = t;
     el.hidden = !t;
+    if (FROM_LINK && !DRAWING && DATA) SHARED_SEEN = true;
   }
   /* PHONE: the bar at the bottom ("Framed · $89 · Check it and pay") once the
      reader's own print is up, hidden while the step 3 button is on screen, a
@@ -3700,7 +3702,35 @@
   var PAY_SEEN = false, TYPING = false, MINI_DIRTY = true;
   function navBottom() { var n = doc.querySelector('.nav'); var b = n ? n.getBoundingClientRect().bottom : 0; return b > 0 ? b : 0; }
   function phone() { return (root.innerWidth || 1000) < 900; }
+  /* A DESIGN LINK OPENS WITH ITS PRINT FIRST (Sig, 2026-10-19). The early
+     script in rain-print.html's head marks <html> rp-from-link for a ?d= link
+     (/r?<id>, GIFT- and RPS- links all arrive as one), so the print sits at the
+     top from the first paint. This names that print in the line over it (place
+     and year from the design, and its name when it has one: what the print
+     itself shows) and takes the mark off when the link can't be drawn. Once the
+     reader draws another town, year or name, the line says so and links back. */
+  var FROM_LINK = doc.documentElement.classList.contains('rp-from-link'), SHARED = null, SHARED_SEEN = false, SHARED_URL = root.location.href;
+  function sharedOff() {
+    if (!FROM_LINK) return;
+    FROM_LINK = false;
+    doc.documentElement.classList.remove('rp-from-link');
+  }
+  function sharedSet(s) {
+    if (!FROM_LINK || !s || !s.place || !s.year) return;
+    SHARED = { place: s.place, year: s.year, name: s.name || '' };
+    syncShared();
+  }
+  function syncShared() {
+    if (!FROM_LINK || !SHARED) return;
+    var same = ST.place === SHARED.place && ST.year === SHARED.year && (ST.name || '') === SHARED.name;
+    // the place and year first: a long name is what the two lines cut short
+    var what = esc(SHARED.place + ', ' + SHARED.year), nm = SHARED.name ? ' (' + esc(SHARED.name) + ')' : '';
+    var t = $('rp-shared-t'), h = same ? 'Shared with you: <b>' + what + '</b>' + nm : 'Shared with you: <a href="' + esc(SHARED_URL) + '">' + what + '</a>' + nm + '. The print here is yours now.';
+    if (t.innerHTML !== h) t.innerHTML = h;
+    $('rp-shared-own').hidden = !same;
+  }
   function syncBar() {
+    syncShared();
     var bar = $('rp-bar');
     if (!bar) return;
     // just paid for this very design: no bar asking to pay for it again (it comes back once anything changes)
@@ -3726,6 +3756,8 @@
     if (phone() && DATA && !BLOCKED && !$('rp-proof').open) {
       var w = $('rp-wall').getBoundingClientRect(), col = $('rp-stepcol').getBoundingClientRect();
       on = w.bottom < nav + 8 && col.bottom > nav + 200;
+      // a design link: the headline and photo sit between the print and the steps, no pinned copy over them
+      if (on && FROM_LINK) on = col.top < (root.innerHeight || 0);
     }
     if (on && MINI_DIRTY) miniSoon();
     if (on) $('rp-strip-t').textContent = (META ? META.place : ST.place) + ', ' + ST.year;
@@ -4877,6 +4909,15 @@
     try { p.focus({ preventScroll: true }); } catch (e) { p.focus(); }
     ga('rain_print_start', {});
   });
+  // the line over a shared print: the town box, its text selected so typing replaces the shared town
+  $('rp-shared-own').addEventListener('click', function (ev) {
+    ev.preventDefault();
+    var p = $('rp-place');
+    try { p.scrollIntoView({ behavior: smooth(), block: 'center' }); } catch (e) {}
+    try { p.focus({ preventScroll: true }); } catch (e) { p.focus(); }
+    try { p.select(); } catch (e) {}
+    ga('rain_print_shared_own', {});
+  });
   $('rp-another').addEventListener('click', function () {
     var y = $('rp-year');
     try { y.scrollIntoView({ behavior: smooth(), block: 'center' }); } catch (e) {}
@@ -4962,6 +5003,7 @@
     look.then(function (r) {
       var s = r && r.code ? decodeCode(r.code) : null;
       if (!s) {
+        sharedOff();
         $('rp-link-note').textContent = 'Design ' + name + (r && r.missing
           ? ' isn\u2019t one the site knows. Check the reference, or type the town and press Draw it.'
           : ' didn\u2019t open: the link service didn\u2019t answer. Try again in a minute, or open agsist.com/r?' + ref.id + '.');
@@ -4975,6 +5017,9 @@
       }
       if (ref.gift) s.gift = true;
       ST = s;
+      // a design from a link comes in as it was made: no example words on it (they went on an RPS- design with no name of its own)
+      SHOW_EX = false;
+      sharedSet(s);
       writeInputs(ST);
       markLinkCuts(cutLabels('?d=' + r.code));
       run();
@@ -4984,6 +5029,7 @@
   var LINK_WHY = linkProblem(root.location.search);
   markLinkCuts(cutLabels(root.location.search));
   if (LINK_WHY) { $('rp-link-note').textContent = LINK_WHY; $('rp-link-note').hidden = false; }
+  if (LINK_WHY || PAID || MAKER) sharedOff(); else sharedSet(ST);
   showBuy(false);
   /* The art measures its labels with these fonts: draw again once they are in.
      They are asked for when a draw starts, when the reader reaches the form, or
