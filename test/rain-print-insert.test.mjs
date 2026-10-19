@@ -211,14 +211,16 @@ test("What's in the box: the public block, the sample letter and the FAQ, word f
 });
 
 // the "next print" code line (Sig, 2026-10-17): off until data/rain-print.json letter_offer has a code
+// 2026-10-19 (Rain Print audit): the Stripe coupon is good on a print or a framed print only, not the
+// digital file, so the line says so ("for $10 off a print or framed print"); it said "for $10 off" before
 const OFFER = { code: "rain10", dollars_off: 10, expires: "2027-12-31" };
-const OFFER_WORDS = "Want one for another year or another farm? Use code RAIN10 for $10 off at agsist.com/rain-print. Good through December 31, 2027.";
+const OFFER_WORDS = "Want one for another year or another farm? Use code RAIN10 for $10 off a print or framed print at agsist.com/rain-print. Good through December 31, 2027.";
 
 test("the code line: on with Sig's Stripe code NEXTPRINT, $10 off print and framed, through Dec 31, 2027 (Sig, 2026-10-19)", () => {
   const J = JSON.parse(read("data/rain-print.json"));
   assert.deepEqual(J.letter_offer, { code: "NEXTPRINT", dollars_off: 10, expires: "2027-12-31" }, "the Stripe promotion code Sig made Oct 18 (coupon Next Rain Print, $10 off once)");
   assert.ok(J._letter_offer.includes("Allow promotion codes"), "the note says what to turn on in Stripe");
-  assert.equal(INS.offerLine(J.letter_offer, "2027-01-10"), "Want one for another year or another farm? Use code NEXTPRINT for $10 off at agsist.com/rain-print. Good through December 31, 2027.");
+  assert.equal(INS.offerLine(J.letter_offer, "2027-01-10"), "Want one for another year or another farm? Use code NEXTPRINT for $10 off a print or framed print at agsist.com/rain-print. Good through December 31, 2027.");
   assert.equal(INS.offerLine(J.letter_offer, "2028-01-01"), "", "no line after it ends");
   for (const st of ["r1", "r2"]) {
     const m = make(st, { offer: J.letter_offer, today: "2027-01-10" });
@@ -235,7 +237,7 @@ test("the code line: on with Sig's Stripe code NEXTPRINT, $10 off print and fram
   assert.equal(INS.offerLine(OFFER, "2028-01-01"), "");
   assert.equal(INS.offerLine(OFFER, "2027-12-31"), OFFER_WORDS);
   // no end date: no "Good through"
-  assert.equal(INS.offerLine({ code: "RAIN10", dollars_off: 15, expires: "" }, "2027-01-10"), "Want one for another year or another farm? Use code RAIN10 for $15 off at agsist.com/rain-print.");
+  assert.equal(INS.offerLine({ code: "RAIN10", dollars_off: 15, expires: "" }, "2027-01-10"), "Want one for another year or another farm? Use code RAIN10 for $15 off a print or framed print at agsist.com/rain-print.");
 });
 
 test("the code line: on the letter when set, and the page still fits with the longest note and five marked days", () => {
@@ -258,6 +260,20 @@ test("the code line: on the letter when set, and the page still fits with the lo
     assert.doesNotMatch(L, /archival|Stripe|hurry|act now|limited|!/i, "plain words");
   }
   assert.doesNotMatch(read("components/rp-insert.js"), /—|&mdash;/);
+});
+
+test("the code line with the real code (NEXTPRINT, print or framed print) fits every letter variant", () => {
+  const J = JSON.parse(read("data/rain-print.json"));
+  const words = INS.offerLine(J.letter_offer, "2027-01-10");
+  assert.equal(words, "Want one for another year or another farm? Use code NEXTPRINT for $10 off a print or framed print at agsist.com/rain-print. Good through December 31, 2027.");
+  const long = "Thanks for another year. From all of us at the elevator. ".repeat(10).slice(0, 300);
+  const marks = [["2012-04-20", "Planted"], ["2012-06-10", "Hail"], ["2012-08-01", "Wedding"], ["2012-10-01", "Harvest"], ["2012-12-01", "Done"]].map(([date, label]) => ({ date, label }));
+  for (const st of ["r1", "r2"]) for (const v of [{}, { gift: long }, { markers: marks }, { gift: long, markers: marks }, { gift: long, markers: marks, serial: "" }]) {
+    const m = make(st, Object.assign({ offer: J.letter_offer, today: "2027-01-10" }, v));
+    const tag = st + " " + Object.keys(v).join("+");
+    assert.ok(letterTexts(m.svg).join(" ").replace(/\s+/g, " ").includes(words), tag + ": the whole line is on the letter");
+    assert.equal(m.overflow, 0, tag + " fits");
+  }
 });
 
 test("the engine hands the letter the offer from the prices it already loads", () => {
