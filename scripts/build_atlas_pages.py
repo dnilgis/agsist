@@ -1295,6 +1295,11 @@ def _f1(x):
     return "%.1f" % x if x is not None else None
 
 
+def K_trend_unbacked(sentence, slope, ci95):
+    import stories_core as K
+    return bool(K.trend_unbacked(sentence, [K.yield_trend(slope, ci95)]))
+
+
 def read_wrong(t, d, year=None):
     """The reasons a written read says more than its record, [] when none.
     One rule a class, each from the 2026-10-18 page-set pass (138 leads,
@@ -1312,10 +1317,10 @@ def read_wrong(t, d, year=None):
     for s in _sents(t):
         low = s.lower()
         yieldy = re.search(r"\b(?:corn|yields?|bushels?)\b", low)
-        # a yield trend called a climb or a fall when its 95% interval spans zero
-        if yieldy and re.search(r"(?:bushels?|bu)(?: per acre| an acre| a acre|/ac)? (?:a|per|each) year", low) and re.search(CHANGE_RE, low):
-            if sl is None or ci is None or abs(sl) <= ci:
-                bad.append("yield trend inside its 95% interval")
+        # a yield trend called a climb or a fall when its 95% interval spans zero: the one copy of the
+        # rule is stories_core.trend_unbacked (also atlas_reads.py gate and the story sets' check())
+        if yieldy and K_trend_unbacked(s, sl, ci):
+            bad.append("yield trend inside its 95% interval")
         # a July-low trend the record calls no clear direction
         if re.search(r"\bjuly\b|\bnight\w*\b|\blows\b", low) and re.search(r"per decade|a decade|each decade", low) and re.search(CHANGE_RE, low):
             if not jt or jt.get("direction") in (None, "no clear direction") or (jt.get("ci95_per_decade") is not None and abs(jt.get("per_decade") or 0) <= jt["ci95_per_decade"]):

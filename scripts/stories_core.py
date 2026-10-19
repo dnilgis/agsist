@@ -212,6 +212,70 @@ def bound(rx, cl, se, pos, prev, end=None):
     return m and m.group(0)
 
 
+# ---------------------------------------------------------------- the significance gate (2026-10-19)
+# check() stops a number the facts do not hold. It did not stop a TREND the facts do not back:
+# Adams County CO's read said "Corn yields have been falling 2.3 bushels per acre a year since
+# 2008" when its record gives -2.34 with a 95% range of +/- 2.42, so the range crosses zero and
+# the data cannot say which way yields went. A story may state a trend only when its range
+# clears zero. One copy of the rule: check() (spec "trends"), scripts/atlas_reads.py gate() and
+# scripts/build_atlas_pages.py read_wrong() all call trend_unbacked().
+CHANGE_RE = (r"\b(?:climb\w*|ris(?:e|en|es|ing)|rose|gr[eo]w\w*|gain\w*|increas\w*|improv\w*|trend\w* (?:up|upward|down|downward|higher|lower)|"
+             r"fall\w*|fell|declin\w*|drop\w*|slipp\w*|sliding|decreas\w*|moved? (?:up|down)|warm\w*|cool\w*|down|up)\b")
+PER_YEAR_BU = r"(?:bushels?|bu)(?: per acre| an acre| a acre|/ac)? (?:a|per|each) year"
+YIELD_SUBJ = r"\b(?:corn|yields?|bushels?)\b"
+
+
+def backed(slope, ci95):
+    """True when a fitted trend's 95% range clears zero; a missing slope or range is not backed."""
+    return slope is not None and ci95 is not None and abs(slope) > ci95
+
+
+def trend_unbacked(text, trends):
+    """The reasons a text states a trend its 95% range does not back, [] when none.
+    trends: [{name, subj (regex the sentence must name), rate (regex for 'a year', 'per decade'),
+    slope, ci95, and optionally backed (bool) to override the range test}]. A sentence counts as
+    stating the trend when it names the subject, gives the rate and uses a change word."""
+    bad = []
+    for se in re.findall(r"(?:[^.]|\.\d)+\.?", text or ""):
+        low = se.lower()
+        if not re.search(CHANGE_RE, low):
+            continue
+        for t in trends:
+            if re.search(t["subj"], low) and re.search(t["rate"], low):
+                ok = t["backed"] if "backed" in t else backed(t.get("slope"), t.get("ci95"))
+                if not ok:
+                    bad.append(f"{t['name']} inside its 95% range")
+    return sorted(set(bad))
+
+
+def yield_trend(slope, ci95):
+    """The county corn yield trend as trend_unbacked() reads it (the Atlas record's yield.slope and slope_ci95)."""
+    return {"name": "yield trend", "subj": YIELD_SUBJ, "rate": PER_YEAR_BU, "slope": slope, "ci95": ci95}
+
+
+def trend_selftest():
+    """The real case: Adams County CO, reads.json as committed 2026-10-12, record slope -2.337, slope_ci95 2.423."""
+    adams = ("Corn yields have been falling 2.3 bushels per acre a year since 2008, and heat and drought claims have climbed "
+             "from 19 percent of crop insurance indemnities in 1989-1999 to 67 percent in 2020-2025.")
+    bad = 0
+    for got, want, what in (
+            (trend_unbacked(adams, [yield_trend(-2.337, 2.423)]), ["yield trend inside its 95% range"], "Adams CO falling 2.3 bu a year is refused"),
+            (trend_unbacked(adams, [yield_trend(-2.337, 1.9)]), [], "the same sentence passes when the range clears zero"),
+            (trend_unbacked("Corn yields averaged 160.1 bushels per acre.", [yield_trend(-2.337, 2.423)]), [], "a level, not a trend, passes"),
+            (trend_unbacked(adams, [yield_trend(None, None)]), ["yield trend inside its 95% range"], "no range on record: refused"),
+            (check("As of Oct 18, " + adams[0].lower() + adams[1:], {"lead": "Oct 18", "chars": (10, 900), "sents": (1, 4), "years": {2008}, "unban": ["drought"],
+                                                                     "trends": [yield_trend(-2.337, 2.423)]}),
+             None, "check() carries the gate")):
+        if want is None:
+            ok = "yield trend inside its 95% range" in got
+        else:
+            ok = got == want
+        if not ok:
+            bad += 1
+            print("FAIL", what, got)
+    return bad
+
+
 def check(story, spec, extra=None, facts=None):
     """[] when every claim in the story is in its facts, else the reasons.
 
@@ -402,6 +466,8 @@ def check(story, spec, extra=None, facts=None):
             elif not any(d["dir"] == want for d in ds):
                 bad.append(f"'{m.group(1)}' is the wrong way (facts: {sorted({d['dir'] for d in ds})})")
         prev_se = se
+    if spec.get("trends"):
+        bad += trend_unbacked(s0, spec["trends"])
     if extra:
         bad += extra(s0, m_, facts)
     return sorted(set(bad))
@@ -542,7 +608,8 @@ def run_pairs(S, f, pairs, ok):
 def main(a):
     if not a or a[0] == "selftest":
         names = a[1:] or ["prf", "atlas", "town"]
-        bad = 0
+        bad = trend_selftest()
+        print("trend gate selftest: " + ("ok" if not bad else f"{bad} failure(s)"))
         for n in names:
             bad += mod_of(n).selftest()
         return 1 if bad else 0

@@ -333,8 +333,49 @@ def numbers_in(text):
     return out
 
 
-def gate(text, block):
-    """None if the read passes; otherwise the reason."""
+def trends_of(rec):
+    """The fitted trends a read may speak of, for the significance gate (stories_core.trend_unbacked):
+    the corn yield trend (yield.slope, slope_ci95) and the July-low trend (heat jul trend)."""
+    import stories_core as K
+    y = (rec or {}).get("yield") or {}
+    jt = ((((rec or {}).get("heat") or {}).get("months") or {}).get("jul") or {}).get("trend") or {}
+    j_ok = bool(jt) and jt.get("direction") in ("rising", "falling", "warming", "cooling") and \
+        (jt.get("ci95_per_decade") is None or abs(jt.get("per_decade") or 0) > jt["ci95_per_decade"])
+    return [K.yield_trend(y.get("slope"), y.get("slope_ci95")),
+            {"name": "July-low trend", "subj": r"\bjuly\b|\bnight\w*\b|\blows\b", "rate": r"per decade|a decade|each decade", "backed": j_ok}]
+
+
+def unbacked_trend(text, detail):
+    """The significance gate alone: the first trend the text states that its record does not back, else None.
+    A read whose detail record is missing is not judged here (the other paths judge it)."""
+    if detail is None:
+        return None
+    import stories_core as K
+    tb = K.trend_unbacked(text, trends_of(detail))
+    return tb[0] if tb else None
+
+
+def recheck(reads, details):
+    """Offline, no API: every stored read that states a trend its record does not back loses its
+    text and is marked for rewriting ('recheck: ...', which carry() never keeps and the next run
+    sends). The map panel and the county pages then show no read rather than a false trend.
+    details: {fips: detail record or None}. Returns how many were taken down."""
+    n = 0
+    for fips, e in reads["counties"].items():
+        if not e.get("text"):
+            continue
+        why = unbacked_trend(e["text"], details.get(fips))
+        if why:
+            reads["counties"][fips] = {"status": f"recheck: {why}", "sha": e.get("sha"), "block": e.get("block"),
+                                       "model": e.get("model"), "generated": e.get("generated")}
+            n += 1
+    return n
+
+
+def gate(text, block, rec=None):
+    """None if the read passes; otherwise the reason. With rec (the county record), a trend
+    stated in words must clear its own 95% range (2026-10-19: Adams County CO's
+    "falling 2.3 bushels per acre a year" on -2.34 +/- 2.42 passed every number check)."""
     words = len(text.split())
     if words > MAX_WORDS:
         return f"{words} words, limit {MAX_WORDS}"
@@ -370,6 +411,11 @@ def gate(text, block):
     # is still reported first.
     if words < MIN_WORDS:
         return f"{words} words, minimum {MIN_WORDS}"
+    if rec is not None:
+        import stories_core as K
+        tb = K.trend_unbacked(text, trends_of(rec))
+        if tb:
+            return tb[0]
     return None
 
 
@@ -664,7 +710,7 @@ def one(api_key, fips, rec, model=None):
     first_ok = None          # a read that passed the gate but not the voice check
     for attempt in range(2):
         text, hits = finish(call_model(api_key, block, model), fips)
-        why = gate(text, block)
+        why = gate(text, block, rec)
         if why is None and (not hits or attempt == 1):
             return _entry(text, rec["sha"], block, model, hits)
         if why is None:
@@ -689,15 +735,16 @@ def gate_withheld(status):
     return st.startswith("withheld: ") and not st.startswith(("withheld: API error", "withheld: detail file"))
 
 
-def carry(have, rec, block):
+def carry(have, rec, block, detail=None):
     """The previous read, re-stamped with this build's fingerprint, if it was
-    written from exactly this block of numbers. Otherwise None."""
+    written from exactly this block of numbers and still passes the gate,
+    the significance gate included (detail: the county's detail record). Otherwise None."""
     if not have or not have.get("block") or have["block"] != block_hash(block):
         return None
     if have.get("salvaged"):
         return None          # kept from an older read until a run with credit rewrites it
     if have.get("text"):
-        if gate(have["text"], block) is not None:
+        if gate(have["text"], block, detail) is not None:
             return None
     elif not gate_withheld(have.get("status")):
         return None          # an API error or a stale detail file: try again
@@ -871,6 +918,31 @@ def selftest():
     finally:
         call_model = _real
         _FEEDBACK.clear()
+    # THE SIGNIFICANCE GATE (2026-10-19). Adams County CO's committed read passed every
+    # number check: "Corn yields have been falling 2.3 bushels per acre a year since 2008"
+    # on a record of -2.337 with a 95% range of +/- 2.423, a range that crosses zero.
+    adams = {"sha": "bf2eadd0eee8122e", "yield": {"status": "ok", "slope": -2.337, "slope_ci95": 2.423, "n": 16, "window": "2008-2025"}}
+    adams_text = ("Corn yields have been falling 2.3 bushels per acre a year since 2008, and heat and drought claims have climbed "
+                  "from 19 percent of crop insurance indemnities in 1989-1999 to 67 percent in 2020-2025. The county paid out "
+                  "$143.0 million in indemnities across those years, with heat and drought the largest cause.")
+    ablock = ("County corn yield trend, fitted over the published years 2008-2025: -2.3 bushels per acre a year\n"
+              "Heat and drought share of indemnities 1989-1999: 19 percent\nHeat and drought share of indemnities 2020-2025: 67 percent\n"
+              "Crop insurance indemnities 1989-2025, closed crop years: $143.0 million; largest cause: heat and drought at 50 percent")
+    assert gate(adams_text, ablock) is None, "without the record, the old gate let it through (the bug)"
+    assert gate(adams_text, ablock, adams) == "yield trend inside its 95% range", gate(adams_text, ablock, adams)
+    sig = {"sha": "x", "yield": {"status": "ok", "slope": -2.337, "slope_ci95": 1.2}}
+    assert gate(adams_text, ablock, sig) is None, "a trend whose range clears zero may be stated"
+    assert carry({"text": adams_text, "sha": "old", "block": block_hash(ablock)}, {"sha": "new"}, ablock, adams) is None, "a stored false trend is not carried"
+    assert carry({"text": adams_text, "sha": "old", "block": block_hash(ablock)}, {"sha": "new"}, ablock, sig)["sha"] == "new"
+    rs = {"counties": {"08001": {"text": adams_text, "sha": "bf2eadd0eee8122e", "block": "00cdbb8630dd38ec", "model": "m", "generated": "g"},
+                       "08003": {"text": adams_text, "sha": "y", "block": "b"}}}
+    assert recheck(rs, {"08001": adams, "08003": sig}) == 1 and rs["counties"]["08001"]["status"] == "recheck: yield trend inside its 95% range"
+    assert "text" not in rs["counties"]["08001"] and rs["counties"]["08003"]["text"] == adams_text
+    assert not gate_withheld(rs["counties"]["08001"]["status"]), "a recheck is rewritten on the next run, not kept as a refusal"
+    assert carry(rs["counties"]["08001"], {"sha": "new"}, ablock, adams) is None
+    # the July-low trend: a direction the record calls no clear direction is refused
+    jul = {"heat": {"months": {"jul": {"trend": {"per_decade": 0.2, "direction": "no clear direction"}}}}}
+    assert unbacked_trend("July nights have been warming 0.2 F per decade since 1976.", jul) == "July-low trend inside its 95% range"
     log("selftest ok")
 
 
@@ -1004,6 +1076,16 @@ def main():
     if "--selftest" in sys.argv:
         selftest()
         return
+    if "--recheck" in sys.argv:
+        # the significance gate over the stored reads, no API call (2026-10-19)
+        with open(ATLAS, encoding="utf-8") as f:
+            atlas = json.load(f)
+        with open(OUT, encoding="utf-8") as f:
+            reads = json.load(f)
+        n = recheck(reads, {fips: load_detail(fips, rec) for fips, rec in atlas["counties"].items()})
+        save(reads)
+        log(f"recheck: {n} stored reads stated a trend inside its 95% range; marked for rewriting")
+        return
     if "--salvage" in sys.argv:
         with open(ATLAS, encoding="utf-8") as f:
             atlas = json.load(f)
@@ -1035,6 +1117,7 @@ def main():
     mode = "sync" if (only or "--sync" in sys.argv) else MODE
 
     jobs, recs, carried, stale, stamped = {}, {}, 0, 0, 0
+    details = {}
     for fips, rec in sorted(atlas["counties"].items()):
         if only and fips != only:
             continue
@@ -1043,7 +1126,8 @@ def main():
         if not any((rec.get(k) or {}).get("status") == "ok" for k in ("heat", "water", "loss")):
             continue
         have = reads["counties"].get(fips)
-        if have and have.get("sha") == rec.get("sha") and have.get("text") and not have.get("salvaged"):
+        if have and have.get("sha") == rec.get("sha") and have.get("text") and not have.get("salvaged") and \
+                not unbacked_trend(have["text"], load_detail(fips, rec)):
             # CURRENT, AND WRITTEN BEFORE READS CARRIED A BLOCK HASH: stamp it now,
             # for nothing, so the first month its fingerprint moves it can be
             # carried instead of paid for again -- but only if it still passes
@@ -1052,7 +1136,7 @@ def main():
                 d0 = load_detail(fips, rec)
                 if d0 is not None:
                     b0 = inputs_block(fips, d0)
-                    if gate(have["text"], b0) is None:
+                    if gate(have["text"], b0, d0) is None:
                         have["block"] = block_hash(b0)
                         stamped += 1
             continue
@@ -1061,13 +1145,14 @@ def main():
             stale += 1
             continue
         block = inputs_block(fips, detail)
-        kept = carry(have, rec, block)
+        kept = carry(have, rec, block, detail)
         if kept:
             reads["counties"][fips] = kept
             carried += 1
             continue
         jobs[fips] = block
         recs[fips] = rec
+        details[fips] = detail
     if limit:
         jobs = dict(list(jobs.items())[:limit])
     if stamped:
@@ -1111,7 +1196,7 @@ def main():
                             kept_old += 1
                         continue
                     val, hits = finish(val, fips)
-                    why = gate(val, block)
+                    why = gate(val, block, details.get(fips))
                     if why is None and hits and rnd == 1:
                         # numbers fine, voice not: once more with the habits named
                         n_voice += 1
