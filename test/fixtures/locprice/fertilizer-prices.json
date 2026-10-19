@@ -1,0 +1,221 @@
+{
+ "prices": [
+  {
+   "key": "urea",
+   "name": "Urea",
+   "symbol": "46-0-0",
+   "price": 615.95,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "oldest": "2026-09-24",
+   "src": "coop",
+   "n": 5,
+   "low": 608.0,
+   "high": 840.0,
+   "region": "Kansas and Wisconsin",
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks",
+    "synergy-wi"
+   ],
+   "src_label": "Kansas and Wisconsin co-ops, middle of 5, posted Sep 24 to Oct 6, 2026",
+   "short_label": "Kansas and Wisconsin co-ops, Sep 24 to Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "anhydrous",
+   "name": "Anhydrous ammonia",
+   "symbol": "82-0-0",
+   "price": 832.1,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "oldest": "2026-09-24",
+   "src": "coop",
+   "n": 4,
+   "low": 817.0,
+   "high": 965.0,
+   "region": "Kansas",
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "src_label": "Kansas co-ops, middle of 4, posted Sep 24 to Oct 6, 2026",
+   "short_label": "Kansas co-ops, Sep 24 to Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "uan28",
+   "name": "UAN 28%",
+   "symbol": "28-0-0",
+   "price": 415.33,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "oldest": "2026-09-24",
+   "src": "coop",
+   "n": 4,
+   "low": 400.0,
+   "high": 490.0,
+   "region": "Kansas",
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "src_label": "Kansas co-ops, middle of 4, posted Sep 24 to Oct 6, 2026",
+   "short_label": "Kansas co-ops, Sep 24 to Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "uan32",
+   "name": "UAN 32%",
+   "symbol": "32-0-0",
+   "price": 451.05,
+   "unit": "$/ton",
+   "as_of": "2026-09-24",
+   "oldest": "2026-09-24",
+   "src": "coop",
+   "n": 1,
+   "low": 451.05,
+   "high": 451.05,
+   "region": "Kansas",
+   "coops": [
+    "farmerscoop-columbus-ks"
+   ],
+   "src_label": "Farmers Coop, Kansas, posted Sep 24, 2026",
+   "short_label": "Farmers Coop, Sep 24",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "dap",
+   "name": "DAP",
+   "symbol": "18-46-0",
+   "price": 936.05,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "oldest": "2026-09-24",
+   "src": "coop",
+   "n": 3,
+   "low": 921.5,
+   "high": 970.0,
+   "region": "Kansas",
+   "coops": [
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "src_label": "Kansas co-ops, middle of 3, posted Sep 24 to Oct 6, 2026",
+   "short_label": "Kansas co-ops, Sep 24 to Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "map",
+   "name": "MAP",
+   "symbol": "11-52-0",
+   "price": 980.0,
+   "unit": "$/ton",
+   "as_of": "2026-10-12",
+   "oldest": "2026-10-06",
+   "src": "coop",
+   "n": 2,
+   "low": 980.0,
+   "high": 980.0,
+   "region": "Kansas",
+   "coops": [
+    "tworivers-ks",
+    "mulvane-ks"
+   ],
+   "src_label": "Kansas co-ops, average of 2, posted Oct 6 to Oct 12, 2026",
+   "short_label": "Kansas co-ops, Oct 6 to Oct 12",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "potash",
+   "name": "Potash",
+   "symbol": "0-0-60",
+   "price": 470.4,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "oldest": "2026-09-24",
+   "src": "coop",
+   "n": 4,
+   "low": 460.0,
+   "high": 500.0,
+   "region": "Kansas",
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "src_label": "Kansas co-ops, middle of 4, posted Sep 24 to Oct 6, 2026",
+   "short_label": "Kansas co-ops, Sep 24 to Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "ams",
+   "name": "AMS",
+   "symbol": "21-0-0-24S",
+   "price": 509.25,
+   "unit": "$/ton",
+   "as_of": "2026-09-24",
+   "oldest": "2026-09-24",
+   "src": "coop",
+   "n": 1,
+   "low": 509.25,
+   "high": 509.25,
+   "region": "Kansas",
+   "coops": [
+    "farmerscoop-columbus-ks"
+   ],
+   "src_label": "Farmers Coop, Kansas, posted Sep 24, 2026",
+   "short_label": "Farmers Coop, Sep 24",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "10-34-0",
+   "name": "10-34-0",
+   "symbol": "10-34-0",
+   "price": 640.0,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "oldest": "2026-10-06",
+   "src": "coop",
+   "n": 1,
+   "low": 640.0,
+   "high": 640.0,
+   "region": "Kansas",
+   "coops": [
+    "mulvane-ks"
+   ],
+   "src_label": "Mulvane Cooperative Union, Kansas, posted Oct 6, 2026",
+   "short_label": "Mulvane Cooperative Union, Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "thiosul",
+   "name": "Thio-Sul",
+   "symbol": "12-0-0-26S",
+   "price": 420.0,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "oldest": "2026-09-10",
+   "src": "coop",
+   "n": 2,
+   "low": 390.0,
+   "high": 450.0,
+   "region": "Kansas",
+   "coops": [
+    "tworivers-ks",
+    "mulvane-ks"
+   ],
+   "src_label": "Kansas co-ops, average of 2, posted Sep 10 to Oct 6, 2026",
+   "short_label": "Kansas co-ops, Sep 10 to Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  }
+ ]
+}

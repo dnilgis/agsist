@@ -35,9 +35,12 @@ Rules (id: what must agree):
   removal-rates    one crop-removal table: scripts/crop_removal.py (A2809) ==
                    fertilizer.html CROPS and its printed line == breakeven.html
                    FERT.r == the pounds in fertilizer-prices.json programs
-  fert-head        fertilizer.html description: each named price == the shared
-                   price file, each state named belongs to that price, and its
-                   date range sits inside the oldest-to-newest range of the file
+  fert-head        fertilizer.html description AND the baked body line
+                   (<!--BAKE:fert-bar-->, Sig Oct 19): each named price == the
+                   shared price file, each state named belongs to that price,
+                   its date range sits inside the oldest-to-newest range of the
+                   file, and the body names the same prices and dates as the
+                   description, written the same way
   milk-mailbox     every "mailbox average was $X" on milk-prices.html (FAQ and
                    JSON-LD included) is the newest month in dairy-mailbox.json
   staleness        each file's own date against a maximum age
@@ -320,25 +323,26 @@ def _regions(r):
     return set(x for x in re.split(r", (?:and )?| and ", r.get("region") or "") if x)
 
 
-def rule_fert_head(c):
-    d, page = c.load("data/fertilizer-prices.json"), c.text("fertilizer.html")
-    if not d or not page:
-        return c.note("fert-head", "fertilizer-prices.json or fertilizer.html missing")
-    rows = {r["key"]: r for r in d.get("prices") or [] if r.get("key")}
-    _, desc = head_of(page)
-    lead = re.match(r"(.*?) co-op cash prices posted ", desc)
+_FERT_PX = re.compile(r"\b(urea|anhydrous|DAP|MAP|potash) \$([\d,]+)(?:/ton)?(?: \(([^)]*)\))?")
+_FERT_RNG = re.compile(r"posted ([A-Z][a-z]{2} \d{1,2})(?:, (\d{4}))?(?: to ([A-Z][a-z]{2} \d{1,2}), (\d{4}))?")
+
+
+def _fert_text(c, rows, text, where):
+    """The fert-head checks on one piece of reader text (the description, or
+    the body line baked from it)."""
+    lead = re.match(r"(.*?) co-op cash prices posted ", text)
     base = set(re.split(r", (?:and )?| and ", lead.group(1))) if lead else set()
-    for m in re.finditer(r"\b(urea|anhydrous|DAP|MAP|potash) \$([\d,]+)(?:/ton)?(?: \(([^)]*)\))?", desc):
+    for m in _FERT_PX.finditer(text):
         r = rows.get(FERT_NAMES[m.group(1)])
         if not r:
-            c.ok("fert-head", False, "fertilizer.html", f"description names {m.group(1)}, the price file has none")
+            c.ok("fert-head", False, "fertilizer.html", f"{where} names {m.group(1)}, the price file has none")
             continue
         c.ok("fert-head", int(m.group(2).replace(",", "")) == round(r["price"]), "fertilizer.html",
-             f"description {m.group(1)} ${m.group(2)}, price file {r['price']}")
+             f"{where} {m.group(1)} ${m.group(2)}, price file {r['price']}")
         named = set(re.split(r", (?:and )?| and ", m.group(3))) if m.group(3) else base
         c.ok("fert-head", not named or named == _regions(r), "fertilizer.html",
-             f"description puts {m.group(1)} in {sorted(named)}; its co-ops are in {sorted(_regions(r))}")
-    rng = re.search(r"posted ([A-Z][a-z]{2} \d{1,2})(?:, (\d{4}))?(?: to ([A-Z][a-z]{2} \d{1,2}), (\d{4}))?", desc)
+             f"{where} puts {m.group(1)} in {sorted(named)}; its co-ops are in {sorted(_regions(r))}")
+    rng = _FERT_RNG.search(text)
     ds = [x for r in rows.values() for x in (r.get("as_of"), r.get("oldest")) if x]
     if rng and ds:
         yr = rng.group(4) or rng.group(2)
@@ -347,8 +351,30 @@ def rule_fert_head(c):
             return f"{yr}-{MON.index(mo) + 1:02d}-{int(dd):02d}"
         lo, hi = iso(rng.group(1)), iso(rng.group(3) or rng.group(1))
         c.ok("fert-head", min(ds) <= lo <= hi <= max(r["as_of"] for r in rows.values() if r.get("as_of")),
-             "fertilizer.html", f"description range {lo} to {hi} is outside the file's {min(ds)} to "
+             "fertilizer.html", f"{where} range {lo} to {hi} is outside the file's {min(ds)} to "
                                 f"{max(r['as_of'] for r in rows.values() if r.get('as_of'))}")
+
+
+def rule_fert_head(c):
+    d, page = c.load("data/fertilizer-prices.json"), c.text("fertilizer.html")
+    if not d or not page:
+        return c.note("fert-head", "fertilizer-prices.json or fertilizer.html missing")
+    rows = {r["key"]: r for r in d.get("prices") or [] if r.get("key")}
+    _, desc = head_of(page)
+    _fert_text(c, rows, desc, "description")
+    # Sig Oct 19: the body is baked with the same prices (bake_seo.py
+    # body_fertilizer). It is checked against the file on its own, and
+    # against the description: one price shown one way on the page.
+    bm = re.search(r"<!--BAKE:fert-bar-->(.*?)<!--/BAKE-->", page, re.S)
+    if not bm:
+        return c.note("fert-head", "fertilizer.html has no fert-bar body line")
+    body = H.unescape(re.sub(r"<[^>]+>", "", bm.group(1))).strip()
+    _fert_text(c, rows, body, "body line")
+    px_d = [m.group(0) for m in _FERT_PX.finditer(desc)]
+    px_b = [m.group(0) for m in _FERT_PX.finditer(body)]
+    rg_d, rg_b = _FERT_RNG.search(desc), _FERT_RNG.search(body)
+    c.ok("fert-head", px_b == px_d and (rg_b and rg_b.group(0)) == (rg_d and rg_d.group(0)), "fertilizer.html",
+         f"body line {px_b} {rg_b and rg_b.group(0)} differs from the description {px_d} {rg_d and rg_d.group(0)}")
 
 
 def rule_milk_mailbox(c):
@@ -494,6 +520,8 @@ def _fixture(td):
     w("fertilizer.html", head("Kansas and Wisconsin Co-op Fertilizer per Ton: Urea $616 | AGSIST",
                               "Kansas co-op cash prices posted Sep 24 to Oct 6, 2026: urea $616/ton (Kansas and Wisconsin), "
                               "anhydrous $832. Cost per lb.")
+      + '<div id="fert-coop-bar"><!--BAKE:fert-bar-->Kansas co-op cash prices posted Sep 24 to Oct 6, 2026: '
+        "urea $616/ton (Kansas and Wisconsin), anhydrous $832.<!--/BAKE--></div>"
       + "var CROPS={corn:{label:'Corn',nRate:0.90,p2o5:0.38,k2o:0.29},soybean:{nRate:0,p2o5:0.80,k2o:1.40},wheat:{nRate:1.2,p2o5:0.50,k2o:0.35}};"
         "<code>Corn P&#x2082;O&#x2085; 0.38, K&#x2082;O 0.29 &middot; Soybeans 0.80 / 1.40 &middot; Wheat 0.50 / 0.35</code>")
     w("breakeven.html", "var FERT={n:0.67,r:{corn:[0,0.38,0.29],soybeans:[0,0.8,1.4],wheat:[1.2,0.5,0.35]},nf:{corn:[120,0.5074,'anhydrous']}};")
@@ -588,6 +616,13 @@ def selftest():
          sub("fertilizer.html", "anhydrous $832.", "anhydrous $840.")),
         ("fert-head", "a date range outside the file",
          sub("fertilizer.html", "Sep 24 to Oct 6, 2026", "Sep 2 to Oct 6, 2026")),
+        ("fert-head", "a body price off the file (Sig Oct 19)",
+         sub("fertilizer.html", "anhydrous $832.<!--/BAKE-->", "anhydrous $840.<!--/BAKE-->")),
+        ("fert-head", "a body price written a second way",
+         sub("fertilizer.html", "urea $616/ton (Kansas and Wisconsin), anhydrous $832.<!--/BAKE-->",
+             "urea $615.95/ton (Kansas and Wisconsin), anhydrous $832.<!--/BAKE-->")),
+        ("fert-head", "a body date range outside the file",
+         sub("fertilizer.html", "fert-bar-->Kansas co-op cash prices posted Sep 24", "fert-bar-->Kansas co-op cash prices posted Sep 2")),
         ("milk-mailbox", "a stale FAQ mailbox month (N6)",
          sub("milk-prices.html", "<!--SEED:milkmbfaq-->In June 2026 the federal-order mailbox average was $20.18",
              "<!--SEED:milkmbfaq-->In March 2026 the federal-order mailbox average was $18.84")),
