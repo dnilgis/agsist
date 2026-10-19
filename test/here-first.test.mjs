@@ -228,8 +228,8 @@ test("bids-network exports the index and a checked shard getter; versions bumped
   assert.match(js, /\^merged\\\/\[a-z0-9\]/);
   for (const f of ["here.html", "corn-futures-prices.html", "store-or-sell.html", "combine-loss.html"]) assert.match(read(f), /bids-network\.js\?v=7/, f);
   assert.match(read("components/bids-homepage.js"), /bids-network\.js\?v=7/);
-  assert.match(read("here.html"), /place\.js\?v=3/);
-  assert.match(read("here.html"), /here\.js\?v=3/);
+  assert.match(read("here.html"), /place\.js\?v=4/);
+  assert.match(read("here.html"), /here\.js\?v=4/);
   assert.match(read("here.html"), /rain-county\.css\?v=4/);
 });
 
