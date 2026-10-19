@@ -577,7 +577,7 @@
       if (!rows.length) { box.innerHTML = na('no elevator we read within ' + P.EL.NEAR + ' miles of ' + from + ' posts a usable corn or soybean bid'); return; }
       S.elev = rows;
       box.innerHTML = '<ul class="h-el">' + rows.map(function (r, i) {
-        var head = '<b>' + CROPN[r.crop] + '</b> at ' + esc(r.name) + (r.town ? ', ' + esc(r.town) : '') + ' ' + esc(r.st) + ' (' + r.mi + ' mi): basis ' + basisTxt(r.basis) + (r.delivery ? ' for ' + esc(r.delivery) : '');
+        var head = '<b>' + CROPN[r.crop] + '</b> at ' + esc(r.name) + (r.town ? ', ' + esc(r.town) : '') + ' ' + esc(r.st) + ' (' + r.mi + ' mi): basis ' + basisTxt(r.basis) + (r.delivery ? ' (delivery ' + esc(r.delivery) + ')' : '');
         var vs = r.status === 'ok' ? ', ' + (r.gap === 0 ? 'the same as' : Math.abs(r.gap) + '¢ ' + (r.gap > 0 ? 'stronger than' : 'weaker than')) + ' the middle of ' + r.nbN + ' elevators' + (r.nbCos < r.nbN ? ' (' + r.nbCos + ' compan' + (r.nbCos === 1 ? 'y' : 'ies') + ')' : '') + ' within ' + r.radius + ' miles posting the same delivery (' + basisTxt(r.nbMedian) + ').'
           : '. Against its neighbors: not available, ' + esc(r.why) + '.';
         return '<li id="h-el-' + i + '">' + head + vs + ' <span class="h-el-h" id="h-el-h' + i + '"></span>' + mathBox('h-el-m' + i) + '</li>';
