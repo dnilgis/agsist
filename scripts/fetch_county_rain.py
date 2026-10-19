@@ -235,7 +235,7 @@ def build_state(src, st, year, edate, C, fetched):
         if fips not in mine:
             continue
         seen += 1
-        summ, why = R.summarize(year, dates, vals, norms, edate)
+        summ, why = R.summarize(year, dates, vals, norms, edate, snows if snow_col else None)
         lon, lat = meta["ll"][0], meta["ll"][1]
         c = mine[fips]
         mi = R.miles(c["lat"], c["lon"], lat, lon)
@@ -730,6 +730,18 @@ def selftest():
     _files["KY"]["counties"].update({"9": _t(4.11), "10": _t(29.5), "11": _t(23.2), "12": _t(4.36), "13": _t(2.85), "14": _t(22.5)})
     _held = hold_outliers(_files, _files, {"1": ["2", "3", "4"], "5": ["6", "7", "8"], "9": ["10", "11", "12", "13", "14"]})
     ok(_held == ["1"], f"no-normal gauge far under its neighbors' totals held; dry country and a rain shadow kept: {_held}")
+    # a dry run counts an A total of 0.00 as dry and ends on a day snow fell,
+    # as Rain Print's derive does (2026-10-19: Allerton IA, Wayne County, Feb 7
+    # 0.00A then 12 days at 0.00 is 13 days; the page said 12)
+    _fx = json.load(open(os.path.join(ROOT, "test", "fixtures", "rain-snow", "days.json")))["wayne_ia"]
+    _wp, _ws = R.unpack_days(_fx["p"]), R.unpack_days(_fx["s"])
+    _wd = R.days_of(2026, "2026-01-01", len(_wp))
+    s, _ = R.summarize(2026, _wd, _wp, None, _fx["as_of"], _ws)
+    ok(s and s["dry"] == [13, "2026-02-07", "2026-02-19"], f"Allerton's dry run takes in the 0.00A day: {s and s['dry']}")
+    s, _ = R.summarize(2026, d14, ["0.20"] + ["0.00"] * 13, None, "2026-01-14", ["0.0"] * 6 + ["1.5"] + ["0.0"] * 7)
+    ok(s and s["dry"] == [7, "2026-01-08", "2026-01-14"], f"a day snow fell ends a dry run: {s and s['dry']}")
+    s, _ = R.summarize(2026, d14, ["0.20"] + ["0.00"] * 13, None, "2026-01-14")
+    ok(s and s["dry"] == [13, "2026-01-02", "2026-01-14"], f"no snowfall record: zeros are dry: {s and s['dry']}")
     # 0.00 for 60 days or more is refused outright, with or without a normal
     d70 = R.days_of(2026, "2026-01-01", 70)
     s, why = R.summarize(2026, d70, ["0.00"] * 70, None, "2026-03-11")

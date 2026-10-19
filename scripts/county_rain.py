@@ -399,11 +399,13 @@ def row_values(row):
     return row if isinstance(row, list) else [row]
 
 
-def summarize(year, dates, vals, norms, edate):
+def summarize(year, dates, vals, norms, edate, snows=None):
     """Everything a county page needs from one station's year so far, or a
-    reason it does not qualify. dates/vals/norms are parallel (norms may be None).
+    reason it does not qualify. dates/vals/norms are parallel (norms may be None);
+    snows, the station's snowfall values beside them (None: no snowfall record).
     Returns (summary or None, reason)."""
     parsed = close_s([parse_pcpn(v) for v in vals])
+    snowed = [(parse_pcpn(v)[0] or 0) > 0 for v in snows] if snows is not None else []
     # the last day reported; trailing S days wait for the A value that ends them
     last = max((i for i, (v, f) in enumerate(parsed) if v is not None and f != "S"), default=-1)
     if last < 0:
@@ -456,7 +458,11 @@ def summarize(year, dates, vals, norms, edate):
                 while k > 0 and parsed[k - 1][1] == "S":
                     k -= 1
                 acc_day = max(acc_day, v / (i - k + 1))
-        if v is not None and flag == "" and v == 0:
+        # a dry day: a measured 0.00, plain or an A total of 0.00, with no snow
+        # that day (Rain Print's derive, components/rain-print.js: an A total of
+        # 0.00 is several dry days; snow falling is not a dry day, Sig).
+        # 2026-10-19: Allerton IA (Wayne County), Feb 7 0.00A then 12 zeros: 13 days.
+        if v is not None and flag in ("", "A") and v == 0 and not (i < len(snowed) and snowed[i]):
             if run == 0:
                 run_start = i
             run += 1
