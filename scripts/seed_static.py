@@ -415,7 +415,7 @@ def px_table(rows, flabel, in_session=False):
     grain quotes in cents; quotes may be None (row skipped)."""
     noun = state_words(in_session)[1]
     src = ("CBOT settles as Yahoo Finance posts them" if in_session is False
-           else "Yahoo Finance, delayed (not CME settlements)")
+           else "Yahoo Finance, delayed, not the settle")   # the daily strip's words; "(not CME settlements)" is banned on these pages (test/close-kind-wording)
     out = ['<table class="seed-tbl"><caption>' + noun + ' &middot; as of ' + flabel +
            ' &middot; ' + src + ' &middot; quotes above refresh every 15 minutes in session</caption>',
            '<thead><tr><th scope="col">Contract</th><th scope="col" class="num">' +
