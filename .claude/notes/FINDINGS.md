@@ -6,6 +6,14 @@ Sig decided: <what> / refuted: <why> / open.
 
 | Date | Area | Finding | Verdict | Reach |
 | --- | --- | --- | --- | --- |
+| 2026-10-19 | Signups | Cattle futures form swallowed errors, no source or ZIP; duplicate asks on tariffs and COT; Atlas watch said "up to 5 counties" for every 429 | fixed (batch 6) | 3 pages + 3,148 Atlas pages |
+| 2026-10-19 | Signups | "Every weekday" in 25 places but the Daily sends daily; "by 6am CT" missed 13 of 28 Sep 20-Oct 18 | Sig decides wording | site-wide |
+| 2026-10-19 | Signups | PRF and county rain asks pre-tick the Daily box | Sig decides | /prf, rain/ |
+| 2026-10-19 | Phone | Location requested about 1 s after load with no tap on /, /cash-bids, corn, cattle, fertilizer, spray | Sig decides (built on purpose in May) | about 5,000 views/month |
+| 2026-10-19 | Phone | Futures pages layout shift 0.19-0.22 (seed note hidden; new-crop seed picked the wrong contract) | fixed: under 0.01 | 3 pages |
+| 2026-10-19 | Phone | Atlas headline irrigated rent tile showed 2009-2022 rents with no age rule | fixed: n/a past three survey years, 314 pages; dry rent tile same issue (Sig decides) | farmland-atlas/ |
+| 2026-10-19 | Phone | Shared Rain Print link opens below the fold; Atlas leads with census value over recorded sales | Sig decides | /rain-print, farmland-atlas/ |
+| 2026-10-19 | Phone | "Last trade 12:45 am" with no day | refuted: the stamp adds the date when not today | |
 | 2026-10-19 | Breakeven | Corn N default 213 lb/ac (unsourced 0.90 lb/bu) vs cited A2809 120 after soybeans; +$62/ac, +26c/bu | fixed (fx/nightmoney, batch 5): 120 lb, $4.92 to $4.58 | /breakeven |
 | 2026-10-19 | ARC/PLC | 2026 expected dollars rested on corn's price spread for 21 other crops (about 3/4 of Sumner KS wheat's $6.76) | fixed: withheld with reason, 2,570 pages | arc-plc/ |
 | 2026-10-19 | ARC/PLC | Sequestration "before the limit" stated as fact; payment limit "not out" | fixed: order clause removed; "$164,000 by the rule's own method" | /arc-plc |
