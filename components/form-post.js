@@ -18,12 +18,21 @@
  *     resolves {ok:true, via:'worker'} or the string 'fallback'; rejects on a
  *     refusal. For a plain HTML form that falls back by submitting itself.
  *     A worker that has not answered in 12 seconds counts as 'fallback'.
+ *
+ * WORKER_ONLY (2026-10-19, Sig): a kind that carries a business's customer
+ * list never goes to Formspree. The business page promises "your list stays
+ * with me", so when the worker fails or is silent the post rejects instead
+ * (an Error with .workerOnly true, and .slow true when the worker only went
+ * quiet and may still have it). The page keeps the list and says to call or
+ * try again. Every other kind keeps the Formspree fallback.
  */
 (function () {
   'use strict';
   var WORKER = 'https://agsist-subs.dnilgis.workers.dev/form';
   var FORMSPREE = 'https://formspree.io/f/xnjbwepn';
   var FALLBACK = { 403: 1, 404: 1, 405: 1 };
+  // kinds with a customer list (rain-print-business: the towns box, names and addresses); see WORKER_ONLY above
+  var WORKER_ONLY = { 'rain-print-business': 1 };
 
   // A worker that takes the post but never answers would leave the button on
   // "Sending..." for good (2026-10-14): after 12 seconds the post is given up
@@ -86,9 +95,14 @@
 
   function post(kind, data, formspreeFields) {
     return toWorker(kind, data).then(function (x) {
+      if ((x === 'fallback' || x === 'slow') && WORKER_ONLY[kind]) {
+        var e = new Error('not sent'); e.workerOnly = true; e.slow = x === 'slow';
+        throw e;
+      }
       return x === 'fallback' || x === 'slow' ? toFormspree(formspreeFields || data, x === 'slow') : x;
     });
   }
+  post.WORKER_ONLY = WORKER_ONLY;
   // the plain-HTML forms only need to know to fall back
   post.worker = function (kind, data) { return toWorker(kind, data).then(function (x) { return x === 'slow' ? 'fallback' : x; }); };
   window.agsistFormPost = post;

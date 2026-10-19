@@ -135,7 +135,9 @@ test("at 390: tick the gift, fill it in, Pay posts the gift and then opens Strip
     assert.equal(posts.length + stripe.length, 0, "nothing sent with a gift half filled in");
     await page.fill("#rp-pg-to", "Dad");
     await page.fill("#rp-pg-msg", "Every inch of the year you farmed.");
-    await page.fill("#rp-pg-addr", "Ole Lindquist, 1 Main St, Chetek, WI 54728");
+    // 2026-10-19 (board B): no address box when Stripe takes the address; the sheet says where it goes
+    assert.equal(await page.isVisible("#rp-pg-addr"), false, "the address is not asked twice");
+    assert.equal(await page.textContent("#rp-pg-ship"), "Where it ships: at checkout, Stripe asks for the shipping address. Give theirs.");
     await page.fill("#rp-pg-name", "Sig");
     await page.fill("#rp-pg-me", "buyer@example.com");
     const sum = (await page.textContent("#rp-pg-sum")).replace(/\s+/g, " ");
@@ -146,7 +148,7 @@ test("at 390: tick the gift, fill it in, Pay posts the gift and then opens Strip
     const p = posts[0];
     assert.equal(p.kind, "rain-print-order"); assert.equal(p.gift, true); assert.equal(p.gift_to, "Dad");
     assert.equal(p.gift_deliver, "recipient"); assert.equal(p.choice, "framed12x18");
-    assert.match(p.address, /Chetek, WI 54728/); assert.equal(p.email, "buyer@example.com");
+    assert.match(p.address, /^The shipping address given at Stripe checkout, reference \S+ \(theirs\)$/, "the worker's address field says where the address is"); assert.equal(p.email, "buyer@example.com");
     assert.match(p.notes, /Paying now at Stripe checkout, reference /);
     assert.equal(stripe.length, 1, "then checkout");
     assert.ok(stripe[0].includes("client_reference_id=" + p.design_code) || /client_reference_id=/.test(stripe[0]));
@@ -188,7 +190,9 @@ test("this year's gift: no line says Stripe asks for the gift details", () => {
   assert.ok(!/At checkout you can say who it|add their name and your note at checkout|Payment Link asks who it's for/.test(JS), "no line leaves the gift to Stripe");
   assert.match(JS, /\$\('rp-gift-fields'\)\.hidden = false;/, "the step 3 boxes always show");
   assert.match(JS, /function pgOffered\(\) \{ return canOrder\(\) && !\(GIFT && GIFT\.usable\); \}/, "the review sheet offers the gift for this year's print too");
-  assert.match(HTML, /At checkout, Stripe asks for the shipping address again\. Use the same one: theirs\./, "the same-address line stays until Sig turns Stripe's field off");
+  // 2026-10-19 (board B, Sig): Stripe's shipping field stays on, so the sheet no longer asks for the address too
+  assert.ok(!/Use the same one/.test(HTML + JS), "no 'type it again' line");
+  assert.match(JS, /\$\('rp-pg-addr-wrap'\)\.hidden = file \|\| stripeShips;/, "the address box shows only without a payment link");
 });
 
 test("at 390: this year's gift carries who it's for and the card note from step 3 to the sheet, posts them, then opens Stripe", { skip, timeout: 90000 }, async () => {
@@ -217,7 +221,7 @@ test("at 390: this year's gift carries who it's for and the card note from step 
     assert.equal(await page.textContent("#rp-pg-msg-l"), "A message for the gift card (optional)");
     await page.fill("#rp-pg-to", "Mom and Dad");
     assert.equal(await page.inputValue("#rp-gift-to"), "Mom and Dad", "the two boxes stay in step");
-    await page.fill("#rp-pg-addr", "Ole Lindquist, 1 Main St, Chetek, WI 54728");
+    assert.equal(await page.isVisible("#rp-pg-addr"), false, "Stripe takes the address");
     await page.fill("#rp-pg-name", "Sig");
     await page.fill("#rp-pg-me", "buyer@example.com");
     assert.match((await page.textContent("#rp-pg-sum")).replace(/\s+/g, " "), /Note on the gift card ?For the dry year/);

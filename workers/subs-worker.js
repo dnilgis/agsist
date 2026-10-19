@@ -5,6 +5,9 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.31 (2026-10-19): the Daily sponsor tier id is "daily" (Sig: never the old
+ *   name). POST /sponsor-apply takes tier page|supporter|daily; every other
+ *   route answers exactly as before. No new binding and no new secret.
  * v5.30 (2026-10-18): THE HAY BOARD (agsist.com/haymow). New routes only;
  *   every existing route answers exactly as before. No new binding and no new
  *   secret. Readers post hay or forage for sale or wanted; buyers and sellers
@@ -393,7 +396,7 @@
  * v5.5 (2026-10-07): SELF-SERVE SPONSOR SIGN-UP. New routes only; every
  *   existing route answers exactly as before. The sponsor-apply page posts an
  *   application; nothing goes public until Sig approves it.
- *   POST /sponsor-apply  JSON {tier: page|supporter|founding, slot, company,
+ *   POST /sponsor-apply  JSON {tier: page|supporter|daily, slot, company,
  *     contact, email, phone, headline, body, url, logo (data:image/png|jpeg|
  *     webp;base64, <= 250 KB decoded), terms:true}. Stored pending under
  *     sapp:<id>, the logo apart under sapp-logo:<id>. At most 3 open
@@ -882,8 +885,8 @@ function pendExpired(rec) {
 }
 
 // v5.5: self-serve sponsor applications.
-const SAPP_TIERS = { page: "page", supporter: "footer", founding: "briefing" };
-const SAPP_LABEL = { page: "Own a page", supporter: "Supporter", founding: "Sponsor" };
+const SAPP_TIERS = { page: "page", supporter: "footer", daily: "briefing" };
+const SAPP_LABEL = { page: "Own a page", supporter: "Supporter", daily: "Sponsor" };
 const SAPP_DECISIONS = {
   approve: { from: ["confirmed"], to: "approved", ask: "Approve and put live", button: "Approve", done: "Approved" },
   decline: { from: ["confirmed", "approved"], to: "declined", ask: "Decline", button: "Decline", done: "Declined" },

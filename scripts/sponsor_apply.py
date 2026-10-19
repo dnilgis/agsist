@@ -15,7 +15,8 @@ thing that changes the site:
                                  data/page-sponsors.json or data/supporters.json,
                                  the logo to img/sponsors/. Then marked live with
                                  its start date, and both sides are told.
-  approved (founding)         -> Sig is told it needs setting up by hand (the
+  approved (daily, or any tier
+   that is not page/supporter)-> Sig is told it needs setting up by hand (the
                                  sponsor card has its own approval flow).
   declined                    -> one polite note to the applicant.
   live                        -> 3 days before the free month ends, the sponsor
@@ -69,7 +70,11 @@ REPO = Path(__file__).resolve().parent.parent
 SITE = "https://agsist.com"
 ADDRESS = "AGSIST, PO Box 243, Chetek, WI 54728"
 PEND_TTL_MS = 14 * 864e5
-TIER_NAME = {"page": "Own a page", "supporter": "Supporter", "founding": "Sponsor"}
+TIER_NAME = {"page": "Own a page", "supporter": "Supporter", "daily": "Sponsor"}
+# Only these two ever go live on their own. Any other tier (the Daily sponsor,
+# or an application stored under an older tier id) is handed to Sig, never
+# written into the site (Oct 19: the Daily tier id became "daily").
+SELF_SERVE = ("page", "supporter")
 
 
 def env(name, default=None):
@@ -130,9 +135,9 @@ def plan(apps, now_ms, today, sold_pages, supporters):
         elif st == "confirmed" and not a.get("notified"):
             out.append(("notify", a))
         elif st == "approved":
-            if a.get("tier") == "founding":
+            if a.get("tier") not in SELF_SERVE:
                 if (a.get("notified") or 0) < 2:
-                    out.append(("founding", a))
+                    out.append(("daily", a))
             elif a.get("tier") == "page" and slot_owner(sold_pages, a.get("slot")) not in (None, aid):
                 if (a.get("notified") or 0) < 2:
                     out.append(("clash", a))          # someone else holds the page: tell Sig, change nothing
@@ -324,7 +329,7 @@ def emails_for(action, a, base, secret, card, today, sig):
         lines = ["New AGSIST sponsor waiting for you: %s." % what(a)] + ad_lines(a) + [
             "Contact: %s, %s%s." % (a.get("contact") or "?", a["email"], (", " + a["phone"]) if a.get("phone") else ""),
             "Price: first month free, then %s a month." % price]
-        if a["tier"] == "founding":
+        if a["tier"] not in SELF_SERVE:
             lines.append("Sponsor slot: approving tells you to set it up by hand (the briefing card has its own proof and approval).")
         else:
             lines.append("Approve and it goes live within the hour; the free month starts that day.")
@@ -343,9 +348,9 @@ def emails_for(action, a, base, secret, card, today, sig):
                     "%s went live today. Free through %s; first invoice (%s) due %s." % (
                         a["company"], fmt(free_end), price, fmt(free_end + timedelta(days=1)))],
                     links=[("End it (frees the slot)", dec("end"))]))]
-    if action == "founding":
+    if action == "daily":
         return [(sig, dict(subject="Sponsor approved: %s" % a["company"], paras=[
-            "You approved %s for the sponsor slot. That one is set up by hand, like Apex:" % a["company"]] + ad_lines(a) + [
+            "You approved %s for the sponsor slot. That one is set up by hand:" % a["company"]] + ad_lines(a) + [
             "Contact: %s, %s%s." % (a.get("contact") or "?", a["email"], (", " + a["phone"]) if a.get("phone") else ""),
             "Nothing has gone live and the applicant has not been told anything yet."]))]
     if action == "clash":
@@ -457,7 +462,7 @@ def main():
                 mark(a, m=1)
             elif action == "notify":
                 mark(a, notified=1)
-            elif action in ("founding", "clash"):
+            elif action in ("daily", "clash"):
                 mark(a, notified=2)
             elif action == "declined":
                 mark(a, m=2)
@@ -501,7 +506,9 @@ def selftest():
     ck("15 days unconfirmed expires", P([A(ts=now_ms - 15 * 864e5)]) == ["expire"])
     ck("confirmed: Sig is told once", P([A(status="confirmed")]) == ["notify"] and P([A(status="confirmed", notified=1)]) == [])
     ck("approved page goes live", P([A(status="approved")]) == ["golive"])
-    ck("approved founding is handed to Sig, never auto-live", P([A(status="approved", tier="founding")]) == ["founding"])
+    ck("approved daily is handed to Sig, never auto-live", P([A(status="approved", tier="daily")]) == ["daily"])
+    ck("an approved row under an older tier id is handed to Sig too, never auto-live",
+       P([A(status="approved", tier="old-id")]) == ["daily"])
     taken = {"slots": {"spray": {"app": "ffffffffffff", "active": True}}}
     ck("a page someone else holds is a clash, not an overwrite", P([A(status="approved")], taken) == ["clash"])
     ck("declined: one note", P([A(status="declined")]) == ["declined"] and P([A(status="declined", m=2)]) == [])

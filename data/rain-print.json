@@ -19,6 +19,8 @@
   "framed_christmas_cutoff": "2026-12-09",
   "business_cutoff": "2026-11-20",
   "business_note": null,
+  "_business_sample_by": "Sig sets this (2026-10-19). YYYY-MM-DD or null: the last day to order one sample print for a business and still see it before the list date. When set, /rain-print-business adds the line \"To see one before Christmas, order the sample by <Mon D>.\" under the sample line through that day; null, a bad date, or a day past it shows nothing (components/rp-business.js sampleByLine).",
+  "business_sample_by": null,
   "business_tiers": [
     {"min": 5, "print12x18": 45, "framed12x18": 89},
     {"min": 10, "print12x18": 40, "framed12x18": 79},

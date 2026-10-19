@@ -32,7 +32,7 @@ WHAT IS DELIBERATELY NOT COUNTED, AND WHY THAT MATTERS MORE THAN WHAT IS
 Three event names looked like sponsor metrics and are not:
 
     sponsor_impression   fired on the homepage block, which has shown the HOUSE
-                         pitch ("Available - Founding Sponsor") every day of its
+                         pitch (the empty sponsor slot for sale) every day of its
                          life. No paying sponsor has ever been in it.
     hm_sponsor_view      same, on the hail map's "Sponsor this map" ribbon.
     sponsor_cta_click    a click on "become a sponsor" - in the footer legal
@@ -240,23 +240,32 @@ def previews(c):
     return out
 
 
+# Never written to a portal, even if someone types them into data/sponsors.json:
+# every file in this repo is published, so a person's name, phone, email or
+# invoice address in a portal file is public. Who to call and where invoices go
+# live with Sig, in his own email, nowhere in the repo (Oct 19).
+PRIVATE_BILLING_KEYS = ("invoice_contact", "invoice_to", "invoice_email", "contact", "email", "phone")
+
+
 def portal_extras(s):
-    """What the portal needs beyond the numbers: the approval on record, the
-    contract terms, and who to call. All of it is read from data/sponsors.json,
-    typed there by Sig, never inferred.
+    """What the portal needs beyond the numbers: the approval on record and the
+    contract terms. All of it is read from data/sponsors.json, typed there by
+    Sig, never inferred. No contact: see PRIVATE_BILLING_KEYS.
 
     approved  {"proof": "xxxxxxxx", "on": "YYYY-MM-DD", "by": "name"} -- set when
               the approval email arrives. The portal shows APPROVED only when
               this proof equals the current proof code; if the copy changed
               since, it says the approval does not cover the new words.
-    billing   {"tier": "founding", "trial_months": 1, "rate_lock_months": 12,
-               "invoice_to": "...", "notes": "..."} -- the deal as agreed. The
-              schedule on the portal is computed from this and the start date.
+    billing   {"tier": "daily", "trial_months": 1, "rate_lock_months": 12,
+               "notes": "..."} -- the deal as agreed. The schedule on the
+              portal is computed from this and the start date.
     """
+    bill = s.get("billing")
+    if isinstance(bill, dict):
+        bill = {k: v for k, v in bill.items() if k not in PRIVATE_BILLING_KEYS} or None
     return {
         "approval": s.get("approved") or None,
-        "billing": s.get("billing") or None,
-        "contact": s.get("contact") or None,
+        "billing": bill or None,
         "placements": s.get("placements") or None,
         # The states this sponsor can write business in, as two-letter codes,
         # typed from the sponsor's own list. The audience section marks them on
@@ -361,6 +370,7 @@ def main():
             cur["rateCard"] = rate_card()
             cur["approveTo"] = s_.get("approve_to") or APPROVE_TO
             cur.update(portal_extras(s_))
+            cur.pop("contact", None)     # an older file may still carry one; never again (Oct 19)
             cur["creativeRefreshed"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
             f_.write_text(json.dumps(cur, indent=1) + "\n", encoding="utf-8")
             n += 1

@@ -65,3 +65,26 @@ test("markets and futures pages: one Rain Print gift line, after the FAQ, with i
     assert.ok(!/data-sponsor-slot/.test(h), f + ": no sponsor slot alongside");
   }
 });
+
+// Oct 19 (Sig, monetization fixes): hail pages keep one cross-promo each. The 51 state hail pages carry the
+// gauge line (scripts/generate_hail_states.py); /hail-map already carries its one Rain Print line, so the
+// gauge line is not added there on top of it.
+const inMain = (h) => h.slice(h.indexOf("<main"), h.indexOf("</main>"));
+test("each state hail page: one gauge line after the content, and no Rain Print promo beside it", () => {
+  const states = readdirSync(ROOT + "hail-map").filter((f) => f.endsWith(".html"));
+  assert.equal(states.length, 51);
+  for (const f of states) {
+    const m = inMain(readFileSync(ROOT + "hail-map/" + f, "utf8"));
+    assert.equal(slots(m), 1, f);
+    assert.ok(m.includes('<p class="rp-promo" data-rain-print-promo="gauge" hidden></p>'), f);
+    assert.ok(m.indexOf('data-rain-print-promo="gauge"') > m.indexOf('class="hs-src"'), f + ": after the content");
+    assert.ok(!/href="\/rain-print/.test(m), f + ": no second promo");
+  }
+  assert.match(readFileSync(ROOT + "scripts/generate_hail_states.py", "utf8"), /data-rain-print-promo=\\"gauge\\"/);
+});
+test("/hail-map: one cross-promo, the Rain Print line after the FAQ, no gauge line stacked on it", () => {
+  const m = inMain(readFileSync(ROOT + "hail-map.html", "utf8"));
+  assert.equal((m.match(/class="rp-promo"/g) || []).length, 1);
+  assert.equal(slots(m), 0, "no gauge slot on top of the Rain Print line");
+  assert.ok(!/href="\/rain-gauge"/.test(m));
+});

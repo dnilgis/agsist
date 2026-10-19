@@ -216,7 +216,7 @@ test("one picker, framed first: the button, the print's look, the phone bar and 
     assert.equal(await page.textContent("#rp-pay"), "Check it and pay $" + J.framed12x18);
     assert.match(await page.textContent("#rp-sub-framed12x18"), /^Black frame, white mat, real glass\. Order by Dec 9 for Christmas, if you OK the proof the day it comes\.$/);
     assert.match(await page.textContent("#rp-sub-print12x18"), /Order by Dec 10 for Christmas, if you OK the proof the day it comes\./);
-    assert.equal(await page.textContent("#rp-xmas-top"), "For Christmas: order framed by Dec 9, a print by Dec 10.");
+    assert.equal(await page.textContent("#rp-xmas-top"), "For Christmas: last year (2025), or any past year, comes by Christmas if you order it framed by Dec 9, or as a print by Dec 10. This year (2026) is a gift card now, the print in January.");
     await page.click('.rp-prod[data-choice="print12x18"]');
     assert.equal(await page.textContent("#rp-pay"), "Check it and pay $" + J.print12x18);
     assert.equal(await page.getAttribute("#rp-wall", "data-view"), "print", "the print at the top shows the pick");

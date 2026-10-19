@@ -119,3 +119,82 @@ test("standing rules: no sponsor, name off the print, honest copy", () => {
   assert.ok(!/compliments of|archival|founding|only \d+ left|hurry|limited time|best[- ]selling|\d+ (businesses|elevators) (have )?(ordered|trust)/i.test(COPY), "no claims Sig ruled out, no fake scarcity or counts");
   assert.ok(!/amazon|walmart|etsy|tractor supply|fleet farm|costco|staples|fedex office|printful/i.test(HTML), "no store or printer names");
 });
+
+// 2026-10-19 (board seat C: "AP will not pay without a PO"): optional PO number and invoice contact. The worker
+// drops fields it doesn't know, so they go at the top of the notes, inside the worker's 2000 characters.
+test("PO number and invoice contact: optional fields, carried in the notes the worker keeps", () => {
+  for (const id of ["rb-po", "rb-inv-name", "rb-inv-email"]) {
+    const tag = MAIN.match(new RegExp('<input id="' + id + '"[^>]*>'));
+    assert.ok(tag, id);
+    assert.doesNotMatch(tag[0], /required/, id + " is optional");
+  }
+  assert.match(MAIN, /<legend>For the invoice \(optional\)<\/legend>/);
+  assert.deepEqual({ ...B.invoiceLines("", "", "") }, { text: "", bad: false });
+  assert.deepEqual({ ...B.invoiceLines(" 4512-A ", "Jane Berg", "ap@coop.example") }, { text: "PO number: 4512-A\nSend the invoice to: Jane Berg, ap@coop.example", bad: false });
+  assert.deepEqual({ ...B.invoiceLines("", "", "ap@coop.example") }, { text: "Send the invoice to: ap@coop.example", bad: false });
+  assert.equal(B.invoiceLines("", "Jane", "not an email").bad, true);
+  const worker = readFileSync(ROOT + "workers/subs-worker.js", "utf8");
+  const notes = worker.match(/"rain-print-business": \{[\s\S]*?notes: \[(\d+), false, "text"\]/);
+  assert.equal(Number(notes[1]), B.NOTES_MAX, "the cap is the worker's own");
+  assert.ok(!/\bpo:|invoice_/.test(JS.match(/var x = \{([\s\S]*?)\};/)[1]), "no new field the worker would drop");
+  assert.match(JS, /x\.notes = both/);
+});
+
+// 2026-10-19 (board seat C: "40 customers near one station get 40 identical rain lines. Say it plainly").
+// The maker picks a station per town (RainPrint.pickStation: the nearest with a good record for the year), so
+// the page says each print uses the station nearest each customer's town, and neighbors on one station share a line.
+test("same-station line: neighbors near one station share a rain line, said plainly, in the copy and the FAQ", () => {
+  assert.match(COPY, /<b>Neighbors share a rain line\.<\/b> Each print uses the weather station nearest that customer&rsquo;s town with a good record for the year\. Customers near the same station get the same rain line for the same year/);
+  assert.match(COPY, /give each customer their own year/);
+  const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
+  const q = ld["@graph"].find((g) => g["@type"] === "FAQPage").mainEntity.find((x) => x.name === "Will customers near each other get the same print?");
+  assert.ok(q, "in FAQPage");
+  assert.match(q.acceptedAnswer.text, /customers near the same station get the same rain line/);
+  assert.equal(typeof R.pickStation, "function", "the per-town pick the copy describes");
+});
+
+// 2026-10-19: the call line sat about 10 px up under the H1 (margin -1rem) at 390 and 1280 px. Measured in a
+// browser after the fix: 10 px clear at both widths. Here: no negative top margin on it again.
+test("the 'Questions? Call or text' line is not pulled up under the title", () => {
+  const rule = HTML.match(/\.rbz \.rbz-call\{([^}]*)\}/);
+  assert.ok(rule, "the rule");
+  const top = rule[1].match(/margin:\s*(-?[\d.]+)rem/);
+  assert.ok(top && Number(top[1]) >= 0, "top margin is not negative: " + rule[1]);
+  assert.match(MAIN, /<h1>[^<]+<\/h1>\s*<p class="rbz-call" id="rbz-call">/);
+});
+
+// 2026-10-19 (board seat C: "no picture of the box letter with a business note"). The code renders the real
+// letter (components/rp-insert.js), so the sample is rendered by scripts/render_rp_business_letter.mjs from the
+// saved 2012 Ames NOAA answers; the proof sheet and a logo print have no renderer and wait for Sig's photos.
+test("the sample box letter with a business note: the real letter, small, captioned as a sample", () => {
+  const fig = MAIN.match(/<figure class="rbz-fig rbz-fig-letter" id="rbz-letter">([\s\S]*?)<\/figure>/);
+  assert.ok(fig, "the figure");
+  const img = fig[1].match(/<img [^>]*>/)[0];
+  assert.match(img, /src="\/img\/rain-print-business-letter-sample\.webp" width="600" height="776" loading="lazy"/);
+  assert.match(img, /25\.52 inches, 32% less than usual/, "the alt's numbers are the Ames example's (test/rain-print-insert.test.mjs)");
+  assert.match(fig[1], /This sample uses the 2012 Ames example and a sample note/);
+  const buf = readFileSync(ROOT + "img/rain-print-business-letter-sample.webp");
+  assert.equal(buf.toString("ascii", 0, 4), "RIFF"); assert.equal(buf.toString("ascii", 8, 12), "WEBP");
+  assert.ok(buf.length <= 60 * 1024, "small: " + buf.length);
+  const script = readFileSync(ROOT + "scripts/render_rp_business_letter.mjs", "utf8");
+  assert.match(script, /components\/rp-insert\.js/);
+  assert.match(script, /2012-ames-ia\.json/);
+  assert.ok(!/—|archival|\$\d/.test(script.match(/export const NOTE = "([^"]*)"/)[1]), "the sample note follows the box rules");
+  assert.doesNotMatch(MAIN, /proof-sheet-sample|logo-sample/, "no made-up proof sheet or logo picture");
+});
+
+// 2026-10-19: "Sample by" date. Sig has not confirmed one, so the data field is null and the page says nothing.
+test("sample-by line: driven by business_sample_by, which stays null (nothing shown) until Sig sets it", () => {
+  assert.ok(Object.prototype.hasOwnProperty.call(J, "business_sample_by"), "the field exists");
+  assert.equal(J.business_sample_by, null, "Sig sets the date; until then null");
+  assert.match(J._business_sample_by, /Sig sets this/);
+  assert.equal(B.sampleByLine("2026-10-19", null), "");
+  assert.equal(B.sampleByLine("2026-10-19", "2026-11-06"), "To see one before Christmas, order the sample by Nov 6.");
+  assert.equal(B.sampleByLine("2026-11-06", "2026-11-06"), "To see one before Christmas, order the sample by Nov 6.", "through the day itself");
+  assert.equal(B.sampleByLine("2026-11-07", "2026-11-06"), "", "gone the day after");
+  assert.equal(B.sampleByLine("2026-10-19", "Nov 6"), "");
+  assert.equal(B.sampleByLine("2026-10-19", "2026-13-01"), "");
+  // no date written into the page: its line ships empty and hidden
+  assert.match(MAIN, /order 10 or more\.<\/p>\s*<p class="rbz-sample" id="rbz-sample-by" hidden><\/p>/);
+  assert.doesNotMatch(COPY, /sample by/i);
+});

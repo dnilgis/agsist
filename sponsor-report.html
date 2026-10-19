@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=2">
 <script src="/components/util.js?v=17"></script>
 <script src="/components/sponsor-ad.js?v=2"></script>
-<script src="/components/form-post.js?v=4"></script>
+<script src="/components/form-post.js?v=5"></script>
 <style>
 /* THE CAMPAIGN PORTAL. Every colour is a site token (styles.css) or the ad
    orange the ad itself uses; a block does not get its own colour vocabulary.
@@ -734,8 +734,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     h += '<div class="cp-hero-top"><div class="cp-brands">' + logo + (logo ? '<span class="cp-x" aria-hidden="true"></span>' : '') +
          '<span class="cp-agsist">AG<span>SIST</span></span></div><span class="cp-eyebrow">Campaign portal</span></div>';
     h += '<h1>' + esc(d.sponsor) + '</h1>';
-    h += '<p class="cp-sub">' + (s.tier ? '<b>' + esc(s.tier.name) + '</b> of the AGSIST Daily' : 'Sponsor of the AGSIST Daily') +
-         (d.contact ? ' &middot; ' + esc(d.contact) : '') + '</p>';
+    h += '<p class="cp-sub">' + (s.tier ? '<b>' + esc(s.tier.name) + '</b> of the AGSIST Daily' : 'Sponsor of the AGSIST Daily') + '</p>';
 
     /* ONE STATUS, WITH THE NEXT THING TO DO. */
     var st;
@@ -1079,9 +1078,9 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       var plan = act === 'plan' && sel ? sel.options[sel.selectedIndex] && sel.options[sel.selectedIndex].text : '';
       if ((act === 'change' || act === 'note') && !msg) { out.innerHTML = '<p class="cp-req-bad">Add a line about what you need first.</p>'; f.querySelector('#cp-req-msg').focus(); return; }
       if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { out.innerHTML = '<p class="cp-req-bad">That email address does not look complete.</p>'; f.querySelector('#cp-req-email').focus(); return; }
-      var lines = ['Request: ' + A[1], 'Sponsor: ' + (d.sponsor || ''), d.contact ? 'Contact: ' + d.contact : '',
+      var lines = ['Request: ' + A[1], 'Sponsor: ' + (d.sponsor || ''),
         plan ? 'New plan: ' + plan : '', date_ && !f.querySelector('[data-for="pause cancel extend"]').hidden ? f.querySelector('#cp-req-date-l').textContent + ': ' + date_ : '',
-        'Current plan: ' + (s.tier ? s.tier.name : 'not recorded'), 'Ad proof code: ' + (s.code || '-'), '', msg].filter(function (x, i) { return x !== '' || i === 7; });
+        'Current plan: ' + (s.tier ? s.tier.name : 'not recorded'), 'Ad proof code: ' + (s.code || '-'), '', msg].filter(function (x, i) { return x !== '' || i === 6; });
       var body = lines.join('\n');
       var subj = 'AGSIST portal: ' + A[1] + ' (' + (d.sponsor || '') + ')';
       var to = d.approveTo || 'sig@farmers1st.com';
@@ -1136,7 +1135,6 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
            '</div><div class="cp-tl-w"><b>' + esc(x[1]) + '</b><span>' + esc(x[2]) + '</span></div></li>';
     });
     h += '</ol>';
-    if (s.bill.invoice_contact) h += '<p class="cp-note">Invoices and billing questions: <b>' + esc(s.bill.invoice_contact) + '</b></p>';
     return h + '</div></div></section>';
   }
 

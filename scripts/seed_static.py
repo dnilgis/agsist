@@ -2417,7 +2417,7 @@ def milk_example(v, alab):
             "co-op deductions) and ERS's average cost of production. The mailbox price itself isn't published in real "
             "time (see above), so the true net figure, after hauling and PPD, sits lower than this. Beef and cull-cow "
             "income and each farm's own cost structure move the real number, which is exactly why the only cost that "
-            "matters is <a href=\"/breakeven\" style=\"color:var(--gold);text-decoration:none\">your own</a>.</p>")
+            "matters is <a href=\"/breakeven\" style=\"color:var(--gold);text-decoration:underline\">your own</a>.</p>")
 
 
 def milk_states(f, today):

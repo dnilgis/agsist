@@ -2687,17 +2687,28 @@
   function syncXmas() {
     var J = OJ().j || {}, pc = J.print_christmas_cutoff, fc = J.framed_christmas_cutoff;
     // no dates (a Canadian design: no Christmas promise unless data/rain-print.json canada sets one): no Christmas lines
+    $('rp-xmas-alt').hidden = true;
     if (!/^\d{4}-\d{2}-\d{2}$/.test(pc || '') || !/^\d{4}-\d{2}-\d{2}$/.test(fc || '')) { $('rp-xmas-top').hidden = true; $('rp-xmas-why').hidden = true; return; }
     var top = $('rp-xmas-top'), why = $('rp-xmas-why'), late = TODAY > pc && TODAY > fc;
     if (TODAY > pc.slice(0, 4) + '-12-25' || TODAY < pc.slice(0, 4) + '-10-01') { top.hidden = true; return; }
     // one product past its date and the other not: say which (2026-10-14, panel 3)
     var lateMail = ' Too late for the mail? The digital file comes by email in 1 business day, or give the gift card now and the print after Christmas.';
-    top.textContent = giftMode() && canOrder() ? 'For Christmas: a gift card now, the print in January.'
-      : late ? 'For Christmas: past years ordered now ship after Christmas.' + lateMail
-      : TODAY <= pc && TODAY <= fc ? 'For Christmas: order framed by ' + shortDate(fc) + ', a print by ' + shortDate(pc) + '.'
-      : TODAY <= pc ? 'For Christmas: order a print by ' + shortDate(pc) + '. A framed print ordered now ships after Christmas.'
-      : 'For Christmas: order framed by ' + shortDate(fc) + '. A print ordered now ships after Christmas.';
+    var gift = giftMode() && canOrder(), ly = CURRENT_YEAR - 1;
+    /* "Last year, by Christmas" beside "This year, in January" (2026-10-19, board B: a county link opened this
+       year's print and nobody said last year still comes by Christmas). While a cutoff is ahead the first screen
+       names both; a drawn design of this year gets one tap to last year. After the cutoffs, the words as before. */
+    var by = TODAY <= pc && TODAY <= fc ? 'framed by ' + shortDate(fc) + ', or as a print by ' + shortDate(pc)
+      : TODAY <= pc ? 'as a print by ' + shortDate(pc) + ' (framed now ships after Christmas)'
+      : 'framed by ' + shortDate(fc) + ' (a print now ships after Christmas)';
+    var thisYr = 'This year (' + CURRENT_YEAR + ') is a gift card now, the print in January.';
+    top.textContent = late ? (gift ? 'For Christmas: a gift card now, the print in January.' : 'For Christmas: past years ordered now ship after Christmas.' + lateMail)
+      : gift ? 'For Christmas: ' + thisYr.charAt(0).toLowerCase() + thisYr.slice(1) + ' Last year (' + ly + ') comes by Christmas if you order it ' + by + '.'
+      : 'For Christmas: last year (' + ly + '), or any past year, comes by Christmas if you order it ' + by + '. ' + thisYr;
     top.hidden = false;
+    if (!late && gift && ST.place && !(GIFT && GIFT.lock)) {
+      $('rp-xmas-last').textContent = 'Make it ' + ly + ', by Christmas';
+      $('rp-xmas-alt').hidden = false;
+    }
     if (Number.isInteger(J.ship_business_days) && J.transit_business_days) {
       why.textContent = 'The Christmas dates allow ' + (J.proof_business_days === 1 ? 'a business day' : J.proof_business_days + ' business days') + ' for the proof, ' +
         (J.approve_business_days === 1 ? 'one' : J.approve_business_days) + ' for you to OK it, ' + J.ship_business_days + ' to ship and the time in the mail, to arrive by Dec 24.';
@@ -3090,8 +3101,11 @@
     if (!preset) $('rp-pick').hidden = true;
     showBuy(!!DATA);
     var g, chosen, picked, autoPick = false, why = null, artShown = false, readErr = null, seen = SNOW_SEEN[ST.year] = SNOW_SEEN[ST.year] || {};
-    // the county page's station location, on the first draw of its own link only
-    var ll = LINK_LL && LINK_LL.place === ST.place && ST.station ? LINK_LL : null;
+    /* the county page's station location, for its own link's town only. A link
+       with no station (last year's print from a county page, 2026-10-19, or a
+       station that missed too many days) searches around that spot too, so a
+       station town the lookup can't find still draws, from the nearest good record. */
+    var ll = LINK_LL && LINK_LL.place === ST.place ? LINK_LL : null;
     var done = function () { if (my === reqToken) { art.removeAttribute('aria-busy'); DRAWING = false; go.disabled = go.hasAttribute('data-gift-lock'); sel.disabled = STATIONS.length < 2 || sel.hasAttribute('data-gift-lock'); showBuy(canOrder()); } };
     // the town lookup starts now, beside rain-print.json, not after it (2026-10-15)
     var geoEarly = ST.place ? geocode(ST.place).then(function (h) { return { h: h }; }, function (x) { return { x: x }; }) : null;
@@ -3446,7 +3460,7 @@
     $('rp-gift-line').textContent = 'It\u2019s a gift? Say so on the order form, with their name and your note.';
     $('rp-gift-line').hidden = giftOff || link;
     $('rp-gift-pre').innerHTML = PICK === 'digital' ? 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name and your note. I send the note with the file, and no prices go with it.'
-      : 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name, your note and their address. I print your note at the top of the letter in the box, free, and no prices go in the box.';
+      : 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name and your note; Stripe asks where to ship it. I print your note at the top of the letter in the box, free, and no prices go in the box.';
     $('rp-gift-pre').hidden = giftOff || !link || !canOrder();
     $('rp-another-wrap').hidden = !canOrder() || !!(GIFT && GIFT.usable);
     pgSync();
@@ -3568,13 +3582,29 @@
      make another. The address bar loses paid= and s= (a reload or a share
      shows no thank-you), and Analytics gets one purchase per checkout session. */
   var PAID_FIRED = false;
+  /* A second gift (2026-10-19, board B: "order one, then the next" lost the second). Stripe Payment Links sell one
+     design per checkout, so the next one is one tap: the same town, year, station and style, the words cleared
+     (the name, the line under it, the marked days, who it's for and the note), the name box ready to type. */
+  function anotherForSomeone(from, choice) {
+    var s = readInputs(ST.year);
+    s.place = ST.place; s.year = ST.year; s.station = ST.station;
+    s.name = ''; s.dedication = ''; s.markers = [];
+    writeInputs(s);
+    ['rp-pg-to', 'rp-pg-msg', 'rp-gift-to', 'rp-gift-msg', 'ro-gift-to', 'ro-gift-msg', 'ro-gift-email', 'rp-pg-email'].forEach(function (id) { var el = $(id); if (el) el.value = ''; });
+    restyle();
+    ga('rain_print_another_person', { from: from, choice: choice || PICK });
+    try { $('rp-design').scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {}
+    try { $('rp-name').focus({ preventScroll: true }); } catch (e) {}
+  }
   function showPaid(p, sv, fire) {
     var box = $('rp-paid'), lines = paidText({ choice: p.choice, today: TODAY, prices: PRICES, saved: sv });
     box.innerHTML = '<h2>Paid. Thank you.</h2>' + lines.map(function (t) { return '<p>' + esc(t).replace('sig@farmers1st.com', '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>') + '</p>'; }).join('') +
       // more than one (2026-10-16): one for each of the kids, or the home farm and the rented ground
       '<p>One for each of the kids, or for the home farm and the rented ground? Each is its own order, with its own proof.</p>' +
+      (sv ? '<p><button type="button" class="btn btn-primary rp-paid-other" id="rp-paid-other">Make another for someone else</button></p>' : '') +
       '<p>' + (sv ? '<button type="button" class="rp-linkbtn" id="rp-paid-again">Same words, another town or year</button> or ' : '') + '<a href="/rain-print" id="rp-paid-new">Make another</a></p>';
     box.hidden = false;
+    if (sv) $('rp-paid-other').addEventListener('click', function () { anotherForSomeone('paid', p.choice); });
     if (sv) $('rp-paid-again').addEventListener('click', function () {
       ga('rain_print_again', { choice: p.choice });
       try { $('rp-where').scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {}
@@ -3647,7 +3677,7 @@
         btn.disabled = false;
         ga('rain_print_gift_save', { result: 'fail', choice: id });
         var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
-        proofSay('The gift details didn\u2019t save just now. Tap Pay to try again, or <a href="' + esc(u) + '">go to checkout</a> and write their name, your note and their address to ' + ORDER_TO + '.', true);
+        proofSay('The gift details didn\u2019t save just now. Tap Pay to try again, or <a href="' + esc(u) + '">go to checkout</a> and write their name and your note to ' + ORDER_TO + '.', true);
       });
       return;
     }
@@ -3937,13 +3967,16 @@
     $('rp-pgift').hidden = !offered;
     $('rp-pg-box').hidden = !on;
     $('rp-pg-msg-l').textContent = januaryGift() ? 'A message for the gift card (optional)' : file ? 'Your note, sent with the file (optional)' : 'Your note, printed at the top of the letter in the box (optional)';
-    $('rp-pg-addr-wrap').hidden = file;
+    /* The address is Stripe's (2026-10-19, board B: the same address typed twice on a phone was a quit point;
+       Sig keeps Stripe's shipping field on, 2026-10-18). With a payment link the sheet asks no address and says
+       where it goes; the order post says it is at checkout. Without one, the order form path, it is asked here. */
+    var stripeShips = !file && !!payLink(PICK);
+    $('rp-pg-addr-wrap').hidden = file || stripeShips;
+    $('rp-pg-ship').hidden = !stripeShips;
+    $('rp-pg-ship').textContent = 'Where it ships: at checkout, Stripe asks for the shipping address. Give ' + (theirs ? 'theirs.' : 'yours.');
     $('rp-pg-addr-l').textContent = (theirs ? 'Their address' : 'Your address') + ' (name, street, town, ' + (caOrder() ? 'province, postal code' : 'state, ZIP') + ')';
     $('rp-pg-email-wrap').hidden = !(file && theirs);
     $('rp-pg-me-l').textContent = file ? 'Your email' : 'Your email, for the proof';
-    /* Until Stripe's address is filled in from this box, it asks again: the
-       buyer is told once, right under the box (2026-10-17, panels). */
-    $('rp-pg-addr-hint').textContent = 'At checkout, Stripe asks for the shipping address again. Use the same one' + (theirs ? ': theirs.' : '.');
     $('rp-pg-line').textContent = (file ? 'No prices go with it.' : 'No prices go in the box.') + ' These come to me with your order; at checkout, Stripe takes the payment.';
     var sum = $('rp-pg-sum');
     sum.hidden = !on;
@@ -3955,10 +3988,12 @@
   }
   // the gift as an order post, or {bad: [field id, words]}
   function pgOrder(ref) {
-    var file = PICK === 'digital', theirs = pgTheirs();
+    var file = PICK === 'digital', theirs = pgTheirs(), stripeShips = !file && !!payLink(PICK);
     var x = {
       name: cleanText($('rp-pg-name').value, 80), email: $('rp-pg-me').value.trim(), choice: PICK,
-      address: file ? '' : $('rp-pg-addr').value.trim().slice(0, 600),
+      // the worker wants an address for a print (subs-worker formClean); with a payment link it is the one given at Stripe checkout
+      address: file ? '' : stripeShips ? ('The shipping address given at Stripe checkout' + (ref ? ', reference ' + ref : '') + (theirs ? ' (theirs)' : ' (the buyer\u2019s)')).slice(0, 600)
+        : $('rp-pg-addr').value.trim().slice(0, 600),
       design_url: designUrl(ST), design_code: orderCode(), page: '/rain-print',
       gift_to: cleanText($('rp-pg-to').value, GIFT_TO_MAX), gift_deliver: theirs ? 'recipient' : 'buyer',
       gift_email: file && theirs ? $('rp-pg-email').value.trim() : '',
@@ -3971,7 +4006,7 @@
       (x.gift_january ? ' Make it after January 1, once the full year is in.' : '') +
       (PROOF_OK === encodeCode(ST) ? ' Proof checked on the page: yes.' : ' Proof checked on the page: no.')).slice(0, 2000);
     var bad = !x.gift_to ? ['rp-pg-to', 'Say who the gift is for, or untick \u201cThis is a gift\u201d.']
-      : !file && x.address.length < 10 ? ['rp-pg-addr', theirs ? 'Add their address for the print.' : 'Add your address for the print.']
+      : !file && !stripeShips && x.address.length < 10 ? ['rp-pg-addr', theirs ? 'Add their address for the print.' : 'Add your address for the print.']
       : file && theirs && !EMAIL_RE.test(x.gift_email) ? ['rp-pg-email', 'Add their email for the file, or choose Me under Send it to.']
       : !x.name ? ['rp-pg-name', 'Add your name.']
       : !EMAIL_RE.test(x.email) ? ['rp-pg-me', 'Add your email, so I can send you the proof.'] : null;
@@ -4059,7 +4094,7 @@
     var el = $('rp-gift-checkout'), linked = PRODUCTS.filter(function (id) { return payLink(id); });
     var t = '';
     if (giftTicked() && linked.length) {
-      t = 'Before you pay, the next screen asks their name, your note and their address.';
+      t = 'Before you pay, the next screen asks their name and your note.';
       if (linked.length < PRODUCTS.length) {
         var names = linked.map(function (id) { return CHOICE[id].replace(/^Digital/, 'digital'); });
         t = 'For the ' + names.join(' and the ') + ', y' + t.slice(1) + ' The others take your note on the order form.';
@@ -4917,6 +4952,13 @@
     try { p.focus({ preventScroll: true }); } catch (e) { p.focus(); }
     try { p.select(); } catch (e) {}
     ga('rain_print_shared_own', {});
+  });
+  // last year, by Christmas: the same town, last year, drawn now (the station is picked again for that year)
+  $('rp-xmas-last').addEventListener('click', function () {
+    if (GIFT && GIFT.lock) return;
+    $('rp-year').value = String(CURRENT_YEAR - 1);
+    ga('rain_print_last_year', { from: 'top' });
+    run({ type: 'submit', preventDefault: function () {} });
   });
   $('rp-another').addEventListener('click', function () {
     var y = $('rp-year');
