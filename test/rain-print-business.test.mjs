@@ -139,3 +139,16 @@ test("PO number and invoice contact: optional fields, carried in the notes the w
   assert.ok(!/\bpo:|invoice_/.test(JS.match(/var x = \{([\s\S]*?)\};/)[1]), "no new field the worker would drop");
   assert.match(JS, /x\.notes = both/);
 });
+
+// 2026-10-19 (board seat C: "40 customers near one station get 40 identical rain lines. Say it plainly").
+// The maker picks a station per town (RainPrint.pickStation: the nearest with a good record for the year), so
+// the page says each print uses the station nearest each customer's town, and neighbors on one station share a line.
+test("same-station line: neighbors near one station share a rain line, said plainly, in the copy and the FAQ", () => {
+  assert.match(COPY, /<b>Neighbors share a rain line\.<\/b> Each print uses the weather station nearest that customer&rsquo;s town with a good record for the year\. Customers near the same station get the same rain line for the same year/);
+  assert.match(COPY, /give each customer their own year/);
+  const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
+  const q = ld["@graph"].find((g) => g["@type"] === "FAQPage").mainEntity.find((x) => x.name === "Will customers near each other get the same print?");
+  assert.ok(q, "in FAQPage");
+  assert.match(q.acceptedAnswer.text, /customers near the same station get the same rain line/);
+  assert.equal(typeof R.pickStation, "function", "the per-town pick the copy describes");
+});
