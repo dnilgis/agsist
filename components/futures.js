@@ -1970,8 +1970,18 @@ AG.json('/data/prices.json')
          contract ($4.81½ under a $4.82¾ hero). Hiding only the Nearby row left
          wheat's Mar '27 and KC rows at the 8:31 a.m. bake under live cards
          that said otherwise (2026-10-15), so the whole table goes. */
-      var __sn=document.querySelector('.px-seed-note');if(__sn)__sn.style.display='none';
       var __st=document.querySelector('.seed-tbl-wrap');if(__st)__st.style.display='none';
+      /* The note keeps its box and takes the live quote in the seed's words
+         (seed_static.py state_words): hiding it moved everything below up
+         62 px on a phone, CLS about 0.2 (phone audit, Oct 19, 2026). */
+      var __sn=document.querySelector('.px-seed-note');
+      if(__sn){
+        var __s=window.AgPxStamp?AgPxStamp.stamp(front,data.fetched):'',__m=/^(.*) settle$/.exec(__s),__t=/^Last trade as of (.*)$/.exec(__s),__u=/^Updated (.*)$/.exec(__s);
+        var __v=__m?'settled at':__t?'last traded near':'last quoted near',__w=__m?__m[1]:__t?__t[1]:__u?__u[1]:'';
+        var __cr={corn:'corn',beans:'soybeans',wheat:'wheat'}[CROP_KEY]||CROP.label.toLowerCase();
+        __sn.style.minHeight=__sn.offsetHeight+'px';
+        __sn.innerHTML=heroLabel+' '+__cr+' '+__v+' <strong>'+grain$(front.close)+'</strong>'+(front.stale?' (last good quote)':'')+(__w?' &middot; as of '+__w:'')+'.';
+      }
       var hc=chgTxt(front.netChange,front.pctChange,front.roll);setEl('hero-chg',hc.t,hc.c);
       if(front.roll){var __rn=document.querySelector('.px-seed-note');if(__rn){var __d=document.createElement('div');__d.className='roll-note';__d.innerHTML=CROP.rollNote;__rn.parentNode.insertBefore(__d,__rn);}}
       if(front.wk52_lo!=null&&front.wk52_hi!=null){
