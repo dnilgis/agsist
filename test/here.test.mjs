@@ -5,8 +5,9 @@
  * The landing page is indexable with its FAQ; the page stays one shared file under the size cap;
  * and in a browser (where Playwright and Chromium exist): a ZIP, a county and a Kansas ZIP open the
  * right county with a sourced sentence, 17 fingerprint rows with a table, every This week tile filled
- * or saying why not, a role chip that reorders sections and lives in the link and on the device, a
- * neighbor link, and a county picked on the map. */
+ * or saying why not, one fixed order and one go deeper row for everyone (the role chips are gone, Oct 19;
+ * an old &for= link still opens and drops the param), a print panel whose choices change the printed
+ * sheet and live in the link, a Letter PDF, a neighbor link, and a county picked on the map. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs, { readFileSync, existsSync } from "node:fs";
@@ -41,6 +42,29 @@ test("one shared page: small, no em dashes, name only at the end, scripts versio
   for (const s of ["place.js", "here.js", "here.css", "layers.js"]) assert.match(page, new RegExp("/components/" + s.replace(".", "\\.") + "\\?v=\\d+"), s);
   assert.match(read("sw.js"), /v\d+ 2026-10-18: \/here place page/);
   assert.match(read("scripts/dev/checks.sh"), /build_place_pct\.py --check/);
+});
+
+test("no role chips anywhere: markup, FAQ, JSON-LD, scripts, styles", () => {
+  const files = ["here.html", "components/here.js", "components/place.js", "components/here.css"];
+  for (const f of files) {
+    const t = read(f);
+    assert.doesNotMatch(t, /h-roles|data-role|here_role|agsist-here-for|P\.ROLES|P\.order\(|P\.tool\(|role buttons|I am a\b/i, f);
+    assert.doesNotMatch(t, /Lender or Appraiser|Elevator or Plant|Buyer or Seller/, f);
+  }
+  assert.doesNotMatch(page, /"What do the role buttons do\?"/);
+  // the print panel: one checkbox per part, all ticked, More detail unticked, a Print button
+  const parts = [...page.matchAll(/<input type="checkbox" name="part" value="([a-z]+)" checked>/g)].map((m) => m[1]);
+  assert.deepEqual(parts, ["sentence", "week", "fingerprint", "unusual", "long", "sources"]);
+  assert.match(page, /<input type="checkbox" id="h-pr-more">/);
+  assert.match(page, /id="h-pr-go">Print</);
+  assert.match(page, /\/components\/qr\.js\?v=\d+/);
+  const css = read("components/here.css");
+  assert.match(css, /@page\{size:letter/);
+  assert.match(css, /counter\(page\) " of " counter\(pages\)/);
+  // nothing under 9pt in print
+  const pr = css.slice(css.indexOf("@media print{"));
+  for (const m of pr.matchAll(/font-size:([\d.]+)pt/g)) assert.ok(+m[1] >= 9, "print font " + m[0]);
+  for (const m of pr.matchAll(/font:[^;]*?([\d.]+)pt/g)) assert.ok(+m[1] >= 9, "print font " + m[0]);
 });
 
 test("the page fetches only the state's file, the county's file and the week's files, never one file per place", () => {
@@ -141,32 +165,101 @@ test("three places: right county, sourced sentence, fingerprint table, every til
   } finally { await browser.close(); srv.close(); }
 });
 
-test("role chips reorder the sections, add the tool, and stick in the link and on the device", { skip, timeout: 120000 }, async () => {
+test("one order for everyone; an old &for= link opens normally and drops the param; go deeper row", { skip, timeout: 120000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 900 } });
-    let { pg, errs } = await openPage(browser, port, "/here?fips=55005", 390, ctx);
+    await ctx.addInitScript(() => { try { localStorage.setItem("agsist-here-for", "adjuster"); } catch (e) {} });
+    let { pg, errs } = await openPage(browser, port, "/here?zip=54728&for=landowner", 390, ctx);
     await settled(pg);
     const order = () => pg.$$eval("#h-sections > section", (s) => s.map((x) => x.id.replace("h-sec-", "")));
+    assert.equal(await pg.textContent("#h-title"), "Barron County, Wisconsin");
     assert.deepEqual(await order(), ["week", "fingerprint", "unusual", "long"]);
-    assert.ok(await pg.$eval("#h-tool", (e) => e.hidden));
-    await pg.click('#h-roles button[data-role="landowner"]');
-    assert.deepEqual(await order(), ["fingerprint", "unusual", "long", "week"]);
-    assert.equal(await pg.getAttribute("#h-tool a", "href"), "/farmland-atlas/sheet#55005");
-    assert.match(pg.url(), /for=landowner/);
-    await pg.click('#h-roles button[data-role="adjuster"]');
-    assert.match(await pg.getAttribute("#h-tool a", "href"), /^\/hail-map\?lat=/);
+    assert.doesNotMatch(pg.url(), /for=/);
+    assert.match(pg.url(), /fips=55005&zip=54728/);
+    assert.equal(await pg.$("#h-roles"), null);
+    assert.equal(await pg.$("[data-role]"), null);
+    assert.doesNotMatch(await pg.textContent("main"), /I am a|role/i);
+    for (const id of ["week", "fingerprint", "unusual", "long"]) assert.ok(await pg.$eval("#h-sec-" + id, (e) => e.offsetHeight > 0), id);
+    const deep = await pg.$$eval("#h-links a", (a) => a.map((x) => [x.dataset.k, x.getAttribute("href")]));
+    const k = Object.fromEntries(deep);
+    assert.match(k.scout, /^\/field-scout\?at=45\.\d{4},-91\.\d{4}&fips=55005$/);
+    assert.equal(k.bids, "/cash-bids?zip=54728");
+    assert.match(k.hail, /^\/hail-map\?lat=/);
+    assert.equal(k.sheet, "/farmland-atlas/sheet#55005");
+    assert.equal(k.data, "/developer");
+    // Wisconsin has recorded sales on the site: the comparable sales report joins the row once its index answers
+    await pg.waitForSelector('#h-links a[data-k="comps"]', { timeout: 15000 });
+    // the device kept nothing: no role key written
+    assert.equal(await pg.evaluate(() => localStorage.getItem("agsist-here-for")), "adjuster");
     await pg.close();
-    // the device remembers the chip on a link without &for=
-    ({ pg, errs } = await openPage(browser, port, "/here?fips=17019", 390, ctx));
+    // Kansas: no recorded sales file, so no comparable sales link
+    ({ pg, errs } = await openPage(browser, port, "/here?zip=67530", 390, ctx));
     await settled(pg);
-    assert.equal(await pg.getAttribute('#h-roles button[data-role="adjuster"]', "aria-pressed"), "true");
-    assert.deepEqual(await order(), ["week", "long", "fingerprint", "unusual"]);
+    await pg.waitForTimeout(800);
+    assert.equal(await pg.$('#h-links a[data-k="comps"]'), null);
     // a neighbor link opens that county in place
     await pg.click("#h-nb a[data-fips]");
-    await pg.waitForFunction(() => !/Champaign/.test(document.getElementById("h-title").textContent), null, { timeout: 20000 });
-    assert.match(await pg.textContent("#h-title"), /County, (Illinois)$/);
+    await pg.waitForFunction(() => !/Barton/.test(document.getElementById("h-title").textContent), null, { timeout: 20000 });
+    assert.match(await pg.textContent("#h-title"), /County, Kansas$/);
+    assert.deepEqual(errs, []);
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("print report: the panel drops parts from the printed sheet, More detail prints the tables, the link carries it, Letter PDF", { skip, timeout: 180000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg, ctx, errs } = await openPage(browser, port, "/here?zip=54728", 1280);
+    await settled(pg);
+    await pg.evaluate(() => { window.print = () => { window.__printed = (window.__printed || 0) + 1; }; });
+    const shown = (sel) => pg.$eval(sel, (e) => { const s = getComputedStyle(e); return s.display !== "none" && e.getBoundingClientRect().height > 0; });
+    // on screen the printed cover stays hidden; the panel opens from the button
+    assert.equal(await shown("#h-pr-cover"), false);
+    assert.ok(await pg.$eval("#h-pr-box", (e) => e.hidden));
+    await pg.click("#h-pr-btn");
+    assert.equal(await pg.$eval("#h-pr-box input[name=part]:checked", () => true), true);
+    assert.equal(await pg.$$eval("#h-pr-box input[name=part]:checked", (i) => i.length), 6);
+    // print media with everything ticked: cover, week, unusual, long, sources; the full tables stay out
+    await pg.emulateMedia({ media: "print" });
+    for (const s of ["#h-pr-cover", ".pc-sent", ".pc-tiles", ".pd", ".pc-qr svg", "#h-sec-week", "#h-sec-unusual", "#h-sec-long", "#h-part-sources"]) assert.ok(await shown(s), s);
+    for (const s of ["#h-pr-box", ".h-deep", "#h-form", "#h-sec-fingerprint", "#h-part-sentence"]) assert.equal(await shown(s), false, s);
+    assert.equal(await pg.$$eval(".pd-r:not(.pd-ax)", (r) => r.length), 17);
+    assert.equal(await pg.$$eval(".pc-t", (t) => t.length), 6);
+    for (const t of await pg.$$eval(".pc-t .pc-s", (x) => x.map((e) => e.textContent))) assert.ok(t.length > 8, "source and years under each headline figure: " + t);
+    await pg.emulateMedia({ media: "screen" });
+    // untick This week and the long view, tick More detail
+    await pg.uncheck('#h-pr-box input[value="week"]');
+    await pg.uncheck('#h-pr-box input[value="long"]');
+    await pg.check("#h-pr-more");
+    assert.match(pg.url(), /print=sentence,fingerprint,unusual,sources,more/);
+    await pg.click("#h-pr-go");
+    assert.equal(await pg.evaluate(() => window.__printed), 1);
+    await pg.emulateMedia({ media: "print" });
+    assert.equal(await shown("#h-sec-week"), false);
+    assert.equal(await shown("#h-sec-long"), false);
+    assert.ok(await shown("#h-sec-fingerprint"));
+    assert.ok(await shown("#h-fp-t"), "More detail prints the figure table");
+    assert.ok(await shown("#h-sec-unusual"));
+    const pdf = await pg.pdf({ format: "Letter", printBackground: true, preferCSSPageSize: true });
+    assert.ok(pdf.length > 20000);
+    const box = /\/MediaBox\s*\[\s*0 0 612 792\s*\]/.test(pdf.toString("latin1"));
+    assert.ok(box, "Letter pages");
+    await pg.evaluate(() => window.AgHere.afterPrint());
+    await pg.emulateMedia({ media: "screen" });
+    assert.equal(await pg.$eval("#h-fp-t", (t) => t.closest("details").open), false, "the screen table closes again after printing");
+    // a shared link prints the same choices
+    const shared = pg.url().replace(/^https?:\/\/[^/]+/, "");
+    const b2 = await openPage(browser, port, shared, 1280);
+    await settled(b2.pg);
+    assert.equal(await b2.pg.$eval('#h-pr-box input[value="week"]', (i) => i.checked), false);
+    assert.equal(await b2.pg.$eval("#h-pr-more", (i) => i.checked), true);
+    await b2.pg.emulateMedia({ media: "print" });
+    assert.equal(await b2.pg.$eval("#h-sec-week", (e) => getComputedStyle(e).display), "none");
+    assert.deepEqual(b2.errs, []);
+    await b2.ctx.close();
     assert.deepEqual(errs, []);
     await ctx.close();
   } finally { await browser.close(); srv.close(); }

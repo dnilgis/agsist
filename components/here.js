@@ -443,7 +443,7 @@
     if (!S.prof) return;
     var d = $('h-pr-date'); if (d) d.textContent = printedOn();
     buildQr();
-    opened = [];
+    /* The Print button runs this and the browser's beforeprint runs it again: keep the first list. */
     if (S.print.more) [].forEach.call(document.querySelectorAll('#h-place details.h-tbl'), function (d) { if (!d.open) { d.open = true; opened.push(d); } });
   }
   function buildQr() {
