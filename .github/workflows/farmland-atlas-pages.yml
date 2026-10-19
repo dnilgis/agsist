@@ -11,9 +11,12 @@ name: farmland-atlas-pages
 # data), plus a weekly backstop, plus a button. It commits only when output
 # actually changed. Each page carries a content-hash stamp, so a county whose
 # figures did not change keeps its "Figures as of" date and its sitemap lastmod.
+# The land-data run (new deeds, data/land/<st>/summary.json) triggers it too: the IL and WI
+# county pages bake a recorded-sales tile from that file (Oct 19, 2026), and atlas-sales.js
+# redraws the tile from the live file in between.
 on:
   workflow_run:
-    workflows: ["farmland-atlas"]
+    workflows: ["farmland-atlas", "Land data (parcel services + transfers)"]
     types: [completed]
   schedule:
     - cron: "41 11 * * 3"      # Wednesdays 11:41 UTC, backstop

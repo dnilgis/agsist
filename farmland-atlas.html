@@ -1733,9 +1733,14 @@ function renderStrip(fips,c){
   var rv=ok(R)&&R.nonirr?R.nonirr:null, sh=get(c,'water','irrigated_share_2022','share');
   var ia=get(c,'water','applied_2015','irrigated_acres'), ha=get(c,'water','irrigated_share_2022','harvested_acres');
   if(sh==null&&ia&&ha) sh=ia/ha;
+  // Sig, Oct 19, 2026: a rent tile more than three survey years old shows n/a with its last year (the county page and sheet rule)
+  var old_=function(r){ return !!(r&&r.year&&RENT_LATEST&&r.year<RENT_LATEST-3); }, OLDW=', more than three survey years old';
   if(R&&R.irr&&(!ok(R)||!R.nonirr||(sh!=null&&sh>=0.10))){
-    h+=tile('fa-t-rent','Cash rent, irrigated', money(R.irr.value),'/ac', R.irr.year+' county average'+(rv?' · dry '+money(rv.value):' · no dry rent published'), st, money, stateStat('irr',st,fips));
-  } else h+=tile('fa-t-rent','Cash rent, non-irrigated', rv?money(rv.value):null,'/ac', rv?rv.year+' county average':why(R), st, money, rv?stateStat('rent',st,fips):null);
+    var dryW=rv?(old_(rv)?' · dry last published '+rv.year:' · dry '+money(rv.value)):' · no dry rent published';
+    h+=old_(R.irr)?tile('fa-t-rent','Cash rent, irrigated', null,'/ac', 'last published '+R.irr.year+OLDW+dryW, st, money, null)
+      :tile('fa-t-rent','Cash rent, irrigated', money(R.irr.value),'/ac', R.irr.year+' county average'+dryW, st, money, stateStat('irr',st,fips));
+  } else h+=old_(rv)?tile('fa-t-rent','Cash rent, non-irrigated', null,'/ac', 'last published '+rv.year+OLDW, st, money, null)
+    :tile('fa-t-rent','Cash rent, non-irrigated', rv?money(rv.value):null,'/ac', rv?rv.year+' county average':why(R), st, money, rv?stateStat('rent',st,fips):null);
   h+=tile('fa-t-val','Land and buildings', ok(V)&&V.latest!=null?money(V.latest):null,'/ac', ok(V)?(V.flag?V.latest_year+' census · read with care: '+flagWords(V.flag,true):V.latest_year+' census, operators\' own estimate'):why(V), st, money, ok(V)?stateStat('value',st,fips):null);
   h+=tile('fa-t-yld','Corn yield, median', ok(Y)?f1(Y.median):null,' bu/ac', ok(Y)?Y.n+' published years, '+Y.first_year+'–'+Y.last_year:why(Y), st, f1, ok(Y)&&Y.n>=15?stateStat('yld',st,fips):null);
   var lc=ok(S)&&S.last10&&S.last10.loss_cost!=null?S.last10.loss_cost*100:null;

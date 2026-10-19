@@ -55,6 +55,32 @@
     return h + '</tbody></table></div>';
   }
 
+  // The headline tile (Sig, Oct 19, 2026): the same median the county block leads with (market
+  // sales of A+ acres with known acres, the last 12 months), its count and the through date.
+  // scripts/build_atlas_pages.py sales_tile() bakes the same words into the county page (a test
+  // compares them on every IL and WI county); the sheet draws it here. Under N sales: no median,
+  // the count and the reason. No names, ever. -> {label, val, unit, sub, through} or null.
+  S.tile = function (sum, f) {
+    if (!sum || !sum.windows) return null;
+    var c = sum.counties && sum.counties[f], N = sum.min_n || 5, A = sum.min_acres || 20;
+    var t = { label: 'Median sale price, ' + A + '+ acres', val: null, unit: '/ac', through: sum.through };
+    var thru = 'sales dated through ' + S.day(sum.through);
+    if (!c) { t.sub = 'no ' + sum.record + ' file on hand for this county yet'; return t; }
+    if (c.med) {
+      t.val = S.money(c.med.med);
+      t.sub = c.med.n + ' recorded market sale' + (c.med.n === 1 ? '' : 's') + ', ' + S.span(sum.windows.cur) + '; ' + thru;
+    } else {
+      var k = c.k12 || 0;
+      t.sub = 'not shown: ' + k + ' recorded market sale' + (k === 1 ? '' : 's') + ' of ' + A + '+ acres in ' + S.span(sum.windows.cur) + ', a median needs ' + N + '; ' + thru;
+    }
+    return t;
+  };
+  // The tile's inside in the county page's markup (key() in build_atlas_pages.py).
+  S.tileHTML = function (t) {
+    return '<div class="t">' + esc(t.label) + '</div><div class="v">' + (t.val == null ? '<small>n/a</small>' : esc(t.val) + '<small>' + esc(t.unit) + '</small>')
+      + '</div><div class="s">' + esc(t.sub) + '</div>';
+  };
+
   // The county block. sum = summary.json, f = county FIPS, census = {v, year, flag} from the page.
   S.countyHTML = function (sum, f, census) {
     var c = sum && sum.counties && sum.counties[f];
@@ -206,6 +232,10 @@
     var go = function () {
       S.load(st).then(function (sum) {
         box.innerHTML = sum ? S.countyHTML(sum, f, census()) : '<p class="note">The sales file did not load. Reload the page in a minute.</p>';
+        // the headline tile was baked from the file on the day the page was built; it is redrawn
+        // from the file just read, so a newer file never leaves the tile and this block disagreeing
+        var tl = document.querySelector('[data-as-tile]'), t = sum && S.tile(sum, f);
+        if (tl && t) { tl.innerHTML = S.tileHTML(t); tl.setAttribute('data-as-tile', t.through); }
         el.setAttribute('data-ready', '1');
       });
     };
