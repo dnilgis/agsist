@@ -24,7 +24,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => fs.readFileSync(path.join(ROOT, p), "utf8");
-const DASH = /[–—]|&mdash;|&ndash;/;
+const DASH = /[\u2013\u2014]|&mdash;|&ndash;/;
 const asksIn = (h) => h.match(/<div data-signup-ask[^>]*><\/div>/g) || [];
 const REPORT_NOTE = 'data-note="Comes with AGSIST Daily, the free morning markets email."';
 
