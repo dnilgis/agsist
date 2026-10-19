@@ -1152,6 +1152,25 @@ def seo_fertilizer(c):
     return title, desc
 
 
+FERT_BAR_WAIT = "Loading co-op prices&hellip;"
+
+
+def body_fertilizer(c):
+    """The line under the fertilizer page's lede (#fert-coop-bar), Sig Oct 19:
+    the named co-op prices and their posting dates, so a crawler and a reader
+    whose script has not run see prices, not "Loading co-op prices". It is the
+    description's own sentence (seo_fertilizer, same run, same file), so the
+    body and the snippet carry the same numbers and dates written the same way
+    ("$832/ton", then "$623"). The page script draws the co-op cards over it
+    on load. No dated price: the old loading words, no number."""
+    got = seo_fertilizer(c)
+    if not got or got == FERT_PLAIN:
+        return FERT_BAR_WAIT
+    desc = got[1]
+    tail = " Cost per lb of N, P and K."
+    return esc(desc[:-len(tail)] if desc.endswith(tail) else desc)
+
+
 # Added 2026-10-13. /milk-prices was titled as a tool ("Class III & IV Milk
 # Prices and Your Milk Check, Explained") while the searcher wants the month's
 # number. The body figures are baked from the same file by seed_static.py
@@ -1257,6 +1276,7 @@ BODY = {
     CATTLE_PAGE: ("cattle-h1", body_h1(H1_CATTLE)),
     "usda-calendar.html": ("next-wasde", body_usda_calendar),
     "usda-quick-stats.html": ("state-yields", body_quick_stats),
+    "fertilizer.html": ("fert-bar", body_fertilizer),
     "breakeven.html": [("be-example", body_breakeven), ("be-faq", body_be_faq), ("be-total", body_be_total),
                        ("be-cpb", body_be_cpb, True)],
 }

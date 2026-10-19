@@ -1,0 +1,101 @@
+{
+ "fetched": "2026-10-19T14:16:14Z",
+ "quotes": {
+  "corn": {
+   "ticker": "ZC=F",
+   "close": 468.25,
+   "open": 474.25,
+   "netChange": -6.0,
+   "pctChange": -1.2652,
+   "wk52_hi": 544.5,
+   "wk52_lo": 398.5,
+   "close_date": "2026-10-19",
+   "prev_date": "2026-10-16",
+   "close_kind": "last",
+   "close_time": "2026-10-19T14:15:57Z",
+   "prev_kind": "settle",
+   "settle": 474.25,
+   "settle_date": "2026-10-16",
+   "settle_net": -3.75,
+   "settles_v": 2,
+   "settles": {
+    "2026-10-14": 480.75,
+    "2026-10-15": 478.0,
+    "2026-10-16": 474.25
+   },
+   "day_last": {}
+  },
+  "beans": {
+   "ticker": "ZS=F",
+   "close": 1253.75,
+   "open": 1261.25,
+   "netChange": -7.5,
+   "pctChange": -0.5946,
+   "wk52_hi": 1332.25,
+   "wk52_lo": 1019.75,
+   "close_date": "2026-10-19",
+   "prev_date": "2026-10-16",
+   "close_kind": "last",
+   "close_time": "2026-10-19T14:15:57Z",
+   "prev_kind": "settle",
+   "settle": 1261.25,
+   "settle_date": "2026-10-16",
+   "settle_net": -1.75,
+   "settles_v": 2,
+   "settles": {
+    "2026-10-14": 1277.25,
+    "2026-10-15": 1263.0,
+    "2026-10-16": 1261.25
+   },
+   "day_last": {}
+  },
+  "corn-dec": {
+   "ticker": "ZCZ26.CBT",
+   "close": 468.25,
+   "open": 474.25,
+   "netChange": -6.0,
+   "pctChange": -1.2652,
+   "wk52_hi": 549.75,
+   "wk52_lo": 425.75,
+   "close_date": "2026-10-19",
+   "prev_date": "2026-10-16",
+   "close_kind": "last",
+   "close_time": "2026-10-19T14:15:57Z",
+   "prev_kind": "settle",
+   "settle": 474.25,
+   "settle_date": "2026-10-16",
+   "settle_net": -3.75,
+   "settles_v": 2,
+   "settles": {
+    "2026-10-14": 480.75,
+    "2026-10-15": 478.0,
+    "2026-10-16": 474.25
+   },
+   "day_last": {}
+  },
+  "beans-nov": {
+   "ticker": "ZSX26.CBT",
+   "close": 1253.75,
+   "open": 1261.25,
+   "netChange": -7.5,
+   "pctChange": -0.5946,
+   "wk52_hi": 1335.25,
+   "wk52_lo": 1055.5,
+   "close_date": "2026-10-19",
+   "prev_date": "2026-10-16",
+   "close_kind": "last",
+   "close_time": "2026-10-19T14:15:57Z",
+   "prev_kind": "settle",
+   "settle": 1261.25,
+   "settle_date": "2026-10-16",
+   "settle_net": -1.75,
+   "settles_v": 2,
+   "settles": {
+    "2026-10-14": 1277.25,
+    "2026-10-15": 1263.0,
+    "2026-10-16": 1261.25
+   },
+   "day_last": {}
+  }
+ }
+}

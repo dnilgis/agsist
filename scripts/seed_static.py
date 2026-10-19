@@ -869,6 +869,7 @@ def seed_homepage(prices, today):
         for k in ("corn", "beans"):
             seeds["hp:" + k] = "-"
             seeds["hp:" + k + "-when"] = "Quotes unavailable: " + why
+        seeds.update(hero_futures_seeds({}, fetched))  # back to the loading bar
         return _write_seeds("index.html", seeds)
     for k in ("corn", "beans"):
         d = q.get(k) or {}
@@ -883,7 +884,48 @@ def seed_homepage(prices, today):
         seeds["hp:" + k + "-when"] = (quote_when(d, fetched) +
                                       (" (last good quote)" if d.get("stale") else "") +
                                       " &middot; Yahoo Finance, delayed")
+    seeds.update(hero_futures_seeds(q, fetched))
     return _write_seeds("index.html", seeds)
+
+
+_HB_MCODE = dict(zip("FGHJKMNQUVXZ", ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")))
+HB_SKEL = '<span class="hb-skel" aria-hidden="true"></span>'
+
+
+def hero_futures_seeds(q, fetched):
+    """The hero band's two futures tiles (Dec corn, Nov beans), Sig Oct 19:
+    baked so a crawler sees prices, then index.html paintFut draws over them
+    on load. Same quote, same formatter (AG.px slash, hb-frac) and the same
+    label and change markup as paintFut; the moment line uses quote_when, the
+    words the corn and soybean cards lower down are seeded with. No quote on
+    file leaves the tile on its loading bar, as before."""
+    seeds = {}
+    for key, tile, word, mon in (("corn-dec", "fc", "corn", "Dec"), ("beans-nov", "fs", "bean", "Nov")):
+        d = q.get(key) or {}
+        m = re.match(r"^Z[CS]([FGHJKMNQUVXZ])(\d{2})", str(d.get("ticker") or ""))
+        lab = (_HB_MCODE[m.group(1)] + " \u2019" + m.group(2)) if m else mon
+        if not grain_dollars(d):
+            seeds["hp:" + tile + "-k"] = mon + " " + word + " futures"
+            seeds["hp:" + tile] = HB_SKEL
+            seeds["hp:" + tile + "-s"] = ""
+            continue
+        seeds["hp:" + tile + "-k"] = lab + " " + word + " futures"
+        seeds["hp:" + tile] = ('<span class="hb-n">' +
+                               pricefmt.price(d["close"], style="slash", frac_class="hb-frac") + "</span>")
+        diff = d.get("netChange")
+        if diff is None and d.get("open") is not None:
+            diff = d["close"] - d["open"]
+        chg = ""
+        if isinstance(diff, (int, float)):
+            cl = "up" if diff > 0 else ("dn" if diff < 0 else "nc")
+            arrow = ('<span aria-hidden="true">\u25b2 </span><span class="visually-hidden">up </span>' if diff > 0 else
+                     ('<span aria-hidden="true">\u25bc </span><span class="visually-hidden">down </span>' if diff < 0 else ""))
+            chg = ('<span class="hb-l"><span class="hb-n hb-chg ' + cl + '">' + arrow +
+                   pricefmt.move(diff, style="slash", sign=True) + "</span></span>")
+        when = quote_when(d, fetched) + (" (last good quote)" if d.get("stale") else "")
+        seeds["hp:" + tile + "-s"] = chg + '<span class="hb-l hb-age">' + when + "</span>"
+    return seeds
 
 
 # --- /news -------------------------------------------------------------------

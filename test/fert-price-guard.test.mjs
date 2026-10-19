@@ -11,7 +11,9 @@
  *     weekday (manure-value.html [data-mv] numbers, its FAQ and meta,
  *     breakeven.html's FERT:SRC line and CROP_DEFAULTS fertilizer, and the
  *     title / description / share tags bake_seo.py and build_share_images.py
- *     stamp on fertilizer.html, manure-value.html and breakeven.html), each
+ *     stamp on fertilizer.html, manure-value.html and breakeven.html, and
+ *     the co-op line bake_seo.py body_fertilizer writes into fertilizer.html
+ *     between <!--BAKE:fert-bar--> and <!--/BAKE-->, Sig Oct 19), each
  *     checked current by its own test or --check;
  *   * documented sensitivities, which are arithmetic, not prices:
  *     "a $100/ton price increase adds roughly $17/acre";
@@ -41,6 +43,8 @@ function stripBaked(file, s) {
       .replace(/<script type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/g, " ")
       .replace(/<!--BAKE:[\w-]+-->[\s\S]*?<!--\/BAKE:[\w-]+-->/g, " ");
   }
+  // Sig Oct 19: the description's sentence, baked into the body (checked below and by fert-head)
+  if (file === "fertilizer.html") s = s.replace(/<!--BAKE:fert-bar-->[\s\S]*?<!--\/BAKE-->/, " ");
   if (file === "manure-value.html") s = s.replace(/<details><summary>[\s\S]*?<\/details>/g, " ");
   if (file === "breakeven.html") s = s.replace(/\bfertilizer:\d+/g, "fertilizer:BAKED");
   return s;
@@ -129,4 +133,14 @@ test("the baked fertilizer numbers are current with the shared file", () => {
   execFileSync("python3", ["scripts/bake_fert_defaults.py", "--check"], { cwd: ROOT, encoding: "utf8" });
   // manure-value.html and the fast-facts manure table
   execFileSync("node", ["scripts/bake_manure_value.mjs", "--check"], { cwd: ROOT, encoding: "utf8" });
+  // fertilizer.html's baked co-op line (Sig Oct 19): every price it names is the shared file's, rounded
+  const bar = /<!--BAKE:fert-bar-->([\s\S]*?)<!--\/BAKE-->/.exec(read("fertilizer.html"));
+  assert.ok(bar, "fertilizer.html has its baked co-op line");
+  const KEY = { urea: "urea", anhydrous: "anhydrous", DAP: "dap", MAP: "map", potash: "potash" };
+  const rows = Object.fromEntries(JSON.parse(read("data/fertilizer-prices.json")).prices.map((p) => [p.key, p]));
+  for (const m of bar[1].matchAll(/\b(urea|anhydrous|DAP|MAP|potash) \$([\d,]+)/g)) {
+    const r = rows[KEY[m[1]]];
+    assert.ok(r && Math.round(r.price) === Number(m[2].replace(/,/g, "")), `baked ${m[0]} vs the file's ${r && r.price}`);
+  }
+  assert.equal(offenders("fertilizer.html", "<div><!--BAKE:other-->Urea $590/ton<!--/BAKE--></div>").length, 1, "only the fert-bar line is the baker's");
 });

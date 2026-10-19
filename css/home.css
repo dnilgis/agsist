@@ -2259,6 +2259,7 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
 #bids-noloc .hn-p{margin:0 0 .6rem;color:var(--text-dim);font-size:.875rem;line-height:1.45}
 #bids-noloc .hn-pick{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
 #bids-noloc .hn-zip{min-height:44px;padding:0 1rem;border-radius:6px;border:none;background:var(--gold-fill,var(--gold));color:#0a0c0d;font-weight:700;font-size:.875rem;cursor:pointer}
+#bids-noloc .hn-loc{min-height:44px;padding:0 1rem;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-weight:600;font-size:.875rem;cursor:pointer}
 #bids-noloc .hn-sel{min-height:44px;padding:0 .6rem;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.9rem;max-width:100%}
 #bids-noloc .hn-rows{list-style:none;margin:.75rem 0 .35rem;padding:0}
 #bids-noloc .hn-rows li{display:grid;grid-template-columns:6.5rem auto 1fr;column-gap:.5rem;align-items:baseline;padding:.4rem 0;border-top:1px solid var(--border)}

@@ -7,6 +7,14 @@
  *   2. Open-Meteo         — weather
  *   3. Nominatim OSM      — reverse geocoding
  *
+ * v18, 2026-10-19 (Sig: never ask for the reader's location on page load)
+ *   The browser's location question is asked only when the reader taps
+ *   "Use my location" (requestGeo, refreshLocation). Boot no longer calls
+ *   geolocation at all: a saved place (agsist-wx-loc, any age) renders at
+ *   once; no saved place waits for a tap or a ZIP. The v16 background
+ *   "did you move?" fix and the 30-minute cache expiry are gone, since both
+ *   asked on load.
+ *
  * v17 — 2026-05-06
  *   FIX: Cash bids stuck at "Detecting your location…" on iPhone, requiring
  *   manual ZIP entry. Three paths into bids autolocation were leaking:
@@ -94,13 +102,6 @@ var WX_CODES = {
 };
 var WX_ICONS = {}; // TYPE REWORK 2026-07-30: emoji weather icons retired — condition labels carry the meaning
 
-// v16: Cache TTL & distance threshold for stale-cache detection.
-// If a cached coord is older than WX_CACHE_TTL_MS, force fresh geolocation.
-// On every page load, kick off a fresh geo fix in background — if the new
-// fix is more than WX_REFRESH_DISTANCE_MI from the cached one, refetch.
-var WX_CACHE_TTL_MS = 30 * 60 * 1000;  // 30 minutes
-var WX_REFRESH_DISTANCE_MI = 3;        // re-fetch if user has moved this far
-
 // v17: Track whether we've already kicked off bids load this session, so
 // cache-path + propagateLocation don't double-fire on the same coords.
 var _bidsLoadedThisSession = false;
@@ -144,7 +145,9 @@ function _signalBidsGeoFailed() {
   var bar = document.getElementById('bids-geo-bar');
   var row = document.getElementById('bids-zip-row');
   if (bar) bar.style.display = 'none';
-  if (row) row.style.display = 'block';
+  // 2026-10-19: the homepage has one ZIP box, in the hero band; the in-card
+  // row opens only where that band is missing.
+  if (row && typeof window.agsistOpenZip !== 'function') row.style.display = 'block';
   // Also clear the skeleton inside bids-list-area if it's still showing
   var listArea = document.getElementById('bids-list-area');
   if (listArea) {
@@ -154,50 +157,6 @@ function _signalBidsGeoFailed() {
         + 'padding:1rem 0;text-align:center">Enter your ZIP above to find local cash bids.</div>';
     }
   }
-}
-
-// v16: Haversine great-circle distance in miles between two coordinates.
-function _wxDist(lat1, lon1, lat2, lon2) {
-  function toRad(d) { return d * Math.PI / 180; }
-  var R = 3959; // Earth radius in miles
-  var dLat = toRad(lat2 - lat1);
-  var dLon = toRad(lon2 - lon1);
-  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-          Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-          Math.sin(dLon/2) * Math.sin(dLon/2);
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-}
-
-// v16: After rendering from cache, request a fresh geolocation fix.
-// If the fresh coords differ from cached by more than WX_REFRESH_DISTANCE_MI,
-// re-fetch weather/cash bids/spray/urea/forecast with the new position.
-// Silent on permission denial or timeout — user keeps cached view.
-// maximumAge:0 forces the browser to give us a fresh GPS fix, not its own
-// internal cached position (critical on mobile where the browser may keep
-// a 30+ min old fix in memory).
-function _wxRefreshIfMoved(cachedLat, cachedLon) {
-  if (!navigator.geolocation) return;
-  navigator.geolocation.getCurrentPosition(
-    function(pos) {
-      var freshLat = pos.coords.latitude;
-      var freshLon = pos.coords.longitude;
-      // No cache to compare against — always update.
-      if (cachedLat == null || cachedLon == null) {
-        fetchWeather(freshLat, freshLon, null);
-        return;
-      }
-      // Has cache — only update if user has moved meaningfully.
-      var dist = _wxDist(cachedLat, cachedLon, freshLat, freshLon);
-      if (dist > WX_REFRESH_DISTANCE_MI) {
-        // v17: User moved significantly — clear bids guard so loadHomepageBids
-        // re-fires with the new ZIP from the next propagateLocation cycle.
-        _bidsLoadedThisSession = false;
-        fetchWeather(freshLat, freshLon, null);
-      }
-    },
-    function() { /* permission denied or timeout — keep cached view */ },
-    { timeout: 8000, maximumAge: 0 }
-  );
 }
 
 // v16: Public force-refresh — always re-fetches weather using a fresh
@@ -232,6 +191,9 @@ function requestGeo() {
     function() {
       showZipEntry();
       _signalBidsGeoFailed(); // v17: also reveal bids ZIP entry
+      // 2026-10-19: said only after a tap that failed, never on a fresh visit.
+      var h = document.querySelector('#bids-noloc .hn-h');
+      if (h) h.textContent = 'Your location did not come through.';
     },
     { timeout: 8000, maximumAge: 0 }
   );
@@ -1597,53 +1559,35 @@ function loadDailyBriefing() {
       startPricePoll();
     }
 
-    // v16/v17: Stale-cache-aware boot. Read cache for instant render only if it
-    // has a timestamp and is within WX_CACHE_TTL_MS. Always fire a background
-    // geo fix to detect if user has moved more than WX_REFRESH_DISTANCE_MI
-    // since the cached coords were saved.
+    // 2026-10-19 (Sig): never ask for the location on load. A saved place,
+    // of any age, renders at once; with none, nothing is asked until the
+    // reader taps "Use my location" or types a ZIP.
     setTimeout(function() {
-      var usedCache = false;
-      try {
-        var saved = localStorage.getItem('agsist-wx-loc');
-        if (saved) {
-          var p = JSON.parse(saved);
-          var age = (typeof p.ts === 'number') ? (Date.now() - p.ts) : Infinity;
-          if (p.lat && p.lon && age < WX_CACHE_TTL_MS) {
-            // v17 FIX (a): if cache has a ZIP, fire bids autoload IMMEDIATELY
-            // before any network calls. fetchWeather will re-fire propagateLocation
-            // which is guarded by _bidsLoadedThisSession so bids only load once.
-            // This is the single change that takes "Detecting your location..."
-            // from "30 seconds, sometimes never" to "<1 second on warm cache."
-            if (p.zip) {
-              _loadBidsOnce(p.lat, p.lon, p.label || '', p.zip);
-              // Also preload AGSIST_GEO so any widget that reads it sync sees a value.
-              window.AGSIST_GEO = {
-                lat: p.lat, lng: p.lon,
-                city: '', state: p.state || '', zip: p.zip, county: p.county || ''
-              };
-              if (!window.AGSIST_STATE || typeof window.AGSIST_STATE !== 'object') window.AGSIST_STATE = {};
-              window.AGSIST_STATE.weather = {
-                lat: p.lat, lon: p.lon,
-                city: '', state: p.state || '', county: p.county || '', zip: p.zip
-              };
-              // Update the bids-geo-txt label optimistically — propagateLocation
-              // will refine it once Nominatim responds.
-              var bidsGeoTxt = document.getElementById('bids-geo-txt');
-              if (bidsGeoTxt && p.label) {
-                bidsGeoTxt.textContent = '' + p.label;
-              }
-            }
-
-            // Fresh-enough cache — render weather instantly, then verify in background.
-            fetchWeather(p.lat, p.lon, p.label);
-            _wxRefreshIfMoved(p.lat, p.lon);
-            usedCache = true;
-          }
+      var p = null;
+      try { p = JSON.parse(localStorage.getItem('agsist-wx-loc') || 'null'); } catch(e) { p = null; }
+      if (!p || typeof p !== 'object') return;
+      var zip = /^\d{5}$/.test(String(p.zip || '')) ? String(p.zip) : '';
+      if (p.lat && p.lon) {
+        // v17 FIX (a): with a saved ZIP, bids load at once, before any
+        // network call; propagateLocation is guarded so they load once.
+        if (zip) {
+          _loadBidsOnce(p.lat, p.lon, p.label || '', zip);
+          window.AGSIST_GEO = {
+            lat: p.lat, lng: p.lon,
+            city: '', state: p.state || '', zip: zip, county: p.county || ''
+          };
+          if (!window.AGSIST_STATE || typeof window.AGSIST_STATE !== 'object') window.AGSIST_STATE = {};
+          window.AGSIST_STATE.weather = {
+            lat: p.lat, lon: p.lon,
+            city: '', state: p.state || '', county: p.county || '', zip: zip
+          };
+          var bidsGeoTxt = document.getElementById('bids-geo-txt');
+          if (bidsGeoTxt && p.label) bidsGeoTxt.textContent = '' + p.label;
         }
-      } catch(e) {}
-      if (!usedCache) {
-        // No cache, expired cache, or legacy entry without ts — request fresh.
-        requestGeo();
+        fetchWeather(p.lat, p.lon, p.label);
+      } else if (zip) {
+        // A ZIP saved without coordinates: look it up, never the device.
+        window.agsistSetZip(zip);
       }
     }, 400);
   }
