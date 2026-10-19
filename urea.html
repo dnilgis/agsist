@@ -1460,6 +1460,8 @@ setTimeout(function(){
   /* 2026-10-19 (Sig): never ask for the location on load. A saved place loads at once; with none, the browser is asked only on a tap of Use My Location. */
   try{var saved=localStorage.getItem('agsist-wx-loc');if(saved){var p=JSON.parse(saved);if(p&&p.lat&&p.lon){loadWeather(p.lat,p.lon,p.label);return;}if(p&&/^\d{5}$/.test(String(p.zip||''))){document.getElementById('urea-zip').value=p.zip;loadZip();return;}}}catch(e){}
   var rv=document.getElementById('risk-verdict'),rl=document.getElementById('risk-location'),rb=document.getElementById('risk-badge');
+  /* a ZIP typed before this timer has already drawn the place: leave it */
+  if(!rl||!/Detecting location/.test(rl.textContent))return;
   if(rv)rv.textContent='Tap Use My Location or enter a ZIP below for the risk at your field.';
   if(rl)rl.lastChild.textContent=' No location yet';
   if(rb)rb.lastChild.textContent=' Set location';

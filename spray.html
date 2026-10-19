@@ -2119,7 +2119,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     var st=document.getElementById('in-state');if(st){try{var sv2=localStorage.getItem('agsist-spray-state');if(sv2!=null&&(sv2===''||DICAMBA_STATES[sv2]))st.value=sv2;}catch(e){}st.addEventListener('change',function(){try{localStorage.setItem('agsist-spray-state',st.value);}catch(e){}rerenderSpray();});}
     showStatePick();})();
   /* 2026-10-19 (Sig): never ask for the location on load. A saved place loads at once; with none, the panel says how to set one and the browser is asked only on a tap of Use My Location. */
-  function noPlace(){var sm=document.getElementById('st-main'),ss=document.getElementById('st-sub'),sl=document.getElementById('st-loc');if(sm)sm.textContent='Set Your Location';if(ss)ss.textContent='Tap Use My Location or enter a ZIP below for the spray window at your field.';if(sl)sl.textContent='No location yet';}
+  function noPlace(){var sm=document.getElementById('st-main'),ss=document.getElementById('st-sub'),sl=document.getElementById('st-loc');if(!sm||!/Detecting/.test(sm.textContent))return;if(sm)sm.textContent='Set Your Location';if(ss)ss.textContent='Tap Use My Location or enter a ZIP below for the spray window at your field.';if(sl)sl.textContent='No location yet';}
   function autoLoad(){try{var s=localStorage.getItem('agsist-wx-loc');if(s){var p=JSON.parse(s);if(p&&p.lat&&p.lon){loadWeather(p.lat,p.lon,p.label);return;}if(p&&/^\d{5}$/.test(String(p.zip||''))){document.getElementById('spray-zip').value=p.zip;loadZip();return;}}}catch(e){}noPlace();}
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',autoLoad);}else{setTimeout(autoLoad,100);}
 })();
