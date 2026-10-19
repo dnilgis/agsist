@@ -151,10 +151,13 @@ test("town pages: prices to the cent, one Hold line in a one-elevator town", () 
 
 test("fertilizer: the lede says Kansas co-ops and the posting date range; the title says Kansas co-op", () => {
   const F = read("fertilizer.html");
-  assert.match(F, /<span id="fert-lede-when"><\/span><\/p>/);
+  // 2026-10-19 (CLS): the span opens baked with the same line, from the shared file (scripts/bake_fert_page.mjs)
+  const baked = /<span id="fert-lede-when"><!--BAKE:fert-lede-->([^<]*)<!--\/BAKE--><\/span><\/p>/.exec(F);
+  assert.ok(baked, "the lede's when-line sits baked at the end of the lede");
   const ctx = {};
   vm.createContext(ctx);
   vm.runInContext(liftFn(F, "validPrice") + liftFn(F, "ledeWhen"), ctx);
+  assert.equal(baked[1], " " + ctx.ledeWhen(JSON.parse(read("data/fertilizer-prices.json"))), "baked line == the page's own ledeWhen() on the shared file");
   const doc = { prices: [
     { key: "urea", price: 622.98, as_of: "2026-10-06", src: "coop", region: "Kansas" },
     { key: "uan32", price: 451.05, as_of: "2026-09-24", src: "coop", region: "Kansas" },

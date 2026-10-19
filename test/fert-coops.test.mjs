@@ -77,7 +77,12 @@ test("a link that is not https is not drawn as a link", () => {
 });
 
 test("fertilizer.html loads the component and the file, sections hidden until drawn, co-op cards first", () => {
-  assert.match(HTML, /<section id="fert-coops" aria-labelledby="fert-coops-h" hidden><\/section>/);
+  // 2026-10-19 (CLS 0.57 on a phone): the cards open baked, drawn by this same top() from the committed
+  // file (scripts/bake_fert_page.mjs); a file with nothing current bakes the section hidden and empty,
+  // and a file that fails to load hides it again on the page.
+  const th = FC.top(JSON.parse(read("data/fertilizer-coops.json")));
+  assert.ok(HTML.includes('<!--BAKE:fert-cards--><section id="fert-coops" aria-labelledby="fert-coops-h"' + (th ? ">" + th : " hidden>") + "</section><!--/BAKE-->"));
+  assert.ok(HTML.includes("if(top){if(th){top.innerHTML=th;top.hidden=false;}else{top.hidden=true;top.innerHTML='';}}"), "a missing file draws nothing");
   assert.match(HTML, /<section id="fert-coops-more" aria-labelledby="fert-coops-more-h" hidden><\/section>/);
   assert.match(HTML, /<script src="\/components\/fert-coops\.js\?v=\d+"><\/script>/);
   assert.ok(HTML.includes("getJ('/data/fertilizer-coops.json')"));
