@@ -106,10 +106,11 @@ test("sentence with nothing to say, and with unusual neighbors", () => {
 });
 
 test("query parsing and the box", () => {
-  assert.deepEqual(P.parseQuery("?zip=54728&for=farmer"), { q: "", fips: null, zip: "54728", at: null, role: "farmer" });
+  // &for= was the role chip (removed Oct 19): an old link still parses, the param is dropped
+  assert.deepEqual(P.parseQuery("?zip=54728&for=farmer"), { q: "", fips: null, zip: "54728", at: null, print: null });
   assert.deepEqual(P.parseQuery("?fips=17019&at=40.1,-88.2&q=Champaign%2C%20IL").at, { lat: 40.1, lng: -88.2 });
   assert.equal(P.parseQuery("?fips=99001").fips, null, "no state 99");
-  assert.equal(P.parseQuery("?for=nobody").role, null);
+  assert.deepEqual(P.parseQuery("?zip=54728&print=week,long,more").print, { parts: ["week", "long"], more: true });
   assert.equal(P.parseQuery("?at=0,0").at, null);
   assert.equal(P.parsePoint("45.3, 91.6").lng, -91.6, "a longitude typed without its minus sign");
   assert.deepEqual(P.classify("54728"), { kind: "zip", zip: "54728" });
@@ -137,24 +138,64 @@ test("point in county on the site's county lines", () => {
   assert.equal(P.countyAt(geo, 30, -40), null, "the Atlantic");
 });
 
-test("roles: ten chips, each reorders all four sections and has a tool", () => {
-  assert.equal(P.ROLES.length, 10);
-  const place = { fips: "55005", st: "WI", slug: "barron-county", flags: "arpc", lat: 45.314, lng: -91.651, zip: "54728" };
-  for (const r of P.ROLES) {
-    assert.deepEqual(r.order.slice().sort(), P.SECTIONS.slice().sort(), r.id);
-    const t = P.tool(r.id, place);
-    assert.ok(t && /^\//.test(t.href) && t.text, r.id);
-  }
-  assert.equal(P.tool("farmer", place).href, "/cash-bids?zip=54728");
-  assert.equal(P.tool("farmer", { ...place, zip: null }).href, "/cash-bids/wisconsin/");
-  assert.match(P.tool("buyer", place).href, /^\/field-scout\?at=45\.3140,-91\.6510&fips=55005$/);
-  assert.match(P.tool("lender", place).href, /^\/comp-report\?lat=45\.3140&lon=-91\.6510&at=town&fips=55005$/);
-  assert.match(P.tool("adjuster", place).href, /^\/hail-map\?lat=45\.3140&lon=-91\.6510$/);
-  assert.equal(P.tool("landowner", place).href, "/farmland-atlas/sheet#55005");
-  assert.equal(P.tool("media", place).href, "/farmland-atlas/wisconsin/barron-county");
-  assert.equal(P.tool("analyst", place).href, "/developer");
-  assert.deepEqual(P.order(null), P.SECTIONS);
-  assert.equal(P.order("farmer")[0], "week");
+test("no roles: one go deeper row for everyone, built from what the place supports", () => {
+  assert.equal(P.ROLES, undefined);
+  assert.equal(P.order, undefined);
+  assert.equal(P.tool, undefined);
+  const place = { fips: "55005", st: "WI", slug: "barron-county", flags: "arpc", lat: 45.314, lng: -91.651, zip: "54728", sales: true };
+  const row = P.deeper(place), href = Object.fromEntries(row.map((l) => [l.id, l.href]));
+  assert.deepEqual(row.map((l) => l.id), ["scout", "comps", "bids", "hail", "sheet", "atlas", "arcplc", "prf", "rain", "rent", "data"]);
+  for (const l of row) assert.ok(/^\//.test(l.href) && l.text && !/—/.test(l.text), l.id);
+  assert.equal(href.scout, "/field-scout?at=45.3140,-91.6510&fips=55005");
+  assert.equal(href.comps, "/comp-report?lat=45.3140&lon=-91.6510&at=town&fips=55005");
+  assert.equal(href.bids, "/cash-bids?zip=54728");
+  assert.equal(href.hail, "/hail-map?lat=45.3140&lon=-91.6510");
+  assert.equal(href.sheet, "/farmland-atlas/sheet#55005");
+  assert.equal(href.atlas, "/farmland-atlas/wisconsin/barron-county");
+  assert.equal(href.arcplc, "/arc-plc/wisconsin/barron-county");
+  assert.equal(href.prf, "/prf/wisconsin/barron-county");
+  assert.equal(href.rain, "/rain/wisconsin/barron-county");
+  assert.equal(href.data, "/developer");
+  // no recorded sales in the state, no county pages, no ZIP: those links drop, the rest stay
+  const bare = P.deeper({ ...place, st: "KS", fips: "20009", slug: "barton-county", flags: "", zip: null, sales: false });
+  assert.deepEqual(bare.map((l) => l.id), ["scout", "bids", "hail", "sheet", "rent", "data"]);
+  assert.equal(bare.find((l) => l.id === "bids").href, "/cash-bids/kansas/");
+  assert.deepEqual(P.deeper(null), []);
+});
+
+test("print choices: the link form round-trips, defaults stay out of the link", () => {
+  assert.deepEqual(P.PRINT_PARTS, ["sentence", "week", "fingerprint", "unusual", "long", "sources"]);
+  assert.deepEqual(P.parsePrint(""), { parts: P.PRINT_PARTS, more: false });
+  assert.deepEqual(P.parsePrint("nonsense"), { parts: P.PRINT_PARTS, more: false });
+  assert.deepEqual(P.parsePrint("more"), { parts: P.PRINT_PARTS, more: true });
+  assert.deepEqual(P.parsePrint("long,week,week"), { parts: ["week", "long"], more: false });
+  assert.equal(P.printParam({ parts: P.PRINT_PARTS, more: false }), "");
+  assert.equal(P.printParam({ parts: P.PRINT_PARTS, more: true }), "more");
+  assert.equal(P.printParam({ parts: ["long", "week"], more: true }), "week,long,more");
+  for (const v of ["week", "fingerprint,more", "sentence,sources"]) assert.equal(P.printParam(P.parsePrint(v)), v);
+});
+
+test("the printed QR: shortest link that reopens the same report, smallest symbol, pinned", () => {
+  globalThis.window = globalThis.window || globalThis;
+  require(ROOT + "components/qr.js");
+  const Q = globalThis.AgQR;
+  const chetek = P.qrLink({ fips: "55005", zip: "54728" });
+  assert.equal(chetek, "HTTPS://AGSIST.COM/here?f=55005&z=54728");
+  assert.equal(P.qrLink({ fips: "17019" }), "HTTPS://AGSIST.COM/here?f=17019");
+  assert.equal(P.qrLink({ fips: "55005", at: { lat: 45.31413, lng: -91.651 } }), "HTTPS://AGSIST.COM/here?f=55005&a=45.3141,-91.6510");
+  assert.equal(P.qrLink({ fips: "55005", zip: "54728", print: { parts: ["week"], more: true } }), "HTTPS://AGSIST.COM/here?f=55005&z=54728&p=66");
+  // no tracking, no label, nothing but the place and the print choice
+  assert.doesNotMatch(P.qrLink({ fips: "55005", zip: "54728", q: "Chetek, WI" }), /utm|q=|for=/);
+  // the short keys reopen the same report
+  const back = P.parseQuery("?f=55005&z=54728&p=66");
+  assert.deepEqual([back.fips, back.zip, back.print], ["55005", "54728", { parts: ["week"], more: true }]);
+  assert.deepEqual(P.parseQuery("?f=55005&a=45.3141,-91.6510").at, { lat: 45.3141, lng: -91.651 });
+  for (let n = 1; n < 128; n++) { const c = P.printFromCode(n); if (n & 63) assert.equal(P.printCode(c), n); }
+  // module counts at level M, byte mode: version 3 (29 x 29) for a ZIP or a county, version 4 (33) with a print choice or a point
+  assert.equal(Q.matrix(chetek).length, 29);
+  assert.equal(Q.matrix(P.qrLink({ fips: "17019" })).length, 29);
+  assert.equal(Q.matrix(P.qrLink({ fips: "55005", zip: "54728", print: { parts: ["week"], more: true } })).length, 33);
+  assert.equal(Q.matrix(P.qrLink({ fips: "55005", at: { lat: 45.31413, lng: -91.651 } })).length, 33);
 });
 
 test("this week on the site's own files", () => {

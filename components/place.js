@@ -28,71 +28,99 @@
   var STATES = { AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California', CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', FL: 'Florida', GA: 'Georgia', HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa', KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', ME: 'Maine', MD: 'Maryland', MA: 'Massachusetts', MI: 'Michigan', MN: 'Minnesota', MS: 'Mississippi', MO: 'Missouri', MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey', NM: 'New Mexico', NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio', OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina', SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont', VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming' };
   var FIPS_ST = { '01': 'AL', '02': 'AK', '04': 'AZ', '05': 'AR', '06': 'CA', '08': 'CO', '09': 'CT', '10': 'DE', '12': 'FL', '13': 'GA', '15': 'HI', '16': 'ID', '17': 'IL', '18': 'IN', '19': 'IA', '20': 'KS', '21': 'KY', '22': 'LA', '23': 'ME', '24': 'MD', '25': 'MA', '26': 'MI', '27': 'MN', '28': 'MS', '29': 'MO', '30': 'MT', '31': 'NE', '32': 'NV', '33': 'NH', '34': 'NJ', '35': 'NM', '36': 'NY', '37': 'NC', '38': 'ND', '39': 'OH', '40': 'OK', '41': 'OR', '42': 'PA', '44': 'RI', '45': 'SC', '46': 'SD', '47': 'TN', '48': 'TX', '49': 'UT', '50': 'VT', '51': 'VA', '53': 'WA', '54': 'WV', '55': 'WI', '56': 'WY' };
 
-  /* ── roles ────────────────────────────────────────────────────── */
-  // Each role reorders the sections and adds one button to the matching tool.
+  /* ── sections and the go deeper row ──────────────────────────── */
+  // One fixed order for everyone (Sig, Oct 19: no role chips, every reader sees everything).
   var SECTIONS = ['week', 'fingerprint', 'unusual', 'long'];
-  var ROLES = [
-    { id: 'farmer', label: 'Farmer', order: ['week', 'fingerprint', 'unusual', 'long'], tool: 'bids' },
-    { id: 'landowner', label: 'Landowner', order: ['fingerprint', 'unusual', 'long', 'week'], tool: 'sheet' },
-    { id: 'buyer', label: 'Buyer or Seller', order: ['fingerprint', 'long', 'unusual', 'week'], tool: 'scout' },
-    { id: 'lender', label: 'Lender or Appraiser', order: ['fingerprint', 'long', 'unusual', 'week'], tool: 'comps' },
-    { id: 'adjuster', label: 'Adjuster', order: ['week', 'long', 'fingerprint', 'unusual'], tool: 'hail' },
-    { id: 'hauler', label: 'Hauler', order: ['week', 'fingerprint', 'unusual', 'long'], tool: 'bids' },
-    { id: 'elevator', label: 'Elevator or Plant', order: ['week', 'fingerprint', 'long', 'unusual'], tool: 'basis' },
-    { id: 'analyst', label: 'Analyst', order: ['fingerprint', 'unusual', 'long', 'week'], tool: 'data' },
-    { id: 'agency', label: 'Agency', order: ['fingerprint', 'long', 'unusual', 'week'], tool: 'sheet' },
-    { id: 'media', label: 'Media', order: ['unusual', 'fingerprint', 'long', 'week'], tool: 'atlas' }
-  ];
-  var ROLE_BY = {};
-  ROLES.forEach(function (r) { ROLE_BY[r.id] = r; });
-  function role(id) { return ROLE_BY[String(id || '').toLowerCase()] || null; }
-  function order(id) { var r = role(id); return r ? r.order.slice() : SECTIONS.slice(); }
+  // What the Print report panel can leave out, in page order.
+  var PRINT_PARTS = ['sentence', 'week', 'fingerprint', 'unusual', 'long', 'sources'];
 
   function stSlug(st) { return String(STATES[st] || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'); }
 
-  /* The one tool button for a role. place: { fips, st, slug, flags, lat, lng, zip, point }. */
-  function tool(id, place) {
-    var r = role(id);
-    if (!r || !place) return null;
-    var ll = place.lat != null && place.lng != null ? (+place.lat).toFixed(4) + ',' + (+place.lng).toFixed(4) : '';
-    switch (r.tool) {
-      case 'bids':
-        return place.zip ? { href: '/cash-bids?zip=' + place.zip, text: 'Cash bids near ' + place.zip }
-          : { href: '/cash-bids/' + stSlug(place.st) + '/', text: 'Cash bids across ' + STATES[place.st] };
-      case 'basis':
-        return { href: '/cash-bids/' + stSlug(place.st) + '/#basis', text: 'Basis at ' + STATES[place.st] + ' elevators' };
-      case 'scout':
-        return ll ? { href: '/field-scout?at=' + ll + '&fips=' + place.fips, text: 'Open this spot in Field Scout' } : null;
-      case 'comps':
-        return ll ? { href: '/comp-report?lat=' + (+place.lat).toFixed(4) + '&lon=' + (+place.lng).toFixed(4) + (place.point ? '' : '&at=town') + '&fips=' + place.fips, text: 'Comparable sales report' } : null;
-      case 'hail':
-        return ll ? { href: '/hail-map?lat=' + (+place.lat).toFixed(4) + '&lon=' + (+place.lng).toFixed(4), text: 'Hail report for this spot (adjuster sheet)' } : null;
-      case 'sheet':
-        return { href: '/farmland-atlas/sheet#' + place.fips, text: 'Printable county sheet' };
-      case 'atlas':
-        return place.flags && place.flags.indexOf('a') >= 0 ? { href: '/farmland-atlas/' + stSlug(place.st) + '/' + place.slug, text: 'Farmland Atlas county page' }
-          : { href: '/farmland-atlas', text: 'Farmland Atlas' };
-      case 'data':
-        return { href: '/developer', text: 'Data files and embeds' };
-    }
-    return null;
+  /* Every tool for one place, the same row for everyone, built from what the place supports.
+     place: { fips, st, slug, flags, lat, lng, zip, point, sales } where sales is true when
+     AGSIST holds recorded sales for the state (data/land/<st>/index.json has counties). */
+  function deeper(place) {
+    if (!place || !place.fips || !STATES[place.st]) return [];
+    var s = stSlug(place.st), f = place.flags || '', out = [];
+    var has = place.lat != null && place.lng != null && isFinite(+place.lat) && isFinite(+place.lng);
+    var lat = has ? (+place.lat).toFixed(4) : '', lng = has ? (+place.lng).toFixed(4) : '';
+    if (has) out.push({ id: 'scout', href: '/field-scout?at=' + lat + ',' + lng + '&fips=' + place.fips, text: 'Field Scout at this spot' });
+    if (has && place.sales) out.push({ id: 'comps', href: '/comp-report?lat=' + lat + '&lon=' + lng + (place.point ? '' : '&at=town') + '&fips=' + place.fips, text: 'Comparable sales report' });
+    out.push(place.zip ? { id: 'bids', href: '/cash-bids?zip=' + place.zip, text: 'Cash bids near here' }
+      : { id: 'bids', href: '/cash-bids/' + s + '/', text: 'Cash bids across ' + STATES[place.st] });
+    if (has) out.push({ id: 'hail', href: '/hail-map?lat=' + lat + '&lon=' + lng, text: 'Hail report for this spot' });
+    out.push({ id: 'sheet', href: '/farmland-atlas/sheet#' + place.fips, text: 'Printable county sheet' });
+    if (f.indexOf('a') >= 0) out.push({ id: 'atlas', href: '/farmland-atlas/' + s + '/' + place.slug, text: 'Farmland Atlas county page' });
+    if (f.indexOf('c') >= 0) out.push({ id: 'arcplc', href: '/arc-plc/' + s + '/' + place.slug, text: 'ARC or PLC for this county' });
+    if (f.indexOf('p') >= 0) out.push({ id: 'prf', href: '/prf/' + s + '/' + place.slug, text: 'PRF pasture insurance' });
+    if (f.indexOf('r') >= 0) out.push({ id: 'rain', href: '/rain/' + s + '/' + place.slug, text: 'Rain this year, county page' });
+    out.push({ id: 'rent', href: '/rent/' + s, text: STATES[place.st] + ' cash rent' });
+    out.push({ id: 'data', href: '/developer', text: 'Data downloads' });
+    return out;
+  }
+
+  /* &print=week,long,more: the parts a shared link prints. Unknown words are dropped; no
+     known part means everything. more = the fingerprint and year tables printed in full. */
+  function parsePrint(v) {
+    var parts = [], more = false;
+    String(v || '').toLowerCase().split(/[,\s]+/).forEach(function (w) {
+      if (w === 'more') more = true;
+      else if (PRINT_PARTS.indexOf(w) >= 0 && parts.indexOf(w) < 0) parts.push(w);
+    });
+    if (!parts.length) parts = PRINT_PARTS.slice();
+    return { parts: PRINT_PARTS.filter(function (p) { return parts.indexOf(p) >= 0; }), more: more };
+  }
+  /* The print choice as one number for the QR link: bit i = PRINT_PARTS[i] on, 64 = more. */
+  function printCode(choice) {
+    var n = 0;
+    PRINT_PARTS.forEach(function (p, i) { if (choice && choice.parts && choice.parts.indexOf(p) >= 0) n |= 1 << i; });
+    if (!n) n = 63;
+    if (choice && choice.more) n |= 64;
+    return n;
+  }
+  function printFromCode(n) {
+    var parts = PRINT_PARTS.filter(function (p, i) { return n & (1 << i); });
+    return { parts: parts.length ? parts : PRINT_PARTS.slice(), more: !!(n & 64) };
+  }
+  /* The link the printed QR code carries: the shortest that reopens the same report.
+     Uppercase scheme and host (QR stores them the same; phones read them the same), the
+     case-sensitive path as is, short keys, no label, no tracking. place: { fips, zip, at, print }. */
+  function qrLink(place) {
+    if (!place || !place.fips) return '';
+    var q = ['f=' + place.fips];
+    if (place.zip) q.push('z=' + place.zip);
+    else if (place.at) q.push('a=' + (+place.at.lat).toFixed(4) + ',' + (+place.at.lng).toFixed(4));
+    var n = printCode(place.print);
+    if (n !== 63) q.push('p=' + n);
+    return 'HTTPS://AGSIST.COM/here?' + q.join('&');
+  }
+  /* The &print= value for a choice; '' when it is the default (everything, no more detail). */
+  function printParam(choice) {
+    var parts = PRINT_PARTS.filter(function (p) { return choice && choice.parts && choice.parts.indexOf(p) >= 0; });
+    if (!parts.length) parts = PRINT_PARTS.slice();
+    var all = parts.length === PRINT_PARTS.length, more = !!(choice && choice.more);
+    if (all && !more) return '';
+    return (all ? [] : parts).concat(more ? ['more'] : []).join(',');
   }
 
   /* ── the query ────────────────────────────────────────────────── */
   function num(x) { var n = typeof x === 'number' ? x : (x == null || x === '' ? NaN : Number(x)); return isFinite(n) ? n : null; }
   function parseQuery(search) {
-    var out = { q: '', fips: null, zip: null, at: null, role: null };
+    var out = { q: '', fips: null, zip: null, at: null, print: null };
     var s = String(search || '').replace(/^\?/, '');
     s.split('&').forEach(function (kv) {
       if (!kv) return;
       var i = kv.indexOf('='), k = decodeURIComponent((i < 0 ? kv : kv.slice(0, i)).replace(/\+/g, ' ')), v = '';
       try { v = i < 0 ? '' : decodeURIComponent(kv.slice(i + 1).replace(/\+/g, ' ')); } catch (e) { v = ''; }
       v = v.trim();
+      // f z a p: the short keys the printed QR code carries (smallest symbol; see qrLink)
       if (k === 'q') out.q = v.slice(0, 80);
-      else if (k === 'fips' && /^\d{5}$/.test(v) && FIPS_ST[v.slice(0, 2)]) out.fips = v;
-      else if (k === 'zip' && /^\d{5}$/.test(v)) out.zip = v;
-      else if (k === 'at') out.at = parsePoint(v);
-      else if (k === 'for' && role(v)) out.role = v.toLowerCase();
+      else if ((k === 'fips' || k === 'f') && /^\d{5}$/.test(v) && FIPS_ST[v.slice(0, 2)]) out.fips = v;
+      else if ((k === 'zip' || k === 'z') && /^\d{5}$/.test(v)) out.zip = v;
+      else if (k === 'at' || k === 'a') out.at = parsePoint(v);
+      else if (k === 'print') out.print = parsePrint(v);
+      else if (k === 'p') out.print = /^\d{1,3}$/.test(v) ? printFromCode(+v) : parsePrint(v);
+      // &for= (the old role chips, removed Oct 19) and any other key: ignored
     });
     return out;
   }
@@ -466,8 +494,8 @@
   }
 
   return {
-    ROLES: ROLES, SECTIONS: SECTIONS, STATES: STATES, FIPS_ST: FIPS_ST, MIN_RANK_N: MIN_RANK_N,
-    role: role, order: order, tool: tool, parseQuery: parseQuery, parsePoint: parsePoint, classify: classify,
+    SECTIONS: SECTIONS, PRINT_PARTS: PRINT_PARTS, STATES: STATES, FIPS_ST: FIPS_ST, MIN_RANK_N: MIN_RANK_N,
+    deeper: deeper, parsePrint: parsePrint, printParam: printParam, printCode: printCode, printFromCode: printFromCode, qrLink: qrLink, parseQuery: parseQuery, parsePoint: parsePoint, classify: classify,
     splitState: splitState, normName: normName, stateFromName: stateFromName, findCounty: findCounty,
     countyInState: countyInState, countyAt: countyAt, stateOf: stateOf, rankIn: rankIn, profile: profile,
     sentence: sentence, fmt: fmt, fmtShort: fmtShort, ordinal: ordinal, miles: miles, rainSoFar: rainSoFar,
