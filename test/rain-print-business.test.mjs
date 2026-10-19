@@ -119,3 +119,23 @@ test("standing rules: no sponsor, name off the print, honest copy", () => {
   assert.ok(!/compliments of|archival|founding|only \d+ left|hurry|limited time|best[- ]selling|\d+ (businesses|elevators) (have )?(ordered|trust)/i.test(COPY), "no claims Sig ruled out, no fake scarcity or counts");
   assert.ok(!/amazon|walmart|etsy|tractor supply|fleet farm|costco|staples|fedex office|printful/i.test(HTML), "no store or printer names");
 });
+
+// 2026-10-19 (board seat C: "AP will not pay without a PO"): optional PO number and invoice contact. The worker
+// drops fields it doesn't know, so they go at the top of the notes, inside the worker's 2000 characters.
+test("PO number and invoice contact: optional fields, carried in the notes the worker keeps", () => {
+  for (const id of ["rb-po", "rb-inv-name", "rb-inv-email"]) {
+    const tag = MAIN.match(new RegExp('<input id="' + id + '"[^>]*>'));
+    assert.ok(tag, id);
+    assert.doesNotMatch(tag[0], /required/, id + " is optional");
+  }
+  assert.match(MAIN, /<legend>For the invoice \(optional\)<\/legend>/);
+  assert.deepEqual({ ...B.invoiceLines("", "", "") }, { text: "", bad: false });
+  assert.deepEqual({ ...B.invoiceLines(" 4512-A ", "Jane Berg", "ap@coop.example") }, { text: "PO number: 4512-A\nSend the invoice to: Jane Berg, ap@coop.example", bad: false });
+  assert.deepEqual({ ...B.invoiceLines("", "", "ap@coop.example") }, { text: "Send the invoice to: ap@coop.example", bad: false });
+  assert.equal(B.invoiceLines("", "Jane", "not an email").bad, true);
+  const worker = readFileSync(ROOT + "workers/subs-worker.js", "utf8");
+  const notes = worker.match(/"rain-print-business": \{[\s\S]*?notes: \[(\d+), false, "text"\]/);
+  assert.equal(Number(notes[1]), B.NOTES_MAX, "the cap is the worker's own");
+  assert.ok(!/\bpo:|invoice_/.test(JS.match(/var x = \{([\s\S]*?)\};/)[1]), "no new field the worker would drop");
+  assert.match(JS, /x\.notes = both/);
+});

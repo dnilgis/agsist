@@ -184,6 +184,17 @@
       (x.note_all ? '\nNote for every print: ' + x.note_all : '') + '\nTowns and years:\n' + x.towns + (x.notes ? '\nNotes: ' + x.notes : '') +
       (x.logo ? '\nLogo: ' + LOGO_LINK + x.logo : '') + '\n';
   }
+  var NOTES_MAX = 2000;
+  /* -> {text, bad}: "PO number: ...\nSend the invoice to: name, email", '' when all three are empty;
+     bad when an invoice email is given and doesn't read as one. */
+  function invoiceLines(po, name, email) {
+    po = clean(po, 40); name = clean(name, 80); email = String(email || '').trim();
+    if (email && !EMAIL_RE.test(email)) return { text: '', bad: true };
+    var who = [name, email].filter(Boolean).join(', '), out = [];
+    if (po) out.push('PO number: ' + po);
+    if (who) out.push('Send the invoice to: ' + who);
+    return { text: out.join('\n'), bad: false };
+  }
   var sending = false, ASKED = '';   // ASKED: the list the mismatch question was asked about
   function submit(e) {
     e.preventDefault();
@@ -202,6 +213,15 @@
       : qn >= 1 && qn < MIN ? ['rb-qty', 'Business orders start at ' + MIN + '. For fewer, order on the Rain Print page.']
       : !(qn >= MIN && qn <= MAX) ? ['rb-qty', 'Put how many prints, from ' + MIN + ' to ' + MAX + '. For more than ' + MAX + ', put ' + MAX + ' and say how many in the notes.']
       : !x.towns ? ['rb-towns', 'Add the towns and years, or the one town for all of them.'] : null;
+    /* PO number and invoice contact (2026-10-19): the worker keeps only the fields it knows (subs-worker.js
+       FORM_KINDS, unknown fields dropped), so they ride at the top of the notes, where Sig reads them. */
+    var inv = invoiceLines($('rb-po').value, $('rb-inv-name').value, $('rb-inv-email').value);
+    if (!bad && inv.bad) bad = ['rb-inv-email', 'Check the invoice email, or leave it empty.'];
+    if (!bad && inv.text) {
+      var both = inv.text + (x.notes ? '\n\n' + x.notes : '');
+      if (both.length > NOTES_MAX) bad = ['rb-notes', 'The notes and the invoice details are too long together. Shorten the notes a little.'];
+      else x.notes = both;
+    }
     if (!bad && LOGO && LOGO.saving) bad = ['rb-logo-file', 'The logo is still saving. Send again in a moment.'];
     if (bad) { out.innerHTML = '<p class="rbz-out rbz-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
     // 30 prints and 3 towns: asked once (RainPrint.bizTownCheck); Send again sends it as it is
@@ -242,7 +262,7 @@
     }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
   }
 
-  root.RpBusiness = { listText: listText, TEMPLATE: TEMPLATE, money: money };
+  root.RpBusiness = { listText: listText, TEMPLATE: TEMPLATE, money: money, invoiceLines: invoiceLines, NOTES_MAX: NOTES_MAX };
   if (!doc || !$('rb-form')) return;
 
   function init() {

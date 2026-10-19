@@ -87,6 +87,8 @@
     .rbz-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem}
     @media (max-width:560px){.rbz-grid{grid-template-columns:1fr}}
     .rbz-wide{grid-column:1/-1}
+    .rbz fieldset .rbz-fine{margin:.2rem 0 .5rem}
+    @media (max-width:560px){.rbz-gap{display:none}}
     .rbz-f{display:flex;flex-direction:column;gap:.3rem}
     .rbz-f span,.rbz-lh,.rbz fieldset legend{font-size:.85rem;font-weight:600;color:var(--text)}
     .rbz input[type=text],.rbz input[type=email],.rbz input[type=tel],.rbz input[type=number],.rbz textarea{width:100%;box-sizing:border-box;min-height:44px;padding:.55rem .7rem;font:inherit;font-size:16px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:6px}
@@ -249,6 +251,15 @@
               <p class="rbz-fine rbz-msg" id="rb-logo-msg" aria-live="polite"></p>
             </div>
             <label class="rbz-f rbz-wide"><span>Notes (optional)</span><textarea id="rb-notes" maxlength="2000" rows="2" placeholder="A date you need them by, framed for some and prints for others"></textarea></label>
+            <fieldset class="rbz-wide" aria-describedby="rb-inv-help"><legend>For the invoice (optional)</legend>
+              <p class="rbz-fine" id="rb-inv-help">If your office needs a PO number on the invoice, or the invoice goes to someone else.</p>
+              <div class="rbz-grid">
+                <label class="rbz-f"><span>PO number</span><input id="rb-po" type="text" maxlength="40" autocomplete="off"></label>
+                <span class="rbz-gap" aria-hidden="true"></span>
+                <label class="rbz-f"><span>Send the invoice to (name)</span><input id="rb-inv-name" type="text" maxlength="80" autocomplete="off"></label>
+                <label class="rbz-f"><span>Their email</span><input id="rb-inv-email" type="email" maxlength="254" autocomplete="off"></label>
+              </div>
+            </fieldset>
             <label class="rbz-hp" aria-hidden="true">Leave empty<input name="_gotcha" type="text" tabindex="-1" autocomplete="off"></label>
           </div>
           <p style="margin:.9rem 0 0"><button class="rbz-go" id="rb-submit" type="submit">Send quote request</button></p>
