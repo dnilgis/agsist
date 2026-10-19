@@ -87,7 +87,10 @@ def sob_layer(s, latest_year, ran=False, partial_year=None, col_total_indemnity=
             per_year[y]["partial"] = True
             continue
         if r is not None:
-            if r > 1:
+            # on the raw figures (2026-10-19): the ratio is rounded to 0.01,
+            # so a year paying $1.004 per $1 of premium read 1.00 and was not
+            # counted (Fresno). The premium floor still gates it (r is None).
+            if v.get("indem", 0) > v.get("prem", 0):
                 over_one += 1
             if worst is None or r > worst["ratio"]:
                 worst = {"year": y, "ratio": r}
@@ -272,6 +275,13 @@ def drought_layer(d, half=50.0, ran=False, this_year=None):
     out["weeks"] = {"counted": maps, "d2": d2, "d3": d3, "share_d2_pct": round(d2 / maps * 100, 1), "share_d3_pct": round(d3 / maps * 100, 1)}
     worst = max(full, key=lambda y: (full[y]["d2"], full[y]["d3"]))
     out["worst_year"] = {"year": worst, "d2": full[worst]["d2"], "d3": full[worst]["d3"]}
+    # Ties are kept (2026-10-19): the most D2 weeks, then D3, broke a tie by
+    # D3 or by the latest year, and a page named one year where three had the
+    # same count. tied: the other years with the same D2 weeks, oldest first.
+    if full[worst]["d2"] > 0:
+        tied = sorted(y for y in full if y != worst and full[y]["d2"] == full[worst]["d2"])
+        if tied:
+            out["worst_year"]["tied"] = tied
     out["years_half_or_more"] = sorted(y for y, v in full.items() if v["d2"] >= HALF_YEAR_WEEKS)
     last5 = sorted(full)[-5:]
     out["last5"] = {"from": last5[0], "to": last5[-1], "d2": sum(full[y]["d2"] for y in last5), "d3": sum(full[y]["d3"] for y in last5),
@@ -582,6 +592,12 @@ def selftest():
     assert "no non-irrigated cash rent" in V3["rent_to_value"]["status"] and "change" not in V3
     assert value_layer(None, ran=True)["status"].startswith("withheld")
     # crp: 20,000 acres of 180,000 harvested -> 10.0% of the base; peak 30,000 in 2007 -> -33.3%; expiring FY2026-2028 = 5,000 = 25% of enrolled
+    # Fresno 2021: $71,918,053 paid on $71,638,728 of premium is a year over 1.00, though the ratio prints 1.00
+    sf = {"years": {str(y): {"liab": 1e9, "prem": 71638728, "indem": 50e6 if y != 2021 else 71918053, "policies": 1} for y in range(2011, 2022)}}
+    Lf = sob_layer(sf, 2025, ran=True)
+    assert Lf["per_year"][2021]["ratio"] == 1.0 and Lf["years_over_one"] == 1, Lf["years_over_one"]
+    sf["years"]["2020"] = {"liab": 1e6, "prem": 9e5, "indem": 2e6, "policies": 1}   # under the premium floor: not counted
+    assert sob_layer(sf, 2025, ran=True)["years_over_one"] == 1
     C = crp_layer({"acres": {"2007": 30000, "2020": 25000, "2025": 20000}, "expiring": {"2025": 100, "2026": 2000, "2027": 2000, "2028": 1000, "2029": 9000}},
                   harvested_cropland=180000, ran=True, this_fy=2026)
     assert C["latest"] == {"year": 2025, "acres": 20000} and C["peak"] == {"year": 2007, "acres": 30000} and C["change_from_peak_pct"] == -33.3, C
@@ -595,6 +611,11 @@ def selftest():
     assert D["worst_year"] == {"year": 2012, "d2": 30, "d3": 10} and D["years_half_or_more"] == [2012] and D["last_full_year"] == 2013
     assert D["partial_year"] == {"year": 2026, "maps": 20, "d2": 5, "d3": 0} and D["last5"]["d2"] == 30
     assert D["missing_years"] == []
+    # ties are kept: 2014, 2015 and 2016 all 30 weeks; the most D3 (2016) leads, the others are named
+    Dt = drought_layer({"2014": {"maps": 52, "d2": 30, "d3": 2}, "2015": {"maps": 52, "d2": 30, "d3": 1}, "2016": {"maps": 52, "d2": 30, "d3": 9},
+                        "2017": {"maps": 52, "d2": 3, "d3": 0}}, ran=True, this_year=2026)
+    assert Dt["worst_year"] == {"year": 2016, "d2": 30, "d3": 9, "tied": [2014, 2015]}, Dt["worst_year"]
+    assert "tied" not in drought_layer({"2014": {"maps": 52, "d2": 0, "d3": 0}, "2015": {"maps": 52, "d2": 0, "d3": 0}}, ran=True)["worst_year"]
     # the 2024 hole: one map in a finished year is named, not counted and not skipped silently
     Dh = drought_layer({"2023": {"maps": 52, "d2": 2, "d3": 0}, "2024": {"maps": 1, "d2": 0, "d3": 0}, "2025": {"maps": 52, "d2": 0, "d3": 0}}, ran=True, this_year=2026)
     assert Dh["missing_years"] == [2024] and Dh["weeks"]["counted"] == 104 and Dh["last5"]["maps"] == 104, Dh
