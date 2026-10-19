@@ -16,6 +16,10 @@
  * in the towns box for the buyer to check; nothing is uploaded until they
  * send. Over the form's 8,000 characters, the page says to email the file.
  *
+ * The request goes to the AGSIST worker only, never to Formspree (form-post.js
+ * WORKER_ONLY, 2026-10-19): a failed or silent worker leaves the form filled in
+ * and says to call or text Sig, or try again.
+ *
  * Analytics: rain_print_business {result, product, qty, placement:'landing'},
  * rp_business_cta {cta}, rp_business_template, rp_business_csv {result}.
  */
@@ -24,6 +28,7 @@
   var doc = root.document;
   var $ = function (id) { return doc.getElementById(id); };
   var ORDER_TO = 'sig@farmers1st.com';
+  var PHONE = '715-797-2428';
   var LOGO_LINK = 'https://agsist-subs.dnilgis.workers.dev/rp-logo/';
   var EMAIL_RE = /^[^\s@,;<>"]+@[^\s@,;<>"]+\.[A-Za-z]{2,}$/;
   var TOWNS_MAX = 8000;
@@ -50,6 +55,16 @@
   }
   function RP() { return root.RainPrint || null; }
 
+  /* The sample date (data/rain-print.json business_sample_by, Sig sets it; null shows nothing): through that
+     day, 'To see one before Christmas, order the sample by Nov 6.'; a bad date or a day past it, ''. */
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function sampleByLine(todayIso, by) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(by || ''));
+    if (!m || +m[2] < 1 || +m[2] > 12 || +m[3] < 1 || +m[3] > 31) return '';
+    if (String(todayIso || '') > by) return '';
+    return 'To see one before Christmas, order the sample by ' + MON[+m[2] - 1] + ' ' + (+m[3]) + '.';
+  }
+
   /* ---------- table, dates and the quote line, from the data ---------- */
   function syncFromData(j) {
     var R = RP();
@@ -66,6 +81,8 @@
       else if (px && R.bizChristmasLine) px.textContent = R.bizChristmasLine(chicagoToday(), j) + ' This year\u2019s print ships in January, once the full year\u2019s numbers are in.';
       else c2.textContent = 'ask me for dates';
     }
+    var sb = $('rbz-sample-by'), sbt = sampleByLine(chicagoToday(), j.business_sample_by);
+    if (sb) { sb.textContent = sbt; sb.hidden = !sbt; }
     var rows = R.bizRows(j), body = $('rbz-tiers-body');
     if (body && rows.length) {
       body.innerHTML = rows.map(function (r) {
@@ -179,6 +196,17 @@
       (x.note_all ? '\nNote for every print: ' + x.note_all : '') + '\nTowns and years:\n' + x.towns + (x.notes ? '\nNotes: ' + x.notes : '') +
       (x.logo ? '\nLogo: ' + LOGO_LINK + x.logo : '') + '\n';
   }
+  var NOTES_MAX = 2000;
+  /* -> {text, bad}: "PO number: ...\nSend the invoice to: name, email", '' when all three are empty;
+     bad when an invoice email is given and doesn't read as one. */
+  function invoiceLines(po, name, email) {
+    po = clean(po, 40); name = clean(name, 80); email = String(email || '').trim();
+    if (email && !EMAIL_RE.test(email)) return { text: '', bad: true };
+    var who = [name, email].filter(Boolean).join(', '), out = [];
+    if (po) out.push('PO number: ' + po);
+    if (who) out.push('Send the invoice to: ' + who);
+    return { text: out.join('\n'), bad: false };
+  }
   var sending = false, ASKED = '';   // ASKED: the list the mismatch question was asked about
   function submit(e) {
     e.preventDefault();
@@ -197,6 +225,15 @@
       : qn >= 1 && qn < MIN ? ['rb-qty', 'Business orders start at ' + MIN + '. For fewer, order on the Rain Print page.']
       : !(qn >= MIN && qn <= MAX) ? ['rb-qty', 'Put how many prints, from ' + MIN + ' to ' + MAX + '. For more than ' + MAX + ', put ' + MAX + ' and say how many in the notes.']
       : !x.towns ? ['rb-towns', 'Add the towns and years, or the one town for all of them.'] : null;
+    /* PO number and invoice contact (2026-10-19): the worker keeps only the fields it knows (subs-worker.js
+       FORM_KINDS, unknown fields dropped), so they ride at the top of the notes, where Sig reads them. */
+    var inv = invoiceLines($('rb-po').value, $('rb-inv-name').value, $('rb-inv-email').value);
+    if (!bad && inv.bad) bad = ['rb-inv-email', 'Check the invoice email, or leave it empty.'];
+    if (!bad && inv.text) {
+      var both = inv.text + (x.notes ? '\n\n' + x.notes : '');
+      if (both.length > NOTES_MAX) bad = ['rb-notes', 'The notes and the invoice details are too long together. Shorten the notes a little.'];
+      else x.notes = both;
+    }
     if (!bad && LOGO && LOGO.saving) bad = ['rb-logo-file', 'The logo is still saving. Send again in a moment.'];
     if (bad) { out.innerHTML = '<p class="rbz-out rbz-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
     // 30 prints and 3 towns: asked once (RainPrint.bizTownCheck); Send again sends it as it is
@@ -220,17 +257,24 @@
       $('rb-form').reset(); syncShip(); syncTier(); csvMsg('');
       LOGO_ASK++; LOGO = null; syncLogo(); logoMsg('');
       try { out.firstChild.focus(); } catch (err) {}
-    }).catch(function () {
-      ga('rain_print_business', { result: 'fail', product: x.product, qty: qn, placement: 'landing' });
+    }).catch(function (err) {
+      /* The list never goes to Formspree (form-post.js WORKER_ONLY, Sig 2026-10-19): when the worker fails or
+         goes quiet, everything stays filled in on the page and the reader calls or sends again. A worker that
+         only went quiet may still have it, so that case says so. Email to Sig stays as a second way. */
+      var slow = !!(err && err.slow);
+      ga('rain_print_business', { result: slow ? 'slow' : 'fail', product: x.product, qty: qn, placement: 'landing' });
       var body = asText(x);
       var href = 'mailto:' + ORDER_TO + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
-      out.innerHTML = '<div class="rbz-out rbz-bad"><p><b>That didn’t go through, so nothing was sent.</b></p><p>Email it to ' + ORDER_TO + ' instead. The request is written out below.</p>' +
+      out.innerHTML = '<div class="rbz-out rbz-bad" id="rb-fail" tabindex="-1"><p><b>' + (slow ? 'That may not have sent.' : 'That didn’t send.') +
+        ' Call or text <a href="tel:+17157972428">' + PHONE + '</a>, or try again.</b></p>' +
+        '<p>Everything you typed is still in the form above.' + (slow ? ' If it went through after all, I’ll catch the repeat.' : '') + '</p>' +
+        '<p>Or email it to ' + ORDER_TO + '. The request is written out below.</p>' +
         '<p><a class="rbz-ghost" id="rb-mail" href="' + esc(href) + '">Email the request</a></p><textarea readonly rows="7" aria-label="Your quote request, as text">' + esc(body) + '</textarea></div>';
-      try { $('rb-mail').focus(); } catch (err) {}
+      try { $('rb-fail').focus(); } catch (e2) {}
     }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
   }
 
-  root.RpBusiness = { listText: listText, TEMPLATE: TEMPLATE, money: money };
+  root.RpBusiness = { listText: listText, TEMPLATE: TEMPLATE, money: money, invoiceLines: invoiceLines, NOTES_MAX: NOTES_MAX, sampleByLine: sampleByLine };
   if (!doc || !$('rb-form')) return;
 
   function init() {
