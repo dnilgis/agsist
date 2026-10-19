@@ -107,3 +107,48 @@ test("P5: cattle page reads feeders-nearby and labels the range by its contract"
   assert.match(code, /nGF=q\['feeders-nearby'\]/);
   assert.match(code, /'52-Week Range \\u00b7 '\+nGF\.contract\+' contract'/);
 });
+
+/* ---- Farmland Atlas details: the real cases, on the built pages ---- */
+test("A1: sheet prints the share of cropland it tests (acres over cropland)", () => {
+  const s = read("farmland-atlas/sheet.html");
+  assert.match(s, /s0>0&&s0<0\.005\?'under 1%':pct\(s0,0\)/);
+  assert.doesNotMatch(s, /pct\(x\.share,0\)\)\+' of cropland'/);
+});
+
+test("A2: Fresno counts 2021 ($71.9M paid on $71.6M premium) as a year over 1.00", () => {
+  const c = JSON.parse(read("data/atlas/counties/06019.json"));
+  assert.equal(c.sob.years_over_one, 11);
+  assert.match(read("farmland-atlas/california/fresno-county.html"), />11 of 37</);
+});
+
+test("A3: tied worst drought years are named", () => {
+  const c = JSON.parse(read("data/atlas/counties/06019.json"));
+  assert.deepEqual(c.drought.worst_year.tied, [2014, 2015, 2022]);
+  assert.match(read("farmland-atlas/california/fresno-county.html"), /2016 \(tied with 2014, 2015, 2022\)<small>52 weeks/);
+  assert.match(read("components/drought-county.js"), /'Worst year: '\+wy\.year\+', '\+wy\.d2\+' weeks'\+\(wy\.tied/);
+  assert.match(read("farmland-atlas/sheet.html"), /' \(tied with '\+Dr\.worst_year\.tied\.join/);
+});
+
+test("A4: a withheld yield gives the yield's own reason on the key card", () => {
+  assert.match(read("farmland-atlas/arizona/cochise-county.html"), /<div class="t">Corn yield<\/div><div class="v"><small>n\/a<\/small><\/div><div class="s">fewer than 8 published county corn yields<\/div>/);
+});
+
+test("A5: a nonzero drought count that rounds to 0% says under 1%", () => {
+  const h = read("farmland-atlas/alaska/anchorage-municipality.html");
+  assert.match(h, /under 1% of weeks/);
+  assert.doesNotMatch(h, />0% of weeks/);
+  assert.match(read("farmland-atlas/sheet.html"), /wk\.d2>0&&t==='0'\?'under 1%'/);
+});
+
+test("A6: the sheet's rank sentence is the county page's", () => {
+  const sent = "Rent ranks count every county with a published rent in the same survey year, within the state (the same counties as the state rent page); other ranks count counties with 10,000 acres or more in farms.";
+  assert.ok(read("farmland-atlas/wisconsin/barron-county.html").includes(sent));
+  assert.ok(read("farmland-atlas/sheet.html").includes(sent));
+});
+
+test("A7: rent-to-value always has two decimals", () => {
+  assert.match(read("farmland-atlas/alabama/escambia-county.html"), /census value, 2022<\/span><span class="r">2\.90%/);
+  const s = read("farmland-atlas/sheet.html");
+  assert.equal((s.match(/rh\(V\.rent_to_value\.pct,2\)\+'%'/g) || []).length, 2);
+  assert.doesNotMatch(s, /fmt\(V\.rent_to_value\.pct,2\)/);
+});
