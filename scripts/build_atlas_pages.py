@@ -1566,7 +1566,13 @@ def county_page(W, f, d, stamp):
     keys += key("Cash rent, non-irrigated", money(rv["value"]) if rv else None, "/ac",
                 (str(rv["year"]) + " county average") if rv else ("no dry rent published" if ri else why(R)), st_rent, money, st)
     if ri:
-        keys += key("Cash rent, irrigated", money(ri["value"]), "/ac", "%s county average" % ri["year"], st_irr, money, st)
+        # the neighbor table's rule: a rent more than three survey years old shows n/a
+        # with its year (phone audit Oct 19, 2026: Marathon WI led with a 2011 irrigated rent)
+        ri_old = bool(RL and ri.get("year") and ri["year"] < RL - 3)
+        if ri_old:
+            keys += key("Cash rent, irrigated", None, "/ac", "last published %s, more than three survey years old" % ri["year"], None, money, st)
+        else:
+            keys += key("Cash rent, irrigated", money(ri["value"]), "/ac", "%s county average" % ri["year"], st_irr, money, st)
     ss = state_survey(W, st, V.get("latest_year") if ok(V) else get(W.atlas, "national", "value", "year"))
     # same definition beside the census value: farm real estate is land and buildings, as the census asks.
     # Cropland alone sat here until Oct 16, 2026 and read as "my county is 43% below the state".

@@ -2591,6 +2591,24 @@ def wheat_class_quote(prices, cls):
     return (r[0], r[1]) if r else (None, None)
 
 
+def new_crop_quote(q, root, mon):
+    """The new-crop benchmark the page script shows (newCropKey in
+    components/futures.js): the next <mon> after the nearby contract, so Dec
+    corn while Dec '26 is nearby is Dec '27. Falls back to <root>-<mon>. The
+    seed picked corn-dec and hid the line the script then drew, a layout
+    shift on the phone (audit Oct 19, 2026)."""
+    q = q or {}
+    n = q.get(root + "-nearby") or {}
+    m = re.match(r"^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})\b", str(n.get("ticker") or ""))
+    hm = _MON3.index(mon) + 1
+    if m:
+        ny, nm = 2000 + int(m.group(2)), _FCODE.index(m.group(1)) + 1
+        key = root + "-" + mon + str(ny + 1 if nm >= hm else ny)[-2:]
+        if key in q:
+            return q[key]
+    return q.get(root + "-" + mon)
+
+
 def _nearby_label(prices, crop, fallback):
     """'Nearby Dec \'26' the way each page script builds it, else its fallback."""
     q = (prices.get("quotes") or {}).get(crop + "-nearby")
@@ -2610,7 +2628,7 @@ def futures_hero_seeds(page, prices, now=None):
         out["exch"] = ("CBOT &middot; CME Group &middot; " + _e(_nearby_label(prices, "corn", "Most-active (ZC)")) +
                        " &middot; " + _e(quote_when(hq, fetched)))
         out["chg"] = _chg_seed(_fut_chg(hq))
-        cd = q.get("corn-dec")
+        cd = new_crop_quote(q, "corn", "dec")
         # nearby == new crop (Dec corn from Sep on): the hero already shows it
         same = bool(cd and hq and hq.get("ticker") and hq.get("ticker") == cd.get("ticker"))
         if cd and cd.get("close") is not None and not same:
@@ -2632,7 +2650,7 @@ def futures_hero_seeds(page, prices, now=None):
         out["contract"] = _e(_nearby_label(prices, "beans", "Most-active (ZS)"))
         out["when"] = _e(quote_when(hq, fetched))
         out["chg"] = _chg_seed(_fut_chg(hq))
-        nq = q.get("beans-nov")
+        nq = new_crop_quote(q, "beans", "nov")
         same = bool(nq and hq and hq.get("ticker") and hq.get("ticker") == nq.get("ticker"))
         if nq and nq.get("close") is not None and not same:
             h = _ticker_label(nq, "Nov") + " new crop: <strong>$" + grain_dollars(nq) + "</strong>"

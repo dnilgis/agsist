@@ -896,11 +896,12 @@ def build_state_page(st, d, s, all_states, aslug=None):
 <main class="rs-wrap">
   <p class="sub" style="margin-top:14px"><a href="/rent/" style="color:var(--text-muted)">Cash Rent by State</a> &rsaquo; <b>{name}</b></p>
   <h1>{name} Cash Rent by County, {yr}</h1>
+  <p class="rs-jump" style="margin:.1rem 0 .3rem"><a href="#counties" style="display:inline-flex;align-items:center;min-height:44px;color:var(--gold,#d4a23f);font-weight:600">County table &darr;</a></p>
   <p class="sub">{name} cash rent by county, per acre per year: every USDA-published county rate, free, from
   the NASS Cash Rents Survey. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
   {hero}
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside {name} county cash rents. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-{st.lower()}&amp;utm_source=rent-{sl}&amp;utm_medium=slot">Put your name here &rarr;</a></aside>{ground_html}
-  <h2>Every published county, {yr}</h2>
+  <h2 id="counties" style="scroll-margin-top:80px">Every published county, {yr}</h2>
   <p class="sub">Tap a column heading to sort. Greyed values are the county&rsquo;s most recent published year where {yr}
   wasn&rsquo;t published.{other_types} Each county name opens its Farmland Atlas record (land value, yield, insurance
   and drought). Corn trend is the county&rsquo;s 14-yr trend yield (projected {s['ty']}) from NASS county estimates,
