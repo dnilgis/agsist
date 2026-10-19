@@ -56,13 +56,13 @@
   function RP() { return root.RainPrint || null; }
 
   /* The sample date (data/rain-print.json business_sample_by, Sig sets it; null shows nothing): through that
-     day, ' To see one before Christmas, order the sample by Nov 6.'; a bad date or a day past it, ''. */
+     day, 'To see one before Christmas, order the sample by Nov 6.'; a bad date or a day past it, ''. */
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   function sampleByLine(todayIso, by) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(by || ''));
     if (!m || +m[2] < 1 || +m[2] > 12 || +m[3] < 1 || +m[3] > 31) return '';
     if (String(todayIso || '') > by) return '';
-    return ' To see one before Christmas, order the sample by ' + MON[+m[2] - 1] + ' ' + (+m[3]) + '.';
+    return 'To see one before Christmas, order the sample by ' + MON[+m[2] - 1] + ' ' + (+m[3]) + '.';
   }
 
   /* ---------- table, dates and the quote line, from the data ---------- */
