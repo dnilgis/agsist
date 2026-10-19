@@ -99,6 +99,9 @@
   };
 
   // The settings as a list a reviewer can read and repeat.
+  // The address the printed QR holds: the site's own address for this exact report.
+  CR.reportUrl = function (P) { return 'https://agsist.com/comp-report?' + CR.toQuery(P); };
+
   CR.paramsRows = function (P) {
     var s = P.subject || {};
     var at = s.kind === 'field' ? 'Center of the field outline (' + s.pts.length + ' points)' :
@@ -454,6 +457,8 @@
     var link = location.origin + location.pathname + '?' + CR.toQuery(P);
     set('cr-params', '<table class="fl-kv">' + CR.paramsRows(P).map(function (r) { return '<tr><th>' + esc(r[0]) + '</th><td>' + esc(r[1]) + '</td></tr>'; }).join('') + '</table>' +
       '<p class="fl-note">This exact report: <a href="' + esc(link) + '" class="cr-link">' + esc(link) + '</a></p>');
+    // printed only: a QR top right of page 1 that opens this same report (every setting in it)
+    if (G.AgPrintQR) { G.AgPrintQR.addCSS(); set('cr-pq', G.AgPrintQR.html(CR.reportUrl(P), 'agsist.com/comp-report')); }
     if (S.subj.kind === 'field') $('cr-back').href = '/field-scout#f=' + S.subj.pts.map(function (q) { return q.lat.toFixed(5) + ',' + q.lng.toFixed(5); }).join('~');
 
     // A link from Field Scout carries the county, so the 2 MB county map is needed only for the map's lines.

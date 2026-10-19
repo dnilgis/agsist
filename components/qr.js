@@ -1,6 +1,7 @@
 /* components/qr.js: a small QR code encoder (byte mode, error correction
-   level M, versions 1 to 10) that returns an inline SVG (window.AgQR).
-   A line-for-line port of scripts/qr_svg.py, which the build's selftest
+   level M, versions 1 to 40, 1 to 10 unless asked) that returns an inline SVG (window.AgQR).
+   A line-for-line port of scripts/qr_svg.py (versions 11 to 40 are in this
+   file only), which the build's selftest
    checks against a symbol jsQR decoded; test/arc-plc-math.test.mjs checks
    this file gives the same symbol as the Python one for county URLs and that
    jsQR reads them back. Used by the counter sheet (/arc-plc/sheet), so the
@@ -13,13 +14,24 @@
        version 2 (25 x 25) instead of byte mode's version 3. Added 2026-10-14
        for the Rain Print standard code; byte mode, and every symbol the
        county pages print, is unchanged.
-     AgQR.svg(text, label) -> '<svg class="qr" ...>' */
+     AgQR.svg(text, label) -> '<svg class="qr" ...>'
+     AgQR.matrix(text, null, null, maxVer) and AgQR.svg(text, label, maxVer)
+       go past version 10, up to maxVer (40 at most). Without maxVer both stop
+       at version 10 and throw past it, as they always have, so a caller that
+       counts on the throw (a link too long to print) is unchanged. Added
+       2026-10-19 for the printed reports (components/print-qr.js). */
 (function (w) {
   'use strict';
   if (w.AgQR) return;
 
-  var ECC_PER_BLOCK = [null, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26];
-  var NUM_BLOCKS = [null, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5];
+  /* Level M, versions 1 to 40 (ISO/IEC 18004 table 9). Versions 11 to 40 were
+     added 2026-10-19 for the printed reports (comp report, land report, hail
+     report), whose links carry a field outline; 1 to 10 are unchanged. */
+  var ECC_PER_BLOCK = [null, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22, 22, 24, 24, 28, 28, 26, 26, 26,
+    26, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28];
+  var NUM_BLOCKS = [null, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8, 9, 9, 10, 10, 11, 13, 14, 16,
+    17, 17, 18, 20, 21, 23, 25, 26, 28, 29, 31, 33, 35, 37, 38, 40, 43, 45, 47, 49];
+  var MAX_VER = 40;
   var FORMAT_M = 0;
 
   function gfMul(x, y) {
@@ -65,7 +77,7 @@
   function alignPositions(ver) {
     if (ver === 1) return [];
     var size = ver * 4 + 17, na = Math.floor(ver / 7) + 2;
-    var step = Math.floor((ver * 4 + na * 2 + 1) / (na * 2 - 2)) * 2, out = [];
+    var step = ver === 32 ? 26 : Math.floor((ver * 4 + na * 2 + 1) / (na * 2 - 2)) * 2, out = [];
     for (var i = 0; i < na - 1; i++) out.push(size - 7 - i * step);
     out.push(6);
     return out.reverse();
@@ -76,13 +88,14 @@
     return out;
   }
   var ALNUM = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
-  function alnumBits(n, ver) { return 4 + (ver <= 9 ? 9 : 11) + 11 * Math.floor(n / 2) + 6 * (n % 2); }
+  function alnumCountBits(ver) { return ver <= 9 ? 9 : ver <= 26 ? 11 : 13; }
+  function alnumBits(n, ver) { return 4 + alnumCountBits(ver) + 11 * Math.floor(n / 2) + 6 * (n % 2); }
   function encodeData(data, ver, alnum) {
     var bits = [];
     function put(val, n) { for (var i = n - 1; i >= 0; i--) bits.push((val >> i) & 1); }
     if (alnum) {
       put(2, 4);
-      put(data.length, ver <= 9 ? 9 : 11);
+      put(data.length, alnumCountBits(ver));
       for (var a = 0; a < data.length; a += 2) {
         if (a + 1 < data.length) put(data[a] * 45 + data[a + 1], 11); else put(data[a], 6);
       }
@@ -145,16 +158,16 @@
     function (x, y) { return ((x + y) % 2 + x * y % 3) % 2 === 0; }
   ];
 
-  function matrix(text, mask, mode) {
-    var alnum = mode === 'alnum', data, ver = null, v, i, j, x, y;
+  function matrix(text, mask, mode, maxVer) {
+    var alnum = mode === 'alnum', data, ver = null, v, i, j, x, y, top = Math.min(MAX_VER, maxVer || 10);
     if (alnum) {
       data = String(text).split('').map(function (ch) { var k = ALNUM.indexOf(ch); if (k < 0) throw new Error('not a QR alphanumeric character: ' + ch); return k; });
-      for (v = 1; v <= 10; v++) if (alnumBits(data.length, v) <= dataCodewords(v) * 8) { ver = v; break; }
+      for (v = 1; v <= top; v++) if (alnumBits(data.length, v) <= dataCodewords(v) * 8) { ver = v; break; }
     } else {
       data = utf8(text);
-      for (v = 1; v <= 10; v++) if (data.length + (v <= 9 ? 2 : 3) <= dataCodewords(v)) { ver = v; break; }
+      for (v = 1; v <= top; v++) if (data.length + (v <= 9 ? 2 : 3) <= dataCodewords(v)) { ver = v; break; }
     }
-    if (ver === null) throw new Error('text too long for a version 10 QR code at level M');
+    if (ver === null) throw new Error('text too long for a version ' + top + ' QR code at level M');
     var size = ver * 4 + 17, mod = [], fn = [];
     for (y = 0; y < size; y++) { mod.push([]); fn.push([]); for (x = 0; x < size; x++) { mod[y].push(false); fn[y].push(false); } }
     function setf(x, y, dark) { mod[y][x] = dark; fn[y][x] = true; }
@@ -214,8 +227,8 @@
   }
 
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
-  function svg(text, label) {
-    var m = matrix(text), n = m.length + 8, d = '';
+  function svg(text, label, maxVer) {
+    var m = matrix(text, null, null, maxVer), n = m.length + 8, d = '';
     m.forEach(function (row, y) { row.forEach(function (v, x) { if (v) d += 'M' + (x + 4) + ',' + (y + 4) + 'h1v1h-1z'; }); });
     return '<svg class="qr" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + n + ' ' + n + '" role="img" aria-label="' + esc(label || 'QR code') + '" ' +
       'shape-rendering="crispEdges"><rect width="' + n + '" height="' + n + '" fill="#fff"/><path fill="#000" d="' + d + '"/></svg>';
