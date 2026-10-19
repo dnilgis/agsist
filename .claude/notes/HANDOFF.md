@@ -159,7 +159,7 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
   (bids capture.yml list=probe-lists/elevsites.txt save=elevsites, then agsist api-jobs build=elevsites).
 - Helpers out: fx/accfix3 (verifying 107 accuracy leads from raw accuracy-pass/run4-pass3), fx/faqapply (25 tool FAQ proposals).
 - Strategy reports (old scratchpad strategy/landscape.md, correlations.md): top ideas = net elevator price after shrink/drying/freight;
-  basis history B2B (check DTN/Barchart redistribution terms first); county risk sheet (drought ~doubles crop insurance loss ratio,
+  basis history B2B (check DTN/Barchart redistribution terms first); county risk sheet (tested Oct 19: 10 more weeks of D2+ drought add about +0.24 to the loss ratio with county and year effects; "doubles" was unadjusted, do not print it,
   60,859 county-years). Elevators need FIPS + permanent IDs for data joins. Sig asked to start: awaiting his go.
 - Bids repo: coverage1 (+26 boards, 16 WI) and elevsites merged; capture/dtn-probe/discover dispatched Oct 18.
 
