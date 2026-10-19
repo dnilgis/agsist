@@ -8,21 +8,24 @@
    data/layers.json (source names), then the This week files. The county map
    (data/atlas/counties.geo.json) loads only for a map pick or a coordinate.
 
-   URL: ?q= &fips= &zip= &at=lat,lng &for=<role>. The role chip is kept in the
-   URL and in localStorage (agsist-here-for). */
+   URL: ?q= &fips= &zip= &at=lat,lng &print=<parts>. Every reader sees every
+   section in one order (Sig, Oct 19: the role chips are gone; an old link with
+   &for= opens normally and the param is dropped). &print= holds the Print
+   report choices so a shared link prints the same; it is never required.
+   The recorded sales index (data/land/<st>/index.json) is read only to decide
+   whether the Go deeper row offers the comparable sales report. */
 (function () {
   'use strict';
   var P = window.AgPlace, L = window.AGLayers;
   if (!P) return;
   var GEO_API = 'https://geocoding-api.open-meteo.com/v1/search';
-  var LS_ROLE = 'agsist-here-for', LS_ZIP = 'agsist_user_zip';
+  var LS_ZIP = 'agsist_user_zip';
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  var S = { seq: 0, where: null, prof: null, county: null, pct: null, role: null, week: {} };
+  var S = { seq: 0, where: null, prof: null, county: null, pct: null, week: {}, sales: {}, print: { parts: P.PRINT_PARTS.slice(), more: false } };
   var memo = {};
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
   function track(n, p) { try { if (typeof gtag === 'function') gtag('event', n, p || {}); } catch (e) {} }
   function getJSON(u, ms) {
@@ -192,19 +195,22 @@
     if (w.zip) q.push('zip=' + w.zip);
     else if (w.lat != null && !w.center) q.push('at=' + (+w.lat).toFixed(4) + ',' + (+w.lng).toFixed(4));
     if (w.how === 'town' && w.label) q.push('q=' + encodeURIComponent(w.label));
-    if (S.role) q.push('for=' + S.role);
+    var pr = P.printParam(S.print);
+    if (pr) q.push('print=' + pr);
     try { history.replaceState(null, '', location.pathname + '?' + q.join('&')); } catch (e) {}
   }
 
   /* ── drawing ──────────────────────────────────────────────────── */
-  function placeLink(p) {
-    var s = P.stSlug(p.st), out = [];
-    if (p.flags.indexOf('a') >= 0) out.push(['/farmland-atlas/' + s + '/' + p.slug, 'Farmland Atlas']);
-    if (p.flags.indexOf('r') >= 0) out.push(['/rain/' + s + '/' + p.slug, 'Rain this year']);
-    if (p.flags.indexOf('p') >= 0) out.push(['/prf/' + s + '/' + p.slug, 'PRF pasture insurance']);
-    if (p.flags.indexOf('c') >= 0) out.push(['/arc-plc/' + s + '/' + p.slug, 'ARC or PLC']);
-    out.push(['/rent/' + s, P.STATES[p.st] + ' cash rent']);
-    return out;
+  /* Does AGSIST hold recorded sales for this state? One small index file per state, read once. */
+  function salesIn(st) {
+    if (!(st in S.sales)) S.sales[st] = getJSON('/data/land/' + st.toLowerCase() + '/index.json', 10000).then(function (ix) { return !!(ix && ix.counties && ix.counties.length); });
+    return S.sales[st];
+  }
+  function drawDeeper(sales) {
+    var p = S.prof, w = S.where || {};
+    if (!p) return;
+    var list = P.deeper({ fips: p.fips, st: p.st, slug: p.slug, flags: p.flags, lat: w.lat, lng: w.lng, zip: w.zip, point: !!w.point && !w.center, sales: !!sales });
+    $('h-links').innerHTML = list.map(function (l) { return '<a href="' + esc(l.href) + '" data-k="' + l.id + '">' + esc(l.text) + '</a>'; }).join('');
   }
   function render() {
     var p = S.prof, w = S.where;
@@ -215,14 +221,16 @@
     $('h-where').innerHTML = (from ? 'From ' + esc(from) + ', in ' + esc(p.name) + '. ' : '') + 'County figures; ranks are among ' + esc(p.stName) + ' counties that carry the figure, never among fields.';
     $('h-sent').textContent = p.sentence;
     $('h-sent-src').innerHTML = 'Every number in that line is in the table below with its source and year. Farmland Atlas county files of ' + esc(mdy(p.atlasGenerated)) + '.';
-    $('h-links').innerHTML = placeLink(p).map(function (l) { return '<a href="' + l[0] + '">' + esc(l[1]) + '</a>'; }).join('') ;
+    drawDeeper(false);
+    var fips = p.fips;
+    salesIn(p.st).then(function (has) { if (has && S.prof && S.prof.fips === fips) drawDeeper(true); });
     var nb = p.neighbors.filter(function (n) { return n.name; });
-    $('h-nb').innerHTML = nb.length ? 'Next door: ' + nb.map(function (n) { return '<a href="?fips=' + n.fips + (S.role ? '&for=' + S.role : '') + '" data-fips="' + n.fips + '">' + esc(n.name) + '</a>'; }).join(' · ') : '';
+    $('h-nb').innerHTML = nb.length ? 'Next door: ' + nb.map(function (n) { return '<a href="?fips=' + n.fips + '" data-fips="' + n.fips + '">' + esc(n.name) + '</a>'; }).join(' · ') : '';
     drawFingerprint(p);
     drawUnusual(p);
     drawLong(S.county);
     drawWeek();
-    applyRole();
+    applyPrint();
     $('h-place').hidden = false;
     if ($('h-map-box').open) drawMap();
   }
@@ -365,25 +373,62 @@
     });
   }
 
-  /* ── roles ────────────────────────────────────────────────────── */
-  function drawRoles() {
-    $('h-roles').innerHTML = P.ROLES.map(function (r) { return '<button type="button" class="h-chip" data-role="' + r.id + '" aria-pressed="' + (S.role === r.id) + '">' + esc(r.label) + '</button>'; }).join('');
-    $('h-roles').onclick = function (e) {
-      var b = e.target.closest('button[data-role]'); if (!b) return;
-      var id = b.getAttribute('data-role');
-      S.role = S.role === id ? null : id;
-      lsSet(LS_ROLE, S.role);
-      track('here_role', { role: S.role || 'none' });
-      drawRoles(); applyRole(); writeUrl();
-    };
+  /* ── print report ─────────────────────────────────────────────── */
+  // The sheet: checkboxes pick the parts (all ticked by default); More detail prints the
+  // figure table and the table of years open. Classes on <html> do the hiding, print media only.
+  var PART_EL = { sentence: 'h-part-sentence', week: 'h-sec-week', fingerprint: 'h-sec-fingerprint', unusual: 'h-sec-unusual', long: 'h-sec-long', sources: 'h-part-sources' };
+  function applyPrint() {
+    var root = document.documentElement, c = S.print;
+    P.PRINT_PARTS.forEach(function (k) {
+      root.classList.toggle('pr-off-' + k, c.parts.indexOf(k) < 0);
+      var el = $(PART_EL[k]); if (el) el.classList.add('h-part');
+    });
+    root.classList.toggle('pr-more', !!c.more);
+    var box = $('h-pr-box');
+    if (box) {
+      [].forEach.call(box.querySelectorAll('input[name=part]'), function (i) { i.checked = c.parts.indexOf(i.value) >= 0; });
+      $('h-pr-more').checked = !!c.more;
+    }
   }
-  function applyRole() {
-    var host = $('h-sections');
-    P.order(S.role).forEach(function (id) { var el = $('h-sec-' + id); if (el) host.appendChild(el); });
-    var t = S.prof ? P.tool(S.role, { fips: S.prof.fips, st: S.prof.st, slug: S.prof.slug, flags: S.prof.flags, lat: S.where.lat, lng: S.where.lng, zip: S.where.zip, point: !!S.where.point && !S.where.center }) : null;
-    var box = $('h-tool');
-    box.innerHTML = t ? '<a class="h-tool" href="' + esc(t.href) + '">' + esc(t.text) + ' →</a>' : '';
-    box.hidden = !t;
+  function readPanel() {
+    var parts = [].filter.call($('h-pr-box').querySelectorAll('input[name=part]'), function (i) { return i.checked; }).map(function (i) { return i.value; });
+    S.print = { parts: P.PRINT_PARTS.filter(function (k) { return parts.indexOf(k) >= 0; }), more: $('h-pr-more').checked };
+    applyPrint();
+    writeUrl();
+  }
+  /* Just before printing: the date, the QR back to this exact link, and the tables opened for More detail. */
+  var opened = [];
+  function beforePrint() {
+    if (!S.prof) return;
+    var now = new Date();
+    $('h-pr-date').textContent = 'Printed ' + MONTHS[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+    var url = location.origin.indexOf('agsist.com') >= 0 ? location.href : 'https://agsist.com' + location.pathname.replace(/\.html$/, '') + location.search;
+    var qr = $('h-pr-qr');
+    if (qr && qr.getAttribute('data-url') !== url) {
+      var svg = '';
+      try { svg = window.AgQR ? window.AgQR.svg(url, 'QR code for this page') : ''; } catch (e) { svg = ''; }
+      qr.innerHTML = (svg ? svg : '') + '<p>Scan for this page, live: ' + esc(url.replace(/^https?:\/\//, '')) + '</p>';
+      qr.setAttribute('data-url', url);
+    }
+    opened = [];
+    if (S.print.more) [].forEach.call(document.querySelectorAll('#h-place details.h-tbl'), function (d) { if (!d.open) { d.open = true; opened.push(d); } });
+  }
+  function afterPrint() { opened.forEach(function (d) { d.open = false; }); opened = []; }
+  function wirePrint() {
+    var btn = $('h-pr-btn'), box = $('h-pr-box');
+    btn.addEventListener('click', function () {
+      box.hidden = !box.hidden;
+      btn.setAttribute('aria-expanded', String(!box.hidden));
+    });
+    box.addEventListener('change', readPanel);
+    $('h-pr-go').addEventListener('click', function () {
+      readPanel();
+      track('here_print', { parts: S.print.parts.length, more: S.print.more ? 1 : 0 });
+      beforePrint();
+      try { window.print(); } catch (e) {}
+    });
+    window.addEventListener('beforeprint', beforePrint);
+    window.addEventListener('afterprint', afterPrint);
   }
 
   /* ── the map ──────────────────────────────────────────────────── */
@@ -434,8 +479,8 @@
   /* ── start ────────────────────────────────────────────────────── */
   function start() {
     var q = P.parseQuery(location.search);
-    S.role = q.role || (function () { var r = lsGet(LS_ROLE); return P.role(r) ? r : null; })();
-    drawRoles();
+    if (q.print) S.print = q.print;
+    wirePrint();
     $('h-form').addEventListener('submit', function (e) { e.preventDefault(); go($('h-q').value); });
     $('h-locate').addEventListener('click', function () {
       if (!navigator.geolocation) { say('This browser does not share a location. Type a ZIP or town.', true); return; }
@@ -477,5 +522,5 @@
     else if (q.q) { $('h-q').value = q.q; go(q.q, 'link'); }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
-  window.AgHere = { go: go, open: open, state: S };
+  window.AgHere = { go: go, open: open, state: S, beforePrint: beforePrint, afterPrint: afterPrint };
 })();
