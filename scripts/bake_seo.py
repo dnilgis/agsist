@@ -59,9 +59,7 @@ REPO = Path(__file__).resolve().parent.parent
 DATA = REPO / "data"
 sys.path.insert(0, str(REPO / "scripts"))
 
-TITLE_MAX = 68          # Google truncates around 600px; 68 chars is a safe ceiling
-DESC_MAX = 160          # the site's own new-page checklist
-SUFFIX = " | AGSIST"
+from seo_caps import TITLE_MAX, DESC_MAX, SUFFIX  # noqa: E402  the one cap (scripts/seo_caps.py)
 
 MONTHS = ["January", "February", "March", "April", "May", "June", "July",
           "August", "September", "October", "November", "December"]

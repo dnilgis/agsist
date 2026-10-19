@@ -50,7 +50,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ORIGIN = "https://agsist.com"
 
 DESC_MIN = 70
-DESC_MAX = 170
+from seo_caps import DESC_MAX, TITLE_MAX  # noqa: E402  the one cap every builder reads (scripts/seo_caps.py); was 170 here
 
 SKIP_DIRS = {".git", ".github", "node_modules", "__pycache__", ".claude",
              "components", "scripts", "test", "workers", "build"}
@@ -272,6 +272,8 @@ def check(root=ROOT):
         n_index += 1
         if p["titles"] and p["titles"][0]:
             titles.setdefault(p["titles"][0], []).append(rel)
+            if len(p["titles"][0]) > TITLE_MAX:
+                warnings.append(f"{rel}: title is {len(p['titles'][0])} chars (cap {TITLE_MAX}, scripts/seo_caps.py)")
         want = clean_url(rel)
         if not p["canon"]:
             err(rel, "has no canonical link")
@@ -373,6 +375,11 @@ def selftest():
         ok("e.html: has no canonical" in es, "missing canonical flagged")
         ok("f.html: has 2 <title>" in es, "two titles flagged")
         ok("b.html: meta description is 5 chars" in ws, "short description warns")
+        w("long.html", page("L" * (TITLE_MAX + 1), "https://agsist.com/long", desc="d" * (DESC_MAX + 1)))
+        ws2 = "\n".join(check(d)["warnings"])
+        ok(f"long.html: title is {TITLE_MAX + 1} chars (cap {TITLE_MAX}" in ws2, "long title warns at the shared cap")
+        ok(f"long.html: meta description is {DESC_MAX + 1} chars" in ws2 and DESC_MAX == 160, "description warns past 160")
+        os.remove(os.path.join(d, "long.html"))
         ok("c.html: no meta description" in ws, "missing description warns")
         ok("b.html: indexable but in no sitemap" in ws, "missing from sitemap warns")
         ok(not any("ni.html: has no canonical" in e for e in r["errors"]), "noindex pages need no canonical")
