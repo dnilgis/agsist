@@ -493,7 +493,319 @@
     return rows;
   }
 
+  /* ── the first screen: the year's rain at the county station (Oct 19) ──────────
+     The station is the county rain page's own pick (data/rain/<st>.json, built by
+     scripts/fetch_county_rain.py), so /here and /rain/<state>/<county> always draw
+     the same gauge, the same days and the same total. */
+  function roundHalfEven(x) {   // Python's round(), so the miles read as the county page prints them
+    var f = Math.floor(x), d = x - f;
+    if (Math.abs(d - 0.5) < 1e-9) return f % 2 === 0 ? f : f + 1;
+    return Math.round(x);
+  }
+  function milesFrom(mi) { var n = roundHalfEven(mi); return n === 0 ? 'less than a mile from' : n === 1 ? '1 mile from' : n + ' miles from'; }
+  var MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function md(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); return m ? MON3[+m[2] - 1] + ' ' + (+m[3]) : ''; }
+  /* What the county rain page's Rain Print figure carries (scripts/build_county_rain.py chart()),
+     from the same county record. null when the county has no rain record. The print itself
+     (components/rain-county-print.js mount) still checks the days and total against these. */
+  function rainFigure(file, fips) {
+    var c = file && file.counties && file.counties[fips];
+    if (!c || !c.station || !c.cum || !c.cum.length || c.total == null) return null;
+    var st = String(file.state || stateOf(fips) || '').toUpperCase(), stName = STATES[st] || st;
+    var mn = null;
+    if (c.usual != null && c.months && c.months.length && c.months.every(function (m) { return m[1] != null; })) {
+      var sum = c.months.reduce(function (a, m) { return a + m[1]; }, 0);
+      if (Math.abs(sum - c.usual) <= 0.015) mn = c.months.map(function (m) { return m[1].toFixed(2); }).join(',');
+    }
+    var noun = c.station.net === 'cocorahs' ? 'gauge' : 'station';
+    var leap = file.year % 4 === 0 && (file.year % 100 !== 0 || file.year % 400 === 0);
+    return {
+      st: st.toLowerCase(), fips: fips, year: file.year, days: c.days, total: c.total, usual: c.usual, pct: c.pct,
+      place: c.name + ', ' + stName, county: c.name, asOf: c.as_of || file.edate, missing: c.missing || 0, noun: noun,
+      done: c.days >= (leap ? 366 : 365),
+      gauge: 'Weather ' + noun + ': ' + c.station.name + ', ' + milesFrom(c.station.mi) + ' the middle of ' + c.name,
+      station: { name: c.station.name, sid: c.station.sid, mi: c.station.mi, net: c.station.net, ll: c.station.ll },
+      mn: mn, norm: file.normals === '1991-2020' ? '1991-2020' : '30', normals: file.normals, cum: c.cum, source: file.source
+    };
+  }
+  /* The plain running total, drawn at once while the Rain Print loads (and kept if it cannot
+     draw): the county page's placeholder chart, the same weekly points (c.cum: [day, this year,
+     usual]). SVG text only; the page styles it with the county page's own classes. */
+  function rainChart(f) {
+    if (!f || !f.cum || !f.cum.length) return '';
+    var W = 420, H = 210, L = 30, R = 50, T = 10, B = 26, year = f.year;
+    var nYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 366 : 365;
+    var pts = f.cum, hasUs = f.usual != null && pts.every(function (p) { return p[2] != null; });
+    var top = Math.max(f.total, hasUs ? f.usual : 0, 1);
+    var step = top <= 6 ? 1 : top <= 12 ? 2 : top <= 40 ? 5 : 10, ymax = step * (Math.floor(top / step) + 1);
+    var pw = W - L - R, ph = H - T - B;
+    function X(d) { return L + pw * d / nYear; }
+    function Y(v) { return T + ph * (1 - v / ymax); }
+    var out = ['<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Running total of rain at the ' + f.noun + ' for ' + f.county + ', ' + year + (hasUs ? ', against a usual year' : '') + '">'];
+    for (var v = 0; v <= ymax; v += step) {
+      var y = Y(v).toFixed(0);
+      out.push('<path class="' + (v === 0 ? 'rc-ax' : 'rc-grid') + '" d="M' + L + ' ' + y + 'H' + (W - R) + '"/><text class="rc-lab" x="' + (L - 6) + '" y="' + (+y + 4) + '" text-anchor="end">' + v + '</text>');
+    }
+    for (var m = 0; m < 12; m++) {
+      var doy = Math.round((Date.UTC(year, m, 1) - Date.UTC(year, 0, 1)) / 864e5);
+      out.push('<text class="rc-lab" x="' + X(doy + 15).toFixed(0) + '" y="' + (H - 8) + '" text-anchor="middle">' + MON3[m].charAt(0) + '</text>');
+    }
+    function path(k) { return 'M' + X(0).toFixed(1) + ',' + Y(0).toFixed(1) + pts.map(function (p) { return 'L' + X(p[0] + 1).toFixed(1) + ',' + Y(p[k]).toFixed(1); }).join(''); }
+    if (hasUs) out.push('<path class="rc-us" d="' + path(2) + '"/>');
+    out.push('<path class="rc-yr" d="' + path(1) + '"/>');
+    var last = pts[pts.length - 1], xe = (X(last[0] + 1) + 5).toFixed(1), ly = Y(last[1]), lu = hasUs ? Y(last[2]) : null;
+    if (hasUs && Math.abs(ly - lu) < 18) { var mid = (ly + lu) / 2, up = ly <= lu ? -1 : 1; ly = mid + up * 9; lu = mid - up * 9; }
+    var ys = [ly].concat(hasUs ? [lu] : []), sh = Math.max(0, 10 - Math.min.apply(null, ys));
+    sh -= Math.max(0, Math.max.apply(null, ys) + sh - (H - B - 4));
+    out.push('<text class="rc-yl" x="' + xe + '" y="' + (ly + sh + 4).toFixed(1) + '">' + year + '</text>');
+    if (hasUs) out.push('<text class="rc-lab" x="' + xe + '" y="' + (lu + sh + 4).toFixed(1) + '">Usual</text>');
+    return out.join('') + '</svg>';
+  }
+
+  /* THE RANKED LINE: this year's rain from Jan 1 to the last reported day, against the same
+     calendar days of every earlier year the station recorded in full.
+       rows    the station's period of record from RCC-ACIS (StnData sdate=por, elems pcpn),
+               the call components/rain-print.js stationExtremes() makes
+       fig     rainFigure(): the year, the last day (asOf) and the total the page draws
+     Rules (set Oct 19 before any station was ranked; the engine's own words for each):
+       - a year counts only when every day of the window has a report (no M, no missing row)
+         and every S run (rain counted later) closes on its A day inside the window, the
+         AgRainExtras.fullYears rule cut to the window
+       - this year must pass the same test, and its total from the record must equal the
+         drawn total (within 0.011 in); otherwise nothing is ranked (two numbers never disagree)
+       - at least RANK_MIN (30, the engine's HIST_MIN) years including this one, else withheld
+       - ties within 0.005 in; ranked from the nearer end, as AgRainExtras.rank does
+     test/place.test.mjs checks that on a whole year this gives AgRainExtras.rank's answer. */
+  var RANK_MIN = 30;
+  function pcpn(raw) {
+    var s = String(raw == null ? '' : raw).trim();
+    if (s === 'T') return { v: 0, f: 'T' };
+    if (s === 'S') return { v: 0, f: 'S' };
+    var v = parseFloat(s);
+    if (s === 'M' || s === '' || isNaN(v)) return { v: null, f: 'M' };
+    return { v: v, f: /A$/.test(s) ? 'A' : '' };
+  }
+  function windowTotals(rows, mmdd) {
+    var by = {}, years = [];
+    (rows || []).forEach(function (r) {
+      if (!r || !/^\d{4}-\d\d-\d\d$/.test(r[0])) return;
+      var y = +r[0].slice(0, 4);
+      if (r[0].slice(5) > mmdd) return;
+      if (!by[y]) { by[y] = {}; years.push(y); }
+      by[y][r[0]] = r[1];
+    });
+    var out = {};
+    years.forEach(function (y) {
+      var m = +mmdd.slice(0, 2), d = +mmdd.slice(3, 5), end = Date.UTC(y, m - 1, d);
+      if (new Date(end).getUTCDate() !== d) end = Date.UTC(y, m - 1, d - 1);   // Feb 29 in a common year
+      var tot = 0, open = false, ok = true, n = 0;
+      for (var t = Date.UTC(y, 0, 1); t <= end; t += 864e5) {
+        var iso = new Date(t).toISOString().slice(0, 10), a = pcpn(by[y][iso]);
+        n++;
+        if (!(iso in by[y]) || a.v === null) { ok = false; break; }
+        if (a.f === 'S') open = true;
+        else { if (open && a.f !== 'A') { ok = false; break; } open = false; }
+        tot += a.v;
+      }
+      out[y] = { year: y, ok: ok && !open, total: Math.round(tot * 100) / 100, days: n };
+    });
+    return out;
+  }
+  function rankSoFar(rows, fig) {
+    if (!fig || !fig.asOf) return { status: 'none', why: 'no rain record for this county this year' };
+    if (!rows || !rows.length) return { status: 'none', why: 'the station record did not load' };
+    var year = +fig.year, mmdd = String(fig.asOf).slice(5, 10);
+    var w = windowTotals(rows, mmdd), me = w[year];
+    var span = 'Jan 1 to ' + md(fig.asOf);
+    if (!me || !me.ok) return { status: 'none', why: 'this year has a day with no report between Jan 1 and ' + md(fig.asOf) + ', so it is not ranked' };
+    if (Math.abs(me.total - fig.total) > 0.011) return { status: 'none', why: 'NOAA’s record for this station now reads ' + me.total.toFixed(2) + ' in, not the ' + fig.total.toFixed(2) + ' in drawn; the county file will catch up on its next run' };
+    var past = Object.keys(w).map(Number).filter(function (y) { return y < year; }).sort(function (a, b) { return a - b; });
+    var full = past.filter(function (y) { return w[y].ok; }).map(function (y) { return w[y]; });
+    var skipped = past.length - full.length;
+    var n = full.length + 1;
+    var base = { span: span, n: n, skipped: skipped, first: full.length ? full[0].year : null, last: full.length ? full[full.length - 1].year : null,
+      total: me.total, years: full.map(function (f) { return [f.year, f.total]; }), soFar: !fig.done, min: RANK_MIN };
+    if (n < RANK_MIN) { base.status = 'thin'; base.why = 'only ' + n + ' years with every day of ' + span + ' on record here; ranking needs ' + RANK_MIN; return base; }
+    var lt = 0, gt = 0, eq = 0;
+    full.forEach(function (f) { if (Math.abs(f.total - me.total) < 0.005) eq++; else if (f.total < me.total) lt++; else gt++; });
+    var dry = lt <= gt;
+    base.status = 'ok'; base.rank = (dry ? lt : gt) + 1; base.dir = dry ? 'driest' : 'wettest'; base.tied = eq; base.wetter = gt; base.drier = lt;
+    return base;
+  }
+  /* "2026 at Cumberland: 9th wettest of 94 years so far (Jan 1 to Oct 13)." */
+  function rankWordsRain(r, fig) {
+    if (!r || r.status !== 'ok') return '';
+    var which = r.rank === 1 ? 'the ' + r.dir : ordinal(r.rank) + ' ' + r.dir;
+    return fig.year + ' at ' + fig.station.name + ': ' + (r.tied ? 'tied for ' : '') + which + ' of ' + r.n + ' years' + (r.soFar ? ' so far' : '') + ' (' + r.span + ').';
+  }
+
+  /* ── what is out of the ordinary here, against this place's own past (Oct 19) ──────
+     THE RULE, SET BEFORE ANY COUNTY WAS RUN: a figure shows only when its newest value sits
+     beyond 90% of the place's own earlier values (strictly higher than at least 90% of them, or
+     strictly lower), with at least OWN_MIN earlier values, and the newest value is from this
+     year or last year. Ties never count toward unusual. Figures with a steady climb (rent, land
+     value, corn yield) are not checked: their newest value is nearly always a record, which
+     says the trend, not the year. Five figures are checked, so in an ordinary year expect about
+     one line here by chance (each two-sided check has about a 1 in 5 chance, drought 1 in 10);
+     the math under each line says so. Nothing shows when nothing passes. */
+  var OWN_MIN = 20, OWN_BAND = 0.9, OWN_MAX = 5, FULL_MAPS = 40;
+  function ownLine(id, label, latest, earlier, opts) {
+    if (!latest || latest.v == null || earlier.length < OWN_MIN) return { id: id, label: label, status: 'thin', n: earlier.length, latest: latest };
+    var below = 0, above = 0;
+    earlier.forEach(function (e) { if (e[1] < latest.v) below++; else if (e[1] > latest.v) above++; });
+    var n = earlier.length, hi = below / n >= OWN_BAND, lo = !opts.highOnly && above / n >= OWN_BAND;
+    return { id: id, label: label, status: hi || lo ? 'unusual' : 'ordinary', dir: hi ? 'high' : lo ? 'low' : null,
+      latest: latest, n: n, below: below, above: above, from: earlier[0][0], to: earlier[n - 1][0], earlier: earlier,
+      unit: opts.unit, source: opts.source, highOnly: !!opts.highOnly, partial: !!opts.partial };
+  }
+  function seriesOf(obj, pick) {
+    return Object.keys(obj || {}).filter(function (y) { return /^\d{4}$/.test(y); }).map(Number).sort(function (a, b) { return a - b; })
+      .map(function (y) { return [y, pick(obj[String(y)], y)]; }).filter(function (p) { return p[1] != null && isFinite(p[1]); });
+  }
+  function splitLatest(ser) { return ser.length ? { latest: { year: ser[ser.length - 1][0], v: ser[ser.length - 1][1] }, earlier: ser.slice(0, -1) } : { latest: null, earlier: [] }; }
+  function ownPast(county, thisYear) {
+    if (!county) return [];
+    var out = [], recent = function (l) { return l && l.year >= thisYear - 1; };
+    var cl = county.climate, ht = county.heat && county.heat.months, dr = county.drought, sob = county.sob;
+    if (cl && cl.status === 'ok' && cl.gs_series) {
+      var g = splitLatest(seriesOf(cl.gs_series, function (v) { return v; }));
+      if (recent(g.latest)) out.push(ownLine('gs_rain', 'April to September rain', g.latest, g.earlier, { unit: 'in', source: 'NOAA nClimDiv county precipitation (newest months preliminary)' }));
+    }
+    [['jul', 'July'], ['aug', 'August']].forEach(function (mo) {
+      var h = ht && ht[mo[0]];
+      if (!h || !h.series) return;
+      var s = splitLatest(seriesOf(h.series, function (v) { return v; }));
+      if (recent(s.latest)) out.push(ownLine(mo[0] + '_nights', mo[1] + ' nights', s.latest, s.earlier, { unit: 'deg F', source: 'NOAA nClimDiv county minimum temperature' }));
+    });
+    if (dr && dr.status === 'ok' && dr.series) {
+      var lf = dr.last_full_year;
+      var fullYears = seriesOf(dr.series, function (v, y) { return v && v.maps >= FULL_MAPS && y <= lf && v.d2 != null ? v.d2 : null; });
+      var py = dr.partial_year;
+      if (py && py.year === thisYear && py.d2 != null) {
+        out.push(ownLine('drought', 'Weeks in severe drought or worse', { year: py.year, v: py.d2, maps: py.maps }, fullYears, { unit: 'weeks', source: 'U.S. Drought Monitor county statistics', highOnly: true, partial: true }));
+      } else if (fullYears.length) {
+        var d = splitLatest(fullYears);
+        if (recent(d.latest)) out.push(ownLine('drought', 'Weeks in severe drought or worse', d.latest, d.earlier, { unit: 'weeks', source: 'U.S. Drought Monitor county statistics' }));
+      }
+    }
+    if (sob && sob.status === 'ok' && sob.per_year) {
+      var lr = splitLatest(seriesOf(sob.per_year, function (v) { return v && !v.partial && v.ratio != null ? v.ratio : null; }));
+      if (recent(lr.latest)) out.push(ownLine('loss_ratio', 'Crop insurance loss ratio', lr.latest, lr.earlier, { unit: 'paid out / premium', source: 'USDA RMA Summary of Business' }));
+    }
+    return out;
+  }
+  /* The lines that show (at most OWN_MAX, furthest out first), each one sentence. */
+  function ownWords(l) {
+    var y = l.latest.year, v = l.latest.v, n = l.n, span = l.from + ' to ' + l.to, k = l.dir === 'high' ? l.below : l.above;
+    if (l.id === 'gs_rain') return 'April to September rain, ' + y + ': ' + v.toFixed(2) + ' in, ' + (l.dir === 'high' ? 'more' : 'less') + ' than in ' + k + ' of the ' + n + ' earlier years (' + span + ').';
+    if (/_nights$/.test(l.id)) return l.label + ', ' + y + ': an average low of ' + v.toFixed(1) + '°F, ' + (l.dir === 'high' ? 'warmer' : 'cooler') + ' than ' + k + ' of the ' + n + ' earlier ' + l.label.split(' ')[0] + 's (' + span + ').';
+    if (l.id === 'drought') return v + ' week' + (v === 1 ? '' : 's') + ' with at least half the county in severe drought or worse ' + (l.partial ? 'so far in ' + y + ', already more than in ' : 'in ' + y + ', ' + (l.dir === 'high' ? 'more' : 'fewer') + ' than in ') + k + ' of the ' + n + ' earlier full years (' + span + ').';
+    if (l.id === 'loss_ratio') return 'Crop insurance paid out $' + v.toFixed(2) + ' per $1 of premium in ' + y + ', ' + (l.dir === 'high' ? 'more' : 'less') + ' than in ' + k + ' of the ' + n + ' earlier years (' + span + ').';
+    return l.label + ', ' + y + ': ' + v;
+  }
+  function unusualHere(county, thisYear) {
+    return ownPast(county, thisYear).filter(function (l) { return l.status === 'unusual'; })
+      .sort(function (a, b) { return Math.max(b.below, b.above) / b.n - Math.max(a.below, a.above) / a.n || 0; })
+      .slice(0, OWN_MAX).map(function (l) { l.words = ownWords(l); return l; });
+  }
+
+  /* ── my elevator against its neighbors (Oct 19) ─────────────────────────────
+     places: the bids network's live index (dnilgis/bids data/merged-index.json, `places`), whose
+     rows carry the permanent elevId. A place's bid is its `now`: the nearest open delivery.
+     THE RULE, SET BEFORE ANY PLACE WAS RUN:
+       - the place's 3 nearest elevators within EL_NEAR miles that post a usable bid for the crop
+         (US dollars, a basis within 300 cents, a cash price in the crop's bushel band)
+       - its neighbors: every other elevator within EL_NB miles of IT posting the same crop for
+         the same delivery period (one per elevId; the same id twice is one elevator)
+       - at least EL_NB_MIN neighbors, else no comparison
+       - the gap is its basis minus the neighbors' middle basis, in cents; nothing else */
+  var EL_NEAR = 30, EL_NB = 40, EL_NB_MIN = 4, EL_EACH = 3;
+  var BANDS = { corn: [2, 12], soybeans: [6, 32] };
+  function elevBid(p, crop) {
+    if (!p || typeof p.lat !== 'number' || typeof p.lon !== 'number' || (p.currency || 'USD') !== 'USD') return null;
+    var n = p.now && p.now[crop];
+    if (!n || typeof n.cash !== 'number' || typeof n.basisCents !== 'number' || Math.abs(n.basisCents) > 300) return null;
+    if (!(n.cash >= BANDS[crop][0] && n.cash <= BANDS[crop][1])) return null;
+    return { basis: Math.round(n.basisCents), cash: n.cash, period: String(n.period || ''), delivery: n.delivery || '' };
+  }
+  function median(xs) {
+    var s = xs.slice().sort(function (a, b) { return a - b; }), k = s.length;
+    return k ? (k % 2 ? s[(k - 1) / 2] : (s[k / 2 - 1] + s[k / 2]) / 2) : null;
+  }
+  function elevName(p) { return String(p.operator || '').trim(); }
+  function elevTown(p) { return String(p.town || p.city || '').trim(); }
+  function basisNeighbors(places, lat, lng, crops) {
+    var out = {};
+    if (!places || !places.length || lat == null || lng == null) return out;
+    (crops || ['corn', 'soybeans']).forEach(function (crop) {
+      var all = [];
+      places.forEach(function (p) { var b = elevBid(p, crop); if (b) all.push({ p: p, b: b, id: p.elevId || ('place:' + p.place) }); });
+      var mine = all.map(function (x) { return { x: x, mi: miles(lat, lng, x.p.lat, x.p.lon) }; })
+        .filter(function (m) { return m.mi <= EL_NEAR; }).sort(function (a, b) { return a.mi - b.mi; });
+      var seen = {}, rows = [];
+      mine.forEach(function (m) {
+        if (rows.length >= EL_EACH || seen[m.x.id]) return;
+        seen[m.x.id] = 1;
+        var nb = {}, list = [];
+        all.forEach(function (o) {
+          if (o.id === m.x.id || nb[o.id] || o.b.period !== m.x.b.period) return;
+          var d = miles(m.x.p.lat, m.x.p.lon, o.p.lat, o.p.lon);
+          if (d > EL_NB) return;
+          nb[o.id] = 1;
+          list.push({ basis: o.b.basis, name: elevName(o.p), town: elevTown(o.p), st: o.p.state || '', mi: Math.round(d) });
+        });
+        var r = { crop: crop, elevId: m.x.p.elevId || null, name: elevName(m.x.p), town: elevTown(m.x.p), st: m.x.p.state || '', mi: Math.round(m.mi),
+          basis: m.x.b.basis, cash: m.x.b.cash, period: m.x.b.period, delivery: m.x.b.delivery, place: m.x.p.place || null, shard: m.x.p.shard || null,
+          operator: m.x.p.operator || '', city: m.x.p.city || '', pricedAt: m.x.p.pricedAt || null, nbN: list.length, radius: EL_NB, min: EL_NB_MIN,
+          neighbors: list.sort(function (a, b) { return a.basis - b.basis; }) };
+        r.nbCos = Object.keys(list.reduce(function (o, l) { o[l.name.toLowerCase()] = 1; return o; }, {})).length;   // other branches of one company count too: said, not hidden
+        if (list.length >= EL_NB_MIN) { r.nbMedian = median(list.map(function (l) { return l.basis; })); r.gap = r.basis - r.nbMedian; r.status = 'ok'; }
+        else { r.status = 'thin'; r.why = (list.length ? 'only ' + list.length : 'no') + ' other elevator' + (list.length === 1 ? '' : 's') + ' within ' + EL_NB + ' miles post' + (list.length === 1 ? 's' : '') + ' ' + crop + ' for the same delivery; the comparison needs ' + EL_NB_MIN; }
+        rows.push(r);
+      });
+      out[crop] = rows;
+    });
+    return out;
+  }
+  /* Its own recent history, from data/basis/<ST>.json (the /cash-bids "from -42c" line), joined
+     on the permanent id: data/ids/basis-join.json gives the one history key an elevId holds
+     (an id with two or more keys is left out there, never guessed). Mirrors cb-myelev.js
+     basisFact(). HIST_DAYS: a row first seen fewer days ago than this says only that. */
+  var HIST_DAYS = 28;
+  function basisRowKey(fac, city, st, cat, sym, month) {
+    var n = function (v) { return String(v == null ? '' : v).trim().toUpperCase().replace(/\s+/g, ' '); };
+    return [n(fac), n(city), n(st), n(cat), n(sym), n(month)].join('|');
+  }
+  function basisHistMap(sh) {
+    if (!sh || !sh.r) return null;
+    var m = {}, f = sh.f || [], d = sh.d || [], c = sh.c || ['corn', 'soybeans', 'wheat', 'other'];
+    var when = function (i) { return i == null || i >= d.length ? null : d[i]; };
+    sh.r.forEach(function (r) {
+      var fc = String(f[r[0]] || '').split('|');
+      m[basisRowKey(fc[0], fc[1], sh.state, c[r[1]], r[2], r[3])] = { cur: r[4], prev: r[5], since: when(r[6]), first: when(r[7]), last: when(r[8]) };
+    });
+    return m;
+  }
+  function basisHistory(map, joinKey, crop, futuresMonth, delivery, live, today) {
+    if (!map || !joinKey) return { status: 'none', why: 'no basis history joined to this elevator’s id' };
+    var k = String(joinKey).split('|'), h = map[basisRowKey(k[1], k.slice(2).join('|'), k[0], crop, futuresMonth, delivery)];
+    if (!h) return { status: 'none', why: 'no basis history for this contract and delivery' };
+    var sane = function (c) { return c != null && Math.abs(c) <= 300; };
+    if (live == null || !sane(live) || !sane(h.cur)) return { status: 'none', why: 'basis outside the range we narrate' };
+    var age = h.first && today ? Math.round((Date.parse(today) - Date.parse(h.first)) / 864e5) : null;
+    if (age == null || age < HIST_DAYS) return { status: 'thin', first: h.first, why: 'this delivery was first seen ' + md(h.first) + ' and we wait for ' + HIST_DAYS + ' days of it' };
+    if (h.cur === live) {
+      if (h.prev == null) return { status: 'ok', kind: 'same', first: h.first };
+      return sane(h.prev) && h.since ? { status: 'ok', kind: 'moved', date: h.since, from: h.prev, first: h.first } : { status: 'none', why: 'the earlier value is outside the range we narrate' };
+    }
+    return h.last ? { status: 'ok', kind: 'after', date: h.last, from: h.cur, first: h.first } : { status: 'none', why: 'no last-seen day' };
+  }
+
   return {
+    rainFigure: rainFigure, rainChart: rainChart, rankSoFar: rankSoFar, rankWordsRain: rankWordsRain, windowTotals: windowTotals, RANK_MIN: RANK_MIN,
+    ownPast: ownPast, unusualHere: unusualHere, ownWords: ownWords, OWN_MIN: OWN_MIN, OWN_MAX: OWN_MAX,
+    basisNeighbors: basisNeighbors, basisHistMap: basisHistMap, basisHistory: basisHistory, median: median, EL: { NEAR: EL_NEAR, NB: EL_NB, NB_MIN: EL_NB_MIN, EACH: EL_EACH, HIST_DAYS: HIST_DAYS },
+    milesFrom: milesFrom,
     SECTIONS: SECTIONS, PRINT_PARTS: PRINT_PARTS, STATES: STATES, FIPS_ST: FIPS_ST, MIN_RANK_N: MIN_RANK_N,
     deeper: deeper, parsePrint: parsePrint, printParam: printParam, printCode: printCode, printFromCode: printFromCode, qrLink: qrLink, parseQuery: parseQuery, parsePoint: parsePoint, classify: classify,
     splitState: splitState, normName: normName, stateFromName: stateFromName, findCounty: findCounty,

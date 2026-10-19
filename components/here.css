@@ -196,3 +196,41 @@ html.h-has .h-land{display:none}
   html.pr-off-sentence .pc-sent,html.pr-off-week #h-sec-week,html.pr-off-fingerprint .pc-fp,html.pr-off-fingerprint #h-sec-fingerprint,
   html.pr-off-unusual #h-sec-unusual,html.pr-off-long #h-sec-long,html.pr-off-sources #h-part-sources{display:none!important}
 }
+
+/* The first screen (Oct 19): the ranked line, the county station's year drawn (the county rain
+   page's figure classes, components/rain-county.css), and what is unusual against its own past. */
+.h-first{margin:.5rem 0 .8rem}
+.h-rank{font-size:1.06rem!important;line-height:1.45!important;color:var(--text)!important;margin:.2rem 0 .5rem!important;min-height:2.9em}
+.h-rank-l{display:block;font-family:var(--font-display,inherit);font-size:clamp(1.2rem,4.6vw,1.6rem);font-weight:800;line-height:1.2;color:var(--text);margin:0 0 .2rem}
+.h-rank-t{color:var(--text-dim)}
+.h-wait{color:var(--text-muted)}
+.h-rp-box{min-height:120px}
+.h-rp-box .rc-chart{margin:0 0 .4rem}
+.h-rp-ph{aspect-ratio:2/1;max-width:520px;border-radius:6px;background:color-mix(in srgb,var(--text-muted) 10%,transparent)}
+.h-math{margin:.25rem 0 .1rem;font-size:.86rem}
+.h-math summary{cursor:pointer;color:var(--link,var(--brand));min-height:36px;display:inline-flex;align-items:center;font-size:.86rem}
+.h-math-b{border-left:2px solid var(--border);padding:.2rem 0 .1rem .7rem;margin:.2rem 0 .4rem}
+.h-math-b p{font-size:.86rem!important}
+.h-math-b table{max-width:26rem}
+.h-math-b .h-tw{max-height:18rem;overflow-y:auto}
+.h-me th,.h-me td{font-weight:800;background:color-mix(in srgb,var(--gold) 18%,transparent)}
+.h-odd{margin:.9rem 0 0;padding:.7rem .85rem .3rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.h-odd h2{font-size:1.02rem;margin:0 0 .2rem}
+.h-odd-l{margin:.3rem 0 0;padding:0;list-style:none}
+.h-odd-l li{margin:0 0 .45rem;padding:0 0 .35rem;border-bottom:1px solid var(--border)}
+.h-odd-l li:last-child{border-bottom:0}
+.h-odd-l li>span:first-child{color:var(--text)}
+.h-elev{margin:.9rem 0 0}
+.h-el{margin:.2rem 0 .4rem;padding:0;list-style:none}
+.h-el li{margin:0 0 .5rem;padding:0 0 .4rem;border-bottom:1px solid var(--border);font-size:.92rem}
+.h-el-h{display:block;font-size:.84rem;color:var(--text-muted)}
+.h-el-h:empty{display:none}
+@media print{
+  .h-first .h-math,.h-first .rc-print-styles,.h-rp-ph,.h-elev{display:none!important}
+  html.pr-off-sentence #h-first{display:none!important}
+  .h-first{break-inside:avoid}
+  .h-rank-l{font-size:16pt}
+  .h-rp-box .rc-chart svg{max-width:6.5in}
+  .h-odd{border:1pt solid #000}
+}
+@media(min-width:700px){.h-rp-box .rc-chart{max-width:680px}}

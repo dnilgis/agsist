@@ -30,7 +30,7 @@
   // proxy is not called at all, rather than called and ignored.
   var LICENSED_FEED = false;   // Barchart turned off 2026-10-11 (Sig cancelling the subscription)
   var LICENSED_DEADLINE_MS = 6000;
-  var NET_SCRIPT = '/components/bids-network.js?v=6';
+  var NET_SCRIPT = '/components/bids-network.js?v=7';
 
   var MAX_ELEVATORS = 3;
   var MAX_BIDS_PER_COMMODITY = 3;

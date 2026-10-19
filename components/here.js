@@ -13,7 +13,23 @@
    &for= opens normally and the param is dropped). &print= holds the Print
    report choices so a shared link prints the same; it is never required.
    The recorded sales index (data/land/<st>/index.json) is read only to decide
-   whether the Go deeper row offers the comparable sales report. */
+   whether the Go deeper row offers the comparable sales report.
+
+   THE FIRST SCREEN (Oct 19): the county station's year of rain, drawn by the
+   county rain page's own Rain Print (components/rain-county-print.js mount(),
+   the same station, days and checks as /rain/<state>/<county>); the plain
+   running total shows at once from data/rain/<st>.json and stays if the print
+   cannot draw. Over it, one ranked line: this year from Jan 1 to the last
+   reported day against the same days of every earlier year the station kept
+   in full (place.js rankSoFar), from the station's period of record at
+   RCC-ACIS, the call /rain-print makes; it shows a placeholder while NOAA
+   answers and says so when it does not. Under it, "What's unusual here": at
+   most five figures from the county's own Atlas record that sit outside 90% of
+   their own past (place.js unusualHere); nothing shows when none does. Every
+   line opens its math on tap. In This week, the nearest elevators' basis
+   against their neighbors (place.js basisNeighbors), from the bids network's
+   live index, and against their own history joined on the permanent id
+   (data/ids/basis-join/<ST>.json, data/basis/<ST>.json). */
 (function () {
   'use strict';
   var P = window.AgPlace, L = window.AGLayers;
@@ -227,6 +243,7 @@
     salesIn(p.st).then(function (has) { if (has && S.prof && S.prof.fips === fips) drawDeeper(true); });
     var nb = p.neighbors.filter(function (n) { return n.name; });
     $('h-nb').innerHTML = nb.length ? 'Next door: ' + nb.map(function (n) { return '<a href="?fips=' + n.fips + '" data-fips="' + n.fips + '">' + esc(n.name) + '</a>'; }).join(' · ') : '';
+    drawFirst(p);
     drawFingerprint(p);
     drawCover(p);
     drawUnusual(p);
@@ -358,6 +375,12 @@
       var d = P.droughtNow(f, fips);
       if (d.status !== 'ok') { tile('drought', na(d.why)); return; }
       var lead = d.worst < 0 ? 'None' : d.worstPct.toFixed(0) + '% in ' + d.worstWords.split(' ')[0];
+      /* The drought line under the drawing counts weeks this year; say what the newest map shows beside it. */
+      (S.odd || []).forEach(function (l, i) {
+        if (l.id !== 'drought') return;
+        var li = $('h-odd-m' + i), d2 = d.now[2] || 0;
+        if (li && !li.parentNode.querySelector('.h-odd-now')) li.insertAdjacentHTML('beforebegin', '<span class="h-src h-odd-now">The newest map (' + esc(mdy(d.valid)) + '): ' + d2.toFixed(0) + '% of the county in severe drought or worse.</span> ');
+      });
       tile('drought', '<p class="wk-n">' + esc(lead) + '</p><p>' + (d.worst < 0 ? 'No part of the county is dry or in drought on the map of ' + esc(mdy(d.valid)) + '.' :
         d.worstPct.toFixed(0) + '% of the county in ' + esc(d.worstWords) + ' or worse on the map of ' + esc(mdy(d.valid)) + '. In drought (D1 or worse): ' + d.d1.toFixed(0) + '% now, ' + (d.d1FourAgo == null ? 'no map' : d.d1FourAgo.toFixed(0) + '%') + ' four weeks earlier.') +
         '</p><p class="h-src">U.S. Drought Monitor county statistics (NDMC, University of Nebraska-Lincoln). <a href="/drought-monitor">Drought map</a></p>');
@@ -391,6 +414,7 @@
       tile('usda', '<p class="wk-n">' + esc(r.name) + '</p><p>' + esc(et) + ' ET.</p><p class="h-src">From the <a href="/usda-calendar">USDA report calendar</a>. Weekly Crop Progress and Export Sales are not in this list.</p>');
     });
     loadBids(fips, w);
+    loadElev(fips, w);
   }
   function loadBids(fips, w) {
     var net = window.AGSIST_BIDS_NET, lat = +w.lat, lng = +w.lng;
@@ -411,6 +435,203 @@
     live.then(function (snap) {
       if (snap && snap.bids && snap.bids.length) { draw(snap, true); return; }
       getJSON('/data/bids.json').then(function (f) { draw(f, false); });
+    });
+  }
+
+  /* ── the first screen ─────────────────────────────────────────── */
+  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=20';
+  var porMemo = {};
+  function loadScript(src, ready) {
+    if (ready()) return Promise.resolve(true);
+    return new Promise(function (ok) {
+      var el = document.createElement('script');
+      el.src = src; el.async = true;
+      el.onload = function () { ok(ready()); };
+      el.onerror = function () { ok(false); };
+      document.head.appendChild(el);
+    });
+  }
+  /* The station's whole daily record, precipitation only: the call components/rain-print.js
+     stationExtremes() makes (there with avgt too). Null when NOAA does not answer in 20 s. */
+  function porRows(sid) {
+    if (porMemo[sid]) return porMemo[sid];
+    var u = ACIS + '?' + new URLSearchParams({ sid: sid, sdate: 'por', edate: 'por', elems: 'pcpn' }).toString();
+    var p = new Promise(function (ok) {
+      var done = false, t = setTimeout(function () { if (!done) { done = true; ok(null); } }, 20000);
+      fetch(u).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+        .then(function (j) { if (!done) { done = true; clearTimeout(t); ok(j && !j.error && Array.isArray(j.data) ? j.data : null); } });
+    });
+    porMemo[sid] = p.then(function (rows) { if (!rows) delete porMemo[sid]; return rows; });
+    return porMemo[sid];
+  }
+  function thisYear() { try { return +new Date().toLocaleString('en-US', { timeZone: 'America/Chicago', year: 'numeric' }); } catch (e) { return new Date().getFullYear(); } }
+  function drawFirst(p) {
+    var fips = p.fips, st = p.st;
+    function mine() { return S.prof && S.prof.fips === fips; }
+    $('h-first').hidden = false;
+    $('h-rank').innerHTML = '<span class="h-wait">Reading this year&rsquo;s rain at the county station&hellip;</span>';
+    $('h-rank-sub').innerHTML = '';
+    $('h-rp-box').innerHTML = '<div class="h-rp-ph" aria-hidden="true"></div>';
+    drawOdd(p);
+    getJSON('/data/rain/' + st.toLowerCase() + '.json').then(function (f) {
+      if (!mine()) return;
+      var fig = P.rainFigure(f, fips);
+      if (!fig) {
+        var r = P.rainSoFar(f, fips);
+        $('h-rank').innerHTML = '<span class="h-na">No rain drawing for ' + esc(p.name) + ': ' + esc(r.why || 'no county rain record') + '.</span>';
+        $('h-rp-box').innerHTML = '';
+        return;
+      }
+      S.fig = fig;
+      drawFigure(fig);
+      var head = '<b>' + fig.year + ' at ' + esc(fig.station.name) + '</b>: ' + fig.total.toFixed(2) + ' in' + (fig.done ? '' : ' so far') + (fig.pct != null ? ', ' + fig.pct + '% of a usual year to date' : '') + ' (Jan 1 to ' + esc(mdy(fig.asOf).replace(/, \d{4}$/, '')) + ').';
+      $('h-rank').innerHTML = head + ' <span class="h-wait">Ranking it against this station&rsquo;s own record&hellip;</span>';
+      $('h-rank-sub').innerHTML = esc(fig.gauge) + '. NOAA daily records through RCC-ACIS, as on the <a href="/rain/' + P.stSlug(st) + '/' + esc(p.slug) + '">county rain page</a>.';
+      rankIt(fig, head, mine);
+    });
+  }
+  function rankIt(fig, head, mine) {
+    porRows(fig.station.sid).then(function (rows) {
+      if (!mine()) return;
+      if (!rows) {
+        $('h-rank').innerHTML = head + ' <span class="h-na">Not ranked: NOAA&rsquo;s station record did not answer.</span> <button type="button" class="h-lnk" id="h-rank-retry">Try again</button>';
+        var b = $('h-rank-retry'); if (b) b.onclick = function () { $('h-rank').innerHTML = head + ' <span class="h-wait">Asking NOAA again&hellip;</span>'; rankIt(fig, head, mine); };
+        return;
+      }
+      var r = P.rankSoFar(rows, fig);
+      S.rank = r;
+      if (r.status !== 'ok') { $('h-rank').innerHTML = head + ' <span class="h-na">Not ranked: ' + esc(r.why) + '.</span>' + mathBox('h-rank-m'); wireMath('h-rank-m', function () { return rankMath(r, fig); }); return; }
+      track('here_rank', { n: r.n });
+      $('h-rank').innerHTML = '<span class="h-rank-l">' + esc(P.rankWordsRain(r, fig)) + '</span> <span class="h-rank-t">' + fig.total.toFixed(2) + ' in' + (fig.pct != null ? ', ' + fig.pct + '% of a usual year to date' : '') + '.</span>' + mathBox('h-rank-m');
+      wireMath('h-rank-m', function () { return rankMath(r, fig); });
+    });
+  }
+  function mathBox(id) { return '<details class="h-math" id="' + id + '"><summary>Show the math</summary><div class="h-math-b"></div></details>'; }
+  /* The math is built only when a reader opens it. */
+  function wireMath(id, build) {
+    var d = $(id); if (!d) return;
+    d.addEventListener('toggle', function () { var b = d.querySelector('.h-math-b'); if (d.open && !b.firstChild) b.innerHTML = build(); });
+  }
+  function rankMath(r, fig) {
+    var rows = (r.years || []).concat([[fig.year, r.total]]).sort(function (a, b) { return b[1] - a[1] || a[0] - b[0]; });
+    var out = '<p>Rain from ' + esc(r.span) + ' in every year the ' + esc(fig.noun) + ' recorded every one of those days' + (r.first ? ' (' + r.first + ' to ' + r.last + ', plus ' + fig.year + ')' : '') + ': ' + r.n + ' years. ' +
+      (r.skipped ? r.skipped + ' earlier year' + (r.skipped === 1 ? '' : 's') + ' left out for a day with no report or a several-day total that ran past the window. ' : '') +
+      (r.status === 'ok' ? 'Wetter: ' + r.wetter + '. Drier: ' + r.drier + '. Tied (within 0.005 in): ' + r.tied + '. Ranked from the nearer end, wettest or driest. ' : '') +
+      'We rank only with ' + r.min + ' years or more, and only when ' + fig.year + ' has a report for every day and its total matches the ' + fig.total.toFixed(2) + ' in drawn.</p>' +
+      '<p class="h-src">Source: NOAA daily records through RCC-ACIS (data.rcc-acis.org), ' + esc(fig.noun) + ' ' + esc(String(fig.station.sid).split(' ')[0]) + ', read just now. ' + fig.year + ' days: the county rain file through ' + esc(mdy(fig.asOf)) + '.</p>';
+    if (rows.length > 1) out += '<div class="h-tw"><table><caption class="sr-only">Each year, wettest first</caption><thead><tr><th scope="col">Year</th><th scope="col">Inches, ' + esc(r.span) + '</th></tr></thead><tbody>' +
+      rows.map(function (y) { var me = y[0] === fig.year; return '<tr' + (me ? ' class="h-me"' : '') + '><th scope="row">' + y[0] + (me ? ' (this year)' : '') + '</th><td>' + y[1].toFixed(2) + '</td></tr>'; }).join('') + '</tbody></table></div>';
+    return out;
+  }
+  function drawFigure(fig) {
+    var cap = 'Inches of rain added up day by day from Jan 1' + (fig.usual != null ? ', solid line, against the usual year at this ' + fig.noun + ' (dashed), counted on the same days' : '') + '. Days with no report add nothing.';
+    var pcap = 'Every day of ' + fig.year + (fig.done ? '' : ' so far') + ' at this ' + fig.noun + ', drawn by Rain Print. A gap is a day with no report.' + (fig.done ? '' : ' The empty months are still to come.') +
+      (fig.mn ? ' The dashed line is the usual year: NOAA&rsquo;s ' + (fig.norm === '1991-2020' ? '1991 to 2020' : '30-year') + ' normals for this ' + fig.noun + ', added up over the days it reported.' : '');
+    $('h-rp-box').innerHTML = '<figure class="rc-chart rc-print h-rp" id="h-rp" data-st="' + esc(fig.st) + '" data-fips="' + esc(fig.fips) + '" data-year="' + fig.year + '" data-days="' + fig.days + '" data-total="' + fig.total.toFixed(2) + '" data-place="' + esc(fig.place) + '" data-gauge="' + esc(fig.gauge) + '"' +
+      (fig.mn ? ' data-mn="' + esc(fig.mn) + '" data-usual="' + fig.usual.toFixed(2) + '" data-norm="' + esc(fig.norm) + '"' : '') + '>' +
+      '<div class="rc-print-styles" role="group" aria-label="Print style" hidden><button type="button" data-style="r1" aria-pressed="true">Staircase</button><button type="button" data-style="r2" aria-pressed="false">Roots</button><button type="button" class="rc-zoom" aria-pressed="false">Up close</button></div>' +
+      '<div class="rc-print-art">' + P.rainChart(fig) + '</div><figcaption><span class="rc-cap-chart">' + esc(cap) + '</span><span class="rc-cap-print" hidden>' + pcap + '</span></figcaption></figure>';
+    var el = $('h-rp');
+    loadScript(RCP, function () { return !!(window.AgRainCountyPrint && window.AgRainCountyPrint.mount); }).then(function (ok) {
+      if (ok && el.isConnected) window.AgRainCountyPrint.mount(el);
+    });
+  }
+  /* What's unusual here: the county's own past (Atlas county file), at most five lines. */
+  function drawOdd(p) {
+    var box = $('h-odd'), list = P.unusualHere(S.county, thisYear());
+    S.odd = list;
+    if (!list.length) { box.hidden = true; $('h-odd-l').innerHTML = ''; return; }
+    box.hidden = false;
+    $('h-odd-l').innerHTML = list.map(function (l, i) {
+      return '<li><span>' + esc(l.words) + '</span> <span class="h-src">' + esc(l.source) + ', Farmland Atlas county file of ' + esc(mdy((S.county && S.county.generated) || p.atlasGenerated)) + '.</span>' + mathBox('h-odd-m' + i) + '</li>';
+    }).join('');
+    list.forEach(function (l, i) { wireMath('h-odd-m' + i, function () { return oddMath(l); }); });
+  }
+  function oddMath(l) {
+    var fmtV = function (v) { return l.unit === 'in' ? v.toFixed(2) + ' in' : l.unit === 'deg F' ? v.toFixed(1) + '°F' : l.unit === 'weeks' ? v + ' wk' : v.toFixed(2); };
+    var e = l.earlier.slice().sort(function (a, b) { return b[1] - a[1] || a[0] - b[0]; });
+    return '<p>' + l.latest.year + ': ' + esc(fmtV(l.latest.v)) + (l.partial ? ' so far (' + l.latest.maps + ' weekly maps in)' : '') + '. Earlier ' + (l.partial ? 'full ' : '') + 'years: ' + l.n + ' (' + l.from + ' to ' + l.to + '). ' +
+      'Strictly higher than ' + l.below + ', strictly lower than ' + l.above + ', the same as ' + (l.n - l.below - l.above) + '.</p>' +
+      '<p>The rule, set before any county was run: a line shows only when the newest value is higher than at least 90% of the place&rsquo;s own earlier values' + (l.highOnly ? '' : ' or lower than at least 90% of them') + ', with ' + P.OWN_MIN + ' or more earlier values. ' +
+      (l.partial ? 'A year still going is checked on the high side only: its count can only grow. ' : '') +
+      'We check five figures (April to September rain, July and August nights, weeks in drought, the insurance loss ratio). In an ordinary year about one of them lands here by chance, so a line means unusual for this place, not a cause.</p>' +
+      '<div class="h-tw"><table><caption class="sr-only">Earlier values, highest first</caption><thead><tr><th scope="col">Year</th><th scope="col">Value</th></tr></thead><tbody>' +
+      e.map(function (x) { return '<tr><th scope="row">' + x[0] + '</th><td>' + esc(fmtV(x[1])) + '</td></tr>'; }).join('') + '</tbody></table></div>';
+  }
+
+  /* ── my elevator against its neighbors (This week) ──────────────── */
+  var CROPN = { corn: 'Corn', soybeans: 'Soybeans' };
+  /* cents, signed; a neighbors' middle can fall on a half cent and says so */
+  function basisTxt(c) { if (c == null) return ''; var a = Math.round(Math.abs(c) * 2) / 2; return (a === 0 ? '' : c < 0 ? '−' : '+') + (a % 1 ? a.toFixed(1) : a) + '¢'; }
+  function loadElev(fips, w) {
+    var net = window.AGSIST_BIDS_NET, lat = +w.lat, lng = +w.lng, box = $('h-elev-b');
+    if (!box) return;
+    function mine() { return S.prof && S.prof.fips === fips; }
+    box.innerHTML = '<span class="wk-wait">Reading the elevator boards&hellip;</span>';
+    var ask = net && net.index && isFinite(lat) && isFinite(lng) ? net.index() : Promise.resolve(null);
+    ask.then(function (idx) {
+      if (!mine()) return;
+      if (!idx || !idx.places) { box.innerHTML = na('the elevator network did not answer'); return; }
+      var by = P.basisNeighbors(idx.places, lat, lng), from = w.center ? 'the county center' : w.zip ? 'ZIP ' + w.zip : 'this spot';
+      var rows = [].concat(by.corn || [], by.soybeans || []);
+      if (!rows.length) { box.innerHTML = na('no elevator we read within ' + P.EL.NEAR + ' miles of ' + from + ' posts a usable corn or soybean bid'); return; }
+      S.elev = rows;
+      box.innerHTML = '<ul class="h-el">' + rows.map(function (r, i) {
+        var head = '<b>' + CROPN[r.crop] + '</b> at ' + esc(r.name) + (r.town ? ', ' + esc(r.town) : '') + ' ' + esc(r.st) + ' (' + r.mi + ' mi): basis ' + basisTxt(r.basis) + (r.delivery ? ' for ' + esc(r.delivery) : '');
+        var vs = r.status === 'ok' ? ', ' + (r.gap === 0 ? 'the same as' : Math.abs(r.gap) + '¢ ' + (r.gap > 0 ? 'stronger than' : 'weaker than')) + ' the middle of ' + r.nbN + ' elevators' + (r.nbCos < r.nbN ? ' (' + r.nbCos + ' compan' + (r.nbCos === 1 ? 'y' : 'ies') + ')' : '') + ' within ' + r.radius + ' miles posting the same delivery (' + basisTxt(r.nbMedian) + ').'
+          : '. Against its neighbors: not available, ' + esc(r.why) + '.';
+        return '<li id="h-el-' + i + '">' + head + vs + ' <span class="h-el-h" id="h-el-h' + i + '"></span>' + mathBox('h-el-m' + i) + '</li>';
+      }).join('') + '</ul><p class="h-src" id="h-el-thin" hidden></p><p class="h-src">Distances from ' + esc(from) + '. Live elevator boards AGSIST reads (the bids network)' + (idx.generated ? ', ' + esc(mdy(idx.generated)) : '') + '. Each elevator&rsquo;s nearest open delivery. Basis history starts June 2026. <a href="' + (w.zip ? '/cash-bids?zip=' + w.zip : '/cash-bids') + '">All bids near here</a></p>';
+      rows.forEach(function (r, i) { wireMath('h-el-m' + i, function () { return elevMath(r); }); });
+      elevHistory(rows, mine);
+    });
+  }
+  function elevMath(r) {
+    return '<p>Its bid: ' + esc(r.name) + ', ' + esc(r.town) + ' ' + esc(r.st) + ', ' + esc(CROPN[r.crop].toLowerCase()) + ' $' + r.cash.toFixed(2) + ', basis ' + basisTxt(r.basis) + ', delivery &ldquo;' + esc(r.delivery) + '&rdquo; (' + esc(r.period) + ').' + (r.elevId ? ' Elevator id ' + esc(r.elevId) + '.' : '') + '</p>' +
+      '<p>The rule, set before any place was run: the ' + P.EL.EACH + ' nearest elevators within ' + P.EL.NEAR + ' miles with a usable bid; their neighbors are every other elevator within ' + r.radius + ' miles of each one posting the same crop for the same delivery period, one per elevator id; at least ' + r.min + ' neighbors, else no comparison. The gap is its basis minus the neighbors&rsquo; middle basis. Other branches of the same company count as neighbors; the line says how many companies they are.</p>' +
+      (r.neighbors.length ? '<div class="h-tw"><table><caption class="sr-only">The neighbors, weakest basis first</caption><thead><tr><th scope="col">Elevator</th><th scope="col">Miles from it</th><th scope="col">Basis</th></tr></thead><tbody>' +
+        r.neighbors.map(function (n) { return '<tr><th scope="row">' + esc(n.name) + (n.town ? ', ' + esc(n.town) : '') + ' ' + esc(n.st) + '</th><td>' + n.mi + '</td><td>' + basisTxt(n.basis) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="h-na">No neighbor posts the same delivery.</p>');
+  }
+  /* Rows whose own history is too short share one line under the list, not one each. */
+  function thinNote(rows) {
+    var t = rows.filter(function (r) { return r.hist && r.hist.status === 'thin'; }), el = $('h-el-thin');
+    if (!el || !t.length) return;
+    var f = t.map(function (r) { return r.hist.first; }).filter(Boolean).sort(), d = function (x) { return mdy(x).replace(/, \d{4}$/, ''); };
+    el.hidden = false;
+    el.textContent = 'Against its own history: not yet for ' + (t.length === rows.length ? 'any of these' : t.length + ' of these') + '. ' +
+      (f.length ? 'Those deliveries were first seen ' + (f[0] === f[f.length - 1] ? d(f[0]) : 'between ' + d(f[0]) + ' and ' + d(f[f.length - 1])) + '; ' : '') +
+      'a comparison waits for ' + P.EL.HIST_DAYS + ' days of one delivery.';
+  }
+  /* Its own history: the id -> history key join, the state's basis file, and the place's shard
+     for the row's contract. Any missing piece leaves the line empty, never a guess. */
+  function elevHistory(rows, mine) {
+    var net = window.AGSIST_BIDS_NET, today = new Date().toISOString().slice(0, 10);
+    var sts = {};
+    rows.forEach(function (r) { if (r.st) sts[r.st] = 1; });
+    Object.keys(sts).forEach(function (st) {
+      if (!/^[A-Z]{2}$/.test(st)) return;
+      Promise.all([getJSON('/data/ids/basis-join/' + st + '.json', 8000), getJSON('/data/basis/' + st + '.json', 8000)]).then(function (a) {
+        if (!mine()) return;
+        var join = a[0], map = P.basisHistMap(a[1]);
+        rows.forEach(function (r, i) {
+          if (r.st !== st) return;
+          var el = $('h-el-h' + i); if (!el) return;
+          var key = join && join.k && r.elevId ? join.k[r.elevId] : null;
+          if (!key) { el.textContent = join && join.multi && join.multi[r.elevId] ? 'Its own history: listed under ' + join.multi[r.elevId] + ' names in the history, so not joined.' : ''; return; }
+          if (!map || !net || !net.shard || !r.shard) return;
+          net.shard(r.shard).then(function (sh) {
+            if (!mine() || !sh || !Array.isArray(sh.bids)) return;
+            var row = null;
+            sh.bids.forEach(function (b) { if (!row && b && b.crop === r.crop && String(b.period || '') === r.period && String(b.delivery || '') === r.delivery && typeof b.cash === 'number' && Math.abs(b.cash - r.cash) < 0.0001) row = b; });
+            if (!row) return;
+            var h = P.basisHistory(map, key, r.crop, row.futuresMonth || '', row.delivery || '', r.basis, today);
+            r.hist = h;
+            if (h.status === 'thin') thinNote(rows);
+            else if (h.status === 'ok') el.textContent = 'Its own history (since ' + mdy(h.first).replace(/, 2026$/, '') + '): ' +
+              (h.kind === 'same' ? 'no change since then.' : h.kind === 'moved' ? 'changed ' + mdy(h.date).replace(/, 2026$/, '') + ', was ' + basisTxt(h.from) + '.' : 'was ' + basisTxt(h.from) + ' when last seen ' + mdy(h.date).replace(/, 2026$/, '') + '; it moved since.');
+          });
+        });
+      });
     });
   }
 
