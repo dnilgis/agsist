@@ -23,7 +23,7 @@ Write your answer to the file path you are given, in plain English, short senten
 7. The one bet you'd make in the next 30 days.
 Be concrete and grounded in what is actually in the repo. Mark anything unverified as a hypothesis. Under 1,200 words.
 
-Fill before use: <your seat and lens>, <output path>, <branches not on main that matter>, <Sig's question in his words>.
+Fill before use: <your seat and lens>, <output path>, <branches not on main that matter>, <Sig's question, verbatim>.
 Evidence rules: load the honest-numbers and could-this-evidence-differ skills if you have the Skill tool. One-line
 versions: state the sample beside every number; withhold rather than hedge; count every test you ran; no look-ahead;
 before believing evidence ask "what else would produce exactly this?". End with "What I checked and found correct".
