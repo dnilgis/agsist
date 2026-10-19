@@ -211,7 +211,7 @@
 .fr-link-icon{font-size:1rem;flex-shrink:0}
 
 .fert-source{font-size:0.763rem;color:var(--text-muted);text-align:center;padding-top:.65rem;border-top:1px solid var(--border)}
-.fert-source a{color:var(--gold);text-decoration:none}
+.fert-source a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 .fert-source a:hover{text-decoration:underline}
 
 /* === Decision layer: verdict + nutrient table + calculator === */
@@ -348,7 +348,7 @@
     <div class="fv-grid" id="fv-cheapest"></div>
     <div class="fv-afford" id="fv-afford" hidden></div>
   </div>
-  <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the fertilizer prices. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=fertilizer&amp;utm_source=fertilizer&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="fertilizer"></aside>
 
 
   <h2 class="fert-related-title" style="margin-top:.25rem">Cost per pound of nutrient</h2>

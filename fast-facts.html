@@ -53,7 +53,7 @@
 .ff-mvlink a{color:var(--gold);font-weight:700}
 .ff-meta{font-size:0.765rem;color:var(--text-muted);margin-top:.55rem;}
 .ff-meta strong{color:var(--text-dim);}
-.ff-meta a{color:var(--gold);text-decoration:none;}
+.ff-meta a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
 @media print{.ff-tabs,.ff-hero p,.skip,#site-header,#site-footer{display:none!important;}.ff-panel{display:block!important;page-break-inside:avoid;}.ff-page{padding:0;max-width:100%;}}
 .ff-page{max-width:980px;margin:0 auto;padding:0 1rem 4rem;}
 .ff-hero{padding:var(--page-top) 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
@@ -217,7 +217,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .ff-print-btn{padding:.55rem 1.2rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:44px;}
 .ff-print-btn:hover{border-color:var(--gold);color:var(--gold);}
 .ff-source{font-size:0.763rem;color:var(--text-muted);text-align:center;margin-top:1.5rem;}
-.ff-source a{color:var(--gold);text-decoration:none;}
+.ff-source a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
 /* FIX: two-line overflow-x pattern */
 
 
@@ -266,7 +266,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .ff-ans-res b{font-family:'JetBrains Mono',monospace;color:var(--text);margin-left:.2rem;}
 .ff-ans-src{font-size:0.755rem;color:var(--text-muted);margin:.45rem 0 0;line-height:1.45;}
 .ff-ans-note{font-size:0.78rem;color:var(--text-dim);margin:.45rem 0 0;line-height:1.5;}
-.ff-ans-note a{color:var(--gold);font-weight:700;text-decoration:none;}
+.ff-ans-note a{color:var(--gold);font-weight:700;text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
 .ff-ans-fall{color:var(--text);}
 #nc-table .rg{display:block;font-size:0.72rem;color:var(--text-muted);white-space:nowrap;}
 #nc-table td.act{background:rgba(230,176,66,.22)!important;outline:2px solid var(--gold);outline-offset:-2px;}
@@ -277,7 +277,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .ff-toc b{color:var(--text-dim);}
 .ff-src-list{font-size:.8rem;color:var(--text-dim);line-height:1.55;padding-left:1.1rem;margin:.4rem 0 0;}
 .ff-src-list li{margin:.25rem 0;}
-.ff-src-list a{color:var(--gold);text-decoration:none;}
+.ff-src-list a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
 .ff-sources{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1rem 1.2rem;margin:1.5rem 0 0;}
 .ff-sources h2{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:0 0 .3rem;}
 .ff-sources p{font-size:.8rem;color:var(--text-dim);line-height:1.55;margin:.3rem 0;}
@@ -452,7 +452,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <p class="ff-ans-note" id="ans-note">Rates are A2809 Table 6.1 as UW posts it today (Mar 2026 web edition, read Oct 16, 2026), from Wisconsin trials, starter included. If UW posts a newer table, these rates change with it. Subtract manure and second-year alfalfa credits; after corn or a forage legume, also first-year legume credits. Outside Wisconsin, run the same prices in <a href="https://www.cornnratecalc.org/">Iowa State's Corn N Rate Calculator</a>, which several Corn Belt states use for their own rates. <a href="#nitrogen" data-jump="nitrogen">Full table and credits &rarr;</a></p>
   <p class="ff-ans-note ff-ans-fall" id="ans-fall" hidden>Fall anhydrous: wait until 4-inch soil stays under 50&deg;F. <a href="/fall-nitrogen">Soil temps near you</a>.</p>
 </section>
-<style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the reference tables. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=fast-facts&amp;utm_source=fast-facts&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="fast-facts"></aside>
 <div class="ff-strip" id="ff-strip" hidden>
   <div class="ff-tile"><div class="k">Corn</div><div class="v" id="fft-corn">-</div><div class="n">CBOT, delayed</div></div>
   <div class="ff-tile"><div class="k">Soybeans</div><div class="v" id="fft-beans">-</div><div class="n">CBOT, delayed</div></div>

@@ -1,18 +1,26 @@
 #!/usr/bin/env python3
 """
-PRICES ON THE OPEN SPONSOR SLOTS, FROM THE RATE CARD.
+PRICES FROM THE RATE CARD, AND THE OPEN SPONSOR SLOTS.
 
-Every "Sponsor this page" ribbon carries what the slot costs. Since
-2026-10-11 an unsold ribbon is hidden on the page (components/styles.css;
-the homepage chip and the footer's open slot are gone), but the ribbon
-markup is still where each slot's id and price live, for data/sponsor-slots.json
-and the sign-up form. Those prices are written here from data/rate-card.json, into
-<span ... data-rate="TIER">...</span>, and nowhere by hand. A price typed into
-eighty pages is eighty copies that will disagree the first time it changes
-(2026-10-07: the footer said $25/week while the card had moved on).
+Prices are written from data/rate-card.json into <span ... data-rate="TIER">...</span>,
+and nowhere by hand. A price typed into eighty pages is eighty copies that will
+disagree the first time it changes (2026-10-07: the footer said $25/week while
+the card had moved on). The sponsor kit pages (/sponsor, /sponsor-apply) keep
+their prices this way.
 
-    python3 scripts/stamp_rates.py            rewrite every data-rate span; add one to any ribbon missing it;
-                                              point every ribbon at /sponsor-apply; write data/sponsor-slots.json
+An UNSOLD "Sponsor this page" ribbon carries no text at all (Sig, 2026-10-19):
+since 2026-10-11 it is hidden on the page (components/styles.css), and the
+"$29/mo, first month free" it still carried was read only by crawlers that skip
+CSS. Each ribbon is now an empty aside with the slot id and nothing else:
+
+    <aside class="ag-sponsor-ribbon" data-slot="whats-priced-in"></aside>
+
+components/loader.js reads data-slot and fills the aside when the slot is sold.
+The pitch the sign-up form shows lives in data/sponsor-slots.json: an old
+ribbon's pitch is read once, as it is emptied, and kept there after.
+
+    python3 scripts/stamp_rates.py            rewrite every data-rate span; empty every unsold ribbon to its
+                                              slot id; write data/sponsor-slots.json
     python3 scripts/stamp_rates.py --check    exit 1 on drift, write nothing (scripts/test_rate_card.py runs this)
 
 data/sponsor-slots.json is the list the sign-up form offers (2026-10-07): one
@@ -30,8 +38,6 @@ ROOT = Path(__file__).resolve().parent.parent
 CARD = ROOT / "data" / "rate-card.json"
 
 SPAN = re.compile(r'(<span\b[^>]*\bdata-rate="([a-z]+)"[^>]*>)(.*?)(</span>)', re.S)
-# A ribbon's link to the sponsor page, with no price span before it yet.
-RIBBON_LINK = re.compile(r'(<aside class="ag-sponsor-ribbon"[^>]*>(?:(?!</aside>).)*?)(<a href="/sponsor)', re.S)
 
 
 def label(card, tier):
@@ -50,9 +56,16 @@ def pages():
 
 
 SLOTS = ROOT / "data" / "sponsor-slots.json"
-RIBBON = re.compile(r'<aside class="ag-sponsor-ribbon"[^>]*>(.*?)</aside>', re.S)
+# An unsold page ribbon. The class is exactly "ag-sponsor-ribbon": sold and
+# PRF ribbons (built in the browser) and the homepage idx1-sponsor carry more.
+RIBBON = re.compile(r'<aside class="ag-sponsor-ribbon"([^>]*)>(.*?)</aside>', re.S)
+SLOT_ATTR = re.compile(r'\sdata-slot="([a-z0-9-]+)"')
 SLOT_ID = re.compile(r'href="/sponsor(?:-apply)?\?slot=([a-z0-9-]+)')
-OLD_HREF = re.compile(r'(<aside class="ag-sponsor-ribbon"(?:(?!</aside>).)*?href=")/sponsor\?slot=', re.S)
+
+
+def empty_ribbon(attrs, sid):
+    attrs = SLOT_ATTR.sub("", attrs)
+    return '<aside class="ag-sponsor-ribbon"%s data-slot="%s"></aside>' % (attrs, sid)
 
 
 NAMES = {"whats-priced-in": "What's Priced In", "breakeven": "Break-Even Calculator",
@@ -62,15 +75,23 @@ NAMES = {"whats-priced-in": "What's Priced In", "breakeven": "Break-Even Calcula
          "archive": "Daily Archive", "tools": "All Tools", "cash-lease": "Cash Farm Lease"}
 
 
-def slot_entry(rel, text):
+def ribbon_slot(inner, attrs):
+    """(slot id, pitch or None) for one unsold ribbon."""
+    m = SLOT_ATTR.search(attrs) or SLOT_ID.search(inner)
+    if not m:
+        return None, None
+    pitch = re.sub(r'<span class="ag-sponsor-(?:tag|price)"[^>]*>.*?</span>|<a\b.*?</a>', "", inner, flags=re.S)
+    pitch = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", pitch)).strip()
+    return m.group(1), (__import__("html").unescape(pitch) or None)
+
+
+def slot_entry(rel, text, known):
     m = RIBBON.search(text)
     if not m:
         return None
-    sid = SLOT_ID.search(m.group(1))
+    sid, pitch = ribbon_slot(m.group(2), m.group(1))
     if not sid:
         return None
-    pitch = re.sub(r'<span class="ag-sponsor-(?:tag|price)"[^>]*>.*?</span>|<a\b.*?</a>', "", m.group(1), flags=re.S)
-    pitch = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", pitch)).strip()
     url = "/" + rel[:-5].replace("index", "").rstrip("/") if rel.endswith(".html") else "/" + rel
     # A stable name from the address, not the <title>: several titles carry the
     # day's reading ("Weak in 6 of 10 USDA Regions") and would churn this file.
@@ -83,18 +104,17 @@ def slot_entry(rel, text):
         name = (words(parts[1]) + " cash rent") if len(parts) > 1 else "Cash rent by state"
     else:
         name = NAMES.get(parts[-1]) or words(parts[-1]) if parts else "Home"
-    return {"id": sid.group(1), "page": url or "/", "name": name,
-            "pitch": __import__("html").unescape(pitch)}
+    # The pitch: off an old ribbon that still carries one, else as kept in
+    # data/sponsor-slots.json, else a plain line from the page name.
+    pitch = pitch or (known.get(sid) or {}).get("pitch") or ("Your name on the %s page. One category-exclusive slot." % name)
+    return {"id": sid, "page": url or "/", "name": name, "pitch": pitch}
 
 
 def stamp(text, card):
-    text = OLD_HREF.sub(lambda m: m.group(1) + "/sponsor-apply?slot=", text)
     def ribbon(m):
-        if 'data-rate=' in m.group(1):
-            return m.group(0)
-        return (m.group(1) + '<span class="ag-sponsor-price" data-rate="page">'
-                + label(card, "page") + '</span> ' + m.group(2))
-    text = RIBBON_LINK.sub(ribbon, text)
+        sid, _ = ribbon_slot(m.group(2), m.group(1))
+        return empty_ribbon(m.group(1), sid) if sid else m.group(0)
+    text = RIBBON.sub(ribbon, text)
     return SPAN.sub(lambda m: m.group(1) + label(card, m.group(2)) + m.group(4), text)
 
 
@@ -102,12 +122,14 @@ def main():
     check = "--check" in sys.argv
     card = json.loads(CARD.read_text())
     drift, slots = [], []
+    have = SLOTS.read_text() if SLOTS.exists() else ""
+    known = {e["id"]: e for e in (json.loads(have).get("slots", []) if have else [])}
     for p in pages():
         s = p.read_text(encoding="utf-8")
         if "data-rate=" not in s and "ag-sponsor-ribbon" not in s:
             continue
+        e = slot_entry(str(p.relative_to(ROOT)), s, known)
         new = stamp(s, card)
-        e = slot_entry(str(p.relative_to(ROOT)), new)
         if e:
             slots.append(e)
         if new != s:
@@ -121,7 +143,6 @@ def main():
         raise SystemExit("two ribbons share a slot id: %s" % ", ".join(dup))
     want = json.dumps({"_": "Every open page slot, read off the ribbons by scripts/stamp_rates.py. Do not edit by hand.",
                        "slots": slots}, indent=1, ensure_ascii=False) + "\n"
-    have = SLOTS.read_text() if SLOTS.exists() else ""
     if want != have:
         drift.append("data/sponsor-slots.json")
         if not check:

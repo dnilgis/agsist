@@ -1845,7 +1845,7 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
       +esc(SS.costNote(inputs,months,first.price,FULLMON[(first.idx-1)%12]))
       +esc(binNote(first))
       +' Futures carry assumes your basis stays where it is; your elevator’s posted later bids show the carry it actually pays. '
-      +'<a style="color:var(--gold)" href="/store-or-sell?crop='+encodeURIComponent(window.AGSIST_FUTURES)+'">Store or sell, with your elevator’s bids and your costs →</a>';
+      +'<a style="color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px" href="/store-or-sell?crop='+encodeURIComponent(window.AGSIST_FUTURES)+'">Store or sell, with your elevator’s bids and your costs →</a>';
   }
   if(shape)shape.textContent=shapeTxt;
   if(interp)interp.innerHTML=interpTxt;

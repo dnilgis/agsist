@@ -127,7 +127,7 @@ button,a,[role="button"] { touch-action: manipulation; }
 .dm-map-wrap.is-broken .dm-map-fallback { display: flex; }
 .dm-map-label { position: absolute; top: 10px; left: 12px; font-family: 'JetBrains Mono', monospace; font-size:0.755rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: rgba(0,0,0,.6); color: #fff; padding: .2rem .5rem; border-radius: 4px; }
 .dm-map-src { text-align: center; padding: .6rem; font-size:0.763rem; color: var(--text-muted); border-top: 1px solid var(--border); }
-.dm-map-src a { color: var(--gold); text-decoration: none; }
+.dm-map-src a { color: var(--gold); text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px; }
 
 /* Legend */
 .dm-legend { display: flex; flex-wrap: wrap; gap: .6rem .9rem; margin-bottom: 1.25rem; padding: .9rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
@@ -349,7 +349,7 @@ button,a,[role="button"] { touch-action: manipulation; }
     <div class="dm-legend-item"><span class="dm-legend-dot" style="background:#e60000"></span>D3: extreme drought</div>
     <div class="dm-legend-item"><span class="dm-legend-dot" style="background:#730000"></span>D4: exceptional drought</div>
   </div>
-  <style></style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the drought map. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=drought&amp;utm_source=drought&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <style></style><aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="drought"></aside>
 
   <div id="dm-state-section" style="display:none">
     <p class="dm-state-prompt">Select a state to view its drought map:</p>

@@ -59,7 +59,7 @@
 .js .sk{animation:blink 1.4s ease-in-out infinite}
 .nc-line{font-size:0.785rem;color:var(--text-dim);margin:6px 0 10px;font-family:'JetBrains Mono',monospace}
 .nc-line strong{color:var(--text)}
-.nc-line a{color:var(--gold)}
+.nc-line a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 .seed-tbl-wrap table{width:100%;border-collapse:collapse;font-size:.85rem;margin:.4rem 0}.seed-tbl-wrap caption{font-size:1rem;color:var(--text-dim);text-align:left;padding:.2rem 0}.seed-tbl-wrap td,.seed-tbl-wrap th{padding:.25rem .5rem;border-bottom:1px solid var(--border,rgba(128,128,128,.25));text-align:left}
 .snap-card{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.03) 100%);border:1px solid var(--border-g);border-left:3px solid var(--green);border-radius:var(--card-r);padding:13px 16px;margin-bottom:14px}
 .snap-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:4px}
@@ -94,7 +94,7 @@ html[data-theme="light"] .cc,html[data-theme="light"] .be-zones,html[data-theme=
 html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 
 .rat-interp{font-size:0.787rem;color:var(--text-dim);min-height:1.1em;margin-bottom:6px}
-.rat-note{font-size:1rem;color:var(--text-dim);margin-top:8px;border-top:1px solid var(--border);padding-top:7px}.rat-note a{color:var(--gold);text-decoration:none}
+.rat-note{font-size:1rem;color:var(--text-dim);margin-top:8px;border-top:1px solid var(--border);padding-top:7px}.rat-note a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 .crush-zones{display:flex;flex-direction:column;gap:3px;margin:8px 0}
 .crush-zone{font-size:0.77rem;color:var(--text-dim);padding:4px 8px;border-radius:4px;border:1px solid transparent;transition:all .3s}.crush-zone.active{font-weight:700}
 .crush-zone.cz0.active{background:rgba(200,50,50,.15);border-color:var(--red);color:var(--red)}
@@ -107,7 +107,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .cp{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);overflow:hidden;margin-bottom:14px}
 .cp-head{padding:9px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .cp-head h2{margin:0;font-size:.85rem;color:var(--gold)}.cp-src{font-size:0.755rem;color:var(--text-muted);text-align:right}
-.cp-src a{color:var(--gold);text-decoration:none}
+.cp-src a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 .tv-fallback{display:none;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:.5rem;font-size:.8rem;color:var(--text-muted);text-align:center;padding:1rem}
 .tv-fallback a{color:var(--gold)}
 .tv-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;height:100%;padding:1rem;font-size:.85rem;color:var(--text-muted);text-align:center}
@@ -198,7 +198,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .crop-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:13px 14px;margin-bottom:14px;display:none}
 .crop-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:6px}
 .crop-title{font-size:0.795rem;font-weight:700;color:var(--gold)}
-.moved-line{font-size:.9rem;line-height:1.5;color:var(--text-dim);margin:.5rem 0 0;max-width:62rem}.moved-line b{color:var(--text);font-weight:600}.moved-line .ml-src{display:block;font-size:.75rem;color:var(--text-muted);margin-top:.15rem}.moved-line .ml-src a{color:var(--gold)}
+.moved-line{font-size:.9rem;line-height:1.5;color:var(--text-dim);margin:.5rem 0 0;max-width:62rem}.moved-line b{color:var(--text);font-weight:600}.moved-line .ml-src{display:block;font-size:.75rem;color:var(--text-muted);margin-top:.15rem}.moved-line .ml-src a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 .crop-asof{font-size:0.755rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
 .crop-section{margin-bottom:12px}
 .crop-section:last-child{margin-bottom:0}
@@ -214,7 +214,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .crop-pace.onpace{background:rgba(230,176,66,.1);color:var(--gold);border:1px solid rgba(230,176,66,.25)}
 .crop-pending{font-size:0.77rem;color:var(--text-muted);padding:6px 0;line-height:1.5}
 .crop-src{font-size:0.75rem;color:var(--text-muted);margin-top:10px;border-top:1px solid var(--border);padding-top:7px}
-.crop-src a{color:var(--gold);text-decoration:none}
+.crop-src a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 /* NEW v12: COT positioning card */
 .cot-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:13px 14px;margin-bottom:14px;display:none}
 .cot-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;flex-wrap:wrap;gap:6px}
@@ -235,7 +235,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .cot-interp{font-size:0.78rem;color:var(--text-dim);line-height:1.55;margin-top:8px;border-top:1px solid var(--border);padding-top:8px}
 .cot-interp strong{color:var(--text)}
 .cot-src{font-size:0.75rem;color:var(--text-muted);margin-top:8px}
-.cot-src a{color:var(--gold);text-decoration:none}
+.cot-src a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 
 
 /* NEW v13: Market session status badge */
@@ -295,7 +295,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .basis-actions a,.basis-actions button{font-size:0.775rem;color:var(--gold);background:transparent;border:1px solid var(--border);border-radius:6px;padding:7px 12px;text-decoration:none;cursor:pointer;font-family:inherit;min-height:40px;display:inline-flex;align-items:center}
 .basis-actions a:hover,.basis-actions button:hover{border-color:var(--gold)}
 .basis-src{font-size:0.75rem;color:var(--text-muted);margin-top:9px;line-height:1.5}
-.basis-src a{color:var(--gold);text-decoration:none}
+.basis-src a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 @media(max-width:480px){.basis-grid{grid-template-columns:1fr}.basis-cell{flex-direction:row;text-align:left;padding:9px 12px;min-height:42px;justify-content:space-between}.basis-cell-lbl{margin-bottom:0}}
 
 /* Pricing Situation scorecard */
@@ -456,7 +456,7 @@ details.fold[hidden]{display:none}
     <b>Soybean futures</b> are CBOT (Chicago Board of Trade) contracts that set the benchmark price per bushel of soybeans.
     <details class="qa-more"><summary>New crop, basis and what moves soybeans</summary><p>The <b>front-month</b> contract tracks nearest delivery; <b>November soybeans (ZSX)</b> is the new-crop harvest benchmark producers use to forward-price. Your local <b>cash price</b> equals futures plus or minus <b>basis</b>. Soybean prices move mainly on the monthly <b>USDA WASDE</b> report, South American weather and harvest, the soybean crush (meal and oil), and Chinese export demand. See <a href="/whats-priced-in">what&rsquo;s priced in</a> ahead of each report. Live CBOT prices below are refreshed every 15 minutes during trading hours. Reload for the latest. Compare with live <a href="/corn-futures-prices">corn</a> and <a href="/wheat-futures-prices">wheat</a> futures.</p></details>
   </div>
-  <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the soybean futures price. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=soybean-futures-prices&amp;utm_source=soybean-futures-prices&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="soybean-futures-prices"></aside>
 
   <div class="cg">
     <div class="cc hi"><div class="cc-lbl" id="lbl-beans">Soybeans (ZS)</div><div class="cc-p sk" id="p-beans">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-beans"></div></div>
@@ -853,7 +853,7 @@ details.fold[hidden]{display:none}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=30" defer></script>
 <script>window.AGSIST_FUTURES='soybean'</script>
-<script src="/components/storesell.js?v=8"></script><script src="/components/price-local.js?v=5"></script><script src="/components/futures.js?v=22"></script>
+<script src="/components/storesell.js?v=8"></script><script src="/components/price-local.js?v=5"></script><script src="/components/futures.js?v=23"></script>
 
   <script src="/components/next-links.js?v=3" defer></script>
 </body>

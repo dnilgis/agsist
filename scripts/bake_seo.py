@@ -207,10 +207,13 @@ def seo_usda_calendar(c):
     # named the WASDE only. When the next WASDE comes with Crop Production
     # on the page's own schedule, both are named, and the description gives
     # the release time and the weekly Crop Progress time.
+    # 2026-10-19 (Sig): the title stays the Oct 11 one every month, with no
+    # Crop Production variant, and is left alone until the Nov 15 re-measure.
+    # Only the description names Crop Production.
+    title = f"WASDE & USDA Report Dates {w.year}: Next WASDE {MONTHS[w.month - 1][:3]} {w.day}{SUFFIX}"
     cr = next_crop_report(c)
     if cr and cr[0] == w:
         import usda_dates
-        title = f"USDA Report Dates {w.year}: Next WASDE & Crop Production {MONTHS[w.month - 1][:3]} {w.day}{SUFFIX}"
         head = (f"Next USDA crop report: {_and(cr[1])}, {when}, {mdY(w)}, at {WASDE_TIME}.")
         tails = []
         if usda_dates.next_crop_progress(c["today"]):
@@ -235,7 +238,7 @@ def seo_usda_calendar(c):
     # and wrong every day after until the next bake (none on weekends), and
     # "wasde report today" (30 impressions) asks for the time, which never
     # goes stale.
-    return (f"WASDE & USDA Report Dates {w.year}: Next WASDE {MONTHS[w.month - 1][:3]} {w.day}{SUFFIX}",
+    return (title,
             f"The next WASDE report is {when}, {mdY(w)}, at {WASDE_TIME}. Every "
             f"USDA report date on one calendar: WASDE, Crop Production, Grain Stocks.")
 
@@ -1566,8 +1569,11 @@ def selftest():
     ck("the page's REPORTS list parses", _cr_rows and len(_cr_rows) > 40, len(_cr_rows or []))
     cctx = dict(ctx, cal_reports=_cr_rows, today=date(2026, 10, 18), next_wasde=date(2026, 11, 10))
     ct, cd = seo_usda_calendar(cctx)
-    ck("when Crop Production comes with the WASDE, the title names both",
-       ct == "USDA Report Dates 2026: Next WASDE & Crop Production Nov 10" + SUFFIX, ct)
+    # Changed 2026-10-19 (Sig): the Oct 11 title stands every month; the
+    # Oct 18 "Next WASDE & Crop Production" title is gone.
+    ck("when Crop Production comes with the WASDE, the title is still the Oct 11 one",
+       ct == "WASDE & USDA Report Dates 2026: Next WASDE Nov 10" + SUFFIX, ct)
+    ck("...and never names Crop Production", "Crop Production" not in ct, ct)
     ck("...and the description gives weekday, date and noon ET",
        cd.startswith("Next USDA crop report: WASDE and Crop Production, Tuesday, Nov 10, 2026, at noon ET (11 a.m. CT).")
        and "4 p.m. ET" in cd and len(cd) <= DESC_MAX, cd)

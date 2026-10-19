@@ -47,9 +47,14 @@ test("usda-calendar: title, description and the two FAQs agree with the page's s
     assert.ok(vis.includes(q) && vis.includes(ld.get(q)), `visible answer for ${q} matches the JSON-LD`);
     assert.ok(!/—|&mdash;/.test(ld.get(q)), "no em dash");
   }
-  const m = t.match(/Next WASDE & Crop Production (\w{3}) (\d+)/);
+  // Sig, 2026-10-19: the Oct 11 title stands every month, never the Oct 18
+  // "Next WASDE & Crop Production" variant (it was removed that day).
+  assert.ok(!/Crop Production/.test(t), `title names no Crop Production: ${t}`);
+  const tm = t.match(/^(?:WASDE & USDA Report Dates \d{4}: Next WASDE (\w{3}) (\d+)|WASDE & USDA Report Dates: The Full USDA Calendar) \| AGSIST$/);
+  assert.ok(tm, `Oct 11 title form: ${t}`);
+  const m = d.startsWith("Next USDA crop report:") && tm[1] ? [null, tm[1], tm[2]] : null;
   if (m) {
-    // the date in the title is a day the page lists BOTH reports, at noon ET
+    // the description names Crop Production only on a day the page lists BOTH reports, at noon ET
     const day = rows.filter((r) => r.date.slice(5) === `${String(MON.indexOf(m[1]) + 1).padStart(2, "0")}-${m[2].padStart(2, "0")}`);
     assert.ok(day.some((r) => r.name === "WASDE" && r.time === "12:00 PM ET"), "WASDE that day");
     assert.ok(day.some((r) => r.name === "Crop Production" && r.time === "12:00 PM ET"), "Crop Production that day");

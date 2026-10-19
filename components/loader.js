@@ -585,10 +585,16 @@
   function fillPageRibbons() {
     var rib = document.querySelector('aside.ag-sponsor-ribbon');
     if (!rib) return;
-    var a = rib.querySelector('a[href*="slot="]');
-    var m = a && /[?&]slot=([a-z0-9-]+)/.exec(a.getAttribute('href') || '');
-    if (!m) return;
-    var id = m[1];
+    // An unsold ribbon ships empty with only data-slot (Sig, 2026-10-19: no
+    // price text in the page; scripts/stamp_rates.py writes it). A page cached
+    // from before that still carries the slot in its link.
+    var id = rib.getAttribute('data-slot') || '';
+    if (!/^[a-z0-9-]+$/.test(id)) {
+      var a = rib.querySelector('a[href*="slot="]');
+      var m = a && /[?&]slot=([a-z0-9-]+)/.exec(a.getAttribute('href') || '');
+      if (!m) return;
+      id = m[1];
+    }
     fetch(BASE + '/data/page-sponsors.json', { cache: 'no-cache' })
       .then(function (r) { if (!r.ok) throw new Error('page-sponsors'); return r.json(); })
       .then(function (d) {
