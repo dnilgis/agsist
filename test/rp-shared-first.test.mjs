@@ -204,8 +204,9 @@ test("an ordinary visit keeps its order and never shows the line", { skip }, asy
     assert.ok(L.h1.top < L.art.top, "the headline first");
     const d = await page.evaluate(() => [getComputedStyle(document.getElementById("rp-head")).display, getComputedStyle(document.querySelector(".rp-flow")).display]);
     assert.deepEqual(d, ["block", w < 900 ? "flex" : "grid"], "the wrapper adds no layout of its own");
-    // the first screen as it was: the headline at the top, the photo, then the print (390: 954 px; 1280: 492 px, both before this change)
-    assert.equal(L.art.top, w < 900 ? 954 : 492, `${w}: the print's box where it always was`);
+    // the first screen as it was: the headline at the top, the photo, then the print (390: 954 px; 1280: 492 px, both before this change).
+    // 2026-10-19 (board B): the Christmas line names last year by Christmas and this year in January, two lines longer at 390 (1019)
+    assert.equal(L.art.top, w < 900 ? 1019 : 492, `${w}: the print's box where it always was`);
     assert.deepEqual(errors, []);
   }, { width: w, height: h });
 });
