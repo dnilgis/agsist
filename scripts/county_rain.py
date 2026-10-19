@@ -663,14 +663,133 @@ def mark_mountain(cands):
     Pondera MT's Pike Creek SNOTEL read 34.9 in while the plains around it read
     16; Hood River OR, San Juan CO and Franklin ID picked snow sites too."""
     def elev(x):
-        v = (x.get("meta") or {}).get("elev")
-        return float(v) if isinstance(v, (int, float)) or (isinstance(v, str) and re.fullmatch(r"-?\d+(\.\d+)?", v)) else None
+        return _elev(x.get("meta"))
     low = sorted(e for e in (elev(x) for x in cands if not snow_site((x.get("meta") or {}).get("sids"))) if e is not None)
     mid = (low[len(low) // 2] if len(low) % 2 else (low[len(low) // 2 - 1] + low[len(low) // 2]) / 2) if low else None
     for x in cands:
         e = elev(x)
         x["mountain"] = snow_site((x.get("meta") or {}).get("sids")) or (e is not None and mid is not None and e - mid >= HIGH_FT)
     return cands
+
+
+# ---------------------------------------------------------------- snowfall
+
+SNOW_MISS_OK = 10   # MISS_OK in components/rain-print.js: at most this many reported days without a snowfall value
+SNOW_SLACK_MI = 10  # SNOW_SLACK_MI in components/rain-print.js: how much farther a station may sit for its snowfall record
+
+
+def snow_state(vals, snows, year):
+    """Would a Rain Print of these days draw snow? The engine's rule, step for step
+    (components/rain-county-print.js daysOf, then rain-print.js lastRecorded,
+    closeOpenS and snowCount). vals, snows: the station's raw daily rain and
+    snowfall values from Jan 1. Counted over days with a rain report: at most
+    SNOW_MISS_OK of them may lack a snowfall value, and at least 0.1 in must have
+    fallen. In a year still going (the days end before Dec 31), the days after
+    the last snowfall value have not come in yet and are not counted (2026-10-19:
+    Eagle River WI, 70.0 in, missed only Oct 1 to 13 and one March day).
+    "drawn", "none" (no snowfall value at all), "gaps" or "little" (under 0.1 in)."""
+    sv = [parse_pcpn(x)[0] for x in (snows or [])]
+    if not any(x is not None for x in sv):
+        return "none"
+    pp = [parse_pcpn(x) for x in vals]
+    last = max((i for i, (v, f) in enumerate(pp) if v is not None and f != "S"), default=-1)
+    pp = pp[:last + 1]
+    i = 0
+    while i < len(pp):                     # an S run not closed by an A day is missing days
+        if pp[i][1] != "S":
+            i += 1
+            continue
+        j = i
+        while j < len(pp) and pp[j][1] == "S":
+            j += 1
+        if not (j < len(pp) and pp[j][1] == "A"):
+            pp[i:j] = [(None, "M")] * (j - i)
+        i = j
+    end = len(pp)
+    if dt.date(int(year), 1, 1) + dt.timedelta(days=len(pp) - 1) != dt.date(int(year), 12, 31):
+        has = [k for k in range(min(len(pp), len(sv))) if sv[k] is not None]
+        if has:
+            end = has[-1] + 1
+    miss, tot = 0, 0.0
+    for k, (v, _f) in enumerate(pp[:end]):
+        if v is None:
+            continue
+        x = sv[k] if k < len(sv) else None
+        if x is None:
+            miss += 1
+        else:
+            tot += x
+    if miss > SNOW_MISS_OK:
+        return "gaps"
+    return "drawn" if tot >= 0.1 else "little"
+
+
+def snow_country(st, lat, elev=None):
+    """Where snow is normal: snowCountry in components/rain-print.js, the same map
+    test (island states and territories and Florida never; south of 31 N never;
+    the low Gulf and South Atlantic coast to 33 N; low Texas and New Mexico south
+    of 33 N; the low deserts of California, Arizona and Nevada). elev: feet, None
+    when unknown (unknown counts as low)."""
+    st = str(st or "").upper()
+    if st in ("HI", "PR", "VI", "GU", "AS", "MP", "FL"):
+        return False
+    try:
+        lat = float(lat)
+    except (TypeError, ValueError):
+        return True
+    if lat != lat:
+        return True
+    if lat < 31:
+        return False
+
+    def low(ft):
+        return elev is None or elev < ft
+    if st in ("LA", "MS", "AL", "GA", "SC") and lat < 33 and low(500):
+        return False
+    if st in ("TX", "NM") and lat < 33 and low(3000):
+        return False
+    if st in ("CA", "AZ", "NV") and low(3000):
+        return False
+    return True
+
+
+def snow_limit_mi(mi):
+    """How far a station may sit and still be taken over a nearer one for its
+    snowfall record: snowLimitKm in components/rain-print.js, in miles."""
+    return max(mi + SNOW_SLACK_MI, 2 * mi)
+
+
+def _elev(meta):
+    v = (meta or {}).get("elev")
+    return float(v) if isinstance(v, (int, float)) or (isinstance(v, str) and re.fullmatch(r"-?\d+(\.\d+)?", v)) else None
+
+
+def pick_order(cands, st, lat, year):
+    """A county's qualifying stations (summary set, mark_mountain run) in pick
+    order. rank_key first; then Sig's rule (2026-10-15, the one /rain-print
+    follows): where snow is normal (snow_country), when the first pick's
+    snowfall record is not whole (snow_state "gaps" or "none"), the nearest
+    station that keeps BOTH a full rain record (at most SNOW_MISS_OK days
+    missing) and a full snowfall record ("drawn" or "little") is taken instead,
+    if it ranks the same on mountain and normals and sits within
+    snow_limit_mi of the first pick's distance. 2026-10-19: Story County IA
+    took a CoCoRaHS gauge with 95 snowfall gaps; the page's print drew no snow.
+    cand["vals"], cand["snows"]: raw daily values from Jan 1."""
+    ok = sorted(cands, key=rank_key)
+    if not ok:
+        return ok
+
+    def whole(x):
+        n = x["summary"]["days"]
+        return snow_state(x["vals"][:n], (x.get("snows") or [])[:n], year) in ("drawn", "little")
+    top = ok[0]
+    if not snow_country(st, lat, _elev(top.get("meta"))) or whole(top):
+        return ok
+    lim, k = snow_limit_mi(top["mi"]), rank_key(top)[:2]
+    for x in sorted(ok[1:], key=lambda y: y["mi"]):
+        if rank_key(x)[:2] == k and x["mi"] <= lim and x["summary"]["missing"] <= SNOW_MISS_OK and whole(x):
+            return [x] + [y for y in ok if y is not x]
+    return ok
 
 
 def rank_key(cand):

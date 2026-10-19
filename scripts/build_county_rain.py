@@ -150,7 +150,7 @@ def last_year_words(c, L, year):
 
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
-RP_SNOW_MISS_OK = 10 # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
+RP_SNOW_MISS_OK = R.SNOW_MISS_OK  # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
 PRINT_JS = '<script src="/components/rain-county-print.js?v=18" defer></script>'
 
 
@@ -171,41 +171,18 @@ def print_ready(c, day):
     return (c.get("missing") or 0) <= RP_MISS_BLOCK and c["days"] >= RP_MIN_DAYS and len(R.unpack_days(day["p"])) == c["days"]
 
 
-def print_snow(day):
+def print_snow(day, year):
     """Does the print on the county page draw snow? The engine's rule, step for step
     (components/rain-county-print.js daysOf, then rain-print.js lastRecorded, closeOpenS
-    and derive): counted over reported days, at most RP_SNOW_MISS_OK of them may lack a
-    snowfall value, and at least 0.1 in of snow must have fallen. Returns "drawn",
-    "none" (no snowfall record), "gaps" (record too patchy) or "little" (under 0.1 in)."""
+    and snowCount; county_rain.snow_state): counted over reported days, at most RP_SNOW_MISS_OK of them may lack a
+    snowfall value, and at least 0.1 in of snow must have fallen. In a year still going
+    (the days end before Dec 31), the days after the last snowfall value are not counted
+    (2026-10-19: Eagle River WI, Vilas County, 70.0 in, missed only Oct 1 to 13 and one
+    March day). Returns "drawn", "none" (no snowfall record), "gaps" (record too patchy)
+    or "little" (under 0.1 in)."""
     if not day or not day.get("s"):
         return "none"
-    pp = [R.parse_pcpn(x) for x in R.unpack_days(day.get("p"))]
-    sv = [R.parse_pcpn(x)[0] for x in R.unpack_days(day["s"])]
-    last = max((i for i, (v, f) in enumerate(pp) if v is not None and f != "S"), default=-1)
-    pp = pp[:last + 1]
-    i = 0
-    while i < len(pp):                     # an S run not closed by an A day is missing days
-        if pp[i][1] != "S":
-            i += 1
-            continue
-        j = i
-        while j < len(pp) and pp[j][1] == "S":
-            j += 1
-        if not (j < len(pp) and pp[j][1] == "A"):
-            pp[i:j] = [(None, "M")] * (j - i)
-        i = j
-    miss, tot = 0, 0.0
-    for k, (v, _f) in enumerate(pp):
-        if v is None:
-            continue
-        x = sv[k] if k < len(sv) else None
-        if x is None:
-            miss += 1
-        else:
-            tot += x
-    if miss > RP_SNOW_MISS_OK:
-        return "gaps"
-    return "drawn" if tot >= 0.1 else "little"
+    return R.snow_state(R.unpack_days(day.get("p")), R.unpack_days(day["s"]), year)
 
 
 def rain_print_href(c, st, year):
@@ -329,6 +306,10 @@ PICK_RULE_1 = ("The pick goes to one with NOAA normals first, then the most days
 PICK_RULE_2 = ("Mountain snow sites, and stations far above the rest in the county, come last, "
                "since their rain is not what the farms below get. Then the pick goes to one with NOAA normals, "
                "then the most days reported, then the one nearest the middle of the county.")
+# "pick": 3 (2026-10-19): Sig's rule, a full record of rain and snowfall (county_rain.pick_order)
+PICK_RULE_3 = (PICK_RULE_2 + " Where snow is normal and that station's snowfall record has gaps, "
+               "the nearest one that keeps a full record of both rain and snowfall is picked instead, "
+               "if it is no more than 10 miles farther or twice as far.")
 
 
 def morning_read(stw):
@@ -578,7 +559,7 @@ def county_page(ctx):
                   "Your own rain gauge can read differently a few miles away.")
     else:
         pick_p = (f"Why this {noun}: {n_ok} stations inside {e(name)} reported at least 90% of the days in {year}. "
-                  + (PICK_RULE_2 if d.get("pick") == 2 else PICK_RULE_1)
+                  + {3: PICK_RULE_3, 2: PICK_RULE_2}.get(d.get("pick"), PICK_RULE_1)
                   + " Your own rain gauge can read differently a few miles away.")
     # ---- next door and links
     nb_html = "".join(f'<li><a class="rc-nb" href="{h}">{e(n)} <small>{v}</small></a></li>' for n, h, v in ctx["nbrs"])
@@ -599,15 +580,16 @@ def county_page(ctx):
                      "so Rain Print draws the nearest station with a fuller record.")
     # ---- the county's year as a Rain Print, and the one line that sells it (one promo a page)
     ready = None
+    snow = print_snow(ctx.get("day"), year)
     if print_ready(c, ctx.get("day")):
         gauge = f"Weather station: {stw['name']}, {miles_from(stw['mi'])} the middle of {name}"
-        ready = (st, fips, f"{name}, {stn}", gauge, done, print_snow(ctx["day"]), d.get("normals"))
+        ready = (st, fips, f"{name}, {stn}", gauge, done, snow, d.get("normals"))
     pr = rp_prices()
     price = f": framed ${pr[0]}, print ${pr[1]}" if pr else ""
     so_far = "" if done else " so far"
     lead_print = (f'<span id="rc-sell-lead" hidden>This is {e(name)}&rsquo;s {year}{so_far}, drawn as a Rain Print. '
                   f'Put your name and dates on it{price}.</span>') if ready else ""
-    lead_plain = (f'<span class="rc-sell-plain">Get {e(name)}&rsquo;s {year} rain and snow drawn as a Rain Print, '
+    lead_plain = (f'<span class="rc-sell-plain">Get {e(name)}&rsquo;s {year} {"rain and snow" if snow == "drawn" else "rain"} drawn as a Rain Print, '
                   f'with your name and dates{price}.</span>')
     sell = (f'<div class="rc-sell"><p>{lead_print}{lead_plain} <a class="btn btn-primary" href="{e(rp)}">Make yours</a></p>'
             + (f'<p class="rc-fine">{(ship + " " + miss_note).strip()}</p>' if (ship or miss_note) else "")
@@ -1012,7 +994,13 @@ def selftest():
         pr = rp_prices()
         ok(pr and f"This is Story County&rsquo;s 2026 so far, drawn as a Rain Print. Put your name and dates on it: framed ${pr[0]}, print ${pr[1]}." in story,
            "the cross-sell line under the print names the county and the prices from data/rain-print.json")
-        ok("Get Story County&rsquo;s 2026 rain and snow drawn as a Rain Print" in story and '>Make yours</a>' in story, "the plain line and button, for no JS")
+        # 2026-10-19 rule change: "rain and snow" only where the print draws snow; Story's
+        # fixture station keeps no snowfall record, so the line says rain
+        ok("Get Story County&rsquo;s 2026 rain drawn as a Rain Print" in story and '>Make yours</a>' in story, "the plain line and button, for no JS")
+        snowy = [b for r, b in want.items() if r.startswith("rain/") and "Light blue is snow" in b]
+        ok(all("rain and snow drawn as a Rain Print" in b for b in snowy)
+           and not any("rain and snow drawn as a Rain Print" in b for r, b in want.items() if r.startswith("rain/") and "Light blue is snow" not in b and 'id="rc-print"' in b),
+           f"the plain line says rain and snow exactly where the print draws snow ({len(snowy)} pages draw it)")
         ok(story.index('id="rc-print"') < story.index('class="rc-sell"') < story.index("<h2>Month by month</h2>"), "the line sits right under the print")
         ok("rc-cta" not in story and story.count('href="/rain-print?') == 1, "one Rain Print promo on the page")
         sell_blk = story.split('class="rc-sell"')[1].split("</div>")[0]
@@ -1097,7 +1085,8 @@ def selftest():
            "a CoCoRaHS gauge's normal is said to be NOAA's estimate")
         ok("no gauge has 30 years" not in story, "a co-op station's normal is its own")
         # the pick rule the page states is the one the data file says the fetch used
-        for pk, words in ((None, "The pick goes to one with NOAA normals first"), (2, "Mountain snow sites, and stations far above the rest in the county, come last")):
+        for pk, words in ((None, "The pick goes to one with NOAA normals first"), (2, "Mountain snow sites, and stations far above the rest in the county, come last"),
+                          (3, "the nearest one that keeps a full record of both rain and snowfall is picked instead")):
             dp = {k: v for k, v in d.items() if k != "pick"}
             if pk:
                 dp["pick"] = pk
@@ -1197,6 +1186,18 @@ def selftest():
         ok(not os.path.exists(os.path.join(site, "rain", "iowa", "story-county.html")) and not os.path.exists(os.path.join(site, "rain.html")), "stale pages removed")
         sizes = [len(b.encode()) for k, b in want.items() if k.count("/") == 2]
         print(f"  fixture county pages: {len(sizes)}, largest {max(sizes) / 1024:.1f} KB, mean {sum(sizes) / len(sizes) / 1024:.1f} KB")
+    # print_snow, on real days (test/fixtures/rain-snow/days.json, fetched through Oct 13, 2026)
+    sf = json.load(open(os.path.join(ROOT, "test", "fixtures", "rain-snow", "days.json")))
+    ok(print_snow(sf["vilas_wi"], 2026) == "drawn", "Eagle River WI: Oct 1 to 13 snowfall not in yet is not 13 gaps; 70 in of snow is drawn")
+    ok(print_snow(sf["wayne_ia"], 2026) == "drawn", "Allerton IA keeps drawing snow")
+    ok(print_snow(sf["story_ia"], 2026) == "gaps", "Ames 1.5 NNE (CoCoRaHS) still has too many snowfall gaps")
+    _vp, _vs = R.unpack_days(sf["vilas_wi"]["p"]), R.unpack_days(sf["vilas_wi"]["s"])
+    _pad = 365 - len(_vp)
+    ok(print_snow({"p": R.pack_days(_vp + ["0.00"] * _pad), "s": R.pack_days(_vs + ["M"] * _pad)}, 2026) == "gaps",
+       "a finished year counts every reported day without a snowfall value")
+    _mid = _vs[:]
+    _mid[100:111] = ["M"] * 11
+    ok(print_snow({"p": sf["vilas_wi"]["p"], "s": R.pack_days(_mid)}, 2026) == "gaps", "gaps before the last snowfall value still count")
     for f in fails:
         print("FAIL", f)
     print("county rain pages selftest:", "ok" if not fails else f"{len(fails)} failure(s)")
