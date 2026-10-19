@@ -69,7 +69,7 @@ var CROPS={
           var ncc=document.getElementById('nc-chg');
           if(ncc){
             if(cornDec.roll){ncc.textContent='(contract roll)';ncc.className='roll';}
-            else if(cornDec.pctChange!=null){ncc.textContent='('+AG.px.pct(cornDec.pctChange)+')';ncc.className=(cornDec.netChange||0)>=0?'up':'dn';}
+            else if(cornDec.pctChange!=null){var ncx=pctChip(cornDec);ncc.textContent=ncx.t;ncc.className=ncx.c;}
             else{ncc.textContent='';}
           }
           ncEl.style.display='block';
@@ -118,7 +118,7 @@ var CROPS={
       var ncSame=!!(front&&ncQ&&front.ticker&&front.ticker===ncQ.ticker);
       if(ncEl&&ncQ&&ncQ.close!=null&&!ncSame){
         var ncHtml=(contractLabel(ncQ)||'Nov')+" new crop: <strong>"+grain$(ncQ.close)+"</strong>";
-        if(ncQ.pctChange!=null&&!ncQ.roll){var np=ncQ.pctChange;ncHtml+=' <span class="'+(np>=0?'up':'dn')+'">('+AG.px.pct(np)+')</span>';}
+        if(ncQ.pctChange!=null&&!ncQ.roll){var npx=pctChip(ncQ);ncHtml+=' <span class="'+npx.c+'">'+npx.t+'</span>';}
         ncEl.innerHTML=ncHtml;
         ncEl.style.display='';
       }else if(ncEl){ncEl.style.display='none';}
@@ -126,7 +126,7 @@ var CROPS={
       var cEl=document.getElementById('corn-line'),cq=(q['corn-nearby']&&q['corn-nearby'].close!=null)?q['corn-nearby']:q.corn;
       if(cEl&&cq&&cq.close!=null){
         var cH='Corn '+(contractLabel(cq)||'')+': <strong>'+grain$(cq.close)+'</strong>';
-        if(cq.pctChange!=null&&!cq.roll)cH+=' <span class="'+(cq.pctChange>=0?'up':'dn')+'">('+AG.px.pct(cq.pctChange)+')</span>';
+        if(cq.pctChange!=null&&!cq.roll){var cpx=pctChip(cq);cH+=' <span class="'+cpx.c+'">'+cpx.t+'</span>';}
         var cS=window.AgPxStamp&&AgPxStamp.html?AgPxStamp.html(cq,data&&data.fetched):'';
         cEl.innerHTML=cH+(cS?' &middot; '+cS:'')+' &middot; <a href="/corn-futures-prices">Corn futures</a>';
         cEl.style.display='';
@@ -306,6 +306,16 @@ var CROP_PROGRESS_KEY=CROP.progressKey;
 function fwdContracts(q){var SS=window.AgsistStoreSell;return SS&&SS.forwardCurve?SS.forwardCurve(CROP.carry,q):[];}
 
 /* ── small shared helpers ─────────────────────────────────────────────────── */
+/* A percent-only change chip, "(+0.12%)": a move that rounds to no quarter
+   cent is "(unch)", class nc, as AG.px.change does for the hero (a11y
+   2026-10-19: "(0.00%)" was green "up" on /corn-futures-prices). With no net
+   change, a percent that prints 0.00 is unch. Twin of seed_static.py _pct_chip. */
+function pctChip(q){
+  var net=q.netChange,p=q.pctChange;
+  var flat=net!=null?AG.px.quarters(net)===0:Number(Math.abs(p).toFixed(2))===0;
+  if(flat)return{t:'(unch)',c:'nc'};
+  return{t:'('+AG.px.pct(p)+')',c:(net!=null?net:p)>0?'up':'dn'};
+}
 function setTxt(id,t){var e=document.getElementById(id);if(e)e.textContent=t;}
 /* ONE QUOTE PER CONTRACT (2026-10-16). Every card that names a market reads
    that market's dated nearby: the <root>-nearby alias (fetch_prices
