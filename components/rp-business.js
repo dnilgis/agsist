@@ -55,6 +55,16 @@
   }
   function RP() { return root.RainPrint || null; }
 
+  /* The sample date (data/rain-print.json business_sample_by, Sig sets it; null shows nothing): through that
+     day, ' To see one before Christmas, order the sample by Nov 6.'; a bad date or a day past it, ''. */
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function sampleByLine(todayIso, by) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(by || ''));
+    if (!m || +m[2] < 1 || +m[2] > 12 || +m[3] < 1 || +m[3] > 31) return '';
+    if (String(todayIso || '') > by) return '';
+    return ' To see one before Christmas, order the sample by ' + MON[+m[2] - 1] + ' ' + (+m[3]) + '.';
+  }
+
   /* ---------- table, dates and the quote line, from the data ---------- */
   function syncFromData(j) {
     var R = RP();
@@ -71,6 +81,8 @@
       else if (px && R.bizChristmasLine) px.textContent = R.bizChristmasLine(chicagoToday(), j) + ' This year\u2019s print ships in January, once the full year\u2019s numbers are in.';
       else c2.textContent = 'ask me for dates';
     }
+    var sb = $('rbz-sample-by'), sbt = sampleByLine(chicagoToday(), j.business_sample_by);
+    if (sb) { sb.textContent = sbt; sb.hidden = !sbt; }
     var rows = R.bizRows(j), body = $('rbz-tiers-body');
     if (body && rows.length) {
       body.innerHTML = rows.map(function (r) {
@@ -262,7 +274,7 @@
     }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
   }
 
-  root.RpBusiness = { listText: listText, TEMPLATE: TEMPLATE, money: money, invoiceLines: invoiceLines, NOTES_MAX: NOTES_MAX };
+  root.RpBusiness = { listText: listText, TEMPLATE: TEMPLATE, money: money, invoiceLines: invoiceLines, NOTES_MAX: NOTES_MAX, sampleByLine: sampleByLine };
   if (!doc || !$('rb-form')) return;
 
   function init() {

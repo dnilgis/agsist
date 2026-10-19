@@ -182,3 +182,19 @@ test("the sample box letter with a business note: the real letter, small, captio
   assert.ok(!/—|archival|\$\d/.test(script.match(/export const NOTE = "([^"]*)"/)[1]), "the sample note follows the box rules");
   assert.doesNotMatch(MAIN, /proof-sheet-sample|logo-sample/, "no made-up proof sheet or logo picture");
 });
+
+// 2026-10-19: "Sample by" date. Sig has not confirmed one, so the data field is null and the page says nothing.
+test("sample-by line: driven by business_sample_by, which stays null (nothing shown) until Sig sets it", () => {
+  assert.ok(Object.prototype.hasOwnProperty.call(J, "business_sample_by"), "the field exists");
+  assert.equal(J.business_sample_by, null, "Sig sets the date; until then null");
+  assert.match(J._business_sample_by, /Sig sets this/);
+  assert.equal(B.sampleByLine("2026-10-19", null), "");
+  assert.equal(B.sampleByLine("2026-10-19", "2026-11-06"), " To see one before Christmas, order the sample by Nov 6.");
+  assert.equal(B.sampleByLine("2026-11-06", "2026-11-06"), " To see one before Christmas, order the sample by Nov 6.", "through the day itself");
+  assert.equal(B.sampleByLine("2026-11-07", "2026-11-06"), "", "gone the day after");
+  assert.equal(B.sampleByLine("2026-10-19", "Nov 6"), "");
+  assert.equal(B.sampleByLine("2026-10-19", "2026-13-01"), "");
+  // no date written into the page: the span ships empty and hidden
+  assert.match(MAIN, /<span id="rbz-sample-by" hidden><\/span><\/p>/);
+  assert.doesNotMatch(COPY, /sample by/i);
+});
