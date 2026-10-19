@@ -118,15 +118,24 @@ os.environ.pop("GITHUB_STEP_SUMMARY", None)
 
 import send_daily  # noqa: E402
 import local_bid   # noqa: E402
+import brief_email  # noqa: E402
+import re          # noqa: E402
 
 archive = sorted((ROOT / "data" / "daily-archive").glob("20*.json"))[-1]
 day = archive.stem
+# 2026-10-19: every agsist.com link carries the Daily's own tags.
+TAG = "utm_source=daily&utm_medium=email&utm_campaign=" + day
+
+
+def tagged(url, content):
+    return url + ("&" if "?" in url.split("#")[0] else "?") + TAG + "&utm_content=" + content
 send_daily.load_today = lambda: (day, json.load(open(archive)))
 send_daily.load_elevator_lines = lambda: {}
 
 
 def run():
     send_daily.LOCAL_LINES.clear()
+    send_daily.RAIN_LINES.clear()
     buf = io.StringIO()
     with contextlib.redirect_stdout(buf):
         rc = send_daily.main()
@@ -162,9 +171,11 @@ check(first[3] == "Near Chetek, WI: top corn bid $4.41 (Test Board B, 17 mi), so
       "54728 opening line: %r" % first[3])
 check(first[4] == "  Corn: %s delivery, −45¢ basis, Otherton, WI." % local_bid.month_short(YM), "54728 corn detail: %r" % first[4])
 check("Straight-line miles" in first[6], "the note follows the detail")
-check("Forward to a neighbor. Or send them the free sign-up link: https://agsist.com/?ref=email-forward" in ta, "forward line in text")
+check("Forward to a neighbor. Or send them the free sign-up link: " + tagged("https://agsist.com/?ref=email-forward", "forward") in ta,
+      "forward line in text, tagged")
 check("Add your ZIP" not in ta, "a reader with a ZIP is not asked for one")
-check('href="https://agsist.com/?ref=email-forward"' in ha, "forward link in html")
+check('href="%s"' % tagged("https://agsist.com/?ref=email-forward", "forward").replace("&", "&amp;") in ha,
+      "forward link in html, tagged")
 check(ha.find("Near Chetek, WI") < ha.find("AGSIST DAILY &middot;") or ha.find("Near Chetek, WI") > 0, "local line in html")
 check(ha.index("Near Chetek, WI") < ha.index("Charts, calls and the full issue"), "local line sits above the button")
 tc, _ = text_for("c@farm.com")
@@ -173,9 +184,49 @@ td, _ = text_for("d@farm.com")
 check("Near Amberg, WI: No posted corn bid within 50 mi, nor soybeans." in td, "54102: nothing within 50 mi, said plainly")
 check("Straight-line" not in td, "no source note under a line with no bid")
 te, he = text_for("e@farm.com")
-check("Add your ZIP to get your local top bid at the top of this email: https://agsist.com/#signup-full" in te, "no-ZIP reader asked once")
+check("Add your ZIP to get your local top bid at the top of this email: https://agsist.com/?" + TAG + "&utm_content=zip#signup-full" in te,
+      "no-ZIP reader asked once, tagged, anchor kept")
 check(te.count("Add your ZIP") == 1 and "Near " not in te.split("\n")[3], "ask is one line, not at the top")
-check('href="https://agsist.com/#signup-full"' in he, "ask link in html")
+check(('href="https://agsist.com/?' + TAG + '&utm_content=zip#signup-full"').replace("&", "&amp;") in he, "ask link in html, tagged")
+# Every agsist.com link in both parts, for every kind of reader, is tagged
+# with this issue's date and names which link it is. The unsubscribe link is
+# the worker's and is never touched.
+URLS = re.compile(r'https?://(?:www\.)?agsist\.com[^\s"<>]*')
+for who in ("a@farm.com", "c@farm.com", "d@farm.com", "e@farm.com", "f@farm.com"):
+    t, h = text_for(who)
+    us = URLS.findall(t) + [u.replace("&amp;", "&") for u in URLS.findall(h)]
+    check(len(us) >= 4, "%s: links found in the email (%d)" % (who, len(us)))
+    bad = [u for u in us if TAG not in u or "utm_content=" not in u]
+    check(not bad, "%s: untagged agsist.com link(s): %r" % (who, bad[:3]))
+    check(all(u.count("utm_source=") == 1 for u in us), "%s: one utm_source per link" % who)
+    unsub = [l for l in t.splitlines() if l.startswith("Unsubscribe: ")]
+    check(len(unsub) == 1 and "/unsubscribe?e=" in unsub[0] and "&t=" in unsub[0] and "utm_" not in unsub[0],
+          "%s: unsubscribe link untouched: %r" % (who, unsub))
+    check('href="http://127.0.0.1:%d/unsubscribe?e=' % srv.server_port in h and "utm_" not in h.split("/unsubscribe?e=")[1].split('"')[0],
+          "%s: html unsubscribe untouched" % who)
+contents = set(re.findall(r"utm_content=(\w+)", ta))
+check({"button", "forward"} <= contents, "button and forward named: %r" % contents)
+check(("utm_content=footer" in ha) and ("utm_content=button" in ha), "html footer and button named")
+
+# The reader's own Rain Print (2026-10-19): ZIP and town from the list, never
+# printed in the log; one Rain Print line, never two.
+check(send_daily.RAIN_LINES.get("a@farm.com") == {"zip": "54728", "town": "Chetek, WI"}, "54728 reader: own rain print key")
+check(send_daily.RAIN_LINES.get("f@farm.com") == {"zip": "54999", "town": None}, "ZIP not in the town table: ZIP only")
+check("e@farm.com" not in send_daily.RAIN_LINES, "no-ZIP reader: generic line")
+check("54728" not in out and "farm.com" not in out, "no ZIP or address in the log")
+own = brief_email.rain_print_offer({"zip": "54728", "town": "Chetek, WI"})
+gen = brief_email.rain_print_offer(None)
+for who, want in (("a@farm.com", own), ("e@farm.com", gen)):
+    t, h = text_for(who)
+    if want is None:
+        check("/rain-print" not in t.replace("agsist.com/rain-print", ""), who + ": no rain print line out of season")
+    else:
+        check(t.count(want[0]) == 1 and h.count(brief_email.e(want[0])) == 1, who + ": the rain print line once in each part")
+        check(tagged("https://agsist.com" + want[1][len("https://agsist.com"):], "rainprint") in t, who + ": its link, tagged")
+if own:
+    check("place=54728&year=" in own[1] and "Chetek, WI" in own[0] and "$" not in own[0], "own line: town, ZIP link, no price")
+    check(gen and own[0] != gen[0], "own line replaces the generic one")
+
 tf, _ = text_for("f@farm.com")
 check("Near " not in tf and "Add your ZIP" not in tf, "ZIP with no centroid (0,0): nothing local, no ask")
 check("Forward to a neighbor" in tf, "but still the forward line")

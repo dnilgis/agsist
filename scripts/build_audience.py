@@ -45,6 +45,8 @@ the last 7 days: event names only, never a parameter. It is NOT written to
 data/audience.json (the file is public; Sig, 2026-10-19): morning_report.py
 calls it in its own job and the counts go only into Sig's email. Both use the
 same US and server-town filter; returns fails on its own and keeps its last copy.
+promo_section() is private the same way (2026-10-19): Rain Print and rain gauge
+promo clicks by page, gauge waitlist signups, and email sessions by utm_source.
 
 WHAT IT DOES NOT DO
 
@@ -444,6 +446,91 @@ def funnel_section(ga, F, rg):
             "caveats": FUNNEL_CAVEATS}
 
 
+# ── promo clicks, gauge signups, email sessions (private, 2026-10-19) ─────
+# Same rule as the funnel: NOT written to data/audience.json. morning_report.py
+# calls promo_section() in its own job and the counts go only into Sig's email.
+# The funnel above counts /rain-print* pages only, so a promo click on any other
+# page and a gauge waitlist signup were never reported (board, Oct 19).
+#   - rain_print_promo_click / rain_gauge_promo_click: counted by the page they
+#     were clicked on (pagePath: the path only, no query string).
+#   - gauge waitlist signups: notice_signup on /rain-gauge pages. The topic is an
+#     event parameter GA4 cannot split until it is registered as a custom
+#     dimension, so the page stands in for it: rain-gauge.html is the only page
+#     that sends notice_signup with topic rain-gauge. The worker's own list
+#     count (morning_report.py, /notice-list?topic=rain-gauge) is the record.
+#   - email sessions by utm_source (sessionMedium "email"): the Daily is
+#     "daily" since Oct 19 ("daily_email" before), the others their own
+#     sources; the Daily's split by utm_content (which link) too.
+# Counts only: no event parameter, no full URL, nothing about a reader.
+PROMO_EVENTS = ["rain_print_promo_click", "rain_gauge_promo_click"]
+GAUGE_SIGNUP = ("notice_signup", "/rain-gauge")
+DAILY_SOURCES = ("daily", "daily_email")
+PROMO_TOP = 8
+PROMO_CAVEATS = [
+    "GA4 events and sessions, with the same US-only and server-town rules as the rest of this file. GA is off for readers with Global Privacy Control.",
+    "Gauge waitlist signups are notice_signup events on /rain-gauge pages; the worker's list count is the record.",
+    "Email sessions are sessions whose medium is email, by utm_source. Before Oct 19 only the Daily's button was tagged; its other links landed as Direct.",
+]
+
+
+def f_eq(field, value):
+    from google.analytics.data_v1beta.types import Filter, FilterExpression
+    return FilterExpression(filter=Filter(field_name=field, string_filter=Filter.StringFilter(value=value)))
+
+
+def promo_section(ga, F, rg):
+    """{windows: {7d, 28d: {start, end, promos, gaugeSignups, email}}, ...}.
+    promos[event] = {"total": n, "pages": [{"page", "count"}] top PROMO_TOP};
+    email = {"bySource": [{"source", "sessions", "engaged"}], "daily": [{"content", "sessions"}]}."""
+    wins = [x for x in rg if x["id"] in ("7d", "28d")]
+    out = {"through": wins[0]["end"], "windows": {}, "caveats": PROMO_CAVEATS}
+    for w in wins:
+        out["windows"][w["id"]] = {"start": w["start"], "end": w["end"],
+                                   "promos": {e: {"total": 0, "pages": []} for e in PROMO_EVENTS},
+                                   "gaugeSignups": 0, "email": {"bySource": [], "daily": []}}
+    multi = len(wins) > 1
+    wid = lambda r: r.get("dateRange") if multi else wins[0]["id"]
+    ev = ga.run(["eventName", "pagePath"], ["eventCount"], wins,
+                filt=f_and(F, f_in("eventName", PROMO_EVENTS + [GAUGE_SIGNUP[0]])))
+    pages = {}
+    for r in ev:
+        k, e, pg, n = wid(r), r.get("eventName"), r.get("pagePath") or "(not set)", r.get("eventCount", 0)
+        if k not in out["windows"]:
+            continue
+        if e == GAUGE_SIGNUP[0]:
+            if pg.startswith(GAUGE_SIGNUP[1]):
+                out["windows"][k]["gaugeSignups"] += n
+            continue
+        if e in PROMO_EVENTS:
+            pages.setdefault((k, e), {})
+            pages[(k, e)][pg] = pages[(k, e)].get(pg, 0) + n
+    for (k, e), m in pages.items():
+        rows = sorted(m.items(), key=lambda x: (-x[1], x[0]))
+        out["windows"][k]["promos"][e] = {"total": sum(m.values()),
+                                          "pages": [{"page": p, "count": n} for p, n in rows[:PROMO_TOP]]}
+    em = ga.run(["sessionSource", "sessionManualAdContent"], ["sessions", "engagedSessions"], wins,
+                filt=f_and(F, f_eq("sessionMedium", "email")))
+    src, cont = {}, {}
+    for r in em:
+        k = wid(r)
+        if k not in out["windows"]:
+            continue
+        so, c = r.get("sessionSource") or "(not set)", r.get("sessionManualAdContent") or "(not set)"
+        a_ = src.setdefault(k, {}).setdefault(so, [0, 0])
+        a_[0] += r.get("sessions", 0)
+        a_[1] += r.get("engagedSessions", 0)
+        if so in DAILY_SOURCES:
+            cont.setdefault(k, {})
+            cont[k][c] = cont[k].get(c, 0) + r.get("sessions", 0)
+    for k, m in src.items():
+        out["windows"][k]["email"]["bySource"] = [{"source": so, "sessions": v[0], "engaged": v[1]}
+                                                  for so, v in sorted(m.items(), key=lambda x: (-x[1][0], x[0]))]
+    for k, m in cont.items():
+        out["windows"][k]["email"]["daily"] = [{"content": c, "sessions": n}
+                                               for c, n in sorted(m.items(), key=lambda x: (-x[1], x[0]))]
+    return out
+
+
 # ── Search Console ────────────────────────────────────────────────────────
 def is_ours(u):
     u = (u or "").lower()
@@ -611,6 +698,7 @@ def build(today, prev, ga=None, gsc=None, bing=None, email=None, errors=None, re
             out["returns"] = prev["returns"]
         src["returns"] = dict(src.get("returns") or {}, ok=False, error=(errors or {}).get("returns", "not configured"))
     src.pop("rain_print_funnel", None)      # never in this public file
+    src.pop("promos", None)                 # nor the promo and email-session counts
 
     # Carried from the exports, with their own dates, until Bing has an API for them.
     if "ai" in prev:
@@ -991,6 +1079,43 @@ def selftest():
     t(o7["returns"] == ret and o7["sources"]["returns"]["ok"] is False and o7["sources"]["returns"]["error"] == "boom"
       and o7["returns"]["through"] == "2026-10-17",
       "a failed returns pull keeps the last one, with its own through date, and says it failed")
+    # Promo clicks by page, gauge signups, email sessions by source (private).
+    class Client3:
+        def run_report(self, req):
+            seen3.append(req)
+            dims = [d.name for d in req.dimensions]
+            mets = [m.name for m in req.metrics]
+            if dims == ["eventName", "pagePath"]:
+                return Res(dims + ["dateRange"], mets, [
+                    ["rain_print_promo_click", "/", "7d", 5], ["rain_print_promo_click", "/cash-bids", "7d", 3],
+                    ["rain_print_promo_click", "/", "28d", 20], ["rain_gauge_promo_click", "/rain/iowa", "28d", 2],
+                    ["notice_signup", "/rain-gauge", "7d", 2], ["notice_signup", "/rain-gauge.html", "28d", 4],
+                    ["notice_signup", "/rent/iowa/", "28d", 9], ["rain_print_promo_click", "/x", "90d", 99]])
+            if dims == ["sessionSource", "sessionManualAdContent"]:
+                return Res(dims + ["dateRange"], mets, [
+                    ["daily", "button", "7d", 4, 3], ["daily", "rainprint", "7d", 2, 2], ["daily_email", "(not set)", "7d", 1, 0],
+                    ["report_email", "(not set)", "7d", 3, 1], ["daily", "button", "28d", 9, 6]])
+            raise AssertionError("unexpected request %s" % dims)
+    seen3 = []
+    pc = promo_section(GA4("123", Client3()), F2, rg2)
+    w7, w28 = pc["windows"]["7d"], pc["windows"]["28d"]
+    t(w7["promos"]["rain_print_promo_click"] == {"total": 8, "pages": [{"page": "/", "count": 5}, {"page": "/cash-bids", "count": 3}]}
+      and w7["promos"]["rain_gauge_promo_click"] == {"total": 0, "pages": []}
+      and w28["promos"]["rain_gauge_promo_click"]["total"] == 2 and w28["promos"]["rain_print_promo_click"]["total"] == 20,
+      "promo clicks by page and window; a window with none is zero; a stray range is ignored")
+    t(w7["gaugeSignups"] == 2 and w28["gaugeSignups"] == 4, "gauge signups: notice_signup on /rain-gauge pages only")
+    t([x["source"] for x in w7["email"]["bySource"]] == ["daily", "report_email", "daily_email"]
+      and w7["email"]["bySource"][0] == {"source": "daily", "sessions": 6, "engaged": 5}
+      and w7["email"]["daily"] == [{"content": "button", "sessions": 4}, {"content": "rainprint", "sessions": 2}, {"content": "(not set)", "sessions": 1}],
+      "email sessions by utm_source, and the Daily's by utm_content (old daily_email counted with it)")
+    t(len(seen3) == 2 and all("United States" in str(r.dimension_filter) and "Ashburn" in str(r.dimension_filter) for r in seen3)
+      and "email" in str(seen3[1].dimension_filter) and {r.name for q in seen3 for r in q.date_ranges} == {"7d", "28d"},
+      "promo requests: US, server towns out, 7 and 28 days, email medium only for sessions")
+    t(not any(d.name.startswith("customEvent") or d.name in ("transactionId", "pageLocation") for r in seen3 for d in r.dimensions),
+      "promo requests: no event parameter, transaction id or full URL")
+    o8 = build(date(2026, 10, 19), {"promos": pc, "sources": {"promos": {"ok": True}}}, g, None, None, None, returns=ret)
+    t("promo" not in json.dumps(o8) and "gaugeSignups" not in json.dumps(o8) and "report_email" not in json.dumps(o8),
+      "no promo or email-session number reaches the public file")
     print("selftest " + ("passed" if ok else "FAILED"))
     return 0 if ok else 1
 

@@ -223,6 +223,19 @@ class Sources:
         return BA.funnel_section(BA.GA4(self.ga4_prop, BetaAnalyticsDataClient(credentials=c)),
                                  BA.f_readers(towns), BA.ranges(now.date()))
 
+    def promo_counts(self, towns, now):
+        """Promo clicks by page, gauge signups and email sessions by source,
+        build_audience.promo_section(), live from GA4 in this job only."""
+        if not (self.ga4_prop and self.ga4_cred):
+            raise LookupError("GA4 not set up for this job")
+        import build_audience as BA
+        from google.analytics.data_v1beta import BetaAnalyticsDataClient
+        from google.oauth2 import service_account
+        c = service_account.Credentials.from_service_account_info(
+            json.loads(self.ga4_cred), scopes=["https://www.googleapis.com/auth/analytics.readonly"])
+        return BA.promo_section(BA.GA4(self.ga4_prop, BetaAnalyticsDataClient(credentials=c)),
+                                BA.f_readers(towns), BA.ranges(now.date()))
+
 
 # ───────────────────────────── sections ─────────────────────────────
 
@@ -682,6 +695,32 @@ def returns_lines(a, fn=None):
     return out
 
 
+def promo_lines(pc):
+    """Two lines from build_audience.promo_section(): promo clicks by page and
+    gauge signups, then email sessions by source with the Daily's links. 7 days,
+    with 28 days beside each total. Counts only."""
+    w7, w28 = ((pc or {}).get("windows") or {}).get("7d"), ((pc or {}).get("windows") or {}).get("28d") or {}
+    if not w7:
+        return []
+
+    def promo(e, name):
+        a_ = (w7.get("promos") or {}).get(e) or {}
+        b_ = ((w28.get("promos") or {}).get(e) or {}).get("total")
+        pg = ", ".join("%s %s" % (x["page"], num(x["count"])) for x in (a_.get("pages") or [])[:5])
+        return "%s %s%s%s" % (name, num(a_.get("total", 0)), (" (%s)" % pg) if pg else "",
+                              (" [28 days %s]" % num(b_)) if isinstance(b_, int) else "")
+    out = ["Promo clicks, 7 days to %s: %s; %s. Gauge waitlist signups on /rain-gauge: %s%s (GA4 events)."
+           % (short_day(w7["end"]), promo("rain_print_promo_click", "Rain Print"), promo("rain_gauge_promo_click", "rain gauge"),
+              num(w7.get("gaugeSignups", 0)), (" [28 days %s]" % num(w28["gaugeSignups"])) if isinstance(w28.get("gaugeSignups"), int) else "")]
+    em = w7.get("email") or {}
+    bs = ", ".join("%s %s" % (x["source"], num(x["sessions"])) for x in em.get("bySource") or []) or "none"
+    dl = ", ".join("%s %s" % (x["content"], num(x["sessions"])) for x in em.get("daily") or [])
+    t28 = sum(x.get("sessions", 0) for x in ((w28.get("email") or {}).get("bySource") or []))
+    out.append("Email sessions, 7 days to %s, by utm_source: %s%s [28 days %s] (GA4)."
+               % (short_day(w7["end"]), bs, ("; the Daily by link: " + dl) if dl else "", num(t28)))
+    return out
+
+
 def sec_traffic(src, now, rep):
     lines = []
     try:
@@ -713,6 +752,12 @@ def sec_traffic(src, now, rep):
         lines.extend(returns_lines(a, fn))
         if fn_line:
             lines.append(fn_line)
+        else:
+            # Same GA4 and the same rule: never in a dry run, never in a file.
+            try:
+                lines.extend(promo_lines(src.promo_counts(((a.get("servers") or {}).get("towns") or []), now)))
+            except Exception as e:                     # noqa: BLE001
+                lines.append("Promo clicks and email sessions: %s." % (str(e) if isinstance(e, LookupError) else "could not be read (%s)" % why(e)))
         if not lines:
             lines.append("data/audience.json has no traffic numbers.")
     except Exception as e:                                 # noqa: BLE001
@@ -932,6 +977,7 @@ class Fake(Sources):
         self.ghd, self.wd, self.ud, self.fd, self.sd, self.broken = gh or {}, worker or {}, urls or {}, files or {}, stripe, set(broken)
         self.asked = []
         self.funnel = None
+        self.promo = None
 
     def _pick(self, table, key, kind):
         self.asked.append((kind, key))
@@ -968,6 +1014,14 @@ class Fake(Sources):
         if self.funnel is None:
             raise LookupError("GA4 not set up for this job")
         return self.funnel
+
+    def promo_counts(self, towns, now):
+        self.asked.append(("ga4-promo", tuple(t.get("city") for t in towns)))
+        if "ga4-promo" in self.broken:
+            raise urllib.error.HTTPError("https://analyticsdata.googleapis.com/x", 500, "no", {}, None)
+        if self.promo is None:
+            raise LookupError("GA4 not set up for this job")
+        return self.promo
 
     def file(self, rel):
         self.asked.append(("file", rel))
@@ -1311,6 +1365,42 @@ def selftest():
     tl = traffic(Fake(files={"data/audience.json": json.dumps(aud)}, broken={"ga4"}))
     ck("GA4 refusing: one line, the rest still builds", "Rain Print funnel: could not be read (HTTP 403)." in str(tl)
        and "Came back within 14 days" in str(tl), tl)
+
+    # Promo clicks by page, gauge signups, email sessions by source (2026-10-19): live, never a file.
+    PC = {"through": "2026-10-17", "windows": {
+        "7d": {"start": "2026-10-11", "end": "2026-10-17", "gaugeSignups": 2,
+               "promos": {"rain_print_promo_click": {"total": 8, "pages": [{"page": "/", "count": 5}, {"page": "/cash-bids", "count": 3}]},
+                          "rain_gauge_promo_click": {"total": 0, "pages": []}},
+               "email": {"bySource": [{"source": "daily", "sessions": 6, "engaged": 5}, {"source": "report_email", "sessions": 3, "engaged": 1}],
+                         "daily": [{"content": "button", "sessions": 4}, {"content": "rainprint", "sessions": 2}]}},
+        "28d": {"start": "2026-09-20", "end": "2026-10-17", "gaugeSignups": 4,
+                "promos": {"rain_print_promo_click": {"total": 20, "pages": []}, "rain_gauge_promo_click": {"total": 2, "pages": []}},
+                "email": {"bySource": [{"source": "daily", "sessions": 9, "engaged": 6}], "daily": []}}}}
+    pl = promo_lines(PC)
+    ck("promo line: clicks by page, gauge signups, 7 days with 28 beside", pl[0] ==
+       "Promo clicks, 7 days to Oct 17: Rain Print 8 (/ 5, /cash-bids 3) [28 days 20]; rain gauge 0 [28 days 2]. "
+       "Gauge waitlist signups on /rain-gauge: 2 [28 days 4] (GA4 events).", pl)
+    ck("email line: sessions by utm_source and the Daily by link", pl[1] ==
+       "Email sessions, 7 days to Oct 17, by utm_source: daily 6, report_email 3; the Daily by link: button 4, rainprint 2 "
+       "[28 days 9] (GA4).", pl)
+    ck("no promo section: no lines", promo_lines(None) == [] and promo_lines({}) == [])
+    f = Fake(files={"data/audience.json": json.dumps(aud)})
+    f.funnel, f.promo = FN, PC
+    tl = traffic(f)
+    ck("the email asks GA4 for promo counts with the server towns and prints both lines",
+       ("ga4-promo", ("Ashburn",)) in f.asked and pl[0] in tl and pl[1] in tl, (f.asked, tl))
+    f = Fake(files={"data/audience.json": json.dumps(aud)})
+    f.dry, f.promo = True, PC
+    tl = traffic(f)
+    ck("a dry run never asks for or prints promo counts",
+       not any(k == "ga4-promo" for k, _ in f.asked) and "Promo clicks" not in str(tl) and "Email sessions" not in str(tl), tl)
+    f = Fake(files={"data/audience.json": json.dumps(aud)}, broken={"ga4-promo"})
+    f.funnel = FN
+    tl = traffic(f)
+    ck("promo counts failing: one line, the funnel still prints",
+       "Promo clicks and email sessions: could not be read (HTTP 500)." in tl and "1,240 draws" in str(tl), tl)
+    tl = traffic(Fake(files={"data/audience.json": json.dumps(aud)}))
+    ck("no GA4: only the funnel's one line, not a second", "Promo clicks" not in str(tl), tl)
 
     print()
     if fails:
