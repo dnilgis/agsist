@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
+import { execFileSync } from "node:child_process";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(ROOT + p, "utf8");
@@ -38,4 +39,28 @@ test("P1: a last trade read in the day session still says Delayed", () => {
   d.fetched = "2026-10-20T00:31:00Z";
   d.quotes["corn-nearby"] = { close: 470, close_kind: "last", close_date: "2026-10-19", settled: true };
   assert.notEqual(badge(d, "2026-10-20T00:40:00Z").t, "Delayed 15 min");
+});
+
+const py = (code) => execFileSync("python3", ["-c", code], { cwd: ROOT + "scripts", encoding: "utf8" }).trim();
+
+test("P2: cattle change below one tick reads unch (page and seed agree)", () => {
+  const h = read("cattle-futures-prices.html");
+  const src = h.match(/function chgCwt\(q\)\{[\s\S]*?\n  \}/)[0];
+  const ctx = { AG: { px: { cash: (v, o) => py("import pricefmt; print(pricefmt.cash(" + v + ", dollar=False))") } } };
+  vm.runInNewContext("function cwtN(v){return AG.px.cash(Math.abs(v),{dollar:false});}\n" + src + "\nthis.f=chgCwt;", ctx);
+  const cases = [
+    { netChange: 0, pctChange: 0 },
+    { netChange: 0.004, pctChange: 0.0017 },
+    { netChange: -0.0001, pctChange: -0.00004 },
+    { netChange: 0.125, pctChange: 0.04 },
+    { netChange: -1.6, pctChange: -0.7 },
+  ];
+  for (const q of cases) {
+    const js = [...ctx.f(q)];
+    const fromPy = JSON.parse(py("import json, seed_static as s; print(json.dumps(s._cwt_chg(" + JSON.stringify(q).replace(/"/g, "'") + ")))"));
+    assert.deepEqual(js, fromPy, JSON.stringify(q));
+  }
+  assert.deepEqual([...ctx.f(cases[0])], ["unch", "nc"]);
+  assert.deepEqual([...ctx.f(cases[1])], ["unch", "nc"]);
+  assert.equal(ctx.f(cases[4])[1], "dn");
 });

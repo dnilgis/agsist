@@ -2664,16 +2664,24 @@ def futures_hero_seeds(page, prices, now=None):
         for key, chg_tag, ct_tag, st_tag in (("cattle", "chg", "lect", "lestamp"), ("feeders", "gfchg", "gfct", "gfstamp")):
             le = q.get(key) or {}
             if le.get("close") is not None and le.get("pctChange") is not None:
-                net = le.get("netChange")
-                hu = (net or 0) >= 0
-                txt = (("\u25b2 +" if hu else "\u25bc \u2212") + (("$" + _fixed(abs(float(net)), 2) + " ") if net is not None else "")
-                       + "(" + ("+" if hu else "\u2212") + _fixed(abs(float(le["pctChange"])), 2) + "%)")
-                out[chg_tag] = _chg_seed((txt, "up" if hu else "dn"))
+                out[chg_tag] = _chg_seed(_cwt_chg(le))
             else:
                 out[chg_tag] = ""
             out[ct_tag] = _e(_ticker_label(le, ""))
             out[st_tag] = _e(quote_stamp(le))
     return out
+
+
+def _cwt_chg(q):
+    """A livestock change in $/cwt, three ways: below one tick (0.025) is "unch",
+    class nc. Twin of chgCwt() in cattle-futures-prices.html."""
+    net, pc = q.get("netChange"), q.get("pctChange")
+    if net is not None and pricefmt._js_round(abs(float(net)) / 0.025) == 0:
+        return ("unch", "nc")
+    hu = (float(net) if net is not None else float(pc)) >= 0
+    txt = (("\u25b2 +" if hu else "\u25bc \u2212") + (("$" + pricefmt.cash(abs(float(net)), dollar=False) + " ") if net is not None else "")
+           + "(" + ("+" if hu else "\u2212") + _fixed(abs(float(pc)), 2) + "%)")
+    return (txt, "up" if hu else "dn")
 
 
 def quote_stamp(q):
