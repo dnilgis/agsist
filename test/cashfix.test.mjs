@@ -194,7 +194,11 @@ test("breakeven: the FAQ and the results panel quote the calculator's own corn d
     `the FAQ sentence does not match the defaults (${money}, $${be})`);
   assert.ok(B.includes(`id="totalCost"><!--BAKE:be-total-->${money}/ac<!--/BAKE-->`));
   assert.equal((B.match(new RegExp(`<!--BAKE:be-cpb-->\\$${be.replace(".", "\\.")}/bu<!--/BAKE-->`, "g")) || []).length, 4);
-  assert.doesNotMatch(B, /\$905|\$5\.03/, "the old typed example is back");
+  /* the old typed example was $905 an acre, $5.03 a bushel. A live futures
+     quote baked into the description ("Dec '27 futures are near $5.03¾",
+     Oct 19) is not that example, so quotes are set aside first. */
+  const noQuotes = B.replace(/futures are near \$\d+\.\d+[¼½¾]?/g, "futures are near (quote)");
+  assert.doesNotMatch(noQuotes, /\$905|\$5\.03/, "the old typed example is back");
 });
 
 test("a board skipped this pass counts while read within 6 h; refused or broken never (held rows keep their own time)", () => {
