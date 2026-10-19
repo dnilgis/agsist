@@ -151,6 +151,7 @@ def make_parts(data, cmap, repo):
             page = page_url(src if src != RP_SRC else rp_county_src(fips, st, cmap), st, repo)
             paras.append([("Month by month, the biggest rain and how the station was picked: ", None), (page, page)])
             rp = SITE + BCR.rain_print_href(c, st, year)
+            rp += ("&" if "?" in rp else "?") + UTM      # tagged like every other link here (2026-10-19)
             paras.append([("The same year drawn as a Rain Print: ", None), (rp, rp)])
             paras.append([("NOAA daily records through RCC-ACIS. Daily numbers are sometimes corrected after the fact, "
                            "so the page can move by a few hundredths.", None)])
@@ -357,6 +358,9 @@ def selftest():
        and "2.28 inches more than a usual year (106% of usual)." in txt, txt[:400])
     ck("links the county page it was asked on", SITE + "/rain/iowa/story-county?" + UTM in txt)
     ck("links the Rain Print for that place and year", SITE + "/rain-print?place=Ames%2C+IA&year=2026" in txt)
+    ck("every agsist.com link in the email is tagged rain_year (2026-10-19)",
+       all(UTM in u for u in re.findall(r'https://agsist\.com/[^\s"<>]*', txt + htm.replace("&amp;", "&"))),
+       [u for u in re.findall(r'https://agsist\.com/[^\s"<>]*', txt) if UTM not in u])
     ck("one email, said so", "There won't be another for this county and year." in txt)
     ck("a county page ask gets no Rain Print ask line", "You asked on Rain Print" not in txt)
     mr = SN.render(T, RP_SRC, "a@example.com", "https://w.dev", "sec", date(2027, 1, 4), "news@agsist.com", None, tmp)

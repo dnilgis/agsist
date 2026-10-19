@@ -77,7 +77,9 @@ WPI = REPO / "data" / "whats-priced-in.json"
 WASDE = REPO / "data" / "wasde.json"
 PRICES_REL = "data/prices.json"
 PAGE = "https://agsist.com/whats-priced-in?utm_source=report_email&utm_medium=email"
-FORWARD_URL = "https://agsist.com/?ref=email-forward"
+# Tagged like PAGE, so GA4 splits this email from the Daily (2026-10-19). The
+# site still reads ?ref= for the sign-up source.
+FORWARD_URL = "https://agsist.com/?ref=email-forward&utm_source=report_email&utm_medium=email"
 UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"}
 TYPES = ("WASDE", "Crop Production", "Grain Stocks")
 # corn, soybeans, wheat: the nearby contract data/prices.json names in `nearby`
@@ -394,7 +396,7 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
               'sign-up link: <a href="%s" style="color:#8a6b1f">agsist.com/?ref=email-forward</a></p>'
               '<p style="margin:12px 0 0;font:14px/1.6 sans-serif;color:#6b6b6b">You get this because you signed up for AGSIST Daily '
               'and report-day emails.<br>%s<br>PO Box 243, Chetek, WI 54728</p>'
-              % (FORWARD_URL, ('<a href="%s" style="color:#6b6b6b">Unsubscribe</a> (stops AGSIST Daily too)' % uurl.replace("&", "&amp;"))
+              % (FORWARD_URL.replace("&", "&amp;"), ('<a href="%s" style="color:#6b6b6b">Unsubscribe</a> (stops AGSIST Daily too)' % uurl.replace("&", "&amp;"))
                  if uurl else "To unsubscribe, reply with subject line: unsubscribe"))
     msg.add_alternative(html.replace("{{FOOT}}", foot_h), subtype="html")
     return msg
@@ -621,6 +623,10 @@ def _selftest():
     body = m.get_body(("plain",)).get_content()
     ok(FORWARD_URL in body and "PO Box 243" in body, "forward link and postal address")
     ok("{{FOOT}}" not in m.get_body(("html",)).get_content(), "html footer filled")
+    _all = body + m.get_body(("html",)).get_content().replace("&amp;", "&")
+    _us = re.findall(r'https://agsist\.com/[^\s"<>]*', _all)
+    ok(_us and all("utm_source=report_email&utm_medium=email" in u for u in _us),
+       "every agsist.com link tagged report_email: %r" % [u for u in _us if "utm_source=report_email" not in u])
 
     # OCTOBER 9 2026: STOCKS JOIN THE YIELDS UNDER THE SAME REPORT NAME.
     # The yields-only email went out that day (127/127) and set
