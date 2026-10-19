@@ -3827,8 +3827,12 @@ def selftest():
         c27, p27 = XC.year_params_x(xt, 2027)
         # long grain 2021-2025: 0.136, 0.167, 0.159, 0.14, 2025 projected; at any 2025 price 88% of the middle three is at most
         # 0.88 x (0.167+0.159+0.14)/3 = 0.1367 < 0.169, and every year is raised to 0.169: ERP and benchmark 0.169 whatever 2025 brings
-        ck("2027 long grain rice fixed at 0.169 whatever the 2025 price; sorghum waits on its final 2025 price",
-           c27.get("rice_long", {}).get("erp", {}).get("erp") == 0.169 and c27["rice_long"]["bp"]["value"] == 0.169 and "sorghum" in p27, str(p27.get("sorghum")))
+        # Sorghum's final 2025 price is in FSA's Oct 9 tables: 88% of the 2021-2025 Olympic average (4.38) is under the
+        # statutory 4.40, so the statutory price binds. Before Oct 9 sorghum waited on that price (pending in p27).
+        s27 = c27.get("sorghum", {}).get("erp", {})
+        ck("2027 long grain rice fixed at 0.169 whatever the 2025 price; sorghum 2027 ERP is the statutory 4.40 (or still waits on its final 2025 price)",
+           c27.get("rice_long", {}).get("erp", {}).get("erp") == 0.169 and c27["rice_long"]["bp"]["value"] == 0.169
+           and ("sorghum" in p27 or (s27.get("erp") == 4.4 and s27.get("binding") == "statutory")), str(p27.get("sorghum")) + " " + str(s27))
     # 65 characters with the yield, so the yield goes first; a longer name then takes "Co."
     ck("practice split: both irrigated and non-irrigated benchmarks -> the title names the practice",
        practice_split([{"d": "irr", "by": 238.96}, {"d": "non", "by": 187.38}])
