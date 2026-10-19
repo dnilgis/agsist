@@ -63,7 +63,7 @@
     if (exp && !validIso(exp)) return '';
     if (exp && validIso(today) && today > exp) return '';
     var p = exp.split('-').map(Number);
-    return 'Want one for another year or another farm? Use code ' + code.toUpperCase() + ' for $' + off + ' off at agsist.com/rain-print.' +
+    return 'Want one for another year or another farm? Use code ' + code.toUpperCase() + ' for $' + off + ' off a print or framed print at agsist.com/rain-print.' +
       (exp ? ' Good through ' + MONTHS[p[1] - 1] + ' ' + p[2] + ', ' + p[0] + '.' : '');
   }
   function cap(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }

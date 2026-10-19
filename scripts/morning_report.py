@@ -599,8 +599,9 @@ RP_REF_RE = re.compile(r"^[A-Za-z0-9_-]{1,200}$")
 def rain_print_paid(src, now):
     """Each paid Rain Print checkout of the last 48 hours, one line each:
     product, amount, the design reference and the maker link Sig opens to make
-    it. Read from /v1/checkout/sessions?status=complete. Only those four
-    things are taken from a session; never an email, a name or an address."""
+    it. Read from /v1/checkout/sessions?status=complete. Only those things,
+    and the session id of a paid session with no design reference, are taken
+    from a session; never an email, a name or an address."""
     if not src.stripe_key:
         return []
     since = int(now.timestamp()) - 2 * 86400
@@ -619,14 +620,26 @@ def rain_print_paid(src, now):
     except Exception as e:                                 # noqa: BLE001
         return ["Rain Print orders: could not be read from Stripe (%s)." % why(e)]
     out = []
+    money = lambda c: "{:,.2f}".format(c / 100)
     for x in sorted(rows, key=lambda r: int(r.get("created") or 0)):
-        ref = str(x.get("client_reference_id") or "")
-        if x.get("payment_status") not in (None, "paid") or not RP_REF_RE.match(ref):
+        if x.get("payment_status") not in (None, "paid"):
             continue
+        ref = str(x.get("client_reference_id") or "")
+        # The product from the price before any code (2026-10-19: with the
+        # letter's NEXTPRINT code a print paid $35 and read "Rain Print"); the
+        # amount is what was paid.
         cents = int(x.get("amount_total") or 0)
-        what = RP_PRODUCT.get(cents, "Rain Print")
-        out.append("Rain Print paid: %s, $%s, ref %s, make it at https://agsist.com/rain-print?d=%s&maker=1"
-                   % (what, "{:,.2f}".format(cents / 100), ref, urllib.parse.quote(ref, safe="-_")))
+        sub = int(x.get("amount_subtotal") or 0) or cents
+        what = RP_PRODUCT.get(sub, RP_PRODUCT.get(cents, "Rain Print"))
+        paid = "$%s" % money(cents) + (" ($%s less $%s off)" % (money(sub), money(sub - cents)) if sub > cents else "")
+        if not RP_REF_RE.match(ref):
+            # paid through a bare payment link (shared, or "buy again" from a
+            # receipt): the money is real, so it is said, not skipped
+            out.append("Rain Print paid: %s, %s, NO design reference: find the buyer in Stripe (session %s) and ask for the design"
+                       % (what, paid, str(x.get("id") or "?")))
+            continue
+        out.append("Rain Print paid: %s, %s, ref %s, make it at https://agsist.com/rain-print?d=%s&maker=1"
+                   % (what, paid, ref, urllib.parse.quote(ref, safe="-_")))
     if not out:
         return ["Rain Print orders, last 48 hours: none paid."]
     return [scrub(line) for line in out]
@@ -1214,13 +1227,23 @@ def selftest():
         {"id": "cs_2", "created": t0 - 7200, "status": "complete", "payment_status": "paid", "amount_total": 1900, "client_reference_id": "RPS-K7Q2M",
          "customer_details": {"email": "kate@x.com"}},
         {"id": "cs_3", "created": t0 - 600, "status": "complete", "payment_status": "unpaid", "amount_total": 4500, "client_reference_id": "RPS-ZZZZZ"},
-        {"id": "cs_4", "created": t0 - 900, "status": "complete", "payment_status": "paid", "amount_total": 4500, "client_reference_id": None}],
+        {"id": "cs_4", "created": t0 - 900, "status": "complete", "payment_status": "paid", "amount_total": 4500, "client_reference_id": None},
+        {"id": "cs_5", "created": t0 - 300, "status": "complete", "payment_status": "paid", "amount_subtotal": 4500, "amount_total": 3500, "client_reference_id": "RPS-K7Q3M"},
+        {"id": "cs_6", "created": t0 - 200, "status": "complete", "payment_status": "paid", "amount_subtotal": 8900, "amount_total": 7900, "client_reference_id": "RPS-K7Q4M"}],
         "has_more": False}
     f = Fake(stripe=ses, stripe_key="rk")
     got = rain_print_paid(f, now)
+    # cs_4 (paid, no reference) was expected absent until 2026-10-19: a payment
+    # link opened bare is still money paid, so it now gets its own line rather
+    # than being skipped (Rain Print audit); NEXTPRINT orders ($35, $79) are
+    # named from the subtotal
     ck("one line per paid Rain Print, oldest first", got == [
         "Rain Print paid: Digital file, $19.00, ref RPS-K7Q2M, make it at https://agsist.com/rain-print?d=RPS-K7Q2M&maker=1",
-        "Rain Print paid: Framed, $89.00, ref MnxDaGV0ZWssIFdJfDQ3MTY2NyAyfDIwMjV8, make it at https://agsist.com/rain-print?d=MnxDaGV0ZWssIFdJfDQ3MTY2NyAyfDIwMjV8&maker=1"], got)
+        "Rain Print paid: Framed, $89.00, ref MnxDaGV0ZWssIFdJfDQ3MTY2NyAyfDIwMjV8, make it at https://agsist.com/rain-print?d=MnxDaGV0ZWssIFdJfDQ3MTY2NyAyfDIwMjV8&maker=1",
+        "Rain Print paid: Print, $45.00, NO design reference: find the buyer in Stripe (session cs_4) and ask for the design",
+        "Rain Print paid: Print, $35.00 ($45.00 less $10.00 off), ref RPS-K7Q3M, make it at https://agsist.com/rain-print?d=RPS-K7Q3M&maker=1",
+        "Rain Print paid: Framed, $79.00 ($89.00 less $10.00 off), ref RPS-K7Q4M, make it at https://agsist.com/rain-print?d=RPS-K7Q4M&maker=1"], got)
+    ck("unpaid is never listed", not any("RPS-ZZZZZ" in x for x in got), got)
     ck("asked of checkout/sessions", ("stripe", "checkout/sessions") in f.asked, f.asked)
     ck("no buyer email, name or address", not any(("@" in x or "Buyer" in x or "Farm Rd" in x or "kate" in x) for x in got), got)
     ck("none paid is one line", rain_print_paid(Fake(stripe={"data": [], "has_more": False}, stripe_key="rk"), now) == ["Rain Print orders, last 48 hours: none paid."])
