@@ -379,9 +379,18 @@
     var days = I.days || [], D = I.D, n = days.length, year = +I.year;
     var N = Math.max(n, I.axisLen || 0, 1);
     var P = days.map(function (x) { return x.v === null || x.v === undefined || x.flag === 'S' ? null : x.v; });
-    var snowMissing = 0, snowTot = 0;
-    // a day with no precipitation report is a gap already (the foot line says so): it doesn't also count against the snow record (2026-10-14, panel 3 D2)
-    days.forEach(function (x) { if (x.v === null || x.v === undefined) return; if (x.s === null || x.s === undefined) snowMissing++; else snowTot += x.s; });
+    var snowMissing = 0, snowTot = 0, snowEnd = n;
+    /* The engine's snowCount (components/rain-print.js), step for step: a day with no precipitation report is a gap
+       already (the foot line says so) and doesn't also count against the snow record (2026-10-14, panel 3 D2); in a
+       year still going (the days end before Dec 31) the days after the last snowfall value have not come in yet and
+       are not counted either (2026-10-19, Eagle River WI). */
+    var hasSnow = function (x) { return x && x.s !== null && x.s !== undefined; };
+    if (n && days[n - 1] && days[n - 1].date && !/-12-31$/.test(String(days[n - 1].date))) {
+      var sk = n - 1;
+      while (sk >= 0 && !hasSnow(days[sk])) sk--;
+      if (sk >= 0) snowEnd = sk + 1;
+    }
+    days.forEach(function (x, i) { if (i >= snowEnd || !x || x.v === null || x.v === undefined) return; if (hasSnow(x)) snowTot += x.s; else snowMissing++; });
     var snowState = snowMissing <= 10 ? (snowTot >= 0.1 ? 'full' : 'none') : 'unknown';
     if (n === 0) snowState = 'unknown';
     var full = snowState === 'full';
