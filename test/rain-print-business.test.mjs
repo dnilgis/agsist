@@ -152,3 +152,13 @@ test("same-station line: neighbors near one station share a rain line, said plai
   assert.match(q.acceptedAnswer.text, /customers near the same station get the same rain line/);
   assert.equal(typeof R.pickStation, "function", "the per-town pick the copy describes");
 });
+
+// 2026-10-19: the call line sat about 10 px up under the H1 (margin -1rem) at 390 and 1280 px. Measured in a
+// browser after the fix: 10 px clear at both widths. Here: no negative top margin on it again.
+test("the 'Questions? Call or text' line is not pulled up under the title", () => {
+  const rule = HTML.match(/\.rbz \.rbz-call\{([^}]*)\}/);
+  assert.ok(rule, "the rule");
+  const top = rule[1].match(/margin:\s*(-?[\d.]+)rem/);
+  assert.ok(top && Number(top[1]) >= 0, "top margin is not negative: " + rule[1]);
+  assert.match(MAIN, /<h1>[^<]+<\/h1>\s*<p class="rbz-call" id="rbz-call">/);
+});
