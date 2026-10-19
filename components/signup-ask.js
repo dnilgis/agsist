@@ -26,8 +26,8 @@
    none is. A notice ask shows to Daily readers too, hides once that notice
    is asked for in this browser (agsist_notices), and enrolls nobody in the
    Daily unless "Also send the morning briefing" is ticked.
-   data-daily="on" starts that box ticked, with its ZIP box open (the
-   reader can untick it); without it the box starts empty. (2026-10-17)
+   That box always starts empty and its ZIP box opens when it is ticked
+   (Sig, 2026-10-19: no ask ever pre-ticks the Daily; data-daily is ignored).
    data-after="YYYY-II" goes with a recurring notice (prf:<grid>): the
    newest interval already out, so the first email is the next one.
 
@@ -311,7 +311,6 @@
     var BTN = topic ? (arc ? arc.btn : (el.getAttribute('data-btn') || 'Email me')) : (variant === 'hero' ? 'Sign up' : 'Sign up free');
     var OK = topic ? (arc ? arc.ok : (el.getAttribute('data-ok') || 'Done. One email when it’s out.')) : okText();
     var withDaily = topic && !isSignedUp();
-    var dailyOn = withDaily && el.getAttribute('data-daily') === 'on';
     var n = ++seq, iid = 'sa-e-' + n, mid = 'sa-m-' + n, zid = 'sa-z-' + n, did = 'sa-d-' + n;
     /* the ZIP box: a Daily ask always has one; a notice ask only with the Daily box ticked */
     var zipLater = topic ? true : (variant === 'hero' || variant === 'bar');
@@ -322,8 +321,8 @@
       + '<input class="sa-in" id="' + iid + '" type="email" name="email" autocomplete="email" inputmode="email" placeholder="your@email.com" required aria-describedby="' + mid + '">'
       + (variant === 'hero' ? '</span>' : '')
       + '<button class="sa-b" type="submit">' + esc(BTN) + '</button>'
-      + (withDaily ? '<label class="sa-optin sa-d" for="' + did + '"><input type="checkbox" id="' + did + '"' + (dailyOn ? ' checked' : '') + '> Also send the morning briefing</label>' : '')
-      + (topic && !withDaily ? '' : '<div class="sa-z"' + (zipLater && !dailyOn ? ' hidden' : '') + '><label class="sa-zl" for="' + zid + '">' + ZIP_LABEL + '</label>'
+      + (withDaily ? '<label class="sa-optin sa-d" for="' + did + '"><input type="checkbox" id="' + did + '"> Also send the morning briefing</label>' : '')
+      + (topic && !withDaily ? '' : '<div class="sa-z"' + (zipLater ? ' hidden' : '') + '><label class="sa-zl" for="' + zid + '">' + ZIP_LABEL + '</label>'
         + '<input class="sa-zin" id="' + zid + '" type="text" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Optional"></div>')
       + '<p class="sa-m" id="' + mid + '" role="status" aria-live="polite"></p>'
       + (note ? '<p class="sa-n">' + esc(note) + '</p>' : '')

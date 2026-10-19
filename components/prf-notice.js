@@ -10,7 +10,7 @@
 
    PRF RULE: plain index information. No lead capture beyond the address the
    reader types for this email, no agent, no sales words. The briefing box
-   starts ticked (data-daily="on") and the reader can untick it.
+   starts empty; the reader ticks it to get the Daily too (Sig, 2026-10-19).
 
    WIRING
      <div class="prf-notice" data-prf-notice data-grid="30452" hidden></div>
@@ -49,7 +49,7 @@
   }
   function askHtml(grid, after) {
     return '<div data-signup-ask="Email me when grid ' + grid + '’s index posts"'
-      + ' data-topic="prf:' + grid + '" data-daily="on"' + (after ? ' data-after="' + after + '"' : '')
+      + ' data-topic="prf:' + grid + '"' + (after ? ' data-after="' + after + '"' : '')
       + ' data-source="' + source() + '"'
       + ' data-ok="Done. One email each time USDA RMA posts a final index for grid ' + grid + ', about once a month."'
       + ' data-note="The final index and the grid’s normal rain, nothing else. Your address goes to no agent."></div>';

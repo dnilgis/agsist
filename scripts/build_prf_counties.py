@@ -294,7 +294,7 @@ def page(ctx):
            f'<script src="/components/prf-now.js?v=2" defer></script>'
            # the grid index email (components/prf-notice.js, worker topic prf:<grid>): follows the card's grid
            f'<div class="prf-notice" data-prf-notice data-grid="{now_g}" hidden></div>'
-           f'<script src="/components/prf-notice.js?v=1" defer></script>')
+           f'<script src="/components/prf-notice.js?v=2" defer></script>')
     sod = (f'<p class="prf-note">{stn} has the native sod rule: native sod broken in recent years gets 65% of the protection and 50 points less of USDA&rsquo;s share. '
            f'The values here are for land the rule does not touch.</p>') if stc in S.SOD else ""
     return f"""<!DOCTYPE html>

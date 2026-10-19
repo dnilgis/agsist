@@ -951,7 +951,7 @@
 (function () {
   if (window.AgsistSignup || document.querySelector('script[src*="/components/signup-ask.js"]')) return;
   var s = document.createElement('script');
-  s.src = '/components/signup-ask.js?v=8';
+  s.src = '/components/signup-ask.js?v=9';
   s.async = true;
   (document.head || document.documentElement).appendChild(s);
 })();

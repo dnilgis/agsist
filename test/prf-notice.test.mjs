@@ -30,8 +30,9 @@ test("the component: no dashes, no sales words, the topic the sender reads", () 
   assert.ok(N && N.newestFinal && N.gridOk && N.askHtml);
   assert.doesNotMatch(SRC, /—|–/, "no em or en dashes");
   const h = N.askHtml("30452", "2026-06");
-  assert.match(h, /^<div data-signup-ask="Email me when grid 30452’s index posts" data-topic="prf:30452" data-daily="on" data-after="2026-06" data-source="[^"]+" data-ok="[^"]+" data-note="[^"]+"><\/div>$/);
+  assert.match(h, /^<div data-signup-ask="Email me when grid 30452’s index posts" data-topic="prf:30452" data-after="2026-06" data-source="[^"]+" data-ok="[^"]+" data-note="[^"]+"><\/div>$/);
   assert.doesNotMatch(h, SALES, "plain index information only");
+  assert.doesNotMatch(h, /data-daily/, "the Daily box starts empty (Sig, 2026-10-19)");
   assert.ok(h.includes("Your address goes to no agent."), "says where the address goes");
   assert.doesNotMatch(N.askHtml("30452", ""), /data-after/, "no after when meta.json did not load");
   assert.ok(read("scripts/send_prf_notice.py").includes('TOPIC_RE = re.compile(r"prf:([1-9]\\d{3,4})")'), "the sender reads the same topic");

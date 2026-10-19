@@ -44,7 +44,7 @@ test("every county rain page asks once, for its own county and year, and says wh
   let asked = 0;
   for (const p of pages) {
     const h = read(p);
-    const asks = [...h.matchAll(/<div data-signup-ask="([^"]*)" data-topic="rainyear:(\d{4}):(\d{5})" data-daily="on" data-ok="([^"]*)" data-note="([^"]*)"><\/div>/g)];
+    const asks = [...h.matchAll(/<div data-signup-ask="([^"]*)" data-topic="rainyear:(\d{4}):(\d{5})" data-ok="([^"]*)" data-note="([^"]*)"><\/div>/g)];
     const any = (h.match(/data-signup-ask/g) || []).length;
     const m = asks[0];
     if (!m) { assert.equal(any, 0, p + ": a signup ask that is not the rainyear ask"); continue; }
@@ -121,10 +121,10 @@ test("What's Priced In asks for the report-day email, which send_report_day.py s
   assert.match(read("scripts/send_report_day.py"), /TYPES = \("WASDE", "Crop Production", "Grain Stocks"\)/);
 });
 
-test("signup-ask.js: data-daily=\"on\" starts the morning briefing box ticked", () => {
+test("signup-ask.js: the morning briefing box never starts ticked (Sig, 2026-10-19)", () => {
   const s = read("components/signup-ask.js");
-  assert.ok(s.includes("var dailyOn = withDaily && el.getAttribute('data-daily') === 'on';"));
-  assert.ok(s.includes("(dailyOn ? ' checked' : '')"));
+  assert.ok(s.includes(`'<input type="checkbox" id="' + did + '"> Also send the morning briefing</label>'`));
+  assert.ok(!/dailyOn|getAttribute\('data-daily'\)/.test(s), "no attribute turns the box on");
 });
 
 // ---------------------------------------------------------------- in a browser
@@ -162,7 +162,7 @@ async function open(browser, port, url, posts) {
   return pg;
 }
 
-test("county rain page: the ask posts rainyear for that county with the Daily box ticked", { skip, timeout: 60000 }, async () => {
+test("county rain page: the ask posts rainyear for that county; the Daily box starts empty and is ticked by the reader", { skip, timeout: 60000 }, async () => {
   const p = "rain/iowa/story-county.html", h = read(p);
   const m = /data-topic="(rainyear:\d{4}:\d{5})"/.exec(h);
   assert.ok(m, "the Story County page has the ask");
@@ -172,8 +172,10 @@ test("county rain page: the ask posts rainyear for that county with the Daily bo
     const pg = await open(browser, port, "/" + p, posts);
     const ask = pg.locator(`[data-sa-topic="${m[1]}"]`);
     await ask.waitFor();
-    assert.equal(await ask.locator(".sa-d input").isChecked(), true, "morning briefing box ticked");
-    assert.equal(await ask.locator(".sa-z").isVisible(), true, "its ZIP box open");
+    assert.equal(await ask.locator(".sa-d input").isChecked(), false, "morning briefing box starts empty");
+    assert.equal(await ask.locator(".sa-z").isVisible(), false, "its ZIP box closed until the box is ticked");
+    await ask.locator(".sa-d input").check();
+    assert.equal(await ask.locator(".sa-z").isVisible(), true, "ticking opens the ZIP box");
     await ask.locator(".sa-in").fill("reader@example.com");
     await ask.locator(".sa-zin").fill("50010");
     await ask.locator(".sa-b").click();
@@ -189,13 +191,14 @@ test("company page box: its own ZIP field, the Daily by ZIP and the 25 mi price 
   const page = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="/components/styles.css"><link rel="stylesheet" href="/components/cb-signup.css?v=2"></head><body><main>
 <input type="hidden" id="co-zip" value=""><div id="bid-email" data-bid-alerts data-zip-input="co-zip" data-source="company:acme-co-op" data-crops="corn soybeans wheat"></div>
-</main><script src="/components/cb-signup.js?v=2" defer></script></body></html>`;
+</main><script src="/components/cb-signup.js?v=3" defer></script></body></html>`;
   const srv = await serve({ "/company-test.html": page }), port = srv.address().port, posts = [];
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const pg = await open(browser, port, "/company-test.html", posts);
     await pg.locator(".cbs-zip").waitFor();
-    assert.equal(await pg.locator(".cbs-d").isChecked(), true, "morning bids box ticked");
+    assert.equal(await pg.locator(".cbs-d").isChecked(), false, "morning bids box starts empty (Sig, 2026-10-19)");
+    await pg.locator(".cbs-d").check();
     await pg.locator(".cbs-zip").fill("50830");
     await pg.locator(".cbs-price").fill("4.50");
     await pg.locator(".cbs-em").fill("reader@example.com");
