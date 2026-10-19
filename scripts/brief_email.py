@@ -37,6 +37,7 @@ import html as _html
 import json
 import os
 import re
+import urllib.parse
 from datetime import date, datetime, timedelta
 
 import sys
@@ -67,6 +68,54 @@ GOLD, UP, DOWN, PAPER = "#8a6b1f", "#1f6f2a", "#b3261e", "#ffffff"
 SANS = ("-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,"
         "Helvetica,Arial,sans-serif")
 MONO = "ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace"
+
+
+# ── link tagging (2026-10-19) ──────────────────────────────────────────────
+# The board saw 149 readers and 7 Email sessions in a week, and only the
+# button was tagged: every other link landed in GA4 as Direct. Every
+# agsist.com link in the Daily now says where it came from:
+#   utm_source=daily  utm_medium=email  utm_campaign=<issue date>
+#   utm_content=<which link: button, rainprint, onlyon, tracker, zip,
+#                forward, footer>
+# Only agsist.com links are touched. The unsubscribe link (the subs worker)
+# and a sponsor's own link (sponsor_links.tag) are never rewritten.
+UTM_SOURCE = "daily"
+_OURS = ("agsist.com", "www.agsist.com")
+
+
+def utm(url, content, campaign=None, source=UTM_SOURCE):
+    """`url` with this email's utm_* set (any old utm_* replaced, every other
+    parameter and the #fragment kept). Anything not on agsist.com comes back
+    exactly as it went in."""
+    u = str(url or "")
+    try:
+        p = urllib.parse.urlsplit(u)
+    except ValueError:
+        return u
+    if p.scheme not in ("http", "https") or (p.hostname or "") not in _OURS:
+        return u
+    q = [(k, v) for k, v in urllib.parse.parse_qsl(p.query, keep_blank_values=True)
+         if not k.startswith("utm_")]
+    q += [("utm_source", source), ("utm_medium", "email")]
+    if campaign:
+        q.append(("utm_campaign", str(campaign)))
+    if content:
+        q.append(("utm_content", content))
+    return urllib.parse.urlunsplit((p.scheme, p.netloc, p.path or "/", urllib.parse.urlencode(q), p.fragment))
+
+
+def campaign_of(daily):
+    """The issue's date as ISO (grade_calls.iso_date, the one definition), or
+    None: an issue whose date cannot be read is tagged without a campaign."""
+    try:
+        import grade_calls
+        return grade_calls.iso_date(daily or {})
+    except Exception:
+        return None
+
+
+def _unamp(u):
+    return str(u or "").replace("&amp;", "&")
 
 
 # ── text hygiene ───────────────────────────────────────────────────────────
@@ -666,13 +715,81 @@ def rain_print_line(today=None, cfg=None):
     return strip_md(line.strip()) if lo <= t <= hi else ""
 
 
-def local_html(local):
+RAIN_PRINT_URL = "https://agsist.com/rain-print"
+_ISO = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _md(iso):
+    d = date.fromisoformat(iso)
+    return d.strftime("%b ") + str(d.day)
+
+
+def _chicago_today(today):
+    if today is not None:
+        return today if isinstance(today, date) else date.fromisoformat(str(today)[:10])
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.now(ZoneInfo("America/Chicago")).date()
+    except Exception:
+        return date.today()
+
+
+def rain_print_offer(rain=None, today=None, cfg=None):
+    """The one Rain Print line for this reader, as (sentence, url), or None.
+
+    2026-10-19 (Sig approved the board's fix): a reader whose ZIP the Daily
+    knows gets their own town's Rain Print for last year, linked the way a
+    hand-written link is (/rain-print?place=<ZIP>&year=<last year>, no style=),
+    which opens with the 30-year normals and the remarkable days on
+    (components/rain-print.js fromParams). A reader with no ZIP gets the
+    shipped briefing_line, as before. One line, never both.
+
+    On only while rain_print_line() is (promote true, a briefing_line, today in
+    promote_from..promote_until) AND today is on or before the later of
+    print_christmas_cutoff and framed_christmas_cutoff. A cutoff that cannot
+    be read means no line: the line is a Christmas line. No price in it.
+    `rain` is {"zip": "54728", "town": "Chetek, WI" or None} from send_daily.
+    """
+    if cfg is None:
+        try:
+            with open(RAIN_PRINT_JSON, encoding="utf-8") as f:
+                cfg = json.load(f)
+        except Exception:
+            return None
+    t = _chicago_today(today)
+    generic = rain_print_line(t, cfg)
+    if not generic:
+        return None
+    pc, fc = str(cfg.get("print_christmas_cutoff") or ""), str(cfg.get("framed_christmas_cutoff") or "")
+    if not (_ISO.match(pc) and _ISO.match(fc)):
+        return None
+    ti = t.isoformat()
+    if ti > max(pc, fc):
+        return None
+    z = str((rain or {}).get("zip") or "").strip()
+    if not re.match(r"^\d{5}$", z):
+        return generic, RAIN_PRINT_URL
+    if ti <= pc and ti <= fc:
+        when = "For Christmas, order framed by %s, a print by %s." % (_md(fc), _md(pc))
+    elif ti <= fc:
+        when = "For Christmas, order framed by %s." % _md(fc)
+    else:
+        when = "For Christmas, order a print by %s." % _md(pc)
+    year = t.year - 1
+    town = strip_md((rain or {}).get("town") or "")
+    # "near": the print is drawn from the nearest weather station, not the farm's own gauge.
+    where = (" near " + town) if town else " near you"
+    line = "Your Rain Print: every rain of %d%s, on one print for the wall. Free to make. %s" % (year, where, when)
+    return line, RAIN_PRINT_URL + "?place=" + z + "&year=" + str(year)
+
+
+def local_html(local, camp=None):
     if not local:
         return ""
     if local.get("ask_url"):
         return ('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:14px;line-height:1.5;'
                 'color:%s"><a href="%s" style="color:%s">Add your ZIP to get your local top bid</a> '
-                'at the top of this email.</td></tr>' % (SANS, MUTE, _href(local["ask_url"]), GOLD))
+                'at the top of this email.</td></tr>' % (SANS, MUTE, _href(utm(local["ask_url"], "zip", camp)), GOLD))
     if not local.get("head"):
         return ""
     det = "".join('<br><span class="mute" style="font-size:14px;color:%s">%s</span>' % (MUTE, e(d))
@@ -685,11 +802,11 @@ def local_html(local):
             % (GOLD, SANS, INK, e(local["head"]), det, note))
 
 
-def local_text(local):
+def local_text(local, camp=None):
     if not local:
         return []
     if local.get("ask_url"):
-        return ["", "Add your ZIP to get your local top bid at the top of this email: " + local["ask_url"]]
+        return ["", "Add your ZIP to get your local top bid at the top of this email: " + utm(local["ask_url"], "zip", camp)]
     if not local.get("head"):
         return []
     return ["", local["head"]] + ["  " + d for d in (local.get("detail") or [])] + (
@@ -724,7 +841,7 @@ def daily_action(daily):
 CLOCK_URL = "https://agsist.com/harvest-price-tracker"
 
 
-def clock_html(daily, today=None):
+def clock_html(daily, today=None, camp=None):
     b = harvest_clock.visible(daily.get("harvest_clock"), today)
     if not b:
         return ""
@@ -735,15 +852,15 @@ def clock_html(daily, today=None):
             '<strong>Harvest price clock.</strong>%s'
             '<div class="mute" style="padding-top:6px;font-size:14px;color:%s">%s '
             '<a href="%s" style="color:%s">Harvest price tracker</a></div></td></tr></table></td></tr>'
-            % (GOLD, SANS, INK, lines, MUTE, e(b.get("note") or ""), CLOCK_URL, GOLD))
+            % (GOLD, SANS, INK, lines, MUTE, e(b.get("note") or ""), _href(utm(CLOCK_URL, "tracker", camp)), GOLD))
 
 
-def clock_text(daily, today=None):
+def clock_text(daily, today=None, camp=None):
     b = harvest_clock.visible(daily.get("harvest_clock"), today)
     if not b:
         return []
     return ["", "HARVEST PRICE CLOCK"] + list(b["lines"]) + [
-        ((b.get("note") or "") + " Harvest price tracker: " + CLOCK_URL).strip()]
+        ((b.get("note") or "") + " Harvest price tracker: " + utm(CLOCK_URL, "tracker", camp)).strip()]
 
 
 # "Only on AGSIST" (scripts/daily_edge.py): facts counted by code from the
@@ -758,13 +875,13 @@ def _edge_facts(daily):
     return daily_edge.shown(daily.get("edge"))
 
 
-def edge_html(daily):
+def edge_html(daily, camp=None):
     facts = _edge_facts(daily)
     out = ""
     if facts:
         rows = "".join(
-            '<div style="padding-top:6px"><strong>%s</strong> <a href="%s%s" style="color:%s">%s</a></div>'
-            % (e(f["sentence"]), SITE, e(f["url"]), GOLD, e(f.get("link_text") or "See it"))
+            '<div style="padding-top:6px"><strong>%s</strong> <a href="%s" style="color:%s">%s</a></div>'
+            % (e(f["sentence"]), e(utm(SITE + f["url"], "onlyon", camp)), GOLD, e(f.get("link_text") or "See it"))
             for f in facts)
         out += ('<tr><td style="padding:14px 0 0"><table role="presentation" width="100%%" cellpadding="0" '
                 'cellspacing="0" border="0"><tr><td class="ink" style="border-left:3px solid %s;padding:4px 0 4px 12px;'
@@ -781,13 +898,13 @@ def edge_html(daily):
     return out
 
 
-def edge_text(daily):
+def edge_text(daily, camp=None):
     L = []
     facts = _edge_facts(daily)
     if facts:
         L += ["", "ONLY ON AGSIST"]
         for f in facts:
-            L += [f["sentence"] + " " + SITE + f["url"]]
+            L += [f["sentence"] + " " + utm(SITE + f["url"], "onlyon", camp)]
     n = daily.get("cca_note")
     if isinstance(n, dict) and str(n.get("text") or "").strip():
         L += ["", "FROM SIG: " + str(n["text"]).strip()]
@@ -795,8 +912,9 @@ def edge_text(daily):
 
 
 def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=None,
-                local=None, forward_url=None, today=None):
+                local=None, forward_url=None, today=None, rain=None):
     prior, prior_day = prior_board(daily)
+    camp = campaign_of(daily)
     head = soften_caps(strip_md(daily.get("headline")))
     lead = strip_md(daily.get("lead"))
     # v5.1: the action holds the slot the takeaway had. An issue from before
@@ -826,7 +944,7 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
         '<tr><td style="padding:2px 0 0;font-family:%s;font-size:14px;color:%s" class="mute">%s</td></tr>'
         % (SANS, MUTE, e(date_display)),
     ]
-    _loc = local_html(local)
+    _loc = local_html(local, camp)
     if _loc and not local.get("ask_url"):
         body.append(_loc)              # the reader's own bid opens the email
     if head:
@@ -841,10 +959,10 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
                     'padding:4px 0 4px 12px;font-family:%s;font-size:16px;line-height:1.55;color:%s" '
                     'class="ink"><strong>%s</strong> %s%s</td></tr></table></td></tr>'
                     % (GOLD, SANS, INK, e(take_label), e(take), ""))
-    _edge = edge_html(daily)
+    _edge = edge_html(daily, camp)
     if _edge:
         body.append(_edge)
-    _clock = clock_html(daily, today)
+    _clock = clock_html(daily, today, camp)
     if _clock:
         body.append(_clock)
 
@@ -888,11 +1006,11 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
         body.append(_rule())
         body.append(mine)
 
-    _rp = rain_print_line(today)
+    _rp = rain_print_offer(rain, today)
     if _rp:
         body.append('<tr><td class="mute" style="padding:18px 0 0;font-family:%s;font-size:14px;line-height:1.5;'
-                    'color:%s"><a href="https://agsist.com/rain-print" style="color:%s">%s</a></td></tr>'
-                    % (SANS, MUTE, GOLD, e(_rp)))
+                    'color:%s"><a href="%s" style="color:%s">%s</a></td></tr>'
+                    % (SANS, MUTE, e(utm(_rp[1], "rainprint", camp)), GOLD, e(_rp[0])))
 
     # Outlook's Word engine throws away padding and background on an inline
     # <a>, so a styled anchor arrives there as a bare blue link. The button is
@@ -906,16 +1024,17 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
                 'color:#f3ead6;font-family:%s;font-size:13px;font-weight:700;'
                 'letter-spacing:.06em;display:inline-block">'
                 'Charts, calls and the full issue &rarr;</a></td></tr></table></td></tr>'
-                % (INK, INK, _href(site_href), MONO))
+                % (INK, INK, _href(utm(_unamp(site_href), "button", camp)), MONO))
     if _loc and local.get("ask_url"):
         body.append(_loc)
     if forward_url:
         body.append('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:14px;line-height:1.5;'
                     'color:%s">Forward to a neighbor. Or send them the free sign-up link: '
                     '<a href="%s" style="color:%s">%s</a></td></tr>'
-                    % (SANS, MUTE, _href(forward_url), GOLD, e(forward_url.split("://", 1)[-1])))
+                    % (SANS, MUTE, _href(utm(forward_url, "forward", camp)), GOLD, e(forward_url.split("://", 1)[-1])))
     foot = ('AGSIST &middot; free US farm markets &middot; '
-            '<a class="mute" href="https://agsist.com" style="color:%s">agsist.com</a>' % MUTE)
+            '<a class="mute" href="%s" style="color:%s">agsist.com</a>'
+            % (e(utm("https://agsist.com/", "footer", camp)), MUTE))
     if unsub_url:
         foot += ('<br><a class="mute" href="%s" style="color:%s">'
                  'Unsubscribe</a>') % (_href(unsub_url), MUTE)
@@ -959,7 +1078,7 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
 
 
 def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
-                local=None, forward_url=None, today=None):
+                local=None, forward_url=None, today=None, rain=None):
     """The plain-text alternative, and it is not an afterthought.
 
     Some clients show it, some readers prefer it, and a multipart message with a
@@ -968,12 +1087,13 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
     will pull apart.
     """
     prior, prior_day = prior_board(daily)
+    camp = campaign_of(daily)
     L = []
     issue = daily.get("issue_number")
     L.append("AGSIST DAILY")  # 2026-10-11: no issue number shown
     L.append(strip_md(daily.get("date")) or (date_display or ""))
     if local and not local.get("ask_url"):
-        L += local_text(local)
+        L += local_text(local, camp)
     for k in ("headline", "lead"):
         v = strip_md(daily.get(k))
         if k == "headline":
@@ -988,8 +1108,8 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
         take = strip_md(daily.get("the_takeaway"))
         if take:
             L += ["", "THE TAKEAWAY: " + take]
-    L += edge_text(daily)
-    L += clock_text(daily, today)
+    L += edge_text(daily, camp)
+    L += clock_text(daily, today, camp)
     # Same slot as the HTML part, same rule: real active sponsor only, never
     # the house ad. A multipart message whose text half quietly drops the
     # sponsor is a message that shortchanges them for every reader whose
@@ -1070,14 +1190,15 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
         L += ["", "YOUR ELEVATORS"] + ["  " + x for x in elevators]
         L.append("  The elevators' own posted boards, read when this email was sent. Not a contract. "
                  "Call to confirm before you haul.")
-    _rp = rain_print_line(today)
+    _rp = rain_print_offer(rain, today)
     if _rp:
-        L += ["", _rp + " https://agsist.com/rain-print"]
-    L += ["", "Charts, calls and the full issue: " + site]
+        # The shipped line already names agsist.com/rain-print; the link goes after it.
+        L += ["", _rp[0] + " " + utm(_rp[1], "rainprint", camp)]
+    L += ["", "Charts, calls and the full issue: " + utm(_unamp(site), "button", camp)]
     if local and local.get("ask_url"):
-        L += local_text(local)
+        L += local_text(local, camp)
     if forward_url:
-        L += ["", "Forward to a neighbor. Or send them the free sign-up link: " + forward_url]
+        L += ["", "Forward to a neighbor. Or send them the free sign-up link: " + utm(forward_url, "forward", camp)]
     L += ["", "AGSIST, free US farm markets, agsist.com"]
     L.append("Unsubscribe: " + unsub_url if unsub_url
              else "To unsubscribe, reply with subject line: unsubscribe")
@@ -1178,6 +1299,63 @@ def _selftest():
             bad.append(("shipped line on inside its window", lo, hi))
         if rain_print_line(hi + timedelta(days=1), shipped) or rain_print_line(lo - timedelta(days=1), shipped):
             bad.append(("shipped line off outside its window", lo, hi))
+    # 2026-10-19: link tags. agsist.com only; old utm_* replaced; ?ref= and #fragment kept.
+    for u, c, want in (
+            ("https://agsist.com", "footer", "https://agsist.com/?utm_source=daily&utm_medium=email&utm_campaign=2026-10-19&utm_content=footer"),
+            ("https://agsist.com/?d=1&utm_source=daily_email&utm_medium=email", "button",
+             "https://agsist.com/?d=1&utm_source=daily&utm_medium=email&utm_campaign=2026-10-19&utm_content=button"),
+            ("https://agsist.com/#signup-full", "zip",
+             "https://agsist.com/?utm_source=daily&utm_medium=email&utm_campaign=2026-10-19&utm_content=zip#signup-full"),
+            ("https://agsist-subs.dnilgis.workers.dev/unsubscribe?e=a%40b.com&t=ab", "x",
+             "https://agsist-subs.dnilgis.workers.dev/unsubscribe?e=a%40b.com&t=ab"),
+            ("https://aigwi.com/?utm_source=agsist", "x", "https://aigwi.com/?utm_source=agsist"),
+            ("https://agsist.com.evil.example/", "x", "https://agsist.com.evil.example/")):
+        if utm(u, c, "2026-10-19") != want:
+            bad.append(("utm", u, utm(u, c, "2026-10-19")))
+    td = dict(d, date="Monday, October 19, 2026", edge={"label": "Only on AGSIST", "facts": [ef]})
+    for part, out in (("text", render_text(td, "https://agsist.com/daily/2026-10-19.html", forward_url="https://agsist.com/?ref=email-forward",
+                                           unsub_url="https://w.dev/unsubscribe?e=a&t=1", today=date(2026, 10, 19))),
+                      ("html", render_html(td, "https://agsist.com/daily/2026-10-19.html", forward_url="https://agsist.com/?ref=email-forward",
+                                           unsub_url="https://w.dev/unsubscribe?e=a&t=1", today=date(2026, 10, 19)).replace("&amp;", "&"))):
+        us = re.findall(r'https?://(?:www\.)?agsist\.com[^\s"<>]*', out)
+        if not us or [u for u in us if "utm_source=daily&utm_medium=email&utm_campaign=2026-10-19&utm_content=" not in u]:
+            bad.append(("untagged link in " + part, us))
+        if "https://w.dev/unsubscribe?e=a&t=1" not in out:
+            bad.append(("unsubscribe changed in " + part, ""))
+        for c in ("button", "onlyon", "forward"):
+            if "utm_content=" + c not in out:
+                bad.append(("utm_content " + c + " in " + part, ""))
+    # The reader's own Rain Print: in the promote window and on or before the
+    # later Christmas cutoff; the town's link for last year; no price; else the
+    # generic line for a reader with no ZIP; nothing after the cutoff.
+    rc = dict(rp, promote_from="2026-10-14", promote_until="2026-12-10",
+              print_christmas_cutoff="2026-12-10", framed_christmas_cutoff="2026-12-09")
+    me = {"zip": "54728", "town": "Chetek, WI"}
+    o = rain_print_offer(me, date(2026, 10, 19), rc)
+    if not (o and o[1] == "https://agsist.com/rain-print?place=54728&year=2025" and "near Chetek, WI" in o[0]
+            and "2025" in o[0] and "Dec 9" in o[0] and "Dec 10" in o[0] and "$" not in o[0] and "\u2014" not in o[0]):
+        bad.append(("own rain print line", o))
+    o = rain_print_offer(me, date(2026, 12, 10), rc)
+    if not (o and "a print by Dec 10" in o[0] and "framed" not in o[0]):
+        bad.append(("own line after the framed cutoff", o))
+    if rain_print_offer(me, date(2026, 12, 11), dict(rc, promote_until="2026-12-31")) is not None:
+        bad.append(("own line after the cutoff", ""))
+    if rain_print_offer(None, date(2026, 12, 11), dict(rc, promote_until="2026-12-31")) is not None:
+        bad.append(("generic line after the cutoff", ""))
+    if rain_print_offer(None, date(2026, 10, 19), rc) != (rp["briefing_line"], RAIN_PRINT_URL):
+        bad.append(("no ZIP: the generic line", rain_print_offer(None, date(2026, 10, 19), rc)))
+    if rain_print_offer({"zip": "5472"}, date(2026, 10, 19), rc) != (rp["briefing_line"], RAIN_PRINT_URL):
+        bad.append(("bad ZIP: the generic line", ""))
+    o = rain_print_offer({"zip": "54999", "town": None}, date(2026, 10, 19), rc)
+    if not (o and "near you" in o[0] and o[1].endswith("place=54999&year=2025")):
+        bad.append(("ZIP with no town", o))
+    if rain_print_offer(me, date(2026, 10, 19), dict(rc, promote=False)) or \
+            rain_print_offer(me, date(2026, 10, 19), dict(rc, framed_christmas_cutoff=None)):
+        bad.append(("own line off with promote off or a cutoff missing", ""))
+    for part, out in (("text", render_text(d, "https://agsist.com/", rain=me, today=date(2026, 10, 19))),
+                      ("html", render_html(d, "https://agsist.com/", rain=me, today=date(2026, 10, 19)))):
+        if out.count("Rain Print") > 1 or (shipped.get("briefing_line") or "@@") in out:
+            bad.append(("one rain print line, not two, in " + part, ""))
     for b in bad:
         print("FAIL", b)
     print("brief_email selftest " + ("FAILED" if bad else "ok"))

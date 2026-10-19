@@ -78,8 +78,10 @@ ARCHIVE = REPO / "data" / "daily-archive"
 # reader came from the email and explicitly asked for the briefing, so a "hide
 # until tomorrow" dismissal from earlier today must not collapse it on arrival.
 # utm_* is plain GA4 attribution: email->site clicks is the one number a sponsor
-# actually asks for, and it costs nothing to measure.
-SITE = "https://agsist.com/?d=1&utm_source=daily_email&utm_medium=email"
+# actually asks for, and it costs nothing to measure. Since 2026-10-19 every
+# agsist.com link is tagged in one place, brief_email.utm (utm_source=daily,
+# utm_campaign=<issue date>, utm_content=<which link>), so these stay plain.
+SITE = "https://agsist.com/?d=1"
 # Same URL, ampersands escaped, for use inside an href="" attribute. A bare "&"
 # in an href is tolerated by most clients but is not valid HTML, and email
 # sanitisers are not something to gamble a send on.
@@ -114,8 +116,7 @@ def issue_url(daily):
         iso = None
     if not iso:
         return SITE
-    return ("https://agsist.com/daily/%s.html"
-            "?utm_source=daily_email&utm_medium=email" % iso)
+    return "https://agsist.com/daily/%s.html" % iso
 
 
 def env(name, default=None, required=False):
@@ -251,6 +252,41 @@ def load_elevator_lines():
         return {}
 
 
+# Address -> {"zip", "town"} for the reader's own Rain Print line
+# (brief_email.rain_print_offer). Filled once by main(), like LOCAL_LINES.
+# A reader missing here gets the shipped generic line. Never printed.
+RAIN_LINES = {}
+
+
+def load_rain_lines(subs, how, bids_data=None):
+    """Address -> {"zip", "town"} for every reader with a five-digit ZIP.
+    The town comes from the same ZIP table the local bid line names
+    ("Chetek, WI"); with no row there the line still links the ZIP, it just
+    does not name the town. Independent of LOCAL_BIDS: no bid is read."""
+    import re
+    out = {}
+    if how != "json":
+        return out
+    data = None
+    towns = {}
+    for r in subs:
+        z = str(r.get("zip") or "").strip()[:5]
+        if not re.match(r"^\d{5}$", z):
+            continue
+        if z not in towns:
+            try:
+                if data is None:
+                    import local_bid
+                    data = bids_data or local_bid.BidsData()
+                towns[z] = data.zip_town(z)
+            except Exception:
+                towns[z] = None
+        out[str(r["email"]).strip().lower()] = {"zip": z, "town": towns[z]}
+    print("rain print line: %d reader(s) get their own town's, %d distinct ZIP(s), %d named"
+          % (len(out), len(towns), sum(1 for t in towns.values() if t)))
+    return out
+
+
 def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     """One issue, two bodies, one message.
 
@@ -287,12 +323,13 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
 
     mine = ELEVATOR_LINES.get(str(to_addr).strip().lower()) or None
     loc = LOCAL_LINES.get(str(to_addr).strip().lower()) or None
+    rain = RAIN_LINES.get(str(to_addr).strip().lower()) or None
     text = brief_email.render_text(b, issue_url(b), unsub_url=uurl, date_display=date_display, elevators=mine,
-                                   local=loc, forward_url=FORWARD_URL)
+                                   local=loc, forward_url=FORWARD_URL, rain=rain)
     _issue = issue_url(b)
     hbody = brief_email.render_html(b, _issue.replace("&", "&amp;"),
                                     unsub_url=uurl, date_display=date_display, elevators=mine,
-                                    local=loc, forward_url=FORWARD_URL)
+                                    local=loc, forward_url=FORWARD_URL, rain=rain)
 
     # set_content first, add_alternative second: that ordering is what makes it
     # multipart/alternative with the HTML preferred and the text a real
@@ -327,6 +364,11 @@ def main():
         print("local bid line skipped (" + type(ex).__name__ + ": " + str(ex)[:120] + ")")
         _ll, _counts = {}, {"plain": len(subs)}
     LOCAL_LINES.update(_ll)
+    try:
+        RAIN_LINES.update(load_rain_lines(subs, how))
+    except Exception as ex:
+        # An extra, like the local line: anything wrong sends the generic line.
+        print("own rain print line skipped (" + type(ex).__name__ + ")")
     gmail_limit.check(len(recipients), sum(1 for r in subs if r.get("reports") is not False),
                       date.fromisoformat(day), dry=dry)
 
