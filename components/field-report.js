@@ -10,6 +10,15 @@
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function miss(t) { return '<p class="fl-note">' + t + '</p>'; }
 
+  /* The address the printed QR holds (Oct 19): this page's own link on agsist.com, the
+     outline (f=) and the Field Scout comp filters (cf=) exactly as the link carries them.
+     A #f= link reads the same, so its code is written the ?f= way. */
+  function reportUrl(search, hash) {
+    var q = /[?&]f=([^&#]+)/.exec(search || '') || /#f=(.+)$/.exec(hash || ''), cf = /[?&]cf=([^&#]+)/.exec(search || '');
+    return q ? 'https://agsist.com/field-report?f=' + q[1] + (cf ? '&cf=' + cf[1] : '') : null;
+  }
+  if (typeof module === 'object' && module.exports) { module.exports = { reportUrl: reportUrl }; return; }
+
   function start() {
     var F = window.FSLand;
     if (!F) { set('frp-none', '<b>This page did not finish loading.</b> Check the connection and reload.'); $('frp-none').hidden = false; return; }
@@ -20,6 +29,8 @@
     $('frp-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     if (!pts) { $('frp-none').hidden = false; $('frp-print').hidden = true; return; }
     $('frp-body').hidden = false;
+    // printed only: a QR top right of page 1 that opens this same report
+    if (window.AgPrintQR) { window.AgPrintQR.addCSS(); set('frp-pq', window.AgPrintQR.html(reportUrl(location.search, location.hash), 'agsist.com/field-report')); }
     var enc = pts.map(function (p) { return p.lat.toFixed(5) + ',' + p.lng.toFixed(5); }).join('~');
     $('frp-back').href = '/field-scout#f=' + enc;
     var c = F.centroid(pts), acres = F.ringAcres(pts);

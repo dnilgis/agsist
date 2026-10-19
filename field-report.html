@@ -41,6 +41,8 @@
       .frp{max-width:none;padding:0}.frp h1,.frp h2,.frp b,.fl-kv td,.fl-tbl td,.fl-big{color:#000!important}
       .frp p,.frp li,.fl-note,.fl-kv th,.fl-tbl th,.fs-src{color:#333!important}
       .fl-p,.frp-sum div,.fl-empty{background:#fff!important;border-color:#bbb!important}
+      /* the QR back to this exact report, top right of page 1 (components/print-qr.js) */
+      .frp-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.25in}.frp-top>div:first-child{flex:1;min-width:0}
       .frp h2{break-after:avoid}.fl-p,.fl-hist li,.fl-tbl tr{break-inside:avoid}
       .fl-tbl{min-width:0!important;font-size:.74rem!important}.fl-tbl td{white-space:normal!important}a{color:#000!important}
     }
@@ -70,8 +72,8 @@
   <main id="main" tabindex="-1">
     <article class="frp">
       <p class="breadcrumb no-print" style="font-size:.8rem;margin:0"><a href="/field-scout">Field Scout</a> / Land report</p>
-      <h1 id="frp-h">Field land report</h1>
-      <p class="by"><span id="frp-date"></span> &middot; free, no sign-up</p>
+      <div class="frp-top"><div><h1 id="frp-h">Field land report</h1>
+      <p class="by"><span id="frp-date"></span> &middot; free, no sign-up</p></div><div id="frp-pq"></div></div>
       <div class="frp-act"><button type="button" id="frp-print">Print or save as PDF</button><a id="frp-back" href="/field-scout">Open this field in Field Scout</a></div>
       <div id="frp-none" class="frp-err" hidden><b>No field on this link.</b> This report is made from a field picked on <a href="/field-scout">Field Scout</a>: pick or trace a field there, then tap "Printable land report".</div>
       <div id="frp-body" hidden>
@@ -112,6 +114,8 @@
 </div>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/field-scout-land.js?v=7" defer></script>
-  <script src="/components/field-report.js?v=3" defer></script>
+  <script src="/components/qr.js?v=11" defer></script>
+  <script src="/components/print-qr.js?v=1" defer></script>
+  <script src="/components/field-report.js?v=4" defer></script>
 </body>
 </html>
