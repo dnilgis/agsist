@@ -86,3 +86,16 @@ test("P3: homepage rows name a date or kind that differs from the badge", () => 
   assert.equal(ctx.f("crude", { ...q.crude, close_date: "2026-10-19" }), "");
   assert.equal(ctx.f("cattle", q["cattle-nearby"]), "Oct 16 settle");
 });
+
+test("P4: /markets board age is its oldest settle", async () => {
+  const P = (await import(ROOT + "components/price-local.js")).default;
+  const now = new Date("2026-10-22T15:00:00Z"); // Thursday
+  const s = (d) => ({ close: 1, close_kind: "settle", close_date: d });
+  const a = P.boardAge({ corn: s("2026-10-21"), milk: s("2026-10-14") }, null, now);
+  assert.equal(a.oldest, "2026-10-14");
+  assert.equal(a.newest, "2026-10-21");
+  assert.equal(a.stale, true);
+  assert.equal(a.old, true); // Oct 15, 16, 19, 20, 21 missing
+  assert.equal(P.boardAge({ corn: s("2026-10-21"), beans: s("2026-10-21") }, null, now).stale, false);
+  assert.match(read("markets.html"), /'oldest settle '\+ba\.oldestLabel/);
+});

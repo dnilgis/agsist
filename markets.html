@@ -388,7 +388,7 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
       var bw=window.AgPxStamp?AgPxStamp.board(bq,null,data.fetched):'';
       /* chaos-1: a settle the file should have moved past says how old it is, and greys the cards once it is OLD_SESSIONS behind */
       var ba=bw&&AgPxStamp.boardAge?AgPxStamp.boardAge(bq,null):null;
-      var stampH=bw?'<time class="px-stamp'+(ba&&ba.old?' is-stale':'')+'" datetime="'+data.fetched+'">'+bw.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];})+(ba&&ba.stale?'<span class="asof-note"> &middot; '+ba.note+'</span>':'')+'</time>':(window.AgAsOf?AgAsOf.html(data.fetched,'prices'):'');
+      var stampH=bw?'<time class="px-stamp'+(ba&&ba.old?' is-stale':'')+'" datetime="'+data.fetched+'">'+bw.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];})+(ba&&ba.stale?'<span class="asof-note"> &middot; '+(ba.oldest!==ba.newest&&ba.oldestLabel?'oldest settle '+ba.oldestLabel+', ':'')+ba.note+'</span>':'')+'</time>':(window.AgAsOf?AgAsOf.html(data.fetched,'prices'):'');
       Array.prototype.forEach.call(document.querySelectorAll('.pc'),function(c){c.classList.toggle('px-old',!!(ba&&ba.old));});
       if(stampH)status.innerHTML=stampH+' &middot; each change line carries its own close date';
     }
