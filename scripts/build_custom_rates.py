@@ -468,7 +468,7 @@ def state_page(d, idx):
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="{og}">
   <script>try{{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}}catch(e){{}}</script>
-  <link rel="stylesheet" href="/components/styles.css?v=24">
+  <link rel="stylesheet" href="/components/styles.css?v=25">
   <link rel="stylesheet" href="/components/custom-rates.css?v=2">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <script type="application/ld+json">{ld}</script>
