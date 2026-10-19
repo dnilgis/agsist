@@ -41,7 +41,8 @@ const TOTAL = ["seed", "fertilizer", "chemicals", "insurance", "machinery", "lab
  * screen at the posted $/lb (var FERT, baked). */
 const Y = CORN.yield;
 const FERT = (() => { const m = /var FERT=(\{[^;]*\});/.exec(HTML); return m ? Function("return " + m[1])() : null; })();
-const fertAt = (crop, y) => { const r = FERT.r[crop]; const lb = r.map((x) => Math.round(y * x)); return Math.round(lb[0] * FERT.n + lb[1] * FERT.p + lb[2] * FERT.k); };
+/* corn N is flat (FERT.nf.corn = [lb, $/lb, form], money audit 1, 2026-10-19); P and K follow the yield */
+const fertAt = (crop, y) => { const r = FERT.r[crop], nf = FERT.nf && FERT.nf[crop]; const lb = r.map((x) => Math.round(y * x)); if (nf) lb[0] = nf[0]; return Math.round(lb[0] * (nf ? nf[1] : FERT.n) + lb[1] * FERT.p + lb[2] * FERT.k); };
 const usd = (v) => (v >= 0 ? "+$" : "-$") + Math.abs(Math.round(v)).toLocaleString("en-US");
 
 /* The board, fixed, so the arithmetic below is exact. fetched is "now" so
@@ -164,16 +165,18 @@ test("other revenue lowers the break-even, adds to profit, and the grid agrees",
   try {
     const { pg, errors } = await open(browser, port);
     assert.doesNotMatch(await txt(pg, "#be-sub"), /other revenue/);
-    await type(pg, "#basis", "-0.30");
+    /* basis -0.40 (was -0.30): with corn N at the A2809 rate (money audit 1, Oct 19) the defaults cost
+       less, and -0.30 no longer made the hand case a loss. 4.7875 Dec '26 - 0.40 = 4.3875. */
+    await type(pg, "#basis", "-0.40");
     await type(pg, "#other", "30");
-    const be = (TOTAL - 30) / Y, prof = Y * 4.4875 + 30 - TOTAL;
+    const be = (TOTAL - 30) / Y, prof = Y * 4.3875 + 30 - TOTAL;
     assert.ok(prof < 0, "the hand case below is a loss at these defaults");
     assert.equal(await txt(pg, "#costPerBu"), `$${(TOTAL / Y).toFixed(2)}/bu`, "cost per bushel is still the full total");
     assert.equal(await txt(pg, "#breakeven"), `$${be.toFixed(2)}/bu, above your price`, "(total - 30) / 237");
     assert.equal(await txt(pg, "#be-sub"), `After $30/ac other revenue. Before it: $${(TOTAL / Y).toFixed(2)}/bu.`);
-    assert.equal(await txt(pg, "#futNeeded"), `$${(be + 0.30).toFixed(2)}/bu`, "break-even + 0.30 basis");
-    assert.equal(await txt(pg, "#profit"), usd(prof) + "/ac", "237 x 4.4875 + 30 - total");
-    assert.equal(await txt(pg, "#yieldNeeded"), `${Math.ceil((TOTAL - 30) / 4.4875 - 1e-9)} bu/ac`, "(total - 30) / 4.4875, rounded up");
+    assert.equal(await txt(pg, "#futNeeded"), `$${(be + 0.40).toFixed(2)}/bu`, "break-even + 0.40 basis");
+    assert.equal(await txt(pg, "#profit"), usd(prof) + "/ac", "237 x 4.3875 + 30 - total");
+    assert.equal(await txt(pg, "#yieldNeeded"), `${Math.ceil((TOTAL - 30) / 4.3875 - 1e-9)} bu/ac`, "(total - 30) / 4.3875, rounded up");
     assert.equal(await txt(pg, "#farmTotal"), usd(500 * prof), "500 acres x the acre profit");
     assert.equal(await txt(pg, "#mb-be"), `$${be.toFixed(2)}/bu`, "the phone bar shows the same break-even");
     assert.equal(await txt(pg, "#sens-table .sens-current"), usd(prof), "the outlined cell is the headline profit");

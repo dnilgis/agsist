@@ -298,8 +298,13 @@ def rule_removal_rates(c):
     m = re.search(r"r:\{corn:\[([\d.,]+)\],soybeans:\[([\d.,]+)\],wheat:\[([\d.,]+)\]\}", be)
     if m:
         got = [[float(x) for x in g.split(",")] for g in m.groups()]
-        c.ok("removal-rates", got == [list(t["corn"]), list(t["soybeans"]), list(t["wheat"])], "breakeven.html",
-             f"FERT.r {got} vs {t}")
+        # 2026-10-19 money audit 1: /breakeven's corn N is a flat A2809 MRTN rate
+        # (FERT.nf.corn), not per bushel, so its per-bushel corn N is 0 and the
+        # flat rate must be there; P, K and the other crops are the one table.
+        flat = re.search(r"nf:\{corn:\[(\d+),", be)
+        want_be = [[0.0] + list(t["corn"][1:]), list(t["soybeans"]), list(t["wheat"])]
+        c.ok("removal-rates", got == want_be and bool(flat), "breakeven.html",
+             f"FERT.r {got} vs {want_be} (corn N flat, nf {'set' if flat else 'missing'})")
     progs = ((c.load("data/fertilizer-prices.json") or {}).get("programs")) or {}
     for crop, pr in progs.items():
         if pr and crop in t:
@@ -491,7 +496,7 @@ def _fixture(td):
                               "anhydrous $832. Cost per lb.")
       + "var CROPS={corn:{label:'Corn',nRate:0.90,p2o5:0.38,k2o:0.29},soybean:{nRate:0,p2o5:0.80,k2o:1.40},wheat:{nRate:1.2,p2o5:0.50,k2o:0.35}};"
         "<code>Corn P&#x2082;O&#x2085; 0.38, K&#x2082;O 0.29 &middot; Soybeans 0.80 / 1.40 &middot; Wheat 0.50 / 0.35</code>")
-    w("breakeven.html", "var FERT={n:0.67,r:{corn:[0.9,0.38,0.29],soybeans:[0,0.8,1.4],wheat:[1.2,0.5,0.35]}};")
+    w("breakeven.html", "var FERT={n:0.67,r:{corn:[0,0.38,0.29],soybeans:[0,0.8,1.4],wheat:[1.2,0.5,0.35]},nf:{corn:[120,0.5074,'anhydrous']}};")
     w("data/fertilizer-prices.json", {"prices": [
         {"key": "urea", "price": 615.95, "as_of": "2026-10-06", "oldest": "2026-09-24", "region": "Kansas and Wisconsin"},
         {"key": "anhydrous", "price": 832.1, "as_of": "2026-10-06", "oldest": "2026-09-24", "region": "Kansas"},
@@ -570,7 +575,11 @@ def selftest():
          js("data/basis-sparklines/IL.json", lambda d: d["series"].update(
              {"IL|PRIMIENT|DECATUR|corn|ZCZ6|JAN27": [{"date": "2026-09-02", "cents": -200}]}))),
         ("removal-rates", "breakeven on the old 0.37 / 0.24 corn rates (N3)",
-         sub("breakeven.html", "corn:[0.9,0.38,0.29]", "corn:[0.9,0.37,0.24]")),
+         sub("breakeven.html", "corn:[0,0.38,0.29]", "corn:[0,0.37,0.24]")),
+        ("removal-rates", "breakeven back on 0.90 lb N a bushel for corn (money audit 1)",
+         sub("breakeven.html", "corn:[0,0.38,0.29]", "corn:[0.9,0.38,0.29]")),
+        ("removal-rates", "breakeven corn N with no flat MRTN rate",
+         sub("breakeven.html", ",nf:{corn:[120,0.5074,'anhydrous']}", "")),
         ("removal-rates", "program pounds priced at other rates",
          js("data/fertilizer-prices.json", lambda d: d["programs"]["corn"].update(k_lb=43))),
         ("fert-head", "Wisconsin on a Kansas-only price (N7)",
