@@ -164,3 +164,7 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - (Oct 19, Sig) A Rain Print link that carries a design (?d=, /r?, gift codes) opens with that print first; ordinary visits unchanged.
 - (Oct 19, Sig) Atlas county pages in states with recorded deeds show a recorded-sales tile (median, number of sales, through date, no names) in the top tiles.
 - (Oct 19, Sig) Any rent tile (dry or irrigated) more than three survey years old shows n/a with the last year.
+- (Oct 19, Sig) USDA calendar keeps the Oct 11 title every month (no Crop Production override) and is left alone until the Nov 15 re-measure.
+- (Oct 19, Sig) Unsold sponsor slots carry no price text in the page (no hidden "$29/mo"); the sponsor kit page still shows prices.
+- (Oct 19, Sig) Links inside small source/credit lines are underlined; menus and buttons unchanged.
+- (Oct 19, Sig) About page Person record: sameAs farmers1st.com and lokedrone.com (Sig's only other profiles).
