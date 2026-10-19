@@ -153,7 +153,7 @@ async function open(browser, port, url, posts, width) {
 }
 const AFTER = N.newestFinal(JSON.parse(read("data/prf/meta.json")));
 
-test("county page: the ask follows the card's grid and posts prf:<grid> with after and the briefing box ticked", { skip, timeout: 90000 }, async () => {
+test("county page: the ask follows the card's grid and posts prf:<grid> with after; the briefing box starts empty (Sig, 2026-10-19)", { skip, timeout: 90000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
@@ -163,7 +163,7 @@ test("county page: the ask follows the card's grid and posts prf:<grid> with aft
       const ask = pg.locator('[data-sa-topic="prf:30452"]');
       await ask.waitFor();
       assert.equal(await ask.locator(".sa-l").textContent(), "Email me when grid 30452’s index posts");
-      assert.equal(await ask.locator(".sa-d input").isChecked(), true, "briefing box ticked");
+      assert.equal(await ask.locator(".sa-d input").isChecked(), false, "briefing box starts empty");
       const wide = await pg.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
       assert.equal(wide, false, width + ": no sideways scroll");
       const sel = pg.locator("#prf-now-grid");
@@ -181,7 +181,7 @@ test("county page: the ask follows the card's grid and posts prf:<grid> with aft
       assert.equal(n[0].body.topic, "prf:30753");
       assert.equal(n[0].body.after, AFTER);
       assert.equal(n[0].body.source, "page:prf/wisconsin/barron-county");
-      assert.equal(n[0].body.daily, true);
+      assert.equal(n[0].body.daily, false, "no Daily unless the reader ticks it");
       if (SHOTS) await pg.screenshot({ path: path.join(SHOTS, `county-${width}-done.png`) });
       await pg.context().close();
     }

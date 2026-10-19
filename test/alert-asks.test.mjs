@@ -123,7 +123,7 @@ test("What's Priced In asks for the report-day email, which send_report_day.py s
 
 test("signup-ask.js: the morning briefing box never starts ticked (Sig, 2026-10-19)", () => {
   const s = read("components/signup-ask.js");
-  assert.ok(s.includes(`'<input type="checkbox" id="' + did + '"> Also send the morning briefing</label>'`));
+  assert.ok(s.includes(`<input type="checkbox" id="' + did + '"> Also send the morning briefing</label>`));
   assert.ok(!/dailyOn|getAttribute\('data-daily'\)/.test(s), "no attribute turns the box on");
 });
 
