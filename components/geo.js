@@ -7,7 +7,7 @@
  *   2. Open-Meteo         — weather
  *   3. Nominatim OSM      — reverse geocoding
  *
- * v18 — 2026-10-19 (Sig: never ask for the reader's location on page load)
+ * v18, 2026-10-19 (Sig: never ask for the reader's location on page load)
  *   The browser's location question is asked only when the reader taps
  *   "Use my location" (requestGeo, refreshLocation). Boot no longer calls
  *   geolocation at all: a saved place (agsist-wx-loc, any age) renders at
