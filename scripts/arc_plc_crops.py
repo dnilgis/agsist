@@ -169,6 +169,13 @@ def yf(cd, v, k=2):
     return f"{rnd(v, k):,.{k}f} {u}"
 
 
+def byf(cd, v):
+    """A benchmark yield the way the county page's title prints it (215.2 bu, 2,037 lb): a tenth of a
+    bushel, a whole pound. Night audit, Oct 19, 2026: the title said 215.2 bu and the body 215.15 bu,
+    two answers for one figure; every print of the benchmark now uses this."""
+    return yf(cd, v, 1 if cd.get("unit", "bu") == "bu" else 0)
+
+
 def per(cd):
     return UNIT[cd.get("unit", "bu")]["per"]
 

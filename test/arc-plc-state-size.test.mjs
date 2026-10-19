@@ -71,7 +71,7 @@ for (const f of ["texas.html", "georgia.html", "kansas.html"]) {
 test("table revenue is yield x the 2026 benchmark price", () => {
   const tx = JSON.parse(read("data/arc-plc/table/TX.json"));
   const andrews = tx.rows.find((c) => c[0] === "Andrews");
-  assert.deepEqual(andrews[2][0], ["Wheat", "All", "21.00 bu", "$147"]);
+  assert.deepEqual(andrews[2][0], ["Wheat", "All", "21.0 bu", "$147"]);  // one benchmark rounding, the title's (Oct 19, 2026; was "21.00 bu")
   assert.equal(MAIN.years["2026"].crops.wheat.bp.value, 6.98);
   assert.equal(Math.round(21.0 * 6.98), 147);
   const bp = {};
@@ -125,9 +125,9 @@ test("Texas: opening the table draws every row with its county link and rowspan"
     await pg.click("#ap-tbl summary");
     await pg.waitForFunction((n) => document.querySelectorAll("#ap-tbl tbody tr").length === n, n);
     const first = await pg.$$eval("#ap-tbl tbody tr", (rs) => rs.slice(0, 3).map((r) => r.outerHTML));
-    assert.equal(first[0], '<tr><th scope="row"><a href="/arc-plc/texas/anderson-county">Anderson</a></th><td>Seed cotton</td><td>All</td><td>1,351.44 lb</td><td>$583</td></tr>');
-    assert.equal(first[1], '<tr><th scope="row" rowspan="6"><a href="/arc-plc/texas/andrews-county">Andrews</a></th><td>Wheat</td><td>All</td><td>21.00 bu</td><td>$147</td></tr>');
-    assert.equal(first[2], "<tr><td>Sorghum</td><td>All</td><td>31.29 bu</td><td>$166</td></tr>");
+    assert.equal(first[0], '<tr><th scope="row"><a href="/arc-plc/texas/anderson-county">Anderson</a></th><td>Seed cotton</td><td>All</td><td>1,351 lb</td><td>$583</td></tr>');  // a whole pound, as the title prints it (Oct 19, 2026; was 1,351.44 lb)
+    assert.equal(first[1], '<tr><th scope="row" rowspan="6"><a href="/arc-plc/texas/andrews-county">Andrews</a></th><td>Wheat</td><td>All</td><td>21.0 bu</td><td>$147</td></tr>');
+    assert.equal(first[2], "<tr><td>Sorghum</td><td>All</td><td>31.3 bu</td><td>$166</td></tr>");  // tenths, Oct 19, 2026 (were 21.00 and 31.29 bu)
     assert.equal(await pg.$$eval("#ap-tbl tbody th a", (a) => a.length), tx.rows.length);
     assert.equal(await pg.evaluate(() => document.documentElement.scrollWidth), 390, "no sideways scroll");
     assert.deepEqual(errors, []);

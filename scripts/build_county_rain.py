@@ -47,6 +47,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import county_rain as R  # noqa: E402
 import build_prf_states as S  # noqa: E402  boot() and text_of()
+import cross_links as XL  # noqa: E402  same-county links between the county sets
+import seo_caps as CAPS  # noqa: E402  the site's one title and description cap (was 165 for descriptions here)
 import pointer_pages as PP  # noqa: E402
 import inject_static_nav as nav  # noqa: E402
 import county_stories as CS  # noqa: E402
@@ -440,16 +442,17 @@ def county_page(ctx):
     asof = c["as_of"]
     whole = done and asof[5:] == "12-31"        # and this station reported through Dec 31
     ans = answer(c, name, year, done)
-    title = (f"How Much Rain Did {full_c} Get in {year}? | AGSIST" if done
-             else f"How Much Rain Has {full_c} Had in {year}? | AGSIST")
+    # the site's one cap (scripts/seo_caps.py): " | AGSIST" gives way first
+    q_ = (f"How Much Rain Did {full_c} Get in {year}?" if done else f"How Much Rain Has {full_c} Had in {year}?")
+    title = CAPS.fit([q_ + CAPS.SUFFIX, q_])
     span = f"Jan 1 to {short_date(asof)}"
     pct_bit = f", {c['pct']}% of a usual year{'' if whole else ' to date'}" if c["pct"] is not None else ""
     has = [x for x, k in (("the wettest month", "wet_month"), ("the biggest rain", "max_day"), ("the longest dry stretch", "dry")) if c.get(k)]
     desc = (f"{inch(c['total'])} inches of rain in {full_c} in {year} ({span}){pct_bit}. "
             + "Month by month" + ("".join(", " + x for x in has[:-1]) + " and " + has[-1] if has else "") + ".")
-    if len(desc) > 165:
+    if len(desc) > CAPS.DESC_MAX:
         desc = f"{inch(c['total'])} inches of rain in {full_c} in {year} ({span}){pct_bit}. Month by month" + (" and the year's biggest rain." if c.get("max_day") else ".")
-    if len(desc) > 165:
+    if len(desc) > CAPS.DESC_MAX:
         desc = f"{inch(c['total'])} inches of rain in {full}, {span}, {year}{pct_bit}."
     stw = c["station"]
     noun = "gauge" if stw["net"] == "cocorahs" else "station"     # one word for it on the whole page
@@ -569,6 +572,10 @@ def county_page(ctx):
     for label, top in (("PRF insurance in", "prf"), ("Farmland Atlas:", "farmland-atlas")):
         if os.path.exists(os.path.join(ROOT, top, st_slug, ctx["slug"] + ".html")):
             more.append((f"{label} {e(name)}", f"/{top}/{st_slug}/{ctx['slug']}"))
+    # the county's ARC or PLC page when it is live (scripts/cross_links.py, night SEO audit Oct 19, 2026)
+    arc_h = XL.arc_href(ROOT, st_slug, ctx["slug"])
+    if arc_h:
+        more.append((f"ARC or PLC in {e(name)}", arc_h))
     more_html = " &middot; ".join(f'<a href="{h}">{t}</a>' for t, h in more)
     rp = rain_print_href(c, st, year)
     # Oct 1 to Dec 24 (by the page's own as-of day): the gift card is the Christmas answer for this year's print
@@ -682,7 +689,8 @@ def state_page(st, d, pages, none_rows):
     mid = middle(cs)
     u1, un = unit(st)
     by = {"LA": "Parish by Parish", "AK": "Borough by Borough"}.get(st, "County by County")
-    title = f"How Much Rain Has {stn} Had in {year}? {by} | AGSIST" if not done else f"How Much Rain Did {stn} Get in {year}? {by} | AGSIST"
+    q_ = f"How Much Rain Has {stn} Had in {year}? {by}" if not done else f"How Much Rain Did {stn} Get in {year}? {by}"
+    title = CAPS.fit([q_ + CAPS.SUFFIX, q_])
     early = sum(1 for c in cs.values() if c["as_of"] < asofs[-1])
     lede = (f"{len(cs)} {stn} {un} have a weather station inside the {u1} that reported at least 90% of the days in {year}"
             + ("." if done else f", through {short_date(asofs[-1])}"
@@ -695,7 +703,7 @@ def state_page(st, d, pages, none_rows):
     driest = min(cs.items(), key=lambda kv: kv[1]["total"])
     desc = (f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} {un}, from weather stations: inches, percent of usual and the station. "
             f"Most: {wettest[1]['name']}, {inch(wettest[1]['total'])} in.")
-    if len(desc) > 165:
+    if len(desc) > CAPS.DESC_MAX:
         desc = f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} {un} from weather stations: inches, percent of usual, the station."
     rows = []
     for fips, c in sorted(cs.items(), key=lambda kv: kv[1]["name"]):

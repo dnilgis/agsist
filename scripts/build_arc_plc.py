@@ -138,6 +138,8 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import arc_plc_crops as XC  # noqa: E402  every covered crop beyond corn, soybeans and wheat
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
+import cross_links as XL  # noqa: E402  same-county links between the county sets
+from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402
 
 SITE = "https://agsist.com"
 YEARS = (2026, 2027)
@@ -154,7 +156,7 @@ STYLES_V = "24"
 LOADER_V = "19"
 ASOF_V = "1"
 QR_V = "10"   # components/qr.js on its own (10: an alphanumeric mode for the Rain Print standard code, 2026-10-14)
-CALC_V = "11"   # 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
+CALC_V = "12"   # 12: one rounding for the benchmark yield (byf, night audit Oct 19, 2026); 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2026))   # years with both an FSA county yield and a price change; 2025 counts once its final MYA is out
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap, at least 1 SE, and MIN_WINS winning years
@@ -2176,9 +2178,9 @@ def state_page(st, S, D, ch, nav_states):
                     m = county_metrics(e["by"], y6[k])
                     th = (f'<th scope="row"{f" rowspan={nrow}" if nrow > 1 else ""}>{link}</th>') if first else ""
                     rows.append(f'<tr>{th}<td>{esc(y6[k]["label"])}</td>'
-                                f'<td>{PRAC[e["d"]]}{", " + esc(e["sub"]) if e.get("sub") else ""}</td><td>{XC.yf(y6[k], e["by"])}</td><td>{usd(m["br"], 0)}</td></tr>')
+                                f'<td>{PRAC[e["d"]]}{", " + esc(e["sub"]) if e.get("sub") else ""}</td><td>{XC.byf(y6[k], e["by"])}</td><td>{usd(m["br"], 0)}</td></tr>')
                     trows[-1][2].append([html.unescape(y6[k]["label"]), html.unescape(PRAC[e["d"]] + (", " + e["sub"] if e.get("sub") else "")),
-                                         html.unescape(XC.yf(y6[k], e["by"])), html.unescape(usd(m["br"], 0))])
+                                         html.unescape(XC.byf(y6[k], e["by"])), html.unescape(usd(m["br"], 0))])
                     first = False
                     continue
                 else:
@@ -2338,7 +2340,7 @@ def typical_html(c, k, D, cname):
             continue
         if vl["verdict"] == "mismatch":
             lines.append(f'<p class="ap-small"><b>{lab}:</b> no typical-farm verdict. FSA&rsquo;s average PLC yield for the county ({XC.yf(cd6, pyv, 1)}) covers '
-                         f'all practices and is above this benchmark ({XC.yf(cd6, e["by"])}), so it does not describe a typical farm here. Run your own PLC yield below.</p>')
+                         f'all practices and is above this benchmark ({XC.byf(cd6, e["by"])}), so it does not describe a typical farm here. Run your own PLC yield below.</p>')
             continue
         if head_v is None and vl["verdict"] in SHORT:
             head_v = (vl, e, LY_)
@@ -2348,7 +2350,7 @@ def typical_html(c, k, D, cname):
                      + (f'<p>{why_text(vl, D["years"][LY_]["crops"][k], e["by"], pyv)}</p>' if vl["verdict"] not in NOCALL else (f'<p class="ap-small">{why}</p>' if why else ""))
                      + (f'<p class="ap-small"><b>{OY_}:</b> {verdict_line(vo)}{note7 if OY_ == "2027" else ""}</p>' if vo else "")
                      + f'<p class="ap-small">For a typical farm: FSA&rsquo;s county average PLC yield {XC.yf(cd6, pyv, 1)} (program year {plc_py}) and the official '
-                       f'{XC.yf(cd6, e["by"])} benchmark.' + (' That PLC yield is FSA&rsquo;s average over all practices, irrigated and not; an irrigated farm&rsquo;s own is often higher.' if e["d"] == "irr" else "")
+                       f'{XC.byf(cd6, e["by"])} benchmark.' + (' That PLC yield is FSA&rsquo;s average over all practices, irrigated and not; an irrigated farm&rsquo;s own is often higher.' if e["d"] == "irr" else "")
                        + f' County yields from {src}. Run your own numbers in the calculator below.</p></div>')
     return "".join(lines), head_v
 
@@ -2672,9 +2674,9 @@ def trigger_html(cd, e, LY):
     src = ("USDA&rsquo;s price outlook" if (cd.get("scen") or {}).get("kind") != "fut" else "the futures-based price")
     at = (f"at {src}, {XC.pf(cd, cen)}" if p == cen else f"at the {XC.pf(cd, p)} loan rate ({src} is under it)")
     u = XC.UNIT[cd["unit"]]["short"]
-    over = (f" That is above the {XC.yf(cd, e['by'])} benchmark, so at that price it pays even on a normal crop." if _t > e["by"] else "")
+    over = (f" That is above the {XC.byf(cd, e['by'])} benchmark, so at that price it pays even on a normal crop." if _t > e["by"] else "")
     return (f'<p class="ap-trig">ARC-CO pays here for {LY} if the county yield comes in under <b>{ns} {u}</b> {at}.{over}</p>'
-            f'<p class="ap-small ap-trig-m">90% of the {XC.yf(cd, e["by"])} benchmark &times; the {XC.pf(cd, cd["bp"]["value"])} benchmark price, '
+            f'<p class="ap-small ap-trig-m">90% of the {XC.byf(cd, e["by"])} benchmark &times; the {XC.pf(cd, cd["bp"]["value"])} benchmark price, '
             f'divided by {XC.pf(cd, p)}.</p>')
 
 
@@ -2921,7 +2923,7 @@ def key_numbers_html(c, D, cname):
             hist = {h["py"]: h for h in e.get("hist", [])}
             pays = "".join(f'<td>{("none" if hist[y]["pay"] == 0 else usd(hist[y]["pay"])) if y in hist and hist[y]["pay"] is not None else (pending_word(y) if y in hist else "not in file")}</td>' for y in hy)
             e7 = f"{XC.pf(y7[k], y7[k]['erp']['erp'])}{XC.per(cd)}" if k in y7 else "not set yet"
-            rows.append(f'<tr><th scope="row">{esc(lab)}</th><td>{XC.yf(cd, e["by"]) if e["by"] else "not loaded"}</td>'
+            rows.append(f'<tr><th scope="row">{esc(lab)}</th><td>{XC.byf(cd, e["by"]) if e["by"] else "not loaded"}</td>'
                         f'<td>{XC.pf(cd, cd["erp"]["erp"])}{XC.per(cd)}</td><td>{e7}</td>'
                         f'<td>{XC.yf(cd, plcy[k], 1) if plcy.get(k) else "none from FSA"}</td>{pays}</tr>')
     if not rows:
@@ -2976,14 +2978,14 @@ def county_page(st, S, c, D, ch):
         if le and (le["d"] == "irr" or split):
             lab = DLABEL[le["d"]] + " " + lab.lower()
         # rounded half up like every other yield on the page: 54.05 is 54.1 in the title too, not the float's 54.0
-        by_txt = XC.yf(cdl, le["by"], 1 if cdl["unit"] == "bu" else 0) if le else ""
+        by_txt = XC.byf(cdl, le["by"]) if le else ""
         title = county_title(cname, st, lab, LY, by_txt)
-        bm = f"FSA {LY if LY == '2026' else '2026'} ARC-CO benchmark {XC.yf(cdl, le['by'], 1)}" if le else "FSA ARC-CO benchmarks"
+        bm = f"FSA {LY if LY == '2026' else '2026'} ARC-CO benchmark {XC.byf(cdl, le['by'])}" if le else "FSA ARC-CO benchmarks"
         if le and split:
             # the other practice's benchmark beside it, so neither number reads as the county's only one
             oth = next((e for e in c["k"][lead] if e["by"] and e["d"] in ("irr", "non") and e["d"] != le["d"]), None)
             if oth:
-                bm += f" ({XC.yf(cdl, oth['by'], 1)} {DLABEL[oth['d']].lower()})"
+                bm += f" ({XC.byf(cdl, oth['by'])} {DLABEL[oth['d']].lower()})"
         if head_v:
             vv = head_v[0]
             desc = (f"{cname}, {name} {lab.lower()}: {bm}. Typical farm {head_v[2]}: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs "
@@ -2997,7 +2999,7 @@ def county_page(st, S, c, D, ch):
             if len(desc) > 155:
                 desc = f"{cname}, {st}: {VWORD[vv['verdict']]} for {lab.lower()} in {head_v[2]}, est. {usd_pay(vv['plc'])} PLC vs {usd_pay(vv['arc'])} ARC-CO per base acre."
         else:
-            bits = [f"{CROP_LC[k]}{'' if e['d'] == 'all' else ' ' + DLABEL[e['d']].lower()} {XC.yf(y6[k], e['by'], 1)}" for k in order for e in c["k"].get(k, []) if e["by"]]
+            bits = [f"{CROP_LC[k]}{'' if e['d'] == 'all' else ' ' + DLABEL[e['d']].lower()} {XC.byf(y6[k], e['by'])}" for k in order for e in c["k"].get(k, []) if e["by"]]
             desc = f"{cname}, {name}: FSA official 2026 ARC-CO benchmark yields: {', '.join(bits)}. Revenue, guarantee and PLC vs ARC break-even."
             if len(desc) > 155:
                 desc = f"{cname}, {st}: FSA official 2026 ARC-CO benchmark yields by crop and practice, revenue, guarantee and PLC vs ARC break-even."
@@ -3057,11 +3059,11 @@ def county_page(st, S, c, D, ch):
                     else:
                         parts.append(f"{y}: {v:g}")
                 ys = (f'<p class="ap-math">FSA trend-adjusted county yields (county yield or 80% of T-yield): {" &middot; ".join(parts)} '
-                      f'(struck: high and low). Middle three average: <b>{XC.yf(cd, e["by"])}</b>.</p>')
+                      f'(struck: high and low). Middle three average: <b>{XC.byf(cd, e["by"])}</b>.</p>')
             blocks.append(f"""
   <h3>{esc(ent_label(e))}: official 2026 ARC-CO benchmark</h3>
   <div class="ap-kv">
-    <div><span>Benchmark yield (FSA)</span><b>{XC.yf(cd, e['by'])}</b></div>
+    <div><span>Benchmark yield (FSA)</span><b>{XC.byf(cd, e['by'])}</b></div>
     <div><span>Benchmark price 2026</span><b>{XC.pf(cd, cd['bp']['value'])}</b></div>
     <div><span>Benchmark revenue</span><b>{usd(m['br'])}/ac</b></div>
     <div><span>Guarantee (90%)</span><b>{usd(m['g'])}/ac</b></div>
@@ -3071,14 +3073,14 @@ def county_page(st, S, c, D, ch):
   {ys}
   <p>At a season-average price equal to the 2026 effective reference price ({XC.pf(cd, cd['erp']['erp'])}{XC.per(cd)}), PLC pays nothing and ARC-CO pays when the
   county yield comes in below <b>{XC.yf(cd, m['trig_y'], 1)}</b>, reaching its cap below <b>{XC.yf(cd, m['cap_y'], 1)}</b>.</p>
-  <h3>PLC vs ARC-CO break-even at a {XC.yf(cd, e['by'])} county yield, 2026 prices</h3>
+  <h3>PLC vs ARC-CO break-even at a {XC.byf(cd, e['by'])} county yield, 2026 prices</h3>
   {crossover_table(cd, e['by'])}
   {hist_table(e, cd)}""")
             ds_vars.append(f"{CROP_LC[k]} {ent_label(e).lower()} ARC-CO benchmark yield ({u}/acre)")
         if official and es[0]["by"]:
             faqs.append((f"What is the ARC-CO benchmark yield for {CROP_LC[k]} in {cname}?",
                          f"FSA's official 2026 benchmark yield for {CROP_LC[k]} in {cname}, {name} is "
-                         + "; ".join(f"{XC.yf(cd, e['by'])} ({ent_label(e).lower()})" for e in es if e["by"])
+                         + "; ".join(f"{XC.byf(cd, e['by'])} ({ent_label(e).lower()})" for e in es if e["by"])
                          + f". The 2026 benchmark price is {XC.pf(cd, cd['bp']['value'])} per {XC.word(cd)}. FSA has not posted the 2027 benchmark."))
         elif plcy.get(k) and plc_py:
             faqs.append((f"What is the average PLC yield for {CROP_LC[k]} in {cname}?",
@@ -3113,6 +3115,13 @@ def county_page(st, S, c, D, ch):
     rel = [f'<a href="/arc-plc/{sl}">All {esc(name)} counties</a>', '<a href="/arc-plc">ARC or PLC calculator and method</a>']
     if atlas:
         rel.append(f'<a href="/farmland-atlas/{sl}/{cslug}">{esc(cname)} in the Farmland Atlas</a>')
+    # the same county's PRF and rain pages (scripts/cross_links.py, night SEO audit Oct 19, 2026):
+    # PRF only when its county page is live; rain the county page, else the state rain page
+    prf_h = XL.prf_href(ROOT, sl, cslug)
+    if prf_h:
+        rel.append(f'<a href="{prf_h}">PRF rainfall insurance in {esc(cname)}</a>')
+    if st in RAIN_STATES:
+        rel.append(XL.rain_link(ROOT, rain_slug(RAIN_STATES[st]), esc(RAIN_STATES[st]), cslug, esc(cname)))
     missing = [CROP_LC[k] for k in CROPS if k not in c["k"]]
     miss_txt = f'<p class="ap-small">Nothing from FSA here for {" or ".join(missing)}. {ASK}</p>' if missing else ""
     share = f"{SITE}{path}"
@@ -3541,7 +3550,8 @@ def selftest():
         mj = json.loads(math_json(D)[f"{OUT_MATH}/WI.json"])
         me = (mj["c"].get("55017") or {}).get("e", {}).get("corn", [])
         ck("official path: county page indexed, official benchmark in Key numbers, both practices, math in the state's math file",
-           cm["indexable"] and 'id="key-numbers"' in cp and "170.00 bu" in cp and "200.00 bu" in cp and 'content="index,follow"' in cp
+           cm["indexable"] and 'id="key-numbers"' in cp and "170.0 bu" in cp and "200.0 bu" in cp and 'content="index,follow"' in cp
+           and "170.00 bu" not in cp and "200.00 bu" not in cp
            and f'data-math="/{OUT_MATH}/WI.json" data-f="55017"' in cp and sorted((e["d"], e["by"]) for e in me) == [("irr", 200), ("non", 170)]
            and all(len(e["ys"]) == 5 and bin(e["x"]).count("1") == 2 for e in me), cm["title"])
         ck("official path: counter sheet link goes to the shared sheet, no per-county sheet page",
@@ -3722,7 +3732,12 @@ def selftest():
     # the 2026-10-18 page-set pass
     _cd = {"unit": "bu", "dp": 2, "bp": {"value": 6.43}, "loan": 2.2, "scen": {"center": 5.70, "kind": "wasde"}}
     _h = trigger_html(_cd, {"by": 52.13}, "2026")     # 0.9 x 52.13 x 6.43 / 5.70 = 52.93
-    ck("trigger over the benchmark prints its tenth, never 'under 52 ... above 52.13'", "<b>52.9 bu</b>" in _h and "above the 52.13 bu benchmark" in _h, _h)
+    ck("trigger over the benchmark prints its tenth, never 'under 52 ... above 52.13'", "<b>52.9 bu</b>" in _h and "above the 52.1 bu benchmark" in _h
+       and "90% of the 52.1 bu benchmark" in _h, _h)
+    # night audit, Oct 19, 2026: the benchmark prints one way everywhere, the title's (Gooding Co., ID corn:
+    # title 215.2 bu, body 215.15 bu): a tenth of a bushel, a whole pound
+    ck("benchmark yield prints as the title does", XC.byf({"unit": "bu"}, 215.15) == "215.2 bu"
+       and XC.byf({"unit": "lb"}, 2037.4) == "2,037 lb" and XC.byf({"unit": "bu"}, 41.0) == "41.0 bu")
     _h = trigger_html(dict(_cd, bp={"value": 6.98}, scen={"center": 6.30, "kind": "wasde"}), {"by": 63.11}, "2026")   # 62.93, under 63.11
     ck("trigger under the benchmark stays floored to a whole bushel", "<b>62 bu</b>" in _h and "above the" not in _h, _h)
     ck("title yield rounds half up like the page (54.05 -> 54.1)", XC.yf({"unit": "bu"}, 54.05, 1) == "54.1 bu")

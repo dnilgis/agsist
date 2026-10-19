@@ -59,6 +59,8 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import county_yield as CY  # noqa: E402  (one fit, one withholding rule, one set of names)
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
+import cross_links as XL  # noqa: E402  same-county links between the county sets
+import seo_caps as CAPS  # noqa: E402  the site's one title and description cap
 from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
 from atlas_layers_p1 import FULL_YEAR_MAPS, years_covered  # noqa: E402  one full-year gate, one way to name a gap
 
@@ -1780,10 +1782,12 @@ def county_page(W, f, d, stamp):
                    ("1991–2020 normal; last ten years %s%% of it" % Cl["gs_recent"]["pct_of_normal"]) if get(Cl, "gs_recent", "pct_of_normal") is not None else "1991–2020 normal")
     if ok(Sm):
         S5 += fact("Days with hail 1 inch or larger", f1(Sm["hail_1in_days_per_year"]) + " a year", "reports, %s–%s; a zero is no report, not proof of no hail" % (Sm["from"], Sm["to"]))
-    # The rain STATE page only (scripts/build_county_rain.py): its county pages can come
-    # and go week to week, and this build must not read data/rain.
+    # The county's own rain page when it is live, else the state rain page (scripts/cross_links.py,
+    # Oct 19, 2026). Rain county pages come and go week to week: this build never reads data/rain,
+    # only whether the page is there, and county-rain.yml re-stamps the link when the rain set moves.
     if st in RAIN_STATES:
-        S5 += '<p class="note"><a href="/rain/%s">Rain so far this year in %s, county by county</a></p>' % (rain_slug(RAIN_STATES[st]), esc(RAIN_STATES[st]))
+        S5 += '<p class="note">%s</p>' % XL.rain_link(W.root, rain_slug(RAIN_STATES[st]), esc(RAIN_STATES[st]),
+                                                      W.slug[f].split("/", 1)[1], esc(lab))
 
     S6 = "<h2>Land, water and programs</h2>"
     if ok(Wt):
@@ -2055,7 +2059,10 @@ def state_page(W, st):
                               f"{stn} Farmland Values by County: Value, Yield & Risk",
                               f"{stn} Farmland Values by County: Yield & Risk") if len(t) <= 60),
                  f"{stn} Farmland Values by County")
-    desc = "%s: %d counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks, from public records updated monthly." % (stn, len(fs))
+    # the site's one description cap (scripts/seo_caps.py): 8 longer state names ran to 164
+    desc = CAPS.fit(["%s: %d counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks, from public records updated monthly." % (stn, len(fs)),
+                     "%s: %d counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks, from public records." % (stn, len(fs))],
+                    CAPS.DESC_MAX)
     rent_link = ('<a href="/rent/%s">%s cash rent by county</a>' % (slugify(stn), esc(stn))) if st in W.rent_states else ""
     body = f"""
 <main class="ap">
