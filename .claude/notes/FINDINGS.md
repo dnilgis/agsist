@@ -6,6 +6,12 @@ Sig decided: <what> / refuted: <why> / open.
 
 | Date | Area | Finding | Verdict | Reach |
 | --- | --- | --- | --- | --- |
+| 2026-10-19 | Rain Print | Maker saved a numbered print/digital file without the usual-year line when NOAA's normal failed or took over 15 s; page said "no NOAA normal" | fixed (batch 7): order and files blocked, "didn't load, press Draw again" | /rain-print |
+| 2026-10-19 | Rain Print | Morning email named NEXTPRINT orders by amount_total (no product) and skipped paid sessions with no design reference | fixed | morning email |
+| 2026-10-19 | Rain Print | Letter said "$10 off" but the coupon covers print and framed only | fixed: "a print or framed print" | box letter |
+| 2026-10-19 | Rain Print | Gift "ships in January" can slip to early Feb; AK/HI transit; buyer "First frost" label vs auto mark | Sig decides | |
+| 2026-10-19 | Accessibility | Cash bids basis stronger/weaker by color only (1.02:1 light); fixed 17px base ignored larger fonts; gold buttons 3.55:1; --blue no light value; orange note 2.38:1; unnamed checkboxes, unreachable scroll tables; zero change green | fixed (batch 7) | site-wide |
+| 2026-10-19 | Accessibility | Link underlines in source notes, small-type floor, breadcrumb padding | Sig decides | |
 | 2026-10-19 | Signups | Cattle futures form swallowed errors, no source or ZIP; duplicate asks on tariffs and COT; Atlas watch said "up to 5 counties" for every 429 | fixed (batch 6) | 3 pages + 3,148 Atlas pages |
 | 2026-10-19 | Signups | "Every weekday" in 25 places but the Daily sends daily; "by 6am CT" missed 13 of 28 Sep 20-Oct 18 | Sig decides wording | site-wide |
 | 2026-10-19 | Signups | PRF and county rain asks pre-tick the Daily box | Sig decides | /prf, rain/ |
