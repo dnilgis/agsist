@@ -98,7 +98,7 @@ def group(open_rows):
         # grower, produced by a grouping choice.
         k = (r["crop"], r.get("type") or "", leg, r.get("practice") or "",
              r.get(leg + "_start"), r.get(leg + "_end"),
-             r.get(leg + "_mon") or "", r.get(leg + "_exch") or "")
+             r.get(leg + "_mon") or "", r.get(leg + "_exch") or "", contract_name(r, leg))
         g.setdefault(k, []).append(r)
     return g
 
@@ -126,6 +126,29 @@ def price_span(rows, leg):
     if not vals:
         return None, None, []
     return vals[0], vals[-1], vals
+
+
+def contract_name(r, leg):
+    """'December CBOT corn', 'December CBOT soybean oil', 'January 2027 CBOT soybeans'.
+
+    2026-10-19 audit: sorghum read "December CBOT" and sunflowers the same, so a
+    grower could not tell sorghum rides the corn contract and sunflowers soybean
+    oil. The underlying is RMA's p_sym (a name; h_sym is a ticker), and the year
+    is named when it is not the crop year (Georgia soybeans: January 2027)."""
+    mon, exch = r.get(leg + "_mon") or "", r.get(leg + "_exch") or ""
+    if not (mon or exch):
+        return ""
+    sym = " ".join(w if w.isupper() else w.lower() for w in str(r.get("p_sym") or "").split())
+    yr = r.get(leg + "_yr")
+    return " ".join(x for x in (mon, str(yr) if yr and yr != r.get("year") else "", exch, sym) if x)
+
+
+def trading_days_after(today, end):
+    """Sessions after today through the window's last day, by scripts/contract_calendar.py.
+    The bake runs after the close (rma-prices.yml, 22:10 UTC), so today's settle is in."""
+    import contract_calendar as cc
+    from datetime import timedelta
+    return cc.sessions_between(today + timedelta(days=1), end + timedelta(days=1))
 
 
 def esc(s):
@@ -163,15 +186,16 @@ def build(rows, today):
     g = group(open_rows)
     cards = {}
     for k in sorted(g, key=crop_sort):
-        crop, typ, leg, practice, wstart, wend, mon, exch = k
-        cards.setdefault((crop, typ, leg, wstart, wend, mon, exch), {})[practice] = g[k]
+        crop, typ, leg, practice, wstart, wend, mon, exch, cname = k
+        cards.setdefault((crop, typ, leg, wstart, wend, mon, exch, cname), {})[practice] = g[k]
 
     any_leg = next(iter(open_rows))
     ends = sorted({_d(r[leg + "_end"]) for r, leg in open_rows})
     closes = ends[0]
-    left = (closes - today).days
-    left_txt = ("closing today" if left == 0 else
-                "1 day left" if left == 1 else "%d days left" % left)
+    # one count across the page: trading days, as the cards count them (Oct 19 audit)
+    left = trading_days_after(today, closes)
+    left_txt = ("closing today" if closes == today else "last trading day done" if left == 0 else
+                "1 trading day left" if left == 1 else "%d trading days left" % left)
 
     out = [
         '<div class="pd-sect">In discovery right now &middot; %s crop year</div>'
@@ -185,12 +209,12 @@ def build(rows, today):
         'state.</p>' % (len(cards), "" if len(cards) == 1 else "s",
                         closes.strftime("%B %-d"), left_txt),
         '<div class="dn-wrap"><table class="dn-t"><thead><tr>'
-        '<th class="c-crop">Crop</th><th class="r c-avg">Conventional</th>'
-        '<th class="r c-avg">Organic</th><th class="r c-st">States</th>'
+        '<th scope="col" class="c-crop">Crop</th><th scope="col" class="r c-avg">Conventional</th>'
+        '<th scope="col" class="r c-avg">Organic</th><th scope="col" class="r c-st">States</th>'
         '</tr></thead><tbody>',
     ]
 
-    for (crop, typ, leg, wstart, wend, mon, exch), practices in cards.items():
+    for (crop, typ, leg, wstart, wend, mon, exch, cname), practices in cards.items():
         name = crop + ((" &middot; " + esc(typ)) if typ else "")
         states = sorted({r["state"] for rs in practices.values() for r in rs})
         wend_d = _d(wend)
@@ -213,10 +237,10 @@ def build(rows, today):
         # one on September CBOT at $6.57. Three identical labels over three
         # different prices is worse than no table.
         out.append('<tr><td class="c-crop"><span class="dn-cn">%s</span>'
-                   '<span class="dn-cx">%s%s &middot; closes %s</span></td>'
+                   '<span class="dn-cx">%s%scloses %s</span></td>'
                    '<td class="r dn-p c-avg">%s</td><td class="r dn-p c-avg">%s</td>'
                    '<td class="r c-st">%d</td></tr>'
-                   % (name, esc(mon), esc(" " + exch if exch else ""),
+                   % (name, esc(cname), " &middot; " if cname else "",
                       wend_d.strftime("%b %-d") if wend_d else "unknown",
                       cell("Conventional"), cell("Organic"), len(states)))
 
