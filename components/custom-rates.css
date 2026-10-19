@@ -52,6 +52,8 @@
   .cr-t thead th{letter-spacing:0;font-size:.66rem}
 }
 .cr-t td.av .rgm{display:none;font-size:.72rem;color:var(--text-muted);white-space:normal}
+/* the median, where a survey prints one (Missouri G302): always under the average */
+.cr-t td.av .mdn{display:block;font-size:.72rem;color:var(--text-muted);white-space:normal}
 /* neighbor comparison: a table on wide screens, a list per job on phones */
 .cr-cmpl{list-style:none;padding:0;margin:0 0 .8rem;display:none}
 .cr-cmpl li{border-bottom:1px solid var(--border);padding:.55rem 0;font-size:.9rem;color:var(--text)}

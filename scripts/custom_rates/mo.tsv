@@ -1,64 +1,110 @@
 # state: MO
 # name: Missouri
-# survey: Custom Rates for Farm Services in Missouri (MU Extension guide G302, revised April 2023)
+# survey: Custom Rates for Farm Services in Missouri (MU Extension guide G302, revised March 2026 by Drew Kientzy and Ben Brown)
 # publisher: University of Missouri Extension
-# survey_year: 2023
-# rate_year: 2022
-# collected: Statewide survey online and through MU Extension specialists in spring 2023, of rates charged or paid in 2022
-# url: https://extension.missouri.edu/media/wysiwyg/Extensiondata/Pub/pdf/agguides/agecon/g00302.pdf
-# ref: cr-mo-g302-pdf
+# survey_year: 2026
+# rate_year: 2025
+# collected: 2025 rates (survey fall 2025 to winter 2026, published March 2026). MU Extension asked farmers, agribusinesses and land improvement contractors, online and through its specialists, what they charged or paid for custom work in 2025; 953 answers across all jobs
+# url: https://extension.missouri.edu/publications/g302
+# numbers_only: MU Extension does not allow reposting the guide, so no copy is stored; numbers and a link with credit only
+# published: 2026-03
 # spread: minmax
-# includes: Custom rates cover the cost of machinery, fuel, labor and, occasionally, a product such as lime or bale wrap. Rates exclude the cost of materials being applied.
-# range_note: The range is the lowest and highest answer. MU revised G302 in March 2026 from a fall 2025 to winter 2026 survey of 2025 rates; that PDF would not open from here, so this table is the April 2023 guide (2022 rates) until it can be read. The 2026 guide is linked from the MU Extension G302 page.
-key	section	operation	unit	avg	lo	hi	n
-chisel	Field work	Chisel plow	acre	27.10	18.00	35.00	5
-	Field work	Heavy or offset disking	acre	21.36	15.00	30.00	7
-disk-tandem	Field work	Tandem disk	acre	23.81	10.00	40.00	8
-vertical-till	Field work	Vertical tillage tool	acre	19.75	11.00	30.00	10
-field-cult	Field work	Field cultivator	acre	19.05	8.00	28.00	10
-	Field work	Cut brush (brush hog)	hour	97.86	55.00	150.00	7
-	Field work	Mow pasture or CRP land	hour	95.71	75.00	150.00	7
-plant-row	Planting, conventional	Corn or grain sorghum, plant in 30-inch rows	acre	24.17	15.00	40.00	15
-	Planting, conventional	Corn or grain sorghum, plant in narrow rows	acre	28.50	15.00	45.00	9
-	Planting, conventional	Soybean, plant in 30-inch rows	acre	25.31	15.00	40.00	8
-	Planting, conventional	Soybean, plant in 15-inch rows	acre	26.04	15.00	50.00	14
-drill-soy	Planting, conventional	Soybean, drill	acre	22.33	15.00	35.00	9
-drill-smallgrain	Planting, conventional	Small grains or forage crops, drill	acre	24.77	15.00	35.00	13
-plant-notill	Planting, no-till	Corn or grain sorghum, plant in 30-inch rows	acre	24.81	14.00	45.00	16
-	Planting, no-till	Corn or grain sorghum, plant in narrow rows	acre	29.07	15.00	45.00	7
-	Planting, no-till	Soybean, plant in 30-inch rows	acre	27.89	15.00	40.00	9
-	Planting, no-till	Soybean, plant in 15-inch rows	acre	25.72	14.00	45.00	16
-	Planting, no-till	Small grains or forage crops, drill	acre	21.00	12.00	35.00	11
-	Planting, no-till	Additional charge for variable rate	acre	3.00	1.00	5.00	9
-fert-dry	Fertilizer and chemical application	Dry fertilizer on cropland, single spread	acre	7.02	4.25	9.50	29
-	Fertilizer and chemical application	Dry fertilizer on cropland, double spread	acre	10.06	5.50	14.00	18
-	Fertilizer and chemical application	Dry fertilizer on cropland, variable rate	acre	9.93	7.00	14.00	21
-	Fertilizer and chemical application	Dry fertilizer on pasture (topdressing)	acre	7.25	4.25	9.50	24
-fert-liquid	Fertilizer and chemical application	Spray liquid fertilizer	acre	7.84	6.50	10.00	11
-nh3	Fertilizer and chemical application	Inject anhydrous ammonia	acre	18.53	12.00	30.00	16
-	Fertilizer and chemical application	Lime, deliver and spread, including lime	ton	27.50	22.00	35.00	10
-	Fertilizer and chemical application	Lime, spread only	acre	8.44	5.00	11.00	12
-spray-ground	Fertilizer and chemical application	Spray with self-propelled crop sprayer	acre	7.71	5.00	10.00	28
-	Fertilizer and chemical application	Spray with floater	acre	7.84	5.00	10.00	8
-spray-tractor	Fertilizer and chemical application	Spray with pull-type sprayer	acre	6.75	5.00	7.50	4
-combine-corn	Harvesting and hauling	Combining corn	acre	43.29	30.00	60.00	17
-combine-soy	Harvesting and hauling	Combining soybean	acre	39.42	28.00	60.00	19
-combine-smallgrain	Harvesting and hauling	Combining small grains	acre	41.13	35.00	50.00	8
-grain-cart	Harvesting and hauling	Grain cart, in field	acre	9.80	5.00	15.00	5
-	Harvesting and hauling	Hauling grain, field to farm storage with farm vehicle or wagon	bushel	0.16	0.05	0.26	13
-haul-grain-bu	Harvesting and hauling	Hauling grain, bin to market with large grain truck over 20 miles	bushel	0.29	0.20	0.38	9
-mow-cond	Hay	Cutting and conditioning	acre	19.00	10.00	30.00	7
-rake	Hay	Raking hay	acre	9.25	5.00	20.00	8
-bale-round-net	Hay	Round bale only with net wrap	bale	17.44	8.00	25.00	18
-	Hay	Cut, rake, and bale with net wrap	bale	29.86	18.00	45.00	25
-	Hay	Tube wrap round bales, with wrap	bale	10.00	5.00	12.00	7
-	Hay	Moving round bales on farm or locally	bale	6.50	3.50	10.00	7
-	Earth moving	Bulldozer, under 150 hp	hour	145.00	120.00	165.00	8
-	Earth moving	Bulldozer, over 150 hp	hour	196.00	150.00	250.00	15
-	Earth moving	Track hoe/excavator, medium and large	hour	173.67	110.00	230.00	15
-backhoe	Earth moving	Back hoe	hour	125.83	80.00	175.00	6
-	Earth moving	Skid loader	hour	108.57	65.00	150.00	21
-	Earth moving	Pond and lake construction	hour	235.00	150.00	400.00	10
-	Earth moving	Land clearing, cut brush and trees, pile on site	hour	173.75	55.00	400.00	16
-	Earth moving	Building terraces, conventional gradient	hour	183.33	130.00	235.00	15
-	Earth moving	Grade and shape grass waterways	hour	191.67	130.00	235.00	12
+# includes: Rates are for machinery, fuel and labor, now and then with a product such as lime or bale wrap. The material being applied is not included unless the row says so.
+# range_note: The range is the lowest and highest answer, and the median (the middle answer) is shown under each average, as G302 prints them. For a few jobs with too few answers to report in full, G302 prints only a median, calls it anecdotal and says to give it much less weight; those rows show no average, range or count. Rows priced as a share of the crop are the guide's own percent-of-crop lines.
+key	section	operation	unit	avg	md	lo	hi	n	printed
+custom-farm-corn	Full-service custom farming	Corn, conventional tillage	acre	112.50	112.50	90.00	140.00	6
+	Full-service custom farming	Corn, no-till	acre	99.17	92.50	85.00	130.00	6
+custom-farm-soy	Full-service custom farming	Soybean, conventional tillage	acre	111.00	120.00	90.00	125.00	5
+	Full-service custom farming	Soybean, no-till	acre	96.00	95.00	80.00	110.00	5
+chisel	Tillage	Chisel plowing	acre	25.44	25.00	22.00	30.00	9
+	Tillage	Heavy or offset disking	acre	25.60	25.00	21.00	30.00	5
+subsoil	Tillage	Ripping or subsoiling	acre	26.86	26.00	25.00	30.00	7
+	Tillage	Disk ripping	acre	27.60	28.00	25.00	30.00	5
+disk-tandem	Tillage	Tandem disk	acre	20.28	20.00	15.00	27.00	9
+vertical-till	Tillage	Vertical tillage	acre	19.30	18.00	14.00	25.00	10
+	Tillage	Vertical tillage with cover crop seeder	acre	23.20	20.00	18.00	35.00	5
+	Tillage	Soil finisher or do-all	acre	21.57	20.00	18.00	25.00	7
+	Tillage	Phillips harrow or chain disk	acre	16.71	15.00	9.00	25.00	7
+field-cult	Tillage	Field cultivator	acre	15.63	15.00	11.00	23.00	8
+plant-row	Planting, conventional	Corn or grain sorghum, plant in 30-inch rows	acre	24.65	25.00	15.00	33.00	23
+	Planting, conventional	Corn or grain sorghum, plant in 20-inch rows	acre	26.00	25.00	16.00	40.00	7
+	Planting, conventional	Soybean, plant in 30-inch rows	acre	26.19	28.00	15.00	40.00	16
+	Planting, conventional	Soybean, plant in 15-inch rows	acre	27.40	28.50	15.00	40.00	20
+drill-soy	Planting, conventional	Soybean, drill	acre	22.45	24.00	15.00	30.00	11
+drill-smallgrain	Planting, conventional	Small grains, drill	acre	25.11	25.00	15.00	30.00	9
+	Planting, conventional	Forages and small seeds, drill	acre	29.17	30.00	23.00	35.00	6
+plant-notill	Planting, no-till	Corn or grain sorghum, plant in 30-inch rows	acre	26.65	26.00	15.00	35.00	23
+	Planting, no-till	Corn or grain sorghum, plant in 20-inch rows	acre	29.00	30.00	20.00	40.00	5
+	Planting, no-till	Soybean, plant in 30-inch rows	acre	29.17	30.00	20.00	35.00	12
+	Planting, no-till	Soybean, plant in 15-inch rows	acre	28.85	29.00	15.00	40.00	20
+drill-soy-notill	Planting, no-till	Soybean, drill	acre	27.56	25.00	22.00	40.00	9
+	Planting, no-till	Small grains, drill	acre	23.82	25.00	15.00	35.00	11
+	Planting, no-till	Forages and small seeds, drill	acre	24.60	25.00	15.00	35.00	5
+	Planting, no-till	Cover crops, drill	acre	24.17	25.00	15.00	35.00	6
+	Planting, no-till	Additional charge for liquid fertilizer	acre	7.31	8.00	4.50	10.00	20
+	Planting, no-till	Additional charge for variable rate	acre	3.90	4.50	2.00	5.00	12
+fert-dry	Fertilizer application, fertilizer not included	Dry fertilizer on cropland, single spread	acre	7.97	8.13	4.00	10.00	16
+	Fertilizer application, fertilizer not included	Dry fertilizer on cropland, double spread	acre	11.94	12.00	10.00	15.00	9
+	Fertilizer application, fertilizer not included	Dry fertilizer on cropland, variable rate	acre	10.30	10.00	6.00	17.00	11
+	Fertilizer application, fertilizer not included	Dry fertilizer on pasture (topdressing)	acre	8.32	9.00	3.00	12.00	11
+	Fertilizer application, fertilizer not included	Dry fertilizer plus seed	acre	8.93	9.00	6.00	12.00	7
+fert-liquid	Fertilizer application, fertilizer not included	Spray liquid fertilizer	acre	10.69	11.50	8.00	12.00	8
+	Fertilizer application, fertilizer not included	Spray liquid fertilizer and other chemicals	acre	12.29	10.00	8.00	30.00	9
+nh3	Fertilizer application, fertilizer not included	Inject anhydrous ammonia	acre	19.35	20.00	10.00	25.00	17
+	Fertilizer application, fertilizer not included	Inject anhydrous ammonia, variable rate application	acre	23.40	24.00	21.00	25.00	5
+	Fertilizer application, fertilizer not included	Deliver and spread lime, including lime	ton	30.58	32.50	20.00	40.00	6
+spray-ground	Chemical application, chemical not included	Spray with row crop sprayer	acre	9.42	9.43	4.00	12.00	20
+	Chemical application, chemical not included	Spray with floater	acre	10.25	11.00	7.00	12.00	6
+	Combining, including grain cart	Corn, combine with grain cart	acre	47.95	50.00	35.00	60.00	22
+	Combining, including grain cart	Soybean, combine with grain cart	acre	46.22	45.00	35.00	70.00	23
+	Combining, including grain cart	Grain sorghum, combine with grain cart	acre	46.80	50.00	35.00	55.00	5
+	Combining, including grain cart	Small grains, combine with grain cart	acre	45.17	46.00	35.00	55.00	12
+combine-corn	Combining, without grain cart	Corn, combine without grain cart	acre	47.56	40.00	35.00	95.00	9
+combine-soy	Combining, without grain cart	Soybean, combine without grain cart	acre	42.33	40.00	35.00	60.00	9
+combine-smallgrain	Combining, without grain cart	Small grains, combine without grain cart	acre	45.60	40.00	30.00	75.00	5
+grain-cart	Grain cart	Grain cart, per acre	acre	5.60	5.00	4.00	8.00	5
+	Grain cart	Grain cart, per hour	hour	108.75	100.00	85.00	150.00	4
+	Hauling grain or seed	Field to farm storage with farm vehicle or wagon	bushel	0.17	0.15	0.10	0.30	18
+haul-grain-bu	Hauling grain or seed	Bin to market with large grain truck over 20 miles	bushel	0.26	0.28	0.18	0.30	6
+	Hauling grain or seed	Bin to market with large grain truck over 20 miles	loaded mile	4.70	4.50	4.00	5.50	5
+	Hauling hay or livestock	Hay, 20 or more miles	mile	4.35	4.50	3.00	6.33	8
+	Hauling hay or livestock	Livestock with pickup and gooseneck trailer	mile	3.30	3.50	3.00	3.50	5
+	Hauling hay or livestock	Livestock with semi and trailer	mile	5.38	5.25	5.00	6.00	4
+mow-hay	Haymaking and vegetation management	Mow with disc mower	acre	17.60	15.00	10.00	25.00	5
+mow-cond	Haymaking and vegetation management	Mow with mower-conditioner	acre	17.70	18.00	10.00	27.00	10
+ted	Haymaking and vegetation management	Tedding hay	acre	6.40	5.00	3.00	12.00	5
+rake	Haymaking and vegetation management	Raking hay	acre	10.00	10.00	3.00	15.00	10
+bale-smallsq	Haymaking and vegetation management	Small square baling	bale	1.88	1.75	1.00	3.25	6
+bale-round	Haymaking and vegetation management	Round bale with twine	bale	17.20	17.00	10.00	25.00	5
+	Haymaking and vegetation management	Round bale with net wrap, under 1,000 pound bales	bale	15.00	15.00	11.00	18.00	6
+bale-round-net	Haymaking and vegetation management	Round bale with net wrap, over 1,000 pound bales	bale	18.87	20.00	10.00	35.00	15
+	Haymaking and vegetation management	Cut, rake and bale small square bales	bale	4.43	4.00	2.00	10.00	7
+	Haymaking and vegetation management	Cut, rake and bale small square bales	percent of crop	58	60	20	75	9
+	Haymaking and vegetation management	Cut, rake and round bale with twine, under 1,000 pound bales	bale	28.31	27.50	24.00	35.00	8
+	Haymaking and vegetation management	Cut, rake and round bale with twine, over 1,000 pound bales	bale	26.40	25.00	15.00	35.00	5
+	Haymaking and vegetation management	Cut, rake and round bale with net wrap, over 1,000 pound bales	bale	31.11	30.00	20.00	40.00	23
+	Haymaking and vegetation management	Cut, rake and round bale with net wrap	percent of crop	59	50	50	100	17
+	Haymaking and vegetation management	Tube wrap round bales, including wrap	bale	8.90	8.00	6.00	12.50	5
+	Haymaking and vegetation management	Moving round bales on farm or locally	bale	6.17	5.00	5.00	10.00	6
+	Haymaking and vegetation management	Mow brush or overgrown pasture	hour	125.71	130.00	50.00	175.00	7
+	Haymaking and vegetation management	Mow pasture or Conservation Reserve Program (CRP)	hour	107.22	110.00	50.00	150.00	9
+mow-crp	Haymaking and vegetation management	Mow pasture or Conservation Reserve Program (CRP)	acre	17.40	15.00	12.00	25.00	5
+	Earth moving, by equipment (operator included)	Bulldozer, over 150 hp	hour	198.89	200.00	165.00	235.00	9
+	Earth moving, by equipment (operator included)	Track hoe/excavator, mini (2 to 6 tons)	hour	110.00	114.00	100.00	135.00	5
+	Earth moving, by equipment (operator included)	Track hoe/excavator, medium and large	hour	198.33	200.00	140.00	250.00	6
+	Earth moving, by equipment (operator included)	Farm tractor with front end loader	hour	85.83	82.50	75.00	100.00	6
+	Earth moving, by equipment (operator included)	Skid loader	hour	120.50	122.50	100.00	150.00	10
+	Earth moving, by job	Land clearing	hour	208.33	200.00	120.00	300.00	6
+	Earth moving, by job	Installing drainage tile	linear foot	1.48	1.50	1.30	1.75	5
+	Anecdotal medians, few answers	Applying chemicals with selective targeting (Greeneye)	acre		14.00				median-only
+	Anecdotal medians, few answers	Aerial spray application over cropland	acre		13.00				median-only
+	Anecdotal medians, few answers	Aerial spray application over trees	acre		22.00				median-only
+	Anecdotal medians, few answers	Aerial spreading over cropland	pound		0.43				median-only
+	Anecdotal medians, few answers	Fence inspection and minor repairs	hour		35.00				median-only
+	Anecdotal medians, few answers	Fence construction, barbed wire, labor only	foot		1.88				median-only
+	Anecdotal medians, few answers	Fence construction, woven wire, labor only	foot		2.38				median-only
+	Anecdotal medians, few answers	Fence removal	foot		1.25				median-only
+	Anecdotal medians, few answers	Tractor rental	horsepower / hour		0.72				median-only
+	Anecdotal medians, few answers	Grain vacuum rental	bushel		0.13				median-only
+	Anecdotal medians, few answers	Grain bagger rental, no bags included	bushel		0.11				median-only
+	Anecdotal medians, few answers	Grain bag unloader	bushel		0.12				median-only

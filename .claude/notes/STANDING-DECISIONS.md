@@ -168,3 +168,4 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - (Oct 19, Sig) Unsold sponsor slots carry no price text in the page (no hidden "$29/mo"); the sponsor kit page still shows prices.
 - (Oct 19, Sig) Links inside small source/credit lines are underlined; menus and buttons unchanged.
 - (Oct 19, Sig) About page Person record: sameAs farmers1st.com and lokedrone.com (Sig's only other profiles).
+- (Oct 19, Sig) A source whose license forbids reposting (MU Extension G302) is kept as numbers only with a link; no PDF or text copy in any public branch.
