@@ -281,7 +281,7 @@ test("in Chromium: the Hail History Report printout carries the QR of the spot, 
     assert.deepEqual(await pg.evaluate(() => window.__qrIn), [t + " mixed"], "what the encoder drew");
     assert.equal(await pop.$eval(".agpq", (e) => e.getAttribute("data-qr")), t);
     assert.equal(await pop.$eval(".agpq svg", (e) => e.getAttribute("viewBox")), "0 0 37 37", "29 x 29 modules and the margin");
-    assert.match(await pop.textContent(".agpq"), /Scan to open this report on agsist\.com\s*agsist\.com\/hail-map\?lat=42\.0300&lon=-93\.6200&mi=25&day=2025-06-14/);
+    assert.match(await pop.textContent(".agpq"), /Scan to open this report on agsist\.com\s*agsist\.com\/hail-map$/);
     assert.match(await pop.textContent("body"), /Radius: 25 miles/);
     assert.deepEqual(errs, []);
     await ctx.close();
