@@ -66,6 +66,10 @@
   .rc-answer { font-size: 1.06rem; }
   .rc-figs { grid-template-columns: 1fr 1fr; }
   .rc-t th, .rc-t td { padding: .38rem .3rem; }
+  /* the month table fits a 390 px phone, "Vs usual" in view (2026-10-19, board B): the column heads wrap, the
+     month notes ("1 day not reported") too; the wide state table keeps its sideways scroll */
+  .rc-t:not(.rc-t-wide) thead th { white-space: normal; vertical-align: bottom; }
+  .rc-t:not(.rc-t-wide) td:first-child .rc-n, .rc-t:not(.rc-t-wide) th:first-child .rc-n { white-space: normal; }
   .rc-t-wide td:nth-child(5), .rc-t-wide th:nth-child(5) { display: none; }
   /* "Through" on phones: the county cell says "to Oct 9" when it differs */
   .rc-t-wide td:nth-child(6), .rc-t-wide th:nth-child(6) { display: none; }

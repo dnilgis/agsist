@@ -55,7 +55,7 @@ import county_stories as CS  # noqa: E402
 
 ROOT = R.ROOT
 MAX_KB = 25
-CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=4">'
+CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=5">'
 ORIGIN = "https://agsist.com"
 M3, ML = R.MONTHS, R.MONTHS_LONG
 
