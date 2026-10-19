@@ -783,13 +783,15 @@ def place_fallbacks(merged, srcs, towns_by_state, zip_towns=None, zip_coord=None
 
 def near_text(bd):
     """Where a place sits, for a board not named by its town: "Pana Facility,
-    Pana, IL 62557" for a ZIP placement, "8 mi from Pana" for a near one."""
+    Pana, IL 62557" for a ZIP placement, "8 mi from Pana" for a near one.
+    The point is the board's branch name (branch_name()) when select() set one."""
+    pt = bd["branch"] if "branch" in bd else bd["city"]
     if bd.get("how") == "zip":
-        return f"{bd['city']}, {bd['town']}, {bd['state']} {bd['zip']}".lstrip(", ")
+        return f"{pt}, {bd['town']}, {bd['state']} {bd['zip']}".lstrip(", ")
     if bd.get("how") == "near":
         mi = bd["near_mi"]
         dist = "under 1 mi" if mi < 1 else f"{mi:.0f} mi"
-        return (f"{bd['city']}, " if bd["city"] else "") + f"{dist} from {bd['town']}"
+        return (f"{pt}, " if pt else "") + f"{dist} from {bd['town']}"
     return ""
 
 
@@ -1302,7 +1304,8 @@ def board_section(bd, snap_ct):
     call = (f'<a href="tel:+1{ph}">call{who} to confirm ({ph[:3]}-{ph[3:6]}-{ph[6:]})</a>' if ph
             else f"call{who} to confirm")
     name = bd["operator"] or bd["city"]
-    loc = near_text(bd) or (bd["city"] if bd["city"] and bd["city"].lower() != name.lower() else "")
+    pt = bd["branch"] if "branch" in bd else bd["city"]
+    loc = near_text(bd) or (pt if pt and pt.lower() != name.lower() else "")
     # the company's own page (scripts/build_company_pages.py), when it has one
     co = (f'<div class="loc"><a href="{esc(bd["company_path"])}">Every {esc(bd["company_short"])} location</a></div>'
           if bd.get("company_path") else "")
@@ -3467,6 +3470,9 @@ def _selftest_place():
     assert head_name(fac) == "Linn Coop Oil Company (Ingredion, Cedar Rapids)", head_name(fac)
     assert branch_name({"city": "Creston 1"}, {}, "Creston", {"creston": "Creston"}) == "Creston 1"
     assert head_name({"operator": "", "city": "Ackney", "branch": "", "town": "Ackley"}) == "Ackney"
+    sec = board_section(pl, parse_ts(gen).astimezone(CT))[0]
+    assert '<div class="loc">Pine Lake</div>' in sec and "Ackney" not in sec, sec[:400]
+    assert near_text(dict(ty, how="zip")) == "Ackley, IA 50601"
 
 
 def _selftest_share():
