@@ -198,6 +198,7 @@
     var pr = P.printParam(S.print);
     if (pr) q.push('print=' + pr);
     try { history.replaceState(null, '', location.pathname + '?' + q.join('&')); } catch (e) {}
+    buildQr();
   }
 
   /* ── drawing ──────────────────────────────────────────────────── */
@@ -227,6 +228,7 @@
     var nb = p.neighbors.filter(function (n) { return n.name; });
     $('h-nb').innerHTML = nb.length ? 'Next door: ' + nb.map(function (n) { return '<a href="?fips=' + n.fips + '" data-fips="' + n.fips + '">' + esc(n.name) + '</a>'; }).join(' · ') : '';
     drawFingerprint(p);
+    drawCover(p);
     drawUnusual(p);
     drawLong(S.county);
     drawWeek();
@@ -261,6 +263,43 @@
       }).join('') + '</tbody>';
   }
 
+  /* The printed sheet's first page (print only): the place, the sentence, six headline
+     figures in large type with their state rank and source, and every figure's place in
+     the state as one dot plot. Built from the same profile as the screen; nothing new. */
+  function printedOn() { var now = new Date(); return 'Printed ' + MONTHS[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear(); }
+  var HEAD = ['rent', 'land_value', 'yield', 'loss_ratio', 'drought', 'gs_rain'];
+  function drawCover(p) {
+    var w = S.where || {}, by = {};
+    p.cols.forEach(function (c) { by[c.id] = c; });
+    var from = w.zip ? 'ZIP ' + w.zip + (w.label && w.label !== 'ZIP ' + w.zip ? ', ' + w.label : '') : w.how === 'town' ? w.label : w.point ? 'the point ' + w.label : '';
+    var tiles = HEAD.map(function (id) {
+      var c = by[id]; if (!c) return '';
+      var v = c.value == null ? '<span class="pc-na">Not available</span>' : esc(P.fmtShort(c.value, c));
+      return '<div class="pc-t' + (c.band ? ' pc-band' : '') + '"><p class="pc-l">' + esc(c.short) + '</p><p class="pc-v">' + v + '</p>' +
+        '<p class="pc-r">' + esc(c.value == null ? (c.reason || '') : (c.words || '')) + (c.band ? ' <b>' + (c.band === 'top' ? 'Top tenth' : 'Bottom tenth') + '</b>' : '') + '</p>' +
+        '<p class="pc-s">' + esc(c.source || '') + ', ' + esc(c.years || '') + '</p></div>';
+    }).join('');
+    var rows = p.cols.map(function (c) {
+      var pos = c.pos == null ? null : Math.max(0, Math.min(1, c.pos));
+      return '<div class="pd-r' + (c.band ? ' pd-band' : '') + (pos == null ? ' pd-na' : '') + '"><span class="pd-l">' + esc(c.short) + '</span>' +
+        '<span class="pd-tr">' + (pos == null ? '' : '<span class="pd-dot" style="left:' + (pos * 100).toFixed(1) + '%"></span>') + '</span>' +
+        '<span class="pd-v">' + (c.value == null ? 'n/a' : esc(P.fmtShort(c.value, c))) + '</span></div>';
+    }).join('');
+    var srcs = p.cols.map(function (c) { return '<b>' + esc(c.short) + '</b> ' + esc(c.source || '') + ', ' + esc(c.years || ''); }).join('; ');
+    $('h-pr-cover').innerHTML =
+      '<div class="pc-head"><span class="pc-brand">AGSIST</span><span>One place, all its numbers</span><span id="h-pr-date">' + esc(printedOn()) + '</span></div>' +
+      '<h2 class="pc-name">' + esc(p.name) + ', ' + esc(p.stName) + '</h2>' +
+      '<p class="pc-from">' + (from ? 'From ' + esc(from) + '. ' : '') + 'County figures. Ranks are among ' + esc(p.stName) + ' counties that carry the figure, never among fields.</p>' +
+      '<p class="pc-sent h-part-sentence-pr">' + esc(p.sentence) + '</p>' +
+      '<div class="pc-fp"><div class="pc-tiles">' + tiles + '</div>' +
+      '<h3 class="pc-h">Where ' + esc(p.name) + ' sits among ' + esc(p.stName) + ' counties</h3>' +
+      '<div class="pd"><div class="pd-r pd-ax"><span class="pd-l"></span><span class="pd-tr"><span>Lowest county</span><span>Middle</span><span>Highest county</span></span><span class="pd-v">Here</span></div>' + rows + '</div>' +
+      '<p class="pc-key">Black dot: top or bottom tenth of the state. n/a: the source does not publish it here. Sources: ' + srcs + '. Farmland Atlas county files of ' + esc(mdy(p.atlasGenerated)) + '.</p></div>';
+    var st = $('h-pr-page');
+    if (!st) { st = document.createElement('style'); st.id = 'h-pr-page'; document.head.appendChild(st); }
+    st.textContent = '@media print{@page{@top-right{content:"' + (p.name + ', ' + p.st).replace(/["\\]/g, '') + '"}}}';
+  }
+
   function drawUnusual(p) {
     var list = p.unusual, any = list.some(function (u) { return u.unusual; });
     var lead = !list.length ? 'Too few neighboring counties carry the same figures to compare.' :
@@ -279,7 +318,7 @@
     var y0 = Infinity, y1 = -Infinity;
     rows.forEach(function (r) { r.pts.forEach(function (p) { if (p[0] < y0) y0 = p[0]; if (p[0] > y1) y1 = p[0]; }); });
     var W = 600, H = 46, span = Math.max(1, y1 - y0 + 1), bw = W / span;
-    box.innerHTML = rows.map(function (r) {
+    box.innerHTML = '<div class="lv-grid">' + rows.map(function (r) {
       var max = 0, min = Infinity, hi = null, lo = null;
       r.pts.forEach(function (p) { if (p[1] > max) { max = p[1]; hi = p; } if (p[1] < min) { min = p[1]; lo = p; } });
       var bars = r.pts.map(function (p) {
@@ -288,8 +327,9 @@
       }).join('');
       var u = r.unit === '$/ac' ? function (v) { return '$' + Math.round(v); } : function (v) { return String(v); };
       return '<div class="lv-row"><div class="lv-h"><b>' + esc(r.label) + '</b> <span>' + esc(r.unit) + ', ' + r.pts[0][0] + '-' + r.pts[r.pts.length - 1][0] + '. High ' + esc(u(hi[1])) + ' (' + hi[0] + '), low ' + esc(u(lo[1])) + ' (' + lo[0] + '). ' + (r.partial ? r.partial + ' is the year so far. ' : '') + esc(r.source) + '.</span></div>' +
-        '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" class="lv-svg" aria-hidden="true">' + bars + '</svg></div>';
-    }).join('') + '<div class="lv-ax" aria-hidden="true"><span>' + y0 + '</span><span>' + y1 + '</span></div>' +
+        '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" class="lv-svg" aria-hidden="true">' + bars + '</svg>' +
+        '<div class="lv-ax" aria-hidden="true"><span>' + y0 + '</span><span>' + y1 + '</span></div></div>';
+    }).join('') + '</div>' +
       '<details class="h-tbl"><summary>The years, as a table</summary><div class="h-tw"><table><thead><tr><th scope="col">Year</th>' + rows.map(function (r) { return '<th scope="col">' + esc(r.label) + '</th>'; }).join('') + '</tr></thead><tbody>' +
       (function () { var out = ''; for (var y = y1; y >= y0; y--) { out += '<tr><th scope="row">' + y + '</th>' + rows.map(function (r) { var p = r.pts.filter(function (x) { return x[0] === y; })[0]; return '<td>' + (p ? esc(p[1]) : '') + '</td>'; }).join('') + '</tr>'; } return out; })() +
       '</tbody></table></div></details>';
@@ -400,8 +440,12 @@
   var opened = [];
   function beforePrint() {
     if (!S.prof) return;
-    var now = new Date();
-    $('h-pr-date').textContent = 'Printed ' + MONTHS[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+    var d = $('h-pr-date'); if (d) d.textContent = printedOn();
+    buildQr();
+    opened = [];
+    if (S.print.more) [].forEach.call(document.querySelectorAll('#h-place details.h-tbl'), function (d) { if (!d.open) { d.open = true; opened.push(d); } });
+  }
+  function buildQr() {
     var url = location.origin.indexOf('agsist.com') >= 0 ? location.href : 'https://agsist.com' + location.pathname.replace(/\.html$/, '') + location.search;
     var qr = $('h-pr-qr');
     if (qr && qr.getAttribute('data-url') !== url) {
@@ -410,8 +454,6 @@
       qr.innerHTML = (svg ? svg : '') + '<p>Scan for this page, live: ' + esc(url.replace(/^https?:\/\//, '')) + '</p>';
       qr.setAttribute('data-url', url);
     }
-    opened = [];
-    if (S.print.more) [].forEach.call(document.querySelectorAll('#h-place details.h-tbl'), function (d) { if (!d.open) { d.open = true; opened.push(d); } });
   }
   function afterPrint() { opened.forEach(function (d) { d.open = false; }); opened = []; }
   function wirePrint() {
