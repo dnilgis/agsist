@@ -151,3 +151,6 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - (Oct 18, Sig) Net price tool: wait.
 - (Oct 18, Sig) PRF state sponsor slots: crop insurance agencies may sponsor (labeled "Sponsor"; Farmers First still never takes a slot; no lead capture or routing).
 - (Oct 18, Sig) PRF month picker ("What the numbers would pick") stays as is, button included. Sig: publishing what the numbers say about the best months is just math. This replaces "no best months" for the picker: a pick may be shown, always beside its own out-of-sample record (how often it beat an even spread); "stands out" only when a real significance test says so, outlook included.
+- (Oct 19, Sig) /here: no role chips or "I am a" picker; everyone sees all the data; only the printed report lets a reader choose more or less.
+- (Oct 19, Sig) Printed reports and PDFs must be as good as the screen or better: designed for the reader (strong first page, clear hierarchy, headline numbers large, every figure with source and date, branded, QR back to the live page), "engaging and entrancing", never a print of the screen.
+- (Oct 19, Sig) Bids repo duplicates: fold a duplicate row into its board only on evidence (same phone in the same town or within 400 m, or within 400 m with the same operator or a declared alias); never on town alone; ids never change.
