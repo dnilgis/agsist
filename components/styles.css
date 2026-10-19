@@ -836,8 +836,13 @@ summary:focus-visible, .pc:focus-visible {
    style outranks a stylesheet rule. One overriding rule beats eight hand-edits
    that would drift apart -- the single-definition rule applied to CSS. */
 #site-header{min-height:74px}
-/* the live nav is 62px tall at 520px and under (.nav-inner 60px + 2px border) */
-@media (max-width:520px){#site-header{min-height:62px}}
+/* the live nav is 62px tall at 520px and under (.nav-inner 60px + 2px border).
+   The static crawlable nav inside the placeholder can stand taller: 69px on
+   the homepage, and 67.5px on every static-nav page for a reader with a 20px
+   default font. The page then jumped when the live nav landed. Hold the
+   placeholder to the live nav's height; the links still scroll sideways
+   (test/cls-header-phone.test.mjs). */
+@media (max-width:520px){#site-header{min-height:62px;height:62px;overflow:hidden}}
 /* A page ask (<div data-signup-ask>, drawn by components/signup-ask.js after
    first paint) used to arrive as a 100-140px box and shove everything under it
    down (CLS 0.07 to 0.09 on /cash-bids and the town pages). Hold its space from

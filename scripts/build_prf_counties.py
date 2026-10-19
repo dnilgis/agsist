@@ -303,7 +303,7 @@ def page(ctx):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
-  <link rel="stylesheet" href="/components/styles.css?v=25">
+  <link rel="stylesheet" href="/components/styles.css?v=26">
   <link rel="stylesheet" href="/components/prf.css?v=8">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
