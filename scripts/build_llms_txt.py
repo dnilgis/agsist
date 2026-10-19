@@ -55,8 +55,9 @@ HEAD = """# AGSIST
 > AGSIST (agsist.com) is a free, no-login farm market site for working US
 > producers: cash grain bids and basis near you, futures prices, USDA report
 > data, crop size, weather and field conditions, farm programs, and a daily
-> morning briefing. Built and maintained by one person: Sigurd Lindquist, a
-> licensed crop insurance agent at Farmers First Agri Service in Wisconsin.
+> morning briefing. Built and maintained by one person: Sigurd Lindquist,
+> Certified Crop Adviser (CCA), Chetek, Wisconsin, who also works at Farmers
+> First Agri Service.
 
 How fresh the numbers are: futures prices and cash bids refresh about every 15
 minutes. Prices are delayed exchange quotes from the Yahoo Finance feed, not an
@@ -64,8 +65,8 @@ official CME feed. The AGSIST Daily briefing publishes each morning. Every other
 page states its own source and date on the page, and /status shows whether each
 feed is current right now. Nothing on the site is financial or trading advice.
 
-Sources: cash bids from AGSIST's own network of elevator bid boards plus a
-licensed cash-bid feed; weather from Open-Meteo and NOAA; crop, price and
+Sources: cash bids read from AGSIST's own network of elevator bid boards (each
+elevator's own posted board); weather from Open-Meteo and NOAA; crop, price and
 program data from USDA (NASS, FAS, RMA, FSA); positioning from the CFTC.
 Every number's source is on /data-sources.
 
@@ -81,6 +82,8 @@ PAGES = [
         ("/cash-bids/company/", "Cash Bids by Elevator Company", "every elevator company with 3 or more network locations, today's bids at all its locations on one page"),
         ("/cash-bids/iowa/", "Bids and Basis by State",
          "each state's best bids, median corn and soybean basis with the number of elevators behind it, and every elevator's bid, at /cash-bids/<state>/"),
+        ("/cash-bids/iowa/ackley", "Cash Bids by Town",
+         "each town's nearest-delivery corn and soybean bid and basis, the elevator and the date it posted, at /cash-bids/<state>/<town>"),
         ("/basis", "Basis by State and vs Normal",
          "your state's median corn and soybean basis, USDA regions against their own 5-year same-week normal, barge rates, and this fall's grain vs bin space"),
         ("/corn-futures-prices", "Corn Futures", "CBOT corn with 52-week and 5-year context"),
@@ -117,6 +120,8 @@ PAGES = [
         ("/urea", "Urea Volatilization Risk", "nitrogen loss risk for surface-applied urea in the days ahead"),
         ("/gdu-calculator", "GDU Calculator", "growing degree units from planting, crop stage and black layer"),
         ("/planting-date", "Planting Date Calculator", "soil temperature and 5-day soil forecast at your ZIP, nearest NOAA station frost odds, county final planting dates, and yield loss by planting week (UMN, UW)"),
+        ("/rain", "Rain by County",
+         "rain so far this year at a weather station in each county: inches, percent of a usual year and month by month, dated through the last day read, at /rain/<state>/<county>"),
         ("/drought-monitor", "Drought Monitor", "this week's US Drought Monitor map and what each category means for crops"),
         ("/rain-print", "Rain Print", "one year of daily rain at the nearest weather station, drawn as wall art with your farm name and dates; free to make, prints for sale"),
         ("/gifts-for-farmers", "Gifts for Farmers", "Sig's gift ideas for a farmer: a Rain Print of the year they still talk about, with the Christmas order-by dates, then plain gear and time gifts; no store links"),
@@ -127,7 +132,7 @@ PAGES = [
         ("/prf-sponsor", "PRF State Sponsor", "how a business sponsors the PRF pages for one or more states: what the sponsor slot shows and how to ask; price on request"),
         ("/rain-gauge", "Rain Gauge (in the works)", "a rain gauge Sig is building: a clear tube in front of a printed scale, read by eye or logged with a phone photo, field by field; a prototype now, aiming for before planting 2027, no price set; waitlist by email"),
         ("/field-scout", "Field Scout", "draw a field and see its soils, crop history, weather, drought and nearby bids"),
-        ("/fertilizer", "Fertilizer Prices", "the middle cash price per ton that farm co-ops post for anhydrous, urea, UAN, DAP, potash and more, read each weekday from their own websites and credited by name, each price with its region and date; a USDA Illinois average is shown separately for reference"),
+        ("/fertilizer", "Fertilizer Prices", "the middle cash price per ton that farm co-ops post for anhydrous, urea, UAN, DAP, potash and more, read each weekday from their own websites and credited by name, each price with its region and date"),
         ("/fast-facts", "Ag Fast Facts", "on-farm reference tables: corn N rates, P and K by soil test, crop removal, manure nutrients, crop stages, pest thresholds, herbicide groups, conversions; each tab has its own #link"),
         ("/manure-value", "Manure Value", "what dairy, hog, beef, poultry and horse manure is worth per 1,000 gallons and per ton at current co-op posted fertilizer prices (P from MAP or DAP with its N credited): the value of all the N, P and K by UW A2809's typical totals, with the part a crop can use the first year beside it, an acre and for a whole field, a worked dairy example and a calculator that takes your own manure test"),
         ("/tools", "All Tools", "every AGSIST calculator on one page"),
@@ -258,6 +263,50 @@ def top_level_pages(root=REPO):
     return out
 
 
+def robots_sitemaps(root=REPO):
+    """Sitemap file names that robots.txt announces, in order."""
+    f = os.path.join(root, "robots.txt")
+    if not os.path.isfile(f):
+        return []
+    out = []
+    for m in re.finditer(r"(?im)^\s*Sitemap:\s*(\S+)", open(f, encoding="utf-8").read()):
+        out.append(m.group(1).rsplit("/", 1)[-1])
+    return out
+
+
+def sitemap_coverage(text, root=REPO):
+    """Problems: a robots.txt Sitemap whose pages llms.txt never names.
+
+    A sitemap is covered when a URL or a /path written in llms.txt is one of
+    its <loc>s, or when every page in it is also in a covered sitemap (the news
+    sitemap repeats Daily issues that sitemap.xml already holds). Added Oct 19,
+    2026: the town bid and county rain sets had no line and --check passed,
+    because it only read sitemap.xml.
+    """
+    named = set()
+    for m in re.finditer(r"(?:https://agsist\.com)?(/[a-z0-9][a-z0-9/._-]*|/)(?=[)\s,;:]|$)", text):
+        named.add(HOST + m.group(1))
+        named.add(HOST + m.group(1).rstrip("/"))
+    files = robots_sitemaps(root)
+    locs = {}
+    for fn in files:
+        f = os.path.join(root, fn)
+        locs[fn] = set(re.findall(r"<loc>([^<]+)</loc>", open(f, encoding="utf-8").read())) if os.path.isfile(f) else None
+    problems = []
+    covered = [fn for fn in files if locs[fn] and (locs[fn] & named)]
+    for fn in files:
+        if locs[fn] is None:
+            problems.append("robots.txt lists %s but there is no such file" % fn)
+            continue
+        if fn in covered:
+            continue
+        others = set().union(*[locs[c] for c in covered]) if covered else set()
+        if locs[fn] and locs[fn] <= others:
+            continue
+        problems.append("robots.txt lists %s but no line in llms.txt names a page in it" % fn)
+    return problems
+
+
 def norm(p):
     return p if p in ("/",) else p.rstrip("/")
 
@@ -300,7 +349,9 @@ def build(current_text, root=REPO):
         if page_problem(p, locs, root):
             continue   # a stub or noindex page still in sitemap.xml is another check's business
         problems.append("%s is in sitemap.xml but in neither PAGES nor OMIT of scripts/build_llms_txt.py" % p)
-    return "\n".join(out) + "\n", problems
+    text = "\n".join(out) + "\n"
+    problems.extend(sitemap_coverage(text, root))
+    return text, problems
 
 
 def selftest():
@@ -331,12 +382,31 @@ def selftest():
         ok(page_problem("/live#a1", locs, d) is None, "anchor present")
         ok(page_problem("/live#zz", locs, d) == "anchor #zz not on the page", "anchor missing")
         ok(top_level_pages(d) == ["/live", "/stub", "/rent/", "/new-page"], "sets excluded: %s" % top_level_pages(d))
+        # every robots.txt Sitemap needs a line (Oct 19: rain and town sets were missing and --check passed)
+        w("sitemap-rain.xml", "<urlset><url><loc>https://agsist.com/rain</loc></url>"
+                              "<url><loc>https://agsist.com/rain/iowa/polk-county</loc></url></urlset>")
+        w("sitemap-news.xml", "<urlset><url><loc>https://agsist.com/live</loc></url></urlset>")
+        w("robots.txt", "User-agent: *\nSitemap: https://agsist.com/sitemap.xml\n"
+                        "Sitemap: https://agsist.com/sitemap-rain.xml\nSitemap: https://agsist.com/sitemap-news.xml\n")
+        ok(robots_sitemaps(d) == ["sitemap.xml", "sitemap-rain.xml", "sitemap-news.xml"], "robots sitemaps read")
+        cov = sitemap_coverage("- [Live](https://agsist.com/live): x\n", d)
+        ok(cov == ["robots.txt lists sitemap-rain.xml but no line in llms.txt names a page in it"], "rain set missing caught: %s" % cov)
+        ok(sitemap_coverage("- [Live](https://agsist.com/live): x\n- [Rain](https://agsist.com/rain): y\n", d) == [],
+           "rain line covers sitemap-rain; news is a subset of sitemap.xml")
+        ok(sitemap_coverage("- [Live](https://agsist.com/live): one page per county at /rain/iowa/polk-county\n", d) == [],
+           "a bare /path in a description counts")
+        w("robots.txt", "Sitemap: https://agsist.com/sitemap-gone.xml\n")
+        ok(sitemap_coverage("", d) == ["robots.txt lists sitemap-gone.xml but there is no such file"], "missing sitemap file caught")
     # the real list: no retired URL, one refresh statement, no em dash
     t, probs = build(open(os.path.join(REPO, OUT), encoding="utf-8").read() if os.path.exists(os.path.join(REPO, OUT)) else "")
     for gone in ("/presell-calculator", "/ag-odds", "/embed)", "/cash-rent", "/land-tenure", "/storage-crunch", "/basis-map", "/cash-bids-national"):
         ok(gone not in t, "retired URL in output: " + gone)
     ok(t.count("every 15") == 1 and "30 minutes" not in t, "one refresh-rate statement")
     ok("—" not in t, "no em dash")
+    ok("crop insurance agent" not in t and "Certified Crop Adviser (CCA)" in t, "standing byline, never 'crop insurance agent'")
+    ok("licensed" not in t.lower(), "no licensed-feed claim (the Barchart feed is off)")
+    ok("USDA Illinois" not in t, "no USDA Illinois fertilizer box (removed Oct 16)")
+    ok("/cash-bids/iowa/ackley" in t and "](https://agsist.com/rain)" in t, "town and county rain sets have lines")
     ok(not probs, "problems: %s" % probs)
     if fails:
         print("SELFTEST FAILED:\n  " + "\n  ".join(fails))
