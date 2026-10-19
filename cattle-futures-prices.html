@@ -116,15 +116,6 @@ details.fold[hidden]{display:none}
 .brief-teaser{font-size:1rem;color:var(--text-dim);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .brief-cta{font-size:0.77rem;color:var(--gold);text-decoration:none;white-space:nowrap;padding:6px 10px;border:1px solid var(--border);border-radius:6px;flex-shrink:0;min-height:32px;display:flex;align-items:center}
 .brief-cta:hover{border-color:var(--gold)}
-.signup-card{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.05) 100%);border:1px solid var(--border-g,var(--border));border-radius:var(--card-r);padding:14px;margin:16px 0;text-align:center}
-.signup-card h3{font-size:.85rem;color:var(--gold);margin:0 0 4px 0}.signup-card p{font-size:0.78rem;color:var(--text-dim);margin:0 0 10px 0;line-height:1.5}
-.signup-form{display:flex;gap:6px;max-width:420px;margin:0 auto;flex-wrap:wrap}
-.signup-form input{flex:1;min-width:180px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:1rem;color:var(--text);min-height:40px}
-.signup-form input:focus{outline:1px solid var(--gold);border-color:var(--gold)}
-.signup-form button{background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);padding:10px 16px;font-size:var(--btn-fs);font-weight:700;cursor:pointer;min-height:40px;font-family:var(--font-body);text-transform:none;letter-spacing:0}
-.signup-form button:hover{filter:brightness(.94)}
-.signup-ok{color:var(--green);font-size:0.795rem;margin-top:8px;font-weight:600;display:none}
-.signup-sub{font-size:0.755rem;color:var(--text-dim);margin-top:6px}
 .author-block{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.03) 100%);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin:16px 0 0;display:flex;align-items:flex-start;gap:12px}
 
 
@@ -608,16 +599,7 @@ details.fold[hidden]{display:none}
     </div>
   </div>
 
-  <div class="signup-card">
-    <h3><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Daily market briefing, direct from me</h3>
-    <p>Morning market read with the numbers and the USDA calendar. No affiliate links.</p>
-    <form class="signup-form" id="signup-form" novalidate>
-      <input type="email" name="email" placeholder="you@example.com" required autocomplete="email" aria-label="Email address">
-      <button type="submit">Subscribe</button>
-    </form>
-    <div class="signup-ok" id="signup-ok">✓ Subscribed. Next briefing arrives weekday 6am CT.</div>
-    <div class="signup-sub">Free · unsubscribe anytime · I read every reply</div>
-  </div>
+  <div data-signup-ask="Email me the morning market read with the numbers and the USDA calendar." data-source="page:cattle-futures-prices" data-note="Free. No affiliate links. I read every reply."></div>
 
   <div class="rl">Related Tools</div>
   <div class="rg">
@@ -819,11 +801,6 @@ details.fold[hidden]{display:none}
     var strip=document.getElementById('brief-strip'),hd=document.getElementById('brief-hd'),t=document.getElementById('brief-teaser');
     if(strip&&hd&&t){hd.textContent=d.headline;t.textContent=d.teaser||d.subheadline||d.lead||'';strip.style.display='flex';}
   }).catch(function(){});
-  var form=document.getElementById('signup-form'),ok=document.getElementById('signup-ok');
-  if(form)form.addEventListener('submit',function(e){e.preventDefault();var data={};new FormData(form).forEach(function(v,k){data[k]=v;});
-    fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json','Accept':'application/json'}})
-      .then(function(r){if(r.ok){form.style.display='none';if(ok)ok.style.display='block';if(typeof gaEvent==='function')gaEvent('briefing_signup',{page:location.pathname});}}).catch(function(){});
-  });
 })();
 </script>
 <script>
