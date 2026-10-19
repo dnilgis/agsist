@@ -134,15 +134,19 @@ test("Sig, 2026-10-14: the first-batch price holds for everyone on the waitlist,
   assert.ok(!/while the first batch lasts/i.test(main));
 });
 
-// Oct 17: two things on one page (Sig, via the lead)
-const ORDER = ["rain-print", "gauge", "rg-faq-h"];
-const sec = (id) => { const i = main.indexOf(`id="${id}"`); assert.ok(i > 0, "section " + id); const nx = ORDER[ORDER.indexOf(id) + 1]; return main.slice(i, nx ? main.indexOf(`id="${nx}"`) : undefined); };
-test("the page runs in order: opening with two cards, Rain Print, the AGSIST rain gauge, questions", () => {
-  const at = ["<h1>Two things for the rain at your place</h1>", 'id="rain-print"', 'id="gauge"', 'id="rg-faq-h"'].map((k) => main.indexOf(k));
+// Oct 17: two things on one page (Sig, via the lead). Oct 19 (Sig, "yeah fix please"): the gauge and its
+// waitlist come first; Rain Print moves after the main content as the page's one cross-promo.
+const ORDER = ["gauge", "rg-faq-h", "waitlist", "rain-print"];
+const sec = (id) => { const i = main.indexOf(`id="${id}"`); assert.ok(i > 0, "section " + id); const nx = ORDER[ORDER.indexOf(id) + 1]; return main.slice(i, nx ? main.indexOf(`id="${nx}"`) : main.indexOf('class="rg-by"')); };
+test("the page runs in order: the gauge, its waitlist right after the intro, questions, second form, then Rain Print", () => {
+  const at = ['id="gauge"', '<h1 id="rg-gauge-h">A rain gauge that keeps its own log</h1>', 'class="rg-lede"', 'id="rg-form-1"', 'class="rg-side"',
+    'id="rg-faq-h"', 'id="rg-form-2"', 'id="rain-print"', 'class="rg-by"'].map((k) => main.indexOf(k));
   for (let i = 0; i < at.length; i++) assert.ok(at[i] > 0 && (i === 0 || at[i] > at[i - 1]), "order at " + i);
-  assert.equal((main.match(/<h1>/g) || []).length, 1);
-  assert.equal((main.match(/<ul class="rg-three">[\s\S]*?<\/ul>/)[0].match(/<li>/g) || []).length, 2, "two cards");
-  assert.ok(main.indexOf('id="rg-form-1"') > at[2] && main.indexOf('id="rg-form-1"') < at[3], "the waitlist sits with the gauge");
+  assert.equal((main.match(/<h1\b/g) || []).length, 1);
+  assert.ok(!/rg-three|Two things for the rain/.test(page), "no two-card opening");
+  assert.match(page, /grid-template-areas:"tag" "h1" "lede" "form" "side"\}/, "on a phone the form comes right after the lede");
+  assert.ok(!/data-rg-jump/.test(page), "no jump link once the form sits under the intro");
+  assert.equal((main.match(/href="\/rain-print"[^>]*data-rg=/g) || []).length, 1, "one Rain Print promo");
   assert.match(main, /Sigurd Lindquist, CCA/);
   assert.ok(!/Sigurd Lindquist, Certified Crop Adviser/.test(main), "short byline on the page (Oct 16)");
 });
@@ -192,4 +196,20 @@ test("the Christmas line is the shared one from the same cutoffs, hidden until f
   assert.equal(P.xmasLine({ ...cfg, print_christmas_cutoff: "2026-12-10", framed_christmas_cutoff: "2026-12-09" }, "2026-10-17"),
     "For Christmas delivery, order a framed print by Dec 9, a print by Dec 10.");
   assert.equal(P.xmasLine(cfg, "2026-07-01"), "");
+});
+test("Oct 19: \"For my customers\" sits beside \"6 or more\" on both forms and rides in the note, with no bulk promise", () => {
+  for (const n of [1, 2]) {
+    assert.match(main, new RegExp(`name="count-${n}" value="6\\+"><span>6 or more</span></label>\\s*<label><input type="checkbox" id="rg-biz-${n}" name="customers" value="yes"[^>]*><span>For my customers</span></label>`));
+    assert.ok(!new RegExp(`id="rg-biz-${n}"[^>]*checked`).test(main), "never pre-ticked");
+  }
+  const fn = page.match(/function noteFor\(count, use, biz\) \{[\s\S]*?\n    \}/);
+  assert.ok(fn);
+  const noteFor = new Function(fn[0] + "; return noteFor;")();
+  assert.equal(noteFor("6+", "", true), "Gauges: 6+. For my customers");
+  assert.equal(noteFor("", "seed dealer", true), "For my customers. Use: seed dealer");
+  assert.equal(noteFor("1", "", false), "Gauges: 1");
+  assert.ok(noteFor("6+", "x".repeat(400), true).length <= 280);
+  assert.match(page, /var note = noteFor\(count, use, biz\);/);
+  assert.match(page, /for_customers: biz \? 'yes' : 'no'/);
+  assert.ok(!/bulk|wholesale|volume (price|discount)|dealer price|discount/i.test(text(main)), "no bulk order or dealer price promised");
 });

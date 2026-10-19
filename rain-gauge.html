@@ -52,22 +52,19 @@
   .rg-tag::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--brand-fill);box-shadow:0 0 0 3px rgba(var(--brand-rgb),.22)}
 
   /* hero: words and the form on the left, the render on the right; on a phone
-     the render sits between the lede and the status line */
-  .rg-hero{display:grid;gap:0 2.6rem;grid-template-areas:"tag" "h1" "lede" "side" "form"}
-  .rg-hero>.rg-tag{grid-area:tag}.rg-hero>h2{grid-area:h1}.rg-hero>.rg-lede{grid-area:lede}
+     the waitlist form comes right after the lede, then the render (Oct 19) */
+  .rg-hero{display:grid;gap:0 2.6rem;grid-template-areas:"tag" "h1" "lede" "form" "side"}
+  .rg-hero>.rg-tag{grid-area:tag}.rg-hero>h1{grid-area:h1}.rg-hero>.rg-lede{grid-area:lede}
   .rg-hero>.rg-side{grid-area:side;min-width:0}.rg-hero>.rg-form{grid-area:form}
-  #main .rg .rg-hero>h2{font-size:clamp(1.6rem,5.2vw,2.2rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 .65rem;text-wrap:balance}
+  #main .rg .rg-hero>h1{font-size:clamp(1.6rem,5.2vw,2.2rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 .65rem;text-wrap:balance}
   .rg-lede{font-size:var(--fs-md);color:var(--text-dim);line-height:1.6;margin:0 0 1.1rem;max-width:46ch}
-  /* on a phone the form sits under the render: one jump to it (Oct 16) */
-  .rg-jump{display:block;width:max-content;margin-top:.8rem;padding:.55rem 1rem;min-height:44px;box-sizing:border-box;border-radius:6px;background:var(--brand-fill,var(--brand));color:#0a1206!important;font-weight:700;font-size:var(--fs-sm);text-decoration:none}
-  .rg-jump:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
   .rg-fig{margin:0 -16px 0;position:relative}
   .rg-fig img{display:block;width:100%;height:auto;aspect-ratio:8/5;object-fit:cover}
   .rg-fig figcaption{padding:.45rem 16px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
   .rg-cbadge{position:absolute;top:12px;left:12px;padding:.2rem .55rem;border-radius:var(--r-pill);background:rgba(10,12,13,.62);color:#f2efe6;font-family:var(--font-mono);font-size:var(--fs-2xs);font-weight:700;letter-spacing:.12em;text-transform:uppercase;backdrop-filter:blur(4px)}
   /* on a phone the badge covered the funnel; the caption and the label above the title already say prototype */
   @media(max-width:899px){.rg-cbadge{display:none}}
-  @media(min-width:900px){.rg-jump{display:none}}
+  @media(max-width:899px){.rg-hero>.rg-side{margin-top:1.4rem}}
   .rg-status{display:flex;gap:.7rem;align-items:flex-start;margin:1.1rem 0 1rem;padding:.75rem .9rem;border:1px solid var(--border);border-left:3px solid var(--brand-fill);border-radius:var(--r-8);background:var(--surface);line-height:1.5;font-size:var(--fs-sm);color:var(--text-dim)}
   .rg-status b{color:var(--text)}
   @media(min-width:900px){
@@ -94,6 +91,7 @@
   .rg-seg span{display:inline-flex;align-items:center;min-height:var(--btn-h);padding:.3rem .95rem;border:1px solid var(--border-2);border-radius:var(--r-sm);font-size:var(--fs-sm);font-weight:600;color:var(--text-dim);cursor:pointer;background:var(--bg)}
   .rg-seg input:checked+span{background:var(--brand-fill);border-color:var(--brand-fill);color:#0a0c0d}
   .rg-seg input:focus-visible+span{outline:2px solid var(--gold);outline-offset:2px}
+  .rg-biz-x{margin:.4rem 0 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
   .rg-go-row{margin:1rem 0 0}
   .rg-go{min-width:14rem}
   @media(max-width:520px){.rg-go{width:100%}}
@@ -156,21 +154,11 @@
 
   /* the opening: two things */
   #main .rg h1{font-size:clamp(1.8rem,6.2vw,2.7rem);line-height:1.1;letter-spacing:-.02em;margin:.4rem 0 .6rem;text-wrap:balance;max-width:22ch}
-  .rg-open{font-size:var(--fs-md);color:var(--text-dim);line-height:1.6;margin:0 0 1.2rem;max-width:52ch}
-  .rg-three{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
-  @media(min-width:700px){.rg-three{grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}}
-  .rg-three a,#main .rg-three a{text-decoration:none}
-  .rg-three a{display:block;height:100%;box-sizing:border-box;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);color:var(--text)!important}
-  .rg-three a:hover,.rg-three a:focus-visible{border-color:var(--brand)}
-  .rg-three a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
-  .rg-three b{display:block;font-size:var(--fs-md);margin:0 0 .2rem}
-  .rg-three .rg-three-x{display:block;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.5}
-  .rg-three .rg-tag{display:flex;margin:0 0 .35rem}
-  .rg-tag.soon{color:var(--text-muted)}
-  .rg-tag.soon::before{background:transparent;box-shadow:inset 0 0 0 2px var(--text-muted)}
   .rg-byline{margin:1rem 0 0;font-size:var(--fs-xs);color:var(--text-muted)}
   .rg-prod{margin:3.6rem 0 0;padding-top:2.2rem;border-top:1px solid var(--border);scroll-margin-top:72px}
   .rg-prod>.rg-sec:first-of-type{margin-top:2.4rem}
+  .rg-first{margin-top:0;padding-top:0;border-top:0}
+  /* Rain Print: the page's one cross-promo, after the gauge, its questions and the second form (Oct 19) */
   /* a product: heading, picture, the rest on a phone; words left, picture right when wide */
   .rg-pair{display:grid;gap:0;grid-template-areas:"head" "fig" "body";align-items:start}
   .rg-pair>.rg-head{grid-area:head}.rg-pair>figure{grid-area:fig;margin:0 0 1.2rem}.rg-pair>.rg-body{grid-area:body}
@@ -224,53 +212,13 @@
   <div class="rg">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Rain gauge</nav>
 
-    <h1>Two things for the rain at your place</h1>
-    <p class="rg-open">One you can buy today, and one I&rsquo;m building. Here are both.</p>
-    <ul class="rg-three">
-      <li><a href="#rain-print"><span class="rg-tag">Available now</span><b>Rain Print</b><span class="rg-three-x">A year of rain at the weather station nearest you, printed and framed.</span></a></li>
-      <li><a href="#gauge"><span class="rg-tag soon">Before planting 2027</span><b>A rain gauge that keeps its own log</b><span class="rg-three-x">A prototype on my bench. Waitlist open.</span></a></li>
-    </ul>
-    
-
-    <section class="rg-prod" id="rain-print" aria-labelledby="rg-rp-h">
-      <div class="rg-pair">
-        <div class="rg-head">
-          <p class="rg-tag">Available now</p>
-          <h2 class="sec-h" id="rg-rp-h">Rain Print</h2>
-          <p class="rg-p">One year of rain at the NOAA station nearest you, drawn day by day on 13 x 19 paper, printed and framed for the wall. Type your town and a year: a drought year, the wet spring, the year you bought the place. Drawing it on screen is free. You pay only for the digital file or a print.</p>
-        </div>
-        <figure>
-          <a href="/rain-print" tabindex="-1" aria-hidden="true"><picture><source type="image/webp" srcset="/img/rain-print-example-2012-ames-ia.webp"><img src="/img/rain-print-example-2012-ames-ia.jpg" width="1200" height="800" alt="Example Rain Print of Ames, Iowa, 2012: a stepped rain line ending well below the dashed usual-year line, 32% less" loading="lazy" decoding="async"></picture></a>
-          <figcaption>A real one: 2012 at Ames, Iowa, the drought year, from NOAA daily records.</figcaption>
-        </figure>
-        <div class="rg-body">
-          <ul class="rg-list">
-            <li><b>Every rain and snow of the year,</b> from NOAA&rsquo;s daily records, next to what a usual year brings.</li>
-            <li><b>Your name and dates on it.</b> You see a proof before I print.</li>
-            <li><b>Printed, framed and shipped by me</b> from Chetek. Every print is numbered, and I initial each one by hand.</li>
-          </ul>
-          <p class="rg-price" id="rg-rp-price">Digital file, print or framed print. Shipping included in the 50 states.</p>
-          <p class="rg-xmas" id="rg-rp-xmas" hidden></p>
-          <a class="rg-go-link" href="/rain-print" data-rg="rain-print">Make your Rain Print</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="rg-prod" id="gauge" aria-labelledby="rg-gauge-h">
+    <section class="rg-prod rg-first" id="gauge" aria-labelledby="rg-gauge-h">
 
     <div class="rg-hero">
       <!-- THE GAUGE'S NAME: this tag line is the one place it is written. Change it here when the name is picked. -->
       <p class="rg-tag"><span><span id="rg-gauge-name">The AGSIST rain gauge</span> &middot; Prototype design</span></p>
-      <h2 id="rg-gauge-h">A rain gauge that keeps its own log</h2>
-      <p class="rg-lede">Read it like any good gauge. Or scan the code on it, take a photo, and the rain goes into your log for that field. <a class="rg-jump" href="#rg-form-1" data-rg-jump>Get on the waitlist</a></p>
-      <div class="rg-side">
-      <figure class="rg-fig">
-        <span class="rg-cbadge" aria-hidden="true">Prototype design</span>
-        <picture><source type="image/webp" srcset="/img/rain-gauge/gauge-wood-post.webp" sizes="(min-width: 900px) 540px, 100vw"><img src="/img/rain-gauge/gauge-wood-post.jpg" width="1600" height="1000" alt="3D render of the prototype rain gauge on a wood fence post by a field: dark funnel, clear tube, white scale, QR code" loading="lazy" decoding="async"></picture>
-        <figcaption>Prototype design, 3D render. On a wood post at the edge of a field.</figcaption>
-      </figure>
-      <p class="rg-status"><span><b>Where it stands:</b> a prototype on my bench in Chetek. I&rsquo;m aiming to have the first ones ready before planting 2027.</span></p>
-      </div>
+      <h1 id="rg-gauge-h">A rain gauge that keeps its own log</h1>
+      <p class="rg-lede">Read it like any good gauge. Or scan the code on it, take a photo, and the rain goes into your log for that field.</p>
       <form class="rg-form" id="rg-form-1" data-n="1" novalidate aria-labelledby="rg-form-h-1">
           <h2 class="rg-form-h" id="rg-form-h-1">Get on the waitlist</h2>
           <p class="rg-form-lead">Everyone on the waitlist hears first and gets the first-batch price. No price is set yet; the first batch will be priced barely over what it costs me to make. Free to join.</p>
@@ -281,7 +229,8 @@
               <label><input type="radio" name="count-1" value="1"><span>1</span></label>
               <label><input type="radio" name="count-1" value="2-5"><span>2 to 5</span></label>
               <label><input type="radio" name="count-1" value="6+"><span>6 or more</span></label>
-            </div></fieldset>
+              <label><input type="checkbox" id="rg-biz-1" name="customers" value="yes" aria-describedby="rg-biz-x-1"><span>For my customers</span></label>
+            </div><p class="rg-biz-x" id="rg-biz-x-1">Pick it if you sell to or work for farmers. I&rsquo;m counting that interest for later; the first batch is for people trying it early.</p></fieldset>
             <label class="field rg-use"><span>What would you use it for? <i>(optional)</i></span><input type="text" id="rg-use-1" name="use" maxlength="200" placeholder="A few fields, rented ground"></label>
           </div>
           <div class="rg-hp" aria-hidden="true"><label for="rg-gotcha-1">Leave this empty</label><input type="text" id="rg-gotcha-1" name="_gotcha" tabindex="-1" autocomplete="off"></div>
@@ -289,6 +238,14 @@
           <p class="rg-msg" id="rg-msg-1" role="status" aria-live="polite" hidden></p>
           <p class="rg-fine">Only rain gauge news goes to this address. It does not sign you up for AGSIST Daily. See <a href="/privacy">privacy</a>.</p>
         </form>
+      <div class="rg-side">
+      <figure class="rg-fig">
+        <span class="rg-cbadge" aria-hidden="true">Prototype design</span>
+        <picture><source type="image/webp" srcset="/img/rain-gauge/gauge-wood-post.webp" sizes="(min-width: 900px) 540px, 100vw"><img src="/img/rain-gauge/gauge-wood-post.jpg" width="1600" height="1000" alt="3D render of the prototype rain gauge on a wood fence post by a field: dark funnel, clear tube, white scale, QR code" loading="lazy" decoding="async"></picture>
+        <figcaption>Prototype design, 3D render. On a wood post at the edge of a field.</figcaption>
+      </figure>
+      <p class="rg-status"><span><b>Where it stands:</b> a prototype on my bench in Chetek. I&rsquo;m aiming to have the first ones ready before planting 2027.</span></p>
+      </div>
     </div>
 
     <section class="rg-sec" id="what" aria-labelledby="rg-what-h">
@@ -435,7 +392,8 @@
               <label><input type="radio" name="count-2" value="1"><span>1</span></label>
               <label><input type="radio" name="count-2" value="2-5"><span>2 to 5</span></label>
               <label><input type="radio" name="count-2" value="6+"><span>6 or more</span></label>
-            </div></fieldset>
+              <label><input type="checkbox" id="rg-biz-2" name="customers" value="yes" aria-describedby="rg-biz-x-2"><span>For my customers</span></label>
+            </div><p class="rg-biz-x" id="rg-biz-x-2">Pick it if you sell to or work for farmers. I&rsquo;m counting that interest for later; the first batch is for people trying it early.</p></fieldset>
             <label class="field rg-use"><span>What would you use it for? <i>(optional)</i></span><input type="text" id="rg-use-2" name="use" maxlength="200" placeholder="A few fields, rented ground"></label>
           </div>
           <div class="rg-hp" aria-hidden="true"><label for="rg-gotcha-2">Leave this empty</label><input type="text" id="rg-gotcha-2" name="_gotcha" tabindex="-1" autocomplete="off"></div>
@@ -443,6 +401,30 @@
           <p class="rg-msg" id="rg-msg-2" role="status" aria-live="polite" hidden></p>
           <p class="rg-fine">Only rain gauge news goes to this address. It does not sign you up for AGSIST Daily. See <a href="/privacy">privacy</a>.</p>
         </form>
+    </section>
+
+    <section class="rg-prod" id="rain-print" aria-labelledby="rg-rp-h">
+      <div class="rg-pair">
+        <div class="rg-head">
+          <p class="rg-tag">Also from me &middot; Available now</p>
+          <h2 class="sec-h" id="rg-rp-h">Rain Print</h2>
+          <p class="rg-p">One year of rain at the NOAA station nearest you, drawn day by day on 13 x 19 paper, printed and framed for the wall. Type your town and a year: a drought year, the wet spring, the year you bought the place. Drawing it on screen is free. You pay only for the digital file or a print.</p>
+        </div>
+        <figure>
+          <a href="/rain-print" tabindex="-1" aria-hidden="true"><picture><source type="image/webp" srcset="/img/rain-print-example-2012-ames-ia.webp"><img src="/img/rain-print-example-2012-ames-ia.jpg" width="1200" height="800" alt="Example Rain Print of Ames, Iowa, 2012: a stepped rain line ending well below the dashed usual-year line, 32% less" loading="lazy" decoding="async"></picture></a>
+          <figcaption>A real one: 2012 at Ames, Iowa, the drought year, from NOAA daily records.</figcaption>
+        </figure>
+        <div class="rg-body">
+          <ul class="rg-list">
+            <li><b>Every rain and snow of the year,</b> from NOAA&rsquo;s daily records, next to what a usual year brings.</li>
+            <li><b>Your name and dates on it.</b> You see a proof before I print.</li>
+            <li><b>Printed, framed and shipped by me</b> from Chetek. Every print is numbered, and I initial each one by hand.</li>
+          </ul>
+          <p class="rg-price" id="rg-rp-price">Digital file, print or framed print. Shipping included in the 50 states.</p>
+          <p class="rg-xmas" id="rg-rp-xmas" hidden></p>
+          <a class="rg-go-link" href="/rain-print" data-rg="rain-print">Make your Rain Print</a>
+        </div>
+      </div>
     </section>
 
     <p class="rg-by">Sigurd Lindquist, CCA, Chetek, Wisconsin</p>
@@ -476,8 +458,9 @@
   (function () {
     'use strict';
     // Same worker, topic and fields as before (workers/subs-worker.js /notice).
-    // The worker keeps email, zip and one note line of 280; how many gauges and
-    // what for go into that note so the worker does not change.
+    // The worker keeps email, zip and one note line of 280; how many gauges,
+    // "For my customers" (Oct 19: counts business interest) and what for go
+    // into that note so the worker does not change.
     var EP = 'https://agsist-subs.dnilgis.workers.dev/notice';
     var KEY = 'agsist_notices';
     var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -491,9 +474,10 @@
       m.textContent = text; m.className = 'rg-msg ok'; m.hidden = false;
       f.querySelectorAll('input,button').forEach(function (i) { i.disabled = true; });
     }
-    function noteFor(count, use) {
+    function noteFor(count, use, biz) {
       var parts = [];
       if (count) parts.push('Gauges: ' + count);
+      if (biz) parts.push('For my customers');
       if (use) parts.push('Use: ' + use.replace(/\s+/g, ' '));
       return parts.join('. ').slice(0, 280);
     }
@@ -509,11 +493,12 @@
         var email = $('rg-email').value.trim();
         var zip = zipIn.value.trim(), use = $('rg-use').value.trim();
         var c = f.querySelector('input[name="count-' + n + '"]:checked'), count = c ? c.value : '';
+        var biz = !!$('rg-biz').checked;
         if (!EMAIL_RE.test(email)) { say('That email does not look right. Check it and try again.', false); $('rg-email').focus(); return; }
         if (zip && !/^\d{5}$/.test(zip)) { say('A ZIP is five digits. Fix it or leave it blank.', false); zipIn.focus(); return; }
         var body = { email: email, topic: 'rain-gauge', source: 'rain-gauge', _gotcha: $('rg-gotcha').value };
         if (zip) body.zip = zip;
-        var note = noteFor(count, use);
+        var note = noteFor(count, use, biz);
         if (note) body.note = note;
         go.disabled = true;
         // a silent worker gives up after 12 s instead of leaving the button stuck (2026-10-14, panel 3 F4)
@@ -530,7 +515,7 @@
             if (res.ok) {
               done();
               forms.forEach(function (g) { lock(g, g === f ? 'Thanks. You are on the waitlist. You will hear from me when the first batch is ready.' : 'You are on the waitlist.'); });
-              try { if (typeof window.gtag === 'function') window.gtag('event', 'notice_signup', { topic: 'rain-gauge', source: 'rain-gauge', form: n === '1' ? 'top' : 'bottom' }); } catch (e) {}
+              try { if (typeof window.gtag === 'function') window.gtag('event', 'notice_signup', { topic: 'rain-gauge', source: 'rain-gauge', form: n === '1' ? 'top' : 'bottom', for_customers: biz ? 'yes' : 'no' }); } catch (e) {}
             } else {
               go.disabled = false;
               say(res.status === 429 && res.error === 'busy today' ? 'Lots of people are signing up today. Try again tomorrow, or write to me through /contact.'
@@ -567,13 +552,6 @@
     if (!ok('digital') || !ok('print12x18') || !ok('framed12x18')) return '';
     return 'Digital file $' + cfg.digital + ', print $' + cfg.print12x18 + ', framed $' + cfg.framed12x18 + '. Shipping included in the 50 states.';
   }
-  // the phone's jump to the waitlist form (Oct 16)
-  (function () {
-    var j = document.querySelector('[data-rg-jump]');
-    if (j) j.addEventListener('click', function () {
-      try { if (typeof window.gtag === 'function') window.gtag('event', 'rain_gauge_waitlist_jump', { page: location.pathname }); } catch (e) {}
-    });
-  })();
   </script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>

@@ -6,7 +6,7 @@
   "terms": "Month-to-month. No minimum, cancel any time, no penalty.",
   "tiers": [
     {
-      "id": "founding",
+      "id": "daily",
       "name": "Sponsor",
       "price_month": 149,
       "slots": 1,
@@ -22,7 +22,7 @@
       "slots": null,
       "exclusive": true,
       "placement": "One sponsor ribbon on a single high-traffic page, category-exclusive.",
-      "note": "Any one page — cash bids, the hail map, break-even, a state hail page. The 51 state hail pages can each carry their own ribbon at the same rate."
+      "note": "Any one page: cash bids, the hail map, break-even, a state hail page. The 51 state hail pages can each carry their own ribbon at the same rate."
     },
     {
       "id": "supporter",
