@@ -34,6 +34,18 @@ checked rather than trusted.
 Search Console is filtered to US searches. Bing's API has no country filter, so
 Bing figures are worldwide and the file says so.
 
+RETURNS AND THE RAIN PRINT FUNNEL
+
+"returns" asks whether readers come back: GA4's new-vs-returning split (28 and
+90 days) and weekly cohorts, the share of each week's new readers active again
+on a later day within 14 days, withheld under COHORT_MIN new readers. GA4's
+caveats (cookies, two devices, consent, blocking) are written into the file.
+funnel_section() counts the events the Rain Print page sends, by week and for
+the last 7 days: event names only, never a parameter. It is NOT written to
+data/audience.json (the file is public; Sig, 2026-10-19): morning_report.py
+calls it in its own job and the counts go only into Sig's email. Both use the
+same US and server-town filter; returns fails on its own and keeps its last copy.
+
 WHAT IT DOES NOT DO
 
 It does not touch the AI-citation figures. Bing publishes those in its
@@ -163,6 +175,22 @@ def f_readers(servers):
     ]))
 
 
+def f_and(*exprs):
+    from google.analytics.data_v1beta.types import FilterExpression, FilterExpressionList
+    return FilterExpression(and_group=FilterExpressionList(expressions=list(exprs)))
+
+
+def f_in(field, values):
+    from google.analytics.data_v1beta.types import Filter, FilterExpression
+    return FilterExpression(filter=Filter(field_name=field, in_list_filter=Filter.InListFilter(values=list(values))))
+
+
+def f_begins(field, value):
+    from google.analytics.data_v1beta.types import Filter, FilterExpression
+    return FilterExpression(filter=Filter(field_name=field, string_filter=Filter.StringFilter(
+        value=value, match_type=Filter.StringFilter.MatchType.BEGINS_WITH)))
+
+
 def summarise(rows):
     u = sum(r.get("activeUsers", 0) for r in rows)
     e = sum(r.get("engagedSessions", 0) for r in rows)
@@ -252,6 +280,168 @@ def ga4_section(ga, rg, today):
             "servers": {"rule": {"seconds": SERVER_SECONDS, "minReaders": SERVER_MIN},
                         "window": r90[0], "towns": servers,
                         "users": sum(s["users"] for s in servers)}}
+
+
+# ── do readers come back? ─────────────────────────────────────────────────
+# 13,004 of 13,241 US readers were "new" over 90 days (file of 2026-10-18).
+# That is GA4's newUsers: browsers whose first visit fell in the window. It is
+# not a return rate, and it cannot be one: a reader who came on day 1 and on
+# day 40 is in both counts. This section asks the question directly.
+#
+#   newVsReturning  GA4's own split, users and sessions, 28 and 90 days. The
+#                   user rows overlap (someone new on Monday who came back
+#                   Thursday is in both), so they are never added up; the
+#                   session rows do add up, and the share printed is of
+#                   sessions.
+#   cohorts         readers first seen in one Monday-to-Sunday week, and how
+#                   many of them came back on a LATER day within 14 days of
+#                   their own first day. Asked one first day at a time (date
+#                   range d+1..d+14, firstSessionDate = d), so every reader is
+#                   counted once and a reader who came back three times is
+#                   still one. The days are disjoint, so a week is their sum.
+#                   Only weeks whose last day is 14 days behind the window end
+#                   are shown, and a week under COHORT_MIN new readers prints
+#                   its reason instead of a share.
+RETURN_DAYS = 14
+COHORT_WEEKS = 8
+COHORT_MIN = 100        # new readers in a week; under it, no share is printed
+RETURNS_CAVEATS = [
+    "GA4 counts browsers, not people. It knows a reader by a cookie: one person on a phone and a computer is two "
+    "readers, and a cleared cookie or a new browser makes a returning reader look new.",
+    "Safari and some other browsers expire a cookie set by a script after about 7 days without a visit, so a reader "
+    "who comes back after a week can be counted as new. That pushes the return share DOWN, not up.",
+    "Readers who send Global Privacy Control, who turned analytics off on /privacy, who block Google Analytics, or "
+    "whose browser is automated are not counted at all, on any day.",
+    "US only, with the same server towns removed as every other GA4 figure in this file. A reader who was in a "
+    "server town, or outside the US, on their first day is not in a cohort.",
+    "GA4 sends no row for a day with no returns; such a day counts as zero returns.",
+    "These are estimates for watching a trend, not exact counts.",
+]
+
+
+def mondays(d):
+    return d - timedelta(days=d.weekday())
+
+
+def cohort_weeks(end, n=COHORT_WEEKS, days=RETURN_DAYS):
+    """The n newest Monday-to-Sunday weeks whose last day is `days` or more
+    behind `end`, oldest first, as (monday, sunday)."""
+    last = end - timedelta(days=days)
+    sun = last - timedelta(days=(last.weekday() + 1) % 7)
+    return [(sun - timedelta(days=6 + 7 * i), sun - timedelta(days=7 * i)) for i in range(n - 1, -1, -1)]
+
+
+def ymd(d):
+    return d.strftime("%Y%m%d")
+
+
+def cohort_rows(weeks, sizes, back, min_n=COHORT_MIN):
+    """sizes / back: {YYYYMMDD: readers}. A day missing from sizes had no new
+    readers; missing from back, no returns. Returns one row per week."""
+    out = []
+    for mon, sun in weeks:
+        days = [ymd(mon + timedelta(days=i)) for i in range(7)]
+        n = sum(sizes.get(d, 0) for d in days)
+        k = sum(back.get(d, 0) for d in days)
+        row = {"week": mon.isoformat(), "end": sun.isoformat(), "newReaders": n, "returned": k}
+        if n < min_n:
+            row.update(share=None, withheld="%d new readers that week, under the %d needed to print a share" % (n, min_n))
+        else:
+            row.update(share=round(k / n, 3), withheld=None)
+        out.append(row)
+    return out
+
+
+def returns_section(ga, F, rg):
+    end = date.fromisoformat(rg[0]["end"])
+    nvr = {}
+    for k, v in by_range(ga.run(["newVsReturning"], ["activeUsers", "sessions", "engagedSessions"],
+                                [x for x in rg if x["id"] in ("28d", "90d")], filt=F)).items():
+        rows = {}
+        for r in v:
+            key = r["newVsReturning"] if r["newVsReturning"] in ("new", "returning") else "not set"
+            a = rows.setdefault(key, {"users": 0, "sessions": 0, "engaged": 0})
+            a["users"] += r["activeUsers"]
+            a["sessions"] += r["sessions"]
+            a["engaged"] += r["engagedSessions"]
+        s = sum(x["sessions"] for x in rows.values())
+        nvr[k] = {"rows": rows, "sessions": s,
+                  "returningSessionShare": round(rows.get("returning", {}).get("sessions", 0) / s, 3) if s else None}
+
+    weeks = cohort_weeks(end)
+    days = [weeks[0][0] + timedelta(days=i) for i in range((weeks[-1][1] - weeks[0][0]).days + 1)]
+    sizes = {}
+    for r in ga.run(["firstSessionDate"], ["activeUsers"],
+                    [{"id": "c", "start": days[0].isoformat(), "end": days[-1].isoformat()}],
+                    filt=f_and(F, f_in("firstSessionDate", [ymd(d) for d in days]))):
+        sizes[r["firstSessionDate"]] = sizes.get(r["firstSessionDate"], 0) + r["activeUsers"]
+    back = {}
+    for i in range(0, len(days), 4):        # the Data API takes at most four date ranges a request
+        chunk = days[i:i + 4]
+        drs = [{"id": "d" + ymd(d), "start": (d + timedelta(days=1)).isoformat(),
+                "end": (d + timedelta(days=RETURN_DAYS)).isoformat()} for d in chunk]
+        for r in ga.run(["firstSessionDate"], ["activeUsers"], drs, filt=f_and(F, f_in("firstSessionDate", [ymd(d) for d in chunk]))):
+            if r.get("dateRange", drs[0]["id"]) == "d" + r["firstSessionDate"]:
+                back[r["firstSessionDate"]] = back.get(r["firstSessionDate"], 0) + r["activeUsers"]
+    return {"through": end.isoformat(), "newVsReturning": nvr,
+            "cohorts": {"rule": {"returnDays": RETURN_DAYS, "minNewReaders": COHORT_MIN, "week": "Monday to Sunday",
+                                 "returned": "active again on a later day, within %d days of their own first day" % RETURN_DAYS},
+                        "weeks": cohort_rows(weeks, sizes, back)},
+            "caveats": RETURNS_CAVEATS}
+
+
+# ── the Rain Print funnel ─────────────────────────────────────────────────
+# NOT written to data/audience.json, which is public (Sig, 2026-10-19: no
+# Rain Print numbers in a committed file until he decides). morning_report.py
+# calls funnel_section() in its own job; the counts go only into his email.
+# Event names only, counted on /rain-print* pages. No event parameter is read:
+# the design code, the Stripe session and the town never leave GA4. The events
+# are the ones components/rain-print.js and components/signup-ask.js send.
+# rain_print_buy and rain_print_order carry a via / result parameter that GA4
+# can only split once it is registered as a custom dimension; until then a
+# "Pay" press counts Stripe and the order form together, and an order-form
+# send counts sent and failed together.
+FUNNEL = [
+    ("rain_print_draw", "draws", "a print drawn for a town and year (every redraw counts)"),
+    ("rain_print_step3", "pay button seen", "the pay button came on screen, once a visit"),
+    ("rain_print_proof", "review opened", "the review sheet opened (the order button, or tapping the print)"),
+    ("rain_print_buy", "pay pressed", "Pay pressed on the review sheet: to Stripe checkout or to the order form"),
+    ("rain_print_order", "order form sent", "the order request form submitted (sent or failed)"),
+    ("purchase", "paid, back from Stripe", "back on the page from a paid Stripe checkout, once per order per browser"),
+    ("email_signup", "email signups", "a Daily signup made on a Rain Print page"),
+]
+FUNNEL_WEEKS = 8
+FUNNEL_PATH = "/rain-print"
+FUNNEL_CAVEATS = [
+    "GA4 events, counted by GA4, with the same US-only and server-town rules as the rest of this file.",
+    "A paid order counts only if the buyer came back to the page from Stripe; Stripe itself is the record of what was paid.",
+    "A week with no row for an event counts as zero; a zero can also mean the page did not send that event yet.",
+]
+
+
+def funnel_section(ga, F, rg):
+    end = date.fromisoformat(rg[0]["end"])
+    last_sun = end - timedelta(days=(end.weekday() + 1) % 7)
+    weeks = [(last_sun - timedelta(days=6 + 7 * i), last_sun - timedelta(days=7 * i)) for i in range(FUNNEL_WEEKS - 1, -1, -1)]
+    names = [e for e, _, _ in FUNNEL]
+    filt = f_and(F, f_in("eventName", names), f_begins("pagePath", FUNNEL_PATH))
+    counts = {}
+    for r in ga.run(["date", "eventName"], ["eventCount"],
+                    [{"id": "w", "start": weeks[0][0].isoformat(), "end": end.isoformat()}], filt=filt):
+        d = date(int(r["date"][:4]), int(r["date"][4:6]), int(r["date"][6:]))
+        counts[(mondays(d), r["eventName"])] = counts.get((mondays(d), r["eventName"]), 0) + r["eventCount"]
+    wk = [{"week": m.isoformat(), "end": s.isoformat(), "counts": {e: counts.get((m, e), 0) for e in names}}
+          for m, s in weeks]
+    r7 = [x for x in rg if x["id"] == "7d"][0]
+    got = {r["eventName"]: r for r in ga.run(["eventName"], ["eventCount", "totalUsers"], [r7], filt=filt)}
+    last7 = {"start": r7["start"], "end": r7["end"],
+             "counts": {e: got[e]["eventCount"] if e in got else 0 for e in names},
+             "people": {e: got[e]["totalUsers"] if e in got else 0 for e in names}}
+    return {"through": end.isoformat(), "pages": FUNNEL_PATH + "*",
+            "events": [{"event": e, "label": l, "means": m} for e, l, m in FUNNEL],
+            "weeks": wk, "last7": last7, "stripe": None,
+            "stripeNote": "No Stripe source runs in this job; the morning report reads paid orders from Stripe once STRIPE_READ_KEY is set.",
+            "caveats": FUNNEL_CAVEATS}
 
 
 # ── Search Console ────────────────────────────────────────────────────────
@@ -350,9 +540,10 @@ def merge_series(ga_days, g_days, b_days, start, end):
     return out
 
 
-def build(today, prev, ga=None, gsc=None, bing=None, email=None, errors=None):
-    """prev: the previous file (or {}). ga/gsc/bing: section dicts or None when
-    that source was not available this run. Anything None is carried from prev."""
+def build(today, prev, ga=None, gsc=None, bing=None, email=None, errors=None, returns=None):
+    """prev: the previous file (or {}). ga/gsc/bing/returns: section dicts
+    or None when that source was not available this run. Anything None is
+    carried from prev, with its own "through" date on it."""
     rg = ranges(today)
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
     src = dict(prev.get("sources") or {})
@@ -412,6 +603,15 @@ def build(today, prev, ga=None, gsc=None, bing=None, email=None, errors=None):
             out["email"] = prev["email"]
         src["email"] = dict(src.get("email") or {}, ok=False, error=(errors or {}).get("email", "not configured"))
 
+    if returns is not None:
+        out["returns"] = returns
+        src["returns"] = {"ok": True, "through": returns["through"], "fetched": now}
+    else:
+        if "returns" in prev:
+            out["returns"] = prev["returns"]
+        src["returns"] = dict(src.get("returns") or {}, ok=False, error=(errors or {}).get("returns", "not configured"))
+    src.pop("rain_print_funnel", None)      # never in this public file
+
     # Carried from the exports, with their own dates, until Bing has an API for them.
     if "ai" in prev:
         out["ai"] = prev["ai"]
@@ -433,6 +633,7 @@ def main():
     except ValueError:
         prev = {}
     errors = {}
+    extra = {}
     ga = gsc = bing = email = None
     prop = os.environ.get("GA4_PROPERTY_ID", "").strip()
     cred = os.environ.get("GA4_SERVICE_ACCOUNT", "").strip()
@@ -456,6 +657,19 @@ def main():
         except Exception as e:  # noqa: BLE001 -- one source failing must not take the others down
             errors["ga4"] = "%s: %s" % (type(e).__name__, str(e)[:300])
             log("::warning::GA4 failed, keeping the previous figures: " + errors["ga4"])
+        if ga:
+            # Each on its own: a refused cohort request must not cost the totals.
+            # The Rain Print funnel is not pulled here: it never goes in this public file.
+            try:
+                extra["returns"] = returns_section(GA4(prop, BetaAnalyticsDataClient(credentials=c)),
+                                                   f_readers(ga["servers"]["towns"]), rg)
+                w = [x for x in extra["returns"]["cohorts"]["weeks"] if x["share"] is not None]
+                log("returns: %d of %d cohort weeks printable" % (len(w), len(extra["returns"]["cohorts"]["weeks"])))
+            except Exception as e:  # noqa: BLE001
+                errors["returns"] = "%s: %s" % (type(e).__name__, str(e)[:300])
+                log("::warning::returns failed, keeping the previous figures: " + errors["returns"])
+        else:
+            errors.setdefault("returns", "not pulled: the main GA4 pull failed")
     if info:
         try:
             from google.auth.transport.requests import AuthorizedSession
@@ -492,7 +706,7 @@ def main():
     if not any((ga, gsc, bing, email is not None)):
         log("::warning::no source was reachable or configured -- data/audience.json left exactly as it was")
         return 0
-    out = build(today, prev, ga, gsc, bing, email, errors)
+    out = build(today, prev, ga, gsc, bing, email, errors, returns=extra.get("returns"))
     OUT.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
     log("wrote data/audience.json")
     return 0
@@ -660,6 +874,123 @@ def selftest():
     o4 = build(today, exp, g, None, None, None)
     t("mode" not in o4 and "stateFlagRule" not in o4 and set(o4["totals"]) == {"7d", "28d", "90d", "ytd"},
       "once GA4 answers, the export's single range and flag rule are gone")
+    # ── returns: hand-worked ──────────────────────────────────────────────
+    # The window ends Sat Oct 17. A week's last day must be 14 days behind
+    # that, so on or before Sat Oct 3: the newest whole Monday-Sunday week is
+    # Sep 21-27 (Sep 27 + 14 = Oct 11), and Sep 28-Oct 4 is NOT (Oct 4 + 14 =
+    # Oct 18, after the end). Eight weeks back from it starts Aug 3.
+    rg2 = ranges(date(2026, 10, 19))
+    wks = cohort_weeks(date(2026, 10, 17))
+    t(len(wks) == 8 and wks[-1] == (date(2026, 9, 21), date(2026, 9, 27)) and wks[0] == (date(2026, 8, 3), date(2026, 8, 9)),
+      "cohort weeks: the newest is the last whole week 14 days behind the end, eight in all, Monday first")
+    t(cohort_weeks(date(2026, 10, 11))[-1] == (date(2026, 9, 21), date(2026, 9, 27)),
+      "a week whose Sunday is exactly 14 days back is complete")
+    # The withhold gate, at its edge: 100 prints, 99 does not.
+    wk = [(date(2026, 9, 14), date(2026, 9, 20)), (date(2026, 9, 21), date(2026, 9, 27))]
+    cr = cohort_rows(wk, {"20260914": 99, "20260921": 60, "20260927": 40}, {"20260914": 30, "20260921": 9, "20260927": 3})
+    t(cr[0]["share"] is None and cr[0]["newReaders"] == 99 and "99 new readers" in cr[0]["withheld"] and cr[0]["returned"] == 30,
+      "a week under 100 new readers prints its reason and its n, not a share")
+    t(cr[1] == {"week": "2026-09-21", "end": "2026-09-27", "newReaders": 100, "returned": 12, "share": 0.12, "withheld": None},
+      "100 new readers, 12 back: 12% (9 + 3 of 60 + 40), with n beside it")
+
+    SIZES = {"20260921": 70, "20260922": 50, "20260926": 30, "20260915": 40}      # Sep 21-27: 150; Sep 14-20: 40
+    BACK = {"20260921": 14, "20260922": 9, "20260926": 4, "20260915": 6}         # Sep 21-27: 27 of 150 = 18%
+    seen2 = []
+
+    def in_list(f):
+        out = []
+        for e in f.and_group.expressions:
+            if e.filter.field_name in ("firstSessionDate", "eventName"):
+                out += list(e.filter.in_list_filter.values)
+        return out
+
+    class Client2:
+        def run_report(self, req):
+            seen2.append(req)
+            dims = [d.name for d in req.dimensions]
+            mets = [m.name for m in req.metrics]
+            multi = len(req.date_ranges) > 1
+            rows = []
+            if dims == ["newVsReturning"]:
+                for r in req.date_ranges:
+                    for nv, u, s_, e in (("new", 900, 1000, 600), ("returning", 200, 500, 400), ("(not set)", 1, 2, 0)):
+                        rows.append([nv, r.name, u, s_, e])
+                return Res(dims + ["dateRange"], mets, rows)
+            if dims == ["firstSessionDate"]:
+                want = in_list(req.dimension_filter)
+                if not multi and req.date_ranges[0].name == "c":
+                    return Res(dims, mets, [[d, SIZES[d]] for d in want if d in SIZES])
+                for r in req.date_ranges:
+                    for d in want:
+                        if r.name == "d" + d:
+                            if BACK.get(d):
+                                rows.append([d, r.name, BACK[d]])
+                        else:
+                            rows.append([d, r.name, 999])       # the wrong (day, range) pair: must be ignored
+                return Res(dims + (["dateRange"] if multi else []), mets,
+                           [x if multi else [x[0], x[2]] for x in rows])
+            if dims == ["date", "eventName"]:
+                return Res(dims, mets, [["20260921", "rain_print_draw", 5], ["20260927", "rain_print_draw", 3],
+                                        ["20260928", "purchase", 1], ["20260920", "email_signup", 2],
+                                        ["20261013", "rain_print_draw", 7]])
+            if dims == ["eventName"]:
+                return Res(dims, mets, [["rain_print_draw", 40, 12], ["email_signup", 2, 2], ["purchase", 1, 1]])
+            raise AssertionError("unexpected request %s" % dims)
+
+    F2 = f_readers([{"region": "Virginia", "city": "Ashburn"}])
+    ret = returns_section(GA4("123", Client2()), F2, rg2)
+    nv = ret["newVsReturning"]
+    t(set(nv) == {"28d", "90d"} and nv["28d"]["rows"]["returning"] == {"users": 200, "sessions": 500, "engaged": 400}
+      and nv["28d"]["rows"]["not set"]["sessions"] == 2 and nv["28d"]["sessions"] == 1502,
+      "new vs returning: users and sessions per window, the unset row kept apart")
+    t(nv["90d"]["returningSessionShare"] == 0.333 and "returningUserShare" not in nv["90d"],
+      "the share is of sessions (500 of 1,502), never of users, whose rows overlap")
+    cw = {x["week"]: x for x in ret["cohorts"]["weeks"]}
+    t(cw["2026-09-21"]["newReaders"] == 150 and cw["2026-09-21"]["returned"] == 27 and cw["2026-09-21"]["share"] == 0.18,
+      "a cohort: 27 of 150 came back within 14 days = 18%, the wrong date-range pairs ignored")
+    t(cw["2026-09-14"]["share"] is None and cw["2026-09-14"]["newReaders"] == 40 and cw["2026-09-14"]["returned"] == 6,
+      "a 40-reader cohort is withheld with its n")
+    t(cw["2026-08-03"]["newReaders"] == 0 and cw["2026-08-03"]["share"] is None, "a week with no rows is zero readers, withheld, not 0%")
+    backs = [r for r in seen2 if [d.name for d in r.dimensions] == ["firstSessionDate"] and r.date_ranges[0].name != "c"]
+    t(len(backs) == 14 and all(len(r.date_ranges) <= 4 for r in backs), "56 cohort days asked four at a time, the API's limit")
+    pairs = [(r.name, r.start_date, r.end_date) for q in backs for r in q.date_ranges]
+    t(("d20260921", "2026-09-22", "2026-10-05") in pairs and len({p[0] for p in pairs}) == 56,
+      "each first day d is asked for d+1 to d+14: a later day, within 14 days")
+    t(max(p[2] for p in pairs) <= rg2[0]["end"], "no cohort window reaches past the last finished day")
+    sz = [r for r in seen2 if [d.name for d in r.dimensions] == ["firstSessionDate"] and r.date_ranges[0].name == "c"][0]
+    t((sz.date_ranges[0].start_date, sz.date_ranges[0].end_date) == ("2026-08-03", "2026-09-27") and len(in_list(sz.dimension_filter)) == 56,
+      "cohort sizes: first seen Aug 3 to Sep 27, one request")
+    t(all("United States" in str(r.dimension_filter) and "Ashburn" in str(r.dimension_filter) for r in seen2),
+      "every returns and funnel request is US only with the server towns out")
+    t(len(ret["caveats"]) >= 4 and any("two readers" in c for c in ret["caveats"]) and any("7 days" in c for c in ret["caveats"]),
+      "the file names GA4's caveats: cookies, two devices, cookie expiry, consent and blocking")
+
+    seen2.clear()
+    fn = funnel_section(GA4("123", Client2()), F2, rg2)
+    fw = {x["week"]: x["counts"] for x in fn["weeks"]}
+    t(len(fn["weeks"]) == 8 and fn["weeks"][-1]["week"] == "2026-10-05" and fn["weeks"][-1]["end"] == "2026-10-11",
+      "funnel weeks: the last whole Monday-Sunday week before the end, eight of them")
+    t(fw["2026-09-21"]["rain_print_draw"] == 8 and fw["2026-09-28"]["purchase"] == 1 and fw["2026-09-14"]["email_signup"] == 2
+      and fw["2026-09-21"]["purchase"] == 0, "events land in their own Monday week (Sun Sep 27 is Sep 21's, Mon Sep 28 the next)")
+    t("2026-10-12" not in fw, "the unfinished week is left out of the weekly rows")
+    t(fn["last7"]["counts"]["rain_print_draw"] == 40 and fn["last7"]["people"]["rain_print_draw"] == 12
+      and fn["last7"]["counts"]["rain_print_buy"] == 0, "last 7 days: counts and people per event; no row is zero")
+    t(all("BEGINS_WITH" in str(r.dimension_filter) and "/rain-print" in str(r.dimension_filter) for r in seen2)
+      and set(in_list(seen2[0].dimension_filter)) == {e for e, _, _ in FUNNEL},
+      "funnel requests: only the Rain Print events, only on /rain-print pages")
+    t(not any(d.name.startswith("customEvent") or d.name in ("transactionId", "pageLocation") for r in seen2 for d in r.dimensions),
+      "no event parameter, transaction id or full URL is ever asked for")
+    t(fn["stripe"] is None, "no Stripe figure is invented here")
+
+    o6 = build(date(2026, 10, 19), {"rain_print_funnel": fn, "sources": {"rain_print_funnel": {"ok": True}}}, g, None, None, None, returns=ret)
+    t(o6["returns"] is ret and o6["sources"]["returns"]["ok"], "returns go into the file")
+    t("rain_print_funnel" not in o6 and "rain_print_funnel" not in o6["sources"]
+      and "rain_print" not in json.dumps(o6) and "purchase" not in json.dumps(o6),
+      "no Rain Print funnel number reaches the public file, even one an older file carried")
+    o7 = build(date(2026, 10, 20), o6, g, None, None, None, {"returns": "boom"})
+    t(o7["returns"] == ret and o7["sources"]["returns"]["ok"] is False and o7["sources"]["returns"]["error"] == "boom"
+      and o7["returns"]["through"] == "2026-10-17",
+      "a failed returns pull keeps the last one, with its own through date, and says it failed")
     print("selftest " + ("passed" if ok else "FAILED"))
     return 0 if ok else 1
 
