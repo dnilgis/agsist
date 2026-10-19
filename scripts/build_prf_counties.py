@@ -44,6 +44,8 @@ sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import build_prf_states as S  # noqa: E402  shared helpers: long_date, money2, slug, boot, text_of
 import inject_static_nav as nav  # noqa: E402
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
+import cross_links as XL  # noqa: E402  same-county links between the county sets
+import seo_caps as CAPS  # noqa: E402  the site's one title and description cap
 from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
 
 D = os.path.join(ROOT, "data", "prf")
@@ -166,15 +168,18 @@ def page(ctx):
     full = f"{name}, {stn}"
     g_list = ", ".join(str(g) for g in grids)
     g_short = ", ".join(str(g) for g in grids[:6]) + (f" and {ng - 6} more" if ng > 6 else "")
-    title = f"PRF Insurance in {full}: {cy} Grids and Rates | AGSIST"
-    if len(title) > 75:
-        title = f"PRF Insurance, {full}: {cy} | AGSIST"
+    # one cap for the site (scripts/seo_caps.py, was 75 here): " | AGSIST" gives way first, then words;
+    # the year stays
+    title = CAPS.fit([f"PRF Insurance in {full}: {cy} Grids and Rates{CAPS.SUFFIX}",
+                      f"PRF Insurance in {full}: {cy} Grids and Rates",
+                      f"PRF Insurance in {full}: {cy} Grids",
+                      f"PRF Insurance, {full}: {cy}"])
     desc = (f"PRF insurance in {full} for {cy}: {ng} {'grid' if ng == 1 else 'grids'} ({g_short}), "
             f"county values {money2(gz)} grazing and {money2(hy) if hy is not None else 'no'} hay per acre, rates by month, history since {y0}.")
-    if len(desc) > 160:
+    if len(desc) > CAPS.DESC_MAX:
         desc = (f"PRF in {full} for {cy}: {ng} {'grid' if ng == 1 else 'grids'}, county values for grazing and hay, "
                 f"rates by month and how often each paid since {y0}.")
-    if len(desc) > 160:
+    if len(desc) > CAPS.DESC_MAX:
         desc = f"PRF in {full}, {cy}: {ng} grids, county values, rates by month and the record since {y0}."
     calc = f"/prf?c={fips}"
     # ---- each pair of months
@@ -256,9 +261,10 @@ def page(ctx):
     faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faq)
     nb_html = (" ".join(f'<a href="{h}">{e(n)}</a>' for n, h in nbrs)) if nbrs else ""
     more = " &middot; ".join(f'<a href="{h}">{t}</a>' for t, h in links)
-    # The rain STATE page only: rain county pages can come and go week to week,
-    # and this build must not read data/rain (it is held to its output by --check).
-    rain = (f'<p class="prf-fine"><a href="/rain/{rain_slug(RAIN_STATES[stc])}">Rain so far this year in {e(RAIN_STATES[stc])}, county by county</a></p>'
+    # The county's own rain page when it is live, else the state rain page (scripts/cross_links.py,
+    # Oct 19, 2026). Rain county pages come and go week to week: this build never reads data/rain,
+    # only whether the page is there, and county-rain.yml re-stamps the link when the rain set moves.
+    rain = (f'<p class="prf-fine">{XL.rain_link(ROOT, rain_slug(RAIN_STATES[stc]), e(RAIN_STATES[stc]), sl, e(name))}</p>'
             if stc in RAIN_STATES else "")
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,

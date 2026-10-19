@@ -63,7 +63,7 @@ test("arc-plc: 10-acre rule, peanut limit, Childress title, trigger at the bench
   assert.match(h, /wheat 41\.\d\d bu, weighted by enrolled base/);
   const c = read("arc-plc/texas/childress-county.html");
   assert.match(c, /<title>Childress Co\., TX ARC or PLC 2026: Irrigated wheat/);
-  assert.match(c, /comes in under <b>41\.6 bu<\/b> at USDA&rsquo;s price outlook, \$5\.70\. That is above the 41\.00 bu benchmark/);
+  assert.match(c, /comes in under <b>41\.6 bu<\/b> at USDA&rsquo;s price outlook, \$5\.70\. That is above the 41\.0 bu benchmark/);  // the benchmark to a tenth, as the title prints it (Oct 19, 2026; was 41.00)
 });
 
 test("cash bids: Hold-to note says how the month is picked; Alabama listed; top-bid heading", () => {

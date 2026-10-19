@@ -60,6 +60,9 @@
   }
   var UNIT = { bu: { short: 'bu', word: 'bushel', per: '/bu' }, lb: { short: 'lb', word: 'pound', per: '/lb' } };
   function yf(cd, v, k) { return fmt(v, k == null ? 2 : k) + ' ' + UNIT[cd.u || 'bu'].short; }
+  /* a benchmark yield as the page title prints it: a tenth of a bushel, a whole pound
+     (twin of arc_plc_crops.byf, night audit Oct 19, 2026: one figure, one rounding) */
+  function byf(cd, v) { return yf(cd, v, (cd.u || 'bu') === 'bu' ? 1 : 0); }
   function pf(cd, v) {
     if (v == null) return '';
     if (cd.u === 'lb') return '$' + rndStr(v, 4);
@@ -175,7 +178,7 @@
       if (!vl) return;
       if (vl.verdict === 'mismatch') {
         lines.push('<p class="ap-small"><b>' + lab + ':</b> no typical-farm verdict. FSA&rsquo;s average PLC yield for the county (' + yf(cd, pyv, 1) + ') covers ' +
-          'all practices and is above this benchmark (' + yf(cd, e.by) + '), so it does not describe a typical farm here. Run your own PLC yield below.</p>');
+          'all practices and is above this benchmark (' + byf(cd, e.by) + '), so it does not describe a typical farm here. Run your own PLC yield below.</p>');
         return;
       }
       if (headV === null && SHORT[vl.verdict]) headV = [vl, e, LY_];
@@ -185,7 +188,7 @@
         (!NOCALL[vl.verdict] ? '<p>' + whyText(vl, cropYear(g, k, LY_), cd, e.by, pyv) + '</p>' : (why ? '<p class="ap-small">' + why + '</p>' : '')) +
         (vo ? '<p class="ap-small"><b>' + OY_ + ':</b> ' + verdictLine(vo, g) + (OY_ === '2027' ? note7 : '') + '</p>' : '') +
         '<p class="ap-small">For a typical farm: FSA&rsquo;s county average PLC yield ' + yf(cd, pyv, 1) + ' (program year ' + g.plc_py + ') and the official ' +
-        yf(cd, e.by) + ' benchmark.' + (e.d === 'irr' ? ' That PLC yield is FSA&rsquo;s average over all practices, irrigated and not; an irrigated farm&rsquo;s own is often higher.' : '') +
+        byf(cd, e.by) + ' benchmark.' + (e.d === 'irr' ? ' That PLC yield is FSA&rsquo;s average over all practices, irrigated and not; an irrigated farm&rsquo;s own is often higher.' : '') +
         ' County yields from ' + src + '. Run your own numbers in the calculator below.</p></div>');
     });
     return { html: lines.join(''), head: headV };
@@ -232,10 +235,10 @@
         return (e.x >> j) & 1 ? '<s>' + y + ': ' + gfmt(v) + '</s><span class="sr-only"> (dropped)</span>' : y + ': ' + gfmt(v);
       });
       ys = '<p class="ap-math">FSA trend-adjusted county yields (county yield or 80% of T-yield): ' + parts.join(' &middot; ') + ' ' +
-        '(struck: high and low). Middle three average: <b>' + yf(cd, e.by) + '</b>.</p>';
+        '(struck: high and low). Middle three average: <b>' + byf(cd, e.by) + '</b>.</p>';
     }
     return '\n  <h3>' + esc(entLabel(e)) + ': official 2026 ARC-CO benchmark</h3>\n  <div class="ap-kv">\n' +
-      '    <div><span>Benchmark yield (FSA)</span><b>' + yf(cd, e.by) + '</b></div>\n' +
+      '    <div><span>Benchmark yield (FSA)</span><b>' + byf(cd, e.by) + '</b></div>\n' +
       '    <div><span>Benchmark price 2026</span><b>' + pf(cd, cy.bp) + '</b></div>\n' +
       '    <div><span>Benchmark revenue</span><b>' + usd(m.br) + '/ac</b></div>\n' +
       '    <div><span>Guarantee (90%)</span><b>' + usd(m.g) + '/ac</b></div>\n' +
@@ -243,7 +246,7 @@
       '    <div><span>Max per base acre (&times;85%)</span><b>' + usd(m.max_base) + '</b></div>\n  </div>\n  ' + ys + '\n' +
       '  <p>At a season-average price equal to the 2026 effective reference price (' + pf(cd, cy.erp) + per(cd) + '), PLC pays nothing and ARC-CO pays when the\n' +
       '  county yield comes in below <b>' + yf(cd, m.trig_y, 1) + '</b>, reaching its cap below <b>' + yf(cd, m.cap_y, 1) + '</b>.</p>\n' +
-      '  <h3>PLC vs ARC-CO break-even at a ' + yf(cd, e.by) + ' county yield, 2026 prices</h3>\n  ' + crossoverTable(cd, e.by) + '\n  ' + histTable(e, cd);
+      '  <h3>PLC vs ARC-CO break-even at a ' + byf(cd, e.by) + ' county yield, 2026 prices</h3>\n  ' + crossoverTable(cd, e.by) + '\n  ' + histTable(e, cd);
   }
 
   function summaryHtml(g, rec, cname) {
@@ -356,7 +359,7 @@
     return out;
   }
 
-  var M = { render: render, sheetRows: sheetRows, verdictLine: verdictLine, whyText: whyText, unpack: unpack, rndStr: rndStr, pf: pf, yf: yf, usd: usd, esc: esc };
+  var M = { render: render, sheetRows: sheetRows, verdictLine: verdictLine, whyText: whyText, unpack: unpack, rndStr: rndStr, pf: pf, yf: yf, byf: byf, usd: usd, esc: esc };
   w.AgArcMath = M;
 
   if (typeof document === 'undefined' || !document.querySelector) return;

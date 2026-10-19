@@ -1869,6 +1869,15 @@ def build_town_page(t, ctx):
                      f"; put in your own costs on <a href=\"{ss}\">Store or sell</a>.")
     if qs:
         jsonld["@graph"].append(faq_jsonld(qs))
+    if indexable and times:
+        # Night audit, Oct 19, 2026: 1,502 town pages carried no date or publisher in
+        # their structured data. dateModified is the sitemap's lastmod (the newest bid
+        # posted on the page, meta["latest"] below), never the build time, so it moves
+        # only when the bids do and never churns 1,500 pages a run.
+        jsonld["@graph"].append({"@type": "WebPage", "@id": f"{SITE}{path}", "url": f"{SITE}{path}", "name": title,
+                                 "dateModified": lastmod_z(max(times)),
+                                 "publisher": {"@type": "Organization", "@id": f"{SITE}/#org", "name": "AGSIST",
+                                               "url": f"{SITE}/"}})
     hdr, ftr = ctx["chrome"]
     # The bid email box sits right under the first elevator's table (or under
     # the intro when no elevator here has a current bid), so a phone reaches it
@@ -2035,14 +2044,73 @@ def ds_name(city, feed_label=None):
     return "direct ship"
 
 
-def best_card(g, r, town_paths, labels=None):
+def best_where(r, town_paths, labels=None):
+    """Where a best bid is, as its card prints it: (plain text, html). The
+    state FAQ answer and the card read this one function."""
     tp = town_paths.get(r["source"])
     town = SB.town_text(r["city"])
     ds = ds_name(r["city"], (labels or {}).get(r["source"]))
     if ds:
-        where = f'{esc(ds)}, <a href="{tp[1]}">{esc(tp[0])}</a>' if tp else esc(ds)
-    else:
-        where = f'<a href="{tp[1]}">{esc(town)}</a>' if tp else esc(town)
+        return ((f"{ds}, {tp[0]}" if tp else ds),
+                (f'{esc(ds)}, <a href="{tp[1]}">{esc(tp[0])}</a>' if tp else esc(ds)))
+    return town, (f'<a href="{tp[1]}">{esc(town)}</a>' if tp else esc(town))
+
+
+def best_card_crops(bests):
+    """Which crops get a best-bid card: corn and soybeans, else one wheat class."""
+    return [g for g in ("corn", "soybeans") if g in bests] or [g for g in BM.CROP_ORDER[2:] if g in bests][:1]
+
+
+def state_faq_pairs(sname, bests, summ, town_paths, labels, n_el, n_towns, snap_ct):
+    """Three questions for a state page, answered from numbers already on it
+    (night audit, Oct 19, 2026: the 31 state pages had no FAQ while every town
+    page had one): the best-bid cards, the #basis headlines and the counts. The
+    visible FAQ and the FAQPage JSON-LD are built from these same strings."""
+    qs = []
+    gs = best_card_crops(bests)
+    if gs:
+        parts = []
+        for i, g in enumerate(gs):
+            r = bests[g]
+            where = best_where(r, town_paths, labels)[0]
+            lab = ADJ.get(g, SB.CROP_LABEL[g].lower())
+            d = dtext(r)
+            d = ("by " + d[3:]) if d.startswith("By ") else d
+            parts.append((f"The highest nearest-delivery {lab} bid we read in {sname} is " if i == 0 else
+                           f"The highest {lab} bid is ") +
+                         f"{cash_c(r['cash'])} a bushel at {r['operator']} ({where}) for delivery {d}, "
+                         f"posted {fmt_day(r['priced'])}.")
+        latest = max(bests[g]["priced"] for g in gs)
+        today = latest.astimezone(CT).date() == snap_ct.date()
+        crops_q = " and ".join(ADJ.get(g, SB.CROP_LABEL[g].lower()) for g in gs)
+        qs.append(((f"What are the best {crops_q} bids in {sname} today?" if today else
+                    f"What are the latest best {crops_q} bids in {sname}?") if len(gs) > 1 else
+                   (f"What is the best {crops_q} bid in {sname} today?" if today else
+                    f"What is the latest best {crops_q} bid in {sname}?"),
+                   " ".join(parts) + " Call the elevator to confirm before you haul."))
+    bas, bg = [], []
+    for g in ("corn", "soybeans"):
+        c = ((summ or {}).get(g) or {}).get("contracts") or []
+        if c and "median" in c[0]:
+            h = c[0]
+            bg.append(ADJ[g])
+            lead = (f"The middle {ADJ[g]} basis in {sname} is" if not bas else
+                    f"For {SB.CROP_LABEL[g].lower()} it is")
+            bas.append(f"{lead} {SB.plain_basis(h['median'])} vs {SB.contract_plain(h['contract'])}, across {h['n']} "
+                       f"{_plural(h['n'], 'elevator')} (range {SB.plain_basis(h['lo'])} to {SB.plain_basis(h['hi'])}).")
+    if bas:
+        qs.append((f"What is the {' and '.join(bg)} basis in {sname}?",
+                   " ".join(bas) + " Basis is cash minus futures; the middle is the median elevator, each counted once "
+                                   "at its nearest delivery."))
+    qs.append((f"How many {sname} elevators does AGSIST read?",
+               f"AGSIST has a current bid from {n_el} {sname} {_plural(n_el, 'elevator')} across {n_towns} "
+               f"{_plural(n_towns, 'town')}, read from each elevator's own bid board. This is the network's sample, not "
+               f"every elevator in {sname}; the live cash bids page finds the ones nearest your ZIP."))
+    return qs
+
+
+def best_card(g, r, town_paths, labels=None):
+    where = best_where(r, town_paths, labels)[1]
     bas = (f'basis {money_basis(r["basis"])} vs {contract_label(r["contract"])}' if r["contract"]
            else f'basis {money_basis(r["basis"])}, futures month not named')
     return (f'<div class="cbt-stat"><div class="v">{cash_c(r["cash"])}</div>'
@@ -2391,9 +2459,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
     bests = best_bids(near, ctx.get("odd") or frozenset())
     best_html = ""
     lab = ctx.get("labels") or {}
-    cards = [best_card(g, bests[g], town_paths, lab) for g in ("corn", "soybeans") if g in bests]
-    if not cards:
-        cards = [best_card(g, bests[g], town_paths, lab) for g in BM.CROP_ORDER[2:] if g in bests][:1]
+    cards = [best_card(g, bests[g], town_paths, lab) for g in best_card_crops(bests)]
     if cards:
         best_html = f'<h2 id="best">Best bid today</h2><div class="cbt-hero">{"".join(cards)}</div>'
     tops_html = "".join(top_bid_table(g, near, town_paths) for g in ("corn", "soybeans"))
@@ -2409,6 +2475,10 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
                    f'<div id="cbt-full-{st}" class="cbt-full" hidden></div>'
                    f'<noscript><p class="cbt-sub">The full table needs JavaScript. The '
                    f'<a href="/data/state-basis/{st}.json">same data as a file</a>, or each town below.</p></noscript>')
+    qs = (state_faq_pairs(sname, bests, summ, town_paths, lab, n_el, len(live), ctx["snap_ct"])
+          if indexable else [])
+    if qs:
+        jsonld["@graph"].append(faq_jsonld(qs))
     pg = ctx.get("prev_generated")
     wow_note = (f" Change in a week compares each bid with the same elevator&rsquo;s same delivery and futures month "
                 f"in the network snapshot of {fmt_day(pg)}." if pg else
@@ -2426,6 +2496,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   {best_html}
   {basis_section(st, summ, pg)}
   {el_html}
+  {faq_html(qs, sname)}
   <h2 id="towns">{len(live)} town{'s' if len(live) != 1 else ''} with a current bid</h2>
   {lst}
   {quiet_html}
@@ -2657,11 +2728,17 @@ def stamp_live_coverage(path, companies, counts):
     return False
 
 
+def lastmod_z(lm):
+    """The sitemap's <lastmod> text for a page, and the town page's JSON-LD
+    dateModified: one formatter, so the two never differ."""
+    return lm.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
 def write_sitemap(path, entries):
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for loc, lm in entries:
-        out.append(f"  <url><loc>{esc(loc)}</loc><lastmod>{lm.strftime('%Y-%m-%dT%H:%M:%SZ')}</lastmod>"
+        out.append(f"  <url><loc>{esc(loc)}</loc><lastmod>{lastmod_z(lm)}</lastmod>"
                    f"<changefreq>hourly</changefreq><priority>0.6</priority></url>")
     out.append("</urlset>\n")
     with open(path, "w", encoding="utf-8") as f:
@@ -3068,7 +3145,33 @@ def selftest():
         # three questions answered from the page's own numbers; the visible FAQ and
         # the FAQPage JSON-LD say the same words
         blks = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', fr, re.S)]
-        assert [sorted(g["@type"] for g in b["@graph"]) for b in blks] == [["BreadcrumbList", "FAQPage"]], blks
+        assert [sorted(g["@type"] for g in b["@graph"]) for b in blks] == [["BreadcrumbList", "FAQPage", "WebPage"]], blks
+        # Oct 19, 2026: the town page's dateModified is its sitemap lastmod, never the build
+        # time (now is 19:00Z, the newest bid posted 17:00Z), and the publisher is AGSIST
+        # Oct 19, 2026: the state page answers three questions from its own cards and counts
+        ne = open(os.path.join(out, "nebraska", "index.html")).read()
+        nb = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', ne, re.S)]
+        nfaq = next(g for g in nb[0]["@graph"] if g["@type"] == "FAQPage")["mainEntity"]
+        assert [q["name"] for q in nfaq] == ["What are the best corn and soybean bids in Nebraska today?",
+                                            "What is the corn basis in Nebraska?",
+                                            "How many Nebraska elevators does AGSIST read?"], [q["name"] for q in nfaq]
+        nvis = re.search(r'<div class="cbt-faq">(.*?)</div>', ne).group(1)
+        assert re.findall(r"<h3>(.*?)</h3><p>(.*?)</p>", nvis) == [(esc(q["name"]), esc(q["acceptedAnswer"]["text"]))
+                                                                    for q in nfaq], "state FAQ and JSON-LD word for word"
+        a1 = nfaq[0]["acceptedAnswer"]["text"]
+        assert a1.startswith("The highest nearest-delivery corn bid we read in Nebraska is $3.95 a bushel at Op kept "
+                             "(Fremont) for delivery by Oct 9, posted Oct 7, 2026. The highest soybean bid is $9.85"), a1
+        assert '<div class="v">$3.95</div>' in ne and '<div class="v">$9.85</div>' in ne, "answer prices are the cards'"
+        assert nfaq[1]["acceptedAnswer"]["text"].startswith(
+            "The middle corn basis in Nebraska is \u221231\u00bd\u00a2 vs Dec '26, across 6 elevators (range "), nfaq[1]
+        assert ne.index('class="cbt-faq"') > ne.index('id="basis"'), "FAQ after the basis block"
+        wp = next(g for g in blks[0]["@graph"] if g["@type"] == "WebPage")
+        sm_lm = re.search(r"<loc>https://agsist\.com/cash-bids/nebraska/fremont</loc><lastmod>([^<]+)</lastmod>",
+                          open(sm).read()).group(1)
+        assert wp["dateModified"] == sm_lm and wp["dateModified"] != "2026-10-07T19:00:00Z", (wp, sm_lm)
+        assert wp["publisher"] == {"@type": "Organization", "@id": "https://agsist.com/#org", "name": "AGSIST",
+                                   "url": "https://agsist.com/"}, wp
+        assert wp["@id"] == wp["url"] == "https://agsist.com/cash-bids/nebraska/fremont"
         faq = next(g for g in blks[0]["@graph"] if g["@type"] == "FAQPage")["mainEntity"]
         assert [q["name"] for q in faq] == ["What is corn paying in Fremont today?", "What is the corn basis in Fremont?",
                                            "How far is the next elevator from Fremont?"]

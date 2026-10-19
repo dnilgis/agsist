@@ -59,9 +59,7 @@ REPO = Path(__file__).resolve().parent.parent
 DATA = REPO / "data"
 sys.path.insert(0, str(REPO / "scripts"))
 
-TITLE_MAX = 68          # Google truncates around 600px; 68 chars is a safe ceiling
-DESC_MAX = 160          # the site's own new-page checklist
-SUFFIX = " | AGSIST"
+from seo_caps import TITLE_MAX, DESC_MAX, SUFFIX  # noqa: E402  the one cap (scripts/seo_caps.py)
 
 MONTHS = ["January", "February", "March", "April", "May", "June", "July",
           "August", "September", "October", "November", "December"]
@@ -617,7 +615,23 @@ def seo_conditions(c):
         lead += f" against {prev:g}% a year ago"
     if soy is not None:
         lead += f"; soybeans {soy:g}%"
-    return (f"USDA Crop Conditions: Corn {ge:g}% Good-Excellent{SUFFIX}",
+    # Night audit, Oct 19, 2026: "crop progress usda" and "crop progress report" land here and
+    # the title said Conditions only. NASS dates the report by the week ENDING on its Sunday
+    # (the page says "week ending Oct 11, 2026"), so never "Week of".
+    wk = ""
+    rd = d.get("report_date") or corn.get("report_date")
+    try:
+        _rd = date.fromisoformat(str(rd)[:10])
+        wk = f"{_rd:%b} {_rd.day}"
+    except ValueError:
+        pass
+    # (a harvest figure beside G+E runs past TITLE_MAX; it is in the page's lead)
+    cands = []
+    if wk:
+        cands.append(f"Crop Progress, Week Ending {wk}: Corn {ge:g}% Good-Excellent{SUFFIX}")
+    cands.append(f"USDA Crop Conditions: Corn {ge:g}% Good-Excellent{SUFFIX}")
+    title = next(t for t in cands if len(t) <= TITLE_MAX)
+    return (title,
             f"{lead}. Every state's rating ranked "
             f"against its own record for this week.")
 
@@ -1080,15 +1094,25 @@ def seo_fertilizer(c):
         xs = sorted(xs)
         return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 2 else " and ".join(xs)
 
+    def who_of(rs):
+        # the states of the prices this title names, not of every product
+        regs_n = set().union(*[regions(r) for r in rs])
+        return (and_join(regs_n) + " Co-op") if regs_n else "Co-op"
+
     title = None
     for n in range(len(named), 0, -1):
-        # the states of the prices this title names, not of every product
-        regs_n = set().union(*[regions(r) for _, r, _ in named[:n]])
-        who = (and_join(regs_n) + " Co-op") if regs_n else "Co-op"
+        who = who_of([r for _, r, _ in named[:n]])
         bits = ", ".join(f"{s} ${r['price']:,.0f}" for s, r, _ in named[:n])
         # "per Ton" stays (2026-10-13): the page's named queries are
-        # "... fertilizer price(s) per ton".
-        for cand in (f"{who} Fertilizer Prices per Ton: {bits}{SUFFIX}", f"{who} Fertilizer per Ton: {bits}{SUFFIX}"):
+        # "... fertilizer price(s) per ton". Down to one number, the word
+        # "Prices" outranks the number (night SEO audit, Oct 19, 2026): once
+        # Wisconsin joined the region the Prices form ran long and the title fell
+        # to "Fertilizer per Ton: Urea $616", losing the main query word by accident.
+        forms = [f"{who} Fertilizer Prices per Ton: {bits}{SUFFIX}"]
+        if n == 1:
+            forms.append(f"{who_of([r for _, r, _ in named])} Fertilizer Prices per Ton{SUFFIX}")
+        forms.append(f"{who} Fertilizer per Ton: {bits}{SUFFIX}")
+        for cand in forms:
             if len(cand) <= TITLE_MAX:
                 title = cand
                 break
@@ -1311,6 +1335,33 @@ TAGS = [
 EXPECT_TAGS = 6
 
 
+# The page's JSON-LD WebPage "name" follows the title too (night SEO audit, Oct 19, 2026): it was
+# typed once and drifted, e.g. cattle-futures-prices named "Live Cattle & Feeder Cattle Futures
+# Prices Today" under a title that leads with feeders and carries the settles. Only a WebPage node,
+# and only its own "name": a flat nested object before it (an author) is stepped over whole, so a
+# name inside it, or in a breadcrumb list, is never touched.
+_LD_NAME = re.compile(r'("@type":\s*"WebPage"(?:[^{}]|\{[^{}]*\})*?"name":\s*")((?:[^"\\]|\\.)*)(")')
+
+
+def stamp_ld_name(text, title):
+    """(text, n): the WebPage name in each JSON-LD block set to the title without the suffix."""
+    name = (title or "")
+    if name.endswith(SUFFIX):
+        name = name[:-len(SUFFIX)]
+    if not name:
+        return text, 0
+    val = json.dumps(name, ensure_ascii=False)[1:-1].replace("</", "<\\/")
+    n = 0
+
+    def blk(m):
+        nonlocal n
+        new, c = _LD_NAME.subn(lambda mm: mm.group(1) + val + mm.group(3), m.group(2))
+        n += c
+        return m.group(1) + new + m.group(3)
+    out = re.sub(r'(<script type="application/ld\+json">)(.*?)(</script>)', blk, text, flags=re.S)
+    return out, n
+
+
 def stamp(text, title, desc, owns=frozenset({"title", "desc"})):
     vals = {"title": esc(title or ""), "desc": esc(desc or ""), "alt": esc(title or "")}
     n = 0
@@ -1320,6 +1371,8 @@ def stamp(text, title, desc, owns=frozenset({"title", "desc"})):
         new, cnt = pat.subn(lambda m: m.group(1) + vals[which] + m.group(3), text, count=1)
         if cnt:
             text, n = new, n + 1
+    if "title" in owns:
+        text, _ = stamp_ld_name(text, title)   # not counted: a page may have no WebPage node
     return text, n
 
 
@@ -1636,6 +1689,15 @@ def selftest():
        seo_cond_yield(dict(ctx, yield_panel=None)) is None)
     t, d = seo_conditions(ctx)
     ck("conditions carries this week's G+E and last year's", "57%" in d and "66%" in d)
+    ck("conditions with no report date keeps the old title", t == "USDA Crop Conditions: Corn 57% Good-Excellent | AGSIST", t)
+    # Oct 19, 2026 (night audit): the Oct 11 report as data/crop-progress.json held it
+    _cp11 = {"in_season": True, "report_date": "2026-10-11",
+             "corn": {"good_excellent": 56, "report_date": "2026-10-11", "good_excellent_prev_year": None,
+                      "harvest_pct": 33, "harvest_date": "2026-10-11"}, "soybeans": {"good_excellent": 61}}
+    t11, _d11 = seo_conditions(dict(ctx, crop_progress=_cp11))
+    ck("conditions title names the week ENDING Oct 11, never 'Week of'",
+       t11 == "Crop Progress, Week Ending Oct 11: Corn 56% Good-Excellent | AGSIST" and "Week of" not in t11
+       and len(t11) <= TITLE_MAX, t11)
     cp = dict(ctx["crop_progress"], corn={"good_excellent": 54, "good_excellent_prev_year": None},
               soybeans={"good_excellent": 57})
     _t, d0 = seo_conditions(dict(ctx, crop_progress=cp))
@@ -1648,6 +1710,21 @@ def selftest():
     _o, _n = stamp(alt_html, "Corn 54%", "D", frozenset({"title", "desc", "alt"}))
     ck("og:image:alt follows the title on pages that own it",
        _n == 7 and 'og:image:alt" content="Corn 54%"' in _o and "57%" not in _o, _o)
+    _ld = ('<title>Old | AGSIST</title><script type="application/ld+json">{"@context": "https://schema.org", "@graph": '
+           '[{"@type": "WebPage", "@id": "https://agsist.com/x#webpage", "name": "Old typed name | AGSIST", "breadcrumb": '
+           '{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home"}]}}]}</script>')
+    _lo, _ = stamp(_ld, 'CME Feeder Cattle Futures $343.625 & "Live" | AGSIST', "D", frozenset({"title"}))
+    _lj = json.loads(re.search(r'json">(.*?)</script>', _lo).group(1))["@graph"][0]
+    ck("the JSON-LD WebPage name follows the title (suffix off), breadcrumb names untouched",
+       _lj["name"] == 'CME Feeder Cattle Futures $343.625 & "Live"'
+       and _lj["breadcrumb"]["itemListElement"][0]["name"] == "Home", _lo)
+    _lq = ('<script type="application/ld+json">{"@type":"WebPage","author":{"@type":"Person","name":"Sigurd Lindquist"},'
+           '"name":"Old"}</script>')
+    _lqo = stamp_ld_name(_lq, "New title | AGSIST")[0]
+    ck("an author object before the name is stepped over, the author's name kept",
+       '"name":"Sigurd Lindquist"' in _lqo and '"name":"New title"}' in _lqo, _lqo)
+    ck("a page that does not own its title keeps its JSON-LD name",
+       "Old typed name" in stamp(_ld, "New", "D", frozenset({"desc"}))[0])
     ck("og:image:alt left alone on pages that do not own it",
        "57%" in stamp(alt_html, "Corn 54%", "D")[0])
     ck("conditions stays quiet out of season",
@@ -2067,6 +2144,9 @@ def selftest():
     t3, d3 = seo_fertilizer(two)
     ck("fertilizer: a two-state region names each state once (Synergy, WI, 2026-10-16)",
        t3.startswith("Kansas and Wisconsin Co-op Fertilizer") and "Kansas and Kansas" not in t3 + d3, (t3, d3))
+    # night SEO audit, Oct 19, 2026: the real two-state case kept its number and lost "Prices"
+    ck("fertilizer: one number cannot fit, so the title keeps the word Prices (Sig's Oct 13 wording)",
+       t3 == "Kansas and Wisconsin Co-op Fertilizer Prices per Ton | AGSIST", t3)
     # 2026-10-17 audit N7: Wisconsin goes on the urea price only, never on Kansas-only anhydrous
     ck("fertilizer: the description names each price's own states",
        d3.startswith("Kansas co-op cash prices posted Oct 6, 2026: urea $616/ton (Kansas and Wisconsin), anhydrous $832.")

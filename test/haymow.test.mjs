@@ -39,7 +39,8 @@ test("indexable page: title, description, canonical, FAQ and structured data", (
   const ld = JSON.parse(/<script type="application\/ld\+json">\s*([\s\S]*?)<\/script>/.exec(page)[1]);
   const types = ld["@graph"].map((x) => x["@type"]);
   assert.deepEqual(types, ["WebPage", "FAQPage", "BreadcrumbList"]);
-  assert.equal(ld["@graph"][0].name, "The Haymow: hay for sale and wanted near you");
+  // the JSON-LD name is the title without the suffix (night SEO audit, Oct 19, 2026; was the H1 wording)
+  assert.equal(ld["@graph"][0].name, "The Haymow: Hay for Sale and Wanted Near You");
   /* every FAQ answer in the structured data is on the page */
   for (const q of ld["@graph"][1].mainEntity) {
     assert.ok(page.includes("<summary>" + q.name + "</summary>"), q.name);

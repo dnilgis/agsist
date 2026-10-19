@@ -1959,6 +1959,7 @@
    "written_by": [
     "Cattle cash prices",
     "Generate Daily Briefing",
+    "Fertilizer co-op posted prices",
     "Fetch Prices"
    ],
    "touched_by": [
@@ -1970,6 +1971,7 @@
     "Daily site check",
     "Generate Daily Briefing",
     "Dairy prices",
+    "Fertilizer co-op posted prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Morning brief \u2014 email Sigurd",
     "Morning report",
@@ -1991,6 +1993,7 @@
     "41 11 * * *",
     "23 13 * * *",
     "0 20 * * 5",
+    "41 13 * * 1-5",
     "11 * * * *"
    ],
    "max_gap_hours": 1.0,

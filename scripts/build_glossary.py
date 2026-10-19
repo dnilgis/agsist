@@ -47,9 +47,9 @@ def body(terms):
     return "\n" + "\n".join(out) + "\n"
 
 
-def ld(terms, updated):
+def ld(terms, updated, name="Farm market glossary"):
     graph = [
-        {"@type": "WebPage", "@id": URL + "#page", "name": "Farm market glossary", "url": URL,
+        {"@type": "WebPage", "@id": URL + "#page", "name": name, "url": URL,
          "description": "Plain definitions of the farm market words AGSIST uses.",
          "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"},
          "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"},
@@ -67,12 +67,21 @@ def ld(terms, updated):
     return '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False, separators=(",", ":")) + "</script>"
 
 
+def page_name(src):
+    """The WebPage name is the page's own <title> without the suffix (night SEO audit, Oct 19, 2026:
+    the name stayed "Farm market glossary" when the title was rewritten)."""
+    m = re.search(r"<title>(.*?)</title>", src, re.S)
+    t = html.unescape(m.group(1)).strip() if m else "Farm market glossary"
+    return re.sub(r"\s*\|\s*AGSIST$", "", t)
+
+
 def render(src, data):
     terms = data["terms"]
+    name = page_name(src)
     src = re.sub(r"<!--GLOSSARY:BODY-->.*?<!--/GLOSSARY:BODY-->",
                  lambda m: "<!--GLOSSARY:BODY-->" + body(terms) + "<!--/GLOSSARY:BODY-->", src, flags=re.S)
     src = re.sub(r"<!--GLOSSARY:LD-->.*?<!--/GLOSSARY:LD-->",
-                 lambda m: "<!--GLOSSARY:LD-->" + ld(terms, data.get("updated", "2026-10-18")) + "<!--/GLOSSARY:LD-->", src, flags=re.S)
+                 lambda m: "<!--GLOSSARY:LD-->" + ld(terms, data.get("updated", "2026-10-18"), name) + "<!--/GLOSSARY:LD-->", src, flags=re.S)
     return src
 
 

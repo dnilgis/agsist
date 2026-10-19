@@ -105,7 +105,8 @@ test("trigger line, by hand: Story County, IA corn pays under 215 bu at $4.70", 
   assert.equal(D.years["2026"].crops.corn.bp.value, 5.03);
   assert.equal(D.years["2026"].crops.corn.scen.center, 4.7);
   assert.ok(corn[7].includes("comes in under <b>215 bu</b> at USDA&rsquo;s price outlook, $4.70."), corn[7]);
-  assert.ok(corn[7].includes("90% of the 223.82 bu benchmark &times; the $5.03 benchmark price, divided by $4.70."), corn[7]);
+  // the benchmark prints as the title does, to a tenth (Oct 19, 2026; was "223.82 bu")
+  assert.ok(corn[7].includes("90% of the 223.8 bu benchmark &times; the $5.03 benchmark price, divided by $4.70."), corn[7]);
 });
 
 test("trigger line on every card with a price outlook: floor(90% x benchmark x benchmark price / price), from the state file", () => {
