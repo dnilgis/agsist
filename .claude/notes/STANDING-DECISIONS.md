@@ -156,3 +156,11 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - (Oct 19, Sig) Bids repo duplicates: fold a duplicate row into its board only on evidence (same phone in the same town or within 400 m, or within 400 m with the same operator or a declared alias); never on town alone; ids never change.
 - (Oct 19, Sig) Every printed report or PDF carries a QR code that opens the exact same report (same place, filters and settings) on agsist.com.
 - (Oct 19, Sig) QR codes: as simple as possible, the fewest modules (smallest version) that does the job, always. Short URL, short keys, uppercase-only where the page accepts it so alphanumeric mode applies (AgQR.matrix(text, null, 'alnum')), level M, no tracking parameters in the code. Test the module count, not just that it scans.
+- (Oct 19, Sig) Location: never ask for the reader's location on page load; only when they tap "Use my location". A saved ZIP still works at once.
+- (Oct 19, Sig) The Daily is described as "every morning", with no clock time promised (was "every weekday" and "by 6am CT").
+- (Oct 19, Sig) Homepage hero prices and the fertilizer page body are baked with the same dated settle the page already shows, so crawlers see prices; live prices replace them on load.
+- (Oct 19, Sig) Daily bid snapshots keep saving to the raw branch; backfill the 93 past days from git history (Jun to Sep rows came from the Barchart feed; Sig OK'd).
+- (Oct 19, Sig) Email asks never pre-tick "also send me the Daily" (PRF, county rain and anywhere else).
+- (Oct 19, Sig) A Rain Print link that carries a design (?d=, /r?, gift codes) opens with that print first; ordinary visits unchanged.
+- (Oct 19, Sig) Atlas county pages in states with recorded deeds show a recorded-sales tile (median, number of sales, through date, no names) in the top tiles.
+- (Oct 19, Sig) Any rent tile (dry or irrigated) more than three survey years old shows n/a with the last year.
