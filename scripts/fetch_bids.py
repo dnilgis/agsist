@@ -966,6 +966,15 @@ def network_rows(grid, base=None):
             "source": "network",
             "lat": la if isinstance(la, (int, float)) else None,
             "lon": lo if isinstance(lo, (int, float)) else None,
+            # FULL FILE ONLY (2026-10-19, daily bid snapshots on raw). The
+            # board id, the time the elevator posted the price and the futures
+            # price it was quoted against. scripts/bid_snapshots.py reads them
+            # from bids-full.json; the slim browser file drops every "_" key
+            # (slim_dump_rows), so data/bids.json does not grow.
+            "_board": b.get("source") or "",
+            "_posted": b.get("pricedAt") or None,
+            "_fut": (round(b["futuresCents"] / 100, 4)
+                     if isinstance(b.get("futuresCents"), (int, float)) else None),
         })
         if held:
             # A HELD ROW SHOWS ITS OWN READ TIME. Every surface that prints a
@@ -1579,6 +1588,13 @@ def page_pick(bids, grid_zip, crop):
     return min(crop_bids, key=_bid_order)
 
 
+def slim_dump_rows(rows):
+    """Copies of rows without the full-file-only "_" keys (network_rows)."""
+    return [{k: v for k, v in r.items() if not k.startswith("_")}
+            if isinstance(r, dict) and any(k.startswith("_") for k in r) else r
+            for r in rows]
+
+
 def slim_for_browser(bids, grid):
     """The smallest set of bids from which the page picks the same bid.
 
@@ -1915,7 +1931,7 @@ def main():
         json.dump(full, f, separators=(",", ":"))
 
     slim = slim_for_browser(all_bids, zip_index)
-    output["bids"] = slim
+    output["bids"] = slim_dump_rows(slim)
     output["full"] = False
     output["slim_note"] = (
         "Only the bids the futures pages can select: every bid at a grid ZIP, "
@@ -2962,11 +2978,17 @@ def selftest():
         run_main.withheld = json.load(open(wp)) if os.path.exists(wp) else None
         rp = os.path.join(d, "barchart-raw.json")
         run_main.raw = json.load(open(rp))["bids"] if os.path.exists(rp) else None
+        fp = os.path.join(d, "bids-full.json")
+        run_main.full = json.load(open(fp))["bids"] if os.path.exists(fp) else None
         shutil.rmtree(d, ignore_errors=True)
         return code, out, flag, b2.getvalue()
 
     code, out, flag, log = run_main("", tmp)
     ck("no key: the feed is still written, exit 0", code == 0 and out is not None)
+    ck("no key: the full file carries the board, posted time and futures for the snapshots",
+       bool(run_main.full) and all("_board" in r and "_posted" in r and "_fut" in r for r in run_main.full))
+    ck("no key: the slim browser file carries none of the full-file-only '_' fields",
+       out is not None and out["bids"] and not any(k.startswith("_") for r in out["bids"] for k in r))
     ck("no key: every row is the network's",
        out is not None and out["bids"] and all(r.get("source") == "network" for r in out["bids"]))
     ck("no key: the header says the licensed feed is not in it",
