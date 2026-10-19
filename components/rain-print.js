@@ -1039,6 +1039,7 @@
   var GIFT_MIN_DAYS = 60;  // a gift preview needs the year recorded at least this far (to about March 1); less is too thin to draw fairly
   var STALE_DAYS = 30;     // this year: a station whose record stopped longer ago than this is not reporting, so it cannot make the print
   var EXT_CACHE = new Map(), NORM_CACHE = new Map(), DAILY_CACHE = new Map();
+  var LOAD_FAIL = new Set();   // the asks that failed or timed out (loadFail, below)
   /* LAST YEAR IN JANUARY (2026-10-14, panel 3). NOAA's daily numbers come in
      late, by days and at some co-op stations by weeks, so on Jan 1 last year
      isn't all in yet. While it is "open", last year is read like this year:
@@ -1692,8 +1693,8 @@
      15 s timeout on the normal read as "This station has no NOAA normal" and
      the maker file, the digital file and the order all went out without the
      line). A station with no normal (ACIS's error reply) has no retry flag and
-     is not listed: that print is fine as it is. */
-  var LOAD_FAIL = new Set();
+     is not listed: that print is fine as it is. LOAD_FAIL itself is
+     declared with NORM_CACHE, since the fetches fill it without a page. */
   /* -> what the design asks for that didn't load, in words, or ''. While it is
      set, ordering and the maker's files stay shut until Draw brings it in. */
   function loadFail() {
