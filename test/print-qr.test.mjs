@@ -22,10 +22,11 @@ const require = createRequire(import.meta.url);
 function load() {
   const ctx = {}; ctx.window = ctx;
   vm.runInNewContext(read("components/qr.js"), ctx);
+  ctx.AgReportLink = require(join(ROOT, "components/report-link.js"));
   vm.runInNewContext(read("components/print-qr.js"), ctx);
   return ctx;
 }
-const W = load(), Q = W.AgQR, PQ = W.AgPrintQR;
+const W = load(), Q = W.AgQR, PQ = W.AgPrintQR, RL = W.AgReportLink;
 const FIELD = "45.29750,-91.70250~45.29750,-91.69750~45.30250,-91.69750~45.30250,-91.70250";
 const longField = (n) => Array.from({ length: n }, (_, i) => (45.3 + i * 0.00013).toFixed(5) + "," + (-91.7 - (i % 7) * 0.00021).toFixed(5)).join("~");
 
@@ -65,22 +66,76 @@ test("print-qr.js: 0.85 in up to version 15, grows to keep 0.01 in squares up to
   assert.equal(PQ.plan("x".repeat(997)).inches, 1.25);
   assert.equal(PQ.plan("x".repeat(998)), null);
   const h = PQ.html("https://agsist.com/comp-report?f=1&n=2", "agsist.com/comp-report");
-  assert.match(h, /^<div class="agpq" data-qr="https:\/\/agsist\.com\/comp-report\?f=1&amp;n=2" data-ver="\d+">/);
+  assert.match(h, /^<div class="agpq" data-qr="https:\/\/agsist\.com\/comp-report\?f=1&amp;n=2" data-url="https:\/\/agsist\.com\/comp-report\?f=1&amp;n=2" data-ver="\d+">/, "a link the short form cannot write keeps the full link");
   assert.match(h, /<svg style="width:0\.85in;height:0\.85in" class="qr"/);
   assert.match(h, /<p>Scan to open this report on agsist\.com<\/p><p class="agpq-u">agsist\.com\/comp-report<\/p>/);
   assert.doesNotMatch(PQ.html("x".repeat(998), "agsist.com/x"), /<svg/, "too long: no code, the address in words");
   assert.match(PQ.CSS, /^\.agpq\{display:none;/, "hidden on screen");
   assert.match(PQ.CSS, /@media print\{\.agpq\{display:block\}\}/, "shown in print");
-  assert.doesNotMatch(read("components/print-qr.js") + read("components/qr.js"), /—/, "no em dashes");
+  assert.doesNotMatch(read("components/print-qr.js") + read("components/qr.js") + read("components/report-link.js") + read("Q.html"), /—/, "no em dashes");
 });
 
 test("one QR encoder: the three report pages load components/qr.js (v=11) before print-qr.js and their own script", () => {
   for (const [page, own] of [["comp-report.html", "/components/comp-report.js?v="], ["field-report.html", "/components/field-report.js?v="], ["hail-map.html", "<script>"]]) {
-    const h = read(page), a = h.indexOf('<script src="/components/qr.js?v=11" defer></script>'), b = h.indexOf('<script src="/components/print-qr.js?v=1" defer></script>');
-    assert.ok(a > 0 && b > a, page + " loads qr.js then print-qr.js");
+    const h = read(page), a = h.indexOf('<script src="/components/qr.js?v=11" defer></script>'), r = h.indexOf('<script src="/components/report-link.js?v=1" defer></script>'), b = h.indexOf('<script src="/components/print-qr.js?v=1" defer></script>');
+    assert.ok(a > 0 && r > a && b > r, page + " loads qr.js, report-link.js, then print-qr.js");
     if (own !== "<script>") assert.ok(h.indexOf(own) > b, page + " loads its own script after");
     assert.doesNotMatch(h, /qrcode-generator|farmland-atlas\/qr\.js|api\.qrserver|chart\.googleapis/, page + ": no second QR library or outside service");
   }
+});
+
+// ---------------------------------------------------------------- the short links (Sig, Oct 19: fewest squares)
+const EX = {
+  comp: "https://agsist.com/comp-report?f=" + encodeURIComponent(FIELD) + "&fips=55005&r=25&from=2023-10-19&to=2026-10-19&amin=10&n=15&sort=mi",
+  compParcel: "https://agsist.com/comp-report?pid=036-0400-11-000&fips=55005&r=25&from=2023-10-19&to=2026-10-19&amin=10&n=15&sort=mi",
+  land: "https://agsist.com/field-report?f=" + encodeURIComponent(FIELD),
+  hailDay: "https://agsist.com/hail-map?lat=42.0300&lon=-93.6200&mi=10&day=2025-03-14",
+  hail5y: "https://agsist.com/hail-map?lat=42.0300&lon=-93.6200&mi=25",
+};
+test("short links: exact text and the module count pinned for a real example of each report (full link in byte mode in brackets)", () => {
+  const want = {
+    comp: ["HTTPS://AGSIST.COM/Q?CP+4529750-9170250+0+500+500+0+0-500K55005T261019", 33, 57],
+    compParcel: ["HTTPS://AGSIST.COM/Q?CI036-0400-11-000*K55005T261019", 29, 45],
+    land: ["HTTPS://AGSIST.COM/Q?LP+4529750-9170250+0+500+500+0+0-500", 33, 45],
+    hailDay: ["HTTPS://AGSIST.COM/Q?H+42.03-93.62D250314", 29, 37],
+    hail5y: ["HTTPS://AGSIST.COM/Q?H+42.03-93.62R25", 29, 33],
+  };
+  for (const k of Object.keys(EX)) {
+    const t = PQ.text(EX[k]);
+    assert.equal(t, want[k][0], k);
+    assert.equal(Q.matrix(t, null, "mixed", 40).length, want[k][1], k + ": modules");
+    assert.equal(Q.matrix(EX[k], null, null, 40).length, want[k][2], k + ": the full link would be");
+    assert.equal(RL.full(t.slice(t.indexOf("?"))), EX[k], k + ": /Q opens the exact report");
+  }
+});
+
+test("short links: every setting goes and comes back; anything the short form cannot write keeps the full link", () => {
+  const CR = require(join(ROOT, "components/comp-report.js"));
+  assert.deepEqual([RL.DEF.r, RL.DEF.amin, RL.DEF.n, RL.DEF.years].map(String), [CR.DEF.r, CR.DEF.amin, CR.DEF.n, CR.DEF.years].map(String), "defaults agree with the comp report");
+  const many = "https://agsist.com/comp-report?lat=40.12000&lon=-88.20000&at=town&pid=17-24-09-376-015&fips=17019&r=40&from=any&to=2026-10-18&amin=any&amax=80&cls=4,5M&all=1&n=30&sort=date";
+  for (const u of [many, "https://agsist.com/comp-report?lat=40.12000&lon=-88.20000&r=12.5&from=2021-02-28&to=2024-02-29&amin=0&n=15&sort=mi",
+    "https://agsist.com/field-report?f=" + encodeURIComponent(longField(30)) + "&cf=" + encodeURIComponent("mi:25,ac:10,s:2023-10-19,c:4.5M,a:1"),
+    "https://agsist.com/hail-map?lat=-12.5000&lon=130.1234&mi=5"]) {
+    const t = RL.short(u);
+    assert.ok(t && /^HTTPS:\/\/AGSIST\.COM\/Q\?[0-9A-Z+\-.*:]+$/.test(t), u + " -> " + t);
+    assert.equal(RL.full("?" + t.split("?")[1]), u, "back: " + t);
+    assert.equal(RL.full("?" + t.split("?")[1].toLowerCase() + "&fbclid=abc"), u, "lower case and an app's extra parameter still open it");
+  }
+  // every comp setting, through the page's own reader
+  const P = CR.parseParams(many.slice(many.indexOf("?")), "2026-10-18"), t = RL.short(CR.reportUrl(P));
+  assert.equal(CR.toQuery(CR.parseParams(RL.full("?" + t.split("?")[1]).split("?")[1], "2027-05-01")), CR.toQuery(P));
+  for (const u of ["https://agsist.com/comp-report?pid=abc 1&fips=55005&r=25&from=2023-10-19&to=2026-10-19&amin=10&n=15&sort=mi",
+    "https://agsist.com/comp-report?lat=40.12&lon=-88.2&r=25&from=2023-10-19&to=2026-10-19&amin=10&n=15&sort=mi",
+    "https://agsist.com/comp-report?lat=40.12000&lon=-88.20000&r=25&from=1999-10-19&to=2026-10-19&amin=10&n=15&sort=mi",
+    "https://agsist.com/field-report?f=" + encodeURIComponent(FIELD) + "&cf=" + encodeURIComponent("c:4.5m"),
+    "https://agsist.com/rain-print?d=x"]) assert.equal(RL.short(u), null, u);
+  assert.equal(RL.full("?Cjunk"), null);
+  assert.equal(RL.full("?H+42.03"), null);
+  assert.equal(RL.full(""), null);
+  const q = read("Q.html");
+  assert.match(q, /<meta name="robots" content="noindex, nofollow">/);
+  assert.match(q, /location\.replace\(u\.slice\('https:\/\/agsist\.com'\.length\)\)/, "opens on this site only");
+  for (const sm of fs.readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) assert.doesNotMatch(read(sm), /agsist\.com\/Q\b/, "not in a sitemap");
 });
 
 // ---------------------------------------------------------------- the links
@@ -145,9 +200,9 @@ function serve() {
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-/* every text handed to the QR encoder, kept on window.__qrIn (the generator input) */
+/* every text handed to the QR encoder, kept on window.__qrIn (the generator input), with its mode */
 const TAP = `(() => { let v; window.__qrIn = []; Object.defineProperty(window, "AgQR", { configurable: true, get: () => v, set: (q) => {
-  v = { matrix: q.matrix, svg: function (t) { window.__qrIn.push(String(t)); return q.svg.apply(null, arguments); } }; } }); })();`;
+  v = { matrix: q.matrix, svg: function (t, l, mv, mode) { window.__qrIn.push(String(t) + " " + mode); return q.svg.apply(null, arguments); } }; } }); })();`;
 async function open(browser, port, url) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1280, height: 900 } });
   await ctx.addInitScript(TAP);
@@ -158,13 +213,28 @@ async function open(browser, port, url) {
   await pg.goto(`http://127.0.0.1:${port}${url}`, { waitUntil: "load" });
   return { pg, ctx, errs };
 }
+/* the encoder was handed the short link (in mixed mode); /Q turns it back into the page's own address */
 async function checkBlock(pg, want) {
-  const got = await pg.evaluate(() => ({ inn: window.__qrIn, data: [...document.querySelectorAll(".agpq")].map((e) => e.getAttribute("data-qr")), svg: !!document.querySelector(".agpq svg") }));
-  assert.deepEqual(got.inn, [want], "what the encoder drew");
-  assert.deepEqual(got.data, [want]);
+  const got = await pg.evaluate(() => ({ inn: window.__qrIn, data: [...document.querySelectorAll(".agpq")].map((e) => [e.getAttribute("data-qr"), e.getAttribute("data-url")]), svg: !!document.querySelector(".agpq svg") }));
+  const t = RL.short(want);
+  assert.ok(t, "a short link for " + want);
+  assert.deepEqual(got.inn, [t + " mixed"], "what the encoder drew");
+  assert.deepEqual(got.data, [[t, want]]);
+  assert.equal(RL.full("?" + t.split("?")[1]), want, "the short link reads back to this page's address");
   assert.ok(got.svg);
-  const t = await pg.textContent(".agpq");
-  assert.match(t, /Scan to open this report on agsist\.com/);
+  assert.match(await pg.textContent(".agpq"), /Scan to open this report on agsist\.com/);
+  return t;
+}
+/* open the short link the way a phone does and see where it lands */
+async function viaQ(browser, port, t, landPath) {
+  const ctx = await browser.newContext({ serviceWorkers: "block" });
+  await ctx.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
+  const pg = await ctx.newPage();
+  await pg.goto(`http://127.0.0.1:${port}/Q?` + t.split("?")[1]);
+  await pg.waitForURL((u) => u.pathname === landPath, { timeout: 10000 });
+  const at = await pg.evaluate(() => "https://agsist.com" + location.pathname + location.search);
+  await ctx.close();
+  return at;
 }
 
 test("in Chromium: the comp report and land report print the QR of their own address, hidden on screen", { skip, timeout: 120000 }, async () => {
@@ -172,12 +242,12 @@ test("in Chromium: the comp report and land report print the QR of their own add
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const cq = "?f=" + encodeURIComponent(FIELD) + "&fips=55005&r=25&from=2023-10-18&to=2026-10-18&amin=10&n=15&sort=mi";
-    const fq = "?f=" + encodeURIComponent(FIELD) + "&cf=r25.a10";
+    const fq = "?f=" + encodeURIComponent(FIELD) + "&cf=" + encodeURIComponent("mi:25,ac:10");
     for (const [p, q, want] of [["/comp-report", cq, "https://agsist.com/comp-report" + cq], ["/field-report", fq, "https://agsist.com/field-report" + fq]]) {
       const { pg, ctx, errs } = await open(browser, port, p + q);
       await pg.waitForSelector(".agpq", { state: "attached", timeout: 20000 });
       assert.equal(await pg.evaluate(() => "https://agsist.com" + location.pathname + location.search), want, "the page's own address");
-      await checkBlock(pg, want);
+      const t = await checkBlock(pg, want);
       assert.equal(await pg.isVisible(".agpq"), false, p + ": hidden on screen");
       await pg.emulateMedia({ media: "print" });
       assert.equal(await pg.isVisible(".agpq"), true, p + ": shown in print");
@@ -188,6 +258,7 @@ test("in Chromium: the comp report and land report print the QR of their own add
       assert.ok(box.right > 1280 * 0.6, p + ": on the right");
       assert.deepEqual(errs, []);
       await ctx.close();
+      assert.equal(await viaQ(browser, port, t, p), want, p + ": the code opens this same report");
     }
   } finally { await browser.close(); srv.close(); }
 });
@@ -205,12 +276,15 @@ test("in Chromium: the Hail History Report printout carries the QR of the spot, 
     const [pop] = await Promise.all([ctx.waitForEvent("page"), pg.click("#hm-point-print")]);
     await pop.evaluate(() => { window.print = () => {}; }).catch(() => {});
     await pop.waitForSelector(".agpq svg", { timeout: 10000 });
-    const want = "https://agsist.com/hail-map" + q;
-    assert.deepEqual(await pg.evaluate(() => window.__qrIn), [want], "what the encoder drew");
-    assert.equal(await pop.$eval(".agpq", (e) => e.getAttribute("data-qr")), want);
+    const want = "https://agsist.com/hail-map" + q, t = RL.short(want);
+    assert.equal(t, "HTTPS://AGSIST.COM/Q?H+42.03-93.62R25D250614");
+    assert.deepEqual(await pg.evaluate(() => window.__qrIn), [t + " mixed"], "what the encoder drew");
+    assert.equal(await pop.$eval(".agpq", (e) => e.getAttribute("data-qr")), t);
+    assert.equal(await pop.$eval(".agpq svg", (e) => e.getAttribute("viewBox")), "0 0 37 37", "29 x 29 modules and the margin");
     assert.match(await pop.textContent(".agpq"), /Scan to open this report on agsist\.com\s*agsist\.com\/hail-map\?lat=42\.0300&lon=-93\.6200&mi=25&day=2025-06-14/);
     assert.match(await pop.textContent("body"), /Radius: 25 miles/);
     assert.deepEqual(errs, []);
     await ctx.close();
+    assert.equal(await viaQ(browser, port, t, "/hail-map"), want, "the code opens this same report");
   } finally { await browser.close(); srv.close(); }
 });
