@@ -192,7 +192,7 @@
       box.innerHTML = '<p class="fine">' + (st.q ? 'None of the matching jobs is in a bordering state\'s survey with the same unit.' : 'No common job with the same unit in the bordering surveys.') + '</p>';
       return;
     }
-    var head = cols.map(function (x) { var s = info(x); return '<th scope="col">' + esc(s.name) + '<br><small>' + s.year + '</small></th>'; }).join('');
+    var head = cols.map(function (x) { var s = info(x); return '<th scope="col">' + esc(s.name) + '<br><small>' + (s.yl || s.year) + '</small></th>'; }).join('');
     box.innerHTML = '<div class="cr-tw"><table class="cr-t cr-cmp"><caption>Average, with the number of answers in brackets. Each survey words its jobs its own way and was taken in a different year, so read these as close matches, not the same job. The full table above shows this state\'s wording.</caption>' +
       '<thead><tr><th scope="col">Job</th>' + head + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div>' +
       '<ul class="cr-cmpl">' + items.join('') + '</ul>';
