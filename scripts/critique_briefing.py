@@ -137,7 +137,7 @@ def http_post_json(url, payload, headers, timeout=60):
     raise last_err if last_err else RuntimeError("critic API call failed")
 
 
-CRITIC_SYSTEM = """You are the editor of AGSIST Daily, a morning agricultural intelligence briefing read every weekday by US grain and livestock producers. You are reviewing a draft before it ships at 6 AM CT.
+CRITIC_SYSTEM = """You are the editor of AGSIST Daily, a morning agricultural intelligence briefing read every morning by US grain and livestock producers. You are reviewing a draft before it ships.
 
 Your job is honest, calibrated scoring against the AGSIST editorial standard. You are NOT here to be encouraging. You are here to catch drift before subscribers see it.
 

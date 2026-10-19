@@ -321,7 +321,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
          never jumps. -->
     <!-- 2026-10-17: the reader's state middle bid (data/basis-states.json), only with a saved state; nothing otherwise (components/price-local.js) -->
     <p class="pl-line" data-state-bid="corn soybeans" hidden></p>
-    <div id="hb-ask" data-signup-ask="Get your top local bid by email every weekday morning" data-source="hero" data-variant="hero"></div>
+    <div id="hb-ask" data-signup-ask="Get your top local bid by email every morning" data-source="hero" data-variant="hero"></div>
     <!-- 2026-10-16: who stands behind the page, on the first screen. -->
     <!-- Sponsor credit: at the foot of the first answer (this band), not above the headline. Inside the band so the desktop grid cannot move it. Drawn only for a paid sponsor; unsold it stays hidden and empty. -->
   <div class="s7-adrow s7-adrow--hb" style="display:none"><a class="teaser-sponsor" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"></a></div>
@@ -329,7 +329,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <!-- no saved ZIP: hide the bid cells now, before the parser stops for the script below and the page paints with them (they used to vanish after first paint and the row rewrapped) -->
   <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
   <!-- signup-ask.js stays a plain script here: it fills #hb-ask above before the first paint. Deferred, the ask arrived after paint and pushed the page down (CLS 0.009 to 0.042, 2026-10-12). -->
-  <script src="/components/signup-ask.js?v=8"></script>
+  <script src="/components/signup-ask.js?v=9"></script>
 <section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-10-19" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full" aria-expanded="false">
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><span class="teaser-action">Read today’s briefing &#x2193;</span></div>
@@ -1322,7 +1322,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         </div>
         <div id="r7-pa-now" aria-live="polite"></div>
         <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.765rem);color:var(--text)">
-        <label class="sa-optin" id="pa-optin-l" data-signup-hide><input type="checkbox" id="pa-optin" checked> Also send me AGSIST Daily, free, every morning</label>
+        <label class="sa-optin" id="pa-optin-l" data-signup-hide><input type="checkbox" id="pa-optin"> Also send me AGSIST Daily, free, every morning</label>
         <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:5px;font-size:.824rem;font-weight:700;cursor:pointer">Set alert</button>
         <div id="pa-status" role="status" tabindex="-1" style="font-size:.765rem;color:var(--text-muted);min-height:1.1em"></div>
       </div>
@@ -1384,7 +1384,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             return fail(/email/.test(String(data.error))?'That email address was not accepted.':/target/.test(String(data.error))?'That target price was not accepted.':'That alert was not accepted.',/email/.test(String(data.error))?email:/target/.test(String(data.error))?tgt:null);
           if(!r.ok||!data||data.ok!==true)
             return fail('The alert service did not confirm this'+(r.ok?'':' (error '+r.status+')')+'. Nothing was saved. Try again in a minute.');
-          /* 2026-10-06: the labelled daily opt-in, ticked by default. It is
+          /* 2026-10-06: the labelled daily opt-in, empty until the reader ticks it
+             (Sig, 2026-10-19). It is
              read before the form is replaced, and only after the alert
              itself was accepted. */
           var oi=document.getElementById('pa-optin'), oiL=document.getElementById('pa-optin-l');
@@ -1656,7 +1657,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/bids-homepage.js?v=39" defer></script>
 <link rel="stylesheet" href="/components/cb-myelev.css?v=1">
 <script src="/components/cb-myelev.js?v=3" defer></script>
-<script src="/components/homepage-extras.js?v=15" defer></script>
+<script src="/components/homepage-extras.js?v=16" defer></script>
 <script src="/components/home-yield.js?v=7" defer></script>
 <script src="/components/home.js?v=13"></script>
 <script src="/components/home-planting.js?v=2" defer></script>

@@ -746,7 +746,7 @@ def page_html(editions):
       {past}
       {method}
     </article>
-    <div data-signup-ask="Email me my top local bid and the markets, every weekday morning" data-source="page:cash-bid-index"></div>
+    <div data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:cash-bid-index"></div>
     <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
   </main>
   <div id="site-footer">

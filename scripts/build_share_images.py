@@ -131,7 +131,7 @@ LINES = {
     "cash-lease": ("Farm lease", "A free cash lease you can fill in and print, with your state's deadlines."),
     "changelog": ("What's new", "Every change to the site, by date."),
     "contact": ("Contact", "Questions, data problems or a sponsor spot: write Sig."),
-    "daily": ("AGSIST Daily", "Grain markets before the open, free in your inbox every weekday."),
+    "daily": ("AGSIST Daily", "Grain markets before the open, free in your inbox every morning."),
     "data-sources": ("Data sources", "Where every number on the site comes from."),
     "developer": ("For developers", "Put our calculators on your site, or pull the market data feeds."),
     "drought-monitor": ("Drought", "This week's US Drought Monitor map, and what each category means for crops."),

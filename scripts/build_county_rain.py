@@ -423,9 +423,10 @@ def year_ask(name, year, fips):
     """One email in January with this county's full-year rain (subs worker v5.28,
     topic rainyear:<year>:<fips>, mailed by scripts/send_rain_year.py from
     county-rain.yml once the finished year is fetched). components/signup-ask.js
-    draws it; the morning briefing box starts ticked and can be unticked."""
+    draws it; the morning briefing box starts empty (Sig, 2026-10-19: no ask
+    pre-ticks the Daily)."""
     return (f'<div data-signup-ask="Email me {e(name)}&rsquo;s full {year} rain total in January." '
-            f'data-topic="rainyear:{year}:{fips}" data-daily="on" '
+            f'data-topic="rainyear:{year}:{fips}" '
             f'data-ok="Done. One email in January, once NOAA has all of {year} for {e(name)}." '
             f'data-note="One email: the year&rsquo;s total against a usual year, and a link to the month by month page."></div>')
 
@@ -1016,9 +1017,10 @@ def selftest():
         sell_blk = story.split('class="rc-sell"')[1].split("</div>")[0]
         ok(f'<p class="rc-fine">{RP_ANY_YEAR}</p>' in sell_blk and story.count('href="/rain-print"') == 1,
            "one plain link to the bare /rain-print, inside the same promo block")
-        # the January full-year email (subs worker v5.28): one ask, under the month table, box ticked
-        ok(story.count("data-signup-ask=") == 1 and 'data-topic="rainyear:2026:19169" data-daily="on"' in story,
-           "one rainyear ask for this county and year, morning briefing box ticked")
+        # the January full-year email (subs worker v5.28): one ask, under the month table, Daily box not pre-ticked
+        ok(story.count("data-signup-ask=") == 1 and 'data-topic="rainyear:2026:19169" data-ok=' in story
+           and "data-daily" not in story,
+           "one rainyear ask for this county and year, morning briefing box not pre-ticked")
         ok(story.index("<h2>Month by month</h2>") < story.index('data-topic="rainyear:') < story.index("<h2>The station"),
            "the ask sits under the month by month table")
         ok("Email me Story County&rsquo;s full 2026 rain total in January." in story and "once NOAA has all of 2026" in story,
