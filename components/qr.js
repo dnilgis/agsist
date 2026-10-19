@@ -19,7 +19,10 @@
        go past version 10, up to maxVer (40 at most). Without maxVer both stop
        at version 10 and throw past it, as they always have, so a caller that
        counts on the throw (a link too long to print) is unchanged. Added
-       2026-10-19 for the printed reports (components/print-qr.js). */
+       2026-10-19 for the printed reports (components/print-qr.js).
+     AgQR.matrix(text, null, 'mixed', maxVer), AgQR.svg(text, label, maxVer, 'mixed')
+       alphanumeric segments where the text allows, bytes between, fewest bits
+       (the short report links, HTTPS://AGSIST.COM/Q?...). */
 (function (w) {
   'use strict';
   if (w.AgQR) return;
@@ -90,20 +93,29 @@
   var ALNUM = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
   function alnumCountBits(ver) { return ver <= 9 ? 9 : ver <= 26 ? 11 : 13; }
   function alnumBits(n, ver) { return 4 + alnumCountBits(ver) + 11 * Math.floor(n / 2) + 6 * (n % 2); }
-  function encodeData(data, ver, alnum) {
+  /* segs: [{alnum: bool, data: [values]}]. One segment is the old single-mode symbol, bit for bit. */
+  function segBits(segs, ver) {
+    return segs.reduce(function (t, g) {
+      return t + (g.alnum ? alnumBits(g.data.length, ver) : 4 + (ver <= 9 ? 8 : 16) + 8 * g.data.length);
+    }, 0);
+  }
+  function encodeData(segs, ver) {
     var bits = [];
     function put(val, n) { for (var i = n - 1; i >= 0; i--) bits.push((val >> i) & 1); }
-    if (alnum) {
-      put(2, 4);
-      put(data.length, alnumCountBits(ver));
-      for (var a = 0; a < data.length; a += 2) {
-        if (a + 1 < data.length) put(data[a] * 45 + data[a + 1], 11); else put(data[a], 6);
+    segs.forEach(function (g) {
+      var data = g.data;
+      if (g.alnum) {
+        put(2, 4);
+        put(data.length, alnumCountBits(ver));
+        for (var a = 0; a < data.length; a += 2) {
+          if (a + 1 < data.length) put(data[a] * 45 + data[a + 1], 11); else put(data[a], 6);
+        }
+      } else {
+        put(4, 4);
+        put(data.length, ver <= 9 ? 8 : 16);
+        data.forEach(function (b) { put(b, 8); });
       }
-    } else {
-      put(4, 4);
-      put(data.length, ver <= 9 ? 8 : 16);
-      data.forEach(function (b) { put(b, 8); });
-    }
+    });
     var cap = dataCodewords(ver) * 8;
     put(0, Math.min(4, cap - bits.length));
     put(0, ((-bits.length) % 8 + 8) % 8);
@@ -158,9 +170,36 @@
     function (x, y) { return ((x + y) % 2 + x * y % 3) % 2 === 0; }
   ];
 
+  /* Mixed mode (2026-10-19, for the printed reports' short links): runs of QR
+     alphanumeric letters go as alphanumeric segments, the rest as bytes. Every
+     cut-off for how short an alphanumeric run may be is tried and the fewest
+     bits kept, so HTTPS://AGSIST.COM/Q?H*... pays one byte segment for the "?". */
+  function mixedSegs(text, ver) {
+    var s = String(text), runs = [], i;
+    for (i = 0; i < s.length; i++) {
+      var al = ALNUM.indexOf(s.charAt(i)) >= 0, last = runs[runs.length - 1];
+      if (last && last.al === al) last.t += s.charAt(i); else runs.push({ al: al, t: s.charAt(i) });
+    }
+    var best = null;
+    for (var cut = 1; cut <= 24; cut++) {
+      var segs = [];
+      runs.forEach(function (r) {
+        var al = r.al && r.t.length >= cut, last = segs[segs.length - 1];
+        if (last && last.al === al) last.t += r.t; else segs.push({ al: al, t: r.t });
+      });
+      var out = segs.map(function (g) {
+        return g.al ? { alnum: true, data: g.t.split('').map(function (c) { return ALNUM.indexOf(c); }) } : { alnum: false, data: utf8(g.t) };
+      });
+      var b = segBits(out, ver);
+      if (!best || b < best.b) best = { b: b, segs: out };
+    }
+    return best.segs;
+  }
   function matrix(text, mask, mode, maxVer) {
-    var alnum = mode === 'alnum', data, ver = null, v, i, j, x, y, top = Math.min(MAX_VER, maxVer || 10);
-    if (alnum) {
+    var alnum = mode === 'alnum', segs = null, data, ver = null, v, i, j, x, y, top = Math.min(MAX_VER, maxVer || 10);
+    if (mode === 'mixed') {
+      for (v = 1; v <= top; v++) { var sg = mixedSegs(text, v); if (segBits(sg, v) <= dataCodewords(v) * 8) { ver = v; segs = sg; break; } }
+    } else if (alnum) {
       data = String(text).split('').map(function (ch) { var k = ALNUM.indexOf(ch); if (k < 0) throw new Error('not a QR alphanumeric character: ' + ch); return k; });
       for (v = 1; v <= top; v++) if (alnumBits(data.length, v) <= dataCodewords(v) * 8) { ver = v; break; }
     } else {
@@ -168,6 +207,7 @@
       for (v = 1; v <= top; v++) if (data.length + (v <= 9 ? 2 : 3) <= dataCodewords(v)) { ver = v; break; }
     }
     if (ver === null) throw new Error('text too long for a version ' + top + ' QR code at level M');
+    if (!segs) segs = [{ alnum: alnum, data: data }];
     var size = ver * 4 + 17, mod = [], fn = [];
     for (y = 0; y < size; y++) { mod.push([]); fn.push([]); for (x = 0; x < size; x++) { mod[y].push(false); fn[y].push(false); } }
     function setf(x, y, dark) { mod[y][x] = dark; fn[y][x] = true; }
@@ -202,7 +242,7 @@
       var vb = ver << 12 | rem;
       for (i = 0; i < 18; i++) { var bt = ((vb >> i) & 1) === 1, a = size - 11 + i % 3, b2 = Math.floor(i / 3); setf(a, b2, bt); setf(b2, a, bt); }
     }
-    var cw = interleave(encodeData(data, ver, alnum), ver), bi = 0, right = size - 1;
+    var cw = interleave(encodeData(segs, ver), ver), bi = 0, right = size - 1;
     while (right >= 1) {
       if (right === 6) right = 5;
       for (var vert = 0; vert < size; vert++) for (j = 0; j < 2; j++) {
@@ -227,8 +267,8 @@
   }
 
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
-  function svg(text, label, maxVer) {
-    var m = matrix(text, null, null, maxVer), n = m.length + 8, d = '';
+  function svg(text, label, maxVer, mode) {
+    var m = matrix(text, null, mode || null, maxVer), n = m.length + 8, d = '';
     m.forEach(function (row, y) { row.forEach(function (v, x) { if (v) d += 'M' + (x + 4) + ',' + (y + 4) + 'h1v1h-1z'; }); });
     return '<svg class="qr" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + n + ' ' + n + '" role="img" aria-label="' + esc(label || 'QR code') + '" ' +
       'shape-rendering="crispEdges"><rect width="' + n + '" height="' + n + '" fill="#fff"/><path fill="#000" d="' + d + '"/></svg>';
