@@ -147,6 +147,7 @@ PAGES = [
         ("/combine-loss", "Combine Loss Check", "harvest loss from beans or kernels counted on the ground behind the combine (UNL rules: 4 beans or 2 kernels per sq ft = 1 bu/ac), with ears, in bu/ac and dollars at your bid"),
         ("/nutrient-removal", "Nutrient Removal Value Calculator", "pounds of P2O5 and K2O removed per ton, bale and acre when you bale corn stalks or small grain straw, chop silage, sell hay or haul grain (UW A2809 Table 4.2), priced at posted co-op fertilizer prices; N and S withheld until sourced"),
         ("/hay-prices", "Hay Prices by State", "This week's USDA AMS hay trades by state, grade and bale type ($ a ton, each report dated), beside USDA NASS monthly prices received for alfalfa, other hay and all hay, every published state, the same month last year and 3 years of history; withheld states say so"),
+        ("/haymow", "The Haymow (hay for sale and wanted)", "a free board where farmers post hay, straw and forage for sale or wanted, sorted by distance from a ZIP, with the price per ton worked out from a per-bale price and the poster's bale weight; buyers and sellers call each other, no fees and no cut"),
         ("/cattle-auction-prices", "Sale Barn Prices", "feeder steer and heifer prices by 100 lb weight class (Medium and Large 1 and 1-2), weighted average $/cwt and $/head with head counts, at USDA-reported sale barns and state auction summaries near a ZIP"),
     ]),
     ("My ground and programs", [

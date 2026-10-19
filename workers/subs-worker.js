@@ -5,6 +5,35 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.30 (2026-10-18): THE HAY BOARD (agsist.com/haymow). New routes only;
+ *   every existing route answers exactly as before. No new binding and no new
+ *   secret. Readers post hay or forage for sale or wanted; buyers and sellers
+ *   call each other. AGSIST takes no cut and ranks nothing by payment.
+ *   hay:<id> = {id, kind sale|wanted, zip, place, lat, lng (ZIP centroid, 2
+ *     decimals; from the bids ZIP table, then Open-Meteo, when the page sends
+ *     none), product, cutting, bale, count, price, unit bale|ton, weight,
+ *     rfv, rfq, cp, delivery no|yes|miles, note (300), name (60), phone,
+ *     email, ts, updated, exp, status live|held|hidden, why_hidden, reports
+ *     [{who (IP hmac), why, ts}], n, hn, kh}, stored with a KV expiration at
+ *     exp (30 days). kh = hmac16("hay|" + key); the key is never stored.
+ *   POST /hay/post    publicGate, 4 KB, honeypot, RATE 3 an hour, 10 a day
+ *     per address, 300 for everyone. Tags stripped; a link, or a phone or
+ *     email in the note or name, is refused. Repeated text or all caps is
+ *     stored as held (not shown) until Sig clears it. -> {id, key, status, exp}
+ *   POST /hay/mine, /hay/edit, /hay/renew, /hay/delete {id, key, ...}: the
+ *     poster's own post. edit checks every field again; renew adds 30 days,
+ *     at most 60 days ahead.
+ *   GET  /hay/feed?lat&lng&mi&kind  live posts WITHOUT phone or email
+ *     (has_phone, has_email instead), nearest first with mi when lat/lng are
+ *     given, else newest first. public, max-age=60.
+ *   POST /hay/contact {id}  the name, phone and email of one live post (RATE
+ *     20 an hour, 60 a day per address), so contacts are never in the feed.
+ *   POST /hay/report {id, why}  one report per address; 3 from different
+ *     addresses hide the post until Sig clears it.
+ *   GET  /hay/admin/list[?new=1], POST /hay/admin/hide {id},
+ *     /hay/admin/clear {id}, /hay/admin/mark {ids}: Bearer LIST_TOKEN only.
+ *     scripts/form_digest.py mails Sig the new and newly hidden posts (public
+ *     text only) and marks them.
  * v5.29 (2026-10-17): PRF GRID INDEX NOTICE. /notice takes one more topic,
  *   prf:<grid id> (an email each time USDA RMA posts a final PRF index for a
  *   pair of months on that grid, from /prf and the PRF county pages). The id
@@ -1543,6 +1572,317 @@ export default {
   },
 };
 
+// ---------- v5.30: THE HAY BOARD (agsist.com/haymow) ----------
+// Readers post hay and forage for sale or wanted; buyers and sellers call each
+// other. AGSIST takes no cut, routes nothing and ranks nothing by payment.
+// hay:<id> = the post (contact inside), stored with a KV expiration at exp.
+// The private key is never stored, only kh = hmac16("hay|" + key).
+const HAY_TTL_S = 30 * 86400;
+const HAY_RENEW_MAX_S = 60 * 86400;      // a renew adds 30 days, up to 60 days ahead
+const HAY_MAX_BYTES = 4096;
+const HAY_NOTE_MAX = 300;
+const HAY_REPORTS_HIDE = 3;
+const HAY_B32 = "0123456789abcdefghjkmnpqrstvwxyz";   // Crockford, lowercase
+const HAY_ID_RE = /^[0-9a-hjkmnp-tv-z]{10}$/;
+const HAY_KEY_RE = /^[0-9a-hjkmnp-tv-z]{24}$/;
+const HAY_KINDS = ["sale", "wanted"];
+const HAY_PRODUCTS = ["alfalfa", "grass", "mixed", "straw", "corn-stalks", "baleage", "other"];
+const HAY_BALES = ["small-square", "large-square", "round", "wrapped", "bulk"];
+const HAY_CUTTINGS = ["", "1", "2", "3", "4"];
+const HAY_UNITS = ["bale", "ton"];
+const HAY_WHY = ["sold", "spam", "wrong", "scam", "other"];
+const HAY_PUBLIC = ["id", "kind", "zip", "place", "lat", "lng", "product", "cutting", "bale", "count", "price", "unit",
+  "weight", "rfv", "rfq", "cp", "delivery", "note", "name", "ts", "updated", "exp"];
+const HAY_ZIPS = "https://dnilgis.github.io/bids/data/zips/";
+// A link of any kind: a scheme, www., or a word.tld.
+const HAY_LINK_RE = /(https?:|ftp:|www\.|\b[a-z0-9-]+\s?\.\s?(com|net|org|biz|info|io|co|us|xyz|ly|me|site|online|shop|app|link|top)\b)/i;
+const HAY_EMAIL_IN_TEXT = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i;
+const HAY_PHONE_IN_TEXT = /(\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/;
+let HAY_MEMO = null;                       // {at, rows}: the public list for 60 s on this isolate
+
+function hayNew(n) {
+  return [...crypto.getRandomValues(new Uint8Array(n))].map(b => HAY_B32[b & 31]).join("");
+}
+async function hayKh(env, key) { return hmac16("hay|" + key, env.UNSUB_SECRET); }
+// Visitor text: tags and angle brackets out, one line, then the length check.
+function hayText(v, max, field) {
+  if (v == null || v === "") return { v: "" };
+  if (typeof v !== "string") return { error: "invalid " + field };
+  const s = oneLine(v.replace(/<[^>]*>/g, " ").replace(/[<>]/g, " "), max + 1);
+  if (s.length > max) return { error: field + " too long (" + max + " at most)" };
+  if (HAY_LINK_RE.test(s)) return { error: "no links in the " + field + ", please" };
+  return { v: s };
+}
+function hayNum(v, lo, hi, field, dec) {
+  if (v == null || v === "") return { v: null };
+  const x = typeof v === "number" ? v : (typeof v === "string" ? Number(v.replace(/[$,\s]/g, "")) : NaN);
+  if (!Number.isFinite(x) || x < lo || x > hi) return { error: "invalid " + field };
+  const f = Math.pow(10, dec || 0);
+  return { v: Math.round(x * f) / f };
+}
+function hayEnum(v, list, field, need) {
+  const s = v == null ? "" : String(v).trim().toLowerCase();
+  if (!s && !need) return { v: "" };
+  if (!list.includes(s)) return { error: (s ? "invalid " : "missing ") + field };
+  return { v: s };
+}
+// Text that is posted but held for Sig: repeated letters or words, or shouting.
+function hayHeld(s) {
+  if (!s) return "";
+  if (/(.)\1{7,}/.test(s)) return "repeated text";
+  const w = s.toLowerCase().match(/[a-z]+/g) || [];
+  const seen = {};
+  for (const x of w) if (x.length > 2 && (seen[x] = (seen[x] || 0) + 1) >= 5) return "repeated text";
+  const letters = s.replace(/[^A-Za-z]/g, "");
+  if (letters.length >= 12 && letters.replace(/[^A-Z]/g, "").length / letters.length > 0.8) return "all caps";
+  return "";
+}
+function hayDist(aLat, aLng, bLat, bLng) {
+  const r = Math.PI / 180, dLat = (bLat - aLat) * r, dLng = (bLng - aLng) * r;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(aLat * r) * Math.cos(bLat * r) * Math.sin(dLng / 2) ** 2;
+  return 3958.8 * 2 * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+async function hayZipLL(zip) {
+  try {
+    const r = await fetch(HAY_ZIPS + zip.slice(0, 2) + ".json", { cf: { cacheTtl: 86400 } });
+    if (r.ok) {
+      const t = await r.json(), p = t && t[zip];
+      if (Array.isArray(p) && Number.isFinite(+p[0]) && Number.isFinite(+p[1]) && !(+p[0] === 0 && +p[1] === 0)) return { lat: +p[0], lng: +p[1] };
+    }
+  } catch (e) { /* fall through */ }
+  try {
+    const r = await fetch("https://geocoding-api.open-meteo.com/v1/search?name=" + zip + "&count=1&language=en&format=json&countryCode=US");
+    if (r.ok) {
+      const d = await r.json(), x = d && d.results && d.results[0];
+      if (x && Number.isFinite(+x.latitude) && Number.isFinite(+x.longitude)) return { lat: +x.latitude, lng: +x.longitude };
+    }
+  } catch (e) { /* none */ }
+  return null;
+}
+// Every field a post can carry, checked. `old` is the stored post on an edit:
+// a field left out keeps its value. -> {rec} or {error}
+function hayClean(b, old) {
+  const o = old || {};
+  const pick = (k) => (Object.prototype.hasOwnProperty.call(b, k) ? b[k] : o[k]);
+  const out = {};
+  let t;
+  t = hayEnum(pick("kind"), HAY_KINDS, "kind (sale or wanted)", true); if (t.error) return t; out.kind = t.v;
+  const zip = String(pick("zip") == null ? "" : pick("zip")).trim();
+  if (!/^\d{5}$/.test(zip)) return { error: "a 5-digit ZIP is needed" };
+  out.zip = zip;
+  t = hayEnum(pick("product"), HAY_PRODUCTS, "product", true); if (t.error) return t; out.product = t.v;
+  const cut = String(pick("cutting") == null ? "" : pick("cutting")).trim().replace(/(st|nd|rd|th)$/i, "");
+  t = hayEnum(cut, HAY_CUTTINGS, "cutting", false); if (t.error) return t; out.cutting = t.v;
+  t = hayEnum(pick("bale"), HAY_BALES, "bale type", out.kind === "sale"); if (t.error) return t; out.bale = t.v;
+  t = hayNum(pick("count"), 1, 100000, "count", 0); if (t.error) return t; out.count = t.v;
+  if (out.kind === "sale" && out.count == null) return { error: "how many bales (or tons) is missing" };
+  t = hayNum(pick("price"), 0.01, 5000, "price", 2); if (t.error) return t; out.price = t.v;
+  t = hayEnum(pick("unit"), HAY_UNITS, "price unit (per bale or per ton)", out.price != null); if (t.error) return t; out.unit = out.price != null ? t.v : "";
+  t = hayNum(pick("weight"), 20, 3000, "bale weight", 0); if (t.error) return t; out.weight = t.v;
+  t = hayNum(pick("rfv"), 1, 400, "RFV", 0); if (t.error) return t; out.rfv = t.v;
+  t = hayNum(pick("rfq"), 1, 400, "RFQ", 0); if (t.error) return t; out.rfq = t.v;
+  t = hayNum(pick("cp"), 0.1, 40, "crude protein", 1); if (t.error) return t; out.cp = t.v;
+  const dv = pick("delivery");
+  if (dv == null || dv === "" || dv === "no" || dv === false) out.delivery = "no";
+  else if (dv === "yes" || dv === true) out.delivery = "yes";
+  else { t = hayNum(dv, 1, 1000, "delivery miles", 0); if (t.error || t.v == null) return { error: "invalid delivery" }; out.delivery = t.v; }
+  t = hayText(pick("note"), HAY_NOTE_MAX, "note"); if (t.error) return t; out.note = t.v;
+  if (HAY_EMAIL_IN_TEXT.test(out.note) || HAY_PHONE_IN_TEXT.test(out.note)) return { error: "put your phone or email in the contact boxes, not the note" };
+  t = hayText(pick("name"), 60, "name"); if (t.error) return t; out.name = t.v;
+  if (HAY_EMAIL_IN_TEXT.test(out.name) || HAY_PHONE_IN_TEXT.test(out.name)) return { error: "put your phone or email in the contact boxes, not the name" };
+  const place = String(pick("place") == null ? "" : pick("place")).trim();
+  out.place = /^[A-Za-z][A-Za-z .'-]{0,50}, [A-Z]{2}$/.test(place) ? place : "";
+  const ph = pick("phone") == null ? "" : String(pick("phone")).trim();
+  if (ph && (ph.length > 30 || !/^[0-9()+\-. ]+$/.test(ph) || ph.replace(/\D/g, "").length < 10)) return { error: "invalid phone" };
+  out.phone = ph;
+  const em = pick("email") == null ? "" : String(pick("email")).trim().toLowerCase();
+  if (em && (em.length > 254 || !EMAIL_RE.test(em))) return { error: "invalid email" };
+  out.email = em;
+  if (!out.phone && !out.email) return { error: "a phone or an email is needed, so people can reach you" };
+  const lat = pick("lat"), lng = pick("lng");
+  if (lat != null && lat !== "" && lng != null && lng !== "") {
+    const a = Number(lat), g = Number(lng);
+    if (!Number.isFinite(a) || !Number.isFinite(g) || a < 17 || a > 72 || g < -180 || g > -64) return { error: "invalid lat/lng" };
+    out.lat = Math.round(a * 100) / 100; out.lng = Math.round(g * 100) / 100;
+  } else { out.lat = null; out.lng = null; }
+  return { rec: out };
+}
+function hayPublic(r) {
+  const out = {};
+  for (const k of HAY_PUBLIC) out[k] = r[k] === undefined ? null : r[k];
+  out.has_phone = !!r.phone; out.has_email = !!r.email;
+  return out;
+}
+function hayLive(r, now) { return !!r && r.status === "live" && (r.exp || 0) > now; }
+async function hayGet(env, id) {
+  if (!HAY_ID_RE.test(String(id || ""))) return null;
+  try { const r = JSON.parse(await env.SUBS.get("hay:" + id)); return r && typeof r === "object" ? r : null; } catch (e) { return null; }
+}
+async function hayPut(env, r) {
+  HAY_MEMO = null;
+  await env.SUBS.put("hay:" + r.id, JSON.stringify(r), { expiration: Math.max(Math.floor(Date.now() / 1000) + 120, Math.floor(r.exp / 1000)) });
+}
+async function hayAll(env) {
+  const out = [];
+  for (const k of await listKeys(env, "hay:")) {
+    const r = await hayGet(env, k.slice(4));
+    if (r) out.push(r);
+  }
+  return out;
+}
+async function hayBody(req) {
+  if (Number(req.headers.get("Content-Length") || 0) > HAY_MAX_BYTES) return { error: "too large", status: 413 };
+  let raw = "";
+  try { raw = await req.text(); } catch (e) { raw = ""; }
+  if (raw.length > HAY_MAX_BYTES) return { error: "too large", status: 413 };
+  let b = null;
+  try { b = JSON.parse(raw); } catch (e) { b = null; }
+  if (!b || typeof b !== "object" || Array.isArray(b)) return { error: "bad json", status: 400 };
+  return { b };
+}
+async function hayOwned(env, b) {
+  const id = typeof b.id === "string" ? b.id.trim().toLowerCase() : "";
+  const key = typeof b.key === "string" ? b.key.trim().toLowerCase() : "";
+  const r = HAY_ID_RE.test(id) && HAY_KEY_RE.test(key) ? await hayGet(env, id) : null;
+  if (!r || !safeEq(await hayKh(env, key), r.kh)) return { error: "this link is not right, or the post has expired", status: 404 };
+  return { r };
+}
+const HAY_RATE = {
+  "/hay/post": [3, 10, 300], "/hay/edit": [20, 60, 1000], "/hay/delete": [20, 60, 1000], "/hay/renew": [20, 60, 1000],
+  "/hay/mine": [30, 100, 2000], "/hay/contact": [20, 60, 3000], "/hay/report": [5, 20, 500],
+};
+Object.assign(RATE, HAY_RATE);
+for (const p of Object.keys(HAY_RATE)) PUBLIC_POSTS.add(p);
+
+async function hayRoute(req, env, url, path) {
+  const c = Object.assign({ "Cache-Control": "no-store" }, cors(req));
+  const now = Date.now();
+
+  if (path === "/hay/feed" && req.method === "GET") {
+    if (!HAY_MEMO || now - HAY_MEMO.at > 60e3) HAY_MEMO = { at: now, rows: (await hayAll(env)).filter(r => hayLive(r, now)).map(hayPublic) };
+    let rows = HAY_MEMO.rows.filter(r => r.exp > now);
+    const kind = url.searchParams.get("kind");
+    if (kind && HAY_KINDS.includes(kind)) rows = rows.filter(r => r.kind === kind);
+    const lat = Number(url.searchParams.get("lat")), lng = Number(url.searchParams.get("lng"));
+    const mi = Number(url.searchParams.get("mi"));
+    if (url.searchParams.has("lat") && url.searchParams.has("lng") && Number.isFinite(lat) && Number.isFinite(lng)) {
+      rows = rows.map(r => Object.assign({}, r, { mi: r.lat == null ? null : Math.round(hayDist(lat, lng, r.lat, r.lng)) }));
+      if (Number.isFinite(mi) && mi > 0) rows = rows.filter(r => r.mi != null && r.mi <= mi);
+      rows.sort((a, b) => (a.mi == null) - (b.mi == null) || a.mi - b.mi || b.ts - a.ts);
+    } else rows = rows.slice().sort((a, b) => b.ts - a.ts);
+    return json({ ok: true, generated_at: new Date(now).toISOString(), listings: rows }, 200,
+      Object.assign({ "Cache-Control": "public, max-age=60" }, cors(req)));
+  }
+
+  // Sig only: Bearer LIST_TOKEN, never ?token=.
+  if (path.startsWith("/hay/admin/")) {
+    const bearer = /^Bearer\s+(\S+)\s*$/i.exec(req.headers.get("Authorization") || "");
+    if (!bearer || !env.LIST_TOKEN || !safeEq(bearer[1], env.LIST_TOKEN)) return json({ ok: false }, 403, c);
+    if (path === "/hay/admin/list" && req.method === "GET") {
+      const onlyNew = url.searchParams.get("new") === "1";
+      let rows = (await hayAll(env)).map(r => { const o = Object.assign({}, r); delete o.kh; o.reports = (r.reports || []).map(x => ({ why: x.why, ts: x.ts })); return o; });
+      if (onlyNew) rows = rows.filter(r => !r.n || (r.status !== "live" && !r.hn));
+      rows.sort((a, b) => a.ts - b.ts);
+      return json({ ok: true, posts: rows }, 200, c);
+    }
+    if (req.method !== "POST") return json({ ok: false, error: "not found" }, 404, c);
+    let b = {};
+    try { b = await req.json(); } catch (e) { return json({ ok: false, error: "bad json" }, 400, c); }
+    if (path === "/hay/admin/mark") {
+      let marked = 0;
+      for (const id of Array.isArray(b.ids) ? b.ids.slice(0, 500) : []) {
+        const r = await hayGet(env, id);
+        if (!r) continue;
+        r.n = 1;
+        if (r.status !== "live") r.hn = 1;
+        await hayPut(env, r); marked++;
+      }
+      return json({ ok: true, marked }, 200, c);
+    }
+    const r = await hayGet(env, b.id);
+    if (!r) return json({ ok: false, error: "no such post" }, 404, c);
+    if (path === "/hay/admin/hide") { r.status = "hidden"; r.why_hidden = "sig"; r.hn = 1; await hayPut(env, r); return json({ ok: true, id: r.id, status: r.status }, 200, c); }
+    if (path === "/hay/admin/clear") { r.status = "live"; r.reports = []; r.why_hidden = ""; r.hn = 1; await hayPut(env, r); return json({ ok: true, id: r.id, status: r.status }, 200, c); }
+    return json({ ok: false, error: "not found" }, 404, c);
+  }
+
+  if (req.method !== "POST" || !Object.prototype.hasOwnProperty.call(HAY_RATE, path)) return json({ ok: false, error: "not found" }, 404, c);
+  // publicGate (Origin, JSON) has already run: every route here is in PUBLIC_POSTS.
+  const p = await hayBody(req);
+  if (p.error) return json({ ok: false, error: p.error }, p.status, c);
+  const b = p.b;
+  if (b._gotcha) return json({ ok: true }, 200, c);
+  const slow = await rateLimit(req, env, path);
+  if (slow) return slow;
+
+  if (path === "/hay/post") {
+    const v = hayClean(b, null);
+    if (v.error) return json({ ok: false, error: v.error }, 400, c);
+    const rec = v.rec;
+    if (rec.lat == null) {
+      const ll = await hayZipLL(rec.zip);
+      if (!ll) return json({ ok: false, error: "could not find ZIP " + rec.zip + "; check it" }, 400, c);
+      rec.lat = Math.round(ll.lat * 100) / 100; rec.lng = Math.round(ll.lng * 100) / 100;
+    }
+    const id = hayNew(10), key = hayNew(24);
+    const held = hayHeld(rec.note) || hayHeld(rec.name);
+    Object.assign(rec, { id, kh: await hayKh(env, key), ts: now, updated: now, exp: now + HAY_TTL_S * 1000,
+      status: held ? "held" : "live", why_hidden: held, reports: [], n: 0 });
+    await hayPut(env, rec);
+    return json({ ok: true, id, key, status: rec.status, exp: rec.exp }, 200, c);
+  }
+
+  if (path === "/hay/report") {
+    const r = await hayGet(env, typeof b.id === "string" ? b.id.trim().toLowerCase() : "");
+    if (!r || (r.exp || 0) <= now) return json({ ok: false, error: "no such post" }, 404, c);
+    const why = HAY_WHY.includes(String(b.why || "")) ? String(b.why) : "other";
+    const ip = req.headers.get("CF-Connecting-IP") || "";
+    const who = ip ? await hmac16("hay-report|" + ipBucket(ip), env.UNSUB_SECRET) : "";
+    r.reports = Array.isArray(r.reports) ? r.reports : [];
+    if (who && !r.reports.some(x => x.who === who) && r.reports.length < 50) {
+      r.reports.push({ who, why, ts: now });
+      if (r.status === "live" && r.reports.length >= HAY_REPORTS_HIDE) { r.status = "hidden"; r.why_hidden = "reports"; r.hn = 0; }
+      await hayPut(env, r);
+    }
+    return json({ ok: true }, 200, c);
+  }
+
+  if (path === "/hay/contact") {
+    const r = await hayGet(env, typeof b.id === "string" ? b.id.trim().toLowerCase() : "");
+    if (!hayLive(r, now)) return json({ ok: false, error: "this post is gone" }, 404, c);
+    return json({ ok: true, id: r.id, name: r.name || "", phone: r.phone || "", email: r.email || "" }, 200, c);
+  }
+
+  // The poster's own routes: the id and the private key.
+  const owner = await hayOwned(env, b);
+  if (owner.error) return json({ ok: false, error: owner.error }, owner.status, c);
+  const r = owner.r;
+  const mine = () => Object.assign(hayPublic(r), { phone: r.phone, email: r.email, status: r.status });
+  if (path === "/hay/mine") return json({ ok: true, post: mine() }, 200, c);
+  if (path === "/hay/delete") { HAY_MEMO = null; await env.SUBS.delete("hay:" + r.id); return json({ ok: true, deleted: r.id }, 200, c); }
+  if (path === "/hay/renew") {
+    r.exp = Math.min(Math.max(r.exp, now) + HAY_TTL_S * 1000, now + HAY_RENEW_MAX_S * 1000);
+    await hayPut(env, r);
+    return json({ ok: true, post: mine() }, 200, c);
+  }
+  // /hay/edit: every field checked again before anything is stored.
+  const v = hayClean(b, r);
+  if (v.error) return json({ ok: false, error: v.error }, 400, c);
+  if (v.rec.zip !== r.zip && !(Object.prototype.hasOwnProperty.call(b, "lat") && b.lat != null && b.lat !== "")) {
+    const ll = await hayZipLL(v.rec.zip);
+    if (!ll) return json({ ok: false, error: "could not find ZIP " + v.rec.zip + "; check it" }, 400, c);
+    v.rec.lat = Math.round(ll.lat * 100) / 100; v.rec.lng = Math.round(ll.lng * 100) / 100;
+  }
+  Object.assign(r, v.rec, { updated: now });
+  if (r.status === "live" || r.status === "held") {
+    const held = hayHeld(r.note) || hayHeld(r.name);
+    if (held && r.status === "live") { r.status = "held"; r.why_hidden = held; r.hn = 0; }
+    else if (!held && r.status === "held" && r.why_hidden !== "sig") { r.status = "live"; r.why_hidden = ""; }
+  }
+  await hayPut(env, r);
+  return json({ ok: true, post: mine() }, 200, c);
+}
+
 async function handle(req, env) {
   {
     const url = new URL(req.url);
@@ -1575,6 +1915,9 @@ async function handle(req, env) {
       const refused = publicGate(req, path);
       if (refused) return refused;
     }
+
+    // v5.30: the hay board. Every /hay/ route lives in hayRoute; nothing else starts with /hay/.
+    if (path.startsWith("/hay/")) return hayRoute(req, env, url, path);
 
     // ---------- daily briefing: subscribe ----------
     if (path === "/subscribe" && req.method === "POST") {
