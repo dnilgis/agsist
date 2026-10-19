@@ -2064,6 +2064,10 @@
     {"id": "land-tx-nondisclosure", "kind": "html",
      "url": "https://comptroller.texas.gov/taxes/property-tax/",
      "title": "Texas Comptroller property tax",
-     "why": "Texas: no sale price disclosure requirement (non-disclosure state)"}
+     "why": "Texas: no sale price disclosure requirement (non-disclosure state)"},
+    {"id": "ecfr-7cfr-457-8", "kind": "html",
+     "url": "https://www.ecfr.gov/current/title-7/subtitle-B/chapter-IV/part-457/section-457.8",
+     "title": "7 CFR 457.8, Common Crop Insurance Policy (Basic Provisions)",
+     "why": "/harvest-price-tracker loss box: section 14 duties after damage (notice within 72 hours, representative samples, no destroying the crop before consent), production records by unit"}
 ]
 }
