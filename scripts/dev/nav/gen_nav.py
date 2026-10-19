@@ -111,7 +111,7 @@ def ic(i):
 
 
 def signup_box(where):
-    return (f'<div class="nav-ask" data-signup-hide><div data-signup-ask="Free, every weekday morning: the markets and your top local bid" '
+    return (f'<div class="nav-ask" data-signup-hide><div data-signup-ask="Free, every morning: the markets and your top local bid" '
             f'data-source="menu-{where}" data-reports="0"></div></div>')
 
 
@@ -489,7 +489,7 @@ def footer_body():
     out = ['<footer class="footer">\n  <div class="footer-inner">\n',
            '    <div class="footer-band">\n', BRAND,
            '      <div class="footer-band-side">\n'
-           '        <div class="footer-band-ask"><div data-signup-ask="AGSIST Daily: the markets and your top local bid, free, every weekday morning" data-source="footer"></div></div>\n'
+           '        <div class="footer-band-ask"><div data-signup-ask="AGSIST Daily: the markets and your top local bid, free, every morning" data-source="footer"></div></div>\n'
            f'        <p class="footer-band-daily">{daily}</p>\n'
            '        <p class="footer-band-rp"><a href="/rain-print"><b>Rain Print:</b> your farm&rsquo;s year of rain, framed &rarr;</a></p>\n'
            '      </div>\n'

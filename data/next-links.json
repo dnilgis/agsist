@@ -1,6 +1,6 @@
 {
  "note": "One map for the Next block at the end of each page (components/next-links.js). Keys are paths without .html. 2 or 3 links each, every one a real page (test/fresh-visitor.test.mjs). signup false: the page gets no AGSIST Daily ask.",
- "ask": "Email me the markets and my top local bid, every weekday morning",
+ "ask": "Email me the markets and my top local bid, every morning",
  "pages": {
   "/": {
    "links": [
@@ -17,7 +17,7 @@
     {
      "href": "/daily",
      "text": "Today's briefing",
-     "why": "The markets in a few minutes, every weekday"
+     "why": "The markets in a few minutes, every morning"
     }
    ]
   },
@@ -901,7 +901,7 @@
     {
      "href": "/daily",
      "text": "Today's briefing",
-     "why": "The markets in a few minutes, every weekday"
+     "why": "The markets in a few minutes, every morning"
     }
    ]
   },
@@ -967,7 +967,7 @@
     {
      "href": "/daily",
      "text": "Today's briefing",
-     "why": "The markets in a few minutes, every weekday"
+     "why": "The markets in a few minutes, every morning"
     },
     {
      "href": "/news",
@@ -1146,7 +1146,7 @@
     {
      "href": "/daily",
      "text": "Today's briefing",
-     "why": "The markets in a few minutes, every weekday"
+     "why": "The markets in a few minutes, every morning"
     }
    ]
   },
@@ -1361,7 +1361,7 @@
     {
      "href": "/daily",
      "text": "Today's briefing",
-     "why": "The markets in a few minutes, every weekday"
+     "why": "The markets in a few minutes, every morning"
     },
     {
      "href": "/archive",

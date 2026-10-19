@@ -84,7 +84,7 @@ def card_bytes(daily, record=None):
         pic = ("number", {"big": rows[0][1] if rows else "AGSIST", "unit": "Dec corn" if rows else "",
                           "table": rows[1:], "table_title": "Futures in the briefing"})
         caption = "AGSIST Daily  ·  " + date_str
-    meta = record or "Grain markets before the open, free every weekday"
+    meta = record or "Grain markets before the open, free every morning"
     meta += "  ·  agsist.com/daily"
     head = [(headline.rstrip("."), False)]
     alt = f"AGSIST Daily, {date_str}: {headline}."
