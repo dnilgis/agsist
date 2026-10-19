@@ -295,7 +295,7 @@ def inputs_block(fips, rec):
         # almost every county and the read comes back with it. The gate was
         # right and the input was baiting it.
         if w["d2"]:
-            L.append(f"Weeks with at least 50 percent of the county in severe drought or worse, {d['first_year']}-{d['last_full_year']}: {w['d2']} of {w['counted']} ({fmt_num(w['share_d2_pct'])} percent); worst year {d['worst_year']['year']} with {d['worst_year']['d2']} weeks")
+            L.append(f"Weeks with at least 50 percent of the county in severe drought or worse, {d['first_year']}-{d['last_full_year']}: {w['d2']} of {w['counted']} ({fmt_num(w['share_d2_pct'])} percent); worst year {d['worst_year']['year']} with {d['worst_year']['d2']} weeks" + (f" (tied with {', '.join(map(str, d['worst_year']['tied']))})" if d['worst_year'].get('tied') else ""))
         else:
             L.append(f"Weeks with at least 50 percent of the county in severe drought or worse, {d['first_year']}-{d['last_full_year']}: none")
         if d.get("last5") and w["d2"]:
