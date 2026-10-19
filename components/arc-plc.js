@@ -611,7 +611,7 @@
       var tot = base ? per * base : 0, lim = D.params.payment_limit_2025;
       return '<div class="ap-card"><span class="k">' + k + '</span><span class="v">' + v + '</span><span class="s">' + sub +
         (base ? '<br>' + pay$(tot, 0) + ' on ' + n$(base) + ' base acres, before the 5.7% sequestration cut' : '') + '</span>' +
-        (tot > lim ? '<span class="s ap-warn">If you pick ' + k + ', this alone is over ' + money(lim, 0) + ', USDA’s 2025 limit (' + year + ' not announced). The limit is per person across all crops and farms; actively engaged LLC and S corporation members can each carry one.</span>' : '') + '</div>';
+        (tot > lim ? '<span class="s ap-warn">If you pick ' + k + ', this alone is over ' + money(lim, 0) + ', USDA’s 2025 limit (' + (String(year) === '2026' && D.params.payment_limit_2026_rule ? '2026: ' + money(D.params.payment_limit_2026_rule, 0) + ' by the rule’s own method; FSA posts the official figure' : 'FSA posts the ' + year + ' figure') + '). The limit is per person across all crops and farms; actively engaged LLC and S corporation members can each carry one.</span>' : '') + '</div>';
     }
     function grid(c) {
       var g = c.crop.grid, cols = [0.8, 0.9, 1, 1.1], sc = c.scale || 100, rows = [Math.round(c.loan * sc) / sc];

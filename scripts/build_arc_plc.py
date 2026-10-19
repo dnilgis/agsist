@@ -86,7 +86,9 @@ files are fetched by .github/workflows/fetch-fsa-arcplc.yml into data/fsa/.
      historical irrigated percentage, not by what it plants [FSA24][APPX].
    Payment limit [ALA][FR26][DTNL]: $155,000 per person or legal entity,
      indexed to CPI-U; USDA put 2025 at $160,000; the rule's own example shows
-     $164,000 (factor 1.059). 2026 and 2027 not announced. Members of LLCs and
+     $164,000 (factor 1.059) for 2026, printed as "by the rule's own method;
+     FSA posts the official figure" (FR26 says its example does not set the
+     limit; money audit 5, 2026-10-19). Members of LLCs and
      S corporations who are actively engaged each get a limit under the 2025
      law [CCF][UMN]. Sequestration: 5.7% on recent payments [SEQ].
    AGI: $900,000 average AGI limit still applies to ARC and PLC; the 75%-of-
@@ -249,6 +251,9 @@ PARAMS = {
     "erp_pct": 0.88, "erp_cap_pct": 1.15,
     "arc_guarantee_pct": 0.90, "arc_max_pct": 0.12, "payment_acres_pct": 0.85,
     "payment_limit_base": 155000, "payment_limit_2025": 160000, "sequestration_recent_pct": 0.057,
+    # FR 2026-00313's worked example: $155,000 x 319.205 / 301.3742 (CPI-U) = 1.059 -> $164,000. Not the official
+    # figure (the rule says its example does not establish it); FSA posts that. Printed as the rule's own method.
+    "payment_limit_2026_rule": 164000,
 }
 YEAR_INFO = {
     2026: {"open": "2026-09-16", "close": "2026-12-11", "pay_after": "2027-10-01",
@@ -1760,8 +1765,8 @@ def faq_items(D):
          "Yes. FSA's rule says every payment eligibility document for a 2026 contract is due by March 1, 2028. Miss it and the "
          "payment does not issue: FSA treats it as forfeited, not denied."),
         ("What is the ARC/PLC payment limit?",
-         "$155,000 per person or legal entity in the 2025 law, adjusted for inflation; USDA put 2025 at $160,000. The 2026 and 2027 figures "
-         "are not out. The limit is per person across all crops and farms."),
+         "$155,000 per person or legal entity in the 2025 law, adjusted for inflation; USDA put 2025 at $160,000. For 2026 it is $164,000 by "
+         "the rule's own method; FSA posts the official figure. The limit is per person across all crops and farms."),
     ]
 
 
@@ -2025,7 +2030,7 @@ def build_main(D, ch):
     <li><b>New base acres:</b> up to 30 million, from 2019 to 2023 plantings, cut 3.69% on the new acres only. New base takes the farm&rsquo;s existing PLC yield for that crop, or the county average PLC yield if the farm has none.</li>
     <li><b>2025 only:</b> farms got the higher of ARC-CO or PLC automatically. That does not carry into 2026 or 2027.</li>
     <li><b>SCO:</b> no longer tied to the ARC/PLC election; for 2026 the band to 90% is sold as ECO, and SCO goes to 90% in 2027. Ask your crop insurance agent.</li>
-    <li><b>Payment limit:</b> $155,000 per person, indexed (2025: $160,000). Actively engaged members of LLCs and S corporations can each carry a limit.</li>
+    <li><b>Payment limit:</b> $155,000 per person, indexed (2025: $160,000; 2026: $164,000 by the rule&rsquo;s own method, FSA posts the official figure). Actively engaged members of LLCs and S corporations can each carry a limit.</li>
     <li><b>Signup moved:</b> the 2026 window opened Sept 16, 2026, later than the usual spring signup.</li>
   </ul>
 
