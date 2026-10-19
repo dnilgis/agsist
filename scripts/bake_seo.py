@@ -617,7 +617,23 @@ def seo_conditions(c):
         lead += f" against {prev:g}% a year ago"
     if soy is not None:
         lead += f"; soybeans {soy:g}%"
-    return (f"USDA Crop Conditions: Corn {ge:g}% Good-Excellent{SUFFIX}",
+    # Night audit, Oct 19, 2026: "crop progress usda" and "crop progress report" land here and
+    # the title said Conditions only. NASS dates the report by the week ENDING on its Sunday
+    # (the page says "week ending Oct 11, 2026"), so never "Week of".
+    wk = ""
+    rd = d.get("report_date") or corn.get("report_date")
+    try:
+        _rd = date.fromisoformat(str(rd)[:10])
+        wk = f"{_rd:%b} {_rd.day}"
+    except ValueError:
+        pass
+    # (a harvest figure beside G+E runs past TITLE_MAX; it is in the page's lead)
+    cands = []
+    if wk:
+        cands.append(f"Crop Progress, Week Ending {wk}: Corn {ge:g}% Good-Excellent{SUFFIX}")
+    cands.append(f"USDA Crop Conditions: Corn {ge:g}% Good-Excellent{SUFFIX}")
+    title = next(t for t in cands if len(t) <= TITLE_MAX)
+    return (title,
             f"{lead}. Every state's rating ranked "
             f"against its own record for this week.")
 
@@ -1080,15 +1096,25 @@ def seo_fertilizer(c):
         xs = sorted(xs)
         return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 2 else " and ".join(xs)
 
+    def who_of(rs):
+        # the states of the prices this title names, not of every product
+        regs_n = set().union(*[regions(r) for r in rs])
+        return (and_join(regs_n) + " Co-op") if regs_n else "Co-op"
+
     title = None
     for n in range(len(named), 0, -1):
-        # the states of the prices this title names, not of every product
-        regs_n = set().union(*[regions(r) for _, r, _ in named[:n]])
-        who = (and_join(regs_n) + " Co-op") if regs_n else "Co-op"
+        who = who_of([r for _, r, _ in named[:n]])
         bits = ", ".join(f"{s} ${r['price']:,.0f}" for s, r, _ in named[:n])
         # "per Ton" stays (2026-10-13): the page's named queries are
-        # "... fertilizer price(s) per ton".
-        for cand in (f"{who} Fertilizer Prices per Ton: {bits}{SUFFIX}", f"{who} Fertilizer per Ton: {bits}{SUFFIX}"):
+        # "... fertilizer price(s) per ton". Down to one number, the word
+        # "Prices" outranks the number (night SEO audit, Oct 19, 2026): once
+        # Wisconsin joined the region the Prices form ran long and the title fell
+        # to "Fertilizer per Ton: Urea $616", losing the main query word by accident.
+        forms = [f"{who} Fertilizer Prices per Ton: {bits}{SUFFIX}"]
+        if n == 1:
+            forms.append(f"{who_of([r for _, r, _ in named])} Fertilizer Prices per Ton{SUFFIX}")
+        forms.append(f"{who} Fertilizer per Ton: {bits}{SUFFIX}")
+        for cand in forms:
             if len(cand) <= TITLE_MAX:
                 title = cand
                 break
@@ -1636,6 +1662,15 @@ def selftest():
        seo_cond_yield(dict(ctx, yield_panel=None)) is None)
     t, d = seo_conditions(ctx)
     ck("conditions carries this week's G+E and last year's", "57%" in d and "66%" in d)
+    ck("conditions with no report date keeps the old title", t == "USDA Crop Conditions: Corn 57% Good-Excellent | AGSIST", t)
+    # Oct 19, 2026 (night audit): the Oct 11 report as data/crop-progress.json held it
+    _cp11 = {"in_season": True, "report_date": "2026-10-11",
+             "corn": {"good_excellent": 56, "report_date": "2026-10-11", "good_excellent_prev_year": None,
+                      "harvest_pct": 33, "harvest_date": "2026-10-11"}, "soybeans": {"good_excellent": 61}}
+    t11, _d11 = seo_conditions(dict(ctx, crop_progress=_cp11))
+    ck("conditions title names the week ENDING Oct 11, never 'Week of'",
+       t11 == "Crop Progress, Week Ending Oct 11: Corn 56% Good-Excellent | AGSIST" and "Week of" not in t11
+       and len(t11) <= TITLE_MAX, t11)
     cp = dict(ctx["crop_progress"], corn={"good_excellent": 54, "good_excellent_prev_year": None},
               soybeans={"good_excellent": 57})
     _t, d0 = seo_conditions(dict(ctx, crop_progress=cp))
@@ -2067,6 +2102,9 @@ def selftest():
     t3, d3 = seo_fertilizer(two)
     ck("fertilizer: a two-state region names each state once (Synergy, WI, 2026-10-16)",
        t3.startswith("Kansas and Wisconsin Co-op Fertilizer") and "Kansas and Kansas" not in t3 + d3, (t3, d3))
+    # night SEO audit, Oct 19, 2026: the real two-state case kept its number and lost "Prices"
+    ck("fertilizer: one number cannot fit, so the title keeps the word Prices (Sig's Oct 13 wording)",
+       t3 == "Kansas and Wisconsin Co-op Fertilizer Prices per Ton | AGSIST", t3)
     # 2026-10-17 audit N7: Wisconsin goes on the urea price only, never on Kansas-only anhydrous
     ck("fertilizer: the description names each price's own states",
        d3.startswith("Kansas co-op cash prices posted Oct 6, 2026: urea $616/ton (Kansas and Wisconsin), anhydrous $832.")
