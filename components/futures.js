@@ -35,9 +35,9 @@ var CROPS={
     carry:'corn',
     tiles:[{nc:['corn','dec'],alt:'corn-dec',p:'p-corndec',c:'c-corndec',g:true,lbl:'lbl-corndec'},{root:'beans',name:'Soybeans',sym:'ZS',p:'p-beans',c:'c-beans',g:true},{root:'wheat',name:'Wheat',sym:'ZW',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-corn','c-corn'],
-    labels:function(lbl){
+    labels:function(lbl,nearby,when){
       setTxt('lbl-corn',lbl);
-      setTxt('ph-exch','CBOT · CME Group · '+lbl+' · Refreshed in session');
+      setTxt('ph-exch','CBOT · CME Group · '+lbl+' · '+when);
       setTxt('rng-lbl','52-Week Range: Corn '+lbl);
     },
     rollNote:'The nearby contract just rolled to the next month; day-change comparisons span two contracts until the new month has a clean close.',
@@ -1925,6 +1925,16 @@ function pxWhat(q,fetched,ctf){
   if(/^Last trade/.test(s))return 'the l'+s.slice(1);
   return 'today\u2019s quote'+(fetched&&ctf?' ('+ctf(fetched)+')':'');
 }
+/* The hero line's moment, in the baked seed's words (seed_static.py quote_when,
+   state_words): "Settle Oct 16" | "Last trade as of 10:42 am CT" | "Last quote".
+   Night audit Oct 19, 2026: it called a Friday settle "refreshed" in session
+   on a Sunday, and an answer engine can quote that as a live price. */
+function exchWhen(q,fetched){
+  var s=window.AgPxStamp&&q?AgPxStamp.stamp(q,fetched):'',m=/^(.*) settle$/.exec(s);
+  if(m)return 'Settle '+m[1];
+  if(/^Last trade/.test(s))return s;
+  return 'Last quote';
+}
 /* the price stamp: price-local.js when it is on the page, asof.js otherwise */
 function pxStampHtml(q,data){
   if(window.AgPxStamp&&q){
@@ -1947,7 +1957,9 @@ AG.json('/data/prices.json')
     window.__agsistLastQ=q;
     var F=frontInfo(q,data),front=F.q,heroLabel=F.label;
     window.__agsistHeroQ=front;
-    CROP.labels(heroLabel,F.nearby);
+    var __when=exchWhen(front,data.fetched);
+    CROP.labels(heroLabel,F.nearby,__when);
+    setTxt('ph-when',__when);
     if(front&&front.close!=null){setEl(CROP.heroTile[0],grain$(front.close));var hcT=chgTxt(front.netChange,front.pctChange,front.roll);setEl(CROP.heroTile[1],hcT.t,hcT.c);}
     CROP.tiles.forEach(function(m){var r=m.root?nearbyOf(q,m.root):null,mk=m.nc?newCropKey(m.nc[0],m.nc[1],q):m.key,d=m.root?(r&&r.d):(q[mk]||(m.alt&&q[m.alt]));if(!d||d.close==null)return;if(m.root){var pe=document.getElementById(m.p),le0=pe&&pe.parentNode.querySelector('.cc-lbl');if(le0)le0.textContent=m.name+' '+(r.label||'most-active')+' ('+m.sym+')';}if(m.lbl){var le=document.getElementById(m.lbl),cl=contractLabel(d);if(le&&cl)le.textContent=cl+' new crop';}setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange,d.roll,m.g,m.u);setEl(m.c,ch.t,ch.c);});
 

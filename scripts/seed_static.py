@@ -401,6 +401,15 @@ def state_words(in_session):
     return "last quoted", "Last quote"
 
 
+def quote_when(q, fetched):
+    """'Settle Oct 16' | 'Last trade Oct 19, 10:42 a.m. CT' | 'Last quote': the
+    words the homepage card seed prints under a price (state_words), for any
+    line that names a price's moment. Night audit Oct 19, 2026: the futures
+    heroes called a Friday settle "refreshed" in session, on a Sunday."""
+    live, label = quote_state(q, fetched, "grain")
+    return state_words(live)[1] + (" " + label if label else "")
+
+
 def px_table(rows, flabel, in_session=False):
     """Small crawler-visible last-close table. rows: [(label, quote)] with
     grain quotes in cents; quotes may be None (row skipped)."""
@@ -871,8 +880,7 @@ def seed_homepage(prices, today):
         # the card's own format (geo.js / index.html qc, both AG.px slash
         # style), so the seed and the live price never print a quote two ways
         seeds["hp:" + k] = pricefmt.price(d["close"], style="slash")
-        live, label = quote_state(d, fetched, "grain")
-        seeds["hp:" + k + "-when"] = (state_words(live)[1] + (" " + label if label else "") +
+        seeds["hp:" + k + "-when"] = (quote_when(d, fetched) +
                                       (" (last good quote)" if d.get("stale") else "") +
                                       " &middot; Yahoo Finance, delayed")
     return _write_seeds("index.html", seeds)
@@ -2595,10 +2603,12 @@ def _nearby_label(prices, crop, fallback):
 def futures_hero_seeds(page, prices, now=None):
     """{tag: html} for the hero seeds a futures page carries."""
     q = prices.get("quotes") or {}
+    fetched = prices.get("fetched")
     out = {}
     if page.startswith("corn"):
         hq = q.get("corn-nearby") or q.get("corn")
-        out["exch"] = "CBOT &middot; CME Group &middot; " + _e(_nearby_label(prices, "corn", "Most-active (ZC)")) + " &middot; Refreshed in session"
+        out["exch"] = ("CBOT &middot; CME Group &middot; " + _e(_nearby_label(prices, "corn", "Most-active (ZC)")) +
+                       " &middot; " + _e(quote_when(hq, fetched)))
         out["chg"] = _chg_seed(_fut_chg(hq))
         cd = q.get("corn-dec")
         # nearby == new crop (Dec corn from Sep on): the hero already shows it
@@ -2620,6 +2630,7 @@ def futures_hero_seeds(page, prices, now=None):
     elif page.startswith("soybean"):
         hq = q.get("beans-nearby") if (q.get("beans-nearby") or {}).get("close") is not None else q.get("beans")
         out["contract"] = _e(_nearby_label(prices, "beans", "Most-active (ZS)"))
+        out["when"] = _e(quote_when(hq, fetched))
         out["chg"] = _chg_seed(_fut_chg(hq))
         nq = q.get("beans-nov")
         same = bool(nq and hq and hq.get("ticker") and hq.get("ticker") == nq.get("ticker"))
@@ -2648,6 +2659,7 @@ def futures_hero_seeds(page, prices, now=None):
         n = q.get("wheat-nearby")
         hq = n if (n and n.get("close") is not None) else q.get("wheat")
         out["contract"] = "&middot; " + _e(("Nearby " + n["contract"]) if (n and n.get("contract")) else "Most-active (ZW)")
+        out["when"] = _e(quote_when(hq, fetched))
         out["chg"] = _chg_seed(_fut_chg(hq))
         _, dq = wheat_deferred(q, now)
         same = bool(dq and hq and hq.get("ticker") and hq.get("ticker") == dq.get("ticker"))
