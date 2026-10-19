@@ -2272,3 +2272,16 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
 /* 2026-10-16: "Also today" line in the briefing strip (components/home.js) */
 .daily-teaser .teaser-also{display:block;flex-basis:100%;margin-top:.15rem;font-size:.8125rem;line-height:1.35;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .daily-teaser .teaser-also[hidden]{display:none}
+/* 2026-10-19 phone audit, layout shift (test/cls-oct19.test.mjs).
+   1. The static crawlable header in #site-header stood 69px tall at phone
+      width; loader.js swaps in the live nav at 62px and the whole page moved
+      up 7px (with a saved ZIP, in the same frame as the state line: CLS 0.19).
+      Held to the live nav's height; the links still scroll sideways. */
+@media (max-width:520px){#site-header{height:62px;overflow:hidden}}
+/* 2. The ticker status opened as one "..." and became two short lines, and
+      the whole ticker slid 30px right. Hold two lines of seven characters
+      ("Delayed" over "15 min", "Settle" over "Oct 16"). */
+.ticker-live #ticker-age{min-width:calc(7ch + .28em);min-height:2.2em}
+/* 3. A saved state's middle-bid line holds its space until the numbers come
+      (components/price-local.js reserve()); unseen until filled. */
+.pl-line.pl-wait{visibility:hidden}
