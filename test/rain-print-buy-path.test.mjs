@@ -290,10 +290,21 @@ async function drawChetek(page, base, place = "Chetek, WI") {
   await idle(page);
   await page.waitForTimeout(300);
 }
+/* Pay is put mid-screen at once and left to settle before the tap. The page
+   scrolls smoothly (styles.css), so Playwright's own scroll to it ran on
+   while it tapped; on a phone it could end with Pay just under the menu, the
+   pinned copy (#rp-strip) came up over it between press and release, and the
+   tap went to the pinned copy: no sheet, most runs (2026-10-19). */
 async function openSheet(page) {
+  await idle(page);
+  await page.$eval("#rp-pay", (b) => b.scrollIntoView({ block: "center", behavior: "instant" }));
+  await page.waitForTimeout(250);
+  const over = await page.$eval("#rp-pay", (b) => { const r = b.getBoundingClientRect(), e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return b.contains(e) ? "" : e ? e.id || e.className || e.nodeName : "off screen"; });
+  assert.equal(over, "", "Pay is on screen and nothing sits over it before the tap");
   await page.click("#rp-pay");
   await page.waitForTimeout(300);
   if (await page.isVisible("#rp-noname")) { await page.click("#rp-noname-go"); await page.waitForTimeout(300); }
+  assert.ok(await page.evaluate(() => document.getElementById("rp-proof").open), "the tap on Pay opened the review sheet");
   await page.waitForSelector("#rp-proof[open]");
   await page.waitForTimeout(200);
 }
