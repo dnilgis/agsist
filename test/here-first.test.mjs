@@ -229,7 +229,7 @@ test("bids-network exports the index and a checked shard getter; versions bumped
   for (const f of ["here.html", "corn-futures-prices.html", "store-or-sell.html", "combine-loss.html"]) assert.match(read(f), /bids-network\.js\?v=7/, f);
   assert.match(read("components/bids-homepage.js"), /bids-network\.js\?v=7/);
   assert.match(read("here.html"), /place\.js\?v=4/);
-  assert.match(read("here.html"), /here\.js\?v=12/);   // v12: rain-county-print.js v29, engine rain-print.js v59 (new maker key, 2026-10-20); v11: rain-county-print.js v28, the county print as a hidden shell (2026-10-20); v10: summer snow traces skipped (v27)
+  assert.match(read("here.html"), /here\.js\?v=13/);   // v13: rain-county-print.js v30, engine rain-print.js v60 (order tracking, 2026-10-20); v12: rain-county-print.js v29, engine rain-print.js v59 (new maker key, 2026-10-20); v11: rain-county-print.js v28, the county print as a hidden shell (2026-10-20); v10: summer snow traces skipped (v27)
   assert.match(read("here.html"), /rain-county\.css\?v=5/);   // v5: the month table fits a phone (2026-10-19)
 });
 

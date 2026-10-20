@@ -48,7 +48,7 @@ for (const [patch, why] of [[{ email: 'nope' }, 'email'], [{ elevator: '' }, 're
 }
 r = await post('[1,2]'); A(r.status === 400, 'array body');
 r = await post('{nope'); A(r.status === 400, 'bad json');
-r = await post(Object.assign({}, claim, { page: 'x'.repeat(17000) })); A(r.status === 413, 'over 16 KB');
+r = await post(Object.assign({}, claim, { page: 'x'.repeat(50000) })); A(r.status === 413, 'over 48 KB (v5.35; was 16 KB)');
 r = await post(claim, { Origin: 'https://evil.example' }); A(r.status === 403, 'foreign origin refused');
 r = await post(claim, { Origin: '' }); A(r.status === 403, 'no origin refused');
 const before = forms().length;
@@ -184,7 +184,7 @@ for (const [patch, why] of [[{ business: '' }, 'business required'], [{ name: ''
     [{ ship: '' }, 'ship required'], [{ product: 'canvas' }, 'bad product'], [{ product: 'framed12x18' }, 'consumer choice is not a product here'],
     [{ ship: 'pickup' }, 'bad ship'], [{ ship: 'EACH' }, 'enum is exact'], [{ quantity: '0' }, 'quantity 0'], [{ quantity: '1' }, 'quantity 1'], [{ quantity: '4' }, 'quantity 4, under the business minimum (v5.17)'], [{ quantity: 4 }, 'numeric 4'], [{ quantity: '004' }, '"004"'], [{ quantity: '501' }, 'quantity 501'],
     [{ quantity: 1000 }, 'quantity 1000'], [{ quantity: '-5' }, 'negative quantity'], [{ quantity: '2.5' }, 'fractional quantity'],
-    [{ quantity: 'ten' }, 'quantity words'], [{ quantity: '1e2' }, 'quantity exponent'], [{ towns: 't'.repeat(8001) }, 'towns cap'], [{ note_all: 'n'.repeat(301) }, 'note_all cap'],
+    [{ quantity: 'ten' }, 'quantity words'], [{ quantity: '1e2' }, 'quantity exponent'], [{ towns: 't'.repeat(20001) }, 'towns cap (20,000 since v5.35)'], [{ note_all: 'n'.repeat(301) }, 'note_all cap'],
     [{ business: 'b'.repeat(121) }, 'business cap'], [{ notes: 'n'.repeat(2001) }, 'notes cap'], [{ phone: '1'.repeat(31) }, 'phone cap']]) {
   r = await post(Object.assign({}, biz, patch)); A(r.status === 400 && (await r.json()).ok === false, 'business rejects ' + why);
 }
