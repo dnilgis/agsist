@@ -132,7 +132,7 @@
 .draw-place{padding:.4rem 1.1rem .7rem;border-bottom:1px solid var(--border)}
 .draw-place-h{display:flex;align-items:baseline;gap:.5rem;margin:0 0 .4rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand)}
 .draw-place-z{font-family:var(--font-body);font-size:.78rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-muted)}
-.draw-place-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
+.draw-place-row{display:grid;grid-template-columns:repeat(2,1fr);gap:.4rem}
 .draw-pl{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.25rem;min-height:56px;padding:.45rem .55rem;border:1px solid var(--border);border-radius:var(--r-sm);font-size:.8rem;font-weight:600;line-height:1.2;color:var(--text);text-decoration:none}
 .draw-pl:hover,.draw-pl:focus-visible{border-color:var(--brand)}
 .draw-pl .lic{opacity:.8}
@@ -192,6 +192,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
             <a href="/whats-priced-in"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-dices"/></svg>What&rsquo;s priced in</a>
             <a href="/conditions"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Crop progress</a>
             <a href="/conditions-yield"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg>Crop size</a>
+            <a href="/usda-quick-stats"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-database"/></svg>Yield by state</a>
             <a href="/crop-tour"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Crop tour</a>
             <a href="/cot"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Fund positions (COT)</a>
             <a href="/tariffs"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-landmark"/></svg>Tariffs and trade</a>
@@ -256,6 +257,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
             <div class="nav-q">Land</div>
             <a href="/rent/"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Cash rent</a>
             <a href="/farmland-atlas"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Farmland Atlas</a>
+            <a href="/farmland-index"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Farmland sale index</a>
             <a href="/custom-rates"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Custom rates</a>
             <a href="/cash-lease"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scroll-text"/></svg>Lease form</a>
           </div>
@@ -295,7 +297,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
             <label for="zip-in">Your ZIP, for bids, rain and rent near you</label>
             <div class="zip-row"><input id="zip-in" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" pattern="[0-9]{5}" placeholder="54728"><button type="submit" class="zip-save">Save</button></div>
             <p class="zip-m" id="zip-m" role="status" aria-live="polite"></p>
-            <p class="zip-links" id="zip-links" hidden><a href="/cash-bids" id="zip-go">See bids near you &rarr;</a><button type="button" class="zip-clear" id="zip-clear">Clear</button></p>
+            <p class="zip-links" id="zip-links" hidden><a href="/here" id="zip-go">Bids, rain and rent near you &rarr;</a><button type="button" class="zip-clear" id="zip-clear">Clear</button></p>
             <p class="zip-note">Kept in this browser only.</p>
           </form>
         </div>
@@ -323,6 +325,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
   <section class="draw-place" aria-labelledby="dp-h">
     <h2 class="draw-place-h" id="dp-h">My place <span class="draw-place-z" id="dp-zip"></span></h2>
     <div class="draw-place-row">
+      <a href="/here" class="draw-pl" id="dp-here"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Everything near me</a>
       <a href="/cash-bids" class="draw-pl" id="dp-bids"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Bids near me</a>
       <a href="/rain-radar" class="draw-pl" id="dp-rain"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain at my field</a>
       <a href="/rent/" class="draw-pl" id="dp-rent"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Rent in my county</a>
@@ -352,6 +355,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
       <a href="/whats-priced-in" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-dices"/></svg>What&rsquo;s priced in</a>
       <a href="/conditions" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Crop progress</a>
       <a href="/conditions-yield" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg>Crop size</a>
+      <a href="/usda-quick-stats" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-database"/></svg>Yield by state</a>
       <a href="/crop-tour" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Crop tour</a>
       <a href="/cot" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Fund positions (COT)</a>
       <a href="/tariffs" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-landmark"/></svg>Tariffs and trade</a>
@@ -410,6 +414,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
     <div class="draw-links">
       <a href="/rent/" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Cash rent</a>
       <a href="/farmland-atlas" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Farmland Atlas</a>
+      <a href="/farmland-index" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Farmland sale index</a>
       <a href="/custom-rates" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Custom rates</a>
       <a href="/cash-lease" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scroll-text"/></svg>Lease form</a>
     </div>
