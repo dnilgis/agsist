@@ -161,6 +161,8 @@ PAGES = [
         ("/rent/", "Cash Rent by State", "USDA county cash rent for every published state, one page per state at /rent/<state>"),
         ("/farmland-atlas", "Farmland Atlas",
          "every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>"),
+        ("/farmland-index", "Illinois Farmland Sale Index",
+         "what Illinois farm ground sold for each quarter since 2018, from the state's PTAX-203 sale declarations: arm's-length bare-land sales of 20+ acres, county mix and tract size held fixed, 2018 = 100, with 90% ranges, the latest quarter marked provisional, USDA NASS cropland value as a separate line, county medians by year, price-to-rent multiples and buyer-type shares; no names"),
         ("/farmland-atlas/compare", "Compare Counties", "up to three counties side by side"),
         ("/farmland-atlas/data", "Farmland Atlas Data", "the county table as a CSV, every column with its unit and source"),
         ("/farmland-atlas/methods", "Farmland Atlas Methods", "sources and formulas"),
