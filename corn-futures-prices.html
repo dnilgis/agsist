@@ -429,7 +429,7 @@ details.fold[hidden]{display:none}
     <div class="ph-price">
       <div class="ph-val sk" id="hero-price"><!--SEED:px-->$4.65<!--/SEED--></div>
       <div class="ph-unit">$ / bushel</div>
-      <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="dn">▼ −2¢ (−0.43%)</span><!--/SEED--></div>
+      <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="dn">▼ −2¢ (−0.43%)</span><!--/SEED--></div><div class="ph-ovn" id="hero-ovn" hidden></div><script>/* 2026-10-20: the overnight line (futures.js heroOvernight) keeps a two-line box from the first paint in the grain overnight, 7 pm to 7:45 am CT, so it lands with no layout shift */try{(function(){var e=document.getElementById('hero-ovn'),p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute),d=p.weekday;if(e&&((m>=1140&&d!=='Fri'&&d!=='Sat')||(m<465&&d!=='Sat'&&d!=='Sun'))){e.hidden=false;e.className+=' ph-ovn-wait';e.style.minHeight='2.4em';}})();}catch(x){}</script>
     </div>
   </div>
   <p class="pl-line" data-state-bid="corn" hidden></p>
@@ -838,9 +838,9 @@ details.fold[hidden]{display:none}
 </div>
 <script src="/components/bids-network.js?v=7" defer></script>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/geo.js?v=31" defer></script>
+<script src="/components/geo.js?v=32" defer></script>
 <script>window.AGSIST_FUTURES='corn'</script>
-<script src="/components/storesell.js?v=8"></script><script src="/components/price-local.js?v=6"></script><script src="/components/futures.js?v=23"></script>
+<script src="/components/storesell.js?v=8"></script><script src="/components/price-local.js?v=7"></script><script src="/components/futures.js?v=24"></script>
 
   <script src="/components/next-links.js?v=3" defer></script>
 </body>

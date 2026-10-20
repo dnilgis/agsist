@@ -2120,6 +2120,30 @@ def selftest():
                             prev_date="2026-10-15"), "2026-10-17T05:00:00Z", "grain")
     ck("Friday's bar read after 11 p.m. CT (no evening session) is the settle",
        sc and sc["px"] == 474.25 and sc["date"] == "2026-10-16" and sc["net"] == -3.75, sc)
+    # 2026-10-20 (Sig): the last daily bake moved from 23:35 to 04:50 UTC, after
+    # the settle lands (about 04:15 UTC). Real files: at 00:46 UTC Dec corn's
+    # file still held the Oct 16 settle (the day's 466.75 a last trade, the
+    # evening trade 465.50 in last); at 04:46 UTC the Oct 19 settle 467.00 is
+    # in and the price is the overnight trade 465.00. The title takes the
+    # settle both times, never an overnight trade.
+    _ovd = Path(__file__).resolve().parent.parent / "test" / "fixtures" / "futures-overnight"
+    _ov = {}
+    for _n in ("0046Z", "0446Z"):
+        try:
+            with open(_ovd / f"prices-2026-10-20T{_n}.json") as _f:
+                _ov[_n] = json.load(_f)
+        except Exception as exc:
+            _ov[_n] = None
+            print(f"  (overnight fixture {_n} unreadable: {exc})")
+    if _ov["0446Z"] and _ov["0046Z"]:
+        _t5 = PAGES["corn-futures-prices.html"][0](dict(ctx, prices=_ov["0446Z"]))[0]
+        ck("the 04:50 UTC run titles corn with the Oct 19 settle, not the overnight trade",
+           "$4.67" in _t5 and "Oct 19" in _t5 and "4.65" not in _t5, _t5)
+        _t0 = PAGES["corn-futures-prices.html"][0](dict(ctx, prices=_ov["0046Z"]))[0]
+        ck("an evening run before the settle lands keeps the Oct 16 settle (why 23:35 was too early)",
+           "Oct 16" in _t0 and "4.65" not in _t0 and "4.66" not in _t0, _t0)
+    else:
+        ck("overnight fixtures present (test/fixtures/futures-overnight)", False)
     # fetch_prices v3.7 files say what the close is; the bake reads the settle
     # fields and nothing else. Oct 16 2026, 1:46 p.m. CT: Nov beans last trade
     # 1260.50, the Oct 15 settle 1263.00 (-14.25 on Oct 14's 1277.25).

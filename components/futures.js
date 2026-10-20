@@ -1933,6 +1933,7 @@ function pxWhat(q,fetched,ctf){
   var s=window.AgPxStamp&&q?AgPxStamp.stamp(q,fetched):'';
   if(/ settle$/.test(s))return 'the '+s;
   if(/^Last trade/.test(s))return 'the l'+s.slice(1);
+  if(/^Overnight trade/.test(s))return 'the overnight trade'+s.slice(15);
   return 'today\u2019s quote'+(fetched&&ctf?' ('+ctf(fetched)+')':'');
 }
 /* The hero line's moment, in the baked seed's words (seed_static.py quote_when,
@@ -1942,7 +1943,7 @@ function pxWhat(q,fetched,ctf){
 function exchWhen(q,fetched){
   var s=window.AgPxStamp&&q?AgPxStamp.stamp(q,fetched):'',m=/^(.*) settle$/.exec(s);
   if(m)return 'Settle '+m[1];
-  if(/^Last trade/.test(s))return s;
+  if(/^(Last|Overnight) trade/.test(s))return s;
   return 'Last quote';
 }
 /* the price stamp: price-local.js when it is on the page, asof.js otherwise */
@@ -1953,6 +1954,15 @@ function pxStampHtml(q,data){
     if(h)return h;
   }
   return window.AgAsOf?AgAsOf.html(data.fetched,'prices'):'';
+}
+/* the overnight line under the hero price: '' and hidden when there is no overnight trade */
+function heroOvernight(q){
+  var hc=document.getElementById('hero-chg');if(!hc)return;
+  var el=document.getElementById('hero-ovn'),h=window.AgPxStamp&&AgPxStamp.overnightHtml?AgPxStamp.overnightHtml(q,grain$,function(n){return AG.px.move(n,{sign:true});}):'';
+  if(!el){if(!h)return;el=document.createElement('div');el.id='hero-ovn';el.className='ph-ovn';hc.parentNode.insertBefore(el,hc.nextSibling);}
+  /* a box reserved for the night (the page's inline script) stays, empty, rather than shift the page */
+  if(!h&&/ph-ovn-wait/.test(el.className)){el.innerHTML='';return;}
+  el.innerHTML=h;el.hidden=!h;
 }
 function loadPrices(){
 /* AG.json (util.js): one request for prices.json, shared with geo.js and the
@@ -1986,13 +1996,16 @@ AG.json('/data/prices.json')
          62 px on a phone, CLS about 0.2 (phone audit, Oct 19, 2026). */
       var __sn=document.querySelector('.px-seed-note');
       if(__sn){
-        var __s=window.AgPxStamp?AgPxStamp.stamp(front,data.fetched):'',__m=/^(.*) settle$/.exec(__s),__t=/^Last trade as of (.*)$/.exec(__s),__u=/^Updated (.*)$/.exec(__s);
-        var __v=__m?'settled at':__t?'last traded near':'last quoted near',__w=__m?__m[1]:__t?__t[1]:__u?__u[1]:'';
+        var __s=window.AgPxStamp?AgPxStamp.stamp(front,data.fetched):'',__m=/^(.*) settle$/.exec(__s),__t=/^(?:Last|Overnight) trade as of (.*)$/.exec(__s),__u=/^Updated (.*)$/.exec(__s);
+        var __v=__m?'settled at':__t?(/^Overnight/.test(__s)?'traded overnight near':'last traded near'):'last quoted near',__w=__m?__m[1]:__t?__t[1]:__u?__u[1]:'';
         var __cr={corn:'corn',beans:'soybeans',wheat:'wheat'}[CROP_KEY]||CROP.label.toLowerCase();
         __sn.style.minHeight=__sn.offsetHeight+'px';
         __sn.innerHTML=heroLabel+' '+__cr+' '+__v+' <strong>'+grain$(front.close)+'</strong>'+(front.stale?' (last good quote)':'')+(__w?' &middot; as of '+__w:'')+'.';
       }
       var hc=chgTxt(front.netChange,front.pctChange,front.roll);setEl('hero-chg',hc.t,hc.c);
+      /* 2026-10-20 (Sig): the overnight electronic trade, when the file has one,
+         beside the settle (price-local.js overnight). Titles keep the settle. */
+      heroOvernight(front);
       if(front.roll){var __rn=document.querySelector('.px-seed-note');if(__rn){var __d=document.createElement('div');__d.className='roll-note';__d.innerHTML=CROP.rollNote;__rn.parentNode.insertBefore(__d,__rn);}}
       if(front.wk52_lo!=null&&front.wk52_hi!=null){
         var lo=front.wk52_lo,hi=front.wk52_hi,cu=front.close,rp=Math.min(100,Math.max(0,(cu-lo)/(hi-lo)*100));
