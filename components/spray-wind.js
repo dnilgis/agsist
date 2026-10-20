@@ -30,7 +30,8 @@
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function loadScript(src) { return new Promise(function (ok, no) { var s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = function () { no(new Error('load ' + src)); }; document.head.appendChild(s); }); }
-  function loadCss(href) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = href; document.head.appendChild(l); }
+  // resolves when the sheet is in (or failed): the map box needs its height before the map is drawn
+  function loadCss(href) { return new Promise(function (ok) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = href; l.onload = l.onerror = function () { ok(); }; document.head.appendChild(l); setTimeout(ok, 4000); }); }
   function getJson(u) {
     var ac = ('AbortController' in window) ? new AbortController() : null, t = ac ? setTimeout(function () { ac.abort(); }, FETCH_MS) : 0;
     return fetch(u, ac ? { signal: ac.signal } : {}).then(function (r) { clearTimeout(t); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
@@ -51,7 +52,7 @@
       '<div class="sw-wrap" id="sw-wrap">' +
         '<div class="sw-map" id="sw-map" role="img" aria-label="Forecast wind around your field"></div>' +
         '<canvas class="sw-cv" id="sw-cv" aria-hidden="true"></canvas>' +
-        '<div class="sw-haze" id="sw-haze" hidden></div>' +
+        '<div class="sw-haze" id="sw-haze" hidden></div><div class="sw-hz" id="sw-hz" role="status" hidden></div>' +
         '<div class="sw-tag" id="sw-tag" aria-hidden="true"></div>' +
         '<button type="button" class="sw-mode" id="sw-mode"></button>' +
         '<div class="sw-down" id="sw-down" hidden></div>' +
@@ -345,14 +346,16 @@
     var sl = $('sw-slider'); if (sl) sl.setAttribute('aria-valuetext', hourLabel(t) + (h ? ', ' + RWORD[h.r] : '') + (wind != null ? ', about ' + Math.round(b) + ' mph at the boom' : ''));
     var tag = $('sw-tag'); if (tag) tag.textContent = hourLabel(t);
     var inv = h && h.why.indexOf('inv') >= 0, hz = $('sw-haze');
-    if (hz) { hz.hidden = !inv; hz.textContent = inv ? 'Inversion risk this hour: calm air, low sun' + (h.cloud != null && h.cloud <= W.INV.clearCloud ? ', clear sky' : '') + '. A risk, not a reading.' : ''; }
+    var hzt = $('sw-hz');
+    if (hz) hz.hidden = !inv;
+    if (hzt) { hzt.hidden = !inv; hzt.textContent = inv ? 'Inversion risk this hour: light wind, low sun' + (h.cloud != null && h.cloud <= W.INV.clearCloud ? ', clear sky' : '') + '. A risk, not a reading.' : ''; }
   }
   function renderStrip() {
     var el = $('sw-strip'); if (!el) return;
     var ts = times(), html = '';
     for (var i = 0; i < ts.length; i++) {
       var h = S.hours[i], hh = +ts[i].slice(11, 13), cls = h ? h.r : 'na', inv = h && h.why.indexOf('inv') >= 0;
-      html += '<span class="sw-c ' + cls + (inv ? ' inv' : '') + (hh === 0 ? ' d0' : '') + '" data-i="' + i + '" title="' + esc(hourLabel(ts[i]) + (h ? ': ' + RWORD[h.r] : '')) + '">' + (hh === 0 || i === 0 ? '<i>' + esc(W.dow(ts[i])) + '</i>' : '') + '</span>';
+      html += '<span class="sw-c ' + cls + (inv ? ' inv' : '') + (hh === 0 ? ' d0' : '') + '" data-i="' + i + '" title="' + esc(hourLabel(ts[i]) + (h ? ': ' + RWORD[h.r] : '')) + '">' + (hh === 0 || (i === 0 && hh < 21) ? '<i>' + esc(W.dow(ts[i])) + '</i>' : '') + '</span>';
     }
     el.innerHTML = html;
   }
@@ -383,7 +386,7 @@
     var state = [];
     if (S.fieldErr) state.push('field forecast not answering');
     if (S.gridErr) state.push('wind map forecast not answering');
-    el.innerHTML = '<b>Forecast (estimate), model ' + esc(W.MODEL) + ' (NOAA HRRR, then GFS)</b>' + (runs.length ? ': ' + esc(runs.join(', ')) : '') + '.' + (S.readAt ? ' Read ' + esc(fmtRun(S.readAt)) + '.' : '') + (state.length ? ' <span class="sw-bad">Now: ' + esc(state.join('; ')) + '.</span>' : '') + ' ' +
+    el.innerHTML = '<b>Forecast (estimate): NOAA HRRR and GFS models, blended by Open-Meteo (model ' + esc(W.MODEL) + ')</b>' + (runs.length ? '. ' + esc(runs.join(', ')) : '') + '.' + (S.readAt ? ' Read ' + esc(fmtRun(S.readAt)) + '.' : '') + (state.length ? ' <span class="sw-bad">Now: ' + esc(state.join('; ')) + '.</span>' : '') + ' ' +
       W.CREDITS.map(function (c) { return '<span data-credit="' + c.id + '">' + esc(c.t) + (c.a ? ' <a href="' + esc(c.u) + '" target="_blank" rel="noopener">' + esc(c.a) + '</a>' : '') + (c.tail ? (c.tail === '.' ? '' : ' ') + esc(c.tail) : '') + '</span>'; }).join(' ');
   }
   function renderHow() {
@@ -414,17 +417,19 @@
     if (window.AgSprayField) start(window.AgSprayField);
     document.addEventListener('agsist:spray-field', function (e) { stopPlay(); S.hour = 0; start(e.detail); });
     ['in-product', 'in-state'].forEach(function (id) { var e = $(id); if (e) e.addEventListener('change', function () { S.rainfree = null; renderLegend(); rate(); }); });
-    var rt = 0; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(size, 150); });
+    var rt = 0, later = function () { clearTimeout(rt); rt = setTimeout(size, 150); };
+    if ('ResizeObserver' in window) { var lw = 0, lh = 0; new ResizeObserver(function (es) { var r = es[0].contentRect; if (Math.round(r.width) !== lw || Math.round(r.height) !== lh) { lw = Math.round(r.width); lh = Math.round(r.height); later(); } }).observe($('sw-wrap')); }
+    else window.addEventListener('resize', later);
     if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { S.visible = es[0].isIntersecting; if (S.visible && S.mode === 'flow' && !S.raf) { last = 0; S.raf = requestAnimationFrame(frame); } }).observe($('sw-wrap'));
     document.addEventListener('visibilitychange', function () { if (!document.hidden && S.mode === 'flow' && !S.raf) { last = 0; S.raf = requestAnimationFrame(frame); } });
     if (location.hash === '#wind') setTimeout(function () { var w = $('wind'); if (w) w.scrollIntoView({ block: 'start' }); }, 50);
   }
 
   window.AgSprayWind = { state: S };
-  loadCss('/components/spray-wind.css?v=' + V.css);
   var needL = !window.L;
-  if (needL) loadCss(LEAFLET + 'leaflet.css');
   Promise.all([
+    loadCss('/components/spray-wind.css?v=' + V.css),
+    needL ? loadCss(LEAFLET + 'leaflet.css') : Promise.resolve(),
     window.AgSprayWin ? Promise.resolve() : loadScript('/components/spray-windows.js?v=' + V.win),
     needL ? loadScript(LEAFLET + 'leaflet.js').catch(function () { S.mapFailed = true; }) : Promise.resolve()
   ]).then(init, function () { var r = $('sw-root'); if (r) r.innerHTML = '<p class="sw-ph">The wind view did not load. Check your signal and reload the page.</p>'; });

@@ -201,7 +201,7 @@ test("credits: every source named on screen with a link", () => {
   const all = W.CREDITS.map((c) => c.t + " " + c.a + " " + c.tail).join(" ");
   for (const s of ["Open-Meteo", "CC BY 4.0", "NOAA HRRR and GFS", "USGS", "FAO-56", "Sprayers101", "SDSU Extension", "Check your product label"]) assert.ok(all.includes(s), s);
   for (const c of W.CREDITS) if (c.a) assert.match(c.u, /^https:\/\//, c.id);
-  assert.match(UI, /Forecast \(estimate\), model/);
+  assert.match(UI, /Forecast \(estimate\): NOAA HRRR and GFS models, blended by Open-Meteo \(model /);
   assert.match(UI, /time not given by the source/);
 });
 

@@ -38,7 +38,7 @@
   var RAINFREE_CHOICES = [1, 2, 4, 6];
 
   var CREDITS = [
-    { id: 'forecast', t: 'Forecast: NOAA HRRR and GFS models (Open-Meteo GFS blend), from', a: 'Open-Meteo', u: 'https://open-meteo.com/', tail: '(CC BY 4.0). An estimate, not a measurement.' },
+    { id: 'forecast', t: 'Weather data by', a: 'Open-Meteo.com', u: 'https://open-meteo.com/', tail: '(CC BY 4.0), from NOAA HRRR and GFS. An estimate, not a measurement.' },
     { id: 'map', t: 'Map:', a: 'USGS The National Map', u: 'https://www.usgs.gov/programs/national-geospatial-program/national-map', tail: '(public domain).' },
     { id: 'boom', t: 'Boom wind from the 10 m forecast with the', a: 'FAO-56 wind profile', u: 'https://www.fao.org/4/x0490e/x0490e07.htm', tail: '(about 0.75 of the 10 m speed).' },
     { id: 'inv', t: 'Inversion rule after', a: 'Sprayers101, Spraying weather', u: 'https://sprayers101.com/spraying-weather/', tail: '' },

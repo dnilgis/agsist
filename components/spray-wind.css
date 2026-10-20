@@ -6,7 +6,9 @@
 .sw-map.sw-bare{background:#eef0ea}
 .sw-map .leaflet-control-attribution{font-size:.66rem}
 .sw-cv{position:absolute;inset:0;z-index:450;pointer-events:none}
-.sw-haze{position:absolute;inset:0;z-index:440;background:rgba(107,63,196,.16);display:flex;align-items:flex-end;justify-content:center;padding:0 .6rem 1.9rem;font-size:.8rem;font-weight:700;color:#3b1f86;text-align:center;pointer-events:none}
+.sw-haze{position:absolute;inset:0;z-index:440;background:rgba(107,63,196,.16);pointer-events:none}
+.sw-hz{position:absolute;left:.5rem;right:.5rem;bottom:1.7rem;z-index:465;background:rgba(255,255,255,.95);border-left:5px solid #6b3fc4;border-radius:6px;padding:.35rem .55rem;font-size:.8rem;font-weight:700;color:#2c1666;line-height:1.35;pointer-events:none}
+.sw-hz[hidden]{display:none}
 .sw-haze[hidden]{display:none}
 .sw-tag{position:absolute;left:.5rem;top:.5rem;z-index:460;background:rgba(255,255,255,.92);color:#111;font-size:.8rem;font-weight:700;padding:.2rem .5rem;border-radius:6px;pointer-events:none}
 .sw-mode{position:absolute;right:.5rem;top:.5rem;z-index:460;background:rgba(255,255,255,.95);color:#111;border:1px solid #888;border-radius:6px;font-size:.8rem;font-weight:600;min-height:36px;padding:0 .6rem;cursor:pointer}
@@ -18,9 +20,9 @@
 .sw-rd{color:var(--text-dim)}
 .sw-why{color:var(--text-dim);font-size:.85rem}
 .sw-pill{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.04em;padding:.05rem .45rem;border-radius:5px;color:#fff;vertical-align:1px}
-.sw-pill.good{background:var(--green,#2e7d4f)}
+.sw-pill.good{background:#1f6b3a}
 .sw-pill.fair{background:#8a6514}
-.sw-pill.no{background:var(--red,#c0492f)}
+.sw-pill.no{background:#a63c22}
 .sw-time{display:flex;align-items:center;gap:.6rem}
 .sw-play{flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:1rem;cursor:pointer}
 .sw-time input[type=range]{flex:1 1 auto;min-width:0;height:44px;accent-color:var(--green,#2e7d4f)}
@@ -59,3 +61,4 @@
 .sw-how{font-size:.85rem;color:var(--text-dim);line-height:1.55;margin:.3rem 0 .8rem}
 .sw-how summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600;color:var(--text)}
 .sw-how p{margin:.35rem 0}
+.sw-rf>span:first-child,.sw-rfn{flex-basis:100%}
