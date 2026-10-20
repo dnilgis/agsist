@@ -4637,7 +4637,7 @@
       job = go(function () { return fontCss(); }).then(function (css) { return new Blob([buildSvg({ fontCss: css, px: ['18in', '12in'], qrMatrix: own })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return qrNote('SVG saved.'); });
     } else {
       job = go(function () { return drawCanvas(kind, own); }).then(function (c) {
-        /* the digital file's PDF is the art alone, 18 x 12 in (it fits a 12 x 18 frame); a print's is the 13 x 19 sheet */
+        /* the digital file's PDF is the art alone, 12 x 18 in, landscape (it fits a 12 x 18 frame); a print's is the 13 x 19 sheet */
         if (fmt === 'pdf') {
           var page = kind === 'digital' ? PRINT[ST.size] : SHEET;
           return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
