@@ -261,3 +261,18 @@ test("the sample offer links to the order box and says how Sig matches it; the s
   assert.match(RPH, /tick <b>This is a gift<\/b> and add their name and your note/);
   assert.equal(J.business_sample_by, null);
 });
+
+// 2026-10-20 (business walk-through: no price until the table, well down the page). The line by Get a quote is
+// the table's lowest delivered price of one print, from the data; the page's written copy is checked against it.
+test("starting price by Get a quote: the table's lowest delivered print price, from the data", () => {
+  const rows = R.bizRows(J);
+  const lowest = Math.min(...rows.flatMap((r) => [r.prices.print12x18, r.one.print12x18]));
+  assert.equal(lowest, 32, "by hand: 50 to 100 prints all to one address, $35 less $3");
+  assert.equal(B.fromLine(rows), "From $" + lowest + " a print, delivered");
+  // the written table's own cells agree: the smallest print price in it
+  const cells = [...MAIN.matchAll(/<td data-label="Print">\$(\d+)<\/td><td[^>]*>\$\d+<\/td><td data-label="All to one address">\$(\d+) \//g)].flatMap((m) => [+m[1], +m[2]]);
+  assert.equal(Math.min(...cells), lowest);
+  assert.match(MAIN, new RegExp('data-rbz-cta="hero-quote">Get a quote</a> <span class="rbz-from" id="rbz-from">' + B.fromLine(rows).replace(/\$/g, "\\$") + "</span>"));
+  assert.match(JS, /fr\.textContent = frt/, "the script writes it from the data too");
+  assert.equal(B.fromLine([]), "");
+});

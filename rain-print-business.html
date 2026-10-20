@@ -54,6 +54,7 @@
     .rbz-go,.rbz-ghost,.rbz-pick{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 1.2rem;border-radius:6px;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
     .rbz-go{color:#14110a!important;background:var(--gold-fill,var(--brand));border:none}
     .rbz-go:disabled{opacity:.6;cursor:default}
+    .rbz-from{font-weight:600;color:var(--text)}
     .rbz-ghost,.rbz-pick{color:var(--text)!important;background:var(--surface);border:1px solid var(--border)}
     .rbz-pick{min-height:40px;padding:0 .9rem;font-weight:600;font-size:.9rem}
     .rbz-go:focus-visible,.rbz-ghost:focus-visible,.rbz-pick:focus-visible,.rbz-file:focus-visible+.rbz-pick{outline:2px solid var(--brand);outline-offset:2px}
@@ -153,7 +154,7 @@
 
       <p class="lead">Elevators, co-ops, seed dealers, ag lenders, crop insurance agencies and equipment dealers give customers something every December. Most of it is a cap, a calendar or a box of sausage. A Rain Print is a year of rain at the customer&rsquo;s own place, drawn day by day and printed on 13 x 19 heavy, textured cotton fine-art paper for the wall.</p>
       <p>Each print can be a different customer&rsquo;s town and year, or one town for the whole list. I print, frame and ship every one myself, from 5 prints up, on one invoice.</p>
-      <p class="rbz-ctas"><a class="rbz-go" href="#rb-quote" data-rbz-cta="hero-quote">Get a quote</a> <a class="rbz-ghost" href="/rain-print" data-rbz-cta="hero-try">Draw one for your town, free</a></p>
+      <p class="rbz-ctas"><a class="rbz-go" href="#rb-quote" data-rbz-cta="hero-quote">Get a quote</a> <span class="rbz-from" id="rbz-from">From $32 a print, delivered</span> <a class="rbz-ghost" href="/rain-print" data-rbz-cta="hero-try">Draw one for your town, free</a></p>
       <p class="rbz-date" id="rbz-cutoff">For Christmas, send your list by Nov 20.</p>
 
       <figure class="rbz-fig">
@@ -310,7 +311,7 @@
   <script src="/components/form-post.js?v=5" defer></script>
   <script src="/components/rp-logo.js?v=2" defer></script>
   <script src="/components/rain-print.js?v=59" defer></script>
-  <script src="/components/rp-business.js?v=5" defer></script>
+  <script src="/components/rp-business.js?v=6" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>
