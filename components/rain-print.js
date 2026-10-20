@@ -1679,7 +1679,46 @@
     return hit;
   }
 
-  var api = { countyFips: countyFips, encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
+  /* BY THE BUTTON (2026-10-20, Sig: "do all"). Two short lines under Pay, then
+     "Send this to your family". Line one (buyLine) is when it comes: for a print
+     or framed print, from October 1 through that product's own cutoff in
+     data/rain-print.json, "Order by Dec 9 for Christmas delivery." (a plain
+     date, never a countdown); any other day the arrival date (arriveText), so
+     past the cutoff it plainly says a date after Christmas. This year's January
+     gift says January; a year NOAA hasn't finished, a gift being redeemed and
+     the digital file say nothing here. o = {gift, settle, used, year}. Line
+     two (promiseLine) is Sig's guarantee, and for a print the serial: every
+     print and framed print carries "No. 0001" under the QR and Sig initials it
+     in pencil (the renderer prints no signature, so it says initialed, never
+     signed). The digital file has no serial. */
+  var GUARANTEE = 'If it’s not right, I’ll redo it or refund it.';
+  function buyLine(j, id, todayIso, o) {
+    o = o || {};
+    if (id === 'digital' || o.settle || o.used) return '';
+    if (o.gift) return o.year ? 'A ' + o.year + ' print ships in January ' + (o.year + 1) + ', once the full year is in.' : '';
+    var cut = String(j && j[id === 'framed12x18' ? 'framed_christmas_cutoff' : 'print_christmas_cutoff'] || ''), t = String(todayIso || '');
+    if (/^\d{4}-\d{2}-\d{2}$/.test(cut) && /^\d{4}-\d{2}-\d{2}$/.test(t) && t >= cut.slice(0, 4) + '-10-01' && t <= cut)
+      return 'Order by ' + shortDate(cut) + ' for Christmas delivery.';
+    return arriveText(j, id, todayIso);
+  }
+  function promiseLine(id) {
+    return id === 'digital' ? 'You see a proof first. ' + GUARANTEE : 'Numbered and initialed by hand. ' + GUARANTEE;
+  }
+  /* "Send this to your family" (2026-10-20): the reader's own design link (the
+     ?d= code, which opens with their print first) and a few words for going
+     in on it together. A share, nothing more: no split payment. o = {who
+     (the gift box's "Who it's for", optional), place, year, url}. {subject,
+     text (no link), body (text and link)}. */
+  function familyMessage(o) {
+    o = o || {};
+    var who = cleanText(String(o.who || ''), 40), where = String(o.place || '').trim(), yr = o.year ? String(o.year) : '';
+    var what = where && yr ? 'It’s every rain and snow at ' + where + ' in ' + yr + ', drawn from NOAA’s records and printed for the wall.'
+      : 'It’s a year of rain, drawn from NOAA’s records and printed for the wall.';
+    var text = (who ? 'Want to go in on this for ' + who + '? ' : 'Want to go in on this together? ') + what + ' Have a look:';
+    return { subject: 'A Rain Print' + (where && yr ? ' of ' + where + ', ' + yr : ''), text: text, body: text + '\n' + String(o.url || '') };
+  }
+
+  var api = { buyLine: buyLine, promiseLine: promiseLine, GUARANTEE: GUARANTEE, familyMessage: familyMessage, countyFips: countyFips, encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, SHEET: SHEET, sheetBoxes: sheetBoxes, safeInArt: safeInArt, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
@@ -3502,8 +3541,8 @@
     var p = pickPrice(PICK), link = !!payLink(PICK);
     $('rp-pay').textContent = 'Check it and pay' + (p ? ' ' + p : '');
     $('rp-bar-what').textContent = PICK_WORD[PICK] + (p ? ' \u00b7 ' + p : '');
-    $('rp-promise').textContent = PICK === 'digital' ? 'You see a proof first; the full file comes once you approve it.'
-      : 'You see a proof first, and get a full refund any time before I print.';
+    // two short lines by the button: when it comes, then the guarantee (buyLine, promiseLine; 2026-10-20)
+    $('rp-promise').textContent = promiseLine(PICK);
     /* One gift instruction, said once (2026-10-17, gift-buyers panel): with a
        payment link, the line above Pay says what to do on the next screen, and
        the line under the mockup goes. Without one, the order form takes it. */
@@ -3517,17 +3556,67 @@
     pgSync();
     // the file: no shipping line, no Christmas proof dates; it says what the file is (2026-10-15)
     $('rp-ships').hidden = PICK === 'digital';
-    $('rp-madeby').textContent = MADE_BY[PICK === 'digital' ? 'file' : 'print'];
-    // when it comes: this year's gift ships in January and a year NOAA hasn't finished waits, so those say so instead
-    var arr = januaryGift() || (SETTLE && canOrder()) || (GIFT && GIFT.usable) ? '' : arriveText(OJ().j, PICK, TODAY);
+    $('rp-from').textContent = FROM_WORDS[PICK === 'digital' ? 'file' : 'print'];
+    /* when it comes: the Christmas order-by date while it holds, else the arrival date; this year's gift says
+       January, and a year NOAA hasn't finished waits. In the Christmas window the arrival date goes lower. */
+    var arr = buyLine(OJ().j, PICK, TODAY, { gift: januaryGift(), settle: SETTLE && canOrder(), used: !!(GIFT && GIFT.usable), year: ST.year });
+    var est = arr && !januaryGift() && arr.indexOf('Order by') === 0 ? arriveText(OJ().j, PICK, TODAY) : '';
+    $('rp-arrive-est').textContent = est;
+    $('rp-arrive-est').hidden = !est;
     // the prices at the top and the shipping line follow the country (Canada: data/rain-print.json canada)
     var OJj = OJ().j || {};
     PRODUCTS.forEach(function (id) { Array.prototype.forEach.call(doc.querySelectorAll('[data-price="' + id + '"]'), function (el) { if (typeof OJj[id] === 'number') el.textContent = (caOrder() ? 'US' : '') + money(OJj[id]); }); });
     if (OJj.ships_within) $('rp-ships').textContent = OJj.ships_within;
     $('rp-arrive').textContent = arr;
     $('rp-arrive').hidden = !arr;
+    var fam = canOrder() && !(GIFT && GIFT.usable);
+    $('rp-fam-wrap').hidden = !fam;
+    if (!fam) { $('rp-fam-more').hidden = true; $('rp-fam').setAttribute('aria-expanded', 'false'); }
+    syncMailme(fam && !!DATA && !MAKER);
     syncXmas();
   }
+  /* EMAIL ME THIS DESIGN (2026-10-20, Sig): the reader's own address, nothing
+     ticked. The worker (v5.43, POST /rp-remind) keeps the design code and
+     starts the email job: the link now, and one reminder the next day unless
+     a paid order matches it, then nothing. A changed design can be sent again. */
+  var REMIND_URL = 'https://agsist-subs.dnilgis.workers.dev/rp-remind', MAILME = { code: '', busy: false };
+  function syncMailme(on) {
+    var w = $('rp-mailme');
+    if (!w) return;
+    w.hidden = !on || typeof root.fetch !== 'function';
+    if (w.hidden) return;
+    var code = encodeCode(artDesign());
+    if (MAILME.code && MAILME.code !== code) {
+      MAILME.code = '';
+      $('rp-mailme-out').textContent = '';
+      $('rp-mailme-open').parentNode.hidden = false;
+    }
+  }
+  function sendMailme(ev) {
+    ev.preventDefault();
+    var out = $('rp-mailme-out'), em = String($('rp-mailme-email').value || '').trim();
+    if (MAILME.busy) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em) || em.length > 254) { out.textContent = 'That email doesn\u2019t look right. Check it and try again.'; $('rp-mailme-email').focus(); return; }
+    if (LOGO && LOGO.state === 'saving') { out.textContent = 'The logo is still saving. Try again in a moment.'; return; }
+    var code = encodeCode(artDesign()), daily = !!$('rp-mailme-daily').checked;
+    if (!code) return;
+    MAILME.busy = true; $('rp-mailme-go').disabled = true; out.textContent = 'Sending\u2026';
+    root.fetch(REMIND_URL, { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: em, code: code, ref: checkoutRef(code, false, shortHit()), daily: daily, source: 'page:rain-print', _gotcha: $('rp-mailme-hp').value }) })
+      .then(function (r) { return r.json().then(function (j) { return r.ok && j && j.ok === true; }, function () { return false; }); }, function () { return false; })
+      .then(function (ok) {
+        MAILME.busy = false; $('rp-mailme-go').disabled = false;
+        if (!ok) { out.textContent = 'That didn\u2019t go through. Try again in a minute.'; return; }
+        MAILME.code = code;
+        $('rp-mailme-form').hidden = true;
+        $('rp-mailme-open').setAttribute('aria-expanded', 'false');
+        $('rp-mailme-open').parentNode.hidden = true;
+        out.textContent = 'Sent. The link to this design is on its way to your email, with one reminder tomorrow unless you order it.';
+        ga('rain_print_design_email', { daily: daily ? 1 : 0 });
+      });
+  }
+  // under the call line, lower down: who the emails come from (the proof sheet's "When" keeps MADE_BY)
+  var FROM_WORDS = { print: 'Your proof comes by email from Sig, your receipt from Stripe.', file: 'Your proof and your file come by email from Sig, your receipt from Stripe.' };
   var MADE_BY = { print: 'Made by Sig Lindquist in Chetek, Wisconsin. Your proof comes by email from Sig, your receipt from Stripe.',
     file: 'Made by Sig Lindquist in Chetek, Wisconsin. Your proof and your file come by email from Sig, your receipt from Stripe.' };
   // why an order can't go yet, in words, or ''
@@ -5023,6 +5112,50 @@
     if (root.navigator.clipboard && root.navigator.clipboard.writeText) root.navigator.clipboard.writeText(u).then(ok, function () { root.prompt('Copy this link', u); });
     else root.prompt('Copy this link', u);
   });
+  /* SEND THIS TO YOUR FAMILY (2026-10-20, Sig): the reader's own design link
+     (?d=, opens with their print first) and a few words for going in on it
+     together (familyMessage). A phone opens its own share sheet; a computer
+     gets Email it, Text it and Copy the link. The event says only how. */
+  function familyNow() {
+    var who = giftMode() ? $('rp-gift-to').value : ($('rp-pg-to') && $('rp-pg-to').value) || '';
+    var url = shortUrl(artDesign());
+    return Object.assign({ url: url }, familyMessage({ who: who, place: META ? META.place : ST.place, year: ST.year, url: url }));
+  }
+  function familyLinks(m) {
+    $('rp-fam-mail').href = 'mailto:?subject=' + encodeURIComponent(m.subject) + '&body=' + encodeURIComponent(m.body);
+    $('rp-fam-sms').href = 'sms:?&body=' + encodeURIComponent(m.body);
+  }
+  $('rp-fam').addEventListener('click', function () {
+    var say = $('rp-fam-say');
+    if (LOGO && LOGO.state === 'saving') { $('rp-fam-more').hidden = false; say.textContent = 'The logo is still saving. Try again in a moment.'; return; }
+    var m = familyNow(), nav = root.navigator, phone = root.matchMedia && root.matchMedia('(pointer: coarse)').matches;
+    say.textContent = '';
+    if (phone && nav && typeof nav.share === 'function') {
+      nav.share({ title: m.subject, text: m.text, url: m.url }).then(function () { ga('rain_print_family_share', { method: 'share' }); }, function () {});
+      return;
+    }
+    familyLinks(m);
+    var open = $('rp-fam-more').hidden;
+    $('rp-fam-more').hidden = !open;
+    $('rp-fam').setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  // the words follow the design: built again at the tap, so a name typed after opening still goes
+  ['rp-fam-mail', 'rp-fam-sms'].forEach(function (id) {
+    $(id).addEventListener('click', function () { familyLinks(familyNow()); ga('rain_print_family_share', { method: id === 'rp-fam-mail' ? 'email' : 'text' }); });
+  });
+  $('rp-fam-copy').addEventListener('click', function () {
+    var say = $('rp-fam-say'), txt = familyNow().url;
+    var ok = function () { say.textContent = 'Link copied. It opens with your print.'; ga('rain_print_family_share', { method: 'copy' }); };
+    if (root.navigator.clipboard && root.navigator.clipboard.writeText) root.navigator.clipboard.writeText(txt).then(ok, function () { root.prompt('Copy this', txt); });
+    else root.prompt('Copy this', txt);
+  });
+  $('rp-mailme-open').addEventListener('click', function () {
+    var f = $('rp-mailme-form'), open = f.hidden;
+    f.hidden = !open;
+    $('rp-mailme-open').setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) try { $('rp-mailme-email').focus(); } catch (e) {}
+  });
+  $('rp-mailme-form').addEventListener('submit', sendMailme);
   $('rp-gift-use').addEventListener('click', function () { useGift(); });
   /* "Make another" (2026-10-17, farm-buyers panel: Dad's last year, then my
      first): the town and the words stay; the Year box comes up to change. */
