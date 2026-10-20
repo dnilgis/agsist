@@ -1,1 +1,1 @@
-{"schema":"agsist-bids-stats/1","fetched":"2026-10-20T22:49:04Z","note":"Counts from data/bids.json, written by scripts/fetch_bids.py on the same run.","stats":{"total_bids":23799,"facilities":334,"locations":2026,"states":31}}
+{"schema":"agsist-bids-stats/1","fetched":"2026-10-20T23:07:42Z","note":"Counts from data/bids.json, written by scripts/fetch_bids.py on the same run.","stats":{"total_bids":23888,"facilities":334,"locations":2042,"states":31}}
