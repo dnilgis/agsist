@@ -7,6 +7,14 @@ name: Rain Print buyer email
 # reads the buyer's address from Stripe at send time with its STRIPE_READ_KEY
 # secret (the one place that key lives). The log prints counts only.
 #
+# A DIGITAL file the buyer approves (Approve this print starts this job,
+# worker v5.37) gets its files email in the same run (Sig 2026-10-20): the
+# PDF, PNG and JPG at 12 x 18 in, 300 dpi, and the one-page reading guide,
+# attached, made by the maker view; marked delivered first (worker v5.38),
+# once per order; Sig gets a one-line note. Buyer emails go out as "Sig at
+# AGSIST" (variable RP_FROM_NAME to change it; the shared FROM_NAME secret is
+# for Sig's alerts and the other jobs and does not decide it).
+#
 # It also sends Sig an alert for each new paid order first (always to Sig).
 # NO SCHEDULE: it runs when the subs worker's Stripe webhook (v5.36) starts it
 # through the GitHub API (worker secret GH_DISPATCH_TOKEN), or by hand. The
@@ -71,6 +79,7 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
           FROM_ADDR: ${{ secrets.FROM_ADDR }}
           FROM_NAME: ${{ secrets.FROM_NAME }}
+          RP_FROM_NAME: ${{ vars.RP_FROM_NAME }}
           SIG_TO: ${{ secrets.SIG_TO }}
           SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
           DRY_RUN: ${{ inputs.dry_run == false && '' || '1' }}

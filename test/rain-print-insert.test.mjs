@@ -279,7 +279,107 @@ test("the code line with the real code (NEXTPRINT, print or framed print) fits e
 test("the engine hands the letter the offer from the prices it already loads", () => {
   const js = read("components/rain-print.js");
   assert.match(js, /offer: \(PRICES && PRICES\.letter_offer\) \|\| null, today: TODAY/);
-  assert.match(js, /sc\.src = '\/components\/rp-insert\.js\?v=4'/);
+  assert.match(js, /sc\.src = '\/components\/rp-insert\.js\?v=5'/);
   // checkout: the Stripe link only gains client_reference_id; nothing strips a promotion code
   assert.doesNotMatch(js, /promotion_code|promo_code/i);
+});
+
+// ---------- the reading guide (Sig, 2026-10-20): "How to read your Rain Print", sent with a digital file ----------
+// what the engine reads from the print's own groups (components/rain-print.js insertSvg), the same tests on the same SVG
+const DRAWN_RE = { hist: /data-rp="hist"/, rec: /data-rp="rec:/, frost: /data-rp="frost:/, crop: /data-rp="crop"/, ribbon: /data-rp="ribbon"/, qr: /data-rp="qr"/ };
+const drawnOf = (art) => Object.fromEntries(Object.entries(DRAWN_RE).map(([k, re]) => [k, re.test(art)]));
+function guide(style, opts) {
+  opts = opts || {};
+  const I = Object.assign(input(style, opts.markers), { qr: { matrix: RP.standardMatrix(), serial: "" } }, opts.extra || {});
+  const art = A.render(I);
+  const F = A.facts(I, { unplaced: A.lastUnplaced() });
+  const o = { facts: F, mini: art, serial: "", guide: true, drawn: drawnOf(art), gift: opts.gift || "", qr: RP.standardMatrix(),
+    station: { words: "Ames, IA", away: "2.0 miles", kind: "volunteer" }, source: "NOAA’s daily records", offer: { code: "NEXTPRINT", dollars_off: 10, expires: "2027-12-31" }, today: "2026-10-20" };
+  const svg = INS.render(o);
+  return { art, F, svg, copy: INS.copy(o), overflow: INS.lastOverflow(), drawn: o.drawn };
+}
+const REC = [{ label: "Wettest week: 3.10 in", span: { from: "2012-06-01", to: "2012-06-07" } }];
+
+test("the guide: its title, no serial, no pencil line, no code line, Sig's plain maker line, printing tips", () => {
+  const g = guide("r1");
+  const w = letterTexts(g.svg).join(" | "), ws = letterTexts(g.svg).join(" ");
+  assert.equal(g.copy.head, "How to read your Rain Print");
+  assert.ok(w.includes("How to read your Rain Print"));
+  assert.doesNotMatch(w, /No\. \d|No\. ___|initialed|pencil/, "a digital file has no serial");
+  assert.doesNotMatch(w, /NEXTPRINT|off a print/, "the box letter's code line is not on the guide");
+  assert.match(ws, /Made by Sigurd Lindquist, CCA, Chetek, Wisconsin\./);
+  assert.match(ws, /PRINTING IT Print the PDF at 100% \(Actual size\), never Fit to page\./);
+  assert.equal(g.overflow, 0);
+  assert.doesNotMatch(w, /—|archival|\$/);
+  const exp = (s) => s.replace(/<svg x="[\s\S]*?<\/svg>/, "");
+  assert.ok(!exp(make("r1").svg).includes("How to read your Rain Print") && exp(make("r1").svg).includes("Print No. 0001"), "the box letter is unchanged");
+});
+
+test("the guide's key says only what the print draws, and each line matches the drawing", () => {
+  const C = A.COLORS;
+  // Staircase with the 30-year normal: the blue line, the red step, the dashed usual line with the tan and blue bands
+  const g = guide("r1");
+  const keys = g.copy.key.map((k) => k[0]);
+  assert.deepEqual([...keys.filter((k) => ["climb", "wet", "usual", "months", "dry", "qr"].includes(k))], ["climb", "wet", "usual", "months", "dry", "qr"], keys.join());
+  assert.ok(g.art.includes('stroke="' + C.rain + '"'), "the blue line is the rain color");
+  assert.match(g.art, /<g data-rp="wet"><line [^>]*stroke="#B23A2E"/, "the red step");
+  assert.match(g.art, /<g data-rp="usual"><path [^>]*stroke-dasharray/, "the usual year is a dashed line");
+  assert.ok(g.art.includes('fill="' + C.dryBand + '"') && g.art.includes('fill="' + C.wetBand + '"'), "tan behind, pale blue ahead");
+  assert.match(g.art, /<g data-rp="qr">/, "the code is drawn");
+  const qx = [...g.art.matchAll(/<g data-rp="qr">[\s\S]*?<rect x="([\d.]+)" y="([\d.]+)"/g)].map((m) => [+m[1], +m[2]])[0];
+  assert.ok(qx[0] > 1400 && qx[1] > 900, "in the corner (lower right): " + qx);
+  assert.ok(!keys.includes("rec") && !keys.includes("hist") && !keys.includes("frost") && !keys.includes("crop") && !keys.includes("ribbon"), "no extras, no extra lines");
+  // remarkable days on: an open circle, and the key says so
+  const r = guide("r1", { extra: { records: REC } });
+  assert.ok(r.drawn.rec && r.copy.key.some((k) => k[0] === "rec"));
+  assert.match(r.art, /<g data-rp="rec:0"><circle [^>]*fill="#FFFFFF"/, "an open circle");
+  const r2 = guide("r2", { extra: { records: REC } });
+  assert.match(r2.art, /<g data-rp="rec:0">[\s\S]*?<circle [^>]*fill="#FFFFFF"/, "an open circle on Roots too");
+  // Roots: the bars, the months across the top
+  const ro = guide("r2");
+  assert.ok(ro.copy.key.some((k) => k[0] === "bar") && ro.copy.key.some((k) => k[0] === "monthsTop") && ro.copy.key.some((k) => k[0] === "qr"));
+  // the other years' lines: no tan and blue bands are drawn, and neither the guide nor the letter says there are
+  const threads = [{ year: 2000, cum: Array.from({ length: 366 }, (_, i) => i * 0.08) }, { year: 2001, cum: Array.from({ length: 366 }, (_, i) => i * 0.1) }];
+  const h = guide("r1", { extra: { hist: { threads, labels: { wet: [2001], dry: [2000] }, foot: "Gray lines: the other 2 full years" } } });
+  assert.ok(h.drawn.hist, "the threads are drawn");
+  assert.ok(!h.art.includes('fill="' + C.dryBand + '"') && !h.art.includes('fill="' + C.wetBand + '"'), "no bands with the threads");
+  const u = h.copy.key.find((k) => /^usual/.test(k[0]));
+  assert.equal(u[1], "Dashed line: a usual year.");
+  assert.ok(h.copy.key.some((k) => k[0] === "hist"));
+  const L = INS.copy({ facts: h.F, station: {}, drawn: h.drawn });
+  assert.equal(L.key.find((k) => /^usual/.test(k[0]))[1], "Dashed line: a usual year.", "the box letter too");
+});
+
+test("the guide fits one page with the longest note, five marked days and every extra key", () => {
+  // a digital file's note is a gift note from the order form (ro-gift-msg, 240 characters at most); business notes go on print boxes
+  const long = "For every inch of rain you farmed through. ".repeat(8).slice(0, 240);
+  const marks = [["2012-04-20", "Planted"], ["2012-06-10", "Hail"], ["2012-08-01", "Wedding"], ["2012-10-01", "Harvest"], ["2012-12-01", "Done"]].map(([date, label]) => ({ date, label }));
+  for (const st of ["r1", "r2"]) {
+    const g = guide(st, { gift: long, markers: marks, extra: { records: REC } });
+    const o = { facts: g.F, mini: g.art, serial: "", guide: true, drawn: { hist: true, rec: true, frost: true, crop: true, ribbon: true, qr: true }, gift: long, qr: RP.standardMatrix(),
+      station: { words: "Ames, IA", away: "2.0 miles", kind: "volunteer" } };
+    INS.render(o);
+    assert.equal(INS.lastOverflow(), 0, st + " fits");
+  }
+});
+
+test("the maker page has the digital PDF, JPG and the guide; the engine makes them", () => {
+  const html = read("rain-print.html"), js = read("components/rain-print.js");
+  assert.match(html, /data-size="digital" data-fmt="pdf">Digital file PDF</);
+  assert.match(html, /data-size="digital" data-fmt="jpg">Digital file JPG</);
+  assert.match(html, /data-size="guide" data-fmt="pdf">Reading guide PDF</);
+  for (const [k, re] of Object.entries(DRAWN_RE)) assert.ok(js.includes(k + ": " + re.toString() + ".test(mini)"), "the engine reads " + k + " the same way");
+  assert.match(js, /var page = kind === 'digital' \? PRINT\[ST\.size\] : SHEET;/, "the digital PDF is the art alone");
+  assert.match(js, /var PRINT = \{ '12x18': \{ w: 18, h: 12/);
+});
+
+test("jpegWithDpi marks a JPEG 300 dpi", () => {
+  const jfif = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0, 16, 0x4a, 0x46, 0x49, 0x46, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0xff, 0xd9]);
+  const out = RP.jpegWithDpi(jfif, 300);
+  assert.deepEqual([...out.slice(13, 18)], [1, 1, 44, 1, 44]);
+  const bare = new Uint8Array([0xff, 0xd8, 0xff, 0xdb, 0, 2, 0xff, 0xd9]);
+  const o2 = RP.jpegWithDpi(bare, 300);
+  assert.deepEqual([...o2.slice(2, 12)], [0xff, 0xe0, 0, 16, 0x4a, 0x46, 0x49, 0x46, 0, 1]);
+  assert.deepEqual([...o2.slice(-6)], [0xff, 0xdb, 0, 2, 0xff, 0xd9]);
+  assert.deepEqual([...RP.jpegWithDpi(new Uint8Array([1, 2, 3]), 300)], [1, 2, 3], "not a JPEG: unchanged");
 });
