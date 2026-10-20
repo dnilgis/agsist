@@ -10,7 +10,7 @@
   var R = window.AgRadarRain;
   if (!R) return;
   var $ = function (id) { return document.getElementById(id); };
-  var LS_LOC = 'agsist-wx-loc', LS_WIN = 'agsist-rr-win';
+  var LS_LOC = 'agsist-wx-loc', LS_WIN = 'agsist-rr-win', LS_BASE = 'agsist-rr-base';
   var ZIPS = 'https://dnilgis.github.io/bids/data/zips/';
   var BASE = '/data/radar-rain/';
   var STALE_H = 9;              // four runs a day: anything older than this missed a run or two
@@ -209,21 +209,83 @@
     return { canvas: cv, cx: cx, bounds: [[north - n * d, west], [north, west + w * d]] };
   }
 
+  /* ---------- the map underneath ---------- */
+  /* USGS The National Map cached basemaps: public domain, no key, Web Mercator,
+     /tile/{level}/{row}/{col}. Topo for roads, towns and creeks; Imagery Topo for
+     the aerial view with the same labels. */
+  var BASES = {
+    topo: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
+    aerial: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}'
+  };
+  var BASE_MAX_Z = 16;
+  var RAIN_OPACITY = 0.55;      // over the map: towns and roads read through the rain
+  var RAIN_OPACITY_BARE = 0.72; // no map underneath: as the page drew it before
+
+  function restyle() {
+    if (S.lines) S.lines.setStyle(lineStyle());
+    if (S.over) S.over.setOpacity(S.baseOk ? RAIN_OPACITY : RAIN_OPACITY_BARE);
+  }
+
+  function lineStyle() {
+    // state lines: dark on the topo, white on the aerial, page text color with no map
+    var c = !S.baseOk ? (getComputedStyle(document.body).color || '#888') : S.base === 'aerial' ? '#fff' : '#222';
+    return { color: c, weight: 1.4, opacity: S.baseOk ? 0.6 : 0.75, fill: false };
+  }
+
+  function baseNote(msg) {
+    var n = $('rr-basenote');
+    if (!n) return;
+    n.textContent = msg || '';
+    n.hidden = !msg;
+  }
+
+  function setBase(which) {
+    if (!S.map || !window.L) return;
+    S.base = which;
+    S.baseOk = false;
+    baseNote('');
+    if (S.tiles) { S.map.removeLayer(S.tiles); S.tiles = null; }
+    var loaded = 0, waiting = 0, t = L.tileLayer(BASES[which], { maxNativeZoom: BASE_MAX_Z, maxZoom: BASE_MAX_Z });
+    t.on('tileload', function () {
+      loaded++;
+      if (S.tiles !== t) return;
+      if (!S.baseOk) { S.baseOk = true; restyle(); }
+      baseNote('');
+    });
+    t.on('tileerror', function () {
+      // a tile or two can fail on a slow line; only when none has come through after a
+      // few seconds does the page say so. The rain and the outline draw either way.
+      if (loaded || waiting) return;
+      waiting = setTimeout(function () {
+        if (loaded || S.tiles !== t) return;
+        S.baseOk = false;
+        restyle();
+        baseNote('The map underneath did not load. The rain and state lines still show.');
+      }, 6000);
+    });
+    S.tiles = t.addTo(S.map);
+    t.bringToBack();
+    restyle();
+    var bs = document.querySelectorAll('#rr-base [data-base]');
+    for (var i = 0; i < bs.length; i++) bs[i].setAttribute('aria-pressed', String(bs[i].getAttribute('data-base') === which));
+  }
+
   function renderMap() {
     var el = $('rr-map'), o = overlayCanvas(), pt = S.pt;
     $('rr-mapwin').textContent = (WINS.filter(function (x) { return x[0] === S.win; })[0] || [0, ''])[1].toLowerCase();
     if (window.L && !S.mapFailed) {
       try {
         if (!S.map) {
-          S.map = L.map(el, { scrollWheelZoom: false, attributionControl: true, zoomSnap: 0.25 });
+          S.map = L.map(el, { scrollWheelZoom: false, attributionControl: true, zoomSnap: 0.25, maxZoom: BASE_MAX_Z });
           /* No rented tiles (scripts/basemap-checks.mjs): CARTO's basemap turned into
-             "API KEY REQUIRED" watermarks (seen here Oct 17, 2026). The state lines come
-             from this site's own outline, drawn over the rain; the dot is the spot. */
-          S.map.attributionControl.addAttribution('Rain: NOAA MRMS | State lines: Natural Earth');
+             "API KEY REQUIRED" watermarks (seen here Oct 17, 2026). The map underneath is
+             the USGS National Map (public domain, no key). If its tiles do not load, the
+             rain still draws over this site's own state outline; the dot is the spot. */
+          S.map.attributionControl.addAttribution('Rain: NOAA MRMS | Map: USGS');
+          setBase(lsGet(LS_BASE) === 'aerial' ? 'aerial' : 'topo');
           fetch('/data/us-states.geo.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (g) {
             if (!g || !S.map) return;
-            var line = getComputedStyle(document.body).color || '#888';
-            S.lines = L.geoJSON(g, { interactive: false, style: { color: line, weight: 1.4, opacity: 0.75, fill: false } }).addTo(S.map);
+            S.lines = L.geoJSON(g, { interactive: false, style: lineStyle() }).addTo(S.map);
             if (S.mark) S.mark.bringToFront();
           }).catch(function () {});
           S.map.on('click', function (e) {
@@ -233,7 +295,7 @@
         }
         if (S.over) S.map.removeLayer(S.over);
         if (S.mark) S.map.removeLayer(S.mark);
-        S.over = L.imageOverlay(o.canvas.toDataURL(), o.bounds, { opacity: 0.72, className: 'rr-px', interactive: false }).addTo(S.map);
+        S.over = L.imageOverlay(o.canvas.toDataURL(), o.bounds, { opacity: S.baseOk ? RAIN_OPACITY : RAIN_OPACITY_BARE, className: 'rr-px', interactive: false }).addTo(S.map);
         S.mark = L.circleMarker([pt.lat, pt.lon], { radius: 7, color: '#111', weight: 2, fillColor: '#ffd23f', fillOpacity: 1 }).addTo(S.map);
         S.map.fitBounds(o.bounds, { padding: [4, 4] });
         return;
@@ -241,6 +303,7 @@
     }
     // no map library (offline or blocked): the grid alone, point in the middle
     el.innerHTML = '';
+    if ($('rr-base')) $('rr-base').hidden = true;
     var cv = o.canvas, big = document.createElement('canvas'), k = 8;
     big.width = cv.width * k; big.height = cv.height * k;
     var x = big.getContext('2d');
@@ -278,6 +341,16 @@
       S.win = b.getAttribute('data-win');
       lsSet(LS_WIN, S.win);
       render();
+    });
+    var savedBase = lsGet(LS_BASE) === 'aerial' ? 'aerial' : 'topo';
+    Array.prototype.forEach.call(document.querySelectorAll('#rr-base [data-base]'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-base') === savedBase)); });
+    $('rr-base').addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('[data-base]') : null;
+      if (!b) return;
+      var which = b.getAttribute('data-base') === 'aerial' ? 'aerial' : 'topo';
+      lsSet(LS_BASE, which);
+      if (S.map) setBase(which);
+      else { var bs = this.querySelectorAll('[data-base]'); for (var i = 0; i < bs.length; i++) bs[i].setAttribute('aria-pressed', String(bs[i] === b)); }
     });
     try { if (window.agsistFillZip) window.agsistFillZip(); } catch (e) {}
     var z = (lsGet(LS_LOC) || {}).zip;

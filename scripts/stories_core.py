@@ -558,7 +558,7 @@ def collect(S, bundle_d, results_d, out_dir, made=None):
         kept += 1
     os.makedirs(out_dir, exist_ok=True)
     for g, cs in sorted(files.items()):
-        json.dump({"schema": SCHEMA, "set": S.NAME, "group": g, "model": results_d.get("model"),
+        json.dump({"schema": SCHEMA, "set": S.NAME, "group": g,
                    "batch_id": results_d.get("batch_id"), "made": made or results_d.get("collected_utc"), "pages": cs},
                   open(os.path.join(out_dir, g + ".json"), "w", encoding="utf-8"), ensure_ascii=False, sort_keys=True,
                   separators=(",", ":"))

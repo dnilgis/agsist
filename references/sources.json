@@ -2072,6 +2072,18 @@
     {"id": "ispfmra-home", "kind": "html",
      "url": "https://www.ispfmra.org/",
      "title": "Illinois Society of Professional Farm Managers and Rural Appraisers (home page)",
-     "why": "/farmland-index: find the ISPFMRA land values survey so its numbers can sit beside the sale index (not used yet)"}
+     "why": "/farmland-index: find the ISPFMRA land values survey so its numbers can sit beside the sale index (not used yet)"},
+    {"id": "usgs-tnm-terms", "kind": "html",
+     "url": "https://www.usgs.gov/faqs/what-are-terms-uselicensing-map-services-and-data-national-map",
+     "title": "USGS FAQ: What are the terms of use/licensing for map services and data from The National Map?",
+     "why": "/rain-radar basemap: USGS National Map services are free, public domain, no key; the acknowledgment USGS asks for"},
+    {"id": "usgs-tnm-topo-service", "kind": "html",
+     "url": "https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer",
+     "title": "USGS The National Map: USGSTopo MapServer (ArcGIS REST service directory)",
+     "why": "/rain-radar basemap: cached tile scheme (Web Mercator, 256 px, /tile/{level}/{row}/{col}), levels, copyright text"},
+    {"id": "usgs-tnm-imagerytopo-service", "kind": "html",
+     "url": "https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer",
+     "title": "USGS The National Map: USGSImageryTopo MapServer (ArcGIS REST service directory)",
+     "why": "/rain-radar aerial view: cached tile scheme, levels, copyright and license notes (Alaska imagery restrictions)"}
 ]
 }

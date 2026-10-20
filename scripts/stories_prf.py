@@ -647,6 +647,7 @@ def selftest():
         kept, rej = K.collect(S, bd, res, t, made="2026-10-12")
         ok(kept == 1 and not rej, f"collect keeps the good one {rej}")
         j = json.load(open(os.path.join(t, "DE.json")))
+        ok("model" not in j, "the published story file names no model")
         e = j["pages"]["10001"]
         ok(set(e) == {"story", "hash", "vol"} and "grid_rows" not in json.dumps(e), "only the story, its hash and the volatile facts are stored")
         ok(len(json.dumps(e)) < 1200, f"a stored story is small ({len(json.dumps(e))} bytes)")
