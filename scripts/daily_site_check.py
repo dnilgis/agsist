@@ -69,9 +69,11 @@ def clock_findings(doc):
     out = []
     for w in (doc or {}).get("workflows", []):
         if w.get("status") not in ("ok", None):
-            out.append({"check": "clocks", "where": w.get("workflow", ""),
+            wf = w.get("workflow", "")
+            out.append({"check": "clocks", "where": wf,
                         "title": ("late (critical)" if w.get("critical") else "late") if w.get("status") not in ("over", "warn")
-                        else ("folder near its budget" if w.get("workflow") == "folder-budgets" else "published size"),
+                        else {"folder-budgets": "folder near its budget", "private-repo-key": "private repo key expiring",
+                              "private-raw-saves": "saves to the private repo stopped"}.get(wf, "published size"),
                         "detail": f"{w.get('why', '')}; last success {w.get('last_success') or 'never'}"})
     return out
 
@@ -231,6 +233,10 @@ def selftest():
     cf = clock_findings(doc)
     ck("late and over rows are findings, ok rows are not",
        [f["where"] for f in cf] == ["b.yml", "pages size"] and cf[0]["title"] == "late (critical)")
+    pk = clock_findings({"workflows": [{"workflow": "private-repo-key", "status": "warn", "why": "Private repo key expires 2026-10-30 (10 days)"},
+                                       {"workflow": "private-raw-saves", "status": "warn", "why": "96 h"}]})
+    ck("the private repo rows get their own titles",
+       [f["title"] for f in pk] == ["private repo key expiring", "saves to the private repo stopped"])
     now = datetime(2026, 10, 17, 11, 37, tzinfo=timezone.utc)     # 6:37 a.m. CDT, a Saturday
     ck("today's Daily is clean", daily_findings({"date": "Saturday, October 17, 2026"}, now) == [])
     ck("yesterday's Daily is a finding", len(daily_findings({"date": "Friday, October 16, 2026"}, now)) == 1)

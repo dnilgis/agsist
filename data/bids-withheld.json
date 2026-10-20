@@ -1,1 +1,0 @@
-{"note":"Rows the identity guard in scripts/fetch_bids.py kept out of selection on the run that wrote data/bids.json. Overwritten every run. no_cohort rows are not shown to be wrong: nothing in the file can check them.","tolerance":0.03,"minCohort":3,"withheldRows":0,"byKind":{},"byCategory":{},"groups":0,"truncated":false,"withheld":[]}

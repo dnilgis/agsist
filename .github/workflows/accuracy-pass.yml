@@ -83,13 +83,15 @@ jobs:
       - name: Selftest
         run: python scripts/accuracy_pass.py selftest
       - name: Get the input and any earlier batch record from raw
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
-          git fetch -q --depth 1 origin raw
+          bash scripts/fetch_private.sh raw
           mkdir -p "$REC"
           git show "FETCH_HEAD:$REC/batch.json" > "$REC/batch.json" 2>/dev/null || rm -f "$REC/batch.json"
           if [ "${{ inputs.build }}" = "sets" ] && [ "${{ inputs.mode }}" != "collect" ]; then
             if [ -f "$REC/batch.json" ]; then echo "::error::$REC/batch.json is on raw (this run was submitted); use a new run name"; exit 1; fi
-            git fetch -q --depth 1 origin references:refs/remotes/origin/references
+            bash scripts/fetch_private.sh references
             python scripts/build_cash_bid_pages.py --out /tmp/cb-pages --sitemap /tmp/cb-sitemap.xml
             git checkout -- . 2>/dev/null || true     # the cash bid build also stamps pages in the checkout; keep main's
             mkdir -p "$REC/input"
@@ -108,6 +110,8 @@ jobs:
           ls -laR accuracy-pass /tmp/bundle.json
       - name: Save the built input to raw
         if: ${{ inputs.build == 'sets' && inputs.mode != 'collect' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/push_raw.sh "accuracy-pass input ${{ inputs.run }}" "$REC/input/bundle.json"
       - name: Estimate
         if: ${{ inputs.mode == 'estimate' }}
@@ -116,6 +120,8 @@ jobs:
         run: python scripts/accuracy_pass.py estimate /tmp/bundle.json
       - name: Save the estimate to raw
         if: ${{ !cancelled() && inputs.mode == 'estimate' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/push_raw.sh "accuracy-pass estimate ${{ inputs.run }}" "$REC/estimate.json"
       - name: Submit
         if: ${{ inputs.mode == 'submit' }}
@@ -124,6 +130,8 @@ jobs:
         run: python scripts/accuracy_pass.py submit /tmp/bundle.json
       - name: Save the batch record to raw
         if: ${{ !cancelled() && inputs.mode == 'submit' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/push_raw.sh "accuracy-pass batch ${{ inputs.run }}" "$REC/batch.json" "$REC/estimate.json"
       - name: Wait and collect
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
@@ -132,9 +140,13 @@ jobs:
         run: test -f "$REC/batch.json" && python scripts/accuracy_pass.py collect "${{ inputs.wait_minutes }}"
       - name: Save results to raw
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/push_raw.sh "accuracy-pass results ${{ inputs.run }}" "$REC/batch-status.json" "$REC/results.json" "$REC/results-raw.jsonl"
       - name: Rank the leads
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           python scripts/accuracy_pass.py report /tmp/bundle.json
           if [ -f "$REC/findings.json" ]; then

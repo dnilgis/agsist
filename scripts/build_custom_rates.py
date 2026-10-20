@@ -711,7 +711,7 @@ def verify_refs(src_dir=SRC):
             if meta.get(k):
                 t = text(meta[k])
                 if t is None:
-                    bad.append("%s: refs/%s.txt is not on %s (git fetch origin references)" % (st, meta[k], rev))
+                    bad.append("%s: refs/%s.txt is not on %s (bash scripts/fetch_private.sh references)" % (st, meta[k], rev))
                     lines[k], raws[k] = [], []
                 else:
                     lines[k] = [toks(l) for l in t.splitlines()]

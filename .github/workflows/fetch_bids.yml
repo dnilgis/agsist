@@ -271,7 +271,7 @@ jobs:
       - name: Sizes
         run: |
           ls -lh data/bids.json bids-full.json
-          ls -lh data/bids-withheld.json 2>/dev/null || echo "no data/bids-withheld.json this run"
+          ls -lh private/data/bids-withheld.json 2>/dev/null || echo "no private/data/bids-withheld.json this run"
           du -sh data/basis data/basis-sparklines 2>/dev/null || true
 
       - name: Commit and push
@@ -282,9 +282,6 @@ jobs:
           # bids-full.json is gitignored. Adding it explicitly here would put
           # 6 MB into every commit, which is the whole thing this avoids.
           git add data/bids.json data/basis data/basis-sparklines data/elevator-directory.json
-          # The withheld-rows report is written by fetch_bids.py inside a try/except,
-          # so it can be missing. A missing file must never cost the run its commit.
-          [ -f data/bids-withheld.json ] && git add data/bids-withheld.json || true
           # The homepage counts line (scripts/fetch_bids.py STATS_PATH), same run as bids.json.
           [ -f data/bids-stats.json ] && git add data/bids-stats.json || true
           # WAVE1-A: the day-change record and the contacts shards.
@@ -295,6 +292,19 @@ jobs:
           git commit -m "Update grain bids + basis map + basis history $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git pull --rebase origin main
           git push
+
+      # The withheld-rows report (which rows were held back and why) is read by
+      # no page, so since Oct 20 it goes to the private repo (branch
+      # private-data), not main. fetch_bids.py writes it inside a try/except,
+      # so it can be missing; AFTER the commit, and never costs the bids.
+      - name: Withheld rows to the private repo
+        if: github.event.inputs.dry_run != 'true'
+        continue-on-error: true
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: bash scripts/push_raw.sh "bids withheld" private/data/bids-withheld.json
 
       # 2026-10-19 (Sig, Bet 7): ONE FULL CASH BID SNAPSHOT A TRADING DAY, ON RAW.
       # Cash prices leave main within days (only basis changes are kept), so
@@ -312,12 +322,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           NOW: ${{ github.event.inputs.bid_snapshot }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
         run: |
           day=$(python3 scripts/bid_snapshots.py due) || { echo "::warning::bid snapshot: due check failed"; exit 0; }
           [ "$NOW" = "true" ] && day=$(TZ=America/Chicago date +%F)
           [ -n "$day" ] || { echo "bid snapshot: not in the window (weekdays from 15:00 CT)"; exit 0; }
           f="bids-daily/${day:0:4}/${day}.json.gz"
-          if [ "$NOW" != "true" ] && gh api -X GET "repos/$GITHUB_REPOSITORY/contents/$f?ref=raw" --silent >/dev/null 2>&1; then
+          # The raw branch is in the private repo (Oct 20); its key reads it.
+          if [ "$NOW" != "true" ] && GH_TOKEN="$PRIVATE_REPO_TOKEN" gh api -X GET "repos/dnilgis/agsistretired/contents/$f?ref=raw" --silent >/dev/null 2>&1; then
             echo "bid snapshot: $f is already on raw"; exit 0
           fi
           python3 scripts/bid_snapshots.py build --from bids-full.json --day "$day" \

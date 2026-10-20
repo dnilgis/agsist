@@ -88,6 +88,8 @@ jobs:
       # FSA's program files live on the raw branch, not main (Oct 20: 34 MB no
       # page reads). The build refuses to run without them.
       - name: FSA files from raw
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/pull_raw.sh data/fsa
       - name: Selftest
         run: python scripts/build_arc_plc.py --selftest

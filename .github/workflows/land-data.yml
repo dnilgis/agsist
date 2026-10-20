@@ -147,6 +147,9 @@ jobs:
         run: OMP_NUM_THREADS=1 python scripts/build_land_index.py
       - name: Save raw answers to the raw branch
         if: ${{ !cancelled() }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
         run: |
           [ -d data/land-raw ] && bash scripts/push_raw.sh "land-data raw answers" data/land-raw || echo "nothing raw"
           # the raw answers live on the raw branch now; out of the tree before the site budget counts it

@@ -1032,7 +1032,7 @@ def verify_bids(bids, detail=None):
     back holding, for each withheld row, id(row) -> what the guard measured
     (kind, cohort size, cohort futures, envelope). It reads nothing back and
     no decision depends on it, so a call with and without it marks the same
-    rows the same way. withheld_report() turns it into data/bids-withheld.json.
+    rows the same way. withheld_report() turns it into private/data/bids-withheld.json.
 
     THE COHORT LEG IS KEYED ON THE SYMBOL ALONE, NOT ON THE CROP. Central
     Prairie's MILO quotes against ZCZ26 and implies 5.37, the same figure the
@@ -1189,7 +1189,9 @@ def verified_only(bids):
 # Rows are grouped: the same elevator, crop, contract, cash and basis in
 # several delivery months is one entry with the months listed. Sorted, no
 # clock in the file, so a run with nothing new writes the same bytes.
-WITHHELD_PATH = os.environ.get("WITHHELD_PATH", "data/bids-withheld.json")
+# No page reads it, so since Oct 20 it is saved to the private repo (branch private-data,
+# scripts/push_raw.sh in fetch_bids.yml), never to main.
+WITHHELD_PATH = os.environ.get("WITHHELD_PATH", "private/data/bids-withheld.json")
 WITHHELD_MAX_GROUPS = 600      # a cap on the listing; the counts are never capped
 
 
@@ -2974,7 +2976,7 @@ def selftest():
             with open(op) as f:
                 out = json.load(f)
         flag = open(gho).read() if os.path.exists(gho) else ""
-        wp = os.path.join(d, "data", "bids-withheld.json")
+        wp = os.path.join(d, "private", "data", "bids-withheld.json")
         run_main.withheld = json.load(open(wp)) if os.path.exists(wp) else None
         rp = os.path.join(d, "barchart-raw.json")
         run_main.raw = json.load(open(rp))["bids"] if os.path.exists(rp) else None
