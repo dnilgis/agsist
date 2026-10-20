@@ -121,9 +121,9 @@ test("rain-county-print.js mounts any figure; the county page mounts its own; ve
   const js = read("components/rain-county-print.js");
   assert.match(js, /mount: mount/);
   assert.match(js, /var own = doc && doc\.getElementById\('rc-print'\);\s*if \(own\) mount\(own\);/);
-  assert.match(read("components/here.js"), /RCP = '\/components\/rain-county-print\.js\?v=24'/);
-  assert.match(read("scripts/build_county_rain.py"), /rain-county-print\.js\?v=24/);
-  assert.match(read("rain/wisconsin/barron-county.html"), /rain-county-print\.js\?v=24/);
+  assert.match(read("components/here.js"), /RCP = '\/components\/rain-county-print\.js\?v=25'/);
+  assert.match(read("scripts/build_county_rain.py"), /rain-county-print\.js\?v=25/);
+  assert.match(read("rain/wisconsin/barron-county.html"), /rain-county-print\.js\?v=25/);
 });
 
 test("what's unusual here: own past only, the rule's numbers, nothing when nothing passes", () => {
@@ -229,7 +229,7 @@ test("bids-network exports the index and a checked shard getter; versions bumped
   for (const f of ["here.html", "corn-futures-prices.html", "store-or-sell.html", "combine-loss.html"]) assert.match(read(f), /bids-network\.js\?v=7/, f);
   assert.match(read("components/bids-homepage.js"), /bids-network\.js\?v=7/);
   assert.match(read("here.html"), /place\.js\?v=4/);
-  assert.match(read("here.html"), /here\.js\?v=7/);
+  assert.match(read("here.html"), /here\.js\?v=8/);
   assert.match(read("here.html"), /rain-county\.css\?v=5/);   // v5: the month table fits a phone (2026-10-19)
 });
 
