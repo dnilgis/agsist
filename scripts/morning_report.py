@@ -188,6 +188,7 @@ class Report:
         self.today = None        # {health, paste: [..], also: [..]}, shown before everything
         self.needs = []          # red lines, shown first
         self.sections = []       # (title, [lines])
+        self.tables = {}         # title: {head, rows, after}, drawn under that section (2026-10-20)
 
     def add(self, title, lines):
         self.sections.append((title, [scrub(x) for x in lines if x]))
@@ -230,6 +231,26 @@ class Sources:
 
     def url_json(self, url):
         return self._get(url, {})
+
+    def gh_text(self, path):
+        """A job log as text. GitHub answers with a redirect to storage that must
+        not get the token, so the redirect is followed by hand without it."""
+        class NoRedirect(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self, *a, **k):
+                return None
+        h = {"User-Agent": "agsist-morning-report", "Accept": "application/vnd.github+json"}
+        if self.gh_token:
+            h["Authorization"] = "Bearer %s" % self.gh_token
+        op = urllib.request.build_opener(NoRedirect)
+        try:
+            with op.open(urllib.request.Request("https://api.github.com" + path, headers=h), timeout=30) as r:
+                return r.read().decode("utf-8", "replace")
+        except urllib.error.HTTPError as e:
+            loc = e.headers.get("Location") if e.code in (301, 302, 303, 307, 308) else None
+            if not loc:
+                raise
+        with urllib.request.urlopen(urllib.request.Request(loc, headers={"User-Agent": "agsist-morning-report"}), timeout=30) as r:
+            return r.read().decode("utf-8", "replace")
 
     def stripe(self, path, params):
         if not self.stripe_key:
@@ -583,6 +604,223 @@ def sec_signups(src, now, rep, snap):
         if k not in keep:
             del snap[k]
     rep.add("Signups", lines)
+
+
+# ─────────────── signups by where, and yesterday's sends (2026-10-20) ───────────────
+# Where the Daily readers signed up, from /count by_source (one source per
+# reader: the latest ask they used). Each source falls in the first group
+# whose test matches; the rest are page asks. Counts only.
+SIGNUP_GROUPS = (
+    ("Sitewide bar", lambda s: s == "bar" or s.startswith("bar-") or s.startswith("bar:")),
+    ("Daily page", lambda s: s in ("daily-briefing-subscribe", "daily") or s.startswith("page:daily")),
+    ("Town pages", lambda s: s.startswith("town:")),
+    ("Homepage", lambda s: s in ("hero", "homepage-email", "signup-band", "watch-optin")),
+    ("Menu and footer", lambda s: s.startswith("menu") or s.startswith("footer")),
+    ("Imported or added by hand", lambda s: s in ("import", "manual")),
+    ("One more", lambda s: s.startswith("onemore:")),
+    ("Forwarded or not recorded", lambda s: s in ("email-forward", "(none)", "")),
+    ("Page asks", lambda s: True),
+)
+# Groups whose sources name a page, for "top pages this week".
+PAGE_GROUPS = ("Page asks", "Town pages", "Daily page")
+# Alert and notice senders, read from their own job logs (the lines they
+# print, "sent N/M" or "sent N; failed M"), last 24 h. The jobs' logs are
+# public and kept a day, so these counts are no secret and need no new store.
+SENDS = (
+    ("daily.yml", "send_daily.py", "AGSIST Daily"),
+    ("report-day.yml", "send_report_day.py", "Report-day emails (USDA vs the trade)"),
+    ("alert-check.yml", "check_alerts.py", "Hail alerts"),
+    ("price-watch.yml", "send_price_watch.py", "Price alerts"),
+    ("elevator-watch.yml", "send_elevator_watch.py", "Elevator alerts"),
+    ("elevator-watch.yml", "send_zip_alert.py", "ZIP price alerts"),
+    ("farmland-atlas-watch.yml", "send_watch.py", "County watch"),
+)
+NOTICE_KINDS = {"rent": "rent", "arcplc": "ARC/PLC", "prf": "PRF", "rainyear": "rain year", "rain-gauge": "rain gauge"}
+
+
+def signup_group(s):
+    s = str(s or "")
+    for name, test in SIGNUP_GROUPS:
+        if test(s):
+            return name
+    return "Page asks"
+
+
+def _snap_src(day):
+    """{source: n} kept for a day, or None when that morning kept none."""
+    d = day or {}
+    if not any(k.startswith("s:") for k in d):
+        return None
+    return {k[2:]: v for k, v in d.items() if k.startswith("s:") and k != "s:"}
+
+
+def _count(src):
+    """/count once per report: the other Signups lines read it too."""
+    if getattr(src, "_count_cache", None) is None:
+        src._count_cache = src.worker("count")
+    return src._count_cache
+
+
+def sec_signup_sources(src, now, rep, snap):
+    """Adds the 'where they signed up' table under Signups. Needs /count; keeps
+    today's per-source counts in the counts file as s:<source> (and n:notice)."""
+    today = ct(now).date()
+    try:
+        c = _count(src)
+        if not isinstance(c, dict) or not c.get("ok") or not isinstance(c.get("by_source"), dict):
+            raise ValueError("no by_source")
+    except Exception as e:                                 # noqa: BLE001
+        rep.tables["Signups"] = {"after": ["Where they signed up: could not be read (%s)." % why(e)]}
+        return
+    cur = {str(k)[:60]: v for k, v in c["by_source"].items() if isinstance(v, int) and not isinstance(v, bool)}
+    day = snap.setdefault(today.isoformat(), {})
+    for k in [k for k in day if k.startswith("s:")]:
+        del day[k]
+    day.update({"s:" + k: v for k, v in cur.items()})
+    if not cur:
+        day["s:"] = 0      # marks a morning that kept an empty table
+    if isinstance(c.get("notice"), int):
+        day["n:notice"] = c["notice"]
+    if src.dry:
+        rep.tables["Signups"] = {"after": ["Where they signed up: left out of a dry run (the Actions log is public)."]}
+        return
+    yday = snap.get((today - timedelta(days=1)).isoformat()) or {}
+    y = _snap_src(yday)
+    wk_day = None
+    for back in range(7, 0, -1):
+        if _snap_src(snap.get((today - timedelta(days=back)).isoformat())) is not None:
+            wk_day = today - timedelta(days=back)
+            break
+    w = _snap_src(snap.get(wk_day.isoformat())) if wk_day else None
+
+    def tot(m, name):
+        return sum(v for k, v in (m or {}).items() if signup_group(k) == name)
+    rows = []
+    for name, _ in SIGNUP_GROUPS:
+        n = tot(cur, name)
+        if not n and not tot(y, name) and not tot(w, name):
+            continue
+        rows.append([name, num(n), "%+d" % (n - tot(y, name)) if y is not None else "", "%+d" % (n - tot(w, name)) if w is not None else ""])
+    total = sum(cur.values())
+    rows.append(["All Daily readers", num(total), "%+d" % (total - sum(y.values())) if y is not None else "",
+                 "%+d" % (total - sum(w.values())) if w is not None else ""])
+    after = []
+    if isinstance(c.get("notice"), int):
+        s = "One-time notices (rent, ARC/PLC, PRF, rain year, rain gauge): %s addresses" % num(c["notice"])
+        if isinstance(yday.get("n:notice"), int):
+            s += " (%+d since yesterday)" % (c["notice"] - yday["n:notice"])
+        after.append(s + ".")
+    if w is not None:
+        gain = sorted(((cur.get(k, 0) - w.get(k, 0), k) for k in cur if signup_group(k) in PAGE_GROUPS), key=lambda x: (-x[0], x[1]))
+        top = [(g, k) for g, k in gain if g > 0][:3]
+        label = "this week" if wk_day == today - timedelta(days=7) else "since %s" % short_day(wk_day.isoformat())
+        if top:
+            after.append("Top pages by new signups %s: %s." % (label, ", ".join(
+                "%s +%d" % (("/" + k[5:]) if k.startswith("page:") else k, g) for g, k in top)))
+        else:
+            after.append("Top pages by new signups %s: none gained readers." % label)
+    if y is None:
+        after.append("Change by group starts once this report has kept the sources two mornings in a row.")
+    rep.tables["Signups"] = {"head": ["Where they signed up", "Readers", "Since yesterday", "7 days"], "rows": rows, "after": after}
+
+
+def _step_sections(text):
+    """[(the step's command, its lines)] from a job log, split at '##[group]Run '."""
+    out, cmd, buf = [], None, []
+    for ln in str(text or "").splitlines():
+        i = ln.find("##[group]Run ")
+        if i >= 0:
+            if cmd is not None:
+                out.append((cmd, buf))
+            cmd, buf = ln[i + 13:].strip(), []
+        elif cmd is not None:
+            buf.append(ln)
+    if cmd is not None:
+        out.append((cmd, buf))
+    return out
+
+
+SENT_OF = re.compile(r"\bsent (\d+)/(\d+)\s*$")
+SENT_FAILED = re.compile(r"\bsent (\d+); failed (\d+)")
+
+
+def send_counts(src, wf, script, now, logs):
+    """{runs, sent, failed} over the workflow's runs in the last 24 h, from the
+    lines `script` printed in its real (not --selftest, not --dry-run) step."""
+    if wf not in logs:
+        since = (now - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        d = src.gh("/repos/%s/actions/workflows/%s/runs?status=completed&per_page=100&created=%s"
+                   % (REPO, wf, urllib.parse.quote(">=" + since)))
+        texts = []
+        for r in (d.get("workflow_runs") or [] if isinstance(d, dict) else []):
+            if not isinstance(r, dict) or r.get("conclusion") in ("skipped", "cancelled"):
+                continue
+            jobs = src.gh("/repos/%s/actions/runs/%s/jobs" % (REPO, r.get("id")))
+            for j in (jobs.get("jobs") or [] if isinstance(jobs, dict) else []):
+                if isinstance(j, dict) and j.get("conclusion") in ("success", "failure"):
+                    texts.append(src.gh_text("/repos/%s/actions/jobs/%s/logs" % (REPO, j.get("id"))))
+        logs[wf] = texts
+    runs = sent = failed = 0
+    for text in logs[wf]:
+        hit = False
+        for cmd, lines in _step_sections(text):
+            if script not in cmd or "--selftest" in cmd or "--dry-run" in cmd:
+                continue
+            for ln in lines:
+                m = SENT_OF.search(ln)
+                if m:
+                    sent += int(m.group(1))
+                    failed += max(0, int(m.group(2)) - int(m.group(1)))
+                    hit = True
+                    continue
+                m = SENT_FAILED.search(ln)
+                if m:
+                    sent += int(m.group(1))
+                    failed += int(m.group(2))
+                    hit = True
+        runs += hit
+    return {"runs": runs, "sent": sent, "failed": failed}
+
+
+def sec_sends(src, now, rep):
+    """Yesterday's email sends in one short block, counts only."""
+    lines, logs = [], {}
+    for wf, script, label in SENDS:
+        try:
+            n = send_counts(src, wf, script, now, logs)
+        except Exception as e:                             # noqa: BLE001
+            lines.append("%s: could not be read (%s)." % (label, why(e)))
+            continue
+        if not n["runs"] or not (n["sent"] or n["failed"]):
+            lines.append("%s: none sent in the last 24 h." % label)
+        else:
+            lines.append("%s: %s sent%s." % (label, num(n["sent"]), ", %s failed" % num(n["failed"]) if n["failed"] else ""))
+    try:
+        rows = src.worker("notice-list")
+        ms = int(now.timestamp() * 1000)
+        by = {}
+        for r in rows if isinstance(rows, list) else []:
+            t = r.get("sent") if isinstance(r, dict) else None
+            if isinstance(t, (int, float)) and t >= ms - FD.DAY_MS:
+                k = NOTICE_KINDS.get(str(r.get("topic") or "").split(":")[0], "other")
+                by[k] = by.get(k, 0) + 1
+        lines.append("One-time notices: %s sent%s." % (num(sum(by.values())), (" (%s)" % ", ".join("%s %d" % kv for kv in sorted(by.items()))) if by else ""))
+    except Exception as e:                                 # noqa: BLE001
+        lines.append("One-time notices: could not be read (%s)." % why(e))
+    try:
+        c = _count(src)
+        u = c.get("unsubs") if isinstance(c, dict) else None
+        if not isinstance(u, dict):
+            lines.append("Unsubscribes: not counted yet (the subs worker counts them from v5.41).")
+        else:
+            d, a = u.get("daily") or {}, u.get("alerts") or {}
+            lines.append("Unsubscribes: AGSIST Daily %d in 24 h, %d in 7 days; hail alerts %d and %d." % (
+                d.get("h24", 0), d.get("d7", 0), a.get("h24", 0), a.get("d7", 0)))
+            cl = (d.get("cleanup_h24", 0) + a.get("cleanup_h24", 0), d.get("cleanup_d7", 0) + a.get("cleanup_d7", 0))
+            lines.append("Removed by the list cleanup (bounced or a fixed typo): %d in 24 h, %d in 7 days." % cl)
+    except Exception as e:                                 # noqa: BLE001
+        lines.append("Unsubscribes: could not be read (%s)." % why(e))
+    rep.add("Emails sent, last 24 hours", lines)
 
 
 def month_start_ms(now):
@@ -1060,7 +1298,7 @@ def make_report(src, now, snap):
             f(src, now, rep)
         except Exception as e:                             # noqa: BLE001
             rep.add(f.__name__, ["Could not be built (%s)." % why(e)])
-    for f, args in ((sec_signups, (snap,)), (sec_orders, ()), (sec_rp_orders, ()), (sec_traffic, ()), (sec_todos, ())):
+    for f, args in ((sec_signups, (snap,)), (sec_signup_sources, (snap,)), (sec_sends, ()), (sec_orders, ()), (sec_rp_orders, ()), (sec_traffic, ()), (sec_todos, ())):
         try:
             f(src, now, rep, *args)
         except Exception as e:                             # noqa: BLE001
@@ -1097,6 +1335,7 @@ def text_body(rep, now):
     for title, lines in rep.sections:
         out += ["", title]
         out.extend(lines)
+        out.extend(table_text(rep.tables.get(title)))
     out += ["", "To check off a to-do, edit TODO-SIG.md on GitHub: %s" % TODO_EDIT,
             "Counts only: no reader or customer address is ever in this email.", "", "-- ", ADDRESS]
     return "\n".join(out) + "\n"
@@ -1134,12 +1373,44 @@ def html_body(rep, now):
     for title, lines in rep.sections:
         parts.append(h2 % e(title))
         parts.append(ul(lines))
+        if rep.tables.get(title):
+            parts.append(table_html(rep.tables[title]))
+            parts.append(ul(rep.tables[title].get("after") or []))
     parts.append('<p style="font-size:13px;color:#6b6b6b;margin-top:22px;line-height:1.45">To check off a to-do, '
                  '<a href="%s">edit TODO-SIG.md on GitHub</a>.<br>Counts only: no reader or customer address is ever in '
                  'this email.<br>%s</p>' % (e(TODO_EDIT, quote=True), e(ADDRESS)))
     return ('<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
             '<body style="margin:0;background:#fff"><div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;'
             'padding:16px;color:#1a1a1a;background:#fff">%s</div></body></html>' % "".join(parts))
+
+
+def table_text(t):
+    """A table under a section, as plain lines: one line a row."""
+    if not t:
+        return []
+    out = []
+    for r in t.get("rows") or []:
+        ch = [x for x in ("%s since yesterday" % r[2] if r[2] else "", "%s in 7 days" % r[3] if r[3] else "") if x]
+        out.append("- %s: %s%s" % (scrub(r[0]), r[1], " (%s)" % ", ".join(ch) if ch else ""))
+    return out + [scrub(x) for x in t.get("after") or []]
+
+
+def table_html(t):
+    """The same table for Gmail on a phone: four narrow columns, inline styles."""
+    e = H.escape
+    if not t.get("rows"):
+        return ""
+    td = 'style="padding:5px 6px;border-top:1px solid #e6e1d6;font:14px Arial,Helvetica,sans-serif;%s"'
+    head = "".join('<th %s>%s</th>' % (td % ("text-align:%s;color:#555;font-weight:bold;font-size:12px" % ("left" if i == 0 else "right")), e(h))
+                   for i, h in enumerate(t.get("head") or []))
+    rows = []
+    for r in t["rows"]:
+        last = r[0].startswith("All ")
+        rows.append("<tr>%s</tr>" % "".join('<td %s>%s</td>' % (td % ("text-align:%s%s" % ("left" if i == 0 else "right",
+                                                                        ";font-weight:bold" if last else "")), e(scrub(x)))
+                                              for i, x in enumerate(r)))
+    return ('<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" '
+            'style="border-collapse:collapse;margin:6px 0 4px">%s%s</table>' % ("<tr>%s</tr>" % head, "".join(rows)))
 
 
 def today_html(rep):
@@ -1326,6 +1597,9 @@ class Fake(Sources):
     def url_json(self, url):
         return self._pick(self.ud, url, "url")
 
+    def gh_text(self, path):
+        return self._pick(self.ghd, path, "gh")
+
     def stripe(self, path, params):
         if not self.stripe_key:
             return None
@@ -1481,7 +1755,9 @@ def selftest():
     ck("other lists, with change where there is a count to compare", "Hail alerts: 12 (+0 since yesterday)." in t and
        "Elevator watch and bid alerts: 7." in t and "Rain gauge waitlist: 9." in t, t)
     ck("today's counts are kept for tomorrow, old days dropped, counts only",
-       snap.get("2026-10-14") == {"daily": 141, "alerts": 12, "ewatch": 7, "pwatch": 3, "watch": 4, "rain-gauge": 9}
+       {k: v for k, v in snap.get("2026-10-14", {}).items() if not k.startswith(("s:", "n:"))}
+       == {"daily": 141, "alerts": 12, "ewatch": 7, "pwatch": 3, "watch": 4, "rain-gauge": 9}
+       and snap["2026-10-14"].get("s:hero") == 100
        and "@" not in json.dumps(snap), snap)
     big = {("2026-09-%02d" % d): {"daily": d} for d in range(1, 30)}
     sec_signups(Fake(gh, worker, urls, files), now, Report(), big)
@@ -1881,12 +2157,131 @@ def selftest():
     with open(os.path.join(os.environ.get("TODAY_EMAIL_OUT", os.devnull)), "w", encoding="utf-8") as f:
         f.write(sent[0].get_body(("html",)).get_content())
 
+    selftest_sources_sends(ck)
+
     print()
     if fails:
         print("%d FAILED: %s" % (len(fails), "; ".join(fails)))
         return 1
     print("morning_report: all checks pass")
     return 0
+
+
+def selftest_sources_sends(ck):
+    """Signups by where (2026-10-20) and yesterday's sends: fixtures, counts only."""
+    print("\nsignups by where, and the sends")
+    now = datetime(2026, 10, 20, 11, 45, tzinfo=UTC)
+    ms = int(now.timestamp() * 1000)
+    by = {"bar": 5, "bar-cash-bids": 3, "page:cash-bids": 9, "cot-tool": 3, "town:iowa/marcus": 4, "hero": 2, "homepage-email": 1,
+          "signup-band": 3, "watch-optin": 2, "menu-desk": 1, "footer": 1, "import": 50, "manual": 2, "onemore:hail-alert": 1,
+          "daily-briefing-subscribe": 18, "email-forward": 1, "(none)": 2, "page:harvest-price-tracker": 1}
+    count = {"ok": True, "daily": sum(by.values()), "alerts": 12, "ewatch": 7, "pwatch": 3, "watch": 4, "notice": 7,
+             "notices": {"rent:ia": 5, "rain-gauge": 2}, "by_source": by,
+             "unsubs": {"daily": {"h24": 1, "d7": 3, "cleanup_h24": 0, "cleanup_d7": 2}, "alerts": {"h24": 0, "d7": 1, "cleanup_h24": 0, "cleanup_d7": 0}}}
+    yd = {"s:" + k: v for k, v in by.items()}
+    yd.update({"s:bar": 4, "s:page:cash-bids": 8, "s:onemore:hail-alert": 0, "n:notice": 5, "daily": 100})
+    wk = {"s:" + k: v for k, v in by.items()}
+    wk.update({"s:page:cash-bids": 4, "s:cot-tool": 1, "s:town:iowa/marcus": 3, "s:bar": 2})
+    snap = {"2026-10-19": yd, "2026-10-13": wk}
+
+    def log(*steps):
+        out = ["2026-10-20T10:00:00.0000000Z Current runner version"]
+        for cmd, ls in steps:
+            out.append("2026-10-20T10:00:01.0000000Z ##[group]Run " + cmd)
+            out.extend("2026-10-20T10:00:02.0000000Z " + x for x in ls)
+        return "\n".join(out)
+    wf = "/repos/dnilgis/agsist/actions/workflows/"
+    gh = {
+        wf + "daily.yml/runs": {"workflow_runs": [{"id": 501, "conclusion": "success"}, {"id": 502, "conclusion": "skipped"}]},
+        wf + "report-day.yml/runs": {"workflow_runs": []},
+        wf + "alert-check.yml/runs": {"workflow_runs": [{"id": 503, "conclusion": "success"}]},
+        wf + "price-watch.yml/runs": {"workflow_runs": [{"id": 504, "conclusion": "success"}, {"id": 505, "conclusion": "success"}]},
+        wf + "elevator-watch.yml/runs": {"workflow_runs": [{"id": 506, "conclusion": "failure"}]},
+        wf + "farmland-atlas-watch.yml/runs": urllib.error.HTTPError("u", 403, "no", {}, None),
+        "/repos/dnilgis/agsist/actions/runs/501/jobs": {"jobs": [{"id": 7001, "conclusion": "skipped"}, {"id": 7002, "conclusion": "success"}]},
+        "/repos/dnilgis/agsist/actions/runs/503/jobs": {"jobs": [{"id": 7003, "conclusion": "success"}]},
+        "/repos/dnilgis/agsist/actions/runs/504/jobs": {"jobs": [{"id": 7004, "conclusion": "success"}]},
+        "/repos/dnilgis/agsist/actions/runs/505/jobs": {"jobs": [{"id": 7005, "conclusion": "success"}]},
+        "/repos/dnilgis/agsist/actions/runs/506/jobs": {"jobs": [{"id": 7006, "conclusion": "failure"}]},
+        "/repos/dnilgis/agsist/actions/jobs/7002/logs": log(("python scripts/send_daily.py", ["sending to 415 readers", "  connection lost after 200 sent; reconnecting (1/3)", "sent 412/415"])),
+        "/repos/dnilgis/agsist/actions/jobs/7003/logs": log(("python3 scripts/test_send_loops.py", ["sent 9/9"]), ("python3 scripts/check_alerts.py", ["no watch areas touched \u2014 nothing to send"])),
+        "/repos/dnilgis/agsist/actions/jobs/7004/logs": log(("python3 scripts/send_price_watch.py --selftest", ["sent 2; failed 1"]), ("python3 scripts/send_price_watch.py", ["sent 1; failed 0"])),
+        "/repos/dnilgis/agsist/actions/jobs/7005/logs": log(("python3 scripts/send_price_watch.py", ["sent 2; failed 0"])),
+        "/repos/dnilgis/agsist/actions/jobs/7006/logs": log(("python3 scripts/send_elevator_watch.py", ["sent 3; failed 1 (to jane@farm.com)"]), ("python3 scripts/send_zip_alert.py", ["sent 0; failed 0"])),
+    }
+    worker = {"count": count, "list?format=json": [],
+              "notice-list": [{"email": "a@farm.com", "topic": "rent:ia", "sent": ms - 3600e3}, {"email": "b@farm.com", "topic": "rent:ia", "sent": ms - 30 * 3600e3},
+                              {"email": "c@farm.com", "topic": "prf:12345", "sent": ms - 600e3}, {"email": "d@farm.com", "topic": "rain-gauge", "sent": None}]}
+    src = Fake(gh, worker, {}, {})
+    rep = Report()
+    sec_signups(src, now, rep, snap)
+    sec_signup_sources(src, now, rep, snap)
+    sec_sends(src, now, rep)
+    t = rep.tables["Signups"]
+    rows = {r[0]: r[1:] for r in t["rows"]}
+    ck("groups: bar*, Daily page, towns, homepage, menu and footer, imports, One more, page asks",
+       rows["Sitewide bar"] == ["8", "+1", "+3"] and rows["Daily page"] == ["18", "+0", "+0"] and rows["Town pages"] == ["4", "+0", "+1"]
+       and rows["Homepage"] == ["8", "+0", "+0"] and rows["Menu and footer"] == ["2", "+0", "+0"]
+       and rows["Imported or added by hand"] == ["52", "+0", "+0"] and rows["One more"] == ["1", "+1", "+0"]
+       and rows["Page asks"] == ["13", "+1", "+7"] and rows["Forwarded or not recorded"] == ["3", "+0", "+0"], rows)
+    ck("a total row last", t["rows"][-1] == ["All Daily readers", "109", "+3", "+11"], t["rows"][-1])
+    ck("top 3 pages this week, page: shown as a path",
+       "Top pages by new signups this week: /cash-bids +5, cot-tool +2, town:iowa/marcus +1." in t["after"], t["after"])
+    ck("notices with the change", "One-time notices (rent, ARC/PLC, PRF, rain year, rain gauge): 7 addresses (+2 since yesterday)." in t["after"], t["after"])
+    ck("today's sources kept for tomorrow, counts only",
+       snap["2026-10-20"].get("s:bar") == 5 and snap["2026-10-20"].get("n:notice") == 7 and "daily" in snap["2026-10-20"]
+       and all(isinstance(v, int) for v in snap["2026-10-20"].values()) and "@" not in json.dumps(snap), snap["2026-10-20"])
+    ck("the counts file keeps the sources through a reload",
+       load_snap_from(json.dumps(snap)).get("2026-10-19", {}).get("s:page:cash-bids") == 8)
+    sl = dict(rep.sections)["Emails sent, last 24 hours"]
+    ck("the Daily: its real send step, not the reconnect line",
+       "AGSIST Daily: 412 sent, 3 failed." in sl, sl)
+    ck("a selftest or test step never counts; a quiet day says none sent",
+       "Hail alerts: none sent in the last 24 h." in sl and "Price alerts: 3 sent." in sl, sl)
+    ck("both elevator senders, from one job log", "Elevator alerts: 3 sent, 1 failed." in sl and "ZIP price alerts: none sent in the last 24 h." in sl, sl)
+    ck("no runs: none sent; a refused list: one line", "Report-day emails (USDA vs the trade): none sent in the last 24 h." in sl
+       and "County watch: could not be read (HTTP 403)." in sl, sl)
+    ck("notices sent in 24 h by kind", "One-time notices: 2 sent (PRF 1, rent 1)." in sl, sl)
+    ck("unsubscribes and the cleanup", "Unsubscribes: AGSIST Daily 1 in 24 h, 3 in 7 days; hail alerts 0 and 1." in sl
+       and "Removed by the list cleanup (bounced or a fixed typo): 0 in 24 h, 2 in 7 days." in sl, sl)
+    ck("logs read once per workflow", sum(1 for k, p in src.asked if p.startswith("/repos/dnilgis/agsist/actions/jobs/7006/logs")) == 1, src.asked)
+    m = build(rep, now, "sig@x.com")
+    pt, ht = m.get_body(("plain",)).get_content(), m.get_body(("html",)).get_content()
+    ck("plain text: one line a group", "- Sitewide bar: 8 (+1 since yesterday, +3 in 7 days)" in pt and "- All Daily readers: 109 (+3 since yesterday, +11 in 7 days)" in pt, pt)
+    ck("html: a four-column table, inline styles, no '@'",
+       "<th " in ht and ">Since yesterday</th>" in ht and ">Sitewide bar</td>" in ht and "<style" not in ht and "@" not in ht.split("<body")[1], "")
+    ck("no address in the sends or the table", "@" not in pt and "jane" not in pt, [x for x in pt.splitlines() if "@" in x])
+    w2 = dict(worker)
+    w2["count"] = {k: v for k, v in count.items() if k != "unsubs"}
+    r2 = Report()
+    sec_sends(Fake(gh, w2, {}, {}), now, r2)
+    ck("an older worker: unsubscribes not counted yet",
+       "Unsubscribes: not counted yet (the subs worker counts them from v5.41)." in dict(r2.sections)["Emails sent, last 24 hours"], r2.sections)
+    # a dry run (public Actions log): the totals as before, no per-source numbers
+    d = Fake(gh, worker, {}, {})
+    d.dry = True
+    code, dlog = run(d, now, True, lambda m: None, "sig@x.com", {"2026-10-19": dict(yd)})
+    dl = "\n".join(dlog)
+    ck("dry run: no per-source numbers, says why", "Where they signed up: left out of a dry run (the Actions log is public)." in dl
+       and "Sitewide bar" not in dl and "Top pages by new signups" not in dl and "/cash-bids +" not in dl, dl[-1500:])
+    r3 = Report()
+    s3 = {}
+    sec_signup_sources(Fake(gh, worker, {}, {}), now, r3, s3)
+    ck("first morning: groups without change, says when it starts",
+       r3.tables["Signups"]["rows"][0][2] == "" and any("starts once this report has kept the sources" in x for x in r3.tables["Signups"]["after"]), r3.tables)
+    r4 = Report()
+    sec_signup_sources(Fake(gh, {}, {}, {}), now, r4, {})
+    ck("no /count: one line", r4.tables["Signups"]["after"] == ["Where they signed up: could not be read (HTTP 404)."], r4.tables)
+
+
+def load_snap_from(text):
+    import tempfile
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+        f.write(text)
+    try:
+        return load_snap(f.name)
+    finally:
+        os.unlink(f.name)
 
 
 if __name__ == "__main__":
