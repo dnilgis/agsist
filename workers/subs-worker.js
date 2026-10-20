@@ -5,6 +5,11 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.35 (2026-10-20): BUSINESS LISTS OF 100 WITH ADDRESSES. kind
+ *   rain-print-business takes towns up to 20,000 characters (was 8,000), so
+ *   100 ship-to-each customers with mailing addresses fit; POST /form takes a
+ *   body up to 48 KB (was 16 KB). Every field cap of every other kind is
+ *   unchanged. No new route, binding or secret.
  * v5.34 (2026-10-20): A BOARD SIG PASTES BY HAND. New routes only; every
  *   existing route answers exactly as before. No new binding and no new secret.
  *   NEW Cooperative's site puts a Cloudflare bot check in front of the bids
@@ -1003,7 +1008,7 @@ const FORM_KINDS = {
   // v5.12: Rain Print business quotes (rain-print.html#rp-biz). Sig emails back a quote and proofs.
   "rain-print-business": {
     business: [120, true], name: [80, true], email: [254, true, "email"], phone: [30],
-    quantity: [3, true, "rpqty"], product: [10, true, "rpbproduct"], towns: [8000, true, "text"],
+    quantity: [3, true, "rpqty"], product: [10, true, "rpbproduct"], towns: [20000, true, "text"],
     ship: [10, true, "rpbship"], note_all: [300, false, "text"], notes: [2000, false, "text"], page: [60],
     logo: [12, false, "rplogo"],   // v5.23: for the note card or the prints
   },
@@ -1033,7 +1038,7 @@ const RP_DELIVER = ["buyer", "recipient"];
 const RPB_PRODUCTS = ["print", "framed", "digital", "not-sure"];
 const RPB_SHIP = ["one", "each", "not-sure"];
 const RPB_QTY_MIN = 5, RPB_QTY_MAX = 500;    // v5.17: business orders start at 5 prints
-const FORM_MAX_BYTES = 16 * 1024;
+const FORM_MAX_BYTES = 48 * 1024;   // v5.35: a 20,000-character business list plus the rest, in UTF-8
 const FORM_RATE_MAX = 8;                 // posts per IP per hour, all kinds together
 const FORM_TTL_S = 365 * 24 * 3600;      // a stored post is dropped after a year
 const FORM_KEY_RE = /^form:[a-z-]{2,30}:\d{10,16}:[0-9a-f]{8}$/;

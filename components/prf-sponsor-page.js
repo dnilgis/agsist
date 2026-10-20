@@ -13,6 +13,10 @@
    ?state=IA (the links on the PRF state pages, county pages, /prf and the
    sponsor sheet) ticks that state. Only a code that is one of the page's own
    state boxes is used; anything else in the link is ignored.
+   With a state ticked from the link, the 48 boxes fold behind "Add more
+   states" (2026-10-20: on a phone the list put Send about 20 screens' worth of
+   boxes down); the line above the button names what is ticked. Without
+   ?state= the list stays open as before.
 
    The pure parts are on window.PrfSponsorPage and under module.exports, so
    test/prf-sponsor-page.test.mjs runs the same code the page runs. */
@@ -116,7 +120,14 @@
     };
   }
 
-  var api = { prefill: prefill, site: site, check: check, payload: payload, subject: subject, bodyText: bodyText,
+  /* The line over "Add more states" when the list is folded: 'Ticked: Iowa.' or 'Ticked: Iowa and Kansas.' */
+  function pickedLine(names) {
+    names = (names || []).filter(Boolean);
+    if (!names.length) return 'No state ticked yet.';
+    return 'Ticked: ' + (names.length === 1 ? names[0] : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]) + '.';
+  }
+
+  var api = { pickedLine: pickedLine, prefill: prefill, site: site, check: check, payload: payload, subject: subject, bodyText: bodyText,
     previewSp: previewSp, clean: clean, esc: esc, RULES: RULES, MAX: MAX, SAMPLE: SAMPLE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.PrfSponsorPage = api;
@@ -144,8 +155,24 @@
   var from = document.getElementById('ps-from');
   if (from && pre.length) {
     from.textContent = (pre.length === 1 ? known[pre[0]].name + ' is' : pre.map(function (c) { return known[c].name; }).join(', ') + ' are') +
-      ' ticked in the form below. Tick any other states you want.';
+      ' ticked in the form below. Add any other states you want there.';
     from.hidden = false;
+  }
+  /* Folded: the boxes hide behind "Add more states" until it is pressed (then they stay open). */
+  var list = document.getElementById('ps-states-list'), more = document.getElementById('ps-more'), picked = document.getElementById('ps-picked');
+  var folded = !!(pre.length && list && more && picked);
+  function syncPicked() {
+    if (!folded) return;
+    picked.textContent = pickedLine(ticked().map(function (c) { return known[c] ? known[c].name : c; }));
+  }
+  if (folded) {
+    list.hidden = true; more.hidden = false; picked.hidden = false;
+    syncPicked();
+    more.addEventListener('click', function () {
+      folded = false; list.hidden = false; more.hidden = true; picked.hidden = true;
+      more.setAttribute('aria-expanded', 'true');
+      try { list.querySelector('input').focus(); } catch (e) {}
+    });
   }
 
   function v(n) { var e = f.elements[n]; return e && typeof e.value === 'string' ? String(e.value).trim() : ''; }
@@ -166,6 +193,7 @@
   function draw() {
     var R = root.AgPrfSponsor;
     if (!pv || !R || typeof R.render !== 'function') return;
+    syncPicked();
     var t = ticked();
     if (t.indexOf(last) < 0) last = t[0] || '';
     if (nState && nState.value !== last) nState.value = last;
@@ -239,6 +267,7 @@
     var x = fields(), errs = check(x);
     mark(errs);
     var first = Object.keys(RULES).filter(function (k) { return errs[k]; })[0];
+    if (first === 'states' && folded) more.click();
     if (first) { try { target(first).focus(); } catch (err) {} return; }
     var p = payload(x);
     var fd = { _subject: subject(p), form: 'prf-sponsor' };

@@ -87,7 +87,11 @@ test("the form posts the worker's business kind with only fields the worker take
   assert.ok("/rain-print-business".length <= 60);
   for (const id of ["rb-business", "rb-name", "rb-email", "rb-qty", "rb-towns", "rb-submit", "rb-out", "rb-tier", "rb-csv"])
     assert.ok(MAIN.includes('id="' + id + '"'), id);
-  assert.match(MAIN, /id="rb-towns" maxlength="8000"/);
+  // the box, the script and the worker take the same number of characters (20,000 since 2026-10-20)
+  const cap = Number(spec.match(/towns: \[(\d+), true, "text"\]/)[1]);
+  assert.equal(cap, 20000);
+  assert.ok(MAIN.includes('id="rb-towns" maxlength="' + cap + '"'), "textarea maxlength is the worker's cap");
+  assert.ok(JS.includes("var TOWNS_MAX = " + cap + ";"), "the script's cap is the worker's");
   // GA4 on every CTA
   for (const e of ["rain_print_business", "rp_business_cta", "rp_business_template", "rp_business_csv"]) assert.ok(JS.includes("'" + e + "'"), e);
   assert.ok((MAIN.match(/data-rbz-cta=/g) || []).length >= 3);
@@ -96,7 +100,8 @@ test("the form posts the worker's business kind with only fields the worker take
 test("the CSV reader keeps the rows, drops blank ones, refuses a list the form can't hold", () => {
   assert.equal(B.listText("﻿Name,Town\r\nThe Olson Farm,Chetek\r\n,,\r\n\r\nBerg,Cameron  \n"), "Name,Town\nThe Olson Farm,Chetek\nBerg,Cameron");
   assert.equal(B.listText(""), "");
-  assert.equal(B.listText("x,".repeat(4001)), null);
+  assert.equal(B.listText("x,".repeat(10001)), null);
+  assert.equal(B.listText("x".repeat(20000)).length, 20000, "exactly the cap fits");
   assert.match(B.TEMPLATE, /^Name for the print,Town,State,Year,Mailing address/);
 });
 
@@ -195,6 +200,79 @@ test("sample-by line: driven by business_sample_by, which stays null (nothing sh
   assert.equal(B.sampleByLine("2026-10-19", "Nov 6"), "");
   assert.equal(B.sampleByLine("2026-10-19", "2026-13-01"), "");
   // no date written into the page: its line ships empty and hidden
-  assert.match(MAIN, /order 10 or more\.<\/p>\s*<p class="rbz-sample" id="rbz-sample-by" hidden><\/p>/);
+  assert.match(MAIN, /so I can match it to your order\.<\/p>\s*<p class="rbz-sample" id="rbz-sample-by" hidden><\/p>/);
   assert.doesNotMatch(COPY, /sample by/i);
+});
+
+// 2026-10-20 (business walk-through: a 100-customer ship-to-each list with addresses did not fit 8,000 characters).
+// A list shaped like the real thing, every name and address made up: 100 rows from the page's own template.
+const FAKE_LIST = B.TEMPLATE + Array.from({ length: 100 }, (_, i) => {
+  const n = String(i + 1).padStart(3, "0");
+  return "The Example Farm " + n + " (Pat and Lee Testperson)," + ["Chetek", "Rice Lake", "Cameron", "Bloomer"][i % 4] + ",WI," +
+    (2012 + (i % 14)) + ",\"N" + (1000 + i) + " Sample County Road M, Apt " + (i % 9 + 1) + ", Faketown, WI 5472" + (i % 10) +
+    "\",Thanks for another good year from all of us at the co-op";
+}).join("\r\n") + "\r\n";
+
+test("a 100-customer list with mailing addresses fits the form and the worker; a longer one says to email it", async () => {
+  const t = B.listText(FAKE_LIST);
+  assert.ok(t, "the reader takes it");
+  assert.equal(t.split("\n").length, 101, "header plus 100 customers");
+  assert.ok(t.length > 14000 && t.length <= 20000, "real-shaped: about 150 characters a line, " + t.length);
+  // over the cap: the reader refuses it and the page says to email the file (the fallback text stays)
+  assert.equal(B.listText(FAKE_LIST + FAKE_LIST), null);
+  assert.match(JS, /That list is longer than the form takes\. Send the rest of the form, and email the file to ' \+ ORDER_TO/);
+
+  // the worker itself, against an in-memory KV: stored whole; one character over the cap is refused
+  const { copyFileSync, unlinkSync } = await import("node:fs");
+  const os = await import("node:os"), path = await import("node:path"), { pathToFileURL } = await import("node:url");
+  const tmp = path.join(os.tmpdir(), "rpb-list-test-" + process.pid + ".mjs");
+  copyFileSync(ROOT + "workers/subs-worker.js", tmp);
+  const W = (await import(pathToFileURL(tmp).href)).default;
+  unlinkSync(tmp);
+  const store = new Map();
+  const env = { UNSUB_SECRET: "sec", LIST_TOKEN: "tok", SUBS: {
+    async get(k) { return store.has(k) ? store.get(k) : null; }, async put(k, v) { store.set(k, v); }, async delete(k) { store.delete(k); },
+    async list({ prefix, limit }) { const all = [...store.keys()].filter((k) => k.startsWith(prefix)).sort(); return { keys: all.slice(0, limit || 1000).map((name) => ({ name })), list_complete: true }; } } };
+  let ip = 0;
+  const post = (towns) => W.fetch(new Request("https://x.dev/form", { method: "POST",
+    body: JSON.stringify({ kind: "rain-print-business", _gotcha: "", business: "Example Co-op", name: "Pat Testperson", email: "pat@example.com",
+      phone: "", quantity: "100", product: "framed", towns, ship: "each", notes: "x".repeat(2000), page: "/rain-print-business" }),
+    headers: { "Content-Type": "application/json", Origin: "https://agsist.com", "CF-Connecting-IP": "10.9.9." + (++ip) } }), env);
+  const ok = await post(t);
+  assert.equal(ok.status, 200, await ok.clone().text());
+  const rec = [...store.entries()].filter(([k]) => k.startsWith("form:rain-print-business:")).map(([, v]) => JSON.parse(v));
+  assert.equal(rec.length, 1);
+  assert.equal(rec[0].towns, t, "stored whole, line breaks kept");
+  const wide = await post("\u00f1".repeat(20000));   // 40,000 bytes of list in UTF-8 still under the body cap
+  assert.equal(wide.status, 200, await wide.clone().text());
+  const over = await post("x".repeat(20001));
+  assert.equal(over.status, 400);
+  assert.match((await over.json()).error, /towns is too long/);
+});
+
+// 2026-10-20 (business walk-through: the sample offer said "order one" with nowhere to click and no way for Sig to match it).
+test("the sample offer links to the order box and says how Sig matches it; the sample date stays Sig's", () => {
+  const p = MAIN.match(/<p class="rbz-sample" id="rbz-sample">([\s\S]*?)<\/p>/)[1];
+  assert.match(p, /<a href="\/rain-print#rp-buy" data-rbz-cta="sample">Order one at the regular price<\/a> and I take it off your invoice when you order 10 or more\./);
+  assert.match(p, /tick <b>This is a gift<\/b> and put your business name in the note, so I can match it to your order\./);
+  // the words match the real checkout: the order box is #rp-buy, and its gift tick says "This is a gift"
+  const RPH = readFileSync(ROOT + "rain-print.html", "utf8");
+  assert.match(RPH, /id="rp-buy"/);
+  assert.match(RPH, /tick <b>This is a gift<\/b> and add their name and your note/);
+  assert.equal(J.business_sample_by, null);
+});
+
+// 2026-10-20 (business walk-through: no price until the table, well down the page). The line by Get a quote is
+// the table's lowest delivered price of one print, from the data; the page's written copy is checked against it.
+test("starting price by Get a quote: the table's lowest delivered print price, from the data", () => {
+  const rows = R.bizRows(J);
+  const lowest = Math.min(...rows.flatMap((r) => [r.prices.print12x18, r.one.print12x18]));
+  assert.equal(lowest, 32, "by hand: 50 to 100 prints all to one address, $35 less $3");
+  assert.equal(B.fromLine(rows), "From $" + lowest + " a print, delivered");
+  // the written table's own cells agree: the smallest print price in it
+  const cells = [...MAIN.matchAll(/<td data-label="Print">\$(\d+)<\/td><td[^>]*>\$\d+<\/td><td data-label="All to one address">\$(\d+) \//g)].flatMap((m) => [+m[1], +m[2]]);
+  assert.equal(Math.min(...cells), lowest);
+  assert.match(MAIN, new RegExp('data-rbz-cta="hero-quote">Get a quote</a> <span class="rbz-from" id="rbz-from">' + B.fromLine(rows).replace(/\$/g, "\\$") + "</span>"));
+  assert.match(JS, /fr\.textContent = frt/, "the script writes it from the data too");
+  assert.equal(B.fromLine([]), "");
 });
