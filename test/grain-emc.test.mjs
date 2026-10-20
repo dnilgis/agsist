@@ -222,7 +222,8 @@ test("page: title, H1, byline, voice, structured data and the FAQ word for word"
   assert.ok(!/50x|50 times/.test(page + ui));
   assert.match(page, /Grain drying down settles a little wetter than grain taking on water/);
   assert.match(page, /src="\/components\/grain-emc\.js\?v=\d+"/);
-  assert.ok(Buffer.byteLength(page) < 90000, "page stays small");
+  // Oct 20: the baked menu grew 215 bytes on every page (Sig approved Everything near me, Yield by state and Farmland sale index), so the cap moves up 500 bytes.
+  assert.ok(Buffer.byteLength(page) < 90500, "page stays small");
 });
 
 test("Zach A. is credited in three places, on the visible page only", () => {
