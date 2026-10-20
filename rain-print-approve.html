@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Rain Print proof | AGSIST</title>
+<!-- The proof email's "Approve this print" button (scripts/rp_buyer_email.py,
+     Sig 2026-10-20: the email is the proof, they sign off in it) opens
+     /rain-print-approve?k=<order key>&t=<token>. This page posts them to the
+     subs worker (v5.37, POST /rp-order/approve) and says what happens next.
+     The approval is a POST made by this page's script, so a mail scanner that
+     only fetches the link approves nothing. Approving twice is fine. Nothing
+     about the buyer is in the link. Not in the sitemap. -->
+<link rel="preconnect" href="https://agsist-subs.dnilgis.workers.dev" crossorigin>
+<style>
+  :root{--bg:#f6f7f5;--text:#161a18;--muted:rgba(22,26,24,.72);--link:#7a5a12;--ok:#1f6b3a}
+  @media (prefers-color-scheme: dark){:root{--bg:#0a0c0d;--text:#e9edeb;--muted:rgba(233,237,235,.72);--link:#d4a23f;--ok:#7fd19b}}
+  html,body{background:var(--bg)}
+  body{margin:0;color:var(--text);font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+  main{max-width:520px;margin:0 auto;padding:3.5rem 16px}
+  .tag{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 .4rem}
+  h1{font-size:1.5rem;line-height:1.25;margin:0 0 .8rem}
+  h1.ok{color:var(--ok)}
+  p{color:var(--muted);margin:.5rem 0}
+  a{color:var(--link)}
+  button{font:inherit;font-weight:600;padding:.7rem 1.2rem;border-radius:8px;border:0;background:#1f6b3a;color:#fff;cursor:pointer;min-height:44px}
+</style>
+</head>
+<body>
+<main>
+<p class="tag">AGSIST Rain Print</p>
+<h1 id="msg">Approving your print</h1>
+<p id="sub">One moment.</p>
+<p id="again-wrap" hidden><button type="button" id="again">Try again</button></p>
+<p><a href="/rain-print">Rain Print</a></p>
+<noscript><p>This page needs JavaScript to approve. Or reply to the proof email with the word Approved and I will take it from there.</p></noscript>
+</main>
+<script>
+(function () {
+  var API = 'https://agsist-subs.dnilgis.workers.dev/rp-order/approve';
+  var q = new URLSearchParams(location.search), k = q.get('k') || '', t = q.get('t') || '';
+  var msg = document.getElementById('msg'), sub = document.getElementById('sub'), wrap = document.getElementById('again-wrap');
+  function say(h, s, ok) { msg.textContent = h; msg.className = ok ? 'ok' : ''; sub.textContent = s; }
+  function day(iso) {
+    var d = new Date(iso);
+    return isNaN(d) ? '' : d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/Chicago' });
+  }
+  function next(product) {
+    return product === 'digital' ? 'The full file comes by email within 1 business day.'
+      : 'I make it, number it and initial it by hand, and it ships within 3 business days.';
+  }
+  function go() {
+    wrap.hidden = true;
+    say('Approving your print', 'One moment.');
+    if (!/^rpo:\d{10,16}:[0-9a-f]{8}$/.test(k) || !/^[0-9a-f]{16}$/.test(t)) {
+      say('That approval link is not complete', 'Tap Approve this print in the proof email again, or reply to that email and say Approved.');
+      return;
+    }
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ k: k, t: t }) })
+      .then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
+      .then(function (x) {
+        if (x.j && x.j.ok) {
+          if (x.j.already) say('Already approved. Thank you.', 'You approved it on ' + day(x.j.at) + '. ' + next(x.j.product), true);
+          else say('Approved. Thank you.', next(x.j.product) + ' Questions? Write to me at sig@farmers1st.com.', true);
+          return;
+        }
+        if (x.s === 403 || x.s === 404) { say('That approval link does not work', 'Reply to the proof email and say Approved, or write to sig@farmers1st.com.'); return; }
+        throw new Error('http');
+      })
+      .catch(function () {
+        say('That did not go through', 'Check your connection and try again. Nothing was changed.');
+        wrap.hidden = false;
+      });
+  }
+  document.getElementById('again').addEventListener('click', go);
+  go();
+})();
+</script>
+</body>
+</html>
