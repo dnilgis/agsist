@@ -5,6 +5,14 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.36 (2026-10-20): THE PROOF IS THE EMAIL (Sig). POST /rp-order/approve {k, t}
+ *   (public, publicGate, RATE): k is the record key, t = hmac16("rp-approve|" + k)
+ *   with UNSUB_SECRET; a right pair on a paid record sets approved {at} once
+ *   (again: already, same time) and starts the email job for Sig's "approved"
+ *   alert. Wrong or missing t: 403. /rp-order/list adds approved, approve_t,
+ *   approved_alerted and approval_overdue (proof mailed 3 business days ago,
+ *   Mon to Fri, no answer; never approved for the buyer). POST
+ *   /rp-order/approved-alerted {key} marks Sig's approval alert. No new secret.
  * v5.35 (2026-10-20): ORDER ALERTS. POST /rp-order/stripe is Stripe's webhook
  *   (checkout.session.completed when paid, checkout.session.async_payment_succeeded),
  *   checked with the new secret STRIPE_WEBHOOK_SECRET (Stripe-Signature, HMAC
@@ -734,6 +742,7 @@ const PUBLIC_POSTS = new Set(["/subscribe", "/notice", "/alert-subscribe", "/wat
   "/rp-gift/check", "/rp-gift/redeem"]);   // v5.16
 PUBLIC_POSTS.add("/elev/me").add("/elev/save");   // v5.20: the elevator portal
 PUBLIC_POSTS.add("/rp-order");   // v5.34: Rain Print order records
+PUBLIC_POSTS.add("/rp-order/approve");   // v5.36: the buyer approves the proof
 function publicGate(req, path) {
   const origin = req.headers.get("Origin") || "";
   if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, cors(req));
@@ -771,6 +780,8 @@ const RATE = {
   // v5.34: one record per press of Pay. A buyer presses once or twice; the
   // daily total bounds KV writes.
   "/rp-order": [30, 100, 2000],
+  // v5.36: approving a proof: a buyer taps once or twice; a wrong token counts too.
+  "/rp-order/approve": [20, 60, 1000],
 };
 // Within one Worker isolate the hourly count is exact (JavaScript runs one
 // request at a time), so a burst that lands before KV has caught up is still
@@ -1720,6 +1731,23 @@ async function rpoSerialLast(env) {
   try { const v = JSON.parse(await env.SUBS.get("rpo-serial")); return v && Number.isInteger(v.last) && v.last >= 0 ? v.last : RPO_SERIAL_START_LAST; }
   catch (e) { return RPO_SERIAL_START_LAST; }
 }
+// v5.36: the proof email's Approve link carries k (the record key) and t, an HMAC
+// of the key with UNSUB_SECRET under its own label. Nothing about the buyer.
+function rpoApproveToken(env, k) { return hmac16("rp-approve|" + k, env.UNSUB_SECRET); }
+// Business days (Mon to Fri) from an ISO time to now; holidays are not counted out here.
+function rpoBizDaysSince(iso, nowMs) {
+  const t = Date.parse(iso || "");
+  if (!Number.isFinite(t)) return 0;
+  let n = 0;
+  for (let d = new Date(t); ; ) {
+    d = new Date(d.getTime() + 86400e3);
+    if (d.getTime() > nowMs) break;
+    const w = d.getUTCDay();
+    if (w !== 0 && w !== 6) n++;
+  }
+  return n;
+}
+const RPO_APPROVE_WAIT_BIZ = 3;
 function rpoFulfill(r, serial) {
   if (!r.design_url) return "";
   return r.design_url + "&maker=1" + (RPO_PRINTS.includes(r.product) && serial ? "&serial=" + serial : "");
@@ -1765,12 +1793,17 @@ async function rpoList(env, days) {
   for (const r of changed) { const k = r.key; delete r.key; await rpoPut(env, k, r); r.key = k; }
   // Without Stripe, a print's suggested serial: the next free ones, in the order pressed.
   let next = last;
+  const toks = {};
+  for (const r of recs) if (r.paid) toks[r.key] = await rpoApproveToken(env, r.key);
   const out = recs.map(r => {
     const serialNext = !r.serial && !sessions && RPO_PRINTS.includes(r.product) ? ++next : null;
     return {
       key: r.key, ts: r.ts, at: new Date(r.ts).toISOString(), ref: r.ref, product: r.product, price: r.price,
       design_url: r.design_url, place: r.place, year: r.year, style: r.style, name: r.name, markers: r.markers,
       dedication: r.dedication, gift: !!r.gift, status: r.paid ? "paid" : "pay pressed", paid: r.paid || null, mailed: r.mailed || null, alerted: r.alerted || null, no_press: !!r.no_press,
+      approved: r.approved || null, approved_alerted: r.approved_alerted || null, approve_t: toks[r.key] || null,
+      // the proof went out 3 business days ago and no answer: Sig's Today page flags it (never approved for the buyer)
+      approval_overdue: !!(r.paid && r.mailed && !r.approved && rpoBizDaysSince(r.mailed.at, now) >= RPO_APPROVE_WAIT_BIZ),
       serial: r.serial || null, serial_next: serialNext, fulfill_url: rpoFulfill(r, r.serial || serialNext),
     };
   }).reverse();
@@ -3385,9 +3418,29 @@ async function handle(req, env) {
       if (done.already) return json({ ok: true, already: true }, 200);
       return json({ ok: true, job: await rpoDispatch(env) }, 200);
     }
+    // v5.36: the buyer approves the proof (rain-print-approve.html posts {k, t}). publicGate has run.
+    // Idempotent: a second approve answers already with the first time.
+    if (path === "/rp-order/approve" && req.method === "POST") {
+      const c = Object.assign({ "Cache-Control": "no-store" }, cors(req));
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
+      let b = null;
+      try { b = JSON.parse((await req.text()).slice(0, 2048)); } catch (e) { b = null; }
+      const k = b && typeof b.k === "string" ? b.k : "", t = b && typeof b.t === "string" ? b.t : "";
+      if (!RPO_KEY_RE.test(k) || !safeEq(t, await rpoApproveToken(env, k))) return json({ ok: false, error: "bad link" }, 403, c);
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (!r || !r.paid) return json({ ok: false, error: "not found" }, 404, c);
+      if (r.approved) return json({ ok: true, already: true, at: r.approved.at, product: r.product }, 200, c);
+      r.approved = { at: new Date().toISOString() };
+      await rpoPut(env, k, r);
+      const job = await rpoDispatch(env);   // Sig's "approved" alert goes out from the same email job
+      return json({ ok: true, already: false, at: r.approved.at, product: r.product, job: job === "started" ? "started" : "later" }, 200, c);
+    }
     // v5.35: Sig's order alert went out for this paid record (scripts/rp_buyer_email.py), once.
-    if ((path === "/rp-order/mailed" || path === "/rp-order/alerted") && req.method === "POST") {
-      const what = path === "/rp-order/mailed" ? "mailed" : "alerted";
+    // v5.36: /rp-order/approved-alerted, the same for his "approved, make it" alert.
+    if ((path === "/rp-order/mailed" || path === "/rp-order/alerted" || path === "/rp-order/approved-alerted") && req.method === "POST") {
+      const what = path === "/rp-order/mailed" ? "mailed" : path === "/rp-order/alerted" ? "alerted" : "approved_alerted";
       if (!sig) return json({ ok: false }, 403, ac);
       let b = null;
       try { b = await req.json(); } catch (e) { b = null; }
@@ -3397,6 +3450,7 @@ async function handle(req, env) {
       try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
       if (!r) return json({ ok: false, error: "not found" }, 404, ac);
       if (!r.paid) return json({ ok: false, error: "not paid" }, 409, ac);
+      if (what === "approved_alerted" && !r.approved) return json({ ok: false, error: "not approved" }, 409, ac);
       if (r[what]) return json({ ok: true, already: true, [what]: r[what] }, 200, ac);
       r[what] = { at: new Date().toISOString(), session: String(r.paid.session || "") };
       await rpoPut(env, k, r);

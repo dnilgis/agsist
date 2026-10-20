@@ -290,3 +290,44 @@ console.log('rp-order worker checks: ' + n + ' passed');
   globalThis.fetch = realFetch;
   console.log('rp-order webhook checks: ' + n + ' passed');
 }
+
+// ---------- v5.36: the buyer approves the proof ----------
+{
+  const cryptoN = await import('node:crypto');
+  const tok = (k) => cryptoN.createHmac('sha256', 'sec').update(('rp-approve|' + k).toLowerCase()).digest('hex').slice(0, 16);
+  const approve = (b, h = {}) => w.fetch(new Request('https://x.dev/rp-order/approve', { method: 'POST',
+    headers: Object.assign({ 'Content-Type': 'application/json', Origin: 'https://agsist.com', 'CF-Connecting-IP': '10.2.0.' + (++ipN) }, h), body: JSON.stringify(b) }), env);
+  const dispatched = [];
+  globalThis.fetch = async (u, o) => { dispatched.push(String(u)); return new Response(null, { status: 204 }); };
+  const L = await (await admin('/rp-order/list')).json();
+  const paidOne = L.orders.find(o => o.status === 'paid' && !o.no_press && o.product !== 'digital'), unpaid = L.orders.find(o => o.status !== 'paid');
+  A(paidOne.approve_t === tok(paidOne.key) && paidOne.approved === null, 'list: the approve token for a paid record, not approved yet');
+  A(unpaid.approve_t === null, 'list: no token for a press that was not paid');
+  let r = await approve({ k: paidOne.key, t: 'nope' }); A(r.status === 403, 'approve: wrong token refused');
+  r = await approve({ k: paidOne.key }); A(r.status === 403, 'approve: no token refused');
+  r = await approve({ k: unpaid.key, t: tok(unpaid.key) }); A(r.status === 404, 'approve: an unpaid press cannot be approved');
+  r = await approve({ k: paidOne.key, t: tok(paidOne.key) }, { Origin: 'https://evil.example' }); A(r.status === 403, 'approve: from agsist.com only');
+  A(!JSON.parse(store.get(paidOne.key)).approved, 'nothing approved by a refused call');
+  r = await approve({ k: paidOne.key, t: tok(paidOne.key) }); let j = await r.json();
+  A(r.status === 200 && j.ok && j.already === false && j.product === paidOne.product && j.job === 'started', 'approve: approved, the job started for Sig');
+  const at = j.at;
+  r = await approve({ k: paidOne.key, t: tok(paidOne.key) }); j = await r.json();
+  A(j.ok && j.already === true && j.at === at, 'approve: twice is fine, the first time kept');
+  A(dispatched.filter(u => u.includes('api.github.com')).length === 1, 'approve: the job starts once');
+  const L2 = await (await admin('/rp-order/list')).json();
+  A(L2.orders.find(o => o.key === paidOne.key).approved.at === at, 'list: approved with its time');
+  let m = await admin('/rp-order/approved-alerted', 'POST', { key: unpaid.key }); A(m.status === 409, 'approved-alerted: never for an unpaid one');
+  m = await admin('/rp-order/approved-alerted', 'POST', { key: paidOne.key }); j = await m.json(); A(j.ok && j.already === false, 'approved-alerted: marked');
+  m = await admin('/rp-order/approved-alerted', 'POST', { key: paidOne.key }); A((await m.json()).already === true, 'approved-alerted: once');
+  // overdue: mailed 3 business days ago with no answer
+  const other = L2.orders.find(o => o.status === 'paid' && !o.approved && o.key !== paidOne.key);
+  const rec = JSON.parse(store.get(other.key));
+  rec.mailed = { at: new Date(Date.now() - 6 * 86400e3).toISOString(), session: rec.paid.session };
+  store.set(other.key, JSON.stringify(rec));
+  const L3 = await (await admin('/rp-order/list')).json();
+  A(L3.orders.find(o => o.key === other.key).approval_overdue === true && L3.orders.find(o => o.key === other.key).approved === null, 'overdue after 3 business days, never approved for the buyer');
+  rec.mailed.at = new Date(Date.now() - 3600e3).toISOString(); store.set(other.key, JSON.stringify(rec));
+  A((await (await admin('/rp-order/list')).json()).orders.find(o => o.key === other.key).approval_overdue === false, 'not overdue an hour after the proof');
+  globalThis.fetch = realFetch;
+  console.log('rp-order approve checks: ' + n + ' passed');
+}

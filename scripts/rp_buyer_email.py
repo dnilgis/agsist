@@ -140,13 +140,46 @@ def what_line(o):
 
 def subject(o):
     place, year = one_line(o.get("place"), 80), str(o.get("year") or "")
-    return "Your Rain Print of %s%s" % (place or "your place", (", " + year) if year else "")
+    return "Your Rain Print proof: %s%s" % (place or "your place", (", " + year) if year else "")
 
 
 def next_lines(words):
     """The thank-you page's lines, without its last one (the reply line below says it)."""
     w = [one_line(x, 400) for x in (words or []) if one_line(x, 400)]
     return w[:-1] if len(w) > 1 else w
+
+
+APPROVE_BASE = "https://agsist.com/rain-print-approve"
+
+
+def can_approve(o, r):
+    """A proof to approve: the full year is in (not a preview) and the worker gave the record its token."""
+    return bool(o.get("approve_t")) and not r.get("preview")
+
+
+def approve_url(o):
+    return "%s?k=%s&t=%s" % (APPROVE_BASE, urllib.parse.quote(o["key"], safe=""), urllib.parse.quote(o["approve_t"], safe=""))
+
+
+def change_url(o):
+    return "mailto:%s?subject=%s" % (REPLY_TO, urllib.parse.quote("Change to my Rain Print (ref %s)" % one_line(o.get("ref"), 200)))
+
+
+def proof_lines(o, r):
+    """What the buyer does with this proof, and what happens after. The email is the proof (Sig, 2026-10-20)."""
+    digital = o.get("product") == "digital"
+    if not can_approve(o, r):
+        # a year not finished (this year's gift, or last year before NOAA has December): the proof comes later
+        return ["This picture shows the year so far. Your proof comes by email once the full year is in, and you approve it then."] + \
+            [x for x in next_lines(r.get("words")) if "proof" not in x.lower()]
+    out = ["This email is your proof. Check the name, the town, the year and the dates in the picture.",
+           "If it is right, tap Approve this print. If not, tap Ask for a change and tell me what to fix. Nothing is made until you approve it."]
+    if digital:
+        out.append("After you approve it, the full file (12 x 18 in at 300 dpi, no preview mark) comes by email within 1 business day.")
+    else:
+        ship = [x for x in (r.get("words") or []) if str(x).startswith("It ships within")]
+        out.append(one_line(ship[0], 300) if ship else "It ships within 3 business days after you approve it.")
+    return out
 
 
 def text_body(o, r, gift_to=""):
@@ -158,8 +191,19 @@ def text_body(o, r, gift_to=""):
     if r.get("letter"):
         out += ["", "The letter in the box: it goes on top of the print, %s, exactly as it will print. The picture of it is in this email."
                 % ("with your note" if o.get("gift_note") else "so whoever opens it knows what it is")]
-    out += [""] + next_lines(r.get("words")) + ["", "Something wrong? Reply to this email and I will fix it.", "", "Sig", "", ADDRESS]
+    out += [""] + proof_lines(o, r)
+    if can_approve(o, r):
+        out += ["", "Approve this print: %s" % approve_url(o), "Ask for a change: reply to this email, or write to %s" % REPLY_TO]
+    out += ["", "Something wrong? Reply to this email and I will fix it.", "", "Sig", "", ADDRESS]
     return "\n".join(out) + "\n"
+
+
+def button(href, label, bg, fg, border):
+    """A button that holds in Gmail and Outlook: a table cell with the color, the link filling it."""
+    return ('<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 12px;"><tr>'
+            '<td align="center" bgcolor="%s" style="background:%s;border:2px solid %s;border-radius:8px;">'
+            '<a href="%s" style="display:block;padding:16px 12px;font-family:Arial,Helvetica,sans-serif;font-size:18px;font-weight:bold;'
+            'line-height:1.2;color:%s;text-decoration:none;border-radius:8px;">%s</a></td></tr></table>') % (bg, bg, border, H.escape(href), fg, H.escape(label))
 
 
 def html_body(o, r, gift_to="", srcs=None):
@@ -168,10 +212,12 @@ def html_body(o, r, gift_to="", srcs=None):
     e = H.escape
     font = "font-family:Georgia,'Times New Roman',serif;"
     p = lambda t, extra="": ('<p style="margin:0 0 14px;%sfont-size:17px;line-height:1.5;color:#1E2125;%s">%s</p>' % (font, extra, t))  # noqa: E731
+    ok = can_approve(o, r)
     rows = []
     rows.append('<tr><td style="padding:24px 20px 6px;"><p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;'
-                'letter-spacing:1px;text-transform:uppercase;color:#5E6475;">AGSIST Rain Print</p>'
-                '<h1 style="margin:0 0 14px;%sfont-size:26px;line-height:1.25;font-weight:normal;color:#1E2125;">Here is your Rain Print</h1>' % font
+                'letter-spacing:1px;text-transform:uppercase;color:#5E6475;">AGSIST Rain Print%s</p>' % (" &middot; your proof" if ok else "")
+                + '<h1 style="margin:0 0 14px;%sfont-size:26px;line-height:1.25;font-weight:normal;color:#1E2125;">%s</h1>'
+                % (font, "Your proof: check it and approve it" if ok else "Here is your Rain Print")
                 + p("Thank you for ordering. You ordered a <b>%s</b>." % e(what_line(o)))
                 + (p("For: <b>%s</b>" % e(gift_to)) if gift_to else "") + "</td></tr>")
     note = "The picture carries a preview mark; your %s will not." % ("file" if o.get("product") == "digital" else "print")
@@ -185,8 +231,13 @@ def html_body(o, r, gift_to="", srcs=None):
         rows.append('<tr><td style="padding:0 20px 18px;">' + p(e(lead)) +
                     '<img src="%s" width="420" alt="The letter that goes in the box" style="display:block;width:100%%;max-width:420px;'
                     'height:auto;margin:0 auto;border:1px solid #D6D9D2;"></td></tr>' % e(srcs["letter"]))
-    rows.append('<tr><td style="padding:0 20px 8px;"><h2 style="margin:0 0 10px;%sfont-size:20px;font-weight:normal;color:#1E2125;">'
-                'What happens next</h2>' % font + "".join(p(e(x)) for x in next_lines(r.get("words"))) + "</td></tr>")
+    lines = proof_lines(o, r)
+    rows.append('<tr><td style="padding:0 20px 8px;"><h2 style="margin:0 0 10px;%sfont-size:20px;font-weight:normal;color:#1E2125;">%s</h2>'
+                % (font, "Your sign-off" if ok else "What happens next") + "".join(p(e(x)) for x in lines[:2 if ok else len(lines)]) + "</td></tr>")
+    if ok:
+        rows.append('<tr><td style="padding:0 20px 10px;">' + button(approve_url(o), "Approve this print", "#1F6B3A", "#FFFFFF", "#1F6B3A")
+                    + button(change_url(o), "Ask for a change", "#FFFFFF", "#1E2125", "#1E2125") + "</td></tr>")
+        rows.append('<tr><td style="padding:0 20px 8px;">' + "".join(p(e(x)) for x in lines[2:]) + "</td></tr>")
     rows.append('<tr><td style="padding:0 20px 24px;">' + p("<b>Something wrong?</b> Reply to this email and I will fix it.")
                 + p("Sig", "margin-top:18px;") +
                 '<p style="margin:18px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;color:#5E6475;">%s</p></td></tr>'
@@ -236,6 +287,8 @@ def alert_text(o, buyer):
     url = str(o.get("fulfill_url") or "")
     lines.append("Open to fulfill: %s" % url if url.startswith("https://agsist.com/rain-print?") else
                  "Open to fulfill: no design link. Find the session in Stripe (%s) and ask the buyer." % paid.get("session", "?"))
+    lines.append("Approval: %s" % ("approved %s" % o["approved"].get("at", "") if o.get("approved") else
+                                   "waiting for approval (the proof email has the buttons; nothing is made before)"))
     lines.append("Buyer (as Stripe sent it): %s" % (buyer or "not given"))
     lines.append("Stripe session: %s" % paid.get("session", "?"))
     lines += ["", "Sent once per paid session. Nothing about the buyer is kept by AGSIST."]
@@ -272,6 +325,30 @@ def send_alerts(src, orders, send, sig_to, fn="AGSIST", fa=""):
         m["To"] = sig_to
         m["Message-ID"] = make_msgid(domain=(fa.split("@", 1)[1] if "@" in fa else "agsist.com"))
         m.set_content(alert_text(o, buyer))
+        try:
+            send(m)
+            c["alerts"] += 1
+        except Exception:                                  # noqa: BLE001
+            c["alert failed"] += 1
+    # the buyer approved the proof: make it (prints) or send the full file (digital)
+    for o in orders:
+        if o.get("status") != "paid" or not o.get("approved") or o.get("approved_alerted"):
+            continue
+        mk = src.worker("rp-order/approved-alerted", body={"key": o["key"]})
+        if not mk.get("ok") or mk.get("already"):
+            continue
+        m = EmailMessage()
+        what = {"digital": "Digital file", "print12x18": "Print", "framed12x18": "Framed"}.get(o.get("product"), "Rain Print")
+        m["Subject"] = "Rain Print approved: %s%s%s" % (what, (", " + one_line(o.get("place"), 60)) if o.get("place") else "",
+                                                         (" " + str(o["year"])) if o.get("year") else "")
+        m["From"] = formataddr((fn, fa))
+        m["To"] = sig_to
+        m["Message-ID"] = make_msgid(domain=(fa.split("@", 1)[1] if "@" in fa else "agsist.com"))
+        url = str(o.get("fulfill_url") or "")
+        todo = ("Send the full file within 1 business day (the page promises it)." if o.get("product") == "digital"
+                else "Make it: it ships within 3 business days of the approval (the page promises it).")
+        m.set_content("The buyer approved the proof.\n\nWhat: %s\nApproved: %s\nSerial: %s\n%s\nOpen to fulfill: %s\n" % (
+            what_line(o), o["approved"].get("at", ""), o.get("serial") or "none (a digital file)", todo, url or "no design link"))
         try:
             send(m)
             c["alerts"] += 1
@@ -395,8 +472,8 @@ def main():
 SIG_URL = ("https://agsist.com/rain-print?place=Chetek%2C+WI&year=2025&station=471667+2&layout=staircase&palette=paper"
            "&size=12x18&style=r1&name=Gustum+Farm&m1=2025-04-01+Moved+in")
 SIG_REF = "MnxDaGV0ZWssIFdJfDQ3MTY2NyAyfDIwMjV8c3AwYWF8R3VzdHVtIEZhcm18Mml8TW92ZWQgaW4"
-WORDS = ["Your 13 x 19 framed print of Chetek, WI, 2025 is ordered. I email you a proof from sig@farmers1st.com by Wed Oct 21. Reply OK, or tell me what to change.",
-         "It ships within 3 business days after your OK, and ordered by Dec 9 it arrives by Christmas.",
+WORDS = ["Your framed print of Chetek, WI, 2025 is ordered. Your proof comes by email by Wednesday, Oct 21. Approve it there, or ask for a change. Nothing prints until you approve it.",
+         "It ships within 3 business days after you approve it, and ordered by Dec 9 it arrives by Christmas.",
          "Nothing by then? Check spam, or write to me at sig@farmers1st.com."]
 
 
@@ -404,7 +481,8 @@ def order(key, product="framed12x18", session="cs_live_1", **kw):
     o = {"key": "rpo:17610000000%s:0000000%s" % (key, key), "ts": 1761000000000, "ref": SIG_REF, "product": product,
          "design_url": SIG_URL, "place": "Chetek, WI", "year": 2025, "style": "r1", "name": "Gustum Farm", "gift": False,
          "status": "paid", "paid": {"amount": 89, "session": session}, "mailed": None, "alerted": {"at": "x", "session": session},
-         "fulfill_url": SIG_URL + "&maker=1&serial=4", "serial": 4}
+         "fulfill_url": SIG_URL + "&maker=1&serial=4", "serial": 4, "approve_t": "0123456789abcdef", "approved": None,
+         "approved_alerted": None}
     o.update(kw)
     return o
 
@@ -422,6 +500,11 @@ class Fake(Sources):
             return self.listing
         if path == "form-list":
             return self.forms
+        if path == "rp-order/approved-alerted":
+            k = body["key"]
+            already = ("ap", k) in self.alerted
+            self.alerted.add(("ap", k))
+            return {"ok": True, "already": already}
         if path == "rp-order/alerted":
             k = body["key"]
             already = k in self.alerted
@@ -564,6 +647,21 @@ def selftest():
        and "no address: 1" in log[-1], (log, [m["To"] for m in sent]))
     ck("no em dashes in the alert", not any("\u2014" in m.get_content() for m in alerts))
 
+    sent.clear()
+    f = Fake({"stripe": "ok", "orders": [order("1", approved={"at": "2026-10-21T14:00:00.000Z"}, mailed={"at": "x"}),
+                                         order("2", product="digital", approved={"at": "2026-10-21T15:00:00.000Z"}, mailed={"at": "x"}, serial=None)]},
+             {"cs_live_1": live})
+    run(f, False, send, "sig@farmers1st.com", tests)
+    ap = [m for m in sent if m["Subject"].startswith("Rain Print approved:")]
+    ck("an approval: one email to Sig each, with the maker link and what to do",
+       len(ap) == 2 and all(m["To"] == "sig@farmers1st.com" for m in ap) and "Make it: it ships within 3 business days" in ap[0].get_content()
+       and "Open to fulfill: " + SIG_URL + "&maker=1&serial=4" in ap[0].get_content() and "Send the full file within 1 business day" in ap[1].get_content(),
+       [m.get_content() for m in ap])
+    sent.clear()
+    run(f, False, send, "sig@farmers1st.com", tests)
+    ck("an approval alert goes once", not any(m["Subject"].startswith("Rain Print approved:") for m in sent))
+    ck("the order alert says waiting for approval", "Approval: waiting for approval" in alert_text(order("1"), ""))
+
     print("\nthe email")
     sent.clear()
     forms = [{"kind": "rain-print-order", "design_code": SIG_REF, "gift": "yes", "gift_to": "Dad Olson", "gift_message": "For every inch\nyou farmed",
@@ -574,10 +672,19 @@ def selftest():
     ck("the gift note goes to the letter", ("render", "framed12x18", "For every inch\nyou farmed") in f.calls, f.calls)
     txt = m.get_body(("plain",)).get_content()
     htm = m.get_body(("html",)).get_content()
-    ck("subject: the town and year", m["Subject"] == "Your Rain Print of Chetek, WI, 2025", m["Subject"])
+    ck("subject: the proof, the town and year", m["Subject"] == "Your Rain Print proof: Chetek, WI, 2025", m["Subject"])
     ck("what was bought", "13 x 19 framed print of Chetek, WI, 2025, Staircase" in txt and "13 x 19 framed print of Chetek, WI, 2025, Staircase" in htm, txt)
     ck("who it is for", "For: Dad Olson" in txt and "For: <b>Dad Olson</b>" in htm)
-    ck("the next steps from the page, without its last line", WORDS[0] in txt and WORDS[1] in txt and WORDS[2] not in txt, txt)
+    ck("the email is the proof: check it, approve it, nothing made before", "This email is your proof." in txt and "Nothing is made until you approve it." in txt
+       and "Your proof comes by email" not in txt and "Your proof comes by email" not in htm, txt)
+    ck("the shipping line from the page", WORDS[1] in txt and WORDS[1] in htm and WORDS[2] not in txt, txt)
+    k = urllib.parse.quote(order("1")["key"], safe="")
+    ck("Approve this print: a big button to the approve page with the key and token, nothing about the buyer",
+       ('href="https://agsist.com/rain-print-approve?k=%s&amp;t=0123456789abcdef"' % k) in htm and ">Approve this print</a>" in htm
+       and "buyer@example.com" not in htm.split("Approve this print")[0][-400:], htm[-1500:])
+    ck("Ask for a change: a mailto to Sig with the ref in the subject",
+       ('href="mailto:sig@farmers1st.com?subject=Change%%20to%%20my%%20Rain%%20Print%%20%%28ref%%20%s%%29"' % SIG_REF) in htm and ">Ask for a change</a>" in htm, htm[-1500:])
+    ck("the text part has the approve link too", "Approve this print: https://agsist.com/rain-print-approve?k=%s&t=0123456789abcdef" % k in txt, txt)
     ck("Something wrong? Reply", "Something wrong? Reply to this email" in txt and "Something wrong?</b> Reply to this email" in htm)
     ck("the proof and the letter inline by cid", 'src="cid:proof"' in htm and 'src="cid:letter"' in htm and
        sorted(p["Content-ID"] for p in m.walk() if p["Content-ID"]) == ["<letter>", "<proof>"], htm[:200])
@@ -591,6 +698,13 @@ def selftest():
     run(f, False, send, "sig@farmers1st.com", tests)
     htm = sent[0].get_body(("html",)).get_content()
     ck("a digital file: no letter, the file wording", "cid:letter" not in htm and "your file will not" in htm, htm[-400:])
+    ck("a digital file: the full file after the OK", "After you approve it, the full file (12 x 18 in at 300 dpi, no preview mark) comes by email within 1 business day." in htm)
+    # a year not finished, or no token: no buttons, the proof comes later
+    o2 = order("1")
+    r2 = {"proof": "x", "letter": None, "preview": True, "words": ["Your 13 x 19 print of Chetek, WI, 2026 is ordered. Your gift card to print comes by email by Wednesday, Oct 21. The print follows in January, with a proof to you first.", "Questions?"]}
+    h2 = html_body(o2, r2)
+    ck("this year's print: no approve button, the proof comes when the year is in", "Approve this print" not in h2 and "once the full year is in" in h2 and "gift card" not in h2, h2[-1200:])
+    ck("no token: no approve button", "Approve this print" not in html_body(dict(o2, approve_t=None), dict(r2, preview=False)))
 
     print()
     if fails:

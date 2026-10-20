@@ -691,6 +691,14 @@ def rp_order_line(o, now):
     if o.get("status") == "paid":
         amt = (o.get("paid") or {}).get("amount")
         state = "paid" + (" $%s" % "{:,.2f}".format(amt) if isinstance(amt, (int, float)) else "")
+        # the proof email is the proof (Oct 20): nothing is made until the buyer approves it
+        ap = parse_time((o.get("approved") or {}).get("at"))
+        if ap:
+            state += ", approved %s" % when(ap, now)
+        elif o.get("approval_overdue"):
+            state += ", no answer on the proof in 3 business days: follow up"
+        else:
+            state += ", waiting for approval"
     else:
         t = parse_time(o.get("at") or o.get("ts"))
         state = "pay pressed%s, payment not confirmed" % ((" " + when(t, now)) if t else "")
@@ -1404,6 +1412,7 @@ def selftest():
     paid_list = {"ok": True, "days": 2, "stripe": "ok", "serial_last": 4, "orders": [
         orec("GIFT-RPS-K7Q2M", "print12x18", ms - 600000),
         orec("RPS-K7Q2M", "framed12x18", ms - 3600000, style="r2", status="paid", paid={"amount": 79, "subtotal": 89, "at": "x", "session": "cs_live_rps"},
+             approved={"at": "2026-10-14T16:00:00.000Z"},
              serial=4, fulfill_url=sig_url + "&maker=1&serial=4"),
         orec(sig_ref, "digital", ms - 7200000, status="paid", paid={"amount": 19, "subtotal": 19, "at": "x", "session": "cs_live_sig19"})]}
     rep = Report()
@@ -1413,9 +1422,9 @@ def selftest():
     ck("the Orders section asks the worker for 48 hours", title == "Orders" and ("worker", "rp-order/list?days=2") in f.asked, f.asked)
     ck("a count line, then one line each, newest first", rl[0] == "Rain Print, last 48 hours: 3 presses of Pay, 2 paid." and len(rl) == 4, rl)
     ck("the $19 file: paid, the maker link, no serial",
-       rl[3] == "  - Digital file, Chetek, WI 2025 Staircase, paid $19.00: open to fulfill " + sig_url + "&maker=1", rl)
+       rl[3] == "  - Digital file, Chetek, WI 2025 Staircase, paid $19.00, waiting for approval: open to fulfill " + sig_url + "&maker=1", rl)
     ck("a paid framed print: its serial in the line and the link",
-       rl[2] == "  - Framed, Chetek, WI 2025 Roots, paid $79.00, serial 4: open to fulfill " + sig_url + "&maker=1&serial=4", rl)
+       rl[2] == "  - Framed, Chetek, WI 2025 Roots, paid $79.00, approved 11:00 am, serial 4: open to fulfill " + sig_url + "&maker=1&serial=4", rl)
     ck("a press with no payment says so", rl[1].startswith("  - Print, Chetek, WI 2025 Staircase, pay pressed ") and "payment not confirmed" in rl[1] and "serial" not in rl[1], rl)
     ck("nothing about the buyer", not any("@" in x for x in rl), rl)
     # without a key anywhere: pay pressed, and a print's suggested serial
@@ -1431,6 +1440,8 @@ def selftest():
     ck("no key: the file still has its maker link", any(x.startswith("  - Digital file, ") and x.endswith(sig_url + "&maker=1") for x in rl), rl)
     rep = Report()
     sec_rp_orders(Fake(worker={"rp-order/list": {"ok": True, "stripe": "ok", "orders": []}}), now, rep)
+    ov = orec(sig_ref, "print12x18", ms, status="paid", paid={"amount": 45, "session": "cs_x"}, approval_overdue=True, serial=5)
+    ck("no answer in 3 business days is said", "no answer on the proof in 3 business days: follow up" in rp_order_line(ov, now), rp_order_line(ov, now))
     ck("nobody pressed Pay: one line", rep.sections[-1][1] == ["Rain Print, last 48 hours: no one pressed Pay."], rep.sections)
     rep = Report()
     sec_rp_orders(Fake(worker={"rp-order/list": urllib.error.HTTPError("https://x/", 500, "x", {}, None)}), now, rep)

@@ -437,16 +437,16 @@ test("Digital file picked: no shipping or Christmas-proof lines, the file's type
   await withPage(async (page, base, errors) => {
     await drawChetek(page, base);
     assert.equal(await page.isVisible("#rp-ships"), true, "a print says how it ships");
-    assert.equal(await page.textContent("#rp-sub-digital"), "A PNG and a PDF by email within 1 business day of paying.", "the file's line says its types once prices are in");
+    assert.equal(await page.textContent("#rp-sub-digital"), "A PNG and a PDF by email within 1 business day of your OK on the proof.", "the file's line says its types once prices are in");
     await page.locator('.rp-prod[data-choice="digital"]').click();
     await page.waitForTimeout(300);
     assert.equal(await page.isVisible("#rp-ships"), false);
     assert.equal(await page.isVisible("#rp-xmas-why"), false);
-    assert.equal(await page.textContent("#rp-madeby"), "Made by Sig Lindquist in Chetek, Wisconsin. Your file comes from sig@farmers1st.com, your receipt from Stripe.");
+    assert.equal(await page.textContent("#rp-madeby"), "Made by Sig Lindquist in Chetek, Wisconsin. Your proof and your file come by email from Sig, your receipt from Stripe.");
     await page.fill("#rp-name", "Olson");
     await openSheet(page);
     const when = await page.textContent("#rp-proof-sum");
-    assert.match(when, /WhenA PNG and a PDF by email within 1 business day of paying\. Made by Sig Lindquist in Chetek, Wisconsin\./);
+    assert.match(when, /WhenA PNG and a PDF by email within 1 business day of your OK on the proof\. Made by Sig Lindquist in Chetek, Wisconsin\./);
     assert.ok(!/ship/i.test(when.slice(when.indexOf("When"))), "no shipping words for the file");
     assert.deepEqual(errors, []);
   }, { width: 1280, height: 900 });

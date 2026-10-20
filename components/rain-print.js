@@ -1622,18 +1622,18 @@
     var out = [];
     if (sv && sv.gift) {
       out.push(what + 'Your gift card to print comes by email' + (by ? ' by ' + by : ' within 1 business day') + '. ' +
-        (file ? 'The finished file follows in January, once the full year is in.' : 'The print follows in January, with a proof to you first.'));
+        (file ? 'Your proof follows in January, once the full year is in, and the full file once you approve it.' : 'The print follows in January, with a proof to you first.'));
     } else if (sv && sv.settle) {
-      out.push(what + 'NOAA doesn\u2019t have all of ' + sv.year + ' in yet. I make it once the full year is in, and email you the ' + (file ? 'finished file' : 'proof') + ' from sig@farmers1st.com then.' +
-        (file ? ' Want anything changed? Reply and I\u2019ll redo it, no charge.' : ' Reply OK, or tell me what to change. It ships within ' + ship + ' business days after your OK.'));
+      out.push(what + 'NOAA doesn\u2019t have all of ' + sv.year + ' in yet. I make it once the full year is in, and email you the proof then. Approve it there, or ask for a change.' +
+        (file ? ' The full file follows within 1 business day of your OK.' : ' It ships within ' + ship + ' business days after you approve it.'));
     } else if (file) {
-      out.push((what ? what + 'The finished file' : 'The finished file') + ' comes by email' + (by ? ' by ' + by : ' within 1 business day') + '. Want anything changed? Reply and I\u2019ll redo it, no charge.');
+      out.push(what + 'Your proof comes by email' + (by ? ' by ' + by : ' within 1 business day') + '. Approve it there and the full file follows within 1 business day, or ask for a change.');
     } else {
-      out.push(what + 'I email you a proof from sig@farmers1st.com' + (by ? ' by ' + by : ' within 1 business day') + '. Reply OK, or tell me what to change.');
+      out.push(what + 'Your proof comes by email' + (by ? ' by ' + by : ' within 1 business day') + '. Approve it there, or ask for a change. Nothing prints until you approve it.');
       var cut = j[id === 'framed12x18' ? 'framed_christmas_cutoff' : 'print_christmas_cutoff'], t = String(o.today || ''), xm = '';
       if (/^\d{4}-\d{2}-\d{2}$/.test(cut || '') && t >= cut.slice(0, 4) + '-10-01' && t <= cut.slice(0, 4) + '-12-25')
         xm = t <= cut ? ', and ordered by ' + shortDate(cut) + ' it arrives by Christmas.' : '. Ordered now, it arrives after Christmas.';
-      out.push('It ships within ' + ship + ' business days after your OK' + (xm || '.'));
+      out.push('It ships within ' + ship + ' business days after you approve it' + (xm || '.'));
     }
     out.push(by && !(sv && sv.settle) ? 'Nothing by then? Check spam, or write to me at sig@farmers1st.com.' : 'Questions? Write to me at sig@farmers1st.com.');
     return out;
@@ -2683,8 +2683,8 @@
     $('rp-gift-fields').hidden = false;
     $('rp-gift-cardnote').textContent = 'Want a gift card for under the tree? Fill in the boxes above, then order. Within 1 business day of paying, I email you a card to print, with a code they use to see their print.';
     // the digital file's card (2026-10-14, Sig: no proof step for the file; he redoes it free on request)
-    $('rp-dig-when').textContent = on ? 'The finished file by email in January, once the full year is in'
-      : SETTLE && canOrder() ? 'The finished file by email once the full year is in' : 'The finished file by email within 1 business day of paying';
+    $('rp-dig-when').textContent = on ? 'A proof by email in January, once the full year is in, the full file once you approve it'
+      : SETTLE && canOrder() ? 'A proof by email once the full year is in, the full file once you approve it' : 'A proof by email within 1 business day of paying, the full file once you approve it';
     if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
     $('ro-order-note').textContent = GIFT && GIFT.usable ? 'Your gift card covers this print, so there\u2019s nothing to pay. Check the design below, then send it.'
       : on ? 'I\u2019ll email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it. In January, once the full year is in, I send the proof of a print, or the finished file.' : ORDER_NOTE;
@@ -2706,7 +2706,7 @@
       if (!el) return;
       el.textContent = id === 'digital'
         ? (gift ? 'A gift card to print by email within 1 business day. The file comes in January, once the full year is in.'
-          : settle ? 'A PNG and a PDF by email once the full year is in.' : 'A PNG and a PDF by email within 1 business day of paying.')
+          : settle ? 'A PNG and a PDF by email once the full year is in.' : 'A PNG and a PDF by email within 1 business day of your OK on the proof.')
         : (SUB_BASE[id] + ' ' + (gift ? 'A gift card to print by email within 1 business day; the ' + (id === 'framed12x18' ? 'framed print' : 'print') + ' ships in January.'
           : settle ? 'Made once NOAA has all of ' + ST.year + ' in, with a proof first.' : cutoffNote(TODAY, OJ().j && OJ().j[CUTOFF_KEY[id]]))).trim();
       if (blockedPick(id)) el.textContent = L('Shipping to Canada starts soon.', 'Envoi au Canada bientôt.');
@@ -3483,7 +3483,7 @@
     var p = pickPrice(PICK), link = !!payLink(PICK);
     $('rp-pay').textContent = 'Check it and pay' + (p ? ' ' + p : '');
     $('rp-bar-what').textContent = PICK_WORD[PICK] + (p ? ' \u00b7 ' + p : '');
-    $('rp-promise').textContent = PICK === 'digital' ? 'No proof for the file: it comes finished. Want a change after? Write to me and I\u2019ll redo it.'
+    $('rp-promise').textContent = PICK === 'digital' ? 'You see a proof first; the full file comes once you approve it.'
       : 'You see a proof first, and get a full refund any time before I print.';
     /* One gift instruction, said once (2026-10-17, gift-buyers panel): with a
        payment link, the line above Pay says what to do on the next screen, and
@@ -3509,8 +3509,8 @@
     $('rp-arrive').hidden = !arr;
     syncXmas();
   }
-  var MADE_BY = { print: 'Made by Sig Lindquist in Chetek, Wisconsin. Your proof comes from sig@farmers1st.com, your receipt from Stripe.',
-    file: 'Made by Sig Lindquist in Chetek, Wisconsin. Your file comes from sig@farmers1st.com, your receipt from Stripe.' };
+  var MADE_BY = { print: 'Made by Sig Lindquist in Chetek, Wisconsin. Your proof comes by email from Sig, your receipt from Stripe.',
+    file: 'Made by Sig Lindquist in Chetek, Wisconsin. Your proof and your file come by email from Sig, your receipt from Stripe.' };
   // why an order can't go yet, in words, or ''
   function orderBlock() {
     if (staleInputs()) return staleWords();
@@ -3964,7 +3964,7 @@
     $('rp-proof-order').textContent = !can ? 'Draw your own' : gift ? 'Use my gift' : payLink(PICK) ? 'Pay' + (p ? ' ' + p : '') + ' at checkout' : 'Order it' + (p ? ', ' + p : '');
     $('rp-proof-first').textContent = !can ? 'This is a sample. Type the town nearest the farm to draw your own.'
       : gift && GIFT.product === 'digital' ? 'Your card covers the digital file.'
-      : PICK === 'digital' ? 'No proof for the file: it comes finished. Want a change after? Write to me and I\u2019ll redo it.'
+      : PICK === 'digital' ? 'You see a proof first; the full file comes once you approve it.'
       : 'You see a proof first, and get a full refund any time before I print.';
     $('rp-proof-ok-wrap').hidden = !can;
     var when = can && !gift ? payWhen(PICK, TODAY) : '';
@@ -3981,9 +3981,9 @@
     if (januaryGift()) return 'Arrives in January, once the year is done. A gift card for under the tree comes by email within 1 business day.';
     var J = OJ().j || {}, hol = holidaysFor(J, today), next = addBizDays(today, 1, hol);
     var by = next === isoMinusDays(today, -1) ? 'tomorrow' : 'by ' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(next + 'T12:00:00Z').getUTCDay()];
-    if (id === 'digital') return 'The finished file comes by email from Sig at ' + ORDER_TO + ' within 1 business day. Check spam if it\u2019s not there ' + (by === 'tomorrow' ? 'by tomorrow' : by) + '.';
+    if (id === 'digital') return 'Watch for an email from Sig with your proof. Approve it there and the full file follows. Check spam if it\u2019s not there ' + (by === 'tomorrow' ? 'by tomorrow' : by) + '.';
     var cut = cutoffNote(today, J[CUTOFF_KEY[id]]);
-    return 'Watch for an email from Sig at ' + ORDER_TO + ' with your proof. Check spam if it\u2019s not there ' + (by === 'tomorrow' ? 'by tomorrow' : by) + '.' +
+    return 'Watch for an email from Sig with your proof. Approve it there. Check spam if it\u2019s not there ' + (by === 'tomorrow' ? 'by tomorrow' : by) + '.' +
       (/^Order by/.test(cut) ? ' OK it late? I\u2019ll tell you the new date the same day.' : '');
   }
   /* THE GIFT ON THE REVIEW SHEET (2026-10-17, field audit). The last AGSIST
@@ -4063,9 +4063,9 @@
   // when it comes, in words, for the review sheet
   function whenWords(id) {
     var file = id === 'digital', J = OJ().j || {};
-    if (giftMode() && canOrder()) return 'This one is made in January, once the full year is in, and I send the ' + (file ? 'finished file' : 'proof') + ' then. Within 1 business day I email you a gift card to print.';
-    if (SETTLE) return 'NOAA doesn\u2019t have all of ' + ST.year + ' in yet. I make this one once the full year is in, and send the ' + (file ? 'finished file' : 'proof') + ' then.';
-    if (file) return 'A PNG and a PDF by email within 1 business day of paying.';
+    if (giftMode() && canOrder()) return 'This one is made in January, once the full year is in, and I send the proof then. Within 1 business day I email you a gift card to print.';
+    if (SETTLE) return 'NOAA doesn\u2019t have all of ' + ST.year + ' in yet. I make this one once the full year is in, and send the proof then; ' + (file ? 'the full file comes once you approve it.' : 'nothing prints until you approve it.');
+    if (file) return 'A PNG and a PDF by email within 1 business day of your OK on the proof.';
     return 'Shipping included. A proof by email within 1 business day; it ships within ' + (J.ship_business_days || 3) + ' business days of your OK. ' + cutoffNote(TODAY, J[CUTOFF_KEY[id]]);
   }
   /* Fit or actual size. Going in, the spot that was clicked (or the middle)
