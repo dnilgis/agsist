@@ -113,17 +113,56 @@
       }).filter(function (g) { return g.cells.length; });
   }
 
-  var api = { nearOwn: nearOwn, ownRanges: ownRanges, glance: glance, GLANCE_N: GLANCE_N, miles: miles, daysBetween: daysBetween, nearest: nearest, classRows: classRows, money: money, signed: signed,
+
+  /* Value of gain from one report (2026-10-20, panel seat C): what the barn paid for each pound a
+   * calf added, from that report's own lighter and heavier class of the same sex and grade.
+   *   (heavy $/head - light $/head) / (heavy avg wt - light avg wt)
+   * $/head is the report's dollars over head (cwt price times weight, row by row); without it,
+   * cwt x avg wt / 100. Light is the 500 lb class (else 400, else 600), heavy the 800 lb class
+   * (else 700), each with VOG_MIN_HEAD head or more, at least VOG_MIN_GAP lb apart. Withheld, with
+   * the reason, when the sale is more than STALE_DAYS old or a class is missing or thin. One report
+   * only: never two barns, two sales or steers against heifers. Pure. */
+  var VOG_LIGHT = [500, 400, 600], VOG_HEAVY = [800, 700], VOG_MIN_HEAD = 10, VOG_MIN_GAP = 150;
+  function perHead(r) { return isFinite(r.per_head) && r.per_head > 0 ? r.per_head : r.cwt * r.avg_wt / 100; }
+  function valueOfGain(sale, key, todayIso) {
+    if (!sale || !sale.classes) return { ok: false, why: 'no sale on file' };
+    var age = todayIso ? daysBetween(sale.date, todayIso) : 0;
+    if (age > STALE_DAYS) return { ok: false, why: 'this sale is ' + age + ' days old', stale: true, age: age };
+    var c = sale.classes[key] || {};
+    function ok(cls) { var r = c[String(cls)]; return r && r.head >= VOG_MIN_HEAD && r.avg_wt > 0 && (r.cwt > 0 || r.per_head > 0) ? r : null; }
+    var L = null, lc = null, H = null, hc = null, i;
+    for (i = 0; i < VOG_LIGHT.length && !L; i++) if (ok(VOG_LIGHT[i])) { lc = VOG_LIGHT[i]; L = ok(lc); }
+    if (!L) return { ok: false, why: 'no 400, 500 or 600 lb class with ' + VOG_MIN_HEAD + ' head or more on this report' };
+    for (i = 0; i < VOG_HEAVY.length && !H; i++) {
+      var r = ok(VOG_HEAVY[i]);
+      if (r && r.avg_wt - L.avg_wt >= VOG_MIN_GAP) { hc = VOG_HEAVY[i]; H = r; }
+    }
+    if (!H) return { ok: false, why: 'no 700 or 800 lb class with ' + VOG_MIN_HEAD + ' head or more on this report' };
+    var lp = perHead(L), hp = perHead(H), lb = H.avg_wt - L.avg_wt;
+    return { ok: true, date: sale.date,
+      light: { cls: lc, head: L.head, avg_wt: L.avg_wt, cwt: L.cwt, per_head: Math.round(lp * 100) / 100 },
+      heavy: { cls: hc, head: H.head, avg_wt: H.avg_wt, cwt: H.cwt, per_head: Math.round(hp * 100) / 100 },
+      lb: lb, added: Math.round((hp - lp) * 100) / 100, vog: Math.round((hp - lp) / lb * 100) / 100 };
+  }
+  /* "background or sell": the reader's cost of gain ($/lb) against one report's value of gain.
+   * Gain pays when value of gain is above cost of gain. null without a usable cost. Pure. */
+  function gainVerdict(v, cog) {
+    if (!v || !v.ok || cog == null || !isFinite(cog) || cog <= 0 || cog > 20) return null;
+    var per = Math.round((v.vog - cog) * 100) / 100;
+    return { pays: per > 0, even: per === 0, per_lb: per, per_head: Math.round(per * v.lb * 100) / 100 };
+  }
+
+  var api = { valueOfGain: valueOfGain, gainVerdict: gainVerdict, VOG_MIN_HEAD: VOG_MIN_HEAD, VOG_MIN_GAP: VOG_MIN_GAP, STALE_DAYS: STALE_DAYS, nearOwn: nearOwn, ownRanges: ownRanges, glance: glance, GLANCE_N: GLANCE_N, miles: miles, daysBetween: daysBetween, nearest: nearest, classRows: classRows, money: money, signed: signed,
     niceDate: niceDate, hasSales: hasSales, CLASSES: CLASSES, PRIOR_DAYS: PRIOR_DAYS, MIN_HEAD: MIN_HEAD, NEAR_MILES: NEAR_MILES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgSaleBarn = api;
   if (typeof document === 'undefined') return;
 
   /* ---------- page ---------- */
-  var S = { data: null, sex: 'steers', grade: '1', here: null, label: '', state: '', seq: 0 };
+  var S = { data: null, sex: 'steers', grade: '1', here: null, label: '', state: '', seq: 0, shown: [], vogPick: '' };
   function $(id) { return document.getElementById(id); }
   function status(msg, err) { var el = $('sb-status'); el.textContent = msg || ''; el.className = 'sb-status' + (err ? ' err' : ''); }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify({ sex: S.sex, grade: S.grade, zip: $('sb-zip').value || '', state: S.state })); } catch (e) {} }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify({ sex: S.sex, grade: S.grade, zip: $('sb-zip').value || '', state: S.state, cog: ($('vog-cog') || {}).value || '' })); } catch (e) {} }
   function getJSON(url, ms) {
     var c = typeof AbortController === 'function' ? new AbortController() : null, to;
     var timer = new Promise(function (_, rej) { to = setTimeout(function () { if (c) c.abort(); rej(new Error('timeout')); }, ms || 9000); });
@@ -132,13 +171,20 @@
   }
   function today() { return new Date().toISOString().slice(0, 10); }
 
+  function title(b) { return b.name || (b.state + ' auctions, ' + (b.label || 'weekly summary').replace(/ summary$/, '')); }
+  function sexWord() { return S.sex === 'steers' ? 'steers' : 'heifers'; }
+  function vogLine(v) {
+    if (!v.ok) return '<p class="sb-src sb-vogno">Value of gain not shown: ' + esc(v.why) + '.</p>';
+    return '<p class="sb-vog"><b>Value of gain ' + money(v.vog) + ' a lb</b> from ' + v.light.avg_wt + ' to ' + v.heavy.avg_wt + ' lb ' + sexWord() + ': ' +
+      money(v.heavy.per_head, 0) + ' a head minus ' + money(v.light.per_head, 0) + ', over ' + v.lb + ' lb. <a href="#vog">Background or sell?</a></p>';
+  }
   function card(b, mi) {
     var s0 = b.sales[0], key = S.sex + '|' + S.grade;
     var rows = classRows(b, key);
     var age = daysBetween(s0.date, today());
     var kind = b.label || 'weekly summary';
     var where = b.town ? esc(b.town) + ', ' + esc(b.state) : esc(b.state) + ' ' + esc(kind);
-    var h = '<section class="sb-card"><header><h3>' + esc(b.name || (b.state + ' auctions, ' + kind.replace(/ summary$/, ''))) + '</h3>' +
+    var h = '<section class="sb-card"><header><h3>' + esc(title(b)) + '</h3>' +
       '<p class="sb-where">' + where + (mi != null ? ' &middot; ' + Math.round(mi) + ' mi' : '') + '</p></header>';
     h += '<p class="sb-sale">Sale of <b>' + niceDate(s0.date) + '</b>' + (s0.receipts ? ' &middot; ' + s0.receipts.toLocaleString('en-US') + ' head on the report' : '') +
       (age > STALE_DAYS ? ' <span class="sb-old">' + age + ' days old</span>' : '') + '</p>';
@@ -155,7 +201,7 @@
         h += '<tr><th scope="row">' + r.cls + '-' + (r.cls + 99) + '</th><td>' + r.head + '</td><td><b>' + r.cwt.toFixed(2) + '</b><small>' +
           r.lo.toFixed(2) + '-' + r.hi.toFixed(2) + '</small></td><td>' + money(r.per_head, 0) + '<small>' + r.avg_wt + ' lb</small></td><td>' + chg + '</td></tr>';
       });
-      h += '</tbody></table></div>';
+      h += '</tbody></table></div>' + vogLine(valueOfGain(s0, key, today()));
     }
     h += '<p class="sb-src">' + (s0.noted_head ? s0.noted_head + ' head with a note on the report (value added, fleshy, unweaned and the like) are left out of the averages. ' : '') +
       'Reported by USDA AMS, not the barn. <a href="' + esc(b.source_url) + '" rel="noopener">The USDA report</a></p></section>';
@@ -205,12 +251,12 @@
     if (!barns.length && !states.length) return;
     renderGlance(states);
     $('sb-empty').hidden = true;
-    var h = '';
+    var h = '', shown = [];
     if (S.state) {
       var inState = barns.filter(function (b) { return b.state === S.state; });
       var sum = states.filter(function (b) { return b.state === S.state; });
       var ownIn = own.filter(function (b) { return b.state === S.state; });
-      sum.concat(inState).forEach(function (b) { h += card(b, S.here ? miles(S.here, b) : null); });
+      sum.concat(inState).forEach(function (b) { shown.push(b); h += card(b, S.here ? miles(S.here, b) : null); });
       if (ownIn.length) {
         h += '<h3 class="sb-ownh">' + esc(ST[S.state] || S.state) + ' barns USDA does not report</h3>';
         ownIn.forEach(function (b) { h += ownCard(b, S.here ? miles(S.here, b) : null); });
@@ -218,7 +264,7 @@
       $('sb-head').textContent = inState.length || sum.length || ownIn.length ? 'Barns in ' + S.state : 'No barn on file in ' + S.state + ' yet';
     } else if (S.here) {
       var n = nearest(barns, S.here, MAX_NEAR, NEAR_MILES);
-      n.list.forEach(function (x) { h += card(x.barn, x.mi); });
+      n.list.forEach(function (x) { shown.push(x.barn); h += card(x.barn, x.mi); });
       var no = nearOwn(own, S.here, MAX_NEAR, NEAR_MILES);
       if (no.length) {
         h += '<h3 class="sb-ownh">Near you, not in a USDA report</h3>';
@@ -229,9 +275,48 @@
       $('sb-head').textContent = 'Enter a ZIP or pick a state';
     }
     out.innerHTML = h;
+    S.shown = shown.length ? shown : states.slice().sort(function (a, b) { return (b.sales[0].receipts || 0) - (a.sales[0].receipts || 0); });
+    renderVog();
     var latest = barns.concat(states).map(function (b) { return b.sales[0].date; }).sort().pop();
     $('sb-asof').textContent = barns.length + ' barns with a sale on file' + (own.length ? ', and ' + own.length + ' more listed that USDA does not report' : '') +
       '. Newest sale ' + niceDate(latest) + '. Checked ' + niceDate(String(D.updated).slice(0, 10)) + '.';
+  }
+
+  /* "Background or sell": one report at a time, picked from the reports on screen (the state
+   * summaries, biggest first, before a ZIP or state is picked). */
+  function renderVog() {
+    var box = $('vog'), sel = $('vog-barn'), out = $('vog-out');
+    if (!box || !sel || !out) return;
+    var key = S.sex + '|' + S.grade, t = today();
+    var opts = S.shown.map(function (b) { return { b: b, v: valueOfGain(b.sales[0], key, t), id: b.id || b.state }; })
+      .filter(function (o) { return o.v.ok; });
+    box.hidden = false;
+    var keep = S.vogPick || sel.value;
+    sel.innerHTML = opts.map(function (o) {
+      return '<option value="' + esc(o.id) + '">' + esc(title(o.b)) + ', ' + esc(niceDate(o.v.date).replace(/, \d{4}$/, '')) + '</option>';
+    }).join('');
+    sel.disabled = !opts.length;
+    if (!opts.length) {
+      out.innerHTML = 'No report on screen has both a lighter and a heavier class of Medium and Large ' + esc(S.grade) + ' ' + sexWord() +
+        ' (10 head or more each) from a sale in the last 14 days, so no value of gain is shown.';
+      return;
+    }
+    var pick = opts.filter(function (o) { return o.id === keep; })[0] || opts[0];
+    sel.value = pick.id;
+    var v = pick.v, raw = String($('vog-cog').value || '').replace(/[$\s]/g, '');
+    var cog = raw === '' ? null : parseFloat(raw), g = gainVerdict(v, cog);
+    var who = esc(title(pick.b)) + ' (sale of ' + niceDate(v.date) + ')';
+    var base = 'At ' + who + ', ' + v.light.avg_wt + ' lb ' + sexWord() + ' brought ' + money(v.light.per_head, 0) + ' a head and ' +
+      v.heavy.avg_wt + ' lb ' + sexWord() + ' ' + money(v.heavy.per_head, 0) + ': ' + money(v.added, 0) + ' more for ' + v.lb +
+      ' more lb, a value of gain of <b>' + money(v.vog) + ' a lb</b>.';
+    if (raw === '') { out.innerHTML = base + ' Type your cost of gain to compare.'; return; }
+    if (!g) { out.innerHTML = base + ' Type your cost of gain in dollars a pound, more than zero (not cents).'; return; }
+    var yours = ' Your gain costs ' + money(cog) + ' a lb';
+    if (g.even) out.innerHTML = '<b>Even at these prices.</b> ' + base + yours + ', the same.';
+    else if (g.pays) out.innerHTML = '<b>Gain pays at these prices.</b> ' + base + yours + ', so you keep about ' + money(g.per_lb) +
+      ' a lb, or ' + money(g.per_head, 0) + ' a head over the ' + v.lb + ' lb.';
+    else out.innerHTML = '<b>Gain does not pay at these prices.</b> ' + base + yours + ', ' + money(-g.per_lb) + ' a lb more than the sale paid, or about ' +
+      money(-g.per_head, 0) + ' a head short over the ' + v.lb + ' lb. Selling at ' + v.light.avg_wt + ' lb brings more.';
   }
 
   function byZip() {
@@ -272,6 +357,11 @@
       if (saved.grade === '1' || saved.grade === '1-2') S.grade = saved.grade;
       if (/^\d{5}$/.test(saved.zip || '')) $('sb-zip').value = saved.zip;
       if (/^[A-Z]{2}$/.test(saved.state || '')) S.state = saved.state;
+      if ($('vog-cog') && /^\$?\d{0,2}(\.\d{0,3})?$/.test(saved.cog || '')) $('vog-cog').value = saved.cog || '';
+    }
+    if ($('vog-cog')) {
+      $('vog-cog').addEventListener('input', function () { save(); renderVog(); });
+      $('vog-barn').addEventListener('change', function () { S.vogPick = this.value; renderVog(); });
     }
     sync();
     seg('data-sex', function (v) { S.sex = v; });
