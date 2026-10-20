@@ -18,7 +18,8 @@ name: Morning report
 # FROM_ADDR, FROM_NAME, FORMS_TO / SPONSOR_TO (who gets it), BIDS_READ_TOKEN
 # (only if the bids run list ever needs a token), STRIPE_READ_KEY (a
 # restricted, read-only Stripe key; without it the email points to the
-# dashboard).
+# dashboard), PRIVATE_REPO_TOKEN (reads the job health file from the private
+# repo and checks the key's expiry date).
 #
 # Signups change vs yesterday and vs 7 days ago come from the counts this job
 # kept on earlier mornings, in the Actions cache (counts only, never an
@@ -110,8 +111,18 @@ jobs:
       # email: it is never written to a file (data/audience.json is public).
       - name: Install the GA4 client
         run: pip install --quiet google-analytics-data==0.23.3 google-auth==2.62.0
+      # The job health file is in the private repo since Oct 20 (branch
+      # private-data). Missing, the email says so and still goes out; the
+      # key itself is checked in the email step, so a dead key is said too.
+      - name: Get the job health file (private repo)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: bash scripts/pull_raw.sh private/data/cron-health.json
       - name: Build and send
         env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
           GA4_SERVICE_ACCOUNT: ${{ secrets.GA4_SERVICE_ACCOUNT }}
           GITHUB_TOKEN: ${{ github.token }}

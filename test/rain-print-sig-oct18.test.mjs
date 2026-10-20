@@ -93,5 +93,5 @@ test("copy: no em dashes in the new lines, and every page loads the bumped engin
     assert.ok(m && !/—/.test(m[0]), id);
   }
   for (const [n, h] of PAGES) assert.match(h, /\/components\/rain-print\.js\?v=60"/, n);
-  assert.match(read("components/rain-county-print.js"), /ENGINE = '\/components\/rain-print\.js\?v=58'/);
+  assert.match(read("components/rain-county-print.js"), /ENGINE = '\/components\/rain-print\.js\?v=60'/);
 });

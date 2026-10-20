@@ -580,7 +580,7 @@ def collect(bundle_d, results_d, out_dir, made=None):
         kept += 1
     os.makedirs(out_dir, exist_ok=True)
     for st, cs in sorted(files.items()):
-        json.dump({"schema": SCHEMA, "state": st, "model": results_d.get("model"), "batch_id": results_d.get("batch_id"),
+        json.dump({"schema": SCHEMA, "state": st, "batch_id": results_d.get("batch_id"),
                    "made": made or results_d.get("collected_utc"), "counties": cs},
                   open(os.path.join(out_dir, st.lower() + ".json"), "w", encoding="utf-8"), indent=1, ensure_ascii=False, sort_keys=True)
     return kept, rej
@@ -856,6 +856,7 @@ def selftest():
         ok(kept == 1 and len(rej) == len(bd_["story"]) - 1, f"collect keeps the good one ({kept}, {len(rej)} rejected)")
         j = json.load(open(os.path.join(out, "ia.json")))
         ok(list(j["counties"]) == [r0["fips"]] and j["counties"][r0["fips"]]["hash"] == r0["hash"], "collect writes the story with its facts hash")
+        ok("model" not in j and '"m"' not in json.dumps(j), "the published story file names no model")
         je = j["counties"][r0["fips"]]
         ok(je["facts"] == r0["facts"] and je["sid"] == r0["sid"] and je["through"] == r0["facts"]["through_iso"], "collect stores the facts and station it was checked against")
         # the request: the API job builds one per county with the facts only

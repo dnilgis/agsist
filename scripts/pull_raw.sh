@@ -14,24 +14,35 @@
 # dark map that looks like a working one. Better a red run than that.
 #
 # By hand, for a local build: bash scripts/pull_raw.sh data/atlas/raw
-# Test knobs: RAW_REMOTE (default origin), RAW_BRANCH (default raw).
+# (since Oct 20 the branches are in the private repo dnilgis/agsistretired; from
+# a session that has it cloned: RAW_REMOTE=/path/to/agsistretired bash scripts/pull_raw.sh data/fsa)
+#
+# Where from: scripts/private_remote.sh (RAW_REMOTE wins; in Actions,
+# PRIVATE_REPO_TOKEN picks the private repo; else origin). RAW_BRANCH (default
+# raw). RAW_SOFT=1 is only for inputs a job can run without (the Daily's
+# editorial notes, the last job health file): a miss is then a ::warning:: and
+# exit 0. Build inputs (the Atlas pulls, the FSA files) never set it.
 set -u
 set -o pipefail
 [ $# -gt 0 ] || { echo "::error::pull_raw.sh: no paths given"; exit 1; }
 ROOT=$(git rev-parse --show-toplevel) || exit 1
 cd "$ROOT" || exit 1
-REMOTE="${RAW_REMOTE:-origin}"
+. "$ROOT/scripts/private_remote.sh" || { echo "::error::pull_raw.sh: scripts/private_remote.sh is missing"; exit 1; }
 BR="${RAW_BRANCH:-raw}"
+fail() {
+  if [ "${RAW_SOFT:-}" = 1 ]; then echo "::warning::$* (going on without it)"; exit 0; fi
+  echo "::error::$*"; exit 1
+}
 ok=0
 for i in 1 2 3; do
   if out=$(git fetch -q --depth 1 "$REMOTE" "$BR" 2>&1); then ok=1; break; fi
-  echo "::warning::git fetch $BR failed: $(printf '%s' "$out" | tail -3 | tr '\n' ' ')"
-  sleep $((10 * i))
+  echo "::warning::git fetch $BR failed: $(printf '%s' "$out" | tail -3 | tr '\n' ' ' | hide)"
+  sleep $((${RAW_SLEEP:-10} * i))
 done
-[ "$ok" = 1 ] || { echo "::error::could not fetch the $BR branch from $REMOTE; the raw inputs are not here, so nothing is built"; exit 1; }
+[ "$ok" = 1 ] || fail "could not fetch the $BR branch from $WHERE (missing, or the key cannot read it); the raw inputs are not here, so nothing is built"
 SHA=$(git rev-parse FETCH_HEAD) || exit 1
 for p in "$@"; do
-  git cat-file -e "$SHA:$p" 2>/dev/null || { echo "::error::$p is not on the $BR branch ($SHA); nothing is built without it"; exit 1; }
+  git cat-file -e "$SHA:$p" 2>/dev/null || fail "$p is not on the $BR branch ($SHA); nothing is built without it"
 done
-git archive "$SHA" -- "$@" | tar -x -C "$ROOT" || { echo "::error::could not unpack $* from $BR"; exit 1; }
-echo "raw: unpacked $* from $BR $(git rev-parse --short "$SHA")"
+git archive "$SHA" -- "$@" | tar -x -C "$ROOT" || fail "could not unpack $* from $BR"
+echo "raw: unpacked $* from $BR $(git rev-parse --short "$SHA") on $WHERE"

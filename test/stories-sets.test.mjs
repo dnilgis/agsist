@@ -64,7 +64,9 @@ test("prompts and code carry no em dash; PRF stays neutral; the bid pages never 
 test("the builders print the story where it belongs and only through the set's own gate", () => {
   const prfB = read("scripts/build_prf_counties.py");
   assert.match(prfB, /SP\.story_html\(STORIES, st\["st"\], fips, SP\.county_facts\(/);
-  assert.ok(prfB.indexOf('class="prf-lede"') < prfB.indexOf('{ctx.get("story", "")}'), "PRF: under the lede");
+  /* Sig, Oct 20: the county page's first screen leads with the priced example; the story heads the record section */
+  assert.ok(prfB.indexOf('<h2 id="record">') < prfB.indexOf('{ctx.get("story", "")}'), "PRF: at the head of the record section");
+  assert.ok(prfB.indexOf('class="prf-lede"') < prfB.indexOf("{exh}") && prfB.indexOf("{exh}") < prfB.indexOf('{ctx.get("story", "")}'), "PRF: the example comes first");
   const at = read("scripts/build_atlas_pages.py");
   assert.match(at, /SA\.story_html\(W\.stories, W, f, d\)/);
   assert.match(at, /\{story_html\}\{warn\}<div class="two">/);

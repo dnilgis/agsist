@@ -148,10 +148,21 @@
      with that state ticked (2026-10-13; moved up 2026-10-14). */
   var box = doc.getElementById('prf-spon'), pbox = doc.getElementById('prf-spon-p');
   var offer = doc.querySelector ? doc.querySelector('a[data-prf-offer]') : null;
+  /* The offer band ships under "Find your grid" (the empty page) and moves under the step 3 answer,
+     after the email box, the first time a grid opens (Sig, Oct 20). */
+  var band = offer && offer.closest ? offer.closest('.prf-spon-offer') : null;
+  function placeBand() {
+    if (!band || band.getAttribute('data-placed')) return;
+    var after = doc.querySelector('.prf-tool [data-prf-notice]') || box;
+    if (!after || !after.parentNode) return;
+    after.parentNode.insertBefore(band, after.nextSibling);
+    band.setAttribute('data-placed', 'answer');
+  }
   if (box) {
     var asked = '';
     doc.addEventListener('prf:grid', function (ev) {
       var dt = (ev && ev.detail) || {}, st = dt.st || '';
+      if (dt.grid) placeBand();
       if (st === asked) return;
       asked = st;
       if (offer) offer.setAttribute('href', ST_RE.test(st) ? '/prf-sponsor?state=' + st : '/prf-sponsor');

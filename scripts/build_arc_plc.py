@@ -160,7 +160,7 @@ STYLES_V = "26"
 LOADER_V = "19"
 ASOF_V = "1"
 QR_V = "11"   # components/qr.js on its own (10: an alphanumeric mode for the Rain Print standard code, 2026-10-14; 11: mixed mode and versions to 40 for the printed report QRs, 2026-10-19)
-CALC_V = "13"   # 13: both 12s together (fx/nightmoney + fx/nightseo, 2026-10-19); 12 (nightseo): one rounding for the benchmark yield (byf, night audit Oct 19, 2026); 12 (nightmoney): no expected dollars where the price swings are borrowed from corn, county-yield wording (money audit 3); 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
+CALC_V = "14"   # 14: arcfix (Oct 20, 2026): no "Ask FSA" (range answers in arc-plc-simple.js and arc-plc-math.js), the 2025 and 50-cent lines (arc-plc-simple.css), the landlord line on the counter sheet (arc-plc-sheet.js), "at your price only" (arc-plc.js), the main page's first line (arc-plc.css); 13: both 12s together (fx/nightmoney + fx/nightseo, 2026-10-19); 12 (nightseo): one rounding for the benchmark yield (byf, night audit Oct 19, 2026); 12 (nightmoney): no expected dollars where the price swings are borrowed from corn, county-yield wording (money audit 3); 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2026))   # years with both an FSA county yield and a price change; 2025 counts once its final MYA is out
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap, at least 1 SE, and MIN_WINS winning years
@@ -719,7 +719,7 @@ def load_plc_county(root="."):
     hdr = [str(h or "").strip() for h in rows[hi]]
     ist, ico, icr, iy = hdr.index("State"), hdr.index("County"), hdr.index("Crop Name"), hdr.index("PLC Yield")
     want = {"CORN": "corn", "SOYBEANS": "soybeans", "WHEAT": "wheat", **XC.PLC_NAMES}
-    out, base = {}, {}
+    out, base, raw = {}, {}, {}
     for r in rows[hi + 1:]:
         if not r or r[ist] is None:
             continue
@@ -728,10 +728,11 @@ def load_plc_county(root="."):
         if crop and y:
             f = str(r[ist]).zfill(2) + str(r[ico]).zfill(3)
             out.setdefault(f, {})[crop] = round(y, 1)
+            raw.setdefault(f, {})[crop] = rnd(y, 2)   # to the hundredth, as a PLC yield is written (171.75), for the 2025 estimate; the scenarios keep the tenth
             b = _num(r[hdr.index("ENROLLED BASE (PLC+ARC_CO+ARC_IC)")]) if "ENROLLED BASE (PLC+ARC_CO+ARC_IC)" in hdr else None
             if b:
                 base.setdefault(f, {})[crop] = b
-    return {"py": best[0], "file": os.path.relpath(best[1]), "yields": out, "base": base}
+    return {"py": best[0], "file": os.path.relpath(best[1]), "yields": out, "base": base, "raw": raw}
 
 
 def load_arc_tables(root="."):
@@ -746,13 +747,27 @@ def load_arc_tables(root="."):
             continue
         i_n = next(i for i, h in enumerate(hdr) if re.search(r"Actual ARC-CO Price", str(h or "")))
         i_l = next(i for i, h in enumerate(hdr) if "National Loan Rate" in str(h or ""))
-        t = {}
+        com = next((r for r in rows if r and str(r[0] or "").strip() == "Commodity"), None) or ()
+        i_e = next((i for i, h in enumerate(com) if re.search(r"Effective Reference Price", str(h or ""))), None)
+        i_d = next((i for i, h in enumerate(com) if "Publishing Dates" in str(h or "")), None)
+        when = None
+        for r in rows[:4]:
+            mm = re.match(r"([A-Z][a-z]+) (\d{1,2}), (20\d\d)", str((r or [None])[0] or ""))
+            if mm:
+                when = dt.datetime.strptime(mm.group(0), "%B %d, %Y").date().isoformat()
+                break
+        t, erp, fin = {}, {}, {}
         for r in rows:
             nm = XC._name((r or [None])[0])
             if nm and _num(r[i_n]) is not None and _num(r[i_l]) is not None:
                 t[nm] = (_num(r[i_n]), str(r[i_n + 1] or "").strip(), _num(r[i_l]))
+                if i_e is not None and _num(r[i_e]) is not None:
+                    erp[nm] = _num(r[i_e])
+                md = re.match(r"([A-Z][a-z]+) (\d{1,2}), (20\d\d)", str(r[i_d] or "").strip()) if i_d is not None else None
+                if md:
+                    fin[nm] = dt.datetime.strptime(md.group(0), "%B %d, %Y").date().isoformat()
         if t:
-            out[py] = {"rows": t, "file": os.path.relpath(p, root)}
+            out[py] = {"rows": t, "erp": erp, "final_on": fin, "date": when, "file": os.path.relpath(p, root)}
     return out
 
 
@@ -1351,6 +1366,10 @@ def compute(inp):
                     if "same" in lv:
                         c["levels"][(k, i, y)] = lv
                         c["verdicts"][(k, i, y)] = lv["same"]
+                        if cd and any(v_["verdict"] == "mismatch" for v_ in lv.values()):
+                            # no one typical farm at this PLC yield: the call across PLC yields of 60% to 100% of
+                            # the benchmark instead of "Ask FSA" (arcfix item 2, Oct 20, 2026)
+                            c.setdefault("rng", {})[(k, i, y)] = range_call(cd, e)
     plc = inp["plc_county"]
     for c in counties.values():
         c["lead"] = lead_crop(c, plc)
@@ -1371,6 +1390,9 @@ def compute(inp):
         "_arc_tabs": {py: t["file"] for py, t in arc_tabs.items()},
         "states": states,
         "_plc_yields": plc["yields"] if plc else {},
+        "_plc_raw": plc.get("raw", {}) if plc else {},
+        "_y25": y25_table(inp, arc_tabs),
+        "_xtab_dates": (inp.get("xtab") or {}).get("dates") or {},
         "_plc_base": plc["base"] if plc else {},
         "sources": {k: {"name": v[0], "url": v[1]} for k, v in SRC.items()},
         "links": {"fsa": FSA_PAGE, "fsa_data": FSA_DATA, "office": OFFICE},
@@ -1380,6 +1402,102 @@ def compute(inp):
         "_xtab_date": (inp.get("xtab") or {}).get("date"),
         "_geo": inp.get("geo"),
     }
+
+
+RNG = (0.60, 1.00)   # the PLC yields, as a share of the practice's benchmark, a mismatched row is run across
+
+
+def range_call(cd, e):
+    """A row whose county average PLC yield is above this practice's benchmark has no one typical farm. Run
+    the typical-farm call at PLC yields from 60% to 100% of the benchmark (every 5%). One call across all of
+    them: that call, and where it stops, found by stepping on past the range (down for PLC, which only gains
+    as the PLC yield rises; up for ARC-CO) and narrowing to a whole unit. More than one: None, "depends".
+    -> {"w": verdict or None, "lo", "hi": the range's ends, "x": the crossover yield or None, "dir": "over" | "under" | None}."""
+    by = e["by"]
+    lo, hi = rnd(by * RNG[0], 1), rnd(by * RNG[1], 1)
+
+    def call(py):
+        v = typical_eval(cd, py, e)
+        return v["verdict"] if v else None
+    pts = [rnd(by * f / 100.0, 1) for f in range(int(RNG[0] * 100), int(RNG[1] * 100) + 1, 5)]
+    ws = {call(py) for py in pts}
+    if len(ws) != 1 or None in ws:
+        return {"w": None, "lo": lo, "hi": hi, "x": None, "dir": None}
+    w0 = ws.pop()
+    out = {"w": w0, "lo": lo, "hi": hi, "x": None, "dir": None}
+    side = w0[5:] if w0.startswith("lean_") else w0
+    if side not in ("plc", "arc"):
+        return out
+    step = -1 if side == "plc" else 1
+    good, bad, f = (lo if side == "plc" else hi), None, (RNG[0] if side == "plc" else RNG[1])
+    while bad is None:
+        f = round(f + step * 0.05, 2)
+        if f <= 0 or f > 3.0:
+            break
+        py = rnd(by * f, 1)
+        if call(py) == w0:
+            good = py
+        else:
+            bad = py
+    if bad is None:
+        # never changed out to 0 (PLC) or 3 times the benchmark (ARC-CO): any PLC yield a farm here could carry
+        out["x"], out["dir"] = 0, ("over" if side == "plc" else "under")
+        return out
+    # narrow to the whole unit the call holds from (PLC: at and over; ARC-CO: at and under)
+    a, b = int(math.floor(min(bad, good))), int(math.ceil(max(bad, good)))   # PLC: fails at a, holds at b; ARC-CO: holds at a, fails at b
+    while b - a > 1:
+        m = (a + b) // 2
+        if (call(float(m)) == w0) == (side == "plc"):
+            b = m
+        else:
+            a = m
+    out["x"], out["dir"] = ((b, "over") if side == "plc" else (a, "under"))
+    return out
+
+
+def y25_table(inp, arc_tabs):
+    """FSA's 2025 Table 4 (Oct 9, 2026): per crop key, the 2025 effective reference price, the actual ARC-CO price
+    (the higher of the 2025/26 season-average price and the 2025 loan rate), F or P, and the date FSA lists for the
+    final price. The three main crops' 2025 ERPs must equal ours from NASS's final prices (2019 to 2023 window)."""
+    t = arc_tabs.get(2025) or {}
+    if not t:
+        return {}
+    names = {"corn": "Corn", "soybeans": "Soybeans", "wheat": "Wheat"}
+    names.update({k: v["table"] for k, v in XC.XCROPS.items()})
+    out = {}
+    for k, nm in names.items():
+        row = t["rows"].get(nm)
+        if not row or nm not in t.get("erp", {}):
+            continue
+        out[k] = {"erp": t["erp"][nm], "price": row[0], "flag": row[1], "loan": row[2], "final_on": t.get("final_on", {}).get(nm)}
+    for k, c in CROPS.items():
+        if k in out:
+            ys = [inp["mya"][k][y] for y in range(2019, 2024) if y in inp["mya"][k]]
+            if len(ys) == 5:
+                ours = erp_calc(ys, c["statutory"], PARAMS["erp_pct"], PARAMS["erp_cap_pct"])["erp"]
+                if abs(ours - out[k]["erp"]) > 0.005:
+                    raise SystemExit(f"[arc-plc] FSA's 2025 ERP for {k} is {out[k]['erp']}, ours {ours}: refusing two answers")
+    return {"date": t.get("date"), "file": t.get("file"), "crops": out}
+
+
+def est25(c, k, e, D):
+    """2025 for a typical farm on entry e: the higher of PLC (FSA's 2025 rate x the county average PLC yield as
+    FSA files it x 85%) and ARC-CO (FSA's 2025 county rate for this practice x 85%), per base acre, before
+    sequestration. Our arithmetic on FSA's figures, not a USDA determination.
+    -> None (no figures), {"final": False, "on": date or None}, or {"final": True, "plc", "arc" (None: not in FSA's file), "rate"}."""
+    t = ((D.get("_y25") or {}).get("crops") or {}).get(k)
+    if not t:
+        return None
+    if t["flag"] != "F":
+        return {"final": False, "on": t.get("final_on")}
+    pyr = (D.get("_plc_raw") or {}).get(c["f"], {}).get(k)
+    if not pyr:
+        return None
+    dp = 4 if (D["years"]["2026"]["crops"].get(k) or {}).get("unit") == "lb" else 2
+    rate = rnd(max(0.0, t["erp"] - t["price"]), dp)
+    h = next((x for x in e.get("hist", []) if x["py"] == 2025), None)
+    arc = rnd(per_base(h["pay"]), 2) if h and h.get("pay") is not None else None
+    return {"final": True, "plc": rnd(per_base(rate * pyr), 2), "arc": arc, "rate": rate, "py": pyr}
 
 
 def typical_eval(cd, py, e):
@@ -1733,6 +1851,21 @@ def worked_example(D):
 </ol>"""
 
 
+def rice_note(D):
+    """Rice prices go final later than the rest (FSA's Table 1, 'Publishing Dates for the Final 2026/27 MYA Prices'),
+    so rice payments come later too. Read from FSA's table, never typed in (arcfix item 6)."""
+    y6 = D["years"]["2026"]["crops"]
+    grp = {}
+    for k in ("rice_long", "rice_medium", "rice_japonica"):
+        on = (y6.get(k) or {}).get("final_on")
+        if on:
+            grp.setdefault(on, []).append({"rice_long": "long grain", "rice_medium": "medium and short grain", "rice_japonica": "temperate japonica"}[k])
+    if not grp:
+        return ""
+    parts = [f"{' and '.join(v)} on {nice_date(d_)}" for d_, v in sorted(grp.items())]
+    return "Rice is later: FSA lists the final 2026/27 rice price for " + "; ".join(parts) + "."
+
+
 def faq_items(D):
     y6, y7 = D["years"]["2026"]["crops"], D["years"]["2027"]["crops"]
     return [
@@ -1777,7 +1910,7 @@ def faq_items(D):
          "split it by their shares, and both sign the contract."),
         ("When do the payments come?",
          "After the marketing year ends and USDA publishes the season-average price: after October 1, 2027 for 2026 crops and after "
-         "October 1, 2028 for 2027 crops."),
+         "October 1, 2028 for 2027 crops. " + html.unescape(rice_note(D))),
         ("Is there a deadline for the payment eligibility paperwork after I sign up?",
          "Yes. FSA's rule says every payment eligibility document for a 2026 contract is due by March 1, 2028. Miss it and the "
          "payment does not issue: FSA treats it as forfeited, not denied."),
@@ -1989,17 +2122,18 @@ def build_main(D, ch):
   <p class="page-kicker">Farm program &middot; 2026 and 2027 crop years</p>
   <h1>ARC or PLC for 2026 and 2027: decision calculator</h1>
   {byline_html(D)}
+  <p class="ap-first">Pick your county to see which pays more on a typical farm there, ARC-CO or PLC, crop by crop.</p>
+  <h2 class="ap-find-h sr-only">Find your county&rsquo;s short answer</h2>
+  {picker_html(D)}
   <div class="ap-quick" id="quick-answer">
     {lead_sentence(D)}
+    {tally_sentence(D)}
     <p>By our math from final USDA prices, the 2027 PLC effective reference prices are <b>{usd(c7['erp']['erp'])}</b> for corn,
     <b>{usd(s7['erp']['erp'])}</b> for soybeans and <b>{usd(w7['erp']['erp'])}</b> for wheat (2026: {usd(y6['corn']['erp']['erp'])},
     {usd(y6['soybeans']['erp']['erp'])}, {usd(y6['wheat']['erp']['erp'])}). PLC pays if the national season-average price ends below that.
     ARC-CO pays when county revenue falls below 90% of its benchmark. {signup_copy(build_date())['quick']}</p>
-    {tally_sentence(D)}
     <p class="ap-small">{fsa_line} {asof(D['updated'])}</p>
   </div>
-  <h2 class="ap-find-h">Find your county&rsquo;s short answer</h2>
-  {picker_html(D)}
   {deadlines_html()}
   <p class="page-lede">Pick the year, crop and county, type your PLC yield, and set a price. The table shows which program pays more per base acre across
   a range of prices and county yields. It does not forecast the price. You set it.</p>
@@ -2016,7 +2150,7 @@ def build_main(D, ch):
     Some advisers prefer signing each year so nothing is assumed.</li>
     <li><b>If you don&rsquo;t sign:</b> for 2026, a farm with no election by Dec 11, 2026 keeps its 2025 election and gets no 2026 payment.</li>
     <li><b>How to sign:</b> {ONLINE}</li>
-    <li><b>When payments come:</b> after Oct 1, 2027 for 2026 crops; after Oct 1, 2028 for 2027 crops.</li>
+    <li><b>When payments come:</b> after Oct 1, 2027 for 2026 crops; after Oct 1, 2028 for 2027 crops. {rice_note(D)}</li>
   </ul>
 
   </div>
@@ -2408,8 +2542,11 @@ def typical_html(c, k, D, cname):
         if not vl:
             continue
         if vl["verdict"] == "mismatch":
-            lines.append(f'<p class="ap-small"><b>{lab}:</b> no typical-farm verdict. FSA&rsquo;s average PLC yield for the county ({XC.yf(cd6, pyv, 1)}) covers '
-                         f'all practices and is above this benchmark ({XC.byf(cd6, e["by"])}), so it does not describe a typical farm here. Run your own PLC yield below.</p>')
+            rw = rng_of(c, k, i, LY_, D)
+            lines.append(f'<p class="ap-small"><b>{lab}, {LY_}:</b> FSA&rsquo;s average PLC yield for the county ({XC.yf(cd6, pyv, 1)}) covers '
+                         f'all practices and is above this benchmark ({XC.byf(cd6, e["by"])}), so it does not describe a typical farm here. '
+                         f'Across PLC yields of 60% to 100% of the benchmark: {rw["s"]}.' + (" Run your own PLC yield in the calculator below." if rw["t"] == "mismatch" else "")
+                         + '</p>')
             continue
         if head_v is None and vl["verdict"] in SHORT:
             head_v = (vl, e, LY_)
@@ -2575,6 +2712,102 @@ def gap_line(v, lc, y, cd, by=None):
     return "Not enough years of price and county yield history to call it."
 
 
+RUN_LINK = '<a href="#run">run it below</a>'
+
+
+def attr1(s):
+    """A value for a single-quoted attribute: JSON keeps its double quotes (no &quot; on every key)."""
+    return s.replace("&", "&amp;").replace("'", "&#39;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def rng_words(r, cd, e, lc, y):
+    """What a card says for a row with no one typical farm (range_call()): never "Ask FSA".
+    -> {b: the big word, t: the verdict its tier badge shows, g: the sentence (the county average PLC yield is
+    over the benchmark), g2: the same for a PLC yield button that lands over it, a: the answer alone, s: a few
+    words (the other year, the other practice, the counter sheet)}."""
+    w0 = (r or {}).get("w")
+    by_t = XC.byf(cd, e["by"])
+    span = f"PLC yields of 60% to 100% of the benchmark ({XC.yf(cd, r['lo'], 0)} to {XC.yf(cd, r['hi'], 0)})" if r else ""
+    why = f"The county average PLC yield is above this {by_t} benchmark, so there is no one typical farm here."
+    why2 = f"A PLC yield that high is above the {by_t} benchmark."
+    if not r or w0 is None:
+        g = f"Depends on your PLC yield: {RUN_LINK}. Across {span} the answer changes."
+        return {"b": "Depends on your PLC yield", "t": "mismatch", "g": f"{g} {why}", "g2": f"{why2} {g}", "a": g, "y": by_t, "s": "depends on your PLC yield"}
+    side = w0[5:] if w0.startswith("lean_") else w0
+    if side in ("plc", "arc"):
+        x, dr = r.get("x"), r.get("dir")
+        at = ("at any PLC yield" if not x else f"at any PLC yield {dr} {XC.yf(cd, x, 0)}")
+        lead = f"{WORD[side]} {at}."
+        g = f"{lead} Across {span}, the call is {VWORD[w0]} every time."
+        sw = f"{WORD[side]} at a PLC yield {dr} {XC.yf(cd, x, 0)}" if x else f"{WORD[side]} at any PLC yield"
+        return {"b": WORD[side], "t": w0, "g": f"{g} {why}", "g2": f"{why2} {g}", "a": g, "y": by_t, "s": sw}
+    if w0 in ("close", "none"):
+        lead = ("Either one: too close to call" if w0 == "close" else f"Neither one is likely to pay on {lc} for {y}") + f" across {span}."
+        return {"b": big_word({"verdict": w0}), "t": w0, "g": f"{lead} {why}", "g2": f"{why2} {lead}", "a": lead, "y": by_t, "s": low1(short_word({"verdict": w0}))}
+    g = gap_line({"verdict": w0}, lc, y, cd)
+    return {"b": big_word({"verdict": w0}), "t": w0, "g": g, "g2": g, "a": g, "y": "", "s": low1(short_word({"verdict": w0}))}
+
+
+def rng_of(c, k, i, y, D):
+    """rng_words for entry i of crop k in year y, or None."""
+    r = (c.get("rng") or {}).get((k, i, y))
+    cd = D["years"][y]["crops"].get(k)
+    if r is None or not cd:
+        return None
+    return rng_words(r, cd, c["k"][k][i], CROP_LC[k], y)
+
+
+def est25_html(c, k, e, D, cls="ap-y25"):
+    """The 2025 line on a crop card (arcfix item 1, Oct 20, 2026): our arithmetic on FSA's final 2025 figures."""
+    x = est25(c, k, e, D)
+    cd = D["years"]["2026"]["crops"][k]
+    if not x:
+        return ""
+    if not x["final"]:
+        return (f'<p class="{cls}"><b>2025:</b> the 2025 {esc(CROP_LC[k])} price is not final yet'
+                + (f"; FSA lists {nice_date(x['on'])} for it" if x.get("on") else "") + ".</p>")
+    if x["arc"] is None:
+        body = f"PLC {usd_pay(x['plc'])} per base acre (FSA&rsquo;s 2025 ARC-CO rate for this county is not in its file)"
+    elif cents(x["plc"]) == 0 and cents(x["arc"]) == 0:
+        body = "neither program pays, PLC $0 and ARC-CO $0 per base acre"
+    else:
+        body = f"higher of PLC {usd_pay(x['plc'])} or ARC-CO {usd_pay(x['arc'])} per base acre"
+    return f'<p class="{cls}"><b>2025, our estimate, not a USDA figure:</b> {body}, typical farm, before 5.7% sequestration.</p>'
+
+
+def at50(cd):
+    """The price 'under USDA's' a card prices at: 50 cents under for bushel crops; for pound crops, where 50 cents
+    is more than the price, 10% under. -> (price, words) or None."""
+    cen = (cd.get("scen") or {}).get("center")
+    if not cen:
+        return None
+    if cd.get("unit") == "lb":
+        return rnd(cen * 0.9, 4), "10% under"
+    return rnd(cen - 0.50, 2), "50 cents under"
+
+
+def at50_html(c, k, i, D, LY):
+    """'At 50 cents under USDA's price: PLC $X, ARC-CO $Y per base acre (typical farm)' (arcfix item 4): the
+    typical farm's payments with the price fixed there, the same past years' county yields; the calculator's
+    "at your price only" figure for that price."""
+    cd = D["years"][LY]["crops"].get(k)
+    pyv = D["_plc_yields"].get(c["f"], {}).get(k)
+    v = c["levels"].get((k, i, LY), {}).get("same")
+    if not cd or not pyv or not v or v["verdict"] in ("mismatch", "noprice", "pending"):
+        return ""
+    a = at50(cd)
+    sc = cd.get("scen") or {}
+    if not a or a[0] <= 0:
+        return ""
+    e = c["k"][k][i]
+    dy = 1.0 if sc.get("fix") else e["dy"]
+    u = scen_eval(cd["erp"]["erp"], cd["bp"]["value"], cd["loan"], pyv, [(1.0, e["by"], dy)], sc["center"], sc["ratios"], price=a[0])
+    if not u.get("n"):
+        return ""
+    return (f'<p class="ap-at50">At {XC.pf(cd, a[0])}, {a[1]} USDA&rsquo;s {XC.pf(cd, sc["center"])} for {LY}: PLC {usd_pay(u["plc"])}, '
+            f'ARC-CO {usd_pay(u["arc"])} per base acre (typical farm).</p>')
+
+
 def erp_line(cd, lc, y):
     return f"PLC only pays if {lc} {avg_verb(lc)} under {XC.say_price(cd, cd['erp']['erp'])} for {y}."
 
@@ -2715,18 +2948,22 @@ def level_html(c, k, D, LY, OY, nm, mi, oi):
     v = c["levels"][(k, mi, LY)][nm]
     v7 = c["levels"][(k, mi, OY)][nm]
     g = gap_line(v, lc, LY, cd)
-    if v["verdict"] == "mismatch" and c["levels"][(k, mi, LY)]["same"]["verdict"] != "mismatch":
-        g = ("A PLC yield that high is above the county benchmark yield, so this page cannot figure it. Ask your FSA office.")
+    big, tv = big_word(v), v
+    if v["verdict"] == "mismatch":
+        rw = rng_of(c, k, mi, LY, D)
+        big, tv = rw["b"], {"verdict": rw["t"]}
+        g = rw["g"] if c["levels"][(k, mi, LY)]["same"]["verdict"] == "mismatch" else rw["g2"]
     oth, vo = "", None
     if oi is not None and (k, oi, LY) in c["levels"]:
         vo = c["levels"][(k, oi, LY)][nm]
         note = " Figured with the county&rsquo;s all-practice PLC yield; an irrigated farm&rsquo;s own is often higher." if es[oi]["d"] == "irr" else ""
-        oth = f'<p class="ap-oth"><b>{DLABEL[es[oi]["d"]]} ground:</b> {low1(short_word(vo)) if vo["verdict"] not in ("mismatch",) else "ask your FSA office"}.{note}</p>'
+        oth = f'<p class="ap-oth"><b>{DLABEL[es[oi]["d"]]} ground:</b> {low1(short_word(vo)) if vo["verdict"] not in ("mismatch",) else rng_of(c, k, oi, LY, D)["s"]}.{note}</p>'
     if e["d"] == "irr":
         oth = '<p class="ap-oth">Figured with the county&rsquo;s all-practice PLC yield; an irrigated farm&rsquo;s own is often higher.</p>' + oth
     erp = "" if v["verdict"] == "mismatch" else f'<p>{erp_line(cd, lc, LY)}</p>'
-    return (f'<div class="ap-ans"><span class="ap-big">{big_word(v)}</span>{tier_html(v)}</div>'
-            f'<p>{g}</p>{erp}{oth}<p class="ap-y2">{year_line(v7, OY)}</p>'), lv_pack(v, v7, vo)
+    y2 = year_line(v7, OY) if v7["verdict"] != "mismatch" else f"<b>{OY}:</b> {rng_of(c, k, mi, OY, D)['s']}"
+    return (f'<div class="ap-ans"><span class="ap-big">{big}</span>{tier_html(tv)}</div>'
+            f'<p>{g}</p>{erp}{oth}<p class="ap-y2">{y2}</p>'), lv_pack(v, v7, vo)
 
 
 def trigger_yield(cd, by):
@@ -2753,13 +2990,19 @@ def trigger_html(cd, e, LY):
     ns = f"{n:,}"
     # and "under 52 bu ... above the 52.13 bu benchmark" (Newton Co., MO barley, 52.93): the tenth whenever
     # the line is over the benchmark, so the two numbers never read the wrong way round (sets pass, 2026-10-18)
-    if n >= e["by"] or _t > e["by"]:
+    lb = cd.get("unit") == "lb"
+    if not lb and (n >= e["by"] or _t > e["by"]):
         ns = f"{math.floor(round(_t * 10, 6)) / 10:,.1f}"
     cen = cd["scen"]["center"]
     src = ("USDA&rsquo;s price outlook" if (cd.get("scen") or {}).get("kind") != "fut" else "the futures-based price")
     at = (f"at {src}, {XC.pf(cd, cen)}" if p == cen else f"at the {XC.pf(cd, p)} loan rate ({src} is under it)")
     u = XC.UNIT[cd["unit"]]["short"]
     over = (f" That is above the {XC.byf(cd, e['by'])} benchmark, so at that price it pays even on a normal crop." if _t > e["by"] else "")
+    # pound crops: one rounding on the trigger line, whole pounds like the benchmark beside it (arcfix item 6,
+    # Oct 20, 2026: Lubbock Co., TX read "under 1,613 lb" on one card and "under 2,870.2 lb" on the next).
+    # Where the whole pound would not clear the whole-pound benchmark, the line says "about the benchmark".
+    if lb and _t > e["by"] and n <= int(rnd(e["by"], 0)):
+        over = f" That is about the {XC.byf(cd, e['by'])} benchmark, so at that price it pays even on a normal crop."
     return (f'<p class="ap-trig">ARC-CO pays here for {LY} if the county yield comes in under <b>{ns} {u}</b> {at}.{over}</p>'
             f'<p class="ap-small ap-trig-m">90% of the {XC.byf(cd, e["by"])} benchmark &times; the {XC.pf(cd, cd["bp"]["value"])} benchmark price, '
             f'divided by {XC.pf(cd, p)}.</p>')
@@ -2788,19 +3031,37 @@ def crop_card(c, k, D, LY, OY):
         tt = re.search(r'data-t="([^"]+)"', tag).group(1)
         other[nm] = f'{c["levels"][(k, mi, LY)][nm]["py"]};{tt};{pk}'
     cen = (cd.get("scen") or {}).get("center")
+    # the answers for a PLC yield with no one typical farm (range_call), for the Lower and Higher buttons
+    rj = {}
+    r_ly, r_oy = rng_of(c, k, mi, LY, D), rng_of(c, k, mi, OY, D)
+    r_ot = rng_of(c, k, oi, LY, D) if oi is not None else None
+    if r_ly:
+        rj["ly"] = [r_ly["b"], r_ly["t"], r_ly["a"], r_ly["y"]]
+    if r_oy:
+        rj["oy"] = r_oy["s"]
+    if r_ot:
+        rj["ot"] = r_ot["s"]
     attrs = (f' data-lc="{esc(lc)}" data-cen="{XC.pf(cd, cen) if cen else ""}" data-pu="{esc(XC.say_price(cd, cd["erp"]["erp"]))}"'
              + (f' data-oth="{DLABEL[es[oi]["d"]]}"' if oi is not None and (k, oi, LY) in c["levels"] else "")
-             + "".join(f' data-{nm}="{esc(v)}"' for nm, v in other.items()))
+             + "".join(f' data-{nm}="{esc(v)}"' for nm, v in other.items())
+             + (f" data-rng='{attr1(json.dumps(rj, separators=(',', ':'), ensure_ascii=False))}'" if rj else ""))
     return (f'<article class="ap-crop" id="crop-{k}"{attrs}>{head}'
             f'<div class="ap-lv"{level_tag(c, k, mi, e, LY, OY, "same")} data-lv="same" data-p="{sp}">{same}</div>'
-            f'{trigger_html(cd, e, LY)}</article>')
+            f'{trigger_html(cd, e, LY)}{at50_html(c, k, mi, D, LY)}{est25_html(c, k, e, D)}</article>')
+
+
+# the counter sheet's landlord line (arcfix item 5): the page's own wording ("Rented ground", the FAQ) and FSA's
+# ("Landowners cannot enroll in either program unless they have a share interest in the crops on the farm",
+# fsa.usda.gov/arc-plc, references branch fsa-arc-plc, read Oct 15, 2026) [CFR54]
+LEASE_LINE = ("<b>Rented ground:</b> on a share lease, landlord and tenant both sign and split the payment by share. On a cash lease the "
+              "tenant enrolls and is paid unless the two agree otherwise; FSA says a landowner with no share in the crop cannot enroll.")
 
 
 def sheet_shell(D):
     """/arc-plc/sheet: the one counter sheet page (noindex). One letter page, black and white, for the
     FSA office. components/arc-plc-sheet.js reads ?c=<state>/<county> and fills it from
     data/arc-plc/math/<ST>.json, QR code included (components/qr.js)."""
-    cfg = {"states": {S["slug"]: st for st, S in sorted(D["states"].items())}, "math": f"/{OUT_MATH}/",
+    cfg = {"states": {S["slug"]: st for st, S in sorted(D["states"].items())}, "math": f"/{OUT_MATH}/", "lease": LEASE_LINE,
            "icons": ICON_SVG, "key": key_html().replace('class="ap-key"', 'class="ap-key sh-key"').replace("<svg class=\"ap-ic\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><use href=\"#api-", "@@")}
     for k, v in ICON_SVG.items():
         cfg["key"] = cfg["key"].replace(f'@@{k}"/></svg>', v)
@@ -2852,15 +3113,17 @@ def _cents2(x):
     return 0 if cents(x) == 0 else int(round(rnd(x, 2) * 100))
 
 
-def vpack(v):
+def vpack(v, rw=None):
     """One typical-farm verdict, compact, for components/arc-plc-math.js:
-    [verdict] or [verdict, n] (withheld) or
+    [verdict] or [verdict, n] (withheld) or ["mismatch", tier verdict, the few words rng_words() gives] or
     [verdict, PLC cents, ARC-CO cents, PLC wins, ARC-CO wins, n, |gap| cents, years ARC-CO paid, flags 1 borrowed 2 futures start
     disagrees 4 gap under a dollar (cents()) 8 no dollars (nousd) 16 too few years of its own prices, |gap| in whole dollars (whole(), rounded once from the unrounded gap)].
     Withheld dollars (nousd) pack null for PLC, ARC-CO, |gap| and whole dollars: the file carries no figure the page will not print."""
     if not v:
         return None
     w_ = v["verdict"]
+    if w_ == "mismatch" and rw:
+        return [w_, rw["t"], rw["s"]]
     if w_ in ("pending", "noprice", "mismatch"):
         return [w_]
     if w_ == "withheld":
@@ -2969,7 +3232,7 @@ def math_json(D):
                         r["h"] = [_n(x_) for h in hist for x_ in (h["py"], h["by"], h["bp"], h["ay"], h["pay"])]
                     rows.append(r)
                 es_out[k] = rows
-                v_out[k] = [({LY: vpack(c["verdicts"].get((k, i, LY))), OY: vpack(c["verdicts"].get((k, i, OY)))}
+                v_out[k] = [({LY: vpack(c["verdicts"].get((k, i, LY)), rng_of(c, k, i, LY, D)), OY: vpack(c["verdicts"].get((k, i, OY)), rng_of(c, k, i, OY, D))}
                              if (c["verdicts"].get((k, i, LY)) or c["verdicts"].get((k, i, OY))) else None) for i in range(len(es))]
             for k in ("corn", "soybeans"):
                 if k in main + small and (y6[k].get("scen") or {}).get("alt"):
@@ -3014,15 +3277,62 @@ def key_numbers_html(c, D, cname):
             e7 = f"{XC.pf(y7[k], y7[k]['erp']['erp'])}{XC.per(cd)}" if k in y7 else "not set yet"
             rows.append(f'<tr><th scope="row">{esc(lab)}</th><td>{XC.byf(cd, e["by"]) if e["by"] else "not loaded"}</td>'
                         f'<td>{XC.pf(cd, cd["erp"]["erp"])}{XC.per(cd)}</td><td>{e7}</td>'
-                        f'<td>{XC.yf(cd, plcy[k], 1) if plcy.get(k) else "none from FSA"}</td>{pays}</tr>')
+                        f'<td>{XC.yf(cd, plcy[k], 1) if plcy.get(k) else "none from FSA"}</td><td>{est25_cell(c, k, e, D)}</td>{pays}</tr>')
     if not rows:
         return ""
     return (f'<h2 id="key-numbers">Key numbers</h2><p class="ap-small">FSA&rsquo;s figures for '
             f'{esc(cname)}. PLC pays when the season-average price ends under the effective reference price. ARC-CO paid is FSA&rsquo;s rate per '
-            f'acre for the county, before the 85% factor.</p><div class="ap-scroll"><table class="tbl ap-t ap-keyn"><thead><tr><th scope="col" rowspan="2">Crop</th><th scope="col" rowspan="2">Benchmark<br>yield 2026</th>'
-            f'<th scope="colgroup" colspan="2">PLC pays under</th><th scope="col" rowspan="2">County avg<br>PLC yield</th>'
+            f'acre for the county, before the 85% factor. 2025 est. is our estimate from FSA&rsquo;s final 2025 figures: per base acre, typical farm, '
+            f'before the 5.7% sequestration cut, the farm gets the higher of the two. Not a USDA determination. 2025 payments: see your FSA office for the date.</p>'
+            f'<div class="ap-scroll"><table class="tbl ap-t ap-keyn"><thead><tr><th scope="col" rowspan="2">Crop</th><th scope="col" rowspan="2">Benchmark<br>yield 2026</th>'
+            f'<th scope="colgroup" colspan="2">PLC pays under</th><th scope="col" rowspan="2">County avg<br>PLC yield</th><th scope="col" rowspan="2">2025 est.<br>per base acre</th>'
             + (f'<th scope="colgroup" colspan="{len(hy)}">ARC-CO paid per acre</th>' if hy else "") + '</tr><tr><th scope="col">2026</th><th scope="col">2027</th>'
             + "".join(f'<th scope="col">{y}</th>' for y in hy) + f'</tr></thead><tbody>{"".join(rows)}</tbody></table></div>')
+
+
+def est25_cell(c, k, e, D):
+    """Key numbers' 2025 column: the two figures est25() gives, or why there are none."""
+    x = est25(c, k, e, D)
+    if not x:
+        return "no PLC yield from FSA" if ((D.get("_y25") or {}).get("crops") or {}).get(k) else "not in FSA&rsquo;s table"
+    if not x["final"]:
+        return "price not final"
+    return f"PLC {usd_pay(x['plc'])}<br>ARC-CO " + (usd_pay(x["arc"]) if x["arc"] is not None else "not in file")
+
+
+def faq25(c, D, cname):
+    """'When is my 2025 payment?' (arcfix item 1): only what FSA's files say, and our estimate for the card crops."""
+    fsa25 = next((h for h in ((D["fsa"] or {}).get("history") or []) if h["py"] == 2025), None)
+    t25 = D.get("_y25") or {}
+    bits = []
+    main_k, small_k, _n = crop_split(c, D)
+    for k in main_k:
+        mi, _oi = card_entries(c, k, D)
+        if mi is None:
+            continue
+        e = c["k"][k][mi]
+        x = est25(c, k, e, D)
+        if not x:
+            continue
+        lab = CROP_LC[k] + ("" if e["d"] == "all" else f" ({DLABEL[e['d']].lower()})")
+        if not x["final"]:
+            bits.append(f"{lab}: 2025 price not final yet" + (f" (FSA lists {nice_date(x['on'])})" if x.get("on") else ""))
+        elif x["arc"] is None:
+            bits.append(f"{lab}: PLC {usd_pay(x['plc'])}, ARC-CO rate not in FSA's file")
+        else:
+            bits.append(f"{lab}: higher of PLC {usd_pay(x['plc'])} or ARC-CO {usd_pay(x['arc'])}")
+    if not bits:
+        return None
+    src = []
+    if fsa25 and fsa25.get("as_of"):
+        src.append(f"FSA's final 2025 ARC-CO county rates are in its file of {nice_date(fsa25['as_of'])}")
+    if t25.get("date"):
+        src.append(f"its 2025 prices in its table of {nice_date(t25['date'])}")
+    return ("When is my 2025 payment?",
+            (" and ".join(src) + ". " if src else "")
+            + "We have no FSA notice of the 2025 payment date that we can check, so see your FSA office for the date. "
+            f"For 2025 a farm gets the higher of ARC-CO or PLC. Our estimate for a typical farm in {cname}, per base acre before the 5.7% "
+            f"sequestration cut. " + "; ".join(bits)[0].upper() + "; ".join(bits)[1:] + ". Not a USDA determination.")
 
 
 def county_title(cname, st, lab, LY, by_txt):
@@ -3192,6 +3502,10 @@ def county_page(st, S, c, D, ch):
                          f"{plc_py}. Each farm has its own PLC yield, shown on its FSA-156EZ."))
         if not official:
             blocks.append(f"<p>Break-even by PLC yield as a share of the official benchmark (2026 prices):</p>{crossover_table(cd)}")
+    if official:
+        f25 = faq25(c, D, cname)
+        if f25:
+            faqs.append(f25)
     faq_html = "".join(f"<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>" for q, a in faqs)
     OY = "2027" if LY == "2026" else "2026"
     jsonld = [{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
@@ -3878,6 +4192,61 @@ def selftest():
     ck("trigger under the benchmark stays floored to a whole bushel", "<b>62 bu</b>" in _h and "above the" not in _h, _h)
     ck("title yield rounds half up like the page (54.05 -> 54.1)", XC.yf({"unit": "bu"}, 54.05, 1) == "54.1 bu")
     ck("a closed program year FSA left blank is not 'not yet'", pending_word(2021) == "none in FSA file" and pending_word(int(lead_year()) - 1) == "not yet")
+    # arcfix, Oct 20, 2026 ------------------------------------------------------------------------------
+    # item 1: 2025 for a typical farm, against an independent hand check (scratchpad/arcux/hand.py, typed from
+    # FSA's 2025 Table 4 and the county files): PLC = (ERP - higher of MYA and loan) x county PLC yield x 85%,
+    # ARC-CO = FSA's 2025 county rate x 85%, per base acre, before sequestration
+    try:
+        inp25 = load_inputs(ROOT)
+        y25 = y25_table(inp25, inp25["arc_tabs"])
+        raw25, f25 = inp25["plc_county"]["raw"], inp25["fsa"][2025]["rows"]
+
+        def e25(fips, crop, d, k):
+            r = f25[(fips, "", crop, d)]
+            Dm = {"_y25": y25, "_plc_raw": raw25, "years": {"2026": {"crops": {k: {"unit": "lb" if k in ("seed_cotton", "peanuts", "rice_long") else "bu"}}}}}
+            return est25({"f": fips}, k, {"hist": [{"py": 2025, "pay": r["pay"]}]}, Dm)
+        for nm, args, want in (("Lubbock TX irrigated seed cotton", ("48303", "Seed Cotton", "irr", "seed_cotton"), (98.06, 13.54)),
+                               ("McLean IL corn", ("17113", "Corn", "all", "corn"), (37.96, 9.78)),
+                               ("Hamilton NE irrigated corn", ("31081", "Corn", "irr", "corn"), (40.61, 71.40)),
+                               ("Sumner KS non-irrigated wheat", ("20191", "Wheat", "non", "wheat"), (40.25, 27.91))):
+            x = e25(*args)
+            ck(f"2025 typical farm, {nm}: PLC ${want[0]:.2f}, ARC-CO ${want[1]:.2f}", x and x["final"] and (x["plc"], x["arc"]) == want, str(x))
+        ck("2025: rice's price is not final, so no 2025 dollars (FSA lists Oct 30, 2026)",
+           y25["crops"]["rice_long"]["flag"] == "P" and y25["crops"]["rice_long"]["final_on"] == "2026-10-30"
+           and est25({"f": "05001"}, "rice_long", {"hist": []}, {"_y25": y25, "_plc_raw": raw25, "years": {"2026": {"crops": {"rice_long": {"unit": "lb"}}}}})["final"] is False)
+        ck("2025 ERPs in FSA's Table 4 match ours (corn $4.42, soybeans $10.71, wheat $6.35)",
+           (y25["crops"]["corn"]["erp"], y25["crops"]["soybeans"]["erp"], y25["crops"]["wheat"]["erp"]) == (4.42, 10.71, 6.35))
+        # item 6: the source list's dates are the tables' own
+        ck("FSA tables 1, 2 and 4 are the Oct 9, 2026 copies; Table 3 says its own Sept 11 date",
+           inp25["xtab"]["dates"] == {"2026_MYA": "2026-10-09", "2026_ERP": "2026-10-09", "2026_PLC": "2026-09-11", "2026_ARC_CO": "2026-10-09"}
+           and all("2026-10/" in XC.TABLE_URLS[k][1] for k in ("FSAT_MYA", "FSAT_ERP", "FSAT_ARC")), str(inp25["xtab"].get("dates")))
+        ck("rice timing from FSA's Table 1: long and medium grain Oct 29, 2027, temperate japonica Jan 31, 2028",
+           [inp25["xtab"]["rows"][n].get("final_on") for n in ("Rice (long grain)", "Rice (med/short grain)", "Rice (temperate japonica)")]
+           == ["2027-10-29", "2027-10-29", "2028-01-31"])
+    except ImportError:
+        ck("openpyxl installed", False)
+    # item 2: a row with no one typical farm gets the call across PLC yields of 60% to 100% of the benchmark,
+    # with the PLC yield where it stops; never "Ask FSA"
+    _rat = {t: r for t, r in zip(range(2015, 2026), (0.80, 0.86, 0.92, 0.97, 1.0, 1.02, 1.05, 1.08, 1.12, 1.18, 1.25))}
+    _cdp = {"erp": {"erp": 0.315}, "bp": {"value": 0.315}, "loan": 0.195, "unit": "lb", "dp": 4,
+            "scen": {"kind": "corn_oct", "center": 0.24, "ratios": _rat, "fix": True, "borrowed": True}}
+    _e = {"by": 2430.0, "dy": {}}
+    _r = range_call(_cdp, _e)
+    _at = lambda py: typical_eval(_cdp, py, _e)["verdict"]
+    ck("range: one call across 60% to 100% of the benchmark is printed with its crossover",
+       _r["w"] == "lean_plc" and _r["dir"] == "over" and 0 < _r["x"] < 0.6 * 2430 and _at(_r["x"]) == "lean_plc" and _at(_r["x"] - 1) != "lean_plc", str(_r))
+    _w = rng_words(_r, _cdp, _e, "peanuts", "2026")
+    ck("range: the words name the program and the PLC yield, never 'Ask FSA'",
+       _w["b"] == "PLC" and f"PLC at any PLC yield over {_r['x']:,} lb." in _w["g"] and "Ask FSA" not in json.dumps(_w), _w["g"])
+    _w = rng_words({"w": None, "lo": 1458.0, "hi": 2430.0, "x": None, "dir": None}, _cdp, _e, "peanuts", "2026")
+    ck("range: a call that changes across the range says 'Depends on your PLC yield' and links the calculator",
+       _w["b"] == "Depends on your PLC yield" and 'href="#run"' in _w["g"] and "Ask" not in _w["g"], _w["g"])
+    # item 6: pound crops, one rounding on the trigger line: whole pounds, like the benchmark beside it
+    _cdl = {"unit": "lb", "dp": 4, "bp": {"value": 0.315}, "loan": 0.195, "scen": {"center": 0.24, "kind": "x"}}
+    _h = trigger_html(_cdl, {"by": 2430.0}, "2026")      # 0.9 x 2430 x 0.315 / 0.24 = 2,870.4
+    ck("pound trigger over the benchmark: whole pounds", "<b>2,870 lb</b>" in _h and "above the 2,430 lb benchmark" in _h, _h)
+    _h = trigger_html(dict(_cdl, scen={"center": 0.28347, "kind": "x"}), {"by": 2430.2}, "2026")   # 0.9 x 2,430.2 x 0.315 / 0.28347 = 2,430.5
+    ck("pound trigger a hair over the benchmark: whole pounds, 'about the benchmark'", "<b>2,430 lb</b>" in _h and "about the 2,430 lb benchmark" in _h and "above the" not in _h, _h)
     print(f"\n{'FAIL' if fails else 'OK'}: {len(fails)} failure(s)")
     return 1 if fails else 0
 

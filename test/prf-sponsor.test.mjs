@@ -215,7 +215,7 @@ test("the shipped data file is valid and holds no test sponsor", () => {
 
 const STATE_PAGES = meta.states.map((s) => ({ st: s, rel: "prf/" + slug(s.name) + ".html" }));
 
-const JS_TAG = '<script src="/components/prf-sponsor.js?v=4" defer></script>';
+const JS_TAG = '<script src="/components/prf-sponsor.js?v=5" defer></script>';
 const BAND_BAD = /founding|sponsor-apply|states? left|slots? left|only \d+|\d+ (states?|slots?) (open|left)/i;
 
 test("every state page offers its slot near the top, once, with no price", () => {
@@ -264,7 +264,7 @@ test("every county page carries the one-line offer for its own state near the to
   assert.equal(n, meta.counts.counties);
 });
 
-test("/prf: the offer band under the intro and above the tool, the sponsor box beside the result, the script before prf.js", () => {
+test("/prf: the offer band under Find your grid on the empty page (moved under the answer by script), the sponsor box beside the result, the script before prf.js", () => {
   const h = readFileSync(ROOT + "prf.html", "utf8");
   const offers = h.match(/prf-spon-offer/g) || [];
   assert.equal(offers.length, 1, "one offer on /prf, not two");
@@ -276,13 +276,19 @@ test("/prf: the offer band under the intro and above the tool, the sponsor box b
   assert.ok(o.includes('<a href="/prf-sponsor" data-prf-offer data-out="prf-sponsor">See your block and ask &rarr;</a>'), "the offer goes to /prf-sponsor");
   assert.ok(!PRICE.test(o) && !BAND_BAD.test(o) && !/left/i.test(o));
   const at = h.indexOf(o);
-  assert.ok(at > h.indexOf('class="prf-lede"'), "the band sits under the intro");
-  assert.ok(at < h.indexOf('id="prf-app"'), "the band sits above the tool");
+  /* Sig, Oct 20: never above "Find your grid". In the HTML it closes #prf-app, after the find step and the
+     whole tool, so the empty page shows it under Find your grid; prf-sponsor.js moves it under the answer */
+  assert.ok(at > h.indexOf('id="prf-find-h"') && at > h.indexOf('id="prf-app"'), "the band sits below Find your grid");
+  assert.ok(at > h.indexOf('id="prf-spon-p"') && at < h.indexOf('class="prf-byline"'), "the last thing in the tool's block");
+  assert.ok(!h.slice(h.indexOf('id="prf-tool"'), h.indexOf('id="prf-spon-p"')).includes("prf-spon-offer"), "not inside the tool until a grid opens");
+  const js = readFileSync(ROOT + "components/prf-sponsor.js", "utf8");
+  assert.match(js, /if \(dt\.grid\) placeBand\(\);/, "moved when a grid opens");
+  assert.match(js, /doc\.querySelector\('\.prf-tool \[data-prf-notice\]'\) \|\| box/, "to just after the email box under the answer");
   assert.ok(!/ag-sponsor-ribbon prf-spon-offer/.test(h), "the old bottom offer is gone");
   const box = h.indexOf('<aside class="prf-spon" id="prf-spon" hidden></aside>');
   assert.ok(box > h.indexOf('id="prf-answer"') && box < h.indexOf('id="prf-optimize"'), "the sponsor box sits beside the result, outside the panel");
   assert.ok(h.indexOf("prf-sponsor.js") < h.indexOf("/components/prf.js"), "prf-sponsor.js must listen before prf.js renders");
-  assert.ok(h.includes('<script src="/components/prf-sponsor.js?v=4" defer></script>'));
+  assert.ok(h.includes('<script src="/components/prf-sponsor.js?v=5" defer></script>'));
   assert.ok(!/founding/i.test(h));
   assert.ok(readFileSync(ROOT + "components/prf.js", "utf8").includes("st: S.st, stName:"), "prf.js names the state in prf:grid");
 });

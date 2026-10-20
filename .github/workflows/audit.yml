@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -95,23 +95,18 @@ jobs:
           fi
           node scripts/audit-site.mjs --base "$IN_BASE" "${ARGS[@]}"
 
-      # Committed so the TREND exists. One audit says what is broken today; a
-      # file in git says whether the site is getting better or worse.
+      # Kept so the TREND exists. One audit says what is broken today; a
+      # file in git says whether the site is getting better or worse. No page
+      # reads it, so since Oct 20 it goes to the private repo (branch
+      # private-data, private/data/audit.json), not main.
       - name: Keep the record
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
         run: |
-          git config user.name  "agsist-bot"
-          git config user.email "bot@agsist.com"
-          git add data/audit.json 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "no change"
-          else
-            HIGH=$(python3 -c "import json;print(json.load(open('data/audit.json'))['high'])" 2>/dev/null || echo "?")
-            git commit -m "audit: $HIGH high finding(s) [skip ci]"
-            for i in 1 2 3; do
-              git push && break
-              git pull --rebase --autostash && sleep 3
-            done
-          fi
+          HIGH=$(python3 -c "import json;print(json.load(open('private/data/audit.json'))['high'])" 2>/dev/null || echo "?")
+          bash scripts/push_raw.sh "audit: $HIGH high finding(s)" private/data/audit.json
 
       # ══════════════════════════════════════════════════════════════════
       #  AN ALERT HAS TO REACH A PERSON
@@ -134,7 +129,7 @@ jobs:
           import json, os, smtplib, ssl
           from email.message import EmailMessage
           try:
-              d = json.load(open("data/audit.json"))
+              d = json.load(open("private/data/audit.json"))
           except Exception:
               raise SystemExit(0)
           high = [f for f in d.get("findings", []) if f["sev"] == "high"]
@@ -148,7 +143,7 @@ jobs:
           body = ["The render audit found %d high finding(s) on %s.\n" % (len(high), d["base"])]
           for f in high[:25]:
               body.append("  %-16s %-12s %s" % (f["page"], f["kind"], f["detail"]))
-          body.append("\nFull report: the run summary in Actions, and data/audit.json in the repo.")
+          body.append("\nFull report: the run summary in Actions, and private/data/audit.json in the private repo.")
           m = EmailMessage()
           m["Subject"] = "agsist: render audit found %d problem(s)" % len(high)
           m["From"] = os.environ.get("SMTP_USER") or to

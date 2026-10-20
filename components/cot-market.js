@@ -4,7 +4,7 @@
    DEPTH ON DEMAND (2026-10-15). This used to ship inside cot.html on every
    load, 25 KB of code for a panel most readers never scroll to. It now loads
    only when a market is opened (a card or picker tap, or the panel coming
-   into view), per CLAUDE.md. components/cot-analysis.js owns the data, the
+   into view), per the site size rule. components/cot-analysis.js owns the data, the
    vintage guard and the helpers, and hands them over through `api`; this file
    owns the pixels and the words of the panel and nothing else. */
 window.cotMarket = function (api) {

@@ -347,7 +347,7 @@ def build_page(co, ctx):
                 n_live += 1
                 cells.append(g)
                 named.append((g, t["name"] + (f" ({extra})" if extra else "")))
-                stamp = CB.asof_time(min(r["priced"] for r in g.values()))
+                stamp = CB.asof_time(min(r["priced"] for r in g.values())) + CB.pasted_mark(bd["rows"], snap_ct, short=True)
                 trs.append(f'<tr><td class="l">{lab}{stamp}</td>' + "".join(_cell(g.get(c), snap_ct) for c in crops)
                            + "</tr>")
             elif bd["rows"]:

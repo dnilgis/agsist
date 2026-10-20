@@ -1,4 +1,4 @@
-// Runs the v5.34 Rain Print order-record routes of workers/subs-worker.js
+// Runs the v5.36 Rain Print order-record routes of workers/subs-worker.js
 // (POST /rp-order, GET /rp-order/list, POST /rp-order/serial) against an
 // in-memory KV and a stand-in for Stripe's Checkout Sessions list. No network.
 //   node scripts/test_rp_order_worker.mjs
@@ -220,7 +220,7 @@ console.log('rp-order worker checks: ' + n + ' passed');
   console.log('rp-order buyer checks: ' + n + ' passed');
 }
 
-// ---------- v5.35: the Stripe webhook ----------
+// ---------- v5.36: the Stripe webhook ----------
 {
   const cryptoN = await import('node:crypto');
   const SECRET = 'whsec_test_123';
@@ -291,7 +291,7 @@ console.log('rp-order worker checks: ' + n + ' passed');
   console.log('rp-order webhook checks: ' + n + ' passed');
 }
 
-// ---------- v5.36: the buyer approves the proof ----------
+// ---------- v5.37: the buyer approves the proof ----------
 {
   const cryptoN = await import('node:crypto');
   const tok = (k) => cryptoN.createHmac('sha256', 'sec').update(('rp-approve|' + k).toLowerCase()).digest('hex').slice(0, 16);

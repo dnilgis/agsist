@@ -25,6 +25,14 @@
  * repository, and what this file checks is that it stays that way.
  *
  * Natural Earth 1:50m admin-1, public domain. Rebuilt by build/make_outline.sh.
+ *
+ * 2026-10-20: /rain-radar puts a real map under the rain again (Sig: "get a
+ * real map underneath the rain at my field"). The one tile host allowed is the
+ * USGS National Map: a federal service, public domain, no key, no account, no
+ * terms that can be changed to a paid plan. The rain still draws over the
+ * outline above, so if those tiles stop loading the page is no worse than it
+ * was. Any other tile URL template, or any template carrying a key or token,
+ * fails here.
  */
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -44,6 +52,28 @@ const TILE_VENDORS = [
   "tiles.openfreemap.org", "tile.opentopomap.org",
 ];
 
+/* Tile hosts that are public domain and need no key. Adding one needs the
+   same argument USGS got: who runs it, why its terms cannot turn into a bill,
+   and what the page shows when it stops answering. */
+const PUBLIC_TILE_HOSTS = ["basemap.nationalmap.gov"];
+
+/* A tile URL template ({z} with {x}/{y}) found in served code, and whether it
+   is allowed: public host and nothing in it that looks like a key. */
+export function tileTemplates(text) {
+  const out = [];
+  const re = /https?:\/\/[^'"`\s)]*\{z\}[^'"`\s)]*/g;
+  let m;
+  while ((m = re.exec(text))) out.push(m[0]);
+  return out;
+}
+export function tileAllowed(url) {
+  let host;
+  try { host = new URL(url.replace(/\{[a-z]+\}/g, "0")).hostname; } catch { return false; }
+  if (!PUBLIC_TILE_HOSTS.includes(host)) return false;
+  if (/[?&](key|apikey|api_key|access_token|token|subscription-key)=|\{(key|token|accessToken)\}/i.test(url)) return false;
+  return true;
+}
+
 let pass = 0, fail = 0;
 const ok = (msg) => { pass++; console.log("  ok   " + msg); };
 const bad = (msg, why) => { fail++; console.log("  FAIL " + msg + "\n         " + why); };
@@ -53,10 +83,31 @@ function pages() {
     .map((f) => [f, readFileSync(join(ROOT, f), "utf8")]);
 }
 
+/* what the browser runs: root pages plus the component scripts they load */
+function served() {
+  const dir = join(ROOT, "components");
+  const js = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".js"))
+    .map((f) => ["components/" + f, readFileSync(join(dir, f), "utf8")]) : [];
+  return pages().concat(js);
+}
+
+function checkTileTemplates() {
+  console.log("\nEVERY TILE URL IS PUBLIC DOMAIN AND KEYLESS");
+  const seen = [], badOnes = [];
+  for (const [name, text] of served())
+    for (const u of tileTemplates(text)) (tileAllowed(u) ? seen : badOnes).push(`${name} -> ${u}`);
+  if (badOnes.length)
+    bad("every tile template is on " + PUBLIC_TILE_HOSTS.join(", ") + " with no key",
+        badOnes.join("\n         ") +
+        "\n         Only public domain, keyless hosts may serve a basemap here. A keyed or" +
+        "\n         paid host is the 2026-09-09 failure waiting to happen again.");
+  else ok(`${seen.length} tile template(s), all public domain and keyless` + (seen.length ? ": " + seen.join("; ") : ""));
+}
+
 function checkNoVendors() {
   console.log("\nNO RENTED TILES");
   const found = [];
-  for (const [name, html] of pages())
+  for (const [name, html] of served())
     for (const v of TILE_VENDORS)
       if (html.includes(v)) found.push(`${name} -> ${v}`);
   if (found.length)
@@ -141,6 +192,13 @@ function selftest() {
   eq(countriesNeeded({ byState: { IA: {}, ON: {} } }), ["CA", "US"], "an Ontario elevator needs CA");
   eq(countriesNeeded({ byState: {} }), [], "no data needs nothing");
   eq(countriesNeeded({}), [], "a coverage file with no byState needs nothing");
+  const usgs = "https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}";
+  eq(tileTemplates("var a='" + usgs + "';"), [usgs], "a template is found in code");
+  eq(tileAllowed(usgs), true, "the USGS topo template is allowed");
+  eq(tileAllowed(usgs + "?token=abc"), false, "a USGS template with a token is not");
+  eq(tileAllowed("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"), false, "CARTO is not");
+  eq(tileAllowed("https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=X"), false, "a keyed vendor is not");
+  eq(tileAllowed("https://tile.openstreetmap.org/{z}/{x}/{y}.png"), false, "OSM's tile server is not");
   console.log("selftest passed");
 }
 
@@ -148,6 +206,7 @@ if (process.argv.includes("--selftest")) { selftest(); process.exit(0); }
 
 const outline = readOutline();
 checkNoVendors();
+checkTileTemplates();
 checkOutlineUsers();
 checkOutlineFile(outline);
 checkCountries(outline);

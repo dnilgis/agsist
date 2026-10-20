@@ -982,6 +982,13 @@ def network_rows(grid, base=None):
             # read five hours ago never borrows this run's clock.
             rows[-1].update({"held": True, "timestamp": b.get("checkedAt"),
                              "checkedAt": b.get("checkedAt"), "pricedAt": b.get("pricedAt") or None})
+        if b.get("pasted") is True:
+            # A BOARD SIG PASTED BY HAND (2026-10-20): the site will not let the
+            # bids reader in, so Sig pastes its public page. dnilgis/bids holds
+            # it up to 7 days, aged by the paste. It prints its own paste time.
+            pa = b.get("pastedAt") or b.get("checkedAt")
+            rows[-1].update({"pasted": pa, "timestamp": pa, "checkedAt": b.get("checkedAt"),
+                             "pricedAt": b.get("pricedAt") or None})
     print(f"[fetch_bids] network: {len(bids)} rows in the feed, "
           f"{dropped_stale} stale/broken dropped, {n_held} held (skipped, read within {HELD_SKIP_HOURS} h), "
           f"{dropped_currency} not priced in USD, {len(rows)} merged in")
@@ -1032,7 +1039,7 @@ def verify_bids(bids, detail=None):
     back holding, for each withheld row, id(row) -> what the guard measured
     (kind, cohort size, cohort futures, envelope). It reads nothing back and
     no decision depends on it, so a call with and without it marks the same
-    rows the same way. withheld_report() turns it into data/bids-withheld.json.
+    rows the same way. withheld_report() turns it into private/data/bids-withheld.json.
 
     THE COHORT LEG IS KEYED ON THE SYMBOL ALONE, NOT ON THE CROP. Central
     Prairie's MILO quotes against ZCZ26 and implies 5.37, the same figure the
@@ -1189,7 +1196,9 @@ def verified_only(bids):
 # Rows are grouped: the same elevator, crop, contract, cash and basis in
 # several delivery months is one entry with the months listed. Sorted, no
 # clock in the file, so a run with nothing new writes the same bytes.
-WITHHELD_PATH = os.environ.get("WITHHELD_PATH", "data/bids-withheld.json")
+# No page reads it, so since Oct 20 it is saved to the private repo (branch private-data,
+# scripts/push_raw.sh in fetch_bids.yml), never to main.
+WITHHELD_PATH = os.environ.get("WITHHELD_PATH", "private/data/bids-withheld.json")
 WITHHELD_MAX_GROUPS = 600      # a cap on the listing; the counts are never capped
 
 
@@ -2974,7 +2983,7 @@ def selftest():
             with open(op) as f:
                 out = json.load(f)
         flag = open(gho).read() if os.path.exists(gho) else ""
-        wp = os.path.join(d, "data", "bids-withheld.json")
+        wp = os.path.join(d, "private", "data", "bids-withheld.json")
         run_main.withheld = json.load(open(wp)) if os.path.exists(wp) else None
         rp = os.path.join(d, "barchart-raw.json")
         run_main.raw = json.load(open(rp))["bids"] if os.path.exists(rp) else None

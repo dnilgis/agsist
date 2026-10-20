@@ -82,7 +82,7 @@ PAGES = [
         ("/cash-bids/company/", "Cash Bids by Elevator Company", "every elevator company with 3 or more network locations, today's bids at all its locations on one page"),
         ("/cash-bids/iowa/", "Bids and Basis by State",
          "each state's best bids, median corn and soybean basis with the number of elevators behind it, and every elevator's bid, at /cash-bids/<state>/"),
-        ("/cash-bids/iowa/ackley", "Cash Bids by Town",
+        ("/cash-bids/iowa/des-moines", "Cash Bids by Town",
          "each town's nearest-delivery corn and soybean bid and basis, the elevator and the date it posted, at /cash-bids/<state>/<town>"),
         ("/basis", "Basis by State and vs Normal",
          "your state's median corn and soybean basis, USDA regions against their own 5-year same-week normal, barge rates, and this fall's grain vs bin space"),
@@ -408,7 +408,7 @@ def selftest():
     ok("crop insurance agent" not in t and "Certified Crop Adviser (CCA)" in t, "standing byline, never 'crop insurance agent'")
     ok("licensed" not in t.lower(), "no licensed-feed claim (the Barchart feed is off)")
     ok("USDA Illinois" not in t, "no USDA Illinois fertilizer box (removed Oct 16)")
-    ok("/cash-bids/iowa/ackley" in t and "](https://agsist.com/rain)" in t, "town and county rain sets have lines")
+    ok("/cash-bids/iowa/des-moines" in t and "](https://agsist.com/rain)" in t, "town and county rain sets have lines")
     ok(not probs, "problems: %s" % probs)
     if fails:
         print("SELFTEST FAILED:\n  " + "\n  ".join(fails))

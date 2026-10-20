@@ -1,5 +1,5 @@
 /* /store-or-sell: the board line says "closes" only for a close (2026-10-16 benchmark,
- * .claude/skills/competitor-benchmark/results/2026-10-16-store-or-sell.md: it printed
+ * competitor-benchmark/results/2026-10-16-store-or-sell.md (private repo, .claude/skills): it printed
  * "closes of 2026-10-16" for prices read at 11:01 am CT, mid-session).
  * CBOT corn, soybean and wheat day session ends 1:20 pm CT. Oct 16, 2026 is CDT (UTC-5):
  *   16:01Z = 11:01 am CT, before the close -> delayed quotes, with the read time

@@ -26,7 +26,7 @@ Reply-To sig@farmers1st.com.
                 Sig (product, town year style, gift, amount, serial, the
                 "Open to fulfill" maker link, the buyer's address as Stripe
                 sent it), marked alerted first, dry run or not. A paid
-                session comes in by Stripe's webhook (worker v5.35, which
+                session comes in by Stripe's webhook (worker v5.36, which
                 also starts this job at once) or by the worker's poll.
   Once only     the record is marked mailed (POST /rp-order/mailed) BEFORE the
                 send, so a crash or a rerun can never send it twice; a send

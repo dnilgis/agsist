@@ -1076,6 +1076,7 @@ function groupElevators(bids){
        still inside the feed's withdrawal window. What was wrong was showing it
        with nothing to distinguish it from a board read ten minutes ago. */
     if(b.stale===true)map[key].unread=true;
+    if(b.pasted&&(!map[key].pasted||b.pasted>map[key].pasted))map[key].pasted=b.pasted;
     if(b.asOf){var _t=Date.parse(b.asOf);if(!isNaN(_t)&&(map[key].asOfT==null||_t>map[key].asOfT))map[key].asOfT=_t;}
     var e=map[key],cat=b.category||'other';
     /* The elevator's own listing (hours, contact, note), from its shard. */
@@ -1288,6 +1289,17 @@ function readTimeOnly(pricedAt,checkedAt){
   return !isFinite(p)||(isFinite(c)&&p===c);
 }
 /* "3h ago" from a row's posted time; nothing when the board posted no time. */
+/* "Last updated Oct 20, 2:05 PM CT" on a board Sig pasted by hand, once it is
+   older than the 14-hour line every live board is held to. Empty before then. */
+var PASTE_MARK_H=14;
+function pastedMark(iso,cls){
+  var t=Date.parse(iso||'');
+  if(isNaN(t)||Date.now()-t<PASTE_MARK_H*36e5)return'';
+  var d=new Date(t);
+  var day=d.toLocaleDateString('en-US',{timeZone:'America/Chicago',month:'short',day:'numeric'});
+  var hm=d.toLocaleTimeString('en-US',{timeZone:'America/Chicago',hour:'numeric',minute:'2-digit'});
+  return'<span class="'+cls+'" title="Copied by hand from the elevator\u2019s public bid page. Call to confirm before hauling.">Last updated '+escH(day+', '+hm)+' CT</span>';
+}
 function bbcAgo(asOf){
   var t=Date.parse(asOf||'');if(isNaN(t))return'';
   var m=Math.round((Date.now()-t)/60000);if(m<0)return'';
@@ -1358,6 +1370,7 @@ function renderBestBids(elevators){
       if(del)l2.push('<span class="bbc-delivery'+(isSpot?' bbc-delivery-spot':'')+'">'+escH(isSpot?'Spot':del)+'</span>');
       var agoSt=window.AgAsOf?AgAsOf.html(best.asOf,'bids',{prefix:best.asOfRead?'Read':'Posted'}):'';
       if(agoSt)l2.push(agoSt);else if(ago)l2.push((best.asOfRead?'read ':'posted ')+escH(ago));
+      if(best.pasted){var _pm=pastedMark(best.pasted,'bbc-pasted');if(_pm)l2.push(_pm);}
       if(bfut!=null&&blab)l2.push('<span class="bbc-fut" title="Implied by this board: cash minus basis">vs '+escH(blab)+' $'+fmtPx(bfut)+'</span>');
       if(l2.length)html+='<div class="bbc-city">'+l2.join(' \u00b7 ')+'</div>';
       if(rkN)html+='<div class="bbc-note'+(top.rk.old?' bbc-warn':'')+'">'+escH(rkN)+'</div>';
@@ -1776,6 +1789,7 @@ function renderBids(bids,keepLimit){
         if(_age>18*3600e3){var _d=new Date(elev.asOfT);html+='<div class="elev-stale" title="This elevator\u2019s bid feed hasn\u2019t updated recently, confirm before hauling">'+(window.AgAsOf?AgAsOf.html(_d,'bids'):'bids quoted '+_d.toLocaleDateString('en-US',{month:'short',day:'numeric'}))+'</div>';}
       }
     }
+    if(elev.pasted)html+=pastedMark(elev.pasted,'elev-stale');
     html+='</div><div class="elev-meta">';
     if(elev.phone)html+='<a class="elev-call-btn" href="tel:'+elev.phone.replace(/[^\d]/g,'')+'" aria-label="Call '+(elev.portal&&elev.portal.contactName?escH(elev.portal.contactName)+' at ':'')+escH(elev.facility)+' on '+escH(fmtPhone(elev.phone))+'" title="'+escH(fmtPhone(elev.phone))+'"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> Call'+(elev.portal&&elev.portal.contactName?' <span class="elev-who">'+escH(truncName(elev.portal.contactName,14))+'</span>':'')+'</a>';
     html+='<a class="elev-dir-btn" href="'+murl+'" target="_blank" rel="noopener" aria-label="Directions to '+escH(elev.facility)+'" title="Directions"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg><span class="elev-btn-t"> Directions</span></a>';
@@ -2177,7 +2191,11 @@ function netRowsFrom(shard,distanceMi){
          runs, and deliveryRank() derives it from the key meanwhile -- a field
          that is only sometimes there must never be the only thing consulted. */
       periodPast:(b.periodPast===true||b.periodPast===false)?b.periodPast:null,
-      via:'direct'
+      via:'direct',
+      /* A BOARD SIG PASTED BY HAND (dnilgis/bids rows with pasted: true, 2026-10-20): the
+         site will not let the reader in, so Sig pastes their public page. Held
+         up to 7 days and stamped "Last updated" once older than 14 hours. */
+      pasted:b.pasted===true?(b.pastedAt||b.checkedAt||''):''
     });
   });
   if(nonUsd)netLog('withheld',nonUsd,'row(s) not priced in USD at',shard.operator||shard.place||'(unnamed board)');

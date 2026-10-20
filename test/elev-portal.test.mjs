@@ -99,8 +99,8 @@ test("the page checks rows the way the worker does", () => {
   assert.equal(E.checkRows(Array(13).fill(ok)).errors[0].field, "rows");
 });
 
-test("post.html and elev-admin.html: noindex, no analytics, not in a sitemap", () => {
-  for (const p of ["post.html", "elev-admin.html"]) {
+test("post.html, elev-admin.html and elev-today.html: noindex, no analytics, not in a sitemap", () => {
+  for (const p of ["post.html", "elev-admin.html", "elev-today.html"]) {
     const h = read(p);
     assert.match(h, /<meta name="robots" content="noindex, nofollow">/, p);
     assert.match(h, /<meta name="referrer" content="no-referrer">/, p);
@@ -114,6 +114,6 @@ test("post.html and elev-admin.html: noindex, no analytics, not in a sitemap", (
   assert.match(read("components/elev-post.js"), /sig@farmers1st\.com/);
   assert.ok(!/—/.test(read("components/elev-post.js")), "elev-post.js has no em dash");
   for (const f of readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) {
-    assert.ok(!/agsist\.com\/(post|elev-admin)\b/.test(read(f)), f);
+    assert.ok(!/agsist\.com\/(post|elev-admin|elev-today)\b/.test(read(f)), f);
   }
 });

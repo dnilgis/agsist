@@ -5,7 +5,7 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
- * v5.36 (2026-10-20): THE PROOF IS THE EMAIL (Sig). POST /rp-order/approve {k, t}
+ * v5.37 (2026-10-20): THE PROOF IS THE EMAIL (Sig). POST /rp-order/approve {k, t}
  *   (public, publicGate, RATE): k is the record key, t = hmac16("rp-approve|" + k)
  *   with UNSUB_SECRET; a right pair on a paid record sets approved {at} once
  *   (again: already, same time) and starts the email job for Sig's "approved"
@@ -13,7 +13,7 @@
  *   approved_alerted and approval_overdue (proof mailed 3 business days ago,
  *   Mon to Fri, no answer; never approved for the buyer). POST
  *   /rp-order/approved-alerted {key} marks Sig's approval alert. No new secret.
- * v5.35 (2026-10-20): ORDER ALERTS. POST /rp-order/stripe is Stripe's webhook
+ * v5.36 (2026-10-20), part 2: ORDER ALERTS. POST /rp-order/stripe is Stripe's webhook
  *   (checkout.session.completed when paid, checkout.session.async_payment_succeeded),
  *   checked with the new secret STRIPE_WEBHOOK_SECRET (Stripe-Signature, HMAC
  *   SHA-256, 5 minutes' tolerance; 400 otherwise). It marks the press paid
@@ -25,7 +25,7 @@
  *   /rp-order/mailed. The poll in /rp-order/list stays as the backup.
  *   New optional secrets STRIPE_WEBHOOK_SECRET, GH_DISPATCH_TOKEN; variable
  *   RP_BUYER_EMAIL_LIVE. Every other route answers as before.
- * v5.34 (2026-10-20): RAIN PRINT ORDER RECORDS. A $19 Stripe payment showed
+ * v5.36 (2026-10-20): RAIN PRINT ORDER RECORDS. A $19 Stripe payment showed
  *   no design (Stripe keeps client_reference_id on the Checkout Session, not
  *   on the payment page). New routes only; every other route answers as before.
  *   POST /rp-order (public, publicGate, RATE["/rp-order"]): one record per press
@@ -53,6 +53,25 @@
  *   POST /rp-order/serial {last} (Bearer LIST_TOKEN only): the last serial
  *     already used, so the next one handed out is last + 1.
  *   New optional secret STRIPE_READ_KEY; no new binding.
+ * v5.34 (2026-10-20): A BOARD SIG PASTES BY HAND. New routes only; every
+ *   existing route answers exactly as before. No new binding and no new secret.
+ *   NEW Cooperative's site puts a Cloudflare bot check in front of the bids
+ *   reader, which does not try to get past it. Sig opens their public bid page
+ *   in his own browser and pastes it into elev-admin.html; the page reads the
+ *   table and sends the rows as printed.
+ *   POST /elev/admin/paste  Bearer LIST_TOKEN {site, locations: [{name, rows:
+ *     [{commodity, delivery, cash, basis, future, change}]}]}: every cell is
+ *     checked against the shape the site prints ("10/1/2026 - 10/31/2026",
+ *     "$4.26", "-35", "461-4", "-5-4"); nothing is stored unless all pass and
+ *     there is at least one row. Stored as paste:<site> = {site, name, page,
+ *     source, pastedAt (this Worker's clock when it was saved, the price's
+ *     "as of"), locations, rows}. 256 KB at most.
+ *   GET /elev/paste/<site>: that record, public (the elevator's own posted
+ *     numbers, nothing private), max-age 60. dnilgis/bids reads it.
+ *   GET /elev/paste-status: {site: {pastedAt, rows, locations}} for each site.
+ *   Sites: PASTE_SITES (newcoop only for now).
+ *   GET /sponsor-apps answers with CORS for agsist.com (elev-today.html lists
+ *   the open applications by company and tier); same token, same body.
  * v5.33 (2026-10-20): GA GATE. New route GET /ga-ok answers {"ok":true} or
  *   {"ok":false}: false when Cloudflare puts the request on a cloud, hosting
  *   or data center network (request.cf.asn in CLOUD_ASNS, or a hosting word
@@ -741,8 +760,8 @@ const PUBLIC_POSTS = new Set(["/subscribe", "/notice", "/alert-subscribe", "/wat
   "/rp-short",   // v5.14
   "/rp-gift/check", "/rp-gift/redeem"]);   // v5.16
 PUBLIC_POSTS.add("/elev/me").add("/elev/save");   // v5.20: the elevator portal
-PUBLIC_POSTS.add("/rp-order");   // v5.34: Rain Print order records
-PUBLIC_POSTS.add("/rp-order/approve");   // v5.36: the buyer approves the proof
+PUBLIC_POSTS.add("/rp-order");   // v5.36: Rain Print order records
+PUBLIC_POSTS.add("/rp-order/approve");   // v5.37: the buyer approves the proof
 function publicGate(req, path) {
   const origin = req.headers.get("Origin") || "";
   if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, cors(req));
@@ -777,7 +796,7 @@ const RATE = {
   // v5.20: the elevator portal. A manager opens the page and saves a few
   // times a day; a 24-character key cannot be walked at 60 tries an hour.
   "/elev/me": [60, 300, 1000], "/elev/save": [60, 300, 1000],
-  // v5.34: one record per press of Pay. A buyer presses once or twice; the
+  // v5.36: one record per press of Pay. A buyer presses once or twice; the
   // daily total bounds KV writes.
   "/rp-order": [30, 100, 2000],
   // v5.36: approving a proof: a buyer taps once or twice; a wrong token counts too.
@@ -1563,6 +1582,46 @@ async function elevBody(req) {
   if (!b || typeof b !== "object" || Array.isArray(b)) return { error: "bad json", status: 400 };
   return { b };
 }
+// v5.34: a board Sig pastes by hand. See the header.
+const PASTE_SITES = {
+  newcoop: { name: "NEW Cooperative", page: "https://www.newcoop.com/cash-bids",
+             source: "posted from NEW Cooperative's public bid page" },
+};
+const PASTE_MAX_BYTES = 256 * 1024;
+const PASTE_CELL = {
+  commodity: /^[A-Za-z][A-Za-z0-9 #&()\/.,'-]{0,39}$/,
+  delivery: /^\d{1,2}\/\d{1,2}\/\d{4}\s*-\s*\d{1,2}\/\d{1,2}\/\d{4}$/,
+  cash: /^\$?\d{1,3}(?:\.\d{1,4})?$/,
+  basis: /^[-+]?\d{1,4}(?:\.\d{1,2})?$/,
+  future: /^\d{2,5}-[0-7]$/,
+  change: /^(?:[-+]?\d{1,4}-[0-7]|-|unch|)$/i,
+};
+function pasteClean(b) {
+  const site = typeof b.site === "string" ? b.site : "";
+  if (!own(PASTE_SITES, site)) return { error: "unknown site" };
+  if (!Array.isArray(b.locations) || !b.locations.length || b.locations.length > 200) return { error: "locations must be a list of 1 to 200" };
+  const locations = [];
+  let rows = 0;
+  for (const [i, l] of b.locations.entries()) {
+    const name = typeof l?.name === "string" ? l.name.replace(/\s+/g, " ").trim() : "";
+    if (!name || name.length > 60 || /[<>]/.test(name)) return { error: "location " + (i + 1) + ": invalid name" };
+    if (!Array.isArray(l.rows) || l.rows.length > 60) return { error: name + ": rows must be a list of at most 60" };
+    const out = [];
+    for (const [k, r] of l.rows.entries()) {
+      const row = {};
+      for (const [f, re] of Object.entries(PASTE_CELL)) {
+        const v = typeof r?.[f] === "string" ? r[f].replace(/\s+/g, " ").trim() : "";
+        if (!re.test(v)) return { error: name + " row " + (k + 1) + ": " + f + " does not look like the board's own (" + JSON.stringify(v.slice(0, 40)) + ")" };
+        row[f] = v;
+      }
+      out.push(row);
+    }
+    rows += out.length;
+    locations.push({ name, rows: out });
+  }
+  if (!rows) return { error: "no bid rows" };
+  return { site, locations, rows };
+}
 async function elevGet(env, id) {
   try { const r = JSON.parse(await env.SUBS.get("elev:" + id)); return r && typeof r === "object" ? r : null; } catch (e) { return null; }
 }
@@ -1660,7 +1719,7 @@ async function formCounts(env) {
   return out;
 }
 
-// ---------- v5.34: Rain Print order records ----------
+// ---------- v5.36: Rain Print order records ----------
 // rpo:<ts>:<rand> = one press of Pay on /rain-print (POST /rp-order), kept
 // RPO_TTL_S. rpo-serial = {last}: the last print serial handed out (no expiry).
 const RPO_TTL_S = 120 * 24 * 3600;
@@ -1731,7 +1790,7 @@ async function rpoSerialLast(env) {
   try { const v = JSON.parse(await env.SUBS.get("rpo-serial")); return v && Number.isInteger(v.last) && v.last >= 0 ? v.last : RPO_SERIAL_START_LAST; }
   catch (e) { return RPO_SERIAL_START_LAST; }
 }
-// v5.36: the proof email's Approve link carries k (the record key) and t, an HMAC
+// v5.37: the proof email's Approve link carries k (the record key) and t, an HMAC
 // of the key with UNSUB_SECRET under its own label. Nothing about the buyer.
 function rpoApproveToken(env, k) { return hmac16("rp-approve|" + k, env.UNSUB_SECRET); }
 // Business days (Mon to Fri) from an ISO time to now; holidays are not counted out here.
@@ -1810,7 +1869,7 @@ async function rpoList(env, days) {
   return { stripe, serial_last: last, orders: out };
 }
 
-// ---------- v5.35: the Stripe webhook (Sig: "alerts whenever an order is placed") ----------
+// ---------- v5.36: the Stripe webhook (Sig: "alerts whenever an order is placed") ----------
 // POST /rp-order/stripe, from Stripe only: the Stripe-Signature header is
 // checked against STRIPE_WEBHOOK_SECRET (HMAC SHA-256 of "<t>.<body>", any v1,
 // t within RPO_WH_TOLERANCE_S of now). A paid checkout.session.completed or a
@@ -3081,12 +3140,14 @@ async function handle(req, env) {
     }
 
     if (path === "/sponsor-apps" && req.method === "GET") {
-      if (!authed) return json({ ok: false }, 403);
+      // v5.34: CORS for agsist.com, so elev-today.html can list the open ones
+      // (company and tier only; it shows nothing else). Same token as before.
+      if (!authed) return json({ ok: false }, 403, cors(req));
       const out = [];
       for (const k of await listKeys(env, "sapp:")) {
         try { out.push(JSON.parse(await env.SUBS.get(k))); } catch (e) { /* skip */ }
       }
-      return json(out);
+      return json(out, 200, Object.assign({ "Cache-Control": "no-store" }, cors(req)));
     }
 
     if (path === "/sponsor-logo" && req.method === "GET") {
@@ -3367,7 +3428,7 @@ async function handle(req, env) {
       return json({ ok: true, redeemed_on: rpgDay(ts), ships: rec.ships, product: rec.product, choice: v.rec.choice, upgrade: up }, 200, c);
     }
 
-    // ---------- v5.34: Rain Print order records ----------
+    // ---------- v5.36: Rain Print order records ----------
     // POST /rp-order: publicGate (Origin, JSON) has already run (PUBLIC_POSTS).
     if (path === "/rp-order" && req.method === "POST") {
       const c = cors(req);
@@ -3395,9 +3456,9 @@ async function handle(req, env) {
       const out = await rpoList(env, days);
       return json(Object.assign({ ok: true, days }, out), 200, Object.assign({ "Cache-Control": "no-store" }, ac));
     }
-    // v5.34: the buyer's "here's your print" email went out for this paid record (scripts/rp_buyer_email.py).
+    // v5.36: the buyer's "here's your print" email went out for this paid record (scripts/rp_buyer_email.py).
     // Only the time and the session id are kept; never the address it went to.
-    // v5.35: Stripe's webhook. Not a browser post (no Origin): the signature is the gate.
+    // v5.36: Stripe's webhook. Not a browser post (no Origin): the signature is the gate.
     if (path === "/rp-order/stripe" && req.method === "POST") {
       if (typeof env.STRIPE_WEBHOOK_SECRET !== "string" || !env.STRIPE_WEBHOOK_SECRET) return json({ ok: false, error: "not set up" }, 503);
       if (Number(req.headers.get("Content-Length") || 0) > RPO_WH_MAX_BYTES) return json({ ok: false, error: "too large" }, 413);
@@ -3418,7 +3479,7 @@ async function handle(req, env) {
       if (done.already) return json({ ok: true, already: true }, 200);
       return json({ ok: true, job: await rpoDispatch(env) }, 200);
     }
-    // v5.36: the buyer approves the proof (rain-print-approve.html posts {k, t}). publicGate has run.
+    // v5.37: the buyer approves the proof (rain-print-approve.html posts {k, t}). publicGate has run.
     // Idempotent: a second approve answers already with the first time.
     if (path === "/rp-order/approve" && req.method === "POST") {
       const c = Object.assign({ "Cache-Control": "no-store" }, cors(req));
@@ -3437,8 +3498,8 @@ async function handle(req, env) {
       const job = await rpoDispatch(env);   // Sig's "approved" alert goes out from the same email job
       return json({ ok: true, already: false, at: r.approved.at, product: r.product, job: job === "started" ? "started" : "later" }, 200, c);
     }
-    // v5.35: Sig's order alert went out for this paid record (scripts/rp_buyer_email.py), once.
-    // v5.36: /rp-order/approved-alerted, the same for his "approved, make it" alert.
+    // v5.36: Sig's order alert went out for this paid record (scripts/rp_buyer_email.py), once.
+    // v5.37: /rp-order/approved-alerted, the same for his "approved, make it" alert.
     if ((path === "/rp-order/mailed" || path === "/rp-order/alerted" || path === "/rp-order/approved-alerted") && req.method === "POST") {
       const what = path === "/rp-order/mailed" ? "mailed" : path === "/rp-order/alerted" ? "alerted" : "approved_alerted";
       if (!sig) return json({ ok: false }, 403, ac);
@@ -3456,7 +3517,7 @@ async function handle(req, env) {
       await rpoPut(env, k, r);
       return json({ ok: true, already: false, [what]: r[what] }, 200, ac);
     }
-    // v5.34: for the buyer email only (scripts/rp_buyer_email.py): the one paid session's livemode and
+    // v5.36: for the buyer email only (scripts/rp_buyer_email.py): the one paid session's livemode and
     // buyer address, read from Stripe now and handed back. Nothing is stored or logged here.
     if (path === "/rp-order/buyer" && req.method === "GET") {
       if (!sig) return json({ ok: false }, 403, ac);
@@ -3510,6 +3571,23 @@ async function handle(req, env) {
         }
         out.sort((a, b) => (b.ts || 0) - (a.ts || 0));
         return json({ ok: true, requests: out }, 200, Object.assign({ "Cache-Control": "no-store" }, ac));
+      }
+      // v5.34: a board Sig pasted by hand. Its own size cap, larger than elevBody's.
+      if (path === "/elev/admin/paste" && req.method === "POST") {
+        if (Number(req.headers.get("Content-Length") || 0) > PASTE_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, ac);
+        let raw = "";
+        try { raw = await req.text(); } catch (e) { raw = ""; }
+        if (raw.length > PASTE_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, ac);
+        let b = null;
+        try { b = JSON.parse(raw); } catch (e) { b = null; }
+        if (!b || typeof b !== "object" || Array.isArray(b)) return json({ ok: false, error: "bad json" }, 400, ac);
+        const v = pasteClean(b);
+        if (v.error) return json({ ok: false, error: v.error }, 400, ac);
+        const meta = PASTE_SITES[v.site];
+        const rec = { site: v.site, name: meta.name, page: meta.page, source: meta.source,
+                      pastedAt: new Date().toISOString(), locations: v.locations, rows: v.rows };
+        await env.SUBS.put("paste:" + v.site, JSON.stringify(rec));
+        return json({ ok: true, site: v.site, pastedAt: rec.pastedAt, rows: v.rows, locations: v.locations.length }, 200, ac);
       }
       if (req.method !== "POST") return json({ ok: false, error: "not found" }, 404, ac);
       const p = await elevBody(req);
@@ -3600,6 +3678,26 @@ async function handle(req, env) {
     }
 
     // Public: every listing that is turned on, never an email or a key.
+    // v5.34: what Sig pasted, public: the elevator's own posted numbers.
+    if (path.startsWith("/elev/paste/") && req.method === "GET") {
+      const site = path.slice("/elev/paste/".length);
+      const h = Object.assign({ "Cache-Control": "public, max-age=60" }, cors(req));
+      if (!own(PASTE_SITES, site)) return json({ ok: false, error: "unknown site" }, 404, h);
+      let rec = null;
+      try { rec = JSON.parse(await env.SUBS.get("paste:" + site)); } catch (e) { rec = null; }
+      if (!rec) return json({ ok: false, error: "nothing pasted yet" }, 404, h);
+      return json(Object.assign({ ok: true }, rec), 200, h);
+    }
+    if (path === "/elev/paste-status" && req.method === "GET") {
+      const out = {};
+      for (const site of Object.keys(PASTE_SITES)) {
+        let rec = null;
+        try { rec = JSON.parse(await env.SUBS.get("paste:" + site)); } catch (e) { rec = null; }
+        out[site] = rec ? { name: rec.name, page: rec.page, pastedAt: rec.pastedAt, rows: rec.rows, locations: rec.locations.length }
+                        : { name: PASTE_SITES[site].name, page: PASTE_SITES[site].page, pastedAt: null, rows: 0, locations: 0 };
+      }
+      return json({ ok: true, sites: out }, 200, Object.assign({ "Cache-Control": "public, max-age=60" }, cors(req)));
+    }
     if (path === "/elev/feed" && req.method === "GET") {
       const out = [];
       for (const k of await listKeys(env, "elev:")) {

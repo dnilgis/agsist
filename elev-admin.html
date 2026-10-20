@@ -61,6 +61,13 @@ th{font-size:.78rem;color:var(--dim);font-weight:600}
 .banner[hidden]{display:none}
 .chk{display:flex;align-items:center;gap:.4rem;font-weight:400;margin:.6rem 0 0}
 .chk input{width:auto;min-height:0}
+textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5rem;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--text);font-family:ui-monospace,monospace}
+.btnlink{display:inline-flex;align-items:center;min-height:40px;padding:0 1rem;border:1px solid var(--accent);border-radius:5px;color:var(--accent);font-weight:600;text-decoration:none;box-sizing:border-box}
+.pv{font-size:.9rem;margin:.5rem 0}
+.pv ul{margin:.3rem 0 .3rem 1.1rem;padding:0}
+.pv li{margin:.1rem 0}
+.pv .warn{color:var(--warn)}
+.pv details{margin:.3rem 0}
 @media(max-width:640px){
   table,tbody,tr,td{display:block;width:100%}
   thead{display:none}
@@ -79,6 +86,23 @@ th{font-size:.78rem;color:var(--dim);font-weight:600}
     <label for="tok">Token (LIST_TOKEN)</label>
     <div class="tok-row"><input id="tok" type="password" autocomplete="off" spellcheck="false"><button type="button" class="quiet" id="tok-forget">Forget the token</button></div>
     <p>Paste it once; this browser keeps it. Never put it in a link.</p>
+  </section>
+
+  <section id="paste">
+    <h2>Paste bids</h2>
+    <p>For a site that will not let our reader in. Open their bid page in your own browser, wait for the bids to show, copy the page (the Copy for AGSIST bookmark, the page source, or select all), then paste it here.</p>
+    <div class="row">
+      <div><label for="p-site">Site</label><select id="p-site"></select></div>
+      <div><label>&nbsp;</label><a id="p-open" class="btnlink" target="_blank" rel="noopener noreferrer">Open their bid page</a></div>
+    </div>
+    <label for="p-in">The page</label>
+    <textarea id="p-in" rows="5" spellcheck="false" autocomplete="off" placeholder="Paste the page here"></textarea>
+    <button type="button" id="p-clip" class="quiet">Paste from clipboard</button>
+    <button type="button" id="p-read">Read it</button>
+    <div id="p-out" class="out" role="status"></div>
+    <div id="p-prev"></div>
+    <button type="button" id="p-save" hidden>Save these bids</button>
+    <p id="p-last" class="dim"></p>
   </section>
 
   <section id="requests">
@@ -127,6 +151,7 @@ th{font-size:.78rem;color:var(--dim);font-weight:600}
     <div id="list"></div>
   </section>
 </main>
+<script src="/components/paste-bids.js?v=1"></script>
 <script>
 (function () {
   'use strict';
@@ -348,6 +373,79 @@ th{font-size:.78rem;color:var(--dim);font-weight:600}
       loadReqs();
     });
   });
+
+  // ---------- Paste bids (worker v5.34) ----------
+  // Sig pastes a site's public bid page, opened in his own browser. Nothing on
+  // this page fetches the elevator's site. The rows go to the worker as printed;
+  // dnilgis/bids reads them with the same code as a live read.
+  var PB = window.AgsistPasteBids;
+  var PUB = 'https://agsist-subs.dnilgis.workers.dev/elev/';
+  var pending = null;
+  function ctTime(iso) {
+    var d = new Date(iso); if (isNaN(d)) return '';
+    return d.toLocaleString('en-US', { timeZone: 'America/Chicago', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' CT';
+  }
+  (function () {
+    // ?paste= is a site key (from the Today page) or a host (from the Copy for
+    // AGSIST bookmark, which only knows where it was clicked).
+    var q = new URLSearchParams(location.search), asked = q.get('paste'), want = PB.siteFor(asked) || 'newcoop';
+    Object.keys(PB.SITES).forEach(function (k) {
+      var o = document.createElement('option'); o.value = k; o.textContent = PB.SITES[k].name; $('p-site').appendChild(o);
+    });
+    $('p-site').value = want;
+    if (asked && !PB.siteFor(asked)) show('p-out', 'There is no paste reader for ' + esc(asked) + ' yet. It is on the Today list with its board count.', 'bad');
+    else if (asked) show('p-out', 'If you used the Copy for AGSIST bookmark, the page is on your clipboard: tap Paste from clipboard.', '');
+    function site() { return $('p-site').value; }
+    function setOpen() { $('p-open').href = PB.SITES[site()].page; lastPaste(); }
+    function lastPaste() {
+      // A public route; the token goes along in the header only so every call this page makes looks the same.
+      var t = $('tok').value.trim();
+      if (!t) { $('p-last').textContent = ''; return; }
+      fetch(PUB + 'paste-status', { cache: 'no-store', headers: { Authorization: 'Bearer ' + t } }).then(function (r) { return r.json(); }).then(function (j) {
+        var s = j && j.sites && j.sites[site()];
+        $('p-last').textContent = s && s.pastedAt ? 'Last saved ' + ctTime(s.pastedAt) + ': ' + s.rows + ' rows, ' + s.locations + ' locations.' : 'Nothing saved for this site yet.';
+      }, function () { $('p-last').textContent = ''; });
+    }
+    $('tok').addEventListener('change', lastPaste);
+    $('p-site').addEventListener('change', function () { pending = null; $('p-save').hidden = true; $('p-prev').innerHTML = ''; show('p-out', ''); setOpen(); });
+    setOpen();
+    $('p-clip').addEventListener('click', function () {
+      if (!navigator.clipboard || !navigator.clipboard.readText) { show('p-out', 'This browser will not hand over the clipboard. Long-press the box and paste.', 'bad'); return; }
+      navigator.clipboard.readText().then(function (t) { $('p-in').value = t; readIt(); },
+        function () { show('p-out', 'The clipboard was not handed over. Long-press the box and paste.', 'bad'); });
+    });
+    $('p-read').addEventListener('click', readIt);
+    function readIt() {
+      pending = null; $('p-save').hidden = true; $('p-prev').innerHTML = '';
+      var r = PB.read(site(), $('p-in').value);
+      if (r.error) { show('p-out', esc(r.error), 'bad'); return; }
+      var boards = PB.SITES[site()].boards.length;
+      var h = '<div class="pv"><b>' + r.matched.length + ' of ' + boards + ' boards found, ' + r.rows + ' rows</b> (from ' + esc(r.kind) + ').';
+      h += '<ul>' + r.matched.map(function (l) {
+        var a = l.rows[0];
+        return '<li>' + esc(l.name) + (l.printed !== l.name ? ' <span class="dim">(printed "' + esc(l.printed) + '")</span>' : '') + ': ' + l.rows.length + ' rows'
+          + (a ? ' <span class="dim">' + esc(a.commodity + ' ' + a.cash + ', basis ' + a.basis + ', futures ' + a.future) + '</span>' : '') + '</li>';
+      }).join('') + '</ul>';
+      if (r.unmatched.length) h += '<p class="warn">Not on our list, not saved: ' + r.unmatched.map(function (u) { return esc(u.name) + ' (' + u.rows + ' rows)'; }).join(', ') + '.</p>';
+      if (r.missing.length) h += '<details><summary>' + r.missing.length + ' of our boards are not in this paste</summary><p>' + esc(r.missing.join(', ')) + '</p></details>';
+      h += '</div>';
+      $('p-prev').innerHTML = h;
+      show('p-out', 'Check the list, then save. The time saved is the "as of" time on the site.', '');
+      pending = r.body; $('p-save').hidden = false;
+    }
+    $('p-save').addEventListener('click', function () {
+      if (!pending) return;
+      $('p-save').disabled = true;
+      call('paste', pending).then(function (j) {
+        $('p-save').disabled = false;
+        if (!j.ok) { show('p-out', esc(j.error || 'Not saved.'), 'bad'); return; }
+        pending = null; $('p-save').hidden = true; $('p-in').value = '';
+        show('p-out', 'Saved ' + esc(ctTime(j.pastedAt)) + ': ' + j.rows + ' rows at ' + j.locations + ' locations. The bids reader picks it up on its next pass, about 10 minutes.', 'good');
+        lastPaste();
+      });
+    });
+    if (q.get('paste') && location.hash === '#paste') { try { $('paste').scrollIntoView(); } catch (e) {} }
+  })();
 
   if ($('tok').value) { load(); loadReqs(); }
 })();
