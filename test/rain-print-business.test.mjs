@@ -200,7 +200,7 @@ test("sample-by line: driven by business_sample_by, which stays null (nothing sh
   assert.equal(B.sampleByLine("2026-10-19", "Nov 6"), "");
   assert.equal(B.sampleByLine("2026-10-19", "2026-13-01"), "");
   // no date written into the page: its line ships empty and hidden
-  assert.match(MAIN, /order 10 or more\.<\/p>\s*<p class="rbz-sample" id="rbz-sample-by" hidden><\/p>/);
+  assert.match(MAIN, /so I can match it to your order\.<\/p>\s*<p class="rbz-sample" id="rbz-sample-by" hidden><\/p>/);
   assert.doesNotMatch(COPY, /sample by/i);
 });
 
@@ -248,4 +248,16 @@ test("a 100-customer list with mailing addresses fits the form and the worker; a
   const over = await post("x".repeat(20001));
   assert.equal(over.status, 400);
   assert.match((await over.json()).error, /towns is too long/);
+});
+
+// 2026-10-20 (business walk-through: the sample offer said "order one" with nowhere to click and no way for Sig to match it).
+test("the sample offer links to the order box and says how Sig matches it; the sample date stays Sig's", () => {
+  const p = MAIN.match(/<p class="rbz-sample" id="rbz-sample">([\s\S]*?)<\/p>/)[1];
+  assert.match(p, /<a href="\/rain-print#rp-buy" data-rbz-cta="sample">Order one at the regular price<\/a> and I take it off your invoice when you order 10 or more\./);
+  assert.match(p, /tick <b>This is a gift<\/b> and put your business name in the note, so I can match it to your order\./);
+  // the words match the real checkout: the order box is #rp-buy, and its gift tick says "This is a gift"
+  const RPH = readFileSync(ROOT + "rain-print.html", "utf8");
+  assert.match(RPH, /id="rp-buy"/);
+  assert.match(RPH, /tick <b>This is a gift<\/b> and add their name and your note/);
+  assert.equal(J.business_sample_by, null);
 });
