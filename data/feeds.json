@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 97,
- "with_known_cadence": 97,
+ "count": 98,
+ "with_known_cadence": 98,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -1010,6 +1010,32 @@
     "41 13 * * 1-5"
    ],
    "max_gap_hours": 72.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/hail/all-grid.json",
+   "pages": [
+    "hail-map.html"
+   ],
+   "written_by": [
+    "Hail data refresh",
+    "MESH radar hail swaths \u2014 daily"
+   ],
+   "touched_by": [
+    "Hail data refresh",
+    "MESH radar hail swaths \u2014 daily"
+   ],
+   "cadence": "2 launches every day at about 1am, 3am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "41 6 1 * *",
+    "25 8 * * *"
+   ],
+   "max_gap_hours": 24.0,
    "quiet": null,
    "why_quiet": null
   },
