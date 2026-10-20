@@ -7,7 +7,7 @@
  *     was (5-county limit, the day's cap for everyone, the rate limit);
  *   - usda-quick-stats and crop-tour: one report-day ask each (the Daily with
  *     report-day mail, scripts/send_report_day.py).
- * Not given an ask: gdu-calculator, grain-emc and fertilizer (the Daily does
+ * Not given an ask: grain-emc and fertilizer (gdu-calculator got one Oct 20, Sig) (the Daily does
  * not cover GDUs, grain drying or fertilizer prices, and no notice topic with a
  * sender fits), and lrp (the page says it asks for no contact details).
  * The browser parts need Playwright and Chromium and skip where they are missing.
@@ -75,7 +75,8 @@ test("usda-quick-stats and crop-tour ask for the report-day email, which send_re
 });
 
 test("pages left without an ask, and why", () => {
-  for (const p of ["gdu-calculator.html", "grain-emc.html", "fertilizer.html"]) assert.equal(asksIn(read(p)).length, 0, p + ": the Daily does not cover it");
+  // gdu-calculator got a Daily ask on Oct 20 (Sig); its note says the Daily carries no GDU counts (test/one-more.test.mjs)
+  for (const p of ["grain-emc.html", "fertilizer.html"]) assert.equal(asksIn(read(p)).length, 0, p + ": the Daily does not cover it");
   const lrp = read("lrp.html");
   assert.equal(asksIn(lrp).length, 0);
   assert.ok(lrp.includes("asks for no contact details"), "lrp promises no contact capture");
