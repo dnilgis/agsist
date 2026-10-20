@@ -185,7 +185,6 @@
 
           <aside class="prf-spon" id="prf-spon" hidden></aside>
           <div class="prf-notice" data-prf-notice hidden></div>
-          <aside class="prf-spon-band prf-spon-offer" aria-label="For businesses"><span class="prf-spon-tag">For businesses</span> <span class="prf-spon-t">Sponsor PRF in your states.<span class="prf-spon-x"> One business per state, on the state page and every county page in it.</span> Price on request.</span> <a href="/prf-sponsor" data-prf-offer data-out="prf-sponsor">See your block and ask &rarr;</a></aside>
           <section class="prf-block prf-o5" id="prf-cmp-wrap" aria-labelledby="prf-cmp-h" hidden><h3 id="prf-cmp-h">Setup A against setup B</h3><div id="prf-cmp"></div></section>
 
           <section class="prf-o6" aria-labelledby="prf-det-h">
@@ -216,7 +215,9 @@
     <div class="prf-spon-p" id="prf-spon-p" hidden></div>
         </div>
       </div>
-
+      <!-- the one offer to businesses (Sig, Oct 20): under "Find your grid" while no grid is open;
+           prf-sponsor.js moves it under the step 3 answer once one is -->
+      <aside class="prf-spon-band prf-spon-offer" aria-label="For businesses"><span class="prf-spon-tag">For businesses</span> <span class="prf-spon-t">Sponsor PRF in your states.<span class="prf-spon-x"> One business per state, on the state page and every county page in it.</span> Price on request.</span> <a href="/prf-sponsor" data-prf-offer data-out="prf-sponsor">See your block and ask &rarr;</a></aside>
     </div>
 
     <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells nothing and refers no one; a labeled sponsor box may be an insurance agency, which has no say over any figure. Its one email box sends your grid&rsquo;s final index when USDA posts it. <!--prf:built--><time datetime="2026-10-12">Data read Oct 12, 2026</time><!--/prf:built-->. <!--prf:check-->Last checked against RMA&rsquo;s own tool on Oct 14, 2026: 14 of 14 policies priced here matched it to the dollar.<!--/prf:check--></p>
@@ -346,7 +347,7 @@ payment              = interval protection
 <!-- /static-nav:footer -->
 </div>
   <script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/prf-sponsor.js?v=4" defer></script>
+  <script src="/components/prf-sponsor.js?v=5" defer></script>
   <script src="/components/prf-math.js?v=3" defer></script>
   <script src="/components/qr.js?v=11" defer></script>
   <script src="/components/prf.js?v=8" defer></script>

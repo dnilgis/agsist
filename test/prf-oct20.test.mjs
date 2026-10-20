@@ -127,3 +127,33 @@ test("the month picker can be held to the months the grass needs rain, and says 
   const ui = read("components/prf-optimize-ui.js");
   assert.match(ui, /the test across grids picked from every month, so it is not this pick’s record/);
 });
+
+test("the sponsor offer, in a browser: under Find your grid on the empty page, under the answer once a grid opens", async (t) => {
+  const PW = "/home/user/node_modules/playwright/index.mjs", CH = "/opt/pw-browsers/chromium";
+  const { existsSync } = await import("node:fs");
+  if (!existsSync(PW) || !existsSync(CH)) { t.skip("no Playwright here"); return; }
+  const { chromium } = await import(PW);
+  const http = await import("node:http"), path = await import("node:path");
+  const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".svg": "image/svg+xml" };
+  const srv = http.createServer((q, r) => {
+    let f = decodeURIComponent(q.url.split("?")[0]); if (f.endsWith("/")) f += "index.html";
+    const fp = path.join(ROOT, f); if (!fp.startsWith(ROOT) || !existsSync(fp)) { r.writeHead(404); r.end(); return; }
+    r.writeHead(200, { "content-type": TYPES[path.extname(fp)] || "application/octet-stream" }); r.end(readFileSync(fp));
+  });
+  await new Promise((ok) => srv.listen(0, "127.0.0.1", ok));
+  const base = "http://127.0.0.1:" + srv.address().port;
+  const br = await chromium.launch({ executablePath: CH });
+  try {
+    for (const w of [390, 1280]) {
+      const pg = await br.newPage({ viewport: { width: w, height: 900 } });
+      await pg.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
+      await pg.goto(base + "/prf.html"); await pg.waitForTimeout(1500);
+      const y = await pg.evaluate(() => { const r = (s) => document.querySelector(s).getBoundingClientRect(); return { find: r("#prf-find-h").bottom, band: r(".prf-spon-offer").top, h: r(".prf-spon-offer").height }; });
+      assert.ok(y.h > 0 && y.band > y.find, w + ": empty page, the offer shows below Find your grid " + JSON.stringify(y));
+      await pg.goto(base + "/prf.html?g=14538"); await pg.waitForTimeout(2500);
+      const z = await pg.evaluate(() => { const r = (s) => document.querySelector(s).getBoundingClientRect().top; return { inTool: !!document.querySelector(".prf-tool .prf-spon-offer"), n: document.querySelectorAll(".prf-spon-offer").length, ans: r("#prf-answer"), band: r(".prf-spon-offer"), det: r("#prf-det-h") }; });
+      assert.ok(z.inTool && z.n === 1 && z.band > z.ans && z.band < z.det, w + ": a grid open, one offer, under the answer " + JSON.stringify(z));
+      await pg.close();
+    }
+  } finally { await br.close(); srv.close(); }
+});

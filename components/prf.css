@@ -105,6 +105,7 @@ main.main { padding-top: 12px; }
 .prf-tool .prf-notice, .prf-tool .prf-spon-offer { order: 3; }
 .prf-tool .prf-notice { margin: 0; padding: .2rem var(--prf-pad) .6rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); }
 .prf-tool .prf-spon-offer { margin: 0; }
+#prf-app > .prf-spon-offer { margin: var(--prf-gap) 0 0; }
 @media (min-width: 980px) {
   .prf-tool { display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 0 1.25rem; align-items: start; }
   .prf-pane { display: flex; flex-direction: column; gap: var(--prf-gap); min-width: 0; }

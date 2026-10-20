@@ -92,7 +92,7 @@ def text_of(fragment):
     return re.sub(r"\s+", " ", html.unescape(t)).strip()
 
 
-PRF_SPONSOR_JS = '<script src="/components/prf-sponsor.js?v=4" defer></script>'
+PRF_SPONSOR_JS = '<script src="/components/prf-sponsor.js?v=5" defer></script>'
 
 
 def sponsor_ribbon(name, code):
