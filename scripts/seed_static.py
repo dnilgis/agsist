@@ -2769,6 +2769,9 @@ def _cwt_chg(q):
     net, pc = q.get("netChange"), q.get("pctChange")
     if net is not None and pricefmt._js_round(abs(float(net)) / 0.025) == 0:
         return ("unch", "nc")
+    # 2026-10-20: no netChange and a percent that rounds to 0.00 is unch, not "up"
+    if net is None and (pc is None or pricefmt._js_round(abs(float(pc)) * 100) == 0):
+        return ("unch", "nc")
     hu = (float(net) if net is not None else float(pc)) >= 0
     txt = (("\u25b2 +" if hu else "\u25bc \u2212") + (("$" + pricefmt.cash(abs(float(net)), dollar=False) + " ") if net is not None else "")
            + "(" + ("+" if hu else "\u2212") + _fixed(abs(float(pc)), 2) + "%)")

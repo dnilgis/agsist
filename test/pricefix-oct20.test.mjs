@@ -187,3 +187,22 @@ test("4: the markets lead shows the settle range, and the baked twin says the sa
   assert.equal(py.split(". Read")[0], "Oct 16 to Oct 19 settles");
   assert.equal(js.split(". Read")[0], py.split(". Read")[0]);
 });
+
+/* ---- 5: cattle, zero changes ---- */
+test("5: cattle change with no netChange and 0% is unch (page and seed agree); a zero COT week is not green", async () => {
+  const { execFileSync } = await import("node:child_process");
+  const h = read("cattle-futures-prices.html");
+  const src = h.match(/function chgCwt\(q\)\{[\s\S]*?\n  \}/)[0];
+  const ctx = { AG: { px: { cash: (v) => v.toFixed(2) } } };
+  vm.runInNewContext("function cwtN(v){return AG.px.cash(Math.abs(v),{dollar:false});}\n" + src + "\nthis.f=chgCwt;", ctx);
+  const py = (q) => JSON.parse(execFileSync("python3", ["-c", "import json,sys; sys.path.insert(0,'scripts'); import seed_static as s; print(json.dumps(s._cwt_chg(json.loads(sys.argv[1]))))", JSON.stringify(q)], { cwd: ROOT, encoding: "utf8" }));
+  for (const q of [{ netChange: null, pctChange: 0 }, { netChange: null, pctChange: 0.004 }, { netChange: null, pctChange: -0.001 }]) {
+    assert.deepEqual([...ctx.f(q)], ["unch", "nc"], JSON.stringify(q));
+    assert.deepEqual(py(q), ["unch", "nc"], "seed " + JSON.stringify(q));
+  }
+  assert.equal(ctx.f({ netChange: null, pctChange: 0.3 })[1], "up");
+  assert.equal(py({ netChange: null, pctChange: -0.3 })[1], "dn");
+  // the COT week line: up only above zero, down only below
+  assert.match(h, /'Week: <span class="d '\+\(dl>0\?'up':dl<0\?'dn':'nc'\)\+'">'/);
+  assert.doesNotMatch(h, /dl>=0\?'up'/);
+});
