@@ -2104,11 +2104,17 @@ def basis_stat(g, st, prev_gen):
 
 
 def dtext(r):
-    """SB.delivery_text, with a DTN-style "10/01/2026" month start read as
-    "Oct 2026" (the state page's best card printed the raw date)."""
-    d = SB.delivery_text(r)
-    m = re.fullmatch(r"(\d{2})/01/(\d{4})", d.strip())
-    return f"{MONTH_ABBR[int(m.group(1)) - 1]} {m.group(2)}" if m and 1 <= int(m.group(1)) <= 12 else d
+    """A row's delivery as every cash bid page prints it: delivery_text(), the
+    town pages' (and the ZIP search's) one rule. /cash-bids/iowa/ printed one
+    October three ways on 2026-10-19: "Oct 2026", "01 Oct 2026 to 31 Oct 2026"
+    and "10/01/2026" (SB.delivery_text keeps a board's own wording)."""
+    return delivery_text(r.get("delivery"), r.get("period"))
+
+
+def loc_li(r):
+    """SB.loc_li with the delivery read by dtext()."""
+    return (f'<li>{esc(r["operator"])}, {esc(SB.town_text(r["city"]))}: basis <b>{money_basis(r["basis"])}</b>, '
+            f'cash {pricefmt.cash(r["cash"])} ({esc(dtext(r))}), as of {SB.fmt_ct(r["priced"])}</li>')
 
 
 def odd_keys(towns):
@@ -2278,9 +2284,9 @@ def basis_section(st, summ, prev_gen):
         if g in ("corn", "soybeans"):
             lab = contract_label(head0["contract"])
             lists.append(f'<h3>Strongest {SB.CROP_LABEL[g].lower()} basis ({lab})</h3><ul class="cbt-list">'
-                         + "".join(SB.loc_li(r) for r in head0["strong"]) + "</ul>"
+                         + "".join(loc_li(r) for r in head0["strong"]) + "</ul>"
                          + f'<h3>Weakest {SB.CROP_LABEL[g].lower()} basis ({lab})</h3><ul class="cbt-list">'
-                         + "".join(SB.loc_li(r) for r in head0["weak"]) + "</ul>")
+                         + "".join(loc_li(r) for r in head0["weak"]) + "</ul>")
     if not blocks and not notes:
         return (f'<h2 id="basis">{esc(sname)} basis today</h2><div class="cbt-note"><b>No basis number today.</b> '
                 f'No elevator here had a fresh corn, soybean or wheat bid on a named futures month.</div>')
@@ -3153,6 +3159,12 @@ def selftest():
     assert delivery_month("oldcrop-2026", "wheat", snap) == "2026-10"
     assert delivery_label({"delivery": "10/01/2026"}) == "Oct 2026"
     assert delivery_label({"delivery": "Fall 2026 (2026-12)"}) == "Fall 2026"
+    # /cash-bids/iowa/, 2026-10-19: one October, one label (it read three ways)
+    for d in ("Oct 2026", "01 Oct 2026 to 31 Oct 2026", "10/01/2026", "Oct 2026 (2026-12)"):
+        assert dtext({"delivery": d, "period": "2026-10"}) == "Oct 2026", (d, dtext({"delivery": d, "period": "2026-10"}))
+    assert "(Oct 2026)" in loc_li({"operator": "Mid-Iowa Cooperative", "city": "Eddy", "basis": -0.10, "cash": 4.56,
+                                   "delivery": "10/01/2026", "period": "2026-10",
+                                   "priced": parse_ts("2026-10-20T03:30:00Z")})
     assert dated_label_past({"periodVia": "deadline-inferred-year", "delivery": "By Oct 3", "period": "2026-10"}, snap)
     assert not dated_label_past({"periodVia": "day-range-inferred-year", "delivery": "Oct 1-9th",
                                  "period": "2026-10"}, snap)
