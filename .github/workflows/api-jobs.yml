@@ -101,9 +101,10 @@ jobs:
       - name: Get the input and any earlier batch record from raw
         if: ${{ github.event_name == 'workflow_dispatch' }}
         env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git fetch -q --depth 1 origin raw
+          bash scripts/fetch_private.sh raw
           D="apijobs/$APIJOBS_RUN"
           mkdir -p "$D"
           B="${{ inputs.build }}"
@@ -137,6 +138,8 @@ jobs:
           ls -la "$D" /tmp/bundle.json
       - name: Save the built input to raw
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.build != '' && inputs.mode != 'collect' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/push_raw.sh "apijobs $APIJOBS_RUN input" "apijobs/$APIJOBS_RUN/input/bundle.json"
       - name: Estimate
         if: ${{ inputs.mode == 'estimate' }}
@@ -145,6 +148,8 @@ jobs:
         run: python scripts/api_jobs.py estimate /tmp/bundle.json
       - name: Save the estimate to raw
         if: ${{ !cancelled() && inputs.mode == 'estimate' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/push_raw.sh "apijobs $APIJOBS_RUN estimate" "apijobs/$APIJOBS_RUN/estimate.json"
       - name: Submit
         if: ${{ inputs.mode == 'submit' }}
@@ -153,6 +158,8 @@ jobs:
         run: python scripts/api_jobs.py submit /tmp/bundle.json
       - name: Save the batch record to raw
         if: ${{ !cancelled() && inputs.mode == 'submit' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/push_raw.sh "apijobs $APIJOBS_RUN batch" "apijobs/$APIJOBS_RUN/batch.json" "apijobs/$APIJOBS_RUN/estimate.json"
       - name: Wait and collect
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
@@ -161,9 +168,13 @@ jobs:
         run: test -f "apijobs/$APIJOBS_RUN/batch.json" && python scripts/api_jobs.py collect "${{ inputs.wait_minutes }}"
       - name: Save results to raw
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/push_raw.sh "apijobs $APIJOBS_RUN results" "apijobs/$APIJOBS_RUN/batch-status.json" "apijobs/$APIJOBS_RUN/results.json" "apijobs/$APIJOBS_RUN/results-raw.jsonl"
       - name: Check the stories against their facts
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           R="apijobs/$APIJOBS_RUN/results.json"
           SET=$(python -c "import json; print(json.load(open('/tmp/bundle.json')).get('set') or '')")
@@ -178,13 +189,15 @@ jobs:
           fi
       - name: Check the elevator site answers and write the to-do
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           R="apijobs/$APIJOBS_RUN/results.json"
           if [ -f "$R" ] && python -c "import json,sys; sys.exit(0 if json.load(open('/tmp/bundle.json')).get('elevsite') else 1)"; then
             python scripts/elevsites_job.py collect /tmp/bundle.json "$R" "apijobs/$APIJOBS_RUN/elevsites"
             M=$(python -c "import json; print(json.load(open('/tmp/bundle.json')).get('mergeWith') or '')")
             if [ -n "$M" ]; then
-              git fetch -q --depth 1 origin raw
+              bash scripts/fetch_private.sh raw
               git show "FETCH_HEAD:apijobs/$M/elevsites/todo.json" > /tmp/v1-todo.json
               python scripts/elevsites_job.py merge /tmp/v1-todo.json "apijobs/$APIJOBS_RUN/elevsites/todo.json" "apijobs/$APIJOBS_RUN/elevsites"
             fi
@@ -194,6 +207,8 @@ jobs:
           fi
       - name: Check the schedules and county sources, write the findings
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           R="$PWD/apijobs/$APIJOBS_RUN/results.json"; O="$PWD/apijobs/$APIJOBS_RUN"
           J=$(python -c "import json; b=json.load(open('/tmp/bundle.json')); print('schedule' if b.get('schedule') else 'landsrc' if b.get('landsrc') else '')")

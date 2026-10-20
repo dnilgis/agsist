@@ -6,7 +6,7 @@ name: Cron health
 # 2026-10-02 to 10-09, and a dropped fire leaves nothing behind: no red run,
 # just a page that stops moving. The COT watcher missed its whole window three
 # days running before anyone saw it. scripts/cron_health.py checks each
-# time-critical workflow against its own clock and writes data/cron-health.json.
+# time-critical workflow against its own clock and writes cron-health.json.
 # This run goes red when a critical one is late.
 #
 # It runs after every "Fetch Grain Bids" (cron-job.org, every 15 minutes) and
@@ -20,11 +20,17 @@ name: Cron health
 # of any folder's budget there (red past it).
 #
 # Watching the watchers (2026-10-20): daily-site-check.yml and this workflow
-# are rows, and a stale data/cron-health.json (older than 8 h) is a red row
+# are rows, and a stale cron-health.json (older than 8 h) is a red row
 # that daily-site-check.yml, on GitHub's cron rather than cron-job.org, reports.
 #
-# The file is committed only when a status changes or every six hours, so it
-# does not add a Pages deploy every half hour.
+# THE PRIVATE REPO (2026-10-20, Sig). No page reads the file, so it is saved to
+# the private repo dnilgis/agsistretired (branch private-data,
+# private/data/cron-health.json), not main. The PRIVATE_REPO_TOKEN secret also
+# feeds two rows: private-repo-key (red when the key fails; warns when it
+# expires within 14 days, from the github-authentication-token-expiration
+# header) and private-raw-saves (warns when no save has reached the private raw
+# branch for 80 h). The morning email shows both. Saved only when a status
+# changes or every six hours.
 
 on:
   workflow_run:
@@ -35,7 +41,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   actions: read
 
 concurrency:
@@ -79,33 +85,34 @@ jobs:
           python3 scripts/check_site_budget.py --selftest
           python3 scripts/cron_health.py --selftest
 
+      # The last saved file: its age is the cron-health.json row, and the new
+      # one is saved only when a status changed. Missing, the check still runs
+      # (that row reads unknown, the save goes ahead).
+      - name: Get the last health file (private repo)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: bash scripts/pull_raw.sh private/data/cron-health.json
+
       - name: Check every clock
         id: h
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 scripts/cron_health.py --out data/cron-health.json
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: python3 scripts/cron_health.py --out private/data/cron-health.json
 
-      - name: Commit
+      - name: Save
         if: steps.h.outputs.commit == '1'
-        run: |
-          git config user.name  "AGSIST Bot"
-          git config user.email "bot@agsist.com"
-          cp data/cron-health.json /tmp/cron-health.json
-          for i in 1 2 3 4 5; do
-            git fetch -q origin main
-            git reset -q --hard origin/main
-            cp /tmp/cron-health.json data/cron-health.json
-            git add data/cron-health.json
-            if git diff --staged --quiet; then echo "nothing to commit"; exit 0; fi
-            git commit -q -m "chore: cron health [skip ci]"
-            if git push -q origin HEAD:main; then echo "pushed (attempt $i)"; exit 0; fi
-            sleep $((RANDOM % 5 + 2))
-          done
-          echo "::warning::could not push data/cron-health.json"
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: bash scripts/push_raw.sh "cron health" private/data/cron-health.json
 
       - name: Late
         if: steps.h.outputs.red == '1'
         run: |
           echo "::error::Time-critical check failed (a workflow past its clock, or published-size over budget): ${{ steps.h.outputs.late }}"
-          echo "See data/cron-health.json for which tick was missed and why."
+          echo "See private/data/cron-health.json (private repo, branch private-data) or the log above for which tick was missed and why."
           exit 1

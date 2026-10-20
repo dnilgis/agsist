@@ -64,7 +64,8 @@ v4.6.0 (the editorial-hardening upgrade, 2026-05-18):
     and Thu briefings; "Iran crisis" appearing without anchor). Manually
     maintained editorial input; loader injects active situations into
     the system prompt.
-  - EDITORIAL NOTES file (data/editorial-notes.md). Cumulative log of
+  - EDITORIAL NOTES file (private/data/editorial-notes.md, from the private
+    repo's private-data branch). Cumulative log of
     corrections/preferences from prior reviews. Loader pulls last 15
     bullets and injects into prompt. Turns ongoing editorial feedback
     into compounding prompt quality without bloating the static rules.
@@ -1379,11 +1380,13 @@ def load_ongoing_situations():
 
 
 def load_editorial_notes(n=15):
-    """Load the most recent N editorial notes from data/editorial-notes.md.
+    """Load the most recent N editorial notes from private/data/editorial-notes.md.
     Notes accrue over time as Sigurd flags issues; injected into the prompt
     so the generator's instructions grow organically with editorial judgment.
     Returns formatted block string or empty string if file missing/empty."""
-    path = REPO_ROOT / "data" / "editorial-notes.md"
+    # In the private repo since Oct 20 (branch private-data); daily.yml unpacks
+    # it here with scripts/pull_raw.sh. Missing means no notes, as before.
+    path = REPO_ROOT / "private" / "data" / "editorial-notes.md"
     if not path.exists():
         return ""
     try:

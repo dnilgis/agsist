@@ -99,6 +99,12 @@ from build_state_basis_pages import (  # noqa: E402
 OUT_DIR = "cash-bids"
 SITEMAP = "sitemap-cash-bids.xml"
 FRESH_HOURS = 72
+# A BOARD SIG PASTED BY HAND (dnilgis/bids rows with pasted: true, 2026-10-20). The site
+# puts a bot check in front of the bids reader, so Sig pastes its public bid
+# page. Sig: show it up to 7 days, with a small "Last updated" mark once it is
+# older than the 14 hours a live read is held. bids withdraws it at 168 h.
+PASTE_HOURS = 168
+PASTE_MARK_HOURS = 14
 MAX_SNAPSHOT_AGE_H = 6        # the network publishes every few minutes; older = something is wrong
 MAX_PER_CROP = 6              # nearest delivery windows per elevator and crop
 CROPS = ["corn", "soybeans", "wheat", "sorghum", "oats"]
@@ -536,7 +542,8 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
         if not held and (src.get("status") != "ok" or src.get("health") != "live"):
             no("board_not_live")
             continue
-        if pt is None or (gen - pt).total_seconds() > FRESH_HOURS * 3600:
+        fresh_h = PASTE_HOURS if b.get("pasted") is True else FRESH_HOURS
+        if pt is None or (gen - pt).total_seconds() > fresh_h * 3600:
             no("price_older_than_cutoff")
             continue
         crop = b.get("crop")
@@ -571,7 +578,9 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             "dm": delivery_month(period, crop, snap_ct), "period": str(period or ""),
             "period_feed": str(raw_period or ""),
             "cash": round(float(cash), 4), "basis": basis, "contract": con, "priced": pt,
-            "source": sid, "via": b.get("via")})
+            "source": sid, "via": b.get("via"),
+            "pasted": parse_ts(b.get("pastedAt") or b.get("checkedAt")) if b.get("pasted") is True else None,
+            "posted_from": b.get("postedFrom") if b.get("pasted") is True else None})
     return towns, drops, unplaced
 
 
@@ -1082,6 +1091,7 @@ CSS = """
     .cbt-more[hidden]{display:none}
     @media (max-width:640px){.cbt-stat{min-width:0;flex-basis:100%}.cbt-full-t td,.cbt-full-t th{padding:6px 3px}}
     .cbt-t tr.cbt-odd td{color:#b07a10;font-size:.8rem;padding-top:0;line-height:1.4}
+    .cbt-paste{font-size:.8rem;color:var(--text-muted);margin:2px 0 6px}
     .cbt-hold{font-size:.85rem;color:var(--text-muted);margin:6px 0 0;line-height:1.5}
     .cbt-top{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:.92rem;line-height:1.55;color:var(--text)}
     .cbt-top p{margin:0 0 4px}.cbt-top p:last-child{margin:0}.cbt-top a{color:var(--gold)}
@@ -1431,6 +1441,23 @@ def top_holds(held, ss):
             f'<a href="{esc(ss)}">put in your own costs</a>.</p></div>')
 
 
+def pasted_mark(rows, snap_ct, short=False):
+    """'Last updated Oct 20, 2:05 PM CDT' for a board Sig pasted by hand, once
+    the paste is older than PASTE_MARK_HOURS at the snapshot; '' otherwise.
+    short: one line for a company page table cell."""
+    ts = [r["pasted"] for r in rows if r.get("pasted")]
+    if not ts:
+        return ""
+    t = max(ts)
+    if (snap_ct - t).total_seconds() < PASTE_MARK_HOURS * 3600:
+        return ""
+    src = next((r["posted_from"] for r in rows if r.get("posted_from")), "")
+    if short:
+        return f'<span class="cbt-paste" style="display:block">Last updated {esc(fmt_posted(t, snap_ct))}</span>'
+    return (f'<p class="cbt-paste">Last updated {esc(fmt_posted(t, snap_ct))}'
+            + (f', {esc(src)}' if src else "") + '. Call to confirm before you haul.</p>')
+
+
 def board_section(bd, snap_ct):
     rows, more = trim(bd["rows"])
     times = [r["priced"] for r in rows]
@@ -1475,6 +1502,7 @@ def board_section(bd, snap_ct):
             + (f'<div class="loc">{esc(loc)}</div>' if loc else "") + co
             + portal_html(pi, snap_ct)
             + f'<p class="cbt-posted" title="Posted {esc(posted)}">{asof_time(lo)} &middot; {call}</p>'
+            + pasted_mark(rows, snap_ct) +
             f'<div class="cbt-scroll"><table class="cbt-t"><thead><tr><th>Crop</th><th>Delivery</th>'
             f'<th class="n">Cash</th><th class="n">Basis</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div>'
             f'{more_html}</section>'), rows, times, holds
@@ -3786,6 +3814,7 @@ def selftest():
     _selftest_share()
     _selftest_best()
     _selftest_restricted()
+    _selftest_pasted()
     _selftest_off_feed()
     # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
     for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
@@ -4208,6 +4237,45 @@ def _selftest_restricted():
     assert p2["cash"] == 11.70 and not p2.get("open_far")
     q = faq_pairs({"name": "Sheldon", "state": "WI"}, {"soybeans": pk["soybeans"]}, [], [], None, snap, pt)
     assert q[0][1].startswith("The nearest open soybeans bid we read in Sheldon, WI is $11.41"), q[0][1]
+
+
+def _selftest_pasted():
+    """A board Sig pasted by hand (NEW Cooperative, Afton IA, Oct 20 2026: corn
+    $4.26, basis -35 vs 461-4): shown up to PASTE_HOURS with a "Last updated"
+    mark once older than PASTE_MARK_HOURS; past that, or the same row unpasted
+    past FRESH_HOURS, it is not shown."""
+    pa = "2026-10-20T14:05:00Z"
+    row = {"source": "newcoop-afton", "place": "NEW Cooperative, Inc.||Afton|IA", "operator": "NEW Cooperative, Inc.",
+           "city": "Afton", "town": None, "state": "IA", "zip": None, "lat": 41.0401, "lon": -94.194, "precision": "town",
+           "currency": "USD", "crop": "corn", "commodity": "Corn", "delivery": "01 Oct 2026 to 31 Oct 2026",
+           "period": "2026-10", "periodVia": "explicit-range", "periodPast": False, "cash": 4.26, "basis": -0.35,
+           "basisUnit": "per-bushel", "futuresMonth": None, "via": "scrape", "stale": False, "sourceStatus": "ok",
+           "pricedAt": pa, "checkedAt": pa, "pasted": True, "pastedAt": pa,
+           "postedFrom": "posted from NEW Cooperative's public bid page"}
+    srcs = [{"id": "newcoop-afton", "operator": "NEW Cooperative, Inc.", "status": "ok", "health": "live",
+             "checkedAt": pa, "pasted": True}]
+    zt = {"zips": {"50830": ["Afton", "IA"]}}
+
+    def boards(gen, r):
+        towns, drops, _ = select({"generated": gen, "bids": [r]}, {"sources": srcs}, known_towns(zt))
+        return [bd for t in towns.values() for bd in t["boards"].values() if bd["rows"]], drops
+    # four days on: shown, and marked
+    got, _ = boards("2026-10-24T14:05:00Z", row)
+    assert len(got) == 1 and got[0]["rows"][0]["cash"] == 4.26, got
+    snap = parse_ts("2026-10-24T14:05:00Z").astimezone(CT)
+    h, _, _, _ = board_section(dict(got[0], phone="", operator="NEW Cooperative"), snap)
+    assert ('<p class="cbt-paste">Last updated Oct 20, 9:05 AM CDT, posted from NEW Cooperative&#x27;s public bid page. '
+            'Call to confirm before you haul.</p>') in h, h[:900]
+    assert pasted_mark(got[0]["rows"], snap, short=True).startswith('<span class="cbt-paste"')
+    # an hour after the paste: no mark (inside the line a live read is held to)
+    assert pasted_mark(got[0]["rows"], parse_ts("2026-10-20T15:05:00Z").astimezone(CT)) == ""
+    # past seven days: gone
+    got, drops = boards("2026-10-27T14:06:00Z", row)
+    assert not got and drops["price_older_than_cutoff"] == 1, drops
+    # the same row, not pasted, four days old: gone (FRESH_HOURS)
+    plain = {k: v for k, v in row.items() if k not in ("pasted", "pastedAt", "postedFrom")}
+    got, drops = boards("2026-10-24T14:05:00Z", plain)
+    assert not got and drops["price_older_than_cutoff"] == 1, drops
 
 
 def _selftest_known():

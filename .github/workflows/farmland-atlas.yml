@@ -136,6 +136,8 @@ jobs:
       # build reads every layer. pull_raw.sh fails the run if the branch or the
       # folder is missing; the check below fails it if the pulls came back thin.
       - name: Unpack the raw pulls (raw branch)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           bash scripts/pull_raw.sh data/atlas/raw
           n=$(ls data/atlas/raw/*.json | grep -vc '/drought\.json$' || true)
@@ -403,6 +405,9 @@ jobs:
         if: ${{ !cancelled() }}
         # *.json.gz too: climate_monthly.json.gz (every month of rain, highs and
         # lows per county, for analysis; no page or build reads it).
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
         run: bash scripts/push_raw.sh "farmland atlas raw" $(ls data/atlas/raw/*.json data/atlas/raw/*.json.gz 2>/dev/null | grep -v '/drought\.json$')
 
       - name: IndexNow ping
