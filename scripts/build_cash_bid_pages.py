@@ -1814,12 +1814,28 @@ def history_box(t, boards, logged):
             f'<p class="cbt-sub">Opens the basis log for these elevators.</p></div></details>')
 
 
+def lead_first(boards):
+    """The boards in page order: the elevator the answer sentence names first
+    leads, then the one it names second, then the rest as they were. Nevada, IA
+    on 2026-10-19: the answer said corn $4.41 at Mid-Iowa Cooperative while the
+    first card was Key Cooperative at $4.29 and Mid-Iowa sat third."""
+    picks = answer_picks(boards)
+    lead = []
+    for c in [c for c in CROPS if c in picks][:ANSWER_CROPS]:
+        r, name = picks[c]
+        bd = next((b for b in boards if any(x is r for x in b["rows"])), None) \
+            or next((b for b in boards if head_name(b) == name), None)
+        if bd is not None and all(bd is not x for x in lead):
+            lead.append(bd)
+    return lead + [b for b in boards if all(b is not x for x in lead)]
+
+
 def build_town_page(t, ctx):
     st, sname = t["state"], STATE_NAMES[t["state"]]
     ssl = url_slug(sname)
     snap_ct = ctx["snap_ct"]
     order = lambda b: (b["how"] == "near", b["near_mi"] or 0, b["operator"].lower(), b["city"].lower())  # noqa: E731
-    live_b = sorted((b for b in t["boards"].values() if b["rows"]), key=order)
+    live_b = lead_first(sorted((b for b in t["boards"].values() if b["rows"]), key=order))
     quiet = sorted((b for b in t["boards"].values() if not b["rows"]), key=order)
     secs, times, crops, nrows, shown, any_hold, held_all = [], [], set(), 0, [], False, []
     held_first = False
@@ -3490,6 +3506,7 @@ def selftest():
     _selftest_delivery_year()
     _selftest_place()
     _selftest_name_fit()
+    _selftest_lead()
     _selftest_share()
     _selftest_best()
     _selftest_restricted()
@@ -3739,6 +3756,24 @@ def _selftest_name_fit():
         with open(sm) as f:
             x = f.read()
         assert "/iowa/granger<" not in x and "/iowa/cresco<" in x, x
+
+
+def _selftest_lead():
+    """Nevada, IA, 2026-10-19: the answer named Mid-Iowa at $4.41, the first card was Key Cooperative at $4.29."""
+    pt = parse_ts("2026-10-19T18:00:00Z")
+
+    def bd(op, city, corn, soy=None):
+        rows = [{"crop": "corn", "commodity": "Corn", "label": "Oct 2026", "dm": "2026-10", "cash": corn,
+                 "basis": -0.40, "contract": None, "priced": pt}]
+        if soy:
+            rows.append({"crop": "soybeans", "commodity": "Soybeans", "label": "Oct 2026", "dm": "2026-10",
+                         "cash": soy, "basis": -0.6, "contract": None, "priced": pt})
+        return {"operator": op, "city": city, "branch": city, "town": "Nevada", "how": "name", "rows": rows}
+    key, lin, mid = bd("Key Cooperative", "Nevada", 4.29, 11.90), bd("Lincolnway Energy LLC", "Nevada", 4.36), \
+        bd("Mid-Iowa Cooperative", "Lincolnway", 4.41)
+    assert lead_first([key, lin, mid]) == [mid, key, lin], [b["operator"] for b in lead_first([key, lin, mid])]
+    assert lead_first([key, lin]) == [lin, key]
+    assert lead_first([key]) == [key] and lead_first([]) == []
 
 
 def _selftest_share():
