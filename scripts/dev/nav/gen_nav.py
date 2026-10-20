@@ -26,6 +26,7 @@ PRICES = [
                  ("/whats-priced-in", "What&rsquo;s priced in", "i-dices"),
                  ("/conditions", "Crop progress", "i-sun"),
                  ("/conditions-yield", "Crop size", "i-target"),
+                 ("/usda-quick-stats", "Yield by state", "i-database"),
                  ("/crop-tour", "Crop tour", "i-map"),
                  ("/cot", "Fund positions (COT)", "i-chart-column"),
                  ("/tariffs", "Tariffs and trade", "i-landmark")]),
@@ -66,6 +67,7 @@ FIELD = [
 MONEY = [
     ("Land", [("/rent/", "Cash rent", "i-banknote"),
               ("/farmland-atlas", "Farmland Atlas", "i-map"),
+              ("/farmland-index", "Farmland sale index", "i-chart-column"),
               ("/custom-rates", "Custom rates", "i-banknote"),
               ("/cash-lease", "Lease form", "i-scroll-text")]),
     ("Programs", [("/arc-plc", "ARC or PLC", "i-calculator"),
@@ -189,6 +191,7 @@ def drawer(theme_btn_d):
            '  <section class="draw-place" aria-labelledby="dp-h">\n'
            '    <h2 class="draw-place-h" id="dp-h">My place <span class="draw-place-z" id="dp-zip"></span></h2>\n'
            '    <div class="draw-place-row">\n'
+           '      <a href="/here" class="draw-pl" id="dp-here">' + ic("i-map") + 'Everything near me</a>\n'
            '      <a href="/cash-bids" class="draw-pl" id="dp-bids">' + ic("i-banknote") + 'Bids near me</a>\n'
            '      <a href="/rain-radar" class="draw-pl" id="dp-rain">' + ic("i-cloud-rain") + 'Rain at my field</a>\n'
            '      <a href="/rent/" class="draw-pl" id="dp-rent">' + ic("i-map") + 'Rent in my county</a>\n'
@@ -226,7 +229,7 @@ def actions(theme_btn):
             '            <div class="zip-row"><input id="zip-in" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" pattern="[0-9]{5}" placeholder="54728">'
             '<button type="submit" class="zip-save">Save</button></div>\n'
             '            <p class="zip-m" id="zip-m" role="status" aria-live="polite"></p>\n'
-            '            <p class="zip-links" id="zip-links" hidden><a href="/cash-bids" id="zip-go">See bids near you &rarr;</a>'
+            '            <p class="zip-links" id="zip-links" hidden><a href="/here" id="zip-go">Everything near you &rarr;</a>'
             '<button type="button" class="zip-clear" id="zip-clear">Clear</button></p>\n'
             '            <p class="zip-note">Kept in this browser only.</p>\n'
             '          </form>\n'
@@ -300,7 +303,7 @@ STYLE = r"""<style>
 .zip-links{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin:.45rem 0 0;font-size:.82rem}
 .zip-links[hidden]{display:none}
 .zip-links a{color:var(--brand);font-weight:700;text-decoration:none}
-.zip-clear{min-height:36px;background:none;border:0;color:var(--text-muted);font:inherit;font-size:.78rem;text-decoration:underline;cursor:pointer}
+.zip-clear{flex:0 0 auto;white-space:nowrap;min-height:36px;background:none;border:0;color:var(--text-muted);font:inherit;font-size:.78rem;text-decoration:underline;cursor:pointer}
 .zip-note{margin:.45rem 0 0;font-size:.72rem;color:var(--text-muted)}
 /* Free daily email: opens the Daily panel at its signup box. Hidden for subscribers.
    Same gold and dark text as the signup button (signup-ask.js .sa-b), in both themes. */
@@ -330,7 +333,7 @@ STYLE = r"""<style>
 .draw-place{padding:.4rem 1.1rem .7rem;border-bottom:1px solid var(--border)}
 .draw-place-h{display:flex;align-items:baseline;gap:.5rem;margin:0 0 .4rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand)}
 .draw-place-z{font-family:var(--font-body);font-size:.78rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-muted)}
-.draw-place-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
+.draw-place-row{display:grid;grid-template-columns:repeat(2,1fr);gap:.4rem}
 .draw-pl{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.25rem;min-height:56px;padding:.45rem .55rem;border:1px solid var(--border);border-radius:var(--r-sm);font-size:.8rem;font-weight:600;line-height:1.2;color:var(--text);text-decoration:none}
 .draw-pl:hover,.draw-pl:focus-visible{border-color:var(--brand)}
 .draw-pl .lic{opacity:.8}
@@ -394,6 +397,7 @@ def fb_header():
             if ls:
                 parts.append((f"{sub}: " if sub else "") + ls)
         rows.append(f"        <b>{name}:</b> " + " · ".join(parts))
+    rows.append('        <b>My place:</b> <a href="/here">Everything near me</a>')
     rows.append('        <b>More:</b> <a href="/about">About</a> · <a href="/contact">Contact</a>')
     body = "<br>\n".join(rows)
     return ('  <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->\n'

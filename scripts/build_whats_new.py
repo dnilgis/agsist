@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """What's new: data/whats-new.json drives two places.
 
-  index.html     the small card near the top: the newest CARD_N entries,
-                 baked into the page (no fetch, so no layout shift), each one
-                 hideable by the reader (localStorage agsist-wn-hide).
+  index.html     one small line at the end of the page, above the byline:
+                 a link to /changelog and the newest entry. Until Oct 20 this
+                 was a card of the newest four near the top, which sat above
+                 Cash bids on a phone (panel Oct 20, seats A and G; Sig's
+                 "after main content" rule). The card and its hide buttons
+                 are gone; the entries live on /changelog.
   changelog.html every entry, as day sections above the older hand-written
                  log, which is kept as it is; the stamp line is recounted.
 
@@ -21,7 +24,6 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(REPO, "data", "whats-new.json")
 INDEX = os.path.join(REPO, "index.html")
 CHANGELOG = os.path.join(REPO, "changelog.html")
-CARD_N = 4
 MONTHS = ["January", "February", "March", "April", "May", "June", "July",
           "August", "September", "October", "November", "December"]
 
@@ -58,60 +60,6 @@ def long_date(iso):
     return "%s %d, %d" % (MONTHS[d.month - 1], d.day, d.year)
 
 
-CARD_CSS = (
-    ".wn-card{margin:0 0 16px;padding:0;box-sizing:border-box;font-family:var(--font-body,Inter,system-ui,sans-serif)}"
-    ".wn-in{border:1px solid var(--border-2,rgba(132,160,168,.24));border-radius:8px;background:var(--surface2,transparent);padding:10px 12px 4px}"
-    ".wn-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 4px}"
-    ".wn-head h2{margin:0;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);font-weight:700}"
-    ".wn-head a{font-size:.82rem;color:var(--gold,#d4a23f);text-decoration:none;font-weight:600;padding:6px 0}"
-    ".wn-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:0}"
-    ".wn-list li{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-top:1px solid var(--hair,rgba(132,160,168,.12));min-width:0}"
-    ".wn-list li:first-child{border-top:0}"
-    ".wn-list li[hidden]{display:none}"
-    ".wn-list a{flex:1;min-width:0;color:var(--text);text-decoration:none!important;font-size:.9rem;line-height:1.4;padding:3px 0}"
-    ".wn-list a b{color:var(--gold,#d4a23f);font-weight:600}"
-    ".wn-list a:hover b{text-decoration:underline}"
-    ".wn-list a span{color:var(--text-dim,var(--text-muted))}"
-    ".wn-list time{flex:none;font-size:.78rem;color:var(--text-muted);padding-top:.15rem;white-space:nowrap}"
-    ".wn-x{flex:none;width:32px;height:32px;margin:-5px -6px -5px 0;border:0;background:none;color:var(--text-muted);font-size:1.1rem;line-height:1;cursor:pointer;border-radius:6px}"
-    ".wn-x:hover{color:var(--text)}.wn-x:focus-visible{outline:2px solid var(--gold,#d4a23f)}"
-    "@media(max-width:640px){.wn-list a span{display:none}}"
-    "@media(min-width:900px){.wn-list{grid-template-columns:1fr 1fr;column-gap:24px}.wn-list li:nth-child(2){border-top:0}}"
-)
-
-CARD_JS = (
-    "(function(){var c=document.getElementById('wn-card');if(!c)return;var K='agsist-wn-hide',h=[];"
-    "try{h=JSON.parse(localStorage.getItem(K)||'[]')||[];}catch(e){}"
-    "var lis=c.querySelectorAll('li[data-wn]');"
-    "function left(){var n=0;for(var i=0;i<lis.length;i++)if(!lis[i].hidden)n++;if(!n)c.hidden=true;return n;}"
-    "for(var i=0;i<lis.length;i++)if(h.indexOf(lis[i].getAttribute('data-wn'))>=0)lis[i].hidden=true;left();"
-    "c.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.wn-x');if(!b)return;"
-    "var li=b.closest('li'),id=li.getAttribute('data-wn');li.hidden=true;"
-    "if(h.indexOf(id)<0)h.push(id);try{localStorage.setItem(K,JSON.stringify(h.slice(-60)));}catch(e){}"
-    "if(left()){var nx=c.querySelector('li[data-wn]:not([hidden]) .wn-x');if(nx)nx.focus();}});})();"
-)
-
-
-def card_html(items):
-    lis = []
-    for it in items[:CARD_N]:
-        lis.append(
-            '<li data-wn="%s"><a href="%s"><b>%s</b> <span>%s</span></a>'
-            '<time datetime="%s">%s</time>'
-            '<button type="button" class="wn-x" aria-label="Hide %s">&times;</button></li>'
-            % (esc(it["id"]), esc(it["link"]), esc(it["title"]), esc(it["line"]),
-               it["date"], short_date(it["date"]), esc(it["title"])))
-    return (
-        "<!-- WHATSNEW:card (scripts/build_whats_new.py from data/whats-new.json; do not edit by hand) -->\n"
-        "<style>" + CARD_CSS + "</style>\n"
-        '<aside class="wn-card" id="wn-card" aria-labelledby="wn-h"><div class="wn-in">'
-        '<div class="wn-head"><h2 id="wn-h">What&rsquo;s new</h2><a href="/changelog">All changes</a></div>'
-        '<ul class="wn-list">' + "".join(lis) + "</ul></div></aside>\n"
-        "<script>" + CARD_JS + "</script>\n"
-        "<!-- /WHATSNEW:card -->"
-    )
-
-
 def changelog_html(items):
     days, order = {}, []
     for it in items:
@@ -140,9 +88,25 @@ def replace_block(src, start, end, new, fallback_before=None):
     return src[:k] + new + "\n" + src[k:]
 
 
+def link_html(items):
+    it = items[0]
+    return ('<!-- WHATSNEW:link (scripts/build_whats_new.py from data/whats-new.json; do not edit by hand) -->'
+            '<p class="wn-link" style="font-size:.84rem;color:var(--text-dim);margin:1.2rem 0 0">'
+            '<a href="/changelog">What&rsquo;s new</a> &middot; latest: <a href="%s">%s</a>, %s</p>'
+            '<!-- /WHATSNEW:link -->\n' % (esc(it["link"]), esc(it["title"]), short_date(it["date"])))
+
+
 def build_index(src, items):
-    return replace_block(src, "<!-- WHATSNEW:card", "<!-- /WHATSNEW:card -->", card_html(items),
-                         fallback_before="<svg width=\"0\" height=\"0\" style=\"position:absolute\"")
+    i, j = src.find("<!-- WHATSNEW:card"), src.find("<!-- /WHATSNEW:card -->")
+    if i >= 0 and j > i:                      # the old card, retired Oct 20
+        k = j + len("<!-- /WHATSNEW:card -->")
+        src = src[:i] + src[k + (1 if src[k:k + 1] == "\n" else 0):]
+    i, j = src.find("<!-- WHATSNEW:link"), src.find("<!-- /WHATSNEW:link -->")
+    if i >= 0 and j > i:
+        k = j + len("<!-- /WHATSNEW:link -->")
+        src = src[:i] + src[k + (1 if src[k:k + 1] == "\n" else 0):]
+    k = src.index('<p class="by-end"')
+    return src[:k] + link_html(items) + src[k:]
 
 
 def build_changelog(src, items):

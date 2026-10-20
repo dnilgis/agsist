@@ -130,6 +130,20 @@ def shown_value(q):
     return q.get("close")
 
 
+def settles_by_label(q):
+    """{"Oct 16": 474.25} for every settle a v3.7 quote names: its settles
+    map, its newest settle, and its close when that is a settle."""
+    out = {}
+    for d, px in (q.get("settles") or {}).items():
+        if isinstance(px, (int, float)):
+            out[md(d)] = px
+    if q.get("settle_date") and isinstance(q.get("settle"), (int, float)):
+        out[md(q["settle_date"])] = q["settle"]
+    if q.get("close_kind") == "settle" and q.get("close_date") and isinstance(q.get("close"), (int, float)):
+        out.setdefault(md(q["close_date"]), q["close"])
+    return out
+
+
 # ── rules ────────────────────────────────────────────────────────────────────
 
 SETTLE_DENIAL = re.compile(r"not (?:official )?CME settlements?\b", re.I)
@@ -169,24 +183,39 @@ def rule_futures_heads(c):
             c.note("futures-heads", f"{f}: page or {k} quote missing")
             continue
         want = shown_value(q)
+        on_file = settles_by_label(q)
         for where, s in zip(("title", "description"), head_of(page)):
-            for m in re.finditer(re.escape(label) + r"(?: settled)? (\$[\d,]+\.\d{2}[\u00bc\u00bd\u00be]?)", s):
-                got = grain_cents(m.group(1))
+            # "Dec '26 $4.74¼ (Oct 16)": a dated number is checked against that
+            # date's settle, so a weekday-evening title holding the session
+            # before is right, not a disagreement (2026-10-20, issue #2 noise).
+            sm = re.search(r"\bsettled (\$[\d,]+\.\d{2}[\u00bc\u00bd\u00be]?).*? on ([A-Z][a-z]{2} \d{1,2})\b", s)
+            for m in re.finditer(re.escape(label) + r"( settled)? (\$[\d,]+\.\d{2}[\u00bc\u00bd\u00be]?)"
+                                 r"(?: \(([A-Z][a-z]{2} \d{1,2})\))?", s):
+                got = grain_cents(m.group(2))
+                if m.group(1) and sm:
+                    continue        # "settled $X on <date>": checked against that date below
+                if m.group(3):
+                    ref = on_file.get(m.group(3))
+                    c.ok("futures-heads", got is not None and ref is not None and abs(got - ref) < 0.01, f,
+                         f"{where} prints {label} {m.group(2)} ({m.group(3)}), prices.json settle that day is {ref}")
+                    continue
                 c.ok("futures-heads", got is not None and abs(got - want) < 0.01, f,
-                     f"{where} prints {label} {m.group(1)}, prices.json {q.get('close_kind')} is {want}")
-            sm = re.search(r"\bsettled\b.*? on ([A-Z][a-z]{2} \d{1,2})\b", s)
+                     f"{where} prints {label} {m.group(2)}, prices.json {q.get('close_kind')} is {want}")
             if sm:
-                c.ok("futures-heads", q.get("close_kind") == "settle" and sm.group(1) == md(q["close_date"]), f,
-                     f"{where} says settled on {sm.group(1)}; prices.json is {q.get('close_kind')} for {q.get('close_date')}")
+                got, ref = grain_cents(sm.group(1)), on_file.get(sm.group(2))
+                c.ok("futures-heads", got is not None and ref is not None and abs(got - ref) < 0.01, f,
+                     f"{where} says settled {sm.group(1)} on {sm.group(2)}; prices.json settle that day is {ref}")
     page = c.text("cattle-futures-prices.html")
     if page:
         t, d = head_of(page)
+        dm = re.search(r"\(([A-Z][a-z]{2} \d{1,2})\)", t)
         for key, pat in (("feeders", r"Feeder Cattle Futures \$([\d.]+)"), ("cattle", r"Live Cattle \$([\d.]+)")):
             m = re.search(pat, t)
             q = ((p.get("quotes") or {}).get(key)) or {}
             if m and q:
-                c.ok("futures-heads", abs(float(m.group(1)) - shown_value(q)) < 1e-6, "cattle-futures-prices.html",
-                     f"title prints {key} ${m.group(1)}, prices.json {shown_value(q)}")
+                ref = settles_by_label(q).get(dm.group(1)) if dm else shown_value(q)
+                c.ok("futures-heads", ref is not None and abs(float(m.group(1)) - ref) < 1e-6, "cattle-futures-prices.html",
+                     f"title prints {key} ${m.group(1)}{' (' + dm.group(1) + ')' if dm else ''}, prices.json {ref}")
 
 
 def _cents(x):
@@ -587,8 +616,12 @@ def selftest():
          sub("daily/2026-10-17.html", "Yahoo Finance, delayed</div>", "Yahoo Finance, delayed, not CME settlements</div>")),
         ("futures-heads", "a title a tick off the settle",
          sub("soybean-futures-prices.html", "Nov '26 $12.61\u00bc |", "Nov '26 $12.60\u00bd |")),
-        ("futures-heads", "'settled' over a last trade",
-         js("data/prices.json", lambda d: d["quotes"]["wheat-dec26"].update(close_kind="last"))),
+        ("futures-heads", "'settled' on a day with no settle on file",
+         js("data/prices.json", lambda d: d["quotes"]["wheat-dec26"].update(close_kind="last", settle=None, settles={}))),
+        ("futures-heads", "a dated title whose number is not that day's settle",
+         sub("corn-futures-prices.html", "Dec &#x27;26 $4.74\u00bc |", "Dec &#x27;26 $4.66\u00be (Oct 16) |")),
+        ("futures-heads", "a dated cattle title on a day with no settle on file",
+         sub("cattle-futures-prices.html", "Live Cattle $227.55 |", "Live Cattle $227.55 (Oct 19) |")),
         ("futures-heads", "a cattle title off the file",
          sub("cattle-futures-prices.html", "Live Cattle $227.55", "Live Cattle $227.50")),
         ("harvest-tracker", "Friday's provisional close kept under a posted settle (N1)",
@@ -635,6 +668,20 @@ def selftest():
         c = plant(rule, edit)
         ck(f"{rule}: catches {what}", any(x[0] == rule for x in c.findings), c.findings or c.notes)
 
+    # Weekday evening (real file, 03:31 UTC Oct 20): close is Monday's last
+    # trade, the newest settle Friday's; titles dated Oct 16 are right.
+    with tempfile.TemporaryDirectory() as td:
+        r = _fixture(td)
+        js("data/prices.json", lambda d: [d["quotes"][k].update(close=v, close_kind="last", close_date="2026-10-19",
+                                                               settle_date="2026-10-16")
+                                          for k, v in (("corn-dec26", 466.75), ("beans-nov26", 1253.0),
+                                                       ("wheat-dec26", 656.0), ("cattle", 228.0), ("feeders", 344.0))])(r)
+        sub("corn-futures-prices.html", "Dec &#x27;26 $4.74\u00bc |", "Dec &#x27;26 $4.74\u00bc (Oct 16) |")(r)
+        sub("soybean-futures-prices.html", "Nov '26 $12.61\u00bc |", "Nov '26 $12.61\u00bc (Oct 16) |")(r)
+        sub("wheat-futures-prices.html", "Dec '26 $6.60\u00bd |", "Dec '26 $6.60\u00bd (Oct 16) |")(r)
+        sub("cattle-futures-prices.html", "Live Cattle $227.55 |", "Live Cattle $227.55 (Oct 16) |")(r)
+        c = run(r, now, only={"futures-heads"})
+        ck("futures-heads: an evening title dated by its settle is no finding", not c.findings, c.findings)
     # a page script that keeps old words for old files is not reader text
     with tempfile.TemporaryDirectory() as td:
         c = run(_fixture(td), now, only={"settle-words"})

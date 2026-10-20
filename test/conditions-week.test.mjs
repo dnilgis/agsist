@@ -48,9 +48,17 @@ test("shipped page: title, summary, stats, caption and harvest table all name th
   if (!cp.in_season) return;
   const ge = cp.corn.good_excellent;
   const title = html.match(/<title>([^<]*)<\/title>/)[1];
-  assert.match(title, new RegExp(`Corn ${ge}% Good-Excellent`), "title carries this week's corn G+E");
+  // Oct 20 (panel B): in harvest season the title leads with this week's harvest percent
+  const hp = cp.corn.harvest_pct, harvest = typeof hp === "number" && hp > 0 && hp < 100 && cp.corn.harvest_date === rd;
+  if (harvest) {
+    assert.match(title, new RegExp(`^Corn ${hp}% Harvested`), "title leads with this week's corn harvest");
+    assert.ok(title.includes(`Week Ending ${nice(rd).replace(/, \d{4}$/, "")}`), "and names the week: " + title);
+  } else {
+    assert.match(title, new RegExp(`Corn ${ge}% Good-Excellent`), "title carries this week's corn G+E");
+  }
   const desc = html.match(/<meta name="description" content="([^"]*)"/)[1];
-  assert.match(desc, new RegExp(`US corn is ${ge}% good to excellent`), "meta description too");
+  assert.match(desc, new RegExp(`(US c|C)orn is ${ge}% good to excellent`), "meta description too");
+  if (harvest) assert.match(desc, new RegExp(`US corn is ${hp}% harvested`), "and the harvest");
   for (const tag of ["condweek", "condvsent", "condstats", "condharvline"]) {
     assert.ok(seed(html, tag).toLowerCase().includes(`week ending ${nice(rd)}`.toLowerCase()), `${tag} names ${nice(rd)}`);
     assert.ok(seed(html, tag).includes(`${ge}%`) || tag === "condharvline", `${tag} carries ${ge}%`);

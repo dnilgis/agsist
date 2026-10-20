@@ -156,6 +156,7 @@
         state = { RP: RP, days: days, d: d, preview: days.length < (isLeap(year) ? 366 : 365), ov: usualOf(days, D.mn, D.usual) };
         draw('r1');
         fig.classList.add('rc-print-on');
+        fig.hidden = false;   // county pages ship the print as a hidden shell after the farm content
         var cap = fig.querySelector('.rc-cap-print'), old = fig.querySelector('.rc-cap-chart');
         if (cap) cap.hidden = false;
         if (old) old.hidden = true;
@@ -184,7 +185,8 @@
         var io = new root.IntersectionObserver(function (es) {
           if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); run(); }
         }, { rootMargin: '400px 0px' });
-        io.observe(fig);
+        // a hidden shell has no box to scroll into view: watch the line under it (county pages)
+        io.observe(fig.hidden ? (fig.nextElementSibling || fig.parentNode) : fig);
       } else {
         run();
       }
