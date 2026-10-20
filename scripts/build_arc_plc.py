@@ -143,6 +143,7 @@ import arc_plc_crops as XC  # noqa: E402  every covered crop beyond corn, soybea
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
 from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402
+from seo_caps import TITLE_MAX  # noqa: E402  the site title cap (68); ARC/PLC held itself to 60 until 2026-10-20
 
 SITE = "https://agsist.com"
 YEARS = (2026, 2027)
@@ -1563,7 +1564,7 @@ def head(title, desc, path, jsonld, indexable=True, fonts="", og_title=None, og_
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}}catch(e){{}}</script><script>/* agsist-ga-guard 2026-10-17: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set and the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string), and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){{var off=false,v,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){{w.gtag=function(){{w.dataLayer.push(arguments);}};}}try{{off=w.localStorage.getItem('agsist-ga-off')==='1';}}catch(e){{}}if(n.globalPrivacyControl===true){{off=true;}}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){{off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){{return;}}i=function(){{s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);}};if(d.prerendering){{d.addEventListener('prerenderingchange',i,{{once:true}});}}else{{i();}}}})(window,document,navigator);</script>
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}}catch(e){{}}</script><script>/* agsist-ga-guard 2026-10-20: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set, the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string) and its time zone is US or Canada (Sig, Oct 20: keep server traffic such as Singapore out of GA), and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){{var off=false,v,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){{w.gtag=function(){{w.dataLayer.push(arguments);}};}}try{{off=w.localStorage.getItem('agsist-ga-off')==='1';}}catch(e){{}}if(n.globalPrivacyControl===true){{off=true;}}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){{off=true;}}try{{v=w.Intl.DateTimeFormat().resolvedOptions().timeZone;}}catch(e){{}}if(!/^(America|US|Canada)[/]|^Pacific[/]Honolulu$/.test(v)){{off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){{return;}}i=function(){{s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);}};if(d.prerendering){{d.addEventListener('prerenderingchange',i,{{once:true}});}}else{{i();}}}})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   {fonts}
   <link rel="preload" href="/components/styles.css?v={STYLES_V}" as="style">
@@ -2215,12 +2216,12 @@ def state_page(st, S, D, ch, nav_states):
     if official:
         title = next((t for t in (f"{name} ARC-CO Benchmark Yields 2026, Official | AGSIST",
                                   f"{name} ARC-CO Benchmark Yields 2026 | AGSIST",
-                                  f"{name} ARC-CO Benchmarks 2026") if len(t) <= 60), f"{name} ARC-CO 2026")
+                                  f"{name} ARC-CO Benchmarks 2026") if len(t) <= TITLE_MAX), f"{name} ARC-CO 2026")
         desc = (f"FSA official 2026 ARC-CO benchmark yields for {len(S['c'])} {name} counties by crop and practice, with benchmark revenue "
                 f"and the PLC vs ARC break-even.")
     else:
         title = next((t for t in (f"{name} ARC or PLC 2026 and 2027 by County | AGSIST", f"{name} ARC or PLC by County | AGSIST")
-                      if len(t) <= 60), f"{name} ARC or PLC")
+                      if len(t) <= TITLE_MAX), f"{name} ARC or PLC")
         desc = f"{name} counties: FSA average PLC yields and ARC-CO history, and how to get your official 2026 benchmark."
     rows, trows = [], []   # trows: the same official rows as data, for the on-demand table
     for c in S["c"]:
@@ -3025,7 +3026,8 @@ def key_numbers_html(c, D, cname):
 
 
 def county_title(cname, st, lab, LY, by_txt):
-    """'{County}, {ST} ARC or PLC {year}: {Crop} Benchmark {yield}', shortened until it fits 60 characters.
+    """'{County}, {ST} ARC or PLC {year}: {Crop} Benchmark {yield}', shortened until it fits the site cap (TITLE_MAX, 68 characters).
+    At 60 (until 2026-10-20) 320 long "Non-irrigated" titles lost their benchmark number.
     Always carries 'ARC or PLC'; the verdict goes in the description, not here.
     The number goes last (scripts/seo_caps.py): "Co." first, then the word "Benchmark", and only then
     the yield. Until 2026-10-20 the full name without the number came before "Co." with it, and
@@ -3041,9 +3043,9 @@ def county_title(cname, st, lab, LY, by_txt):
               f"{short}, {st} ARC or PLC {LY}: {lab}",
               f"{cname}, {st} ARC or PLC {LY} and {int(LY) + 1 if LY == '2026' else 2026}",
               f"{short}, {st} ARC or PLC {LY}"):
-        if len(t) <= 60:
+        if len(t) <= TITLE_MAX:
             return t
-    return f"{short} {st} ARC or PLC {LY}"[:60]
+    return f"{short} {st} ARC or PLC {LY}"[:TITLE_MAX]
 
 
 def county_page(st, S, c, D, ch):
@@ -3112,7 +3114,7 @@ def county_page(st, S, c, D, ch):
         desc = f"{cname}, {st}: FSA official 2026 ARC-CO benchmark yields by crop and practice, revenue, guarantee and PLC vs ARC break-even."
     else:
         title = next((t for t in (f"{cname}, {st} ARC or PLC 2026 and 2027 | AGSIST", f"{cname}, {st} ARC or PLC | AGSIST")
-                      if len(t) <= 60), f"{cname}, {st} ARC or PLC")
+                      if len(t) <= TITLE_MAX), f"{cname}, {st} ARC or PLC")
         desc = f"{cname}, {name}: FSA county average PLC yields and ARC-CO history, and how to get the official 2026 benchmark."
     blocks, faqs, ds_vars = [], [], []
     first = lead or next(k for k in ALL if k in c["k"])
@@ -3845,20 +3847,23 @@ def selftest():
         ck("2027 long grain rice fixed at 0.169 whatever the 2025 price; sorghum 2027 ERP is the statutory 4.40 (or still waits on its final 2025 price)",
            c27.get("rice_long", {}).get("erp", {}).get("erp") == 0.169 and c27["rice_long"]["bp"]["value"] == 0.169
            and ("sorghum" in p27 or (s27.get("erp") == 4.4 and s27.get("binding") == "statutory")), str(p27.get("sorghum")) + " " + str(s27))
-    # 65 characters with the yield, so the yield goes first; a longer name then takes "Co."
     ck("practice split: both irrigated and non-irrigated benchmarks -> the title names the practice",
        practice_split([{"d": "irr", "by": 238.96}, {"d": "non", "by": 187.38}])
        and not practice_split([{"d": "all", "by": 203.4}]) and not practice_split([{"d": "irr", "by": 230.0}])
        and not practice_split([{"d": "irr", "by": 230.0}, {"d": "non", "by": None}]))
-    ck("title: the yield goes last: Clearwater takes Co., Pottawattamie, Prince George's and Wright drop the word Benchmark, never the number",
-       county_title("Clearwater County", "ID", "Wheat", "2026", "71.9 bu") == "Clearwater Co., ID ARC or PLC 2026: Wheat Benchmark 71.9 bu"
-       and county_title("Pottawattamie County", "IA", "Corn", "2026", "203.4 bu") == "Pottawattamie County, IA ARC or PLC 2026: Corn 203.4 bu"
-       and county_title("Prince George's County", "MD", "Soybeans", "2026", "45.1 bu") == "Prince George's County, MD ARC or PLC 2026: Soybeans 45.1 bu"
-       and county_title("Wright County", "MN", "Non-irrigated corn", "2026", "182.3 bu") == "Wright Co., MN ARC or PLC 2026: Non-irrigated corn 182.3 bu"
+    ck("title: the yield goes last: at the site cap (68) Clearwater, Pottawattamie and Story keep every word, Prince George's takes Co., Wright drops the word Benchmark, never the number",
+       county_title("Clearwater County", "ID", "Wheat", "2026", "71.9 bu") == "Clearwater County, ID ARC or PLC 2026: Wheat Benchmark 71.9 bu"
+       and county_title("Pottawattamie County", "IA", "Corn", "2026", "203.4 bu") == "Pottawattamie County, IA ARC or PLC 2026: Corn Benchmark 203.4 bu"
+       and county_title("Prince George's County", "MD", "Soybeans", "2026", "45.1 bu") == "Prince George's Co., MD ARC or PLC 2026: Soybeans Benchmark 45.1 bu"
+       and county_title("Wright County", "MN", "Non-irrigated corn", "2026", "182.3 bu") == "Wright County, MN ARC or PLC 2026: Non-irrigated corn 182.3 bu"
        and county_title("Story County", "IA", "Corn", "2026", "203.4 bu") == "Story County, IA ARC or PLC 2026: Corn Benchmark 203.4 bu"
        and county_title("Story County", "IA", "ARC-CO", "2026", "") == "Story County, IA ARC or PLC 2026: ARC-CO Benchmark")
-    ck("title: always 60 or fewer with 'ARC or PLC'", all(len(t) <= 60 and "ARC or PLC" in t for t in (
+    # Sig, 2026-10-20: at 60 about 300 county titles lost the number, most of them "Non-irrigated"; Grand Forks was one
+    ck("title: a long Non-irrigated title keeps its benchmark number at the site cap",
+       county_title("Grand Forks County", "ND", "Non-irrigated wheat", "2026", "61.4 bu") == "Grand Forks County, ND ARC or PLC 2026: Non-irrigated wheat 61.4 bu")
+    ck(f"title: always {TITLE_MAX} or fewer with 'ARC or PLC'", TITLE_MAX == 68 and all(len(t) <= TITLE_MAX and "ARC or PLC" in t for t in (
         county_title("Prince of Wales-Hyder Census Area", "AK", "Medium and short grain rice", "2027", "7,000 lb"),
+        county_title("East Carroll Parish", "LA", "Non-irrigated seed cotton", "2026", "2,502 lb"),
         county_title("Story County", "IA", "Corn", "2026", "203.4 bu"))))
     # the 2026-10-18 page-set pass
     _cd = {"unit": "bu", "dp": 2, "bp": {"value": 6.43}, "loan": 2.2, "scen": {"center": 5.70, "kind": "wasde"}}

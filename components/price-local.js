@@ -163,11 +163,66 @@
     return out;
   }
 
-  /* The stamp for one quote: "Oct 16 settle" | "Last trade as of 1:46 pm CT" | "Updated 1:46 am CT" */
+  /* THE OVERNIGHT (ELECTRONIC) TRADE, 2026-10-20 (Sig: "don't forget about
+     overnight market trading, I want that displayed if it is available").
+     CBOT grains trade electronically 7:00 pm to 7:45 am CT. The price file
+     carries that trade in one of two shapes (fetch_prices v3.7):
+       before the settle posts (about 7 to 11 pm CT): settled:true, close is
+         the day session's last trade, and the evening trade is last /
+         last_time / last_date / last_net (last_net from that close);
+       after it posts (about 11 pm to 7:45 am CT): close is the overnight
+         trade (close_kind "last", close_time in the overnight), netChange
+         from settle / settle_date, the day just finished.
+     Returns { px, net, at, hero, ref: { px, date, kind } } or null. hero:
+     the page's main price already IS this trade (second shape). ref.kind is
+     "settle" or "last" (the day's last trade, before the settle posts).
+     An overnight trade is never a settle: titles keep the dated settle
+     (seed_static.settled_close). Grain only; livestock has no overnight. */
+  var OVN_ROOTS = { ZC: 1, ZS: 1, ZW: 1, KE: 1, MW: 1, ZO: 1, ZM: 1, ZL: 1, ZR: 1 };
+  function inOvernight(t) { var p = ct(t); if (!p) return false; var m = p.hh * 60 + p.mm; return m >= 19 * 60 || m < 7 * 60 + 45; }
+  function num(x) { return typeof x === 'number' && isFinite(x); }
+  function overnight(q) {
+    if (!q || !OVN_ROOTS[String(q.ticker || '').slice(0, 2)]) return null;
+    if (q.settled && num(q.last) && q.last_time && num(q.close)) {
+      return { px: q.last, net: num(q.last_net) ? q.last_net : null, at: q.last_time, hero: false,
+        ref: { px: q.close, date: q.close_date || '', kind: q.close_kind === 'settle' ? 'settle' : 'last' } };
+    }
+    if (q.close_kind === 'last' && q.close_time && num(q.close) && inOvernight(q.close_time) &&
+        num(q.settle) && q.settle_date && q.close_date && q.settle_date < q.close_date && !q.roll) {
+      var net = q.prev_kind === 'settle' && q.prev_date === q.settle_date && num(q.netChange) ? q.netChange : Math.round((q.close - q.settle) * 1e4) / 1e4;
+      return { px: q.close, net: net, at: q.close_time, hero: true, ref: { px: q.settle, date: q.settle_date, kind: 'settle' } };
+    }
+    return null;
+  }
+  /* One line for under a price. fmt(px) and move(net) are the page's own
+     formatters (plain text; this escapes them). With the overnight trade as
+     the main price (o.hero) the line names the settle beside it; otherwise
+     it gives the overnight trade under the day session's price.
+       "Overnight electronic trade $4.65½ (-1¼¢) at 7:45 pm CT. Oct 19 settle not posted yet."
+       "Overnight electronic trade at 11:45 pm CT. Oct 19 settle $4.67." */
+  function overnightHtml(q, fmt, move, now, opts) {
+    var o = overnight(q);
+    if (!o || typeof fmt !== 'function') return '';
+    var at = clock(o.at, now), day = isoDay(o.ref.date, now).replace(' ', '\u00a0');
+    var mv = o.net === 0 ? 'unch' : o.net != null && typeof move === 'function' ? move(o.net) : '';
+    var trade = '<b>' + esc(fmt(o.px)) + '</b>' + (mv ? ' (' + esc(mv) + ')' : '');
+    var ref = o.ref.kind === 'settle' ? (day ? day + ' settle ' : 'Settle ') + '<b>' + esc(fmt(o.ref.px)) + '</b>' :
+      (day ? day + ' settle' : 'The settle') + ' not posted yet';
+    var cls = 'px-ovn' + (opts && opts.short ? ' px-ovn-s' : ''), dh = ' data-ovn="' + (o.hero ? 'hero' : 'line') + '"';
+    /* short, for a small card:
+       "Overnight $4.65½ (-1¼¢), 7:45 pm CT" | "Overnight at 11:45 pm CT · Oct 19 settle $4.67" */
+    if (opts && opts.short) return '<span class="' + cls + '"' + dh + '><span class="px-ovn-k">Overnight</span> ' +
+      (o.hero ? 'at ' + esc(at) + ' &middot; ' + ref : trade + ', ' + esc(at)) + '</span>';
+    return '<span class="' + cls + '"' + dh + '><span class="px-ovn-k">Overnight electronic trade</span> ' +
+      (o.hero ? 'at ' + esc(at) + '. ' : trade + ' at ' + esc(at) + '. ') + ref + '.</span>';
+  }
+
+  /* The stamp for one quote: "Oct 16 settle" | "Last trade as of 1:46 pm CT" |
+     "Overnight trade as of 11:45 pm CT" (overnight() hero) | "Updated 1:46 am CT" */
   function stamp(q, fetched, now) {
     var k = q && q.close_kind;
     if (k === 'settle') { var d = isoDay(q.settle_date || q.close_date, now); if (d) return d + ' settle'; }
-    if (k === 'last') { var t = clock(q.close_time || fetched, now); if (t) return 'Last trade as of ' + t; }
+    if (k === 'last') { var t = clock(q.close_time || fetched, now); if (t) return (overnight(q) && overnight(q).hero ? 'Overnight trade as of ' : 'Last trade as of ') + t; }
     var u = fetched ? clock(fetched, now) : '';
     return u ? 'Updated ' + u : '';
   }
@@ -302,7 +357,7 @@
       (b.when ? '. <span class="pl-s">' + esc(b.when) + '.</span>' : '.') + ' <a href="/cash-bids">All bids near you &rarr;</a>';
   }
 
-  var api = { stamp: stamp, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
+  var api = { stamp: stamp, overnight: overnight, overnightHtml: overnightHtml, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
     deadFrom: deadFrom, expired: expired, roll: roll, html: html, clock: clock, readState: readState, zipState: zipState, label: label, cell: cell, lines: lines, build: build, nearLine: nearLine, placeholder: placeholder, NAMES: NAMES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgPxStamp = api;
@@ -388,7 +443,7 @@
 
   var css = doc.createElement('style');
   css.textContent = '.pl-line{margin:.45rem 0 .2rem;padding:.45rem .7rem;border-left:3px solid var(--green,#3a7d44);background:var(--surface,transparent);border-radius:6px;font-size:.86rem;line-height:1.5;color:var(--text-dim)}.pl-line b{color:var(--text)}.pl-line .pl-s{color:var(--text-muted);font-size:.8rem}.pl-line a{color:var(--gold);white-space:nowrap}' +
-    '.px-stamp.is-stale{color:var(--text-muted)}.px-stamp .asof-note{font-weight:600;white-space:nowrap}.px-old{filter:grayscale(1);opacity:.75}';
+    '.ph-ovn{margin:4px 0 0 auto;max-width:26rem}.pc-ovn{margin-top:3px}.pc-ovn[hidden],.ph-ovn[hidden]{display:none}.ph-price .ph-ovn{order:4;flex-basis:100%}.px-ovn{display:block;font-size:.85em;line-height:1.4;color:var(--text-muted,#666)}.px-ovn-k{font-weight:600;color:var(--text,inherit)}.px-ovn b{color:var(--text,inherit)}.px-stamp.is-stale{color:var(--text-muted)}.px-stamp .asof-note{font-weight:600;white-space:nowrap}.px-old{filter:grayscale(1);opacity:.75}';
   (doc.head || doc.documentElement).appendChild(css);
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', boot); else boot();
 })(typeof window !== 'undefined' ? window : this);

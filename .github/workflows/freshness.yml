@@ -12,11 +12,14 @@ on:
   schedule:
     - cron: '35 13 * * 1-5'   # 13:35 UTC — pre-open refresh (overnight session closes)
     - cron: '35 20 * * 1-5'   # 20:35 UTC — post-close (CBOT day session ends 19:20 UTC)
-    # 23:35 UTC: Yahoo's close moves to the settle in the evening (Dec corn
-    # Oct 13: 482.25 at 18:16 UTC, 482.75 by 00:01). This run picks that up
-    # before the grain overnight opens (7 p.m. CT); a run that lands in the
-    # overnight leaves titles and descriptions alone (seed_static.settled_close).
-    - cron: '35 23 * * 1-5'
+    # 04:50 UTC Tue-Sat: the night after each trading day. The day's settle
+    # reaches data/prices.json around 04:15 UTC (Oct 20: Dec corn 467.00 for
+    # Oct 19 first in the 04:16 file; the 04:01 file still had Oct 16's).
+    # The old 23:35 UTC run came before it, so titles carried the day before's
+    # settle until morning (Sig, Oct 20). This run lands in the grain
+    # overnight; the price file names its settle (close_kind), so titles get
+    # that settle, and the overnight trade stays on the cards, never a title.
+    - cron: '50 4 * * 2-6'
   # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
   # drops and delays the schedule above. The gate job below lets the first run
   # after each tick of the schedule do the work; see scripts/cron_gate.py.
@@ -53,7 +56,7 @@ jobs:
           python3 scripts/cron_gate.py tick --workflow freshness.yml --max-lag 120
           --cron "35 13 * * 1-5"
           --cron "35 20 * * 1-5"
-          --cron "35 23 * * 1-5"
+          --cron "50 4 * * 2-6"
 
   seed:
     needs: gate

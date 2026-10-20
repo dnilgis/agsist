@@ -29,6 +29,7 @@ Deploys run from GitHub (Cloudflare Workers Builds, root `workers`, deploy comma
 - subs: `GET /unsubscribe?e=x@y.zz&t=bad` renders the worker's own HTML page
 - subs v5.5 (sponsor sign-ups): `GET /sponsor-confirm?i=000000000000&t=x` answers "This link isn't valid." (the old worker answers 404 JSON)
 - subs v5.8 (site forms): `GET /form-list?token=x` answers `{"ok":false}` with status 403 (the old worker answers 404 `not found`)
+- subs v5.33 (GA gate): `GET /ga-ok` answers `{"ok":true}` from a home or phone connection and `{"ok":false}` from a cloud server (the old worker answers 404 `not found`, and until then Google Analytics stays off on every page)
 
 ## Deploying subs v5.8 (site forms, 2026-10-11)
 

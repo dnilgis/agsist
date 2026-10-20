@@ -104,6 +104,10 @@
     chgEl.textContent=chgObj.text;
     chgEl.className='pc-chg-val '+chgObj.cls;
     if(prevEl&&fq.open!=null)prevEl.textContent='prev: '+fmtPrice(fq.open,2,true)+' '+(fq.ticker||'');
+    /* the card's overnight line (geo.js wrote the swapped-out contract's) follows the contract shown, 2026-10-20 */
+    var ovCard=priceEl.closest?priceEl.closest('.pc'):null,ovEl=ovCard&&ovCard.querySelector('.pc-ovn');
+    if(ovEl){var ovH=window.AgPxStamp&&AgPxStamp.overnightHtml?AgPxStamp.overnightHtml(fq,function(v){return AG.px.price(v,{style:'slash'});},function(n){return AG.px.move(n,{style:'slash',sign:true});},null,{short:true}):'';
+      ovEl.innerHTML=ovH;ovEl.hidden=!ovH;}
     var lo=fq.wk52_lo/100,hi=fq.wk52_hi/100,cl=fq.close/100;
     if(hi>lo){
       var pct=Math.max(0,Math.min(100,((cl-lo)/(hi-lo))*100));

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#111a0a"><script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-17: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set and the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string), and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+<meta name="theme-color" content="#111a0a"><script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set, the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string) and its time zone is US or Canada (Sig, Oct 20: keep server traffic such as Singapore out of GA), and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}try{v=w.Intl.DateTimeFormat().resolvedOptions().timeZone;}catch(e){}if(!/^(America|US|Canada)[/]|^Pacific[/]Honolulu$/.test(v)){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');window.gaEvent=function(n,p){try{gtag('event',n,p||{});}catch(e){};};</script>
 <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/util.js?v=20"></script>
 <script src="/components/asof.js?v=1"></script>
-<script src="/components/price-local.js?v=6"></script>
+<script src="/components/price-local.js?v=7"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -223,21 +223,21 @@ details.fold[hidden]{display:none}
     <div class="ph-price ph-two">
       <div class="ph-q" id="hero-gf">
         <div class="ph-name">Feeder cattle <span id="hero-gf-ct"><!--SEED:gfct-->Oct '26<!--/SEED--></span></div>
-        <div class="ph-val sk" id="hero-gf-price"><!--SEED:gfpx-->$344.425<!--/SEED--></div>
+        <div class="ph-val sk" id="hero-gf-price"><!--SEED:gfpx-->$344.125<!--/SEED--></div>
         <div class="ph-unit">$ / cwt · GF</div>
-        <div class="ph-chg sk" id="hero-gf-chg"><!--SEED:gfchg--><span class="up">▲ +$0.80 (+0.23%)</span><!--/SEED--></div>
-        <div class="ph-stamp" id="hero-gf-stamp"><!--SEED:gfstamp-->Oct 19 settle<!--/SEED--></div>
+        <div class="ph-chg sk" id="hero-gf-chg"><!--SEED:gfchg--><span class="dn">▼ −$0.30 (−0.09%)</span><!--/SEED--></div>
+        <div class="ph-stamp" id="hero-gf-stamp"><!--SEED:gfstamp-->Last trade<!--/SEED--></div>
       </div>
       <div class="ph-q" id="hero-le">
         <div class="ph-name">Live cattle <span id="hero-le-ct"><!--SEED:lect-->Oct '26<!--/SEED--></span></div>
-        <div class="ph-val sk" id="hero-price"><!--SEED:px-->$227.50<!--/SEED--></div>
+        <div class="ph-val sk" id="hero-price"><!--SEED:px-->$228.475<!--/SEED--></div>
         <div class="ph-unit">$ / cwt · LE</div>
-        <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="dn">▼ −$0.05 (−0.02%)</span><!--/SEED--></div>
-        <div class="ph-stamp" id="hero-le-stamp"><!--SEED:lestamp-->Oct 19 settle<!--/SEED--></div>
+        <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="up">▲ +$0.975 (+0.43%)</span><!--/SEED--></div>
+        <div class="ph-stamp" id="hero-le-stamp"><!--SEED:lestamp-->Last trade<!--/SEED--></div>
       </div>
     </div>
   </div>
-  <p class="ct-seednote"><!--SEED:note-->Live cattle settled at <strong>$227.50</strong> &middot; feeders near $344.425 &middot; $/cwt &middot; as of Oct 19 &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours. Reload for the latest.<!--/SEED--></p>
+  <p class="ct-seednote"><!--SEED:note-->Live cattle last traded near <strong>$228.475</strong> &middot; feeders near $344.125 &middot; $/cwt &middot; as of Oct 20, 10:46 a.m. CT &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours. Reload for the latest.<!--/SEED--></p>
       <div class="ps"><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span></div>
 
   <p class="ph-plain" style="font-size:.95rem;color:var(--text-dim);margin:.45rem 0 .2rem;line-height:1.5">Feeder cattle are calves headed to the feedlot; live cattle are finished cattle ready to sell. The settle is the exchange&rsquo;s official closing price for the day. <a href="/cattle-auction-prices">See what cattle brought at sale barns</a>.</p>
@@ -644,7 +644,7 @@ details.fold[hidden]{display:none}
 <!-- /static-nav:footer -->
 </div>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/geo.js?v=31" defer></script>
+<script src="/components/geo.js?v=32" defer></script>
 
 <script>
 /* ===== cattle dashboard: prices.json + price-stats.json ===== */

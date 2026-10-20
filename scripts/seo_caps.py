@@ -4,7 +4,7 @@ Night SEO audit, Oct 19, 2026: one quantity had five caps (bake_seo 68, PRF 75,
 county rain none for titles and 165 for descriptions, check_seo 170) and 2,679
 indexable titles ran past 68. Every builder that fits a title or a description
 reads these, and check_seo.py warns past them. A builder may hold itself to less
-(cash bids and ARC/PLC keep titles to 60, pinned by their selftests; the Daily
+(cash bids keep titles to 60, pinned by their selftests; ARC/PLC did until Oct 20; the Daily
 keeps its whole headline, scripts/generate_daily.py says why) but never more.
 
 When a title runs long, " | AGSIST" gives way first (Google shows the site name

@@ -36,6 +36,8 @@ COORD_DP = 2          # ~1 km — plenty for a national heatmap, keeps files sma
 TIMEOUT = 240         # a full year of national LSRs is a large response
 UA = "AGSIST-hail-pipeline/1.0 (sig@farmers1st.com)"
 RECENT_DAYS = 30      # rolling window for the "recent hail" events layer
+GRID_PATH = "data/hail/all-grid.json"   # the map's opening "all years" picture
+GRID_DEG = 0.1        # bin size; the map uses the grid only at zoom 5 and out
 
 
 def fetch_year(year):
@@ -389,6 +391,65 @@ def existing_count(year):
         return None
 
 
+def grid_points(year_points, deg=GRID_DEG):
+    """Every year's [lat, lon, weight] points summed into deg-sized bins.
+
+    hail-map.html opens on all five years. That used to mean five year files
+    (about 330 KB gzipped) before the first heat paint on a phone. Leaflet.heat
+    already merges every point inside one 17.5 px cell into one weighted
+    centre, and at zoom 5 and out a cell is 0.77 degrees or more, so a 0.1
+    degree bin drawn at its weighted centre with its summed weight paints the
+    same picture from a third of the bytes. Zoomed in past 5 the page loads
+    the real year files (2026-10-20).
+    """
+    acc = {}
+    for pts in year_points:
+        for lat, lon, w in pts:
+            k = (int((lat + 90) // deg), int((lon + 180) // deg))
+            a = acc.get(k)
+            if a is None:
+                acc[k] = [lat * w, lon * w, w]
+            else:
+                a[0] += lat * w
+                a[1] += lon * w
+                a[2] += w
+    out = []
+    for k in sorted(acc):
+        sl, so, sw = acc[k]
+        if sw <= 0:
+            continue
+        out.append([round(sl / sw, COORD_DP), round(so / sw, COORD_DP), round(sw, 2)])
+    return out
+
+
+def write_grid(years):
+    """data/hail/all-grid.json from the year files on disk, so a year whose
+    fetch failed and kept its old file is in the grid exactly as on the map.
+    "years" and "count" let the page check it matches the manifest."""
+    got, pts, count = [], [], 0
+    for y in years:
+        try:
+            with open("%s/%d.json" % (OUT_DIR, y)) as fh:
+                d = json.load(fh)
+        except (OSError, ValueError):
+            continue
+        p = d.get("points") or []
+        if not p:
+            continue
+        got.append(y)
+        pts.append(p)
+        count += len(p)
+    if not got:
+        print("[grid] no year files, keeping any existing grid", file=sys.stderr)
+        return None
+    g = grid_points(pts)
+    with open(GRID_PATH, "w") as fh:
+        json.dump({"years": got, "count": count, "deg": GRID_DEG, "points": g},
+                  fh, separators=(",", ":"))
+    print("[grid] %d reports in %d bins (%s)" % (count, len(g), ",".join(map(str, got))))
+    return got
+
+
 def refresh_recent_only():
     """Daily mode (--recent): refresh ONLY recent.json and the manifest's
     recent_* fields. The yearly files, counties, and events are monthly work;
@@ -422,6 +483,11 @@ def refresh_recent_only():
 def main():
     if "--recent" in sys.argv:
         refresh_recent_only()
+        return
+    if "--grid" in sys.argv:
+        # Rebuild only the grid from the year files on disk (no network).
+        with open("%s/manifest.json" % OUT_DIR) as fh:
+            write_grid(json.load(fh).get("years") or [])
         return
     os.makedirs(OUT_DIR, exist_ok=True)
     this_year = datetime.now(timezone.utc).year
@@ -480,6 +546,8 @@ def main():
             json.dump({"year": y, "n": len(ev), "ev": ev}, fh, separators=(",", ":"))
         print("[%d] %d hail reports (%d dated events)" % (y, len(pts), len(ev)))
         time.sleep(2)  # be polite to IEM between large requests
+
+    write_grid(years)
 
     # ── County rankings per state (only rewrite if we got fresh rows) ──
     if cty_acc:

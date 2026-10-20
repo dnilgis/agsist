@@ -9,7 +9,11 @@ name: MESH partial — last 24h live layer
 on:
   workflow_dispatch:
   schedule:
-    - cron: '5 15,18,21,0 * * *'   # ~10a, 1p, 4p, 7p Central (summer)
+    # Sig, Oct 20: often in hail season, a comfortable pace off season.
+    # Hail season, March to September: every hour.
+    - cron: '5 * * 3-9 *'
+    # Off season, October to February: twice a day (~10a and 4p Central).
+    - cron: '5 15,21 * 1,2,10,11,12 *'
 
 concurrency:
   group: mesh-partial
