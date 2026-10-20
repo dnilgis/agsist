@@ -57,3 +57,18 @@ test("index so far: the rain-needed table first, the definition under the number
   assert.ok(o.indexOf("pn-figs") < o.indexOf("pn-def") && /percent of normal/.test(def) && /climbs as the rest of the interval&rsquo;s rain comes in/.test(def), "defined right under the number");
   assert.ok(!/pn-pay/.test(o));
 });
+
+test("irrigated hay valued under non-irrigated is said where both show, with no reason given", async () => {
+  const M = (await import("../components/prf-math.js")).default;
+  const tx = JSON.parse(read("data/prf/s/TX.json")), and = tx.counties["001"];
+  assert.equal(and.n, "Anderson");
+  const irr = tx.combos.indexOf("Haying, irrigated"), non = tx.combos.indexOf("Haying, non-irrigated");
+  assert.deepEqual(M.irrigatedLower(tx.combos, and.b, irr), { irr: 168, non: 224 }, "Anderson: $168 against $224");
+  assert.equal(M.irrigatedLower(tx.combos, and.b, non), null, "said on the irrigated line only");
+  assert.equal(M.irrigatedLower(tx.combos, and.b, 0), null, "not on grazing");
+  assert.equal(M.irrigatedLower(["Haying, irrigated", "Haying, non-irrigated"], [250, 224], 0), null, "not when irrigated is higher");
+  assert.match(read("components/prf.js"), /USDA sets irrigated hay lower here: ' \+ usd2\(lo\.irr\)/);
+  const page = read("prf/texas/anderson-county.html");
+  assert.ok(page.includes("<dt>Hay, irrigated, per acre</dt><dd>$168.00</dd>") && page.includes("USDA sets irrigated hay lower here."), "the Anderson page says it");
+  assert.ok(!/irrigated hay lower here because/i.test(page), "no guessed reason");
+});

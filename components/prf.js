@@ -139,6 +139,14 @@
   function cur() { return S[S.on] || S.A; }
   function county() { return S.st && states[S.st] && S.co ? states[S.st].counties[S.co] : null; }
   function limits() { var c = county(); if (!c) return null; return c.lim || (c.limc || {})[String(S.use)] || null; }
+  /* irrigated hay worth less than non-irrigated in this county: say so, with no guessed reason */
+  function irrNote() {
+    var c = county(), names = states[S.st].combos, o = c && c.bg && c.bg[String(S.grid)];
+    if (!c) return '';
+    var vals = names.map(function (n, i) { return o && o[String(i)] != null ? o[String(i)] : c.b[i]; });
+    var lo = M.irrigatedLower(names, vals, S.use);
+    return lo ? ' USDA sets irrigated hay lower here: ' + usd2(lo.irr) + ' an acre, against ' + usd2(lo.non) + ' for non-irrigated.' : '';
+  }
   function baseValue() {
     var c = county(); if (!c) return null;
     var o = c.bg && c.bg[String(S.grid)];
@@ -564,7 +572,7 @@
     $('prf-pf-hint').textContent = cbv == null ? '' : 'How much to insure each acre for. 100 is USDA’s county value, ' + usd2(cbv) + ' an acre here for this use. 150 raises the premium and any payment by half. It does not change how often it pays.';
     $('prf-use-note').innerHTML = isGrazing()
       ? 'From 2027, grazing land needs your livestock on it: at least 25% of the stocking rate, or no payment is due and the premium is still owed. <button type="button" class="prf-link" data-jump="new">The rule</button>'
-      : 'PRF covers perennial hay ground. Forage planted every year is a different policy, Annual Forage.';
+      : 'PRF covers perennial hay ground. Forage planted every year is a different policy, Annual Forage.' + irrNote();
     Array.prototype.forEach.call(document.querySelectorAll('[data-cov]'), function (b) {
       var on = +b.getAttribute('data-cov') === s.cov; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });

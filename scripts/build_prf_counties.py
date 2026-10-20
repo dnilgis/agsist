@@ -295,6 +295,8 @@ def page(ctx):
            # the grid index email (components/prf-notice.js, worker topic prf:<grid>): follows the card's grid
            f'<div class="prf-notice" data-prf-notice data-grid="{now_g}" hidden></div>'
            f'<script src="/components/prf-notice.js?v=2" defer></script>')
+    # irrigated hay under non-irrigated (2,968 of 3,070 counties for 2027): said, never explained (Sig, Oct 20)
+    irr_low = " USDA sets irrigated hay lower here." if hi is not None and hy is not None and hi < hy else ""
     sod = (f'<p class="prf-note">{stn} has the native sod rule: native sod broken in recent years gets 65% of the protection and 50 points less of USDA&rsquo;s share. '
            f'The values here are for land the rule does not touch.</p>') if stc in S.SOD else ""
     return f"""<!DOCTYPE html>
@@ -345,7 +347,7 @@ def page(ctx):
       <div><dt>January to February cap</dt><dd>{jf}</dd></div>
       <div><dt>Sign-up deadline</dt><dd>{sales}</dd></div>
     </dl>
-    <p class="prf-fine">USDA&rsquo;s {cy} county base values, the same on every grid in the county. Protection per acre is the value times your coverage level times a productivity factor of 60 to 150: grazing at 90% and 100 is {money2(prot)} an acre.</p>
+    <p class="prf-fine">USDA&rsquo;s {cy} county base values, the same on every grid in the county. Protection per acre is the value times your coverage level times a productivity factor of 60 to 150: grazing at 90% and 100 is {money2(prot)} an acre.{irr_low}</p>
     {exh}
     {sod}
     {now}

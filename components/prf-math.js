@@ -336,7 +336,21 @@
     return best;
   }
 
+  /* Irrigated hay valued under non-irrigated (Sig, Oct 20; Anderson County, TX: $168 against $224).
+     names: the state's uses in order; vals: the county value for each (null where not offered); use: the
+     index shown. When the use is an irrigated hay line and its non-irrigated twin is worth more, returns
+     { irr, non }, else null. No reason is given: USDA sets the values. */
+  function irrigatedLower(names, vals, use) {
+    var n = names && names[use];
+    if (!n || !/irrigated/i.test(n) || /non-irrigated/i.test(n)) return null;
+    var twin = names.indexOf(n.replace(/irrigated/i, 'non-irrigated'));
+    if (twin < 0) return null;
+    var irr = vals[use], non = vals[twin];
+    return irr != null && non != null && irr < non ? { irr: irr, non: non } : null;
+  }
+
   var api = {
+    irrigatedLower: irrigatedLower,
     evenSplit: evenSplit, longestDry: longestDry,
     CODES: CODES, LABELS: LABELS, LONG: LONG, COVERAGE: COVERAGE, N: N, MISSING: MISSING, BLOCK: BLOCK,
     gridFromLatLon: gridFromLatLon, gridRowCol: gridRowCol, gridBounds: gridBounds, shardKey: shardKey,
