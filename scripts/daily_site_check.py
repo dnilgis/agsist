@@ -71,9 +71,11 @@ def clock_findings(doc):
         if w.get("status") not in ("ok", None):
             wf = w.get("workflow", "")
             out.append({"check": "clocks", "where": wf,
-                        "title": ("late (critical)" if w.get("critical") else "late") if w.get("status") not in ("over", "warn")
+                        "title": "engine checkout failing" if wf == "engine-checkout" and w.get("status") == "late"
+                        else ("late (critical)" if w.get("critical") else "late") if w.get("status") not in ("over", "warn")
                         else {"folder-budgets": "folder near its budget", "private-repo-key": "private repo key expiring",
-                              "private-raw-saves": "saves to the private repo stopped"}.get(wf, "published size"),
+                              "private-raw-saves": "saves to the private repo stopped",
+                              "engine-checkout": "engine branch not readable"}.get(wf, "published size"),
                         "detail": f"{w.get('why', '')}; last success {w.get('last_success') or 'never'}"})
     return out
 
@@ -237,6 +239,10 @@ def selftest():
                                        {"workflow": "private-raw-saves", "status": "warn", "why": "96 h"}]})
     ck("the private repo rows get their own titles",
        [f["title"] for f in pk] == ["private repo key expiring", "saves to the private repo stopped"])
+    ek = clock_findings({"workflows": [{"workflow": "engine-checkout", "status": "late", "critical": True, "why": "Engine checkout failing: bids poll.yml (2 runs)"},
+                                       {"workflow": "engine-checkout", "status": "warn", "why": "the key cannot read engine-bids"}]})
+    ck("the engine row says engine checkout failing",
+       [f["title"] for f in ek] == ["engine checkout failing", "engine branch not readable"])
     now = datetime(2026, 10, 17, 11, 37, tzinfo=timezone.utc)     # 6:37 a.m. CDT, a Saturday
     ck("today's Daily is clean", daily_findings({"date": "Saturday, October 17, 2026"}, now) == [])
     ck("yesterday's Daily is a finding", len(daily_findings({"date": "Friday, October 16, 2026"}, now)) == 1)

@@ -82,7 +82,14 @@ jobs:
             scripts/usda_current.py
             data/wasde.json
             crop-tour.html
+            /.github/actions/engine/
+            /.github/engine-paths
           sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
       - id: g
         env:
           EV: ${{ github.event_name }}
@@ -102,6 +109,11 @@ jobs:
       TZ: America/Chicago
     steps:
       - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
 
       - uses: actions/setup-python@v5
         with:

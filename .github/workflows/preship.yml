@@ -38,6 +38,11 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 2          # HEAD and HEAD~1; the baseline is fetched on its own below
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
 
       - uses: actions/setup-node@v4
         with:

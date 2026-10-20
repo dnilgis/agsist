@@ -95,6 +95,11 @@ jobs:
         run: echo "ATLAS_JOB_T0=$(date +%s)" >> "$GITHUB_ENV"
 
       - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
 
       - uses: actions/setup-python@v5
         with:

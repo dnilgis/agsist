@@ -49,8 +49,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-          sparse-checkout: scripts/cron_gate.py
+          sparse-checkout: |
+            scripts/cron_gate.py
+            /.github/actions/engine/
+            /.github/engine-paths
           sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
       - id: g
         env:
           GH_TOKEN: ${{ github.token }}
@@ -71,6 +79,11 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
 
       - name: Set up Python
         uses: actions/setup-python@v5

@@ -87,7 +87,14 @@ jobs:
           sparse-checkout: |
             scripts/cron_gate.py
             data/cot.json
+            /.github/actions/engine/
+            /.github/engine-paths
           sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
       - id: report
         if: steps.window.outputs.open == '1'
         run: python3 scripts/cron_gate.py cot --cot-file data/cot.json
@@ -98,6 +105,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
 
       # ── THE PROBE ────────────────────────────────────────────────────────
       # Nothing below this step runs unless CFTC's latest report date is newer
