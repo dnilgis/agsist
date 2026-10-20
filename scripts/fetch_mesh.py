@@ -22,7 +22,15 @@ Output: data/hail/mesh/YYYY-MM-DD.json  (FeatureCollection; each feature has
 Retention: keeps the most recent KEEP_DAYS days plus any older date whose file
 already exists (notable storms accumulate; nothing is deleted by default).
 
+Hourly (2026-10-20, for the storm replay on /hail-map and /rain-radar):
+        --hours writes data/hail/mesh/hours.json, the last 48 hours of MRMS
+        MESH_Max_60min read once per hour (the file stamped HH:00 holds the
+        largest estimate in the hour before it). The daily file says where;
+        this one says WHEN, to the hour. Hours already in the file are kept,
+        so a run fetches only the hours it has not read yet.
+
 Usage:
+  python scripts/fetch_mesh.py --hours        # hour-by-hour, last 48 hours
   python scripts/fetch_mesh.py                # yesterday (UTC)
   python scripts/fetch_mesh.py 2026-06-12     # a specific date
   python scripts/fetch_mesh.py --selftest     # offline pipeline test, no network
@@ -42,6 +50,11 @@ from datetime import datetime, timedelta, timezone
 import numpy as np
 
 ARCHIVE = "https://mtarchive.geol.iastate.edu/{y}/{m:02d}/{d:02d}/mrms/ncep/MESH_Max_1440min/"
+ARCHIVE60 = "https://mtarchive.geol.iastate.edu/{y}/{m:02d}/{d:02d}/mrms/ncep/MESH_Max_60min/"
+HOURS_FILE = "hours.json"
+HOURS_KEEP = 48       # the replay shows 24 or 48 hours
+HOURS_LAG_MIN = 8     # an hour's file lands a few minutes after the hour
+HOURS_SLACK_MIN = 4   # take a file up to 4 minutes before the hour when HH:00 is missing
 OUTDIR = "data/hail/mesh"
 THRESH_IN = [0.75, 1.0, 1.5, 2.0]
 MM_PER_IN = 25.4
@@ -211,6 +224,19 @@ def contour_features(grid_mm, lons, lats):
 
 
 # ── grib acquisition ────────────────────────────────────────────────────────
+def http_get(u, timeout):
+    """GET with one retry; None on a transport failure (callers treat it as a miss)."""
+    import requests
+    for attempt in (1, 2):
+        try:
+            return requests.get(u, timeout=timeout)
+        except requests.RequestException as e:
+            log("  GET failed (attempt %d): %s" % (attempt, e))
+            if attempt == 1:
+                time.sleep(5)
+    return None
+
+
 def fetch_day_grib(dt):
     """Return (values_mm ndarray, lons 1d, lats 1d) for the day's max, or None."""
     import requests
@@ -257,7 +283,12 @@ def fetch_day_grib(dt):
     if g.status_code != 200:
         log("  grib HTTP", g.status_code)
         return None
-    raw = gzip.decompress(g.content)
+    return decode_grib(g.content)
+
+
+def decode_grib(gz_bytes):
+    """gzipped MRMS GRIB2 -> (values_mm, lons, lats), north row last."""
+    raw = gzip.decompress(gz_bytes)
     tmp = "/tmp/mesh.grib2"
     open(tmp, "wb").write(raw)
     import xarray as xr
@@ -376,6 +407,149 @@ def selftest():
         "polygons across", len(feats), "bands; donut kept", holes, "hole(s)")
 
 
+# ── hour by hour (storm replay) ─────────────────────────────────────────────
+def iso_z(t):
+    return t.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def hour_ends(now, keep=HOURS_KEEP, lag_min=HOURS_LAG_MIN):
+    """The last `keep` whole hours whose file should be posted by `now`, oldest
+    first. Each is the END of its hour: the file stamped 22:00 is 21:00-22:00."""
+    newest = (now - timedelta(minutes=lag_min)).replace(minute=0, second=0, microsecond=0)
+    return [newest - timedelta(hours=k) for k in range(keep - 1, -1, -1)]
+
+
+def pick_hour_file(names, end, slack_min=HOURS_SLACK_MIN):
+    """The 60-minute file for the hour ending `end`: stamped exactly HH:00:00,
+    else the newest stamped up to `slack_min` minutes before it. Never one after
+    the hour: that file would reach into the next hour."""
+    best, best_t = None, None
+    for n in names:
+        m = re.search(r"(\d{8})-(\d{6})", n)
+        if not m:
+            continue
+        t = datetime.strptime(m.group(1) + m.group(2), "%Y%m%d%H%M%S").replace(tzinfo=timezone.utc)
+        if t > end or t < end - timedelta(minutes=slack_min):
+            continue
+        if best_t is None or t > best_t:
+            best, best_t = n, t
+    return best
+
+
+def merge_hours(old_hours, fresh, ends):
+    """old_hours / fresh: {end_iso: features}. Keeps only the window `ends`,
+    fresh wins, oldest first. Returns (hours list, missing end isos)."""
+    out, missing = [], []
+    for e in ends:
+        k = iso_z(e)
+        if k in fresh:
+            out.append({"end": k, "features": fresh[k]})
+        elif k in old_hours:
+            out.append({"end": k, "features": old_hours[k]})
+        else:
+            missing.append(k)
+    return out, missing
+
+
+def hour_features(vals, lons, lats, end_iso):
+    """One hour's grid -> banded features tagged with the hour. A quiet hour
+    (nothing at 0.75 in) is an empty list, which still counts as read."""
+    if float(vals.max()) < THRESH_IN[0] * MM_PER_IN:
+        return []
+    vp = maxpool(vals, POOL)
+    lp = lons[: (len(lons) // POOL) * POOL].reshape(-1, POOL).mean(axis=1)
+    la = lats[: (len(lats) // POOL) * POOL].reshape(-1, POOL).mean(axis=1)
+    feats = contour_features(vp, lp, la)
+    for f in feats:
+        f["properties"]["hour_end"] = end_iso
+    return feats
+
+
+def run_hours(now=None):
+    now = now or datetime.now(timezone.utc)
+    os.makedirs(OUTDIR, exist_ok=True)
+    out = os.path.join(OUTDIR, HOURS_FILE)
+    old = {}
+    if os.path.exists(out):
+        try:
+            for h in json.load(open(out)).get("hours", []):
+                if isinstance(h, dict) and "end" in h:
+                    old[h["end"]] = h.get("features") or []
+        except (ValueError, OSError):
+            old = {}
+    ends = hour_ends(now)
+    todo = [e for e in ends if iso_z(e) not in old]
+    log("MESH hours: %d in window, %d already read, %d to fetch" % (len(ends), len(ends) - len(todo), len(todo)))
+    listings, fresh = {}, {}
+    for e in reversed(todo):              # newest first: a cut-off run still has the latest storm
+        day = e.date()
+        if day not in listings:
+            url = ARCHIVE60.format(y=day.year, m=day.month, d=day.day)
+            r = http_get(url, timeout=30)
+            listings[day] = (url, re.findall(r'href="(MESH_Max_60min[^"]+\.grib2\.gz)"', r.text)
+                             if r is not None and r.status_code == 200 else [])
+        url, names = listings[day]
+        name = pick_hour_file(names, e)
+        if not name:
+            log("  no file for hour ending", iso_z(e))
+            continue
+        g = http_get(url + name, timeout=120)
+        if g is None or g.status_code != 200:
+            log("  could not fetch", name)
+            continue
+        try:
+            vals, lons, lats = decode_grib(g.content)
+        except Exception as ex:        # a bad file is a missing hour, not a dead run
+            log("  could not decode", name, ex)
+            continue
+        fresh[iso_z(e)] = hour_features(vals, lons, lats, iso_z(e))
+        log("  hour ending %s: %d bands" % (iso_z(e), len(fresh[iso_z(e)])))
+    hours, missing = merge_hours(old, fresh, ends)
+    doc = {
+        "meta": {
+            "source": "NOAA MRMS MESH 60-minute maximum via Iowa State mtarchive",
+            "units_note": ("HOUR BY HOUR radar ESTIMATE of maximum hail size. Each hour is the largest estimate "
+                           "in the 60 minutes before its end time. Not a ground measurement."),
+            "thresholds_in": THRESH_IN,
+            "hours_kept": HOURS_KEEP,
+            "generated": iso_z(now),
+            "as_of": hours[-1]["end"] if hours else None,
+            "missing": missing,
+        },
+        "hours": hours,
+    }
+    json.dump(doc, open(out, "w"), separators=(",", ":"))
+    log("wrote", out, "(%d KB, %d hours, %d missing)" % (os.path.getsize(out) // 1024, len(hours), len(missing)))
+
+
+def selftest_hours():
+    """Offline checks of the hour picking and the 48-hour window."""
+    now = datetime(2026, 7, 14, 22, 5, tzinfo=timezone.utc)
+    ends = hour_ends(now, keep=3)
+    # 22:05 is inside the lag: 22:00 is not counted posted yet, 21:00 is newest
+    assert [iso_z(e) for e in ends] == ["2026-07-14T19:00:00Z", "2026-07-14T20:00:00Z", "2026-07-14T21:00:00Z"], ends
+    names = ["MESH_Max_60min_00.50_20260714-205600.grib2.gz", "MESH_Max_60min_00.50_20260714-205800.grib2.gz",
+             "MESH_Max_60min_00.50_20260714-210200.grib2.gz"]
+    e21 = datetime(2026, 7, 14, 21, 0, tzinfo=timezone.utc)
+    assert pick_hour_file(names, e21) == names[1], "the newest file at or before the hour, inside the slack"
+    assert pick_hour_file(names[2:], e21) is None, "a file after the hour reaches into the next hour"
+    assert pick_hour_file(names + ["MESH_Max_60min_00.50_20260714-210000.grib2.gz"], e21).endswith("210000.grib2.gz")
+    old = {"2026-07-14T18:00:00Z": [1], "2026-07-14T19:00:00Z": [2]}
+    hours, missing = merge_hours(old, {"2026-07-14T21:00:00Z": []}, ends)
+    assert [h["end"] for h in hours] == ["2026-07-14T19:00:00Z", "2026-07-14T21:00:00Z"], hours
+    assert missing == ["2026-07-14T20:00:00Z"], missing
+    assert hours[1]["features"] == [], "a quiet hour is kept as read, with no bands"
+    lats = np.arange(40.0, 41.0, 0.01)
+    lons = np.arange(-92.0, -91.0, 0.01)
+    assert hour_features(np.zeros((len(lats), len(lons)), np.float32), lons, lats, "x") == []
+    LN, LT = np.meshgrid(lons, lats)
+    blob = np.where(np.hypot(LN + 91.5, LT - 40.5) < 0.2, 30.0, 0.0).astype(np.float32)
+    f = hour_features(blob, lons, lats, "2026-07-14T21:00:00Z")
+    assert f and all(x["properties"]["hour_end"] == "2026-07-14T21:00:00Z" for x in f)
+    assert [x["properties"]["thresh_in"] for x in f] == [0.75, 1.0], [x["properties"] for x in f]
+    log("SELFTEST hours OK")
+
+
 def run_partial():
     """Rolling 24-hour MESH as of right now: today's UTC directory fills all
     day, so its newest file IS the last-24h maximum at fetch time. Writes a
@@ -407,6 +581,10 @@ def run_partial():
 def main():
     if "--selftest" in sys.argv:
         selftest()
+        selftest_hours()
+        return
+    if "--hours" in sys.argv:
+        run_hours()
         return
     if "--partial" in sys.argv:
         run_partial()

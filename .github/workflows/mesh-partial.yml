@@ -1,6 +1,7 @@
 name: MESH partial — last 24h live layer
 # Refreshes the rolling 24-hour radar-estimated hail layer several times a
-# day during hail season. Writes ONLY data/hail/mesh/today-partial.json —
+# day during hail season. Writes ONLY data/hail/mesh/today-partial.json and
+# data/hail/mesh/hours.json (hour-by-hour, last 48 hours, for the storm replay) —
 # never the dated archive or its index — so the nightly alert checker and
 # the finished-day pipeline are completely untouched (this workflow's name
 # is deliberately different from the daily MESH workflow the alert check
@@ -38,6 +39,10 @@ jobs:
         run: pip install requests==2.34.2 numpy==2.5.4 xarray==2026.9.0 cfgrib==0.9.15.1 matplotlib==3.11.2 shapely==2.2.0 --quiet
       - name: Fetch rolling 24h MESH
         run: python3 scripts/fetch_mesh.py --partial
+      - name: Fetch hour-by-hour MESH (storm replay)
+        # A miss here must not hold back the 24-hour layer: the replay says when
+        # its hourly file is old.
+        run: python3 scripts/fetch_mesh.py --hours || echo "::warning::hourly MESH run failed; hours.json left as it was"
       - name: Commit and push (rebase armor)
         run: |
           git config user.name "github-actions[bot]"
@@ -47,10 +52,11 @@ jobs:
           # and fails the job. Stage the directory instead: picks up writes
           # AND deletions, and is a clean no-op when nothing is there.
           git add -A data/hail/mesh/today-partial.json 2>/dev/null || true
+          git add -A data/hail/mesh/hours.json 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: MESH last-24h partial [skip ci]"
           for i in 1 2 3; do
             git push origin main && exit 0
-            git pull --rebase origin main || { git rebase --abort; cp data/hail/mesh/today-partial.json /tmp/mesh.json; git reset --hard origin/main; cp /tmp/mesh.json data/hail/mesh/today-partial.json; git add data/hail/mesh/today-partial.json; git commit -m "data: MESH last-24h partial [skip ci]" || true; }
+            git pull --rebase origin main || { git rebase --abort; cp data/hail/mesh/today-partial.json /tmp/mesh.json 2>/dev/null; cp data/hail/mesh/hours.json /tmp/mesh-hours.json 2>/dev/null; git reset --hard origin/main; cp /tmp/mesh.json data/hail/mesh/today-partial.json 2>/dev/null; cp /tmp/mesh-hours.json data/hail/mesh/hours.json 2>/dev/null; git add -A data/hail/mesh/today-partial.json 2>/dev/null; git add -A data/hail/mesh/hours.json 2>/dev/null; git commit -m "data: MESH last-24h partial [skip ci]" || true; }
           done
           exit 1
