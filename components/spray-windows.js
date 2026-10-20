@@ -283,9 +283,9 @@
     return out;
   }
   function mainWhy(h) { return h.why.length ? h.why[0] : 'na'; }
-  function detail(hours, run, k) {
-    var mx = function (f) { var m = null; for (var i = run.s; i <= run.e; i++) { var v = f(hours[i]); if (v != null && (m == null || v > m)) m = v; } return m; };
-    var mn = function (f) { var m = null; for (var i = run.s; i <= run.e; i++) { var v = f(hours[i]); if (v != null && (m == null || v < m)) m = v; } return m; };
+  function detail(hours, rr, k) { // rr: the runs named on the line; highs and lows over their hours only
+    var each = function (f, better) { var m = null; rr.forEach(function (run) { for (var i = run.s; i <= run.e; i++) { var v = f(hours[i]); if (v != null && (m == null || better(v, m))) m = v; } }); return m; };
+    var mx = function (f) { return each(f, function (a, b) { return a > b; }); }, mn = function (f) { return each(f, function (a, b) { return a < b; }); };
     if (k === 'windy' || k === 'breezy') { var b = mx(function (h) { return h.boom; }), g = mx(function (h) { return h.gust; }); return '(about ' + Math.round(b) + ' mph at the boom' + (g != null ? ', gusts ' + Math.round(g) + ' mph' : '') + ')'; }
     if (k === 'gust') { var g2 = mx(function (h) { return h.gust; }); return g2 == null ? '' : '(gusts ' + Math.round(g2) + ' mph)'; }
     if (k === 'calm') { var b2 = mx(function (h) { return h.boom; }); return b2 == null ? '' : '(under ' + Math.max(1, Math.ceil(b2)) + ' mph at the boom)'; }
@@ -298,12 +298,18 @@
   function summary(hours, opts) {
     opts = opts || {};
     var N = opts.rainfree || 2, lines = [], maxLines = opts.max || 7;
-    if (!hours.length) return ['No forecast hours to rate.'];
+    if (!hours.length) return [{ r: 'no', text: 'No forecast hours to rate.' }];
+    // OTT dicamba blocked on every hour (in October, past the label cutoff): say so once, with the reason
+    var allDic = hours.every(function (h) { return h.why.indexOf('dicamba') >= 0; });
+    if (allDic) {
+      var rsn = (hours[0].dicamba && hours[0].dicamba.reason) || '';
+      lines.push({ r: 'no', k: 'dicamba', text: 'No OTT dicamba hours in the next ' + hours.length + ' hours' + (rsn ? ': ' + rsn.replace(/\.$/, '') : '') + '.' });
+    }
     var good = runs(hours, function (h) { return h.r === 'good'; });
     good.forEach(function (g) { if (lines.length < 3) lines.push({ r: 'good', text: 'Good: ' + fmtRange(hours[g.s].t, hours[g.e].t) + (g.s === 0 ? ' (from now)' : '') + '.' }); });
     if (!good.length) {
       var fair = runs(hours, function (h) { return h.r === 'fair'; });
-      if (!fair.length) lines.push({ r: 'no', text: 'No spray window in the next ' + hours.length + ' hours.' });
+      if (!fair.length) { if (!allDic) lines.push({ r: 'no', text: 'No spray window in the next ' + hours.length + ' hours.' }); }
       else {
         lines.push({ r: 'no', text: 'No good hours in the next ' + hours.length + ' hours.' });
         fair.slice(0, 2).forEach(function (f) { lines.push({ r: 'fair', text: 'Best is fair: ' + fmtRange(hours[f.s].t, hours[f.e].t) + ' (' + WHY_TEXT[mainWhy(hours[f.s])].toLowerCase() + ').' }); });
@@ -311,6 +317,7 @@
     }
     // what rules out the other hours: runs of the same main reason, worst reasons first, named once each
     var segs = runs(hours, function (h) { return h.r !== 'good'; }), by = {};
+    function mainWhy(h) { var w = allDic ? h.why.filter(function (k) { return k !== 'dicamba'; }) : h.why; return w.length ? w[0] : (allDic ? 'dicamba' : 'na'); }
     segs.forEach(function (sg) {
       var s = sg.s;
       for (var i = sg.s; i <= sg.e + 1; i++) {
@@ -322,11 +329,11 @@
       }
     });
     WHY.forEach(function (k) {
-      if (!by[k] || lines.length >= maxLines) return;
+      if (!by[k] || lines.length >= maxLines || (allDic && k === 'dicamba')) return;
       var rr = by[k].slice(0, 3), txt = WHY_TEXT[k];
       if (k === 'rainsoon') txt = 'Rain within ' + N + ' hour' + (N === 1 ? '' : 's') + ' after';
       var where = rr.map(function (x) { return fmtRange(hours[x.s].t, hours[x.e].t); }).join(', ');
-      var det = rr.length === 1 ? detail(hours, rr[0], k) : detail(hours, { s: rr[0].s, e: rr[rr.length - 1].e }, k);
+      var det = detail(hours, rr, k);
       var rs = hours[rr[0].s].r;
       lines.push({ r: rs, k: k, text: txt + ' ' + where + (det ? ' ' + det : '') + '.' });
     });
