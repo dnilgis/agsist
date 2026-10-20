@@ -5,6 +5,11 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.32 (2026-10-20): RENT NOTICE, EVERY YEAR. POST /notice with a rent:<st>
+ *   topic this address already had mailed (sent set) starts it over: {ts:
+ *   now, src}, no sent. scripts/send_rent_notice.py reads it unchanged (the
+ *   first release after ts). The page remembers rent:<st>:<year> and asks
+ *   again the next year. Every other route and topic answers as before.
  * v5.31 (2026-10-19): the Daily sponsor tier id is "daily" (Sig: never the old
  *   name). POST /sponsor-apply takes tier page|supporter|daily; every other
  *   route answers exactly as before. No new binding and no new secret.
@@ -1969,7 +1974,10 @@ async function handle(req, env) {
         return json({ ok: false, error: "too many notices for this address" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
-      if (!(topic in r.t)) r.t[topic] = { ts: Date.now(), src };
+      // v5.32: a rent notice is one release a year. Asked again after it was
+      // sent, it starts over (new ts, no sent), so send_rent_notice.py mails
+      // the next release after this ask, as it does for a first ask.
+      if (!(topic in r.t) || (topic.startsWith("rent:") && r.t[topic] && r.t[topic].sent)) r.t[topic] = { ts: Date.now(), src };
       // v5.18: the rain gauge list keeps an optional ZIP and a one-line note;
       // v5.24: asked again, it takes the new ones (the first ts and src stay)
       if (topic === "rain-gauge") {
