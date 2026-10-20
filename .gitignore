@@ -55,3 +55,7 @@ build/shots/
 /data/fsa/*
 !/data/fsa/urls.txt
 !/data/fsa/manifest.tsv
+
+# Working notes live on the raw branch, never on main (Sig, Oct 20: off the public site).
+# Unpack with: bash scripts/pull_raw.sh .claude/notes ; save edits with scripts/push_raw.sh.
+/.claude/notes/

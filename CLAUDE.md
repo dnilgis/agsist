@@ -28,5 +28,6 @@ same commit and say why.
 
 ## New session? Start here
 
-Read `.claude/notes/HANDOFF.md` (how we ship, where things live, what is open) and
+Run `bash scripts/pull_raw.sh .claude/notes` (the notes live on the unpublished `raw` branch, off the public site), then read `.claude/notes/HANDOFF.md` (how we ship, where things live, what is open) and
 `.claude/notes/STANDING-DECISIONS.md` (Sig's rules) before doing anything. Ship checks: `scripts/dev/checks.sh`.
+After editing a note, save it back with `bash scripts/push_raw.sh "<what changed>" .claude/notes`; never commit it to main.

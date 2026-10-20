@@ -1,28 +1,28 @@
 {
-  "fetched": "2026-10-19T16:32:42Z",
+  "fetched": "2026-10-20T14:23:02Z",
   "version": 5,
   "count": 6,
-  "total_found": 11,
+  "total_found": 10,
   "tier_breakdown": {
     "direct_ag": 0,
     "trade_energy": 2,
-    "macro_weather": 9
+    "macro_weather": 8
   },
   "published_tier_breakdown": {
     "direct_ag": 0,
     "trade_energy": 2,
     "macro_weather": 4
   },
-  "published_event_count": 4,
+  "published_event_count": 3,
   "categories": {
     "Energy & Inputs": [
       {
         "platform": "Polymarket",
         "ticker": "2126461",
         "title": "Will Crude Oil reach a new all-time high by December 31?",
-        "yes": 10,
-        "no": 90,
-        "volume_24h": 14521.618987,
+        "yes": 12,
+        "no": 88,
+        "volume_24h": 7458.166181,
         "close_time": "2027-01-01T04:59:00Z",
         "time_left": "Closes in ~2mo",
         "url": "https://polymarket.com/event/crude-oil-all-time-high-by",
@@ -31,15 +31,15 @@
         "relevance": 70,
         "tier": 2,
         "category": "Energy & Inputs",
-        "why_it_matters": "Tail-risk bet (10% odds) on crude reaching a new all-time high. Closes in ~2mo. Would lift farm diesel and pass through to nitrogen fertilizer cost within a few months."
+        "why_it_matters": "Tail-risk bet (12% odds) on crude reaching a new all-time high. Closes in ~2mo. Would lift farm diesel and pass through to nitrogen fertilizer cost within a few months."
       },
       {
         "platform": "Polymarket",
         "ticker": "5426238",
         "title": "Will Crude Oil reach a new all-time high by March 31, 2027?",
-        "yes": 24,
-        "no": 76,
-        "volume_24h": 0.84,
+        "yes": 22,
+        "no": 78,
+        "volume_24h": 146.064494,
         "close_time": "2027-04-01T03:59:00Z",
         "time_left": "Closes in ~5mo",
         "url": "https://polymarket.com/event/crude-oil-all-time-high-by",
@@ -48,7 +48,7 @@
         "relevance": 70,
         "tier": 2,
         "category": "Energy & Inputs",
-        "why_it_matters": "Lower-probability outcome (24%) of crude reaching a new all-time high. Closes in ~5mo. Would lift farm diesel and pass through to nitrogen fertilizer cost within a few months."
+        "why_it_matters": "Lower-probability outcome (22%) of crude reaching a new all-time high. Closes in ~5mo. Would lift farm diesel and pass through to nitrogen fertilizer cost within a few months."
       }
     ],
     "Economy & Markets": [
@@ -56,35 +56,35 @@
         "platform": "Polymarket",
         "ticker": "2589812",
         "title": "Will there be no change in Fed interest rates after the October 2026 meeting?",
-        "yes": 84,
-        "no": 16,
-        "volume_24h": 814759.161733,
+        "yes": 86,
+        "no": 14,
+        "volume_24h": 287021.847815,
         "close_time": "2026-10-29T03:59:00Z",
-        "time_left": "Closes in 9d",
+        "time_left": "Closes in 8d",
         "url": "https://polymarket.com/event/fed-decision-in-october-20260617190323537",
         "slug": "fed-decision-in-october-20260617190323537",
         "event_title": "Fed Decision in October?",
         "relevance": 40,
         "tier": 3,
         "category": "Economy & Markets",
-        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 84% YES on this outcome."
+        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 86% YES on this outcome."
       },
       {
         "platform": "Polymarket",
         "ticker": "2589813",
         "title": "Will the Fed increase interest rates by 25 bps after the October 2026 meeting?",
-        "yes": 14,
-        "no": 86,
-        "volume_24h": 800097.1567579999,
+        "yes": 12,
+        "no": 88,
+        "volume_24h": 167269.319655,
         "close_time": "2026-10-29T03:59:00Z",
-        "time_left": "Closes in 9d",
+        "time_left": "Closes in 8d",
         "url": "https://polymarket.com/event/fed-decision-in-october-20260617190323537",
         "slug": "fed-decision-in-october-20260617190323537",
         "event_title": "Fed Decision in October?",
         "relevance": 40,
         "tier": 3,
         "category": "Economy & Markets",
-        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 14% YES on this outcome."
+        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 12% YES on this outcome."
       },
       {
         "platform": "Polymarket",
@@ -92,7 +92,7 @@
         "title": "Will there be no change in Fed interest rates after the December 2026 meeting?",
         "yes": 20,
         "no": 80,
-        "volume_24h": 68946.73308699999,
+        "volume_24h": 36736.292177,
         "close_time": "2026-12-09T23:59:00Z",
         "time_left": "Closes in ~1mo",
         "url": "https://polymarket.com/event/fed-decision-in-december-20260729232808632",
@@ -105,20 +105,20 @@
       },
       {
         "platform": "Polymarket",
-        "ticker": "2941849",
-        "title": "Will the Bank of Canada increase the target for the overnight rate by 25 bps at the October interest rate announcement?",
-        "yes": 43,
-        "no": 57,
-        "volume_24h": 41039.591599,
-        "close_time": "2026-10-28T00:00:00Z",
-        "time_left": "Closes in 8d",
-        "url": "https://polymarket.com/event/bank-of-canada-decision-in-october-20260715203359314",
-        "slug": "bank-of-canada-decision-in-october-20260715203359314",
-        "event_title": "",
+        "ticker": "3215006",
+        "title": "Will the Fed decrease interest rates by 25 bps after the December 2026 meeting?",
+        "yes": 1,
+        "no": 99,
+        "volume_24h": 22106.143926999997,
+        "close_time": "2026-12-09T23:59:00Z",
+        "time_left": "Closes in ~1mo",
+        "url": "https://polymarket.com/event/fed-decision-in-december-20260729232808632",
+        "slug": "fed-decision-in-december-20260729232808632",
+        "event_title": "Fed Decision in December?",
         "relevance": 40,
         "tier": 3,
         "category": "Economy & Markets",
-        "why_it_matters": "Rate changes affect land values, operating loans, and the cost of carrying stored grain."
+        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 1% YES on this outcome."
       }
     ]
   },
@@ -127,9 +127,9 @@
       "platform": "Polymarket",
       "ticker": "2126461",
       "title": "Will Crude Oil reach a new all-time high by December 31?",
-      "yes": 10,
-      "no": 90,
-      "volume_24h": 14521.618987,
+      "yes": 12,
+      "no": 88,
+      "volume_24h": 7458.166181,
       "close_time": "2027-01-01T04:59:00Z",
       "time_left": "Closes in ~2mo",
       "url": "https://polymarket.com/event/crude-oil-all-time-high-by",
@@ -138,15 +138,15 @@
       "relevance": 70,
       "tier": 2,
       "category": "Energy & Inputs",
-      "why_it_matters": "Tail-risk bet (10% odds) on crude reaching a new all-time high. Closes in ~2mo. Would lift farm diesel and pass through to nitrogen fertilizer cost within a few months."
+      "why_it_matters": "Tail-risk bet (12% odds) on crude reaching a new all-time high. Closes in ~2mo. Would lift farm diesel and pass through to nitrogen fertilizer cost within a few months."
     },
     {
       "platform": "Polymarket",
       "ticker": "5426238",
       "title": "Will Crude Oil reach a new all-time high by March 31, 2027?",
-      "yes": 24,
-      "no": 76,
-      "volume_24h": 0.84,
+      "yes": 22,
+      "no": 78,
+      "volume_24h": 146.064494,
       "close_time": "2027-04-01T03:59:00Z",
       "time_left": "Closes in ~5mo",
       "url": "https://polymarket.com/event/crude-oil-all-time-high-by",
@@ -155,41 +155,41 @@
       "relevance": 70,
       "tier": 2,
       "category": "Energy & Inputs",
-      "why_it_matters": "Lower-probability outcome (24%) of crude reaching a new all-time high. Closes in ~5mo. Would lift farm diesel and pass through to nitrogen fertilizer cost within a few months."
+      "why_it_matters": "Lower-probability outcome (22%) of crude reaching a new all-time high. Closes in ~5mo. Would lift farm diesel and pass through to nitrogen fertilizer cost within a few months."
     },
     {
       "platform": "Polymarket",
       "ticker": "2589812",
       "title": "Will there be no change in Fed interest rates after the October 2026 meeting?",
-      "yes": 84,
-      "no": 16,
-      "volume_24h": 814759.161733,
+      "yes": 86,
+      "no": 14,
+      "volume_24h": 287021.847815,
       "close_time": "2026-10-29T03:59:00Z",
-      "time_left": "Closes in 9d",
+      "time_left": "Closes in 8d",
       "url": "https://polymarket.com/event/fed-decision-in-october-20260617190323537",
       "slug": "fed-decision-in-october-20260617190323537",
       "event_title": "Fed Decision in October?",
       "relevance": 40,
       "tier": 3,
       "category": "Economy & Markets",
-      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 84% YES on this outcome."
+      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 86% YES on this outcome."
     },
     {
       "platform": "Polymarket",
       "ticker": "2589813",
       "title": "Will the Fed increase interest rates by 25 bps after the October 2026 meeting?",
-      "yes": 14,
-      "no": 86,
-      "volume_24h": 800097.1567579999,
+      "yes": 12,
+      "no": 88,
+      "volume_24h": 167269.319655,
       "close_time": "2026-10-29T03:59:00Z",
-      "time_left": "Closes in 9d",
+      "time_left": "Closes in 8d",
       "url": "https://polymarket.com/event/fed-decision-in-october-20260617190323537",
       "slug": "fed-decision-in-october-20260617190323537",
       "event_title": "Fed Decision in October?",
       "relevance": 40,
       "tier": 3,
       "category": "Economy & Markets",
-      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 14% YES on this outcome."
+      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 12% YES on this outcome."
     },
     {
       "platform": "Polymarket",
@@ -197,7 +197,7 @@
       "title": "Will there be no change in Fed interest rates after the December 2026 meeting?",
       "yes": 20,
       "no": 80,
-      "volume_24h": 68946.73308699999,
+      "volume_24h": 36736.292177,
       "close_time": "2026-12-09T23:59:00Z",
       "time_left": "Closes in ~1mo",
       "url": "https://polymarket.com/event/fed-decision-in-december-20260729232808632",
@@ -210,20 +210,20 @@
     },
     {
       "platform": "Polymarket",
-      "ticker": "2941849",
-      "title": "Will the Bank of Canada increase the target for the overnight rate by 25 bps at the October interest rate announcement?",
-      "yes": 43,
-      "no": 57,
-      "volume_24h": 41039.591599,
-      "close_time": "2026-10-28T00:00:00Z",
-      "time_left": "Closes in 8d",
-      "url": "https://polymarket.com/event/bank-of-canada-decision-in-october-20260715203359314",
-      "slug": "bank-of-canada-decision-in-october-20260715203359314",
-      "event_title": "",
+      "ticker": "3215006",
+      "title": "Will the Fed decrease interest rates by 25 bps after the December 2026 meeting?",
+      "yes": 1,
+      "no": 99,
+      "volume_24h": 22106.143926999997,
+      "close_time": "2026-12-09T23:59:00Z",
+      "time_left": "Closes in ~1mo",
+      "url": "https://polymarket.com/event/fed-decision-in-december-20260729232808632",
+      "slug": "fed-decision-in-december-20260729232808632",
+      "event_title": "Fed Decision in December?",
       "relevance": 40,
       "tier": 3,
       "category": "Economy & Markets",
-      "why_it_matters": "Rate changes affect land values, operating loans, and the cost of carrying stored grain."
+      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 1% YES on this outcome."
     }
   ]
 }
