@@ -102,3 +102,28 @@ test("pick by county ends on a grid to start with: the one holding most of the c
   assert.equal(M.countyCells({ c: ["48001", "48213"], m: "a10?4b6a2" }, "48001"), 12);
   assert.ok(read("components/prf.js").includes(`'Not sure? Start with grid ' + g + ', which covers most of the county, or type the nearest town above. <button type="button" class="prf-link" data-grid="' + g + '" data-county="' + f + k + '">Open grid ' + g + '</button>'`));
 });
+
+test("the month picker can be held to the months the grass needs rain, and says it does not know the grass", async () => {
+  const vm = await import("node:vm");
+  const box = { window: {}, Buffer };
+  vm.runInNewContext(read("components/prf-math.js"), box);
+  vm.runInNewContext(read("components/prf-optimize.js"), box);
+  vm.runInNewContext(read("components/prf-optimize-ui.js"), box);
+  const O = box.window.AgPrfOptimize, U = box.window.AgPrfOptUI;
+  assert.equal(U.GRASS_LINE, "The pick follows the record’s dollars; it does not know when your grass grows.");
+  const apr2sep = [false, false, false, true, true, true, true, true, true, false, false, false];
+  /* a pair counts only when both its months are ticked: Apr-May through Aug-Sep */
+  assert.equal(JSON.stringify(U.monthMask(apr2sep).map((x, i) => x ? i : -1).filter((i) => i >= 0)), "[3,4,5,6,7]");
+  assert.equal(JSON.stringify(U.validWith(null, false, apr2sep)), JSON.stringify(new Array(11).fill(true)), "off: every pair the county offers");
+  const fx = JSON.parse(read("test/fixtures/prf/opt-grid-16014.json")), lim = fx.lim;
+  const input = (valid) => ({ index: fx.index, rates: fx.rates[90], coverage: 90, subsidy: fx.subsidy["90"], min: lim.map((p) => (p ? p[0] : null)), max: lim.map((p) => (p ? p[1] : null)),
+    valid, avgMm: fx.avgMm, lastComplete: +fx.last_complete });
+  const all = O.recommend(input(null)), mine = O.recommend(input(U.validWith(null, true, apr2sep)));
+  assert.ok(all.ok && mine.ok);
+  const outside = mine.rec.split.some((p, i) => p > 0 && !U.monthMask(apr2sep)[i]);
+  assert.ok(!outside, "the pick stays in Apr-May to Aug-Sep: " + mine.rec.split.join(","));
+  assert.ok(mine.backtest && mine.backtest.vsEven.n > 0, "this grid's own walk-forward test is run on the same rule");
+  assert.ok(!mine.base.even.split.some((p, i) => p > 0 && !U.monthMask(apr2sep)[i]), "the even spread it is compared with is in the same months");
+  const ui = read("components/prf-optimize-ui.js");
+  assert.match(ui, /the test across grids picked from every month, so it is not this pick’s record/);
+});
