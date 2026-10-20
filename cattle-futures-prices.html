@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/util.js?v=20"></script>
 <script src="/components/asof.js?v=1"></script>
-<script src="/components/price-local.js?v=5"></script>
+<script src="/components/price-local.js?v=6"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -657,6 +657,8 @@ details.fold[hidden]{display:none}
   function chgCwt(q){
     var net=q.netChange;
     if(net!=null&&Math.round(Math.abs(net)/0.025)===0)return['unch','nc'];
+    /* 2026-10-20: no netChange and a percent that rounds to 0.00 is unch, not "up" */
+    if(net==null&&(q.pctChange==null||Math.round(Math.abs(q.pctChange)*100)===0))return['unch','nc'];
     var up=(net!=null?net:q.pctChange)>=0;
     return[(up?'▲ +':'▼ −')+(net!=null?'$'+cwtN(net)+' ':'')+'('+(up?'+':'−')+Math.abs(q.pctChange).toFixed(2)+'%)',up?'up':'dn'];
   }
@@ -822,7 +824,8 @@ details.fold[hidden]{display:none}
     if(d.prev!=null){var dl=d.net-d.prev,dir;
       if(dl>0&&d.net>=0)dir='added longs';else if(dl>0)dir='covered shorts';
       else if(dl<0&&d.net>0)dir='trimmed longs';else if(dl<0)dir='added shorts';else dir='unchanged';
-      $(pre+'-cot-chg').innerHTML='Week: <span class="d '+(dl>=0?'up':'dn')+'">'+fmtK(dl)+'</span> ('+dir+')';}
+      /* 2026-10-20: a zero week is not green beside "unchanged" */
+      $(pre+'-cot-chg').innerHTML='Week: <span class="d '+(dl>0?'up':dl<0?'dn':'nc')+'">'+fmtK(dl)+'</span> ('+dir+')';}
     return pct;
   }
   fetch('/data/cot.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){

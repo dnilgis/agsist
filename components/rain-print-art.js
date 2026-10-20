@@ -604,13 +604,20 @@
       '" preserveAspectRatio="xMidYMid meet"/>' + G1;
   }
 
-  // ---------- a preview of this year: a band across the art, and the watermark ----------
-  // across the chart only (2026-10-13): edge to edge it hid the scale's numbers
-  function previewBand(E, b) {
-    var t = (LOC.fr ? 'APERÇU JUSQU’AU ' : 'PREVIEW THROUGH ') + fmtDate(E.preview.last).toUpperCase(), y = b.y, cx = (b.x0 + b.x1) / 2;
-    return '<g data-rp="band" aria-hidden="true"><rect x="' + n2(b.x0) + '" y="' + (y - 34) + '" width="' + n2(b.x1 - b.x0) + '" height="68" fill="' + C.ink + '" opacity="0.88"/>' +
-      T(cx, y - 4, t, { w: 500, size: 24, ls: 0.12, fill: '#FFFFFF', anchor: 'middle' }) +
-      T(cx, y + 22, (LOC.fr ? 'Le tirage final montre toute l’année, du 1er janvier au 31 décembre ' : 'Your print will show the full year, Jan 1 to Dec 31, ') + E.year, { size: 17, fill: '#FFFFFF', anchor: 'middle' }) + '</g>';
+  // ---------- a preview of this year: a note in the weeks still to come, and the watermark ----------
+  // Sig, 2026-10-20: nothing may cover the data. The note sits in the empty stretch after the last reported day
+  // (E.laterBox), never across the line. When that stretch is too narrow (late in the year) the title, the "so far"
+  // totals and the dashed last-day line say it instead. The gift card's own wash note (E.preview.later) takes the
+  // stretch when it is there.
+  function previewBand(E) {
+    var L = E.laterBox;
+    if (!L || E.preview.later || L.x1 - L.x0 < 170) return '';
+    var cx = (L.x0 + L.x1) / 2, y = L.y0 + (L.y1 - L.y0) * 0.42;
+    var lines = LOC.fr ? ['APERÇU', 'JUSQU’AU ' + fmtDate(E.preview.last).toUpperCase(), 'Le tirage montre', 'toute l’année ' + E.year]
+                       : ['PREVIEW', 'THROUGH ' + fmtDate(E.preview.last).toUpperCase(), 'Your print shows', 'the full year, ' + E.year];
+    return '<g data-rp="band" aria-hidden="true">' + lines.map(function (t, k) {
+      return T(cx, y + k * 26 + (k > 1 ? 10 : 0), t, k < 2 ? { w: 500, size: 18, ls: 0.12, fill: C.mute, anchor: 'middle' } : { size: 15, fill: C.mute, anchor: 'middle' });
+    }).join('') + '</g>';
   }
   function watermark() {
     var row = '', out = '', i;
@@ -659,7 +666,7 @@
   // bandY: where the preview band goes (bandAt picks a height that hides no label)
   function close(I, E, o, bandY) {
     if (E.preview && E.preview.later && E.laterBox) o.push(laterWash(E, E.laterBox, bandY));
-    if (E.preview) o.push(previewBand(E, bandY));
+    if (E.preview) o.push(previewBand(E));
     if (I.watermark) o.push(watermark());
     o.push('</svg>');
     return o.join('');
