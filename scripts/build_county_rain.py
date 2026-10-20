@@ -364,6 +364,13 @@ PICK_RULE_3 = ("Mountain snow sites, and stations far above the rest in the coun
                "Where snow is normal, a station that keeps a full record of both rain and snowfall comes next, "
                "over a nearer one whose snowfall record has gaps, if it is no more than 10 miles farther or twice as far. "
                "Then the most days reported, then the one nearest the middle of the county.")
+# "pick": 4 (2026-10-20): Sig changed the rule, the full snowfall record now comes before NOAA normals
+PICK_RULE_4 = ("Mountain snow sites, and stations far above the rest in the county, come last, "
+               "since their rain is not what the farms below get. "
+               "Where snow is normal, a station that keeps a full record of both rain and snowfall comes first, "
+               "over a nearer one whose snowfall record has gaps, if it is no more than 10 miles farther or twice as far, "
+               "even when only the nearer one has NOAA normals. "
+               "Then the pick goes to one with NOAA normals, then the most days reported, then the one nearest the middle of the county.")
 
 
 def morning_read(stw):
@@ -615,7 +622,7 @@ def county_page(ctx):
                   "Your own rain gauge can read differently a few miles away.")
     else:
         pick_p = (f"Why this {noun}: {n_ok} stations inside {e(name)} reported at least 90% of the days in {year}. "
-                  + {3: PICK_RULE_3, 2: PICK_RULE_2}.get(d.get("pick"), PICK_RULE_1)
+                  + {4: PICK_RULE_4, 3: PICK_RULE_3, 2: PICK_RULE_2}.get(d.get("pick"), PICK_RULE_1)
                   + " Your own rain gauge can read differently a few miles away.")
     # ---- next door and links
     nb_html = "".join(f'<li><a class="rc-nb" href="{h}">{e(n)} <small>{v}</small></a></li>' for n, h, v in ctx["nbrs"])
@@ -1187,7 +1194,8 @@ def selftest():
         ok("no gauge has 30 years" not in story, "a co-op station's normal is its own")
         # the pick rule the page states is the one the data file says the fetch used
         for pk, words in ((None, "The pick goes to one with NOAA normals first"), (2, "Mountain snow sites, and stations far above the rest in the county, come last"),
-                          (3, "a station that keeps a full record of both rain and snowfall comes next")):
+                          (3, "a station that keeps a full record of both rain and snowfall comes next"),
+                          (4, "even when only the nearer one has NOAA normals")):
             dp = {k: v for k, v in d.items() if k != "pick"}
             if pk:
                 dp["pick"] = pk
