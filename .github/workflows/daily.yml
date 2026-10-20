@@ -363,6 +363,7 @@ jobs:
         run: |
           python scripts/usda_dates.py --selftest
           python scripts/test_daily_trust.py
+          python scripts/test_daily_numbers.py
 
       # The schedule is machinery too. This asserts the backup fires still
       # exist and are spread, and that the gate asks the remote rather than its
