@@ -171,3 +171,11 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - (Oct 19, Sig) A source whose license forbids reposting (MU Extension G302) is kept as numbers only with a link; no PDF or text copy in any public branch.
 - (Oct 19, Sig, Flash Grain) Fix everything the audit found ("mediocrity is not an option"). Keep the intro bolt on every load (skipped only under reduced motion). Contract roll: the admin warns and suggests, Jeff confirms. Discount schedule stays exactly as is. dnilgis/bids withdraws Flash Grain prices at 2 h (per-source maxAgeH), matching the page. Later (not today) flashgrain.com and flashgrains.com both point at the repo; the DTN offer portal at www.flashgrains.com must move first. Target offers get their own /offers page that opens the DTN portal.
 - (Oct 19, Sig) Monetization board fixes approved and shipped (ship11): county rain pages and /rain-print offer last year's print by Christmas beside this year's in January; gift address only at Stripe; a business customer list never goes to Formspree; the Daily tags every link and carries one line per reader for their own town's last-year print until the Christmas cutoff; /rain-gauge waitlist first; sponsor contacts never in a public file; sponsor tier "daily" (never "founding"). Waiting on Sig: business_sample_by date, framed/proof/logo photos, the state sponsor product, /hail-map gauge swap after Dec 10, storm-day hail pages.
+
+## What we build next (Oct 20, Sig)
+Browser assistants will answer generic questions on the spot, so pages that only explain or run a public formula lose visits. Data only AGSIST collects or connects keeps its value.
+- Put effort into our own data first: elevator cash bids, field rain and hail, the Rain Print, land sales, and the connections between them that nobody else makes.
+- Own the reader directly: the Daily, price and elevator alerts, the Rain Print. These matter more than search visits.
+- Be the source assistants cite: every number has its date, units and source; hub pages stay strong; data feeds stay clean.
+- No new template page sets that only restate a formula or a generic explainer.
+- Later option: license the bids and land data (the Flash Grain feed is the first case).
