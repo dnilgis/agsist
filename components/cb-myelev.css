@@ -44,3 +44,9 @@
 .elev-card.mye-flash{box-shadow:0 0 0 3px var(--gold);transition:box-shadow .3s}
 @media(prefers-reduced-motion:reduce){.elev-card.mye-flash{transition:none}}
 @media print{.mye,.elev-acts{display:none!important}}
+
+/* The morning email line (subs worker v5.42): Stop / Try again read as links, 40px tall. */
+.mye-daily{display:flex;flex-wrap:wrap;align-items:center;gap:.1rem .4rem}
+.mye-dstop,.mye-dretry{min-height:40px;padding:0 .2rem;background:none;border:0;color:var(--gold);font:inherit;font-size:.78rem;text-decoration:underline;cursor:pointer}
+[data-theme="light"] .mye-dstop,[data-theme="light"] .mye-dretry{color:#86600f}
+.mye-dstop:focus-visible,.mye-dretry:focus-visible{outline:2px solid var(--gold);outline-offset:2px}

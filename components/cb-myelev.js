@@ -34,10 +34,21 @@
      CBMyElev.mount(el, {page:'cash-bids'|'home'})  draw the block into el
      CBMyElev.feed(elevators, pick, reveal)         cash-bids, after each render
      CBMyElev.keyOf(elev) / has(key) / toggle(elev, zip) / pinKeys(elevs, pins)
-     CBMyElev.saveBtn(elev, compared)                 the card's Save button */
+     CBMyElev.saveBtn(elev, compared)                 the card's Save button
+
+   IN THE MORNING EMAIL (2026-10-20, subs worker v5.42). The Daily's footer
+   link ("Put your saved elevators in this email") proves the address on the
+   worker and opens /cash-bids#dk=<key>, a random key and nothing else; the
+   fragment never reaches a server or analytics and is dropped at once. With
+   that key kept here (DAILY_KEY), every save or remove sends the whole list
+   as ids (placeId: FNV-1a of the place key, 8 hex) to /daily-elev/set, and
+   scripts/send_daily.py prints those elevators in that reader's Daily. No
+   key: nothing leaves the phone, as before. "Stop" clears the list there and
+   forgets the key. */
 (function(){
   'use strict';
   var KEY = 'agsist-my-elevators', MAX = 6;
+  var DAILY_KEY = 'agsist-daily-key', WORKER = 'https://agsist-subs.dnilgis.workers.dev';
   var NET = 'https://dnilgis.github.io/bids/';
   var CROPS = ['corn', 'soybeans', 'wheat', 'sorghum', 'oats'];
   var NAMES = { corn:'Corn', soybeans:'Soy', wheat:'Wheat', sorghum:'Sorghum', oats:'Oats' };
@@ -190,6 +201,57 @@
     for(var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); }
     return ('00000000' + (h >>> 0).toString(16)).slice(-8);
   }
+  /* The id the Daily record keeps for a saved elevator (scripts/daily_elevators.py place_id). */
+  function placeId(key){ return fnv(String(key || '')); }
+
+  /* ── the morning email link ────────────────────────────────────────── */
+  function dailyKey(){ try{ var k = window.localStorage.getItem(DAILY_KEY) || ''; return /^[0-9a-z]{24}$/.test(k) ? k : ''; }catch(e){ return ''; } }
+  function setDailyKey(k){ try{ if(k) window.localStorage.setItem(DAILY_KEY, k); else window.localStorage.removeItem(DAILY_KEY); }catch(e){} }
+  var daily = { state:dailyKey() ? 'linked' : 'off', n:null };
+  function dailyPost(route, body){
+    return fetch(WORKER + route, { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify(body) })
+      .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return { status:r.status, j:j }; }); })
+      .catch(function(){ return { status:0, j:{} }; });
+  }
+  function dailyAnswer(res){
+    if(res.status === 404){ setDailyKey(''); daily.state = 'off'; daily.n = null; }
+    else if(res.status === 200 && res.j && res.j.ok){ daily.state = 'linked'; if(typeof res.j.n === 'number') daily.n = res.j.n; else if(res.j.ids) daily.n = res.j.ids.length; }
+    else daily.state = dailyKey() ? 'error' : 'off';
+    mounts.forEach(function(m){ m.force = true; draw(m); });
+    return res;
+  }
+  function dailySync(){
+    var k = dailyKey(); if(!k) return Promise.resolve(null);
+    return dailyPost('/daily-elev/set', { k:k, ids:read().map(function(i){ return placeId(i.key); }) }).then(dailyAnswer);
+  }
+  function dailyStop(){
+    var k = dailyKey(); if(!k) return Promise.resolve(null);
+    return dailyPost('/daily-elev/set', { k:k, ids:[], forget:true }).then(function(res){
+      if(res.status === 200 || res.status === 404){ setDailyKey(''); daily.state = 'off'; daily.n = null; mounts.forEach(function(m){ m.force = true; draw(m); }); }
+      else dailyAnswer(res);
+      return res;
+    });
+  }
+  /* #dk=<key> from the worker's page: keep the key, drop the fragment before anything else reads the address. */
+  (function(){
+    var m = /(?:^#|&)dk=([0-9a-z]{24})(?:&|$)/.exec(window.location.hash || '');
+    if(!m) return;
+    setDailyKey(m[1]);
+    try{ history.replaceState(null, '', window.location.pathname + window.location.search); }catch(e){ try{ window.location.hash = ''; }catch(x){} }
+    daily.state = 'linked'; daily.fresh = true;
+    /* A list on this phone goes in at once; an empty one leaves what the email already has. */
+    var go = function(){ if(read().length) dailySync(); else dailyPost('/daily-elev/me', { k:m[1] }).then(dailyAnswer); };
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
+  })();
+  function dailyNote(page, count){
+    if(page !== 'cash-bids') return '';
+    if(daily.state === 'linked')
+      return '<p class="mye-note mye-daily">' + (count ? 'These go in your morning email' + (daily.n != null && daily.n !== count ? ' (' + daily.n + ' there now)' : '') + '. ' : 'Tap Save on an elevator card and it goes in your morning email. ')
+        + '<button type="button" class="mye-dstop">Stop</button></p>';
+    if(daily.state === 'error') return '<p class="mye-note mye-daily">Could not reach your morning email just now. <button type="button" class="mye-dretry">Try again</button></p>';
+    return '';
+  }
+
   function bhNorm(v){ return String(v == null ? '' : v).trim().toUpperCase().replace(/\s+/g, ' '); }
 
   /* The day's change: bids-homepage.js fillChanges(), same file, same rule. */
@@ -329,7 +391,13 @@
   function draw(m){
     var items = read(), el = m.el, seq = ++drawSeq;
     m.seq = seq;
-    if(!items.length){ el.hidden = true; el.innerHTML = ''; return; }
+    if(!items.length){
+      if(m.page === 'cash-bids' && daily.state !== 'off'){
+        el.innerHTML = '<section class="mye" aria-labelledby="mye-h-' + m.page + '"><div class="mye-head"><h2 class="mye-h" id="mye-h-' + m.page + '">' + STAR + ' My elevators</h2></div>' + dailyNote(m.page, 0) + '</section>';
+        el.hidden = false; return;
+      }
+      el.hidden = true; el.innerHTML = ''; return;
+    }
     Promise.all(items.map(function(it){ return factsFor(it).catch(function(){ return { item:it, crops:[], basis:'', elev:{ facility:it.name, state:it.state, commodities:{} } }; }); })).then(function(list){
       if(m.seq !== seq) return;
       /* An alert form open in a row that is still listed: do not wipe what they typed. */
@@ -344,12 +412,13 @@
         + '</div>' + (m.page === 'cash-bids' && compareFn && items.filter(function(i){ return fed[i.key]; }).length >= 2
            ? '<button type="button" class="mye-cmp">Compare ' + items.filter(function(i){ return fed[i.key]; }).length + ' side by side</button>' : '')
         + '<ul class="mye-list">' + list.map(function(f){ return rowHTML(f, m.page); }).join('') + '</ul>'
-        + (m.page === 'cash-bids' ? '<p class="mye-note">Saved on this phone only. Watch sends an email when a price or basis moves.</p>' : '')
+        + (m.page === 'cash-bids' ? (dailyNote(m.page, items.length) || '<p class="mye-note">Saved on this phone only. Watch sends an email when a price or basis moves.</p>') : '')
         + '</section>';
       el.innerHTML = h; el.hidden = false;
     });
   }
   function changed(k, saved){
+    if(k && dailyKey()) dailySync();
     mounts.forEach(draw);
     if(k) try{ document.dispatchEvent(new CustomEvent('agsist-myelev', { detail:{ key:k, saved:saved } })); }catch(err){}
   }
@@ -360,6 +429,8 @@
     el.addEventListener('click', function(e){
       var t = e.target;
       if(t.closest && t.closest('.mye-cmp')){ if(compareFn) compareFn(); return; }
+      if(t.closest && t.closest('.mye-dstop')){ dailyStop(); return; }
+      if(t.closest && t.closest('.mye-dretry')){ dailySync(); return; }
       var ed = t.closest && t.closest('button.mye-edit');
       if(ed){ editing = !editing; mounts.forEach(function(x){ x.force = true; }); changed(); return; }
       var x = t.closest && t.closest('.mye-x');
@@ -420,5 +491,6 @@
   }
 
   window.CBMyElev = { KEY:KEY, MAX:MAX, list:read, has:has, keyOf:keyOf, toggle:toggle, remove:remove, pinKeys:pinKeys,
-                      saveBtn:saveBtn, syncBtn:syncBtn, mount:mount, feed:feed, goTo:goTo, refresh:changed };
+                      saveBtn:saveBtn, syncBtn:syncBtn, mount:mount, feed:feed, goTo:goTo, refresh:changed,
+                      placeId:placeId, dailyState:function(){ return daily.state; } };
 })();
