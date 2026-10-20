@@ -1,8 +1,52 @@
 {
  "about": "Pointer pages left where a generated page dropped out of its set (scripts/pointer_pages.py). path: file; to: where it sends readers; since: date retired.",
  "pointers": {
+  "cash-bids/company/gateway-fs.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-10-20"
+  },
   "cash-bids/company/new-cooperative.html": {
    "to": "/cash-bids/company/",
+   "since": "2026-10-20"
+  },
+  "cash-bids/illinois/carlyle.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-10-20"
+  },
+  "cash-bids/illinois/evansville.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-10-20"
+  },
+  "cash-bids/illinois/fults.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-10-20"
+  },
+  "cash-bids/illinois/nashville.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-10-20"
+  },
+  "cash-bids/illinois/oakdale.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-10-20"
+  },
+  "cash-bids/illinois/percy.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-10-20"
+  },
+  "cash-bids/illinois/prairie-du-rocher.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-10-20"
+  },
+  "cash-bids/illinois/red-bud.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-10-20"
+  },
+  "cash-bids/illinois/waltonville.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-10-20"
+  },
+  "cash-bids/illinois/waterloo.html": {
+   "to": "/cash-bids/illinois/",
    "since": "2026-10-20"
   },
   "cash-bids/indiana/ladoga.html": {
@@ -253,6 +297,10 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-10-20"
   },
+  "cash-bids/missouri/sainte-genevieve.html": {
+   "to": "/cash-bids/missouri/",
+   "since": "2026-10-20"
+  },
   "cash-bids/montana/circle.html": {
    "to": "/cash-bids/montana/",
    "since": "2026-10-13"
@@ -415,6 +463,10 @@
   },
   "cash-bids/texas/morton.html": {
    "to": "/cash-bids/texas/dumas",
+   "since": "2026-10-20"
+  },
+  "cash-bids/wisconsin/columbus.html": {
+   "to": "/cash-bids/wisconsin/",
    "since": "2026-10-20"
   },
   "cash-bids/wisconsin/ixonia.html": {
