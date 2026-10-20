@@ -10,6 +10,13 @@
  * 54,974 of about 74,500 sessions at 5.8 s. Those are scripted browsers, and
  * they were counted as readers.
  *
+ * Since 2026-10-20 it also stays off unless the browser's time zone is a US or
+ * Canada one: America/*, US/*, Canada/* or Pacific/Honolulu. A missing or
+ * unreadable zone counts as off. Why: Sig, Oct 20, "can we get analytics to not
+ * show server countries like Singapore, I don't even want that traffic listed
+ * for agsist". Server bots run on UTC or their own region (Asia/Singapore).
+ * Our own reports (build_audience.py) already drop them; GA's screens did not.
+ *
  * Cubot is a real Android phone brand whose model names (CUBOT_X30 and so on)
  * put "bot" in the user agent, so it is excepted. A prerendered page waits
  * until it is shown.
@@ -28,11 +35,12 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-const GUARD = String.raw`/* agsist-ga-guard 2026-10-17: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set and the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string), and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);`;
+const GUARD = String.raw`/* agsist-ga-guard 2026-10-20: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set, the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string) and its time zone is a US or Canada one (America, US, Canada or Pacific/Honolulu; a missing or unreadable zone counts as off), and only once the page is shown (a page loaded ahead in the background is not a visit). Why: Sig, Oct 20, wants no server traffic (Singapore and the like) listed in GA, and server bots run on UTC or their own region. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}v='';try{v=w.Intl.DateTimeFormat().resolvedOptions().timeZone||'';}catch(e){}if(!/^(America|US|Canada)[/]|^Pacific[/]Honolulu$/.test(v)){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);`;
 const FSTR = GUARD.replace(/\{/g, "{{").replace(/\}/g, "}}"); // the same text inside a Python f-string
 
 const WEBDRIVER = "if(n.webdriver===true||";
 const UA_RULE = "/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u)";
+const TZ_RULE = "v='';try{v=w.Intl.DateTimeFormat().resolvedOptions().timeZone||'';}catch(e){}if(!/^(America|US|Canada)[/]|^Pacific[/]Honolulu$/.test(v)){off=true;}";
 
 // Builders and templates that type the guard themselves. f: inside a Python f-string.
 const GA_SOURCES = [
@@ -48,6 +56,8 @@ const GA_SOURCES = [
 const LIFTERS = [
   ["scripts/make_prf_html.py", "store-or-sell.html"],
   ["scripts/build_prf_states.py", "store-or-sell.html"],
+  ["scripts/build_land_index.py", "grain-emc.html"],
+  ["scripts/cash_bid_index.py", "grain-emc.html"],
 ];
 
 const SKIP = new Set([".git", "node_modules", "fixtures"]);
@@ -81,6 +91,7 @@ test("every page with Google Analytics carries the one guard, byte for byte", ()
       if (c !== GUARD) bad.push(`${rel}: guard text differs from the pinned one`);
       if (!c.includes(WEBDRIVER)) bad.push(`${rel}: no navigator.webdriver rule`);
       if (!c.includes(UA_RULE)) bad.push(`${rel}: no headless / bot user agent rule`);
+      if (!c.includes(TZ_RULE)) bad.push(`${rel}: no US / Canada time zone rule`);
     }
     // the only gtag.js request is the one the guard makes
     if (/<script[^>]*src=["'][^"']*googletagmanager/i.test(h)) bad.push(`${rel}: loads gtag.js outside the guard`);
@@ -90,10 +101,11 @@ test("every page with Google Analytics carries the one guard, byte for byte", ()
   assert.deepEqual(bad.slice(0, 20), [], `${bad.length} problems`);
 });
 
-test("no page carries the 2026-10-09 guard (no webdriver or bot rule)", () => {
+test("no page carries an older guard (2026-10-09: no bot rule; 2026-10-17: no time zone rule)", () => {
   const old = [];
   for (const p of htmlFiles(ROOT)) {
-    if (fs.readFileSync(p, "utf8").includes("agsist-ga-guard 2026-10-09")) old.push(path.relative(ROOT, p));
+    const h = fs.readFileSync(p, "utf8");
+    if (h.includes("agsist-ga-guard 2026-10-09") || h.includes("agsist-ga-guard 2026-10-17")) old.push(path.relative(ROOT, p));
   }
   assert.deepEqual(old.slice(0, 20), [], `${old.length} pages still on the old guard`);
 });
@@ -104,18 +116,19 @@ test("every builder and template that types the guard types this one", () => {
     const want = f ? FSTR : GUARD;
     const n = t.split(want).length - 1;
     assert.equal(n, 1, `${rel}: ${n} copies of the current guard`);
-    assert.ok(!t.includes("agsist-ga-guard 2026-10-09"), `${rel}: old guard left`);
+    assert.ok(!t.includes("agsist-ga-guard 2026-10-09") && !t.includes("agsist-ga-guard 2026-10-17"), `${rel}: old guard left`);
     assert.equal((t.match(/agsist-ga-guard \d{4}-\d\d-\d\d/g) || []).length, 1, `${rel}: a second guard text`);
   }
   for (const [rel, model] of LIFTERS) {
     const t = fs.readFileSync(path.join(ROOT, rel), "utf8");
-    assert.ok(t.includes(`(ROOT, "${model}")`) || t.includes(`(REPO / "${model}")`), `${rel} no longer lifts from ${model}`);
+    assert.ok([`(ROOT, "${model}")`, `(REPO / "${model}")`, `(REPO, "${model}")`].some((k) => t.includes(k)), `${rel} no longer lifts from ${model}`);
     assert.equal(fs.readFileSync(path.join(ROOT, model), "utf8").split(GUARD).length - 1, 1, `${model} has no current guard`);
   }
 });
 
 // Run the guard in a sandbox: did it ask for gtag.js?
-function run({ ua = "", webdriver, gpc, off, prerendering = false, storageThrows = false } = {}) {
+// tz: the zone Intl reports ("missing": no timeZone field; null: Intl.DateTimeFormat throws; "none": no Intl at all).
+function run({ ua = "", webdriver, gpc, off, prerendering = false, storageThrows = false, tz = "America/Chicago", code = GUARD } = {}) {
   const appended = [], listeners = {};
   const doc = {
     prerendering,
@@ -126,10 +139,13 @@ function run({ ua = "", webdriver, gpc, off, prerendering = false, storageThrows
   const win = {
     localStorage: { getItem: (k) => { if (storageThrows) throw new Error("blocked"); return k === "agsist-ga-off" && off ? "1" : null; } },
   };
+  if (tz !== "none") {
+    win.Intl = { DateTimeFormat: () => { if (tz === null) throw new Error("no Intl"); return { resolvedOptions: () => (tz === "missing" ? {} : { timeZone: tz }) }; } };
+  }
   const nav = { userAgent: ua };
   if (webdriver !== undefined) nav.webdriver = webdriver;
   if (gpc !== undefined) nav.globalPrivacyControl = gpc;
-  vm.runInNewContext(GUARD, { window: win, document: doc, navigator: nav });
+  vm.runInNewContext(code, { window: win, document: doc, navigator: nav });
   return { win, appended, listeners };
 }
 const CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36";
@@ -192,5 +208,52 @@ test("GPC, the /privacy switch and prerender behave as before", () => {
     const sets = r.win.dataLayer.map((a) => Array.from(a).join(","));
     assert.ok(sets.includes("set,allow_google_signals,false"));
     assert.ok(sets.includes("set,allow_ad_personalization_signals,false"));
+  }
+});
+
+const LOADS = ["America/Chicago", "America/Toronto", "America/New_York", "America/Denver", "America/Los_Angeles",
+  "America/Anchorage", "America/Puerto_Rico", "America/Indiana/Indianapolis", "US/Central", "Canada/Saskatchewan", "Pacific/Honolulu"];
+const STAYS_OFF = ["Asia/Singapore", "UTC", "Etc/UTC", "Europe/London", "Europe/Dublin", "Asia/Tokyo",
+  "Australia/Sydney", "Pacific/Auckland", "Atlantic/Reykjavik", "", "missing", null, "none", "XAmerica/Chicago"];
+
+test("only a US or Canada time zone loads GA; servers and unreadable zones do not", () => {
+  for (const tz of LOADS) {
+    const r = run({ ua: CHROME, tz });
+    assert.equal(r.appended.length, 1, `${tz} got no GA`);
+    assert.equal(r.win.agsistGaOff, false, tz);
+  }
+  for (const tz of STAYS_OFF) {
+    const r = run({ ua: CHROME, tz });
+    assert.equal(r.appended.length, 0, `${String(tz)} loaded GA`);
+    assert.equal(r.win.agsistGaOff, true, String(tz));
+    assert.equal(typeof r.win.gtag, "function", "gtag must exist with GA off");
+    assert.ok(Array.isArray(r.win.dataLayer));
+    r.win.gtag("event", "x");  // page code calling gtag never throws
+  }
+  // the zone rule does not override the others
+  assert.equal(run({ ua: CHROME, tz: "America/Chicago", gpc: true }).appended.length, 0);
+  assert.equal(run({ ua: "Googlebot/2.1", tz: "America/Chicago" }).appended.length, 0);
+});
+
+test("a built page from every generated set runs the zone rule", () => {
+  // first guarded page found under each top-level folder, plus the root pages
+  const sample = new Map();
+  for (const p of htmlFiles(ROOT)) {
+    const rel = path.relative(ROOT, p);
+    const set = rel.includes(path.sep) ? rel.split(path.sep)[0] : "(root)";
+    if (sample.has(set)) continue;
+    const m = fs.readFileSync(p, "utf8").match(GUARD_RE);
+    if (m) sample.set(set, [rel, m[0]]);
+  }
+  for (const want of ["(root)", "arc-plc", "farmland-atlas", "prf", "cash-bids", "daily"]) {
+    assert.ok(sample.has(want), `no guarded page found under ${want}; the sets have moved`);
+  }
+  assert.ok(sample.size >= 8, `only ${sample.size} sets sampled`);
+  for (const [set, [rel, code]] of sample) {
+    assert.equal(run({ ua: CHROME, tz: "America/Chicago", code }).appended.length, 1, `${rel} (${set}): America/Chicago got no GA`);
+    assert.equal(run({ ua: CHROME, tz: "America/Toronto", code }).appended.length, 1, `${rel}: America/Toronto got no GA`);
+    for (const tz of ["Asia/Singapore", "UTC", "Europe/London"]) {
+      assert.equal(run({ ua: CHROME, tz, code }).appended.length, 0, `${rel} (${set}): ${tz} loaded GA`);
+    }
   }
 });
