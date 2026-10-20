@@ -163,3 +163,27 @@ test("bar: Iowa corn reads our running average, the calculator's number, with RM
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
+
+/* ---- 4: /markets lead, cards on different settle dates ---- */
+test("4: the markets lead shows the settle range, and the baked twin says the same", async () => {
+  const { execFileSync } = await import("node:child_process");
+  const P = (await import(join(ROOT, "components/price-local.js"))).default;
+  const NOW = Date.parse("2026-10-20T08:00:00Z"); // Tue 3:00 AM CT
+  const s = (d) => ({ close: 1, close_kind: "settle", close_date: d });
+  // the v40 case: corn Oct 19, milk Oct 16
+  const q = { corn: s("2026-10-19"), milk: s("2026-10-16") };
+  const js = P.board(q, null, "2026-10-20T08:00:00Z", NOW);
+  assert.match(js, /^Oct 16 to Oct 19 settles\. Read 3:00\sam CT$/);
+  assert.equal(P.board({ corn: s("2026-10-19"), beans: s("2026-10-19") }, null, "2026-10-20T08:00:00Z", NOW).split(".")[0], "Oct 19 settle");
+  assert.equal(P.board({ corn: s("2026-10-19"), milk: s("2026-10-16"), crude: { close: 1, close_kind: "last" } }, null, "", NOW),
+    "Oct 16 to Oct 19 settles where posted, latest delayed trade otherwise");
+  // seed_static.mk_board, same words before ". Read"
+  const py = execFileSync("python3", ["-c", [
+    "import sys", `sys.path.insert(0, ${JSON.stringify(join(ROOT, "scripts"))})`, "import seed_static as s",
+    "keys=[k for _,_,_,k,_ in s.MK_MAP]",
+    "q={keys[0]:{'close':1,'close_kind':'settle','close_date':'2026-10-19'}, 'milk':{'close':1,'close_kind':'settle','close_date':'2026-10-16'}}",
+    "assert 'milk' in keys",
+    "print(s.mk_board(q, '2026-10-20T08:00:00Z'))"].join("\n")], { encoding: "utf8" }).trim();
+  assert.equal(py.split(". Read")[0], "Oct 16 to Oct 19 settles");
+  assert.equal(js.split(". Read")[0], py.split(". Read")[0]);
+});
