@@ -257,3 +257,10 @@ test("a built page from every generated set runs the zone rule", () => {
     }
   }
 });
+
+test("/privacy says so, and its switch uses the guard's own zone rule", () => {
+  const h = fs.readFileSync(path.join(ROOT, "privacy.html"), "utf8");
+  assert.ok(h.includes("It loads only when your browser is set to a US or Canada time zone"), "privacy.html no longer explains the zone rule");
+  const zone = TZ_RULE.match(/if\(!(\/.*?\/)\.test\(v\)\)/)[1];
+  assert.ok(h.includes(`return ${zone}.test(z);`), "privacy.html's switch status reads a different zone rule than the guard");
+});

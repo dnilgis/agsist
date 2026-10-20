@@ -178,7 +178,7 @@
 
       <h2>What is collected</h2>
       <ul>
-        <li><strong>Visits, through Google Analytics 4.</strong> Only when analytics is on. Google records the pages you open, the site that sent you, your device, browser and screen size, a rough location it works out from your IP address, and events such as a click on a module, a calculator used, or a sponsor seen. Cookies with a random ID let repeat visits count as one reader. Google signals and ad personalization are switched off in the site&rsquo;s code. On the cash bids page and the basis box on the corn, soybean and wheat futures pages, the ZIP code you search is sent along with the search event.</li>
+        <li><strong>Visits, through Google Analytics 4.</strong> Only when analytics is on. It loads only when your browser is set to a US or Canada time zone, which keeps servers overseas out of the counts. Google records the pages you open, the site that sent you, your device, browser and screen size, a rough location it works out from your IP address, and events such as a click on a module, a calculator used, or a sponsor seen. Cookies with a random ID let repeat visits count as one reader. Google signals and ad personalization are switched off in the site&rsquo;s code. On the cash bids page and the basis box on the corn, soybean and wheat futures pages, the ZIP code you search is sent along with the search event.</li>
         <li><strong>Settings in your browser.</strong> Your last location and ZIP, calculator inputs, saved Field Scout fields, theme and similar choices are kept in your browser&rsquo;s local storage so the tools remember your work. They stay on your device. The full list is under Cookies and local storage below.</li>
         <li><strong>A location you give.</strong> Your browser&rsquo;s location, if you allow it, or a ZIP code you type. It is sent to the service that answers the question (weather, a place name, nearby cash bids), as listed below.</li>
         <li><strong>Your email, if you sign up.</strong> For the AGSIST Daily, a price alert, an elevator watch, a county watch or a hail alert, together with what you asked to watch. Details are under Alerts and watches below.</li>
@@ -318,6 +318,12 @@
     /* GPC only since 2026-10-08; Do Not Track is no longer read (see #dnt). */
     return navigator.globalPrivacyControl === true ? 'Global Privacy Control' : '';
   }
+  function zoneOk() {
+    /* the same zone rule as the guard (agsist-ga-guard 2026-10-20) */
+    var z = '';
+    try { z = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+    return /^(America|US|Canada)[/]|^Pacific[/]Honolulu$/.test(z);
+  }
   function stored() {
     try { return window.localStorage.getItem(K) === '1'; } catch (e) { return null; }
   }
@@ -344,6 +350,7 @@
       st.textContent = 'Off. Your browser sends ' + s + ', so Google Analytics does not load on any AGSIST page.';
     }
     else if (o) st.textContent = 'Off in this browser. Google Analytics does not load on AGSIST pages.';
+    else if (!zoneOk()) st.textContent = 'Off. Your browser is not set to a US or Canada time zone, so Google Analytics does not load here.';
     else if (offAtLoad) st.textContent = 'On. Google Analytics loads from the next AGSIST page you open.';
     else st.textContent = 'On. Google Analytics loads on AGSIST pages in this browser.';
   }
