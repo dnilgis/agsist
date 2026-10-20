@@ -54,7 +54,8 @@
  * is no art, only a plain message, and ordering stays open. A gift order's
  * code is GIFT- plus the design code (Stripe's client_reference_id and the
  * order form carry it); the QR and shared links carry the plain code. A
- * gift card is issued by Sig after payment (components/rp-gift.js, worker v5.16);
+ * gift card is issued and emailed to the buyer the moment Stripe says paid
+ * (scripts/rp_buyer_email.py, worker v5.40; components/rp-gift.js, worker v5.16);
  * a ?gift=CODE link redeems one here (see THE GIFT CARD below).
  *
  * PRODUCTS (2026-10-11; paper 13 x 19 from 2026-10-17, SHEET): digital file (the art, 18 x 12 in), print, framed; Sig
@@ -1640,7 +1641,8 @@
     var what = sv && sv.place && sv.year ? 'Your ' + PAID_WHAT[id] + ' of ' + sv.place + ', ' + sv.year + ' is ordered. ' : '';
     var out = [];
     if (sv && sv.gift) {
-      out.push(what + 'Your gift card to print comes by email' + (by ? ' by ' + by : ' within 1 business day') + '. ' +
+      // the card goes out by email the moment Stripe says paid (scripts/rp_buyer_email.py, worker v5.40; Sig 2026-10-20)
+      out.push(what + 'Your gift card to print comes by email within minutes, with what they get and how to use it. ' +
         (file ? 'Your proof follows in January, once the full year is in, and the full file once you approve it.' : 'The print follows in January, with a proof to you first.'));
     } else if (sv && sv.settle) {
       out.push(what + 'NOAA doesn\u2019t have all of ' + sv.year + ' in yet. I make it once the full year is in, and email you the proof then. Approve it there, or ask for a change.' +
@@ -1654,7 +1656,8 @@
         xm = t <= cut ? ', and ordered by ' + shortDate(cut) + ' it arrives by Christmas.' : '. Ordered now, it arrives after Christmas.';
       out.push('It ships within ' + ship + ' business days after you approve it' + (xm || '.'));
     }
-    out.push(by && !(sv && sv.settle) ? 'Nothing by then? Check spam, or write to me at sig@farmers1st.com.' : 'Questions? Write to me at sig@farmers1st.com.');
+    out.push(sv && sv.gift ? 'No card in a few minutes? Check spam, or write to me at sig@farmers1st.com.'
+      : by && !(sv && sv.settle) ? 'Nothing by then? Check spam, or write to me at sig@farmers1st.com.' : 'Questions? Write to me at sig@farmers1st.com.');
     return out;
   }
 
@@ -2631,7 +2634,7 @@
   function syncYearNote() {
     var y = parseInt($('rp-year').value, 10), el = $('rp-year-note');
     if (!el) return;
-    el.textContent = y === CURRENT_YEAR ? CURRENT_YEAR + ' isn\u2019t over yet. Order it now and I email you a gift card to print within 1 business day; the print ships in January.' : '';
+    el.textContent = y === CURRENT_YEAR ? CURRENT_YEAR + ' isn\u2019t over yet. Order it now and a gift card to print comes by email within minutes; the print ships in January.' : '';
     el.hidden = !el.textContent;
   }
   var KEEP_URL = false;   // a ?d=RPS- link that didn't open stays in the address bar until the reader draws
@@ -2694,13 +2697,14 @@
   var ORDER_NOTE = '';
   function syncGift() {
     var on = giftMode() && canOrder();
-    $('rp-gift').hidden = !on;
+    // a card holder is the one getting the gift: never "Want a gift card?" (2026-10-20)
+    $('rp-gift').hidden = !on || !!(GIFT && (GIFT.usable || GIFT.prepaid));
     /* Who it's for and the card note are asked here, on the page, always
        (2026-10-18, Sig: the page must not rely on Stripe for gift details).
        With a checkout link they come onto the review sheet's gift box
        (#rp-pgift) and go to Sig as a rain-print-order post before checkout. */
     $('rp-gift-fields').hidden = false;
-    $('rp-gift-cardnote').textContent = 'Want a gift card for under the tree? Fill in the boxes above, then order. Within 1 business day of paying, I email you a card to print, with a code they use to see their print.';
+    $('rp-gift-cardnote').textContent = 'Want a gift card for under the tree? Fill in the boxes above, then order. Within minutes of paying, a card to print comes by email, with a code they use to see their print.';
     // the digital file's card (2026-10-14, Sig: no proof step for the file; he redoes it free on request)
     $('rp-dig-when').textContent = on ? 'A proof by email in January, once the full year is in, the full file once you approve it'
       : SETTLE && canOrder() ? 'A proof by email once the full year is in, the full file once you approve it' : 'A proof by email within 1 business day of paying, the full file once you approve it';
@@ -2724,9 +2728,9 @@
       var el = $('rp-sub-' + id);
       if (!el) return;
       el.textContent = id === 'digital'
-        ? (gift ? 'A gift card to print by email within 1 business day. The file comes in January, once the full year is in.'
+        ? (gift ? 'A gift card to print by email within minutes. The file comes in January, once the full year is in.'
           : settle ? 'A PDF, a PNG and a JPG by email once the full year is in.' : 'A PDF, a PNG and a JPG by email within minutes of your OK on the proof.')
-        : (SUB_BASE[id] + ' ' + (gift ? 'A gift card to print by email within 1 business day; the ' + (id === 'framed12x18' ? 'framed print' : 'print') + ' ships in January.'
+        : (SUB_BASE[id] + ' ' + (gift ? 'A gift card to print by email within minutes; the ' + (id === 'framed12x18' ? 'framed print' : 'print') + ' ships in January.'
           : settle ? 'Made once NOAA has all of ' + ST.year + ' in, with a proof first.' : cutoffNote(TODAY, OJ().j && OJ().j[CUTOFF_KEY[id]]))).trim();
       if (blockedPick(id)) el.textContent = L('Shipping to Canada starts soon.', 'Envoi au Canada bientôt.');
     });
@@ -2742,6 +2746,8 @@
     if (!/^\d{4}-\d{2}-\d{2}$/.test(pc || '') || !/^\d{4}-\d{2}-\d{2}$/.test(fc || '')) { $('rp-xmas-top').hidden = true; $('rp-xmas-why').hidden = true; return; }
     var top = $('rp-xmas-top'), why = $('rp-xmas-why'), late = TODAY > pc && TODAY > fc;
     if (TODAY > pc.slice(0, 4) + '-12-25' || TODAY < pc.slice(0, 4) + '-10-01') { top.hidden = true; return; }
+    // a gift card holder reads the card's banner, not the buying lines (2026-10-20)
+    if (typeof GIFT !== 'undefined' && GIFT && (GIFT.usable || GIFT.prepaid)) { top.hidden = true; why.hidden = true; return; }
     // one product past its date and the other not: say which (2026-10-14, panel 3)
     var lateMail = ' Too late for the mail? The digital file comes by email in 1 business day, or give the gift card now and the print after Christmas.';
     var gift = giftMode() && canOrder(), ly = CURRENT_YEAR - 1;
@@ -3832,7 +3838,7 @@
     if (!bar) return;
     // just paid for this very design: no bar asking to pay for it again (it comes back once anything changes)
     var paidFor = typeof PAID_SAVED !== 'undefined' && PAID_SAVED && PAID_SAVED.code === encodeCode(ST);
-    var on = phone() && canOrder() && !SHOW_EX && !paidFor && !PAY_SEEN && !TYPING && !$('rp-proof').open && !(GIFT && GIFT.usable) && $('rp-order').hidden;
+    var on = phone() && canOrder() && !SHOW_EX && !paidFor && !PAY_SEEN && !TYPING && !$('rp-proof').open && !(GIFT && (GIFT.usable || GIFT.prepaid)) && $('rp-order').hidden;
     if (on) $('rp-bar-where').textContent = (META ? META.place : ST.place) + ' ' + ST.year;
     bar.hidden = !on;
     // the room under the page for the bar, also on phones too old for :has() (iOS before 15.4)
@@ -3997,7 +4003,7 @@
      Christmas date on each card holds only if the proof is OK'd the day it
      comes; this says what happens when it isn't. */
   function payWhen(id, today) {
-    if (januaryGift()) return 'Arrives in January, once the year is done. A gift card for under the tree comes by email within 1 business day.';
+    if (januaryGift()) return 'Arrives in January, once the year is done. A gift card for under the tree comes by email within minutes.';
     var J = OJ().j || {}, hol = holidaysFor(J, today), next = addBizDays(today, 1, hol);
     var by = next === isoMinusDays(today, -1) ? 'tomorrow' : 'by ' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(next + 'T12:00:00Z').getUTCDay()];
     if (id === 'digital') return 'Watch for an email from Sig with your proof. Approve it there and the full file follows. Check spam if it\u2019s not there ' + (by === 'tomorrow' ? 'by tomorrow' : by) + '.';
@@ -4082,7 +4088,7 @@
   // when it comes, in words, for the review sheet
   function whenWords(id) {
     var file = id === 'digital', J = OJ().j || {};
-    if (giftMode() && canOrder()) return 'This one is made in January, once the full year is in, and I send the proof then. Within 1 business day I email you a gift card to print.';
+    if (giftMode() && canOrder()) return 'This one is made in January, once the full year is in, and I send the proof then. Within minutes of paying, a gift card to print comes by email.';
     if (SETTLE) return 'NOAA doesn\u2019t have all of ' + ST.year + ' in yet. I make this one once the full year is in, and send the proof then; ' + (file ? 'the full file comes once you approve it.' : 'nothing prints until you approve it.');
     if (file) return 'A PDF, a PNG and a JPG by email within minutes of your OK on the proof.';
     return 'Shipping included. A proof by email within 1 business day; it ships within ' + (J.ship_business_days || 3) + ' business days of your OK. ' + cutoffNote(TODAY, J[CUTOFF_KEY[id]]);
@@ -5183,8 +5189,8 @@
   else if (ST.place) { ST.year = lastFullYear(); writeInputs(ST); run(); }
   else startNear();
 
-  /* THE GIFT CARD (2026-10-13). A card is issued by Sig after payment (worker
-     v5.16) and printed from /rp-gift. Its link, /rain-print?gift=RP-XXXX-XXXX-XXXX,
+  /* THE GIFT CARD (2026-10-13). A card is issued after payment (worker
+     v5.16; since v5.40 by the email job, at once) and printed from /rp-gift. Its link, /rain-print?gift=RP-XXXX-XXXX-XXXX,
      is redeemed here through components/rp-gift.js (loaded with defer, so this
      runs once the page is parsed): a banner says whose gift it is, a locked
      card draws its design and holds those inputs still, the three buy buttons
@@ -5204,10 +5210,18 @@
     });
   }
   function syncGiftUse() {
-    var on = !!(GIFT && GIFT.usable);
-    $('rp-gift-use-wrap').hidden = !on;
+    var on = !!(GIFT && GIFT.usable), pre = !!(GIFT && GIFT.prepaid);
+    $('rp-gift-use-wrap').hidden = !on && !pre;
+    $('rp-gift-use').hidden = !on;
+    // a prepaid card (worker v5.40) is only looked at: no picker, no price, nothing to send
+    if (pre) {
+      doc.querySelectorAll('#rp-prods, .rp-box-d, #rp-pay-wrap, #rp-gift-line, #rp-isgift-wrap, #rp-gift').forEach(function (el) { el.hidden = true; });
+      $('rp-gift-use-note').textContent = 'This gift is paid for and on its way: ' + root.AgRpGift.product(GIFT.product) + '. There\u2019s nothing to do here.';
+      syncBar();
+      return;
+    }
     // a card covers one product: no picker, no price button, the card's own button instead
-    doc.querySelectorAll('#rp-prods, .rp-box-d, #rp-pay-wrap, #rp-gift-line, #rp-isgift-wrap').forEach(function (el) { if (on) el.hidden = true; });
+    doc.querySelectorAll('#rp-prods, .rp-box-d, #rp-pay-wrap, #rp-gift-line, #rp-isgift-wrap, #rp-gift').forEach(function (el) { if (on) el.hidden = true; });
     syncBar();
     if (!on) return;
     $('rp-gift-use-note').textContent = 'Your card covers ' + root.AgRpGift.product(GIFT.product) + '.' + (canOrder() ? '' : ' Draw the print above first.');
@@ -5229,7 +5243,8 @@
     A.open(gc, { banner: $('rp-gift-banner'), onChange: takeGift }).then(takeGift);
   }
   function takeGift(g) {
-    if (!g || !g.usable) return;
+    // a prepaid card (worker v5.40: set at checkout) draws its design to look at, and nothing to send
+    if (!g || !(g.usable || g.prepaid)) return;
     GIFT = g;
     if (g.lock && g.lock.design) {
       // the name box keeps what the reader typed (it never holds the example's name: that is a gray hint)
@@ -5249,6 +5264,7 @@
     if (g.lock && g.lock.design) $('rp-stories').hidden = true;
     endExample();
     syncGiftUse();
+    syncXmas();
     ga('rain_print_gift_open', { kind: g.kind || '' });
   }
   // rp-gift.js comes after this file; deferred, both run before DOMContentLoaded, so wait for it while the page is still parsing or running its deferred scripts

@@ -139,8 +139,8 @@ test("check: typo tolerance, what a stranger sees, and unknown codes", async () 
     const c = await r.json();
     assert.equal(r.status, 200, t);
     assert.equal(c.code, j.code);
-    assert.deepEqual(Object.keys(c).sort(), ["code", "from_line", "kind", "lock", "ok", "product", "redeemed_on", "ships", "status", "to"]);
-    assert.equal(c.to, "Dad"); assert.equal(c.from_line, "Kate"); assert.equal(c.status, "issued");
+    assert.deepEqual(Object.keys(c).sort(), ["code", "from_line", "kind", "lock", "ok", "prepaid", "product", "redeemed_on", "ships", "status", "to"]);
+    assert.equal(c.to, "Dad"); assert.equal(c.from_line, "Kate"); assert.equal(c.status, "issued"); assert.equal(c.prepaid, false, "v5.40: an issued card is not prepaid");
     assert.ok(!JSON.stringify(c).includes("example.com") && !JSON.stringify(c).includes("every inch"), "no email or message");
   }
   // every single wrong character and every swap of neighbours fails the check

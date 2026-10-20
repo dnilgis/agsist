@@ -21,7 +21,10 @@
  *       status, redeemed_on, lock: null | { design_code, edit 'none'|'name',
  *       design: RainPrint.decodeCode(design_code) or null }, locked: [field
  *       names the reader may not change], text: the banner sentence, error }
- *     usable is true only for an unused card. With banner, it fills that
+ *     usable is true only for an unused card. prepaid (worker v5.40) is a
+ *     card set when it was bought (the giver gave the address at checkout):
+ *     not usable, nothing to fill in, its design shown. head, steps and note
+ *     are the banner's lines (2026-10-20, Sig: what they get, how to use it). With banner, it fills that
  *     element with the banner (and a box to type a code if the link's was
  *     wrong). It never throws; a network failure answers ok:false.
  *   AgRpGift.redeem(G, order) -> Promise of {ok:true, redeemed_on, ships,
@@ -122,7 +125,8 @@
 
   function stateFrom(j, code) {
     var G = { ok: !!j.ok, usable: false, code: code, kind: j.kind, product: j.product, to: j.to || '', from_line: j.from_line || '',
-      ships: j.ships || 'now', status: j.status, redeemed_on: j.redeemed_on || null, lock: null, locked: [], text: '', error: '' };
+      ships: j.ships || 'now', status: j.status, redeemed_on: j.redeemed_on || null, lock: null, locked: [], text: '', error: '',
+      prepaid: !!j.ok && j.prepaid === true && j.status === 'redeemed', head: '', steps: [], note: '' };
     if (!j.ok) { G.error = errorText(j); return G; }
     if (j.lock && j.lock.design_code) {
       var d = null;
@@ -133,6 +137,16 @@
     var from = G.from_line ? 'A gift from ' + G.from_line : 'A gift for you';
     var what = product(G.product);
     var yr = G.lock && G.lock.summary ? G.lock.summary.year : '';
+    var jan = G.ships === 'january' ? 'Your ' + (yr || '') + (yr ? ' ' : '') + 'print comes in January, once the full year is in.' : '';
+    // the banner's own lines (2026-10-20, Sig: what the receiver gets and how to use it, plainly, at phone width)
+    G.head = G.to && G.from_line ? 'A gift for ' + G.to + ' from ' + G.from_line : G.to ? 'A gift for ' + G.to : G.from_line ? 'A gift from ' + G.from_line : 'A gift for you';
+    if (G.prepaid) {
+      // set when it was bought (worker v5.40): the giver gave the address at checkout, so nothing to fill in
+      G.text = from + ': ' + what + '. It\u2019s paid for and on its way, so there\u2019s nothing to fill in.' + (jan ? ' ' + jan : '');
+      G.steps = ['It\u2019s paid for and on its way. There\u2019s nothing to fill in.'].concat(G.lock ? ['Below is ' + (G.ships === 'january' ? 'the print so far' : 'your print') + '.'] : []);
+      G.note = jan;
+      return G;
+    }
     if (G.status === 'redeemed') G.text = 'This card was used on ' + dayText(G.redeemed_on) + '. If that wasn\u2019t you, write to sig@farmers1st.com.';
     else if (G.status === 'void') G.text = 'This card is no longer active. Write to me at sig@farmers1st.com and I\u2019ll sort it out.';
     else if (G.status === 'pending') G.text = 'This card is being used right now. Try again in two minutes.';
@@ -141,7 +155,11 @@
       G.text = from + ': ' + what + '. ' + (G.lock
         ? 'The design is already chosen' + (G.lock.edit === 'name' ? '; you can change the name line' : '') + '. Add where it goes and press Use my gift.'
         : 'Pick the farm and the year, then press Use my gift.') +
-        (G.ships === 'january' ? ' Your ' + (yr || '') + (yr ? ' ' : '') + 'print comes in January, once the full year is in.' : '');
+        (jan ? ' ' + jan : '');
+      var where = G.product === 'digital' ? 'give your email for the file' : 'say where it goes';
+      G.steps = [G.lock ? 'Your print is below, already picked' + (G.lock.edit === 'name' ? '. You can change the name line.' : '.')
+        : 'Type the farm or town and pick a year. Your print draws below.', 'Tap Use my gift, then ' + where + '. Nothing to pay.'];
+      G.note = (jan ? jan + ' ' : '') + 'The card never expires; it works once.';
     }
     return G;
   }
@@ -151,6 +169,9 @@
     '.rpg-banner .rpg-code{font-family:"IBM Plex Mono",monospace;font-size:.85em;color:var(--text-dim,#5E6475)}' +
     '.rpg-banner.rpg-bad{border-left-color:#A8321E}.rpg-banner form{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}' +
     '.rpg-banner input{font:inherit;font-family:"IBM Plex Mono",monospace;min-height:40px;padding:0 .6rem;border:1px solid var(--border-2,#c9ccc4);border-radius:4px;background:var(--bg,#fff);color:inherit;text-transform:uppercase;flex:1 1 14em;max-width:20em}' +
+    '.rpg-banner .rpg-h{font-size:1.1em}.rpg-banner .rpg-steps{margin:.2rem 0 .5rem;padding-left:1.4em}.rpg-banner .rpg-steps li{margin:0 0 .25rem}' +
+    '.rpg-banner .rpg-note{font-size:.92em;color:var(--text-dim,#5E6475)}' +
+    '.rpg-banner .rpg-go{display:inline-flex;align-items:center;min-height:44px;padding:0 1rem;border-radius:4px;background:#2B5C8A;color:#fff;font-weight:600;text-decoration:none}' +
     '.rpg-banner button{font:inherit;font-weight:600;min-height:40px;padding:0 .9rem;border-radius:4px;border:1px solid #2B5C8A;background:#2B5C8A;color:#fff;cursor:pointer}';
   function css(doc) {
     if (doc.getElementById('rpg-css')) return;
@@ -162,10 +183,20 @@
     var doc = el.ownerDocument;
     css(doc);
     el.hidden = false;
-    el.className = 'rpg-banner' + (G.usable ? '' : ' rpg-bad');
+    el.className = 'rpg-banner' + (G.usable || G.prepaid ? '' : ' rpg-bad');
     el.setAttribute('role', 'status');
-    var html = '<p><b>' + esc(G.ok ? G.text : G.error) + '</b></p>';
-    if (G.ok && G.to) html += '<p>For ' + esc(G.to) + '. <span class="rpg-code">Card ' + esc(G.code) + '</span></p>';
+    var html;
+    if (G.ok && (G.usable || G.prepaid)) {
+      html = '<p class="rpg-h"><b>' + esc(G.head) + '</b></p><p>' + (G.prepaid ? 'It\u2019s ' : 'Your card covers ') + esc(product(G.product)) + '.</p>' +
+        (G.usable ? '<ol class="rpg-steps">' + G.steps.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ol>'
+          : G.steps.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('')) +
+        (G.note ? '<p class="rpg-note">' + esc(G.note) + '</p>' : '') +
+        (G.usable && doc.getElementById('rp-gift-use-wrap') ? '<p><a class="rpg-go" href="#rp-gift-use-wrap">Go to Use my gift</a></p>' : '') +
+        '<p class="rpg-code">Card ' + esc(G.code) + '</p>';
+    } else {
+      html = '<p><b>' + esc(G.ok ? G.text : G.error) + '</b></p>';
+      if (G.ok && G.to) html += '<p>For ' + esc(G.to) + '. <span class="rpg-code">Card ' + esc(G.code) + '</span></p>';
+    }
     if (!G.ok) html += '<form novalidate><label class="sr-only" for="rpg-in">Gift card code</label><input id="rpg-in" autocomplete="off" spellcheck="false" placeholder="RP-XXXX-XXXX-XXXX" value="' + esc(G.code || '') + '"><button type="submit">Check the code</button></form>';
     el.innerHTML = html;
     var f = el.querySelector('form');
@@ -199,7 +230,9 @@
     var go = function (cc) {
       return post('check', { code: cc }).then(function (j) {
         var G = stateFrom(j, cc);
-        if (G.ok) remember(cc);
+        // a prepaid card is only looked at: a later visit in this tab is the ordinary page
+        if (G.ok && !G.prepaid) remember(cc);
+        else if (G.prepaid) { try { root.sessionStorage.removeItem(KEY); } catch (e) {} }
         banner(opts.banner, G, function (again) { go(again).then(opts.onChange || function () {}); });
         return G;
       });

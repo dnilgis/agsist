@@ -359,7 +359,7 @@ test("the proof view and the order summary are on the page", () => {
 // ---------- gift cards on the page (components/rp-gift.js, worker v5.16) ----------
 test("a ?gift= card is redeemed on the page; the free pre-payment card is gone", () => {
   const H = readFileSync(ROOT + "rain-print.html", "utf8"), S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(H, /<script src="\/components\/rp-gift\.js\?v=5" defer><\/script>/);
+  assert.match(H, /<script src="\/components\/rp-gift\.js\?v=6" defer><\/script>/);
   assert.ok(H.indexOf("/components/rain-print.js?v=") < H.indexOf("/components/rp-gift.js"), "the page script is in place before the gift script runs");
   for (const id of ["rp-gift-banner", "rp-gift-use"]) assert.ok(H.includes(`id="${id}"`), id);
   assert.ok(!/Print a gift card|id="rp-card"|id="rp-giftcard"|rp-carding/.test(H + S), "no free printable card before payment");
@@ -503,7 +503,9 @@ test("one promise for the digital file and the gift card: within 1 business day"
   assert.match(S2, /'The finished file comes by email within 1 business day of paying\. There\\u2019s no proof step for the file\.'/);
   assert.match(J.gift_delivery, /Every order gets a proof by email first\./);
   assert.ok(!/December numbers/.test(HTML + S2), "January, once the full year is in");
-  assert.match(HTML, /Within 1 business day of paying, I email you a gift card to print for under the tree/);
+  // 2026-10-20 (Sig): the gift card goes out by email the moment Stripe says paid (scripts/rp_buyer_email.py, worker v5.40)
+  assert.match(HTML, /Within minutes of paying, I email you a gift card to print for under the tree/);
+  assert.ok(!/Within 1 business day of paying, I email you a (gift )?card/.test(HTML), "no hand-sent card promise left on the page");
 });
 
 test("station words are honest and the same everywhere", () => {

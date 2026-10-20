@@ -363,10 +363,10 @@ test("P14: gift mode: no Christmas dates line, the card said once, and the check
     const box = await page.innerText("#rp-gift");
     assert.equal((box.match(/gift card/g) || []).length, 1, box);
     // the gift-card words stay on the picker's rows for this year (2026-10-14)
-    for (const id of ["framed12x18", "print12x18", "digital"]) assert.match(await page.textContent("#rp-sub-" + id), /gift card to print by email within 1 business day/, id);
+    for (const id of ["framed12x18", "print12x18", "digital"]) assert.match(await page.textContent("#rp-sub-" + id), /gift card to print by email within minutes/, id);
     assert.equal(await page.isHidden("#rp-gift-line"), true, "the plain gift line gives way to the Ordering 2026 box");
     await checkout(page, "framed12x18", { tick: false });
-    assert.match(await page.textContent("#rp-proof-sum"), /Within 1 business day I email you a gift card to print\./);
+    assert.match(await page.textContent("#rp-proof-sum"), /Within minutes of paying, a gift card to print comes by email\./);
   }, { time: "2026-10-14T17:00:00Z" });
 });
 
