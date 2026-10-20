@@ -22,6 +22,10 @@
  *     pressed". A paid print or framed print gets the next serial (rpo-serial
  *     counter, never 0; 0 is Sig's test print) and keeps it. fulfill_url is
  *     the design link with maker=1 (and serial=N for a print).
+ *   POST /rp-order/mailed {key} (Bearer LIST_TOKEN only): the buyer's email
+ *     for this paid record went out (scripts/rp_buyer_email.py); kept as
+ *     mailed {at, session}, never the address. A second call changes nothing,
+ *     so each paid session gets one email.
  *   POST /rp-order/serial {last} (Bearer LIST_TOKEN only): the last serial
  *     already used, so the next one handed out is last + 1.
  *   New optional secret STRIPE_READ_KEY; no new binding.
@@ -1738,7 +1742,7 @@ async function rpoList(env, days) {
     return {
       key: r.key, ts: r.ts, at: new Date(r.ts).toISOString(), ref: r.ref, product: r.product, price: r.price,
       design_url: r.design_url, place: r.place, year: r.year, style: r.style, name: r.name, markers: r.markers,
-      dedication: r.dedication, gift: !!r.gift, status: r.paid ? "paid" : "pay pressed", paid: r.paid || null,
+      dedication: r.dedication, gift: !!r.gift, status: r.paid ? "paid" : "pay pressed", paid: r.paid || null, mailed: r.mailed || null,
       serial: r.serial || null, serial_next: serialNext, fulfill_url: rpoFulfill(r, r.serial || serialNext),
     };
   }).reverse();
@@ -3253,6 +3257,23 @@ async function handle(req, env) {
       const days = Number.isFinite(d) ? Math.min(120, Math.max(1, Math.floor(d))) : 14;
       const out = await rpoList(env, days);
       return json(Object.assign({ ok: true, days }, out), 200, Object.assign({ "Cache-Control": "no-store" }, ac));
+    }
+    // v5.34: the buyer's "here's your print" email went out for this paid record (scripts/rp_buyer_email.py).
+    // Only the time and the session id are kept; never the address it went to.
+    if (path === "/rp-order/mailed" && req.method === "POST") {
+      if (!sig) return json({ ok: false }, 403, ac);
+      let b = null;
+      try { b = await req.json(); } catch (e) { b = null; }
+      const k = b && b.key;
+      if (typeof k !== "string" || !RPO_KEY_RE.test(k)) return json({ ok: false, error: "invalid key" }, 400, ac);
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (!r) return json({ ok: false, error: "not found" }, 404, ac);
+      if (!r.paid) return json({ ok: false, error: "not paid" }, 409, ac);
+      if (r.mailed) return json({ ok: true, already: true, mailed: r.mailed }, 200, ac);
+      r.mailed = { at: new Date().toISOString(), session: String(r.paid.session || "") };
+      await rpoPut(env, k, r);
+      return json({ ok: true, already: false, mailed: r.mailed }, 200, ac);
     }
     if (path === "/rp-order/serial" && req.method === "POST") {
       if (!sig) return json({ ok: false }, 403, ac);

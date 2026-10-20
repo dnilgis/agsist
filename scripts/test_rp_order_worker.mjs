@@ -176,3 +176,23 @@ j = await (await admin('/rp-order/list?days=0')).json(); A(j.days === 1, 'days a
 j = await (await admin('/rp-order/list?days=999')).json(); A(j.days === 120, 'days at most 120');
 globalThis.fetch = realFetch;
 console.log('rp-order worker checks: ' + n + ' passed');
+
+// ---------- the buyer email's once-only mark ----------
+{
+  globalThis.fetch = async () => new Response(JSON.stringify({ data: [], has_more: false }), { status: 200 });
+  const list = await (await admin('/rp-order/list')).json();
+  const paidOne = list.orders.find(o => o.status === 'paid'), unpaid = list.orders.find(o => o.status !== 'paid');
+  A(paidOne.mailed === null, 'not mailed yet');
+  let m = await admin('/rp-order/mailed', 'POST', { key: paidOne.key }, ''); A(m.status === 403, 'mailed: Sig only');
+  m = await admin('/rp-order/mailed', 'POST', { key: 'rpo:1:zz' }); A(m.status === 400, 'mailed: bad key');
+  m = await admin('/rp-order/mailed', 'POST', { key: unpaid.key }); A(m.status === 409, 'mailed: an unpaid press is never mailed');
+  m = await admin('/rp-order/mailed', 'POST', { key: paidOne.key }); let mj = await m.json();
+  A(mj.ok && mj.already === false && mj.mailed.session === paidOne.paid.session, 'mailed: marked with the session');
+  m = await admin('/rp-order/mailed', 'POST', { key: paidOne.key }); mj = await m.json();
+  A(mj.ok && mj.already === true, 'mailed: a second mark changes nothing');
+  const after = await (await admin('/rp-order/list')).json();
+  A(after.orders.find(o => o.key === paidOne.key).mailed.session === paidOne.paid.session, 'the list says it was mailed');
+  A(!JSON.stringify([...store.values()]).includes('@'), 'no address kept');
+  globalThis.fetch = realFetch;
+  console.log('rp-order mailed checks: ' + n + ' passed');
+}
