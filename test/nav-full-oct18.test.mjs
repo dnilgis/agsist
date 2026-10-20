@@ -201,7 +201,7 @@ test("ZIP chip: reads the saved place, sets all three keys, a failed lookup save
     assert.equal(keys.loc.zip, "54728"); assert.equal(keys.loc.state, "WI"); assert.equal(keys.loc.label, "Chetek, WI"); assert.equal(keys.loc.zipTyped, true);
     // Sig, Oct 20: once a ZIP is saved the box sends the reader to /here for that ZIP
     assert.equal(await pg.getAttribute("#zip-go", "href"), "/here?zip=54728");
-    assert.equal(await pg.textContent("#zip-go"), "Bids, rain and rent near Chetek →");
+    assert.equal(await pg.textContent("#zip-go"), "Everything near Chetek →");
     await pg.keyboard.press("Escape");
     assert.equal(await pg.isVisible("#zip-pop"), false);
     assert.equal(await pg.evaluate(() => document.activeElement.id), "zip-chip");

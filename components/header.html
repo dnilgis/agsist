@@ -102,7 +102,7 @@
 .zip-links{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin:.45rem 0 0;font-size:.82rem}
 .zip-links[hidden]{display:none}
 .zip-links a{color:var(--brand);font-weight:700;text-decoration:none}
-.zip-clear{min-height:36px;background:none;border:0;color:var(--text-muted);font:inherit;font-size:.78rem;text-decoration:underline;cursor:pointer}
+.zip-clear{flex:0 0 auto;white-space:nowrap;min-height:36px;background:none;border:0;color:var(--text-muted);font:inherit;font-size:.78rem;text-decoration:underline;cursor:pointer}
 .zip-note{margin:.45rem 0 0;font-size:.72rem;color:var(--text-muted)}
 /* Free daily email: opens the Daily panel at its signup box. Hidden for subscribers.
    Same gold and dark text as the signup button (signup-ask.js .sa-b), in both themes. */
@@ -297,7 +297,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
             <label for="zip-in">Your ZIP, for bids, rain and rent near you</label>
             <div class="zip-row"><input id="zip-in" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" pattern="[0-9]{5}" placeholder="54728"><button type="submit" class="zip-save">Save</button></div>
             <p class="zip-m" id="zip-m" role="status" aria-live="polite"></p>
-            <p class="zip-links" id="zip-links" hidden><a href="/here" id="zip-go">Bids, rain and rent near you &rarr;</a><button type="button" class="zip-clear" id="zip-clear">Clear</button></p>
+            <p class="zip-links" id="zip-links" hidden><a href="/here" id="zip-go">Everything near you &rarr;</a><button type="button" class="zip-clear" id="zip-clear">Clear</button></p>
             <p class="zip-note">Kept in this browser only.</p>
           </form>
         </div>

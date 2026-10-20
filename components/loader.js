@@ -365,7 +365,7 @@
     if (rent) rent.setAttribute('href', p && RENT_ST[p.state] ? '/rent/' + RENT_ST[p.state] + '#your-ground' : '/rent/');
     if (dz) dz.textContent = p ? where + (p.town ? ' ' + p.zip : '') : 'no ZIP set';
     var go = byId('zip-go'), links = byId('zip-links');
-    if (go) { go.setAttribute('href', p ? '/here?zip=' + p.zip : '/here'); go.textContent = p ? 'Bids, rain and rent near ' + where + ' →' : ''; }
+    if (go) { go.setAttribute('href', p ? '/here?zip=' + p.zip : '/here'); go.textContent = p ? 'Everything near ' + where + ' →' : ''; }
     if (links) links.hidden = !p;
   }
   function saveZip(z, done) {

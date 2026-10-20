@@ -36,7 +36,7 @@ test("compare: the rent-to-value blank gives the county page's own reason (seat 
   assert.ok(far.rent_dry_usd_ac != null && far.value_usd_ac != null && !far.value_flag && far.rent_to_value_pct == null,
     "Faribault still has a rent, a value and no ratio");
   assert.equal(row[1](far), null);
-  assert.equal(why(far), "NASS published no dry cash rent for this county in 2022");
+  assert.equal(why(far), "NASS published no 2022 dry rent");
   assert.equal(why({ value_usd_ac: null, value_year: 2022 }), "census value withheld");
   assert.equal(row[1]({ value_flag: "x", rent_to_value_pct: 3 }), "flag", "a flagged value reads with care, not a reason");
   assert.equal(row[1]({ value_flag: null, rent_to_value_pct: 3.04 }), "3.04%");

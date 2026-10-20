@@ -111,7 +111,7 @@ var SPEC=[
  // The county page's own reason (scripts/atlas_layers_p1.py rent_to_value): the census value is
  // withheld, or NASS published no dry rent in the census year (Faribault MN has a 2026 rent, none for 2022).
  ['Dry rent as % of land value',function(r){return r.value_flag?'flag':(r.rent_to_value_pct==null?null:nf(r.rent_to_value_pct,2)+'%');},
-  function(r){return r.value_usd_ac==null?'census value withheld':'NASS published no dry cash rent for this county in '+r.value_year;}],
+  function(r){return r.value_usd_ac==null?'census value withheld':'NASS published no '+r.value_year+' dry rent';}],
  ['Median corn yield, bu/ac',function(r){return r.corn_yield_median_bu_ac==null?null:nf(r.corn_yield_median_bu_ac,1)+' ('+r.corn_yield_years+' yrs)';},'fewer than the published years needed'],
  ['Claims per $100 of coverage',function(r){return r.claims_per_100_usd==null?null:'$'+nf(r.claims_per_100_usd,2);},'no crop insurance record'],
  ['Loss ratio, last ten years',function(r){return r.loss_ratio_last10==null?null:nf(r.loss_ratio_last10,2);},'no crop insurance record'],
