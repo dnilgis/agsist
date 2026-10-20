@@ -722,6 +722,7 @@
       zn.textContent='Reports are town-level precision (~1\u20135 mi), not parcel-exact';
       document.getElementById('hm-map').appendChild(zn);
       map.on('zoomend', function(){ zn.style.display = map.getZoom()>=10 ? 'block' : 'none'; });
+      map.on('zoomend', function(){ if(current==='all' && manifest && allWant()!==allSrc) drawAll(); });
 
       map.on('click', function(e){ runLookup(e.latlng.lat, e.latlng.lng, null); });
       wireSearch();
@@ -1636,6 +1637,42 @@
         .catch(function(){ cache[y]=[]; return cache[y]; });
     }
 
+    /* THE OPENING PICTURE (2026-10-20). "All 5 years" used to fetch all five
+       year files, about 330 KB gzipped, before the first heat paint: 8.8 s on
+       a phone on slow 4G. data/hail/all-grid.json is the same reports summed
+       into 0.1 degree bins at their weighted centre (scripts/fetch_hail.py).
+       Leaflet.heat merges every point in a 17.5 px cell anyway, and at zoom 5
+       and out a cell is 0.77 degrees or more, so the grid paints the same map.
+       Zoomed in past 5, or a grid that does not match the manifest's years,
+       loads the real year files, each once. */
+    var GRID_MAX_Z=5, gridP=null, allSrc='';
+    function loadGrid(){
+      if(!gridP) gridP=fetch(DATA+'all-grid.json').then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(g){
+          var ok=g && g.points && g.points.length && manifest && String(g.years)===String(manifest.years);
+          return ok ? g : null;
+        })
+        .catch(function(){ return null; });
+      return gridP;
+    }
+    function allYears(){
+      return Promise.all(manifest.years.map(loadYear)).then(function(arr){
+        var pts=[]; arr.forEach(function(a){ pts=pts.concat(a); });
+        return { pts:pts, n:pts.length };
+      });
+    }
+    function allWant(){ return (map && map.getZoom()<=GRID_MAX_Z) ? 'grid' : 'years'; }
+    function drawAll(){
+      var want=allWant(); allSrc=want;
+      var p = want==='grid'
+        ? loadGrid().then(function(g){ return g ? { pts:g.points, n:g.count } : allYears(); })
+        : allYears();
+      p.then(function(r){
+        if(current!=='all' || allSrc!==want) return; // a newer selection or zoom won
+        renderHeat(r.pts); document.getElementById('hm-count').textContent=r.n.toLocaleString();
+      });
+    }
+
     function loadRecent(){
       if(recentCache) return Promise.resolve(recentCache);
       return fetch(DATA+'recent.json', {cache:'no-cache'})
@@ -1682,11 +1719,7 @@
       showLegend('freq');
       if(key==='all'){
         scope.textContent='across '+manifest.years.length+' years';
-        Promise.all(manifest.years.map(loadYear)).then(function(arr){
-          if(current!=='all') return; // a newer selection won
-          var pts=[]; arr.forEach(function(a){ pts=pts.concat(a); });
-          renderHeat(pts); cnt.textContent=pts.length.toLocaleString();
-        });
+        drawAll();
       } else {
         scope.textContent='in '+key;
         loadYear(key).then(function(pts){
