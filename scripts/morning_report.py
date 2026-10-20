@@ -92,6 +92,12 @@ MAX_ERR = 160
 SNAP_DAYS = 15
 
 
+
+def clean_txt(v, cap=80):
+    """One line of plain text from a form field: whitespace folded, cut to cap, no address-like strings."""
+    t = " ".join(str(v or "").split())[:cap]
+    return "" if "@" in t else t
+
 def scrub(s):
     """No address-shaped text gets into the report, whatever a source returned."""
     return EMAIL_RE.sub("[address]", str(s)).replace("@", " at ")
@@ -561,8 +567,16 @@ def sec_orders(src, now, rep):
         rep.red("%s waiting for your yes or no." % plural(pend, "sponsor application", "sponsor applications"))
     try:
         reqs = src.worker("elev/admin/requests")
-        n = sum(1 for r in (reqs.get("requests") or []) if isinstance(r, dict) and r.get("status") == "pending")
+        pend_reqs = [r for r in (reqs.get("requests") or []) if isinstance(r, dict) and r.get("status") == "pending"]
+        n = len(pend_reqs)
         lines.append("Elevator listing requests still pending on elev-admin: %d." % n)
+        # Sig, Oct 20: name them (elevator, town, state) so the email says who without opening elev-admin.
+        # Business name and place only: never the contact person, phone or email.
+        for r in pend_reqs[:10]:
+            where = ", ".join(x for x in (clean_txt(r.get("town")), clean_txt(r.get("state"))) if x)
+            lines.append("  - %s%s" % (clean_txt(r.get("elevator")) or "(no name given)", (", " + where) if where else ""))
+        if n > 10:
+            lines.append("  - and %d more on elev-admin" % (n - 10))
         if n:
             rep.red("%s still pending on elev-admin (call, then make the listing or dismiss it)." %
                     plural(n, "elevator listing request", "elevator listing requests"))
@@ -1083,7 +1097,7 @@ def fixtures(now):
         "notice-list?topic=rain-gauge": [{"email": "gauge1@y.org", "topic": "rain-gauge", "ts": ms - 600},
                                          {"email": "gauge2@y.org", "topic": "rain-gauge", "ts": ms - 600}],
         "sponsor-apps": [{"id": "s1", "ts": ms - 5000, "status": "pending", "email": "boss@seed.com", "company": "Apex Seed"}],
-        "elev/admin/requests": {"ok": True, "requests": [{"status": "pending", "email": "pat@x.com"}, {"status": "created"}]},
+        "elev/admin/requests": {"ok": True, "requests": [{"status": "pending", "email": "pat@x.com", "name": "Pat Doe", "phone": "715-555-0100", "elevator": "Sand Creek Grain", "town": "Sand Creek", "state": "WI"}, {"status": "created", "elevator": "Done Co-op", "town": "Elsewhere", "state": "IA"}]},
     }
     urls = {BIDS_INDEX: {"generated": iso(h(0.4)), "counts": {"total": 2038, "live": 1900, "refused": 63, "broken": 30},
                          "sources": [{"email": "office@coop.com"}]}}
@@ -1159,6 +1173,8 @@ def selftest():
     ck("month to date counts this month only", "Month to date: 1 Rain Print order request, 1 gift card redemption, "
        "0 business quote requests, 2 rain gauge waitlist, 0 elevator listing, 0 PRF sponsor, 1 elevator claim," in t, t)
     ck("pending elevator requests", "Elevator listing requests still pending on elev-admin: 1." in t, t)
+    ck("a pending request is named by elevator and town, never the contact", "  - Sand Creek Grain, Sand Creek, WI" in t
+       and "Pat Doe" not in t and "715-555-0100" not in t and "Done Co-op" not in t, t)
     ck("no Stripe key: the dashboard line", "Stripe: see dashboard (add STRIPE_READ_KEY to show paid orders here)." in t, t)
 
     print("\ntraffic and to-dos")
