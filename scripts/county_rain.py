@@ -724,12 +724,22 @@ def snow_state(vals, snows, year):
     return "drawn" if tot >= 0.1 else "little"
 
 
+def snow_trace_on(raw, year, k):
+    """Day k of the year (0 = Jan 1) has a snowfall trace the print marks: a snowfall value of T,
+    not June 1 to August 31 by the day's date (Sig, 2026-10-20: "skip summer traces"; a summer T
+    is most likely hail logged as snow). The engine's rule (snowTraceRaw in components/rain-print.js).
+    A measured summer snow amount is not changed."""
+    if str(raw).strip() != "T":
+        return False
+    return (dt.date(int(year), 1, 1) + dt.timedelta(days=k)).month not in (6, 7, 8)
+
+
 def snow_trace_days(vals, snows, year):
     """How many days the Rain Print marks with a trace of snow (2026-10-20, Sig: "a trace should
     somehow show as a trace"): the art's rule (components/rain-print-art.js model, snowTr), on
     the days snow_state reads: only where the snowfall record is whole ("drawn" or "little"), a
-    snowfall value of T on a day with a rain report of its own (not M, not an S day), within the
-    days counted. Never a measured amount: these add nothing to any snow total."""
+    snowfall value of T (snow_trace_on: not in summer) on a day with a rain report of its own
+    (not M, not an S day), within the days counted. Never a measured amount: these add nothing to any snow total."""
     if snow_state(vals, snows, year) not in ("drawn", "little"):
         return 0
     raw = [str(x).strip() for x in (snows or [])]
@@ -753,7 +763,7 @@ def snow_trace_days(vals, snows, year):
         has = [k for k in range(min(len(pp), len(sv))) if sv[k] is not None]
         if has:
             end = has[-1] + 1
-    return sum(1 for k, (v, f) in enumerate(pp[:end]) if v is not None and f != "S" and k < len(raw) and raw[k] == "T")
+    return sum(1 for k, (v, f) in enumerate(pp[:end]) if v is not None and f != "S" and k < len(raw) and snow_trace_on(raw[k], year, k))
 
 
 def snow_country(st, lat, elev=None):

@@ -9,7 +9,8 @@
  * Real days: test/fixtures/snow-trace/days.json, copied from the shipped data/rain/daily files
  * (2026 through Oct 18): Belle Mina AL (Limestone County, only traces: 5 days, two of them with
  * measured rain, 1.42 in on Jan 25) and Grand Forks International Airport ND (24.4 in of snow
- * and 36 trace days, most on days the gauge also read T).
+ * and 35 trace days, most on days the gauge also read T; its Jun 3 snowfall T, on the year's biggest rain,
+ * is a summer trace and is not marked: Sig, 2026-10-20, "skip summer traces").
  *
  *   node --test test/rain-print-snow-trace.test.mjs
  */
@@ -50,7 +51,33 @@ test("the engine flags a snowfall T on the day and nowhere else", () => {
   const j25 = al.find((x) => x.date === "2026-01-25");
   assert.equal(j25.s, 0); assert.equal(j25.v, 1.42); assert.equal(j25.flag, "");
   // daily() reads the same: the snow column's T sets sT (the page's own fetch)
-  assert.match(read("components/rain-print.js"), /if \(snowTraceRaw\(row\[3\]\)\) dy\.sT = true;/);
+  assert.match(read("components/rain-print.js"), /if \(snowTraceRaw\(row\[3\], row\[0\]\)\) dy\.sT = true;/);
+});
+
+test("a summer trace (June 1 to August 31, by the day's date) is not marked; May keeps its flakes (Grand Forks ND 2026)", () => {
+  // the rule, by date: the last day of May and the first of September are marked, June 1 and August 31 are not
+  assert.equal(RP.snowTraceRaw("T", "2026-05-31"), true);
+  assert.equal(RP.snowTraceRaw("T", "2026-06-01"), false);
+  assert.equal(RP.snowTraceRaw("T", "2026-07-15"), false);
+  assert.equal(RP.snowTraceRaw("T", "2026-08-31"), false);
+  assert.equal(RP.snowTraceRaw("T", "2026-09-01"), true);
+  assert.equal(RP.snowTraceRaw("0.0", "2026-01-10"), false);
+  const gf = daysOf("grandforks_nd"), sT = gf.filter((x) => x.sT).map((x) => x.date);
+  // Jun 3: NOAA's snowfall T on 1.88 in, the year's biggest rain; most likely hail logged as snow
+  const j3 = gf.find((x) => x.date === "2026-06-03");
+  assert.equal(j3.v, 1.88); assert.equal(j3.s, 0); assert.ok(!j3.sT, "Jun 3 carries no trace");
+  assert.equal(sT.filter((d) => d >= "2026-06-01" && d <= "2026-08-31").length, 0, "no summer trace marked");
+  assert.deepEqual([...sT.filter((d) => d.startsWith("2026-05"))], ["2026-05-04", "2026-05-05", "2026-05-06"], "the May days stay as recorded");
+  assert.equal(sT.length, 35);
+  // the biggest rain is still Jun 3 and no mark is drawn over June to August on either style
+  for (const style of ["r1", "r2"]) {
+    const E = ART.model(input(gf, style));
+    assert.equal(E.wet.date, "2026-06-03");
+    assert.ok(E.snowTr.every((i) => gf[i].m < 5 || gf[i].m > 7), style);
+  }
+  // a measured summer snow amount is not touched: it still counts as snow
+  const ms = gf.map((x) => x.date === "2026-06-03" ? Object.assign({}, x, { s: 0.5 }) : x);
+  assert.equal(ART.model(input(ms, "r1")).snowTot, ART.model(input(gf, "r1")).snowTot + 0.5);
 });
 
 test("a snowfall trace never changes a total: rain, snow, wet days and the gauge's own trace count stay as they were", () => {
@@ -62,8 +89,8 @@ test("a snowfall trace never changes a total: rain, snow, wet days and the gauge
   }
   // Grand Forks: the gauge's trace days (D.trace) and the snowfall trace days are two counts
   const gf = daysOf("grandforks_nd");
-  assert.equal(ART.model(input(gf, "r1")).snowTr.length, 36);
-  assert.notEqual(RP.derive(gf).trace, 36);
+  assert.equal(ART.model(input(gf, "r1")).snowTr.length, 35);
+  assert.notEqual(RP.derive(gf).trace, 35);
 });
 
 test("only traces (Limestone County AL): five marks above the line on both styles, the key says how many, no snow total", () => {
@@ -97,18 +124,18 @@ test("Staircase: the mark sits above the step and clear of the next riser (Jan 2
   }
 });
 
-test("measured snow and traces (Grand Forks ND): total unchanged, 'plus 36 days with a trace' beside it, the key once", () => {
+test("measured snow and traces (Grand Forks ND): total unchanged, 'plus 35 days with a trace' beside it, the key once", () => {
   const d = daysOf("grandforks_nd");
   const r1 = ART.render(input(d, "r1", { place: "Grand Forks County, North Dakota" }));
   const t1 = texts(r1).join(" | ");
-  assert.match(t1, /Snow: 24\.4 in, the light blue steps, plus 36 days with a trace/);
+  assert.match(t1, /Snow: 24\.4 in, the light blue steps, plus 35 days with a trace/);
   assert.equal((t1.match(/Trace of snow \(too little to measure\)/g) || []).length, 1);
   assert.doesNotMatch(t1, /too little to measure\), \d+ days/, "the count rides on the total when snow was measured");
   const r2 = ART.render(input(d, "r2", { place: "Grand Forks County, North Dakota" }));
   const t2 = texts(r2);
-  assert.ok(t2.includes("24.4 in") && t2.includes("plus 36 days with a trace"), "Roots: under the SNOWFALL total");
-  assert.equal(flakeCenters(r2).length, 37);
-  assert.equal(flakeCenters(r1).length, 37);
+  assert.ok(t2.includes("24.4 in") && t2.includes("plus 35 days with a trace"), "Roots: under the SNOWFALL total");
+  assert.equal(flakeCenters(r2).length, 36);
+  assert.equal(flakeCenters(r1).length, 36);
 });
 
 test("no trace, no mark and no key; a station whose snowfall record has holes marks nothing", () => {
@@ -136,8 +163,8 @@ test("the glyph is one constant, kept to the production limits", () => {
 });
 
 test("the county page's preview reads the same days (rain-county-print.js daysOf carries sT)", () => {
-  assert.match(read("components/rain-county-print.js"), /RP\.snowTraceRaw\(s\[i\]\)\) dy\.sT = true/);
-  assert.match(read("components/rain-county-print.js"), /ENGINE = '\/components\/rain-print\.js\?v=57'/);
+  assert.match(read("components/rain-county-print.js"), /RP\.snowTraceRaw\(s\[i\], iso\)\) dy\.sT = true/);
+  assert.match(read("components/rain-county-print.js"), /ENGINE = '\/components\/rain-print\.js\?v=58'/);
   assert.match(read("components/rain-county-print.js"), /rain-print-art\.js\?v=18'/);
   for (const p of ["rain-print.html", "rp-gift.html"]) assert.match(read(p), /rain-print-art\.js\?v=18"/, p);
 });

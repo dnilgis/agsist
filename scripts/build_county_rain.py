@@ -153,7 +153,7 @@ def last_year_words(c, L, year):
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
 RP_SNOW_MISS_OK = R.SNOW_MISS_OK  # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
-PRINT_JS = '<script src="/components/rain-county-print.js?v=26" defer></script>'
+PRINT_JS = '<script src="/components/rain-county-print.js?v=27" defer></script>'
 
 
 def rp_prices():
@@ -209,17 +209,19 @@ def print_snow(day, year):
     return R.snow_state(R.unpack_days(day.get("p")), R.unpack_days(day["s"]), year)
 
 
-def snow_caption(day, snow):
+def snow_caption(day, snow, year):
     """The caption's key for the snow line. Wording only (2026-10-20): "little" (under 0.1 in)
     stays the snow state, but where the station's snowfall record for the year has no value
     above zero the caption says so instead of "under 0.1 in", which reads as if snow fell
-    (162 pages, mostly the South). "nosnow": every value 0; "trace": only zeros and traces."""
+    (162 pages, mostly the South). "nosnow": every value 0; "trace": only zeros and traces.
+    A summer trace (June to August) is not snow here (county_rain.snow_trace_on, Sig 2026-10-20)."""
     if snow != "little" or not day or not day.get("s"):
         return snow
-    sv = [R.parse_pcpn(x) for x in R.unpack_days(day["s"])]
+    raw = R.unpack_days(day["s"])
+    sv = [R.parse_pcpn(x) for x in raw]
     if any(v for v, _f in sv if v is not None):
         return snow
-    return "trace" if any(f == "T" for _v, f in sv) else "nosnow"
+    return "trace" if any(R.snow_trace_on(x, year, k) for k, x in enumerate(raw)) else "nosnow"
 
 
 def print_snow_traces(day, year):
@@ -675,7 +677,7 @@ def county_page(ctx):
     snow = print_snow(ctx.get("day"), year)
     if print_ready(c, ctx.get("day")):
         gauge = f"Weather station: {stw['name']}, {miles_from(stw['mi'])} the middle of {name}"
-        ready = (st, fips, f"{name}, {stn}", gauge, done, snow_caption(ctx.get("day"), snow), d.get("normals"), print_snow_traces(ctx.get("day"), year))
+        ready = (st, fips, f"{name}, {stn}", gauge, done, snow_caption(ctx.get("day"), snow, year), d.get("normals"), print_snow_traces(ctx.get("day"), year))
     pr = rp_prices()
     price = f": framed ${pr[0]}, print ${pr[1]}" if pr else ""
     so_far = "" if done else " so far"
@@ -1334,18 +1336,24 @@ def selftest():
     ok(print_snow({"p": sf["vilas_wi"]["p"], "s": R.pack_days(_mid)}, 2026) == "gaps", "gaps before the last snowfall value still count")
     # the caption under 0.1 in (2026-10-20, Clinch County GA: every snowfall value 0)
     _z = {"p": R.pack_days(["0.00"] * 280), "s": R.pack_days(["0.0"] * 280)}
-    ok(print_snow(_z, 2026) == "little" and snow_caption(_z, "little") == "nosnow", "all-zero snowfall says no snow fell")
+    ok(print_snow(_z, 2026) == "little" and snow_caption(_z, "little", 2026) == "nosnow", "all-zero snowfall says no snow fell")
     _t = {"p": _z["p"], "s": R.pack_days(["0.0"] * 40 + ["T"] + ["0.0"] * 239)}
-    ok(snow_caption(_t, "little") == "trace", "a trace is snow that fell: not 'no snow'")
+    ok(snow_caption(_t, "little", 2026) == "trace", "a trace is snow that fell: not 'no snow'")
+    # a summer trace (June 1 to August 31) is not snow (Sig, 2026-10-20: "skip summer traces")
+    _su = {"p": _z["p"], "s": R.pack_days(["0.0"] * 153 + ["T"] + ["0.0"] * 126)}   # day 153 = Jun 3
+    ok(snow_caption(_su, "little", 2026) == "nosnow" and print_snow_traces(_su, 2026) == 0, "a June trace: no snow fell, nothing marked")
+    ok([R.snow_trace_on("T", 2026, k) for k in (150, 151, 242, 243)] == [True, False, False, True]
+       and not R.snow_trace_on("0.0", 2026, 10) and R.snow_trace_on(" T ", 2024, 151) is True and R.snow_trace_on("T", 2024, 152) is False,
+       "summer is June 1 to August 31 by the date, leap years too")
     _l = {"p": _z["p"], "s": R.pack_days(["0.0"] * 40 + ["0.05"] + ["0.0"] * 239)}
-    ok(snow_caption(_l, "little") == "little" and snow_caption(sf["vilas_wi"], "drawn") == "drawn", "a little snow keeps 'under 0.1 in'")
+    ok(snow_caption(_l, "little", 2026) == "little" and snow_caption(sf["vilas_wi"], "drawn", 2026) == "drawn", "a little snow keeps 'under 0.1 in'")
     # a trace of snow is marked on the print (2026-10-20, Sig): the caption says so, from real days
     # (test/fixtures/snow-trace/days.json, copied from data/rain/daily through Oct 18, 2026)
     tf = json.load(open(os.path.join(ROOT, "test", "fixtures", "snow-trace", "days.json")))
-    ok(print_snow_traces(tf["limestone_al"], 2026) == 5 and print_snow_traces(tf["grandforks_nd"], 2026) == 36,
-       "Belle Mina AL marks 5 trace days, Grand Forks ND 36 (the art's count, test/rain-print-snow-trace.test.mjs)")
+    ok(print_snow_traces(tf["limestone_al"], 2026) == 5 and print_snow_traces(tf["grandforks_nd"], 2026) == 35,
+       "Belle Mina AL marks 5 trace days, Grand Forks ND 35, not its Jun 3 summer T (the art's count, test/rain-print-snow-trace.test.mjs)")
     ok(print_snow_traces(sf["story_ia"], 2026) == 0, "a snowfall record with gaps marks no trace")
-    _al = snow_caption(tf["limestone_al"], print_snow(tf["limestone_al"], 2026))
+    _al = snow_caption(tf["limestone_al"], print_snow(tf["limestone_al"], 2026), 2026)
     ok(_al == "trace" and snow_trace_words(_al, 5) == "Only traces of snow fell (5 days), too little to measure; each is marked on the print. ",
        "only traces: no longer 'so none is drawn'")
     ok("marked above the line" in snow_trace_words("drawn", 36) and snow_trace_words("drawn", 36).startswith("Light blue is snow. ")

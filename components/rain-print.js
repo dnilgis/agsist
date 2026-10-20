@@ -503,8 +503,15 @@
   }
   /* A snowfall value of T: snow fell that day, too little to measure (under 0.1 in). Its own
      flag on the day (sT), never the precipitation trace (flag 'T', counted in derive's D.trace):
-     a snowfall trace can fall on a day with measured rain, or a day the gauge read T or 0. */
-  function snowTraceRaw(raw) { return raw !== undefined && raw !== null && String(raw).trim() === 'T'; }
+     a snowfall trace can fall on a day with measured rain, or a day the gauge read T or 0.
+     Not June 1 to August 31 by the day's date (iso, YYYY-MM-DD; Sig, 2026-10-20: "skip summer
+     traces"): a summer T is most likely hail logged as snow (Grand Forks ND, Jun 3 2026, on the
+     year's biggest rain). US and Canada only, so one season. A measured summer snow amount stays. */
+  function snowTraceRaw(raw, iso) {
+    if (raw === undefined || raw === null || String(raw).trim() !== 'T') return false;
+    var mo = iso ? +String(iso).slice(5, 7) : 0;
+    return !(mo >= 6 && mo <= 8);
+  }
   // A day whose own amount nobody knows: unrecorded, or rolled into a later A total.
   function unknownDay(x) { return x.v === null || x.v === undefined || x.flag === 'S'; }
   /* Snowfall over the year's days: {miss: reported days with no snowfall value,
@@ -1307,9 +1314,9 @@
         // counts that snow melted down to water, so snowfall is shown beside it, never added.
         var p = parsePcpn(row[1]), t = row[2] !== undefined ? parseTemp(row[2]) : null, sn = row[3] !== undefined ? parsePcpn(row[3]).v : null;
         var dt = new Date(row[0] + 'T00:00:00'), dy = { date: row[0], v: p.v, flag: p.flag, t: t, s: sn, m: dt.getMonth(), d: dt.getDate(), doy: days.length };
-        // a snowfall "T" (2026-10-20, Sig: "a trace should somehow show as a trace"): snow fell, under 0.1 in.
+        // a snowfall "T" (2026-10-20, Sig: "a trace should somehow show as a trace"): snow fell, under 0.1 in (not in summer: snowTraceRaw).
         // It stays 0 in every snow total; sT only lets the print mark the day. Not the gauge's own T (flag).
-        if (snowTraceRaw(row[3])) dy.sT = true;
+        if (snowTraceRaw(row[3], row[0])) dy.sT = true;
         days.push(dy);
       });
       // This year: stop at the last recorded day. The days after it have not
