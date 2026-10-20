@@ -2207,10 +2207,16 @@ def dtext(r):
     return delivery_text(r.get("delivery"), r.get("period"))
 
 
-def loc_li(r):
-    """SB.loc_li with the delivery read by dtext()."""
-    return (f'<li>{esc(r["operator"])}, {esc(SB.town_text(r["city"]))}: basis <b>{money_basis(r["basis"])}</b>, '
-            f'cash {pricefmt.cash(r["cash"])} ({esc(dtext(r))}), as of {SB.fmt_ct(r["priced"])}</li>')
+def loc_li(r, town_paths=None):
+    """SB.loc_li with the delivery read by dtext(), and the town its page is in
+    when the board's own name is another place ("Farmers Win Cooperative,
+    Granger, Cresco": the board is Granger, the elevator is at Cresco)."""
+    tp = (town_paths or {}).get(r.get("source"))
+    where = SB.town_text(r["city"])
+    if tp and town_key(tp[0]) not in town_key(where):
+        where = f"{where}, {tp[0]}"
+    return (f'<li>{esc(r["operator"])}, {esc(where)}: basis <b>{money_basis(r["basis"])}</b>, '
+            f'cash {cash_c(r["cash"])} ({esc(dtext(r))}), as of {SB.fmt_ct(r["priced"])}</li>')
 
 
 def odd_keys(towns):
@@ -2267,6 +2273,8 @@ def best_where(r, town_paths, labels=None):
     if ds:
         return ((f"{ds}, {tp[0]}" if tp else ds),
                 (f'{esc(ds)}, <a href="{tp[1]}">{esc(tp[0])}</a>' if tp else esc(ds)))
+    if tp and town_key(tp[0]) not in town_key(town):     # a branch named for another place: say where it is
+        return f"{town}, {tp[0]}", f'{esc(town)}, <a href="{tp[1]}">{esc(tp[0])}</a>'
     return town, (f'<a href="{tp[1]}">{esc(town)}</a>' if tp else esc(town))
 
 
@@ -2333,7 +2341,7 @@ def best_card(g, r, town_paths, labels=None):
             f'Call to confirm.</div></div>')
 
 
-def basis_section(st, summ, prev_gen):
+def basis_section(st, summ, prev_gen, town_paths=None):
     """The #basis block: one headline per crop, the other contracts, what was
     left out and why, strongest and weakest."""
     sname = STATE_NAMES[st]
@@ -2380,9 +2388,9 @@ def basis_section(st, summ, prev_gen):
         if g in ("corn", "soybeans"):
             lab = contract_label(head0["contract"])
             lists.append(f'<h3>Strongest {SB.CROP_LABEL[g].lower()} basis ({lab})</h3><ul class="cbt-list">'
-                         + "".join(loc_li(r) for r in head0["strong"]) + "</ul>"
+                         + "".join(loc_li(r, town_paths) for r in head0["strong"]) + "</ul>"
                          + f'<h3>Weakest {SB.CROP_LABEL[g].lower()} basis ({lab})</h3><ul class="cbt-list">'
-                         + "".join(loc_li(r) for r in head0["weak"]) + "</ul>")
+                         + "".join(loc_li(r, town_paths) for r in head0["weak"]) + "</ul>")
     if not blocks and not notes:
         return (f'<h2 id="basis">{esc(sname)} basis today</h2><div class="cbt-note"><b>No basis number today.</b> '
                 f'No elevator here had a fresh corn, soybean or wheat bid on a named futures month.</div>')
@@ -2708,7 +2716,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   elevator&rsquo;s own bid board. This is the network&rsquo;s sample, not every elevator in {esc(sname)}; the
   <a href="/cash-bids">live cash bids page</a> finds the ones nearest your ZIP.</p>
   {best_html}
-  {basis_section(st, summ, pg)}
+  {basis_section(st, summ, pg, town_paths)}
   {el_html}
   {faq_html(qs, sname)}
   <h2 id="towns">{len(live)} town{'s' if len(live) != 1 else ''} with a current bid</h2>
@@ -3261,6 +3269,12 @@ def selftest():
     assert "(Oct 2026)" in loc_li({"operator": "Mid-Iowa Cooperative", "city": "Eddy", "basis": -0.10, "cash": 4.56,
                                    "delivery": "10/01/2026", "period": "2026-10",
                                    "priced": parse_ts("2026-10-20T03:30:00Z")})
+    gr = {"operator": "Farmers Win Cooperative", "city": "Granger", "basis": -0.70, "cash": 3.97, "source": "fw-g",
+          "delivery": "Oct 2026", "period": "2026-10", "priced": parse_ts("2026-10-20T03:30:00Z")}
+    assert "Farmers Win Cooperative, Granger, Cresco: basis" in loc_li(gr, {"fw-g": ("Cresco", "/cash-bids/iowa/cresco")})
+    assert "Farmers Win Cooperative, Granger: basis" in loc_li(gr, {"fw-g": ("Granger", "/cash-bids/iowa/granger")})
+    assert best_where(gr, {"fw-g": ("Cresco", "/x")}) == ("Granger, Cresco", 'Granger, <a href="/x">Cresco</a>')
+    assert best_where(dict(gr, city="Mt Pleasant"), {"fw-g": ("Mount Pleasant", "/x")})[0] == "Mt Pleasant"
     assert dated_label_past({"periodVia": "deadline-inferred-year", "delivery": "By Oct 3", "period": "2026-10"}, snap)
     assert not dated_label_past({"periodVia": "day-range-inferred-year", "delivery": "Oct 1-9th",
                                  "period": "2026-10"}, snap)
