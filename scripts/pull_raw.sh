@@ -14,8 +14,8 @@
 # dark map that looks like a working one. Better a red run than that.
 #
 # By hand, for a local build: bash scripts/pull_raw.sh data/atlas/raw
-# (since Oct 20 the branches are in the private repo dnilgis/agsistretired; from
-# a session that has it cloned: RAW_REMOTE=/path/to/agsistretired bash scripts/pull_raw.sh data/fsa)
+# (since Oct 20 the branches are in the private repo dnilgis/feedbag; from
+# a session that has it cloned: RAW_REMOTE=/path/to/feedbag bash scripts/pull_raw.sh data/fsa)
 #
 # Where from: scripts/private_remote.sh (RAW_REMOTE wins; in Actions,
 # PRIVATE_REPO_TOKEN picks the private repo; else origin). RAW_BRANCH (default

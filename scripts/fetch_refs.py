@@ -15,7 +15,7 @@ never deploys:
 
 Anyone can then read a source with
     bash scripts/fetch_private.sh references && git show origin/references:refs/<id>.txt
-(the branch is in the private repo dnilgis/agsistretired since Oct 20, 2026)
+(the branch is in the private repo dnilgis/feedbag since Oct 20, 2026)
 
 Polite: one request at a time, a pause between them, a browser User-Agent,
 a 30 MB cap per file. A file that has not changed is not rewritten: a 304 on

@@ -24,7 +24,7 @@ name: Cron health
 # that daily-site-check.yml, on GitHub's cron rather than cron-job.org, reports.
 #
 # THE PRIVATE REPO (2026-10-20, Sig). No page reads the file, so it is saved to
-# the private repo dnilgis/agsistretired (branch private-data,
+# the private repo dnilgis/feedbag (branch private-data,
 # private/data/cron-health.json), not main. The PRIVATE_REPO_TOKEN secret also
 # feeds two rows: private-repo-key (red when the key fails; warns when it
 # expires within 14 days, from the github-authentication-token-expiration

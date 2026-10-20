@@ -17,7 +17,7 @@
  * reads it) and each probe's listing.json (the normal run reads it).
  *
  * Oct 20 (Sig): the raw and references branches moved off the public repo, to
- * the private repo dnilgis/agsistretired. Every step that saves or reads them
+ * the private repo dnilgis/feedbag. Every step that saves or reads them
  * passes the PRIVATE_REPO_TOKEN secret; scripts/private_remote.sh turns it into
  * the remote. A save that fails in a job that publishes site data is a warning
  * (RAW_SOFT=1), never the reason the data did not ship; a missing build input

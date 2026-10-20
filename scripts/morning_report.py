@@ -408,7 +408,7 @@ def sec_agsist(src, now, rep):
         elif pk.get("expires") and pk.get("days_left") is not None and pk["days_left"] < PRIVATE_KEY_WARN_DAYS:
             msg = "Private repo key expires %s" % pk["expires"].strftime("%b %-d, %Y")
             lines.append("%s." % msg)
-            rep.red("%s. Make a new one (Contents read and write on dnilgis/agsistretired) and save it as PRIVATE_REPO_TOKEN." % msg)
+            rep.red("%s. Make a new one (Contents read and write on dnilgis/feedbag) and save it as PRIVATE_REPO_TOKEN." % msg)
         else:
             lines.append("Private repo key works%s." % (", expires %s" % pk["expires"].strftime("%b %-d, %Y") if pk.get("expires") else ""))
     except Exception as e:                                 # noqa: BLE001

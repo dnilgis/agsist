@@ -1,7 +1,7 @@
 /**
  * Off the public repo (Sig, Oct 20 2026). The raw and references branches, the
  * session skills and four job files no page reads moved to the private repo
- * dnilgis/agsistretired. The site keeps running exactly as before: pages read
+ * dnilgis/feedbag. The site keeps running exactly as before: pages read
  * only public files on main, which stay.
  *
  * - scripts/private_remote.sh picks the remote: RAW_REMOTE, else the private
@@ -32,7 +32,7 @@ const git = (args, cwd = root) => execFileSync('git', args, { cwd, encoding: 'ut
 const WF = path.join(root, '.github/workflows');
 const workflows = fs.readdirSync(WF).filter((f) => f.endsWith('.yml'));
 const TOKEN_ENV = 'PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}';
-const CALLS = /scripts\/(push_raw|pull_raw|fetch_private|private_remote)\.sh|agsistretired/;
+const CALLS = /scripts\/(push_raw|pull_raw|fetch_private|private_remote)\.sh|feedbag/;
 
 // Steps of one workflow (every workflow here puts steps at six spaces).
 function steps(file) {
@@ -57,8 +57,8 @@ test('private_remote.sh: RAW_REMOTE wins, then the private repo with the token, 
   const withTok = show({ PRIVATE_REPO_TOKEN: tok });
   const [line, hidden] = withTok.stdout.trim().split('\n');
   const [remote, where, key, val] = line.split('|');
-  assert.equal(remote, `https://x-access-token:${tok}@github.com/dnilgis/agsistretired.git`);
-  assert.equal(where, 'the private repo (dnilgis/agsistretired)');
+  assert.equal(remote, `https://x-access-token:${tok}@github.com/dnilgis/feedbag.git`);
+  assert.equal(where, 'the private repo (dnilgis/feedbag)');
   assert.ok(!where.includes(tok));
   assert.equal(key, 'http.https://github.com/.extraheader', "checkout's own token header is cleared for these calls");
   assert.equal(val, '');
@@ -166,7 +166,7 @@ test('no workflow reads or writes raw, references or private-data on the public 
     assert.doesNotMatch(code, /git (fetch|push)[^\n]*\borigin\b[^\n]*\b(raw|references|private-data)\b/, `${f} still uses origin`);
     assert.doesNotMatch(code, /GITHUB_REPOSITORY\/contents[^\n]*ref=(raw|references)/, `${f} reads a private branch through the public API`);
   }
-  assert.match(read('.github/workflows/fetch_bids.yml'), /GH_TOKEN="\$PRIVATE_REPO_TOKEN" gh api -X GET "repos\/dnilgis\/agsistretired\/contents\/\$f\?ref=raw"/);
+  assert.match(read('.github/workflows/fetch_bids.yml'), /GH_TOKEN="\$PRIVATE_REPO_TOKEN" gh api -X GET "repos\/dnilgis\/feedbag\/contents\/\$f\?ref=raw"/);
   const refs = read('.github/workflows/refs.yml');
   assert.match(refs, /scripts\/private_remote\.sh\n/, 'refs.yml checks the helper out (sparse)');
   assert.match(refs, /git push -q "\$REMOTE" HEAD:references/);
