@@ -119,6 +119,10 @@ test("homepage: live prices draw the same price markup over the seed; a failed p
     for (const mode of ["live", "dead"]) {
       const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 844 } });
       const pg = await ctx.newPage();
+      // The page's clock is the fixture's: the page greys a close older than the
+      // last weekday ("Last close · Oct 19", no stamp), so on Oct 20 the real
+      // clock turned this fixture old and the live wait below never matched.
+      await pg.clock.install({ time: new Date(Date.parse(JSON.parse(fx).fetched) + 5 * 60e3) });
       await pg.route("**/*", (r) => {
         const u = r.request().url();
         if (u.includes("/data/prices.json")) return mode === "dead" ? r.abort() : r.fulfill({ contentType: "application/json", body: fx });
