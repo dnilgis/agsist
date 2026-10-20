@@ -22,7 +22,7 @@ test('live prices hide the whole baked table, not just the nearby row', () => {
   assert.match(block, /querySelector\('\.seed-tbl-wrap'\);if\(__st\)__st\.style\.display='none'/);
   assert.doesNotMatch(block, /\/\^Nearby\//, 'no row-by-row filter that leaves deferred and KC rows behind');
   for (const p of ['corn', 'soybean', 'wheat']) {
-    assert.match(read(`${p}-futures-prices.html`), /futures\.js\?v=23/, `${p} page loads the new futures.js`);
+    assert.match(read(`${p}-futures-prices.html`), /futures\.js\?v=24/, `${p} page loads the new futures.js`);
   }
 });
 
@@ -59,11 +59,16 @@ test('bake_seo selftest passes (finished sessions only in titles)', () => {
   assert.match(out, /a morning run titles beans with the Oct 13 close/);
 });
 
-test('the freshness workflow retries a rejected push and has an evening run', () => {
+test('the freshness workflow retries a rejected push and has a run after the settle lands', () => {
   const y = read('.github/workflows/freshness.yml');
   assert.match(y, /for i in 1 2 3 4; do/);
-  assert.match(y, /cron: '35 23 \* \* 1-5'/);
-  assert.match(y, /--cron "35 23 \* \* 1-5"/);
+  // Sig, Oct 20: the settle reaches the price file about 04:15 UTC; 23:35 was before it
+  assert.match(y, /cron: '50 4 \* \* 2-6'/);
+  assert.match(y, /--cron "50 4 \* \* 2-6"/);
+  assert.doesNotMatch(y, /35 23 \* \* 1-5/);
+  for (const c of ['35 13 * * 1-5', '35 20 * * 1-5']) {
+    assert.ok(y.includes(`cron: '${c}'`) && y.includes(`--cron "${c}"`), c);
+  }
 });
 
 test('the RP card names the harvest price so far and writes a dollar-plus gap in dollars', () => {
