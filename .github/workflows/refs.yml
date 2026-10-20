@@ -11,7 +11,8 @@ name: refs
 #   refs/<id>.txt        readable text (pdftotext -layout, or page text)
 #   index.json           status, bytes, sha256, fetched_utc, pages per source
 # Read one anywhere:
-#   git fetch origin references && git show origin/references:refs/<id>.txt
+#   bash scripts/fetch_private.sh references && git show origin/references:refs/<id>.txt
+# (the branch is in the private repo dnilgis/agsistretired since Oct 20, 2026)
 #
 # A source that fails is listed (index.json, the run summary, a warning) and
 # keeps its last good copy; the run does not fail over it.
@@ -58,6 +59,7 @@ jobs:
         with:
           sparse-checkout: |
             scripts/fetch_refs.py
+            scripts/private_remote.sh
             references/sources.json
           sparse-checkout-cone-mode: false
 
@@ -110,10 +112,14 @@ jobs:
       # (--no-checkout alone would leave an empty index and the commit would
       # delete README.md; the reset fills it.)
       - name: Check out the references branch
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           git config --global user.name "agsist-bot"
           git config --global user.email "bot@agsist.com"
-          git fetch -q --depth 1 origin references || { echo "::error::the references branch is missing; push it first"; exit 1; }
+          # The branch is in the private repo since Oct 20 (scripts/private_remote.sh).
+          . scripts/private_remote.sh
+          git fetch -q --depth 1 "$REMOTE" references || { echo "::error::the references branch is missing on $WHERE, or the key cannot read it"; exit 1; }
           git worktree add -q --no-checkout -B references "$REFS" FETCH_HEAD
           git -C "$REFS" sparse-checkout disable
           git -C "$REFS" reset -q --hard
@@ -129,10 +135,13 @@ jobs:
       # because the job log is not always readable from where we look.
       - name: Commit to references
         if: ${{ !cancelled() }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           set -u
+          . scripts/private_remote.sh
           g() { local out; if out=$(git "$@" 2>&1); then return 0; fi
-                echo "::warning::git $1 failed: $(printf '%s' "$out" | tail -5 | tr '\n' ' ')"; return 1; }
+                echo "::warning::git $1 failed: $(printf '%s' "$out" | tail -5 | tr '\n' ' ' | hide)"; return 1; }
           cd "$REFS"
           [ -f index.json ] || { echo "::warning::no index.json: the fetch wrote nothing"; exit 1; }
           mkdir -p refs
@@ -141,14 +150,15 @@ jobs:
           rm -rf /tmp/refsout && mkdir -p /tmp/refsout
           cp -r refs index.json /tmp/refsout/
           for i in 1 2 3 4 5; do
-            g fetch -q --depth 1 origin references || { sleep $((10 * i)); continue; }
+            g fetch -q --depth 1 "$REMOTE" references || { sleep $((10 * i)); continue; }
             g reset -q --hard FETCH_HEAD || exit 1
             rm -rf refs index.json && cp -r /tmp/refsout/refs /tmp/refsout/index.json .
             test -f README.md || { echo "::warning::README.md missing after reset; not committing"; exit 1; }
             g add -A || exit 1
             if git diff --cached --quiet; then echo "no change"; exit 0; fi
             g commit -q -m "refs $(date -u +%Y-%m-%dT%H:%M:%SZ)${IN_IDS:+: $IN_IDS}" || exit 1
-            if out=$(git push -q origin HEAD:references 2>&1); then echo "pushed $(git rev-parse --short HEAD)"; exit 0; fi
+            if out=$(git push -q "$REMOTE" HEAD:references 2>&1); then echo "pushed $(git rev-parse --short HEAD) to references on $WHERE"; exit 0; fi
+            out=$(printf '%s\n' "$out" | hide)
             # the whole answer, not a tail: on Oct 17 the tail hid which file push protection named
             echo "::group::git push output (try $i)"; printf '%s\n' "$out"; echo "::endgroup::"
             echo "::warning::git push failed: $(printf '%s' "$out" | grep -iE 'GH0|rule|secret|refs/[a-z0-9-]+\.' | head -8 | tr '\n' ' ')"

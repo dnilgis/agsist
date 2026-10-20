@@ -18,7 +18,7 @@ skim over coffee. Run by .github/workflows/morning-report.yml.
                      critical job, a stale feed, a stuck Pages deploy, the
                      site size warning, a request waiting on him.
   Site health        agsist: failed runs in the last 24 h (GitHub API,
-                     collapsed by workflow), data/cron-health.json, the last
+                     collapsed by workflow), private/data/cron-health.json (private repo), the last
                      Pages deploy, the published size, prices / bids /
                      briefing freshness. bids (dnilgis/bids): failed runs and
                      its reader summary (data/index.json on its Pages site).
@@ -99,6 +99,7 @@ STATE_NAMES = {"IA": "Iowa", "IL": "Illinois", "IN": "Indiana", "KS": "Kansas", 
                "MT": "Montana", "AR": "Arkansas", "GA": "Georgia", "AL": "Alabama", "MS": "Mississippi",
                "LA": "Louisiana", "PA": "Pennsylvania", "NY": "New York", "ID": "Idaho", "WA": "Washington",
                "OR": "Oregon", "WY": "Wyoming", "ON": "Ontario", "MB": "Manitoba", "SK": "Saskatchewan", "AB": "Alberta"}
+PRIVATE_KEY_WARN_DAYS = 14     # same as cron_health.KEY_WARN_DAYS: say it two weeks out
 TODO_EDIT = "https://github.com/dnilgis/agsist/edit/main/TODO-SIG.md"
 # The two clocks the workflow lists: 11:40 UTC is 6:40 am CDT, 12:40 UTC is 6:40 am CST.
 CRONS = ("40 11 * * *", "40 12 * * *")
@@ -201,7 +202,8 @@ class Sources:
     """Every outside read goes through here, so the selftest can hand in fixtures."""
 
     def __init__(self, gh_token="", bids_token="", list_url="", list_token="", stripe_key="", root=ROOT,
-                 ga4_prop="", ga4_cred="", dry=False):
+                 ga4_prop="", ga4_cred="", dry=False, private_token=""):
+        self.private_token = (private_token or "").strip()
         self.ga4_prop, self.ga4_cred, self.dry = (ga4_prop or "").strip(), (ga4_cred or "").strip(), dry
         self.gh_token, self.bids_token = gh_token, bids_token
         u = urllib.parse.urlsplit((list_url or "").strip())
@@ -238,6 +240,11 @@ class Sources:
     def file(self, rel):
         with open(os.path.join(self.root, rel), encoding="utf-8") as f:
             return f.read()
+
+    def private_key(self, now):
+        """Does PRIVATE_REPO_TOKEN still work, and when does it expire (cron_health.private_key_check)."""
+        import cron_health
+        return cron_health.private_key_check(now, self.private_token)
 
     def rain_print_funnel(self, towns, now):
         """The Rain Print funnel straight from GA4, in this job only: it is
@@ -354,9 +361,10 @@ def sec_agsist(src, now, rep):
             lines.append("No failed runs in the last 24 hours.")
     except Exception as e:                                 # noqa: BLE001
         lines.append("Failed runs: could not be read (%s)." % why(e))
-    # data/cron-health.json: late jobs and the published size.
+    # cron-health.json: late jobs and the published size. In the private repo
+    # since Oct 20 (branch private-data); the workflow unpacks it here.
     try:
-        ch = json.loads(src.file("data/cron-health.json"))
+        ch = json.loads(src.file("private/data/cron-health.json"))
         gen = parse_time(ch.get("generated_at"))
         crit = [str(x) for x in ch.get("late_critical") or []]
         late = [str(x) for x in ch.get("late") or [] if str(x) not in crit]
@@ -376,6 +384,24 @@ def sec_agsist(src, now, rep):
             lines.append("Published size: not in the job health file.")
     except Exception as e:                                 # noqa: BLE001
         lines.append("Job health file: could not be read (%s)." % why(e))
+    # The key the jobs use for the private repo (raw files, references, job
+    # health). Checked here directly, so a dead key is said even when the job
+    # health file could not be fetched because of it.
+    try:
+        pk = src.private_key(now)
+        if pk.get("ok") is None:
+            lines.append("Private repo key: not given to this job.")
+        elif not pk["ok"]:
+            lines.append("%s." % pk["why"])
+            rep.red("%s: saves to the private repo (raw files, job health) are not landing." % pk["why"])
+        elif pk.get("expires") and pk.get("days_left") is not None and pk["days_left"] < PRIVATE_KEY_WARN_DAYS:
+            msg = "Private repo key expires %s" % pk["expires"].strftime("%b %-d, %Y")
+            lines.append("%s." % msg)
+            rep.red("%s. Make a new one (Contents read and write on dnilgis/agsistretired) and save it as PRIVATE_REPO_TOKEN." % msg)
+        else:
+            lines.append("Private repo key works%s." % (", expires %s" % pk["expires"].strftime("%b %-d, %Y") if pk.get("expires") else ""))
+    except Exception as e:                                 # noqa: BLE001
+        lines.append("Private repo key: could not be checked (%s)." % why(e))
     # The last GitHub Pages deploy.
     try:
         b = src.gh("/repos/%s/pages/builds/latest" % REPO)
@@ -1153,7 +1179,8 @@ def main():
     dry = env("DRY_RUN") == "1"
     src = Sources(gh_token=env("GITHUB_TOKEN", ""), bids_token=env("BIDS_READ_TOKEN", ""), list_url=env("LIST_URL", ""),
                   list_token=env("LIST_TOKEN", ""), stripe_key=env("STRIPE_READ_KEY", ""),
-                  ga4_prop=env("GA4_PROPERTY_ID", ""), ga4_cred=env("GA4_SERVICE_ACCOUNT", ""), dry=dry)
+                  ga4_prop=env("GA4_PROPERTY_ID", ""), ga4_cred=env("GA4_SERVICE_ACCOUNT", ""), dry=dry,
+                  private_token=env("PRIVATE_REPO_TOKEN", ""))
     to = env("REPORT_TO") or env("FORMS_TO") or env("SPONSOR_TO") or "sig@farmers1st.com"
     fn, fa = env("FROM_NAME", "AGSIST"), env("FROM_ADDR") or env("SMTP_USER") or ""
     snap_path = env("SNAPSHOT", os.path.join(ROOT, ".morning-report", "counts.json"))
@@ -1193,6 +1220,7 @@ class Fake(Sources):
         self.asked = []
         self.funnel = None
         self.promo = None
+        self.pk = None
 
     def _pick(self, table, key, kind):
         self.asked.append((kind, key))
@@ -1244,6 +1272,14 @@ class Fake(Sources):
             raise FileNotFoundError(rel)
         return self.fd[rel]
 
+    def private_key(self, now):
+        self.asked.append(("private", "key"))
+        if "private" in self.broken:
+            raise urllib.error.URLError("down")
+        if self.pk is not None:
+            return self.pk
+        return {"ok": True, "why": "works", "expires": now + timedelta(days=200), "days_left": 200, "raw_at": now}
+
 
 def fixtures(now):
     ms = int(now.timestamp() * 1000)
@@ -1271,7 +1307,7 @@ def fixtures(now):
         "/repos/dnilgis/bids/actions/runs?status=failure": {"workflow_runs": []},
     }
     files = {
-        "data/cron-health.json": json.dumps({"generated_at": iso(h(1)), "late": ["prf.yml", "county-rain.yml"], "late_critical": [],
+        "private/data/cron-health.json": json.dumps({"generated_at": iso(h(1)), "late": ["prf.yml", "county-rain.yml"], "late_critical": [],
                                              "workflows": [{"workflow": "published-size", "status": "ok", "total_mb": 736.2,
                                                             "warn_mb": 850, "fail_mb": 900}]}),
         "data/prices.json": json.dumps({"fetched": iso(h(0.2))}),
@@ -1445,7 +1481,7 @@ def selftest():
 
     print("\nred lines")
     f4 = dict(files)
-    f4["data/cron-health.json"] = json.dumps({"generated_at": "2026-10-13T20:00:00Z", "late": ["daily.yml"], "late_critical": ["daily.yml"],
+    f4["private/data/cron-health.json"] = json.dumps({"generated_at": "2026-10-13T20:00:00Z", "late": ["daily.yml"], "late_critical": ["daily.yml"],
                                               "workflows": [{"workflow": "published-size", "status": "warn", "total_mb": 870.4,
                                                              "warn_mb": 850, "fail_mb": 900}]})
     f4["data/prices.json"] = json.dumps({"fetched": "2026-10-14T05:00:00Z"})
@@ -1459,6 +1495,38 @@ def selftest():
             "GitHub Pages deploy stuck: building since 5:00 am.", "Prices are stale: last update 7 h ago",
             "Cash bids are stale: last update 4 h ago.", "Today's daily briefing is not out yet (last one Oct 13, 5:47 am)."]
     ck("late critical, size, stuck deploy, stale feeds, missing briefing", all(any(w in x for x in rep.needs) for w in want), rep.needs)
+
+    print("\nprivate repo key")
+    fk = Fake(gh, worker, urls, files)
+    rp = Report()
+    sec_agsist(fk, now, rp)
+    body = "\n".join(rp.sections[0][1])
+    ck("a working key is one line, nothing red", "Private repo key works, expires May 2, 2027." in body
+       and not any("Private repo" in x for x in rp.needs), body)
+    ck("the job health file is read from the private copy", ("file", "private/data/cron-health.json") in fk.asked, fk.asked)
+    fk = Fake(gh, worker, urls, files)
+    fk.pk = {"ok": True, "why": "works", "expires": datetime(2026, 10, 27, 12, tzinfo=UTC), "days_left": 12.9}
+    rp = Report()
+    sec_agsist(fk, now, rp)
+    ck("under 14 days: 'Private repo key expires <date>', red", any(x.startswith("Private repo key expires Oct 27, 2026.") for x in rp.needs)
+       and "Private repo key expires Oct 27, 2026." in rp.sections[0][1], rp.needs)
+    fk = Fake(gh, worker, urls, files)
+    fk.pk = {"ok": True, "why": "works", "expires": datetime(2026, 11, 3, 12, tzinfo=UTC), "days_left": 20.0}
+    rp = Report()
+    sec_agsist(fk, now, rp)
+    ck("20 days left is not red yet", not any("Private repo" in x for x in rp.needs), rp.needs)
+    fk = Fake(gh, worker, urls, files)
+    fk.pk = {"ok": False, "why": "Private repo key failing: HTTP 401 (expired or revoked)", "expires": None, "days_left": None}
+    rp = Report()
+    sec_agsist(fk, now, rp)
+    ck("a failing key: 'Private repo key failing', red", any(x.startswith("Private repo key failing: HTTP 401") for x in rp.needs), rp.needs)
+    rp = Report()
+    sec_agsist(Fake(gh, worker, urls, files, broken=("private",)), now, rp)
+    ck("a check that cannot run is one line, the section still builds",
+       any(x.startswith("Private repo key: could not be checked") for x in rp.sections[0][1]), rp.sections[0][1])
+    import cron_health as CH
+    ck("no token in the job: 'not given', never red",
+       CH.private_key_check(now, "")["ok"] is None and PRIVATE_KEY_WARN_DAYS == CH.KEY_WARN_DAYS)
     ck("late critical is not repeated as not critical", "Late, not critical: none." in rep.sections[0][1], rep.sections[0][1])
     ck("an old health file is said", any("The job health file is 16 h old" in x for x in rep.sections[0][1]), rep.sections[0][1])
     g5 = dict(gh)

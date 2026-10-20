@@ -359,16 +359,18 @@ for (const f of findings) {
 console.log("\n  high " + (counts.high || 0) + "   med " + (counts.med || 0) +
   "   expected " + (counts.expected || 0) + "\n");
 
-/* Committed so the trend exists. A single audit says what is broken today; a
-   file in git says whether the site is getting better. */
+/* Kept so the trend exists. A single audit says what is broken today; a
+   file in git says whether the site is getting better. No page reads it, so
+   since Oct 20 audit.yml saves it to the private repo (branch private-data,
+   scripts/push_raw.sh), never to main. */
 try {
-  mkdirSync(ROOT + "data", { recursive: true });
-  writeFileSync(ROOT + "data/audit.json", JSON.stringify({
+  mkdirSync(ROOT + "private/data", { recursive: true });
+  writeFileSync(ROOT + "private/data/audit.json", JSON.stringify({
     schema: "agsist-render-audit/1", base: BASE,
     ran: new Date().toISOString(), pages: PAGES.length, seconds: secs,
     high: counts.high || 0, med: counts.med || 0, findings,
   }, null, 1) + "\n");
-} catch (e) { console.log("  (could not write data/audit.json: " + e.message + ")"); }
+} catch (e) { console.log("  (could not write private/data/audit.json: " + e.message + ")"); }
 
 if (process.env.GITHUB_STEP_SUMMARY) {
   const rows = findings.slice(0, 60).map((f) =>

@@ -55,6 +55,8 @@ jobs:
           grep -v -E '\tdata/fsa/[^\t.]+\t' data/fsa/manifest.tsv > /tmp/m && mv /tmp/m data/fsa/manifest.tsv || true
           cat data/fsa/manifest.tsv
       - name: Commit
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           git config user.name "agsist-bot"; git config user.email "bot@agsist.com"
           # the files go to the raw branch (never deployed); main keeps only the
