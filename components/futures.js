@@ -1960,6 +1960,8 @@ function heroOvernight(q){
   var hc=document.getElementById('hero-chg');if(!hc)return;
   var el=document.getElementById('hero-ovn'),h=window.AgPxStamp&&AgPxStamp.overnightHtml?AgPxStamp.overnightHtml(q,grain$,function(n){return AG.px.move(n,{sign:true});}):'';
   if(!el){if(!h)return;el=document.createElement('div');el.id='hero-ovn';el.className='ph-ovn';hc.parentNode.insertBefore(el,hc.nextSibling);}
+  /* a box reserved for the night (the page's inline script) stays, empty, rather than shift the page */
+  if(!h&&/ph-ovn-wait/.test(el.className)){el.innerHTML='';return;}
   el.innerHTML=h;el.hidden=!h;
 }
 function loadPrices(){
