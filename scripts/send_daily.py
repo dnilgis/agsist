@@ -229,27 +229,75 @@ def load_local_lines(subs, how, bids_data=None):
 
 
 # WAVE2-G: "Your elevators" -- address -> lines, filled once by main() from
-# the elevator-watch list and the posted boards (send_elevator_watch.py). A
+# the elevator-watch list and the posted boards (send_elevator_watch.py).
+# 2026-10-20: address -> block (scripts/daily_elevators.py): the reader's
+# saved and watched elevators and at most two near-you lines. A
 # module-level map, so the send loop below (which test_send_loops.py lifts by
 # its own text) is not touched. Any failure leaves it empty: the briefing
 # goes out exactly as before, without the block.
 ELEVATOR_LINES = {}
 
 
-def load_elevator_lines():
+def elevator_add_url(email):
+    """The reader's signed link to put their saved elevators in this email
+    (subs worker v5.42 /daily-elev): t = HMAC of the address + "|de", the way
+    the unsubscribe link is signed. None without LIST_URL and UNSUB_SECRET."""
+    base, secret = (os.environ.get("LIST_URL") or "").strip(), (os.environ.get("UNSUB_SECRET") or "").strip()
+    if not (base and secret):
+        return None
+    e = str(email).strip().lower()
+    t = hmac.new(secret.encode(), (e + "|de").encode(), hashlib.sha256).hexdigest()[:16]
+    return base.rstrip("/") + "/daily-elev?e=" + urllib.parse.quote(e) + "&t=" + t
+
+
+def load_elevator_lines(subs=None, how="plain", bids_data=None):
+    """Address -> the reader's elevator block (scripts/daily_elevators.py):
+    their saved and watched elevators, and at most two near-you lines. With
+    an older list (addresses only) the v5.x watch lines, as before. Anything
+    failing leaves the block out; the briefing still goes. Counts only."""
     base, token = (os.environ.get("LIST_URL") or "").strip(), (os.environ.get("LIST_TOKEN") or "").strip()
-    if not (base and token):
-        return {}
-    try:
-        import send_elevator_watch as sew
-        watchers = sew.worker(base.rstrip("/"), "elevator-watch-list", token)
-        now_ms = time.time() * 1000
-        lines = sew.daily_lines(watchers, sew.load_net_index(sew.fetch_net_index(), now_ms), sew.load_basis_index())
-        print("your-elevators block for " + str(len(lines)) + " address(es)")
-        return lines
-    except Exception as ex:
-        print("your-elevators block skipped (" + type(ex).__name__ + ")")
-        return {}
+    watchers, sew = [], None
+    if base and token:
+        try:
+            import send_elevator_watch as sew
+            watchers = sew.worker(base.rstrip("/"), "elevator-watch-list", token)
+        except Exception as ex:
+            print("elevator watches not read (" + type(ex).__name__ + "); saved elevators only")
+            watchers = []
+    out = {}
+    if how == "json" and subs:
+        try:
+            import daily_elevators as de
+            import local_bid
+            if sew is None:
+                import send_elevator_watch as sew
+            boards = de.Boards(bids_data or local_bid.BidsData())
+            out, c = de.blocks(boards, subs, watchers, sew.load_basis_index())
+            print("your-elevators block: %d reader(s) with their own elevators, %d with a near-you line, "
+                  "%d with both, %d with a ZIP and no near-you line (rules: basis move %d c, pays %d c more, "
+                  "%d mi)" % (c["with_own"], c["with_near"], c["with_both"], c["with_zip_no_near"],
+                              de.BASIS_MOVE_C, de.PAYS_MORE_C, de.RADIUS_MI))
+        except Exception as ex:
+            print("your-elevators block skipped (" + type(ex).__name__ + ")")
+            out = {}
+    elif watchers and sew is not None:
+        try:
+            now_ms = time.time() * 1000
+            out = sew.daily_lines(watchers, sew.load_net_index(sew.fetch_net_index(), now_ms), sew.load_basis_index())
+            print("your-elevators block for " + str(len(out)) + " address(es)")
+        except Exception as ex:
+            print("your-elevators block skipped (" + type(ex).__name__ + ")")
+            out = {}
+    # Every reader on the list gets the signed footer link to add saved elevators.
+    if subs and elevator_add_url("reader@example.com"):
+        for r in subs:
+            em = str(r["email"]).strip().lower()
+            b = out.get(em)
+            if isinstance(b, dict):
+                b["add_url"] = elevator_add_url(em)
+            elif not b:
+                out[em] = {"mine": [], "near": [], "add_url": elevator_add_url(em)}
+    return out
 
 
 # Address -> {"zip", "town"} for the reader's own Rain Print line
@@ -355,7 +403,7 @@ def main():
         print("FATAL: RECIPIENTS parsed to zero addresses")
         return 1
     print("briefing " + day + " · recipients " + str(len(recipients)) + " · dry_run " + str(dry))
-    ELEVATOR_LINES.update(load_elevator_lines())
+    ELEVATOR_LINES.update(load_elevator_lines(subs, how))
     try:
         _ll, _counts = load_local_lines(subs, how)
     except Exception as ex:

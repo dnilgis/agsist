@@ -4,7 +4,8 @@ subscribers.py -- the AGSIST Daily list, as records, from the subs worker.
 
     fetch(base, token)  ->  (records, how)
 
-records: [{"email", "zip", "src", "ts", "reports"}], one per address, in the
+records: [{"email", "zip", "src", "ts", "reports"}] (and "el", the saved
+elevator ids, on a record that has them: worker v5.42), one per address, in the
 order the worker listed them. how: "json" (worker v5.4+, zips and the
 report-day opt-in are known) or "plain" (an older worker: addresses only,
 every zip None and every reports True -- the v5.4 default).
@@ -23,6 +24,7 @@ import urllib.request
 
 UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"}
 ZIP_RE = re.compile(r"^\d{5}$")
+EL_RE = re.compile(r"^[0-9a-f]{8}$")
 
 
 def parse_plain(raw):
@@ -45,9 +47,15 @@ def parse_json(arr):
             continue
         seen.add(e.lower())
         z = str(r.get("zip") or "").strip()
-        out.append({"email": e, "zip": z if ZIP_RE.match(z) else None,
-                    "src": str(r.get("src") or ""), "ts": r.get("ts"),
-                    "reports": r.get("reports") is not False})
+        rec = {"email": e, "zip": z if ZIP_RE.match(z) else None,
+               "src": str(r.get("src") or ""), "ts": r.get("ts"),
+               "reports": r.get("reports") is not False}
+        # worker v5.42: the elevators the reader put in the Daily (8-hex ids), only when there are some
+        el = r.get("el") if isinstance(r.get("el"), list) else []
+        el = [str(x).lower() for x in el if isinstance(x, str) and EL_RE.match(x.lower())]
+        if el:
+            rec["el"] = el[:6]
+        out.append(rec)
     return out
 
 
