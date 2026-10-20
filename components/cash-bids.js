@@ -2809,6 +2809,8 @@ if(window.AGSIST_STATE&&window.AGSIST_STATE.lat&&window.AGSIST_STATE.zip){
   } else {
     try{
       var saved=localStorage.getItem('agsist_zip');
+      /* a place saved by geo.js before it wrote agsist_zip (Oct 20, 2026) */
+      if(!(saved&&/^\d{5}$/.test(saved))){try{saved=String((JSON.parse(localStorage.getItem('agsist-wx-loc')||'null')||{}).zip||'');}catch(x){saved='';}}
       if(saved&&/^\d{5}$/.test(saved)&&!zipInput.value.trim()){
         zipInput.value=saved;
         setTimeout(function(){ doSearch(saved); }, 300); // v2 panel: auto-run for returning farmers
