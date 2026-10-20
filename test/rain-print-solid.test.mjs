@@ -272,7 +272,7 @@ test("P4: on Jan 4, a station behind on December still draws last year, as a pre
     await Promise.all([page.waitForURL(/buy\.stripe\.com/), page.click("#rp-proof-order")]);
     await page.goto(base + "/rain-print.html?paid=digital&s=cs_test_settle0001");
     await page.waitForFunction(() => !document.getElementById("rp-paid").hidden);
-    assert.match(await page.textContent("#rp-paid"), /NOAA doesn’t have all of 2026 in yet\. I make it once the full year is in, and email you the proof then\. Approve it there, or ask for a change\. The full file follows within 1 business day of your OK/);
+    assert.match(await page.textContent("#rp-paid"), /NOAA doesn’t have all of 2026 in yet\. I make it once the full year is in, and email you the proof then\. Approve it there, or ask for a change\. Your files come by email within minutes of your OK/);
     assert.deepEqual(errors, []);
   }, { time: "2027-01-04T18:00:00Z", upto: "2026-12-28", stnEnd });
 });

@@ -57,7 +57,7 @@ test("one name for the $19 product, curly apostrophes in FAQ titles, no 'made-up
   const G = readFileSync(ROOT + "gifts-for-farmers.html", "utf8"), P = readFileSync(ROOT + "components/rain-print-promo.js", "utf8"), C = readFileSync(ROOT + "rp-gift.html", "utf8");
   assert.match(G, /<li>Digital file <b>\$<span data-gf-price="digital">/);
   for (const [n, t] of [["rain-print", HTML], ["gifts", G], ["gift card", C]]) assert.ok(!/print files?\b[^.]{0,40}\$19|Print file <b>|print file of the whole year|A print file is/.test(t), n + ": the $19 product is the Digital file");
-  assert.match(HTML, /<li>A PNG and a PDF of the picture alone, 12 x 18 in at 300 dpi, no watermark; it fits a 12 x 18 frame<\/li>/, "the file says its types (2026-10-15)");
+  assert.match(HTML, /<li>A PDF, a PNG and a JPG of the picture alone, 12 x 18 in at 300 dpi, no watermark; it fits a 12 x 18 frame<\/li><li>A one-page guide to reading it, and tips for printing it<\/li>/, "the file says its types (2026-10-15; the JPG and the guide 2026-10-20)");
   const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   const faq = ld["@graph"].find((g) => g["@type"] === "FAQPage").mainEntity.map((q) => q.name);
   const shown = [...HTML.matchAll(/<details><summary>([^<]*)<\/summary>/g)].map((m) => m[1].replace(/&rsquo;/g, "\u2019").replace(/&ldquo;/g, "\u201c").replace(/&rdquo;/g, "\u201d"));
@@ -498,7 +498,7 @@ test("one promise for the digital file and the gift card: within 1 business day"
   assert.ok(!/emailed once you OK it|within a day with/.test(S2));
   assert.match(S2, /'A proof by email in January, once the full year is in, the full file once you approve it'/);
   assert.match(visible, /Every order gets a proof by email\.(<\/b>)? Within 1 business day of paying/);
-  assert.match(visible, /Nothing prints until you approve it, and the full digital file comes within 1 business day of your OK\./);
+  assert.match(visible, /Nothing prints until you approve it\. A digital file comes by email within minutes of your OK: a PDF, a PNG and a JPG, with a one-page guide to reading it\./, "the files go out on approval (2026-10-20)");
   assert.match(visible, /if you want anything changed, write to me and I&rsquo;ll fix it or redo it by hand and send it again, no charge\./);
   assert.match(S2, /'The finished file comes by email within 1 business day of paying\. There\\u2019s no proof step for the file\.'/);
   assert.match(J.gift_delivery, /Every order gets a proof by email first\./);
@@ -610,7 +610,7 @@ test("one name per thing, one sun note, the file's types, and the file's return 
   assert.deepEqual(box, ["Framed", "Print", "Digital file"]);
   assert.match(HTML, /<summary>What you get<\/summary>/);
   assert.equal((HTML.match(/direct sun/g) || []).length, 1, "the sun note once");
-  assert.match(HTML, /id="rp-sub-digital">A PNG and a PDF by email within 1 business day of your OK on the proof\.</);
+  assert.match(HTML, /id="rp-sub-digital">A PDF, a PNG and a JPG by email within minutes of your OK on the proof\.</);
   assert.match(HTML, /<li><b>Every order gets a proof by email\.<\/b>/);
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   assert.match(S, /var PICK_WORD = \{ framed12x18: 'Framed', print12x18: 'Print', digital: 'Digital file' \};/);
