@@ -56,12 +56,12 @@
   "IN":{
    "rows":2051,
    "facilities":120,
-   "kb":89.1
+   "kb":89.0
   },
   "KS":{
-   "rows":7778,
+   "rows":7789,
    "facilities":438,
-   "kb":337.5
+   "kb":338.0
   },
   "KY":{
    "rows":100,
