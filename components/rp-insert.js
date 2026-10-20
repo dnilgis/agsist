@@ -268,7 +268,8 @@
   /* The page never runs long: a full page (a long gift note, five marked days)
      draws the small print smaller until everything fits above the foot. */
   function render(o) {
-    var fits = [[400, 0], [360, 0], [340, 1], [320, 2], [320, 3], [280, 3], [280, 4], [240, 4]], svg = '';
+    // tight 5, the last two: only a guide with every extra keyed (six more key lines) and a full note gets there; the key one size smaller again
+    var fits = [[400, 0], [360, 0], [340, 1], [320, 2], [320, 3], [280, 3], [280, 4], [240, 4], [240, 5], [200, 5]], svg = '';
     for (var k = 0; k < fits.length; k++) {
       svg = draw(Object.assign({}, o, { miniW: fits[k][0], tight: fits[k][1] }));
       if (!render.overflow) break;
@@ -313,7 +314,7 @@
       var inner = String(o.mini).replace(/^<svg\b/, '<svg x="' + M + '" y="' + n2(miniTop) + '" width="' + miniW + '" height="' + n2(miniH) + '"').replace(/<style>[\s\S]*?<\/style>/, '');
       out.push('<rect x="' + (M - 0.5) + '" y="' + n2(miniTop - 0.5) + '" width="' + (miniW + 1) + '" height="' + n2(miniH + 1) + '" fill="none" stroke="' + RULE + '" stroke-width="1"/>' + inner);
     }
-    var kx = M + miniW + 26, kw = W0 - M - kx - 50, kst = { size: o.tight > 3 ? 12.5 : 13.5, fill: INK }, ky = miniTop + 10, klh = o.tight > 3 ? 16 : 18, kgap = o.tight > 3 ? 4 : 8;
+    var kx = M + miniW + 26, kw = W0 - M - kx - 50, kst = { size: o.tight > 4 ? 11.5 : o.tight > 3 ? 12.5 : 13.5, fill: INK }, ky = miniTop + 10, klh = o.tight > 4 ? 14.5 : o.tight > 3 ? 16 : 18, kgap = o.tight > 4 ? 3 : o.tight > 3 ? 4 : 8;
     out.push(T(kx, ky, 'HOW TO READ IT', eb));
     ky += 26;
     c.key.forEach(function (k) {
