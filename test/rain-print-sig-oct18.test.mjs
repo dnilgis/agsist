@@ -66,7 +66,8 @@ test("4. no Sponsor or Advertise link on Rain Print pages, done in the page", ()
 test("5. the business sample offer is under the prices", () => {
   const s = BIZ.indexOf('id="prices"'), x = BIZ.indexOf('id="christmas"'), t = BIZ.indexOf('id="rbz-sample"');
   assert.ok(s > 0 && t > s && t < x);
-  assert.match(BIZ, /id="rbz-sample">Want to see one first\? Order one at the regular price and I take it off your invoice when you order 10 or more\.<\/p>/);
+  // 2026-10-20: the offer links to the order box and says how Sig matches the sample (test/rain-print-business.test.mjs)
+  assert.match(BIZ, /id="rbz-sample">Want to see one first\? <a href="\/rain-print#rp-buy" data-rbz-cta="sample">Order one at the regular price<\/a> and I take it off your invoice when you order 10 or more\. When you pay, tick <b>This is a gift<\/b> and put your business name in the note, so I can match it to your order\.<\/p>/);
   const tiers = J.business_tiers || [];
   if (tiers.length) assert.ok(tiers.some((r) => r.min === 10), "10 is where the discount starts");
 });
