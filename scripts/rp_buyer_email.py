@@ -35,11 +35,30 @@ Reply-To sig@farmers1st.com.
                 sig@farmers1st.com) and marks nothing. A test-mode session
                 (livemode false) or a buyer address in SIG_TEST_EMAILS (and
                 SIG_TO) goes to Sig only.
+  The files     (Sig, 2026-10-20) a paid DIGITAL file the buyer has approved
+                (the Approve this print button starts this job, worker
+                v5.37) gets a second email at once: "Your Rain Print files:
+                <town>, <year>", with the files attached (the PDF of the art at
+                12 x 18 in, the PNG and the JPG at 5400 x 3600 px, 300 dpi, no
+                watermark, made by the maker view: rp_buyer_render.mjs
+                renderFiles), the one-page "How to read your Rain Print" PDF
+                (with the gift note when there is one) and short printing
+                tips. Attached, not linked: the four come to about 2 to 4 MB,
+                far under Gmail's 25 MB, and nothing about an order is hosted
+                anywhere. Over ATTACH_MAX the JPG, then the PNG, are left off;
+                if even the PDF and guide are over, no buyer email goes, the
+                record is marked delivered by hand and Sig is told to send them.
+                Marked delivered (POST /rp-order/delivered, worker v5.38)
+                BEFORE the send, like mailed: once per order. Sig gets a
+                one-line note that the files went (no buyer details). Prints
+                and framed prints keep their flow. Dry run: to Sig, nothing
+                marked, same as the proof.
 
     python3 scripts/rp_buyer_email.py              send what is due
     DRY_RUN=1 python3 scripts/rp_buyer_email.py    every email to Sig, nothing marked
     python3 scripts/rp_buyer_email.py --selftest   fixtures, no network, no mail
     python3 scripts/rp_buyer_email.py --sample out.html   the email as a page (made-up order), for a look
+    python3 scripts/rp_buyer_email.py --sample-files out.html   the files email as a page, for a look
 
 Env: LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS. Optional:
 SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME, SIG_TO, SIG_TEST_EMAILS (comma
@@ -70,6 +89,10 @@ STYLE = {"r1": "Staircase", "r2": "Roots"}
 EMAIL_RE = re.compile(r"^[^\s@<>\"]+@[^\s@<>\"]+\.[^\s@<>\"]{2,}$")
 URL_RE = re.compile(r"^https://agsist\.com/rain-print\?[A-Za-z0-9%+._~=&-]+$")
 DAYS = 7
+# the most the files email attaches, in bytes before encoding (base64 adds about a third: 15 MB is about
+# 20.5 MB sent, under Gmail's 25 MB with room to spare). A real order's four files come to about 2 to 4 MB.
+ATTACH_MAX = 15 * 1024 * 1024
+FILE_MIME = {"pdf": ("application", "pdf"), "guide": ("application", "pdf"), "png": ("image", "png"), "jpg": ("image", "jpeg")}
 
 
 def env(name, default=None):
@@ -127,6 +150,21 @@ class Sources:
             raise RuntimeError("render: %s" % r.get("error", "failed"))
         return r
 
+    def render_files(self, order, out_dir):
+        """rp_buyer_render.mjs renderFiles: the digital file's PDF, PNG, JPG and the reading guide, checked there.
+        -> [{kind, path, name, bytes}]"""
+        inp = os.path.join(out_dir, "in.json")
+        with open(inp, "w", encoding="utf-8") as f:
+            json.dump({"design_url": order["design_url"], "product": order["product"], "files": True,
+                       "gift_note": order.get("gift_note") or "", "base": env("RENDER_BASE", "https://agsist.com")}, f)
+        p = subprocess.run(["node", os.path.join(ROOT, "scripts", "rp_buyer_render.mjs"), inp, out_dir],
+                           capture_output=True, text=True, timeout=420)
+        last = (p.stdout.strip().splitlines() or ["{}"])[-1]
+        r = json.loads(last)
+        if not r.get("ok") or [x.get("kind") for x in r.get("files") or []] != ["pdf", "png", "jpg", "guide"]:
+            raise RuntimeError("render files: %s" % r.get("error", "failed"))
+        return r["files"]
+
 
 # ───────────────────────────── the email ─────────────────────────────
 
@@ -175,7 +213,8 @@ def proof_lines(o, r):
     out = ["This email is your proof. Check the name, the town, the year and the dates in the picture.",
            "If it is right, tap Approve this print. If not, tap Ask for a change and tell me what to fix. Nothing is made until you approve it."]
     if digital:
-        out.append("After you approve it, the full file (12 x 18 in at 300 dpi, no preview mark) comes by email within 1 business day.")
+        out.append("After you approve it, your files come by email within minutes: a PDF, a PNG and a JPG at 12 x 18 in, 300 dpi, no preview mark, "
+                   "with a page on how to read it.")
     else:
         ship = [x for x in (r.get("words") or []) if str(x).startswith("It ships within")]
         out.append(one_line(ship[0], 300) if ship else "It ships within 3 business days after you approve it.")
@@ -267,6 +306,185 @@ def build(o, r, to, gift_to="", fn="AGSIST", fa="", dry=False):
     return m
 
 
+# ───────────────────────────── the files email (a digital file, on approval) ─────────────────────────────
+
+def files_subject(o):
+    place, year = one_line(o.get("place"), 80), str(o.get("year") or "")
+    return "Your Rain Print files: %s%s" % (place or "your place", (", " + year) if year else "")
+
+
+FILE_WORDS = {
+    "pdf": "the print file: 12 x 18 in at 300 dpi. Send this one to a print shop.",
+    "png": "the same picture, 5400 x 3600 px at 300 dpi. Good for an online photo or poster service.",
+    "jpg": "the same again as a JPG, for a service that takes only JPG.",
+    "guide": "one page on how to read your print. Print it on letter paper and give it with the print, or tuck it in the back of the frame.",
+}
+
+# short and plain; every size here is the file's own (5400 x 3600 px is 300 dpi at 18 x 12 in, 225 dpi at 24 x 16)
+PRINT_TIPS = [
+    "It is made for 12 x 18 in. A print shop or an online print service can print that size, and a standard 12 x 18 frame fits it.",
+    "Print the PDF at 100% (Actual size). Turn off Fit to page and Scale to fit, or the size comes out wrong.",
+    "Pick a heavy matte paper. Glossy shows glare, and more behind glass. I print mine on heavy textured cotton paper.",
+    "Another size? Keep the 3:2 shape so nothing is cut off: 8 x 12 or 16 x 24 in. Both stay sharp.",
+    "At home: letter paper is too small for 12 x 18. Print the PNG at 10.5 x 7 in for a small one, or use a printer that takes 13 x 19 paper and print the PDF at 100%.",
+    "Want a mat? An 18 x 24 frame with a mat cut for a 12 x 18 print is a common size.",
+]
+
+
+def files_lead(o, files):
+    left = [k for k in ("png", "jpg") if k not in {f["kind"] for f in files}]
+    out = ["Thank you for approving your proof. Your Rain Print files are attached: the %s, ready to print, with no preview mark." % what_line(o)]
+    if left:
+        out.append("The %s %s too big to attach with the rest. Reply to this email and I will send %s." % (
+            " and the ".join(x.upper() for x in left), "was" if len(left) == 1 else "were", "it" if len(left) == 1 else "them"))
+    return out
+
+
+def files_text(o, files, gift_to=""):
+    out = files_lead(o, files)[:1]
+    if gift_to:
+        out.append("For: %s" % gift_to)
+    out += files_lead(o, files)[1:] + ["", "What is attached:"]
+    out += ["  %s: %s" % (f["name"], FILE_WORDS[f["kind"]]) for f in files]
+    out += ["", "Printing it:"] + ["  - " + t for t in PRINT_TIPS]
+    out += ["", "Something wrong, or want a change? Reply to this email and I will fix it.", "", "Sig", "", ADDRESS]
+    return "\n".join(out) + "\n"
+
+
+def files_html(o, files, gift_to=""):
+    """Phone first, Gmail safe, like the proof email: one 600 px table, inline styles only, no images."""
+    e = H.escape
+    font = "font-family:Georgia,'Times New Roman',serif;"
+    sans = "font-family:Arial,Helvetica,sans-serif;"
+    p = lambda t, extra="": ('<p style="margin:0 0 14px;%sfont-size:17px;line-height:1.5;color:#1E2125;%s">%s</p>' % (font, extra, t))  # noqa: E731
+    lead = files_lead(o, files)
+    rows = ['<tr><td style="padding:24px 20px 6px;"><p style="margin:0 0 6px;%sfont-size:13px;letter-spacing:1px;text-transform:uppercase;color:#5E6475;">'
+            'AGSIST Rain Print &middot; your files</p>' % sans
+            + '<h1 style="margin:0 0 14px;%sfont-size:26px;line-height:1.25;font-weight:normal;color:#1E2125;">Your Rain Print files</h1>' % font
+            + p(e(lead[0]).replace(e(what_line(o)), "<b>%s</b>" % e(what_line(o))))
+            + (p("For: <b>%s</b>" % e(gift_to)) if gift_to else "") + "".join(p(e(x)) for x in lead[1:]) + "</td></tr>"]
+    items = "".join('<tr><td style="padding:0 0 12px;%sfont-size:15px;line-height:1.45;color:#1E2125;"><b style="word-break:break-all;">%s</b><br>%s</td></tr>'
+                    % (sans, e(f["name"]), e(FILE_WORDS[f["kind"]][0].upper() + FILE_WORDS[f["kind"]][1:])) for f in files)
+    rows.append('<tr><td style="padding:0 20px 12px;"><h2 style="margin:0 0 10px;%sfont-size:20px;font-weight:normal;color:#1E2125;">What is attached</h2>'
+                '<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0">%s</table></td></tr>' % (font, items))
+    tips = "".join('<li style="margin:0 0 10px;">%s</li>' % e(t) for t in PRINT_TIPS)
+    rows.append('<tr><td style="padding:0 20px 8px;"><h2 style="margin:0 0 10px;%sfont-size:20px;font-weight:normal;color:#1E2125;">Printing it</h2>'
+                '<ul style="margin:0 0 14px;padding:0 0 0 20px;%sfont-size:16px;line-height:1.5;color:#1E2125;">%s</ul></td></tr>' % (font, font, tips))
+    rows.append('<tr><td style="padding:0 20px 24px;">' + p("<b>Something wrong, or want a change?</b> Reply to this email and I will fix it.")
+                + p("Sig", "margin-top:18px;") +
+                '<p style="margin:18px 0 0;%sfont-size:12px;line-height:1.4;color:#5E6475;">%s</p></td></tr>' % (sans, e(ADDRESS)))
+    return ('<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<title>%s</title></head><body style="margin:0;padding:0;background:#F4F3EE;">'
+            '<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" style="background:#F4F3EE;"><tr><td align="center" style="padding:12px 8px;">'
+            '<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%%;max-width:600px;background:#FFFFFF;">'
+            '%s</table></td></tr></table></body></html>') % (e(files_subject(o)), "".join(rows))
+
+
+def fit_files(files):
+    """The files that go, under ATTACH_MAX: all four; else without the JPG; else without the PNG too; else none."""
+    for drop in ((), ("jpg",), ("jpg", "png")):
+        keep = [f for f in files if f["kind"] not in drop]
+        if sum(int(f.get("bytes") or 0) for f in keep) <= ATTACH_MAX:
+            return keep
+    return []
+
+
+def build_files(o, files, to, gift_to="", fn="AGSIST", fa="", dry=False):
+    m = EmailMessage()
+    m["Subject"] = ("[dry run, would go to the buyer] " if dry else "") + files_subject(o)
+    m["From"] = formataddr((fn, fa))
+    m["To"] = to
+    m["Reply-To"] = REPLY_TO
+    m["Message-ID"] = make_msgid(domain=(fa.split("@", 1)[1] if "@" in fa else "agsist.com"))
+    m.set_content(files_text(o, files, gift_to))
+    m.add_alternative(files_html(o, files, gift_to), subtype="html")
+    for f in files:
+        mt, st = FILE_MIME[f["kind"]]
+        with open(f["path"], "rb") as fh:
+            m.add_attachment(fh.read(), maintype=mt, subtype=st, filename=f["name"])
+    return m
+
+
+def sig_note(o, sig_to, text, fn="AGSIST", fa=""):
+    """Sig's one-line note about the files: product, town and year only, never the buyer."""
+    m = EmailMessage()
+    m["Subject"] = "Rain Print files sent: %s%s" % (one_line(o.get("place"), 60) or "a digital file", (" " + str(o["year"])) if o.get("year") else "")
+    m["From"] = formataddr((fn, fa))
+    m["To"] = sig_to
+    m["Message-ID"] = make_msgid(domain=(fa.split("@", 1)[1] if "@" in fa else "agsist.com"))
+    m.set_content(text + "\n")
+    return m
+
+
+def files_due(orders):
+    """Paid digital files the buyer approved, not yet delivered, with a design link to make them from."""
+    return [o for o in orders if o.get("status") == "paid" and o.get("product") == "digital" and o.get("approved")
+            and not o.get("delivered") and (o.get("paid") or {}).get("session") and URL_RE.match(str(o.get("design_url") or ""))]
+
+
+def deliver(src, due, notes, dry, send, sig_to, test_emails):
+    """The files email for each approved digital file, once (marked delivered before the send). -> counts."""
+    c = {"files sent": 0, "files to Sig": 0, "files waiting": 0, "files no address": 0, "files render failed": 0,
+         "files by hand": 0, "files marked, send failed": 0}
+    for o in due:
+        if notes is None:
+            c["files waiting"] += 1
+            continue
+        gift_to, note = notes.get(o["ref"], ("", ""))
+        o = dict(o, gift_note=note)
+        try:
+            s = src.session(o["key"])
+        except Exception:                                  # noqa: BLE001
+            c["files no address"] += 1
+            continue
+        buyer = s["email"] if EMAIL_RE.match(s["email"]) else ""
+        sig_only = dry or not s["livemode"] or buyer.lower() in test_emails
+        if not buyer and not sig_only:
+            c["files no address"] += 1
+            continue
+        with tempfile.TemporaryDirectory() as tmp:
+            try:
+                files = src.render_files(o, tmp)
+            except Exception:                              # noqa: BLE001
+                c["files render failed"] += 1              # nothing marked: the next run tries again
+                continue
+            keep = fit_files(files)
+            if not keep:
+                # too big to attach even as the PDF and the guide: Sig sends them, told once
+                if not dry:
+                    mk = src.worker("rp-order/delivered", body={"key": o["key"], "how": "hand"})
+                    if not mk.get("ok") or mk.get("already"):
+                        continue
+                c["files by hand"] += 1
+                try:
+                    send(sig_note(o, sig_to, "The files for this approved digital file are too big to attach. Make them on the maker page and send them by hand: %s"
+                                  % (o.get("fulfill_url") or "no design link")))
+                except Exception:                          # noqa: BLE001
+                    c["files marked, send failed"] += 1
+                continue
+            m = build_files(o, keep, sig_to if sig_only else buyer, gift_to, dry=dry)
+            if not dry:
+                mk = src.worker("rp-order/delivered", body={"key": o["key"], "how": "email"})
+                if not mk.get("ok") or mk.get("already"):
+                    continue
+            try:
+                send(m)
+            except Exception:                              # noqa: BLE001
+                c["files marked, send failed" if not dry else "files render failed"] += 1
+                continue
+            if sig_only:
+                c["files to Sig"] += 1
+                continue
+            c["files sent"] += 1
+            mb = sum(int(f.get("bytes") or 0) for f in keep) / 1048576.0
+            try:
+                send(sig_note(o, sig_to, "The files went to the buyer by email (%s; %.1f MB attached)." % (", ".join(
+                    {"pdf": "PDF", "png": "PNG", "jpg": "JPG", "guide": "reading guide"}[f["kind"]] for f in keep), mb)))
+            except Exception:                              # noqa: BLE001
+                pass                                       # the buyer has the files; the note is a courtesy
+    return c
+
+
 # ───────────────────────────── Sig's order alert ─────────────────────────────
 
 def alert_text(o, buyer):
@@ -345,7 +563,7 @@ def send_alerts(src, orders, send, sig_to, fn="AGSIST", fa=""):
         m["To"] = sig_to
         m["Message-ID"] = make_msgid(domain=(fa.split("@", 1)[1] if "@" in fa else "agsist.com"))
         url = str(o.get("fulfill_url") or "")
-        todo = ("Send the full file within 1 business day (the page promises it)." if o.get("product") == "digital"
+        todo = ("Nothing to do: the files go to the buyer by email now (this job), and a note follows when they have." if o.get("product") == "digital"
                 else "Make it: it ships within 3 business days of the approval (the page promises it).")
         m.set_content("The buyer approved the proof.\n\nWhat: %s\nApproved: %s\nSerial: %s\n%s\nOpen to fulfill: %s\n" % (
             what_line(o), o["approved"].get("at", ""), o.get("serial") or "none (a digital file)", todo, url or "no design link"))
@@ -386,12 +604,17 @@ def run(src, dry, send, sig_to, test_emails):
         return (1 if ac["alert failed"] else 0), log + ["The worker could not confirm payments (Stripe: %s); no buyer email sent." % one_line(d.get("stripe"), 60)]
     due = [o for o in d.get("orders") or [] if isinstance(o, dict) and o.get("status") == "paid" and not o.get("mailed")
            and (o.get("paid") or {}).get("session") and URL_RE.match(str(o.get("design_url") or "")) and o.get("product") in PRODUCT]
+    fdue = files_due(orders)
     log.append("Paid and not yet mailed: %d." % len(due))
+    log.append("Approved digital files not yet sent: %d." % len(fdue))
     try:
-        notes = gift_notes(src, {o["ref"] for o in due})
+        notes = gift_notes(src, {o["ref"] for o in due} | {o["ref"] for o in fdue})
     except Exception as e:                                 # noqa: BLE001
         notes = None
         log.append("Gift notes could not be read (%s); every order waits for the next run." % type(e).__name__)
+    # the files for each approved digital file first (the buyer is waiting on them); their counts on their own line
+    fc = deliver(src, fdue, notes, dry, send, sig_to, test_emails)
+    log.append("; ".join("%s: %d" % (k, v) for k, v in fc.items()) + ".")
     counts = {"sent": 0, "to Sig": 0, "no address": 0, "render failed": 0, "marked, send failed": 0, "waiting": 0}
     for o in due:
         if notes is None:   # a gift's note could be missed: every order waits for the next run
@@ -429,7 +652,7 @@ def run(src, dry, send, sig_to, test_emails):
                 continue
             counts["to Sig" if sig_only else "sent"] += 1
     log.append("; ".join("%s: %d" % (k, v) for k, v in counts.items()) + ".")
-    return (1 if counts["marked, send failed"] or ac["alert failed"] else 0), log
+    return (1 if counts["marked, send failed"] or fc["files marked, send failed"] or ac["alert failed"] else 0), log
 
 
 def smtp_send(fn, fa):
@@ -456,6 +679,8 @@ def main():
         return selftest()
     if "--sample" in sys.argv:
         return sample(sys.argv[sys.argv.index("--sample") + 1])
+    if "--sample-files" in sys.argv:
+        return sample_files(sys.argv[sys.argv.index("--sample-files") + 1])
     dry = env("DRY_RUN") == "1"
     sig_to = env("SIG_TO", REPLY_TO)
     tests = {x.strip().lower() for x in (env("SIG_TEST_EMAILS", "") or "").split(",") if x.strip()} | {sig_to.lower(), REPLY_TO}
@@ -488,11 +713,14 @@ def order(key, product="framed12x18", session="cs_live_1", **kw):
 
 
 class Fake(Sources):
-    def __init__(self, listing, sessions, forms=None, render_fail=False, mark_fail=False):
+    def __init__(self, listing, sessions, forms=None, render_fail=False, mark_fail=False, file_bytes=None):
         super().__init__("https://w.dev", "tok")
         self.listing, self.sessions, self.forms = listing, sessions, forms or []
         self.render_fail, self.mark_fail = render_fail, mark_fail
         self.calls, self.marked, self.alerted = [], set(), set()
+        self.delivered = {}
+        # made-up file sizes (bytes); the real ones come to about 2 to 4 MB in all
+        self.file_bytes = file_bytes or {"pdf": 800000, "png": 600000, "jpg": 400000, "guide": 1200000}
 
     def worker(self, path, body=None, **q):
         self.calls.append(("worker", path))
@@ -514,6 +742,13 @@ class Fake(Sources):
             if self.listing.get("stripe") != "ok":   # the worker reads the address with its read key, or not at all
                 raise urllib.error.HTTPError("https://w.dev/x", 503, "no key", {}, None)
             return {"ok": True, **self.session(q["key"])}
+        if path == "rp-order/delivered":
+            if self.mark_fail:
+                raise urllib.error.HTTPError("https://w.dev/x", 500, "x", {}, None)
+            k = body["key"]
+            already = k in self.delivered
+            self.delivered.setdefault(k, body.get("how"))
+            return {"ok": True, "already": already}
         if path == "rp-order/mailed":
             if self.mark_fail:
                 raise urllib.error.HTTPError("https://w.dev/x", 500, "x", {}, None)
@@ -545,6 +780,19 @@ class Fake(Sources):
             with open(lt, "wb") as f:
                 f.write(b"\xff\xd8\xff\xe0letter")
         return {"ok": True, "proof": pr, "letter": lt, "words": WORDS}
+
+    def render_files(self, o, out_dir):
+        self.calls.append(("render files", o["product"], o.get("gift_note", "")))
+        if self.render_fail:
+            raise RuntimeError("render files")
+        out = []
+        for kind, name in (("pdf", "rain-print-chetek-wi-2025-r1-12x18-300dpi.pdf"), ("png", "rain-print-chetek-wi-2025-r1-12x18-300dpi.png"),
+                           ("jpg", "rain-print-chetek-wi-2025-r1-12x18-300dpi.jpg"), ("guide", "rain-print-chetek-wi-2025-r1-how-to-read.pdf")):
+            path = os.path.join(out_dir, name)
+            with open(path, "wb") as f:
+                f.write(kind.encode() * 8)
+            out.append({"kind": kind, "path": path, "name": name, "bytes": self.file_bytes[kind]})
+        return out
 
 
 def selftest():
@@ -655,7 +903,7 @@ def selftest():
     ap = [m for m in sent if m["Subject"].startswith("Rain Print approved:")]
     ck("an approval: one email to Sig each, with the maker link and what to do",
        len(ap) == 2 and all(m["To"] == "sig@farmers1st.com" for m in ap) and "Make it: it ships within 3 business days" in ap[0].get_content()
-       and "Open to fulfill: " + SIG_URL + "&maker=1&serial=4" in ap[0].get_content() and "Send the full file within 1 business day" in ap[1].get_content(),
+       and "Open to fulfill: " + SIG_URL + "&maker=1&serial=4" in ap[0].get_content() and "Nothing to do: the files go to the buyer by email now" in ap[1].get_content(),
        [m.get_content() for m in ap])
     sent.clear()
     run(f, False, send, "sig@farmers1st.com", tests)
@@ -698,13 +946,98 @@ def selftest():
     run(f, False, send, "sig@farmers1st.com", tests)
     htm = sent[0].get_body(("html",)).get_content()
     ck("a digital file: no letter, the file wording", "cid:letter" not in htm and "your file will not" in htm, htm[-400:])
-    ck("a digital file: the full file after the OK", "After you approve it, the full file (12 x 18 in at 300 dpi, no preview mark) comes by email within 1 business day." in htm)
+    ck("a digital file: the files right after the OK", "After you approve it, your files come by email within minutes: a PDF, a PNG and a JPG at 12 x 18 in, 300 dpi, no preview mark, "
+       "with a page on how to read it." in htm, htm[-900:])
     # a year not finished, or no token: no buttons, the proof comes later
     o2 = order("1")
     r2 = {"proof": "x", "letter": None, "preview": True, "words": ["Your 13 x 19 print of Chetek, WI, 2026 is ordered. Your gift card to print comes by email by Wednesday, Oct 21. The print follows in January, with a proof to you first.", "Questions?"]}
     h2 = html_body(o2, r2)
     ck("this year's print: no approve button, the proof comes when the year is in", "Approve this print" not in h2 and "once the full year is in" in h2 and "gift card" not in h2, h2[-1200:])
     ck("no token: no approve button", "Approve this print" not in html_body(dict(o2, approve_t=None), dict(r2, preview=False)))
+
+    print("\nthe files (a digital file, the moment the buyer approves)")
+    ap_at = {"at": "2026-10-21T15:00:00.000Z"}
+    dig = lambda key="5", **kw: order(key, product="digital", serial=None, paid={"amount": 19, "session": kw.pop("session", "cs_live_5")},  # noqa: E731
+                                      mailed={"at": "x"}, approved=kw.pop("approved", ap_at), approved_alerted={"at": "x"}, fulfill_url=SIG_URL + "&maker=1", **kw)
+    sent.clear()
+    f = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live})
+    code, log = run(f, False, lambda m: (f.calls.append(("send",)), sent.append(m)), "sig@farmers1st.com", tests)
+    fm = [m for m in sent if m["Subject"].startswith("Your Rain Print files:")]
+    ck("approved: one files email, to the buyer", code == 0 and len(fm) == 1 and fm[0]["To"] == "buyer@example.com", [(m["To"], m["Subject"]) for m in sent])
+    ck("subject: the files, the town and year", fm and fm[0]["Subject"] == "Your Rain Print files: Chetek, WI, 2025", fm and fm[0]["Subject"])
+    ck("marked delivered before the send, by email", f.delivered == {dig()["key"]: "email"} and f.calls.index(("worker", "rp-order/delivered")) < f.calls.index(("send",)), f.calls)
+    att = [(p.get_filename(), p.get_content_type()) for p in fm[0].iter_attachments()] if fm else []
+    ck("attached: the PDF, the PNG, the JPG and the reading guide", att == [
+        ("rain-print-chetek-wi-2025-r1-12x18-300dpi.pdf", "application/pdf"), ("rain-print-chetek-wi-2025-r1-12x18-300dpi.png", "image/png"),
+        ("rain-print-chetek-wi-2025-r1-12x18-300dpi.jpg", "image/jpeg"), ("rain-print-chetek-wi-2025-r1-how-to-read.pdf", "application/pdf")], att)
+    ftxt = fm[0].get_body(("plain",)).get_content() if fm else ""
+    fhtm = fm[0].get_body(("html",)).get_content() if fm else ""
+    ck("the printing tips: 100%, no fit to page, matte, the 3:2 sizes, a shop or a service", all(x in ftxt and H.escape(x) in fhtm for x in (
+        "Print the PDF at 100% (Actual size). Turn off Fit to page and Scale to fit", "heavy matte paper", "8 x 12 or 16 x 24 in",
+        "A print shop or an online print service")), ftxt)
+    ck("each file said in plain words, the guide too", "one page on how to read your print" in ftxt and "12 x 18 in at 300 dpi" in ftxt and "5400 x 3600 px" in ftxt, ftxt)
+    ck("Reply-To Sig, reply line, no em dashes, no sponsor", fm and fm[0]["Reply-To"] == "sig@farmers1st.com" and "Reply to this email" in ftxt
+       and "\u2014" not in ftxt + fhtm and "sponsor" not in (ftxt + fhtm).lower())
+    notes_ = [m for m in sent if m["Subject"].startswith("Rain Print files sent:")]
+    ck("Sig's one-line note: the files went, no buyer details", len(notes_) == 1 and notes_[0]["To"] == "sig@farmers1st.com"
+       and notes_[0].get_content().strip().count("\n") == 0 and "@" not in notes_[0].get_content() and "buyer@example.com" not in str(notes_[0]),
+       [m.get_content() for m in notes_])
+    ck("the log: counts only, no address, no place", any(x.startswith("files sent: 1;") for x in log)
+       and all("@" not in x and "Chetek" not in x and "Gustum" not in x and SIG_REF not in x for x in log), log)
+    sent.clear()
+    run(f, False, send, "sig@farmers1st.com", tests)
+    ck("once: a second run sends no files", not any(m["Subject"].startswith(("Your Rain Print files:", "Rain Print files sent:")) for m in sent), [m["Subject"] for m in sent])
+    sent.clear()
+    f = Fake({"stripe": "ok", "orders": [dig(delivered={"at": "x", "how": "email"})]}, {"cs_live_5": live})
+    run(f, False, send, "sig@farmers1st.com", tests)
+    ck("a record already delivered: skipped without asking Stripe", sent == [] and not any(c[0] in ("session", "render files") for c in f.calls), f.calls)
+    f = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live})
+    run(f, True, send, "sig@farmers1st.com", tests)
+    ck("dry run: the files email to Sig only, nothing marked, no note", [m["To"] for m in sent] == ["sig@farmers1st.com"]
+       and sent[0]["Subject"] == "[dry run, would go to the buyer] Your Rain Print files: Chetek, WI, 2025" and not f.delivered, [m["Subject"] for m in sent])
+    sent.clear()
+    f = Fake({"stripe": "ok", "orders": [dig(session="cs_test_6")]}, {"cs_test_6": {"livemode": False, "email": "buyer@example.com"}})
+    run(f, False, send, "sig@farmers1st.com", tests)
+    ck("a test-mode session: the files to Sig only", [m["To"] for m in sent] == ["sig@farmers1st.com"], [m["To"] for m in sent])
+    sent.clear()
+    f = Fake({"stripe": "ok", "orders": [dig(approved=None), order("7", approved=ap_at, mailed={"at": "x"}, approved_alerted={"at": "x"})]}, {"cs_live_5": live, "cs_live_1": live})
+    run(f, False, send, "sig@farmers1st.com", tests)
+    ck("not approved, or a print: no files", sent == [] and not any(c[0] == "render files" for c in f.calls), [m["Subject"] for m in sent])
+    f = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live}, render_fail=True)
+    code, log = run(f, False, send, "sig@farmers1st.com", tests)
+    ck("the files fail to render: nothing sent, nothing marked (the next run tries again)", sent == [] and not f.delivered and any("files render failed: 1" in x for x in log), log)
+    f = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live})
+    code, log = run(f, False, lambda m: (_ for _ in ()).throw(OSError("smtp")), "sig@farmers1st.com", tests)
+    ck("a send that fails after the mark: exit 1, counted", code == 1 and any("files marked, send failed: 1" in x for x in log), log)
+    f = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": {"livemode": True, "email": ""}})
+    code, log = run(f, False, send, "sig@farmers1st.com", tests)
+    ck("no address: nothing, counted", sent == [] and not f.delivered and any("files no address: 1" in x for x in log), log)
+    forms = [{"kind": "rain-print-order", "design_code": SIG_REF, "gift": "yes", "gift_to": "Dad Olson", "gift_message": "For every inch you farmed",
+              "email": "buyer@example.com", "name": "Jane Buyer"}]
+    f = Fake({"stripe": "ok", "orders": [dig(gift=True)]}, {"cs_live_5": live}, forms=forms)
+    sent.clear()
+    run(f, False, send, "sig@farmers1st.com", tests)
+    gtxt = sent[0].get_body(("plain",)).get_content() if sent else ""
+    ck("a gift: the note goes on the reading guide, For: in the email, nothing else from the form", ("render files", "digital", "For every inch you farmed") in f.calls
+       and "For: Dad Olson" in gtxt and "Jane" not in gtxt, (f.calls, gtxt[:300]))
+    sent.clear()
+    big = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live}, file_bytes={"pdf": 6 << 20, "png": 7 << 20, "jpg": 5 << 20, "guide": 1 << 20})
+    run(big, False, send, "sig@farmers1st.com", tests)
+    bm = [m for m in sent if m["Subject"].startswith("Your Rain Print files:")]
+    ck("too big with the JPG: the JPG is left off and the email says so", bm and [p.get_filename().rsplit(".", 1)[1] for p in bm[0].iter_attachments()] == ["pdf", "png", "pdf"]
+       and "The JPG was too big to attach with the rest. Reply to this email and I will send it." in bm[0].get_body(("plain",)).get_content(), [m["Subject"] for m in sent])
+    sent.clear()
+    huge = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live}, file_bytes={"pdf": 14 << 20, "png": 20 << 20, "jpg": 9 << 20, "guide": 2 << 20})
+    code, log = run(huge, False, send, "sig@farmers1st.com", tests)
+    ck("too big even as the PDF and guide: no buyer email, marked by hand once, Sig told with the maker link",
+       [m["To"] for m in sent] == ["sig@farmers1st.com"] and "too big to attach" in sent[0].get_content() and SIG_URL + "&maker=1" in sent[0].get_content()
+       and huge.delivered == {dig()["key"]: "hand"} and any("files by hand: 1" in x for x in log), ([m.get_content() for m in sent], log))
+    ck("fit_files: under the cap all four go", [f_["kind"] for f_ in fit_files([{"kind": k, "bytes": 1} for k in ("pdf", "png", "jpg", "guide")])] == ["pdf", "png", "jpg", "guide"])
+    f = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live})
+    f.worker = (lambda orig: (lambda path, body=None, **q: (_ for _ in ()).throw(OSError("x")) if path == "form-list" else orig(path, body, **q)))(f.worker)
+    sent.clear()
+    code, log = run(f, False, send, "sig@farmers1st.com", tests)
+    ck("gift notes unreadable: the files wait too", sent == [] and not f.delivered and any("files waiting: 1" in x for x in log), log)
 
     print()
     if fails:
@@ -725,6 +1058,25 @@ def sample(out):
     o = order("1", gift_note="For every inch you farmed")
     with open(out, "w", encoding="utf-8") as f:
         f.write(html_body(o, {"letter": srcs["letter"], "words": words}, "Dad Olson", srcs))
+    return 0
+
+
+def sample_files(out):
+    """The files email as a page, from a made-up gift order (FILES_DIR: the real files, for their names)."""
+    d = env("FILES_DIR", "")
+    kinds = {".pdf": "pdf", ".png": "png", ".jpg": "jpg"}
+    files = []
+    for n in sorted(os.listdir(d)) if d and os.path.isdir(d) else []:
+        k = "guide" if n.endswith("-how-to-read.pdf") else kinds.get(os.path.splitext(n)[1])
+        if k:
+            files.append({"kind": k, "name": n, "path": os.path.join(d, n), "bytes": os.path.getsize(os.path.join(d, n))})
+    files.sort(key=lambda f: ["pdf", "png", "jpg", "guide"].index(f["kind"]))
+    if not files:
+        files = [{"kind": k, "name": "rain-print-chetek-wi-2025-r1-" + n, "path": "", "bytes": 1} for k, n in
+                 (("pdf", "12x18-300dpi.pdf"), ("png", "12x18-300dpi.png"), ("jpg", "12x18-300dpi.jpg"), ("guide", "how-to-read.pdf"))]
+    o = order("1", product="digital", gift=True)
+    with open(out, "w", encoding="utf-8") as f:
+        f.write(files_html(o, files, "Dad Olson"))
     return 0
 
 
