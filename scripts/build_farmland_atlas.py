@@ -52,7 +52,7 @@ import statistics
 import sys
 from datetime import datetime, timezone
 
-from atlas_layers_p1 import (sob_layer, value_layer, crp_layer, drought_layer, energy_layer, wells_layer,
+from atlas_layers_p1 import (practice_share, irrigated_share, sob_layer, value_layer, crp_layer, drought_layer, energy_layer, wells_layer,
                              national_p1, summarize_p1, seed_p1,
                              MIN_RATIO_PREMIUM, MIN_RATIO_YEARS, MIN_CRP_ACRES, FULL_YEAR_MAPS, HALF_YEAR_WEEKS)
 from atlas_layers_p2 import (climate_layer, storms_layer, livestock_layer, frost_layer, wells_state_block, more_row, MORE_KEYS)
@@ -1327,6 +1327,8 @@ def selftest():
     w = water_layer({"census2022": {"harvested": 200000, "irrigated": 50000},
                      "usgs2015": {"ir_gw_mgd": 80, "ir_sw_mgd": 20, "ir_tot_mgd": 100, "ir_acres_k": 50}})
     assert w["irrigated_share_2022"]["share"] == 0.25 and w["groundwater_share_2015"]["share"] == 0.8, w
+    # Benewah ID 16009: 0.1% irrigated, the map record keeps acres over harvested so no copy rounds twice
+    assert irrigated_share({"harvested_acres": 30000.0, "irrigated_acres": 41.0, "share": 0.001}) == 0.001367
     assert w["applied_2015"]["acre_ft_per_acre"] == 2.24, w["applied_2015"]
     w = water_layer({"census2022": {"harvested": 200000, "irrigated": None, "irrigated_published": True}, "usgs2015": {}})
     assert "suppressed" in w["irrigated_share_2022"]["status"]
@@ -1644,6 +1646,10 @@ def _selftest_practices():
     assert practices_layer({"y": {"2022": {"tile": 5.0}}}, ran=True)["status"].startswith("withheld: cropland")
     sm = summarize({"name": "X", "state": "IA", "sha": "s", "practices": p})
     assert sm["practices"] == {"status": "ok", "tile": 0.6, "notill": None, "cover": 0.04, "tile_reported": True, "tile_chg_pct": 20.0}, sm["practices"]
+    # Barron WI 55005: 55,953 no-till acres of 183,541 cropland is 30.49%; the layer keeps 0.305 (31%),
+    # the map record carries acres over cropland so the map, next-door table and compare print 30%
+    b = practices_layer({"y": {"2022": {"cropland": 183541.0, "notill": 55953.0}}}, ran=True)
+    assert b["notill"]["share"] == 0.305 and summarize({"name": "B", "state": "WI", "sha": "s", "practices": b})["practices"]["notill"] == 0.304853, b
 
 
 def _label(c):
@@ -1711,7 +1717,7 @@ def summarize(rec):
     wa = rec.get("water") or {}
     out["water"] = {"status": _st(wa)}
     if _st(wa) == "ok":
-        out["water"].update({"irrigated_share_2022": {"share": (wa.get("irrigated_share_2022") or {}).get("share")},
+        out["water"].update({"irrigated_share_2022": {"share": irrigated_share(wa.get("irrigated_share_2022"))},
                              "groundwater_share_2015": {"share": (wa.get("groundwater_share_2015") or {}).get("share")},
                              "applied_2015": {"acre_ft_per_acre": (wa.get("applied_2015") or {}).get("acre_ft_per_acre")} if wa.get("applied_2015") else None})
     lo = rec.get("loss") or {}
@@ -1729,7 +1735,7 @@ def summarize(rec):
     pr = rec.get("practices") or {}
     out["practices"] = {"status": _st(pr)}
     if _st(pr) == "ok":
-        out["practices"].update({k: (pr.get(k) or {}).get("share") for k in ("tile", "notill", "cover")})
+        out["practices"].update({k: practice_share(pr, k) for k in ("tile", "notill", "cover")})
         out["practices"]["tile_reported"] = (pr.get("tile") or {}).get("reported")
         out["practices"]["tile_chg_pct"] = (pr.get("tile_change") or {}).get("pct")
     return out

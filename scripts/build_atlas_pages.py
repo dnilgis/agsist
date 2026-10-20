@@ -62,7 +62,7 @@ import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 4
 import cross_links as XL  # noqa: E402  same-county links between the county sets
 import seo_caps as CAPS  # noqa: E402  the site's one title and description cap
 from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
-from atlas_layers_p1 import FULL_YEAR_MAPS, years_covered  # noqa: E402  one full-year gate, one way to name a gap
+from atlas_layers_p1 import FULL_YEAR_MAPS, years_covered, practice_share, irrigated_share  # noqa: E402  one full-year gate, one way to name a gap
 
 SITE = "https://agsist.com"
 DATA = "data/atlas"
@@ -167,6 +167,14 @@ def musd(x):
 def pct(x, k=0):
     """x is a ratio."""
     return "n/a" if x is None else fmt(x * 100, k) + "%"
+
+
+def share_words(x):
+    """A share as a whole percent, and "under 1%" for a nonzero share that rounds to 0 (2026-10-20:
+    282 pages printed irrigated "0%" on 0.1% to 0.4%). The same rule as sheet.html and the Atlas panel."""
+    return "under 1%" if x is not None and 0 < x < 0.005 else pct(x, 0)
+
+
 
 
 def sgn(v, k):
@@ -676,8 +684,8 @@ def flat_record(W, f, d=None):
         rec["irrigated_share_2022"] = get(Wt, "irrigated_share_2022", "share")
     Pr = d.get("practices") or {}
     if ok(Pr):
-        rec["tile_share_2022"] = get(Pr, "tile", "share")
-        rec["notill_share_2022"] = get(Pr, "notill", "share")
+        rec["tile_share_2022"] = practice_share(Pr, "tile")
+        rec["notill_share_2022"] = practice_share(Pr, "notill")
     Cr = d.get("crp") or {}
     if ok(Cr):
         rec["crp_acres"] = get(Cr, "latest", "acres")
@@ -1335,6 +1343,13 @@ def d2_share(Dr):
         return 100.0 * wk["d2"] / wk["counted"]
     return wk.get("share_d2_pct")
 
+def sob_tied(w):
+    """" (2002 also 2.31)": the worst year is picked on raw claims over premium, and another
+    year that prints the same ratio at two decimals is named (Butler NE, 2026-10-20)."""
+    t = w.get("tied") or []
+    return (" (%s also %s)" % (", ".join(map(str, t)), rh(w["ratio"], 2))) if t else ""
+
+
 def worst_words(w):
     """"2016", or "2016 (tied with 2014, 2015)" when other years had as many D2 weeks."""
     t = w.get("tied") or []
@@ -1827,13 +1842,14 @@ def county_page(W, f, d, stamp):
                        "crop years with at least %s of premium" % SOB_GATE)
         # a worst year out of one or two gated years is not a worst year: the same gate as the count above
         if S.get("worst_year") and S.get("years_over_one") is not None:
-            S4 += fact("Worst year", str(S["worst_year"]["year"]), "ratio %s, of the %s crop years with at least %s of premium" % (
-                rh(S["worst_year"]["ratio"], 2), S["years_with_ratio"], SOB_GATE))
+            S4 += fact("Worst year", str(S["worst_year"]["year"]), "ratio %s%s, of the %s crop years with at least %s of premium" % (
+                rh(S["worst_year"]["ratio"], 2), sob_tied(S["worst_year"]), S["years_with_ratio"], SOB_GATE))
     else:
         S4 += fwith("Premium and payouts", why(S))
-    if ok(Lo) and Lo.get("share_all"):
-        top = sorted((k for k, v in Lo["share_all"].items() if v is not None), key=lambda k: -Lo["share_all"][k])[:3]
-        S4 += fact("Largest causes of loss, %s–%s" % (Lo["first_year"], Lo["last_year"]), " · ".join("%s %s" % (CAUSE.get(k, k), pct(Lo["share_all"][k], 0)) for k in top), "share of dollars paid")
+    if ok(Lo) and Lo.get("share_all") and any(Lo["share_all"].values()):
+        # a cause with no share of the dollars is not one of the largest (13 pages listed "hail 0%", 2026-10-20)
+        top = sorted((k for k, v in Lo["share_all"].items() if v), key=lambda k: -Lo["share_all"][k])[:3]
+        S4 += fact("Largest causes of loss, %s–%s" % (Lo["first_year"], Lo["last_year"]), " · ".join("%s %s" % (CAUSE.get(k, k), share_words(Lo["share_all"][k])) for k in top), "share of dollars paid")
 
     S5 = "<h2>Drought and weather</h2>"
     if ok(Dr):
@@ -1878,18 +1894,18 @@ def county_page(W, f, d, stamp):
         if sh.get("share") is not None and sh.get("reported") is False:
             S6 += fact("Harvested cropland irrigated, 2022", "none reported")
         elif sh.get("share") is not None:
-            S6 += fact("Harvested cropland irrigated, 2022", pct(sh["share"], 0))
+            S6 += fact("Harvested cropland irrigated, 2022", share_words(irrigated_share(sh)))
         else:
             S6 += fwith("Harvested cropland irrigated, 2022", why(sh))
     if ok(Pr):
-        for label, x in (("Drained by tile, 2022", Pr.get("tile")), ("Farmed no-till, 2022", Pr.get("notill")), ("Cover crops, 2022", Pr.get("cover"))):
+        for label, pk in (("Drained by tile, 2022", "tile"), ("Farmed no-till, 2022", "notill"), ("Cover crops, 2022", "cover")):
+            x = Pr.get(pk)
             if not x:
                 continue
             if x.get("reported") is False:
                 S6 += fact(label, "none reported")
             elif x.get("share") is not None:
-                s0 = x["acres"] / Pr["cropland"] if Pr.get("cropland") else x["share"]
-                S6 += fact(label, ("under 1%" if 0 < s0 < 0.005 else pct(s0, 0)) + " of cropland", "%s ac" % fmt(x["acres"], 0))
+                S6 += fact(label, share_words(practice_share(Pr, pk)) + " of cropland", "%s ac" % fmt(x["acres"], 0))
     elif Pr.get("status"):
         S6 += fwith("Tile drainage and tillage", why(Pr))
     if ok(Cr):
@@ -1903,7 +1919,7 @@ def county_page(W, f, d, stamp):
         if Cr.get("expiring_next3"):
             x = Cr["expiring_next3"]
             ce = (100.0 * x["acres"] / Cr["latest"]["acres"]) if x.get("acres") is not None and get(Cr, "latest", "acres") else x.get("share_of_enrolled_pct")
-            S6 += fact("CRP expiring FY%s–%s" % (x["from"], x["to"]), fmt(x["acres"], 0) + " ac", "%s%% of enrolled acres" % fmt(ce, 0) if ce is not None else None)
+            S6 += fact("CRP expiring FY%s–%s" % (x["from"], x["to"]), fmt(x["acres"], 0) + " ac", share_words(ce / 100) + " of enrolled acres" if ce is not None else None)
         if get(Cr, "rate", "usd_per_acre") is not None:
             S6 += fact("CRP average rental payment, FY%s" % Cr["rate"]["year"], money(Cr["rate"]["usd_per_acre"]) + "/ac", "all contracts in force, old ones included; not today's offer")
     elif Cr.get("status"):
@@ -2535,6 +2551,12 @@ def selftest():
           and d2_share_words({"weeks": {"d2": 0, "counted": 1357}}) == "0%" and d2_share_words({"weeks": {"d2": 142, "counted": 1357}}) == "10%")
     check("drought share rounds once", fmt(d2_share({"weeks": {"d2": 142, "counted": 1357, "share_d2_pct": 10.5}}), 0) == "10"
           and fmt(d2_share({"weeks": {"d2": 156, "counted": 1357, "share_d2_pct": 11.5}}), 0) == "11")     # 11.496%
+    check("share under 1% (irrigated, CRP expiring, practices)", share_words(0.002) == "under 1%" and share_words(0.0) == "0%"
+          and share_words(0.3049) == "30%" and share_words(None) == "n/a")
+    check("irrigated share from acres", irrigated_share({"irrigated_acres": 30.0, "harvested_acres": 20000.0, "share": 0.002}) == 0.0015
+          and irrigated_share({"share": 0.004}) == 0.004)
+    check("Barron WI no-till 30%, not the stored 0.305", share_words(practice_share({"cropland": 183541.0, "notill": {"acres": 55953.0, "share": 0.305}}, "notill")) == "30%")
+    check("loss worst year tie named", sob_tied({"year": 2023, "ratio": 2.31, "tied": [2002]}) == " (2002 also 2.31)" and sob_tied({"year": 2023, "ratio": 2.31}) == "")
     check("slugify", slugify("St. Louis City") == "st-louis-city" and slugify("Lower Ct River Valley") == "lower-ct-river-valley")
     check("recent yield", recent_yield({"last_year": 2025, "hist": {"2021": 200, "2022": 100, "2023": 210, "2024": 220, "2025": 230}}, 2026)["avg"] == 210.0)
     # state survey beside the census: newer only, named as the state's, change hand worked

@@ -29,6 +29,34 @@ HALF_YEAR_WEEKS = 26
 PERIODS = [("1989-1999", 1989, 1999), ("2000-2009", 2000, 2009), ("2010-2019", 2010, 2019)]
 
 
+def practice_share(pr, k):
+    """A practice's share of cropland as every copy prints it: acres over
+    cropland, unrounded to 6 places (2026-10-20). The layer keeps the share at
+    3 places, and a copy that printed that rounded share to a whole percent
+    read Barron WI no-till 31% where acres over cropland is 30.49%. None when
+    there is no share to print."""
+    x = (pr or {}).get(k)
+    if x is None or isinstance(x, (int, float)):
+        return x                       # the map record already carries the share
+    if x.get("share") is None:
+        return None
+    if x.get("acres") is not None and (pr or {}).get("cropland"):
+        return round(x["acres"] / pr["cropland"], 6)
+    return x["share"]
+
+
+def irrigated_share(sh):
+    """Irrigated share of harvested cropland as every copy prints it: irrigated
+    acres over harvested acres to 6 places when both are there, else the stored
+    share (3 places). Same reason as practice_share."""
+    sh = sh or {}
+    if sh.get("share") is None:
+        return None
+    if sh.get("irrigated_acres") is not None and sh.get("harvested_acres"):
+        return round(sh["irrigated_acres"] / sh["harvested_acres"], 6)
+    return sh["share"]
+
+
 def _ratio(indem, prem):
     return round(indem / prem, 2) if prem and prem >= MIN_RATIO_PREMIUM else None
 
@@ -77,7 +105,7 @@ def sob_layer(s, latest_year, ran=False, partial_year=None, col_total_indemnity=
     out["loss_cost_all"] = _cost(ti, tl, tp)
     per_year = {}
     over_one = 0
-    worst = None
+    worst, worst_raw = None, None
     for y in sorted(years):
         v = years[y]
         r = _ratio(v.get("indem", 0), v.get("prem", 0))
@@ -92,8 +120,18 @@ def sob_layer(s, latest_year, ran=False, partial_year=None, col_total_indemnity=
             # counted (Fresno). The premium floor still gates it (r is None).
             if v.get("indem", 0) > v.get("prem", 0):
                 over_one += 1
-            if worst is None or r > worst["ratio"]:
-                worst = {"year": y, "ratio": r}
+            # worst year on the raw figures too (2026-10-20): picked on the
+            # rounded ratio, a tie at 0.01 kept the first year (Butler NE named
+            # 2002 at 2.3077 over 2023 at 2.3121). raw is indem/prem unrounded.
+            raw = v.get("indem", 0) / v["prem"]
+            if worst is None or raw > worst_raw:
+                worst, worst_raw = {"year": y, "ratio": r}, raw
+    # tied: the other years that print the same ratio, oldest first, so a page
+    # that names one year says another reads the same at two decimals
+    if worst:
+        tied = sorted(y for y, pv in per_year.items() if y != worst["year"] and y != partial and pv["ratio"] == worst["ratio"])
+        if tied:
+            worst["tied"] = tied
     out["per_year"] = per_year
     n_ratio = sum(1 for y, v in per_year.items() if v["ratio"] is not None and y != partial)
     out["years_with_ratio"] = n_ratio
@@ -598,6 +636,13 @@ def selftest():
     assert Lf["per_year"][2021]["ratio"] == 1.0 and Lf["years_over_one"] == 1, Lf["years_over_one"]
     sf["years"]["2020"] = {"liab": 1e6, "prem": 9e5, "indem": 2e6, "policies": 1}   # under the premium floor: not counted
     assert sob_layer(sf, 2025, ran=True)["years_over_one"] == 1
+    # Butler NE 31023: 2002 and 2023 both print 2.31; on raw figures 2023 (2.3121) beats 2002 (2.3077)
+    sb = {"years": {str(y): {"liab": 1e8, "prem": 10e6, "indem": 3e6, "policies": 1} for y in range(2000, 2026)}}
+    sb["years"]["2002"]["indem"], sb["years"]["2023"]["indem"] = 23.077e6, 23.121e6
+    Lb = sob_layer(sb, 2025, ran=True)
+    assert Lb["worst_year"] == {"year": 2023, "ratio": 2.31, "tied": [2002]}, Lb["worst_year"]
+    sb["years"]["2002"]["indem"] = 20e6
+    assert sob_layer(sb, 2025, ran=True)["worst_year"] == {"year": 2023, "ratio": 2.31}
     C = crp_layer({"acres": {"2007": 30000, "2020": 25000, "2025": 20000}, "expiring": {"2025": 100, "2026": 2000, "2027": 2000, "2028": 1000, "2029": 9000}},
                   harvested_cropland=180000, ran=True, this_fy=2026)
     assert C["latest"] == {"year": 2025, "acres": 20000} and C["peak"] == {"year": 2007, "acres": 30000} and C["change_from_peak_pct"] == -33.3, C
