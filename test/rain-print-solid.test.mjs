@@ -531,7 +531,7 @@ test("T2: the privacy page is true today: Rain Print links, logos, orders, gift 
   const P = readFileSync(ROOT + "privacy.html", "utf8");
   const W = readFileSync(ROOT + "workers/subs-worker.js", "utf8");
   assert.ok(!/three forms/.test(P), "the forms are not three");
-  assert.match(P, /Last updated: Oct 14, 2026/);
+  assert.match(P, /Last updated: Oct 20, 2026/);
   assert.ok(!/—|&mdash;/.test(P.replace(/<script[\s\S]*?<\/script>/g, "")), "no em dashes");
   for (const want of [/<h2 id="rain-print">Rain Print<\/h2>/, /<strong>Stripe<\/strong>: takes payment for Rain Print orders/, /RCC-ACIS, data\.rcc-acis\.org/,
     /rough town Cloudflare works out from your IP address\. The worker sends it back and keeps nothing\./, /Anyone with the link can open the design\. It is kept with no end date/,
