@@ -401,13 +401,41 @@ def state_words(in_session):
     return "last quoted", "Last quote"
 
 
+OVN_ROOTS = ("ZC", "ZS", "ZW", "KE", "MW", "ZO", "ZM", "ZL", "ZR")
+
+
+def overnight_trade(q):
+    """True when the quote's price IS a grain overnight (electronic) trade:
+    close_kind "last", close_time between 7 p.m. and 7:45 a.m. CT, and a
+    settle on file for an earlier day (the day just finished). Twin of the
+    second shape in components/price-local.js overnight(). The 04:50 UTC
+    freshness run (Sig, Oct 20) bakes in this window; the title still takes
+    the settle (settled_close), and the seed calls the price what it is."""
+    q = q or {}
+    if str(q.get("ticker") or "")[:2] not in OVN_ROOTS or q.get("close_kind") != "last" or q.get("roll"):
+        return False
+    if not isinstance(q.get("close"), (int, float)) or not isinstance(q.get("settle"), (int, float)):
+        return False
+    sd, cd = q.get("settle_date") or "", q.get("close_date") or ""
+    if not (sd and cd and sd < cd) or CT is None:
+        return False
+    try:
+        tc = datetime.strptime(q.get("close_time") or "", "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).astimezone(CT)
+    except Exception:
+        return False
+    m = tc.hour * 60 + tc.minute
+    return m >= 19 * 60 or m < 7 * 60 + 45
+
+
 def quote_when(q, fetched):
-    """'Settle Oct 16' | 'Last trade Oct 19, 10:42 a.m. CT' | 'Last quote': the
-    words the homepage card seed prints under a price (state_words), for any
-    line that names a price's moment. Night audit Oct 19, 2026: the futures
-    heroes called a Friday settle "refreshed" in session, on a Sunday."""
+    """'Settle Oct 16' | 'Last trade Oct 19, 10:42 a.m. CT' | 'Overnight trade
+    Oct 19, 11:45 p.m. CT' | 'Last quote': the words the homepage card seed
+    prints under a price (state_words), for any line that names a price's
+    moment. Night audit Oct 19, 2026: the futures heroes called a Friday
+    settle "refreshed" in session, on a Sunday."""
     live, label = quote_state(q, fetched, "grain")
-    return state_words(live)[1] + (" " + label if label else "")
+    noun = "Overnight trade" if live is True and overnight_trade(q) else state_words(live)[1]
+    return noun + (" " + label if label else "")
 
 
 def px_table(rows, flabel, in_session=False):
@@ -2842,7 +2870,7 @@ def seed_futures_pages(prices, today):
             front_label = ("Nearby " + mon + " " + crop) if mon else ("Front-month " + crop)
             live, flabel = quote_state(fq, fetched, "grain")
             flabel = flabel or today
-            verb = state_words(live)[0]
+            verb = "traded overnight" if live is True and overnight_trade(fq) else state_words(live)[0]
             t, c1 = seed_between(t, "px", "$" + f_usd)
 
             # crawler-visible last-close table (marker optional per page)

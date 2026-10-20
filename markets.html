@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/util.js?v=20"></script>
 <script src="/components/asof.js?v=1"></script>
-<script src="/components/price-local.js?v=6"></script>
+<script src="/components/price-local.js?v=7"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -373,6 +373,14 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
       var cdm=/^(\d{4})-(\d{2})-(\d{2})/.exec(d.close_date||data.fetched||''),MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       var when=cdm?' \u00b7 '+MON3[+cdm[2]-1]+' '+(+cdm[3])+(+cdm[1]!==new Date().getFullYear()?', '+cdm[1]:'')+(d.stale?' (last good quote)':''):'';
       setEl(m.p,m.c,d.close,m.grain,d.netChange,d.pctChange,d.roll,when,m.key);
+      /* 2026-10-20 (Sig): the overnight electronic trade on the card when the file has one (price-local.js overnight) */
+      var ope=document.getElementById(m.p),oc=ope&&ope.closest('.pc');
+      if(oc&&window.AgPxStamp&&AgPxStamp.overnightHtml){
+        var oh=AgPxStamp.overnightHtml(d,function(v){return m.grain?grain$(v):dollar$(v,m.key);},function(n){return m.grain?AG.px.move(n,{sign:true}):(n>0?'+':n<0?'\u2212':'')+num(Math.abs(n),m.key)+(CENTS[m.key]?'\u00a2':'');},null,{short:true});
+        var oe=oc.querySelector('.pc-ovn');
+        if(!oe&&oh){oe=document.createElement('div');oe.className='pc-ovn';var occ=document.getElementById(m.c);if(occ&&occ.parentNode)occ.parentNode.insertBefore(oe,occ.nextSibling);else oc.appendChild(oe);}
+        if(oe){oe.innerHTML=oh;oe.hidden=!oh;}
+      }
       /* a rolled alias names the month it now shows */
       if(d.rolled_from&&d.contract){var pe=document.getElementById(m.p),ce=pe&&pe.closest('.pc'),lb=ce&&ce.querySelector('.pc-contract');if(lb)lb.textContent=d.contract;}
     });

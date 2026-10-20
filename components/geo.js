@@ -1062,6 +1062,22 @@ function applyPriceResult(key, q, close, open, netChg, pctChg) {
     var prevTxt = fmtPrice(open, meta.dec, meta.grain, meta.suffix, meta.prefix, meta.comma, meta.tick);
     prevEl.textContent = 'prev: ' + prevTxt + ' ' + (q && q.ticker ? q.ticker : '');
   }
+  /* 2026-10-20 (Sig): a grain card shows the overnight electronic trade when
+     the file has one, beside the settle (components/price-local.js overnight). */
+  if (meta.grain && meta.priceEl && q && window.AgPxStamp && AgPxStamp.overnightHtml) {
+    var __ope = document.getElementById(meta.priceEl), __oc = (__ope && __ope.closest) ? __ope.closest('.pc') : null;
+    if (__oc) {
+      var __oh = AgPxStamp.overnightHtml(q, function(v) { return AG.px.price(v, {style: 'slash'}); },
+        function(n) { return AG.px.move(n, {style: 'slash', sign: true}); }, null, {short: true});
+      var __oe = __oc.querySelector('.pc-ovn');
+      if (!__oe && __oh) {
+        __oe = document.createElement('div'); __oe.className = 'pc-ovn';
+        var __ce = meta.chgEl ? document.getElementById(meta.chgEl) : null, __cw = __ce && __ce.closest ? __ce.closest('.pc-change') || __ce : null;
+        if (__cw && __cw.parentNode) __cw.parentNode.insertBefore(__oe, __cw.nextSibling); else __oc.appendChild(__oe);
+      }
+      if (__oe) { __oe.innerHTML = __oh; __oe.hidden = !__oh; }
+    }
+  }
   if (meta.priceEl && q) {
     var wk52Hi = q.wk52_hi, wk52Lo = q.wk52_lo;
     if (wk52Hi != null && wk52Lo != null) {
