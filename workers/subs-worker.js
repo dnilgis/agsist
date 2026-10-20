@@ -5,6 +5,14 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.33 (2026-10-20): GA GATE. New route GET /ga-ok answers {"ok":true} or
+ *   {"ok":false}: false when Cloudflare puts the request on a cloud, hosting
+ *   or data center network (request.cf.asn in CLOUD_ASNS, or a hosting word
+ *   in request.cf.asOrganization). components/ga-gate.js loads Google
+ *   Analytics only on true (Sig, Oct 20: readers anywhere count, data centers
+ *   do not). Nothing is logged or stored, no IP is read. Private, max-age
+ *   3600; CORS for agsist.com only. Every other route answers as before.
+ *   No new binding and no new secret.
  * v5.32 (2026-10-20): RENT NOTICE, EVERY YEAR. POST /notice with a rent:<st>
  *   topic this address already had mailed (sent set) starts it over: {ts:
  *   now, src}, no sent. scripts/send_rent_notice.py reads it unchanged (the
@@ -567,6 +575,42 @@ function json(obj, status, extra) {
     status: status || 200,
     headers: Object.assign({ "Content-Type": "application/json" }, extra || {}),
   });
+}
+
+// v5.33 GA gate. Cloud, hosting and data center networks by ASN, checked
+// 2026-10-20 against each network's own registration. Readers' ISPs, mobile
+// carriers and Starlink (14593) are not here. Left out on purpose:
+// Cloudflare 13335, Akamai 36183 and Fastly 54113, the exits of iCloud
+// Private Relay and Cloudflare WARP, which real readers on iPhones use; their
+// organisation names are also excepted from the word check below.
+const CLOUD_ASNS = new Set([
+  16509, 14618, 8987,      // Amazon AWS
+  15169, 396982, 19527,    // Google, Google Cloud
+  8075,                    // Microsoft (Azure)
+  45102, 37963,            // Alibaba Cloud
+  132203, 45090,           // Tencent Cloud
+  136907,                  // Huawei Cloud
+  31898,                   // Oracle Cloud
+  36351,                   // IBM Cloud (SoftLayer)
+  14061,                   // DigitalOcean
+  63949,                   // Linode (Akamai Cloud)
+  20473,                   // Vultr (Choopa)
+  24940,                   // Hetzner
+  16276,                   // OVH
+  51167,                   // Contabo
+  12876,                   // Scaleway
+  60781, 16265, 30633, 59253, // Leaseweb
+  9009,                    // M247
+  47583,                   // Hostinger
+]);
+const CLOUD_ORG_RE = /hosting|\bcloud|data ?cent(er|re)|server|\bcolo(cation)?\b|\bvps\b/i;
+const RELAY_ASNS = new Set([13335, 36183, 54113]);
+function gaOk(cf) {
+  const asn = Number(cf && cf.asn);
+  if (!Number.isInteger(asn) || asn <= 0) return false;   // no network data: not a reader we can vouch for
+  if (RELAY_ASNS.has(asn)) return true;
+  if (CLOUD_ASNS.has(asn)) return false;
+  return !CLOUD_ORG_RE.test(String((cf && cf.asOrganization) || ""));
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -1916,6 +1960,11 @@ async function handle(req, env) {
       if (cf.country !== "US" || !cf.city || !Number.isFinite(lat) || !Number.isFinite(lon)) return json({ ok: false }, 200, h);
       return json({ ok: true, city: String(cf.city).slice(0, 60), region: String(cf.region || "").slice(0, 60),
         region_code: String(cf.regionCode || "").slice(0, 3), lat: Math.round(lat * 100) / 100, lon: Math.round(lon * 100) / 100 }, 200, h);
+    }
+
+    // v5.33: may this visit load Google Analytics? Network type only; nothing kept.
+    if (path === "/ga-ok" && req.method === "GET") {
+      return json({ ok: gaOk(req.cf) }, 200, Object.assign({ "Cache-Control": "private, max-age=3600" }, cors(req)));
     }
 
     // v5.13: origin and content type, before any public POST reads its body.
