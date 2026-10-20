@@ -209,6 +209,8 @@
       + '<p class="prfo-lede">What NOAA’s Climate Prediction Center expects for precipitation in the seasons ahead, the ENSO status and today’s drought map, for the grid you are looking at. It is information, not advice: an outlook is not the PRF index and does not predict a payment.</p>'
       + '<div class="prfo-body" aria-live="polite"><p class="prfo-withheld">Find a grid above and its outlook appears here.</p></div>';
     var body = el.querySelector('.prfo-body');
+    /* on /prf the panel sits in a folded row of step 4 (details.prf-d, Oct 20): the row shows when the panel does */
+    var row = el.closest ? el.closest('details.prf-d') : null;
     var data = null, loading = null, want = null, eventSeen = false;
 
     function load() {
@@ -224,8 +226,8 @@
       if (want === key) return;
       want = key;
       body.innerHTML = '<p class="prfo-withheld">Loading the outlook for grid ' + esc(g.grid) + '…</p>';
-      (load() || Promise.resolve(data)).then(function () { if (want === key) { body.innerHTML = render(data, +g.grid, g.split, today); el.hidden = false; } },
-        function () { if (want === key) { want = null; el.hidden = true; } });
+      (load() || Promise.resolve(data)).then(function () { if (want === key) { body.innerHTML = render(data, +g.grid, g.split, today); el.hidden = false; if (row) row.hidden = false; } },
+        function () { if (want === key) { want = null; el.hidden = true; if (row) row.hidden = true; } });
     }
     document.addEventListener('prf:grid', function (ev) { eventSeen = true; show(ev.detail || {}); });
     /* Until prf.js sends the event: read the state it already exposes. */

@@ -101,6 +101,10 @@ main.main { padding-top: 12px; }
 .prf-pane { display: contents; }
 .prf-block { min-width: 0; }
 .prf-o1 { order: 1; } .prf-o3 { order: 2; } .prf-o2 { order: 3; } .prf-o5 { order: 4; } .prf-o6 { order: 5; min-width: 0; }
+/* under the answer, in this order (Sig, Oct 20): the plain line, a sold state's sponsor, the grid's index email, the offer to businesses */
+.prf-tool .prf-notice, .prf-tool .prf-spon-offer { order: 3; }
+.prf-tool .prf-notice { margin: 0; padding: .2rem var(--prf-pad) .6rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); }
+.prf-tool .prf-spon-offer { margin: 0; }
 @media (min-width: 980px) {
   .prf-tool { display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 0 1.25rem; align-items: start; }
   .prf-pane { display: flex; flex-direction: column; gap: var(--prf-gap); min-width: 0; }
@@ -206,6 +210,10 @@ table.prf-iv { width: 100%; border-collapse: collapse; }
 .prf-iv-total { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--text-dim); }
 .prf-iv-total.is-bad { color: var(--text); box-shadow: inset 3px 0 0 var(--red); padding-left: .5rem; font-weight: 700; }
 .prf-outlook { margin: 1.1rem 0 0; padding-top: .9rem; border-top: 1px solid var(--border); }
+/* step 4 rows (Oct 20): the outlook and the interval so far, folded; the row's summary is the heading */
+.prf-d .prf-outlook, .prf-d .prf-now { margin: 0; padding: 0; border: 0; background: none; }
+.prf-d .prf-outlook > h2:first-child, .prf-d .prf-outlook > h3:first-child, .prf-d .prf-now > h3, .prf-d .prf-now > .pn-sub { display: none; }
+.prf-d .pn-iv:first-of-type { border-top: 0; padding-top: 0; }
 .prf-more { margin: 1rem 0 0; border-top: 1px solid var(--border); }
 .prf-more > summary { display: flex; align-items: center; gap: .5rem; min-height: 48px; cursor: pointer; font-weight: 600; list-style: none; }
 .prf-more > summary::-webkit-details-marker { display: none; }
@@ -217,6 +225,9 @@ table.prf-iv { width: 100%; border-collapse: collapse; }
 
 /* ---- step 3: the answer */
 .prf-o2 { border-top: 3px solid var(--gold); }
+/* the plain line under the figures (prf.js meansLine), on screen as on the sheet (Oct 20) */
+.prf-pm { margin: 1rem 0 0; padding: .45rem .75rem; border-left: 3px solid var(--gold); color: var(--text-dim); font-size: var(--fs-sm); line-height: 1.55; max-width: 44em; }
+.prf-pm:empty { display: none; }
 .prf-policy { font-size: var(--fs-sm); color: var(--text-dim); line-height: 1.5; margin: -.3rem 0 .8rem; }
 .prf-policy b { color: var(--gold); }
 .prf-win { margin: 1rem 0 0; }
@@ -365,7 +376,7 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
   .prf-acts .btn { flex: 1 1 auto; }
 }
 @media (prefers-reduced-motion: reduce) { .prf * { transition: none !important; scroll-behavior: auto !important; } }
-.prf-printonly, .prf-printfoot, .prf-ph, .prf-pp, .prf-pm, .prf-pcap, .prf-pbot, .prf-pq, .prf-spon-p { display: none; }
+.prf-printonly, .prf-printfoot, .prf-ph, .prf-pp, .prf-pcap, .prf-pbot, .prf-pq, .prf-spon-p { display: none; }
 /* Print: one Letter page, readable at arm's length (Sig, Oct 18). The AGSIST
    header with the grid, county and state; the policy as chosen; the answer
    with one plain "what this means" line; the chart; every counted year's
@@ -514,7 +525,7 @@ html:not([data-theme="light"]) .prf-spon-band .prf-spon-tag { color: var(--ad-or
 .prf-st .prf-spon-state, .prf-st .prf-spon-county { margin: .2rem 0 1.2rem; }
 .prf-spon-county { font-size: .82rem; padding: .6rem .8rem; }
 .prf-spon-county a[href] { min-height: 40px; }
-@media print { .prf-spon, .prf-spon-band { display: none !important; } }
+@media print { .prf-spon, .prf-spon-band, .prf-tool .prf-notice { display: none !important; } }
 
 /* Two long sections on /prf folded to one line each (phones open them on a tap; prf.js opens them on wide screens and when a link points inside) */
 .prf details.prf-fold { border-top: 1px solid var(--border-2); border-bottom: 1px solid var(--border-2); margin: 1.6rem 0; }

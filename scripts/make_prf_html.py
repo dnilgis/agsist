@@ -63,7 +63,6 @@ HTML = f"""<!DOCTYPE html>
     <h1>PRF insurance calculator: what your grid would have paid, every year since {mk("y0")}</h1>
     <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. Find your grid to see the {mk("crop_year")} premium, USDA&rsquo;s share of it, and what the policy would have paid in each of the {mk("nyears")} years from {mk("y0")} to {mk("y1")}. Free, no sign-up, all {mk("grids")} grids in {mk("states")} states.</p>
 
-    <aside class="prf-spon-band prf-spon-offer" aria-label="For businesses"><span class="prf-spon-tag">For businesses</span> <span class="prf-spon-t">Sponsor PRF in your states.<span class="prf-spon-x"> One business per state, on the state page and every county page in it.</span> Price on request.</span> <a href="/prf-sponsor" data-prf-offer data-out="prf-sponsor">See your block and ask &rarr;</a></aside>
     <p class="prf-status" id="prf-status" role="status"></p>
     <noscript><p class="prf-status is-bad">The calculator needs JavaScript. The dates, the rules, the worked example and the method below do not.</p></noscript>
 
@@ -107,7 +106,6 @@ HTML = f"""<!DOCTYPE html>
               <p class="prf-hint"><span id="prf-co-why">This grid touches <span id="prf-co-n"></span> counties, and each has its own dollar values and limits.</span> <span id="prf-co-how"></span></p>
             </div>
             <details class="prf-about"><summary>Grid edges, size and the official map</summary><p class="prf-fine" id="prf-where-f"></p></details>
-            <div class="prf-notice" data-prf-notice hidden></div>
           </section>
 
           <section class="prf-card prf-block prf-o3" id="prf-setup" aria-labelledby="prf-setup-h">
@@ -129,6 +127,12 @@ HTML = f"""<!DOCTYPE html>
                 <div class="prf-cov" id="prf-cov">{COV}</div>
                 <p class="prf-hint">It pays when two months of precipitation in the grid come in under this percent of normal. 90% pays soonest and costs most.</p></fieldset>
             </div>
+            <details class="prf-more" id="prf-more">
+              <summary><span>Productivity factor</span> <span class="prf-more-v" id="prf-pf-sum"></span></summary>
+              <fieldset class="prf-f"><legend class="prf-sr">Productivity factor, 60 to 150</legend>
+                <div class="prf-pf"><input id="prf-pf" type="range" min="60" max="150" step="1" value="100" aria-label="Productivity factor, slider"><label class="prf-sr" for="prf-pf-n">Productivity factor, 60 to 150</label><input id="prf-pf-n" type="number" inputmode="numeric" min="60" max="150" step="1" value="100" aria-describedby="prf-pf-hint"></div>
+                <p class="prf-hint" id="prf-pf-hint"></p></fieldset>
+            </details>
 
             <div class="prf-ivwrap prf-o4">
               <div class="prf-iv-head"><h3 id="prf-iv-h">Months to insure</h3><span class="prf-iv-total" id="prf-iv-total" role="status" aria-live="polite"></span></div>
@@ -143,23 +147,6 @@ HTML = f"""<!DOCTYPE html>
               <p class="prf-hint">At least two pairs of months, no month in two pairs, and the parts add to 100%. The page opens on April to May and June to July as an example, not a recommendation. Insure the months when a dry spell costs you grass or hay.</p>
             </div>
 
-            <section class="prf-outlook" id="prf-outlook" aria-labelledby="prf-outlook-h" hidden>
-              <h3 id="prf-outlook-h">Long-range outlook</h3>
-              <div class="prf-outlook-body" id="prf-outlook-body"></div>
-            </section>
-
-            <section class="prf-now" id="prf-now" aria-labelledby="prf-now-h" hidden>
-              <h3 id="prf-now-h">This interval so far, <span data-pn-grid></span></h3>
-              <p class="pn-sub">Where the grid stands in the pairs of months still open, before RMA&rsquo;s final index. Preliminary.</p>
-              <div data-pn-body></div>
-            </section>
-
-            <details class="prf-more" id="prf-more">
-              <summary><span>Productivity factor</span> <span class="prf-more-v" id="prf-pf-sum"></span></summary>
-              <fieldset class="prf-f"><legend class="prf-sr">Productivity factor, 60 to 150</legend>
-                <div class="prf-pf"><input id="prf-pf" type="range" min="60" max="150" step="1" value="100" aria-label="Productivity factor, slider"><label class="prf-sr" for="prf-pf-n">Productivity factor, 60 to 150</label><input id="prf-pf-n" type="number" inputmode="numeric" min="60" max="150" step="1" value="100" aria-describedby="prf-pf-hint"></div>
-                <p class="prf-hint" id="prf-pf-hint"></p></fieldset>
-            </details>
             <button type="button" class="btn btn-secondary prf-addb" id="prf-addb">Compare with a second setup</button>
             </div>
           </section>
@@ -191,10 +178,23 @@ HTML = f"""<!DOCTYPE html>
           </section>
 
           <aside class="prf-spon" id="prf-spon" hidden></aside>
+          <div class="prf-notice" data-prf-notice hidden></div>
+          <aside class="prf-spon-band prf-spon-offer" aria-label="For businesses"><span class="prf-spon-tag">For businesses</span> <span class="prf-spon-t">Sponsor PRF in your states.<span class="prf-spon-x"> One business per state, on the state page and every county page in it.</span> Price on request.</span> <a href="/prf-sponsor" data-prf-offer data-out="prf-sponsor">See your block and ask &rarr;</a></aside>
           <section class="prf-block prf-o5" id="prf-cmp-wrap" aria-labelledby="prf-cmp-h" hidden><h3 id="prf-cmp-h">Setup A against setup B</h3><div id="prf-cmp"></div></section>
 
           <section class="prf-o6" aria-labelledby="prf-det-h">
           <h2 class="prf-step-h"><span class="prf-n" aria-hidden="true">4</span><span id="prf-det-h">The details</span></h2>
+          <details class="prf-d" id="prf-now-d" hidden><summary><span class="prf-d-t">This interval so far<span class="prf-d-x">Where the grid stands in the pairs of months still open, before RMA&rsquo;s final index</span></span></summary><div>
+            <section class="prf-now" id="prf-now" aria-labelledby="prf-now-h" hidden>
+              <h3 id="prf-now-h">This interval so far, <span data-pn-grid></span></h3>
+              <p class="pn-sub">Where the grid stands in the pairs of months still open, before RMA&rsquo;s final index. Preliminary.</p>
+              <div data-pn-body></div>
+            </section></div></details>
+          <details class="prf-d" id="prf-outlook-d" hidden><summary><span class="prf-d-t">Long-range outlook<span class="prf-d-x">NOAA&rsquo;s precipitation outlook by pair of months, ENSO and the drought map, for this grid</span></span></summary><div>
+            <section class="prf-outlook" id="prf-outlook" aria-labelledby="prf-outlook-h" hidden>
+              <h3 id="prf-outlook-h">Long-range outlook</h3>
+              <div class="prf-outlook-body" id="prf-outlook-body"></div>
+            </section></div></details>
           <details class="prf-d" id="prf-years-d"><summary><span class="prf-d-t">Every year, in numbers<span class="prf-d-x">What it would have paid each year, interval by interval</span></span></summary><div id="prf-years"></div></details>
           <section id="prf-optimize" class="prf-block" aria-labelledby="prf-opt-h"><h2 id="prf-opt-h">What the numbers would pick</h2><p class="po-note">This is what the history and current outlook point to, not advice. RMA rates already price most of this in.</p><div data-opt-body></div></section>
           <details class="prf-d" id="prf-pol-d"><summary><span class="prf-d-t">The policy, interval by interval<span class="prf-d-x">Protection, premium and USDA&rsquo;s share on each line, as an insurer lists them</span></span></summary><div id="prf-pol"></div></details>

@@ -46,7 +46,10 @@ test("print CSS: one Letter page, the sheet shown, the panels and the pick hidde
   for (const sel of [".prf-ph {", ".prf-pp {", ".prf-pm {", ".prf-pq {", ".prf-pbot {", ".prf-spon-p:not([hidden])"]) assert.ok(PRINT.includes(sel), "styled in print: " + sel);
   const sizes = [...PRINT.matchAll(/font-size:\s*([\d.]+)pt/g)].map((m) => +m[1]);
   assert.ok(sizes.length > 10 && Math.min(...sizes) >= 9, "no print type under 9pt: " + Math.min(...sizes));
-  assert.match(CSS, /\.prf-ph, \.prf-pp, \.prf-pm, \.prf-pcap, \.prf-pbot, \.prf-pq, \.prf-spon-p \{ display: none; \}/, "hidden on screen");
+  assert.match(CSS, /\.prf-ph, \.prf-pp, \.prf-pcap, \.prf-pbot, \.prf-pq, \.prf-spon-p \{ display: none; \}/, "hidden on screen");
+  /* the plain "What this means" line shows on screen too (Sig, Oct 20), and hides only when empty */
+  assert.match(CSS, /\.prf-pm:empty \{ display: none; \}/);
+  assert.ok(!/\.prf-pcap[^{]*\.prf-pm|\.prf-pm[^{]*\.prf-pcap/.test(CSS.split("@media print")[0]), "the plain line is not in the screen-hidden list");
 });
 
 test("prf.js fills the sheet on every render: the live link with the same settings, the QR, the sources with dates, one plain line", () => {

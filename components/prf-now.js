@@ -187,9 +187,11 @@
     var pick = el.querySelector('[data-pn-pick]');
     var cur = { st: el.dataset.st || '', grid: el.dataset.grid || '' };
 
+    /* On /prf the card sits in a folded row of step 4 (details.prf-d, Oct 20): the row shows when the card does. */
+    var row = el.closest ? el.closest('details.prf-d') : null;
     function show() {
-      if (!cur.st || !cur.grid) { el.hidden = true; return; }
-      el.hidden = false;
+      if (!cur.st || !cur.grid) { el.hidden = true; if (row) row.hidden = true; return; }
+      el.hidden = false; if (row) row.hidden = false;
       if (pick) { var sel = pick.querySelector('select'); if (sel) sel.value = String(cur.grid); }
       load(cur.st, el.dataset.src).then(function (doc) {
         body.innerHTML = render(model(doc, +cur.grid, todayStr(el)));

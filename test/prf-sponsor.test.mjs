@@ -264,7 +264,7 @@ test("every county page carries the one-line offer for its own state near the to
   assert.equal(n, meta.counts.counties);
 });
 
-test("/prf: the offer band under the intro and above the tool, the sponsor box beside the result, the script before prf.js", () => {
+test("/prf: the offer band under the step 3 answer, the sponsor box beside the result, the script before prf.js", () => {
   const h = readFileSync(ROOT + "prf.html", "utf8");
   const offers = h.match(/prf-spon-offer/g) || [];
   assert.equal(offers.length, 1, "one offer on /prf, not two");
@@ -276,8 +276,10 @@ test("/prf: the offer band under the intro and above the tool, the sponsor box b
   assert.ok(o.includes('<a href="/prf-sponsor" data-prf-offer data-out="prf-sponsor">See your block and ask &rarr;</a>'), "the offer goes to /prf-sponsor");
   assert.ok(!PRICE.test(o) && !BAND_BAD.test(o) && !/left/i.test(o));
   const at = h.indexOf(o);
-  assert.ok(at > h.indexOf('class="prf-lede"'), "the band sits under the intro");
-  assert.ok(at < h.indexOf('id="prf-app"'), "the band sits above the tool");
+  /* Sig, Oct 20: the sponsor ask moves below the step 3 answer */
+  assert.ok(at > h.indexOf('id="prf-answer"') && at > h.indexOf('id="prf-spon"'), "the band sits under the answer");
+  assert.ok(at < h.indexOf('id="prf-det-h"') && at < h.indexOf('id="prf-optimize"'), "the band sits above step 4");
+  assert.ok(h.indexOf('id="prf-app"') < at, "not above the tool any more");
   assert.ok(!/ag-sponsor-ribbon prf-spon-offer/.test(h), "the old bottom offer is gone");
   const box = h.indexOf('<aside class="prf-spon" id="prf-spon" hidden></aside>');
   assert.ok(box > h.indexOf('id="prf-answer"') && box < h.indexOf('id="prf-optimize"'), "the sponsor box sits beside the result, outside the panel");
