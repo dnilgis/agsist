@@ -249,6 +249,48 @@ test("P3: a locked card that lets the name change shows the giver's name and red
   }, { where: true, gift });
 });
 
+// ---------- the card holder at phone width (2026-10-20, Sig: what they get and how to use it, plainly) ----------
+test("P3b: at 390 px a card holder reads who it's from, what it covers and two steps; no 'Want a gift card?' box", { skip }, async () => {
+  const yr = RP.encodeCode({ place: "Chetek, WI", station: "471667 2", year: 2026, style: "r1", name: "Gustum Farm", markers: [] });
+  const gift = { ok: true, kind: "locked", product: "framed12x18", to: "Dad", from_line: "Kate", ships: "january", status: "issued", lock: { design_code: yr, edit: "none" } };
+  await withPage(async (page, base, errors) => {
+    await page.goto(base + "/rain-print.html?gift=" + cardCode());
+    await page.waitForFunction(() => !document.getElementById("rp-gift-use-wrap").hidden, null, { timeout: 15000 });
+    await page.waitForFunction(() => document.querySelector("#rp-art svg") && !document.getElementById("rp-art").getAttribute("aria-busy"), null, { timeout: 30000 });
+    await settle(page);
+    const b = (await page.innerText("#rp-gift-banner")).replace(/\s+/g, " ");
+    assert.match(b, /^A gift for Dad from Kate Your card covers one framed 13 x 19 Rain Print, shipping included\. /);
+    assert.match(b, /Your print is below, already picked\. Tap Use my gift, then say where it goes\. Nothing to pay\./);
+    assert.match(b, /Your 2026 print comes in January, once the full year is in\. The card never expires; it works once\./);
+    assert.equal(await page.getAttribute("#rp-gift-banner a.rpg-go", "href"), "#rp-gift-use-wrap");
+    assert.equal(await page.isVisible("#rp-gift"), false, "the receiver is never asked if they want a gift card");
+    assert.equal(await page.isVisible("#rp-xmas-top"), false, "no buying lines over the card's banner");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390, "nothing wider than the phone");
+    assert.deepEqual(errors, []);
+  }, { where: true, gift, width: 390, height: 844, time: "2026-10-21T17:00:00Z" });
+});
+
+test("P3c: a prepaid card (bought with the address at checkout, worker v5.40) shows its print and asks nothing", { skip }, async () => {
+  const yr = RP.encodeCode({ place: "Chetek, WI", station: "471667 2", year: 2026, style: "r1", name: "Gustum Farm", markers: [] });
+  const gift = { ok: true, kind: "locked", product: "framed12x18", to: "Dad", from_line: "", ships: "january", status: "redeemed", redeemed_on: "Oct 21, 2026", prepaid: true, lock: { design_code: yr, edit: "none" } };
+  await withPage(async (page, base, errors) => {
+    await page.goto(base + "/rain-print.html?gift=" + cardCode());
+    await page.waitForFunction(() => !document.getElementById("rp-gift-use-wrap").hidden, null, { timeout: 15000 });
+    await page.waitForFunction(() => document.querySelector("#rp-art svg") && !document.getElementById("rp-art").getAttribute("aria-busy"), null, { timeout: 30000 });
+    await settle(page);
+    const b = (await page.innerText("#rp-gift-banner")).replace(/\s+/g, " ");
+    assert.match(b, /^A gift for Dad One framed 13 x 19 Rain Print, shipping included\. It’s paid for and on its way, so there’s nothing to fill in\. Below is the print so far\./);
+    assert.ok(!/used on|wasn’t you/.test(b), "never 'this card was used' for a gift bought with the address");
+    assert.ok(!(await page.getAttribute("#rp-gift-banner", "class")).includes("rpg-bad"));
+    assert.equal(await page.inputValue("#rp-name"), "Gustum Farm", "the giver's design is drawn");
+    assert.equal(await page.isVisible("#rp-gift-use"), false, "no Use my gift");
+    assert.match(await page.textContent("#rp-gift-use-note"), /This gift is paid for and on its way: one framed 13 x 19 Rain Print, shipping included\. There’s nothing to do here\./);
+    for (const id of ["#rp-pay-wrap", "#rp-prods", "#rp-gift"]) assert.equal(await page.isVisible(id), false, id + " hidden");
+    assert.equal(await page.evaluate(() => { try { return sessionStorage.getItem("agsist-rp-gift"); } catch (e) { return "x"; } }), null, "not kept for the next visit");
+    assert.deepEqual(errors, []);
+  }, { where: true, gift, width: 390, height: 844, time: "2026-10-21T17:00:00Z" });
+});
+
 // ---------- P4 ----------
 const LAST = { place: "Chetek, WI", year: "2026", style: "r1", name: "The Olson Farm" };
 test("P4: on Jan 4, a station behind on December still draws last year, as a preview, and the order waits for the full year", { skip }, async () => {

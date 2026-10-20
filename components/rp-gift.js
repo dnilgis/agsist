@@ -143,7 +143,7 @@
     if (G.prepaid) {
       // set when it was bought (worker v5.40): the giver gave the address at checkout, so nothing to fill in
       G.text = from + ': ' + what + '. It\u2019s paid for and on its way, so there\u2019s nothing to fill in.' + (jan ? ' ' + jan : '');
-      G.steps = ['It\u2019s paid for and on its way. There\u2019s nothing to fill in.'].concat(G.lock ? ['Below is ' + (G.ships === 'january' ? 'the print so far' : 'your print') + '.'] : []);
+      G.steps = ['It\u2019s paid for and on its way, so there\u2019s nothing to fill in.' + (G.lock ? ' Below is ' + (G.ships === 'january' ? 'the print so far' : 'your print') + '.' : '')];
       G.note = jan;
       return G;
     }
@@ -187,7 +187,7 @@
     el.setAttribute('role', 'status');
     var html;
     if (G.ok && (G.usable || G.prepaid)) {
-      html = '<p class="rpg-h"><b>' + esc(G.head) + '</b></p><p>' + (G.prepaid ? 'It\u2019s ' : 'Your card covers ') + esc(product(G.product)) + '.</p>' +
+      html = '<p class="rpg-h"><b>' + esc(G.head) + '</b></p><p>' + (G.prepaid ? esc(product(G.product).charAt(0).toUpperCase() + product(G.product).slice(1)) : 'Your card covers ' + esc(product(G.product))) + '.</p>' +
         (G.usable ? '<ol class="rpg-steps">' + G.steps.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ol>'
           : G.steps.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('')) +
         (G.note ? '<p class="rpg-note">' + esc(G.note) + '</p>' : '') +

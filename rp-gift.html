@@ -297,7 +297,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
     o += '<p class="code" aria-label="Gift card code ' + esc(C.code.split('').join(' ')) + '">' + esc(C.code) + '</p>';
     if (C.prepaid) {
       // set when it was bought (worker v5.40): nothing to fill in; the square opens the print to look at
-      o += '<p class="never">Paid for and on its way. Nothing to fill in.</p>';
+      o += '<p class="never">Paid for. Nothing to fill in.</p>';
       o += '<div class="how">' + (qr ? '<div class="qrbox">' + qr + '</div>' : '') + '<p><b>To see your print,</b> scan the square, or go to<br><span class="url">agsist.com/rain-print?gift=' + esc(C.code) + '</span></p></div>';
     } else if (C.status === 'redeemed') {
       o += '<p class="never">Already set: Sig has the order. Nothing to do.</p>';
@@ -352,7 +352,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
     o += coming() + '</div><div class="r">';
     if (qr && (C.status !== 'redeemed' || C.prepaid)) o += '<div class="qrbox">' + qr + '</div>';
     o += '<p class="code" aria-label="Gift card code ' + esc(C.code.split('').join(' ')) + '">' + esc(C.code) + '</p>';
-    o += C.prepaid ? '<p class="use">To see your print, scan the square or go to<br><span class="url">agsist.com/rain-print?gift=' + esc(C.code) + '</span></p><p class="never">Paid for and on its way. Nothing to fill in.</p>'
+    o += C.prepaid ? '<p class="use">To see your print, scan the square or go to<br><span class="url">agsist.com/rain-print?gift=' + esc(C.code) + '</span></p><p class="never">Paid for. Nothing to fill in.</p>'
       : C.status === 'redeemed' ? '<p class="never">Already set: Sig has the order. Nothing to do.</p>'
       : '<p class="use">' + (C.lock ? 'To see your print' : 'To pick the farm and the year') + ', scan the square or go to<br><span class="url">agsist.com/rain-print?gift=' + esc(C.code) + '</span></p><p class="never">Never expires. Use it once.</p>';
     o += '</div></div>';

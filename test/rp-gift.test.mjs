@@ -430,11 +430,24 @@ test("rp-gift.js: the same code rules as the worker, and the banner words", () =
   assert.match(jan, /so I’ll email you a link for the difference\./);
   for (const t of [now, jan, v]) assert.doesNotMatch(t, /\bSig (has|will)\b|last rain is in|within a day/);
   assert.equal(G._state({ ok: false, status_code: 429 }, good).usable, false);
+  // v5.40: a card set at checkout (prepaid): looked at, nothing to fill in, never "used on"
+  const pre = G._state({ ok: true, kind: "locked", product: "framed12x18", to: "Dad", lock: { design_code: CODE, edit: "none" }, ships: "january", status: "redeemed", redeemed_on: "Oct 21, 2026", prepaid: true }, good);
+  assert.equal(pre.prepaid, true); assert.equal(pre.usable, false);
+  assert.doesNotMatch(pre.text, /used on/);
+  assert.match(pre.text, /It’s paid for and on its way, so there’s nothing to fill in\. Your 2025 print comes in January/);
+  assert.equal(pre.head, "A gift for Dad");
+  assert.equal(G._state({ ok: true, status: "redeemed", redeemed_on: "Oct 21, 2026", prepaid: false }, good).prepaid, false, "a card someone used is still 'used on'");
+  assert.deepEqual([...open.steps], ["Type the farm or town and pick a year. Your print draws below.", "Tap Use my gift, then say where it goes. Nothing to pay."]);
+  assert.equal(G._state({ ok: true, kind: "open", product: "digital", status: "issued" }, good).steps[1], "Tap Use my gift, then give your email for the file. Nothing to pay.");
   for (const f of ["components/rp-gift.js", "rp-gift.html"]) assert.doesNotMatch(read(f), /—/, f + ": no em dashes");
 });
 
 test("rp-gift.html: the card's words (station, marked days, full year, card number, trim)", () => {
   const h = read("rp-gift.html");
+  // v5.40: a card bought with the address at checkout keeps its square to see the print, and asks nothing
+  assert.match(h, /o \+= C\.prepaid \? '<p class="use">To see your print, scan the square or go to<br><span class="url">agsist\.com\/rain-print\?gift=' \+ esc\(C\.code\) \+ '<\/span><\/p><p class="never">Paid for\. Nothing to fill in\.<\/p>'/);
+  assert.match(h, /if \(qr && \(C\.status !== 'redeemed' \|\| C\.prepaid\)\)/);
+  assert.match(h, /say\(j\.status === 'redeemed' && !j\.prepaid \?/, "a prepaid card is never 'has been used'");
   // The marked-days phrase, run from the page's own function.
   const src = h.match(/function marked\(d\) \{[\s\S]*?\n  \}/);
   assert.ok(src, "marked() is on the card page");
