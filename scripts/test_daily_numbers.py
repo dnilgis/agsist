@@ -20,6 +20,8 @@ THE DAILY'S STANDING FACTS AND NUMBERS, PINNED (2026-10-20 panel, C2 A2 F2 F5).
 Fixtures and repo data only: no network, no model call, nothing sent.
 """
 import json
+import glob
+import datetime as _dtmod
 import os
 import re
 import shutil
@@ -210,7 +212,11 @@ def test_frozen_counts():
     check(byid["basis_spread_corn"]["key"] == [f for f in oct19["facts"] if f["id"] == "basis_spread_corn"][0]["key"]
           and "frozen_from" not in byid["basis_spread_corn"],
           "today's basis snapshot is not frozen")
-    newday = {"facts": [{"id": "cash_change_corn", "kind": "cash_change", "as_of": "2026-10-19", "key": "x", "n": 1}]}
+    # a day after every issue on disk, so no archived issue can have printed it (a fixed past date stopped working the
+    # day an issue printed it: Oct 19 was "never printed" until the Oct 20 issue came out)
+    last = max(os.path.basename(f)[:10] for f in glob.glob(str(REPO / "data" / "daily-archive" / "20??-??-??.json")))
+    nxt = (_dtmod.date.fromisoformat(last) + _dtmod.timedelta(days=1)).isoformat()
+    newday = {"facts": [{"id": "cash_change_corn", "kind": "cash_change", "as_of": nxt, "key": "x", "n": 1}]}
     check(de.freeze(newday, pub)["facts"][0].get("frozen_from") is None, "a day no issue has printed is counted fresh")
     src = open(os.path.join(HERE, "daily_edge.py")).read()
     check("return freeze(build(" in src, "build_from_files freezes before writing daily-edge.json")
