@@ -258,7 +258,7 @@ jobs:
         continue-on-error: true
         run: python scripts/fetch_atlas_wells_states.py
 
-      - name: Fetch rain and July highs (NCEI nClimDiv)
+      - name: Fetch rain and July highs, plus single months (NCEI nClimDiv)
         if: steps.which.outputs.climate == '1'
         continue-on-error: true
         run: python scripts/fetch_atlas_climate.py
@@ -401,7 +401,9 @@ jobs:
       # starts from the last pulls that did land.
       - name: Save the raw pulls to the raw branch
         if: ${{ !cancelled() }}
-        run: bash scripts/push_raw.sh "farmland atlas raw" $(ls data/atlas/raw/*.json | grep -v '/drought\.json$')
+        # *.json.gz too: climate_monthly.json.gz (every month of rain, highs and
+        # lows per county, for analysis; no page or build reads it).
+        run: bash scripts/push_raw.sh "farmland atlas raw" $(ls data/atlas/raw/*.json data/atlas/raw/*.json.gz 2>/dev/null | grep -v '/drought\.json$')
 
       - name: IndexNow ping
         run: |
