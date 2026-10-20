@@ -509,6 +509,7 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             "phone": src.get("phone") or "", "checked": parse_ts(src.get("checkedAt")),
             "last_priced": None, "rows": [], "why": Counter(), "how": how["how"], "near_mi": how.get("mi"),
             "town": tname, "state": st, "pin": ovr["pin"] if ovr else _pin(b),
+            "precision": "street" if ovr else b.get("precision"),
             # hours, contact, note and closed-until of an elevator that posts
             # its own bids through agsist.com/post; None for every other board
             "portal": portal_info(src.get("portal"))})
@@ -1860,6 +1861,100 @@ def lead_first(boards):
     return lead + [b for b in boards if all(b is not x for x in lead)]
 
 
+COUNTY_GEO = os.path.join("data", "atlas", "counties.geo.json")
+COUNTY_INDEX = os.path.join("farmland-atlas", "data", "counties-index.json")
+
+
+def _in_ring(x, y, ring):
+    inside, j = False, len(ring) - 1
+    for i in range(len(ring)):
+        xi, yi = ring[i][0], ring[i][1]
+        xj, yj = ring[j][0], ring[j][1]
+        if (yi > y) != (yj > y) and x < (xj - xi) * (y - yi) / ((yj - yi) or 1e-12) + xi:
+            inside = not inside
+        j = i
+    return inside
+
+
+def county_finder(root="."):
+    """find(lat, lon, ST) -> {"name", "links": [(href, text)]} for the county a
+    point is in, from the Atlas's county shapes (data/atlas/counties.geo.json),
+    with the county's own rain, Atlas and ARC/PLC pages that are real pages on
+    disk (a pointer or a missing file is left out). None when the files are
+    missing (the line is then left off every page) or the point is in no
+    county of that state."""
+    try:
+        with open(os.path.join(root, COUNTY_GEO), encoding="utf-8") as f:
+            geo = json.load(f)
+        with open(os.path.join(root, COUNTY_INDEX), encoding="utf-8") as f:
+            idx = {r[0]: (r[1], r[2]) for r in json.load(f) if isinstance(r, list) and len(r) == 3}
+    except (OSError, ValueError):
+        return None
+    by_st = defaultdict(list)
+    for ft in geo.get("features") or []:
+        g, pr = ft.get("geometry") or {}, ft.get("properties") or {}
+        polys = g.get("coordinates") or []
+        if g.get("type") == "Polygon":
+            polys = [polys]
+        elif g.get("type") != "MultiPolygon":
+            continue
+        pts = [p for poly in polys for p in (poly[0] if poly else [])]
+        if not pts or ft.get("id") not in idx:
+            continue
+        bb = (min(p[0] for p in pts), min(p[1] for p in pts), max(p[0] for p in pts), max(p[1] for p in pts))
+        by_st[pr.get("st")].append((bb, polys, ft["id"]))
+
+    def real(rel):
+        p = os.path.join(root, rel)
+        return os.path.isfile(p) and not PP.is_pointer(p)
+    memo = {}
+
+    def find(lat, lon, st):
+        for bb, polys, fips in by_st.get(st, []):
+            if not (bb[0] <= lon <= bb[2] and bb[1] <= lat <= bb[3]):
+                continue
+            if not any(_in_ring(lon, lat, poly[0]) and not any(_in_ring(lon, lat, h) for h in poly[1:])
+                       for poly in polys if poly):
+                continue
+            if fips not in memo:
+                label, atlas = idx[fips]
+                name = label.rsplit(", ", 1)[0]
+                ssl, slug = atlas.strip("/").split("/")[-2:]
+                links = []
+                for rel, href, text in ((f"rain/{ssl}/{slug}.html", f"/rain/{ssl}/{slug}", "rain this year"),
+                                        (atlas.strip("/") + ".html", atlas, "farmland and cash rent"),
+                                        (f"arc-plc/{ssl}/{slug}.html", f"/arc-plc/{ssl}/{slug}", "ARC or PLC")):
+                    if real(rel):
+                        links.append((href, text))
+                memo[fips] = {"name": name, "links": links} if links else None
+            return memo[fips]
+        return None
+    return find
+
+
+def county_line(t, center, ctx):
+    """One plain line of links to the county's own pages (SEO seat, Oct 19, 2026:
+    the ARC/PLC county set had a median of 4 links in). The county is the one
+    the town's elevators sit in: the middle of their street-level pins, else the
+    town's centre, else the centre of one of the town's own ZIPs (a board with
+    no ZIP or pin; Texhoma, TX posts the Oklahoma ZIP across the line). ''
+    when there is no county or no page for it."""
+    find = ctx.get("county")
+    if not find:
+        return ""
+    pins = sorted(bd["pin"] for bd in t["boards"].values()
+                  if bd.get("pin") and bd.get("how") != "near" and bd.get("precision") == "street")
+    pts = ([pins[len(pins) // 2]] if pins else []) + ([center[:2]] if center else [])
+    zc = ctx.get("zip_coord")
+    if zc:
+        pts += [c for c in (zc(x) for x in (ctx.get("town_zips") or {}).get((t["state"], town_key(t["name"])), [])) if c]
+    c = next((r for r in (find(p[0], p[1], t["state"]) for p in pts) if r), None)
+    if not c:
+        return ""
+    return (f'<p class="cbt-sub">{esc(c["name"])}: '
+            + " &middot; ".join(f'<a href="{esc(h)}">{esc(x)}</a>' for h, x in c["links"]) + "</p>")
+
+
 def build_town_page(t, ctx):
     st, sname = t["state"], STATE_NAMES[t["state"]]
     ssl = url_slug(sname)
@@ -2034,6 +2129,7 @@ def build_town_page(t, ctx):
   read successfully in the last {SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="{esc(live)}">live page</a>
   has the newest board and nearby elevators. Basis is cash minus the futures contract named under it.{near_note}{hold_note}{HIST_NOTE if hist_html else ''}</div>
+  {county_line(t, center, ctx)}
   <p class="cbt-sub">{' &middot; '.join(links)}</p>
 """
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
@@ -2939,7 +3035,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
            "counts": state_counts(towns, near), "zip_coord": zip_coord, "summaries": summaries,
            "hist": _hist_lookup(hist_dir) if hist_dir else None, "live_all": live_board_list(towns),
            "town_zips": town_zips(zip_towns), "known": known_by_town(directory, tbs) if directory else {},
-           "odd": town_odd,
+           "odd": town_odd, "county": county_finder(root),
            "labels": {s_["id"]: s_["labelInFeed"] for s_ in index.get("sources") or []
                       if s_.get("id") and s_.get("labelInFeed")}}
     # one page per company with COMPANY_MIN or more boards in towns; each board
@@ -3548,6 +3644,7 @@ def selftest():
     _selftest_place()
     _selftest_name_fit()
     _selftest_lead()
+    _selftest_county()
     _selftest_share()
     _selftest_best()
     _selftest_restricted()
@@ -3825,6 +3922,39 @@ def _selftest_lead():
     assert town_title("Nevada, IA", [key, dict(key)]) == "Cash Grain Bids in Nevada, IA Today: Key Cooperative"
     assert town_title("Nevada, IA", []) == "Cash Grain Bids in Nevada, IA Today | AGSIST"
     assert town_title("Bloomington Springs, TN", [lin]) == "Cash Grain Bids in Bloomington Springs, TN Today | AGSIST"
+
+
+def _selftest_county():
+    """A town page links its county's rain, Atlas and ARC/PLC pages, only those that are real pages."""
+    import tempfile as _tf
+    with _tf.TemporaryDirectory() as d:
+        sq = lambda x0, y0, x1, y1: [[[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]]  # noqa: E731
+        geo = {"features": [
+            {"id": "19169", "properties": {"name": "Story", "st": "IA"}, "geometry": {"type": "Polygon",
+             "coordinates": sq(-93.70, 41.86, -93.23, 42.21)}},
+            {"id": "19079", "properties": {"name": "Hamilton", "st": "IA"}, "geometry": {"type": "MultiPolygon",
+             "coordinates": [sq(-93.93, 42.21, -93.46, 42.56)]}}]}
+        idx = [["19169", "Story County, IA", "/farmland-atlas/iowa/story-county"],
+               ["19079", "Hamilton County, IA", "/farmland-atlas/iowa/hamilton-county"]]
+        for rel, body in ((COUNTY_GEO, json.dumps(geo)), (COUNTY_INDEX, json.dumps(idx)),
+                          ("rain/iowa/story-county.html", "<html>rain</html>"),
+                          ("farmland-atlas/iowa/story-county.html", "<html>atlas</html>"),
+                          ("arc-plc/iowa/story-county.html", PP.page("/arc-plc/iowa/", "Story", "Iowa")),
+                          ("rain/iowa/hamilton-county.html", "<html>rain</html>")):
+            os.makedirs(os.path.dirname(os.path.join(d, rel)), exist_ok=True)
+            with open(os.path.join(d, rel), "w") as f:
+                f.write(body)
+        ctx = {"county": county_finder(d), "zip_coord": {"50201": (42.02, -93.45)}.get,
+               "town_zips": {("IA", "nevada"): ["50201"]}}
+        t = {"state": "IA", "name": "Nevada", "boards": {"a": {"pin": (42.0, -93.4), "how": "name", "precision": "street"}}}
+        ln = county_line(t, None, ctx)
+        assert ln == ('<p class="cbt-sub">Story County: <a href="/rain/iowa/story-county">rain this year</a> &middot; '
+                      '<a href="/farmland-atlas/iowa/story-county">farmland and cash rent</a></p>'), ln
+        t["boards"]["a"] = {"pin": None, "how": "name"}
+        assert county_line(t, None, ctx) == ln, "no pin: the town's own ZIP"
+        assert "Hamilton County" in county_line(t, (42.4, -93.6, "x"), ctx)
+        assert county_line(t, (40.0, -90.0, "x"), {"county": ctx["county"]}) == ""
+        assert county_line(t, None, {}) == "" and county_finder(os.path.join(d, "nope")) is None
 
 
 def _selftest_share():
