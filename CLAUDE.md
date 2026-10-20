@@ -1,33 +1,4 @@
-# AGSIST: notes for anyone building here
+# agsist
 
-agsist.com is a static GitHub Pages site. GitHub Pages will not deploy a site
-over 1 GB. Past that the site does not break, it freezes: every data commit
-stops reaching readers and nothing on the page says so.
-
-## Build pages the efficient way
-
-Before generating a set of pages (one per county, town, state, crop), decide
-what has to be in each file and what can come from data:
-
-- **In every page:** what a reader or a search engine needs at first glance.
-  Title, the answer, the key numbers, FAQ, structured data.
-- **Loaded from data on demand:** anything bulky or rarely opened. Detail
-  tables, scenario grids, "show the math", full calculators. Put it in one
-  data file per state (or per set) and render it when the reader opens it.
-- **One shared page, not one file per item:** anything that is the same
-  layout filled with different data and does not need to rank in search
-  (print sheets, embeds, share views). Use one page with a query parameter.
-
-Multiply before shipping: page size x number of pages. A 100 KB template
-across 2,800 counties is 280 MB.
-
-`scripts/check_site_budget.py` enforces this (published total, per-folder
-budgets, and a 150 KB cap on any page in a generated set). Run it before shipping
-any generated page set; the site-budget workflow runs it on every push. Raising a budget is a decision: change the number in that file in the
-same commit and say why.
-
-## New session? Start here
-
-The working notes live in Sig's private repo dnilgis/agsistretired, folder notes/ (off the public site). Add it to the session (add_repo), then read `notes/HANDOFF.md` (how we ship, where things live, what is open) and
-`notes/STANDING-DECISIONS.md` (Sig's rules) before doing anything. Ship checks: `scripts/dev/checks.sh`.
-After editing a note, commit it in that private repo; never commit notes to this public repo.
+Static site. Before building, read notes/HANDOFF.md, notes/STANDING-DECISIONS.md and notes/BUILD-RULES.md in the
+owner's private repo (dnilgis/agsistretired). Ship checks: scripts/dev/checks.sh. Size limits: scripts/check_site_budget.py.
