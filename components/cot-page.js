@@ -117,6 +117,19 @@ function fmtKShort(n) {
    when it has not, nothing here is shown. */
 var CX_A = null;              // the analysis file, once the guard has passed it
 var COT_SUMMARY = null;       // the cot.json payload on screen
+/* THE ONE PRINTED PERCENTILE (2026-10-20, panel F3). cot_analysis.shown_pct()
+   writes it as crowd.shown; this is the same rule for a file without it.
+   Whole number, 1 to 99, and rounding never carries a not-crowded 89.8 up to
+   the 90th (the crowded line) or a not-crowded 10.2 down to the 10th. The card
+   printed "90th" beside The Read's "89th" for soybeans' 89.8. */
+function shownPct(p, crowded, hi, lo){
+  if(p==null||isNaN(p)) return null;
+  hi=hi==null?90:hi; lo=lo==null?10:lo;
+  var n=Math.min(99,Math.max(1,Math.round(p)));
+  if(!crowded&&n>=hi&&p<hi) n=Math.floor(hi)-1;
+  if(!crowded&&n<=lo&&p>lo) n=Math.floor(lo)+1;
+  return n;
+}
 function ordinal(n){n=Math.round(n);var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 function fmtMagK(n){var a=Math.abs(n);return a>=1000?(a/1000).toFixed(0)+'k':String(a);}
 function divLabel(d){return d==='bearish'?'net rose while price fell':d==='bullish'?'net fell while price rose':d==='confirmed-up'?'net and price both rose':d==='confirmed-down'?'net and price both fell':'';}
@@ -201,7 +214,9 @@ function renderInsight(key){
      52-week figure in contracts moves under "show the math". */
   var cr=c.crowd,cp=cr?cr.pctl:(c.pctl&&c.pctl.net_oi_all);
   if(pill){
-    pill.textContent=cp==null?'':((c.crowded&&cr&&cr.word)?cr.word+', crowded '+c.crowded:ordinal(Math.max(1,Math.min(99,cp)))+' percentile')
+    var th=(CX_A&&CX_A.thresholds)||{};
+    var sp=(cr&&typeof cr.shown==='number')?cr.shown:shownPct(cp,c.crowded,th.crowded_hi,th.crowded_lo);
+    pill.textContent=cp==null?'':((c.crowded&&cr&&cr.word)?cr.word+', crowded '+c.crowded:ordinal(sp)+' percentile')
       +' of every week since '+String(c.first_week||'').slice(0,4)+', as a share of open interest';
     pill.className='cot-pctl'+(c.crowded==='long'?' hot':c.crowded==='short'?' cold':'');
   }
