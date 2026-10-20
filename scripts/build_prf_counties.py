@@ -120,19 +120,21 @@ def dollars(x):
     return f"${x:,.0f}"
 
 
-def example_html(ex, cy, y0, y1, many, ng):
-    """The labeled 100-acre example under the stat tiles (scripts/prf_county_facts.mjs countyExample):
-    the calculator's opening policy, priced on the county's middle grid by premium."""
+def example_html(ex, cy, y0, y1, many, ng, read_day=""):
+    """The labeled 100-acre example (scripts/prf_county_facts.mjs countyExample): the calculator's
+    opening policy, priced on the county's middle grid by premium. Since Oct 20 (Sig) it is the page's
+    first answer, right under the lede, and it opens with what you pay, dated by the USDA files read."""
     if not ex:
         return ('<p class="prf-note prf-ex"><b>Example:</b> the calculator opens on April to May and June to July, and this county '
                 'does not offer both for grazing, so no example is priced here. The calculator prices the months it does offer.</p>')
     where = (f"grid {ex['grid']}, the middle of the county&rsquo;s {ex['of']} grids by premium" if ex["of"] > 1
              else f"grid {ex['grid']}")
-    return (f'<p class="prf-note prf-ex" id="example"><b>Example, not a recommendation:</b> 100 acres of grazing at 90% coverage, productivity factor 100, '
-            f'half in April to May and half in June to July, on {where}. The full premium is {dollars(ex["premium"])}: USDA pays {dollars(ex["usda"])} '
-            f'and you pay {dollars(ex["you"])}, or ${ex["you_acre"]:.2f} an acre. Run over {y0} to {y1} at {cy} rates, it would have paid in '
+    when = f" (USDA files read {read_day})" if read_day else ""
+    return (f'<p class="prf-note prf-ex" id="example"><b>What it costs here at {cy} rates{when}:</b> you pay {dollars(ex["you"])} a year, '
+            f'${ex["you_acre"]:.2f} an acre, for 100 acres of grazing at 90% coverage, productivity factor 100, half in April to May and half in June to July, '
+            f'on {where}. USDA pays {dollars(ex["usda"])} of the {dollars(ex["premium"])} full premium. Run over {y0} to {y1} at {cy} rates, it would have paid in '
             f'{ex["paid_years"]} of {ex["years"]} years, an average of {dollars(ex["avg"])} a year, or ${ex["avg_acre"]:.2f} an acre. '
-            f'{example_vs_premium(ex)}That is the past record, not a forecast, and it leaves out the administrative fee.</p>')
+            f'{example_vs_premium(ex)}That is the past record, not a forecast, and it leaves out the administrative fee. Example, not a recommendation.</p>')
 
 
 def example_vs_premium(ex):
@@ -281,7 +283,7 @@ def page(ctx):
             {"@type": "ListItem", "position": 4, "name": name, "item": url}]},
     ]
     ldh = "".join('<script type="application/ld+json">' + json.dumps(x, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/") + "</script>" for x in ld)
-    exh = example_html(fx.get("example"), cy, y0, y1, many, ng)
+    exh = example_html(fx.get("example"), cy, y0, y1, many, ng, S.long_date(meta["built"][:10]))
     # "This interval so far" (components/prf-now.js): the numbers come from
     # data/prf/now/<ST>.json when the reader opens the page, never baked here.
     ex_g = (fx.get("example") or {}).get("grid")
@@ -336,8 +338,9 @@ def page(ctx):
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/prf">PRF insurance calculator</a> &rsaquo; <a href="/prf/{st_slug}">{e(stn)}</a> &rsaquo; <span aria-current="page">{e(name)}</span></nav>
     <p class="page-kicker">Crop year {cy} &middot; sign-up deadline {sales}</p>
     <h1>PRF insurance in {e(full)}: {cy} grids, values and record</h1>
-    <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. USDA&rsquo;s {cy} files offer it in {e(name)} on {ng} {'grid' if ng == 1 else 'grids'}: {g_list}. It pays when precipitation in the grid over two months you choose comes in under a set share of normal.</p>
-    {ctx.get("story", "")}<p><a class="btn btn-primary prf-cta" href="{calc}" rel="nofollow">Open the PRF calculator</a></p>
+    <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. USDA&rsquo;s {cy} files offer it in {e(name)} on {('grid ' + g_list) if ng == 1 else (str(ng) + ' grids, each in the <a href="#grids">table of grids</a> below')}. It pays when precipitation in the grid over two months you choose comes in under a set share of normal.</p>
+    {exh}
+    <p><a class="btn btn-primary prf-cta" href="{calc}" rel="nofollow">Open the PRF calculator</a></p>
     <p class="prf-spon-band prf-spon-line" data-prf-spon="county" data-prf-st="{stc}" data-prf-name="{e(stn)}"><span class="prf-spon-tag">For businesses</span> <a href="/prf-sponsor?state={stc}">Sponsor PRF in {e(stn)} &rarr;</a></p>
     <dl class="prf-figs prf-st-figs">
       <div><dt>Grids</dt><dd>{ng}</dd></div>
@@ -348,7 +351,6 @@ def page(ctx):
       <div><dt>Sign-up deadline</dt><dd>{sales}</dd></div>
     </dl>
     <p class="prf-fine">USDA&rsquo;s {cy} county base values, the same on every grid in the county. Protection per acre is the value times your coverage level times a productivity factor of 60 to 150: grazing at 90% and 100 is {money2(prot)} an acre.{irr_low}</p>
-    {exh}
     {sod}
     {now}
     <div class="prf-prose">
@@ -358,7 +360,7 @@ def page(ctx):
     <p>{('The wettest pair of months here is ' + S.LONG_IV[wet[0]] + f' ({wet[1]:.2f} in on {mid_word}) and the driest is ' + S.LONG_IV[dry[0]] + f' ({dry[1]:.2f} in). ') if wet and dry else ''}{('Coverage costs least in ' + S.LONG_IV[cheap[0]] + ' and most in ' + S.LONG_IV[dear[0]] + '. ') if cheap and dear and cheap[0] != dear[0] else ''}The months to insure are the ones when a dry spell costs you grass or hay, not the cheapest ones.</p>
 
     <h2 id="record">The last five years in {e(name)}, and {cf['open_year'] or ''} so far</h2>
-    <p>The index for each pair of months as a percent of normal (100 is a normal year), on {mid_word}{' (each grid has its own; the calculator shows yours)' if many else ''}. Shaded cells came in under 90%, where a 90% policy on those months would have paid.{(' ' + str(cf['open_year']) + ' shows the ' + str(open_n) + ' pairs of months USDA has published so far.') if open_y else ''}</p>
+    {ctx.get("story", "")}    <p>The index for each pair of months as a percent of normal (100 is a normal year), on {mid_word}{' (each grid has its own; the calculator shows yours)' if many else ''}. Shaded cells came in under 90%, where a 90% policy on those months would have paid.{(' ' + str(cf['open_year']) + ' shows the ' + str(open_n) + ' pairs of months USDA has published so far.') if open_y else ''}</p>
     <div class="prf-scroll" tabindex="0" role="region" aria-label="Recent years, scrolls sideways"><table class="prf-t prf-yr-t"><caption class="prf-sr">PRF index by pair of months, {rec[0]['year']} to {rec[-1]['year']}, {e(full)}</caption><thead><tr><th scope="col">Months</th>{yr_head}</tr></thead><tbody>{yr_rows}</tbody></table></div>
     <p class="prf-fine">Every year since {y0}, priced at {cy} rates, is in the <a href="{calc}" rel="nofollow">calculator</a>.</p>
 

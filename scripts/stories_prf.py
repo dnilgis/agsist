@@ -13,7 +13,8 @@ FACTS (only what the page prints, as it prints it; scripts/build_prf_counties.py
   the deadlines (the PRF rule: the page stays neutral, sells nothing, routes no
   one to an agent).
 
-THE PAGE: build_prf_counties.py prints a kept story under the lede only when the
+THE PAGE: build_prf_counties.py prints a kept story at the head of the record section
+("The last five years", since Oct 20: the first screen leads with the priced example) only when the
 county's facts rebuilt now (plus the stored "as of" day and preliminary figure)
 hash to the story's own, it passes check(), and it is at most 35 days older than
 the data the page was built from.

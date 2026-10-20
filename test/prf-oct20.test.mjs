@@ -72,3 +72,19 @@ test("irrigated hay valued under non-irrigated is said where both show, with no 
   assert.ok(page.includes("<dt>Hay, irrigated, per acre</dt><dd>$168.00</dd>") && page.includes("USDA sets irrigated hay lower here."), "the Anderson page says it");
   assert.ok(!/irrigated hay lower here because/i.test(page), "no guessed reason");
 });
+
+test("county first screen: the dated dollar example leads, no grid ID list, no single-interval statistic", () => {
+  for (const f of ["prf/nebraska/cherry-county.html", "prf/texas/anderson-county.html"]) {
+    const h = read(f), main = h.slice(h.indexOf("<main"), h.indexOf('<div class="prf-prose">'));
+    const lede = main.match(/<p class="prf-lede">([\s\S]*?)<\/p>/)[1];
+    assert.ok(!/\d{5}, \d{5}/.test(lede), f + ": the grid list left the intro");
+    assert.match(lede, /grids, each in the <a href="#grids">table of grids<\/a> below/);
+    assert.ok(!/under 90% of normal in/.test(main), f + ": no single-interval count on the first screen");
+    assert.ok(main.indexOf('class="prf-note prf-ex"') < main.indexOf("prf-figs"), f + ": the example before the tiles");
+  }
+  const ch = read("prf/nebraska/cherry-county.html");
+  /* Cherry County, grid 27119, the middle of 36 grids by premium */
+  assert.match(ch, /What it costs here at 2027 rates \(USDA files read [A-Z][a-z]{2} \d{1,2}, 2026\):<\/b> you pay \$130 a year, \$1\.30 an acre, for 100 acres of grazing at 90% coverage/);
+  assert.match(ch, /it would have paid in 45 of 75 years/);
+  assert.ok(ch.includes("<tr><th scope=\"row\">27119</th>"), "the grid IDs are in the grids table");
+});
