@@ -108,7 +108,10 @@ var SPEC=[
  ['Irrigated cash rent',function(r){return r.rent_irr_usd_ac==null?null:usd(r.rent_irr_usd_ac)+' ('+r.rent_irr_year+')';},'no published irrigated rent'],
  ['Pasture rent',function(r){return r.rent_pasture_usd_ac==null?null:usd(r.rent_pasture_usd_ac);},'no published pasture rent'],
  ['Land and buildings, census',function(r){return r.value_flag?'flag':(r.value_usd_ac==null?null:usd(r.value_usd_ac)+' ('+r.value_year+')');},'census value withheld'],
- ['Dry rent as % of land value',function(r){return (r.value_flag||r.rent_to_value_pct==null)?null:nf(r.rent_to_value_pct,2)+'%';},'needs a rent and an unflagged land value'],
+ // The county page's own reason (scripts/atlas_layers_p1.py rent_to_value): the census value is
+ // withheld, or NASS published no dry rent in the census year (Faribault MN has a 2026 rent, none for 2022).
+ ['Dry rent as % of land value',function(r){return r.value_flag?'flag':(r.rent_to_value_pct==null?null:nf(r.rent_to_value_pct,2)+'%');},
+  function(r){return r.value_usd_ac==null?'census value withheld':'NASS published no '+r.value_year+' dry rent';}],
  ['Median corn yield, bu/ac',function(r){return r.corn_yield_median_bu_ac==null?null:nf(r.corn_yield_median_bu_ac,1)+' ('+r.corn_yield_years+' yrs)';},'fewer than the published years needed'],
  ['Claims per $100 of coverage',function(r){return r.claims_per_100_usd==null?null:'$'+nf(r.claims_per_100_usd,2);},'no crop insurance record'],
  ['Loss ratio, last ten years',function(r){return r.loss_ratio_last10==null?null:nf(r.loss_ratio_last10,2);},'no crop insurance record'],
@@ -135,7 +138,7 @@ function render(){
       if(!r){cells+='<td>'+DASH+'</td>';return;}
       var v=s[1](r);
       if(v==='flag'){cells+='<td><small>read with care: see the county page</small></td>';any=true;}
-      else if(v==null) cells+='<td><small>'+esc(s[2])+'</small></td>';
+      else if(v==null) cells+='<td><small>'+esc(typeof s[2]==='function'?s[2](r):s[2])+'</small></td>';
       else {cells+='<td>'+esc(v)+'</td>';any=true;}
     });
     body+='<tr><th scope="row">'+esc(s[0])+'</th>'+cells+(any?'':'')+'</tr>';

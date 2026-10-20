@@ -13,7 +13,9 @@ and emits data/whats-priced-in.json in the exact shape the page consumes:
 What it does beyond pass-through:
   • Picks the next report whose date is today-or-later as `upcoming`
     (so the card rolls over automatically as report dates pass — run daily).
-  • Derives the bullish/bearish surprise thresholds from the trade range
+  • Derives the bullish/bearish surprise thresholds from the trade average
+    and the band report_bands grades with (until 2026-10-20 they were the
+    trade range's ends, the pre-Oct 10 rule)
     when they aren't spelled out (convention: a print BELOW the low end is
     bullish — less supply — and ABOVE the high end is bearish; this holds
     for both ending-stocks and production metrics).
@@ -42,6 +44,7 @@ from datetime import datetime, timezone, timedelta, date as _date
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from report_bands import surprise as band_surprise, gap_pct as band_gap_pct  # noqa: E402
 from report_bands import range_context, consensus_lock, ConsensusLockError, RULE_CHANGED  # noqa: E402
+from report_bands import band_for  # noqa: E402
 
 EST_PATH  = "data/wpi-estimates.json"
 ANALYST_PATH = "data/analyst-estimates.json"
@@ -120,6 +123,33 @@ def _fmt(v, unit):
     if isinstance(v, float) and v.is_integer():
         v = int(v)
     return f"{v}{(' ' + unit) if unit else ''}"
+
+
+THRESHOLDS_WITHHELD = (
+    "A surprise is a print past the trade average by more than its band: 0.5% for a "
+    "yield, 1% for production, 2% for stocks. The thresholds arrive with the trade average.")
+
+
+def band_thresholds(avg, metric, unit="", direction="supply"):
+    """("Below X", "Above Y") as (bullish, bearish): the trade average minus
+    and plus report_bands' band for this metric, the same rule surprise()
+    grades with. A demand number swaps them. None without a usable average.
+    One more decimal than the average, so the edge is not rounded across."""
+    try:
+        a = float(avg)
+    except (TypeError, ValueError):
+        return None
+    if a == 0:
+        return None
+    band = band_for(metric)
+    txt = str(avg)
+    dec = len(txt.split(".")[1]) if "." in txt and "e" not in txt.lower() else 0
+    lo, hi = sorted((a * (1 - band), a * (1 + band)))
+    f = lambda v: _fmt(round(v, dec + 1), unit)
+    below, above = "Below " + f(lo), "Above " + f(hi)
+    if str(direction or "supply").lower() == "demand":
+        return above, below
+    return below, above
 
 
 def cot_positioning(commodity_text, cot):
@@ -390,13 +420,20 @@ def build_upcoming(reports, today, cot=None, released=()):
     if not isinstance(out.get("implied_odds"), list):
         out["implied_odds"] = []
     lo, hi, unit = out.get("estimate_low"), out.get("estimate_high"), out.get("unit") or ""
-    # Derive surprise thresholds from the range only when both bounds exist
-    # and the author hasn't supplied explicit threshold text.
-    if lo is not None and hi is not None:
+    # Surprise thresholds follow the grade (2026-10-20, panel F4). Since
+    # 2026-10-10 a print is graded on its distance from the trade AVERAGE
+    # against a band per kind of number (report_bands); the range is context.
+    # The thresholds used to be the range's ends, so a print inside the range
+    # could be graded bearish under a card that said it was not a surprise
+    # (October corn yield 181.2: inside 173.2 to 182.1, graded bearish at
+    # +1.9%). They are now the average plus and minus the band, worked out
+    # only when the average exists and the author typed no threshold text.
+    th = band_thresholds(out.get("estimate_avg"), out.get("metric"), unit, r.get("direction"))
+    if th:
         if not out.get("bullish_threshold"):
-            out["bullish_threshold"] = "Below " + _fmt(lo, unit)
+            out["bullish_threshold"] = th[0]
         if not out.get("bearish_threshold"):
-            out["bearish_threshold"] = "Above " + _fmt(hi, unit)
+            out["bearish_threshold"] = th[1]
     # The one block that can fill itself.
     #
     # WHICH COMMODITIES, NOT WHICH BAR. `commodity` names what the range bar
@@ -446,7 +483,7 @@ def build_upcoming(reports, today, cot=None, released=()):
             "appear here with the venue named.")
     if not out.get("bullish_threshold") and not out.get("bearish_threshold"):
         out["withheld"]["thresholds"] = (
-            "The thresholds are the ends of the trade range, so they arrive with it.")
+            THRESHOLDS_WITHHELD)
     if not out.get("positioning"):
         # the reason that is true, not the first one that comes to mind
         if not cot:
@@ -871,6 +908,21 @@ def _selftest():
     for k in ("estimate_low", "estimate_avg", "estimate_high", "bullish_threshold"):
         assert u.get(k) is None, f"the fallback card must not carry {k}"
     assert u.get("withheld"), "and it must say in words why each block is missing"
+
+    # thresholds follow the band rule, not the range (2026-10-20)
+    assert band_thresholds(177.8, "2026/27 corn yield", "bu/acre") == ("Below 176.91 bu/acre", "Above 178.69 bu/acre")
+    assert band_thresholds(1.677, "2026/27 corn ending stocks", "bil bu") == ("Below 1.6435 bil bu", "Above 1.7105 bil bu")
+    assert band_thresholds(15.716, "2026/27 corn production") == ("Below 15.5588", "Above 15.8732")
+    assert band_thresholds(100, "exports", "", "demand") == ("Above 102", "Below 98")
+    assert band_thresholds(None, "x") is None and band_thresholds(0, "x") is None
+    # the Oct corn yield: 181.2 sits inside 173.2 to 182.1, and is past the bearish threshold
+    _bear = band_thresholds(177.8, "2026/27 corn yield")[1]
+    assert float(_bear.split()[1]) < 181.2 < 182.1 and band_surprise(177.8, 181.2, "2026/27 corn yield") == "bearish"
+    u = build_upcoming([{"report": "X WASDE", "date": "2026-11-10", "metric": "2026/27 corn yield",
+                         "estimate_low": 173.2, "estimate_high": 182.1, "estimate_avg": 177.8, "unit": "bu/acre"}],
+                       "2026-11-01")
+    assert u["bullish_threshold"] == "Below 176.91 bu/acre" and u["bearish_threshold"] == "Above 178.69 bu/acre", u
+    assert "ends of the trade range" not in THRESHOLDS_WITHHELD and "0.5%" in THRESHOLDS_WITHHELD
 
     # an empty list behaves the same way as an exhausted one
     assert build_upcoming([], "2026-09-12")["report"] == "October WASDE"

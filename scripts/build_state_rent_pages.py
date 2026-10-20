@@ -70,15 +70,119 @@ STATE_NAMES = {
 TYPE_LABEL = {"nonirr": "non-irrigated cropland", "irr": "irrigated cropland",
               "pasture": "permanent pasture"}
 TYPE_SHORT = {"nonirr": "Non-irrigated", "irr": "Irrigated", "pasture": "Pasture"}
-# Statutory termination-notice facts, same tier-1 set cash-lease.html cites.
-NOTICE = {
-    "IA": "September 1 before the lease year ends (Iowa Code &sect;562.6)",
-    "IL": "4 months before the end of the lease year (735 ILCS 5/9-206)",
-    "IN": "3 months before the end of the lease year (Ind. Code &sect;32-31-1-3)",
-    "KS": "30 days before March 1 (K.S.A. &sect;58-2506)",
-    "NE": "September 1 for oral year-to-year leases (Nebraska case law, Moudry v. Parkos, 1984)",
-    "SD": "September 1 before the new lease year (SDCL &sect;43-32-22.1, oral leases)",
-}
+# Termination-notice rules: ONE table, the one cash-lease.html carries (RULES,
+# the prose and its tier; NOTICE, how the date counts back). Until Oct 20 this
+# file kept its own six-state copy: Ohio's ORC 5301.71 September 1 rule and the
+# cited Minnesota, Wisconsin and Missouri rules never reached the rent pages, and
+# Indiana cited a different section (32-31-1-3 here, 32-31-1-2 on the lease
+# page). The rent pages now read the lease page's table at build time.
+LEASE_PAGE = "cash-lease.html"
+_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
+           "September", "October", "November", "December"]
+_KEEP_CAPS = {"ORC", "SDCL", "ILCS", "ISU", "CALT", "UT", "RSMO", "AGSIST"}
+
+
+def _js_block(src, var):
+    """The text of `var NAME={...};` in the lease page's script, braces matched."""
+    i = src.index("var %s={" % var) + len("var %s=" % var)
+    depth, j, q = 0, i, None
+    while True:
+        ch = src[j]
+        if q:
+            if ch == "\\":
+                j += 1
+            elif ch == q:
+                q = None
+        elif ch in "'\"":
+            q = ch
+        elif ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return src[i:j + 1]
+        j += 1
+
+
+def _js_str(s):
+    return re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), s).replace("\\'", "'").replace('\\"', '"')
+
+
+def load_lease_rules(root="."):
+    """{state: {"n", "t", "s", "u", "d", "how"}} from cash-lease.html. `how` is
+    the counting rule (NOTICE: mo, dd, fix, oral, mar1) or None when the lease
+    page computes no date for the state."""
+    src = open(os.path.join(root, LEASE_PAGE), encoding="utf-8").read()
+    rules = {}
+    for m in re.finditer(r"\b([A-Z]{2}):\{((?:[^{}'\"]|'(?:[^'\\]|\\.)*')*)\}", _js_block(src, "RULES")):
+        rec = {k: _js_str(v) for k, v in re.findall(r"\b([a-z]):'((?:[^'\\]|\\.)*)'", m.group(2))}
+        rules[m.group(1)] = rec
+    hows = {}
+    for m in re.finditer(r"\b([A-Z]{2}):\{([^{}]*)\}", _js_block(src, "NOTICE")):
+        h = {}
+        for k, v in re.findall(r"(\w+):(\[[^\]]*\]|[^,]+)", m.group(2)):
+            h[k] = json.loads(v) if v.startswith("[") else (True if v == "true" else int(v))
+        hows[m.group(1)] = h
+    for st, rec in rules.items():
+        rec["how"] = hows.get(st)
+    return rules
+
+
+def notice_phrase(rule):
+    """'by September 1', '4 months before the lease year ends' ... or None."""
+    h = (rule or {}).get("how")
+    if not h:
+        return None
+    if h.get("fix"):
+        out = "by %s %d" % (_MONTHS[h["fix"][0] - 1], h["fix"][1])
+    elif h.get("mar1"):
+        out = "%d days before March 1" % h["dd"]
+    elif h.get("mo"):
+        out = "%d months before the lease year ends" % h["mo"]
+    elif h.get("dd"):
+        out = "%d days before the lease year ends" % h["dd"]
+    else:
+        return None
+    return out + (" (oral leases)" if h.get("oral") else "")
+
+
+def notice_plain(d):
+    """The lease page's prose without its shouted words: 'SEPTEMBER 1' -> 'September 1'."""
+    def fix(m):
+        w = m.group(0)
+        if w in _KEEP_CAPS or w.upper() == "RSMO":
+            return w
+        if w.capitalize() in _MONTHS:
+            return w.capitalize()
+        return w.lower()
+    return re.sub(r"\b[A-Z]{2,}\b", fix, d)
+
+
+NOTICE_RULES = load_lease_rules(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+def notice_note(st):
+    """The short line beside the lease link, or "" when the lease page has none."""
+    r = NOTICE_RULES.get(st)
+    ph = notice_phrase(r)
+    if not r or not ph:
+        return ""
+    if r.get("t") == "firm":
+        return " (termination notice: %s%s)" % (ph, (", " + esc(r["s"])) if r.get("s") else "")
+    return " (termination notice, commonly cited: %s; confirm it)" % ph
+
+
+def notice_faq(st, name):
+    r = NOTICE_RULES.get(st)
+    if not r or not r.get("d"):
+        return None
+    a = notice_plain(r["d"])
+    if r.get("t") == "firm" and "continue" not in a:
+        a += " Miss it and the lease typically continues another year on the same terms."
+    elif r.get("t") == "cited":
+        a += " Confirm the current rule with a %s attorney before relying on it." % name
+    a += " The AGSIST cash farm lease page has the details and a printable lease."
+    return {"q": "When must I give notice to terminate %s %s farm lease?" % (article(name), name), "a": a}
 
 
 
@@ -815,11 +919,9 @@ def build_state_page(st, d, s, all_states, aslug=None):
                              f"per acre across the {pas['n']} counties with a published {yr} pasture rate. "
                              + (f"Highest {p_hi}; lowest {p_lo}. " if len(pv) >= 5 else "")
                              + "Each county's pasture rate is in its own column in the county table below.")})
-    if st in NOTICE:
-        faq.append({"q": f"When must I give notice to terminate {article(name)} {name} farm lease?",
-                    "a": f"{name} law sets the deadline at {NOTICE[st].replace('&sect;', 'section ')}. "
-                         f"Miss it and the lease typically continues another year on the same terms. "
-                         f"See the AGSIST cash farm lease for the details and a printable lease."})
+    nf = notice_faq(st, name)
+    if nf:
+        faq.append(nf)
     jsonld = {"@context": "https://schema.org", "@graph": [
         {"@type": "Dataset",
          "@id": f"{SITE}/rent/{sl}#dataset",
@@ -913,8 +1015,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   ground. Year-over-year stats above compare only counties published in both years, so a county dropping out
   of the survey can&rsquo;t fake a trend.</div>
   <div class="rs-note rs-links" style="border-left-color:#5fc28a">Open a county in the table for its Farmland Atlas page and the <b>rent share calculator</b> (rent as a share of
-  what the acre can actually gross, year by year) &middot; put a number in a <a href="/cash-lease?st={st}">printable {name} cash lease</a>{
-      " (termination notice: " + NOTICE[st] + ")" if st in NOTICE else ""} &middot;
+  what the acre can actually gross, year by year) &middot; put a number in a <a href="/cash-lease?st={st}">printable {name} cash lease</a>{notice_note(st)} &middot;
   check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price{prf_rel}.</div>
   {faq_html(faq)}
   <h2>Other states</h2>
@@ -1250,6 +1351,16 @@ def selftest():
         assert money(s["median"]) in ia, "IA median not baked into page"
         assert "SEED:rentstate" in ia and "FAQPage" in ia and "canonical" in ia
         assert "September 1" in ia, "IA termination notice missing"
+        # One notice table, cash-lease.html's (panel Oct 20, seat D1)
+        assert len(NOTICE_RULES) >= 20 and all(NOTICE_RULES[k].get("d") for k in ("IA", "OH", "MN", "WI", "MO")), NOTICE_RULES.keys()
+        rd = lambda sl: open(os.path.join(td, sl + ".html"), encoding="utf-8").read()  # noqa: E731
+        oh = rd("ohio")
+        assert "5301.71" in oh and "termination notice: by September 1" in oh, "OH notice not from the lease table"
+        for sl in ("minnesota", "wisconsin", "missouri"):
+            assert "termination notice, commonly cited:" in rd(sl), sl + " cited notice missing"
+        assert "32-31-1-2" in rd("indiana") and "32-31-1-3" not in rd("indiana"), "IN section differs from the lease page"
+        assert notice_phrase({"how": {"dd": 30, "mar1": True}}) == "30 days before March 1"
+        assert notice_plain("notice by SEPTEMBER 1, ORAL leases (ORC 5301.71)") == "notice by September 1, oral leases (ORC 5301.71)"
         assert 'no survey' in ia, "2015 gap not shown honestly"
         assert 2018 in NO_SURVEY_YEARS, "2018 (no NASS county survey) must be labeled no survey"
         assert ia.count("<tr>") >= 99, "IA county rows missing"

@@ -278,6 +278,10 @@ def crowd_summary(c):
     card = c.get("card") or {}
     return {
         "pctl": p,
+        # the whole number every page prints (shown_pct): one rounding and
+        # clamp, so the COT card and The Read cannot say 90th and 89th for
+        # one 89.8 (soybeans, 2026-10-20 panel F3)
+        "shown": shown_pct(p, c.get("crowded")) if p is not None else None,
         "word": crowd_word(p),
         "crowded": c.get("crowded"),
         "side": side,
@@ -740,7 +744,7 @@ def _rec_pct(c):
     if c.get("is_record_high"):
         return f"the highest reading of its record since {c['first_week'][:4]} {n}"
     # Not a record, so never "0th" or "100th".
-    return (f"the {ordinal(min(99, max(1, round(p))))} percentile of its record since "
+    return (f"the {ordinal(shown_pct(p, c.get('crowded')))} percentile of its record since "
             f"{c['first_week'][:4]} {n}")
 
 
@@ -1708,6 +1712,14 @@ def selftest():
     cs2 = crowd_summary({"pctl": {"net_oi_all": 97.6}, "net": 1, "crowded": "long", "first_week": "2010-01-05",
                          "studies": {"4": {"flow": {"verdict": "measured", "fdr_pass": True}}}})
     ckt("crowd summary: a passing study is named, not hidden", cs2["held"] and cs2["tested"] != TESTED_NONE)
+    # one printed percentile: 89.8 not crowded is the 89th everywhere (soybeans, Oct 13 2026 report)
+    cs3 = crowd_summary({"pctl": {"net_oi_all": 89.8}, "net": 249807, "crowded": None, "first_week": "2010-01-05"})
+    ckt("crowd summary: soybeans 89.8 not crowded is shown as the 89th", cs3["shown"] == 89, cs3)
+    ckt("record line uses the same clamp",
+        "the 89th percentile" in _rec_pct({"pctl": {"net_oi_all": 89.8}, "crowded": None,
+                                           "weeks_of_history": 876, "first_week": "2010-01-05"}))
+    ckt("shown_pct: crowded 90.2 is the 90th, not crowded 10.2 the 11th, 99.7 the 99th",
+        shown_pct(90.2, "long") == 90 and shown_pct(10.2, None) == 11 and shown_pct(99.7, "long") == 99)
 
     # ── shutdown weeks are not entry points ──
     ckt("the 2025-09-30 report's release is unknown", CAL.release_unknown(date(2025, 9, 30)))

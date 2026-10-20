@@ -448,14 +448,18 @@ def branch_name(b, src, town, known):
     return city
 
 
-def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed=None):
+def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed=None, moved=None):
     """-> (towns, drops, unplaced). towns: {(ST, town_key): {...}} with every
     board that has posted rows in that town and, per board, the rows that may
-    print. A place town_of() cannot name is tried by place_by_zip_or_pin()."""
+    print. A place town_of() cannot name is tried by place_fallbacks().
+    moved: a dict to fill with {(ST, slug of the town its name says): (town it
+    went to, operator, branch)} for every board whose name names a town its
+    ZIP or pin does not fit (name_fit()), so that page can point to the right one."""
     gen = parse_ts(merged.get("generated"))
     snap_ct = gen.astimezone(CT)
     srcs = {s["id"]: s for s in (index.get("sources") or []) if s.get("id")}
-    fallback = place_fallbacks(merged, srcs, towns_by_state, zip_towns, zip_coord)
+    fit = name_fit(town_zips(zip_towns), zip_coord)
+    fallback = place_fallbacks(merged, srcs, towns_by_state, zip_towns, zip_coord, fit=fit)
     if placed is not None:
         placed.update(fallback)
     drops = Counter()
@@ -477,7 +481,8 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             continue
         ovr = PLACE_OVERRIDE.get(sid)
         ovr = ovr if ovr and ovr["state"] == st else None
-        tname = ovr["town"] if ovr else town_of(b, src, towns_by_state)
+        wrong = []
+        tname = ovr["town"] if ovr else town_of(b, src, towns_by_state, fit, wrong)
         how = {"how": "name"}
         if not tname and fallback.get((st, b.get("place") or sid)):
             how = fallback[(st, b.get("place") or sid)]
@@ -489,6 +494,11 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
                                                               zip5(b.get("zip") or src.get("zip"))))
             continue
         tk = (st, url_slug(tname))
+        if moved is not None:
+            for w in wrong:
+                if url_slug(w) != tk[1]:
+                    moved.setdefault((st, url_slug(w)), (tname, display_name(b.get("operator") or src.get("operator") or ""),
+                                                         clean_place(town_name(b.get("city")))))
         t = towns.setdefault(tk, {"state": st, "name": tname, "slug": tk[1], "boards": {}})
         place = b.get("place") or sid
         bd = t["boards"].setdefault(place, {
@@ -499,6 +509,7 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             "phone": src.get("phone") or "", "checked": parse_ts(src.get("checkedAt")),
             "last_priced": None, "rows": [], "why": Counter(), "how": how["how"], "near_mi": how.get("mi"),
             "town": tname, "state": st, "pin": ovr["pin"] if ovr else _pin(b),
+            "precision": "street" if ovr else b.get("precision"),
             # hours, contact, note and closed-until of an elevator that posts
             # its own bids through agsist.com/post; None for every other board
             "portal": portal_info(src.get("portal"))})
@@ -574,7 +585,53 @@ def known_towns(zip_towns):
     return out
 
 
-def town_of(b, src, towns_by_state):
+NAME_FIT_MI = 15     # a town read from a board's name must be this close to the board's ZIP centre or street pin
+
+
+def _one_digit_off(a, b):
+    return len(a) == len(b) == 5 and sum(x != y for x, y in zip(a, b)) == 1
+
+
+def name_fit(zips_of, zip_coord):
+    """fit(st, town, b, src) -> False only when a board named for `town` clearly
+    is not there. The name stands when any of these holds:
+      - the board's ZIP is one of the town's ZIPs (Ashmore and Ingraham, IL:
+        own ZIP, pin miles off; a pin that is not street-level is not used to
+        throw a name out);
+      - the board's ZIP is one digit off one of the town's ZIPs: a typo, the
+        name is right (NEW Cooperative's Essex, IA board posts 50638 for 51638;
+        Agtegra's Bowdle, SD 57528 for 57428);
+      - a street-level pin sits within NAME_FIT_MI of the town;
+      - with no street pin: the ZIP's centre, or the board's own pin (the
+        network places a pin from the town name when it has no street
+        address), is within NAME_FIT_MI of one of the town's ZIP centres;
+      - there is nothing to check against (no ZIP centre, no pin, or a town
+        with no centre).
+    Farmers Win Cooperative's "Granger" board posts ZIP 52136 (Cresco) with its
+    pin on that ZIP, 140 mi from Granger, IA: it fails, and the ZIP rule in
+    place_fallbacks() puts it in Cresco. A street pin farther than
+    NAME_FIT_MI from the named town fails too (FS Grain's "CHS - Elburn/ Morris"
+    is in Elburn, 37 mi from Morris)."""
+    def fit(st, town, b, src):
+        tz = zips_of.get((st, town_key(town))) or []
+        z = zip5(b.get("zip") or src.get("zip"))
+        if z and (z in tz or any(_one_digit_off(z, x) for x in tz)):
+            return True
+        cents = [c for c in (zip_coord(x) for x in tz) if c] if zip_coord else []
+        if not cents:
+            return True
+
+        def near(p):
+            return any(miles(p[0], p[1], q[0], q[1]) <= NAME_FIT_MI for q in cents)
+        pin = _pin(b)
+        if pin and b.get("precision") == "street":
+            return near(pin)
+        pts = [c for c in [zip_coord(z) if (z and zip_coord) else None, pin] if c]
+        return not pts or any(near(p) for p in pts)
+    return fit
+
+
+def town_of(b, src, towns_by_state, fit=None, rejected=None):
     """The town a place is in, or None when it cannot be placed:
       1. the bids repo's display `town`, when its table-backed rules set one;
       2. else `city` (minus a trailing ", ST" or state name), when it is a
@@ -586,6 +643,10 @@ def town_of(b, src, towns_by_state):
          Marengo" for Circle J Grain), when what is left is such a town.
          A processor's name in front ("Cargill Sioux City" posted by another
          company) is not stripped: that is a delivered bid to a plant.
+    A town found by rules 2 to 4 is a name match only; with `fit` (name_fit())
+    it must also agree with the board's ZIP or street pin, or it is passed over
+    (and added to `rejected`, a list, when one is given). A branch named for a
+    town 140 mi away ("Granger" on a Cresco ZIP) is not that town.
     Nothing else: a `city` that is a facility's name ("Lincolnway Energy",
     "CGB Albany", "Big River") is not turned into a town by reading the name or
     by trusting a head-office ZIP (merge_bids.mjs displayTown() measured why).
@@ -597,10 +658,19 @@ def town_of(b, src, towns_by_state):
     known = towns_by_state.get(st, {})
     city = re.sub(rf",?\s+({st}|{re.escape(STATE_NAMES.get(st, st))})\.?$", "", (b.get("city") or "").strip(),
                   flags=re.I)
-    hit = known.get(town_key(city))
+
+    def ok(hit):
+        if not hit:
+            return None
+        if fit is None or fit(st, hit, b, src):
+            return hit
+        if rejected is not None and hit not in rejected:
+            rejected.append(hit)
+        return None
+    hit = ok(known.get(town_key(city)))
     if not hit:
         for piece in reversed(re.split(r"\s+-\s*|\s*-\s+|/|,", city)):
-            hit = known.get(town_key(piece))
+            hit = ok(known.get(town_key(piece)))
             if hit:
                 break
     if not hit:
@@ -610,7 +680,7 @@ def town_of(b, src, towns_by_state):
         while k < len(words) - 1 and re.sub(r"[^a-z0-9]", "", words[k].lower()) in op:
             k += 1
         if k:
-            hit = known.get(town_key(" ".join(words[k:])))
+            hit = ok(known.get(town_key(" ".join(words[k:]))))
     return town_name(hit) if hit else None
 
 
@@ -708,7 +778,7 @@ def _pin(b):
     return (lat, lon) if isinstance(lat, (int, float)) and isinstance(lon, (int, float)) else None
 
 
-def place_fallbacks(merged, srcs, towns_by_state, zip_towns=None, zip_coord=None):
+def place_fallbacks(merged, srcs, towns_by_state, zip_towns=None, zip_coord=None, fit=None):
     """{(ST, place): placement} for every network place town_of() cannot name.
     A placement is {"how": "zip"|"near"|"none", "town", "mi", "why"}:
 
@@ -741,7 +811,7 @@ def place_fallbacks(merged, srcs, towns_by_state, zip_towns=None, zip_coord=None
         if k in first:
             continue
         first[k] = (b, src)
-        tname = town_of(b, src, towns_by_state)
+        tname = town_of(b, src, towns_by_state, fit)
         if tname:
             named.add(k)
             if _pin(b) and b.get("precision") == "street":
@@ -1745,12 +1815,152 @@ def history_box(t, boards, logged):
             f'<p class="cbt-sub">Opens the basis log for these elevators.</p></div></details>')
 
 
+TOWN_TITLE_MAX = 60
+
+
+def town_title(place, live_b):
+    """The town page's <title>, at most TOWN_TITLE_MAX characters. It names the
+    elevators when they fit, in page order (lead_first()): "Cash Grain Bids in
+    Jerome, ID Today: Scoular", or "...: A and B", or
+    "...: A and 2 more" (940 of 1,533 town pages with a bid on 2026-10-20). Search engines are asked for elevators by name and no
+    town title named one (SEO seat, Oct 19, 2026). It always starts "Cash Grain
+    Bids in <Town>, <ST> Today" while that fits: scripts/build_search_index.py
+    reads the town from it. A town with no current bid keeps the plain title."""
+    base = f"Cash Grain Bids in {place} Today"
+    names = []
+    for bd in live_b:
+        op = (bd.get("operator") or "").strip()
+        if op and op.lower() not in (n.lower() for n in names):
+            names.append(op)
+    tails = []
+    if len(names) == 1:
+        tails = [names[0]]
+    elif len(names) == 2:
+        tails = [f"{names[0]} and {names[1]}", f"{names[0]} and 1 more"]
+    elif names:
+        tails = [f"{names[0]} and {len(names) - 1} more"]
+    for c in [f"{base}: {x}" for x in tails] + [f"{base} | AGSIST", base, f"{place} Cash Grain Bids"]:
+        if len(c) <= TOWN_TITLE_MAX:
+            return c
+    return f"{place} Cash Grain Bids"
+
+
+def lead_first(boards):
+    """The boards in page order: the elevator the answer sentence names first
+    leads, then the one it names second, then the rest as they were. Nevada, IA
+    on 2026-10-19: the answer said corn $4.41 at Mid-Iowa Cooperative while the
+    first card was Key Cooperative at $4.29 and Mid-Iowa sat third."""
+    picks = answer_picks(boards)
+    lead = []
+    for c in [c for c in CROPS if c in picks][:ANSWER_CROPS]:
+        r, name = picks[c]
+        bd = next((b for b in boards if any(x is r for x in b["rows"])), None) \
+            or next((b for b in boards if head_name(b) == name), None)
+        if bd is not None and all(bd is not x for x in lead):
+            lead.append(bd)
+    return lead + [b for b in boards if all(b is not x for x in lead)]
+
+
+COUNTY_GEO = os.path.join("data", "atlas", "counties.geo.json")
+COUNTY_INDEX = os.path.join("farmland-atlas", "data", "counties-index.json")
+
+
+def _in_ring(x, y, ring):
+    inside, j = False, len(ring) - 1
+    for i in range(len(ring)):
+        xi, yi = ring[i][0], ring[i][1]
+        xj, yj = ring[j][0], ring[j][1]
+        if (yi > y) != (yj > y) and x < (xj - xi) * (y - yi) / ((yj - yi) or 1e-12) + xi:
+            inside = not inside
+        j = i
+    return inside
+
+
+def county_finder(root="."):
+    """find(lat, lon, ST) -> {"name", "links": [(href, text)]} for the county a
+    point is in, from the Atlas's county shapes (data/atlas/counties.geo.json),
+    with the county's own rain, Atlas and ARC/PLC pages that are real pages on
+    disk (a pointer or a missing file is left out). None when the files are
+    missing (the line is then left off every page) or the point is in no
+    county of that state."""
+    try:
+        with open(os.path.join(root, COUNTY_GEO), encoding="utf-8") as f:
+            geo = json.load(f)
+        with open(os.path.join(root, COUNTY_INDEX), encoding="utf-8") as f:
+            idx = {r[0]: (r[1], r[2]) for r in json.load(f) if isinstance(r, list) and len(r) == 3}
+    except (OSError, ValueError):
+        return None
+    by_st = defaultdict(list)
+    for ft in geo.get("features") or []:
+        g, pr = ft.get("geometry") or {}, ft.get("properties") or {}
+        polys = g.get("coordinates") or []
+        if g.get("type") == "Polygon":
+            polys = [polys]
+        elif g.get("type") != "MultiPolygon":
+            continue
+        pts = [p for poly in polys for p in (poly[0] if poly else [])]
+        if not pts or ft.get("id") not in idx:
+            continue
+        bb = (min(p[0] for p in pts), min(p[1] for p in pts), max(p[0] for p in pts), max(p[1] for p in pts))
+        by_st[pr.get("st")].append((bb, polys, ft["id"]))
+
+    def real(rel):
+        p = os.path.join(root, rel)
+        return os.path.isfile(p) and not PP.is_pointer(p)
+    memo = {}
+
+    def find(lat, lon, st):
+        for bb, polys, fips in by_st.get(st, []):
+            if not (bb[0] <= lon <= bb[2] and bb[1] <= lat <= bb[3]):
+                continue
+            if not any(_in_ring(lon, lat, poly[0]) and not any(_in_ring(lon, lat, h) for h in poly[1:])
+                       for poly in polys if poly):
+                continue
+            if fips not in memo:
+                label, atlas = idx[fips]
+                name = label.rsplit(", ", 1)[0]
+                ssl, slug = atlas.strip("/").split("/")[-2:]
+                links = []
+                for rel, href, text in ((f"rain/{ssl}/{slug}.html", f"/rain/{ssl}/{slug}", "rain this year"),
+                                        (atlas.strip("/") + ".html", atlas, "farmland and cash rent"),
+                                        (f"arc-plc/{ssl}/{slug}.html", f"/arc-plc/{ssl}/{slug}", "ARC or PLC")):
+                    if real(rel):
+                        links.append((href, text))
+                memo[fips] = {"name": name, "links": links} if links else None
+            return memo[fips]
+        return None
+    return find
+
+
+def county_line(t, center, ctx):
+    """One plain line of links to the county's own pages (SEO seat, Oct 19, 2026:
+    the ARC/PLC county set had a median of 4 links in). The county is the one
+    the town's elevators sit in: the middle of their street-level pins, else the
+    town's centre, else the centre of one of the town's own ZIPs (a board with
+    no ZIP or pin; Texhoma, TX posts the Oklahoma ZIP across the line). ''
+    when there is no county or no page for it."""
+    find = ctx.get("county")
+    if not find:
+        return ""
+    pins = sorted(bd["pin"] for bd in t["boards"].values()
+                  if bd.get("pin") and bd.get("how") != "near" and bd.get("precision") == "street")
+    pts = ([pins[len(pins) // 2]] if pins else []) + ([center[:2]] if center else [])
+    zc = ctx.get("zip_coord")
+    if zc:
+        pts += [c for c in (zc(x) for x in (ctx.get("town_zips") or {}).get((t["state"], town_key(t["name"])), [])) if c]
+    c = next((r for r in (find(p[0], p[1], t["state"]) for p in pts) if r), None)
+    if not c:
+        return ""
+    return (f'<p class="cbt-sub">{esc(c["name"])}: '
+            + " &middot; ".join(f'<a href="{esc(h)}">{esc(x)}</a>' for h, x in c["links"]) + "</p>")
+
+
 def build_town_page(t, ctx):
     st, sname = t["state"], STATE_NAMES[t["state"]]
     ssl = url_slug(sname)
     snap_ct = ctx["snap_ct"]
     order = lambda b: (b["how"] == "near", b["near_mi"] or 0, b["operator"].lower(), b["city"].lower())  # noqa: E731
-    live_b = sorted((b for b in t["boards"].values() if b["rows"]), key=order)
+    live_b = lead_first(sorted((b for b in t["boards"].values() if b["rows"]), key=order))
     quiet = sorted((b for b in t["boards"].values() if not b["rows"]), key=order)
     secs, times, crops, nrows, shown, any_hold, held_all = [], [], set(), 0, [], False, []
     held_first = False
@@ -1769,11 +1979,7 @@ def build_town_page(t, ctx):
     indexable = bool(live_b)
     path = f"/cash-bids/{ssl}/{t['slug']}"
     place = f"{t['name']}, {st}"
-    title = f"Cash Grain Bids in {place} Today | AGSIST"
-    if len(title) > 60:
-        title = f"Cash Grain Bids in {place} Today"
-    if len(title) > 60:
-        title = f"{place} Cash Grain Bids"
+    title = town_title(place, live_b)
     zips = Counter(b["zip"] for b in live_b or quiet if b["zip"] and b["how"] != "near")
     if not zips:
         zips = Counter(b["zip"] for b in live_b or quiet if b["zip"])
@@ -1923,6 +2129,7 @@ def build_town_page(t, ctx):
   read successfully in the last {SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="{esc(live)}">live page</a>
   has the newest board and nearby elevators. Basis is cash minus the futures contract named under it.{near_note}{hold_note}{HIST_NOTE if hist_html else ''}</div>
+  {county_line(t, center, ctx)}
   <p class="cbt-sub">{' &middot; '.join(links)}</p>
 """
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
@@ -1993,11 +2200,23 @@ def basis_stat(g, st, prev_gen):
 
 
 def dtext(r):
-    """SB.delivery_text, with a DTN-style "10/01/2026" month start read as
-    "Oct 2026" (the state page's best card printed the raw date)."""
-    d = SB.delivery_text(r)
-    m = re.fullmatch(r"(\d{2})/01/(\d{4})", d.strip())
-    return f"{MONTH_ABBR[int(m.group(1)) - 1]} {m.group(2)}" if m and 1 <= int(m.group(1)) <= 12 else d
+    """A row's delivery as every cash bid page prints it: delivery_text(), the
+    town pages' (and the ZIP search's) one rule. /cash-bids/iowa/ printed one
+    October three ways on 2026-10-19: "Oct 2026", "01 Oct 2026 to 31 Oct 2026"
+    and "10/01/2026" (SB.delivery_text keeps a board's own wording)."""
+    return delivery_text(r.get("delivery"), r.get("period"))
+
+
+def loc_li(r, town_paths=None):
+    """SB.loc_li with the delivery read by dtext(), and the town its page is in
+    when the board's own name is another place ("Farmers Win Cooperative,
+    Granger, Cresco": the board is Granger, the elevator is at Cresco)."""
+    tp = (town_paths or {}).get(r.get("source"))
+    where = SB.town_text(r["city"])
+    if tp and town_key(tp[0]) not in town_key(where):
+        where = f"{where}, {tp[0]}"
+    return (f'<li>{esc(r["operator"])}, {esc(where)}: basis <b>{money_basis(r["basis"])}</b>, '
+            f'cash {cash_c(r["cash"])} ({esc(dtext(r))}), as of {SB.fmt_ct(r["priced"])}</li>')
 
 
 def odd_keys(towns):
@@ -2054,6 +2273,8 @@ def best_where(r, town_paths, labels=None):
     if ds:
         return ((f"{ds}, {tp[0]}" if tp else ds),
                 (f'{esc(ds)}, <a href="{tp[1]}">{esc(tp[0])}</a>' if tp else esc(ds)))
+    if tp and town_key(tp[0]) not in town_key(town):     # a branch named for another place: say where it is
+        return f"{town}, {tp[0]}", f'{esc(town)}, <a href="{tp[1]}">{esc(tp[0])}</a>'
     return town, (f'<a href="{tp[1]}">{esc(town)}</a>' if tp else esc(town))
 
 
@@ -2120,7 +2341,7 @@ def best_card(g, r, town_paths, labels=None):
             f'Call to confirm.</div></div>')
 
 
-def basis_section(st, summ, prev_gen):
+def basis_section(st, summ, prev_gen, town_paths=None):
     """The #basis block: one headline per crop, the other contracts, what was
     left out and why, strongest and weakest."""
     sname = STATE_NAMES[st]
@@ -2167,9 +2388,9 @@ def basis_section(st, summ, prev_gen):
         if g in ("corn", "soybeans"):
             lab = contract_label(head0["contract"])
             lists.append(f'<h3>Strongest {SB.CROP_LABEL[g].lower()} basis ({lab})</h3><ul class="cbt-list">'
-                         + "".join(SB.loc_li(r) for r in head0["strong"]) + "</ul>"
+                         + "".join(loc_li(r, town_paths) for r in head0["strong"]) + "</ul>"
                          + f'<h3>Weakest {SB.CROP_LABEL[g].lower()} basis ({lab})</h3><ul class="cbt-list">'
-                         + "".join(SB.loc_li(r) for r in head0["weak"]) + "</ul>")
+                         + "".join(loc_li(r, town_paths) for r in head0["weak"]) + "</ul>")
     if not blocks and not notes:
         return (f'<h2 id="basis">{esc(sname)} basis today</h2><div class="cbt-note"><b>No basis number today.</b> '
                 f'No elevator here had a fresh corn, soybean or wheat bid on a named futures month.</div>')
@@ -2495,7 +2716,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   elevator&rsquo;s own bid board. This is the network&rsquo;s sample, not every elevator in {esc(sname)}; the
   <a href="/cash-bids">live cash bids page</a> finds the ones nearest your ZIP.</p>
   {best_html}
-  {basis_section(st, summ, pg)}
+  {basis_section(st, summ, pg, town_paths)}
   {el_html}
   {faq_html(qs, sname)}
   <h2 id="towns">{len(live)} town{'s' if len(live) != 1 else ''} with a current bid</h2>
@@ -2790,8 +3011,8 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     if sum(len(v) for v in tbs.values()) < min_towns:
         raise SystemExit("[cash-bid-pages] geocodes/zip-towns.json missing or short; refusing to build "
                          "(every town page would be dropped)")
-    placed = {}
-    towns, drops, unplaced = select(merged, index, tbs, zip_towns, zip_coord, placed)
+    placed, moved = {}, {}
+    towns, drops, unplaced = select(merged, index, tbs, zip_towns, zip_coord, placed, moved)
     how = Counter(v["how"] for v in placed.values())
     drop_misreads(towns, drops)
     ids = {s["id"] for s in index.get("sources") or []}
@@ -2822,7 +3043,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
            "counts": state_counts(towns, near), "zip_coord": zip_coord, "summaries": summaries,
            "hist": _hist_lookup(hist_dir) if hist_dir else None, "live_all": live_board_list(towns),
            "town_zips": town_zips(zip_towns), "known": known_by_town(directory, tbs) if directory else {},
-           "odd": town_odd,
+           "odd": town_odd, "county": county_finder(root),
            "labels": {s_["id"]: s_["labelInFeed"] for s_ in index.get("sources") or []
                       if s_.get("id") and s_.get("labelInFeed")}}
     # one page per company with COMPANY_MIN or more boards in towns; each board
@@ -2894,8 +3115,30 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     os.replace(tmp, out_dir)
     site_root = os.path.dirname(out_dir.rstrip("/")) or "."
     pre = os.path.basename(out_dir.rstrip("/"))
+    # a page that was there only because a board's name named the wrong town points at the
+    # town that board is in now ("Granger" on a Cresco ZIP: /cash-bids/iowa/granger -> cresco)
+    st_of = {url_slug(STATE_NAMES[s_]): s_ for s_ in STATE_NAMES}
+    built_towns = {(t["state"], t["slug"]) for t in towns.values()}
+
+    def moved_to(r):
+        parts = r.split("/")
+        if len(parts) != 3 or parts[1] not in st_of or not parts[2].endswith(".html"):
+            return None
+        k = (st_of[parts[1]], parts[2][:-5])
+        if k not in moved or k in built_towns:
+            return None
+        return moved[k]
+
+    def target_for(r):
+        mv = moved_to(r)
+        lead = [(f"/{pre}/{r.split('/')[1]}/{url_slug(mv[0])}", mv[0])] if mv else []
+        return lead + cash_parent(r, pre)
+
+    def name_for(r):
+        mv = moved_to(r)
+        return ", ".join(x for x in (mv[1], mv[2]) if x) if mv else PP.label(r)
     _, orphans = PP.settle(site_root, OUT_DIR, [pre + "/" + r.replace(os.sep, "/") for r in gone],
-                           lambda r: cash_parent(r, pre))
+                           target_for, name_for=name_for)
     for r in orphans:
         os.remove(os.path.join(site_root, r))
     after = set()
@@ -2942,6 +3185,9 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     n_idx = sum(1 for m in metas if m["indexable"])
     print(f"[cash-bid-pages] snapshot {merged.get('generated')} ({age_h:.1f} h old); drops {dict(drops)}; "
           f"{len(unplaced)} places not placed in a town (listed on the state index); {n_odd} unusual-basis rows flagged")
+    if moved:
+        print(f"[cash-bid-pages] {len(moved)} boards named for a town their ZIP or pin does not fit, placed by "
+              f"ZIP or pin instead: " + ", ".join(f"{k[1]} {k[0]} -> {v[0]}" for k, v in sorted(moved.items())))
     print(f"[cash-bid-pages] places with no town in their name: {len(placed)}; placed by ZIP {how['zip']}, "
           f"within {NEAR_MI} mi of a town {how['near']}, not placed {how['none']}")
     print(f"[cash-bid-pages] {len(metas)} town pages ({n_idx} with a current bid, {len(metas) - n_idx} noindex), "
@@ -3017,6 +3263,18 @@ def selftest():
     assert delivery_month("oldcrop-2026", "wheat", snap) == "2026-10"
     assert delivery_label({"delivery": "10/01/2026"}) == "Oct 2026"
     assert delivery_label({"delivery": "Fall 2026 (2026-12)"}) == "Fall 2026"
+    # /cash-bids/iowa/, 2026-10-19: one October, one label (it read three ways)
+    for d in ("Oct 2026", "01 Oct 2026 to 31 Oct 2026", "10/01/2026", "Oct 2026 (2026-12)"):
+        assert dtext({"delivery": d, "period": "2026-10"}) == "Oct 2026", (d, dtext({"delivery": d, "period": "2026-10"}))
+    assert "(Oct 2026)" in loc_li({"operator": "Mid-Iowa Cooperative", "city": "Eddy", "basis": -0.10, "cash": 4.56,
+                                   "delivery": "10/01/2026", "period": "2026-10",
+                                   "priced": parse_ts("2026-10-20T03:30:00Z")})
+    gr = {"operator": "Farmers Win Cooperative", "city": "Granger", "basis": -0.70, "cash": 3.97, "source": "fw-g",
+          "delivery": "Oct 2026", "period": "2026-10", "priced": parse_ts("2026-10-20T03:30:00Z")}
+    assert "Farmers Win Cooperative, Granger, Cresco: basis" in loc_li(gr, {"fw-g": ("Cresco", "/cash-bids/iowa/cresco")})
+    assert "Farmers Win Cooperative, Granger: basis" in loc_li(gr, {"fw-g": ("Granger", "/cash-bids/iowa/granger")})
+    assert best_where(gr, {"fw-g": ("Cresco", "/x")}) == ("Granger, Cresco", 'Granger, <a href="/x">Cresco</a>')
+    assert best_where(dict(gr, city="Mt Pleasant"), {"fw-g": ("Mount Pleasant", "/x")})[0] == "Mt Pleasant"
     assert dated_label_past({"periodVia": "deadline-inferred-year", "delivery": "By Oct 3", "period": "2026-10"}, snap)
     assert not dated_label_past({"periodVia": "day-range-inferred-year", "delivery": "Oct 1-9th",
                                  "period": "2026-10"}, snap)
@@ -3111,7 +3369,10 @@ def selftest():
         assert share == re.search(r'<meta name="twitter:description" content="([^"]*)">', fr).group(1)
         assert share.startswith("Top bids for nearest delivery: corn $3.95, soybeans $9.85 at "), share
         assert share.endswith("Updated Oct 7, 12:00 pm CT."), share
-        assert "<title>Cash Grain Bids in Fremont, NE Today | AGSIST</title>" in fr, "search title unchanged"
+        ft = re.search(r"<title>(.*?)</title>", fr).group(1)
+        assert ft == "Cash Grain Bids in Fremont, NE Today: Op kept and 5 more", ft
+        import build_search_index as BSI
+        assert BSI.TOWN_T.search(ft).groups() == ("Fremont", "NE"), "the search index still reads the town"
         # each board's posted time is the site's "Updated" stamp, re-rendered and aged by asof.js
         assert '<time class="asof" data-asof="bids" datetime="2026-10-07T17:00:00Z">Updated Oct 7, 12:00 pm CT</time>' in fr
         assert '/components/asof.js?v=1' in fr and '/components/asof.css?v=1' in fr
@@ -3395,6 +3656,9 @@ def selftest():
     _selftest_answer()
     _selftest_delivery_year()
     _selftest_place()
+    _selftest_name_fit()
+    _selftest_lead()
+    _selftest_county()
     _selftest_share()
     _selftest_best()
     _selftest_restricted()
@@ -3585,6 +3849,126 @@ def _selftest_place():
     sec = board_section(pl, parse_ts(gen).astimezone(CT))[0]
     assert '<div class="loc">Pine Lake</div>' in sec and "Ackney" not in sec, sec[:400]
     assert near_text(dict(ty, how="zip")) == "Ackley, IA 50601"
+
+
+def _selftest_name_fit():
+    """Real rows of 2026-10-20: Farmers Win Cooperative's "Granger" board (ZIP
+    52136, Cresco, its pin on that ZIP) was the Granger, IA page at corn $3.97,
+    140 mi from Granger. It now goes to Cresco, and /cash-bids/iowa/granger points there."""
+    import tempfile as _tf
+    gen = "2026-10-20T03:37:41Z"
+    cents = {"52136": (43.363, -92.126), "50109": (41.7611, -93.8244), "50638": (42.3672, -92.7773),
+             "51638": (40.8404, -95.2888), "61912": (39.5254, -88.0341), "60450": (41.3672, -88.4178),
+             "60119": (41.8824, -88.4611)}
+    zt = {"zips": {"52136": ["Cresco", "IA"], "50109": ["Granger", "IA"], "50638": ["Grundy Center", "IA"],
+                   "51638": ["Essex", "IA"], "61912": ["Ashmore", "IL"], "60450": ["Morris", "IL"],
+                   "60119": ["Elburn", "IL"]}}
+    tbs, fit = known_towns(zt), name_fit(town_zips(zt), cents.get)
+    granger = {"source": "farmerswin-granger", "place": "Farmers Win Cooperative||Granger|IA",
+               "operator": "Farmers Win Cooperative", "city": "Granger", "town": None, "state": "IA",
+               "zip": "52136", "lat": 43.363, "lon": -92.126, "precision": None}
+    rej = []
+    assert town_of(granger, {}, tbs) == "Granger", "no fit: the old name-only rule"
+    assert town_of(granger, {}, tbs, fit, rej) is None and rej == ["Granger"], rej
+    # the network's own ZIP, pin miles off and not street-level: stays (Total Grain, Ashmore IL)
+    ash = {"city": "Ashmore", "state": "IL", "zip": "61912", "lat": 38.7166, "lon": -88.91525, "precision": None}
+    assert town_of(ash, {}, tbs, fit) == "Ashmore"
+    # a ZIP one digit off the town's own is a typo: NEW Cooperative's Essex (50638 for 51638) stays in Essex
+    essex = {"city": "Essex", "state": "IA", "zip": "50638", "lat": 42.3672, "lon": -92.7773, "precision": None}
+    assert town_of(essex, {}, tbs, fit) == "Essex"
+    # a street pin decides between two named towns: FS Grain "CHS - Elburn/ Morris" is at Elburn
+    fs = {"city": "CHS - Elburn/ Morris", "state": "IL", "lat": 41.9011, "lon": -88.54022, "precision": "street"}
+    assert town_of(fs, {}, tbs) == "Morris" and town_of(fs, {}, tbs, fit) == "Elburn"
+    assert town_of(dict(granger, zip=None, lat=None, lon=None), {}, tbs, fit) == "Granger", "nothing to check"
+    row = dict(granger, currency="USD", crop="corn", commodity="Corn", delivery="Oct 2026", period="2026-10",
+               periodVia="month-year", periodPast=False, cash=3.97, basis=-0.70, basisUnit="per-bushel",
+               futuresMonth="ZCZ26", via="scrape", stale=False, sourceStatus="ok", pricedAt="2026-10-20T02:00:00Z")
+    srcs = [{"id": "farmerswin-granger", "operator": "Farmers Win Cooperative", "status": "ok", "health": "live",
+             "zip": "52136", "checkedAt": "2026-10-20T03:00:00Z"}]
+    moved = {}
+    towns, _, _ = select({"generated": gen, "bids": [row]}, {"sources": srcs}, tbs, zt, cents.get, {}, moved)
+    assert list(towns) == [("IA", "cresco")], list(towns)
+    bd = towns[("IA", "cresco")]["boards"]["Farmers Win Cooperative||Granger|IA"]
+    assert bd["how"] == "zip" and near_text(bd) == "Granger, Cresco, IA 52136", near_text(bd)
+    assert moved == {("IA", "granger"): ("Cresco", "Farmers Win Cooperative", "Granger")}, moved
+    # the old page is kept as a pointer to Cresco, out of the sitemap
+    with _tf.TemporaryDirectory() as d:
+        out = os.path.join(d, OUT_DIR)
+        os.makedirs(os.path.join(out, "iowa"))
+        with open(os.path.join(out, "iowa", "granger.html"), "w") as f:
+            f.write("<html>old Granger page, corn $3.97</html>")
+        sm = os.path.join(d, SITEMAP)
+        idx = {"sources": srcs}
+        build_all({"generated": gen, "bids": [row]}, idx, zt, out_dir=out, root=d, sitemap=sm,
+                  now=parse_ts(gen), min_towns=1, zip_coord=cents.get)
+        with open(os.path.join(out, "iowa", "granger.html")) as f:
+            g = f.read()
+        assert PP.pointer_target(g) == "/cash-bids/iowa/cresco", g[:600]
+        assert "Farmers Win Cooperative, Granger" in g and "$3.97" not in g
+        with open(sm) as f:
+            x = f.read()
+        assert "/iowa/granger<" not in x and "/iowa/cresco<" in x, x
+
+
+def _selftest_lead():
+    """Nevada, IA, 2026-10-19: the answer named Mid-Iowa at $4.41, the first card was Key Cooperative at $4.29."""
+    pt = parse_ts("2026-10-19T18:00:00Z")
+
+    def bd(op, city, corn, soy=None):
+        rows = [{"crop": "corn", "commodity": "Corn", "label": "Oct 2026", "dm": "2026-10", "cash": corn,
+                 "basis": -0.40, "contract": None, "priced": pt}]
+        if soy:
+            rows.append({"crop": "soybeans", "commodity": "Soybeans", "label": "Oct 2026", "dm": "2026-10",
+                         "cash": soy, "basis": -0.6, "contract": None, "priced": pt})
+        return {"operator": op, "city": city, "branch": city, "town": "Nevada", "how": "name", "rows": rows}
+    key, lin, mid = bd("Key Cooperative", "Nevada", 4.29, 11.90), bd("Lincolnway Energy LLC", "Nevada", 4.36), \
+        bd("Mid-Iowa Cooperative", "Lincolnway", 4.41)
+    assert lead_first([key, lin, mid]) == [mid, key, lin], [b["operator"] for b in lead_first([key, lin, mid])]
+    assert lead_first([key, lin]) == [lin, key]
+    assert lead_first([key]) == [key] and lead_first([]) == []
+    assert town_title("Nevada, IA", [mid, key, lin]) == "Cash Grain Bids in Nevada, IA Today | AGSIST", "68 chars: too long"
+    assert town_title("Jerome, ID", [dict(key, operator="Scoular")]) == "Cash Grain Bids in Jerome, ID Today: Scoular"
+    assert town_title("Gothenburg, NE", [dict(key, operator="Country Partners Cooperative")]) == \
+        "Cash Grain Bids in Gothenburg, NE Today | AGSIST", "69 chars: the plain title"
+    a, b2 = dict(key, operator="Key Coop"), dict(lin, operator="AGP")
+    assert town_title("Ames, IA", [a, b2]) == "Cash Grain Bids in Ames, IA Today: Key Coop and AGP"
+    assert town_title("Nevada, IA", [key, lin]) == "Cash Grain Bids in Nevada, IA Today | AGSIST", "63 chars"
+    assert town_title("Nevada, IA", [key, dict(key)]) == "Cash Grain Bids in Nevada, IA Today: Key Cooperative"
+    assert town_title("Nevada, IA", []) == "Cash Grain Bids in Nevada, IA Today | AGSIST"
+    assert town_title("Bloomington Springs, TN", [lin]) == "Cash Grain Bids in Bloomington Springs, TN Today | AGSIST"
+
+
+def _selftest_county():
+    """A town page links its county's rain, Atlas and ARC/PLC pages, only those that are real pages."""
+    import tempfile as _tf
+    with _tf.TemporaryDirectory() as d:
+        sq = lambda x0, y0, x1, y1: [[[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]]  # noqa: E731
+        geo = {"features": [
+            {"id": "19169", "properties": {"name": "Story", "st": "IA"}, "geometry": {"type": "Polygon",
+             "coordinates": sq(-93.70, 41.86, -93.23, 42.21)}},
+            {"id": "19079", "properties": {"name": "Hamilton", "st": "IA"}, "geometry": {"type": "MultiPolygon",
+             "coordinates": [sq(-93.93, 42.21, -93.46, 42.56)]}}]}
+        idx = [["19169", "Story County, IA", "/farmland-atlas/iowa/story-county"],
+               ["19079", "Hamilton County, IA", "/farmland-atlas/iowa/hamilton-county"]]
+        for rel, body in ((COUNTY_GEO, json.dumps(geo)), (COUNTY_INDEX, json.dumps(idx)),
+                          ("rain/iowa/story-county.html", "<html>rain</html>"),
+                          ("farmland-atlas/iowa/story-county.html", "<html>atlas</html>"),
+                          ("arc-plc/iowa/story-county.html", PP.page("/arc-plc/iowa/", "Story", "Iowa")),
+                          ("rain/iowa/hamilton-county.html", "<html>rain</html>")):
+            os.makedirs(os.path.dirname(os.path.join(d, rel)), exist_ok=True)
+            with open(os.path.join(d, rel), "w") as f:
+                f.write(body)
+        ctx = {"county": county_finder(d), "zip_coord": {"50201": (42.02, -93.45)}.get,
+               "town_zips": {("IA", "nevada"): ["50201"]}}
+        t = {"state": "IA", "name": "Nevada", "boards": {"a": {"pin": (42.0, -93.4), "how": "name", "precision": "street"}}}
+        ln = county_line(t, None, ctx)
+        assert ln == ('<p class="cbt-sub">Story County: <a href="/rain/iowa/story-county">rain this year</a> &middot; '
+                      '<a href="/farmland-atlas/iowa/story-county">farmland and cash rent</a></p>'), ln
+        t["boards"]["a"] = {"pin": None, "how": "name"}
+        assert county_line(t, None, ctx) == ln, "no pin: the town's own ZIP"
+        assert "Hamilton County" in county_line(t, (42.4, -93.6, "x"), ctx)
+        assert county_line(t, (40.0, -90.0, "x"), {"county": ctx["county"]}) == ""
+        assert county_line(t, None, {}) == "" and county_finder(os.path.join(d, "nope")) is None
 
 
 def _selftest_share():

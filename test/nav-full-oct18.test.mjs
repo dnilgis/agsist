@@ -33,7 +33,7 @@ const MENU = {
   markets: ["Prices", {
     "Near you": [["/cash-bids", "Cash bids near me"], ["/cash-bids/states", "Bids by state"], ["/basis", "Basis vs normal"], ["/cash-bid-index", "Cash Bid Index"], ["/fertilizer", "Fertilizer prices"]],
     Futures: [["/corn-futures-prices", "Corn"], ["/soybean-futures-prices", "Soybeans"], ["/wheat-futures-prices", "Wheat"], ["/harvest-price-tracker", "Harvest price tracker"], ["/markets", "All markets →"]],
-    Reports: [["/usda-calendar", "USDA calendar"], ["/whats-priced-in", "What’s priced in"], ["/conditions", "Crop progress"], ["/conditions-yield", "Crop size"], ["/crop-tour", "Crop tour"], ["/cot", "Fund positions (COT)"], ["/tariffs", "Tariffs and trade"]],
+    Reports: [["/usda-calendar", "USDA calendar"], ["/whats-priced-in", "What’s priced in"], ["/conditions", "Crop progress"], ["/conditions-yield", "Crop size"], ["/usda-quick-stats", "Yield by state"], ["/crop-tour", "Crop tour"], ["/cot", "Fund positions (COT)"], ["/tariffs", "Tariffs and trade"]],
   }],
   livestock: ["Livestock", {
     "": [["/cattle-auction-prices", "Sale barn prices"], ["/cattle-futures-prices", "Cattle futures"], ["/milk-prices", "Milk"], ["/hay-prices", "Hay"], ["/haymow", "The Haymow"], ["/lrp", "LRP"], ["/prf", "PRF"], ["/manure-value", "Manure value"], ["/drought-monitor", "Drought monitor"]],
@@ -44,7 +44,7 @@ const MENU = {
     "Harvest and bins": [["/harvest-or-wait", "Harvest now or wait"], ["/grain-emc", "Grain drying (EMC)"], ["/grain-shrink", "Grain shrink"], ["/grain-bin-calculator", "Bin calculator"], ["/combine-loss", "Combine loss"], ["/tools", "All tools →"]],
   }],
   money: ["Money & Land", {
-    Land: [["/rent/", "Cash rent"], ["/farmland-atlas", "Farmland Atlas"], ["/custom-rates", "Custom rates"], ["/cash-lease", "Lease form"]],
+    Land: [["/rent/", "Cash rent"], ["/farmland-atlas", "Farmland Atlas"], ["/farmland-index", "Farmland sale index"], ["/custom-rates", "Custom rates"], ["/cash-lease", "Lease form"]],
     Programs: [["/arc-plc", "ARC or PLC"], ["/prf", "PRF"], ["/lrp", "LRP"], ["/farm-bill", "Farm bill"]],
     Selling: [["/store-or-sell", "Sell or store"], ["/breakeven", "Break-even"], ["/commodity-loan", "CCC loan"]],
   }],
@@ -85,8 +85,10 @@ test("desktop menu: five groups in order, short noun subheads, every label exact
 test("phone panel: search, My place, the five groups open with subheads, a Rain Print card, About, Contact, Display mode", () => {
   assert.doesNotMatch(drawer, /<details/, "no folds inside the panel");
   const at = (s) => { const i = drawer.indexOf(s); assert.ok(i > 0, s); return i; };
-  const seq = ['id="draw-srch"', 'id="dp-bids"', 'id="dg-markets"', 'id="dg-livestock"', 'id="dg-field"', 'id="dg-money"', 'id="dg-daily"', 'class="draw-rp"', 'href="/about"', 'href="/contact"', 'id="theme-btn-d"'];
+  const seq = ['id="draw-srch"', 'id="dp-here"', 'id="dp-bids"', 'id="dg-markets"', 'id="dg-livestock"', 'id="dg-field"', 'id="dg-money"', 'id="dg-daily"', 'class="draw-rp"', 'href="/about"', 'href="/contact"', 'id="theme-btn-d"'];
   for (let i = 1; i < seq.length; i++) assert.ok(at(seq[i - 1]) < at(seq[i]), `${seq[i - 1]} before ${seq[i]}`);
+  // Sig, Oct 20: /here is the first My place tile
+  assert.match(drawer, /<div class="draw-place-row">\s*<a href="\/here" class="draw-pl" id="dp-here">[\s\S]*?Everything near me<\/a>/);
   assert.match(drawer, /<a href="\/cash-bids" class="draw-pl" id="dp-bids">[\s\S]*?Bids near me<\/a>/);
   assert.match(drawer, /<a href="\/rain-radar" class="draw-pl" id="dp-rain">[\s\S]*?Rain at my field<\/a>/);
   assert.match(drawer, /<a href="\/rent\/" class="draw-pl" id="dp-rent">[\s\S]*?Rent in my county<\/a>/);
@@ -197,7 +199,9 @@ test("ZIP chip: reads the saved place, sets all three keys, a failed lookup save
     const keys = await pg.evaluate(() => ({ loc: JSON.parse(localStorage.getItem("agsist-wx-loc")), z: localStorage.getItem("agsist_zip"), u: localStorage.getItem("agsist_user_zip") }));
     assert.equal(keys.z, "54728"); assert.equal(keys.u, "54728");
     assert.equal(keys.loc.zip, "54728"); assert.equal(keys.loc.state, "WI"); assert.equal(keys.loc.label, "Chetek, WI"); assert.equal(keys.loc.zipTyped, true);
-    assert.equal(await pg.getAttribute("#zip-go", "href"), "/cash-bids?zip=54728");
+    // Sig, Oct 20: once a ZIP is saved the box sends the reader to /here for that ZIP
+    assert.equal(await pg.getAttribute("#zip-go", "href"), "/here?zip=54728");
+    assert.equal(await pg.textContent("#zip-go"), "Everything near Chetek →");
     await pg.keyboard.press("Escape");
     assert.equal(await pg.isVisible("#zip-pop"), false);
     assert.equal(await pg.evaluate(() => document.activeElement.id), "zip-chip");
@@ -217,6 +221,7 @@ test("ZIP chip: reads the saved place, sets all three keys, a failed lookup save
     await pg.click("#hamburger");
     await pg.waitForFunction(() => document.getElementById("drawer").classList.contains("open"));
     assert.equal(await pg.getAttribute("#dp-bids", "href"), "/cash-bids?zip=50010");
+    assert.equal(await pg.getAttribute("#dp-here", "href"), "/here?zip=50010");
     await ctx.close();
 
     // a saved Iowa place: rent opens on Iowa's county picker
@@ -265,7 +270,8 @@ test("phone: one tap on the menu shows every group's links; desktop panels stay 
     const hidden = await pg.evaluate(() => [...document.querySelectorAll("#drawer .draw-grp a.draw-item")].filter((a) => !a.getClientRects().length).map((a) => a.getAttribute("href")));
     assert.deepEqual(hidden, [], "every group link is shown without another tap");
     const n = await pg.evaluate(() => document.querySelectorAll("#drawer .draw-grp a.draw-item").length);
-    assert.equal(n, 5 + 5 + 7 + 9 + 7 + 7 + 6 + 4 + 4 + 3 + 3, "Livestock has 9 since The Haymow (2026-10-18)");
+    assert.equal(n, 5 + 5 + 8 + 9 + 7 + 7 + 6 + 5 + 4 + 3 + 3,
+      "Livestock has 9 since The Haymow (2026-10-18); Reports 8 with Yield by state, Land 5 with Farmland sale index (2026-10-20)");
     assert.ok(await pg.evaluate(() => document.getElementById("drawer").scrollWidth <= 390), "no sideways scroll in the panel");
     // the moved note shows before Nov 1 and stays closed once dismissed
     assert.ok(await pg.isVisible("#drawer .nav-moved"));

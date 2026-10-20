@@ -59,7 +59,7 @@ REPO = Path(__file__).resolve().parent.parent
 DATA = REPO / "data"
 sys.path.insert(0, str(REPO / "scripts"))
 
-from seo_caps import TITLE_MAX, DESC_MAX, SUFFIX  # noqa: E402  the one cap (scripts/seo_caps.py)
+from seo_caps import TITLE_MAX, DESC_MAX, SUFFIX, fit  # noqa: E402  the one cap (scripts/seo_caps.py)
 
 MONTHS = ["January", "February", "March", "April", "May", "June", "July",
           "August", "September", "October", "November", "December"]
@@ -628,8 +628,40 @@ def seo_conditions(c):
         wk = f"{_rd:%b} {_rd.day}"
     except ValueError:
         pass
-    # (a harvest figure beside G+E runs past TITLE_MAX; it is in the page's lead)
+    # Harvest season (panel Oct 20, seat B): October searches ask how far harvest is, so
+    # the title leads with the harvest percent when this week's report carries one. Each
+    # crop's figure counts only when it is dated within a week of the report and is
+    # between 0 and 100 (a finished harvest, or none started, keeps the plain title).
     cands = []
+    hv = []
+    for key, nm in (("corn", "Corn"), ("soybeans", "Soybeans")):
+        x = d.get(key) or {}
+        hp, hd = x.get("harvest_pct"), x.get("harvest_date")
+        try:
+            fresh = bool(wk) and abs((date.fromisoformat(str(hd)[:10]) - _rd).days) <= 6
+        except (TypeError, ValueError):
+            fresh = False
+        if isinstance(hp, (int, float)) and 0 < hp < 100 and fresh:
+            hv.append((nm, hp, x.get("harvest_5yr_avg")))
+    if hv and hv[0][0] == "Corn":
+        h0 = f"Corn {hv[0][1]:g}% Harvested"
+        h1 = h0 + (f", Soybeans {hv[1][1]:g}%" if len(hv) > 1 else "")
+        # " | AGSIST" gives way before "Week Ending" does (seo_caps)
+        cands += [f"{h1}: Crop Progress, Week Ending {wk}{SUFFIX}", f"{h1}: Crop Progress, Week Ending {wk}",
+                  f"{h0}: Crop Progress, Week Ending {wk}{SUFFIX}", f"{h0}: Crop Progress, Week Ending {wk}"]
+        avg = hv[0][2]
+        hl = (f"US corn is {hv[0][1]:g}% harvested" + (f" against a {avg:g}% five-year average" if isinstance(avg, (int, float)) else "")
+              + (f", soybeans {hv[1][1]:g}%" if len(hv) > 1 else ""))
+        # soybean ratings stop before corn's (the Oct 18 file still holds the Oct 11 soybean 57%):
+        # only a rating from this week's report is printed beside it
+        srd = str((d.get("soybeans") or {}).get("report_date") or rd or "")[:10]
+        gl = f"Corn is {ge:g}% good to excellent" + (f", soybeans {soy:g}%" if soy is not None and srd == str(rd)[:10] else "")
+        desc_h = next((x for x in (f"{hl}. {gl}. Every state ranked against its own record.", f"{hl}. {gl}.", f"{hl}.")
+                       if len(x) <= DESC_MAX), f"{hl}.")
+        title = next((t for t in cands if len(t) <= TITLE_MAX), None)
+        if title and len(desc_h) <= DESC_MAX:
+            return (title, desc_h)
+        cands = []
     if wk:
         cands.append(f"Crop Progress, Week Ending {wk}: Corn {ge:g}% Good-Excellent{SUFFIX}")
     cands.append(f"USDA Crop Conditions: Corn {ge:g}% Good-Excellent{SUFFIX}")
@@ -830,8 +862,11 @@ def seo_cattle(c):
     when = f" {lab}" if lab else ""
     # livestock to the tick, the site's one rule (pricefmt.cash): $343.625, $227.55
     fp, lp = pricefmt.cash(feed["px"]), pricefmt.cash(live["px"])
-    return (f"CME Feeder Cattle Futures {fp} & Live Cattle "
-            f"{lp}{SUFFIX}",
+    # The settle's own date rides in the title (2026-10-20 panel A4/B1/E2: on
+    # a weekday evening the title holds the session before, and an undated
+    # number read as today's). " | AGSIST" gives way first.
+    head = f"CME Feeder Cattle Futures {fp} & Live Cattle {lp} ({feed['label']})"
+    return (fit([head + SUFFIX, head]),
             f"Feeder cattle settled {fp}, live cattle{when} "
             f"{lp} on {feed['label']}. CME futures every 15 min, "
             "with 5-year ranges, the feeder-to-live ratio and cost of gain.")
@@ -910,9 +945,13 @@ def make_futures(page):
         px = sc["px"]
         # grain boards quote in cents; cattle already quotes in dollars per cwt
         money = pricefmt.price(px) if key != "cattle" else pricefmt.cash(px)
-        if extra is None:
-            return (f"{exch} {crop} Futures Price: {lab} {money}{SUFFIX}", None)
-        return (f"{exch} {crop} Futures Price: {lab} {money}, {extra}{SUFFIX}", None)
+        # Dated by the settle itself (2026-10-20, panel A4/B1/E2): from the
+        # 1:20 p.m. CT close until Yahoo posts the settle near 11 p.m. CT the
+        # newest settle is the session before, and an undated "$4.74 1/4"
+        # read as today's price beside a page showing $4.66 3/4.
+        base = f"{exch} {crop} Futures Price: {lab} {money} ({sc['label']})"
+        cands = ([base + f", {extra}" + SUFFIX, base + f", {extra}"] if extra else []) + [base + SUFFIX, base]
+        return (fit(cands), None)
 
     build.__name__ = f"seo_{key}_futures"
     return build
@@ -1720,10 +1759,32 @@ def selftest():
     _cp11 = {"in_season": True, "report_date": "2026-10-11",
              "corn": {"good_excellent": 56, "report_date": "2026-10-11", "good_excellent_prev_year": None,
                       "harvest_pct": 33, "harvest_date": "2026-10-11"}, "soybeans": {"good_excellent": 61}}
+    # Oct 20 (panel B): in harvest season the title leads with the harvest percent; the Oct 11
+    # report carried corn 33% harvested and no soybean harvest figure
     t11, _d11 = seo_conditions(dict(ctx, crop_progress=_cp11))
-    ck("conditions title names the week ENDING Oct 11, never 'Week of'",
-       t11 == "Crop Progress, Week Ending Oct 11: Corn 56% Good-Excellent | AGSIST" and "Week of" not in t11
+    ck("conditions title names the week ENDING Oct 11, never 'Week of', led by the harvest",
+       t11 == "Corn 33% Harvested: Crop Progress, Week Ending Oct 11 | AGSIST" and "Week of" not in t11
        and len(t11) <= TITLE_MAX, t11)
+    ck("the harvest description says the percent and the condition", _d11.startswith("US corn is 33% harvested. Corn is 56% good to excellent"), _d11)
+    _cpg = dict(_cp11, corn={k: v for k, v in _cp11["corn"].items() if not k.startswith("harvest")})
+    tg, _ = seo_conditions(dict(ctx, crop_progress=_cpg))
+    ck("no harvest figure (summer): the condition title as before",
+       tg == "Crop Progress, Week Ending Oct 11: Corn 56% Good-Excellent | AGSIST", tg)
+    _cpo = dict(_cp11, corn=dict(_cp11["corn"], harvest_date="2026-09-27"))
+    ck("a harvest figure from an older week does not lead",
+       seo_conditions(dict(ctx, crop_progress=_cpo))[0].startswith("Crop Progress, Week Ending Oct 11: Corn 56% Good"))
+    _cpd = dict(_cp11, corn=dict(_cp11["corn"], harvest_pct=100))
+    ck("a finished harvest does not lead", seo_conditions(dict(ctx, crop_progress=_cpd))[0].startswith("Crop Progress,"))
+    # Oct 20 file: corn 44% (5-year 52%), soybeans 64%, week ending Oct 18
+    _cp18 = {"in_season": True, "report_date": "2026-10-18",
+             "corn": {"good_excellent": 56, "report_date": "2026-10-18", "harvest_pct": 44, "harvest_date": "2026-10-18", "harvest_5yr_avg": 52},
+             "soybeans": {"good_excellent": 57, "report_date": "2026-10-11", "harvest_pct": 64, "harvest_date": "2026-10-18", "harvest_5yr_avg": 65}}
+    t18, d18 = seo_conditions(dict(ctx, crop_progress=_cp18))
+    ck("both crops' harvest in the title, the suffix gives way first",
+       t18 == "Corn 44% Harvested, Soybeans 64%: Crop Progress, Week Ending Oct 18" and len(t18) <= TITLE_MAX, t18)
+    ck("harvest description within the cap", d18.startswith("US corn is 44% harvested against a 52% five-year average, soybeans 64%.")
+       and len(d18) <= DESC_MAX, d18)
+    ck("last week's soybean rating is not printed beside this week's corn", "57%" not in d18 and "Corn is 56% good to excellent." in d18, d18)
     cp = dict(ctx["crop_progress"], corn={"good_excellent": 54, "good_excellent_prev_year": None},
               soybeans={"good_excellent": 57})
     _t, d0 = seo_conditions(dict(ctx, crop_progress=cp))
@@ -2074,6 +2135,29 @@ def selftest():
     sc = settled_close(v37s, "2026-10-17T05:00:00Z", "grain")
     ck("v3.7 settle: settled $12.61 1/4, -1 3/4 on Oct 16 (the CBOT settle)",
        sc and sc["px"] == 1261.25 and sc["date"] == "2026-10-16" and sc["net"] == -1.75, sc)
+    # 2026-10-20 03:31 UTC, real file: Dec corn last trade 466.75 (Oct 19),
+    # newest settle 474.25 (Oct 16). The title says which day its number is.
+    eve = {"fetched": "2026-10-20T03:31:20Z",
+           "nearby": {"corn": {"key": "corn-dec26", "label": "Dec '26"},
+                      "wheat": {"key": "wheat-dec26", "label": "Dec '26"}},
+           "quotes": {"corn-nearby": {"close": 466.75, "close_date": "2026-10-19", "close_kind": "last",
+                                      "settle": 474.25, "settle_date": "2026-10-16", "settle_net": -3.75},
+                      "wheat-nearby": {"close": 656.0, "close_date": "2026-10-19", "close_kind": "last",
+                                       "settle": 660.5, "settle_date": "2026-10-16", "settle_net": -2.0},
+                      "cattle": {"close": 228.0, "close_date": "2026-10-19", "close_kind": "last",
+                                 "settle": 227.55, "settle_date": "2026-10-16"},
+                      "feeders": {"close": 344.0, "close_date": "2026-10-19", "close_kind": "last",
+                                  "settle": 343.625, "settle_date": "2026-10-16"}}}
+    t_eve = PAGES["corn-futures-prices.html"][0](dict(ctx, prices=eve))[0]
+    ck("evening corn title names the settle's date, not just a number",
+       t_eve == "CBOT Corn Futures Price: Dec '26 $4.74¼ (Oct 16) | AGSIST", t_eve)
+    t_eve = PAGES["wheat-futures-prices.html"][0](dict(ctx, prices=eve))[0]
+    ck("wheat title keeps its date within the cap",
+       "(Oct 16)" in t_eve and "$6.60½" in t_eve and len(t_eve) <= TITLE_MAX, t_eve)
+    t_eve = PAGES[CATTLE_PAGE][0](dict(ctx, prices=eve))[0]
+    ck("cattle title names both settles and their date within the cap",
+       t_eve.startswith("CME Feeder Cattle Futures $343.625 & Live Cattle $227.55 (Oct 16)")
+       and len(t_eve) <= TITLE_MAX, t_eve)
     ck("v3.7 with no settle field bakes nothing",
        settled_close(dict(v37, settle=None), "2026-10-16T18:46:22Z", "grain") is None)
     t_nt = PAGES["soybean-futures-prices.html"][0](dict(ctx, prices={

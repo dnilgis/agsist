@@ -16,7 +16,12 @@ name: Cron health
 #
 # It also measures what GitHub Pages publishes (scripts/check_site_budget.py):
 # a warn row past 850 MB and a red one past 900 MB, before the 1 GB limit where
-# Pages stops deploying and the site freezes.
+# Pages stops deploying and the site freezes. A folder-budgets row warns at 90%
+# of any folder's budget there (red past it).
+#
+# Watching the watchers (2026-10-20): daily-site-check.yml and this workflow
+# are rows, and a stale data/cron-health.json (older than 8 h) is a red row
+# that daily-site-check.yml, on GitHub's cron rather than cron-job.org, reports.
 #
 # The file is committed only when a status changes or every six hours, so it
 # does not add a Pages deploy every half hour.

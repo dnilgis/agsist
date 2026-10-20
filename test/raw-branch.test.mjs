@@ -9,8 +9,11 @@
  * workflow that writes them saves them to raw instead, and runs
  * scripts/push_raw.sh and scripts/pull_raw.sh against a throwaway remote.
  *
- * Kept on main on purpose: data/fsa (build_arc_plc.py --check reads it in every
- * ship check), data/atlas/raw/drought.json (test/drought-county-week.test.mjs
+ * data/fsa (FSA's ARC/PLC xlsx and pdf, 34 MB) followed on Oct 20: only
+ * build_arc_plc.py reads it, and arc-plc-refresh.yml and scripts/dev/checks.sh
+ * unpack it with pull_raw.sh first. Its URL list and manifest stay on main.
+ *
+ * Kept on main on purpose: data/atlas/raw/drought.json (test/drought-county-week.test.mjs
  * reads it) and each probe's listing.json (the normal run reads it).
  */
 import { test } from 'node:test';
@@ -64,8 +67,26 @@ test('.gitignore keeps them off main, and keeps the files main still needs', () 
   assert.ok(ignored('data/atlas/raw/climate_monthly.json.gz'), 'the monthly climate file never reaches main');
   for (const d of MOVED) assert.ok(ignored(`${d}/x.txt`), `${d}/ ignored`);
   for (const k of KEPT) assert.ok(!ignored(k), `${k} is not ignored`);
-  assert.ok(!ignored('data/fsa/2026_PLC.xlsx'), 'data/fsa stays on main (build_arc_plc.py --check reads it)');
-  assert.ok(tracked('data/fsa').length > 10, 'data/fsa still on main');
+  assert.ok(ignored('data/fsa/2026_PLC.xlsx'), 'FSA files are kept off main');
+  assert.ok(ignored('data/fsa/arcco_2027_data_2027-01-15.xlsx'), 'a new FSA file is kept off main too');
+  for (const k of ['data/fsa/urls.txt', 'data/fsa/manifest.tsv']) assert.ok(!ignored(k), `${k} stays on main`);
+  assert.deepEqual(tracked('data/fsa'), ['data/fsa/manifest.tsv', 'data/fsa/urls.txt'], 'only the URL list and manifest are on main');
+});
+
+test('FSA files: every reader unpacks them from raw, every writer saves them there', () => {
+  const r = read('.github/workflows/arc-plc-refresh.yml');
+  const pull = r.indexOf('bash scripts/pull_raw.sh data/fsa');
+  assert.ok(pull > 0 && pull < r.indexOf('build_arc_plc.py --selftest'), 'arc-plc-refresh pulls before the selftest and build');
+  assert.doesNotMatch(r, /git add[^\n]*data\/fsa/, 'arc-plc-refresh never commits data/fsa');
+  for (const wf of ['fetch-fsa-arcplc', 'fetch-fsa-files']) {
+    const y = read(`.github/workflows/${wf}.yml`);
+    assert.match(y, /bash scripts\/push_raw\.sh "FSA ARC\/PLC files" data\/fsa\n/, `${wf}: files saved to raw`);
+    assert.match(y, /git add data\/fsa\/manifest\.tsv\n/, `${wf}: main gets only the manifest`);
+    assert.doesNotMatch(y, /git add data\/fsa\n/, `${wf}: the folder is not committed to main`);
+  }
+  const c = read('scripts/dev/checks.sh');
+  assert.ok(c.indexOf('pull_raw.sh data/fsa') > 0 && c.indexOf('pull_raw.sh data/fsa') < c.indexOf('run node-test'), 'ship checks unpack them first');
+  assert.match(read('scripts/build_arc_plc.py'), /no FSA county files in \{FSA_DIR\}\/\. They live on the raw branch/, 'a build without them stops, never falls back to estimates');
 });
 
 test('every probe saves its captures to the raw branch and commits only built outputs to main', () => {

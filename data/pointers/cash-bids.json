@@ -9,6 +9,14 @@
    "to": "/cash-bids/indiana/",
    "since": "2026-10-16"
   },
+  "cash-bids/iowa/granger.html": {
+   "to": "/cash-bids/iowa/cresco",
+   "since": "2026-10-20"
+  },
+  "cash-bids/iowa/grant.html": {
+   "to": "/cash-bids/iowa/paton",
+   "since": "2026-10-20"
+  },
   "cash-bids/montana/circle.html": {
    "to": "/cash-bids/montana/",
    "since": "2026-10-13"
@@ -168,6 +176,10 @@
   "cash-bids/ohio/saint-marys.html": {
    "to": "/cash-bids/ohio/",
    "since": "2026-10-15"
+  },
+  "cash-bids/texas/morton.html": {
+   "to": "/cash-bids/texas/dumas",
+   "since": "2026-10-20"
   },
   "cash-bids/wisconsin/ixonia.html": {
    "to": "/cash-bids/wisconsin/",

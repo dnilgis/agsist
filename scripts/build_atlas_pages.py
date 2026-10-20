@@ -1629,7 +1629,7 @@ def county_page(W, f, d, stamp):
             return why(V)
         if fl:
             return "%s census · read with care: %s" % (V.get("latest_year"), flag_words(fl, True))
-        return "%s: what operators guessed land and buildings were worth" % V.get("latest_year")
+        return "%s: operators' own estimate of what land and buildings were worth" % V.get("latest_year")
     st_rent = W.stat("rent", st, f) if rv else None
     st_irr = W.stat("irr", st, f) if ri else None
     st_val = W.stat("value", st, f) if ok(V) and not fl else None

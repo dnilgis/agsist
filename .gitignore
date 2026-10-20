@@ -47,3 +47,11 @@ build/shots/
 /data/hay-raw/
 /data/drought/probe/
 /data/land-raw/
+# FSA's ARC/PLC program files (xlsx/pdf, 34 MB, Oct 20): read only by
+# scripts/build_arc_plc.py, linked by no page. They live on raw at the same
+# path; arc-plc-refresh.yml and scripts/dev/checks.sh unpack them with
+# `bash scripts/pull_raw.sh data/fsa`. The URL list (it triggers
+# fetch-fsa-files.yml) and the download manifest stay on main.
+/data/fsa/*
+!/data/fsa/urls.txt
+!/data/fsa/manifest.tsv

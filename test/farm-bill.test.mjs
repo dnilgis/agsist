@@ -119,7 +119,8 @@ test("the page got lighter", () => {
   // 91,261 bytes on Oct 14 with the titles and ledger inline. The picker and the
   // 90-day strip were added on top, so the cap is just under where it started.
   // Oct 16: the Oct 1 cards and the sources moved into folds and repeated status copy went, so 86,000.
-  assert.ok(Buffer.byteLength(html) < 86000, `farm-bill.html is ${Buffer.byteLength(html)} bytes`);
+  // Oct 20: the baked menu grew 215 bytes on every page (Sig approved Everything near me, Yield by state and Farmland sale index), so the cap moves up 500 bytes.
+  assert.ok(Buffer.byteLength(html) < 86500, `farm-bill.html is ${Buffer.byteLength(html)} bytes`);
 });
 
 test("visible FAQ and FAQ JSON-LD match word for word", () => {

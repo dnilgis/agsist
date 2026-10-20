@@ -1,6 +1,6 @@
 # Download FSA's ARC/PLC program data files (official ARC-CO benchmark yields
 # and revenues, trend yield adjustment factors, effective reference prices) into
-# data/fsa/ so scripts/build_arc_plc.py can use official numbers. fsa.usda.gov is
+# data/fsa/ (saved to the raw branch) so scripts/build_arc_plc.py can use official numbers. fsa.usda.gov is
 # not reachable from the dev sandbox; the Actions runner can reach it.
 name: fetch-fsa-arcplc
 on:
@@ -57,7 +57,10 @@ jobs:
       - name: Commit
         run: |
           git config user.name "agsist-bot"; git config user.email "bot@agsist.com"
-          git add data/fsa
-          if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -m "data: FSA ARC/PLC program data files [skip ci]"
+          # the files go to the raw branch (never deployed); main keeps only the
+          # manifest and the URL list (.gitignore). push_raw.sh never deletes on raw.
+          bash scripts/push_raw.sh "FSA ARC/PLC files" data/fsa
+          git add data/fsa/manifest.tsv
+          if git diff --cached --quiet; then echo "no change on main"; exit 0; fi
+          git commit -m "data: FSA ARC/PLC program data files manifest [skip ci]"
           for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done

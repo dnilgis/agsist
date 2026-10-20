@@ -38,7 +38,8 @@ WHERE EVERY NUMBER COMES FROM (verified 2026-10-09)
 fsa.usda.gov, federalregister.gov, ecfr.gov and law.cornell.edu are not
 reachable from the build sandbox. Program rules were checked through search
 results quoting those pages, each against a second source. FSA's own data
-files are fetched by .github/workflows/fetch-fsa-arcplc.yml into data/fsa/.
+files are fetched by .github/workflows/fetch-fsa-arcplc.yml into data/fsa/
+and saved to the raw branch (not main); locally: bash scripts/pull_raw.sh data/fsa
 
 1. FSA OFFICIAL COUNTY DATA (data/fsa/arcco_<PY>_data*.xlsx)
    "ARC-CO trend adjusted yields, benchmark yields and guarantee revenues for
@@ -1012,6 +1013,11 @@ def load_inputs(root="."):
         inp["mya"][crop] = {int(k): float(v) for k, v in d["values"].items()}
         inp["mya_meta"][crop] = {"file": f"data/nass/{c['mya']}.json", "updated": d.get("updated")}
     inp["counties"] = _read(root, "farmland-atlas/data/counties-index.json")
+    # FSA's files live on the raw branch, not main (Oct 20). A build without them would
+    # quietly fall back to estimates on every county page, so it stops instead.
+    if not glob.glob(os.path.join(root, FSA_DIR, "arcco_*.xls*")):
+        raise SystemExit(f"[arc-plc] no FSA county files in {FSA_DIR}/. They live on the raw branch: "
+                         f"bash scripts/pull_raw.sh {FSA_DIR}   Nothing built.")
     inp["fsa"] = load_fsa(root)
     inp["arc_tabs"] = load_arc_tables(root)
     inp["plc_county"] = load_plc_county(root)
@@ -3020,11 +3026,17 @@ def key_numbers_html(c, D, cname):
 
 def county_title(cname, st, lab, LY, by_txt):
     """'{County}, {ST} ARC or PLC {year}: {Crop} Benchmark {yield}', shortened until it fits 60 characters.
-    Always carries 'ARC or PLC'; the verdict goes in the description, not here."""
+    Always carries 'ARC or PLC'; the verdict goes in the description, not here.
+    The number goes last (scripts/seo_caps.py): "Co." first, then the word "Benchmark", and only then
+    the yield. Until 2026-10-20 the full name without the number came before "Co." with it, and
+    986 of 2,772 county titles ended in a bare "Benchmark" (panel B2)."""
     short = re.sub(r" County$", " Co.", cname)
-    for t in (f"{cname}, {st} ARC or PLC {LY}: {lab} Benchmark {by_txt}",
+    num = (f"{cname}, {st} ARC or PLC {LY}: {lab} Benchmark {by_txt}",
+           f"{short}, {st} ARC or PLC {LY}: {lab} Benchmark {by_txt}",
+           f"{cname}, {st} ARC or PLC {LY}: {lab} {by_txt}",
+           f"{short}, {st} ARC or PLC {LY}: {lab} {by_txt}") if by_txt else ()
+    for t in (*num,
               f"{cname}, {st} ARC or PLC {LY}: {lab} Benchmark",
-              f"{short}, {st} ARC or PLC {LY}: {lab} Benchmark {by_txt}",
               f"{short}, {st} ARC or PLC {LY}: {lab} Benchmark",
               f"{short}, {st} ARC or PLC {LY}: {lab}",
               f"{cname}, {st} ARC or PLC {LY} and {int(LY) + 1 if LY == '2026' else 2026}",
@@ -3838,9 +3850,13 @@ def selftest():
        practice_split([{"d": "irr", "by": 238.96}, {"d": "non", "by": 187.38}])
        and not practice_split([{"d": "all", "by": 203.4}]) and not practice_split([{"d": "irr", "by": 230.0}])
        and not practice_split([{"d": "irr", "by": 230.0}, {"d": "non", "by": None}]))
-    ck("title: Pottawattamie drops the yield, Prince George's takes Co.",
-       county_title("Pottawattamie County", "IA", "Corn", "2026", "203.4 bu") == "Pottawattamie County, IA ARC or PLC 2026: Corn Benchmark"
-       and county_title("Prince George's County", "MD", "Soybeans", "2026", "45.1 bu") == "Prince George's Co., MD ARC or PLC 2026: Soybeans Benchmark")
+    ck("title: the yield goes last: Clearwater takes Co., Pottawattamie, Prince George's and Wright drop the word Benchmark, never the number",
+       county_title("Clearwater County", "ID", "Wheat", "2026", "71.9 bu") == "Clearwater Co., ID ARC or PLC 2026: Wheat Benchmark 71.9 bu"
+       and county_title("Pottawattamie County", "IA", "Corn", "2026", "203.4 bu") == "Pottawattamie County, IA ARC or PLC 2026: Corn 203.4 bu"
+       and county_title("Prince George's County", "MD", "Soybeans", "2026", "45.1 bu") == "Prince George's County, MD ARC or PLC 2026: Soybeans 45.1 bu"
+       and county_title("Wright County", "MN", "Non-irrigated corn", "2026", "182.3 bu") == "Wright Co., MN ARC or PLC 2026: Non-irrigated corn 182.3 bu"
+       and county_title("Story County", "IA", "Corn", "2026", "203.4 bu") == "Story County, IA ARC or PLC 2026: Corn Benchmark 203.4 bu"
+       and county_title("Story County", "IA", "ARC-CO", "2026", "") == "Story County, IA ARC or PLC 2026: ARC-CO Benchmark")
     ck("title: always 60 or fewer with 'ARC or PLC'", all(len(t) <= 60 and "ARC or PLC" in t for t in (
         county_title("Prince of Wales-Hyder Census Area", "AK", "Medium and short grain rice", "2027", "7,000 lb"),
         county_title("Story County", "IA", "Corn", "2026", "203.4 bu"))))

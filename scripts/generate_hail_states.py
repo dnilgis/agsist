@@ -126,7 +126,11 @@ def storm_days_html(name, sdays):
 def merge_counties(rows, n_yrs):
     """Upstream names arrive with mixed casing ("Dane"/"DANE") splitting one
     county into two rows — merge case-insensitively, totals summed, damaging
-    share re-weighted, then re-rank."""
+    share re-weighted, then re-rank. scripts/fetch_hail.py joins the spellings
+    before it ranks (2026-10-20), so this is for a file built before that.
+    Rows that carry their 12 monthly counts add them, and the peak is read
+    from the sum (Scott, IA: Apr 63 + Mar 57 was shown as the bigger half's
+    "Apr" whatever the months added up to)."""
     seen = {}
     out = []
     for r in rows:
@@ -141,8 +145,17 @@ def merge_counties(rows, n_yrs):
             if t2 > t1 and not (str(r.get("county", "")).isupper() and not str(m["county"]).isupper()):
                 m["county"] = r.get("county", m["county"])
                 m["peak"] = r.get("peak") or m.get("peak")
+            elif str(m["county"]).isupper() and not str(r.get("county", "")).isupper():
+                m["county"] = r.get("county", m["county"])     # "Linn" over "LINN" whichever half is bigger
             m["total"] = T
             m["avg"] = round(T / max(1, n_yrs), 1)
+            a, b = m.get("months"), r.get("months")
+            if isinstance(a, list) and isinstance(b, list) and len(a) == len(b) == 12:
+                m["months"] = [x + y for x, y in zip(a, b)]
+                top = max(m["months"])
+                m["peak"] = MONTH_ORDER[m["months"].index(top)] if top else m.get("peak")
+            else:
+                m.pop("months", None)   # one half only: the sum is not known
         else:
             seen[k] = dict(r)
             out.append(seen[k])

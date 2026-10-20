@@ -79,14 +79,33 @@ PAGE_EXCEPTIONS = {
 SKIP_DIRS = {".git", ".github", "node_modules", "__pycache__", ".claude"}
 
 
+def ignored_files(root):
+    """Files git ignores in this checkout. They are never committed, so Pages never
+    publishes them: raw inputs unpacked from the raw branch for a local build
+    (bash scripts/pull_raw.sh data/fsa) must not count. Empty when root is not a
+    git checkout."""
+    import subprocess
+    try:
+        out = subprocess.run(["git", "-C", root, "ls-files", "-z", "--others", "--ignored", "--exclude-standard"],
+                             capture_output=True, timeout=120)
+    except (OSError, subprocess.SubprocessError):
+        return set()
+    if out.returncode != 0:
+        return set()
+    return {os.path.normpath(p) for p in out.stdout.decode("utf-8", "replace").split("\0") if p}
+
+
 def walk(root):
     """Yield (relative_path, bytes) for every file Pages would publish.
     The repo has .nojekyll, so Pages serves the tree as-is; dot folders and
-    tooling folders above are left out."""
+    tooling folders above are left out, and so are files git ignores."""
+    skip = ignored_files(root)
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.startswith(".")]
         for f in filenames:
             p = os.path.join(dirpath, f)
+            if skip and os.path.relpath(p, root) in skip:
+                continue
             try:
                 yield os.path.relpath(p, root), os.path.getsize(p)
             except OSError:
@@ -185,6 +204,18 @@ def selftest():
             ok(any(o.startswith("gen/hist.json is") for o in measure(d)["over"]), "file cap enforced")
             FILE_KB["gen/hist.json"] = 4
             ok(not any("hist.json" in o for o in measure(d)["over"]), "file under its cap passes")
+        with tempfile.TemporaryDirectory() as d:
+            import subprocess
+            os.makedirs(os.path.join(d, "data", "raw"))
+            with open(os.path.join(d, ".gitignore"), "w") as f:
+                f.write("/data/raw/*\n")
+            with open(os.path.join(d, "data", "raw", "big.xlsx"), "w") as f:
+                f.write("x" * 3_000_000)
+            with open(os.path.join(d, "data", "kept.json"), "w") as f:
+                f.write("x" * 1_100_000)
+            if subprocess.run(["git", "init", "-q", d], capture_output=True).returncode == 0:
+                r = measure(d)
+                ok(r["folders"].get("data") == 1.0, f"an ignored raw file unpacked for a local build does not count: {r['folders']}")
     finally:
         FAIL_MB, WARN_MB, SET_PAGE_KB, SET_MIN, DEFAULT_FOLDER_MB = saved
         FILE_KB.pop("gen/hist.json", None)

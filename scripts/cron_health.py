@@ -11,6 +11,12 @@ so until a reader noticed.
 It also checks the size of what GitHub Pages publishes (scripts/check_site_budget.py
 measures it): over 1 GB, Pages stops deploying and the site freezes on its last
 good build, so the row warns at that script's WARN_MB and goes red at FAIL_MB.
+A second row warns when any top-level folder reaches 90% of its budget there.
+
+It watches the watchers too: daily-site-check.yml and cron-health.yml are rows,
+and the committed data/cron-health.json going stale (the check stopped, or
+cannot push) is a red row that daily-site-check.yml, on GitHub's own cron,
+reports even when cron-job.org has stopped dispatching this one.
 
 This writes data/cron-health.json: for each watched workflow, its last
 successful run, the longest gap its clock allows, and whether the latest
@@ -76,7 +82,18 @@ CHECKS = [
     ("prf-outlook.yml", ["47 15 * * 4", "17 11 * * 5"], 240, False, "PRF long-range outlook (CPC, ENSO, Drought Monitor), Thursdays and Fridays"),
     ("climate-indices.yml", ["37 14 9 * *"], 240, False, "NOAA PDO and AMO for the PRF optimizer test, monthly on the 9th"),
     ("county-rain.yml", ["23 13 * * 1"], 240, False, "rain so far this year by county (RCC-ACIS) and the /rain pages, Mondays"),
+    # The watchers themselves (2026-10-20). GitHub's own cron runs the site check hours
+    # late (3 h and 6 h on Oct 18 and 19, nothing on Oct 17), so 8 h is the limit.
+    ("daily-site-check.yml", ["37 11 * * *"], 480, False, "the morning site check and its issue, GitHub cron 11:37 UTC"),
+    ("cron-health.yml", None, 60, False, "this check, after every Fetch Grain Bids, gated to every half hour"),
 ]
+
+# The committed data/cron-health.json is rewritten at least every RECOMMIT_HOURS while
+# this check runs. Older than this and the check itself stopped (or cannot push):
+# daily-site-check.yml, on GitHub's cron and not cron-job.org, sees it here.
+SELF_STALE_HOURS = RECOMMIT_HOURS + 2
+# A top-level folder at this share of its check_site_budget.py budget gets a warn row.
+FOLDER_WARN = 0.90
 
 # The briefing is judged by what it publishes: today's archive file, by 07:30
 # Central. Its runs prove nothing alone (most heartbeats skip on purpose).
@@ -197,17 +214,74 @@ def collect(now, repo, token, api):
     rows.append(row)
     if row["status"] == "late":
         late.append("cot.html")
-    row = size_row()
+    row = self_row(now)
     rows.append(row)
-    if row["status"] == "over":
-        late.append("published-size")
+    if row["status"] == "late":
+        late.append(row["workflow"])
+    for row in budget_rows():
+        rows.append(row)
+        if row["status"] == "over":
+            late.append(row["workflow"])
     return rows, late
 
 
 GATED = {wf for wf, crons, *_ in CHECKS if crons is None}
 
 
-def size_row(root=ROOT, measure=None):
+def self_row(now, root=ROOT):
+    """Age of the committed data/cron-health.json (read before this run overwrites it)."""
+    path = os.path.join(root, "data", "cron-health.json")
+    row = {"workflow": "cron-health.json", "critical": True,
+           "clock": "rewritten at least every %d hours while the check runs" % RECOMMIT_HOURS}
+    try:
+        gen = parse_ts(json.load(open(path))["generated_at"])
+    except Exception as e:
+        row.update(status="unknown", why="could not read data/cron-health.json: %s" % e)
+        return row
+    hours = (now - gen).total_seconds() / 3600
+    row["generated_at"] = gen.strftime("%Y-%m-%dT%H:%M:%SZ")
+    if hours > SELF_STALE_HOURS:
+        row.update(status="late", why="data/cron-health.json is %.1f h old (limit %d h): the cron health check stopped "
+                   "running or could not push" % (hours, SELF_STALE_HOURS))
+    else:
+        row.update(status="ok", why="written %.1f h ago" % hours)
+    return row
+
+
+def folder_row(r, SB):
+    """warn when a top-level folder passes FOLDER_WARN of its check_site_budget.py budget, over
+    (red) past the budget itself (the site-budget check then fails every push)."""
+    near, over = [], []
+    for k, mb in (r.get("folders") or {}).items():
+        if k == "(root files)":
+            continue
+        cap = SB.FOLDER_MB.get(k, SB.DEFAULT_FOLDER_MB)
+        if mb > cap:
+            over.append("%s/ %s of %s MB" % (k, mb, cap))
+        elif mb >= FOLDER_WARN * cap:
+            near.append("%s/ %s of %s MB (%d%%)" % (k, mb, cap, int(100 * mb / cap)))
+    status = "over" if over else "warn" if near else "ok"
+    why = "; ".join(["over budget: " + ", ".join(over)] * bool(over) + ["near budget: " + ", ".join(near)] * bool(near)) \
+        or "every folder under %d%% of its budget" % int(100 * FOLDER_WARN)
+    return {"workflow": "folder-budgets", "critical": True, "status": status, "why": why,
+            "clock": "scripts/check_site_budget.py FOLDER_MB; warns at %d%%" % int(100 * FOLDER_WARN)}
+
+
+def budget_rows(root=ROOT, measure=None):
+    """published-size and folder-budgets from one walk of the tree."""
+    try:
+        import check_site_budget as SB
+        r = (measure or SB.measure)(root)
+    except Exception as e:
+        r = e
+    rows = [size_row(root, measure, measured=r)]
+    if not isinstance(r, Exception):
+        import check_site_budget as SB
+        rows.append(folder_row(r, SB))
+    return rows
+
+
+def size_row(root=ROOT, measure=None, measured=None):
     """The published-size row: the total GitHub Pages serves (scripts/check_site_budget.py measure(),
     one walker for the site check and this). warn past its WARN_MB, over (red) past FAIL_MB."""
     clock = "GitHub Pages stops deploying over 1024 MB"
@@ -217,7 +291,9 @@ def size_row(root=ROOT, measure=None):
         return {"workflow": "published-size", "critical": True, "clock": clock, "status": "unknown",
                 "why": "scripts/check_site_budget.py could not be loaded: %s" % e}
     try:
-        r = (measure or SB.measure)(root)
+        if isinstance(measured, Exception):
+            raise measured
+        r = measured if measured is not None else (measure or SB.measure)(root)
     except Exception as e:
         return {"workflow": "published-size", "critical": True, "clock": clock, "status": "unknown", "why": "could not measure: %s" % e}
     mb, warn, fail = r["total_mb"], r.get("warn_mb", SB.WARN_MB), r.get("fail_mb", SB.FAIL_MB)
@@ -367,6 +443,42 @@ def selftest():
     check(size_row(measure=fake(905))["critical"] and "905" in size_row(measure=fake(905))["why"], "the red row says how big")
     real = size_row()
     check(real["status"] in ("ok", "warn", "over") and real.get("total_mb", 0) > 0, "the real tree measures (%s)" % real.get("why"))
+
+    # folder budgets: a warn row at 90% of any folder's budget, red past the budget
+    import check_site_budget as SB
+    ff = lambda folders: (lambda root: {"total_mb": 500, "warn_mb": 850, "fail_mb": 900, "folders": folders, "over": []})
+    rows = budget_rows(measure=ff({"data": 253.9, "prf": 71.9, "rain": 53.6, "(root files)": 40.0}))
+    check([r["workflow"] for r in rows] == ["published-size", "folder-budgets"], "one walk gives both size rows")
+    fr = rows[1]
+    check(fr["status"] == "warn" and "prf/ 71.9 of 75 MB (95%)" in fr["why"] and "rain" not in fr["why"] and "data" not in fr["why"],
+          "prf at 95.9%% of 75 MB warns, rain at 89%% and data at 85%% do not (%s)" % fr["why"])
+    check(folder_row({"folders": {"data": 270.0}}, SB)["status"] == "warn", "data at exactly 90% of 300 MB warns")
+    check(folder_row({"folders": {"data": 269.9}}, SB)["status"] == "ok", "data just under 90% is ok")
+    check(folder_row({"folders": {"newset": 23.0}}, SB)["status"] == "warn", "a folder with no named budget is held to the 25 MB default")
+    o = folder_row({"folders": {"arc-plc": 151.0, "prf": 70.0}}, SB)
+    check(o["status"] == "over" and "arc-plc/ 151.0 of 150 MB" in o["why"] and "prf/" in o["why"], "over budget is red and still names the near ones")
+    check(folder_row({"folders": {"(root files)": 999.0}}, SB)["status"] == "ok", "root files have no folder budget")
+    check(budget_rows(measure=lambda root: 1 / 0)[0]["status"] == "unknown", "a failed walk is unknown, not ok")
+    check(any(r["workflow"] == "folder-budgets" for r in budget_rows()), "the real tree gives a folder-budgets row")
+
+    # the watchers are watched
+    names = [c[0] for c in CHECKS]
+    check("daily-site-check.yml" in names and "cron-health.yml" in names, "daily-site-check.yml and cron-health.yml are rows")
+    check(gate_crons("cron-health.yml") == ["26,56 * * * *"], "cron-health's own clock is read from its gate step")
+    dsc = next(c for c in CHECKS if c[0] == "daily-site-check.yml")
+    check("37 11 * * *" in open(os.path.join(WF_DIR, "daily-site-check.yml")).read() and dsc[1] == ["37 11 * * *"],
+          "the site check's clock matches its workflow")
+    s, *_ = judge(dsc[1], dsc[2], T("2026-10-19 20:00"), [R(3, "2026-10-19 17:42")], False)
+    check(s == "ok", "the site check 6 h late (Oct 19) still serves its tick")
+    s, *_ = judge(dsc[1], dsc[2], T("2026-10-17 20:00"), [], False)
+    check(s == "late", "no site check by 19:37 UTC (Oct 17) is late")
+    d2 = tempfile.mkdtemp()
+    os.makedirs(os.path.join(d2, "data"))
+    check(self_row(T("2026-10-20 12:00"), d2)["status"] == "unknown", "no file: unknown")
+    json.dump({"generated_at": "2026-10-20T05:00:00Z"}, open(os.path.join(d2, "data", "cron-health.json"), "w"))
+    check(self_row(T("2026-10-20 12:00"), d2)["status"] == "ok", "7 h old file is ok (rewritten every 6 h)")
+    st = self_row(T("2026-10-20 14:00"), d2)
+    check(st["status"] == "late" and st["critical"] and "9.0 h old" in st["why"], "9 h old file: the check itself stopped (%s)" % st["why"])
 
     print("\n%d failed" % len(fails) if fails else "\nall cron_health checks passed")
     return 1 if fails else 0

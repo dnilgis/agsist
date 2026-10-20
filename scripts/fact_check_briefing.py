@@ -429,6 +429,23 @@ def report(findings, model, usage, note=""):
         pass
 
 
+def dropped_situations_line(inputs):
+    """The standing situations generate_daily left out of today's prompt as
+    stale (older than STALE_SITUATIONS_DAYS), as one log line, or ""."""
+    rows = (inputs or {}).get("dropped_situations") if isinstance(inputs, dict) else None
+    if not rows:
+        return ""
+    parts = []
+    for r in rows:
+        if not isinstance(r, dict):
+            continue
+        age = r.get("age_days")
+        parts.append(f"{r.get('key')} (updated {r.get('updated') or 'never'}"
+                     + (f", {age} days old)" if age is not None else ")"))
+    return ("Standing situations dropped from the prompt as stale: " + "; ".join(parts)
+            + ". Any claim about them must come from today's news.") if parts else ""
+
+
 def run(daily_path, post=_post, api_key=None, today=None, inputs_path=None, calendar=None):
     """Returns the exit code. post and calendar are seams for the tests."""
     api_key = api_key if api_key is not None else os.environ.get("ANTHROPIC_API_KEY", "")
@@ -447,6 +464,9 @@ def run(daily_path, post=_post, api_key=None, today=None, inputs_path=None, cale
         inputs = json.loads(_read(inputs_path) or "null")
     except ValueError:
         inputs = None
+    dropped = dropped_situations_line(inputs)
+    if dropped:
+        print(f"  {dropped}", flush=True)
     if not api_key:
         note = "ANTHROPIC_API_KEY not set: the model review was skipped, code checks only."
         print(f"::warning title=Fact check::{note}")
@@ -463,6 +483,8 @@ def run(daily_path, post=_post, api_key=None, today=None, inputs_path=None, cale
         except Exception as e:
             note = f"model review failed ({type(e).__name__}: {str(e)[:200]}); code checks only"
             print(f"::warning title=Fact check skipped::{note}", flush=True)
+    if dropped:
+        note = (note + " " if note else "") + dropped
     report(findings, model, usage, note)
     stop = blocking(findings)
     if stop and MODE != "report":

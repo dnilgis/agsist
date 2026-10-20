@@ -534,6 +534,10 @@ def apply_rewrite(briefing, critique):
         briefing = report_day.apply(briefing, _dt.now().date(), _dt.now(_tz.utc))
         import watch_dates     # a rewritten watch list gets its dates again
         briefing, _ = watch_dates.apply(briefing)
+        import streak_words    # and its streak words are counted again
+        briefing, _sl = streak_words.apply(briefing, streak_words.from_files())
+        for line in _sl:
+            print(f"  [streak] {line}")
         n = briefing_cut.word_count(briefing)
         print(f"  Word count after rewrite: {n} (ceiling {briefing_cut.HARD_CEILING})")
         if isinstance(briefing.get("meta"), dict):
