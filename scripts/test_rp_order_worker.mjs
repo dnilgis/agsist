@@ -101,9 +101,9 @@ A(j.orders[0].ref.startsWith('GIFT-Mnx') && j.orders[3].ref === sigCode, 'newest
 const dig = j.orders[3];
 A(dig.fulfill_url === dig.design_url + '&maker=1' && dig.serial_next === null, 'a digital file: maker link, no serial');
 const prints = j.orders.filter(o => o.product !== 'digital').reverse();
-A(prints.map(o => o.serial_next).join() === '1,2,3', 'suggested serials start at 1 (0 is the test print), in the order pressed');
-A(prints[0].fulfill_url.endsWith('&maker=1&serial=1'), 'a print: maker link with the serial');
-A(j.serial_last === 0 && !store.has('rpo-serial'), 'nothing handed out without a confirmed payment');
+A(prints.map(o => o.serial_next).join() === '2,3,4', 'suggested serials start at 2 (No. 0001 is Sig\'s wife\'s print, 0 his test), in the order pressed');
+A(prints[0].fulfill_url.endsWith('&maker=1&serial=2'), 'a print: maker link with the serial');
+A(j.serial_last === 1 && !store.has('rpo-serial'), 'no counter stored: last is 1; nothing handed out without a confirmed payment');
 A(!JSON.stringify(j).includes('@'), 'no email anywhere in the list');
 
 // the last serial Sig already used

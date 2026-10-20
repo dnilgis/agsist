@@ -32,7 +32,8 @@
  *     paid Checkout Session's client_reference_id matches is marked paid
  *     (amount, time, session id; never the customer); the rest say "pay
  *     pressed". A paid print or framed print gets the next serial (rpo-serial
- *     counter, never 0; 0 is Sig's test print) and keeps it. fulfill_url is
+ *     counter, never 0; 0 is Sig's test print; with no counter stored the first is
+ *     No. 0002, as No. 0001 is his wife's print) and keeps it. fulfill_url is
  *     the design link with maker=1 (and serial=N for a print).
  *   POST /rp-order/mailed {key} (Bearer LIST_TOKEN only): the buyer's email
  *     for this paid record went out (scripts/rp_buyer_email.py); kept as
@@ -1713,9 +1714,11 @@ async function rpoPut(env, k, r) {
   const exp = Math.max(Math.floor(Date.now() / 1000) + 120, Math.floor((r.ts || Date.now()) / 1000) + RPO_TTL_S);
   await env.SUBS.put(k, JSON.stringify(r), { expiration: exp });
 }
+// No counter stored yet: last = 1. No. 0001 is already Sig's wife's print (Sig, Oct 17), so the first paid print is No. 0002.
+const RPO_SERIAL_START_LAST = 1;
 async function rpoSerialLast(env) {
-  try { const v = JSON.parse(await env.SUBS.get("rpo-serial")); return v && Number.isInteger(v.last) && v.last >= 0 ? v.last : 0; }
-  catch (e) { return 0; }
+  try { const v = JSON.parse(await env.SUBS.get("rpo-serial")); return v && Number.isInteger(v.last) && v.last >= 0 ? v.last : RPO_SERIAL_START_LAST; }
+  catch (e) { return RPO_SERIAL_START_LAST; }
 }
 function rpoFulfill(r, serial) {
   if (!r.design_url) return "";
