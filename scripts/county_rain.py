@@ -771,9 +771,15 @@ def pick_order(cands, st, lat, year):
     snowfall record is not whole (snow_state "gaps" or "none"), the nearest
     station that keeps BOTH a full rain record (at most SNOW_MISS_OK days
     missing) and a full snowfall record ("drawn" or "little") is taken instead,
-    if it ranks the same on mountain and normals and sits within
-    snow_limit_mi of the first pick's distance. 2026-10-19: Story County IA
-    took a CoCoRaHS gauge with 95 snowfall gaps; the page's print drew no snow.
+    if it ranks the same on mountain and sits within snow_limit_mi of the
+    first pick's distance. 2026-10-19: Story County IA took a CoCoRaHS gauge
+    with 95 snowfall gaps; the page's print drew no snow.
+    2026-10-20, Sig changed the rule: the full snowfall record wins over the
+    NOAA-normals tier. Until then the swap had to rank the same on normals too,
+    so a gappy gauge with normals never lost to a co-op without them, and 835
+    snow-country counties drew no snow (Hampden MA, Berkshire MA, Clearwater
+    ID). A county that swaps to a station without normals loses its "compared
+    with a usual year" figure; the page says the station has no NOAA normal.
     cand["vals"], cand["snows"]: raw daily values from Jan 1."""
     ok = sorted(cands, key=rank_key)
     if not ok:
@@ -785,9 +791,9 @@ def pick_order(cands, st, lat, year):
     top = ok[0]
     if not snow_country(st, lat, _elev(top.get("meta"))) or whole(top):
         return ok
-    lim, k = snow_limit_mi(top["mi"]), rank_key(top)[:2]
+    lim, k = snow_limit_mi(top["mi"]), rank_key(top)[:1]
     for x in sorted(ok[1:], key=lambda y: y["mi"]):
-        if rank_key(x)[:2] == k and x["mi"] <= lim and x["summary"]["missing"] <= SNOW_MISS_OK and whole(x):
+        if rank_key(x)[:1] == k and x["mi"] <= lim and x["summary"]["missing"] <= SNOW_MISS_OK and whole(x):
             return [x] + [y for y in ok if y is not x]
     return ok
 
