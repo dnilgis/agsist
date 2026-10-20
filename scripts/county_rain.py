@@ -724,6 +724,38 @@ def snow_state(vals, snows, year):
     return "drawn" if tot >= 0.1 else "little"
 
 
+def snow_trace_days(vals, snows, year):
+    """How many days the Rain Print marks with a trace of snow (2026-10-20, Sig: "a trace should
+    somehow show as a trace"): the art's rule (components/rain-print-art.js model, snowTr), on
+    the days snow_state reads: only where the snowfall record is whole ("drawn" or "little"), a
+    snowfall value of T on a day with a rain report of its own (not M, not an S day), within the
+    days counted. Never a measured amount: these add nothing to any snow total."""
+    if snow_state(vals, snows, year) not in ("drawn", "little"):
+        return 0
+    raw = [str(x).strip() for x in (snows or [])]
+    sv = [parse_pcpn(x)[0] for x in (snows or [])]
+    pp = [parse_pcpn(x) for x in vals]
+    last = max((i for i, (v, f) in enumerate(pp) if v is not None and f != "S"), default=-1)
+    pp = pp[:last + 1]
+    i = 0
+    while i < len(pp):                     # as snow_state: an S run not closed by an A day is missing days
+        if pp[i][1] != "S":
+            i += 1
+            continue
+        j = i
+        while j < len(pp) and pp[j][1] == "S":
+            j += 1
+        if not (j < len(pp) and pp[j][1] == "A"):
+            pp[i:j] = [(None, "M")] * (j - i)
+        i = j
+    end = len(pp)
+    if dt.date(int(year), 1, 1) + dt.timedelta(days=len(pp) - 1) != dt.date(int(year), 12, 31):
+        has = [k for k in range(min(len(pp), len(sv))) if sv[k] is not None]
+        if has:
+            end = has[-1] + 1
+    return sum(1 for k, (v, f) in enumerate(pp[:end]) if v is not None and f != "S" and k < len(raw) and raw[k] == "T")
+
+
 def snow_country(st, lat, elev=None):
     """Where snow is normal: snowCountry in components/rain-print.js, the same map
     test (island states and territories and Florida never; south of 31 N never;
