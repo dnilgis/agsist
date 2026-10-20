@@ -1,4 +1,4 @@
-// Runs the v5.36 Rain Print order-record routes of workers/subs-worker.js
+// Runs the v5.36 to v5.38 Rain Print order-record routes of workers/subs-worker.js
 // (POST /rp-order, GET /rp-order/list, POST /rp-order/serial) against an
 // in-memory KV and a stand-in for Stripe's Checkout Sessions list. No network.
 //   node scripts/test_rp_order_worker.mjs
@@ -328,6 +328,21 @@ console.log('rp-order worker checks: ' + n + ' passed');
   A(L3.orders.find(o => o.key === other.key).approval_overdue === true && L3.orders.find(o => o.key === other.key).approved === null, 'overdue after 3 business days, never approved for the buyer');
   rec.mailed.at = new Date(Date.now() - 3600e3).toISOString(); store.set(other.key, JSON.stringify(rec));
   A((await (await admin('/rp-order/list')).json()).orders.find(o => o.key === other.key).approval_overdue === false, 'not overdue an hour after the proof');
+  // v5.38: the digital files went out, once; never for a print, an unpaid press or a file not approved
+  m = await admin('/rp-order/delivered', 'POST', { key: paidOne.key }); A(m.status === 409 && (await m.json()).error === 'not a digital file', 'delivered: never for a print');
+  m = await admin('/rp-order/delivered', 'POST', { key: unpaid.key }); A(m.status === 409, 'delivered: never for an unpaid one');
+  m = await admin('/rp-order/delivered', 'POST', { key: paidOne.key }, null); A(m.status === 403, 'delivered: LIST_TOKEN only');
+  m = await admin('/rp-order/delivered', 'POST', { key: 'rpo:1:x' }); A(m.status === 400, 'delivered: a bad key refused');
+  const dig = (await (await admin('/rp-order/list')).json()).orders.find(o => o.status === 'paid' && o.product === 'digital' && !o.no_press);
+  A(dig && dig.delivered === null, 'list: a paid digital file, not delivered yet');
+  m = await admin('/rp-order/delivered', 'POST', { key: dig.key }); A(m.status === 409 && (await m.json()).error === 'not approved', 'delivered: not before the buyer approves');
+  r = await approve({ k: dig.key, t: tok(dig.key) }); j = await r.json(); A(j.ok && j.product === 'digital', 'approve: a digital file');
+  m = await admin('/rp-order/delivered', 'POST', { key: dig.key, how: 'email', email: 'buyer@farm.com' }); j = await m.json();
+  A(j.ok && j.already === false && j.delivered.how === 'email' && j.delivered.session === dig.paid.session, 'delivered: marked, with the session');
+  A(!JSON.stringify(JSON.parse(store.get(dig.key)).delivered).includes('@'), 'delivered: never the address');
+  m = await admin('/rp-order/delivered', 'POST', { key: dig.key, how: 'hand' }); j = await m.json();
+  A(j.already === true && j.delivered.how === 'email', 'delivered: once, the first kept');
+  A((await (await admin('/rp-order/list')).json()).orders.find(o => o.key === dig.key).delivered.how === 'email', 'list: delivered');
   globalThis.fetch = realFetch;
   console.log('rp-order approve checks: ' + n + ' passed');
 }
