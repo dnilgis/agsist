@@ -742,7 +742,7 @@ def mk_board(q, fetched):
     "Oct 16 settle", or "Oct 16 settle where posted, latest delayed trade otherwise",
     or "Latest delayed trades", then when the file was read, in Central time.
     Baked, so the read time always carries its date."""
-    st, last, n = "", 0, 0
+    st, lo, last, n = "", "", 0, 0
     for _, _, _, key, _ in MK_MAP:
         d = q.get(key) or {}
         if d.get("close") is None:
@@ -752,6 +752,8 @@ def mk_board(q, fetched):
             sd = str(d.get("settle_date") or d.get("close_date") or "")
             if sd > st:
                 st = sd
+            if sd and (not lo or sd < lo):
+                lo = sd
         else:
             last += 1
     read = ""
@@ -766,10 +768,13 @@ def mk_board(q, fetched):
     if not n:
         return ("Read " + read) if read else ""
     sdd = _iso_date(st) if st else None
+    ldd = _iso_date(lo) if lo else None
+    # 2026-10-20: cards on different settle dates show the range (twin of AgPxStamp.board)
+    sw = (_md(ldd) + " to " + _md(sdd) + " settles") if (sdd and ldd and ldd != sdd) else (_md(sdd) + " settle" if sdd else "")
     if sdd and not last:
-        out = _md(sdd) + " settle"
+        out = sw
     elif sdd:
-        out = _md(sdd) + " settle where posted, latest delayed trade otherwise"
+        out = sw + " where posted, latest delayed trade otherwise"
     else:
         out = "Latest delayed trades"
     return out + (". Read " + read if read else "")
@@ -2763,6 +2768,9 @@ def _cwt_chg(q):
     class nc. Twin of chgCwt() in cattle-futures-prices.html."""
     net, pc = q.get("netChange"), q.get("pctChange")
     if net is not None and pricefmt._js_round(abs(float(net)) / 0.025) == 0:
+        return ("unch", "nc")
+    # 2026-10-20: no netChange and a percent that rounds to 0.00 is unch, not "up"
+    if net is None and (pc is None or pricefmt._js_round(abs(float(pc)) * 100) == 0):
         return ("unch", "nc")
     hu = (float(net) if net is not None else float(pc)) >= 0
     txt = (("\u25b2 +" if hu else "\u25bc \u2212") + (("$" + pricefmt.cash(abs(float(net)), dollar=False) + " ") if net is not None else "")

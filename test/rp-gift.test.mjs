@@ -533,8 +533,8 @@ test("previewArt: the card's print so far, through the last reported day, the mo
   assert.equal(r.place, "Chetek, Wisconsin");
   assert.equal(r.days, 282, "January 1 through October 9");
   assert.match(r.svg, /^<svg /);
-  assert.match(r.svg, /PREVIEW THROUGH OCT 9/, "the page's preview band");
-  assert.match(r.svg, /Your print will show the full year, Jan 1 to Dec 31, 2026/);
+  // Sig, 2026-10-20: nothing covers the data; the card's own wash note holds the weeks still to come, so no band
+  assert.doesNotMatch(r.svg, /data-rp="band"/, "no preview band over the card's print");
   assert.match(r.svg, /<title id="gcT">Chetek, Wisconsin, 2026, rain print, preview through Oct 9<\/title>/);
   const later = r.svg.match(/<g data-rp="later" aria-hidden="true"><rect x="([\d.]+)" y="[\d.]+" width="([\d.]+)"[^>]*\/>([\s\S]*?)<\/g>/);
   assert.ok(later, "the months still to come are washed pale");
@@ -542,7 +542,6 @@ test("previewArt: the card's print so far, through the last reported day, the mo
   // (Staircase A2 clean, 2026-10-17: the chart runs from 196 to 1590, the line ends' words to its right)
   assert.ok(Math.abs(x0 - (196 + 282 * (1590 - 196) / 365)) < 0.01 && Math.abs(x1 - 1590) < 0.01, "from the day after Oct 9 to Dec 31 on the full calendar: " + x0 + " to " + x1);
   assert.match(later[3].replace(/<[^>]+>/g, "|"), /The rest of 2026\|+arrives in January/, "with the words in it");
-  assert.ok(r.svg.indexOf('data-rp="later"') < r.svg.indexOf('data-rp="band"'), "the band stays on top of the wash");
   assert.match(r.svg, />Planted</, "a date already past is on it");
   assert.doesNotMatch(r.svg, />After</, "a date still to come is not");
   // the same engine on the page draws no wash: the page never passes later

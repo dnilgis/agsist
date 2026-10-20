@@ -415,6 +415,12 @@
             }
             if(day||night){
               if(age<=45&&cq.close_kind==='last'&&!cq.settled)return{t:'Delayed 15 min',live:true,title:'Futures prices delayed about 15 minutes. '+read};
+              /* 2026-10-20: an evening file holding the day's last trades
+                 (settled:true) is not a 7:18 PM price: the quotes are the
+                 1:20 PM grain and 1:05 PM livestock last trades. Name their
+                 day, never the file's read time. */
+              if(cq.close_kind==='last'&&cq.settled&&cq.close_date){var ld=Date.parse(cq.close_date+'T00:00:00Z');
+                if(!isNaN(ld))return{t:'As of '+lbl(ld),live:false,title:'Last trades. The day session closed at 1:20 PM CT; the settles post late in the evening. '+read};}
               var n=ct(new Date()),same=(+n.year===+p.year&&+n.month===+p.month&&+n.day===+p.day);
               return{t:'As of '+(same?hm(F):lbl(dayT)),live:false,title:read};
             }

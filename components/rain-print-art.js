@@ -86,7 +86,8 @@
     'your year, rain and melted snow': 'votre année, pluie et neige fondue', 'your year, rain': 'votre année, pluie', 'your year': 'votre année',
     'a usual year by then': 'une année normale à cette date', 'a usual year, same days': 'une année normale, mêmes jours', 'a usual year': 'une année normale',
     'this year': 'cette année', 'so far': 'jusqu’ici',
-    'usual': 'normale', 'SNOWFALL': 'NEIGE', 'snow': 'neige', 'PREVIEW': 'APERÇU'
+    'usual': 'normale', 'SNOWFALL': 'NEIGE', 'snow': 'neige', 'PREVIEW': 'APERÇU',
+    'Trace of snow (too little to measure)': 'Trace de neige (trop peu pour être mesurée)'
   };
   function tr(en) { return LOC.fr && FR[en] !== undefined ? FR[en] : en; }
   function setLoc(l) { l = l || {}; LOC = { mm: l.units === 'mm', fr: l.lang === 'fr' }; }
@@ -402,6 +403,13 @@
       snowNote = tr(someSnow ? 'This station’s snowfall record has holes, so no snow is drawn; melted snow is counted in the total'
         : 'This station doesn’t report snowfall; melted snow is counted in the total');
     }
+    /* Snowfall traces (Sig, 2026-10-20: "if a trace of snow falls we should not just dismiss it, especially on the
+       rain print, a trace should somehow show as a trace"): the days whose snowfall was T (the engine's sT), where
+       the snow record is whole ('full', or 'none': only traces fell). Never a day with no report or an S day. They
+       add nothing to the snow total; each gets the small trace mark above the line (traceMark). */
+    var snowTr = [];
+    if (snowState !== 'unknown') days.forEach(function (x, i) { if (i < snowEnd && x && x.sT && P[i] !== null && !(x.s > 0)) snowTr.push(i); });
+    var nTr = snowTr.length, dayW = function (k) { return k + (LOC.fr ? (k === 1 ? ' jour' : ' jours') : k === 1 ? ' day' : ' days'); };
     var cum = [], c = 0;
     P.forEach(function (p) { if (p !== null) c += p; cum.push(p === null ? null : c); });
     var ov = I.ov && I.ov.daily ? I.ov : null;
@@ -449,6 +457,9 @@
       // metric: the cm come from the days' own sum, not from the inches rounded to a tenth
       snowText: full ? colon(tr('Snow')) + (LOC.mm ? snowAmt(snowTot) : (Math.round(snowTot * 10) / 10).toFixed(1) + ' in') : null,
       snowKey: full ? tr('light blue: snow') : null,
+      // the trace days, the key in the foot line (the count in it when no snow was measured), and "plus 3 days with a trace" beside a measured total
+      snowTr: snowTr, traceKey: nTr ? tr('Trace of snow (too little to measure)') + (full ? '' : ', ' + dayW(nTr)) : null,
+      tracePlus: nTr && full ? (LOC.fr ? 'plus ' + dayW(nTr) + ' avec une trace' : 'plus ' + dayW(nTr) + ' with a trace') : null,
       verdict: verdict, dry: dry, markers: markers, maxP: maxP, maxSnow: maxSnow,
       name: String(I.name || '').trim(), dedication: String(I.dedication || '').trim(), place: String(I.place || ''),
       showN: !!(ov && I.showNormals), ovNote: I.ovNote || '', preview: I.preview || null, soFar: soFar,
@@ -593,13 +604,20 @@
       '" preserveAspectRatio="xMidYMid meet"/>' + G1;
   }
 
-  // ---------- a preview of this year: a band across the art, and the watermark ----------
-  // across the chart only (2026-10-13): edge to edge it hid the scale's numbers
-  function previewBand(E, b) {
-    var t = (LOC.fr ? 'APERÇU JUSQU’AU ' : 'PREVIEW THROUGH ') + fmtDate(E.preview.last).toUpperCase(), y = b.y, cx = (b.x0 + b.x1) / 2;
-    return '<g data-rp="band" aria-hidden="true"><rect x="' + n2(b.x0) + '" y="' + (y - 34) + '" width="' + n2(b.x1 - b.x0) + '" height="68" fill="' + C.ink + '" opacity="0.88"/>' +
-      T(cx, y - 4, t, { w: 500, size: 24, ls: 0.12, fill: '#FFFFFF', anchor: 'middle' }) +
-      T(cx, y + 22, (LOC.fr ? 'Le tirage final montre toute l’année, du 1er janvier au 31 décembre ' : 'Your print will show the full year, Jan 1 to Dec 31, ') + E.year, { size: 17, fill: '#FFFFFF', anchor: 'middle' }) + '</g>';
+  // ---------- a preview of this year: a note in the weeks still to come, and the watermark ----------
+  // Sig, 2026-10-20: nothing may cover the data. The note sits in the empty stretch after the last reported day
+  // (E.laterBox), never across the line. When that stretch is too narrow (late in the year) the title, the "so far"
+  // totals and the dashed last-day line say it instead. The gift card's own wash note (E.preview.later) takes the
+  // stretch when it is there.
+  function previewBand(E) {
+    var L = E.laterBox;
+    if (!L || E.preview.later || L.x1 - L.x0 < 170) return '';
+    var cx = (L.x0 + L.x1) / 2, y = L.y0 + (L.y1 - L.y0) * 0.42;
+    var lines = LOC.fr ? ['APERÇU', 'JUSQU’AU ' + fmtDate(E.preview.last).toUpperCase(), 'Le tirage montre', 'toute l’année ' + E.year]
+                       : ['PREVIEW', 'THROUGH ' + fmtDate(E.preview.last).toUpperCase(), 'Your print shows', 'the full year, ' + E.year];
+    return '<g data-rp="band" aria-hidden="true">' + lines.map(function (t, k) {
+      return T(cx, y + k * 26 + (k > 1 ? 10 : 0), t, k < 2 ? { w: 500, size: 18, ls: 0.12, fill: C.mute, anchor: 'middle' } : { size: 15, fill: C.mute, anchor: 'middle' });
+    }).join('') + '</g>';
   }
   function watermark() {
     var row = '', out = '', i;
@@ -648,7 +666,7 @@
   // bandY: where the preview band goes (bandAt picks a height that hides no label)
   function close(I, E, o, bandY) {
     if (E.preview && E.preview.later && E.laterBox) o.push(laterWash(E, E.laterBox, bandY));
-    if (E.preview) o.push(previewBand(E, bandY));
+    if (E.preview) o.push(previewBand(E));
     if (I.watermark) o.push(watermark());
     o.push('</svg>');
     return o.join('');
@@ -660,6 +678,36 @@
      15 u, down to 12 to stay one line; only past that does it take a second
      line above (never under 12 u). Inside the 0.6 in safe margin (last
      baseline 1132), left of the QR. */
+  /* THE TRACE MARK (2026-10-20): a day with a trace of snow, drawn above the line only (Sig's snow rule), smaller
+     than any measured snow and set clear of the line, so it never reads as an amount. TRACE_MARK picks the glyph
+     for both styles; Sig can swap it here: 'flake' (a six-armed flake), 'dot' (a small open ring), 'tick' (a short
+     upright stroke). TRACE_R: its half-size in units. Lines 0.8 u or more (production limit 0.7). */
+  var TRACE_MARK = 'flake', TRACE_R = 2.6;
+  function traceMark(cx, cy, kind) {
+    kind = kind || TRACE_MARK;
+    var r = TRACE_R, ink = C.snowInk;
+    if (kind === 'dot') return '<circle cx="' + n2(cx) + '" cy="' + n2(cy) + '" r="' + n2(r * 0.8) + '" fill="#FFFFFF" stroke="' + ink + '" stroke-width="0.9"/>';
+    if (kind === 'tick') return line(cx, cy - r, cx, cy + r, ink, 1.2, ' stroke-linecap="round"');
+    var d = '';
+    [90, 30, 150].forEach(function (a) { var dx = r * Math.cos(a * Math.PI / 180), dy = r * Math.sin(a * Math.PI / 180); d += 'M' + n2(cx - dx) + ',' + n2(cy - dy) + 'L' + n2(cx + dx) + ',' + n2(cy + dy); });
+    return '<path d="' + d + '" fill="none" stroke="' + ink + '" stroke-width="0.8" stroke-linecap="round"/>';
+  }
+  function traceBox(cx, cy) { return { x: cx - TRACE_R - 0.6, y: cy - TRACE_R - 0.6, w: 2 * TRACE_R + 1.2, h: 2 * TRACE_R + 1.2 }; }
+  /* The key's own mark, drawn in the foot line just before its words: the words carry TRACE_PAD in front
+     (room for the mark), and this finds where they landed on each line (st: the line's text style). */
+  var TRACE_PAD = '\u2002\u2002';
+  function traceKeyMarks(E, lines, x, ys, st0) {
+    if (!E.traceKey) return '';
+    var key = TRACE_PAD + E.traceKey, out = '';
+    lines.forEach(function (t, k) {
+      var at = String(t).indexOf(key);
+      if (at < 0) return;
+      // as the SVG draws it: runs of plain spaces (the "  ·  " between parts) show as one
+      var x0 = x + W(String(t).slice(0, at).replace(/ {2,}/g, ' '), st0), pw = W(TRACE_PAD, st0);
+      out += traceMark(x0 + pw / 2, ys[k] - 0.3 * st0.size);
+    });
+    return out;
+  }
   var FOOT_Y = 1132, FOOT_GAP = 22, GAP_QUIET = 3;
   function smallLine(E, x, maxW, extra) {
     var parts = [];
@@ -667,6 +715,7 @@
     // which mark is snow and which is rain, in plain words (Sig, 2026-10-13: tell them apart at a glance)
     if (E.full) parts.push(tr(E.style2 ? 'Light blue above the ground is snow, dark bars below it are rain' : 'Dark blue steps are rain, light blue steps are snow'));
     if (E.snowNote) parts.push(E.snowNote);
+    if (E.traceKey) parts.push(TRACE_PAD + E.traceKey);
     /* Gaps, said short (Sig, 2026-10-15: the full sentence was too long for the foot line; the page's station line
        explains them in full). Three or fewer missing days say nothing on the print; more give the count. */
     if (E.missing > GAP_QUIET) parts.push(LOC.fr ? 'Trous : ' + E.missing + ' jours sans relevé' : 'Gaps: ' + E.missing + ' days with no report');
@@ -697,6 +746,7 @@
     }
     var ys = lines.map(function (t, k) { return FOOT_Y - (lines.length - 1 - k) * FOOT_GAP; }), svg = '', boxes = [];
     lines.forEach(function (t, k) { svg += T(x, ys[k], t, st0); boxes.push(box(x, ys[k], t, st0)); });
+    svg += traceKeyMarks(E, lines, x, ys, st0);
     var u = boxes.reduce(function (A, B) { var x0 = Math.min(A.x, B.x), y0 = Math.min(A.y, B.y); return { x: x0, y: y0, w: Math.max(A.x + A.w, B.x + B.w) - x0, h: Math.max(A.y + A.h, B.y + B.h) - y0 }; });
     return { svg: G0('foot') + svg + G1, box: u, boxes: boxes, lines: lines.length, size: st0.size };
   }
@@ -1126,6 +1176,15 @@
       var px = X0, py = PB; np = 'M' + X0 + ',' + PB;
       days.forEach(function (x, i) { var qx = xs(i + 1), qy = y(E.ncum[i]); room.seg(px, py, qx, qy, USUAL_W, 'data', 'usual'); np += 'L' + n2(qx) + ',' + n2(qy); px = qx; py = qy; });
     }
+    /* the trace marks, above the line only: over the day's step and clear of the next day's riser (the line rises
+       to the right, so the mark sits above the highest step it reaches), STAIR_W / 2 + 2.5 u off the stroke */
+    var traces = E.snowTr.map(function (i) {
+      var cx = xs(i + 0.5), reach = cx + TRACE_R + STAIR_W / 2 + 0.8, top = lastCum(i);
+      for (var k = i + 1; k < E.n && xs(k) <= reach; k++) if (E.cum[k] !== null) top = Math.max(top, E.cum[k]);
+      var cy = y(top) - STAIR_W / 2 - 2.5 - TRACE_R;
+      room.add({ b: traceBox(cx, cy), own: 'data', k: 'mark' });
+      return [cx, cy];
+    });
     var pvTop = PTOP;
     if (E.preview && E.n < N) { if (xs(E.n) > headBox.x - 6 && xs(E.n) < headBox.x + headBox.w + 6) pvTop = headBox.y + headBox.h + 6; room.seg(xs(E.n), pvTop, xs(E.n), PB, 1, 'data', 'usual'); }
     var inPlot = function (b) { return b.x > X0 + 4 && b.x + b.w < X1 - 2 && b.y + b.h < PB - 6 && b.y > HB + 4; };
@@ -1288,8 +1347,9 @@
     if (E.gauge) foot1.push(E.gauge);
     foot1.push((LOC.fr ? 'Pouces de ' : LOC.mm ? 'Millimetres of ' : 'Inches of ') + E.liquid + (LOC.fr ? ', du 1er janv. au 31 déc. ' : ', Jan 1 to Dec 31, ') + E.year);
     if (LOC.mm) foot1[foot1.length - 1] = (LOC.fr ? 'Millimètres de ' : 'Millimetres of ') + E.liquid + (LOC.fr ? ', du 1er janv. au 31 déc. ' : ', Jan 1 to Dec 31, ') + E.year;
-    if (E.snowText) foot1.push(E.snowText + (LOC.fr ? ', les marches bleu pâle' : ', the light blue steps'));
+    if (E.snowText) foot1.push(E.snowText + (LOC.fr ? ', les marches bleu pâle' : ', the light blue steps') + (E.tracePlus ? ', ' + E.tracePlus : ''));
     foot1.push(E.daysText);
+    if (E.traceKey) foot1.push(TRACE_PAD + E.traceKey);
     var foot2 = [];
     if (E.cmp && E.ovNote) foot2.push(E.ovNote + (E.showN ? (LOC.fr ? '; le total normal du mois est le chiffre gris sous chaque mois' : '; the usual month total is the gray number under each month') : ''));
     if (E.snowNote) foot2.push(E.snowNote);
@@ -1313,7 +1373,7 @@
     // a part too long for any line is cut at a word, never run past the QR
     lines = lines.map(function (l) { var s = l.join(SEPF); while (W(s, fS) > FW && s.indexOf(' ') > 0) s = s.slice(0, s.lastIndexOf(' ')).replace(/\u0001[^\u0002]*$/, ''); return s; });
     var footTop = 1081 - (lines.length - 1) * 19;
-    var foot = lines.map(function (s, k) { return T(X0, footTop + k * 19, s, fS); }).join('');
+    var foot = lines.map(function (s, k) { return T(X0, footTop + k * 19, s, fS); }).join('') + traceKeyMarks(E, lines, X0, lines.map(function (s, k) { return footTop + k * 19; }), st(fS));
     dropped.forEach(function (t) { skipped.push(t); });
 
     // ================= draw, back to front
@@ -1373,6 +1433,7 @@
       });
       if (sp) o.push('<path d="' + sp + '" fill="none" stroke="' + C.snowLine + '" stroke-width="' + STAIR_W + '" stroke-linejoin="round"/>');
     }
+    traces.forEach(function (t) { o.push(traceMark(t[0], t[1])); });
     o.push(G1);
     if (wx >= 0) o.push(G0('wet') + line(wx, y(wc0) + 1.5, wx, y(wc1) - 1.5, X.red, STAIR_W) + G1);
     o.push(G0('months') + months.map(function (t) { var s = T(t[0], t[1], t[2], t[3]); return t[3].size === 11 && !t[3].ls || t[3].size === 14 ? tab(s) : s; }).join(''));
@@ -1468,9 +1529,9 @@
        so the name stays the biggest. A logo goes first, at the left margin, and the words start after it (TX). */
     var lg = logoOf(I, 'r2'), TX = lg ? ML + lg.w + LOGO_GAP : ML;
     var vst = { size: 22, anchor: 'end' }, totals, title, rightEdge, leftRoom, nst = null, big = { w: 300, size: 68 }, snowBig = { w: 300, size: 44 };
-    var NAME_MAX = 78, py = E.name ? 202 : 196;
+    var NAME_MAX = 78, py = E.name ? 202 : 196, plusLeft = null;
     function layTotals() {
-      totals = [];
+      totals = []; plusLeft = null;
       totals.push([X1, 214, E.TU, Object.assign({ anchor: 'end' }, big)]);
       totals.push([X1, 140, (E.liquid + (E.soFar ? (LOC.fr ? ', jusqu’ici' : ', so far') : '')).toUpperCase(), { w: 500, size: 14, ls: 0.16, fill: C.mute, anchor: 'end' }]);
       if (E.verdict) totals.push([X1, 254, E.verdict, vst]);
@@ -1480,6 +1541,11 @@
         totals.push([bxs, 214, sTot, Object.assign({ fill: C.snowInk, anchor: 'end' }, snowBig)]);
         totals.push([bxs, 140, tr('SNOWFALL'), { w: 500, size: 14, ls: 0.16, fill: C.snowInk, anchor: 'end' }]);
         rightEdge = bxs - W(sTot, snowBig);
+        // the days with a trace, under the measured total (never in it)
+        if (E.tracePlus) {
+          var tpS = { size: 14, fill: C.snowInk, anchor: 'end' }, tpB = box(bxs, 240, E.tracePlus, tpS), vB = E.verdict ? box(X1, 254, E.verdict, vst) : null;
+          if (!vB || !hit(tpB, vB, 6)) { totals.push([bxs, 240, E.tracePlus, tpS]); plusLeft = tpB.x; rightEdge = Math.min(rightEdge, tpB.x); }
+        }
       }
       leftRoom = rightEdge - 50 - TX;
     }
@@ -1508,6 +1574,7 @@
     // the dedication runs under the totals but stops short of the verdict on its line
     if (E.dedication) {
       var dRoom = (E.verdict ? X1 - W(E.verdict, vst) - 40 : X1) - TX;
+      if (plusLeft !== null) dRoom = Math.min(dRoom, plusLeft - 40 - TX);
       title.push([TX, py + 42, E.dedication, { fam: SERIF, it: true, size: fit(E.dedication, { fam: SERIF, it: true, size: 24 }, dRoom, 14), fill: C.mute }]);
     }
     put(totals, 'totals'); put(title, 'title');
@@ -1540,7 +1607,16 @@
         bars += '<rect x="' + n2(bb.x) + '" y="' + bb.y + '" width="' + n2(bb.w) + '" height="' + n2(bb.h) + '"/>';
         room.add({ b: bb, own: 'data', k: 'mark' }); barBoxes.push(bb);
       }
-      // trace days are not drawn: unexplained dots at the ground line read as data (designers' panel, 2026-10-13)
+      // a precipitation trace is not drawn: unexplained dots at the ground line read as data (designers' panel, 2026-10-13)
+    });
+    /* a trace of snow (2026-10-20) is: its key says what it is. Above the ground only, 3 u clear of the line, never
+       sitting on it like a pile, and never lifted onto a pile beside it (that read as the top of that day's snow):
+       the mark is no wider than its day's column (the flake's arms reach 0.87 R), so it stays at its own height. */
+    var GH = 1.1 * PT / 2;
+    var traces = E.snowTr.map(function (i) {
+      var cx = xs(i), cy = G - GH - 3 - TRACE_R;
+      room.add({ b: traceBox(cx, cy), own: 'data', k: 'mark' });
+      return [cx, cy];
     });
     // ground line, broken over unrecorded days
     var seg = null, segs = [];
@@ -1578,6 +1654,8 @@
     // footer
     // one line at the foot (panel 4, 2026-10-14; there were two): what smallLine says, then these
     var foot = [E.daysText].concat(recs.lines);   // a year record is a sentence, not a day: it goes in the foot line
+    // the trace days had no room under the snow total (a wide verdict): said in the foot line, beside the total
+    if (E.tracePlus && plusLeft === null) foot.unshift(colon(tr('Snow')) + (LOC.mm ? snowAmt(E.snowRaw) : E.snowTot.toFixed(1) + ' in') + ', ' + E.tracePlus);
     if (E.cmp && E.ovNote) foot.push(E.ovNote);   // whenever the verdict says "usual" (2026-10-13)
     // the QR sits at the foot's line; a deep December bar under it moves it down to the small line (still inside the margin)
     var qrBottom = 1100, qb = qrBox(I.qr, X1, qrBottom);
@@ -1746,6 +1824,7 @@
     o.push(draw(axisT) + G1);
     o.push(G0('data'));
     if (snows) o.push('<g fill="' + C.snowFill + '" stroke="' + C.snowEdge + '" stroke-width="0.7">' + snows + '</g>');
+    traces.forEach(function (t) { o.push(traceMark(t[0], t[1])); });
     o.push('<g fill="' + C.bar + '">' + bars + '</g>' + G1);
     o.push(crop.back);
     if (hasRib) o.push(ribbon(I, { x0: X0, x1: X1, w: w, n: N, y0: RIB_Y, h: RIBBON_H, side: 'right' }));
@@ -1832,6 +1911,7 @@
       total: E.total, totalText: E.TU, liquid: E.liquid,
       snowState: E.snowState, snowNote: E.snowNote,
       snowText: E.full ? (LOC.mm ? snowAmt(E.snowRaw) : E.snowTot.toFixed(1) + ' in') : null,
+      snowTraceDays: E.snowTr.length,
       wet: E.wet ? { label: E.wetLabel, amount: rainAmt(E.wet.p, 'day'), date: E.wet.date, dateText: fmtDate(E.wet.date) } : null,
       wetDays: I.D.wet, daysLabel: tr(E.snowState === 'none' ? 'Days with rain' : 'Days with rain or snow'),
       verdict: E.verdict, usual: E.cmp ? rainAmt(E.normalRec, 'tot') : null, usualNote: E.cmp ? E.ovNote : '', normals: E.showN,
@@ -1848,7 +1928,7 @@
     lastUnplaced: function () { return last_unplaced.slice(); }, MAX_MARKS: MAX_MARKS,
     // the buyer's logo: its size for a shape (w / h) in a style, and where the last render put it (art units)
     logoSize: logoSize, lastLogo: function () { return last_logo ? Object.assign({}, last_logo) : null; },
-    STYLES: ['r1', 'r2'], W: W0, H: H0, QR_INK: QR_INK, INK: C.ink, roughW: roughW,
+    STYLES: ['r1', 'r2'], W: W0, H: H0, traceMark: traceMark, TRACE_MARK: TRACE_MARK, TRACE_R: TRACE_R, QR_INK: QR_INK, INK: C.ink, roughW: roughW,
     // the French words on the print, for the review list and the tests (FR-REVIEW)
     FR: FR, MON_FR: MON_FR
   };

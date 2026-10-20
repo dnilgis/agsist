@@ -370,11 +370,16 @@ test("hard years still draw cleanly: dry, wet, many gaps, no name, a long place 
   }
 });
 
-test("a preview of this year lays out the whole calendar and says so across the art", () => {
+test("a preview of this year lays out the whole calendar and says so without covering the data", () => {
   const days = year(2026).slice(0, 283);
   for (const style of ["r1", "r2"]) {
-    const t = texts(ART.render(input(days, { style, axisLen: 365, preview: { last: "2026-10-10" } })));
-    assert.ok(t.includes("PREVIEW THROUGH OCT 10"), style);
+    const svg = ART.render(input(days, { style, axisLen: 365, preview: { last: "2026-10-10" } }));
+    const t = texts(svg);
+    // Sig, 2026-10-20: nothing covers the data. The note sits in the weeks still to come (Staircase), with no filled box.
+    const band = svg.match(/<g data-rp="band"[^>]*>([\s\S]*?)<\/g>/);
+    if (style === "r1") assert.ok(t.includes("THROUGH OCT 10") && t.includes("PREVIEW"), style + ": the note names the last day");
+    if (band) assert.doesNotMatch(band[1], /<rect/, style + ": no box drawn over the chart");
+    assert.ok(t.some((x) => /preview through Oct 10/i.test(x)) || /preview through Oct 10/.test(svg), style + ": the title still says preview");
     assert.ok(t.includes("NOV") && t.includes("DEC"), style + ": the months to come keep their place");
     assert.ok(t.some((x) => / so far$/.test(x) || /SO FAR/.test(x)), style + ": the totals say so far");
   }
@@ -393,7 +398,7 @@ test("the page offers the two styles, the dedication and both switches, and load
   const i = (s) => html.indexOf(s);
   assert.ok(i("/components/rp-short.js") > 0 && i("/components/rain-print-art.js") > 0);
   assert.ok(i("/components/rp-short.js") < i("/components/rain-print.js?v=") && i("/components/rain-print-art.js") < i("/components/rain-print.js?v="));
-  assert.match(html, /\/components\/rain-print\.js\?v=56"/);
+  assert.match(html, /\/components\/rain-print\.js\?v=58"/);
   for (const f of ["rp-fraunces-opsz.woff2", "rp-fraunces-opsz-400i.woff2", "rp-plex-sans-var.woff2", "rp-plex-sans-400i.woff2"]) {
     assert.ok(html.includes("/fonts/" + f), "the page declares " + f);
     assert.ok(readFileSync(ROOT + "components/rain-print.js", "utf8").includes("/fonts/" + f), "and the export inlines " + f);

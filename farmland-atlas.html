@@ -767,6 +767,11 @@ function money(x){ if(x===null||x===undefined) return '-'; var v=Math.floor(Math
 function pm(v,ci,k){ return (v>0?'+':'')+Number(v).toFixed(k)+' ± '+Number(ci).toFixed(k); }
 function r2(x){ return x===null||x===undefined?'-':Number(x).toFixed(2); }
 function pct(x,k){ return x===null||x===undefined?'-':fmt(x*100,k===undefined?0:k)+'%'; }
+// One rule for a share on every copy (panel, sheet, county page, compare; 2026-10-20): the share from its acres,
+// printed once to a whole percent, and "under 1%" for a nonzero share that rounds to 0
+function shareWords(s){ return s!=null&&s>0&&s<0.005?'under 1%':pct(s,0); }
+function pracShare(Pr,x){ return x.acres!=null&&Pr.cropland?x.acres/Pr.cropland:x.share; }
+function irrShareOf(sh){ return sh.irrigated_acres!=null&&sh.harvested_acres?sh.irrigated_acres/sh.harvested_acres:sh.share; }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
 // 134 of the 3,144 counties in atlas.json carry a unit word that is not "County". Test with 'u' in c, not c.u:
 // Carson City's unit word is an empty string because its name is already whole, and truthiness would print "Carson City County".
@@ -1833,7 +1838,7 @@ function renderPanel(fips,c){
     if(per.length>1) f+=fact('Loss ratio by period', per.map(function(k){return k.replace('-','–')+': '+r2(S.periods[k].ratio);}).join(' · '));
     if(S.years_over_one!=null) f+=fact('Years paying out more than premium', S.years_over_one+' of '+S.years_with_ratio, 'crop years with $1M or more of premium');
     else if(S.years_over_one_status) f+=fact('Years paying out more than premium',''+why({status:S.years_over_one_status}),'',true);
-    if(S.worst_year) f+=fact('Worst year', String(S.worst_year.year), 'ratio '+r2(S.worst_year.ratio));
+    if(S.worst_year) f+=fact('Worst year', String(S.worst_year.year), 'ratio '+r2(S.worst_year.ratio)+(S.worst_year.tied&&S.worst_year.tied.length?' ('+S.worst_year.tied.join(', ')+' also '+r2(S.worst_year.ratio)+')':''));
     if(S.partial) f+=fact(S.partial.year+' so far', mUSD(S.partial.indemnity)+' paid', 'on '+mUSD(S.partial.premium)+' premium. Claims are still being paid, so this year is left out above');
     var py=d.sob&&d.sob.per_year;
     if(py){ ch.push(chart({title:'Loss ratio by crop year',sub:'indemnity ÷ premium; bars above 3 are cut and labelled',kind:'bars',
@@ -1841,10 +1846,10 @@ function renderPanel(fips,c){
         refs:[{v:1,label:'1.00 = paid out what premium took in'}],top:3,
         note:'Blank years had under $1M of premium.'})); }
   } else f+=fact('Crop insurance',''+why(S),'',true);
-  if(ok(Lo)&&Lo.share_all){
+  if(ok(Lo)&&Lo.share_all&&Object.keys(Lo.share_all).some(function(k){return Lo.share_all[k]>0;})){
     var NM={heat_drought:'heat and drought',wet:'excess moisture',hail:'hail',wind:'wind',cold:'freeze',irrigation:'irrigation failure',price:'price decline',unassigned:'not assigned',other:'other'};
-    var top3=Object.keys(Lo.share_all).filter(function(k){return Lo.share_all[k]!=null;}).sort(function(x,y){return Lo.share_all[y]-Lo.share_all[x];}).slice(0,3);
-    f+=fact('Largest causes of payouts, '+Lo.first_year+'–'+Lo.last_year, top3.map(function(k){return NM[k]+' '+pct(Lo.share_all[k],0);}).join(' · '));
+    var top3=Object.keys(Lo.share_all).filter(function(k){return Lo.share_all[k]>0;}).sort(function(x,y){return Lo.share_all[y]-Lo.share_all[x];}).slice(0,3);
+    f+=fact('Largest causes of payouts, '+Lo.first_year+'–'+Lo.last_year, top3.map(function(k){return NM[k]+' '+shareWords(Lo.share_all[k]);}).join(' · '));
     var lp=Lo.periods?Object.keys(Lo.periods).filter(function(k){return Lo.periods[k].heat_drought_share!=null;}):[];
     if(lp.length) f+=fact('Heat and drought share of payouts, by period', lp.map(function(k){return k.replace('-','–')+': '+pct(Lo.periods[k].heat_drought_share,0);}).join(' · '), 'each period can hang on one or two bad years');
   }
@@ -1933,7 +1938,7 @@ function renderPanel(fips,c){
   if(ok(W)){
     var sh=W.irrigated_share_2022||{}, gw=W.groundwater_share_2015||{}, ap=W.applied_2015, tiny=ap&&ap.status&&/under 1,000/.test(ap.status);
     if(sh.share!=null&&sh.reported===false) f+=fact('Harvested cropland irrigated, 2022','none reported');
-    else if(sh.share!=null) f+=fact('Harvested cropland irrigated, 2022', pct(sh.share,0), sh.irrigated_acres!=null?fmt(sh.irrigated_acres,0)+' of '+fmt(sh.harvested_acres,0)+' acres':'');
+    else if(sh.share!=null) f+=fact('Harvested cropland irrigated, 2022', shareWords(irrShareOf(sh)), sh.irrigated_acres!=null?fmt(sh.irrigated_acres,0)+' of '+fmt(sh.harvested_acres,0)+' acres':'');
     else f+=fact('Harvested cropland irrigated, 2022',''+why(sh),'',true);
     var gwb=gw.basis==='IR'?'USGS all irrigation, golf courses included (no crop split for this county)':gw.basis==='IC'?'USGS crop irrigation':'';
     if(gw.share!=null&&!tiny) f+=fact('Irrigation water from groundwater, 2015', pct(gw.share,0), gwb);
@@ -1972,7 +1977,7 @@ function renderPanel(fips,c){
   } else na.push(['Wells and water rights', why(Wl)]);
   if(ok(Pr)){
     f+=facthead('Drainage and tillage, 2022 census');
-    var prf=function(label,x,none){ if(!x) return; if(x.reported===false) f+=fact(label,'none reported'); else if(x.share!=null){ var s0=Pr.cropland?x.acres/Pr.cropland:x.share; f+=fact(label, (s0>0&&s0<0.005?'under 1%':pct(x.share,0))+' of cropland', fmt(x.acres,0)+' acres'); } else f+=fact(label,''+why(x),'',true); };
+    var prf=function(label,x,none){ if(!x) return; if(x.reported===false) f+=fact(label,'none reported'); else if(x.share!=null) f+=fact(label, shareWords(pracShare(Pr,x))+' of cropland', fmt(x.acres,0)+' acres'); else f+=fact(label,''+why(x),'',true); };
     prf('Drained by tile',Pr.tile);
     // no 2017-to-2022 tile change: Iowa's statewide census total fell 8% (14.1M to 13.0M acres) while tile is
     // almost never pulled; a county's change measures who answered the census, not drainage put in
@@ -2000,7 +2005,7 @@ function renderPanel(fips,c){
   if(ok(C)){
     f+=facthead('Conservation Reserve (CRP)');
     if(C.latest&&C.latest.acres!=null) f+=fact('Enrolled, '+C.latest.year, fmt(C.latest.acres,0)+' acres', C.share_of_cropland&&C.share_of_cropland.pct!=null?fmt(C.share_of_cropland.pct,1)+'% of harvested cropland plus CRP':'');
-    if(C.expiring_next3) f+=fact('Expiring FY'+C.expiring_next3.from+'–'+C.expiring_next3.to, fmt(C.expiring_next3.acres,0)+' acres', C.expiring_next3.share_of_enrolled_pct!=null?fmt(C.expiring_next3.share_of_enrolled_pct,0)+'% of what is enrolled':'');
+    if(C.expiring_next3) f+=fact('Expiring FY'+C.expiring_next3.from+'–'+C.expiring_next3.to, fmt(C.expiring_next3.acres,0)+' acres', (function(x){ var ce=x.acres!=null&&C.latest&&C.latest.acres?x.acres/C.latest.acres:(x.share_of_enrolled_pct!=null?x.share_of_enrolled_pct/100:null); return ce==null?'':shareWords(ce)+' of what is enrolled'; })(C.expiring_next3));
     if(C.rate&&C.rate.usd_per_acre!=null) f+=fact('Average CRP rental payment, FY'+C.rate.year, money(C.rate.usd_per_acre)+'/ac', 'averaged over every contract in force, some signed 10 to 15 years ago; not today\'s offer'+(ok(c.rent)&&c.rent.nonirr?'. County dry cash rent '+money(c.rent.nonirr.value)+'/ac in '+c.rent.nonirr.year:''));
     else if(C.rate&&C.rate.status) f+=fact('Average CRP rental payment',''+why(C.rate),'',true);
   } else na.push(['CRP', why(C)]);
@@ -2019,8 +2024,8 @@ var NBCOLS=[
   ['Corn yield','median, bu/ac',function(c){return METRICS.yld(c);},function(v){return f1(v);}],
   ['Claims paid','per $100 of coverage',function(c){return METRICS.cost(c);},function(v){return '$'+rh(v,2);}],
   ['July low','°F, last 10 yrs',function(c){return METRICS.heat(c);},function(v){return f1(v);}],
-  ['Tile','share of cropland',function(c){return get(c,'practices','tile');},function(v){return pct(v,0);}],
-  ['Irrigated','share of cropland',function(c){return get(c,'water','irrigated_share_2022','share');},function(v){return pct(v,0);}],
+  ['Tile','share of cropland',function(c){return get(c,'practices','tile');},shareWords],
+  ['Irrigated','share of cropland',function(c){return get(c,'water','irrigated_share_2022','share');},shareWords],
   ['Drought','share of weeks in D2+',function(c){var x=get(c,'drought','weeks','share_d2_pct'); return x==null?null:x/100;},function(v){return pct(v,0);}]
 ];
 function nextDoor(fips,d){

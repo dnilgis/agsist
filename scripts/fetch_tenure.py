@@ -94,9 +94,21 @@ def place_key(row, lvl):
 
 
 def resolve_totals(rows, lvl):
-    """One total row per place: prefer domain_desc=='TOTAL'; else accept a
-    place's single row whatever its domain label (pre-2022 counties); a place
-    with multiple non-TOTAL rows is ambiguous and is DROPPED, not guessed."""
+    """One total row per place.
+
+    COUNTY: domain_desc=='TOTAL' only. A county with no TOTAL row is withheld
+    for that year. FAULT FOUND 2026-10-20: the old rule took "a place's single
+    row whatever its domain label" for pre-2022 counties. That single row is a
+    tenure-class subset, not all farms: 1997-2017 counties summed to 46-78% of
+    each state's TOTAL (US about 500M of 900M acres), no county-year had a zero
+    owned or zero rented cell (full owners rent nothing, tenants own nothing,
+    so it is the part-owner class), and the median county read 55% rented
+    through 2017 against 35% in 2022. Story IA 2017: 75,063 owned + 133,965
+    rented = 209,028 ac, 64.1% rented; 2022 TOTAL: 299,244 ac, 54.9%.
+
+    STATE / NATIONAL: prefer TOTAL; a place's single row is accepted only
+    because check_coherence() then holds it against the level below.
+    Multiple non-TOTAL rows are ambiguous and DROPPED, not guessed."""
     by_place = {}
     for r in rows:
         by_place.setdefault(place_key(r, lvl), []).append(r)
@@ -105,13 +117,52 @@ def resolve_totals(rows, lvl):
         totals = [r for r in rs if r.get("domain_desc") == "TOTAL"]
         if totals:
             out.append(totals[0])
-        elif len(rs) == 1:
+        elif lvl != "COUNTY" and len(rs) == 1:
             out.append(rs[0])
         else:
             dropped += 1
     if dropped:
-        print(f"    !! {dropped} places dropped (multiple non-TOTAL rows — ambiguous)")
+        print(f"    !! {dropped} {lvl.lower()} places withheld (no TOTAL row)")
     return out
+
+
+# A state's published counties must add up to its TOTAL row before any of
+# them is printed for that year. Suppression (D) and the 998 combined row pull
+# the sum down a little (2022: NV 0.88, AZ 0.90, every other state 0.96-1.00);
+# the pre-2022 subset rows sat at 0.05-0.78. Outside the band: withhold.
+COHERE_LO, COHERE_HI = 0.85, 1.02
+
+
+def check_coherence(counties, states, national):
+    """Withhold, in place, every county-year of a state whose counties do not
+    add up to that state's total, and any national year that is not the sum
+    of the states. Returns a list of (what, year, ratio) withheld."""
+    gone = []
+    for yr in sorted({y for c in counties.values() for y in c["y"]}):
+        by_st = {}
+        for c in counties.values():
+            p = c["y"].get(yr)
+            if p and None not in p:
+                by_st[c["st"]] = by_st.get(c["st"], 0) + p[0] + p[1]
+        for st in sorted({c["st"] for c in counties.values() if yr in c["y"]}):
+            sp = (states.get(st) or {}).get("y", {}).get(yr)
+            ratio = None if not sp or None in sp or sp[0] + sp[1] <= 0 else by_st.get(st, 0) / (sp[0] + sp[1])
+            if ratio is None or not (COHERE_LO <= ratio <= COHERE_HI):
+                gone.append((st, yr, None if ratio is None else round(ratio, 3)))
+                for c in counties.values():
+                    if c["st"] == st:
+                        c["y"].pop(yr, None)
+    for yr in sorted(national):
+        n = national[yr]
+        tot = sum(s["y"][yr][0] + s["y"][yr][1] for s in states.values()
+                  if yr in s["y"] and None not in s["y"][yr])
+        ratio = None if None in n or not tot else (n[0] + n[1]) / tot
+        if ratio is None or not (0.98 <= ratio <= 1.02):
+            gone.append(("US", yr, None if ratio is None else round(ratio, 3)))
+            del national[yr]
+    for what, yr, ratio in gone:
+        print(f"    !! withheld {what} {yr}: county/state sum ratio {ratio}")
+    return gone
 
 
 def collect(fetch):
@@ -155,55 +206,80 @@ def main():
     if not KEY:
         raise SystemExit("FATAL: NASS_API_KEY not set")
     counties, states, national = collect(api_get)
-    # keep only counties with at least one complete (owned, rented) year
+    check_coherence(counties, states, national)
+    # keep every county with any published cell: a 2022 pair with one part (D)
+    # still says the county farms (the Atlas reads it as size unknown, not as
+    # no farmland); a county with nothing left after the guard is dropped
     counties = {f: c for f, c in counties.items()
-                if any(None not in pair for pair in c["y"].values())}
+                if any(v is not None for pair in c["y"].values() for v in pair)}
     if len(counties) < 500:
-        raise SystemExit(f"FATAL: only {len(counties)} usable counties — refusing to write")
+        raise SystemExit(f"FATAL: only {len(counties)} usable counties, refusing to write")
     out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-           "source": "USDA NASS Census of Agriculture — land in farms by ownership, domain TOTAL",
+           "source": "USDA NASS Census of Agriculture, land in farms by ownership, domain TOTAL",
            "note": ("pct rented = rented-from-others / (owned + rented-from-others) acres, "
                     "as reported by farms themselves each census. Counties with (D) "
-                    "suppression simply lack that year — never estimated."),
+                    "suppression simply lack that year, never estimated. A county year "
+                    "is kept only from a TOTAL row, and only where the state's counties "
+                    "add up to the state total (pre-2022 county rows are a tenure-class "
+                    "subset and are withheld)."),
            "years": YEARS, "counties": counties, "states": states, "national": national}
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     json.dump(out, open(OUT, "w"), separators=(",", ":"))
+    if sum(1 for c in counties.values() if any(None not in p for p in c["y"].values())) < 500:
+        raise SystemExit("FATAL: under 500 counties with a complete year, refusing to write")
     yrs2022 = sum(1 for c in counties.values() if "2022" in c["y"] and None not in c["y"]["2022"])
     print(f"wrote {OUT}: {len(counties)} counties ({yrs2022} complete for 2022), "
           f"{len(states)} states, national years {sorted(national)}")
 
 
 def selftest():
-    """Synthetic census rows through collect + shaping rules."""
+    """Census rows through collect + shaping rules, built on the real 2026-07
+    fault (see resolve_totals): pre-2022 county rows are a single non-TOTAL
+    tenure-class row; states and the nation carry TOTAL rows."""
+    # Real values from the 2026-07-19 file. Story IA (19169) and McLean IL
+    # (17113): 2017 single-row subset vs the 2022 TOTAL row. State totals are
+    # the real IA and IL TOTAL rows.
+    REAL = {
+        "19169": {"2017": (75063, 133965), "2022": (134824, 164420)},
+        "17113": {"2017": (90624, 332432), "2022": (184802, 412595)},
+    }
+    ST_TOT = {"IA": {"2017": (14874668, 15689210), "2022": (15043032, 14935133)},
+              "IL": {"2017": (11227047, 15779241), "2022": (11607971, 14684070)}}
+
     def fake(params):
         lvl = params["agg_level_desc"]
-        yr = int(params["year"])
-        assert "domain_desc" not in params, "must fetch unfiltered now"
-        base = 100000 if "OWNED" in params["short_desc"] else 60000
-        # 2022 mimics live: TOTAL rows + domain-breakdown noise. Pre-2022
-        # mimics live: single rows whose domain label is NOT 'TOTAL'.
-        dom = "TOTAL" if yr == 2022 else "AREA OPERATED"
+        yr = params["year"]
+        assert "domain_desc" not in params, "must fetch unfiltered"
+        idx = 0 if "OWNED" in params["short_desc"] else 1
+        dom = "TOTAL" if yr == "2022" else "TENURE"
         if lvl == "COUNTY":
-            rows = [{"state_fips_code": "19", "county_code": f"{i:03d}", "county_name": "TEST",
-                     "state_alpha": "IA", "domain_desc": dom, "Value": f"{base + i:,}"}
-                    for i in (1, 3, 5)]
-            if yr == 2022:
+            rows = []
+            for f, ys in REAL.items():
+                v = ys["2017" if yr != "2022" else "2022"][idx]
+                rows.append({"state_fips_code": f[:2], "county_code": f[2:], "county_name": "X",
+                             "state_alpha": "IA" if f.startswith("19") else "IL",
+                             "domain_desc": dom, "Value": f"{v:,}"})
+            # the rest of each state, so the 2022 counties add up to the state total
+            if yr == "2022":
+                for st, fp in (("IA", "19"), ("IL", "17")):
+                    mine = [REAL[f]["2022"][idx] for f in REAL if f.startswith(fp)]
+                    rest = ST_TOT[st]["2022"][idx] - sum(mine)
+                    rows.append({"state_fips_code": fp, "county_code": "500", "county_name": "REST",
+                                 "state_alpha": st, "domain_desc": "TOTAL", "Value": f"{rest:,}"})
                 # domain noise beside a TOTAL row: prefer-TOTAL path
-                rows.append({"state_fips_code": "19", "county_code": "001", "county_name": "TEST",
-                             "state_alpha": "IA", "domain_desc": "OPERATORS", "Value": "1"})
-                # ambiguous place: two non-TOTAL rows -> must be dropped
-                rows.append({"state_fips_code": "19", "county_code": "009", "county_name": "AMBIG",
-                             "state_alpha": "IA", "domain_desc": "OPERATORS", "Value": "5"})
-                rows.append({"state_fips_code": "19", "county_code": "009", "county_name": "AMBIG",
-                             "state_alpha": "IA", "domain_desc": "AREA OPERATED", "Value": "6"})
+                rows.append({"state_fips_code": "19", "county_code": "169", "county_name": "X",
+                             "state_alpha": "IA", "domain_desc": "TENURE", "Value": "1"})
             rows.append({"state_fips_code": "19", "county_code": "998", "county_name": "OTHER COUNTIES",
                          "state_alpha": "IA", "domain_desc": dom, "Value": "9"})
             rows.append({"state_fips_code": "19", "county_code": "007", "county_name": "SUPPRESSED",
-                         "state_alpha": "IA", "domain_desc": dom, "Value": "(D)"})
+                         "state_alpha": "IA", "domain_desc": "TOTAL", "Value": "(D)"})
             return rows
+        y = "2017" if yr != "2022" else "2022"
         if lvl == "STATE":
-            return [{"state_alpha": "IA", "domain_desc": dom, "Value": f"{base * 100:,}"}]
-        return [{"domain_desc": dom, "Value": f"{base * 4800:,}"}]
+            return [{"state_alpha": st, "domain_desc": "TOTAL", "Value": f"{t[y][idx]:,}"}
+                    for st, t in ST_TOT.items()]
+        return [{"domain_desc": "TOTAL", "Value": f"{sum(t[y][idx] for t in ST_TOT.values()):,}"}]
+
     import time as _t
     real_sleep = _t.sleep
     _t.sleep = lambda s: None
@@ -211,19 +287,34 @@ def selftest():
         counties, states, national = collect(fake)
     finally:
         _t.sleep = real_sleep
-    assert "19001" in counties and "19998" not in counties, "998 combined row not excluded"
-    assert "19009" not in counties, "ambiguous multi-domain place not dropped"
-    pair = counties["19001"]["y"]["2022"]
-    assert pair[0] == 100001 and pair[1] == 60001, f"prefer-TOTAL failed: {pair}"
-    hist = counties["19001"]["y"]
-    assert "1997" in hist and hist["1997"] == [100001, 60001], \
-        f"pre-2022 single-row (non-TOTAL domain) county history lost: {sorted(hist)}"
-    pct = pair[1] / (pair[0] + pair[1])
-    assert 0.37 < pct < 0.38, pct
-    assert states["IA"]["y"]["1997"] == [10000000, 6000000]
-    assert national["2022"][0] == 480000000
-    print(f"SELFTEST OK — {len(counties)} counties shaped with FULL 1997-2022 history, "
-          f"prefer-TOTAL, ambiguity drop, 998-exclusion, (D) skip, pct math ({pct:.3f})")
+    assert "19998" not in counties, "998 combined row not excluded"
+    story = counties["19169"]["y"]
+    assert story["2022"] == [134824, 164420], f"prefer-TOTAL failed: {story['2022']}"
+    assert sorted(story) == ["2022"], f"a non-TOTAL county row leaked into the history: {sorted(story)}"
+    assert sorted(counties["17113"]["y"]) == ["2022"]
+    pct = story["2022"][1] / sum(story["2022"])
+    assert 0.549 < pct < 0.550, pct
+
+    # The guard, on the real fault: if a subset row ever arrives labelled
+    # TOTAL, the state's counties no longer add up and the year is withheld.
+    c2 = {"19169": {"st": "IA", "y": {"2017": [75063, 133965], "2022": [134824, 164420]}},
+          "19001": {"st": "IA", "y": {"2017": [6000000, 6000000],
+                                      "2022": [15043032 - 134824, 14935133 - 164420]}}}
+    s2 = {"IA": {"y": {k: list(v) for k, v in ST_TOT["IA"].items()}}}
+    n2 = {"2017": list(ST_TOT["IA"]["2017"]), "2022": list(ST_TOT["IA"]["2022"])}
+    gone = check_coherence(c2, s2, n2)
+    assert ("IA", "2017") in [(a, b) for a, b, _ in gone], gone
+    assert "2017" not in c2["19169"]["y"] and "2022" in c2["19169"]["y"], c2["19169"]
+    # suppression inside the band keeps the year (NV 2022 was 0.88)
+    c3 = {"32001": {"st": "NV", "y": {"2022": [880, 0]}}}
+    gone = check_coherence(c3, {"NV": {"y": {"2022": [1000, 0]}}}, {})
+    assert gone == [] and "2022" in c3["32001"]["y"], gone
+    # a national year that is not the sum of the states is withheld
+    n4 = {"2022": [1, 1]}
+    check_coherence({}, {"IA": {"y": {"2022": [10, 10]}}}, n4)
+    assert n4 == {}, n4
+    print(f"SELFTEST OK: pre-2022 non-TOTAL county rows withheld, prefer-TOTAL, coherence guard, "
+          f"998-exclusion, (D) skip, pct math ({pct:.3f})")
 
 
 if __name__ == "__main__":

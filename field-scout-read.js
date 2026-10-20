@@ -1956,12 +1956,17 @@ window.__fsRead = function (FSX) {
       function findByName(obj){ var hit=null; if(!obj) return null;
         Object.keys(obj).some(function(k){ var v=obj[k]; if(v&&normCty(v.n)===normCty(cty)&&(v.st===abbr||v.st===stFull)){ hit={k:k,v:v}; return true; } return false; });
         return hit; }
+      // FS-TENYEAR-BEGIN
+      // latest census with BOTH parts published: a (D) half would read as 100% or 0% rented
+      // (Wakulla FL 2022 is [null, 2384]: owned suppressed)
+      function tenureYear(y){ var ys=Object.keys(y||{}).filter(function(k){ var p=y[k]; return !!(p&&p.length===2&&p[0]!=null&&p[1]!=null&&p[0]+p[1]>0); }).map(Number).sort(function(a,b){return a-b;});
+        return ys.length?ys[ys.length-1]:null; }
+      // FS-TENYEAR-END
       var trec = t&&t.counties ? (fips&&t.counties[fips]?{k:fips,v:t.counties[fips]}:findByName(t.counties)) : null;
       var denom=null;
       if(trec){
-        var ys=Object.keys(trec.v.y).map(Number).sort(function(x,y){return x-y;});
-        var ly=ys[ys.length-1], pair=trec.v.y[ly];   // [owned, rented]
-        if(pair&&pair.length===2){
+        var ly=tenureYear(trec.v.y), pair=ly!=null?trec.v.y[ly]:null;   // [owned, rented]
+        if(pair){
           got=true;
           var owned=pair[0], rented=pair[1]; denom=owned+rented;
           var pct=Math.round(rented/denom*100);

@@ -501,6 +501,17 @@
     if (isNaN(v)) return { v: null, flag: 'M' };
     return { v: v, flag: /A$/.test(s) ? 'A' : '' };
   }
+  /* A snowfall value of T: snow fell that day, too little to measure (under 0.1 in). Its own
+     flag on the day (sT), never the precipitation trace (flag 'T', counted in derive's D.trace):
+     a snowfall trace can fall on a day with measured rain, or a day the gauge read T or 0.
+     Not June 1 to August 31 by the day's date (iso, YYYY-MM-DD; Sig, 2026-10-20: "skip summer
+     traces"): a summer T is most likely hail logged as snow (Grand Forks ND, Jun 3 2026, on the
+     year's biggest rain). US and Canada only, so one season. A measured summer snow amount stays. */
+  function snowTraceRaw(raw, iso) {
+    if (raw === undefined || raw === null || String(raw).trim() !== 'T') return false;
+    var mo = iso ? +String(iso).slice(5, 7) : 0;
+    return !(mo >= 6 && mo <= 8);
+  }
   // A day whose own amount nobody knows: unrecorded, or rolled into a later A total.
   function unknownDay(x) { return x.v === null || x.v === undefined || x.flag === 'S'; }
   /* Snowfall over the year's days: {miss: reported days with no snowfall value,
@@ -1302,8 +1313,11 @@
         // snow: NOAA's separate snowfall record (inches of snow as it fell). pcpn already
         // counts that snow melted down to water, so snowfall is shown beside it, never added.
         var p = parsePcpn(row[1]), t = row[2] !== undefined ? parseTemp(row[2]) : null, sn = row[3] !== undefined ? parsePcpn(row[3]).v : null;
-        var dt = new Date(row[0] + 'T00:00:00');
-        days.push({ date: row[0], v: p.v, flag: p.flag, t: t, s: sn, m: dt.getMonth(), d: dt.getDate(), doy: days.length });
+        var dt = new Date(row[0] + 'T00:00:00'), dy = { date: row[0], v: p.v, flag: p.flag, t: t, s: sn, m: dt.getMonth(), d: dt.getDate(), doy: days.length };
+        // a snowfall "T" (2026-10-20, Sig: "a trace should somehow show as a trace"): snow fell, under 0.1 in (not in summer: snowTraceRaw).
+        // It stays 0 in every snow total; sT only lets the print mark the day. Not the gauge's own T (flag).
+        if (snowTraceRaw(row[3], row[0])) dy.sT = true;
+        days.push(dy);
       });
       // This year: stop at the last recorded day. The days after it have not
       // come in yet (NOAA's daily numbers lag a few days); they are not gaps.
@@ -1633,7 +1647,7 @@
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
-    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
+    parsePcpn: parsePcpn, snowTraceRaw: snowTraceRaw, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
     cropInput: cropInput, tempInput: tempInput, histInput: histInput, withoutTemp: withoutTemp, tempStationOk: tempStationOk, tempWords: tempWords, TEMP_KINDS: TEMP_KINDS, HIST_MIN: HIST_MIN, TEMP_GAP_OK: TEMP_GAP_OK, OPT_FLAGS: OPT_FLAGS };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;

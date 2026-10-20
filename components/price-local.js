@@ -172,18 +172,22 @@
     return u ? 'Updated ' + u : '';
   }
   /* A whole board: "Oct 16 settle where posted, latest delayed trade otherwise. Read 1:46 am CT" */
+  /* 2026-10-20: cards on different settle dates show the range ("Oct 16 to
+     Oct 19 settles"), never the newest alone (a card one session behind read
+     as current). Twin: seed_static.py mk_board. */
   function board(quotes, keys, fetched, now) {
-    var st = '', last = 0, n = 0;
+    var st = '', lo = '', last = 0, n = 0;
     (keys || Object.keys(quotes || {})).forEach(function (k) {
       var q = quotes && quotes[k];
       if (!q || q.close == null) return;
       n++;
-      if (q.close_kind === 'settle') { var d = q.settle_date || q.close_date || ''; if (d > st) st = d; } else last++;
+      if (q.close_kind === 'settle') { var d = q.settle_date || q.close_date || ''; if (d > st) st = d; if (d && (!lo || d < lo)) lo = d; } else last++;
     });
     var read = fetched ? clock(fetched, now) : '', out;
     if (!n) return read ? 'Read ' + read : '';
-    if (st && !last) out = isoDay(st, now) + ' settle';
-    else if (st) out = isoDay(st, now) + ' settle where posted, latest delayed trade otherwise';
+    var sw = st ? (lo && lo !== st ? isoDay(lo, now) + ' to ' + isoDay(st, now) + ' settles' : isoDay(st, now) + ' settle') : '';
+    if (st && !last) out = sw;
+    else if (st) out = sw + ' where posted, latest delayed trade otherwise';
     else out = 'Latest delayed trades';
     return out + (read ? '. Read ' + read : '');
   }

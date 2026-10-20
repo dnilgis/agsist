@@ -59,7 +59,8 @@ test("Atlas county pages: a worst year, a drought share and the rent-per-bushel 
     // the worst year names the gate it is out of; Cole Co., MO printed 0.29 as its "worst" from 1 gated year
     for (const m of h.matchAll(/Worst year<\/span><span class="r">\d{4}<small>([^<]*)<\/small>/g)) {
       worst++;
-      assert.match(m[1], /^ratio \d+\.\d\d, of the \d+ crop years with at least \$1,000,000 of premium$/, p);
+      // a year that prints the same ratio is named, with that same ratio (Butler NE, 2026-10-20)
+      assert.match(m[1], /^ratio (\d+\.\d\d)(?: \(\d{4}(?:, \d{4})* also \1\))?, of the \d+ crop years with at least \$1,000,000 of premium$/, p);
     }
     // 142 of 1,357 weeks is 10%, not the stored 10.5 rounded again to 11%
     const w = h.match(/(\d[\d,]*) of (\d[\d,]*) weeks<small>(\d+)% of weeks/);

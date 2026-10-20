@@ -32,7 +32,7 @@
      print is drawn, false when it is not (the plain chart stays). The county page's own
      #rc-print mounts itself, as before. */
   root.AgRainCountyPrint = { unpack: unpack, daysOf: daysOf, usualOf: usualOf, mount: mount };   // for test/rain-county-print.test.mjs
-  var ART = '/components/rain-print-art.js?v=16', ENGINE = '/components/rain-print.js?v=56';
+  var ART = '/components/rain-print-art.js?v=18', ENGINE = '/components/rain-print.js?v=58';
   var MISS_BLOCK = 31, MIN_DAYS = 60;
   var FONTS = [
     ['Fraunces', '/fonts/rp-fraunces-opsz.woff2', { weight: '300 600' }],
@@ -87,8 +87,11 @@
     for (var i = 0; i < p.length; i++) {
       var dt = new Date(Date.UTC(year, 0, 1 + i));
       var iso = dt.toISOString().slice(0, 10), x = RP.parsePcpn(p[i]);
-      out.push({ date: iso, v: x.v, flag: x.flag, t: null, s: s && s[i] !== undefined ? RP.parsePcpn(s[i]).v : null,
-        m: dt.getUTCMonth(), d: dt.getUTCDate(), doy: i });
+      var dy = { date: iso, v: x.v, flag: x.flag, t: null, s: s && s[i] !== undefined ? RP.parsePcpn(s[i]).v : null,
+        m: dt.getUTCMonth(), d: dt.getUTCDate(), doy: i };
+      // a snowfall trace (T): marked on the print, never counted (2026-10-20, as daily() does)
+      if (s && RP.snowTraceRaw && RP.snowTraceRaw(s[i], iso)) dy.sT = true;
+      out.push(dy);
     }
     out = out.slice(0, RP.lastRecorded(out) + 1);
     return RP.closeOpenS(out);

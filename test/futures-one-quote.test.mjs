@@ -182,11 +182,12 @@ let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
-function isoDaysAgo(n) { const d = new Date(Date.now() - n * 864e5); return d.toISOString().slice(0, 10); }
 function serve() {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml" };
   const cp = JSON.parse(read("test/fixtures/crop-progress-2026-10-16.json"));
-  for (const k of ["winter_wheat_planted", "winter_wheat_emerged"]) cp.progress[k].date = isoDaysAgo(5);
+  // dated against the page clock (fixed at 2026-10-14 in open()), not the real clock: "5 days ago" by the real clock
+  // ran past the page's own day once the real date moved on, and the rows read as future reports
+  for (const k of ["winter_wheat_planted", "winter_wheat_emerged"]) cp.progress[k].date = "2026-10-12";
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
     if (!extname(p) && p !== "/") p += ".html";

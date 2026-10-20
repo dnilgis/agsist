@@ -153,7 +153,7 @@ def last_year_words(c, L, year):
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
 RP_SNOW_MISS_OK = R.SNOW_MISS_OK  # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
-PRINT_JS = '<script src="/components/rain-county-print.js?v=24" defer></script>'
+PRINT_JS = '<script src="/components/rain-county-print.js?v=27" defer></script>'
 
 
 def rp_prices():
@@ -207,6 +207,50 @@ def print_snow(day, year):
     if not day or not day.get("s"):
         return "none"
     return R.snow_state(R.unpack_days(day.get("p")), R.unpack_days(day["s"]), year)
+
+
+def snow_caption(day, snow, year):
+    """The caption's key for the snow line. Wording only (2026-10-20): "little" (under 0.1 in)
+    stays the snow state, but where the station's snowfall record for the year has no value
+    above zero the caption says so instead of "under 0.1 in", which reads as if snow fell
+    (162 pages, mostly the South). "nosnow": every value 0; "trace": only zeros and traces.
+    A summer trace (June to August) is not snow here (county_rain.snow_trace_on, Sig 2026-10-20)."""
+    if snow != "little" or not day or not day.get("s"):
+        return snow
+    raw = R.unpack_days(day["s"])
+    sv = [R.parse_pcpn(x) for x in raw]
+    if any(v for v, _f in sv if v is not None):
+        return snow
+    return "trace" if any(R.snow_trace_on(x, year, k) for k, x in enumerate(raw)) else "nosnow"
+
+
+def print_snow_traces(day, year):
+    """Days the county page's print marks with a trace of snow (county_rain.snow_trace_days, the art's rule)."""
+    if not day or not day.get("s"):
+        return 0
+    return R.snow_trace_days(R.unpack_days(day.get("p")), R.unpack_days(day["s"]), year)
+
+
+def snow_trace_words(snow, n):
+    """The caption's words for the snow on the print (2026-10-20: a trace of snow is marked, so the
+    old "so none is drawn" is no longer true where a trace fell). n: the days the print marks."""
+    dw = f"{n} day{'' if n == 1 else 's'}"
+    if snow == "trace" and n:
+        return f"Only traces of snow fell ({dw}), too little to measure; each is marked on the print. "
+    if snow == "trace":
+        return "Only traces of snow, too little to measure, so none is drawn. "
+    base = {"drawn": "Light blue is snow. ",
+            "gaps": "Its snowfall record has gaps, so no snow is drawn. ",
+            "little": "Under 0.1 in of snow, so none is drawn. ",
+            "nosnow": "No snow fell, so none is drawn. "}.get(snow)
+    if base is None:
+        return None
+    if n and snow in ("drawn", "little"):
+        if snow == "drawn":
+            base += f"A trace of snow, too little to measure, fell on {dw}, marked above the line. "
+        else:
+            base += ("The day with a trace of snow is" if n == 1 else f"The {dw} with a trace of snow are") + " marked above the line. "
+    return base
 
 
 def rain_print_href(c, st, year):
@@ -304,6 +348,7 @@ def chart(c, year, county, noun="station", ready=None):
         return f'<figure class="rc-chart">{"".join(out)}<figcaption>{cap}</figcaption></figure>'
     st, fips, place, gauge, done, snow = ready[:6]
     period = ready[6] if len(ready) > 6 else None
+    traces = ready[7] if len(ready) > 7 else 0
     # The usual-year line on the print (2026-10-16; it was off, showNormals false). The page has
     # NOAA's normal for each month summed over the days the station reported (c["months"][m][1],
     # the same numbers as the month table); they add up to the page's usual. The print spreads each
@@ -314,10 +359,7 @@ def chart(c, year, county, noun="station", ready=None):
             and abs(sum(m[1] for m in c["months"]) - c["usual"]) <= 0.015:
         mn = ",".join(f"{m[1]:.2f}" for m in c["months"])
     pcap = (f"Every day of {year}{'' if done else ' so far'} at this {noun}, drawn by Rain Print. "
-            + {"drawn": "Light blue is snow. ",
-               "gaps": "Its snowfall record has gaps, so no snow is drawn. ",
-               "little": "Under 0.1 in of snow, so none is drawn. "}.get(
-                  snow, f"This {noun} keeps no snowfall record, so snow is counted as water, not drawn. ")
+            + (snow_trace_words(snow, traces) or f"This {noun} keeps no snowfall record, so snow is counted as water, not drawn. ")
             + "A gap is a day with no report." + ("" if done else " The empty months are still to come.")
             + ((" The dashed line is the usual year: NOAA&rsquo;s " + ("1991 to 2020" if period == "1991-2020" else "30-year")
                 + f" normals for this {noun}, added up over the days it reported, with each month&rsquo;s usual under its total; "
@@ -349,6 +391,13 @@ PICK_RULE_3 = ("Mountain snow sites, and stations far above the rest in the coun
                "Where snow is normal, a station that keeps a full record of both rain and snowfall comes next, "
                "over a nearer one whose snowfall record has gaps, if it is no more than 10 miles farther or twice as far. "
                "Then the most days reported, then the one nearest the middle of the county.")
+# "pick": 4 (2026-10-20): Sig changed the rule, the full snowfall record now comes before NOAA normals
+PICK_RULE_4 = ("Mountain snow sites, and stations far above the rest in the county, come last, "
+               "since their rain is not what the farms below get. "
+               "Where snow is normal, a station that keeps a full record of both rain and snowfall comes first, "
+               "over a nearer one whose snowfall record has gaps, if it is no more than 10 miles farther or twice as far, "
+               "even when only the nearer one has NOAA normals. "
+               "Then the pick goes to one with NOAA normals, then the most days reported, then the one nearest the middle of the county.")
 
 
 def morning_read(stw):
@@ -600,7 +649,7 @@ def county_page(ctx):
                   "Your own rain gauge can read differently a few miles away.")
     else:
         pick_p = (f"Why this {noun}: {n_ok} stations inside {e(name)} reported at least 90% of the days in {year}. "
-                  + {3: PICK_RULE_3, 2: PICK_RULE_2}.get(d.get("pick"), PICK_RULE_1)
+                  + {4: PICK_RULE_4, 3: PICK_RULE_3, 2: PICK_RULE_2}.get(d.get("pick"), PICK_RULE_1)
                   + " Your own rain gauge can read differently a few miles away.")
     # ---- next door and links
     nb_html = "".join(f'<li><a class="rc-nb" href="{h}">{e(n)} <small>{v}</small></a></li>' for n, h, v in ctx["nbrs"])
@@ -628,7 +677,7 @@ def county_page(ctx):
     snow = print_snow(ctx.get("day"), year)
     if print_ready(c, ctx.get("day")):
         gauge = f"Weather station: {stw['name']}, {miles_from(stw['mi'])} the middle of {name}"
-        ready = (st, fips, f"{name}, {stn}", gauge, done, snow, d.get("normals"))
+        ready = (st, fips, f"{name}, {stn}", gauge, done, snow_caption(ctx.get("day"), snow, year), d.get("normals"), print_snow_traces(ctx.get("day"), year))
     pr = rp_prices()
     price = f": framed ${pr[0]}, print ${pr[1]}" if pr else ""
     so_far = "" if done else " so far"
@@ -1172,7 +1221,8 @@ def selftest():
         ok("no gauge has 30 years" not in story, "a co-op station's normal is its own")
         # the pick rule the page states is the one the data file says the fetch used
         for pk, words in ((None, "The pick goes to one with NOAA normals first"), (2, "Mountain snow sites, and stations far above the rest in the county, come last"),
-                          (3, "a station that keeps a full record of both rain and snowfall comes next")):
+                          (3, "a station that keeps a full record of both rain and snowfall comes next"),
+                          (4, "even when only the nearer one has NOAA normals")):
             dp = {k: v for k, v in d.items() if k != "pick"}
             if pk:
                 dp["pick"] = pk
@@ -1284,6 +1334,35 @@ def selftest():
     _mid = _vs[:]
     _mid[100:111] = ["M"] * 11
     ok(print_snow({"p": sf["vilas_wi"]["p"], "s": R.pack_days(_mid)}, 2026) == "gaps", "gaps before the last snowfall value still count")
+    # the caption under 0.1 in (2026-10-20, Clinch County GA: every snowfall value 0)
+    _z = {"p": R.pack_days(["0.00"] * 280), "s": R.pack_days(["0.0"] * 280)}
+    ok(print_snow(_z, 2026) == "little" and snow_caption(_z, "little", 2026) == "nosnow", "all-zero snowfall says no snow fell")
+    _t = {"p": _z["p"], "s": R.pack_days(["0.0"] * 40 + ["T"] + ["0.0"] * 239)}
+    ok(snow_caption(_t, "little", 2026) == "trace", "a trace is snow that fell: not 'no snow'")
+    # a summer trace (June 1 to August 31) is not snow (Sig, 2026-10-20: "skip summer traces")
+    _su = {"p": _z["p"], "s": R.pack_days(["0.0"] * 153 + ["T"] + ["0.0"] * 126)}   # day 153 = Jun 3
+    ok(snow_caption(_su, "little", 2026) == "nosnow" and print_snow_traces(_su, 2026) == 0, "a June trace: no snow fell, nothing marked")
+    ok([R.snow_trace_on("T", 2026, k) for k in (150, 151, 242, 243)] == [True, False, False, True]
+       and not R.snow_trace_on("0.0", 2026, 10) and R.snow_trace_on(" T ", 2024, 151) is True and R.snow_trace_on("T", 2024, 152) is False,
+       "summer is June 1 to August 31 by the date, leap years too")
+    _l = {"p": _z["p"], "s": R.pack_days(["0.0"] * 40 + ["0.05"] + ["0.0"] * 239)}
+    ok(snow_caption(_l, "little", 2026) == "little" and snow_caption(sf["vilas_wi"], "drawn", 2026) == "drawn", "a little snow keeps 'under 0.1 in'")
+    # a trace of snow is marked on the print (2026-10-20, Sig): the caption says so, from real days
+    # (test/fixtures/snow-trace/days.json, copied from data/rain/daily through Oct 18, 2026)
+    tf = json.load(open(os.path.join(ROOT, "test", "fixtures", "snow-trace", "days.json")))
+    ok(print_snow_traces(tf["limestone_al"], 2026) == 5 and print_snow_traces(tf["grandforks_nd"], 2026) == 35,
+       "Belle Mina AL marks 5 trace days, Grand Forks ND 35, not its Jun 3 summer T (the art's count, test/rain-print-snow-trace.test.mjs)")
+    ok(print_snow_traces(sf["story_ia"], 2026) == 0, "a snowfall record with gaps marks no trace")
+    _al = snow_caption(tf["limestone_al"], print_snow(tf["limestone_al"], 2026), 2026)
+    ok(_al == "trace" and snow_trace_words(_al, 5) == "Only traces of snow fell (5 days), too little to measure; each is marked on the print. ",
+       "only traces: no longer 'so none is drawn'")
+    ok("marked above the line" in snow_trace_words("drawn", 36) and snow_trace_words("drawn", 36).startswith("Light blue is snow. ")
+       and "36 days" in snow_trace_words("drawn", 36), "measured snow keeps its words and adds the trace days")
+    ok(snow_trace_words("drawn", 0) == "Light blue is snow. " and snow_trace_words("nosnow", 0) == "No snow fell, so none is drawn. "
+       and snow_trace_words("gaps", 3) == "Its snowfall record has gaps, so no snow is drawn. " and snow_trace_words("none", 0) is None,
+       "no trace, the words as before")
+    ok(snow_trace_words("little", 1).endswith("The day with a trace of snow is marked above the line. ")
+       and "fell on 1 day," in snow_trace_words("drawn", 1) and "(1 day)" in snow_trace_words("trace", 1), "one day, said as one")
     globals()["rp_cutoffs"] = real_cutoffs
     for f in fails:
         print("FAIL", f)

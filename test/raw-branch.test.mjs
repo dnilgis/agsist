@@ -61,6 +61,7 @@ test('.gitignore keeps them off main, and keeps the files main still needs', () 
   const ignored = (p) => spawnSync('git', ['check-ignore', '-q', '--no-index', p], { cwd: root }).status === 0;
   for (const n of ATLAS_MOVED) assert.ok(ignored(`data/atlas/raw/${n}.json`), `data/atlas/raw/${n}.json ignored`);
   assert.ok(ignored('data/atlas/raw/some-new-layer.json'), 'a new Atlas pull is ignored too');
+  assert.ok(ignored('data/atlas/raw/climate_monthly.json.gz'), 'the monthly climate file never reaches main');
   for (const d of MOVED) assert.ok(ignored(`${d}/x.txt`), `${d}/ ignored`);
   for (const k of KEPT) assert.ok(!ignored(k), `${k} is not ignored`);
   assert.ok(!ignored('data/fsa/2026_PLC.xlsx'), 'data/fsa stays on main (build_arc_plc.py --check reads it)');
@@ -91,8 +92,8 @@ test('the Atlas unpacks its pulls from raw before any fetch and saves them back 
   }
   const push = y.indexOf('bash scripts/push_raw.sh "farmland atlas raw"');
   assert.ok(push > y.indexOf('python scripts/build_farmland_atlas.py --seed'), 'saved after the build');
-  assert.match(y, /if: \$\{\{ !cancelled\(\) \}\}\n\s+run: bash scripts\/push_raw\.sh "farmland atlas raw" \$\(ls data\/atlas\/raw\/\*\.json \| grep -v '\/drought\\\.json\$'\)/,
-    'saved even when the build fails; drought.json stays on main only');
+  assert.match(y, /if: \$\{\{ !cancelled\(\) \}\}\n(\s+#.*\n)*\s+run: bash scripts\/push_raw\.sh "farmland atlas raw" \$\(ls data\/atlas\/raw\/\*\.json data\/atlas\/raw\/\*\.json\.gz 2>\/dev\/null \| grep -v '\/drought\\\.json\$'\)/,
+    'saved even when the build fails, the gzipped monthly climate file with them; drought.json stays on main only');
   assert.match(y, /git add -A data\/atlas farmland-atlas\.html/, 'main commit unchanged; .gitignore keeps the pulls out');
 });
 
