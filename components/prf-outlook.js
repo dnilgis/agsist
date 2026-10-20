@@ -5,7 +5,7 @@
      * for each PRF interval of the crop year: what CPC's seasonal outlook says
        about precipitation for the 3-month seasons that contain it
      * CPC's one-month outlook for the next month, labelled as one month
-     * the US Drought Monitor category at the grid's centre
+     * the US Drought Monitor category at the grid's center
      * what an outlook is and is not, and links to the sources
 
    WHAT IT WILL NOT SAY
@@ -144,7 +144,7 @@
   function droughtText(code, sec) {
     var d = code === 'N' ? 'None: not in drought or abnormally dry' : /^[0-4]$/.test(code || '') ? DM[+code] : null;
     if (!d) return null;
-    return d + ' at the grid’s centre (US Drought Monitor, map for ' + fmtDate(sec.map_date) + ', released ' + fmtDate(sec.released) + ')';
+    return d + ' at the grid’s center (US Drought Monitor, map for ' + fmtDate(sec.map_date) + ', released ' + fmtDate(sec.released) + ')';
   }
   function ensoText(e) {
     return e.status + (e.synopsis ? '. ' + e.synopsis.replace(/\s*\.$/, '') : '') + ' (CPC, issued ' + fmtDate(e.issued) + ')';
@@ -302,7 +302,7 @@
       d.enso.probs.forEach(function (r) { s += '<tr><td>' + esc(r.season) + '</td><td>' + esc(r.la) + '</td><td>' + esc(r.neutral) + '</td><td>' + esc(r.el) + '</td></tr>'; });
       s += '</tbody></table>';
     }
-    s += '<p>Each value is read at the grid’s centre point. CPC categories are the lower, middle and upper thirds of 1991 to 2020 precipitation for the season. A CPC map shades bands (33 to 40%, 40 to 50%, and so on); the band is all the map gives, so the band is what is printed. Built ' + esc(fmtDate((d.built || '').slice(0, 10))) + ' by scripts/fetch_prf_outlook.py.</p>';
+    s += '<p>Each value is read at the grid’s center point. CPC categories are the lower, middle and upper thirds of 1991 to 2020 precipitation for the season. A CPC map shades bands (33 to 40%, 40 to 50%, and so on); the band is all the map gives, so the band is what is printed. Built ' + esc(fmtDate((d.built || '').slice(0, 10))) + ' by scripts/fetch_prf_outlook.py.</p>';
     return s;
   }
 

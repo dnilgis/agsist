@@ -131,7 +131,7 @@ test("age limits withhold, with the reason", () => {
 });
 
 test("drought and ENSO lines carry their source and date", () => {
-  assert.equal(O.droughtText("2", doc.drought), "D2 Severe drought at the grid’s centre (US Drought Monitor, map for Oct 6, 2026, released Oct 8, 2026)");
+  assert.equal(O.droughtText("2", doc.drought), "D2 Severe drought at the grid’s center (US Drought Monitor, map for Oct 6, 2026, released Oct 8, 2026)");
   assert.match(O.droughtText("N", doc.drought), /^None: not in drought/);
   assert.equal(O.droughtText("7", doc.drought), null);
   assert.equal(O.ensoText(doc.enso), "El Nino Advisory. El Nino is expected to continue through the Northern Hemisphere winter 2026-27 (98% chance in October-December 2026) (CPC, issued Oct 8, 2026)");
