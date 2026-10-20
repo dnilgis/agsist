@@ -105,6 +105,7 @@ specific page. Each daily briefing has a permanent dated URL.
 - [Custom Farm Rates by State](https://agsist.com/custom-rates): what hired combining, planting, spraying, tillage, hauling and baling cost, as each state's university or state survey published it (average, range, unit, survey year, link): Iowa, Kansas, Nebraska, North Dakota, Wisconsin, Indiana, Ohio, Missouri, Oklahoma; one page per state at /custom-rates/<state>
 - [Cash Rent by State](https://agsist.com/rent/): USDA county cash rent for every published state, one page per state at /rent/<state>
 - [Farmland Atlas](https://agsist.com/farmland-atlas): every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>
+- [Illinois Farmland Sale Index](https://agsist.com/farmland-index): what Illinois farm ground sold for each quarter since 2018, from the state's PTAX-203 sale declarations: arm's-length bare-land sales of 20+ acres, county mix and tract size held fixed, 2018 = 100, with 90% ranges, the latest quarter marked provisional, USDA NASS cropland value as a separate line, county medians by year, price-to-rent multiples and buyer-type shares; no names
 - [Compare Counties](https://agsist.com/farmland-atlas/compare): up to three counties side by side
 - [Farmland Atlas Data](https://agsist.com/farmland-atlas/data): the county table as a CSV, every column with its unit and source
 - [Farmland Atlas Methods](https://agsist.com/farmland-atlas/methods): sources and formulas

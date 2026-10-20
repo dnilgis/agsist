@@ -115,6 +115,7 @@ PAGES = [
     ("/hay-prices", "Hay prices by state", "Alfalfa and other hay, $/ton", "hay prices alfalfa grass hay bale ton price per ton state usda nass forage"),
     ("/cattle-auction-prices", "Sale barn prices", "Feeder cattle by weight near you", "sale barn auction feeder cattle steers heifers calves prices cwt weight class stockyards livestock auction market report usda"),
     ("/harvest-price-tracker", "Harvest price tracker", "Crop insurance harvest price", "harvest price projected crop insurance rma tracker"),
+    ("/farmland-index", "Farmland sale index (Illinois)", "What farm ground sold for, by quarter", "farmland index land sale prices values illinois sold acre county median price to rent buyers"),
     ("/farmland-atlas", "Farmland Atlas", "Land value, rent and risk by county", "farmland atlas land value values county rent rents cash rent risk acre tenure rented owned landlord ownership"),
     ("/rent/", "Cash rent by state", "Rent by county", "cash rent rents rental county land acre lease"),
     ("/cash-lease", "Cash farm lease form", "Free printable lease", "cash lease form farm lease printable template contract rent"),
