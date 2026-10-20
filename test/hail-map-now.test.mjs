@@ -5,8 +5,14 @@
  *   warnings in effect, the rolling 24-hour radar hail layer, and ground
  *   reports from the last 24 hours. When none has hail, one plain line says so,
  *   names the latest radar hail day and where, and offers that day and the
- *   5-year map. Every link that names a year, a swath date, a state, a spot or
- *   a view opens exactly that, never now.
+ *   5-year map. Every link that names a year, a swath date, a spot or a view
+ *   opens exactly that, never now.
+ *
+ *   A state alone (Oct 20, Sig: "open to the last 24 yes, with the history
+ *   readily available for viewers"): ?state=IA, the link on each of the 52
+ *   state hail pages, opens on now zoomed to that state, the line says what
+ *   happened in that state, and "Iowa: 5 years of hail" sits in the card.
+ *   ?view=all&state=IA opens the state's 5-year map.
  *
  *   The live feeds (api.weather.gov, the Iowa Environmental Mesonet) are
  *   fixtures here; the sandbox cannot reach them and a test must not depend on
@@ -36,7 +42,7 @@ function lift(src, name) {
   throw new Error(name + " never closes");
 }
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
-const nowLine = Function("esc", lift(HTML, "plural") + "\n" + lift(HTML, "nowLine") + "\nreturn nowLine;")(esc);
+const nowLine = Function("esc", lift(HTML, "plural") + "\n" + lift(HTML, "nowLineState") + "\n" + lift(HTML, "nowLine") + "\nreturn nowLine;")(esc);
 const base = { warn: 0, warnStates: "", radar: "fresh", radarN: 0, radarWhere: "", radarAsof: "", pins: 0, pinStates: "",
   latest: { d: "2026-10-13", where: "Texas and Kansas" }, latestDay: "Oct 13, 2026", latestShort: "Oct 13" };
 const text = (h) => h.replace(/<[^>]+>/g, "");
@@ -86,6 +92,67 @@ test("still asking: no verdict yet", () => {
   assert.doesNotMatch(r.html, /No hail/);
 });
 
+// ── one state ────────────────────────────────────────────────────────────
+const ia = { ...base, st: "IA", stName: "Iowa", sWarn: 0, sPins: 0, sRadarN: 0, elsewhere: "",
+  sLatest: { d: "2026-10-08" }, sLatestDay: "Oct 8, 2026", sLatestShort: "Oct 8" };
+
+test("a state, quiet: says so for that state, names its latest radar day, and its 5 years are the first button", () => {
+  const r = nowLine(ia);
+  assert.equal(r.quiet, true);
+  assert.match(text(r.html), /^No hail warnings or radar hail in Iowa in the last 24 hours\. No ground reports of hail either\. Latest radar hail in Iowa: Oct 8, 2026\./);
+  assert.deepEqual(r.acts.map((a) => [a[0], a[1], a[2]]), [["all", "Iowa: 5 years of hail", 1], ["day", "See Oct 8", 0]]);
+  assert.ok(!/—/.test(r.html), "no em dashes");
+});
+
+test("a state, quiet, with storms elsewhere: says Iowa is quiet and names where the hail is", () => {
+  const r = nowLine({ ...ia, warn: 2, warnStates: "Kansas", pins: 1, radarN: 1, elsewhere: "Kansas" });
+  assert.equal(r.quiet, true);
+  assert.match(text(r.html), /^No hail warnings or radar hail in Iowa in the last 24 hours\./);
+  assert.match(text(r.html), /Elsewhere in the last 24 hours: Kansas\./);
+});
+
+test("a state with hail: counts only that state's warnings and reports, and keeps the 5 years one tap away", () => {
+  const r = nowLine({ ...ia, warn: 3, sWarn: 1, radarN: 4, sRadarN: 2, pins: 5, sPins: 2, elsewhere: "Kansas" });
+  assert.equal(r.quiet, false);
+  assert.equal(text(r.html).split("Also")[0], "Last 24 hours in Iowa: 1 hail warning in effect now; radar hail; 2 ground reports of hail.");
+  assert.match(text(r.html), /Also hail in the last 24 hours: Kansas\./);
+  assert.deepEqual(r.acts.map((a) => a[1]), ["Iowa: 5 years of hail"]);
+});
+
+test("a state never says 'no radar hail' when the radar cannot be placed, is old, or is missing", () => {
+  const unk = nowLine({ ...ia, sRadarN: "unk" });
+  assert.doesNotMatch(unk.html, /radar hail in Iowa in the last 24/);
+  assert.match(text(unk.html), /^No hail warnings in Iowa in the last 24 hours\./);
+  assert.match(unk.html, /could not be matched to Iowa/);
+  const old = nowLine({ ...ia, radar: "old", radarAsof: "Oct 19, 7:05 PM" });
+  assert.doesNotMatch(old.html, /radar hail in Iowa in the last 24/);
+  assert.match(old.html, /last updated Oct 19, 7:05 PM/);
+  // the outline is still loading: no verdict yet
+  assert.equal(nowLine({ ...ia, sRadarN: null }).pending, true);
+  assert.doesNotMatch(nowLine({ ...ia, sRadarN: null }).html, /No hail/);
+});
+
+test("a state with no radar hail in the days on file says how far back it looked", () => {
+  const r = nowLine({ ...ia, sLatest: { none: 30, from: "2026-09-19" }, sFrom: "Sep 19" });
+  assert.match(text(r.html), /No radar hail in Iowa in the 30 days of radar on file since Sep 19\./);
+  assert.deepEqual(r.acts.map((a) => a[0]), ["all"]);
+  // still looking, or the walk missed a file: no claim either way
+  assert.doesNotMatch(text(nowLine({ ...ia, sLatest: null }).html), /Latest radar hail|No radar hail in Iowa in the/);
+});
+
+test("the state helpers: a corner inside the real outline counts, a swath across the river in Nebraska does not", () => {
+  const geo = JSON.parse(readFileSync(ROOT + "data/us-states.geo.json", "utf8"));
+  const src = ["stateShape", "inRing", "inShape", "swathsIn"].map((n) => lift(HTML, n)).join("\n");
+  const swathsIn = Function("usOutline", "var stateShapes={};\n" + src + "\nreturn swathsIn;")(geo);
+  const fc = (...polys) => ({ features: polys.map((p) => ({ geometry: p })) });
+  assert.equal(swathsIn(fc(sq0(-93.7, 41.6, 0.2)), "IA"), 1, "Des Moines is in Iowa");
+  assert.equal(swathsIn(fc(sq0(-96.45, 41.15, 0.15)), "IA"), 0, "west of Omaha is Nebraska, though inside Iowa's rough box");
+  assert.equal(swathsIn(fc(sq0(-96.45, 41.15, 0.15)), "NE"), 1);
+  assert.equal(swathsIn(fc(sq0(-93.7, 41.6, 0.2), sq0(-97.5, 37.6, 0.3)), "KS"), 1);
+  assert.equal(Function("usOutline", "var stateShapes={};\n" + src + "\nreturn swathsIn;")(false)(fc(sq0(-93.7, 41.6)), "IA"), "unk");
+});
+function sq0(lo, la, d = 0.4) { return { type: "Polygon", coordinates: [[[lo, la], [lo + d, la], [lo + d, la + d], [lo, la + d], [lo, la]]] }; }
+
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
@@ -118,6 +185,18 @@ const FIX = {
     nws: FC([{ type: "Feature", geometry: sq(-97.6, 37.5), properties: { areaDesc: "Sedgwick, KS; Butler, KS", parameters: { maxHailSize: ["1.75"] } } }]),
     lsr: FC([{ type: "Feature", geometry: { type: "Point", coordinates: [-97.33, 37.69] }, properties: { typetext: "HAIL", magnitude: 1.0, city: "Wichita", st: "KS" } }]),
     radar: [{ type: "Feature", properties: { thresh_in: 1.0 }, geometry: { type: "MultiPolygon", coordinates: [sq(-97.5, 37.6, 0.3).coordinates] } }],
+  },
+  iowa: {
+    nws: FC([{ type: "Feature", geometry: sq(-93.8, 41.5), properties: { areaDesc: "Polk, IA; Dallas, IA", parameters: { maxHailSize: ["1.25"] } } },
+             { type: "Feature", geometry: sq(-97.6, 37.5), properties: { areaDesc: "Sedgwick, KS", parameters: { maxHailSize: ["1.75"] } } }]),
+    lsr: FC([{ type: "Feature", geometry: { type: "Point", coordinates: [-93.62, 41.59] }, properties: { typetext: "HAIL", magnitude: 1.0, city: "Des Moines", st: "IA" } },
+             { type: "Feature", geometry: { type: "Point", coordinates: [-97.33, 37.69] }, properties: { typetext: "HAIL", magnitude: 1.0, city: "Wichita", st: "KS" } }]),
+    // one swath in Iowa, one across the river in Nebraska (inside Iowa's rough box)
+    radar: [{ type: "Feature", properties: { thresh_in: 1.0 }, geometry: { type: "MultiPolygon", coordinates: [sq(-93.7, 41.6, 0.2).coordinates, sq(-96.45, 41.15, 0.15).coordinates] } }],
+  },
+  nebraska: {
+    nws: FC([]), lsr: FC([]),
+    radar: [{ type: "Feature", properties: { thresh_in: 1.0 }, geometry: { type: "MultiPolygon", coordinates: [sq(-96.45, 41.15, 0.15).coordinates] } }],
   },
 };
 
@@ -195,6 +274,82 @@ test("active storms: the line leads with them and the layers are on the map", { 
   } finally { await browser.close(); srv.close(); }
 });
 
+test("a state link opens on now zoomed to the state, says that state's 24 hours, and its 5 years are one tap", { skip, timeout: 120000 }, async () => {
+  const hits = []; const srv = await serve(hits), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const width of [390, 1280]) {
+      hits.length = 0; // the last width asked for the 5 years; this one has not yet
+      const { pg, ctx, errors } = await open(browser, port, "/hail-map?state=IA", "quiet", width);
+      await pg.waitForFunction(() => /Latest radar hail in Iowa:|days of radar on file/.test((document.getElementById("hm-now") || {}).textContent || ""), null, { timeout: 30000 });
+      const t = await pg.evaluate(nowText);
+      assert.match(t, /^No hail warnings or radar hail in Iowa in the last 24 hours\. No ground reports of hail either\./, width + ": " + t);
+      assert.equal(await pg.getAttribute('#hm-controls [data-key="now"]', "aria-pressed"), "true");
+      assert.equal(await pg.textContent('#hm-now [data-now="all"]'), "Iowa: 5 years of hail");
+      // zoomed to Iowa: the county table follows the map's centre
+      await pg.waitForFunction(() => document.getElementById("hm-cty-select").value === "IA", null, { timeout: 15000 });
+      assert.equal(new URL(pg.url()).search, "?state=IA");
+      assert.ok(!hits.some((p) => p === "/data/hail/all-grid.json" || /^\/data\/hail\/\d{4}\.json$/.test(p)), "no 5-year data until asked");
+      if (width === 390) {
+        // the 5-year button and the All 5 years chip are on the first screen of a phone
+        for (const sel of ['#hm-now [data-now="all"]', '#hm-controls [data-key="all"]']) {
+          const b = await pg.locator(sel).boundingBox();
+          assert.ok(b && b.y >= 0 && b.y + b.height <= 844, sel + " on the first screen: " + JSON.stringify(b));
+        }
+      }
+      await pg.click('#hm-now [data-now="all"]');
+      await pg.waitForFunction(() => /5-Year/.test(document.getElementById("hm-yearbadge").textContent), null, { timeout: 15000 });
+      assert.equal(new URL(pg.url()).search, "?state=IA&view=all", "the address names what is on screen");
+      assert.equal(await pg.isHidden("#hm-now"), true);
+      assert.equal(await pg.evaluate(() => document.getElementById("hm-cty-select").value), "IA", "still on Iowa");
+      // and back: Now keeps the state
+      await pg.click('#hm-controls [data-key="now"]');
+      await pg.waitForFunction(() => /in Iowa in the last 24 hours/.test(document.getElementById("hm-now").textContent));
+      assert.equal(new URL(pg.url()).search, "?state=IA");
+      assert.deepEqual(errors, []);
+      await ctx.close();
+    }
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("a state with storms: counts only what is in the state; a swath across the river is not Iowa's", { skip, timeout: 90000 }, async () => {
+  const hits = []; const srv = await serve(hits), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    let { pg, ctx, errors } = await open(browser, port, "/hail-map?state=IA", "iowa", 1280);
+    await pg.waitForFunction(() => /ground report/.test((document.getElementById("hm-now") || {}).textContent || ""), null, { timeout: 30000 });
+    let t = await pg.evaluate(nowText);
+    assert.match(t, /^Last 24 hours in Iowa: 1 hail warning in effect now; radar hail; 1 ground report of hail\./, t);
+    assert.match(t, /Also hail in the last 24 hours: Kansas\./);
+    assert.equal(await pg.textContent("#hm-count"), "1");
+    await pg.waitForTimeout(500);
+    assert.equal(await pg.evaluate(() => document.getElementById("hm-cty-select").value), "IA", "the storms in Kansas do not pull the map away");
+    assert.deepEqual(errors, []);
+    await ctx.close();
+    ({ pg, ctx, errors } = await open(browser, port, "/hail-map?state=IA", "nebraska", 1280));
+    await pg.waitForFunction(() => /No hail warnings or radar hail in Iowa/.test((document.getElementById("hm-now") || {}).textContent || ""), null, { timeout: 30000 });
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("the plain now view keeps the 5 years on a phone's first screen", { skip, timeout: 90000 }, async () => {
+  const hits = []; const srv = await serve(hits), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg, ctx, errors } = await open(browser, port, "/hail-map", "quiet", 390);
+    await pg.waitForFunction(() => /Latest radar hail:/.test((document.getElementById("hm-now") || {}).textContent || ""), null, { timeout: 30000 });
+    for (const sel of ['#hm-now [data-now="all"]', '#hm-controls [data-key="all"]']) {
+      const b = await pg.locator(sel).boundingBox();
+      assert.ok(b && b.y >= 0 && b.y + b.height <= 844, sel + " on the first screen: " + JSON.stringify(b));
+    }
+    assert.equal(await pg.textContent('#hm-now [data-now="all"]'), "5-year map");
+    assert.equal(new URL(pg.url()).search, "");
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
 test("named links open exactly what they name, never now", { skip, timeout: 120000 }, async () => {
   const hits = []; const srv = await serve(hits), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
@@ -202,7 +357,8 @@ test("named links open exactly what they name, never now", { skip, timeout: 1200
   const cases = [
     ["/hail-map?year=2024", () => /^2024/.test(document.getElementById("hm-yearbadge").textContent)],
     [`/hail-map?swath=${swath}`, (d) => document.getElementById("hm-mesh-date").textContent === d],
-    ["/hail-map?state=IA", () => /5-Year/.test(document.getElementById("hm-yearbadge").textContent)],
+    ["/hail-map?view=all&state=IA", () => /5-Year/.test(document.getElementById("hm-yearbadge").textContent) && document.getElementById("hm-cty-select").value === "IA"],
+    ["/hail-map?state=IA&year=2024", () => /^2024/.test(document.getElementById("hm-yearbadge").textContent)],
     ["/hail-map?view=all", () => /5-Year/.test(document.getElementById("hm-yearbadge").textContent)],
     ["/hail-map?view=recent", () => /Recent/.test(document.getElementById("hm-yearbadge").textContent)],
     ["/hail-map?lat=41.5868&lon=-93.625&mi=10&day=2025-06-14", () => /5-Year/.test(document.getElementById("hm-yearbadge").textContent) && document.querySelectorAll("#hm-point-table tbody tr").length > 0],
