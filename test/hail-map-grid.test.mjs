@@ -7,6 +7,10 @@
  *   reader picks that year, presses play, or zooms the all-years view past 5,
  *   and each one only once.
  *
+ *   Since the same day the bare page opens on the last 24 hours
+ *   (test/hail-map-now.test.mjs), so this opens the 5-year view by name,
+ *   ?view=all, which is the same first paint a reader gets one tap later.
+ *
  *   node --test test/hail-map-grid.test.mjs
  */
 import { test } from "node:test";
@@ -88,7 +92,7 @@ test("first load fetches only the grid; a picked year is fetched once; zooming i
     const pg = await ctx.newPage();
     const errors = []; pg.on("pageerror", (e) => errors.push(String(e)));
     await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
-    await pg.goto(`http://127.0.0.1:${port}/hail-map`);
+    await pg.goto(`http://127.0.0.1:${port}/hail-map?view=all`);
     await pg.waitForFunction((c) => document.getElementById("hm-count").textContent === c, GRID.count.toLocaleString("en-US"), { timeout: 30000 });
     await pg.waitForTimeout(1500);
     assert.deepEqual(yearHits(hits), [], "no year file on first load");
