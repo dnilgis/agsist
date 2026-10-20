@@ -72,6 +72,10 @@
     .rr-map{width:100%;aspect-ratio:1/1;max-height:440px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--bg)}
     .rr-map .rr-px,.rr-flat{image-rendering:pixelated;image-rendering:crisp-edges}
     .rr-flat{width:100%;height:100%;display:block;object-fit:contain}
+    .rr-base{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:.45rem 0 0}
+    .rr-base button{min-height:44px;min-width:64px;padding:.3rem .8rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+    .rr-base button[aria-pressed="true"]{border-color:#2b8cbe;box-shadow:0 0 0 2px #2b8cbe inset}
+    .rr-base .rr-credit{margin-left:auto;font-size:.72rem;color:var(--text-muted)}
     .rr-key{display:flex;flex-wrap:wrap;gap:.2rem .7rem;margin:.45rem 0 .1rem;font-size:.76rem;color:var(--text-muted)}
     .rr-key i{display:inline-block;width:.85rem;height:.85rem;border-radius:2px;margin-right:.25rem;vertical-align:-2px}
     .rr-key i.nd{background:rgba(120,120,120,.55)}
@@ -90,6 +94,7 @@
     .rr .rel:empty{display:none}
     .rr .src{font-size:.82rem;color:var(--text-muted);margin-top:1.2rem}
     .leaflet-container{font:inherit}
+    .rr-map .leaflet-control-attribution{font-size:.68rem}
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://agsist.com/rain-radar#app","name":"Rain on your field (radar)","url":"https://agsist.com/rain-radar","description":"Rain on your field in the last 24 hours, 3 days, 7 days and this month, from NOAA radar corrected with rain gauges (MRMS), for any spot in the lower 48.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isAccessibleForFree":true,"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-17","dateModified":"2026-10-17","inLanguage":"en-US","image":"https://agsist.com/img/og/rain-radar.jpg?v=d59b84d9","isBasedOn":{"@type":"Dataset","name":"NOAA MRMS MultiSensor QPE Pass 2","url":"https://registry.opendata.aws/noaa-mrms-pds/","creator":{"@type":"Organization","name":"NOAA"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Rain on your field","item":"https://agsist.com/rain-radar"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Where does this rain number come from?","acceptedAnswer":{"@type":"Answer","text":"From NOAA’s Multi-Radar Multi-Sensor system (MRMS), which blends the national radar network with rain gauges that report every hour. This page uses its Pass 2 multi-sensor totals, the gauge-corrected run, averaged into squares about 2.8 miles by 2 miles. It is an estimate for the square your field sits in, not a reading from a gauge."}},{"@type":"Question","name":"How close is the radar estimate to a rain gauge?","acceptedAnswer":{"@type":"Answer","text":"Checked against 1,175 NOAA co-op gauges in 47 states from October 1 to 13, 2026, radar and gauge were a median 0.13 inch apart on days with a tenth of an inch or more. On days a gauge caught half an inch or more, the median miss was 0.21 inch (20%), and radar read about 9% under the gauge. Over the 13 days added up, the median gap was 0.20 inch (13%)."}},{"@type":"Question","name":"Why does my rain gauge read different from the radar?","acceptedAnswer":{"@type":"Answer","text":"A gauge catches rain in a few square inches; the radar number is an average over a square of about six square miles. Radar sees rain above the ground, sometimes a mile up or more far from the radar, and wind, evaporation and hail all change what reaches the field. Gauges miss rain too, in wind and when they are read late. The two usually land close; on a heavy day expect a few tenths either way."}},{"@type":"Question","name":"How often does it update?","acceptedAnswer":{"@type":"Answer","text":"About four times a day. NOAA posts its gauge-corrected totals about an hour after each hour ends, and the page reads the 0, 6, 12 and 18 UTC totals shortly after. The page shows the newest hour in your time zone and says so if the data is more than 9 hours old."}},{"@type":"Question","name":"Does it count snow?","acceptedAnswer":{"@type":"Answer","text":"It counts melted water, so snow shows up as its water content. Radar is weaker with snow than with rain, so treat winter numbers loosely."}},{"@type":"Question","name":"Can I check a field instead of my ZIP?","acceptedAnswer":{"@type":"Answer","text":"Yes. Open a field or a point on Field Scout and follow its rain link, or tap anywhere on the map here to read that square. The page covers the lower 48 states. NOAA runs Alaska and Hawaii as separate radar rain grids, and this page does not read them yet."}}]}]}</script>
 </head>
@@ -141,6 +146,8 @@
           <p id="rr-asof" class="fine"></p>
           <h3 class="rr-h3">Map: <span id="rr-mapwin">last 7 days</span> around the spot</h3>
           <div id="rr-map" class="rr-map" aria-label="Map of radar rain around the spot"></div>
+          <div id="rr-base" class="rr-base" role="group" aria-label="Map underneath the rain"><button type="button" data-base="topo" aria-pressed="true">Map</button><button type="button" data-base="aerial" aria-pressed="false">Aerial</button><span class="rr-credit">Map: USGS The National Map</span></div>
+          <p id="rr-basenote" class="fine" role="status" hidden></p>
           <div class="rr-key" aria-label="Inches of rain">
             <span><i style="background:#d9f0d3"></i>0.01</span><span><i style="background:#a6dba0"></i>0.10</span><span><i style="background:#5aae61"></i>0.25</span><span><i style="background:#4eb3d3"></i>0.50</span><span><i style="background:#2b8cbe"></i>1</span><span><i style="background:#0868ac"></i>1.5</span><span><i style="background:#6a51a3"></i>2</span><span><i style="background:#ae017e"></i>3</span><span><i style="background:#f768a1"></i>4+ in</span><span><i class="nd"></i>no data</span>
           </div>
@@ -187,7 +194,7 @@
         <li><a href="/rain-print">Rain Print: a year of rain, printed</a></li>
         <li><a href="/spray">Spray advisory</a></li>
       </ul>
-      <p class="src">Sources: NOAA National Severe Storms Laboratory and NCEP, Multi-Radar Multi-Sensor (MRMS) MultiSensor_QPE 24H, 72H and shorter Pass 2 products, NOAA Open Data Dissemination (noaa-mrms-pds); NOAA co-op and CoCoRaHS daily reports via RCC-ACIS for the gauge comparison. Map: OpenStreetMap, CARTO.</p>
+      <p class="src">Sources: NOAA National Severe Storms Laboratory and NCEP, Multi-Radar Multi-Sensor (MRMS) MultiSensor_QPE 24H, 72H and shorter Pass 2 products, NOAA Open Data Dissemination (noaa-mrms-pds); NOAA co-op and CoCoRaHS daily reports via RCC-ACIS for the gauge comparison. Map: USGS The National Map (map services and data from the U.S. Geological Survey, National Geospatial Program); state lines from Natural Earth.</p>
     </article>
   <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
@@ -210,7 +217,7 @@
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/vendor/leaflet-1.9.4/leaflet.js" defer></script>
   <script src="/components/radar-rain.js?v=1" defer></script>
-  <script src="/components/radar-rain-page.js?v=3" defer></script>
+  <script src="/components/radar-rain-page.js?v=4" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>
