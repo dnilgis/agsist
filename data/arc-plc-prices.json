@@ -1,5 +1,5 @@
 {
- "taken": "2026-10-17T06:46:21Z",
+ "taken": "2026-10-20T01:01:23Z",
  "harvest": {
   "corn": {
    "contract": "Dec '26",
@@ -21,13 +21,13 @@
  "futures": {
   "corn": {
    "key": "corn-dec27",
-   "price": 5.0675,
-   "date": "2026-10-16"
+   "price": 5.0425,
+   "date": "2026-10-19"
   },
   "soybeans": {
    "key": "beans-nov27",
-   "price": 12.4075,
-   "date": "2026-10-16"
+   "price": 12.3925,
+   "date": "2026-10-19"
   }
  }
 }
