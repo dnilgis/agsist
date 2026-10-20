@@ -109,10 +109,73 @@ test("P5: cattle page reads feeders-nearby and labels the range by its contract"
 });
 
 /* ---- Farmland Atlas details: the real cases, on the built pages ---- */
-test("A1: sheet prints the share of cropland it tests (acres over cropland)", () => {
-  const s = read("farmland-atlas/sheet.html");
-  assert.match(s, /s0>0&&s0<0\.005\?'under 1%':pct\(s0,0\)/);
-  assert.doesNotMatch(s, /pct\(x\.share,0\)\)\+' of cropland'/);
+/* One share rule on every copy (v38 item 1, Oct 20): acres over cropland, printed once, "under 1%" when it
+   rounds to 0. Barron WI 55005: 55,953 no-till acres of 183,541 cropland is 30.49%; the stored share is 0.305. */
+function fnSrc(src, re) { const m = src.match(re); assert.ok(m, "missing " + re); return m[0]; }
+function shareWordsOf(path) {
+  const s = read(path);
+  const helpers = path === "farmland-atlas/compare.html"
+    ? fnSrc(s, /function n\(x,k\)\{[^\n]*\}/) + "\n" + fnSrc(s, /var shareWords=function\(s\)\{[^\n]*\};/)
+    : fnSrc(s, /function fmt\(x,k\)\{[^\n]*\}/) + "\n" + fnSrc(s, /function pct\(x,k\)\{[^\n]*\}/) + "\n" + fnSrc(s, /function shareWords\(s\)\{[^\n]*\}/);
+  return vm.runInNewContext(helpers + "\nshareWords;", {});
+}
+test("A1: sheet, panel and compare print the share of cropland from acres, once", () => {
+  const barron = JSON.parse(read("data/atlas/counties/55005.json"));
+  const nt = barron.practices.notill;
+  assert.equal(nt.share, 0.305);   // the stored share that read 31%
+  const raw = nt.acres / barron.practices.cropland;
+  for (const p of ["farmland-atlas/sheet.html", "farmland-atlas.html", "farmland-atlas/compare.html"]) {
+    const sw = shareWordsOf(p);
+    assert.equal(sw(raw), "30%", p);
+    assert.equal(sw(0.002), "under 1%", p);
+    assert.equal(sw(0), "0%", p);
+  }
+  // each copy feeds it acres over cropland, never the rounded share
+  const sheet = read("farmland-atlas/sheet.html"), panel = read("farmland-atlas.html"), cmp = read("farmland-atlas/compare.html");
+  assert.match(sheet, /var s0=x\.acres!=null&&Pr\.cropland\?x\.acres\/Pr\.cropland:x\.share; Rt\+=fct\(label, shareWords\(s0\)\+' of cropland'/);
+  assert.match(panel, /function pracShare\(Pr,x\)\{ return x\.acres!=null&&Pr\.cropland\?x\.acres\/Pr\.cropland:x\.share; \}/);
+  assert.match(panel, /f\+=fact\(label, shareWords\(pracShare\(Pr,x\)\)\+' of cropland'/);
+  for (const t of [sheet, panel]) assert.doesNotMatch(t, /pct\(x\.share,0\)/);
+  assert.match(cmp, /r\.notill_share_2022==null\?null:shareWords\(r\.notill_share_2022\)/);
+  assert.match(cmp, /r\.tile_share_2022==null\?null:shareWords\(r\.tile_share_2022\)/);
+  // compare and the map read the build's columns: those carry acres over cropland, not the 3-place share
+  const cj = JSON.parse(read("farmland-atlas/data/counties.json"));
+  const row = cj.rows.find((r) => r[0] === "55005");
+  const v = row[cj.columns.indexOf("notill_share_2022")];
+  assert.equal(shareWordsOf("farmland-atlas/compare.html")(v), "30%");
+  const atlas = JSON.parse(read("data/atlas/atlas.json"));
+  assert.equal(shareWordsOf("farmland-atlas.html")(atlas.counties["55005"].practices.notill), "30%");
+  assert.match(read("farmland-atlas/wisconsin/barron-county.html"), /Farmed no-till, 2022<\/span><span class="r">30% of cropland/);
+});
+
+test("A8: worst loss year is picked on raw claims over premium, and a year that prints the same ratio is named", () => {
+  // Butler NE 31023: 2002 (2.3077) and 2023 (2.3121) both print 2.31; 2023 is the worst
+  const c = JSON.parse(read("data/atlas/counties/31023.json"));
+  assert.deepEqual(c.sob.worst_year, { year: 2023, ratio: 2.31, tied: [2002] });
+  const py = c.sob.per_year;
+  assert.ok(py["2023"].indem / py["2023"].prem > py["2002"].indem / py["2002"].prem);
+  assert.match(read("farmland-atlas/nebraska/butler-county.html"), /Worst year<\/span><span class="r">2023<small>ratio 2\.31 \(2002 also 2\.31\),/);
+  for (const [f, y] of [["21213", 2012], ["22009", 2008], ["39057", 2012], ["01005", 2024]])
+    assert.equal(JSON.parse(read("data/atlas/counties/" + f + ".json")).sob.worst_year.year, y, f);
+  assert.match(read("farmland-atlas.html"), /S\.worst_year\.tied&&S\.worst_year\.tied\.length\?' \('\+S\.worst_year\.tied\.join\(', '\)\+' also '/);
+  assert.match(read("farmland-atlas/sheet.html"), /S\.worst_year\.tied&&S\.worst_year\.tied\.length\?' \('\+S\.worst_year\.tied\.join\(', '\)\+' also '/);
+});
+
+test("A9: a nonzero irrigated or CRP-expiring share says under 1%; a cause with no dollars is not listed", () => {
+  // Benewah ID 16009 (stored 0.001) and Lewis ID 16061 (0.002) printed 0%
+  for (const p of ["farmland-atlas/idaho/benewah-county.html", "farmland-atlas/idaho/lewis-county.html"])
+    assert.match(read(p), /Harvested cropland irrigated, 2022<\/span><span class="r">under 1%/, p);
+  // Oneida ID 38 ac, Weld CO 1,155 ac expiring printed 0% of enrolled acres
+  assert.match(read("farmland-atlas/idaho/oneida-county.html"), />38 ac<small>under 1% of enrolled acres/);
+  assert.match(read("farmland-atlas/colorado/weld-county.html"), />1,155 ac<small>under 1% of enrolled acres/);
+  // San Mateo CA 06081: share_all has wet 0.0; it listed "excess moisture 0%"
+  assert.equal(JSON.parse(read("data/atlas/counties/06081.json")).loss.share_all.wet, 0);
+  assert.match(read("farmland-atlas/california/san-mateo-county.html"), /Largest causes of loss, 2020–2024<\/span><span class="r">other 64% · heat and drought 36%</);
+  const panel = read("farmland-atlas.html");
+  assert.match(panel, /f\+=fact\('Harvested cropland irrigated, 2022', shareWords\(irrShareOf\(sh\)\)/);
+  assert.match(panel, /filter\(function\(k\)\{return Lo\.share_all\[k\]>0;\}\)/);
+  assert.match(panel, /return ce==null\?'':shareWords\(ce\)\+' of what is enrolled'/);
+  assert.match(read("farmland-atlas/sheet.html"), /Rt\+=fct\('Harvested cropland irrigated, 2022', shareWords\(sh\.irrigated_acres!=null&&sh\.harvested_acres\?sh\.irrigated_acres\/sh\.harvested_acres:sh\.share\)\)/);
 });
 
 test("A2: Fresno counts 2021 ($71.9M paid on $71.6M premium) as a year over 1.00", () => {
