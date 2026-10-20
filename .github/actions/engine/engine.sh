@@ -16,8 +16,11 @@
 #   tracked file: the checkout stays clean, so a job's `git pull --rebase`
 #   cannot stop on a code file. Once the code is gone from this repository the
 #   engine copy is the only copy.
-# - Every engine path (and the scratch checkout) goes into .git/info/exclude,
-#   so a job's bare `git add -A` can never put private code in this repository.
+# - In Actions, every engine path (and the scratch checkout) goes into
+#   .git/info/exclude, so a job's bare `git add -A` can never put private code
+#   in this repository. A local `pull` does not touch info/exclude (it is shared
+#   by every worktree of a clone and would hide new files from git status);
+#   locally .gitignore covers the paths once the code has left this repository.
 # - The key is never printed: it reaches only actions/checkout (with
 #   persist-credentials false, so it is not left in .git/config either).
 set -uo pipefail
@@ -50,11 +53,11 @@ exclude_paths() {
 
 # copy <src> into the checkout, path by path
 overlay_from() {
-  local src="$1" p kept=0 n
+  local src="$1" excl="${2:-exclude}" p kept=0 n
   for p in "${PATHS[@]}"; do
     [ -e "$src/$p" ] || say_fail "the engine branch $BRANCH has no $p"
   done
-  exclude_paths
+  [ "$excl" = "exclude" ] && exclude_paths
   for p in "${PATHS[@]}"; do
     if [ -n "$(git -C "$ROOT" ls-files -- "$p" | head -1)" ]; then
       # still tracked here: add what is missing, never overwrite
@@ -106,16 +109,16 @@ case "$cmd" in
     true ;;
   pull)
     ED="${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}"
-    if [ -d "$ED/.git" ]; then
+    if [ -e "$ED/.git" ]; then
       git -C "$ED" fetch -q origin "$BRANCH" && git -C "$ED" merge -q --ff-only "origin/$BRANCH" || { echo "engine: could not update $ED" >&2; exit 1; }
     else
       git clone -q -b "$BRANCH" "${ENGINE_REMOTE:-https://github.com/$REPO.git}" "$ED" || { echo "engine: could not clone $REPO $BRANCH into $ED" >&2; exit 1; }
     fi
-    overlay_from "$ED"
+    overlay_from "$ED" local
     echo "engine: $(git -C "$ED" rev-parse --short HEAD) from $ED copied into $ROOT (${PATHS[*]})" ;;
   save)
     ED="${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}"
-    [ -d "$ED/.git" ] || { echo "engine: no engine clone at $ED (run engine.sh pull first)" >&2; exit 1; }
+    [ -e "$ED/.git" ] || { echo "engine: no engine clone at $ED (run engine.sh pull first)" >&2; exit 1; }
     for p in "${PATHS[@]}"; do
       [ -e "$ROOT/$p" ] || { echo "engine: $ROOT/$p is missing; nothing saved" >&2; exit 1; }
     done

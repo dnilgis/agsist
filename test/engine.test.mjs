@@ -147,6 +147,8 @@ function engineDir(base) {
   return e;
 }
 const E = 'bash .github/actions/engine/engine.sh';
+// what the removal commit adds to .gitignore (the local session relies on it)
+const PATHS_IGNORE = '\n/scripts/\n/test/\n/build/\n';
 
 test('engine.sh plan: in-repo when the code is here; loud failure when it is gone or the key is missing', () => {
   const d = publicRepo();
@@ -244,6 +246,8 @@ test('engine.sh pull and save: a local session gets the engine and saves its cha
   fs.mkdirSync(d);
   const pub = publicRepo({ tracked: false });
   fs.cpSync(pub, d, { recursive: true });
+  fs.appendFileSync(path.join(d, '.gitignore'), PATHS_IGNORE);
+  g(d, 'add', '.gitignore'); g(d, 'commit', '-qm', 'ignore the engine paths');
   const env = { ENGINE_REMOTE: bare };
   let r = sh(d, `${E} pull`, env);
   assert.equal(r.status, 0, r.stdout + r.stderr);
@@ -258,4 +262,5 @@ test('engine.sh pull and save: a local session gets the engine and saves its cha
   r = sh(d, `${E} save`, env);
   assert.match(r.stdout, /nothing to save/);
   assert.equal(g(d, 'status', '--porcelain'), '', 'the public checkout never sees the engine files');
+  assert.doesNotMatch(fs.readFileSync(path.join(d, '.git/info/exclude'), 'utf8').replace(/^#.*$/mg, ''), /\S/, 'a local pull leaves info/exclude alone (shared by every worktree)');
 });
