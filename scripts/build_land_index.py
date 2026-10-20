@@ -756,8 +756,8 @@ def page_html(data):
     y4 = s["y4"]
     nass_last = [a for a in s["annual"] if a.get("nass")][-1]
     title = "Illinois farmland sale index: what farm ground sold for"
-    desc = ("Illinois farmland sale index from %s: %s, %s than a year earlier. Arm's-length bare-land sales, 20+ acres, "
-            "county mix held fixed, beside USDA NASS.") % (span_words(y4["from"], y4["to"]), fmt1(y4["ix"]), pct_words(y4["pct"]))
+    desc = ("What Illinois farm ground sold for, %s: index %s (%d = 100), %s than a year earlier. Bare-land sales, county mix held fixed.") % (
+        span_words(y4["from"], y4["to"]), fmt1(y4["ix"]), s["start"], pct_words(y4["pct"]))
     faqs = faq_items(s, others)
     v = data["built"].replace("-", "")
     ld = {"@context": "https://schema.org", "@graph": [
