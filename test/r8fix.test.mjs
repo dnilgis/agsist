@@ -150,12 +150,13 @@ test("whats-new.json: real pages, newest first, plain words, baked into home and
   assert.deepEqual(items.filter((i) => /saledetail|tap-a-sale|land sales/i.test(i.id + i.title)), [], "nothing from branches not on main");
   execFileSync("python3", [join(ROOT, "scripts/build_whats_new.py"), "--check"], { cwd: ROOT });
   const h = read("index.html");
-  const card = h.slice(h.indexOf("<!-- WHATSNEW:card"), h.indexOf("<!-- /WHATSNEW:card -->"));
-  assert.equal((card.match(/<li data-wn=/g) || []).length, 4, "the card shows the newest 4");
-  for (const it of items.slice(0, 4)) assert.ok(card.includes('data-wn="' + it.id + '"'), it.id);
-  assert.match(card, /aria-label="Hide /);
-  assert.match(card, /localStorage\.setItem\(K/);
-  assert.ok(h.indexOf("<!-- WHATSNEW:card") < h.indexOf('id="f1"') || h.indexOf('id="f1"') < 0, "near the top");
+  // Oct 20 (panel A and G, Sig's after-main-content rule): no card near the top; one small line at
+  // the end, above the byline, linking /changelog and the newest entry.
+  assert.ok(!h.includes("WHATSNEW:card") && !h.includes('id="wn-card"'), "the card is off the homepage");
+  const ln = h.slice(h.indexOf("<!-- WHATSNEW:link"), h.indexOf("<!-- /WHATSNEW:link -->"));
+  assert.match(ln, /<a href="\/changelog">What&rsquo;s new<\/a>/);
+  assert.ok(ln.includes('href="' + items[0].link + '"'), "the newest entry is named");
+  assert.ok(h.indexOf("<!-- WHATSNEW:link") > h.indexOf('id="f-faq"') && h.indexOf("<!-- WHATSNEW:link") < h.indexOf('<p class="by-end"'), "after the main content, before the byline");
   const c = read("changelog.html");
   const i = c.indexOf("<!-- WHATSNEW:entries -->"), j = c.indexOf("<!-- CHANGELOG:entries -->");
   assert.ok(i > 0 && j > i, "new entries sit above the old log");
@@ -228,15 +229,10 @@ test("in a browser: one ask at the end, small Next fetch, comma stays with its m
     assert.equal(await p.evaluate(() => window.AgsistNext && window.AgsistNext._v), 2, "next-links.js ran on the plain page");
     assert.ok(!got.some((u) => /glossary/.test(u)), "no glossary fetch without a term: " + got.join(","));
 
-    // the homepage card: baked in, hides per item, remembers it
+    // the homepage: no What's new card, one small line at the end
     await p.goto(base + "/", { waitUntil: "domcontentloaded" });
-    const before = await p.evaluate(() => { const c = document.getElementById("wn-card"); return c && { n: c.querySelectorAll("li:not([hidden])").length, h: c.getBoundingClientRect().height }; });
-    assert.ok(before && before.n === 4 && before.h > 80, "card drawn with 4 items before scripts finish");
-    const id = await p.locator("#wn-card li").first().getAttribute("data-wn");
-    await p.locator("#wn-card .wn-x").first().click();
-    assert.equal(await p.locator("#wn-card li:not([hidden])").count(), 3);
-    await p.reload({ waitUntil: "domcontentloaded" });
-    assert.equal(await p.locator('#wn-card li[data-wn="' + id + '"]').isHidden(), true, "stays hidden after reload");
+    assert.equal(await p.locator("#wn-card").count(), 0, "no card on the homepage");
+    assert.equal(await p.locator(".wn-link a[href='/changelog']").count(), 1, "a small link to /changelog");
     assert.equal(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false, "no sideways scroll at 390");
     await ctx.close();
   } finally { await b.close(); srv.close(); }
