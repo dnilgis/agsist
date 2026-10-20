@@ -788,15 +788,21 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     var cls=up?'up':'dn';
     var upPct=((Math.min(g.h,2*g.p)-g.p)/g.p*100).toFixed(1), upTo=money(Math.min(g.h,2*g.p),unitOf(g))+per(g);
     // 2026-10-19: a released final price is said in the past tense; only an open
-    // or unreleased window is "if it closed today"
-    var mean = up
+    // window is "if it closed today".
+    // 2026-10-20: a window that has closed but RMA has not released (every Oct 31
+    // window from Nov 1 until the release) says so, and never "if it closed today"
+    var waiting=isClosed(g)&&!isDone(g);
+    var lead=waiting?'Window closed '+shortd(g.he)+'. RMA has not posted the final price yet. ':'';
+    var mean = lead + (up
       ? (sw==='final'
           ? 'Your revenue guarantee revised up <b>'+upPct+'%</b>: it is now figured at the <b class="pd-num">'+upTo+'</b> harvest price.'
-          : 'If the window closed today your revenue guarantee would revise up <b>'+upPct+'%</b>: figured at the <b class="pd-num">'+upTo+'</b> '+(sw==='running'?'running':'last posted')+' harvest price.')+
+          : (waiting
+              ? 'If the final matches the last posted average, your revenue guarantee revises up <b>'+upPct+'%</b>: figured at the <b class="pd-num">'+upTo+'</b> last posted harvest price.'
+              : 'If the window closed today your revenue guarantee would revise up <b>'+upPct+'%</b>: figured at the <b class="pd-num">'+upTo+'</b> running harvest price.'))+
         (g.h>2*g.p?' The harvest price counts only up to 200% of the projected price.':'')
       : 'A '+sw+' average below the projected price does not cut your '+
         'guarantee: it stays figured at the <b class="pd-num">'+money(g.p,unitOf(g))+per(g)+'</b> projected price. '+
-        'It changes what your crop is worth against that guarantee.';
+        'It changes what your crop is worth against that guarantee.');
     // a $/bu figure is a price, not the guarantee (which is $/ac): "projected price"
     var tagP='<div class="pd-tag'+(gx>60?' r':'')+'" style="'+side(gx)+'">'+
           '<b class="pd-num">'+money(g.p,unitOf(g))+'</b><br>projected</div>';
