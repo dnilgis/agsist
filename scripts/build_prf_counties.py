@@ -293,7 +293,7 @@ def page(ctx):
            f'<p class="pn-sub">Where {"a grid in " if many else "the grid in "}{e(name)} stands in the pairs of months still open, before RMA&rsquo;s final index. Preliminary.</p>'
            f'<p class="pn-pick" data-pn-pick hidden></p>'
            f'<div data-pn-body><p class="pn-held">Rain so far loads from NOAA&rsquo;s rain data when the page opens.</p></div></section>'
-           f'<script src="/components/prf-now.js?v=2" defer></script>'
+           f'<script src="/components/prf-now.js?v=3" defer></script>'
            # the grid index email (components/prf-notice.js, worker topic prf:<grid>): follows the card's grid
            f'<div class="prf-notice" data-prf-notice data-grid="{now_g}" hidden></div>'
            f'<script src="/components/prf-notice.js?v=2" defer></script>')
@@ -308,7 +308,7 @@ def page(ctx):
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
   <link rel="stylesheet" href="/components/styles.css?v=26">
-  <link rel="stylesheet" href="/components/prf.css?v=8">
+  <link rel="stylesheet" href="/components/prf.css?v=9">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <title>{e(title)}</title>

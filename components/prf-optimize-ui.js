@@ -261,7 +261,6 @@
     h += '<div class="po-tabs" role="group" aria-label="What to make best">'
       + '<button type="button" class="po-tab' + (state.objective === 'net' ? ' is-on' : '') + '" data-opt-obj="net" aria-pressed="' + (state.objective === 'net') + '">Most expected dollars</button>'
       + '<button type="button" class="po-tab' + (state.objective === 'dry' ? ' is-on' : '') + '" data-opt-obj="dry" aria-pressed="' + (state.objective === 'dry') + '">Most in the driest years</button></div>';
-    h += monUi;
 
     var pk = res.forecast || res.rec, sp = pk.split;
     var tiltOnly = res.forecast && !res.forecast.enso && !res.forecast.outlook;
@@ -269,7 +268,6 @@
     h += '<div class="po-split">';
     for (var i = 0; i < N; i++) if (sp[i]) h += '<div class="po-iv"><b>' + sp[i] + '%</b><span>' + LABELS[i] + '</span></div>';
     h += '</div>';
-    h += '<p class="po-fine po-grass">' + esc(GRASS_LINE) + '</p>';
     var lean = leansDry(sp, ctx.avgMm, (ctx.limits || {}).valid);
     if (lean) h += '<p class="po-fine po-lean">Most of this pick sits in ' + lean + '. That is why winter and fall months look good on a payback table. It is not a sign they cover the grass you grow.</p>';
     if (!behind) h += '<button type="button" class="po-use" data-opt-use="' + sp.join('.') + '">Use this setup in the calculator above</button>';
@@ -286,9 +284,13 @@
         + '% and ' + (rr.mean.meanDiff <= 0 ? 'gave up ' + per100(-rr.mean.meanDiff) : 'added ' + per100(rr.mean.meanDiff)) + ' a year per $100 of protection.</p>');
     }
 
+    h += '<p class="po-fine po-grass">' + esc(GRASS_LINE) + '</p>';
     h += '<p class="po-fine po-shown">Shown: ' + (state.objective === 'net'
       ? 'the split with the highest expected payment minus your share of the premium, at ' + ctx.cov + '% coverage, from RMA’s 2027 rates and this grid’s record' + (state.monOn ? ', among the pairs in your months.' : '.')
       : 'the split that would have paid most, after your share of the premium, in the driest fifth of years here (by whole-year precipitation), at ' + ctx.cov + '% coverage.') + '</p>';
+
+    /* the month filter sits under the pick, so the pick and its buttons stay at the top on a phone */
+    h += monUi;
 
     /* Compare setups */
     var cmp = '';

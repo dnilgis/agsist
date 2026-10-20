@@ -199,7 +199,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=26" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=26">
-  <link rel="stylesheet" href="/components/prf.css?v=8">
+  <link rel="stylesheet" href="/components/prf.css?v=9">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -365,7 +365,7 @@ def guide(meta, facts, states, BOOT):
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=26" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=26">
-  <link rel="stylesheet" href="/components/prf.css?v=8">
+  <link rel="stylesheet" href="/components/prf.css?v=9">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
