@@ -26,6 +26,9 @@
  *     for this paid record went out (scripts/rp_buyer_email.py); kept as
  *     mailed {at, session}, never the address. A second call changes nothing,
  *     so each paid session gets one email.
+ *   GET /rp-order/buyer?key= (Bearer LIST_TOKEN only): for the buyer email,
+ *     the paid record's session read from Stripe now: {livemode, email}.
+ *     Nothing stored. The one place the read key lives is this worker.
  *   POST /rp-order/serial {last} (Bearer LIST_TOKEN only): the last serial
  *     already used, so the next one handed out is last + 1.
  *   New optional secret STRIPE_READ_KEY; no new binding.
@@ -3274,6 +3277,23 @@ async function handle(req, env) {
       r.mailed = { at: new Date().toISOString(), session: String(r.paid.session || "") };
       await rpoPut(env, k, r);
       return json({ ok: true, already: false, mailed: r.mailed }, 200, ac);
+    }
+    // v5.34: for the buyer email only (scripts/rp_buyer_email.py): the one paid session's livemode and
+    // buyer address, read from Stripe now and handed back. Nothing is stored or logged here.
+    if (path === "/rp-order/buyer" && req.method === "GET") {
+      if (!sig) return json({ ok: false }, 403, ac);
+      const k = String(url.searchParams.get("key") || "");
+      if (!RPO_KEY_RE.test(k)) return json({ ok: false, error: "invalid key" }, 400, ac);
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (!r || !r.paid || !r.paid.session) return json({ ok: false, error: "not paid" }, 409, ac);
+      if (typeof env.STRIPE_READ_KEY !== "string" || !env.STRIPE_READ_KEY) return json({ ok: false, error: "no key" }, 503, ac);
+      const sr = await fetch("https://api.stripe.com/v1/checkout/sessions/" + encodeURIComponent(r.paid.session),
+        { headers: { Authorization: "Bearer " + env.STRIPE_READ_KEY } });
+      if (!sr.ok) return json({ ok: false, error: "stripe HTTP " + sr.status }, 502, ac);
+      const x = await sr.json();
+      const email = String((x && x.customer_details && x.customer_details.email) || "").trim();
+      return json({ ok: true, livemode: !(x && x.livemode === false), email }, 200, Object.assign({ "Cache-Control": "no-store" }, ac));
     }
     if (path === "/rp-order/serial" && req.method === "POST") {
       if (!sig) return json({ ok: false }, 403, ac);

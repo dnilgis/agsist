@@ -19,11 +19,10 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { createServer } from "node:http";
 import { execFileSync } from "node:child_process";
-import { extname, join, normalize } from "node:path";
 import vm from "node:vm";
-import { checkout, stripePage, refOf } from "./fixtures/rp-checkout.mjs";
+import { checkout, refOf } from "./fixtures/rp-checkout.mjs";
+import { mocks, serve } from "./fixtures/rp-site-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(ROOT + p, "utf8");
@@ -99,60 +98,8 @@ let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
-function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
-function yearDays(y) { const a = []; for (let t = Date.UTC(y, 0, 1); new Date(t).getUTCFullYear() === y; t += 864e5) a.push(new Date(t).toISOString().slice(0, 10)); return a; }
-function series(y, upto) {
-  const r = rng(7 + y);
-  return yearDays(y).map((d, i) => {
-    if (d > upto) return [d, "M", "M", "M", "M", "M"];
-    const u = r(), p = u < 0.12 ? (r() * r() * 2).toFixed(2) : u < 0.16 ? "T" : "0.00";
-    const t = Math.round(44 + 32 * Math.sin((i - 105) / 365 * 2 * Math.PI));
-    return [d, p, String(t), "0.0", String(t + 9), String(t - 9)];
-  });
-}
-/* opts.order: 'ok' (the default), 'fail' (503), 'hang' (never answers) */
-async function mocks(ctx, opts, log) {
-  const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
-  const upto = "2026-10-09";
-  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
-    const req = r.request(), u = new URL(req.url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
-      if (req.method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
-      if (u.pathname === "/rp-order" && req.method() === "POST") {
-        log.order.push({ at: Date.now(), body: JSON.parse(req.postData()), stripeBefore: log.stripe.length });
-        if (opts.order === "hang") return;   // never answered
-        return opts.order === "fail" ? r.fulfill({ status: 503, headers: h, body: "x" }) : r.fulfill({ headers: h, json: { ok: true } });
-      }
-      if (u.pathname === "/rp-short" && req.method() === "POST") return r.fulfill({ headers: h, json: { ok: true, id: "K7Q2M" } });
-      return r.fulfill({ status: 503, headers: h, body: "x" });
-    }
-    if (u.host === "buy.stripe.com") { log.stripeAt = Date.now(); return stripePage(r, log.stripe); }
-    if (u.host === "geocoding-api.open-meteo.com") return r.fulfill({ json: { results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] } });
-    if (u.host === "data.rcc-acis.org") {
-      if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [{ name: "CHETEK", sids: ["471667 2"], ll: [-91.65, 45.32], valid_daterange: [["1950-01-01", upto]], state: "WI" }] } });
-      let sdate = u.searchParams.get("sdate"), normal = false;
-      if (u.searchParams.get("params")) { sdate = JSON.parse(u.searchParams.get("params")).sdate; normal = true; }
-      if (normal) return r.fulfill({ json: { data: yearDays(+String(sdate).slice(0, 4)).map((d) => [d, "0.08"]) } });
-      if (sdate === "por") { let data = []; for (let y = 1995; y <= 2025; y++) data = data.concat(series(y, upto).map((x) => x.slice(0, 3))); return r.fulfill({ json: { data } }); }
-      return r.fulfill({ json: { meta: { name: "CHETEK", state: "WI", ll: [-91.65, 45.32] }, data: series(+String(sdate).slice(0, 4), upto) } });
-    }
-    return r.abort();
-  });
-}
-function serve() {
-  const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".woff2": "font/woff2", ".html": "text/html", ".svg": "image/svg+xml", ".jpg": "image/jpeg", ".png": "image/png" };
-  const srv = createServer((req, res) => {
-    const u = new URL(req.url, "http://x");
-    let p = normalize(join(ROOT, decodeURIComponent(u.pathname)));
-    if (!extname(p) && existsSync(p + ".html")) p += ".html";
-    if (!p.startsWith(ROOT) || !existsSync(p)) { res.writeHead(404); res.end(); return; }
-    res.writeHead(200, { "content-type": types[extname(p)] || "application/octet-stream" });
-    res.end(readFileSync(p));
-  });
-  return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
-}
 async function withPage(fn, opts = {}) {
-  const srv = await serve(), port = srv.address().port;
+  const srv = await serve(ROOT), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: "block" });

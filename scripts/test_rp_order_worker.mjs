@@ -196,3 +196,26 @@ console.log('rp-order worker checks: ' + n + ' passed');
   globalThis.fetch = realFetch;
   console.log('rp-order mailed checks: ' + n + ' passed');
 }
+
+// ---------- the buyer's address, for the buyer email only ----------
+{
+  const list = await (await admin('/rp-order/list')).json();
+  const paidOne = list.orders.find(o => o.status === 'paid'), unpaid = list.orders.find(o => o.status !== 'paid');
+  const asks = [];
+  globalThis.fetch = async (u, o) => { asks.push(String(u)); return new Response(JSON.stringify({ id: 'x', livemode: true, customer_details: { email: 'buyer@farm.com', name: 'Jane', address: { line1: '12 Main St' } } }), { status: 200 }); };
+  let b = await admin('/rp-order/buyer?key=' + encodeURIComponent(paidOne.key), 'GET', null, ''); A(b.status === 403, 'buyer: Sig only');
+  b = await admin('/rp-order/buyer?key=' + encodeURIComponent(unpaid.key)); A(b.status === 409, 'buyer: never for an unpaid press');
+  b = await admin('/rp-order/buyer?key=x'); A(b.status === 400, 'buyer: bad key');
+  const before = JSON.stringify([...store.entries()]);
+  b = await admin('/rp-order/buyer?key=' + encodeURIComponent(paidOne.key)); const bj = await b.json();
+  A(bj.ok && bj.email === 'buyer@farm.com' && bj.livemode === true && !('name' in bj) && !('address' in bj), 'buyer: the address and livemode only');
+  A(asks.pop() === 'https://api.stripe.com/v1/checkout/sessions/' + paidOne.paid.session, 'buyer: that one session');
+  A(JSON.stringify([...store.entries()]) === before, 'buyer: nothing stored');
+  globalThis.fetch = async () => new Response('{}', { status: 401 });
+  b = await admin('/rp-order/buyer?key=' + encodeURIComponent(paidOne.key)); A(b.status === 502, 'buyer: Stripe refused is said');
+  const keep = env.STRIPE_READ_KEY; delete env.STRIPE_READ_KEY;
+  b = await admin('/rp-order/buyer?key=' + encodeURIComponent(paidOne.key)); A(b.status === 503, 'buyer: no key');
+  env.STRIPE_READ_KEY = keep;
+  globalThis.fetch = realFetch;
+  console.log('rp-order buyer checks: ' + n + ' passed');
+}

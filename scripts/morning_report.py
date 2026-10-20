@@ -590,7 +590,7 @@ def sec_orders(src, now, rep):
 def stripe_line(src, now):
     """Paid charges, counts and dollars only. Never a name or address."""
     if not src.stripe_key:
-        return "Stripe: see dashboard (add STRIPE_READ_KEY to show paid orders here)."
+        return "Stripe totals: see the dashboard. Paid Rain Prints are under Orders below."
     m0 = month_start_ms(now) // 1000
     d0 = int(now.timestamp()) - 86400
     try:
@@ -681,21 +681,6 @@ RP_STYLE = {"r1": "Staircase", "r2": "Roots"}
 RP_PRINTS = ("print12x18", "framed12x18")
 
 
-def rp_paid_here(orders, sessions):
-    """When the worker could not check Stripe but this job can: each paid
-    session marks the latest unpaid press of the same ref made before it.
-    Only the ref, the amount and the time are read from a session."""
-    for s in sorted(sessions, key=lambda x: int(x.get("created") or 0)):
-        ref = str(s.get("client_reference_id") or "")
-        if not ref or s.get("payment_status") not in (None, "paid"):
-            continue
-        t = int(s.get("created") or 0) * 1000 + 120000
-        c = [o for o in orders if o.get("status") != "paid" and o.get("ref") == ref and int(o.get("ts") or 0) <= t]
-        if c:
-            hit = max(c, key=lambda o: int(o.get("ts") or 0))
-            hit["status"] = "paid"
-            hit["paid"] = {"amount": int(s.get("amount_total") or 0) / 100}
-
 
 def rp_order_line(o, now):
     """One order: product, town year style, paid or pay pressed, and the link
@@ -735,16 +720,9 @@ def sec_rp_orders(src, now, rep):
     orders = [o for o in d["orders"] if isinstance(o, dict)]
     lines = []
     if d.get("stripe") != "ok":
-        done = False
-        if src.stripe_key and orders:
-            try:
-                since = min(int(o.get("ts") or 0) for o in orders) // 1000 - 60
-                rp_paid_here(orders, rp_sessions(src, since))
-                done = True
-            except Exception as e:                         # noqa: BLE001
-                lines.append("Stripe could not be read here either (%s)." % why(e))
-        if not done:
-            lines.append("Payments are not checked (the worker has no STRIPE_READ_KEY): match each one to Stripe by time and product.")
+        # the read-only Stripe key lives on the worker alone (Oct 20): without it there, payments are not checked
+        lines.append("Payments are not checked (Stripe on the worker: %s): match each one to Stripe by time and product."
+                     % clean_txt(d.get("stripe") or "no key", 60))
     if not orders:
         lines.insert(0, "Rain Print, last 48 hours: no one pressed Pay.")
         rep.add("Orders", lines)
@@ -1262,7 +1240,7 @@ def selftest():
     ck("pending elevator requests", "Elevator listing requests still pending on elev-admin: 1." in t, t)
     ck("a pending request is named by elevator and town, never the contact", "  - Sand Creek Grain, Sand Creek, WI" in t
        and "Pat Doe" not in t and "715-555-0100" not in t and "Done Co-op" not in t, t)
-    ck("no Stripe key: the dashboard line", "Stripe: see dashboard (add STRIPE_READ_KEY to show paid orders here)." in t, t)
+    ck("no Stripe key: the dashboard line", "Stripe totals: see the dashboard. Paid Rain Prints are under Orders below." in t, t)
 
     print("\ntraffic and to-dos")
     ck("latest day, 7 days, top 3 pages", "Latest day in the analytics, Sun Oct 11: 181 users" in t and
@@ -1447,18 +1425,10 @@ def selftest():
     rep = Report()
     sec_rp_orders(Fake(worker={"rp-order/list": nokey}), now, rep)
     rl = rep.sections[-1][1]
-    ck("no key: says payments are not checked", any("not checked" in x and "by time and product" in x for x in rl), rl)
+    ck("no key: says payments are not checked", any("not checked (Stripe on the worker: no key)" in x and "by time and product" in x for x in rl), rl)
     ck("no key: a print gets the next serial, marked as a suggestion",
        any(x.startswith("  - Print, ") and "pay pressed" in x and "serial 1 if it is the next one you make" in x and x.endswith("&maker=1&serial=1") for x in rl), rl)
     ck("no key: the file still has its maker link", any(x.startswith("  - Digital file, ") and x.endswith(sig_url + "&maker=1") for x in rl), rl)
-    # the worker without a key, this job with one: matched here
-    rep = Report()
-    ses2 = {"data": [{"id": "cs_9", "created": int(now.timestamp()) - 100, "payment_status": "paid", "amount_total": 1900,
-                      "client_reference_id": sig_ref, "customer_details": {"email": "buyer@x.com"}}], "has_more": False}
-    sec_rp_orders(Fake(worker={"rp-order/list": json.loads(json.dumps(nokey))}, stripe=ses2, stripe_key="rk"), now, rep)
-    rl = rep.sections[-1][1]
-    ck("matched here with this job's key", rl[0].endswith("2 presses of Pay, 1 paid.") and any(x.startswith("  - Digital file, ") and "paid $19.00" in x for x in rl)
-       and not any("not checked" in x for x in rl) and not any("@" in x for x in rl), rl)
     rep = Report()
     sec_rp_orders(Fake(worker={"rp-order/list": {"ok": True, "stripe": "ok", "orders": []}}), now, rep)
     ck("nobody pressed Pay: one line", rep.sections[-1][1] == ["Rain Print, last 48 hours: no one pressed Pay."], rep.sections)
