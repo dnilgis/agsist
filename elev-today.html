@@ -227,7 +227,7 @@
         Object.keys(by).forEach(function (name) {
           var xs = by[name];
           items.push({ key: 'run:' + r.repo + ':' + name, group: 'run', tag: 'Failed run', title: r.repo.split('/')[1] + ': ' + name,
-            why: 'Failed ' + xs.length + ' time' + (xs.length === 1 ? '' : 's') + ' in the last 24 hours, last ' + esc(T.ct(xs[0].created_at)) + '.',
+            why: 'Failed ' + (xs.length === 1 ? 'once' : xs.length + ' times') + ' in the last 24 hours, last ' + esc(T.ct(xs[0].created_at)) + '.',
             acts: [{ primary: true, label: 'Open the run', href: xs[0].html_url, ext: true }] });
         });
       });

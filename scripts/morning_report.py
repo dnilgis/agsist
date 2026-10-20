@@ -3,6 +3,17 @@
 Sig's morning report (2026-10-14): ONE email at about 6:40 am Central he can
 skim over coffee. Run by .github/workflows/morning-report.yml.
 
+  Today              first, before anything else (2026-10-20, Sig): the bid
+                     sites a person has to deal with by hand (a bot check or a
+                     refusal, no good read for 6 h), biggest town count first,
+                     each with its last good read and a Paste link when the
+                     elevator desk has a paste reader for it; the boards with a
+                     current price and the change since yesterday; and the other
+                     items by name (listing requests by elevator and town,
+                     sponsor applications by company). Links to
+                     agsist.com/elev-today.html. Same sums as
+                     components/today-core.js; the selftest reads the real
+                     bids index of Oct 20 (test/fixtures).
   Needs you          anything red, first: a job still failing, a late
                      critical job, a stale feed, a stuck Pages deploy, the
                      site size warning, a request waiting on him.
@@ -76,6 +87,18 @@ ADDRESS = "AGSIST, PO Box 243, Chetek, WI 54728"
 REPO = "dnilgis/agsist"
 BIDS_REPO = "dnilgis/bids"
 BIDS_INDEX = "https://dnilgis.github.io/bids/data/index.json"
+TODAY_URL = "https://agsist.com/elev-today.html"
+PASTE_STATUS = "https://agsist-subs.dnilgis.workers.dev/elev/paste-status"
+# Sites the elevator desk has a paste reader for (components/paste-bids.js SITES).
+PASTE_READERS = {"newcoop.com": ("newcoop", "NEW Cooperative", "https://www.newcoop.com/cash-bids")}
+# dnilgis/bids lib/freshness.mjs: WITHDRAW_H, PASTED_WITHDRAW_H, LATE_H.
+LIVE_H, PASTED_H, STALE_H = 14, 168, 6
+STATE_NAMES = {"IA": "Iowa", "IL": "Illinois", "IN": "Indiana", "KS": "Kansas", "MN": "Minnesota", "MO": "Missouri",
+               "NE": "Nebraska", "ND": "North Dakota", "SD": "South Dakota", "WI": "Wisconsin", "OH": "Ohio",
+               "MI": "Michigan", "KY": "Kentucky", "TN": "Tennessee", "OK": "Oklahoma", "TX": "Texas", "CO": "Colorado",
+               "MT": "Montana", "AR": "Arkansas", "GA": "Georgia", "AL": "Alabama", "MS": "Mississippi",
+               "LA": "Louisiana", "PA": "Pennsylvania", "NY": "New York", "ID": "Idaho", "WA": "Washington",
+               "OR": "Oregon", "WY": "Wyoming", "ON": "Ontario", "MB": "Manitoba", "SK": "Saskatchewan", "AB": "Alberta"}
 TODO_EDIT = "https://github.com/dnilgis/agsist/edit/main/TODO-SIG.md"
 # The two clocks the workflow lists: 11:40 UTC is 6:40 am CDT, 12:40 UTC is 6:40 am CST.
 CRONS = ("40 11 * * *", "40 12 * * *")
@@ -161,6 +184,7 @@ def why(e):
 
 class Report:
     def __init__(self):
+        self.today = None        # {health, paste: [..], also: [..]}, shown before everything
         self.needs = []          # red lines, shown first
         self.sections = []       # (title, [lines])
 
@@ -477,7 +501,7 @@ def sec_signups(src, now, rep, snap):
         if not isinstance(c, dict) or not c.get("ok"):
             raise ValueError("not ok")
         cur = snapshot_counts(c)
-        snap[today.isoformat()] = cur
+        snap[today.isoformat()] = dict({k: v for k, v in (snap.get(today.isoformat()) or {}).items() if k == "bids_current"}, **cur)
     except Exception as e:                                 # noqa: BLE001
         lines.append("Worker counts: could not be read (%s)." % why(e))
     joins = None
@@ -782,6 +806,128 @@ def sec_traffic(src, now, rep):
 TODO_RE = re.compile(r"^\s*[-*]\s+\[( |x|X)\]\s+(.+?)\s*$")
 
 
+# ───────────────────────────── today ─────────────────────────────
+
+def _host(s):
+    u = s.get("website") or s.get("url") or ""
+    try:
+        return (urllib.parse.urlsplit(u).hostname or "").lower().removeprefix("www.")
+    except ValueError:
+        return ""
+
+
+def bids_current(s, now):
+    """A board with a price on the site now: last good read inside its line."""
+    c = parse_time(s.get("checkedAt"))
+    if c is None or not (isinstance(s.get("rows"), int) and s["rows"] > 0):
+        return False
+    return (now - c) / timedelta(hours=1) < (PASTED_H if s.get("pasted") is True else LIVE_H)
+
+
+def hand_paste(index, now):
+    """The bid sites a person has to deal with by hand, biggest town count first.
+    components/today-core.js handPaste(), the same rule."""
+    by = {}
+    for s in (index or {}).get("sources") or []:
+        if isinstance(s, dict) and _host(s):
+            by.setdefault(_host(s), []).append(s)
+    out = []
+    bot = lambda s: bool(re.search(r"bot check|Cloudflare challenge", s.get("error") or "", re.I))   # noqa: E731
+    ref = lambda s: s.get("health") == "refused" and not s.get("emptyBoard")                         # noqa: E731
+
+    def stale(s):
+        c = parse_time(s.get("checkedAt"))
+        return c is None or (now - c) / timedelta(hours=1) >= STALE_H
+    for h, rows in by.items():
+        b = any(bot(s) for s in rows)
+        hit = [s for s in rows if (b or ref(s)) and stale(s)]
+        pasted = [s for s in rows if s.get("pasted") is True]
+        if not hit and not (pasted and b):
+            continue
+        boards = hit or pasted
+        towns = {(s.get("location") or "", s.get("usState") or "") for s in boards}
+        states = sorted({s.get("usState") for s in boards if s.get("usState")})
+        reads = [t for t in (parse_time(s.get("checkedAt")) for s in boards) if t]
+        pastes = [t for t in (parse_time(s.get("pastedAt") or s.get("checkedAt")) for s in pasted) if t]
+        ops = {}
+        for s in rows:
+            if s.get("operator"):
+                ops[s["operator"]] = ops.get(s["operator"], 0) + 1
+        op = sorted(ops, key=lambda k: (-ops[k], k))[0] if ops else h
+        out.append({"host": h, "operator": op, "why": "bot check" if b else "refused", "boards": len(boards),
+                    "towns": len(towns), "states": states, "last": max(reads) if reads else None,
+                    "pasted": max(pastes) if pastes else None, "reader": PASTE_READERS.get(h)})
+    out.sort(key=lambda p: (-p["towns"], -p["boards"], p["host"]))
+    return out
+
+
+def towns_text(p):
+    n, w = p["towns"], "town" if p["towns"] == 1 else "towns"
+    if len(p["states"]) == 1 and p["states"][0] in STATE_NAMES:
+        return "%d %s %s" % (n, STATE_NAMES[p["states"][0]], w)
+    if 1 < len(p["states"]) <= 3:
+        return "%d %s in %s" % (n, w, ", ".join(STATE_NAMES.get(x, x) for x in p["states"]))
+    return "%d %s" % (n, w)
+
+
+def ct_stamp(t):
+    c = ct(t)
+    return "%s %d, %s CT" % (c.strftime("%b"), c.day, c.strftime("%I:%M %p").lstrip("0"))
+
+
+def sec_today(src, now, rep, snap):
+    """The Today block: hand-paste sites, boards with a current price, the rest by name."""
+    t = {"health": "", "paste": [], "also": [], "more": 0}
+    day = ct(now).date()
+    try:
+        idx = src.url_json(BIDS_INDEX)
+        srcs = [s for s in (idx.get("sources") or []) if isinstance(s, dict)]
+        cur = sum(1 for s in srcs if bids_current(s, now))
+        if srcs and cur:
+            y = (snap.get((day - timedelta(days=1)).isoformat()) or {}).get("bids_current")
+            snap.setdefault(day.isoformat(), {})["bids_current"] = cur
+            t["health"] = "Boards with a current price: %s of %s (%d%%)%s." % (
+                num(cur), num(len(srcs)), round(100 * cur / len(srcs)),
+                ", %+d since yesterday" % (cur - y) if isinstance(y, int) else "")
+        try:
+            st = (src.url_json(PASTE_STATUS) or {}).get("sites") or {}
+        except Exception:                                  # noqa: BLE001
+            st = {}
+        ps = hand_paste(idx, now)
+        big = [p for p in ps if p["boards"] > 2]
+        t["more"] = len(ps) - len(big)
+        for p in big[:8]:
+            r = p["reader"]
+            last_paste = (st.get(r[0]) or {}).get("pastedAt") if r else None
+            lp = parse_time(last_paste) if last_paste else p["pasted"]
+            why = ("Blocked by a bot check. " if p["why"] == "bot check" else "Our reader refused their page. ") + \
+                "Feeds %s in %s. %s%s" % (plural(p["boards"], "board", "boards"), towns_text(p),
+                                          "Last good read %s." % ct_stamp(p["last"]) if p["last"] else "No good read on file.",
+                                          " Last paste %s." % ct_stamp(lp) if lp else "")
+            t["paste"].append({"title": p["operator"], "why": why,
+                               "link": ("https://agsist.com/elev-admin.html?paste=%s#paste" % r[0]) if r else "",
+                               "label": "Paste" if r else "no paste reader yet"})
+        t["more"] += max(0, len(big) - 8)
+    except Exception as e:                                 # noqa: BLE001
+        t["also"].append("Bid sites: could not be read (%s)." % why(e))
+    try:
+        rq = [r for r in (src.worker("elev/admin/requests").get("requests") or []) if r.get("status") == "pending"]
+        if rq:
+            t["also"].append("%s: %s." % (plural(len(rq), "listing request", "listing requests"),
+                                          "; ".join(clean_txt("%s, %s %s" % (r.get("elevator") or "?", r.get("town") or "", r.get("state") or ""), 60).strip()
+                                                    for r in rq[:5])))
+    except Exception:                                      # noqa: BLE001
+        pass
+    try:
+        ap = [a for a in (src.worker("sponsor-apps") or []) if isinstance(a, dict) and a.get("status") in ("confirmed", "approved")]
+        if ap:
+            t["also"].append("%s: %s." % (plural(len(ap), "sponsor application open", "sponsor applications open"),
+                                          "; ".join(clean_txt(a.get("company") or "?", 40) for a in ap[:5])))
+    except Exception:                                      # noqa: BLE001
+        pass
+    rep.today = t
+
+
 def sec_todos(src, now, rep):
     try:
         items = [m.group(2) for m in map(TODO_RE.match, src.file("TODO-SIG.md").splitlines()) if m and m.group(1) == " "]
@@ -795,6 +941,10 @@ def sec_todos(src, now, rep):
 
 def make_report(src, now, snap):
     rep = Report()
+    try:
+        sec_today(src, now, rep, snap)
+    except Exception as e:                                 # noqa: BLE001
+        rep.today = {"health": "", "paste": [], "also": ["Today: could not be built (%s)." % why(e)], "more": 0}
     for f in (sec_agsist, sec_bids):
         try:
             f(src, now, rep)
@@ -816,8 +966,23 @@ def subject(rep, now):
     return "AGSIST morning, %s: all clear" % day
 
 
+def today_lines(rep):
+    t = rep.today or {}
+    out = []
+    if t.get("health"):
+        out.append(t["health"])
+    if t.get("paste"):
+        out.append("Bid sites to paste or fix, biggest first:")
+        for p in t["paste"]:
+            out.append("- %s: %s %s" % (scrub(p["title"]), scrub(p["why"]), ("Paste: " + p["link"]) if p["link"] else "(no paste reader yet)"))
+    if t.get("more"):
+        out.append("%s with 1 or 2 boards on the Today page." % plural(t["more"], "more site", "more sites"))
+    out.extend(scrub(x) for x in t.get("also") or [])
+    return out
+
+
 def text_body(rep, now):
-    out = ["Needs you"]
+    out = ["Today"] + today_lines(rep) + ["Today page: %s" % TODAY_URL, "", "Needs you"]
     out.extend(["- " + x for x in rep.needs] or ["Nothing red this morning."])
     for title, lines in rep.sections:
         out += ["", title]
@@ -853,7 +1018,8 @@ def html_body(rep, now):
                          % "".join("<li%s>%s</li>" % (st, e(i)) for i in v))
         return "".join(h)
     h2 = '<h2 style="font-size:17px;margin:20px 0 6px;border-bottom:1px solid #ddd;padding-bottom:3px">%s</h2>'
-    parts = [h2 % "Needs you"]
+    parts = [today_html(rep)] if rep.today else []
+    parts.append(h2 % "Needs you")
     parts.append(ul(["- " + x for x in rep.needs], red) if rep.needs else ul(["Nothing red this morning."]))
     for title, lines in rep.sections:
         parts.append(h2 % e(title))
@@ -864,6 +1030,41 @@ def html_body(rep, now):
     return ('<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
             '<body style="margin:0;background:#fff"><div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;'
             'padding:16px;color:#1a1a1a;background:#fff">%s</div></body></html>' % "".join(parts))
+
+
+def today_html(rep):
+    """The Today block for Gmail on a phone: one table, inline styles, no script."""
+    e = H.escape
+    t = rep.today or {}
+    n = len(t.get("paste") or []) + int(t.get("more") or 0) + len(t.get("also") or [])
+    rows = []
+    head = ('<tr><td style="padding:14px 14px 4px;font-family:Arial,Helvetica,sans-serif">'
+            '<div style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#7a5b12;font-weight:bold">Today</div>'
+            '<div style="font-size:19px;font-weight:bold;color:#1a1a1a;margin-top:2px">%s</div>%s</td></tr>'
+            % (e(plural(n, "thing", "things") + " on the list") if n else "Nothing on the list",
+               '<div style="font-size:14px;color:#444;margin-top:4px">%s</div>' % e(scrub(t["health"])) if t.get("health") else ""))
+    rows.append(head)
+    for i, p in enumerate(t.get("paste") or []):
+        btn = ('<a href="%s" style="display:inline-block;background:#d4a23f;color:#14110a;font-weight:bold;text-decoration:none;'
+               'padding:10px 16px;border-radius:6px;font-size:15px">Paste</a>' % e(p["link"], quote=True)) if p["link"] else \
+              '<span style="font-size:13px;color:#6b6b6b">no paste reader yet</span>'
+        rows.append('<tr><td style="padding:10px 14px;border-top:1px solid #e6e1d6;font-family:Arial,Helvetica,sans-serif">'
+                    '<div style="font-size:16px;font-weight:bold;color:#1a1a1a">%s%s</div>'
+                    '<div style="font-size:14px;line-height:1.45;color:#333;margin:3px 0 8px">%s</div>%s</td></tr>'
+                    % (e(scrub(p["title"])), ' <span style="font-size:11px;color:#7a5b12;border:1px solid #d4a23f;border-radius:3px;padding:0 4px">FIRST</span>' if i == 0 else "",
+                       e(scrub(p["why"])), btn))
+    if t.get("more"):
+        rows.append('<tr><td style="padding:8px 14px;border-top:1px solid #e6e1d6;font:14px Arial,Helvetica,sans-serif;color:#444">%s</td></tr>'
+                    % e(plural(t["more"], "more site", "more sites") + " with 1 or 2 boards on the Today page."))
+    for x in t.get("also") or []:
+        rows.append('<tr><td style="padding:8px 14px;border-top:1px solid #e6e1d6;font:14px Arial,Helvetica,sans-serif;color:#333">%s</td></tr>'
+                    % e(scrub(x)))
+    rows.append('<tr><td style="padding:12px 14px 14px;border-top:1px solid #e6e1d6"><a href="%s" style="display:inline-block;'
+                'border:1px solid #1a1a1a;color:#1a1a1a;font:bold 15px Arial,Helvetica,sans-serif;text-decoration:none;padding:10px 16px;'
+                'border-radius:6px">Open the Today page</a></td></tr>' % e(TODAY_URL, quote=True))
+    return ('<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" '
+            'style="border-collapse:collapse;background:#faf7f0;border:1px solid #e6e1d6;border-radius:8px;margin:4px 0 8px">%s</table>'
+            % "".join(rows))
 
 
 def build(rep, now, to, fn="AGSIST", fa=""):
@@ -1417,6 +1618,44 @@ def selftest():
        "Promo clicks and email sessions: could not be read (HTTP 500)." in tl and "1,240 draws" in str(tl), tl)
     tl = traffic(Fake(files={"data/audience.json": json.dumps(aud)}))
     ck("no GA4: only the funnel's one line, not a second", "Promo clicks" not in str(tl), tl)
+
+    print("\ntoday, from the real bids index of Oct 20 15:40 UTC (test/fixtures)")
+    import gzip
+    with gzip.open(os.path.join(ROOT, "test", "fixtures", "today-bids-index-2026-10-20.json.gz"), "rt", encoding="utf-8") as f:
+        idx = json.load(f)
+    tnow = parse_time(idx["generated"])
+    w = dict(worker)
+    w["sponsor-apps"] = [{"id": "s2", "status": "confirmed", "company": "Apex Seed", "email": "boss@seed.com", "phone": "715-555-0101"}]
+    tsnap = {"2026-10-19": {"bids_current": 2030}}
+    tf = Fake(gh, w, {BIDS_INDEX: idx, PASTE_STATUS: {"ok": True, "sites": {"newcoop": {"pastedAt": None}}}}, files)
+    rp = Report()
+    sec_today(tf, tnow, rp, tsnap)
+    tl = today_lines(rp)
+    ck("health: boards with a current price and the change since yesterday",
+       tl[0] == "Boards with a current price: 2,046 of 2,281 (90%), +16 since yesterday." and tsnap["2026-10-20"] == {"bids_current": 2046}, tl)
+    ck("NEW Cooperative first, its towns, its last good read, the Paste link",
+       tl[2] == "- NEW Cooperative, Inc.: Blocked by a bot check. Feeds 66 boards in 66 Iowa towns. Last good read Oct 19, 10:30 AM CT. "
+                "Paste: https://agsist.com/elev-admin.html?paste=newcoop#paste", tl)
+    ck("then Frontier (refused, no paste reader) and Central United (bot check)",
+       tl[3].startswith("- Frontier Cooperative") and "42 towns in Iowa, Nebraska" in tl[3] and tl[3].endswith("(no paste reader yet)")
+       and tl[4].startswith("- Central United") and "16 Minnesota towns" in tl[4], tl[3:5])
+    ck("small sites folded to one line", any(re.fullmatch(r"\d+ more sites with 1 or 2 boards on the Today page\.", x) for x in tl), tl)
+    ck("others by name only", "1 listing request: Sand Creek Grain, Sand Creek WI." in tl and "1 sponsor application open: Apex Seed." in tl
+       and not any(("@" in x or "555-01" in x or "Pat Doe" in x) for x in tl), tl)
+    hh = today_html(rp)
+    ck("the email block: a table, inline styles, no script, links to the Today page and the paste box",
+       hh.startswith('<table role="presentation"') and "<script" not in hh and "<style" not in hh and TODAY_URL in hh
+       and "elev-admin.html?paste=newcoop#paste" in hh and "FIRST" in hh and "@" not in hh, hh[:300])
+    tsnap2 = {}
+    sec_today(tf, tnow, Report(), tsnap2)
+    sec_signups(Fake(gh, worker, urls, files), tnow, Report(), tsnap2)
+    ck("the signup counts keep today's bids count beside them", tsnap2["2026-10-20"].get("bids_current") == 2046 and "daily" in tsnap2["2026-10-20"], tsnap2)
+    sent = []
+    run(Fake(gh, w, {BIDS_INDEX: idx}, files), tnow, False, sent.append, "s", {})
+    tt = sent[0].get_body(("plain",)).get_content()
+    ck("the email opens with Today, then Needs you", tt.index("Today") < tt.index("Needs you"), tt[:200])
+    with open(os.path.join(os.environ.get("TODAY_EMAIL_OUT", os.devnull)), "w", encoding="utf-8") as f:
+        f.write(sent[0].get_body(("html",)).get_content())
 
     print()
     if fails:

@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 99,
- "with_known_cadence": 99,
+ "count": 100,
+ "with_known_cadence": 100,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -1218,6 +1218,25 @@
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
+  },
+  {
+   "path": "data/index.json",
+   "pages": [
+    "elev-today.html"
+   ],
+   "written_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "published by dnilgis/bids, every reader pass",
+   "curated": false,
+   "planned": false,
+   "external": true,
+   "url": "https://dnilgis.github.io/bids/data/index.json",
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": "Every board the bid network reads, with its last read and why it failed. Sig's Today list (elev-today.html) and the morning email build the day's hand-paste list from it. Unreachable means the Today list says so and shows the other items; nothing on the public site reads it."
   },
   {
    "path": "data/land/index.json",
