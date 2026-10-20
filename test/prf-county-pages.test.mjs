@@ -43,7 +43,9 @@ test("the answer is in the HTML: grids by number, county values, the deadline, t
     const main = h.slice(h.indexOf("<main"), h.indexOf("</main>"));
     assert.match(main, /<h1>PRF insurance in [^<]+<\/h1>/, p.rel);
     assert.ok(main.includes(SALES), p.rel + " lacks the sales closing date");
-    assert.match(main, /grids?: \d{5}/, p.rel + " lacks its grid numbers in the lede");
+    /* Sig, Oct 20: the grid numbers left the lede for the grids table; the FAQ still names them all */
+    assert.match(main, /<table class="prf-t prf-co-t">[\s\S]*?<th scope="row">\d{4,5}<\/th>/, p.rel + " lacks its grid numbers in the grids table");
+    assert.match(main, /Which PRF grid is [^<]+\?<\/summary><p>Grids? \d{4,5}/, p.rel + " lacks its grid numbers in the FAQ");
     assert.match(main, /Grazing, county base value per acre<\/dt><dd>\$\d/, p.rel);
     assert.equal((main.match(/<table /g) || []).length, 3, p.rel + " should carry the month, recent-year and grid tables");
     assert.ok(statSync(ROOT + p.rel).size < 40 * 1024, p.rel + " is over 40 KB");
@@ -129,9 +131,13 @@ test("each county page prints the 100-acre example on its middle grid by premium
     rows.sort((a, b) => a.you - b.you || a.g - b.g);
     const x = rows[Math.ceil(rows.length / 2) - 1];
     const t = m[1];
-    assert.ok(t.startsWith("<b>Example, not a recommendation:</b> 100 acres of grazing at 90% coverage"), p.rel + " example is not labeled");
+    /* Sig, Oct 20: it leads the page with what you pay, dated by the USDA files read, and stays labeled */
+    assert.ok(t.startsWith(`<b>What it costs here at ${meta.crop_year} rates (USDA files read `), p.rel + " example does not lead with the cost: " + t.slice(0, 80));
+    assert.ok(t.endsWith("Example, not a recommendation."), p.rel + " example is not labeled");
+    assert.ok(t.includes(`you pay ${usd(x.you)} a year, $${(x.you / 100).toFixed(2)} an acre, for 100 acres of grazing at 90% coverage`), `${p.rel}: ${t}`);
     assert.ok(t.includes(`on grid ${x.g}`), `${p.rel}: expected grid ${x.g}: ${t}`);
-    assert.ok(t.includes(`The full premium is ${usd(x.premium)}: USDA pays ${usd(x.usda)} and you pay ${usd(x.you)}, or $${(x.you / 100).toFixed(2)} an acre`), `${p.rel}: ${t}`);
+    assert.ok(t.includes(`USDA pays ${usd(x.usda)} of the ${usd(x.premium)} full premium`), `${p.rel}: ${t}`);
+    assert.ok(main.indexOf('class="prf-note prf-ex"') < main.indexOf('class="btn btn-primary prf-cta"'), p.rel + ": the example is the first answer, above the button");
     assert.ok(t.includes(`paid in ${x.paid} of ${x.years} years, an average of ${usd(x.avg)} a year, or $${(Math.round(x.avg) / 100).toFixed(2)} an acre`) ||
               t.includes(`paid in ${x.paid} of ${x.years} years, an average of ${usd(x.avg)} a year, or $${(x.avg / 100).toFixed(2)} an acre`), `${p.rel}: ${t}`);
     assert.ok(/not a forecast/.test(t), p.rel);

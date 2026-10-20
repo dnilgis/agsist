@@ -367,7 +367,7 @@ def recheck(reads, details):
         why = unbacked_trend(e["text"], details.get(fips))
         if why:
             reads["counties"][fips] = {"status": f"recheck: {why}", "sha": e.get("sha"), "block": e.get("block"),
-                                       "model": e.get("model"), "generated": e.get("generated")}
+                                       "generated": e.get("generated")}
             n += 1
     return n
 
@@ -538,7 +538,7 @@ def _keep_first_ok(reads, pending):
 
 
 def _entry(text, sha, block, model, hits):
-    e = {"text": text, "sha": sha, "block": block_hash(block), "model": model, "generated": _now()}
+    e = {"text": text, "sha": sha, "block": block_hash(block), "generated": _now()}
     if hits:
         # kept, because every number checked out, but marked for the next look
         e["voice"] = sorted({h[0] for h in hits})
@@ -723,7 +723,7 @@ def one(api_key, fips, rec, model=None):
         last = why
         log(f"  {fips}: gate failed ({why}), attempt {attempt + 1}")
         _log_reject(fips, why, text)
-    return {"status": f"withheld: {last}", "sha": rec["sha"], "block": block_hash(block), "model": model,
+    return {"status": f"withheld: {last}", "sha": rec["sha"], "block": block_hash(block),
             "generated": _now()}
 
 
@@ -940,6 +940,7 @@ def selftest():
     assert "text" not in rs["counties"]["08001"] and rs["counties"]["08003"]["text"] == adams_text
     assert not gate_withheld(rs["counties"]["08001"]["status"]), "a recheck is rewritten on the next run, not kept as a refusal"
     assert carry(rs["counties"]["08001"], {"sha": "new"}, ablock, adams) is None
+    assert "model" not in rs["counties"]["08001"], "a recheck does not carry a model name into the published file"
     # the July-low trend: a direction the record calls no clear direction is refused
     jul = {"heat": {"months": {"jul": {"trend": {"per_decade": 0.2, "direction": "no clear direction"}}}}}
     assert unbacked_trend("July nights have been warming 0.2 F per decade since 1976.", jul) == "July-low trend inside its 95% range"
@@ -957,6 +958,11 @@ def load_detail(fips, rec):
 
 
 def save(reads):
+    # The published file carries no model name (Sig, 2026-10-20). The run log says which model ran.
+    reads.pop("model", None)
+    for e in (reads.get("counties") or {}).values():
+        if isinstance(e, dict):
+            e.pop("model", None)
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(reads, f, separators=(",", ":"), ensure_ascii=False)
 
@@ -1062,12 +1068,12 @@ def salvage(atlas, reads):
             if have.get("text"):
                 reads["counties"][fips] = {"status": "withheld: nothing in the older read passes today's check",
                                            "sha": rec["sha"], "salvaged": True,
-                                           "model": have.get("model"), "generated": have.get("generated")}
+                                           "generated": have.get("generated")}
             continue
         n_cut += len(_SENT.split(out)) < len(_SENT.split(text.strip()))
         n_new += 1
         reads["counties"][fips] = {"text": out, "sha": rec["sha"], "block": block_hash(block), "salvaged": True,
-                                   "model": have.get("model"), "generated": have.get("generated")}
+                                   "generated": have.get("generated")}
     log(f"salvage: {n_carry} carried whole, {n_new} reads kept from older text ({n_cut} with sentences dropped), {n_none} counties with none")
     return reads
 
@@ -1108,7 +1114,7 @@ def main():
         except Fatal as e:
             sys.exit(f"STOPPED: {e}")
         return
-    reads = {"generated": None, "model": MODEL, "counties": {}}
+    reads = {"generated": None, "counties": {}}
     if os.path.exists(OUT):
         with open(OUT, encoding="utf-8") as f:
             reads = json.load(f)
@@ -1219,7 +1225,7 @@ def main():
                     else:
                         _log_reject(fips, why, val)
                         reads["counties"][fips] = {"status": f"withheld: {why}", "sha": recs[fips]["sha"],
-                                                   "block": block_hash(block), "model": MODEL, "generated": _now()}
+                                                   "block": block_hash(block), "generated": _now()}
                         written += 1
                 log(f"  round {rnd}: {n_gate} failed the gate, {n_voice} passed it but go again for voice, "
                     f"{n_err} came back as API errors"
@@ -1263,7 +1269,6 @@ def main():
         sys.exit(1)
 
     reads["generated"] = _now()
-    reads["model"] = MODEL
     # drop reads for counties no longer in the Atlas
     reads["counties"] = {k: v for k, v in reads["counties"].items() if k in atlas["counties"]}
     save(reads)

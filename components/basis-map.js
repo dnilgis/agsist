@@ -4,7 +4,7 @@
    scripts/basis_method.py): the middle basis of the AGSIST network elevators in each
    state, against the futures month most of them name. Outlines are
    data/us-states.geo.json, which the site already carries. Nothing here is in the
-   page until the reader taps "Show the map" (CLAUDE.md: depth on demand).
+   page until the reader taps "Show the map" (site rule: depth on demand).
 
    Color says one thing: how far under or over futures the state's middle bid is.
    Two hues and a gray middle, in the page's own weaker/stronger colors. A state with

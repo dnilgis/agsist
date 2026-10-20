@@ -4,13 +4,19 @@ arc_plc_crops.py -- every covered commodity beyond corn, soybeans and wheat,
 for scripts/build_arc_plc.py (which imports this file; it writes nothing itself).
 
 WHERE EVERY NUMBER COMES FROM (verified 2026-10-09)
-  FSA's national tables in data/fsa/, dated Sept 11, 2026 [FSAT]:
+  FSA's national tables in data/fsa/ [FSAT]. Tables 1, 2 and 4 are FSA's
+  Oct 9, 2026 copies (sites/default/files/2026-10/, data/fsa/manifest.tsv);
+  Table 3 on file is still the Sept 11, 2026 one, and each is labeled with
+  the date printed in its own header (TABLE_DATES, read at build time):
     2026_MYA.xlsx     Table 1: final MYA prices 2020/21 to 2024/25, 2025/26
-                      (final F or projected P), projected 2026/27, unit, marketing year
+                      (final F or projected P), projected 2026/27, unit, marketing
+                      year, and the date FSA lists for the final 2026/27 price
     2026_ERP.xlsx     Table 2: statutory reference price, 115% cap, 88% of the
                       Olympic average, 2026 effective reference price
     2026_PLC.xlsx     Table 3: 2026 national loan rate, projected 2026 PLC rate
-    2026_ARC_CO.xlsx  Table 4: 2026 ARC-CO benchmark price
+                      (at Table 3's own projected price, printed with its date)
+    2026_ARC_CO.xlsx  Table 4: 2026 ARC-CO benchmark price, and the 2026 loan
+                      rate again (must equal Table 3's, or the build refuses)
   Units are FSA's: bushel for sorghum, barley, oats and flaxseed; pound for
   everything else, rice included (FSA prices rice in $/lb, not $/cwt).
   Statutory prices and loan rates are read from those tables, never typed in
@@ -52,12 +58,13 @@ import datetime as dt
 from decimal import Decimal, ROUND_HALF_UP
 
 FSA_DIR = "data/fsa"
-TABLE_URLS = {
-    "FSAT_MYA": ("FSA, 2026 MYA prices (Table 1, Sept 11, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-09/2026_MYA_0.xlsx"),
-    "FSAT_ERP": ("FSA, 2026 effective reference prices (Table 2, Sept 11, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-09/2026_ERP_0.xlsx"),
+TABLE_URLS = {   # FSA's own copies (data/fsa/manifest.tsv); the date in each label is checked against the table's header (TABLE_DATES)
+    "FSAT_MYA": ("FSA, 2026 MYA prices (Table 1, Oct 9, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-10/2026_MYA.xlsx"),
+    "FSAT_ERP": ("FSA, 2026 effective reference prices (Table 2, Oct 9, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-10/2026_ERP.xlsx"),
     "FSAT_PLC": ("FSA, projected 2026 PLC payment rates (Table 3, Sept 11, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-09/2026_PLC.xlsx"),
-    "FSAT_ARC": ("FSA, 2026 ARC-CO benchmark prices (Table 4, Sept 11, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-09/2026_ARC_CO_0.xlsx"),
+    "FSAT_ARC": ("FSA, 2026 ARC-CO benchmark prices (Table 4, Oct 9, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-10/2026_ARC_CO.xlsx"),
 }
+TABLE_DATES = {"2026_MYA": "FSAT_MYA", "2026_ERP": "FSAT_ERP", "2026_PLC": "FSAT_PLC", "2026_ARC_CO": "FSAT_ARC"}
 
 # key: label, lowercase phrase, hub slug, FSA county-file crop name, FSA PLC-yield
 # file crop name, FSA national table commodity, unit, decimals FSA rounds to,
@@ -249,8 +256,10 @@ def load_tables(load_xlsx, root="."):
     if not rs:
         return None
     out["date"] = date_of(rs)
+    out["dates"] = {"2026_MYA": out["date"]}
     h = hdr_row(rs)
     hdr = [str(x or "") for x in rs[h]]
+    ipub = next((i for i, x in enumerate(hdr) if "Publishing Dates" in x), None)
     ycols = []
     for i, x in enumerate(hdr):
         m = re.search(r"(\d{4})/\d\d MYA", x)
@@ -267,12 +276,16 @@ def load_tables(load_xlsx, root="."):
             if v is not None:
                 mya[y] = (v, str(r[i + 1] or "").strip() if flagged else "F")
         out["rows"][c] = {"my": str(r[im] or "").strip(), "unit": str(r[iu] or "").strip(), "mya": mya}
+        mm = re.match(r"([A-Z][a-z]+) (\d{1,2}), (20\d\d)", str(r[ipub] or "").strip()) if ipub is not None else None
+        if mm:   # the date FSA lists for the final 2026/27 price (Table 1, column C)
+            out["rows"][c]["final_on"] = dt.datetime.strptime(mm.group(0), "%B %d, %Y").date().isoformat()
     for stem, cols in (("2026_ERP", {"statutory": "Reference Price", "cap": "115% of", "erp_pv": "88% of", "erp": "Effective Reference Price"}),
-                       ("2026_PLC", {"loan": "National Loan Rate", "plc_p": "PLC Payment Rate", "plc_max": "Maximum"}),
-                       ("2026_ARC_CO", {"bp": "Benchmark Price"})):
+                       ("2026_PLC", {"loan": "National Loan Rate", "plc_p": "PLC Payment Rate", "plc_max": "Maximum", "plc_proj": "MYA Price"}),
+                       ("2026_ARC_CO", {"bp": "Benchmark Price", "loan4": "National Loan Rate"})):
         rs = rows_of(stem)
         if not rs:
             return None
+        out["dates"][stem] = date_of(rs)
         h = hdr_row(rs)
         heads = [" ".join(str(x or "") for x in col) for col in zip(*rs[max(0, h - 2):h + 2])]
         idx = {}
@@ -292,7 +305,22 @@ def load_tables(load_xlsx, root="."):
             if c in out["rows"]:
                 for key, i in idx.items():
                     out["rows"][c][key] = _num(r[i])
+    for c, row in out["rows"].items():
+        # Table 4 (Oct 9) repeats the 2026 loan rate Table 3 (Sept 11) gives: two answers would be two loan rates
+        if row.get("loan4") is not None and row.get("loan") is not None and abs(row["loan4"] - row["loan"]) > 1e-9:
+            raise SystemExit(f"FSA's 2026 loan rate for {c}: Table 3 says {row['loan']}, Table 4 says {row['loan4']}; refusing")
+    for stem, key in TABLE_DATES.items():
+        # the source list prints each table's date; it must be the date in that table's own header
+        d_ = out["dates"].get(stem)
+        if d_ and nice_long(d_) not in TABLE_URLS[key][0]:
+            raise SystemExit(f"{stem}: FSA's header says {d_}, the source label says {TABLE_URLS[key][0]!r}; update TABLE_URLS")
     return out
+
+
+def nice_long(iso):
+    """'2026-10-09' -> 'Oct 9, 2026'; 'Sept 11, 2026' for September (the labels' style)."""
+    d = dt.date.fromisoformat(iso)
+    return f"{MONN[d.month - 1]} {d.day}, {d.year}"
 
 
 # ---------------------------------------------------------------- WASDE
@@ -394,6 +422,9 @@ def year_params_x(tabs, py):
             cd["fsa_check"] = {"erp": t.get("erp"), "bp": t.get("bp"), "cap": t.get("cap"), "erp_pv": t.get("erp_pv")}
             cd["fsa_proj"] = t["mya"].get(2026, (None, ""))[0]
             cd["fsa_plc_p"] = t.get("plc_p")
+            cd["fsa_plc_proj"] = t.get("plc_proj")   # Table 3's own projected price: its rate is figured at that, not at Table 1's
+        if t.get("final_on"):
+            cd["final_on"] = t["final_on"]
         crops[k] = cd
     return crops, pending
 
@@ -542,8 +573,10 @@ def hub_faq(D, k, B=None):
         r = proj_rate(c6, sc["center"])
         q.append((f"Will PLC pay on {x['lc']} for 2026?",
                   f"At {strip(sc['usda_src'])}'s projected 2026/27 price of {pf(c6, sc['center'])}{u}, PLC would pay " + ("nothing for 2026" if r == 0 else f"a 2026 rate of {pf(c6, r)}{u}")
-                  + f". FSA's own table of {nice(D['_xtab_date'])} shows " + ("no payment" if not c6['fsa_plc_p'] else f"{pf(c6, c6['fsa_plc_p'])}{u}") + f" at {pf(c6, c6['fsa_proj'])}. "
-                  f"The real rate is set by the final season-average price, published after the marketing year ({c6['my']}) ends."))
+                  + f". FSA's projected-rate table (Table 3, {D['_xtab_dates'].get('2026_PLC') and nice_long(D['_xtab_dates']['2026_PLC'])}) showed "
+                  + ("no payment" if not c6['fsa_plc_p'] else f"{pf(c6, c6['fsa_plc_p'])}{u}") + f" at its then-projected {pf(c6, c6.get('fsa_plc_proj') or c6['fsa_proj'])}. "
+                  f"The real rate is set by the final season-average price, published after the marketing year ({c6['my']}) ends"
+                  + (f"; FSA lists {nice_long(c6['final_on'])} for it." if c6.get("final_on") else ".")))
     t6 = tally(D, k).get("2026", {})
     if t6 and not all_withheld(t6) and B is not None:
         # Same condition and the same counts as the verdict line on the page.
@@ -609,7 +642,7 @@ def hub_page(B, D, k, ch):
         r = proj_rate(c6, sc["center"])
         proj = (f"<p>At {sc['center_label']}, {pf(c6, sc['center'])}{u}, PLC would pay " + ("<b>nothing</b> for 2026" if r == 0 else f"a 2026 rate of <b>{pf(c6, r)}{u}</b>")
                 + ". The real rate comes from the final price after the marketing year ends "
-                f"({esc(c6['my'])}).</p>")
+                f"({esc(c6['my'])})" + (f"; FSA lists {nice_long(c6['final_on'])} for it" if c6.get("final_on") else "") + ".</p>")
     y7 = (f"2027 (est.): ERP <b>{pf(c7, c7['erp']['erp'])}</b>, benchmark price {pf(c7, c7['bp']['value'])}. {c7.get('note', '')}" if c7
           else f"2027: {pend7}")
     t = tally(D, k)

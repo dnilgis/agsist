@@ -149,3 +149,23 @@ test("schedule: four runs a day off the hour, approved, never overlapping", () =
   assert.match(wf, /concurrency:\s*\n\s*group: radar-rain\s*\n\s*cancel-in-progress: false/);
   assert.match(wf, /git diff --staged --quiet/);
 });
+
+test("a real map under the rain: USGS National Map only, credited, with a fallback", () => {
+  const js = fs.readFileSync(path.join(ROOT, "components/radar-rain-page.js"), "utf8");
+  // public domain, keyless USGS tiles, both views
+  assert.ok(js.includes("https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}"));
+  assert.ok(js.includes("https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}"));
+  assert.doesNotMatch(js + page, /cartocdn|tile\.openstreetmap|api\.mapbox|maptiler|stadiamaps|arcgisonline/i);
+  // credited in small type by the map and in the sources line
+  assert.match(page, /class="rr-credit">Map: USGS The National Map</);
+  assert.match(page, /Map: USGS The National Map \(map services and data from the U\.S\. Geological Survey, National Geospatial Program\)/);
+  assert.match(js, /Map: USGS/);
+  // the toggle and the note shown when tiles fail
+  assert.match(page, /id="rr-base"[^>]*>[\s\S]*?data-base="topo"[\s\S]*?data-base="aerial"/);
+  assert.match(page, /id="rr-basenote"/);
+  assert.match(js, /tileerror[\s\S]*?setTimeout[\s\S]*?did not load/);
+  // the rain still draws over the site's own outline and keeps the field pin
+  assert.match(js, /\/data\/us-states\.geo\.json/);
+  assert.match(js, /circleMarker\(\[pt\.lat, pt\.lon\]/);
+  assert.ok(page.includes("/components/radar-rain-page.js?v=4"));
+});

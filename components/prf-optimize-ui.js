@@ -26,7 +26,7 @@
   var O = root.AgPrfOptimize;
   if (!O) return;
   var LABELS = O.LABELS, N = O.N;
-  var state = { objective: 'net', enso: null, ensoFromFile: null, opt: null, outlook: null, loaded: false, loading: null, ctx: null, cache: {}, open: {} };
+  var state = { monOn: false, months: [false, false, false, false, false, false, false, false, false, false, false, false], objective: 'net', enso: null, ensoFromFile: null, opt: null, outlook: null, loaded: false, loading: null, ctx: null, cache: {}, open: {} };
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function usd(v) { if (v == null || !isFinite(v)) return 'not available'; var n = Math.round(v); return (n < 0 ? '-' : '') + '$' + Math.abs(n).toLocaleString('en-US'); }
@@ -56,6 +56,19 @@
     if (inWinter > 50) return 'November to February';
     return 'the grid’s two driest pairs of months and November to February';
   }
+
+  /* "Only months my grass needs rain" (Sig, Oct 20). The reader ticks months; a pair of months is in
+     play only when both its months are ticked. The pick, its own walk-forward record and the setups it
+     is compared with are all worked out on those pairs alone. The test across grids picked from every
+     month, so with the filter on it is not quoted as this pick's record. */
+  var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function monthMask(months) { var a = []; for (var i = 0; i < N; i++) a.push(!!(months[i] && months[i + 1])); return a; }
+  function validWith(valid, monOn, months) {
+    var m = monOn ? monthMask(months) : null, out = [];
+    for (var i = 0; i < N; i++) out.push((!valid || valid[i] !== false) && (!m || m[i]));
+    return out;
+  }
+  var GRASS_LINE = 'The pick follows the record’s dollars; it does not know when your grass grows.';
 
   function css() {
     if (document.getElementById('prf-opt-css')) return;
@@ -98,7 +111,15 @@
       '#prf-optimize .po-in>p+p{margin-top:.5rem}',
       '#prf-optimize .po-in>p:first-child,#prf-optimize .po-in>.po-row:first-child{margin-top:.2rem}',
       '@media (max-width:640px){#prf-optimize table,#prf-optimize tbody,#prf-optimize td{display:block;width:auto}#prf-optimize thead{position:absolute;left:-9999px}#prf-optimize tr{display:grid;grid-template-columns:1fr 1fr;gap:.1rem .8rem;border-bottom:1px solid var(--border-2);padding:.45rem 0}#prf-optimize td{border:0;text-align:left;padding:0}#prf-optimize td:first-child,#prf-optimize td.po-wide{grid-column:1/-1}#prf-optimize td[data-l]::before{content:attr(data-l) ": ";color:var(--text-muted)}}',
-      '#prf-optimize .po-fine{color:var(--text-muted);font-size:var(--fs-sm);line-height:1.55;max-width:46em}'
+      '#prf-optimize .po-fine{color:var(--text-muted);font-size:var(--fs-sm);line-height:1.55;max-width:46em}',
+      '#prf-optimize .po-mon{margin:.5rem 0 .7rem}',
+      '#prf-optimize .po-mon-on{display:flex;align-items:center;gap:.55rem;min-height:44px;cursor:pointer;font-weight:600}',
+      '#prf-optimize .po-mon-on input{width:22px;height:22px;accent-color:var(--gold);margin:0}',
+      '#prf-optimize .po-mons{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.35rem;max-width:30rem;margin:.3rem 0}',
+      '#prf-optimize .po-m{min-height:44px;border:1px solid var(--border-2);border-radius:8px;background:transparent;color:var(--text);font:inherit;font-size:var(--fs-sm);cursor:pointer}',
+      '#prf-optimize .po-m.is-on{border-color:var(--gold);color:var(--gold);font-weight:600;background:rgba(var(--gold-rgb),.08)}',
+      '#prf-optimize .po-m:focus-visible,#prf-optimize .po-mon-on input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}',
+      '#prf-optimize .po-grass{margin:.2rem 0 .5rem}'
     ].join('\n');
     document.head.appendChild(st);
   }
@@ -172,10 +193,11 @@
     var outl = state.outlookJson ? O.outlookFor(state.outlookJson, ctx.grid) : { outlook: null, enso: null };
     state.ensoFromFile = outl.enso;
     var enso = state.enso === 'none' ? null : (state.enso || outl.enso || null);
-    var key = [ctx.grid, ctx.cov, JSON.stringify(mm.min), JSON.stringify(mm.max), state.objective, enso, outl.outlook ? JSON.stringify(outl.outlook) : '', ctx.lastComplete, (state.kept || []).join(',')].join('|');
+    var valid = validWith(mm.valid, state.monOn, state.months);
+    var key = [ctx.grid, ctx.cov, JSON.stringify(mm.min), JSON.stringify(mm.max), JSON.stringify(valid), state.objective, enso, outl.outlook ? JSON.stringify(outl.outlook) : '', ctx.lastComplete, (state.kept || []).join(',')].join('|');
     if (state.cache.key === key) return state.cache.res;
     var res = O.recommend({ index: ctx.index, rates: ctx.rates ? ctx.rates[ctx.cov] : null, coverage: ctx.cov, subsidy: ctx.subsidy ? ctx.subsidy[String(ctx.cov)] : null,
-                            min: mm.min, max: mm.max, valid: mm.valid, avgMm: ctx.avgMm, lastComplete: ctx.lastComplete, grid: ctx.grid },
+                            min: mm.min, max: mm.max, valid: valid, avgMm: ctx.avgMm, lastComplete: ctx.lastComplete, grid: ctx.grid },
                           { objective: state.objective, enso: enso, outlook: outl.outlook, tilts: state.kept || [], climate: state.climate || null, policyYear: ctx.cropYear || null,
                             steadier: !!(state.opt && state.opt.risk && state.opt.risk.held) });
     res.outlookMeta = outl;
@@ -217,9 +239,18 @@
     css();
     if (!ctx.index || !ctx.rates || !ctx.limits) { b.innerHTML = '<p class="po-fine">Pick a grid and county above to see what the numbers would pick.</p>'; return; }
     var res = compute(ctx);
-    if (!res.ok) { b.innerHTML = '<p class="po-fine">' + esc(res.why) + '</p>'; return; }
+    var monUi = monthsUi();
+    if (!res.ok) {
+      var why = res.why;
+      if (state.monOn) why = !state.months.some(Boolean) ? 'Tick the months your grass or hay needs rain, and the pick is made from those months only.'
+        : /fewer than two/i.test(why) ? 'The months ticked hold fewer than two pairs of months this county offers. Tick more months; a pair counts only when both its months are ticked.'
+        : /No split fits/.test(why) ? 'No split of the pairs in your months fits this county’s limits at this coverage. Tick more months.' : why;
+      b.innerHTML = monUi + '<p class="po-fine">' + esc(why) + '</p>'; return;
+    }
     var prot = protection(ctx), nat = national(ctx.cov, state.objective), bt = res.backtest;
-    var np = nationalParts(nat, state.objective);
+    var np = state.monOn
+      ? { head: 'With your months only: the test across grids picked from every month, so it is not this pick’s record. This grid’s own test below is.', rest: '' }
+      : nationalParts(nat, state.objective);
     /* When this grid's own walk-forward test says the pick would not have
        beaten an even spread, the card leads with that and offers no button to
        copy the pick: the panel must not argue with itself. */
@@ -248,13 +279,18 @@
         + ' years here, against ' + res.rec.record.paidYears + ' for the pick. It steadies the check; it does not earn more.</p>'
         + (behind ? '' : '<button type="button" class="po-use" data-opt-use="' + st.split.join('.') + '">Use the steadier setup instead</button>');
       steadyMore = '<p class="po-fine"><b>About the steadier option.</b> On this grid’s record it averages ' + (gap >= 0 ? per100(gap) + ' less' : per100(-gap) + ' more') + ' a year per $100 of protection than the pick. '
-        + 'In the test across grids, picked each fall from the years before, splits like this cut the years with no payment from ' + rr.noPaymentPct.plain + '% to ' + rr.noPaymentPct.steadier
-        + '% and ' + (rr.mean.meanDiff <= 0 ? 'gave up ' + per100(-rr.mean.meanDiff) : 'added ' + per100(rr.mean.meanDiff)) + ' a year per $100 of protection.</p>';
+        + (state.monOn ? 'The test across grids picked steadier splits from every month, so it is not quoted for your months.</p>'
+        : 'In the test across grids, picked each fall from the years before, splits like this cut the years with no payment from ' + rr.noPaymentPct.plain + '% to ' + rr.noPaymentPct.steadier
+        + '% and ' + (rr.mean.meanDiff <= 0 ? 'gave up ' + per100(-rr.mean.meanDiff) : 'added ' + per100(rr.mean.meanDiff)) + ' a year per $100 of protection.</p>');
     }
 
+    h += '<p class="po-fine po-grass">' + esc(GRASS_LINE) + '</p>';
     h += '<p class="po-fine po-shown">Shown: ' + (state.objective === 'net'
-      ? 'the split with the highest expected payment minus your share of the premium, at ' + ctx.cov + '% coverage, from RMA’s 2027 rates and this grid’s record.'
+      ? 'the split with the highest expected payment minus your share of the premium, at ' + ctx.cov + '% coverage, from RMA’s 2027 rates and this grid’s record' + (state.monOn ? ', among the pairs in your months.' : '.')
       : 'the split that would have paid most, after your share of the premium, in the driest fifth of years here (by whole-year precipitation), at ' + ctx.cov + '% coverage.') + '</p>';
+
+    /* the month filter sits under the pick, so the pick and its buttons stay at the top on a phone */
+    h += monUi;
 
     /* Compare setups */
     var cmp = '';
@@ -267,7 +303,7 @@
       if (res.steadier) cmp += row('Steadier option', res.steadier, prot);
       if (res.naive && res.naive.split.join() !== res.rec.split.join()) cmp += row('Grid’s own record alone', res.naive, prot);
       cmp += row('Even spread', res.base.even, prot);
-      cmp += row('The page’s example (Apr-May, Jun-Jul)', res.base.def, prot, 'not offered in this county');
+      cmp += row('The page’s example (Apr-May, Jun-Jul)', res.base.def, prot, state.monOn ? 'not in your months, or not offered in this county' : 'not offered in this county');
       cmp += row('Two driest months', res.base.dry2, prot);
       cmp += '</tbody></table></div>';
     } else {
@@ -352,7 +388,19 @@
     return det('tested', 'What we tested', '', h + '</div>');
   }
 
+  function monthsUi() {
+    var h = '<div class="po-mon"><label class="po-mon-on"><input type="checkbox" id="prf-opt-mon-on"' + (state.monOn ? ' checked' : '') + '> Only months my grass needs rain</label>';
+    if (state.monOn) {
+      h += '<div class="po-mons" role="group" aria-label="Months your grass or hay needs rain">';
+      for (var m = 0; m < 12; m++) h += '<button type="button" class="po-m' + (state.months[m] ? ' is-on' : '') + '" data-opt-mon="' + m + '" aria-pressed="' + !!state.months[m] + '">' + MONTHS[m] + '</button>';
+      h += '</div><p class="po-fine">A pair of months is in play only when both its months are ticked. The pick and this grid’s test below use those pairs alone.</p>';
+    }
+    return h + '</div>';
+  }
+
   function onClick(e) {
+    var mb = e.target.closest ? e.target.closest('[data-opt-mon]') : null;
+    if (mb) { var mi = +mb.getAttribute('data-opt-mon'); state.months[mi] = !state.months[mi]; draw(); var again = section().querySelector('[data-opt-mon="' + mi + '"]'); if (again) again.focus(); return; }
     var t = e.target.closest ? e.target.closest('[data-opt-obj],[data-opt-use]') : null;
     if (!t) return;
     if (t.hasAttribute('data-opt-obj')) { state.objective = t.getAttribute('data-opt-obj'); draw(); return; }
@@ -363,6 +411,7 @@
   }
   function onChange(e) {
     if (e.target && e.target.id === 'prf-opt-enso') { state.enso = e.target.value || null; draw(); }
+    if (e.target && e.target.id === 'prf-opt-mon-on') { state.monOn = !!e.target.checked; draw(); var cb = document.getElementById('prf-opt-mon-on'); if (cb) cb.focus(); }
   }
   var wired = false;
   function wire() {
@@ -386,7 +435,7 @@
     draw();
   }
 
-  root.AgPrfOptUI = { update: update, _state: state };
+  root.AgPrfOptUI = { update: update, _state: state, monthMask: monthMask, validWith: validWith, GRASS_LINE: GRASS_LINE };
   /* prf.js may have rendered a grid before this file loaded; take its last context. */
   var pending = root.AgPrf && root.AgPrf.optCtx;
   if (pending && typeof document !== 'undefined') update(pending);

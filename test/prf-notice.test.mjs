@@ -66,11 +66,15 @@ test("every real grid passes the id check the worker uses; neighbours outside do
   assert.ok(w.includes(" * v5.29 (2026-10-17): PRF GRID INDEX NOTICE."), "the worker header names the change");
 });
 
-test("/prf: one ask holder in the grid card, the component loaded, the byline says what the box sends", () => {
+test("/prf: one ask holder under the answer, the component loaded, the byline says what the box sends", () => {
   const h = read("prf.html");
   assert.equal((h.match(/data-prf-notice/g) || []).length, 1);
-  const card = h.slice(h.indexOf('aria-labelledby="prf-where-h"'), h.indexOf('id="prf-setup"'));
-  assert.ok(card.includes('<div class="prf-notice" data-prf-notice hidden></div>'), "inside the Your grid card");
+  /* Sig, Oct 20: on a ?g= link the email box goes below the answer, not in the grid card above it */
+  const at = h.indexOf('<div class="prf-notice" data-prf-notice hidden></div>');
+  assert.ok(at > h.indexOf('id="prf-answer"') && at > h.indexOf('id="prf-acts"'), "under the step 3 answer");
+  assert.ok(at < h.indexOf('id="prf-det-h"') && at < h.indexOf('id="prf-optimize"'), "above step 4");
+  assert.ok(!h.slice(h.indexOf('aria-labelledby="prf-where-h"'), h.indexOf('id="prf-setup"')).includes("data-prf-notice"), "no longer in the Your grid card");
+  assert.match(read("components/prf.css"), /\.prf-tool \.prf-notice, \.prf-tool \.prf-spon-offer \{ order: 3; \}/, "on a phone it follows the answer, not the top of the tool");
   assert.match(h, /<script src="\/components\/prf-notice\.js\?v=\d+" defer><\/script>/);
   assert.ok(!h.includes("asks for no contact details"), "the old byline claim is gone now that there is a box");
   assert.ok(h.includes("This page sells nothing and refers no one; a labeled sponsor box may be an insurance agency, which has no say over any figure. Its one email box sends your grid&rsquo;s final index when USDA posts it."));

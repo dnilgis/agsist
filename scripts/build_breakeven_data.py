@@ -108,7 +108,9 @@ def arc_for(rec, crop, rent_key):
     for y, p in sorted(row.items()):
         if not p:
             continue
-        if p[0] == "withheld" or len(p) < 3:
+        # ARC/PLC math rows since Oct 20: "mismatch" carries a range answer as
+        # ["mismatch", verdict, words]; only rows with two numbers are counted.
+        if p[0] in ("withheld", "mismatch") or len(p) < 3 or not all(isinstance(v, (int, float)) for v in p[1:3]):
             out[y] = [p[0]]
         else:
             out[y] = [p[0], int(p[1]), int(p[2])]
