@@ -47,6 +47,9 @@
 .ap-trig{margin-top:.55rem!important;padding-top:.5rem;border-top:1px solid var(--border);font-size:var(--fs-sm)}
 .ap-trig b{color:var(--text)}
 .ap-crop .ap-trig-m{margin-top:.1rem;font-size:var(--fs-xs);color:var(--text-muted)}
+.ap-crop .ap-at50,.ap-crop .ap-y25{margin-top:.4rem;font-size:var(--fs-sm)}
+.ap-crop .ap-y25{color:var(--text-muted)}
+.ap-crop .ap-y25 b{color:var(--text)}
 
 /* deadlines */
 .ap-dead{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:.8rem 1rem}
@@ -101,6 +104,8 @@
 .sh-xdense .sh-county{font-size:28pt}
 .sh-xdense .sh-intro{margin:.08in 0 .06in}
 .sh-key{color:#000;font-size:8.5pt;margin:.08in 0 0}
+.sh-table td.a.w{white-space:normal;min-width:1.3in}
+.sh-lease{color:#000;font-size:9pt;line-height:1.35;margin:.08in 0 0}
 .sh-bottom{display:grid;grid-template-columns:1fr 1.6in;gap:.3in;margin-top:auto;padding-top:.14in;border-top:2px solid #000}
 .sh-dead h2{margin:0 0 .05in;font-size:12pt;color:#000}
 .sh-dead ul{margin:0;padding-left:.2in;font-size:10pt;line-height:1.45}

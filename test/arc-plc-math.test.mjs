@@ -42,6 +42,20 @@ const sheetTbody = (doc, f) => M.sheetRows(doc, f).map((r) => {
   return '<tr><td class="c">' + r.lab + "</td>" + cell(r.ly) + cell(r.oy) + "<td>" + r.why + "</td></tr>";
 }).join("");
 
+/* The fixture holds the pre-Oct 20 words. A county average PLC yield over the benchmark said "Ask FSA" and "no
+   typical-farm verdict" there; it now gives the call across PLC yields of 60% to 100% of the benchmark (arcfix, Sig
+   Oct 20, 2026). The fixture's data has no range words (packs ["mismatch"]), so the browser writes its default
+   ("depends on your PLC yield"); newWords() puts exactly those words into the old output, and everything else must
+   still match to the character. The live-tree test below holds the real range words to the build's. */
+const ASK = /Ask FSA|ask your FSA office/;
+const newWords = (h, ly) => h
+  .replace(/<p class="ap-small"><b>([^<]+):<\/b> no typical-farm verdict\. (FSA&rsquo;s average PLC yield for the county \([^)]*\) covers all practices and is above this benchmark \([^)]*\), so it does not describe a typical farm here\.) Run your own PLC yield below\.<\/p>/g,
+    (_m, lab, mid) => `<p class="ap-small"><b>${lab}, ${ly}:</b> ${mid} Across PLC yields of 60% to 100% of the benchmark: depends on your PLC yield. Run your own PLC yield in the calculator below.</p>`)
+  .replace(/No typical-farm answer: FSA&rsquo;s county average PLC yield is above this benchmark yield\. Run your own PLC yield\./g,
+    "No one typical farm: FSA&rsquo;s county average PLC yield is above this benchmark yield. Across PLC yields of 60% to 100% of the benchmark: depends on your PLC yield. Run your own PLC yield in the calculator below.")
+  .replace(/Ask FSA/g, "Depends on your PLC yield")
+  .replace(/County PLC yield is above the benchmark\./g, "County PLC yield is above the benchmark, so we ran 60% to 100% of it.");
+
 test("the fixtures cover what they must: 50+ counties, 20+ states, every kind of answer", () => {
   const pages = Object.entries(FX.pages);
   assert.ok(pages.length >= 50, `${pages.length} counties`);
@@ -65,7 +79,8 @@ test("Show the math: the browser's build equals what the server used to render, 
     const [st, f] = fipsOf(path);
     const got = M.render(FX.data[st], f);
     assert.ok(got, `${path}: no record for ${f} in the fixture data`);
-    const a = oldBody(html), b = got.trim();
+    const a = newWords(oldBody(html), FX.data[st].g.ly), b = got.trim();
+    assert.ok(!ASK.test(b), `${path}: no "Ask FSA"`);
     assert.deepEqual(nums(b), nums(a), `${path}: the numbers differ`);
     assert.equal(text(b), text(a), `${path}: the words differ`);
     assert.equal(b, a, `${path}: the markup differs`);
@@ -78,8 +93,9 @@ test("the counter sheet's rows equal the old per-county sheets, for every fixtur
   let n = 0;
   for (const [path, old] of Object.entries(FX.sheets)) {
     const [st, f] = fipsOf(path);
-    const tb = /<tbody>(.*?)<\/tbody>/s.exec(old.main)[1];
+    const tb = newWords(/<tbody>(.*?)<\/tbody>/s.exec(old.main)[1], FX.data[st].g.ly);
     assert.equal(sheetTbody(FX.data[st], f), tb, `${path}: sheet rows`);
+    assert.ok(!ASK.test(sheetTbody(FX.data[st], f)), `${path}: no "Ask FSA" on the sheet`);
     const rows = (tb.match(/<tr>/g) || []).length;
     assert.equal(old.cls, "ap-sheet" + (rows > 13 ? " sh-dense sh-xdense" : rows > 9 ? " sh-dense" : ""), `${path}: density class`);
     n++;
@@ -154,7 +170,10 @@ test("every county page: its math file renders, and the page's FAQ and cards say
         const [y, w, pc, ac] = part.split(":");
         const p = rec.v[k][i][y];
         assert.equal(p[0], w, `${f} ${k} ${y}: card ${w}, math ${p[0]}`);
-        if (p.length > 2 && (pc === "-" || p[1] === null)) {
+        if (w === "mismatch") {
+          // no one typical farm: the math file carries the range answer's tier verdict and words, never "Ask FSA" (arcfix)
+          assert.ok(p.length === 3 && typeof p[2] === "string" && p[2] && !ASK.test(p[2]), `${f} ${k} ${y}: range words ${JSON.stringify(p)}`);
+        } else if (p.length > 2 && (pc === "-" || p[1] === null)) {
           // money audit 3 (2026-10-19): withheld dollars (flag 8) carry no cents in either place, and only there
           assert.ok(pc === "-" && ac === "-" && p[1] === null && p[2] === null && (p[8] & 8), `${f} ${k} ${y}: withheld in both or neither: card ${pc}/${ac}, math ${p[1]}/${p[2]}`);
         } else if (p.length > 2) {

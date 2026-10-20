@@ -38,8 +38,23 @@ function countyPages() {
   }
   return out;
 }
-const CARD = /<article class="ap-crop" id="crop-([a-z_]+)"([^>]*)><h3>[^<]*<\/h3><div class="ap-lv" data-k="[a-z_]+" data-e="([^"]+)" data-py="[\d.]+" data-t="([^"]+)" data-lv="same" data-p="([^"]*)">(.*?)<\/div>(<p class="ap-trig">.*?<\/p><p class="ap-small ap-trig-m">.*?<\/p>)?<\/article>/g;
+// after the trigger line: the 50-cents-under line and the 2025 line (arcfix, Oct 20, 2026), groups 8 and 9
+const CARD = /<article class="ap-crop" id="crop-([a-z_]+)"([^>]*)><h3>[^<]*<\/h3><div class="ap-lv" data-k="[a-z_]+" data-e="([^"]+)" data-py="[\d.]+" data-t="([^"]+)" data-lv="same" data-p="([^"]*)">(.*?)<\/div>(<p class="ap-trig">.*?<\/p><p class="ap-small ap-trig-m">.*?<\/p>)?(<p class="ap-at50">.*?<\/p>)?(<p class="ap-y25">.*?<\/p>)?<\/article>/g;
 const attrs = (a) => Object.fromEntries([...a.matchAll(/data-([a-z]+)="([^"]*)"/g)].map((m) => [m[1], unesc(m[2])]));
+// data-rng is single-quoted JSON (rng_words in the build): the answers for a PLC yield with no one typical farm
+const rngOf = (a) => { const m = /data-rng='([^']*)'/.exec(a); return m ? JSON.parse(unesc(m[1])) : null; };
+const ASK = /Ask FSA|ask your FSA office/;
+/* The fixture holds the pre-Oct 20 words. A PLC yield over the benchmark said "Ask FSA" there; it now gives the
+   call across PLC yields of 60% to 100% of the benchmark (arcfix, Sig Oct 20, 2026). Those pieces are cut from
+   both sides before the exact comparison, and the new side must not say "Ask FSA"; the live-page test below holds
+   the new words to the build's on every card. */
+const cutMismatch = (h, P) => {
+  let x = h;
+  if (P.w === "mismatch") x = x.replace(/^<div class="ap-ans">.*?<\/div><p>.*?<\/p>/, "");
+  if (P.wo === "mismatch") x = x.replace(/(<p class="ap-oth"><b>[^<]+ ground:<\/b> )[^.]*\./, "$1.");
+  if (P.w7 === "mismatch") x = x.replace(/(<p class="ap-y2"><b>\d{4}:<\/b> ).*?<\/p>$/, "$1</p>");
+  return x;
+};
 
 test("Lower, About the same and Higher: the browser writes the words the old pages carried, every distinct case", () => {
   assert.ok(FX.length >= 1500, `${FX.length} cases`);
@@ -53,7 +68,15 @@ test("Lower, About the same and Higher: the browser writes the words the old pag
   assert.ok(FX.some((x) => x[0].irr), "an irrigated card");
   assert.ok(FX.some((x) => x[0].oth === "Irrigated") && FX.some((x) => x[0].oth === "Non-irrigated"), "other-practice lines");
   assert.ok(FX.some((x) => /cents a pound/.test(x[0].pu)), "a pound crop");
-  for (const [card, pack, sameW, html, where] of FX) assert.equal(C.level(card, pack, sameW), html, `${where} ${pack}`);
+  let cut = 0;
+  for (const [card, pack, sameW, html, where] of FX) {
+    const P = C.unpack(pack), got = C.level(card, pack, sameW);
+    if (P.w !== "mismatch" && P.wo !== "mismatch" && P.w7 !== "mismatch") { assert.equal(got, html, `${where} ${pack}`); continue; }
+    assert.ok(!ASK.test(got), `${where} ${pack}: no "Ask FSA"`);
+    assert.equal(cutMismatch(got, P), cutMismatch(html, P), `${where} ${pack}: the rest of the card`);
+    cut++;
+  }
+  assert.ok(cut >= 50, `${cut} mismatch cases checked`);
 });
 
 test("a clear pick, a futures-start Leans and a withheld answer (none on the live pages today): the build's words, from build_arc_plc.py gap_line, big_word, year_line", () => {
@@ -75,8 +98,11 @@ test("every county page carries one answer per card, and the browser's words for
     for (const m of html.matchAll(CARD)) {
       const [, k, a, e, t, pack, body] = m;
       const A = attrs(a);
-      const card = { lc: A.lc, cen: A.cen || "", pu: A.pu, oth: A.oth || "", irr: e.split(":")[0] === "irr", ly: seg[1], oy: seg[2] };
+      const card = { lc: A.lc, cen: A.cen || "", pu: A.pu, oth: A.oth || "", irr: e.split(":")[0] === "irr", ly: seg[1], oy: seg[2], rng: rngOf(a) };
       assert.equal(C.level(card, pack, pack.split(",")[0]), body, `${p} ${k}: browser and build words`);
+      assert.ok(!ASK.test(body) && !ASK.test(a), `${p} ${k}: never "Ask FSA"`);
+      const PP = C.unpack(pack);
+      if ([PP.w, PP.w7, PP.wo].includes("mismatch")) assert.ok(card.rng, `${p} ${k}: a mismatched answer carries its range words`);
       const [ly, oy] = t.split("|").map((x) => x.split(":")[1]);
       const P = C.unpack(pack);
       assert.equal(P.w, ly, `${p} ${k}: pack and data-t agree (${seg[1]})`);
@@ -84,7 +110,8 @@ test("every county page carries one answer per card, and the browser's words for
       for (const lv of ["lower", "higher"]) {
         const [, t2, pk] = A[lv].split(";");
         assert.equal(C.unpack(pk).w, t2.split("|")[0].split(":")[1], `${p} ${k} ${lv}: pack and data-t agree`);
-        assert.ok(C.level(card, pk, P.w).includes('class="ap-big"'), `${p} ${k} ${lv}: renders`);
+        const L = C.level(card, pk, P.w);
+        assert.ok(L.includes('class="ap-big"') && !ASK.test(L), `${p} ${k} ${lv}: renders, never "Ask FSA"`);
       }
       here++;
     }
@@ -132,7 +159,9 @@ test("trigger line on every card with a price outlook: floor(90% x benchmark x b
       // at or over the benchmark the line is floored to a tenth, so "under 41 bu ... above the 41.00 bu
       // benchmark" cannot print (Childress Co., TX, 2026-10-18); nor "under 52 bu ... above the 52.13 bu"
       // (Newton Co., MO barley, sets pass 2026-10-18); still floored, so "under N" stays true
-      const want = whole >= ent.by || raw > ent.by ? Math.floor(Math.round(raw * 10 * 1e6) / 1e6) / 10 : whole;
+      // pound crops: whole pounds always, like the benchmark beside them (arcfix, Oct 20, 2026: Lubbock Co., TX
+      // read "under 1,613 lb" on one card and "under 2,870.2 lb" on the next)
+      const want = cd.unit !== "lb" && (whole >= ent.by || raw > ent.by) ? Math.floor(Math.round(raw * 10 * 1e6) / 1e6) / 10 : whole;
       const got = +/under <b>([\d,.]+) (?:bu|lb)<\/b>/.exec(trig)[1].replace(/,/g, "");
       assert.equal(got, want, `${p} ${k}: ${got} vs ${want}`);
       assert.ok(got <= raw + 1e-9, `${p} ${k}: floored`);
@@ -143,11 +172,17 @@ test("trigger line on every card with a price outlook: floor(90% x benchmark x b
   assert.ok(n >= 12000, `${n} trigger lines checked`);
 });
 
-test("verdict first: the main page's quick answer comes before the deadlines and the reminder box, and leads with the 2026 counts", () => {
+test("main page: one plain line, then the county picker, then the quick answer (2026 counts first), before the deadlines and the reminder box", () => {
+  // Sig, Oct 20, 2026 (arcfix item 3): on a phone the first screen is one plain line and the county picker;
+  // the counts and the ERP paragraph move below the picker. Until then the quick answer came first.
   const html = readFileSync(ROOT + "arc-plc.html", "utf8");
   const main = html.slice(html.indexOf("<main"));
   const q = main.indexOf('id="quick-answer"'), dl = main.indexOf('class="ap-dead"'), ask = main.indexOf("data-signup-ask"), pick = main.indexOf("data-arcfind");
-  assert.ok(q > 0 && q < dl && q < ask && q < pick, "quick answer above the picker, deadlines and reminder");
+  const first = /<\/h1>\s*<p class="ap-byline">.*?<\/p>\s*<p class="ap-first">([^<]+)<\/p>\s*<h2 class="ap-find-h sr-only">[^<]*<\/h2>\s*<div class="ap-find"/s.exec(main);
+  assert.ok(first, "the H1, the date, one plain line, then the picker");
+  assert.ok(first[1].length < 120 && !/\$\d/.test(first[1]), "the line is short and carries no price");
+  assert.ok(pick > 0 && pick < q && q < dl && q < ask, "picker, then the quick answer, then the deadlines and reminder");
+  assert.ok(main.indexOf("effective reference prices are <b>") > pick, "the ERP paragraph is below the picker");
   const lead = /<div class="ap-quick" id="quick-answer">\s*<p class="ap-lead"><b>For 2026, on a typical farm\.<\/b> Corn: (.*?)<\/p>/.exec(main);
   assert.ok(lead, "quick answer opens with the 2026 counts");
   // the counts are the build's own verdicts, so they add up to the tally sentence below them

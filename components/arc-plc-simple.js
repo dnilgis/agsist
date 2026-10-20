@@ -70,12 +70,12 @@
   function bigWord(w) {
     if (w === 'plc' || w === 'arc') return WORD[w];
     if (w.indexOf('lean_') === 0) return WORD[w.slice(5)];
-    return { close: 'Either one', none: 'Neither expected to pay', mismatch: 'Ask FSA' }[w] || 'No answer yet';
+    return { close: 'Either one', none: 'Neither expected to pay' }[w] || 'No answer yet';
   }
   function shortWord(w) {
     if (w === 'plc' || w === 'arc') return WORD[w];
     if (w.indexOf('lean_') === 0) return 'Leans ' + WORD[w.slice(5)];
-    return { close: 'Either one', none: 'Neither pays', mismatch: 'Ask FSA', pending: 'Wait for USDA', noprice: 'No 2027 price yet', withheld: 'Not enough history' }[w];
+    return { close: 'Either one', none: 'Neither pays', mismatch: 'Depends on your PLC yield', pending: 'Wait for USDA', noprice: 'No 2027 price yet', withheld: 'Not enough history' }[w];
   }
   function low1(t) { return /^(ARC|PLC)/.test(t) ? t : t.charAt(0).toLowerCase() + t.slice(1); }
   function tier(w) { var s = shapeOf(w); return '<span class="ap-tier ap-tier-' + s + '"><svg class="ap-ic" viewBox="0 0 16 16" aria-hidden="true"><use href="#api-' + s + '"/></svg>' + TIER[s] + '</span>'; }
@@ -111,30 +111,39 @@
       return WORD[v.f & 16 ? 'plc' : 'arc'] + ' comes out about $' + v.whole + ' more per base acre, but it swings more than that from year to year.';
     }
     if (w === 'none') return 'Neither one is likely to pay on ' + lc + ' for ' + y + ' at USDA' + RS + 's price outlook' + (c.cen ? ' (' + c.cen + ')' : '') + '.';
-    if (w === 'mismatch') return 'FSA' + RS + 's county average PLC yield is above the county benchmark yield, so there is no typical-farm answer. Ask your FSA office.';
     if (w === 'noprice') return 'There is no ' + y + ' price outlook for ' + lc + ' we can check against past years, so no ' + y + ' answer yet.';
     if (w === 'pending') return 'Waiting on USDA' + RS + 's closing 2025 price, which sets the 2027 reference price.';
     return 'Not enough years of price and county yield history to call it.';
   }
-  function yearLine(w, y) {
-    var t = { mismatch: 'ask your FSA office', pending: 'waiting on USDA' + RS + 's closing 2025 price', noprice: 'no ' + y + ' price yet',
+  function yearLine(w, y, rs) {
+    var t = { mismatch: rs || 'depends on your PLC yield', pending: 'waiting on USDA' + RS + 's closing 2025 price', noprice: 'no ' + y + ' price yet',
       withheld: 'not enough history to say', none: 'neither expected to pay', close: 'close, either one' }[w];
     return '<b>' + y + ':</b> ' + (t || low1(shortWord(w)));
   }
-  /* c: {lc, cen, pu, oth, irr, ly, oy}; p: the packed answer; sameW: the card's About-the-same verdict */
+  /* c: {lc, cen, pu, oth, irr, ly, oy, rng}; p: the packed answer; sameW: the card's About-the-same verdict.
+     rng (data-rng, rng_words in the build): a PLC yield over the benchmark has no one typical farm, so the
+     build ran PLC yields of 60% to 100% of it; ly [big word, tier verdict, answer, benchmark], oy and ot the
+     few words for the other year and the other practice. Never "Ask FSA" (arcfix, Oct 20, 2026). */
   function level(c, p, sameW) {
-    var v = unpackLv(p), w = v.w;
-    var g = w === 'mismatch' && sameW !== 'mismatch' ? 'A PLC yield that high is above the county benchmark yield, so this page cannot figure it. Ask your FSA office.' : gapLine(v, c);
+    var v = unpackLv(p), w = v.w, R = c.rng || {}, ly = R.ly || ['Depends on your PLC yield', 'mismatch', '', ''];
+    var big = bigWord(w), tw = w, g = gapLine(v, c);
+    if (w === 'mismatch') {
+      /* ly: [big word, tier verdict, the answer, the benchmark as printed ('' when the reason does not apply)] */
+      big = ly[0]; tw = ly[1];
+      g = !ly[3] ? ly[2] : sameW === 'mismatch' ? ly[2] + ' The county average PLC yield is above this ' + ly[3] + ' benchmark, so there is no one typical farm here.' :
+        'A PLC yield that high is above the ' + ly[3] + ' benchmark. ' + ly[2];
+    }
     var oth = '';
-    if (c.oth && v.wo) oth = '<p class="ap-oth"><b>' + c.oth + ' ground:</b> ' + (v.wo !== 'mismatch' ? low1(shortWord(v.wo)) : 'ask your FSA office') + '.' + (c.oth === 'Irrigated' ? ' ' + IRR_NOTE : '') + '</p>';
+    if (c.oth && v.wo) oth = '<p class="ap-oth"><b>' + c.oth + ' ground:</b> ' + (v.wo !== 'mismatch' ? low1(shortWord(v.wo)) : (R.ot || 'depends on your PLC yield')) + '.' + (c.oth === 'Irrigated' ? ' ' + IRR_NOTE : '') + '</p>';
     if (c.irr) oth = '<p class="ap-oth">' + IRR_NOTE + '</p>' + oth;
     var erp = w === 'mismatch' ? '' : '<p>PLC only pays if ' + c.lc + ' ' + (/s$/.test(c.lc) ? 'average' : 'averages') + ' under ' + c.pu + ' for ' + c.ly + '.</p>';
-    return '<div class="ap-ans"><span class="ap-big">' + bigWord(w) + '</span>' + tier(w) + '</div><p>' + g + '</p>' + erp + oth + '<p class="ap-y2">' + yearLine(v.w7, c.oy) + '</p>';
+    return '<div class="ap-ans"><span class="ap-big">' + big + '</span>' + tier(tw) + '</div><p>' + g + '</p>' + erp + oth + '<p class="ap-y2">' + yearLine(v.w7, c.oy, R.oy) + '</p>';
   }
   /* a card element -> what level() needs (the attributes the build writes) */
   function cardOf(art, seg) {
-    var lv = art.querySelector('.ap-lv');
-    return { lc: art.getAttribute('data-lc'), cen: art.getAttribute('data-cen') || '', pu: art.getAttribute('data-pu'),
+    var lv = art.querySelector('.ap-lv'), rng = null;
+    try { rng = JSON.parse(art.getAttribute('data-rng') || 'null'); } catch (e) {}
+    return { rng: rng, lc: art.getAttribute('data-lc'), cen: art.getAttribute('data-cen') || '', pu: art.getAttribute('data-pu'),
       oth: art.getAttribute('data-oth') || '', irr: /^irr(:|$)/.test(lv.getAttribute('data-e') || ''),
       ly: seg.getAttribute('data-ly'), oy: seg.getAttribute('data-oy') };
   }
@@ -292,6 +301,8 @@
       } catch (e) {}
     }
     if (want) run.open = true;
+    /* "Depends on your PLC yield: run it below" links to #run: open it when the link is followed */
+    d.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href="#run"]'); if (a) run.open = true; });
   }
 
   /* crop pages (/arc-plc/<crop>): each state's county links, filled from data/arc-plc/hub/<crop>.json when its list opens */
