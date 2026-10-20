@@ -220,6 +220,32 @@ def main():
     chk(seed_static.quote_state(OLD_V36, "2026-10-16T18:46:22Z")[0] is not False,
         "seed_static: a v3.6 quote fetched at 1:46 p.m. CT is not called settled")
 
+    # 14. Monday night Oct 19, real files (panel Oct 20, A4/B1/E2). At 22:31 CT the Monday bar
+    #     still held overnight trades (465.50) and Monday's settle was not posted; at 23:16 CT
+    #     Yahoo opened the Oct 20 bar and the Monday bar read 467.00, its settle. The settle is
+    #     recorded in that run, in the evening session, from the older bar. Before the split the
+    #     bar is a trade: promoting it after 23:30 CT would record an overnight price as Monday's
+    #     settle (Oct 15 at 22:16 CT the bar read 1262.00 against a 1263.00 settle), so an
+    #     unsplit bar is never taken, whatever the hour.
+    mon_carry = {"settles": {"2026-10-14": 480.75, "2026-10-15": 478.0, "2026-10-16": 474.25},
+                 "day_last": {"2026-10-19": {"px": 466.75, "at": "2026-10-19T18:20:00Z"}}}
+    CORN_1020_0331 = [("2026-10-15", 478.0), ("2026-10-16", 474.25), ("2026-10-19", 465.5)]
+    CORN_1020_0416 = [("2026-10-16", 474.25), ("2026-10-19", 467.0), ("2026-10-20", 465.25)]
+    q = quote("corn-dec26", "ZCZ26.CBT", CORN_1020_0331, at("2026-10-20T03:31:20Z"), carried=mon_carry)
+    chk(q["close"] == 466.75 and q["close_kind"] == "last" and q.get("settle_date") == "2026-10-16",
+        "Mon 22:31 CT: Monday's 1:20 p.m. trade, newest settle Friday's (%s)" % q.get("settle_date"))
+    rec = carry(q)
+    q = quote("corn-dec26", "ZCZ26.CBT", CORN_1020_0416, at("2026-10-20T04:16:16Z"), carried=rec)
+    chk(q.get("settle") == 467.0 and q.get("settle_date") == "2026-10-19" and q.get("settle_net") == -7.25
+        and q.get("settles", {}).get("2026-10-19") == 467.0,
+        "Mon 23:16 CT, evening session trading: Monday's 467.00 settle is in Monday night's file")
+    import seed_static
+    sc = seed_static.settled_close(q, "2026-10-20T04:16:16Z")
+    chk(sc and sc["px"] == 467.0 and sc["label"] == "Oct 19", "titles baked from that file carry the Oct 19 settle (%s)" % sc)
+    late = quote("corn-dec26", "ZCZ26.CBT", CORN_1020_0331, at("2026-10-20T05:31:00Z"), carried=rec)
+    chk(late.get("settle_date") == "2026-10-16" and "2026-10-19" not in late.get("settles", {}),
+        "00:31 CT with the bar still unsplit: an overnight trade is never recorded as Monday's settle")
+
     print("PASS" if ok else "FAIL")
     sys.exit(0 if ok else 1)
 
