@@ -911,6 +911,24 @@
     return m ? (gift ? GIFT_PREFIX : '') + 'RPS-' + m[1] : '';
   }
 
+  /* THE ORDER RECORD (2026-10-20, Sig: a $19 payment showed in Stripe with no
+     design on it; client_reference_id sits on the Checkout Session, not on
+     the payment page). Every press of Pay that opens Stripe posts this to the
+     subs worker first (POST /rp-order, kept 120 days, Sig only reads it at
+     /rp-order/list): the same ref Stripe gets, the product, the price shown,
+     the full design link and the design in words, so Sig can match a payment
+     to a design by ref, or by time and product. Never the buyer's email,
+     name or address: Stripe has those. */
+  function orderRecord(x, ref, choice, price) {
+    var s = normalize(x);
+    return {
+      ref: String(ref || ''), product: String(choice || ''), price: typeof price === 'number' && isFinite(price) ? price : null,
+      design_url: designUrl(x), place: s.place, year: s.year, style: s.style, name: s.name,
+      markers: s.markers.map(function (m) { return shortDate(m.date) + (m.label ? ' ' + m.label : ''); }).join('; '),
+      dedication: s.dedication, gift: !!s.gift
+    };
+  }
+
   /* Labels in a link that were longer than a date's 13 letters: normalize cuts
      them to fit, so the page says so instead of printing "Our wedding d"
      quietly (2026-10-14). [{date, label: as it is now, full: as the link had it}]. */
@@ -1646,7 +1664,7 @@
     designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, SHEET: SHEET, sheetBoxes: sheetBoxes, safeInArt: safeInArt, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
-    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
+    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, orderRecord: orderRecord, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, snowTraceRaw: snowTraceRaw, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
     cropInput: cropInput, tempInput: tempInput, histInput: histInput, withoutTemp: withoutTemp, tempStationOk: tempStationOk, tempWords: tempWords, TEMP_KINDS: TEMP_KINDS, HIST_MIN: HIST_MIN, TEMP_GAP_OK: TEMP_GAP_OK, OPT_FLAGS: OPT_FLAGS };
   root.RainPrint = api;
@@ -3544,6 +3562,18 @@
     openProof(true);
   }
   function goTo(u) { try { root.location.assign(u); } catch (err) { root.location.href = u; } }
+  /* The order record (orderRecord above) goes to the subs worker before
+     Stripe opens. Fail-soft: whatever the worker answers, or after
+     PRESS_WAIT_MS with no answer, checkout opens anyway. */
+  var ORDER_URL = 'https://agsist-subs.dnilgis.workers.dev/rp-order', PRESS_WAIT_MS = 2000, PRESS_BUSY = false;
+  function pressPost(rec) {
+    return new Promise(function (done) {
+      var t = root.setTimeout(done, PRESS_WAIT_MS), end = function () { root.clearTimeout(t); done(); };
+      try {
+        root.fetch(ORDER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rec) }).then(end, end);
+      } catch (e) { end(); }
+    });
+  }
   /* What the buyer ordered, kept in this tab (and this browser) for the page
      Stripe sends them back to, and for Back. The design is in the address bar
      too. Nothing leaves the browser. */
@@ -3705,7 +3735,11 @@
       updateUrlNow();
       // the same tab: a link to tap in case the browser holds it back (an in-app browser); no design code in the words, it travels with the payment
       proofSay('Opening checkout\u2026 If nothing happens, <a href="' + esc(u) + '">go to checkout</a>.' + (shortRef() ? ' Your design reference: ' + esc(shortRef()) + '.' : ''), true);
-      goTo(u);
+      // one order record per press, then Stripe; a second tap while it goes counts once
+      if (PRESS_BUSY) return;
+      PRESS_BUSY = true;
+      var J = OJ().j || {};
+      pressPost(orderRecord(ST, code, id, typeof J[id] === 'number' ? J[id] : null)).then(function () { PRESS_BUSY = false; goTo(u); });
       return;
     }
     closeProof(true);

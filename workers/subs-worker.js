@@ -5,6 +5,26 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.34 (2026-10-20): RAIN PRINT ORDER RECORDS. A $19 Stripe payment showed
+ *   no design (Stripe keeps client_reference_id on the Checkout Session, not
+ *   on the payment page). New routes only; every other route answers as before.
+ *   POST /rp-order (public, publicGate, RATE["/rp-order"]): one record per press
+ *     of Pay on /rain-print, sent before the page opens Stripe: {ref (the same
+ *     client_reference_id Stripe gets: a design code, GIFT-<code>, RPS-<id> or
+ *     GIFT-RPS-<id>), product, price shown, design_url, place, year, style,
+ *     name, markers, dedication, gift}. rpo:<ts>:<rand>, kept 120 days. Never an
+ *     email, a buyer name or an address: unknown fields are dropped.
+ *   GET /rp-order/list?days=N (Bearer LIST_TOKEN only; default 14, at most 120):
+ *     the records, newest first. With the optional secret STRIPE_READ_KEY (a
+ *     restricted key, read on Checkout Sessions), each record a completed,
+ *     paid Checkout Session's client_reference_id matches is marked paid
+ *     (amount, time, session id; never the customer); the rest say "pay
+ *     pressed". A paid print or framed print gets the next serial (rpo-serial
+ *     counter, never 0; 0 is Sig's test print) and keeps it. fulfill_url is
+ *     the design link with maker=1 (and serial=N for a print).
+ *   POST /rp-order/serial {last} (Bearer LIST_TOKEN only): the last serial
+ *     already used, so the next one handed out is last + 1.
+ *   New optional secret STRIPE_READ_KEY; no new binding.
  * v5.33 (2026-10-20): GA GATE. New route GET /ga-ok answers {"ok":true} or
  *   {"ok":false}: false when Cloudflare puts the request on a cloud, hosting
  *   or data center network (request.cf.asn in CLOUD_ASNS, or a hosting word
@@ -693,6 +713,7 @@ const PUBLIC_POSTS = new Set(["/subscribe", "/notice", "/alert-subscribe", "/wat
   "/rp-short",   // v5.14
   "/rp-gift/check", "/rp-gift/redeem"]);   // v5.16
 PUBLIC_POSTS.add("/elev/me").add("/elev/save");   // v5.20: the elevator portal
+PUBLIC_POSTS.add("/rp-order");   // v5.34: Rain Print order records
 function publicGate(req, path) {
   const origin = req.headers.get("Origin") || "";
   if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, cors(req));
@@ -727,6 +748,9 @@ const RATE = {
   // v5.20: the elevator portal. A manager opens the page and saves a few
   // times a day; a 24-character key cannot be walked at 60 tries an hour.
   "/elev/me": [60, 300, 1000], "/elev/save": [60, 300, 1000],
+  // v5.34: one record per press of Pay. A buyer presses once or twice; the
+  // daily total bounds KV writes.
+  "/rp-order": [30, 100, 2000],
 };
 // Within one Worker isolate the hourly count is exact (JavaScript runs one
 // request at a time), so a burst that lands before KV has caught up is still
@@ -1603,6 +1627,122 @@ async function formCounts(env) {
   const out = {};
   for (const kind of Object.keys(FORM_KINDS)) out[kind] = (await listKeys(env, "form:" + kind + ":")).length;
   return out;
+}
+
+// ---------- v5.34: Rain Print order records ----------
+// rpo:<ts>:<rand> = one press of Pay on /rain-print (POST /rp-order), kept
+// RPO_TTL_S. rpo-serial = {last}: the last print serial handed out (no expiry).
+const RPO_TTL_S = 120 * 24 * 3600;
+const RPO_MAX_BYTES = 4 * 1024;
+const RPO_KEY_RE = /^rpo:\d{10,16}:[0-9a-f]{8}$/;
+const RPO_PRINTS = ["print12x18", "framed12x18"];
+const RPO_URL_RE = /^https:\/\/agsist\.com\/rain-print\?[A-Za-z0-9%+._~=&-]+$/;
+// The ref Stripe gets (components/rain-print.js checkoutRef): a design code,
+// GIFT-<code>, RPS-<short id> or GIFT-RPS-<short id>, 200 characters at most.
+function rpoRefOk(ref) {
+  if (typeof ref !== "string" || !ref || ref.length > 200) return false;
+  if (/^(GIFT-)?RPS-[0-9A-HJKMNP-TV-Z]{5,8}$/.test(ref)) return true;
+  return rpsCodeOk(ref.replace(/^GIFT-/, ""));
+}
+function rpoClean(b) {
+  if (!rpoRefOk(b.ref)) return { error: "invalid ref" };
+  if (!RP_CHOICES.includes(b.product)) return { error: "invalid product" };
+  const url = String(b.design_url == null ? "" : b.design_url);
+  if (url.length > 2000 || !RPO_URL_RE.test(url)) return { error: "invalid design_url" };
+  const price = typeof b.price === "number" && Number.isFinite(b.price) && b.price >= 0 && b.price <= 10000 ? Math.round(b.price * 100) / 100 : null;
+  const year = Number.isInteger(b.year) && b.year >= 1850 && b.year <= 2100 ? b.year : null;
+  // the design in words only; anything else the body carries is dropped
+  return { rec: {
+    ref: b.ref, product: b.product, price, design_url: url,
+    place: oneLine(b.place, 80), year, style: b.style === "r1" || b.style === "r2" ? b.style : "",
+    name: oneLine(b.name, 60), markers: oneLine(b.markers, 400), dedication: oneLine(b.dedication, 160), gift: b.gift === true,
+  } };
+}
+// Completed Checkout Sessions since sinceSec, from Stripe with a read-only key.
+// Only the id, client_reference_id, payment status, amounts and time are kept:
+// never customer_details or anything else about the buyer.
+async function rpoSessions(env, sinceSec) {
+  const out = [];
+  let after = "";
+  for (let i = 0; i < 10; i++) {
+    const q = new URLSearchParams({ limit: "100", status: "complete", "created[gte]": String(sinceSec) });
+    if (after) q.set("starting_after", after);
+    const r = await fetch("https://api.stripe.com/v1/checkout/sessions?" + q, { headers: { Authorization: "Bearer " + env.STRIPE_READ_KEY } });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const d = await r.json();
+    const got = Array.isArray(d && d.data) ? d.data.filter(x => x && typeof x === "object") : [];
+    for (const x of got) out.push({ id: String(x.id || ""), ref: typeof x.client_reference_id === "string" ? x.client_reference_id : "",
+      paid: x.payment_status === "paid", total: Number(x.amount_total) || 0, sub: Number(x.amount_subtotal) || Number(x.amount_total) || 0,
+      created: Number(x.created) || 0 });
+    if (!d.has_more || !got.length) break;
+    after = String(got[got.length - 1].id || "");
+  }
+  return out;
+}
+async function rpoPut(env, k, r) {
+  const exp = Math.max(Math.floor(Date.now() / 1000) + 120, Math.floor((r.ts || Date.now()) / 1000) + RPO_TTL_S);
+  await env.SUBS.put(k, JSON.stringify(r), { expiration: exp });
+}
+async function rpoSerialLast(env) {
+  try { const v = JSON.parse(await env.SUBS.get("rpo-serial")); return v && Number.isInteger(v.last) && v.last >= 0 ? v.last : 0; }
+  catch (e) { return 0; }
+}
+function rpoFulfill(r, serial) {
+  return r.design_url + "&maker=1" + (RPO_PRINTS.includes(r.product) && serial ? "&serial=" + serial : "");
+}
+// The records of the last `days` days, newest first, each paid or pay pressed.
+// A session is matched to the latest unpaid press of the same ref made before
+// it (the same product's price first). The match and a print's serial are
+// written into the record, so they stay once the session is past the window.
+async function rpoList(env, days) {
+  const now = Date.now(), since = now - days * 86400e3;
+  const recs = [];
+  for (const k of await listKeys(env, "rpo:")) {
+    if (!RPO_KEY_RE.test(k)) continue;
+    let r = null;
+    try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+    if (r && typeof r === "object" && (r.ts || 0) >= since) { r.key = k; recs.push(r); }
+  }
+  recs.sort((a, b) => (a.ts || 0) - (b.ts || 0));
+  let stripe = "no key", sessions = null;
+  if (typeof env.STRIPE_READ_KEY === "string" && env.STRIPE_READ_KEY) {
+    try {
+      const oldest = recs.length ? recs[0].ts : now;
+      sessions = await rpoSessions(env, Math.floor(oldest / 1000) - 60);
+      stripe = "ok";
+    } catch (e) { stripe = "could not be read (" + (e && e.message || "error") + ")"; sessions = null; }
+  }
+  const changed = new Set();
+  if (sessions) {
+    const used = new Set(recs.filter(r => r.paid && r.paid.session).map(r => r.paid.session));
+    for (const s of sessions.filter(x => x.paid && x.ref && !used.has(x.id)).sort((a, b) => a.created - b.created)) {
+      const c = recs.filter(r => !r.paid && r.ref === s.ref && (r.ts || 0) <= s.created * 1000 + 120e3);
+      if (!c.length) continue;
+      const same = c.filter(r => typeof r.price === "number" && Math.round(r.price * 100) === s.sub);
+      const hit = (same.length ? same : c).sort((a, b) => (b.ts || 0) - (a.ts || 0))[0];
+      hit.paid = { amount: s.total / 100, subtotal: s.sub / 100, at: new Date(s.created * 1000).toISOString(), session: s.id };
+      changed.add(hit);
+    }
+  }
+  let last = await rpoSerialLast(env);
+  const lastBefore = last;
+  for (const r of recs) {
+    if (r.paid && RPO_PRINTS.includes(r.product) && !r.serial) { r.serial = ++last; changed.add(r); }
+  }
+  if (last !== lastBefore) await env.SUBS.put("rpo-serial", JSON.stringify({ last }));
+  for (const r of changed) { const k = r.key; delete r.key; await rpoPut(env, k, r); r.key = k; }
+  // Without Stripe, a print's suggested serial: the next free ones, in the order pressed.
+  let next = last;
+  const out = recs.map(r => {
+    const serialNext = !r.serial && !sessions && RPO_PRINTS.includes(r.product) ? ++next : null;
+    return {
+      key: r.key, ts: r.ts, at: new Date(r.ts).toISOString(), ref: r.ref, product: r.product, price: r.price,
+      design_url: r.design_url, place: r.place, year: r.year, style: r.style, name: r.name, markers: r.markers,
+      dedication: r.dedication, gift: !!r.gift, status: r.paid ? "paid" : "pay pressed", paid: r.paid || null,
+      serial: r.serial || null, serial_next: serialNext, fulfill_url: rpoFulfill(r, r.serial || serialNext),
+    };
+  }).reverse();
+  return { stripe, serial_last: last, orders: out };
 }
 
 export default {
@@ -3084,6 +3224,44 @@ async function handle(req, env) {
       rec.status = "redeemed"; rec.redeemed_ts = ts; rec.form_key = fkey; delete rec.pending_ts;
       await env.SUBS.put(key, JSON.stringify(rec));
       return json({ ok: true, redeemed_on: rpgDay(ts), ships: rec.ships, product: rec.product, choice: v.rec.choice, upgrade: up }, 200, c);
+    }
+
+    // ---------- v5.34: Rain Print order records ----------
+    // POST /rp-order: publicGate (Origin, JSON) has already run (PUBLIC_POSTS).
+    if (path === "/rp-order" && req.method === "POST") {
+      const c = cors(req);
+      if (Number(req.headers.get("Content-Length") || 0) > RPO_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, c);
+      let raw = "";
+      try { raw = await req.text(); } catch (e) { raw = ""; }
+      if (raw.length > RPO_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, c);
+      let b = null;
+      try { b = JSON.parse(raw); } catch (e) { b = null; }
+      if (!b || typeof b !== "object" || Array.isArray(b)) return json({ ok: false, error: "bad json" }, 400, c);
+      const v = rpoClean(b);
+      if (v.error) return json({ ok: false, error: v.error }, 400, c);
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
+      const ts = Date.now();
+      const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(x => x.toString(16).padStart(2, "0")).join("");
+      await env.SUBS.put("rpo:" + ts + ":" + rnd, JSON.stringify(Object.assign({ ts }, v.rec)), { expirationTtl: RPO_TTL_S });
+      return json({ ok: true }, 200, c);
+    }
+    // Sig only: Bearer LIST_TOKEN, never ?token=. The Today page on agsist.com reads these.
+    if (path === "/rp-order/list" && req.method === "GET") {
+      if (!sig) return json({ ok: false }, 403, ac);
+      const d = Number(url.searchParams.get("days") || 14);
+      const days = Number.isFinite(d) ? Math.min(120, Math.max(1, Math.floor(d))) : 14;
+      const out = await rpoList(env, days);
+      return json(Object.assign({ ok: true, days }, out), 200, Object.assign({ "Cache-Control": "no-store" }, ac));
+    }
+    if (path === "/rp-order/serial" && req.method === "POST") {
+      if (!sig) return json({ ok: false }, 403, ac);
+      let b = null;
+      try { b = await req.json(); } catch (e) { b = null; }
+      const last = b && b.last;
+      if (!Number.isInteger(last) || last < 0 || last > 999999) return json({ ok: false, error: "last must be a whole number, 0 or more" }, 400, ac);
+      await env.SUBS.put("rpo-serial", JSON.stringify({ last }));
+      return json({ ok: true, serial_last: last, next: last + 1 }, 200, ac);
     }
 
     // ---------- v5.20: the elevator portal ----------
