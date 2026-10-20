@@ -20,7 +20,7 @@
     try { return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : ''; } catch (e) { return ''; }
   }
   function say(html) { main.removeAttribute('aria-busy'); main.classList.add('sh-msg'); main.innerHTML = html; }
-  function cell(x) { return x ? '<td class="a">' + C.icons[x.shape] + x.word + '</td>' : '<td class="a">' + C.icons.ask + 'No answer yet</td>'; }
+  function cell(x) { return x ? '<td class="a' + (x.word.length > 18 ? ' w' : '') + '">' + C.icons[x.shape] + x.word + '</td>' : '<td class="a">' + C.icons.ask + 'No answer yet</td>'; }
 
   var c = q('c').replace(/^\/+|\/+$/g, '').toLowerCase(), parts = c.split('/');
   var sslug = parts[0] || '', cslug = parts[1] || '', st = C.states[sslug];
@@ -49,6 +49,7 @@
       '  <p class="sh-intro">For a typical farm here: FSA&rsquo;s county average PLC yield and benchmark yield. Prices from ' + esc(g.wz) + ' and futures; county yields from FSA.</p>\n' +
       '  <table class="sh-table"><thead><tr><th scope="col">Crop</th><th scope="col">' + LY + '</th><th scope="col">' + OY + '</th><th scope="col">Why</th></tr></thead>\n' +
       '  <tbody>' + html + '</tbody></table>\n  ' + C.key + '\n' +
+      (C.lease ? '  <p class="sh-lease">' + C.lease + '</p>\n' : '') +
       '  <div class="sh-bottom">\n    <div class="sh-dead"><h2>Deadlines</h2><ul>' + g.dl.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>\n' +
       '    <div class="sh-qr"><p class="scan">This county, more detail</p>' + w.AgQR.svg(url, 'QR code for ' + url) + '<p class="url">agsist.com/arc-plc/<br>' + esc(sslug) + '/' + esc(cslug) + '</p></div>\n' +
       '  </div>\n  <p class="sh-foot">General guidance for a typical farm in this county. Your farm&rsquo;s PLC yield can change the answer. Not from FSA.<br>\n' +

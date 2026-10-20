@@ -591,8 +591,10 @@
           paid + ' of the ' + v.n + ' past-year scenarios. With prices centered at ' + pm(sc.center) + ', ' + (v.nousd ? 'the expected payments are not printed: this crop borrows corn&rsquo;s price swings.' : 'PLC is expected to pay ' + pay$(v.plc) + ' and ARC-CO ' + pay$(v.arc) + ' per base acre.') + '</p>';
         if (c.price != null) {
           var u = scenarios(cy, sc.center, sc.ratios, c.price);
-          h += '<p>At your ' + pm(c.price) + ' price, across the same ' + u.n + ' years: PLC ' + pay$(u.plc) + ' vs ARC-CO ' + pay$(u.arc) +
-            ' per base acre; PLC more in ' + u.plcWins + ', ARC-CO in ' + u.arcWins + '. ' + (u.verdict === 'withheld' ? '' : VW[u.verdict] + ' at that price.') + '</p>';
+          /* one price held all year: not the call above, which spreads the price (arcfix item 7) */
+          h += '<p class="ap-atp"><b>At your price only (' + pm(c.price) + '):</b> across the same ' + u.n + ' years of county yields, PLC ' + pay$(u.plc) + ' vs ARC-CO ' + pay$(u.arc) +
+            ' per base acre; PLC more in ' + u.plcWins + ', ARC-CO in ' + u.arcWins + '. ' + (u.verdict === 'withheld' ? '' : VW[u.verdict] + ' at your price only.') +
+            ' The call above spreads the price; this holds it at ' + pm(c.price) + '.</p>';
         }
         var ysrc = sc.fix ? (yTyped ? 'the county yield you typed, every year (the ' + year + ' crop is harvested)' : 'a normal county crop (the benchmark) every year, since county yields come out months after harvest') :
           (c.parts.some(function (p) { return p.dsrc === 'state'; }) ? 'the state average for this crop and practice (the county has too few years)' : 'this county&rsquo;s FSA yields') + ' in the same year';
