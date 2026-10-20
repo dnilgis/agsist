@@ -9,7 +9,8 @@
 <!-- The proof email's "Approve this print" button (scripts/rp_buyer_email.py,
      Sig 2026-10-20: the email is the proof, they sign off in it) opens
      /rain-print-approve?k=<order key>&t=<token>. This page posts them to the
-     subs worker (v5.37, POST /rp-order/approve) and says what happens next.
+     subs worker (v5.37, POST /rp-order/approve) and says what happens next
+     (a digital file: the files by email within minutes, v5.38).
      The approval is a POST made by this page's script, so a mail scanner that
      only fetches the link approves nothing. Approving twice is fine. Nothing
      about the buyer is in the link. Not in the sitemap. -->
@@ -47,9 +48,11 @@
     var d = new Date(iso);
     return isNaN(d) ? '' : d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/Chicago' });
   }
-  function next(product) {
-    return product === 'digital' ? 'The full file comes by email within 1 business day.'
-      : 'I make it, number it and initial it by hand, and it ships within 3 business days.';
+  // a digital file: the email job (started by this approval) sends the files at once (Sig, 2026-10-20)
+  function next(product, already) {
+    if (product === 'digital') return already ? 'Your files went out by email when you approved it. Not there? Check spam, or write to me at sig@farmers1st.com.'
+      : 'Your files come by email within minutes: a PDF, a PNG and a JPG, with a page on how to read it. Not there in an hour? Check spam.';
+    return 'I make it, number it and initial it by hand, and it ships within 3 business days.';
   }
   function go() {
     wrap.hidden = true;
@@ -62,7 +65,7 @@
       .then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
       .then(function (x) {
         if (x.j && x.j.ok) {
-          if (x.j.already) say('Already approved. Thank you.', 'You approved it on ' + day(x.j.at) + '. ' + next(x.j.product), true);
+          if (x.j.already) say('Already approved. Thank you.', 'You approved it on ' + day(x.j.at) + '. ' + next(x.j.product, true), true);
           else say('Approved. Thank you.', next(x.j.product) + ' Questions? Write to me at sig@farmers1st.com.', true);
           return;
         }

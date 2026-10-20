@@ -24,6 +24,14 @@
  *   POST /daily-elev/set {k, ids, forget} -> {ok, n}: ids replace el (6 at
  *     most, 8 hex each, no repeats); forget:true also deletes the key. The
  *     address never leaves the worker on these routes.
+ * v5.38 (2026-10-20): THE DIGITAL FILES GO OUT ON APPROVAL (Sig). POST
+ *   /rp-order/delivered {key, how} (Bearer LIST_TOKEN only): the files email
+ *   for an approved, paid digital file went out (scripts/rp_buyer_email.py,
+ *   how "email"), or the files were too big to attach and Sig sends them
+ *   (how "hand"). Kept as delivered {at, session, how}, never the address it
+ *   went to; once per record (again: already). Refused for a print (409 "not
+ *   a digital file") or a record not approved (409). /rp-order/list adds
+ *   delivered. No new secret, binding or variable.
  * v5.37 (2026-10-20): THE PROOF IS THE EMAIL (Sig). POST /rp-order/approve {k, t}
  *   (public, publicGate, RATE): k is the record key, t = hmac16("rp-approve|" + k)
  *   with UNSUB_SECRET; a right pair on a paid record sets approved {at} once
@@ -1905,6 +1913,7 @@ async function rpoList(env, days) {
       design_url: r.design_url, place: r.place, year: r.year, style: r.style, name: r.name, markers: r.markers,
       dedication: r.dedication, gift: !!r.gift, status: r.paid ? "paid" : "pay pressed", paid: r.paid || null, mailed: r.mailed || null, alerted: r.alerted || null, no_press: !!r.no_press,
       approved: r.approved || null, approved_alerted: r.approved_alerted || null, approve_t: toks[r.key] || null,
+      delivered: r.delivered || null,   // v5.38: the digital files went out (rp_buyer_email.py)
       // the proof went out 3 business days ago and no answer: Sig's Today page flags it (never approved for the buyer)
       approval_overdue: !!(r.paid && r.mailed && !r.approved && rpoBizDaysSince(r.mailed.at, now) >= RPO_APPROVE_WAIT_BIZ),
       serial: r.serial || null, serial_next: serialNext, fulfill_url: rpoFulfill(r, r.serial || serialNext),
@@ -3628,6 +3637,24 @@ async function handle(req, env) {
       r[what] = { at: new Date().toISOString(), session: String(r.paid.session || "") };
       await rpoPut(env, k, r);
       return json({ ok: true, already: false, [what]: r[what] }, 200, ac);
+    }
+    // v5.38: the files email for an approved digital file went out (or Sig sends them by hand), once.
+    if (path === "/rp-order/delivered" && req.method === "POST") {
+      if (!sig) return json({ ok: false }, 403, ac);
+      let b = null;
+      try { b = await req.json(); } catch (e) { b = null; }
+      const k = b && b.key, how = b && b.how === "hand" ? "hand" : "email";
+      if (typeof k !== "string" || !RPO_KEY_RE.test(k)) return json({ ok: false, error: "invalid key" }, 400, ac);
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (!r) return json({ ok: false, error: "not found" }, 404, ac);
+      if (!r.paid) return json({ ok: false, error: "not paid" }, 409, ac);
+      if (r.product !== "digital") return json({ ok: false, error: "not a digital file" }, 409, ac);
+      if (!r.approved) return json({ ok: false, error: "not approved" }, 409, ac);
+      if (r.delivered) return json({ ok: true, already: true, delivered: r.delivered }, 200, ac);
+      r.delivered = { at: new Date().toISOString(), session: String(r.paid.session || ""), how };
+      await rpoPut(env, k, r);
+      return json({ ok: true, already: false, delivered: r.delivered }, 200, ac);
     }
     // v5.36: for the buyer email only (scripts/rp_buyer_email.py): the one paid session's livemode and
     // buyer address, read from Stripe now and handed back. Nothing is stored or logged here.
