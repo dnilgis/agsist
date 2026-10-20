@@ -40,6 +40,11 @@ jobs:
         with:
           persist-credentials: false
           ref: main   # workflow_run defaults to the pre-mesh commit — must
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
                       # checkout main to see the swath day mesh.yml just pushed
 
       # THE SEND LOOP IS CHECKED BEFORE IT IS USED.

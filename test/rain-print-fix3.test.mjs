@@ -228,13 +228,13 @@ test("5, 6, 7: the card's Christmas date carries its condition; above Pay, the p
     assert.equal(await page.isVisible("#rp-another"), true);
     await openSheet(page);
     const when = await page.textContent("#rp-proof-when");
-    assert.equal(when, "Watch for an email from Sig at sig@farmers1st.com with your proof. Check spam if it’s not there by Monday. OK it late? I’ll tell you the new date the same day.",
+    assert.equal(when, "Watch for an email from Sig with your proof. Approve it there. Check spam if it’s not there by Monday. OK it late? I’ll tell you the new date the same day.",
       "Saturday Oct 17: the next business day is Monday");
     const order = await page.evaluate(() => { const w = document.getElementById("rp-proof-when"), b = document.getElementById("rp-proof-order"); return !!(w.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING); });
     assert.ok(order, "the line sits above Pay");
     // the digital file: its own true line, no proof
     await page.check('input[name="rp-pproduct"][value="digital"]');
-    assert.equal(await page.textContent("#rp-proof-when"), "The finished file comes by email from Sig at sig@farmers1st.com within 1 business day. Check spam if it’s not there by Monday.");
+    assert.equal(await page.textContent("#rp-proof-when"), "Watch for an email from Sig with your proof. Approve it there and the full file follows. Check spam if it’s not there by Monday.");
     await page.check('input[name="rp-pproduct"][value="framed12x18"]');
     // 7, (e), (m): the gift address note under Their address, and no second instruction elsewhere
     await page.check("#rp-pg-on");

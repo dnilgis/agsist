@@ -54,6 +54,7 @@
     .rbz-go,.rbz-ghost,.rbz-pick{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 1.2rem;border-radius:6px;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
     .rbz-go{color:#14110a!important;background:var(--gold-fill,var(--brand));border:none}
     .rbz-go:disabled{opacity:.6;cursor:default}
+    .rbz-from{font-weight:600;color:var(--text)}
     .rbz-ghost,.rbz-pick{color:var(--text)!important;background:var(--surface);border:1px solid var(--border)}
     .rbz-pick{min-height:40px;padding:0 .9rem;font-weight:600;font-size:.9rem}
     .rbz-go:focus-visible,.rbz-ghost:focus-visible,.rbz-pick:focus-visible,.rbz-file:focus-visible+.rbz-pick{outline:2px solid var(--brand);outline-offset:2px}
@@ -153,7 +154,7 @@
 
       <p class="lead">Elevators, co-ops, seed dealers, ag lenders, crop insurance agencies and equipment dealers give customers something every December. Most of it is a cap, a calendar or a box of sausage. A Rain Print is a year of rain at the customer&rsquo;s own place, drawn day by day and printed on 13 x 19 heavy, textured cotton fine-art paper for the wall.</p>
       <p>Each print can be a different customer&rsquo;s town and year, or one town for the whole list. I print, frame and ship every one myself, from 5 prints up, on one invoice.</p>
-      <p class="rbz-ctas"><a class="rbz-go" href="#rb-quote" data-rbz-cta="hero-quote">Get a quote</a> <a class="rbz-ghost" href="/rain-print" data-rbz-cta="hero-try">Draw one for your town, free</a></p>
+      <p class="rbz-ctas"><a class="rbz-go" href="#rb-quote" data-rbz-cta="hero-quote">Get a quote</a> <span class="rbz-from" id="rbz-from">From $32 a print, delivered</span> <a class="rbz-ghost" href="/rain-print" data-rbz-cta="hero-try">Draw one for your town, free</a></p>
       <p class="rbz-date" id="rbz-cutoff">For Christmas, send your list by Nov 20.</p>
 
       <figure class="rbz-fig">
@@ -188,7 +189,7 @@
         </tbody>
       </table></div>
       <p class="rbz-fine">5 to 9 prints cost the regular price, on one invoice. A digital file is $19 each, emailed. Over 100 prints, ask me for a quote.</p>
-      <p class="rbz-sample" id="rbz-sample">Want to see one first? Order one at the regular price and I take it off your invoice when you order 10 or more.</p>
+      <p class="rbz-sample" id="rbz-sample">Want to see one first? <a href="/rain-print#rp-buy" data-rbz-cta="sample">Order one at the regular price</a> and I take it off your invoice when you order 10 or more. When you pay, tick <b>This is a gift</b> and put your business name in the note, so I can match it to your order.</p>
       <p class="rbz-sample" id="rbz-sample-by" hidden></p>
 
       <h2 id="christmas">Christmas dates</h2>
@@ -242,7 +243,7 @@
               <label><input type="radio" name="rb-ship" value="not-sure" checked><span>Not sure yet</span></label>
             </div></fieldset>
             <div class="rbz-wide">
-              <label class="rbz-f"><span>Towns and years, one per line, or one town for all</span><textarea id="rb-towns" maxlength="8000" rows="6" required aria-describedby="rb-towns-help rb-csv-msg" placeholder="The Olson Farm, Chetek, WI, 2025&#10;Rice Lake, WI 2012&#10;(or: Chetek, WI 2025 for all of them)"></textarea></label>
+              <label class="rbz-f"><span>Towns and years, one per line, or one town for all</span><textarea id="rb-towns" maxlength="20000" rows="6" required aria-describedby="rb-towns-help rb-csv-msg" placeholder="The Olson Farm, Chetek, WI, 2025&#10;Rice Lake, WI 2012&#10;(or: Chetek, WI 2025 for all of them)"></textarea></label>
               <p class="rbz-fine" id="rb-towns-help">Or load your list: <input class="rbz-file" id="rb-csv" type="file" accept=".csv,.txt,text/csv,text/plain"><label class="rbz-pick" for="rb-csv">Choose a CSV file</label> It is read on your computer and put in the box above, where you can check it before you send.</p>
               <p class="rbz-fine rbz-msg" id="rb-csv-msg" aria-live="polite"></p>
             </div>
@@ -300,7 +301,7 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a> · <a href="/manure-value">Manure value</a> · <a href="/drought-monitor">Drought monitor</a><br>
     <b>Field:</b> <a href="/rain-radar">Rain on your field</a> · <a href="/rain">Rain by county</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray advisory</a> · <a href="/fall-nitrogen">Soil temp (fall anhydrous)</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/urea">Urea loss</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/pod-counts">Pod counts</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts reference tables</a><br>
     <b>Money &amp; Land:</b> <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/farmland-index">Farmland sale index</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a> · <a href="/foreign-land">Foreign-owned land</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/data-sources">Data sources</a> · <a href="/contact">Contact</a> · <a href="/status">Status</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
@@ -309,8 +310,8 @@
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/form-post.js?v=5" defer></script>
   <script src="/components/rp-logo.js?v=2" defer></script>
-  <script src="/components/rain-print.js?v=59" defer></script>
-  <script src="/components/rp-business.js?v=4" defer></script>
+  <script src="/components/rain-print.js?v=60" defer></script>
+  <script src="/components/rp-business.js?v=6" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

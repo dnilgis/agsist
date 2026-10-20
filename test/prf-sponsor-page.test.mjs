@@ -109,3 +109,77 @@ test("listed in the sitemap and linked from the advertise page", () => {
   assert.ok(readFileSync(ROOT + "sitemap.xml", "utf8").includes("<loc>https://agsist.com/prf-sponsor</loc>"));
   assert.ok(readFileSync(ROOT + "sponsor.html", "utf8").includes('href="/prf-sponsor"'));
 });
+
+// 2026-10-20 (business walk-through, /prf-sponsor?state=IA on a phone: Send sat under all 48 state boxes).
+// With a state from the link the boxes fold behind "Add more states"; without one the list stays open.
+import { existsSync as _exists } from "node:fs";
+import { createServer as _createServer } from "node:http";
+import { extname as _extname, join as _join, normalize as _normalize } from "node:path";
+const _PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
+const _CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
+let _chromium = null;
+try { if (_exists(_PW)) ({ chromium: _chromium } = await import(_PW)); } catch (e) { _chromium = null; }
+const _skip = !_chromium || !_exists(_CHROME) ? "Playwright or Chromium not found here" : false;
+
+test("the folded list's line names what is ticked", () => {
+  assert.equal(PG.pickedLine(["Iowa"]), "Ticked: Iowa.");
+  assert.equal(PG.pickedLine(["Iowa", "Kansas"]), "Ticked: Iowa and Kansas.");
+  assert.equal(PG.pickedLine(["Iowa", "Kansas", "Nebraska"]), "Ticked: Iowa, Kansas and Nebraska.");
+  assert.equal(PG.pickedLine([]), "No state ticked yet.");
+  assert.match(HTML, /<button type="button" class="cl-btn2 ps-more" id="ps-more" aria-expanded="false" aria-controls="ps-states-list" hidden>Add more states<\/button>/);
+  assert.match(HTML, /<div class="ps-states" id="ps-states-list">/, "open in the HTML: folded only by the script, only with ?state=");
+  assert.match(HTML, /\.ps-states\[hidden\]\{display:none\}/, "the grid rule cannot override hidden");
+});
+
+test("browser: ?state=IA folds the 48 boxes so Send is near the top on a phone; no ?state= keeps them open", { skip: _skip, timeout: 120000 }, async () => {
+  const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml", ".png": "image/png", ".woff2": "font/woff2" };
+  const srv = _createServer((req, res) => {
+    let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
+    if (!_extname(p) && p !== "/") p += ".html";
+    const f = _normalize(_join(ROOT, p));
+    if (!f.startsWith(ROOT) || !_exists(f)) { res.writeHead(404); res.end(); return; }
+    res.writeHead(200, { "content-type": types[_extname(f)] || "application/octet-stream" });
+    res.end(readFileSync(f));
+  });
+  await new Promise((ok) => srv.listen(0, "127.0.0.1", ok));
+  const base = "http://127.0.0.1:" + srv.address().port;
+  const browser = await _chromium.launch({ executablePath: _CHROME });
+  try {
+    for (const width of [390, 1280]) {
+      const ctx = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: "block" });
+      const p = await ctx.newPage();
+      const errors = [];
+      p.on("pageerror", (e) => errors.push(e.message));
+      await p.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
+      const sendY = () => p.evaluate(() => document.getElementById("ps-send").getBoundingClientRect().top - document.getElementById("ps-form").getBoundingClientRect().top);
+
+      await p.goto(base + "/prf-sponsor");
+      assert.equal(await p.locator("#ps-states-list").isVisible(), true, "open without ?state=");
+      assert.equal(await p.locator("#ps-more").isHidden(), true);
+      const openY = await sendY();
+
+      await p.goto(base + "/prf-sponsor?state=IA");
+      assert.equal(await p.locator("#ps-states-list").isHidden(), true, "folded with ?state=");
+      assert.equal(await p.locator("#ps-more").isVisible(), true);
+      assert.equal(await p.textContent("#ps-picked"), "Ticked: Iowa.");
+      assert.equal(await p.locator('input[name=states][value=IA]').isChecked(), true);
+      const foldY = await sendY();
+      if (width === 390) assert.ok(openY - foldY > 600, "Send moves up a long way on a phone: " + openY + " -> " + foldY);
+      assert.equal(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, "no sideways scroll at " + width);
+      // the preview's state picker ticks another state; the line follows it
+      await p.selectOption("#ps-pick", "KS");
+      assert.equal(await p.textContent("#ps-picked"), "Ticked: Iowa and Kansas.");
+      // Add more states opens the list for good, focus on the first box
+      await p.click("#ps-more");
+      assert.equal(await p.locator("#ps-states-list").isVisible(), true);
+      assert.equal(await p.locator("#ps-more").isHidden(), true);
+      assert.equal(await p.getAttribute("#ps-more", "aria-expanded"), "true");
+      assert.equal(await p.evaluate(() => document.activeElement && document.activeElement.name), "states");
+      // no price, no counter came with the fold
+      const txt = await p.textContent("#ask");
+      assert.ok(!PRICE.test(txt) && !/(states?|slots?) (left|open|available)/i.test(txt));
+      assert.deepEqual(errors, []);
+      await ctx.close();
+    }
+  } finally { await browser.close(); srv.close(); }
+});

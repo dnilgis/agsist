@@ -37,7 +37,14 @@ jobs:
             scripts/build_state_stats.py
             scripts/usda_dates.py
             data/state-stats.json
+            /.github/actions/engine/
+            /.github/engine-paths
           sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
       - id: g
         env:
           EV: ${{ github.event_name }}
@@ -50,6 +57,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

@@ -1,0 +1,8 @@
+# Where the collection code lives and which paths it fills in a checkout.
+# Read by .github/actions/engine/engine.sh (the "Engine checkout" step in every
+# workflow job that runs code, and local sessions). Lines: repo, branch, path.
+repo dnilgis/agsistretired
+branch engine-agsist
+path scripts
+path test
+path build

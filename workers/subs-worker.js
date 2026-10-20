@@ -5,6 +5,59 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.37 (2026-10-20): THE PROOF IS THE EMAIL (Sig). POST /rp-order/approve {k, t}
+ *   (public, publicGate, RATE): k is the record key, t = hmac16("rp-approve|" + k)
+ *   with UNSUB_SECRET; a right pair on a paid record sets approved {at} once
+ *   (again: already, same time) and starts the email job for Sig's "approved"
+ *   alert. Wrong or missing t: 403. /rp-order/list adds approved, approve_t,
+ *   approved_alerted and approval_overdue (proof mailed 3 business days ago,
+ *   Mon to Fri, no answer; never approved for the buyer). POST
+ *   /rp-order/approved-alerted {key} marks Sig's approval alert. No new secret.
+ * v5.36 (2026-10-20), part 2: ORDER ALERTS. POST /rp-order/stripe is Stripe's webhook
+ *   (checkout.session.completed when paid, checkout.session.async_payment_succeeded),
+ *   checked with the new secret STRIPE_WEBHOOK_SECRET (Stripe-Signature, HMAC
+ *   SHA-256, 5 minutes' tolerance; 400 otherwise). It marks the press paid
+ *   (paid.via "webhook"), hands a print its serial, keeps a paid session with
+ *   no press as its own record (no_press), once per session (rpo-ev:<id>),
+ *   and starts .github/workflows/rp-buyer-email.yml when GH_DISPATCH_TOKEN is
+ *   set (RP_BUYER_EMAIL_LIVE = "1" lets the buyer email reach buyers; else a
+ *   dry run). POST /rp-order/alerted {key} marks Sig's alert sent, like
+ *   /rp-order/mailed. The poll in /rp-order/list stays as the backup.
+ *   New optional secrets STRIPE_WEBHOOK_SECRET, GH_DISPATCH_TOKEN; variable
+ *   RP_BUYER_EMAIL_LIVE. Every other route answers as before.
+ * v5.36 (2026-10-20): RAIN PRINT ORDER RECORDS. A $19 Stripe payment showed
+ *   no design (Stripe keeps client_reference_id on the Checkout Session, not
+ *   on the payment page). New routes only; every other route answers as before.
+ *   POST /rp-order (public, publicGate, RATE["/rp-order"]): one record per press
+ *     of Pay on /rain-print, sent before the page opens Stripe: {ref (the same
+ *     client_reference_id Stripe gets: a design code, GIFT-<code>, RPS-<id> or
+ *     GIFT-RPS-<id>), product, price shown, design_url, place, year, style,
+ *     name, markers, dedication, gift}. rpo:<ts>:<rand>, kept 120 days. Never an
+ *     email, a buyer name or an address: unknown fields are dropped.
+ *   GET /rp-order/list?days=N (Bearer LIST_TOKEN only; default 14, at most 120):
+ *     the records, newest first. With the optional secret STRIPE_READ_KEY (a
+ *     restricted key, read on Checkout Sessions), each record a completed,
+ *     paid Checkout Session's client_reference_id matches is marked paid
+ *     (amount, time, session id; never the customer); the rest say "pay
+ *     pressed". A paid print or framed print gets the next serial (rpo-serial
+ *     counter, never 0; 0 is Sig's test print; with no counter stored the first is
+ *     No. 0002, as No. 0001 is his wife's print) and keeps it. fulfill_url is
+ *     the design link with maker=1 (and serial=N for a print).
+ *   POST /rp-order/mailed {key} (Bearer LIST_TOKEN only): the buyer's email
+ *     for this paid record went out (scripts/rp_buyer_email.py); kept as
+ *     mailed {at, session}, never the address. A second call changes nothing,
+ *     so each paid session gets one email.
+ *   GET /rp-order/buyer?key= (Bearer LIST_TOKEN only): for the buyer email,
+ *     the paid record's session read from Stripe now: {livemode, email}.
+ *     Nothing stored. The one place the read key lives is this worker.
+ *   POST /rp-order/serial {last} (Bearer LIST_TOKEN only): the last serial
+ *     already used, so the next one handed out is last + 1.
+ *   New optional secret STRIPE_READ_KEY; no new binding.
+ * v5.35 (2026-10-20): BUSINESS LISTS OF 100 WITH ADDRESSES. kind
+ *   rain-print-business takes towns up to 20,000 characters (was 8,000), so
+ *   100 ship-to-each customers with mailing addresses fit; POST /form takes a
+ *   body up to 48 KB (was 16 KB). Every field cap of every other kind is
+ *   unchanged. No new route, binding or secret.
  * v5.34 (2026-10-20): A BOARD SIG PASTES BY HAND. New routes only; every
  *   existing route answers exactly as before. No new binding and no new secret.
  *   NEW Cooperative's site puts a Cloudflare bot check in front of the bids
@@ -712,6 +765,8 @@ const PUBLIC_POSTS = new Set(["/subscribe", "/notice", "/alert-subscribe", "/wat
   "/rp-short",   // v5.14
   "/rp-gift/check", "/rp-gift/redeem"]);   // v5.16
 PUBLIC_POSTS.add("/elev/me").add("/elev/save");   // v5.20: the elevator portal
+PUBLIC_POSTS.add("/rp-order");   // v5.36: Rain Print order records
+PUBLIC_POSTS.add("/rp-order/approve");   // v5.37: the buyer approves the proof
 function publicGate(req, path) {
   const origin = req.headers.get("Origin") || "";
   if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, cors(req));
@@ -746,6 +801,11 @@ const RATE = {
   // v5.20: the elevator portal. A manager opens the page and saves a few
   // times a day; a 24-character key cannot be walked at 60 tries an hour.
   "/elev/me": [60, 300, 1000], "/elev/save": [60, 300, 1000],
+  // v5.36: one record per press of Pay. A buyer presses once or twice; the
+  // daily total bounds KV writes.
+  "/rp-order": [30, 100, 2000],
+  // v5.36: approving a proof: a buyer taps once or twice; a wrong token counts too.
+  "/rp-order/approve": [20, 60, 1000],
 };
 // Within one Worker isolate the hourly count is exact (JavaScript runs one
 // request at a time), so a burst that lands before KV has caught up is still
@@ -1003,7 +1063,7 @@ const FORM_KINDS = {
   // v5.12: Rain Print business quotes (rain-print.html#rp-biz). Sig emails back a quote and proofs.
   "rain-print-business": {
     business: [120, true], name: [80, true], email: [254, true, "email"], phone: [30],
-    quantity: [3, true, "rpqty"], product: [10, true, "rpbproduct"], towns: [8000, true, "text"],
+    quantity: [3, true, "rpqty"], product: [10, true, "rpbproduct"], towns: [20000, true, "text"],
     ship: [10, true, "rpbship"], note_all: [300, false, "text"], notes: [2000, false, "text"], page: [60],
     logo: [12, false, "rplogo"],   // v5.23: for the note card or the prints
   },
@@ -1033,7 +1093,7 @@ const RP_DELIVER = ["buyer", "recipient"];
 const RPB_PRODUCTS = ["print", "framed", "digital", "not-sure"];
 const RPB_SHIP = ["one", "each", "not-sure"];
 const RPB_QTY_MIN = 5, RPB_QTY_MAX = 500;    // v5.17: business orders start at 5 prints
-const FORM_MAX_BYTES = 16 * 1024;
+const FORM_MAX_BYTES = 48 * 1024;   // v5.35: a 20,000-character business list plus the rest, in UTF-8
 const FORM_RATE_MAX = 8;                 // posts per IP per hour, all kinds together
 const FORM_TTL_S = 365 * 24 * 3600;      // a stored post is dropped after a year
 const FORM_KEY_RE = /^form:[a-z-]{2,30}:\d{10,16}:[0-9a-f]{8}$/;
@@ -1662,6 +1722,232 @@ async function formCounts(env) {
   const out = {};
   for (const kind of Object.keys(FORM_KINDS)) out[kind] = (await listKeys(env, "form:" + kind + ":")).length;
   return out;
+}
+
+// ---------- v5.36: Rain Print order records ----------
+// rpo:<ts>:<rand> = one press of Pay on /rain-print (POST /rp-order), kept
+// RPO_TTL_S. rpo-serial = {last}: the last print serial handed out (no expiry).
+const RPO_TTL_S = 120 * 24 * 3600;
+const RPO_MAX_BYTES = 4 * 1024;
+const RPO_KEY_RE = /^rpo:\d{10,16}:[0-9a-f]{8}$/;
+const RPO_PRINTS = ["print12x18", "framed12x18"];
+const RPO_URL_RE = /^https:\/\/agsist\.com\/rain-print\?[A-Za-z0-9%+._~=&-]+$/;
+// The ref Stripe gets (components/rain-print.js checkoutRef): a design code,
+// GIFT-<code>, RPS-<short id> or GIFT-RPS-<short id>, 200 characters at most.
+function rpoRefOk(ref) {
+  if (typeof ref !== "string" || !ref || ref.length > 200) return false;
+  if (/^(GIFT-)?RPS-[0-9A-HJKMNP-TV-Z]{5,8}$/.test(ref)) return true;
+  return rpsCodeOk(ref.replace(/^GIFT-/, ""));
+}
+function rpoClean(b) {
+  if (!rpoRefOk(b.ref)) return { error: "invalid ref" };
+  if (!RP_CHOICES.includes(b.product)) return { error: "invalid product" };
+  const url = String(b.design_url == null ? "" : b.design_url);
+  if (url.length > 2000 || !RPO_URL_RE.test(url)) return { error: "invalid design_url" };
+  const price = typeof b.price === "number" && Number.isFinite(b.price) && b.price >= 0 && b.price <= 10000 ? Math.round(b.price * 100) / 100 : null;
+  const year = Number.isInteger(b.year) && b.year >= 1850 && b.year <= 2100 ? b.year : null;
+  // the design in words only; anything else the body carries is dropped
+  return { rec: {
+    ref: b.ref, product: b.product, price, design_url: url,
+    place: oneLine(b.place, 80), year, style: b.style === "r1" || b.style === "r2" ? b.style : "",
+    name: oneLine(b.name, 60), markers: oneLine(b.markers, 400), dedication: oneLine(b.dedication, 160), gift: b.gift === true,
+  } };
+}
+// Completed Checkout Sessions since sinceSec, from Stripe with a read-only key.
+// Only the id, client_reference_id, payment status, amounts and time are kept:
+// never customer_details or anything else about the buyer.
+async function rpoSessions(env, sinceSec) {
+  const out = [];
+  let after = "";
+  for (let i = 0; i < 10; i++) {
+    const q = new URLSearchParams({ limit: "100", status: "complete", "created[gte]": String(sinceSec) });
+    if (after) q.set("starting_after", after);
+    const r = await fetch("https://api.stripe.com/v1/checkout/sessions?" + q, { headers: { Authorization: "Bearer " + env.STRIPE_READ_KEY } });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const d = await r.json();
+    const got = Array.isArray(d && d.data) ? d.data.filter(x => x && typeof x === "object") : [];
+    for (const x of got) out.push({ id: String(x.id || ""), ref: typeof x.client_reference_id === "string" ? x.client_reference_id : "",
+      paid: x.payment_status === "paid", total: Number(x.amount_total) || 0, sub: Number(x.amount_subtotal) || Number(x.amount_total) || 0,
+      created: Number(x.created) || 0 });
+    if (!d.has_more || !got.length) break;
+    after = String(got[got.length - 1].id || "");
+  }
+  return out;
+}
+// The press a paid session belongs to: the latest unpaid press of the same ref
+// made before the session (two minutes' slack), the same product's price first.
+function rpoMatch(recs, s) {
+  const c = recs.filter(r => !r.paid && r.ref === s.ref && (r.ts || 0) <= s.created * 1000 + 120e3);
+  if (!c.length) return null;
+  const same = c.filter(r => typeof r.price === "number" && Math.round(r.price * 100) === s.sub);
+  return (same.length ? same : c).sort((a, b) => (b.ts || 0) - (a.ts || 0))[0];
+}
+function rpoPaid(s, via) {
+  return { amount: s.total / 100, subtotal: s.sub / 100, at: new Date(s.created * 1000).toISOString(), session: s.id, via };
+}
+async function rpoPut(env, k, r) {
+  const exp = Math.max(Math.floor(Date.now() / 1000) + 120, Math.floor((r.ts || Date.now()) / 1000) + RPO_TTL_S);
+  await env.SUBS.put(k, JSON.stringify(r), { expiration: exp });
+}
+// No counter stored yet: last = 1. No. 0001 is already Sig's wife's print (Sig, Oct 17), so the first paid print is No. 0002.
+const RPO_SERIAL_START_LAST = 1;
+async function rpoSerialLast(env) {
+  try { const v = JSON.parse(await env.SUBS.get("rpo-serial")); return v && Number.isInteger(v.last) && v.last >= 0 ? v.last : RPO_SERIAL_START_LAST; }
+  catch (e) { return RPO_SERIAL_START_LAST; }
+}
+// v5.37: the proof email's Approve link carries k (the record key) and t, an HMAC
+// of the key with UNSUB_SECRET under its own label. Nothing about the buyer.
+function rpoApproveToken(env, k) { return hmac16("rp-approve|" + k, env.UNSUB_SECRET); }
+// Business days (Mon to Fri) from an ISO time to now; holidays are not counted out here.
+function rpoBizDaysSince(iso, nowMs) {
+  const t = Date.parse(iso || "");
+  if (!Number.isFinite(t)) return 0;
+  let n = 0;
+  for (let d = new Date(t); ; ) {
+    d = new Date(d.getTime() + 86400e3);
+    if (d.getTime() > nowMs) break;
+    const w = d.getUTCDay();
+    if (w !== 0 && w !== 6) n++;
+  }
+  return n;
+}
+const RPO_APPROVE_WAIT_BIZ = 3;
+function rpoFulfill(r, serial) {
+  if (!r.design_url) return "";
+  return r.design_url + "&maker=1" + (RPO_PRINTS.includes(r.product) && serial ? "&serial=" + serial : "");
+}
+// The records of the last `days` days, newest first, each paid or pay pressed.
+// A session is matched to the latest unpaid press of the same ref made before
+// it (the same product's price first). The match and a print's serial are
+// written into the record, so they stay once the session is past the window.
+async function rpoList(env, days) {
+  const now = Date.now(), since = now - days * 86400e3;
+  const recs = [];
+  for (const k of await listKeys(env, "rpo:")) {
+    if (!RPO_KEY_RE.test(k)) continue;
+    let r = null;
+    try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+    if (r && typeof r === "object" && (r.ts || 0) >= since) { r.key = k; recs.push(r); }
+  }
+  recs.sort((a, b) => (a.ts || 0) - (b.ts || 0));
+  let stripe = "no key", sessions = null;
+  if (typeof env.STRIPE_READ_KEY === "string" && env.STRIPE_READ_KEY) {
+    try {
+      const oldest = recs.length ? recs[0].ts : now;
+      sessions = await rpoSessions(env, Math.floor(oldest / 1000) - 60);
+      stripe = "ok";
+    } catch (e) { stripe = "could not be read (" + (e && e.message || "error") + ")"; sessions = null; }
+  }
+  const changed = new Set();
+  if (sessions) {
+    const used = new Set(recs.filter(r => r.paid && r.paid.session).map(r => r.paid.session));
+    for (const s of sessions.filter(x => x.paid && x.ref && !used.has(x.id)).sort((a, b) => a.created - b.created)) {
+      const hit = rpoMatch(recs, s);
+      if (!hit) continue;
+      hit.paid = rpoPaid(s, "poll");
+      changed.add(hit);
+    }
+  }
+  let last = await rpoSerialLast(env);
+  const lastBefore = last;
+  for (const r of recs) {
+    if (r.paid && RPO_PRINTS.includes(r.product) && !r.serial) { r.serial = ++last; changed.add(r); }
+  }
+  if (last !== lastBefore) await env.SUBS.put("rpo-serial", JSON.stringify({ last }));
+  for (const r of changed) { const k = r.key; delete r.key; await rpoPut(env, k, r); r.key = k; }
+  // Without Stripe, a print's suggested serial: the next free ones, in the order pressed.
+  let next = last;
+  const toks = {};
+  for (const r of recs) if (r.paid) toks[r.key] = await rpoApproveToken(env, r.key);
+  const out = recs.map(r => {
+    const serialNext = !r.serial && !sessions && RPO_PRINTS.includes(r.product) ? ++next : null;
+    return {
+      key: r.key, ts: r.ts, at: new Date(r.ts).toISOString(), ref: r.ref, product: r.product, price: r.price,
+      design_url: r.design_url, place: r.place, year: r.year, style: r.style, name: r.name, markers: r.markers,
+      dedication: r.dedication, gift: !!r.gift, status: r.paid ? "paid" : "pay pressed", paid: r.paid || null, mailed: r.mailed || null, alerted: r.alerted || null, no_press: !!r.no_press,
+      approved: r.approved || null, approved_alerted: r.approved_alerted || null, approve_t: toks[r.key] || null,
+      // the proof went out 3 business days ago and no answer: Sig's Today page flags it (never approved for the buyer)
+      approval_overdue: !!(r.paid && r.mailed && !r.approved && rpoBizDaysSince(r.mailed.at, now) >= RPO_APPROVE_WAIT_BIZ),
+      serial: r.serial || null, serial_next: serialNext, fulfill_url: rpoFulfill(r, r.serial || serialNext),
+    };
+  }).reverse();
+  return { stripe, serial_last: last, orders: out };
+}
+
+// ---------- v5.36: the Stripe webhook (Sig: "alerts whenever an order is placed") ----------
+// POST /rp-order/stripe, from Stripe only: the Stripe-Signature header is
+// checked against STRIPE_WEBHOOK_SECRET (HMAC SHA-256 of "<t>.<body>", any v1,
+// t within RPO_WH_TOLERANCE_S of now). A paid checkout.session.completed or a
+// checkout.session.async_payment_succeeded marks its press paid (rpoMatch, as
+// the poll does), hands a print its serial, and starts the email job once.
+// Idempotent by session id (rpo-ev:<session>). Nothing about the buyer is
+// stored: the event's customer_details is never read.
+const RPO_WH_TOLERANCE_S = 300;
+const RPO_WH_MAX_BYTES = 64 * 1024;
+const RPO_PRODUCT_BY_CENTS = { 1900: "digital", 4500: "print12x18", 8900: "framed12x18" };
+async function hmacHex(secret, msg) {
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(msg));
+  return [...new Uint8Array(sig)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+// -> "" when the header is good, else why not
+async function stripeSigProblem(header, raw, secret, nowS) {
+  const parts = String(header || "").split(",").map(x => x.trim().split("="));
+  const t = Number((parts.find(p => p[0] === "t") || [])[1]);
+  const v1 = parts.filter(p => p[0] === "v1" && p[1]).map(p => p[1]);
+  if (!Number.isInteger(t) || !v1.length) return "no signature";
+  if (Math.abs(nowS - t) > RPO_WH_TOLERANCE_S) return "stale";
+  const want = await hmacHex(secret, t + "." + raw);
+  return v1.some(v => safeEq(v, want)) ? "" : "bad signature";
+}
+async function rpoWebhookSession(env, x) {
+  const s = { id: String(x.id || ""), ref: typeof x.client_reference_id === "string" ? x.client_reference_id : "",
+    total: Number(x.amount_total) || 0, sub: Number(x.amount_subtotal) || Number(x.amount_total) || 0, created: Number(x.created) || Math.floor(Date.now() / 1000) };
+  if (!/^cs_[A-Za-z0-9_]{1,250}$/.test(s.id)) return { error: "no session" };
+  const evKey = "rpo-ev:" + s.id;
+  if (await env.SUBS.get(evKey) !== null) return { already: true };
+  const recs = [];
+  for (const k of await listKeys(env, "rpo:")) {
+    if (!RPO_KEY_RE.test(k)) continue;
+    let r = null;
+    try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+    if (r && typeof r === "object") { r.key = k; recs.push(r); }
+  }
+  if (recs.some(r => r.paid && r.paid.session === s.id)) { await env.SUBS.put(evKey, "1", { expirationTtl: RPO_TTL_S }); return { already: true }; }
+  let hit = rpoMatch(recs, s);
+  if (!hit) {
+    // paid with no press on record (a bare payment link, or the press post was lost): kept so Sig still sees it
+    const ts = s.created * 1000;
+    const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(v => v.toString(16).padStart(2, "0")).join("");
+    const okRef = rpoRefOk(s.ref);
+    hit = { key: "rpo:" + ts + ":" + rnd, ts, ref: okRef ? s.ref : "", product: RPO_PRODUCT_BY_CENTS[s.sub] || "", price: s.sub / 100,
+      design_url: okRef ? "https://agsist.com/rain-print?d=" + s.ref : "", place: "", year: null, style: "", name: "", markers: "",
+      dedication: "", gift: /^GIFT-/.test(s.ref), no_press: true };
+  }
+  hit.paid = rpoPaid(s, "webhook");
+  if (RPO_PRINTS.includes(hit.product) && !hit.serial) {
+    hit.serial = (await rpoSerialLast(env)) + 1;
+    await env.SUBS.put("rpo-serial", JSON.stringify({ last: hit.serial }));
+  }
+  const k = hit.key; delete hit.key;
+  await rpoPut(env, k, hit);
+  await env.SUBS.put(evKey, "1", { expirationTtl: RPO_TTL_S });
+  return { key: k };
+}
+// Starts .github/workflows/rp-buyer-email.yml (Sig's alert and the buyer email) at once.
+// Needs GH_DISPATCH_TOKEN (a fine-grained token on dnilgis/agsist, Actions read and write);
+// without it the job waits for its next run. RP_BUYER_EMAIL_LIVE = "1" lets buyer emails go
+// to buyers; anything else is a dry run (every email to Sig only).
+async function rpoDispatch(env) {
+  if (typeof env.GH_DISPATCH_TOKEN !== "string" || !env.GH_DISPATCH_TOKEN) return "no token";
+  try {
+    const r = await fetch("https://api.github.com/repos/dnilgis/agsist/actions/workflows/rp-buyer-email.yml/dispatches", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-subs", "Content-Type": "application/json" },
+      body: JSON.stringify({ ref: "main", inputs: { dry_run: env.RP_BUYER_EMAIL_LIVE === "1" ? "false" : "true" } }),
+    });
+    return r.status === 204 ? "started" : "HTTP " + r.status;
+  } catch (e) { return "failed"; }
 }
 
 export default {
@@ -3145,6 +3431,122 @@ async function handle(req, env) {
       rec.status = "redeemed"; rec.redeemed_ts = ts; rec.form_key = fkey; delete rec.pending_ts;
       await env.SUBS.put(key, JSON.stringify(rec));
       return json({ ok: true, redeemed_on: rpgDay(ts), ships: rec.ships, product: rec.product, choice: v.rec.choice, upgrade: up }, 200, c);
+    }
+
+    // ---------- v5.36: Rain Print order records ----------
+    // POST /rp-order: publicGate (Origin, JSON) has already run (PUBLIC_POSTS).
+    if (path === "/rp-order" && req.method === "POST") {
+      const c = cors(req);
+      if (Number(req.headers.get("Content-Length") || 0) > RPO_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, c);
+      let raw = "";
+      try { raw = await req.text(); } catch (e) { raw = ""; }
+      if (raw.length > RPO_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, c);
+      let b = null;
+      try { b = JSON.parse(raw); } catch (e) { b = null; }
+      if (!b || typeof b !== "object" || Array.isArray(b)) return json({ ok: false, error: "bad json" }, 400, c);
+      const v = rpoClean(b);
+      if (v.error) return json({ ok: false, error: v.error }, 400, c);
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
+      const ts = Date.now();
+      const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(x => x.toString(16).padStart(2, "0")).join("");
+      await env.SUBS.put("rpo:" + ts + ":" + rnd, JSON.stringify(Object.assign({ ts }, v.rec)), { expirationTtl: RPO_TTL_S });
+      return json({ ok: true }, 200, c);
+    }
+    // Sig only: Bearer LIST_TOKEN, never ?token=. The Today page on agsist.com reads these.
+    if (path === "/rp-order/list" && req.method === "GET") {
+      if (!sig) return json({ ok: false }, 403, ac);
+      const d = Number(url.searchParams.get("days") || 14);
+      const days = Number.isFinite(d) ? Math.min(120, Math.max(1, Math.floor(d))) : 14;
+      const out = await rpoList(env, days);
+      return json(Object.assign({ ok: true, days }, out), 200, Object.assign({ "Cache-Control": "no-store" }, ac));
+    }
+    // v5.36: the buyer's "here's your print" email went out for this paid record (scripts/rp_buyer_email.py).
+    // Only the time and the session id are kept; never the address it went to.
+    // v5.36: Stripe's webhook. Not a browser post (no Origin): the signature is the gate.
+    if (path === "/rp-order/stripe" && req.method === "POST") {
+      if (typeof env.STRIPE_WEBHOOK_SECRET !== "string" || !env.STRIPE_WEBHOOK_SECRET) return json({ ok: false, error: "not set up" }, 503);
+      if (Number(req.headers.get("Content-Length") || 0) > RPO_WH_MAX_BYTES) return json({ ok: false, error: "too large" }, 413);
+      let raw = "";
+      try { raw = await req.text(); } catch (e) { raw = ""; }
+      if (raw.length > RPO_WH_MAX_BYTES) return json({ ok: false, error: "too large" }, 413);
+      const why = await stripeSigProblem(req.headers.get("Stripe-Signature"), raw, env.STRIPE_WEBHOOK_SECRET, Math.floor(Date.now() / 1000));
+      if (why) return json({ ok: false, error: why }, 400);
+      let ev = null;
+      try { ev = JSON.parse(raw); } catch (e) { ev = null; }
+      const x = ev && ev.data && ev.data.object;
+      if (!x || typeof x !== "object") return json({ ok: false, error: "bad event" }, 400);
+      const type = String(ev.type || "");
+      const paid = (type === "checkout.session.completed" && x.payment_status === "paid") || type === "checkout.session.async_payment_succeeded";
+      if (!paid) return json({ ok: true, ignored: type }, 200);
+      const done = await rpoWebhookSession(env, x);
+      if (done.error) return json({ ok: false, error: done.error }, 400);
+      if (done.already) return json({ ok: true, already: true }, 200);
+      return json({ ok: true, job: await rpoDispatch(env) }, 200);
+    }
+    // v5.37: the buyer approves the proof (rain-print-approve.html posts {k, t}). publicGate has run.
+    // Idempotent: a second approve answers already with the first time.
+    if (path === "/rp-order/approve" && req.method === "POST") {
+      const c = Object.assign({ "Cache-Control": "no-store" }, cors(req));
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
+      let b = null;
+      try { b = JSON.parse((await req.text()).slice(0, 2048)); } catch (e) { b = null; }
+      const k = b && typeof b.k === "string" ? b.k : "", t = b && typeof b.t === "string" ? b.t : "";
+      if (!RPO_KEY_RE.test(k) || !safeEq(t, await rpoApproveToken(env, k))) return json({ ok: false, error: "bad link" }, 403, c);
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (!r || !r.paid) return json({ ok: false, error: "not found" }, 404, c);
+      if (r.approved) return json({ ok: true, already: true, at: r.approved.at, product: r.product }, 200, c);
+      r.approved = { at: new Date().toISOString() };
+      await rpoPut(env, k, r);
+      const job = await rpoDispatch(env);   // Sig's "approved" alert goes out from the same email job
+      return json({ ok: true, already: false, at: r.approved.at, product: r.product, job: job === "started" ? "started" : "later" }, 200, c);
+    }
+    // v5.36: Sig's order alert went out for this paid record (scripts/rp_buyer_email.py), once.
+    // v5.37: /rp-order/approved-alerted, the same for his "approved, make it" alert.
+    if ((path === "/rp-order/mailed" || path === "/rp-order/alerted" || path === "/rp-order/approved-alerted") && req.method === "POST") {
+      const what = path === "/rp-order/mailed" ? "mailed" : path === "/rp-order/alerted" ? "alerted" : "approved_alerted";
+      if (!sig) return json({ ok: false }, 403, ac);
+      let b = null;
+      try { b = await req.json(); } catch (e) { b = null; }
+      const k = b && b.key;
+      if (typeof k !== "string" || !RPO_KEY_RE.test(k)) return json({ ok: false, error: "invalid key" }, 400, ac);
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (!r) return json({ ok: false, error: "not found" }, 404, ac);
+      if (!r.paid) return json({ ok: false, error: "not paid" }, 409, ac);
+      if (what === "approved_alerted" && !r.approved) return json({ ok: false, error: "not approved" }, 409, ac);
+      if (r[what]) return json({ ok: true, already: true, [what]: r[what] }, 200, ac);
+      r[what] = { at: new Date().toISOString(), session: String(r.paid.session || "") };
+      await rpoPut(env, k, r);
+      return json({ ok: true, already: false, [what]: r[what] }, 200, ac);
+    }
+    // v5.36: for the buyer email only (scripts/rp_buyer_email.py): the one paid session's livemode and
+    // buyer address, read from Stripe now and handed back. Nothing is stored or logged here.
+    if (path === "/rp-order/buyer" && req.method === "GET") {
+      if (!sig) return json({ ok: false }, 403, ac);
+      const k = String(url.searchParams.get("key") || "");
+      if (!RPO_KEY_RE.test(k)) return json({ ok: false, error: "invalid key" }, 400, ac);
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (!r || !r.paid || !r.paid.session) return json({ ok: false, error: "not paid" }, 409, ac);
+      if (typeof env.STRIPE_READ_KEY !== "string" || !env.STRIPE_READ_KEY) return json({ ok: false, error: "no key" }, 503, ac);
+      const sr = await fetch("https://api.stripe.com/v1/checkout/sessions/" + encodeURIComponent(r.paid.session),
+        { headers: { Authorization: "Bearer " + env.STRIPE_READ_KEY } });
+      if (!sr.ok) return json({ ok: false, error: "stripe HTTP " + sr.status }, 502, ac);
+      const x = await sr.json();
+      const email = String((x && x.customer_details && x.customer_details.email) || "").trim();
+      return json({ ok: true, livemode: !(x && x.livemode === false), email }, 200, Object.assign({ "Cache-Control": "no-store" }, ac));
+    }
+    if (path === "/rp-order/serial" && req.method === "POST") {
+      if (!sig) return json({ ok: false }, 403, ac);
+      let b = null;
+      try { b = await req.json(); } catch (e) { b = null; }
+      const last = b && b.last;
+      if (!Number.isInteger(last) || last < 0 || last > 999999) return json({ ok: false, error: "last must be a whole number, 0 or more" }, 400, ac);
+      await env.SUBS.put("rpo-serial", JSON.stringify({ last }));
+      return json({ ok: true, serial_last: last, next: last + 1 }, 200, ac);
     }
 
     // ---------- v5.20: the elevator portal ----------

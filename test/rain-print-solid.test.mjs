@@ -262,9 +262,9 @@ test("P4: on Jan 4, a station behind on December still draws last year, as a pre
     assert.match(await page.textContent("#rp-sub-framed12x18"), /Made once NOAA has all of 2026 in, with a proof first\./, "the picker says so before the button");
     const r = await checkout(page, "framed12x18", { tick: false });
     assert.equal(r.stage, "sheet");
-    assert.match(await page.textContent("#rp-proof-sum"), /NOAA doesn’t have all of 2026 in yet\. I make this one once the full year is in, and send the proof then\./, "the review sheet says it before paying");
+    assert.match(await page.textContent("#rp-proof-sum"), /NOAA doesn’t have all of 2026 in yet\. I make this one once the full year is in, and send the proof then; nothing prints until you approve it\./, "the review sheet says it before paying");
     await page.click('#rp-proof label:has(input[name="rp-pproduct"][value="digital"])');
-    assert.match(await page.textContent("#rp-proof-sum"), /send the finished file then/);
+    assert.match(await page.textContent("#rp-proof-sum"), /send the proof then; the full file comes once you approve it\./);
     assert.equal(await page.$eval('input[name="rp-product"][value="digital"]', (r) => r.checked), true, "the sheet's picker is step 3's picker");
     assert.match(await page.textContent("#rp-dig-when"), /once the full year is in/);
     // and the page Stripe sends them back to says it again
@@ -272,7 +272,7 @@ test("P4: on Jan 4, a station behind on December still draws last year, as a pre
     await Promise.all([page.waitForURL(/buy\.stripe\.com/), page.click("#rp-proof-order")]);
     await page.goto(base + "/rain-print.html?paid=digital&s=cs_test_settle0001");
     await page.waitForFunction(() => !document.getElementById("rp-paid").hidden);
-    assert.match(await page.textContent("#rp-paid"), /NOAA doesn’t have all of 2026 in yet\. I make it once the full year is in, and email you the finished file/);
+    assert.match(await page.textContent("#rp-paid"), /NOAA doesn’t have all of 2026 in yet\. I make it once the full year is in, and email you the proof then\. Approve it there, or ask for a change\. The full file follows within 1 business day of your OK/);
     assert.deepEqual(errors, []);
   }, { time: "2027-01-04T18:00:00Z", upto: "2026-12-28", stnEnd });
 });

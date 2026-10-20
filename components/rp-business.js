@@ -5,7 +5,7 @@
  * (rain-print-business, subs worker v5.12+, same fields and limits), with
  * page "/rain-print-business" so Sig can see where it came from.
  *
- * Every price, tier and date comes from data/rain-print.json through the pure
+ * Every price, tier and date (and the hero's starting price) comes from data/rain-print.json through the pure
  * business functions in components/rain-print.js (RainPrint.bizRows,
  * bizQuote, bizCutoffNote, bizRange); this file keeps no copy of that math.
  * The page's own table and dates are the same numbers written out for
@@ -14,7 +14,8 @@
  *
  * A customer list can be loaded from a CSV: it is read in the browser and put
  * in the towns box for the buyer to check; nothing is uploaded until they
- * send. Over the form's 8,000 characters, the page says to email the file.
+ * send. Over the form's 20,000 characters (2026-10-20: room for 100 customers
+ * with mailing addresses, about 150 characters a line), the page says to email the file.
  *
  * The request goes to the AGSIST worker only, never to Formspree (form-post.js
  * WORKER_ONLY, 2026-10-19): a failed or silent worker leaves the form filled in
@@ -31,7 +32,7 @@
   var PHONE = '715-797-2428';
   var LOGO_LINK = 'https://agsist-subs.dnilgis.workers.dev/rp-logo/';
   var EMAIL_RE = /^[^\s@,;<>"]+@[^\s@,;<>"]+\.[A-Za-z]{2,}$/;
-  var TOWNS_MAX = 8000;
+  var TOWNS_MAX = 20000;   // the worker's rain-print-business towns cap (subs-worker.js v5.35)
   var PAGE = '/rain-print-business';
   var BIZ_PRODUCT = { print: 'print12x18', framed: 'framed12x18', digital: 'digital' };
   var BIZ_WORD = { print: ['print', 'prints'], framed: ['framed print', 'framed prints'], digital: ['digital file', 'digital files'],
@@ -66,6 +67,13 @@
   }
 
   /* ---------- table, dates and the quote line, from the data ---------- */
+  /* The starting price by the hero's Get a quote (2026-10-20): the lowest delivered price of one print in the
+     table, whichever tier and destination it is, e.g. 'From $32 a print, delivered'; '' with no rows. */
+  function fromLine(rows) {
+    var lo = Infinity;
+    (rows || []).forEach(function (r) { lo = Math.min(lo, r.prices.print12x18, r.one.print12x18); });
+    return isFinite(lo) && lo > 0 ? 'From ' + money(lo) + ' a print, delivered' : '';
+  }
   function syncFromData(j) {
     var R = RP();
     if (!R || !j) return;
@@ -84,6 +92,8 @@
     var sb = $('rbz-sample-by'), sbt = sampleByLine(chicagoToday(), j.business_sample_by);
     if (sb) { sb.textContent = sbt; sb.hidden = !sbt; }
     var rows = R.bizRows(j), body = $('rbz-tiers-body');
+    var fr = $('rbz-from'), frt = fromLine(rows);
+    if (fr && frt) fr.textContent = frt;
     if (body && rows.length) {
       body.innerHTML = rows.map(function (r) {
         var off = r.retail ? '<span class="rbz-off">regular price, one invoice</span>' : '';
@@ -274,7 +284,7 @@
     }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
   }
 
-  root.RpBusiness = { listText: listText, TEMPLATE: TEMPLATE, money: money, invoiceLines: invoiceLines, NOTES_MAX: NOTES_MAX, sampleByLine: sampleByLine };
+  root.RpBusiness = { listText: listText, TEMPLATE: TEMPLATE, money: money, invoiceLines: invoiceLines, NOTES_MAX: NOTES_MAX, sampleByLine: sampleByLine, fromLine: fromLine };
   if (!doc || !$('rb-form')) return;
 
   function init() {

@@ -1,0 +1,77 @@
+name: Rain Print buyer email
+# The "here's your print, get ready for it" email to each Rain Print buyer
+# (scripts/rp_buyer_email.py, Sig 2026-10-20): what they bought, a picture of
+# their exact design and, for a print or framed print, the letter that goes in
+# the box, made by the real page (scripts/rp_buyer_render.mjs). One email per
+# paid Checkout Session; the subs worker (v5.36) confirms the payment and
+# reads the buyer's address from Stripe at send time with its STRIPE_READ_KEY
+# secret (the one place that key lives). The log prints counts only.
+#
+# It also sends Sig an alert for each new paid order first (always to Sig).
+# NO SCHEDULE: it runs when the subs worker's Stripe webhook (v5.36) starts it
+# through the GitHub API (worker secret GH_DISPATCH_TOKEN), or by hand. The
+# worker asks for a dry run unless its variable RP_BUYER_EMAIL_LIVE is "1"; a
+# dry run sends every buyer email to Sig and marks nothing (alerts still go
+# to Sig, once). A backup run on a schedule is Sig's call; if he wants one:
+#   workflow_run: {workflows: ["Site forms digest"], types: [completed]}
+# Secrets: LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS (or GMAIL_USER,
+# GMAIL_APP_PASS), as the forms digest. Optional: SMTP_HOST, SMTP_PORT,
+# FROM_ADDR, FROM_NAME, SIG_TO, SIG_TEST_EMAILS.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Send every email to Sig only and mark nothing"
+        type: boolean
+        default: true
+
+concurrency:
+  group: rp-buyer-email
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Checks (gate)
+        run: |
+          python3 scripts/rp_buyer_email.py --selftest
+          node scripts/test_rp_order_worker.mjs
+      - name: Browser
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Run
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
+          SIG_TO: ${{ secrets.SIG_TO }}
+          SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
+          DRY_RUN: ${{ inputs.dry_run == false && '' || '1' }}
+        run: python3 scripts/rp_buyer_email.py

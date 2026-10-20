@@ -368,6 +368,17 @@ def sec_agsist(src, now, rep):
         gen = parse_time(ch.get("generated_at"))
         crit = [str(x) for x in ch.get("late_critical") or []]
         late = [str(x) for x in ch.get("late") or [] if str(x) not in crit]
+        # the engine checkout (the code copied from the private repo): its own words, not a job name
+        eng = next((w for w in ch.get("workflows") or [] if w.get("workflow") == "engine-checkout"), None)
+        crit = [x for x in crit if x != "engine-checkout"]
+        late = [x for x in late if x != "engine-checkout"]
+        if eng and eng.get("status") == "late":
+            lines.append("%s." % str(eng.get("why", "Engine checkout failing")).rstrip("."))
+            rep.red(str(eng.get("why", "Engine checkout failing")).split(";")[0])
+        elif eng and eng.get("status") in ("warn", "unknown"):
+            lines.append("Engine checkout: %s." % str(eng.get("why", "")).rstrip("."))
+        elif eng:
+            lines.append("Engine checkout works (code from %s)." % ("the private repo" if eng.get("mode") == "private" else "the public repo"))
         if crit:
             lines.append("Late critical jobs: %s." % ", ".join(crit))
             rep.red("Late critical job%s: %s" % ("s" if len(crit) > 1 else "", ", ".join(crit)))
@@ -640,7 +651,7 @@ def sec_orders(src, now, rep):
 def stripe_line(src, now):
     """Paid charges, counts and dollars only. Never a name or address."""
     if not src.stripe_key:
-        return "Stripe: see dashboard (add STRIPE_READ_KEY to show paid orders here)."
+        return "Stripe totals: see the dashboard. Paid Rain Prints are under Orders below."
     m0 = month_start_ms(now) // 1000
     d0 = int(now.timestamp()) - 86400
     try:
@@ -673,6 +684,22 @@ RP_PRODUCT = {1900: "Digital file", 4500: "Print", 8900: "Framed"}
 RP_REF_RE = re.compile(r"^[A-Za-z0-9_-]{1,200}$")
 
 
+def rp_sessions(src, since):
+    """Completed Checkout Sessions since `since` (seconds), up to 500. Raises when Stripe cannot be read."""
+    rows, after = [], None
+    for _ in range(5):
+        p = {"limit": 100, "status": "complete", "created[gte]": since}
+        if after:
+            p["starting_after"] = after
+        d = src.stripe("checkout/sessions", p) or {}
+        got = [x for x in d.get("data") or [] if isinstance(x, dict)]
+        rows.extend(got)
+        if not d.get("has_more") or not got:
+            break
+        after = got[-1].get("id")
+    return rows
+
+
 def rain_print_paid(src, now):
     """Each paid Rain Print checkout of the last 48 hours, one line each:
     product, amount, the design reference and the maker link Sig opens to make
@@ -681,19 +708,8 @@ def rain_print_paid(src, now):
     from a session; never an email, a name or an address."""
     if not src.stripe_key:
         return []
-    since = int(now.timestamp()) - 2 * 86400
     try:
-        rows, after = [], None
-        for _ in range(5):
-            p = {"limit": 100, "status": "complete", "created[gte]": since}
-            if after:
-                p["starting_after"] = after
-            d = src.stripe("checkout/sessions", p) or {}
-            got = [x for x in d.get("data") or [] if isinstance(x, dict)]
-            rows.extend(got)
-            if not d.get("has_more") or not got:
-                break
-            after = got[-1].get("id")
+        rows = rp_sessions(src, int(now.timestamp()) - 2 * 86400)
     except Exception as e:                                 # noqa: BLE001
         return ["Rain Print orders: could not be read from Stripe (%s)." % why(e)]
     out = []
@@ -720,6 +736,74 @@ def rain_print_paid(src, now):
     if not out:
         return ["Rain Print orders, last 48 hours: none paid."]
     return [scrub(line) for line in out]
+
+
+RP_STYLE = {"r1": "Staircase", "r2": "Roots"}
+RP_PRINTS = ("print12x18", "framed12x18")
+
+
+
+def rp_order_line(o, now):
+    """One order: product, town year style, paid or pay pressed, and the link
+    that opens it in Sig's maker view (with the serial for a print)."""
+    what = {"digital": "Digital file", "print12x18": "Print", "framed12x18": "Framed"}.get(o.get("product"), "Rain Print")
+    design = " ".join(x for x in (clean_txt(o.get("place"), 60), str(o.get("year") or ""),
+                                  RP_STYLE.get(o.get("style"), "")) if x) or "design not named"
+    if o.get("status") == "paid":
+        amt = (o.get("paid") or {}).get("amount")
+        state = "paid" + (" $%s" % "{:,.2f}".format(amt) if isinstance(amt, (int, float)) else "")
+        # the proof email is the proof (Oct 20): nothing is made until the buyer approves it
+        ap = parse_time((o.get("approved") or {}).get("at"))
+        if ap:
+            state += ", approved %s" % when(ap, now)
+        elif o.get("approval_overdue"):
+            state += ", no answer on the proof in 3 business days: follow up"
+        else:
+            state += ", waiting for approval"
+    else:
+        t = parse_time(o.get("at") or o.get("ts"))
+        state = "pay pressed%s, payment not confirmed" % ((" " + when(t, now)) if t else "")
+    serial = ""
+    if o.get("product") in RP_PRINTS:
+        if o.get("serial"):
+            serial = ", serial %s" % o["serial"]
+        elif o.get("serial_next"):
+            serial = ", serial %s if it is the next one you make" % o["serial_next"]
+    url = str(o.get("fulfill_url") or "")
+    if not url.startswith("https://agsist.com/rain-print?"):
+        url = ""
+    return "%s, %s, %s%s%s" % (what, design, state, serial, (": open to fulfill " + url) if url else "")
+
+
+def sec_rp_orders(src, now, rep):
+    """Every press of Pay on /rain-print in the last 48 hours (the subs
+    worker's /rp-order/list), one line each. Nothing about the buyer: the
+    worker never has it."""
+    try:
+        d = src.worker("rp-order/list", days=2)
+        if not isinstance(d, dict) or not isinstance(d.get("orders"), list):
+            raise ValueError("not a list")
+    except Exception as e:                                 # noqa: BLE001
+        rep.add("Orders", ["Rain Print order records: could not be read (%s)." % why(e)])
+        return
+    orders = [o for o in d["orders"] if isinstance(o, dict)]
+    lines = []
+    if d.get("stripe") != "ok":
+        # the read-only Stripe key lives on the worker alone (Oct 20): without it there, payments are not checked
+        lines.append("Payments are not checked (Stripe on the worker: %s): match each one to Stripe by time and product."
+                     % clean_txt(d.get("stripe") or "no key", 60))
+    if not orders:
+        lines.insert(0, "Rain Print, last 48 hours: no one pressed Pay.")
+        rep.add("Orders", lines)
+        return
+    paid = sum(1 for o in orders if o.get("status") == "paid")
+    lines.insert(0, "Rain Print, last 48 hours: %s, %s." % (plural(len(orders), "press of Pay", "presses of Pay"),
+                                                              plural(paid, "paid", "paid")))
+    for o in orders[:20]:
+        lines.append("  - " + rp_order_line(o, now))
+    if len(orders) > 20:
+        lines.append("  - and %d more" % (len(orders) - 20))
+    rep.add("Orders", lines)
 
 
 def short_day(iso):
@@ -976,7 +1060,7 @@ def make_report(src, now, snap):
             f(src, now, rep)
         except Exception as e:                             # noqa: BLE001
             rep.add(f.__name__, ["Could not be built (%s)." % why(e)])
-    for f, args in ((sec_signups, (snap,)), (sec_orders, ()), (sec_traffic, ()), (sec_todos, ())):
+    for f, args in ((sec_signups, (snap,)), (sec_orders, ()), (sec_rp_orders, ()), (sec_traffic, ()), (sec_todos, ())):
         try:
             f(src, now, rep, *args)
         except Exception as e:                             # noqa: BLE001
@@ -1412,7 +1496,7 @@ def selftest():
     ck("pending elevator requests", "Elevator listing requests still pending on elev-admin: 1." in t, t)
     ck("a pending request is named by elevator and town, never the contact", "  - Sand Creek Grain, Sand Creek, WI" in t
        and "Pat Doe" not in t and "715-555-0100" not in t and "Done Co-op" not in t, t)
-    ck("no Stripe key: the dashboard line", "Stripe: see dashboard (add STRIPE_READ_KEY to show paid orders here)." in t, t)
+    ck("no Stripe key: the dashboard line", "Stripe totals: see the dashboard. Paid Rain Prints are under Orders below." in t, t)
 
     print("\ntraffic and to-dos")
     ck("latest day, 7 days, top 3 pages", "Latest day in the analytics, Sun Oct 11: 181 users" in t and
@@ -1495,6 +1579,22 @@ def selftest():
             "GitHub Pages deploy stuck: building since 5:00 am.", "Prices are stale: last update 7 h ago",
             "Cash bids are stale: last update 4 h ago.", "Today's daily briefing is not out yet (last one Oct 13, 5:47 am)."]
     ck("late critical, size, stuck deploy, stale feeds, missing briefing", all(any(w in x for x in rep.needs) for w in want), rep.needs)
+
+    print("\nengine checkout")
+    f5 = dict(files)
+    f5["private/data/cron-health.json"] = json.dumps({"generated_at": "2026-10-14T10:30:00Z", "late": ["engine-checkout"], "late_critical": ["engine-checkout"],
+                                              "workflows": [{"workflow": "engine-checkout", "status": "late", "critical": True, "mode": "private",
+                                                             "why": "Engine checkout failing: bids poll.yml (2 runs) in the last 6 h; those jobs ran nothing"}]})
+    re5 = Report()
+    sec_agsist(Fake(gh, worker, urls, f5), now, re5)
+    ck("a failing engine checkout is red in its own words", "Engine checkout failing: bids poll.yml (2 runs) in the last 6 h" in re5.needs
+       and not any("Late critical job" in x for x in re5.needs), re5.needs)
+    f5["private/data/cron-health.json"] = json.dumps({"generated_at": "2026-10-14T10:30:00Z", "late": [], "late_critical": [],
+                                              "workflows": [{"workflow": "engine-checkout", "status": "ok", "mode": "private", "why": "x"}]})
+    re5 = Report()
+    sec_agsist(Fake(gh, worker, urls, f5), now, re5)
+    ck("a working engine is one line, nothing red", "Engine checkout works (code from the private repo)." in re5.sections[0][1]
+       and not any("Engine" in x for x in re5.needs), re5.sections[0][1])
 
     print("\nprivate repo key")
     fk = Fake(gh, worker, urls, files)
@@ -1588,6 +1688,62 @@ def selftest():
     ck("none paid is one line", rain_print_paid(Fake(stripe={"data": [], "has_more": False}, stripe_key="rk"), now) == ["Rain Print orders, last 48 hours: none paid."])
     ck("no key: nothing", rain_print_paid(Fake(stripe=ses), now) == [])
     ck("a bad key is one line", rain_print_paid(Fake(stripe=ses, stripe_key="rk", broken={"stripe"}), now) == ["Rain Print orders: could not be read from Stripe (HTTP 401)."])
+
+    print("\nRain Print order records (the subs worker's /rp-order/list)")
+    # The real case, Oct 20: Sig's $19 digital file, Stripe's payment page showed no design.
+    # Sig's test design: Chetek WI, Staircase, "Gustum Farm", Apr 1 "Moved in" (the year is only for the test).
+    sig_url = ("https://agsist.com/rain-print?place=Chetek%2C+WI&year=2025&station=471667+2&layout=staircase&palette=paper"
+               "&size=12x18&style=r1&name=Gustum+Farm&m1=2025-04-01+Moved+in")
+    sig_ref = "MnxDaGV0ZWssIFdJfDQ3MTY2NyAyfDIwMjV8c3AwYWF8R3VzdHVtIEZhcm18Mml8TW92ZWQgaW4"
+    ms = int(now.timestamp() * 1000)
+
+    def orec(ref, product, ts, **kw):
+        o = {"key": "rpo:%d:00000000" % ts, "ts": ts, "at": datetime.fromtimestamp(ts / 1000, UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+             "ref": ref, "product": product, "price": {"digital": 19, "print12x18": 45, "framed12x18": 89}[product],
+             "design_url": sig_url, "place": "Chetek, WI", "year": 2025, "style": "r1", "name": "Gustum Farm",
+             "markers": "Apr 1 Moved in", "dedication": "", "gift": False, "status": "pay pressed", "paid": None,
+             "serial": None, "serial_next": None, "fulfill_url": sig_url + "&maker=1"}
+        o.update(kw)
+        return o
+    paid_list = {"ok": True, "days": 2, "stripe": "ok", "serial_last": 4, "orders": [
+        orec("GIFT-RPS-K7Q2M", "print12x18", ms - 600000),
+        orec("RPS-K7Q2M", "framed12x18", ms - 3600000, style="r2", status="paid", paid={"amount": 79, "subtotal": 89, "at": "x", "session": "cs_live_rps"},
+             approved={"at": "2026-10-14T16:00:00.000Z"},
+             serial=4, fulfill_url=sig_url + "&maker=1&serial=4"),
+        orec(sig_ref, "digital", ms - 7200000, status="paid", paid={"amount": 19, "subtotal": 19, "at": "x", "session": "cs_live_sig19"})]}
+    rep = Report()
+    f = Fake(worker={"rp-order/list": paid_list})
+    sec_rp_orders(f, now, rep)
+    title, rl = rep.sections[-1]
+    ck("the Orders section asks the worker for 48 hours", title == "Orders" and ("worker", "rp-order/list?days=2") in f.asked, f.asked)
+    ck("a count line, then one line each, newest first", rl[0] == "Rain Print, last 48 hours: 3 presses of Pay, 2 paid." and len(rl) == 4, rl)
+    ck("the $19 file: paid, the maker link, no serial",
+       rl[3] == "  - Digital file, Chetek, WI 2025 Staircase, paid $19.00, waiting for approval: open to fulfill " + sig_url + "&maker=1", rl)
+    ck("a paid framed print: its serial in the line and the link",
+       rl[2] == "  - Framed, Chetek, WI 2025 Roots, paid $79.00, approved 11:00 am, serial 4: open to fulfill " + sig_url + "&maker=1&serial=4", rl)
+    ck("a press with no payment says so", rl[1].startswith("  - Print, Chetek, WI 2025 Staircase, pay pressed ") and "payment not confirmed" in rl[1] and "serial" not in rl[1], rl)
+    ck("nothing about the buyer", not any("@" in x for x in rl), rl)
+    # without a key anywhere: pay pressed, and a print's suggested serial
+    nokey = {"ok": True, "days": 2, "stripe": "no key", "serial_last": 0, "orders": [
+        orec("RPS-K7Q2M", "print12x18", ms - 60000, serial_next=1, fulfill_url=sig_url + "&maker=1&serial=1"),
+        orec(sig_ref, "digital", ms - 120000)]}
+    rep = Report()
+    sec_rp_orders(Fake(worker={"rp-order/list": nokey}), now, rep)
+    rl = rep.sections[-1][1]
+    ck("no key: says payments are not checked", any("not checked (Stripe on the worker: no key)" in x and "by time and product" in x for x in rl), rl)
+    ck("no key: a print gets the next serial, marked as a suggestion",
+       any(x.startswith("  - Print, ") and "pay pressed" in x and "serial 1 if it is the next one you make" in x and x.endswith("&maker=1&serial=1") for x in rl), rl)
+    ck("no key: the file still has its maker link", any(x.startswith("  - Digital file, ") and x.endswith(sig_url + "&maker=1") for x in rl), rl)
+    rep = Report()
+    sec_rp_orders(Fake(worker={"rp-order/list": {"ok": True, "stripe": "ok", "orders": []}}), now, rep)
+    ov = orec(sig_ref, "print12x18", ms, status="paid", paid={"amount": 45, "session": "cs_x"}, approval_overdue=True, serial=5)
+    ck("no answer in 3 business days is said", "no answer on the proof in 3 business days: follow up" in rp_order_line(ov, now), rp_order_line(ov, now))
+    ck("nobody pressed Pay: one line", rep.sections[-1][1] == ["Rain Print, last 48 hours: no one pressed Pay."], rep.sections)
+    rep = Report()
+    sec_rp_orders(Fake(worker={"rp-order/list": urllib.error.HTTPError("https://x/", 500, "x", {}, None)}), now, rep)
+    ck("the worker down: one line", rep.sections[-1] == ("Orders", ["Rain Print order records: could not be read (HTTP 500)."]), rep.sections)
+    bad = orec(sig_ref, "digital", ms, fulfill_url="https://evil.example/x")
+    ck("a link that is not agsist.com/rain-print is left out", "evil" not in rp_order_line(bad, now) and "open to fulfill" not in rp_order_line(bad, now))
 
     print("\nthe 6:40 am gate")
     ck("CDT: 11:40 UTC is 6:40 am", chicago_tick_ok(datetime(2026, 10, 14, 11, 50, tzinfo=UTC)))
