@@ -19,7 +19,7 @@ push) is a red row that daily-site-check.yml, on GitHub's own cron, reports
 even when cron-job.org has stopped dispatching this one.
 
 THE PRIVATE REPO (Oct 20, 2026). No page reads this file, so it lives in the
-private repo dnilgis/agsistretired (branch private-data) at
+private repo dnilgis/feedbag (branch private-data) at
 private/data/cron-health.json, with the raw and references branches. The
 workflows unpack the last copy there with scripts/pull_raw.sh and save the new
 one with scripts/push_raw.sh. Two rows watch that link, from one API call with
@@ -72,7 +72,7 @@ WF_DIR = os.path.join(ROOT, ".github", "workflows")
 RECOMMIT_HOURS = 6
 # Where the file lives (unpacked from the private repo's private-data branch).
 HEALTH_PATH = os.path.join("private", "data", "cron-health.json")
-PRIVATE_REPO = "dnilgis/agsistretired"
+PRIVATE_REPO = "dnilgis/feedbag"
 KEY_WARN_DAYS = 14
 # The raw branch gets the Daily's fact check every day and a bid snapshot every
 # weekday; 80 h covers a long weekend with one of them missing.
@@ -669,7 +669,7 @@ def selftest():
 
     def fake(exp, raw="2026-10-20T03:00:00Z", fail=None):
         def get(url, token):
-            assert token == TOK and url.endswith("/repos/dnilgis/agsistretired/branches/raw"), url
+            assert token == TOK and url.endswith("/repos/dnilgis/feedbag/branches/raw"), url
             if fail:
                 raise urllib.error.HTTPError(url, fail, "x", {}, None)
             return {"commit": {"commit": {"committer": {"date": raw}}}}, \
@@ -683,7 +683,7 @@ def selftest():
     check(k["status"] == "late" and k["critical"] and k["why"].startswith("Private repo key failing: HTTP 401"), "a refused key is red (%s)" % k["why"])
     check(TOK not in json.dumps([k, sv]), "the token is never in a row")
     k, _ = private_rows(now, TOK, fake(None, fail=404))
-    check(k["status"] == "late" and "cannot see dnilgis/agsistretired" in k["why"], "404 says the key cannot see the repo")
+    check(k["status"] == "late" and "cannot see dnilgis/feedbag" in k["why"], "404 says the key cannot see the repo")
     _, sv = private_rows(now, TOK, fake("2027-01-15 12:00:00 UTC", raw="2026-10-16T12:00:00Z"))
     check(sv["status"] == "warn" and "96 h" in sv["why"], "no save on raw for 96 h warns (%s)" % sv["why"])
     k, sv = private_rows(now, "", None)
@@ -699,7 +699,7 @@ def selftest():
 
         def get_h(url, token):
             asked.append(url)
-            assert token == TOK and "/repos/dnilgis/agsistretired/branches/engine-" in url, url
+            assert token == TOK and "/repos/dnilgis/feedbag/branches/engine-" in url, url
             if branch_fail and url.endswith(branch_fail[0]):
                 raise urllib.error.HTTPError(url, branch_fail[1], "x", {}, None)
             return {}, {}

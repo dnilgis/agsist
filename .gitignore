@@ -56,11 +56,11 @@ build/shots/
 !/data/fsa/urls.txt
 !/data/fsa/manifest.tsv
 
-# Working notes live in the private repo dnilgis/agsistretired, never here (Sig, Oct 20).
+# Working notes live in the private repo dnilgis/feedbag, never here (Sig, Oct 20).
 # A stray copy unpacked here is never committed.
 /.claude/notes/
 
-# Session skills live in the private repo dnilgis/agsistretired at .claude/skills
+# Session skills live in the private repo dnilgis/feedbag at .claude/skills
 # (Oct 20, 2026, Sig: off the public repo). A session that adds that repo loads them.
 /.claude/skills/
 

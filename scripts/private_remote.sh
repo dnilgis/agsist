@@ -1,14 +1,14 @@
 # Where the private branches live (raw, references, private-data). Sourced, not run:
 #   . scripts/private_remote.sh
 #
-# Since Oct 20, 2026 they are in the private repo dnilgis/agsistretired, not on
+# Since Oct 20, 2026 they are in the private repo dnilgis/feedbag, not on
 # agsist (Sig: off the public repo). Pages read only public files on main, so
 # nothing here touches the site. Picks, in order:
 #   RAW_REMOTE set          that remote (tests, or a local run against a clone:
-#                           RAW_REMOTE=../agsistretired)
+#                           RAW_REMOTE=../feedbag)
 #   PRIVATE_REPO_TOKEN set  the private repo, with that token (Actions; the
 #                           secret is fine-grained, Contents read/write on
-#                           agsistretired only)
+#                           feedbag only)
 #   neither                 origin (the old branches on agsist, for local runs
 #                           until they are deleted)
 # Sets REMOTE (what git is given), WHERE (what a message may print; never the
@@ -17,7 +17,7 @@
 # actions/checkout leaves its own token in http.https://github.com/.extraheader,
 # and git would send that one instead of ours (the private repo then answers
 # "not found"). An empty value resets that list for these git calls only.
-PRIVATE_REPO=dnilgis/agsistretired
+PRIVATE_REPO=dnilgis/feedbag
 if [ -n "${RAW_REMOTE:-}" ]; then
   REMOTE="$RAW_REMOTE"; WHERE="$RAW_REMOTE"
 elif [ -n "${PRIVATE_REPO_TOKEN:-}" ]; then

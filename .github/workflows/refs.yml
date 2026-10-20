@@ -12,7 +12,7 @@ name: refs
 #   index.json           status, bytes, sha256, fetched_utc, pages per source
 # Read one anywhere:
 #   bash scripts/fetch_private.sh references && git show origin/references:refs/<id>.txt
-# (the branch is in the private repo dnilgis/agsistretired since Oct 20, 2026)
+# (the branch is in the private repo dnilgis/feedbag since Oct 20, 2026)
 #
 # A source that fails is listed (index.json, the run summary, a warning) and
 # keeps its last good copy; the run does not fail over it.
