@@ -40,6 +40,9 @@ skim over coffee. Run by .github/workflows/morning-report.yml.
                      from GA4 here (GA4_PROPERTY_ID, GA4_SERVICE_ACCOUNT) and
                      never written to a file; left out of a dry run.
   To-dos             the unchecked lines of TODO-SIG.md.
+  Backup             on the 1st of each month (Central time), one line in
+                     Needs you: plug in the SSD and run the monthly backup
+                     (scripts/backup/backup-agsist.cmd on his SSD).
 
 COUNTS ONLY. No subscriber or customer address, name or message ever goes into
 the log or the email body: rows from the worker are only counted, every line
@@ -114,6 +117,7 @@ LISTS = (("daily", "Daily briefing"), ("alerts", "Hail alerts"), ("ewatch", "Ele
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+'-]+@[A-Za-z0-9.-]+")
 MAX_ERR = 160
 SNAP_DAYS = 15
+BACKUP_LINE = "Monthly backup due: plug in the SSD and double-click backup-agsist."
 
 
 
@@ -1047,6 +1051,12 @@ def sec_todos(src, now, rep):
     rep.add("To-dos", lines)
 
 
+def sec_backup(src, now, rep):
+    """The 1st of each month in Central time: the backup reminder, in Needs you."""
+    if ct(now).day == 1:
+        rep.red(BACKUP_LINE)
+
+
 # ───────────────────────────── the email ─────────────────────────────
 
 def make_report(src, now, snap):
@@ -1055,6 +1065,7 @@ def make_report(src, now, snap):
         sec_today(src, now, rep, snap)
     except Exception as e:                                 # noqa: BLE001
         rep.today = {"health": "", "paste": [], "also": ["Today: could not be built (%s)." % why(e)], "more": 0}
+    sec_backup(src, now, rep)
     for f in (sec_agsist, sec_bids):
         try:
             f(src, now, rep)
@@ -1880,6 +1891,30 @@ def selftest():
     ck("the email opens with Today, then Needs you", tt.index("Today") < tt.index("Needs you"), tt[:200])
     with open(os.path.join(os.environ.get("TODAY_EMAIL_OUT", os.devnull)), "w", encoding="utf-8") as f:
         f.write(sent[0].get_body(("html",)).get_content())
+
+    print("\nthe monthly backup reminder (the 1st, Central time)")
+    def backup_mail(at):
+        out = []
+        run(Fake(gh, worker, urls, files), at, False, out.append, "s", {})
+        return out[0]["Subject"], out[0].get_body(("plain",)).get_content(), out[0].get_body(("html",)).get_content()
+    bl = "- " + BACKUP_LINE
+    s1, t1, h1 = backup_mail(datetime(2026, 11, 1, 12, 40, tzinfo=UTC))     # Sun Nov 1, 6:40 am CST
+    ck("the 1st: the line is in Needs you", bl in t1 and t1.index("Needs you") < t1.index(bl) < t1.index("Site health, agsist"), t1[:600])
+    ck("the 1st: once, and in the html too", t1.count(BACKUP_LINE) == 1 and H.escape(BACKUP_LINE) in h1, t1.count(BACKUP_LINE))
+    def needs_n(tx):
+        block = tx[tx.index("Needs you"):tx.index("Site health, agsist")]
+        return sum(1 for x in block.splitlines() if x.startswith("- "))
+    ck("the 1st: it counts in the subject", s1.startswith("AGSIST morning, Sun Nov 1: ")
+       and s1.endswith(": %d things need you" % needs_n(t1)), (s1, needs_n(t1)))
+    s2, t2, _ = backup_mail(datetime(2026, 11, 2, 12, 40, tzinfo=UTC))      # Mon Nov 2
+    ck("the 2nd: no line", BACKUP_LINE not in t2 and "Monthly backup" not in t2 and s2.startswith("AGSIST morning, Mon Nov 2: "), s2)
+    ck("the 2nd: the subject still counts every red line", s2.endswith(": %d things need you" % needs_n(t2)), s2)
+    ck("the 14th (the main fixture): no line", BACKUP_LINE not in t, "")
+    ck("by Central time, not UTC: 1 am UTC Nov 1 is still Oct 31 in Chicago",
+       BACKUP_LINE not in backup_mail(datetime(2026, 11, 1, 1, 0, tzinfo=UTC))[1], "")
+    ck("by Central time: 3 am UTC Dec 2 is still Dec 1 in Chicago",
+       BACKUP_LINE in backup_mail(datetime(2026, 12, 2, 3, 0, tzinfo=UTC))[1], "")
+    ck("the line has no em dash and no address", "\u2014" not in BACKUP_LINE and "@" not in BACKUP_LINE)
 
     print()
     if fails:

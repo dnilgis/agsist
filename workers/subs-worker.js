@@ -5,6 +5,19 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.39 (2026-10-20): MONTHLY BACKUP. New route GET /export (Bearer
+ *   LIST_TOKEN only; 403 otherwise, and 403 whenever ?token= is in the
+ *   address, so the token never sits in a URL). Read-only: every key in the
+ *   SUBS namespace with its value, metadata and expiration where present, one
+ *   page at a time: {ok, keys: [{name, value | value_b64, metadata?,
+ *   expiration?}], count, cursor, done}. Pass ?cursor= from the last answer
+ *   until done is true. A value that is not UTF-8 text (a logo PNG) comes as
+ *   value_b64. ?limit= 1..900 keys a page (default 500), so one call stays
+ *   under 1,000 KV operations; values are read 50 at a time and a page stops
+ *   early past 8 MB of values (the cursor then resumes inside the KV page).
+ *   no-store, never cached. scripts/backup/backup-agsist.ps1 reads it once a
+ *   month to Sig's SSD. No new binding and no new secret; every other route
+ *   answers as before.
  * v5.37 (2026-10-20): THE PROOF IS THE EMAIL (Sig). POST /rp-order/approve {k, t}
  *   (public, publicGate, RATE): k is the record key, t = hmac16("rp-approve|" + k)
  *   with UNSUB_SECRET; a right pair on a paid record sets approved {at} once
@@ -727,6 +740,71 @@ async function listKeys(env, prefix) {
     cursor = page.list_complete ? null : page.cursor;
   } while (cursor);
   return out;
+}
+
+// ---------- v5.39: GET /export, the monthly backup ----------
+const EXPORT_LIMIT_MAX = 900;       // 1 list + 900 gets stays under 1,000 KV operations a call
+const EXPORT_LIMIT_DEFAULT = 500;
+const EXPORT_BATCH = 50;            // values read in parallel, this many at a time
+const EXPORT_PAGE_BYTES = 8 * 1024 * 1024;   // stop a page early past this many bytes of values
+
+function b64Bytes(u8) {
+  let s = "";
+  for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+// UTF-8 byte order, the order KV lists keys in.
+function utf8Cmp(a, b) {
+  const x = new TextEncoder().encode(a), y = new TextEncoder().encode(b);
+  for (let i = 0; i < Math.min(x.length, y.length); i++) if (x[i] !== y[i]) return x[i] - y[i];
+  return x.length - y.length;
+}
+// The cursor: the KV cursor that starts the current KV page, plus the last key already sent from it.
+function exportCursorOut(c, after) {
+  return b64Bytes(new TextEncoder().encode(JSON.stringify({ c: c || "", a: after || "" }))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function exportCursorIn(s) {
+  if (!s) return { c: "", a: "" };
+  try {
+    const bin = atob(s.replace(/-/g, "+").replace(/_/g, "/"));
+    const o = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(Uint8Array.from(bin, ch => ch.charCodeAt(0))));
+    if (o && typeof o.c === "string" && typeof o.a === "string") return o;
+  } catch (e) { /* bad cursor */ }
+  return null;
+}
+async function exportPage(env, cur, limit) {
+  const page = await env.SUBS.list({ limit, cursor: cur.c || undefined });
+  let keys = page.keys || [];
+  if (cur.a) {
+    const at = keys.findIndex(k => k.name === cur.a);
+    keys = at >= 0 ? keys.slice(at + 1) : keys.filter(k => utf8Cmp(k.name, cur.a) > 0);
+  }
+  const out = [];
+  let bytes = 0, gone = 0, last = "", full = false;
+  for (let i = 0; i < keys.length && !full; i += EXPORT_BATCH) {
+    const batch = keys.slice(i, i + EXPORT_BATCH);
+    const got = await Promise.all(batch.map(k => env.SUBS.getWithMetadata(k.name, { type: "arrayBuffer" })));
+    for (let j = 0; j < batch.length; j++) {
+      const k = batch[j], g = got[j];
+      last = k.name;
+      if (!g || g.value === null || g.value === undefined) { gone++; continue; }   // expired between list and get
+      const u8 = new Uint8Array(g.value);
+      const row = { name: k.name };
+      let text = null;
+      try { text = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(u8); } catch (e) { text = null; }
+      if (text === null) row.value_b64 = b64Bytes(u8); else row.value = text;
+      const meta = g.metadata !== undefined && g.metadata !== null ? g.metadata : k.metadata;
+      if (meta !== undefined && meta !== null) row.metadata = meta;
+      if (k.expiration) row.expiration = k.expiration;
+      out.push(row);
+      bytes += u8.length;
+      if (bytes >= EXPORT_PAGE_BYTES && (j < batch.length - 1 || i + EXPORT_BATCH < keys.length)) { full = true; break; }
+    }
+  }
+  let cursor = null;
+  if (full) cursor = exportCursorOut(cur.c, last);
+  else if (!page.list_complete && page.cursor) cursor = exportCursorOut(page.cursor, "");
+  return { keys: out, count: out.length, gone, cursor, done: cursor === null };
 }
 
 function escHtml(s) {
@@ -3276,6 +3354,18 @@ async function handle(req, env) {
     // "Authorization: Bearer"; ?token= is refused here so it never sits in a URL.
     const sig = !!bearer && authed;
     const ac = cors(req);   // the admin page on agsist.com reads these answers
+    // v5.39: the monthly backup (scripts/backup/backup-agsist.ps1). Bearer only; a ?token= in the address is refused outright.
+    if (path === "/export") {
+      const ns = { "Cache-Control": "no-store" };
+      if (!sig || url.searchParams.has("token")) return json({ ok: false }, 403, ns);
+      if (req.method !== "GET") return json({ ok: false, error: "GET only" }, 405, ns);
+      const lim = Number(url.searchParams.get("limit") || EXPORT_LIMIT_DEFAULT);
+      const limit = Number.isFinite(lim) ? Math.min(EXPORT_LIMIT_MAX, Math.max(1, Math.floor(lim))) : EXPORT_LIMIT_DEFAULT;
+      const cur = exportCursorIn(url.searchParams.get("cursor") || "");
+      if (!cur) return json({ ok: false, error: "bad cursor" }, 400, ns);
+      const out = await exportPage(env, cur, limit);
+      return json(Object.assign({ ok: true, generated_at: new Date().toISOString() }, out), 200, ns);
+    }
     if (path === "/rp-gift/issue" && req.method === "POST") {
       if (!sig) return json({ ok: false }, 403, ac);
       const p = await rpgBody(req, RPG_ADMIN_MAX_BYTES);
