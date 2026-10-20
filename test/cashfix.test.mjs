@@ -196,8 +196,9 @@ test("breakeven: the FAQ and the results panel quote the calculator's own corn d
   assert.equal((B.match(new RegExp(`<!--BAKE:be-cpb-->\\$${be.replace(".", "\\.")}/bu<!--/BAKE-->`, "g")) || []).length, 4);
   /* the old typed example was $905 an acre, $5.03 a bushel. A live futures
      quote baked into the description ("Dec '27 futures are near $5.03¾",
-     Oct 19) is not that example, so quotes are set aside first. */
-  const noQuotes = B.replace(/futures are near \$\d+\.\d+[¼½¾]?/g, "futures are near (quote)");
+     Oct 19) is not that example, so quotes are set aside first. So is the
+     fertilizer line's "Dec '27 corn futures $5.03 (Oct 20, 2026 close)". */
+  const noQuotes = B.replace(/futures (?:are near )?\$\d+\.\d+[¼½¾]?/g, "futures (quote)");
   assert.doesNotMatch(noQuotes, /\$905|\$5\.03/, "the old typed example is back");
 });
 
