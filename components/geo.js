@@ -409,6 +409,18 @@ function loadWxAlerts(lat, lon) {
   _wxAlertTimer = setInterval(go, 5 * 60 * 1000);
 }
 
+/* Oct 20, 2026 (panel A3): a ZIP saved here also goes in agsist_zip, the key
+   /cash-bids, the Daily box and the price pages read, as loader.js does when
+   the header chip saves one. A ZIP the reader typed always does; one found
+   from the map only when no ZIP is saved yet, so it never replaces a typed one. */
+function _shareZip(z, typed) {
+  try {
+    z = String(z || '');
+    if (!/^\d{5}$/.test(z)) return;
+    if (typed || !/^\d{5}$/.test(String(localStorage.getItem('agsist_zip') || ''))) localStorage.setItem('agsist_zip', z);
+  } catch (e) {}
+}
+
 function fetchWeather(lat, lon, label, known) {
   // v16: stamp localStorage save with ts so boot() can detect stale cache.
   // v17 FIX: MERGE into cache instead of replacing it. Previously each
@@ -446,6 +458,7 @@ function fetchWeather(lat, lon, label, known) {
     };
     if (_typed) _rec.zipTyped = true;
     localStorage.setItem('agsist-wx-loc', JSON.stringify(_rec));
+    _shareZip(_rec.zip, _typed);
   } catch(e) {}
 
   // v17 FIX: when initializing AGSIST_GEO, preload zip/state/county from
@@ -704,6 +717,7 @@ function propagateLocation(lat, lon, label, known) {
         if (st)   saved.state = st;
         if (county) saved.county = county;
         localStorage.setItem('agsist-wx-loc', JSON.stringify(saved));
+        _shareZip(saved.zip, !!saved.zipTyped);
       } catch(e) {}
 
       // v17: fire AGSIST_GEO_READY callbacks so widgets that need refined
