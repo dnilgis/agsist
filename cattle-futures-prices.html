@@ -707,12 +707,11 @@ details.fold[hidden]{display:none}
     if(le&&gf&&le.close&&gf.close){
       var r=gf.close/le.close;$('ct-ratio-val').textContent=r.toFixed(3)+' : 1';
       $('ct-ratio-feed').textContent=cwt(gf.close)+' ÷ '+cwt(le.close);
-      var msg;
-      if(r>=1.55)msg='<b>Feeders are expensive</b> relative to fed cattle; feedlot buying margins are tight; cost of gain has to be sharp to pencil.';
-      else if(r>=1.40)msg='<b>Feeder/fed value is in a normal-to-firm band.</b> Feedlot margins workable with disciplined cost of gain.';
-      else if(r>=1.25)msg='<b>Feeders are reasonably priced</b> versus fed cattle, historically a friendlier setup for feedlot margins.';
-      else msg='<b>Feeders are cheap</b> relative to fed cattle: unusually wide feeding margin potential, often a sign the market expects higher fed prices or lower feed cost.';
-      $('ct-ratio-interp').innerHTML=msg+' Run your own numbers in the cost-of-gain calculator below.';
+      // No verdict words (panel Oct 20, seat C1): the old bands (1.25/1.40/1.55)
+      // had no source and called 1.51 "workable" over a calculator showing a
+      // loss. The ratio's own 5-year percentile is added below when
+      // price-stats.json carries both weekly histories.
+      $('ct-ratio-interp').innerHTML='A higher ratio means feeders cost more against fed cattle. Run your own numbers in the cost-of-gain calculator below.';
     }
     // prefill calculator from the board: feeder = front GF; fed = the LE
     // contract nearest the implied sale month (not the front month, which
@@ -744,8 +743,20 @@ details.fold[hidden]{display:none}
   function band(x){return x<10?'historically very low: near a 5-year bottom':x<25?'historically low: below most of the last 5 years':x<45?'below the 5-year midpoint':x<=55?'right around the 5-year midpoint':x<75?'above the 5-year midpoint':x<90?'historically high: above most of the last 5 years':'historically very high: near a 5-year peak';}
   function ctT(iso){try{return new Date(iso).toLocaleString('en-US',{timeZone:'America/Chicago',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})+' CT';}catch(e){return String(iso);}}
   var statsP=fetch('/data/price-stats.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});
+  /* The feeder/live ratio's 5-year percentile, from the same weekly closes:
+     only when both histories cover the same weeks. Pure; test/oct20-small-batch.test.mjs. */
+  function ratioRead(d,gfc,lec){
+    var f=d&&d.feeders,c=d&&d.cattle;
+    if(!f||!c||!f.hist||!c.hist||f.hist.length!==c.hist.length||f.hist.length<29||f.hist_from!==c.hist_from||f.hist_to!==c.hist_to||!(gfc>0)||!(lec>0))return null;
+    var cur=gfc/lec,k=1,nn=f.hist.length+1,i;
+    for(i=0;i<f.hist.length;i++)if(c.hist[i]>0&&f.hist[i]/c.hist[i]<=cur)k++;
+    var pct=Math.round(100*k/nn);
+    return {pct:pct,n:nn,text:'5-year: the ratio is at the '+pct+ordn(pct)+' percentile of '+nn+' weekly readings (continuous front-month feeder over live, Yahoo Finance, delayed).'};
+  }
   Promise.all([statsP,pricesP]).then(function(a){
     var d=a[0],pr=a[1];
+    var gq=pr&&pr.q&&pr.q.feeders,lq0=pr&&pr.q&&pr.q.cattle,rr=gq&&lq0?ratioRead(d,Number(gq.close),Number(lq0.close)):null;
+    if(rr){var ri=$('ct-ratio-interp');if(ri)ri.textContent=rr.text+' A higher ratio means feeders cost more against fed cattle. Run your own numbers in the cost-of-gain calculator below.';}
     [['le','cattle'],['gf','feeders']].forEach(function(p){
       var s=d&&d[p[1]];if(!s||s.pct==null)return;
       var lq=pr&&pr.q&&pr.q[p[1]],live=(lq&&lq.close!=null)?Number(lq.close):null,h=s.hist,pct,nn,note;

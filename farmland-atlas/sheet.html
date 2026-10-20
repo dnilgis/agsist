@@ -260,7 +260,7 @@ function render(){
   var rpb=(rv&&ytv&&yt.rk==='nonirr')?rv.value/ytv:null;
   var ylast=(ok(Y)&&Y.hist&&Y.last_year&&!(RENT_LATEST&&Y.last_year<RENT_LATEST-3)&&Y.hist[Y.last_year]!=null)?[Y.last_year,Y.hist[Y.last_year]]:null;
   var ysub=[]; if(ylast) ysub.push(ylast[0]+' county yield '+f1(ylast[1])); if(ry5) ysub.push(ry5.from+'-'+String(ry5.to).slice(2)+' average '+f1(ry5.avg));
-  var valSub=ok(V)?(fl?V.latest_year+' census · read with care: '+flagWords(fl,true):V.latest_year+': what operators guessed land and buildings were worth'):why(V);
+  var valSub=ok(V)?(fl?V.latest_year+' census · read with care: '+flagWords(fl,true):V.latest_year+': operators\' own estimate of what land and buildings were worth'):why(V);
   // Sig, Oct 19, 2026, as on the county page: a rent tile more than three survey years old shows n/a with
   // its last year, and no state comparison or rent per bushel comes from it; the recorded-sales tile
   // (IL, WI) is AtlasSales.tile, the same words the county page bakes
