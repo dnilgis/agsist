@@ -20,7 +20,7 @@
   var WORKER = 'https://agsist-subs.dnilgis.workers.dev';
   var MAX_LOGO = 250 * 1024;
   var $ = function (id) { return document.getElementById(id); };
-  var form = $('sa-form');
+  var form = $('spa-form');
   if (!form) return;
   var S = { card: null, slots: [], taken: {}, supFull: false, fndReserved: false, logo: '' };
 
@@ -49,19 +49,19 @@
       var el = form.querySelector('[data-price="' + t + '"]');
       if (el) el.innerHTML = price(t) ? price(t) + ' &middot; first month free' : '-';
     });
-    if (S.supFull) $('sa-sup-note').textContent = 'All supporter spots are taken. Apply and you are first in line.';
-    if (S.fndReserved) $('sa-fnd-note').textContent = 'In talks with one business. Apply and you are next in line.';
+    if (S.supFull) $('spa-sup-note').textContent = 'All supporter spots are taken. Apply and you are first in line.';
+    if (S.fndReserved) $('spa-fnd-note').textContent = 'In talks with one business. Apply and you are next in line.';
     fillSlots();
     var q = new URLSearchParams(location.search);
     var want = q.get('tier') || (q.get('slot') ? 'page' : '');
-    if (q.get('slot') && S.slots.some(function (s) { return s.id === q.get('slot'); })) $('sa-slot').value = q.get('slot');
+    if (q.get('slot') && S.slots.some(function (s) { return s.id === q.get('slot'); })) $('spa-slot').value = q.get('slot');
     var radio = form.querySelector('input[name=tier][value="' + (want || 'page') + '"]');
     if (radio) radio.checked = true;
     sync();
   });
 
   function fillSlots() {
-    var sel = $('sa-slot'), groups = { tools: [], rent: [] };
+    var sel = $('spa-slot'), groups = { tools: [], rent: [] };
     S.slots.forEach(function (s) { (s.page.indexOf('/rent/') === 0 ? groups.rent : groups.tools).push(s); });
     var html = '';
     [['tools', 'Tools and markets'], ['rent', 'Cash rent by state']].forEach(function (g) {
@@ -79,20 +79,20 @@
     if (first && (!sel.value || S.taken[sel.value])) sel.value = first.value;
   }
 
-  function slotInfo() { var id = $('sa-slot').value; return S.slots.filter(function (s) { return s.id === id; })[0]; }
+  function slotInfo() { var id = $('spa-slot').value; return S.slots.filter(function (s) { return s.id === id; })[0]; }
 
   function sync() {
     var t = tier();
-    $('sa-page-row').hidden = t !== 'page';
-    $('sa-head-row').hidden = t === 'supporter';
-    $('sa-body-row').hidden = t === 'supporter';
+    $('spa-page-row').hidden = t !== 'page';
+    $('spa-head-row').hidden = t === 'supporter';
+    $('spa-body-row').hidden = t === 'supporter';
     var si = slotInfo();
-    $('sa-slot-pitch').textContent = (t === 'page' && si) ? si.pitch : '';
+    $('spa-slot-pitch').textContent = (t === 'page' && si) ? si.pitch : '';
     var p = price(t) || 'the monthly price above';
-    $('sa-terms-text').textContent = 'I understand: the first month is free, then an invoice each month for ' + p +
+    $('spa-terms-text').textContent = 'I understand: the first month is free, then an invoice each month for ' + p +
       ', month to month. I can cancel any time by replying to any AGSIST email. Sig reviews every ad and can decline one.';
-    $('sa-insurance').hidden = !/insur/i.test(val('sa-company') + ' ' + val('sa-headline') + ' ' + val('sa-body'));
-    ['sa-headline', 'sa-body'].forEach(function (id) {
+    $('spa-insurance').hidden = !/insur/i.test(val('spa-company') + ' ' + val('spa-headline') + ' ' + val('spa-body'));
+    ['spa-headline', 'spa-body'].forEach(function (id) {
       var el = $(id), c = form.querySelector('[data-for="' + id + '"]');
       if (c) { c.textContent = el.value.length + ' / ' + el.maxLength; c.classList.toggle('over', el.value.length > el.maxLength - 10); }
     });
@@ -100,26 +100,26 @@
   }
 
   function preview() {
-    var box = $('sa-preview'), t = tier(), slots = window.AgsistSlots;
-    var company = val('sa-company') || 'Your business', link = val('sa-url') || 'https://example.com';
+    var box = $('spa-preview'), t = tier(), slots = window.AgsistSlots;
+    var company = val('spa-company') || 'Your business', link = val('spa-url') || 'https://example.com';
     if (!/^https?:\/\//i.test(link)) link = 'https://' + link;
-    if (!slots) { box.innerHTML = '<p class="sa-small">Preview loads with the page.</p>'; return; }
+    if (!slots) { box.innerHTML = '<p class="spa-small">Preview loads with the page.</p>'; return; }
     if (t === 'page') {
       box.innerHTML = '<aside class="ag-sponsor-ribbon ag-sponsor-ribbon--sold">' + slots.ribbon({
-        company: company, headline: val('sa-headline') || 'Your headline here', body: val('sa-body'),
-        url: link, logo: S.logo }, $('sa-slot').value || 'page') + '</aside>';
-      $('sa-preview-lbl').textContent = 'On ' + ((slotInfo() || {}).page || 'the page') + ', in place of the "Sponsor this page" ribbon:';
+        company: company, headline: val('spa-headline') || 'Your headline here', body: val('spa-body'),
+        url: link, logo: S.logo }, $('spa-slot').value || 'page') + '</aside>';
+      $('spa-preview-lbl').textContent = 'On ' + ((slotInfo() || {}).page || 'the page') + ', in place of the "Sponsor this page" ribbon:';
     } else if (t === 'supporter') {
-      box.innerHTML = '<div class="adspace-row sa-preview-foot"><a class="ad-slot ad-slot--filled" href="#" onclick="return false">' +
+      box.innerHTML = '<div class="adspace-row spa-preview-foot"><a class="ad-slot ad-slot--filled" href="#" onclick="return false">' +
         slots.supporter({ name: company, logo: S.logo }) + '</a></div>';
-      $('sa-preview-lbl').textContent = 'In the footer of every page:';
+      $('spa-preview-lbl').textContent = 'In the footer of every page:';
     } else {
-      box.innerHTML = '<p class="sa-small">The sponsor card runs in every briefing and at the top of the homepage. Sig builds it with you from what you send here, and you approve the final version before it runs.</p>';
-      $('sa-preview-lbl').textContent = 'Sponsor card:';
+      box.innerHTML = '<p class="spa-small">The sponsor card runs in every briefing and at the top of the homepage. Sig builds it with you from what you send here, and you approve the final version before it runs.</p>';
+      $('spa-preview-lbl').textContent = 'Sponsor card:';
     }
   }
 
-  $('sa-logo').addEventListener('change', function () {
+  $('spa-logo').addEventListener('change', function () {
     var f = this.files && this.files[0];
     S.logo = '';
     msg('');
@@ -131,9 +131,9 @@
     rd.readAsDataURL(f);
   });
   form.addEventListener('input', sync);
-  form.addEventListener('change', function (e) { if (e.target.id !== 'sa-logo') sync(); });
+  form.addEventListener('change', function (e) { if (e.target.id !== 'spa-logo') sync(); });
 
-  function msg(t, err) { var m = $('sa-msg'); m.textContent = t; m.className = 'sa-msg' + (err ? ' err' : ''); }
+  function msg(t, err) { var m = $('spa-msg'); m.textContent = t; m.className = 'spa-msg' + (err ? ' err' : ''); }
 
   function fallbackMail(p) {
     var lines = ['Placement: ' + p.tier + (p.tier === 'page' ? ' (' + p.slot + ')' : ''), 'Business: ' + p.company, 'Website: ' + p.url,
@@ -146,10 +146,10 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var t = tier();
-    var p = { tier: t, slot: t === 'page' ? $('sa-slot').value : '', company: val('sa-company'), url: val('sa-url'),
-      headline: t === 'supporter' ? '' : val('sa-headline'), body: t === 'supporter' ? '' : val('sa-body'),
-      contact: val('sa-contact'), phone: val('sa-phone'), email: val('sa-email'), logo: S.logo,
-      terms: $('sa-terms').checked, _gotcha: (form.querySelector('[name=_gotcha]') || {}).value || '' };
+    var p = { tier: t, slot: t === 'page' ? $('spa-slot').value : '', company: val('spa-company'), url: val('spa-url'),
+      headline: t === 'supporter' ? '' : val('spa-headline'), body: t === 'supporter' ? '' : val('spa-body'),
+      contact: val('spa-contact'), phone: val('spa-phone'), email: val('spa-email'), logo: S.logo,
+      terms: $('spa-terms').checked, _gotcha: (form.querySelector('[name=_gotcha]') || {}).value || '' };
     var miss = [];
     if (!t) miss.push('a placement');
     if (t === 'page' && (!p.slot || S.taken[p.slot])) miss.push('an open page');
@@ -160,13 +160,13 @@
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(p.email)) miss.push('a working email');
     if (!p.terms) miss.push('a tick in the terms box');
     if (miss.length) { msg('Almost there. Please add ' + miss.join(', ') + '.', true); return; }
-    var go = $('sa-go');
+    var go = $('spa-go');
     go.disabled = true; msg('Sending…');
     fetch(WORKER + '/sponsor-apply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) })
       .then(function (r) { return r.json().catch(function () { return { ok: false, http: r.status }; }).then(function (j) { j.http = r.status; return j; }); })
       .then(function (j) {
         if (j && j.ok === true) {
-          form.hidden = true; $('sa-done-email').textContent = p.email; $('sa-done').hidden = false;
+          form.hidden = true; $('spa-done-email').textContent = p.email; $('spa-done').hidden = false;
           try { if (typeof gtag === 'function') gtag('event', 'sponsor_apply', { tier: t, slot: p.slot || t }); } catch (x) {}
           window.scrollTo({ top: 0, behavior: 'smooth' });
           return;
@@ -176,8 +176,8 @@
       })
       .catch(function () {
         go.disabled = false;
-        var m = $('sa-msg');
-        m.className = 'sa-msg err';
+        var m = $('spa-msg');
+        m.className = 'spa-msg err';
         m.innerHTML = 'The form could not reach our server just now. Nothing is lost: <a href="' +
           fallbackMail(p).replace(/"/g, '&quot;') + '">send these details to Sig by email</a> instead, or call 715-797-2428.';
       });

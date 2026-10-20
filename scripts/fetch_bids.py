@@ -982,6 +982,13 @@ def network_rows(grid, base=None):
             # read five hours ago never borrows this run's clock.
             rows[-1].update({"held": True, "timestamp": b.get("checkedAt"),
                              "checkedAt": b.get("checkedAt"), "pricedAt": b.get("pricedAt") or None})
+        if b.get("pasted") is True:
+            # A BOARD SIG PASTED BY HAND (2026-10-20): the site will not let the
+            # bids reader in, so Sig pastes its public page. dnilgis/bids holds
+            # it up to 7 days, aged by the paste. It prints its own paste time.
+            pa = b.get("pastedAt") or b.get("checkedAt")
+            rows[-1].update({"pasted": pa, "timestamp": pa, "checkedAt": b.get("checkedAt"),
+                             "pricedAt": b.get("pricedAt") or None})
     print(f"[fetch_bids] network: {len(bids)} rows in the feed, "
           f"{dropped_stale} stale/broken dropped, {n_held} held (skipped, read within {HELD_SKIP_HOURS} h), "
           f"{dropped_currency} not priced in USD, {len(rows)} merged in")
