@@ -270,7 +270,8 @@ test("phone: one tap on the menu shows every group's links; desktop panels stay 
     const hidden = await pg.evaluate(() => [...document.querySelectorAll("#drawer .draw-grp a.draw-item")].filter((a) => !a.getClientRects().length).map((a) => a.getAttribute("href")));
     assert.deepEqual(hidden, [], "every group link is shown without another tap");
     const n = await pg.evaluate(() => document.querySelectorAll("#drawer .draw-grp a.draw-item").length);
-    assert.equal(n, 5 + 5 + 7 + 9 + 7 + 7 + 6 + 4 + 4 + 3 + 3, "Livestock has 9 since The Haymow (2026-10-18)");
+    assert.equal(n, 5 + 5 + 8 + 9 + 7 + 7 + 6 + 5 + 4 + 3 + 3,
+      "Livestock has 9 since The Haymow (2026-10-18); Reports 8 with Yield by state, Land 5 with Farmland sale index (2026-10-20)");
     assert.ok(await pg.evaluate(() => document.getElementById("drawer").scrollWidth <= 390), "no sideways scroll in the panel");
     // the moved note shows before Nov 1 and stays closed once dismissed
     assert.ok(await pg.isVisible("#drawer .nav-moved"));

@@ -612,8 +612,7 @@ def exists(h):
 
 
 if __name__ == "__main__":
-    # /farmland-index ships on its own branch (fx/landindex) ahead of this menu (Sig, Oct 20)
-    missing = sorted(h for h in all_hrefs() if not exists(h) and h not in ("/cash-bids/states", "/farmland-index"))
+    missing = sorted(h for h in all_hrefs() if not exists(h) and h != "/cash-bids/states")
     if missing:
         raise SystemExit(f"links with no page: {missing}")
     build_header()
