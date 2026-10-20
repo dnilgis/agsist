@@ -679,8 +679,8 @@ try {
     fold.addEventListener('toggle',soon);
     if('ResizeObserver' in window){ var ro=new ResizeObserver(soon); ro.observe(f1); ro.observe(f2); }
   })();
-  function isSignedUp(){try{return document.cookie.split(';').some(function(c){return c.trim().startsWith('agsist_subscribed=');})||localStorage.getItem('agsist_subscribed')==='1';}catch(e){return false;}}
-  function setSignedUp(){try{var exp=new Date();exp.setFullYear(exp.getFullYear()+2);document.cookie='agsist_subscribed=1;expires='+exp.toUTCString()+';path=/;SameSite=Lax';localStorage.setItem('agsist_subscribed','1');}catch(e){}}
+  /* 2026-10-20: components/signup-ask.js owns the flag (365 days, then the asks come back). */
+  function isSignedUp(){var S=window.AgsistSignup;if(S&&S.isSignedUp)return S.isSignedUp();try{return document.cookie.split(';').some(function(c){return c.trim().startsWith('agsist_subscribed=');})||localStorage.getItem('agsist_subscribed')==='1';}catch(e){return false;}}
   // 2026-09-30: exposed so components/bids-homepage.js can skip the post-lookup
   // signup CTA for a reader who already subscribed.
   window.isSignedUp=isSignedUp;
@@ -708,7 +708,7 @@ try {
     var toSignup=/^#signup(-full)?$/.test(location.hash);
     if(toSignup){var el=document.getElementById('signup-full');if(el){el.style.display='block';if(toSignup)setTimeout(function(){try{el.scrollIntoView({block:'start'});}catch(e){}},0);}}
   })();
-  var btnCompactDismiss=document.getElementById('btn-compact-dismiss');if(btnCompactDismiss)btnCompactDismiss.addEventListener('click',function(){setDismissed('agsist_signup_compact_dismissed');var el=document.getElementById('signup-compact');if(el)el.style.display='none';var m=document.getElementById('main');if(m&&m.focus){try{m.focus({preventScroll:true});}catch(e){}}});
+  var btnCompactDismiss=document.getElementById('btn-compact-dismiss');if(btnCompactDismiss)btnCompactDismiss.addEventListener('click',function(){setDismissed('agsist_signup_compact_dismissed');try{if(window.AgsistSignup&&window.AgsistSignup.dismissed)window.AgsistSignup.dismissed('signup-band','close');}catch(e){}var el=document.getElementById('signup-compact');if(el)el.style.display='none';var m=document.getElementById('main');if(m&&m.focus){try{m.focus({preventScroll:true});}catch(e){}}});
   function showSignupSuccess(formId,icon,headline,sub){var formEl=document.getElementById(formId);if(!formEl)return;formEl.innerHTML='<div style="text-align:center;padding:.9rem 0"><div style="font-size:1.882rem;margin-bottom:.4rem">'+icon+'</div><div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.25rem">'+headline+'</div><div style="font-size:.824rem;color:var(--text-muted);line-height:1.5">'+sub+'</div></div>';formEl.style.display='block';}
   /* 2026-10-06: both homepage signups post through components/signup-ask.js
      (source "signup-band", the saved ZIP, reports:true). Success needs HTTP
@@ -719,7 +719,7 @@ try {
     if(box)box.setAttribute('data-sa-busy','1');
     S.subscribe({email:email,source:'signup-band'}).then(function(res){
       if(box)box.removeAttribute('data-sa-busy');
-      if(res.ok){if(box)box.setAttribute('data-sa-done','1');onOk(S.okText());}
+      if(res.ok){if(box)box.setAttribute('data-sa-done','1');onOk(S.okText());if(box&&S.oneMore)S.oneMore(box,{gave:'daily',email:email});}
       else onFail(S.errText(res));
     });
   }
