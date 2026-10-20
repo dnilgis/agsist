@@ -1440,7 +1440,8 @@ def range_call(cd, e):
         else:
             bad = py
     if bad is None:
-        out["x"], out["dir"] = (0, "over") if side == "plc" else (good, "under")
+        # never changed out to 0 (PLC) or 3 times the benchmark (ARC-CO): any PLC yield a farm here could carry
+        out["x"], out["dir"] = 0, ("over" if side == "plc" else "under")
         return out
     # narrow to the whole unit the call holds from (PLC: at and over; ARC-CO: at and under)
     a, b = int(math.floor(min(bad, good))), int(math.ceil(max(bad, good)))   # PLC: fails at a, holds at b; ARC-CO: holds at a, fails at b
