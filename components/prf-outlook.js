@@ -5,7 +5,7 @@
      * for each PRF interval of the crop year: what CPC's seasonal outlook says
        about precipitation for the 3-month seasons that contain it
      * CPC's one-month outlook for the next month, labelled as one month
-     * the US Drought Monitor category at the grid's centre
+     * the US Drought Monitor category at the grid's center
      * what an outlook is and is not, and links to the sources
 
    WHAT IT WILL NOT SAY
@@ -144,7 +144,7 @@
   function droughtText(code, sec) {
     var d = code === 'N' ? 'None: not in drought or abnormally dry' : /^[0-4]$/.test(code || '') ? DM[+code] : null;
     if (!d) return null;
-    return d + ' at the grid’s centre (US Drought Monitor, map for ' + fmtDate(sec.map_date) + ', released ' + fmtDate(sec.released) + ')';
+    return d + ' at the grid’s center (US Drought Monitor, map for ' + fmtDate(sec.map_date) + ', released ' + fmtDate(sec.released) + ')';
   }
   function ensoText(e) {
     return e.status + (e.synopsis ? '. ' + e.synopsis.replace(/\s*\.$/, '') : '') + ' (CPC, issued ' + fmtDate(e.issued) + ')';
@@ -209,6 +209,8 @@
       + '<p class="prfo-lede">What NOAA’s Climate Prediction Center expects for precipitation in the seasons ahead, the ENSO status and today’s drought map, for the grid you are looking at. It is information, not advice: an outlook is not the PRF index and does not predict a payment.</p>'
       + '<div class="prfo-body" aria-live="polite"><p class="prfo-withheld">Find a grid above and its outlook appears here.</p></div>';
     var body = el.querySelector('.prfo-body');
+    /* on /prf the panel sits in a folded row of step 4 (details.prf-d, Oct 20): the row shows when the panel does */
+    var row = el.closest ? el.closest('details.prf-d') : null;
     var data = null, loading = null, want = null, eventSeen = false;
 
     function load() {
@@ -224,8 +226,8 @@
       if (want === key) return;
       want = key;
       body.innerHTML = '<p class="prfo-withheld">Loading the outlook for grid ' + esc(g.grid) + '…</p>';
-      (load() || Promise.resolve(data)).then(function () { if (want === key) { body.innerHTML = render(data, +g.grid, g.split, today); el.hidden = false; } },
-        function () { if (want === key) { want = null; el.hidden = true; } });
+      (load() || Promise.resolve(data)).then(function () { if (want === key) { body.innerHTML = render(data, +g.grid, g.split, today); el.hidden = false; if (row) row.hidden = false; } },
+        function () { if (want === key) { want = null; el.hidden = true; if (row) row.hidden = true; } });
     }
     document.addEventListener('prf:grid', function (ev) { eventSeen = true; show(ev.detail || {}); });
     /* Until prf.js sends the event: read the state it already exposes. */
@@ -302,7 +304,7 @@
       d.enso.probs.forEach(function (r) { s += '<tr><td>' + esc(r.season) + '</td><td>' + esc(r.la) + '</td><td>' + esc(r.neutral) + '</td><td>' + esc(r.el) + '</td></tr>'; });
       s += '</tbody></table>';
     }
-    s += '<p>Each value is read at the grid’s centre point. CPC categories are the lower, middle and upper thirds of 1991 to 2020 precipitation for the season. A CPC map shades bands (33 to 40%, 40 to 50%, and so on); the band is all the map gives, so the band is what is printed. Built ' + esc(fmtDate((d.built || '').slice(0, 10))) + ' by scripts/fetch_prf_outlook.py.</p>';
+    s += '<p>Each value is read at the grid’s center point. CPC categories are the lower, middle and upper thirds of 1991 to 2020 precipitation for the season. A CPC map shades bands (33 to 40%, 40 to 50%, and so on); the band is all the map gives, so the band is what is printed. Built ' + esc(fmtDate((d.built || '').slice(0, 10))) + ' by scripts/fetch_prf_outlook.py.</p>';
     return s;
   }
 

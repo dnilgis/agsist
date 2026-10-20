@@ -139,6 +139,14 @@
   function cur() { return S[S.on] || S.A; }
   function county() { return S.st && states[S.st] && S.co ? states[S.st].counties[S.co] : null; }
   function limits() { var c = county(); if (!c) return null; return c.lim || (c.limc || {})[String(S.use)] || null; }
+  /* irrigated hay worth less than non-irrigated in this county: say so, with no guessed reason */
+  function irrNote() {
+    var c = county(), names = states[S.st].combos, o = c && c.bg && c.bg[String(S.grid)];
+    if (!c) return '';
+    var vals = names.map(function (n, i) { return o && o[String(i)] != null ? o[String(i)] : c.b[i]; });
+    var lo = M.irrigatedLower(names, vals, S.use);
+    return lo ? ' USDA sets irrigated hay lower here: ' + usd2(lo.irr) + ' an acre, against ' + usd2(lo.non) + ' for non-irrigated.' : '';
+  }
   function baseValue() {
     var c = county(); if (!c) return null;
     var o = c.bg && c.bg[String(S.grid)];
@@ -523,12 +531,28 @@
     c.g.forEach(function (g) { var rc = M.gridRowCol(g); if (rc.row < r0) r0 = rc.row; if (rc.row > r1) r1 = rc.row; if (rc.col < c0) c0 = rc.col; if (rc.col > c1) c1 = rc.col; });
     var bn = M.gridBounds(r1 * 300 + c0 + 1), bs = M.gridBounds(r0 * 300 + c1 + 1);
     box.innerHTML = '<p class="prf-b-l">' + plural(c.g.length, 'grid touches', 'grids touch') + ' ' + esc(c.n) + ' County. They are drawn where they lie, north at the top: '
-      + bn.north.toFixed(2) + '° N at the top edge, ' + bs.south.toFixed(2) + '° N at the bottom, ' + Math.abs(bn.west).toFixed(2) + '° W at the left, ' + Math.abs(bs.east).toFixed(2) + '° W at the right. Not sure which? Type the nearest town above.</p>'
+      + bn.north.toFixed(2) + '° N at the top edge, ' + bs.south.toFixed(2) + '° N at the bottom, ' + Math.abs(bn.west).toFixed(2) + '° W at the left, ' + Math.abs(bs.east).toFixed(2) + '° W at the right.</p><p class="prf-b-l" id="prf-b-start">Not sure which? Type the nearest town above.</p>'
       + '<div class="prf-b-scroll"><div class="prf-b-map" style="grid-template-columns:repeat(' + (c1 - c0 + 1) + ',minmax(3.4rem,1fr))">'
       + c.g.map(function (g) {
           var rc = M.gridRowCol(g);
           return '<button type="button" class="prf-chip' + (g === S.grid && st === S.st && k === S.co ? ' is-on' : '') + '" style="grid-row:' + (r1 - rc.row + 1) + ';grid-column:' + (rc.col - c0 + 1) + '" data-grid="' + g + '" data-county="' + f + k + '">' + g + '</button>';
         }).join('') + '</div></div>';
+    /* Not sure which? The grid that holds the most of the county, from the county cells (data/prf/c, the
+       Census Bureau's county lines). A tie, or a file that did not load, keeps the plain line. (Sig, Oct 20) */
+    if (c.g.length > 1) countyBiggest(c.g, f + k).then(function (g) {
+      var sp = document.getElementById('prf-b-start');
+      if (!g || $('prf-b-co').value !== k || $('prf-b-st').value !== st || !sp) return;
+      sp.innerHTML = 'Not sure? Start with grid ' + g + ', which covers most of the county, or type the nearest town above. <button type="button" class="prf-link" data-grid="' + g + '" data-county="' + f + k + '">Open grid ' + g + '</button>';
+    });
+  }
+  /* The grid with the most of a county's cells, or null on a tie or a missing file. */
+  function countyBiggest(grids, fips) {
+    return Promise.all(grids.map(function (g) {
+      return cellFile(M.shardKey(g)).then(function (d) { return M.countyCells(d.g && d.g[String(g)], fips); });
+    })).then(function (ns) {
+      var at = M.biggest(ns);
+      return at < 0 ? null : grids[at];
+    }).catch(function () { return null; });
   }
 
   /* ---------------------------------------------------------------- the setup controls */
@@ -564,7 +588,7 @@
     $('prf-pf-hint').textContent = cbv == null ? '' : 'How much to insure each acre for. 100 is USDA’s county value, ' + usd2(cbv) + ' an acre here for this use. 150 raises the premium and any payment by half. It does not change how often it pays.';
     $('prf-use-note').innerHTML = isGrazing()
       ? 'From 2027, grazing land needs your livestock on it: at least 25% of the stocking rate, or no payment is due and the premium is still owed. <button type="button" class="prf-link" data-jump="new">The rule</button>'
-      : 'PRF covers perennial hay ground. Forage planted every year is a different policy, Annual Forage.';
+      : 'PRF covers perennial hay ground. Forage planted every year is a different policy, Annual Forage.' + irrNote();
     Array.prototype.forEach.call(document.querySelectorAll('[data-cov]'), function (b) {
       var on = +b.getAttribute('data-cov') === s.cov; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });

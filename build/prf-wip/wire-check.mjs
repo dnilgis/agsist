@@ -39,7 +39,8 @@ for (const W of [390, 1280]) {
   ok(await page.$$eval('#prf-optimize ul.po-why li', e => e.length) >= 2, W + ' reasons listed');
   ok(/\$\d/.test(opt) && /You pay a year|YOU PAY A YEAR/i.test(opt), W + ' figures in dollars');
   // outlook: shows once data/prf/outlook.json loads (the hidden-without-data case is checked on the reload below)
-  await openSetup(page); await page.waitForTimeout(150);
+  // since Oct 20 the outlook is a folded row at the top of step 4 (#prf-outlook-d): open it the way a reader does
+  await page.evaluate(() => { const d = document.getElementById('prf-outlook-d'); if (d && !d.hidden) d.open = true; }); await page.waitForTimeout(150);
   const ol = await page.evaluate(() => { const s = document.getElementById('prf-outlook'); return { vis: !!s.offsetParent, t: s.innerText }; });
   console.log(W, 'OUTLOOK visible', ol.vis, '|', ol.t.replace(/\s+/g, ' ').slice(-140));
   ok(ol.vis && /CPC/.test(ol.t), W + ' outlook shows once its data loads');
@@ -64,8 +65,9 @@ for (const W of [390, 1280]) {
   await page.reload(); await page.waitForSelector('.prf-figs');
   await page.waitForSelector('#prf-optimize .po-use', { timeout: 8000 }).catch(() => {});
   ok(!!(await page.$('#prf-optimize .po-use')), W + ' panel fills when its script arrives after the first render');
-  await openSetup(page); await page.waitForTimeout(150);
+  await page.evaluate(() => { const d = document.getElementById('prf-outlook-d'); if (d) d.open = true; }); await page.waitForTimeout(150);
   ok(!(await page.evaluate(() => !!document.getElementById('prf-outlook').offsetParent)), W + ' outlook stays hidden when its data fails to load');
+  ok(await page.evaluate(() => document.getElementById('prf-outlook-d').hidden), W + ' and so does its row');
   await browser.close();
 }
 done();

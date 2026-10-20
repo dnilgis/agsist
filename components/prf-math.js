@@ -336,7 +336,39 @@
     return best;
   }
 
+  /* Irrigated hay valued under non-irrigated (Sig, Oct 20; Anderson County, TX: $168 against $224).
+     names: the state's uses in order; vals: the county value for each (null where not offered); use: the
+     index shown. When the use is an irrigated hay line and its non-irrigated twin is worth more, returns
+     { irr, non }, else null. No reason is given: USDA sets the values. */
+  function irrigatedLower(names, vals, use) {
+    var n = names && names[use];
+    if (!n || !/irrigated/i.test(n) || /non-irrigated/i.test(n)) return null;
+    var twin = names.indexOf(n.replace(/irrigated/i, 'non-irrigated'));
+    if (twin < 0) return null;
+    var irr = vals[use], non = vals[twin];
+    return irr != null && non != null && irr < non ? { irr: irr, non: non } : null;
+  }
+
+  /* How many of a grid's county cells (data/prf/c, one grid's { c, m }) are sure to be in the county
+     `fips`; null without a record. "?" and "-" cells count for no county. */
+  function countyCells(rec, fips) {
+    if (!rec || !rec.m || !rec.c) return null;
+    var at = rec.c.indexOf(fips), n = 0;
+    if (at < 0) return 0;
+    var ch = String.fromCharCode(97 + at);
+    rec.m.replace(/([a-z?\-])(\d+)/g, function (_, x, k) { if (x === ch) n += +k; return ''; });
+    return n;
+  }
+  /* The index of the largest count, or -1 on a tie at the top, a missing count or all zero. */
+  function biggest(ns) {
+    var best = -1, second = -1, at = -1;
+    for (var i = 0; i < ns.length; i++) { var x = ns[i]; if (x == null) return -1; if (x > best) { second = best; best = x; at = i; } else if (x > second) second = x; }
+    return best > 0 && best > second ? at : -1;
+  }
+
   var api = {
+    countyCells: countyCells, biggest: biggest,
+    irrigatedLower: irrigatedLower,
     evenSplit: evenSplit, longestDry: longestDry,
     CODES: CODES, LABELS: LABELS, LONG: LONG, COVERAGE: COVERAGE, N: N, MISSING: MISSING, BLOCK: BLOCK,
     gridFromLatLon: gridFromLatLon, gridRowCol: gridRowCol, gridBounds: gridBounds, shardKey: shardKey,

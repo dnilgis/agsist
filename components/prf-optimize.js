@@ -67,7 +67,7 @@
    THE ENSO TABLE
      ONI_ASO below: the Nino 3.4 sea surface anomaly averaged over August,
      September and October of each year, in degrees C. 1950 to 2021 are the
-     September (ASO-centred) three-month values of the Nino 3.4 series shipped
+     September (ASO-centered) three-month values of the Nino 3.4 series shipped
      with the Pyleoclim package (LinkedEarth/Pyleoclim_util,
      pyleoclim/data/oni.csv). That series starts in 1871, so it is a long
      reconstruction, not CPC's ERSSTv5 ONI, and values can differ from CPC's
@@ -107,7 +107,7 @@
   ];
   var ONI_SOURCE = {
     what: 'Nino 3.4 sea surface temperature anomaly, August to October, degrees C',
-    years: '1950-2021: Pyleoclim package Nino 3.4 series (github.com/LinkedEarth/Pyleoclim_util, pyleoclim/data/oni.csv), September-centred three-month value. 2022-2024: NOAA CPC ONI v5, ASO.',
+    years: '1950-2021: Pyleoclim package Nino 3.4 series (github.com/LinkedEarth/Pyleoclim_util, pyleoclim/data/oni.csv), September-centered three-month value. 2022-2024: NOAA CPC ONI v5, ASO.',
     cpc: 'https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt',
     thresholds: 'El Nino at +0.5 or above, La Nina at -0.5 or below'
   };
