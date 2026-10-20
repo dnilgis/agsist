@@ -2068,6 +2068,10 @@
     {"id": "ecfr-7cfr-457-8", "kind": "html",
      "url": "https://www.ecfr.gov/current/title-7/subtitle-B/chapter-IV/part-457/section-457.8",
      "title": "7 CFR 457.8, Common Crop Insurance Policy (Basic Provisions)",
-     "why": "/harvest-price-tracker loss box: section 14 duties after damage (notice within 72 hours, representative samples, no destroying the crop before consent), production records by unit"}
+     "why": "/harvest-price-tracker loss box: section 14 duties after damage (notice within 72 hours, representative samples, no destroying the crop before consent), production records by unit"},
+    {"id": "ispfmra-home", "kind": "html",
+     "url": "https://www.ispfmra.org/",
+     "title": "Illinois Society of Professional Farm Managers and Rural Appraisers (home page)",
+     "why": "/farmland-index: find the ISPFMRA land values survey so its numbers can sit beside the sale index (not used yet)"}
 ]
 }
