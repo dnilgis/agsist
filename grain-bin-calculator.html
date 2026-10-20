@@ -74,9 +74,10 @@
     .input-grid.cols-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
     .input-grid label { font-size:0.78rem; color: var(--text-dim); margin-bottom: 2px; display: block; }
     .input-grid input, .input-grid select { width: 100%; padding: 8px 10px; font-family: 'JetBrains Mono', monospace; font-size: 1rem; background: var(--surface); border: var(--card-bw) solid var(--border); border-radius: 6px; color: var(--text); }
-    .input-grid input:focus, .input-grid select:focus { outline: none; border-color: var(--green); }
+    /* no outline:none here: the sitewide :focus-visible ring (components/styles.css) shows on every input (panel E6, 2026-10-20) */
+    .input-grid input:focus, .input-grid select:focus { border-color: var(--green); }
     .crop-select { width: 100%; padding: 8px 10px; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; font-size: 1rem; background: var(--surface); border: var(--card-bw) solid var(--border); border-radius: 6px; color: var(--text); }
-    .crop-select:focus { outline: none; border-color: var(--green); }
+    .crop-select:focus { border-color: var(--green); }
     .depth-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding: 10px 12px; background: var(--bg); border: 2px solid var(--border); border-radius: 6px; }
     .depth-row label { font-family: 'JetBrains Mono', monospace; font-size:0.755rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em; white-space: nowrap; min-width: 72px; }
     .depth-row input[type="range"] { flex: 1; accent-color: var(--green); cursor: pointer; min-width: 0; }
