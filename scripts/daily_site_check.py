@@ -70,7 +70,8 @@ def clock_findings(doc):
     for w in (doc or {}).get("workflows", []):
         if w.get("status") not in ("ok", None):
             out.append({"check": "clocks", "where": w.get("workflow", ""),
-                        "title": ("late (critical)" if w.get("critical") else "late") if w.get("status") != "over" else "published size",
+                        "title": ("late (critical)" if w.get("critical") else "late") if w.get("status") not in ("over", "warn")
+                        else ("folder near its budget" if w.get("workflow") == "folder-budgets" else "published size"),
                         "detail": f"{w.get('why', '')}; last success {w.get('last_success') or 'never'}"})
     return out
 

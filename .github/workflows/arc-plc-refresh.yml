@@ -85,6 +85,10 @@ jobs:
       # can change the extracted text. The selftest checks the Oct 2026 PDF.
       - name: Install
         run: pip install openpyxl==3.1.5 pypdf==6.17.0
+      # FSA's program files live on the raw branch, not main (Oct 20: 34 MB no
+      # page reads). The build refuses to run without them.
+      - name: FSA files from raw
+        run: bash scripts/pull_raw.sh data/fsa
       - name: Selftest
         run: python scripts/build_arc_plc.py --selftest
 
@@ -96,6 +100,7 @@ jobs:
         run: pip install --quiet pillow==12.3.0
 
       - name: Build and commit
+        id: commit
         env:
           SNAP: ${{ needs.gate.outputs.snap }}
         run: |
@@ -112,10 +117,28 @@ jobs:
                           embed/arc-plc.html sitemap-arc-plc.xml llms.txt components/arc-plc-form.js img/og/arc-plc.jpg
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -q -m "arc-plc: rebuilt $(date -u +%Y-%m-%d)"
-            if git push; then echo "Pushed on attempt $i."; exit 0; fi
+            if git push; then
+              echo "Pushed on attempt $i."
+              git show --name-only --format= HEAD > /tmp/arc-changed.txt
+              echo "pushed=1" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
             echo "Push race on attempt $i; building again on the new main..."
             git fetch -q origin main
             git reset -q --hard origin/main
             sleep $((RANDOM % 6 + 3))
           done
           echo "Failed to push after 5 attempts."; exit 1
+
+      # This job pushes with the default token, so indexnow.yml's on: push never
+      # fires for it, and ARC/PLC changes reached Bing only in the next Monday's
+      # full submission, 6 days later (panel B4, Oct 20). Send just the pages this
+      # push changed, as freshness.yml does; --changed sends only sitemap pages.
+      - name: IndexNow ping for the pages this run changed (best-effort)
+        if: steps.commit.outputs.pushed == '1'
+        continue-on-error: true
+        run: |
+          files=$(grep -E '\.html$' /tmp/arc-changed.txt || true)
+          if [ -z "$files" ]; then echo "no page changed"; exit 0; fi
+          # shellcheck disable=SC2086
+          python scripts/indexnow_submit.py --changed $files || echo "IndexNow ping failed - harmless"

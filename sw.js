@@ -13,7 +13,9 @@
  *                     prices, daily brief, bids, weather, ARC/PLC program data):
  *                     network first with a 3 s limit, then the last good copy,
  *                     and the page is told so it can say "Offline. Showing ..."
- *   Navigations     → when network and cache both fail: offline.html
+ *   Navigations     → network gets NAV_TIMEOUT_MS (3.5 s), then a cached copy
+ *                     if there is one (else keep waiting on the network);
+ *                     when network and cache both fail: offline.html
  *   External APIs   → Network only (NEVER_CACHE list below)
  *
  * v4 FIXES:
@@ -118,7 +120,7 @@ function handleFetch(request, event) {
   var isHTML = accept && accept.indexOf('text/html') >= 0;
   if (isHTML) {
     if (isShell(url)) return shellFirst(request, event);
-    return networkFirst(request);
+    return networkFirst(request, event);
   }
 
   // Versioned assets (?v=N in URL) → cache first
@@ -137,8 +139,10 @@ function handleFetch(request, event) {
 // cheap 304. Without this, a fresh deploy stays invisible for up to 10 minutes
 // even though this is "network first" — the staleness lived in the HTTP cache,
 // not the SW cache.
-function networkFirst(request) {
-  return fetch(request, { cache: 'no-cache' }).then(function(response) {
+// HTML pages (event given) do not wait on a stalled network for longer than
+// NAV_TIMEOUT_MS when a cached copy exists: see navRace below.
+function networkFirst(request, event) {
+  var net = fetch(request, { cache: 'no-cache' }).then(function(response) {
     if (response && response.ok) {
       var copy = response.clone(); // clone SYNCHRONOUSLY before any await
       caches.open(CACHE_NAME).then(function(cache) {
@@ -156,6 +160,34 @@ function networkFirst(request) {
   }).catch(function() {
     return caches.match(request).then(function(cached) {
       return cached || Promise.reject('network-and-cache-both-failed');
+    });
+  });
+  if (!event) return net;
+  return navRace(net, function() { return caches.match(request); }, event);
+}
+
+// ── Navigations on a weak signal (2026-10-20) ─────────────────────
+// A page with a cached copy used to show a blank screen for as long as a
+// one-bar connection held the request open (25 s and more on a stalled
+// response). Now the network gets NAV_TIMEOUT_MS; after that the cached copy
+// is served if there is one, and the network answer, when it comes, still
+// refreshes the cache (waitUntil keeps the worker alive for it). With no
+// cached copy it keeps waiting on the network: a late page beats no page.
+var NAV_TIMEOUT_MS = 3500;
+function navRace(net, cachedCopy, event) {
+  try { if (event && event.waitUntil) event.waitUntil(net.catch(function(){})); } catch (e) {}
+  return new Promise(function(resolve, reject) {
+    var done = false;
+    var timer = setTimeout(function() {
+      if (done) return;
+      Promise.resolve(cachedCopy()).then(function(cached) {
+        if (cached && !done) { done = true; resolve(cached); }
+      }, function(){});
+    }, NAV_TIMEOUT_MS);
+    net.then(function(r) {
+      if (!done) { done = true; clearTimeout(timer); resolve(r); }
+    }, function(err) {
+      if (!done) { done = true; clearTimeout(timer); reject(err); }
     });
   });
 }
@@ -215,7 +247,7 @@ function shellFirst(request, event) {
       try { if (event && event.waitUntil) event.waitUntil(bg); } catch (e) {}
       return cached;
     }
-    return net.then(function(response) {
+    var answer = net.then(function(response) {
       if (response && response.ok) return response;
       return cached || response;
     }, function() {
@@ -223,6 +255,8 @@ function shellFirst(request, event) {
         return c || Promise.reject('network-and-cache-both-failed');
       });
     });
+    // an old shell copy still beats a stalled network
+    return navRace(answer, function() { return cached || caches.match(request); }, event);
   });
 }
 
