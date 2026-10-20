@@ -104,6 +104,10 @@
     .ps-states{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 1rem}
     .ps-states label{display:flex;align-items:center;gap:.5rem;min-height:40px;font-family:var(--font-body);font-size:.95rem;letter-spacing:0;text-transform:none;color:var(--text);font-weight:400;cursor:pointer}
     .ps-states input{width:20px;height:20px;min-height:0;flex:none;margin:0;accent-color:var(--gold)}
+    .ps-states[hidden]{display:none}
+    .ps-picked{margin:0;font-size:.95rem;color:var(--text)}
+    .ps-more{align-self:flex-start}
+    .ps-more[hidden]{display:none}
     .cl-err{font-size:.8rem;color:var(--red);line-height:1.4;margin:0}
     .cl-err:empty{display:none}
     .le-n{font-size:.75rem;color:var(--text-muted);text-align:right;margin:0!important}
@@ -230,7 +234,9 @@
           </div>
           <fieldset class="cl-f full" aria-describedby="ps-states-e">
             <legend>States you want</legend>
-            <div class="ps-states">
+            <p class="ps-picked" id="ps-picked" hidden></p>
+            <button type="button" class="cl-btn2 ps-more" id="ps-more" aria-expanded="false" aria-controls="ps-states-list" hidden>Add more states</button>
+            <div class="ps-states" id="ps-states-list">
               <label><input type="checkbox" name="states" value="AL" data-name="Alabama" data-counties="67"> Alabama</label>
               <label><input type="checkbox" name="states" value="AZ" data-name="Arizona" data-counties="15"> Arizona</label>
               <label><input type="checkbox" name="states" value="AR" data-name="Arkansas" data-counties="75"> Arkansas</label>
@@ -355,7 +361,7 @@
 </div>
   <script src="/components/prf-sponsor.js?v=5"></script>
   <script src="/components/form-post.js?v=5"></script>
-  <script src="/components/prf-sponsor-page.js?v=1"></script>
+  <script src="/components/prf-sponsor-page.js?v=2"></script>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
