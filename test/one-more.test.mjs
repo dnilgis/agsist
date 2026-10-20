@@ -313,6 +313,9 @@ test("the bar: first visit after 40 s on a desktop, half the page on a phone; on
     await pg.clock.runFor(21000);
     await pg.locator("#sa-bar:not(.is-off)").waitFor();
     if (SHOTS) await pg.screenshot({ path: path.join(SHOTS, "bar-first-visit-1280.png") });
+    // the clock is faked, and a fake clock holds back the half-on-screen observer: let real time run, then wait for it
+    await pg.clock.resume();
+    await pg.waitForFunction(() => Array.from(window.dataLayer || []).some((x) => x && x[0] === "event" && x[1] === "ask_shown" && x[2] && x[2].ask_id === "bar"), null, { timeout: 5000 }).catch(() => {});
     assert.deepEqual((await events(pg, "ask_shown")).map((e) => e.ask_id).filter((x) => x === "bar"), ["bar"]);
     // once a session: the next page in the same session gets none
     await go(pg, port, "/fertilizer.html");
