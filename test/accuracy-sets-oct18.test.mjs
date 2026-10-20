@@ -98,6 +98,10 @@ test("PRF county pages: a pair of months priced on fewer grids says how many and
 });
 
 test("ARC/PLC county pages: a trigger over the benchmark never prints a whole number under it, titles round half up", () => {
+  // The selftest reads FSA's county files, which live on the raw branch since Oct 20
+  // (scripts/dev/checks.sh unpacks them first). Without them it stops before testing anything.
+  assert.ok(readdirSync(ROOT + "data/fsa").some((f) => /^arcco_.*\.xlsx?$/.test(f)),
+    "no FSA county files in data/fsa: run bash scripts/pull_raw.sh data/fsa (scripts/dev/checks.sh does)");
   assert.match(py(["scripts/build_arc_plc.py", "--selftest"]), /OK: 0 failure/);
   let over = 0;
   for (const p of pages("arc-plc", (f) => f.endsWith(".html") && !f.endsWith("-sheet.html"))) {
