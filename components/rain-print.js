@@ -1688,7 +1688,7 @@
      This stops casual use. It is not DRM: the hash and the flag are both in
      this public file, and anyone who reads it can set the flag and draw the
      files themselves. */
-  var MAKER_HASH = 'd13c567a9e183ee53f5f263b90610b99e05c0a7bdb27e26940c19683ca1c30d3', MAKER_FLAG = 'rp-maker';
+  var MAKER_HASH = 'c48c7a7a1b467a7488ba147a5d790c31e533b0d2dbd27a0f4be7114ad9b54504', MAKER_FLAG = 'rp-maker';
   var MAKER_ASK = /(?:^|[?&])maker=([^&#]+)/.exec(root.location.search);
   var MAKER = (function () {
     if (!MAKER_ASK) return false;
