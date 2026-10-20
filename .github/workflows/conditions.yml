@@ -42,7 +42,14 @@ jobs:
             scripts/cron_gate.py
             data/crop-progress.json
             data/conditions/conditions.json
+            /.github/actions/engine/
+            /.github/engine-paths
           sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
       - id: g
         env:
           TRIGGER_WORKFLOW: ${{ github.event.workflow_run.name }}
@@ -55,6 +62,11 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

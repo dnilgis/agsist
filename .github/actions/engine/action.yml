@@ -1,0 +1,49 @@
+name: Engine checkout
+description: >-
+  Puts the collection code (the paths in .github/engine-paths) in the workspace.
+  mode empty: this repository's own copy (nothing changes). mode private: the
+  engine branch of the private repo, checked out with PRIVATE_REPO_TOKEN and
+  copied into place. A failed checkout fails the job here, before any step can
+  read or publish data.
+inputs:
+  token:
+    description: PRIVATE_REPO_TOKEN (Contents read on the private repo)
+    required: false
+    default: ''
+  mode:
+    description: "'' or in-repo (this repository's copy), or private (the engine branch); the repository variable ENGINE_MODE"
+    required: false
+    default: ''
+outputs:
+  sha:
+    description: the engine commit used (private mode)
+    value: ${{ steps.overlay.outputs.sha }}
+runs:
+  using: composite
+  steps:
+    - id: plan
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      env:
+        MODE: ${{ inputs.mode }}
+        HAVE_TOKEN: ${{ inputs.token != '' }}
+      run: bash "$GITHUB_ACTION_PATH/engine.sh" plan
+
+    - id: checkout
+      if: steps.plan.outputs.private == 'true'
+      continue-on-error: true
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      with:
+        repository: ${{ steps.plan.outputs.repo }}
+        ref: ${{ steps.plan.outputs.ref }}
+        token: ${{ inputs.token }}
+        path: .engine-src
+        persist-credentials: false
+
+    - id: overlay
+      if: steps.plan.outputs.private == 'true'
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      env:
+        CHECKOUT_OUTCOME: ${{ steps.checkout.outcome }}
+      run: bash "$GITHUB_ACTION_PATH/engine.sh" overlay .engine-src

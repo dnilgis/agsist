@@ -38,6 +38,11 @@ jobs:
         with:
           ref: ${{ github.event.repository.default_branch }}
           persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
 
       - uses: actions/setup-python@v5
         with:
@@ -64,6 +69,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ github.token }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          ENGINE_MODE: ${{ vars.ENGINE_MODE }}
           DRY: ${{ github.event.inputs.dry }}
         run: |
           if [ "$DRY" = "true" ]; then

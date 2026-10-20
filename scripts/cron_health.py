@@ -29,6 +29,15 @@ github-authentication-token-expiration header) and private-raw-saves (a
 warning when nothing has reached the private raw branch for RAW_STALE_HOURS:
 the jobs' saves are failing softly).
 
+THE ENGINE (Oct 20, 2026). The collection code is checked out from the private
+repo's engine-agsist and engine-bids branches by the "Engine checkout" step
+of every job (.github/actions/engine) once the repository variable
+ENGINE_MODE is private. One row, engine-checkout: red "Engine checkout
+failing" when a run in dnilgis/agsist or dnilgis/bids failed at that step in
+the last ENGINE_LOOKBACK_HOURS, or when ENGINE_MODE is private and the key
+cannot read an engine branch; a warning when an engine branch cannot be read
+while the code still runs from the public repo (do not flip until it can).
+
 This writes private/data/cron-health.json: for each watched workflow, its last
 successful run, the longest gap its clock allows, and whether the latest
 tick of that clock was served. A tick is served when a run that started
@@ -68,6 +77,13 @@ KEY_WARN_DAYS = 14
 # The raw branch gets the Daily's fact check every day and a bid snapshot every
 # weekday; 80 h covers a long weekend with one of them missing.
 RAW_STALE_HOURS = 80
+# The engine checkout: the branches every job copies the code from, the repos
+# whose failed runs are scanned for a failed engine step, and how far back.
+ENGINE_BRANCHES = ("engine-agsist", "engine-bids")
+ENGINE_REPOS = ("dnilgis/agsist", "dnilgis/bids")
+ENGINE_STEP = "Engine checkout"
+ENGINE_LOOKBACK_HOURS = 6
+ENGINE_RUNS_LOOKED_AT = 15
 
 # file, clock (None = read it from the workflow's cron_gate step), max delay
 # in minutes, critical (fails the run red), and what the clock is.
@@ -240,6 +256,11 @@ def collect(now, repo, token, api):
         rows.append(row)
         if row["status"] == "late":
             late.append(row["workflow"])
+    row = engine_row(now, os.environ.get("PRIVATE_REPO_TOKEN", ""), token, api,
+                     os.environ.get("ENGINE_MODE", ""))
+    rows.append(row)
+    if row["status"] == "late":
+        late.append(row["workflow"])
     for row in budget_rows():
         rows.append(row)
         if row["status"] == "over":
@@ -355,6 +376,57 @@ def private_rows(now, token, get=None):
         else:
             saves.update(status="ok", why="last save %.0f h ago" % hours)
     return [key, saves]
+
+
+def engine_row(now, key, gh_token, api="https://api.github.com", mode="", get=None, get_h=None):
+    """engine-checkout: can the key read each engine branch, and did any run in
+    the last ENGINE_LOOKBACK_HOURS fail at the Engine checkout step."""
+    get, get_h = get or _get, get_h or _get_h
+    private = (mode or "").strip() == "private"
+    row = {"workflow": "engine-checkout", "critical": True, "mode": "private" if private else "in-repo",
+           "clock": "every job copies the code from %s (%s) when ENGINE_MODE is private" % (PRIVATE_REPO, ", ".join(ENGINE_BRANCHES))}
+    unreadable = []
+    if key:
+        for b in ENGINE_BRANCHES:
+            try:
+                get_h("%s/repos/%s/branches/%s" % (api, PRIVATE_REPO, b), key)
+            except Exception as e:
+                code = getattr(e, "code", None)
+                unreadable.append("%s (%s)" % (b, ("HTTP %s" % code) if code else type(e).__name__))
+    failed, scan_err = {}, []
+    since = (now - timedelta(hours=ENGINE_LOOKBACK_HOURS)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    for repo in ENGINE_REPOS:
+        try:
+            runs = get("%s/repos/%s/actions/runs?status=failure&per_page=%d&created=%%3E%%3D%s"
+                       % (api, repo, ENGINE_RUNS_LOOKED_AT, since), gh_token).get("workflow_runs", [])
+            for r in runs[:ENGINE_RUNS_LOOKED_AT]:
+                jobs = get(r["jobs_url"] + "?per_page=100", gh_token).get("jobs", [])
+                if any(st.get("name") == ENGINE_STEP and st.get("conclusion") == "failure"
+                       for j in jobs for st in (j.get("steps") or [])):
+                    k = "%s %s" % (repo.split("/")[1], r.get("path", "").split("/")[-1] or r.get("name", "?"))
+                    failed[k] = failed.get(k, 0) + 1
+        except Exception as e:
+            scan_err.append("%s runs could not be read (%s)" % (repo, getattr(e, "code", None) or type(e).__name__))
+    if failed:
+        row.update(status="late", why="Engine checkout failing: %s in the last %d h; those jobs ran nothing "
+                   "(check PRIVATE_REPO_TOKEN in that repository's secrets and the engine branches)"
+                   % (", ".join("%s (%d run%s)" % (k, n, "" if n == 1 else "s") for k, n in sorted(failed.items())),
+                      ENGINE_LOOKBACK_HOURS))
+    elif unreadable and private:
+        row.update(status="late", why="Engine checkout failing: the key cannot read %s; every job that runs code will fail"
+                   % ", ".join(unreadable))
+    elif unreadable:
+        row.update(status="warn", critical=False, why="the key cannot read %s; the code still runs from the public repo, "
+                   "do not set ENGINE_MODE=private until it can" % ", ".join(unreadable))
+    elif not key:
+        row.update(status="unknown", critical=private,
+                   why="PRIVATE_REPO_TOKEN was not given to this job; no failed engine step in the last %d h" % ENGINE_LOOKBACK_HOURS)
+    else:
+        row.update(status="ok", why="%s readable; mode %s; no failed engine step in the last %d h"
+                   % (" and ".join(ENGINE_BRANCHES), row["mode"], ENGINE_LOOKBACK_HOURS))
+    if scan_err and row["status"] == "ok":
+        row.update(status="unknown", why=row["why"] + "; " + "; ".join(scan_err))
+    return row
 
 
 def folder_row(r, SB):
@@ -619,7 +691,57 @@ def selftest():
     check(parse_expiry("2026-11-03 12:00:00 UTC") == datetime(2026, 11, 3, 12, tzinfo=UTC), "expiry header in UTC")
     check(parse_expiry("2026-11-03 07:00:00 -0500") == datetime(2026, 11, 3, 12, tzinfo=UTC), "expiry header with an offset")
     check(parse_expiry("") is None and parse_expiry("soon") is None, "no or odd header: no date")
+    # the engine checkout: branch reads with the key, failed runs scanned for a failed engine step
+    GHT = "ghs_" + "y" * 20
+
+    def eng(branch_fail=None, runs=None, jobs=None, runs_fail=None):
+        asked = []
+
+        def get_h(url, token):
+            asked.append(url)
+            assert token == TOK and "/repos/dnilgis/agsistretired/branches/engine-" in url, url
+            if branch_fail and url.endswith(branch_fail[0]):
+                raise urllib.error.HTTPError(url, branch_fail[1], "x", {}, None)
+            return {}, {}
+
+        def get(url, token):
+            asked.append(url)
+            assert token == GHT, url
+            if "/actions/runs?" in url:
+                assert "status=failure" in url and "created=%3E%3D2026-10-20T06:00:00Z" in url, url
+                if runs_fail:
+                    raise urllib.error.HTTPError(url, runs_fail, "x", {}, None)
+                repo = url.split("/repos/")[1].split("/actions")[0]
+                return {"workflow_runs": (runs or {}).get(repo, [])}
+            return {"jobs": (jobs or {}).get(url.split("?")[0], [])}
+        return get, get_h, asked
+
+    def run(rid, path):
+        return {"jobs_url": "https://api/jobs/%d" % rid, "path": ".github/workflows/%s" % path, "name": path}
+    step = lambda name, c: {"name": name, "conclusion": c}
+    g1, h1, asked = eng()
+    r = engine_row(now, TOK, GHT, "https://api.github.com", "", g1, h1)
+    check(r["status"] == "ok" and "engine-agsist and engine-bids readable; mode in-repo" in r["why"], "engine ok (%s)" % r["why"])
+    check(sum("/branches/engine-" in u for u in asked) == 2, "both engine branches are read (%s)" % asked)
+    g1, h1, _ = eng(runs={"dnilgis/bids": [run(1, "poll.yml"), run(2, "poll.yml"), run(3, "tidy.yml")]},
+                    jobs={"https://api/jobs/1": [{"steps": [step("Set up job", "success"), step("Engine checkout", "failure")]}],
+                          "https://api/jobs/2": [{"steps": [step("Engine checkout", "failure")]}],
+                          "https://api/jobs/3": [{"steps": [step("Engine checkout", "success"), step("tidy", "failure")]}]})
+    r = engine_row(now, TOK, GHT, "https://api.github.com", "private", g1, h1)
+    check(r["status"] == "late" and r["critical"] and r["why"].startswith("Engine checkout failing: bids poll.yml (2 runs)")
+          and "tidy" not in r["why"], "a failed engine step in bids is red, other failures are not counted (%s)" % r["why"])
+    g1, h1, _ = eng(branch_fail=("engine-bids", 404))
+    r = engine_row(now, TOK, GHT, "https://api.github.com", "private", g1, h1)
+    check(r["status"] == "late" and "cannot read engine-bids (HTTP 404)" in r["why"], "private mode, unreadable branch: red (%s)" % r["why"])
+    r = engine_row(now, TOK, GHT, "https://api.github.com", "", g1, h1)
+    check(r["status"] == "warn" and not r["critical"] and "do not set ENGINE_MODE=private" in r["why"],
+          "in-repo mode, unreadable branch: a warning, not red (%s)" % r["why"])
+    g1, h1, _ = eng(runs_fail=403)
+    r = engine_row(now, TOK, GHT, "https://api.github.com", "", g1, h1)
+    check(r["status"] == "unknown" and "runs could not be read (403)" in r["why"], "runs unreadable: unknown (%s)" % r["why"])
+    check(TOK not in json.dumps(r) and GHT not in json.dumps(r), "no token in the engine row")
     wf = open(os.path.join(WF_DIR, "cron-health.yml")).read()
+    check("ENGINE_MODE: ${{ vars.ENGINE_MODE }}" in wf, "cron-health.yml tells the check the engine mode")
     check("PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}" in wf and "--out private/data/cron-health.json" in wf,
           "cron-health.yml gives the check the key and writes the private copy")
 

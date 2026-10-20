@@ -105,7 +105,14 @@ jobs:
           sparse-checkout: |
             scripts/cron_gate.py
             data/lrp/today.json
+            /.github/actions/engine/
+            /.github/engine-paths
           sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
       - id: gate
         run: python3 scripts/cron_gate.py lrp --lrp-file data/lrp/today.json
 
@@ -132,7 +139,14 @@ jobs:
           sparse-checkout: |
             scripts/fetch_lrp.py
             test/fixtures/lrp/
+            /.github/actions/engine/
+            /.github/engine-paths
           sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
 
       - name: Selftest
         run: python3 scripts/fetch_lrp.py --selftest > /dev/null
@@ -189,6 +203,11 @@ jobs:
       HIST: ${{ github.workspace }}/../lrp-history
     steps:
       - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

@@ -344,6 +344,17 @@ def sec_agsist(src, now, rep):
         gen = parse_time(ch.get("generated_at"))
         crit = [str(x) for x in ch.get("late_critical") or []]
         late = [str(x) for x in ch.get("late") or [] if str(x) not in crit]
+        # the engine checkout (the code copied from the private repo): its own words, not a job name
+        eng = next((w for w in ch.get("workflows") or [] if w.get("workflow") == "engine-checkout"), None)
+        crit = [x for x in crit if x != "engine-checkout"]
+        late = [x for x in late if x != "engine-checkout"]
+        if eng and eng.get("status") == "late":
+            lines.append("%s." % str(eng.get("why", "Engine checkout failing")).rstrip("."))
+            rep.red(str(eng.get("why", "Engine checkout failing")).split(";")[0])
+        elif eng and eng.get("status") in ("warn", "unknown"):
+            lines.append("Engine checkout: %s." % str(eng.get("why", "")).rstrip("."))
+        elif eng:
+            lines.append("Engine checkout works (code from %s)." % ("the private repo" if eng.get("mode") == "private" else "the public repo"))
         if crit:
             lines.append("Late critical jobs: %s." % ", ".join(crit))
             rep.red("Late critical job%s: %s" % ("s" if len(crit) > 1 else "", ", ".join(crit)))
@@ -1294,6 +1305,22 @@ def selftest():
             "GitHub Pages deploy stuck: building since 5:00 am.", "Prices are stale: last update 7 h ago",
             "Cash bids are stale: last update 4 h ago.", "Today's daily briefing is not out yet (last one Oct 13, 5:47 am)."]
     ck("late critical, size, stuck deploy, stale feeds, missing briefing", all(any(w in x for x in rep.needs) for w in want), rep.needs)
+
+    print("\nengine checkout")
+    f5 = dict(files)
+    f5["private/data/cron-health.json"] = json.dumps({"generated_at": "2026-10-14T10:30:00Z", "late": ["engine-checkout"], "late_critical": ["engine-checkout"],
+                                              "workflows": [{"workflow": "engine-checkout", "status": "late", "critical": True, "mode": "private",
+                                                             "why": "Engine checkout failing: bids poll.yml (2 runs) in the last 6 h; those jobs ran nothing"}]})
+    re5 = Report()
+    sec_agsist(Fake(gh, worker, urls, f5), now, re5)
+    ck("a failing engine checkout is red in its own words", "Engine checkout failing: bids poll.yml (2 runs) in the last 6 h" in re5.needs
+       and not any("Late critical job" in x for x in re5.needs), re5.needs)
+    f5["private/data/cron-health.json"] = json.dumps({"generated_at": "2026-10-14T10:30:00Z", "late": [], "late_critical": [],
+                                              "workflows": [{"workflow": "engine-checkout", "status": "ok", "mode": "private", "why": "x"}]})
+    re5 = Report()
+    sec_agsist(Fake(gh, worker, urls, f5), now, re5)
+    ck("a working engine is one line, nothing red", "Engine checkout works (code from the private repo)." in re5.sections[0][1]
+       and not any("Engine" in x for x in re5.needs), re5.sections[0][1])
 
     print("\nprivate repo key")
     fk = Fake(gh, worker, urls, files)
