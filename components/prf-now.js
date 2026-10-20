@@ -112,24 +112,46 @@
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
+  /* What share of its protection a policy at each coverage level pays at this index: the policy's own
+     rule, (coverage - index) / coverage, whole percent. Only for an interval whose months are both
+     NCEI final (Sig, Oct 20): "a 90% policy pays 28% of protection" at 65.0, computed, never typed. */
+  function payShare(index, cov) { return index == null || !(index < cov) ? 0 : Math.round((cov - index) / cov * 100); }
+  function payLine(iv) {
+    var parts = [];
+    for (var k = COV.length - 1; k >= 0; k--) { var c = COV[k], s = payShare(iv.index, c); if (s > 0) parts.push(c + '% pays ' + s + '%'); }
+    if (!parts.length) return '<p class="pn-pay">At ' + iv.index.toFixed(1) + ', no coverage level pays for ' + esc(iv.name) + '.</p>';
+    return '<p class="pn-pay">At ' + iv.index.toFixed(1) + ', a ' + parts[0].replace(' pays ', ' policy pays ') + ' of its protection for ' + esc(iv.name) +
+      (parts.length > 1 ? '; ' + parts.slice(1).join(', ') : '') + (parts.length < COV.length ? '; the lower levels pay nothing' : '') + '.' +
+      (iv.y <= 2026 ? ' That is on RMA&rsquo;s 2027 record; a ' + iv.y + ' policy is paid on its own year&rsquo;s index (see below).' : '') + '</p>';
+  }
+
+  function needTable(iv) {
+    var h = '<table class="pn-need"><caption>More rain by ' + fmtDate(iv.to) + ' that would lift the index to each coverage level</caption>' +
+      '<thead><tr><th scope="col">Coverage</th><th scope="col">Rain still to fall</th></tr></thead><tbody>';
+    iv.need.forEach(function (n) {
+      h += '<tr><th scope="row">' + n.cov + '%</th><td>' + (n.mm > 0 ? fmtIn(n.inches) + ' more' : 'Already there') + '</td></tr>';
+    });
+    return h + '</tbody></table><p class="pn-fine">A policy at a coverage level pays only when the final index ends under it. Past that much more rain, that level would not pay for ' + esc(iv.name) + '.</p>';
+  }
+
   function ivHtml(iv, through) {
     var h = '<div class="pn-iv"><h3 class="pn-iv-h">' + esc(iv.long) + ' ' + iv.y + '</h3>';
     if (iv.ended) h += '<p class="pn-when">Ended ' + fmtDate(iv.to) + '. ' + (iv.allFinal ? 'Both months are NCEI&rsquo;s final data, the same data RMA&rsquo;s index uses.' : 'Not all final yet, so this is still an estimate.') + '</p>';
     else h += '<p class="pn-when">Day ' + (iv.days - iv.left) + ' of ' + iv.days + ', ' + iv.left + (iv.left === 1 ? ' day' : ' days') + ' left (to ' + fmtDate(iv.to) + ').</p>';
     if (iv.withheld) return h + '<p class="pn-held">' + esc(iv.withheld) + '</p></div>';
+    /* an open interval leads with the rain still needed (Sig, Oct 20) */
+    if (!iv.ended) h += needTable(iv);
     h += '<dl class="pn-figs">' +
       '<div><dt>' + (iv.ended ? 'Rain, whole interval' : 'Rain so far') + '</dt><dd>' + fmtIn(iv.precipIn) + '</dd></div>' +
       '<div><dt>Average, whole interval</dt><dd>' + fmtIn(iv.avgIn) + '</dd></div>' +
       '<div><dt>' + (iv.allFinal ? 'Index' : iv.ended ? 'Index, estimate' : 'Index so far') + '</dt><dd>' + iv.index.toFixed(1) + ' <span class="pn-pre">' + (iv.allFinal ? 'from final data' : 'preliminary') + '</span></dd></div>' +
-      '</dl><p class="pn-fine pn-how">' + howLine(iv.how) + '</p>';
-    if (!iv.ended) {
-      h += '<table class="pn-need"><caption>More rain by ' + fmtDate(iv.to) + ' that would lift the index to each coverage level</caption>' +
-        '<thead><tr><th scope="col">Coverage</th><th scope="col">Rain still to fall</th></tr></thead><tbody>';
-      iv.need.forEach(function (n) {
-        h += '<tr><th scope="row">' + n.cov + '%</th><td>' + (n.mm > 0 ? fmtIn(n.inches) + ' more' : 'Already there') + '</td></tr>';
-      });
-      h += '</tbody></table><p class="pn-fine">A policy at a coverage level pays only when the final index ends under it. Past that much more rain, that level would not pay for ' + esc(iv.name) + '.</p>';
-    }
+      '</dl>';
+    /* what the index is, right under the number */
+    h += '<p class="pn-def">' + (iv.ended
+      ? 'The index is the interval&rsquo;s rain as a percent of normal: ' + iv.index.toFixed(1) + ' means ' + iv.index.toFixed(1) + '% of the average.'
+      : 'The index is rain as a percent of normal for the whole interval. So far it counts only rain that has fallen, so it climbs as the rest of the interval&rsquo;s rain comes in.') + '</p>';
+    if (iv.allFinal) h += payLine(iv);
+    h += '<p class="pn-fine pn-how">' + howLine(iv.how) + '</p>';
     return h + '</div>';
   }
 
@@ -140,12 +162,12 @@
     if (m.state === 'stale') return '<p class="pn-held">NOAA&rsquo;s newest day here is ' + fmtDateY(m.through) + ', more than ' + MAX_AGE + ' days ago, so the numbers are held back until it updates.</p>';
     m.ivs.forEach(function (iv) { h += ivHtml(iv, m.through); });
     h += '<p class="pn-fine pn-src"><b>An estimate, not RMA&rsquo;s index.</b> Rain from NOAA NCEI&rsquo;s nClimGrid on RMA&rsquo;s grid, the data RMA builds the index from, with daily grids through ' + fmtDateY(m.through) +
-      ' (NCEI runs 3 days behind). Until both months are final, the index RMA publishes can differ. The index so far counts only rain that has fallen against the whole interval&rsquo;s average, so it climbs as the interval goes on. It is not a forecast. ' +
+      ' (NCEI runs 3 days behind). Until both months are final, the index RMA publishes can differ. It is not a forecast. ' +
       accLine(m.acc) + cpcLine(m.acc, m.ivs) + ' <a href="https://www.ncei.noaa.gov/pub/data/cirs/usda/" rel="noopener">NCEI data</a></p>';
     return h;
   }
 
-  var api = { model: model, render: render, indexSoFar: indexSoFar, rainToReach: rainToReach, accLine: accLine, cpcLine: cpcLine, howLine: howLine, MAX_AGE: MAX_AGE, MIN_AVG_MM: MIN_AVG_MM };
+  var api = { model: model, render: render, payShare: payShare, payLine: payLine, indexSoFar: indexSoFar, rainToReach: rainToReach, accLine: accLine, cpcLine: cpcLine, howLine: howLine, MAX_AGE: MAX_AGE, MIN_AVG_MM: MIN_AVG_MM };
   root.AgPrfNow = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
@@ -161,6 +183,7 @@
     '.pn-need caption{text-align:left;font-size:.85rem;color:var(--text-muted,#999);padding-bottom:.25rem}' +
     '.pn-need th,.pn-need td{padding:.15rem .9rem .15rem 0;text-align:left;font-weight:400}.pn-need thead th{font-size:.78rem;color:var(--text-muted,#999)}' +
     '.pn-fine{font-size:.8rem;color:var(--text-muted,#999);margin:.3rem 0 0}.pn-src{border-top:1px solid var(--border,#333);padding-top:.6rem}' +
+    '.pn-def{margin:-.2rem 0 .5rem;font-size:.85rem;color:var(--text-dim,#bbb)}.pn-pay{margin:0 0 .5rem;font-size:.95rem;font-weight:600}' +
     '.pn-held{font-size:.9rem;color:var(--text-muted,#999)}.pn-pick{margin:0 0 .5rem;font-size:.9rem}.pn-pick select{margin-left:.35rem;max-width:100%}' +
     '@media (max-width:480px){.pn-figs{grid-template-columns:1fr 1fr}}';
 

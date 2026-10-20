@@ -34,3 +34,26 @@ test("the plain line sits under the answer and shows on screen", () => {
   const css = read("components/prf.css").split("@media print")[0];
   assert.match(css, /\.prf-pm \{ margin: 1rem 0 0;/);
 });
+
+test("index so far: the rain-needed table first, the definition under the number; a final interval says what each level pays", async () => {
+  const N = (await import("../components/prf-now.js")).default;
+  /* the real case: grid 14538, July to August 2026, both months NCEI final, 3.17 in of a 4.87 in average, index 65.0 */
+  assert.equal(N.payShare(65.0, 90), 28);
+  assert.equal(N.payShare(65.0, 70), 7);
+  assert.equal(N.payShare(95, 90), 0);
+  const fin = { name: "Jul-Aug", long: "July to August", y: 2026, ended: true, allFinal: true, to: "2026-08-31", how: [["July", "final"], ["August", "final"]], index: 65.0, precipIn: 3.17, avgIn: 4.87 };
+  const html = N.render({ state: "ok", through: "2026-10-15", ivs: [fin], acc: null });
+  assert.match(html, /a 90% policy pays 28% of its protection for Jul-Aug; 85% pays 24%, 80% pays 19%, 75% pays 13%, 70% pays 7%\./);
+  assert.match(html, /a 2026 policy is paid on its own year&rsquo;s index/);
+  assert.ok(html.indexOf("pn-figs") < html.indexOf("pn-def") && html.indexOf("pn-def") < html.indexOf("pn-pay"), "number, then what it means, then what it pays");
+  const est = Object.assign({}, fin, { allFinal: false });
+  assert.ok(!/pn-pay/.test(N.render({ state: "ok", through: "2026-10-15", ivs: [est], acc: null })), "no payout line on an estimate");
+  /* an open interval: Sep-Oct 2026, 4.82 in so far of 7.85 */
+  const open = { name: "Sep-Oct", long: "September to October", y: 2026, ended: false, days: 61, left: 16, to: "2026-10-31", how: [["September", "initial"], ["October", "daily"]], index: 61.4, precipIn: 4.82, avgIn: 7.85,
+    need: [70, 75, 80, 85, 90].map((c) => ({ cov: c, mm: 1, inches: 1 })) };
+  const o = N.render({ state: "ok", through: "2026-10-15", ivs: [open], acc: null });
+  assert.ok(o.indexOf("pn-need") < o.indexOf("pn-figs"), "leads with the more-rain table");
+  const def = o.slice(o.indexOf("pn-def"));
+  assert.ok(o.indexOf("pn-figs") < o.indexOf("pn-def") && /percent of normal/.test(def) && /climbs as the rest of the interval&rsquo;s rain comes in/.test(def), "defined right under the number");
+  assert.ok(!/pn-pay/.test(o));
+});
