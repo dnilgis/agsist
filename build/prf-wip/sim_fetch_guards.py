@@ -1,11 +1,13 @@
 # What a refresh does when RMA's index service answers 200 with nothing in it.
 import sys, os, json, tempfile, shutil
 sys.dont_write_bytecode = True
-sys.path.insert(0, '/home/claude/agsist/scripts')
-os.chdir('/home/claude/build/audit/seo')
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.insert(0, os.path.join(ROOT, 'scripts'))
+WORK = os.environ.get('PRF_WORK') or tempfile.mkdtemp(prefix='prfwork_')
+os.chdir(WORK)
 import fetch_prf as F
 fx, T, make_zip, api_doc, _, _ = F._fixture()
-d = tempfile.mkdtemp(prefix='prfsim_', dir='/home/claude/build/audit/seo')
+d = tempfile.mkdtemp(prefix='prfsim_', dir=WORK)
 zp = os.path.join(d, 'adm.zip'); make_zip(zp, T); adm = F.read_adm(zp); adm['last_modified'] = 'fixture'
 out = os.path.join(d, 'out')
 def ls():

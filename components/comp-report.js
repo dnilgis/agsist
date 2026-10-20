@@ -1,5 +1,5 @@
 /* /comp-report: free comparable sales report for bankers, appraisers and buyers (Oct 18, 2026).
-   One shared page driven by the link (CLAUDE.md: no per-parcel files). Nothing is stored.
+   One shared page driven by the link (site rule: no per-parcel files). Nothing is stored.
 
    Link (every part optional except a subject):
      f=<field outline, the Field Scout share encoding>   or   lat=<>&lon=<>   or   pid=<parcel>&fips=<county>
