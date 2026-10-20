@@ -1,6 +1,10 @@
 {
  "about": "Pointer pages left where a generated page dropped out of its set (scripts/pointer_pages.py). path: file; to: where it sends readers; since: date retired.",
  "pointers": {
+  "cash-bids/illinois/green-valley.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-10-20"
+  },
   "cash-bids/indiana/ladoga.html": {
    "to": "/cash-bids/indiana/",
    "since": "2026-10-16"
