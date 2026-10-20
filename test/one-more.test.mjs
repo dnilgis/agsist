@@ -254,7 +254,16 @@ test("town cash bid box: after the Daily, One more? offers a ZIP alert for the t
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const pg = await newPage(browser, port, posts);
-    await go(pg, port, "/cash-bids/iowa/afton.html");
+    // A live Iowa town page, read from the repo: town pages come and go with the
+    // elevator network (Afton turned into a pointer page on Oct 20), so the test
+    // takes the first one that still has the box, with corn first.
+    const town = fs.readdirSync(path.join(ROOT, "cash-bids/iowa")).filter((f) => f.endsWith(".html")).sort().map((f) => {
+      const h = read("cash-bids/iowa/" + f);
+      const m = !h.includes('name="agsist-pointer"') && /data-bid-alerts data-place="[^"]+" data-zip="(\d{5})"[^>]* data-crops="corn\b/.exec(h);
+      return m ? { f, zip: m[1] } : null;
+    }).find(Boolean);
+    assert.ok(town, "an Iowa town page with the alert box");
+    await go(pg, port, "/cash-bids/iowa/" + town.f);
     const box = pg.locator("[data-bid-alerts]");
     await box.locator(".cbs-em").waitFor();
     await box.locator(".cbs-em").fill(EMAIL);
@@ -263,14 +272,14 @@ test("town cash bid box: after the Daily, One more? offers a ZIP alert for the t
     await more.locator(".sa-mh").waitFor();
     const keys = await more.locator("[data-k]").evaluateAll((a) => a.map((x) => x.getAttribute("data-k")));
     assert.deepEqual(keys, ["zip", "rent"]);
-    assert.match(await more.locator('[data-k="zip"]').textContent(), /within 25 mi of ZIP 50830 pays \$/);
+    assert.match(await more.locator('[data-k="zip"]').textContent(), new RegExp("within 25 mi of ZIP " + town.zip + " pays \\$"));
     await more.locator(".sa-mp").fill("4.25");
     assert.equal(await more.locator('[data-k="zip"] input[type="checkbox"]').isChecked(), true, "typing a price ticks it");
     await more.locator(".sa-b").click();
     await more.locator(".sa-ok").waitFor();
     const a = posts.filter((x) => x.path === "/elevator-watch-subscribe");
     assert.equal(a.length, 1);
-    assert.equal(a[0].body.ewid, "ab50830025");
+    assert.equal(a[0].body.ewid, "ab" + town.zip + "025");
     assert.equal(a[0].body.target_cents, 425);
     assert.equal(a[0].body.crop, "corn");
     assert.match(await more.locator(".sa-ok").textContent(), /Check your email to confirm the price alert/);
