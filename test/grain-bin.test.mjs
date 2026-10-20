@@ -323,3 +323,26 @@ test("title and description lead with the answer the FAQ gives", () => {
   }
   assert.ok(!/live/i.test(desc));
 });
+
+/* One shrink rule (panel Oct 20, seat G2). The bin page started at 1.3 a point
+   while /grain-shrink (components/grain-shrink.js) starts corn at 1.4, so
+   3,000 bu of 18% corn into 15.5% was 97.5 bu lost on one page and 105 on the
+   other. The bin page now takes its starting factor and its total from that
+   file. */
+test("bin page and /grain-shrink give one shrink answer for corn", () => {
+  const sctx = {};
+  vm.runInNewContext(read("components/grain-shrink.js"), sctx);
+  const S = sctx.AgShrink;
+  assert.match(PAGE, /<script src="\/components\/grain-shrink\.js\?v=\d+"><\/script>/);
+  const fac = Number(PAGE.match(/id="shrinkFactor" value="([\d.]+)"/)[1]);
+  assert.equal(fac, S.CROPS.corn.factor, "the page's starting factor is the shared corn factor");
+  const pct = S.totalShrink(18, 15.5, { method: "factor", factor: fac });
+  near(3000 * pct / 100, 105, "3,000 bu x 2.5 pts x 1.4%", 1e-9);
+  // the /grain-shrink page with its defaults (corn: factor 1.4) loses the same bushels
+  const c = S.CROPS.corn;
+  near(3000 * S.totalShrink(18, 15.5, c) / 100, 105, "/grain-shrink default", 1e-9);
+  const t = text(PAGE);
+  assert.match(t, /shrinks 3\.5%, 105 bushels on 3,000 bushels/);
+  assert.doesNotMatch(t, /defaults to 1\.3/);
+  assert.doesNotMatch(PAGE, /\$\('shrinkFactor'\)\.value=1\.3/, "reset takes the shared default");
+});
