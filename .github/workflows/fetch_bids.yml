@@ -310,14 +310,18 @@ jobs:
         if: github.event.inputs.dry_run != 'true'
         continue-on-error: true
         env:
+          RAW_SOFT: '1'
           GH_TOKEN: ${{ github.token }}
           NOW: ${{ github.event.inputs.bid_snapshot }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
         run: |
           day=$(python3 scripts/bid_snapshots.py due) || { echo "::warning::bid snapshot: due check failed"; exit 0; }
           [ "$NOW" = "true" ] && day=$(TZ=America/Chicago date +%F)
           [ -n "$day" ] || { echo "bid snapshot: not in the window (weekdays from 15:00 CT)"; exit 0; }
           f="bids-daily/${day:0:4}/${day}.json.gz"
-          if [ "$NOW" != "true" ] && gh api -X GET "repos/$GITHUB_REPOSITORY/contents/$f?ref=raw" --silent >/dev/null 2>&1; then
+          # The raw branch is in the private repo (Oct 20); its key reads it.
+          if [ "$NOW" != "true" ] && GH_TOKEN="$PRIVATE_REPO_TOKEN" gh api -X GET "repos/dnilgis/agsistretired/contents/$f?ref=raw" --silent >/dev/null 2>&1; then
             echo "bid snapshot: $f is already on raw"; exit 0
           fi
           python3 scripts/bid_snapshots.py build --from bids-full.json --day "$day" \

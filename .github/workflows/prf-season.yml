@@ -45,6 +45,9 @@ jobs:
 
       - name: Probe
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'probe' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
         run: |
           D=data/prf-season-raw/probe
           mkdir -p "$D"
@@ -74,6 +77,9 @@ jobs:
 
       - name: Probe 2 (NCEI files and RMA's CPC-era index record)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'probe2' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
         run: |
           D=data/prf-season-raw/probe2
           mkdir -p "$D"
@@ -104,6 +110,9 @@ jobs:
 
       - name: Probe 3 (NCEI daily and initial files)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'probe3' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
         run: |
           D=data/prf-season-raw/probe3
           mkdir -p "$D"
@@ -151,6 +160,8 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'backtest' }}
         timeout-minutes: 45
         env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
           PYTHONUNBUFFERED: "1"
           PRF_SEASON_CACHE: /tmp/cpc
         run: |
@@ -161,6 +172,8 @@ jobs:
       - name: Preliminary against month file (collect)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'prelim' }}
         env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
           PYTHONUNBUFFERED: "1"
         run: |
           python scripts/fetch_prf_season.py --prelim-collect data/prf-season-raw/backtest
@@ -172,6 +185,8 @@ jobs:
         if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'build') }}
         timeout-minutes: 20
         env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
           PYTHONUNBUFFERED: "1"
           PRF_SEASON_SAVE: data/prf-season-raw/initial
         run: |

@@ -14,7 +14,8 @@ never deploys:
                                       pages, etag, last_modified, error
 
 Anyone can then read a source with
-    git fetch origin references && git show origin/references:refs/<id>.txt
+    bash scripts/fetch_private.sh references && git show origin/references:refs/<id>.txt
+(the branch is in the private repo dnilgis/agsistretired since Oct 20, 2026)
 
 Polite: one request at a time, a pause between them, a browser User-Agent,
 a 30 MB cap per file. A file that has not changed is not rewritten: a 304 on
@@ -735,8 +736,8 @@ def run(sources_path, out, ids=None, delay=DELAY, max_bytes=MAX_BYTES,
     # sources dropped from the list: forget them and their files
     _forget(rows, result, out)
     ordered = [result[r["id"]] for r in rows if r["id"] in result]
-    doc = {"note": "Written by scripts/fetch_refs.py on agsist main. Read a source: "
-                   "git show origin/references:refs/<id>.txt",
+    doc = {"note": "Written by scripts/fetch_refs.py (agsist refs.yml). Read a source: "
+                   "bash scripts/fetch_private.sh references && git show origin/references:refs/<id>.txt",
            "run_utc": now_utc(), "sources": ordered}
     os.makedirs(out, exist_ok=True)
     with open(idx_path, "w", encoding="utf-8") as f:

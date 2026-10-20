@@ -488,6 +488,9 @@ jobs:
       - name: Save the fact check to the raw branch
         if: ${{ !cancelled() }}
         continue-on-error: true
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
         run: |
           f="$RUNNER_TEMP/fact-check.json"
           if [ ! -s "$f" ]; then echo "::warning::no fact-check.json from this run; nothing saved"; exit 0; fi
