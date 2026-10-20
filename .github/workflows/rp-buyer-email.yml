@@ -15,6 +15,13 @@ name: Rain Print buyer email
 # AGSIST" (variable RP_FROM_NAME to change it; the shared FROM_NAME secret is
 # for Sig's alerts and the other jobs and does not decide it).
 #
+# A paid this-year GIFT (ref GIFT-...) gets its gift card email in the same run
+# (Sig 2026-10-20: no more card links sent by hand): the card is issued through
+# the worker's POST /rp-gift/issue {order_key} (worker v5.40, once per order,
+# the code kept on the order), then the buyer gets the Print the gift card
+# link, what the receiver gets, how they use it, when it comes and print tips;
+# marked gift-mailed first, once per order; Sig gets a one-line note.
+#
 # It also sends Sig an alert for each new paid order first (always to Sig).
 # NO SCHEDULE: it runs when the subs worker's Stripe webhook (v5.36) starts it
 # through the GitHub API (worker secret GH_DISPATCH_TOKEN), or by hand. The
