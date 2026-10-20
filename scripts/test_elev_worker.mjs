@@ -1,6 +1,7 @@
 // Runs the v5.20 elevator portal routes of workers/subs-worker.js
 // (/elev/admin/create, /elev/admin/rekey, /elev/admin/active, /elev/admin/list,
-// /elev/me, /elev/save, /elev/feed) and the v5.21 listing requests (POST /form
+// /elev/me, /elev/save, /elev/feed), the v5.34 hand paste (/elev/admin/paste,
+// /elev/paste/<site>, /elev/paste-status) and the v5.21 listing requests (POST /form
 // kind elevator-listing, /elev/admin/requests, /elev/admin/request) against an
 // in-memory KV. No network.
 //     node scripts/test_elev_worker.mjs
@@ -292,6 +293,41 @@ A(/Authorization/.test(r.headers.get('Access-Control-Allow-Headers')), 'prefligh
   A(j.forms && j.forms['elevator-listing'] === reqKeys().length, '/count forms elevator-listing');
   // a request never reaches the public feed
   r = await get('/elev/feed'); A(!(await r.text()).includes('Farmers Elevator Co'), 'requests are not in the feed');
+}
+
+// ---- v5.34: a board Sig pastes by hand (NEW Cooperative, Oct 20) ----
+{
+  const AFTON = { commodity: 'Corn', delivery: '10/1/2026 - 10/31/2026', cash: '$4.26', basis: '-35', future: '461-4', change: '-5-4' };
+  const P = { site: 'newcoop', locations: [{ name: 'Afton', rows: [AFTON] }, { name: 'Creston 1', rows: [Object.assign({}, AFTON, { cash: '$4.21', basis: '-40' })] }] };
+  r = await get('/elev/paste/newcoop'); A(r.status === 404, 'nothing pasted yet is a 404');
+  r = await admin('/elev/admin/paste', P, 'nope'); A(r.status === 403 && !store.has('paste:newcoop'), 'paste needs the token');
+  r = await w.fetch(new Request(H + '/elev/admin/paste?token=tok', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(P) }), env);
+  A(r.status === 403, 'paste refuses ?token=');
+  for (const [patch, why] of [[{ site: 'cargill' }, 'unknown site'], [{ locations: [] }, 'no locations'],
+      [{ locations: [{ name: 'Afton', rows: [] }] }, 'zero rows'],
+      [{ locations: [{ name: 'Afton', rows: [Object.assign({}, AFTON, { future: '461.50' })] }] }, 'futures not in ticks'],
+      [{ locations: [{ name: 'Afton', rows: [Object.assign({}, AFTON, { cash: 'Just a moment...' })] }] }, 'a bot check page'],
+      [{ locations: [{ name: '<b>x</b>', rows: [AFTON] }] }, 'markup in a name'],
+      [{ locations: [{ name: 'Afton', rows: [Object.assign({}, AFTON, { delivery: 'Oct' })] }] }, 'delivery not a range']]) {
+    r = await admin('/elev/admin/paste', Object.assign({}, P, patch)); A(r.status === 400 && !store.has('paste:newcoop'), 'paste rejects ' + why);
+  }
+  const t0 = Date.now();
+  r = await admin('/elev/admin/paste', P); j = await r.json();
+  A(r.status === 200 && j.ok && j.rows === 2 && j.locations === 2, 'paste saved: ' + JSON.stringify(j));
+  A(Math.abs(Date.parse(j.pastedAt) - t0) < 5000, 'pastedAt is the Worker clock at save');
+  const S = JSON.parse(store.get('paste:newcoop'));
+  A(S.source === "posted from NEW Cooperative's public bid page" && S.locations[0].rows[0].future === '461-4', 'stored as printed, with its source line');
+  r = await w.fetch(new Request(H + '/elev/paste/newcoop'), env); j = await r.json();
+  A(r.status === 200 && j.ok && j.site === 'newcoop' && j.pastedAt === S.pastedAt && j.locations.length === 2, 'public read for dnilgis/bids (no Origin needed)');
+  A(/max-age=60/.test(r.headers.get('Cache-Control') || ''), 'cached a minute');
+  r = await get('/elev/paste/other'); A(r.status === 404, 'unknown site 404');
+  r = await get('/elev/paste-status'); j = await r.json();
+  A(j.ok && j.sites.newcoop.rows === 2 && j.sites.newcoop.pastedAt === S.pastedAt, 'paste-status');
+  const big = { site: 'newcoop', locations: [{ name: 'Afton', rows: [AFTON] }], pad: 'x'.repeat(300 * 1024) };
+  r = await admin('/elev/admin/paste', big); A(r.status === 413, 'paste over 256 KB refused');
+  // a paste the size of the real board (69 locations, 12 rows each) fits
+  const full = { site: 'newcoop', locations: Array.from({ length: 69 }, (_, i) => ({ name: 'Loc ' + i, rows: Array.from({ length: 12 }, () => AFTON) })) };
+  r = await admin('/elev/admin/paste', full); j = await r.json(); A(r.status === 200 && j.rows === 828, 'a full board fits: ' + JSON.stringify(full).length + ' bytes');
 }
 
 // ---- every existing route still answers ----
