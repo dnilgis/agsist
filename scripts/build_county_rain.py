@@ -209,6 +209,19 @@ def print_snow(day, year):
     return R.snow_state(R.unpack_days(day.get("p")), R.unpack_days(day["s"]), year)
 
 
+def snow_caption(day, snow):
+    """The caption's key for the snow line. Wording only (2026-10-20): "little" (under 0.1 in)
+    stays the snow state, but where the station's snowfall record for the year has no value
+    above zero the caption says so instead of "under 0.1 in", which reads as if snow fell
+    (162 pages, mostly the South). "nosnow": every value 0; "trace": only zeros and traces."""
+    if snow != "little" or not day or not day.get("s"):
+        return snow
+    sv = [R.parse_pcpn(x) for x in R.unpack_days(day["s"])]
+    if any(v for v, _f in sv if v is not None):
+        return snow
+    return "trace" if any(f == "T" for _v, f in sv) else "nosnow"
+
+
 def rain_print_href(c, st, year):
     """The county page's Rain Print link: the town, the year, this station
     (unless it missed more days than a print allows, so Rain Print picks the
@@ -316,7 +329,9 @@ def chart(c, year, county, noun="station", ready=None):
     pcap = (f"Every day of {year}{'' if done else ' so far'} at this {noun}, drawn by Rain Print. "
             + {"drawn": "Light blue is snow. ",
                "gaps": "Its snowfall record has gaps, so no snow is drawn. ",
-               "little": "Under 0.1 in of snow, so none is drawn. "}.get(
+               "little": "Under 0.1 in of snow, so none is drawn. ",
+               "nosnow": "No snow fell, so none is drawn. ",
+               "trace": "Only traces of snow, too little to measure, so none is drawn. "}.get(
                   snow, f"This {noun} keeps no snowfall record, so snow is counted as water, not drawn. ")
             + "A gap is a day with no report." + ("" if done else " The empty months are still to come.")
             + ((" The dashed line is the usual year: NOAA&rsquo;s " + ("1991 to 2020" if period == "1991-2020" else "30-year")
@@ -628,7 +643,7 @@ def county_page(ctx):
     snow = print_snow(ctx.get("day"), year)
     if print_ready(c, ctx.get("day")):
         gauge = f"Weather station: {stw['name']}, {miles_from(stw['mi'])} the middle of {name}"
-        ready = (st, fips, f"{name}, {stn}", gauge, done, snow, d.get("normals"))
+        ready = (st, fips, f"{name}, {stn}", gauge, done, snow_caption(ctx.get("day"), snow), d.get("normals"))
     pr = rp_prices()
     price = f": framed ${pr[0]}, print ${pr[1]}" if pr else ""
     so_far = "" if done else " so far"
@@ -1284,6 +1299,13 @@ def selftest():
     _mid = _vs[:]
     _mid[100:111] = ["M"] * 11
     ok(print_snow({"p": sf["vilas_wi"]["p"], "s": R.pack_days(_mid)}, 2026) == "gaps", "gaps before the last snowfall value still count")
+    # the caption under 0.1 in (2026-10-20, Clinch County GA: every snowfall value 0)
+    _z = {"p": R.pack_days(["0.00"] * 280), "s": R.pack_days(["0.0"] * 280)}
+    ok(print_snow(_z, 2026) == "little" and snow_caption(_z, "little") == "nosnow", "all-zero snowfall says no snow fell")
+    _t = {"p": _z["p"], "s": R.pack_days(["0.0"] * 40 + ["T"] + ["0.0"] * 239)}
+    ok(snow_caption(_t, "little") == "trace", "a trace is snow that fell: not 'no snow'")
+    _l = {"p": _z["p"], "s": R.pack_days(["0.0"] * 40 + ["0.05"] + ["0.0"] * 239)}
+    ok(snow_caption(_l, "little") == "little" and snow_caption(sf["vilas_wi"], "drawn") == "drawn", "a little snow keeps 'under 0.1 in'")
     globals()["rp_cutoffs"] = real_cutoffs
     for f in fails:
         print("FAIL", f)
