@@ -343,6 +343,13 @@
       .hm-controls{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
       .hm-controls::-webkit-scrollbar{display:none}
       .hm-controls>*{flex:0 0 auto}
+      /* Recent storm days in one sideways row (2026-10-20). Wrapped they
+         took four lines, and pushed the now card's 5-year button and the
+         "All 5 years" chip below the first screen on a 390 x 844 phone. */
+      .hm-days{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;white-space:nowrap;margin:.1rem 0 .4rem}
+      .hm-days::-webkit-scrollbar{display:none}
+      .hm-days ul{flex-wrap:nowrap}
+      .hm-days>*,.hm-days li{flex:0 0 auto}
       .hm-cmp td:first-child{white-space:normal;width:30%}
       .hm-cmp{font-size:.8rem}
     }
@@ -664,6 +671,8 @@
         manifest=null, manifestP=null, current=null, anim=null,
         countyData=null, countyState=null,
         meshIdx=null, meshLayer=null, meshCache={}, meshPos=-1;
+    // the state outlines (data/us-states.geo.json): null while loading, false if it failed
+    var outlineP=null, usOutline=null;
     var MESH_COLORS={0.75:'#7cd2ff',1:'#fed976',1.5:'#fd8d3c',2:'#e31a1c'};
 
     // Approximate state bounding boxes [minLng,minLat,maxLng,maxLat] for a
@@ -718,7 +727,10 @@
          because nothing had failed. Natural Earth 1:50m, public domain, US and
          Canada, 73KB — less than one screen of the tiles it replaces.
          Rebuilt by build/make_outline.sh. */
-      fetch('/data/us-states.geo.json').then(function(r){ return r.ok?r.json():null; })
+      outlineP=fetch('/data/us-states.geo.json').then(function(r){ return r.ok?r.json():null; })
+        .catch(function(){ return null; });
+      outlineP.then(function(g){ usOutline=g||false; if(current==='now'){ nowStateLatest(); nowPaint(); } });
+      outlineP
         .then(function(g){
           if(!g){ banner('The background map could not load. The hail reports on it are unaffected.'); return; }
           L.geoJSON(g, { interactive:false,
@@ -742,7 +754,7 @@
       wireNowActs();
       var qp=new URLSearchParams(location.search);
       var qs=(qp.get('state')||'').toUpperCase();
-      if(qs && STATE_BBOX[qs]){ var bb=STATE_BBOX[qs]; map.fitBounds([[bb[1],bb[0]],[bb[3],bb[2]]]); }
+      if(qs && STATE_BBOX[qs]) fitState(qs);
       /* A report link (the printed QR, Copy link) also carries the radius and the date of
          loss, so it opens the same report: mi= one of the radius chips, day= a real date. */
       var qmi=+qp.get('mi'); if([5,10,25].indexOf(qmi)>=0) lookupMi=qmi;
@@ -777,7 +789,7 @@
              than not -- it was answered without the radar check. Answer it
              again now that the index is here. */
           if(lastLookup) wireSwathCheck();
-          if(current==='now') nowLatest();
+          if(current==='now') nowLatestAny();
         })
         .catch(function(){ if(!live24P) wireLive24(); NOW.latest=null; nowPaint(); });
 
@@ -800,16 +812,20 @@
     /* WHAT THE PAGE OPENS ON (2026-10-20, Sig: "the hail map should open to
        current or active storms within the last 24 hours"). A bare /hail-map
        opens on now. Any link that names something -- a year, a swath date, a
-       state, a spot, a date of loss, a view -- opens exactly that, as it did
-       before, never the now view. ?year=2024 and ?view=all|recent|now are new
-       ways to name a view. */
+       spot, a date of loss, a view -- opens exactly that, as it did before,
+       never the now view. ?year=2024 and ?view=all|recent|now are new ways to
+       name a view.
+       A state alone (?state=IA, the 52 state hail pages) opens on now zoomed
+       to that state, with the line about that state and its 5 years one tap
+       away (Sig, 2026-10-20: "open to the last 24 yes, with the history
+       readily available"). ?view=all&state=IA opens the state's 5-year map. */
     var NAMED_PARAMS=['year','view','swath','swaths','state','lat','lon','day','mi'];
     function openingView(qp){
       var v=String(qp.get('view')||'').toLowerCase();
       if(v==='now'||v==='all'||v==='recent') return v;
       var y=+qp.get('year');
       if(y && manifest && manifest.years.indexOf(y)>=0) return y;
-      for(var i=0;i<NAMED_PARAMS.length;i++) if(qp.has(NAMED_PARAMS[i])) return 'all';
+      for(var i=0;i<NAMED_PARAMS.length;i++) if(NAMED_PARAMS[i]!=='state' && qp.has(NAMED_PARAMS[i])) return 'all';
       return 'now';
     }
 
@@ -1259,6 +1275,25 @@
           { paddingTopLeft:[pad,pad], paddingBottomRight:[pad,pad+bar], animate:false });
       }catch(e){}
     }
+    /* A state named in the address (?state=IA, from the state hail pages),
+       fitted the same way: above the phone's control bar, not under it. */
+    function fitState(st){
+      var bb=STATE_BBOX[st]; if(!map || !bb) return;
+      try{
+        var bar=0;
+        if(window.matchMedia && window.matchMedia('(max-width:640px)').matches){
+          var c=document.getElementById('hm-controls');
+          bar=(c && c.offsetHeight ? c.offsetHeight : 70) + 16;
+        }
+        map.fitBounds([[bb[1],bb[0]],[bb[3],bb[2]]], { paddingTopLeft:[8,8], paddingBottomRight:[8,8+bar], animate:false });
+      }catch(e){}
+    }
+    /* The state the address names, when it names one and no spot. A lookup's
+       lat/lon wins: that link is about a place, not a state. */
+    function urlState(){
+      try{ var q=new URLSearchParams(location.search), st=(q.get('state')||'').toUpperCase();
+        return (STATE_NAME[st] && STATE_BBOX[st] && !(q.get('lat')&&q.get('lon'))) ? st : ''; }catch(e){ return ''; }
+    }
     function sizeWord(b){ return b>=2.75?'baseball-class (2.75\u2033+)':b>=2?'hen-egg-class (2\u2033+)':b>=1.75?'golf-ball-class (1.75\u2033+)':b>=1.5?'ping-pong-class (1.5\u2033+)':b>=1?'quarter-size or larger (1\u2033+)':'penny-size or larger (0.75\u2033+)'; }
     /* Storm days that have their own /hail/<date> page (written by
        generate_hail_events.py). Loaded once, on the first verdict, so a radar
@@ -1632,7 +1667,7 @@
       /* The first fitBounds ran before this strip existed, so on a phone it
          guessed the bar height. Now it can be measured -- but only re-fit
          while the user is still on the view the page opened with. */
-      if(!refitDone && current==='all' && !lastLookup){ refitDone=true; fitConus(); }
+      if(!refitDone && current==='all' && !lastLookup){ refitDone=true; var rs=urlState(); if(rs) fitState(rs); else fitConus(); }
     }
 
     function markActive(key){
@@ -1755,6 +1790,10 @@
       showLegend('freq');
       if(key==='all'){
         scope.textContent='across '+manifest.years.length+' years';
+        /* From a state's now view the 5-year map is that state's: put it in
+           the address, so the link shared is the one on screen. */
+        if(urlState()){ try{ var qa=new URLSearchParams(location.search);
+          if(qa.get('view')!=='all'){ qa.delete('year'); qa.set('view','all'); history.replaceState(null,'','/hail-map?'+qa.toString()); } }catch(e){} }
         drawAll();
       } else {
         scope.textContent='in '+key;
@@ -1879,7 +1918,11 @@
             var sz=parseFloat((par.maxHailSize&&par.maxHailSize[0])||0);
             if(!(sz>=0.75) || !f.geometry) return;
             f._hail=sz; feats.push(f);
-            String(p.areaDesc||'').split(';').forEach(function(a){ var m=a.match(/,\s*([A-Z]{2})\s*$/); if(m) states[m[1]]=1; });
+            /* counted once per state it covers: the now line for a state
+               counts the warnings that name that state's counties */
+            var fs={};
+            String(p.areaDesc||'').split(';').forEach(function(a){ var m=a.match(/,\s*([A-Z]{2})\s*$/); if(m) fs[m[1]]=1; });
+            for(var k in fs) states[k]=(states[k]||0)+1;
             try{ (f.geometry.coordinates[0]||[]).forEach(function(c){ if(c[1]<minLa)minLa=c[1]; if(c[1]>maxLa)maxLa=c[1]; if(c[0]<minLo)minLo=c[0]; if(c[0]>maxLo)maxLo=c[0]; }); }catch(e){}
           });
           warnCount=feats.length;
@@ -1893,7 +1936,7 @@
           }
           if(warnFirstPoll){ warnFirstPoll=false; if(warnCount>0) ga('hm_live_warn_seen',{n:warnCount}); }
           warnFeats=feats; warnAt=Date.now();
-          NOW.warn=warnCount; NOW.warnStates=warnStates;
+          NOW.warn=warnCount; NOW.warnStates=warnStates; NOW.warnBy=states;
           if(warnOn) drawWarnings(feats);
           nowPaint();
         }).catch(function(){ warnInflight=false; markWarnStale(); });
@@ -1968,7 +2011,7 @@
               +(p.remark?'<br><em>'+esc(String(p.remark).slice(0,140))+'</em>':''));
           }}).addTo(map);
           var pst={}; pins.forEach(function(f){ var t=(f.properties||{}).st; if(t) pst[t]=(pst[t]||0)+1; });
-          NOW.pins=pins.length; NOW.pinStates=topNames(pst); nowPaint();
+          NOW.pins=pins.length; NOW.pinStates=topNames(pst); NOW.pinBy=pst; nowPaint();
         }).catch(function(){ if(warnOn){ NOW.pins='err'; nowPaint(); } });
     }
     function warnSchedule(){
@@ -2024,7 +2067,7 @@
        latest radar hail day and where, and offers that day and the 5-year
        map. */
     var NOW={ warn:null, warnStates:'', radar:null, radarN:0, radarWhere:'', radarAsof:'',
-              pins:null, pinStates:'', latest:undefined },
+              pins:null, pinStates:'', latest:undefined, st:'', warnBy:{}, pinBy:{} },
         nowAuto=false, nowFitDone=false, live24Any=null, nowLatestP=null;
     function topNames(counts){
       var ks=Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; }).slice(0,3)
@@ -2034,7 +2077,8 @@
     /* Where a day's swaths fell, by state, weighted by outline length. The
        state boxes are approximate (see STATE_BBOX), which is close enough to
        name a region, and that is all this line does. */
-    function swathWhere(fc){
+    function swathWhere(fc){ return topNames(swathCounts(fc)); }
+    function swathCounts(fc){
       var n={};
       ((fc&&fc.features)||[]).forEach(function(f){
         var g=f.geometry; if(!g) return;
@@ -2045,7 +2089,7 @@
           var st=stateAt(la/r.length, lo/r.length); if(st) n[st]=(n[st]||0)+r.length;
         });
       });
-      return topNames(n);
+      return n;
     }
     function hasSwath(fc){
       return !!(fc && fc.features && fc.features.some(function(f){ var g=f.geometry; return g && g.coordinates && g.coordinates.length; }));
@@ -2092,10 +2136,99 @@
       })(0).then(function(x){ NOW.latest=x; nowPaint(); return x; });
       return nowLatestP;
     }
+    /* == NOW FOR ONE STATE (?state=IA) ==
+       Warnings are counted by the counties they name (areaDesc), ground
+       reports by the state on the report. Radar swaths carry no state, so a
+       swath counts for a state when a corner of it falls inside the state's
+       real outline (data/us-states.geo.json, the basemap), not the rough
+       boxes above: a swath across the line in Nebraska is not Iowa's. Until
+       the outline loads the radar part waits; if it fails, the line says it
+       could not place the radar by state rather than say none. */
+    var stateShapes={};
+    function stateShape(st){
+      if(stateShapes[st]!==undefined) return stateShapes[st];
+      if(!usOutline) return null;
+      var rings=[], bb=[180,90,-180,-90];
+      usOutline.features.forEach(function(f){
+        var pr=f.properties||{}; if(pr.iso_a2!=='US' || pr.postal!==st || !f.geometry) return;
+        var g=f.geometry, polys=g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[];
+        polys.forEach(function(pl){ var r=pl[0]; if(!r) return; rings.push(r);
+          r.forEach(function(c){ if(c[0]<bb[0])bb[0]=c[0]; if(c[1]<bb[1])bb[1]=c[1]; if(c[0]>bb[2])bb[2]=c[0]; if(c[1]>bb[3])bb[3]=c[1]; }); });
+      });
+      stateShapes[st] = rings.length ? { bb:bb, rings:rings } : false;
+      return stateShapes[st];
+    }
+    function inRing(x, y, r){
+      var inside=false;
+      for(var i=0, j=r.length-1; i<r.length; j=i++){
+        var xi=r[i][0], yi=r[i][1], xj=r[j][0], yj=r[j][1];
+        if(((yi>y)!==(yj>y)) && (x < (xj-xi)*(y-yi)/(yj-yi)+xi)) inside=!inside;
+      }
+      return inside;
+    }
+    function inShape(sh, x, y){
+      if(x<sh.bb[0]||x>sh.bb[2]||y<sh.bb[1]||y>sh.bb[3]) return false;
+      for(var i=0;i<sh.rings.length;i++) if(inRing(x,y,sh.rings[i])) return true;
+      return false;
+    }
+    /* swaths of fc with a corner inside the state; null = outline not here yet,
+       'unk' = no outline to test against */
+    function swathsIn(fc, st){
+      var sh=stateShape(st);
+      if(sh===null) return usOutline===false ? 'unk' : null;
+      if(!sh) return 'unk';
+      var n=0;
+      ((fc&&fc.features)||[]).forEach(function(f){
+        var g=f.geometry; if(!g) return;
+        var polys=g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[];
+        var hit=polys.some(function(pl){ return (pl&&pl[0]||[]).some(function(c){ return inShape(sh,c[0],c[1]); }); });
+        if(hit) n++;
+      });
+      return n;
+    }
+    /* The newest radar day with hail in the state: the last 30 days on file
+       at most, one file at a time, stopping at the first hit. Said as "none in
+       those 30 days" only when every one of them loaded. */
+    var STATE_LOOKBACK=30, stateLatestP={};
+    function nowStateLatest(){
+      var st=NOW.st;
+      if(!st || !meshIdx || !usOutline) return null;
+      if(stateLatestP[st]) return stateLatestP[st];
+      var ds=meshIdx.dates.slice(-STATE_LOOKBACK).reverse(), missed=false;
+      stateLatestP[st]=(function step(i){
+        if(i>=ds.length) return Promise.resolve(missed ? null : { none:ds.length, from:ds[ds.length-1] });
+        var d=ds[i];
+        var p = meshCache[d] ? Promise.resolve(meshCache[d]) :
+          fetch(DATA+'mesh/'+d+'.json').then(function(r){ return r.ok? r.json():null; })
+            .then(function(fc){ if(fc) meshCache[d]=fc; return fc; }).catch(function(){ return null; });
+        return p.then(function(fc){
+          if(!fc){ missed=true; return step(i+1); }
+          var n=swathsIn(fc, st);
+          if(n==='unk' || n===null) return null;
+          return n>0 ? { d:d } : step(i+1);
+        });
+      })(0).then(function(x){ if(NOW.st===st){ NOW.sLatest=x; nowPaint(); } return x; });
+      return stateLatestP[st];
+    }
+    function nowLatestAny(){ return NOW.st ? nowStateLatest() : nowLatest(); }
+    /* Where hail was outside the state, for one line under it: the states
+       named by warnings and ground reports, and the regions the radar names. */
+    function elseNames(st){
+      var c={}, k;
+      if(NOW.warn>0) for(k in NOW.warnBy) if(k!==st) c[k]=(c[k]||0)+NOW.warnBy[k];
+      if(NOW.pins>0) for(k in NOW.pinBy) if(k!==st) c[k]=(c[k]||0)+NOW.pinBy[k];
+      /* radar regions come from the rough state boxes, so they only rank
+         after the states warnings and reports name */
+      if(NOW.radarN>0 && (NOW.radar==='fresh'||NOW.radar==='old') && live24Any){
+        var rc=swathCounts(live24Any); for(k in rc) if(k!==st && !c[k]) c[k]=1e-6*rc[k];
+      }
+      return topNames(c);
+    }
     function plural(n, one, many){ return n+' '+(n===1?one:many); }
     /* The words of the now line, from what each source said. Pure, so the
        tests can feed it every case. null = still asking; 'err' = no answer. */
     function nowLine(S){
+      if(S.st) return nowLineState(S);
       var pending = S.warn===null || S.radar===null || S.pins===null;
       var warnHit = S.warn>0, radarHit = (S.radar==='fresh'||S.radar==='old') && S.radarN>0, pinHit = S.pins>0;
       var parts=[], notes=[], acts=[];
@@ -2128,11 +2261,65 @@
       acts.push(['all','5-year map',S.latest?0:1]);
       return { quiet:true, pending:false, html:'<p>'+lines.join(' ')+'</p><small>'+notes.join(' ')+'</small>', acts:acts };
     }
+    /* The same line for one state. Its 5 years are the first button when it
+       is quiet and always one tap away: the state pages link here, and a
+       reader from one may well have come for the history. */
+    function nowLineState(S){
+      var nm=esc(S.stName), radarUp=(S.radar==='fresh'||S.radar==='old');
+      var pending = S.warn===null || S.radar===null || S.pins===null || (radarUp && S.sRadarN===null);
+      var radarOk = radarUp && typeof S.sRadarN==='number';
+      var warnHit = S.warn>0 && S.sWarn>0, radarHit = radarOk && S.sRadarN>0, pinHit = S.pins>0 && S.sPins>0;
+      var hist=['all', nm+': 5 years of hail'];
+      var notes=[], acts=[];
+      function errNotes(quiet){
+        if(S.warn==='err') notes.push(quiet?'The NWS warning feed did not answer, so warnings are not shown.':'The NWS warning feed did not answer.');
+        if(S.pins==='err') notes.push('Ground reports did not load.');
+        if(radarUp && S.sRadarN==='unk') notes.push('The radar layer could not be matched to '+nm+' right now.');
+      }
+      if(warnHit || radarHit || pinHit){
+        var parts=[];
+        if(warnHit) parts.push('<b>'+plural(S.sWarn,'hail warning','hail warnings')+' in effect now</b>');
+        if(radarHit) parts.push('radar hail'+(S.radar==='old'?' (radar as of '+esc(S.radarAsof)+')':''));
+        if(pinHit) parts.push('<b>'+plural(S.sPins,'ground report','ground reports')+'</b> of hail');
+        errNotes(false);
+        if(S.radar==='none') notes.push('The 24-hour radar layer is not posted right now.');
+        if(S.elsewhere) notes.push('Also hail in the last 24 hours: '+esc(S.elsewhere)+'.');
+        acts.push(hist.concat(0));
+        return { quiet:false, pending:pending, html:'<p>Last 24 hours in <b>'+nm+'</b>: '+parts.join('; ')+'.</p>'+(notes.length?'<small>'+notes.join(' ')+'</small>':''), acts:acts };
+      }
+      if(pending) return { quiet:false, pending:true, html:'<p>Checking for hail in '+nm+' in the last 24 hours…</p>', acts:[hist.concat(1)] };
+      var no=[], lines=[];
+      if(S.warn===0 || S.warn>0) no.push('hail warnings');
+      if(S.radar==='fresh' && radarOk) no.push('radar hail');
+      if(no.length) lines.push('No '+no.join(' or ')+' in '+nm+' in the last 24 hours.');
+      if(typeof S.pins==='number') lines.push(no.length?'No ground reports of hail either.':'No ground reports of hail in '+nm+' in the last 24 hours.');
+      errNotes(true);
+      if(S.radar==='old') notes.push('The radar layer last updated '+esc(S.radarAsof)+', so storms since then are not on it yet.');
+      if(S.radar==='none') notes.push('The 24-hour radar layer is not posted right now; it updates four times a day in hail season.');
+      var L=S.sLatest;
+      if(L && L.d) lines.push('Latest radar hail in '+nm+': <b>'+esc(S.sLatestDay)+'</b>.');
+      else if(L && L.none) lines.push('No radar hail in '+nm+' in the '+L.none+' days of radar on file since '+esc(S.sFrom)+'.');
+      if(S.elsewhere) notes.push('Elsewhere in the last 24 hours: '+esc(S.elsewhere)+'.');
+      notes.push('Ground reports post as spotters call them in, often hours after a storm.');
+      acts.push(hist.concat(1));
+      if(L && L.d) acts.push(['day','See '+esc(S.sLatestShort),0]);
+      return { quiet:true, pending:false, html:'<p>'+lines.join(' ')+'</p><small>'+notes.join(' ')+'</small>', acts:acts };
+    }
     function nowPaint(){
       if(current!=='now') return;
       var box=document.getElementById('hm-now'); if(!box) return;
       var S={}; for(var k in NOW) S[k]=NOW[k];
       if(NOW.latest){ S.latestDay=fmtDate(NOW.latest.d); S.latestShort=shortDay(NOW.latest.d); }
+      var st=NOW.st;
+      if(st){
+        S.stName=STATE_NAME[st]||st;
+        S.sWarn=(NOW.warnBy&&NOW.warnBy[st])||0;
+        S.sPins=(NOW.pinBy&&NOW.pinBy[st])||0;
+        S.sRadarN=(NOW.radar==='fresh'||NOW.radar==='old') ? swathsIn(live24Any, st) : 0;
+        if(NOW.sLatest && NOW.sLatest.d){ S.sLatestDay=fmtDate(NOW.sLatest.d); S.sLatestShort=shortDay(NOW.sLatest.d); }
+        if(NOW.sLatest && NOW.sLatest.none) S.sFrom=shortDay(NOW.sLatest.from);
+        S.elsewhere=elseNames(st);
+      }
       var r=nowLine(S);
       var html=r.html+'<div class="hm-now-acts">'+r.acts.map(function(a){
         return '<button type="button" data-now="'+a[0]+'"'+(a[2]?' class="pri"':'')+'>'+a[1]+'</button>'; }).join('')+'</div>';
@@ -2142,9 +2329,10 @@
       box.hidden=false;
       box.classList.toggle('quiet', !!r.quiet);
       var cnt=document.getElementById('hm-count'), sc=document.getElementById('hm-scope');
-      if(cnt) cnt.textContent = typeof NOW.pins==='number' ? NOW.pins.toLocaleString() : (NOW.pins==='err'?'–':'…');
-      if(sc) sc.textContent='on the ground in the last 24 hours';
-      if(!r.pending && !r.quiet && !nowFitDone && !lastLookup){ nowFitDone=true; nowFit(); }
+      if(cnt) cnt.textContent = typeof NOW.pins==='number' ? (st?S.sPins:NOW.pins).toLocaleString() : (NOW.pins==='err'?'–':'…');
+      if(sc) sc.textContent='on the ground'+(st?' in '+S.stName:'')+' in the last 24 hours';
+      // a state link is already fitted to its state; the storms elsewhere do not move it
+      if(!st && !r.pending && !r.quiet && !nowFitDone && !lastLookup){ nowFitDone=true; nowFit(); }
     }
     function nowBounds(){
       var b=null;
@@ -2167,7 +2355,9 @@
       if(!warnOn){ nowAuto=true; warnSet(true); }
       else loadLivePins();
       nowDrawRadar(); // nothing yet if the live layer has not answered; nowRadar() draws it then
-      nowLatest();
+      var st=urlState();
+      if(st!==NOW.st){ NOW.st=st; NOW.sLatest=undefined; }
+      nowLatestAny();
       /* A link back to the plain page is a link to now. Drop only the view
          names; a lookup's lat/lon/mi/day stay. */
       try{ var q=new URLSearchParams(location.search), ch=false;
@@ -2189,7 +2379,9 @@
         var a=b.getAttribute('data-now');
         if(a==='zoom') nowFit();
         else if(a==='all') setView('all');
-        else if(a==='day' && NOW.latest && meshIdx){ meshStart=NOW.latest.d; setView('mesh'); }
+        else if(a==='day' && meshIdx){
+          var dd = NOW.st ? (NOW.sLatest && NOW.sLatest.d) : (NOW.latest && NOW.latest.d);
+          if(dd){ meshStart=dd; setView('mesh'); } }
         ga('hm_now_act',{act:a});
       });
     }
