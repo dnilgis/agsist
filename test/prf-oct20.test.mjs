@@ -88,3 +88,17 @@ test("county first screen: the dated dollar example leads, no grid ID list, no s
   assert.match(ch, /it would have paid in 45 of 75 years/);
   assert.ok(ch.includes("<tr><th scope=\"row\">27119</th>"), "the grid IDs are in the grids table");
 });
+
+test("pick by county ends on a grid to start with: the one holding most of the county", async () => {
+  const M = (await import("../components/prf-math.js")).default;
+  const tx = JSON.parse(read("data/prf/s/TX.json")), c = tx.counties["001"];
+  const { readdirSync } = await import("node:fs");
+  const recs = {};
+  for (const f of readdirSync(ROOT + "data/prf/c")) { const d = JSON.parse(read("data/prf/c/" + f)); for (const g of c.g) if (d.g[String(g)]) recs[g] = d.g[String(g)]; }
+  const ns = c.g.map((g) => M.countyCells(recs[g], "48001"));
+  assert.equal(c.g[M.biggest(ns)], 14238, "Anderson County, TX: grid 14238 holds the most of it");
+  assert.equal(M.biggest([5, 5, 2]), -1, "a tie names no grid");
+  assert.equal(M.biggest([5, null]), -1, "a missing file names no grid");
+  assert.equal(M.countyCells({ c: ["48001", "48213"], m: "a10?4b6a2" }, "48001"), 12);
+  assert.ok(read("components/prf.js").includes(`'Not sure? Start with grid ' + g + ', which covers most of the county, or type the nearest town above. <button type="button" class="prf-link" data-grid="' + g + '" data-county="' + f + k + '">Open grid ' + g + '</button>'`));
+});
