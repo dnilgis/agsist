@@ -5,6 +5,25 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.40 (2026-10-20): GIFT CARDS GO OUT BY EMAIL (Sig: "the gift card option
+ *   should provide explanation as to what the receiver is getting and how to
+ *   redeem easily"; no more card links sent by hand). POST /rp-gift/issue
+ *   (Bearer LIST_TOKEN, as before) also takes {order_key, to, message}: the
+ *   paid record of a this-year gift (rpo:..., ref GIFT-...) gets its card,
+ *   locked to the record's design (a GIFT-RPS-<id> is looked up in rps:),
+ *   product from the record, order_ref the Stripe session id, ships January,
+ *   status redeemed with prepaid true (the address was given at Stripe
+ *   checkout, so the receiver has nothing to fill in). The record keeps
+ *   gift_card {code, no, last4, key, at, session}; a second call answers the
+ *   same card (already: true), so one card per paid order. Refused for an
+ *   unpaid record (409), a record that is not a gift (409) or a design that
+ *   can't be read (409). POST /rp-order/gift-mailed {key} marks the buyer's
+ *   gift card email sent, once, like /rp-order/mailed (409 before the card).
+ *   /rp-order/list adds gift_card {no, last4, at} (never the code) and
+ *   gift_mailed. /rp-gift/check and /rp-gift/card add prepaid (also true for a
+ *   card Sig issued as already redeemed); /rp-gift/redeem answers a prepaid
+ *   card 409 "This gift is already paid for and on its way. There is nothing
+ *   to fill in." Every other route answers as before. No new secret.
  * v5.38 (2026-10-20): THE DIGITAL FILES GO OUT ON APPROVAL (Sig). POST
  *   /rp-order/delivered {key, how} (Bearer LIST_TOKEN only): the files email
  *   for an approved, paid digital file went out (scripts/rp_buyer_email.py,
@@ -1417,7 +1436,12 @@ function rpgPublic(r) {
   return { kind: r.kind, product: r.product, to: r.to || "", from_line: r.from_line || "",
     lock: r.lock ? { design_code: r.lock.design_code, edit: r.lock.edit } : null, ships: r.ships,
     status: r.status === "pending" && Date.now() - (r.pending_ts || 0) > RPG_PENDING_MS ? "issued" : r.status,
-    redeemed_on: r.status === "redeemed" ? rpgDay(r.redeemed_ts) : null };
+    redeemed_on: r.status === "redeemed" ? rpgDay(r.redeemed_ts) : null, prepaid: rpgPrepaid(r) };
+}
+// v5.40: set at issue (the giver gave the address at checkout): nothing for the receiver to fill in.
+// An older card Sig issued as already redeemed has redeemed_ts === issued_ts.
+function rpgPrepaid(r) {
+  return !!r && r.status === "redeemed" && (r.prepaid === true || (!!r.issued_ts && r.redeemed_ts === r.issued_ts));
 }
 // Sig's issue body -> the record's fields, or {error}.
 function rpgIssueClean(b) {
@@ -1484,6 +1508,42 @@ async function rpgIssue(env, f, extra) {
   const k = await rpgCardK(env, code);
   return { ok: true, code, no, last4, key, status: rec.status, ships: rec.ships,
     card_url: RPG_SITE + "/rp-gift?c=" + code + "&k=" + k };
+}
+// v5.40: the card for one paid this-year gift order (rpo:...), issued by scripts/rp_buyer_email.py
+// through POST /rp-gift/issue {order_key, to, message}. Once per order: the record keeps the
+// code, and a second call answers the same card. The design and product come from the record,
+// never from the body; the giver's name and email are not put on the card.
+async function rpgIssueForOrder(env, b) {
+  const k = String(b.order_key || "");
+  if (!RPO_KEY_RE.test(k)) return { status: 400, error: "invalid order_key" };
+  let r = null;
+  try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+  if (!r || typeof r !== "object") return { status: 404, error: "not found" };
+  if (!r.paid || !r.paid.session) return { status: 409, error: "not paid" };
+  if (!r.gift || !/^GIFT-/.test(String(r.ref || ""))) return { status: 409, error: "not a gift card order" };
+  if (r.gift_card && r.gift_card.code) {
+    const g = r.gift_card;
+    let rec = null;
+    try { rec = JSON.parse(await env.SUBS.get(g.key)); } catch (e) { rec = null; }
+    return { ok: true, already: true, code: g.code, no: g.no, last4: g.last4, key: g.key, status: rec ? rec.status : "redeemed",
+      ships: rec ? rec.ships : "january", prepaid: rpgPrepaid(rec), card_url: RPG_SITE + "/rp-gift?c=" + g.code + "&k=" + await rpgCardK(env, g.code) };
+  }
+  let dc = String(r.ref).replace(/^GIFT-/, "");
+  const short = /^RPS-([0-9A-Za-z]{5,8})$/.exec(dc);
+  if (short) {
+    const id = rpsId(short[1]), got = id ? await env.SUBS.get("rps:" + id) : null;
+    dc = typeof got === "string" && rpsCodeOk(got) ? got : "";
+  }
+  if (!rpgFields(dc)) return { status: 409, error: "the design could not be read" };
+  const sess = String(r.paid.session);
+  const v = rpgIssueClean({ product: r.product, order_ref: RPG_REF_RE.test(sess) ? sess : k.replace(/:/g, "-"),
+    to: b.to, message: b.message, lock: { design_code: dc, edit: "none" }, ships: "january" });
+  if (v.error) return { status: 409, error: v.error };
+  const out = await rpgIssue(env, v.rec, { status: "redeemed", prepaid: true, order_key: k });
+  if (!out) return { status: 500, error: "no free code; try again" };
+  r.gift_card = { code: out.code, no: out.no, last4: out.last4, key: out.key, at: new Date().toISOString(), session: sess };
+  await rpoPut(env, k, r);
+  return Object.assign({}, out, { already: false, prepaid: true });
 }
 
 // v5.20: THE ELEVATOR PORTAL. An elevator keeps its own listing (basis by
@@ -1875,6 +1935,8 @@ async function rpoList(env, days) {
       dedication: r.dedication, gift: !!r.gift, status: r.paid ? "paid" : "pay pressed", paid: r.paid || null, mailed: r.mailed || null, alerted: r.alerted || null, no_press: !!r.no_press,
       approved: r.approved || null, approved_alerted: r.approved_alerted || null, approve_t: toks[r.key] || null,
       delivered: r.delivered || null,   // v5.38: the digital files went out (rp_buyer_email.py)
+      // v5.40: the gift card issued for this order (never the code here) and the buyer's card email
+      gift_card: r.gift_card ? { no: r.gift_card.no, last4: r.gift_card.last4, at: r.gift_card.at } : null, gift_mailed: r.gift_mailed || null,
       // the proof went out 3 business days ago and no answer: Sig's Today page flags it (never approved for the buyer)
       approval_overdue: !!(r.paid && r.mailed && !r.approved && rpoBizDaysSince(r.mailed.at, now) >= RPO_APPROVE_WAIT_BIZ),
       serial: r.serial || null, serial_next: serialNext, fulfill_url: rpoFulfill(r, r.serial || serialNext),
@@ -3289,10 +3351,15 @@ async function handle(req, env) {
       if (!sig) return json({ ok: false }, 403, ac);
       const p = await rpgBody(req, RPG_ADMIN_MAX_BYTES);
       if (p.error) return json({ ok: false, error: p.error }, p.status, ac);
+      // v5.40: a paid order's card, from the email job: once per order, kept on the order record
+      if (p.b.order_key != null) {
+        const o = await rpgIssueForOrder(env, p.b);
+        return json(o.error ? { ok: false, error: o.error } : o, o.error ? o.status : 200, ac);
+      }
       const v = rpgIssueClean(p.b);
       if (v.error) return json({ ok: false, error: v.error }, 400, ac);
       // already_redeemed: the giver gave the address at purchase; the card only announces it.
-      const out = await rpgIssue(env, v.rec, p.b.already_redeemed === true ? { status: "redeemed" } : null);
+      const out = await rpgIssue(env, v.rec, p.b.already_redeemed === true ? { status: "redeemed", prepaid: true } : null);
       if (!out) return json({ ok: false, error: "no free code; try again" }, 500, ac);
       return json(out, 200, ac);
     }
@@ -3400,6 +3467,7 @@ async function handle(req, env) {
       if (key) try { rec = JSON.parse(await env.SUBS.get(key)); } catch (e) { rec = null; }
       if (!rec) { rpgMemMiss(req); return json({ ok: false, error: "We don't know that code. Check it against the card." }, 404, c); }
       if (rec.status === "void") return json({ ok: false, error: "This card is no longer active. Write to sig@farmers1st.com." }, 410, c);
+      if (rpgPrepaid(rec)) return json({ ok: false, error: "This gift is already paid for and on its way. There is nothing to fill in." }, 409, c);   // v5.40
       if (rec.status === "redeemed") return json({ ok: false, error: "This card was used on " + rpgDay(rec.redeemed_ts) + "." }, 409, c);
       if (rec.status === "pending" && Date.now() - (rec.pending_ts || 0) <= RPG_PENDING_MS)
         return json({ ok: false, error: "This card is being used right now. Try again in two minutes." }, 409, c);
@@ -3514,8 +3582,9 @@ async function handle(req, env) {
     }
     // v5.36: Sig's order alert went out for this paid record (scripts/rp_buyer_email.py), once.
     // v5.37: /rp-order/approved-alerted, the same for his "approved, make it" alert.
-    if ((path === "/rp-order/mailed" || path === "/rp-order/alerted" || path === "/rp-order/approved-alerted") && req.method === "POST") {
-      const what = path === "/rp-order/mailed" ? "mailed" : path === "/rp-order/alerted" ? "alerted" : "approved_alerted";
+    // v5.40: /rp-order/gift-mailed, the buyer's gift card email (only once the card is on the record).
+    if ((path === "/rp-order/mailed" || path === "/rp-order/alerted" || path === "/rp-order/approved-alerted" || path === "/rp-order/gift-mailed") && req.method === "POST") {
+      const what = { "/rp-order/mailed": "mailed", "/rp-order/alerted": "alerted", "/rp-order/approved-alerted": "approved_alerted", "/rp-order/gift-mailed": "gift_mailed" }[path];
       if (!sig) return json({ ok: false }, 403, ac);
       let b = null;
       try { b = await req.json(); } catch (e) { b = null; }
@@ -3526,6 +3595,7 @@ async function handle(req, env) {
       if (!r) return json({ ok: false, error: "not found" }, 404, ac);
       if (!r.paid) return json({ ok: false, error: "not paid" }, 409, ac);
       if (what === "approved_alerted" && !r.approved) return json({ ok: false, error: "not approved" }, 409, ac);
+      if (what === "gift_mailed" && !(r.gift_card && r.gift_card.code)) return json({ ok: false, error: "no gift card yet" }, 409, ac);
       if (r[what]) return json({ ok: true, already: true, [what]: r[what] }, 200, ac);
       r[what] = { at: new Date().toISOString(), session: String(r.paid.session || "") };
       await rpoPut(env, k, r);
