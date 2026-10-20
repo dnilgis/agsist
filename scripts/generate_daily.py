@@ -5413,6 +5413,20 @@ def main():
         print(f"  Markets OPEN: {market_status['day_name']}")
     print("  Loading prices.json...")
     price_data, surprises = load_prices()
+    # 2026-10-20: streak counts ("the fourth straight lower close") come from
+    # the settles by code (scripts/streak_words.py). The model is handed the
+    # counts; after drafting, any streak words that disagree are fixed or cut.
+    _streaks = {}
+    try:
+        import streak_words as _sw
+        _streaks = _sw.from_files(str(REPO_ROOT))
+        _sl = _sw.prompt_lines(_streaks)
+        if _sl and isinstance(price_data, dict) and price_data.get("price_block"):
+            price_data["price_block"] += "\n\n" + _sl
+            print("  Streaks: " + "; ".join(f"{s_['label']} {s_['n']} {s_['dir']}" + (" (open)" if s_['open'] else "")
+                                            for s_ in _streaks.values()))
+    except Exception as _e:
+        print(f"  [warn] streak counts skipped ({type(_e).__name__}: {_e})")
     if market_status["is_closed"]:
         surprises = []
         print("  Weekend/holiday: surprise detection suppressed")
@@ -5634,6 +5648,13 @@ def main():
     briefing, _wdt = watch_dates.apply(briefing)
     if _wdt:
         print(f"  Watch list dated: {_wdt}")
+    try:
+        import streak_words as _sw
+        briefing, _swl = _sw.apply(briefing, _streaks)
+        for _l in _swl:
+            print(f"  [streak] {_l}")
+    except Exception as _e:
+        print(f"  [warn] streak check skipped ({type(_e).__name__}: {_e})")
 
     # v5.1 the cut, in this order: drop what the prompt retired, then cut to
     # the budget deterministically (weakest block first), then grade the call

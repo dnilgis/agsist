@@ -624,7 +624,55 @@ def build_from_files(repo=REPO, bids_base=None, now=None):
     index = local_bid.BidsData(bids_base).index()
     prev, prev_gen = load_prev(repo)
     bs = load_json(os.path.join(repo, "data", "basis-states.json"))
-    return build(index, prev, prev_gen, bs, now)
+    return freeze(build(index, prev, prev_gen, bs, now), load_published(repo))
+
+
+# ── one count per past day (2026-10-20, panel F2) ─────────────────────────
+# Saturday, Sunday and Monday all compare Friday with Thursday. bids-prev
+# keeps filling in boards that post late, so the three issues printed three
+# counts for the same Friday (1,494 of 1,527; 1,491 of 1,524; 1,596 of
+# 1,629). A day's count and change are now frozen the first time an issue
+# prints them: a later issue reuses the published fact word for word.
+FROZEN_KINDS = ("cash_change",)
+FROZEN_KEEP = ("id", "kind", "crop", "sentence", "key", "detail", "value", "unit", "n",
+               "as_of", "source", "url", "link_text")
+
+
+def load_published(repo=REPO):
+    """{(fact id, as_of): (issue date, fact)} for the FIRST published issue
+    that printed each past-day fact, from data/daily-archive/*.json."""
+    out = {}
+    for fp in sorted(glob.glob(os.path.join(repo, "data", "daily-archive", "20??-??-??.json"))):
+        j = load_json(fp)
+        edge = (j or {}).get("edge") if isinstance(j, dict) else None
+        if not isinstance(edge, dict):
+            continue
+        issue = os.path.basename(fp)[:-5]
+        for f in edge.get("facts") or []:
+            if not isinstance(f, dict) or f.get("kind") not in FROZEN_KINDS or not f.get("as_of"):
+                continue
+            out.setdefault((f.get("id"), f["as_of"]), (issue, f))
+    return out
+
+
+def freeze(block, published):
+    """Pure. Each past-day fact in `block` that an earlier issue already
+    printed is replaced by that issue's fact, marked frozen_from; the counts
+    recomputed since are dropped so no second set of numbers rides along."""
+    if not isinstance(block, dict) or not published:
+        return block
+    out = []
+    for f in block.get("facts") or []:
+        hit = published.get((f.get("id"), f.get("as_of"))) if f.get("kind") in FROZEN_KINDS else None
+        if hit:
+            issue, old = hit
+            g = {k: old.get(k) for k in FROZEN_KEEP if k in old}
+            g.update({"from": f.get("from"), "comparison": f.get("comparison"),
+                      "frozen_from": issue})
+            out.append(g)
+        else:
+            out.append(f)
+    return dict(block, facts=out)
 
 
 # ── selftest ───────────────────────────────────────────────────────────────
@@ -818,7 +866,8 @@ def main(argv):
         base = argv[argv.index("--bids-base") + 1]
     blk = build_from_files(REPO, base, now)
     for f in blk["facts"]:
-        print("  [edge] " + f["sentence"])
+        print("  [edge] " + f["sentence"]
+              + (f"  (frozen as first printed in the {f['frozen_from']} issue)" if f.get("frozen_from") else ""))
     for w in blk["withheld"]:
         print(f"  [edge] withheld {w['id']}: {w['why']} ({w.get('detail', '')})")
     if "--print" in argv:
