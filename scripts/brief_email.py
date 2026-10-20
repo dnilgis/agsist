@@ -480,7 +480,11 @@ def _elevator_block_html(b):
            'color:%s" class="ink">%%s</td></tr>' % (SANS, INK))
     sub = ('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:11px;font-weight:700;'
            'letter-spacing:.12em;text-transform:uppercase;color:%s">%%s</td></tr>' % (MONO, MUTE))
-    rows = "".join(row % e(x) for x in mine)
+    def named(x):
+        # The elevator's name in bold, so a phone reader finds their own at a glance.
+        head, sep, rest = x.partition(": ")
+        return ("<strong>%s</strong>: %s" % (e(head), e(rest))) if sep and len(head) <= 90 else e(x)
+    rows = "".join(row % named(x) for x in mine)
     if near:
         rows += (sub % e(b.get("near_head") or "Near you")) if mine else ""
         rows += "".join(row % e(x) for x in near)

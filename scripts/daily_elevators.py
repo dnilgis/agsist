@@ -327,12 +327,12 @@ def own_line(boards, p):
             continue
         s = CROP_WORD[crop] + " " + cash_txt(f["cash"])
         if f["chg"] is not None:
-            s += " " + chg_txt(f["chg"])
+            s += " (" + chg_txt(f["chg"]) + ")"
             days.add(f["since"])
         if f["basis"] is not None:
             s += ", basis " + basis_txt(f["basis"])
             if f["bchg"] is not None:
-                s += " " + chg_txt(f["bchg"])
+                s += " (" + chg_txt(f["bchg"]) + ")"
         bits.append(s)
     head = where(p)
     if not bits:

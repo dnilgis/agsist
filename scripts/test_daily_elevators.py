@@ -146,7 +146,7 @@ B, MIRROR = build(ALL, H, STATUS)
 f = B.fact(MINE1, "corn")
 check(f["chg"] == 3.0 and f["bchg"] == 2 and f["since"] == "2026-10-19", "corn change from Mon: +3c cash, +2c basis %r" % (f,))
 line = de.own_line(B, MINE1)
-check(line == "Test Home Grain, Chetek WI: corn $4.12 up 3¢, basis −38¢ up 2¢; soybeans $9.80 down 5¢, basis −62¢ up 2¢. "
+check(line == "Test Home Grain, Chetek WI: corn $4.12 (up 3¢), basis −38¢ (up 2¢); soybeans $9.80 (down 5¢), basis −62¢ (up 2¢). "
               "Posted 5:30 AM CT, change from Mon.", "own line: " + line)
 check(de.chg_txt(-4.5) == "down 4 1/2¢" and de.chg_txt(0.1) == "unch" and de.chg_txt(None) == "", "change words in quarter cents")
 
@@ -207,7 +207,7 @@ watch = {de.wid_for("WI", "Test Second Elevator", "Cameron", "corn"): {"kind": "
          "deadbeef": {"label": "Test Gone Elevator \u2014 corn"},
          "ab54728050": {"kind": "cash", "ewid": "ab54728050"}}
 wb = de.block_for(B, {"email": "w@example.com", "zip": None, "el": [de.place_id(MINE1["place"])]}, watch)
-check(wb["mine"][0].startswith("Test Home Grain") and wb["mine"][1].startswith("Test Second Elevator, Cameron WI: corn $4.05 up 2¢")
+check(wb["mine"][0].startswith("Test Home Grain") and wb["mine"][1].startswith("Test Second Elevator, Cameron WI: corn $4.05 (up 2¢)")
       and wb["mine"][2] == "Test Gone Elevator: not on the board this morning." and len(wb["mine"]) == 3,
       "saved first, then watched, a watch the network lacks says so, a ZIP-wide alert is no line: %r" % (wb["mine"],))
 held_mine = de.own_line(B, HELD)
@@ -278,8 +278,11 @@ archive = sorted((ROOT / "data" / "daily-archive").glob("2026-*.json"))[-1]
 issue = json.load(open(archive))
 m = send_daily.build_email(day, issue, "made-up-reader@example.com", "AGSIST Daily", "daily@example.com", None)
 htm, tx = m.get_body(("html",)).get_content(), m.get_body(("plain",)).get_content()
-for x in r1["mine"] + r1["near"]:
-    check(brief_email.e(x) in htm and x in tx, "line in both parts: " + x[:40])
+for x in r1["mine"]:
+    hd, _, rest = x.partition(": ")
+    check("<strong>%s</strong>: %s" % (brief_email.e(hd), brief_email.e(rest)) in htm and x in tx, "own line in both parts, name in bold: " + x[:40])
+for x in r1["near"]:
+    check(brief_email.e(x) in htm and x in tx, "near line in both parts: " + x[:40])
 check("NEAR YOU THIS MORNING" not in tx and "Near you this morning:" in tx, "near-you label in text")
 check(brief_email.ELEVATOR_ADD_WORDS in htm and r1["add_url"] in tx, "footer link in both parts")
 m0 = send_daily.build_email(day, issue, "nothing@example.com", "AGSIST Daily", "daily@example.com", None)
