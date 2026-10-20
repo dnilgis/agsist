@@ -59,3 +59,12 @@ build/shots/
 # Working notes live in the private repo dnilgis/agsistretired, never here (Sig, Oct 20).
 # A stray copy unpacked here is never committed.
 /.claude/notes/
+
+# Session skills live in the private repo dnilgis/agsistretired at .claude/skills
+# (Oct 20, 2026, Sig: off the public repo). A session that adds that repo loads them.
+/.claude/skills/
+
+# Job files no page reads, unpacked from (and saved to) the private repo's
+# private-data branch: job health, render audit, withheld bid rows, the
+# Daily's editorial notes (Oct 20, 2026).
+/private/

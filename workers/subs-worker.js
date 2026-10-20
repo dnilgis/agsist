@@ -5,11 +5,30 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
- * v5.34 (2026-10-20): BUSINESS LISTS OF 100 WITH ADDRESSES. kind
+ * v5.35 (2026-10-20): BUSINESS LISTS OF 100 WITH ADDRESSES. kind
  *   rain-print-business takes towns up to 20,000 characters (was 8,000), so
  *   100 ship-to-each customers with mailing addresses fit; POST /form takes a
  *   body up to 48 KB (was 16 KB). Every field cap of every other kind is
  *   unchanged. No new route, binding or secret.
+ * v5.34 (2026-10-20): A BOARD SIG PASTES BY HAND. New routes only; every
+ *   existing route answers exactly as before. No new binding and no new secret.
+ *   NEW Cooperative's site puts a Cloudflare bot check in front of the bids
+ *   reader, which does not try to get past it. Sig opens their public bid page
+ *   in his own browser and pastes it into elev-admin.html; the page reads the
+ *   table and sends the rows as printed.
+ *   POST /elev/admin/paste  Bearer LIST_TOKEN {site, locations: [{name, rows:
+ *     [{commodity, delivery, cash, basis, future, change}]}]}: every cell is
+ *     checked against the shape the site prints ("10/1/2026 - 10/31/2026",
+ *     "$4.26", "-35", "461-4", "-5-4"); nothing is stored unless all pass and
+ *     there is at least one row. Stored as paste:<site> = {site, name, page,
+ *     source, pastedAt (this Worker's clock when it was saved, the price's
+ *     "as of"), locations, rows}. 256 KB at most.
+ *   GET /elev/paste/<site>: that record, public (the elevator's own posted
+ *     numbers, nothing private), max-age 60. dnilgis/bids reads it.
+ *   GET /elev/paste-status: {site: {pastedAt, rows, locations}} for each site.
+ *   Sites: PASTE_SITES (newcoop only for now).
+ *   GET /sponsor-apps answers with CORS for agsist.com (elev-today.html lists
+ *   the open applications by company and tier); same token, same body.
  * v5.33 (2026-10-20): GA GATE. New route GET /ga-ok answers {"ok":true} or
  *   {"ok":false}: false when Cloudflare puts the request on a cloud, hosting
  *   or data center network (request.cf.asn in CLOUD_ASNS, or a hosting word
@@ -1019,7 +1038,7 @@ const RP_DELIVER = ["buyer", "recipient"];
 const RPB_PRODUCTS = ["print", "framed", "digital", "not-sure"];
 const RPB_SHIP = ["one", "each", "not-sure"];
 const RPB_QTY_MIN = 5, RPB_QTY_MAX = 500;    // v5.17: business orders start at 5 prints
-const FORM_MAX_BYTES = 48 * 1024;   // v5.34: a 20,000-character business list plus the rest, in UTF-8
+const FORM_MAX_BYTES = 48 * 1024;   // v5.35: a 20,000-character business list plus the rest, in UTF-8
 const FORM_RATE_MAX = 8;                 // posts per IP per hour, all kinds together
 const FORM_TTL_S = 365 * 24 * 3600;      // a stored post is dropped after a year
 const FORM_KEY_RE = /^form:[a-z-]{2,30}:\d{10,16}:[0-9a-f]{8}$/;
@@ -1512,6 +1531,46 @@ async function elevBody(req) {
   try { b = JSON.parse(raw); } catch (e) { b = null; }
   if (!b || typeof b !== "object" || Array.isArray(b)) return { error: "bad json", status: 400 };
   return { b };
+}
+// v5.34: a board Sig pastes by hand. See the header.
+const PASTE_SITES = {
+  newcoop: { name: "NEW Cooperative", page: "https://www.newcoop.com/cash-bids",
+             source: "posted from NEW Cooperative's public bid page" },
+};
+const PASTE_MAX_BYTES = 256 * 1024;
+const PASTE_CELL = {
+  commodity: /^[A-Za-z][A-Za-z0-9 #&()\/.,'-]{0,39}$/,
+  delivery: /^\d{1,2}\/\d{1,2}\/\d{4}\s*-\s*\d{1,2}\/\d{1,2}\/\d{4}$/,
+  cash: /^\$?\d{1,3}(?:\.\d{1,4})?$/,
+  basis: /^[-+]?\d{1,4}(?:\.\d{1,2})?$/,
+  future: /^\d{2,5}-[0-7]$/,
+  change: /^(?:[-+]?\d{1,4}-[0-7]|-|unch|)$/i,
+};
+function pasteClean(b) {
+  const site = typeof b.site === "string" ? b.site : "";
+  if (!own(PASTE_SITES, site)) return { error: "unknown site" };
+  if (!Array.isArray(b.locations) || !b.locations.length || b.locations.length > 200) return { error: "locations must be a list of 1 to 200" };
+  const locations = [];
+  let rows = 0;
+  for (const [i, l] of b.locations.entries()) {
+    const name = typeof l?.name === "string" ? l.name.replace(/\s+/g, " ").trim() : "";
+    if (!name || name.length > 60 || /[<>]/.test(name)) return { error: "location " + (i + 1) + ": invalid name" };
+    if (!Array.isArray(l.rows) || l.rows.length > 60) return { error: name + ": rows must be a list of at most 60" };
+    const out = [];
+    for (const [k, r] of l.rows.entries()) {
+      const row = {};
+      for (const [f, re] of Object.entries(PASTE_CELL)) {
+        const v = typeof r?.[f] === "string" ? r[f].replace(/\s+/g, " ").trim() : "";
+        if (!re.test(v)) return { error: name + " row " + (k + 1) + ": " + f + " does not look like the board's own (" + JSON.stringify(v.slice(0, 40)) + ")" };
+        row[f] = v;
+      }
+      out.push(row);
+    }
+    rows += out.length;
+    locations.push({ name, rows: out });
+  }
+  if (!rows) return { error: "no bid rows" };
+  return { site, locations, rows };
 }
 async function elevGet(env, id) {
   try { const r = JSON.parse(await env.SUBS.get("elev:" + id)); return r && typeof r === "object" ? r : null; } catch (e) { return null; }
@@ -2805,12 +2864,14 @@ async function handle(req, env) {
     }
 
     if (path === "/sponsor-apps" && req.method === "GET") {
-      if (!authed) return json({ ok: false }, 403);
+      // v5.34: CORS for agsist.com, so elev-today.html can list the open ones
+      // (company and tier only; it shows nothing else). Same token as before.
+      if (!authed) return json({ ok: false }, 403, cors(req));
       const out = [];
       for (const k of await listKeys(env, "sapp:")) {
         try { out.push(JSON.parse(await env.SUBS.get(k))); } catch (e) { /* skip */ }
       }
-      return json(out);
+      return json(out, 200, Object.assign({ "Cache-Control": "no-store" }, cors(req)));
     }
 
     if (path === "/sponsor-logo" && req.method === "GET") {
@@ -3119,6 +3180,23 @@ async function handle(req, env) {
         out.sort((a, b) => (b.ts || 0) - (a.ts || 0));
         return json({ ok: true, requests: out }, 200, Object.assign({ "Cache-Control": "no-store" }, ac));
       }
+      // v5.34: a board Sig pasted by hand. Its own size cap, larger than elevBody's.
+      if (path === "/elev/admin/paste" && req.method === "POST") {
+        if (Number(req.headers.get("Content-Length") || 0) > PASTE_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, ac);
+        let raw = "";
+        try { raw = await req.text(); } catch (e) { raw = ""; }
+        if (raw.length > PASTE_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, ac);
+        let b = null;
+        try { b = JSON.parse(raw); } catch (e) { b = null; }
+        if (!b || typeof b !== "object" || Array.isArray(b)) return json({ ok: false, error: "bad json" }, 400, ac);
+        const v = pasteClean(b);
+        if (v.error) return json({ ok: false, error: v.error }, 400, ac);
+        const meta = PASTE_SITES[v.site];
+        const rec = { site: v.site, name: meta.name, page: meta.page, source: meta.source,
+                      pastedAt: new Date().toISOString(), locations: v.locations, rows: v.rows };
+        await env.SUBS.put("paste:" + v.site, JSON.stringify(rec));
+        return json({ ok: true, site: v.site, pastedAt: rec.pastedAt, rows: v.rows, locations: v.locations.length }, 200, ac);
+      }
       if (req.method !== "POST") return json({ ok: false, error: "not found" }, 404, ac);
       const p = await elevBody(req);
       if (p.error) return json({ ok: false, error: p.error }, p.status, ac);
@@ -3208,6 +3286,26 @@ async function handle(req, env) {
     }
 
     // Public: every listing that is turned on, never an email or a key.
+    // v5.34: what Sig pasted, public: the elevator's own posted numbers.
+    if (path.startsWith("/elev/paste/") && req.method === "GET") {
+      const site = path.slice("/elev/paste/".length);
+      const h = Object.assign({ "Cache-Control": "public, max-age=60" }, cors(req));
+      if (!own(PASTE_SITES, site)) return json({ ok: false, error: "unknown site" }, 404, h);
+      let rec = null;
+      try { rec = JSON.parse(await env.SUBS.get("paste:" + site)); } catch (e) { rec = null; }
+      if (!rec) return json({ ok: false, error: "nothing pasted yet" }, 404, h);
+      return json(Object.assign({ ok: true }, rec), 200, h);
+    }
+    if (path === "/elev/paste-status" && req.method === "GET") {
+      const out = {};
+      for (const site of Object.keys(PASTE_SITES)) {
+        let rec = null;
+        try { rec = JSON.parse(await env.SUBS.get("paste:" + site)); } catch (e) { rec = null; }
+        out[site] = rec ? { name: rec.name, page: rec.page, pastedAt: rec.pastedAt, rows: rec.rows, locations: rec.locations.length }
+                        : { name: PASTE_SITES[site].name, page: PASTE_SITES[site].page, pastedAt: null, rows: 0, locations: 0 };
+      }
+      return json({ ok: true, sites: out }, 200, Object.assign({ "Cache-Control": "public, max-age=60" }, cors(req)));
+    }
     if (path === "/elev/feed" && req.method === "GET") {
       const out = [];
       for (const k of await listKeys(env, "elev:")) {

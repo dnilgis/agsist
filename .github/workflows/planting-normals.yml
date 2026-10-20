@@ -46,6 +46,9 @@ jobs:
         run: python scripts/fetch_planting_normals.py --probe
       - name: Save the probe's raw files to the raw branch
         if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
         run: bash scripts/push_raw.sh "planting-normals probe" data/planting-normals-raw
       - name: Fetch and write data/planting/*.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}

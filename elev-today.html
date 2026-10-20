@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Today | AGSIST desk</title>
+  <!-- Sig's daily list (elevator desk). Not linked from anywhere, noindex, no
+       analytics. Reads public data (dnilgis/bids index.json, the subs worker's
+       paste status, GitHub's public run list) and, with the LIST_TOKEN this
+       browser already keeps for elev-admin.html, the listing requests and open
+       sponsor applications. Names only: no email or phone is shown. "Done"
+       ticks are kept in this browser's localStorage, per day. Nothing here
+       fetches an elevator's site. -->
+  <script>window.gtag = function () {}; window.agsistGaOff = true; window.AgsistSignup = window.AgsistSignup || { off: true };</script>
+  <script>/* agsist-theme-early */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
+  <link rel="stylesheet" href="/components/styles.css?v=26">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <style>
+    body{background:var(--bg);color:var(--text)}
+    .td{max-width:720px;margin:0 auto;padding:1rem 1rem 6rem}
+    .td h1{font-size:1.55rem;line-height:1.15;margin:.2rem 0 0;color:var(--text)}
+    .td-date{color:var(--text-muted);font-size:.95rem;margin:.1rem 0 0}
+    .td-sum{margin:.9rem 0 .2rem;font-size:1.08rem;line-height:1.45;color:var(--text)}
+    .td-sum b{color:var(--gold)}
+    .td-health{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap;font-size:.92rem;color:var(--text-dim);margin:.2rem 0 .8rem}
+    .td-bar{flex:1 1 100%;height:6px;border-radius:3px;background:var(--surface3);overflow:hidden}
+    .td-bar i{display:block;height:100%;background:var(--green)}
+    .td-up{color:var(--green)}.td-down{color:var(--red)}
+    .td h2.td-sec{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin:1.4rem 0 .5rem;font-weight:700}
+    .td-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem .9rem;margin:.6rem 0}
+    .td-item.top{border-color:var(--border-g)}
+    .td-item h3{font-size:1.05rem;margin:0;color:var(--text);line-height:1.3}
+    .td-tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:4px;padding:.1rem .4rem;margin:0 .4rem .2rem 0;vertical-align:middle;border:1px solid var(--border-2);color:var(--text-muted)}
+    .td-tag.hot{border-color:var(--gold);color:var(--gold)}
+    .td-why{margin:.35rem 0 .1rem;color:var(--text-dim);font-size:.93rem;line-height:1.45}
+    .td-why b{color:var(--text)}
+    .td-note{margin:.2rem 0 0;color:var(--text-muted);font-size:.82rem;line-height:1.4;word-break:break-word}
+    .td-acts{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.65rem}
+    .td-btn,.td-btn2,.td-done{min-height:44px;min-width:44px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;padding:0 1rem;border-radius:8px;font:inherit;font-weight:700;font-size:.95rem;text-decoration:none;cursor:pointer}
+    .td-btn{background:var(--gold-fill);color:#14110a;border:1px solid var(--gold)}
+    .td-btn2{background:none;color:var(--text);border:1px solid var(--border-2)}
+    .td-done{background:none;color:var(--text-muted);border:1px solid var(--border-2);margin-left:auto}
+    .td-off{color:var(--text-muted);font-size:.85rem;align-self:center}
+    .td-folded summary,.td-donebox summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--text-dim);font-weight:600}
+    .td-donebox .td-item{opacity:.7}
+    .td-donebox .td-item .td-acts{display:none}
+    .td-ticked{color:var(--green);font-size:.82rem;margin-left:.4rem;font-weight:600}
+    .td-empty{background:var(--surface);border:1px dashed var(--border-2);border-radius:10px;padding:1.2rem;text-align:center;color:var(--text-dim);margin:.6rem 0}
+    .td-tok{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.7rem .9rem;margin:1rem 0}
+    .td-tok summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--text-dim);font-weight:600}
+    .td-tok input{font:inherit;font-size:16px;width:100%;box-sizing:border-box;min-height:44px;padding:.35rem .6rem;border:1px solid var(--border-2);border-radius:8px;background:var(--bg);color:var(--text)}
+    .td-err{color:var(--red);font-size:.88rem}
+    .td-bm{display:inline-flex;align-items:center;min-height:44px;padding:0 1rem;border:1px dashed var(--gold);border-radius:8px;color:var(--gold);font-weight:700;text-decoration:none}
+    .td-code{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.75rem;padding:.6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text-dim);word-break:break-all;margin:.5rem 0;max-height:7.5rem;overflow:auto}
+    .td a.inl{color:var(--gold)}
+    @media (min-width:900px){.td{padding-top:2rem}}
+  </style>
+</head>
+<body>
+<main class="td">
+  <h1>Today</h1>
+  <p class="td-date" id="date"></p>
+  <p class="td-sum" id="sum">Loading the list.</p>
+  <div class="td-health" id="health"></div>
+
+  <div id="list"></div>
+
+  <details class="td-donebox" id="donebox" hidden><summary id="donesum"></summary><div id="donelist"></div></details>
+
+  <details class="td-tok" id="tokbox">
+    <summary>Token (LIST_TOKEN)</summary>
+    <input id="tok" type="password" autocomplete="off" spellcheck="false" aria-label="Token">
+    <p class="td-note">The same token as the elevator desk; this browser keeps it. Without it the list still shows the bid sites and failed runs; listing requests and sponsor applications need it.</p>
+  </details>
+
+  <h2 class="td-sec">Grab helper</h2>
+  <div class="td-item">
+    <h3>Copy for AGSIST</h3>
+    <p class="td-why">Save this once as a bookmark. On an elevator's bid page, in your own browser, tap it: it copies the page and opens the paste box for that site. It sends nothing anywhere itself and holds no token.</p>
+    <div class="td-acts"><a class="td-bm" id="bm" href="#">Copy for AGSIST</a></div>
+    <p class="td-note">Computer: drag the button to the bookmarks bar. Phone: bookmark any page, edit the bookmark, and paste this in place of its address:</p>
+    <code class="td-code" id="bmcode"></code>
+  </div>
+</main>
+<script src="/components/paste-bids.js?v=1"></script>
+<script src="/components/today-core.js?v=1"></script>
+<script>
+(function () {
+  'use strict';
+  var T = window.AgsistToday, PB = window.AgsistPasteBids;
+  var SUBS = 'https://agsist-subs.dnilgis.workers.dev';
+  var INDEX = 'https://dnilgis.github.io/bids/data/index.json';
+  var REPOS = ['dnilgis/agsist', 'dnilgis/bids', 'dnilgis/flashgrain'];
+  var TOK_KEY = 'agsist-elev-admin-token';
+  var now = Date.now(), day = T.ctDay(now);
+  var DONE_KEY = 'agsist-today-done-' + day, HIST_KEY = 'agsist-today-health';
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
+  function n(x) { return Number(x).toLocaleString('en-US'); }
+  function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+
+  $('date').textContent = new Date(now).toLocaleDateString('en-US', { timeZone: 'America/Chicago', weekday: 'long', month: 'long', day: 'numeric' });
+  try { $('tok').value = localStorage.getItem(TOK_KEY) || ''; } catch (e) {}
+  if (!$('tok').value) $('tokbox').open = true;
+  $('tok').addEventListener('change', function () { try { localStorage.setItem(TOK_KEY, $('tok').value.trim()); } catch (e) {} load(); });
+
+  /* The bookmarklet: copies this page's HTML and opens the paste box for its host. */
+  var BM = "javascript:(function(){var h=document.documentElement.outerHTML,s=location.hostname,u='https://agsist.com/elev-admin.html?paste='+encodeURIComponent(s)+'#paste';function go(){window.open(u,'_blank')}function fb(){var t=document.createElement('textarea');t.value=h;document.body.appendChild(t);t.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(t);go()}try{navigator.clipboard.writeText(h).then(go,fb)}catch(e){fb()}})()";
+  $('bm').setAttribute('href', BM);
+  $('bm').addEventListener('click', function (e) { e.preventDefault(); });
+  $('bmcode').textContent = BM;
+
+  var done = store(DONE_KEY) || {};
+
+  function item(o) {
+    var acts = (o.acts || []).map(function (a) {
+      return a.off ? '<span class="td-off">' + esc(a.off) + '</span>'
+        : '<a class="' + (a.primary ? 'td-btn' : 'td-btn2') + '" href="' + esc(a.href) + '"' + (a.ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + esc(a.label) + '</a>';
+    }).join('');
+    var ticked = done[o.key] ? '<span class="td-ticked">Done ' + esc(new Date(done[o.key]).toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' })) + '</span>' : '';
+    return '<article class="td-item' + (o.top ? ' top' : '') + '" data-key="' + esc(o.key) + '">'
+      + '<h3><span class="td-tag' + (o.top ? ' hot' : '') + '">' + esc(o.tag) + '</span>' + esc(o.title) + ticked + '</h3>'
+      + '<p class="td-why">' + o.why + '</p>' + (o.note ? '<p class="td-note">' + esc(o.note) + '</p>' : '')
+      + '<div class="td-acts">' + acts + '<button type="button" class="td-done" data-done="' + esc(o.key) + '">Done</button></div></article>';
+  }
+
+  function render(items, hs, err) {
+    var open = items.filter(function (o) { return !done[o.key]; });
+    var shut = items.filter(function (o) { return done[o.key]; });
+    var paste = open.filter(function (o) { return o.group === 'paste'; });
+    var big = paste.filter(function (o) { return o.boards > 2; }), small = paste.filter(function (o) { return o.boards <= 2; });
+    var rest = open.filter(function (o) { return o.group !== 'paste'; });
+    var h = '';
+    if (big.length || small.length) {
+      h += '<h2 class="td-sec">Bid sites to paste or fix</h2>' + big.map(item).join('');
+      if (small.length) h += '<details class="td-folded"><summary>' + small.length + ' more site' + (small.length === 1 ? '' : 's') + ', 1 or 2 boards each</summary>' + small.map(item).join('') + '</details>';
+    }
+    if (rest.length) h += '<h2 class="td-sec">Everything else</h2>' + rest.map(item).join('');
+    if (!open.length) h += '<div class="td-empty">All done for ' + esc(new Date(now).toLocaleDateString('en-US', { timeZone: 'America/Chicago', month: 'short', day: 'numeric' })) + '.</div>';
+    if (err.length) h += '<p class="td-err">' + err.map(esc).join(' ') + '</p>';
+    $('list').innerHTML = h;
+    $('donebox').hidden = !shut.length;
+    $('donesum').textContent = 'Done today (' + shut.length + ')';
+    $('donelist').innerHTML = shut.map(item).join('');
+    var first = big[0] || rest[0] || small[0];
+    $('sum').innerHTML = open.length
+      ? '<b>' + open.length + ' thing' + (open.length === 1 ? '' : 's') + ' today.</b> ' + (first ? 'First: ' + esc(first.title) + (first.towns ? ', ' + esc(first.townsTxt) : '') + '.' : '')
+      : 'Nothing open today.';
+    if (hs) {
+      var hist = store(HIST_KEY) || {}, prevDay = Object.keys(hist).filter(function (d) { return d < day; }).sort().pop();
+      var ch = prevDay != null ? hs.current - hist[prevDay] : null;
+      hist[day] = hs.current;
+      var keep = {}; Object.keys(hist).sort().slice(-14).forEach(function (d) { keep[d] = hist[d]; }); store(HIST_KEY, keep);
+      $('health').innerHTML = '<span>Boards with a current price <b>' + n(hs.current) + '</b> of ' + n(hs.total) + ' (' + hs.pct + '%)</span>'
+        + (ch == null ? '<span>Change shows once this page has a day before to compare.</span>'
+          : '<span class="' + (ch > 0 ? 'td-up' : ch < 0 ? 'td-down' : '') + '">' + (ch > 0 ? '+' : '') + n(ch) + ' since ' + esc(prevDay === T.ctDay(now - 864e5) ? 'yesterday' : prevDay) + '</span>')
+        + '<span class="td-bar" aria-hidden="true"><i style="width:' + hs.pct + '%"></i></span>';
+    }
+  }
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-done]');
+    if (!b) return;
+    var k = b.getAttribute('data-done');
+    if (done[k]) delete done[k]; else done[k] = new Date().toISOString();
+    store(DONE_KEY, done);
+    render(last.items, null, last.err);
+  });
+
+  var last = { items: [], err: [] };
+  function getJSON(url, opt) { return fetch(url, Object.assign({ cache: 'no-store' }, opt || {})).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
+
+  function load() {
+    var tok = $('tok').value.trim();
+    var auth = tok ? { headers: { Authorization: 'Bearer ' + tok } } : null;
+    var err = [];
+    var jobs = [
+      getJSON(INDEX).catch(function () { err.push('The bids list did not load.'); return null; }),
+      getJSON(SUBS + '/elev/paste-status').catch(function () { return null; }),
+      auth ? getJSON(SUBS + '/elev/admin/requests', auth).catch(function () { err.push('Listing requests did not load (token?).'); return null; }) : Promise.resolve(null),
+      auth ? getJSON(SUBS + '/sponsor-apps', auth).catch(function () { err.push('Sponsor applications did not load (token?).'); return null; }) : Promise.resolve(null),
+      Promise.all(REPOS.map(function (r) {
+        var since = new Date(now - 864e5).toISOString().slice(0, 19) + 'Z';
+        return getJSON('https://api.github.com/repos/' + r + '/actions/runs?status=failure&per_page=50&created=%3E%3D' + since)
+          .then(function (j) { return { repo: r, runs: j.workflow_runs || [] }; }, function () { return { repo: r, runs: null }; });
+      }))
+    ];
+    Promise.all(jobs).then(function (got) {
+      var index = got[0], ps = got[1], reqs = got[2], apps = got[3], runs = got[4];
+      var items = [], hs = index ? T.health(index, now) : null;
+      if (index) {
+        T.handPaste(index, now, PB.siteFor).forEach(function (p, i) {
+          var st = ps && ps.sites && p.site ? ps.sites[p.site] : null;
+          var pastedAt = (st && st.pastedAt) || p.pastedAt;
+          var why = (p.why === 'bot check' ? 'Blocked by a bot check. ' : 'Our reader refused their page. ')
+            + 'Feeds <b>' + n(p.boards) + ' board' + (p.boards === 1 ? '' : 's') + '</b> in <b>' + esc(T.townsText(p)) + '</b>. '
+            + (p.lastGood ? 'Last good read ' + esc(T.ct(p.lastGood)) + '.' : 'No good read on file.')
+            + (pastedAt ? ' Last paste ' + esc(T.ct(pastedAt)) + ', held 7 days.' : '');
+          var acts = p.site ? [{ primary: true, label: 'Paste', href: '/elev-admin.html?paste=' + p.site + '#paste' },
+                               { label: 'Open their bid page', href: PB.SITES[p.site].page, ext: true }]
+                            : [{ label: 'Open their bid page', href: p.page, ext: true }, { off: 'no paste reader yet' }];
+          items.push({ key: 'paste:' + p.host, group: 'paste', top: i === 0, tag: p.site ? 'Paste' : (p.why === 'bot check' ? 'Bot check' : 'Refused'),
+            title: p.operator, why: why, note: p.why === 'refused' ? p.reason : '', acts: acts,
+            boards: p.boards, towns: p.towns, townsTxt: T.townsText(p) });
+        });
+        var fg = (index.sources || []).filter(function (s) { return /^flashgrain/.test(s.id || '') || /flash ?grain/i.test(s.operator || ''); });
+        var fgBad = fg.filter(function (s) { return !T.current(s, now) || s.health !== 'live'; });
+        if (fgBad.length) items.push({ key: 'flashgrain', group: 'feed', tag: 'Feed', title: 'Flash Grain',
+          why: esc(fgBad.length + ' of ' + fg.length + ' Flash Grain board' + (fg.length === 1 ? '' : 's') + ' not live. ') + (fgBad[0].checkedAt ? 'Last good read ' + esc(T.ct(fgBad[0].checkedAt)) + '.' : ''),
+          note: (fgBad[0].error || '').slice(0, 140), acts: [{ label: 'Open the bids status board', href: 'https://dnilgis.github.io/bids/', ext: true }] });
+      }
+      (reqs && reqs.requests || []).filter(function (r) { return r.status === 'pending'; }).forEach(function (r) {
+        items.push({ key: 'req:' + r.key, group: 'req', tag: 'Request', title: (r.elevator || 'An elevator') + ', ' + (r.town || '') + (r.state ? ' ' + r.state : ''),
+          why: 'Asked to post its own bids ' + esc(T.ct(new Date(r.ts).toISOString(), { hour: undefined, minute: undefined }).replace(/ CT$/, '')) + '. Call the elevator at its own number, then make the listing.',
+          acts: [{ primary: true, label: 'Open the request', href: '/elev-admin.html#requests' }] });
+      });
+      (Array.isArray(apps) ? apps : []).filter(function (a) { return a && (a.status === 'confirmed' || a.status === 'approved'); }).forEach(function (a) {
+        items.push({ key: 'sapp:' + a.id, group: 'sponsor', tag: 'Sponsor', title: (a.company || 'A sponsor') + (a.tier ? ' (' + a.tier + ')' : ''),
+          why: a.status === 'confirmed' ? 'Waiting for your yes or no. The links are in the email you got for it.' : 'Approved, waiting on payment before it goes live.', acts: [] });
+      });
+      (runs || []).forEach(function (r) {
+        if (!r.runs) { err.push('GitHub runs for ' + r.repo + ' did not load.'); return; }
+        var by = {};
+        r.runs.forEach(function (x) { (by[x.name] = by[x.name] || []).push(x); });
+        Object.keys(by).forEach(function (name) {
+          var xs = by[name];
+          items.push({ key: 'run:' + r.repo + ':' + name, group: 'run', tag: 'Failed run', title: r.repo.split('/')[1] + ': ' + name,
+            why: 'Failed ' + (xs.length === 1 ? 'once' : xs.length + ' times') + ' in the last 24 hours, last ' + esc(T.ct(xs[0].created_at)) + '.',
+            acts: [{ primary: true, label: 'Open the run', href: xs[0].html_url, ext: true }] });
+        });
+      });
+      last = { items: items, err: err };
+      render(items, hs, err);
+    });
+  }
+  load();
+})();
+</script>
+</body>
+</html>

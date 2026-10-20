@@ -15,6 +15,13 @@
  *
  * Kept on main on purpose: data/atlas/raw/drought.json (test/drought-county-week.test.mjs
  * reads it) and each probe's listing.json (the normal run reads it).
+ *
+ * Oct 20 (Sig): the raw and references branches moved off the public repo, to
+ * the private repo dnilgis/agsistretired. Every step that saves or reads them
+ * passes the PRIVATE_REPO_TOKEN secret; scripts/private_remote.sh turns it into
+ * the remote. A save that fails in a job that publishes site data is a warning
+ * (RAW_SOFT=1), never the reason the data did not ship; a missing build input
+ * still stops the build.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -94,6 +101,7 @@ test('every probe saves its captures to the raw branch and commits only built ou
     const y = read(`.github/workflows/${wf}.yml`);
     assert.ok(y.includes(files + '\n'), `${wf}: main gets ${files}`);
     const step = `        if: \${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}\n` +
+      `        env:\n          PRIVATE_REPO_TOKEN: \${{ secrets.PRIVATE_REPO_TOKEN }}\n          RAW_SOFT: '1'\n` +
       `        run: bash scripts/push_raw.sh "${wf} probe" ${dir}\n`;
     assert.ok(y.includes(step), `${wf}: probe captures go to raw, even after a partial probe`);
     assert.ok(y.indexOf('push_raw.sh') > y.indexOf('--probe'), `${wf}: saved after the probe runs`);
@@ -113,7 +121,7 @@ test('the Atlas unpacks its pulls from raw before any fetch and saves them back 
   }
   const push = y.indexOf('bash scripts/push_raw.sh "farmland atlas raw"');
   assert.ok(push > y.indexOf('python scripts/build_farmland_atlas.py --seed'), 'saved after the build');
-  assert.match(y, /if: \$\{\{ !cancelled\(\) \}\}\n(\s+#.*\n)*\s+run: bash scripts\/push_raw\.sh "farmland atlas raw" \$\(ls data\/atlas\/raw\/\*\.json data\/atlas\/raw\/\*\.json\.gz 2>\/dev\/null \| grep -v '\/drought\\\.json\$'\)/,
+  assert.match(y, /if: \$\{\{ !cancelled\(\) \}\}\n(\s+#.*\n)*\s+env:\n\s+PRIVATE_REPO_TOKEN: \$\{\{ secrets\.PRIVATE_REPO_TOKEN \}\}\n\s+RAW_SOFT: '1'\n\s+run: bash scripts\/push_raw\.sh "farmland atlas raw" \$\(ls data\/atlas\/raw\/\*\.json data\/atlas\/raw\/\*\.json\.gz 2>\/dev\/null \| grep -v '\/drought\\\.json\$'\)/,
     'saved even when the build fails, the gzipped monthly climate file with them; drought.json stays on main only');
   assert.match(y, /git add -A data\/atlas farmland-atlas\.html/, 'main commit unchanged; .gitignore keeps the pulls out');
 });
@@ -127,7 +135,7 @@ function sandbox() {
   const w = path.join(t, 'work');
   g(['init', '-q', 'work'], t);
   fs.mkdirSync(path.join(w, 'scripts'));
-  for (const s of ['push_raw.sh', 'pull_raw.sh', 'redact_secrets.py']) fs.copyFileSync(path.join(root, 'scripts', s), path.join(w, 'scripts', s));
+  for (const s of ['push_raw.sh', 'pull_raw.sh', 'fetch_private.sh', 'private_remote.sh', 'redact_secrets.py']) fs.copyFileSync(path.join(root, 'scripts', s), path.join(w, 'scripts', s));
   fs.writeFileSync(path.join(w, '.gitignore'), '/data/x-raw/\n');
   g(['add', '-A'], w); g(['commit', '-qm', 'main'], w);
   g(['remote', 'add', 'origin', path.join(t, 'origin.git')], w);
@@ -142,8 +150,10 @@ function seedRaw({ t, g }, files) {
   g(['add', '-A'], s); g(['commit', '-qm', 'seed'], s);
   g(['push', '-q', path.join(t, 'origin.git'), 'HEAD:raw'], s);
 }
-const run = (sb, script, args) => spawnSync('bash', [`scripts/${script}`, ...args], {
-  cwd: sb.w, encoding: 'utf8', env: { ...process.env, RAW_WT: path.join(sb.t, 'rawwt'), RAW_SLEEP: '0' },
+// The sandbox's own origin: never the real private repo, whatever this shell has set.
+const baseEnv = () => { const e = { ...process.env }; for (const k of ['PRIVATE_REPO_TOKEN', 'RAW_REMOTE', 'RAW_SOFT', 'RAW_BRANCH', 'GITHUB_STEP_SUMMARY']) delete e[k]; return e; };
+const run = (sb, script, args, extra = {}) => spawnSync('bash', [`scripts/${script}`, ...args], {
+  cwd: sb.w, encoding: 'utf8', env: { ...baseEnv(), RAW_WT: path.join(sb.t, 'rawwt'), RAW_SLEEP: '0', ...extra },
 });
 const onRaw = (sb) => git(['ls-tree', '-r', '--name-only', 'raw'], path.join(sb.t, 'origin.git')).split('\n').filter(Boolean).sort();
 const rawFile = (sb, p) => git(['show', `raw:${p}`], path.join(sb.t, 'origin.git'));

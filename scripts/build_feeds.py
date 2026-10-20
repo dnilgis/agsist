@@ -199,6 +199,12 @@ EXTERNAL = {
         "to ask to post its own bids, and Sig's elevator desk matches each "
         "request against it. Unreachable means the town pages leave that "
         "list out and the desk says to check by hand; nothing breaks."),
+    "data/index.json": (
+        "published by dnilgis/bids, every reader pass",
+        "Every board the bid network reads, with its last read and why it failed. "
+        "Sig's Today list (elev-today.html) and the morning email build the "
+        "day's hand-paste list from it. Unreachable means the Today list says "
+        "so and shows the other items; nothing on the public site reads it."),
 }
 
 # ── feeds whose real clock is outside GitHub ────────────────────────────────

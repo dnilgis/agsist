@@ -32,7 +32,7 @@
   var PHONE = '715-797-2428';
   var LOGO_LINK = 'https://agsist-subs.dnilgis.workers.dev/rp-logo/';
   var EMAIL_RE = /^[^\s@,;<>"]+@[^\s@,;<>"]+\.[A-Za-z]{2,}$/;
-  var TOWNS_MAX = 20000;   // the worker's rain-print-business towns cap (subs-worker.js v5.34)
+  var TOWNS_MAX = 20000;   // the worker's rain-print-business towns cap (subs-worker.js v5.35)
   var PAGE = '/rain-print-business';
   var BIZ_PRODUCT = { print: 'print12x18', framed: 'framed12x18', digital: 'digital' };
   var BIZ_WORD = { print: ['print', 'prints'], framed: ['framed print', 'framed prints'], digital: ['digital file', 'digital files'],
