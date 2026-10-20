@@ -93,6 +93,7 @@ jobs:
             /scripts/
             /data/*.json
             /TODO-SIG.md
+            /test/fixtures/today-bids-index-*.json.gz
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
         with:
