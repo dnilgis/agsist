@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-10-20T15:39:07+00:00",
+ "built": "2026-10-20T22:52:53+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -5549,8 +5549,8 @@
     "d": "2026-10-18",
     "users": 229,
     "engaged": 156,
-    "gClicks": null,
-    "gImpr": null,
+    "gClicks": 122,
+    "gImpr": 7535,
     "bClicks": 47,
     "bImpr": 1154
    }
@@ -5563,8 +5563,8 @@
    "rows": [
     {
      "q": "soybean yield calculator",
-     "clicks": 32,
-     "impr": 583,
+     "clicks": 33,
+     "impr": 587,
      "pos": 4.7
     },
     {
@@ -5575,21 +5575,21 @@
     },
     {
      "q": "cash rents by county per acre",
-     "clicks": 15,
-     "impr": 254,
+     "clicks": 16,
+     "impr": 258,
      "pos": 4.3
     },
     {
      "q": "grain bin calculator",
      "clicks": 8,
-     "impr": 342,
+     "impr": 349,
      "pos": 9.3
     },
     {
      "q": "usda cash rent by county",
-     "clicks": 6,
-     "impr": 85,
-     "pos": 8.1
+     "clicks": 7,
+     "impr": 87,
+     "pos": 7.9
     },
     {
      "q": "south dakota cash rents by county map pdf",
@@ -5600,13 +5600,19 @@
     {
      "q": "cash rents by county",
      "clicks": 3,
-     "impr": 65,
-     "pos": 6.4
+     "impr": 68,
+     "pos": 6.2
+    },
+    {
+     "q": "grain prices at local elevators",
+     "clicks": 3,
+     "impr": 274,
+     "pos": 4.5
     },
     {
      "q": "hail tracker",
      "clicks": 3,
-     "impr": 39,
+     "impr": 40,
      "pos": 9.2
     },
     {
@@ -5630,7 +5636,7 @@
     {
      "q": "average corn yield per acre by state",
      "clicks": 2,
-     "impr": 80,
+     "impr": 87,
      "pos": 9.2
     },
     {
@@ -5646,16 +5652,10 @@
      "pos": 1.5
     },
     {
-     "q": "grain prices at local elevators",
-     "clicks": 2,
-     "impr": 250,
-     "pos": 4.7
-    },
-    {
      "q": "grain prices at local elevators today near me",
      "clicks": 2,
-     "impr": 31,
-     "pos": 4.3
+     "impr": 34,
+     "pos": 7.2
     },
     {
      "q": "hail map today",
@@ -5672,14 +5672,14 @@
     {
      "q": "how much does farmland rent for per acre per month",
      "clicks": 2,
-     "impr": 66,
-     "pos": 12.4
+     "impr": 67,
+     "pos": 12.3
     },
     {
      "q": "indiana cash rent by county per acre",
      "clicks": 2,
-     "impr": 20,
-     "pos": 3.5
+     "impr": 21,
+     "pos": 3.6
     }
    ],
    "country": "US"
@@ -5793,7 +5793,7 @@
   }
  },
  "email": {
-  "subscribers": 151,
+  "subscribers": 155,
   "asOf": "2026-10-20"
  },
  "returns": {
@@ -6304,26 +6304,26 @@
   "ga4": {
    "ok": true,
    "through": "2026-10-18",
-   "fetched": "2026-10-20T15:39:07+00:00"
+   "fetched": "2026-10-20T22:52:53+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-10-20T15:39:07+00:00"
+   "fetched": "2026-10-20T22:52:53+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-10-20T15:39:07+00:00"
+   "fetched": "2026-10-20T22:52:53+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-10-20T15:39:07+00:00"
+   "fetched": "2026-10-20T22:52:53+00:00"
   },
   "returns": {
    "ok": true,
    "through": "2026-10-18",
-   "fetched": "2026-10-20T15:39:07+00:00"
+   "fetched": "2026-10-20T22:52:53+00:00"
   }
  }
 }
