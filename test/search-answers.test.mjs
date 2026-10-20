@@ -138,7 +138,7 @@ test("cattle auction: the no-ZIP line is the biggest fresh state summaries, 500 
   assert.equal(A.glance([], "steers|1", "2026-10-17").length, 0);
   const page = read("cattle-auction-prices.html");
   assert.ok(page.indexOf('id="sb-glance"') < page.indexOf('id="sb-zip"'), "above the ZIP box");
-  assert.match(page, /cattle-auction\.js\?v=5/);
+  assert.match(page, /cattle-auction\.js\?v=6/);
 });
 
 /* ---------------- /hail-map ---------------- */

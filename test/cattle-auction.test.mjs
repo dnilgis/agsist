@@ -28,6 +28,73 @@ const fixture = JSON.parse(readFileSync(ROOT + "test/fixtures/cattle-auction/fee
 const near = (a, b, tol, msg) => assert.ok(Math.abs(a - b) <= tol, `${msg}: ${a} vs ${b} (tol ${tol})`);
 const strip = (h) => h.replace(/<script[\s\S]*?<\/script>/g, " ").replace(/<style[\s\S]*?<\/style>/g, " ").replace(/<[^>]+>/g, " ");
 
+/* ---------------- value of gain (real SD weekly rows, USDA AMS report 2027, sale of Oct 18, 2026) ---------------- */
+const vfx = JSON.parse(readFileSync(ROOT + "test/fixtures/cattle-auction/vog-sd-2026-10-18.json", "utf8"));
+const sdSale = vfx.states[0].sales[0];
+
+test("value of gain, SD weekly Oct 18 steers M&L 1: (3,050.37 - 2,515.91) / (844 - 552) = $1.83 a lb", () => {
+  const v = A.valueOfGain(sdSale, "steers|1", "2026-10-20");
+  assert.equal(v.ok, true);
+  assert.deepEqual([v.light.cls, v.light.avg_wt, v.light.per_head, v.light.head], [500, 552, 2515.91, 8914]);
+  assert.deepEqual([v.heavy.cls, v.heavy.avg_wt, v.heavy.per_head, v.heavy.head], [800, 844, 3050.37, 667]);
+  assert.equal(v.lb, 292);
+  assert.equal(v.added, 534.46);           // 3050.37 - 2515.91
+  assert.equal(v.vog, 1.83);               // 534.46 / 292 = 1.8303
+  assert.equal(v.date, "2026-10-18");
+});
+
+test("value of gain, SD weekly Oct 18 heifers M&L 1: (2,730.68 - 2,323.96) / (853 - 541) = $1.30 a lb; steers and heifers never mixed", () => {
+  const v = A.valueOfGain(sdSale, "heifers|1", "2026-10-20");
+  assert.deepEqual([v.light.avg_wt, v.heavy.avg_wt, v.lb, v.added, v.vog], [541, 853, 312, 406.72, 1.3]);
+  // heifers 1-2 has only 7 head at 800 and no 700 class: withheld, not borrowed from steers or 1s
+  const w = A.valueOfGain(sdSale, "heifers|1-2", "2026-10-20");
+  assert.equal(w.ok, false);
+  assert.match(w.why, /no 700 or 800 lb class with 10 head or more/);
+  // a report with steers light and only heifers heavy: withheld
+  const mixed = { date: "2026-10-18", classes: { "steers|1": { "500": sdSale.classes["steers|1"]["500"] }, "heifers|1": { "800": sdSale.classes["heifers|1"]["800"] } } };
+  assert.equal(A.valueOfGain(mixed, "steers|1", "2026-10-20").ok, false);
+});
+
+test("value of gain withheld when the sale is stale, a class is thin or the classes are too close", () => {
+  const old = A.valueOfGain(sdSale, "steers|1", "2026-11-02");
+  assert.equal(old.ok, false); assert.equal(old.stale, true);
+  assert.equal(old.why, "this sale is 15 days old");
+  assert.equal(A.valueOfGain(sdSale, "steers|1", "2026-11-01").ok, true, "14 days old still shows");
+  const c = JSON.parse(JSON.stringify(sdSale.classes["steers|1"]));
+  c["800"].head = 9; c["700"].head = 9;
+  assert.match(A.valueOfGain({ date: "2026-10-18", classes: { "steers|1": c } }, "steers|1", "2026-10-20").why, /no 700 or 800/);
+  // 800 thin, 700 fine: falls back to 700 (717 lb, $2,759.02): (2759.02 - 2515.91) / 165 = 1.473
+  const c7 = JSON.parse(JSON.stringify(sdSale.classes["steers|1"])); c7["800"].head = 9;
+  const v7 = A.valueOfGain({ date: "2026-10-18", classes: { "steers|1": c7 } }, "steers|1", "2026-10-20");
+  assert.deepEqual([v7.heavy.cls, v7.lb, v7.vog], [700, 165, 1.47]);
+  // 500 missing: 400 (464 lb) is the light class
+  const c4 = JSON.parse(JSON.stringify(sdSale.classes["steers|1"])); delete c4["500"];
+  const v4 = A.valueOfGain({ date: "2026-10-18", classes: { "steers|1": c4 } }, "steers|1", "2026-10-20");
+  assert.deepEqual([v4.light.cls, v4.light.avg_wt, v4.heavy.avg_wt], [400, 464, 844]);
+  // only 600 light (630 lb) and 700 heavy (717 lb): 87 lb apart, under 150, withheld
+  const cg = { "600": sdSale.classes["steers|1"]["600"], "700": sdSale.classes["steers|1"]["700"] };
+  assert.equal(A.valueOfGain({ date: "2026-10-18", classes: { "steers|1": cg } }, "steers|1", "2026-10-20").ok, false);
+  assert.equal(A.VOG_MIN_HEAD, 10); assert.equal(A.VOG_MIN_GAP, 150); assert.equal(A.STALE_DAYS, 14);
+});
+
+test("value of gain: without $/head on the row, cwt x weight / 100", () => {
+  const c = JSON.parse(JSON.stringify(sdSale.classes["steers|1"]));
+  delete c["500"].per_head; delete c["800"].per_head;
+  const v = A.valueOfGain({ date: "2026-10-18", classes: { "steers|1": c } }, "steers|1", "2026-10-20");
+  // 455.55 x 5.52 = 2514.64; 361.58 x 8.44 = 3051.74; 537.10 / 292 = 1.839
+  assert.deepEqual([v.light.per_head, v.heavy.per_head, v.vog], [2514.64, 3051.74, 1.84]);
+});
+
+test("background or sell: gain pays only when value of gain is above cost of gain; no cost, no verdict", () => {
+  const v = A.valueOfGain(sdSale, "steers|1", "2026-10-20");
+  assert.deepEqual({ ...A.gainVerdict(v, 1.10) }, { pays: true, even: false, per_lb: 0.73, per_head: 213.16 }); // 0.73 x 292
+  assert.deepEqual({ ...A.gainVerdict(v, 2.00) }, { pays: false, even: false, per_lb: -0.17, per_head: -49.64 });
+  assert.equal(A.gainVerdict(v, 1.83).even, true);
+  assert.equal(A.gainVerdict(v, 1.83).pays, false);
+  for (const bad of [null, NaN, 0, -1, 110]) assert.equal(A.gainVerdict(v, bad), null, String(bad));
+  assert.equal(A.gainVerdict({ ok: false }, 1.1), null);
+});
+
 /* ---------------- page ---------------- */
 
 test("page: title, canonical, h1, byline, one script of its own", () => {
@@ -269,13 +336,13 @@ let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".woff2": "font/woff2" };
-function serve(withData) {
+function serve(withData, fx = fixture) {
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
     if (p === "/data/cattle-auction.json") {
       if (!withData) { res.writeHead(404); res.end(); return; }
       res.writeHead(200, { "content-type": "application/json" });
-      res.end(JSON.stringify(fixture));
+      res.end(JSON.stringify(fx));
       return;
     }
     if (!extname(p)) p += ".html";
@@ -286,9 +353,10 @@ function serve(withData) {
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-async function open(browser, srv) {
-  const ctx = await browser.newContext({ viewport: { width: 390, height: 900 }, serviceWorkers: "block" });
+async function open(browser, srv, opt = {}) {
+  const ctx = await browser.newContext({ viewport: { width: opt.width || 390, height: 900 }, serviceWorkers: "block" });
   const p = await ctx.newPage();
+  if (opt.now) await p.clock.setFixedTime(new Date(opt.now));
   const errs = [];
   p.on("pageerror", (e) => errs.push(e.message));
   await p.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
@@ -365,6 +433,61 @@ test("browser: a Wisconsin ZIP lists the barns USDA does not report, nearest fir
     await p.selectOption("#sb-state", "MN");
     assert.match(await p.textContent("#sb-results"), /Minnesota barns USDA does not report.*Central Livestock Association/s);
     assert.equal(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    assert.deepEqual(errs, []);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("browser: value of gain on each card and the background or sell calculator, from the real SD weekly rows", { skip }, async () => {
+  const srv = await serve(true, vfx), browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { p, errs } = await open(browser, srv, { now: "2026-10-20T15:00:00Z" });
+    await p.waitForSelector("#vog:not([hidden])");
+    // before a ZIP or state: the state summary, no cost typed, no verdict
+    assert.match(await p.textContent("#vog-barn"), /SD auctions, weekly, Oct 18/);
+    let out = await p.textContent("#vog-out");
+    assert.match(out, /552 lb steers brought \$2,516 a head and 844 lb steers \$3,050: \$534 more for 292 more lb, a value of gain of \$1\.83 a lb\. Type your cost of gain to compare\./);
+    assert.doesNotMatch(out, /pays/);
+    await p.fill("#vog-cog", "1.10");
+    out = await p.textContent("#vog-out");
+    assert.match(out, /^Gain pays at these prices\..*Your gain costs \$1\.10 a lb, so you keep about \$0\.73 a lb, or \$213 a head over the 292 lb\./s);
+    await p.fill("#vog-cog", "2");
+    out = await p.textContent("#vog-out");
+    assert.match(out, /^Gain does not pay at these prices\..*\$0\.17 a lb more than the sale paid, or about \$50 a head short over the 292 lb\. Selling at 552 lb brings more\./s);
+    await p.fill("#vog-cog", "110");
+    assert.match(await p.textContent("#vog-out"), /not cents/);
+    // pick the state: two cards, each with its own value of gain from its own report
+    await p.selectOption("#sb-state", "SD");
+    await p.waitForSelector(".sb-vog");
+    const cards = await p.$$eval(".sb-card", (x) => x.map((e) => e.textContent));
+    assert.match(cards[0], /Value of gain \$1\.83 a lb from 552 to 844 lb steers: \$3,050 a head minus \$2,516, over 292 lb\./);
+    assert.match(cards[1], /Fort Pierre.*Value of gain \$1\.89 a lb from 552 to 813 lb steers/s);
+    assert.deepEqual(await p.$$eval("#vog-barn option", (x) => x.map((o) => o.textContent)), ["SD auctions, weekly, Oct 18", "Fort Pierre Livestock Auction, Oct 16"]);
+    await p.selectOption("#vog-barn", "fort-pierre-sd");
+    await p.fill("#vog-cog", "1.10");
+    assert.match(await p.textContent("#vog-out"), /At Fort Pierre Livestock Auction \(sale of Oct 16, 2026\)/);
+    await p.click('[data-sex="heifers"]');
+    assert.match(await p.textContent(".sb-card"), /Value of gain \$1\.30 a lb from 541 to 853 lb heifers/);
+    await p.click('[data-grade="1-2"]');
+    assert.match(await p.textContent(".sb-card"), /Value of gain not shown: no 700 or 800 lb class with 10 head or more on this report\./);
+    assert.equal(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    // the cost typed is kept for the next visit
+    assert.match(await p.evaluate(() => localStorage.getItem("agsist-salebarn")), /"cog":"1.10"/);
+    assert.deepEqual(errs, []);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("browser: a stale report shows no value of gain and says why", { skip }, async () => {
+  const srv = await serve(true, vfx), browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { p, errs } = await open(browser, srv, { now: "2026-11-10T15:00:00Z" });
+    await p.waitForSelector("#sb-controls:not([hidden])");
+    await p.selectOption("#sb-state", "SD");
+    await p.waitForSelector(".sb-card");
+    const t = await p.textContent(".sb-card");
+    assert.match(t, /Value of gain not shown: this sale is 23 days old\./);
+    assert.doesNotMatch(t, /Value of gain \$/);
+    assert.match(await p.textContent("#vog-out"), /no value of gain is shown/);
+    assert.equal(await p.$eval("#vog-barn", (s) => s.disabled), true);
     assert.deepEqual(errs, []);
   } finally { await browser.close(); srv.close(); }
 });

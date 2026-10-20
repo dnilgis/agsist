@@ -40,7 +40,7 @@ const PAGES = {
   "grain-bin-calculator": [8, ["How does USDA measure the grain in my bin, and how close is it?", "How much does a cubic foot of corn weigh in a bin?"]],
   "arc-plc": [14, ["If I pick ARC-CO, do I have to turn in my yields to FSA?", "Do I have to carry crop insurance to get ARC or PLC?", "Is there a deadline for the payment eligibility paperwork after I sign up?"]],
   "cash-lease": [8, ["Can I mail the notice to end an Iowa farm lease, and when does it have to go out?", "In Kansas, what happens to the wheat if I give notice after my tenant already planted it?", "How much notice does Wisconsin want to end a year-to-year farm lease?"]],
-  "cattle-auction-prices": [9, ["What's the difference between a large frame and a medium frame calf?", "What makes a calf grade a 3 instead of a 1?", "Will my beef on dairy calves grade a 1?"]],
+  "cattle-auction-prices": [10, ["What is value of gain, and how do I use it?", "What's the difference between a large frame and a medium frame calf?", "What makes a calf grade a 3 instead of a 1?", "Will my beef on dairy calves grade a 1?"]],
   "combine-loss": [9, ["Can I just go by the loss monitor in the cab?", "How do I cut shatter loss in soybeans?", "What gap should I run on the deck plates of the corn head?"]],
   "drought-monitor": [9, ["How many weeks does my county have to be in D2 before LFP kicks in?", "What's the most LFP will pay me in a year?", "Does grazing corn stalks count for LFP if we're in drought?"]],
   "fast-facts": [6, ["When is it worth spraying Japanese beetles on corn silks?", "When do I start and stop scouting beans for aphids?"]],
