@@ -41,6 +41,7 @@ jobs:
             /.github/engine-paths
           sparse-checkout-cone-mode: false
       - name: Engine checkout
+        if: github.event_name == 'workflow_run'
         uses: ./.github/actions/engine
         with:
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
