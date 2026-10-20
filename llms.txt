@@ -27,7 +27,6 @@ specific page. Each daily briefing has a permanent dated URL.
 - [AGSIST Cash Bid Index](https://agsist.com/cash-bid-index): monthly cash corn and soybean bids and basis by state, counted from the elevators AGSIST reads
 - [Cash Bids by Elevator Company](https://agsist.com/cash-bids/company/): every elevator company with 3 or more network locations, today's bids at all its locations on one page
 - [Bids and Basis by State](https://agsist.com/cash-bids/iowa/): each state's best bids, median corn and soybean basis with the number of elevators behind it, and every elevator's bid, at /cash-bids/<state>/
-- [Cash Bids by Town](https://agsist.com/cash-bids/iowa/ackley): each town's nearest-delivery corn and soybean bid and basis, the elevator and the date it posted, at /cash-bids/<state>/<town>
 - [Basis by State and vs Normal](https://agsist.com/basis): your state's median corn and soybean basis, USDA regions against their own 5-year same-week normal, barge rates, and this fall's grain vs bin space
 - [Corn Futures](https://agsist.com/corn-futures-prices): CBOT corn with 52-week and 5-year context
 - [Soybean Futures](https://agsist.com/soybean-futures-prices): CBOT soybeans with 52-week and 5-year context
