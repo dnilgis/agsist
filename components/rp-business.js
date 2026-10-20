@@ -14,7 +14,8 @@
  *
  * A customer list can be loaded from a CSV: it is read in the browser and put
  * in the towns box for the buyer to check; nothing is uploaded until they
- * send. Over the form's 8,000 characters, the page says to email the file.
+ * send. Over the form's 20,000 characters (2026-10-20: room for 100 customers
+ * with mailing addresses, about 150 characters a line), the page says to email the file.
  *
  * The request goes to the AGSIST worker only, never to Formspree (form-post.js
  * WORKER_ONLY, 2026-10-19): a failed or silent worker leaves the form filled in
@@ -31,7 +32,7 @@
   var PHONE = '715-797-2428';
   var LOGO_LINK = 'https://agsist-subs.dnilgis.workers.dev/rp-logo/';
   var EMAIL_RE = /^[^\s@,;<>"]+@[^\s@,;<>"]+\.[A-Za-z]{2,}$/;
-  var TOWNS_MAX = 8000;
+  var TOWNS_MAX = 20000;   // the worker's rain-print-business towns cap (subs-worker.js v5.34)
   var PAGE = '/rain-print-business';
   var BIZ_PRODUCT = { print: 'print12x18', framed: 'framed12x18', digital: 'digital' };
   var BIZ_WORD = { print: ['print', 'prints'], framed: ['framed print', 'framed prints'], digital: ['digital file', 'digital files'],
