@@ -564,7 +564,10 @@ test("copy batch: size, proof, business words", () => {
   assert.match(HTML, /On the paper the picture is 16\.5 x 11 in, on a 13 x 19 sheet\./);
   // the maker's note is one plain line (2026-10-15, Sig: the quote was "a bit much"); the byline stays on the page
   assert.match(HTML, /<p class="rp-p rp-sig">I print each one myself in Chetek, Wisconsin, and send you a proof first\. Sig<\/p>/);
-  assert.ok(!/<blockquote>|crop adviser in Chetek/.test(HTML), "no big quote");
+  assert.ok(!/<blockquote>/.test(HTML), "no big quote");
+  // Sig, 2026-10-20 ("do all"): the story as one quiet line, lower in the buy box, never a block
+  assert.equal(HTML.split("crop adviser in Chetek").length, 2, "said once");
+  assert.match(HTML, /<p class="rp-note rp-madeby" id="rp-madeby">Made by a crop adviser in Chetek, Wisconsin, from NOAA&rsquo;s own records\.<\/p>/);
   assert.match(HTML, /<p class="rp-byline">By <a href="\/about">Sigurd Lindquist<\/a>, CCA<\/p>/);
   assert.match(HTML, /<p>Yes\. Before you pay, tick This is a gift and give their name and your note, then their address at checkout\. I ship the print with your note printed at the top of the letter in the box, at no charge\./, "the gift FAQ says what the page does now (no separate card, Sig 2026-10-17)");
   assert.ok(!/above the prices|price card/.test(HTML), "no FAQ points at the old price cards");
@@ -593,8 +596,9 @@ test("outside review, as Sig took it: example years, the framed choice first, th
   // one picker, framed first and picked; the promise sits right under the one button
   const picks = [...HTML.matchAll(/name="rp-product" value="([a-z0-9]+)"( checked)?/g)].map((m) => m[1] + (m[2] ? "*" : ""));
   assert.deepEqual(picks, ["framed12x18*", "print12x18", "digital"]);
-  assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<p class="rp-promise" id="rp-promise">You see a proof first, and get a full refund any time before I print\.<\/p>\s*<p class="rp-note rp-madeby" id="rp-madeby">Made by Sig Lindquist in Chetek, Wisconsin\. Your proof comes by email from Sig, your receipt from Stripe\.<\/p>/);
-  assert.match(S2, /'You see a proof first; the full file comes once you approve it\.'/, "the file gets the proof email too (2026-10-20)");
+  // 2026-10-20 (Sig, "do all"): under Pay, the date line, then the promise: numbered, and Sig's guarantee (test/rain-print-conv.test.mjs)
+  assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<!--[\s\S]*?-->\s*<p class="rp-arrive" id="rp-arrive" hidden><\/p>\s*<p class="rp-promise" id="rp-promise">Numbered and initialed by hand\. If it&rsquo;s not right, I&rsquo;ll redo it or refund it\.<\/p>/);
+  assert.match(S2, /'You see a proof first\. ' \+ GUARANTEE/, "the file gets the proof email too (2026-10-20)");
   assert.match(HTML, /<select id="rp-cmp" aria-describedby="rp-cmp-hint">/);
   assert.match(HTML, /id="rp-cmp-hint">Nothing: just your year\. NOAA normal: [^<]+Full record: /);
   assert.ok(HTML.indexOf('id="rp-biz"') > HTML.indexOf('id="rp-buy"'), "the business section stays below the personal flow");
@@ -625,6 +629,7 @@ test("one name per thing, one sun note, the file's types, and the file's return 
   assert.equal(dig.hasMerchantReturnPolicy.applicableCountry, "US");
   // word for word what the visible FAQ says about the file
   const faq = HTML.match(/<details><summary>What if something[\s\S]*?<\/details>/)[0].replace(/&rsquo;/g, "\u2019");
+  assert.ok(faq.includes("If it\u2019s not right, I\u2019ll redo it or refund it. "), "Sig's guarantee, 2026-10-20");
   assert.ok(faq.includes("The digital file waits for your OK on the proof too, so check the spelling there; after that, if you want anything changed, write to me and I\u2019ll fix it or redo it by hand and send it again, no charge."), "the FAQ says it");
-  assert.equal(dig.hasMerchantReturnPolicy.description, "The digital file waits for your OK on the proof too, so check the spelling there; after that, if you want anything changed, write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.");
+  assert.equal(dig.hasMerchantReturnPolicy.description, "If it\u2019s not right, I\u2019ll redo it or refund it. The digital file waits for your OK on the proof too, so check the spelling there; after that, if you want anything changed, write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.");
 });
