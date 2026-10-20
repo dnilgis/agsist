@@ -6,6 +6,8 @@ OUT="${TMPDIR:-/tmp}/agsist-checks"; mkdir -p "$OUT"
 # optional: QR decode tests use jsqr if JSQR_PATH points at it
 fails=0
 run(){ name="$1"; shift; out=$("$@" 2>&1); rc=$?; if [ $rc -ne 0 ]; then echo "FAIL $name"; echo "$out" | tail -25; fails=$((fails+1)); else echo "ok   $name"; fi; }
+# FSA's program files live on the raw branch (Oct 20); build_arc_plc.py (--check, --selftest) needs them
+ls data/fsa/arcco_*.xls* >/dev/null 2>&1 || bash scripts/pull_raw.sh data/fsa >/dev/null || echo "FAIL fsa-pull (bash scripts/pull_raw.sh data/fsa)"
 run node-test bash -c "node --test > '$OUT/nt.out' 2>&1; grep -E '^# fail 0$' '$OUT/nt.out' >/dev/null || { grep -E '^# (pass|fail)' '$OUT/nt.out'; grep -B2 -A15 -E '^\s*not ok' '$OUT/nt.out' | head -60; exit 1; }"
 run seo python3 scripts/check_seo.py
 run budget python3 scripts/check_site_budget.py

@@ -85,6 +85,10 @@ jobs:
       # can change the extracted text. The selftest checks the Oct 2026 PDF.
       - name: Install
         run: pip install openpyxl==3.1.5 pypdf==6.17.0
+      # FSA's program files live on the raw branch, not main (Oct 20: 34 MB no
+      # page reads). The build refuses to run without them.
+      - name: FSA files from raw
+        run: bash scripts/pull_raw.sh data/fsa
       - name: Selftest
         run: python scripts/build_arc_plc.py --selftest
 

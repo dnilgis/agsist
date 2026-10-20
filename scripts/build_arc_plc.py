@@ -38,7 +38,8 @@ WHERE EVERY NUMBER COMES FROM (verified 2026-10-09)
 fsa.usda.gov, federalregister.gov, ecfr.gov and law.cornell.edu are not
 reachable from the build sandbox. Program rules were checked through search
 results quoting those pages, each against a second source. FSA's own data
-files are fetched by .github/workflows/fetch-fsa-arcplc.yml into data/fsa/.
+files are fetched by .github/workflows/fetch-fsa-arcplc.yml into data/fsa/
+and saved to the raw branch (not main); locally: bash scripts/pull_raw.sh data/fsa
 
 1. FSA OFFICIAL COUNTY DATA (data/fsa/arcco_<PY>_data*.xlsx)
    "ARC-CO trend adjusted yields, benchmark yields and guarantee revenues for
@@ -1012,6 +1013,11 @@ def load_inputs(root="."):
         inp["mya"][crop] = {int(k): float(v) for k, v in d["values"].items()}
         inp["mya_meta"][crop] = {"file": f"data/nass/{c['mya']}.json", "updated": d.get("updated")}
     inp["counties"] = _read(root, "farmland-atlas/data/counties-index.json")
+    # FSA's files live on the raw branch, not main (Oct 20). A build without them would
+    # quietly fall back to estimates on every county page, so it stops instead.
+    if not glob.glob(os.path.join(root, FSA_DIR, "arcco_*.xls*")):
+        raise SystemExit(f"[arc-plc] no FSA county files in {FSA_DIR}/. They live on the raw branch: "
+                         f"bash scripts/pull_raw.sh {FSA_DIR}   Nothing built.")
     inp["fsa"] = load_fsa(root)
     inp["arc_tabs"] = load_arc_tables(root)
     inp["plc_county"] = load_plc_county(root)

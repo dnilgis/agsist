@@ -41,7 +41,8 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
 - `raw` branch (never deployed, Oct 16): raw build inputs no page reads, same paths as they had on main: the Farmland Atlas pulls
   (data/atlas/raw/*, except drought.json which stays on main) and every probe capture (data/*-raw/, data/drought/probe/).
   Workflows save them with scripts/push_raw.sh; farmland-atlas.yml unpacks them with scripts/pull_raw.sh. The paths are in
-  .gitignore on main. Local Atlas build: `bash scripts/pull_raw.sh data/atlas/raw`. data/fsa stays on main (arc-plc --check reads it).
+  .gitignore on main. Local Atlas build: `bash scripts/pull_raw.sh data/atlas/raw`. data/fsa (FSA ARC/PLC xlsx/pdf, 34 MB) moved
+  there Oct 20: arc-plc-refresh.yml and scripts/dev/checks.sh unpack it (`bash scripts/pull_raw.sh data/fsa`); urls.txt and manifest.tsv stay on main.
   Daily cash bid snapshots (Bet 7, Oct 19): fetch_bids.yml saves every row of the day's bids (cash, basis, futures, posted time,
   permanent elevator id) to raw as bids-daily/YYYY/YYYY-MM-DD.json.gz, first run at or after 15:00 CT each weekday, about 200 KB a day.
   Read: `git fetch origin raw` then `python3 scripts/bid_snapshots.py list` / `load <day> --rows`. Take or replace a day now:
