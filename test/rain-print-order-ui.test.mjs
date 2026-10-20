@@ -364,7 +364,7 @@ test("Paid, thank you: what was ordered, when the proof comes, Christmas, one pu
     "It ships within 3 business days after you approve it, and ordered by Dec 9 it arrives by Christmas.",
     "Nothing by then? Check spam, or write to me at sig@farmers1st.com."]);
   assert.deepEqual(plain(RP.paidText({ choice: "digital", today: "2026-10-16", prices: J, saved: null })), [
-    "Your proof comes by email by Monday, Oct 19. Approve it there and the full file follows within 1 business day, or ask for a change.",
+    "Your proof comes by email by Monday, Oct 19. Approve it there and your files come by email within minutes, or ask for a change.",
     "Nothing by then? Check spam, or write to me at sig@farmers1st.com."], "a Friday order: Monday; no saved design: no order line");
   assert.equal(RP.paidText({ choice: "print12x18", today: "2026-11-25", prices: J, saved: null })[0], "Your proof comes by email by Friday, Nov 27. Approve it there, or ask for a change. Nothing prints until you approve it.", "Thanksgiving is skipped");
   assert.equal(RP.paidText({ choice: "framed12x18", today: "2026-12-12", prices: J, saved: null })[1], "It ships within 3 business days after you approve it. Ordered now, it arrives after Christmas.");

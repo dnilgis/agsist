@@ -1058,6 +1058,25 @@
     return out;
   }
 
+  /* A JPEG's bytes marked dpi dots per inch (the JFIF header's density), so a shop
+     or a photo app opens the digital JPG at 12 x 18 in, not 75 x 50 (2026-10-20).
+     A canvas JPEG starts with a JFIF APP0 whose units are 0 (no size); the density
+     is set in place. A JPEG with no JFIF header gets one; not a JPEG: unchanged. Pure. */
+  function jpegWithDpi(bytes, dpi) {
+    var b = bytes;
+    if (!b || b.length < 4 || b[0] !== 0xFF || b[1] !== 0xD8) return b;
+    var hi = dpi >>> 8 & 255, lo = dpi & 255;
+    if (b[2] === 0xFF && b[3] === 0xE0 && b.length > 18 && String.fromCharCode(b[6], b[7], b[8], b[9]) === 'JFIF' && b[10] === 0) {
+      var out = new Uint8Array(b);
+      out[13] = 1; out[14] = hi; out[15] = lo; out[16] = hi; out[17] = lo;
+      return out;
+    }
+    var app0 = [0xFF, 0xE0, 0, 16, 0x4A, 0x46, 0x49, 0x46, 0, 1, 1, 1, hi, lo, hi, lo, 0, 0];
+    var o2 = new Uint8Array(b.length + app0.length);
+    o2.set(b.subarray(0, 2), 0); o2.set(app0, 2); o2.set(b.subarray(2), 2 + app0.length);
+    return o2;
+  }
+
   /* ------------------------------------------------ the data (page and gift card)
      The NOAA and town calls, shared by the page below and the gift card's
      preview (previewArt, rp-gift.html). Moved up here 2026-10-14 so the card
@@ -1625,9 +1644,9 @@
         (file ? 'Your proof follows in January, once the full year is in, and the full file once you approve it.' : 'The print follows in January, with a proof to you first.'));
     } else if (sv && sv.settle) {
       out.push(what + 'NOAA doesn\u2019t have all of ' + sv.year + ' in yet. I make it once the full year is in, and email you the proof then. Approve it there, or ask for a change.' +
-        (file ? ' The full file follows within 1 business day of your OK.' : ' It ships within ' + ship + ' business days after you approve it.'));
+        (file ? ' Your files come by email within minutes of your OK.' : ' It ships within ' + ship + ' business days after you approve it.'));
     } else if (file) {
-      out.push(what + 'Your proof comes by email' + (by ? ' by ' + by : ' within 1 business day') + '. Approve it there and the full file follows within 1 business day, or ask for a change.');
+      out.push(what + 'Your proof comes by email' + (by ? ' by ' + by : ' within 1 business day') + '. Approve it there and your files come by email within minutes, or ask for a change.');
     } else {
       out.push(what + 'Your proof comes by email' + (by ? ' by ' + by : ' within 1 business day') + '. Approve it there, or ask for a change. Nothing prints until you approve it.');
       var cut = j[id === 'framed12x18' ? 'framed_christmas_cutoff' : 'print_christmas_cutoff'], t = String(o.today || ''), xm = '';
@@ -1665,7 +1684,7 @@
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, orderRecord: orderRecord, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
-    parsePcpn: parsePcpn, snowTraceRaw: snowTraceRaw, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
+    parsePcpn: parsePcpn, snowTraceRaw: snowTraceRaw, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, jpegWithDpi: jpegWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
     cropInput: cropInput, tempInput: tempInput, histInput: histInput, withoutTemp: withoutTemp, tempStationOk: tempStationOk, tempWords: tempWords, TEMP_KINDS: TEMP_KINDS, HIST_MIN: HIST_MIN, TEMP_GAP_OK: TEMP_GAP_OK, OPT_FLAGS: OPT_FLAGS };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
@@ -2706,7 +2725,7 @@
       if (!el) return;
       el.textContent = id === 'digital'
         ? (gift ? 'A gift card to print by email within 1 business day. The file comes in January, once the full year is in.'
-          : settle ? 'A PNG and a PDF by email once the full year is in.' : 'A PNG and a PDF by email within 1 business day of your OK on the proof.')
+          : settle ? 'A PDF, a PNG and a JPG by email once the full year is in.' : 'A PDF, a PNG and a JPG by email within minutes of your OK on the proof.')
         : (SUB_BASE[id] + ' ' + (gift ? 'A gift card to print by email within 1 business day; the ' + (id === 'framed12x18' ? 'framed print' : 'print') + ' ships in January.'
           : settle ? 'Made once NOAA has all of ' + ST.year + ' in, with a proof first.' : cutoffNote(TODAY, OJ().j && OJ().j[CUTOFF_KEY[id]]))).trim();
       if (blockedPick(id)) el.textContent = L('Shipping to Canada starts soon.', 'Envoi au Canada bientôt.');
@@ -4065,7 +4084,7 @@
     var file = id === 'digital', J = OJ().j || {};
     if (giftMode() && canOrder()) return 'This one is made in January, once the full year is in, and I send the proof then. Within 1 business day I email you a gift card to print.';
     if (SETTLE) return 'NOAA doesn\u2019t have all of ' + ST.year + ' in yet. I make this one once the full year is in, and send the proof then; ' + (file ? 'the full file comes once you approve it.' : 'nothing prints until you approve it.');
-    if (file) return 'A PNG and a PDF by email within 1 business day of your OK on the proof.';
+    if (file) return 'A PDF, a PNG and a JPG by email within minutes of your OK on the proof.';
     return 'Shipping included. A proof by email within 1 business day; it ships within ' + (J.ship_business_days || 3) + ' business days of your OK. ' + cutoffNote(TODAY, J[CUTOFF_KEY[id]]);
   }
   /* Fit or actual size. Going in, the spot that was clicked (or the middle)
@@ -4591,7 +4610,7 @@
         .then(function () { btn.disabled = false; btn.textContent = was; });
       return;
     }
-    var name = slug() + (kind === 'preview' ? '-preview' : kind === 'digital' ? '-digital-300dpi' : '-' + kind + '-300dpi' + (SERIAL ? '-no-' + SERIAL.replace(/\D/g, '') : ''));
+    var name = slug() + (kind === 'preview' ? '-preview' : kind === 'digital' ? '-12x18-300dpi' : '-' + kind + '-300dpi' + (SERIAL ? '-no-' + SERIAL.replace(/\D/g, '') : ''));
     var job, NO_QR = {};
     /* Every file someone pays for, or Sig prints, carries the print's own
        short-link QR: the long ?d= link makes modules too small to scan, and the
@@ -4618,10 +4637,20 @@
       job = go(function () { return fontCss(); }).then(function (css) { return new Blob([buildSvg({ fontCss: css, px: ['18in', '12in'], qrMatrix: own })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return qrNote('SVG saved.'); });
     } else {
       job = go(function () { return drawCanvas(kind, own); }).then(function (c) {
+        /* the digital file's PDF is the art alone, 18 x 12 in (it fits a 12 x 18 frame); a print's is the 13 x 19 sheet */
         if (fmt === 'pdf') {
+          var page = kind === 'digital' ? PRINT[ST.size] : SHEET;
           return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
-            saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, SHEET), name + '.pdf');
-            return qrNote('PDF saved: ' + SHEET_WORDS + ', ' + c.width + ' x ' + c.height + ' px.');
+            saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, page), name + '.pdf');
+            return qrNote(kind === 'digital' ? 'Digital file PDF saved: the picture alone, 12 x 18 in, ' + c.width + ' x ' + c.height + ' px at 300 dpi, no serial.'
+              : 'PDF saved: ' + SHEET_WORDS + ', ' + c.width + ' x ' + c.height + ' px.');
+          });
+        }
+        // the digital file as a JPG too (2026-10-20: some shops and photo services take only JPG), marked 300 dpi
+        if (fmt === 'jpg') {
+          return toBlob(c, 'image/jpeg', 0.95).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
+            saveBlob(new Blob([jpegWithDpi(new Uint8Array(buf), DPI)], { type: 'image/jpeg' }), name + '.jpg');
+            return qrNote('JPG saved: ' + c.width + ' x ' + c.height + ' px at 300 dpi' + (kind === 'digital' ? ', 12 x 18 in, no serial.' : '.'));
           });
         }
         return toBlob(c, 'image/png').then(function (b) {
@@ -4659,7 +4688,7 @@
     if (INS_P) return INS_P;
     INS_P = new Promise(function (res) {
       var sc = doc.createElement('script');
-      sc.src = '/components/rp-insert.js?v=4';
+      sc.src = '/components/rp-insert.js?v=5';
       sc.onload = function () { res(!!root.AgRpInsert); };
       sc.onerror = function () { INS_P = null; res(false); };
       doc.head.appendChild(sc);
@@ -4675,29 +4704,33 @@
   /* -> {svg, facts, overflow} for the design on the page: the print's own input,
      drawn once small (the miniature, with the serial it carries) so the facts
      leave off exactly the days the print leaves off. */
-  function insertSvg(gift, fontCssText, px, from) {
-    var I = artInput({ serial: SERIAL, idPrefix: 'rpins' });
+  /* guide (2026-10-20): the reading guide that goes with a digital file (rp-insert.js o.guide): no serial,
+     no code line, and a key for every extra the print draws (drawn, read from the miniature's own groups). */
+  function insertSvg(gift, fontCssText, px, from, guide) {
+    var I = artInput({ serial: guide ? '' : SERIAL, idPrefix: 'rpins' });
     var mini = root.AgRainArt.render(I);
+    var drawn = { hist: /data-rp="hist"/.test(mini), rec: /data-rp="rec:/.test(mini), frost: /data-rp="frost:/.test(mini),
+      crop: /data-rp="crop"/.test(mini), ribbon: /data-rp="ribbon"/.test(mini), qr: /data-rp="qr"/.test(mini) };
     var F = root.AgRainArt.facts(I, { unplaced: root.AgRainArt.lastUnplaced() });
     var svg = root.AgRpInsert.render({
-      facts: F, mini: mini, serial: SERIAL, gift: printable(gift || ''), giftFrom: printable(cleanText(from, 40)), qr: standardMatrix(), fontCss: fontCssText, px: px,
+      facts: F, mini: mini, serial: guide ? '' : SERIAL, guide: !!guide, drawn: drawn, gift: printable(gift || ''), giftFrom: printable(cleanText(from, 40)), qr: standardMatrix(), fontCss: fontCssText, px: px,
       station: { words: gaugeWords(META), away: META.approx ? '' : milesText(miles(META.km)).replace(/ mi$/, ' miles'), kind: stationKind(META) },
       source: META && META.ca ? 'Environment and Climate Change Canada\u2019s daily records' : 'NOAA\u2019s daily records',
-      offer: (PRICES && PRICES.letter_offer) || null, today: TODAY   // data/rain-print.json letter_offer: empty code, no line
+      offer: guide ? null : (PRICES && PRICES.letter_offer) || null, today: TODAY   // data/rain-print.json letter_offer: empty code, no line
     });
-    return { svg: svg, facts: F, overflow: root.AgRpInsert.lastOverflow() };
+    return { svg: svg, facts: F, drawn: drawn, overflow: root.AgRpInsert.lastOverflow() };
   }
-  function insertFile(btn) {
+  function insertFile(btn, guide) {
     var out = $('rp-dl-note');
     if (!DATA || BLOCKED) return;
     if (lostMsg()) return;
-    if (PREVIEW) { out.textContent = 'The letter is made from the full year, like the print. Make it in January once the year is in.'; return; }
+    if (PREVIEW) { out.textContent = (guide ? 'The reading guide' : 'The letter') + ' is made from the full year, like the print. Make it in January once the year is in.'; return; }
     if (META && META.ca && FR()) { out.textContent = 'The letter is in English only for now.'; return; }
     var was = btn.textContent, note = $('rp-ins-gift') ? $('rp-ins-gift').value : '', from = $('rp-ins-from') ? $('rp-ins-from').value : '';
-    btn.disabled = true; btn.textContent = 'Making the letter\u2026';
+    btn.disabled = true; btn.textContent = guide ? 'Making the guide\u2026' : 'Making the letter\u2026';
     var pxW = LETTER.w * DPI, pxH = LETTER.h * DPI, info = null;
     insertReady().then(function (ok) { if (!ok) throw 'load'; return fontsReady(); }).then(fontCss).then(function (css) {
-      info = insertSvg(note, css, [pxW, pxH], from);
+      info = insertSvg(note, css, [pxW, pxH], from, guide);
       return new Promise(function (resolve, reject) {
         var img = new Image(), url = URL.createObjectURL(new Blob([info.svg], { type: 'image/svg+xml' }));
         img.onload = function () {
@@ -4710,6 +4743,13 @@
       });
     }).then(function (c) {
       return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
+        if (guide) {
+          saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, LETTER, 0), slug() + '-how-to-read.pdf');
+          out.textContent = 'Reading guide saved: ' + LETTER.label + ', ' + c.width + ' x ' + c.height + ' px at 300 dpi' + (note.trim() ? ', with the gift note' : '') + '.' +
+            (info.overflow ? ' The page ran long by ' + info.overflow + ' units: shorten the gift note.' : '');
+          ga('rain_print_download', { kind: 'guide', fmt: 'pdf' });
+          return;
+        }
         saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, LETTER, 0), slug() + '-insert-letter' + (SERIAL ? '-no-' + SERIAL.replace(/\D/g, '') : '') + '.pdf');
         out.textContent = 'Insert letter saved: ' + LETTER.label + ', ' + c.width + ' x ' + c.height + ' px at 300 dpi' + (SERIAL ? ', ' + SERIAL : ', no serial (a blank to fill in by hand; add &serial=N to the link)') +
           (note.trim() ? ', with the gift note' : ', no gift note') + '.' + (info.overflow ? ' The page ran long by ' + info.overflow + ' units: shorten the gift note.' : '');
@@ -4972,7 +5012,7 @@
   radios('rb-ship').forEach(function (r) { r.addEventListener('change', syncBizShip); });
   $('rp-dl').addEventListener('click', function () { exportFile('preview', 'png', $('rp-dl')); });
   doc.querySelectorAll('#rp-maker button').forEach(function (b) {
-    b.addEventListener('click', function () { if (b.getAttribute('data-size') === 'insert') insertFile(b); else exportFile(b.getAttribute('data-size'), b.getAttribute('data-fmt'), b); });
+    b.addEventListener('click', function () { var sz = b.getAttribute('data-size'); if (sz === 'insert' || sz === 'guide') insertFile(b, sz === 'guide'); else exportFile(sz, b.getAttribute('data-fmt'), b); });
   });
   $('rp-copy').addEventListener('click', function () {
     // a logo still saving has no id: the link would leave it off (panel 3 F1)

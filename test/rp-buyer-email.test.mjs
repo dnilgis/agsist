@@ -79,7 +79,7 @@ test("in a browser: a framed gift gets the preview of its design and the box let
     const d = await renderOrder(ctx, { design_url: SIG_URL, product: "digital" }, join(dir, "digital"), base);
     assert.equal(d.letter, null);
     assert.equal(d.letter_why, "digital");
-    assert.match(d.words[0], /Your proof comes by email by .* Approve it there and the full file follows within 1 business day/);
+    assert.match(d.words[0], /Your proof comes by email by .* Approve it there and your files come by email within minutes/);
     const g = await renderOrder(ctx, { design_url: SIG_URL.replace("year=2025", "year=2026").replace("2025-04-01", "2026-04-01") + "&gift=1", product: "print12x18", gift: true }, join(dir, "gift"), base);
     assert.equal(g.preview, true, "this year is not finished");
     assert.equal(g.letter, null);
@@ -143,7 +143,7 @@ test("in a browser: the approve page posts once, says approved, already approved
     await page.goto(url);
     await page.waitForFunction(() => document.getElementById("msg").textContent !== "Approving your print");
     assert.equal(await page.textContent("#msg"), "Already approved. Thank you.");
-    assert.match(await page.textContent("#sub"), /You approved it on Wednesday, October 21\. The full file comes by email within 1 business day\./);
+    assert.match(await page.textContent("#sub"), /You approved it on Wednesday, October 21\. Your files went out by email when you approved it\. Not there\? Check spam, or write to me at sig@farmers1st\.com\./);
     answer = { status: 403, json: { ok: false, error: "bad link" } };
     await page.goto(url);
     await page.waitForFunction(() => document.getElementById("msg").textContent !== "Approving your print");

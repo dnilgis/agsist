@@ -30,7 +30,17 @@
  * date all read clean and the letter is made on or before the last day; otherwise
  * nothing. It is worded for whoever opens the box, the giver or the one who got it.
  * Copy rules (Sig): plain farm words, no em dashes, no store or printer names,
- * never "archival", no prices, no counts of buyers. */
+ * never "archival", no prices, no counts of buyers.
+ *
+ * THE READING GUIDE (o.guide true, Sig 2026-10-20): the same page for a digital
+ * file, sent with the files the moment the buyer approves the proof
+ * (scripts/rp_buyer_email.py). Titled "How to read your Rain Print"; no serial,
+ * no pencil line and no code line (a digital file has neither); the maker line
+ * is Sig's plain one; "Printing it" takes the place of the care list.
+ * o.drawn (both kinds): what the print's own drawing holds, read from the
+ * miniature's groups by the engine ({hist, rec, frost, crop, ribbon, qr}). The
+ * guide keys every one of them; the letter only uses hist (no tan and blue
+ * bands are drawn when the other years' lines take their place). */
 (function (root) {
   'use strict';
 
@@ -79,10 +89,10 @@
     canada: ['the Environment and Climate Change Canada weather station at ', '']
   };
   function copy(o) {
-    var F = o.facts, S = o.station || {}, r2 = F.style === 'r2';
+    var F = o.facts, S = o.station || {}, r2 = F.style === 'r2', dr = o.drawn || {}, guide = !!o.guide;
     var c = {};
     c.eyebrow = 'RAIN PRINT';
-    c.head = 'What you’re holding';
+    c.head = guide ? 'How to read your Rain Print' : 'What you’re holding';
     c.intro = 'Every rain and snow of ' + F.year + ' near ' + F.place + ', drawn day by day from ' + (o.source || 'NOAA’s daily records') + '.';
     var K = STATION_KIND[S.kind] || STATION_KIND.noaa;
     c.station = S.words ? 'From ' + K[0] + S.words + (S.away ? ', ' + S.away + ' away' : '') + K[1] + '.' : '';
@@ -108,7 +118,8 @@
       key.push(['climb', 'The blue line climbs with every rain and ends at the year’s total.']);
       if (F.snowText) key.push(['snowStep', 'Light blue steps came as snow.']);
       if (F.wet) key.push(['wet', 'Red step: the ' + (F.wet.label === 'Wettest day' ? 'wettest day' : 'biggest rain') + '.']);
-      if (F.usual) key.push(['usual', 'Dashed line: a usual year. Tan where your year fell behind it, pale blue where it ran ahead.']);
+      // the tan and blue bands are not drawn when the other years' lines (hist) take their place
+      if (F.usual) key.push([dr.hist ? 'usualLine' : 'usual', dr.hist ? 'Dashed line: a usual year.' : 'Dashed line: a usual year. Tan where your year fell behind it, pale blue where it ran ahead.']);
       key.push(['months', 'Months along the bottom' + (F.normals ? ', each with its total and a usual month under it.' : '.')]);
       if (F.dry) key.push(['dry', 'Bracket: the longest dry stretch.']);
     } else {
@@ -120,6 +131,16 @@
     }
     if (F.gaps) key.push(['gap', 'A break: a day with no report, left blank, never drawn as dry.']);
     if (F.markers && F.markers.length) key.push(['dot', (F.markers.length === 1 ? 'Your day, with your words.' : 'Your days, with your words.')]);
+    if (guide) {
+      // the extras, each only when the print draws it (o.drawn, from the print's own groups)
+      var ground = r2 ? 'ground line' : 'bottom line';
+      if (dr.rec) key.push(['rec', 'Small open circle: a remarkable day at this station, with its words.']);
+      if (dr.hist) key.push(['hist', 'Thin gray lines: the other full years this station kept. The wettest and driest end with their year.']);
+      if (dr.frost) key.push(['frost', 'Small gray triangle on the ' + ground + ': the last frost of spring and the first of fall.']);
+      if (dr.crop) key.push(['crop', 'Crop stages on the ' + ground + ', each with its date, counted from planting by this station\u2019s growing degree days.']);
+      if (dr.ribbon) key.push(['ribbon', 'Colored band: each day\u2019s high and low, gray-blue for cold to rust for hot.']);
+      if (dr.qr) key.push(['qr', 'The small code in the corner opens this same print at agsist.com.']);
+    }
     c.key = key;
 
     // a business's message says who it is from (Sig, 2026-10-17: no separate card; the note is on the letter)
@@ -128,12 +149,24 @@
     c.gift = String(o.gift || '').replace(/\s+/g, ' ').trim();
     c.maker = 'Print ' + (o.serial || 'No. ______') + ', made, numbered and initialed by hand by Sigurd Lindquist, CCA.';
     c.makerSub = 'The number is under the code in the corner, my initials beside it in pencil.';
+    c.makerHead = 'MADE BY HAND';
+    c.careHead = 'TAKING CARE OF IT';
     c.care = ['Hang it out of direct sun. Sunlight fades any print in time.',
       'Keep it dry, away from a damp wall.',
       'Framed, it hangs on one nail. A loose print fits a standard 13 x 19 frame with an 11 x 17 mat.'];
     c.footer = 'Draw another year at agsist.com/rain-print';
     c.footerSub = 'Any town, any year the nearest station kept records.';
     c.offer = offerLine(o.offer, o.today);
+    if (guide) {
+      c.makerHead = 'WHO MADE IT';
+      c.maker = 'Made by Sigurd Lindquist, CCA, Chetek, Wisconsin.';
+      c.makerSub = 'Every number on this page comes from the same records as your print.';
+      c.careHead = 'PRINTING IT';
+      c.care = ['Print the PDF at 100% (Actual size), never Fit to page. It is 12 x 18 in.',
+        'Matte paper reads best and does not glare behind glass.',
+        'Smaller or bigger? Keep the 3:2 shape: 8 x 12, 12 x 18 or 16 x 24 in.'];
+      c.offer = '';
+    }
     return c;
   }
 
@@ -187,6 +220,7 @@
       case 'usual':
         s = '<rect x="' + x + '" y="' + top + '" width="20" height="' + (bot - top) + '" fill="' + C.dryBand + '"/><rect x="' + (x + 20) + '" y="' + top + '" width="20" height="' + (bot - top) + '" fill="' + C.wetBand + '"/>';
         return s + line(x, mid, x + 40, mid, C.mute, 1.6, ' stroke-dasharray="5 3"');
+      case 'usualLine': return line(x, mid, x + 40, mid, C.mute, 1.6, ' stroke-dasharray="5 3"');
       case 'months': case 'monthsTop':
         return line(x, mid, x + 40, mid, C.ink, 1.2) + [0, 13, 26, 39].map(function (k) { return line(x + k + 0.5, mid - 4, x + k + 0.5, mid + 4, C.ink, 1); }).join('');
       case 'dry': return '<path d="M' + x + ',' + (mid - 4) + 'v5H' + (x + 40) + 'v-5" fill="none" stroke="' + C.mute + '" stroke-width="1"/>';
@@ -200,6 +234,18 @@
           s += '<rect x="' + (x + k) + '" y="' + (top + 5) + '" width="3.4" height="' + h + '" fill="' + (red ? C.accent : C.bar) + '"/>';
         });
         return s;
+      case 'rec': return line(x, mid, x + 40, mid, C.rain, 3) + '<circle cx="' + (x + 20) + '" cy="' + mid + '" r="4" fill="#FFFFFF" stroke="' + (C.rec || C.mute) + '" stroke-width="1.4"/>';
+      case 'hist': return [-6, -2, 3, 7].map(function (d, i) { return '<path d="M' + x + ',' + bot + 'L' + (x + 40) + ',' + (top + 6 + d) + '" stroke="' + (i === 2 ? C.rain : C.soft) + '" stroke-width="' + (i === 2 ? 2.4 : 0.8) + '" fill="none"/>'; }).join('');
+      case 'frost': return line(x, bot, x + 40, bot, C.ink, 1.2) + '<path d="M' + (x + 16) + ',' + (bot - 8) + 'L' + (x + 24) + ',' + (bot - 8) + 'L' + (x + 20) + ',' + (bot - 1.5) + 'z" fill="' + C.mute + '"/>';
+      case 'crop': return line(x, bot, x + 40, bot, C.ink, 1.2) + '<g fill="none" stroke="' + C.mute + '" stroke-width="1" stroke-linecap="round">' +
+          '<path d="M' + (x + 12) + ',' + bot + 'V' + (bot - 8) + 'M' + (x + 12) + ',' + (bot - 5) + 'l-4,-3M' + (x + 12) + ',' + (bot - 6) + 'l4,-3"/>' +
+          '<path d="M' + (x + 28) + ',' + bot + 'V' + (top + 1) + 'M' + (x + 28) + ',' + (bot - 6) + 'l-5,-4M' + (x + 28) + ',' + (bot - 11) + 'l5,-4M' + (x + 28) + ',' + (bot - 15) + 'l-4,-3"/></g>';
+      case 'ribbon':
+        s = '';
+        ['#8095A8', '#A9B4BD', '#CDBFA8', '#C89A72', '#A9583A'].forEach(function (col, i) { for (var k = 0; k < 4; k++) s += line(x + i * 8 + k * 2 + 0.5, top + 4 + ((i + k) % 3), x + i * 8 + k * 2 + 0.5, bot - ((i * 2 + k) % 3), col, 1.4); });
+        return s;
+      case 'qr': return '<g fill="' + QR_INK + '">' + [[0, 0], [12, 0], [0, 12]].map(function (p) { return '<rect x="' + (x + 12 + p[0]) + '" y="' + (top + p[1]) + '" width="7" height="7"/>'; }).join('') +
+          '<rect x="' + (x + 24) + '" y="' + (top + 12) + '" width="3" height="3"/><rect x="' + (x + 28) + '" y="' + (top + 16) + '" width="3" height="3"/></g>';
       case 'pile':
         s = line(x, bot - 2, x + 40, bot - 2, C.ink, 1.4);
         [6, 12, 18, 24].forEach(function (k, i) { var h = [6, 14, 10, 4][i]; s += '<rect x="' + (x + k) + '" y="' + (bot - 3 - h) + '" width="4.4" height="' + h + '" fill="' + C.snowFill + '" stroke="' + C.snowEdge + '" stroke-width="0.6"/>'; });
@@ -239,7 +285,7 @@
 
     var eb = { size: 12.5, w: 500, ls: 0.2, fill: MUTE };
     out.push(T(M, 78, c.eyebrow, eb));
-    if (o.serial) out.push(T(W0 - M, 78, o.serial, { size: 12.5, w: 500, ls: 0.06, fill: MUTE, anchor: 'end' }));
+    if (o.serial && !o.guide) out.push(T(W0 - M, 78, o.serial, { size: 12.5, w: 500, ls: 0.06, fill: MUTE, anchor: 'end' }));
     out.push(line(M, 92, W0 - M, 92, RULE, 1));
     out.push(T(M - 2, 146, c.head, { fam: SERIF, w: 600, size: 46 }));
 
@@ -313,13 +359,13 @@
     y += 16;
     out.push(line(M, y - 22, W0 - M, y - 22, RULE, 1));
     y1 = y2 = y;
-    out.push(T(M, y1, 'MADE BY HAND', eb)); y1 += 24;
+    out.push(T(M, y1, c.makerHead, eb)); y1 += 24;
     wrap(meas, c.maker, mk, half).forEach(function (t) { out.push(T(M, y1, t, mk)); y1 += 20; });
     y1 += 2;
     if (!o.tight) wrap(meas, c.makerSub, bst, half).forEach(function (t) { out.push(T(M, y1, t, Object.assign({}, bst, { fill: MUTE }))); y1 += 19; });
     if (o.tight < 3) {
       // made by and care, side by side; the foot under them
-      out.push(T(cx2, y2, 'TAKING CARE OF IT', eb)); y2 += 24;
+      out.push(T(cx2, y2, c.careHead, eb)); y2 += 24;
       (o.tight ? c.care.slice(0, 1) : c.care).forEach(function (p) { wrap(meas, p, bst, half).forEach(function (t) { out.push(T(cx2, y2, t, bst)); y2 += 19; }); y2 += 3; });
       y = Math.max(y1 - 19, y2 - 22);
       // the code line, when there is one, sits just above the foot (its last line 16 over the rule)
@@ -338,7 +384,8 @@
       render.overflow = y > lim ? Math.round(y - lim) : 0;
     } else {
       // the fullest page: care goes under the maker line, and the foot (words and code) takes the right half of the same row
-      wrap(meas, c.care[0], bst, half).forEach(function (t) { out.push(T(M, y1, t, bst)); y1 += 19; });
+      // (the guide's first care line is a printing tip, not care: the email says it, so a full guide leaves it off here)
+      if (!o.guide) wrap(meas, c.care[0], bst, half).forEach(function (t) { out.push(T(M, y1, t, bst)); y1 += 19; });
       var fw = half - qs - 16, fst = { fam: SERIF, w: 500, size: 19 };
       wrap(meas, c.footer, fst, fw).forEach(function (t) { out.push(T(cx2, y2, t, fst)); y2 += 24; });
       wrap(meas, c.footerSub, bst, fw).forEach(function (t) { out.push(T(cx2, y2, t, Object.assign({}, bst, { fill: MUTE }))); y2 += 19; });
