@@ -328,9 +328,9 @@ function render(){
     if(S.years_over_one!=null) Rt+=fopt('Years claims exceeded premium', S.years_over_one+' of '+S.years_with_ratio);
     if(S.worst_year) Rt+=fopt('Worst year', S.worst_year.year+'', 'ratio '+Number(S.worst_year.ratio).toFixed(2)+(S.worst_year.tied&&S.worst_year.tied.length?' ('+S.worst_year.tied.join(', ')+' also '+Number(S.worst_year.ratio).toFixed(2)+')':''));
   } else Rt+=fw('Premium and payouts', why(S));
-  if(ok(Lo)&&Lo.share_all){
-    var top=Object.keys(Lo.share_all).filter(function(k){return Lo.share_all[k]!=null;}).sort(function(a,b){return Lo.share_all[b]-Lo.share_all[a];}).slice(0,3);
-    Rt+=fct('Largest causes, '+Lo.first_year+'–'+Lo.last_year, top.map(function(k){ return (CAUSE[k]||k)+' '+pct(Lo.share_all[k],0); }).join(' · '));
+  if(ok(Lo)&&Lo.share_all&&Object.keys(Lo.share_all).some(function(k){return Lo.share_all[k]>0;})){
+    var top=Object.keys(Lo.share_all).filter(function(k){return Lo.share_all[k]>0;}).sort(function(a,b){return Lo.share_all[b]-Lo.share_all[a];}).slice(0,3);
+    Rt+=fct('Largest causes, '+Lo.first_year+'–'+Lo.last_year, top.map(function(k){ return (CAUSE[k]||k)+' '+shareWords(Lo.share_all[k]); }).join(' · '));
     var per=Lo.periods||{}, hp=Object.keys(per).filter(function(k){return per[k].heat_drought_share!=null;});
   }
   Rt+='<h2>Weather</h2>';

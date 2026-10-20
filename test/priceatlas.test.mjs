@@ -174,6 +174,7 @@ test("A9: a nonzero irrigated or CRP-expiring share says under 1%; a cause with 
   const panel = read("farmland-atlas.html");
   assert.match(panel, /f\+=fact\('Harvested cropland irrigated, 2022', shareWords\(irrShareOf\(sh\)\)/);
   assert.match(panel, /filter\(function\(k\)\{return Lo\.share_all\[k\]>0;\}\)/);
+  assert.match(read("farmland-atlas/sheet.html"), /filter\(function\(k\)\{return Lo\.share_all\[k\]>0;\}\)/);
   assert.match(panel, /return ce==null\?'':shareWords\(ce\)\+' of what is enrolled'/);
   assert.match(read("farmland-atlas/sheet.html"), /Rt\+=fct\('Harvested cropland irrigated, 2022', shareWords\(sh\.irrigated_acres!=null&&sh\.harvested_acres\?sh\.irrigated_acres\/sh\.harvested_acres:sh\.share\)\)/);
 });
