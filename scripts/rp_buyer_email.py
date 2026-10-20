@@ -61,7 +61,9 @@ Reply-To sig@farmers1st.com.
     python3 scripts/rp_buyer_email.py --sample-files out.html   the files email as a page, for a look
 
 Env: LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS. Optional:
-SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME, SIG_TO, SIG_TEST_EMAILS (comma
+SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME (Sig's own alerts only), RP_FROM_NAME
+(the buyer emails' sender name, default "Sig at AGSIST"; Sig 2026-10-20. The shared
+FROM_NAME secret serves a dozen other jobs and never decides it), SIG_TO, SIG_TEST_EMAILS (comma
 separated), RENDER_BASE (default https://agsist.com), PLAYWRIGHT_PATH,
 CHROMIUM_PATH. Run by .github/workflows/rp-buyer-email.yml.
 """
@@ -92,6 +94,12 @@ DAYS = 7
 # the most the files email attaches, in bytes before encoding (base64 adds about a third: 15 MB is about
 # 20.5 MB sent, under Gmail's 25 MB with room to spare). A real order's four files come to about 2 to 4 MB.
 ATTACH_MAX = 15 * 1024 * 1024
+BUYER_FROM_NAME = "Sig at AGSIST"
+
+
+def buyer_from_name():
+    """The sender name on every buyer email (the proof, the files): RP_FROM_NAME, else "Sig at AGSIST". Never FROM_NAME."""
+    return one_line(env("RP_FROM_NAME", BUYER_FROM_NAME), 60) or BUYER_FROM_NAME
 FILE_MIME = {"pdf": ("application", "pdf"), "guide": ("application", "pdf"), "png": ("image", "png"), "jpg": ("image", "jpeg")}
 
 
@@ -288,8 +296,10 @@ def html_body(o, r, gift_to="", srcs=None):
             '%s</table></td></tr></table></body></html>') % (e(subject(o)), "".join(rows))
 
 
-def build(o, r, to, gift_to="", fn="AGSIST", fa="", dry=False):
+def build(o, r, to, gift_to="", fn=None, fa="", dry=False):
+    fn = fn or buyer_from_name()
     m = EmailMessage()
+    m.rp_buyer = True   # smtp_send keeps this name (Sig's alerts take FROM_NAME)
     m["Subject"] = ("[dry run, would go to the buyer] " if dry else "") + subject(o)
     m["From"] = formataddr((fn, fa))
     m["To"] = to
@@ -389,8 +399,10 @@ def fit_files(files):
     return []
 
 
-def build_files(o, files, to, gift_to="", fn="AGSIST", fa="", dry=False):
+def build_files(o, files, to, gift_to="", fn=None, fa="", dry=False):
+    fn = fn or buyer_from_name()
     m = EmailMessage()
+    m.rp_buyer = True
     m["Subject"] = ("[dry run, would go to the buyer] " if dry else "") + files_subject(o)
     m["From"] = formataddr((fn, fa))
     m["To"] = to
@@ -660,7 +672,8 @@ def smtp_send(fn, fa):
         if not (env("SMTP_USER") and env("SMTP_PASS")):
             raise RuntimeError("no SMTP_USER / SMTP_PASS")
         del m["From"]
-        m["From"] = formataddr((fn, fa))
+        # a buyer email goes out as Sig at AGSIST (RP_FROM_NAME); Sig's own alerts and notes keep FROM_NAME
+        m["From"] = formataddr((buyer_from_name() if getattr(m, "rp_buyer", False) else fn, fa))
         conn = smtplib.SMTP(env("SMTP_HOST", "smtp.gmail.com"), int(env("SMTP_PORT", "587")), timeout=30)
         try:
             conn.starttls(context=ssl.create_default_context())
@@ -954,6 +967,41 @@ def selftest():
     h2 = html_body(o2, r2)
     ck("this year's print: no approve button, the proof comes when the year is in", "Approve this print" not in h2 and "once the full year is in" in h2 and "gift card" not in h2, h2[-1200:])
     ck("no token: no approve button", "Approve this print" not in html_body(dict(o2, approve_t=None), dict(r2, preview=False)))
+
+    print("\nthe sender name")
+    ENVS = ("RP_FROM_NAME", "FROM_NAME", "SMTP_USER", "SMTP_PASS")
+    keep = {k: os.environ.pop(k) for k in ENVS if k in os.environ}
+    real_smtp = smtplib.SMTP
+    try:
+        os.environ["FROM_NAME"] = "AGSIST Daily"
+        got = []
+
+        class _SMTP:   # a stand-in server: smtp_send runs as it does for real, nothing leaves
+            def __init__(self, *a, **k): pass
+            def starttls(self, **k): pass
+            def login(self, *a): pass
+            def send_message(self, m): got.append(m["From"])
+            def quit(self): pass
+        smtplib.SMTP = _SMTP
+        os.environ.update({"SMTP_USER": "x@example.com", "SMTP_PASS": "x"})
+        send_real = smtp_send(env("FROM_NAME", "AGSIST"), "x@example.com")
+
+        def from_after_send(m):
+            send_real(m)
+            return got[-1]
+        pm = build(order("1"), {"proof": None, "letter": None, "words": WORDS}, "buyer@example.com")
+        fmm = build_files(dict(order("1"), product="digital"), [], "buyer@example.com")
+        ck("buyer emails: Sig at AGSIST with no RP_FROM_NAME, whatever FROM_NAME says",
+           "Sig at AGSIST" in pm["From"] and "Sig at AGSIST" in fmm["From"] and "Sig at AGSIST" in from_after_send(pm) and "Sig at AGSIST" in from_after_send(fmm),
+           (pm["From"], fmm["From"]))
+        ck("Sig's own note keeps FROM_NAME", "AGSIST Daily" in from_after_send(sig_note(order("1"), "sig@farmers1st.com", "x")))
+        os.environ["RP_FROM_NAME"] = "Sig Lindquist"
+        ck("RP_FROM_NAME changes only the buyer emails", "Sig Lindquist" in build(order("1"), {"proof": None, "letter": None, "words": WORDS}, "b@example.com")["From"])
+    finally:
+        smtplib.SMTP = real_smtp
+        for k in ENVS:
+            os.environ.pop(k, None)
+        os.environ.update(keep)
 
     print("\nthe files (a digital file, the moment the buyer approves)")
     ap_at = {"at": "2026-10-21T15:00:00.000Z"}

@@ -4716,7 +4716,7 @@
       facts: F, mini: mini, serial: guide ? '' : SERIAL, guide: !!guide, drawn: drawn, gift: printable(gift || ''), giftFrom: printable(cleanText(from, 40)), qr: standardMatrix(), fontCss: fontCssText, px: px,
       station: { words: gaugeWords(META), away: META.approx ? '' : milesText(miles(META.km)).replace(/ mi$/, ' miles'), kind: stationKind(META) },
       source: META && META.ca ? 'Environment and Climate Change Canada\u2019s daily records' : 'NOAA\u2019s daily records',
-      offer: guide ? null : (PRICES && PRICES.letter_offer) || null, today: TODAY   // data/rain-print.json letter_offer: empty code, no line
+      offer: (PRICES && PRICES.letter_offer) || null, today: TODAY   // data/rain-print.json letter_offer: empty code, no line
     });
     return { svg: svg, facts: F, drawn: drawn, overflow: root.AgRpInsert.lastOverflow() };
   }
@@ -4724,7 +4724,8 @@
     var out = $('rp-dl-note');
     if (!DATA || BLOCKED) return;
     if (lostMsg()) return;
-    if (PREVIEW) { out.textContent = (guide ? 'The reading guide' : 'The letter') + ' is made from the full year, like the print. Make it in January once the year is in.'; return; }
+    if (PREVIEW && guide) { out.textContent = 'The reading guide is made from the full year, like the print. Make it in January once the year is in.'; return; }
+    if (PREVIEW) { out.textContent = 'The letter is made from the full year, like the print. Make it in January once the year is in.'; return; }
     if (META && META.ca && FR()) { out.textContent = 'The letter is in English only for now.'; return; }
     var was = btn.textContent, note = $('rp-ins-gift') ? $('rp-ins-gift').value : '', from = $('rp-ins-from') ? $('rp-ins-from').value : '';
     btn.disabled = true; btn.textContent = guide ? 'Making the guide\u2026' : 'Making the letter\u2026';
@@ -5012,7 +5013,7 @@
   radios('rb-ship').forEach(function (r) { r.addEventListener('change', syncBizShip); });
   $('rp-dl').addEventListener('click', function () { exportFile('preview', 'png', $('rp-dl')); });
   doc.querySelectorAll('#rp-maker button').forEach(function (b) {
-    b.addEventListener('click', function () { var sz = b.getAttribute('data-size'); if (sz === 'insert' || sz === 'guide') insertFile(b, sz === 'guide'); else exportFile(sz, b.getAttribute('data-fmt'), b); });
+    b.addEventListener('click', function () { if (b.getAttribute('data-size') === 'insert') insertFile(b); else if (b.getAttribute('data-size') === 'guide') insertFile(b, true); else exportFile(b.getAttribute('data-size'), b.getAttribute('data-fmt'), b); });
   });
   $('rp-copy').addEventListener('click', function () {
     // a logo still saving has no id: the link would leave it off (panel 3 F1)
