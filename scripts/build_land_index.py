@@ -494,7 +494,7 @@ def chart_svg(s):
     """Quarterly index with its 90% range, and NASS cropland value as its own line."""
     qs = [r for r in s["quarters"]]
     pts = [r for r in qs if r.get("ix") is not None]
-    W, H, L, R, T, Bm = 640, 300, 44, 12, 14, 34
+    W, H, L, R, T, Bm = 640, 320, 50, 12, 14, 40
     vals = [r["lo"] for r in pts] + [r["hi"] for r in pts] + [a["nass"] for a in s["annual"] if a.get("nass")]
     lo = math.floor(min(vals) / 10) * 10
     hi = math.ceil(max(vals) / 10) * 10
@@ -518,7 +518,7 @@ def chart_svg(s):
         xx = L + (W - L - R) * i0 / n
         out.append('<line x1="%.1f" x2="%.1f" y1="%d" y2="%d" class="li-tick"/>' % (xx, xx, H - Bm, H - Bm + 5))
         lab = str(yv) if yv == yrs[0] or yv % 2 == 0 else "&#8217;" + str(yv)[2:]
-        out.append('<text x="%.1f" y="%d" class="li-ax">%s</text>' % (xx + 2, H - Bm + 17, lab))
+        out.append('<text x="%.1f" y="%d" class="li-ax">%s</text>' % (xx + 2, H - Bm + 24, lab))
     # range band (settled and provisional), then the line
     top = " ".join("%.1f,%.1f" % (x(ix[r["q"]]), y(r["hi"])) for r in pts)
     bot = " ".join("%.1f,%.1f" % (x(ix[r["q"]]), y(r["lo"])) for r in reversed(pts))
@@ -563,7 +563,9 @@ def quarter_table(s):
 def annual_table(s):
     rows = []
     for a in s["annual"]:
-        if a.get("ix") is not None:
+        if a["y"] == s["start"] and a.get("ix") is not None:
+            ixc = '<td data-l="Sale index">100.0 <span class="li-rng">(the base year)</span></td>'
+        elif a.get("ix") is not None:
             ixc = '<td data-l="Sale index">%s <span class="li-rng">(%s to %s)</span></td>' % (fmt1(a["ix"]), fmt1(a["lo"]), fmt1(a["hi"]))
         else:
             ixc = '<td data-l="Sale index" class="li-why">not a full settled year yet</td>'
@@ -606,7 +608,7 @@ CSS = """
 @media (min-width:700px){.li-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .li-fig{margin:1rem 0;padding:.6rem .4rem;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
 .li-fig figcaption{font-size:.8rem;color:var(--text-muted);padding:.3rem .4rem 0;line-height:1.45}
-.li-chart{width:100%;height:auto;display:block}
+.li-chart{width:100%;max-width:720px;height:auto;display:block;margin:0 auto}
 .li-ax{font-family:'JetBrains Mono',monospace;font-size:11px;fill:var(--text-muted)}
 .li-grid{stroke:var(--border);stroke-width:1}
 .li-tick{stroke:var(--text-muted);stroke-width:1}
@@ -657,7 +659,7 @@ CSS = """
 .li-t td.li-why::before{font-style:normal}
 .li-c tr.li-more{display:none}
 .li-all .li-c tr.li-more{display:grid}
-.li-b tr{grid-template-columns:repeat(3,minmax(0,1fr))}
+.li-ax{font-size:19px}
 }
 """
 
