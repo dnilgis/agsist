@@ -363,6 +363,8 @@ jobs:
         run: |
           python scripts/usda_dates.py --selftest
           python scripts/test_daily_trust.py
+          python scripts/watch_dates.py --selftest
+          python scripts/streak_words.py --selftest
           python scripts/test_daily_numbers.py
 
       # The schedule is machinery too. This asserts the backup fires still
