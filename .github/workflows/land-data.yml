@@ -54,7 +54,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install openpyxl (xlsx transfer files)
-        run: pip install openpyxl==3.1.5
+        run: pip install openpyxl==3.1.5 numpy==2.5.4
       - name: Selftests
         run: |
           python scripts/probe_land_services.py --selftest
@@ -64,6 +64,7 @@ jobs:
           python scripts/wi_retr_browser.py --selftest
           python scripts/probe_field_layers.py --selftest
           python scripts/build_land_summary.py --selftest
+          OMP_NUM_THREADS=1 python scripts/build_land_index.py --selftest
       - name: Probe transfer sources (raw capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: |
@@ -139,6 +140,11 @@ jobs:
       - name: Build Atlas sale summaries
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/build_land_summary.py
+      # The farmland sale index (/farmland-index and data/land/index.json) from the same county
+      # files. Offline; refuses output that carries a source name.
+      - name: Build the farmland sale index
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        run: OMP_NUM_THREADS=1 python scripts/build_land_index.py
       - name: Save raw answers to the raw branch
         if: ${{ !cancelled() }}
         run: |
@@ -154,14 +160,16 @@ jobs:
           git config user.email "bot@agsist.com"
           rm -rf /tmp/ld && mkdir -p /tmp/ld
           [ -d data/land ] && cp -r --parents data/land /tmp/ld/ || true
+          [ -f farmland-index.html ] && cp farmland-index.html /tmp/ld/ || true
           [ -n "$(ls -A /tmp/ld)" ] || { echo "No output; nothing to commit."; exit 0; }
           BR="${GITHUB_REF_NAME:-main}"
           for i in 1 2 3 4 5; do
             git fetch origin "$BR"
             git reset --hard "origin/$BR"
             mkdir -p data && cp -r /tmp/ld/data/. data/
+            [ -f /tmp/ld/farmland-index.html ] && cp /tmp/ld/farmland-index.html . || true
             python3 scripts/land_keep_stamp_only.py data/land   # a file whose only change is a timestamp is not data
-            git add data/land
+            git add data/land farmland-index.html
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Update land data $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
