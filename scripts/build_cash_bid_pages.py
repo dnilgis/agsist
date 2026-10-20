@@ -454,7 +454,7 @@ def branch_name(b, src, town, known):
     return city
 
 
-def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed=None, moved=None):
+def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed=None, moved=None, prev=None):
     """-> (towns, drops, unplaced). towns: {(ST, town_key): {...}} with every
     board that has posted rows in that town and, per board, the rows that may
     print. A place town_of() cannot name is tried by place_fallbacks().
@@ -465,14 +465,29 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
     snap_ct = gen.astimezone(CT)
     srcs = {s["id"]: s for s in (index.get("sources") or []) if s.get("id")}
     fit = name_fit(town_zips(zip_towns), zip_coord)
-    fallback = place_fallbacks(merged, srcs, towns_by_state, zip_towns, zip_coord, fit=fit)
+    rows = [b for b in merged.get("bids") or [] if isinstance(b, dict)]
+    rows += held_rows(rows, srcs, gen, prev)     # boards off the feed that keep their page, placed like the rest
+    fallback = place_fallbacks({"bids": rows}, srcs, towns_by_state, zip_towns, zip_coord, fit=fit)
     if placed is not None:
         placed.update(fallback)
     drops = Counter()
     towns, unplaced = {}, {}
-    for b in merged.get("bids") or []:
-        if not isinstance(b, dict):
-            continue
+
+    def new_board(b, src, sid, st, tname, how, ovr, place):
+        return {
+            "place": place, "source": sid,
+            "operator": display_name(b.get("operator") or src.get("operator") or ""),
+            "city": clean_place(town_name(b.get("city"))), "branch": branch_name(b, src, tname, towns_by_state.get(st, {})),
+            "zip": ovr["zip"] if ovr else zip5(b.get("zip") or src.get("zip")),
+            "phone": src.get("phone") or "", "checked": parse_ts(src.get("checkedAt")),
+            "last_priced": None, "rows": [], "why": Counter(), "how": how["how"], "near_mi": how.get("mi"),
+            "town": tname, "state": st, "pin": ovr["pin"] if ovr else _pin(b),
+            "precision": "street" if ovr else b.get("precision"),
+            # hours, contact, note and closed-until of an elevator that posts
+            # its own bids through agsist.com/post; None for every other board
+            "portal": portal_info(src.get("portal"))}
+
+    for b in rows:
         sid = b.get("source")
         src = srcs.get(sid)
         st = (b.get("state") or "").upper()
@@ -507,18 +522,7 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
                                                          clean_place(town_name(b.get("city")))))
         t = towns.setdefault(tk, {"state": st, "name": tname, "slug": tk[1], "boards": {}})
         place = b.get("place") or sid
-        bd = t["boards"].setdefault(place, {
-            "place": place, "source": sid,
-            "operator": display_name(b.get("operator") or src.get("operator") or ""),
-            "city": clean_place(town_name(b.get("city"))), "branch": branch_name(b, src, tname, towns_by_state.get(st, {})),
-            "zip": ovr["zip"] if ovr else zip5(b.get("zip") or src.get("zip")),
-            "phone": src.get("phone") or "", "checked": parse_ts(src.get("checkedAt")),
-            "last_priced": None, "rows": [], "why": Counter(), "how": how["how"], "near_mi": how.get("mi"),
-            "town": tname, "state": st, "pin": ovr["pin"] if ovr else _pin(b),
-            "precision": "street" if ovr else b.get("precision"),
-            # hours, contact, note and closed-until of an elevator that posts
-            # its own bids through agsist.com/post; None for every other board
-            "portal": portal_info(src.get("portal"))})
+        bd = t["boards"].get(place) or t["boards"].setdefault(place, new_board(b, src, sid, st, tname, how, ovr, place))
         pt = parse_ts(b.get("pricedAt"))
         if pt and (bd["last_priced"] is None or pt > bd["last_priced"]):
             bd["last_priced"] = pt
@@ -526,6 +530,10 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
         def no(k):
             drops[k] += 1
             bd["why"][k] += 1
+
+        if b.get("_held"):
+            no("board_off_feed_page_kept")
+            continue
 
         held = SB.held_skip(b, src, gen)   # skipped this pass, read within HELD_SKIP_HOURS
         if not held and (b.get("stale") is not False or b.get("sourceStatus") != "ok"):
@@ -574,6 +582,64 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             "pasted": parse_ts(b.get("pastedAt") or b.get("checkedAt")) if b.get("pasted") is True else None,
             "posted_from": b.get("postedFrom") if b.get("pasted") is True else None})
     return towns, drops, unplaced
+
+
+# A BOARD OFF THE FEED FOR A DAY KEEPS ITS PAGE (2026-10-20). The network
+# withdraws a board's rows 14 h after its last good read (bids
+# lib/freshness.mjs WITHDRAW_H), and a town page used to exist only while one
+# of its boards had rows. From 15:30 UTC Oct 19 NEW Cooperative's site
+# answered our browser with a bot check, its 66 boards left merged-all.json at
+# 05:37 UTC Oct 20, and the 06:39 build turned 62 Iowa town pages and the
+# company page into pointers. A board still in index.json, skipped or broken
+# (not refused), that posted rows and was last read within PAGE_GRACE_DAYS
+# keeps its place on its town page with no price: the "no current bid" line
+# names it with the day it was last read.
+PAGE_GRACE_DAYS = 7      # a board off the feed this long, or less, keeps its town page (select())
+OFF_FEED_STATUS = {"skipped", "broken"}   # not "refused": a site that said no is not held
+
+
+def held_off_feed(src, gen):
+    """True when an index.json board with no row in merged-all.json still gets
+    its town page: skipped or broken, in the merge, posted rows on its last
+    good read, and that read is within PAGE_GRACE_DAYS of the snapshot."""
+    if src.get("status") not in OFF_FEED_STATUS or src.get("inMerge") is False or not src.get("rows"):
+        return False
+    t = parse_ts(src.get("checkedAt"))
+    return t is not None and dt.timedelta(0) <= gen - t <= dt.timedelta(days=PAGE_GRACE_DAYS)
+
+
+def held_rows(rows, srcs, gen, prev=None):
+    """One placeholder row per held_off_feed() board with no row in `rows`,
+    flagged _held (never priced). Its place, ZIP and pin come from the board's
+    own row in `prev` (the earlier merged-all.json the build already reads),
+    so it lands in the same town it did while on the feed; with no such row,
+    from its index.json entry. A place another board on the feed already
+    reads is left to that board."""
+    have = {b.get("source") for b in rows}
+    places = {((b.get("state") or "").upper(), b.get("place")) for b in rows}
+    old = {}
+    for b in (prev or {}).get("bids") or []:
+        if isinstance(b, dict) and b.get("source") not in have:
+            old.setdefault(b.get("source"), b)
+    out = []
+    for sid, src in srcs.items():
+        if sid in have or not held_off_feed(src, gen):
+            continue
+        st = (src.get("usState") or "").upper()
+        o = old.get(sid)
+        if o and (o.get("state") or "").upper() == st:
+            b = {k: o.get(k) for k in ("place", "operator", "branch", "city", "town", "state", "zip", "lat", "lon",
+                                       "precision", "currency")}
+        else:
+            b = {"place": f"{src.get('operator') or ''}||{src.get('location') or ''}|{st}",
+                 "operator": src.get("operator"), "city": src.get("location"), "state": st, "zip": src.get("zip"),
+                 "lat": src.get("lat"), "lon": src.get("lon"), "precision": "town", "currency": "USD"}
+        if (st, b["place"]) in places:
+            continue
+        places.add((st, b["place"]))
+        out.append(dict(b, source=sid, via="scrape", _held=True, pricedAt=src.get("pricedAt"),
+                        checkedAt=src.get("checkedAt"), stale=True, sourceStatus=src.get("status")))
+    return out
 
 
 def town_key(name):
@@ -1443,6 +1509,7 @@ def board_section(bd, snap_ct):
 
 
 WHY = {"stale_or_unconfirmed": "board not confirmed on the latest read",
+       "board_off_feed_page_kept": "board could not be read on recent passes",
        "board_not_live": "board not confirmed on the latest read",
        "price_older_than_cutoff": f"no price posted in the last {FRESH_HOURS} hours",
        "delivery_expired_or_undated": "only expired delivery periods posted",
@@ -3040,7 +3107,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
         raise SystemExit("[cash-bid-pages] geocodes/zip-towns.json missing or short; refusing to build "
                          "(every town page would be dropped)")
     placed, moved = {}, {}
-    towns, drops, unplaced = select(merged, index, tbs, zip_towns, zip_coord, placed, moved)
+    towns, drops, unplaced = select(merged, index, tbs, zip_towns, zip_coord, placed, moved, prev=prev_doc)
     how = Counter(v["how"] for v in placed.values())
     drop_misreads(towns, drops)
     ids = {s["id"] for s in index.get("sources") or []}
@@ -3279,6 +3346,63 @@ def _fixture():
             b["operator"] = index_fix[b["source"]]
     merged = {"schema": "agsist-merged-all/1", "generated": gen, "bids": bids}
     return merged, {"generated": gen, "sources": srcs}
+
+
+def _selftest_off_feed():
+    """The real case, 2026-10-20: NEW Cooperative's board was last read 15:30 UTC
+    Oct 19, then its site answered with a bot check; at 05:37 UTC Oct 20 the
+    network withdrew its rows (14 h), and the 06:37 snapshot had none of them.
+    index.json still listed every board ("skipped", rows 12). The town page
+    must stay (noindex, no price, the board named with its last read), placed
+    from its own row in the earlier snapshot; a refused board, one last read
+    past PAGE_GRACE_DAYS, one that never posted, and a yard another board on
+    the feed reads are not held."""
+    import tempfile as _tf
+    merged, index = _fixture()
+    gen = parse_ts(merged["generated"])
+    last = (gen - dt.timedelta(hours=15)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    old = (gen - dt.timedelta(days=PAGE_GRACE_DAYS, hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    nc = {"operator": "NEW Cooperative, Inc.", "usState": "IA", "zip": None, "lat": None, "lon": None,
+          "status": "skipped", "health": "skipped", "inMerge": True, "rows": 12, "pricedAt": last, "checkedAt": last,
+          "error": "not read: www.newcoop.com answered our browser with a Cloudflare challenge page"}
+    index["sources"] += [
+        dict(nc, id="newcoop-creston1", location="Creston 1"),          # placed by its ZIP, from the earlier row
+        dict(nc, id="newcoop-afton", location="Afton"),                 # no earlier row: placed from index.json
+        dict(nc, id="nc-refused", location="Afton", operator="Said No Co-op", status="refused", health="refused"),
+        dict(nc, id="nc-old", location="Lamoni", checkedAt=old, pricedAt=old),
+        dict(nc, id="nc-never", location="Lamoni", rows=0),
+        dict(nc, id="nc-out", location="Lamoni", inMerge=False),
+        dict(nc, id="nc-dup", location="Fremont", usState="NE", operator="Op n0", status="broken", health="broken")]
+    prev = {"generated": "2026-10-07T05:27:00Z", "bids": [
+        {"place": "NEW Cooperative, Inc.||Creston 1|IA", "operator": "NEW Cooperative, Inc.", "city": "Creston 1",
+         "town": None, "state": "IA", "zip": "50801", "lat": 41.05972, "lon": -94.34978, "precision": "street",
+         "currency": "USD", "crop": "corn", "cash": 3.9, "basis": -0.4, "via": "scrape", "source": "newcoop-creston1",
+         "sourceStatus": "skipped", "stale": True, "pricedAt": last},
+        {"place": "Op n0||FREMONT|NE", "operator": "Op n0", "city": "FREMONT", "state": "NE", "zip": "68025",
+         "currency": "USD", "via": "scrape", "source": "nc-dup", "pricedAt": last}]}
+    for b in merged["bids"]:
+        if b["source"] == "t-n0":
+            b["place"] = "Op n0||FREMONT|NE"
+    ZT = {"zips": {"68025": ["Fremont", "NE"], "68031": ["Hooper", "NE"], "50001": ["Ackworth", "IA"],
+                   "50801": ["Creston", "IA"], "50830": ["Afton", "IA"], "50140": ["Lamoni", "IA"]}}
+    srcs = {s_["id"]: s_ for s_ in index["sources"]}
+    held = {r["source"] for r in held_rows(merged["bids"], srcs, gen, prev)}
+    assert held == {"newcoop-creston1", "newcoop-afton"}, held
+    with _tf.TemporaryDirectory() as td:
+        out = os.path.join(td, "cash-bids")
+        metas, _, drops, _ = build_all(merged, index, ZT, out_dir=out, root=".", sitemap=os.path.join(td, "sm.xml"),
+                                       min_towns=0, now=gen + dt.timedelta(hours=1), prev_doc=prev,
+                                       zip_coord={"50801": (41.0586, -94.3614)}.get)
+        m = {(x["state"], x["slug"]): x for x in metas}
+        assert ("IA", "creston") in m and ("IA", "afton") in m and ("IA", "lamoni") not in m, sorted(m)
+        assert drops["board_off_feed_page_kept"] == 2, drops
+        for slug in ("creston", "afton"):
+            assert not m[("IA", slug)]["indexable"] and m[("IA", slug)]["rows"] == 0, m[("IA", slug)]
+            h = open(os.path.join(out, "iowa", f"{slug}.html"), encoding="utf-8").read()
+            assert 'content="noindex,follow"' in h
+            assert "NEW Cooperative, Inc." in h and "board could not be read on recent passes, last read Oct 6, 2026" in h, slug
+            assert "3.90" not in h and "$3.9" not in h
+        assert open(os.path.join(out, "nebraska", "fremont.html"), encoding="utf-8").read().count("could not be read") == 0
 
 
 def selftest():
@@ -3691,6 +3815,7 @@ def selftest():
     _selftest_best()
     _selftest_restricted()
     _selftest_pasted()
+    _selftest_off_feed()
     # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
     for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
                   (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
