@@ -75,6 +75,23 @@ test('every job that runs engine code has the Engine checkout step, key and mode
   assert.ok(n > 100, `found ${n} jobs that run engine code; the parser lost them`);
 });
 
+
+// Oct 20: email-bids.yml skips its checkout outside 5am-1pm Central; the Engine
+// checkout step ran anyway, found no action files and failed every idle run.
+test('an Engine checkout step runs only when its job\'s checkout ran (same if:)', () => {
+  const cond = (s) => ((s.code.match(/^\s+(?:- )?if:\s*(.+?)\s*$/m) || [])[1] || '').replace(/^\$\{\{\s*|\s*\}\}$/g, '');
+  const bad = [];
+  for (const f of workflows) {
+    for (const j of jobs(f)) {
+      const e = j.steps.findIndex(isEngine);
+      if (e < 0) continue;
+      const co = j.steps.slice(0, e).map((s, i) => [s, i]).filter(([s]) => isOwnCheckout(s)).pop();
+      if (co && cond(co[0]) !== cond(j.steps[e])) bad.push(`${f} ${j.name}: checkout if "${cond(co[0])}", Engine checkout if "${cond(j.steps[e])}"`);
+    }
+  }
+  assert.deepEqual(bad, []);
+});
+
 test('the key lives at step level only: never in a workflow or job env, never inline in a run script', () => {
   const bad = [];
   for (const f of workflows) {
