@@ -88,7 +88,7 @@ test("the page posts the record on the Stripe path only, waits at most 2 s, and 
   const W = read("workers/subs-worker.js");
   assert.match(W, /PUBLIC_POSTS\.add\("\/rp-order"\)/);
   assert.match(W, /"\/rp-order": \[30, 100, 2000\]/);
-  for (const p of ["rain-print.html", "rain-print-business.html", "rp-gift.html"]) assert.match(read(p), /\/components\/rain-print\.js\?v=61"/, p);
+  for (const p of ["rain-print.html", "rain-print-business.html", "rp-gift.html"]) assert.match(read(p), /\/components\/rain-print\.js\?v=62"/, p);
 });
 
 // ---------- in a browser ----------
