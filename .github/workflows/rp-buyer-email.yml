@@ -7,9 +7,12 @@ name: Rain Print buyer email
 # reads the buyer's address from Stripe at send time with its STRIPE_READ_KEY
 # secret (the one place that key lives). The log prints counts only.
 #
-# RUN BY HAND ONLY for now: Sig has not OK'd a schedule. A dry run (the
-# default) sends every email to Sig and marks nothing. To run it on its own,
-# Sig adds a trigger here, e.g. after the forms digest:
+# It also sends Sig an alert for each new paid order first (always to Sig).
+# NO SCHEDULE: it runs when the subs worker's Stripe webhook (v5.35) starts it
+# through the GitHub API (worker secret GH_DISPATCH_TOKEN), or by hand. The
+# worker asks for a dry run unless its variable RP_BUYER_EMAIL_LIVE is "1"; a
+# dry run sends every buyer email to Sig and marks nothing (alerts still go
+# to Sig, once). A backup run on a schedule is Sig's call; if he wants one:
 #   workflow_run: {workflows: ["Site forms digest"], types: [completed]}
 # Secrets: LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS (or GMAIL_USER,
 # GMAIL_APP_PASS), as the forms digest. Optional: SMTP_HOST, SMTP_PORT,

@@ -219,3 +219,74 @@ console.log('rp-order worker checks: ' + n + ' passed');
   globalThis.fetch = realFetch;
   console.log('rp-order buyer checks: ' + n + ' passed');
 }
+
+// ---------- v5.35: the Stripe webhook ----------
+{
+  const cryptoN = await import('node:crypto');
+  const SECRET = 'whsec_test_123';
+  const signed = (body, t = Math.floor(Date.now() / 1000), secret = SECRET) =>
+    't=' + t + ',v1=' + cryptoN.createHmac('sha256', secret).update(t + '.' + body).digest('hex');
+  const hook = (body, sigHeader) => w.fetch(new Request('https://x.dev/rp-order/stripe', { method: 'POST',
+    headers: Object.assign({ 'Content-Type': 'application/json' }, sigHeader === undefined ? {} : { 'Stripe-Signature': sigHeader }), body }), env);
+  // a real-shaped event (Stripe's checkout.session.completed for a Payment Link), made-up buyer
+  const event = (o = {}, type = 'checkout.session.completed') => JSON.stringify({ id: 'evt_1Q', object: 'event', api_version: '2024-06-20', type, livemode: true,
+    data: { object: Object.assign({ id: 'cs_live_a1B2c3', object: 'checkout.session', mode: 'payment', status: 'complete', payment_status: 'paid',
+      client_reference_id: sigCode, amount_subtotal: 1900, amount_total: 1900, currency: 'usd', created: Math.floor(Date.now() / 1000), livemode: true,
+      payment_link: 'plink_1x', customer_details: { email: 'buyer@example.com', name: 'Pat Example', address: { line1: '1 Example Rd', city: 'Chetek' } } }, o) } });
+  const dispatches = [];
+  globalThis.fetch = async (u, o) => { dispatches.push({ u: String(u), body: o && o.body, auth: o && o.headers && o.headers.Authorization }); return new Response(null, { status: 204 }); };
+
+  let h = await hook(event(), signed(event())); A(h.status === 503, 'webhook: no secret set, refused');
+  env.STRIPE_WEBHOOK_SECRET = SECRET;
+  // a fresh press of Sig's design to be paid
+  await post(sigRec);
+  const pressKey = recs().map(k => [k, JSON.parse(store.get(k))]).filter(([, r]) => r.ref === sigCode && !r.paid).sort((a, b) => b[1].ts - a[1].ts)[0][0];
+  const body = event();
+  h = await hook(body, undefined); A(h.status === 400, 'webhook: no signature, refused');
+  h = await hook(body, signed(body, undefined, 'whsec_wrong')); A(h.status === 400 && (await h.json()).error === 'bad signature', 'webhook: wrong secret, refused');
+  h = await hook(body, signed(body, Math.floor(Date.now() / 1000) - 400)); A(h.status === 400 && (await h.json()).error === 'stale', 'webhook: stale, refused');
+  h = await hook(body.replace('1900,', '19,'), signed(body)); A(h.status === 400, 'webhook: body changed after signing, refused');
+  A(!JSON.parse(store.get(pressKey)).paid, 'nothing marked by a refused event');
+  h = await hook(body, signed(body)); let hj = await h.json();
+  A(h.status === 200 && hj.ok && hj.job === 'no token', 'webhook: paid event taken; no dispatch token yet');
+  let pr = JSON.parse(store.get(pressKey));
+  A(pr.paid && pr.paid.session === 'cs_live_a1B2c3' && pr.paid.via === 'webhook' && pr.paid.amount === 19, 'webhook: the press is marked paid');
+  A(!JSON.stringify([...store.values()]).includes('example.com') && !JSON.stringify([...store.values()]).includes('Pat Example'), 'webhook: nothing about the buyer kept');
+  h = await hook(body, signed(body)); hj = await h.json(); A(hj.ok && hj.already === true, 'webhook: the same session again changes nothing');
+  A(dispatches.length === 0, 'no dispatch without a token');
+  // a framed print by webhook, with the dispatch token: serial and the job started, dry run until Sig says live
+  env.GH_DISPATCH_TOKEN = 'ghp_x';
+  await post(RP.orderRecord(long, longRef, 'framed12x18', 89));
+  const before = JSON.parse(store.get('rpo-serial')).last;
+  const b2 = event({ id: 'cs_live_framed2', client_reference_id: 'RPS-K7Q2M', amount_subtotal: 8900, amount_total: 8900 });
+  h = await hook(b2, signed(b2)); hj = await h.json();
+  A(hj.job === 'started' && dispatches.length === 1 && dispatches[0].u === 'https://api.github.com/repos/dnilgis/agsist/actions/workflows/rp-buyer-email.yml/dispatches', 'webhook: starts the email job');
+  A(JSON.parse(dispatches[0].body).inputs.dry_run === 'true', 'dry run until RP_BUYER_EMAIL_LIVE is 1');
+  const fr2 = recs().map(k => JSON.parse(store.get(k))).find(r => r.paid && r.paid.session === 'cs_live_framed2');
+  A(fr2 && fr2.serial === before + 1 && JSON.parse(store.get('rpo-serial')).last === before + 1, 'webhook: a framed print gets the next serial');
+  env.RP_BUYER_EMAIL_LIVE = '1';
+  // async: completed but unpaid is ignored, async_payment_succeeded counts
+  const b3 = event({ id: 'cs_live_async3', payment_status: 'unpaid', client_reference_id: 'GIFT-RPS-K7Q2M', amount_subtotal: 4500, amount_total: 4500 });
+  h = await hook(b3, signed(b3)); hj = await h.json(); A(hj.ignored === 'checkout.session.completed', 'webhook: an unpaid completion is ignored');
+  const b4 = event({ id: 'cs_live_async3', payment_status: 'paid', client_reference_id: 'GIFT-RPS-K7Q2M', amount_subtotal: 4500, amount_total: 4500 }, 'checkout.session.async_payment_succeeded');
+  h = await hook(b4, signed(b4)); hj = await h.json();
+  A(hj.job === 'started' && JSON.parse(dispatches[1].body).inputs.dry_run === 'false', 'webhook: async success counts; live when Sig says');
+  // a paid session with no press: its own record, so Sig still sees it
+  const b5 = event({ id: 'cs_live_bare5', client_reference_id: null, amount_subtotal: 4500, amount_total: 4500 });
+  h = await hook(b5, signed(b5)); A((await h.json()).ok, 'webhook: a bare payment link is taken');
+  const bare = recs().map(k => JSON.parse(store.get(k))).find(r => r.paid && r.paid.session === 'cs_live_bare5');
+  A(bare && bare.no_press && bare.product === 'print12x18' && bare.design_url === '' && bare.serial > 0, 'webhook: no press, kept with product from the price');
+  const other = event({}, 'payment_intent.succeeded');
+  h = await hook(other, signed(other)); A((await h.json()).ignored === 'payment_intent.succeeded', 'webhook: other events ignored');
+  // the poll does not mark a webhook-paid session again
+  globalThis.fetch = async () => new Response(JSON.stringify({ data: [{ id: 'cs_live_a1B2c3', client_reference_id: sigCode, payment_status: 'paid', amount_total: 1900, amount_subtotal: 1900, created: Math.floor(Date.now() / 1000) }], has_more: false }), { status: 200 });
+  const L = await (await admin('/rp-order/list')).json();
+  A(L.orders.filter(o => o.paid && o.paid.session === 'cs_live_a1B2c3').length === 1, 'the poll leaves a webhook-paid session alone');
+  A(L.orders.some(o => o.no_press && o.fulfill_url === ''), 'a record with no design has no maker link');
+  // the alert mark
+  let m = await admin('/rp-order/alerted', 'POST', { key: pressKey }); let mj = await m.json();
+  A(mj.ok && mj.already === false && mj.alerted.session === 'cs_live_a1B2c3', 'alerted: marked');
+  m = await admin('/rp-order/alerted', 'POST', { key: pressKey }); A((await m.json()).already === true, 'alerted: once');
+  globalThis.fetch = realFetch;
+  console.log('rp-order webhook checks: ' + n + ' passed');
+}

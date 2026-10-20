@@ -22,6 +22,12 @@ Reply-To sig@farmers1st.com.
                 page's own words (RainPrint.paidText, from the business days
                 in data/rain-print.json); "Something wrong? Reply to this
                 email."
+  Sig's alert   first, every paid record not yet alerted: one plain email to
+                Sig (product, town year style, gift, amount, serial, the
+                "Open to fulfill" maker link, the buyer's address as Stripe
+                sent it), marked alerted first, dry run or not. A paid
+                session comes in by Stripe's webhook (worker v5.35, which
+                also starts this job at once) or by the worker's poll.
   Once only     the record is marked mailed (POST /rp-order/mailed) BEFORE the
                 send, so a crash or a rerun can never send it twice; a send
                 that fails after the mark is counted in the log for Sig.
@@ -210,6 +216,70 @@ def build(o, r, to, gift_to="", fn="AGSIST", fa="", dry=False):
     return m
 
 
+# ───────────────────────────── Sig's order alert ─────────────────────────────
+
+def alert_text(o, buyer):
+    """Sig's alert: one order, plain text. The buyer's address only as Stripe sent it, never kept."""
+    paid = o.get("paid") or {}
+    amt = paid.get("amount")
+    lines = ["New Rain Print order.", ""]
+    lines.append("What: %s" % (what_line(o) if not o.get("no_press") else "%s (no design on record: the press post never came)"
+                                % PRODUCT.get(o.get("product"), "unknown product")))
+    lines.append("Gift: %s" % ("yes, this year's print, made in January" if o.get("gift") else "see the order form posts" if o.get("gift_to") else "no"))
+    if o.get("gift_to"):
+        lines[-1] = "Gift: yes, for %s" % o["gift_to"]
+    if isinstance(amt, (int, float)):
+        sub = paid.get("subtotal")
+        lines.append("Paid: $%s%s" % ("{:,.2f}".format(amt), (" ($%s less a code)" % "{:,.2f}".format(sub)) if isinstance(sub, (int, float)) and sub > amt else ""))
+    if o.get("serial"):
+        lines.append("Serial: %s" % o["serial"])
+    url = str(o.get("fulfill_url") or "")
+    lines.append("Open to fulfill: %s" % url if url.startswith("https://agsist.com/rain-print?") else
+                 "Open to fulfill: no design link. Find the session in Stripe (%s) and ask the buyer." % paid.get("session", "?"))
+    lines.append("Buyer (as Stripe sent it): %s" % (buyer or "not given"))
+    lines.append("Stripe session: %s" % paid.get("session", "?"))
+    lines += ["", "Sent once per paid session. Nothing about the buyer is kept by AGSIST."]
+    return "\n".join(lines) + "\n"
+
+
+def alert_subject(o):
+    what = {"digital": "Digital file", "print12x18": "Print", "framed12x18": "Framed"}.get(o.get("product"), "Rain Print")
+    place = one_line(o.get("place"), 60)
+    amt = (o.get("paid") or {}).get("amount")
+    return "Rain Print order: %s%s%s%s" % (what, (", " + place) if place else "", (" " + str(o["year"])) if o.get("year") else "",
+                                           (" ($%s)" % "{:,.2f}".format(amt)) if isinstance(amt, (int, float)) else "")
+
+
+def send_alerts(src, orders, send, sig_to, fn="AGSIST", fa=""):
+    """Every paid record not yet alerted: marked first (once only), then one email to Sig. Dry run or not:
+    the alert always goes to Sig. -> counts."""
+    c = {"alerts": 0, "alert failed": 0}
+    for o in orders:
+        if o.get("status") != "paid" or o.get("alerted") or not (o.get("paid") or {}).get("session"):
+            continue
+        mk = src.worker("rp-order/alerted", body={"key": o["key"]})
+        if not mk.get("ok") or mk.get("already"):
+            continue
+        buyer = ""
+        try:
+            b = src.session(o["key"])
+            buyer = b["email"] if EMAIL_RE.match(b["email"]) else ""
+        except Exception:                                  # noqa: BLE001
+            buyer = ""
+        m = EmailMessage()
+        m["Subject"] = alert_subject(o)
+        m["From"] = formataddr((fn, fa))
+        m["To"] = sig_to
+        m["Message-ID"] = make_msgid(domain=(fa.split("@", 1)[1] if "@" in fa else "agsist.com"))
+        m.set_content(alert_text(o, buyer))
+        try:
+            send(m)
+            c["alerts"] += 1
+        except Exception:                                  # noqa: BLE001
+            c["alert failed"] += 1
+    return c
+
+
 # ───────────────────────────── the run ─────────────────────────────
 
 def gift_notes(src, refs):
@@ -232,8 +302,11 @@ def run(src, dry, send, sig_to, test_emails):
         d = src.worker("rp-order/list", days=DAYS)
     except Exception as e:                                 # noqa: BLE001
         return 0, ["Order records could not be read (%s); nothing sent." % type(e).__name__]
-    if d.get("stripe") != "ok":
-        return 0, ["The worker could not confirm payments (Stripe: %s); nothing sent." % one_line(d.get("stripe"), 60)]
+    orders = [o for o in d.get("orders") or [] if isinstance(o, dict)]
+    ac = send_alerts(src, orders, send, sig_to)
+    log.append("Order alerts to Sig: %d sent, %d failed." % (ac["alerts"], ac["alert failed"]))
+    if d.get("stripe") != "ok" and not any((o.get("paid") or {}).get("via") == "webhook" for o in orders):
+        return (1 if ac["alert failed"] else 0), log + ["The worker could not confirm payments (Stripe: %s); no buyer email sent." % one_line(d.get("stripe"), 60)]
     due = [o for o in d.get("orders") or [] if isinstance(o, dict) and o.get("status") == "paid" and not o.get("mailed")
            and (o.get("paid") or {}).get("session") and URL_RE.match(str(o.get("design_url") or "")) and o.get("product") in PRODUCT]
     log.append("Paid and not yet mailed: %d." % len(due))
@@ -279,7 +352,7 @@ def run(src, dry, send, sig_to, test_emails):
                 continue
             counts["to Sig" if sig_only else "sent"] += 1
     log.append("; ".join("%s: %d" % (k, v) for k, v in counts.items()) + ".")
-    return (1 if counts["marked, send failed"] else 0), log
+    return (1 if counts["marked, send failed"] or ac["alert failed"] else 0), log
 
 
 def smtp_send(fn, fa):
@@ -330,7 +403,8 @@ WORDS = ["Your 13 x 19 framed print of Chetek, WI, 2025 is ordered. I email you 
 def order(key, product="framed12x18", session="cs_live_1", **kw):
     o = {"key": "rpo:17610000000%s:0000000%s" % (key, key), "ts": 1761000000000, "ref": SIG_REF, "product": product,
          "design_url": SIG_URL, "place": "Chetek, WI", "year": 2025, "style": "r1", "name": "Gustum Farm", "gift": False,
-         "status": "paid", "paid": {"amount": 89, "session": session}, "mailed": None}
+         "status": "paid", "paid": {"amount": 89, "session": session}, "mailed": None, "alerted": {"at": "x", "session": session},
+         "fulfill_url": SIG_URL + "&maker=1&serial=4", "serial": 4}
     o.update(kw)
     return o
 
@@ -340,7 +414,7 @@ class Fake(Sources):
         super().__init__("https://w.dev", "tok")
         self.listing, self.sessions, self.forms = listing, sessions, forms or []
         self.render_fail, self.mark_fail = render_fail, mark_fail
-        self.calls, self.marked = [], set()
+        self.calls, self.marked, self.alerted = [], set(), set()
 
     def worker(self, path, body=None, **q):
         self.calls.append(("worker", path))
@@ -348,6 +422,15 @@ class Fake(Sources):
             return self.listing
         if path == "form-list":
             return self.forms
+        if path == "rp-order/alerted":
+            k = body["key"]
+            already = k in self.alerted
+            self.alerted.add(k)
+            return {"ok": True, "already": already}
+        if path == "rp-order/buyer":
+            if self.listing.get("stripe") != "ok":   # the worker reads the address with its read key, or not at all
+                raise urllib.error.HTTPError("https://w.dev/x", 503, "no key", {}, None)
+            return {"ok": True, **self.session(q["key"])}
         if path == "rp-order/mailed":
             if self.mark_fail:
                 raise urllib.error.HTTPError("https://w.dev/x", 500, "x", {}, None)
@@ -357,7 +440,9 @@ class Fake(Sources):
             return {"ok": True, "already": already}
         raise urllib.error.HTTPError("https://w.dev/x", 404, "x", {}, None)
 
-    def session(self, key):
+    def session(self, key, direct=False):
+        if self.listing.get("stripe") != "ok":
+            raise urllib.error.HTTPError("https://w.dev/x", 503, "no key", {}, None)
         sid = next((o["paid"]["session"] for o in self.listing.get("orders", []) if o["key"] == key), "")
         self.calls.append(("session", sid))
         if sid not in self.sessions:
@@ -422,7 +507,7 @@ def selftest():
     sent.clear()
     f = Fake({"stripe": "no key", "orders": [order("1")]}, {"cs_live_1": live})
     code, log = run(f, False, send, "sig@farmers1st.com", tests)
-    ck("no confirmed payments: nothing sent", sent == [] and "nothing sent" in log[0], log)
+    ck("no confirmed payments: nothing sent", sent == [] and "no buyer email sent" in log[-1], log)
     f = Fake({"stripe": "ok", "orders": [order("1", status="pay pressed", paid=None)]}, {"cs_live_1": live})
     run(f, False, send, "sig@farmers1st.com", tests)
     ck("pay pressed only: nothing sent", sent == [])
@@ -447,6 +532,37 @@ def selftest():
     sent.clear()
     code, log = run(f, False, send, "sig@farmers1st.com", tests)
     ck("gift notes unreadable: every order waits", sent == [] and not f.marked and "waiting: 1" in log[-1], log)
+
+    print("\nSig's order alert")
+    sent.clear()
+    f = Fake({"stripe": "ok", "orders": [order("1", alerted=None, paid={"amount": 79, "subtotal": 89, "session": "cs_live_1", "via": "webhook"}),
+                                         order("2", status="pay pressed", paid=None, alerted=None),
+                                         order("3", alerted=None, session="cs_live_3", no_press=True, design_url="", fulfill_url="", place="", year=None,
+                                               product="print12x18", serial=5, mailed={"at": "x"})]},
+             {"cs_live_1": live, "cs_live_3": {"livemode": True, "email": ""}})
+    code, log = run(f, True, send, "sig@farmers1st.com", tests)
+    alerts = [m for m in sent if m["Subject"].startswith("Rain Print order:")]
+    ck("one alert per paid record, to Sig, even on a dry run", len(alerts) == 2 and all(m["To"] == "sig@farmers1st.com" for m in alerts), [m["Subject"] for m in sent])
+    a = alerts[0].get_content()
+    ck("alert subject", alerts[0]["Subject"] == "Rain Print order: Framed, Chetek, WI 2025 ($79.00)", alerts[0]["Subject"])
+    ck("alert: what, paid, serial, the maker link", "What: 13 x 19 framed print of Chetek, WI, 2025, Staircase" in a and "Paid: $79.00 ($89.00 less a code)" in a
+       and "Serial: 4" in a and "Open to fulfill: " + SIG_URL + "&maker=1&serial=4" in a, a)
+    ck("alert: the buyer only as Stripe sent it", "Buyer (as Stripe sent it): buyer@example.com" in a, a)
+    b = alerts[1].get_content()
+    ck("alert with no press: says so, no link", "no design on record" in b and "no design link" in b and "Buyer (as Stripe sent it): not given" in b, b)
+    ck("alerts marked once", f.alerted == {order("1")["key"], order("3")["key"]})
+    ck("the log: counts only", "Order alerts to Sig: 2 sent, 0 failed." in log and all("@" not in x for x in log), log)
+    sent.clear()
+    run(f, True, send, "sig@farmers1st.com", tests)
+    ck("a second run sends no alert again", not any(m["Subject"].startswith("Rain Print order:") for m in sent), [m["Subject"] for m in sent])
+    sent.clear()
+    f = Fake({"stripe": "no key", "orders": [order("1", alerted=None, mailed=None, paid={"amount": 19, "session": "cs_live_1", "via": "webhook"}, product="digital")]},
+             {"cs_live_1": live})
+    code, log = run(f, False, send, "sig@farmers1st.com", tests)
+    ck("webhook-paid with no read key: Sig's alert goes (buyer not given); no buyer email, counted",
+       [m["To"] for m in sent] == ["sig@farmers1st.com"] and "Buyer (as Stripe sent it): not given" in sent[0].get_content()
+       and "no address: 1" in log[-1], (log, [m["To"] for m in sent]))
+    ck("no em dashes in the alert", not any("\u2014" in m.get_content() for m in alerts))
 
     print("\nthe email")
     sent.clear()

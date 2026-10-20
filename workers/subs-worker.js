@@ -5,6 +5,18 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.35 (2026-10-20): ORDER ALERTS. POST /rp-order/stripe is Stripe's webhook
+ *   (checkout.session.completed when paid, checkout.session.async_payment_succeeded),
+ *   checked with the new secret STRIPE_WEBHOOK_SECRET (Stripe-Signature, HMAC
+ *   SHA-256, 5 minutes' tolerance; 400 otherwise). It marks the press paid
+ *   (paid.via "webhook"), hands a print its serial, keeps a paid session with
+ *   no press as its own record (no_press), once per session (rpo-ev:<id>),
+ *   and starts .github/workflows/rp-buyer-email.yml when GH_DISPATCH_TOKEN is
+ *   set (RP_BUYER_EMAIL_LIVE = "1" lets the buyer email reach buyers; else a
+ *   dry run). POST /rp-order/alerted {key} marks Sig's alert sent, like
+ *   /rp-order/mailed. The poll in /rp-order/list stays as the backup.
+ *   New optional secrets STRIPE_WEBHOOK_SECRET, GH_DISPATCH_TOKEN; variable
+ *   RP_BUYER_EMAIL_LIVE. Every other route answers as before.
  * v5.34 (2026-10-20): RAIN PRINT ORDER RECORDS. A $19 Stripe payment showed
  *   no design (Stripe keeps client_reference_id on the Checkout Session, not
  *   on the payment page). New routes only; every other route answers as before.
@@ -1686,6 +1698,17 @@ async function rpoSessions(env, sinceSec) {
   }
   return out;
 }
+// The press a paid session belongs to: the latest unpaid press of the same ref
+// made before the session (two minutes' slack), the same product's price first.
+function rpoMatch(recs, s) {
+  const c = recs.filter(r => !r.paid && r.ref === s.ref && (r.ts || 0) <= s.created * 1000 + 120e3);
+  if (!c.length) return null;
+  const same = c.filter(r => typeof r.price === "number" && Math.round(r.price * 100) === s.sub);
+  return (same.length ? same : c).sort((a, b) => (b.ts || 0) - (a.ts || 0))[0];
+}
+function rpoPaid(s, via) {
+  return { amount: s.total / 100, subtotal: s.sub / 100, at: new Date(s.created * 1000).toISOString(), session: s.id, via };
+}
 async function rpoPut(env, k, r) {
   const exp = Math.max(Math.floor(Date.now() / 1000) + 120, Math.floor((r.ts || Date.now()) / 1000) + RPO_TTL_S);
   await env.SUBS.put(k, JSON.stringify(r), { expiration: exp });
@@ -1695,6 +1718,7 @@ async function rpoSerialLast(env) {
   catch (e) { return 0; }
 }
 function rpoFulfill(r, serial) {
+  if (!r.design_url) return "";
   return r.design_url + "&maker=1" + (RPO_PRINTS.includes(r.product) && serial ? "&serial=" + serial : "");
 }
 // The records of the last `days` days, newest first, each paid or pay pressed.
@@ -1723,11 +1747,9 @@ async function rpoList(env, days) {
   if (sessions) {
     const used = new Set(recs.filter(r => r.paid && r.paid.session).map(r => r.paid.session));
     for (const s of sessions.filter(x => x.paid && x.ref && !used.has(x.id)).sort((a, b) => a.created - b.created)) {
-      const c = recs.filter(r => !r.paid && r.ref === s.ref && (r.ts || 0) <= s.created * 1000 + 120e3);
-      if (!c.length) continue;
-      const same = c.filter(r => typeof r.price === "number" && Math.round(r.price * 100) === s.sub);
-      const hit = (same.length ? same : c).sort((a, b) => (b.ts || 0) - (a.ts || 0))[0];
-      hit.paid = { amount: s.total / 100, subtotal: s.sub / 100, at: new Date(s.created * 1000).toISOString(), session: s.id };
+      const hit = rpoMatch(recs, s);
+      if (!hit) continue;
+      hit.paid = rpoPaid(s, "poll");
       changed.add(hit);
     }
   }
@@ -1745,11 +1767,87 @@ async function rpoList(env, days) {
     return {
       key: r.key, ts: r.ts, at: new Date(r.ts).toISOString(), ref: r.ref, product: r.product, price: r.price,
       design_url: r.design_url, place: r.place, year: r.year, style: r.style, name: r.name, markers: r.markers,
-      dedication: r.dedication, gift: !!r.gift, status: r.paid ? "paid" : "pay pressed", paid: r.paid || null, mailed: r.mailed || null,
+      dedication: r.dedication, gift: !!r.gift, status: r.paid ? "paid" : "pay pressed", paid: r.paid || null, mailed: r.mailed || null, alerted: r.alerted || null, no_press: !!r.no_press,
       serial: r.serial || null, serial_next: serialNext, fulfill_url: rpoFulfill(r, r.serial || serialNext),
     };
   }).reverse();
   return { stripe, serial_last: last, orders: out };
+}
+
+// ---------- v5.35: the Stripe webhook (Sig: "alerts whenever an order is placed") ----------
+// POST /rp-order/stripe, from Stripe only: the Stripe-Signature header is
+// checked against STRIPE_WEBHOOK_SECRET (HMAC SHA-256 of "<t>.<body>", any v1,
+// t within RPO_WH_TOLERANCE_S of now). A paid checkout.session.completed or a
+// checkout.session.async_payment_succeeded marks its press paid (rpoMatch, as
+// the poll does), hands a print its serial, and starts the email job once.
+// Idempotent by session id (rpo-ev:<session>). Nothing about the buyer is
+// stored: the event's customer_details is never read.
+const RPO_WH_TOLERANCE_S = 300;
+const RPO_WH_MAX_BYTES = 64 * 1024;
+const RPO_PRODUCT_BY_CENTS = { 1900: "digital", 4500: "print12x18", 8900: "framed12x18" };
+async function hmacHex(secret, msg) {
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(msg));
+  return [...new Uint8Array(sig)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+// -> "" when the header is good, else why not
+async function stripeSigProblem(header, raw, secret, nowS) {
+  const parts = String(header || "").split(",").map(x => x.trim().split("="));
+  const t = Number((parts.find(p => p[0] === "t") || [])[1]);
+  const v1 = parts.filter(p => p[0] === "v1" && p[1]).map(p => p[1]);
+  if (!Number.isInteger(t) || !v1.length) return "no signature";
+  if (Math.abs(nowS - t) > RPO_WH_TOLERANCE_S) return "stale";
+  const want = await hmacHex(secret, t + "." + raw);
+  return v1.some(v => safeEq(v, want)) ? "" : "bad signature";
+}
+async function rpoWebhookSession(env, x) {
+  const s = { id: String(x.id || ""), ref: typeof x.client_reference_id === "string" ? x.client_reference_id : "",
+    total: Number(x.amount_total) || 0, sub: Number(x.amount_subtotal) || Number(x.amount_total) || 0, created: Number(x.created) || Math.floor(Date.now() / 1000) };
+  if (!/^cs_[A-Za-z0-9_]{1,250}$/.test(s.id)) return { error: "no session" };
+  const evKey = "rpo-ev:" + s.id;
+  if (await env.SUBS.get(evKey) !== null) return { already: true };
+  const recs = [];
+  for (const k of await listKeys(env, "rpo:")) {
+    if (!RPO_KEY_RE.test(k)) continue;
+    let r = null;
+    try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+    if (r && typeof r === "object") { r.key = k; recs.push(r); }
+  }
+  if (recs.some(r => r.paid && r.paid.session === s.id)) { await env.SUBS.put(evKey, "1", { expirationTtl: RPO_TTL_S }); return { already: true }; }
+  let hit = rpoMatch(recs, s);
+  if (!hit) {
+    // paid with no press on record (a bare payment link, or the press post was lost): kept so Sig still sees it
+    const ts = s.created * 1000;
+    const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(v => v.toString(16).padStart(2, "0")).join("");
+    const okRef = rpoRefOk(s.ref);
+    hit = { key: "rpo:" + ts + ":" + rnd, ts, ref: okRef ? s.ref : "", product: RPO_PRODUCT_BY_CENTS[s.sub] || "", price: s.sub / 100,
+      design_url: okRef ? "https://agsist.com/rain-print?d=" + s.ref : "", place: "", year: null, style: "", name: "", markers: "",
+      dedication: "", gift: /^GIFT-/.test(s.ref), no_press: true };
+  }
+  hit.paid = rpoPaid(s, "webhook");
+  if (RPO_PRINTS.includes(hit.product) && !hit.serial) {
+    hit.serial = (await rpoSerialLast(env)) + 1;
+    await env.SUBS.put("rpo-serial", JSON.stringify({ last: hit.serial }));
+  }
+  const k = hit.key; delete hit.key;
+  await rpoPut(env, k, hit);
+  await env.SUBS.put(evKey, "1", { expirationTtl: RPO_TTL_S });
+  return { key: k };
+}
+// Starts .github/workflows/rp-buyer-email.yml (Sig's alert and the buyer email) at once.
+// Needs GH_DISPATCH_TOKEN (a fine-grained token on dnilgis/agsist, Actions read and write);
+// without it the job waits for its next run. RP_BUYER_EMAIL_LIVE = "1" lets buyer emails go
+// to buyers; anything else is a dry run (every email to Sig only).
+async function rpoDispatch(env) {
+  if (typeof env.GH_DISPATCH_TOKEN !== "string" || !env.GH_DISPATCH_TOKEN) return "no token";
+  try {
+    const r = await fetch("https://api.github.com/repos/dnilgis/agsist/actions/workflows/rp-buyer-email.yml/dispatches", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-subs", "Content-Type": "application/json" },
+      body: JSON.stringify({ ref: "main", inputs: { dry_run: env.RP_BUYER_EMAIL_LIVE === "1" ? "false" : "true" } }),
+    });
+    return r.status === 204 ? "started" : "HTTP " + r.status;
+  } catch (e) { return "failed"; }
 }
 
 export default {
@@ -3263,7 +3361,30 @@ async function handle(req, env) {
     }
     // v5.34: the buyer's "here's your print" email went out for this paid record (scripts/rp_buyer_email.py).
     // Only the time and the session id are kept; never the address it went to.
-    if (path === "/rp-order/mailed" && req.method === "POST") {
+    // v5.35: Stripe's webhook. Not a browser post (no Origin): the signature is the gate.
+    if (path === "/rp-order/stripe" && req.method === "POST") {
+      if (typeof env.STRIPE_WEBHOOK_SECRET !== "string" || !env.STRIPE_WEBHOOK_SECRET) return json({ ok: false, error: "not set up" }, 503);
+      if (Number(req.headers.get("Content-Length") || 0) > RPO_WH_MAX_BYTES) return json({ ok: false, error: "too large" }, 413);
+      let raw = "";
+      try { raw = await req.text(); } catch (e) { raw = ""; }
+      if (raw.length > RPO_WH_MAX_BYTES) return json({ ok: false, error: "too large" }, 413);
+      const why = await stripeSigProblem(req.headers.get("Stripe-Signature"), raw, env.STRIPE_WEBHOOK_SECRET, Math.floor(Date.now() / 1000));
+      if (why) return json({ ok: false, error: why }, 400);
+      let ev = null;
+      try { ev = JSON.parse(raw); } catch (e) { ev = null; }
+      const x = ev && ev.data && ev.data.object;
+      if (!x || typeof x !== "object") return json({ ok: false, error: "bad event" }, 400);
+      const type = String(ev.type || "");
+      const paid = (type === "checkout.session.completed" && x.payment_status === "paid") || type === "checkout.session.async_payment_succeeded";
+      if (!paid) return json({ ok: true, ignored: type }, 200);
+      const done = await rpoWebhookSession(env, x);
+      if (done.error) return json({ ok: false, error: done.error }, 400);
+      if (done.already) return json({ ok: true, already: true }, 200);
+      return json({ ok: true, job: await rpoDispatch(env) }, 200);
+    }
+    // v5.35: Sig's order alert went out for this paid record (scripts/rp_buyer_email.py), once.
+    if ((path === "/rp-order/mailed" || path === "/rp-order/alerted") && req.method === "POST") {
+      const what = path === "/rp-order/mailed" ? "mailed" : "alerted";
       if (!sig) return json({ ok: false }, 403, ac);
       let b = null;
       try { b = await req.json(); } catch (e) { b = null; }
@@ -3273,10 +3394,10 @@ async function handle(req, env) {
       try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
       if (!r) return json({ ok: false, error: "not found" }, 404, ac);
       if (!r.paid) return json({ ok: false, error: "not paid" }, 409, ac);
-      if (r.mailed) return json({ ok: true, already: true, mailed: r.mailed }, 200, ac);
-      r.mailed = { at: new Date().toISOString(), session: String(r.paid.session || "") };
+      if (r[what]) return json({ ok: true, already: true, [what]: r[what] }, 200, ac);
+      r[what] = { at: new Date().toISOString(), session: String(r.paid.session || "") };
       await rpoPut(env, k, r);
-      return json({ ok: true, already: false, mailed: r.mailed }, 200, ac);
+      return json({ ok: true, already: false, [what]: r[what] }, 200, ac);
     }
     // v5.34: for the buyer email only (scripts/rp_buyer_email.py): the one paid session's livemode and
     // buyer address, read from Stripe now and handed back. Nothing is stored or logged here.
