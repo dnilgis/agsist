@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 98,
- "with_known_cadence": 98,
+ "count": 99,
+ "with_known_cadence": 99,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -1067,6 +1067,33 @@
     "25 8 * * *"
    ],
    "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/hail/mesh/today-partial.json",
+   "pages": [
+    "hail-map.html"
+   ],
+   "written_by": [
+    "Hail data refresh",
+    "MESH partial \u2014 last 24h live layer"
+   ],
+   "touched_by": [
+    "Hail data refresh",
+    "MESH partial \u2014 last 24h live layer"
+   ],
+   "cadence": "about every 60 minutes",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "41 6 1 * *",
+    "5 * * 3-9 *",
+    "5 15,21 * 1,2,10,11,12 *"
+   ],
+   "max_gap_hours": 1.0,
    "quiet": null,
    "why_quiet": null
   },

@@ -56,6 +56,6 @@ build/shots/
 !/data/fsa/urls.txt
 !/data/fsa/manifest.tsv
 
-# Working notes live on the raw branch, never on main (Sig, Oct 20: off the public site).
-# Unpack with: bash scripts/pull_raw.sh .claude/notes ; save edits with scripts/push_raw.sh.
+# Working notes live in the private repo dnilgis/agsistretired, never here (Sig, Oct 20).
+# A stray copy unpacked here is never committed.
 /.claude/notes/

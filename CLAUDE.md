@@ -28,6 +28,6 @@ same commit and say why.
 
 ## New session? Start here
 
-Run `bash scripts/pull_raw.sh .claude/notes` (the notes live on the unpublished `raw` branch, off the public site), then read `.claude/notes/HANDOFF.md` (how we ship, where things live, what is open) and
-`.claude/notes/STANDING-DECISIONS.md` (Sig's rules) before doing anything. Ship checks: `scripts/dev/checks.sh`.
-After editing a note, save it back with `bash scripts/push_raw.sh "<what changed>" .claude/notes`; never commit it to main.
+The working notes live in Sig's private repo dnilgis/agsistretired, folder notes/ (off the public site). Add it to the session (add_repo), then read `notes/HANDOFF.md` (how we ship, where things live, what is open) and
+`notes/STANDING-DECISIONS.md` (Sig's rules) before doing anything. Ship checks: `scripts/dev/checks.sh`.
+After editing a note, commit it in that private repo; never commit notes to this public repo.
