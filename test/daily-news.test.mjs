@@ -97,7 +97,8 @@ test("daily.yml: commits the news sitemap and pings IndexNow last, never blockin
   assert.match(y, /git add [^\n]*sitemap-news\.xml/);
   const i = y.indexOf("- name: Ping IndexNow with today's issue");
   assert.ok(i > y.indexOf("- name: Send daily email"), "after the email");
-  assert.ok(i > y.indexOf("- name: Send the forwarding brief to Sig"), "last step");
+  // Sig, 2026-10-20: the old plain-text forwarding brief is off; the Daily list replaced it.
+  assert.equal(y.indexOf("send_morning_brief.py"), -1, "no forwarding brief step");
   assert.equal(y.indexOf("- name:", i + 10), -1, "nothing after it");
   const step = y.slice(i);
   assert.match(step, /continue-on-error: true/);
