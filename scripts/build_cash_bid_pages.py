@@ -1814,6 +1814,36 @@ def history_box(t, boards, logged):
             f'<p class="cbt-sub">Opens the basis log for these elevators.</p></div></details>')
 
 
+TOWN_TITLE_MAX = 60
+
+
+def town_title(place, live_b):
+    """The town page's <title>, at most TOWN_TITLE_MAX characters. It names the
+    elevators when they fit, in page order (lead_first()): "Cash Grain Bids in
+    Jerome, ID Today: Scoular", or "...: A and B", or
+    "...: A and 2 more" (940 of 1,533 town pages with a bid on 2026-10-20). Search engines are asked for elevators by name and no
+    town title named one (SEO seat, Oct 19, 2026). It always starts "Cash Grain
+    Bids in <Town>, <ST> Today" while that fits: scripts/build_search_index.py
+    reads the town from it. A town with no current bid keeps the plain title."""
+    base = f"Cash Grain Bids in {place} Today"
+    names = []
+    for bd in live_b:
+        op = (bd.get("operator") or "").strip()
+        if op and op.lower() not in (n.lower() for n in names):
+            names.append(op)
+    tails = []
+    if len(names) == 1:
+        tails = [names[0]]
+    elif len(names) == 2:
+        tails = [f"{names[0]} and {names[1]}", f"{names[0]} and 1 more"]
+    elif names:
+        tails = [f"{names[0]} and {len(names) - 1} more"]
+    for c in [f"{base}: {x}" for x in tails] + [f"{base} | AGSIST", base, f"{place} Cash Grain Bids"]:
+        if len(c) <= TOWN_TITLE_MAX:
+            return c
+    return f"{place} Cash Grain Bids"
+
+
 def lead_first(boards):
     """The boards in page order: the elevator the answer sentence names first
     leads, then the one it names second, then the rest as they were. Nevada, IA
@@ -1854,11 +1884,7 @@ def build_town_page(t, ctx):
     indexable = bool(live_b)
     path = f"/cash-bids/{ssl}/{t['slug']}"
     place = f"{t['name']}, {st}"
-    title = f"Cash Grain Bids in {place} Today | AGSIST"
-    if len(title) > 60:
-        title = f"Cash Grain Bids in {place} Today"
-    if len(title) > 60:
-        title = f"{place} Cash Grain Bids"
+    title = town_title(place, live_b)
     zips = Counter(b["zip"] for b in live_b or quiet if b["zip"] and b["how"] != "near")
     if not zips:
         zips = Counter(b["zip"] for b in live_b or quiet if b["zip"])
@@ -3221,7 +3247,10 @@ def selftest():
         assert share == re.search(r'<meta name="twitter:description" content="([^"]*)">', fr).group(1)
         assert share.startswith("Top bids for nearest delivery: corn $3.95, soybeans $9.85 at "), share
         assert share.endswith("Updated Oct 7, 12:00 pm CT."), share
-        assert "<title>Cash Grain Bids in Fremont, NE Today | AGSIST</title>" in fr, "search title unchanged"
+        ft = re.search(r"<title>(.*?)</title>", fr).group(1)
+        assert ft == "Cash Grain Bids in Fremont, NE Today: Op kept and 5 more", ft
+        import build_search_index as BSI
+        assert BSI.TOWN_T.search(ft).groups() == ("Fremont", "NE"), "the search index still reads the town"
         # each board's posted time is the site's "Updated" stamp, re-rendered and aged by asof.js
         assert '<time class="asof" data-asof="bids" datetime="2026-10-07T17:00:00Z">Updated Oct 7, 12:00 pm CT</time>' in fr
         assert '/components/asof.js?v=1' in fr and '/components/asof.css?v=1' in fr
@@ -3774,6 +3803,16 @@ def _selftest_lead():
     assert lead_first([key, lin, mid]) == [mid, key, lin], [b["operator"] for b in lead_first([key, lin, mid])]
     assert lead_first([key, lin]) == [lin, key]
     assert lead_first([key]) == [key] and lead_first([]) == []
+    assert town_title("Nevada, IA", [mid, key, lin]) == "Cash Grain Bids in Nevada, IA Today | AGSIST", "68 chars: too long"
+    assert town_title("Jerome, ID", [dict(key, operator="Scoular")]) == "Cash Grain Bids in Jerome, ID Today: Scoular"
+    assert town_title("Gothenburg, NE", [dict(key, operator="Country Partners Cooperative")]) == \
+        "Cash Grain Bids in Gothenburg, NE Today | AGSIST", "69 chars: the plain title"
+    a, b2 = dict(key, operator="Key Coop"), dict(lin, operator="AGP")
+    assert town_title("Ames, IA", [a, b2]) == "Cash Grain Bids in Ames, IA Today: Key Coop and AGP"
+    assert town_title("Nevada, IA", [key, lin]) == "Cash Grain Bids in Nevada, IA Today | AGSIST", "63 chars"
+    assert town_title("Nevada, IA", [key, dict(key)]) == "Cash Grain Bids in Nevada, IA Today: Key Cooperative"
+    assert town_title("Nevada, IA", []) == "Cash Grain Bids in Nevada, IA Today | AGSIST"
+    assert town_title("Bloomington Springs, TN", [lin]) == "Cash Grain Bids in Bloomington Springs, TN Today | AGSIST"
 
 
 def _selftest_share():
