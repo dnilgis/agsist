@@ -253,8 +253,14 @@ def _month_of(row):
 def tally_counties(rows, acc):
     """Fold one year's hail rows into the cross-year county accumulator `acc`.
 
-    acc[(ST, COUNTY)] = {"total":int, "dmg":int, "months":[13 ints]}.
+    acc[(ST, county lower-cased)] = {"total":int, "dmg":int, "months":[13 ints], "names":{spelling: n}}.
     Rows with no county (~1% IEM can't match to a boundary) are skipped.
+
+    IEM spells one county several ways ("LINN" and "Linn"). The key is the
+    lower-cased name, so both spellings land in one record BEFORE
+    finalize_counties ranks and cuts to 12 (2026-10-20, panel F1: keyed on the
+    raw spelling, Iowa's Linn came out as 65 + 62, and any half that fell below
+    12th place was lost, so the state table showed 9 counties, not 12).
     """
     for row in rows or []:
         if not is_hail(row):
@@ -263,11 +269,12 @@ def tally_counties(rows, acc):
         county = (_get(row, "county") or "").strip()
         if not st or not county:
             continue
-        key = (st, county)
+        key = (st, " ".join(county.lower().split()))
         rec = acc.get(key)
         if rec is None:
-            rec = {"total": 0, "dmg": 0, "months": [0] * 13}
+            rec = {"total": 0, "dmg": 0, "months": [0] * 13, "names": {}}
             acc[key] = rec
+        rec["names"][county] = rec["names"].get(county, 0) + 1
         rec["total"] += 1
         mag = mag_of(row)
         if mag is not None and mag >= DAMAGING_IN:
@@ -297,8 +304,18 @@ VALID_ST = set("AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD M
                "NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY PR VI GU AS MP".split())
 
 
+def display_name(county, names):
+    """The spelling the table shows: the most-reported one, a mixed-case
+    spelling ahead of an all-caps one ("Linn" over "LINN")."""
+    if not names:
+        return county
+    return max(names, key=lambda n: (not n.isupper(), names[n], n))
+
+
 def finalize_counties(acc, years, per_state=12, end_iso=None):
-    """Turn the accumulator into {ST: [ranked county rows]} for the page."""
+    """Turn the accumulator into {ST: [ranked county rows]} for the page.
+    Each row carries its 12 monthly counts (Jan..Dec) so a later merge adds
+    months instead of keeping the bigger half's peak."""
     n_years = elapsed_years(years, end_iso or datetime.now(timezone.utc).strftime("%Y-%m-%d"))
     by_state = {}
     for (st, county), rec in acc.items():
@@ -309,15 +326,16 @@ def finalize_counties(acc, years, per_state=12, end_iso=None):
             if rec["months"][i] > rec["months"][peak_i]:
                 peak_i = i
         row = {
-            "county": county,
+            "county": display_name(county, rec.get("names")),
             "total": rec["total"],
             "avg": round(rec["total"] / n_years, 1),
             "peak": _MONTHS[peak_i] if peak_i else "\u2014",
             "dmg_pct": round(100.0 * rec["dmg"] / rec["total"]) if rec["total"] else 0,
+            "months": rec["months"][1:13],
         }
         by_state.setdefault(st, []).append(row)
     for st in by_state:
-        by_state[st].sort(key=lambda r: r["total"], reverse=True)
+        by_state[st].sort(key=lambda r: (-r["total"], r["county"]))
         by_state[st] = by_state[st][:per_state]
     return by_state
 
