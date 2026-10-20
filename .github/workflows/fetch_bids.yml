@@ -320,7 +320,6 @@ jobs:
         if: github.event.inputs.dry_run != 'true'
         continue-on-error: true
         env:
-          RAW_SOFT: '1'
           GH_TOKEN: ${{ github.token }}
           NOW: ${{ github.event.inputs.bid_snapshot }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
