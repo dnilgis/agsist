@@ -238,7 +238,8 @@ def save_briefing_inputs(user_message, system_prompt):
         with open(briefing_inputs_path(), "w") as f:
             json.dump({"saved": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                        "user_message": user_message,
-                       "system_day_part": blocks[-1]["text"] if len(blocks) > 1 else system_prompt},
+                       "system_day_part": blocks[-1]["text"] if len(blocks) > 1 else system_prompt,
+                       "dropped_situations": list(DROPPED_SITUATIONS)},
                       f, ensure_ascii=False)
     except Exception as _e:
         print(f"  [warn] briefing inputs not saved for the fact check ({type(_e).__name__}: {_e})")
@@ -1294,10 +1295,14 @@ def load_yesterdays_call_context(today_briefing=None):
     return None
 
 
-# How old data/ongoing-situations.json may get before the prompt is told to
-# distrust its dates. Two weeks spans a normal refresh cadence without letting
+# How old an "active" entry in data/ongoing-situations.json may get before it
+# is dropped from the prompt. Two weeks spans a normal refresh cadence without letting
 # a whole report cycle go by unflagged.
 STALE_SITUATIONS_DAYS = 14
+# Situations the last load_ongoing_situations() call left out as stale:
+# [{"key", "updated", "age_days"}]. Saved with the briefing inputs so the
+# fact check lists them in its log.
+DROPPED_SITUATIONS = []
 
 
 def load_ongoing_situations():
@@ -1306,6 +1311,7 @@ def load_ongoing_situations():
     cross-day continuity drift (Hormuz tanker counts contradicting between
     Monday and Thursday briefings, "Iran crisis" appearing without anchor, etc.).
     Returns formatted block string or empty string if file missing."""
+    DROPPED_SITUATIONS.clear()
     path = REPO_ROOT / "data" / "ongoing-situations.json"
     if not path.exists():
         return ""
@@ -1316,7 +1322,7 @@ def load_ongoing_situations():
         return ""
     situations = data.get("situations", {}) if isinstance(data, dict) else {}
 
-    # ── staleness guard (2026-08-15) ──────────────────────────────────────
+    # ── staleness guard (2026-08-15, made a drop 2026-10-20) ─────────────
     # This file is standing context the model is told NOT to contradict, so a
     # stale fact in here outranks today's news in the model's head. On
     # 2026-08-15 it still said "Pro Farmer scouts are in fields the week of
@@ -1324,39 +1330,38 @@ def load_ongoing_situations():
     # catalyst" three days after it printed, and carried USDA's superseded
     # 183.0/53.0 as current. That is the same shape as the 2026-08-11
     # fabrication: a wrong date in trusted context, narrated as fact.
-    # We cannot auto-refresh it, but we can stop presenting it as timeless.
-    stale_note = ""
+    # Until 2026-10-20 an old file only got a warning line in the prompt, and
+    # the Oct 5 issue still wrote about the Aug 24 screwworm reopening from
+    # it, 66 days on. Now an "active" entry older than STALE_SITUATIONS_DAYS
+    # (its own "updated" date, else the file's _last_updated) is DROPPED from
+    # the prompt and recorded in DROPPED_SITUATIONS, which
+    # save_briefing_inputs() hands to the fact check for its log.
     _lu = (data.get("_last_updated") or "").strip() if isinstance(data, dict) else ""
-    if _lu:
-        try:
-            _age = (datetime.now().date() - datetime.strptime(_lu, "%Y-%m-%d").date()).days
-            if _age > STALE_SITUATIONS_DAYS:
-                print(f"  [v4.6] ⚠ ongoing-situations.json is {_age} days old "
-                      f"(updated {_lu}) — prompt will flag it as possibly stale")
-                stale_note = (
-                    f"\n  ⚠ THIS BLOCK WAS LAST UPDATED {_lu}, {_age} DAYS AGO. Treat every DATE and\n"
-                    f"  every 'upcoming'/'next' claim in it as possibly overtaken. If a date in here has\n"
-                    f"  already passed, the event has happened — never describe a past date as upcoming,\n"
-                    f"  and never resolve it from these facts alone. Today's news block and the release\n"
-                    f"  calendar outrank this block on anything time-sensitive.\n")
-            else:
-                print(f"  [v4.6] ongoing-situations.json is {_age} days old (updated {_lu})")
-        except ValueError:
-            pass
+    today = datetime.now().date()
 
     active = []
     for key, sit in situations.items():
-        if (sit.get("status") or "").lower() != "active":
+        if not isinstance(sit, dict) or (sit.get("status") or "").lower() != "active":
             continue
         anchor = sit.get("anchor", "").strip()
         facts = sit.get("facts", []) or []
         if not anchor and not facts:
             continue
+        upd = (sit.get("updated") or _lu or "").strip()
+        try:
+            age = (today - datetime.strptime(upd, "%Y-%m-%d").date()).days
+        except ValueError:
+            age = None
+        if age is None or age > STALE_SITUATIONS_DAYS:
+            DROPPED_SITUATIONS.append({"key": key, "updated": upd or None, "age_days": age})
+            print(f"  [v4.6] ⚠ standing situation [{key}] dropped from the prompt: "
+                  + (f"{age} days old (updated {upd})" if age is not None else "no valid 'updated' date"))
+            continue
         block = f"  [{key}]"
         if anchor:
             block += f"\n    Anchor phrase: \"{anchor}\""
         if facts:
-            block += "\n    Standing facts (do NOT contradict):"
+            block += f"\n    Standing facts as of {upd} (do NOT contradict):"
             for fact in facts[:6]:  # cap at 6 to keep prompt tight
                 block += f"\n      - {fact}"
         active.append(block)
@@ -1370,7 +1375,7 @@ def load_ongoing_situations():
         "If today's news block contradicts a standing fact, prefer today's news but flag the\n"
         "shift explicitly (e.g., \"Iran tensions, ongoing since late April, escalated overnight as...\")\n"
     )
-    return header + stale_note + "\n" + "\n\n".join(active) + "\n"
+    return header + "\n" + "\n\n".join(active) + "\n"
 
 
 def load_editorial_notes(n=15):
@@ -3954,7 +3959,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     # og:title = NewsArticle headline = news sitemap title.
     headline = html_esc(news_headline(briefing))
     subheadline = html_esc(briefing.get("subheadline", ""))
-    lead = html_esc(briefing.get("lead", ""))
+    lead = html_esc_preserve_strong(briefing.get("lead", ""))  # **bold** as <strong>, like the body (2026-10-20)
     meta = briefing.get("meta", {})
     mood = meta.get("market_mood", "")
     heat_idx = meta.get("heat_section", -1)
@@ -5408,6 +5413,20 @@ def main():
         print(f"  Markets OPEN: {market_status['day_name']}")
     print("  Loading prices.json...")
     price_data, surprises = load_prices()
+    # 2026-10-20: streak counts ("the fourth straight lower close") come from
+    # the settles by code (scripts/streak_words.py). The model is handed the
+    # counts; after drafting, any streak words that disagree are fixed or cut.
+    _streaks = {}
+    try:
+        import streak_words as _sw
+        _streaks = _sw.from_files(str(REPO_ROOT))
+        _sl = _sw.prompt_lines(_streaks)
+        if _sl and isinstance(price_data, dict) and price_data.get("price_block"):
+            price_data["price_block"] += "\n\n" + _sl
+            print("  Streaks: " + "; ".join(f"{s_['label']} {s_['n']} {s_['dir']}" + (" (open)" if s_['open'] else "")
+                                            for s_ in _streaks.values()))
+    except Exception as _e:
+        print(f"  [warn] streak counts skipped ({type(_e).__name__}: {_e})")
     if market_status["is_closed"]:
         surprises = []
         print("  Weekend/holiday: surprise detection suppressed")
@@ -5629,6 +5648,13 @@ def main():
     briefing, _wdt = watch_dates.apply(briefing)
     if _wdt:
         print(f"  Watch list dated: {_wdt}")
+    try:
+        import streak_words as _sw
+        briefing, _swl = _sw.apply(briefing, _streaks)
+        for _l in _swl:
+            print(f"  [streak] {_l}")
+    except Exception as _e:
+        print(f"  [warn] streak check skipped ({type(_e).__name__}: {_e})")
 
     # v5.1 the cut, in this order: drop what the prompt retired, then cut to
     # the budget deterministically (weakest block first), then grade the call
