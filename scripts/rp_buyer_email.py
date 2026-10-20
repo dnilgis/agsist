@@ -62,7 +62,11 @@ Reply-To sig@farmers1st.com.
                 once per order, the code kept on the order, a second call
                 answers the same card; locked to the design, set at issue, as
                 the address was given at Stripe checkout), then "Your Rain
-                Print gift card for <to>" to the buyer: the card link
+                Print gift card for <to>" to the buyer, the ONE email a
+                this-year gift gets (the lead, 2026-10-20: the proof email's
+                "year so far" picture is folded in under the card, and the
+                order is marked mailed too, so the proof loop never sends it
+                a second email): the card link
                 (/rp-gift?c=...&k=...) as a big Print the gift card button,
                 the card at a glance, what the receiver gets, how they use it
                 (scan the square or agsist.com/rain-print?gift=CODE; nothing
@@ -548,9 +552,14 @@ def ship_days():
         return 3
 
 
+def is_gift_card_order(o):
+    """A this-year gift (ref GIFT-...): its one email is the gift card email, with the print so far in it."""
+    return bool(o.get("gift")) and str(o.get("ref") or "").startswith("GIFT-")
+
+
 def gift_due(orders):
-    """Paid this-year gifts (ref GIFT-...) whose card email has not gone yet."""
-    return [o for o in orders if o.get("status") == "paid" and o.get("gift") and str(o.get("ref") or "").startswith("GIFT-")
+    """Paid this-year gifts whose card email has not gone yet."""
+    return [o for o in orders if o.get("status") == "paid" and is_gift_card_order(o)
             and not o.get("gift_mailed") and (o.get("paid") or {}).get("session") and o.get("product") in PRODUCT]
 
 
@@ -593,10 +602,16 @@ def gift_parts(o, card, to=""):
     return lead, what, how, when
 
 
-def gift_text(o, card, to="", note=""):
+SO_FAR = ["The print so far, from your design: every rain from January 1 to the last day NOAA has, the months to come left pale.",
+          "The picture carries a preview mark; the print will not. Check the name, the town and the dates; if anything is wrong, reply and I will fix it."]
+
+
+def gift_text(o, card, to="", note="", pic=False):
     lead, what, how, when = gift_parts(o, card, to)
-    out = [lead, "", "Print the gift card: %s" % card["card_url"], "", "On the card: " + card_desc(o, card, to, note), "",
-           "What they get:"] + ["  " + x for x in what] + ["", "How they use it:"] + ["  " + x for x in how]
+    out = [lead, "", "Print the gift card: %s" % card["card_url"], "", "On the card: " + card_desc(o, card, to, note), ""]
+    if pic:
+        out += ["The print so far (the picture in this email):"] + ["  " + x for x in SO_FAR] + [""]
+    out += ["What they get:"] + ["  " + x for x in what] + ["", "How they use it:"] + ["  " + x for x in how]
     out += ["", "When it comes:"] + ["  " + x for x in when] + ["", "Printing the card:"] + ["  - " + t for t in CARD_TIPS]
     out += ["", "Something wrong, or a name to fix on the card? Reply to this email and I will fix it.", "", "Sig", "", ADDRESS]
     return "\n".join(out) + "\n"
@@ -612,7 +627,7 @@ def card_desc(o, card, to="", note=""):
     return ", ".join(bits[:-1]) + ", and " + bits[-1] + "."
 
 
-def gift_html(o, card, to="", note=""):
+def gift_html(o, card, to="", note="", pic=""):
     """Phone first, Gmail safe, like the proof email: one 600 px table, inline styles only, no images."""
     e = H.escape
     font = "font-family:Georgia,'Times New Roman',serif;"
@@ -638,6 +653,12 @@ def gift_html(o, card, to="", note=""):
             % (sans, e(str(card.get("no") or 0).zfill(4)), e(card["code"])))
     rows.append('<tr><td style="padding:0 20px 18px;">' + h2("On the card")
                 + '<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:16px;border:1px solid #D6D9D2;border-top:4px solid #2B5C8A;background:#FBFAF7;">%s</td></tr></table></td></tr>' % face)
+    if pic:
+        # the year so far, folded in from the proof email (one email per this-year gift)
+        rows.append('<tr><td style="padding:0 20px 18px;">' + h2("The print so far") +
+                    '<img src="%s" width="560" alt="The Rain Print so far: %s" style="display:block;width:100%%;max-width:560px;height:auto;border:1px solid #D6D9D2;">'
+                    % (e(pic), e(what_line(o))) + "".join('<p style="margin:8px 0 0;%sfont-size:14px;line-height:1.45;color:#5E6475;">%s</p>' % (sans, e(x)) for x in SO_FAR)
+                    + "</td></tr>")
     rows.append('<tr><td style="padding:0 20px 6px;">' + h2("What they get") + "".join(p(e(x)) for x in what) + "</td></tr>")
     rows.append('<tr><td style="padding:0 20px 6px;">' + h2("How they use it") + "".join(p(e(x).replace(e(gift_redeem(card)), '<b style="word-break:break-all;">%s</b>' % e(gift_redeem(card)))) for x in how) + "</td></tr>")
     rows.append('<tr><td style="padding:0 20px 6px;">' + h2("When it comes") + "".join(p(e(x)) for x in when) + "</td></tr>")
@@ -654,7 +675,7 @@ def gift_html(o, card, to="", note=""):
             '%s</table></td></tr></table></body></html>') % (e(gift_subject(o, to)), "".join(rows))
 
 
-def build_gift(o, card, to_addr, to="", note="", fn=None, fa="", dry=False):
+def build_gift(o, card, to_addr, to="", note="", fn=None, fa="", dry=False, proof=None):
     fn = fn or buyer_from_name()
     m = EmailMessage()
     m.rp_buyer = True
@@ -663,8 +684,12 @@ def build_gift(o, card, to_addr, to="", note="", fn=None, fa="", dry=False):
     m["To"] = to_addr
     m["Reply-To"] = REPLY_TO
     m["Message-ID"] = make_msgid(domain=(fa.split("@", 1)[1] if "@" in fa else "agsist.com"))
-    m.set_content(gift_text(o, card, to, note))
-    m.add_alternative(gift_html(o, card, to, note), subtype="html")
+    m.set_content(gift_text(o, card, to, note, bool(proof)))
+    m.add_alternative(gift_html(o, card, to, note, "cid:proof" if proof else ""), subtype="html")
+    if proof:
+        with open(proof, "rb") as f:
+            m.get_payload()[1].add_related(f.read(), maintype="image", subtype="jpeg", cid="<proof>",
+                                           filename="rain-print-so-far.jpg", disposition="inline")
     return m
 
 
@@ -674,10 +699,13 @@ def card_ok(c):
 
 
 def send_gift_cards(src, due, notes, dry, send, sig_to, test_emails):
-    """Each paid this-year gift: the card issued (worker v5.40, once per order, the code kept on the order),
-    then the buyer's card email, marked gift-mailed before the send. Dry run: nothing issued or marked, the
-    email to Sig with a stand-in code. -> counts."""
-    c = {"cards sent": 0, "cards to Sig": 0, "cards waiting": 0, "cards no address": 0, "card not issued": 0, "cards marked, send failed": 0}
+    """Each paid this-year gift gets ONE email (the lead, 2026-10-20): the card (issued by the worker v5.40, once
+    per order, the code kept on the order) and, under it, the print so far (the proof email's preview picture,
+    folded in). Marked gift-mailed, then mailed (the preview was its proof email), both before the send; the
+    proof loop never sends a this-year gift a second email. Dry run: nothing issued or marked, the email to Sig
+    with a stand-in code. -> counts."""
+    c = {"cards sent": 0, "cards to Sig": 0, "cards waiting": 0, "cards no address": 0, "card not issued": 0,
+         "cards render failed": 0, "cards marked, send failed": 0}
     for o in due:
         if notes is None:
             c["cards waiting"] += 1
@@ -693,32 +721,40 @@ def send_gift_cards(src, due, notes, dry, send, sig_to, test_emails):
         if not buyer and not sig_only:
             c["cards no address"] += 1
             continue
-        if dry:
-            card = {"ok": True, "code": DRY_CODE, "no": 0, "prepaid": True, "card_url": CARD_BASE + "?c=" + DRY_CODE + "&k=dry-run"}
-        else:
+        with tempfile.TemporaryDirectory() as tmp:
             try:
-                card = src.worker("rp-gift/issue", body={"order_key": o["key"], "to": to, "message": note})
+                r = src.render(dict(o, gift_note=note), tmp) if URL_RE.match(str(o.get("design_url") or "")) else {}
             except Exception:                              # noqa: BLE001
-                card = None
-            if not card_ok(card):
-                c["card not issued"] += 1                  # nothing marked: the next run tries again (the worker gives the same card)
+                c["cards render failed"] += 1              # nothing issued or marked: the next run tries again
                 continue
-        m = build_gift(o, card, sig_to if sig_only else buyer, to, note, dry=dry)
-        if not dry:
-            mk = src.worker("rp-order/gift-mailed", body={"key": o["key"]})
-            if not mk.get("ok") or mk.get("already"):
+            if dry:
+                card = {"ok": True, "code": DRY_CODE, "no": 0, "prepaid": True, "card_url": CARD_BASE + "?c=" + DRY_CODE + "&k=dry-run"}
+            else:
+                try:
+                    card = src.worker("rp-gift/issue", body={"order_key": o["key"], "to": to, "message": note})
+                except Exception:                          # noqa: BLE001
+                    card = None
+                if not card_ok(card):
+                    c["card not issued"] += 1              # nothing marked: the next run tries again (the worker gives the same card)
+                    continue
+            m = build_gift(o, card, sig_to if sig_only else buyer, to, note, dry=dry, proof=r.get("proof"))
+            if not dry:
+                mk = src.worker("rp-order/gift-mailed", body={"key": o["key"]})
+                if not mk.get("ok") or mk.get("already"):
+                    continue
+                if not o.get("mailed"):
+                    src.worker("rp-order/mailed", body={"key": o["key"]})   # the preview went in this email: its proof email, once
+            try:
+                send(m)
+            except Exception:                              # noqa: BLE001
+                c["cards marked, send failed" if not dry else "card not issued"] += 1
                 continue
-        try:
-            send(m)
-        except Exception:                                  # noqa: BLE001
-            c["cards marked, send failed" if not dry else "card not issued"] += 1
-            continue
         if sig_only:
             c["cards to Sig"] += 1
             continue
         c["cards sent"] += 1
         try:
-            n = sig_note(o, sig_to, "The gift card went to the buyer by email (card No. %s, ends %s). Nothing to do until January." % (
+            n = sig_note(o, sig_to, "The gift card went to the buyer by email (card No. %s, ends %s), with the print so far. Nothing to do until January." % (
                 str(card.get("no") or 0).zfill(4), card["code"][-4:]))
             n.replace_header("Subject", "Rain Print gift card sent: %s%s" % (one_line(o.get("place"), 60) or "a gift", (" " + str(o["year"])) if o.get("year") else ""))
             send(n)
@@ -845,7 +881,8 @@ def run(src, dry, send, sig_to, test_emails):
     if d.get("stripe") != "ok" and not any((o.get("paid") or {}).get("via") == "webhook" for o in orders):
         return (1 if ac["alert failed"] else 0), log + ["The worker could not confirm payments (Stripe: %s); no buyer email sent." % one_line(d.get("stripe"), 60)]
     due = [o for o in d.get("orders") or [] if isinstance(o, dict) and o.get("status") == "paid" and not o.get("mailed")
-           and (o.get("paid") or {}).get("session") and URL_RE.match(str(o.get("design_url") or "")) and o.get("product") in PRODUCT]
+           and (o.get("paid") or {}).get("session") and URL_RE.match(str(o.get("design_url") or "")) and o.get("product") in PRODUCT
+           and not is_gift_card_order(o)]   # a this-year gift's preview goes in its gift card email (one email)
     fdue = files_due(orders)
     gdue = gift_due(orders)
     log.append("Paid and not yet mailed: %d." % len(due))
@@ -1385,7 +1422,16 @@ def selftest():
     ck("Sig gets one line, no buyer details", len(notes_) == 1 and notes_[0]["To"] == "sig@farmers1st.com" and notes_[0]["Subject"] == "Rain Print gift card sent: Chetek, WI 2026"
        and "@" not in notes_[0].get_content() and "Pat" not in notes_[0].get_content() and "card No. 0007, ends H07F" in notes_[0].get_content(), [m["Subject"] for m in gsent])
     ck("the log: counts only (no address, name, place or code)", all("@" not in x and "Dad" not in x and "Pat" not in x and "Chetek" not in x and "RP-7K3M" not in x for x in log)
-       and "cards sent: 1; cards to Sig: 0; cards waiting: 0; cards no address: 0; card not issued: 0; cards marked, send failed: 0." in log, log)
+       and "cards sent: 1; cards to Sig: 0; cards waiting: 0; cards no address: 0; card not issued: 0; cards render failed: 0; cards marked, send failed: 0." in log, log)
+    buyer_mail = [m for m in gsent if m["To"] == "buyer@example.com"]
+    ck("ONE email to a this-year gift buyer: the card with the print so far, no separate preview email",
+       len(buyer_mail) == 1 and buyer_mail[0] is cards[0] and not any(m["Subject"].startswith("Your Rain Print proof") for m in gsent), [m["Subject"] for m in gsent])
+    rel = [p_ for p_ in cards[0].walk() if p_.get_content_type() == "image/jpeg"]
+    ck("the print so far is in it, inline, under the card", len(rel) == 1 and rel[0]["Content-ID"] == "<proof>" and 'src="cid:proof"' in gh
+       and gh.index("On the card") < gh.index("The print so far") < gh.index("What they get") and "The picture carries a preview mark; the print will not." in gh, gh[:400])
+    ck("the preview was its proof email: marked mailed too, before the send", gorder()["key"] in f.marked
+       and f.calls.index(("worker", "rp-order/mailed")) < f.calls.index(("send", cards[0]["Subject"])), f.calls)
+    ck("rendered once, with the card's words as the gift note", [x for x in f.calls if x[0] == "render"] == [("render", "framed12x18", "Every inch of the year you farmed.")], f.calls)
     gsent.clear()
     run(f, False, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
     ck("exactly once: a second run sends no card and makes no second card", not any(m["Subject"].startswith("Your Rain Print gift card") for m in gsent)
@@ -1430,6 +1476,26 @@ def selftest():
     f = Fake({"stripe": "ok", "orders": [order("1")]}, {"cs_live_1": live})
     run(f, False, lambda m: None, "sig@farmers1st.com", tests)
     ck("an order that is not a gift gets no card", f.issues == [])
+    gsent.clear()
+    f = Fake({"stripe": "ok", "orders": [gorder(gift_mailed={"at": "x"})]}, {"cs_live_7": live}, forms=gform)
+    run(f, False, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    ck("a gift whose card email went (even if its mailed mark was lost): no second email of any kind", gsent == [] and not f.marked, [m["Subject"] for m in gsent])
+    gsent.clear()
+    f = Fake({"stripe": "ok", "orders": [gorder(mailed={"at": "x", "session": "cs_live_7"})]}, {"cs_live_7": live}, forms=gform)
+    run(f, False, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    ck("a gift whose preview went before this change: the card email still goes, once, and mailed is not asked again",
+       [m["Subject"] for m in gsent if m["To"] == "buyer@example.com"] == ["Your Rain Print gift card for Dad"] and ("worker", "rp-order/mailed") not in f.calls, f.calls)
+    gsent.clear()
+    f = Fake({"stripe": "ok", "orders": [gorder()]}, {"cs_live_7": live}, forms=gform, render_fail=True)
+    code, log = run(f, False, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    ck("the picture fails: nothing sent, issued or marked; the next run tries again", not any(m["To"] == "buyer@example.com" for m in gsent)
+       and f.issues == [] and not f.marked and not f.gift_mailed and any("cards render failed: 1" in x for x in log), log)
+    gsent.clear()
+    f = Fake({"stripe": "ok", "orders": [gorder(), order("1")]}, {"cs_live_7": live, "cs_live_1": live}, forms=gform)
+    run(f, True, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    ck("dry run, a gift and a plain order: one email each, both to Sig", sorted(m["Subject"] for m in gsent) ==
+       ["[dry run, would go to the buyer] Your Rain Print gift card for Dad", "[dry run, would go to the buyer] Your Rain Print proof: Chetek, WI, 2025"]
+       and all(m["To"] == "sig@farmers1st.com" for m in gsent), [m["Subject"] for m in gsent])
     ck("card_ok: the worker's answer is checked", card_ok({"ok": True, "code": "RP-7K3M-Q9TW-H07F", "card_url": link})
        and not card_ok({"ok": True, "code": "RP-7K3M-Q9TW-H07F", "card_url": "https://evil.example/x"}) and not card_ok({"ok": False}) and not card_ok(None))
 
@@ -1460,7 +1526,9 @@ def sample_gift(out):
     o = order("7", ref="GIFT-" + SIG_REF, gift=True, year=2026, approve_t=None)
     card = {"ok": True, "code": "RP-7K3M-Q9TW-H2F4", "no": 7, "prepaid": True, "card_url": CARD_BASE + "?c=RP-7K3M-Q9TW-H2F4&k=0123456789abcdef"}
     with open(out, "w", encoding="utf-8") as f:
-        f.write(gift_html(o, card, "Dad", "Every inch of the year you farmed. Love, Kate"))
+        p = os.path.join(env("RENDER_DIR", ""), "proof.jpg")
+        pic = ("data:image/jpeg;base64," + base64.b64encode(open(p, "rb").read()).decode()) if env("RENDER_DIR") and os.path.exists(p) else ""
+        f.write(gift_html(o, card, "Dad", "Every inch of the year you farmed. Love, Kate", pic))
     return 0
 
 

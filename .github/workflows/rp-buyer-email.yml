@@ -19,7 +19,8 @@ name: Rain Print buyer email
 # (Sig 2026-10-20: no more card links sent by hand): the card is issued through
 # the worker's POST /rp-gift/issue {order_key} (worker v5.40, once per order,
 # the code kept on the order), then the buyer gets the Print the gift card
-# link, what the receiver gets, how they use it, when it comes and print tips;
+# link, the print so far (its only email: no separate preview), what the
+# receiver gets, how they use it, when it comes and print tips;
 # marked gift-mailed first, once per order; Sig gets a one-line note.
 #
 # It also sends Sig an alert for each new paid order first (always to Sig).
