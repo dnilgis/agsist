@@ -136,6 +136,8 @@
 .pd-pct span{font-size:.85rem;color:var(--pd-mut);}
 .pd-mean{font-size:.87rem;color:var(--pd-txt);margin:.4rem 0 0;max-width:62ch;line-height:1.5;}
 .pd-mean b{font-family:var(--pd-mono);}
+.pd-rmaline{font-size:.78rem;color:var(--pd-mut);margin:.3rem 0 0;}
+.pd-rmaline b{font-family:var(--pd-mono);font-weight:600;}
 
 /* ── tables and drawers ──────────────────────────────────────────── */
 .pd-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;}
@@ -779,14 +781,22 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     return x.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(dd<10?'0':'')+dd; }
 
   function bar(g){
-    var diff=g.h-g.p, up=diff>=0, p=pct(g), live=!isDone(g), sw=stWord(g);
+    /* 2026-10-20, Sig's call (v37 item 2): ONE RUNNING NUMBER reaches the bar.
+       While a window is open and we have its daily settles (runH: corn and
+       soybeans, "All" types, within 3% of RMA), the bar uses our running
+       average, the number the H1 and the calculator print, and names RMA's
+       latest posted figure once in a small line under it. No settles on file
+       (other crops) or a closed window: RMA's figure, as before. Once RMA
+       releases the final, RMA's final is the only number. */
+    var rh=runH(g), H=rh?rh.avg:g.h;
+    var diff=H-g.p, up=diff>=0, p=(H-g.p)/g.p*100, live=!isDone(g), sw=stWord(g);
     var pad=Math.max(Math.abs(diff)*1.6, g.p*0.045);
-    var lo=Math.min(g.p,g.h)-pad, hi=Math.max(g.p,g.h)+pad;
+    var lo=Math.min(g.p,H)-pad, hi=Math.max(g.p,H)+pad;
     var at=function(v){ return (v-lo)/(hi-lo)*100; };
-    var gx=at(g.p), hx=at(g.h), l=Math.min(gx,hx), w=Math.abs(hx-gx);
+    var gx=at(g.p), hx=at(H), l=Math.min(gx,hx), w=Math.abs(hx-gx);
     var side=function(x){ return x>60 ? 'right:'+(100-x)+'%' : 'left:'+x+'%'; };
     var cls=up?'up':'dn';
-    var upPct=((Math.min(g.h,2*g.p)-g.p)/g.p*100).toFixed(1), upTo=money(Math.min(g.h,2*g.p),unitOf(g))+per(g);
+    var upPct=((Math.min(H,2*g.p)-g.p)/g.p*100).toFixed(1), upTo=money(Math.min(H,2*g.p),unitOf(g))+per(g);
     // 2026-10-19: a released final price is said in the past tense; only an open
     // window is "if it closed today".
     // 2026-10-20: a window that has closed but RMA has not released (every Oct 31
@@ -799,7 +809,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
           : (waiting
               ? 'If the final matches the last posted average, your revenue guarantee revises up <b>'+upPct+'%</b>: figured at the <b class="pd-num">'+upTo+'</b> last posted harvest price.'
               : 'If the window closed today your revenue guarantee would revise up <b>'+upPct+'%</b>: figured at the <b class="pd-num">'+upTo+'</b> running harvest price.'))+
-        (g.h>2*g.p?' The harvest price counts only up to 200% of the projected price.':'')
+        (H>2*g.p?' The harvest price counts only up to 200% of the projected price.':'')
       : 'A '+sw+' average below the projected price does not cut your '+
         'guarantee: it stays figured at the <b class="pd-num">'+money(g.p,unitOf(g))+per(g)+'</b> projected price. '+
         'It changes what your crop is worth against that guarantee.');
@@ -807,12 +817,14 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     var tagP='<div class="pd-tag'+(gx>60?' r':'')+'" style="'+side(gx)+'">'+
           '<b class="pd-num">'+money(g.p,unitOf(g))+'</b><br>projected</div>';
     var tagH='<div class="pd-tag '+cls+(hx>60?' r':'')+'" style="'+side(hx)+'">'+
-          '<b class="pd-num">'+money(g.h,unitOf(g))+'</b><br>'+(sw==='running'?('RMA'+(rmaThrough(g)?', through '+shortd(rmaThrough(g)):'')):sw)+'</div>';
+          '<b class="pd-num">'+money(H,unitOf(g))+'</b><br>'+(rh?'our average, through '+shortd(rh.last):(sw==='running'?('RMA'+(rmaThrough(g)?', through '+shortd(rmaThrough(g)):'')):sw))+'</div>';
+    var rt=rh?rmaThrough(g):null;
+    var rmaLine=rh?'<p class="pd-rmaline">RMA&rsquo;s latest posted figure: <b class="pd-num">'+money(g.h,unitOf(g))+'</b>'+(rt?' (through '+shortd(rt)+')':'')+'</p>':'';
     // 2026-10-19: two tags under 30% of the track apart ran into each other at
     // 390 px; then one sits above the track and one below
     var stack=Math.abs(hx-gx)<30;
     return '<div class="pd-pb">'+
-      '<div class="pd-pb-h">'+(sw==='final'?'Final harvest price':(sw==='running'?'RMA&rsquo;s running average':'Last posted average'))+
+      '<div class="pd-pb-h">'+(sw==='final'?'Final harvest price':(rh?'Our running average of the daily settles':(sw==='running'?'RMA&rsquo;s running average':'Last posted average')))+
         ' against the projected price</div>'+
       (stack?'<div class="pd-tags pd-tags-top">'+tagP+'</div>':'')+
       '<div class="pd-track">'+
@@ -823,7 +835,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       '<div class="pd-pct '+cls+'"><b>'+(up?'+':'−')+Math.abs(p).toFixed(1)+'%</b>'+
         '<span>'+(up?'+':'−')+money(Math.abs(diff),unitOf(g))+per(g)+' · '+
         (up?'above':'below')+' the '+money(g.p,unitOf(g))+' projected price'+(sw==='running'?' so far':'')+'</span></div>'+
-      '<p class="pd-mean">'+mean+'</p></div>';
+      '<p class="pd-mean">'+mean+'</p>'+rmaLine+'</div>';
   }
 
   function card(g,st){

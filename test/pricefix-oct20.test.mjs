@@ -118,3 +118,48 @@ test("1: Nov 3, Iowa corn and soybeans closed Oct 31, not released: no 'if it cl
     }
   } finally { await browser.close(); srv.close(); }
 });
+
+/* ---- Sig's call Oct 20 (v37 item 2): the window bar uses our running average where we have the settles ---- */
+test("bar: Iowa corn reads our running average, the calculator's number, with RMA's figure in one line", { skip, timeout: 90000 }, async () => {
+  const HP = JSON.parse(read("data/harvest-prices.json"));
+  const corn = HP.commodities.find((c) => c.label === "Corn");
+  const ser = (corn.harvest && corn.harvest.series) || [];
+  if (corn.harvest.status !== "running" || !ser.length) return; // only while the window runs
+  const avg = Math.round(ser.reduce((t, x) => t + +x.s, 0) / ser.length * 100 + 1e-7) / 100;
+  const last = ser[ser.length - 1].d;
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 900 } });
+    const pg = await ctx.newPage();
+    await pg.clock.setFixedTime(new Date(last + "T23:00:00Z"));
+    await pg.route("**/*", (r) => r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort());
+    await pg.goto(`http://127.0.0.1:${port}/harvest-price-tracker.html`);
+    await pg.waitForFunction(() => document.querySelector("#pd-state option[value=IA]"));
+    await pg.selectOption("#pd-state", "IA");
+    await pg.waitForFunction(() => !document.getElementById("pd-crop").disabled && !/Loading/.test(document.getElementById("pd-your").textContent));
+    const bars = await pg.$$eval("#pd-your .pd-crop", (cs) => cs.map((c) => c.innerText.replace(/\s+/g, " ")));
+    const cb = bars.find((t) => /^Corn /.test(t) && !/High Amylose/.test(t));
+    const rows = JSON.parse(read("data/rma-prices/IA.json")).rows;
+    const r = rows.find((x) => x.crop === "Corn" && /^All/.test(x.type) && x.practice === "Conventional");
+    if (Math.abs(avg - r.h_price) / r.h_price > 0.03) return; // the 3% guard keeps RMA's figure
+    const d = new Date(last + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    const pct = ((avg - r.p_price) / r.p_price * 100).toFixed(1);
+    assert.match(cb, /Our running average of the daily settles against the projected price/i);
+    assert.ok(cb.includes(`$${avg.toFixed(2)} our average, through ${d}`), cb.slice(0, 400));
+    assert.ok(cb.includes(`+${pct}%`), "the bar's percent is ours");
+    assert.ok(cb.includes(`would revise up ${pct}%: figured at the $${avg.toFixed(2)} /bu running harvest price.`), cb.slice(0, 600));
+    assert.match(cb, new RegExp(`RMA’s latest posted figure: \\$${r.h_price.toFixed(2)}( \\(through [A-Z][a-z]{2} \\d+\\))?`));
+    assert.doesNotMatch(cb, /RMA, through/);
+    assert.doesNotMatch(cb, /\b(better|official)\b/i, "ours is never called better or official");
+    // the calculator prints the same percent
+    await pg.selectOption("#pd-crop", await pg.$eval("#pd-crop", (s) => [...s.options].find((o) => o.textContent === "Corn").value));
+    await pg.fill("#pd-aph", "180"); await pg.dispatchEvent("#pd-aph", "input");
+    const calc = await pg.$eval("#pd-gout2", (x) => x.textContent);
+    assert.ok(calc.includes(`$${avg.toFixed(2)}`) && calc.includes(`+${pct}%`), calc);
+    // High Amylose has no settles of its own: RMA's figure, no RMA line
+    const ha = bars.find((t) => /High Amylose/.test(t));
+    if (ha) { assert.doesNotMatch(ha, /our average|latest posted figure/); }
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
