@@ -407,6 +407,16 @@ jobs:
           python scripts/daily_edge.py --selftest
           python scripts/daily_edge.py
 
+      # Sig's editorial notes are in the private repo (branch private-data,
+      # Oct 20). Without them the briefing still runs, as it did before the
+      # file existed; the warning says so.
+      - name: Get the editorial notes (private repo)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: bash scripts/pull_raw.sh private/data/editorial-notes.md
+
       - name: Generate daily briefing
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

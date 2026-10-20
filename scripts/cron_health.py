@@ -14,11 +14,22 @@ good build, so the row warns at that script's WARN_MB and goes red at FAIL_MB.
 A second row warns when any top-level folder reaches 90% of its budget there.
 
 It watches the watchers too: daily-site-check.yml and cron-health.yml are rows,
-and the committed data/cron-health.json going stale (the check stopped, or
-cannot push) is a red row that daily-site-check.yml, on GitHub's own cron,
-reports even when cron-job.org has stopped dispatching this one.
+and the saved cron-health.json going stale (the check stopped, or cannot
+push) is a red row that daily-site-check.yml, on GitHub's own cron, reports
+even when cron-job.org has stopped dispatching this one.
 
-This writes data/cron-health.json: for each watched workflow, its last
+THE PRIVATE REPO (Oct 20, 2026). No page reads this file, so it lives in the
+private repo dnilgis/agsistretired (branch private-data) at
+private/data/cron-health.json, with the raw and references branches. The
+workflows unpack the last copy there with scripts/pull_raw.sh and save the new
+one with scripts/push_raw.sh. Two rows watch that link, from one API call with
+PRIVATE_REPO_TOKEN: private-repo-key (red when the key fails, a warning when
+it expires within KEY_WARN_DAYS; GitHub sends the date in the
+github-authentication-token-expiration header) and private-raw-saves (a
+warning when nothing has reached the private raw branch for RAW_STALE_HOURS:
+the jobs' saves are failing softly).
+
+This writes private/data/cron-health.json: for each watched workflow, its last
 successful run, the longest gap its clock allows, and whether the latest
 tick of that clock was served. A tick is served when a run that started
 within `max_delay` minutes of it succeeded (or is still running). For a
@@ -31,7 +42,7 @@ own gate step, so this list cannot drift from the schedule it checks.
 Exit code is 0. The workflow reads `red=1` from $GITHUB_OUTPUT and fails the
 run after committing, so the file always says why.
 
-    python3 scripts/cron_health.py --out data/cron-health.json
+    python3 scripts/cron_health.py --out private/data/cron-health.json
     python3 scripts/cron_health.py --selftest
 """
 
@@ -50,6 +61,13 @@ UTC = timezone.utc
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WF_DIR = os.path.join(ROOT, ".github", "workflows")
 RECOMMIT_HOURS = 6
+# Where the file lives (unpacked from the private repo's private-data branch).
+HEALTH_PATH = os.path.join("private", "data", "cron-health.json")
+PRIVATE_REPO = "dnilgis/agsistretired"
+KEY_WARN_DAYS = 14
+# The raw branch gets the Daily's fact check every day and a bid snapshot every
+# weekday; 80 h covers a long weekend with one of them missing.
+RAW_STALE_HOURS = 80
 
 # file, clock (None = read it from the workflow's cron_gate step), max delay
 # in minutes, critical (fails the run red), and what the clock is.
@@ -88,7 +106,7 @@ CHECKS = [
     ("cron-health.yml", None, 60, False, "this check, after every Fetch Grain Bids, gated to every half hour"),
 ]
 
-# The committed data/cron-health.json is rewritten at least every RECOMMIT_HOURS while
+# The saved private/data/cron-health.json is rewritten at least every RECOMMIT_HOURS while
 # this check runs. Older than this and the check itself stopped (or cannot push):
 # daily-site-check.yml, on GitHub's cron and not cron-job.org, sees it here.
 SELF_STALE_HOURS = RECOMMIT_HOURS + 2
@@ -218,6 +236,10 @@ def collect(now, repo, token, api):
     rows.append(row)
     if row["status"] == "late":
         late.append(row["workflow"])
+    for row in private_rows(now, os.environ.get("PRIVATE_REPO_TOKEN", "")):
+        rows.append(row)
+        if row["status"] == "late":
+            late.append(row["workflow"])
     for row in budget_rows():
         rows.append(row)
         if row["status"] == "over":
@@ -229,23 +251,110 @@ GATED = {wf for wf, crons, *_ in CHECKS if crons is None}
 
 
 def self_row(now, root=ROOT):
-    """Age of the committed data/cron-health.json (read before this run overwrites it)."""
-    path = os.path.join(root, "data", "cron-health.json")
+    """Age of the saved private/data/cron-health.json (unpacked from the private
+    repo before this run overwrites it)."""
+    path = os.path.join(root, HEALTH_PATH)
     row = {"workflow": "cron-health.json", "critical": True,
            "clock": "rewritten at least every %d hours while the check runs" % RECOMMIT_HOURS}
     try:
         gen = parse_ts(json.load(open(path))["generated_at"])
     except Exception as e:
-        row.update(status="unknown", why="could not read data/cron-health.json: %s" % e)
+        row.update(status="unknown", why="could not read %s (from the private repo): %s" % (HEALTH_PATH, e))
         return row
     hours = (now - gen).total_seconds() / 3600
     row["generated_at"] = gen.strftime("%Y-%m-%dT%H:%M:%SZ")
     if hours > SELF_STALE_HOURS:
-        row.update(status="late", why="data/cron-health.json is %.1f h old (limit %d h): the cron health check stopped "
-                   "running or could not push" % (hours, SELF_STALE_HOURS))
+        row.update(status="late", why="%s is %.1f h old (limit %d h): the cron health check stopped "
+                   "running or could not save to the private repo" % (HEALTH_PATH, hours, SELF_STALE_HOURS))
     else:
         row.update(status="ok", why="written %.1f h ago" % hours)
     return row
+
+
+def _get_h(url, token):
+    """JSON and response headers (the key's expiry date is a header)."""
+    req = urllib.request.Request(url, headers={
+        "Accept": "application/vnd.github+json", "Authorization": "Bearer %s" % token,
+        "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "agsist-cron-health"})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        return json.loads(r.read().decode()), dict(r.headers.items())
+
+
+def parse_expiry(v):
+    """github-authentication-token-expiration: "2026-11-03 12:00:00 UTC" or "... -0500"."""
+    v = (v or "").strip()
+    if not v:
+        return None
+    for fmt, val in (("%Y-%m-%d %H:%M:%S %z", v.replace(" UTC", " +0000")), ("%Y-%m-%d %H:%M:%S", v[:19])):
+        try:
+            d = datetime.strptime(val, fmt)
+            return (d if d.tzinfo else d.replace(tzinfo=UTC)).astimezone(UTC)
+        except ValueError:
+            continue
+    return None
+
+
+def private_key_check(now, token, get=None, api="https://api.github.com"):
+    """One call with PRIVATE_REPO_TOKEN: does the key work, when does it expire,
+    when did the private raw branch last get a save. Never prints the token.
+    Returns {ok, why, expires (datetime or None), days_left, raw_at (datetime or None)}."""
+    if not token:
+        return {"ok": None, "why": "PRIVATE_REPO_TOKEN was not given to this job", "expires": None, "days_left": None, "raw_at": None}
+    try:
+        body, headers = (get or _get_h)("%s/repos/%s/branches/raw" % (api, PRIVATE_REPO), token)
+    except Exception as e:
+        code = getattr(e, "code", None)
+        why = ("HTTP %s" % code) if code else type(e).__name__
+        if code in (401, 403):
+            why += " (expired or revoked)"
+        elif code == 404:
+            why += " (the key cannot see %s, or its raw branch is gone)" % PRIVATE_REPO
+        return {"ok": False, "why": "Private repo key failing: %s" % why, "expires": None, "days_left": None, "raw_at": None}
+    h = {k.lower(): v for k, v in (headers or {}).items()}
+    exp = parse_expiry(h.get("github-authentication-token-expiration"))
+    try:
+        raw_at = parse_ts(body["commit"]["commit"]["committer"]["date"])
+    except Exception:
+        raw_at = None
+    days = (exp - now).total_seconds() / 86400 if exp else None
+    return {"ok": True, "why": "works", "expires": exp, "days_left": days, "raw_at": raw_at}
+
+
+def private_rows(now, token, get=None):
+    """private-repo-key (red when failing, warn under KEY_WARN_DAYS) and private-raw-saves."""
+    c = private_key_check(now, token, get)
+    key = {"workflow": "private-repo-key", "critical": True,
+           "clock": "PRIVATE_REPO_TOKEN reads and writes %s; warns %d days before it expires" % (PRIVATE_REPO, KEY_WARN_DAYS)}
+    saves = {"workflow": "private-raw-saves", "critical": False,
+             "clock": "a save reaches the private raw branch at least every %d h" % RAW_STALE_HOURS}
+    if c["ok"] is None:
+        key.update(status="unknown", critical=False, why=c["why"])
+        saves.update(status="unknown", why=c["why"])
+        return [key, saves]
+    if not c["ok"]:
+        key.update(status="late", why=c["why"] + "; every save to the private repo is failing")
+        saves.update(status="unknown", why="the key failed, so the branch could not be read")
+        return [key, saves]
+    if c["expires"]:
+        key["expires"] = c["expires"].strftime("%Y-%m-%d")
+        if c["days_left"] < KEY_WARN_DAYS:
+            key.update(status="warn", why="Private repo key expires %s (%d days); make a new one and save it as "
+                       "PRIVATE_REPO_TOKEN" % (key["expires"], max(0, int(c["days_left"]))))
+        else:
+            key.update(status="ok", why="works; expires %s" % key["expires"])
+    else:
+        key.update(status="ok", why="works; no expiry date sent")
+    if c["raw_at"] is None:
+        saves.update(status="unknown", why="could not read the raw branch's last commit")
+    else:
+        hours = (now - c["raw_at"]).total_seconds() / 3600
+        saves["last_save"] = c["raw_at"].strftime("%Y-%m-%dT%H:%M:%SZ")
+        if hours > RAW_STALE_HOURS:
+            saves.update(status="warn", why="nothing has reached the private raw branch for %.0f h (limit %d h): "
+                         "the jobs' saves are failing (see the ::warning:: lines in their runs)" % (hours, RAW_STALE_HOURS))
+        else:
+            saves.update(status="ok", why="last save %.0f h ago" % hours)
+    return [key, saves]
 
 
 def folder_row(r, SB):
@@ -335,7 +444,7 @@ def should_commit(prev, doc, now):
 def main(argv):
     import argparse
     p = argparse.ArgumentParser()
-    p.add_argument("--out", default="data/cron-health.json")
+    p.add_argument("--out", default=HEALTH_PATH)
     p.add_argument("--selftest", action="store_true")
     a = p.parse_args(argv)
     if a.selftest:
@@ -351,6 +460,7 @@ def main(argv):
         prev = None
     commit = should_commit(prev, doc, now)
     if commit:
+        os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
         with open(a.out, "w") as f:
             json.dump(doc, f, indent=1)
             f.write("\n")
@@ -473,12 +583,45 @@ def selftest():
     s, *_ = judge(dsc[1], dsc[2], T("2026-10-17 20:00"), [], False)
     check(s == "late", "no site check by 19:37 UTC (Oct 17) is late")
     d2 = tempfile.mkdtemp()
-    os.makedirs(os.path.join(d2, "data"))
+    os.makedirs(os.path.join(d2, "private", "data"))
     check(self_row(T("2026-10-20 12:00"), d2)["status"] == "unknown", "no file: unknown")
-    json.dump({"generated_at": "2026-10-20T05:00:00Z"}, open(os.path.join(d2, "data", "cron-health.json"), "w"))
+    json.dump({"generated_at": "2026-10-20T05:00:00Z"}, open(os.path.join(d2, "private", "data", "cron-health.json"), "w"))
     check(self_row(T("2026-10-20 12:00"), d2)["status"] == "ok", "7 h old file is ok (rewritten every 6 h)")
     st = self_row(T("2026-10-20 14:00"), d2)
     check(st["status"] == "late" and st["critical"] and "9.0 h old" in st["why"], "9 h old file: the check itself stopped (%s)" % st["why"])
+
+    # the private repo key: one call, the expiry header, the raw branch's last save
+    import urllib.error
+    now = T("2026-10-20 12:00")
+    TOK = "github_pat_" + "x" * 20
+
+    def fake(exp, raw="2026-10-20T03:00:00Z", fail=None):
+        def get(url, token):
+            assert token == TOK and url.endswith("/repos/dnilgis/agsistretired/branches/raw"), url
+            if fail:
+                raise urllib.error.HTTPError(url, fail, "x", {}, None)
+            return {"commit": {"commit": {"committer": {"date": raw}}}}, \
+                ({"GitHub-Authentication-Token-Expiration": exp} if exp else {})
+        return get
+    k, sv = private_rows(now, TOK, fake("2027-01-15 12:00:00 UTC"))
+    check(k["status"] == "ok" and k["expires"] == "2027-01-15" and sv["status"] == "ok", "a working key far from expiry is ok (%s)" % k["why"])
+    k, _ = private_rows(now, TOK, fake("2026-10-30 07:00:00 -0500"))
+    check(k["status"] == "warn" and "Private repo key expires 2026-10-30 (10 days)" in k["why"], "10 days left warns (%s)" % k["why"])
+    k, sv = private_rows(now, TOK, fake(None, fail=401))
+    check(k["status"] == "late" and k["critical"] and k["why"].startswith("Private repo key failing: HTTP 401"), "a refused key is red (%s)" % k["why"])
+    check(TOK not in json.dumps([k, sv]), "the token is never in a row")
+    k, _ = private_rows(now, TOK, fake(None, fail=404))
+    check(k["status"] == "late" and "cannot see dnilgis/agsistretired" in k["why"], "404 says the key cannot see the repo")
+    _, sv = private_rows(now, TOK, fake("2027-01-15 12:00:00 UTC", raw="2026-10-16T12:00:00Z"))
+    check(sv["status"] == "warn" and "96 h" in sv["why"], "no save on raw for 96 h warns (%s)" % sv["why"])
+    k, sv = private_rows(now, "", None)
+    check(k["status"] == "unknown" and not k["critical"] and sv["status"] == "unknown", "no token in the job: unknown, not red")
+    check(parse_expiry("2026-11-03 12:00:00 UTC") == datetime(2026, 11, 3, 12, tzinfo=UTC), "expiry header in UTC")
+    check(parse_expiry("2026-11-03 07:00:00 -0500") == datetime(2026, 11, 3, 12, tzinfo=UTC), "expiry header with an offset")
+    check(parse_expiry("") is None and parse_expiry("soon") is None, "no or odd header: no date")
+    wf = open(os.path.join(WF_DIR, "cron-health.yml")).read()
+    check("PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}" in wf and "--out private/data/cron-health.json" in wf,
+          "cron-health.yml gives the check the key and writes the private copy")
 
     print("\n%d failed" % len(fails) if fails else "\nall cron_health checks passed")
     return 1 if fails else 0

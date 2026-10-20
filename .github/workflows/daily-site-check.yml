@@ -49,10 +49,21 @@ jobs:
           python3 scripts/cron_health.py --selftest
           python3 scripts/daily_site_check.py --selftest
 
+      # cron_health.py judges the age of the last saved job health file, which
+      # is in the private repo since Oct 20 (branch private-data). Missing, that
+      # row reads unknown and the rest of the check runs.
+      - name: Get the last job health file (private repo)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: bash scripts/pull_raw.sh private/data/cron-health.json
+
       - name: Check the site
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ github.token }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           DRY: ${{ github.event.inputs.dry }}
         run: |
           if [ "$DRY" = "true" ]; then
