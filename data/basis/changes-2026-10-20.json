@@ -1,0 +1,1 @@
+{"date":"2026-10-20","units":"integer cents per bushel","columns":["state","facility","city","commodity","symbol","deliveryMonth","from","to"],"changes":[["OK","BEACHNER GRAIN","AFTON","corn","4.6700S","CASH",-35,-69],["OK","BEACHNER GRAIN","AFTON","soybeans","12.5350S","CASH",-16,-44],["OK","BEACHNER GRAIN","AFTON","soybeans","12.5350S","NEW CROP 2026",-16,-44]]}
