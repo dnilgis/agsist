@@ -113,6 +113,8 @@ function fmt(x,k){ if(x==null||isNaN(x)) return 'n/a'; return Number(x).toLocale
 function money(x){ if(x==null) return 'n/a'; var v=Math.floor(Math.abs(x)+0.5); return (x<0?'−$':'$')+v.toLocaleString('en-US'); }
 function mUSD(x){ if(x==null) return 'n/a'; var a=Math.abs(x); if(a>=1e9) return '$'+(x/1e9).toFixed(2)+' billion'; if(a>=1e6) return '$'+(x/1e6).toFixed(1)+' million'; return money(x); }
 function pct(x,k){ return x==null?'n/a':fmt(x*100,k==null?0:k)+'%'; }
+// the Atlas panel's rule (farmland-atlas.html shareWords): a share from its acres, printed once, "under 1%" when it rounds to 0
+function shareWords(s){ return s!=null&&s>0&&s<0.005?'under 1%':pct(s,0); }
 function rh(v,k){ var m=Math.pow(10,k); return (Math.sign(v)*Math.round(Math.abs(v)*m+1e-9)/m).toFixed(k); }   // half away from zero; toFixed alone prints 2.135 as 2.13
 function f1(v){ return rh(Number(v),1); }
 function usd2(v){ return '$'+rh(Number(v),2); }
@@ -324,7 +326,7 @@ function render(){
     if(S.last10&&S.last10.ratio!=null) Rt+=fct('Loss ratio, '+S.last10.from+'–'+S.last10.to, rh(S.last10.ratio,2),'claims ÷ total premium (farmer share + federal subsidy)');
     if(S.loss_ratio_all!=null) Rt+=fct('Loss ratio, '+S.first_year+'–'+S.last_year, rh(S.loss_ratio_all,2), mUSD(S.total_indemnity)+' paid');
     if(S.years_over_one!=null) Rt+=fopt('Years claims exceeded premium', S.years_over_one+' of '+S.years_with_ratio);
-    if(S.worst_year) Rt+=fopt('Worst year', S.worst_year.year+'', 'ratio '+Number(S.worst_year.ratio).toFixed(2));
+    if(S.worst_year) Rt+=fopt('Worst year', S.worst_year.year+'', 'ratio '+Number(S.worst_year.ratio).toFixed(2)+(S.worst_year.tied&&S.worst_year.tied.length?' ('+S.worst_year.tied.join(', ')+' also '+Number(S.worst_year.ratio).toFixed(2)+')':''));
   } else Rt+=fw('Premium and payouts', why(S));
   if(ok(Lo)&&Lo.share_all){
     var top=Object.keys(Lo.share_all).filter(function(k){return Lo.share_all[k]!=null;}).sort(function(a,b){return Lo.share_all[b]-Lo.share_all[a];}).slice(0,3);
@@ -356,11 +358,11 @@ function render(){
   if(ok(W)){
     var sh=W.irrigated_share_2022||{}, gw=W.groundwater_share_2015||{}, tiny=get(W,'applied_2015','status')&&/under 1,000/.test(W.applied_2015.status);
     if(sh.share!=null&&sh.reported===false) Rt+=fct('Harvested cropland irrigated, 2022','none reported');
-    else if(sh.share!=null) Rt+=fct('Harvested cropland irrigated, 2022', pct(sh.share,0));
+    else if(sh.share!=null) Rt+=fct('Harvested cropland irrigated, 2022', shareWords(sh.irrigated_acres!=null&&sh.harvested_acres?sh.irrigated_acres/sh.harvested_acres:sh.share));
     else Rt+=fw('Harvested cropland irrigated, 2022', why(sh)).replace('class="f','class="opt f');
   }
   if(ok(Pr)){
-    var p=function(label,x){ if(!x) return; if(x.reported===false) Rt+=fct(label,'none reported'); else if(x.share!=null){ var s0=Pr.cropland?x.acres/Pr.cropland:x.share; Rt+=fct(label, (s0>0&&s0<0.005?'under 1%':pct(s0,0))+' of cropland', fmt(x.acres,0)+' ac'); } };
+    var p=function(label,x){ if(!x) return; if(x.reported===false) Rt+=fct(label,'none reported'); else if(x.share!=null){ var s0=x.acres!=null&&Pr.cropland?x.acres/Pr.cropland:x.share; Rt+=fct(label, shareWords(s0)+' of cropland', fmt(x.acres,0)+' ac'); } };
     p('Drained by tile, 2022',Pr.tile);
     p('Farmed no-till, 2022',Pr.notill); p('Cover crops, 2022',Pr.cover);
   }

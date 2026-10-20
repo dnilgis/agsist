@@ -99,6 +99,8 @@ function n(x,k){return Number(x).toLocaleString('en-US',{maximumFractionDigits:k
 function nf(x,k){return Number(x).toLocaleString('en-US',{maximumFractionDigits:k,minimumFractionDigits:k});}
 var usd=function(v){return '$'+n(Math.floor(v+0.5),0);};
 var DASH='n/a';
+// the Atlas panel's rule (farmland-atlas.html shareWords): counties.json carries the share from its acres, printed once
+var shareWords=function(s){return s>0&&s<0.005?'under 1%':n(s*100,0)+'%';};
 // [label, column(s), formatter(row) -> string or null, why-blank]
 var SPEC=[
  ['Dry cash rent',function(r){return r.rent_dry_usd_ac==null?null:usd(r.rent_dry_usd_ac)+' ('+r.rent_dry_year+')';},'no published county rent'],
@@ -113,8 +115,8 @@ var SPEC=[
  ['Years claims exceeded premium',function(r){return r.years_loss_over_1==null?null:String(r.years_loss_over_1);},'no crop insurance record'],
  ['Drought weeks (D2 or worse)',function(r){return r.d2_week_share_pct==null?null:n(r.d2_week_share_pct,0)+'%';},'no drought record'],
  ['Farmland rented from others',function(r){return r.rented_share_2022==null?null:n(r.rented_share_2022*100,0)+'%';},'not in the 2022 census'],
- ['Cropland drained by tile',function(r){return r.tile_share_2022==null?null:n(r.tile_share_2022*100,0)+'%';},'not reported'],
- ['Cropland farmed no-till',function(r){return r.notill_share_2022==null?null:n(r.notill_share_2022*100,0)+'%';},'not reported'],
+ ['Cropland drained by tile',function(r){return r.tile_share_2022==null?null:shareWords(r.tile_share_2022);},'not reported'],
+ ['Cropland farmed no-till',function(r){return r.notill_share_2022==null?null:shareWords(r.notill_share_2022);},'not reported'],
  ['CRP enrolled, acres',function(r){return r.crp_acres==null?null:n(r.crp_acres,0);},'no CRP record'],
  ['Hail days, 1 inch or larger, a year',function(r){return r.hail_1in_days_yr==null?null:n(r.hail_1in_days_yr,1);},'no storm record'],
  ['Growing season rain, inches',function(r){return r.gs_rain_normal_in==null?null:n(r.gs_rain_normal_in,1);},'no climate record']
