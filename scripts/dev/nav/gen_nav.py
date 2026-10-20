@@ -433,6 +433,7 @@ F_MONEY = dedupe([it[:3] for it in flat(MONEY)] + [("/foreign-land", "Foreign-ow
 F_WORK = [("/sponsor", "Advertise", "i-chart-column"),
           ("/rain-print-business", "Rain Print for business", "i-cloud-rain"),
           ("/prf-sponsor", "PRF sponsor", "i-shield-check"),
+          ("/list-your-elevator", "List your elevator, free", "i-warehouse"),
           ("/rain-gauge", "Rain gauge waitlist", "i-test-tube"),
           ("/developer", "Embeds", "i-terminal")]
 F_ABOUT = [("/about", "About", "i-book-open"),
