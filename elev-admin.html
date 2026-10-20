@@ -398,11 +398,15 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
     function site() { return $('p-site').value; }
     function setOpen() { $('p-open').href = PB.SITES[site()].page; lastPaste(); }
     function lastPaste() {
-      fetch(PUB + 'paste-status', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+      // A public route; the token goes along in the header only so every call this page makes looks the same.
+      var t = $('tok').value.trim();
+      if (!t) { $('p-last').textContent = ''; return; }
+      fetch(PUB + 'paste-status', { cache: 'no-store', headers: { Authorization: 'Bearer ' + t } }).then(function (r) { return r.json(); }).then(function (j) {
         var s = j && j.sites && j.sites[site()];
         $('p-last').textContent = s && s.pastedAt ? 'Last saved ' + ctTime(s.pastedAt) + ': ' + s.rows + ' rows, ' + s.locations + ' locations.' : 'Nothing saved for this site yet.';
       }, function () { $('p-last').textContent = ''; });
     }
+    $('tok').addEventListener('change', lastPaste);
     $('p-site').addEventListener('change', function () { pending = null; $('p-save').hidden = true; $('p-prev').innerHTML = ''; show('p-out', ''); setOpen(); });
     setOpen();
     $('p-clip').addEventListener('click', function () {
