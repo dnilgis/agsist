@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-20",
+      "date_display": "Tuesday, October 20, 2026",
+      "headline": "Corn at $4.67¾ and beans at $12.57½ barely move after losing streaks",
+      "teaser": "Corn and beans bounce a few cents after long losing runs; crude falls 2.8% to $100.71.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-10-20",
+      "market_closed": false
+    },
+    {
       "date": "2026-10-19",
       "date_display": "Monday, October 19, 2026",
       "headline": "Crude down 3% to $98.41 on Trump-Putin diesel deal; grains flat",
@@ -2525,6 +2536,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-19T10:47:41.941402+00:00",
-  "count": 220
+  "updated": "2026-10-20T10:47:34.753226+00:00",
+  "count": 221
 }

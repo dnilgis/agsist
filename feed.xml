@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 19 Oct 2026 10:48:07 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 20 Oct 2026 10:48:17 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn at $4.67¾ and beans at $12.57½ barely move after losing streaks</title>
+      <link>https://agsist.com/daily/2026-10-20</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-20</guid>
+      <pubDate>Tue, 20 Oct 2026 10:47:29 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Corn at $4.67¾ and soybeans at $12.57½ are both a few cents higher overnight, which is hardly a bounce after streaks of five and six lower closes. A farmer holding unpriced bushels is still looking at the lowest prices of the run.
+• Grains bounce after losing runs
+• Crude slips but stays above $100
+Read more: https://agsist.com/daily/2026-10-20</description>
+    </item>
     <item>
       <title>Crude down 3% to $98.41 on Trump-Putin diesel deal; grains flat</title>
       <link>https://agsist.com/daily/2026-10-19</link>
@@ -359,19 +370,6 @@ Action: Nothing to do at $13.03 beans over the weekend; a Monday close below $12
 • DIESEL STAYS TIGHT AS CRUDE BREAKS
 • CATTLE FIRM, FEEDER SUPPLY THE STORY
 Read more: https://agsist.com/daily/2026-09-20</description>
-    </item>
-    <item>
-      <title>Crude retreats; Trump-Xi summit hangs over beans</title>
-      <link>https://agsist.com/daily/2026-09-19</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-19</guid>
-      <pubDate>Sat, 19 Sep 2026 13:58:17 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Soybeans closed Friday at $13.03, down 7½ cents, and the fund liquidation was straightforward: nobody wanted to hold a long position into a weekend with the Trump-Xi summit on September 24 still unresolved. Wheat led the grain complex lower at $7.13, off 11½ cents.
-Action: Unpriced new-crop beans: a Sept 24 Trump-Xi outcome below expectations is the sell signal; hold until then, not past it.
-• GRAINS SELL INTO THE WEEKEND
-• CRUDE RETREATS; DIESEL STILL TIGHT
-• CATTLE HOLD; FEEDERS UNDER PRESSURE
-Read more: https://agsist.com/daily/2026-09-19</description>
     </item>
   </channel>
 </rss>
