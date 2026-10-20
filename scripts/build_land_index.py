@@ -79,6 +79,7 @@ PPA_LO, PPA_HI = 1000, 40000
 BANDS = (20, 40, 80, 160)          # acres band lower edges
 MIN_Q = 100                        # sales a quarter needs to be printed
 MIN_N = B.MIN_N                    # county median: 5 sales
+PTR_YEARS = 3                      # price to rent: the latest three full years only
 LAG_SHORT = 0.85                   # a recent quarter under 85% of the year-before count is provisional
 MAX_RANGE = 12.0                   # a state's median 90% range may be no wider than this, in index points
 MAX_STALE = 2                      # latest settled quarter at most this many quarters behind the latest
@@ -353,14 +354,15 @@ def county_table(sales, names, years, rents, through):
             row["y"][str(y)] = [med(v), len(v)] if len(v) >= MIN_N else [None, len(v)]
         rr = ((rent_by.get(fips) or {}).get("rent") or {}).get("nonirr") or {}
         full = [y for y in years if "%d-12-31" % y <= through]
-        for y in sorted(full, reverse=True):
+        # the same age rule as the Atlas rent tiles: a rent more than three survey years old is not used
+        for y in sorted(full, reverse=True)[:PTR_YEARS]:
             v = [s["ppa"] for s in ss if s["year"] == y]
             if len(v) >= MIN_N and rr.get(str(y)):
                 m = med(v)
                 row["ptr"] = {"y": y, "x": round(m / rr[str(y)], 1), "rent": rr[str(y)], "med": m, "n": len(v)}
                 break
         if "ptr" not in row:
-            row["ptr_why"] = "no year with both a NASS rent and %d+ sales" % MIN_N
+            row["ptr_why"] = "no year since %d with both a NASS rent and %d+ sales" % (sorted(full)[-PTR_YEARS], MIN_N) if len(full) >= PTR_YEARS else "too few years"
         out.append(row)
     return out
 
@@ -632,6 +634,10 @@ CSS = """
 .li-find label{font-size:.85rem;color:var(--text-dim)}
 .li-find input{flex:1;max-width:260px;padding:.5rem .6rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:1rem}
 .li-c td.li-why{white-space:normal}
+.li-c tr.li-more{display:none}
+.li-all .li-c tr.li-more{display:table-row}
+.li-more-b{margin:.2rem 0 .6rem;padding:.55rem .9rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--link,var(--brand));font-size:.9rem;cursor:pointer}
+.li-all .li-more-b{display:none}
 .li-note{font-size:.84rem!important;color:var(--text-muted)!important}
 .li-faq dt{font-weight:700;color:var(--text);margin:1rem 0 .25rem}
 .li-faq dd{margin:0;color:var(--text-dim);line-height:1.6;font-size:.95rem}
@@ -647,7 +653,10 @@ CSS = """
 .li-t th,.li-t td{border:0;padding:.15rem 0;text-align:left}
 .li-t th[scope=row]{grid-column:1/-1;font-size:.95rem;padding-bottom:.25rem}
 .li-t td[data-l]::before{content:attr(data-l);display:block;font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.03em;color:var(--text-muted);font-weight:400}
-.li-t td.li-why{grid-column:1/-1}
+.li-q td.li-why,.li-b td.li-why{grid-column:1/-1}
+.li-t td.li-why::before{font-style:normal}
+.li-c tr.li-more{display:none}
+.li-all .li-c tr.li-more{display:grid}
 .li-b tr{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 """
@@ -665,13 +674,15 @@ COUNTY_JS = r"""
       if(v[0]==null) return '<td data-l="'+l+'" class="li-why">'+(v[1]?'withheld: '+v[1]+' sale'+(v[1]==1?'':'s')+', under 5':'no sales')+'</td>';
       return '<td data-l="'+l+'">'+usd(v[0])+' <span class="li-rng">('+v[1]+')</span></td>';};
     var head='<thead><tr><th scope="col">County</th><th scope="col">'+y0+' median (sales)</th><th scope="col">'+y1+' median (sales)</th>'+(yp?'<th scope="col">'+yp+' so far</th>':'')+'<th scope="col">Price to rent</th></tr></thead>';
-    var rows=s.counties.map(function(c){
+    var rows=s.counties.map(function(c,i){
       var p=c.ptr?'<td data-l="Price to rent">'+c.ptr.x.toFixed(1)+'x <span class="li-rng">('+c.ptr.y+', '+usd(c.ptr.rent)+' rent, '+c.ptr.n+' sales)</span></td>':'<td data-l="Price to rent" class="li-why">'+esc(c.ptr_why)+'</td>';
-      return '<tr data-n="'+esc(c.name.toLowerCase())+'"><th scope="row">'+esc(c.name)+'</th>'+cell(c,y0,y0+' median')+cell(c,y1,y1+' median')+(yp?cell(c,yp,yp+' so far'):'')+p+'</tr>';}).join('');
+      return '<tr'+(i>=12?' class="li-more"':'')+' data-n="'+esc(c.name.toLowerCase())+'"><th scope="row">'+esc(c.name)+'</th>'+cell(c,y0,y0+' median')+cell(c,y1,y1+' median')+(yp?cell(c,yp,yp+' so far'):'')+p+'</tr>';}).join('');
     box.innerHTML='<div class="li-find"><label for="li-q">Find a county</label><input id="li-q" type="search" autocomplete="off" placeholder="McLean"></div>'+
-      '<div class="li-tw" tabindex="0" role="region" aria-label="Illinois counties (scrolls sideways)"><table class="li-t li-c"><caption>Illinois counties: median sale price an acre</caption>'+head+'<tbody>'+rows+'</tbody></table></div>';
+      '<div class="li-tw" tabindex="0" role="region" aria-label="Illinois counties (scrolls sideways)"><table class="li-t li-c"><caption>Illinois counties: median sale price an acre</caption>'+head+'<tbody>'+rows+'</tbody></table></div>'+
+      (s.counties.length>12?'<button type="button" class="li-more-b">Show all '+s.counties.length+' counties</button>':'');
+    var mb=box.querySelector('.li-more-b'); if(mb) mb.addEventListener('click',function(){box.classList.add('li-all');});
     var q=document.getElementById('li-q');
-    q.addEventListener('input',function(){var v=q.value.trim().toLowerCase(); box.querySelectorAll('tbody tr').forEach(function(tr){tr.hidden=v&&tr.getAttribute('data-n').indexOf(v)<0;});});
+    q.addEventListener('input',function(){var v=q.value.trim().toLowerCase(); if(v) box.classList.add('li-all'); box.querySelectorAll('tbody tr').forEach(function(tr){tr.hidden=v&&tr.getAttribute('data-n').indexOf(v)<0;});});
   }).catch(function(){box.innerHTML='<p class="li-note">The county table did not load. The numbers are in <a href="/data/land/index.json">the data file</a>.</p>';});
 })();
 """
@@ -921,9 +932,105 @@ def main(argv):
     return 1 if bad else 0
 
 
+def backfit(sales, quarters, iters=3000, tol=1e-12):
+    """The same model solved a different way (alternating means, no matrix), for the selftest."""
+    y = [math.log(x["ppa"]) for x in sales]
+    q = {k: 0.0 for k in quarters}
+    c = {x["fips"]: 0.0 for x in sales}
+    b = {x["band"]: 0.0 for x in sales}
+    for _ in range(iters):
+        delta = 0.0
+        for key, eff in (("q", q), ("fips", c), ("band", b)):
+            acc = {}
+            for x, yy in zip(sales, y):
+                r = yy - (q[x["q"]] if key != "q" else 0) - (c[x["fips"]] if key != "fips" else 0) - (b[x["band"]] if key != "band" else 0)
+                acc.setdefault(x[key], []).append(r)
+            for k, v in acc.items():
+                m = sum(v) / len(v)
+                delta = max(delta, abs(m - eff[k]))
+                eff[k] = m
+        if delta < tol:
+            break
+    return np.array([q[k] for k in quarters])
+
+
 def selftest():
-    print("selftest: not written yet")
-    return 1
+    global MIN_Q
+    fails = []
+
+    def ck(name, ok):
+        if not ok:
+            fails.append(name)
+            print("FAIL", name)
+
+    fx = load_json(FIXTURE)
+    files = fx["files"]
+    save = MIN_Q
+    try:
+        MIN_Q = 5
+        sales, counts, names = state_rows(files, 2018, "2019-12-31")
+        ck("fixture: 78 index sales from 300 real rows", len(sales) == 78)
+        qn = {}
+        for x in sales:
+            qn[x["q"]] = qn.get(x["q"], 0) + 1
+        ck("fixture: sales by quarter", qn == {"2018Q1": 7, "2018Q2": 12, "2018Q3": 9, "2018Q4": 9, "2019Q1": 15, "2019Q2": 11, "2019Q3": 6, "2019Q4": 9})
+        ck("fixture: market sales by quarter (the filing-lag count)", counts == {"2018Q1": 23, "2018Q2": 26, "2018Q3": 17, "2018Q4": 19, "2019Q1": 28, "2019Q2": 28, "2019Q3": 14, "2019Q4": 25})
+        bt = {}
+        for x in sales:
+            bt[x["buyer"]] = bt.get(x["buyer"], 0) + 1
+        ck("fixture: buyer types", bt == {"individual": 64, "company": 9, "trust": 5})
+        ck("every index sale: 20+ acres, in the price band, one parcel", all(x["acres"] >= MIN_ACRES and PPA_LO <= x["ppa"] <= PPA_HI for x in sales))
+        ck("no name kept on a sale row", all(set(x) == {"fips", "date", "q", "year", "ppa", "acres", "band", "buyer"} for x in sales))
+        qs = q_range("2018Q1", "2019Q4")
+        point, D, _ = model(sales, qs, 2018, boot=60)
+        ck("base year averages 100", abs(point[:4].mean() - 100) < 1e-9)
+        bf = backfit(sales, qs)
+        alt = 100 * np.exp(bf) / np.exp(bf[:4]).mean()
+        ck("least squares and alternating means agree (max %.2e)" % float(np.abs(alt - point).max()), float(np.abs(alt - point).max()) < 1e-6)
+        ck("fixture index, 2019Q4", round(float(point[-1]), 1) == FIX_LAST)
+        p2, D2, _ = model(sales, qs, 2018, boot=60)
+        ck("bootstrap repeats with its seed", np.array_equal(D, D2))
+        lo, hi = np.percentile(D, LO_P, axis=0), np.percentile(D, HI_P, axis=0)
+        ck("ranges hold the point (after the base year)", all(lo[i] <= point[i] <= hi[i] for i in range(4, len(qs))))
+        rents = [{"fips": "17009", "rent": {"nonirr": {"2019": 200.0}}}, {"fips": "17061", "rent": {"nonirr": {"2015": 180.0}}}]
+        st, _, _ = build_state("IL", files, rents, {"cropland": {"2018": 7280.0, "2019": 7300.0}}, boot=40)
+        ck("the latest quarter is provisional", [r for r in st["quarters"] if r["q"] == "2019Q4"][0].get("prov") == 1)
+        q3 = [r for r in st["quarters"] if r["q"] == "2019Q3"][0]
+        ck("a recent quarter under 85% of its year-earlier count is provisional (14 vs 17)", q3.get("prov") == 1)
+        ck("NASS on the same base, its own field", [a.get("nass") for a in st["annual"]] == [100.0, 100.3])
+        cty = {c["fips"]: c for c in st["counties"]}
+        ck("price to rent from the same year", cty["17009"]["ptr"]["y"] == 2019 and cty["17009"]["ptr"]["rent"] == 200.0)
+        ck("an old rent is not used", "ptr" not in cty["17061"] and "ptr_why" in cty["17061"])
+        ck("county median withheld under 5, the count kept", all((v[0] is None) == (v[1] < MIN_N) for c in st["counties"] for v in c["y"].values()))
+        text = dump(st)
+        ck("no synthetic name, legal, parcel or document token in the output", "SYN" not in text and not B.leaks(text, files))
+        ck("the leak check finds a planted name", bool(B.leaks(text + files[0]["rows"][0][files[0]["cols"].index("grantee")], files)))
+        MIN_Q = 8
+        st2, _, _ = build_state("IL", files, rents, None, boot=10)
+        ck("a base-year quarter under the minimum holds the whole state back", "held" in st2 and "base year" in st2["held"])
+    finally:
+        MIN_Q = save
+    for name, want in (("SMITH JOHN & MARY", "individual"), ("DOE FAMILY FARMS LLC", "company"), ("JONES REVOCABLE TRUST", "trust"),
+                       ("ESTATE OF A B", "trust"), ("COUNTY OF CHAMPAIGN", "other"), ("ST MARYS CHURCH", "other"),
+                       ("ACME AG INC.", "company"), ("", None), ("BROWN, CO", "company"), ("TRUSTEE OF THE X TRUST LLC", "trust")):
+        ck("buyer type %r" % name, buyer_type(name) == want)
+    ck("quarters", quarter("2026-09-30") == "2026Q3" and quarter("2026-10-01") == "2026Q4" and q_range("2025Q3", "2026Q2") == ["2025Q3", "2025Q4", "2026Q1", "2026Q2"])
+    ck("acres bands", [band(a) for a in (20, 39.9, 40, 80, 159, 160, 640)] == [0, 0, 1, 2, 2, 3, 3])
+    # the committed page and data
+    data = load_json(OUT)
+    if data:
+        page = page_html(data)
+        ck("page: no em dash", "\u2014" not in page and "&mdash;" not in page)
+        ck("page: byline only at the end", page.index("Sigurd Lindquist, CCA") > page.index('id="sources"'))
+        ck("page: no sponsor slot", not re.search(r"data-sponsor|ag-sponsor|sponsor-slot", page))
+        ck("page: withheld quarters and held states say why", "withheld" in page or all(r.get("ix") is not None for r in data["states"]["IL"]["quarters"]))
+        ck("page: a Dataset and a FAQPage", '"@type":"Dataset"' in page and '"@type":"FAQPage"' in page)
+        ck("data file under 150 KB", len(dump(data).encode()) < 150 * 1024)
+    print("selftest: %s" % ("FAIL (%d)" % len(fails) if fails else "ok"))
+    return 1 if fails else 0
+
+
+FIX_LAST = 107.5               # the fixture's 2019Q4 index, frozen from the first run (alternating means agrees)
 
 
 if __name__ == "__main__":

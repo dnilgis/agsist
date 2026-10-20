@@ -82,6 +82,10 @@
 .li-find label{font-size:.85rem;color:var(--text-dim)}
 .li-find input{flex:1;max-width:260px;padding:.5rem .6rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:1rem}
 .li-c td.li-why{white-space:normal}
+.li-c tr.li-more{display:none}
+.li-all .li-c tr.li-more{display:table-row}
+.li-more-b{margin:.2rem 0 .6rem;padding:.55rem .9rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--link,var(--brand));font-size:.9rem;cursor:pointer}
+.li-all .li-more-b{display:none}
 .li-note{font-size:.84rem!important;color:var(--text-muted)!important}
 .li-faq dt{font-weight:700;color:var(--text);margin:1rem 0 .25rem}
 .li-faq dd{margin:0;color:var(--text-dim);line-height:1.6;font-size:.95rem}
@@ -97,7 +101,10 @@
 .li-t th,.li-t td{border:0;padding:.15rem 0;text-align:left}
 .li-t th[scope=row]{grid-column:1/-1;font-size:.95rem;padding-bottom:.25rem}
 .li-t td[data-l]::before{content:attr(data-l);display:block;font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.03em;color:var(--text-muted);font-weight:400}
-.li-t td.li-why{grid-column:1/-1}
+.li-q td.li-why,.li-b td.li-why{grid-column:1/-1}
+.li-t td.li-why::before{font-style:normal}
+.li-c tr.li-more{display:none}
+.li-all .li-c tr.li-more{display:grid}
 .li-b tr{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 </style>
@@ -203,13 +210,15 @@
       if(v[0]==null) return '<td data-l="'+l+'" class="li-why">'+(v[1]?'withheld: '+v[1]+' sale'+(v[1]==1?'':'s')+', under 5':'no sales')+'</td>';
       return '<td data-l="'+l+'">'+usd(v[0])+' <span class="li-rng">('+v[1]+')</span></td>';};
     var head='<thead><tr><th scope="col">County</th><th scope="col">'+y0+' median (sales)</th><th scope="col">'+y1+' median (sales)</th>'+(yp?'<th scope="col">'+yp+' so far</th>':'')+'<th scope="col">Price to rent</th></tr></thead>';
-    var rows=s.counties.map(function(c){
+    var rows=s.counties.map(function(c,i){
       var p=c.ptr?'<td data-l="Price to rent">'+c.ptr.x.toFixed(1)+'x <span class="li-rng">('+c.ptr.y+', '+usd(c.ptr.rent)+' rent, '+c.ptr.n+' sales)</span></td>':'<td data-l="Price to rent" class="li-why">'+esc(c.ptr_why)+'</td>';
-      return '<tr data-n="'+esc(c.name.toLowerCase())+'"><th scope="row">'+esc(c.name)+'</th>'+cell(c,y0,y0+' median')+cell(c,y1,y1+' median')+(yp?cell(c,yp,yp+' so far'):'')+p+'</tr>';}).join('');
+      return '<tr'+(i>=12?' class="li-more"':'')+' data-n="'+esc(c.name.toLowerCase())+'"><th scope="row">'+esc(c.name)+'</th>'+cell(c,y0,y0+' median')+cell(c,y1,y1+' median')+(yp?cell(c,yp,yp+' so far'):'')+p+'</tr>';}).join('');
     box.innerHTML='<div class="li-find"><label for="li-q">Find a county</label><input id="li-q" type="search" autocomplete="off" placeholder="McLean"></div>'+
-      '<div class="li-tw" tabindex="0" role="region" aria-label="Illinois counties (scrolls sideways)"><table class="li-t li-c"><caption>Illinois counties: median sale price an acre</caption>'+head+'<tbody>'+rows+'</tbody></table></div>';
+      '<div class="li-tw" tabindex="0" role="region" aria-label="Illinois counties (scrolls sideways)"><table class="li-t li-c"><caption>Illinois counties: median sale price an acre</caption>'+head+'<tbody>'+rows+'</tbody></table></div>'+
+      (s.counties.length>12?'<button type="button" class="li-more-b">Show all '+s.counties.length+' counties</button>':'');
+    var mb=box.querySelector('.li-more-b'); if(mb) mb.addEventListener('click',function(){box.classList.add('li-all');});
     var q=document.getElementById('li-q');
-    q.addEventListener('input',function(){var v=q.value.trim().toLowerCase(); box.querySelectorAll('tbody tr').forEach(function(tr){tr.hidden=v&&tr.getAttribute('data-n').indexOf(v)<0;});});
+    q.addEventListener('input',function(){var v=q.value.trim().toLowerCase(); if(v) box.classList.add('li-all'); box.querySelectorAll('tbody tr').forEach(function(tr){tr.hidden=v&&tr.getAttribute('data-n').indexOf(v)<0;});});
   }).catch(function(){box.innerHTML='<p class="li-note">The county table did not load. The numbers are in <a href="/data/land/index.json">the data file</a>.</p>';});
 })();
 </script>
