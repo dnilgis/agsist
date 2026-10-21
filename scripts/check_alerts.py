@@ -20,8 +20,6 @@ Idempotence: one run per MESH day; the workflow chains to mesh.yml, which
 runs once daily, so a subscriber gets at most one email per swath day.
 Requires: shapely (installed by the workflow).
 """
-import hashlib
-import hmac
 import json
 import math
 import os
@@ -52,6 +50,7 @@ from shapely.validation import explain_validity, make_valid
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe           # noqa: E402  (no address or watched place in the public log)
+import email_links        # noqa: E402  (k=<link id> links; never an address in one)
 
 REPO = Path(__file__).resolve().parent.parent
 MESH_DIR = REPO / "data" / "hail" / "mesh"
@@ -206,11 +205,12 @@ def fetch_watchers():
         return json.loads(r.read().decode())
 
 
-def stop_url(email):
+def stop_url(w):
+    """The watcher's signed stop link. Subs worker v5.46: ?k=<the row's link
+    id>, never the address (email_links.signed raises when there is no id)."""
     base = env("LIST_URL").rstrip("/")
     secret = env("UNSUB_SECRET", required=True)
-    t = hmac.new(secret.encode(), email.lower().encode(), hashlib.sha256).hexdigest()[:16]
-    return base + "/alert-unsubscribe?e=" + urllib.parse.quote(email.lower()) + "&t=" + t
+    return email_links.signed(base, "alert-unsubscribe", email_links.lid_of(w), secret)
 
 
 def build_email(w, day, band, from_name, from_addr, reply_to):
@@ -219,7 +219,7 @@ def build_email(w, day, band, from_name, from_addr, reply_to):
     place = quoted(w["place"]) if w.get("place") else (str(w["lat"]) + ", " + str(w["lon"]))
     radius = w.get("radius_mi", 5)
     link = MAP + "?swath=" + day
-    stop = stop_url(w["email"])
+    stop = stop_url(w)
 
     msg = EmailMessage()
     msg["Subject"] = "Hail alert: radar-estimated hail in your watch area (" + day + ")"
@@ -275,7 +275,8 @@ def build_email(w, day, band, from_name, from_addr, reply_to):
         '<br>AGSIST, PO Box 243, Chetek, WI 54728'
         '<br><a href="' + stop + '" style="color:#6b6b6b">Stop these alerts</a></p></div>')
     msg.add_alternative(hbody, subtype="html")
-    return msg
+    # v5.46: refuses (raises) if any link carries an address
+    return email_links.check_message(msg)
 
 
 def main():
@@ -283,6 +284,14 @@ def main():
     bands = load_bands(day)
     thresholds = sorted(bands.keys())
     watchers = fetch_watchers()
+    # v5.46: a watcher the worker gave no link id gets no mail this run (counts only)
+    no_id = sum(1 for w in watchers if not email_links.lid_of(w))
+    if watchers and no_id == len(watchers):
+        print("::error::the subs worker gave no link ids (older than v5.46, or UNSUB_SECRET unset); nothing sent")
+        return 1
+    if no_id:
+        print("::warning::%d watcher(s) had no link id this run and are not mailed" % no_id)
+        watchers = [w for w in watchers if email_links.lid_of(w)]
     print("swath day " + day + " · bands " + str(thresholds) + " · watchers " + str(len(watchers)))
     if not watchers:
         print("no watch areas registered — exit 0")
@@ -416,5 +425,41 @@ def main():
     return 0 if sent > 0 else 1
 
 
+def selftest():
+    """The alert email for a made-up watcher: the stop link carries the link
+    id, and no link in the body or the header carries an address."""
+    bad = []
+    old = {k: os.environ.get(k) for k in ("LIST_URL", "UNSUB_SECRET")}
+    os.environ.update({"LIST_URL": "https://w.dev", "UNSUB_SECRET": "sec"})
+    try:
+        w = {"email": "made-up@example.com", "lat": 45.3, "lon": -91.6, "place": "Chetek, WI", "radius_mi": 5,
+             "lid": email_links.SAMPLE_LID}
+        m = build_email(w, "2026-07-01", 1.0, "AGSIST Hail Alerts", "alerts@example.com", None)
+        h, t = m.get_body(("html",)).get_content(), m.get_body(("plain",)).get_content()
+        want = "https://w.dev/alert-unsubscribe?k=%s&t=%s" % (email_links.SAMPLE_LID, email_links.token("sec", email_links.SAMPLE_LID))
+        if want not in t or want not in h or str(m["List-Unsubscribe"]) != "<" + want + ">":
+            bad.append("stop link by link id in text, html and header")
+        if [u for u in email_links.hrefs(h) if "@" in u or "%40" in u.lower()]:
+            bad.append("an @ inside an href")
+        if email_links.bad_links(t) or "/alert-unsubscribe?e=" in t + h:
+            bad.append("an address in a text link")
+        try:
+            build_email(dict(w, lid=None), "2026-07-01", 1.0, "AGSIST Hail Alerts", "alerts@example.com", None)
+            bad.append("a watcher with no link id was given an email")
+        except email_links.LinkError:
+            pass
+    finally:
+        for k, v in old.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+    if bad:
+        print("check_alerts selftest FAILED: " + "; ".join(bad))
+        return 1
+    print("check_alerts selftest ok")
+    return 0
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(selftest() if "--selftest" in sys.argv else main())
