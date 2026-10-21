@@ -192,7 +192,7 @@ def _word(w):
         return lead + MONTHS[core] + tail
     if re.fullmatch(r"'\d\d", core):          # Dec '26 -> December (the year is on screen)
         return ""
-    return w.replace("—", ",").replace("–", " to ")
+    return w.replace("\u2014", ",").replace("\u2013", " to ")
 
 
 def tokens(text):

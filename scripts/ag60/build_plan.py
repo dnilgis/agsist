@@ -91,7 +91,7 @@ def clean(md):
     """Markdown bullet to a plain sentence."""
     s = re.sub(r"\*\*|__|`", "", md).strip()
     s = re.sub(r"^[-*]\s+", "", s)
-    return s.replace("—", ", ").replace("–", " to ").strip()
+    return s.replace("\u2014", ", ").replace("\u2013", " to ").strip()
 
 
 def first_clause(s, limit=24):
