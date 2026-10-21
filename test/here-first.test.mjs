@@ -1,4 +1,5 @@
-/* /here's first screen and its elevator comparison (Oct 19, 2026), from real cases.
+/* The place page's rain drawing and its elevator comparison (Oct 19, 2026), from real cases.
+ * On Fast Facts since Oct 21: both sit in "More about this county" on the My place tab.
  *
  *   node --test test/here-first.test.mjs
  *
@@ -226,11 +227,11 @@ test("bids-network exports the index and a checked shard getter; versions bumped
   const js = read("components/bids-network.js");
   assert.match(js, /index: index,\s*\n\s*shard: shard,/);
   assert.match(js, /\^merged\\\/\[a-z0-9\]/);
-  for (const f of ["here.html", "corn-futures-prices.html", "store-or-sell.html", "combine-loss.html"]) assert.match(read(f), /bids-network\.js\?v=7/, f);
+  for (const f of ["fast-facts.html", "corn-futures-prices.html", "store-or-sell.html", "combine-loss.html"]) assert.match(read(f), /bids-network\.js\?v=7/, f);
   assert.match(read("components/bids-homepage.js"), /bids-network\.js\?v=7/);
-  assert.match(read("here.html"), /place\.js\?v=4/);
-  assert.match(read("here.html"), /here\.js\?v=19/);   // v19: rain-county-print.js v36, engine rain-print.js v65 (fx/rpfix: Chetek Oct 21); v17: rain-county-print.js v34, engine rain-print.js v64, art v20 (fx/rptemp: temperature stripes); v16: rain-county-print.js v33, engine rain-print.js v63 (ship23: buying lines, Watch it draw); v15: rain-county-print.js v32, engine rain-print.js v62 (Watch it draw, 2026-10-20); v14: rain-county-print.js v31, engine rain-print.js v61 (digital files, 2026-10-20); v13: rain-county-print.js v30, engine rain-print.js v60 (order tracking, 2026-10-20); v12: rain-county-print.js v29, engine rain-print.js v59 (new maker key, 2026-10-20); v11: rain-county-print.js v28, the county print as a hidden shell (2026-10-20); v10: summer snow traces skipped (v27)
-  assert.match(read("here.html"), /rain-county\.css\?v=5/);   // v5: the month table fits a phone (2026-10-19)
+  assert.match(read("fast-facts.html"), /place\.js\?v=5/);   // v5: the Fast Facts row builders (Oct 21)
+  assert.match(read("fast-facts.html"), /here\.js\?v=20/);   // v20: Fast Facts My place, State and US tabs (fx/fastfacts, Oct 21);   // v19: rain-county-print.js v36, engine rain-print.js v65 (fx/rpfix: Chetek Oct 21); v17: rain-county-print.js v34, engine rain-print.js v64, art v20 (fx/rptemp: temperature stripes); v16: rain-county-print.js v33, engine rain-print.js v63 (ship23: buying lines, Watch it draw); v15: rain-county-print.js v32, engine rain-print.js v62 (Watch it draw, 2026-10-20); v14: rain-county-print.js v31, engine rain-print.js v61 (digital files, 2026-10-20); v13: rain-county-print.js v30, engine rain-print.js v60 (order tracking, 2026-10-20); v12: rain-county-print.js v29, engine rain-print.js v59 (new maker key, 2026-10-20); v11: rain-county-print.js v28, the county print as a hidden shell (2026-10-20); v10: summer snow traces skipped (v27)
+  assert.match(read("components/here.js"), /css\('\/components\/rain-county\.css\?v=5'\)/);   // loaded with the depth only (Oct 21)   // v5: the month table fits a phone (2026-10-19)
 });
 
 // ---------------------------------------------------------------- in a browser
@@ -266,7 +267,7 @@ function serve() {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml", ".ics": "text/calendar" };
   const srv = http.createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
-    if (p === "/here") p = "/here.html";
+    if (p === "/here" || p === "/fast-facts") p = p + ".html";
     const f = path.normalize(path.join(ROOT, p));
     if (!f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[path.extname(f)] || "application/octet-stream" });
@@ -291,14 +292,17 @@ async function openPage(browser, port, url, width, opts = {}) {
   });
   await pg.goto(`http://127.0.0.1:${port}${url}`, { waitUntil: "load" });
   await pg.waitForSelector("#h-place:not([hidden])", { timeout: 30000 });
+  // the drawing, the rank and the elevators load only when "More about this county" opens
+  assert.equal(await pg.$("#h-rp"), null, "nothing of the depth before it is opened");
+  await pg.click("#h-more summary");
   return { pg, ctx, errs };
 }
 
-test("first screen in a browser: ranked line, the Rain Print, unusual lines only when unusual, elevators; math on tap", { skip, timeout: 240000 }, async () => {
+test("in a browser: ranked line, the Rain Print, unusual lines only when unusual, elevators without names; the years on tap", { skip, timeout: 240000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    for (const [url, odd] of [["/here?zip=54728", 0], ["/here?q=Champaign%20County%2C%20IL", 2], ["/here?zip=67530", 0]]) {
+    for (const [url, odd] of [["/fast-facts?zip=54728", 0], ["/fast-facts?q=Champaign%20County%2C%20IL", 2], ["/fast-facts?zip=67530", 0]]) {
       for (const w of [390, 1280]) {
         const { pg, ctx, errs } = await openPage(browser, port, url, w);
         // the plain running total is there before anything slow answers
@@ -306,20 +310,25 @@ test("first screen in a browser: ranked line, the Rain Print, unusual lines only
         await pg.waitForFunction(() => !document.querySelector("#h-rank .h-wait") && !document.querySelector("#h-elev-b .wk-wait"), null, { timeout: 30000 });
         await pg.waitForSelector("#h-rp.rc-print-on", { timeout: 30000 });
         assert.match(await pg.textContent(".h-rank-l"), /^2026 at .+: (the (wettest|driest)|\d+(st|nd|rd|th) (wettest|driest)) of \d+ years so far \(Jan 1 to [A-Z][a-z]{2} \d+\)\.$/);
-        // the first screen sits above the old panels
-        assert.ok(await pg.evaluate(() => document.querySelector("#h-first").getBoundingClientRect().top < document.querySelector("#h-part-sentence").getBoundingClientRect().top));
+        // the drawing leads the depth, under the cards
+        assert.ok(await pg.evaluate(() => document.querySelector("#h-first").getBoundingClientRect().top < document.querySelector("#h-sec-fingerprint").getBoundingClientRect().top));
+        assert.ok(await pg.evaluate(() => document.querySelector("#h-sec-week").getBoundingClientRect().top < document.querySelector("#h-first").getBoundingClientRect().top));
         assert.equal(await pg.$eval("#h-odd", (e) => e.hidden), odd === 0, url);
         assert.equal(await pg.$$eval("#h-odd-l > li", (l) => l.length), odd, url);
-        assert.ok(await pg.$$eval("#h-odd-l > li", (l) => l.length) <= 5);
-        // math loads on tap, not before
-        assert.equal(await pg.$eval("#h-rank-m .h-math-b", (b) => b.childElementCount), 0);
-        await pg.click("#h-rank-m summary");
-        await pg.waitForSelector("#h-rank-m .h-math-b table");
-        assert.match(await pg.textContent("#h-rank-m .h-math-b"), /RCC-ACIS/);
-        assert.ok(await pg.$eval("#h-rank-m tr.h-me", (r) => /this year/.test(r.textContent)));
+        assert.ok(await pg.$$eval("#h-odd-l > li", (l) => l.length) <= 3, "at most three lines stand out");
+        for (const t of await pg.$$eval("#h-odd-l > li", (l) => l.map((x) => x.textContent))) assert.match(t, /of the \d+ earlier (full )?years \(\d{4} to \d{4}\)/, "each line carries its sample: " + t);
+        // every year at the station loads on tap, not before
+        assert.equal(await pg.$eval("#h-years .h-math-b", (b) => b.childElementCount), 0);
+        await pg.click("#h-years summary");
+        await pg.waitForSelector("#h-years .h-math-b table");
+        assert.match(await pg.textContent("#h-years .h-math-b"), /RCC-ACIS/);
+        assert.ok(await pg.$eval("#h-years tr.h-me", (r) => /this year/.test(r.textContent)));
         const els = await pg.$$eval("#h-elev-b .h-el > li", (l) => l.map((x) => x.textContent));
         assert.equal(els.length, 6, url);
-        for (const t of els) assert.match(t, /^(Corn|Soybeans) at .+ \(\d+ mi\): basis /);
+        for (const t of els) assert.match(t, /^(Corn|Soybeans), \d+ mi from (ZIP \d{5}|the county center): basis /);
+        // never a name: no operator in the network's rows shows anywhere on the tab
+        const tabText = await pg.textContent("#place");
+        for (const n of new Set(IDX.places.map((p) => String(p.operator || "").trim()).filter((n) => n.length > 3))) assert.ok(!tabText.includes(n), url + " names " + n);
         assert.match(await pg.textContent("#h-elev-b"), /Basis history starts June 2026/);
         assert.match(await pg.textContent("#h-el-thin"), /Against its own history: not yet for any of these/);
         const sw = await pg.evaluate(() => document.documentElement.scrollWidth);
@@ -329,7 +338,7 @@ test("first screen in a browser: ranked line, the Rain Print, unusual lines only
       }
     }
     // NOAA does not answer: the line says so, with a way to ask again; the drawing still shows
-    const { pg, ctx, errs } = await openPage(browser, port, "/here?zip=54728", 390, { noAcis: true });
+    const { pg, ctx, errs } = await openPage(browser, port, "/fast-facts?zip=54728", 390, { noAcis: true });
     await pg.waitForSelector("#h-rank-retry", { timeout: 40000 });
     assert.match(await pg.textContent("#h-rank"), /Not ranked: NOAA.s station record did not answer/);
     assert.ok(await pg.$("#h-rp svg"));
