@@ -25,8 +25,10 @@ test("usda-calendar: the 2026 payment needs a signed contract; Export Sales can 
 
 test("fast-facts: the A2809 corn N rates carry the edition and read date", () => {
   const h = read("fast-facts.html");
-  assert.match(h, /Rates are A2809 Table 6\.1 as UW posts it today \(Mar 2026 web edition, read Oct 16, 2026\)/);
-  assert.equal((h.match(/UW Extension A2809 \(Mar 2026 web edition, read Oct 16, 2026\), from Wisconsin trials, gives corn after soybeans/g) || []).length, 2);
+  // Oct 21 (tone): the edition stays by the rates; the read date is said once, in the header line
+  assert.match(h, /Rates from UW A2809 Table 6\.1 \(Mar 2026 edition\), Wisconsin trials/);
+  assert.match(h, /tables checked Oct 16, 2026/);
+  assert.equal((h.match(/UW Extension A2809 \(Mar 2026 web edition\), from Wisconsin trials, gives corn after soybeans/g) || []).length, 2);
 });
 
 test("atlas: reads that hand the whole payout to one cause, or blame a wet year on drought, are not printed", () => {

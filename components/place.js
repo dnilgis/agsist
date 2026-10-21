@@ -967,7 +967,8 @@
     var ys = Object.keys(f.years).sort(), open = ys.filter(function (y) { var Y = f.years[y]; return Y.open && Y.close && today >= Y.open && today <= Y.close; });
     var dy = f.default_year || {}, main = String(open[0] || (dy.until && today > dy.until ? dy.then : (dy.before || ys[ys.length - 1]))), Y = f.years[main];
     if (!Y) return na(label, 'no ' + main + ' sign-up dates published yet', src);
-    var v = today < Y.open ? 'Opens ' + monDay(Y.open) : today <= Y.close ? 'Open until ' + monDay(Y.close) : 'Closed ' + monDay(Y.close);
+    var ends = Y.close;   // the sign-up's last day (a date, not a market close)
+    var v = today < Y.open ? 'Opens ' + monDay(Y.open) : today <= ends ? 'Open until ' + monDay(ends) : 'Sign-up ended ' + monDay(ends);
     var also = open.filter(function (y) { return y !== main; }).map(function (y) { var Z = f.years[y]; return ' ' + y + ' sign-up also open, ' + monDay(Z.open).replace(/, \d{4}$/, '') + ' to ' + monDay(Z.close) + '.'; }).join('');
     if (!also) ys.forEach(function (y) { var Z = f.years[y]; if (y > main && Z.open && today < Z.open) also += ' ' + y + ' sign-up opens ' + monDay(Z.open) + '.'; });
     return { label: label, value: v, long: true, date: isoDay(f.updated), ctx: main + ' crop year, at the county FSA office.' + also, src: src, paper: 'USDA FSA' };
