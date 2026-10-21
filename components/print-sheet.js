@@ -69,9 +69,9 @@
       (spec.sections || []).map(section).join('') +
       '<div class="agps-bottom"><div>' +
       (srcs.length ? '<section class="agps-srcs"><h2>Sources</h2><ul>' + srcs.map(function (s) { return '<li><b>' + esc(s.name) + '</b>' + (s.date ? ', ' + esc(s.date) : '') + '</li>'; }).join('') + '</ul></section>' : '') +
-      '<p class="agps-foot">' + esc(spec.foot || 'For information, not financial advice. Each number carries its source and date.') + '</p></div>' +
-      (qr ? '<div class="agps-qr"><p class="agps-scan">Scan for the live page</p>' + qr + '<p class="agps-url">' + esc(shown) + '</p></div>' : '<p class="agps-url">' + esc(shown) + '</p>') + '</div>' +
-      '<p class="agps-prep"><b>Prepared by AGSIST (agsist.com), printed ' + esc(printed) + '</b></p></div>';
+      '<p class="agps-foot">' + esc(spec.foot || 'For information, not financial advice. Each number carries its source and date.') + '</p>' +
+      '<p class="agps-prep"><b>Prepared by AGSIST (agsist.com), printed ' + esc(printed) + '</b></p></div>' +
+      (qr ? '<div class="agps-qr"><p class="agps-scan">Scan for the live page</p>' + qr + '<p class="agps-url">' + esc(shown).replace(/\//g, '/<wbr>') + '</p></div>' : '<p class="agps-url">' + esc(shown) + '</p>') + '</div></div>';
   }
   function ensureCss(d) {
     if (d.getElementById('agps-css') || d.querySelector('link[href^="/components/print-sheet.css"]')) return;

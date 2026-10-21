@@ -691,7 +691,7 @@
         if (!f || f.value == null || f.hide || (el && el.hidden)) return;
         var d = shortDate(f.date), name = f.paper || (f.src && f.src[0]) || '';
         rows.push({ label: f.label, value: f.value, note: f.ctx || '', date: d, src: name });
-        src(name, d);
+        String(name).split('; ').forEach(function (n) { src(n, d); });
       });
       if (rows.length) secs.push({ h: card[0], rows: rows, cols: 2 });
     });
