@@ -521,8 +521,9 @@ jobs:
       # failed silently. Quiet success = no email. Catches the silent-drift
       # failure mode that continue-on-error: true otherwise hides.
       #
-      # Requires GMAIL_USER + GMAIL_APP_PASS repo secrets. If unset, the
-      # script logs the alert content to the workflow log instead of failing.
+      # Uses the senders' SMTP_* and FROM_ADDR secrets (legacy GMAIL_* still
+      # work). If unset, the script logs the alert content to the workflow
+      # log instead of failing.
       #
       # always() runs this even if previous steps failed — that's the point.
       # if: always() so the alert reports generator failures too.
@@ -536,8 +537,11 @@ jobs:
       - name: Notify critic status
         if: always()
         env:
-          GMAIL_USER:     ${{ secrets.GMAIL_USER }}
-          GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
         run: python scripts/notify_critic_status.py
         continue-on-error: true
 
@@ -702,8 +706,11 @@ jobs:
           # new sender env names; falls back to the legacy GMAIL_* secrets so
           # either set works. RECIPIENTS is ignored when LIST_URL is set
           # (list pulled live from the subs worker).
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
           SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
           SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
           RECIPIENTS:   ${{ secrets.RECIPIENTS }}
           LIST_URL:     ${{ secrets.LIST_URL }}
           LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}

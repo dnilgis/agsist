@@ -301,7 +301,7 @@ def main():
     if not dry and day_flag(day):
         print("alerts already sent for " + day + " (day-flag set) — skipping. exit 0")
         return 0
-    from_addr = env("FROM_ADDR") or env("SMTP_USER", required=not dry)
+    from_addr = log_safe.sender_addr() or env("SMTP_USER", required=not dry)
     from_name = env("FROM_NAME", "AGSIST Hail Alerts")
     reply_to = env("REPLY_TO")
 
@@ -329,8 +329,8 @@ def main():
         print("dry run — nothing sent" if dry else "no watch areas touched — nothing to send")
         return 0
 
-    host = env("SMTP_HOST", "smtp.gmail.com")
-    port = int(env("SMTP_PORT", "587"))
+    host = env("SMTP_HOST") or "smtp.gmail.com"   # an unset secret arrives as ""
+    port = int(env("SMTP_PORT") or "587")
     user = env("SMTP_USER", required=True)
     pw = env("SMTP_PASS", required=True)
     sent, failed = 0, []

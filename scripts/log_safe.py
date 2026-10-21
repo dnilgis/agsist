@@ -52,6 +52,30 @@ def owner_to():
     return OWNER_DEFAULT
 
 
+FROM_REQUIRED = "FROM_ADDR is required when SMTP_USER is not an address"
+
+
+def sender_addr(default=""):
+    """The From address every sender uses: FROM_ADDR, else SMTP_USER (or
+    GMAIL_USER) when that login is an address, else `default` when there is no
+    login at all.
+
+    Gmail logs in with the address itself, so FROM_ADDR could stay empty.
+    Amazon SES logs in with an access key id, which is not an address: with
+    SES and no FROM_ADDR this raises RuntimeError(FROM_REQUIRED) instead of
+    sending mail with a key id in the From line. The message has no secret or
+    address in it."""
+    fa = (os.environ.get("FROM_ADDR") or "").strip()
+    if fa:
+        return fa
+    user = (os.environ.get("SMTP_USER") or os.environ.get("GMAIL_USER") or "").strip()
+    if not user:
+        return default
+    if "@" not in user:
+        raise RuntimeError(FROM_REQUIRED)
+    return user
+
+
 def owner_mail(subject, lines):
     """Mail Sig a private list (full addresses). Returns True if it went out.
 
@@ -61,10 +85,15 @@ def owner_mail(subject, lines):
     if not (user and pw):
         print("private list for Sig not mailed (no SMTP credentials in this step)")
         return False
+    try:
+        sender = sender_addr()
+    except RuntimeError as ex:
+        print("private list for Sig not mailed (%s)" % ex)
+        return False
     to = owner_to()
     m = EmailMessage()
     m["Subject"] = subject
-    m["From"] = (os.environ.get("FROM_ADDR") or "").strip() or user
+    m["From"] = sender
     m["To"] = to
     run = ""
     if os.environ.get("GITHUB_RUN_ID"):
@@ -116,6 +145,35 @@ def _selftest():
         ok(owner_to() == "r@x.com", "REPLY_TO ignored")
     finally:
         os.environ.pop("REPLY_TO", None)
+        for k, v in saved.items():
+            if v is not None:
+                os.environ[k] = v
+    saved = {k: os.environ.pop(k, None) for k in ("FROM_ADDR", "SMTP_USER", "GMAIL_USER", "SMTP_PASS", "GMAIL_APP_PASS")}
+    try:
+        ok(sender_addr("news@agsist.com") == "news@agsist.com", "no login: the default From")
+        os.environ["SMTP_USER"] = "me@gmail.example"
+        ok(sender_addr() == "me@gmail.example", "Gmail login is the From when FROM_ADDR is empty")
+        os.environ["FROM_ADDR"] = "news@agsist.com"
+        ok(sender_addr() == "news@agsist.com", "FROM_ADDR wins over the login")
+        os.environ["SMTP_USER"] = "AKIAEXAMPLEKEYID"
+        ok(sender_addr() == "news@agsist.com", "SES key id login with FROM_ADDR set")
+        os.environ["FROM_ADDR"] = "  "
+        try:
+            sender_addr("news@agsist.com")
+            ok(False, "SES key id login with no FROM_ADDR did not raise")
+        except RuntimeError as ex:
+            ok(str(ex) == FROM_REQUIRED and "AKIA" not in str(ex), "the SES error names FROM_ADDR and not the key: %s" % ex)
+        os.environ["SMTP_PASS"] = "x"
+        import io
+        import contextlib
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            r = owner_mail("s", ["a"])
+        ok(r is False and FROM_REQUIRED in buf.getvalue() and "AKIA" not in buf.getvalue(),
+           "owner_mail with an SES login and no FROM_ADDR: not mailed, says why, no key in the log")
+    finally:
+        for k in ("FROM_ADDR", "SMTP_USER", "GMAIL_USER", "SMTP_PASS", "GMAIL_APP_PASS"):
+            os.environ.pop(k, None)
         for k, v in saved.items():
             if v is not None:
                 os.environ[k] = v

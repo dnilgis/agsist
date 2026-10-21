@@ -108,6 +108,9 @@ import urllib.request
 from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPLY_TO = "sig@farmers1st.com"
 ADDRESS = "AGSIST, PO Box 243, Chetek, WI 54728"
@@ -972,7 +975,7 @@ def main():
     sig_to = env("SIG_TO", REPLY_TO)
     tests = {x.strip().lower() for x in (env("SIG_TEST_EMAILS", "") or "").split(",") if x.strip()} | {sig_to.lower(), REPLY_TO}
     src = Sources(env("LIST_URL", ""), env("LIST_TOKEN", ""))
-    fn, fa = env("FROM_NAME", "AGSIST"), env("FROM_ADDR") or env("SMTP_USER") or ""
+    fn, fa = env("FROM_NAME", "AGSIST"), log_safe.sender_addr()
     code, log = run(src, dry, smtp_send(fn, fa), sig_to, tests)
     for line in log:
         print(line)

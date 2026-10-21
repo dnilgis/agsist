@@ -279,7 +279,7 @@ def main():
         return 0
     for e, f, snapshot, k in bs:                    # silent, no mail
         worker(base, "watch-mark", tok, {"email": e, "fips": f, "k": k, "s": snapshot})
-    fn, fa, rt = env("FROM_NAME", "AGSIST Farmland Atlas"), env("FROM_ADDR") or env("SMTP_USER"), env("REPLY_TO")
+    fn, fa, rt = env("FROM_NAME", "AGSIST Farmland Atlas"), log_safe.sender_addr(None), env("REPLY_TO")
     sent, failed = 0, []
     if (confirms or chg) and cap > 0:
         ctx = ssl.create_default_context()

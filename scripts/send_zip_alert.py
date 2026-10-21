@@ -469,7 +469,7 @@ def main():
         return 0
     for e, w, label, row in rearms:                        # silent: dropped back below
         sew.worker(base, "elevator-watch-mark", tok, state_mark(e, w, False, row))
-    fn, fa, rt = sew.env("FROM_NAME", "AGSIST Cash Bids"), sew.env("FROM_ADDR") or sew.env("SMTP_USER"), sew.env("REPLY_TO")
+    fn, fa, rt = sew.env("FROM_NAME", "AGSIST Cash Bids"), log_safe.sender_addr(None), sew.env("REPLY_TO")
     sent, failed = 0, []
     (confirms, sends), waited = sew.link_ids_from(watchers, (confirms, sends))
     if waited:

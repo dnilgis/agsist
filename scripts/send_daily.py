@@ -15,7 +15,8 @@ tomorrow by changing three repo secrets — the script never changes:
     SMTP_PORT   default 587 (STARTTLS)
     SMTP_USER   the account (Gmail address, or SES SMTP username)
     SMTP_PASS   Gmail APP PASSWORD (not the account password), or SES key
-    FROM_ADDR   defaults to SMTP_USER
+    FROM_ADDR   defaults to SMTP_USER; required with SES, whose username is
+                not an address (log_safe.sender_addr stops the send without it)
     FROM_NAME   default "AGSIST Daily"
     REPLY_TO    optional
     RECIPIENTS  the list — comma or newline separated (fallback)
@@ -397,7 +398,7 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
 
 def main():
     day, b = load_today()
-    from_addr = env("FROM_ADDR") or env("SMTP_USER", required=True)
+    from_addr = log_safe.sender_addr() or env("SMTP_USER", required=True)
     from_name = env("FROM_NAME", "AGSIST Daily")
     reply_to = env("REPLY_TO")
     dry = env("DRY_RUN", "") == "1"
@@ -470,8 +471,8 @@ def main():
         print("dry run complete — nothing sent")
         return 0
 
-    host = env("SMTP_HOST", "smtp.gmail.com")
-    port = int(env("SMTP_PORT", "587"))
+    host = env("SMTP_HOST") or "smtp.gmail.com"   # an unset secret arrives as ""
+    port = int(env("SMTP_PORT") or "587")
     user = env("SMTP_USER", required=True)
     pw = env("SMTP_PASS", required=True)
 

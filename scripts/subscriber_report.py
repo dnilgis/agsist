@@ -16,6 +16,9 @@ import csv, io, json, os, smtplib, sys, urllib.request
 from datetime import datetime, timezone
 from email.message import EmailMessage
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+
 
 def env(n, d=None):
     v = os.environ.get(n, "")
@@ -142,14 +145,15 @@ def main():
         sys.exit(0 if selftest() else 1)
     base, token = env("LIST_URL", "https://agsist-subs.dnilgis.workers.dev"), env("LIST_TOKEN")
     user, pw = env("SMTP_USER"), env("SMTP_PASS")
-    to = env("REPORT_TO") or env("FROM_ADDR") or user
+    sender = log_safe.sender_addr()
+    to = env("REPORT_TO") or sender
     if not (token and user and pw and to):
         print("::error::LIST_TOKEN, SMTP_USER, SMTP_PASS and a recipient are required"); sys.exit(1)
     lists = build(get(base, "/list", token), get(base, "/alert-list", token), get(base, "/watch-list", token),
                   get(base, "/elevator-watch-list", token), get(base, "/price-watch-list", token))
     for line in summary(lists):
         print(line)
-    m = message(lists, to, env("FROM_ADDR") or user, env("FROM_NAME", "AGSIST"))
+    m = message(lists, to, sender, env("FROM_NAME", "AGSIST"))
     with smtplib.SMTP(env("SMTP_HOST", "smtp.gmail.com"), int(env("SMTP_PORT", "587")), timeout=30) as c:
         c.starttls(); c.login(user, pw); c.send_message(m)
     print("sent the report to the owner's address")

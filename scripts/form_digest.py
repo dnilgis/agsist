@@ -68,6 +68,9 @@ from datetime import datetime, timezone
 from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+
 try:
     from zoneinfo import ZoneInfo
     CT = ZoneInfo("America/Chicago")
@@ -610,7 +613,7 @@ def main():
         return 1
     dry = env("DRY_RUN") == "1"
     to = env("FORMS_TO") or env("SPONSOR_TO") or "sig@farmers1st.com"
-    fn, fa = env("FROM_NAME", "AGSIST"), env("FROM_ADDR") or env("SMTP_USER") or ""
+    fn, fa = env("FROM_NAME", "AGSIST"), log_safe.sender_addr()
 
     def send(m):
         del m["From"]
