@@ -1076,7 +1076,7 @@
     var frame = line(b.x0, y0 - 0.5, b.x1, y0 - 0.5, C.guide, 0.7) + line(b.x0, y0 + sh + 0.5, b.x1, y0 + sh + 0.5, C.guide, 0.7);
     var out = G0('ribbon') + frame + o.join('') + G1;
     // the key at the right end, under the strip: colder, seven swatches, warmer
-    var kS = { size: 11, fill: X.fact }, sw = 13, ky = y0 + sh + 14, kx1 = b.x1, words = [LOC.fr ? 'plus chaud' : 'warmer', LOC.fr ? 'plus froid' : 'colder'];
+    var kS = { size: 12, fill: X.fact }, sw = 14, ky = y0 + sh + 14, kx1 = b.x1, words = [LOC.fr ? 'plus chaud' : 'warmer', LOC.fr ? 'plus froid' : 'colder'];
     var wWarm = W(words[0], kS), wCold = W(words[1], kS), kx0 = kx1 - wWarm - 6 - 7 * sw - 6 - wCold, key = [];
     key.push(T(kx0, ky, words[1], kS));
     STRIPE_INK.forEach(function (c, k) { key.push('<rect x="' + n2(kx0 + wCold + 6 + k * sw) + '" y="' + n2(ky - 8.5) + '" width="' + (sw - 1) + '" height="9" fill="' + c + '"/>'); });
@@ -1087,7 +1087,7 @@
     [['hot', LOC.fr ? 'Jour le plus chaud' : 'Hottest day'], ['cold', LOC.fr ? 'Jour le plus froid' : 'Coldest day']].forEach(function (p, k) {
       var d = r[p[0]];
       if (!d || !(d.doy >= 0 && d.doy < N)) return;
-      var text = p[1] + ': ' + degF(d.v) + ' ' + d.date + (d.also ? ' (' + d.also + ')' : ''), st0 = { size: 11, fill: X.fact }, wd = W(text, st0);
+      var text = p[1] + ': ' + degF(d.v) + ' ' + d.date + (d.also ? ' (' + d.also + ')' : ''), st0 = { size: 12, fill: X.fact }, wd = W(text, st0);
       labs.push({ k: k, x: b.x0 + (d.doy + 0.5) * b.w, text: text, w: wd, st: st0 });
     });
     // centred on its day where it fits, kept clear of the key and of each other

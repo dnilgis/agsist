@@ -123,7 +123,8 @@ test("each of the art's groups has a layer; anything new waits for the end", () 
   const L = DR.layerOf;
   assert.equal(L("axis"), "base"); assert.equal(L("data"), "wipe"); assert.equal(L("hist"), "wipe"); assert.equal(L("crop"), "wipe"); assert.equal(L("ribbon"), "wipe");
   assert.equal(L("usual"), "usual"); assert.equal(L("months"), "months");
-  for (const k of ["wet", "dry", "mark:0", "mark:4", "rec:2", "frost:1"]) assert.equal(L(k), "pop", k);
+  for (const k of ["wet", "dry", "mark:0", "mark:4", "rec:2", "frost:1", "temp:0", "temp:1"]) assert.equal(L(k), "pop", k);
+  assert.equal(L("tkey"), "base", "the stripes' key is there from the start");
   for (const k of ["head", "totals", "title", "foot", "qr", "ends", "logo", "band", "wm", "later", "something-new"]) assert.equal(L(k), "end", k);
   // and every group the art can draw today is one of those
   const art = read("components/rain-print-art.js");
@@ -220,8 +221,8 @@ test("weight, copy and the rules: small, lazy on county pages, no sponsor, no em
   assert.match(js, /agsist\.com\/rain-print/);
   const county = read("rain/wisconsin/barron-county.html");
   assert.ok(!/rain-print-draw/.test(county), "county pages carry no copy of the player; it loads on a tap");
-  assert.match(read("components/rain-county-print.js"), /DRAW = '\/components\/rain-print-draw\.js\?v=1'/);
-  assert.match(read("rain-print.html"), /<script src="\/components\/rain-print-draw\.js\?v=1" defer><\/script>/);
+  assert.match(read("components/rain-county-print.js"), /DRAW = '\/components\/rain-print-draw\.js\?v=2'/);
+  assert.match(read("rain-print.html"), /<script src="\/components\/rain-print-draw\.js\?v=2" defer><\/script>/);
   assert.match(read("components/rain-print.js"), /api\.drawInput = function/);
   assert.match(read("components/rain-print-art.js"), /lastGeom: function/);
 });
@@ -306,6 +307,39 @@ test("/rain-print: Watch it draw plays the reader's own print; the last frame is
     assert.ok(ms < 30, "median frame " + ms.toFixed(1) + " ms (software rendering here; a phone's GPU is faster)");
     assert.deepEqual(errors, []);
   });
+});
+
+test("temperature stripes draw day by day and the last frame is still the print; the hottest day is named on its day, never before", { skip, timeout: 180000 }, async () => {
+  for (const style of ["r1", "r2"]) await withPage(async (page, errors) => {
+    await page.waitForFunction(() => /data-rp="ribbon"/.test(document.getElementById("rp-art").innerHTML), null, { timeout: 30000 });
+    await page.click("#rp-watch");
+    await played(page);
+    const r = await lastFrameVsPrint(page);
+    assert.ok(r.off < 0.0005 && r.mean < 0.5, `${style} with stripes: ${(r.off * 100).toFixed(3)}% off, mean ${r.mean.toFixed(2)}`);
+    const m = await page.evaluate(() => {
+      const S = AgRainDraw.current().S, ev = S.events.find((e) => e.key === "temp:0"), p = S.pops.find((x) => x.key === "temp:0");
+      const rib = S.I.temp.ribbon, g = S.geom, W = 1800, H = 1200; S.cw = W; S.ch = H;
+      const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
+      const without = Object.assign({}, S, { pops: S.pops.filter((q) => q !== p), comp: null });
+      const grab = (SS, t, b) => { SS.comp = null; AgRainDraw.frameAt(x, SS, "inplace", t); return x.getImageData(b.x, b.y, b.w, b.h).data; };
+      const diff = (a, b) => { let n = 0; for (let i = 0; i < a.length; i += 4) if (Math.abs(a[i] - b[i]) + Math.abs(a[i + 1] - b[i + 1]) + Math.abs(a[i + 2] - b[i + 2]) > 60) n++; return n; };
+      const at = (t) => diff(grab(S, t, p.box), grab(without, t, p.box));
+      // a stripe late in the year (a day with a value), looked at on Jul 1: still paper
+      const late = rib.dev.findIndex((v, i) => i > 300 && v !== null && Math.abs(v) >= 3);
+      const strip = document.querySelector("#rp-art svg [data-rp=ribbon] rect");
+      const y = +strip.getAttribute("y") + 10, xl = g.x0 + (late + 0.5) * (g.x1 - g.x0) / g.n;
+      const px = (t) => { S.comp = null; AgRainDraw.frameAt(x, S, "inplace", t); return Array.from(x.getImageData(Math.round(xl), Math.round(y), 1, 1).data.slice(0, 3)); };
+      return { late, i: ev && ev.i, hot: rib.hot.doy, text: ev && ev.text, before: at(ev.t - 0.06), end: at(S.plan.total), midLate: px(S.plan.timeOf(181)), endLate: px(S.plan.total) };
+    });
+    assert.equal(m.i, m.hot, "the hottest day pauses on its own day");
+    assert.match(m.text, /^Hottest day: \d+°F, [A-Z][a-z]{2} \d+$/);
+    assert.equal(m.before, 0, "not named before its day");
+    assert.ok(m.end > 30, "named on the print: " + m.end);
+    assert.ok(m.late > 300, "a late-year stripe with a color: " + m.late);
+    assert.ok(m.midLate.every((v) => v > 245), "a late-year stripe is still paper on Jul 1: " + m.midLate);
+    assert.ok(!m.endLate.every((v) => v > 245), "and drawn by the end: " + m.endLate);
+    assert.deepEqual(errors, []);
+  }, { q: DESIGN.replace("style=r1", "style=" + style) + "&ribbon=1&frost=1" });
 });
 
 test("Staircase and Roots both end on the print; Replay plays again", { skip, timeout: 180000 }, async () => {
