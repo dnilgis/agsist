@@ -381,7 +381,7 @@
   function loadAlerts(){
     if(document.querySelector('script[src*="cb-alerts.js"]')) return;
     var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/cb-alerts.css?v=2'; document.head.appendChild(l);
-    var s = document.createElement('script'); s.src = '/components/cb-alerts.js?v=3'; s.defer = true;
+    var s = document.createElement('script'); s.src = '/components/cb-alerts.js?v=4'; s.defer = true;
     s.onload = function(){ mounts.forEach(function(m){ m.force = true; draw(m); }); }; document.head.appendChild(s);
   }
   window.addEventListener('storage', function(e){ if(e.key === KEY) changed(); });

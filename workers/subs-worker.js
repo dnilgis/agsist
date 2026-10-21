@@ -5,6 +5,33 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.43 (2026-10-20): EMAIL ME THIS DESIGN (Sig, "do all"). New routes only;
+ *   every other route answers as before. No new binding and no new secret;
+ *   one new optional variable, RP_DESIGN_EMAIL_LIVE.
+ *   POST /rp-remind (public, publicGate, RATE 5 an hour, 20 a day per
+ *     address, 300 for everyone) {email, code (the design code, as /rp-short
+ *     takes it), ref (optional: the Stripe ref when it differs, RPS-<id>),
+ *     daily (true only when the reader ticked it), source}. Kept as
+ *     rpr:<hmac16(email)>:<hmac16(email|code)> = {email, code, ref, ts, src,
+ *     sent, reminded, done}, 7 days. The same email and design again changes
+ *     nothing (dup). At most 5 designs an address at a time. A new one starts
+ *     .github/workflows/rp-design-email.yml (GH_DISPATCH_TOKEN; a dry run,
+ *     every email to Sig, unless RP_DESIGN_EMAIL_LIVE is "1"). daily:true
+ *     also joins AGSIST Daily as /subscribe does.
+ *   GET /rp-remind/list (Bearer LIST_TOKEN only): the live ones, with
+ *     stop_t = hmac16("rp-remind-stop|" + key) for the stop link.
+ *   POST /rp-remind/mark {key, stage: sent|reminded|done, why?} (Bearer
+ *     LIST_TOKEN only): each stage once (again: already), so each address gets
+ *     the link once and at most one reminder. done = no reminder will go
+ *     (a paid order matched, too late, or stopped).
+ *   GET /rp-remind/stop?k=&t= asks; POST to it marks done (why "stopped").
+ *   scripts/rp_design_email.py sends both emails; the log prints counts only.
+ * v5.41 (2026-10-20): UNSUBSCRIBE COUNTS for Sig's morning email. A POST to
+ *   /unsubscribe or /alert-unsubscribe that removed a real record also writes
+ *   unsx:<daily|alerts>:<reader|cleanup>:<ms>:<rand> ("" value, no address,
+ *   kept 8 days); cleanup is scripts/list_hygiene.py (its User-Agent) removing
+ *   a bounced address. GET /count adds unsubs {daily, alerts: {h24, d7,
+ *   cleanup_h24, cleanup_d7}}. Every other route answers as before.
  * v5.40 (2026-10-20): GIFT CARDS GO OUT BY EMAIL (Sig: "the gift card option
  *   should provide explanation as to what the receiver is getting and how to
  *   redeem easily"; no more card links sent by hand). POST /rp-gift/issue
@@ -872,6 +899,7 @@ const PUBLIC_POSTS = new Set(["/subscribe", "/notice", "/alert-subscribe", "/wat
 PUBLIC_POSTS.add("/elev/me").add("/elev/save");   // v5.20: the elevator portal
 PUBLIC_POSTS.add("/rp-order");   // v5.36: Rain Print order records
 PUBLIC_POSTS.add("/rp-order/approve");   // v5.37: the buyer approves the proof
+PUBLIC_POSTS.add("/rp-remind");   // v5.43: Email me this design
 function publicGate(req, path) {
   const origin = req.headers.get("Origin") || "";
   if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, cors(req));
@@ -911,6 +939,8 @@ const RATE = {
   "/rp-order": [30, 100, 2000],
   // v5.36: approving a proof: a buyer taps once or twice; a wrong token counts too.
   "/rp-order/approve": [20, 60, 1000],
+  // v5.43: Email me this design: two emails each (the link, one reminder); the daily total bounds Gmail use.
+  "/rp-remind": [5, 20, 300],
 };
 // Within one Worker isolate the hourly count is exact (JavaScript runs one
 // request at a time), so a burst that lands before KV has caught up is still
@@ -1854,6 +1884,26 @@ async function sponsorFeedback(env, b, rec) {
   return {};
 }
 
+// v5.41: one key per unsubscribe, no address in it, for /count.
+const UNSX_TTL_S = 8 * 86400;
+async function countUnsub(env, list, req) {
+  const how = /agsist-list-hygiene/.test(req.headers.get("User-Agent") || "") ? "cleanup" : "reader";
+  const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(x => x.toString(16).padStart(2, "0")).join("");
+  try { await env.SUBS.put("unsx:" + list + ":" + how + ":" + Date.now() + ":" + rnd, "", { expirationTtl: UNSX_TTL_S }); } catch (e) { /* a count, never a reason to fail the unsubscribe */ }
+}
+async function unsubCounts(env) {
+  const now = Date.now(), out = {};
+  for (const l of ["daily", "alerts"]) out[l] = { h24: 0, d7: 0, cleanup_h24: 0, cleanup_d7: 0 };
+  for (const k of await listKeys(env, "unsx:")) {
+    const m = /^unsx:(daily|alerts):(reader|cleanup):(\d+):/.exec(k);
+    if (!m) continue;
+    const age = now - Number(m[3]), o = out[m[1]], pre = m[2] === "cleanup" ? "cleanup_" : "";
+    if (age <= 864e5) o[pre + "h24"]++;
+    if (age <= 7 * 864e5) o[pre + "d7"]++;
+  }
+  return out;
+}
+
 async function noticeCounts(env) {
   const keys = await listKeys(env, "note:"), by = {};
   for (const k of keys) {
@@ -2094,6 +2144,31 @@ async function rpoDispatch(env) {
       method: "POST",
       headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-subs", "Content-Type": "application/json" },
       body: JSON.stringify({ ref: "main", inputs: { dry_run: env.RP_BUYER_EMAIL_LIVE === "1" ? "false" : "true" } }),
+    });
+    return r.status === 204 ? "started" : "HTTP " + r.status;
+  } catch (e) { return "failed"; }
+}
+
+// ---------- v5.43: Email me this design ----------
+const RPR_TTL_S = 7 * 24 * 3600, RPR_MAX_PER_EMAIL = 5, RPR_MAX_BYTES = 2048;
+const RPR_KEY_RE = /^rpr:[0-9a-f]{16}:[0-9a-f]{16}$/;
+const RPR_STAGES = ["sent", "reminded", "done"];
+async function rprKey(env, email, code) {
+  return "rpr:" + await hmac16("rp-remind-who|" + email, env.UNSUB_SECRET) + ":" + await hmac16("rp-remind|" + email + "|" + code, env.UNSUB_SECRET);
+}
+function rprStopToken(env, key) { return hmac16("rp-remind-stop|" + key, env.UNSUB_SECRET); }
+async function rprPut(env, k, r) {
+  const exp = Math.max(Math.floor(Date.now() / 1000) + 120, Math.floor((r.ts || Date.now()) / 1000) + RPR_TTL_S);
+  await env.SUBS.put(k, JSON.stringify(r), { expiration: exp });
+}
+// Starts .github/workflows/rp-design-email.yml at once (the same token as rpoDispatch).
+async function rprDispatch(env) {
+  if (typeof env.GH_DISPATCH_TOKEN !== "string" || !env.GH_DISPATCH_TOKEN) return "no token";
+  try {
+    const r = await fetch("https://api.github.com/repos/dnilgis/agsist/actions/workflows/rp-design-email.yml/dispatches", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-subs", "Content-Type": "application/json" },
+      body: JSON.stringify({ ref: "main", inputs: { dry_run: env.RP_DESIGN_EMAIL_LIVE === "1" ? "false" : "true" } }),
     });
     return r.status === 204 ? "started" : "HTTP " + r.status;
   } catch (e) { return "failed"; }
@@ -2614,7 +2689,9 @@ async function handle(req, env) {
       }
 
       if (req.method === "POST") {
+        const had = (await env.SUBS.get((isAlert ? "alert:" : "sub:") + e)) !== null;
         await env.SUBS.delete((isAlert ? "alert:" : "sub:") + e);
+        if (had) await countUnsub(env, isAlert ? "alerts" : "daily", req);
         // v5.11: "No more emails" covers the one-time notices too.
         if (!isAlert) await env.SUBS.delete("note:" + e);
         return htmlPage(isAlert
@@ -2753,6 +2830,8 @@ async function handle(req, env) {
         secret: typeof env.UNSUB_SECRET === "string" && env.UNSUB_SECRET.length > 0,
         // v5.8: stored form posts per kind. Counts only.
         forms: await formCounts(env),
+        // v5.41: unsubscribes in the last 24 h and 7 days. Counts only.
+        unsubs: await unsubCounts(env),
         // v5.11: one-time notices: addresses, and sign-ups per topic.
         ...(await noticeCounts(env)),
       }, 200, { "Access-Control-Allow-Origin": "*" });
@@ -3708,6 +3787,75 @@ async function handle(req, env) {
       r.delivered = { at: new Date().toISOString(), session: String(r.paid.session || ""), how };
       await rpoPut(env, k, r);
       return json({ ok: true, already: false, delivered: r.delivered }, 200, ac);
+    }
+    // ---------- v5.43: Email me this design ----------
+    // POST /rp-remind: publicGate (Origin, JSON) has already run (PUBLIC_POSTS).
+    if (path === "/rp-remind" && req.method === "POST") {
+      const c = cors(req);
+      let raw = "";
+      try { raw = await req.text(); } catch (e) { raw = ""; }
+      if (raw.length > RPR_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, c);
+      let b = null;
+      try { b = JSON.parse(raw); } catch (e) { b = null; }
+      if (!b || typeof b !== "object" || Array.isArray(b)) return json({ ok: false, error: "bad json" }, 400, c);
+      if (b._gotcha) return json({ ok: true }, 200, c);
+      const email = String(b.email || "").trim().toLowerCase();
+      if (!EMAIL_RE.test(email) || email.length > 254) return json({ ok: false, error: "invalid email" }, 400, c);
+      const code = typeof b.code === "string" ? b.code : "";
+      if (code.startsWith("GIFT-") || !rpsCodeOk(code)) return json({ ok: false, error: "invalid code" }, 400, c);
+      const ref = typeof b.ref === "string" && b.ref && b.ref !== code ? b.ref : "";
+      if (ref && (!rpoRefOk(ref) || ref.startsWith("GIFT-"))) return json({ ok: false, error: "invalid ref" }, 400, c);
+      const k = await rprKey(env, email, code);
+      if (await env.SUBS.get(k)) return json({ ok: true, dup: true }, 200, c);
+      if ((await listKeys(env, k.slice(0, 21))).length >= RPR_MAX_PER_EMAIL)
+        return json({ ok: false, error: "too many designs for this address" }, 400, c);
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
+      await rprPut(env, k, { email, code, ref, ts: Date.now(), src: String(b.source || "").slice(0, 60), sent: null, reminded: null, done: null });
+      if (subBool(b.daily) === true) await putSub(env, email, String(b.source || "").slice(0, 60));
+      const job = await rprDispatch(env);
+      return json({ ok: true, job: job === "started" ? "started" : "later" }, 200, c);
+    }
+    if (path === "/rp-remind/list" && req.method === "GET") {
+      if (!sig) return json({ ok: false }, 403, ac);
+      const rows = [];
+      for (const k of await listKeys(env, "rpr:")) {
+        let r = null;
+        try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+        if (!r || typeof r !== "object") continue;
+        rows.push(Object.assign({ key: k }, r, { stop_t: await rprStopToken(env, k) }));
+      }
+      return json({ ok: true, rows }, 200, Object.assign({ "Cache-Control": "no-store" }, ac));
+    }
+    if (path === "/rp-remind/mark" && req.method === "POST") {
+      if (!sig) return json({ ok: false }, 403, ac);
+      let b = null;
+      try { b = await req.json(); } catch (e) { b = null; }
+      const k = b && b.key, stage = b && b.stage;
+      if (typeof k !== "string" || !RPR_KEY_RE.test(k) || !RPR_STAGES.includes(stage)) return json({ ok: false, error: "bad args" }, 400, ac);
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (!r) return json({ ok: false, error: "not found" }, 404, ac);
+      if (r[stage]) return json({ ok: true, already: true, [stage]: r[stage] }, 200, ac);
+      // after done, no reminder: a stop or a paid order wins over a job that was already running
+      if (stage === "reminded" && r.done) return json({ ok: true, already: true, done: r.done }, 200, ac);
+      r[stage] = stage === "done" ? { at: new Date().toISOString(), why: oneLine(b.why, 40) } : { at: new Date().toISOString() };
+      await rprPut(env, k, r);
+      return json({ ok: true, already: false, [stage]: r[stage] }, 200, ac);
+    }
+    if (path === "/rp-remind/stop" && (req.method === "GET" || req.method === "POST")) {
+      const k = url.searchParams.get("k") || "", t = url.searchParams.get("t") || "";
+      if (!RPR_KEY_RE.test(k) || !safeEq(t, await rprStopToken(env, k))) return htmlPage("That link isn't valid.");
+      if (req.method === "GET") {
+        return htmlPage("Stop the reminder about this Rain Print?",
+          "<form method=\"POST\" action=\"/rp-remind/stop?k=" + encodeURIComponent(k) + "&t=" + encodeURIComponent(t) + "\">" +
+          "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">Yes, stop it</button></form>" +
+          "<p style=\"color:#666\">Nothing happens until you press the button. Your design link still works.</p>");
+      }
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (r && !r.done) { r.done = { at: new Date().toISOString(), why: "stopped" }; await rprPut(env, k, r); }
+      return htmlPage("Stopped. No reminder about this one.");
     }
     // v5.36: for the buyer email only (scripts/rp_buyer_email.py): the one paid session's livemode and
     // buyer address, read from Stripe now and handed back. Nothing is stored or logged here.

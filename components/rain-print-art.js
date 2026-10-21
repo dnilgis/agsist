@@ -1376,6 +1376,8 @@
     var foot = lines.map(function (s, k) { return T(X0, footTop + k * 19, s, fS); }).join('') + traceKeyMarks(E, lines, X0, lines.map(function (s, k) { return footTop + k * 19; }), st(fS));
     dropped.forEach(function (t) { skipped.push(t); });
 
+    // where the chart sits, for the year-drawing video (components/rain-print-draw.js, lastGeom)
+    last_geom = { style: 'r1', x0: X0, x1: X1, n: N, top: PTOP, base: PB, dom: dom, head: { x: headBox.x - 4, y: headBox.y, w: headBox.w + 8, h: headBox.h } };
     // ================= draw, back to front
     o.push(G0('axis'));
     ticks.forEach(function (v) { if (v > 0) o.push(line(X0, y(v), X1, y(v), X.grid, 0.7)); });
@@ -1814,6 +1816,7 @@
     foot = foot.concat(frost.foot, cropFoot(I, crop.foot), (I.temp && I.temp.foot) || [], hasRib ? [ribbonFoot(I)] : []);
     var small = smallLine(E, ML, 1440, foot);
 
+    last_geom = { style: 'r2', x0: X0, x1: X1, n: N, ground: G, snowTop: G - SH, rainBase: RB };
     // ================= draw, back to front
     o.push(G0('totals') + draw(totals) + G1);
     o.push(G0('title') + draw(title) + G1);
@@ -1870,7 +1873,7 @@
      one) loses its last-added day, then the one before, until it fits; those days are not drawn at all, and
      lastUnplaced() names them (indexes into I.markers) so the page can tell the buyer. */
   var MAX_MARKS = 5, KEEP_MARKS = 3;
-  var last_skipped = [], last_logo = null, last_forced = false, last_unplaced = [];
+  var last_skipped = [], last_logo = null, last_forced = false, last_unplaced = [], last_geom = null;
   function render(I) {
     measure = typeof I.measure === 'function' ? I.measure : defaultMeasure;
     setLoc(I.loc);
@@ -1928,6 +1931,8 @@
     lastUnplaced: function () { return last_unplaced.slice(); }, MAX_MARKS: MAX_MARKS,
     // the buyer's logo: its size for a shape (w / h) in a style, and where the last render put it (art units)
     logoSize: logoSize, lastLogo: function () { return last_logo ? Object.assign({}, last_logo) : null; },
+    // the chart's box in art units from the last render (x0, x1, n days on the axis; r1 also top, base, dom, head), for the video
+    lastGeom: function () { return last_geom ? JSON.parse(JSON.stringify(last_geom)) : null; },
     STYLES: ['r1', 'r2'], W: W0, H: H0, traceMark: traceMark, TRACE_MARK: TRACE_MARK, TRACE_R: TRACE_R, QR_INK: QR_INK, INK: C.ink, roughW: roughW,
     // the French words on the print, for the review list and the tests (FR-REVIEW)
     FR: FR, MON_FR: MON_FR
