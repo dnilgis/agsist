@@ -301,7 +301,7 @@ def storm_beat(p, src):
             where = " and ".join(STATE_NAMES.get(s, s) for s, _ in top)
             text = f"{weekday(row['d'])} brought {n} hail reports, most in {where}, up to {mx} stones."
             p.beat("storm", text, [{"kind": "hail", "points": [{"lat": r["lat"], "lon": r["lon"], "mag": r["mag"]} for r in pts],
-                                    "title": f"Hail reports, {weekday(row['d'])}", "asof": f"{short_date(row['d'])}, 7 a.m. to 7 a.m. CT",
+                                    "title": f"Hail reports, {weekday(row['d'])}", "asof": f"{short_date(row['d'])}, {ct_time(row['d'] + 'T12:00:00Z').replace(' CT', '')} to {ct_time(row['d'] + 'T12:00:00Z')} next day",
                                     "src": "NOAA Storm Prediction Center, preliminary reports"}], 7)
             return True
     return False
