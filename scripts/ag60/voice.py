@@ -103,7 +103,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description="Ag in 60 voice")
     ap.add_argument("--out", required=True)
     ap.add_argument("--voice", default=os.environ.get("AG60_VOICE", "af_heart"))
-    ap.add_argument("--speed", type=float, default=1.05)
+    ap.add_argument("--speed", type=float, default=1.15)   # measured: about 2.75 words a second at 1.1x
     ap.add_argument("--model", default=os.environ.get("AG60_MODEL", "models/kokoro-v1.0.int8.onnx"))
     ap.add_argument("--voices", default=os.environ.get("AG60_VOICES", "models/voices-v1.0.bin"))
     a = ap.parse_args(argv)
@@ -124,11 +124,15 @@ def main(argv=None):
         audio = speak_all(kokoro, plan["beats"], a.voice, speed)
         durs = {k: len(s) / sr for k, (s, sr) in audio.items()}
         t = total_for(plan, durs)
-        if t > LIMIT:
-            speed = min(1.3, speed * (t - build_plan.END_CARD) / (LIMIT - build_plan.END_CARD - 0.3))
-            print(f"voice: {t:.1f} s at {a.speed}x, reading again at {speed:.2f}x")
+        tries = 0
+        while t > LIMIT and speed < 1.3 and tries < 3:   # the voice does not speed up in a straight line: aim low, check again
+            new = min(1.3, speed * (t - build_plan.END_CARD) / (LIMIT - build_plan.END_CARD - 1.0))
+            print(f"voice: {t:.1f} s at {speed:.2f}x, reading again at {new:.2f}x")
+            speed = new
             audio = speak_all(kokoro, plan["beats"], a.voice, speed)
             durs = {k: len(s) / sr for k, (s, sr) in audio.items()}
+            t = total_for(plan, durs)
+            tries += 1
         retime(plan, durs, "voice")
         write_wav(wav, plan, audio)
         plan["voice"] = {"model": "Kokoro-82M v1.0 (int8 ONNX)", "voice": a.voice, "speed": round(speed, 3)}
