@@ -52,6 +52,7 @@ def quoted(s, n=60):
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe  # noqa: E402  (no address in the public log)
+import email_links  # noqa: E402  (k=<link id> links; never an address in one)
 
 REPO = Path(__file__).resolve().parent.parent
 PRICES_FILE = REPO / "data" / "prices.json"
@@ -87,12 +88,16 @@ def token(secret, email, tail):
     return hmac.new(secret.encode(), (email + tail).lower().encode(), hashlib.sha256).hexdigest()[:16]
 
 
+# Address -> link id (subs worker v5.46), from the /price-watch-list rows main() reads.
+LINK_IDS = {}
+
+
 def link(base, path, email, pid, secret, kind):
+    """Subs worker v5.46: ?k=<the watcher's link id>[&p=]&t=hmac16(id + tail),
+    never the address. Raises email_links.LinkError when there is no id."""
     tail = {"c": "|pc|" + pid, "w1": "|pw|" + pid, "w": "|pw"}[kind]
-    q = "e=" + urllib.parse.quote(email.lower())
-    if kind in ("c", "w1"):
-        q += "&p=" + pid
-    return f"{base}/{path}?{q}&t={token(secret, email, tail)}"
+    mid = ("&p=" + pid) if kind in ("c", "w1") else ""
+    return email_links.signed(base, path, LINK_IDS.get(str(email).strip().lower()), secret, tail, mid)
 
 
 def load_quotes():
@@ -161,7 +166,7 @@ def confirm_email(w, pid, label, base, secret, fn, fa, rt):
         f"Someone asked to set a price alert on AGSIST for {q} using this address.",
         "If that was you, confirm below. You'll get one email the day it crosses your price, then the alert clears itself.",
         "If it was not you, ignore this. Nothing starts until you confirm."], ("CONFIRM", go), foot), subtype="html")
-    return m
+    return email_links.check_message(m)
 
 
 def hit_email(w, pid, label, close_cents, base, secret, fn, fa, rt, symbol=None):
@@ -182,7 +187,7 @@ def hit_email(w, pid, label, close_cents, base, secret, fn, fa, rt, symbol=None)
         line, "This alert has done its job and is now cleared. Set a new one any time from the homepage.",
         "This is the futures price, not a cash bid at any one elevator. Check Cash Bids for your local basis."],
         ("SEE ALL MARKET PRICES", page), foot), subtype="html")
-    return m
+    return email_links.check_message(m)
 
 
 def plan(watchers, quotes, now_ms):
@@ -251,9 +256,12 @@ def selftest():
         "expired pending is not mailed"
 
     s = "sec"
+    L0 = email_links.SAMPLE_LID   # subs worker v5.46: a made-up link id
+    LINK_IDS.clear()
+    LINK_IDS["a@x.com"] = L0
     m = confirm_email("a@x.com", "pB", "Corn (new crop) above $4.50", "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     body = m.get_body(("plain",)).get_content()
-    assert "PO Box 243, Chetek, WI 54728" in body and "price-watch-confirm?e=a%40x.com&p=pB&t=" in body
+    assert "PO Box 243, Chetek, WI 54728" in body and "price-watch-confirm?k=%s&p=pB&t=%s" % (L0, token(s, L0, "|pc|pB")) in body
     assert m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click"
     # a stranger's label: never in the Subject, quoted and at most 60 characters in the body
     mx = confirm_email("a@x.com", "pB", "Reset your account at agsist-help.com\r\nnow " + "x" * 80, "https://w.dev", s, "AGSIST", "n@agsist.com", None)
@@ -269,6 +277,16 @@ def selftest():
     b3 = m3.get_body(("plain",)).get_content()
     assert "/soybean-futures-prices" in b3 and "/corn-futures-prices" not in b3
     assert "/soybean-futures-prices" in m3.get_body(("html",)).get_content()
+    assert "price-watch-unsubscribe?k=%s&t=%s" % (L0, token(s, L0, "|pw")) in b3
+    for mm in (m, mx, m2, m3):
+        h0, t0 = mm.get_body(("html",)).get_content(), mm.get_body(("plain",)).get_content()
+        assert not [u for u in email_links.hrefs(h0) if "@" in u or "%40" in u.lower()], "v5.46: an @ inside an href"
+        assert not email_links.bad_links(t0) and "?e=" not in t0 + h0 and "@" not in str(mm["List-Unsubscribe"]), "v5.46: an address in a link"
+    try:
+        confirm_email("b@x.com", "pB", "x", "https://w.dev", s, "AGSIST", "n@agsist.com", None)
+        raise AssertionError("v5.46: a watcher with no link id was given an email")
+    except email_links.LinkError:
+        pass
     print("selftest ok")
 
 
@@ -287,6 +305,14 @@ def main():
     watchers = worker(base, "price-watch-list", tok)
     confirms, fires = plan(watchers, quotes, time.time() * 1000)
     print(f"quotes loaded {len(quotes)}; watchers {len(watchers)}; confirmations {len(confirms)}; fires {len(fires)}")
+    # v5.46: mail only watchers the worker gave a link id; the rest wait for the next run (counts only)
+    LINK_IDS.clear()
+    LINK_IDS.update(email_links.link_ids(watchers))
+    no_id = sum(1 for x in confirms + fires if str(x[0]).strip().lower() not in LINK_IDS)
+    if no_id:
+        print(f"::warning::{no_id} email(s) wait: no link id this run")
+        confirms = [x for x in confirms if str(x[0]).strip().lower() in LINK_IDS]
+        fires = [x for x in fires if str(x[0]).strip().lower() in LINK_IDS]
     if dry:
         for x in confirms:
             print("would confirm", log_safe.mask(x[0]), x[1], x[2])
