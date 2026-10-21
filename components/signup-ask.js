@@ -293,9 +293,11 @@
     '.sa-mo span{min-width:0}',
     '.sa-mo[data-k="zip"]{align-items:center}',
     '.sa-mo label{cursor:pointer}',
-    '.sa-mc,.sa-mp{min-height:36px;margin:0 2px;padding:.25rem .4rem;font:inherit;font-size:.9375rem;color:var(--text);background:var(--surface,#fff);border:1px solid var(--border-2,var(--border));border-radius:6px;vertical-align:middle}',
-    '.sa-optin .sa-mp{flex:none;width:5.5rem;height:auto;box-sizing:border-box;margin:0 2px;cursor:text;accent-color:auto}',
-    '.sa-mp[aria-invalid="true"]{border-color:var(--red)}',
+    '.sa-mc,.sa-mp,.sa-mz{min-height:36px;margin:0 2px;padding:.25rem .4rem;font:inherit;font-size:.9375rem;color:var(--text);background:var(--surface,#fff);border:1px solid var(--border-2,var(--border));border-radius:6px;vertical-align:middle}',
+    '.sa-optin .sa-mp,.sa-optin .sa-mz{flex:none;width:5.5rem;height:auto;box-sizing:border-box;margin:0 2px;cursor:text;accent-color:auto}',
+    '.sa-mp[aria-invalid="true"],.sa-mz[aria-invalid="true"]{border-color:var(--red)}',
+    '.sa-mzl{display:inline-flex;align-items:center;gap:4px;margin-top:4px;font-size:.875rem;color:var(--text-muted);white-space:nowrap}',
+    '@media (min-width:640px){.sa-mo[data-k="daily"]{align-items:center}.sa-mzl{margin:0 0 0 6px}}',
     '.sa-mf .sa-b{align-self:flex-start;margin-top:6px}',
     '.sa-mf .sa-m{margin-top:4px}',
     '.sa-bar .sa-more{margin:6px 0 2px;max-height:60vh;overflow:auto}',
@@ -426,7 +428,7 @@
           el.setAttribute('data-sa-done', '1');
           el.innerHTML = '<p class="sa-ok" tabindex="-1">' + esc(OK + (topic && daily ? ' The morning briefing starts tomorrow.' : '')) + '</p>';
           var ok = el.querySelector('.sa-ok'); try { ok.focus({ preventScroll: true }); } catch (x) { ok.focus(); }
-          oneMore(el, { gave: topic ? 'notice' : 'daily', topic: topic, email: email, zip: zipUsed || (topic ? zipStart(el) : '') });
+          oneMore(el, { gave: topic ? 'notice' : 'daily', topic: topic, email: email, zip: zipUsed || (topic ? zipStart(el) : ''), reports: topic ? true : reports });
           return;
         }
         btn.disabled = false; btn.textContent = BTN;
@@ -557,29 +559,127 @@
         return { topic: 'rainyear:' + y + ':' + fips, name: c.name, year: y };
       });
   }
+  /* 2026-10-20 (Sig), "One more?" after the alert signups too, and the extras
+     that fit the page after a Daily signup:
+       hail      a hail alert, 10 mi around the spot (POST /alert-subscribe,
+                 scripts/check_alerts.py), on hail and rain pages: the hail
+                 map's last spot (window.AGSIST_HAIL_SPOT) or their ZIP's
+                 center (the bids network's data/zips, as cb-alerts.js);
+       price     a futures price alert, double opt-in (POST
+                 /price-watch-subscribe, scripts/send_price_watch.py), the
+                 body index.html sends, on the futures and report pages;
+       reports   the "USDA vs the trade" report-day emails
+                 (scripts/send_report_day.py), on report and futures pages,
+                 only when the Daily was just taken without them (the menu
+                 asks send reports:false). A Daily signup anywhere else
+                 already gets them, so it is never offered there.
+     After a hail alert, the Daily row carries an optional ZIP box filled
+     from the ZIP they searched, else the ZIP nearest the spot (agsist's
+     data/zip-grid.json picks the ZIP files, the bids network's data/zips
+     gives the centers; nothing within 15 mi leaves it blank). Source tags
+     onemore:<what they gave>, with onemore:hail-alert and
+     onemore:elevator-watch for the hail alert and the elevator alerts. */
+  var NET = 'https://dnilgis.github.io/bids/';
+  var SRC_TAG = { hail: 'hail-alert', elevator: 'elevator-watch' };
+  var HAIL_MI = 10;
+  function getJ(u) { return window.fetch ? fetch(u).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }) : Promise.resolve(null); }
+  function miles(a, b, c, d) {
+    var R = 3958.8, p = Math.PI / 180, x = (c - a) * p, y = (d - b) * p;
+    var s = Math.sin(x / 2) * Math.sin(x / 2) + Math.cos(a * p) * Math.cos(c * p) * Math.sin(y / 2) * Math.sin(y / 2);
+    return R * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1 - s));
+  }
+  var zipFiles = {};
+  function zipFile(p2) { if (!zipFiles[p2]) zipFiles[p2] = getJ(NET + 'data/zips/' + p2 + '.json'); return zipFiles[p2]; }
+  /* The ZIP whose center is nearest a point, within 15 mi; '' when unsure. */
+  function zipNear(lat, lon) {
+    if (!isFinite(lat) || !isFinite(lon)) return Promise.resolve('');
+    return getJ('/data/zip-grid.json').then(function (g) {
+      if (!Array.isArray(g)) return '';
+      var near = g.filter(function (x) { return x && /^\d{5}$/.test(x.zip) && isFinite(x.lat) && isFinite(x.lng); })
+        .map(function (x) { return { p: x.zip.slice(0, 2), mi: miles(lat, lon, x.lat, x.lng) }; })
+        .sort(function (a, b) { return a.mi - b.mi; }).slice(0, 6);
+      var ps = []; near.forEach(function (x) { if (ps.indexOf(x.p) < 0 && ps.length < 3) ps.push(x.p); });
+      return Promise.all(ps.map(zipFile)).then(function (ts) {
+        var best = '', bm = 15;
+        ts.forEach(function (t) {
+          if (!t || typeof t !== 'object') return;
+          for (var z in t) { var c = t[z]; if (!Array.isArray(c) || !/^\d{5}$/.test(z)) continue; var m = miles(lat, lon, +c[0], +c[1]); if (m < bm) { bm = m; best = z; } }
+        });
+        return best;
+      });
+    }).catch(function () { return ''; });
+  }
+  function zipCenter(z) {
+    if (!/^\d{5}$/.test(z || '')) return Promise.resolve(null);
+    return zipFile(z.slice(0, 2)).then(function (t) {
+      var c = t && t[z], la = c && +c[0], lo = c && +c[1];
+      return Array.isArray(c) && isFinite(la) && isFinite(lo) && !(la === 0 && lo === 0) ? { lat: la, lon: lo, label: 'ZIP ' + z } : null;
+    });
+  }
+  /* What the page is about: hail and rain, a report, a futures price. */
+  function pageKind() {
+    var p = location.pathname.replace(/\.html$/, '').replace(/\/+$/, '') || '/';
+    var fut = /^\/(corn|soybean|wheat|cattle)-futures-prices$/.exec(p);
+    return {
+      hail: /^\/(hail-map|hail|rain|rain-radar)(\/|$)/.test(p),
+      report: /^\/(usda-calendar|whats-priced-in|cot|cot-tool|usda-quick-stats|markets)$/.test(p),
+      futures: !!fut || /^\/(harvest-price-tracker)$/.test(p),
+      sym: fut ? { corn: 'corn', soybean: 'beans', wheat: 'wheat', cattle: 'cattle' }[fut[1]] : 'corn'
+    };
+  }
+  /* The futures alert body: the same as index.html's price alert (paId, PA_LABELS). */
+  var PA_LABELS = { corn: 'Corn', beans: 'Soybeans', wheat: 'Chicago SRW wheat', cattle: 'Live Cattle' };
+  function paId(symbol, direction, targetCents) {
+    var s = (symbol + '|' + direction + '|' + targetCents).toUpperCase();
+    var h = 0x811c9dc5;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+    return ('00000000' + (h >>> 0).toString(16)).slice(-8);
+  }
+  function priceBody(email, symbol, direction, dollars) {
+    var cents = Math.round(dollars * 100);
+    return { email: email, pid: paId(symbol, direction, cents), symbol: symbol, direction: direction, target_cents: cents,
+      label: PA_LABELS[symbol] + ' ' + (direction === 'above' ? 'above' : 'below') + ' $' + dollars.toFixed(2) };
+  }
   var mseq = 0;
-  /* host: the ask the reader just used. ctx: {gave: daily|notice|zip|price|county,
-     email, topic?, zip?, fips?, had?: [ids already asked for], after?: put the panel after this element} */
+  /* host: the ask the reader just used. ctx: {gave: daily|notice|zip|price|county|hail|elevator,
+     email, topic?, zip?, fips?, had?: [ids already asked for], after?: put the panel after this element,
+     reports?: false when the Daily was just taken without report days, lat?, lon?: the spot they gave,
+     place?: its name} */
   function oneMore(host, ctx) {
     ctx = ctx || {};
     var email = String(ctx.email || '').trim();
     if (!host || !EMAIL_RE.test(email) || host.querySelector('[data-sa-more]')) return;
     var gave = ctx.gave || 'daily', topic = String(ctx.topic || ''), had = ctx.had || [gave];
-    var zipv = /^\d{5}$/.test(String(ctx.zip || '')) ? String(ctx.zip) : zip();
+    var given = /^\d{5}$/.test(String(ctx.zip || '')) ? String(ctx.zip) : '';
+    var spot = isFinite(ctx.lat) && isFinite(ctx.lon) && ctx.lat !== null && ctx.lon !== null ? { lat: +ctx.lat, lon: +ctx.lon, label: String(ctx.place || '') } : null;
     var fips = String(ctx.fips || (/^rainyear:\d{4}:(\d{5})$/.exec(topic) || [])[1] || '');
-    var st = ((/^rent:([a-z]{2})$/.exec(topic) || [])[1] || '').toUpperCase() || FIPS_ST[fips.slice(0, 2)] || pathState() || zipState(zipv);
+    var kind = pageKind();
     css();
     var box = document.createElement('div');
     box.className = 'sa-more'; box.setAttribute('data-sa-more', '1'); box.hidden = true;
     if (ctx.after && ctx.after.parentNode) ctx.after.parentNode.insertBefore(box, ctx.after.nextSibling);
     else host.appendChild(box);
-    var source = 'onemore:' + gave;
-    rainOffer(fips).then(function (rain) {
+    var source = 'onemore:' + (SRC_TAG[gave] || gave);
+    /* a hail alert gives a spot, not a ZIP: the ZIP they searched, else the nearest one, else the saved one */
+    var zipP = given ? Promise.resolve(given) : (spot ? zipNear(spot.lat, spot.lon) : Promise.resolve(''));
+    zipP.then(function (zz) {
+      var zipv = zz || (spot ? '' : zip());
+      var st = ((/^rent:([a-z]{2})$/.exec(topic) || [])[1] || '').toUpperCase() || FIPS_ST[fips.slice(0, 2)] || pathState() || zipState(zipv || zip());
+      var wantHail = kind.hail && had.indexOf('hail') < 0;
+      var hs = wantHail && window.AGSIST_HAIL_SPOT, hailP = !wantHail ? Promise.resolve(null)
+        : (hs && isFinite(hs.lat) && isFinite(hs.lon) ? Promise.resolve({ lat: +hs.lat, lon: +hs.lon, label: String(hs.label || 'the spot on the map') }) : zipCenter(zipv));
+      return Promise.all([rainOffer(fips), hailP]).then(function (a) { build(zipv, st, a[0], a[1]); });
+    });
+    function build(zipv, st, rain, hspot) {
       var O = {};
-      if (!isSignedUp() && had.indexOf('daily') < 0) O.daily = { label: esc('AGSIST Daily: the markets and your top local bid, free, every morning'),
-        send: function () { return subscribe({ email: email, source: source, zip: zipv, askId: 'onemore' }); },
+      /* after a hail alert the Daily carries an optional ZIP box, filled when a ZIP is known */
+      var dz = gave === 'hail';
+      if (!isSignedUp() && had.indexOf('daily') < 0) O.daily = { label: esc('AGSIST Daily: the markets and your top local bid, free, every morning')
+          + (dz ? '</label> <span class="sa-mzl">ZIP, optional <input class="sa-mz" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" value="' + esc(zipv) + '" aria-label="ZIP for your top local bid, optional"></span>' : ''),
+        field: dz,
+        send: function (f) { return subscribe(dz ? { email: email, source: source, zip: f.zip, zipField: true, askId: 'onemore' } : { email: email, source: source, zip: zipv, askId: 'onemore' }); },
         ok: 'You are on AGSIST Daily, first email tomorrow morning.' };
-      if (zipv && had.indexOf('zip') < 0) O.zip = { zip: 1, label: 'Tell me when <select class="sa-mc" aria-label="Crop"><option value="corn">corn</option><option value="soybeans">soybeans</option><option value="wheat">wheat</option></select>'
+      if (zipv && had.indexOf('zip') < 0) O.zip = { field: 1, label: 'Tell me when</label> <select class="sa-mc" aria-label="Crop"><option value="corn">corn</option><option value="soybeans">soybeans</option><option value="wheat">wheat</option></select>'
           + ' within ' + MILES + ' mi of ZIP ' + zipv + ' pays $<input class="sa-mp" type="number" inputmode="decimal" step="0.01" min="1" max="32" aria-label="Price you want, dollars a bushel">',
         send: function (f) { return post(WORKER + '/elevator-watch-subscribe', alertBody(email, zipv, f.crop, f.cents)); },
         ok: 'Check your email to confirm the price alert. Nothing about it is sent until you press that link.' };
@@ -590,7 +690,23 @@
       if (rt && RENT_ST.indexOf(st) >= 0 && rt !== topic && !noticeDone(rt, ry)) O.rent = { label: esc('The ' + ry + ' ' + ST_NAMES[st] + ' county cash rents, one email when USDA puts them out (usually August)'),
         send: function () { return notice({ email: email, source: source, topic: rt, daily: false, year: ry, askId: 'onemore' }); },
         ok: 'One email when the ' + ry + ' ' + ST_NAMES[st] + ' county rents come out.' };
-      var order = gave === 'daily' ? ['zip', 'rainyear', 'rent', 'daily'] : ['daily', 'rainyear', 'rent', 'zip'];
+      if (hspot) O.hail = { label: esc('Hail alerts: an email the morning after radar-estimated hail touches within ' + HAIL_MI + ' mi of ' + hspot.label),
+        send: function () { return post(WORKER + '/alert-subscribe', { email: email, lat: hspot.lat.toFixed(4), lon: hspot.lon.toFixed(4), place: hspot.label.slice(0, 120), radius_mi: HAIL_MI }); },
+        ok: 'Watching ' + hspot.label + ', ' + HAIL_MI + ' mi radius. Alerts arrive the morning after radar-estimated hail touches it.' };
+      if ((kind.futures || kind.report) && had.indexOf('price') < 0) O.price = { field: 1, label: 'Email me when</label> <select class="sa-mc" data-f="sym" aria-label="Futures contract">'
+          + ['corn', 'beans', 'wheat', 'cattle'].map(function (k) { return '<option value="' + k + '"' + (k === kind.sym ? ' selected' : '') + '>' + { corn: 'corn', beans: 'soybean', wheat: 'wheat', cattle: 'live cattle' }[k] + '</option>'; }).join('')
+          + '</select> futures go <select class="sa-mc" data-f="dir" aria-label="Direction"><option value="above">above</option><option value="below">below</option></select>'
+          + ' $<input class="sa-mp" data-f="usd" type="number" inputmode="decimal" step="0.01" min="0.01" max="1000" aria-label="Futures price you want, dollars">',
+        send: function (f) { return post(WORKER + '/price-watch-subscribe', priceBody(email, f.sym, f.dir, f.usd)); },
+        ok: 'Check your email to confirm the futures alert. Nothing about it is sent until you press that link.' };
+      if (gave === 'daily' && ctx.reports === false && (kind.report || kind.futures) && had.indexOf('reports') < 0) O.reports = {
+        label: esc('USDA report days: a short email the afternoon a big report lands, what USDA printed against the trade'),
+        /* the same list: no source, so the worker keeps where they signed up */
+        send: function () { return post(EP, { email: email, reports: true }); },
+        ok: 'Report-day emails are on.' };
+      var base = gave === 'daily' ? ['zip', 'rainyear', 'rent', 'daily'] : ['daily', 'rainyear', 'rent', 'zip'];
+      var lead = kind.hail ? ['hail'] : kind.futures ? ['price', 'reports'] : kind.report ? ['reports', 'price'] : [];
+      var order = gave === 'daily' ? lead.concat(base) : ['daily'].concat(lead, base.slice(1));
       var ids = order.filter(function (k) { return O[k]; }).slice(0, 3);
       if (!ids.length) { box.parentNode.removeChild(box); return; }
       var n = ++mseq;
@@ -598,8 +714,9 @@
       box.innerHTML = '<p class="sa-mh" id="sa-mh-' + n + '">One more?</p><form class="sa-mf" novalidate>'
         + ids.map(function (k, i) {
           var id = 'sa-mo-' + n + '-' + i;
-          return O[k].zip
-            ? '<div class="sa-optin sa-mo" data-k="' + k + '"><input type="checkbox" id="' + id + '" value="' + k + '"><span><label for="' + id + '">' + O[k].label.replace(/^Tell me when /, 'Tell me when</label> ') + '</span></div>'
+          /* a row with its own fields: the label is only the words before them */
+          return O[k].field
+            ? '<div class="sa-optin sa-mo" data-k="' + k + '"><input type="checkbox" id="' + id + '" value="' + k + '"><span><label for="' + id + '">' + O[k].label + '</span></div>'
             : '<label class="sa-optin sa-mo" data-k="' + k + '" for="' + id + '"><input type="checkbox" id="' + id + '" value="' + k + '"> <span>' + O[k].label + '</span></label>';
         }).join('')
         + '<button type="submit" class="sa-b">Add these</button><p class="sa-m" role="status" aria-live="polite"></p></form>';
@@ -608,20 +725,36 @@
       track('onemore_shown', { from: gave, topics: ids.join(',') });
       if (barEl && barEl.contains(box)) placeBar();
       var form = box.querySelector('form'), msg = box.querySelector('.sa-m'), btn = box.querySelector('.sa-b');
-      var price = box.querySelector('.sa-mp'), crop = box.querySelector('.sa-mc');
-      /* typing a price or picking a crop is the reader ticking that box */
-      function tickZip() { var c = box.querySelector('[data-k="zip"] input[type=checkbox]'); if (c && !c.checked) c.checked = true; }
-      if (price) price.addEventListener('input', function () { if (price.value) tickZip(); price.removeAttribute('aria-invalid'); });
-      if (crop) crop.addEventListener('change', tickZip);
+      /* typing in a row's field or picking from its list is the reader ticking that row */
+      Array.prototype.forEach.call(form.querySelectorAll('[data-k] input:not([type=checkbox]), [data-k] select'), function (el) {
+        var c = el.closest('[data-k]').querySelector('input[type=checkbox]');
+        el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', function () {
+          if (el.classList.contains('sa-mz')) el.value = el.value.replace(/\D/g, '').slice(0, 5);
+          if ((el.tagName === 'SELECT' || el.value) && !c.checked) c.checked = true;
+          el.removeAttribute('aria-invalid');
+        });
+      });
+      function row(k) { return form.querySelector('[data-k="' + k + '"]'); }
+      function bad(el, t) { msg.textContent = t; el.setAttribute('aria-invalid', 'true'); el.focus(); }
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         var pick = Array.prototype.filter.call(form.querySelectorAll('input[type=checkbox]'), function (c) { return c.checked; }).map(function (c) { return c.value; });
         if (!pick.length) { msg.textContent = 'Tick what you want, or leave it.'; return; }
         var f = {};
         if (pick.indexOf('zip') >= 0) {
-          var v = parseFloat(price.value);
-          if (!(v >= 1 && v <= 32)) { msg.textContent = 'Enter the price you want, between $1.00 and $32.00 a bushel.'; price.setAttribute('aria-invalid', 'true'); price.focus(); return; }
-          f.crop = crop.value; f.cents = Math.round(v * 100);
+          var zp = row('zip').querySelector('.sa-mp'), v = parseFloat(zp.value);
+          if (!(v >= 1 && v <= 32)) return bad(zp, 'Enter the price you want, between $1.00 and $32.00 a bushel.');
+          f.crop = row('zip').querySelector('.sa-mc').value; f.cents = Math.round(v * 100);
+        }
+        if (pick.indexOf('price') >= 0) {
+          var pp = row('price').querySelector('[data-f="usd"]'), u = parseFloat(pp.value);
+          if (!(u > 0 && u <= 1000 && isFinite(u))) return bad(pp, 'Enter the futures price you want, between $0.01 and $1000.');
+          f.sym = row('price').querySelector('[data-f="sym"]').value; f.dir = row('price').querySelector('[data-f="dir"]').value; f.usd = u;
+        }
+        if (pick.indexOf('daily') >= 0 && O.daily.field) {
+          var mz = row('daily').querySelector('.sa-mz'), zv = String(mz.value || '').trim();
+          if (zv && !/^\d{5}$/.test(zv)) return bad(mz, 'A ZIP is 5 digits. Fix it, or leave it blank.');
+          f.zip = zv;
         }
         msg.textContent = ''; btn.disabled = true; btn.textContent = 'Sending…';
         box.setAttribute('data-sa-busy', '1');
@@ -630,7 +763,7 @@
           var okIds = [], okTxt = [], err = '';
           rs.forEach(function (r, i) {
             var k = pick[i];
-            if (r && r.ok) { okIds.push(k); okTxt.push(O[k].ok); var row = form.querySelector('[data-k="' + k + '"]'); if (row) row.parentNode.removeChild(row); }
+            if (r && r.ok) { okIds.push(k); okTxt.push(O[k].ok); var rw = row(k); if (rw) rw.parentNode.removeChild(rw); }
             else if (!err) err = errText(r);
           });
           if (okIds.length) track('onemore_added', { from: gave, topics: okIds.join(',') });
@@ -644,7 +777,7 @@
           if (barEl && barEl.contains(box)) placeBar();
         });
       });
-    });
+    }
   }
 
   /* Signups drawn by other scripts. The cash bid box (components/cb-signup.js)
