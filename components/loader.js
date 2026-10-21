@@ -700,6 +700,8 @@
   // stays closed for that id. No file, a bad file or active false: nothing shows.
   function siteNotice() {
     if (!window.fetch) return;
+    // for people: an automated browser (crawlers, the test suite) gets the page as it is, unless ?notice=show
+    if (navigator.webdriver === true && !/[?&]notice=show\b/.test(location.search)) return;
     fetch(BASE + '/data/site-notice.json', { cache: 'no-cache' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (n) {
