@@ -5,6 +5,24 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.45 (2026-10-21): READER COUNTS BY AREA (Sig, Oct 21: the insight
+ *   machine's collection jobs, "counts only"). New route GET /count-area
+ *   ?part=<daily|alerts|watch|ewatch|pwatch|notices|rp_designs|rp_orders>
+ *   [&cursor=][&limit=] (Bearer LIST_TOKEN only; 403 otherwise and whenever
+ *   ?token= is in the address; no-store). Read-only. One page of one list,
+ *   at most 400 records a call (1 list + 400 reads stays under the 1,000 KV
+ *   operations a call), answered as counts: {ok, part, n, counts: {dim:
+ *   {value: n}}, cursor} ("" on the last page). Never an address, a full
+ *   ZIP, a place name or a design: daily by ZIP3 (first three digits) and
+ *   sign-up page; alerts and Rain Print designs and orders by the two-letter
+ *   state at the end of their place ("?" when there is none); county
+ *   watches by the state FIPS of each watched county; notices by topic kind,
+ *   rent state, rain-year state FIPS and the gauge list's ZIP3; elevator and
+ *   price watches as totals (price watches also by symbol). Designs also by
+ *   year, orders also by product and paid. The job that reads it
+ *   (scripts/reader_area_counts.py, in morning-report.yml) adds the pages up
+ *   and withholds every cell under 3 before anything is saved. Every other
+ *   route answers as before. No new secret.
  * v5.40 (2026-10-20): GIFT CARDS GO OUT BY EMAIL (Sig: "the gift card option
  *   should provide explanation as to what the receiver is getting and how to
  *   redeem easily"; no more card links sent by hand). POST /rp-gift/issue
@@ -1854,6 +1872,77 @@ async function sponsorFeedback(env, b, rec) {
   return {};
 }
 
+// ---------- v5.45: GET /count-area, reader counts by area (counts only) ----------
+const AREA_PREFIX = { daily: "sub:", alerts: "alert:", watch: "watch:", ewatch: "ewatch:", pwatch: "pwatch:",
+  notices: "note:", rp_designs: "rps:", rp_orders: "rpo:" };
+const AREA_LIMIT = 400;
+const AREA_CA = new Set("AB BC MB NB NL NS NT NU ON PE QC SK YT".split(" "));
+// The two-letter state or province at the end of a place ("Chetek, WI", "Chetek, WI 54728"), else "?".
+function areaState(place) {
+  const m = /,\s*([A-Za-z]{2})\.?(?:\s+\d{5}(?:-\d{4})?)?\s*$/.exec(String(place || ""));
+  if (!m) return "?";
+  const st = m[1].toUpperCase();
+  return RENT_STATES.has(st.toLowerCase()) || st === "DC" || AREA_CA.has(st) ? st : "?";
+}
+function areaZip3(z) {
+  const v = String(z == null ? "" : z).trim();
+  return /^\d{5}$/.test(v) ? v.slice(0, 3) : "none";
+}
+async function areaPage(env, part, cursor, limit) {
+  const page = await env.SUBS.list({ prefix: AREA_PREFIX[part], cursor: cursor || undefined, limit });
+  const keys = page.keys || [];
+  const counts = {};
+  const add = (dim, v) => { const d = counts[dim] || (counts[dim] = {}); const k = String(v || "?"); d[k] = (d[k] || 0) + 1; };
+  const vals = new Array(keys.length).fill(null);
+  for (let i = 0; i < keys.length; i += EXPORT_BATCH) {
+    const batch = keys.slice(i, i + EXPORT_BATCH);
+    const got = await Promise.all(batch.map(k => part === "daily" && subMetaOk(k.metadata) ? k.metadata : env.SUBS.get(k.name)));
+    for (let j = 0; j < got.length; j++) vals[i + j] = got[j];
+  }
+  const obj = (v) => { if (v && typeof v === "object") return v; try { const o = JSON.parse(v); return o && typeof o === "object" ? o : null; } catch (e) { return null; } };
+  let n = 0;
+  for (let i = 0; i < keys.length; i++) {
+    const v = vals[i];
+    if (v === null || v === undefined) continue;          // expired between list and read
+    if (part === "daily") {
+      const r = subRecord("", v);
+      add("zip3", areaZip3(r.zip)); add("src", r.src ? r.src.slice(0, 40) : "(none)");
+    } else if (part === "alerts") {
+      const r = obj(v); if (!r) continue;
+      add("state", areaState(r.place)); add("radius_mi", r.radius_mi);
+    } else if (part === "watch") {
+      const r = obj(v); if (!r) continue;
+      const sts = new Set(Object.keys(r.w || {}).filter(f => /^\d{5}$/.test(f)).map(f => f.slice(0, 2)));
+      if (!sts.size) continue;                            // nothing confirmed yet
+      for (const st of sts) add("st_fips", st);
+    } else if (part === "ewatch" || part === "pwatch") {
+      const r = obj(v); if (!r || !Object.keys(r.w || {}).length) continue;
+      add("confirmed", "yes");
+      if (part === "pwatch") for (const sym of new Set(Object.values(r.w).map(x => x && x.symbol))) add("symbol", sym);
+    } else if (part === "notices") {
+      const r = obj(v); if (!r || !r.t || typeof r.t !== "object") continue;
+      for (const [t, x] of Object.entries(r.t)) {
+        const kind = t.split(":")[0];
+        add("kind", kind);
+        if (kind === "rent") add("rent_state", (t.split(":")[1] || "").toUpperCase());
+        if (kind === "rainyear") add("rainyear_st_fips", String(t.split(":")[2] || "").slice(0, 2));
+        if (kind === "rain-gauge") add("gauge_zip3", areaZip3(x && x.zip));
+      }
+    } else if (part === "rp_designs") {
+      const f = rpgFields(v); if (!f) continue;
+      add("state", areaState(f[1])); add("year", f[3]);
+    } else if (part === "rp_orders") {
+      if (!RPO_KEY_RE.test(keys[i].name)) continue;
+      const r = obj(v); if (!r) continue;
+      const st = areaState(r.place);
+      add("state", st); add("product", r.product);
+      if (r.paid) { add("paid_state", st); add("paid_product", r.product); }
+    }
+    n++;
+  }
+  return { n, counts, cursor: page.list_complete ? "" : (page.cursor || "") };
+}
+
 async function noticeCounts(env) {
   const keys = await listKeys(env, "note:"), by = {};
   for (const k of keys) {
@@ -3436,6 +3525,19 @@ async function handle(req, env) {
       if (!cur) return json({ ok: false, error: "bad cursor" }, 400, ns);
       const out = await exportPage(env, cur, limit);
       return json(Object.assign({ ok: true, generated_at: new Date().toISOString() }, out), 200, ns);
+    }
+    // v5.45: reader counts by area (scripts/reader_area_counts.py, the morning report). Bearer only, counts only.
+    if (path === "/count-area") {
+      const ns = { "Cache-Control": "no-store" };
+      if (!sig || url.searchParams.has("token")) return json({ ok: false }, 403, ns);
+      if (req.method !== "GET") return json({ ok: false, error: "GET only" }, 405, ns);
+      const part = String(url.searchParams.get("part") || "");
+      if (!Object.prototype.hasOwnProperty.call(AREA_PREFIX, part))
+        return json({ ok: false, error: "part is one of " + Object.keys(AREA_PREFIX).join(", ") }, 400, ns);
+      const lim = Number(url.searchParams.get("limit") || AREA_LIMIT);
+      const limit = Number.isFinite(lim) ? Math.min(AREA_LIMIT, Math.max(1, Math.floor(lim))) : AREA_LIMIT;
+      const out = await areaPage(env, part, String(url.searchParams.get("cursor") || ""), limit);
+      return json(Object.assign({ ok: true, part }, out), 200, ns);
     }
     if (path === "/rp-gift/issue" && req.method === "POST") {
       if (!sig) return json({ ok: false }, 403, ac);
