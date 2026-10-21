@@ -5,6 +5,28 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.44 (2026-10-21): TWO STANDING LISTS ON /notice (Sig, Oct 21). /notice
+ *   takes two more topics, both recurring and both their own list, apart from
+ *   the Daily (a reader can have either without AGSIST Daily):
+ *     reports  the report-day email alone ("USDA vs the trade", the WASDE
+ *              summary), from the WASDE ask on /usda-calendar, /whats-priced-in
+ *              and the report pages. scripts/send_report_day.py mails these
+ *              readers beside the Daily readers with report days on, once
+ *              each.
+ *     cot      "Funds this week", one email after each CFTC Commitments of
+ *              Traders release (scripts/send_cot_weekly.py from
+ *              cot-release-watch.yml), from /cot and the futures and cattle
+ *              pages.
+ *   Same record as every notice: note:<email>.t[topic] = {ts, src}; the
+ *   senders read GET /notice-list?topic=reports|cot and never mark them sent
+ *   (they dedupe with /flag, as the Daily does). Single opt-in, like the
+ *   Daily, the hail alerts and the other notices. /notice-unsubscribe with
+ *   &topic= names the list on its page, and a POST that removed one of these
+ *   writes unsx:<reports|cot>:<reader|cleanup>:<ms>:<rand> (no address).
+ *   GET /count adds lists {reports, cot}: {n, by_source {src: n}, unsubs
+ *   {h24, d7, cleanup_h24, cleanup_d7}}. unsubs {daily, alerts} is unchanged.
+ *   Every other route and topic answers exactly as before. No new binding and
+ *   no new secret.
  * v5.41 (2026-10-20): UNSUBSCRIBE COUNTS for Sig's morning email. A POST to
  *   /unsubscribe or /alert-unsubscribe that removed a real record also writes
  *   unsx:<daily|alerts>:<reader|cleanup>:<ms>:<rand> ("" value, no address,
@@ -970,9 +992,14 @@ function prfInterval(v) {
   if (!m || +m[1] < 1948 || +m[1] > new Date().getUTCFullYear() + 1) return null;
   return s;
 }
+// v5.44: the two standing lists (report-day email alone, Funds this week)
+const LIST_TOPICS = ["reports", "cot"];
+const LIST_ASK = { reports: "Stop the WASDE and report-day emails for this address?", cot: "Stop Funds this week for this address?" };
+const LIST_DONE = { reports: "Stopped. No more WASDE or report-day emails.", cot: "Stopped. No more Funds this week emails." };
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();
   if (t === "rain-gauge") return t;
+  if (LIST_TOPICS.includes(t)) return t;
   const pg = /^prf:(\d+)$/.exec(t);
   if (pg) return prfGridOk(pg[1]) ? t : null;
   let ry = /^rainyear:(\d{4}):(\d{5})$/.exec(t);
@@ -1744,12 +1771,30 @@ async function unsubCounts(env) {
 
 async function noticeCounts(env) {
   const keys = await listKeys(env, "note:"), by = {};
+  // v5.44: the standing lists, with where each reader signed up
+  const lists = {};
+  for (const l of LIST_TOPICS) lists[l] = { n: 0, by_source: {}, unsubs: { h24: 0, d7: 0, cleanup_h24: 0, cleanup_d7: 0 } };
   for (const k of keys) {
     let r = null;
     try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
-    for (const t of Object.keys((r && r.t) || {})) by[t] = (by[t] || 0) + 1;
+    for (const t of Object.keys((r && r.t) || {})) {
+      by[t] = (by[t] || 0) + 1;
+      if (lists[t]) {
+        const s = String((r.t[t] && r.t[t].src) || "") || "(none)";
+        lists[t].n++;
+        lists[t].by_source[s] = (lists[t].by_source[s] || 0) + 1;
+      }
+    }
   }
-  return { notice: keys.length, notices: by };
+  const now = Date.now();
+  for (const k of await listKeys(env, "unsx:")) {
+    const m = /^unsx:(reports|cot):(reader|cleanup):(\d+):/.exec(k);
+    if (!m) continue;
+    const age = now - Number(m[3]), o = lists[m[1]].unsubs, pre = m[2] === "cleanup" ? "cleanup_" : "";
+    if (age <= 864e5) o[pre + "h24"]++;
+    if (age <= 7 * 864e5) o[pre + "d7"]++;
+  }
+  return { notice: keys.length, notices: by, lists };
 }
 
 async function formCounts(env) {
@@ -2433,7 +2478,7 @@ async function handle(req, env) {
       if (!valid || one === null) return htmlPage("That unsubscribe link isn't valid.");
       if (req.method === "GET") {
         const action = path + "?e=" + encodeURIComponent(e) + "&t=" + encodeURIComponent(t) + (one ? "&topic=" + encodeURIComponent(one) : "");
-        return htmlPage(one ? "Stop this notice for this address?" : "Stop every AGSIST notice for this address?",
+        return htmlPage(one ? (LIST_ASK[one] || "Stop this notice for this address?") : "Stop every AGSIST notice for this address?",
           "<p>" + escHtml(e) + "</p>" +
           "<form method=\"POST\" action=\"" + action + "\">" +
           "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">Yes, stop it</button></form>" +
@@ -2442,6 +2487,8 @@ async function handle(req, env) {
       if (req.method === "POST") {
         let r = null;
         try { const v = await env.SUBS.get("note:" + e); r = v ? JSON.parse(v) : null; } catch (x) { r = null; }
+        // v5.44: which standing lists this POST took the address off, for /count
+        const gone = LIST_TOPICS.filter(l => r && r.t && typeof r.t === "object" && (l in r.t) && (!one || one === l));
         if (one && r && r.t && typeof r.t === "object") {
           delete r.t[one];
           if (Object.keys(r.t).length) await env.SUBS.put("note:" + e, JSON.stringify(r));
@@ -2449,6 +2496,8 @@ async function handle(req, env) {
         } else {
           await env.SUBS.delete("note:" + e);
         }
+        for (const l of gone) await countUnsub(env, l, req);
+        if (one && LIST_DONE[one]) return htmlPage(LIST_DONE[one]);
         return htmlPage(one ? "Stopped. No email about this one." : "Stopped. No more AGSIST notices.");
       }
     }
