@@ -21,7 +21,8 @@
   var KEEP_BEHIND = 2, AHEAD_PLAY = 6, AHEAD_IDLE = 2, WARM_CONC = 3;
   var BASE_URL = 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}';
   var HAIL_COL = { 0.75: '#f1c453', 1: '#ee8d3a', 1.5: '#d8452b', 2: '#8e1b56' };
-  var OPAC = { radar: 0.72, lightning: 0.95, clouds: 0.45 };
+  var OPAC = { radar: 0.72, lightning: 0.85, clouds: 0.45 };
+  var REP_COL = '#cfe9ff', REP_NEW = '#7cc4ff';
   var R = null;
 
   function $(sel, el) { return (el || document).querySelector(sel); }
@@ -44,7 +45,7 @@
     '@media(min-width:900px){.sr{padding:24px}.sr-panel{border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.45);display:grid;grid-template-columns:minmax(0,1fr) 360px;grid-template-rows:auto 1fr;overflow:hidden}',
     '.sr-top{grid-column:1/-1}.sr-left{display:flex;flex-direction:column;min-height:0}.sr-right{overflow:auto;border-left:1px solid var(--border,rgba(132,160,168,.13))}.sr-mapwrap{flex:1;min-height:420px}}',
     '.sr-top{display:flex;align-items:center;gap:.6rem;padding:.6rem 16px;border-bottom:1px solid var(--border,rgba(132,160,168,.13))}',
-    '.sr-top h2{font-size:1rem;margin:0;font-weight:700;letter-spacing:.01em}.sr-place{color:var(--text-muted,#aab);font-size:.86rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.sr-top h2{font-size:1rem;margin:0;font-weight:700;letter-spacing:.01em;outline:0}.sr-place{color:var(--text-muted,#aab);font-size:.86rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
     '.sr-x{appearance:none;border:1px solid var(--border-2,rgba(132,160,168,.24));background:transparent;color:inherit;border-radius:999px;width:36px;height:36px;font-size:1.25rem;line-height:1;cursor:pointer}',
     '.sr-cap{padding:.75rem 16px .5rem}',
     '.sr-head{font-size:1.08rem;line-height:1.38;font-weight:650;margin:0 0 .45rem}',
@@ -70,8 +71,8 @@
     '.sr-tick{top:0;bottom:0;width:1px;background:var(--border,rgba(132,160,168,.13))}',
     '.sr-tick.day{background:var(--border-2,rgba(132,160,168,.3))}',
     '.sr-hh{top:6px;height:12px;border-radius:3px}',
-    '.sr-rp{top:22px;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;background:#fff;border:2px solid #141410}',
-    '.sr-lb{bottom:4px;width:3px;margin-left:-1px;background:#c9b6ff;border-radius:1px}',
+    '.sr-rp{top:22px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#cfe9ff;border:2px solid #141410}',
+    '.sr-lb{bottom:5px;width:3px;margin-left:-1px;background:#ffd25a;border-radius:1px}',
     '.sr-rw{bottom:0;height:3px;background:#4eb3d3}',
     '.sr-head-line{top:0;bottom:0;width:2px;margin-left:-1px;background:var(--gold,#d4a23f);box-shadow:0 0 0 1px rgba(0,0,0,.25)}',
     '.sr-range{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}',
@@ -83,7 +84,10 @@
     '.sr-btn svg{width:18px;height:18px;fill:currentColor}',
     '.sr-btn.play{background:var(--gold,#d4a23f);color:#141410;border-color:transparent;font-weight:700;min-width:92px}',
     '.sr-btn[aria-pressed="true"]{border-color:var(--gold,#d4a23f);box-shadow:inset 0 0 0 1px var(--gold,#d4a23f)}',
-    '.sr-seg{display:inline-flex;margin-left:auto}.sr-seg .sr-btn{border-radius:0;min-width:52px}.sr-seg .sr-btn:first-child{border-radius:10px 0 0 10px}.sr-seg .sr-btn:last-child{border-radius:0 10px 10px 0;margin-left:-1px}',
+    '.sr-tlhead{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.4rem;font-size:.82rem;color:var(--text-muted,#aab)}',
+    '.sr-seg{display:inline-flex}.sr-seg .sr-btn{border-radius:0;min-width:50px;min-height:36px;font-size:.8rem;padding:0 .55rem}.sr-seg .sr-btn:first-child{border-radius:8px 0 0 8px}.sr-seg .sr-btn:last-child{border-radius:0 8px 8px 0;margin-left:-1px}',
+    '.sr-tlkey{display:flex;flex-wrap:wrap;gap:.2rem .8rem;font-size:.7rem;color:var(--text-muted,#aab);margin-top:.15rem}.sr-tlkey span{display:inline-flex;align-items:center;gap:.3rem}.sr-tlkey i{display:inline-block}',
+    '.k-hh{width:12px;height:7px;border-radius:2px;background:#ee8d3a}.k-rp{width:8px;height:8px;border-radius:50%;background:#cfe9ff;border:1.5px solid #141410}.k-lb{width:3px;height:10px;background:#ffd25a}.k-rw{width:14px;height:3px;background:#4eb3d3}',
     '.sr-sec{padding:.5rem 16px;border-top:1px solid var(--border,rgba(132,160,168,.13))}',
     '.sr-sec h3{font-size:.74rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted,#aab);margin:0 0 .4rem;font-weight:700}',
     '.sr-chips{display:flex;flex-wrap:wrap;gap:.4rem}',
@@ -96,7 +100,8 @@
     '.sr-dbz{width:90px!important;background:linear-gradient(90deg,#04e9e7,#019ff4,#02fd02,#01c501,#fdf802,#fd9500,#fd0000,#bc0000,#f800fd)}',
     '.sr-cred{font-size:.74rem;line-height:1.5;color:var(--text-muted,#aab);margin:0}.sr-cred a{color:inherit;text-decoration:underline}',
     '.sr-note{font-size:.8rem;color:var(--text-muted,#aab);margin:.3rem 0 0;min-height:1em}',
-    '.sr-field{background:#ffd23f;border:2px solid #111;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.85)}',
+    '.sr-field{background:#fff;border:3px solid #141410;border-radius:50%;box-shadow:0 0 0 2px #fff,0 1px 6px rgba(0,0,0,.45)}.sr-field i{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#141410}',
+    '.leaflet-tooltip.sr-fieldtip{background:rgba(10,12,13,.84);color:#f3f5f4;border:0;box-shadow:none;font-weight:700;font-size:.74rem;padding:.1rem .4rem}.leaflet-tooltip.sr-fieldtip::before{display:none}',
     '.sr-tip{font-size:.8rem}',
     'html.sr-open,html.sr-open body{overflow:hidden}'
   ].join('\n');
@@ -116,7 +121,7 @@
     share: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16a3 3 0 00-2.4 1.2l-6.7-3.4a3 3 0 000-1.6l6.7-3.4A3 3 0 1015 7l-6.7 3.4a3 3 0 100 3.2L15 17a3 3 0 103-1z"/></svg>'
   };
   var LAYER_NAME = { radar: 'Radar', lightning: 'Lightning', swaths: 'Hail estimate', reports: 'Hail reports', clouds: 'Clouds' };
-  var LAYER_SWATCH = { radar: '#02c502', lightning: '#c9b6ff', swaths: '#ee8d3a', reports: '#ffffff', clouds: '#9aa6ad' };
+  var LAYER_SWATCH = { radar: '#02c502', lightning: '#ffd25a', swaths: '#ee8d3a', reports: '#cfe9ff', clouds: '#9aa6ad' };
 
   /* ---------- build ---------- */
   function build() {
@@ -139,15 +144,17 @@
         '<div class="sr-left">' +
           '<div class="sr-mapwrap"><div class="sr-map" id="sr-map" aria-label="Map of the storm around your field"></div>' +
             '<div class="sr-clock" id="sr-clock" aria-hidden="true"></div><div class="sr-flag" id="sr-flag"></div></div>' +
-          '<div class="sr-tl"><div class="sr-track" id="sr-track"><i class="sr-past" id="sr-past"></i><div id="sr-marks"></div><i class="sr-head-line" id="sr-headline"></i>' +
+          '<div class="sr-tl"><div class="sr-tlhead"><span id="sr-span"></span>' +
+            '<span class="sr-seg" role="group" aria-label="How far back"><button type="button" class="sr-btn" data-h="24" aria-pressed="true">24 h</button><button type="button" class="sr-btn" data-h="48" aria-pressed="false">48 h</button></span></div>' +
+            '<div class="sr-track" id="sr-track"><i class="sr-past" id="sr-past"></i><div id="sr-marks"></div><i class="sr-head-line" id="sr-headline"></i>' +
             '<input type="range" class="sr-range" id="sr-range" min="0" max="0" value="0" aria-label="Time in the replay"></div>' +
-            '<div class="sr-hours" id="sr-hours" aria-hidden="true"></div></div>' +
+            '<div class="sr-hours" id="sr-hours" aria-hidden="true"></div>' +
+            '<div class="sr-tlkey" aria-hidden="true"><span><i class="k-hh"></i>radar hail</span><span><i class="k-rp"></i>hail report</span><span><i class="k-lb"></i>lightning</span><span><i class="k-rw"></i>rain total</span></div></div>' +
           '<div class="sr-ctl">' +
             '<button type="button" class="sr-btn" id="sr-back" aria-label="Step back">' + ICON.back + '</button>' +
             '<button type="button" class="sr-btn play" id="sr-play">' + ICON.play + '<span>Play</span></button>' +
             '<button type="button" class="sr-btn" id="sr-fwd" aria-label="Step forward">' + ICON.fwd + '</button>' +
             '<button type="button" class="sr-btn" id="sr-latest">' + ICON.end + '<span>Latest</span></button>' +
-            '<span class="sr-seg" role="group" aria-label="How far back"><button type="button" class="sr-btn" data-h="24" aria-pressed="true">24 h</button><button type="button" class="sr-btn" data-h="48" aria-pressed="false">48 h</button></span>' +
           '</div>' +
         '</div>' +
         '<div class="sr-right">' +
@@ -155,7 +162,7 @@
           '<div class="sr-sec"><h3>Layers</h3><div class="sr-chips" id="sr-chips">' + chips + '</div>' +
             '<div class="sr-key" style="margin-top:.5rem"><span><i class="sr-dbz"></i>radar, light to heavy</span>' +
             '<span><i style="background:' + HAIL_COL[0.75] + '"></i>0.75</span><span><i style="background:' + HAIL_COL[1] + '"></i>1</span><span><i style="background:' + HAIL_COL[1.5] + '"></i>1.5</span><span><i style="background:' + HAIL_COL[2] + '"></i>2+ in hail (estimate)</span>' +
-            '<span><i style="background:#fff;border:2px solid #141410;border-radius:50%;width:10px"></i>hail report</span></div></div>' +
+            '<span><i style="background:#cfe9ff;border:2px solid #141410;border-radius:50%;width:10px"></i>hail report (observed)</span></div></div>' +
           '<div class="sr-sec"><button type="button" class="sr-btn" id="sr-share">' + ICON.share + '<span>Share this replay</span></button><p class="sr-note" id="sr-sharenote" role="status"></p></div>' +
           '<div class="sr-sec"><h3>Sources right now</h3><ul class="sr-src" id="sr-src"></ul></div>' +
           '<div class="sr-sec"><p class="sr-cred" id="sr-cred">' + cred + ' Radar sizes and totals are estimates; a hail report is what someone saw. No key, no signup.</p></div>' +
@@ -191,7 +198,8 @@
     makeMap();
     setWindow(v.hours, v.frame, true);
     loadAll();
-    try { $('#sr-x', el).focus({ preventScroll: true }); } catch (e) {}
+    var hd = $('#sr-h', el); hd.setAttribute('tabindex', '-1');
+    try { hd.focus({ preventScroll: true }); } catch (e) {}
   }
   function close(silent) {
     if (!R) return;
@@ -271,10 +279,13 @@
   /* ---------- map ---------- */
   function makeMap() {
     var v = R.v;
-    var m = R.map = L.map($('#sr-map', R.el), { zoomControl: true, attributionControl: true, zoomSnap: 0.5, maxZoom: 11, minZoom: 5, worldCopyJump: false });
+    /* no tile fade: frames swap by their own short crossfade, and a fade per tile
+       would flicker every frame during play */
+    var m = R.map = L.map($('#sr-map', R.el), { zoomControl: false, attributionControl: true, fadeAnimation: false, zoomSnap: 1, maxZoom: 11, minZoom: 5, worldCopyJump: false });
+    L.control.zoom({ position: 'topright' }).addTo(m);
     m.attributionControl.setPrefix(false);
     m.attributionControl.addAttribution('Radar: NOAA via IEM | Map: USGS');
-    m.setView([v.lat, v.lon], window.innerWidth < 600 ? 8 : 8.5);
+    m.setView([v.lat, v.lon], 9);
     R.base = L.tileLayer(BASE_URL, { maxNativeZoom: 16, maxZoom: 16, className: 'sr-base' }).addTo(m);
     var baseLoaded = 0;
     R.base.on('tileload', function () { baseLoaded++; R.baseOk = true; });
@@ -282,7 +293,8 @@
     m.createPane('sr-hail'); m.getPane('sr-hail').style.zIndex = 420;
     m.createPane('sr-pts'); m.getPane('sr-pts').style.zIndex = 640;
     R.ring = L.circle([v.lat, v.lon], { radius: C.REPORT_MI * 1609.34, color: '#ffd23f', weight: 1.2, opacity: 0.8, fill: false, dashArray: '4 5', interactive: false, pane: 'sr-pts' }).addTo(m);
-    R.field = L.marker([v.lat, v.lon], { icon: L.divIcon({ className: 'sr-field', iconSize: [16, 16] }), keyboard: false, interactive: false, pane: 'sr-pts' }).addTo(m);
+    R.field = L.marker([v.lat, v.lon], { icon: L.divIcon({ className: 'sr-field', iconSize: [18, 18], html: '<i></i>' }), keyboard: false, interactive: false, pane: 'sr-pts', zIndexOffset: 1000 }).addTo(m);
+    R.field.bindTooltip('Your field', { permanent: true, direction: 'right', offset: [10, 0], className: 'sr-fieldtip' });
     R.hailG = L.layerGroup().addTo(m);
     R.repG = L.layerGroup().addTo(m);
     m.on('moveend', function () { warmStart(); });
@@ -296,19 +308,20 @@
   /* ---------- the window and its frames ---------- */
   function setWindow(hours, frameT, first, endT) {
     var sp = C.windowSpec(hours), now = Date.now();
-    var end = endT != null ? Math.min(C.snapDown(endT, sp.step), C.latestEnd(now, sp.step)) : R.v.end;
-    end = C.snapDown(end, sp.step);
-    R.v.hours = sp.hours; R.v.step = sp.step; R.v.end = end;
-    R.times = C.frameTimes(end, sp.hours, sp.step);
+    var e0 = endT != null ? Math.min(C.snapDown(endT, sp.step), C.latestEnd(now, sp.step)) : R.v.end;
+    e0 = C.snapDown(e0, sp.step);
+    R.v.hours = sp.hours; R.v.step = sp.step; R.v.end = e0;
+    R.times = C.frameTimes(e0, sp.hours, sp.step);
     R.rst = R.times.map(function (t) { return { t: t, st: 'wait' }; });
     ['radar', 'lightning', 'clouds'].forEach(function (k) { dropLayer(k); });
     R.hailLayers = null; R.repMarks = null; R.hailG.clearLayers(); R.repG.clearLayers();
     var rng = $('#sr-range', R.el);
     rng.max = String(R.times.length - 1);
     Array.prototype.forEach.call(R.el.querySelectorAll('[data-h]'), function (b) { b.setAttribute('aria-pressed', String(+b.getAttribute('data-h') === sp.hours)); });
+    $('#sr-span', R.el).textContent = C.span(start(), end(), R.tz) + ' ' + C.tzName(end(), R.tz);
     drawHours();
     drawMarks();
-    go(C.nearestIndex(R.times, frameT == null ? end : frameT), true);
+    go(C.nearestIndex(R.times, frameT == null ? e0 : frameT), true);
     if (!first) saveUrl();
   }
   function start() { return R.times[0]; }
@@ -531,7 +544,7 @@
     if (!R.v.layers.reports || !list) { R.repG.clearLayers(); R.repMarks = null; return; }
     if (!R.repMarks) {
       R.repMarks = list.map(function (r) {
-        var mk = L.circleMarker([r.lat, r.lon], { pane: 'sr-pts', radius: Math.min(9, 4 + (r.mag || 0.75) * 2), color: '#141410', weight: 1.5, fillColor: '#fff', fillOpacity: 0.95 });
+        var mk = L.circleMarker([r.lat, r.lon], { pane: 'sr-pts', radius: Math.min(9, 4 + (r.mag || 0.75) * 2), color: '#141410', weight: 1.5, fillColor: REP_COL, fillOpacity: 0.95 });
         mk.bindTooltip(esc((r.mag ? C.hailIn(r.mag) + ' hail' : 'Hail') + ' reported ' + C.when(r.t, R.tz, end()) + (r.city ? ', ' + r.city : '') + ' (observed)'), { className: 'sr-tip' });
         return { r: r, mk: mk, on: false };
       });
@@ -540,7 +553,7 @@
     R.repMarks.forEach(function (m) {
       var vis = m.r.t <= t;
       if (vis !== m.on) { if (vis) R.repG.addLayer(m.mk); else R.repG.removeLayer(m.mk); m.on = vis; }
-      if (vis) m.mk.setStyle({ fillColor: t - m.r.t < step ? '#ffd23f' : '#fff' });
+      if (vis) m.mk.setStyle(t - m.r.t < step ? { fillColor: REP_NEW, weight: 3, color: '#fff' } : { fillColor: REP_COL, weight: 1.5, color: '#141410' });
     });
   }
 
@@ -709,7 +722,7 @@
     var cacheKey = 'sr-lt:' + lat.toFixed(2) + ',' + lon.toFixed(2);
     var cache = {};
     try { cache = JSON.parse(sessionStorage.getItem(cacheKey) || '{}') || {}; } catch (e2) { cache = {}; }
-    var i = 0, active = 0, fails = 0, done = 0, dead = false;
+    var i = 0, active = 0, fails = 0, done = 0, got = 0, dead = false;
     function finish() {
       if (!R || !R.data.lightning || R.data.lightning.gen !== gen) return;
       R.data.lightning.state = dead ? 'unread' : 'ok';
@@ -723,13 +736,14 @@
       var rd = readings[i++];
       if (cache[rd.t] != null) { rd.v = cache[rd.t]; done++; next(); return; }
       active++;
-      getJSON(C.featureInfoUrl('lightning', lat, lon, new Date(rd.t).toISOString()), 10000).then(function (j) {
+      var u = C.featureInfoUrl('lightning', lat, lon, new Date(rd.t).toISOString());
+      getJSON(u, 10000).catch(function () { return getJSON(u, 12000); }).then(function (j) {
         var v = C.featureInfoValue(j);
         if (v == null) throw new Error('not a value');
-        rd.v = v; cache[rd.t] = v;
+        rd.v = v; cache[rd.t] = v; got++;
       }).catch(function () {
         fails++;
-        if (fails >= 3 && done === 0) dead = true; // the counts cannot be read here; the map can still show
+        if (fails >= 3 && got === 0) dead = true; // the counts cannot be read here; the map can still show
       }).then(function () {
         active--; done++;
         if (done % 16 === 0) recaption();

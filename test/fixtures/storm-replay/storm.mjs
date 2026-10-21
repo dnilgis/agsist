@@ -44,9 +44,9 @@ export function dbz(lat, lon, t) {
     const s = { lat: c.lat - 0.22, lon: c.lon - 0.42 };
     const dx = (lon - s.lon) * 78, dy = (lat - s.lat) * 111.2;
     const along = (dx * 0.88 + dy * 0.47), across = (-dx * 0.47 + dy * 0.88);
-    const shield = 34 * Math.exp(-((along / 85) ** 2) - ((across / 30) ** 2));
-    const core = 62 * Math.exp(-((dCore / 14) ** 2));
-    const ripple = 4 * Math.sin(lat * 37 + lon * 23) * Math.cos(lat * 11 - lon * 17);
+    const shield = 33 * Math.exp(-((along / 55) ** 2) - ((across / 17) ** 2));
+    const core = 63 * Math.exp(-((dCore / 9) ** 2));
+    const ripple = 2.5 * Math.sin(lat * 61 + lon * 43) * Math.cos(lat * 29 - lon * 37);
     v = Math.max(shield, core) * a + ripple * a;
   }
   // a few light morning showers well south, so the early frames are not empty
@@ -117,12 +117,12 @@ function dbzColor(v) {
   return c;
 }
 const cache = new Map();
-/* NOAA radar mosaic tile, as the Iowa Environmental Mesonet serves it (step 4 px for speed, no smoothing) */
+/* NOAA radar mosaic tile, as the Iowa Environmental Mesonet serves it (4 px cells, no smoothing) */
 export function radarTile(stampStr, z, x, y) {
   const key = `r${stampStr}/${z}/${x}/${y}`;
   if (cache.has(key)) return cache.get(key);
   const t = Date.UTC(+stampStr.slice(0, 4), +stampStr.slice(4, 6) - 1, +stampStr.slice(6, 8), +stampStr.slice(8, 10), +stampStr.slice(10, 12));
-  const S = 256, buf = Buffer.alloc(S * S * 4), step = 2;
+  const S = 256, buf = Buffer.alloc(S * S * 4), step = 4;   // coarse is fine, and keeps the test process free to talk to the browser
   for (let py = 0; py < S; py += step) for (let px = 0; px < S; px += step) {
     const { lat, lon } = tileLL(z, x, y, px + step / 2, py + step / 2);
     const c = dbzColor(dbz(lat, lon, t));
@@ -131,10 +131,12 @@ export function radarTile(stampStr, z, x, y) {
       const i = (yy * S + xx) * 4; buf[i] = c[0]; buf[i + 1] = c[1]; buf[i + 2] = c[2]; buf[i + 3] = 255;
     }
   }
-  const out = png(S, S, buf);
+  const out = buf.some((v) => v) ? png(S, S, buf) : EMPTY();
   cache.set(key, out);
   return out;
 }
+let empty = null;
+function EMPTY() { return empty || (empty = png(256, 256, Buffer.alloc(256 * 256 * 4))); }
 function merc(lat, lon) {
   const R = 6378137;
   return { x: R * lon * Math.PI / 180, y: R * Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360)) };
@@ -147,13 +149,13 @@ function unmerc(x, y) {
 export function lightningMap(bbox, w, h, t) {
   const [x0, y0, x1, y1] = bbox;
   const buf = Buffer.alloc(w * h * 4);
-  for (let py = 0; py < h; py += 2) for (let px = 0; px < w; px += 2) {
-    const { lat, lon } = unmerc(x0 + (px + 1) / w * (x1 - x0), y1 - (py + 1) / h * (y1 - y0));
+  for (let py = 0; py < h; py += 4) for (let px = 0; px < w; px += 4) {
+    const { lat, lon } = unmerc(x0 + (px + 2) / w * (x1 - x0), y1 - (py + 2) / h * (y1 - y0));
     const v = density(lat, lon, t);
     if (!v) continue;
     const k = Math.min(1, v / 10);
-    const c = [255, Math.round(250 - 140 * k), Math.round(120 - 110 * k)], a = Math.round(120 + 120 * k);
-    for (let yy = py; yy < py + 2 && yy < h; yy++) for (let xx = px; xx < px + 2 && xx < w; xx++) {
+    const c = [255, Math.round(226 - 120 * k), Math.round(60 - 50 * k)], a = Math.round(40 + 150 * k);
+    for (let yy = py; yy < py + 4 && yy < h; yy++) for (let xx = px; xx < px + 4 && xx < w; xx++) {
       const i = (yy * w + xx) * 4; buf[i] = c[0]; buf[i + 1] = c[1]; buf[i + 2] = c[2]; buf[i + 3] = a;
     }
   }
@@ -165,20 +167,27 @@ export function baseTile(z, x, y) {
   const key = `b${z}/${x}/${y}`;
   if (cache.has(key)) return cache.get(key);
   const S = 256, buf = Buffer.alloc(S * S * 4);
-  for (let py = 0; py < S; py++) for (let px = 0; px < S; px++) {
-    const { lat, lon } = tileLL(z, x, y, px + 0.5, py + 0.5);
-    let c = [238, 236, 226];
-    // woods and fields
-    const n = hash(Math.floor(lat * 40), Math.floor(lon * 30));
-    if (n > 0.72) c = [214, 228, 204];
-    // lakes
-    for (let i = -2; i <= 2; i++) for (let j = -2; j <= 2; j++) {
-      const ci = Math.floor(lat * 6) + i, cj = Math.floor(lon * 5) + j, hh = hash(ci, cj);
+  const nw = tileLL(z, x, y, 0, 0), se = tileLL(z, x, y, S, S), lakes = [];
+  for (let ci = Math.floor(se.lat * 6) - 2; ci <= Math.floor(nw.lat * 6) + 2; ci++)
+    for (let cj = Math.floor(nw.lon * 5) - 2; cj <= Math.floor(se.lon * 5) + 2; cj++) {
+      const hh = hash(ci, cj);
       if (hh > 0.55) {
         const cl = (ci + hash(cj, ci)) / 6, co = (cj + hash(ci + 3, cj)) / 5;
-        if (km(lat, lon, cl, co) < 1.2 + hh * 3.5) c = [176, 204, 226];
+        // to tile pixels: x straight from longitude, y from latitude by the local scale
+        const px = (co - nw.lon) / (se.lon - nw.lon) * S, py = (nw.lat - cl) / (nw.lat - se.lat) * S;
+        const rpx = (1.2 + hh * 3.5) / (km(cl, nw.lon, cl, se.lon) / S);
+        lakes.push([px, py, rpx]);
       }
     }
+  const lake = new Uint8Array(S * S);
+  for (const [lx, ly, r] of lakes) {
+    for (let py = Math.max(0, Math.floor(ly - r)); py < Math.min(S, Math.ceil(ly + r)); py++)
+      for (let px = Math.max(0, Math.floor(lx - r)); px < Math.min(S, Math.ceil(lx + r)); px++)
+        if ((px - lx) ** 2 + (py - ly) ** 2 < r * r) lake[py * S + px] = 1;
+  }
+  for (let py = 0; py < S; py++) for (let px = 0; px < S; px++) {
+    const { lat, lon } = tileLL(z, x, y, px + 0.5, py + 0.5);
+    let c = lake[py * S + px] ? [176, 204, 226] : [238, 236, 226];
     // a river
     if (Math.abs(lat - (45.2 + 0.08 * Math.sin(lon * 9))) < 0.006) c = [160, 192, 222];
     // section-line roads every 0.1 deg, a highway
