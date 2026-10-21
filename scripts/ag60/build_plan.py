@@ -154,9 +154,11 @@ def daily_beats(p, src):
     # 1. hook: the day's one number and why
     on = d.get("one_number") or {}
     if on.get("value"):
-        why = first_clause(on.get("context", ""), 12)
+        # the why: the first short sentence of the context (12 words or fewer); none fits, no why
+        sents = [clean(x) for x in re.split(r"(?<=[.!?])\s+", on.get("context", "")) if x.strip()]
+        why = next((x for x in sents if speak.word_count(x) <= 12), "")
         unit = on.get("unit", "").strip()
-        text = f"{on['value']}. {unit[:1].upper() + unit[1:]}. {why}"
+        text = f"{on['value']}. {unit[:1].upper() + unit[1:]}." + (f" {why}" if why else "")
         p.fact("The number", on["value"], on["value"], "daily.json:one_number.value", short_date(ddate))
         p.beat("hook", text, [{"kind": "hook", "value": on["value"], "unit": unit, "why": why, "asof": f"AGSIST Daily, {short_date(ddate)}"}], 9)
     # 2. the board

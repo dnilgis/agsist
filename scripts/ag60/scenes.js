@@ -59,7 +59,8 @@
   S.tile = (s, p, d) => {
     const to = parsePrice(s.price), from = parsePrice(s.prev);
     const k = easeIO((p - .15) / .75);
-    const shown = (to != null && from != null && p < .9) ? showPrice(lerp(from, to, k)) : s.price;
+    const rolling = to != null && from != null && p < .9;   // the roll from the prior close is motion, not a quote: drawn dim
+    const shown = rolling ? showPrice(lerp(from, to, k)) : s.price;
     const up = s.dir === 'up', dn = s.dir === 'down';
     const col = up ? 'var(--green)' : dn ? 'var(--red)' : 'var(--muted)';
     const arrow = up ? '▲' : dn ? '▼' : '■';
@@ -70,7 +71,7 @@
         <div style="display:flex;justify-content:space-between;align-items:baseline">
           <div class="h1" style="font-size:120px">${esc(s.name)}</div>
           <div class="mono" style="font-size:34px;color:var(--muted)">${esc(s.contract)}</div></div>
-        <div class="mono" style="font-weight:800;font-size:${Math.min(236, Math.floor(860 / (s.price.length * .6)))}px;line-height:1.05;margin-top:60px;color:var(--cream);letter-spacing:-.04em">${esc(shown)}</div>
+        <div class="mono" style="font-weight:800;font-size:${Math.min(236, Math.floor(860 / (s.price.length * .6)))}px;line-height:1.05;margin-top:60px;color:var(--cream);opacity:${rolling ? .45 : 1};letter-spacing:-.04em">${esc(shown)}</div>
         <div style="display:flex;gap:28px;align-items:center;margin-top:40px;${enter(p, 6)}">
           <div class="mono" style="font-weight:800;font-size:110px;color:${col}">${arrow} ${esc(s.change)}</div>
           <div class="mono" style="font-size:60px;color:${col};opacity:.85">${esc(pct)}</div></div>
