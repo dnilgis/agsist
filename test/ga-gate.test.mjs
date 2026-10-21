@@ -77,26 +77,33 @@ test("the gate loads gtag.js only when the worker says ok", async () => {
   assert.equal(no.store.get("agsist-ga-ok"), "0");
 });
 
-test("a failed, odd or late answer keeps GA off and is not kept", async () => {
+test("a failed, odd or late answer loads GA anyway and is not kept (Sig, Oct 21)", async () => {
+  // Oct 21: Cloudflare blocked the worker for a day and GA counted nobody.
+  // Only a clear {"ok":false} keeps GA off; a worker outage must never blank the readers.
   for (const answer of ["error", 404, "html", null, {}, { ok: "true" }, { ok: 1 }]) {
     const r = gate({ answer });
     await settle();
-    assert.equal(r.appended.length, 0, `GA loaded on ${JSON.stringify(answer)}`);
+    assert.equal(r.appended.length, 1, `GA stayed off on ${JSON.stringify(answer)}`);
+    assert.equal(r.appended[0].src, GA_SRC);
     assert.equal(r.store.has("agsist-ga-ok"), false, `${JSON.stringify(answer)} was kept`);
   }
-  // no answer in 3 s: the timer aborts the request and nothing loads
+  // no answer in 3 s: the timer aborts the request and loads GA, once
   const slow = gate({ answer: "hang" });
   await settle();
-  assert.equal(slow.appended.length, 0);
+  assert.equal(slow.appended.length, 0, "GA loaded before the time-out");
   assert.equal(slow.timers[0].ms, 3000);
   slow.timers[0].fn();
   await settle();
-  assert.equal(slow.appended.length, 0, "GA loaded after the time-out");
+  assert.equal(slow.appended.length, 1, "GA did not load after the time-out, or loaded twice");
   assert.equal(slow.store.has("agsist-ga-ok"), false);
-  // no fetch at all: off
+  // no fetch at all: load
   const old = gate({ answer: { ok: true }, noFetch: true });
   await settle();
-  assert.equal(old.appended.length, 0);
+  assert.equal(old.appended.length, 1);
+  // a clear no still keeps GA off
+  const no = gate({ answer: { ok: false } });
+  await settle();
+  assert.equal(no.appended.length, 0);
 });
 
 test("the tab's kept answer is used without asking again", async () => {
@@ -254,7 +261,7 @@ async function visit(browser, port, page, width, answer, act) {
   return { before, seen, loaded, kept };
 }
 
-test("in a browser: no GA before the reader acts; GA only on ok + an act", { skip, timeout: 120000 }, async () => {
+test("in a browser: no GA before the reader acts; after an act, GA unless the worker says no", { skip, timeout: 120000 }, async () => {
   const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36";
   const browser = await chromium.launch({ executablePath: CHROME, args: ["--user-agent=" + UA] });
   const srv = await serve();
@@ -276,7 +283,8 @@ test("in a browser: no GA before the reader acts; GA only on ok + an act", { ski
     for (const answer of [{ ok: false }, "fail", "hang"]) {
       const r = await visit(browser, port, "/grain-emc", 1280, answer, "tap");
       assert.equal(r.seen.worker, 1, JSON.stringify(answer));
-      assert.equal(r.seen.gtag, 0, `GA loaded on ${JSON.stringify(answer)}`);
+      // Oct 21: only a clear no keeps GA off; a failed or hung worker loads it
+      assert.equal(r.seen.gtag, answer === "fail" || answer === "hang" ? 1 : 0, `GA on ${JSON.stringify(answer)}`);
       assert.equal(r.kept, answer === "fail" || answer === "hang" ? null : "0");
     }
   } finally {
