@@ -913,12 +913,17 @@
     if (p.src === 'coop' && p.n === 1) return 'one ' + (p.region ? p.region + ' ' : '') + 'co-op' + (p.as_of ? (short ? ', ' + monDay(p.as_of).replace(/, \d{4}$/, '') : ', posted ' + monDay(p.as_of)) : '');
     return short ? (p.short_label || p.src_label || '') : (p.src_label || p.short_label || '');
   }
+  /* file: the price doc components/fert-pick.js chose for the place's state (the reader's own
+     state's co-op sheets first, else every current sheet). Anhydrous, else urea; a product from
+     the reader's own state comes first. Never a co-op's name; always the posting dates. */
   function factFert(file) {
-    var list = (file && file.prices) || [], pick = null;
-    ['anhydrous', 'urea'].forEach(function (k) { if (!pick) pick = list.filter(function (p) { return p.key === k && p.price > 0; })[0] || null; });
-    if (!pick) return na('Fertilizer', 'no posted anhydrous or urea price', ['Fertilizer prices', '/fertilizer']);
+    var list = ((file && file.prices) || []).filter(function (p) { return (p.key === 'anhydrous' || p.key === 'urea') && p.price > 0; });
+    list.sort(function (a, b) { return (a.scope === 'state' ? 0 : 1) - (b.scope === 'state' ? 0 : 1) || (a.key === 'anhydrous' ? 0 : 1) - (b.key === 'anhydrous' ? 0 : 1); });
+    var pick = list[0] || null;
+    if (!pick) return na('Fertilizer', 'no current co-op price for anhydrous or urea', ['Fertilizer prices', '/fertilizer']);
+    var where = pick.src === 'coop' && pick.n === 1 ? fertSrc(pick, false) : pick.src_label || '';
     return { label: pick.name, value: '$' + fixed(Math.round(pick.price), 0) + ' a ton', date: isoDay(pick.as_of || file.updated),
-      ctx: 'Posted cash price, ' + fertSrc(pick).replace(/, posted .*$/, '') + '. Call to confirm.', src: ['Fertilizer prices', '/fertilizer'] };
+      ctx: (where ? where.charAt(0).toUpperCase() + where.slice(1) + '. ' : '') + 'Cash price; call to confirm.', src: ['Fertilizer prices', '/fertilizer'] };
   }
   function factDaily(d) {
     if (!d || !d.headline) return na('The Daily', 'the briefing did not load', ['Today', '/daily']);

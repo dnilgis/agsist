@@ -108,7 +108,11 @@
       fill(id, P.factUsda(r, r ? r.at.toLocaleString('en-US', { timeZone: 'America/New_York', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : ''));
     });
   }
-  function fert(id) { getJSON('/data/fertilizer-prices.json').then(function (f) { fill(id, P.factFert(f)); }); }
+  /* the place's own state's co-op sheets first (components/fert-pick.js, the one chooser) */
+  function fert(id, st) {
+    var F = window.AgFertPick;
+    (F ? F.load(st || null) : getJSON('/data/fertilizer-prices.json')).then(function (f) { fill(id, P.factFert(f)); });
+  }
   function daily(id) { getJSON('/data/daily.json').then(function (f) { fill(id, P.factDaily(f)); }); }
 
   /* ── finding the place ───────────────────────────────────────────── */
@@ -355,7 +359,7 @@
       fill('f-arcplc', P.factArcPlc(f, today, p.flags.indexOf('c') >= 0 ? '/arc-plc/' + slug + '/' + p.slug : '/arc-plc'));
     });
     usda('f-usda');
-    fert('f-fert');
+    fert('f-fert', st);
     daily('f-daily');
   }
   function loadSales(fips, st, href, mine) {

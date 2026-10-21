@@ -80,11 +80,13 @@ function fertGrade(sym){if(!sym)return null;var a=String(sym).trim().split('-');
 var N_POSTED={};
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function loadFertPrices(){
-  getJSON('/data/fertilizer-prices.json').then(function(data){
+  /* the reader's own state's co-op sheets first, else the middle of every current sheet
+     (components/fert-pick.js, the one chooser for every calculator) */
+  (window.AgFertPick?AgFertPick.load():getJSON('/data/fertilizer-prices.json')).then(function(data){
     if(!data||!data.prices)return;
     function key(k){return data.prices.find(function(p){return p.key===k&&p.price>0;})||null;}
     var el=document.getElementById('fert-date');
-    if(el&&data.updated){var d=new Date(data.updated+'T12:00:00');el.textContent='Posted through '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'. Co-op posted cash prices, each named with its region. Call to confirm.';
+    if(el&&data.updated){var d=new Date(data.updated+'T12:00:00');var stn=data.state&&window.AgFertPick?AgFertPick.NAMES[data.state]:'';el.textContent='Co-op posted cash prices through '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+(stn?', '+stn+' sheets first when there are any':'')+'. Call to confirm.';
       if((Date.now()-d.getTime())/864e5>30){el.style.color='var(--gold)';}}
     var urea=key('urea'), potash=key('potash'), ams=key('ams'), phos=key('map')||key('dap'), aa=key('anhydrous');
     var wrap=document.getElementById('fert-pills');
@@ -121,7 +123,7 @@ function loadFertPrices(){
       btn.setAttribute('aria-pressed','false');
       btn.setAttribute('aria-label',p.name+' $'+price+'/ton, '+fertLong(p)+': $'+pplb.toFixed(3)+'/lb '+pd.label);
       btn.innerHTML='<span class="fert-pill-body"><span class="fert-pill-name">'+esc(p.name)+'</span>'
-        +'<span class="fert-pill-sym">'+esc(p.symbol)+' · '+esc(fertShort(p))+'</span></span>'
+        +'<span class="fert-pill-sym">'+esc(p.symbol)+' · $'+pplb.toFixed(2)+'/lb '+esc(pd.label)+' · '+esc(fertShort(p))+'</span></span>'
         +'<span class="fert-pill-price">$'+price+'</span>';
       btn.addEventListener('click',function(){
         document.querySelectorAll('.fert-pill').forEach(function(x){x.classList.remove('active');x.setAttribute('aria-pressed','false');});
@@ -134,14 +136,11 @@ function loadFertPrices(){
       });
       wrap.appendChild(btn);
     });
+    /* one line of method, not a worked formula per product (Sig: undershare); each pill
+       carries its own $/lb, price and dated source */
     var dv=document.getElementById('fert-deriv');
-    if(!dv){
-      var how=document.createElement('details');how.className='fert-how';
-      how.innerHTML='<summary>How each $/lb is worked out</summary>';
-      dv=document.createElement('ul');dv.id='fert-deriv';dv.className='fert-deriv';
-      how.appendChild(dv);wrap.parentNode.insertBefore(how,wrap.nextSibling);
-    }
-    dv.innerHTML=deriv.map(function(x){return '<li>'+esc(x)+'</li>';}).join('');
+    if(!dv){dv=document.createElement('p');dv.id='fert-deriv';dv.className='fert-deriv';wrap.parentNode.insertBefore(dv,wrap.nextSibling);}
+    dv.textContent=deriv.length?'Price per pound is the ton price over the pounds of nutrient in a ton. MAP\u2019s N is taken out at the urea price.':'';
     // The N box at the top starts on anhydrous when a co-op posts it, else urea.
     var first=N_POSTED['82']?'82':(N_POSTED['46']?'46':null);
     if(first){

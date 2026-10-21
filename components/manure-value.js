@@ -461,6 +461,12 @@
       var s = [];
       var dv = derivation(pr);
       ['n', 'p', 'k'].forEach(function (x) { if (dv[x] !== NQ) s.push(dv[x].replace(/&/g, '&amp;').replace(/</g, '&lt;')); });
+      /* data-mv-calc="short" (Fast Facts): one line of method and the dated sources, no worked formulas */
+      if (s.length && root.getAttribute('data-mv-calc') === 'short') {
+        var seen = {}, srcs = [];
+        ['n', 'p', 'k'].forEach(function (x) { var t = pr.src[x] && (pr.src[x].label || day(pr.src[x].as_of)); if (t && !seen[t]) { seen[t] = 1; srcs.push(t); } });
+        s = ['Price per pound is the ton price over the pounds of nutrient in a ton (N from urea, P from ' + (pr.src.p ? pr.src.p.name : 'MAP') + ' less its N at the urea price, K from potash). Prices: ' + srcs.join('; ').replace(/&/g, '&amp;').replace(/</g, '&lt;') + '.'];
+      }
       set('price-src', s.length ? s.join(' ') + ' Type your own prices to redo it.' : 'Prices did not load. Type your own prices.');
       set('price-sum', pr.n != null ? '(N ' + money(pr.n) + ', P ' + (pr.p != null ? money(pr.p) : NQ) + ', K ' + (pr.k != null ? money(pr.k) : NQ) + ' a lb)' : '');
     }
@@ -479,7 +485,9 @@
   function start() {
     var roots = d.querySelectorAll('[data-mv-calc]');
     Array.prototype.forEach.call(roots, function (r) { mount(r); });
-    var get = w.AG && w.AG.json ? w.AG.json('/data/fertilizer-prices.json')
+    /* the reader's own state's co-op sheets first (components/fert-pick.js), else the shared file */
+    var get = w.AgFertPick ? w.AgFertPick.load().then(function (x) { if (!x) throw new Error('no prices'); return x; })
+      : w.AG && w.AG.json ? w.AG.json('/data/fertilizer-prices.json')
       : fetch('/data/fertilizer-prices.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
     get.then(function (data) {
       var pr = nutrientPrices(data);

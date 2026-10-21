@@ -157,6 +157,8 @@ async function open(browser, port, opts = {}) {
   await pg.route("**/*", async (r) => {
     const u = r.request().url();
     const j = (o) => r.fulfill({ contentType: "application/json", body: JSON.stringify(o) });
+    // the co-op sheets (components/fert-pick.js reads them first) are left out: these tests hand the page a price list
+    if (u.includes("/data/fertilizer-coops.json")) return r.fulfill({ status: 404, body: "" });
     if (u.includes("/data/fertilizer-prices.json")) return opts.noFert ? r.fulfill({ status: 404, body: "" }) : j(FERT);
     if (u.includes("/data/prices.json")) return j(PRICES);
     if (u.includes("/data/basis-states.json")) return j(BASIS);

@@ -56,12 +56,15 @@ async function open(browser, port, path, opts = {}) {
   // Since 2026-10-16 the N box asks for a state before it fills a corn price
   // (state basis by default). These tests are about the N price, so the reader
   // has already picked "Futures only" (test/fast-facts-nrate.test.mjs covers the ask).
-  await ctx.addInitScript(() => localStorage.setItem("agsist-ff-state", "fut"));
+  await ctx.addInitScript((zip) => { localStorage.setItem("agsist-ff-state", "fut"); if (zip) localStorage.setItem("agsist_user_zip", zip); }, opts.zip || "");
   const pg = await ctx.newPage();
   const errors = [];
   pg.on("pageerror", (e) => errors.push(String(e)));
   await pg.route("**/*", async (r) => {
     const u = r.request().url();
+    // Oct 21: the page reads the co-op sheets through components/fert-pick.js first; these tests
+    // hand it a price list, so the sheet file is not there and the chooser falls back to it.
+    if (u.includes("/data/fertilizer-coops.json") && !opts.coops) return r.fulfill({ status: 404, body: "" });
     if (u.includes("/data/fertilizer-prices.json")) {
       if (opts.fail) return r.fulfill({ status: 404, body: "" });
       if (opts.fertDelay) await new Promise((ok) => setTimeout(ok, opts.fertDelay));
@@ -144,7 +147,7 @@ test("Fast Facts never calls delayed futures live, names Sonalan's active right"
   assert.ok(html.includes("Treflan (trifluralin), Sonalan (ethalfluralin)"));
 });
 
-test("every fertilizer pill names its source and date, and the arithmetic is written out", { skip }, async () => {
+test("every fertilizer pill names its source and date and its $/lb; one line says how", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
@@ -157,11 +160,13 @@ test("every fertilizer pill names its source and date, and the arithmetic is wri
     await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length === 2);
     const syms = await pg.$$eval(".fert-pill-sym", (els) => els.map((e) => e.textContent));
     // one co-op's price is never named on this indexed page (Oct 21): "one Kansas co-op"
-    assert.deepEqual(syms, ["46-0-0 · Kansas co-ops, Oct 6", "32-0-0 · one Kansas co-op, Sep 24"]);
-    const how = await pg.$$eval("#fert-deriv li", (els) => els.map((e) => e.textContent));
     // 622.98 / 920 = 0.6772 -> $0.68; 451.05 / 640 = 0.7048 -> $0.70
-    assert.equal(how[0], "Urea $623 / (2,000 lb x 46% N) = $0.68 a lb of N (Kansas co-ops, middle of 4, posted Oct 6, 2026).");
-    assert.equal(how[1], "UAN 32% $451 / (2,000 lb x 32% N) = $0.70 a lb of N (one Kansas co-op, posted Sep 24, 2026).");
+    assert.deepEqual(syms, ["46-0-0 · $0.68/lb N · Kansas co-ops, Oct 6", "32-0-0 · $0.70/lb N · one Kansas co-op, Sep 24"]);
+    const labels = await pg.$$eval(".fert-pill", (els) => els.map((e) => e.getAttribute("aria-label")));
+    assert.equal(labels[0], "Urea $623/ton, Kansas co-ops, middle of 4, posted Oct 6, 2026: $0.677/lb N");
+    assert.equal(labels[1], "UAN 32% $451/ton, one Kansas co-op, posted Sep 24, 2026: $0.705/lb N");
+    // the method in one line, not a worked formula per product (Sig, Oct 21: undershare)
+    assert.equal(await pg.textContent("#fert-deriv"), "Price per pound is the ton price over the pounds of nutrient in a ton. MAP\u2019s N is taken out at the urea price.");
     assert.doesNotMatch(await pg.textContent("body"), /Farmers Coop/, "the single co-op is not named anywhere on the page");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
@@ -182,8 +187,7 @@ test("the MAP pill credits its N, the same figure as the calculator", { skip }, 
         src_label: "Kansas co-ops, average of 2, posted Oct 6 to Oct 12, 2026", short_label: "Kansas co-ops, Oct 12" } ] };
     const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { fert });
     await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length === 2);
-    const how = await pg.$$eval("#fert-deriv li", (els) => els.map((e) => e.textContent));
-    assert.equal(how[1], "MAP $980 a ton, less 220 lb of N at the urea price ($147), / 1040 lb of P2O5 = $0.80 a lb of P2O5 (Kansas co-ops, average of 2, posted Oct 6 to Oct 12, 2026).");
+    assert.match(await pg.$$eval(".fert-pill-sym", (els) => els[1].textContent), /^11-52-0 · \$0\.80\/lb P2O5 · /, "the pill shows the credited figure, not $0.94");
     const label = await pg.$$eval(".fert-pill", (els) => els[1].getAttribute("aria-label"));
     assert.equal(label, "MAP $980/ton, Kansas co-ops, average of 2, posted Oct 6 to Oct 12, 2026: $0.801/lb P2O5");
     assert.equal(await pg.inputValue("#eco-p-pplb"), "0.80");
@@ -222,6 +226,28 @@ test("with no price file, no fertilizer number appears and the page says why", {
     assert.equal(await pg.textContent("#nc-nlb"), "-");
     for (const id of ["#eco-n-pplb", "#eco-p-pplb", "#eco-k-pplb"]) assert.equal(await pg.inputValue(id), "", id);
     assert.match(await pg.textContent("#eco-price-note"), /No live price for N, P₂O₅, K₂O right now/);
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});
+
+/* Oct 21 (Sig): a Wisconsin reader is priced from the Wisconsin co-op sheet when it posts the product;
+   what it does not post comes from the middle of every current sheet, labeled with the states. */
+test("a saved Wisconsin ZIP prices urea from the Wisconsin sheet, anhydrous from every sheet", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const F = (await import("../components/fert-pick.js")).default;
+    const live = JSON.parse(readFileSync(join(ROOT, "data/fertilizer-coops.json"), "utf8"));
+    const want = Object.fromEntries(F.choose(live, "WI").prices.map((p) => [p.key, p]));
+    const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { coops: true, zip: "54728" });
+    await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length >= 2);
+    const pills = await pg.$$eval(".fert-pill", (els) => els.map((e) => e.getAttribute("aria-label")));
+    const urea = pills.find((t) => /^Urea /.test(t)), nh3 = pills.find((t) => /^Anhydrous /.test(t));
+    assert.ok(urea.startsWith("Urea $" + Math.round(want.urea.price) + "/ton, " + want.urea.src_label), urea);
+    assert.equal(want.urea.scope, "state");
+    assert.match(urea, /one Wisconsin co-op, posted /);
+    assert.match(nh3, /co-op price sheets \(KS\)/);
+    for (const c of live.coops) assert.doesNotMatch(await pg.textContent("body"), new RegExp(c.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), c.name);
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
