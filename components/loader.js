@@ -694,7 +694,7 @@
   });
 
 
-  // Site notice (2026-10-21): one honest line about an outage, switched on and
+  // Site notice (2026-10-21): one honest line about an outage, a bar fixed to the bottom of the screen, switched on and
   // off by data/site-notice.json alone, no release needed. {"active": true,
   // "id": "...", "text": "...", "link": "/status"}. A reader can close it; it
   // stays closed for that id. No file, a bad file or active false: nothing shows.
@@ -710,7 +710,7 @@
         var bar = document.createElement('div');
         bar.id = 'site-notice';
         bar.setAttribute('role', 'status');
-        bar.style.cssText = 'background:#7a4b00;color:#fff;font-size:0.92rem;line-height:1.4;padding:8px 44px 8px 16px;position:relative;text-align:center';
+        bar.style.cssText = 'background:#7a4b00;color:#fff;font-size:0.92rem;line-height:1.4;padding:8px 44px 8px 16px;position:fixed;left:0;right:0;bottom:0;z-index:2147483000;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
         var msg = document.createElement('span');
         msg.textContent = n.text;
         bar.appendChild(msg);
@@ -727,9 +727,8 @@
           bar.remove();
         });
         bar.appendChild(x);
-        var top = document.querySelector('body > nav, body > header, #site-header');
-        if (top && top.parentNode) top.parentNode.insertBefore(bar, top.nextSibling);
-        else document.body.insertBefore(bar, document.body.firstChild);
+        // fixed to the bottom of the screen, so nothing on the page moves when it lands
+        document.body.appendChild(bar);
       })
       .catch(function () {});
   }
