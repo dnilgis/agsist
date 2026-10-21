@@ -510,8 +510,8 @@
   function scene(S, mode) {
     if (mode === 'inplace') return { W: S.cw, H: S.ch, print: { x: 0, y: 0, w: S.cw, h: S.ch }, zoom: 1, frame: 0 };
     var F = FORMATS[mode], pw = 1000, ph = pw * 2 / 3;
-    if (mode === 'square') return { W: F.w, H: F.h, print: { x: 40, y: 250, w: pw, h: ph }, zoom: 1.15, frame: 16 };
-    return { W: F.w, H: F.h, print: { x: 40, y: 650, w: pw, h: ph }, zoom: 1.34, frame: 16 };
+    if (mode === 'square') return { W: F.w, H: F.h, print: { x: 40, y: 250, w: pw, h: ph }, zoom: 1.15, frame: 16, minTop: 236 };
+    return { W: F.w, H: F.h, print: { x: 40, y: 650, w: pw, h: ph }, zoom: 1.34, frame: 16, minTop: 520 };
   }
   function frameAt(ctx, S, mode, t) {
     var sc = scene(S, mode), pl = S.plan, n = S.E.n, g = S.geom, E = S.E;
@@ -537,6 +537,8 @@
       var halfH = 600 / z; fy = clamp(fy, halfH, 1200 - halfH);
     }
     var k = sc.print.w / 1800 * z, ox = sc.print.x + sc.print.w / 2 - fx * k, oy = sc.print.y + sc.print.h / 2 - fy * k;
+    // in close, the print never rides up over the ticker
+    if (mode !== 'inplace') oy = Math.max(oy, sc.minTop);
     ctx.setTransform(k, 0, 0, k, ox, oy);
     if (sc.frame) {
       var fr = sc.frame / k;
@@ -716,7 +718,7 @@
       var toast = toastAt(S, t);
       if (toast) {
         ctx.globalAlpha = a * toast.a;
-        var ty = tall ? 1600 : 1022;
+        var ty = tall ? 1680 : 1022;
         var size = fitFont(ctx, toast.text, '500', tall ? 40 : 30, SANS_F, W - 120);
         ctx.font = '500 ' + size + 'px ' + SANS_F;
         var tw = ctx.measureText(toast.text).width, ph = size * 1.9;
