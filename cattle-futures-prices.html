@@ -331,7 +331,8 @@ details.fold[hidden]{display:none}
     <div class="method-note"><b>What these are</b> &middot; Fed steers: USDA AMS 5-area weekly weighted average for steers sold live, all grades (LM_CT150). Cutout: the USDA value of a Choice carcass, 600 to 900 lb, from boxed beef sales (LM_XB403, afternoon), per cwt of carcass, not live weight. Each is dated by its own report. These are cash prices, not futures.</div>
   </section>
   <aside class="ya" data-your-state="cattle" data-v="2" hidden></aside><script src="/components/your-state.js?v=1" defer></script>
-  <p class="method-note" style="margin:.5rem 0 1rem">Selling feeders? <a href="/cattle-auction-prices">Sale barn prices near you</a>: steers and heifers by weight class at USDA-reported auctions.</p>
+  <section class="fx" data-feeder="rma" id="feeder-value" hidden aria-label="RMA feeder steer value"></section>
+  <p class="method-note" style="margin:.5rem 0 1rem">Selling feeders? <a href="/cattle-auction-prices">Sale barn prices near you</a>: steers and heifers by weight class at USDA-reported auctions, and <a href="/cattle-auction-prices#feeder-weekly">AGSIST weekly prices by region and weight</a>.</p>
   <script>
   (function(){
     /*cash:start*/
@@ -645,6 +646,7 @@ details.fold[hidden]{display:none}
 </div>
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=32" defer></script>
+<script src="/components/feeder-index.js?v=1" defer></script>
 
 <script>
 /* ===== cattle dashboard: prices.json + price-stats.json ===== */
