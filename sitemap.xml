@@ -12,7 +12,7 @@
 
   <!-- Tools -->
   <url><loc>https://agsist.com/grain-bin-calculator</loc><lastmod>2026-10-20</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://agsist.com/rain-radar</loc><lastmod>2026-10-20</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/rain-radar</loc><lastmod>2026-10-21</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/grain-emc</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/grain-shrink</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/nutrient-removal</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -91,7 +91,7 @@
   <url><loc>https://agsist.com/fertilizer</loc><lastmod>2026-10-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
 
   <!-- Elevator / Cash Bid Coverage -->
-  <url><loc>https://agsist.com/elevators</loc><lastmod>2026-10-20</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/elevators</loc><lastmod>2026-10-21</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/prf-sponsor</loc><lastmod>2026-10-20</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/list-your-elevator</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
 
@@ -118,7 +118,7 @@
 
   <!-- Added 2026-06-12: audit fixes -->
   <url><loc>https://agsist.com/cattle-futures-prices</loc><lastmod>2026-10-21</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://agsist.com/scorecard</loc><lastmod>2026-10-20</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://agsist.com/scorecard</loc><lastmod>2026-10-21</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/sponsor</loc><lastmod>2026-10-15</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/developer</loc><lastmod>2026-10-15</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/contact</loc><lastmod>2026-10-16</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
