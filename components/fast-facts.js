@@ -63,8 +63,13 @@ var ECO_TYPED={};   /* cost-builder boxes the reader typed in */
    source, so they are not priced here (the lime calculator takes your $/ton).
    AG.json (components/util.js) makes one request per file for the whole page. */
 function getJSON(u){return (window.AG&&AG.json)?AG.json(u):fetch(u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
-/* Short source with its region: "Kansas co-ops, Oct 6" / "USDA Illinois, Oct 2". */
+/* Short source with its region: "Kansas co-ops, Oct 6" / "USDA Illinois, Oct 2". One co-op's
+   price is never named on this page (it is indexed): "one Kansas co-op, Sep 24", worded by
+   components/place.js fertSrc, the same line the My place card prints. */
+function oneCoop(p){return !!(p&&p.src==='coop'&&p.n===1&&window.AgPlace&&AgPlace.fertSrc);}
+function fertLong(p){return oneCoop(p)?AgPlace.fertSrc(p,false):(p&&p.src_label)||'';}
 function fertShort(p){
+  if(oneCoop(p))return AgPlace.fertSrc(p,true);
   if(p&&p.short_label)return p.short_label;
   var d=p&&p.as_of?new Date(p.as_of+'T12:00:00'):null;
   var when=d&&!isNaN(d)?d.toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
@@ -107,14 +112,14 @@ function loadFertPrices(){
       var mvx=(pd.nut==='P'&&window.AgManure)?window.AgManure.nutrientPrices(data):null;
       if(mvx&&mvx.p!=null&&mvx.pNcredit!=null){
         pplb=mvx.p;
-        deriv.push(p.name+' $'+price+' a ton, less '+Math.round(mvx.pNlb)+' lb of N at the urea price ($'+Math.round(mvx.pNcredit)+'), / '+Math.round(2000*pct)+' lb of P2O5 = $'+pplb.toFixed(2)+' a lb of P2O5 ('+p.src_label+').');
+        deriv.push(p.name+' $'+price+' a ton, less '+Math.round(mvx.pNlb)+' lb of N at the urea price ($'+Math.round(mvx.pNcredit)+'), / '+Math.round(2000*pct)+' lb of P2O5 = $'+pplb.toFixed(2)+' a lb of P2O5 ('+fertLong(p)+').');
       } else
-      deriv.push(p.name+' $'+price+' / (2,000 lb x '+g[pd.nut]+'% '+pd.label+') = $'+pplb.toFixed(2)+' a lb of '+pd.label+(pd.nut==='P'?', no N credit (no urea price)':'')+' ('+p.src_label+').');
+      deriv.push(p.name+' $'+price+' / (2,000 lb x '+g[pd.nut]+'% '+pd.label+') = $'+pplb.toFixed(2)+' a lb of '+pd.label+(pd.nut==='P'?', no N credit (no urea price)':'')+' ('+fertLong(p)+').');
       var btn=document.createElement('button');
       btn.className='fert-pill';
       btn.setAttribute('type','button');
       btn.setAttribute('aria-pressed','false');
-      btn.setAttribute('aria-label',p.name+' $'+price+'/ton, '+p.src_label+': $'+pplb.toFixed(3)+'/lb '+pd.label);
+      btn.setAttribute('aria-label',p.name+' $'+price+'/ton, '+fertLong(p)+': $'+pplb.toFixed(3)+'/lb '+pd.label);
       btn.innerHTML='<span class="fert-pill-body"><span class="fert-pill-name">'+esc(p.name)+'</span>'
         +'<span class="fert-pill-sym">'+esc(p.symbol)+' · '+esc(fertShort(p))+'</span></span>'
         +'<span class="fert-pill-price">$'+price+'</span>';
@@ -429,7 +434,7 @@ function calcNC(){
   // Where each number came from.
   var src=[];
   var posted=N_POSTED[fertSel.value];
-  if(!nTyped&&posted&&Math.round(ton)===posted.price)src.push(form+': '+posted.row.src_label);
+  if(!nTyped&&posted&&Math.round(ton)===posted.price)src.push(form+': '+fertLong(posted.row));
   else src.push('N price: yours');
   var st=g('ans-state'), b=st&&BASIS[st.value];
   if(cornTyped)src.push('corn price: yours');

@@ -475,18 +475,18 @@
   "/fast-facts": {
    "links": [
     {
+     "href": "/farmland-atlas",
+     "text": "Farmland Atlas",
+     "why": "Every county's land record on one map"
+    },
+    {
+     "href": "/field-scout",
+     "text": "Field Scout",
+     "why": "The same kind of page for one field"
+    },
+    {
      "href": "/tools",
      "text": "All tools"
-    },
-    {
-     "href": "/nutrient-removal",
-     "text": "Nutrient removal value",
-     "why": "What your crop took off the field"
-    },
-    {
-     "href": "/grain-bin-calculator",
-     "text": "Grain bin calculator",
-     "why": "Bushels in a bin"
     }
    ]
   },
@@ -1546,25 +1546,6 @@
      "href": "/drought-monitor",
      "text": "Drought monitor",
      "why": "This week by county"
-    }
-   ]
-  },
-  "/here": {
-   "links": [
-    {
-     "href": "/farmland-atlas",
-     "text": "Farmland Atlas",
-     "why": "Every county's land record on one map"
-    },
-    {
-     "href": "/field-scout",
-     "text": "Field Scout",
-     "why": "The same kind of page for one field"
-    },
-    {
-     "href": "/cash-bids",
-     "text": "Cash bids near me",
-     "why": "What elevators near your ZIP pay today"
     }
    ]
   }

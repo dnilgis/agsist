@@ -1,4 +1,4 @@
-/* /here: the one box and the place page (components/here.js). */
+/* Fast Facts: the five tabs, My place, State, US and Print (components/here.js; was /here). */
 .h{max-width:900px;margin:0 auto;padding:1rem 1rem 3rem}
 .h .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
 .h h1{font-size:clamp(1.35rem,4.4vw,1.95rem);line-height:1.2;margin:0 0 .4rem;color:var(--text)}
@@ -98,7 +98,7 @@ html.h-has .h-land{display:none}
   @page{size:letter;margin:.6in .6in .65in;
     @top-left{content:"AGSIST";font:700 9pt/1 Helvetica,Arial,sans-serif;letter-spacing:.12em;color:#000}
     @top-right{font:9pt/1 Helvetica,Arial,sans-serif;color:#444}
-    @bottom-left{content:"agsist.com/here";font:9pt/1 Helvetica,Arial,sans-serif;color:#444}
+    @bottom-left{content:"agsist.com/fast-facts";font:9pt/1 Helvetica,Arial,sans-serif;color:#444}
     @bottom-right{content:"Page " counter(page) " of " counter(pages);font:9pt/1 Helvetica,Arial,sans-serif;color:#444}}
   @page:first{@top-left{content:none}@top-right{content:none}}
   :root,:root[data-theme]{--text:#000;--text-dim:#1a1a1a;--text-muted:#444;--surface:#fff;--border:#bbb;--gold:#000;--brand:#000;--link:#000;color-scheme:light}
@@ -234,3 +234,55 @@ html.h-has .h-land{display:none}
   .h-odd{border:1pt solid #000}
 }
 @media(min-width:700px){.h-rp-box .rc-chart{max-width:680px}}
+
+/* The tabs (Oct 21): the head script in fast-facts.html sets html[data-fx] before paint;
+   without it every panel shows, in order. */
+.fx-top{padding:var(--page-top,1.2rem) 0 .4rem}
+.fx-top .fx-lede{font-size:.95rem;line-height:1.55;color:var(--text-dim);max-width:44rem;margin:.3rem 0 0}
+.fx-tabs{display:flex;gap:.3rem;overflow-x:auto;scrollbar-width:none;margin:.6rem 0 1rem;padding:0 0 .1rem;border-bottom:1px solid var(--border)}
+.fx-tabs::-webkit-scrollbar{display:none}
+.fx-tab{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 .85rem;font-size:.92rem;font-weight:600;color:var(--text-muted);text-decoration:none;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.fx-tab:hover{color:var(--text)}
+.fx-tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--gold-fill)}
+.fx-tab:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+html[data-fx] .fx-panel{display:none}
+html[data-fx="place"] #place,html[data-fx="state"] #state,html[data-fx="us"] #us,html[data-fx="tables"] #tables,html[data-fx="print"] #print{display:block}
+.ff-page .h{max-width:none;margin:0;padding:0 0 1.5rem}
+.fx-ph{font-size:clamp(1.2rem,4vw,1.55rem)!important;margin:.2rem 0 .3rem!important}
+.h-ask{font-size:.95rem!important;color:var(--text)!important;margin:0 0 .2rem!important}
+.h-change{font:inherit;font-size:.86rem;min-height:40px;padding:0 .8rem;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text-dim);cursor:pointer;margin:0 0 .4rem}
+.h-change span{color:var(--text);font-weight:600}
+/* the four cards and their rows */
+.fx-cards{display:grid;grid-template-columns:1fr;gap:.7rem;margin:.8rem 0}
+@media(min-width:760px){.fx-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.fx-card{border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:.55rem .85rem .2rem;min-width:0}
+.fx-card h3{margin:.15rem 0 .2rem!important}
+.fx-row{padding:.45rem 0;border-top:1px solid var(--border)}
+.fx-card h3+.fx-row{border-top:0}
+.fx-l{font-size:.74rem!important;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)!important;margin:0 0 .1rem!important}
+.fx-b{margin:0!important;font-size:.92rem!important;line-height:1.45!important}
+.fx-v{font-family:var(--font-mono);font-size:1.12rem;font-weight:800;color:var(--text)}
+.fx-v.fx-vl{font-family:inherit;font-size:.98rem;font-weight:700}
+.fx-v.fx-na{font-family:inherit;font-size:.95rem;font-weight:700;color:var(--text-muted)}
+.fx-wait{color:var(--text-muted)!important}
+.fx-s{display:block;font-size:.78rem;color:var(--text-muted);margin-top:.1rem}
+.fx-s a{color:var(--text-muted);text-decoration:underline;text-underline-offset:2px}
+.fx-row:target{background:color-mix(in srgb,var(--gold) 12%,transparent);border-radius:6px}
+.fx-more{margin:1rem 0 .4rem;border:1px solid var(--border);border-radius:10px;padding:0 .85rem}
+.fx-more>summary{cursor:pointer;min-height:48px;display:flex;align-items:center;font-weight:700;color:var(--text)}
+.fx-more[open]{padding-bottom:.8rem}
+.fx-sel{font:inherit;font-size:16px;min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text)}
+.fx-pl{font-size:.86rem;color:var(--text-muted)}
+#print .h-pr-box{max-width:36rem}
+@media print{
+  .fx-top,.fx-tabs,#h-find,.h-change,.fx-more>summary,#print,#state .h-deep,.ag-sponsor-ribbon{display:none!important}
+  html[data-fx="print"] #place{display:block!important}
+  html[data-fx="place"] #tables,html[data-fx="print"] #tables{display:none!important}
+  .fx-more{border:0;padding:0}
+  .fx-cards{grid-template-columns:repeat(2,1fr);gap:.12in}
+  .fx-card{border:1pt solid #000;border-radius:0;background:#fff;break-inside:avoid}
+  .fx-v{font-size:12pt}
+  .fx-b{font-size:10pt!important}
+  .fx-s,.fx-l{font-size:9pt!important}
+  .fx-s a{color:#000;text-decoration:none}
+}

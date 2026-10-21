@@ -163,7 +163,8 @@ async function open(browser, port, opts = {}) {
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
     return r.abort();
   });
-  await pg.goto(`http://127.0.0.1:${port}/fast-facts`);
+  // the N box is on the Reference tables tab (Oct 21: My place opens first)
+  await pg.goto(`http://127.0.0.1:${port}/fast-facts#tables`);
   return { pg, errors, ctx };
 }
 const txt = (pg, id) => pg.textContent(id);

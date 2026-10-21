@@ -156,11 +156,13 @@ test("every fertilizer pill names its source and date, and the arithmetic is wri
     const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { fert });
     await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length === 2);
     const syms = await pg.$$eval(".fert-pill-sym", (els) => els.map((e) => e.textContent));
-    assert.deepEqual(syms, ["46-0-0 · Kansas co-ops, Oct 6", "32-0-0 · Farmers Coop, Sep 24"]);
+    // one co-op's price is never named on this indexed page (Oct 21): "one Kansas co-op"
+    assert.deepEqual(syms, ["46-0-0 · Kansas co-ops, Oct 6", "32-0-0 · one Kansas co-op, Sep 24"]);
     const how = await pg.$$eval("#fert-deriv li", (els) => els.map((e) => e.textContent));
     // 622.98 / 920 = 0.6772 -> $0.68; 451.05 / 640 = 0.7048 -> $0.70
     assert.equal(how[0], "Urea $623 / (2,000 lb x 46% N) = $0.68 a lb of N (Kansas co-ops, middle of 4, posted Oct 6, 2026).");
-    assert.equal(how[1], "UAN 32% $451 / (2,000 lb x 32% N) = $0.70 a lb of N (Farmers Coop, Kansas, posted Sep 24, 2026).");
+    assert.equal(how[1], "UAN 32% $451 / (2,000 lb x 32% N) = $0.70 a lb of N (one Kansas co-op, posted Sep 24, 2026).");
+    assert.doesNotMatch(await pg.textContent("body"), /Farmers Coop/, "the single co-op is not named anywhere on the page");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
@@ -203,7 +205,7 @@ test("the potash pill prices K2O at the grade its source names", { skip }, async
     const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { fert });
     await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length === 1);
     const label = await pg.$eval(".fert-pill", (e) => e.getAttribute("aria-label"));
-    assert.equal(label, "Potash $516/ton, Test Coop, Kansas, posted Oct 2, 2026: $0.416/lb K2O");
+    assert.equal(label, "Potash $516/ton, one Kansas co-op, posted Oct 2, 2026: $0.416/lb K2O");
     assert.equal(await pg.inputValue("#eco-k-pplb"), "0.42");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }

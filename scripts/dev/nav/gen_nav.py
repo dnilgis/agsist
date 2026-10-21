@@ -192,7 +192,7 @@ def drawer(theme_btn_d):
            '  <section class="draw-place" aria-labelledby="dp-h">\n'
            '    <h2 class="draw-place-h" id="dp-h">My place <span class="draw-place-z" id="dp-zip"></span></h2>\n'
            '    <div class="draw-place-row">\n'
-           '      <a href="/here" class="draw-pl" id="dp-here">' + ic("i-map") + 'Everything near me</a>\n'
+           '      <a href="/fast-facts" class="draw-pl" id="dp-here">' + ic("i-map") + 'Everything near me</a>\n'
            '      <a href="/cash-bids" class="draw-pl" id="dp-bids">' + ic("i-banknote") + 'Bids near me</a>\n'
            '      <a href="/rain-radar" class="draw-pl" id="dp-rain">' + ic("i-cloud-rain") + 'Rain at my field</a>\n'
            '      <a href="/rent/" class="draw-pl" id="dp-rent">' + ic("i-map") + 'Rent in my county</a>\n'
@@ -230,7 +230,7 @@ def actions(theme_btn):
             '            <div class="zip-row"><input id="zip-in" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" pattern="[0-9]{5}" placeholder="54728">'
             '<button type="submit" class="zip-save">Save</button></div>\n'
             '            <p class="zip-m" id="zip-m" role="status" aria-live="polite"></p>\n'
-            '            <p class="zip-links" id="zip-links" hidden><a href="/here" id="zip-go">Everything near you &rarr;</a>'
+            '            <p class="zip-links" id="zip-links" hidden><a href="/fast-facts" id="zip-go">Everything near you &rarr;</a>'
             '<button type="button" class="zip-clear" id="zip-clear">Clear</button></p>\n'
             '            <p class="zip-note">Kept in this browser only.</p>\n'
             '          </form>\n'
@@ -398,7 +398,7 @@ def fb_header():
             if ls:
                 parts.append((f"{sub}: " if sub else "") + ls)
         rows.append(f"        <b>{name}:</b> " + " · ".join(parts))
-    rows.append('        <b>My place:</b> <a href="/here">Everything near me</a>')
+    rows.append('        <b>My place:</b> <a href="/fast-facts">Everything near me</a>')
     rows.append('        <b>More:</b> <a href="/about">About</a> · <a href="/contact">Contact</a>')
     body = "<br>\n".join(rows)
     return ('  <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->\n'

@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="/components/styles.css?v=26">
 <script src="/components/util.js?v=19"></script>
 <link rel="stylesheet" href="/components/manure-value.css?v=3">
+<link rel="stylesheet" href="/components/here.css?v=5">
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
@@ -37,7 +38,8 @@
 <meta name="twitter:description" content="N rates, P&amp;K tables, manure value, crop staging, GDU, pest thresholds, state stats. Free.">
 <meta name="twitter:image" content="https://agsist.com/img/og/fast-facts.jpg?v=35dc15fd">
 <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set, the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string), and the reader scrolls, taps or types on the shown page. Then /components/ga-gate.js asks our worker if the visit comes from a cloud server network (Sig, Oct 20) and loads GA only on a clear no. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+<script>/* Fast Facts tabs: the open tab is set before first paint from the #hash (a row anchor opens its own tab, any other anchor the reference tables); without this script every panel shows in order. */(function(d,l){var T={place:1,state:1,us:1,tables:1,print:1},r=d.documentElement;function pick(){var h=l.hash.slice(1);if(T[h])return h;if(/^h-pr/.test(h))return 'print';if(/^(f|h)-/.test(h))return 'place';if(/^s-/.test(h))return 'state';if(/^u-/.test(h))return 'us';if(h&&h!=='main')return 'tables';return r.getAttribute('data-fx')||'place';}function set(t){r.setAttribute('data-fx',t);var a=d.querySelectorAll('.fx-tab');for(var i=0;i<a.length;i++){var on=a[i].getAttribute('data-t')===t;a[i].setAttribute('aria-selected',on?'true':'false');a[i].tabIndex=on?0:-1;}try{r.dispatchEvent(new CustomEvent('fx-tab',{detail:t}));}catch(e){}}set(pick());addEventListener('hashchange',function(){set(pick());});d.addEventListener('DOMContentLoaded',function(){set(r.getAttribute('data-fx'));});d.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a.fx-tab');if(!a)return;e.preventDefault();var t=a.getAttribute('data-t');try{history.replaceState(null,'',l.pathname+l.search+'#'+t);}catch(x){}set(t);});d.addEventListener('keydown',function(e){var a=e.target.closest&&e.target.closest('a.fx-tab');if(!a||(e.key!=='ArrowRight'&&e.key!=='ArrowLeft'))return;var b=[].slice.call(d.querySelectorAll('.fx-tab')),i=b.indexOf(a),n=b[(i+(e.key==='ArrowRight'?1:b.length-1))%b.length];e.preventDefault();n.focus();n.click();});})(document,location);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());/* A place link carries a ZIP or coordinates; Analytics gets the bare path only. */gtag('set',{page_location:location.origin+location.pathname});gtag('config','G-6KXCTD5Z9H',{page_location:location.origin+location.pathname,page_referrer:document.referrer?document.referrer.split('?')[0]:''});</script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type": "Question", "name": "How much nitrogen should I apply to corn?", "acceptedAnswer": {"@type": "Answer", "text": "It depends on your soil, the last crop and the N:corn price ratio: the price of a pound of N divided by the price of a bushel of corn. UW Extension A2809 (Mar 2026 web edition, read Oct 16, 2026), from Wisconsin trials, gives corn after soybeans on high-yield loamy soil 140 lb N at a 0.05 ratio, 120 at 0.10, 105 at 0.15 and 90 at 0.20. Corn after corn on the same soil gets 190, 165, 150 and 135. Subtract manure and legume credits. The box at the top of this page works out the ratio from posted N and corn prices. Outside Wisconsin, use your state's MRTN rates."}}, {"@type": "Question", "name": "What is my manure worth in fertilizer value?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply the total N, P2O5 and K2O in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. That is the value of all of it. A crop can use 80% of the P2O5 and K2O and 25 to 65% of the N the first year, by UW Extension A2809. The Manure tab has the pounds by manure type and a calculator at dated posted prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field."}}, {"@type": "Question", "name": "What is the economic threshold for soybean aphid?", "acceptedAnswer": {"@type": "Answer", "text": "250 aphids per plant on average, aphids on more than 80% of plants, and the population rising. That threshold runs through R5. University of Minnesota Extension sets no threshold for R6."}}, {"@type": "Question", "name": "How do I calculate growing degree units for corn?", "acceptedAnswer": {"@type": "Answer", "text": "GDU (base 50°F) = [(daily max temp, capped at 86°F) + (daily min temp, floor at 50°F)] / 2 - 50. Accumulate daily from planting."}}, {"@type": "Question", "name": "When is it worth spraying Japanese beetles on corn silks?", "acceptedAnswer": {"@type": "Answer", "text": "Iowa State says spray only when all three are true: three or more beetles per ear, silks clipped to less than an inch, and pollination not done yet. Feeding is worse at the field edge, so look across the whole field before you make the call."}}, {"@type": "Question", "name": "When do I start and stop scouting beans for aphids?", "acceptedAnswer": {"@type": "Answer", "text": "Minnesota Extension says start in mid to late June and keep going until R6.5, when pods and leaves begin to yellow, whatever the calendar says. Once a field has aphids, check it every week, because they build fast."}}]}
 </script>
@@ -57,7 +59,7 @@
 .ff-page{max-width:980px;margin:0 auto;padding:0 1rem 4rem;}
 .ff-hero{padding:var(--page-top) 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
 .ff-eyebrow{font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
-.ff-hero h1{font-family:var(--font-display);font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;}
+.ff-hero .ff-h{font-family:var(--font-display);font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;}
 .ff-hero p{font-size:.82rem;color:var(--text-dim);line-height:1.55;max-width:680px;margin:0;}
 .ff-tabs{display:flex;flex-wrap:nowrap;gap:.3rem;margin-bottom:1.5rem;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:sticky;top:0;z-index:60;background:linear-gradient(var(--bg,#0a0c0d) 82%,transparent);padding:.5rem 0 .7rem;}
 .ff-tabs::-webkit-scrollbar{display:none}
@@ -231,7 +233,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   .eco-total-bar{flex-direction:column;gap:.2rem;text-align:center;}
   .eco-price-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
   .eco-price-val{font-size:1.05rem;}
-  .ff-hero h1{font-size:1.4rem;}
+  .ff-hero .ff-h{font-size:1.4rem;}
   .ff-h2{font-size:.95rem;}
   .fert-pill-price{white-space:nowrap;font-size:0.787rem;}
   .eco-section{padding:.9rem 1rem;}
@@ -326,7 +328,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
         <b>Field:</b> Weather: <a href="/rain-radar">Rain on your field</a> · <a href="/rain">Rain by county</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray advisory</a> · <a href="/fall-nitrogen">Soil temp (fall anhydrous)</a> · <a href="/rain-print">Rain Print</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · Crop: <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/urea">Urea loss</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/pod-counts">Pod counts</a> · Harvest and bins: <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a><br>
         <b>Money &amp; Land:</b> Land: <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/farmland-index">Farmland sale index</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · Programs: <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · Selling: <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
         <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/news">The Wire</a> · <a href="/archive">Archive</a><br>
-        <b>My place:</b> <a href="/here">Everything near me</a><br>
+        <b>My place:</b> <a href="/fast-facts">Everything near me</a><br>
         <b>More:</b> <a href="/about">About</a> · <a href="/contact">Contact</a>
       </nav>
     </div>
@@ -414,9 +416,55 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
   <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol></defs></svg><style></style>
 <main id="main" tabindex="-1" class="ff-page">
+<div class="fx-top">
+<h1 class="fx-h1">Fast Facts</h1>
+<p class="fx-lede page-lede">The numbers for your place, each dated and sourced: bids, basis, rain, drought, hail, rent, land and the next report. The farm reference tables are a tab over.</p>
+</div>
+<nav class="fx-tabs" role="tablist" aria-label="Fast Facts"><a class="fx-tab" role="tab" href="#place" data-t="place" id="fx-t-place" aria-controls="place">My place</a><a class="fx-tab" role="tab" href="#state" data-t="state" id="fx-t-state" aria-controls="state">State</a><a class="fx-tab" role="tab" href="#us" data-t="us" id="fx-t-us" aria-controls="us">United States</a><a class="fx-tab" role="tab" href="#tables" data-t="tables" id="fx-t-tables" aria-controls="tables">Reference tables</a><a class="fx-tab" role="tab" href="#print" data-t="print" id="fx-t-print" aria-controls="print">Print</a></nav>
+<section class="fx-panel h" id="place" role="tabpanel" aria-labelledby="fx-t-place">
+<div id="h-find"><p class="h-ask">Your ZIP, once. It stays on this device.</p><form id="h-form" class="h-box" role="search" autocomplete="off"><label for="h-q" class="sr-only">ZIP, town and state, or county</label><input id="h-q" type="text" inputmode="search" placeholder="ZIP, town and state, or county" maxlength="80"><button type="submit">Show this place</button></form><div class="h-alt"><button type="button" id="h-locate">Use my location</button><details id="h-map-box"><summary>Pick on a map</summary><div id="h-map"></div></details></div><noscript><p>Looking up a place needs JavaScript. The reference tables are further down.</p></noscript></div>
+<p id="h-status" class="h-status" role="status" aria-live="polite"></p><div id="h-choices" class="h-chips"></div>
+<button type="button" id="h-change" class="h-change" hidden>Change place <span id="h-change-l"></span></button>
+<div id="h-place" hidden>
+<div id="h-pr-cover" class="h-pr-only" aria-hidden="true"></div>
+<h2 id="h-title" class="fx-ph"></h2><p id="h-where" class="h-where"></p>
+<div id="h-part-sentence" class="h-part"><p id="h-sent" class="h-sent"></p></div>
+<section id="h-odd" class="h-odd" aria-labelledby="h-odd-h" hidden><h3 id="h-odd-h">What stands out here against its own record</h3><ul id="h-odd-l" class="h-odd-l"></ul></section>
+<div id="h-sec-week" class="fx-cards">
+<section class="fx-card"><h3>Price</h3><div class="fx-row" id="f-corn-bid"><p class="fx-l">Corn bid</p><div class="fx-w"></div></div><div class="fx-row" id="f-soy-bid"><p class="fx-l">Soybean bid</p><div class="fx-w"></div></div><div class="fx-row" id="f-corn-basis"><p class="fx-l">Corn basis</p><div class="fx-w"></div></div><div class="fx-row" id="f-soy-basis"><p class="fx-l">Soybean basis</p><div class="fx-w"></div></div><div class="fx-row" id="f-corn-fut"><p class="fx-l">Corn futures</p><div class="fx-w"></div></div><div class="fx-row" id="f-soy-fut"><p class="fx-l">Soybean futures</p><div class="fx-w"></div></div></section>
+<section class="fx-card"><h3>Field</h3><div class="fx-row" id="f-rain"><p class="fx-l">Rain since Jan 1</p><div class="fx-w"></div></div><div class="fx-row" id="f-drought"><p class="fx-l">Drought</p><div class="fx-w"></div></div><div class="fx-row" id="f-hail"><p class="fx-l">Hail, last 30 days</p><div class="fx-w"></div></div><div class="fx-row" id="f-progress"><p class="fx-l">Corn harvested</p><div class="fx-w"></div></div></section>
+<section class="fx-card"><h3>Land and programs</h3><div class="fx-row" id="f-rent"><p class="fx-l">Cash rent</p><div class="fx-w"></div></div><div class="fx-row" id="f-land"><p class="fx-l">Farmland value</p><div class="fx-w"></div></div><div class="fx-row" id="f-sales"><p class="fx-l">Recorded farm sales</p><div class="fx-w"></div></div><div class="fx-row" id="f-loss"><p class="fx-l">Crop insurance paid out per $1 of premium</p><div class="fx-w"></div></div><div class="fx-row" id="f-arcplc"><p class="fx-l">ARC or PLC sign-up</p><div class="fx-w"></div></div></section>
+<section class="fx-card"><h3>Today</h3><div class="fx-row" id="f-usda"><p class="fx-l">Next USDA report</p><div class="fx-w"></div></div><div class="fx-row" id="f-fert"><p class="fx-l">Fertilizer</p><div class="fx-w"></div></div><div class="fx-row" id="f-daily"><p class="fx-l">The Daily</p><div class="fx-w"></div></div></section>
+</div>
+<nav class="h-deep" aria-labelledby="h-deep-l"><span id="h-deep-l" class="h-deep-l">More for this place:</span> <span id="h-links" class="h-links"></span></nav>
+<details id="h-more" class="fx-more"><summary>More about this county</summary>
+<section id="h-first" class="h-first" aria-label="This year&rsquo;s rain"><p id="h-rank" class="h-rank" aria-live="polite"></p><div id="h-rp-box" class="h-rp-box"></div><p id="h-rank-sub" class="h-src"></p><details id="h-years" class="h-math" hidden><summary>Every year at this station</summary><div class="h-math-b"></div></details></section>
+<div id="h-sections">
+<section class="h-sec" id="h-sec-fingerprint" aria-labelledby="h-fp-h"><h2 id="h-fp-h">How it ranks in its state</h2><div id="h-fp" class="fp" role="img"></div><p id="h-fp-d" class="h-src" aria-live="polite"></p><details class="h-tbl"><summary>The numbers, as a table</summary><div class="h-tw"><table id="h-fp-t"></table></div></details></section>
+<section class="h-sec" id="h-sec-unusual" aria-labelledby="h-un-h"><h2 id="h-un-h">Against its neighbors</h2><div id="h-un"></div></section>
+<section class="h-sec" id="h-sec-long" aria-labelledby="h-long-h"><h2 id="h-long-h">The long view</h2><div id="h-long"></div></section>
+<section class="h-sec h-elev" id="h-elev" aria-labelledby="h-elev-h"><h2 id="h-elev-h">Elevators near here against their neighbors</h2><div id="h-elev-b"></div></section>
+</div>
+</details>
+<p id="h-nb" class="h-nb"></p>
+<section id="h-part-sources" class="h-pr-only" aria-label="Sources"><h2>Sources</h2><ul id="h-src-l" class="h-src-l"></ul></section>
+<div id="h-pr-qr" class="h-pr-qr" aria-hidden="true"></div>
+</div>
+</section>
+<section class="fx-panel h" id="state" role="tabpanel" aria-labelledby="fx-t-state">
+<h2 class="fx-ph"><span id="s-name">State</span></h2><p><label for="s-pick" class="fx-pl">State</label> <select id="s-pick" class="fx-sel"><option value="">Pick a state</option></select></p>
+<p id="s-none">Pick a state, or open a place in <a href="#place">My place</a>.</p>
+<div id="s-body" hidden><div class="fx-cards"><section class="fx-card"><h3>Basis</h3><div class="fx-row" id="s-corn-basis"><p class="fx-l">Corn basis</p><div class="fx-w"></div></div><div class="fx-row" id="s-soy-basis"><p class="fx-l">Soybean basis</p><div class="fx-w"></div></div></section><section class="fx-card"><h3>Harvest</h3><div class="fx-row" id="s-corn-prog"><p class="fx-l">Corn harvested</p><div class="fx-w"></div></div><div class="fx-row" id="s-soy-prog"><p class="fx-l">Soybeans harvested</p><div class="fx-w"></div></div></section></div>
+<nav class="h-deep" aria-label="Pages for this state"><span class="h-deep-l">Pages for this state:</span> <span id="s-links" class="h-links"></span></nav></div>
+</section>
+<section class="fx-panel h" id="us" role="tabpanel" aria-labelledby="fx-t-us">
+<h2 class="fx-ph">United States</h2>
+<div class="fx-cards"><section class="fx-card"><h3>Futures</h3><div class="fx-row" id="u-corn-fut"><p class="fx-l">Corn futures</p><div class="fx-w"></div></div><div class="fx-row" id="u-soy-fut"><p class="fx-l">Soybean futures</p><div class="fx-w"></div></div><div class="fx-row" id="u-wheat-fut"><p class="fx-l">Wheat futures</p><div class="fx-w"></div></div></section><section class="fx-card"><h3>Harvest</h3><div class="fx-row" id="u-corn-prog"><p class="fx-l">Corn harvested</p><div class="fx-w"></div></div><div class="fx-row" id="u-soy-prog"><p class="fx-l">Soybeans harvested</p><div class="fx-w"></div></div></section><section class="fx-card"><h3>Today</h3><div class="fx-row" id="u-usda"><p class="fx-l">Next USDA report</p><div class="fx-w"></div></div><div class="fx-row" id="u-fert"><p class="fx-l">Fertilizer</p><div class="fx-w"></div></div><div class="fx-row" id="u-daily"><p class="fx-l">The Daily</p><div class="fx-w"></div></div></section></div>
+</section>
+<div class="fx-panel" id="tables" role="tabpanel" aria-labelledby="fx-t-tables">
 <div class="ff-hero">
   <div class="ff-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Free reference tables, with current prices</div>
-  <h1>Fast Facts: farm reference tables</h1>
+  <h2 class="ff-h">Fast Facts: farm reference tables</h2>
   <p class="page-lede">How much N to put on corn at posted prices, then P and K by soil test, manure, lime, crop stages, pest thresholds and conversions.</p>
   <div class="ff-meta">Checked Oct 16, 2026 &middot; rates from UW Extension A2809 (Wisconsin) unless a table names another source &middot; <a href="#ff-sources">Sources</a></div>
 </div>
@@ -1145,10 +1193,16 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <li>Insects: UW L023 corn IPM scouting sheet, SDSU Extension, Iowa State ICM News and UMN Extension, each linked under the threshold table (read Oct 15, 2026).</li>
   <li><a href="https://crops.extension.iastate.edu/cropnews/2019/09/grain-drying-considerations-fall">Iowa State, Grain drying considerations this fall</a> (2019): propane per bushel per point. <a href="https://extension.umn.edu/corn-planting/planting-date-considerations-corn">UMN Extension</a>: planting date and frost.</li>
   <li><a href="https://cropnutrition.com/wp-content/uploads/2024/04/2025_K-Mag_Granular_Data_Sheet.pdf">K-Mag Granular data sheet</a> (2025): K-Mag analysis.</li>
-  <li>Prices: fertilizer from co-op posted cash prices (<a href="/fertilizer">fertilizer prices</a>, each named with its co-ops and date); corn, soybean and wheat futures are delayed CBOT closes; state corn basis is the median of AGSIST elevator bids this week (<a href="/cash-bids">cash bids</a>).</li>
+  <li>Prices: fertilizer from co-op posted cash prices (<a href="/fertilizer">fertilizer prices</a>, dated); corn, soybean and wheat futures are delayed CBOT closes; state corn basis is the median of AGSIST elevator bids this week (<a href="/cash-bids">cash bids</a>).</li>
   <li><a href="https://www.cornnratecalc.org/">Iowa State Corn N Rate Calculator</a> for N rates outside Wisconsin. <a href="https://quickstats.nass.usda.gov/">USDA NASS</a> for state production.</li>
 </ul>
 <p>Written and checked by Sigurd Lindquist, CCA, Chetek, Wisconsin. No sponsor or seller sets any number on this page.</p>
+</section>
+</div><!-- /tables -->
+<section class="fx-panel h" id="print" role="tabpanel" aria-labelledby="fx-t-print">
+<h2 class="fx-ph">Print a report</h2>
+<p id="h-pr-none">Open a place in <a href="#place">My place</a> first. The report is that place on Letter paper, with a QR code back to it.</p>
+<div id="h-pr-box" class="h-pr-box" hidden><p><b id="h-pr-name"></b></p><fieldset><legend>Put on the printed sheet</legend><label><input type="checkbox" name="part" value="sentence" checked> The one-line summary</label><label><input type="checkbox" name="part" value="week" checked> The four cards</label><label><input type="checkbox" name="part" value="fingerprint" checked> How it ranks in its state</label><label><input type="checkbox" name="part" value="unusual" checked> Against its neighbors</label><label><input type="checkbox" name="part" value="long" checked> The long view</label><label><input type="checkbox" name="part" value="sources" checked> Sources</label><label class="h-pr-more"><input type="checkbox" id="h-pr-more"> More detail: the full figure table and the table of years</label></fieldset><button type="button" id="h-pr-go">Print</button></div>
 </section>
 
 </main><!-- /ff-page -->
@@ -1170,11 +1224,16 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 </div>
 <!-- FIX: loader.js defer: prevents render-blocking -->
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/manure-value.js?v=8" defer></script>
+<script src="/components/layers.js?v=1" defer></script>
+<script src="/components/place.js?v=5" defer></script>
+<script src="/components/qr.js?v=11" defer></script>
+<script src="/components/bids-network.js?v=7" defer></script>
+<script src="/components/here.js?v=20" defer></script>
+<script src="/components/manure-value.js?v=9" defer></script>
 <script src="/components/a2809.js?v=2" defer></script>
 <script src="/components/gdu-stages.js?v=1" defer></script>
 <script src="/components/price-local.js?v=7" defer></script>
-<script src="/components/fast-facts.js?v=12" defer></script>
+<script src="/components/fast-facts.js?v=13" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

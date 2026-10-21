@@ -77,7 +77,7 @@ test("print-qr.js: 0.85 in up to version 15, grows to keep 0.01 in squares up to
 
 test("one QR encoder: the three report pages load components/qr.js (v=11) before print-qr.js and their own script", () => {
   for (const [page, own] of [["comp-report.html", "/components/comp-report.js?v="], ["field-report.html", "/components/field-report.js?v="], ["hail-map.html", "<script>"]]) {
-    const h = read(page), a = h.indexOf('<script src="/components/qr.js?v=11" defer></script>'), r = h.indexOf('<script src="/components/report-link.js?v=2" defer></script>'), b = h.indexOf('<script src="/components/print-qr.js?v=1" defer></script>');
+    const h = read(page), a = h.indexOf('<script src="/components/qr.js?v=11" defer></script>'), r = h.indexOf('<script src="/components/report-link.js?v=3" defer></script>'), b = h.indexOf('<script src="/components/print-qr.js?v=1" defer></script>');
     assert.ok(a > 0 && r > a && b > r, page + " loads qr.js, report-link.js, then print-qr.js");
     if (own !== "<script>") assert.ok(h.indexOf(own) > b, page + " loads its own script after");
     assert.doesNotMatch(h, /qrcode-generator|farmland-atlas\/qr\.js|api\.qrserver|chart\.googleapis/, page + ": no second QR library or outside service");
@@ -91,7 +91,8 @@ const EX = {
   land: "https://agsist.com/field-report?f=" + encodeURIComponent(FIELD),
   hailDay: "https://agsist.com/hail-map?lat=42.0300&lon=-93.6200&mi=10&day=2025-03-14",
   hail5y: "https://agsist.com/hail-map?lat=42.0300&lon=-93.6200&mi=25",
-  here: "https://agsist.com/here?f=55005&z=54728",
+  // the place page moved into Fast Facts (Oct 21); the H/ code opens it there
+  here: "https://agsist.com/fast-facts?f=55005&z=54728",
 };
 const pathOf = (t) => t.slice("HTTPS://AGSIST.COM".length);
 test("short links: exact text and the module count pinned for a real example of each report (full link in byte mode in brackets)", () => {
@@ -101,7 +102,7 @@ test("short links: exact text and the module count pinned for a real example of 
     land: ["HTTPS://AGSIST.COM/F/P4529750-9170250+0+500+500+0+0-500", 29, 45],
     hailDay: ["HTTPS://AGSIST.COM/S/42.03-93.62D25073", 25, 37],
     hail5y: ["HTTPS://AGSIST.COM/S/42.03-93.62R25", 25, 33],
-    here: ["HTTPS://AGSIST.COM/H/55005/54728", 25, 29],
+    here: ["HTTPS://AGSIST.COM/H/55005/54728", 25, 33],   // the full /fast-facts link would be 33 (the /here one was 29)
   };
   for (const k of Object.keys(EX)) {
     const t = PQ.text(EX[k]);
@@ -138,9 +139,12 @@ test("short links: every setting goes and comes back; anything the short form ca
     "https://agsist.com/comp-report?lat=40.12000&lon=-88.20000&r=25&from=1999-10-19&to=2026-10-19&amin=10&n=15&sort=mi",
     "https://agsist.com/field-report?f=" + encodeURIComponent(FIELD) + "&cf=" + encodeURIComponent("c:4.5m"),
     "https://agsist.com/rain-print?d=x"]) assert.equal(RL.short(u), null, u);
+  // a code printed before Oct 21 carried /here, which forwards: the short form is the same either way
+  assert.equal(RL.short("https://agsist.com/here?f=55005&z=54728"), "HTTPS://AGSIST.COM/H/55005/54728");
+  assert.equal(RL.short("https://agsist.com/fast-facts?f=55005&z=54728&q=x"), null, "nothing but the place goes short");
   for (const bad of ["/C/junk", "/S/42.03", "/S/42.03-93.62D25400", "/H/5500/54728", "/X/1", "/c", "/cash-bids/iowa", "/r", ""]) assert.equal(RL.full(bad), null, bad);
   // 404.html: the route runs first in <head>, before the theme script and analytics, and stops the page
-  const h = read("404.html"), r = h.indexOf('<script src="/components/report-link.js?v=2"></script>');
+  const h = read("404.html"), r = h.indexOf('<script src="/components/report-link.js?v=3"></script>');
   assert.ok(r > 0 && r < h.indexOf("agsist-theme-early") && r < h.indexOf("gtag"), "route before anything else runs");
   assert.match(h, /if\(u&&u\.indexOf\('https:\/\/agsist\.com\/'\)===0\)\{if\(window\.stop\)window\.stop\(\);location\.replace\(u\.slice\(18\)\);\}/, "opens on this site only, the 404 page stopped");
   for (const k of "CFSH") assert.ok(!fs.existsSync(join(ROOT, k)) && !fs.existsSync(join(ROOT, k + ".html")) && !fs.existsSync(join(ROOT, k.toLowerCase())), k + "/ is not a real page or folder, so it reaches 404.html");

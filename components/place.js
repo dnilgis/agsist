@@ -445,7 +445,7 @@
       if (d == null || d > radius) return;
       (by[crop] = by[crop] || []).push({ crop: crop, price: b.cashPrice, basis: typeof b.basis === 'number' ? b.basis : null,
         facility: b.facility || '', town: b.town || b.city || '', st: b.state || '', mi: Math.round(d),
-        delivery: b.delivery || b.period || '', pricedAt: b.pricedAt || null });
+        delivery: b.delivery || b.period || '', start: b.deliveryStart || null, pricedAt: b.pricedAt || null });
     });
     Object.keys(by).forEach(function (crop) {
       var rows = by[crop], bs = rows.map(function (r) { return r.basis; }).filter(function (x) { return x != null; }).sort(function (a, b) { return a - b; });
@@ -805,7 +805,148 @@
     return h.last ? { status: 'ok', kind: 'after', date: h.last, from: h.cur, first: h.first } : { status: 'none', why: 'no last-seen day' };
   }
 
+  /* ── Fast Facts rows (Oct 21, 2026) ───────────────────────────────
+     One builder per number. The My place cards, the State tab and the US tab all
+     call these, so a number reads the same wherever it shows. Each returns
+     { label, value, ctx, date, src: [text, href] } or, when the number is missing,
+     value null and why; join is what goes between the value and its line (". " unless set). No buyer, seller, elevator or co-op name ever goes in a row:
+     the page is indexed. */
+  var MONTHS_FULL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var CROP_WORD = { corn: 'Corn', soybeans: 'Soybeans', wheat: 'Wheat' };
+  function na(label, why, src) { return { label: label, value: null, why: why, src: src || null }; }
+  function isoDay(s) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s || '')); return m ? m[0] : null; }
+  function monDay(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); return m ? MON3[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : ''; }
+  function cents(c) { var a = Math.round(Math.abs(c) * 2) / 2; return (a % 1 ? a.toFixed(1) : String(a)) + '¢'; }
+  /* "October delivery" from the bid's own delivery start; plain words when it has no date. */
+  function deliveryWords(row) {
+    var m = /^(\d{4})-(\d{2})/.exec(String(row && row.start || ''));
+    if (!m) { var d = /^(\d{2})\/\d{2}\/(\d{4})$/.exec(String(row && row.delivery || '')); if (d) m = [0, d[2], d[1]]; }
+    if (m && +m[2] >= 1 && +m[2] <= 12) return MONTHS_FULL[+m[2] - 1] + ' delivery';
+    var t = String(row && row.delivery || '').trim();
+    return /^[A-Za-z0-9 '\/.-]{1,24}$/.test(t) ? t + ' delivery' : '';
+  }
+  /* A bid row: price, miles from the reader, delivery, how many it beat. Never the buyer. */
+  function factBid(o, crop, from, when, href) {
+    var label = CROP_WORD[crop] + ' bid';
+    if (!o || !o.best) return na(label, 'no posted ' + crop + ' bid within ' + BID_MILES + ' mi of ' + from, ['Who pays what', href]);
+    var b = o.best, dw = deliveryWords(b);
+    return { label: label, value: '$' + fixed(b.price, 2), date: isoDay(when), join: ', ',
+      ctx: b.mi + ' mi from ' + from + (dw ? ', ' + dw : '') + '. ' + (o.n === 1 ? 'The only one within ' + BID_MILES + ' mi.' : 'Best of ' + o.n + ' within ' + BID_MILES + ' mi.'),
+      src: ['Who pays it', href] };
+  }
+  /* A futures row. px(cents, mode) is the site's one price formatter (util.js AG.px.price). */
+  function factFutures(q, name, contract, href, px) {
+    var label = name + ' futures';
+    if (!q || typeof q.close !== 'number' || !px) return na(label, 'the price file did not load', ['Futures', href]);
+    var settle = q.close_kind === 'settle';
+    var range = q.wk52_lo != null && q.wk52_hi != null ? ' 52-week range ' + px(q.wk52_lo, 'down') + ' to ' + px(q.wk52_hi, 'up') + '.' : '';
+    return { label: label, value: px(q.close), date: isoDay(settle ? q.settle_date || q.close_date : q.close_date),
+      ctx: (contract ? contract + ', ' : '') + (settle ? 'settle' : 'last trade, delayed') + '.' + range, src: ['CBOT', href] };
+  }
+  /* The state's middle basis at the elevators read this week, and USDA's region against normal
+     (both files carry dollars a bushel). */
+  function factBasis(b, n, crop, st, href) {
+    var label = CROP_WORD[crop] + ' basis, ' + (STATES[st] || st);
+    if (!b || b.status !== 'ok') return na(label, b && b.why ? b.why : 'no state basis this week', ['Basis', href]);
+    var ctx = 'Middle of ' + b.n + ' ' + STATES[st] + ' elevator bids.';
+    if (n && n.status === 'ok') ctx += ' USDA ' + n.region + ' region: ' + (Math.abs(n.delta) < 0.0025 ? 'the same as' : cents(n.delta * 100) + ' ' + (n.delta < 0 ? 'weaker' : 'stronger') + ' than') + ' its 5-year normal for the week of ' + monDay(n.week).replace(/, \d{4}$/, '') + '.';
+    return { label: label, value: cents(b.median * 100) + ' ' + (b.median < 0 ? 'under' : 'over') + ' ' + b.label, date: isoDay(b.asOf), ctx: ctx, src: ['Basis', href] };
+  }
+  function factRain(r, href) {
+    if (!r || r.status !== 'ok') return na('Rain since Jan 1', r && r.why ? r.why : 'no county rain record');
+    return { label: 'Rain since Jan 1', value: r.inches.toFixed(2) + ' in', date: isoDay(r.through), join: ', ',
+      ctx: r.pct != null ? r.pct + '% of the ' + r.normals + ' normal (' + r.normal.toFixed(2) + ' in) for the same days.' : 'No normal for this date.', src: ['NOAA', href] };
+  }
+  function factDrought(d) {
+    if (!d || d.status !== 'ok') return na('Drought', d && d.why ? d.why : 'no Drought Monitor row', ['Drought map', '/drought-monitor']);
+    return { label: 'Drought', value: d.worst < 0 ? 'None' : d.worstPct.toFixed(0) + '% in ' + d.worstWords.split(' ')[0], date: isoDay(d.valid),
+      ctx: d.worst < 0 ? 'No part of the county dry or in drought.' : d.worstPct.toFixed(0) + '% of the county in ' + d.worstWords + ' or worse. In drought (D1 or worse): ' + d.d1.toFixed(0) + '% now, ' + (d.d1FourAgo == null ? 'no map' : d.d1FourAgo.toFixed(0) + '%') + ' four weeks earlier.',
+      src: ['U.S. Drought Monitor', '/drought-monitor'] };
+  }
+  function factHail(h, at, href) {
+    if (!h || h.status !== 'ok') return na('Hail, last 30 days', h && h.why ? h.why : 'no hail file', ['Hail map', href]);
+    return { label: 'Hail, last ' + h.days + ' days', value: h.n ? h.n + ' report' + (h.n === 1 ? '' : 's') : 'None', date: isoDay(h.through),
+      ctx: h.n ? 'Within ' + h.radius + ' mi of ' + at + '. Biggest ' + h.biggest.toFixed(2) + ' in, latest ' + monDay(h.latest.date).replace(/, \d{4}$/, '') + '.' : 'No report within ' + h.radius + ' mi of ' + at + '. A missing report is not proof of no hail.',
+      src: ['NWS storm reports', href] };
+  }
+  /* Crop progress: the state's row (data/crop-progress.json states[ST]) or the US row (progress). */
+  function factProgress(file, st, crop) {
+    var where = st ? STATES[st] || st : 'US', label = CROP_WORD[crop] + ' harvested, ' + where;
+    var rows = file ? (st ? file.states && file.states[st] : file.progress) : null, r = rows && rows[crop + '_harvested'];
+    if (!file) return na(label, 'the crop progress file did not load', ['Crop progress', '/conditions']);
+    if (!r || r.pct == null) return na(label, 'USDA does not report ' + where + ' ' + crop + ' harvest this week', ['Crop progress', '/conditions']);
+    var bits = [];
+    if (r.prev_week != null) bits.push(r.prev_week + '% a week earlier');
+    if (r.avg5 != null) bits.push(r.avg5 + '% on average the last 5 years');
+    return { label: label, value: r.pct + '%', date: isoDay(r.date), ctx: bits.length ? bits.join(', ').replace(/^./, function (c) { return c.toUpperCase(); }) + '.' : 'Week ending ' + monDay(r.date) + '.', src: ['USDA NASS', '/conditions'] };
+  }
+  /* A county figure from the profile (rent, land value, loss ratio): its value, its rank in the state. */
+  function factCol(c, label, href) {
+    if (!c) return na(label, 'no such figure for this county');
+    if (c.value == null) return na(label, c.reason || 'no figure in the source for this county', c.source ? [c.source, href] : null);
+    return { label: label, value: c.unit === 'paid out / premium' ? '$' + fixed(c.value, 2) : fmt(c.value, c), date: c.year ? String(c.year) : c.years || '', ctx: c.words ? c.words.charAt(0).toUpperCase() + c.words.slice(1) + '.' : '', src: [c.source || 'Source', href] };
+  }
+  /* Recorded farm sales: the Atlas sales tile (components/atlas-sales.js AtlasSales.tile), worded the same. */
+  function factSales(t, st, href) {
+    var label = 'Recorded farm sales';
+    if (!t) return na(label, 'recorded sales are on hand for Illinois and Wisconsin only' + (st ? ', not ' + (STATES[st] || st) : ''));
+    if (t.val == null) return na(label, t.sub, ['Deed records', href]);
+    return { label: label, value: t.val + t.unit, date: isoDay(t.through), ctx: 'Median price per acre, ' + t.sub.replace(/; sales dated through .*$/, '') + '.', src: ['Deed records', href] };
+  }
+  /* ARC or PLC: where the sign-up stands today and the corn effective reference price (data/arc-plc.json). */
+  function factArcPlc(f, today, href) {
+    var label = 'ARC or PLC sign-up';
+    if (!f || !f.years) return na(label, 'the program file did not load', ['ARC or PLC', href]);
+    var dy = f.default_year || {}, y = String(dy.until && today > dy.until ? dy.then : (dy.before || Object.keys(f.years).sort().pop())), Y = f.years[y];
+    if (!Y) return na(label, 'no ' + y + ' sign-up dates published yet', ['ARC or PLC', href]);
+    var v = today < Y.open ? 'Opens ' + monDay(Y.open) : today <= Y.close ? 'Open until ' + monDay(Y.close) : 'Closed ' + monDay(Y.close);
+    var erp = Y.crops && Y.crops.corn && Y.crops.corn.erp ? Y.crops.corn.erp.erp : null;
+    return { label: label, value: v, long: true, date: isoDay(f.updated), ctx: y + ' crop year, at the county FSA office.' + (erp != null ? ' Corn effective reference price $' + fixed(erp, 2) + ' a bushel.' : ''), src: ['ARC or PLC', href] };
+  }
+  function factUsda(r, when) {
+    if (!r) return na('Next USDA report', 'the report calendar did not load', ['USDA calendar', '/usda-calendar']);
+    return { label: 'Next USDA report', value: r.name, long: true, date: '', ctx: when + ' ET.', src: ['USDA calendar', '/usda-calendar'] };
+  }
+  /* A posted fertilizer price. One co-op's price is never named: "one Kansas co-op". */
+  function fertSrc(p, short) {
+    if (!p) return '';
+    if (p.src === 'coop' && p.n === 1) return 'one ' + (p.region ? p.region + ' ' : '') + 'co-op' + (p.as_of ? (short ? ', ' + monDay(p.as_of).replace(/, \d{4}$/, '') : ', posted ' + monDay(p.as_of)) : '');
+    return short ? (p.short_label || p.src_label || '') : (p.src_label || p.short_label || '');
+  }
+  function factFert(file) {
+    var list = (file && file.prices) || [], pick = null;
+    ['anhydrous', 'urea'].forEach(function (k) { if (!pick) pick = list.filter(function (p) { return p.key === k && p.price > 0; })[0] || null; });
+    if (!pick) return na('Fertilizer', 'no posted anhydrous or urea price', ['Fertilizer prices', '/fertilizer']);
+    return { label: pick.name, value: '$' + fixed(Math.round(pick.price), 0) + ' a ton', date: isoDay(pick.as_of || file.updated),
+      ctx: 'Posted cash price, ' + fertSrc(pick).replace(/, posted .*$/, '') + '. Call to confirm.', src: ['Fertilizer prices', '/fertilizer'] };
+  }
+  function factDaily(d) {
+    if (!d || !d.headline) return na('The Daily', 'the briefing did not load', ['Today', '/daily']);
+    return { label: 'The Daily', value: d.headline, date: d.date || '', ctx: d.teaser || '', src: ['Read it', '/daily'], long: true };
+  }
+  /* State pages a link can open, for all 50 states. A state left out has no such page;
+     test/fast-facts-front.test.mjs checks every link on disk. Cash bids come from
+     data/basis-states.json (its path is the page). */
+  var NO_PAGE = { rent: 'AK HI RI', prf: 'AK HI', yield: 'AK CT HI ME MA NH RI VT', arc: 'HI' };
+  function stateLinks(st, basisFile) {
+    if (!STATES[st]) return [];
+    var s = stSlug(st), n = STATES[st], out = [];
+    function has(k) { return (' ' + NO_PAGE[k] + ' ').indexOf(' ' + st + ' ') < 0; }
+    var b = basisFile && basisFile.states && basisFile.states[st];
+    if (b && b.path) out.push({ id: 'bids', href: b.path.split('#')[0], text: 'Cash bids in ' + n });
+    out.push({ id: 'rain', href: '/rain/' + s, text: 'Rain by county' });
+    if (has('rent')) out.push({ id: 'rent', href: '/rent/' + s, text: n + ' cash rent' });
+    out.push({ id: 'atlas', href: '/farmland-atlas/' + s + '/', text: 'Farmland Atlas' });
+    if (has('arc')) out.push({ id: 'arc', href: '/arc-plc/' + s, text: 'ARC or PLC by county' });
+    if (has('prf')) out.push({ id: 'prf', href: '/prf/' + s, text: 'PRF pasture insurance' });
+    if (has('yield')) out.push({ id: 'yield', href: '/yield/' + s, text: 'Yield by county' });
+    return out;
+  }
+
   return {
+    factBid: factBid, factFutures: factFutures, factBasis: factBasis, factRain: factRain, factDrought: factDrought, factHail: factHail,
+    factProgress: factProgress, factCol: factCol, factSales: factSales, factArcPlc: factArcPlc, factUsda: factUsda, factFert: factFert,
+    factDaily: factDaily, fertSrc: fertSrc, deliveryWords: deliveryWords, stateLinks: stateLinks, NO_PAGE: NO_PAGE,
     rainFigure: rainFigure, rainChart: rainChart, rankSoFar: rankSoFar, rankWordsRain: rankWordsRain, windowTotals: windowTotals, RANK_MIN: RANK_MIN,
     ownPast: ownPast, unusualHere: unusualHere, ownWords: ownWords, OWN_MIN: OWN_MIN, OWN_MAX: OWN_MAX,
     basisNeighbors: basisNeighbors, basisHistMap: basisHistMap, basisHistory: basisHistory, median: median, EL: { NEAR: EL_NEAR, NB: EL_NB, NB_MIN: EL_NB_MIN, EACH: EL_EACH, HIST_DAYS: HIST_DAYS },

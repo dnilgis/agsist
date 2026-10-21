@@ -7,6 +7,12 @@
    "items": [
     {
      "tag": "improved",
+     "page": "/fast-facts",
+     "name": "Fast Facts for your place",
+     "text": "Fast Facts opens on your place now: give a ZIP once and see bids, basis, futures, rain, drought, hail, rent, land and the next report, each dated and sourced, with State, US and the reference tables a tab away. Old /here links land there."
+    },
+    {
+     "tag": "improved",
      "page": "/",
      "name": "A new browser and home-screen icon",
      "text": "The tab icon and the home-screen icon are now a red barn with a gold door on the AGSIST green tile, drawn to stay clear at 16 pixels in light and dark tab strips. The whole icon set is about 50 KB, down from about 650 KB."

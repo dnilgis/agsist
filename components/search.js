@@ -176,7 +176,7 @@
     if (zip) {
       rest = rest.filter(function (w) { return !FILLER[w] && !/^(zip|code|cash|bids?|grain|elevators?)$/.test(w); });
       var more = rest.length ? search(items, rest.join(' '), local) : [];
-      return [zipHit(zip), placeHit('ZIP ' + zip, '/here?zip=' + zip)].concat(more);
+      return [zipHit(zip), placeHit('ZIP ' + zip, '/fast-facts?zip=' + zip)].concat(more);
     }
     var kept = qt.filter(function (w) { return !FILLER[w]; });
     var filler = kept.length && kept.length < qt.length;
@@ -189,8 +189,8 @@
     hits.sort(function (a, b) { return b.s - a.s || a.e.type - b.e.type || a.e.i - b.e.i; });
     for (var w = 0; w < qt.length; w++) if (PIN[qt[w]]) { raise(hits, items, PIN[qt[w]], 0); break; }
     if (filler && hits.length && GRAIN[hits[0].e.url]) raise(hits, items, '/cash-bids', 1);
-    // a town or county on top: the one-place page for it rides second (/here)
-    if (hits.length && (hits[0].e.type === 2 || hits[0].e.type === 3 || hits[0].e.type === 6)) hits.splice(1, 0, placeHit(hits[0].e.title, '/here?q=' + encodeURIComponent(hits[0].e.title)));
+    // a town or county on top: the one-place page for it rides second (/fast-facts, was /here)
+    if (hits.length && (hits[0].e.type === 2 || hits[0].e.type === 3 || hits[0].e.type === 6)) hits.splice(1, 0, placeHit(hits[0].e.title, '/fast-facts?q=' + encodeURIComponent(hits[0].e.title)));
     return hits;
   }
 

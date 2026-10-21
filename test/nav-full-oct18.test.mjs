@@ -87,8 +87,8 @@ test("phone panel: search, My place, the five groups open with subheads, a Rain 
   const at = (s) => { const i = drawer.indexOf(s); assert.ok(i > 0, s); return i; };
   const seq = ['id="draw-srch"', 'id="dp-here"', 'id="dp-bids"', 'id="dg-markets"', 'id="dg-livestock"', 'id="dg-field"', 'id="dg-money"', 'id="dg-daily"', 'class="draw-rp"', 'href="/about"', 'href="/contact"', 'id="theme-btn-d"'];
   for (let i = 1; i < seq.length; i++) assert.ok(at(seq[i - 1]) < at(seq[i]), `${seq[i - 1]} before ${seq[i]}`);
-  // Sig, Oct 20: /here is the first My place tile
-  assert.match(drawer, /<div class="draw-place-row">\s*<a href="\/here" class="draw-pl" id="dp-here">[\s\S]*?Everything near me<\/a>/);
+  // Sig, Oct 20: the place page (/fast-facts since Oct 21) is the first My place tile
+  assert.match(drawer, /<div class="draw-place-row">\s*<a href="\/fast-facts" class="draw-pl" id="dp-here">[\s\S]*?Everything near me<\/a>/);
   assert.match(drawer, /<a href="\/cash-bids" class="draw-pl" id="dp-bids">[\s\S]*?Bids near me<\/a>/);
   assert.match(drawer, /<a href="\/rain-radar" class="draw-pl" id="dp-rain">[\s\S]*?Rain at my field<\/a>/);
   assert.match(drawer, /<a href="\/rent\/" class="draw-pl" id="dp-rent">[\s\S]*?Rent in my county<\/a>/);
@@ -200,8 +200,8 @@ test("ZIP chip: reads the saved place, sets all three keys, a failed lookup save
     const keys = await pg.evaluate(() => ({ loc: JSON.parse(localStorage.getItem("agsist-wx-loc")), z: localStorage.getItem("agsist_zip"), u: localStorage.getItem("agsist_user_zip") }));
     assert.equal(keys.z, "54728"); assert.equal(keys.u, "54728");
     assert.equal(keys.loc.zip, "54728"); assert.equal(keys.loc.state, "WI"); assert.equal(keys.loc.label, "Chetek, WI"); assert.equal(keys.loc.zipTyped, true);
-    // Sig, Oct 20: once a ZIP is saved the box sends the reader to /here for that ZIP
-    assert.equal(await pg.getAttribute("#zip-go", "href"), "/here?zip=54728");
+    // Sig, Oct 20: once a ZIP is saved the box sends the reader to the place page for that ZIP (Fast Facts since Oct 21)
+    assert.equal(await pg.getAttribute("#zip-go", "href"), "/fast-facts?zip=54728");
     assert.equal(await pg.textContent("#zip-go"), "Everything near Chetek →");
     await pg.keyboard.press("Escape");
     assert.equal(await pg.isVisible("#zip-pop"), false);
@@ -222,7 +222,7 @@ test("ZIP chip: reads the saved place, sets all three keys, a failed lookup save
     await pg.click("#hamburger");
     await pg.waitForFunction(() => document.getElementById("drawer").classList.contains("open"));
     assert.equal(await pg.getAttribute("#dp-bids", "href"), "/cash-bids?zip=50010");
-    assert.equal(await pg.getAttribute("#dp-here", "href"), "/here?zip=50010");
+    assert.equal(await pg.getAttribute("#dp-here", "href"), "/fast-facts?zip=50010");
     await ctx.close();
 
     // a saved Iowa place: rent opens on Iowa's county picker

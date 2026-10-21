@@ -92,8 +92,14 @@
     return null;
   }
   function ok(p) { return p && typeof p.price === 'number' && isFinite(p.price) && p.price > 0; }
+  /* Where a price is from. On /fast-facts (components/place.js loaded) one co-op's price is
+     never named: "one Kansas co-op, posted Sep 24, 2026". */
+  function label(p) {
+    var P = typeof window !== 'undefined' && window.AgPlace;
+    return p.src === 'coop' && p.n === 1 && P && P.fertSrc ? P.fertSrc(p, false) : p.src_label || null;
+  }
   function srcOf(p) {
-    return { key: p.key, name: p.name, symbol: p.symbol, price: p.price, as_of: p.as_of || null, oldest: p.oldest || p.as_of || null, label: p.src_label || null, src: p.src || null, region: p.region || null };
+    return { key: p.key, name: p.name, symbol: p.symbol, price: p.price, as_of: p.as_of || null, oldest: p.oldest || p.as_of || null, label: label(p), src: p.src || null, region: p.region || null };
   }
 
   /* $/lb of N, P2O5 and K2O from fertilizer-prices.json. A product with no
@@ -276,7 +282,7 @@
     var g = grade(a.symbol) || { N: 82 };
     var nh3 = a.price / (2000 * g.N / 100), pct = Math.round((1 - nh3 / pr.n) * 100);
     return 'N is priced at urea, ' + money(pr.n) + ' a lb. At anhydrous ammonia, ' + money(a.price, 0) + ' a ton' +
-      (a.src_label ? ' (' + a.src_label + ')' : '') + ', N is ' + money(nh3) + ' a lb' +
+      (label(a) ? ' (' + label(a) + ')' : '') + ', N is ' + money(nh3) + ' a lb' +
       (pct > 0 ? ', ' + pct + '% less' : pct < 0 ? ', ' + (-pct) + '% more' : ', the same') + '.';
   }
 

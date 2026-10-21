@@ -200,9 +200,11 @@ test("the printed QR: shortest link that reopens the same report, smallest symbo
   assert.equal(M(P.qrLink({ fips: "55005", at: { lat: 45.31413, lng: -91.651 } })), 33);
   // the short paths go back to the same page through 404.html
   const RL = require(ROOT + "components/report-link.js");
-  assert.equal(RL.full("/H/55005/54728"), "https://agsist.com/here?f=55005&z=54728");
-  assert.equal(RL.full("/h/17019"), "https://agsist.com/here?f=17019");
+  // (Oct 21: they open Fast Facts, where the place page moved; a /here link still shortens the same)
+  assert.equal(RL.full("/H/55005/54728"), "https://agsist.com/fast-facts?f=55005&z=54728");
+  assert.equal(RL.full("/h/17019"), "https://agsist.com/fast-facts?f=17019");
   assert.equal(RL.short("https://agsist.com/here?f=17019"), "HTTPS://AGSIST.COM/H/17019");
+  assert.equal(RL.short("https://agsist.com/fast-facts?f=17019"), "HTTPS://AGSIST.COM/H/17019");
 });
 
 test("this week on the site's own files", () => {
