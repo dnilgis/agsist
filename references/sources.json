@@ -2100,6 +2100,18 @@
     {"id": "census-gazetteer-2024", "kind": "html",
      "url": "https://www.census.gov/geographies/reference-files/2024/geo/gazetter-file.html",
      "title": "US Census Bureau, 2024 Gazetteer Files (places, national)",
-     "why": "fallback for census-gazetteer-2025 if the 2025 page is not up; scripts/fetch_land_sales.py already reads the 2024 Gazetteer (2024_Gaz_cousubs_national.zip) from the same folder"}
+     "why": "fallback for census-gazetteer-2025 if the 2025 page is not up; scripts/fetch_land_sales.py already reads the 2024 Gazetteer (2024_Gaz_cousubs_national.zip) from the same folder"},
+    {"id": "rma-lrp-feeder-sce", "kind": "pdf",
+     "url": "https://www.rma.usda.gov/sites/default/files/crop-policies/Feeder-Cattle-Premium-Calculation.pdf",
+     "title": "LRP Feeder Cattle endorsement (05-LRP-Feeder Cattle), as linked from RMA's Feeder Cattle Premium Calculation page",
+     "why": "feeder value box on /cattle-futures-prices, /lrp, /cattle-auction-prices: the endorsement defines the feeder cattle actual ending value (which index, which day). Needed before the pages call RMA's value the CME Feeder Cattle Index (scripts/build_feeder_index.py RMA_LABEL)"},
+    {"id": "rma-livestock-plans", "kind": "html",
+     "url": "https://www.rma.usda.gov/policy-procedure/general-policies/livestock-insurance-plans",
+     "title": "USDA RMA, livestock insurance plans (policies and endorsements)",
+     "why": "finds the current LRP Feeder Cattle endorsement if the rma-lrp-feeder-sce link has moved"},
+    {"id": "cme-feeder-specs", "kind": "html",
+     "url": "https://www.cmegroup.com/markets/agriculture/livestock/feeder-cattle.contractSpecs.html",
+     "title": "CME Group, Feeder Cattle futures contract specs",
+     "why": "feeder value box: cash settlement to the CME Feeder Cattle Index, how the index is built and dated"}
 ]
 }
