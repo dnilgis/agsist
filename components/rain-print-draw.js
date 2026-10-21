@@ -63,8 +63,8 @@
   var HAIL_MI = 10;               // reported hail this close to the town, in miles
   var GUST_MARK = 50;             // a modeled gust this strong (mph) gets a mark on its day
   var FORMATS = {
-    square: { w: 1080, h: 1080, label: 'Square, for posts', bps: 2600000 },
-    tall: { w: 1080, h: 1920, label: 'Tall, for stories', bps: 3600000 }
+    square: { w: 1080, h: 1080, label: 'Square, for posts', bps: 2200000 },
+    tall: { w: 1080, h: 1920, label: 'Tall, for stories', bps: 2800000 }
   };
   // seconds: lead-in, base drawing time, the finish, the last hold; each kind of day's pause
   var T = { intro: 1.1, draw: 10.6, outro: 1.5, hold: 2.6, min: 12, max: 20 };
@@ -166,10 +166,11 @@
     (E.markers || []).forEach(function (mk, k) {
       if (!has('mark:' + k)) return;
       var dt = E.days[mk.i] && E.days[mk.i].date;
-      out.push({ i: mk.i, kind: 'mark', key: 'mark:' + k, text: (dt ? fmtDate(dt, fr) : '') + (mk.label ? '  ' + String(mk.label).replace(/[\u0001\u0002]/g, '') : '') });
+      var words = String(mk.words || mk.label || '').replace(/\u0001[^\u0002]*\u0002/g, '').replace(/[\u0001\u0002]/g, '').trim();
+      out.push({ i: mk.i, kind: 'mark', key: 'mark:' + k, text: (words && words !== fmtDate(dt || '', fr) ? words + ', ' : '') + (dt ? fmtDate(dt, fr) : '') });
     });
     if (A && A.recordPoints) A.recordPoints(E, I.records).pts.forEach(function (r, k) {
-      if (has('rec:' + k)) out.push({ i: r.b === undefined ? r.i : Math.max(r.i, r.b), kind: 'rec', key: 'rec:' + k, text: String(r.text || r.label).replace(/[\u0001\u0002]/g, ' ') });
+      if (has('rec:' + k)) out.push({ i: r.b === undefined ? r.i : Math.max(r.i, r.b), kind: 'rec', key: 'rec:' + k, text: String(r.text || r.label).replace(/[\u0001\u0002]/g, ' ').replace(/\s+/g, ' ').trim() });
     });
     ((I.temp && I.temp.frost) || []).forEach(function (f, k) { if (f.doy >= 0 && has('frost:' + k)) out.push({ i: f.doy, kind: 'frost', key: 'frost:' + k, text: '' }); });
     if (E.dry && keys.indexOf('dry') >= 0) out.push({ i: E.dry.e, kind: 'dry', key: 'dry', text: '' });
@@ -285,7 +286,8 @@
     return (s || 'rain-print') + '.' + ext;
   }
   // the recorder's type: H.264 MP4 first (posts everywhere), then WebM
-  var MIMES = ['video/mp4;codecs=avc1.42E01F', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+  /* plain 'video/mp4' comes last: Chromium answers yes to it and writes VP9 inside, which an iPhone will not play */
+  var MIMES = ['video/mp4;codecs=avc1.42E01F', 'video/mp4;codecs=avc1', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm', 'video/mp4'];
   function pickMime(isOk) { for (var i = 0; i < MIMES.length; i++) { try { if (isOk(MIMES[i])) return MIMES[i]; } catch (e) {} } return ''; }
 
   /* A WebM from MediaRecorder carries no duration, so some apps show 0:00 and
@@ -332,9 +334,54 @@
     return bytes;
   }
 
+  /* A plain MP4 (H.264, no sound) from the encoder's own chunks: ftyp, moov
+     (one track, one chunk), mdat, with moov first so a phone can start playing
+     it before it has all of it. o = {width, height, fps, description (the
+     avcC the encoder hands over), samples: [{data, key}] in decode order}. */
+  function mp4Mux(o) {
+    var fps = o.fps || 30, ts = fps * 1000, dt = 1000, N = o.samples.length, durMs = Math.round(N * 1000 / fps);
+    function u32(v) { return [(v >>> 24) & 255, (v >>> 16) & 255, (v >>> 8) & 255, v & 255]; }
+    function u16(v) { return [(v >> 8) & 255, v & 255]; }
+    function str(s) { return s.split('').map(function (c) { return c.charCodeAt(0); }); }
+    function box(type, parts) {
+      var body = [].concat.apply([], parts.map(function (p) { return Array.isArray(p) ? p : Array.prototype.slice.call(p); }));
+      return u32(body.length + 8).concat(str(type), body);
+    }
+    function full(type, ver, flags, parts) { return box(type, [[ver].concat(u32(flags).slice(1))].concat(parts)); }
+    var M = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0];   // the unity matrix
+    var sizes = o.samples.map(function (x) { return x.data.length; }), keys = [];
+    o.samples.forEach(function (x, i) { if (x.key) keys.push(i + 1); });
+    function moov(off) {
+      var avc1 = box('avc1', [[0, 0, 0, 0, 0, 0].concat(u16(1), u16(0), u16(0), u32(0), u32(0), u32(0), u16(o.width), u16(o.height), u32(0x480000), u32(0x480000), u32(0), u16(1)),
+        new Array(32).fill(0), u16(0x18), u16(0xFFFF), box('avcC', [o.description])]);
+      var stbl = box('stbl', [
+        full('stsd', 0, 0, [u32(1), avc1]),
+        full('stts', 0, 0, [u32(1), u32(N), u32(dt)]),
+        full('stss', 0, 0, [u32(keys.length)].concat(keys.map(u32))),
+        full('stsc', 0, 0, [u32(1), u32(1), u32(N), u32(1)]),
+        full('stsz', 0, 0, [u32(0), u32(N)].concat(sizes.map(u32))),
+        full('stco', 0, 0, [u32(1), u32(off)])
+      ]);
+      var minf = box('minf', [full('vmhd', 0, 1, [u16(0), u16(0), u16(0), u16(0)]), box('dinf', [full('dref', 0, 0, [u32(1), full('url ', 0, 1, [])])]), stbl]);
+      var mdia = box('mdia', [full('mdhd', 0, 0, [u32(0), u32(0), u32(ts), u32(N * dt), u16(0x55C4), u16(0)]),
+        full('hdlr', 0, 0, [u32(0), str('vide'), u32(0), u32(0), u32(0), str('VideoHandler'), [0]]), minf]);
+      var trak = box('trak', [full('tkhd', 0, 3, [u32(0), u32(0), u32(1), u32(0), u32(durMs), u32(0), u32(0), u16(0), u16(0), u16(0), u16(0), M, u32(o.width * 65536), u32(o.height * 65536)]), mdia]);
+      return box('moov', [full('mvhd', 0, 0, [u32(0), u32(0), u32(1000), u32(durMs), u32(0x10000), u16(0x100), u16(0), u32(0), u32(0), M, new Array(24).fill(0), u32(2)]), trak]);
+    }
+    var ftyp = box('ftyp', [str('isom'), u32(512), str('isom'), str('iso2'), str('avc1'), str('mp41')]);
+    var mlen = moov(0).length, dataLen = sizes.reduce(function (a, b) { return a + b; }, 0);
+    var mv = moov(ftyp.length + mlen + 8), out = new Uint8Array(ftyp.length + mv.length + 8 + dataLen), p = 0;
+    out.set(ftyp, p); p += ftyp.length; out.set(mv, p); p += mv.length;
+    out.set(u32(dataLen + 8), p); out.set(str('mdat'), p + 4); p += 8;
+    o.samples.forEach(function (x) { out.set(x.data, p); p += x.data.length; });
+    return out;
+  }
+  // H.264 profiles a 1080 x 1920 frame fits (level 4.0 and up), best first
+  var AVC = ['avc1.640028', 'avc1.4d0028', 'avc1.42002a'];
+
   var api = { plan: plan, stepsPlan: stepsPlan, ticker: ticker, events: events, dayIdx: dayIdx, hailCover: hailCover, hailFromNcei: hailFromNcei,
     hailFromNws: hailFromNws, meshAt: meshAt, meshDays: meshDays, windFrom: windFrom, windUrl: windUrl, hailWords: hailWords, windWords: windWords,
-    fileName: fileName, pickMime: pickMime, MIMES: MIMES, webmWithDuration: webmWithDuration, milesBetween: milesBetween, FORMATS: FORMATS, T: T, HOLD: HOLD,
+    fileName: fileName, pickMime: pickMime, mp4Mux: mp4Mux, AVC: AVC, MIMES: MIMES, webmWithDuration: webmWithDuration, milesBetween: milesBetween, FORMATS: FORMATS, T: T, HOLD: HOLD,
     HAIL_MI: HAIL_MI, GUST_MARK: GUST_MARK, layerOf: layerOf };
   root.AgRainDraw = api;
 
@@ -463,13 +510,13 @@
   function scene(S, mode) {
     if (mode === 'inplace') return { W: S.cw, H: S.ch, print: { x: 0, y: 0, w: S.cw, h: S.ch }, zoom: 1, frame: 0 };
     var F = FORMATS[mode], pw = 1000, ph = pw * 2 / 3;
-    if (mode === 'square') return { W: F.w, H: F.h, print: { x: 40, y: 262, w: pw, h: ph }, zoom: 1.22, frame: 16 };
+    if (mode === 'square') return { W: F.w, H: F.h, print: { x: 40, y: 250, w: pw, h: ph }, zoom: 1.15, frame: 16 };
     return { W: F.w, H: F.h, print: { x: 40, y: 650, w: pw, h: ph }, zoom: 1.34, frame: 16 };
   }
   function frameAt(ctx, S, mode, t) {
     var sc = scene(S, mode), pl = S.plan, n = S.E.n, g = S.geom, E = S.E;
     var d = pl.dayAt(t), cxArt = g.x0 + (g.x1 - g.x0) * d / g.n;
-    var drawing = t < pl.t1 + 0.0001, out = smooth((t - pl.t1) / T.outro), endA = t >= pl.outro ? 1 : out;
+    var drawing = t < pl.t1 + 0.0001, endA = t >= pl.outro ? 1 : smooth((t - pl.t1 - 0.45) / (T.outro - 0.45)), tickA = S.still && t >= pl.outro ? 0 : 1 - smooth((t - pl.t1) / 0.45);
     var tk = ticker(E, d, S.loc);
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -497,32 +544,22 @@
       ctx.fillStyle = '#121212'; ctx.fillRect(-fr, -fr, 1800 + 2 * fr, 1200 + 2 * fr);
       ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
     }
-    var L = S.layers, s = 1 / S.scale;
-    var put = function (c) { if (c) ctx.drawImage(c, 0, 0, c.width * s, c.height * s); };
-    put(L.base);
-    // the usual year ahead of the line, faint
-    if (L.usual && d < n) { ctx.save(); ctx.beginPath(); ctx.rect(cxArt, 0, 1800 - cxArt, 1200); ctx.clip(); ctx.globalAlpha = 0.32; put(L.usual); ctx.restore(); }
-    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, d >= n ? 1800 : cxArt, 1200); ctx.clip(); put(L.wipe); put(L.usual); ctx.restore();
-    if (L.months) {
-      var mx = monthEdge(E, d, g);
-      if (mx > 0) { ctx.save(); ctx.beginPath(); ctx.rect(0, 0, mx, 1200); ctx.clip(); put(L.months); ctx.restore(); }
-    }
-    // the head box stays paper while the year draws (the verdict lands there at the end)
-    if (g.style === 'r1' && g.head && endA < 1) { ctx.fillStyle = '#FFFFFF'; ctx.fillRect(g.head.x, g.head.y, g.head.w, g.head.h); }
-    // each pop on its day
+    var L = S.layers, s = 1 / S.scale, C = compose(S, d, t, cxArt, endA);
+    ctx.drawImage(C.canvas, 0, 0, 1800, 1200);
+    // a pop still opening is drawn over the print; once open it is part of it (compose)
     S.pops.forEach(function (p) {
-      var ev = S.popEv[p.key]; if (!ev) return;
-      var u = S.still ? 1 : (t - ev.t) / 0.42;
+      var ev = S.popEv[p.key]; if (!ev || C.stamped[p.key]) return;
+      var u = (t - ev.t) / POP_S;
       if (d < ev.i + 1 || u <= 0) return;
-      var a = clamp(u * 1.6, 0, 1), sz = u >= 1 ? 1 : 1 + 0.18 * Math.sin(clamp(u, 0, 1) * Math.PI), bx = p.box;
-      var cxp = ev.ax !== undefined ? ev.ax : bx.x + bx.w / 2, cyp = ev.ay !== undefined ? ev.ay : bx.y + bx.h / 2;
+      var a = clamp(u * 1.6, 0, 1), sz = 1 + 0.18 * Math.sin(clamp(u, 0, 1) * Math.PI), bx = p.box;
+      var cxp = bx.x + bx.w / 2, cyp = bx.y + bx.h / 2;
       ctx.save(); ctx.globalAlpha = a;
       ctx.translate(cxp, cyp); ctx.scale(sz, sz); ctx.translate(-cxp, -cyp);
       ctx.drawImage(p.canvas, bx.x, bx.y, bx.w, bx.h);
       ctx.restore();
     });
     // what only the video shows: hail and wind marks, gone by the last frame
-    var animA = 1 - endA;
+    var animA = tickA;
     if (animA > 0) S.anims.forEach(function (ev) {
       if (d < ev.i + 1) return;
       var u = S.still ? 1 : clamp((t - ev.t) / 0.4, 0, 1), x = g.x0 + (g.x1 - g.x0) * (ev.i + 0.5) / g.n, y = markY(g, E, ev.i);
@@ -547,12 +584,69 @@
       ctx.restore();
     }
     // the in-place ticker sits where the totals land
-    if (mode === 'inplace' && endA < 1) inplaceTicker(ctx, S, tk, 1 - endA, t);
-    if (L.end && endA > 0) { ctx.save(); ctx.globalAlpha = endA; put(L.end); ctx.restore(); }
+    if (mode === 'inplace' && tickA > 0) inplaceTicker(ctx, S, tk, tickA, t);
+    if (L.end && endA > 0 && !C.endIn) { ctx.save(); ctx.globalAlpha = endA; ctx.drawImage(L.end, 0, 0, 1800, 1200); ctx.restore(); }
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    if (mode !== 'inplace') overlay(ctx, S, sc, mode, t, d, tk, endA);
+    if (mode !== 'inplace') overlay(ctx, S, sc, mode, t, d, tk, endA, tickA);
     ctx.restore();
     return { d: d, k: tk.k, date: tk.date, total: tk.total, endA: endA };
+  }
+  /* The print so far, kept in one canvas in art space and added to a strip at
+     a time: the days drawn since the last frame (paper, the year, the usual
+     year over the faint one), a month's totals when it ends, a pop once it has
+     opened, the finish once it is whole. A frame is then one drawImage. Asked
+     for an earlier moment (Replay, a test), it starts again from the paper. */
+  var POP_S = 0.42;
+  function compose(S, d, t, cxArt, endA) {
+    var C = S.comp, L = S.layers, sc = S.scale, g = S.geom;
+    if (!C || d < C.d || t < C.t) {
+      var cv = C ? C.canvas : doc.createElement('canvas');
+      cv.width = Math.round(1800 * sc); cv.height = Math.round(1200 * sc);
+      var x0 = cv.getContext('2d');
+      x0.clearRect(0, 0, cv.width, cv.height);
+      if (L.base) x0.drawImage(L.base, 0, 0);
+      if (L.usual) { x0.globalAlpha = 0.32; x0.drawImage(L.usual, 0, 0); x0.globalAlpha = 1; }
+      C = S.comp = { canvas: cv, ctx: x0, px: 0, mpx: 0, d: 0, t: 0, stamped: {}, endIn: false };
+      whiteHead(S, C, 0, cv.width);
+    }
+    var W = C.canvas.width;
+    var to = d >= S.E.n ? W : Math.floor(cxArt * sc);
+    if (L.months) { var mx = Math.min(Math.floor(monthEdge(S.E, d, g) * sc), Math.max(to, C.px)); if (mx > C.mpx) { var m0 = C.mpx; C.mpx = mx; if (m0 < C.px) column(S, C, m0, Math.min(mx, C.px)); } }
+    if (to > C.px) { column(S, C, C.px, to); C.px = to; }
+    S.pops.forEach(function (p) {
+      var ev = S.popEv[p.key];
+      if (!ev || C.stamped[p.key] || d < ev.i + 1 || (!S.still && t < ev.t + POP_S)) return;
+      C.stamped[p.key] = true; stamp(S, C, p);
+    });
+    if (endA >= 1 && !C.endIn && L.end) { C.ctx.drawImage(L.end, 0, 0); C.endIn = true; }
+    C.d = d; C.t = t;
+    return C;
+  }
+  // one column of the print, drawn fresh: paper, the year, the usual year, month totals up to the last full month, pops open there
+  function column(S, C, a, b) {
+    var L = S.layers, x = C.ctx, H = C.canvas.height, w = b - a;
+    if (w <= 0) return;
+    x.clearRect(a, 0, w, H);
+    [L.base, L.wipe, L.usual].forEach(function (c) { if (c) x.drawImage(c, a, 0, w, H, a, 0, w, H); });
+    if (L.months && C.mpx > a) { var mw = Math.min(C.mpx, b) - a; x.drawImage(L.months, a, 0, mw, H, a, 0, mw, H); }
+    whiteHead(S, C, a, b);
+    restamp(S, C, a, b);
+  }
+  function stamp(S, C, p) { var sc = S.scale, b = p.box; C.ctx.drawImage(p.canvas, b.x * sc, b.y * sc, b.w * sc, b.h * sc); }
+  // a strip drawn again goes under any pop already open there
+  function restamp(S, C, a, b) {
+    var sc = S.scale, x = C.ctx;
+    S.pops.forEach(function (p) {
+      if (!(C.stamped[p.key] && p.box.x * sc < b && (p.box.x + p.box.w) * sc > a)) return;
+      // only inside the strip: outside it the pop is already there, and twice would darken its edges
+      x.save(); x.beginPath(); x.rect(a, 0, b - a, C.canvas.height); x.clip(); stamp(S, C, p); x.restore();
+    });
+  }
+  function whiteHead(S, C, a, b) {
+    var h = S.geom.head, sc = S.scale;
+    if (S.geom.style !== 'r1' || !h) return;
+    var x0 = Math.max(a, h.x * sc), x1 = Math.min(b, (h.x + h.w) * sc);
+    if (x1 > x0) { C.ctx.fillStyle = '#FFFFFF'; C.ctx.fillRect(x0, h.y * sc, x1 - x0, h.h * sc); }
   }
   // the right edge of the last finished month (the month totals show then)
   function monthEdge(E, d, g) {
@@ -605,8 +699,8 @@
     return size;
   }
     // the export's words, on the wall: the ticker while it draws, the name and the link at the end
-  function overlay(ctx, S, sc, mode, t, d, tk, endA) {
-    var tall = mode === 'tall', W = sc.W, cx = W / 2, a = 1 - endA;
+  function overlay(ctx, S, sc, mode, t, d, tk, endA, tickA) {
+    var tall = mode === 'tall', W = sc.W, cx = W / 2, a = tickA;
     ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
     var top = tall ? 300 : 112;
     if (a > 0) {
@@ -622,7 +716,7 @@
       var toast = toastAt(S, t);
       if (toast) {
         ctx.globalAlpha = a * toast.a;
-        var ty = tall ? sc.print.y + sc.print.h + 250 : sc.print.y + sc.print.h + 72;
+        var ty = tall ? 1600 : 1022;
         var size = fitFont(ctx, toast.text, '500', tall ? 40 : 30, SANS_F, W - 120);
         ctx.font = '500 ' + size + 'px ' + SANS_F;
         var tw = ctx.measureText(toast.text).width, ph = size * 1.9;
@@ -683,7 +777,7 @@
           beats: evs.filter(function (e) { return e.kind === 'wet'; }).map(function (e) { return { t: e.t, x: geom.x0 + (geom.x1 - geom.x0) * (e.i + 0.5) / geom.n, y: markY(geom, E, e.i) }; }),
           scale: B.scale, loc: I.loc || null, fr: fr, year: src.year || I.year, name: String(src.name || I.name || '').trim(),
           placeLine: (src.place || I.place || '') + ', ' + (src.year || I.year), totalLine: F.totalText + (F.preview ? (fr ? ' jusqu’ici' : ' so far') : ' ' + (fr ? 'cette année' : 'this year')),
-          tickBox: tickBox, hail: hail, wind: wind, creditLine: credit.join(' · '), still: !!opts.reduced
+          tickBox: tickBox, hail: hail, wind: wind, creditLine: credit.join(' · '), still: !!opts.reduced, fontCss: css
         };
       });
     });
@@ -727,14 +821,88 @@
   }
 
   // ---------- recording ----------
-  function canRecord() {
-    var c = doc.createElement('canvas');
-    return !!(root.MediaRecorder && typeof c.captureStream === 'function' && pickMime(function (m) { return root.MediaRecorder.isTypeSupported(m); }));
+  /* Two ways to a file. Best: WebCodecs (VideoEncoder) makes H.264 frame by
+     frame, exactly 30 to the second whatever the phone's speed, faster than
+     real time, and mp4Mux wraps it (Chrome, Edge, Safari 16.4 and later).
+     Otherwise MediaRecorder records the canvas as it plays, in real time. */
+  var avcP = null;
+  function avcCodec(F) {
+    if (!root.VideoEncoder || !root.VideoFrame || typeof root.VideoEncoder.isConfigSupported !== 'function') return Promise.resolve('');
+    return AVC.reduce(function (p, codec) {
+      return p.then(function (got) {
+        if (got) return got;
+        return root.VideoEncoder.isConfigSupported(encConfig(codec, F)).then(function (r) { return r && r.supported ? codec : ''; }, function () { return ''; });
+      });
+    }, Promise.resolve(''));
   }
-  function record(S, mode, onTick) {
+  function encConfig(codec, F) { return { codec: codec, width: F.w, height: F.h, bitrate: F.bps, framerate: 30, avc: { format: 'avc' } }; }
+  function mrMime() { return root.MediaRecorder && typeof doc.createElement('canvas').captureStream === 'function' ? pickMime(function (m) { return root.MediaRecorder.isTypeSupported(m); }) : ''; }
+  function canRecord() {
+    if (mrMime()) return Promise.resolve(true);
+    return (avcP = avcP || avcCodec(FORMATS.tall)).then(function (c) { return !!c; });
+  }
+  function record(S, mode, onTick, opts) {
+    opts = opts || {};
+    var F = FORMATS[mode];
+    return (opts.via === 'recorder' ? Promise.resolve('') : avcCodec(F)).then(function (codec) {
+      if (codec) return encodeMp4(S, mode, codec, onTick);
+      if (!mrMime()) throw new Error('no recorder');
+      return liveRecord(S, mode, onTick);
+    });
+  }
+  function encodeMp4(S, mode, codec, onTick) {
+    var F = FORMATS[mode];
+    return encodeFrames(S, mode, codec, onTick).then(function (r) {
+      if (!r.desc || !r.samples.length) throw new Error('encoder');
+      var bytes = mp4Mux({ width: F.w, height: F.h, fps: r.fps, description: r.desc, samples: r.samples });
+      return { blob: new Blob([bytes], { type: 'video/mp4' }), type: 'video/mp4', ext: 'mp4', canvas: r.canvas, via: 'webcodecs', codec: codec, frames: r.samples.length };
+    });
+  }
+  // every frame of the video through VideoEncoder -> {samples [{data, key}], desc, canvas, fps}
+  function encodeFrames(S, mode, codec, onTick) {
+    var F = FORMATS[mode], c = doc.createElement('canvas'), fps = 30;
+    c.width = F.w; c.height = F.h;
+    var ctx = c.getContext('2d'), samples = [], desc = null, failed = null;
+    var enc = new root.VideoEncoder({
+      output: function (chunk, meta) {
+        if (meta && meta.decoderConfig && meta.decoderConfig.description) {
+          var dd = meta.decoderConfig.description;
+          desc = dd.buffer ? new Uint8Array(dd.buffer, dd.byteOffset || 0, dd.byteLength).slice() : new Uint8Array(dd).slice();
+        }
+        var b = new Uint8Array(chunk.byteLength); chunk.copyTo(b);
+        samples.push({ data: b, key: chunk.type === 'key' });
+      },
+      error: function (e) { failed = e || new Error('encoder'); }
+    });
+    enc.configure(encConfig(codec, F));
+    var N = Math.ceil(S.plan.total * fps) + 1, f = 0;
+    return new Promise(function (res, rej) {
+      function step() {
+        if (failed) { try { enc.close(); } catch (e) {} rej(failed); return; }
+        // a few frames, then a breath for the page (and the encoder's queue)
+        var until = performance.now() + 12;
+        while (f < N && enc.encodeQueueSize < 6 && performance.now() < until) {
+          frameAt(ctx, S, mode, Math.min(f / fps, S.plan.total));
+          var vf = new root.VideoFrame(c, { timestamp: Math.round(f * 1e6 / fps), duration: Math.round(1e6 / fps) });
+          enc.encode(vf, { keyFrame: f % (fps * 2) === 0 });
+          vf.close();
+          f++;
+        }
+        if (onTick) onTick(f / fps, N / fps, c);
+        if (f < N) { setTimeout(step, 0); return; }
+        enc.flush().then(function () {
+          enc.close();
+          if (failed) throw failed;
+          res({ samples: samples, desc: desc, canvas: c, fps: fps, frames: N });
+        }).catch(rej);
+      }
+      step();
+    });
+  }
+  function liveRecord(S, mode, onTick) {
     var F = FORMATS[mode], c = doc.createElement('canvas');
     c.width = F.w; c.height = F.h;
-    var ctx = c.getContext('2d'), mime = pickMime(function (m) { return root.MediaRecorder.isTypeSupported(m); });
+    var ctx = c.getContext('2d'), mime = mrMime();
     frameAt(ctx, S, mode, 0);
     var stream = c.captureStream(30), rec = new root.MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: F.bps }), chunks = [];
     return new Promise(function (res, rej) {
@@ -745,10 +913,10 @@
       rec.onerror = function (e) { rej(e.error || new Error('recorder')); };
       rec.onstop = function () {
         if (hid) { rej(new Error('hidden')); return; }
-        var type = (mime.split(';')[0]) || 'video/webm', blob = new Blob(chunks, { type: type });
-        var ms = (performance.now() - t0);
-        if (/webm/.test(type) && blob.arrayBuffer) blob.arrayBuffer().then(function (b) { res({ blob: new Blob([webmWithDuration(new Uint8Array(b), ms)], { type: type }), type: type, ext: 'webm', canvas: c }); }, function () { res({ blob: blob, type: type, ext: 'webm', canvas: c }); });
-        else res({ blob: blob, type: type, ext: /mp4/.test(type) ? 'mp4' : 'webm', canvas: c });
+        var type = (mime.split(';')[0]) || 'video/webm', blob = new Blob(chunks, { type: type }), ms = performance.now() - t0;
+        var done = function (b) { res({ blob: b, type: type, ext: /mp4/.test(type) ? 'mp4' : 'webm', canvas: c, via: 'recorder' }); };
+        if (/webm/.test(type) && blob.arrayBuffer) blob.arrayBuffer().then(function (b) { done(new Blob([webmWithDuration(new Uint8Array(b), ms)], { type: type })); }, function () { done(blob); });
+        else done(blob);
       };
       doc.addEventListener('visibilitychange', onVis);
       rec.start(250);
@@ -854,11 +1022,13 @@
       me.src = s0;
       say.textContent = 'Getting your year ready…';
       host.removeAttribute('data-rpd-done');
-      return prepare(s0, { reduced: reduced, wind: windBox.checked }).then(function (S) {
+      var sz0 = size();
+      return prepare(s0, { reduced: reduced, wind: windBox.checked, scale: clamp(sz0.w / 1800, 0.75, 1) }).then(function (S) {
         me.S = S;
         var words = reduced ? 'Your year in four steps, without motion. The video you make plays the whole year.' : 'Your year, day by day, from the same NOAA record as the print.';
         if (S.hail && S.hail.none && !s0.ca) words += ' No hail record for ' + S.year + ' in our data.';
         else if (S.hail && S.hail.list && S.hail.list.length) words += ' Hail near town: ' + S.hail.srcs.join(', ') + '.';
+        else if (S.hail && S.hail.srcs && S.hail.srcs.length) words += ' No hail reported within ' + HAIL_MI + ' mi in ' + S.year + ' (' + S.hail.srcs.join(', ') + ').';
         if (windBox.checked) words += S.wind && !S.wind.failed ? ' Wind is modeled (ERA5 reanalysis via Open-Meteo), not measured at the station.' : ' The wind record didn’t load, so the video has no wind.';
         say.textContent = words;
         play(S);
@@ -872,19 +1042,17 @@
     shut.addEventListener('click', close);
     make.addEventListener('click', function () {
       if (me.busy || !me.S) return;
-      if (!canRecord()) {
-        say.textContent = 'This browser can’t make a video file. You can save the finished picture instead.';
-        still.classList.remove('rpd-hide'); ga('fail', Object.assign(meta(), { step: 'record' }));
-        return;
-      }
       me.busy = true; make.disabled = true; replay.disabled = true;
       share.classList.add('rpd-hide'); save.classList.add('rpd-hide');
       prog.classList.remove('rpd-hide');
       var mode = fmt(), S = me.S;
       // the file is always the full year in motion, whatever this screen plays
-      var go = S.still ? prepare(me.src, { wind: windBox.checked }) : Promise.resolve(S);
-      say.textContent = 'Making your video. Keep this page open; it takes about ' + Math.round(S.plan.total) + ' seconds.';
-      go.then(function (S2) {
+      var go = S.still ? prepare(me.src, { wind: windBox.checked, scale: 0.75 }) : Promise.resolve(S);
+      say.textContent = 'Making your video. Keep this page open; it takes up to ' + Math.round(S.plan.total) + ' seconds.';
+      canRecord().then(function (ok) {
+        if (!ok) throw new Error('no recorder');
+        return go;
+      }).then(function (S2) {
         return record(S2, mode, function (t, tot) { progI.style.width = Math.min(100, t / tot * 100).toFixed(1) + '%'; });
       }).then(function (r) {
         me.file = new File([r.blob], fileName({ place: me.src.place || S.I.place, year: S.year, style: S.geom.style }, r.ext), { type: r.type });
@@ -892,9 +1060,11 @@
         say.textContent = 'Your video is ready (' + mb + ' MB, ' + r.ext.toUpperCase() + ').';
         if (isPhone() && canShareFile(me.file)) share.classList.remove('rpd-hide');
         save.classList.remove('rpd-hide');
-        ga('export', Object.assign(meta(), { type: r.ext, mb: +mb }));
+        ga('export', Object.assign(meta(), { type: r.ext, via: r.via, mb: +mb }));
       }).catch(function (e) {
-        say.textContent = e && e.message === 'hidden' ? 'The video stopped because the page was hidden. Press Make a video and keep this page open.' : 'The video didn’t record in this browser. You can save the finished picture instead.';
+        say.textContent = e && e.message === 'hidden' ? 'The video stopped because the page was hidden. Press Make a video and keep this page open.'
+          : e && e.message === 'no recorder' ? 'This browser can’t make a video file. You can save the finished picture instead.'
+          : 'The video didn’t record in this browser. You can save the finished picture instead.';
         if (!(e && e.message === 'hidden')) still.classList.remove('rpd-hide');
         ga('fail', Object.assign(meta(), { step: 'record' }));
       }).then(function () { me.busy = false; make.disabled = false; replay.disabled = false; prog.classList.add('rpd-hide'); progI.style.width = '0'; });
@@ -928,7 +1098,7 @@
     if (me.host) { me.host.classList.remove('rpd-host'); me.host.removeAttribute('data-rpd-done'); }
     if (me.onClose) me.onClose();
   }
-  api.open = open; api.close = close; api.prepare = prepare; api.frameAt = frameAt; api.record = record; api.canRecord = canRecord; api.stillOf = stillOf;
+  api.open = open; api.close = close; api.prepare = prepare; api.frameAt = frameAt; api.record = record; api.canRecord = canRecord; api.stillOf = stillOf; api.encodeFrames = encodeFrames; api.avcCodec = avcCodec;
   api.current = function () { return CUR; };
 
   // ---------- on /rain-print: a "Watch it draw" chip beside Up close ----------
