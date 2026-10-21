@@ -100,3 +100,19 @@ jobs:
             sleep $((RANDOM % 4 + 2))
           done
           echo "Failed to push after 5 attempts."; exit 1
+
+      # Oct 21 (Sig, insight machine): per-barn receipts history. Every sale in the feed with the
+      # head the report says sold that day, one CSV per Central day, to the private raw branch at
+      # history/cattle-auction/receipts/ (scripts/history_append.py cattle). After the commit,
+      # and it can never fail the run.
+      - name: Barn receipts history to the raw branch
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        continue-on-error: true
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: |
+          python scripts/history_append.py cattle || { echo "::warning::receipts history not written"; exit 0; }
+          if [ -d history/cattle-auction ]; then
+            bash scripts/push_raw.sh "cattle receipts history" history/cattle-auction
+          fi
