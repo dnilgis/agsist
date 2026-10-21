@@ -725,10 +725,13 @@
         x.addEventListener('click', function () {
           try { localStorage.setItem('agsist-notice-closed', id); } catch (e) {}
           bar.remove();
+          document.body.style.paddingBottom = '';
         });
         bar.appendChild(x);
         // fixed to the bottom of the screen, so nothing on the page moves when it lands
         document.body.appendChild(bar);
+        // room under the last of the page, so the bar never sits on its final buttons
+        document.body.style.paddingBottom = bar.offsetHeight + 'px';
       })
       .catch(function () {});
   }
