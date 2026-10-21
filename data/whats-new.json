@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-21-feeder-weekly",
+   "date": "2026-10-21",
+   "title": "Feeder prices by region and weight",
+   "line": "Each week, what feeder steers and heifers brought at the USDA-reported barns we read, by region and 100 lb class, with the barns and head behind every price. Beside the board, RMA's daily feeder steer value and how it sits against the nearby futures.",
+   "link": "/cattle-auction-prices#feeder-weekly"
+  },
+  {
    "id": "2026-10-18-here",
    "date": "2026-10-18",
    "title": "One place, all its numbers",
