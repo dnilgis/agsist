@@ -138,7 +138,7 @@
       if (dr.hist) key.push(['hist', 'Thin gray lines: the other full years this station kept. The wettest and driest end with their year.']);
       if (dr.frost) key.push(['frost', 'Small gray triangle on the ' + ground + ': the last frost of spring and the first of fall.']);
       if (dr.crop) key.push(['crop', 'Crop stages on the ' + ground + ', each with its date, counted from planting by this station\u2019s growing degree days.']);
-      if (dr.ribbon) key.push(['ribbon', 'Stripes: one a day, blue when the day was colder than usual for that date, rust when warmer, darker the farther off; the hottest and coldest days are named. A blank is a day with no reading.']);
+      if (dr.ribbon) key.push(['ribbon', 'Stripes: each day against usual, blue colder, rust warmer; hottest and coldest named.']);
       if (dr.qr) key.push(['qr', 'The small code in the corner opens this same print at agsist.com.']);
     }
     c.key = key;

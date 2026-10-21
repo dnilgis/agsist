@@ -279,7 +279,7 @@ test("the code line with the real code (NEXTPRINT, print or framed print) fits e
 test("the engine hands the letter the offer from the prices it already loads", () => {
   const js = read("components/rain-print.js");
   assert.match(js, /offer: \(PRICES && PRICES\.letter_offer\) \|\| null, today: TODAY/);
-  assert.match(js, /sc\.src = '\/components\/rp-insert\.js\?v=5'/);
+  assert.match(js, /sc\.src = '\/components\/rp-insert\.js\?v=6'/);
   // checkout: the Stripe link only gains client_reference_id; nothing strips a promotion code
   assert.doesNotMatch(js, /promotion_code|promo_code/i);
 });

@@ -1055,7 +1055,7 @@
   var STRIPE_INK = ['#2F5F8A', '#6F98BD', '#B5CADB', '#E6E1D9', '#E8BE98', '#C98552', '#9C4A22'];
   function stripeStep(dv) {
     var a = Math.abs(dv), k = a < STRIPE_STEPS[0] ? 0 : a < STRIPE_STEPS[1] ? 1 : a < STRIPE_STEPS[2] ? 2 : 3;
-    return dv < 0 ? -k : k;
+    return k && dv < 0 ? -k : k;
   }
   function stripeInk(dv) { return STRIPE_INK[stripeStep(dv) + 3]; }
   function stripesOn(I) { var r = I.temp && I.temp.ribbon; return !!(r && r.dev && r.dev.length); }
