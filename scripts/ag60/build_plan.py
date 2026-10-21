@@ -515,6 +515,22 @@ def srt(caps):
     return "\n".join(f"{i}\n{ts(c['start'])} --> {ts(c['end'])}\n{c['text']}\n" for i, c in enumerate(caps, 1))
 
 
+def source_name(src):
+    """Who the number comes from, in words, for the description."""
+    f, path = src.split(":", 1)
+    if f == "daily.json":
+        if path.startswith("locked_"):
+            return "CME Group, as in the AGSIST Daily"
+        if path.startswith("edge."):
+            return "AGSIST elevator network"
+        if path.startswith("harvest_clock"):
+            return "CME settles, USDA RMA price discovery"
+        return "AGSIST Daily"
+    return {"basis-states.json": "AGSIST elevator network", "storm-days.json": "NOAA Storm Prediction Center",
+            "crop-progress.json": "USDA NASS Crop Progress", "analyst-estimates.json": "USDA; trade survey before the report",
+            "prices.json": "CME Group"}.get(f, f)
+
+
 def metadata(p, src):
     d = src.get("daily") or {}
     nice = day(p.date).strftime("%A, %B ") + str(day(p.date).day)
@@ -526,7 +542,8 @@ def metadata(p, src):
     lines = [f"Ag in 60 for {nice}, {day(p.date).year}. Grain, cattle and milk prices, cash bids, weather and what to watch, in a minute.", "",
              "Every number, with its date and source:"]
     for f in p.facts:
-        lines.append(f"- {f['label']}: {f['show']} ({f['asof']}; {f['src'].split(':')[0]})")
+        sign = ("up " if f["value"] > 0 else "down " if f["value"] < 0 else "") if f["label"].endswith("change") and isinstance(f["value"], (int, float)) else ""
+        lines.append(f"- {f['label']}: {sign}{f['show']} ({f['asof']}; {source_name(f['src'])})")
     lines += ["", "Read the full Daily: https://agsist.com/daily/" + p.date,
               "Cash bids near you: https://agsist.com/cash-bids", "Rain Print: https://agsist.com/rain-print", "",
               "How this is made: the script is built by code from the AGSIST Daily, which AI software drafts each morning from Sig's rules "
