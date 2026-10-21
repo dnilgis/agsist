@@ -118,7 +118,10 @@ test("5. the worker routes and the sender (once, never after a paid order)", () 
   const py = execFileSync("python3", [ROOT + "scripts/rp_design_email.py", "--selftest"], { encoding: "utf8" });
   assert.match(py, /rp_design_email: all checks pass/);
   const wf = read(".github/workflows/rp-design-email.yml");
-  assert.ok(!/^\s*schedule:/m.test(wf), "no schedule until Sig OKs one");
+  // Sig OK'd an hourly run on Oct 21, 2026: exactly that one schedule, and a
+  // scheduled run is live only with the repository variable set.
+  assert.deepEqual([...wf.matchAll(/cron: '([^']+)'/g)].map((m) => m[1]), ["23 * * * *"], "the one hourly schedule Sig approved");
+  assert.match(wf, /github\.event_name == 'schedule' && vars\.RP_DESIGN_EMAIL_LIVE == '1'/, "an hourly run is a dry run unless the variable is 1");
   assert.match(wf, /workflow_dispatch:/);
   const W = read("workers/subs-worker.js");
   assert.match(W, /v5\.43 \(2026-10-20\): EMAIL ME THIS DESIGN/);

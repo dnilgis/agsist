@@ -6,16 +6,16 @@ name: Rain Print design email
 # new one through the GitHub API (worker secret GH_DISPATCH_TOKEN). The log
 # prints counts only.
 #
-# NO SCHEDULE: a new schedule is Sig's call. Without one, a reminder that is
-# due goes out on the next run, which the next new ask starts. To send
-# reminders on time, Sig would add, for example:
-#   schedule: [{cron: '23 * * * *'}]
-# The worker asks for a dry run (every email to Sig, nothing marked) unless
-# its variable RP_DESIGN_EMAIL_LIVE is "1".
+# HOURLY (Sig OK'd Oct 21, 2026) so "one reminder tomorrow" goes on time; a run
+# with nothing due sends nothing. The worker asks for a dry run (every email to
+# Sig, nothing marked) unless its variable RP_DESIGN_EMAIL_LIVE is "1"; an hourly
+# run is live only when the repository variable RP_DESIGN_EMAIL_LIVE is "1" too.
 # Secrets: LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS (or GMAIL_USER,
 # GMAIL_APP_PASS). Optional: SMTP_HOST, SMTP_PORT, FROM_ADDR, SIG_TO.
 
 on:
+  schedule:
+    - cron: '23 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -65,5 +65,5 @@ jobs:
           FROM_ADDR: ${{ secrets.FROM_ADDR }}
           RP_FROM_NAME: ${{ vars.RP_FROM_NAME }}
           SIG_TO: ${{ secrets.SIG_TO }}
-          DRY_RUN: ${{ inputs.dry_run == false && '' || '1' }}
+          DRY_RUN: ${{ (github.event_name == 'schedule' && vars.RP_DESIGN_EMAIL_LIVE == '1') && '' || (github.event_name != 'schedule' && inputs.dry_run == false) && '' || '1' }}
         run: python3 scripts/rp_design_email.py
