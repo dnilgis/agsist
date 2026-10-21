@@ -1,0 +1,149 @@
+name: Ag in 60 video
+
+# A 60-second vertical video (YouTube Short) made from the morning's data:
+# scripts/ag60/build_plan.py writes the script and scene plan from
+# data/daily.json and friends, voice.py reads it with an open voice model on
+# the runner's CPU (no key, no per-use cost), render.mjs draws each frame in a
+# headless browser and ffmpeg stitches them with the voice. The MP4, the
+# captions (.srt, .vtt), the script and the YouTube title and description are
+# kept as the run's artifact for 7 days.
+#
+# NO SCHEDULE (Sig OKs schedules). Run it by hand, or later have a job start
+# it after it publishes, the way prices.yml starts daily.yml:
+#   gh workflow run ag60.yml -f upload=true          (daily.yml, after the push)
+#   gh workflow run ag60.yml -f mode=report -f upload=true   (report-day job, after the release is written)
+#
+# Upload: only when `upload` is ticked AND the three secrets are set
+# (YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN). Without them the step is
+# skipped and the video is still in the artifact. While the Google Cloud
+# project has not passed YouTube's API audit, every upload stays private.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "auto (report on a released report day, else the Daily), daily or report"
+        type: choice
+        options: [auto, daily, report]
+        default: auto
+      date:
+        description: "Day to build (YYYY-MM-DD); empty = today's Daily"
+        type: string
+        default: ""
+      voice:
+        description: "Voice (af_heart, am_michael, bm_george, ...)"
+        type: string
+        default: af_heart
+      upload:
+        description: "Upload to YouTube (needs the YT_ secrets)"
+        type: boolean
+        default: false
+      privacy:
+        description: "private, unlisted or public (an unaudited API project is forced to private)"
+        type: choice
+        options: [private, unlisted, public]
+        default: private
+
+concurrency:
+  group: ag60
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  TZ: America/Chicago
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      HAVE_YT: ${{ secrets.YT_REFRESH_TOKEN != '' && secrets.YT_CLIENT_ID != '' && secrets.YT_CLIENT_SECRET != '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Checks (gate)
+        run: node --test test/ag60.test.mjs
+
+      - name: Voice model (cached; checked against its published hash)
+        id: model
+        uses: actions/cache@v4
+        with:
+          path: models
+          key: kokoro-v1.0-int8-6e742170
+      - name: Get the voice model
+        if: steps.model.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p models
+          base=https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0
+          curl -fsSL --retry 3 -o models/kokoro-v1.0.int8.onnx "$base/kokoro-v1.0.int8.onnx"
+          curl -fsSL --retry 3 -o models/voices-v1.0.bin "$base/voices-v1.0.bin"
+          echo "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb  models/kokoro-v1.0.int8.onnx" | sha256sum -c -
+          echo "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d  models/voices-v1.0.bin" | sha256sum -c -
+
+      - name: Install
+        run: |
+          pip install kokoro-onnx==0.6.1
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+          ffmpeg -version | head -1 || { sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg; }
+
+      - name: Script and scenes
+        env:
+          MODE: ${{ inputs.mode }}
+          DAY: ${{ inputs.date }}
+        run: |
+          case "$MODE" in auto|daily|report) ;; *) echo "bad mode"; exit 1;; esac
+          [ -z "$DAY" ] || [[ "$DAY" =~ ^20[0-9]{2}-[01][0-9]-[0-3][0-9]$ ]] || { echo "bad date"; exit 1; }
+          python3 scripts/ag60/build_plan.py --out out/ag60 --mode "$MODE" ${DAY:+--date "$DAY"}
+
+      - name: Voice
+        env:
+          AG60_VOICE: ${{ inputs.voice }}
+        run: |
+          [[ "$AG60_VOICE" =~ ^[a-z]{2}_[a-z]+$ ]] || { echo "bad voice name"; exit 1; }
+          python3 scripts/ag60/voice.py --out out/ag60 --model models/kokoro-v1.0.int8.onnx --voices models/voices-v1.0.bin
+
+      - name: Render
+        run: node scripts/ag60/render.mjs --out out/ag60 --stills
+
+      - name: Keep the video
+        uses: actions/upload-artifact@v4
+        with:
+          name: ag60-${{ github.run_id }}
+          retention-days: 7
+          path: |
+            out/ag60/ag60.mp4
+            out/ag60/captions.srt
+            out/ag60/captions.vtt
+            out/ag60/script.txt
+            out/ag60/metadata.json
+            out/ag60/plan.json
+            out/ag60/contact.jpg
+
+      - name: Upload to YouTube
+        if: ${{ inputs.upload && env.HAVE_YT == 'true' }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          PRIVACY: ${{ inputs.privacy }}
+        run: python3 scripts/ag60/upload.py --out out/ag60 --privacy "$PRIVACY"
+
+      - name: Upload skipped
+        if: ${{ inputs.upload && env.HAVE_YT != 'true' }}
+        run: echo "No YT_CLIENT_ID / YT_CLIENT_SECRET / YT_REFRESH_TOKEN secrets; the video is in the artifact." >> "$GITHUB_STEP_SUMMARY"
