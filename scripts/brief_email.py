@@ -173,7 +173,7 @@ def e(s):
 def _href(u):
     """A bare "&" in an href is invalid HTML and email sanitisers are not
     something to gamble a send on. The signed unsubscribe link carries one
-    ("...?e=...&t=..."), and it shipped raw. Idempotent, so a caller that
+    ("...?k=...&t=..."), and it shipped raw. Idempotent, so a caller that
     already escaped its URL does not end up with "&amp;amp;".
     """
     return re.sub(r"&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)", "&amp;", str(u or ""))
@@ -1374,22 +1374,25 @@ def _selftest():
              "https://agsist.com/?d=1&utm_source=daily&utm_medium=email&utm_campaign=2026-10-19&utm_content=button"),
             ("https://agsist.com/#signup-full", "zip",
              "https://agsist.com/?utm_source=daily&utm_medium=email&utm_campaign=2026-10-19&utm_content=zip#signup-full"),
-            ("https://agsist-subs.dnilgis.workers.dev/unsubscribe?e=a%40b.com&t=ab", "x",
-             "https://agsist-subs.dnilgis.workers.dev/unsubscribe?e=a%40b.com&t=ab"),
+            ("https://agsist-subs.dnilgis.workers.dev/unsubscribe?k=0123456789abcdef&t=ab", "x",
+             "https://agsist-subs.dnilgis.workers.dev/unsubscribe?k=0123456789abcdef&t=ab"),
             ("https://aigwi.com/?utm_source=agsist", "x", "https://aigwi.com/?utm_source=agsist"),
             ("https://agsist.com.evil.example/", "x", "https://agsist.com.evil.example/")):
         if utm(u, c, "2026-10-19") != want:
             bad.append(("utm", u, utm(u, c, "2026-10-19")))
     td = dict(d, date="Monday, October 19, 2026", edge={"label": "Only on AGSIST", "facts": [ef]})
     for part, out in (("text", render_text(td, "https://agsist.com/daily/2026-10-19.html", forward_url="https://agsist.com/?ref=email-forward",
-                                           unsub_url="https://w.dev/unsubscribe?e=a&t=1", today=date(2026, 10, 19))),
+                                           unsub_url="https://w.dev/unsubscribe?k=0123456789abcdef&t=1", today=date(2026, 10, 19))),
                       ("html", render_html(td, "https://agsist.com/daily/2026-10-19.html", forward_url="https://agsist.com/?ref=email-forward",
-                                           unsub_url="https://w.dev/unsubscribe?e=a&t=1", today=date(2026, 10, 19)).replace("&amp;", "&"))):
+                                           unsub_url="https://w.dev/unsubscribe?k=0123456789abcdef&t=1", today=date(2026, 10, 19)).replace("&amp;", "&"))):
         us = re.findall(r'https?://(?:www\.)?agsist\.com[^\s"<>]*', out)
         if not us or [u for u in us if "utm_source=daily&utm_medium=email&utm_campaign=2026-10-19&utm_content=" not in u]:
             bad.append(("untagged link in " + part, us))
-        if "https://w.dev/unsubscribe?e=a&t=1" not in out:
+        if "https://w.dev/unsubscribe?k=0123456789abcdef&t=1" not in out:
             bad.append(("unsubscribe changed in " + part, ""))
+        # subs worker v5.46: no reader address inside any link
+        if [u for u in re.findall(r'href="([^"]*)"', out) + re.findall(r'https?://[^\s"<>]*', out) if "@" in u or "%40" in u.lower()]:
+            bad.append(("an address inside a link in " + part, ""))
         for c in ("button", "onlyon", "forward"):
             if "utm_content=" + c not in out:
                 bad.append(("utm_content " + c + " in " + part, ""))

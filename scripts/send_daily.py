@@ -53,8 +53,6 @@ failures are reported and tolerated; total failure exits nonzero.
 """
 import json
 import os
-import hmac
-import hashlib
 import smtplib
 import ssl
 import urllib.request
@@ -71,6 +69,7 @@ import brief_email        # noqa: E402  (needs the path line above)
 import subscribers        # noqa: E402
 import gmail_limit        # noqa: E402
 import log_safe           # noqa: E402  (no address in the public log)
+import email_links        # noqa: E402  (k=<link id> links; never an address in one)
 
 REPO = Path(__file__).resolve().parent.parent
 ARCHIVE = REPO / "data" / "daily-archive"
@@ -139,12 +138,18 @@ def load_today():
         return today, json.load(f)
 
 
+# Address -> the reader's link id (subs worker v5.46), filled once by main()
+# from the list. Every signed link carries k=<id>, never the address. A reader
+# with no id gets no signed link, and main() does not mail them.
+LINK_IDS = {}
+
+
 def unsub_url(email):
     base, secret = (os.environ.get("LIST_URL") or "").strip() or None, (os.environ.get("UNSUB_SECRET") or "").strip() or None
-    if not (base and secret):
+    lid = LINK_IDS.get(str(email).strip().lower())
+    if not (base and secret and lid):
         return None
-    t = hmac.new(secret.encode(), email.lower().encode(), hashlib.sha256).hexdigest()[:16]
-    return (base.rstrip("/") + "/unsubscribe?e=" + urllib.parse.quote(email.lower()) + "&t=" + t)
+    return email_links.signed(base, "unsubscribe", lid, secret)
 
 
 def flag(day, set_it=False):
@@ -241,13 +246,13 @@ ELEVATOR_LINES = {}
 def elevator_add_url(email):
     """The reader's signed link to put their saved elevators in this email
     (subs worker v5.42 /daily-elev): t = HMAC of the address + "|de", the way
-    the unsubscribe link is signed. None without LIST_URL and UNSUB_SECRET."""
+    the unsubscribe link is signed. None without LIST_URL and UNSUB_SECRET.
+    v5.46: ?k=<the reader's link id>, t = HMAC of the id + "|de"; no id, no link."""
     base, secret = (os.environ.get("LIST_URL") or "").strip(), (os.environ.get("UNSUB_SECRET") or "").strip()
-    if not (base and secret):
+    lid = LINK_IDS.get(str(email).strip().lower())
+    if not (base and secret and lid):
         return None
-    e = str(email).strip().lower()
-    t = hmac.new(secret.encode(), (e + "|de").encode(), hashlib.sha256).hexdigest()[:16]
-    return base.rstrip("/") + "/daily-elev?e=" + urllib.parse.quote(e) + "&t=" + t
+    return email_links.signed(base, "daily-elev", lid, secret, "|de")
 
 
 def load_elevator_lines(subs=None, how="plain", bids_data=None):
@@ -289,9 +294,11 @@ def load_elevator_lines(subs=None, how="plain", bids_data=None):
             print("your-elevators block skipped (" + type(ex).__name__ + ")")
             out = {}
     # Every reader on the list gets the signed footer link to add saved elevators.
-    if subs and elevator_add_url("reader@example.com"):
+    if subs and (os.environ.get("LIST_URL") or "").strip() and (os.environ.get("UNSUB_SECRET") or "").strip():
         for r in subs:
             em = str(r["email"]).strip().lower()
+            if not elevator_add_url(em):
+                continue
             b = out.get(em)
             if isinstance(b, dict):
                 b["add_url"] = elevator_add_url(em)
@@ -384,7 +391,8 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     # fallback, not an attachment.
     msg.set_content(text)
     msg.add_alternative(hbody, subtype="html")
-    return msg
+    # v5.46: refuses (raises) if any link carries an address; the send loop counts it failed
+    return email_links.check_message(msg)
 
 
 def main():
@@ -398,6 +406,18 @@ def main():
         print("already sent for " + day + " (day-flag set) — skipping. exit 0")
         return 0
     subs, how = fetch_subscribers()
+    if how == "json":
+        # v5.46: only readers the worker gave a link id; their links carry k=, never the address
+        LINK_IDS.clear()
+        LINK_IDS.update(email_links.link_ids(subs))
+        no_id = sum(1 for r in subs if str(r["email"]).strip().lower() not in LINK_IDS)
+        if subs and no_id == len(subs):
+            print("::error::the subs worker gave no link ids (older than v5.46, or UNSUB_SECRET unset); "
+                  "nothing sent, the day is not flagged")
+            return 1
+        if no_id:
+            print("::warning::%d reader(s) had no link id this run and are not mailed" % no_id)
+            subs = [r for r in subs if str(r["email"]).strip().lower() in LINK_IDS]
     recipients = [r["email"] for r in subs]
     if not recipients:
         print("FATAL: RECIPIENTS parsed to zero addresses")
@@ -432,6 +452,7 @@ def main():
         # sample below is built for a made-up address.
         print("preview: %d distinct ZIP(s) on the list, %d reader(s) with none"
               % (len({r.get("zip") for r in subs if r.get("zip")}), sum(1 for r in subs if not r.get("zip"))))
+        LINK_IDS["reader@example.com"] = email_links.SAMPLE_LID
         m = build_email(day, b, "reader@example.com", from_name, from_addr, reply_to)
         _prior, _pday = brief_email.prior_board(b)
         print("SUBJECT: " + str(m["Subject"]))

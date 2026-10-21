@@ -85,6 +85,9 @@ LIST = [
     {"email": "e@farm.com", "zip": None, "src": "", "ts": 5, "reports": True},
     {"email": "f@farm.com", "zip": "54999", "src": "", "ts": 6, "reports": True},
 ]
+# subs worker v5.46: each row carries its link id (made up here)
+for _i, _r in enumerate(LIST):
+    _r["lid"] = "000000000000tes" + "abcdef"[_i]
 MODE = {"m": "json"}
 
 
@@ -97,6 +100,11 @@ class Worker(BaseHTTPRequestHandler):
             self.send_response(403); self.end_headers(); return
         if "format=json" in self.path and MODE["m"] == "json":
             body, ct = json.dumps(LIST), "application/json"
+        elif "format=json" in self.path and MODE["m"] in ("nolid1", "nolid"):
+            rows = [dict(r) for r in LIST]
+            for r in (rows[:1] if MODE["m"] == "nolid1" else rows):
+                r.pop("lid")
+            body, ct = json.dumps(rows), "application/json"
         elif "format=json" in self.path and MODE["m"] == "refuse":
             self.send_response(400); self.end_headers(); return
         else:
@@ -200,10 +208,18 @@ for who in ("a@farm.com", "c@farm.com", "d@farm.com", "e@farm.com", "f@farm.com"
     check(not bad, "%s: untagged agsist.com link(s): %r" % (who, bad[:3]))
     check(all(u.count("utm_source=") == 1 for u in us), "%s: one utm_source per link" % who)
     unsub = [l for l in t.splitlines() if l.startswith("Unsubscribe: ")]
-    check(len(unsub) == 1 and "/unsubscribe?e=" in unsub[0] and "&t=" in unsub[0] and "utm_" not in unsub[0],
-          "%s: unsubscribe link untouched: %r" % (who, unsub))
-    check('href="http://127.0.0.1:%d/unsubscribe?e=' % srv.server_port in h and "utm_" not in h.split("/unsubscribe?e=")[1].split('"')[0],
+    lid = send_daily.LINK_IDS.get(who)
+    check(lid and len(unsub) == 1 and "/unsubscribe?k=" + lid + "&t=" in unsub[0] and "utm_" not in unsub[0],
+          "%s: unsubscribe link carries the link id, untouched: %r" % (who, unsub))
+    check('href="http://127.0.0.1:%d/unsubscribe?k=' % srv.server_port in h and "utm_" not in h.split("/unsubscribe?k=")[1].split('"')[0],
           "%s: html unsubscribe untouched" % who)
+    # v5.46: no address in any link, in either part or the header
+    import email_links  # noqa: E402
+    m = send_daily.build_email(day, json.load(open(archive)), who, "AGSIST Daily", "sender@example.com", None)
+    check(not [u for u in email_links.hrefs(h) if "@" in u or "%40" in u.lower()], "%s: no @ inside any href" % who)
+    check(not email_links.bad_links(t) and "farm.com" not in t.replace(who, "") and "/unsubscribe?e=" not in t + h,
+          "%s: no address in a text link" % who)
+    check("@" not in str(m["List-Unsubscribe"]).split(">")[0], "%s: List-Unsubscribe link carries no address" % who)
 contents = set(re.findall(r"utm_content=(\w+)", ta))
 check({"button", "forward"} <= contents, "button and forward named: %r" % contents)
 check(("utm_content=footer" in ha) and ("utm_content=button" in ha), "html footer and button named")
@@ -264,6 +280,17 @@ os.environ.pop("LOCAL_BIDS", None)
 
 # 6. the Gmail projection runs on every send
 check("gmail limit: projected" in out, "gmail projection printed")
+
+# 7. v5.46: a reader the worker gave no link id is not mailed; no ids at all sends nothing
+MODE["m"] = "nolid1"
+rc, out = run()
+check(rc == 0 and "1 reader(s) had no link id this run and are not mailed" in out and "recipients 5 " in out,
+      "a reader with no link id is left out, counted: " + out[-300:])
+MODE["m"] = "nolid"
+rc, out = run()
+check(rc == 1 and "gave no link ids" in out, "no link ids at all: nothing sent, exit 1")
+check("farm.com" not in out, "no address in the log")
+MODE["m"] = "json"
 
 srv.shutdown()
 if fails:
