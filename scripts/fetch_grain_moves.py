@@ -147,7 +147,14 @@ class Live:
         return http_json(f"{HOST}/api/views/{ds}.json")
 
     def rows(self, ds, params):
-        return http_json(f"{HOST}/resource/{ds}.json?" + urllib.parse.urlencode(params))
+        params = dict(params)
+        # newest first, so a pull that hits the row limit loses the oldest weeks, never the newest
+        if "$order" not in params and "$group" not in params and "$where" in params:
+            params["$order"] = params["$where"].split()[0] + " DESC"
+        rows = http_json(f"{HOST}/resource/{ds}.json?" + urllib.parse.urlencode(params))
+        if len(rows) >= int(params.get("$limit", 1000)):
+            print(f"::warning::grain moves: {ds} returned {len(rows)} rows, the limit; the oldest weeks are cut")
+        return rows
 
     def usgs(self, site, start, end):
         u = ("https://waterservices.usgs.gov/nwis/dv/?" + urllib.parse.urlencode(
