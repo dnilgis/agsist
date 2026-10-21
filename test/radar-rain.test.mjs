@@ -167,5 +167,5 @@ test("a real map under the rain: USGS National Map only, credited, with a fallba
   // the rain still draws over the site's own outline and keeps the field pin
   assert.match(js, /\/data\/us-states\.geo\.json/);
   assert.match(js, /circleMarker\(\[pt\.lat, pt\.lon\]/);
-  assert.ok(page.includes("/components/radar-rain-page.js?v=4"));
+  assert.ok(page.includes("/components/radar-rain-page.js?v=5"));
 });
