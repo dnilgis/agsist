@@ -331,7 +331,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <!-- 2026-10-19: with a saved state, the state line holds its space from the first paint (components/price-local.js reserve(); test/cls-oct19.test.mjs). In this script, not one of its own: a script between here and the hero is a point where the browser may paint. -->
   <script>try{AgPxStamp.reserve(document.querySelector('#hero-band .pl-line'));}catch(e){}try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
   <!-- signup-ask.js stays a plain script here: it fills #hb-ask above before the first paint. Deferred, the ask arrived after paint and pushed the page down (CLS 0.009 to 0.042, 2026-10-12). -->
-  <script src="/components/signup-ask.js?v=11"></script>
+  <script src="/components/signup-ask.js?v=12"></script>
 <section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-10-21" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full" aria-expanded="false">
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><span class="teaser-action">Read today’s briefing &#x2193;</span></div>

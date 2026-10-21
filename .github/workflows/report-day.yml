@@ -1,7 +1,9 @@
 name: Report day — USDA vs the trade email
 
 # After WASDE, Crop Production and Grain Stocks publish (noon ET), email AGSIST
-# Daily readers who did not opt out of report-day mail. scripts/send_report_day.py
+# Daily readers who did not opt out of report-day mail, and the readers on the
+# report-day list alone (subs worker v5.44, notice topic reports: the "WASDE
+# summary" ask), each address once. scripts/send_report_day.py
 # decides everything: it sends only when the What's Priced In data (or the
 # WASDE read) carries a USDA figure dated today, never before noon ET,
 # and never twice (one /flag day-marker per report in the subs worker).

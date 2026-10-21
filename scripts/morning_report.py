@@ -633,6 +633,8 @@ PAGE_GROUPS = ("Page asks", "Town pages", "Daily page")
 # public and kept a day, so these counts are no secret and need no new store.
 SENDS = (
     ("daily.yml", "send_daily.py", "AGSIST Daily"),
+    # 2026-10-21: the weekly COT email, sent from the release watcher's "watch" job
+    ("cot-release-watch.yml", "send_cot_weekly.py", "Funds this week", "watch"),
     ("report-day.yml", "send_report_day.py", "Report-day emails (USDA vs the trade)"),
     ("alert-check.yml", "check_alerts.py", "Hail alerts"),
     ("price-watch.yml", "send_price_watch.py", "Price alerts"),
@@ -641,6 +643,24 @@ SENDS = (
     ("farmland-atlas-watch.yml", "send_watch.py", "County watch"),
 )
 NOTICE_KINDS = {"rent": "rent", "arcplc": "ARC/PLC", "prf": "PRF", "rainyear": "rain year", "rain-gauge": "rain gauge"}
+# 2026-10-21: the two standing lists on /notice (subs worker v5.44), each its
+# own row in the Signups table, from /count lists {n, by_source, unsubs}.
+SIGNUP_LISTS = (("reports", "WASDE summary"), ("cot", "Funds this week"))
+
+
+def _snap_list(day, topic):
+    """(n, {source: n}) a morning kept for one list, or (None, None)."""
+    d = day or {}
+    if not isinstance(d.get("l:" + topic), int):
+        return None, None
+    pre = "ls:" + topic + ":"
+    return d["l:" + topic], {k[len(pre):]: v for k, v in d.items() if k.startswith(pre)}
+
+
+def list_source_label(src, name):
+    """report:wasde:usda-calendar -> /usda-calendar (WASDE summary)."""
+    page = str(src).split(":")[-1] if str(src).startswith(("report:wasde:", "cot-weekly:")) else str(src)
+    return "%s (%s)" % (("/" + page) if page and ":" not in page and page != "(none)" else page, name)
 
 
 def signup_group(s):
@@ -679,13 +699,23 @@ def sec_signup_sources(src, now, rep, snap):
         return
     cur = {str(k)[:60]: v for k, v in c["by_source"].items() if isinstance(v, int) and not isinstance(v, bool)}
     day = snap.setdefault(today.isoformat(), {})
-    for k in [k for k in day if k.startswith("s:")]:
+    for k in [k for k in day if k.startswith(("s:", "l:", "ls:"))]:
         del day[k]
     day.update({"s:" + k: v for k, v in cur.items()})
     if not cur:
         day["s:"] = 0      # marks a morning that kept an empty table
     if isinstance(c.get("notice"), int):
         day["n:notice"] = c["notice"]
+    lists = c.get("lists") if isinstance(c.get("lists"), dict) else {}
+    lcur = {}
+    for topic, _name in SIGNUP_LISTS:
+        L = lists.get(topic)
+        if not isinstance(L, dict) or not isinstance(L.get("n"), int):
+            continue
+        bs = {str(k)[:60]: v for k, v in (L.get("by_source") or {}).items() if isinstance(v, int) and not isinstance(v, bool)}
+        lcur[topic] = (L["n"], bs)
+        day["l:" + topic] = L["n"]
+        day.update({"ls:%s:%s" % (topic, k): v for k, v in bs.items()})
     if src.dry:
         rep.tables["Signups"] = {"after": ["Where they signed up: left out of a dry run (the Actions log is public)."]}
         return
@@ -709,19 +739,35 @@ def sec_signup_sources(src, now, rep, snap):
     total = sum(cur.values())
     rows.append(["All Daily readers", num(total), "%+d" % (total - sum(y.values())) if y is not None else "",
                  "%+d" % (total - sum(w.values())) if w is not None else ""])
+    # the standing lists (not the Daily): their own rows, after the Daily total
+    lw = {}
+    for topic, name in SIGNUP_LISTS:
+        if topic not in lcur:
+            continue
+        n = lcur[topic][0]
+        yn, _ys = _snap_list(yday, topic)
+        wn, ws = _snap_list(snap.get(wk_day.isoformat()) if wk_day else None, topic)
+        lw[topic] = ws
+        rows.append([name, num(n), "%+d" % (n - yn) if yn is not None else "", "%+d" % (n - wn) if wn is not None else ""])
     after = []
     if isinstance(c.get("notice"), int):
-        s = "One-time notices (rent, ARC/PLC, PRF, rain year, rain gauge): %s addresses" % num(c["notice"])
+        s = ("Addresses on any notice or list (rent, ARC/PLC, PRF, rain year, rain gauge, WASDE summary, Funds this week): %s"
+             % num(c["notice"])) if lcur else "One-time notices (rent, ARC/PLC, PRF, rain year, rain gauge): %s addresses" % num(c["notice"])
         if isinstance(yday.get("n:notice"), int):
             s += " (%+d since yesterday)" % (c["notice"] - yday["n:notice"])
         after.append(s + ".")
     if w is not None:
-        gain = sorted(((cur.get(k, 0) - w.get(k, 0), k) for k in cur if signup_group(k) in PAGE_GROUPS), key=lambda x: (-x[0], x[1]))
+        gain = sorted(((cur.get(k, 0) - w.get(k, 0), ("/" + k[5:]) if k.startswith("page:") else k)
+                       for k in cur if signup_group(k) in PAGE_GROUPS), key=lambda x: (-x[0], x[1]))
+        # the two lists' page asks join the breakdown once a week of them is kept
+        for topic, name in SIGNUP_LISTS:
+            if topic in lcur and lw.get(topic) is not None:
+                gain += [(v - lw[topic].get(k, 0), list_source_label(k, name)) for k, v in lcur[topic][1].items()]
+        gain.sort(key=lambda x: (-x[0], x[1]))
         top = [(g, k) for g, k in gain if g > 0][:3]
         label = "this week" if wk_day == today - timedelta(days=7) else "since %s" % short_day(wk_day.isoformat())
         if top:
-            after.append("Top pages by new signups %s: %s." % (label, ", ".join(
-                "%s +%d" % (("/" + k[5:]) if k.startswith("page:") else k, g) for g, k in top)))
+            after.append("Top pages by new signups %s: %s." % (label, ", ".join("%s +%d" % (k, g) for g, k in top)))
         else:
             after.append("Top pages by new signups %s: none gained readers." % label)
     if y is None:
@@ -749,10 +795,13 @@ SENT_OF = re.compile(r"\bsent (\d+)/(\d+)\s*$")
 SENT_FAILED = re.compile(r"\bsent (\d+); failed (\d+)")
 
 
-def send_counts(src, wf, script, now, logs):
+def send_counts(src, wf, script, now, logs, job=None):
     """{runs, sent, failed} over the workflow's runs in the last 24 h, from the
-    lines `script` printed in its real (not --selftest, not --dry-run) step."""
-    if wf not in logs:
+    lines `script` printed in its real (not --selftest, not --dry-run) step.
+    `job`: read only the job of that name (cot-release-watch.yml runs dozens
+    of times a day; its gate job never sends)."""
+    lk = wf if job is None else wf + "#" + job
+    if lk not in logs:
         since = (now - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
         d = src.gh("/repos/%s/actions/workflows/%s/runs?status=completed&per_page=100&created=%s"
                    % (REPO, wf, urllib.parse.quote(">=" + since)))
@@ -762,11 +811,11 @@ def send_counts(src, wf, script, now, logs):
                 continue
             jobs = src.gh("/repos/%s/actions/runs/%s/jobs" % (REPO, r.get("id")))
             for j in (jobs.get("jobs") or [] if isinstance(jobs, dict) else []):
-                if isinstance(j, dict) and j.get("conclusion") in ("success", "failure"):
+                if isinstance(j, dict) and j.get("conclusion") in ("success", "failure") and (job is None or j.get("name") == job):
                     texts.append(src.gh_text("/repos/%s/actions/jobs/%s/logs" % (REPO, j.get("id"))))
-        logs[wf] = texts
+        logs[lk] = texts
     runs = sent = failed = 0
-    for text in logs[wf]:
+    for text in logs[lk]:
         hit = False
         for cmd, lines in _step_sections(text):
             if script not in cmd or "--selftest" in cmd or "--dry-run" in cmd:
@@ -790,9 +839,9 @@ def send_counts(src, wf, script, now, logs):
 def sec_sends(src, now, rep):
     """Yesterday's email sends in one short block, counts only."""
     lines, logs = [], {}
-    for wf, script, label in SENDS:
+    for wf, script, label, *job in SENDS:
         try:
-            n = send_counts(src, wf, script, now, logs)
+            n = send_counts(src, wf, script, now, logs, *job)
         except Exception as e:                             # noqa: BLE001
             lines.append("%s: could not be read (%s)." % (label, why(e)))
             continue
@@ -821,7 +870,14 @@ def sec_sends(src, now, rep):
             d, a = u.get("daily") or {}, u.get("alerts") or {}
             lines.append("Unsubscribes: AGSIST Daily %d in 24 h, %d in 7 days; hail alerts %d and %d." % (
                 d.get("h24", 0), d.get("d7", 0), a.get("h24", 0), a.get("d7", 0)))
-            cl = (d.get("cleanup_h24", 0) + a.get("cleanup_h24", 0), d.get("cleanup_d7", 0) + a.get("cleanup_d7", 0))
+            L = c.get("lists") if isinstance(c.get("lists"), dict) else {}
+            lu = [(name, (L.get(t) or {}).get("unsubs")) for t, name in SIGNUP_LISTS]
+            lu = [(name, x) for name, x in lu if isinstance(x, dict)]
+            if lu:
+                lines.append("Unsubscribes from the lists: " + "; ".join("%s %d in 24 h, %d in 7 days" % (name, x.get("h24", 0), x.get("d7", 0))
+                                                                      for name, x in lu) + ".")
+            cl = (d.get("cleanup_h24", 0) + a.get("cleanup_h24", 0) + sum(x.get("cleanup_h24", 0) for _n, x in lu),
+                  d.get("cleanup_d7", 0) + a.get("cleanup_d7", 0) + sum(x.get("cleanup_d7", 0) for _n, x in lu))
             lines.append("Removed by the list cleanup (bounced or a fixed typo): %d in 24 h, %d in 7 days." % cl)
     except Exception as e:                                 # noqa: BLE001
         lines.append("Unsubscribes: could not be read (%s)." % why(e))
@@ -2193,6 +2249,7 @@ def selftest():
        BACKUP_LINE in backup_mail(datetime(2026, 12, 2, 3, 0, tzinfo=UTC))[1], "")
     ck("the line has no em dash and no address", "\u2014" not in BACKUP_LINE and "@" not in BACKUP_LINE)
     selftest_sources_sends(ck)
+    selftest_lists(ck)
 
     print()
     if fails:
@@ -2307,6 +2364,70 @@ def selftest_sources_sends(ck):
     r4 = Report()
     sec_signup_sources(Fake(gh, {}, {}, {}), now, r4, {})
     ck("no /count: one line", r4.tables["Signups"]["after"] == ["Where they signed up: could not be read (HTTP 404)."], r4.tables)
+
+
+def selftest_lists(ck):
+    """The WASDE summary and Funds this week lists (subs worker v5.44, 2026-10-21)."""
+    print("\nthe two standing lists")
+    now = datetime(2026, 10, 21, 11, 45, tzinfo=UTC)
+    count = {"ok": True, "daily": 6, "by_source": {"bar": 5, "report:wasde:usda-calendar": 1}, "notice": 9,
+             "notices": {"reports": 4, "cot": 6}, "unsubs": {"daily": {"h24": 0, "d7": 0, "cleanup_h24": 0, "cleanup_d7": 0},
+                                                            "alerts": {"h24": 0, "d7": 0, "cleanup_h24": 0, "cleanup_d7": 0}},
+             "lists": {"reports": {"n": 4, "by_source": {"report:wasde:usda-calendar": 3, "report:wasde:whats-priced-in": 1},
+                                   "unsubs": {"h24": 1, "d7": 2, "cleanup_h24": 0, "cleanup_d7": 1}},
+                       "cot": {"n": 6, "by_source": {"cot-weekly:cot": 2, "cot-weekly:corn-futures-prices": 4},
+                               "unsubs": {"h24": 0, "d7": 0, "cleanup_h24": 0, "cleanup_d7": 0}}}}
+    yd = {"s:bar": 5, "s:report:wasde:usda-calendar": 1, "n:notice": 8, "l:reports": 3, "ls:reports:report:wasde:usda-calendar": 2,
+          "ls:reports:report:wasde:whats-priced-in": 1, "l:cot": 6, "ls:cot:cot-weekly:cot": 2, "ls:cot:cot-weekly:corn-futures-prices": 4}
+    wk = {"s:bar": 4, "l:reports": 1, "ls:reports:report:wasde:usda-calendar": 1, "l:cot": 2,
+          "ls:cot:cot-weekly:cot": 1, "ls:cot:cot-weekly:corn-futures-prices": 1}
+    snap = {"2026-10-20": yd, "2026-10-14": wk}
+    wf = "/repos/dnilgis/agsist/actions/workflows/"
+    gh = {wf + "cot-release-watch.yml/runs": {"workflow_runs": [{"id": 601, "conclusion": "success"}, {"id": 602, "conclusion": "success"}]},
+          "/repos/dnilgis/agsist/actions/runs/601/jobs": {"jobs": [{"id": 8001, "name": "gate", "conclusion": "success"},
+                                                                   {"id": 8002, "name": "watch", "conclusion": "success"}]},
+          "/repos/dnilgis/agsist/actions/runs/602/jobs": {"jobs": [{"id": 8003, "name": "gate", "conclusion": "success"},
+                                                                   {"id": 8004, "name": "watch", "conclusion": "skipped"}]},
+          "/repos/dnilgis/agsist/actions/jobs/8002/logs": "\n".join([
+              "2026-10-16T20:05:00.0Z ##[group]Run python scripts/send_cot_weekly.py --selftest", "2026-10-16T20:05:01.0Z sent 9/9",
+              "2026-10-16T20:05:02.0Z ##[group]Run python scripts/send_cot_weekly.py",
+              "2026-10-16T20:05:03.0Z list: 5 reader(s) on Funds this week", "2026-10-16T20:05:09.0Z sent 5/5"])}
+    src = Fake(gh, {"count": count, "notice-list": [], "list": []}, {}, {})
+    rep = Report()
+    sec_signups(src, now, rep, snap)
+    sec_signup_sources(src, now, rep, snap)
+    sec_sends(src, now, rep)
+    t = rep.tables["Signups"]
+    rows = {r[0]: r[1:] for r in t["rows"]}
+    ck("a row a list, after the Daily total: readers, since yesterday, 7 days",
+       rows.get("WASDE summary") == ["4", "+1", "+3"] and rows.get("Funds this week") == ["6", "+0", "+4"]
+       and [r[0] for r in t["rows"]][-3:] == ["All Daily readers", "WASDE summary", "Funds this week"], t["rows"])
+    ck("the Daily total is the Daily alone", rows.get("All Daily readers", [""])[0] == "6", rows)
+    ck("the lists' page asks join the top pages, named by page and list",
+       "Top pages by new signups this week: /corn-futures-prices (Funds this week) +3, /usda-calendar (WASDE summary) +2, "
+       "/cot (Funds this week) +1." in t["after"], t["after"])
+    ck("the notice line says it counts the lists too",
+       "Addresses on any notice or list (rent, ARC/PLC, PRF, rain year, rain gauge, WASDE summary, Funds this week): 9 (+1 since yesterday)." in t["after"], t["after"])
+    d = snap["2026-10-21"]
+    ck("each list and its sources kept for tomorrow, counts only",
+       d.get("l:reports") == 4 and d.get("ls:reports:report:wasde:usda-calendar") == 3 and d.get("l:cot") == 6
+       and d.get("ls:cot:cot-weekly:corn-futures-prices") == 4 and "@" not in json.dumps(snap), d)
+    sl = dict(rep.sections)["Emails sent, last 24 hours"]
+    ck("Funds this week sent N, from the watch job's real send step", "Funds this week: 5 sent." in sl, sl)
+    ck("the gate job's log is never read", not any(p.endswith("/jobs/8001/logs") or p.endswith("/jobs/8003/logs") for _k, p in src.asked), src.asked)
+    ck("list unsubscribes and their cleanup",
+       "Unsubscribes from the lists: WASDE summary 1 in 24 h, 2 in 7 days; Funds this week 0 in 24 h, 0 in 7 days." in sl
+       and "Removed by the list cleanup (bounced or a fixed typo): 0 in 24 h, 1 in 7 days." in sl, sl)
+    m = build(rep, now, "sig@x.com")
+    pt, ht = m.get_body(("plain",)).get_content(), m.get_body(("html",)).get_content()
+    ck("plain and html carry the rows", "- WASDE summary: 4 (+1 since yesterday, +3 in 7 days)" in pt and ">Funds this week</td>" in ht, pt[-800:])
+    # an older worker (no lists): the table exactly as before, no list rows
+    c2 = {k: v for k, v in count.items() if k != "lists"}
+    r2 = Report()
+    sec_signup_sources(Fake(gh, {"count": c2}, {}, {}), now, r2, json.loads(json.dumps(snap)))
+    ck("an older worker: no list rows, the old notice line",
+       not any(r[0] in ("WASDE summary", "Funds this week") for r in r2.tables["Signups"]["rows"])
+       and any(x.startswith("One-time notices (rent") for x in r2.tables["Signups"]["after"]), r2.tables)
 
 
 def load_snap_from(text):
