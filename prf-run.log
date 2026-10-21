@@ -1,0 +1,53 @@
+ADM for crop year 2027
+  https://pubfs-rma.fpac.usda.gov/pub/References/actuarial_data_master/2027/2027_ADM_YTD.zip: 1209 MB in 92s, last modified Fri, 16 Oct 2026 14:08:09 GMT
+  offers: 232184
+  counties: 3070  grids: 13414  (Hawaii left out: 240 grids)
+  rate keys: 722380 from 11156445 rows; keys with more than one rate id: 0
+reading the ADM
+  read in 78s: crop year 2027, checks {'price_rows_without_an_offer': 0, 'county_use_practice_with_two_base_values': 0, 'rate_keys': 722380, 'rate_keys_with_two_rates': 0, 'grids_missing_any_rate': 755}
+index history: 2026 to 2026 for 13414 grids; whole history for 0 new ones
+  1000 of 13414 grids, 0 failed, 44s
+  2000 of 13414 grids, 0 failed, 87s
+  3000 of 13414 grids, 0 failed, 134s
+  4000 of 13414 grids, 0 failed, 177s
+  5000 of 13414 grids, 0 failed, 219s
+  6000 of 13414 grids, 0 failed, 264s
+  7000 of 13414 grids, 0 failed, 307s
+  8000 of 13414 grids, 0 failed, 350s
+  9000 of 13414 grids, 0 failed, 392s
+  10000 of 13414 grids, 0 failed, 435s
+  11000 of 13414 grids, 0 failed, 478s
+  12000 of 13414 grids, 0 failed, 522s
+  13000 of 13414 grids, 0 failed, 567s
+written: g 0, y 0, s 1, removed 0; 13414 grids, last complete year 2025, open ['2026']
+agrees       half dollar in the protection: Barron WI, grid 30152, Haying, non-irrigated, 90%, 3 ac, factor 100, share 100, 2026, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the premium: Barron WI, grid 30152, Haying, non-irrigated, 90%, 2657 ac, factor 100, share 100, 2026, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the subsidy: Barron WI, grid 30152, Haying, non-irrigated, 90%, 82 ac, factor 100, share 100, 2026, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the indemnity: Barron WI, grid 30152, Haying, non-irrigated, 90%, 4 ac, factor 100, share 100, 1996, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the indemnity, odd dollar: Barron WI, grid 30152, Haying, non-irrigated, 90%, 2 ac, factor 100, share 100, 1957, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the indemnity, tells the two rules apart: Barron WI, grid 30152, Haying, non-irrigated, 90%, 6 ac, factor 100, share 100, 1957, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       random 7: Bergen NJ, grid 25424, Haying, irrigated, transitional organic, 80%, 3027 ac, factor 80, share 75, 2005, split [0,0,0,27,0,19,0,28,0,0,26]
+agrees       random 8: Price WI, grid 31059, Haying, irrigated, transitional organic, 85%, 2216 ac, factor 109, share 75, 2020, split [25,0,27,0,23,0,25,0,0,0,0]
+agrees       random 9: Hancock ME, grid 30249, Haying, non-irrigated, transitional organic, 75%, 2853 ac, factor 131, share 100, 1963, split [25,0,0,27,0,0,0,48,0,0,0]
+agrees       random 10: Whitman WA, grid 31849, Haying, non-irrigated, 85%, 3727 ac, factor 147, share 50, 1976, split [0,23,0,0,0,21,0,25,0,0,31]
+agrees       random 11: McLean ND, grid 33117, Haying, irrigated, 85%, 2186 ac, factor 91, share 50, 1961, split [25,0,0,0,0,0,0,0,29,0,46]
+agrees       random 12: Monroe IN, grid 22675, Haying, non-irrigated, certified organic, 75%, 2260 ac, factor 140, share 75, 1956, split [0,24,0,25,0,26,0,0,25,0,0]
+agrees       random 13: Lewis and Clark MT, grid 31572, Haying, non-irrigated, certified organic, 90%, 2099 ac, factor 92, share 33, 1959, split [0,61,0,39,0,0,0,0,0,0,0]
+agrees       random 14: Harrison WV, grid 23300, Haying, non-irrigated, 90%, 690 ac, factor 112, share 75, 1993, split [0,0,56,0,44,0,0,0,0,0,0]
+
+asked 14, reached 14, agreed 14, differ 0
+facts.json written 102729 bytes
+prf.html stamped
+49 state pages written to prf/
+3070 county pages written to prf/<state>/, 70.6 MB, largest 29 KB; 0 stale removed, 0 pointers written; sitemap-prf.xml 3070 URLs
+alt: PRF insurance: what grid 30454 in Barron County, Wisconsin would have paid each year from 1951 to 2025, with the premium as a dashed line. Sign-up deadline Dec 1, 2026.
+wrote /home/runner/work/agsist/agsist/img/og/prf.jpg 101603 bytes
+published size 792.8 MB (warn 850, fail 900, Pages limit 1024)
+  data                   255.2 MB
+  farmland-atlas         158.4 MB
+  arc-plc                139.9 MB
+  prf                     72.5 MB
+  rain                    54.0 MB
+  cash-bids               50.4 MB
+  img                     15.1 MB
+  scripts                  9.5 MB
