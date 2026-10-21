@@ -9,7 +9,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, existsSync, readdirSync, statSync, mkdtempSync, rmSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdtempSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
@@ -96,7 +96,20 @@ test("fetch_grain_moves selftest passes (parsers, series math, correlation gate,
   assert.match(out, /selftest ok/);
 });
 
+// The page as a build with no data at all bakes it (the committed page carries the
+// last real week, baked by the weekly run), so "every source missing" is tested
+// against what a reader would get, not against last week's numbers.
+function unbakedPage() {
+  const tmp = mkdtempSync(join(tmpdir(), "gt-page-"));
+  const f = join(tmp, "grain-transport.html");
+  writeFileSync(f, readFileSync(join(ROOT, "grain-transport.html")));
+  execFileSync("python3", ["-c", "import sys; sys.path.insert(0, 'scripts'); import fetch_grain_moves as g; g.bake(sys.argv[1], {}, {})", f],
+    { cwd: ROOT, stdio: ["ignore", "ignore", "inherit"] });
+  return f;
+}
+
 function serve(movesDir) {
+  const page = movesDir ? null : unbakedPage();
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml", ".jpg": "image/jpeg", ".png": "image/png" };
   const srv = createServer((req, res) => {
     const p = decodeURIComponent(new URL(req.url, "http://x").pathname);
@@ -105,7 +118,8 @@ function serve(movesDir) {
       if (!movesDir) { res.writeHead(404); res.end(); return; }
       f = normalize(join(movesDir, p.slice("/data/transport/moves/".length)));
       if (!f.startsWith(movesDir)) { res.writeHead(404); res.end(); return; }
-    } else f = normalize(join(ROOT, p));
+    } else if (page && p === "/grain-transport.html") f = page;
+    else f = normalize(join(ROOT, p));
     if (!existsSync(f) || statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[extname(f)] || "application/octet-stream" });
     res.end(readFileSync(f));

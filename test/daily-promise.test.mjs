@@ -153,7 +153,7 @@ test("the guards catch the copies Sig asked to change (real Oct 19 cases)", () =
 });
 
 test("the 6am lines that sat next to a Daily link are gone", () => {
-  const LIT = /by 6\s?am|6\s?am(\s|\u00a0|&nbsp;)CT/i;
+  const LIT = /by 6\s?am|(?<![\d:])6\s?am(\s|\u00a0|&nbsp;)CT/i;  // not the 6 in "7:16 am CT" (Oct 21)
   const bad = files().filter((f) => f.endsWith(".html") && LIT.test(visible(f, read(f))));
   assert.deepEqual(bad, []);
 });

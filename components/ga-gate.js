@@ -6,8 +6,10 @@
  *
  * This file asks the agsist-subs worker, GET /ga-ok, whether the visit comes
  * from a cloud or hosting network (Cloudflare's ASN for the request; the
- * worker keeps no address). Only {"ok":true} loads gtag.js. A false answer,
- * an error, a non-JSON answer or no answer within 3 seconds keeps GA off.
+ * worker keeps no address). {"ok":false} keeps GA off. Since Oct 21 (Sig: the
+ * worker was blocked for a day and GA counted nobody) an error, an odd answer,
+ * no fetch or no answer within 3 seconds loads GA anyway: an outage of the
+ * worker lets some data center visits in, it never blanks the readers.
  * A clear answer is kept for this tab in sessionStorage (agsist-ga-ok, 1 or
  * 0), so the worker is asked once per visit, not once per page. A failure is
  * not kept, so the next page asks again.
@@ -33,18 +35,18 @@
   try { c = w.sessionStorage.getItem(K); } catch (e) {}
   if (c === '1') { load(); return; }
   if (c === '0') return;
-  if (typeof w.fetch !== 'function') return;
+  if (typeof w.fetch !== 'function') { load(); return; }
   var ac = typeof w.AbortController === 'function' ? new w.AbortController() : null;
   var live = true;
-  var timer = w.setTimeout(function () { live = false; if (ac) ac.abort(); }, 3000);
+  var timer = w.setTimeout(function () { live = false; if (ac) ac.abort(); load(); }, 3000);
   w.fetch(API, { credentials: 'omit', cache: 'default', signal: ac ? ac.signal : undefined })
     .then(function (r) { return r && r.ok ? r.json() : null; })
     .then(function (j) {
       if (!live) return;
       w.clearTimeout(timer);
-      if (!j || typeof j.ok !== 'boolean') return;
+      if (!j || typeof j.ok !== 'boolean') { load(); return; }
       keep(j.ok ? '1' : '0');
       if (j.ok === true) load();
     })
-    .catch(function () { w.clearTimeout(timer); });
+    .catch(function () { w.clearTimeout(timer); if (live) load(); });
 })(window, document);
