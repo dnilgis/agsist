@@ -1,0 +1,69 @@
+name: Rain Print design email
+# "Email me this design" on /rain-print (scripts/rp_design_email.py, Sig
+# 2026-10-20): the link to the reader's own design at once, and one reminder
+# the next day unless a paid order matches it, then nothing. The subs worker
+# (v5.43, POST /rp-remind) keeps each ask 7 days and starts this job on every
+# new one through the GitHub API (worker secret GH_DISPATCH_TOKEN). The log
+# prints counts only.
+#
+# HOURLY (Sig OK'd Oct 21, 2026) so "one reminder tomorrow" goes on time; a run
+# with nothing due sends nothing. The worker asks for a dry run (every email to
+# Sig, nothing marked) unless its variable RP_DESIGN_EMAIL_LIVE is "1"; an hourly
+# run is live only when the repository variable RP_DESIGN_EMAIL_LIVE is "1" too.
+# Secrets: LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS (or GMAIL_USER,
+# GMAIL_APP_PASS). Optional: SMTP_HOST, SMTP_PORT, FROM_ADDR, SIG_TO.
+
+on:
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Send each new ask's emails to Sig only and mark nothing"
+        type: boolean
+        default: true
+
+concurrency:
+  group: rp-design-email
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Checks (gate)
+        run: |
+          python3 scripts/rp_design_email.py --selftest
+          node scripts/test_rp_remind_worker.mjs
+      - name: Run
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          RP_FROM_NAME: ${{ vars.RP_FROM_NAME }}
+          SIG_TO: ${{ secrets.SIG_TO }}
+          DRY_RUN: ${{ (github.event_name == 'schedule' && vars.RP_DESIGN_EMAIL_LIVE == '1') && '' || (github.event_name != 'schedule' && inputs.dry_run == false) && '' || '1' }}
+        run: python3 scripts/rp_design_email.py

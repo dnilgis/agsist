@@ -442,7 +442,7 @@ test("Digital file picked: no shipping or Christmas-proof lines, the file's type
     await page.waitForTimeout(300);
     assert.equal(await page.isVisible("#rp-ships"), false);
     assert.equal(await page.isVisible("#rp-xmas-why"), false);
-    assert.equal(await page.textContent("#rp-madeby"), "Made by Sig Lindquist in Chetek, Wisconsin. Your proof and your file come by email from Sig, your receipt from Stripe.");
+    assert.equal(await page.textContent("#rp-from"), "Your proof and your file come by email from Sig, your receipt from Stripe.");
     await page.fill("#rp-name", "Olson");
     await openSheet(page);
     const when = await page.textContent("#rp-proof-sum");

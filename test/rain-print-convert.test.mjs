@@ -146,16 +146,20 @@ test("a phone buyer sees the date it should arrive by the button, per product", 
     await page.goto(base + "/rain-print.html?" + new URLSearchParams({ place: "Chetek, WI", year: "2012", station: "471667 2", style: "r1" }));
     await drawn(page);
     await page.waitForTimeout(600);
-    // the clock is Oct 14 (Wed): framed 11 business days -> Thu Oct 29; print 10 -> Wed Oct 28
-    assert.equal(await page.textContent("#rp-arrive"), "Ordered today, it should arrive by about Thursday, Oct 29.");
+    // the clock is Oct 14 (Wed): framed 11 business days -> Thu Oct 29; print 10 -> Wed Oct 28.
+    // 2026-10-20 (Sig): in the Christmas window the line by the button is the order-by date, and the arrival date sits lower
+    assert.equal(await page.textContent("#rp-arrive"), "Order by Dec 9 for Christmas delivery.");
+    assert.equal(await page.textContent("#rp-arrive-est"), "Ordered today, it should arrive by about Thursday, Oct 29.");
     await page.fill("#rp-name", "Olson Home Place");
     await page.press("#rp-name", "Tab");
     await page.selectOption("#rp-m1mo", "07");
     await page.selectOption("#rp-m1dy", "04");
     await page.locator('.rp-prod[data-choice="print12x18"]').click();
-    assert.equal(await page.textContent("#rp-arrive"), "Ordered today, it should arrive by about Wednesday, Oct 28.");
+    assert.equal(await page.textContent("#rp-arrive"), "Order by Dec 10 for Christmas delivery.");
+    assert.equal(await page.textContent("#rp-arrive-est"), "Ordered today, it should arrive by about Wednesday, Oct 28.");
     await page.locator('.rp-prod[data-choice="digital"]').click();
     assert.equal(await page.isVisible("#rp-arrive"), false, "the file has no mail date");
+    assert.equal(await page.isVisible("#rp-arrive-est"), false);
     await page.locator('.rp-prod[data-choice="framed12x18"]').click();
     assert.equal(await page.isVisible("#rp-arrive"), true);
     const r = await checkout(page, "framed12x18");
