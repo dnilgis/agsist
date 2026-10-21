@@ -222,6 +222,10 @@
   var CSS = [
     '.sa-ask{font-family:var(--font-body,Inter,system-ui,sans-serif);color:var(--text);margin:14px 0}',
     '.sa-ask[hidden],.sa-bar[hidden],[data-signup-hide][hidden]{display:none!important}',
+    /* styles.css hides every ask for a Daily reader before first paint (html.sa-subbed, set by the
+       futures and cash bid pages' head script). A notice or list ask is not the Daily: once drawn it
+       shows (2026-10-21; same weight as that rule, and this sheet comes later). */
+    'html.sa-subbed [data-signup-ask][data-topic][data-sa-ready]{display:block}',
     /* narrow: the line on top, then field and button side by side */
     '.sa-f{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 8px;margin:0}',
     '.sa-l{grid-column:1/-1}',
