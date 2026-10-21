@@ -1,4 +1,4 @@
-// Runs the v5.36 to v5.38 Rain Print order-record routes of workers/subs-worker.js
+// Runs the v5.36 to v5.40 Rain Print order-record routes of workers/subs-worker.js
 // (POST /rp-order, GET /rp-order/list, POST /rp-order/serial) against an
 // in-memory KV and a stand-in for Stripe's Checkout Sessions list. No network.
 //   node scripts/test_rp_order_worker.mjs
@@ -345,4 +345,78 @@ console.log('rp-order worker checks: ' + n + ' passed');
   A((await (await admin('/rp-order/list')).json()).orders.find(o => o.key === dig.key).delivered.how === 'email', 'list: delivered');
   globalThis.fetch = realFetch;
   console.log('rp-order approve checks: ' + n + ' passed');
+}
+
+// ---------- v5.40: a paid this-year gift's card, issued by the email job, once per order ----------
+{
+  globalThis.fetch = async () => new Response(JSON.stringify({ data: [], has_more: false }), { status: 200 });
+  const pub = (p, b) => w.fetch(new Request('https://x.dev' + p, { method: 'POST',
+    headers: { 'Content-Type': 'application/json', Origin: 'https://agsist.com', 'CF-Connecting-IP': '10.3.0.' + (++ipN) }, body: JSON.stringify(b) }), env);
+  const paidAs = (k, session) => { const x = JSON.parse(store.get(k)); x.paid = { amount: x.price, subtotal: x.price, at: new Date().toISOString(), session, via: 'webhook' }; store.set(k, JSON.stringify(x)); };
+  // a this-year gift (GIFT-<code>), pressed and paid; the made-up giver's words for the card
+  const gy = Object.assign({}, sig, { year: 2026, markers: [], gift: true });
+  const gCode = RP.encodeCode(gy), gRef = RP.checkoutRef(gCode, true, null);
+  A(gRef === gCode && gCode.startsWith('GIFT-'), 'a short gift goes as GIFT-<code>');
+  const gPlain = gCode.slice(5);
+  await post(RP.orderRecord(gy, gRef, 'framed12x18', 89));
+  const gKey = recs().find(k => JSON.parse(store.get(k)).ref === gRef);
+  const issue = (b, auth) => admin('/rp-gift/issue', 'POST', b, auth);
+  let r = await issue({ order_key: gKey, to: 'Dad', message: 'Every inch of the year you farmed.' }); let j = await r.json();
+  A(r.status === 409 && j.error === 'not paid', 'gift card: never for an unpaid press');
+  paidAs(gKey, 'cs_live_gift1');
+  r = await issue({ order_key: gKey }, ''); A(r.status === 403, 'gift card: LIST_TOKEN only');
+  r = await issue({ order_key: 'rpo:1:x' }); A(r.status === 400, 'gift card: a bad key refused');
+  r = await issue({ order_key: 'rpo:1761000000000:0badbad0' }); A(r.status === 404, 'gift card: no such record');
+  const plainKey = recs().find(k => { const x = JSON.parse(store.get(k)); return x.paid && !x.gift && !x.no_press; });
+  r = await issue({ order_key: plainKey }); j = await r.json(); A(r.status === 409 && j.error === 'not a gift card order', 'gift card: never for an order that is not a gift');
+  let m = await admin('/rp-order/gift-mailed', 'POST', { key: gKey }); A(m.status === 409 && (await m.json()).error === 'no gift card yet', 'gift-mailed: not before the card');
+  const nBefore = Number(store.get('rpg-n') || 0);
+  r = await issue({ order_key: gKey, to: 'Dad', message: 'Every inch of the year you farmed.', product: 'digital', lock: { design_code: sigCode } }); j = await r.json();
+  A(r.status === 200 && j.ok && j.already === false && /^RP-[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}$/.test(j.code), 'gift card: issued');
+  A(j.card_url === 'https://agsist.com/rp-gift?c=' + j.code + '&k=' + (await import('node:crypto')).createHmac('sha256', 'sec').update(('rp-gift-card|' + j.code).toLowerCase()).digest('hex').slice(0, 16), 'gift card: the printable card link');
+  A(j.prepaid === true && j.status === 'redeemed' && j.ships === 'january', 'gift card: set at issue (address at checkout), ships in January');
+  const card = JSON.parse(store.get(j.key));
+  A(card.product === 'framed12x18' && card.lock.design_code === gPlain && card.lock.edit === 'none', 'gift card: the record\'s product and design, never the body\'s');
+  A(card.order_ref === 'cs_live_gift1' && card.to === 'Dad' && card.message === 'Every inch of the year you farmed.' && card.giver.name === '' && card.giver.email === '', 'gift card: the session as the order ref, their words, no giver details');
+  A(Number(store.get('rpg-n')) === nBefore + 1, 'gift card: one number');
+  let o = JSON.parse(store.get(gKey));
+  A(o.gift_card.code === j.code && o.gift_card.no === j.no && o.gift_card.session === 'cs_live_gift1', 'gift card: the code kept on the order');
+  const first = j;
+  r = await issue({ order_key: gKey, to: 'Someone else' }); j = await r.json();
+  A(j.ok && j.already === true && j.code === first.code && j.card_url === first.card_url && j.no === first.no && j.prepaid === true, 'gift card: a second call answers the same card');
+  A(Number(store.get('rpg-n')) === nBefore + 1 && JSON.parse(store.get(first.key)).to === 'Dad', 'gift card: once per order');
+  const L = await (await admin('/rp-order/list')).json();
+  const lo = L.orders.find(x => x.key === gKey);
+  A(lo.gift_card && lo.gift_card.no === first.no && lo.gift_card.last4 === first.last4 && lo.gift_mailed === null, 'list: the card on the order');
+  A(!JSON.stringify(L).includes(first.code), 'list: never the code');
+  // what the receiver sees
+  r = await pub('/rp-gift/check', { code: first.code }); j = await r.json();
+  A(j.ok && j.prepaid === true && j.status === 'redeemed' && j.kind === 'locked' && j.lock.design_code === gPlain, 'check: a prepaid card');
+  r = await pub('/rp-gift/redeem', { code: first.code, name: 'Pat Example', email: 'pat@example.com', address: '1 Example Rd, Chetek, WI 54728', design_url: 'https://agsist.com/rain-print?d=' + gCode, design_code: gCode });
+  j = await r.json(); A(r.status === 409 && j.error === 'This gift is already paid for and on its way. There is nothing to fill in.', 'redeem: a prepaid card has nothing to fill in');
+  const k = (await import('node:crypto')).createHmac('sha256', 'sec').update(('rp-gift-card|' + first.code).toLowerCase()).digest('hex').slice(0, 16);
+  r = await w.fetch(new Request('https://x.dev/rp-gift/card?c=' + first.code + '&k=' + k), env); j = await r.json();
+  A(j.ok && j.prepaid === true && j.message === 'Every inch of the year you farmed.' && j.no === first.no, 'card: prepaid with the message');
+  // the buyer's card email, once
+  m = await admin('/rp-order/gift-mailed', 'POST', { key: gKey }, ''); A(m.status === 403, 'gift-mailed: Sig only');
+  m = await admin('/rp-order/gift-mailed', 'POST', { key: gKey }); j = await m.json();
+  A(j.ok && j.already === false && j.gift_mailed.session === 'cs_live_gift1', 'gift-mailed: marked');
+  m = await admin('/rp-order/gift-mailed', 'POST', { key: gKey }); A((await m.json()).already === true, 'gift-mailed: once');
+  A(!JSON.stringify([...store.values()]).includes('example.com'), 'nothing about the buyer kept');
+  // a long gift (GIFT-RPS-<id>): the short id is looked up for its design
+  const lgKey = recs().find(x => { const y = JSON.parse(store.get(x)); return y.ref === 'GIFT-RPS-K7Q2M' && y.paid; });
+  A(lgKey, 'a paid long gift on record');
+  r = await issue({ order_key: lgKey }); j = await r.json();
+  A(r.status === 409 && j.error === 'the design could not be read', 'gift card: a short id not on file is refused, nothing issued');
+  A(!JSON.parse(store.get(lgKey)).gift_card, 'gift card: nothing kept on a refusal');
+  store.set('rps:K7Q2M', RP.encodeCode(lg).replace(/^GIFT-/, ''));
+  r = await issue({ order_key: lgKey }); j = await r.json();
+  A(j.ok && JSON.parse(store.get(j.key)).lock.design_code === RP.encodeCode(lg).replace(/^GIFT-/, '') && JSON.parse(store.get(j.key)).product === 'print12x18', 'gift card: a long gift locks to its full design');
+  // Sig's own "already redeemed" card (the giver gave the address) reads as prepaid too
+  r = await issue({ product: 'print12x18', order_ref: 'RP-1042', lock: { design_code: gPlain }, already_redeemed: true }); j = await r.json();
+  r = await pub('/rp-gift/check', { code: j.code }); A((await r.json()).prepaid === true, 'check: an already-redeemed card from the desk is prepaid');
+  r = await issue({ product: 'print12x18', order_ref: 'RP-1043' }); j = await r.json();
+  r = await pub('/rp-gift/check', { code: j.code }); A((await r.json()).prepaid === false, 'check: an open card is not prepaid');
+  globalThis.fetch = realFetch;
+  console.log('rp-order gift card checks: ' + n + ' passed');
 }

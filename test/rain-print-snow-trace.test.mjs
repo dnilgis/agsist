@@ -164,7 +164,7 @@ test("the glyph is one constant, kept to the production limits", () => {
 
 test("the county page's preview reads the same days (rain-county-print.js daysOf carries sT)", () => {
   assert.match(read("components/rain-county-print.js"), /RP\.snowTraceRaw\(s\[i\], iso\)\) dy\.sT = true/);
-  assert.match(read("components/rain-county-print.js"), /ENGINE = '\/components\/rain-print\.js\?v=61'/);
+  assert.match(read("components/rain-county-print.js"), /ENGINE = '\/components\/rain-print\.js\?v=62'/);
   assert.match(read("components/rain-county-print.js"), /rain-print-art\.js\?v=18'/);
   for (const p of ["rain-print.html", "rp-gift.html"]) assert.match(read(p), /rain-print-art\.js\?v=18"/, p);
 });

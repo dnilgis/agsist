@@ -696,7 +696,6 @@
     "Daily site check",
     "Generate Daily Briefing",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Morning brief \u2014 email Sigurd",
     "Morning report"
    ],
    "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
@@ -2068,7 +2067,6 @@
     "Dairy prices",
     "Fertilizer co-op posted prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Morning brief \u2014 email Sigurd",
     "Morning report",
     "Build Price Stats (5-year percentile)",
     "Fetch Prices",

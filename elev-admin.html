@@ -6,6 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
 <title>Elevator desk | AGSIST</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <!-- Sig's desk for the elevator portal (subs worker v5.20; Requests, v5.21). Not linked from
      anywhere and noindex. Every action needs LIST_TOKEN: it is sent only in
      the Authorization header, never in an address. It is kept in this
@@ -18,6 +19,11 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1b1c1a;--panel:#252623;--text:#e9edeb;--dim:#b4b8b1;--line:#3a3c37;--accent:#8db6d8;--warn:#e08a78;--ok:#8fc79a}}
 :root[data-theme="dark"]{--bg:#1b1c1a;--panel:#252623;--text:#e9edeb;--dim:#b4b8b1;--line:#3a3c37;--accent:#8db6d8;--warn:#e08a78;--ok:#8fc79a}
 html,body{background:var(--bg)}
+/* The Today page (components/styles.css) opts into cross-page view
+   transitions; this page opts in too, or Chrome logs "View Transition opt-in
+   disabled" on every Paste tap from Today. */
+@view-transition{navigation:auto}
+@media (prefers-reduced-motion: reduce){@view-transition{navigation:none}}
 body{margin:0;color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
 main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
 h1{font-size:1.35rem;margin:0 0 .3rem}
@@ -36,6 +42,9 @@ button.small{min-height:34px;margin:.15rem .25rem .15rem 0;padding:0 .6rem;font-
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button:not(.quiet){color:#10151a}}
 .out{margin-top:.7rem;white-space:pre-wrap;word-break:break-word;font-size:.9rem}
 .out.bad{color:var(--warn)}.out.good{color:var(--ok)}
+.out:empty{display:none}
+#p-res{font-weight:600;font-size:.95rem}
+button:disabled{opacity:.65;cursor:progress}
 .out a{color:var(--accent)}
 .link{display:block;font-family:ui-monospace,monospace;font-size:.85rem;padding:.5rem;border:1px dashed var(--line);border-radius:5px;margin:.4rem 0;word-break:break-all;color:var(--text)}
 .tok-row{display:flex;gap:8px;align-items:center}
@@ -86,6 +95,7 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
     <label for="tok">Token (LIST_TOKEN)</label>
     <div class="tok-row"><input id="tok" type="password" autocomplete="off" spellcheck="false"><button type="button" class="quiet" id="tok-forget">Forget the token</button></div>
     <p>Paste it once; this browser keeps it. Never put it in a link.</p>
+    <p id="tok-miss" class="out bad" role="status" hidden>No token in this browser yet. Paste LIST_TOKEN here first: nothing on this page loads or saves without it.</p>
   </section>
 
   <section id="paste">
@@ -102,6 +112,7 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
     <div id="p-out" class="out" role="status"></div>
     <div id="p-prev"></div>
     <button type="button" id="p-save" hidden>Save these bids</button>
+    <div id="p-res" class="out" role="status" aria-live="polite"></div>
     <p id="p-last" class="dim"></p>
   </section>
 
@@ -162,7 +173,11 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
   function show(id, html, kind) { var o = $(id); o.innerHTML = html; o.className = 'out' + (kind ? ' ' + kind : ''); }
   try { $('tok').value = localStorage.getItem(TOK_KEY) || ''; } catch (e) {}
   $('tok').addEventListener('change', function () { try { localStorage.setItem(TOK_KEY, $('tok').value.trim()); } catch (e) {} });
-  $('tok-forget').addEventListener('click', function () { $('tok').value = ''; try { localStorage.removeItem(TOK_KEY); } catch (e) {} });
+  $('tok-forget').addEventListener('click', function () { $('tok').value = ''; try { localStorage.removeItem(TOK_KEY); } catch (e) {} tokMiss(); });
+  /* Oct 20: an empty token box was the whole of "Save does nothing". Say so at the top, at Read and by Save. */
+  function tokMiss() { var none = !$('tok').value.trim(); $('tok-miss').hidden = !none; if (!none && /token/.test($('p-res').textContent) && /bad/.test($('p-res').className)) show('p-res', ''); return none; }
+  $('tok').addEventListener('input', tokMiss);
+  $('tok').addEventListener('change', tokMiss);
 
   function call(path, body) {
     var tok = $('tok').value.trim();
@@ -170,8 +185,15 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
     try { localStorage.setItem(TOK_KEY, tok); } catch (e) {}
     return fetch(API + path, { method: body ? 'POST' : 'GET', body: body ? JSON.stringify(body) : undefined, cache: 'no-store',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok } })
-      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (r.status === 403) j.error = 'The token was not accepted.'; return j; }); },
-        function () { return { ok: false, error: 'Could not reach the worker.' }; });
+      .then(function (r) {
+        return r.json().catch(function () { return null; }).then(function (j) {
+          j = j && typeof j === 'object' && !Array.isArray(j) ? j : {};
+          j.status = r.status;
+          if (r.status === 403) { j.ok = false; j.error = 'The token was not accepted.'; }
+          else if (!r.ok) { j.ok = false; if (!j.error) j.error = 'The worker answered ' + r.status + ' with no reason'; }
+          return j;
+        });
+      }, function () { return { ok: false, error: 'Could not reach the worker.' }; });
   }
 
   function slug(s) { return String(s || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
@@ -403,11 +425,12 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
       if (!t) { $('p-last').textContent = ''; return; }
       fetch(PUB + 'paste-status', { cache: 'no-store', headers: { Authorization: 'Bearer ' + t } }).then(function (r) { return r.json(); }).then(function (j) {
         var s = j && j.sites && j.sites[site()];
-        $('p-last').textContent = s && s.pastedAt ? 'Last saved ' + ctTime(s.pastedAt) + ': ' + s.rows + ' rows, ' + s.locations + ' locations.' : 'Nothing saved for this site yet.';
-      }, function () { $('p-last').textContent = ''; });
+        if (!s) { $('p-last').textContent = 'The worker did not say when this site was last saved.'; return; }
+        $('p-last').textContent = s.pastedAt ? 'Last saved ' + ctTime(s.pastedAt) + ': ' + s.rows + ' rows, ' + s.locations + ' locations.' : 'Nothing saved for this site yet.';
+      }, function () { $('p-last').textContent = 'Could not ask the worker when this site was last saved.'; });
     }
     $('tok').addEventListener('change', lastPaste);
-    $('p-site').addEventListener('change', function () { pending = null; $('p-save').hidden = true; $('p-prev').innerHTML = ''; show('p-out', ''); setOpen(); });
+    $('p-site').addEventListener('change', function () { pending = null; $('p-save').hidden = true; $('p-prev').innerHTML = ''; show('p-out', ''); show('p-res', ''); setOpen(); });
     setOpen();
     $('p-clip').addEventListener('click', function () {
       if (!navigator.clipboard || !navigator.clipboard.readText) { show('p-out', 'This browser will not hand over the clipboard. Long-press the box and paste.', 'bad'); return; }
@@ -416,7 +439,7 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
     });
     $('p-read').addEventListener('click', readIt);
     function readIt() {
-      pending = null; $('p-save').hidden = true; $('p-prev').innerHTML = '';
+      pending = null; $('p-save').hidden = true; $('p-prev').innerHTML = ''; show('p-res', '');
       var r = PB.read(site(), $('p-in').value);
       if (r.error) { show('p-out', esc(r.error), 'bad'); return; }
       var boards = PB.SITES[site()].boards.length;
@@ -432,21 +455,51 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
       $('p-prev').innerHTML = h;
       show('p-out', 'Check the list, then save. The time saved is the "as of" time on the site.', '');
       pending = r.body; $('p-save').hidden = false;
+      if (tokMiss()) show('p-res', 'The token box at the top of this page is empty: paste LIST_TOKEN there before you save. <a href="#tok">Go to the token box</a>', 'bad');
+    }
+    // Oct 20: the answer to Save went into #p-out, above a 50-board preview,
+    // off screen, so the button looked dead. It goes in #p-res, right under the
+    // button, and the button says Saving... until the worker answers. A paste
+    // that is not saved stays in the box and in the preview, ready to retry.
+    var SAVE = 'Save these bids';
+    function why(j) {
+      var e = String(j.error || '');
+      if (e === 'too large') return 'the worker took it as too large (' + Math.round(JSON.stringify(pending).length / 1024) + ' KB sent; it takes 256 KB from worker v5.34). If the worker is older, deploy workers/subs-worker.js.';
+      if (e === 'unknown site') return 'the worker has no paste reader for this site.';
+      if (e === 'Paste the token first.') return 'the token box at the top of this page is empty. Paste LIST_TOKEN there.';
+      return e ? e.replace(/\.?$/, '.') : 'the worker gave no reason.';
     }
     $('p-save').addEventListener('click', function () {
-      if (!pending) return;
-      $('p-save').disabled = true;
+      if (!pending || $('p-save').disabled) return;
+      var b = $('p-save');
+      b.disabled = true; b.textContent = 'Saving...'; b.setAttribute('aria-busy', 'true');
+      show('p-res', 'Saving ' + pending.locations.length + ' locations...', '');
+      var end = function () { b.disabled = false; b.textContent = SAVE; b.removeAttribute('aria-busy'); };
+      var near = function () { try { $('p-res').scrollIntoView({ block: 'nearest' }); } catch (e) {} };
       call('paste', pending).then(function (j) {
-        $('p-save').disabled = false;
-        if (!j.ok) { show('p-out', esc(j.error || 'Not saved.'), 'bad'); return; }
-        pending = null; $('p-save').hidden = true; $('p-in').value = '';
-        show('p-out', 'Saved ' + esc(ctTime(j.pastedAt)) + ': ' + j.rows + ' rows at ' + j.locations + ' locations. The bids reader picks it up on its next pass, about 10 minutes.', 'good');
+        end();
+        if (!j.ok) {
+          show('p-res', 'Not saved: ' + esc(why(j)) + ' The paste is still here; press Save again when it is fixed.' +
+            (!$('tok').value.trim() || j.status === 403 ? ' <a href="#tok">Go to the token box</a>' : ''), 'bad');
+          if (!$('tok').value.trim()) $('tok').focus({ preventScroll: true });
+          near();
+          return;
+        }
+        pending = null; b.hidden = true; $('p-in').value = '';
+        show('p-res', 'Saved ' + esc(ctTime(j.pastedAt)) + ': ' + j.rows + ' rows at ' + j.locations + ' locations. The bids reader picks it up on its next pass, about 10 minutes.', 'good');
+        show('p-out', '');
+        near();
         lastPaste();
+      }).catch(function (e) {
+        end();
+        show('p-res', 'Not saved: the page hit an error (' + esc(e && e.message || e) + '). The paste is still here.', 'bad');
+        near();
       });
     });
     if (q.get('paste') && location.hash === '#paste') { try { $('paste').scrollIntoView(); } catch (e) {} }
   })();
 
+  tokMiss();
   if ($('tok').value) { load(); loadReqs(); }
 })();
 </script>
