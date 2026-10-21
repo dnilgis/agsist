@@ -23,6 +23,8 @@ by the next run that day. `build --day D` over an existing day replaces it.
                                                        (the workflow then asks GitHub whether raw has it)
   python3 scripts/bid_snapshots.py build [--from bids-full.json] [--day D] [--out-dir .]
   python3 scripts/bid_snapshots.py list [--dir DIR | --ref origin/raw]
+  python3 scripts/bid_snapshots.py gaps [--since D] [--until D] [--dir DIR | --ref origin/raw]
+                                                       weekdays missing, under MIN_LOCS, or partial (exit 1 if any)
   python3 scripts/bid_snapshots.py load DAY [--dir DIR | --ref origin/raw] [--rows]
   python3 scripts/bid_snapshots.py backfill --from-git [--since D] [--until D] [--out-dir DIR] [--replace]
       OPT-IN, never run by a workflow. Rebuilds past days from the git history
@@ -57,6 +59,14 @@ IDS_RECORDS = os.path.join(ROOT, "data", "ids", "elevators.json")
 LOC_COLS = ["id", "facility", "branch", "city", "town", "state", "zip", "lat", "lon", "board"]
 ROW_COLS = ["commodity", "category", "delivery", "start", "end", "cash", "basis",
             "futures", "futuresPrice", "posted", "src"]
+# THE FLOOR (Oct 21). The record from Aug 20 to Oct 16 holds 40 to 340 locations a day
+# (built from the slim file) where the full set had about 835 and now about 2,000. A live
+# snapshot under MIN_LOCS locations is not taken as the day's: before LAST_TRY_CT the step
+# skips it and the next run that day tries again; from LAST_TRY_CT on it is saved marked
+# partial "thin", so a short day is kept and flagged, never passed off as a full one.
+# `gaps` lists every weekday missing, thin or slim. BID_SNAPSHOT_MIN_LOCS overrides the floor.
+MIN_LOCS = 500
+LAST_TRY_CT = (16, 0)
 FIRST_POPULATED = "2026-06-09"     # data/bids.json carried no rows before this (build_basis_history.py)
 SLIM_FROM = "2026-08-19"           # from this day main held only the slim file
 
@@ -200,6 +210,44 @@ def build(doc, day, ids=None, partial=None, origin=None):
     return snap
 
 
+def floor_gate(snap, now=None, min_locs=None):
+    """-> ("write", None) | ("wait", why) | ("thin", partial note) for a live snapshot."""
+    if min_locs is None:
+        try:
+            min_locs = int(os.environ.get("BID_SNAPSHOT_MIN_LOCS") or MIN_LOCS)
+        except ValueError:
+            min_locs = MIN_LOCS
+    n = snap["counts"]["locs"]
+    if n >= min_locs:
+        return "write", None
+    why = f"{n} locations, under the floor of {min_locs}"
+    t = ct_now(now)
+    if (t.hour, t.minute) < LAST_TRY_CT:
+        return "wait", why
+    return "thin", f"thin: {why} (saved after {LAST_TRY_CT[0]}:{LAST_TRY_CT[1]:02d} CT so the day is not lost)"
+
+
+def gaps(days_counts, since, until):
+    """days_counts: {day: (locs, partial)}. -> [(day, what)] for every weekday from since to
+    until that is missing, under the floor, or marked partial."""
+    out = []
+    d = dt.date.fromisoformat(since)
+    end = dt.date.fromisoformat(until)
+    while d <= end:
+        if d.weekday() < 5:
+            k = d.isoformat()
+            if k not in days_counts:
+                out.append((k, "missing"))
+            else:
+                n, part = days_counts[k]
+                if part:
+                    out.append((k, f"{n} locations, {part}"))
+                elif n < MIN_LOCS:
+                    out.append((k, f"{n} locations, under the floor of {MIN_LOCS}"))
+        d += dt.timedelta(days=1)
+    return out
+
+
 def encode(snap):
     raw = json.dumps(snap, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
     buf = io.BytesIO()
@@ -219,7 +267,8 @@ def write(snap, out_dir):
 
 # ------------------------------------------------------------------ read
 def _git(*args, text=True):
-    return subprocess.run(["git", "-C", ROOT, *args], capture_output=True, text=text)
+    # RAW_GIT: a clone of the private repo (the raw branch moved there Oct 20), e.g. RAW_GIT=../feedbag
+    return subprocess.run(["git", "-C", os.environ.get("RAW_GIT") or ROOT, *args], capture_output=True, text=text)
 
 
 def list_days(dir=None, ref=RAW_REF):
@@ -399,6 +448,19 @@ def selftest():
         ck("list and load from a folder; rewrite replaces the day",
            list_days(dir=d) == ["2026-10-19"] and read_snapshot("2026-10-19", dir=d)["fetched"] == "later"
            and len(load_day("2026-10-19", dir=d)) == 3)
+    # the floor (Oct 21): a thin live snapshot waits for a later run, then is saved marked thin
+    small = build(doc, "2026-10-21", ids=ids)
+    big = dict(small, counts=dict(small["counts"], locs=2017))
+    at = lambda h, m: dt.datetime(2026, 10, 21, h + 5, m, tzinfo=utc)       # CDT = UTC-5
+    ck("full set: written", floor_gate(big, at(15, 7), 500) == ("write", None))
+    ck("thin at 15:07 CT: wait for the next run", floor_gate(small, at(15, 7), 500)[0] == "wait")
+    g = floor_gate(small, at(16, 7), 500)
+    ck("thin at 16:07 CT: saved, marked thin", g[0] == "thin" and g[1].startswith("thin: 2 locations, under the floor of 500"))
+    ck("the floor is 500 and the slim record would fail it", MIN_LOCS == 500 and 340 < MIN_LOCS < 835)
+    gp = gaps({"2026-10-19": (2017, None), "2026-10-20": (40, None), "2026-10-16": (235, "slim: main held only the bids")},
+              "2026-10-16", "2026-10-21")
+    ck("gaps: slim, thin and missing weekdays listed, weekend skipped",
+       [x[0] for x in gp] == ["2026-10-16", "2026-10-20", "2026-10-21"] and gp[2][1] == "missing")
     print("selftest: %d failure(s)" % len(fails))
     return 1 if fails else 0
 
@@ -416,6 +478,12 @@ def main(argv=None):
     s.add_argument("--from", dest="src", default="bids-full.json")
     s.add_argument("--day")
     s.add_argument("--out-dir", default=ROOT)
+    s.add_argument("--allow-small", action="store_true", help="skip the location floor (by hand only)")
+    s = sub.add_parser("gaps")
+    s.add_argument("--since", default="2026-10-19")
+    s.add_argument("--until")
+    s.add_argument("--dir")
+    s.add_argument("--ref", default=RAW_REF)
     s = sub.add_parser("list")
     s.add_argument("--dir")
     s.add_argument("--ref", default=RAW_REF)
@@ -446,11 +514,31 @@ def main(argv=None):
         if bad:
             print(f"::warning::bid snapshot: possible personal data, not written: {bad[:3]}")
             return 2
+        if snap["partial"] is None and not a.allow_small:
+            gate, why = floor_gate(snap)
+            if gate == "wait":
+                print(f"::warning::bid snapshot for {day}: {why}; not saved, the next run today tries again")
+                return 3
+            if gate == "thin":
+                snap["partial"] = why
+                print(f"::warning::bid snapshot for {day}: {why}")
         p, size = write(snap, a.out_dir)
         c = snap["counts"]
         print(f"[bid-snapshots] {day}: {c['locs']} locations ({c['locsWithId']} with a permanent id), "
               f"{c['rows']} rows, {size / 1024:.1f} KB gzipped -> {os.path.relpath(p, a.out_dir)}")
         return 0
+    if a.cmd == "gaps":
+        until = a.until or ct_now().date().isoformat()
+        have = {}
+        for d in list_days(dir=a.dir, ref=a.ref):
+            if a.since <= d <= until:
+                sn = read_snapshot(d, dir=a.dir, ref=a.ref)
+                have[d] = (sn["counts"]["locs"], sn.get("partial"))
+        bad = gaps(have, a.since, until)
+        for d, what in bad:
+            print(f"{d}  {what}")
+        print(f"[bid-snapshots] {len(have)} day(s) held from {a.since} to {until}; {len(bad)} weekday(s) missing, thin or partial")
+        return 1 if bad else 0
     if a.cmd == "list":
         for d in list_days(dir=a.dir, ref=a.ref):
             print(d)
