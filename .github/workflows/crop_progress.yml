@@ -126,3 +126,20 @@ jobs:
           git diff --staged --quiet || git commit -m "chore: update crop progress $(date +%F)"
           git pull --rebase origin main
           git push
+
+      # Oct 21 (Sig, insight machine): every state's weekly progress and condition, all crops,
+      # for last year, this year and next (fall-seeded winter wheat), to the private raw branch
+      # at history/nass-progress/ (scripts/backfill_nass_progress.py --current; the full
+      # backfill is history-backfill.yml source=nass). After the commit, and it can never
+      # fail the run: the page data above has already shipped.
+      - name: Crop progress history to the raw branch
+        continue-on-error: true
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: |
+          python scripts/backfill_nass_progress.py --current || { echo "::warning::crop progress history not fetched"; exit 0; }
+          if ls history/nass-progress/weekly/*.json >/dev/null 2>&1; then
+            bash scripts/push_raw.sh "crop progress history" history/nass-progress
+          fi

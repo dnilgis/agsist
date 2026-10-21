@@ -505,6 +505,14 @@ def main():
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(doc, f, separators=(",", ":"))
     print(f"wrote {OUT}: map valid {doc['valid']}, {doc['counties']} counties, {len(doc['zero'])} at zero, {doc['dropped_rows']} rows dropped", flush=True)
+    # Raw history for the insight machine (Oct 21): this year's maps, every county, as
+    # NDMC sent them, to history/usdm-county/ (scripts/backfill_usdm.py ongoing());
+    # the workflow saves it to the private raw branch. Never blocks the page files.
+    try:
+        from backfill_usdm import ongoing
+        ongoing(rows, set(failed), today - timedelta(days=WINDOW_DAYS))
+    except Exception as e:  # noqa: BLE001  report and go on
+        print(f"::warning::drought history not written: {type(e).__name__}: {e}", flush=True)
     # The headline file. A failure here never blocks the county file above; the old summary stays.
     try:
         us, st = fetch_summary(today - timedelta(days=WINDOW_DAYS), today, states)

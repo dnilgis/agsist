@@ -68,3 +68,8 @@ build/shots/
 # private-data branch: job health, render audit, withheld bid rows, the
 # Daily's editorial notes (Oct 20, 2026).
 /private/
+
+# Raw history for the insight machine (Oct 21): written in the runner by
+# scripts/backfill_*.py and scripts/history_append.py, saved to the private raw
+# branch with scripts/push_raw.sh, never to main.
+/history/

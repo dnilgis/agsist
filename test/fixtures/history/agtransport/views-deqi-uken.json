@@ -1,0 +1,30 @@
+{
+ "id": "deqi-uken",
+ "name": "Downbound Grain Barge Rates",
+ "columns": [
+  {
+   "id": 1,
+   "name": "Date",
+   "fieldName": "date",
+   "dataTypeName": "calendar_date"
+  },
+  {
+   "id": 2,
+   "name": "Location",
+   "fieldName": "location",
+   "dataTypeName": "text"
+  },
+  {
+   "id": 3,
+   "name": "Rate",
+   "fieldName": "rate",
+   "dataTypeName": "number"
+  },
+  {
+   "id": 4,
+   "name": ":id",
+   "fieldName": ":id",
+   "dataTypeName": "meta_data"
+  }
+ ]
+}

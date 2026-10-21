@@ -1,0 +1,351 @@
+{
+ "note": "Trimmed copy of data/cattle-auction.json (Oct 21, 2026) for scripts/history_append.py --selftest; the second barn's receipts blanked to test a report without them.",
+ "updated": "2026-10-20T18:40:17Z",
+ "barns": [
+  {
+   "name": "I-40 Livestock",
+   "town": "Ozark",
+   "state": "AR",
+   "lat": 35.49,
+   "lon": -93.83,
+   "id": "ozark-ar",
+   "sales": [
+    {
+     "date": "2026-10-15",
+     "receipts": 368,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 21,
+        "avg_wt": 354,
+        "cwt": 456.47,
+        "per_head": 1617.86,
+        "lo": 435.0,
+        "hi": 500.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 8,
+        "avg_wt": 417,
+        "cwt": 443.2,
+        "per_head": 1848.14,
+        "lo": 425.0,
+        "hi": 465.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 11,
+        "avg_wt": 543,
+        "cwt": 371.05,
+        "per_head": 2013.79,
+        "lo": 342.5,
+        "hi": 400.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 3,
+        "avg_wt": 650,
+        "cwt": 348.8,
+        "per_head": 2267.17,
+        "lo": 335.0,
+        "hi": 362.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 1,
+        "avg_wt": 765,
+        "cwt": 325.0,
+        "per_head": 2486.25,
+        "lo": 325.0,
+        "hi": 325.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 1,
+        "avg_wt": 810,
+        "cwt": 275.0,
+        "per_head": 2227.5,
+        "lo": 275.0,
+        "hi": 275.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 11,
+        "avg_wt": 365,
+        "cwt": 419.91,
+        "per_head": 1531.15,
+        "lo": 410.0,
+        "hi": 450.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 21,
+        "avg_wt": 437,
+        "cwt": 384.27,
+        "per_head": 1680.56,
+        "lo": 340.0,
+        "hi": 430.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 15,
+        "avg_wt": 528,
+        "cwt": 336.84,
+        "per_head": 1779.84,
+        "lo": 325.0,
+        "hi": 350.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 9,
+        "avg_wt": 628,
+        "cwt": 318.75,
+        "per_head": 2001.77,
+        "lo": 300.0,
+        "hi": 332.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 1,
+        "avg_wt": 715,
+        "cwt": 290.0,
+        "per_head": 2073.5,
+        "lo": 290.0,
+        "hi": 290.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 1,
+        "avg_wt": 890,
+        "cwt": 250.0,
+        "per_head": 2225.0,
+        "lo": 250.0,
+        "hi": 250.0,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "500": {
+        "head": 4,
+        "avg_wt": 598,
+        "cwt": 310.0,
+        "per_head": 1853.8,
+        "lo": 310.0,
+        "hi": 310.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 11
+    }
+   ],
+   "slug": "2053",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2053",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-20T18:40:17Z"
+   }
+  },
+  {
+   "name": "Arkansas Cattle Auction",
+   "town": "Searcy",
+   "state": "AR",
+   "lat": 35.25,
+   "lon": -91.74,
+   "id": "searcy-ar",
+   "sales": [
+    {
+     "date": "2026-10-13",
+     "receipts": null,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 3,
+        "avg_wt": 329,
+        "cwt": 505.35,
+        "per_head": 1660.93,
+        "lo": 465.0,
+        "hi": 535.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 4,
+        "avg_wt": 483,
+        "cwt": 418.95,
+        "per_head": 2023.53,
+        "lo": 410.0,
+        "hi": 435.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 16,
+        "avg_wt": 558,
+        "cwt": 389.33,
+        "per_head": 2172.45,
+        "lo": 365.0,
+        "hi": 420.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 3,
+        "avg_wt": 738,
+        "cwt": 333.23,
+        "per_head": 2460.33,
+        "lo": 330.0,
+        "hi": 335.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 3,
+        "avg_wt": 873,
+        "cwt": 297.57,
+        "per_head": 2597.79,
+        "lo": 285.0,
+        "hi": 307.5,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 7,
+        "avg_wt": 359,
+        "cwt": 426.38,
+        "per_head": 1528.86,
+        "lo": 415.0,
+        "hi": 440.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 12,
+        "avg_wt": 461,
+        "cwt": 389.69,
+        "per_head": 1797.78,
+        "lo": 360.0,
+        "hi": 500.0,
+        "rows": 3
+       },
+       "500": {
+        "head": 21,
+        "avg_wt": 563,
+        "cwt": 340.56,
+        "per_head": 1918.83,
+        "lo": 330.0,
+        "hi": 365.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 8,
+        "avg_wt": 674,
+        "cwt": 308.66,
+        "per_head": 2079.61,
+        "lo": 303.0,
+        "hi": 327.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 2,
+        "avg_wt": 730,
+        "cwt": 304.18,
+        "per_head": 2220.5,
+        "lo": 285.0,
+        "hi": 325.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "800": {
+        "head": 4,
+        "avg_wt": 850,
+        "cwt": 294.06,
+        "per_head": 2499.51,
+        "lo": 255.0,
+        "hi": 335.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 24
+    }
+   ],
+   "slug": "2052",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2052",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-20T18:40:17Z"
+   }
+  }
+ ],
+ "own": [
+  {
+   "id": "withee-wi",
+   "name": "Premier Livestock & Auctions",
+   "town": "Withee",
+   "state": "WI",
+   "lat": 44.95,
+   "lon": -90.6,
+   "sale": "Feeder cattle the 1st, 2nd and 3rd Tuesday; calves and fed cattle Mon and Tue; dairy Wed",
+   "site": "https://premierlivestockandauctions.com/market-reports/",
+   "sales": [
+    {
+     "date": "2026-10-13",
+     "receipts": 1080,
+     "ranges": [
+      {
+       "sex": "heifers",
+       "lo": 200,
+       "hi": 400,
+       "plo": 350.0,
+       "phi": 540.0
+      },
+      {
+       "sex": "heifers",
+       "lo": 400,
+       "hi": 600,
+       "plo": 300.0,
+       "phi": 430.0
+      },
+      {
+       "sex": "heifers",
+       "lo": 600,
+       "hi": 900,
+       "plo": 255.0,
+       "phi": 340.0
+      },
+      {
+       "sex": "steers",
+       "lo": 200,
+       "hi": 400,
+       "plo": 375.0,
+       "phi": 600.0
+      },
+      {
+       "sex": "steers",
+       "lo": 400,
+       "hi": 600,
+       "plo": 310.0,
+       "phi": 470.0
+      },
+      {
+       "sex": "steers",
+       "lo": 600,
+       "hi": 900,
+       "plo": 235.0,
+       "phi": 389.0
+      }
+     ],
+     "note": "One report for the Oct 6 and Oct 13 sales (835 and 245 head)",
+     "source_url": "https://premierlivestockandauctions.com/market-reports/"
+    }
+   ],
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-20T18:40:17Z"
+   }
+  }
+ ]
+}

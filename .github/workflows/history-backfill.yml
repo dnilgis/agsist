@@ -1,0 +1,167 @@
+name: History backfill (dispatch only)
+
+# One-time history pulls for the insight machine (Sig, Oct 21): raw history to
+# the PRIVATE raw branch (dnilgis/feedbag, history/<source>/), never to main and
+# never to the site. DISPATCH ONLY: this workflow has no schedule and must never
+# get one (test/history-collect.test.mjs). The ongoing weeks ride the existing
+# jobs (drought-county-week.yml, crop_progress.yml, cattle-auction.yml).
+#
+#   source       agtransport  USDA AgTransport datasets the transport pages read, 2016 on
+#                usdm         Drought Monitor county weekly categories, 2000 on
+#                nass         NASS crop progress and condition, every state, as far back as Quick Stats goes
+#                ams-fert     AMS Illinois Production Cost Report (fertilizer), 2010 on
+#   from, to     years (blank = the script's own start, this year)
+#   only         agtransport: dataset names (grain_basis,barge_rates); usdm: states (IA,MN)
+#   probe        ams-fert only: save what the archive and MARS answer, fetch nothing else
+#   max_minutes  stop starting new chunks after this; what is done is saved
+#
+# Resumable: each run reads the saved manifest first and skips every chunk it
+# marks complete, and saves to raw every 30 minutes as it goes. Dispatch the
+# same source again until the job summary says nothing is left.
+#   gh workflow run history-backfill.yml -R dnilgis/agsist --ref main -f source=usdm
+
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "What to backfill"
+        type: choice
+        options: [agtransport, usdm, nass, ams-fert]
+        required: true
+      from:
+        description: "First year (blank = the script's start)"
+        type: string
+        default: ""
+      to:
+        description: "Last year (blank = this year)"
+        type: string
+        default: ""
+      only:
+        description: "agtransport: dataset names; usdm: state letters (comma-separated; blank = all)"
+        type: string
+        default: ""
+      probe:
+        description: "ams-fert only: probe the sources and save their answers, nothing else"
+        type: boolean
+        default: false
+      max_minutes:
+        description: "Stop starting new chunks after this many minutes"
+        type: string
+        default: "300"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: history-backfill-${{ inputs.source }}
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      SOURCE: ${{ inputs.source }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Where it goes
+        id: w
+        run: |
+          case "$SOURCE" in
+            agtransport) echo "dir=history/agtransport" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_agtransport.py" >> "$GITHUB_OUTPUT";;
+            usdm)        echo "dir=history/usdm-county" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_usdm.py" >> "$GITHUB_OUTPUT";;
+            nass)        echo "dir=history/nass-progress" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_nass_progress.py" >> "$GITHUB_OUTPUT";;
+            ams-fert)    echo "dir=history/ams-fert" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_ams_fert.py" >> "$GITHUB_OUTPUT";;
+            *) echo "::error::unknown source $SOURCE"; exit 1;;
+          esac
+      - name: Selftests (no network)
+        env:
+          SCRIPT: ${{ steps.w.outputs.script }}
+        run: |
+          python3 scripts/history_lib.py --selftest
+          python3 "$SCRIPT" --selftest
+      # The saved manifest says which chunks are done. A path that is not on raw yet is a
+      # first run; a branch that cannot be read stops the run, because a fresh manifest
+      # pushed over the saved one would forget what is done.
+      - name: The saved manifest (private raw branch)
+        env:
+          DIR: ${{ steps.w.outputs.dir }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          rc=0
+          out=$(bash scripts/pull_raw.sh "$DIR/manifest.json" 2>&1) || rc=$?
+          echo "$out"
+          if [ "$rc" -ne 0 ]; then
+            if printf '%s' "$out" | grep -q "is not on the raw branch"; then
+              echo "first run for $SOURCE: starting fresh"
+            else
+              echo "::error::could not read the raw branch; not starting"; exit 1
+            fi
+          fi
+      - name: Backfill
+        env:
+          SCRIPT: ${{ steps.w.outputs.script }}
+          DIR: ${{ steps.w.outputs.dir }}
+          FROM: ${{ inputs.from }}
+          TO: ${{ inputs.to }}
+          ONLY: ${{ inputs.only }}
+          PROBE: ${{ inputs.probe }}
+          MAXMIN: ${{ inputs.max_minutes }}
+          HISTORY_PUSH: '1'
+          RAW_SOFT: '1'
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          NASS_API_KEY: ${{ inputs.source == 'nass' && secrets.NASS_API_KEY || '' }}
+          MARS_API_KEY: ${{ inputs.source == 'ams-fert' && secrets.MARS_API_KEY || '' }}
+          SOCRATA_APP_TOKEN: ${{ inputs.source == 'agtransport' && secrets.SOCRATA_APP_TOKEN || '' }}
+        run: |
+          args=()
+          for v in "$FROM" "$TO" "$MAXMIN"; do
+            case "$v" in *[!0-9]*) echo "::error::years and minutes are numbers ($v)"; exit 1;; esac
+          done
+          if [ -n "$FROM" ]; then args+=(--from "$FROM"); fi
+          if [ -n "$TO" ]; then args+=(--to "$TO"); fi
+          if [ -n "$MAXMIN" ]; then args+=(--max-minutes "$MAXMIN"); fi
+          if [ -n "$ONLY" ]; then
+            case "$ONLY" in *[!A-Za-z0-9_,]*) echo "::error::only takes names and commas"; exit 1;; esac
+            case "$SOURCE" in agtransport) args+=(--only "$ONLY");; usdm) args+=(--states "$ONLY");; esac
+          fi
+          if [ "$PROBE" = "true" ]; then
+            [ "$SOURCE" = "ams-fert" ] || { echo "::error::probe is for ams-fert only"; exit 1; }
+            python3 "$SCRIPT" --probe
+          else
+            python3 "$SCRIPT" "${args[@]}"
+          fi
+      - name: Save to the raw branch
+        if: ${{ !cancelled() }}
+        env:
+          DIR: ${{ steps.w.outputs.dir }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          [ -d "$DIR" ] || { echo "nothing written"; exit 0; }
+          bash scripts/push_raw.sh "history backfill $SOURCE" "$DIR"
+      - name: Summary
+        if: ${{ !cancelled() }}
+        env:
+          DIR: ${{ steps.w.outputs.dir }}
+        run: |
+          python3 - "$DIR/manifest.json" >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          import json, sys
+          try:
+              m = json.load(open(sys.argv[1]))
+          except OSError:
+              print("No manifest written."); sys.exit(0)
+          t = m.get("totals") or {}
+          left = [k for k, c in sorted(m["chunks"].items()) if not c.get("complete")]
+          print(f"### {m['source']}\n\n{t.get('rows')} rows in {t.get('chunks')} chunks, {t.get('complete')} complete; {t.get('first')} to {t.get('last')}.\n")
+          print(f"Not final ({len(left)}): {', '.join(left[:40])}{' ...' if len(left) > 40 else ''}" if left else "Every chunk is complete.")
+          EOF
