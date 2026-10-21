@@ -439,7 +439,6 @@ F_WORK = [("/sponsor", "Advertise", "i-chart-column"),
           ("/developer", "Embeds", "i-terminal")]
 F_ABOUT = [("/about", "About", "i-book-open"),
            ("/editorial-standards", "Editorial standards", "i-book-open"),
-           ("/data-sources", "Data sources", "i-link"),
            ("/contact", "Contact", "i-mail"),
            ("/status", "Status", "i-shield-check"),
            ("/changelog", "What&rsquo;s new", "i-scroll-text")]
@@ -476,10 +475,10 @@ ADSPACE = """    <div class="footer-adspace" id="footer-adspace" hidden>
     </div>
 """
 
-# Bottom row: one small line (data note + where the numbers come from), then the legal links.
+# Bottom row: one small line (data note), then the legal links. No sources link in the footer (Sig, Oct 21: honest, but the inner workings are not put on display).
 # The legal links stay last: test/nav-full-oct18.test.mjs reads every link after footer-legal.
 BOTTOM = """    <div class="footer-bottom">
-      <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Updated as each source posts. For information, not financial advice. <a href="/data-sources">Where the numbers come from</a></p>
+      <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Updated as each source posts. For information, not financial advice.</p>
       <div class="footer-legal">
         <span>&copy; 2026 AGSIST</span><span class="footer-sep">&middot;</span>
         <a href="/privacy">Privacy</a><span class="footer-sep">&middot;</span>

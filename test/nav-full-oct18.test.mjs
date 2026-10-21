@@ -119,7 +119,7 @@ test("footer: email band with an optional ZIP and one Rain Print line, six colum
   const labels = (n) => [...col(n).matchAll(/<a href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)].map((m) => [m[1], text(m[2])]);
   // 2026-10-20: "List your elevator, free" in Work with us (Sig, business walk-through fixes).
   assert.deepEqual(labels("Work with us"), [["/sponsor", "Advertise"], ["/rain-print-business", "Rain Print for business"], ["/prf-sponsor", "PRF sponsor"], ["/list-your-elevator", "List your elevator, free"], ["/rain-gauge", "Rain gauge waitlist"], ["/developer", "Embeds"]]);
-  assert.deepEqual(labels("About"), [["/about", "About"], ["/editorial-standards", "Editorial standards"], ["/data-sources", "Data sources"], ["/contact", "Contact"], ["/status", "Status"], ["/changelog", "What’s new"]]);
+  assert.deepEqual(labels("About"), [["/about", "About"], ["/editorial-standards", "Editorial standards"], ["/contact", "Contact"], ["/status", "Status"], ["/changelog", "What’s new"]]);
   const legal = footer.slice(footer.indexOf('<div class="footer-legal">'));
   assert.deepEqual([...legal.matchAll(/<a href="([^"]+)"/g)].map((m) => m[1]), ["/privacy", "/accessibility", "/terms"]);
   assert.doesNotMatch(footer, /\/cash-bids\/[a-z-]+\/"|\/rent\/[a-z]/, "no state-link columns yet (Sig: later)");
