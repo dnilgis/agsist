@@ -1,13 +1,13 @@
 /* components/print-sheet.js (+ print-sheet.css): the one printed format for every table, calculator and result on AGSIST, modelled on the ARC or PLC counter sheet.
-   AgPrintSheet.print(spec) prints it now, .attach(() => spec) makes Ctrl+P print it too, .html(spec) returns it; spec = {kicker, title, sub, intro, sections:[{h, rows:[{label,value,note,date,src}]} | {h, table:{head,rows}} | {h, html}], sources:[{name,date}], url, qr, shown, foot, page}.
+   AgPrintSheet.print(spec) prints it now, .attach(() => spec) makes Ctrl+P print it too, .html(spec) returns it; spec = {kicker, title, sub, intro, sections:[{h, rows:[{label,value,note,date,src}], cols:1|2} | {h, table:{head,rows}} | {h, html}], sources:[{name,date}], url, qr, shown, foot, page}.
 
    What every sheet carries, whatever the page:
      header   kicker (what it is), the title (the place or the subject) large, one sub line,
               AGSIST at the right, a heavy rule
      body     the sections the page hands over, in order; a row never splits across pages
      sources  one line per source actually printed, each with its date (the page builds the
-              list from the rows it printed)
-     bottom   the foot line on the left; on the right the QR code to the live page (the
+              list from the rows it printed), at the bottom beside the QR code
+     bottom   the sources and the foot line on the left; on the right the QR code to the live page (the
               smallest code that holds spec.qr, else spec.url) with the short address under it
      footer   "Prepared by AGSIST (agsist.com), printed <date>", and on every page the
               running title and "Page n of N"
@@ -32,6 +32,14 @@
     if (!Q || !text) return '';
     try { return Q.svg(text, label || 'QR code for the live page', 10, 'mixed'); } catch (e) { return ''; }
   }
+  /* cols 2: rows as blocks in two columns (label, value, its line, date and source), for long lists */
+  function grid(list) {
+    return '<div class="agps-grid">' + list.map(function (r) {
+      var meta = [r.date, r.src].filter(Boolean).map(esc).join(' &middot; ');
+      return '<div class="agps-cell"><p class="agps-cl">' + esc(r.label) + '</p><p class="agps-cv"><span class="agps-v">' + esc(r.value) + '</span>' +
+        (r.note ? ' <span class="agps-cn">' + esc(r.note) + '</span>' : '') + (meta ? ' <span class="agps-cm">(' + meta + ')</span>' : '') + '</p></div>';
+    }).join('') + '</div>';
+  }
   function rows(list) {
     return '<table class="agps-rows"><tbody>' + list.map(function (r) {
       var meta = [r.date, r.src].filter(Boolean).map(esc).join(' &middot; ');
@@ -44,7 +52,7 @@
       (t.rows || []).map(function (r) { return '<tr>' + r.map(function (c, i) { return i ? '<td>' + esc(c) + '</td>' : '<th scope="row">' + esc(c) + '</th>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>';
   }
   function section(s) {
-    var body = s.rows ? rows(s.rows) : s.table ? table(s.table) : s.html || '';
+    var body = s.rows ? (s.cols === 2 ? grid(s.rows) : rows(s.rows)) : s.table ? table(s.table) : s.html || '';
     if (!body) return '';
     return '<section class="agps-sec' + (s.cls ? ' ' + esc(s.cls) : '') + '">' + (s.h ? '<h2>' + esc(s.h) + '</h2>' : '') + body + (s.note ? '<p class="agps-note">' + esc(s.note) + '</p>' : '') + '</section>';
   }
@@ -59,8 +67,9 @@
       (spec.sub ? '<p class="agps-sub">' + esc(spec.sub) + '</p>' : '') + '</div><p class="agps-brand">AGSIST</p></header>' +
       (spec.intro ? '<p class="agps-intro">' + esc(spec.intro) + '</p>' : '') +
       (spec.sections || []).map(section).join('') +
-      (srcs.length ? '<section class="agps-sec agps-srcs"><h2>Sources</h2><ul>' + srcs.map(function (s) { return '<li><b>' + esc(s.name) + '</b>' + (s.date ? ', ' + esc(s.date) : '') + '</li>'; }).join('') + '</ul></section>' : '') +
-      '<div class="agps-bottom"><p class="agps-foot">' + esc(spec.foot || 'For information, not financial advice. Each number carries its source and date.') + '</p>' +
+      '<div class="agps-bottom"><div>' +
+      (srcs.length ? '<section class="agps-srcs"><h2>Sources</h2><ul>' + srcs.map(function (s) { return '<li><b>' + esc(s.name) + '</b>' + (s.date ? ', ' + esc(s.date) : '') + '</li>'; }).join('') + '</ul></section>' : '') +
+      '<p class="agps-foot">' + esc(spec.foot || 'For information, not financial advice. Each number carries its source and date.') + '</p></div>' +
       (qr ? '<div class="agps-qr"><p class="agps-scan">Scan for the live page</p>' + qr + '<p class="agps-url">' + esc(shown) + '</p></div>' : '<p class="agps-url">' + esc(shown) + '</p>') + '</div>' +
       '<p class="agps-prep"><b>Prepared by AGSIST (agsist.com), printed ' + esc(printed) + '</b></p></div>';
   }

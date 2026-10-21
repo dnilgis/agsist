@@ -939,7 +939,7 @@
     var agency = /Census of Agriculture/i.test(t) ? 'USDA Census of Agriculture' : /NASS/i.test(t) ? 'USDA NASS' : /RMA|Summary of Business/i.test(t) ? 'USDA RMA' :
       /FSA|CRP/i.test(t) ? 'USDA FSA' : /Drought Monitor/i.test(t) ? 'U.S. Drought Monitor' : /NOAA|NCEI|nClim/i.test(t) ? 'NOAA' : /USGS/i.test(t) && /USDA/i.test(t) ? 'USDA and USGS' :
       /USGS/i.test(t) ? 'USGS' : /EIA/i.test(t) ? 'U.S. Energy Information Administration' : /storm|NWS|SPC/i.test(t) ? 'NOAA storm reports' : t.replace(/\s*\(.*?\)\s*/g, ' ').trim();
-    var span = /^\d{4}-\d{4}$/.test(y) ? y : yr;
+    var span = /^\d{4}-\d{4}$/.test(y) || /^\d{4} to date$/.test(y) ? y : yr;
     return agency + (span ? ', ' + span : '');
   }
   /* A county figure from the profile (rent, land value, loss ratio): its value, its rank in the

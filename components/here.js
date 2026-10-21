@@ -661,6 +661,19 @@
     S.print = { parts: P.PRINT_PARTS.filter(function (k) { return parts.indexOf(k) >= 0; }), more: $('h-pr-more').checked, rain: $('h-pr-rain').checked };
     writeUrl();
   }
+  /* the dates one source is printed with: year spans fold into one span ("1991-2026"), days into
+     "first to last" */
+  function dateSpan(list) {
+    var d = list.slice().sort();
+    var yrs = d.filter(function (x) { return /^\d{4}(-\d{4}| to date)?$/.test(x); }), days = d.filter(function (x) { return yrs.indexOf(x) < 0; });
+    if (yrs.length && days.length) return dateSpan(yrs) + '; ' + days[days.length - 1];
+    if (d.length && d.every(function (x) { return /^\d{4}(-\d{4}| to date)?$/.test(x); })) {
+      var lo = Math.min.apply(null, d.map(function (x) { return +x.slice(0, 4); })), td = d.some(function (x) { return / to date$/.test(x); });
+      var hi = Math.max.apply(null, d.map(function (x) { var m = x.match(/(\d{4})$/); return m ? +m[1] : +x.slice(0, 4); }));
+      return td ? lo + ' to date' : lo === hi ? String(lo) : lo + '-' + hi;
+    }
+    return d.length > 2 ? d[0] + ' to ' + d[d.length - 1] : d.join(', ');
+  }
   function shortDate(d) { return /^\d{4}-\d{2}-\d{2}$/.test(d || '') ? mdy(d) : String(d || ''); }
   function sheet() {
     var p = S.prof, w = S.where || {}, c = S.print, on = function (k) { return c.parts.indexOf(k) >= 0; };
@@ -680,17 +693,19 @@
         rows.push({ label: f.label, value: f.value, note: f.ctx || '', date: d, src: name });
         src(name, d);
       });
-      if (rows.length) secs.push({ h: card[0], rows: rows });
+      if (rows.length) secs.push({ h: card[0], rows: rows, cols: 2 });
     });
     if (on('fingerprint')) {
-      var fp = p.cols.filter(function (x) { return x.value != null; }).map(function (x) {
-        var nm = P.srcName(x.source, x.years);
-        src(nm.replace(/, [\d-]+$/, ''), (nm.match(/, ([\d-]+)$/) || [])[1] || '');
-        return [x.label, P.fmtShort(x.value, x), (x.words || '') + (x.band ? ' (' + (x.band === 'top' ? 'highest' : 'lowest') + ' tenth)' : ''), nm];
+      /* a figure already printed in the cards (rent, land value, insurance) is not printed twice */
+      var inCards = on('week') ? { rent: S.facts['f-rent'], land_value: S.facts['f-land'], loss_ratio: S.facts['f-loss'] } : {};
+      var fp = p.cols.filter(function (x) { return x.value != null && !(inCards[x.id] && inCards[x.id].value != null); }).map(function (x) {
+        var nm = P.srcName(x.source, x.years), yrs = (nm.match(/, ([\d-]+(?: to date)?)$/) || [])[1] || '';
+        src(nm.replace(/, [\d-]+(?: to date)?$/, ''), yrs);
+        return { label: x.label, value: P.fmtShort(x.value, x), note: cap((x.words || '').replace(new RegExp(' ' + p.stName + ' counties'), '')) + (x.band ? ' (' + (x.band === 'top' ? 'highest' : 'lowest') + ' tenth)' : '') + '.', date: yrs };
       });
-      if (fp.length) secs.push({ h: 'How it ranks among ' + p.stName + ' counties', table: { head: ['Figure', 'Here', 'Where it sits', 'Source'], rows: fp } });
+      if (fp.length) secs.push({ h: 'How it ranks among ' + p.stName + ' counties', rows: fp, cols: 2 });
     }
-    if (on('unusual') && p.unusual.length) secs.push({ h: 'Against its neighbors', rows: p.unusual.map(function (u) {
+    if (on('unusual') && p.unusual.length) secs.push({ h: 'Against its neighbors', cols: 2, rows: p.unusual.map(function (u) {
       return { label: u.label, value: P.fmtShort(u.value, u.col) + ' here', note: P.fmtShort(u.nb, u.col) + ' across ' + u.nbN + ' neighboring counties' + (u.dir === 'same' ? '.' : ', ' + u.dir + ' than its neighbors.') };
     }) });
     if (on('long')) {
@@ -698,10 +713,10 @@
         var hi = null, lo = null;
         r.pts.forEach(function (q) { if (!hi || q[1] > hi[1]) hi = q; if (!lo || q[1] < lo[1]) lo = q; });
         var u = r.unit === '$/ac' ? function (v) { return '$' + Math.round(v); } : function (v) { return String(v); };
-        src(r.source, r.pts[0][0] + '-' + r.pts[r.pts.length - 1][0]);
+        src(P.srcName(r.source, ''), r.pts[0][0] + '-' + r.pts[r.pts.length - 1][0]);
         return { label: r.label, value: 'High ' + u(hi[1]) + ' (' + hi[0] + '), low ' + u(lo[1]) + ' (' + lo[0] + ')', note: r.unit + ', ' + r.pts[0][0] + '-' + r.pts[r.pts.length - 1][0] + (r.partial ? '; ' + r.partial + ' is the year so far' : '') + '.' };
       });
-      if (lv.length) secs.push({ h: 'The long view', rows: lv });
+      if (lv.length) secs.push({ h: 'The long view', rows: lv, cols: 2 });
       if (c.more && lv.length) {
         var rows = P.longView(S.county), y0 = Infinity, y1 = -Infinity;
         rows.forEach(function (r) { r.pts.forEach(function (q) { y0 = Math.min(y0, q[0]); y1 = Math.max(y1, q[0]); }); });
@@ -722,7 +737,7 @@
       sub: (from ? 'From ' + from + '. ' : '') + 'County figures; ranks are among ' + p.stName + ' counties.',
       intro: on('sentence') ? p.sentence : '',
       sections: secs,
-      sources: on('sources') ? order.map(function (n) { var d = srcs[n].slice().sort(); return { name: n, date: d.length > 2 ? d[0] + ' to ' + d[d.length - 1] : d.join(', ') }; }) : [],
+      sources: on('sources') ? order.map(function (n) { return { name: n, date: dateSpan(srcs[n]) }; }) : [],
       url: 'https://agsist.com/fast-facts' + location.search, qr: qr, shown: qr.replace(/^HTTPS:\/\/AGSIST\.COM/, 'agsist.com'),
       foot: 'Public records for ' + p.name + ', each with its source and date. Bids and prices move every day; check before you sell or buy. For information, not financial advice.'
     };
