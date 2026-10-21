@@ -201,8 +201,20 @@ test("credits: every source named on screen with a link", () => {
   const all = W.CREDITS.map((c) => c.t + " " + c.a + " " + c.tail).join(" ");
   for (const s of ["Open-Meteo", "CC BY 4.0", "NOAA HRRR and GFS", "USGS", "FAO-56", "Sprayers101", "SDSU Extension", "Check your product label"]) assert.ok(all.includes(s), s);
   for (const c of W.CREDITS) if (c.a) assert.match(c.u, /^https:\/\//, c.id);
-  assert.match(UI, /Forecast \(estimate\): NOAA HRRR and GFS models, blended by Open-Meteo \(model /);
-  assert.match(UI, /time not given by the source/);
+  assert.match(UI, /Forecast \(estimate\): the same model and run as the rest of this page/);
+  assert.doesNotMatch(UI, /meta\.json/, "the wind view does not fetch run times itself");
+});
+
+test("one story: the page's own forecast call uses the wind view's model, and the page names model and runs once", () => {
+  const calls = HTML.match(/https:\/\/api\.open-meteo\.com\/v1\/forecast\?[^']*'[^;]*;/g) || [];
+  assert.equal(calls.length, 1, "one forecast call in the page");
+  assert.match(calls[0], /&models=gfs_seamless'/);
+  assert.match(SRC, /var MODEL = 'gfs_seamless'/);
+  assert.match(HTML, /<p class="sp-model" id="sp-model" hidden><\/p>/);
+  assert.match(HTML, /ncep_hrrr_conus\/static\/meta\.json/);
+  assert.match(HTML, /ncep_gfs013\/static\/meta\.json/);
+  assert.match(HTML, /time not given by the source/);
+  assert.match(HTML, /Forecast \(estimate\) for everything on this page/);
 });
 
 test("degraded sources: each one has a plain line and a retry", () => {

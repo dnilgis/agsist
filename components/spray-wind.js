@@ -84,13 +84,12 @@
   function start(field) {
     S.field = field;
     S.grid = W.gridPoints(field.lat, field.lon);
-    S.W = null; S.F = null; S.hours = []; S.runs = {};
+    S.W = null; S.F = null; S.hours = [];
     var shared = W.parseShare(location.search);
     S.wantT = shared && Math.abs(shared.lat - field.lat) < 1e-3 && Math.abs(shared.lon - field.lon) < 1e-3 ? shared.t : null;
     setupMap();
     loadField();
     loadGrid();
-    loadMeta();
   }
   function loadField() {
     $('sw-list').innerHTML = '<li class="sw-wait">Reading the forecast for your field.</li>';
@@ -120,12 +119,6 @@
       down('The wind map forecast is not answering right now (Open-Meteo: ' + esc(msg(e)) + '). The spray windows below use the forecast at your field. <button type="button" class="sw-btn sw-retry" id="sw-retry-g">Try again</button>');
       var b = $('sw-retry-g'); if (b) b.addEventListener('click', loadGrid);
       afterData();
-    });
-  }
-  function loadMeta() {
-    S.runs = {};
-    W.META.forEach(function (m) {
-      getJson(m.u).then(function (j) { S.runs[m.name] = W.runTime(j); renderCredits(); }).catch(function () { S.runs[m.name] = null; renderCredits(); });
     });
   }
   function msg(e) { return (e && e.name === 'AbortError') ? 'no answer in ' + (FETCH_MS / 1000) + ' seconds' : String((e && e.message) || e || 'error').slice(0, 80); }
@@ -383,11 +376,10 @@
   function fmtRun(d) { try { return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }); } catch (e) { return d.toISOString(); } }
   function renderCredits() {
     var el = $('sw-src'); if (!el) return;
-    var runs = W.META.map(function (m) { var d = S.runs && S.runs[m.name]; return d === undefined ? null : m.name + ' run ' + (d ? fmtRun(d) : 'time not given by the source'); }).filter(Boolean);
     var state = [];
     if (S.fieldErr) state.push('field forecast not answering');
     if (S.gridErr) state.push('wind map forecast not answering');
-    el.innerHTML = '<b>Forecast (estimate): NOAA HRRR and GFS models, blended by Open-Meteo (model ' + esc(W.MODEL) + ')</b>' + (runs.length ? '. ' + esc(runs.join(', ')) : '') + '.' + (S.readAt ? ' Read ' + esc(fmtRun(S.readAt)) + '.' : '') + (state.length ? ' <span class="sw-bad">Now: ' + esc(state.join('; ')) + '.</span>' : '') + ' ' +
+    el.innerHTML = '<b>Forecast (estimate): the same model and run as the rest of this page (' + esc(W.MODEL) + ', named under the 24-hour strip)</b>.' + (S.readAt ? ' Read ' + esc(fmtRun(S.readAt)) + '.' : '') + (state.length ? ' <span class="sw-bad">Now: ' + esc(state.join('; ')) + '.</span>' : '') + ' ' +
       W.CREDITS.map(function (c) { return '<span data-credit="' + c.id + '">' + esc(c.t) + (c.a ? ' <a href="' + esc(c.u) + '" target="_blank" rel="noopener">' + esc(c.a) + '</a>' : '') + (c.tail ? (c.tail === '.' ? '' : ' ') + esc(c.tail) : '') + '</span>'; }).join(' ');
   }
   function renderHow() {

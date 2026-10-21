@@ -56,7 +56,7 @@ function serve() {
 async function open(browser, port, { width, height, fail = new Set(), reduced = false, path }) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height }, reducedMotion: reduced ? "reduce" : "no-preference" });
   const pg = await ctx.newPage();
-  const errors = [], asked = [];
+  const errors = [], asked = [], pageAsked = [];
   pg.on("pageerror", (e) => errors.push(String(e)));
   const json = (r, body) => r.fulfill({ status: 200, contentType: "application/json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify(body) });
   const bad = (r) => r.fulfill({ status: 500, contentType: "application/json", headers: { "access-control-allow-origin": "*" }, body: '{"error":true,"reason":"down"}' });
@@ -68,7 +68,8 @@ async function open(browser, port, { width, height, fail = new Set(), reduced = 
     if (u.host === "api.open-meteo.com" && u.pathname === "/v1/forecast") {
       const lat = u.searchParams.get("latitude") || "";
       if (lat.includes(",")) return fail.has("grid") ? bad(r) : json(r, gridForecast(YMD));
-      if (u.searchParams.get("models") === "gfs_seamless") return fail.has("field") ? bad(r) : json(r, fieldForecast(YMD));
+      if (!u.searchParams.get("current")) return fail.has("field") ? bad(r) : json(r, fieldForecast(YMD));
+      pageAsked.push(u.searchParams.get("models"));
       return json(r, pageForecast(YMD, NOWKEY));
     }
     if (u.host === "basemap.nationalmap.gov") return fail.has("tiles") ? r.fulfill({ status: 500, body: "" }) : r.fulfill({ status: 200, contentType: "image/png", body: TILE });
@@ -76,7 +77,7 @@ async function open(browser, port, { width, height, fail = new Set(), reduced = 
     return r.abort();
   });
   await pg.goto(`http://127.0.0.1:${port}${path}`);
-  return { ctx, pg, errors, asked };
+  return { ctx, pg, errors, asked, pageAsked };
 }
 
 const SHARE = `/spray?f=42.03,-93.62&t=${TOMORROW8.slice(0, 13)}#wind`;
@@ -87,9 +88,16 @@ test("a shared field link at 390 and 1280: map, flow, windows, credits, the shar
   try {
     const counts = {};
     for (const [width, height] of [[390, 844], [1280, 900]]) {
-      const { ctx, pg, errors, asked } = await open(browser, port, { width, height, path: SHARE });
+      const { ctx, pg, errors, asked, pageAsked } = await open(browser, port, { width, height, path: SHARE });
       await pg.waitForSelector("#sw-list li.sw-li", { timeout: 15000 });
-      await pg.waitForFunction(() => /HRRR run/.test(document.getElementById("sw-src").textContent));
+      // one story: the cards and the 24-hour strip ask for the same model as the wind view, named once for the page
+      await pg.waitForFunction(() => /HRRR run .*GFS run /.test(document.getElementById("sp-model").textContent));
+      assert.deepEqual([...new Set(pageAsked)], ["gfs_seamless"]);
+      assert.ok(asked.filter((x) => x.includes("/v1/forecast")).every((x) => x.includes("models=gfs_seamless")), "every forecast call names gfs_seamless");
+      const model = await pg.$eval("#sp-model", (e) => e.textContent);
+      assert.match(model, /^Forecast \(estimate\) for everything on this page: NOAA HRRR for the first hours, then GFS, blended by Open-Meteo \(model gfs_seamless\)\. HRRR run .+, GFS run .+\.$/);
+      assert.equal(await pg.evaluate(() => document.body.textContent.split("HRRR run").length - 1), 1, "the run time is named once");
+      assert.equal(await pg.$$eval("#sp-model a", (as) => as[0].href), "https://open-meteo.com/");
       // the shared hour is the slider's hour
       assert.equal(+(await pg.$eval("#sw-slider", (e) => e.value)), IDX8, "slider at the shared hour");
       assert.match(await pg.$eval("#sw-read", (e) => e.textContent), /8 AM/);
@@ -103,7 +111,7 @@ test("a shared field link at 390 and 1280: map, flow, windows, credits, the shar
       assert.ok(list.some((t) => /^Too windy /.test(t)), list.join(" | "));
       // every source on screen, linked
       const src = await pg.$eval("#sw-src", (e) => e.textContent);
-      for (const s of ["Forecast (estimate): NOAA HRRR and GFS models, blended by Open-Meteo (model gfs_seamless)", "HRRR run", "GFS run", "Open-Meteo", "CC BY 4.0", "USGS", "FAO-56", "Sprayers101", "SDSU Extension", "Check your product label"]) assert.ok(src.includes(s), s + " in: " + src);
+      for (const s of ["Forecast (estimate): the same model and run as the rest of this page (gfs_seamless", "Open-Meteo", "CC BY 4.0", "USGS", "FAO-56", "Sprayers101", "SDSU Extension", "Check your product label"]) assert.ok(src.includes(s), s + " in: " + src);
       const links = await pg.$$eval("#sw-src a", (as) => as.map((a) => a.href));
       for (const h of ["https://open-meteo.com/", "sprayers101.com", "extension.sdstate.edu", "usgs.gov", "fao.org"]) assert.ok(links.some((l) => l.includes(h)), h);
       // nothing asked of anyone with a key, and the map came from USGS
@@ -167,7 +175,7 @@ test("each source failing on its own gets a plain line, and the rest still works
     await o.pg.waitForFunction(() => { const d = document.getElementById("sw-down"); return d && !d.hidden; }, null, { timeout: 15000 });
     assert.match(await o.pg.$eval("#sw-down", (e) => e.textContent), /The wind map forecast is not answering right now \(Open-Meteo/);
     await o.pg.waitForSelector("#sw-list li.sw-li");
-    await o.pg.waitForFunction(() => /time not given by the source/.test(document.getElementById("sw-src").textContent));
+    await o.pg.waitForFunction(() => /HRRR run time not given by the source, GFS run time not given by the source/.test(document.getElementById("sp-model").textContent));
     assert.match(await o.pg.$eval("#sw-src", (e) => e.textContent), /Now: wind map forecast not answering/);
     if (SHOTS) { await o.pg.$eval("#wind", (e) => e.scrollIntoView({ block: "start" })); await o.pg.waitForTimeout(300); await o.pg.locator("#wind").screenshot({ path: join(SHOTS, "wind-390-grid-down.png") }); }
     assert.deepEqual(o.errors, []);

@@ -70,16 +70,6 @@
       '&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation,precipitation_probability,weather_code,cloud_cover,wind_speed_10m,wind_gusts_10m,wind_direction_10m,is_day' +
       '&daily=sunrise,sunset,temperature_2m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=4&models=' + MODEL;
   }
-  /* When each model run started, from Open-Meteo's own model status files. */
-  var META = [
-    { name: 'HRRR', u: 'https://api.open-meteo.com/data/ncep_hrrr_conus/static/meta.json' },
-    { name: 'GFS', u: 'https://api.open-meteo.com/data/ncep_gfs013/static/meta.json' }
-  ];
-  function runTime(meta) {
-    var s = meta && num(meta.last_run_initialisation_time);
-    return s == null ? null : new Date(s * 1000);
-  }
-
   /* ---------- time, in the field's own clock ---------- */
   // Open-Meteo (timezone=auto) gives field-local "YYYY-MM-DDTHH:MM" strings. They are handled as text
   // and as UTC-frame dates (Date.UTC of the same numbers) so the reader's own time zone never shifts them.
@@ -355,8 +345,8 @@
   }
 
   var API_OUT = {
-    MODEL: MODEL, HOURS: HOURS, INV: INV, RAINFREE: RAINFREE, RAINFREE_CHOICES: RAINFREE_CHOICES, CREDITS: CREDITS, META: META, WHY_TEXT: WHY_TEXT,
-    gridPoints: gridPoints, gridUrl: gridUrl, fieldUrl: fieldUrl, runTime: runTime, hourKey: hourKey, fmtRange: fmtRange, clock: clock, dow: dow,
+    MODEL: MODEL, HOURS: HOURS, INV: INV, RAINFREE: RAINFREE, RAINFREE_CHOICES: RAINFREE_CHOICES, CREDITS: CREDITS, WHY_TEXT: WHY_TEXT,
+    gridPoints: gridPoints, gridUrl: gridUrl, fieldUrl: fieldUrl, hourKey: hourKey, fmtRange: fmtRange, clock: clock, dow: dow,
     uv: uv, compass: compass, parseGrid: parseGrid, sample: sample, band: band, inversionFlag: inversionFlag, isRain: isRain, sunFor: sunFor,
     rateHours: rateHours, summary: summary, runs: runs, shareUrl: shareUrl, parseShare: parseShare
   };

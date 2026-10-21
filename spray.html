@@ -870,6 +870,8 @@ body {
   .day-wind { font-size:0.755rem; }
 }
 
+.sp-model{font-size:.75rem;color:var(--text-muted);line-height:1.5;margin:.5rem 0 0}
+.sp-model a{color:inherit;text-decoration:underline}
 .sw-sec{margin:1.25rem 0 .5rem}
 .sw-h{margin:0 0 .25rem;font-size:1rem}
 .sw-lede{font-size:.85rem;color:var(--text-dim);margin:0 0 .6rem;line-height:1.5}
@@ -1212,6 +1214,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <div class="window-summary" id="window-summary" role="status" style="font-size:.85rem;color:var(--text-dim);margin:.15rem 0 .5rem;line-height:1.5"></div>
           <div class="hourly-scroll" id="hourly-strip" aria-busy="true"><span class="sr-only">Loading forecast</span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span></div>
           <div class="window-legend"><span class="wl-dot" style="background:var(--green,#4aab4c)"></span> Good window &middot; <span class="wl-dot" style="background:var(--gold-fill,var(--gold,#d4a23f))"></span> Marginal, proceed with care &middot; <span class="wl-dot" style="background:var(--red,#e0685f)"></span> Do not spray &middot; <svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> Frozen &middot; Scroll to see full 24h</div>
+          <p class="sp-model" id="sp-model" hidden></p>
         </div>
         <section class="sw-sec" id="wind" aria-labelledby="sw-h">
           <h2 class="window-head sw-h" id="sw-h"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wind"/></svg></span> Wind at your field, next 48 hours</h2>
@@ -2003,18 +2006,28 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     sk.style.gridTemplateColumns=st==='fail'?'minmax(0,1fr)':'';
     var ds=document.getElementById('day-strip');
     (function(f){f();if(!window.AgStates)(window.AgStatesQ=window.AgStatesQ||[]).push(f);})(function(){if(!window.AgStates||FC_STATE!==st)return;if(st==='load'){AgStates.skeleton(sk,{cards:6,h:150});if(ds)AgStates.skeleton(ds,{cards:5,h:96});}else{AgStates.empty(sk,'No readings here: the forecast didn\u2019t load.');if(ds)AgStates.empty(ds,'The 5-day outlook didn\u2019t load.');}});}
+  /* One model for the whole page (the cards, the 24-hour strip, the 5-day outlook and the wind view): Open-Meteo
+     gfs_seamless, NOAA HRRR for the first hours then GFS. Named once, with each model's run time from Open-Meteo's
+     own status files; a run time that does not come back says so. */
+  var SP_MODEL={name:'gfs_seamless',runs:[{n:'HRRR',u:'https://api.open-meteo.com/data/ncep_hrrr_conus/static/meta.json'},{n:'GFS',u:'https://api.open-meteo.com/data/ncep_gfs013/static/meta.json'}]},SP_RUNS=null;
+  function fmtRunT(d){try{return d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});}catch(e){return d.toISOString();}}
+  function renderModelLine(){var el=document.getElementById('sp-model');if(!el)return;
+    var paint=function(){var r=SP_MODEL.runs.map(function(m){var v=SP_RUNS&&SP_RUNS[m.n];return v===undefined?'':m.n+' run '+(v?fmtRunT(v):'time not given by the source');}).filter(Boolean);el.innerHTML='Forecast (estimate) for everything on this page: NOAA HRRR for the first hours, then GFS, blended by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (model '+SP_MODEL.name+')'+(r.length?'. '+r.join(', '):'')+'.';el.hidden=false;window.AgSprayModel={name:SP_MODEL.name,runs:SP_RUNS};};
+    if(SP_RUNS){paint();return;}SP_RUNS={};paint();
+    SP_MODEL.runs.forEach(function(m){fetch(m.u).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(j){var t=j&&j.last_run_initialisation_time;SP_RUNS[m.n]=(typeof t==='number'&&isFinite(t))?new Date(t*1000):null;paint();}).catch(function(){SP_RUNS[m.n]=null;paint();});});}
   function loadWeather(lat,lon,label){
     document.getElementById('loc-setup').style.display='none';
     document.getElementById('factor-section').style.display='block';
     fcState('load');
     document.getElementById('st-loc').textContent=(label||'Your Location');if(window.gaEvent)gaEvent('spray_location_set');
     window.AgSprayField={lat:+lat,lon:+lon,label:label||null};try{document.dispatchEvent(new CustomEvent('agsist:spray-field',{detail:window.AgSprayField}));}catch(e){}
-    var url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation_probability,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,cloud_cover&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,wind_speed_10m,wind_gusts_10m,wind_direction_10m,weather_code,cloud_cover&daily=weather_code,temperature_2m_max,wind_speed_10m_max,wind_gusts_10m_max,precipitation_probability_max,sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=5';
+    var url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation_probability,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,cloud_cover&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,wind_speed_10m,wind_gusts_10m,wind_direction_10m,weather_code,cloud_cover&daily=weather_code,temperature_2m_max,wind_speed_10m_max,wind_gusts_10m_max,precipitation_probability_max,sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=5&models=gfs_seamless';
     fetch(url).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(d){
       if(!d||!d.current)throw new Error('no current conditions');
       SPRAY_LAST={d:d,lat:lat,lon:lon,label:label};
       renderSprayCurrent(d,lat,lon,label);
       fcState('ok');
+      renderModelLine();
     }).catch(function(e){console.warn('[AGSIST] Weather fetch error:',e);fcState('fail');var sm=document.getElementById('st-main');if(sm){sm.textContent='Couldn’t Load Weather';sm.className='status-main marginal';}var es=document.getElementById('st-sub');if(es)es.textContent='Connection problem, check your signal, then tap "Change location" or reload the page to retry.';(function(f){f();if(!window.AgStates)(window.AgStatesQ=window.AgStatesQ||[]).push(f);})(function(){var hs=document.getElementById('hourly-strip');if(hs&&window.AgStates){hs.removeAttribute('aria-busy');AgStates.error(hs,{msg:'The forecast didn\u2019t load.',retry:function(){if(sm){sm.textContent='Detecting\u2026';}if(es)es.textContent='Getting your local conditions';hs.setAttribute('aria-busy','true');hs.innerHTML='<span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span>';loadWeather(lat,lon,label);}});}});});
   }
   function renderSprayCurrent(d,lat,lon,label){
