@@ -449,9 +449,13 @@ def main(argv=(), now=None, fetch=None):
         print("nobody to send to. exit 0")
         return 0
 
-    from_addr = env("FROM_ADDR") or env("SMTP_USER") or ("" if not dry else "sender@example.com")
+    try:
+        from_addr = log_safe.sender_addr("sender@example.com" if dry else "")
+    except RuntimeError as ex:      # SES login with no FROM_ADDR: never a key id in From
+        print("FATAL: " + str(ex))
+        return 1
     if not from_addr:
-        print("FATAL: missing env SMTP_USER")
+        print("FATAL: missing env FROM_ADDR or SMTP_USER")
         return 1
     from_name = env("FROM_NAME") or "AGSIST"
     reply_to = env("REPLY_TO")

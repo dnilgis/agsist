@@ -143,7 +143,8 @@ test("at 390: tick the gift, fill it in, Pay posts the gift and then opens Strip
     const sum = (await page.textContent("#rp-pg-sum")).replace(/\s+/g, " ");
     assert.match(sum, /Gift for ?Dad/); assert.match(sum, /Note on the letter ?Every inch/);
     await page.click("#rp-proof-order");
-    await page.waitForFunction(() => /stripe/.test(document.body.textContent) || location.host === "buy.stripe.com", null, { timeout: 15000 });
+    // the stub page itself, not any "stripe" in the page (the temperature stripes option says "stripes")
+    await page.waitForFunction(() => location.host === "buy.stripe.com" || document.body.textContent.trim() === "stripe", null, { timeout: 15000 });
     assert.equal(posts.length, 1, "one order post");
     const p = posts[0];
     assert.equal(p.kind, "rain-print-order"); assert.equal(p.gift, true); assert.equal(p.gift_to, "Dad");
@@ -227,7 +228,8 @@ test("at 390: this year's gift carries who it's for and the card note from step 
     assert.match((await page.textContent("#rp-pg-sum")).replace(/\s+/g, " "), /Note on the gift card ?For the dry year/);
     await page.check("#rp-proof-ok");
     await page.click("#rp-proof-order");
-    await page.waitForFunction(() => /stripe/.test(document.body.textContent) || location.host === "buy.stripe.com", null, { timeout: 15000 });
+    // the stub page itself, not any "stripe" in the page (the temperature stripes option says "stripes")
+    await page.waitForFunction(() => location.host === "buy.stripe.com" || document.body.textContent.trim() === "stripe", null, { timeout: 15000 });
     assert.equal(posts.length, 1, "one order post, before checkout");
     const p = posts[0];
     assert.equal(p.kind, "rain-print-order"); assert.equal(p.gift_january, true); assert.equal(p.gift, undefined);

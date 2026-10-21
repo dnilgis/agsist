@@ -217,7 +217,7 @@
     h += '<div class="fx-val">' + v.val + (v.old ? '' : ' <small>$/cwt &middot; ' + v.date + '</small>') + '</div>' +
       '<p class="fx-note">' + v.meta + '</p>';
     if (v.fut) h += '<p class="fx-note">' + esc(v.fut) + ': <b>' + esc(v.diff) + '</b></p>';
-    else if (v.futNote) h += '<p class="fx-note">' + v.futNote + '</p>';
+    // no settle for this date: said in the fold below, not on the card (keeps the cattle page short on phones)
     box.hidden = false;
     var cs = window.getComputedStyle ? getComputedStyle(box) : null;
     var cw = box.clientWidth ? box.clientWidth - (cs ? parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) : 36) : 640;
@@ -230,7 +230,7 @@
       '<li>' + esc(v.label) + '. ' + v.basis + '</li>' +
       '<li>The handbook says RMA applies each type&rsquo;s price adjustment factor before it publishes. This is the type with a factor of 1.00: steers, 6 to 10 cwt. Heifers and lighter steers are this value times their factor.</li>' +
       '<li>Dated by the end date RMA gives it. RMA posts it a few business days later, so the newest value lags the board.</li>' +
-      '<li>The difference is RMA&rsquo;s value minus the nearby feeder futures settle on the same date, only on days we hold that settle (we keep them from Oct 15, 2026 on).</li>' +
+      '<li>The difference is RMA&rsquo;s value minus the nearby feeder futures settle on the same date, only on days we hold that settle (we keep them from Oct 15, 2026 on).' + (v.futNote ? ' ' + v.futNote : '') + '</li>' +
       '</ul><p class="fx-src">' + RMA_CREDIT + '</p></details>';
     box.innerHTML = h; box.hidden = false;
     if (!compact && !v.old) wireChart(box, v.hist, cw);
