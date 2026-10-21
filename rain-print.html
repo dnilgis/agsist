@@ -135,7 +135,8 @@
   .rp-cap-l{flex:1 1 180px;min-width:0}
   .rp-view{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem}
   .rp-view .chip{min-height:var(--btn-h);padding:.3rem .8rem;font-size:var(--fs-xs);overflow-wrap:normal;background:transparent;border-color:color-mix(in srgb,var(--rp-wall-ink) 40%,transparent);color:var(--rp-wall-ink)}
-  .rp-wall .rp-view .rp-zoom-btn[disabled]{display:none}
+  /* Disabled chips keep their place (visibility, not display): a chip that appears when the print is drawn must not re-wrap the row and push the print down (Oct 21: Watch it draw + Up close wrapped on a phone, a 51 px shift). */
+  .rp-wall .rp-view .rp-zoom-btn[disabled],.rp-wall .rp-view .rp-watch[disabled]{visibility:hidden}
   .rp-wall.rp-can-zoom .rp-art{cursor:zoom-in}
   .rp-view .rp-seg{gap:0}
   .rp-view .rp-seg span{min-height:var(--btn-h);padding:.3rem .8rem;font-size:var(--fs-xs);background:transparent;color:var(--rp-wall-ink);border-color:color-mix(in srgb,var(--rp-wall-ink) 40%,transparent)}
@@ -642,6 +643,7 @@
                 <label><input type="radio" name="rp-style" value="r1" checked><span>Staircase</span></label>
                 <label><input type="radio" name="rp-style" value="r2"><span>Roots</span></label>
               </span>
+              <button type="button" class="chip rp-watch" id="rp-watch" aria-label="Watch your year draw itself, and make a video of it" disabled>Watch it draw</button>
               <button type="button" class="chip rp-zoom-btn" id="rp-zoom" aria-label="Up close: see the print at full size" disabled>Up close</button>
             </span>
           </figcaption>
@@ -1125,7 +1127,7 @@
   <script src="/components/rp-canada.js?v=2" defer></script>
   <script src="/components/rain-print-art.js?v=19" defer></script>
   <script src="/components/rain-print.js?v=63" defer></script>
-  <script src="/components/rain-print-draw.js?v=1" defer></script>
+  <script src="/components/rain-print-draw.js?v=2" defer></script>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/rp-gift.js?v=6" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>

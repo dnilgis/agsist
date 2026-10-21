@@ -1110,10 +1110,18 @@
   // ---------- on /rain-print: a "Watch it draw" chip beside Up close ----------
   function pageHook() {
     var RP = root.RainPrint, zoom = doc.getElementById('rp-zoom'), art = doc.getElementById('rp-art');
-    if (!zoom || !art || doc.getElementById('rp-watch')) return;
-    var b = el('button', { type: 'button', class: 'chip rp-watch', id: 'rp-watch', disabled: '' }, 'Watch it draw');
+    if (!zoom || !art) return;
+    // The page ships the chip in its markup (disabled), so the row is the same
+    // height from the first frame (a chip added late wrapped Up close to a
+    // second line on a phone and moved the shared print down 51 px).
+    var b = doc.getElementById('rp-watch');
+    if (b && b.getAttribute('data-wired')) return;
+    if (!b) {
+      b = el('button', { type: 'button', class: 'chip rp-watch', id: 'rp-watch', disabled: '' }, 'Watch it draw');
+      zoom.parentNode.insertBefore(b, zoom);
+    }
+    b.setAttribute('data-wired', '1');
     b.setAttribute('aria-label', 'Watch your year draw itself, and make a video of it');
-    zoom.parentNode.insertBefore(b, zoom);
     var sync = function () {
       var on = !!(root.RainPrint && typeof root.RainPrint.drawInput === 'function' && art.querySelector('svg') && !art.classList.contains('rp-empty'));
       b.disabled = !on;
