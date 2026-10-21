@@ -163,6 +163,7 @@
   /* ---------- the map ---------- */
   function setupMap() {
     var el = $('sw-map');
+    if (S.map) { try { S.map.remove(); } catch (e) {} } // a new field: a fresh map in the same box
     S.map = null; S.tilesOk = false;
     if (window.L && !S.mapFailed) {
       try {
