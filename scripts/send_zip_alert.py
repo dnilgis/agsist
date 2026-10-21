@@ -250,7 +250,7 @@ def confirm_email(w, wid, label, base, secret, fn, fa, rt):
         "If that was you, confirm below. " + how,
         "It reads boards AGSIST reads direct from the elevators, not every elevator in the area.",
         "If it was not you, ignore this. Nothing starts until you confirm."], ("CONFIRM", go), foot), subtype="html")
-    return m
+    return sew.email_links.check_message(m)
 
 
 def alert_email(w, wid, label, hits, zip5, radius, crop, target, first, base, secret, fn, fa, rt):
@@ -280,7 +280,7 @@ def alert_email(w, wid, label, hits, zip5, radius, crop, target, first, base, se
             f'<a href="{H.escape(stopall)}" style="color:#6b6b6b">Stop all</a>')
     m.add_alternative(sew.html_wrap(head, [lead] + lines + [tail, note], ("SEE ALL CASH BIDS", CARD_URL), foot),
                       subtype="html")
-    return m
+    return sew.email_links.check_message(m)
 
 
 def load_zip_tables(prefixes):
@@ -320,6 +320,7 @@ def selftest():
     OLD = "2026-10-01T12:00:00Z"                 # six days: not counted
     tables = {"54": {"54728": [45.317, -91.6542]}}
     home = zip_coord("54728", tables)
+    sew.link_ids_from([{"email": "f@x.com", "lid": "00000000000000ff"}], [])   # subs worker v5.46: a made-up link id
     assert home == (45.317, -91.6542) and zip_coord("54999", tables) is None and zip_coord("50010", tables) is None
     assert parse_ewid("ab54728025") == ("54728", 25) and parse_ewid("ab54728030") is None and parse_ewid("1fa85c8e") is None
 
@@ -405,7 +406,7 @@ def selftest():
     for part in ("Cents, Bloomer, WI · 17 mi · Oct 2026 · $4.62 · posted Oct 7, 1:41 PM CT",
                  "Near Coop, Chetek, WI · 0 mi", "already, as your alert starts",
                  "until every elevator in range is back below $4.50", "PO Box 243",
-                 "elevator-watch-unsubscribe?e=f%40x.com&w=new&t=", "Stop all elevator alerts"):
+                 "elevator-watch-unsubscribe?k=00000000000000ff&w=new&t=", "Stop all elevator alerts"):
         assert part in body, (part, body)
     assert "Mid Grain" not in body, "a place below the price is not listed"
     assert m["Subject"] == "Corn $4.62: Cents, 17 mi from 54728 (your alert $4.50)", m["Subject"]
@@ -414,7 +415,11 @@ def selftest():
                                         "n@agsist.com", None).get_body(("plain",)).get_content()
     c = confirm_email("f@x.com", "p1", cf[0][2], "https://w.dev", "sec", "AGSIST", "n@agsist.com", None)
     cb = c.get_body(("plain",)).get_content()
-    assert "elevator-watch-confirm?e=f%40x.com&w=p1&t=" in cb and "<b>free text</b>" not in c.as_string()
+    assert "elevator-watch-confirm?k=00000000000000ff&w=p1&t=" in cb and "<b>free text</b>" not in c.as_string()
+    for mm0 in (m, c):
+        h0, t0 = mm0.get_body(("html",)).get_content(), mm0.get_body(("plain",)).get_content()
+        assert not [u for u in sew.email_links.hrefs(h0) if "@" in u or "%40" in u.lower()], "v5.46: an @ inside an href"
+        assert not sew.email_links.bad_links(t0) and "?e=" not in t0 + h0, "v5.46: an address in a link"
     assert "back below it and one crosses again" in cb
     many = [dict(rows[0], facility=f"E{i}") for i in range(15)]
     mb = alert_email("f@x.com", "x", "l", many, "54728", 25, "corn", 450, False, "https://w.dev", "s", "A", "n@agsist.com",
@@ -444,6 +449,7 @@ def main():
     cap = int(sew.env("MAX_SENDS", "100"))
     now_ms = float(sew.env("NOW_MS", "0") or 0) or time.time() * 1000
     watchers = fetch_watchers(base, tok)
+    sew.link_ids_from(watchers, [])   # v5.46: links carry each watcher's link id, never the address
     if not any(sew.is_zip_alert(st) for r in watchers for part in ("pend", "w") for st in (r.get(part) or {}).values()):
         print("ZIP alerts: none on the list")
         return 0
@@ -465,6 +471,9 @@ def main():
         sew.worker(base, "elevator-watch-mark", tok, state_mark(e, w, False, row))
     fn, fa, rt = sew.env("FROM_NAME", "AGSIST Cash Bids"), sew.env("FROM_ADDR") or sew.env("SMTP_USER"), sew.env("REPLY_TO")
     sent, failed = 0, []
+    (confirms, sends), waited = sew.link_ids_from(watchers, (confirms, sends))
+    if waited:
+        print(f"::warning::{waited} email(s) wait: no link id this run")
     jobs = [("c", x) for x in confirms] + [("a", x) for x in sends]
     if jobs and cap > 0:
         ctx = ssl.create_default_context()
