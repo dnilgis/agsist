@@ -1,17 +1,19 @@
 /* Fast Facts, My place (Oct 21, 2026; was /here, Oct 18). components/place.js holds the
-   numbers and the row builders; this file finds the place, fetches only what the open tab
-   shows, and draws it.
+   numbers and the row builders; this file finds the place, fetches only what My place
+   shows, draws it, and hands the printed sheet to components/print-sheet.js.
 
    The ZIP is asked once: a saved ZIP (the keys loader.js reads) opens the place with no
    question, and location is used only when "Use my location" is tapped. Once a place is
    open the box folds behind "Change place". Four cards follow, one dated, sourced row per
    number (#f-corn-bid ... #f-daily). "More about this county" (the year's rain drawn and
    ranked, state ranks, neighbors, the long view, elevators against their neighbors) loads
-   only when it is opened or a report is printed. The State and US tabs use the same row
-   builders. No buyer, seller, elevator or co-op name is drawn anywhere: the page is indexed.
+   only when it is opened or a report is printed. Print is a button beside Change place: the
+   sheet carries only the rows on screen, each with its source and date. No buyer, seller,
+   elevator or co-op name is drawn anywhere: the page is indexed.
 
    URL: ?q= &fips= &zip= &at=lat,lng &print=<parts>, and the short f z a p keys the printed
-   QR carries. The tab is the #hash (the head script in fast-facts.html sets it before paint). */
+   QR carries. The tab is the #hash (the head script in fast-facts.html sets it before paint;
+   old #state, #us and #print links open My place). */
 (function () {
   'use strict';
   var P = window.AgPlace, L = window.AGLayers;
@@ -20,7 +22,7 @@
   var LS_ZIP = 'agsist_user_zip';
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var SALES_JS = '/components/atlas-sales.js?v=c3fa7673';
-  var S = { seq: 0, where: null, prof: null, county: null, pct: null, sales: {}, depth: null, print: { parts: P.PRINT_PARTS.slice(), more: false }, started: false, state: null };
+  var S = { seq: 0, where: null, prof: null, county: null, pct: null, sales: {}, depth: null, print: { parts: P.PRINT_PARTS.slice(), more: false, rain: false }, started: false, facts: {}, user: false };
   var memo = {};
 
   function $(id) { return document.getElementById(id); }
@@ -40,8 +42,14 @@
   }
   function getText(u) { return fetch(u).then(function (r) { return r.ok ? r.text() : null; }).catch(function () { return null; }); }
   function mdy(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); return m ? MONTHS[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : ''; }
-  function say(msg, err) { var el = $('h-status'); if (!el) return; el.textContent = msg || ''; el.className = 'h-status' + (err ? ' err' : ''); }
-  function na(why) { return '<p class="h-na">Not available: ' + esc(why) + '.</p>'; }
+  function say(msg, err) {
+    var el = $('h-status'); if (!el) return;
+    el.textContent = msg || ''; el.className = 'h-status' + (err ? ' err' : '');
+    if (err) { unpend(); var q = $('h-q'); if (q) q.setAttribute('aria-invalid', 'true'); }
+  }
+  function unpend() { document.documentElement.classList.remove('fx-pend'); }
+  function smooth() { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; } catch (e) { return 'auto'; } }
+  function na(why) { return '<p class="h-na">' + esc(cap(why)) + '.</p>'; }
   function px(c, mode) { return window.AG && AG.px ? AG.px.price(c, mode ? { mode: mode } : null) : '$' + (c / 100).toFixed(2); }
   function cap(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
   function loadScript(src, ready) {
@@ -77,11 +85,13 @@
   }
   function fill(id, f) {
     var el = $(id); if (!el || !f) return;
+    S.facts[id] = f;
+    el.hidden = !!f.hide;
     var l = el.querySelector('.fx-l'); if (l && f.label) l.textContent = f.label;
     var b = el.querySelector('.fx-w'); if (b) b.innerHTML = factHtml(f);
     el.classList.toggle('fx-off', f.value == null);
   }
-  function waitRows(ids) { ids.forEach(function (id) { var el = $(id), b = el && el.querySelector('.fx-w'); if (b) b.innerHTML = '<p class="fx-b fx-wait">Reading&hellip;</p>'; }); }
+  function waitRows(ids) { ids.forEach(function (id) { delete S.facts[id]; var el = $(id), b = el && el.querySelector('.fx-w'); if (b) b.innerHTML = '<p class="fx-b fx-wait">Reading&hellip;</p>'; }); }
 
   /* ── the shared files, one builder per number ─────────────────────── */
   function futures(prefix) {
@@ -93,11 +103,13 @@
       });
     });
   }
-  function basis(prefix, st) {
-    Promise.all([getJSON('/data/basis-states.json'), getJSON('/data/transport/basis.json')]).then(function (a) {
-      var s = a[0] && a[0].states && a[0].states[st], href = s && s.path ? s.path : '/basis';
+  /* local: a promise of the bids within 50 mi ({corn, soybeans} from P.bestBids), for the local middle basis */
+  function basis(prefix, st, local, from) {
+    Promise.all([getJSON('/data/basis-states.json'), getJSON('/data/transport/basis.json'), local || Promise.resolve(null)]).then(function (a) {
+      var s = a[0] && a[0].states && a[0].states[st], href = s && s.path ? s.path : '/basis', b = a[2] || {};
       [['corn', 'Corn'], ['soybeans', 'Soybeans']].forEach(function (c) {
-        fill(prefix + (c[0] === 'corn' ? 'corn' : 'soy') + '-basis', P.factBasis(a[0] ? P.stateBasis(a[0], st, c[0]) : { status: 'none', why: 'the basis file did not load' }, a[1] ? P.basisVsNormal(a[1], st, c[1]) : null, c[0], st, href));
+        var mine = b[c[0]] && b[c[0]].medianBasis != null ? { median: b[c[0]].medianBasis, n: b[c[0]].nBasis, when: b.when } : null;
+        fill(prefix + (c[0] === 'corn' ? 'corn' : 'soy') + '-basis', P.factBasis(a[0] ? P.stateBasis(a[0], st, c[0]) : { status: 'none', why: 'the basis file did not load' }, a[1] ? P.basisVsNormal(a[1], st, c[1]) : null, c[0], st, href, mine, from));
       });
     });
   }
@@ -105,9 +117,10 @@
   function usda(id) {
     getText('/usda-calendar.ics').then(function (t) {
       var r = P.nextReport(t, new Date());
-      fill(id, P.factUsda(r, r ? r.at.toLocaleString('en-US', { timeZone: 'America/New_York', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : ''));
+      fill(id, P.factUsda(r, r ? r.at.toLocaleString('en-US', { timeZone: 'America/Chicago', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : ''));
     });
   }
+  function centralDay() { try { return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }); } catch (e) { return new Date().toISOString().slice(0, 10); } }
   /* the place's own state's co-op sheets first (components/fert-pick.js, the one chooser) */
   function fert(id, st) {
     var F = window.AgFertPick;
@@ -136,6 +149,8 @@
     var c = P.classify(text), my = ++S.seq;
     $('h-choices').innerHTML = '';
     if (c.kind === 'empty') { say('Type a ZIP, a town and state, or a county.', true); return Promise.resolve(false); }
+    S.user = how !== 'link';
+    var q = $('h-q'); if (q) q.removeAttribute('aria-invalid');
     track('here_find', { by: how || c.kind });
     if (c.kind === 'zip') return byZip(c.zip, my);
     if (c.kind === 'point') return byPoint(c.at, my, null);
@@ -159,7 +174,12 @@
       var net = window.AGSIST_BIDS_NET;
       return (net && net.zipCoord ? net.zipCoord(zip) : Promise.resolve(null)).then(function (pt) {
         if (my !== S.seq) return false;
-        if (!pt) { say('No ZIP ' + zip + ' in the place lookup. Try the town and state, or the county.', true); return false; }
+        if (!pt) {
+          /* a ZIP missing from a table that loaded is not a ZIP; a table that did not answer says so */
+          var st = net && net.status ? net.status(zip) : 'failed';
+          say(st === 'failed' || !net ? 'The place lookup did not answer. Try again in a minute, type the county, or pick on the map.' : 'No ZIP ' + zip + ' in the place lookup. Try the town and state, or the county.', true);
+          return false;
+        }
         return pointToCounty(pt.lat, pt.lon).then(function (f) {
           if (my !== S.seq) return false;
           if (!f) { say('ZIP ' + zip + ' did not land in a county. Try the town and state.', true); return false; }
@@ -232,16 +252,11 @@
     var z = String(lsGet('agsist_user_zip') || lsGet('agsist_zip') || '');
     return /^\d{5}$/.test(z) ? z : null;
   }
-  function savedState() {
-    var o = null;
-    try { o = JSON.parse(lsGet('agsist-wx-loc') || 'null'); } catch (e) { o = null; }
-    return o && P.STATES[o.state] ? o.state : null;
-  }
 
   /* ── one county ──────────────────────────────────────────────────── */
   function open(fips, where, my) {
     var st = P.stateOf(fips);
-    if (!st) { say('That is not a county code we know.', true); return Promise.resolve(false); }
+    if (!st) { say('I don\u2019t know that county code. Try a ZIP or the county name.', true); return Promise.resolve(false); }
     say('Reading the county figures…');
     return Promise.all([stFile(st), getJSON('/data/atlas/counties/' + fips + '.json'), getJSON('/data/layers.json')]).then(function (a) {
       if (my != null && my !== S.seq) return false;
@@ -251,14 +266,16 @@
       if (!prof) { say('The county figures did not load. Refresh in a minute.', true); return false; }
       where = where || {};
       if (where.lat == null && prof.center) { where.lat = prof.center.lat; where.lng = prof.center.lng; where.center = true; }
-      S.where = where; S.prof = prof; S.county = county; S.pct = pct; S.depth = null;
-      if (where.zip) lsSet(LS_ZIP, where.zip);
-      say('');
+      S.where = where; S.prof = prof; S.county = county; S.pct = pct; S.depth = null; S.fig = null; S.rank = null;
+      if (where.zip) savePlace(where, prof);
       render();
       writeUrl();
       loadCards(fips);
       if ($('h-more') && $('h-more').open) loadDepth();
-      if (tab() === 'state') drawState();
+      /* a lookup the reader started: say where it landed and move focus there */
+      say(S.user ? 'Showing ' + prof.name + ', ' + prof.stName + '.' : '');
+      if (S.user) { var t = $('h-title'); if (t) { try { t.focus({ preventScroll: false }); } catch (e) { t.focus(); } } }
+      S.user = false;
       return true;
     });
   }
@@ -272,12 +289,25 @@
     var pr = P.printParam(S.print);
     if (pr) q.push('print=' + pr);
     try { history.replaceState(null, '', location.pathname + '?' + q.join('&') + location.hash); } catch (e) {}
-    buildQr();
+  }
+  /* The ZIP goes where the rest of the site reads it (components/loader.js), so the header's
+     "Bids near" chip and every other page agree with this one. */
+  function savePlace(w, p) {
+    lsSet(LS_ZIP, w.zip); lsSet('agsist_zip', w.zip);
+    var town = w.label && !/^ZIP /.test(w.label) ? String(w.label).split(',')[0].trim() : '';
+    var prior = null;
+    try { prior = JSON.parse(lsGet('agsist-wx-loc') || 'null'); } catch (e) { prior = null; }
+    if (!(prior && prior.zip === w.zip && prior.lat != null) && w.lat != null && !w.center) {
+      lsSet('agsist-wx-loc', JSON.stringify({ lat: +w.lat, lon: +w.lng, label: town ? town + ', ' + p.st : w.zip, ts: Date.now(), zip: w.zip, state: p.st, county: p.name, zipTyped: true }));
+    } else if (prior && prior.zip !== w.zip) lsSet('agsist-wx-loc', null);
+    try { window.dispatchEvent(new Event('focus')); } catch (e) {}
   }
   function fromWords(w) { return w.zip ? 'ZIP ' + w.zip : w.center ? 'the county center' : w.how === 'town' ? w.label : 'this spot'; }
 
   /* ── drawing ─────────────────────────────────────────────────────── */
+  function hasSales(st) { var A = window.AtlasSales; return /^(IL|WI)$/.test(st) || !!(A && A.STATES && A.STATES[st]); }
   function salesIn(st) {
+    if (!hasSales(st)) return Promise.resolve(false);
     if (!(st in S.sales)) S.sales[st] = getJSON('/data/land/' + st.toLowerCase() + '/index.json', 10000).then(function (ix) { return !!(ix && ix.counties && ix.counties.length); });
     return S.sales[st];
   }
@@ -295,21 +325,20 @@
     $('h-where').textContent = (from ? 'From ' + from + ', in ' + p.name + '. ' : '') + 'County figures; ranks are among ' + p.stName + ' counties.';
     $('h-sent').textContent = p.sentence;
     $('h-find').hidden = true;
-    $('h-change').hidden = false;
+    $('h-tools').hidden = false;
     $('h-change-l').textContent = from || (p.name + ', ' + p.st);
+    $('h-keep-l').textContent = p.name;
+    $('h-keep').hidden = true;
+    unpend();
     drawDeeper(false);
     var fips = p.fips;
     salesIn(p.st).then(function (has) { if (has && S.prof && S.prof.fips === fips) drawDeeper(true); });
     var nb = p.neighbors.filter(function (n) { return n.name; });
     $('h-nb').innerHTML = nb.length ? 'Next door: ' + nb.map(function (n) { return '<a href="?fips=' + n.fips + '" data-fips="' + n.fips + '">' + esc(n.name) + '</a>'; }).join(' · ') : '';
     drawOdd(p);
-    drawCover(p);
     resetDepth();
     applyPrint();
     $('h-place').hidden = false;
-    var none = $('h-pr-none'); if (none) none.hidden = true;
-    var pb = $('h-pr-box'); if (pb) pb.hidden = false;
-    var pn = $('h-pr-name'); if (pn) pn.textContent = p.name + ', ' + p.stName;
     if ($('h-map-box').open) drawMap();
   }
 
@@ -321,14 +350,16 @@
     if (!list.length) { box.hidden = true; $('h-odd-l').innerHTML = ''; return; }
     box.hidden = false;
     $('h-odd-l').innerHTML = list.map(function (l) {
-      return '<li><span>' + esc(l.words) + '</span> <span class="h-src">' + esc(l.source) + ', ' + esc(mdy((S.county && S.county.generated) || p.atlasGenerated)) + '.</span></li>';
+      return '<li><span>' + esc(l.words) + '</span> <span class="h-src">' + esc(P.srcName(l.source, l.from + '-' + l.latest.year)) + '.</span></li>';
     }).join('');
   }
 
   /* The four cards. Every row is in the page already (an anchor a link can open); each fills
      in as its file answers, or says why not. */
-  var PLACE_ROWS = ['f-corn-bid', 'f-soy-bid', 'f-corn-basis', 'f-soy-basis', 'f-corn-fut', 'f-soy-fut', 'f-rain', 'f-drought', 'f-hail', 'f-progress',
+  var PLACE_ROWS = ['f-corn-bid', 'f-soy-bid', 'f-corn-basis', 'f-soy-basis', 'f-corn-fut', 'f-soy-fut', 'f-wheat-fut', 'f-rain', 'f-drought', 'f-hail', 'f-progress', 'f-soy-progress',
     'f-rent', 'f-land', 'f-sales', 'f-loss', 'f-arcplc', 'f-usda', 'f-fert', 'f-daily'];
+  var CARDS = [['Price', ['f-corn-bid', 'f-soy-bid', 'f-corn-basis', 'f-soy-basis', 'f-corn-fut', 'f-soy-fut', 'f-wheat-fut']], ['Field', ['f-rain', 'f-drought', 'f-hail', 'f-progress', 'f-soy-progress']],
+    ['Land and programs', ['f-rent', 'f-land', 'f-sales', 'f-loss', 'f-arcplc']], ['Today', ['f-usda', 'f-fert']]];
   function loadCards(fips) {
     var p = S.prof, st = p.st, w = S.where, slug = P.stSlug(st);
     function mine() { return S.prof && S.prof.fips === fips; }
@@ -336,13 +367,15 @@
     var by = {};
     p.cols.forEach(function (c) { by[c.id] = c; });
     var atlas = p.flags.indexOf('a') >= 0 ? '/farmland-atlas/' + slug + '/' + p.slug : '/farmland-atlas';
-    fill('f-rent', P.factCol(by.rent, 'Cash rent', (' ' + P.NO_PAGE.rent + ' ').indexOf(' ' + st + ' ') < 0 ? '/rent/' + slug : atlas));
-    fill('f-land', P.factCol(by.land_value, 'Farmland value', atlas));
-    fill('f-loss', P.factCol(by.loss_ratio, 'Crop insurance paid out per $1 of premium', atlas));
-    loadBids(fips, w);
-    basis('f-', st);
+    fill('f-rent', P.factCol(by.rent, 'Cash rent', (' ' + P.NO_PAGE.rent + ' ').indexOf(' ' + st + ' ') < 0 ? '/rent/' + slug : atlas, 'Non-irrigated cropland.'));
+    var lv = P.factCol(by.land_value, 'Farmland value', atlas, 'Farmer-reported land and buildings, ' + ((by.land_value && by.land_value.year) || 2022) + ' Census.');
+    fill('f-land', lv);
+    fill('f-loss', P.factCol(by.loss_ratio, 'Crop insurance paid out per $1 of total premium (farmer and federal shares)', atlas, by.loss_ratio && by.loss_ratio.years ? by.loss_ratio.years + ' together.' : ''));
+    var bids = loadBids(fips, w);
+    basis('f-', st, bids, fromWords(w));
     futures('f-');
     progress('f-progress', st, 'corn');
+    progress('f-soy-progress', st, 'soybeans');
     getJSON('/data/rain/' + st.toLowerCase() + '.json').then(function (f) {
       if (!mine()) return;
       fill('f-rain', P.factRain(P.rainSoFar(f, fips), p.flags.indexOf('r') >= 0 ? '/rain/' + slug + '/' + p.slug : '/rain/' + slug));
@@ -355,71 +388,42 @@
     loadSales(fips, st, atlas, mine);
     getJSON('/data/arc-plc.json').then(function (f) {
       if (!mine()) return;
-      var today = new Date().toISOString().slice(0, 10);
-      fill('f-arcplc', P.factArcPlc(f, today, p.flags.indexOf('c') >= 0 ? '/arc-plc/' + slug + '/' + p.slug : '/arc-plc'));
+      fill('f-arcplc', P.factArcPlc(f, centralDay(), p.flags.indexOf('c') >= 0 ? '/arc-plc/' + slug + '/' + p.slug : '/arc-plc'));
     });
     usda('f-usda');
     fert('f-fert', st);
     daily('f-daily');
   }
   function loadSales(fips, st, href, mine) {
-    var A = window.AtlasSales;
-    if (!/^(IL|WI)$/.test(st) && !(A && A.STATES && A.STATES[st])) { fill('f-sales', P.factSales(null, st)); return; }
+    /* no sales file for the state: no row and no fetch */
+    if (!hasSales(st)) { var f = P.factSales(null, st); f.hide = true; fill('f-sales', f); return; }
     loadScript(SALES_JS, function () { return !!(window.AtlasSales && window.AtlasSales.tile); }).then(function (ok) {
       if (!mine()) return;
-      if (!ok) { fill('f-sales', { label: 'Recorded farm sales', value: null, why: 'the sales summary did not load' }); return; }
+      if (!ok) { fill('f-sales', { label: 'Recorded farm sales', value: null, why: 'the sales summary is not in right now' }); return; }
       getJSON(window.AtlasSales.url(st)).then(function (sum) {
         if (!mine()) return;
-        fill('f-sales', sum ? P.factSales(window.AtlasSales.tile(sum, fips), st, href) : { label: 'Recorded farm sales', value: null, why: 'the sales summary did not load' });
+        fill('f-sales', sum ? P.factSales(window.AtlasSales.tile(sum, fips), st, href) : { label: 'Recorded farm sales', value: null, why: 'the sales summary is not in right now' });
       });
     });
   }
+  /* The bid rows; resolves the bids within 50 mi (for the local basis), with the time they were read. */
   function loadBids(fips, w) {
     var net = window.AGSIST_BIDS_NET, lat = +w.lat, lng = +w.lng;
     var from = fromWords(w), href = w.zip ? '/cash-bids?zip=' + w.zip : '/cash-bids';
     function draw(snap) {
-      if (!S.prof || S.prof.fips !== fips) return;
+      if (!S.prof || S.prof.fips !== fips) return null;
       var b = P.bestBids(snap, lat, lng, 50), when = snap && snap.fetched ? snap.fetched : '';
       fill('f-corn-bid', P.factBid(b.corn, 'corn', from, when, href));
       fill('f-soy-bid', P.factBid(b.soybeans, 'soybeans', from, when, href));
+      b.when = when;
+      return b;
     }
-    var live = net && net.snapshot && isFinite(lat) && isFinite(lng) ? net.snapshot(lat, lng, { radiusMi: 50 }) : Promise.resolve(null);
-    live.then(function (snap) {
-      if (snap && snap.bids && snap.bids.length) { draw(snap); return; }
-      getJSON('/data/bids.json').then(draw);
-    }, function () { getJSON('/data/bids.json').then(draw); });
-  }
-
-  /* ── State and US tabs: the same builders ─────────────────────────── */
-  function drawState(st) {
-    st = st || (S.prof && S.prof.st) || S.state || savedState();
-    var pick = $('s-pick'), body = $('s-body');
-    if (!pick || !body) return;
-    if (!st) { body.hidden = true; $('s-none').hidden = false; return; }
-    S.state = st;
-    pick.value = st;
-    $('s-none').hidden = true;
-    body.hidden = false;
-    $('s-name').textContent = P.STATES[st];
-    waitRows(['s-corn-basis', 's-soy-basis', 's-corn-prog', 's-soy-prog']);
-    basis('s-', st);
-    progress('s-corn-prog', st, 'corn');
-    progress('s-soy-prog', st, 'soybeans');
-    getJSON('/data/basis-states.json').then(function (f) {
-      if (S.state !== st) return;
-      $('s-links').innerHTML = P.stateLinks(st, f).map(function (l) { return '<a href="' + esc(l.href) + '" data-k="' + l.id + '">' + esc(l.text) + '</a>'; }).join('');
-    });
-  }
-  var usDone = false;
-  function drawUS() {
-    if (usDone) return;
-    usDone = true;
-    futures('u-');
-    progress('u-corn-prog', null, 'corn');
-    progress('u-soy-prog', null, 'soybeans');
-    usda('u-usda');
-    fert('u-fert');
-    daily('u-daily');
+    /* every place within 50 mi counts toward "Best of N", not only the 40 the price card keeps */
+    var live = net && net.snapshot && isFinite(lat) && isFinite(lng) ? net.snapshot(lat, lng, { radiusMi: 50, maxPlaces: 100000 }) : Promise.resolve(null);
+    return live.then(function (snap) {
+      if (snap && snap.bids && snap.bids.length) return draw(snap);
+      return getJSON('/data/bids.json').then(draw);
+    }, function () { return getJSON('/data/bids.json').then(draw); });
   }
 
   /* ── More about this county: loads on open, or for a printed report ───── */
@@ -449,58 +453,20 @@
       return '<button type="button" class="' + cls + '" data-i="' + c.i + '" aria-label="' + esc(tip) + '"><span class="fp-bar"><span class="fp-fill" style="height:' + h + '%"></span></span><span class="fp-l">' + esc(c.short) + '</span></button>';
     }).join('');
     $('h-fp').setAttribute('aria-label', 'Where ' + p.name + ' sits among ' + p.stName + ' counties on ' + have + ' figures, lowest county at the bottom, highest at the top. The same numbers are in the table below.');
-    $('h-fp-d').textContent = 'Tap a column for its number. Gold: top or bottom tenth of ' + p.stName + ' counties.';
+    $('h-fp-d').textContent = 'Tap a column for its number. Gold: highest or lowest tenth of ' + p.stName + ' counties.';
     $('h-fp').onclick = function (e) {
       var b = e.target.closest('button[data-i]'); if (!b) return;
       var c = p.cols[+b.getAttribute('data-i')];
-      $('h-fp-d').textContent = c.label + ': ' + (c.value == null ? 'not available. ' + (c.reason || '') : P.fmt(c.value, c) + (c.words ? ', ' + c.words : '') + '. ' + (c.source || '') + ', ' + c.years + '.');
+      $('h-fp-d').textContent = c.label + ': ' + (c.value == null ? 'not available. ' + (c.reason || '') : P.fmt(c.value, c) + (c.words ? ', ' + c.words : '') + '. ' + P.srcName(c.source, c.years) + '.');
     };
     $('h-fp-t').innerHTML = '<caption class="sr-only">Each figure, its value here, where it sits in the state, and its source</caption><thead><tr><th scope="col">Figure</th><th scope="col">Here</th><th scope="col">Where it sits in ' + esc(p.stName) + '</th><th scope="col">Source</th></tr></thead><tbody>' +
       cols.map(function (c) {
         var here = c.value == null ? '<span class="h-na">Not available</span>' + (c.other ? ' (' + esc(P.fmt(c.other.value, c)) + ' in ' + esc(c.other.year) + ')' : '') : esc(P.fmt(c.value, c));
-        var where = c.value == null ? esc(c.reason || '') : esc(c.words || '') + (c.band ? ' <span class="h-flag">' + (c.band === 'top' ? 'top tenth' : 'bottom tenth') + '</span>' : '');
-        return '<tr><th scope="row">' + esc(c.label) + '</th><td>' + here + '</td><td>' + where + '</td><td>' + esc(c.source || '') + ', ' + esc(c.years) + '</td></tr>';
+        var where = c.value == null ? esc(c.reason || '') : esc(c.words || '') + (c.band ? ' <span class="h-flag">' + (c.band === 'top' ? 'highest tenth' : 'lowest tenth') + '</span>' : '');
+        return '<tr><th scope="row">' + esc(c.label) + '</th><td>' + here + '</td><td>' + where + '</td><td>' + esc(P.srcName(c.source, c.years)) + '</td></tr>';
       }).join('') + '</tbody>';
   }
 
-  /* The printed sheet's first page (print only): the place, the sentence, six headline
-     figures with their state rank and source, and every figure's place in the state. */
-  function printedOn() { var now = new Date(); return 'Printed ' + MONTHS[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear(); }
-  var HEAD = ['rent', 'land_value', 'yield', 'loss_ratio', 'drought', 'gs_rain'];
-  function drawCover(p) {
-    var w = S.where || {}, by = {};
-    p.cols.forEach(function (c) { by[c.id] = c; });
-    var from = w.zip ? 'ZIP ' + w.zip + (w.label && w.label !== 'ZIP ' + w.zip ? ', ' + w.label : '') : w.how === 'town' ? w.label : w.point ? 'the point ' + w.label : '';
-    var tiles = HEAD.map(function (id) {
-      var c = by[id]; if (!c) return '';
-      var v = c.value == null ? '<span class="pc-na">Not available</span>' : esc(P.fmtShort(c.value, c));
-      return '<div class="pc-t' + (c.band ? ' pc-band' : '') + '"><p class="pc-l">' + esc(c.short) + '</p><p class="pc-v">' + v + '</p>' +
-        '<p class="pc-r">' + esc(c.value == null ? (c.reason || '') : (c.words || '')) + (c.band ? ' <b>' + (c.band === 'top' ? 'Top tenth' : 'Bottom tenth') + '</b>' : '') + '</p>' +
-        '<p class="pc-s">' + esc(c.source || '') + ', ' + esc(c.years || '') + '</p></div>';
-    }).join('');
-    var rows = p.cols.map(function (c) {
-      var pos = c.pos == null ? null : Math.max(0, Math.min(1, c.pos));
-      return '<div class="pd-r' + (c.band ? ' pd-band' : '') + (pos == null ? ' pd-na' : '') + '"><span class="pd-l">' + esc(c.short) + '</span>' +
-        '<span class="pd-tr">' + (pos == null ? '' : '<span class="pd-dot" style="left:' + (pos * 100).toFixed(1) + '%"></span>') + '</span>' +
-        '<span class="pd-v">' + (c.value == null ? 'n/a' : esc(P.fmtShort(c.value, c))) + '</span></div>';
-    }).join('');
-    var srcs = {}, list = [];
-    p.cols.forEach(function (c) { if (c.source && !srcs[c.source]) { srcs[c.source] = 1; list.push(c.source); } });
-    $('h-pr-cover').innerHTML =
-      '<div class="pc-head"><span class="pc-brand">AGSIST</span><span>Fast Facts</span><span id="h-pr-date">' + esc(printedOn()) + '</span></div>' +
-      '<div class="pc-top"><div><h2 class="pc-name">' + esc(p.name) + ', ' + esc(p.stName) + '</h2>' +
-      '<p class="pc-from">' + (from ? 'From ' + esc(from) + '. ' : '') + 'County figures. Ranks are among ' + esc(p.stName) + ' counties.</p></div>' +
-      '<div class="pc-qr" id="h-pr-qr1"></div></div>' +
-      '<p class="pc-sent h-part-sentence-pr">' + esc(p.sentence) + '</p>' +
-      '<div class="pc-fp"><div class="pc-tiles">' + tiles + '</div>' +
-      '<h3 class="pc-h">Where ' + esc(p.name) + ' sits among ' + esc(p.stName) + ' counties</h3>' +
-      '<div class="pd"><div class="pd-r pd-ax"><span class="pd-l"></span><span class="pd-tr"><span>Lowest county</span><span>Middle</span><span>Highest county</span></span><span class="pd-v">Here</span></div>' + rows + '</div>' +
-      '<p class="pc-key">Black dot: top or bottom tenth of the state. n/a: the source does not publish it here.</p></div>';
-    $('h-src-l').innerHTML = list.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
-    var st = $('h-pr-page');
-    if (!st) { st = document.createElement('style'); st.id = 'h-pr-page'; document.head.appendChild(st); }
-    st.textContent = '@media print{@page{@top-right{content:"' + (p.name + ', ' + p.st).replace(/["\\]/g, '') + '"}}@page:first{@top-right{content:none}}}';
-  }
   function drawUnusual(p) {
     var list = p.unusual, any = list.some(function (u) { return u.unusual; });
     var lead = !list.length ? 'Too few neighboring counties carry the same figures to compare.' :
@@ -575,8 +541,8 @@
     return porRows(fig.station.sid).then(function (rows) {
       if (!mine()) return;
       if (!rows) {
-        $('h-rank').innerHTML = head + ' <span class="h-na">Not ranked: NOAA&rsquo;s station record did not answer.</span> <button type="button" class="h-lnk" id="h-rank-retry">Try again</button>';
-        var b = $('h-rank-retry'); if (b) b.onclick = function () { $('h-rank').innerHTML = head + ' <span class="h-wait">Asking NOAA again&hellip;</span>'; rankIt(fig, head, mine); };
+        $('h-rank').innerHTML = head + ' <span class="h-na">Not ranked today.</span> <button type="button" class="h-lnk" id="h-rank-retry">Try again</button>';
+        var b = $('h-rank-retry'); if (b) b.onclick = function () { $('h-rank').innerHTML = head + ' <span class="h-wait">Ranking it&hellip;</span>'; rankIt(fig, head, mine); };
         return;
       }
       var r = P.rankSoFar(rows, fig);
@@ -628,26 +594,24 @@
     return ask.then(function (idx) {
       if (!mine()) return;
       var from = fromWords(w);
-      if (!idx || !idx.places) { box.innerHTML = na('the elevator bids did not answer'); return; }
+      if (!idx || !idx.places) { box.innerHTML = na('elevator bids are not in right now'); return; }
       var by = P.basisNeighbors(idx.places, lat, lng), rows = [].concat(by.corn || [], by.soybeans || []);
       if (!rows.length) { box.innerHTML = na('no elevator within ' + P.EL.NEAR + ' miles of ' + from + ' posts a usable corn or soybean bid'); return; }
       box.innerHTML = '<ul class="h-el">' + rows.map(function (r, i) {
         var head = '<b>' + CROPN[r.crop] + '</b>, ' + r.mi + ' mi from ' + esc(from) + ': basis ' + basisTxt(r.basis) + (r.delivery ? ' (delivery ' + esc(r.delivery) + ')' : '');
         var vs = r.status === 'ok' ? ', ' + (r.gap === 0 ? 'the same as' : Math.abs(r.gap) + '¢ ' + (r.gap > 0 ? 'stronger than' : 'weaker than')) + ' the middle of ' + r.nbN + ' elevators within ' + r.radius + ' miles posting the same delivery (' + basisTxt(r.nbMedian) + ').'
-          : '. Against its neighbors: not available, ' + esc(r.why) + '.';
+          : '. Against its neighbors: not yet.';
         return '<li id="h-el-' + i + '">' + head + vs + ' <span class="h-el-h" id="h-el-h' + i + '"></span></li>';
-      }).join('') + '</ul><p class="h-src" id="h-el-thin" hidden></p><p class="h-src">Posted bids' + (idx.generated ? ', ' + esc(mdy(idx.generated)) : '') + '. Basis history starts June 2026. <a href="' + (w.zip ? '/cash-bids?zip=' + w.zip : '/cash-bids') + '">Who pays what near here</a></p>';
+      }).join('') + '</ul><p class="h-src" id="h-el-thin" hidden></p><p class="h-src">Posted bids' + (idx.generated ? ', ' + esc(mdy(idx.generated)) : '') + '. Basis history starts June 2026. <a href="' + (w.zip ? '/cash-bids?zip=' + w.zip : '/cash-bids') + '">See the bids near here</a></p>';
       elevHistory(rows, mine);
-    }, function () { if (mine()) box.innerHTML = na('the elevator bids did not answer'); });
+    }, function () { if (mine()) box.innerHTML = na('elevator bids are not in right now'); });
   }
   function thinNote(rows) {
     var t = rows.filter(function (r) { return r.hist && r.hist.status === 'thin'; }), el = $('h-el-thin');
     if (!el || !t.length) return;
     var f = t.map(function (r) { return r.hist.first; }).filter(Boolean).sort(), d = function (x) { return mdy(x).replace(/, \d{4}$/, ''); };
     el.hidden = false;
-    el.textContent = 'Against its own history: not yet for ' + (t.length === rows.length ? 'any of these' : t.length + ' of these') + '. ' +
-      (f.length ? 'Those deliveries were first seen ' + (f[0] === f[f.length - 1] ? d(f[0]) : 'between ' + d(f[0]) + ' and ' + d(f[f.length - 1])) + '; ' : '') +
-      'a comparison waits for ' + P.EL.HIST_DAYS + ' days of one delivery.';
+    el.textContent = 'Against its own history: too new to compare yet' + (t.length === rows.length ? '' : ' for ' + t.length + ' of these') + '.';
   }
   function elevHistory(rows, mine) {
     var net = window.AGSIST_BIDS_NET, today = new Date().toISOString().slice(0, 10), sts = {};
@@ -661,7 +625,7 @@
           if (r.st !== st) return;
           var el = $('h-el-h' + i); if (!el) return;
           var key = join && join.k && r.elevId ? join.k[r.elevId] : null;
-          if (!key) { el.textContent = join && join.multi && join.multi[r.elevId] ? 'Its own history: not joined (listed more than one way).' : ''; return; }
+          if (!key) { el.textContent = ''; return; }
           if (!map || !net || !net.shard || !r.shard) return;
           net.shard(r.shard).then(function (sh) {
             if (!mine() || !sh || !Array.isArray(sh.bids)) return;
@@ -679,70 +643,108 @@
     });
   }
 
-  /* ── print report ────────────────────────────────────────────────── */
-  // The Print tab: checkboxes pick the parts (all ticked by default); More detail prints the
-  // figure table and the table of years open. Classes on <html> do the hiding, print media only.
-  var PART_EL = { sentence: 'h-part-sentence', week: 'h-sec-week', fingerprint: 'h-sec-fingerprint', unusual: 'h-sec-unusual', long: 'h-sec-long', sources: 'h-part-sources' };
+  /* ── print ───────────────────────────────────────────────────────── */
+  /* Print is a button beside Change place. The options pick the parts (all but the rain drawing
+     and the table of years by default) and live in the link. The sheet is the site's one printed
+     format (components/print-sheet.js): only rows that show on screen, each with its source and
+     date, the sources listed with their dates, a QR code back to this report. Never a link word,
+     a button or a "not in right now" note on paper; The Daily stays off (it is a morning letter). */
   function applyPrint() {
-    var root = document.documentElement, c = S.print;
-    P.PRINT_PARTS.forEach(function (k) {
-      root.classList.toggle('pr-off-' + k, c.parts.indexOf(k) < 0);
-      var el = $(PART_EL[k]); if (el) el.classList.add('h-part');
-    });
-    root.classList.toggle('pr-more', !!c.more);
-    var box = $('h-pr-box');
-    if (box) {
-      [].forEach.call(box.querySelectorAll('input[name=part]'), function (i) { i.checked = c.parts.indexOf(i.value) >= 0; });
-      $('h-pr-more').checked = !!c.more;
-    }
+    var box = $('h-pr-box'), c = S.print;
+    if (!box) return;
+    [].forEach.call(box.querySelectorAll('input[name=part]'), function (i) { i.checked = c.parts.indexOf(i.value) >= 0; });
+    $('h-pr-more').checked = !!c.more;
+    $('h-pr-rain').checked = !!c.rain;
   }
   function readPanel() {
     var parts = [].filter.call($('h-pr-box').querySelectorAll('input[name=part]'), function (i) { return i.checked; }).map(function (i) { return i.value; });
-    S.print = { parts: P.PRINT_PARTS.filter(function (k) { return parts.indexOf(k) >= 0; }), more: $('h-pr-more').checked };
-    applyPrint();
+    S.print = { parts: P.PRINT_PARTS.filter(function (k) { return parts.indexOf(k) >= 0; }), more: $('h-pr-more').checked, rain: $('h-pr-rain').checked };
     writeUrl();
   }
-  var opened = [];
-  function beforePrint() {
-    if (!S.prof) return;
-    loadDepth();
-    var d = $('h-pr-date'); if (d) d.textContent = printedOn();
-    buildQr();
-    var more = $('h-more'); if (more && !more.open) { more.open = true; opened.push(more); }
-    if (S.print.more) [].forEach.call(document.querySelectorAll('#h-place details.h-tbl'), function (x) { if (!x.open) { x.open = true; opened.push(x); } });
-  }
-  function buildQr() {
-    var w = S.where || {}, p = S.prof;
-    if (!p) return;
-    var url = P.qrLink({ fips: p.fips, zip: w.zip, at: w.lat != null && !w.center && !w.zip ? { lat: w.lat, lng: w.lng } : null, print: S.print });
-    var qr = $('h-pr-qr1'), end = $('h-pr-qr'), bare = esc(url.replace(/^HTTPS:\/\/AGSIST\.COM/, 'agsist.com'));
-    if (qr && qr.getAttribute('data-url') !== url) {
-      var svg = '';
-      try { svg = window.AgQR ? window.AgQR.svg(url, 'QR code for this page', 10, 'mixed') : ''; } catch (e) { svg = ''; }
-      qr.innerHTML = svg ? svg + '<p>Scan for the live page</p>' : '';
-      qr.setAttribute('data-url', url);
+  function shortDate(d) { return /^\d{4}-\d{2}-\d{2}$/.test(d || '') ? mdy(d) : String(d || ''); }
+  function sheet() {
+    var p = S.prof, w = S.where || {}, c = S.print, on = function (k) { return c.parts.indexOf(k) >= 0; };
+    if (!p) return null;
+    var secs = [], srcs = {}, order = [];
+    function src(name, date) {
+      if (!name) return;
+      if (!srcs[name]) { srcs[name] = []; order.push(name); }
+      if (date && srcs[name].indexOf(date) < 0) srcs[name].push(date);
     }
-    if (end) end.innerHTML = '<p>This report, live and up to date: ' + bare + '</p>';
+    if (on('week')) CARDS.forEach(function (card) {
+      var rows = [];
+      card[1].forEach(function (id) {
+        var f = S.facts[id], el = $(id);
+        if (!f || f.value == null || f.hide || (el && el.hidden)) return;
+        var d = shortDate(f.date), name = f.paper || (f.src && f.src[0]) || '';
+        rows.push({ label: f.label, value: f.value, note: f.ctx || '', date: d, src: name });
+        src(name, d);
+      });
+      if (rows.length) secs.push({ h: card[0], rows: rows });
+    });
+    if (on('fingerprint')) {
+      var fp = p.cols.filter(function (x) { return x.value != null; }).map(function (x) {
+        var nm = P.srcName(x.source, x.years);
+        src(nm.replace(/, [\d-]+$/, ''), (nm.match(/, ([\d-]+)$/) || [])[1] || '');
+        return [x.label, P.fmtShort(x.value, x), (x.words || '') + (x.band ? ' (' + (x.band === 'top' ? 'highest' : 'lowest') + ' tenth)' : ''), nm];
+      });
+      if (fp.length) secs.push({ h: 'How it ranks among ' + p.stName + ' counties', table: { head: ['Figure', 'Here', 'Where it sits', 'Source'], rows: fp } });
+    }
+    if (on('unusual') && p.unusual.length) secs.push({ h: 'Against its neighbors', rows: p.unusual.map(function (u) {
+      return { label: u.label, value: P.fmtShort(u.value, u.col) + ' here', note: P.fmtShort(u.nb, u.col) + ' across ' + u.nbN + ' neighboring counties' + (u.dir === 'same' ? '.' : ', ' + u.dir + ' than its neighbors.') };
+    }) });
+    if (on('long')) {
+      var lv = P.longView(S.county).map(function (r) {
+        var hi = null, lo = null;
+        r.pts.forEach(function (q) { if (!hi || q[1] > hi[1]) hi = q; if (!lo || q[1] < lo[1]) lo = q; });
+        var u = r.unit === '$/ac' ? function (v) { return '$' + Math.round(v); } : function (v) { return String(v); };
+        src(r.source, r.pts[0][0] + '-' + r.pts[r.pts.length - 1][0]);
+        return { label: r.label, value: 'High ' + u(hi[1]) + ' (' + hi[0] + '), low ' + u(lo[1]) + ' (' + lo[0] + ')', note: r.unit + ', ' + r.pts[0][0] + '-' + r.pts[r.pts.length - 1][0] + (r.partial ? '; ' + r.partial + ' is the year so far' : '') + '.' };
+      });
+      if (lv.length) secs.push({ h: 'The long view', rows: lv });
+      if (c.more && lv.length) {
+        var rows = P.longView(S.county), y0 = Infinity, y1 = -Infinity;
+        rows.forEach(function (r) { r.pts.forEach(function (q) { y0 = Math.min(y0, q[0]); y1 = Math.max(y1, q[0]); }); });
+        var t = [];
+        for (var y = y1; y >= y0; y--) t.push([String(y)].concat(rows.map(function (r) { var q = r.pts.filter(function (x) { return x[0] === y; })[0]; return q ? String(q[1]) : ''; })));
+        secs.push({ h: 'The years, as a table', table: { head: ['Year'].concat(rows.map(function (r) { return r.label; })), rows: t } });
+      }
+    }
+    if (c.rain && S.fig) {
+      var fig = S.fig;
+      secs.push({ h: 'This year’s rain at ' + fig.station.name, cls: 'agps-rain', html: P.rainChart(fig) + '<p class="agps-note">' + esc(fig.year + ': ' + fig.total.toFixed(2) + ' in from Jan 1 to ' + mdy(fig.asOf).replace(/, \d{4}$/, '') + (fig.usual != null ? ', against ' + fig.usual.toFixed(2) + ' in on a usual year (dashed)' : '') + '. ' + fig.gauge + '.') + '</p>' });
+      src('NOAA daily station record', mdy(fig.asOf));
+    }
+    var qr = P.qrLink({ fips: p.fips, zip: w.zip, at: w.lat != null && !w.center && !w.zip ? { lat: w.lat, lng: w.lng } : null, print: S.print });
+    var from = w.zip ? 'ZIP ' + w.zip + (w.label && w.label !== 'ZIP ' + w.zip ? ' (' + w.label + ')' : '') : w.how === 'town' ? w.label : w.point ? 'the point ' + w.label : '';
+    return {
+      kicker: 'Fast Facts, county report', title: p.name + ', ' + p.stName, page: p.name + ', ' + p.st,
+      sub: (from ? 'From ' + from + '. ' : '') + 'County figures; ranks are among ' + p.stName + ' counties.',
+      intro: on('sentence') ? p.sentence : '',
+      sections: secs,
+      sources: on('sources') ? order.map(function (n) { var d = srcs[n].slice().sort(); return { name: n, date: d.length > 2 ? d[0] + ' to ' + d[d.length - 1] : d.join(', ') }; }) : [],
+      url: 'https://agsist.com/fast-facts' + location.search, qr: qr, shown: qr.replace(/^HTTPS:\/\/AGSIST\.COM/, 'agsist.com'),
+      foot: 'Public records for ' + p.name + ', each with its source and date. Bids and prices move every day; check before you sell or buy. For information, not financial advice.'
+    };
   }
-  function afterPrint() { opened.forEach(function (d) { d.open = false; }); opened = []; }
   function wirePrint() {
     var box = $('h-pr-box');
     if (!box) return;
     box.addEventListener('change', readPanel);
+    if (window.AgPrintSheet) window.AgPrintSheet.attach(sheet);
     $('h-pr-go').addEventListener('click', function () {
       readPanel();
-      track('here_print', { parts: S.print.parts.length, more: S.print.more ? 1 : 0 });
+      track('here_print', { parts: S.print.parts.length, more: S.print.more ? 1 : 0, rain: S.print.rain ? 1 : 0 });
       var btn = $('h-pr-go');
       btn.disabled = true;
-      /* the depth is drawn before the sheet goes out; a slow source gets six seconds */
-      Promise.race([loadDepth(), new Promise(function (ok) { setTimeout(ok, 6000); })]).then(function () {
+      /* the rain drawing comes with the depth; a slow source gets six seconds */
+      var wait = S.print.rain ? Promise.race([loadDepth(), new Promise(function (ok) { setTimeout(ok, 6000); })]) : Promise.resolve();
+      wait.then(function () {
         btn.disabled = false;
-        beforePrint();
-        try { window.print(); } catch (e) {}
+        var spec = sheet();
+        if (spec && window.AgPrintSheet) window.AgPrintSheet.print(spec); else { try { window.print(); } catch (e) {} }
       });
     });
-    window.addEventListener('beforeprint', beforePrint);
-    window.addEventListener('afterprint', afterPrint);
   }
 
   /* ── the map ─────────────────────────────────────────────────────── */
@@ -791,13 +793,15 @@
   }
 
   /* ── start ───────────────────────────────────────────────────────── */
-  /* The place loads when a tab that shows it opens (My place, State, Print), not on the
-     reference tables, so a reader there pays for nothing they did not open. */
+  /* The place loads when My place opens, not on the reference tables, so a reader there pays for
+     nothing they did not open. An old #print link (or #h-pr-...) opens My place with the print
+     options open. */
   function begin() {
     if (S.started) return;
     S.started = true;
     var q = P.parseQuery(location.search), my = ++S.seq;
     if (q.print) { S.print = q.print; applyPrint(); }
+    if (/^#(print|h-pr)/.test(location.hash)) { var bx = $('h-pr-box'); if (bx) bx.open = true; }
     if (q.fips) {
       var w = { how: q.q ? 'town' : 'county', label: q.q || null };
       if (q.zip) { w.zip = q.zip; w.how = 'zip'; }
@@ -817,12 +821,17 @@
     } else if (q.zip) { $('h-q').value = q.zip; byZip(q.zip, my); }
     else if (q.at) byPoint(q.at, my, null);
     else if (q.q) { $('h-q').value = q.q; go(q.q, 'link'); }
-    else { var z = savedZip(); if (z) { $('h-q').value = z; byZip(z, my); } }
+    else { var z = savedZip(); if (z) { $('h-q').value = z; byZip(z, my); } else unpend(); }
   }
-  function onTab(t) {
-    if (t === 'place' || t === 'print') begin();
-    if (t === 'state') { begin(); drawState(); }
-    if (t === 'us') drawUS();
+  function onTab(t) { if (t === 'place') begin(); }
+  /* Change place, and the way back to the place that was open */
+  function changing(on) {
+    var has = !!S.prof;
+    $('h-find').hidden = !on && has;
+    $('h-tools').hidden = on || !has;
+    $('h-keep').hidden = !(on && has);
+    $('h-ask').textContent = on && has ? 'Type the new ZIP, town or county.' : 'Your ZIP, once. It stays on this device.';
+    if (on) { $('h-q').value = ''; $('h-q').focus(); } else if (has) $('h-change').focus();
   }
   function start() {
     wirePrint();
@@ -831,34 +840,29 @@
       if (!navigator.geolocation) { say('This browser does not share a location. Type a ZIP or town.', true); return; }
       say('Asking the browser for your location…');
       var my = ++S.seq;
+      S.user = true;
       navigator.geolocation.getCurrentPosition(function (pos) {
         if (my !== S.seq) return;
         track('here_find', { by: 'location' });
         byPoint({ lat: pos.coords.latitude, lng: pos.coords.longitude }, my, 'your location');
       }, function () { if (my === S.seq) say('The browser did not share a location. Type a ZIP or town.', true); }, { timeout: 12000, maximumAge: 600000 });
     });
-    $('h-change').addEventListener('click', function () {
-      $('h-find').hidden = false;
-      $('h-change').hidden = true;
-      $('h-q').value = '';
-      $('h-q').focus();
-    });
+    $('h-change').addEventListener('click', function () { changing(true); });
+    $('h-keep').addEventListener('click', function () { say(''); changing(false); });
+    $('h-find').addEventListener('keydown', function (e) { if (e.key === 'Escape' && S.prof && !$('h-find').hidden) { e.preventDefault(); say(''); changing(false); } });
     $('h-map-box').addEventListener('toggle', function () { if ($('h-map-box').open && !$('h-map').firstChild) drawMap(); });
     var more = $('h-more');
     if (more) more.addEventListener('toggle', function () { if (more.open) loadDepth(); });
-    var pick = $('s-pick');
-    if (pick) pick.insertAdjacentHTML('beforeend', Object.keys(P.STATES).map(function (k) { return '<option value="' + k + '">' + esc(P.STATES[k]) + '</option>'; }).join(''));
-    if (pick) pick.addEventListener('change', function () { if (P.STATES[pick.value]) drawState(pick.value); });
     document.addEventListener('click', function (e) {
       var a = e.target.closest && e.target.closest('a[data-fips]');
       if (!a) return;
       e.preventDefault();
       open(a.getAttribute('data-fips'), { how: 'county' }, ++S.seq);
-      var t = $('h-title'); if (t) window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.scrollY - 80), behavior: 'smooth' });
+      var t = $('h-title'); if (t) window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.scrollY - 80), behavior: smooth() });
     });
     document.documentElement.addEventListener('fx-tab', function (e) { onTab(e.detail); });
     onTab(tab());
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
-  window.AgHere = { go: go, open: open, state: S, beforePrint: beforePrint, afterPrint: afterPrint, loadDepth: loadDepth, drawState: drawState };
+  window.AgHere = { go: go, open: open, state: S, sheet: sheet, loadDepth: loadDepth };
 })();

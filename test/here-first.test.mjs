@@ -11,7 +11,7 @@
  * dnilgis/bids f64b07c8b) and the id join to the basis history (data/ids/basis-join). */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import fs from "node:fs";
+import fs, { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import http from "node:http";
 import vm from "node:vm";
@@ -223,14 +223,27 @@ test("its own history: real rows are too new to compare; the kinds on a hand-bui
   assert.equal(P.basisHistory(m, "WI|COOP X|CHETEK", "corn", "ZCZ26", "NOV26", 392, "2026-10-19").status, "none");
 });
 
+test("a real shard path from the bids index answers: data/ + the index's shard field", { skip: !existsSync("/home/user/bids/data/merged-index.json") && "no bids checkout here" }, () => {
+  const idx = JSON.parse(readFileSync("/home/user/bids/data/merged-index.json", "utf8"));
+  assert.equal(idx.shards.dir, "data/merged");
+  const withShard = idx.places.filter((p) => p.shard);
+  assert.ok(withShard.length > 100);
+  for (const p of withShard.slice(0, 25)) {
+    assert.match(p.shard, /^merged\/[a-z0-9][a-z0-9._-]{0,160}\.json$/i);
+    if (!idx.shards.orphaned.includes(p.shard.slice(7))) assert.ok(existsSync("/home/user/bids/data/" + p.shard), "data/" + p.shard + " is on disk");
+  }
+});
+
 test("bids-network exports the index and a checked shard getter; versions bumped together", () => {
   const js = read("components/bids-network.js");
   assert.match(js, /index: index,\s*\n\s*shard: shard,/);
   assert.match(js, /\^merged\\\/\[a-z0-9\]/);
-  for (const f of ["fast-facts.html", "corn-futures-prices.html", "store-or-sell.html", "combine-loss.html"]) assert.match(read(f), /bids-network\.js\?v=7/, f);
-  assert.match(read("components/bids-homepage.js"), /bids-network\.js\?v=7/);
-  assert.match(read("fast-facts.html"), /place\.js\?v=5/);   // v5: the Fast Facts row builders (Oct 21)
-  assert.match(read("fast-facts.html"), /here\.js\?v=20/);   // v20: Fast Facts My place, State and US tabs (fx/fastfacts, Oct 21);   // v19: rain-county-print.js v36, engine rain-print.js v65 (fx/rpfix: Chetek Oct 21); v17: rain-county-print.js v34, engine rain-print.js v64, art v20 (fx/rptemp: temperature stripes); v16: rain-county-print.js v33, engine rain-print.js v63 (ship23: buying lines, Watch it draw); v15: rain-county-print.js v32, engine rain-print.js v62 (Watch it draw, 2026-10-20); v14: rain-county-print.js v31, engine rain-print.js v61 (digital files, 2026-10-20); v13: rain-county-print.js v30, engine rain-print.js v60 (order tracking, 2026-10-20); v12: rain-county-print.js v29, engine rain-print.js v59 (new maker key, 2026-10-20); v11: rain-county-print.js v28, the county print as a hidden shell (2026-10-20); v10: summer snow traces skipped (v27)
+  // the shards sit under data/ (merged-index.json shards.dir "data/merged"; Oct 21 skeptic: merged/ alone was a 404)
+  assert.match(js, /return get\('data\/' \+ path\);/);
+  for (const f of ["fast-facts.html", "corn-futures-prices.html", "store-or-sell.html", "combine-loss.html"]) assert.match(read(f), /bids-network\.js\?v=8/, f);   // v8: shards under data/ (Oct 21)
+  assert.match(read("components/bids-homepage.js"), /bids-network\.js\?v=8/);
+  assert.match(read("fast-facts.html"), /place\.js\?v=6/);   // v6: two tabs, rows reworded after the panel (Oct 21); v5: the Fast Facts row builders (Oct 21)
+  assert.match(read("fast-facts.html"), /here\.js\?v=21/);   // v21: two tabs and the shared print sheet (fx/fastfacts round 2, Oct 21); v20: Fast Facts My place, State and US tabs (fx/fastfacts, Oct 21);   // v19: rain-county-print.js v36, engine rain-print.js v65 (fx/rpfix: Chetek Oct 21); v17: rain-county-print.js v34, engine rain-print.js v64, art v20 (fx/rptemp: temperature stripes); v16: rain-county-print.js v33, engine rain-print.js v63 (ship23: buying lines, Watch it draw); v15: rain-county-print.js v32, engine rain-print.js v62 (Watch it draw, 2026-10-20); v14: rain-county-print.js v31, engine rain-print.js v61 (digital files, 2026-10-20); v13: rain-county-print.js v30, engine rain-print.js v60 (order tracking, 2026-10-20); v12: rain-county-print.js v29, engine rain-print.js v59 (new maker key, 2026-10-20); v11: rain-county-print.js v28, the county print as a hidden shell (2026-10-20); v10: summer snow traces skipped (v27)
   assert.match(read("components/here.js"), /css\('\/components\/rain-county\.css\?v=5'\)/);   // loaded with the depth only (Oct 21)   // v5: the month table fits a phone (2026-10-19)
 });
 

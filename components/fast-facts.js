@@ -22,7 +22,7 @@ tabs.forEach(function(b){b.addEventListener('click',function(){switchTab(b);if(h
   // tabs are sticky now: jump the reader to the top of the fresh panel so a deep
   // scroll position from the last tab doesn't strand them mid-table
   var p=document.getElementById('tab-'+b.dataset.tab);
-  if(p){var y=p.getBoundingClientRect().top+window.pageYOffset-70;if(Math.abs(window.pageYOffset-y)>40)window.scrollTo({top:Math.max(0,y),behavior:'smooth'});}
+  if(p){var y=p.getBoundingClientRect().top+window.pageYOffset-70;if(Math.abs(window.pageYOffset-y)>40)window.scrollTo({top:Math.max(0,y),behavior:(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth')});}
 });});
 document.addEventListener('keydown',function(e){
   if(!e.target.classList||!e.target.classList.contains('ff-tab'))return;
@@ -131,7 +131,7 @@ function loadFertPrices(){
         if(pd.nut==='N'&&pd.ncPct){
           setNForm(pd.ncPct,price);
           var top=document.getElementById('ff-ans');
-          if(top&&top.scrollIntoView){try{top.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){}}
+          if(top&&top.scrollIntoView){try{top.scrollIntoView({behavior:(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'),block:'start'});}catch(e){}}
         }
       });
       wrap.appendChild(btn);

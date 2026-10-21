@@ -1056,7 +1056,7 @@
   // touch or key press, or when a field is picked. The print report, boundary
   // export and note photos are field-scout-extras.js, fetched on their buttons.
   // Both reach this file's variables through FSX (getters, so always the live value).
-  var FS_READ_SRC='/field-scout-read.js?v=10', FS_EXTRAS_SRC='/field-scout-extras.js?v=1';
+  var FS_READ_SRC='/field-scout-read.js?v=11', FS_EXTRAS_SRC='/field-scout-extras.js?v=1';
   var RM=null, XM=null, _rmP=null, _xmP=null;
   var FSX=Object.defineProperties({}, {
     map:{get:function(){ return map; }, set:function(v){ map=v; }},

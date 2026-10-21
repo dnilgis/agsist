@@ -415,10 +415,12 @@
   }
 
   /* One place's shard (merged/<slug>.json, named by the index's `shard`), for a page that needs a
-     row's contract (futuresMonth). 2026-10-19: /here's elevator comparison. */
+     row's contract (futuresMonth). 2026-10-19: /here's elevator comparison. The shards live under
+     data/ like every other file the index names (merged-index.json shards.dir is "data/merged");
+     Oct 21: the bare merged/ path answered 404 every time, so the comparison never showed. */
   function shard(path) {
     if (!/^merged\/[a-z0-9][a-z0-9._-]{0,160}\.json$/i.test(String(path || ''))) return Promise.resolve(null);
-    return get(path);
+    return get('data/' + path);
   }
 
   window.AGSIST_BIDS_NET = {
