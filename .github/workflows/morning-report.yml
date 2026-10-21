@@ -156,6 +156,25 @@ jobs:
           SNAPSHOT: .morning-report/counts.json
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
         run: python3 scripts/morning_report.py
+      # Oct 21 (Sig, insight machine): reader counts by area, counts only, once a day, to the
+      # private-data branch at private/data/reader-area/<year>/<day>.json: sign-ups by ZIP3 and
+      # page, alerts, watches, notices, Rain Print designs and orders by state, every cell under 3
+      # withheld (scripts/reader_area_counts.py, worker v5.45 /count-area). Never an address or a
+      # full ZIP. After the email, and it can never fail the run.
+      - name: Reader counts by area to the private-data branch
+        if: ${{ !cancelled() && inputs.dry_run != true }}
+        continue-on-error: true
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: |
+          python3 scripts/reader_area_counts.py || { echo "::warning::reader counts by area not taken"; exit 0; }
+          if ls private/data/reader-area/*/*.json >/dev/null 2>&1; then
+            bash scripts/push_raw.sh "reader counts by area" private/data/reader-area
+          fi
       # A dry run reads the counts but does not keep them, so tomorrow's
       # "since yesterday" still compares against a real morning.
       - name: Keep today's counts
