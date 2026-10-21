@@ -130,7 +130,7 @@ TAG = "utm_source=daily&utm_medium=email&utm_campaign=" + day
 def tagged(url, content):
     return url + ("&" if "?" in url.split("#")[0] else "?") + TAG + "&utm_content=" + content
 send_daily.load_today = lambda: (day, json.load(open(archive)))
-send_daily.load_elevator_lines = lambda: {}
+send_daily.load_elevator_lines = lambda *a, **k: {}   # the elevator block has its own test (test_daily_elevators.py)
 
 
 def run():
