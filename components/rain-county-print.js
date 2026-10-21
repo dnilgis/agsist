@@ -32,7 +32,9 @@
      print is drawn, false when it is not (the plain chart stays). The county page's own
      #rc-print mounts itself, as before. */
   root.AgRainCountyPrint = { unpack: unpack, daysOf: daysOf, usualOf: usualOf, mount: mount };   // for test/rain-county-print.test.mjs
-  var ART = '/components/rain-print-art.js?v=18', ENGINE = '/components/rain-print.js?v=62';
+  var ART = '/components/rain-print-art.js?v=19', ENGINE = '/components/rain-print.js?v=62';
+  // "Watch it draw" (2026-10-20): loaded only when a reader taps it
+  var DRAW = '/components/rain-print-draw.js?v=1';
   var MISS_BLOCK = 31, MIN_DAYS = 60;
   var FONTS = [
     ['Fraunces', '/fonts/rp-fraunces-opsz.woff2', { weight: '300 600' }],
@@ -123,9 +125,12 @@
     if (!fig || !fig.dataset) return Promise.resolve(false);
     var D = fig.dataset;
     var state = null;   // {RP, days, d, preview, ov}
+    var lastInput = null, lastStyle = 'r1';
     function draw(style) {
       var A = root.AgRainArt, S = state, year = +D.year;
-      var svg = A.render({
+      if (root.AgRainDraw && root.AgRainDraw.current()) root.AgRainDraw.close();
+      lastStyle = style;
+      var svg = A.render(lastInput = {
         style: style, year: year, place: D.place, name: '', dedication: '',
         days: S.days, D: S.d, showDry: S.RP.showDry(S.d), axisLen: S.preview ? (isLeap(year) ? 366 : 365) : S.d.n,
         ov: S.ov, ovNote: S.ov ? (D.norm === '1991-2020' ? 'Usual: NOAA 1991 to 2020 normals, on the days reported' : 'Usual: NOAA 30-year normals, on the days reported') : '',
@@ -133,6 +138,7 @@
         preview: S.preview ? { last: S.days[S.days.length - 1].date } : null,
         gauge: D.gauge || '', logo: null, watermark: false, bleed: 0, idPrefix: 'rc'
       });
+      lastInput = Object.assign({}, lastInput);
       var box = fig.querySelector('.rc-print-art');
       box.innerHTML = svg;
       var el = box.querySelector('svg');
@@ -163,6 +169,21 @@
         var tg = fig.querySelector('.rc-print-styles');
         if (tg) {
           tg.hidden = false;
+          /* Watch it draw: the same print, drawing itself day by day, and a video of it
+             (components/rain-print-draw.js). No hail or wind here: the page has no town point. */
+          if (!tg.querySelector('.rc-watch')) {
+            var wb = doc.createElement('button');
+            wb.type = 'button'; wb.className = 'rc-watch'; wb.textContent = 'Watch it draw';
+            wb.setAttribute('aria-label', 'Watch this year draw itself, and make a video of it');
+            tg.appendChild(wb);
+            wb.addEventListener('click', function () {
+              script(DRAW, function () { return !!root.AgRainDraw; }).then(function () {
+                var box = fig.querySelector('.rc-print-art');
+                root.AgRainDraw.open({ input: lastInput, place: D.place, year: +D.year, name: '', url: 'https://agsist.com/rain-print', style: lastStyle, from: 'county' },
+                  { host: box, after: box, from: 'county' });
+              }, function () {});
+            });
+          }
           tg.addEventListener('click', function (e) {
             var b = e.target.closest('[data-style]');
             if (b) draw(b.getAttribute('data-style'));

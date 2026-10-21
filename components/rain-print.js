@@ -2958,7 +2958,19 @@
     if ($('rp-proof').open) proofRender();
     syncStrip();
     syncExtrasUi();
+    try { doc.dispatchEvent(new root.CustomEvent('rainprint:drawn')); } catch (e) {}
   }
+
+  /* WATCH YOUR YEAR DRAW (2026-10-20, Sig): components/rain-print-draw.js plays the
+     print drawing itself and records it as a video, from this same art input, so the
+     video is the print (nothing drawn a second way). The example words come off first
+     (they are hints, never the reader's). No serial: a video is not a numbered print. */
+  api.drawInput = function () {
+    if (!DATA || BLOCKED || !META) return null;
+    endExample();
+    return { input: artInput({}), place: placeLong(), year: META.year, name: ST.name, lat: META.lat, lon: META.lon, ca: !!META.ca,
+      sample: !!SAMPLE, url: SAMPLE ? SITE : shortUrl(artDesign()), style: ST.style, from: 'page' };
+  };
 
   /* EMAIL ME WHEN <YEAR> IS FINISHED (2026-10-19, board Bet 1). Once a print
      of this year (the year still going) is drawn for a US town whose county the
