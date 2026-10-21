@@ -681,11 +681,15 @@
           wrap.classList.remove('we-open');
           var done = wrap.querySelector('.we-done'); if(done) done.focus();
           /* The daily signup goes only after the watch itself was accepted. */
+          /* 2026-10-20: then "One more?" under it (components/signup-ask.js), after the Daily answer if one was asked */
+          var more = function(){ if(S && S.oneMore) S.oneMore(wrap, { gave:'elevator', had:['elevator'].concat(wantDaily ? ['daily'] : []), email:email }); };
           if(wantDaily) S.subscribe({ email: email, source: 'watch-optin' }).then(function(res){
             var m = wrap.querySelector('.sa-optmsg'); if(!m) return;
             m.className = 'sa-optmsg ' + (res.ok ? 'is-ok' : 'is-err');
             m.textContent = 'AGSIST Daily: ' + (res.ok ? S.okText() : S.errText(res));
+            more();
           });
+          else more();
         });
     }
     if(go) go.addEventListener('click', submit);

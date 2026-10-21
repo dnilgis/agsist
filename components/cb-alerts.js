@@ -183,10 +183,16 @@
     var em = form.querySelector('.cba-email'); if(em) em.removeAttribute('aria-invalid');
     var pr = form.querySelector('.cba-price'); if(pr) pr.removeAttribute('aria-invalid');
   }
-  function done(box, email){
+  /* had: what this alert already is ('zip' for the ZIP-wide one); zip: its ZIP.
+     Then "One more?" under it (components/signup-ask.js, 2026-10-20). */
+  function done(box, email, had, zip){
     store('cba_email', email);
     box.innerHTML = '<p class="cba-done" tabindex="-1">' + DONE + '</p>';
     var p = box.querySelector('.cba-done'); if(p) p.focus();
+    var S = window.AgsistSignup;
+    /* never inside a form: the ZIP alert's box is its form, so the panel goes after it */
+    var isForm = box.tagName === 'FORM';
+    if(S && S.oneMore) S.oneMore(isForm ? box.parentNode : box, { gave:'elevator', had:['elevator'].concat(had || []), email:email, zip:zip || '', after:isForm ? box : null });
   }
 
   /* ── 1. the bell ───────────────────────────────────────────────────── */
@@ -406,7 +412,7 @@
         label:(NAMES[crop] + ' at or above ' + cash$(cents) + ' within ' + mi + ' mi of ZIP ' + zip).slice(0, 120),
         wid:widFor(ewid, 'cash', 'nearby', 'above:' + cents) };
       sending(form);
-      subscribe(body).then(function(res){ if(res.ok) done(form, email); else fail(form, res); });
+      subscribe(body).then(function(res){ if(res.ok) done(form, email, ['zip'], zip); else fail(form, res); });
     });
   }
 

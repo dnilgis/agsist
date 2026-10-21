@@ -5,6 +5,12 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.41 (2026-10-20): UNSUBSCRIBE COUNTS for Sig's morning email. A POST to
+ *   /unsubscribe or /alert-unsubscribe that removed a real record also writes
+ *   unsx:<daily|alerts>:<reader|cleanup>:<ms>:<rand> ("" value, no address,
+ *   kept 8 days); cleanup is scripts/list_hygiene.py (its User-Agent) removing
+ *   a bounced address. GET /count adds unsubs {daily, alerts: {h24, d7,
+ *   cleanup_h24, cleanup_d7}}. Every other route answers as before.
  * v5.38 (2026-10-20): THE DIGITAL FILES GO OUT ON APPROVAL (Sig). POST
  *   /rp-order/delivered {key, how} (Bearer LIST_TOKEN only): the files email
  *   for an approved, paid digital file went out (scripts/rp_buyer_email.py,
@@ -1716,6 +1722,26 @@ async function sponsorFeedback(env, b, rec) {
   return {};
 }
 
+// v5.41: one key per unsubscribe, no address in it, for /count.
+const UNSX_TTL_S = 8 * 86400;
+async function countUnsub(env, list, req) {
+  const how = /agsist-list-hygiene/.test(req.headers.get("User-Agent") || "") ? "cleanup" : "reader";
+  const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(x => x.toString(16).padStart(2, "0")).join("");
+  try { await env.SUBS.put("unsx:" + list + ":" + how + ":" + Date.now() + ":" + rnd, "", { expirationTtl: UNSX_TTL_S }); } catch (e) { /* a count, never a reason to fail the unsubscribe */ }
+}
+async function unsubCounts(env) {
+  const now = Date.now(), out = {};
+  for (const l of ["daily", "alerts"]) out[l] = { h24: 0, d7: 0, cleanup_h24: 0, cleanup_d7: 0 };
+  for (const k of await listKeys(env, "unsx:")) {
+    const m = /^unsx:(daily|alerts):(reader|cleanup):(\d+):/.exec(k);
+    if (!m) continue;
+    const age = now - Number(m[3]), o = out[m[1]], pre = m[2] === "cleanup" ? "cleanup_" : "";
+    if (age <= 864e5) o[pre + "h24"]++;
+    if (age <= 7 * 864e5) o[pre + "d7"]++;
+  }
+  return out;
+}
+
 async function noticeCounts(env) {
   const keys = await listKeys(env, "note:"), by = {};
   for (const k of keys) {
@@ -2474,7 +2500,9 @@ async function handle(req, env) {
       }
 
       if (req.method === "POST") {
+        const had = (await env.SUBS.get((isAlert ? "alert:" : "sub:") + e)) !== null;
         await env.SUBS.delete((isAlert ? "alert:" : "sub:") + e);
+        if (had) await countUnsub(env, isAlert ? "alerts" : "daily", req);
         // v5.11: "No more emails" covers the one-time notices too.
         if (!isAlert) await env.SUBS.delete("note:" + e);
         return htmlPage(isAlert
@@ -2613,6 +2641,8 @@ async function handle(req, env) {
         secret: typeof env.UNSUB_SECRET === "string" && env.UNSUB_SECRET.length > 0,
         // v5.8: stored form posts per kind. Counts only.
         forms: await formCounts(env),
+        // v5.41: unsubscribes in the last 24 h and 7 days. Counts only.
+        unsubs: await unsubCounts(env),
         // v5.11: one-time notices: addresses, and sign-ups per topic.
         ...(await noticeCounts(env)),
       }, 200, { "Access-Control-Allow-Origin": "*" });

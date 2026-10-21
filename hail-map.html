@@ -911,6 +911,7 @@
             clearBanner();
             var la=+res[0].lat, lo=+res[0].lon;
             map.setView([la,lo],9);
+            searchZip=/^\d{5}$/.test(v)?v:'';
             runLookup(la,lo,res[0].display_name?String(res[0].display_name).split(',').slice(0,2).join(','):null);
           })
           .catch(function(){ go.disabled=false; go.textContent='Check'; banner('Search isn\u2019t responding. Try again in a moment.'); });
@@ -926,8 +927,16 @@
       });
     }
     var focusAnswer=true;   /* false while a control re-runs the same lookup */
+    /* The ZIP the reader typed into the search, kept for the spot it found,
+       and the spot itself for "One more?" (components/signup-ask.js): a
+       Daily signup on this page can then offer the hail alert for it. */
+    var searchZip='', spotZip='';
     function runLookup(lat,lon,label){
       ga('hm_lookup',{});
+      var was=window.AGSIST_HAIL_SPOT;
+      if(searchZip||!was||was.lat!==lat||was.lon!==lon) spotZip=searchZip;
+      searchZip='';
+      window.AGSIST_HAIL_SPOT={lat:lat,lon:lon,label:label&&label!=='Your location'?label:'your spot on the map'};
       if(pin) map.removeLayer(pin);
       pin=L.marker([lat,lon]).addTo(map);
       var panel=document.getElementById('hm-point'); if(panel){ panel.hidden=false; }
@@ -1556,7 +1565,10 @@
              refused is not a signup, and a button wired to nothing produces
              no event at all rather than a clean-looking number. */
           if(r.ok){ ga('hm_alert_signup',{radius_mi:radius});
-                    stx.textContent='Watching this spot: '+radius+' mi radius. Alerts arrive the morning after radar-estimated hail touches it.'; em.value=''; }
+                    stx.textContent='Watching this spot: '+radius+' mi radius. Alerts arrive the morning after radar-estimated hail touches it.'; em.value='';
+                    /* 2026-10-20 (Sig): then "One more?" under it: the Daily, unticked, with the ZIP they searched or the one nearest the spot */
+                    var S=window.AgsistSignup, old=box.querySelector('[data-sa-more]'); if(old) old.parentNode.removeChild(old);
+                    if(S&&S.oneMore) S.oneMore(box,{gave:'hail',email:v,lat:lastLookup.lat,lon:lastLookup.lon,place:lastLookup.label||'',zip:spotZip}); }
           else{ stx.textContent='Couldn\u2019t save just now. Try again in a minute.'; }
         }).catch(function(){ btn.disabled=false; stx.textContent='Couldn\u2019t save just now. Try again in a minute.'; });
       }
