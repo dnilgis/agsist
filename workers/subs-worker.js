@@ -5,6 +5,27 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.46 (2026-10-21): NO ADDRESS IN ANY EMAILED LINK (Oct 21: a Daily link
+ *   with ?e=<address> on a workers.dev host was reported as phishing and the
+ *   host was blocked). Each address gets one link id: 16 letters of
+ *   DK_B32 from HMAC-SHA256(UNSUB_SECRET, "lid|" + address), so it is the
+ *   same id every time with no lookup and reveals nothing. lid:<id> =
+ *   the address (no expiration) lets the routes find it again. The list
+ *   routes the senders read (/list?format=json, /alert-list, /notice-list,
+ *   /watch-list, /elevator-watch-list, /price-watch-list) add lid to each
+ *   row, writing lid:<id> the first time (one KV list of lid: per call, then
+ *   at most LID_NEW_MAX new writes a call; a row past that has no lid this
+ *   call and the sender skips it until the next run). Every route that took
+ *   ?e=&t= (unsubscribe, alert-unsubscribe, notice-unsubscribe, daily-elev,
+ *   watch-, elevator-watch- and price-watch- confirm and unsubscribe) also
+ *   takes ?k=<id>&t= with the same extra params, t = hmac16(id + the same
+ *   suffix as before, e.g. "|de", "|c|" + f, "|pw"). A bad t, a bad id or an
+ *   id with no lid: record answers "That link isn't valid." with a 403. A
+ *   good one finds the address and runs exactly the old logic; the page's
+ *   button posts back with k= and t=, never the address. Old ?e=&t= links
+ *   (already in inboxes) work exactly as before. Nothing is logged. No new
+ *   binding and no new secret. scripts/email_links.py builds the links and
+ *   refuses a message with an address in any link.
  * v5.45 (2026-10-21): READER COUNTS BY AREA (Sig, Oct 21: the insight
  *   machine's collection jobs, "counts only"). New route GET /count-area
  *   ?part=<daily|alerts|watch|ewatch|pwatch|notices|rp_designs|rp_orders>
@@ -822,6 +843,79 @@ async function hmac16(email, secret) {
     .join("").slice(0, 16);
 }
 
+// ---------- v5.46: link ids, so no emailed link carries an address ----------
+const LID_RE = /^[0-9a-hjkmnp-tv-z]{16}$/;
+const LID_NEW_MAX = 400;   // new lid: writes in one list call (KV allows 1,000 operations a call)
+async function lidFor(email, secret) {
+  if (typeof secret !== "string" || !secret)
+    throw new NoSecretError("UNSUB_SECRET is not set on the agsist-subs Worker; refusing to make a link id");
+  const key = await crypto.subtle.importKey(
+    "raw", new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = new Uint8Array(await crypto.subtle.sign("HMAC", key,
+    new TextEncoder().encode("lid|" + String(email).toLowerCase())));
+  let id = "";
+  for (let i = 0; i < 16; i++) id += DK_B32[sig[i] & 31];
+  return id;
+}
+// Adds lid to every row that has a valid email (rows are changed in place).
+// No secret: no ids (the senders cannot sign a link then anyway).
+async function lidAttach(env, rows) {
+  if (typeof env.UNSUB_SECRET !== "string" || !env.UNSUB_SECRET || !Array.isArray(rows) || !rows.length) return rows;
+  const have = new Set(await listKeys(env, "lid:"));
+  const memo = new Map();
+  let made = 0;
+  for (const r of rows) {
+    const e = String((r && r.email) || "").trim().toLowerCase();
+    if (!EMAIL_RE.test(e)) continue;
+    let id = memo.get(e);
+    if (!id) { id = await lidFor(e, env.UNSUB_SECRET); memo.set(e, id); }
+    if (!have.has("lid:" + id)) {
+      if (made >= LID_NEW_MAX) continue;
+      await env.SUBS.put("lid:" + id, e);
+      have.add("lid:" + id);
+      made++;
+    }
+    r.lid = id;
+  }
+  return rows;
+}
+// The routes that take ?e=&t= and, since v5.46, ?k=&t=: the suffix each signs
+// after the address (or the id), from the same params the old logic reads.
+const LINK_TAILS = {
+  "/unsubscribe": () => "",
+  "/alert-unsubscribe": () => "",
+  "/notice-unsubscribe": () => "",
+  "/daily-elev": () => "|de",
+  "/watch-confirm": q => "|c|" + (q.get("f") || "").trim(),
+  "/watch-unsubscribe": q => { const f = (q.get("f") || "").trim(); return f ? "|w|" + f : "|w"; },
+  "/elevator-watch-confirm": q => "|ec|" + (q.get("w") || "").trim().toLowerCase(),
+  "/elevator-watch-unsubscribe": q => { const w = (q.get("w") || "").trim().toLowerCase(); return w ? "|ew|" + w : "|ew"; },
+  "/price-watch-confirm": q => "|pc|" + (q.get("p") || "").trim().toLowerCase(),
+  "/price-watch-unsubscribe": q => { const p = (q.get("p") || "").trim().toLowerCase(); return p ? "|pw|" + p : "|pw"; },
+};
+// The stop links are checked with unsubOk (they work even without the
+// secret, as before); the confirm links and daily-elev need it.
+const LINK_STOPS = new Set(["/unsubscribe", "/alert-unsubscribe", "/notice-unsubscribe",
+  "/watch-unsubscribe", "/elevator-watch-unsubscribe", "/price-watch-unsubscribe"]);
+// ?k=<id>&t= -> the old ?e=<address>&t= on the same URL object, so the route
+// runs exactly as it did. Returns {k, t} (for the page's button), or null.
+async function linkResolve(env, url, path) {
+  const q = url.searchParams;
+  const k = String(q.get("k") || "").trim().toLowerCase(), t = String(q.get("t") || "");
+  if (!LID_RE.test(k)) return null;
+  const tail = LINK_TAILS[path](q);
+  const ok = LINK_STOPS.has(path) ? await unsubOk(env, k + tail, t) : safeEq(t, await hmac16(k + tail, env.UNSUB_SECRET));
+  if (!ok) return null;
+  const e = String((await env.SUBS.get("lid:" + k)) || "").trim().toLowerCase();
+  if (!EMAIL_RE.test(e)) return null;
+  const signed = typeof env.UNSUB_SECRET === "string" && env.UNSUB_SECRET;
+  q.delete("k");
+  q.set("e", e);
+  q.set("t", signed ? await hmac16(e + tail, env.UNSUB_SECRET) : t);
+  return { k, t };
+}
+
 async function listKeys(env, prefix) {
   const out = [];
   let cursor;
@@ -1173,7 +1267,7 @@ function noticeTopic(v, anyDate) {
   return null;
 }
 
-function htmlPage(msg, extraHtml) {
+function htmlPage(msg, extraHtml, status) {
   return new Response(
     "<!doctype html><meta charset=utf-8><title>AGSIST</title>" +
     "<meta name=robots content=noindex>" +
@@ -1183,7 +1277,7 @@ function htmlPage(msg, extraHtml) {
     "<body style=\"font-family:Georgia,serif;max-width:480px;margin:80px auto;" +
     "padding:0 16px;color:#1a1a1a\"><h2>" + msg + "</h2>" + (extraHtml || "") +
     "<p><a href=\"https://agsist.com\">agsist.com</a></p>",
-    { headers: Object.assign({ "Content-Type": "text/html;charset=utf-8" }, PAGE_HEADERS) });
+    { status: status || 200, headers: Object.assign({ "Content-Type": "text/html;charset=utf-8" }, PAGE_HEADERS) });
 }
 // v5.13: the confirm, unsubscribe and sponsor pages carry e= and t= in their
 // address. No script, no framing, no referrer, no caching. Inline style
@@ -2664,6 +2758,18 @@ async function handle(req, env) {
       return json({ ok: gaOk(req.cf) }, 200, Object.assign({ "Cache-Control": "private, max-age=3600" }, cors(req)));
     }
 
+    // v5.46: a link with k=<link id> instead of e=<address>. A good one is
+    // turned back into the old e= and t= here, and the route below runs as
+    // before; its page's button posts back with k= (act), never the address.
+    let linkVia = null;
+    if (Object.prototype.hasOwnProperty.call(LINK_TAILS, path) && url.searchParams.has("k") && !url.searchParams.has("e")) {
+      linkVia = await linkResolve(env, url, path);
+      if (!linkVia) return htmlPage("That link isn't valid.", "", 403);
+    }
+    const act = (e, t, mid, end) => path + (linkVia
+      ? "?k=" + linkVia.k + (mid || "") + "&t=" + encodeURIComponent(linkVia.t)
+      : "?e=" + encodeURIComponent(e) + (mid || "") + "&t=" + encodeURIComponent(t)) + (end || "");
+
     // v5.13: origin and content type, before any public POST reads its body.
     if (req.method === "POST" && PUBLIC_POSTS.has(path)) {
       const refused = publicGate(req, path);
@@ -2749,7 +2855,7 @@ async function handle(req, env) {
       const valid = EMAIL_RE.test(e) && await unsubOk(env, e, t);
       if (!valid || one === null) return htmlPage("That unsubscribe link isn't valid.");
       if (req.method === "GET") {
-        const action = path + "?e=" + encodeURIComponent(e) + "&t=" + encodeURIComponent(t) + (one ? "&topic=" + encodeURIComponent(one) : "");
+        const action = act(e, t, "", one ? "&topic=" + encodeURIComponent(one) : "");
         return htmlPage(one ? "Stop this notice for this address?" : "Stop every AGSIST notice for this address?",
           "<p>" + escHtml(e) + "</p>" +
           "<form method=\"POST\" action=\"" + action + "\">" +
@@ -2806,7 +2912,7 @@ async function handle(req, env) {
       if (!valid) return htmlPage("That unsubscribe link isn't valid.");
 
       if (req.method === "GET") {
-        const action = path + "?e=" + encodeURIComponent(e) + "&t=" + encodeURIComponent(t);
+        const action = act(e, t);
         return htmlPage(
           isAlert ? "Stop hail alerts for this address?" : "Unsubscribe from AGSIST Daily?",
           "<p>" + escHtml(e) + "</p>" +
@@ -2836,7 +2942,7 @@ async function handle(req, env) {
       const e = (url.searchParams.get("e") || "").trim().toLowerCase();
       const t = url.searchParams.get("t") || "";
       if (!(EMAIL_RE.test(e) && safeEq(t, await hmac16(e + "|de", env.UNSUB_SECRET)))) return htmlPage("That link isn't valid.");
-      const action = path + "?e=" + encodeURIComponent(e) + "&t=" + encodeURIComponent(t);
+      const action = act(e, t);
       if (req.method === "GET") {
         return htmlPage("Put your saved elevators in your morning email?",
           "<p>" + escHtml(e) + "</p><p>The elevators you save on agsist.com/cash-bids in this browser go in your AGSIST Daily: cash, basis and the change for corn and soybeans. Up to 6.</p>" +
@@ -2944,7 +3050,7 @@ async function handle(req, env) {
       // v5.13: a confirm needs the secret (503 without it); a stop link always works (unsubOk).
       const tokOk = conf ? safeEq(t, await hmac16(e + "|c|" + f, env.UNSUB_SECRET)) : await unsubOk(env, e + (f ? "|w|" + f : "|w"), t);
       if (!(EMAIL_RE.test(e) && fOk && tokOk)) return htmlPage("That link isn't valid.");
-      const action = path + "?e=" + encodeURIComponent(e) + (f ? "&f=" + f : "") + "&t=" + encodeURIComponent(t);
+      const action = act(e, t, f ? "&f=" + f : "");
       if (req.method === "GET") {
         return htmlPage(
           conf ? "Watch county " + escHtml(f) + " on AGSIST?" : (f ? "Stop watching county " + escHtml(f) + "?" : "Stop all county watches for this address?"),
@@ -2990,9 +3096,9 @@ async function handle(req, env) {
         if (url.searchParams.has("limit") || url.searchParams.has("cursor")) {
           const lim = Math.min(1000, Math.max(1, parseInt(url.searchParams.get("limit"), 10) || 1000));
           const p = await subPage(env, url.searchParams.get("cursor") || "", lim);
-          return json(p.out, 200, Object.assign({ "X-Next-Cursor": p.cursor }, cors_));
+          return json(await lidAttach(env, p.out), 200, Object.assign({ "X-Next-Cursor": p.cursor }, cors_));   // v5.46: lid
         }
-        return json(await subAll(env), 200, cors_);
+        return json(await lidAttach(env, await subAll(env)), 200, cors_);   // v5.46: lid
       }
       const keys = await listKeys(env, "sub:");
       return new Response(keys.map(k => k.slice(4)).join("\n"),
@@ -3057,7 +3163,7 @@ async function handle(req, env) {
           out.push(row);
         }
       }
-      return json(out, 200);
+      return json(await lidAttach(env, out), 200);   // v5.46: lid
     }
 
     if (path === "/notice-mark" && req.method === "POST") {
@@ -3095,7 +3201,7 @@ async function handle(req, env) {
       }
       // v4.1 (2026-07-20): open CORS like /list — the endpoint is already
       // token-gated, and Sig's local subscriber dashboard reads it in-browser.
-      return json(out, 200, { "Access-Control-Allow-Origin": "*" });
+      return json(await lidAttach(env, out), 200, { "Access-Control-Allow-Origin": "*" });   // v5.46: lid
     }
 
 
@@ -3107,7 +3213,7 @@ async function handle(req, env) {
         const v = await env.SUBS.get(k);
         if (v) { const rec = JSON.parse(v); rec.email = k.slice(6); out.push(rec); }
       }
-      return json(out, 200);
+      return json(await lidAttach(env, out), 200);   // v5.46: lid
     }
 
     if (path === "/watch-mark" && req.method === "POST") {
@@ -3235,7 +3341,7 @@ async function handle(req, env) {
       if (!(EMAIL_RE.test(e) && wOk && tokOk)) return htmlPage("That link isn't valid.");
       const rPeek = await getEWatch(e);
       const label = (w && (rPeek.pend[w] || rPeek.w[w] || {}).label) || "this elevator";
-      const action = path + "?e=" + encodeURIComponent(e) + (w ? "&w=" + w : "") + "&t=" + encodeURIComponent(t);
+      const action = act(e, t, w ? "&w=" + w : "");
       if (req.method === "GET") {
         return htmlPage(
           conf ? "Watch " + escHtml(label) + " on AGSIST?" : (w ? "Stop watching " + escHtml(label) + "?" : "Stop all elevator watches for this address?"),
@@ -3278,7 +3384,7 @@ async function handle(req, env) {
         const v = await env.SUBS.get(k);
         if (v) { const rec = JSON.parse(v); rec.email = k.slice(7); out.push(rec); }
       }
-      return json(out, 200);
+      return json(await lidAttach(env, out), 200);   // v5.46: lid
     }
 
     if (path === "/elevator-watch-mark" && req.method === "POST") {
@@ -3372,7 +3478,7 @@ async function handle(req, env) {
       if (!(EMAIL_RE.test(e) && pOk && tokOk)) return htmlPage("That link isn't valid.");
       const rPeek = await getPWatch(e);
       const label = (p && (rPeek.pend[p] || rPeek.w[p] || {}).label) || "this alert";
-      const action = path + "?e=" + encodeURIComponent(e) + (p ? "&p=" + p : "") + "&t=" + encodeURIComponent(t);
+      const action = act(e, t, p ? "&p=" + p : "");
       if (req.method === "GET") {
         return htmlPage(
           conf ? "Set the price alert for " + escHtml(label) + "?" : (p ? "Cancel the price alert for " + escHtml(label) + "?" : "Cancel all price alerts for this address?"),
@@ -3408,7 +3514,7 @@ async function handle(req, env) {
         const v = await env.SUBS.get(k);
         if (v) { const rec = JSON.parse(v); rec.email = k.slice(7); out.push(rec); }
       }
-      return json(out, 200);
+      return json(await lidAttach(env, out), 200);   // v5.46: lid
     }
 
     if (path === "/price-watch-mark" && req.method === "POST") {
