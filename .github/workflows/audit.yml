@@ -126,8 +126,9 @@ jobs:
         env:
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
           ALERT_TO:  ${{ secrets.ALERT_TO }}
         run: |
           python3 - <<'PY'
@@ -151,7 +152,12 @@ jobs:
           body.append("\nFull report: the run summary in Actions, and private/data/audit.json in the private repo.")
           m = EmailMessage()
           m["Subject"] = "agsist: render audit found %d problem(s)" % len(high)
-          m["From"] = os.environ.get("SMTP_USER") or to
+          # FROM_ADDR first: an SES login is a key id, not an address
+          sender = (os.environ.get("FROM_ADDR") or "").strip() or (os.environ.get("SMTP_USER") or "").strip() or to
+          if "@" not in sender:
+              print("::warning::FROM_ADDR is required when SMTP_USER is not an address; audit findings not emailed")
+              raise SystemExit(0)
+          m["From"] = sender
           m["To"] = to
           m.set_content("\n".join(body))
           try:
@@ -160,9 +166,9 @@ jobs:
               s.starttls(context=ssl.create_default_context())
               s.login(os.environ["SMTP_USER"], os.environ["SMTP_PASS"])
               s.send_message(m); s.quit()
-              print("emailed %s" % to)
+              print("emailed the audit findings")
           except Exception as e:
-              print("::warning::could not send the audit email: %s" % e)
+              print("::warning::could not send the audit email (%s)" % type(e).__name__)
           PY
 
       - name: Go red if the site is broken

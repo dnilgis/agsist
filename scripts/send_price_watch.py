@@ -293,7 +293,7 @@ def main():
         for x in fires:
             print("would fire", log_safe.mask(x[0]), x[1], x[2], "close", x[3])
         return 0
-    fn, fa, rt = env("FROM_NAME", "AGSIST Market Prices"), env("FROM_ADDR") or env("SMTP_USER"), env("REPLY_TO")
+    fn, fa, rt = env("FROM_NAME", "AGSIST Market Prices"), log_safe.sender_addr(None), env("REPLY_TO")
     sent, failed = 0, []
     jobs = [("c", x) for x in confirms] + [("f", x) for x in fires]
     if jobs and cap > 0:

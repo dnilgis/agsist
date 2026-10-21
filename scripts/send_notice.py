@@ -55,6 +55,7 @@ from zoneinfo import ZoneInfo
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 sys.path.insert(0, str(HERE))
+import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 import build_arc_plc as AP              # noqa: E402  deadlines and signup facts, one copy
 from send_watch import token, base_msg  # noqa: E402  the worker's hmac16, and the message headers
 
@@ -258,7 +259,7 @@ def run(argv, http=http_json, connect=smtp_connect, now=None, sleep=time.sleep, 
         out("LIST_URL, LIST_TOKEN and UNSUB_SECRET are required")
         return 1
     base = base.rstrip("/")
-    from_addr = env("FROM_ADDR") or env("SMTP_USER") or "news@agsist.com"
+    from_addr = log_safe.sender_addr("news@agsist.com")
     reply_to = env("REPLY_TO")
     out("date %s (America/Chicago), mode %s" % (today.isoformat(), "SEND" if send else "dry run"))
 
@@ -548,6 +549,37 @@ def selftest():
     s = SMTP(w)
     rc, log = go(["--send", "--max", "1"], w, s)
     ck("--max caps a run and the rest wait", rc == 0 and len(s.sent) == 1 and "2 left for the next run" in log, log)
+
+    # Amazon SES: the login is a key id, not an address, so FROM_ADDR must be set
+    saved_from = os.environ.pop("FROM_ADDR", None)
+    try:
+        os.environ["SMTP_USER"] = "AKIAEXAMPLEKEYID"
+        w = Worker()
+        s = SMTP(w)
+        raised = ""
+        try:
+            go(["--send"], w, s)
+        except RuntimeError as ex:
+            raised = str(ex)
+        ck("SES login, no FROM_ADDR: stops before reading or sending, and says FROM_ADDR",
+           raised == log_safe.FROM_REQUIRED and not s.sent and not w.log, raised)
+        os.environ["FROM_ADDR"] = "news@agsist.com"
+        froms = []
+
+        class FromSMTP(SMTP):
+            def send_message(self, msg):
+                froms.append(msg["From"])
+                SMTP.send_message(self, msg)
+        w = Worker()
+        s = FromSMTP(w)
+        rc, log = go(["--send"], w, s)
+        ck("SES login with FROM_ADDR: sends From the FROM_ADDR, never the key id",
+           rc == 0 and len(s.sent) == 3 and froms and all("news@agsist.com" in f and "AKIA" not in f for f in froms), (rc, froms))
+    finally:
+        os.environ["SMTP_USER"] = "news@agsist.com"
+        os.environ.pop("FROM_ADDR", None)
+        if saved_from is not None:
+            os.environ["FROM_ADDR"] = saved_from
     w = Worker()
     s = SMTP(w)
     handed = []

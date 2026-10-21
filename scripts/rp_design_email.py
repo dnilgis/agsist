@@ -60,6 +60,9 @@ import urllib.request
 from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+
 try:
     from zoneinfo import ZoneInfo
     CHICAGO = ZoneInfo("America/Chicago")
@@ -339,7 +342,7 @@ def main():
         return selftest()
     dry = env("DRY_RUN") == "1"
     src = Sources(env("LIST_URL", ""), env("LIST_TOKEN", ""))
-    code, log = run(src, dry, smtp_send(env("FROM_ADDR") or env("SMTP_USER") or ""), env("SIG_TO", REPLY_TO))
+    code, log = run(src, dry, smtp_send(log_safe.sender_addr()), env("SIG_TO", REPLY_TO))
     for line in log:
         print(line)
     return code

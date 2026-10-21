@@ -24,6 +24,9 @@ import urllib.request
 from email.message import EmailMessage
 from email.utils import formataddr
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+
 
 def env(k, d=""):
     v = os.environ.get(k)
@@ -112,7 +115,7 @@ def main():
     link = r.get("link", "")
     to = env("FORMS_TO") or "sig@farmers1st.com"
     m = message(to, rec, link)
-    m["From"] = formataddr((env("FROM_NAME", "AGSIST"), env("FROM_ADDR") or env("SMTP_USER")))
+    m["From"] = formataddr((env("FROM_NAME", "AGSIST"), log_safe.sender_addr()))
     conn = smtplib.SMTP(env("SMTP_HOST", "smtp.gmail.com"), int(env("SMTP_PORT", "587")), timeout=30)
     try:
         conn.starttls(context=ssl.create_default_context())

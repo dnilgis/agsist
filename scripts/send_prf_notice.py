@@ -53,6 +53,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 sys.path.insert(0, str(HERE))
+import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 import send_notice as SN          # noqa: E402  transport, render, unsubscribe link
 
 SITE = SN.SITE
@@ -256,7 +257,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
         out("LIST_URL, LIST_TOKEN and UNSUB_SECRET are required")
         return 1
     base = base.rstrip("/")
-    from_addr = SN.env("FROM_ADDR") or SN.env("SMTP_USER") or "news@agsist.com"
+    from_addr = log_safe.sender_addr("news@agsist.com")
     reply_to = SN.env("REPLY_TO")
     ctx = {}
     SN.TEMPLATES["prf"] = make_parts(data, ctx, repo)

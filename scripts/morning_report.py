@@ -81,6 +81,7 @@ from email.utils import formataddr, make_msgid
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 import form_digest as FD  # noqa: E402
 
 UTC = timezone.utc
@@ -1548,7 +1549,7 @@ def main():
                   ga4_prop=env("GA4_PROPERTY_ID", ""), ga4_cred=env("GA4_SERVICE_ACCOUNT", ""), dry=dry,
                   private_token=env("PRIVATE_REPO_TOKEN", ""))
     to = env("REPORT_TO") or env("FORMS_TO") or env("SPONSOR_TO") or "sig@farmers1st.com"
-    fn, fa = env("FROM_NAME", "AGSIST"), env("FROM_ADDR") or env("SMTP_USER") or ""
+    fn, fa = env("FROM_NAME", "AGSIST"), log_safe.sender_addr()
     snap_path = env("SNAPSHOT", os.path.join(ROOT, ".morning-report", "counts.json"))
     snap = load_snap(snap_path)
 

@@ -1080,7 +1080,7 @@ def main():
         worker(base, "elevator-watch-mark", tok, basis_mark(e, w, label, row))
     for e, w, label, row, val in obase:            # silent, no mail: the last note an alert compares against
         worker(base, "elevator-watch-mark", tok, dict({"email": e, "wid": w}, **alert_mark(row, val)))
-    fn, fa, rt = env("FROM_NAME", "AGSIST Cash Bids"), env("FROM_ADDR") or env("SMTP_USER"), env("REPLY_TO")
+    fn, fa, rt = env("FROM_NAME", "AGSIST Cash Bids"), log_safe.sender_addr(None), env("REPLY_TO")
     sent, failed = 0, []
     jobs = ([("c", x) for x in confirms] + [("oc", x) for x in oconf]
             + [("m", x) for x in chg] + [("oa", x) for x in osend] + [("oe", x) for x in oend])

@@ -501,7 +501,7 @@ def main(argv=()):
         print("nobody to send to. exit 0")
         return 0
 
-    from_addr = env("FROM_ADDR") or env("SMTP_USER", required=True)
+    from_addr = log_safe.sender_addr() or env("SMTP_USER", required=True)
     from_name = env("FROM_NAME") or "AGSIST"
     reply_to = env("REPLY_TO")
     if dry:

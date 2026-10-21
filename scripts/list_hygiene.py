@@ -28,6 +28,9 @@ import email, hashlib, hmac, imaplib, json, os, re, smtplib, sys, urllib.parse, 
 from datetime import datetime, timedelta, timezone
 from email.message import EmailMessage
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+
 LOOKBACK_DAYS = 8
 
 KNOWN = """gmail.com yahoo.com hotmail.com outlook.com icloud.com aol.com live.com msn.com me.com mac.com
@@ -242,10 +245,11 @@ def line(a):
 
 def mail_report(acts, dry):
     user, pw = env("SMTP_USER"), env("SMTP_PASS")
-    to = env("REPORT_TO") or env("FROM_ADDR") or user
+    sender = log_safe.sender_addr()
+    to = env("REPORT_TO") or sender
     m = EmailMessage()
     m["To"] = to
-    m["From"] = f"{env('FROM_NAME', 'AGSIST')} <{env('FROM_ADDR') or user}>"
+    m["From"] = f"{env('FROM_NAME', 'AGSIST')} <{sender}>"
     m["Subject"] = ("[dry run] " if dry else "") + "AGSIST list cleanup, " + datetime.now(timezone.utc).strftime("%b %-d")
     body = ["What the daily list cleanup did:" if acts else "Nothing to clean up this week.", ""]
     body += [line(a) + ("" if a.get("ok", True) else "  (FAILED, will retry next run)") for a in acts]

@@ -21,8 +21,10 @@ At WARN_AT (400) or more:
     gmail-near:<ISO year>-W<week>. No flag service, no email: a warning that
     cannot be deduped is not sent, so it can never repeat every morning.
 
-Moving to Amazon SES changes three repo secrets (SMTP_HOST, SMTP_USER,
-SMTP_PASS) and no code; send_daily.py's docstring has said so since day one.
+Moving to Amazon SES changes repo secrets (SMTP_HOST, SMTP_USER, SMTP_PASS,
+and FROM_ADDR, which SES needs because its login is a key id, not an address)
+and no code. Once SMTP_HOST is not Gmail, the Gmail limit no longer applies and
+none of this fires: no warning, no email.
 
     python3 scripts/gmail_limit.py --selftest
 """
@@ -39,6 +41,7 @@ from email.utils import formataddr, make_msgid
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 
 GMAIL_LIMIT = 500
 WARN_AT = 400
@@ -66,6 +69,15 @@ def report_kinds(day):
     if day.year == 2026 and day.strftime("%m-%d") in QS_2026:
         out.append("Grain Stocks")
     return out
+
+
+def is_gmail(host=None):
+    """True when mail goes through Gmail: SMTP_HOST empty (every sender's
+    default is smtp.gmail.com) or a Google mail host. Amazon SES and any other
+    relay have their own limits, so the Gmail warning is not for them."""
+    h = (os.environ.get("SMTP_HOST") if host is None else host) or ""
+    h = h.strip().lower().rstrip(".")
+    return not h or h.endswith("gmail.com") or h.endswith("googlemail.com")
 
 
 def projection(daily_n, report_n, report_day):
@@ -116,10 +128,12 @@ def body_text(projected, daily_n, report_n, kinds):
         "",
         "Past the limit Gmail stops sending for a day, and the readers at the end of the list get nothing.",
         "",
-        "It is time to switch SMTP to Amazon SES. No code changes. Only three repo secrets change:",
+        "It is time to switch SMTP to Amazon SES. No code changes. Only repo secrets change:",
         "  SMTP_HOST  email-smtp.<region>.amazonaws.com",
+        "  SMTP_PORT  587",
         "  SMTP_USER  the SES SMTP username",
         "  SMTP_PASS  the SES SMTP password",
+        "  FROM_ADDR  the verified @agsist.com sender (required: the SES username is not an address)",
         "GitHub: the agsist repo > Settings > Secrets and variables > Actions > edit each one.",
         "On the SES side first: verify the From address (or the agsist.com domain) and request production access, or SES will only mail verified addresses.",
         "",
@@ -137,9 +151,12 @@ def check(daily_n, report_n=0, day=None, dry=False, send=True):
           % (proj, daily_n, (", report-day %d" % report_n) if kinds else "", WARN_AT))
     if proj < WARN_AT:
         return proj
+    if not is_gmail():
+        print("gmail limit: SMTP_HOST is not Gmail, so the Gmail limit does not apply; no warning")
+        return proj
     msg = ("Email volume: %d recipients projected in 24 h, at or above the %d warning line "
            "(free Gmail allows about %d). Time to move SMTP to Amazon SES: change SMTP_HOST, "
-           "SMTP_USER and SMTP_PASS. Alert senders are not counted." % (proj, WARN_AT, GMAIL_LIMIT))
+           "SMTP_PORT, SMTP_USER and SMTP_PASS, and set FROM_ADDR. Alert senders are not counted." % (proj, WARN_AT, GMAIL_LIMIT))
     print("::warning title=Near Gmail's daily limit::" + msg)
     summary("### Near Gmail's daily limit\n\n" + msg + "\n")
     if dry or not send:
@@ -165,7 +182,7 @@ def check(daily_n, report_n=0, day=None, dry=False, send=True):
 def _send(text):
     user = (os.environ.get("SMTP_USER") or "").strip()
     pw = (os.environ.get("SMTP_PASS") or "").strip()
-    to = (os.environ.get("FROM_ADDR") or "").strip() or user
+    to = log_safe.sender_addr()
     if not (user and pw and to):
         raise RuntimeError("SMTP_USER/SMTP_PASS not set")
     m = EmailMessage()
@@ -202,25 +219,48 @@ def _selftest():
     ok(len(week_key(date(2026, 12, 31))) <= 64, "flag key fits the worker's 64 chars")
     t = body_text(450, 450, 0, [])
     ok("Amazon SES" in t and "SMTP_HOST" in t and "SMTP_USER" in t and "SMTP_PASS" in t, "body names SES and the three secrets")
+    ok("FROM_ADDR" in t and "SMTP_PORT" in t, "body names FROM_ADDR and SMTP_PORT, which SES also needs")
+    ok(is_gmail("") and is_gmail("smtp.gmail.com") and is_gmail(" SMTP.GMAIL.COM ") and is_gmail("smtp.googlemail.com"),
+       "empty or Google hosts are Gmail")
+    ok(not is_gmail("email-smtp.us-east-2.amazonaws.com") and not is_gmail("smtp.example.com"),
+       "SES and other relays are not Gmail")
     import io
     import contextlib
     os.environ.pop("GITHUB_STEP_SUMMARY", None)
-    buf = io.StringIO()
-    with contextlib.redirect_stdout(buf):
-        check(399, 0, date(2026, 10, 6), dry=True)
-    ok("::warning" not in buf.getvalue(), "399 does not warn")
-    buf = io.StringIO()
-    with contextlib.redirect_stdout(buf):
-        check(250, 200, date(2026, 10, 9), dry=True)
-    ok("::warning" in buf.getvalue() and "projected 450" in buf.getvalue(), "250 + 200 on a report day warns")
-    buf = io.StringIO()
-    saved = {k: os.environ.pop(k, None) for k in ("LIST_URL", "LIST_TOKEN")}
-    with contextlib.redirect_stdout(buf):
-        check(450, 0, date(2026, 10, 6), dry=False)
-    for k, v in saved.items():
-        if v is not None:
-            os.environ[k] = v
-    ok("not sending it" in buf.getvalue(), "no flag service: the weekly email is withheld, not sent undeduped")
+    saved_host = os.environ.pop("SMTP_HOST", None)
+    try:
+        os.environ["SMTP_HOST"] = "email-smtp.us-east-2.amazonaws.com"
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            check(450, 0, date(2026, 10, 6), dry=False)
+        ok("::warning" not in buf.getvalue() and "not Gmail" in buf.getvalue() and "emailed" not in buf.getvalue(),
+           "on SES, 450 projected: no Gmail warning and no email")
+        os.environ["SMTP_HOST"] = ""
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            check(450, 0, date(2026, 10, 6), dry=True)
+        ok("::warning" in buf.getvalue(), "an empty SMTP_HOST is Gmail: 450 still warns")
+        # the Gmail path, pinned: a CI step with an SES SMTP_HOST must not change it
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            check(399, 0, date(2026, 10, 6), dry=True)
+        ok("::warning" not in buf.getvalue(), "399 does not warn")
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            check(250, 200, date(2026, 10, 9), dry=True)
+        ok("::warning" in buf.getvalue() and "projected 450" in buf.getvalue(), "250 + 200 on a report day warns")
+        buf = io.StringIO()
+        saved = {k: os.environ.pop(k, None) for k in ("LIST_URL", "LIST_TOKEN")}
+        with contextlib.redirect_stdout(buf):
+            check(450, 0, date(2026, 10, 6), dry=False)
+        for k, v in saved.items():
+            if v is not None:
+                os.environ[k] = v
+        ok("not sending it" in buf.getvalue(), "no flag service: the weekly email is withheld, not sent undeduped")
+    finally:
+        os.environ.pop("SMTP_HOST", None)
+        if saved_host is not None:
+            os.environ["SMTP_HOST"] = saved_host
     if fails:
         for f in fails:
             print("FAIL", f)
