@@ -101,6 +101,10 @@ function serve() {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".woff2": "font/woff2", ".html": "text/html", ".svg": "image/svg+xml", ".jpg": "image/jpeg", ".png": "image/png" };
   const srv = createServer((req, res) => {
     const u = new URL(req.url, "http://x");
+    // data/site-notice.json is Sig's outage switch (components/loader.js siteNotice): its bar, fixed over the bottom of
+    // the screen, comes and goes with the live file. These tests are about the page under it, so they see no notice
+    // (no file is the documented off state) and pass or fail the same whichever way the switch is set.
+    if (u.pathname === "/data/site-notice.json") { res.writeHead(404); res.end(); return; }
     const p = normalize(join(ROOT, decodeURIComponent(u.pathname)));
     if (!p.startsWith(ROOT) || !existsSync(p)) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[extname(p)] || "application/octet-stream" });
