@@ -240,3 +240,16 @@ test('the workflow: dispatch only, engine after checkout, upload behind its secr
     assert.doesNotMatch(run, /\$\{\{\s*inputs\./, 'an input inline in a run script');
   }
 });
+
+test('upload: the request carries the title, description and label; no secrets means a clean skip', () => {
+  const { out } = build(FIX);
+  const UP = path.join(root, 'scripts/ag60/upload.py');
+  const body = JSON.parse(execFileSync('python3', [UP, '--out', out, '--dry-run'], { encoding: 'utf8' }));
+  assert.equal(body.status.privacyStatus, 'private');
+  assert.equal(body.status.selfDeclaredMadeForKids, false);
+  assert.equal(body.status.containsSyntheticMedia, true);
+  assert.match(body.snippet.title, /^Ag in 60, Oct 20: /);
+  const env = { ...process.env }; delete env.YT_CLIENT_ID; delete env.YT_CLIENT_SECRET; delete env.YT_REFRESH_TOKEN;
+  const said = execFileSync('python3', [UP, '--out', out], { encoding: 'utf8', env });
+  assert.match(said, /upload: skipped, no YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN/);
+});
