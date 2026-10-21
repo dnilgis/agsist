@@ -56,7 +56,8 @@ class Fetcher:
     """Polite GET. `opener` (tests) is a function url -> (status, bytes, headers)."""
 
     def __init__(self, min_gap=1.0, retries=4, timeout=120, headers=None, opener=None, sleep=time.sleep,
-                 backoff=(10, 30, 90, 240)):
+                 backoff=(10, 30, 90, 240), ok=(200, 404)):
+        self.ok = tuple(ok)
         self.min_gap, self.retries, self.timeout = min_gap, retries, timeout
         self.headers = dict({"User-Agent": UA, "Accept": "*/*"}, **(headers or {}))
         self.opener, self.sleep, self.backoff = opener, sleep, backoff
@@ -79,7 +80,7 @@ class Fetcher:
             return e.code, body, dict(e.headers or {})
 
     def get(self, url):
-        """-> (status, body). 200 and 404 come back; anything else is retried,
+        """-> (status, body). 200 and 404 (or the `ok` list) come back; anything else is retried,
         then FetchError. The gap between calls is at least min_gap seconds."""
         last = None
         for attempt in range(self.retries + 1):
@@ -93,7 +94,7 @@ class Fetcher:
                 status, body, headers = self._open(url)
             except Exception as e:  # noqa: BLE001  network: retried
                 status, body, headers, last = None, b"", {}, f"{type(e).__name__}: {e}"
-            if status in (200, 404):
+            if status in self.ok:
                 return status, body
             if status is not None:
                 last = f"HTTP {status}"
