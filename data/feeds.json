@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 100,
- "with_known_cadence": 100,
+ "count": 101,
+ "with_known_cadence": 101,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -2552,6 +2552,29 @@
    "path": "data/transport/journey.json",
    "pages": [
     "basis.html"
+   ],
+   "written_by": [
+    "transport"
+   ],
+   "touched_by": [
+    "transport"
+   ],
+   "cadence": "1 launch Fridays at about 6am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "43 11 * * 5"
+   ],
+   "max_gap_hours": 168.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/transport/moves/index.json",
+   "pages": [
+    "grain-transport.html"
    ],
    "written_by": [
     "transport"
