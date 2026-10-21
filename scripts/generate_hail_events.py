@@ -546,6 +546,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         + ("<meta name=\"robots\" content=\"noindex,follow\">\n" if thin else "") +
         "<link rel=\"canonical\" href=\"" + canonical + "\">\n"
         "<meta property=\"og:title\" content=\"Hail on " + esc(nd) + ": where it hit | AGSIST\">\n"
+        "<meta property=\"og:description\" content=\"" + esc(meta_description(nd, fig, mesh_max, has_swath)) + "\">\n"
         "<meta property=\"og:url\" content=\"" + canonical + "\">\n"
         "<meta property=\"og:type\" content=\"article\">\n"
         "<meta property=\"og:image\" content=\"https://agsist.com/img/og/hail-map.jpg\">\n"
@@ -687,6 +688,10 @@ def hub_html(dates_meta, today):
         "<title>US Hail Storm Log: Every Significant Hail Day, Mapped | AGSIST</title>\n"
         "<meta name=\"description\" content=\"A running log of every significant US hail day: report counts, largest stones, and radar swath maps, one page per storm.\">\n"
         "<link rel=\"canonical\" href=\"https://agsist.com/hail/\">\n"
+        "<meta property=\"og:title\" content=\"US Hail Storm Log: every significant hail day, mapped | AGSIST\">\n"
+        "<meta property=\"og:description\" content=\"A running log of every significant US hail day: report counts, largest stones, and radar swath maps, one page per storm.\">\n"
+        "<meta property=\"og:url\" content=\"https://agsist.com/hail/\">\n"
+        "<meta property=\"og:type\" content=\"website\">\n"
         "<meta property=\"og:image\" content=\"https://agsist.com/img/og/hail-map.jpg\">\n"
         "<meta property=\"og:image:width\" content=\"1200\">\n<meta property=\"og:image:height\" content=\"630\">\n"
         "<meta property=\"og:image:alt\" content=\"AGSIST hail map: radar-detected hail swaths and ground reports\">\n"
