@@ -388,7 +388,8 @@
     "lrp",
     "Morning report",
     "The wire",
-    "Build Price Stats (5-year percentile)"
+    "Build Price Stats (5-year percentile)",
+    "Fetch Prices"
    ],
    "cadence": "5 launches on a fixed schedule at about 10am, 8pm, 10pm Central",
    "curated": false,
@@ -609,6 +610,7 @@
     "Morning report",
     "The wire",
     "Build Price Stats (5-year percentile)",
+    "Fetch Prices",
     "Rebuild Feed Manifest",
     "Share images",
     "Build State Stats (USDA NASS)",
@@ -735,6 +737,7 @@
     "Harvest price tracker",
     "lrp",
     "Build Price Stats (5-year percentile)",
+    "Fetch Prices",
     "Rebuild Feed Manifest",
     "Share images",
     "Build State Stats (USDA NASS)",
@@ -827,6 +830,7 @@
     "Harvest price tracker",
     "lrp",
     "Build Price Stats (5-year percentile)",
+    "Fetch Prices",
     "Share images",
     "Build State Stats (USDA NASS)",
     "yield-panel"
@@ -881,7 +885,8 @@
     "Coverage map \u2014 the elevator directory, drawn",
     "Fetch Crop Progress",
     "Dairy prices",
-    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Fetch Prices"
    ],
    "cadence": "1 launch every day at about 7am Central",
    "curated": false,
@@ -1054,6 +1059,7 @@
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Hail data refresh",
     "MESH radar hail swaths \u2014 daily",
+    "Fetch Prices",
     "Tools hub dates"
    ],
    "cadence": "2 launches every day at about 1am, 3am Central",
@@ -1689,7 +1695,8 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "The wire"
+    "The wire",
+    "Fetch Prices"
    ],
    "cadence": "2 launches on a fixed schedule at about 5pm Central",
    "curated": false,
@@ -1820,7 +1827,8 @@
     "Generate Daily Briefing",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Prediction bot \u2014 call and grade"
+    "Prediction bot \u2014 call and grade",
+    "Fetch Prices"
    ],
    "cadence": "4 launches weekdays at about 2pm, 3pm, 5pm, 6pm Central",
    "curated": false,
@@ -2379,6 +2387,7 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Fetch Prices",
     "storage"
    ],
    "cadence": "3 launches every day at about 2am Central",
@@ -2408,6 +2417,7 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Fetch Prices",
     "storage"
    ],
    "cadence": "3 launches every day at about 2am Central",
@@ -2533,6 +2543,7 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Fetch Prices",
     "transport"
    ],
    "cadence": "1 launch Fridays at about 6am Central",
@@ -2644,6 +2655,7 @@
     "bake crop tour",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Fetch Prices",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In",
     "yield-panel"
@@ -2701,6 +2713,7 @@
     "Generate Daily Briefing",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Fetch Prices",
     "Rebuild Call Scorecard",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
