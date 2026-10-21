@@ -11,9 +11,8 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=26" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=26">
-  <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16"  href="/img/favicon-16.png">
+  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon"                     href="/img/apple-touch-icon.png">
   <link rel="manifest"                             href="/manifest.json">
   <meta name="author" content="Sigurd Lindquist">
@@ -318,8 +317,8 @@
         <div class="leg-item"><div class="leg-dot" style="background:#fb923c"></div>Livestock &amp; Dairy</div>
       </div>
 
-      <!-- 2026-10-11: the report-day email (scripts/send_report_day.py) goes to AGSIST Daily readers with reports on, the afternoon a WASDE, Crop Production or Grain Stocks report lands. components/signup-ask.js draws this. -->
-      <div data-signup-ask="Email me the afternoon of each WASDE and Grain Stocks report: what the trade expected and how USDA graded." data-source="page:usda-calendar" data-note="Comes with AGSIST Daily, the free morning markets email."></div>
+      <!-- 2026-10-21 (Sig): the WASDE summary on its own list (subs worker v5.44, notice topic reports); scripts/send_report_day.py mails it beside the Daily readers with report days on. It replaces this page's Daily ask: one ask a page. -->
+      <div data-signup-ask="Email me the WASDE summary when it drops" data-topic="reports" data-source="report:wasde:usda-calendar" data-btn="Email me" data-ok="Done. The next one comes the afternoon of the next WASDE or Grain Stocks report." data-note="What USDA printed against what the trade expected, the afternoon each WASDE and Grain Stocks report comes out. Free, its own list."></div>
       <div id="cal-container"></div>
       <p class="cal-related">ARC/PLC signup at FSA: the 2027 signup opens Nov 2, 2026; the 2026 signup closes Dec 11, 2026; the 2027 signup closes Mar 15, 2027. <a href="/arc-plc">Compare ARC and PLC for your county</a> &middot; <a href="https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net" rel="noopener">FSA notice, Sept 15, 2026</a></p>
       <div class="cal-related">Plan around the data: <a href="/daily">Daily Briefing</a> &middot; <a href="/markets">Live Markets</a> &middot; <a href="/fast-facts">Fast Facts</a> &middot; <a href="/cash-bids">Cash Bids</a></div>

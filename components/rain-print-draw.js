@@ -11,10 +11,12 @@
  * input the page just drew; this file splits that one SVG into its own layers
  * (data-rp groups) and reveals them in date order:
  *   from the start   the paper, the axis, the scale
- *   day by day       the line or bars, the usual-year band, crop, ribbon:
+ *   day by day       the line or bars, the usual-year band, crop, the
+ *                    temperature stripes (each stripe is its own day):
  *                    a wipe to the right edge of the last day drawn
- *   on its date      each marked day, remarkable day, frost and the biggest
- *                    rain, the day it happened (never before)
+ *   on its date      each marked day, remarkable day, frost, the hottest and
+ *                    coldest day and the biggest rain, the day it happened
+ *                    (never before)
  *   month by month   month totals and normals, once that month is over
  *   at the end       the totals, the verdict, the name, the foot, the QR
  * so the last frame IS the print (test/rain-print-draw.test.mjs compares the
@@ -68,7 +70,7 @@
   };
   // seconds: lead-in, base drawing time, the finish, the last hold; each kind of day's pause
   var T = { intro: 1.1, draw: 10.6, outro: 1.5, hold: 2.6, min: 12, max: 20 };
-  var HOLD = { wet: 0.8, mark: 0.55, rec: 0.3, frost: 0.25, dry: 0.25, hail: 0.4, wind: 0.4 };
+  var HOLD = { wet: 0.8, mark: 0.55, rec: 0.3, frost: 0.25, temp: 0.3, dry: 0.25, hail: 0.4, wind: 0.4 };
   var HOLDS_MAX = 4.2;            // all the pauses together
   var EASE_K = 0.3;               // a gentle start and finish to the day rate (0 = even)
 
@@ -173,6 +175,12 @@
       if (has('rec:' + k)) out.push({ i: r.b === undefined ? r.i : Math.max(r.i, r.b), kind: 'rec', key: 'rec:' + k, text: String(r.text || r.label).replace(/[\u0001\u0002]/g, ' ').replace(/\s+/g, ' ').trim() });
     });
     ((I.temp && I.temp.frost) || []).forEach(function (f, k) { if (f.doy >= 0 && has('frost:' + k)) out.push({ i: f.doy, kind: 'frost', key: 'frost:' + k, text: '' }); });
+    // the hottest and coldest days named on the temperature stripes, the day they happened
+    var rib = I.temp && I.temp.ribbon;
+    if (rib) [['hot', fr ? 'Jour le plus chaud' : 'Hottest day'], ['cold', fr ? 'Jour le plus froid' : 'Coldest day']].forEach(function (p, k) {
+      var d = rib[p[0]];
+      if (d && d.doy >= 0 && has('temp:' + k)) out.push({ i: d.doy, kind: 'temp', key: 'temp:' + k, text: p[1] + ': ' + Math.round(d.v) + '°F, ' + d.date });
+    });
     if (E.dry && keys.indexOf('dry') >= 0) out.push({ i: E.dry.e, kind: 'dry', key: 'dry', text: '' });
     (opts.hail || []).forEach(function (h) { out.push({ i: h.i, kind: 'hail', key: '', text: hailWords(h, fr), anim: true, data: h }); });
     if (opts.wind && opts.wind.top) out.push({ i: opts.wind.top.i, kind: 'wind', key: '', text: windWords(opts.wind.top, fr), anim: true, data: opts.wind.top });
@@ -390,11 +398,11 @@
      never show before its time. */
   function layerOf(key) {
     if (!key) return 'base';
-    if (key === 'axis') return 'base';
+    if (key === 'axis' || key === 'tkey') return 'base';
     if (key === 'data' || key === 'hist' || key === 'crop' || key === 'ribbon') return 'wipe';
     if (key === 'usual') return 'usual';
     if (key === 'months') return 'months';
-    if (key === 'wet' || key === 'dry' || /^(mark|rec|frost):\d+$/.test(key)) return 'pop';
+    if (key === 'wet' || key === 'dry' || /^(mark|rec|frost|temp):\d+$/.test(key)) return 'pop';
     return 'end';
   }
 

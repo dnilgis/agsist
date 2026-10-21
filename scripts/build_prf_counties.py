@@ -309,7 +309,8 @@ def page(ctx):
   <meta name="theme-color" content="#0a0c0d">
   <link rel="stylesheet" href="/components/styles.css?v=26">
   <link rel="stylesheet" href="/components/prf.css?v=9">
-  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <title>{e(title)}</title>
   <meta name="description" content="{e(desc)}">

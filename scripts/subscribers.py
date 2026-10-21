@@ -87,3 +87,27 @@ def fetch(base, token):
         return parse_json(arr), "json"
     print("list: the worker answered without JSON (older than v5.4); using the plain list")
     return parse_plain(body), "plain"
+
+
+def fetch_topic(base, token, topic):
+    """The readers on one standing notice list (worker v5.44: topic reports,
+    the report-day email alone, or cot, Funds this week), as rows
+    {"email": <lowercased>, "lid": <link id or None>}, each address once, in
+    the order the worker gave them. lid is the worker's link id (v5.46): the
+    sender builds its stop link with it (scripts/email_links.py) and skips a
+    row without one. Raises when the worker cannot be read, so the caller
+    decides what that means."""
+    import email_links    # the one lid reader
+    u = (base.rstrip("/") + "/notice-list?token=" + urllib.parse.quote(token)
+         + "&topic=" + urllib.parse.quote(topic))
+    arr = json.loads(_get(u))
+    if not isinstance(arr, list):
+        raise ValueError("notice-list did not answer with a list")
+    out, seen = [], set()
+    for r in arr:
+        e = str((r or {}).get("email") or "").strip().lower() if isinstance(r, dict) else ""
+        if (r or {}).get("topic") != topic or "@" not in e or e in seen:
+            continue
+        seen.add(e)
+        out.append({"email": e, "lid": email_links.lid_of(r)})
+    return out

@@ -10,6 +10,11 @@
  * Not given an ask: grain-emc and fertilizer (gdu-calculator got one Oct 20, Sig) (the Daily does
  * not cover GDUs, grain drying or fertilizer prices, and no notice topic with a
  * sender fits), and lrp (the page says it asks for no contact details).
+ * Oct 21 (Sig): one ask a page still, but cot and cattle-futures-prices now
+ * ask for Funds this week (notice topic cot) and usda-quick-stats and
+ * crop-tour for the WASDE summary (notice topic reports), each its own list
+ * (subs worker v5.44); the Daily-ask checks that ran on cattle futures run on
+ * /markets, which keeps its Daily ask.
  * The browser parts need Playwright and Chromium and skip where they are missing.
  *
  *   node --test test/signup-asks-oct19.test.mjs
@@ -29,12 +34,14 @@ const asksIn = (h) => h.match(/<div data-signup-ask[^>]*><\/div>/g) || [];
 const REPORT_NOTE = 'data-note="Comes with AGSIST Daily, the free morning markets email."';
 
 const ONE_ASK = {
-  "cattle-futures-prices.html": "page:cattle-futures-prices",
-  "cot.html": "page:cot",
+  "cattle-futures-prices.html": "cot-weekly:cattle-futures-prices",
+  "cot.html": "cot-weekly:cot",
   "tariffs.html": "page:tariffs",
-  "usda-quick-stats.html": "page:usda-quick-stats",
-  "crop-tour.html": "page:crop-tour",
+  "usda-quick-stats.html": "report:wasde:usda-quick-stats",
+  "crop-tour.html": "report:wasde:crop-tour",
 };
+// the topic each page's one ask names ("" = the Daily)
+const TOPIC_OF = { "cattle-futures-prices.html": "cot", "cot.html": "cot", "tariffs.html": "", "usda-quick-stats.html": "reports", "crop-tour.html": "reports" };
 
 test("each page has one ask, the standard one, and no hand-made signup form", () => {
   for (const [p, src] of Object.entries(ONE_ASK)) {
@@ -50,23 +57,27 @@ test("each page has one ask, the standard one, and no hand-made signup form", ()
   }
 });
 
-test("cattle futures keeps its own reason line", () => {
+test("cattle futures asks for Funds this week (Oct 21), its own list", () => {
   const [a] = asksIn(read("cattle-futures-prices.html"));
-  assert.equal(a, '<div data-signup-ask="Email me the morning market read with the numbers and the USDA calendar." data-source="page:cattle-futures-prices" data-note="Free. No affiliate links. I read every reply."></div>');
+  assert.equal(a, '<div data-signup-ask="Email me Funds this week, after each COT report" data-topic="cot" data-source="cot-weekly:cattle-futures-prices" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Where the big funds sit in corn, soybeans, wheat, cattle and hogs against their 1-year range, one short email after CFTC posts its weekly report. Free, its own list."></div>');
+  const [c] = asksIn(read("cot.html"));
+  assert.equal(c, a.replace("cot-weekly:cattle-futures-prices", "cot-weekly:cot"), "the /cot ask word for word");
   assert.ok(!read("cattle-futures-prices.html").includes(".catch(function(){});\n  });"), "the swallowed-error handler is gone");
 });
 
-test("usda-quick-stats and crop-tour ask for the report-day email, which send_report_day.py sends", () => {
+test("usda-quick-stats and crop-tour ask for the WASDE summary, which send_report_day.py sends (Oct 21: its own list)", () => {
   const [q] = asksIn(read("usda-quick-stats.html"));
   const [cal] = asksIn(read("usda-calendar.html"));
-  assert.equal(q, cal.replace('data-source="page:usda-calendar"', 'data-source="page:usda-quick-stats"'), "the usda-calendar ask word for word");
+  assert.equal(q, cal.replace('data-source="report:wasde:usda-calendar"', 'data-source="report:wasde:usda-quick-stats"'), "the usda-calendar ask word for word");
   const [c] = asksIn(read("crop-tour.html"));
-  assert.ok(c.includes('data-signup-ask="Email me the afternoon of each WASDE: the corn and soybean yields USDA printed against what the trade expected."'));
+  assert.equal(c, cal.replace('data-source="report:wasde:usda-calendar"', 'data-source="report:wasde:crop-tour"'), "and crop-tour's");
+  assert.ok(cal.startsWith('<div data-signup-ask="Email me the WASDE summary when it drops" data-topic="reports" '));
   for (const a of [q, c]) {
-    assert.ok(a.includes(REPORT_NOTE), "says it is the Daily");
-    assert.ok(!a.includes('data-reports="0"') && !a.includes("data-topic"), "a Daily signup with report-day mail on");
+    assert.ok(!a.includes(REPORT_NOTE), "no longer the Daily");
+    assert.ok(a.includes('data-topic="reports"') && !a.includes("data-daily"), "the report-day list alone; the Daily only if the reader ticks it");
   }
   const s = read("scripts/send_report_day.py");
+  assert.ok(s.includes('subscribers.fetch_topic(base, token, "reports")'), "the sender reads that list");
   assert.match(s, /TYPES = \("WASDE", "Crop Production", "Grain Stocks"\)/);
   assert.ok(s.includes("its corn and soybean yields arrive as\n    the WASDE rows"), "the WASDE email carries the yields");
   const h = read("crop-tour.html");
@@ -139,20 +150,20 @@ const noEmailIn = async (pg) => {
   assert.ok(!dl.includes(EMAIL) && !dl.includes("@example"), "no address in dataLayer");
 };
 
-test("cattle futures: a failed signup says so, a good one posts source and ZIP", { skip, timeout: 90000 }, async () => {
+test("a Daily page ask (/markets): a failed signup says so, a good one posts source and ZIP", { skip, timeout: 90000 }, async () => {
   const srv = await serve(), port = srv.address().port, posts = [];
   let fail = true;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const pg = await open(browser, port, "/cattle-futures-prices.html", posts, () => (fail ? { status: 500, body: { ok: false } } : { status: 200, body: { ok: true } }));
-    const ask = pg.locator('main [data-signup-ask][data-source="page:cattle-futures-prices"]');
+    const pg = await open(browser, port, "/markets.html", posts, () => (fail ? { status: 500, body: { ok: false } } : { status: 200, body: { ok: true } }));
+    const ask = pg.locator('main [data-signup-ask][data-source="page:markets"]');
     await ask.locator(".sa-in").waitFor();
     assert.equal(await pg.locator("main .sa-ask").count(), 1, "one ask drawn in the page");
     assert.equal(await ask.locator(".sa-z").isVisible(), true, "ZIP box shown on a page ask");
     await ask.locator(".sa-in").fill(EMAIL);
     await ask.locator(".sa-zin").fill("68801");
     await ask.locator(".sa-b").click();
-    await pg.waitForFunction(() => /Nothing was saved/.test((document.querySelector('[data-source="page:cattle-futures-prices"] .sa-m') || {}).textContent || ""));
+    await pg.waitForFunction(() => /Nothing was saved/.test((document.querySelector('[data-source="page:markets"] .sa-m') || {}).textContent || ""));
     assert.equal(await ask.locator(".sa-ok").count(), 0, "no success shown on a 500");
     assert.equal(await pg.evaluate(() => document.cookie.includes("agsist_subscribed=")), false, "not marked signed up");
     fail = false;
@@ -160,7 +171,35 @@ test("cattle futures: a failed signup says so, a good one posts source and ZIP",
     await ask.locator(".sa-ok").waitFor();
     const subs = posts.filter((x) => x.path === "/subscribe");
     assert.equal(subs.length, 2);
-    assert.deepEqual(subs[1].body, { email: EMAIL, source: "page:cattle-futures-prices", reports: true, zip: "68801" });
+    assert.deepEqual(subs[1].body, { email: EMAIL, source: "page:markets", reports: true, zip: "68801" });
+    await noEmailIn(pg);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("cattle futures (Oct 21): a failed Funds this week signup says so; a good one posts its own list, not the Daily", { skip, timeout: 90000 }, async () => {
+  const srv = await serve(), port = srv.address().port, posts = [];
+  let fail = true;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const pg = await open(browser, port, "/cattle-futures-prices.html", posts, () => (fail ? { status: 500, body: { ok: false } } : { status: 200, body: { ok: true, topic: "cot", daily: false } }));
+    const ask = pg.locator('main [data-signup-ask][data-source="cot-weekly:cattle-futures-prices"]');
+    await ask.locator(".sa-in").waitFor();
+    assert.equal(await pg.locator("main .sa-ask").count(), 1, "one ask drawn in the page");
+    assert.equal(await ask.locator(".sa-d input").isChecked(), false, "the morning briefing box starts empty");
+    assert.equal(await ask.locator(".sa-z").isVisible(), false, "no ZIP box until the Daily is ticked");
+    await ask.locator(".sa-in").fill(EMAIL);
+    await ask.locator(".sa-b").click();
+    await pg.waitForFunction(() => /Nothing was saved/.test((document.querySelector('[data-source="cot-weekly:cattle-futures-prices"] .sa-m') || {}).textContent || ""));
+    assert.equal(await ask.locator(".sa-ok").count(), 0, "no success shown on a 500");
+    fail = false;
+    await ask.locator(".sa-b").click();
+    await ask.locator(".sa-ok").waitFor();
+    assert.match(await ask.locator(".sa-ok").textContent(), /Funds this week comes after the next COT report/);
+    const n = posts.filter((x) => x.path === "/notice");
+    assert.equal(n.length, 2);
+    assert.deepEqual(n[1].body, { email: EMAIL, source: "cot-weekly:cattle-futures-prices", topic: "cot", daily: false });
+    assert.equal(posts.filter((x) => x.path === "/subscribe").length, 0, "nobody put on the Daily");
+    assert.equal(await pg.evaluate(() => document.cookie.includes("agsist_subscribed=")), false, "not marked a Daily reader");
     await noEmailIn(pg);
   } finally { await browser.close(); srv.close(); }
 });
@@ -179,10 +218,17 @@ test("cot, tariffs, usda-quick-stats, crop-tour: one ask drawn, and it posts its
       await ask.locator(".sa-in").fill(EMAIL);
       await ask.locator(".sa-b").click();
       await ask.locator(".sa-ok").waitFor();
-      const subs = posts.filter((x) => x.path === "/subscribe");
-      assert.equal(subs.length, 1, p);
-      assert.equal(subs[0].body.source, src, p);
-      assert.equal(subs[0].body.reports, true, p);
+      if (TOPIC_OF[p]) {
+        const n = posts.filter((x) => x.path === "/notice");
+        assert.equal(n.length, 1, p);
+        assert.deepEqual(n[0].body, { email: EMAIL, source: src, topic: TOPIC_OF[p], daily: false }, p);
+        assert.equal(posts.filter((x) => x.path === "/subscribe").length, 0, p + ": its own list, not the Daily");
+      } else {
+        const subs = posts.filter((x) => x.path === "/subscribe");
+        assert.equal(subs.length, 1, p);
+        assert.equal(subs[0].body.source, src, p);
+        assert.equal(subs[0].body.reports, true, p);
+      }
       await noEmailIn(pg);
       await pg.context().close();
     }

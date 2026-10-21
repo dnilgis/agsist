@@ -200,8 +200,8 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
   <link rel="preload" href="/components/styles.css?v=26" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=26">
   <link rel="stylesheet" href="/components/prf.css?v=9">
-  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
   <title>{e(title)}</title>
@@ -366,8 +366,8 @@ def guide(meta, facts, states, BOOT):
   <link rel="preload" href="/components/styles.css?v=26" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=26">
   <link rel="stylesheet" href="/components/prf.css?v=9">
-  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
   <title>{e(title)}</title>

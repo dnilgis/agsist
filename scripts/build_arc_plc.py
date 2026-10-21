@@ -1690,9 +1690,8 @@ def head(title, desc, path, jsonld, indexable=True, fonts="", og_title=None, og_
   <link rel="stylesheet" href="/components/asof.css?v={ASOF_V}">
   <link rel="stylesheet" href="/components/arc-plc.css?v={CALC_V}">
   <link rel="stylesheet" href="/components/arc-plc-simple.css?v={CALC_V}">
-  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
   <title>{esc(title)}</title>
@@ -3074,7 +3073,8 @@ def sheet_shell(D):
 <meta name="robots" content="noindex,follow">
 <link rel="canonical" href="{SITE}/arc-plc">
 <title>ARC or PLC counter sheet | AGSIST</title>
-<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="stylesheet" href="/components/styles.css?v={STYLES_V}">
 <link rel="stylesheet" href="/components/states.css?v=2">
 <link rel="stylesheet" href="/components/arc-plc-simple.css?v={CALC_V}">
@@ -3607,7 +3607,8 @@ def embed_page(D):
 <meta name="robots" content="noindex"><!-- embed target; canonical tool is /arc-plc -->
 <link rel="canonical" href="{SITE}/arc-plc">
 <title>ARC or PLC | AGSIST</title>
-<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="stylesheet" href="/components/styles.css?v={STYLES_V}">
 <link rel="stylesheet" href="/components/asof.css?v={ASOF_V}">
 <link rel="stylesheet" href="/components/arc-plc.css?v={CALC_V}">

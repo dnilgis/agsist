@@ -163,7 +163,8 @@ test("frost dates and the hottest and coldest day, by hand; withheld when a gap 
   const t = RP.tempInput(s, td, found, { same: false, name: "Ames Municipal Airport", words: "3.1 mi away" }, false);
   assert.deepEqual(plain(t.frost), [{ key: "last", doy: 99, date: "2025-04-10" }, { key: "first", doy: 275, date: "2025-10-03" }]);
   assert.deepEqual(plain(t.foot), ["Temperatures: Ames Municipal Airport, 3.1 mi away; frost is a low of 32°F or colder", "Hottest day: 99°F Jul 20", "Coldest: -8°F Jan 15"]);
-  assert.deepEqual(plain(t.ribbon.scale), { lo: -10, hi: 100, days: 365 });
+  // no normals asked for yet (undefined): no stripes, and nothing said yet; the hottest and coldest go in the foot line as before
+  assert.equal(t.ribbon, null);
   // a missing low after the last frost could hide a later one: no last frost claimed
   const gap = temps(2025, (i) => (i === 120 ? null : f(i)));
   const g2 = REC.find({ year: 2025, daily: { data: gap }, dailyElems: ELEMS }, { kinds: RP.TEMP_KINDS });
@@ -177,6 +178,79 @@ test("frost dates and the hottest and coldest day, by hand; withheld when a gap 
   assert.equal(RP.tempStationOk(thin), false);
   assert.equal(RP.tempStationOk(td), true);
   assert.equal(X.ribbonScale(X.tempDays(temps(2025, (i) => (i < 200 ? null : [70, 50])), 2025)), null, "the ribbon needs half the year read");
+});
+
+// ---------- the temperature stripes (option C, Sig 2026-10-21) ----------
+test("stripes: each day's average against the station's normal for that date, by hand; missing days blank, never filled", () => {
+  // highs and lows: 80/60 every day (average 70), except day 10 (90/70, average 80), day 20 (no low) and day 30 (40/20, average 30)
+  const f = (i) => (i === 10 ? [90, 70] : i === 20 ? [75, null] : i === 30 ? [40, 20] : [80, 60]);
+  const rows = temps(2025, (i) => f(i)).map((r, i) => (i === 20 ? [r[0], r[1], r[2], r[3], r[4], "M"] : r));
+  const td = X.tempDays(rows, 2025);
+  // normals: 74/56 (average 65) every day, none on day 40 (NOAA left the date out), 74.6/55.9 on day 50
+  const nrows = Array.from({ length: 365 }, (_, i) => [X.isoOf(2025, i), i === 50 ? "74.6" : "74", i === 50 ? "55.9" : "56"]).filter((r, i) => i !== 40);
+  const tdN = X.normalTemps(nrows, 2025);
+  const sp = X.stripes(td, tdN);
+  assert.equal(sp.dev.length, 365);
+  assert.equal(sp.dev[0], 5, "70 against 65");
+  assert.equal(sp.dev[10], 15, "80 against 65");
+  assert.equal(sp.dev[30], -35, "30 against 65");
+  assert.equal(sp.dev[50], 4.8, "70 against 65.25, to a tenth");
+  assert.equal(sp.dev[20], null, "no low: blank");
+  assert.equal(sp.dev[40], null, "no normal for the date: blank");
+  assert.equal(sp.days, 363); assert.equal(sp.blank, 2);
+  assert.equal(X.stripes(td, null), null, "no normals, no stripes");
+  assert.equal(X.stripes(X.tempDays(temps(2025, (i) => (i < 200 ? null : [70, 50])), 2025), tdN), null, "fewer than half the days: none");
+  // the steps: symmetric, 3, 9 and 15 F each way
+  const st = ART.stripeStep;
+  assert.deepEqual(plain([-20, -15, -14.9, -9, -8.9, -3, -2.9, 0, 2.9, 3, 8.9, 9, 14.9, 15, 20].map(st)), [-3, -3, -2, -2, -1, -1, 0, 0, 0, 1, 1, 2, 2, 3, 3]);
+  for (let v = 0; v <= 30; v += 0.5) assert.equal(st(-v), -st(v) || 0, "symmetric at " + v);
+  assert.equal(ART.STRIPE_INK.length, 7);
+  assert.deepEqual(plain(ART.STRIPE_STEPS), [3, 9, 15]);
+});
+
+test("stripes: the hottest and coldest days are named from the records finder (ties, withholding), and the fallbacks say so", () => {
+  // highs 70 with 99 F on Jul 20 (day 200) and again Aug 2 (day 213); lows 50 with -8 F on Jan 15 (day 14)
+  const f = (i) => [i === 200 || i === 213 ? 99 : 70, i === 14 ? -8 : 50];
+  const rows = temps(2025, f), td = X.tempDays(rows, 2025);
+  const tdN = X.normalTemps(Array.from({ length: 365 }, (_, i) => [X.isoOf(2025, i), "72", "48"]), 2025);
+  const found = REC.find({ year: 2025, daily: { data: rows }, dailyElems: ELEMS }, { kinds: RP.TEMP_KINDS });
+  const s = RP.normalize({ place: "X", year: 2025, ribbon: true });
+  const t = RP.tempInput(s, td, found, { same: true }, false, tdN);
+  assert.equal(t.ribbon.dev[0], 0);
+  assert.deepEqual(plain(t.ribbon.hot), { doy: 200, v: 99, date: "Jul 20", also: "also Aug 2" });
+  assert.deepEqual(plain(t.ribbon.cold), { doy: 14, v: -8, date: "Jan 15", also: "" });
+  assert.deepEqual(plain(t.foot), ["Temperatures from the same station"], "named on the strip, not twice in the foot line");
+  // with the hottest and coldest day also on, still named once (on the strip)
+  const both = RP.tempInput(RP.normalize({ place: "X", year: 2025, ribbon: true, heat: true }), td, found, { same: true }, false, tdN);
+  assert.ok(!both.foot.some((x) => /Hottest/.test(x)) && both.ribbon.hot.v === 99);
+  // the art names them, with dates and values, and draws the key and the foot line
+  const I = { style: "r1", year: 2025, place: "X", name: "", days: DAYS, D: RP.derive(DAYS), axisLen: 365, markers: [], records: [], temp: t, qr: { matrix: RP.standardMatrix(), serial: "" } };
+  for (const style of ["r1", "r2"]) {
+    const svg = ART.render(Object.assign({}, I, { style })), tx = texts(svg);
+    assert.ok(tx.includes("Hottest day: 99°F Jul 20 (also Aug 2)"), style + ": hottest named: " + tx.filter((x) => /Hott/.test(x)));
+    assert.ok(tx.includes("Coldest day: −8°F Jan 15"), style + ": coldest named");
+    assert.match(svg, /<g data-rp="temp:0">/); assert.match(svg, /<g data-rp="temp:1">/);
+    const key = /<g data-rp="tkey">([\s\S]*?)<\/g>/.exec(svg);
+    assert.ok(key, style + ": the key");
+    assert.equal((key[1].match(/<rect /g) || []).length, 7, style + ": seven swatches");
+    for (const c of ART.STRIPE_INK) assert.ok(key[1].includes(c), style + ": swatch " + c);
+    assert.ok(texts(key[0]).includes("colder") && texts(key[0]).includes("warmer"), style + ": colder and warmer said");
+    assert.ok(tx.some((x) => /^Stripes: each day’s average temperature \(its high and low, averaged\) against this station’s 1991 to 2020 normal for that date; blue colder, rust warmer, in steps of 3, 9 and 15°F; a blank is a day with no reading/.test(x)), style + ": the foot line says what a stripe is (the average, against the normal)");
+  }
+  // a gap in the highs the finder can't rule out: the hottest is withheld, never guessed
+  const gap = temps(2025, (i) => (i % 20 === 5 ? [null, 50] : f(i)));
+  const g2 = REC.find({ year: 2025, daily: { data: gap }, dailyElems: ELEMS }, { kinds: RP.TEMP_KINDS });
+  const t2 = RP.tempInput(s, X.tempDays(gap, 2025), g2, { same: true }, false, tdN);
+  assert.equal(t2.ribbon.hot, null, "too many missing highs: no hottest day named");
+  assert.equal(t2.ribbon.dev[5], null, "that day blank");
+  // no normals for the station: no stripes, and the foot line says so and names the days instead
+  const t3 = RP.tempInput(s, td, found, { same: true }, false, null);
+  assert.equal(t3.ribbon, null);
+  assert.deepEqual(plain(t3.foot), ["Temperatures from the same station", "Temperature stripes left off: NOAA has no daily normal temperatures for this station", "Hottest day: 99°F Jul 20 (also Aug 2)", "Coldest: -8°F Jan 15"]);
+  const t4 = RP.tempInput(s, td, found, { same: true }, false, false);
+  assert.match(t4.foot[1], /didn’t load just now/);
+  const svg3 = ART.render(Object.assign({}, I, { temp: t3 }));
+  assert.ok(!/data-rp="ribbon"/.test(svg3) && texts(svg3).some((x) => /Temperature stripes left off: NOAA has no daily normal temperatures/.test(x)), "the print says the stripes are off and why");
 });
 
 test("the remarkable days give up their temperature days to the temperature layer, so nothing prints twice", () => {
@@ -252,7 +326,7 @@ function artInput(style, opts) {
   const full = Array.from({ length: 45 }, (_, k) => ({ year: 1981 + k, total: 18 + (k * 7) % 25, cum: Array.from({ length: 365 }, (_, i) => (18 + (k * 7) % 25) * (i + 1) / 365) }));
   return { style, year: 2025, place: "Ames, Iowa", name: "The Olson Farm", dedication: "For Dad", days: DAYS, D, showDry: RP.showDry(D), axisLen: 365,
     ov: RP.overlayDaily(DAYS, byDate), ovNote: "A usual year: NOAA’s 30-year normal", showNormals: true, markers: RP.markersOn(s.markers, 2025, 365), records: [],
-    gauge: "Weather station: Ames, IA, 2.0 mi from Ames", crop, temp: RP.tempInput(s, td, found, { same: false, name: "Ames Municipal Airport", words: "3.1 mi away" }, !!crop),
+    gauge: "Weather station: Ames, IA, 2.0 mi from Ames", crop, temp: RP.tempInput(s, td, found, { same: false, name: "Ames Municipal Airport", words: "3.1 mi away" }, !!crop, tdN),
     hist: s.hist && style === "r1" ? RP.histInput(full, 2025) : null, qr: { matrix: RP.standardMatrix(), serial: "" } };
 }
 const texts = (svg) => [...svg.matchAll(/<text[^>]*>((?:[^<]|<\/?tspan[^>]*>)*)<\/text>/g)].map((m) => m[1].replace(/<\/?tspan[^>]*>/g, ""));
@@ -291,16 +365,19 @@ test("each option draws in both styles: plants on the soil line, stage words, fr
         assert.equal((svg.match(/<g data-rp="frost:\d">/g) || []).length, 2, id + ": two tiny marks");
         assert.ok(t.some((x) => /frost is a low of 32°F or colder/.test(x)), id + ": the threshold in the foot line");
       }
-      if (o.heat) assert.ok(t.some((x) => /Hottest day: \d+°F/.test(x)) && t.some((x) => /Coldest: -?\d+°F/.test(x)), id + ": hottest and coldest in the foot line");
+      if (o.heat) assert.ok(t.some((x) => /Hottest day: \d+°F/.test(x)) && t.some((x) => /Coldest( day)?: [-−]?\d+°F/.test(x)), id + ": hottest and coldest named (the foot line, or the stripes when they are on)");
       if (o.ribbon) {
-        const rib = /<g data-rp="ribbon">([\s\S]*?)<\/g>T?/.exec(svg);
-        assert.ok(rib, id + ": the ribbon");
-        // the day strokes (the first inner group) span the band; its two scale numbers sit beside it
-        const ys = [...svg.split('<g data-rp="ribbon">')[1].split("</g>")[0].matchAll(/y[12]="([\d.]+)"/g)].map((m) => +m[1]);
-        assert.ok(ys.length > 300, id + ": a stroke for (nearly) every day");
-        assert.ok(Math.max(...ys) - Math.min(...ys) <= 50, id + ": under 50 units tall");
-        assert.ok(t.some((x) => /^.*Band: each day’s high and low, -?\d+°F to \d+°F/.test(x)), id + ": the scale note in the foot line");
-        assert.ok(!/stroke="#(?:FF0000|00FF00|0000FF)"/.test(rib[1]), id + ": no rainbow");
+        const rib = /<g data-rp="ribbon">([\s\S]*?)<\/g>/.exec(svg);
+        assert.ok(rib, id + ": the stripes");
+        // one stripe a day (neighbours of one step share a rect): the rects cover every day the strip has a value for
+        const rects = [...rib[1].matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" fill="(#[0-9A-F]{6})"/g)];
+        const days = I.temp.ribbon.dev.filter((v) => v !== null).length, wDay = (rects.length && (style === "r1" ? (1590 - 196) : (1690 - 205)) / 365);
+        assert.ok(Math.abs(rects.reduce((a, m) => a + +m[3], 0) / wDay - days) < 0.01, id + ": a stripe for every day with a value");
+        assert.ok(rects.every((m) => ART.STRIPE_INK.includes(m[5])), id + ": only the seven inks");
+        assert.ok(rects.every((m) => +m[4] === 20), id + ": 20 units tall");
+        assert.ok(/<g data-rp="tkey">/.test(svg), id + ": the key");
+        assert.ok(t.some((x) => /Stripes: each day’s average temperature/.test(x)), id + ": the foot line says what a stripe is");
+        assert.ok(t.some((x) => /^Hottest day: \d+°F/.test(x)) && t.some((x) => /^Coldest day: −?\d+°F/.test(x)), id + ": hottest and coldest named on the strip");
       }
       if (o.hist) {
         if (style === "r1") {
@@ -417,7 +494,7 @@ test("the page: options from a link draw, the panel follows, and the URL, code, 
       assert.ok(dts.includes("Crop") && dts.includes("Temperatures"), dts.join(", "));
       const sum = await page.textContent("#rp-proof-sum");
       assert.match(sum, /Corn, planted May 8, harvested Oct 24, with plant drawings, against a usual year/);
-      assert.match(sum, /frost marks, hottest and coldest day, daily temperature band; from the same station/);
+      assert.match(sum, /frost marks, hottest and coldest day, daily temperature stripes; from the same station/);
       await page.keyboard.press("Escape");
       await page.keyboard.press("Escape");
       // a switch off: the print and the code follow

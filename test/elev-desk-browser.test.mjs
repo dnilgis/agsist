@@ -356,7 +356,9 @@ for (const width of WIDTHS) test(`${width}px: an empty token box is said at the 
   await shot(pg, `no-token-save-${width}`);
   assert.ok(!S.calls.some((c) => c.includes("/elev/admin/paste")), "nothing sent without a token");
   await pg.click('#p-res a[href="#tok"]');
+  // the link lands on the box at once (no smooth scroll) and puts the cursor in it
   assert.ok(await inView(pg, "#tok"));
+  assert.equal(await pg.evaluate(() => document.activeElement && document.activeElement.id), "tok");
   await pg.fill("#tok", TOK);
   assert.ok(await pg.isHidden("#tok-miss"), "the warning goes once a token is in");
   assert.equal(await resultText(pg), "", "and so does the line by Save");

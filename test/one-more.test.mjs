@@ -62,7 +62,8 @@ test("every topic the panel offers has a sender that reads it", () => {
   const block = SA.slice(SA.indexOf('/* ---------- "One more?"'), SA.indexOf("/* Signups drawn by other scripts."));
   const ids = [...block.matchAll(/\bO\.(\w+) = \{/g)].map((m) => m[1]).sort();
   // Oct 20: hail, price and reports added (test/one-more-alerts.test.mjs checks their senders)
-  assert.deepEqual(ids, ["daily", "hail", "price", "rainyear", "rent", "reports", "zip"], "only these");
+  // Oct 21: cot and wasde, the two standing lists (test/one-more-alerts.test.mjs checks their senders)
+  assert.deepEqual(ids, ["cot", "daily", "hail", "price", "rainyear", "rent", "reports", "wasde", "zip"], "only these");
   assert.ok(!DASH.test(block), "no dashes in the panel");
   assert.ok(!/type="checkbox"[^>]*checked/.test(block), "no box starts ticked");
   assert.ok(!/navigator\.geolocation/.test(SA), "never geolocation");
@@ -82,10 +83,10 @@ test("hail-map and gdu-calculator: one Daily ask each, honest about what the Dai
   }
 });
 
-test("versions: signup-ask.js v11 where it loads, home.js v15", () => {
-  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=11';"));
+test("versions: signup-ask.js v12 where it loads (Oct 21), home.js v15", () => {
+  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=12';"));
   const idx = read("index.html");
-  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=11"></script>'));
+  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=12"></script>'));
   assert.ok(idx.includes('<script src="/components/home.js?v=15"></script>'));
   assert.ok(read("privacy.html").includes("for one year, so the signup prompts stop until then."));
 });
@@ -376,9 +377,10 @@ test("signed-up flag: a year, then the asks come back; an undated flag starts it
         localStorage.setItem("agsist_subscribed", "1");
         if (d != null) localStorage.setItem("agsist_subscribed_at", String(Date.now() - d * 864e5));
       } });
-      await go(pg, port, "/cattle-futures-prices.html");
-      const ask = pg.locator('main [data-source="page:cattle-futures-prices"]');
-      await pg.waitForFunction(() => document.querySelector('main [data-source="page:cattle-futures-prices"]').getAttribute("data-sa-ready"));
+      // Oct 21: cattle futures asks for Funds this week now; /markets keeps a Daily ask
+      await go(pg, port, "/markets.html");
+      const ask = pg.locator('main [data-source="page:markets"]');
+      await pg.waitForFunction(() => document.querySelector('main [data-source="page:markets"]').getAttribute("data-sa-ready"));
       assert.equal(await ask.isHidden(), hidden, why);
       const st = await pg.evaluate(() => ({ ls: localStorage.getItem("agsist_subscribed"), at: localStorage.getItem("agsist_subscribed_at"), ck: document.cookie.includes("agsist_subscribed=1") }));
       if (!hidden) assert.deepEqual(st, { ls: null, at: null, ck: false }, why);

@@ -28,7 +28,11 @@ const DASH = /[–—]|&mdash;|&ndash;/;
 test("every extra the panel offers has a sender; versions bumped where they load", () => {
   const block = SA.slice(SA.indexOf('/* ---------- "One more?"'), SA.indexOf("/* Signups drawn by other scripts."));
   const ids = [...block.matchAll(/\bO\.(\w+) = \{/g)].map((m) => m[1]).sort();
-  assert.deepEqual(ids, ["daily", "hail", "price", "rainyear", "rent", "reports", "zip"]);
+  assert.deepEqual(ids, ["cot", "daily", "hail", "price", "rainyear", "rent", "reports", "wasde", "zip"]);
+  // cot and wasde (Oct 21): the two standing lists, each read by its sender
+  assert.ok(/\btopic: 'cot', daily: false/.test(block) && read("scripts/send_cot_weekly.py").includes('TOPIC = "cot"'), "cot: send_cot_weekly.py reads it");
+  assert.ok(/\btopic: 'reports', daily: false/.test(block) && read("scripts/send_report_day.py").includes('subscribers.fetch_topic(base, token, "reports")'), "wasde: send_report_day.py reads topic reports");
+  assert.ok(read("workers/subs-worker.js").includes('const LIST_TOPICS = ["reports", "cot"];'), "the worker takes both");
   // hail: the nightly checker reads /alert-subscribe watches
   assert.ok(read("scripts/check_alerts.py").includes("/alert-subscribe"));
   assert.ok(/WORKER \+ '\/alert-subscribe'/.test(block));
@@ -47,9 +51,9 @@ test("every extra the panel offers has a sender; versions bumped where they load
   // reports: send_report_day.py mails Daily readers whose reports flag is on
   assert.ok(read("scripts/send_report_day.py").includes("reports !== false"));
   assert.ok(!DASH.test(block) && !/type="checkbox"[^>]*checked/.test(block));
-  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=11';"));
-  assert.ok(read("components/loader.js").includes("var CV = '75';"));
-  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=11"></script>'));
+  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=12';"));
+  assert.ok(read("components/loader.js").includes("var CV = '76';"));
+  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=12"></script>'));
   assert.ok(read("cash-bids.html").includes("/components/cb-alerts.js?v=4") && read("components/cb-myelev.js").includes("/components/cb-alerts.js?v=4"));
   assert.ok(read("hail-map.html").includes("S.oneMore(box,{gave:'hail'"));
 });
@@ -230,16 +234,17 @@ test("futures and report pages: the futures alert after a Daily signup; report d
   const srv = await serve(), port = srv.address().port, posts = [];
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
+    // Oct 21: the futures pages' own ask is Funds this week, so the Daily signup comes from the panel's caller
     let pg = await newPage(browser, port, posts);
     await go(pg, port, "/soybean-futures-prices.html");
-    const ask = pg.locator('main [data-signup-ask]:not([data-topic])').first();
-    await ask.locator(".sa-in").fill(EMAIL);
-    await ask.locator(".sa-b").click();
-    const more = ask.locator("[data-sa-more]");
+    await pg.waitForFunction(() => window.AgsistSignup && window.AgsistSignup.oneMore);
+    await pg.evaluate((e) => { const h = document.createElement("div"); h.id = "host"; document.querySelector("main").prepend(h); window.AgsistSignup.oneMore(h, { gave: "daily", email: e }); }, EMAIL);
+    const more = pg.locator("#host [data-sa-more]");
     await more.locator(".sa-mh").waitFor();
     const keys = await keysOf(more);
     assert.equal(keys[0], "price", "the futures alert first: " + keys);
-    assert.ok(!keys.includes("reports"), "the Daily signup already carries report days");
+    assert.equal(keys[1], "cot", "then Funds this week: " + keys);
+    assert.ok(!keys.includes("reports") && !keys.includes("wasde"), "the Daily signup already carries report days");
     assert.equal(await more.locator('[data-k="price"] [data-f="sym"]').inputValue(), "beans", "this page's crop");
     for (const c of await more.locator('input[type="checkbox"]').all()) assert.equal(await c.isChecked(), false);
     await more.locator('[data-k="price"] [data-f="usd"]').fill("11.5");

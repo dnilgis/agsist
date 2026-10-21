@@ -36,6 +36,8 @@ export function standInYear(y, kind = "wet") {
   });
 }
 export function normalRows(y) { return yearDays(y).map((d) => [d, (MON_IN[+d.slice(5, 7) - 1] / mdays(y, +d.slice(5, 7) - 1)).toFixed(3)]); }
+/* made-up daily normal highs and lows (the same smooth curve standInYear wanders around), as ACIS answers maxt/mint normal "91" */
+export function tempNormalRows(y) { return yearDays(y).map((d, i) => { const b = 44 + 30 * Math.sin((i - 105) / 365 * 2 * Math.PI); return [d, (b + 11).toFixed(1), (b - 11).toFixed(1)]; }); }
 export function porRows(y0, y1) { let a = []; for (let y = y0; y <= y1; y++) a = a.concat(standInYear(y, y % 7 === 3 ? "dry" : "wet").map((x) => x.slice(0, 4))); return a; }
 
 export const CHETEK = { name: "CHETEK", sids: ["471667 2"], ll: [-91.65, 45.32], valid_daterange: [["1893-01-01", "2026-10-09"], ["1893-01-01", "2026-10-09"]], state: "WI" };
@@ -52,7 +54,7 @@ export async function mocks(ctx, opts = {}) {
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ headers: h, json: { meta: [CHETEK] } });
       let sdate = u.searchParams.get("sdate"), normal = false;
-      if (u.searchParams.get("params")) { sdate = JSON.parse(u.searchParams.get("params")).sdate; normal = true; }
+      if (u.searchParams.get("params")) { const P = JSON.parse(u.searchParams.get("params")); sdate = P.sdate; normal = true; if (P.elems.some((e) => e.name === "maxt")) return r.fulfill({ headers: h, json: { data: tempNormalRows(+String(sdate).slice(0, 4)) } }); }
       if (normal) return r.fulfill({ headers: h, json: { data: normalRows(+String(sdate).slice(0, 4)) } });
       if (sdate === "por") return r.fulfill({ headers: h, json: { data: porRows(1960, 2025) } });
       const y = +String(sdate).slice(0, 4);

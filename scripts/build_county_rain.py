@@ -153,7 +153,7 @@ def last_year_words(c, L, year):
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
 RP_SNOW_MISS_OK = R.SNOW_MISS_OK  # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
-PRINT_JS = '<script src="/components/rain-county-print.js?v=34" defer></script>'
+PRINT_JS = '<script src="/components/rain-county-print.js?v=36" defer></script>'
 
 
 def rp_prices():
@@ -450,7 +450,8 @@ def head(title, desc, url, ld, og_title=None, extra="", img=None):
   <meta name="theme-color" content="#0a0c0d">
   <link rel="stylesheet" href="/components/styles.css?v=26">
   {CSS}
-  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <title>{e(title)}</title>
   <meta name="description" content="{e(desc)}">

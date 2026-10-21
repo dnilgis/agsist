@@ -11,9 +11,8 @@
   <link rel="preload" href="/components/styles.css?v=26" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=26">
   <script src="/components/util.js?v=17"></script>
-<link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 <meta name="theme-color" content="#111a0a">
@@ -768,7 +767,8 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
     <a href="/">← AGSIST Dashboard</a>
   </div>
 
-<div data-signup-ask="Email me the farm markets and my top local bid, every morning" data-source="page:cot"></div>
+<!-- 2026-10-21 (Sig): Funds this week, its own list (subs worker v5.44, notice topic cot), mailed by scripts/send_cot_weekly.py from cot-release-watch.yml. It replaces this page's Daily ask: one ask a page. -->
+<div data-signup-ask="Email me Funds this week, after each COT report" data-topic="cot" data-source="cot-weekly:cot" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Where the big funds sit in corn, soybeans, wheat, cattle and hogs against their 1-year range, one short email after CFTC posts its weekly report. Free, its own list."></div>
 </main>
 
 <div id="site-footer">

@@ -110,15 +110,16 @@ test("company pages carry the town pages' bid email box with their own ZIP field
   assert.ok(cbs.includes("'<input type=\"tel\" class=\"cbs-zip\""), "with data-zip-input the box shows its own ZIP field");
 });
 
-test("What's Priced In asks for the report-day email, which send_report_day.py sends", () => {
+test("What's Priced In asks for the WASDE summary (Oct 21: its own list), which send_report_day.py sends", () => {
   const h = read("whats-priced-in.html");
   const asks = h.match(/<div data-signup-ask="[^"]*"[^>]*><\/div>/g) || [];
   assert.equal(asks.length, 1);
-  assert.ok(asks[0].includes('data-signup-ask="Email me the afternoon of each WASDE and Grain Stocks report: what the trade expected and how USDA graded."'));
-  assert.ok(asks[0].includes('data-note="Comes with AGSIST Daily, the free morning markets email."'), "says it is the Daily");
-  assert.ok(!asks[0].includes("data-reports=\"0\"") && !asks[0].includes("data-topic"), "a Daily signup with report-day mail on");
+  assert.ok(asks[0].includes('data-signup-ask="Email me the WASDE summary when it drops"'), "Sig's words");
+  assert.ok(asks[0].includes('data-topic="reports"') && asks[0].includes('data-source="report:wasde:whats-priced-in"'), "the report-day list alone, tagged");
+  assert.ok(!asks[0].includes("Comes with AGSIST Daily") && !asks[0].includes("data-daily"), "no longer the Daily");
   assert.ok(!DASH.test(asks[0]));
   assert.match(read("scripts/send_report_day.py"), /TYPES = \("WASDE", "Crop Production", "Grain Stocks"\)/);
+  assert.ok(read("scripts/send_report_day.py").includes('subscribers.fetch_topic(base, token, "reports")'), "the sender reads the list");
 });
 
 test("signup-ask.js: the morning briefing box never starts ticked (Sig, 2026-10-19)", () => {

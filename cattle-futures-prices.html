@@ -16,9 +16,8 @@
 <script src="/components/asof.js?v=1"></script>
 <script src="/components/price-local.js?v=7"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
-<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <title>CME Feeder Cattle Futures $345.90 &amp; Live Cattle $229.45 (Oct 20)</title>
@@ -331,6 +330,7 @@ details.fold[hidden]{display:none}
     <div class="method-note"><b>What these are</b> &middot; Fed steers: USDA AMS 5-area weekly weighted average for steers sold live, all grades (LM_CT150). Cutout: the USDA value of a Choice carcass, 600 to 900 lb, from boxed beef sales (LM_XB403, afternoon), per cwt of carcass, not live weight. Each is dated by its own report. These are cash prices, not futures.</div>
   </section>
   <aside class="ya" data-your-state="cattle" data-v="2" hidden></aside><script src="/components/your-state.js?v=1" defer></script>
+  <section class="fx" data-feeder="rma" id="feeder-value" hidden aria-label="RMA feeder steer value"></section>
   <p class="method-note" style="margin:.5rem 0 1rem">Selling feeders? <a href="/cattle-auction-prices">Sale barn prices near you</a>: steers and heifers by weight class at USDA-reported auctions.</p>
   <script>
   (function(){
@@ -600,7 +600,8 @@ details.fold[hidden]{display:none}
     </div>
   </div>
 
-  <div data-signup-ask="Email me the morning market read with the numbers and the USDA calendar." data-source="page:cattle-futures-prices" data-note="Free. No affiliate links. I read every reply."></div>
+  <!-- 2026-10-21 (Sig): Funds this week, its own list (subs worker v5.44, notice topic cot), mailed by scripts/send_cot_weekly.py from cot-release-watch.yml. It replaces this page's Daily ask: one ask a page. -->
+  <div data-signup-ask="Email me Funds this week, after each COT report" data-topic="cot" data-source="cot-weekly:cattle-futures-prices" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Where the big funds sit in corn, soybeans, wheat, cattle and hogs against their 1-year range, one short email after CFTC posts its weekly report. Free, its own list."></div>
 
   <div class="rl">Related Tools</div>
   <div class="rg">
@@ -645,6 +646,7 @@ details.fold[hidden]{display:none}
 </div>
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=32" defer></script>
+<script src="/components/feeder-index.js?v=2" defer></script>
 
 <script>
 /* ===== cattle dashboard: prices.json + price-stats.json ===== */

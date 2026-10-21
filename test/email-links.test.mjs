@@ -36,6 +36,7 @@ const SELFTESTS = [
   ["scripts/send_prf_notice.py", /OK: 0 failure\(s\)/],
   ["scripts/send_rain_year.py", /OK: 0 failure\(s\)/],
   ["scripts/send_rent_notice.py", /OK: 0 failure\(s\)/],
+  ["scripts/send_cot_weekly.py", /send_cot_weekly selftest ok/],
 ];
 for (const [f, ok] of SELFTESTS) {
   test(f + " --selftest: no address in any link it emails", () => {
