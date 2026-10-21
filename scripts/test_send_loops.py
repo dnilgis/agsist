@@ -41,6 +41,7 @@ SENDERS = [
     ("check_alerts.py", "hail alerts"),
     ("send_daily.py", "daily briefings"),
     ("send_report_day.py", "report emails"),
+    ("send_cot_weekly.py", "Funds this week emails"),
 ]
 
 START = "    sent, failed = 0, []"
