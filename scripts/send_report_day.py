@@ -4,7 +4,13 @@ send_report_day.py -- "USDA vs the trade", the afternoon a big report lands.
 
 WHAT IT SENDS. A short email to AGSIST Daily readers who did not opt out of
 report-day mail (`reports !== false` on the v5.4 list; an older worker's
-plain list means everyone, the v5.4 default). For each report released today:
+plain list means everyone, the v5.4 default), and to the readers who asked
+for the report-day email alone (subs worker v5.44, notice topic `reports`,
+the "Email me the WASDE summary when it drops" ask), each address once. A
+reader on the report-day list alone gets a footer that says so and a stop
+link for that list only (/notice-unsubscribe ... &topic=reports); a Daily
+reader's footer and link are as before. If that list cannot be read, the
+Daily readers still get the email and the log says ::error::. For each report released today:
 what USDA printed against the trade average and range, as the site's own
 data/whats-priced-in.json already records them (built by
 scripts/build_whats_priced_in.py from the typed-in pre-report survey and
@@ -373,7 +379,8 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     """`b` is (subject, text, html) from compose(). Same signature as
     send_daily.build_email, so the send loop below is the same loop."""
     subject, text, html = b
-    uurl = unsub_url(to_addr)
+    only = to_addr.lower() in REPORT_ONLY
+    uurl = notice_unsub_url(to_addr) if only else unsub_url(to_addr)
     msg = EmailMessage()
     msg["Subject"] = subject
     msg["From"] = formataddr((from_name, from_addr))
@@ -387,19 +394,60 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
         msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
     else:
         msg["List-Unsubscribe"] = "<mailto:" + unsub + "?subject=unsubscribe>"
+    if only:
+        why_t = "You get this because you asked for the WASDE summary on agsist.com: one email the afternoon of each big USDA report."
+        stop_t = ("Stop these report emails: " + uurl) if uurl else "To stop these, reply with subject line: unsubscribe"
+        why_h = "You get this because you asked for the WASDE summary on agsist.com: one email the afternoon of each big USDA report."
+        stop_h = ('<a href="%s" style="color:#6b6b6b">Stop these report emails</a>' % uurl.replace("&", "&amp;")) if uurl else \
+            "To stop these, reply with subject line: unsubscribe"
+    else:
+        why_t = "You get this because you signed up for AGSIST Daily and report-day emails."
+        stop_t = ("Unsubscribe (stops AGSIST Daily too): " + uurl) if uurl else "To unsubscribe, reply with subject line: unsubscribe"
+        why_h = "You get this because you signed up for AGSIST Daily and report-day emails."
+        stop_h = ('<a href="%s" style="color:#6b6b6b">Unsubscribe</a> (stops AGSIST Daily too)' % uurl.replace("&", "&amp;")) if uurl else \
+            "To unsubscribe, reply with subject line: unsubscribe"
     foot_t = ["", "Forward to a neighbor. Or send them the free sign-up link: " + FORWARD_URL, "",
-              "You get this because you signed up for AGSIST Daily and report-day emails.",
-              ("Unsubscribe (stops AGSIST Daily too): " + uurl) if uurl else "To unsubscribe, reply with subject line: unsubscribe",
-              "PO Box 243, Chetek, WI 54728"]
+              why_t, stop_t, "PO Box 243, Chetek, WI 54728"]
     msg.set_content(text + "\n" + "\n".join(foot_t) + "\n")
     foot_h = ('<p style="margin:16px 0 0;font:14px/1.5 sans-serif;color:#6b6b6b">Forward to a neighbor. Or send them the free '
               'sign-up link: <a href="%s" style="color:#8a6b1f">agsist.com/?ref=email-forward</a></p>'
-              '<p style="margin:12px 0 0;font:14px/1.6 sans-serif;color:#6b6b6b">You get this because you signed up for AGSIST Daily '
-              'and report-day emails.<br>%s<br>PO Box 243, Chetek, WI 54728</p>'
-              % (FORWARD_URL.replace("&", "&amp;"), ('<a href="%s" style="color:#6b6b6b">Unsubscribe</a> (stops AGSIST Daily too)' % uurl.replace("&", "&amp;"))
-                 if uurl else "To unsubscribe, reply with subject line: unsubscribe"))
+              '<p style="margin:12px 0 0;font:14px/1.6 sans-serif;color:#6b6b6b">%s<br>%s<br>PO Box 243, Chetek, WI 54728</p>'
+              % (FORWARD_URL.replace("&", "&amp;"), why_h, stop_h))
     msg.add_alternative(html.replace("{{FOOT}}", foot_h), subtype="html")
     return msg
+
+
+# ── who gets it ───────────────────────────────────────────────────────────
+# The addresses on the report-day list alone (not Daily readers with report
+# days on). build_email reads it, so the send loop is unchanged.
+REPORT_ONLY = set()
+
+
+def merge_lists(daily_records, report_only):
+    """(recipients, report_only_set): the Daily readers with report days on,
+    then the report-day-only readers not already among them, each once."""
+    out, seen = [], set()
+    for r in daily_records:
+        e = str(r.get("email") or "").strip().lower()
+        if e and r.get("reports") is not False and e not in seen:
+            seen.add(e)
+            out.append(e)
+    only = set()
+    for e in report_only or []:
+        e = str(e or "").strip().lower()
+        if e and "@" in e and e not in seen:
+            seen.add(e)
+            only.add(e)
+            out.append(e)
+    return out, only
+
+
+def notice_unsub_url(email):
+    base, secret = (os.environ.get("LIST_URL") or "").strip(), (os.environ.get("UNSUB_SECRET") or "").strip()
+    if not (base and secret):
+        return None
+    t = hmac.new(secret.encode(), email.lower().encode(), hashlib.sha256).hexdigest()[:16]
+    return base.rstrip("/") + "/notice-unsubscribe?e=" + urllib.parse.quote(email.lower()) + "&t=" + t + "&topic=reports"
 
 
 # ── dedupe ────────────────────────────────────────────────────────────────
@@ -494,8 +542,17 @@ def main(argv=()):
         subs, how = subscribers.fetch(base, token)
     else:
         subs, how = subscribers.parse_plain(env("RECIPIENTS", "")), "plain"
-    recipients = [r["email"] for r in subs if r.get("reports") is not False]
-    print("list: %d address(es), %d opted into report-day email (%s list)" % (len(subs), len(recipients), how))
+    only_rows = []
+    if base and token:
+        try:
+            only_rows = subscribers.fetch_topic(base, token, "reports")
+        except Exception as ex:
+            print("::error::the report-day-only list could not be read (%s); this email goes to the Daily readers only" % type(ex).__name__)
+    recipients, only = merge_lists(subs, only_rows)
+    REPORT_ONLY.clear()
+    REPORT_ONLY.update(only)
+    print("list: %d address(es), %d opted into report-day email (%s list), %d more on the report-day list alone"
+          % (len(subs), len(recipients) - len(only), how, len(only)))
     gmail_limit.check(len(subs), len(recipients), day, dry=dry)
     if not recipients:
         print("nobody to send to. exit 0")
@@ -665,6 +722,38 @@ def _selftest():
     ok(">USDA&#x27;S STOCKS" in h10 or ">USDA'S STOCKS" in h10, "the heading is styled as a heading")
     s9, t9, _ = compose(date(2026, 9, 30), r, [], bl)
     ok("STOCKS AND PRICE" not in t9, "a Grain Stocks email does not carry WASDE lines")
+
+    # THE REPORT-DAY LIST ALONE (worker v5.44, Oct 21): one email an address,
+    # its own footer and a stop link for that list only.
+    daily = [{"email": "a@farm.com", "reports": True}, {"email": "b@farm.com", "reports": False}, {"email": "c@farm.com"}]
+    rc, only = merge_lists(daily, ["A@farm.com", "b@farm.com", "d@farm.com", "d@farm.com", "not-an-address"])
+    ok(rc == ["a@farm.com", "c@farm.com", "b@farm.com", "d@farm.com"] and only == {"b@farm.com", "d@farm.com"},
+       "Daily readers with report days first, then the report-only list, each once: %r %r" % (rc, only))
+    ok(merge_lists(daily, [])[0] == ["a@farm.com", "c@farm.com"], "without the list: the Daily readers as before")
+    old_env = {k: os.environ.get(k) for k in ("LIST_URL", "UNSUB_SECRET")}
+    os.environ["LIST_URL"], os.environ["UNSUB_SECRET"] = "https://w.dev", "sec"
+    REPORT_ONLY.clear()
+    REPORT_ONLY.update(only)
+    try:
+        tk = hmac.new(b"sec", b"d@farm.com", hashlib.sha256).hexdigest()[:16]
+        mo = build_email(date(2026, 9, 30), (s, t, h), "d@farm.com", "AGSIST", "sender@example.com", None)
+        bo = mo.get_body(("plain",)).get_content()
+        want = "https://w.dev/notice-unsubscribe?e=d%40farm.com&t=" + tk + "&topic=reports"
+        ok(mo["List-Unsubscribe"].startswith("<" + want + ">"), "report-only: one-click stops that list: %s" % mo["List-Unsubscribe"])
+        ok("you asked for the WASDE summary on agsist.com" in bo and "Stop these report emails: " + want in bo
+           and "stops AGSIST Daily too" not in bo, "report-only footer")
+        md_ = build_email(date(2026, 9, 30), (s, t, h), "a@farm.com", "AGSIST", "sender@example.com", None)
+        bd = md_.get_body(("plain",)).get_content()
+        ok("/unsubscribe?e=a%40farm.com" in md_["List-Unsubscribe"] and "Unsubscribe (stops AGSIST Daily too): " in bd,
+           "a Daily reader's footer is as before")
+        ok("\u2014" not in bo and "\u2014" not in mo.get_body(("html",)).get_content(), "no em dash in the new footer")
+    finally:
+        REPORT_ONLY.clear()
+        for k, v in old_env.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
     if fails:
         for f in fails:
             print("FAIL", f)
