@@ -15,12 +15,12 @@
   <meta property="og:title" content="Grain on the move: barge, rail and ocean freight vs basis">
   <meta property="og:description" content="Is it getting cheaper or dearer to move grain? Barge rates, shuttle railcar bids, Lock 27 tons, late grain cars and Gulf vs PNW ocean freight, next to basis.">
   <meta property="og:url" content="https://agsist.com/grain-transport">
-  <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
+  <meta property="og:image" content="https://agsist.com/img/og/grain-transport.jpg?v=9bd363e4">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Grain on the move. Freight and basis, each week.">
+  <meta property="og:image:alt" content="Grain on the move: is it getting cheaper or dearer to ship grain? Barge, rail and ocean freight this week, beside basis.">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
+  <meta name="twitter:image" content="https://agsist.com/img/og/grain-transport.jpg?v=9bd363e4">
   <meta name="twitter:title" content="Grain on the move: barge, rail and ocean freight vs basis">
   <meta name="twitter:description" content="Is it getting cheaper or dearer to move grain? Barge rates, shuttle railcar bids, Lock 27 tons, late grain cars and Gulf vs PNW ocean freight, next to basis.">
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
@@ -45,6 +45,7 @@
 .gt b,.gt strong{color:var(--text)}
 .gt-kick{font-family:'JetBrains Mono',monospace;font-size:.72rem!important;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)!important;margin:0 0 .35rem}
 .gt-ans{font-size:1.05rem!important;color:var(--text)!important;margin:.2rem 0 .3rem;padding:.7rem .85rem;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;background:var(--surface)}
+.gt-bl{font-size:.92rem!important;color:var(--text)!important;margin:.35rem 0 .3rem}
 .gt-mut{font-size:.82rem!important;color:var(--text-muted)!important}
 .gt-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.6rem;margin:.8rem 0 .4rem}
 .gt-tile{border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:.7rem .8rem .65rem;min-width:0}
@@ -122,6 +123,7 @@
     <p class="gt-kick">Grain on the move &middot; barge, rail and ship freight beside basis</p>
     <h1>Grain on the move: is it getting cheaper or dearer to ship grain?</h1>
     <p class="gt-ans" id="gt-ans" aria-live="polite"><!--SEED:gtans-->This week's freight numbers have not been read yet. The last good week shows below where we have it.<!--/SEED:gtans--></p>
+    <p class="gt-bl" id="gt-bl"><b>What it has meant for basis.</b> <span id="gt-bl-t"><!--SEED:gtbasis-->The long record has not been built yet: it needs the USDA regional basis and the barge and railcar series, read each Friday.<!--/SEED:gtbasis--></span> <a href="#gt-conn-t">The record</a>.</p>
     <p class="gt-mut">Each number below is the latest week its source has posted, with the change from the week before and its own 5-year normal for that week. The weeks differ by source; each card says which week it is.</p>
 
     <section aria-labelledby="gt-now-t">
@@ -217,17 +219,18 @@
     if(/^\$ per car/.test(u))return (v<0?'-':'')+'$'+num(Math.abs(v));
     if(/^\$ per metric/.test(u))return (v<0?'-':'')+'$'+num(Math.abs(v),2);
     if(/^\$\/bu/.test(u))return (v<0?'-':'+')+'$'+Math.abs(v).toFixed(2);
-    if(/^thousand/.test(u))return num(v)+'k';
+    if(/^thousand/.test(u))return num(v);
     if(/^feet/.test(u)||/^mph/.test(u)||/^index/.test(u))return num(v,1);
     return num(v);}
+  function withUnit(v,u){var f=fmt(v,u);return /^%/.test(u)?f+u.slice(1):f+' '+u;}
   function chgTxt(doc){if(doc.chg==null)return'';var u=doc.unit,c=doc.chg;
     if(/^% of/.test(u))return (c>=0?'+':'')+num(c)+' pts in a week';
     if(/^\$/.test(u))return (c>=0?'+':'-')+'$'+num(Math.abs(c),/metric/.test(u)?2:0)+' in a week';
-    return (c>=0?'+':'')+num(c)+(/^thousand/.test(u)?'k':'')+' in a week';}
+    return (c>=0?'+':'')+num(c)+' in a week';}
 
   /* ---- one small line chart: pts [[date,v],...]; lines [{pts,cls}] ---- */
   function chart(lines,o){
-    o=o||{};var W=600,H=o.h||170,L=46,R=64,T=10,B=22;
+    o=o||{};var W=Math.max(300,Math.min(600,(window.innerWidth||600)-58)),H=Math.round((o.h||170)*(W<600?.85:1)),L=46,R=60,T=10,B=22;
     var all=[];lines.forEach(function(l){l.pts.forEach(function(p){if(p[1]!=null)all.push(p);});});
     if(!all.length)return'';
     var x0=o.x0||Math.min.apply(null,all.map(function(p){return ms(p[0]);})),x1=o.x1||Math.max.apply(null,all.map(function(p){return ms(p[0]);}));
@@ -240,7 +243,9 @@
     for(var i=0;i<3;i++){var v=lo+(hi-lo)*(i+.5)/3,y=Y(v);s+='<line class="gl" x1="'+L+'" x2="'+(W-R)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'"/><text x="'+(L-6)+'" y="'+(y+3.5).toFixed(1)+'" text-anchor="end">'+esc(o.tick?o.tick(v):fmt(v,o.unit||''))+'</text>';}
     if(o.zero&&lo<0&&hi>0)s+='<line class="z" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(0).toFixed(1)+'" y2="'+Y(0).toFixed(1)+'"/>';
     var y0=new Date(x0).getUTCFullYear(),y1=new Date(x1).getUTCFullYear();
-    for(var yr=y0+1;yr<=y1;yr++){var xx=X(yr+'-01-01');s+='<line class="gl" x1="'+xx.toFixed(1)+'" x2="'+xx.toFixed(1)+'" y1="'+T+'" y2="'+(H-B)+'"/><text x="'+xx.toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle">'+yr+'</text>';}
+    if(x1-x0<400*864e5){var dt=new Date(x0);dt=new Date(Date.UTC(dt.getUTCFullYear(),dt.getUTCMonth()+1,1));var step=(x1-x0)>200*864e5?2:1;
+      for(;dt.getTime()<=x1;dt=new Date(Date.UTC(dt.getUTCFullYear(),dt.getUTCMonth()+step,1))){var xm=L+(dt.getTime()-x0)/((x1-x0)||1)*(W-L-R);s+='<text x="'+xm.toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle">'+MON[dt.getUTCMonth()]+'</text>';}}
+    else for(var yr=y0+1;yr<=y1;yr++){var xx=X(yr+'-01-01');s+='<line class="gl" x1="'+xx.toFixed(1)+'" x2="'+xx.toFixed(1)+'" y1="'+T+'" y2="'+(H-B)+'"/><text x="'+xx.toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle">'+yr+'</text>';}
     lines.forEach(function(l,k){var d='',prev=null;
       l.pts.forEach(function(p){if(p[1]==null){prev=null;return;}var gap=prev&&(ms(p[0])-ms(prev[0]))>(o.gapDays||21)*864e5;var brk=prev&&l.brk&&l.brk(prev,p);
         d+=((!prev||gap||brk)?'M':'L')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1);prev=p;});
@@ -265,8 +270,8 @@
   function card(sid){var d=docs[sid];if(!d||!d.points||!d.points.length)return'';
     var old=d.status&&d.status!=='ok'?' <b class="gt-old">old</b>':'';
     var nm=d.normal&&d.normal.value!=null?' Normal for this week: '+fmt(d.normal.value,d.unit)+'.':'';
-    return '<div class="gt-panel"><h3>'+esc(d.title)+old+'</h3><p class="gt-stat">'+esc(fmt(d.latest.value,d.unit))+' '+esc(d.unit)+', week of '+esc(day(d.latest.date))+'.'+esc(nm)+'</p>'+
-      chart([{pts:d.points,cls:'l1'}],{unit:d.unit,zero:/car|spread/.test(sid),label:d.title+', '+fmt(d.latest.value,d.unit)+' '+d.unit+' the week of '+day(d.latest.date)})+
+    return '<div class="gt-panel"><h3>'+esc(d.title)+old+'</h3><p class="gt-stat">'+esc(withUnit(d.latest.value,d.unit))+', week of '+esc(day(d.latest.date))+'.'+esc(nm)+'</p>'+
+      chart([{pts:d.points,cls:'l1'}],{unit:d.unit,zero:/car|spread/.test(sid),label:d.title+', '+withUnit(d.latest.value,d.unit)+' the week of '+day(d.latest.date)})+
       (d.note?'<p class="gt-mut">'+esc(d.note)+'</p>':'')+'<p class="gt-mut">Source: <a href="'+esc(d.source.url)+'">'+esc(d.source.name)+'</a>.</p></div>';}
 
   function loadSeries(ids){return Promise.all(ids.map(function(s){return docs[s]!==undefined?null:get(s+'.json').then(function(j){docs[s]=j;});}));}
@@ -297,14 +302,15 @@
     if(!ours||!ours.states){el.innerHTML='<p class="gt-mut">Our weekly basis could not be read.</p>';return;}
     var o=conn&&conn.ours,h='';
     [['river','barge-st-louis'],['rail','railcar-bnsf-shuttle']].forEach(function(gf){
-      var g=gf[0],line=o&&o[crop+'-'+g]||[],t=o&&(o.tests||[]).filter(function(x){return x.crop===crop&&x.group===g;})[0];
+      var g=gf[0],line=(ours.groups&&ours.groups[crop+'-'+g])||[],t=o&&(o.tests||[]).filter(function(x){return x.crop===crop&&x.group===g;})[0];
       var fd=docs[gf[1]],f=fd&&fd.points?fd.points.filter(function(p){return line.length&&p[0]>=line[0][0];}):[];
       h+='<div class="gt-panel"><h3>'+esc(GR[g])+', AGSIST network</h3>';
       if(t)h+='<p class="gt-v">'+esc(t.verdict)+'</p><p class="gt-stat">'+t.n+' weeks so far; '+Math.round(t.n_eff)+' count as separate. The test needs 20.</p>';
       if(line.length){var x0=ms(line[0][0]),x1=ms(line[line.length-1][0]);
         h+='<figure class="gt-fig"><figcaption><span class="gt-key"><i style="background:var(--green)"></i>Middle '+crop+' basis at our elevators, $/bu (middle of the states)</span></figcaption>'+chart([{pts:line.map(function(p){return[p[0],p[1]];}),cls:'l3'}],{h:120,x0:x0,x1:x1,unit:'$/bu',gapDays:8,label:'AGSIST network '+crop+' basis, '+GR[g]})+'</figure>';
         if(f.length)h+='<figure class="gt-fig"><figcaption><span class="gt-key"><i style="background:var(--blue)"></i>'+esc(FR[gf[1]])+(fd.unit?', '+esc(fd.unit):'')+'</span></figcaption>'+chart([{pts:f,cls:'l2'}],{h:110,x0:x0,x1:x1,unit:fd.unit,label:FR[gf[1]]})+'</figure>';}
-      else h+='<p class="gt-mut">Not enough elevators in these states yet.</p>';
+      else h+='<p class="gt-mut">Fewer than two of these states had 5 or more elevators in any week yet.</p>';
+      if(!t&&line.length)h+='<p class="gt-mut">Not tested this week: the freight line beside it could not be read.</p>';
       h+='</div>';});
     h+='<p class="gt-mut">Each state counts the elevators we read that week on one futures contract (the one most of them name), at least 5 elevators; outliers are left out the same way as on <a href="/basis">/basis</a>. The network grew in late August, so the number of elevators behind each week changes. Whole weeks only, through '+esc(day(ours.through))+'.</p>';
     el.innerHTML=h;}
@@ -328,6 +334,7 @@
     var tiles=(j&&j.tiles)||[];
     return loadSeries(tiles.map(function(t){return t.id;}).concat(CHARTS)).then(function(){
       if(j&&j.answer)$('gt-ans').textContent=j.answer;
+      if(j&&j.basis_line)$('gt-bl-t').textContent=j.basis_line;
       if(tiles.length)$('gt-now').innerHTML=tiles.map(function(t){return tile(t.id,t.label);}).join('');
       $('gt-charts').innerHTML=CHARTS.map(card).join('')||'<p class="gt-mut">No series could be read yet.</p>';
       renderCredits();});

@@ -1035,6 +1035,13 @@ def our_weekly(repo=REPO, states=OUR_STATES):
                     continue
                 line.append([t, round(statistics.median(r["basis"] for r in kept), 3), len(kept), sym])
             res["states"][st][crop] = line
+    # the group lines the page draws: the middle of the group's states each week (2 states at least)
+    res["groups"] = {}
+    for g, names in (("river", RIVER_STATES), ("rail", RAIL_STATES)):
+        for crop in ("corn", "soybeans"):
+            per = {n: [(p[0], p[1]) for p in res["states"].get(ST_CODE[n], {}).get(crop, []) if p[1] is not None]
+                   for n in names}
+            res["groups"][f"{crop}-{g}"] = [[d, round(v, 3), n] for d, v, n in group_weekly(per)]
     return res
 
 
@@ -1072,7 +1079,7 @@ def fmt_val(doc):
     if u.startswith("$ per metric"):
         return ("-" if v < 0 else "") + f"${abs(v):,.2f}"
     if u.startswith("thousand"):
-        return f"{v:,.0f}k"
+        return f"{v:,.0f}"
     return f"{v:,.0f}"
 
 
@@ -1096,7 +1103,7 @@ def tile_html(sid, label, doc, status):
         elif unit.startswith("$"):
             c = f"{'+' if chg >= 0 else '-'}${abs(chg):,.{2 if 'metric' in unit else 0}f} in a week"
         else:
-            c = f"{chg:+,.0f}{'k' if unit.startswith('thousand') else ''} in a week"
+            c = f"{chg:+,.0f} in a week"
     nm = doc.get("normal") or {}
     n = ""
     if nm.get("value") is not None:
@@ -1109,7 +1116,37 @@ def tile_html(sid, label, doc, status):
             f'<a href="{esc(doc["source"]["url"])}">{esc(doc["source"]["agency"])}</a></p></div>')
 
 
-def answer(docs):
+NOT_BUILT = ("The long record has not been built yet: it needs the USDA regional basis and the barge and "
+             "railcar series, read each Friday.")
+
+
+def basis_line(conn):
+    """One plain sentence on what freight has meant for basis, from the corn
+    tests on the first two pairs (river vs barge, rail vs BNSF shuttle). Only a
+    pair that passed the gate is stated as a finding; the rest say so."""
+    if not conn or conn.get("status") not in ("ok", "stale"):
+        return NOT_BUILT
+    out = []
+    for g, fk, what, where in (("river", "barge-st-louis", "barge freight", "river states"),
+                               ("rail", "railcar-bnsf-shuttle", "BNSF shuttle bids", "rail states")):
+        t = next((x for x in conn.get("tests", []) if x["crop"] == "Corn" and x["group"] == g and x["freight"] == fk), None)
+        if not t:
+            continue
+        if t["verdict"].startswith("Moved together"):
+            side = "under" if t["r"] < 0 else "over"
+            out.append(f"in the {where}, corn basis has run {side} normal in weeks when {what} ran above normal "
+                       f"(r = {t['r']:.2f}, {round(t['n_eff'])} separate weeks since {t['from'][:4]})")
+        elif t["verdict"].startswith("No clear"):
+            out.append(f"in the {where}, the record since {t['from'][:4]} shows no clear link between {what} and corn basis")
+        else:
+            out.append(f"in the {where}, there is not enough history yet to say how {what} and basis line up")
+    if not out:
+        return NOT_BUILT
+    s = "; ".join(out) + ". Moving together is not proof one moved the other."
+    return s[0].upper() + s[1:]
+
+
+def answer(docs, conn=None):
     """The first-screen sentence, from the pipeline (rule 9)."""
     parts = []
     b = docs.get("barge-st-louis")
@@ -1133,7 +1170,7 @@ def answer(docs):
     return s[0].upper() + s[1:]
 
 
-def bake(page_path, docs, status):
+def bake(page_path, docs, status, conn=None):
     if not os.path.exists(page_path):
         return False
     src = open(page_path, encoding="utf-8").read()
@@ -1143,6 +1180,8 @@ def bake(page_path, docs, status):
                  src, flags=re.S)
     new = re.sub(r"<!--SEED:gtans-->.*?<!--/SEED:gtans-->",
                  lambda m: f"<!--SEED:gtans-->{html.escape(answer(docs))}<!--/SEED:gtans-->", new, flags=re.S)
+    new = re.sub(r"<!--SEED:gtbasis-->.*?<!--/SEED:gtbasis-->",
+                 lambda m: f"<!--SEED:gtbasis-->{html.escape(basis_line(conn))}<!--/SEED:gtbasis-->", new, flags=re.S)
     if new != src:
         open(page_path, "w", encoding="utf-8").write(new)
     return True
@@ -1228,7 +1267,7 @@ def build(cli, today, out_dir, repo=REPO, page=None):
     json.dump(conn, open(os.path.join(out_dir, "connection.json"), "w"), separators=(",", ":"))
     tiles = [{"id": sid, "label": lab} for sid, lab in TILES]
     index = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "today": today.isoformat(),
-             "tiles": tiles, "answer": answer(docs), "sources": status,
+             "tiles": tiles, "answer": answer(docs), "basis_line": basis_line(conn), "sources": status,
              "series": sorted(docs), "benchmark_verified": BENCHMARK_VERIFIED,
              "note": "Each series file carries its own source, the week it describes and the day we read it."}
     json.dump(index, open(ip, "w"), separators=(",", ":"), indent=None)
@@ -1236,7 +1275,7 @@ def build(cli, today, out_dir, repo=REPO, page=None):
     if total > BUDGET_BYTES:
         raise SystemExit(f"FATAL: {out_dir} is {total} bytes, over the {BUDGET_BYTES} budget")
     if page:
-        bake(page, docs, status)
+        bake(page, docs, status, conn)
     print(f"wrote {len(docs)} series, our basis for {len(ours.get('states', {}))} states, "
           f"connection {conn.get('status')}, {total} bytes")
     return docs, status, conn, ours
