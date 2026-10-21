@@ -15,6 +15,7 @@ PRICES = [
     ("Near you", [("/cash-bids", "Cash bids near me", "i-banknote"),
                   ("/cash-bids/states", "Bids by state", "i-map"),
                   ("/basis", "Basis vs normal", "i-chart-column"),
+                  ("/grain-transport", "Grain on the move", "i-map"),
                   ("/cash-bid-index", "Cash Bid Index", "i-chart-column"),
                   ("/fertilizer", "Fertilizer prices", "i-leaf")]),
     ("Futures", [("/corn-futures-prices", "Corn", "i-corn"),

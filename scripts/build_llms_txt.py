@@ -86,6 +86,8 @@ PAGES = [
          "each town's nearest-delivery corn and soybean bid and basis, the elevator and the date it posted, at /cash-bids/<state>/<town>"),
         ("/basis", "Basis by State and vs Normal",
          "your state's median corn and soybean basis, USDA regions against their own 5-year same-week normal, barge rates, and this fall's grain vs bin space"),
+        ("/grain-transport", "Grain on the Move",
+         "weekly barge rates, BNSF and UP shuttle railcar bids, grain tons through Lock 27, grain car orders past due and Gulf vs PNW ocean freight, each against its 5-year normal, and how basis has moved with freight in river and rail regions"),
         ("/corn-futures-prices", "Corn Futures", "CBOT corn with 52-week and 5-year context"),
         ("/soybean-futures-prices", "Soybean Futures", "CBOT soybeans with 52-week and 5-year context"),
         ("/wheat-futures-prices", "Wheat Futures", "Chicago SRW and KC HRW wheat"),

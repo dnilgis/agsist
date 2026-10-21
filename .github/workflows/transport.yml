@@ -3,6 +3,10 @@ name: transport
 # Weekly AgTransport pull for /basis + /bushel-journey. AMS publishes the
 # Grain Transportation Report Thursdays; Friday morning catches it settled.
 # Selftest gates the fetch; fetch fails loud on any empty dataset.
+# Then /grain-transport (scripts/fetch_grain_moves.py): barge, railcar, lock,
+# late car, train speed, carload, inspection, ocean, vessel and river series,
+# our weekly network basis and the freight-basis record. One source failing
+# keeps its last good week and never blocks the basis files above.
 on:
   schedule:
     - cron: '43 11 * * 5'   # Fridays ~06:43 CT
@@ -35,12 +39,18 @@ jobs:
         run: python scripts/fetch_transport.py
       - name: Basis band check on the written file
         run: python scripts/test_basis_band.py
+      - name: Grain on the move (selftest, then fetch)
+        id: moves
+        continue-on-error: true
+        run: |
+          python scripts/fetch_grain_moves.py --selftest
+          python scripts/fetch_grain_moves.py
       - name: Commit
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/transport/
+          git add data/transport/ grain-transport.html
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
-          git commit -m "data: AgTransport basis + journey $(date -u +%F)"
+          git commit -m "data: AgTransport basis + journey + grain on the move $(date -u +%F)"
           git pull --rebase --autostash origin main || true
           git push
