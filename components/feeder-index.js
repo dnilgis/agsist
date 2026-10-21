@@ -30,7 +30,7 @@
   function rmaView(d, nowMs) {
     if (!d || typeof d !== 'object') return { down: true, msg: 'RMA&rsquo;s feeder value did not load. It is on RMA&rsquo;s own files at pubfs-rma.fpac.usda.gov.' };
     var r = d.rma;
-    if (!r || !r.ok || !fxNum(r.value) || !isFinite(fxDay(r.date))) return { down: true, msg: 'RMA&rsquo;s feeder value could not be read on the last run. Nothing is filled in.' };
+    if (!r || !r.ok || !fxNum(r.value) || r.value <= 0 || !isFinite(fxDay(r.date))) return { down: true, msg: 'RMA&rsquo;s feeder value could not be read on the last run. Nothing is filled in.' };
     var age = (nowMs - fxDay(r.date)) / 864e5;
     var old = age > RMA_OLD_DAYS;
     var out = {
@@ -55,7 +55,7 @@
     if (h.length >= 20) {
       var lo = h[0], hi = h[0];
       h.forEach(function (p) { if (p[1] < lo[1]) lo = p; if (p[1] > hi[1]) hi = p; });
-      out.range = 'Since ' + fxLab(h[0][0]) + ': low ' + fxMoney(lo[1]) + ' on ' + fxLab(lo[0]) + ', high ' + fxMoney(hi[1]) + ' on ' + fxLab(hi[0]) + ' (' + h.length + ' trading days).';
+      out.range = 'Since ' + fxLab(h[0][0]) + ': low ' + fxMoney(lo[1]) + ' on ' + fxLab(lo[0]) + ', high ' + fxMoney(hi[1]) + ' on ' + fxLab(hi[0]) + ' (' + h.length + ' days with a value).';
     }
     return out;
   }
@@ -115,9 +115,11 @@
   if (typeof document === 'undefined') return;
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
-  function chartSvg(hist) {
+  // Drawn at the box's own pixel width, so labels stay 11px on a phone and on a desktop.
+  function geo(w) { var W = Math.max(280, Math.round(w || 640)); return { W: W, H: Math.round(Math.min(220, Math.max(140, W * 0.3))), L: 42, R: 6, T: 10, B: 22 }; }
+  function chartSvg(hist, w) {
     if (!hist || hist.length < 20) return '';
-    var W = 640, H = 150, L = 46, R = 8, T = 10, B = 22;
+    var g = geo(w), W = g.W, H = g.H, L = g.L, R = g.R, T = g.T, B = g.B;
     var vals = hist.map(function (p) { return p[1]; });
     var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
     var pad = (hi - lo) * 0.08 || 5; lo -= pad; hi += pad;
@@ -140,10 +142,10 @@
       '<p class="fx-tip" aria-hidden="true"></p>';
   }
 
-  function wireChart(box, hist) {
+  function wireChart(box, hist, w) {
     var svg = box.querySelector('.fx-chart'); if (!svg) return;
     var hit = svg.querySelector('.fx-hit'), cross = svg.querySelector('.fx-cross'), dot = svg.querySelector('.fx-dot'), tip = box.querySelector('.fx-tip');
-    var W = 640, H = 150, L = 46, R = 8, T = 10, B = 22;
+    var g = geo(w), W = g.W, H = g.H, L = g.L, R = g.R, T = g.T, B = g.B;
     var vals = hist.map(function (p) { return p[1]; });
     var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals), pad = (hi - lo) * 0.08 || 5; lo -= pad; hi += pad;
     function at(ev) {
@@ -189,9 +191,9 @@
     '.fx .fx-t th:first-child,.fx .fx-t td:first-child{text-align:left;white-space:nowrap}' +
     '.fx .fx-t thead th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted,var(--text-dim))}' +
     '.fx .fx-t td.p{font-family:"JetBrains Mono",monospace;font-weight:700;color:var(--text)}' +
-    '.fx .fx-t td small{display:block;font-size:.74rem;color:var(--text-muted,var(--text-dim));font-weight:400;font-family:inherit}' +
+    '.fx .fx-t td small{display:block;font-size:.74rem;color:var(--text-muted,var(--text-dim));font-weight:400;font-family:var(--font-body,Inter,system-ui,sans-serif)}' +
     '.fx .fx-t td.c{font-family:"JetBrains Mono",monospace}.fx .fx-t td.c.up{color:var(--green)}.fx .fx-t td.c.dn{color:var(--red)}' +
-    '.fx .fx-t td.c small{font-family:inherit}' +
+    '' +
     '@media(max-width:480px){.fx{padding:.8rem .7rem}.fx .fx-t{font-size:.82rem}.fx .fx-t th,.fx .fx-t td{padding:.35rem .25rem}.fx .fx-val{font-size:1.7rem}}';
 
   function injectCss() {
@@ -216,8 +218,11 @@
       '<p class="fx-note">' + v.meta + '</p>';
     if (v.fut) h += '<div class="fx-row"><span>Nearby futures, ' + esc(v.fut) + '</span><span>RMA value minus futures: <b>' + esc(v.diff) + '</b></span></div>';
     else if (v.futNote) h += '<p class="fx-note">' + v.futNote + '</p>';
+    box.hidden = false;
+    var cs = window.getComputedStyle ? getComputedStyle(box) : null;
+    var cw = box.clientWidth ? box.clientWidth - (cs ? parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) : 36) : 640;
     if (!compact && !v.old) {
-      h += chartSvg(v.hist);
+      h += chartSvg(v.hist, cw);
       if (v.range) h += '<p class="fx-note">' + v.range + '</p>';
     }
     h += '<details><summary>What this number is</summary><ul>' +
@@ -228,7 +233,7 @@
       '</ul></details>';
     h += '<p class="fx-src">' + RMA_CREDIT + '</p>';
     box.innerHTML = h; box.hidden = false;
-    if (!compact && !v.old) wireChart(box, v.hist);
+    if (!compact && !v.old) wireChart(box, v.hist, cw);
   }
 
   function drawTable(box, d) {
@@ -284,7 +289,7 @@
     fetch('/data/feeder-index.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (d) {
       Array.prototype.forEach.call(boxes, function (box) {
         var k = box.getAttribute('data-feeder');
-        try { if (k === 'rma') drawRma(box, d); else if (k === 'table') drawTable(box, d); } catch (e) { /* a broken file never breaks the page */ }
+        try { if (k === "rma") drawRma(box, d); else if (k === "table") drawTable(box, d); } catch (e) { if (window.console) console.warn("feeder box", e); }
       });
     });
   }
