@@ -393,7 +393,8 @@ def read_inputs(root):
 def write(root, doc):
     path = root / OUT
     tmp = path.with_name(path.name + ".tmp")
-    tmp.write_text(json.dumps(doc, separators=(",", ":"), ensure_ascii=False) + "\n")
+    with open(tmp, "w") as f:
+        f.write(json.dumps(doc, separators=(",", ":"), ensure_ascii=False) + "\n")
     os.replace(tmp, path)
 
 

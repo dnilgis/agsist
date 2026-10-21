@@ -82,7 +82,7 @@ jobs:
       # AGSIST weekly feeder prices by region and weight, and RMA's feeder steer
       # value beside the futures (data/feeder-index.json, read by
       # components/feeder-index.js on the cattle, sale barn and LRP pages). It
-      # reads data/lrp/ and data/prices.json as committed; a failure here never
+      # reads the LRP and futures files as committed; a failure here never
       # holds back the barn prices.
       - name: Build data/feeder-index.json
         if: ${{ !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
