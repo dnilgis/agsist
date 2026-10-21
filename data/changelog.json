@@ -1,7 +1,42 @@
 {
- "updated": "2026-10-14",
+ "updated": "2026-10-21",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-21",
+   "items": [
+    {
+     "tag": "improved",
+     "page": "/",
+     "name": "A new browser and home-screen icon",
+     "text": "The tab icon and the home-screen icon are now a red barn with a gold door on the AGSIST green tile, drawn to stay clear at 16 pixels in light and dark tab strips. The whole icon set is about 50 KB, down from about 650 KB."
+    },
+    {
+     "tag": "new",
+     "page": "/rain-print",
+     "name": "Temperature stripes on a Rain Print",
+     "text": "A Rain Print can now carry a band of temperature stripes: each day colored by how far its high ran above or below the station's normal, with the hottest and coldest days named and a small key."
+    },
+    {
+     "tag": "new",
+     "page": "/cot",
+     "name": "Funds this week and the WASDE summary by email",
+     "text": "Two free lists of their own: after each COT report, where the big funds sit in corn, soybeans, wheat, cattle and hogs; and the afternoon of each WASDE and Grain Stocks report, what USDA printed against what the trade expected."
+    },
+    {
+     "tag": "new",
+     "page": "/cattle-auction-prices",
+     "name": "Feeder cattle prices by region and weight",
+     "text": "Weekly feeder steer and heifer prices at the USDA-reported barns we read, by region and 100 lb class, and RMA's feeder steer value beside the futures on the cattle and LRP pages."
+    },
+    {
+     "tag": "improved",
+     "page": "/rain-print",
+     "name": "Link previews on shared pages",
+     "text": "Rain Print short links, gift cards, Field Scout reports and the sponsor sheets now show a title, a line and a picture when pasted into a text or a post, and the hail storm pages carry a description."
+    }
+   ]
+  },
   {
    "date": "2026-10-14",
    "items": [
