@@ -14,7 +14,7 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 
 test("the drawing is stable and uses the wordmark colours", () => {
   assert.equal(drawIcon(), drawIcon());
-  for (const c of ["#16301F", "#F4EFE1", "#D4A23F"]) assert.ok(drawIcon().includes(c), c);
+  for (const c of ["#16301F", "#F4EFE1", "#D4A23F", "#B5442E"]) assert.ok(drawIcon().includes(c), c);   // tile, roof, door and loft, barn
   assert.ok(!drawIcon({ dark: false }).includes("prefers-color-scheme"), "the PNG sources have no media query");
 });
 
