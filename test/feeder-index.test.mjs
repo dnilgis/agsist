@@ -48,8 +48,9 @@ const D = {
 test('RMA box: value with its date, futures for the same day, and the difference', () => {
   const v = V.rmaView(D, NOW);
   assert.equal(v.val, '$341.47');
-  assert.match(v.meta, /^Oct 12, 2026 &middot; as published by USDA RMA$/);
-  assert.equal(v.fut, 'GFV26 settle Oct 12: $340.00');
+  assert.equal(v.date, 'Oct 12, 2026');
+  assert.match(v.meta, /^Ending value, steers 6 to 10 cwt, <a href="https:\/\/pubfs-rma\.fpac\.usda\.gov\/pub\/References\/adm_livestock\/" rel="noopener">USDA RMA<\/a>\.$/);
+  assert.equal(v.fut, 'RMA minus GFV26 settle $340.00');
   assert.equal(v.diff, '+$1.47');
   assert.match(v.range, /^Since Sep 1, 2026: low \$330\.00 on Sep 1, 2026, high \$359\.00 on Sep 30, 2026 \(30 days with a value\)\.$/);
 });
@@ -65,7 +66,7 @@ test('RMA box: the label never calls the value the CME index', () => {
 test('RMA box: no settle for the day says so, an old value is a dash, a missing file says it did not load', () => {
   const noFut = V.rmaView({ ...D, rma: { ...D.rma, fut: null, diff: null } }, NOW);
   assert.equal(noFut.diff, null);
-  assert.match(noFut.futNote, /No feeder futures settle held for Oct 12, 2026/);
+  assert.match(noFut.futNote, /^No futures settle held for Oct 12\.$/);
   const old = V.rmaView(D, Date.parse('2026-11-05T15:00:00Z'));
   assert.equal(old.val, '-');
   assert.match(old.meta, /^Latest held: Oct 12, 2026\. RMA has not posted a newer value/);

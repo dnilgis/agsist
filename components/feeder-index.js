@@ -28,9 +28,9 @@
   // RMA box. Returns null when there is nothing to draw; {down:true,...} for a
   // source that did not load or is out of date (the page says so in words).
   function rmaView(d, nowMs) {
-    if (!d || typeof d !== 'object') return { down: true, msg: 'RMA&rsquo;s feeder value did not load. It is on RMA&rsquo;s own files at pubfs-rma.fpac.usda.gov.' };
+    if (!d || typeof d !== 'object') return { down: true, msg: 'This value did not load. It is in <a href="https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/" rel="noopener">USDA RMA&rsquo;s own files</a>.' };
     var r = d.rma;
-    if (!r || !r.ok || !fxNum(r.value) || r.value <= 0 || !isFinite(fxDay(r.date))) return { down: true, msg: 'RMA&rsquo;s feeder value could not be read on the last run. Nothing is filled in.' };
+    if (!r || !r.ok || !fxNum(r.value) || r.value <= 0 || !isFinite(fxDay(r.date))) return { down: true, msg: 'USDA RMA&rsquo;s value could not be read on the last run, so nothing is shown.' };
     var age = (nowMs - fxDay(r.date)) / 864e5;
     var old = age > RMA_OLD_DAYS;
     var out = {
@@ -38,17 +38,17 @@
       val: old ? '-' : fxMoney(r.value),
       date: fxLab(r.date),
       meta: old ? ('Latest held: ' + fxLab(r.date) + '. RMA has not posted a newer value, so it is not shown.')
-                : (fxLab(r.date) + ' &middot; as published by USDA RMA'),
+                : ('Ending value, steers 6 to 10 cwt, <a href="https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/" rel="noopener">USDA RMA</a>.'),
       label: r.label || '',
       basis: r.basis_note || '',
       fut: null, diff: null, futNote: ''
     };
     if (!old && r.fut && fxNum(r.fut.settle) && fxNum(r.diff)) {
-      out.fut = (r.fut.ticker || 'Nearby') + ' settle ' + fxLab(r.fut.date, true) + ': ' + fxMoney(r.fut.settle);
+      out.fut = 'RMA minus ' + (r.fut.ticker || 'nearby') + ' settle ' + fxMoney(r.fut.settle);
       out.diff = fxSigned(r.diff);
       out.diffWord = r.diff > 0 ? 'over' : r.diff < 0 ? 'under' : 'even with';
     } else if (!old) {
-      out.futNote = 'No feeder futures settle held for ' + fxLab(r.date) + ', so no difference is shown. We keep each day&rsquo;s settle from Oct 15, 2026 on.';
+      out.futNote = 'No futures settle held for ' + fxLab(r.date, true) + '.';
     }
     var h = (r.hist || []).filter(function (p) { return p && fxNum(p[1]) && isFinite(fxDay(p[0])); });
     out.hist = h;
@@ -162,14 +162,15 @@
     hit.addEventListener('mouseleave', off);
   }
 
-  var CSS = '.fx{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:1rem 1.1rem;margin:0 0 1rem}' +
-    '.fx h2,.fx h3{margin:0 0 .25rem;font-size:1.08rem;color:var(--text)}' +
+  var CSS = '.fx{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:.85rem 1.1rem;margin:0 0 .6rem}' +
+    '.fx h2,.fx h3{margin:0 0 .15rem;font-size:1.08rem;color:var(--text)}' +
+    '.fx .fx-lbl{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted,var(--text-dim));font-weight:700;margin:0}' +
     '.fx .fx-sub{margin:0 0 .5rem;font-size:.86rem;color:var(--text-muted,var(--text-dim))}' +
-    '.fx .fx-val{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:2rem;line-height:1.1;color:var(--text)}' +
+    '.fx .fx-val{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:1.9rem;line-height:1.1;margin:.15rem 0 0;color:var(--text)}' +
     '.fx .fx-val small{font-size:.8rem;font-weight:400;color:var(--text-muted,var(--text-dim))}' +
     '.fx .fx-row{display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;margin:.4rem 0;font-size:.9rem}' +
     '.fx .fx-row b{font-family:"JetBrains Mono",monospace}' +
-    '.fx .fx-note{font-size:.84rem;color:var(--text-muted,var(--text-dim));margin:.35rem 0;line-height:1.5}' +
+    '.fx .fx-note{font-size:.84rem;color:var(--text-muted,var(--text-dim));margin:.25rem 0;line-height:1.45}' +
     '.fx .fx-src{font-size:.8rem;color:var(--text-muted,var(--text-dim));margin:.5rem 0 0;line-height:1.5}' +
     '.fx .fx-src a{text-decoration:underline}' +
     '.fx .fx-down{font-size:.9rem;color:var(--text-dim);margin:.2rem 0}' +
@@ -180,7 +181,7 @@
     '.fx .fx-cross{stroke:var(--text-muted,var(--text-dim));stroke-width:1;stroke-dasharray:3 3}' +
     '.fx .fx-dot{fill:var(--gold,#d4a23f);stroke:var(--surface);stroke-width:2}' +
     '.fx .fx-tip{min-height:1.2em;margin:.1rem 0 0;font-family:"JetBrains Mono",monospace;font-size:.82rem;color:var(--text)}' +
-    '.fx details{margin:.5rem 0 0;font-size:.86rem}.fx summary{cursor:pointer;font-weight:600;color:var(--text)}' +
+    '.fx details{margin:.3rem 0 0;font-size:.86rem}.fx summary{cursor:pointer;font-weight:600;color:var(--text)}' +
     '.fx details ul{padding-left:1.1rem;margin:.4rem 0}.fx details li{margin:.2rem 0;color:var(--text-dim)}' +
     '.fx .fx-seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--border);border-radius:10px;overflow:hidden;max-width:100%;margin:0 .5rem .5rem 0}' +
     '.fx .fx-seg button{min-height:40px;padding:0 .7rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.86rem;font-weight:700;cursor:pointer}' +
@@ -194,7 +195,7 @@
     '.fx .fx-t td small{display:block;font-size:.74rem;color:var(--text-muted,var(--text-dim));font-weight:400;font-family:var(--font-body,Inter,system-ui,sans-serif)}' +
     '.fx .fx-t td.c{font-family:"JetBrains Mono",monospace}.fx .fx-t td.c.up{color:var(--green)}.fx .fx-t td.c.dn{color:var(--red)}' +
     '' +
-    '@media(max-width:480px){.fx{padding:.8rem .7rem}.fx .fx-t{font-size:.82rem}.fx .fx-t th,.fx .fx-t td{padding:.35rem .25rem}.fx .fx-val{font-size:1.7rem}}';
+    '@media(max-width:480px){.fx{padding:.7rem .7rem}.fx .fx-t{font-size:.82rem}.fx .fx-t th,.fx .fx-t td{padding:.35rem .25rem}.fx .fx-val{font-size:1.7rem}}';
 
   function injectCss() {
     if (document.getElementById('fx-css')) return;
@@ -208,30 +209,29 @@
   function drawRma(box, d) {
     var v = rmaView(d, Date.now());
     var compact = box.getAttribute('data-compact') === '1';
-    var h = '<h2>Feeder steers, RMA&rsquo;s daily value</h2>';
+    var h = '<h2 class="fx-lbl">Feeder steers, RMA LRP value</h2>';
     if (!v || v.down) {
-      box.innerHTML = h + '<p class="fx-down">' + (v ? v.msg : '') + '</p><p class="fx-src">' + RMA_CREDIT + '</p>';
+      box.innerHTML = h + '<p class="fx-down">' + (v ? v.msg : '') + '</p>';
       box.hidden = false; return;
     }
-    h += '<p class="fx-sub">' + esc(v.label) + '</p>' +
-      '<div class="fx-val">' + v.val + (v.old ? '' : ' <small>$/cwt</small>') + '</div>' +
+    h += '<div class="fx-val">' + v.val + (v.old ? '' : ' <small>$/cwt &middot; ' + v.date + '</small>') + '</div>' +
       '<p class="fx-note">' + v.meta + '</p>';
-    if (v.fut) h += '<div class="fx-row"><span>Nearby futures, ' + esc(v.fut) + '</span><span>RMA value minus futures: <b>' + esc(v.diff) + '</b></span></div>';
+    if (v.fut) h += '<p class="fx-note">' + esc(v.fut) + ': <b>' + esc(v.diff) + '</b></p>';
     else if (v.futNote) h += '<p class="fx-note">' + v.futNote + '</p>';
     box.hidden = false;
     var cs = window.getComputedStyle ? getComputedStyle(box) : null;
     var cw = box.clientWidth ? box.clientWidth - (cs ? parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) : 36) : 640;
-    if (!compact && !v.old) {
+    h += '<details><summary>' + (!compact && !v.old && v.hist.length >= 20 ? 'The past year, and what this number is' : 'What this number is') + '</summary>';
+    if (!compact && !v.old && v.hist.length >= 20) {
       h += chartSvg(v.hist, cw);
       if (v.range) h += '<p class="fx-note">' + v.range + '</p>';
     }
-    h += '<details><summary>What this number is</summary><ul>' +
-      '<li>' + v.basis + '</li>' +
+    h += '<ul>' +
+      '<li>' + esc(v.label) + '. ' + v.basis + '</li>' +
       '<li>The handbook says RMA applies each type&rsquo;s price adjustment factor before it publishes. This is the type with a factor of 1.00: steers, 6 to 10 cwt. Heifers and lighter steers are this value times their factor.</li>' +
       '<li>Dated by the end date RMA gives it. RMA posts it a few business days later, so the newest value lags the board.</li>' +
-      '<li>The difference is RMA&rsquo;s value minus the nearby feeder futures settle on the same date, only on days we hold that settle.</li>' +
-      '</ul></details>';
-    h += '<p class="fx-src">' + RMA_CREDIT + '</p>';
+      '<li>The difference is RMA&rsquo;s value minus the nearby feeder futures settle on the same date, only on days we hold that settle (we keep them from Oct 15, 2026 on).</li>' +
+      '</ul><p class="fx-src">' + RMA_CREDIT + '</p></details>';
     box.innerHTML = h; box.hidden = false;
     if (!compact && !v.old) wireChart(box, v.hist, cw);
   }
