@@ -87,7 +87,8 @@ store.set('sub:' + OTHER, JSON.stringify(os_)); meta.set('sub:' + OTHER, os_);
 r = await call('/list?token=tok&format=json'); j = await r.json();
 const mine = j.find(x => x.email === E), other = j.find(x => x.email === OTHER);
 A(JSON.stringify(mine.el) === JSON.stringify(['0068bbc9', 'abcdef01']), '/list carries el');
-A(!('el' in other) && JSON.stringify(other) === JSON.stringify({ email: OTHER, zip: null, src: 'daily', ts: 1760000000001, reports: true }), 'a record without el is as before');
+const lidOf = (e) => [...crypto.createHmac('sha256', 'sec').update('lid|' + e.toLowerCase()).digest().subarray(0, 16)].map(b => '0123456789abcdefghjkmnpqrstvwxyz'[b & 31]).join('');
+A(!('el' in other) && JSON.stringify(other) === JSON.stringify({ email: OTHER, zip: null, src: 'daily', ts: 1760000000001, reports: true, lid: lidOf(OTHER) }), 'a record without el is as before (plus the v5.46 lid)');
 r = await call('/count?token=tok'); j = await r.json();
 A(j.daily === 2 && j.daily_with_elevators === 1, '/count daily_with_elevators');
 

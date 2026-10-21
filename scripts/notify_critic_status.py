@@ -11,11 +11,13 @@ Triggers an alert when:
   - The average score is under the threshold (7), or any rule scored 3 or less
     (since 2026-10-20; a passing issue with a few rules under 7 stays quiet)
 
-Env vars required:
-  GMAIL_USER       — sender Gmail address
-  GMAIL_APP_PASS   — Gmail app password (NOT the account password)
+Env vars: the same transport as every other sender (send_daily.py):
+  SMTP_USER, SMTP_PASS   the login (legacy GMAIL_USER, GMAIL_APP_PASS still read)
+  SMTP_HOST, SMTP_PORT   default smtp.gmail.com, 587 (STARTTLS)
+  FROM_ADDR              defaults to the login; required when the login is not
+                         an address (Amazon SES)
 
-Both should be set as repo secrets and exposed via the workflow YAML.
+All are repo secrets, exposed via the workflow YAML.
 
 Usage:
   python scripts/notify_critic_status.py
@@ -28,37 +30,45 @@ Exit codes:
 import json
 import os
 import smtplib
+import ssl
 import sys
 from email.mime.text import MIMEText
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import log_safe  # noqa: E402  sender_addr (SES-safe From) and mask_text (no address in the log)
+
 DAILY_PATH = REPO_ROOT / "data" / "daily.json"
 ALERT_TO = "sig@farmers1st.com"
 
 
 def send(subject: str, body: str) -> bool:
-    """Send email via Gmail SMTP. Returns True on success."""
-    user = os.environ.get("GMAIL_USER")
-    pwd = os.environ.get("GMAIL_APP_PASS")
+    """Send email over SMTP_HOST:SMTP_PORT with STARTTLS. Returns True on success."""
+    user = (os.environ.get("SMTP_USER") or os.environ.get("GMAIL_USER") or "").strip()
+    pwd = (os.environ.get("SMTP_PASS") or os.environ.get("GMAIL_APP_PASS") or "").strip()
     if not user or not pwd:
-        print("[warn] GMAIL_USER or GMAIL_APP_PASS not set; can't send alert",
+        print("[warn] SMTP_USER or SMTP_PASS not set; can't send alert",
               file=sys.stderr)
         # Still print the alert content to the workflow log so it's not lost.
         print(f"[ALERT-NOSEND] {subject}\n{body}", file=sys.stderr)
         return False
     msg = MIMEText(body)
     msg["Subject"] = subject
-    msg["From"] = user
     msg["To"] = ALERT_TO
     try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
+        msg["From"] = log_safe.sender_addr()
+        host = (os.environ.get("SMTP_HOST") or "").strip() or "smtp.gmail.com"
+        port = int((os.environ.get("SMTP_PORT") or "").strip() or 587)
+        with smtplib.SMTP(host, port, timeout=30) as s:
+            s.starttls(context=ssl.create_default_context())
             s.login(user, pwd)
             s.send_message(msg)
-        print(f"  [ok] alert sent to {ALERT_TO}: {subject}")
+        print(f"  [ok] alert sent to Sig: {subject}")
         return True
     except Exception as e:
-        print(f"[error] alert email failed: {e}", file=sys.stderr)
+        print(f"[error] alert email failed: {type(e).__name__}: {log_safe.mask_text(e)}", file=sys.stderr)
+        print(f"[ALERT-NOSEND] {subject}\n{body}", file=sys.stderr)
         return False
 
 

@@ -103,6 +103,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe  # noqa: E402  (no address in the public log)
+import email_links  # noqa: E402  (k=<link id> links; never an address in one)
 
 REPO = Path(__file__).resolve().parent.parent
 BASIS_DIR = REPO / "data" / "basis"
@@ -156,12 +157,30 @@ def wid_for(state, facility, city, commodity):
     return f"{h:08x}"
 
 
+# Address -> link id (subs worker v5.46), from the /elevator-watch-list rows
+# main() reads (send_zip_alert.py fills it the same way).
+LINK_IDS = {}
+
+
 def link(base, path, email, wid, secret, kind):
+    """Subs worker v5.46: ?k=<the watcher's link id>[&w=]&t=hmac16(id + tail),
+    never the address. Raises email_links.LinkError when there is no id."""
     tail = {"c": "|ec|" + wid, "w1": "|ew|" + wid, "w": "|ew"}[kind]
-    q = "e=" + urllib.parse.quote(email.lower())
-    if kind in ("c", "w1"):
-        q += "&w=" + wid
-    return f"{base}/{path}?{q}&t={token(secret, email, tail)}"
+    mid = ("&w=" + wid) if kind in ("c", "w1") else ""
+    return email_links.signed(base, path, LINK_IDS.get(str(email).strip().lower()), secret, tail, mid)
+
+
+def link_ids_from(watchers, jobs_lists):
+    """Fills LINK_IDS from the list, and returns each job list with only the
+    addresses that have an id, plus how many waited (counts only)."""
+    LINK_IDS.clear()
+    LINK_IDS.update(email_links.link_ids(watchers))
+    out, waited = [], 0
+    for jl in jobs_lists:
+        keep = [x for x in jl if str(x[0]).strip().lower() in LINK_IDS]
+        waited += len(jl) - len(keep)
+        out.append(keep)
+    return out, waited
 
 
 def load_basis_index(now_ms=None):
@@ -361,7 +380,7 @@ def confirm_email(w, wid, label, base, secret, fn, fa, rt):
         f"Someone asked to watch {q} in AGSIST's cash bids using this address.",
         "If that was you, confirm below. Then you get an email when this elevator's posted basis changes.",
         "If it was not you, ignore this. Nothing starts until you confirm."], ("CONFIRM", go), foot), subtype="html")
-    return m
+    return email_links.check_message(m)
 
 
 def month_words(row):
@@ -395,7 +414,7 @@ def change_email(w, wid, label, old_basis, new_row, base, secret, fn, fa, rt):
     m.add_alternative(html_wrap(f"{label}, {dm}: basis moved", [
         line, "Posted price, not a contract. Freight, moisture and grade discounts are the elevator's. Call to confirm before you haul."],
         ("SEE ALL CASH BIDS", SITE + "/cash-bids"), foot), subtype="html")
-    return m
+    return email_links.check_message(m)
 
 
 def ppu(raw):
@@ -624,7 +643,7 @@ def opt_confirm_email(w, wid, label, base, secret, fn, fa, rt):
         "Someone asked for this cash bid alert on AGSIST using this address:", label,
         "If that was you, confirm below. It looks only at postings made after you confirm.",
         "If it was not you, ignore this. Nothing starts until you confirm."], ("CONFIRM", go), foot), subtype="html")
-    return m
+    return email_links.check_message(m)
 
 
 def opt_alert_email(w, wid, label, kind, old, row, base, secret, fn, fa, rt):
@@ -654,7 +673,7 @@ def opt_alert_email(w, wid, label, kind, old, row, base, secret, fn, fa, rt):
     m.add_alternative(html_wrap(head, lines + [tail,
         "Posted price, not a contract. Freight, moisture and grade discounts are the elevator's. Call to confirm before you haul."],
         ("SEE THE CARD", CARD_URL), foot), subtype="html")
-    return m
+    return email_links.check_message(m)
 
 
 def opt_ended_email(w, wid, label, old_plabel, row, base, secret, fn, fa, rt):
@@ -672,7 +691,7 @@ def opt_ended_email(w, wid, label, old_plabel, row, base, secret, fn, fa, rt):
                   f"-- \n{ADDRESS}\nStop all elevator watches: {stopall}\n")
     foot = f'{H.escape(ADDRESS)}<br><a href="{H.escape(stopall)}" style="color:#6b6b6b">Stop all</a>'
     m.add_alternative(html_wrap(f"{head}: alert ended", lines, ("SEE THE CARD", CARD_URL), foot), subtype="html")
-    return m
+    return email_links.check_message(m)
 
 
 def opt_condition_from_label(label):
@@ -831,6 +850,9 @@ def selftest():
     assert fmt_cents(0) == "0¢"
 
     s = "sec"
+    # subs worker v5.46: made-up link ids for the made-up watchers
+    LIDS = {"a@x.com": "00000000000000aa", "m@x.com": "00000000000000mm", "f@x.com": "00000000000000ff"}
+    link_ids_from([{"email": e, "lid": v} for e, v in LIDS.items()], [])
     row_old = {"basis": -25, "changedOn": "2026-09-10", "lastSeen": "2026-09-29"}
     row_new = {"basis": -30, "changedOn": "2026-09-29", "lastSeen": "2026-09-29"}
     assert basis_key(row_old) != basis_key(row_new)
@@ -885,11 +907,25 @@ def selftest():
 
     m = confirm_email("a@x.com", "wA", "ADM Altamont, IL — corn", "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     body = m.get_body(("plain",)).get_content()
-    assert "PO Box 243, Chetek, WI 54728" in body and "elevator-watch-confirm?e=a%40x.com&w=wA&t=" in body
+    assert "PO Box 243, Chetek, WI 54728" in body and "elevator-watch-confirm?k=00000000000000aa&w=wA&t=%s" % token(s, "00000000000000aa", "|ec|wA") in body
     assert m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click"
     m2 = change_email("a@x.com", "wC", "Chatham Coop, IL — corn", row_old["basis"], row_new, "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     b2 = m2.get_body(("plain",)).get_content()
     assert "PO Box 243" in b2 and "Stop all elevator watches" in b2 and "-25¢" in b2.replace("−", "-") and "-30¢" in b2.replace("−", "-")
+    assert "elevator-watch-unsubscribe?k=00000000000000aa&t=%s" % token(s, "00000000000000aa", "|ew") in b2
+    for mm0 in (m, m2, mm_):
+        h0, t0 = mm0.get_body(("html",)).get_content(), mm0.get_body(("plain",)).get_content()
+        assert not [u for u in email_links.hrefs(h0) if "@" in u or "%40" in u.lower()], "v5.46: an @ inside an href"
+        assert not email_links.bad_links(t0) and "?e=" not in t0 + h0 and "@" not in str(mm0["List-Unsubscribe"]), "v5.46: an address in a link"
+    try:
+        confirm_email("nobody@x.com", "wA", "x", "https://w.dev", s, "AGSIST", "n@agsist.com", None)
+        raise AssertionError("v5.46: a watcher with no link id was given an email")
+    except email_links.LinkError:
+        pass
+    (k1, k2), waited = link_ids_from([{"email": "a@x.com", "lid": "00000000000000aa"}, {"email": "q@x.com"}],
+                                     ([("a@x.com", 1), ("q@x.com", 2)], [("Q@x.com", 3)]))
+    assert k1 == [("a@x.com", 1)] and k2 == [] and waited == 2, (k1, k2, waited)
+    link_ids_from([{"email": e, "lid": v} for e, v in LIDS.items()], [])
     # The display town is printed when the bids merge set one; `city` otherwise.
     assert net_name({"facility": "Walsh Grain", "city": "Walsh Grain", "town": "Mauston", "state": "WI"}) \
         == "Walsh Grain, Mauston, WI"
@@ -1014,11 +1050,15 @@ def selftest_alerts():
     mm = opt_alert_email("f@x.com", "up", got["up"][2], "cash", 436, got["up"][5], "https://w.dev", "sec", "AGSIST", "n@agsist.com", None)
     body = mm.get_body(("plain",)).get_content()
     for part in ("Adell Cooperative, Adell, WI, corn Oct 2026", "Cash: $4.52 now, $4.36 when this alert started.", "Oct 3, 11:30 AM CT",
-                 "https://agsist.com/#f1", "fired and is now cleared", "PO Box 243", "elevator-watch-unsubscribe?e=f%40x.com&w=up&t="):
+                 "https://agsist.com/#f1", "fired and is now cleared", "PO Box 243", "elevator-watch-unsubscribe?k=00000000000000ff&w=up&t="):
         assert part in body, part
     assert mm["Subject"] == "Adell Cooperative, Adell, WI, corn Oct 2026: cash reached $4.52", mm["Subject"]
     mv = opt_alert_email("f@x.com", "mv5", got["mv5"][2], "move", -65, got["mv5"][5], "https://w.dev", "sec", "AGSIST", "n@agsist.com", None)
     assert "Basis: \u221260\u00a2 now, \u221265\u00a2 at the last alert" in mv.get_body(("plain",)).get_content() and "cleared" not in mv.get_body(("plain",)).get_content()
+    for mm0 in (mm, mv, em):
+        h0, t0 = mm0.get_body(("html",)).get_content(), mm0.get_body(("plain",)).get_content()
+        assert not [u for u in email_links.hrefs(h0) if "@" in u or "%40" in u.lower()], "v5.46: an @ inside an href"
+        assert not email_links.bad_links(t0) and "?e=" not in t0 + h0, "v5.46: an address in a link"
     assert "<b>spoof</b>" not in opt_confirm_email("f@x.com", "p1", cf[0][2], "https://w.dev", "sec", "AGSIST", "n@agsist.com", None).as_string()
 
     # ZIP-wide alerts (scripts/send_zip_alert.py) are never planned, counted or printed here.
@@ -1066,6 +1106,10 @@ def main():
           f"confirmations {len(confirms)}+{len(oconf)}; changes {len(chg)}; alerts {len(osend)}; ended {len(oend)}; "
           f"baselines {len(bs)}+{len(obase)}")
     print("pending: " + pend_summary(watchers, basis_idx, net_idx, now_ms))
+    # v5.46: mail only watchers the worker gave a link id; the rest wait for the next run (counts only)
+    (confirms, oconf, chg, osend, oend), waited = link_ids_from(watchers, (confirms, oconf, chg, osend, oend))
+    if waited:
+        print(f"::warning::{waited} email(s) wait: no link id this run")
     if dry:
         for x in confirms + oconf:
             print("would confirm", log_safe.mask(x[0]), x[1], x[2])
@@ -1080,7 +1124,7 @@ def main():
         worker(base, "elevator-watch-mark", tok, basis_mark(e, w, label, row))
     for e, w, label, row, val in obase:            # silent, no mail: the last note an alert compares against
         worker(base, "elevator-watch-mark", tok, dict({"email": e, "wid": w}, **alert_mark(row, val)))
-    fn, fa, rt = env("FROM_NAME", "AGSIST Cash Bids"), env("FROM_ADDR") or env("SMTP_USER"), env("REPLY_TO")
+    fn, fa, rt = env("FROM_NAME", "AGSIST Cash Bids"), log_safe.sender_addr(None), env("REPLY_TO")
     sent, failed = 0, []
     jobs = ([("c", x) for x in confirms] + [("oc", x) for x in oconf]
             + [("m", x) for x in chg] + [("oa", x) for x in osend] + [("oe", x) for x in oend])

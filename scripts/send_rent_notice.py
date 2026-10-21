@@ -46,6 +46,7 @@ from zoneinfo import ZoneInfo
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 sys.path.insert(0, str(HERE))
+import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 import send_notice as SN               # noqa: E402  transport, render, unsubscribe link, mark
 import build_state_rent_pages as BR    # noqa: E402  state_stats, money, names, release dates
 
@@ -179,7 +180,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
         out("LIST_URL, LIST_TOKEN and UNSUB_SECRET are required")
         return 1
     base = base.rstrip("/")
-    from_addr = SN.env("FROM_ADDR") or SN.env("SMTP_USER") or "news@agsist.com"
+    from_addr = log_safe.sender_addr("news@agsist.com")
     reply_to = SN.env("REPLY_TO")
     data = load(repo)
     out("date %s (America/Chicago), %d state rent files, mode %s" % (today.isoformat(), len(data), "SEND" if send else "dry run"))
@@ -202,10 +203,11 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
         m = TOPIC_RE.fullmatch(t)
         ts = r.get("ts")
         if not m or (want and t != want) or r.get("sent") or not SN.EMAIL_RE.match(e) or (e, t) in seen \
-                or not isinstance(ts, (int, float)) or isinstance(ts, bool):
-            skipped += 1
+                or not isinstance(ts, (int, float)) or isinstance(ts, bool) or not SN.email_links.lid_of(r):
+            skipped += 1   # v5.46: a row with no link id waits for the next run
             continue
         seen.add((e, t))
+        SN.LINK_IDS[e] = SN.email_links.lid_of(r)
         st = m.group(1).upper()
         if st not in data:
             unknown[st] = unknown.get(st, 0) + 1
@@ -232,7 +234,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     if not send:
         ex = next((st for st in ("IA",) + tuple(sorted(pub)) if st in data and pub.get(st, (None,))[0]), None)
         if ex:
-            m = SN.render("rent:" + ex.lower(), "", "reader@example.com", base, "preview", today, from_addr, reply_to, repo)
+            m = SN.render("rent:" + ex.lower(), "", "reader@example.com", base, "preview", today, from_addr, reply_to, repo,
+                          lid=SN.email_links.SAMPLE_LID)
             out("preview (a made-up address and unsubscribe token):")
             out("Subject: " + str(m["Subject"]))
             out(m.get_body(("plain",)).get_content().rstrip())
@@ -349,7 +352,12 @@ def selftest():
     os.environ.update({"LIST_URL": "https://w.dev", "LIST_TOKEN": "tok", "UNSUB_SECRET": "sec",
                        "SMTP_USER": "news@agsist.com", "MAX_PER_RUN": "200"})
     SN.TEMPLATES["rent"] = make_parts(data, {"IA": (r27, "release date"), "WI": (5, "first commit")})
+    SN.LINK_IDS["a@example.com"] = SN.email_links.SAMPLE_LID
     m = SN.render("rent:ia", "rent:ia", "a@example.com", "https://w.dev", "sec", datetime(2027, 8, 25).date(), "news@agsist.com", None, tmp)
+    _h, _t = m.get_body(("html",)).get_content(), m.get_body(("plain",)).get_content()
+    ck("no @ inside any href, no address in a text link (subs worker v5.46)",
+       not [x for x in SN.email_links.hrefs(_h) if "@" in x or "%40" in x.lower()] and not SN.email_links.bad_links(_t)
+       and "k=" + SN.email_links.SAMPLE_LID + "&t=" in _t)
     txt = m.get_body(("plain",)).get_content()
     htm = m.get_body(("html",)).get_content()
     ck("subject", m["Subject"] == "Iowa county cash rents for 2027 are out", m["Subject"])
@@ -382,7 +390,8 @@ def selftest():
             assert qs.get("token") == ["tok"]
             if method == "GET" and u.path == "/notice-list":
                 self.log.append(qs.get("topic", [""])[0])
-                return [{"email": e, "topic": v["topic"], "ts": v["ts"], "src": "rent:" + v["topic"][5:], "sent": v["sent"]}
+                return [{"email": e, "topic": v["topic"], "ts": v["ts"], "src": "rent:" + v["topic"][5:], "sent": v["sent"],
+                         "lid": "0000000000%06x" % (sum(map(ord, e)) % 0xffffff)}
                         for e, v in self.t.items() if not (qs.get("unsent") == ["1"] and v["sent"])]
             if method == "POST" and u.path == "/notice-mark":
                 self.marks.append(body["email"])
@@ -415,7 +424,7 @@ def selftest():
     w, s = Worker(), SMTP()
     rc, log = go([], w, s)
     ck("dry run: sends and marks nothing, previews a made-up address", rc == 0 and not s.sent and not w.marks
-       and "reader%40example.com" in log and not any(e in log for e in addrs), log)
+       and "k=" + SN.email_links.SAMPLE_LID in log and "%40" not in log and not any(e in log for e in addrs), log)
     rc, log = go(["--send"], w, s)
     ck("mails the Iowa notices made before the release, not the one made after it",
        sorted(s.sent) == ["before@example.com", "early@example.com"], s.sent)

@@ -55,8 +55,10 @@ from zoneinfo import ZoneInfo
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 sys.path.insert(0, str(HERE))
+import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 import build_arc_plc as AP              # noqa: E402  deadlines and signup facts, one copy
 from send_watch import token, base_msg  # noqa: E402  the worker's hmac16, and the message headers
+import email_links                      # noqa: E402  k=<link id> links; never an address in one
 
 SITE = "https://agsist.com"
 TZ = ZoneInfo("America/Chicago")
@@ -127,10 +129,14 @@ def page_for(src, repo=REPO):
     return page, None, False
 
 
-def unsub_link(base, secret, email, topic):
-    e = email.strip().lower()
-    return "%s/notice-unsubscribe?e=%s&t=%s&topic=%s" % (
-        base.rstrip("/"), urllib.parse.quote(e), token(secret, e, ""), urllib.parse.quote(topic))
+# Address -> the reader's link id (subs worker v5.46), from the /notice-list
+# rows each run reads. render() looks the id up here unless it is given one.
+LINK_IDS = {}
+
+
+def unsub_link(base, secret, lid, topic):
+    """Subs worker v5.46: ?k=<link id>&t=hmac16(id)&topic=, never the address."""
+    return email_links.signed(base, "notice-unsubscribe", lid, secret, end="&topic=" + urllib.parse.quote(topic))
 
 
 def arcplc_parts(topic, src, today, repo=REPO):
@@ -159,9 +165,10 @@ def arcplc_parts(topic, src, today, repo=REPO):
 TEMPLATES = {"arcplc": arcplc_parts}
 
 
-def render(topic, src, email, base, secret, today, from_addr, reply_to, repo=REPO):
+def render(topic, src, email, base, secret, today, from_addr, reply_to, repo=REPO, lid=None):
     subject, paras = TEMPLATES[topic.split(":", 1)[0]](topic, src, today, repo)
-    stop = unsub_link(base, secret, email, topic)
+    # raises email_links.LinkError when the reader has no link id: no mail without one
+    stop = unsub_link(base, secret, lid or LINK_IDS.get(str(email).strip().lower()), topic)
     text = "\n\n".join("".join(t for t, _ in p) for p in paras)
     text += "\n\n" + SIGNATURE + "\n\n-- \n" + FOOT_LINE + "\nUnsubscribe: " + stop + "\n" + POSTAL + "\n"
     e = H.escape
@@ -183,7 +190,7 @@ def render(topic, src, email, base, secret, today, from_addr, reply_to, repo=REP
     m = base_msg(email, subject, FROM_NAME, from_addr, reply_to, stop)
     m.set_content(text)
     m.add_alternative(htm, subtype="html")
-    return m
+    return email_links.check_message(m)   # v5.46: refuses an address in any link
 
 
 # ---------------------------------------------------------------- transport
@@ -258,7 +265,7 @@ def run(argv, http=http_json, connect=smtp_connect, now=None, sleep=time.sleep, 
         out("LIST_URL, LIST_TOKEN and UNSUB_SECRET are required")
         return 1
     base = base.rstrip("/")
-    from_addr = env("FROM_ADDR") or env("SMTP_USER") or "news@agsist.com"
+    from_addr = log_safe.sender_addr("news@agsist.com")
     reply_to = env("REPLY_TO")
     out("date %s (America/Chicago), mode %s" % (today.isoformat(), "SEND" if send else "dry run"))
 
@@ -277,10 +284,12 @@ def run(argv, http=http_json, connect=smtp_connect, now=None, sleep=time.sleep, 
         todo, seen, skipped = [], set(), 0
         for r in rows:
             e = str((r or {}).get("email") or "").strip().lower()
-            if (r or {}).get("topic") != topic or (r or {}).get("sent") or not EMAIL_RE.match(e) or e in seen:
+            lid = email_links.lid_of(r)   # v5.46: no link id, no mail this run
+            if (r or {}).get("topic") != topic or (r or {}).get("sent") or not EMAIL_RE.match(e) or e in seen or not lid:
                 skipped += 1
                 continue
             seen.add(e)
+            LINK_IDS[e] = lid
             todo.append((e, str(r.get("src") or "")))
         later = max(0, len(todo) - a.max)
         todo = todo[:a.max]
@@ -291,8 +300,8 @@ def run(argv, http=http_json, connect=smtp_connect, now=None, sleep=time.sleep, 
 
         if not send:
             m = render(topic, "page:arc-plc/wisconsin/chippewa-county", "reader@example.com", base, "preview",
-                       today, from_addr, reply_to)
-            out("preview (a made-up address and county, a made-up unsubscribe token):")
+                       today, from_addr, reply_to, lid=email_links.SAMPLE_LID)
+            out("preview (a made-up address, county and link id, a made-up unsubscribe token):")
             out("Subject: " + str(m["Subject"]))
             out(m.get_body(("plain",)).get_content().rstrip())
             out("dry run: nothing sent, nothing marked. Pass --send to mail.")
@@ -402,12 +411,15 @@ def selftest():
     ck("state page source links the state page, no sheet", pg.startswith(SITE + "/arc-plc/wisconsin?") and sh is None)
 
     # the unsubscribe link: the worker's own hmac16 and route
-    u = unsub_link("https://w.dev/", "sec", "A@Farm.com", T)
+    L0 = email_links.SAMPLE_LID
+    LINK_IDS["a@farm.com"] = L0
+    u = unsub_link("https://w.dev/", "sec", L0, T)
     q = urllib.parse.parse_qs(urllib.parse.urlsplit(u).query)
-    ck("unsubscribe link: lowercased address, topic, worker path",
-       u.startswith("https://w.dev/notice-unsubscribe?") and q["e"] == ["a@farm.com"] and q["topic"] == [T])
-    ck("token is HMAC-SHA256 of the address, first 16 hex (the daily's)",
-       q["t"] == [hmac.new(b"sec", b"a@farm.com", hashlib.sha256).hexdigest()[:16]])
+    ck("unsubscribe link: link id, topic, worker path, no address (v5.46)",
+       u.startswith("https://w.dev/notice-unsubscribe?k=" + L0 + "&") and q["k"] == [L0] and q["topic"] == [T] and "e" not in q
+       and "@" not in u and "%40" not in u)
+    ck("token is HMAC-SHA256 of the link id, first 16 hex (the daily's recipe)",
+       q["t"] == [hmac.new(b"sec", L0.encode(), hashlib.sha256).hexdigest()[:16]])
     node = shutil.which("node")
     if node:
         js = (
@@ -415,7 +427,7 @@ def selftest():
             "import {pathToFileURL} from 'node:url';"
             "const t=path.join(os.tmpdir(),'sn-'+process.pid+'.mjs');fs.copyFileSync(process.argv[1],t);"
             "const w=(await import(pathToFileURL(t).href)).default;fs.unlinkSync(t);"
-            "const env={UNSUB_SECRET:'sec',SUBS:{async get(){return null},async put(){},async delete(){},"
+            "const env={UNSUB_SECRET:'sec',SUBS:{async get(k){return k==='lid:" + L0 + "'?'a@farm.com':null},async put(){},async delete(){},"
             "async list(){return {keys:[],list_complete:true}}}};"
             "for (const u of process.argv.slice(2)){const r=await w.fetch(new Request(u),env);"
             "console.log((await r.text()).includes('Stop this notice for this address?')?'valid':'invalid');}")
@@ -440,8 +452,10 @@ def selftest():
     ck("signup facts are build_arc_plc's own", "Producers with a share in the crop sign. FSA says a landowner with no share interest, such as a cash-rent landlord, cannot enroll." in txt
        and "FSA-156EZ" in txt and "Do nothing for 2026 and that farm gets no 2026 payment." in txt)
     ck("signature", SIGNATURE in txt and H.escape(SIGNATURE) in htm)
-    ck("footer and postal address, both parts", POSTAL in txt and POSTAL in htm and "Unsubscribe: " + unsub_link("https://w.dev", "sec", "a@farm.com", T) in txt)
-    ck("List-Unsubscribe one-click header", m["List-Unsubscribe"] == "<%s>" % unsub_link("https://w.dev", "sec", "a@farm.com", T)
+    ck("footer and postal address, both parts", POSTAL in txt and POSTAL in htm and "Unsubscribe: " + unsub_link("https://w.dev", "sec", L0, T) in txt)
+    ck("no @ inside any href, no address in a text link (v5.46)",
+       not [x for x in email_links.hrefs(htm) if "@" in x or "%40" in x.lower()] and not email_links.bad_links(txt))
+    ck("List-Unsubscribe one-click header", m["List-Unsubscribe"] == "<%s>" % unsub_link("https://w.dev", "sec", L0, T)
        and m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click")
     low = (txt + htm).lower()
     ck("no em or en dash, no hype, no insurance or Farmers First",
@@ -460,7 +474,8 @@ def selftest():
 
     class Worker:
         def __init__(self):
-            self.t = {e: {"src": "page:arc-plc/wisconsin/chippewa-county", "sent": None} for e in addrs}
+            self.t = {e: {"src": "page:arc-plc/wisconsin/chippewa-county", "sent": None, "lid": "00000000000000" + "abcd"[i] + "0"}
+                      for i, e in enumerate(addrs)}
             self.t["done@farm.com"]["sent"] = 1
             self.log, self.marks, self.fail_marks = [], [], False
 
@@ -470,7 +485,7 @@ def selftest():
             assert qs.get("token") == ["tok"], "token missing"
             if method == "GET" and path == "/notice-list":
                 unsent = qs.get("unsent") == ["1"]
-                return [{"email": e, "topic": T, "ts": 1, "src": v["src"], "sent": v["sent"]}
+                return [dict({"email": e, "topic": T, "ts": 1, "src": v["src"], "sent": v["sent"]}, **({"lid": v["lid"]} if v.get("lid") else {}))
                         for e, v in self.t.items() if not (unsent and v["sent"])]
             if method == "POST" and path == "/notice-mark":
                 if self.fail_marks:
@@ -492,6 +507,7 @@ def selftest():
 
         def send_message(self, msg):
             to = msg["To"]
+            self.bodies = getattr(self, "bodies", []) + [msg]
             if to in self.refuse:
                 raise smtplib.SMTPRecipientsRefused({to: (550, b"no such user " + to.encode())})
             self.w.log.append(("send", to))
@@ -509,8 +525,8 @@ def selftest():
     s = SMTP(w)
     rc, log = go([], w, s)
     ck("dry run (the default) sends nothing and marks nothing", rc == 0 and not s.sent and not w.marks, log)
-    ck("dry run prints a preview with a made-up address only", "reader%40example.com" in log
-       and not any(e in log for e in addrs), log)
+    ck("dry run prints a preview with a made-up link id only", "k=" + email_links.SAMPLE_LID in log
+       and "%40" not in log and not any(e in log for e in addrs), log)
     rc, log = go(["--dry-run", "--send"], w, s)
     ck("--dry-run wins over --send", rc == 0 and not s.sent and not w.marks)
     rc, log = go(["--send"], w, s, "2026-12-03 08:10")
@@ -530,6 +546,15 @@ def selftest():
     s3 = SMTP(w)
     rc, log = go(["--send"], w, s3)
     ck("third run mails nobody", rc == 0 and not s3.sent, s3.sent)
+    ck("every sent email: its own link id, no address in any link (v5.46)",
+       all("k=" + w.t[str(mm["To"])]["lid"] in mm.get_body(("plain",)).get_content()
+           and not [x for x in email_links.hrefs(mm.get_body(("html",)).get_content()) if "@" in x or "%40" in x.lower()]
+           and not email_links.bad_links(mm.get_body(("plain",)).get_content()) for mm in s.bodies + s2.bodies), len(s.bodies))
+    w = Worker()
+    w.t["three@farm.com"].pop("lid")
+    s = SMTP(w)
+    rc, log = go(["--send"], w, s)
+    ck("a row with no link id is not mailed (v5.46)", rc == 0 and sorted(s.sent) == ["one@farm.com", "two@farm.com"], s.sent)
 
     w = Worker()
     s = SMTP(w, refuse=set(addrs))
@@ -548,6 +573,37 @@ def selftest():
     s = SMTP(w)
     rc, log = go(["--send", "--max", "1"], w, s)
     ck("--max caps a run and the rest wait", rc == 0 and len(s.sent) == 1 and "2 left for the next run" in log, log)
+
+    # Amazon SES: the login is a key id, not an address, so FROM_ADDR must be set
+    saved_from = os.environ.pop("FROM_ADDR", None)
+    try:
+        os.environ["SMTP_USER"] = "AKIAEXAMPLEKEYID"
+        w = Worker()
+        s = SMTP(w)
+        raised = ""
+        try:
+            go(["--send"], w, s)
+        except RuntimeError as ex:
+            raised = str(ex)
+        ck("SES login, no FROM_ADDR: stops before reading or sending, and says FROM_ADDR",
+           raised == log_safe.FROM_REQUIRED and not s.sent and not w.log, raised)
+        os.environ["FROM_ADDR"] = "news@agsist.com"
+        froms = []
+
+        class FromSMTP(SMTP):
+            def send_message(self, msg):
+                froms.append(msg["From"])
+                SMTP.send_message(self, msg)
+        w = Worker()
+        s = FromSMTP(w)
+        rc, log = go(["--send"], w, s)
+        ck("SES login with FROM_ADDR: sends From the FROM_ADDR, never the key id",
+           rc == 0 and len(s.sent) == 3 and froms and all("news@agsist.com" in f and "AKIA" not in f for f in froms), (rc, froms))
+    finally:
+        os.environ["SMTP_USER"] = "news@agsist.com"
+        os.environ.pop("FROM_ADDR", None)
+        if saved_from is not None:
+            os.environ["FROM_ADDR"] = saved_from
     w = Worker()
     s = SMTP(w)
     handed = []
