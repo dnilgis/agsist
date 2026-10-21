@@ -263,7 +263,8 @@
         <li><a href="/markets">All markets</a></li>
       </ul>
     </article>
-    <div data-signup-ask="Email me the cattle and grain markets every morning" data-source="page:cattle-auction-prices"></div>
+    <!-- 2026-10-21 (Sig): Funds this week, its own list (subs worker v5.44, notice topic cot), mailed by scripts/send_cot_weekly.py from cot-release-watch.yml. It replaces this page's Daily ask: one ask a page. -->
+    <div data-signup-ask="Email me Funds this week, after each COT report" data-topic="cot" data-source="cot-weekly:cattle-auction-prices" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Where the big funds sit in corn, soybeans, wheat, cattle and hogs against their 1-year range, one short email after CFTC posts its weekly report. Free, its own list."></div>
   </main>
   <div id="site-footer">
 <!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->

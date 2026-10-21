@@ -31,6 +31,17 @@
    data-after="YYYY-II" goes with a recurring notice (prf:<grid>): the
    newest interval already out, so the first email is the next one.
 
+   Two standing lists on the same route (worker v5.44, Sig Oct 21), each its
+   own list, never the Daily unless the reader ticks the box:
+     data-topic="reports"  the report-day email alone, the WASDE summary
+                           (scripts/send_report_day.py), source
+                           report:wasde:<page>;
+     data-topic="cot"      Funds this week, one email after each COT release
+                           (scripts/send_cot_weekly.py), source
+                           cot-weekly:<page>.
+   They count as the page's own ask (no bar), and GA4 gets notice_signup
+   {topic, source, ask_id} like every notice ask.
+
    This file also owns:
      - the second-visit bar (sitewide; components/loader.js loads this file),
      - the visit counter (agsist_visits, counted once per browser session),
@@ -573,6 +584,12 @@
                  only when the Daily was just taken without them (the menu
                  asks send reports:false). A Daily signup anywhere else
                  already gets them, so it is never offered there.
+     2026-10-21 (Sig), the two standing lists (worker v5.44, POST /notice):
+       wasde     the WASDE summary alone (topic reports, the same email),
+                 on report and futures pages, after a notice or alert signup
+                 by a reader not on the Daily (a Daily reader already gets it);
+       cot       Funds this week (topic cot, scripts/send_cot_weekly.py), on
+                 /cot, /markets and the futures and cattle pages.
      After a hail alert, the Daily row carries an optional ZIP box filled
      from the ZIP they searched, else the ZIP nearest the spot (agsist's
      data/zip-grid.json picks the ZIP files, the bids network's data/zips
@@ -622,9 +639,10 @@
     var fut = /^\/(corn|soybean|wheat|cattle)-futures-prices$/.exec(p);
     return {
       hail: /^\/(hail-map|hail|rain|rain-radar)(\/|$)/.test(p),
-      report: /^\/(usda-calendar|whats-priced-in|cot|cot-tool|usda-quick-stats|markets)$/.test(p),
-      futures: !!fut || /^\/(harvest-price-tracker)$/.test(p),
-      sym: fut ? { corn: 'corn', soybean: 'beans', wheat: 'wheat', cattle: 'cattle' }[fut[1]] : 'corn'
+      report: /^\/(usda-calendar|whats-priced-in|cot|cot-tool|usda-quick-stats|markets|crop-tour)$/.test(p),
+      futures: !!fut || /^\/(harvest-price-tracker|cattle-auction-prices)$/.test(p),
+      cot: /^\/(cot|cot-tool|markets|cattle-auction-prices|(corn|soybean|wheat|cattle)-futures-prices)$/.test(p),
+      sym: fut ? { corn: 'corn', soybean: 'beans', wheat: 'wheat', cattle: 'cattle' }[fut[1]] : (/^\/cattle-auction-prices$/.test(p) ? 'cattle' : 'corn')
     };
   }
   /* The futures alert body: the same as index.html's price alert (paId, PA_LABELS). */
@@ -704,8 +722,16 @@
         /* the same list: no source, so the worker keeps where they signed up */
         send: function () { return post(EP, { email: email, reports: true }); },
         ok: 'Report-day emails are on.' };
+      if (kind.cot && topic !== 'cot' && had.indexOf('cot') < 0 && !noticeDone('cot')) O.cot = {
+        label: esc('Funds this week: where the big funds sit in corn, soybeans, wheat and cattle, one short email after each COT report'),
+        send: function () { return notice({ email: email, source: source, topic: 'cot', daily: false, askId: 'onemore' }); },
+        ok: 'Funds this week comes after each COT report.' };
+      if ((kind.report || kind.futures) && gave !== 'daily' && topic !== 'reports' && had.indexOf('wasde') < 0 && !isSignedUp() && !noticeDone('reports')) O.wasde = {
+        label: esc('The WASDE summary: what USDA printed against the trade, the afternoon of each big report'),
+        send: function () { return notice({ email: email, source: source, topic: 'reports', daily: false, askId: 'onemore' }); },
+        ok: 'The WASDE summary comes the afternoon of each big USDA report.' };
       var base = gave === 'daily' ? ['zip', 'rainyear', 'rent', 'daily'] : ['daily', 'rainyear', 'rent', 'zip'];
-      var lead = kind.hail ? ['hail'] : kind.futures ? ['price', 'reports'] : kind.report ? ['reports', 'price'] : [];
+      var lead = kind.hail ? ['hail'] : kind.futures ? ['price', 'cot', 'reports', 'wasde'] : kind.report ? ['reports', 'wasde', 'cot', 'price'] : [];
       var order = gave === 'daily' ? lead.concat(base) : ['daily'].concat(lead, base.slice(1));
       var ids = order.filter(function (k) { return O[k]; }).slice(0, 3);
       if (!ids.length) { box.parentNode.removeChild(box); return; }
