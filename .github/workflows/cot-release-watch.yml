@@ -57,6 +57,10 @@ on:
         description: 'Run the pipeline even if the report date has not moved'
         type: boolean
         default: false
+      send_email:
+        description: 'Email Funds this week too? A manual run is a dry run unless this is ticked.'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -365,3 +369,35 @@ jobs:
       - name: cot.html matches data/cot.json
         if: ${{ !cancelled() && steps.commit.outcome == 'success' }}
         run: python scripts/check_cot_baked.py
+
+      # ── FUNDS THIS WEEK ──────────────────────────────────────────────────
+      # The weekly COT email (Sig, Oct 21 2026), sent from here, right after
+      # the new report is committed: no schedule of its own. Last on purpose,
+      # so a failed send never stops the data, the bake or the checks above.
+      # scripts/send_cot_weekly.py refuses a report more than 3 days past its
+      # release, and one /flag marker a report (cot:<as-of date>) keeps a
+      # rerun or a forced run from mailing anyone twice. A manual run is a dry
+      # run unless send_email is ticked. Readers: the worker's cot list (v5.44).
+      # Secrets: the report-day sender's. No new secret.
+      - name: Test the Funds this week sender and its loop
+        id: cot_mail_test
+        if: ${{ !cancelled() && steps.commit.outcome == 'success' }}
+        run: |
+          python scripts/send_cot_weekly.py --selftest
+          python3 scripts/test_send_loops.py
+
+      - name: Email Funds this week
+        if: ${{ !cancelled() && steps.commit.outcome == 'success' && steps.cot_mail_test.outcome == 'success' }}
+        env:
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
+          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+          FROM_NAME:    ${{ secrets.FROM_NAME }}
+          REPLY_TO:     ${{ secrets.REPLY_TO }}
+          LIST_URL:     ${{ secrets.LIST_URL }}
+          LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          DRY_RUN:      ${{ (github.event_name == 'workflow_dispatch' && inputs.send_email != true) && '1' || '' }}
+        run: python scripts/send_cot_weekly.py
