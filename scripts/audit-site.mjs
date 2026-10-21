@@ -60,7 +60,7 @@ const ONLY = argv.reduce((a, v, i) => (v === "--page" ? a.concat(argv[i + 1]) : 
    for when the template itself changes. */
 const DEFAULT_PAGES = [
   "/", "/cash-bids", "/elevators", "/hail-map", "/daily", "/markets",
-  "/basis", "/spray", "/urea", "/changelog", "/status", "/sponsor",
+  "/basis", "/spray", "/urea", "/changelog", "/sponsor",
   "/corn-futures-prices", "/soybean-futures-prices", "/breakeven", "/tools",
 ];
 /* /sponsor-report is deliberately NOT here. It renders nothing without the

@@ -83,7 +83,7 @@ def fill_fonts(html):
 # went, so no click depends on a stub. Keep in step with the stubs on disk.
 RETIRED = ("/cash-rent", "/land-tenure", "/storage-crunch", "/cash-bids-national",
            "/basis-map", "/presell-calculator", "/ag-odds", "/embed", "/cashbids",
-           "/fastfacts", "/here")
+           "/fastfacts", "/here", "/status")
 RETIRED_TEXT = ("Analyst Estimates",)
 HREF_RE = re.compile(r'<a\b[^>]*\bhref="(/[^"?#]*)(?:[?#][^"]*)?"', re.I)
 

@@ -440,7 +440,6 @@ F_WORK = [("/sponsor", "Advertise", "i-chart-column"),
 F_ABOUT = [("/about", "About", "i-book-open"),
            ("/editorial-standards", "Editorial standards", "i-book-open"),
            ("/contact", "Contact", "i-mail"),
-           ("/status", "Status", "i-shield-check"),
            ("/changelog", "What&rsquo;s new", "i-scroll-text")]
 FCOLS = [("Prices", F_PRICES), ("Livestock", F_LIVE), ("Field", F_FIELD), ("Money &amp; Land", F_MONEY),
          ("Work with us", F_WORK), ("About", F_ABOUT)]

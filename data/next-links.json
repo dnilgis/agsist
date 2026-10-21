@@ -696,26 +696,6 @@
    ],
    "signup": false
   },
-  "/status": {
-   "links": [
-    {
-     "href": "/data-sources",
-     "text": "Data sources",
-     "why": "Where every number comes from"
-    },
-    {
-     "href": "/changelog",
-     "text": "What's new",
-     "why": "Recent changes"
-    },
-    {
-     "href": "/contact",
-     "text": "Contact",
-     "why": "Questions, corrections, ideas"
-    }
-   ],
-   "signup": false
-  },
   "/pod-counts": {
    "links": [
     {
@@ -798,11 +778,6 @@
      "href": "/editorial-standards",
      "text": "Editorial standards",
      "why": "How numbers are checked"
-    },
-    {
-     "href": "/status",
-     "text": "Status",
-     "why": "How fresh each feed is"
     },
     {
      "href": "/about",

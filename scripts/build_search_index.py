@@ -149,7 +149,6 @@ PAGES = [
     ("/developer", "Developer API", "Data feeds", "developer api feeds"),
     ("/sponsor", "Sponsor", "Advertise on AGSIST", "sponsor advertise ads"),
     ("/changelog", "What's new", "Site updates", "changelog updates new"),
-    ("/status", "Site status", "Live data health", "status health"),
     ("/privacy", "Privacy policy", "", "privacy"),
     ("/terms", "Terms of service", "", "terms"),
     ("/accessibility", "Accessibility", "", "accessibility"),

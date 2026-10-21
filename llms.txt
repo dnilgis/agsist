@@ -10,8 +10,7 @@
 How fresh the numbers are: futures prices and cash bids refresh about every 15
 minutes. Prices are delayed exchange quotes from the Yahoo Finance feed, not an
 official CME feed. The AGSIST Daily briefing publishes each morning. Every other
-page states its own source and date on the page, and /status shows whether each
-feed is current right now. Nothing on the site is financial or trading advice.
+page states its own source and date on the page. Nothing on the site is financial or trading advice.
 
 Sources: cash bids read from AGSIST's own network of elevator bid boards (each
 elevator's own posted board); weather from Open-Meteo and NOAA; crop, price and
@@ -130,7 +129,6 @@ specific page. Each daily briefing has a permanent dated URL.
 
 - [Data Sources](https://agsist.com/data-sources): where every number comes from
 - [Farm Market Glossary](https://agsist.com/glossary): plain definitions of basis, cash bid, futures, settle, nearby, carry, WASDE, ending stocks, managed money, NASS, RMA, FSA, CRP, cwt, shrink and other words the site uses
-- [Status](https://agsist.com/status): whether each data feed is current right now
 - [Embed Tools and Data Feeds](https://agsist.com/developer): embeddable GDU and ARC or PLC widgets, and the open JSON feeds
 - [Changelog](https://agsist.com/changelog): dated list of site changes
 - [About](https://agsist.com/about): who builds AGSIST and why
