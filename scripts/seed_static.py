@@ -2988,6 +2988,12 @@ def main():
     if sys.argv[1:] == ["--only", "conditions"]:
         print("CHANGED" if seed_conditions(today) else "NO-CHANGE")
         return
+    # --only markets (2026-10-21): the price loop re-bakes /markets from the file it
+    # just wrote, so the baked source line never disagrees with prices.json when
+    # close_kind flips between freshness runs (test/close-kind-wording.test.mjs)
+    if sys.argv[1:] == ["--only", "markets"]:
+        print("CHANGED" if seed_markets(load_prices(), today) else "NO-CHANGE")
+        return
 
     try:
         prices = load_prices()

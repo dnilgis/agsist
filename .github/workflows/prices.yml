@@ -131,14 +131,16 @@ jobs:
             || echo "::warning::preflight reported unrepairable quotes; they were suppressed, not published"
 
           if ! git diff --quiet -- data/prices.json; then
-            git add data/prices.json
+            # re-bake /markets from this file so its baked source line matches it
+            python scripts/seed_static.py --only markets || echo "::warning::markets re-bake skipped"
+            git add data/prices.json markets.html
             git commit -m "💹 Prices — $(date -u +'%Y-%m-%d %H:%M UTC')"
             # rebase-safe push with retry: pull AFTER commit, take our fresh copy on conflict
             pushed=0
             for i in 1 2 3 4 5; do
               git pull --rebase --autostash origin main || {
-                git checkout --theirs data/prices.json 2>/dev/null || true
-                git add data/prices.json
+                git checkout --theirs data/prices.json markets.html 2>/dev/null || true
+                git add data/prices.json markets.html
                 git rebase --continue 2>/dev/null || git rebase --abort 2>/dev/null || true
               }
               if git push origin main; then pushed=1; echo "pushed (attempt $i)"; break; fi
