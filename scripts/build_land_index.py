@@ -822,9 +822,8 @@ def page_html(data):
   {fonts}
   <link rel="preload" href="/components/styles.css?v=26" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=26">
-  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <style>{CSS}</style>
   <script type="application/ld+json">{ld_json}</script>
 </head>
