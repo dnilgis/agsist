@@ -2100,6 +2100,22 @@
     {"id": "census-gazetteer-2024", "kind": "html",
      "url": "https://www.census.gov/geographies/reference-files/2024/geo/gazetter-file.html",
      "title": "US Census Bureau, 2024 Gazetteer Files (places, national)",
-     "why": "fallback for census-gazetteer-2025 if the 2025 page is not up; scripts/fetch_land_sales.py already reads the 2024 Gazetteer (2024_Gaz_cousubs_national.zip) from the same folder"}
+     "why": "fallback for census-gazetteer-2025 if the 2025 page is not up; scripts/fetch_land_sales.py already reads the 2024 Gazetteer (2024_Gaz_cousubs_national.zip) from the same folder"},
+    {"id": "ndsu-ae1705-inversions", "kind": "html",
+     "url": "https://www.ndsu.edu/agriculture/extension/publications/air-temperature-inversions-causes-characteristics-and-potential-effects-pesticide-spray-drift",
+     "title": "NDSU Extension AE1705, Air Temperature Inversions: Causes, Characteristics and Potential Effects on Pesticide Spray Drift",
+     "why": "/spray wind view: the inversion-risk rule (calm air, low sun, clear sky) wants an extension bulletin beside Sprayers101 and the SDSU Spray Tool page; check the wind and timing numbers it gives"},
+    {"id": "open-meteo-terms", "kind": "html",
+     "url": "https://open-meteo.com/en/terms",
+     "title": "Open-Meteo, Terms of Use",
+     "why": "/spray (and every page that reads Open-Meteo in the browser): whether the free API may serve a public site with sponsors, the call limits, and the attribution it asks for"},
+    {"id": "open-meteo-license", "kind": "html",
+     "url": "https://open-meteo.com/en/license",
+     "title": "Open-Meteo, Licence (data CC BY 4.0)",
+     "why": "/spray wind view credit line: exact attribution wording for Open-Meteo data"},
+    {"id": "open-meteo-gfs-docs", "kind": "html",
+     "url": "https://open-meteo.com/en/docs/gfs-api",
+     "title": "Open-Meteo, GFS and HRRR forecast API (gfs_seamless)",
+     "why": "/spray wind view: what gfs_seamless blends (HRRR then GFS), how far HRRR runs, and the model run status files the page reads for run time"}
 ]
 }

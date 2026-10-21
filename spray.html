@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/util.js?v=17"></script>
 <script src="/components/asof.js?v=1"></script>
-<link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script><script>/* a saved location: the forecast panel shows and the setup box does not, from first paint (autoLoad swapped them after paint and the page jumped) */try{var _l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_l&&_l.lat&&_l.lon)document.documentElement.classList.add('spray-has-loc');}catch(e){}</script>
+<link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script><script>/* a saved location: the forecast panel shows and the setup box does not, from first paint (autoLoad swapped them after paint and the page jumped) */try{var _l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if((_l&&_l.lat&&_l.lon)||/[?&]f=-?\d/.test(location.search))document.documentElement.classList.add('spray-has-loc');}catch(e){}</script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -870,6 +870,13 @@ body {
   .day-wind { font-size:0.755rem; }
 }
 
+.sp-model{font-size:.75rem;color:var(--text-muted);line-height:1.5;margin:.5rem 0 0}
+.sp-model a{color:inherit;text-decoration:underline}
+.sw-sec{margin:1.25rem 0 .5rem}
+.sw-h{margin:0 0 .25rem;font-size:1rem}
+.sw-lede{font-size:.85rem;color:var(--text-dim);margin:0 0 .6rem;line-height:1.5}
+.sw-root{min-height:520px}
+.sw-ph{font-size:.85rem;color:var(--text-muted);padding:1rem 0}
 /* ── Print ───────────────────────────────────────────────────────── */
 @media print {
   .hero, .status-panel, #site-header, #site-footer, .jump-nav,
@@ -1207,7 +1214,14 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <div class="window-summary" id="window-summary" role="status" style="font-size:.85rem;color:var(--text-dim);margin:.15rem 0 .5rem;line-height:1.5"></div>
           <div class="hourly-scroll" id="hourly-strip" aria-busy="true"><span class="sr-only">Loading forecast</span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span></div>
           <div class="window-legend"><span class="wl-dot" style="background:var(--green,#4aab4c)"></span> Good window &middot; <span class="wl-dot" style="background:var(--gold-fill,var(--gold,#d4a23f))"></span> Marginal, proceed with care &middot; <span class="wl-dot" style="background:var(--red,#e0685f)"></span> Do not spray &middot; <svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> Frozen &middot; Scroll to see full 24h</div>
+          <p class="sp-model" id="sp-model" hidden></p>
         </div>
+        <section class="sw-sec" id="wind" aria-labelledby="sw-h">
+          <h2 class="window-head sw-h" id="sw-h"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wind"/></svg></span> Wind at your field, next 48 hours</h2>
+          <p class="sw-lede">The forecast wind around your field, hour by hour, coloured by the spray band at the boom, with the best spray windows below it. Check your product label.</p>
+          <div id="sw-root" class="sw-root" aria-busy="true"><p class="sw-ph">The wind map loads when you get here.</p></div>
+        </section>
+        <script>/* The wind view's code (components/spray-wind.js, Leaflet, the map) loads only once a field is set and the reader nears this section, or at once for a shared ?f= link. */(function(){var done=false;function go(){if(done||!window.AgSprayField)return;done=true;var s=document.createElement('script');s.src='/components/spray-wind.js?v=1';s.defer=true;document.head.appendChild(s);}function arm(){if(done)return;if(/[?&]f=/.test(location.search)||location.hash==='#wind'){go();return;}var el=document.getElementById('wind');if(!el||!('IntersectionObserver' in window)){go();return;}var io=new IntersectionObserver(function(es){if(es.some(function(x){return x.isIntersecting;})){io.disconnect();go();}},{rootMargin:'400px 0px'});io.observe(el);}document.addEventListener('agsist:spray-field',arm);if(window.AgSprayField)arm();})();</script>
       </div>
       <div class="edu has-fold fade-up" id="section-factors">
         <details class="fold">
@@ -1845,7 +1859,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     if(inverseProne&&(veryCalm||rapidCooling))return'poor';
     return'marginal';
   }
-  var SPRAY_LAST=null;
+  var SPRAY_LAST=null,SPRAY_SHARED=false;
   function rerenderSpray(){if(SPRAY_LAST){renderSprayCurrent(SPRAY_LAST.d,SPRAY_LAST.lat,SPRAY_LAST.lon,SPRAY_LAST.label);}}
   function dewRisk(temp,dew){var gap=temp-dew;if(gap<3)return'poor';if(gap<7)return'marginal';return'good';}
   function wetBulbF(tempF,rh){var T=(tempF-32)*5/9;rh=Math.max(1,Math.min(100,rh));var Tw=T*Math.atan(0.151977*Math.sqrt(rh+8.313659))+Math.atan(T+rh)-Math.atan(rh-1.676331)+0.00391838*Math.pow(rh,1.5)*Math.atan(0.023101*rh)-4.686035;return Tw*9/5+32;}
@@ -1960,6 +1974,8 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   function verdictWhy(overall,items){var lv=overall==='poor'?'poor':overall==='marginal'?'marginal':null;if(!lv)return'';var a=[];items.forEach(function(x){if(x&&x.r===lv&&x.t)a.push(x.t);});if(lv==='marginal')items.forEach(function(x){if(x&&x.r==='na'&&x.na)a.push(x.na);});return a.length?((lv==='poor'?'Why: ':'Watch: ')+a.join('; ')+'.'):'';}
   function overallRating(wR,tR,hR,iR,dR,wxCode,dtR){if(tR==='frozen')return'frozen';var r=[wR,tR,hR,iR,dR];if(dtR)r.push(dtR);if(wxCode>=51&&wxCode<=95)return'poor';if(r.indexOf('poor')!==-1)return'poor';if(r.indexOf('marginal')!==-1||r.indexOf('na')!==-1)return'marginal';return'good';}
   /* spray-rules:end */
+  /* The wind view and its spray windows (components/spray-windows.js) rate hours with these same rules. */
+  window.AgSprayRules={PRODUCTS:PRODUCTS,windRatingG:windRatingG,gustyFlag:gustyFlag,boomWind:boomWind,tempRatingP:tempRatingP,humidRating:humidRating,inversionRisk:inversionRisk,dewRisk:dewRisk,deltaTC:deltaTC,deltaTRating:deltaTRating,overallRating:overallRating,dicambaStatus:dicambaStatus,applyDicamba:applyDicamba,currentProduct:currentProduct,currentState:currentState,productKey:function(){var e=document.getElementById('in-product');return(e&&PRODUCTS[e.value])?e.value:'general';}};
   function ratingToWord(r){return{good:'Good',marginal:'Marginal',poor:'Poor',frozen:'Frozen',na:'No data'}[r]||r;}
   function ratingAbbr(r){return{good:'GOOD',marginal:'FAIR',poor:'POOR',frozen:'FROZEN'}[r]||'-';}
   // FIX: Use Unicode character literals not HTML entities.
@@ -1990,17 +2006,28 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     sk.style.gridTemplateColumns=st==='fail'?'minmax(0,1fr)':'';
     var ds=document.getElementById('day-strip');
     (function(f){f();if(!window.AgStates)(window.AgStatesQ=window.AgStatesQ||[]).push(f);})(function(){if(!window.AgStates||FC_STATE!==st)return;if(st==='load'){AgStates.skeleton(sk,{cards:6,h:150});if(ds)AgStates.skeleton(ds,{cards:5,h:96});}else{AgStates.empty(sk,'No readings here: the forecast didn\u2019t load.');if(ds)AgStates.empty(ds,'The 5-day outlook didn\u2019t load.');}});}
+  /* One model for the whole page (the cards, the 24-hour strip, the 5-day outlook and the wind view): Open-Meteo
+     gfs_seamless, NOAA HRRR for the first hours then GFS. Named once, with each model's run time from Open-Meteo's
+     own status files; a run time that does not come back says so. */
+  var SP_MODEL={name:'gfs_seamless',runs:[{n:'HRRR',u:'https://api.open-meteo.com/data/ncep_hrrr_conus/static/meta.json'},{n:'GFS',u:'https://api.open-meteo.com/data/ncep_gfs013/static/meta.json'}]},SP_RUNS=null;
+  function fmtRunT(d){try{return d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});}catch(e){return d.toISOString();}}
+  function renderModelLine(){var el=document.getElementById('sp-model');if(!el)return;
+    var paint=function(){var r=SP_MODEL.runs.map(function(m){var v=SP_RUNS&&SP_RUNS[m.n];return v===undefined?'':m.n+' run '+(v?fmtRunT(v):'time not given by the source');}).filter(Boolean);el.innerHTML='Forecast (estimate) for everything on this page: NOAA HRRR for the first hours, then GFS, blended by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (model '+SP_MODEL.name+')'+(r.length?'. '+r.join(', '):'')+'.';el.hidden=false;window.AgSprayModel={name:SP_MODEL.name,runs:SP_RUNS};};
+    if(SP_RUNS){paint();return;}SP_RUNS={};paint();
+    SP_MODEL.runs.forEach(function(m){fetch(m.u).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(j){var t=j&&j.last_run_initialisation_time;SP_RUNS[m.n]=(typeof t==='number'&&isFinite(t))?new Date(t*1000):null;paint();}).catch(function(){SP_RUNS[m.n]=null;paint();});});}
   function loadWeather(lat,lon,label){
     document.getElementById('loc-setup').style.display='none';
     document.getElementById('factor-section').style.display='block';
     fcState('load');
     document.getElementById('st-loc').textContent=(label||'Your Location');if(window.gaEvent)gaEvent('spray_location_set');
-    var url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation_probability,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,cloud_cover&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,wind_speed_10m,wind_gusts_10m,wind_direction_10m,weather_code,cloud_cover&daily=weather_code,temperature_2m_max,wind_speed_10m_max,wind_gusts_10m_max,precipitation_probability_max,sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=5';
+    window.AgSprayField={lat:+lat,lon:+lon,label:label||null};try{document.dispatchEvent(new CustomEvent('agsist:spray-field',{detail:window.AgSprayField}));}catch(e){}
+    var url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation_probability,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,cloud_cover&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,wind_speed_10m,wind_gusts_10m,wind_direction_10m,weather_code,cloud_cover&daily=weather_code,temperature_2m_max,wind_speed_10m_max,wind_gusts_10m_max,precipitation_probability_max,sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=5&models=gfs_seamless';
     fetch(url).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(d){
       if(!d||!d.current)throw new Error('no current conditions');
       SPRAY_LAST={d:d,lat:lat,lon:lon,label:label};
       renderSprayCurrent(d,lat,lon,label);
       fcState('ok');
+      renderModelLine();
     }).catch(function(e){console.warn('[AGSIST] Weather fetch error:',e);fcState('fail');var sm=document.getElementById('st-main');if(sm){sm.textContent='Couldn’t Load Weather';sm.className='status-main marginal';}var es=document.getElementById('st-sub');if(es)es.textContent='Connection problem, check your signal, then tap "Change location" or reload the page to retry.';(function(f){f();if(!window.AgStates)(window.AgStatesQ=window.AgStatesQ||[]).push(f);})(function(){var hs=document.getElementById('hourly-strip');if(hs&&window.AgStates){hs.removeAttribute('aria-busy');AgStates.error(hs,{msg:'The forecast didn\u2019t load.',retry:function(){if(sm){sm.textContent='Detecting\u2026';}if(es)es.textContent='Getting your local conditions';hs.setAttribute('aria-busy','true');hs.innerHTML='<span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span>';loadWeather(lat,lon,label);}});}});});
   }
   function renderSprayCurrent(d,lat,lon,label){
@@ -2054,7 +2081,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
       var nextGood='';for(var gi=0;gi<hrs.length;gi++){if(hrs[gi].o==='good'){if(gi>0){var ge=gi;while(ge+1<hrs.length&&hrs[ge+1].o==='good')ge++;nextGood=' Next good window: '+hrs[gi].t+(ge>gi?'\u2013'+hrs[ge].t:'')+'.';}break;}}
       if(overall!=='good'&&overall!=='frozen'&&hrs.length&&!nextGood&&!hrs.some(function(h){return h.o==='good';}))nextGood=' No good window in the next 24 hours.';
       if(ss)ss.textContent=(why?why+nextGood:rSubs[overall]+nextGood);
-      try{var _o={};try{_o=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}')||{};}catch(e){_o={};}_o.lat=lat;_o.lon=lon;_o.label=label||null;localStorage.setItem('agsist-wx-loc',JSON.stringify(_o));}catch(e){}
+      if(!SPRAY_SHARED)try{var _o={};try{_o=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}')||{};}catch(e){_o={};}_o.lat=lat;_o.lon=lon;_o.label=label||null;localStorage.setItem('agsist-wx-loc',JSON.stringify(_o));}catch(e){}
       if(!label){fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json',{headers:{'User-Agent':'AGSIST/1.0'}}).then(function(r){return r.json();}).then(function(geo){var city=geo.address.city||geo.address.town||geo.address.village||geo.address.county||'',st=geo.address.state_code||'';if(setStateFromName(geo.address.state||'')){if(SPRAY_LAST)SPRAY_LAST.label=city?(city+(st?', '+st:'')):'Your location';rerenderSpray();}if(city){document.getElementById('st-loc').textContent=city+(st?', '+st:'');}}).catch(function(){});}
   }
   function requestGeo(){if(!navigator.geolocation){document.getElementById('spray-zip-row').style.display='flex';return;}document.getElementById('st-sub').textContent='Waiting for your location. Or enter a ZIP below.';var _geoDone=false;setTimeout(function(){if(_geoDone)return;var sm=document.getElementById('st-main'),sl=document.getElementById('st-loc');if(sm&&/Detecting/.test(sm.textContent)){sm.textContent='Enter Your ZIP';var ss2=document.getElementById('st-sub');if(ss2)ss2.textContent='No location came through. Enter a ZIP below for local conditions.';document.getElementById('spray-zip-row').style.display='flex';document.getElementById('loc-setup').style.display='block';if(sl)sl.textContent='No location yet';}},10000);navigator.geolocation.getCurrentPosition(function(p){_geoDone=true;loadWeather(p.coords.latitude,p.coords.longitude,null);},function(){_geoDone=true;document.getElementById('spray-zip-row').style.display='flex';document.getElementById('loc-setup').style.display='block';var sm=document.getElementById('st-main'),ss=document.getElementById('st-sub');if(sm){sm.textContent='Enter Your ZIP';sm.className='status-main marginal';}if(ss)ss.textContent='Location access denied, enter a ZIP code below for local conditions.';},{timeout:5000});}
@@ -2121,7 +2148,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     showStatePick();})();
   /* 2026-10-19 (Sig): never ask for the location on load. A saved place loads at once; with none, the panel says how to set one and the browser is asked only on a tap of Use My Location. */
   function noPlace(){var sm=document.getElementById('st-main'),ss=document.getElementById('st-sub'),sl=document.getElementById('st-loc');if(!sm||!/Detecting/.test(sm.textContent))return;if(sm)sm.textContent='Set Your Location';if(ss)ss.textContent='Tap Use My Location or enter a ZIP below for the spray window at your field.';if(sl)sl.textContent='No location yet';}
-  function autoLoad(){try{var s=localStorage.getItem('agsist-wx-loc');if(s){var p=JSON.parse(s);if(p&&p.lat&&p.lon){loadWeather(p.lat,p.lon,p.label);return;}if(p&&/^\d{5}$/.test(String(p.zip||''))){document.getElementById('spray-zip').value=p.zip;loadZip();return;}}}catch(e){}noPlace();}
+  function autoLoad(){var sh=/[?&]f=(-?\d{1,2}(?:\.\d+)?),(-?\d{1,3}(?:\.\d+)?)(?:&|#|$)/.exec(location.search);if(sh&&Math.abs(+sh[1])<=90&&Math.abs(+sh[2])<=180){SPRAY_SHARED=true;loadWeather(+sh[1],+sh[2],null);return;}try{var s=localStorage.getItem('agsist-wx-loc');if(s){var p=JSON.parse(s);if(p&&p.lat&&p.lon){loadWeather(p.lat,p.lon,p.label);return;}if(p&&/^\d{5}$/.test(String(p.zip||''))){document.getElementById('spray-zip').value=p.zip;loadZip();return;}}}catch(e){}noPlace();}
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',autoLoad);}else{setTimeout(autoLoad,100);}
 })();
 </script>
