@@ -812,6 +812,17 @@
   // ---------- places (pure: the tests run these) ----------
   var STATE = {wi:'wisconsin',mn:'minnesota',ia:'iowa',il:'illinois',mi:'michigan',nd:'north dakota',sd:'south dakota',ne:'nebraska',ks:'kansas',mo:'missouri',in:'indiana',oh:'ohio',ky:'kentucky',tn:'tennessee',tx:'texas',ok:'oklahoma',co:'colorado',mt:'montana',wy:'wyoming',id:'idaho',wa:'washington',or:'oregon',ca:'california',nv:'nevada',ut:'utah',az:'arizona',nm:'new mexico',ar:'arkansas',la:'louisiana',ms:'mississippi',al:'alabama',ga:'georgia',fl:'florida',sc:'south carolina',nc:'north carolina',va:'virginia',wv:'west virginia',pa:'pennsylvania',ny:'new york',nj:'new jersey',ct:'connecticut',ri:'rhode island',ma:'massachusetts',vt:'vermont',nh:'new hampshire',me:'maine',md:'maryland',de:'delaware',ak:'alaska',hi:'hawaii',dc:'district of columbia',pr:'puerto rico'};
   function abbrFor(full) { for (var k in STATE) if (STATE[k] === full) return k.toUpperCase(); return null; }
+  /* A town as the page repeats it back: typed all in lower case (or all in capitals), the town in
+     title case and a two-letter state in capitals ("chetek, wi" -> "Chetek, WI", 2026-10-21); anything
+     typed with its own capitals, or a ZIP, as typed. */
+  function placeShown(q) {
+    q = String(q || '').trim().replace(/\s+/g, ' ');
+    if (!q || /^\d{5}(-\d{4})?$/.test(q) || (q !== q.toLowerCase() && q !== q.toUpperCase())) return q;
+    var st = function (x) { return /^[a-z]{2}$/i.test(x) && STATE[x.toLowerCase()] ? x.toUpperCase() : toTitle(x); };
+    var p = q.split(',').map(function (x) { return x.trim(); });
+    if (p.length === 1) { var w = p[0].split(' '); if (w.length > 1 && /^[a-z]{2}$/i.test(w[w.length - 1]) && STATE[w[w.length - 1].toLowerCase()]) return toTitle(w.slice(0, -1).join(' ')) + ' ' + w[w.length - 1].toUpperCase(); return toTitle(p[0]); }
+    return [toTitle(p[0])].concat(p.slice(1).map(st)).join(', ');
+  }
   function toTitle(s) { return String(s).split(' ').map(function (w) { return /\d/.test(w) ? w : (w.length ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w); }).join(' '); }
   function haversine(a, b, c, d) { var R = 6371, t = function (x) { return x * Math.PI / 180; }, h = Math.pow(Math.sin(t(c - a) / 2), 2) + Math.cos(t(a)) * Math.cos(t(c)) * Math.pow(Math.sin(t(d - b) / 2), 2); return 2 * R * Math.asin(Math.sqrt(h)); }
   /* The town lookup (Open-Meteo, US only). A plain town with no state that
@@ -1243,7 +1254,9 @@
        why: null, {over: {sid, name, km}} (picked over that nearer one) or
          {none: true, km, sure} (no snow station within km; sure: every
          station there was read or ruled out, none failed to answer); seen: {sid: snow state}. */
-  var SNOW_SLACK_MI = 10, SNOW_TRIES = 3;
+  var SNOW_SLACK_MI = 10, SNOW_TRIES = 3, MISS_SAME = 3;
+  // unrecorded days as the pick ranks them: up to MISS_SAME count as none, so a few days never cost miles
+  function missRank(n) { return n <= MISS_SAME ? 0 : n; }
   function snowStateOf(days) {
     days = days || [];
     if (!days.length) return 'unknown';
@@ -1285,28 +1298,48 @@
         return (got[s.sid] = read(s.sid, year).then(function (d) { return { d: d }; }, function () { return { fail: true }; }));
       }));
     };
+    var snowy = null, first = null, fuller = null;
+    var isSnowy = function (s) { return o.snowy !== undefined ? !!o.snowy : snowCountry({ lat: o.lat !== undefined ? o.lat : s.ll && s.ll[1], state: s.state, elev: s.elev }); };
     var rainStep = function () {
       return readAll(tries, 'rain').then(function (ans) {
+        var ok = [];
         for (i = 0; i < tries.length; i++) {
           var s = tries[i], a = ans[i];
-          if (a.fail) { tried[s.sid] = Infinity; continue; }
+          // one that didn't answer stays a snow candidate: its answer is kept, so it is not asked again, and the page can't say none kept snow
+          if (a.fail) continue;
           var d = a.d;
           tried[s.sid] = d.d.missing; seen[s.sid] = snowStateOf(d.days);
           if (!best || d.d.missing < best.d.missing) { best = d; bestSt = s; }
-          if (d.d.missing <= MISS_OK) { picked = d; chosen = s; return null; }
+          if (d.d.missing <= MISS_OK) ok.push({ s: s, d: d });
         }
-        picked = best; chosen = bestSt;
+        if (!ok.length) { picked = best; chosen = bestSt; return null; }
+        /* THE MOST COMPLETE NEAR ONE (2026-10-21, Sig: "prefer the station with the more complete record,
+           especially one that has both rain and snow, over a slightly closer one with a thin record").
+           Of the near-complete years read, within the snow slack of the nearest of them (never a far one):
+           a snowfall record that draws, where snow is normal, first; then the fewest unrecorded days (a few
+           days either way count the same: MISS_SAME); then the nearest. The page says which and why. */
+        first = ok[0].s; snowy = isSnowy(first);
+        var lim = snowLimitKm(first.km), rk = function (x) { return [snowy && seen[x.s.sid] === 'unknown' ? 1 : 0, missRank(x.d.d.missing), x.s.km]; };
+        var near = ok.filter(function (x) { return x.s.km <= lim; }).sort(function (a, b) { var p = rk(a), q = rk(b); return p[0] - q[0] || p[1] - q[1] || p[2] - q[2]; });
+        picked = near[0].d; chosen = near[0].s;
+        if (chosen !== first) {
+          var f0 = ok[0].d.d.missing;
+          fuller = { over: { sid: first.sid, name: first.name, km: first.km } };
+          if (snowy && seen[first.sid] === 'unknown' && seen[chosen.sid] !== 'unknown') fuller.over.snow = true;
+          else { fuller.over.fuller = true; fuller.over.missing = f0; fuller.missing = picked.d.missing; }
+        }
         return null;
       });
     };
     var done = function (why) { return { chosen: chosen, picked: picked, why: why || null, seen: seen }; };
     return Promise.resolve(rainStep()).then(function () {
       if (!picked) return done(null);
-      var snowy = o.snowy !== undefined ? !!o.snowy : snowCountry({ lat: o.lat !== undefined ? o.lat : chosen.ll && chosen.ll[1], state: chosen.state, elev: chosen.elev });
+      if (fuller) return done(fuller);
+      if (snowy === null) snowy = isSnowy(chosen);
       if (!snowy || seen[chosen.sid] !== 'unknown') return done(null);
-      var limit = snowLimitKm(chosen.km), first = chosen, j = 0;
+      var limit = snowLimitKm(chosen.km), from = chosen, j = 0, good = [];
       var all = pool.filter(function (s) {
-        return s.sid !== first.sid && s.snowOk !== false && s.km <= limit && !(tried[s.sid] > MISS_OK) && seen[s.sid] !== 'unknown';
+        return s.sid !== from.sid && s.snowOk !== false && s.km <= limit && !(tried[s.sid] > MISS_OK) && seen[s.sid] !== 'unknown';
       }), cands = all.slice(0, SNOW_TRIES), sure = all.length <= SNOW_TRIES;
       return readAll(cands, 'snow').then(function (ans) {
         for (j = 0; j < cands.length; j++) {
@@ -1314,17 +1347,26 @@
           if (a.fail) { sure = false; continue; }
           var st = seen[s.sid] = snowStateOf(a.d.days);
           if (a.d.d.missing > MISS_OK || st === 'unknown') continue;
-          chosen = s; picked = a.d;
-          return done({ over: { sid: first.sid, name: first.name, km: first.km } });
+          good.push({ s: s, d: a.d });
         }
-        return done({ none: true, km: limit, sure: sure });
+        if (!good.length) return done({ none: true, km: limit, sure: sure });
+        // the fullest year of those that draw snow, then the nearest (as the rain step ranks)
+        good.sort(function (a, b) { return missRank(a.d.d.missing) - missRank(b.d.d.missing) || a.s.km - b.s.km; });
+        chosen = good[0].s; picked = good[0].d;
+        return done({ over: { sid: from.sid, name: from.name, km: from.km, snow: true } });
       });
     });
   }
   /* The sentence by the station line that says why this station: "Picked over
      a gauge 1.9 mi away because it records snowfall too." */
+  function joursFr(n) { return n === 0 ? 'aucun jour manquant' : n + (n === 1 ? ' jour manquant' : ' jours manquants'); }
+  function daysWord(n) { return n === 0 ? 'no days' : n === 1 ? '1 day' : n + ' days'; }
   function pickWhy(why, year) {
     if (!why) return '';
+    if (why.long) return 'Picked for every year behind yours: the nearest station with ' + HIST_MIN + ' or more full years' + (why.long.snow ? ', a snowfall record' : '') + ' and a good ' + year +
+      ' (' + why.long.n + ' full years here)' + (why.long.over ? '. The nearest station of all is ' + milesText(miles(why.long.over.km)) + ' away.' : '.');
+    if (why.over && why.over.fuller) return 'Picked over a ' + (/^US1/.test(String(why.over.sid)) ? 'gauge' : 'station') + ' ' + milesText(miles(why.over.km)) + ' away because its ' + year + ' is more complete: ' +
+      daysWord(why.missing) + ' unrecorded here, ' + daysWord(why.over.missing) + ' there.';
     if (why.over) return 'Picked over a ' + (/^US1/.test(String(why.over.sid)) ? 'gauge' : 'station') + ' ' + milesText(miles(why.over.km)) + ' away because it records snowfall too.';
     if (why.none) return why.sure ? 'None of the stations within ' + Math.round(miles(why.km)) + ' mi kept a full snowfall record for ' + year + ', so the print draws no snow.'
       : 'The nearest stations that keep snowfall didn\u2019t send a full ' + year + ' of it, so the print draws no snow.';
@@ -1745,7 +1787,7 @@
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, orderRecord: orderRecord, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
-    parsePcpn: parsePcpn, snowTraceRaw: snowTraceRaw, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, jpegWithDpi: jpegWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
+    parsePcpn: parsePcpn, snowTraceRaw: snowTraceRaw, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, jpegWithDpi: jpegWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, placeShown: placeShown, missRank: missRank, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
     cropInput: cropInput, tempInput: tempInput, histInput: histInput, withoutTemp: withoutTemp, tempStationOk: tempStationOk, tempWords: tempWords, TEMP_KINDS: TEMP_KINDS, HIST_MIN: HIST_MIN, TEMP_GAP_OK: TEMP_GAP_OK, OPT_FLAGS: OPT_FLAGS };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
@@ -2135,20 +2177,29 @@
   function extrasTemp() { return TEMP && TEMP.td ? tempInput(ST, TEMP.td, tempFound(), TEMP.tm, !!ST.crop, TEMP.norm) : null; }
   function extrasHist() { return wantHist() && META && FULL_CACHE.get(META.sid) ? histInput(FULL_CACHE.get(META.sid), META.year) : null; }
   /* Every year behind: the nearest station whose full record reaches HIST_MIN full years and whose year is good
-     (at most MISS_OK unrecorded days), from those whose record spans 30 years or more, up to four read. */
-  function pickLong(list, year, onTry) {
+     (at most MISS_OK unrecorded days), from those whose record spans 30 years or more, up to four read.
+     Where snow is normal, one whose year also draws snow comes first (2026-10-21, Sig: rain AND snow);
+     when none of the four does, the nearest long record stands. -> {chosen, picked, n (full years)} or null */
+  function pickLong(list, year, onTry, lat) {
     var yrs = function (s) { var r = s.valid_daterange && s.valid_daterange[0]; return r ? +r[1].slice(0, 4) - +r[0].slice(0, 4) + 1 : 0; };
     var cands = list.filter(function (s) { return yrs(s) >= HIST_MIN && !(CA() && CA().isSid(s.sid)); }).slice(0, 4);
     return extrasReady().then(function () {
-      var i = 0;
+      var i = 0, keep = null;
       var next = function () {
         var s = cands[i++];
-        if (!s) return null;
+        if (!s) return keep;
         if (onTry) onTry(s);
         return Promise.all([stationExtremes(s.sid), daily(s.sid, year)]).then(function (r) {
           var full = root.AgRainExtras.fullYears(r[0].rows, 1);
           FULL_CACHE.set(s.sid, full);
-          return full.length >= HIST_MIN && r[1].d.missing <= MISS_OK ? { chosen: s, picked: r[1] } : next();
+          if (full.length < HIST_MIN || r[1].d.missing > MISS_OK) return next();
+          var got = { chosen: s, picked: r[1], n: full.length };
+          if (s.snowOk === false || (snowCountry({ lat: lat !== undefined ? lat : s.ll && s.ll[1], state: s.state, elev: s.elev }) && snowStateOf(r[1].days) === 'unknown')) {
+            if (!keep) keep = got;
+            return next();
+          }
+          got.snow = !!keep;   // a nearer long record was passed for its snowfall
+          return got;
         }, next);
       };
       return next();
@@ -2173,7 +2224,14 @@
     $('rp-hist').disabled = r2 || (!long && !!STATIONS.length);
     var full = META ? FULL_CACHE.get(META.sid) : null;
     say('rp-hist-why', r2 ? 'Staircase only: Roots draws each day as its own bar.' : !long && STATIONS.length ? 'No station near here has ' + HIST_MIN + ' years of daily records, so this one can’t be drawn.'
-      : HIST_WHY ? HIST_WHY : wantHist() && full && full.length < HIST_MIN ? stationName(META.name) + ' has ' + full.length + ' full years; it takes ' + HIST_MIN + '. Pick the nearest station again under Weather station, or turn this off.' : '');
+      : HIST_WHY ? HIST_WHY : wantHist() && full && full.length < HIST_MIN ? stationName(META.name) + ' has ' + full.length + ' full years; it takes ' + HIST_MIN + '.' : '');
+    // the way back to a long record, for a station picked by hand (a link's or the list's)
+    var hw = $('rp-hist-why');
+    if (hw && !hw.hidden && !r2 && wantHist() && full && full.length < HIST_MIN && !HIST_WHY && !(GIFT && GIFT.lock && GIFT.lock.design)) {
+      var b = doc.createElement('button');
+      b.type = 'button'; b.className = 'rp-linkbtn'; b.id = 'rp-hist-long'; b.textContent = 'Use the nearest station with ' + HIST_MIN + ' full years';
+      hw.appendChild(doc.createTextNode(' ')); hw.appendChild(b);
+    }
   }
   function syncCropDays() {
     var opts = '<option value="">Pick a marked day</option>' + ST.markers.map(function (m) { return '<option value="' + esc(m.date) + '">' + esc(shortDate(m.date) + (m.label ? ', ' + m.label : '')) + '</option>'; }).join('');
@@ -2393,7 +2451,8 @@
   function runSample() {
     SAMPLE = { place: 'Chetek, WI', year: lastFullYear() };
     if (!art.querySelector('.rp-ex')) art.innerHTML = '<p class="rp-placeholder">Drawing a sample from NOAA records…</p>';
-    var s = { place: SAMPLE.place, year: SAMPLE.year, size: '12x18', cmp: 'normal', name: '', markers: [], style: pick('rp-style', 'r1') };
+    // every year behind your year rides along: it picks the sample's station (the nearest long record)
+    var s = { place: SAMPLE.place, year: SAMPLE.year, size: '12x18', cmp: 'normal', name: '', markers: [], style: pick('rp-style', 'r1'), hist: $('rp-hist').checked };
     // the sample wears whatever is in the boxes: the example at first, then the reader's own words
     var w = sampleWords(readInputs()); s.name = w.name; s.dedication = w.dedication; s.markers = w.markers; s.cmp = w.cmp; s.normals = w.normals; s.records = w.records;
     s.logo = w.logo; s.logoInk = w.logoInk;
@@ -2841,7 +2900,9 @@
     var w = pickWhy(m.why, m.year);
     if (m.ca && CA()) {
       var lg = LOC().lang, fr = lg === 'fr';
-      w = !m.why ? '' : m.why.over ? (fr ? 'Choisie plutôt qu’une station à ' : 'Picked over a station ') + CA().kmText(m.why.over.km, lg) + (fr ? ' parce qu’elle mesure aussi la neige.' : ' away because it records snowfall too.')
+      w = !m.why ? '' : m.why.over && m.why.over.fuller ? (fr ? 'Choisie plutôt qu’une station à ' : 'Picked over a station ') + CA().kmText(m.why.over.km, lg) +
+          (fr ? ' parce que son ' + m.year + ' est plus complet : ' + joursFr(m.why.missing) + ' ici, ' + joursFr(m.why.over.missing) + ' là-bas.' : ' away because its ' + m.year + ' is more complete: ' + daysWord(m.why.missing) + ' unrecorded here, ' + daysWord(m.why.over.missing) + ' there.')
+        : m.why.over ? (fr ? 'Choisie plutôt qu’une station à ' : 'Picked over a station ') + CA().kmText(m.why.over.km, lg) + (fr ? ' parce qu’elle mesure aussi la neige.' : ' away because it records snowfall too.')
         : m.why.none ? (fr ? 'Aucune station à proximité n’a de relevés de neige complets pour ' : 'No station nearby kept a full snowfall record for ') + m.year + (fr ? ', donc le tirage ne montre pas de neige.' : ', so the print draws no snow.') : '';
       var dist = m.approx ? caWords().near + ' ' + m.city : CA().kmText(m.km, lg) + ' ' + caWords().from + ' ' + m.city;
       return '<b>' + esc(m.name + (m.state ? ', ' + m.state : '')) + '</b>, ' + esc(dist) + ' (' + esc(sidPlain(m.sid, lg)) + ')' + (w ? '. <span class="rp-why" id="rp-why">' + esc(w.replace(/\.$/, '')) + '</span>' : '') +
@@ -3298,7 +3359,9 @@
       g = res;
       // a ZIP or a picked town: the print, the link and the order name the town found
       // "Ames IA" with no comma: the box and the order say "Ames, IA" once the town is found
-      if (geocodeQuery(ST.place).zip || (ST.place.indexOf(',') < 0 && !g.approx && geocodeQuery(ST.place).st)) { ST.place = cleanText(placeLabel(g), LIMITS.place); $('rp-place').value = ST.place; }
+      // "chetek, wi": the same town in other capitals is said the way the town is spelled (2026-10-21)
+      if (geocodeQuery(ST.place).zip || (ST.place.indexOf(',') < 0 && !g.approx && geocodeQuery(ST.place).st) ||
+        (!g.approx && ST.place !== placeLabel(g) && ST.place.replace(/\s+/g, ' ').replace(/\s*,\s*/g, ', ').trim().toLowerCase() === placeLabel(g).toLowerCase())) { ST.place = cleanText(placeLabel(g), LIMITS.place); $('rp-place').value = ST.place; }
       var gCa = g.country_code === 'CA' || isCanada(ST.station);
       setStatus(gCa ? L('Looking for weather stations near ', 'Recherche des stations météo près de ') + g.name + '…' : 'Looking for NOAA stations near ' + g.name + (g.admin1 ? ', ' + g.admin1 : '') + '…');
       // a county link searches around its own station, so that station is in the list
@@ -3352,10 +3415,12 @@
          Only a design without its own station gets here: a link's, a gift card's or a saved station is never re-picked. */
       function nearestLong() {
         autoPick = true;
-        return pickLong(list, ST.year, function (s) { setStatus('Reading the full record at ' + stationName(s.name) + '\u2026'); }).then(function (r) {
+        return pickLong(list, ST.year, function (s) { setStatus('Reading the full record at ' + stationName(s.name) + '\u2026'); }, g.latitude).then(function (r) {
           if (my !== reqToken) throw 'stale';
           if (!r) { HIST_WHY = 'None of the nearest stations with a long record has ' + HIST_MIN + ' full years and a good ' + ST.year + ', so the history threads are off.'; return nearest(''); }
-          HIST_WHY = ''; picked = r.picked; chosen = r.chosen; why = null; seen[chosen.sid] = snowStateOf(picked.days);
+          HIST_WHY = ''; picked = r.picked; chosen = r.chosen; seen[chosen.sid] = snowStateOf(picked.days);
+          // the page says which and why: a long record, and the nearer station it passed (2026-10-21: never a far station without a word)
+          why = { long: { n: r.n, snow: !!r.snow, over: list[0] && list[0].sid !== chosen.sid ? { sid: list[0].sid, name: list[0].name, km: list[0].km } : null } };
         });
       }
       function nearest(skip) {
@@ -3647,7 +3712,8 @@
       .then(function (r) { return r.json().then(function (j) { return r.ok && j && j.ok === true; }, function () { return false; }); }, function () { return false; })
       .then(function (ok) {
         MAILME.busy = false; $('rp-mailme-go').disabled = false;
-        if (!ok) { out.textContent = 'That didn\u2019t go through. Try again in a minute.'; return; }
+        // the mail service not answering (2026-10-21: the worker's address was blocked for a day): nothing sent, and a way to keep the design meanwhile
+        if (!ok) { out.textContent = 'That didn\u2019t go through, so nothing was sent. Copy link keeps this design as it is; try the email again later.'; return; }
         MAILME.code = code;
         $('rp-mailme-form').hidden = true;
         $('rp-mailme-open').setAttribute('aria-expanded', 'false');
@@ -3915,7 +3981,7 @@
     var n = readInputs(), t = '';
     // a design link's own first draw says nothing here: the headline under the print would jump for a moment
     if (DRAWING && DATA && ST.place && ST.year) t = FROM_LINK && !SHARED_SEEN ? '' : 'Drawing ' + ST.place + ', ' + ST.year + '\u2026';
-    else if (n.place && ((SAMPLE && n.place) || (!SAMPLE && ST.place && (n.place !== ST.place || n.year !== ST.year)))) t = 'Not drawn yet: ' + n.place + ', ' + (n.year || '') + '. Press Draw my year.';
+    else if (n.place && ((SAMPLE && n.place) || (!SAMPLE && ST.place && (n.place !== ST.place || n.year !== ST.year)))) t = 'Not drawn yet: ' + placeShown(n.place) + ', ' + (n.year || '') + '. Press Draw my year.';
     el.textContent = t;
     el.hidden = !t;
     if (FROM_LINK && !DRAWING && DATA) SHARED_SEEN = true;
@@ -4967,7 +5033,8 @@
   $('rp-place').addEventListener('input', syncPending);
   $('rp-place').addEventListener('change', function () {
     // a tap on Draw my year right after typing is a submit of its own: this waits for it, then draws only if nothing did
-    setTimeout(function () { var n = readInputs(); if (!DRAWING && n.place && (SAMPLE || n.place !== ST.place)) run({ type: 'submit', preventDefault: noop, auto: true }); }, 300);
+    // the sample still drawing is no reason to wait: the reader's town replaces it (2026-10-21: it stayed "Not drawn yet")
+    setTimeout(function () { var n = readInputs(); if ((!DRAWING || SAMPLE) && n.place && (SAMPLE || n.place !== ST.place)) run({ type: 'submit', preventDefault: noop, auto: true }); }, 300);
   });
   ['rp-name', 'rp-ded'].concat(dayNums().map(function (i) { return 'rp-m' + i + 'l'; })).forEach(function (id) { catchPaste($(id)); });
   /* THE FUNNEL (2026-10-16): one rain_print_words per kind of word a reader
@@ -5039,11 +5106,25 @@
   ['rp-crop-plant', 'rp-crop-harvest', 'rp-plants', 'rp-ghost', 'rp-frost', 'rp-heat', 'rp-ribbon'].forEach(function (id) {
     $(id).addEventListener('change', function () { restyle(); extrasLoad(reqToken); });
   });
-  $('rp-hist').addEventListener('change', function () {
+  $('rp-hist').addEventListener('change', histStation);
+  /* The threads change the station (the nearest with HIST_MIN full years), so the year is drawn again:
+     the reader's own, the town in the box when the sample is up (2026-10-21, Sig: Chetek 2025 on the
+     sample stayed on a gauge with 0 full years and said "Pick the nearest station again"), or the sample
+     itself, re-picked, when no town is typed yet. */
+  function histStation() {
     HIST_WHY = '';
     ST.hist = $('rp-hist').checked;
+    if (SAMPLE) {
+      if (readInputs().place) { run({ type: 'submit', preventDefault: noop, auto: true }); return; }
+      if (DATA) { runSample(); return; }
+    }
     if (!DATA || SAMPLE) { restyle(); return; }
     ST.station = ''; run();
+  }
+  // the station picked under Weather station is short: one tap goes back to the nearest long record
+  $('rp-hist-why').addEventListener('click', function (e) {
+    if (!e.target || e.target.id !== 'rp-hist-long') return;
+    $('rp-hist').checked = true; histStation();
   });
   // the logo: a file in, the color switch, remove
   $('rp-logo-file').addEventListener('change', function () { var f = $('rp-logo-file').files; if (f && f[0]) logoReady().then(function (ok) { if (ok) pickLogo(f[0]); else logoMsg('The logo tool didn\u2019t load. Check the connection and choose the file again.'); }); });
@@ -5311,7 +5392,8 @@
         sharedOff();
         $('rp-link-note').textContent = 'Design ' + name + (r && r.missing
           ? ' isn\u2019t one the site knows. Check the reference, or type the town and press Draw it.'
-          : ' didn\u2019t open: the link service didn\u2019t answer. Try again in a minute, or open agsist.com/r?' + ref.id + '.');
+          // agsist.com/r asks the same service, so it is no way around it (2026-10-21, the worker blocked)
+          : ' didn\u2019t open: the link service didn\u2019t answer. Try again in a minute.');
         $('rp-link-note').classList.add('rp-bad');
         $('rp-link-note').hidden = false;
         setStatus('');
