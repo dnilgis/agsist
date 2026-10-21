@@ -1477,10 +1477,15 @@
     return { kind: s.crop, name: C.name, plant: dayIndex(td.year, s.cropPlant), harvest: dayIndex(td.year, s.cropHarvest), stages: st.stages,
       ghost: gh ? gh.stages.map(function (g) { return { key: g.key, doy: g.doy }; }) : null, note: cmp, drawings: !!s.plants, stop: st.stop, foot: foot };
   }
-  /* The frost marks, the hottest and coldest day, the ribbon. found: AgRainRecords.find() on the temperature
-     station's year, kinds TEMP_KINDS (it withholds what a missing day could change); tm: tempWords' station.
+  /* The frost marks, the hottest and coldest day, the temperature stripes. found: AgRainRecords.find() on the
+     temperature station's year, kinds TEMP_KINDS (it withholds what a missing day could change); tm: tempWords'
+     station; tdN: that station's 1991-2020 daily normal highs and lows (AgRainExtras.normalTemps), null when NOAA
+     has none for it, false when the ask failed, undefined while they load.
+     The stripes (option C, Sig 2026-10-21): each day's average against its normal (AgRainExtras.stripes), with
+     the hottest and coldest days named on the strip (from found, so a day a gap could change is never named).
+     No normals: no stripes, and the foot line says why and names the hottest and coldest days instead.
      -> input.temp, or null when none of the three is on or there's nothing to show. */
-  function tempInput(s, td, found, tm, withCrop) {
+  function tempInput(s, td, found, tm, withCrop, tdN) {
     var X = X_(), by = {}, out = { frost: [], foot: [], ribbon: null };
     if (!(s.frost || s.heat || s.ribbon || withCrop) || !td || !X) return null;
     (found || []).forEach(function (r) { by[r.kind] = r; });
@@ -1488,15 +1493,29 @@
       var r = by[k]; if (!r) return;
       var d = dayIndex(td.year, r.date); if (d >= 0) out.frost.push({ key: k === 'lastFrost' ? 'last' : 'first', doy: d, date: r.date });
     });
-    if (s.ribbon) { var sc = X.ribbonScale(td); if (sc) out.ribbon = { hi: td.hi, lo: td.lo, scale: sc }; }
+    var tieOf = function (r) { var m = /\((also [^)]*|on \d+ days)\)$/.exec(r.label); return m ? m[1] : ''; };
+    var noNorm = '';
+    if (s.ribbon) {
+      var sp = tdN && X.stripes ? X.stripes(td, tdN) : null;
+      if (sp) {
+        out.ribbon = { dev: sp.dev, days: sp.days, blank: sp.blank, hot: null, cold: null };
+        [['hottest', 'hot'], ['coldest', 'cold']].forEach(function (p) {
+          var r = by[p[0]], d = r ? dayIndex(td.year, r.date) : -1;
+          if (r && d >= 0) out.ribbon[p[1]] = { doy: d, v: r.value, date: shortDate(r.date), also: tieOf(r) };
+        });
+      } else if (tdN === false) noNorm = 'Temperature stripes left off: NOAA’s normal temperatures didn’t load just now';
+      else if (tdN !== undefined) noNorm = tdN && tdN.hi && tdN.hi.some(function (v) { return v !== null; }) ? 'Temperature stripes left off: too few days have both a reading and a normal' : 'Temperature stripes left off: NOAA has no daily normal temperatures for this station';
+    }
     var heat = [];
-    if (s.heat) [['hottest', 'Hottest day'], ['coldest', 'Coldest']].forEach(function (p) {
+    // the stripes name the hottest and coldest days themselves; the foot line names them when the stripes can't
+    if ((s.heat && !out.ribbon) || noNorm) [['hottest', 'Hottest day'], ['coldest', 'Coldest']].forEach(function (p) {
       var r = by[p[0]]; if (!r) return;
-      var tie = /\((also [^)]*|on \d+ days)\)$/.exec(r.label);
-      heat.push(p[1] + ': ' + Math.round(r.value) + '°F ' + shortDate(r.date) + (tie ? ' (' + tie[1] + ')' : ''));
+      var tie = tieOf(r);
+      heat.push(p[1] + ': ' + Math.round(r.value) + '°F ' + shortDate(r.date) + (tie ? ' (' + tie + ')' : ''));
     });
-    if (!out.frost.length && !heat.length && !out.ribbon && !withCrop) return null;
+    if (!out.frost.length && !heat.length && !out.ribbon && !noNorm && !withCrop) return null;
     out.foot.push(tempWords(tm) + (out.frost.length ? '; frost is a low of 32°F or colder' : ''));
+    if (noNorm) out.foot.push(noNorm);
     heat.forEach(function (t) { out.foot.push(t); });
     return out;
   }
@@ -2043,12 +2062,14 @@
   function extrasReady() {
     if (root.AgRainExtras && root.AgGduStages) return Promise.resolve(true);
     var one = function (src, ok) { return ok() ? Promise.resolve(true) : new Promise(function (res) { var sc = doc.createElement('script'); sc.src = src; sc.onload = function () { res(ok()); }; sc.onerror = function () { res(false); }; doc.head.appendChild(sc); }); };
-    return one('/components/gdu-stages.js?v=1', function () { return !!root.AgGduStages; }).then(function () { return one('/components/rain-print-extras.js?v=1', function () { return !!root.AgRainExtras; }); });
+    return one('/components/gdu-stages.js?v=1', function () { return !!root.AgGduStages; }).then(function () { return one('/components/rain-print-extras.js?v=2', function () { return !!root.AgRainExtras; }); });
   }
   function tempNormal(sid, year) {
+    // a Canadian station has no ACIS normals: none, and the print says so
+    if (CA() && CA().isSid(sid)) return Promise.resolve(null);
     var params = JSON.stringify({ sid: sid, sdate: year + '-01-01', edate: year + '-12-31', elems: [{ name: 'maxt', normal: '91' }, { name: 'mint', normal: '91' }] });
     return safeFetch('https://data.rcc-acis.org/StnData?params=' + encodeURIComponent(params)).then(function (r) { return r.json(); })
-      .then(function (j) { return j && !j.error && Array.isArray(j.data) ? root.AgRainExtras.normalTemps(j.data, year) : null; }, function () { return null; });
+      .then(function (j) { return j && !j.error && Array.isArray(j.data) ? root.AgRainExtras.normalTemps(j.data, year) : null; }, function () { return false; });
   }
   function tempStationsNear(lat, lon, year) {
     var d = 0.6, box = [lon - d, lat - d, lon + d, lat + d].map(function (x) { return x.toFixed(3); }).join(',');
@@ -2068,8 +2089,8 @@
       var jobs = [];
       if (wantHist() && !FULL_CACHE.has(META.sid)) jobs.push(stationExtremes(META.sid).then(function (x) { FULL_CACHE.set(META.sid, root.AgRainExtras.fullYears(x.rows, 1)); }, function () { FULL_CACHE.set(META.sid, null); }));
       if (wantTemp() && TEMP_KEY !== key) { TEMP_KEY = key; TEMP = null; TEMP_P = tempFind(key); }
-      if (wantTemp()) jobs.push(TEMP_P.then(function () { return ST.crop && ST.ghost && TEMP && TEMP.sid && TEMP.norm === undefined ? tempNormal(TEMP.sid, META.year).then(function (n) { TEMP.norm = n; }) : null; }));
-      if (ST.frost || ST.heat) jobs.push(recordsReady());
+      if (wantTemp()) jobs.push(TEMP_P.then(function () { return ((ST.crop && ST.ghost) || ST.ribbon) && TEMP && TEMP.sid && (TEMP.norm === undefined || TEMP.norm === false) ? tempNormal(TEMP.sid, META.year).then(function (n) { TEMP.norm = n; }) : null; }));
+      if (ST.frost || ST.heat || ST.ribbon) jobs.push(recordsReady());
       return Promise.all(jobs);
     }).then(function () { if (my === reqToken && DATA) { syncExtrasUi(); render(); } });
   }
@@ -2111,7 +2132,7 @@
     return TEMP.found;
   }
   function extrasCrop() { return ST.crop && TEMP && TEMP.td ? cropInput(ST, TEMP.td, TEMP.norm || null) : null; }
-  function extrasTemp() { return TEMP && TEMP.td ? tempInput(ST, TEMP.td, tempFound(), TEMP.tm, !!ST.crop) : null; }
+  function extrasTemp() { return TEMP && TEMP.td ? tempInput(ST, TEMP.td, tempFound(), TEMP.tm, !!ST.crop, TEMP.norm) : null; }
   function extrasHist() { return wantHist() && META && FULL_CACHE.get(META.sid) ? histInput(FULL_CACHE.get(META.sid), META.year) : null; }
   /* Every year behind: the nearest station whose full record reaches HIST_MIN full years and whose year is good
      (at most MISS_OK unrecorded days), from those whose record spans 30 years or more, up to four read. */
@@ -2141,7 +2162,9 @@
     var noTemp = TEMP && TEMP.none;
     tempBox.hidden = !!noTemp;
     $('rp-crop-opts').hidden = !!noTemp;
-    say('rp-temp-why', noTemp ? TEMP.none : TEMP && TEMP.tm ? (TEMP.tm.same ? 'Temperatures from the same station as the rain.' : 'Temperatures from ' + TEMP.tm.name + ', ' + TEMP.tm.words + ': the nearest station with daily highs and lows for ' + META.year + '.') : '');
+    var stripesWhy = !noTemp && ST.ribbon && TEMP && TEMP.td ? ((extrasTemp() || {}).foot || []).filter(function (t) { return /^Temperature stripes left off/.test(t); })[0] : '';
+    say('rp-temp-why', noTemp ? TEMP.none : TEMP && TEMP.tm ? (TEMP.tm.same ? 'Temperatures from the same station as the rain.' : 'Temperatures from ' + TEMP.tm.name + ', ' + TEMP.tm.words + ': the nearest station with daily highs and lows for ' + META.year + '.') +
+      (stripesWhy ? ' ' + stripesWhy + '; the hottest and coldest day go in the small print instead.' : '') : '');
     // the crop's days come from the marked days
     syncCropDays();
     var c = extrasCrop();
@@ -4006,7 +4029,7 @@
     if (ST.crop) rows.push(['Crop', ({ corn: 'Corn', soy: 'Soybeans' })[ST.crop] + ', planted ' + shortDate(ST.cropPlant) + ', harvested ' + shortDate(ST.cropHarvest) +
       (ST.plants ? ', with plant drawings' : ', stages labeled') + (ST.ghost ? ', against a usual year' : '')]);
     var tw = [];
-    if (ST.frost) tw.push('frost marks'); if (ST.heat) tw.push('hottest and coldest day'); if (ST.ribbon) tw.push('daily temperature band');
+    if (ST.frost) tw.push('frost marks'); if (ST.heat) tw.push('hottest and coldest day'); if (ST.ribbon) tw.push('daily temperature stripes');
     if (tw.length) rows.push(['Temperatures', tw.join(', ') + (TEMP && TEMP.tm ? '; from ' + (TEMP.tm.same ? 'the same station' : TEMP.tm.name + ', ' + TEMP.tm.words) : '')]);
     if (ST.hist) rows.push(['Every year behind', ST.style === 'r2' ? 'on, but Roots doesn\u2019t draw it' : 'on' + (META && FULL_CACHE.get(META.sid) ? ', ' + FULL_CACHE.get(META.sid).length + ' full years at this station' : '')]);
     return rows;
@@ -4795,7 +4818,7 @@
     if (INS_P) return INS_P;
     INS_P = new Promise(function (res) {
       var sc = doc.createElement('script');
-      sc.src = '/components/rp-insert.js?v=5';
+      sc.src = '/components/rp-insert.js?v=6';
       sc.onload = function () { res(!!root.AgRpInsert); };
       sc.onerror = function () { INS_P = null; res(false); };
       doc.head.appendChild(sc);

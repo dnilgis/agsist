@@ -150,7 +150,7 @@ function optionsInput(base, style, o) {
   const cum = []; let c = 0; base.days.forEach((d) => { c += d.v || 0; cum.push(c); });
   const full = Array.from({ length: 40 }, (_, k) => ({ year: 1972 + k, total: +(c * (0.6 + k / 39)).toFixed(2), cum: cum.map((v) => v * (0.6 + k / 39)) })).concat([{ year: 2012, total: +c.toFixed(2), cum }]);
   return Object.assign({}, base, { style, markers: RP.markersOn(marks, 2012, base.D.n), crop, records: RP.withoutTemp(base.records, s),
-    temp: RP.tempInput(s, td, found, { same: false, name: "Ames Municipal Airport", words: "3.1 mi away" }, !!crop),
+    temp: RP.tempInput(s, td, found, { same: false, name: "Ames Municipal Airport", words: "3.1 mi away" }, !!crop, tdN),
     hist: s.hist && style === "r1" ? RP.histInput(full, 2012) : null });
 }
 test("every 2026-10-17 option stays inside the safe window, both styles, at production sizes", { skip }, async () => {

@@ -12,7 +12,8 @@
  *   AgRainExtras.fullYears(rows, col)             every full year of a station's daily record, as running totals
  *   AgRainExtras.remarkableYears(full, year)      the 2 wettest and 2 driest of the other full years
  *   AgRainExtras.rank(full, year)                 where the year stands among the full years
- *   AgRainExtras.ribbonScale(td)                  the temperature ribbon's scale, in round tens
+ *   AgRainExtras.ribbonScale(td)                  the old temperature band's scale, in round tens (kept for the tests)
+ *   AgRainExtras.stripes(td, tdN)                 the temperature stripes: each day's average against its normal
  *
  * CROP STAGES (Sig, 2026-10-17). Corn and soybeans only. Growing degree days are
  * the GDU calculator's (/gdu-calculator): the day's high and low each held
@@ -221,9 +222,26 @@
     return { lo: a, hi: b, days: n };
   }
 
+  // ---------- the temperature stripes (option C, Sig 2026-10-21) ----------
+  /* td: the year (tempDays); tdN: the same station's 1991-2020 normals (normalTemps), same days.
+     Each day's average (high plus low, halved) less the normal average for that date, in °F to a tenth.
+     A day with no high, no low, no normal high or no normal low is null: left blank, never filled.
+     -> {dev: [], days (with a stripe), blank (without)} or null with no normals or fewer than half the days. */
+  function stripes(td, tdN) {
+    if (!td || !tdN || !tdN.hi || !tdN.lo) return null;
+    var dev = [], n = 0;
+    for (var i = 0; i < td.n; i++) {
+      var h = td.hi[i], l = td.lo[i], nh = tdN.hi[i], nl = tdN.lo[i];
+      if (h === null || l === null || nh === null || nl === null || nh === undefined || nl === undefined) { dev.push(null); continue; }
+      dev.push(Math.round(((h + l) / 2 - (nh + nl) / 2) * 10) / 10); n++;
+    }
+    if (n < td.n / 2) return null;
+    return { dev: dev, days: n, blank: td.n - n };
+  }
+
   root.AgRainExtras = {
     CROPS: CROPS, KINDS: KINDS, BASE: BASE, CAP: CAP, SUNFLOWERS: false,
     tempDays: tempDays, normalTemps: normalTemps, tempGaps: tempGaps, gduDay: gduDay, cropStages: cropStages, compare: compare,
-    fullYears: fullYears, remarkableYears: remarkableYears, rank: rank, ribbonScale: ribbonScale, doyOf: doyOf, isoOf: isoOf
+    fullYears: fullYears, remarkableYears: remarkableYears, rank: rank, ribbonScale: ribbonScale, stripes: stripes, doyOf: doyOf, isoOf: isoOf
   };
 })(typeof window !== 'undefined' ? window : this);
