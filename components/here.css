@@ -180,6 +180,7 @@ html[data-fx="place"] #place,html[data-fx="tables"] #tables{display:block}
 #print .h-pr-box{max-width:36rem}
 /* the place's tools: Change place, Print and the print options (Oct 21: Print is a button, not a tab) */
 .h-tools{display:flex;flex-wrap:wrap;align-items:flex-start;gap:.5rem;margin:0 0 .5rem}
+.h-tools[hidden],.fx-row[hidden]{display:none}
 .h-tools .h-change{margin:0}
 .h-pr-go{font:inherit;font-size:.9rem;font-weight:700;min-height:44px;padding:0 .95rem;border-radius:999px;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--border);display:inline-flex;align-items:center;gap:.4rem}
 .h-pr-go .ic{width:16px;height:16px}
