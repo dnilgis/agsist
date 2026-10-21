@@ -121,9 +121,9 @@ test("rain-county-print.js mounts any figure; the county page mounts its own; ve
   const js = read("components/rain-county-print.js");
   assert.match(js, /mount: mount/);
   assert.match(js, /var own = doc && doc\.getElementById\('rc-print'\);\s*if \(own\) mount\(own\);/);
-  assert.match(read("components/here.js"), /RCP = '\/components\/rain-county-print\.js\?v=34'/);
-  assert.match(read("scripts/build_county_rain.py"), /rain-county-print\.js\?v=34/);
-  assert.match(read("rain/wisconsin/barron-county.html"), /rain-county-print\.js\?v=34/);
+  assert.match(read("components/here.js"), /RCP = '\/components\/rain-county-print\.js\?v=36'/);
+  assert.match(read("scripts/build_county_rain.py"), /rain-county-print\.js\?v=36/);
+  assert.match(read("rain/wisconsin/barron-county.html"), /rain-county-print\.js\?v=36/);
 });
 
 test("what's unusual here: own past only, the rule's numbers, nothing when nothing passes", () => {
@@ -229,7 +229,7 @@ test("bids-network exports the index and a checked shard getter; versions bumped
   for (const f of ["here.html", "corn-futures-prices.html", "store-or-sell.html", "combine-loss.html"]) assert.match(read(f), /bids-network\.js\?v=7/, f);
   assert.match(read("components/bids-homepage.js"), /bids-network\.js\?v=7/);
   assert.match(read("here.html"), /place\.js\?v=4/);
-  assert.match(read("here.html"), /here\.js\?v=17/);   // v17: rain-county-print.js v34, engine rain-print.js v64, art v20 (fx/rptemp: temperature stripes); v16: rain-county-print.js v33, engine rain-print.js v63 (ship23: buying lines, Watch it draw); v15: rain-county-print.js v32, engine rain-print.js v62 (Watch it draw, 2026-10-20); v14: rain-county-print.js v31, engine rain-print.js v61 (digital files, 2026-10-20); v13: rain-county-print.js v30, engine rain-print.js v60 (order tracking, 2026-10-20); v12: rain-county-print.js v29, engine rain-print.js v59 (new maker key, 2026-10-20); v11: rain-county-print.js v28, the county print as a hidden shell (2026-10-20); v10: summer snow traces skipped (v27)
+  assert.match(read("here.html"), /here\.js\?v=19/);   // v19: rain-county-print.js v36, engine rain-print.js v65 (fx/rpfix: Chetek Oct 21); v17: rain-county-print.js v34, engine rain-print.js v64, art v20 (fx/rptemp: temperature stripes); v16: rain-county-print.js v33, engine rain-print.js v63 (ship23: buying lines, Watch it draw); v15: rain-county-print.js v32, engine rain-print.js v62 (Watch it draw, 2026-10-20); v14: rain-county-print.js v31, engine rain-print.js v61 (digital files, 2026-10-20); v13: rain-county-print.js v30, engine rain-print.js v60 (order tracking, 2026-10-20); v12: rain-county-print.js v29, engine rain-print.js v59 (new maker key, 2026-10-20); v11: rain-county-print.js v28, the county print as a hidden shell (2026-10-20); v10: summer snow traces skipped (v27)
   assert.match(read("here.html"), /rain-county\.css\?v=5/);   // v5: the month table fits a phone (2026-10-19)
 });
 
