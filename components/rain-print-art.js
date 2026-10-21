@@ -1039,35 +1039,76 @@
     return out;
   }
 
-  /* The temperature ribbon (input.temp.ribbon, off by default): each day's high and low as a short upright
-     stroke in a thin band, colored by the day's middle temperature from cool gray-blue through warm stone to
-     rust. A day with no high or low is a gap. b = {x0 (left of day 0), w (a day), y0, h, side 'left' | 'right'}. */
-  var RIBBON_H = 36, RIB_STOPS = [[-20, [128, 149, 168]], [32, [169, 180, 189]], [58, [205, 191, 168]], [78, [200, 154, 114]], [100, [169, 88, 58]]];
-  function ribbonInk(t) {
-    var s = RIB_STOPS, i = 0;
-    if (t <= s[0][0]) i = 0; else if (t >= s[s.length - 1][0]) i = s.length - 2; else while (t > s[i + 1][0]) i++;
-    var a = s[i], b = s[i + 1], f = Math.max(0, Math.min(1, (t - a[0]) / (b[0] - a[0])));
-    var hx = function (v) { return ('0' + Math.round(v).toString(16)).slice(-2); };
-    return '#' + [0, 1, 2].map(function (k) { return hx(a[1][k] + (b[1][k] - a[1][k]) * f); }).join('').toUpperCase();
+  /* The temperature stripes (input.temp.ribbon, off by default; Sig picked option C, 2026-10-21): one stripe a
+     day, the day's average temperature (its high and low, averaged) against the station's own 1991-2020 normal
+     average for that date, worked out before render (AgRainExtras.stripes). Blue colder, rust warmer, the pale
+     middle within 3°F of usual; three steps each way (3, 9 and 15°F), the same either side, so the scale is
+     symmetric. Blue against rust reads with every common kind of color blindness, and the steps differ in
+     lightness too, so a gray print still tells colder from warmer by how dark it is. A day with no high, no low
+     or no normal gets no stripe: a blank, never a guess. The hottest day (its high) and the coldest day (its
+     low) are named under the strip with their dates, each with its own group so the year-drawing video shows it
+     on its day (temp:0, temp:1); the key (tkey) sits at the strip's right end, and the foot line says what a
+     stripe is. b = {x0 (left of day 0), x1, w (a day), n, y0, h}.
+     input.temp.ribbon = {dev: [°F from normal, or null], hot: {doy, v, date, also}, cold: {...}} */
+  var RIBBON_H = 36, STRIPE_H = 20, STRIPE_STEPS = [3, 9, 15];
+  // colder (3, 2, 1), usual, warmer (1, 2, 3)
+  var STRIPE_INK = ['#2F5F8A', '#6F98BD', '#B5CADB', '#E6E1D9', '#E8BE98', '#C98552', '#9C4A22'];
+  function stripeStep(dv) {
+    var a = Math.abs(dv), k = a < STRIPE_STEPS[0] ? 0 : a < STRIPE_STEPS[1] ? 1 : a < STRIPE_STEPS[2] ? 2 : 3;
+    return dv < 0 ? -k : k;
   }
+  function stripeInk(dv) { return STRIPE_INK[stripeStep(dv) + 3]; }
+  function stripesOn(I) { var r = I.temp && I.temp.ribbon; return !!(r && r.dev && r.dev.length); }
+  function degF(v) { var r = Math.round(v); return (r < 0 ? '−' + -r : r) + '°F'; }
   function ribbon(I, b) {
     var r = I.temp && I.temp.ribbon;
-    if (!r || !r.scale) return '';
-    var sc = r.scale, yv = function (v) { return b.y0 + (sc.hi - v) * b.h / (sc.hi - sc.lo); }, sw = Math.max(0.8, b.w * 0.78), o = [];
-    for (var i = 0; i < r.hi.length && i < b.n; i++) {
-      var hi = r.hi[i], lo = r.lo[i];
-      if (hi === null || lo === null || hi === undefined || lo === undefined) continue;
-      var x = b.x0 + (i + 0.5) * b.w, ya = yv(Math.min(sc.hi, hi)), yb = yv(Math.max(sc.lo, lo));
-      if (yb - ya < 1.2) { ya -= 0.6; yb += 0.6; }
-      o.push('<line x1="' + n2(x) + '" y1="' + n2(ya) + '" x2="' + n2(x) + '" y2="' + n2(yb) + '" stroke="' + ribbonInk((hi + lo) / 2) + '"/>');
+    if (!stripesOn(I)) return '';
+    var N = Math.min(r.dev.length, b.n), y0 = b.y0, sh = STRIPE_H, o = [], runs = [];
+    // neighbouring days of one step share a rect, so a print has a few hundred shapes, not 365 hairline seams
+    for (var i = 0; i < N; i++) {
+      var dv = r.dev[i];
+      if (dv === null || dv === undefined || !isFinite(dv)) continue;
+      var ink = stripeInk(dv), last = runs[runs.length - 1];
+      if (last && last.ink === ink && last.e === i) last.e = i + 1; else runs.push({ s: i, e: i + 1, ink: ink });
     }
-    var deg = function (v) { return Math.round(v) + '°'; }, ts = { size: 11, fill: X.date, anchor: b.side === 'right' ? 'start' : 'end' }, tx = b.side === 'right' ? b.x1 + 8 : b.x0 - 12;
-    return G0('ribbon') + '<g stroke-width="' + n2(sw) + '" stroke-linecap="butt">' + o.join('') + '</g>' +
-      T(tx, b.y0 + 8, deg(sc.hi), ts) + T(tx, b.y0 + b.h, deg(sc.lo), ts) + G1;
+    runs.forEach(function (q) { o.push('<rect x="' + n2(b.x0 + q.s * b.w) + '" y="' + n2(y0) + '" width="' + n2((q.e - q.s) * b.w) + '" height="' + sh + '" fill="' + q.ink + '"/>'); });
+    // hairlines above and below, so a blank day reads as a gap in the strip, not as a pale day
+    var frame = line(b.x0, y0 - 0.5, b.x1, y0 - 0.5, C.guide, 0.7) + line(b.x0, y0 + sh + 0.5, b.x1, y0 + sh + 0.5, C.guide, 0.7);
+    var out = G0('ribbon') + frame + o.join('') + G1;
+    // the key at the right end, under the strip: colder, seven swatches, warmer
+    var kS = { size: 11, fill: X.fact }, sw = 13, ky = y0 + sh + 14, kx1 = b.x1, words = [LOC.fr ? 'plus chaud' : 'warmer', LOC.fr ? 'plus froid' : 'colder'];
+    var wWarm = W(words[0], kS), wCold = W(words[1], kS), kx0 = kx1 - wWarm - 6 - 7 * sw - 6 - wCold, key = [];
+    key.push(T(kx0, ky, words[1], kS));
+    STRIPE_INK.forEach(function (c, k) { key.push('<rect x="' + n2(kx0 + wCold + 6 + k * sw) + '" y="' + n2(ky - 8.5) + '" width="' + (sw - 1) + '" height="9" fill="' + c + '"/>'); });
+    key.push(T(kx1, ky, words[0], Object.assign({ anchor: 'end' }, kS)));
+    out += G0('tkey') + key.join('') + G1;
+    // the hottest and coldest days, named under the strip with a short tick at the day itself
+    var keyBox = { x: kx0 - 10, x1: kx1 }, labs = [];
+    [['hot', LOC.fr ? 'Jour le plus chaud' : 'Hottest day'], ['cold', LOC.fr ? 'Jour le plus froid' : 'Coldest day']].forEach(function (p, k) {
+      var d = r[p[0]];
+      if (!d || !(d.doy >= 0 && d.doy < N)) return;
+      var text = p[1] + ': ' + degF(d.v) + ' ' + d.date + (d.also ? ' (' + d.also + ')' : ''), st0 = { size: 11, fill: X.fact }, wd = W(text, st0);
+      labs.push({ k: k, x: b.x0 + (d.doy + 0.5) * b.w, text: text, w: wd, st: st0 });
+    });
+    // centred on its day where it fits, kept clear of the key and of each other
+    labs.forEach(function (L) { L.lx = Math.max(b.x0, Math.min(L.x - L.w / 2, keyBox.x - L.w)); });
+    if (labs.length === 2) {
+      var A = labs[0].lx <= labs[1].lx ? labs[0] : labs[1], B = A === labs[0] ? labs[1] : labs[0];
+      if (A.lx + A.w + 16 > B.lx) {
+        var mid = (A.lx + A.w + B.lx) / 2;
+        A.lx = Math.max(b.x0, mid - 8 - A.w); B.lx = A.lx + A.w + 16;
+        if (B.lx + B.w > keyBox.x) { B.lx = keyBox.x - B.w; A.lx = Math.max(b.x0, B.lx - 16 - A.w); }
+      }
+    }
+    labs.forEach(function (L) {
+      out += G0('temp:' + L.k) + line(L.x, y0 + sh + 1, L.x, y0 + sh + 5, X.ink, 0.9) + T(L.lx, ky, L.text, L.st) + G1;
+    });
+    return out;
   }
   function ribbonFoot(I) {
-    var r = I.temp && I.temp.ribbon;
-    return r && r.scale ? 'Band: each day’s high and low, ' + r.scale.lo + '°F to ' + r.scale.hi + '°F, gray-blue cold to rust hot' : '';
+    if (!stripesOn(I)) return '';
+    return LOC.fr ? 'Bandes : la température moyenne de chaque jour (max. et min., moyennées) comparée à la normale 1991-2020 de la station pour cette date ; bleu plus froid, rouille plus chaud, par paliers de 3, 9 et 15 °F ; en blanc, un jour sans relevé'
+      : 'Stripes: each day’s average temperature (its high and low, averaged) against this station’s 1991 to 2020 normal for that date; blue colder, rust warmer, in steps of 3, 9 and 15°F; a blank is a day with no reading';
   }
 
   // ======================================================================= R1 "Staircase", A2 clean (Sig, 2026-10-17)
@@ -1083,7 +1124,7 @@
   function printDryMin(I) { var v = +I.printDryMin; return v > 0 && isFinite(v) ? v : PRINT_DRY_MIN; }
   function r1(I, wetFoot) {
     var E = model(I), N = E.N, days = E.days, skipped = [];
-    var hasRib = !!(I.temp && I.temp.ribbon && I.temp.ribbon.scale);
+    var hasRib = stripesOn(I);
     var X0 = 196, X1 = 1590, PTOP = 104, MB = 716, PB = hasRib ? MB - 52 : MB, w = (X1 - X0) / N;
     var xs = function (i) { return X0 + i * w; };
     var lastCum = function (i) { for (var k = i; k >= 0; k--) if (E.cum[k] !== null) return E.cum[k]; return 0; };
@@ -1510,7 +1551,7 @@
   function r2(I) {
     var E = model(I), N = E.N, days = E.days, skipped = [];
     var ML = 120, X0 = 205, X1 = 1690, PW = X1 - X0, w = PW / N;
-    var hasRib = !!(I.temp && I.temp.ribbon && I.temp.ribbon.scale);
+    var hasRib = stripesOn(I);
     // the temperature ribbon takes a strip under the rain (2026-10-17): the rain scale gives it 80 units
     var G = 478, SH = 92, RB = hasRib ? 920 : 1000, RH = RB - G - 6, RIB_Y = RB + 22;
     // the rain scale reaches the deepest bar drawn below the ground (a snow day is drawn above it only)
@@ -1935,6 +1976,8 @@
     lastGeom: function () { return last_geom ? JSON.parse(JSON.stringify(last_geom)) : null; },
     STYLES: ['r1', 'r2'], W: W0, H: H0, traceMark: traceMark, TRACE_MARK: TRACE_MARK, TRACE_R: TRACE_R, QR_INK: QR_INK, INK: C.ink, roughW: roughW,
     // the French words on the print, for the review list and the tests (FR-REVIEW)
-    FR: FR, MON_FR: MON_FR
+    FR: FR, MON_FR: MON_FR,
+    // the temperature stripes' steps and inks (the letter's key draws its swatch from them)
+    stripeStep: stripeStep, STRIPE_INK: STRIPE_INK.slice(), STRIPE_STEPS: STRIPE_STEPS.slice()
   };
 })(typeof window !== 'undefined' ? window : this);

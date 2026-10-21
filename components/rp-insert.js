@@ -138,7 +138,7 @@
       if (dr.hist) key.push(['hist', 'Thin gray lines: the other full years this station kept. The wettest and driest end with their year.']);
       if (dr.frost) key.push(['frost', 'Small gray triangle on the ' + ground + ': the last frost of spring and the first of fall.']);
       if (dr.crop) key.push(['crop', 'Crop stages on the ' + ground + ', each with its date, counted from planting by this station\u2019s growing degree days.']);
-      if (dr.ribbon) key.push(['ribbon', 'Colored band: each day\u2019s high and low, gray-blue for cold to rust for hot.']);
+      if (dr.ribbon) key.push(['ribbon', 'Stripes: one a day, blue when the day was colder than usual for that date, rust when warmer, darker the farther off; the hottest and coldest days are named. A blank is a day with no reading.']);
       if (dr.qr) key.push(['qr', 'The small code in the corner opens this same print at agsist.com.']);
     }
     c.key = key;
@@ -242,7 +242,9 @@
           '<path d="M' + (x + 28) + ',' + bot + 'V' + (top + 1) + 'M' + (x + 28) + ',' + (bot - 6) + 'l-5,-4M' + (x + 28) + ',' + (bot - 11) + 'l5,-4M' + (x + 28) + ',' + (bot - 15) + 'l-4,-3"/></g>';
       case 'ribbon':
         s = '';
-        ['#8095A8', '#A9B4BD', '#CDBFA8', '#C89A72', '#A9583A'].forEach(function (col, i) { for (var k = 0; k < 4; k++) s += line(x + i * 8 + k * 2 + 0.5, top + 4 + ((i + k) % 3), x + i * 8 + k * 2 + 0.5, bot - ((i * 2 + k) % 3), col, 1.4); });
+        // the print's own seven stripe inks (AgRainArt.STRIPE_INK), colder to warmer, as a little strip
+        var A = root.AgRainArt, inks = (A && A.STRIPE_INK) || ['#2F5F8A', '#6F98BD', '#B5CADB', '#E6E1D9', '#E8BE98', '#C98552', '#9C4A22'];
+        [3, 2, 4, 1, 5, 6, 3, 0, 1, 4].forEach(function (k, i) { s += '<rect x="' + (x + i * 4) + '" y="' + (top + 4) + '" width="4" height="' + (bot - top - 6) + '" fill="' + inks[k] + '"/>'; });
         return s;
       case 'qr': return '<g fill="' + QR_INK + '">' + [[0, 0], [12, 0], [0, 12]].map(function (p) { return '<rect x="' + (x + 12 + p[0]) + '" y="' + (top + p[1]) + '" width="7" height="7"/>'; }).join('') +
           '<rect x="' + (x + 24) + '" y="' + (top + 12) + '" width="3" height="3"/><rect x="' + (x + 28) + '" y="' + (top + 16) + '" width="3" height="3"/></g>';
