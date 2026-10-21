@@ -1,14 +1,14 @@
 {
-  "updated": "2026-10-16T21:53:45Z",
+  "updated": "2026-10-21T21:53:49Z",
   "corn": {
-    "pct": 53,
-    "cur": 4.7425,
+    "pct": 48,
+    "cur": 4.6425,
     "lo": 3.6775,
     "hi": 8.1825,
-    "median": 4.6575,
-    "n": 261,
+    "median": 4.6562,
+    "n": 262,
     "years": 5,
-    "read": "At the 53rd percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
+    "read": "At the 48th percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       5.38,
       5.6825,
@@ -269,10 +269,11 @@
       5.275,
       5.2825,
       4.9775,
-      4.7975
+      4.7975,
+      4.7425
     ],
     "hist_from": "2021-10-18",
-    "hist_to": "2026-10-12",
+    "hist_to": "2026-10-19",
     "seasonality": [
       79,
       80,
@@ -295,14 +296,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "soybean": {
-    "pct": 55,
-    "cur": 12.605,
+    "pct": 53,
+    "cur": 12.4625,
     "lo": 9.3875,
     "hi": 17.455,
-    "median": 12.0575,
-    "n": 261,
+    "median": 12.075,
+    "n": 262,
     "years": 5,
-    "read": "At the 55th percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
+    "read": "At the 53rd percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       12.205,
       12.3575,
@@ -563,10 +564,11 @@
       13.035,
       13.19,
       12.7825,
-      12.92
+      12.92,
+      12.6125
     ],
     "hist_from": "2021-10-18",
-    "hist_to": "2026-10-12",
+    "hist_to": "2026-10-19",
     "seasonality": [
       78,
       91,
@@ -589,14 +591,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "wheat": {
-    "pct": 63,
-    "cur": 6.5975,
+    "pct": 58,
+    "cur": 6.2825,
     "lo": 4.985,
     "hi": 13.48,
-    "median": 6.0575,
-    "n": 261,
+    "median": 6.0587,
+    "n": 262,
     "years": 5,
-    "read": "At the 63rd percentile of the last 5 years \u2014 above the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
+    "read": "At the 58th percentile of the last 5 years \u2014 above the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       7.56,
       7.7275,
@@ -857,10 +859,11 @@
       7.1425,
       7.0325,
       6.83,
-      6.71
+      6.71,
+      6.605
     ],
     "hist_from": "2021-10-18",
-    "hist_to": "2026-10-12",
+    "hist_to": "2026-10-19",
     "seasonality": [
       58,
       86,
@@ -883,14 +886,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "cattle": {
-    "pct": 82,
-    "cur": 227.525,
+    "pct": 84,
+    "cur": 230.2,
     "lo": 124.1,
     "hi": 257.45,
-    "median": 183.7,
-    "n": 261,
+    "median": 183.725,
+    "n": 262,
     "years": 5,
-    "read": "At the 82nd percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 261 weekly closes, continuous front-month).",
+    "read": "At the 84th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 262 weekly closes, continuous front-month).",
     "hist": [
       124.1,
       127.375,
@@ -1151,10 +1154,11 @@
       215.925,
       218.875,
       218.85,
-      224.975
+      224.975,
+      227.55
     ],
     "hist_from": "2021-10-18",
-    "hist_to": "2026-10-12",
+    "hist_to": "2026-10-19",
     "seasonality": [
       0,
       19,
@@ -1177,14 +1181,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "feeders": {
-    "pct": 83,
-    "cur": 343.975,
+    "pct": 85,
+    "cur": 347.8,
     "lo": 153.125,
     "hi": 375.5,
-    "median": 248.325,
-    "n": 261,
+    "median": 248.35,
+    "n": 262,
     "years": 5,
-    "read": "At the 83rd percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 261 weekly closes, continuous front-month).",
+    "read": "At the 85th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 262 weekly closes, continuous front-month).",
     "hist": [
       155.425,
       156.575,
@@ -1445,10 +1449,11 @@
       333.575,
       334.925,
       334.625,
-      343.85
+      343.85,
+      343.625
     ],
     "hist_from": "2021-10-18",
-    "hist_to": "2026-10-12",
+    "hist_to": "2026-10-19",
     "seasonality": [
       0,
       10,
