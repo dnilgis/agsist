@@ -275,10 +275,11 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
         r = r or {}
         e = str(r.get("email") or "").strip().lower()
         t = str(r.get("topic") or "")
-        if not TOPIC_RE.fullmatch(t) or not SN.EMAIL_RE.match(e) or (e, t) in seen:
-            n["skipped"] += 1
+        if not TOPIC_RE.fullmatch(t) or not SN.EMAIL_RE.match(e) or (e, t) in seen or not SN.email_links.lid_of(r):
+            n["skipped"] += 1   # v5.46: a row with no link id waits for the next run
             continue
         seen.add((e, t))
+        SN.LINK_IDS[e] = SN.email_links.lid_of(r)
         pl = plan(data, r)
         if pl[0] == "send":
             todo.append((e, t, str(r.get("src") or ""), pl[1], pl[2]))
@@ -301,7 +302,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
         if good:
             ctx.update(grid=30452, items=good[-1:])
             m = SN.render("prf:30452", "page:prf/wisconsin/barron-county", "reader@example.com", base, "preview",
-                          today, from_addr, reply_to, repo)
+                          today, from_addr, reply_to, repo, lid=SN.email_links.SAMPLE_LID)
             out("preview (a made-up address and unsubscribe token):")
             out("Subject: " + str(m["Subject"]))
             out(m.get_body(("plain",)).get_content().rstrip())
@@ -420,9 +421,14 @@ def selftest():
     ctx = {"grid": 30452, "items": [("2026-06", 980)]}
     SN.TEMPLATES["prf"] = make_parts(data, ctx, tmp)
     T = "prf:30452"
+    SN.LINK_IDS["a@example.com"] = SN.email_links.SAMPLE_LID
     m = SN.render(T, "page:prf/wisconsin/barron-county", "a@example.com", "https://w.dev", "sec", C("2026-10-21 05:00").date(),
                   "news@agsist.com", None, tmp)
     txt = m.get_body(("plain",)).get_content()
+    _h, _t = m.get_body(("html",)).get_content(), m.get_body(("plain",)).get_content()
+    ck("no @ inside any href, no address in a text link (subs worker v5.46)",
+       not [x for x in SN.email_links.hrefs(_h) if "@" in x or "%40" in x.lower()] and not SN.email_links.bad_links(_t)
+       and "k=" + SN.email_links.SAMPLE_LID + "&t=" in _t)
     htm = m.get_body(("html",)).get_content()
     ck("subject: grid, interval, final index", m["Subject"] == "PRF grid 30452: Jun-Jul 2026 final index 98.0", m["Subject"])
     ck("the index as percent of normal, hand-checked: 980 / 10 = 98.0",
@@ -472,7 +478,8 @@ def selftest():
             assert qs.get("token") == ["tok"]
             if method == "GET" and u.path == "/notice-list":
                 self.log.append(("list", qs.get("topic", [""])[0], qs.get("unsent")))
-                return [dict({"email": e, "ts": 1, "src": "page:prf/wisconsin/barron-county", "sent": None}, **v)
+                return [dict({"email": e, "ts": 1, "src": "page:prf/wisconsin/barron-county", "sent": None,
+                              "lid": "0000000000%06x" % (sum(map(ord, e)) % 0xffffff)}, **v)
                         for e, v in self.t.items()]
             if method == "POST" and u.path == "/notice-mark":
                 self.marks.append((body["email"], body["interval"], bool(body.get("quiet"))))
@@ -505,7 +512,7 @@ def selftest():
     w, s = Worker(), SMTP()
     rc, log = go([], w, s)
     ck("dry run: reads the list, sends nothing, marks nothing, previews a made-up address",
-       rc == 0 and not s.sent and not w.marks and "reader%40example.com" in log and not any(e in log for e in addrs), log)
+       rc == 0 and not s.sent and not w.marks and "k=" + SN.email_links.SAMPLE_LID in log and "%40" not in log and not any(e in log for e in addrs), log)
     rc, log = go(["--send"], w, s)
     ck("reads every prf: row, not only unsent (the topic recurs)", w.log[-1] == ("list", "prf:", None), w.log)
     ck("mails the two with a new interval", sorted(s.sent) == ["one@example.com", "two@example.com"], s.sent)

@@ -25,6 +25,7 @@
  */
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import crypto from 'node:crypto';
 
 const src = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'workers', 'subs-worker.js');
 const tmp = path.join(os.tmpdir(), 'subs-worker-checks-' + process.pid + '.mjs');
@@ -48,6 +49,9 @@ function makeKV(store, meta = new Map(), opts = new Map(), log = { get: 0, list:
     },
   };
 }
+// v5.46: the link id the worker gives an address (16 letters, HMAC of "lid|" + address), made here independently
+const LID_B32 = '0123456789abcdefghjkmnpqrstvwxyz';
+const lidOf = (e, sec = 'sec') => [...crypto.createHmac('sha256', sec).update('lid|' + e.toLowerCase()).digest().subarray(0, 16)].map(b => LID_B32[b & 31]).join('');
 const store = new Map();
 const env = { UNSUB_SECRET: 'sec', LIST_TOKEN: 'tok', SUBS: makeKV(store) };
 const H = 'https://x.dev';
@@ -137,7 +141,8 @@ A(r.status === 200 && (r.headers.get('Content-Type') || '').includes('applicatio
 const L = await r.json();
 A(Array.isArray(L) && L.length === plain.split('\n').length, 'json list has every address');
 const by = Object.fromEntries(L.map(x => [x.email, x]));
-A(JSON.stringify(Object.keys(by['plain@farm.com']).sort()) === JSON.stringify(['email', 'reports', 'src', 'ts', 'zip']), 'json record keys are exactly email,zip,src,ts,reports');
+A(JSON.stringify(Object.keys(by['plain@farm.com']).sort()) === JSON.stringify(['email', 'lid', 'reports', 'src', 'ts', 'zip']), 'json record keys are exactly email,zip,src,ts,reports and (v5.46) lid');
+A(by['plain@farm.com'].lid === lidOf('plain@farm.com') && store.get('lid:' + lidOf('plain@farm.com')) === 'plain@farm.com', 'v5.46: the lid is the HMAC id and lid:<id> holds the address');
 A(by['z@farm.com'].zip === '67801' && by['z@farm.com'].reports === false && by['z@farm.com'].ts === ts0, 'json record values');
 A(by['old@farm.com'].zip === null && by['old@farm.com'].reports === true && by['old@farm.com'].src === 'import', 'v5.3 record reads as reports:true, zip null');
 A(by['bad5472@farm.com'].zip === null, 'no zip -> null');
@@ -474,11 +479,11 @@ for (const [p, b] of Object.entries(goodBodies)) {
   // what v5.12 answered: one get per key, in list order
   const want = [...F.st.keys()].filter(k => k.startsWith('sub:')).sort().map(k => {
     let x = null; try { x = JSON.parse(F.st.get(k)); } catch (e) { x = null; } if (!x || typeof x !== 'object') x = {};
-    return { email: k.slice(4), zip: /^\d{5}$/.test(String(x.zip || '')) ? x.zip : null, src: String(x.src || ''), ts: Number.isFinite(x.ts) ? x.ts : null, reports: x.reports !== false }; });
+    return { email: k.slice(4), zip: /^\d{5}$/.test(String(x.zip || '')) ? x.zip : null, src: String(x.src || ''), ts: Number.isFinite(x.ts) ? x.ts : null, reports: x.reports !== false, lid: lidOf(k.slice(4)) }; });
   F.log.get = 0;
   r = await req(F.env, '/list?token=tok&format=json', { m: 'GET' });
   const got = await r.text();
-  A(got === JSON.stringify(want), '/list?format=json is byte-for-byte the v5.12 answer');
+  A(got === JSON.stringify(want), '/list?format=json is byte-for-byte the v5.12 answer plus (v5.46) lid last');
   A(F.log.get === 3, 'only the three old records are read with get() (got ' + F.log.get + ')');
   A(r.headers.get('X-Next-Cursor') === null, 'no cursor header without paging');
   // pages
@@ -521,7 +526,17 @@ for (const [p, b] of Object.entries(goodBodies)) {
   for (let i = 0; i < 1200; i++) { const rec = { ts: 1, src: 's', reports: true }; await B.env.SUBS.put('sub:u' + String(i).padStart(4, '0') + '@farm.com', JSON.stringify(rec), { metadata: rec }); }
   B.log.get = 0; B.log.list = [];
   r = await req(B.env, '/list?token=tok&format=json', { m: 'GET' });
-  A((await r.json()).length === 1200 && B.log.get === 0 && B.log.list.length === 2, '1,200 readers: 2 KV operations, not 1,200');
+  // v5.46: the first call also lists lid: once and writes at most 400 new ids; the rest come on the next calls
+  let L1 = await r.json();
+  const lids = () => [...B.st.keys()].filter(k => k.startsWith('lid:')).length;
+  A(L1.length === 1200 && B.log.get === 0 && B.log.list.length === 3 && lids() === 400 && L1.filter(x => x.lid).length === 400,
+    '1,200 readers, first call: 2 list pages + 1 lid list, 400 new ids, no get (' + B.log.list.length + ', ' + lids() + ')');
+  for (let i = 0; i < 2; i++) { r = await req(B.env, '/list?token=tok&format=json', { m: 'GET' }); L1 = await r.json(); }
+  A(lids() === 1200 && L1.every(x => x.lid === lidOf(x.email)), 'three calls give all 1,200 an id');
+  B.log.get = 0; B.log.list = [];
+  r = await req(B.env, '/list?token=tok&format=json', { m: 'GET' }); L1 = await r.json();
+  A(L1.length === 1200 && B.log.get === 0 && B.log.list.length === 4 && lids() === 1200 && L1.every(x => x.lid),
+    '1,200 readers with ids: 4 KV operations (2 list pages, 2 lid pages), not 1,200 (' + B.log.list.length + ')');
 }
 
 // 17. control characters never reach a stored label, place, company or contact

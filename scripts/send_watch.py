@@ -32,6 +32,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe  # noqa: E402  (no address in the public log)
+import email_links  # noqa: E402  (k=<link id> links; never an address in one)
 
 REPO = Path(__file__).resolve().parent.parent
 CARDS = REPO / "farmland-atlas" / "data" / "cards.json"
@@ -51,12 +52,16 @@ def token(secret, email, tail):
     return hmac.new(secret.encode(), (email + tail).lower().encode(), hashlib.sha256).hexdigest()[:16]
 
 
+# Address -> link id (subs worker v5.46), from the /watch-list rows main() reads.
+LINK_IDS = {}
+
+
 def link(base, path, email, fips, secret, kind):
+    """Subs worker v5.46: ?k=<the watcher's link id>[&f=]&t=hmac16(id + tail),
+    never the address. Raises email_links.LinkError when there is no id."""
     tail = {"c": "|c|" + fips, "w1": "|w|" + fips, "w": "|w"}[kind]
-    q = "e=" + urllib.parse.quote(email.lower())
-    if kind in ("c", "w1"):
-        q += "&f=" + fips
-    return f"{base}/{path}?{q}&t={token(secret, email, tail)}"
+    mid = ("&f=" + fips) if kind in ("c", "w1") else ""
+    return email_links.signed(base, path, LINK_IDS.get(str(email).strip().lower()), secret, tail, mid)
 
 
 def snap(c):
@@ -141,7 +146,7 @@ def confirm_email(w, fips, c, base, secret, fn, fa, rt):
         f"Someone asked to watch {lab} in the AGSIST Farmland Atlas using this address.",
         "If that was you, confirm below. Then you get an email when that county's published figures change, usually once or twice a year.",
         "If it was not you, ignore this. Nothing starts until you confirm."], ("CONFIRM", go), foot), subtype="html")
-    return m
+    return email_links.check_message(m)
 
 
 def change_email(w, fips, c, lines, base, secret, fn, fa, rt, page):
@@ -156,7 +161,7 @@ def change_email(w, fips, c, lines, base, secret, fn, fa, rt, page):
             f'<a href="{H.escape(stopall)}" style="color:#6b6b6b">Stop all</a>')
     m.add_alternative(html_wrap(f"{lab}: figures updated", lines + [
         "County averages from public records, not an appraisal of any farm."], ("OPEN THE COUNTY PAGE", page), foot), subtype="html")
-    return m
+    return email_links.check_message(m)
 
 
 def page_url(c):
@@ -219,12 +224,27 @@ def selftest():
     assert [(x[0], x[1]) for x in ch] == [("a@x.com", "19169")]
     assert sorted((x[0], x[1]) for x in bs) == [("a@x.com", "19001"), ("c@x.com", "19001")], bs   # baseline, and key moved with no tracked change
     assert plan([{"email": "z@x.com", "pend": {"19169": {"ts": 0, "m": 0}}, "w": {}}], C, 20 * 864e5)[0] == [], "expired pending is not mailed"
+    L0 = email_links.SAMPLE_LID
+    LINK_IDS.clear()
+    LINK_IDS.update(email_links.link_ids([{"email": "a@x.com", "lid": L0}]))
     m = confirm_email("a@x.com", "19169", C["19169"], "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     body = m.get_body(("plain",)).get_content()
-    assert "PO Box 243, Chetek, WI 54728" in body and "watch-confirm?e=a%40x.com&f=19169&t=" in body
+    assert "PO Box 243, Chetek, WI 54728" in body and "watch-confirm?k=%s&f=19169&t=%s" % (L0, token(s, L0, "|c|19169")) in body, body
+    assert "watch-unsubscribe?k=%s&f=19169&t=%s" % (L0, token(s, L0, "|w|19169")) in str(m["List-Unsubscribe"])
     assert m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click"
     m2 = change_email("a@x.com", "19169", C["19169"], ["x to y"], "https://w.dev", s, "AGSIST", "n@agsist.com", None, "https://agsist.com/p")
     assert "PO Box 243" in m2.get_body(("plain",)).get_content() and "Stop all county watches" in m2.get_body(("plain",)).get_content()
+    assert "watch-unsubscribe?k=%s&t=%s" % (L0, token(s, L0, "|w")) in m2.get_body(("plain",)).get_content()
+    # v5.46: no address inside any link of either email
+    for mm in (m, m2):
+        h, t = mm.get_body(("html",)).get_content(), mm.get_body(("plain",)).get_content()
+        assert not [u for u in email_links.hrefs(h) if "@" in u or "%40" in u.lower()], "an @ inside an href"
+        assert not email_links.bad_links(t) and "?e=" not in t + h, "an address in a text link"
+    try:
+        confirm_email("b@x.com", "19169", C["19169"], "https://w.dev", s, "AGSIST", "n@agsist.com", None)
+        raise AssertionError("a watcher with no link id was given an email")
+    except email_links.LinkError:
+        pass
     print("selftest ok")
 
 
@@ -243,6 +263,14 @@ def main():
     watchers = worker(base, "watch-list", tok)
     confirms, chg, bs = plan(watchers, cards, time.time() * 1000)
     print(f"watchers {len(watchers)}; confirmations {len(confirms)}; changes {len(chg)}; baselines {len(bs)}")
+    # v5.46: mail only watchers the worker gave a link id; the rest wait for the next run (counts only)
+    LINK_IDS.clear()
+    LINK_IDS.update(email_links.link_ids(watchers))
+    no_id = sum(1 for x in confirms + chg if str(x[0]).strip().lower() not in LINK_IDS)
+    if no_id:
+        print(f"::warning::{no_id} email(s) wait: no link id this run")
+        confirms = [x for x in confirms if str(x[0]).strip().lower() in LINK_IDS]
+        chg = [x for x in chg if str(x[0]).strip().lower() in LINK_IDS]
     if dry:
         for x in confirms:
             print("would confirm", log_safe.mask(x[0]), x[1])

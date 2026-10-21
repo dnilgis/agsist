@@ -671,6 +671,99 @@ r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Acce
   r = await adm('/rp-gift/issue', { product: 'digital', order_ref: 'x'.repeat(81) }); A(r.status === 400, 'v5.26: order_ref past 80 refused');
 }
 
+// v5.46: link ids. Every emailed link carries k=<id>, never the address; old e= links keep working.
+{
+  const B32 = '0123456789abcdefghjkmnpqrstvwxyz';
+  const lidOf = (e) => [...crypto.createHmac('sha256', 'sec').update('lid|' + e.toLowerCase()).digest().subarray(0, 16)].map(b => B32[b & 31]).join('');
+  const t16 = (s) => crypto.createHmac('sha256', 'sec').update(s.toLowerCase()).digest('hex').slice(0, 16);
+  const tok = (p) => w.fetch(new Request('https://x.dev' + p, { headers: { Authorization: 'Bearer tok' } }), env);
+  const go = (p, m = 'GET') => w.fetch(new Request('https://x.dev' + p, { method: m, headers: { 'CF-Connecting-IP': '10.7.0.' + (++ipN) } }), env);
+  const E = 'lid-reader@example.com', E2 = 'lid-two@example.com';
+  const now = Date.now();
+  store.set('sub:' + E, JSON.stringify({ ts: now, src: 'hero', reports: true }));
+  store.set('sub:' + E2, JSON.stringify({ ts: now, src: 'hero', reports: true }));
+  store.set('alert:' + E, JSON.stringify({ lat: 45, lon: -91, place: 'Chetek, WI', radius_mi: 5, ts: now }));
+  store.set('note:' + E, JSON.stringify({ ts: now, t: { 'rent:wi': { ts: now, src: 'x' }, 'rent:mn': { ts: now, src: 'x' } } }));
+  store.set('watch:' + E, JSON.stringify({ w: { '55005': { k: '', s: {} } }, pend: { '19169': { ts: now, m: 0 } } }));
+  store.set('ewatch:' + E, JSON.stringify({ w: { abcdef12: { label: 'Chetek Co-op' } }, pend: { abcdef34: { ts: now, m: 0, label: 'Barron Co-op' } } }));
+  store.set('pwatch:' + E, JSON.stringify({ w: { abcdef56: { label: 'Corn' } }, pend: { abcdef78: { ts: now, m: 0, label: 'Beans' } } }));
+  const K = lidOf(E);
+  A(/^[0-9a-hjkmnp-tv-z]{16}$/.test(K) && !K.includes('@'), 'v5.46: the id is 16 url-safe letters');
+  A(!store.has('lid:' + K), 'v5.46: no id before a list asks');
+  // each list route the senders read carries lid, made lazily and the same every time
+  for (const route of ['/list?format=json', '/alert-list', '/notice-list', '/watch-list', '/elevator-watch-list', '/price-watch-list']) {
+    r = await tok(route); j = await r.json();
+    const mine = j.filter(x => x.email === E);
+    A(r.status === 200 && mine.length >= 1 && mine.every(x => x.lid === K), 'v5.46: ' + route + ' gives the reader lid ' + JSON.stringify(mine.map(x => x.lid)));
+  }
+  A(store.get('lid:' + K) === E, 'v5.46: lid:<id> holds the address');
+  r = await tok('/list?format=json'); j = await r.json();
+  A(j.find(x => x.email === E2).lid === lidOf(E2) && lidOf(E2) !== K, 'v5.46: a second reader gets its own id');
+  const lidKeys = () => [...store.keys()].filter(x => x.startsWith('lid:')).length;
+  const before = lidKeys(); await tok('/list?format=json'); A(lidKeys() === before, 'v5.46: asking again writes nothing new');
+  r = await call('/list?format=json'); A(r.status === 403, 'v5.46: the list still needs the token');
+
+  // k resolution: every route, its suffix, GET changes nothing and the button posts back with k
+  const cases = [
+    ['/watch-confirm', '&f=19169', '|c|19169', () => '19169' in JSON.parse(store.get('watch:' + E)).w],
+    ['/elevator-watch-confirm', '&w=abcdef34', '|ec|abcdef34', () => 'abcdef34' in JSON.parse(store.get('ewatch:' + E)).w],
+    ['/price-watch-confirm', '&p=abcdef78', '|pc|abcdef78', () => 'abcdef78' in JSON.parse(store.get('pwatch:' + E)).w],
+    ['/watch-unsubscribe', '&f=55005', '|w|55005', () => !('55005' in JSON.parse(store.get('watch:' + E)).w)],
+    ['/elevator-watch-unsubscribe', '&w=abcdef12', '|ew|abcdef12', () => !('abcdef12' in JSON.parse(store.get('ewatch:' + E)).w)],
+    ['/price-watch-unsubscribe', '&p=abcdef56', '|pw|abcdef56', () => !('abcdef56' in JSON.parse(store.get('pwatch:' + E)).w)],
+    ['/daily-elev', '', '|de', () => [...store.keys()].some(x => x.startsWith('dk:') && JSON.parse(store.get(x)).e === E)],
+    ['/notice-unsubscribe', '', '', () => !JSON.parse(store.get('note:' + E) || '{"t":{}}').t['rent:wi'], '&topic=rent%3Awi'],
+    ['/alert-unsubscribe', '', '', () => !store.has('alert:' + E)],
+  ];
+  for (const [route, mid, tail, done, end = ''] of cases) {
+    const t = t16(K + tail);
+    const u = route + '?k=' + K + mid + '&t=' + t + end;
+    const snap = JSON.stringify([...store.entries()].filter(([x]) => !x.startsWith('rl')));
+    r = await go(u); const h = await r.text();
+    A(r.status === 200 && /<form method="POST"/.test(h), 'v5.46: ' + route + ' k= link shows the button');
+    const action = (h.match(/action="([^"]*)"/) || [])[1] || '';
+    A(action === route + '?k=' + K + mid + '&t=' + t + end, 'v5.46: ' + route + ' button posts back with k= and t= (' + action + ')');
+    A(!action.includes('@') && !action.includes('%40') && !/[?&]e=/.test(action), 'v5.46: ' + route + ' button carries no address');
+    A(JSON.stringify([...store.entries()].filter(([x]) => !x.startsWith('rl'))) === snap, 'v5.46: ' + route + ' GET changes nothing');
+    r = await go(route + '?k=' + K + mid + '&t=0000000000000000' + end, 'POST'); await r.text();
+    A(r.status === 403 && JSON.stringify([...store.entries()].filter(([x]) => !x.startsWith('rl'))) === snap, 'v5.46: ' + route + ' bad t is 403 and changes nothing');
+    r = await go(route + '?k=' + K + mid + '&t=' + t16(K + '|x') + end, 'POST'); await r.text();
+    A(r.status === 403, 'v5.46: ' + route + ' a t for another route is 403');
+    r = await go(action, 'POST'); await r.text();
+    A(r.status === 200 && done(), 'v5.46: ' + route + ' k= POST does what the e= link did');
+  }
+  // a t made for the address does not work with k, and one made for k does not work with e
+  r = await go('/unsubscribe?k=' + K + '&t=' + t16(E), 'POST'); A(r.status === 403 && store.has('sub:' + E), 'v5.46: the address token is not a k token');
+  r = await go('/unsubscribe?e=' + encodeURIComponent(E) + '&t=' + t16(K), 'POST'); A(store.has('sub:' + E), 'v5.46: a k token is not an address token');
+  // bad ids
+  const ghost = 'zzzzzzzzzzzzzzzz';
+  r = await go('/unsubscribe?k=' + ghost + '&t=' + t16(ghost)); A(r.status === 403 && (await r.text()).includes("isn't valid"), 'v5.46: an id with no lid: record is 403');
+  r = await go('/unsubscribe?k=ABC@x&t=' + t16('abc@x')); A(r.status === 403, 'v5.46: a malformed id is 403');
+  r = await go('/unsubscribe?k=' + K); A(r.status === 403, 'v5.46: no t is 403');
+  // the Daily unsubscribe by k last (it ends the address's other lists too)
+  r = await go('/unsubscribe?k=' + K + '&t=' + t16(K), 'POST'); await r.text();
+  A(r.status === 200 && !store.has('sub:' + E), 'v5.46: /unsubscribe by k removes the reader');
+  // an old e= link from mail already sent still works exactly as before
+  r = await go('/unsubscribe?e=' + encodeURIComponent(E2) + '&t=' + t16(E2)); const oh = await r.text();
+  A(r.status === 200 && oh.includes('action="/unsubscribe?e=' + encodeURIComponent(E2) + '&t=' + t16(E2) + '"'), 'v5.46: an old e= link shows the old page');
+  r = await go('/unsubscribe?e=' + encodeURIComponent(E2) + '&t=0000000000000000', 'POST'); A(store.has('sub:' + E2), 'v5.46: an old e= link with a bad t still changes nothing');
+  r = await go('/unsubscribe?e=' + encodeURIComponent(E2) + '&t=' + t16(E2), 'POST'); A(r.status === 200 && !store.has('sub:' + E2), 'v5.46: an old e= link still unsubscribes');
+  // with e= present, k is ignored (the old route runs as before)
+  store.set('sub:' + E2, JSON.stringify({ ts: now, src: 'hero', reports: true }));
+  r = await go('/unsubscribe?e=' + encodeURIComponent(E2) + '&k=' + lidOf(E2) + '&t=' + t16(E2), 'POST'); A(!store.has('sub:' + E2), 'v5.46: e= wins over k=');
+  // without the secret: a stop link by k still works (as stop links always have); a confirm answers 503
+  const noSec = Object.assign({}, env, { UNSUB_SECRET: '' });
+  const errOut = console.error; console.error = () => {};
+  store.set('sub:' + E2, JSON.stringify({ ts: now, src: 'hero', reports: true }));
+  r = await w.fetch(new Request('https://x.dev/unsubscribe?k=' + lidOf(E2) + '&t=whatever', { method: 'POST' }), noSec);
+  A(r.status === 200 && !store.has('sub:' + E2), 'v5.46: no secret, a k stop link still works');
+  r = await w.fetch(new Request('https://x.dev/watch-confirm?k=' + lidOf(E2) + '&f=19169&t=whatever'), noSec);
+  A(r.status === 503, 'v5.46: no secret, a k confirm link is 503 as before');
+  r = await w.fetch(new Request('https://x.dev/list?format=json', { headers: { Authorization: 'Bearer tok' } }), noSec); j = await r.json();
+  A(j.every(x => !('lid' in x)), 'v5.46: no secret, no ids');
+  console.error = errOut;
+}
+
 // older routes still answer the same
 r = await call('/subscribe', 'POST', { email: 'c@x.com' }); A(store.has('sub:c@x.com'), 'subscribe intact');
 r = await call('/nope'); A(r.status === 404, 'unknown path 404');

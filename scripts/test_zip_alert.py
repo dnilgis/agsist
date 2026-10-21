@@ -123,7 +123,7 @@ class FakeSMTP:
 
 
 smtplib.SMTP = FakeSMTP
-state = [{"email": "f@example.com", "pend": {}, "w": {"a1": dict(alert(450), k=None, s=None)}}]
+state = [{"email": "f@example.com", "lid": "0000000000000fex", "pend": {}, "w": {"a1": dict(alert(450), k=None, s=None)}}]
 
 
 def fake_worker(base, path, tok, body=None):
@@ -162,8 +162,10 @@ A(all("fired" not in m for m in marks), "never removed: it re-arms")
 A(state[0]["w"]["a1"]["s"]["on"] is True and state[0]["w"]["a1"]["target_cents"] == 450, state)
 body = outbox[0].get_body(("plain",)).get_content()
 for part in ("Near Coop, Chetek, WI · 0 mi · Oct 2026 · $4.55 · posted Oct 7, 1:41 PM CT",
-             "elevator-watch-unsubscribe?e=f%40example.com&w=a1&t="):
+             "elevator-watch-unsubscribe?k=0000000000000fex&w=a1&t="):
     A(part in body, part)
+A(not [u for u in sew.email_links.hrefs(outbox[0].get_body(("html",)).get_content()) if "@" in u or "%40" in u.lower()]
+  and "@" not in str(outbox[0]["List-Unsubscribe"]), "v5.46: no address inside any link")
 A(outbox[0]["List-Unsubscribe"].startswith("<https://w.example/elevator-watch-unsubscribe?"), "one-click unsubscribe header")
 
 # The elevator-watch sender sees the same list and plans nothing for these records.

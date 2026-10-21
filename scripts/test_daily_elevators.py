@@ -254,6 +254,11 @@ class W(BaseHTTPRequestHandler):
 srv = HTTPServer(("127.0.0.1", 0), W)
 threading.Thread(target=srv.serve_forever, daemon=True).start()
 os.environ.update({"LIST_URL": "http://127.0.0.1:%d" % srv.server_port, "LIST_TOKEN": "tok", "UNSUB_SECRET": "sec"})
+# subs worker v5.46: the link ids main() takes from the list (made up here)
+LIDS = {"made-up-reader@example.com": "000000000000rdr1", "nothing@example.com": "000000000000nth1",
+        "near-only@example.com": "000000000000nr01"}
+send_daily.LINK_IDS.clear()
+send_daily.LINK_IDS.update(LIDS)
 buf = io.StringIO()
 with contextlib.redirect_stdout(buf):
     import daily_elevators
@@ -266,9 +271,11 @@ with contextlib.redirect_stdout(buf):
 log = buf.getvalue()
 check("@" not in log and "example.com" not in log, "the log names no address: " + log)
 check("1 reader(s) with their own elevators, 2 with a near-you line" in log, "the log counts: " + log)
-want_t = hmac.new(b"sec", b"made-up-reader@example.com|de", hashlib.sha256).hexdigest()[:16]
+want_t = hmac.new(b"sec", b"000000000000rdr1|de", hashlib.sha256).hexdigest()[:16]
 r1 = lines["made-up-reader@example.com"]
-check(r1["add_url"] == os.environ["LIST_URL"] + "/daily-elev?e=made-up-reader%40example.com&t=" + want_t, "the footer link is signed like the unsubscribe link")
+check(r1["add_url"] == os.environ["LIST_URL"] + "/daily-elev?k=000000000000rdr1&t=" + want_t,
+      "the footer link carries the link id, signed like the unsubscribe link (v5.46): " + str(r1["add_url"]))
+check("@" not in r1["add_url"] and "%40" not in r1["add_url"], "the footer link carries no address")
 check(lines["nothing@example.com"] == {"mine": [], "near": [], "add_url": send_daily.elevator_add_url("nothing@example.com")},
       "a reader with nothing gets only the footer link")
 send_daily.ELEVATOR_LINES.clear()
@@ -285,6 +292,9 @@ for x in r1["near"]:
     check(brief_email.e(x) in htm and x in tx, "near line in both parts: " + x[:40])
 check("NEAR YOU THIS MORNING" not in tx and "Near you this morning:" in tx, "near-you label in text")
 check(brief_email.ELEVATOR_ADD_WORDS in htm and r1["add_url"] in tx, "footer link in both parts")
+import email_links  # noqa: E402
+check(not [u for u in email_links.hrefs(htm) if "@" in u or "%40" in u.lower()] and not email_links.bad_links(tx),
+      "v5.46: no address inside any link of the Daily")
 m0 = send_daily.build_email(day, issue, "nothing@example.com", "AGSIST Daily", "daily@example.com", None)
 h0 = m0.get_body(("html",)).get_content()
 check("Your elevators" not in h0 and "Near you" not in h0, "a reader with nothing sees no block")

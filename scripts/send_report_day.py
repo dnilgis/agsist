@@ -42,8 +42,6 @@ worker has one list) and the forward-to-a-neighbor link.
     DRY_RUN=1 python3 scripts/send_report_day.py    render, send nothing
     python3 scripts/send_report_day.py --date 2026-09-30 --selftest
 """
-import hashlib
-import hmac
 import json
 import os
 import re
@@ -63,6 +61,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import subscribers        # noqa: E402
 import gmail_limit        # noqa: E402
 import log_safe           # noqa: E402  (no address in the public log)
+import email_links        # noqa: E402  (k=<link id> links; never an address in one)
 from local_bid import q_cash_text, q_cents   # noqa: E402  (the site's quarter-cent text)
 from report_bands import surprise as band_surprise, range_context   # noqa: E402  (the one grading rule)
 
@@ -320,12 +319,17 @@ def _move(cents):
 
 
 # ── the message ───────────────────────────────────────────────────────────
+# Address -> link id (subs worker v5.46), filled by main() from the list.
+# The unsubscribe link carries k=<id>, never the address; no id, no mail.
+LINK_IDS = {}
+
+
 def unsub_url(email):
     base, secret = (os.environ.get("LIST_URL") or "").strip(), (os.environ.get("UNSUB_SECRET") or "").strip()
-    if not (base and secret):
+    lid = LINK_IDS.get(str(email).strip().lower())
+    if not (base and secret and lid):
         return None
-    t = hmac.new(secret.encode(), email.lower().encode(), hashlib.sha256).hexdigest()[:16]
-    return base.rstrip("/") + "/unsubscribe?e=" + urllib.parse.quote(email.lower()) + "&t=" + t
+    return email_links.signed(base, "unsubscribe", lid, secret)
 
 
 def compose(day, reports, moves, balance=None):
@@ -399,7 +403,8 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
               % (FORWARD_URL.replace("&", "&amp;"), ('<a href="%s" style="color:#6b6b6b">Unsubscribe</a> (stops AGSIST Daily too)' % uurl.replace("&", "&amp;"))
                  if uurl else "To unsubscribe, reply with subject line: unsubscribe"))
     msg.add_alternative(html.replace("{{FOOT}}", foot_h), subtype="html")
-    return msg
+    # v5.46: refuses (raises) if any link carries an address; the send loop counts it failed
+    return email_links.check_message(msg)
 
 
 # ── dedupe ────────────────────────────────────────────────────────────────
@@ -494,6 +499,17 @@ def main(argv=()):
         subs, how = subscribers.fetch(base, token)
     else:
         subs, how = subscribers.parse_plain(env("RECIPIENTS", "")), "plain"
+    if how == "json":
+        # v5.46: only readers the worker gave a link id (counts only in the log)
+        LINK_IDS.clear()
+        LINK_IDS.update(email_links.link_ids(subs))
+        no_id = sum(1 for r in subs if str(r["email"]).strip().lower() not in LINK_IDS)
+        if subs and no_id == len(subs):
+            print("::error::the subs worker gave no link ids (older than v5.46, or UNSUB_SECRET unset); nothing sent")
+            return 1
+        if no_id:
+            print("::warning::%d reader(s) had no link id this run and are not mailed" % no_id)
+            subs = [r for r in subs if str(r["email"]).strip().lower() in LINK_IDS]
     recipients = [r["email"] for r in subs if r.get("reports") is not False]
     print("list: %d address(es), %d opted into report-day email (%s list)" % (len(subs), len(recipients), how))
     gmail_limit.check(len(subs), len(recipients), day, dry=dry)
@@ -507,6 +523,7 @@ def main(argv=()):
     if dry:
         # A made-up address: the preview body carries the unsubscribe link,
         # and the Actions log is public.
+        LINK_IDS["reader@example.com"] = email_links.SAMPLE_LID
         m = build_email(day, b, "reader@example.com", from_name, from_addr, reply_to)
         print("SUBJECT: " + str(m["Subject"]))
         print("would send to %d reader(s)" % len(recipients))
@@ -627,6 +644,26 @@ def _selftest():
     _us = re.findall(r'https://agsist\.com/[^\s"<>]*', _all)
     ok(_us and all("utm_source=report_email&utm_medium=email" in u for u in _us),
        "every agsist.com link tagged report_email: %r" % [u for u in _us if "utm_source=report_email" not in u])
+    # subs worker v5.46: the unsubscribe link carries the link id, never the address
+    _env = {k: os.environ.get(k) for k in ("LIST_URL", "UNSUB_SECRET")}
+    os.environ.update({"LIST_URL": "https://w.dev", "UNSUB_SECRET": "sec"})
+    LINK_IDS["a@farm.com"] = email_links.SAMPLE_LID
+    try:
+        m = build_email(date(2026, 9, 30), (s, t, h), "a@farm.com", "AGSIST", "sender@example.com", None)
+        _h, _t = m.get_body(("html",)).get_content(), m.get_body(("plain",)).get_content()
+        ok("https://w.dev/unsubscribe?k=" + email_links.SAMPLE_LID + "&t=" + email_links.token("sec", email_links.SAMPLE_LID) in _t,
+           "unsubscribe link by link id in the text part")
+        ok(not [u for u in email_links.hrefs(_h) if "@" in u or "%40" in u.lower()], "no @ inside any href")
+        ok(not email_links.bad_links(_t) and "@" not in str(m["List-Unsubscribe"]).split(">")[0], "no address in any text link or the header link")
+        LINK_IDS.pop("a@farm.com")
+        m = build_email(date(2026, 9, 30), (s, t, h), "a@farm.com", "AGSIST", "sender@example.com", None)
+        ok("/unsubscribe?" not in m.get_body(("plain",)).get_content(), "no link id: no signed link, never an address link")
+    finally:
+        for k, v in _env.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
 
     # OCTOBER 9 2026: STOCKS JOIN THE YIELDS UNDER THE SAME REPORT NAME.
     # The yields-only email went out that day (127/127) and set
