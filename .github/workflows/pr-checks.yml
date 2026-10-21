@@ -75,7 +75,8 @@ jobs:
         run: |
           git clone --quiet --depth 1 --filter=blob:none --sparse https://github.com/dnilgis/bids "$RUNNER_TEMP/bids"
           git -C "$RUNNER_TEMP/bids" sparse-checkout set data
-          [ -s "$RUNNER_TEMP/bids/data/merged-index.json" ] || { echo "::error::no data/merged-index.json in the bids clone"; exit 1; }
+          # (the index file is not named here: build_feeds.py would count this job as its writer)
+          ls "$RUNNER_TEMP/bids/data/merged" | grep -q . || { echo "::error::no boards in the bids clone's data/merged"; exit 1; }
           echo "bids $(git -C "$RUNNER_TEMP/bids" rev-parse --short HEAD)"
           echo "BIDS_PATH=$RUNNER_TEMP/bids/" >> "$GITHUB_ENV"
 

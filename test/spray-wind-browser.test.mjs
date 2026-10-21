@@ -132,6 +132,8 @@ test("a shared field link at 390 and 1280: map, flow, windows, credits, the shar
       assert.match(await pg.$eval("#sw-slider", (e) => e.getAttribute("aria-valuetext")), /mph at the boom/);
       await pg.$eval("#sw-slider", (e, i) => { e.value = String(i); e.dispatchEvent(new Event("input", { bubbles: true })); }, IDX8);
       await pg.waitForTimeout(1500);
+      // the trails build up frame by frame: on a loaded machine 1.5 s can be too few frames, so give the drawing up to 15 s to reach the same 2000 pixels
+      await pg.waitForFunction(() => { const c = document.getElementById("sw-cv"), d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 40) n++; return n > 2000; }, null, { timeout: 15000, polling: 250 }).catch(() => {});
       // the wind is really drawn: the canvas fills the map box and carries coloured trails
       const drawn = await pg.$eval("#sw-cv", (c) => { const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 40) n++; return { n, w: c.clientWidth, h: c.clientHeight }; });
       assert.ok(drawn.h >= 280 && drawn.w >= 300, JSON.stringify(drawn));
