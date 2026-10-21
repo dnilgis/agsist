@@ -207,6 +207,18 @@ IMAGE_ONLY = {
     "arc-plc": "scripts/build_arc_plc.py",
     "rain": "scripts/build_county_rain.py",
 }
+# Noindex pages people still send as a link (2026-10-21 share audit): the Rain
+# Print QR short link, the gift card, the Field Scout reports, the sponsor
+# sheets. Each borrows the card of the page named here (its og:image and alt),
+# so a text or a post shows a picture instead of a bare link. The ones whose
+# link carries a code or a field in its query have no og:url on purpose:
+# Facebook and LinkedIn follow og:url, which would drop the query.
+BORROW = {
+    "R": "rain-print", "r": "rain-print", "rp-gift": "rain-print",
+    "comp-report": "field-scout", "field-report": "field-scout",
+    "sponsor-kit": "sponsor", "prf-sponsor-kit": "prf-sponsor",
+}
+NO_OG_URL = {"R", "r", "rp-gift", "comp-report", "field-report"}
 # Pages whose image and meta tags another builder owns.
 OWNED = {
     "index": "scripts/build_social_card.py (the daily card)",
@@ -974,6 +986,7 @@ def build(only=None, strict=False):
         if name in SETS or name in IMAGE_ONLY:
             continue
         _write_page(name, img_rel, data, clean_alt(spec["alt"]), changed)
+    borrow(changed)
     print(f"[share] {len(names)} cards, {len(changed)} files changed" + (f", {len(failed)} fell back: {failed}" if failed else ""))
     return changed, failed
 
@@ -991,6 +1004,21 @@ def _write_page(name, img_rel, data, alt, changed, version=True):
         with open(fp, "w", encoding="utf-8") as f:
             f.write(new)
         changed.append(name + ".html")
+
+
+def borrow(changed):
+    """BORROW pages point at their source page's card, as it stands after this run."""
+    for name, src in BORROW.items():
+        if not os.path.exists(os.path.join(ROOT, name + ".html")):
+            continue
+        sh = rd(src + ".html")
+        img = _meta(sh, "property", "og:image")
+        if not img or not img.startswith(SITE + "/"):
+            print(f"[share] {name}: {src} has no card to borrow", file=sys.stderr)
+            continue
+        img_rel = img[len(SITE) + 1:].split("?")[0]
+        data = open(os.path.join(ROOT, img_rel), "rb").read()
+        _write_page(name, img_rel, data, _meta(sh, "property", "og:image:alt") or src, changed)
 
 
 # ------------------------------------------------------------------ check
@@ -1060,12 +1088,26 @@ def check(verbose=True):
         bad = check_page(rel, h, sizes)
         if bad:
             problems[rel] = bad
+    for name in BORROW:
+        rel = name + ".html"
+        if not os.path.exists(os.path.join(ROOT, rel)):
+            continue
+        h = rd(rel)
+        n += 1
+        bad = check_page(rel, h, sizes)
+        for tag in ("og:title", "og:description"):
+            if not _meta(h, "property", tag):
+                bad.append("no " + tag)
+        if name in NO_OG_URL and _meta(h, "property", "og:url"):
+            bad.append("og:url on a page whose link carries its query")
+        if bad:
+            problems[rel] = bad
     if verbose:
         for rel, bad in list(problems.items())[:40]:
             print(f"  {rel}: {'; '.join(bad)}")
         if len(problems) > 40:
             print(f"  ... and {len(problems) - 40} more")
-        print(f"[share] checked {n} indexable pages, {len(sizes)} images: "
+        print(f"[share] checked {n} indexable and shared pages, {len(sizes)} images: "
               f"{'OK' if not problems else str(len(problems)) + ' with problems'}")
     return problems
 
