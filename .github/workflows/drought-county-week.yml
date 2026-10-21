@@ -59,6 +59,16 @@ jobs:
       - name: Fetch and write data/drought/county-week.json and summary.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_drought_county_week.py
+      # Oct 21 (Sig, insight machine): this year's county maps, as NDMC sent them, to the
+      # private raw branch at history/usdm-county/<year>/<ST>.csv.gz (scripts/backfill_usdm.py
+      # ongoing(); the 2000-on backfill is history-backfill.yml source=usdm). A failed save
+      # is a warning: the page files below are unaffected.
+      - name: Save this year's county maps to the raw history
+        if: ${{ !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.probe) && hashFiles('history/usdm-county/weekly/*.json') != '' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: bash scripts/push_raw.sh "drought county history" history/usdm-county
       - name: Commit if changed (race-tolerant)
         run: |
           set -e

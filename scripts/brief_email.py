@@ -441,10 +441,25 @@ def watch_html(daily, limit=3):
               'cellspacing="0" border="0">%s</table></td></tr>' % "".join(items))
 
 
+# The footer link to the worker's /daily-elev page (subs worker v5.42).
+ELEVATOR_ADD_WORDS = "Put the elevators you saved on agsist.com in this email"
+
+
+def elevators_add_url(elevators):
+    """The reader's signed "add your saved elevators" link, when send_daily made one."""
+    return elevators.get("add_url") if isinstance(elevators, dict) else None
+
+
 def elevators_html(lines):
     """WAVE2-G: the subscriber's own watched elevators, one line each, as
     send_elevator_watch.daily_lines() wrote them from the posted boards.
-    Nothing here computes a figure. No lines, no block."""
+    Nothing here computes a figure. No lines, no block.
+
+    2026-10-20: `lines` may instead be daily_elevators.block_for()'s block,
+    {"mine", "near", "note", "mine_head", "near_head"}: the reader's own
+    elevators, then at most two NEAR lines under their own small label."""
+    if isinstance(lines, dict):
+        return _elevator_block_html(lines)
     if not lines:
         return ""
     rows = "".join('<tr><td style="padding:6px 0 0;font-family:%s;font-size:14px;line-height:1.5;'
@@ -455,6 +470,49 @@ def elevators_html(lines):
     return (_label("Your elevators")
             + '<tr><td><table role="presentation" width="100%%" cellpadding="0" '
               'cellspacing="0" border="0">%s%s</table></td></tr>' % (rows, note))
+
+
+def _elevator_block_html(b):
+    mine, near = list(b.get("mine") or []), list(b.get("near") or [])
+    if not (mine or near):
+        return ""
+    row = ('<tr><td style="padding:6px 0 0;font-family:%s;font-size:14px;line-height:1.5;'
+           'color:%s" class="ink">%%s</td></tr>' % (SANS, INK))
+    sub = ('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:11px;font-weight:700;'
+           'letter-spacing:.12em;text-transform:uppercase;color:%s">%%s</td></tr>' % (MONO, MUTE))
+    def named(x):
+        # The elevator's name in bold, so a phone reader finds their own at a glance.
+        head, sep, rest = x.partition(": ")
+        return ("<strong>%s</strong>: %s" % (e(head), e(rest))) if sep and len(head) <= 90 else e(x)
+    rows = "".join(row % named(x) for x in mine)
+    if near:
+        rows += (sub % e(b.get("near_head") or "Near you")) if mine else ""
+        rows += "".join(row % e(x) for x in near)
+    note = ('<tr><td class="mute" style="padding:8px 0 0;font-family:%s;font-size:13px;line-height:1.5;'
+            'color:%s">%s</td></tr>' % (SANS, MUTE, e(b.get("note") or "")))
+    head = (b.get("mine_head") or "Your elevators") if mine else (b.get("near_head") or "Near you")
+    return (_label(head)
+            + '<tr><td><table role="presentation" width="100%%" cellpadding="0" '
+              'cellspacing="0" border="0">%s%s</table></td></tr>' % (rows, note))
+
+
+def _elevator_block_text(b):
+    mine, near = list(b.get("mine") or []), list(b.get("near") or [])
+    if not (mine or near):
+        return []
+    L = [""]
+    if mine:
+        L.append((b.get("mine_head") or "Your elevators").upper())
+        L += ["  " + x for x in mine]
+    if near:
+        if mine:
+            L.append("  " + (b.get("near_head") or "Near you") + ":")
+        else:
+            L.append((b.get("near_head") or "Near you").upper())
+        L += ["  " + x for x in near]
+    if b.get("note"):
+        L.append("  " + b["note"])
+    return L
 
 
 # ── the whole thing ────────────────────────────────────────────────────────
@@ -1037,6 +1095,10 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
     foot = ('AGSIST &middot; free US farm markets &middot; '
             '<a class="mute" href="%s" style="color:%s">agsist.com</a>'
             % (e(utm("https://agsist.com/", "footer", camp)), MUTE))
+    _add = elevators_add_url(elevators)
+    if _add:
+        foot += ('<br><a class="mute" href="%s" style="color:%s">%s</a>'
+                 % (_href(_add), MUTE, e(ELEVATOR_ADD_WORDS)))
     if unsub_url:
         foot += ('<br><a class="mute" href="%s" style="color:%s">'
                  'Unsubscribe</a>') % (_href(unsub_url), MUTE)
@@ -1188,7 +1250,9 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
         L += ["", "WHAT TO WATCH"]
         for w in wl:
             L.append("  %s: %s" % (strip_md(w.get("time")), strip_md(w.get("desc"))))
-    if elevators:
+    if isinstance(elevators, dict):
+        L += _elevator_block_text(elevators)
+    elif elevators:
         L += ["", "YOUR ELEVATORS"] + ["  " + x for x in elevators]
         L.append("  The elevators' own posted boards, read when this email was sent. Not a contract. "
                  "Call to confirm before you haul.")
@@ -1202,6 +1266,8 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
     if forward_url:
         L += ["", "Forward to a neighbor. Or send them the free sign-up link: " + utm(forward_url, "forward", camp)]
     L += ["", "AGSIST, free US farm markets, agsist.com"]
+    if elevators_add_url(elevators):
+        L.append(ELEVATOR_ADD_WORDS + ": " + elevators_add_url(elevators))
     L.append("Unsubscribe: " + unsub_url if unsub_url
              else "To unsubscribe, reply with subject line: unsubscribe")
     L.append("PO Box 243, Chetek, WI 54728")

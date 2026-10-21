@@ -29,6 +29,7 @@ specific page. Each daily briefing has a permanent dated URL.
 - [Bids and Basis by State](https://agsist.com/cash-bids/iowa/): each state's best bids, median corn and soybean basis with the number of elevators behind it, and every elevator's bid, at /cash-bids/<state>/
 - [Cash Bids by Town](https://agsist.com/cash-bids/iowa/des-moines): each town's nearest-delivery corn and soybean bid and basis, the elevator and the date it posted, at /cash-bids/<state>/<town>
 - [Basis by State and vs Normal](https://agsist.com/basis): your state's median corn and soybean basis, USDA regions against their own 5-year same-week normal, barge rates, and this fall's grain vs bin space
+- [Grain on the Move](https://agsist.com/grain-transport): weekly barge rates, BNSF and UP shuttle railcar bids, grain tons through Lock 27, grain car orders past due and Gulf vs PNW ocean freight, each against its 5-year normal, and how basis has moved with freight in river and rail regions
 - [Corn Futures](https://agsist.com/corn-futures-prices): CBOT corn with 52-week and 5-year context
 - [Soybean Futures](https://agsist.com/soybean-futures-prices): CBOT soybeans with 52-week and 5-year context
 - [Wheat Futures](https://agsist.com/wheat-futures-prices): Chicago SRW and KC HRW wheat

@@ -92,6 +92,23 @@ test('an Engine checkout step runs only when its job\'s checkout ran (same if:)'
   assert.deepEqual(bad, []);
 });
 
+// Oct 21: the history collectors' one new workflow (dispatch only). Its job runs engine code
+// (scripts/backfill_*.py), so the Engine checkout is the very next step after its checkout,
+// with the same if:, the key and the mode, and it comes before every step that runs code.
+test('history-backfill.yml: Engine checkout right after the checkout, same if:, before any code', () => {
+  const cond = (s) => ((s.code.match(/^\s+(?:- )?if:\s*(.+?)\s*$/m) || [])[1] || '').replace(/^\$\{\{\s*|\s*\}\}$/g, '');
+  const js = jobs('history-backfill.yml');
+  assert.equal(js.length, 1, 'one job');
+  for (const j of js) {
+    const co = j.steps.findIndex(isOwnCheckout), e = j.steps.findIndex(isEngine);
+    assert.ok(co >= 0 && e === co + 1, `${j.name}: Engine checkout is the step right after the checkout`);
+    assert.equal(cond(j.steps[e]), cond(j.steps[co]), `${j.name}: same if:`);
+    assert.ok(j.steps[e].code.includes(KEY) && j.steps[e].code.includes(MODE), `${j.name}: key and mode at step level`);
+    const first = j.steps.findIndex((s) => needsCode(j, s));
+    assert.ok(first > e, `${j.name}: no code before the engine is in place`);
+  }
+});
+
 test('the key lives at step level only: never in a workflow or job env, never inline in a run script', () => {
   const bad = [];
   for (const f of workflows) {

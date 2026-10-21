@@ -143,6 +143,7 @@ LINES = {
     "foreign-land": ("Foreign-held land", "Who owns US farmland from abroad, county by county, from USDA."),
     "gdu-calculator": ("GDU calculator", "Growing degree units from your planting date, with real weather."),
     "grain-bin-calculator": ("Grain bins", "Bin size to bushels, moisture shrink and what the grain is worth."),
+    "grain-transport": ("Grain on the move", "Barge, rail and ocean freight this week, beside basis."),
     "grain-emc": ("Grain EMC", "Drying, cooling or holding corn, soybeans and wheat: which hours to run fans where you are."),
     "rain-radar": ("Rain on your field", "Rain in the last 24 hours, 3 days and 7 days at any spot, from NOAA radar and gauges."),
     "harvest-or-wait": ("Harvest or wait", "Drying bill now vs after field drydown, against the field loss you expect."),

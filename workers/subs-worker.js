@@ -5,6 +5,24 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.45 (2026-10-21): READER COUNTS BY AREA (Sig, Oct 21: the insight
+ *   machine's collection jobs, "counts only"). New route GET /count-area
+ *   ?part=<daily|alerts|watch|ewatch|pwatch|notices|rp_designs|rp_orders>
+ *   [&cursor=][&limit=] (Bearer LIST_TOKEN only; 403 otherwise and whenever
+ *   ?token= is in the address; no-store). Read-only. One page of one list,
+ *   at most 400 records a call (1 list + 400 reads stays under the 1,000 KV
+ *   operations a call), answered as counts: {ok, part, n, counts: {dim:
+ *   {value: n}}, cursor} ("" on the last page). Never an address, a full
+ *   ZIP, a place name or a design: daily by ZIP3 (first three digits) and
+ *   sign-up page; alerts and Rain Print designs and orders by the two-letter
+ *   state at the end of their place ("?" when there is none); county
+ *   watches by the state FIPS of each watched county; notices by topic kind,
+ *   rent state, rain-year state FIPS and the gauge list's ZIP3; elevator and
+ *   price watches as totals (price watches also by symbol). Designs also by
+ *   year, orders also by product and paid. The job that reads it
+ *   (scripts/reader_area_counts.py, in morning-report.yml) adds the pages up
+ *   and withholds every cell under 3 before anything is saved. Every other
+ *   route answers as before. No new secret.
  * v5.43 (2026-10-20): EMAIL ME THIS DESIGN (Sig, "do all"). New routes only;
  *   every other route answers as before. No new binding and no new secret;
  *   one new optional variable, RP_DESIGN_EMAIL_LIVE.
@@ -26,6 +44,25 @@
  *     (a paid order matched, too late, or stopped).
  *   GET /rp-remind/stop?k=&t= asks; POST to it marks done (why "stopped").
  *   scripts/rp_design_email.py sends both emails; the log prints counts only.
+ * v5.42 (2026-10-20): YOUR ELEVATORS IN AGSIST DAILY (Sig). New routes only;
+ *   every existing route answers as before. No new binding and no new secret.
+ *   A Daily record (sub:<email>) may carry el: up to 6 elevator ids, each the
+ *   8-hex FNV-1a of the bids network's place key ("operator|branch|city|state",
+ *   components/cb-myelev.js placeId). scripts/send_daily.py puts those
+ *   elevators in that reader's Daily. /list?format=json adds el only to a
+ *   record that has one (every other record is byte-for-byte as before);
+ *   /count adds daily_with_elevators (a count).
+ *   GET  /daily-elev?e&t   t = hmac16(e + "|de") with UNSUB_SECRET, the link in
+ *     the Daily's footer. A page with one button; nothing changes on GET.
+ *   POST /daily-elev?e&t   only for an address on the Daily: a new random
+ *     24-character key, dk:<key> = {e, ts (the Daily record's ts)}, kept 400
+ *     days; the page links to agsist.com/cash-bids#dk=<key> (a fragment: it
+ *     never reaches a server or analytics). The page stores the key and drops
+ *     the fragment. A re-subscribe (new ts) or an unsubscribe ends every key.
+ *   POST /daily-elev/me  {k}             -> {ok, ids, max}   (publicGate, RATE)
+ *   POST /daily-elev/set {k, ids, forget} -> {ok, n}: ids replace el (6 at
+ *     most, 8 hex each, no repeats); forget:true also deletes the key. The
+ *     address never leaves the worker on these routes.
  * v5.41 (2026-10-20): UNSUBSCRIBE COUNTS for Sig's morning email. A POST to
  *   /unsubscribe or /alert-unsubscribe that removed a real record also writes
  *   unsx:<daily|alerts>:<reader|cleanup>:<ms>:<rand> ("" value, no address,
@@ -900,6 +937,7 @@ PUBLIC_POSTS.add("/elev/me").add("/elev/save");   // v5.20: the elevator portal
 PUBLIC_POSTS.add("/rp-order");   // v5.36: Rain Print order records
 PUBLIC_POSTS.add("/rp-order/approve");   // v5.37: the buyer approves the proof
 PUBLIC_POSTS.add("/rp-remind");   // v5.43: Email me this design
+PUBLIC_POSTS.add("/daily-elev/me").add("/daily-elev/set");   // v5.42: elevators in the Daily
 function publicGate(req, path) {
   const origin = req.headers.get("Origin") || "";
   if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, cors(req));
@@ -941,6 +979,9 @@ const RATE = {
   "/rp-order/approve": [20, 60, 1000],
   // v5.43: Email me this design: two emails each (the link, one reminder); the daily total bounds Gmail use.
   "/rp-remind": [5, 20, 300],
+  // v5.42: a reader links a browser once and saves a few times a day; a
+  // 24-character random key cannot be walked at 60 tries an hour.
+  "/daily-elev": [10, 30, 300], "/daily-elev/me": [60, 300, 3000], "/daily-elev/set": [60, 300, 3000],
 };
 // Within one Worker isolate the hourly count is exact (JavaScript runs one
 // request at a time), so a burst that lands before KV has caught up is still
@@ -1015,7 +1056,21 @@ function subRecord(email, raw) {
     src: String(r.src || ""),
     ts: Number.isFinite(r.ts) ? r.ts : null,
     reports: r.reports !== false,
+    // v5.42: only when the reader has saved elevators, so every other record is unchanged
+    ...(subEl(r.el).length ? { el: subEl(r.el) } : {}),
   };
+}
+// v5.42: the elevator ids a Daily record may carry: 8 hex, no repeats, 6 at most.
+const SUB_EL_MAX = 6;
+const DK_B32 = "0123456789abcdefghjkmnpqrstvwxyz";   // v5.42 key letters (no i l o u)
+function subEl(v) {
+  if (!Array.isArray(v)) return [];
+  const out = [];
+  for (const x of v) {
+    const id = String(x == null ? "" : x).trim().toLowerCase();
+    if (/^[0-9a-f]{8}$/.test(id) && !out.includes(id)) out.push(id);
+  }
+  return out.slice(0, SUB_EL_MAX);
 }
 
 // v5.4 merge, shared by /subscribe and /notice (daily:true). A bad ZIP is
@@ -1034,6 +1089,8 @@ async function putSub(env, email, src, zipIn, repIn) {
   const keepZip = zip || subZip(prev.zip);
   if (keepZip) rec.zip = keepZip;
   rec.reports = reports !== null ? reports : prev.reports !== false;
+  // v5.42: a second sign-up keeps the reader's saved elevators.
+  if (subEl(prev.el).length) rec.el = subEl(prev.el);
   await env.SUBS.put("sub:" + email, JSON.stringify(rec), { metadata: rec });
 }
 
@@ -1904,6 +1961,77 @@ async function unsubCounts(env) {
   return out;
 }
 
+// ---------- v5.45: GET /count-area, reader counts by area (counts only) ----------
+const AREA_PREFIX = { daily: "sub:", alerts: "alert:", watch: "watch:", ewatch: "ewatch:", pwatch: "pwatch:",
+  notices: "note:", rp_designs: "rps:", rp_orders: "rpo:" };
+const AREA_LIMIT = 400;
+const AREA_CA = new Set("AB BC MB NB NL NS NT NU ON PE QC SK YT".split(" "));
+// The two-letter state or province at the end of a place ("Chetek, WI", "Chetek, WI 54728"), else "?".
+function areaState(place) {
+  const m = /,\s*([A-Za-z]{2})\.?(?:\s+\d{5}(?:-\d{4})?)?\s*$/.exec(String(place || ""));
+  if (!m) return "?";
+  const st = m[1].toUpperCase();
+  return RENT_STATES.has(st.toLowerCase()) || st === "DC" || AREA_CA.has(st) ? st : "?";
+}
+function areaZip3(z) {
+  const v = String(z == null ? "" : z).trim();
+  return /^\d{5}$/.test(v) ? v.slice(0, 3) : "none";
+}
+async function areaPage(env, part, cursor, limit) {
+  const page = await env.SUBS.list({ prefix: AREA_PREFIX[part], cursor: cursor || undefined, limit });
+  const keys = page.keys || [];
+  const counts = {};
+  const add = (dim, v) => { const d = counts[dim] || (counts[dim] = {}); const k = String(v || "?"); d[k] = (d[k] || 0) + 1; };
+  const vals = new Array(keys.length).fill(null);
+  for (let i = 0; i < keys.length; i += EXPORT_BATCH) {
+    const batch = keys.slice(i, i + EXPORT_BATCH);
+    const got = await Promise.all(batch.map(k => part === "daily" && subMetaOk(k.metadata) ? k.metadata : env.SUBS.get(k.name)));
+    for (let j = 0; j < got.length; j++) vals[i + j] = got[j];
+  }
+  const obj = (v) => { if (v && typeof v === "object") return v; try { const o = JSON.parse(v); return o && typeof o === "object" ? o : null; } catch (e) { return null; } };
+  let n = 0;
+  for (let i = 0; i < keys.length; i++) {
+    const v = vals[i];
+    if (v === null || v === undefined) continue;          // expired between list and read
+    if (part === "daily") {
+      const r = subRecord("", v);
+      add("zip3", areaZip3(r.zip)); add("src", r.src ? r.src.slice(0, 40) : "(none)");
+    } else if (part === "alerts") {
+      const r = obj(v); if (!r) continue;
+      add("state", areaState(r.place)); add("radius_mi", r.radius_mi);
+    } else if (part === "watch") {
+      const r = obj(v); if (!r) continue;
+      const sts = new Set(Object.keys(r.w || {}).filter(f => /^\d{5}$/.test(f)).map(f => f.slice(0, 2)));
+      if (!sts.size) continue;                            // nothing confirmed yet
+      for (const st of sts) add("st_fips", st);
+    } else if (part === "ewatch" || part === "pwatch") {
+      const r = obj(v); if (!r || !Object.keys(r.w || {}).length) continue;
+      add("confirmed", "yes");
+      if (part === "pwatch") for (const sym of new Set(Object.values(r.w).map(x => x && x.symbol))) add("symbol", sym);
+    } else if (part === "notices") {
+      const r = obj(v); if (!r || !r.t || typeof r.t !== "object") continue;
+      for (const [t, x] of Object.entries(r.t)) {
+        const kind = t.split(":")[0];
+        add("kind", kind);
+        if (kind === "rent") add("rent_state", (t.split(":")[1] || "").toUpperCase());
+        if (kind === "rainyear") add("rainyear_st_fips", String(t.split(":")[2] || "").slice(0, 2));
+        if (kind === "rain-gauge") add("gauge_zip3", areaZip3(x && x.zip));
+      }
+    } else if (part === "rp_designs") {
+      const f = rpgFields(v); if (!f) continue;
+      add("state", areaState(f[1])); add("year", f[3]);
+    } else if (part === "rp_orders") {
+      if (!RPO_KEY_RE.test(keys[i].name)) continue;
+      const r = obj(v); if (!r) continue;
+      const st = areaState(r.place);
+      add("state", st); add("product", r.product);
+      if (r.paid) { add("paid_state", st); add("paid_product", r.product); }
+    }
+    n++;
+  }
+  return { n, counts, cursor: page.list_complete ? "" : (page.cursor || "") };
+}
+
 async function noticeCounts(env) {
   const keys = await listKeys(env, "note:"), by = {};
   for (const k of keys) {
@@ -2701,6 +2829,72 @@ async function handle(req, env) {
     }
 
 
+    // ---------- v5.42: the reader's own elevators in AGSIST Daily ----------
+    // The Daily's footer link proves the address (t, as the unsubscribe link
+    // does); the page on agsist.com then holds only a random key.
+    if (path === "/daily-elev") {
+      const e = (url.searchParams.get("e") || "").trim().toLowerCase();
+      const t = url.searchParams.get("t") || "";
+      if (!(EMAIL_RE.test(e) && safeEq(t, await hmac16(e + "|de", env.UNSUB_SECRET)))) return htmlPage("That link isn't valid.");
+      const action = path + "?e=" + encodeURIComponent(e) + "&t=" + encodeURIComponent(t);
+      if (req.method === "GET") {
+        return htmlPage("Put your saved elevators in your morning email?",
+          "<p>" + escHtml(e) + "</p><p>The elevators you save on agsist.com/cash-bids in this browser go in your AGSIST Daily: cash, basis and the change for corn and soybeans. Up to 6.</p>" +
+          "<form method=\"POST\" action=\"" + action + "\">" +
+          "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">Yes, link this browser</button></form>" +
+          "<p style=\"color:#666\">Nothing happens until you press the button.</p>");
+      }
+      if (req.method === "POST") {
+        const slow = await rateLimit(req, env, path);
+        if (slow) return slow;
+        let sub = null;
+        try { const v = await env.SUBS.get("sub:" + e); sub = v ? JSON.parse(v) : null; } catch (x) { sub = null; }
+        if (!sub || typeof sub !== "object") return htmlPage("This address is not on AGSIST Daily.", "<p><a href=\"https://agsist.com/daily\">Sign up on agsist.com</a>, then use the link in your next email.</p>");
+        let k = "";
+        for (const x of crypto.getRandomValues(new Uint8Array(24))) k += DK_B32[x & 31];
+        await env.SUBS.put("dk:" + k, JSON.stringify({ e, ts: Number.isFinite(sub.ts) ? sub.ts : null }), { expirationTtl: 400 * 86400 });
+        const go = "https://agsist.com/cash-bids#dk=" + k;
+        return htmlPage("This browser is linked to your morning email.",
+          "<p><a href=\"" + go + "\" style=\"font-size:1.1em\">Open your saved elevators on agsist.com</a></p>" +
+          "<p style=\"color:#666\">Open it in the browser where you saved them. Tap the star on any elevator card to add it; each one you save goes in your Daily.</p>");
+      }
+    }
+    if ((path === "/daily-elev/me" || path === "/daily-elev/set") && req.method === "POST") {
+      const c = Object.assign({ "Cache-Control": "no-store" }, cors(req));
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
+      let raw = "";
+      try { raw = await req.text(); } catch (x) { raw = ""; }
+      if (raw.length > 2048) return json({ ok: false, error: "too large" }, 413, c);
+      let b = null;
+      try { b = JSON.parse(raw); } catch (x) { b = null; }
+      if (!b || typeof b !== "object" || Array.isArray(b)) return json({ ok: false, error: "bad request" }, 400, c);
+      const k = String(b.k || "");
+      if (!/^[0-9a-z]{24}$/.test(k)) return json({ ok: false, error: "bad key" }, 400, c);
+      let d = null;
+      try { const v = await env.SUBS.get("dk:" + k); d = v ? JSON.parse(v) : null; } catch (x) { d = null; }
+      let sub = null;
+      if (d && EMAIL_RE.test(String(d.e || ""))) {
+        try { const v = await env.SUBS.get("sub:" + d.e); sub = v ? JSON.parse(v) : null; } catch (x) { sub = null; }
+      }
+      // No key, no Daily record, or a record started after the key was made: the link has ended.
+      if (!sub || typeof sub !== "object" || (d.ts != null && sub.ts !== d.ts)) {
+        if (d) await env.SUBS.delete("dk:" + k);
+        return json({ ok: false, error: "not linked" }, 404, c);
+      }
+      if (path === "/daily-elev/me") return json({ ok: true, ids: subEl(sub.el), max: SUB_EL_MAX }, 200, c);
+      if (!Array.isArray(b.ids) || b.ids.length > SUB_EL_MAX) return json({ ok: false, error: "ids" }, 400, c);
+      const ids = subEl(b.ids);
+      if (ids.length !== b.ids.length) return json({ ok: false, error: "ids" }, 400, c);
+      const rec = { ts: sub.ts, src: String(sub.src || "") };
+      if (subZip(sub.zip)) rec.zip = subZip(sub.zip);
+      rec.reports = sub.reports !== false;
+      if (ids.length) rec.el = ids;
+      await env.SUBS.put("sub:" + d.e, JSON.stringify(rec), { metadata: rec });
+      if (b.forget === true) await env.SUBS.delete("dk:" + k);
+      return json({ ok: true, n: ids.length }, 200, c);
+    }
+
     // ---------- WATCH A COUNTY ----------
     const WATCH_MAX = 5, PEND_TTL = 14 * 864e5;
     async function getWatch(e) {
@@ -2810,10 +3004,11 @@ async function handle(req, env) {
       // v5.4: totals for the private dashboard. Counts only, no addresses.
       if (!authed) return json({ ok: false }, 403);
       const subs = await subAll(env);   // v5.13: metadata, as /list
-      let withZip = 0;
+      let withZip = 0, withEl = 0;
       const bySource = {};
       for (const r of subs) {
         if (r.zip) withZip++;
+        if (r.el && r.el.length) withEl++;
         const s = r.src || "(none)";
         bySource[s] = (bySource[s] || 0) + 1;
       }
@@ -2821,6 +3016,7 @@ async function handle(req, env) {
         ok: true,
         daily: subs.length,
         daily_with_zip: withZip,
+        daily_with_elevators: withEl,   // v5.42
         alerts: (await listKeys(env, "alert:")).length,
         ewatch: (await listKeys(env, "ewatch:")).length,
         pwatch: (await listKeys(env, "pwatch:")).length,
@@ -3515,6 +3711,19 @@ async function handle(req, env) {
       if (!cur) return json({ ok: false, error: "bad cursor" }, 400, ns);
       const out = await exportPage(env, cur, limit);
       return json(Object.assign({ ok: true, generated_at: new Date().toISOString() }, out), 200, ns);
+    }
+    // v5.45: reader counts by area (scripts/reader_area_counts.py, the morning report). Bearer only, counts only.
+    if (path === "/count-area") {
+      const ns = { "Cache-Control": "no-store" };
+      if (!sig || url.searchParams.has("token")) return json({ ok: false }, 403, ns);
+      if (req.method !== "GET") return json({ ok: false, error: "GET only" }, 405, ns);
+      const part = String(url.searchParams.get("part") || "");
+      if (!Object.prototype.hasOwnProperty.call(AREA_PREFIX, part))
+        return json({ ok: false, error: "part is one of " + Object.keys(AREA_PREFIX).join(", ") }, 400, ns);
+      const lim = Number(url.searchParams.get("limit") || AREA_LIMIT);
+      const limit = Number.isFinite(lim) ? Math.min(AREA_LIMIT, Math.max(1, Math.floor(lim))) : AREA_LIMIT;
+      const out = await areaPage(env, part, String(url.searchParams.get("cursor") || ""), limit);
+      return json(Object.assign({ ok: true, part }, out), 200, ns);
     }
     if (path === "/rp-gift/issue" && req.method === "POST") {
       if (!sig) return json({ ok: false }, 403, ac);
