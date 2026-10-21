@@ -172,7 +172,7 @@ test("the caption reads like a farmer would say it, every number labeled, from t
   assert.equal(by.lightning.tag, "estimate");
   assert.match(by.lightning.text, /^About 34 lightning strikes in the 5-mile square your field sits in, most around Tue 10 PM\. Worked from NOAA/);
   for (const l of cap.lines) assert.ok(l.tag === "estimate" || l.tag === "observed", l.text);
-  assert.doesNotMatch(JSON.stringify(cap), /—/, "no em dashes");
+  assert.doesNotMatch(JSON.stringify(cap), /\u2014/, "no em dashes");
 });
 
 test("near, not over: the caption says so", () => {
@@ -251,7 +251,7 @@ test("the replay's code loads only when a reader opens it", () => {
 test("no em dashes and no AI vendor names in the served replay files", () => {
   for (const f of ["components/storm-replay.js", "components/storm-replay-core.js"]) {
     const s = readFileSync(ROOT + f, "utf8");
-    assert.doesNotMatch(s, /—|&mdash;/, f);
+    assert.doesNotMatch(s, /\u2014|&mdash;/, f);
     assert.doesNotMatch(s, /\b(Claude|Anthropic|OpenAI|ChatGPT|GPT-\d|Gemini)\b/, f);
   }
 });

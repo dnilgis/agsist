@@ -147,6 +147,13 @@ function unmerc(x, y) {
 }
 /* nowCOAST lightning density map for a WMS GetMap in EPSG:3857 */
 export function lightningMap(bbox, w, h, t) {
+  const key = `l${bbox.join(",")}/${w}/${h}/${t}`;
+  if (cache.has(key)) return cache.get(key);
+  const out = drawLightning(bbox, w, h, t);
+  cache.set(key, out);
+  return out;
+}
+function drawLightning(bbox, w, h, t) {
   const [x0, y0, x1, y1] = bbox;
   const buf = Buffer.alloc(w * h * 4);
   for (let py = 0; py < h; py += 4) for (let px = 0; px < w; px += 4) {

@@ -17,8 +17,8 @@
   var C = window.AgStormCore, L = window.L;
   if (!C) return;
   var MIN = C.MIN, HOUR = C.HOUR;
-  var FRAME_MS = 300, LAST_HOLD_MS = 1400, WAIT_MS = 1400;
-  var KEEP_BEHIND = 2, AHEAD_PLAY = 6, AHEAD_IDLE = 2, WARM_CONC = 3;
+  var FRAME_MS = 200, STORM_FRAME_MS = 800, LAST_HOLD_MS = 1400, WAIT_MS = 5000;
+  var KEEP_BEHIND = 2, AHEAD_PLAY = 6, AHEAD_IDLE = 2, WARM_CONC = 2;
   var BASE_URL = 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}';
   var HAIL_COL = { 0.75: '#f1c453', 1: '#ee8d3a', 1.5: '#d8452b', 2: '#8e1b56' };
   var OPAC = { radar: 0.72, lightning: 0.85, clouds: 0.45 };
@@ -40,7 +40,7 @@
 
   /* ---------- styles (only when the replay opens) ---------- */
   var CSS = [
-    '.sr{position:fixed;inset:0;z-index:2000;background:rgba(6,8,9,.62);display:flex;align-items:stretch;justify-content:center;overscroll-behavior:contain}',
+    '.sr{position:fixed;inset:0;z-index:10050;background:rgba(6,8,9,.62);display:flex;align-items:stretch;justify-content:center;overscroll-behavior:contain}',
     '.sr-panel{background:var(--bg,#0a0c0d);color:var(--text,#e9edeb);width:100%;max-width:1180px;display:flex;flex-direction:column;overflow:auto;-webkit-overflow-scrolling:touch}',
     '@media(min-width:900px){.sr{padding:24px}.sr-panel{border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.45);display:grid;grid-template-columns:minmax(0,1fr) 360px;grid-template-rows:auto 1fr;overflow:hidden}',
     '.sr-top{grid-column:1/-1}.sr-left{display:flex;flex-direction:column;min-height:0}.sr-right{overflow:auto;border-left:1px solid var(--border,rgba(132,160,168,.13))}.sr-mapwrap{flex:1;min-height:420px}}',
@@ -82,7 +82,7 @@
     '.sr-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;padding:.35rem 16px .55rem}',
     '.sr-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem;min-height:44px;min-width:44px;padding:0 .7rem;border-radius:10px;border:1px solid var(--border-2,rgba(132,160,168,.24));background:var(--surface,#101415);color:inherit;font:inherit;font-size:.9rem;cursor:pointer}',
     '.sr-btn svg{width:18px;height:18px;fill:currentColor}',
-    '.sr-btn.play{background:var(--gold,#d4a23f);color:#141410;border-color:transparent;font-weight:700;min-width:92px}',
+    '.sr-btn.play{background:var(--gold,#d4a23f);color:var(--bg,#141410);border-color:transparent;font-weight:700;min-width:92px}',
     '.sr-btn[aria-pressed="true"]{border-color:var(--gold,#d4a23f);box-shadow:inset 0 0 0 1px var(--gold,#d4a23f)}',
     '.sr-tlhead{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.4rem;font-size:.82rem;color:var(--text-muted,#aab)}',
     '.sr-seg{display:inline-flex}.sr-seg .sr-btn{border-radius:0;min-width:50px;min-height:36px;font-size:.8rem;padding:0 .55rem}.sr-seg .sr-btn:first-child{border-radius:8px 0 0 8px}.sr-seg .sr-btn:last-child{border-radius:0 8px 8px 0;margin-left:-1px}',
@@ -375,10 +375,16 @@
       lyr.addTo(R.map);
     }
     Object.keys(store).forEach(function (kk) {
-      store[kk].layer.setOpacity(kk === key ? OPAC[k] : 0);
+      setOp(store[kk].layer, kk === key ? OPAC[k] : 0);
       if (kk === key) store[kk].at = Date.now();
     });
     trim(k, key);
+  }
+  /* the frame's whole layer at once (Leaflet's setOpacity also restarts a fade on
+     every tile, which reads as flicker when frames change four times a second) */
+  function setOp(layer, v) {
+    layer.options.opacity = v;
+    if (layer._container) layer._container.style.opacity = v;
   }
   function trim(k, keep) {
     var store = R.frames[k], keys = Object.keys(store);
@@ -464,6 +470,8 @@
   }
   function warmNext(gen) {
     if (!R || gen !== R.warmGen || !R.warmQ.length || document.hidden) return;
+    // while playing, the frames just ahead come first; warming waits for a pause
+    if (R.playing) { R.warmT = setTimeout(function () { warmNext(gen); }, 1000); return; }
     var u = R.warmQ.shift(), img = new Image();
     img.decoding = 'async';
     img.onload = img.onerror = function () { setTimeout(function () { warmNext(gen); }, 30); };
@@ -498,17 +506,32 @@
     (function wait() {
       if (!R || !R.playing) return;
       var ready = !R.v.layers.radar || R.rst[next].st !== 'wait';
-      if (ready || waited >= WAIT_MS) { go(next); R.timer = setTimeout(tick, FRAME_MS); return; }
+      if (ready || waited >= WAIT_MS) { go(next); R.timer = setTimeout(tick, busy(R.times[next]) ? STORM_FRAME_MS : FRAME_MS); return; }
       if (!R.frames.radar[String(next)]) preload(R.idx);
       waited += 100;
       R.timer = setTimeout(wait, 100);
     })();
   }
 
+  /* Quiet hours go by fast; the hour before, during and after anything at the
+     field (radar hail near it, a report, lightning in its square) plays slowly. */
+  function busy(t) {
+    var w = R.busyW;
+    if (!w) {
+      var ev = [];
+      ((R.data.hours && R.data.hours.hours) || []).forEach(function (h) { ev.push(h.start, h.end); });
+      ((R.data.reports && R.data.reports.list) || []).forEach(function (r) { ev.push(r.t); });
+      ((R.data.lightning && R.data.lightning.readings) || []).forEach(function (r) { if (r.v > 0) ev.push(r.t); });
+      w = R.busyW = ev.length ? [Math.min.apply(null, ev) - HOUR, Math.max.apply(null, ev) + 30 * MIN] : [0, 0];
+      if (R.data.lightning && R.data.lightning.state === 'loading') R.busyW = null;   // ask again once the count is in
+    }
+    return t >= w[0] && t <= w[1];
+  }
+
   /* ---------- hail estimate and reports on the map ---------- */
   function hailStyle(th, now) {
     var c = HAIL_COL[th] || HAIL_COL[2];
-    return now ? { color: c, weight: 1.4, opacity: 0.95, fillColor: c, fillOpacity: 0.5 } : { color: c, weight: 0.8, opacity: 0.55, fillColor: c, fillOpacity: 0.16 };
+    return now ? { color: c, weight: 1.4, opacity: 0.95, fillColor: c, fillOpacity: 0.4 } : { color: c, weight: 0.8, opacity: 0.55, fillColor: c, fillOpacity: 0.16 };
   }
   function paintHail(t) {
     var d = R.data.hours;
@@ -653,7 +676,7 @@
       }).catch(function () { return { state: 'down', hours: [] }; });
     }).then(function (res) {
       if (!R) return;
-      R.data.hours = res; R.hailLayers = null; R.dailyLayer = null; R.hailG.clearLayers();
+      R.data.hours = res; R.busyW = null; R.hailLayers = null; R.dailyLayer = null; R.hailG.clearLayers();
       drawMarks(); show(R.idx); recaption(); renderSources();
     });
   }
@@ -665,7 +688,7 @@
       return { state: 'ok', list: C.lsrHail(fc, lat, lon, s, e), all: C.lsrHail(fc, lat, lon, s, e, 120) };
     }).catch(function () { return { state: 'down' }; }).then(function (res) {
       if (!R) return;
-      R.data.reports = res; R.repMarks = null; R.repG.clearLayers();
+      R.data.reports = res; R.busyW = null; R.repMarks = null; R.repG.clearLayers();
       drawMarks(); show(R.idx); recaption(); renderSources();
     });
   }
