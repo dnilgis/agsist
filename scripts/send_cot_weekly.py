@@ -493,7 +493,7 @@ def main(argv=(), now=None, fetch=None):
                     try:
                         conn = connect()
                     except Exception as ex2:
-                        print("::error::could not reconnect (%s) — %d of %d Funds this week emails sent"
+                        print("::error::could not reconnect (%s); %d of %d Funds this week emails sent"
                               % (type(ex2).__name__, sent, len(recipients)))
                         break
             if i < len(recipients) - 1:
@@ -512,7 +512,7 @@ def main(argv=(), now=None, fetch=None):
         mailed = log_safe.owner_mail("AGSIST Funds this week %s: %d of %d did not send" % (day, len(failed), len(recipients)),
                                      ["Resend to these addresses individually (the week is flagged):", ""] + failed)
         print("::error::failed (" + str(len(failed)) + " of " + str(len(recipients))
-              + ") — the week is flagged, so a plain rerun will NOT resend to "
+              + "): the week is flagged, so a plain rerun will NOT resend to "
               "anyone. Resend to these addresses individually ("
               + ("full list mailed to Sig" if mailed else "full list NOT mailed")
               + "): " + ", ".join(log_safe.mask_text(f) for f in failed))
