@@ -712,41 +712,9 @@ jobs:
           REPLY_TO:     ${{ secrets.REPLY_TO }}
         run: python scripts/send_daily.py
 
-      # ── THE FORWARDING BRIEF, MOVED HERE 2026-08-29 ───────────────────────
-      #
-      # This is the email Sig reads and forwards by hand. It used to live in
-      # morning-brief.yml on its own cron, `6 12 * * 1-5` — 7:06 AM Central in
-      # summer, weekdays only. It was never 6:30 and it has never fired on a
-      # Saturday, which is why nothing arrived on the morning he asked about.
-      #
-      # morning-brief.yml's own header recommended this move: "If you want to
-      # combine the two workflows, just add the 'Send brief' step to your
-      # existing daily workflow." Doing it solves three things at once —
-      #
-      #   * it lands whenever the briefing lands, so it inherits the whole net
-      #     of backup fires instead of having one cron of its own to drop;
-      #   * it cannot double-send, because the run that publishes is the only
-      #     run that sends, and the gate already stops a second publish.
-      #     send_morning_brief.py has NO day-flag of its own — it would happily
-      #     send twelve times on a twelve-fire net — so this is not a nicety;
-      #   * DST stops mattering, for the same reason it stopped mattering for
-      #     the briefing: the schedule is a net and the gate is Central.
-      #
-      # THE WEEKEND SKIP IS GONE, at Sig's word on 2026-08-29. It made sense
-      # while this ran on its own weekday-only cron; it made none once it
-      # followed a briefing that publishes seven days a week. The send guard
-      # inside the script — refuse to mail a briefing that failed validation —
-      # is untouched.
-      #
-      # continue-on-error: a forwarding email that fails must not fail the run
-      # that already published the briefing and mailed the list.
-      - name: Send the forwarding brief to Sig
-        if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
-        continue-on-error: true
-        env:
-          GMAIL_USER:     ${{ secrets.GMAIL_USER }}
-          GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
-        run: python scripts/send_morning_brief.py
+      # The forwarding brief (the old plain-text copy Sig used
+      # to forward by hand) is off since 2026-10-20 at Sig's word: the Daily list
+      # replaced it, and he got it as a second, older-looking copy.
 
       # IndexNow (Bing, Yandex, Seznam, Naver and others share one ping).
       # indexnow.yml runs on push, but this job pushes with GITHUB_TOKEN and

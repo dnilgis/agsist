@@ -8,8 +8,8 @@ a one-line health summary if anything is off. Quiet success: no email.
 Triggers an alert when:
   - daily.json is missing or unreadable (generator failed silently)
   - critic_pass.final_scores is missing (critic failed silently)
-  - Any rule scored below 7
-  - Any rewrite was applied (informational)
+  - The average score is under the threshold (7), or any rule scored 3 or less
+    (since 2026-10-20; a passing issue with a few rules under 7 stays quiet)
 
 Env vars required:
   GMAIL_USER       — sender Gmail address
@@ -75,6 +75,17 @@ def format_scores_block(scores: dict, threshold: int = 7) -> str:
     return "\n".join(lines)
 
 
+SERIOUS = 3
+
+
+def should_alert(scores: dict, threshold: float = 7) -> bool:
+    """True when the issue needs Sig's eyes: average under the threshold or a rule at SERIOUS or below."""
+    vals = [float(v) for v in scores.values() if isinstance(v, (int, float))]
+    if not vals:
+        return True
+    return sum(vals) / len(vals) < threshold or min(vals) <= SERIOUS
+
+
 def main() -> int:
     if not DAILY_PATH.exists():
         ok = send("⚠ AGSIST Daily — generator FAILED",
@@ -114,8 +125,11 @@ def main() -> int:
     flagged = {r: s for r, s in scores.items()
                if isinstance(s, (int, float)) and s < threshold}
 
-    # Quiet success — only alert on flagged rules or rewrites
-    if not flagged and not rewrites and avg >= 8.0:
+    # Quiet unless the issue itself is weak (Sig, 2026-10-20: a rule or two
+    # under 7 and an applied rewrite on an otherwise passing issue were a
+    # near-daily email he did not need). Alert when the average is under the
+    # threshold or any one rule is at SERIOUS or below.
+    if not should_alert(scores, threshold):
         print(f"  Critic pass clean: issue #{issue}, avg {avg:.1f}/10. "
               f"No alert needed.")
         return 0
