@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-20T22:39:49Z",
+ "updated": "2026-10-21T00:53:07Z",
  "rules": {
   "version": "bot-v1.1",
   "registered": "2026-10-03",
@@ -479,8 +479,8 @@
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 496.5, a bar that already held evening trades. 497.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 497.25 (read 497.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-20",
-    "close": 461.5
+    "date": "2026-10-19",
+    "close": 467.0
    }
   },
   {
@@ -504,8 +504,8 @@
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 1279.25, a bar that already held evening trades. 1281.0 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 1280.75 (read 1281.0 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-20",
-    "close": 1247.5
+    "date": "2026-10-19",
+    "close": 1253.5
    }
   },
   {
@@ -529,8 +529,8 @@
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 690.5, a bar that already held evening trades. 691.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 692.25 (read 691.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-20",
-    "close": 642.75
+    "date": "2026-10-19",
+    "close": 655.25
    }
   },
   {
@@ -554,8 +554,8 @@
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 740.0, a bar that already held evening trades. 742.25 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT.",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-20",
-    "close": 690.0
+    "date": "2026-10-19",
+    "close": 699.5
    }
   },
   {
@@ -690,7 +690,7 @@
   "after_holiday": null
  },
  "backtest": {
-  "computed": "2026-10-20T22:39:49Z",
+  "computed": "2026-10-21T00:53:07Z",
   "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
   "source_built": "rebuild 2006–2026",
   "cutoff": "2026-10-02",
