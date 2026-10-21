@@ -710,7 +710,7 @@
         var bar = document.createElement('div');
         bar.id = 'site-notice';
         bar.setAttribute('role', 'status');
-        bar.style.cssText = 'background:#7a4b00;color:#fff;font-size:0.92rem;line-height:1.4;padding:8px 44px 8px 16px;position:fixed;left:0;right:0;bottom:0;z-index:2147483000;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
+        bar.style.cssText = 'background:#7a4b00;color:#fff;font-size:0.92rem;line-height:1.4;padding:8px 44px 8px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9980;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
         var msg = document.createElement('span');
         msg.textContent = n.text;
         bar.appendChild(msg);
