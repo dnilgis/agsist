@@ -102,7 +102,7 @@
   <url><loc>https://agsist.com/drought-monitor</loc><lastmod>2026-10-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/hail-map</loc><lastmod>2026-10-21</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/harvest-price-tracker</loc><lastmod>2026-10-19</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://agsist.com/whats-priced-in</loc><lastmod>2026-10-20</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/whats-priced-in</loc><lastmod>2026-10-21</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
 
   <!-- Daily Briefing -->
   <url><loc>https://agsist.com/daily</loc><lastmod>2026-10-21</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
@@ -568,7 +568,7 @@
   <url><loc>https://agsist.com/conditions</loc><lastmod>2026-10-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/conditions-yield</loc><lastmod>2026-10-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/pod-counts</loc><lastmod>2026-10-18</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/crop-tour</loc><lastmod>2026-10-20</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://agsist.com/crop-tour</loc><lastmod>2026-10-21</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/foreign-land</loc><lastmod>2026-10-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/farmland-index</loc><lastmod>2026-10-20</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/farmland-atlas</loc><lastmod>2026-10-19</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
