@@ -825,7 +825,7 @@
      frame, exactly 30 to the second whatever the phone's speed, faster than
      real time, and mp4Mux wraps it (Chrome, Edge, Safari 16.4 and later).
      Otherwise MediaRecorder records the canvas as it plays, in real time. */
-  var avcP = null;
+  var avcP = null, STALL_MS = 8000;
   function avcCodec(F) {
     if (!root.VideoEncoder || !root.VideoFrame || typeof root.VideoEncoder.isConfigSupported !== 'function') return Promise.resolve('');
     return AVC.reduce(function (p, codec) {
@@ -845,9 +845,9 @@
     opts = opts || {};
     var F = FORMATS[mode];
     return (opts.via === 'recorder' ? Promise.resolve('') : avcCodec(F)).then(function (codec) {
-      if (codec) return encodeMp4(S, mode, codec, onTick);
-      if (!mrMime()) throw new Error('no recorder');
-      return liveRecord(S, mode, onTick);
+      var live = function () { if (!mrMime()) throw new Error('no recorder'); return liveRecord(S, mode, onTick); };
+      if (codec) return encodeMp4(S, mode, codec, onTick).then(null, function (e) { if (mrMime()) return live(); throw e; });
+      return live();
     });
   }
   function encodeMp4(S, mode, codec, onTick) {
@@ -862,7 +862,7 @@
   function encodeFrames(S, mode, codec, onTick) {
     var F = FORMATS[mode], c = doc.createElement('canvas'), fps = 30;
     c.width = F.w; c.height = F.h;
-    var ctx = c.getContext('2d'), samples = [], desc = null, failed = null;
+    var ctx = c.getContext('2d'), samples = [], desc = null, failed = null, moved = performance.now();
     var enc = new root.VideoEncoder({
       output: function (chunk, meta) {
         if (meta && meta.decoderConfig && meta.decoderConfig.description) {
@@ -871,6 +871,7 @@
         }
         var b = new Uint8Array(chunk.byteLength); chunk.copyTo(b);
         samples.push({ data: b, key: chunk.type === 'key' });
+        moved = performance.now();
       },
       error: function (e) { failed = e || new Error('encoder'); }
     });
@@ -878,9 +879,12 @@
     var N = Math.ceil(S.plan.total * fps) + 1, f = 0;
     return new Promise(function (res, rej) {
       function step() {
+        // an encoder that stops giving frames back (seen in headless Chromium) must not hang the page: give up, the recorder takes over
+        if (!failed && performance.now() - moved > STALL_MS) failed = new Error('stall');
         if (failed) { try { enc.close(); } catch (e) {} rej(failed); return; }
         // a few frames, then a breath for the page (and the encoder's queue)
         var until = performance.now() + 12;
+        if (enc.encodeQueueSize < 6) moved = performance.now();
         while (f < N && enc.encodeQueueSize < 6 && performance.now() < until) {
           frameAt(ctx, S, mode, Math.min(f / fps, S.plan.total));
           var vf = new root.VideoFrame(c, { timestamp: Math.round(f * 1e6 / fps), duration: Math.round(1e6 / fps) });
@@ -890,7 +894,7 @@
         }
         if (onTick) onTick(f / fps, N / fps, c);
         if (f < N) { setTimeout(step, 0); return; }
-        enc.flush().then(function () {
+        Promise.race([enc.flush(), new Promise(function (r, j) { setTimeout(function () { j(new Error('stall')); }, STALL_MS); })]).then(function () {
           enc.close();
           if (failed) throw failed;
           res({ samples: samples, desc: desc, canvas: c, fps: fps, frames: N });
