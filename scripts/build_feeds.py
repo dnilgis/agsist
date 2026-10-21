@@ -398,7 +398,7 @@ def main():
         for js in sorted(set(re.findall(r"""<script[^>]+src=["']/(components/(?:(?:home|prf|cot)(?:-[\w-]+)?|cash-bids)\.js)""", text))):
             if os.path.exists(js):
                 text += "\n" + read(js)
-        for m in set(re.findall(r"(?<!\}/)(?<!atlas/)data/[\w/.-]+\.json", text)):   # "/farmland-atlas/data/x.json" and "/{OUT}/data/x.json" are the Atlas's own files, not data/x.json
+        for m in set(re.findall(r"(?<!\}/)(?<!atlas/)(?<!open-meteo\.com/)data/[\w/.-]+\.json", text)):   # "/farmland-atlas/data/x.json" and "/{OUT}/data/x.json" are the Atlas's own files, not data/x.json; "api.open-meteo.com/data/..." is Open-Meteo's run-time file (spray page), not ours
             # THE MANIFEST IS NOT ONE OF THE FEEDS IT DESCRIBES. status.html
             # reads it, so a plain grep enrolled it in its own list — with no
             # writer, which failed the "every feed has a cadence" check on the
