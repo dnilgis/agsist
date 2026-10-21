@@ -174,7 +174,9 @@ test('no workflow reads or writes raw, references or private-data on the public 
 });
 
 test('publishing jobs save softly; build inputs, paid batch records and the FSA files stay hard', () => {
-  const HARD = new Set(['accuracy-pass.yml', 'api-jobs.yml', 'fetch-fsa-arcplc.yml', 'fetch-fsa-files.yml']);
+  // history-backfill.yml (Oct 21): saving is the whole job, so its last save is hard (a red run says the
+  // history did not land); the 30-minute saves inside the run are soft and retried by that last one.
+  const HARD = new Set(['accuracy-pass.yml', 'api-jobs.yml', 'fetch-fsa-arcplc.yml', 'fetch-fsa-files.yml', 'history-backfill.yml']);
   for (const f of workflows) {
     for (const s of steps(f)) {
       const pushes = /scripts\/push_raw\.sh/.test(s.code);
