@@ -335,6 +335,13 @@
     $('rr-zip').addEventListener('keydown', function (e) { if (e.key === 'Enter') byZip(); });
     $('rr-geo').addEventListener('click', byDevice);
     $('rr-change').addEventListener('click', function () { $('rr-locbox').hidden = false; $('rr-zip').focus(); });
+    /* Storm replay over this spot (components/storm-replay.js, loaded on the first tap).
+       It gets the radar file already read here, so the rain total costs nothing more. */
+    var rb = $('rr-replay');
+    if (rb) rb.addEventListener('click', function () {
+      if (!S.pt || !window.agsistStormReplay) return;
+      window.agsistStormReplay({ lat: S.pt.lat, lon: S.pt.lon, label: S.label, rain: S.data }, $('rr-replay-note'));
+    });
     $('rr-tiles').addEventListener('click', function (e) {
       var b = e.target.closest ? e.target.closest('[data-win]') : null;
       if (!b || !S.data) return;

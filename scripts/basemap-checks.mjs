@@ -55,7 +55,17 @@ const TILE_VENDORS = [
 /* Tile hosts that are public domain and need no key. Adding one needs the
    same argument USGS got: who runs it, why its terms cannot turn into a bill,
    and what the page shows when it stops answering. */
-const PUBLIC_TILE_HOSTS = ["basemap.nationalmap.gov"];
+const PUBLIC_TILE_HOSTS = [
+  "basemap.nationalmap.gov",
+  /* 2026-10-20, the storm replay (components/storm-replay-core.js): NOAA's
+     national radar mosaic as map tiles, one set every 5 minutes, archived.
+     Run by the Iowa Environmental Mesonet at Iowa State University, which
+     already supplies this site's hail reports and radar hail archive. No key,
+     no account, no paid tier. It is a weather layer over the USGS map, never
+     the map itself; when it stops answering the replay says "NOAA radar not
+     answering since ..." and the other layers still draw. */
+  "mesonet.agron.iastate.edu",
+];
 
 /* A tile URL template ({z} with {x}/{y}) found in served code, and whether it
    is allowed: public host and nothing in it that looks like a key. */

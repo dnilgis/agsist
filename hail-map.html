@@ -167,6 +167,9 @@
     .hm-swathcheck{margin:.8rem 0 0;padding-top:.7rem;border-top:1px solid var(--border,rgba(132,160,168,.12))}
     .hm-swathcheck button{display:inline-flex;align-items:center;gap:.4rem;min-height:42px;background:rgba(212,162,63,.08);border:1px solid rgba(212,162,63,.4);border-radius:8px;color:var(--brand,#d4a23f);font-family:'JetBrains Mono',monospace;font-size:0.785rem;font-weight:700;padding:.5rem .8rem;cursor:pointer}
     .hm-swathcheck button:disabled{opacity:.5;cursor:default}
+    .hm-replay{margin:.8rem 0 0;padding-top:.7rem;border-top:1px solid var(--border,rgba(132,160,168,.12))}
+    .hm-replay-btn{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;background:var(--gold-fill,#d4a23f);border:1px solid var(--gold-fill,#d4a23f);border-radius:8px;color:#141410;font:inherit;font-weight:700;font-size:.9rem;padding:.5rem .9rem;cursor:pointer}
+    .hm-replay-h{display:block;font-size:.8rem;color:var(--text-muted);margin:.35rem 0 0}
     #hm-swath-out{margin-top:.55rem;font-size:.86rem;line-height:1.65}
     #hm-swath-out .sv-day{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid var(--border,rgba(132,160,168,.08));font-family:'JetBrains Mono',monospace;font-size:0.795rem}
     #hm-swath-out .sv-day a{color:var(--brand,#d4a23f);margin-left:auto;text-decoration:none;font-size:0.775rem}
@@ -506,6 +509,9 @@
           <button type="button" id="hm-swath-btn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg> <span id="hm-swath-btn-t">Check radar swaths at this pin</span></button>
           <div id="hm-swath-out"></div>
         </div>
+        <div class="hm-replay"><button type="button" id="hm-replay" class="hm-replay-btn">&#9654; Replay the storm at this pin</button>
+          <span class="hm-replay-h">Radar, lightning and hail on one clock for the last 24 or 48 hours, with the rain total. Estimates are labeled.</span>
+          <p id="hm-replay-note" class="hm-replay-h" role="status"></p></div>
         
         <p class="hm-point-note">Reports are National Weather Service Local Storm Reports within <strong id="hm-note-mi">10 miles</strong> of the pin (pick 5, 10 or 25 above): called in by spotters, law enforcement, and the public, so location is town-level precision (roughly 1&ndash;5 miles), not parcel-exact, and quiet years can mean nobody reported, not that nothing fell. Farming this ground? <a href="/field-scout">Draw the field in Field Scout</a> for the per-field read with satellite vigor.</p>
       </section>
@@ -930,6 +936,7 @@
       ga('hm_lookup',{});
       if(pin) map.removeLayer(pin);
       pin=L.marker([lat,lon]).addTo(map);
+      window.agsistHailPin={lat:lat,lon:lon,label:label||null};
       var panel=document.getElementById('hm-point'); if(panel){ panel.hidden=false; }
       var st=document.getElementById('hm-point-stats');
       if(st) st.innerHTML='<div class="hm-point-stat"><div class="v">\u2026</div><div class="l">checking 5 yrs of reports</div></div>';
@@ -2583,6 +2590,14 @@
     else boot();
   })();
   </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script>/* Storm replay over your field: its code loads only when a reader opens it (components/storm-replay.js). */
+(function(){var p=null;function ld(s){return new Promise(function(ok,no){var e=document.createElement('script');e.src=s;e.onload=ok;e.onerror=no;document.head.appendChild(e);});}
+window.agsistStormReplay=function(o,note){if(!window.L){if(note)note.textContent='The map did not load, so the replay cannot open. Try again in a minute.';return;}
+if(note)note.textContent='Opening the replay\u2026';
+p=p||ld('/components/storm-replay-core.js?v=1').then(function(){return window.AgRadarRain?0:ld('/components/radar-rain.js?v=1');}).then(function(){return ld('/components/storm-replay.js?v=1');});
+p.then(function(){if(note)note.textContent='';window.AgStormReplay.open(o||{});},function(){p=null;if(note)note.textContent='The replay did not load. Check your signal and try again.';});};
+if(/[?&]sr=1(&|$)/.test(location.search))window.addEventListener('load',function(){window.agsistStormReplay({});});})();</script>
+<script>document.getElementById('hm-replay').addEventListener('click',function(){var p=window.agsistHailPin;if(p)window.agsistStormReplay({lat:p.lat,lon:p.lon,label:p.label},document.getElementById('hm-replay-note'));});</script>
+<script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>
