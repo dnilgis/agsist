@@ -299,7 +299,9 @@ async function openPage(browser, port, url, width, opts = {}) {
     if (u.includes("geocoding-api.open-meteo.com")) return r.fulfill({ contentType: "application/json", body: JSON.stringify({ results: GEO[new URL(u).searchParams.get("name")] || [] }) });
     if (u.includes("data.rcc-acis.org")) return opts.noAcis ? r.abort() : r.fulfill({ contentType: "application/json", body: JSON.stringify(synthPor(new URL(u).searchParams.get("sid"))) });
     if (u.includes("dnilgis.github.io/bids/data/merged-index.json")) return r.fulfill({ contentType: "application/json", body: JSON.stringify(IDX) });
-    const m = /dnilgis\.github\.io\/bids\/(merged\/[^?]+)/.exec(u);
+    // the shards live under data/ in the bids repo (merged-index.json shards.dir); Oct 21: this route used to serve the bare
+    // merged/ path, which the live repo answers with a 404, so the test passed while production never showed the line
+    const m = /dnilgis\.github\.io\/bids\/data\/(merged\/[^?]+)/.exec(u);
     if (m && SH[m[1]]) return r.fulfill({ contentType: "application/json", body: JSON.stringify(SH[m[1]]) });
     return r.abort();
   });
@@ -343,7 +345,7 @@ test("in a browser: ranked line, the Rain Print, unusual lines only when unusual
         const tabText = await pg.textContent("#place");
         for (const n of new Set(IDX.places.map((p) => String(p.operator || "").trim()).filter((n) => n.length > 3))) assert.ok(!tabText.includes(n), url + " names " + n);
         assert.match(await pg.textContent("#h-elev-b"), /Basis history starts June 2026/);
-        assert.match(await pg.textContent("#h-el-thin"), /Against its own history: not yet for any of these/);
+        assert.match(await pg.textContent("#h-el-thin"), /^Against its own history: too new to compare yet\.$/);
         const sw = await pg.evaluate(() => document.documentElement.scrollWidth);
         assert.ok(sw <= w + 1, "no sideways scroll at " + w + ": " + sw);
         assert.deepEqual(errs, []);
@@ -353,7 +355,9 @@ test("in a browser: ranked line, the Rain Print, unusual lines only when unusual
     // NOAA does not answer: the line says so, with a way to ask again; the drawing still shows
     const { pg, ctx, errs } = await openPage(browser, port, "/fast-facts?zip=54728", 390, { noAcis: true });
     await pg.waitForSelector("#h-rank-retry", { timeout: 40000 });
-    assert.match(await pg.textContent("#h-rank"), /Not ranked: NOAA.s station record did not answer/);
+    // plain words, no plumbing (tone, Oct 21): which service did not answer is not the reader's business
+    assert.match(await pg.textContent("#h-rank"), /Not ranked today\./);
+    assert.doesNotMatch(await pg.textContent("#h-rank"), /NOAA.s station record did not answer/);
     assert.ok(await pg.$("#h-rp svg"));
     assert.deepEqual(errs, []);
     await ctx.close();

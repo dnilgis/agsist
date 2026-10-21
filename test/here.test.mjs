@@ -34,7 +34,7 @@ test("/here is the site's redirect stub to /fast-facts, keeping the query and th
   assert.match(read("llms.txt"), /agsist\.com\/fast-facts/);
   assert.doesNotMatch(read("llms.txt"), /agsist\.com\/here\b/);
   assert.ok(existsSync(path.join(ROOT, "data/next/fast-facts.json")) && !existsSync(path.join(ROOT, "data/next/here.json")));
-  assert.match(read("scripts/inject_static_nav.py"), /"\/fastfacts", "\/here"\)/, "/here on the nav check's retired list");
+  assert.match(read("scripts/inject_static_nav.py"), /"\/fastfacts", "\/here"[,)]/, "/here on the nav check's retired list");
 });
 
 test("the place code on Fast Facts: no em dashes, name only at the end, scripts versioned", () => {
@@ -53,20 +53,25 @@ test("no role chips anywhere: markup, scripts, styles; the print panel", () => {
     assert.doesNotMatch(t, /h-roles|data-role|here_role|agsist-here-for|P\.ROLES|P\.order\(|P\.tool\(|role buttons|I am a\b/i, f);
     assert.doesNotMatch(t, /Lender or Appraiser|Elevator or Plant|Buyer or Seller/, f);
   }
-  // the print panel: one checkbox per part, all ticked, More detail unticked, a Print button
+  // the print options: one checkbox per part, all ticked; the rain drawing and More detail unticked; a Print button
   const parts = [...page.matchAll(/<input type="checkbox" name="part" value="([a-z]+)" checked>/g)].map((m) => m[1]);
   assert.deepEqual(parts, ["sentence", "week", "fingerprint", "unusual", "long", "sources"]);
   assert.match(page, /<input type="checkbox" id="h-pr-more">/);
-  assert.match(page, /id="h-pr-go">Print</);
+  assert.match(page, /<input type="checkbox" id="h-pr-rain">/);
+  assert.match(page, /id="h-pr-go" class="h-pr-go">[\s\S]{0,80}Print<\/button>/);
   assert.match(page, /\/components\/qr\.js\?v=\d+/);
-  const css = read("components/here.css");
-  assert.match(css, /@page\{size:letter/);
-  assert.match(css, /counter\(page\) " of " counter\(pages\)/);
-  assert.match(css, /@bottom-left\{content:"agsist\.com\/fast-facts"/);
-  // nothing under 9pt in print
-  const pr = css.slice(css.indexOf("@media print{"));
-  for (const m of pr.matchAll(/font-size:([\d.]+)pt/g)) assert.ok(+m[1] >= 9, "print font " + m[0]);
-  for (const m of pr.matchAll(/font:[^;]*?([\d.]+)pt/g)) assert.ok(+m[1] >= 9, "print font " + m[0]);
+  assert.match(page, /\/components\/print-sheet\.js\?v=\d+/);
+  // the one printed format (components/print-sheet.js): Letter, the running title and "Page n of N" on every page
+  const sheet = read("components/print-sheet.js"), css = read("components/print-sheet.css");
+  assert.match(sheet, /@page\{size:letter/);
+  assert.match(sheet, /counter\(page\) " of " counter\(pages\)/);
+  assert.match(sheet, /@bottom-left\{content:"AGSIST/);
+  // nothing under 9pt in print, on the sheet or the page
+  for (const t of [read("components/here.css"), css]) {
+    const pr = t.slice(t.indexOf("@media print{"));
+    for (const m of pr.matchAll(/font-size:([\d.]+)pt/g)) assert.ok(+m[1] >= 9, "print font " + m[0]);
+    for (const m of pr.matchAll(/font:[^;]*?([\d.]+)pt/g)) assert.ok(+m[1] >= 9, "print font " + m[0]);
+  }
 });
 
 test("the page fetches only the state's file, the county's file and the shared files, never one file per place", () => {
@@ -203,13 +208,15 @@ test("one order for everyone; an old &for= link opens normally and drops the par
     assert.doesNotMatch(await pg.textContent("main"), /I am a|role/i);
     for (const id of ["week", "fingerprint", "unusual", "long"]) assert.ok(await pg.$eval("#h-sec-" + id, (e) => e.offsetHeight > 0), id);
     assert.ok(await pg.$eval("#h-sec-week", (w) => w.compareDocumentPosition(document.querySelector("#h-sections")) & 4), "the cards come before the depth");
+    // the bids come first on a phone: the summary box sits under the four cards (farmer, Oct 21)
+    assert.ok(await pg.$eval("#h-sec-week", (w) => w.compareDocumentPosition(document.querySelector("#h-part-sentence")) & 4), "the cards come before the summary");
     const deep = await pg.$$eval("#h-links a", (a) => a.map((x) => [x.dataset.k, x.getAttribute("href")]));
     const k = Object.fromEntries(deep);
     assert.match(k.scout, /^\/field-scout\?at=45\.\d{4},-91\.\d{4}&fips=55005$/);
     assert.equal(k.bids, "/cash-bids?zip=54728");
     assert.match(k.hail, /^\/hail-map\?lat=/);
     assert.equal(k.sheet, "/farmland-atlas/sheet#55005");
-    assert.equal(k.data, "/developer");
+    assert.equal(k.data, undefined, "no Data downloads in a place's links (tone, Oct 21)");
     // Wisconsin has recorded sales on the site: the comparable sales report joins the row once its index answers
     await pg.waitForSelector('#h-links a[data-k="comps"]', { timeout: 15000 });
     // the device kept nothing: no role key written
@@ -229,65 +236,75 @@ test("one order for everyone; an old &for= link opens normally and drops the par
   } finally { await browser.close(); srv.close(); }
 });
 
-test("print report: the panel drops parts from the printed sheet, More detail prints the tables, the link carries it, Letter PDF", { skip, timeout: 180000 }, async () => {
+test("print: one button, the options drop parts from the shared sheet, the link carries them, two Letter pages", { skip, timeout: 240000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const { pg, ctx, errs } = await openPage(browser, port, "/fast-facts?zip=54728", 1280);
     await settled(pg);
     await pg.evaluate(() => { window.print = () => { window.__printed = (window.__printed || 0) + 1; }; });
-    await pg.click("#fx-t-print");
     const shown = (sel) => pg.$eval(sel, (e) => { const s = getComputedStyle(e); return s.display !== "none" && e.getBoundingClientRect().height > 0; });
-    // on screen the printed cover stays hidden; the Print tab shows the panel for the open place
-    assert.equal(await shown("#h-pr-cover"), false);
-    assert.ok(await shown("#h-pr-box"));
-    assert.equal(await pg.textContent("#h-pr-name"), "Barron County, Wisconsin");
-    assert.match(pg.url(), /#print$/);
-    assert.equal(await pg.$eval("#h-pr-box input[name=part]:checked", () => true), true);
+    // Print is a button beside Change place; the options fold under it; every part ticked but the rain drawing and the years
+    assert.ok(await shown("#h-pr-go"));
+    assert.equal(await pg.$eval("#h-pr-box", (d) => d.open), false);
+    await pg.click("#h-pr-box summary");
     assert.equal(await pg.$$eval("#h-pr-box input[name=part]:checked", (i) => i.length), 6);
-    // print media with everything ticked: cover, the cards, unusual, long, sources; the full tables stay out
-    await pg.evaluate(() => window.AgHere.loadDepth());
-    await pg.evaluate(() => window.AgHere.beforePrint());
+    assert.equal(await pg.$eval("#h-pr-rain", (i) => i.checked), false);
+    assert.equal(await pg.$eval("#h-pr-more", (i) => i.checked), false);
+    await pg.click("#h-pr-go");
+    await pg.waitForFunction(() => window.__printed === 1, null, { timeout: 15000 });
     await pg.emulateMedia({ media: "print" });
-    for (const s of ["#h-pr-cover", ".pc-sent", ".pc-tiles", ".pd", ".pc-qr svg", "#h-sec-week", "#h-sec-unusual", "#h-sec-long", "#h-part-sources"]) assert.ok(await shown(s), s);
-    for (const s of ["#h-pr-box", ".h-deep", "#h-form", "#h-sec-fingerprint", "#h-part-sentence", ".fx-tabs", "#tables", "#state"]) assert.equal(await shown(s), false, s);
-    assert.equal(await pg.$$eval(".pd-r:not(.pd-ax)", (r) => r.length), 17);
-    assert.equal(await pg.$$eval(".pc-t", (t) => t.length), 6);
-    for (const t of await pg.$$eval(".pc-t .pc-s", (x) => x.map((e) => e.textContent))) assert.ok(t.length > 8, "source and years under each headline figure: " + t);
-    assert.equal(await pg.$$eval(".pc-qr svg rect, .pc-qr svg path", (n) => n.length > 0), true);
-    assert.equal(await pg.textContent("#h-pr-qr"), "This report, live and up to date: agsist.com/H/55005/54728");
+    // on paper: the sheet only; the page, its tabs and its buttons stay off
+    assert.ok(await shown("#agps"));
+    for (const sel of ["#place", ".fx-tabs", "#tables", ".fx-top"]) assert.equal(await shown(sel), false, sel);
+    const heads = await pg.$$eval("#agps h2", (h) => h.map((x) => x.textContent));
+    assert.deepEqual(heads, ["Price", "Field", "Land and programs", "Today", "How it ranks among Wisconsin counties", "Against its neighbors", "The long view", "Sources"]);
+    assert.equal(await pg.textContent("#agps .agps-title"), "Barron County, Wisconsin");
+    const text = await pg.textContent("#agps");
+    // only rows that show, no link words, no fail-soft notes, no Daily (a morning letter) on paper (lender, Oct 21)
+    for (const bad of [/See the bids near here/, /Read the Daily/, /Try again/, /not in right now/, /did not answer/, /Not available/, /This morning/]) assert.doesNotMatch(text, bad);
+    assert.ok(!(await pg.$("#agps .agps-rain")), "no rain drawing unless chosen");
+    // every printed row carries its date and source; the sources list has every source printed, each with its date
+    const cells = await pg.$$eval("#agps .agps-cell", (c) => c.map((x) => x.textContent));
+    assert.ok(cells.length >= 25, "rows: " + cells.length);
+    const srcs = await pg.$$eval("#agps .agps-srcs li", (l) => l.map((x) => x.textContent));
+    for (const name of ["Posted elevator bids", "CBOT futures, delayed", "U.S. Drought Monitor", "USDA NASS Crop Progress", "Co-op posted prices"]) assert.ok(srcs.some((t) => t.startsWith(name + ", ")), name + " in the sources with a date: " + srcs.join(" | "));
+    assert.match(await pg.textContent("#agps .agps-url"), /^agsist\.com\/H\/55005\/54728$/);
+    assert.ok(await pg.$("#agps .agps-qr svg path"));
+    assert.match(await pg.textContent("#agps .agps-prep"), /^Prepared by AGSIST \(agsist\.com\), printed [A-Z][a-z]{2} \d+, 20\d\d$/);
+    const pdf = await pg.pdf({ format: "Letter", printBackground: true, preferCSSPageSize: true });
+    const raw = pdf.toString("latin1");
+    assert.ok(/\/MediaBox\s*\[\s*0 0 612 792\s*\]/.test(raw), "Letter pages");
+    assert.equal((raw.match(/\/Type\s*\/Page[^s]/g) || []).length, 2, "the default sheet is two pages");
+    await pg.evaluate(() => window.dispatchEvent(new Event("afterprint")));
     await pg.emulateMedia({ media: "screen" });
-    // untick This week and the long view, tick More detail
+    assert.equal(await pg.evaluate(() => document.documentElement.classList.contains("agps-on")), false, "the page is the page again");
+    // untick the cards and the long view, tick More detail and the rain drawing: the link carries it, the sheet follows
     await pg.uncheck('#h-pr-box input[value="week"]');
     await pg.uncheck('#h-pr-box input[value="long"]');
     await pg.check("#h-pr-more");
     assert.match(pg.url(), /print=sentence,fingerprint,unusual,sources,more/);
-    await pg.evaluate(() => window.AgHere.afterPrint());
+    await pg.check("#h-pr-rain");
+    assert.match(pg.url(), /print=sentence,fingerprint,unusual,sources,more,rain/);
     await pg.click("#h-pr-go");
-    await pg.waitForFunction(() => window.__printed === 1, null, { timeout: 15000 });
-    await pg.emulateMedia({ media: "print" });
-    assert.equal(await shown("#h-sec-week"), false);
-    assert.equal(await shown("#h-sec-long"), false);
-    assert.ok(await shown("#h-sec-fingerprint"));
-    assert.ok(await shown("#h-fp-t"), "More detail prints the figure table");
-    assert.ok(await shown("#h-sec-unusual"));
-    const pdf = await pg.pdf({ format: "Letter", printBackground: true, preferCSSPageSize: true });
-    assert.ok(pdf.length > 20000);
-    const box = /\/MediaBox\s*\[\s*0 0 612 792\s*\]/.test(pdf.toString("latin1"));
-    assert.ok(box, "Letter pages");
-    await pg.evaluate(() => window.AgHere.afterPrint());
-    await pg.emulateMedia({ media: "screen" });
-    assert.equal(await pg.$eval("#h-fp-t", (t) => t.closest("details").open), false, "the screen table closes again after printing");
-    // a shared link prints the same choices
+    await pg.waitForFunction(() => window.__printed === 2, null, { timeout: 20000 });
+    const heads2 = await pg.$$eval("#agps h2", (h) => h.map((x) => x.textContent));
+    assert.ok(!heads2.includes("Price") && !heads2.includes("The long view"), heads2.join(", "));
+    assert.ok(heads2.includes("How it ranks among Wisconsin counties"));
+    if (await pg.evaluate(() => !!(window.AgHere.state.fig))) assert.ok(await pg.$("#agps .agps-rain svg"), "the rain drawing when chosen");
+    await pg.evaluate(() => window.dispatchEvent(new Event("afterprint")));
+    // Ctrl+P prints the same sheet
+    await pg.evaluate(() => window.dispatchEvent(new Event("beforeprint")));
+    assert.equal(await pg.evaluate(() => document.documentElement.classList.contains("agps-on")), true);
+    await pg.evaluate(() => window.dispatchEvent(new Event("afterprint")));
+    // a shared link opens My place with the same choices
     const shared = pg.url().replace(/^https?:\/\/[^/]+/, "");
     const b2 = await openPage(browser, port, shared, 1280);
     await settled(b2.pg);
-    assert.equal(await b2.pg.evaluate(() => document.documentElement.getAttribute("data-fx")), "print", "the shared link opens on the Print tab");
+    assert.equal(await b2.pg.evaluate(() => document.documentElement.getAttribute("data-fx")), "place");
     assert.equal(await b2.pg.$eval('#h-pr-box input[value="week"]', (i) => i.checked), false);
     assert.equal(await b2.pg.$eval("#h-pr-more", (i) => i.checked), true);
-    await b2.pg.evaluate(() => window.AgHere.beforePrint());
-    await b2.pg.emulateMedia({ media: "print" });
-    assert.equal(await b2.pg.$eval("#h-sec-week", (e) => getComputedStyle(e).display), "none");
+    assert.equal(await b2.pg.$eval("#h-pr-rain", (i) => i.checked), true);
     assert.deepEqual(b2.errs, []);
     await b2.ctx.close();
     assert.deepEqual(errs, []);
@@ -299,7 +316,7 @@ test("the box: two Springfields ask, a county typed opens, the map picks a count
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const { pg, ctx, errs } = await openPage(browser, port, "/fast-facts", 1280);
+    const { pg, ctx, errs } = await openPage(browser, port, "/fast-facts#place", 1280);
     assert.ok(await pg.$eval("#h-place", (e) => e.hidden));
     await pg.fill("#h-q", "Springfield");
     await pg.click("#h-form button[type=submit]");

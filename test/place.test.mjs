@@ -66,7 +66,11 @@ test("ranks: rank 1 is the highest; ties share the middle; lowest-half words cou
 test("Barron County, WI: the sentence is the template, ranks are among Wisconsin counties", () => {
   const p = P.profile(J("data/atlas/pct/WI.json"), "55005", reg);
   assert.equal(p.name, "Barron County");
-  assert.match(p.sentence, /^Barron County, WI: cash rent \$\d+ an acre in 20\d\d, \d+(st|nd|rd|th) (highest|lowest) of \d+ Wisconsin counties/);
+  // Oct 21 panel: the rent says which rent it is; the insurance figure has one name everywhere; "among the lowest tenth"
+  assert.match(p.sentence, /^Barron County, WI: cash rent \$\d+ an acre for non-irrigated cropland in 20\d\d, \d+(st|nd|rd|th) (highest|lowest) of \d+ Wisconsin counties/);
+  assert.doesNotMatch(p.sentence, /loss ratio|bottom tenth|top tenth/);
+  if (/insurance/.test(p.sentence)) assert.match(p.sentence, /paid out \$\d\.\d\d per \$1 of total premium \(farmer and federal shares\)/);
+  assert.match(p.sentence, /among the (lowest|highest) tenth of Wisconsin counties/);
   assert.doesNotMatch(p.sentence, /—|field/);
   for (const c of p.cols) {
     if (c.value == null) assert.ok(c.reason, c.id);
@@ -110,7 +114,8 @@ test("query parsing and the box", () => {
   assert.deepEqual(P.parseQuery("?zip=54728&for=farmer"), { q: "", fips: null, zip: "54728", at: null, print: null });
   assert.deepEqual(P.parseQuery("?fips=17019&at=40.1,-88.2&q=Champaign%2C%20IL").at, { lat: 40.1, lng: -88.2 });
   assert.equal(P.parseQuery("?fips=99001").fips, null, "no state 99");
-  assert.deepEqual(P.parseQuery("?zip=54728&print=week,long,more").print, { parts: ["week", "long"], more: true });
+  assert.deepEqual(P.parseQuery("?zip=54728&print=week,long,more").print, { parts: ["week", "long"], more: true, rain: false });
+  assert.deepEqual(P.parseQuery("?zip=54728&print=rain").print, { parts: P.PRINT_PARTS, more: false, rain: true });
   assert.equal(P.parseQuery("?at=0,0").at, null);
   assert.equal(P.parsePoint("45.3, 91.6").lng, -91.6, "a longitude typed without its minus sign");
   assert.deepEqual(P.classify("54728"), { kind: "zip", zip: "54728" });
@@ -144,7 +149,8 @@ test("no roles: one go deeper row for everyone, built from what the place suppor
   assert.equal(P.tool, undefined);
   const place = { fips: "55005", st: "WI", slug: "barron-county", flags: "arpc", lat: 45.314, lng: -91.651, zip: "54728", sales: true };
   const row = P.deeper(place), href = Object.fromEntries(row.map((l) => [l.id, l.href]));
-  assert.deepEqual(row.map((l) => l.id), ["scout", "comps", "bids", "hail", "sheet", "atlas", "arcplc", "prf", "rain", "rent", "data"]);
+  // Oct 21 (tone): no "Data downloads" in a place's own links; the raw sets stay on /developer
+  assert.deepEqual(row.map((l) => l.id), ["scout", "comps", "bids", "hail", "sheet", "atlas", "arcplc", "prf", "rain", "rent"]);
   for (const l of row) assert.ok(/^\//.test(l.href) && l.text && !/—/.test(l.text), l.id);
   assert.equal(href.scout, "/field-scout?at=45.3140,-91.6510&fips=55005");
   assert.equal(href.comps, "/comp-report?lat=45.3140&lon=-91.6510&at=town&fips=55005");
@@ -155,24 +161,26 @@ test("no roles: one go deeper row for everyone, built from what the place suppor
   assert.equal(href.arcplc, "/arc-plc/wisconsin/barron-county");
   assert.equal(href.prf, "/prf/wisconsin/barron-county");
   assert.equal(href.rain, "/rain/wisconsin/barron-county");
-  assert.equal(href.data, "/developer");
   // no recorded sales in the state, no county pages, no ZIP: those links drop, the rest stay
   const bare = P.deeper({ ...place, st: "KS", fips: "20009", slug: "barton-county", flags: "", zip: null, sales: false });
-  assert.deepEqual(bare.map((l) => l.id), ["scout", "bids", "hail", "sheet", "rent", "data"]);
+  assert.deepEqual(bare.map((l) => l.id), ["scout", "bids", "hail", "sheet", "rent"]);
   assert.equal(bare.find((l) => l.id === "bids").href, "/cash-bids/kansas/");
   assert.deepEqual(P.deeper(null), []);
 });
 
 test("print choices: the link form round-trips, defaults stay out of the link", () => {
   assert.deepEqual(P.PRINT_PARTS, ["sentence", "week", "fingerprint", "unusual", "long", "sources"]);
-  assert.deepEqual(P.parsePrint(""), { parts: P.PRINT_PARTS, more: false });
-  assert.deepEqual(P.parsePrint("nonsense"), { parts: P.PRINT_PARTS, more: false });
-  assert.deepEqual(P.parsePrint("more"), { parts: P.PRINT_PARTS, more: true });
-  assert.deepEqual(P.parsePrint("long,week,week"), { parts: ["week", "long"], more: false });
+  assert.deepEqual(P.parsePrint(""), { parts: P.PRINT_PARTS, more: false, rain: false });
+  assert.deepEqual(P.parsePrint("nonsense"), { parts: P.PRINT_PARTS, more: false, rain: false });
+  assert.deepEqual(P.parsePrint("more"), { parts: P.PRINT_PARTS, more: true, rain: false });
+  assert.deepEqual(P.parsePrint("long,week,week"), { parts: ["week", "long"], more: false, rain: false });
+  // the year's rain drawn is off unless chosen (lender, Oct 21), and rides in the link like the rest
+  assert.equal(P.printParam({ parts: P.PRINT_PARTS, more: false, rain: true }), "rain");
+  assert.equal(P.printParam({ parts: ["week"], more: true, rain: true }), "week,more,rain");
   assert.equal(P.printParam({ parts: P.PRINT_PARTS, more: false }), "");
   assert.equal(P.printParam({ parts: P.PRINT_PARTS, more: true }), "more");
   assert.equal(P.printParam({ parts: ["long", "week"], more: true }), "week,long,more");
-  for (const v of ["week", "fingerprint,more", "sentence,sources"]) assert.equal(P.printParam(P.parsePrint(v)), v);
+  for (const v of ["week", "fingerprint,more", "sentence,sources", "week,rain"]) assert.equal(P.printParam(P.parsePrint(v)), v);
 });
 
 test("the printed QR: shortest link that reopens the same report, smallest symbol, pinned", () => {
@@ -188,9 +196,10 @@ test("the printed QR: shortest link that reopens the same report, smallest symbo
   assert.doesNotMatch(P.qrLink({ fips: "55005", zip: "54728", q: "Chetek, WI" }), /utm|q=|for=/);
   // the short keys reopen the same report
   const back = P.parseQuery("?f=55005&z=54728&p=66");
-  assert.deepEqual([back.fips, back.zip, back.print], ["55005", "54728", { parts: ["week"], more: true }]);
+  assert.deepEqual([back.fips, back.zip, back.print], ["55005", "54728", { parts: ["week"], more: true, rain: false }]);
+  assert.deepEqual(P.parseQuery("?f=55005&z=54728&p=191").print, { parts: P.PRINT_PARTS, more: false, rain: true });
   assert.deepEqual(P.parseQuery("?f=55005&a=45.3141,-91.6510").at, { lat: 45.3141, lng: -91.651 });
-  for (let n = 1; n < 128; n++) { const c = P.printFromCode(n); if (n & 63) assert.equal(P.printCode(c), n); }
+  for (let n = 1; n < 256; n++) { const c = P.printFromCode(n); if (n & 63) assert.equal(P.printCode(c), n); }
   // module counts at level M, the mode here.js draws with (mixed: letters-and-digits runs packed tight):
   // version 2 (25 x 25) for a ZIP or a county (was 29 in byte mode), 29 with a print choice, 33 with a point
   const M = (u) => Q.matrix(u, null, "mixed", 10).length;

@@ -2,8 +2,10 @@
  *
  *   node --test test/fast-facts-front.test.mjs
  *
- * Five tabs, each with its own #hash, picked before first paint; every panel in order without
- * JavaScript. The ZIP is asked once (a saved ZIP opens the place, location only on a tap). No
+ * Two tabs (Sig, Oct 21 after the panel): My place and Reference tables, each with its own #hash,
+ * picked before first paint; both panels in order without JavaScript. A saved place or a place link
+ * opens My place; any other first visit (a search visitor) opens the tables. Old #state, #us and
+ * #print links open My place; Print is a button. The ZIP is asked once (a saved ZIP opens the place, location only on a tap). No
  * buyer, seller, elevator or co-op name anywhere on the page, which is indexed. Every row an
  * anchor. /here and the H/ short link forward with their query. Every reference-table id the
  * page carried on Oct 21 (159) is still there, inside Reference tables. */
@@ -24,7 +26,7 @@ const tables = page.slice(page.indexOf('<div class="fx-panel" id="tables"'), pag
 
 // the ids inside <main> of fast-facts.html on origin/main 63d75b3c9e (Oct 21), before the tabs
 const OLD_IDS = ["main", "ff-ans", "ff-ans-t", "ans-rate", "ans-range", "ans-cost", "ans-line", "ans-soil", "ans-prev", "nc-fert", "nc-custom-wrap", "nc-custom-pct", "nc-fertprice", "ans-state", "nc-corn", "nc-nlb", "nc-ratio", "nc-col", "ans-src", "ans-note", "ans-fall", "ag-sponsor", "ff-strip", "fft-corn", "fft-beans", "fft-wheat", "ff-week", "ffw-num", "ffw-txt", "tab-btn-nitrogen", "tab-btn-economics", "tab-btn-pk", "tab-btn-removal", "tab-btn-manure", "tab-btn-soilhealth", "tab-btn-stages", "tab-btn-pest", "tab-btn-reference", "tab-btn-statestats", "tab-nitrogen", "fert-banner", "fert-date", "fert-pills", "n-table", "nc-table", "nth-05", "nth-10", "nth-15", "nth-20", "tab-economics", "eco-live-badge", "eco-corn-price", "eco-bean-price", "eco-wheat-price", "eco-urea-price", "eco-dap-price", "eco-mop-price", "eco-n-source-label", "eco-n-rate", "eco-n-pplb", "eco-n-cost", "eco-p-rate", "eco-p-pplb", "eco-p-cost", "eco-k-rate", "eco-k-pplb", "eco-k-cost", "eco-price-note", "eco-seed", "eco-seed-echo", "eco-chem", "eco-chem-echo", "eco-rent", "eco-rent-echo", "eco-other", "eco-other-echo", "eco-total", "tab-pk", "st-crop", "st-yield-unit", "st-yield", "st-soil", "st-rot", "st-p", "st-k", "st-res", "st-pcat", "st-kcat", "st-prec", "st-krec", "pk-cost-out", "pk-p-cost", "pk-k-cost", "pk-total-cost", "st-note", "pk-cats", "tab-removal", "rem-crop", "rem-yield", "rem-acres", "rem-res", "rem-p-ac", "rem-k-ac", "rem-p-tot", "rem-k-tot", "corn-lbs", "corn-moist", "corn-acres", "corn-res", "corn-bu", "corn-buac", "tab-manure", "manure-calc", "man-loads", "man-size", "man-units", "man-acres", "man-res", "man-total", "man-rate", "tab-soilhealth", "lime-wph", "lime-buf", "lime-target", "lime-ni", "lime-ni-wrap", "lime-ni-custom", "lime-depth", "lime-soil", "lime-price", "lime-res", "lime-base", "lime-ag", "lime-note", "lime-cost", "tab-stages", "corn-sv-wrap", "corn-sv-marks", "corn-sv-detail", "bean-sv-wrap", "bean-sv-marks", "bean-sv-detail", "gdu-max", "gdu-min", "gdu-acc", "gdu-res", "gdu-day", "gdu-new", "gdu-corn-stage", "gdu-bean-stage", "tab-pest", "pest-sources", "tab-reference", "tab-statestats", "ff-state-select", "state-content", "agf-t", "ff-sources", "ff-sources-t"];
-const PLACE_ROWS = ["f-corn-bid", "f-soy-bid", "f-corn-basis", "f-soy-basis", "f-corn-fut", "f-soy-fut", "f-rain", "f-drought", "f-hail", "f-progress",
+const PLACE_ROWS = ["f-corn-bid", "f-soy-bid", "f-corn-basis", "f-soy-basis", "f-corn-fut", "f-soy-fut", "f-wheat-fut", "f-rain", "f-drought", "f-hail", "f-progress", "f-soy-progress",
   "f-rent", "f-land", "f-sales", "f-loss", "f-arcplc", "f-usda", "f-fert", "f-daily"];
 
 test("reference anchors unchanged: all 159 ids kept, inside Reference tables; one h1", () => {
@@ -41,16 +43,20 @@ test("reference anchors unchanged: all 159 ids kept, inside Reference tables; on
   assert.match(tables, /<h2 class="ff-h">Fast Facts: farm reference tables<\/h2>/, "the old hero h1 is an h2");
 });
 
-test("five tabs with their own hashes; the head script picks one before first paint", () => {
+test("two tabs with their own hashes; the head script picks one before first paint; Print is a button", () => {
   const tabs = [...page.matchAll(/<a class="fx-tab" role="tab" href="#([a-z]+)" data-t="\1"[^>]*>([^<]+)<\/a>/g)].map((m) => [m[1], m[2]]);
-  assert.deepEqual(tabs, [["place", "My place"], ["state", "State"], ["us", "United States"], ["tables", "Reference tables"], ["print", "Print"]]);
+  assert.deepEqual(tabs, [["place", "My place"], ["tables", "Reference tables"]]);
+  for (const k of ["state", "us", "print"]) assert.doesNotMatch(page, new RegExp('id="' + k + '" role="tabpanel"'), k + " is folded into My place");
+  assert.match(page, /<button type="button" id="h-pr-go" class="h-pr-go">[\s\S]*?Print<\/button>/);
   for (const [k] of tabs) assert.match(page, new RegExp('class="fx-panel[^"]*" id="' + k + '" role="tabpanel"'), k);
   const head = page.slice(0, page.indexOf("</head>"));
-  assert.match(head, /Fast Facts tabs: the open tab is set before first paint/);
+  assert.match(head, /Fast Facts tabs \(My place, Reference tables\), set before first paint/);
   // inline in <head>, so it runs before the body is parsed or painted
   assert.match(head, /<script>\/\* Fast Facts tabs[\s\S]*?\(document,location\);<\/script>/);
   const css = read("components/here.css");
   assert.match(css, /html\[data-fx\] \.fx-panel\{display:none\}/, "panels hide only once the script has run");
+  assert.match(css, /html:not\(\[data-fx\]\) #h-form/, "without JavaScript the place box is hidden, not dead");
+  assert.match(page, /<noscript><style>\.ff-panel\{display:block!important\}<\/style><\/noscript>/, "without JavaScript every reference panel shows");
   for (const id of PLACE_ROWS) assert.match(page, new RegExp('<div class="fx-row" id="' + id + '">'), id + " is an anchor in the page");
 });
 
@@ -76,18 +82,29 @@ test("the bid row: price, miles from the ZIP, delivery, how many; who pays it is
     { facility: "Some Elevator Co", crop: "corn", cashPrice: 3.95, basis: -0.5, lat: 45.4, lon: -91.4, deliveryStart: "2026-10-01", delivery: "10/01/2026" },
     { facility: "Other Grain LLC", crop: "corn", cashPrice: 3.9, basis: -0.55, lat: 45.0, lon: -91.9, deliveryStart: "2026-11-01" }] };
   const f = P.factBid(P.bestBids(snap, 45.31413, -91.651, 50).corn, "corn", "ZIP 54728", "2026-10-21T12:00:00Z", "/cash-bids?zip=54728");
-  assert.equal(f.value + f.join + f.ctx, "$3.95, 14 mi from ZIP 54728, October delivery. Best of 2 within 50 mi.");
-  assert.deepEqual(f.src, ["Who pays it", "/cash-bids?zip=54728"]);
+  // the best and, when it is a different elevator, the nearest beside it (farmer, Oct 21); never a name
+  assert.equal(f.value + f.join + f.ctx, "$3.95, 14 mi from ZIP 54728, October delivery. Best of 2 within 50 mi.", "the nearest is the best here, so it is not said twice");
+  assert.match(f.ctx, /^14 mi from ZIP 54728, October delivery\. Best of 2 within 50 mi\.( Nearest: \$\d\.\d\d at \d+ mi\.)?$/);
+  assert.deepEqual(f.src, ["See the bids near here", "/cash-bids?zip=54728"]);
+  const near = P.factBid({ n: 3, best: { price: 4.06, mi: 22, delivery: "HAR 26" }, nearest: { price: 3.95, mi: 7 } }, "corn", "ZIP 54728", "", "/cash-bids");
+  assert.equal(near.ctx, "22 mi from ZIP 54728, harvest delivery. Best of 3 within 50 mi. Nearest: $3.95 at 7 mi.");
+  assert.equal(P.deliveryWords({ delivery: "Oct 01, 2026" }), "October delivery");
   assert.doesNotMatch(JSON.stringify(f), /Elevator Co|Grain LLC/);
   const none = P.factBid(undefined, "soybeans", "ZIP 54728", "", "/cash-bids?zip=54728");
   assert.equal(none.value, null);
   assert.match(none.why, /no posted soybeans bid within 50 mi of ZIP 54728/);
 });
 
-test("one number, one builder: the place, State and US tabs call the same row builders", () => {
+test("one number, one builder: each row builder is called from one place; the State and US rows live in My place", () => {
   for (const fn of ["factFutures", "factBasis", "factProgress", "factUsda", "factFert", "factDaily"]) assert.equal((HJS.match(new RegExp("P\\." + fn + "\\(", "g")) || []).length, 1, fn + " is called from one place");
-  assert.match(HJS, /futures\('f-'\)/); assert.match(HJS, /futures\('u-'\)/);
-  assert.match(HJS, /basis\('f-', st\)/); assert.match(HJS, /basis\('s-', st\)/);
+  assert.match(HJS, /futures\('f-'\)/);
+  assert.match(HJS, /basis\('f-', st, bids, fromWords\(w\)\)/);
+  assert.match(HJS, /progress\('f-progress', st, 'corn'\);\s*progress\('f-soy-progress', st, 'soybeans'\)/);
+  assert.doesNotMatch(HJS, /drawState|drawUS|'s-corn|'u-corn/);
+  // the harvest row carries the state and the US together, and says whose average it is
+  const h = P.factProgress(J("data/crop-progress.json"), "WI", "corn");
+  assert.match(h.value, /^\d+% WI, \d+% US$/);
+  assert.match(h.ctx, /Week ending [A-Z][a-z]{2} \d+\. The 5-year average is our average of the NASS weeks\.$/);
 });
 
 test("every state link exists on disk, for all 50 states", () => {
@@ -156,40 +173,58 @@ async function openPage(browser, port, url, o = {}) {
 const fx = (pg) => pg.evaluate(() => document.documentElement.getAttribute("data-fx"));
 const shown = (pg, sel) => pg.$eval(sel, (e) => getComputedStyle(e).display !== "none" && e.getBoundingClientRect().height > 0);
 
-test("tabs and hashes in Chromium: each hash opens its tab, old anchors open Reference tables, a tap keeps the hash", { skip, timeout: 180000 }, async () => {
+test("tabs and hashes in Chromium: each hash opens its tab; old #state, #us, #print open My place; a search visit opens the tables", { skip, timeout: 180000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
+  const SAVED = { agsist_user_zip: "54728" };
   try {
-    for (const [hash, want] of [["", "place"], ["#state", "state"], ["#us", "us"], ["#tables", "tables"], ["#print", "print"], ["#nitrogen", "tables"], ["#pk", "tables"],
-      ["#ff-sources", "tables"], ["#n-table", "tables"], ["#f-corn-bid", "place"], ["#s-corn-basis", "state"], ["#u-daily", "us"], ["#h-pr-go", "print"]]) {
-      const { pg, ctx, errs } = await openPage(browser, port, "/fast-facts" + hash);
-      assert.equal(await fx(pg), want, hash);
-      assert.equal(await pg.$eval("#fx-t-" + want, (a) => a.getAttribute("aria-selected")), "true", hash);
-      for (const k of ["place", "state", "us", "tables", "print"]) assert.equal(await shown(pg, "#" + k), k === want, hash + " " + k);
+    for (const [hash, want, storage] of [["", "tables"], ["", "place", SAVED], ["?zip=54728", "place"], ["#place", "place"], ["#tables", "tables", SAVED],
+      ["#state", "place"], ["#us", "place"], ["#print", "place"], ["#nitrogen", "tables", SAVED], ["#pk", "tables"],
+      ["#ff-sources", "tables"], ["#n-table", "tables"], ["#f-corn-bid", "place"], ["#h-pr-go", "place"]]) {
+      const { pg, ctx, errs } = await openPage(browser, port, "/fast-facts" + hash, { storage: storage || {} });
+      const k = hash + (storage ? " (saved place)" : "");
+      assert.equal(await fx(pg), want, k);
+      assert.equal(await pg.$eval("#fx-t-" + want, (a) => a.getAttribute("aria-selected")), "true", k);
+      for (const t of ["place", "tables"]) assert.equal(await shown(pg, "#" + t), t === want, k + " " + t);
       if (hash === "#pk") assert.equal(await pg.$eval("#tab-btn-pk", (b) => b.getAttribute("aria-selected")), "true", "the old inner tab still opens");
       if (hash === "#ff-sources") assert.ok(await shown(pg, "#ff-sources"));
-      assert.deepEqual(errs, [], hash);
+      assert.deepEqual(errs, [], k);
       await ctx.close();
     }
-    // tapping a tab: the hash follows, nothing else on the page moves
+    // an old State or US row link lands on the row that now carries it
+    const old = await openPage(browser, port, "/fast-facts?zip=54728#s-corn-basis");
+    assert.equal(await old.pg.evaluate(() => location.hash), "#f-corn-basis");
+    assert.equal(await fx(old.pg), "place");
+    await old.ctx.close();
+    // tapping a tab: the hash follows; arrows, Home, End and Space move between tabs
     const { pg, ctx, errs } = await openPage(browser, port, "/fast-facts", { width: 1280 });
-    await pg.click("#fx-t-us");
-    assert.equal(await fx(pg), "us");
-    assert.match(pg.url(), /\/fast-facts#us$/);
-    await pg.waitForFunction(() => !document.querySelector("#u-corn-fut .fx-wait") && document.querySelector("#u-corn-fut .fx-w").textContent.length > 5);
-    await pg.focus("#fx-t-us");
+    await pg.click("#fx-t-place");
+    assert.equal(await fx(pg), "place");
+    assert.match(pg.url(), /\/fast-facts#place$/);
+    await pg.focus("#fx-t-place");
     await pg.keyboard.press("ArrowRight");
     assert.equal(await fx(pg), "tables");
+    await pg.keyboard.press("Home");
+    assert.equal(await fx(pg), "place");
+    await pg.keyboard.press("End");
+    assert.equal(await fx(pg), "tables");
+    await pg.focus("#fx-t-place");
+    const y0 = await pg.evaluate(() => scrollY);
+    await pg.keyboard.press(" ");
+    assert.equal(await fx(pg), "place", "Space selects the focused tab");
+    assert.equal(await pg.evaluate(() => scrollY), y0, "and does not scroll the page");
     await pg.goto(`http://127.0.0.1:${port}/fast-facts#tables`);
-    await pg.evaluate(() => { location.hash = "#state"; });
-    await pg.waitForFunction(() => document.documentElement.getAttribute("data-fx") === "state");
+    await pg.evaluate(() => { location.hash = "#place"; });
+    await pg.waitForFunction(() => document.documentElement.getAttribute("data-fx") === "place");
     assert.deepEqual(errs, []);
     await ctx.close();
-    // without JavaScript every panel shows, in order
-    const nj = await openPage(browser, port, "/fast-facts#state", { js: false });
+    // without JavaScript both panels show, in order; every reference panel shows; the place box is hidden
+    const nj = await openPage(browser, port, "/fast-facts#place", { js: false });
     const tops = [];
-    for (const k of ["place", "state", "us", "tables", "print"]) { assert.ok(await shown(nj.pg, "#" + k), "no JS: " + k); tops.push(await nj.pg.$eval("#" + k, (e) => e.getBoundingClientRect().top)); }
+    for (const t of ["place", "tables"]) { assert.ok(await shown(nj.pg, "#" + t), "no JS: " + t); tops.push(await nj.pg.$eval("#" + t, (e) => e.getBoundingClientRect().top)); }
     assert.deepEqual(tops, [...tops].sort((a, b) => a - b));
+    for (const id of ["#tab-pk", "#tab-manure", "#tab-statestats"]) assert.ok(await shown(nj.pg, id), "no JS: " + id);
+    for (const id of ["#h-form", "#h-locate"]) assert.equal(await shown(nj.pg, id), false, "no JS: " + id + " is hidden, not dead");
     await nj.ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
@@ -209,8 +244,8 @@ test("the ZIP once: a saved ZIP opens the place with no question; location only 
       assert.deepEqual(errs, []);
       await ctx.close();
     }
-    // no ZIP saved: one box, nothing looked up, no location asked
-    const a = await openPage(browser, port, "/fast-facts");
+    // no ZIP saved: the tables open; My place shows one box, nothing looked up, no location asked
+    const a = await openPage(browser, port, "/fast-facts#place");
     await a.pg.waitForTimeout(800);
     assert.ok(await shown(a.pg, "#h-form"));
     assert.equal(await a.pg.$eval("#h-place", (e) => e.hidden), true);
@@ -226,12 +261,26 @@ test("the ZIP once: a saved ZIP opens the place with no question; location only 
     await a.pg.waitForFunction(() => !document.getElementById("h-place").hidden, null, { timeout: 30000 });
     assert.equal(await a.pg.evaluate(() => window.__geo), 1);
     assert.equal(await a.pg.textContent("#h-title"), "Barron County, Wisconsin");
-    // typed once, saved for next time
+    // Change place has a way back: Escape, or the Keep button, brings the open place back
+    await a.pg.click("#h-change");
+    assert.ok(await shown(a.pg, "#h-keep"));
+    assert.match(await a.pg.textContent("#h-ask"), /Type the new ZIP/);
+    await a.pg.keyboard.press("Escape");
+    assert.equal(await shown(a.pg, "#h-find"), false);
+    assert.ok(await shown(a.pg, "#h-change"));
+    await a.pg.click("#h-change");
+    await a.pg.click("#h-keep");
+    assert.equal(await shown(a.pg, "#h-find"), false);
+    // typed once, saved for next time; focus and the status line say where it landed; the header chip agrees
     await a.pg.click("#h-change");
     await a.pg.fill("#h-q", "54728");
     await a.pg.click("#h-form button[type=submit]");
     await a.pg.waitForFunction(() => /zip=54728/.test(location.search), null, { timeout: 20000 });
+    await a.pg.waitForFunction(() => document.activeElement && document.activeElement.id === "h-title", null, { timeout: 20000 });
+    assert.equal(await a.pg.textContent("#h-status"), "Showing Barron County, Wisconsin.");
     assert.equal(await a.pg.evaluate(() => localStorage.getItem("agsist_user_zip")), "54728");
+    assert.equal(JSON.parse(await a.pg.evaluate(() => localStorage.getItem("agsist-wx-loc"))).zip, "54728");
+    await a.pg.waitForFunction(() => /54728|Chetek/.test((document.getElementById("zip-chip-t") || { textContent: "54728" }).textContent), null, { timeout: 10000 });
     assert.deepEqual(a.errs, []);
     await a.ctx.close();
   } finally { await browser.close(); srv.close(); }
@@ -250,8 +299,8 @@ test("in Chromium: every row answers with a date and a source or says why; no na
       else assert.ok(await pg.$("#" + id + " .fx-s"), id + " has its date and source line");
     }
     const bid = await pg.textContent("#f-corn-bid .fx-w");
-    assert.match(bid, /^\$\d+\.\d{2}, \d+ mi from ZIP 54728, ([A-Z][a-z]+ )?delivery\. (Best of \d+|The only one) within 50 mi\./, bid);
-    assert.equal(await pg.$eval("#f-corn-bid .fx-s a", (a) => [a.textContent, a.getAttribute("href")].join(" ")), "Who pays it /cash-bids?zip=54728");
+    assert.match(bid, /^\$\d+\.\d{2}, \d+ mi from ZIP 54728, ([A-Za-z]+ )?delivery\. (Best of \d+|The only one) within 50 mi\.( Nearest: \$\d+\.\d\d at \d+ mi\.)?/, bid);
+    assert.equal(await pg.$eval("#f-corn-bid .fx-s a", (a) => [a.textContent, a.getAttribute("href")].join(" ")), "See the bids near here /cash-bids?zip=54728");
     // no elevator in the bid file within 50 miles is named anywhere on the page
     const near = J("data/bids.json").bids.filter((b) => b.lat != null && P.miles(45.31413, -91.651, b.lat, b.lon) <= 60).map((b) => b.facility).filter((n) => n && n.length > 3);
     assert.ok(near.length >= 3, "bids near Chetek in data/bids.json: " + near.length);
@@ -264,11 +313,15 @@ test("in Chromium: every row answers with a date and a source or says why; no na
     // the row the link pointed at is the target
     await pg.click("#fx-t-place");
     assert.equal(await pg.evaluate(() => document.querySelector(":target") && document.querySelector(":target").id), "f-rain");
-    // State: the same builders for the place's state
-    await pg.click("#fx-t-state");
-    await pg.waitForFunction(() => document.querySelectorAll("#s-links a").length >= 3 && !document.querySelector("#s-corn-basis .fx-wait"), null, { timeout: 20000 });
-    assert.equal(await pg.textContent("#s-name"), "Wisconsin");
-    assert.equal(await pg.textContent("#s-corn-basis .fx-w"), await pg.textContent("#f-corn-basis .fx-w"), "one number, one builder: State and My place agree");
+    // what the State and US tabs carried is in My place now: wheat futures, both harvest rows with the state and the US
+    assert.match(await pg.textContent("#f-wheat-fut .fx-w"), /^\$\d+\.\d/);
+    assert.match(await pg.textContent("#f-soy-progress .fx-w"), /^\d+% WI, \d+% US|^Not available/);
+    // the futures rows say how they moved; the Daily row carries no price of its own
+    assert.match(await pg.textContent("#f-corn-fut .fx-w"), /(Up|Down) [\d¼½¾⅛⅜⅝⅞]+¢ from the [A-Z][a-z]{2} \d+ settle\.|Unchanged from the/);
+    assert.doesNotMatch(await pg.textContent("#f-daily .fx-b"), /\$\d{1,2}\.\d{2}/, "no grain price in the Daily row");
+    // tap targets: every source link is at least 44 px tall to the thumb
+    const small = await pg.$$eval("#h-sec-week .fx-s a", (as) => as.filter((a) => { const r = a.getBoundingClientRect(); return r.height > 0 && r.height < 44; }).map((a) => a.textContent));
+    assert.deepEqual(small, []);
     assert.deepEqual(errs, []);
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
@@ -281,9 +334,11 @@ test("/here and the H/ short link forward to Fast Facts with the query and hash"
     let { pg, ctx, errs } = await openPage(browser, port, "/here?zip=54728&print=week#print");
     await pg.waitForURL((u) => u.pathname === "/fast-facts", { timeout: 10000 });
     assert.equal(await pg.evaluate(() => location.hash), "#print");
-    assert.equal(await fx(pg), "print");
+    assert.equal(await fx(pg), "place", "an old #print link opens My place");
     await pg.waitForFunction(() => !document.getElementById("h-place").hidden, null, { timeout: 30000 });
     assert.match(pg.url(), /fips=55005&zip=54728&print=week#print$/, "the query came through: " + pg.url());
+    assert.equal(await pg.$eval("#h-pr-box", (d) => d.open), true, "with the print options open");
+    assert.equal(await pg.$eval('#h-pr-box input[value="long"]', (i) => i.checked), false, "and the link's choice in them");
     assert.deepEqual(errs, []);
     await ctx.close();
     ({ pg, ctx, errs } = await openPage(browser, port, "/H/55005/54728"));
@@ -293,4 +348,10 @@ test("/here and the H/ short link forward to Fast Facts with the query and hash"
     assert.match(pg.url(), /\/fast-facts\?fips=55005&zip=54728/);
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
+});
+
+test("/fastfacts forwards with its query and #anchor", () => {
+  const stub = read("fastfacts.html");
+  assert.match(stub, /location\.replace\("\/fast-facts"\+location\.search\+location\.hash\)/);
+  assert.match(stub, /<meta name="robots" content="noindex, follow">/);
 });
