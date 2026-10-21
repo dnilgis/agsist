@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 20 Oct 2026 10:48:17 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 21 Oct 2026 10:49:03 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn down 6 straight days to $4.59½; beans down 7 to $12.45</title>
+      <link>https://agsist.com/daily/2026-10-21</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-21</guid>
+      <pubDate>Wed, 21 Oct 2026 10:48:17 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Corn closed Tuesday at $4.59½, its sixth lower close in a row, and soybeans at $12.45 made it seven. A corn bushel is worth about 15 cents less than a week ago. Harvest is pushing the selling, and nothing new came overnight.
+• Grains keep sliding on harvest
+• Cattle and hogs firm; crude near $100
+Read more: https://agsist.com/daily/2026-10-21</description>
+    </item>
     <item>
       <title>Corn at $4.67¾ and beans at $12.57½ barely move after losing streaks</title>
       <link>https://agsist.com/daily/2026-10-20</link>
@@ -357,19 +368,6 @@ Action: Diesel at $6.50/gallon: lock harvest fuel needs now, don't wait for crud
 • Diesel Record, Crude Breaks
 • Beans Wait On Xi
 Read more: https://agsist.com/daily/2026-09-21</description>
-    </item>
-    <item>
-      <title>Beans sank Friday; summit week opens with crossed signals</title>
-      <link>https://agsist.com/daily/2026-09-20</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-20</guid>
-      <pubDate>Sun, 20 Sep 2026 14:17:22 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Soybeans closed Friday at $13.03, down 16 cents on the week's last session as funds took profits ahead of the Trump-Xi summit set for Sep 24. Crude broke 5.6% the same day, its biggest single-session drop in weeks, while diesel stayed near record highs regardless.
-Action: Nothing to do at $13.03 beans over the weekend; a Monday close below $12.90 says the summit trade is unwinding, not building.
-• BEANS PRICE THE SUMMIT, NOT THE CROP
-• DIESEL STAYS TIGHT AS CRUDE BREAKS
-• CATTLE FIRM, FEEDER SUPPLY THE STORY
-Read more: https://agsist.com/daily/2026-09-20</description>
     </item>
   </channel>
 </rss>
