@@ -31,7 +31,7 @@ const SUBLINES = { "/haymow": "Hay for sale and wanted" };
 // The approved outline, labels exact.
 const MENU = {
   markets: ["Prices", {
-    "Near you": [["/cash-bids", "Cash bids near me"], ["/cash-bids/states", "Bids by state"], ["/basis", "Basis vs normal"], ["/cash-bid-index", "Cash Bid Index"], ["/fertilizer", "Fertilizer prices"]],
+    "Near you": [["/cash-bids", "Cash bids near me"], ["/cash-bids/states", "Bids by state"], ["/basis", "Basis vs normal"], ["/grain-transport", "Grain on the move"], ["/cash-bid-index", "Cash Bid Index"], ["/fertilizer", "Fertilizer prices"]],
     Futures: [["/corn-futures-prices", "Corn"], ["/soybean-futures-prices", "Soybeans"], ["/wheat-futures-prices", "Wheat"], ["/harvest-price-tracker", "Harvest price tracker"], ["/markets", "All markets →"]],
     Reports: [["/usda-calendar", "USDA calendar"], ["/whats-priced-in", "What’s priced in"], ["/conditions", "Crop progress"], ["/conditions-yield", "Crop size"], ["/usda-quick-stats", "Yield by state"], ["/crop-tour", "Crop tour"], ["/cot", "Fund positions (COT)"], ["/tariffs", "Tariffs and trade"]],
   }],
@@ -271,8 +271,8 @@ test("phone: one tap on the menu shows every group's links; desktop panels stay 
     const hidden = await pg.evaluate(() => [...document.querySelectorAll("#drawer .draw-grp a.draw-item")].filter((a) => !a.getClientRects().length).map((a) => a.getAttribute("href")));
     assert.deepEqual(hidden, [], "every group link is shown without another tap");
     const n = await pg.evaluate(() => document.querySelectorAll("#drawer .draw-grp a.draw-item").length);
-    assert.equal(n, 5 + 5 + 8 + 9 + 7 + 7 + 6 + 5 + 4 + 3 + 3,
-      "Livestock has 9 since The Haymow (2026-10-18); Reports 8 with Yield by state, Land 5 with Farmland sale index (2026-10-20)");
+    assert.equal(n, 6 + 5 + 8 + 9 + 7 + 7 + 6 + 5 + 4 + 3 + 3,
+      "Near you 6 with Grain on the move (2026-10-21); Livestock has 9 since The Haymow (2026-10-18); Reports 8 with Yield by state, Land 5 with Farmland sale index (2026-10-20)");
     assert.ok(await pg.evaluate(() => document.getElementById("drawer").scrollWidth <= 390), "no sideways scroll in the panel");
     // the moved note shows before Nov 1 and stays closed once dismissed
     assert.ok(await pg.isVisible("#drawer .nav-moved"));
