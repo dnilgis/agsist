@@ -172,6 +172,14 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
   function show(id, html, kind) { var o = $(id); o.innerHTML = html; o.className = 'out' + (kind ? ' ' + kind : ''); }
+  // "Go to the token box": land on it at once with the cursor in it, ready to paste
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href="#tok"]'); if (!a) return;
+    var t = $('tok'); if (!t) return;
+    e.preventDefault();
+    t.scrollIntoView({ block: 'center', behavior: 'instant' });
+    t.focus({ preventScroll: true });
+  });
   try { $('tok').value = localStorage.getItem(TOK_KEY) || ''; } catch (e) {}
   $('tok').addEventListener('change', function () { try { localStorage.setItem(TOK_KEY, $('tok').value.trim()); } catch (e) {} });
   $('tok-forget').addEventListener('click', function () { $('tok').value = ''; try { localStorage.removeItem(TOK_KEY); } catch (e) {} tokMiss(); });
