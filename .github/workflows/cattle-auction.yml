@@ -1,6 +1,7 @@
 name: Cattle auction prices
 
-# Writes data/cattle-auction.json for cattle-auction-prices.html: feeder steer
+# Writes data/cattle-auction.json for cattle-auction-prices.html (and, from it,
+# data/feeder-index.json: scripts/build_feeder_index.py): feeder steer
 # and heifer prices by weight class at sale barns, from public USDA AMS
 # auction report PDFs, read by scripts/fetch_cattle_auction.py. The barn list
 # and report numbers are in scripts/cattle_auction_sources.json. The page
@@ -54,7 +55,9 @@ jobs:
       - name: Install pypdf (fallback if pdftotext is missing)
         run: pip install pypdf==6.20.1
       - name: Selftest
-        run: python scripts/fetch_cattle_auction.py --selftest
+        run: |
+          python scripts/fetch_cattle_auction.py --selftest
+          python scripts/build_feeder_index.py --selftest
       - name: Probe (raw source capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         env:
@@ -76,12 +79,21 @@ jobs:
       - name: Fetch and write data/cattle-auction.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_cattle_auction.py
+      # AGSIST weekly feeder prices by region and weight, and RMA's feeder steer
+      # value beside the futures (data/feeder-index.json, read by
+      # components/feeder-index.js on the cattle, sale barn and LRP pages). It
+      # reads the LRP and futures files as committed; a failure here never
+      # holds back the barn prices.
+      - name: Build data/feeder-index.json
+        if: ${{ !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        continue-on-error: true
+        run: python scripts/build_feeder_index.py
       - name: Commit if changed (race-tolerant)
         run: |
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/cattle-auction.json data/cattle-auction-raw/listing.json"
+          FILES="data/cattle-auction.json data/cattle-auction-raw/listing.json data/feeder-index.json"
           rm -rf /tmp/ca && mkdir -p /tmp/ca
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/ca/ || true
