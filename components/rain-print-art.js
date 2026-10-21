@@ -1295,7 +1295,8 @@
       var cx = (xs(b) + xs(E.ends[m])) / 2;
       months.push([cx, MB + 26, monCap(m), { w: 500, size: 11, ls: 0.08, fill: X.date, anchor: 'middle' }]);
       if (E.monthHas[m]) months.push([cx, MB + 46, rainNum(E.month[m], 'tot'), { size: 14, fill: X.ink, anchor: 'middle' }]);
-      if (E.showN) months.push([cx, MB + 63, rainNum(E.mN[m], 'tot'), { size: 11, fill: X.usualM, anchor: 'middle' }]);
+      // a month with no reported day yet has no usual to show (Oct 21: a year in progress drew "0.00" under Nov and Dec)
+      if (E.showN && E.monthHas[m]) months.push([cx, MB + 63, rainNum(E.mN[m], 'tot'), { size: 11, fill: X.usualM, anchor: 'middle' }]);
     });
     months.forEach(function (t) { room.text(box(t[0], t[1], t[2], t[3]), 'months'); });
     if (hasRib) room.add({ b: { x: X0 - 4, y: PB + 10, w: X1 - X0 + 48, h: RIBBON_H + 4 }, own: 'ribbon', k: 'mark' });
@@ -1392,7 +1393,7 @@
     foot1.push(E.daysText);
     if (E.traceKey) foot1.push(TRACE_PAD + E.traceKey);
     var foot2 = [];
-    if (E.cmp && E.ovNote) foot2.push(E.ovNote + (E.showN ? (LOC.fr ? '; le total normal du mois est le chiffre gris sous chaque mois' : '; the usual month total is the gray number under each month') : ''));
+    if (E.cmp && E.ovNote) foot2.push(E.ovNote + (E.showN ? (LOC.fr ? '; le total normal du mois est le chiffre gris sous chaque mois' : '; the usual month total is the gray number under each month') + (E.preview ? (LOC.fr ? ' (le mois en cours : les jours rapport\u00e9s seulement)' : ' (this month: the days reported so far)') : '') : ''));
     if (E.snowNote) foot2.push(E.snowNote);
     if (hist && hist.foot) foot2.push(hist.foot);
     if (E.missing > GAP_QUIET) foot2.push(LOC.fr ? 'Trous : ' + E.missing + ' jours sans relevé' : 'Gaps: ' + E.missing + ' days with no report');

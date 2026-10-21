@@ -323,18 +323,18 @@ function fillCorn(){
     // week card: what most of the Corn Belt is doing, hedged
     var wk=isoWeekNow();
     var W={
-      16:['planting is rolling','Corn planters are rolling across the Belt. Check soil temp ≥50°F and scout for black cutworm as fields green.',['stages']],
-      18:['corn VE–V1','Early corn is spiking. Stand counts now save replant regrets later.',['stages']],
+      16:['planting is rolling','Corn planting is underway. Check soil temp ≥50°F and scout for black cutworm as fields green.',['stages']],
+      18:['corn VE–V1','Early corn is spiking. Count stands now.',['stages']],
       20:['corn V1–V2 · beans in','Corn at V1–V2, beans going in. Cutworm and slugs on the watch list.',['stages','pest']],
       22:['corn V2–V4','Side-dress window opening. Weed escapes show now. Check your MOA rotation.',['stages','pest']],
       24:['corn V4–V6','Side-dress window closing at V6. Rapid N uptake starts now.',['stages']],
       26:['corn V8–V12 · beans V3–R1','Corn stacking leaves fast. First rootworm beetles show; start counting.',['stages','pest']],
-      28:['corn VT–R1: pollination','THE weather-sensitive window. Japanese beetles clipping silks? 3+ per ear, silks clipped under 1 inch, pollination not done is the threshold.',['pest']],
+      28:['corn VT–R1: pollination','Weather matters most now. Japanese beetles clipping silks? 3+ per ear, silks clipped under 1 inch, pollination not done is the threshold.',['pest']],
       30:['corn ~R2 · beans ~R3','Blister corn, pod-set beans. Worth a walk: rootworm beetles, soybean aphid (250/plant, over 80% of plants, rising).',['pest']],
       32:['corn R3–R4 · beans R4','Aphid pressure peaks. Grain-fill weather sets the top end of yield.',['pest']],
       34:['corn ~R5 · beans R5','Dent corn, seed-fill beans. Late diseases and stink bugs in beans.',['stages','pest']],
-      36:['corn R5–R6 · beans R6','Push-test stalks: rots pick lodging candidates. Line up dry-down logistics.',['stages']],
-      38:['maturity: black layer','Corn hitting black layer. Moisture checks beat calendar dates for harvest order.',['stages']],
+      36:['corn R5–R6 · beans R6','Push-test stalks to find fields that may lodge. Plan drying.',['stages']],
+      38:['maturity: black layer','Corn hitting black layer. Go by moisture, not the calendar.',['stages']],
       40:['harvest','Combines rolling. Watch bin moisture targets and shrink math.',['stages']],
       42:['harvest wrap-up','Soil sampling season: plan P and K from the new tests.',['pk']]
     };
@@ -693,7 +693,7 @@ function initStages(){
     R4:['Dough. Kernel contents doughy.','About half of final dry weight in. Stalks cannibalize if N or K is short.'],
     R5:['Dent. Kernels dented, milk line showing.','Watch for stalk rots and Diplodia ear rot. Plan harvest order.'],
     'R5.5':['Full dent, milk line moving down.','Silage harvest window opens.'],
-    R6:['Black layer. Kernel dry weight at its most.','Moisture near 30\u201335%. Moisture checks beat calendar dates for harvest order.']
+    R6:['Black layer. Kernel dry weight at its most.','Moisture near 30\u201335%. Go by moisture, not the calendar.']
   };
   var BEAN_NOTES={
     VE:['Unifoliate leaves through the soil.','Check stand. Seedcorn maggot or pythium risk in cold wet soils.'],
@@ -728,7 +728,7 @@ function initStages(){
         document.querySelectorAll('#'+markId+' .sv-mark').forEach(function(m){m.classList.remove('active');});
         div.classList.add('active');
         detail.innerHTML='<div class="sv-detail-stage">'+st.s+'</div>'
-          +'<div class="sv-detail-gdu">~'+g+' GDUs from planting (86/50 method)</div>'
+          +'<div class="sv-detail-gdu">~'+g+' GDUs from planting (highs capped at 86°F, lows floored at 50°F)</div>'
           +'<div class="sv-detail-desc">'+st.desc+'</div>'
           +(st.mgmt?'<div class="sv-detail-mgmt"><svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> '+st.mgmt+'</div>':'');
       });
