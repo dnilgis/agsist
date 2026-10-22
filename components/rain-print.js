@@ -5657,6 +5657,18 @@
       if (!typing(e.target)) keepClearOfPin(e.target);
     });
     doc.addEventListener('focusout', function () { clearTimeout(back); back = setTimeout(function () { TYPING = typing(doc.activeElement); syncBar(); if (!(TYPING && $('rp-stepcol').contains(doc.activeElement))) doc.body.classList.remove('rp-typing'); }, 450); });
+    /* The strip holds its folded size through a press (2026-10-22). While a box has focus the picture and Up close fold
+       away (rain-print.html); the press on a card or button below takes the focus, the strip unfolded over the place
+       pressed, and the release landed on the strip, so the click went to neither (CI, Oct 22: the Print card and
+       "+ Mark another day" missed). From the press until its click is done the strip stays as it was. */
+    var FOLDS = ':is(input:not([type=checkbox]):not([type=radio]),textarea,select)', holdT = 0;
+    var hold = function (on) { clearTimeout(holdT); $('rp-strip').classList.toggle('rp-strip-hold', on); if (on) holdT = setTimeout(function () { hold(false); }, 2000); };
+    doc.addEventListener('pointerdown', function (e) {
+      var st = $('rp-strip'), a = doc.activeElement;
+      if (st.hidden || st.contains(e.target) || !a || !a.matches || !a.matches(FOLDS)) return;
+      hold(true);
+    }, true);
+    ['pointerup', 'pointercancel'].forEach(function (t) { doc.addEventListener(t, function () { if ($('rp-strip').classList.contains('rp-strip-hold')) setTimeout(function () { hold(false); }, 0); }, true); });
   })();
   // Back from Stripe with the page kept as it was: no "Opening checkout" left on the screen
   root.addEventListener('pageshow', function (e) { if (e.persisted) { proofSay(''); syncBar(); } });

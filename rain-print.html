@@ -178,6 +178,10 @@
   .rp-mini svg{display:block;width:100%;height:auto;background:#fff}
   .rp-strip[data-view="framed"] .rp-mini{padding:3px;background:#131313}
   .rp-mini-in{display:block}
+  /* 2026-10-22: the slim copy is drawn when the page is idle, after the strip shows. Until then its box holds the
+     drawing's 3:2 shape (the content box, inside the framed view's mat), so the strip never grows over what is under it
+     (a tap on the card under it landed on the strip; test/rain-print-strip-height.test.mjs) */
+  .rp-mini-in:empty{aspect-ratio:3/2;box-sizing:content-box}
   .rp-strip[data-view="framed"] .rp-mini-in{padding:6.5%;background:#FDFDFB}
   .rp-strip[data-view="framed"] .rp-mini svg{box-shadow:0 0 0 1px rgba(0,0,0,.3)}
   .rp-strip-r{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:.35rem;font-size:var(--fs-xs);line-height:1.35;color:var(--rp-wall-ink)}
@@ -246,7 +250,10 @@
   /* phone: while a text box has the keyboard, the sticky preview folds to its one line of words, "On the print: ..."
      (2026-10-17, panels: strip, menu and pay bar took 38% of the screen while typing) */
   @media (max-width:899px){body:has(:is(input:not([type=checkbox]):not([type=radio]),textarea,select):focus) .rp-strip :is(.rp-mini,.chip){display:none}
-    body:has(:is(input:not([type=checkbox]):not([type=radio]),textarea,select):focus) .rp-strip{padding-top:4px;padding-bottom:4px}}
+    body:has(:is(input:not([type=checkbox]):not([type=radio]),textarea,select):focus) .rp-strip{padding-top:4px;padding-bottom:4px}
+    /* and through the press that takes the focus away, until its click is done (components/rain-print.js, 2026-10-22) */
+    .rp-strip.rp-strip-hold :is(.rp-mini,.chip){display:none}
+    .rp-strip.rp-strip-hold{padding-top:4px;padding-bottom:4px}}
   .rp-date .rp-rm:hover{color:var(--text);background:var(--surface-2,var(--surface))}
   .rp-date .rp-rm:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
   .rp-date .rp-rm[hidden]{display:none}
@@ -1147,7 +1154,7 @@
     </nav>
     <p class="rp-also" style="margin:1rem 0 0;font-size:.9rem;color:var(--text-dim)">Also in the works: <a href="/rain-gauge" style="color:var(--brand)">a better rain gauge</a>.</p>
     <div class="rp-strip" id="rp-strip" hidden>
-      <div class="rp-mini" id="rp-mini" aria-hidden="true"></div>
+      <div class="rp-mini" id="rp-mini" aria-hidden="true"><span class="rp-mini-in"></span></div>
       <div class="rp-strip-r"><span id="rp-strip-t"></span><span class="rp-strip-say" id="rp-strip-say" hidden></span><button type="button" class="chip" id="rp-strip-zoom" aria-label="Up close: see the print at full size">Up close</button></div>
     </div>
     <div class="rp-bar" id="rp-bar" hidden>
@@ -1231,7 +1238,7 @@
   <script src="/components/rp-short.js?v=6" defer></script>
   <script src="/components/rp-canada.js?v=3" defer></script>
   <script src="/components/rain-print-art.js?v=21" defer></script>
-  <script src="/components/rain-print.js?v=72" defer></script>
+  <script src="/components/rain-print.js?v=76" defer></script>
   <script src="/components/rain-print-draw.js?v=4" defer></script>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/rp-gift.js?v=7" defer></script>
