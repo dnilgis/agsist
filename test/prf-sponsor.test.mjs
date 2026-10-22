@@ -316,6 +316,6 @@ test("the sponsor sheet points at /prf-sponsor", () => {
   const h = readFileSync(ROOT + "prf-sponsor-kit.html", "utf8");
   assert.ok(h.includes("AgQR.svg('https://agsist.com/prf-sponsor'"), "the QR opens /prf-sponsor");
   assert.ok(h.includes('href="/prf-sponsor"') && h.includes("agsist.com/prf-sponsor</b>"));
-  assert.ok(h.includes("sig@farmers1st.com"), "the email stays");
+  assert.ok(h.includes("sig@agsist.com"), "the email stays");
   assert.ok(!PRICE.test(h.replace(/<style>[\s\S]*?<\/style>/, "")) && !/founding/i.test(h));
 });

@@ -81,7 +81,7 @@ test("two waitlist forms, same worker and topic as before, extras folded into th
     assert.ok(new RegExp(`name="count-${n}" value="6\\+"`).test(main));
     assert.ok(new RegExp(`id="rg-gotcha-${n}" name="_gotcha"`).test(main), "honeypot on form " + n);
   }
-  assert.ok(page.includes("'https://agsist-subs.dnilgis.workers.dev/notice'"));
+  assert.ok(page.includes("'https://agsist-api.dnilgis.workers.dev/notice'"));
   assert.ok(/topic: 'rain-gauge', source: 'rain-gauge'/.test(page));
   assert.ok(/\.slice\(0, 280\)/.test(page), "the note stays inside the worker's 280");
   assert.ok(!/body\.(count|use)\b/.test(page), "no new worker fields");
@@ -106,8 +106,8 @@ test("title says prototype, like the page; share copy matches the share screen",
   assert.ok(!main.includes("for that field and nothing else"));
 });
 test("the warranty says where to write, as a link, on the card, in the FAQ and in the JSON-LD", () => {
-  assert.equal((main.match(/Send me a photo and tell me what happened\. Write to me at <a href="mailto:sig@farmers1st\.com">sig@farmers1st\.com<\/a>\./g) || []).length, 2);
-  assert.ok(JSON.stringify(ld).includes("Write to me at sig@farmers1st.com."));
+  assert.equal((main.match(/Send me a photo and tell me what happened\. Write to me at <a href="mailto:sig@agsist\.com">sig@agsist\.com<\/a>\./g) || []).length, 2);
+  assert.ok(JSON.stringify(ld).includes("Write to me at sig@agsist.com."));
 });
 test("phone layout: no badge over the funnel, readable phone screens, a full-width email box", () => {
   assert.match(page, /@media\(max-width:899px\)\{\.rg-cbadge\{display:none\}\}/);

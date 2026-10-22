@@ -356,3 +356,23 @@ test("Rain Print pages: the footer shows no sponsor link (Advertise or PRF spons
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
+
+/* 2026-10-22: the Daily panel fades in and is hidden until its fade starts at a frame. On a busy machine the one
+   focus try at 60 ms came first, so Free daily email opened the panel with nothing in focus (CI, about 1 in 8 under
+   load). Here the fade starts late on purpose (as a slow phone does): the box still gets the focus once it shows. */
+test("Free daily email lands in the signup box even when the panel's fade starts late", { skip, timeout: 60000 }, async () => {
+  const srv = await serve(), base = `http://127.0.0.1:${srv.address().port}`;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { ctx } = await context(browser, 1280, 800);
+    const pg = await ctx.newPage();
+    await pg.goto(base + "/about");
+    await pg.waitForSelector("#nav-email", { state: "visible", timeout: 15000 });
+    await pg.waitForSelector("#dd-daily-panel .nav-ask input[type=email]", { state: "attached", timeout: 15000 });
+    await pg.addStyleTag({ content: "#dd-daily-panel{transition-delay:.2s!important}" });
+    await pg.click("#nav-email");
+    await pg.waitForFunction(() => document.activeElement && document.activeElement.matches("#dd-daily-panel .nav-ask input[type=email]"), null, { timeout: 5000 });
+    assert.equal(await pg.getAttribute("#dd-daily .nav-btn", "aria-expanded"), "true");
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});

@@ -123,7 +123,7 @@ test("in a browser: a framed gift gets the preview of its design and the box let
     }
     // the email's two buttons
     assert.match(html, />Approve this print<\/a>/);
-    assert.match(html, /href="mailto:sig@farmers1st\.com\?subject=Change%20to%20my%20Rain%20Print%20%28ref%20/);
+    assert.match(html, /href="mailto:sig@agsist\.com\?subject=Change%20to%20my%20Rain%20Print%20%28ref%20/);
     const href = /href="(https:\/\/agsist\.com\/rain-print-approve\?[^"]+)"/.exec(html)[1].replace(/&amp;/g, "&");
     assert.match(href, /^https:\/\/agsist\.com\/rain-print-approve\?k=rpo%3A\d+%3A[0-9a-f]{8}&t=[0-9a-f]{16}$/);
   });
@@ -184,7 +184,7 @@ test("in a browser: the approve page posts once, says approved, already approved
     await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
       const req = r.request(), h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
       if (req.method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
-      if (req.url() === "https://agsist-subs.dnilgis.workers.dev/rp-order/approve") { posts.push(JSON.parse(req.postData())); return r.fulfill({ status: answer.status, headers: h, json: answer.json }); }
+      if (req.url() === "https://agsist-api.dnilgis.workers.dev/rp-order/approve") { posts.push(JSON.parse(req.postData())); return r.fulfill({ status: answer.status, headers: h, json: answer.json }); }
       return r.abort();
     });
     const page = await ctx.newPage();
@@ -202,7 +202,7 @@ test("in a browser: the approve page posts once, says approved, already approved
     await page.goto(url);
     await page.waitForFunction(() => document.getElementById("msg").textContent !== "Approving your print");
     assert.equal(await page.textContent("#msg"), "Already approved. Thank you.");
-    assert.match(await page.textContent("#sub"), /You approved it on Wednesday, October 21\. Your files went out by email when you approved it\. Not there\? Check spam, or write to me at sig@farmers1st\.com\./);
+    assert.match(await page.textContent("#sub"), /You approved it on Wednesday, October 21\. Your files went out by email when you approved it\. Not there\? Check spam, or write to me at sig@agsist\.com\./);
     answer = { status: 403, json: { ok: false, error: "bad link" } };
     await page.goto(url);
     await page.waitForFunction(() => document.getElementById("msg").textContent !== "Approving your print");

@@ -51,6 +51,7 @@ from shapely.validation import explain_validity, make_valid
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe           # noqa: E402  (no address or watched place in the public log)
 import email_links        # noqa: E402  (k=<link id> links; never an address in one)
+import list_source        # noqa: E402  (the worker, or the private copy of its list when it is blocked)
 
 REPO = Path(__file__).resolve().parent.parent
 MESH_DIR = REPO / "data" / "hail" / "mesh"
@@ -186,11 +187,9 @@ def day_flag(day, set_it=False):
     base, token = (os.environ.get("LIST_URL") or "").strip() or None, (os.environ.get("LIST_TOKEN") or "").strip() or None
     if not (base and token):
         return False
-    u = (base.rstrip("/") + "/flag?k=alerted:" + day + "&token=" + urllib.parse.quote(token))
+    # 2026-10-22: the worker AND the private repo (scripts/list_source.py); either set = sent
     try:
-        req = urllib.request.Request(u, method="POST" if set_it else "GET", headers={"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"})
-        with urllib.request.urlopen(req, timeout=20) as r:
-            return json.loads(r.read().decode()).get("set", False)
+        return list_source.flag_set("alerted:" + day) if set_it else list_source.flag_is_set("alerted:" + day)
     except Exception as ex:
         print("flag check unavailable (" + type(ex).__name__ + ") — proceeding")
         return False
@@ -200,9 +199,7 @@ def fetch_watchers():
     base = env("LIST_URL", required=True).rstrip("/")
     token = env("LIST_TOKEN", required=True)
     u = base + "/alert-list?token=" + urllib.parse.quote(token)
-    req_ = urllib.request.Request(u, headers={"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"})
-    with urllib.request.urlopen(req_, timeout=30) as r:
-        return json.loads(r.read().decode())
+    return list_source.request("GET", u)      # the private copy when the worker is blocked
 
 
 def stop_url(w):
@@ -333,6 +330,8 @@ def main():
     port = int(env("SMTP_PORT") or "587")
     user = env("SMTP_USER", required=True)
     pw = env("SMTP_PASS", required=True)
+    if not list_source.claim("alerted:" + day):      # backup mode: the day flag is saved before the first mail
+        return 1
     sent, failed = 0, []
     ctx = ssl.create_default_context()
 
@@ -436,8 +435,8 @@ def selftest():
              "lid": email_links.SAMPLE_LID}
         m = build_email(w, "2026-07-01", 1.0, "AGSIST Hail Alerts", "alerts@example.com", None)
         h, t = m.get_body(("html",)).get_content(), m.get_body(("plain",)).get_content()
-        want = "https://w.dev/alert-unsubscribe?k=%s&t=%s" % (email_links.SAMPLE_LID, email_links.token("sec", email_links.SAMPLE_LID))
-        if want not in t or want not in h or str(m["List-Unsubscribe"]) != "<" + want + ">":
+        want = "https://agsist.com/e?a=alert-unsubscribe&k=%s&t=%s" % (email_links.SAMPLE_LID, email_links.token("sec", email_links.SAMPLE_LID))
+        if want not in t or want not in h or str(m["List-Unsubscribe"]) != "<%s>, <%s>" % (email_links.STOP_MAILTO, want):
             bad.append("stop link by link id in text, html and header")
         if [u for u in email_links.hrefs(h) if "@" in u or "%40" in u.lower()]:
             bad.append("an @ inside an href")
@@ -462,4 +461,4 @@ def selftest():
 
 
 if __name__ == "__main__":
-    sys.exit(selftest() if "--selftest" in sys.argv else main())
+    sys.exit(selftest() if "--selftest" in sys.argv else list_source.guard(main, soft=True))

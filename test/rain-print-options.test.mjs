@@ -424,7 +424,7 @@ async function mocks(c) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
   await c.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
     const u = new URL(r.request().url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev") return r.request().method() === "OPTIONS" ? r.fulfill({ status: 204, headers: h }) : r.fulfill({ status: 503, headers: h, body: "x" });
+    if (u.host === "agsist-api.dnilgis.workers.dev") return r.request().method() === "OPTIONS" ? r.fulfill({ status: 204, headers: h }) : r.fulfill({ status: 503, headers: h, body: "x" });
     if (u.host === "geocoding-api.open-meteo.com") return r.fulfill({ json: { results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] } });
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [STN] } });
@@ -476,7 +476,10 @@ test("the page: options from a link draw, the panel follows, and the URL, code, 
       assert.equal(await page.$eval("#rp-crop-plant", (e) => e.value), "2025-05-08");
       assert.equal(await page.$eval("#rp-crop-harvest", (e) => e.value), "2025-10-24");
       for (const id of ["rp-plants", "rp-ghost", "rp-frost", "rp-heat", "rp-ribbon"]) assert.ok(await page.$eval("#" + id, (e) => e.checked), id);
-      assert.ok(await page.$eval("#rp-more", (e) => e.open), "More options opens for a design that uses them");
+      // every layer is in view in the Layers card (2026-10-22): no fold to open; hottest and coldest are "included" with the stripes on
+      assert.match(await page.textContent("#rp-lcount"), /^10 in all, 8 on$/, "usual year, month normals, frost, hottest and coldest (included), stripes, crop, plants, usual-year plants; not remarkable days or history");
+      assert.ok(await page.$eval("#rp-heat-chip", (e) => e.classList.contains("rp-inc")), "hottest and coldest: included with the stripes");
+      assert.equal(await page.getAttribute('[data-crop="corn"]', "aria-pressed"), "true");
       assert.match(await page.textContent("#rp-temp-why"), /Temperatures from the same station/);
       // the URL, the code, the order's design link
       await page.waitForTimeout(700);

@@ -37,10 +37,11 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr (SES-safe From) and mask_text (no address in the log)
 
 DAILY_PATH = REPO_ROOT / "data" / "daily.json"
-ALERT_TO = "sig@farmers1st.com"
+ALERT_TO = "sig@agsist.com"
 
 
 def send(subject: str, body: str) -> bool:
@@ -170,12 +171,12 @@ def main() -> int:
     body = "\n".join(parts)
 
     if flagged:
-        subject = f"AGSIST critic flagged {len(flagged)} rule(s) — issue #{issue}"
+        subject = f"AGSIST critic flagged {len(flagged)} rule(s), issue #{issue}"
     elif rewrites:
-        subject = f"AGSIST critic applied {len(rewrites)} rewrite(s) — issue #{issue}"
+        subject = f"AGSIST critic applied {len(rewrites)} rewrite(s), issue #{issue}"
     else:
         # Avg below 8 but no individual flags
-        subject = f"AGSIST critic — average score {avg:.1f}/10 — issue #{issue}"
+        subject = f"AGSIST critic: average score {avg:.1f}/10, issue #{issue}"
 
     ok = send(subject, body)
     return 0 if ok else 1

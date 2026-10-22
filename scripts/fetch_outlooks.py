@@ -38,7 +38,7 @@ from urllib.error import HTTPError, URLError
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR   = REPO_ROOT / 'data' / 'outlooks'
-USER_AGENT = 'AGSIST-OutlookFetcher/2 (+https://agsist.com; sig@farmers1st.com)'
+USER_AGENT = 'AGSIST-OutlookFetcher/2 (+https://agsist.com; sig@agsist.com)'
 TIMEOUT_S = 30
 
 NOAA_BASE = 'https://www.cpc.ncep.noaa.gov/products/predictions/'

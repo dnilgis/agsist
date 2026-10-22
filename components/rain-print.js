@@ -923,6 +923,30 @@
     return m ? (gift ? GIFT_PREFIX : '') + 'RPS-' + m[1] : '';
   }
 
+  /* THE HASH REFERENCE (2026-10-22, after the Oct 21 worker block; BUILD-RULES
+     14: checkout never depends on the worker). A design past Stripe's 200
+     characters goes to checkout as its short-link id, which only the worker
+     can make. When the worker can't be reached, it goes as RPH-<10 letters>
+     instead (GIFT-RPH-... for this year's January gift): a hash of the full
+     design code, made here with no outside service. It names exactly one
+     design: the same code always gives the same ref, and Sig gets the full
+     code itself by the backup form (pressBackup below, Formspree) and the
+     buyer's browser keeps it until that is sent. Stripe alone can't hold
+     such a design (its payment links take nothing longer than 200
+     characters from the page), so this is the honest second copy, not a
+     cut-down code. Letters: the short ids' own (no I, L, O, U). */
+  var REF_B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+  function hashRef(code, gift) {
+    var s = String(code || ''), h1 = 0xdeadbeef ^ s.length, h2 = 0x41c6ce57 ^ s.length;
+    for (var i = 0; i < s.length; i++) { var ch = s.charCodeAt(i); h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677); }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    var out = '', a = h1 >>> 7, b = h2 >>> 7;
+    for (var k = 0; k < 5; k++) { out += REF_B32[a & 31]; a >>>= 5; }
+    for (k = 0; k < 5; k++) { out += REF_B32[b & 31]; b >>>= 5; }
+    return (gift ? GIFT_PREFIX : '') + 'RPH-' + out;
+  }
+
   /* THE ORDER RECORD (2026-10-20, Sig: a $19 payment showed in Stripe with no
      design on it; client_reference_id sits on the Checkout Session, not on
      the payment page). Every press of Pay that opens Stripe posts this to the
@@ -1717,8 +1741,8 @@
         xm = t <= cut ? ', and ordered by ' + shortDate(cut) + ' it arrives by Christmas.' : '. Ordered now, it arrives after Christmas.';
       out.push('It ships within ' + ship + ' business days after you approve it' + (xm || '.'));
     }
-    out.push(sv && sv.gift ? 'No card in a few minutes? Check spam, or write to me at sig@farmers1st.com.'
-      : by && !(sv && sv.settle) ? 'Nothing by then? Check spam, or write to me at sig@farmers1st.com.' : 'Questions? Write to me at sig@farmers1st.com.');
+    out.push(sv && sv.gift ? 'No card in a few minutes? Check spam, or write to me at sig@agsist.com.'
+      : by && !(sv && sv.settle) ? 'Nothing by then? Check spam, or write to me at sig@agsist.com.' : 'Questions? Write to me at sig@agsist.com.');
     return out;
   }
 
@@ -1786,7 +1810,7 @@
     designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, SHEET: SHEET, sheetBoxes: sheetBoxes, safeInArt: safeInArt, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
-    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, orderRecord: orderRecord, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
+    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, hashRef: hashRef, orderRecord: orderRecord, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, snowTraceRaw: snowTraceRaw, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, jpegWithDpi: jpegWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, placeShown: placeShown, missRank: missRank, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
     cropInput: cropInput, tempInput: tempInput, histInput: histInput, withoutTemp: withoutTemp, tempStationOk: tempStationOk, tempWords: tempWords, TEMP_KINDS: TEMP_KINDS, HIST_MIN: HIST_MIN, TEMP_GAP_OK: TEMP_GAP_OK, OPT_FLAGS: OPT_FLAGS };
   root.RainPrint = api;
@@ -1838,7 +1862,7 @@
   }
   var CHOICE = { digital: 'Digital file', print12x18: '13 x 19 print', framed12x18: '13 x 19 framed print' };
   var PRODUCTS = ['digital', 'print12x18', 'framed12x18'];
-  var ORDER_TO = 'sig@farmers1st.com';
+  var ORDER_TO = 'sig@agsist.com';
 
   var ST = fromParams(root.location.search);
   var EXT_WAIT = false, NORM_WAIT = false, BUY_NOTE_CODE = '', XMAS_OFF = true;
@@ -2208,18 +2232,15 @@
   // the options panel: what each switch can do for this print, and why one can't
   function syncExtrasUi() {
     var say = function (id, t) { var el = $(id); if (el) { el.textContent = t || ''; el.hidden = !t; } };
-    var tempBox = $('rp-temp-opts');
-    if (!tempBox) return;
+    if (!$('rp-temp-opts')) return;
     var noTemp = TEMP && TEMP.none;
-    tempBox.hidden = !!noTemp;
-    $('rp-crop-opts').hidden = !!noTemp;
     var stripesWhy = !noTemp && ST.ribbon && TEMP && TEMP.td ? ((extrasTemp() || {}).foot || []).filter(function (t) { return /^Temperature stripes left off/.test(t); })[0] : '';
     say('rp-temp-why', noTemp ? TEMP.none : TEMP && TEMP.tm ? (TEMP.tm.same ? 'Temperatures from the same station as the rain.' : 'Temperatures from ' + TEMP.tm.name + ', ' + TEMP.tm.words + ': the nearest station with daily highs and lows for ' + META.year + '.') +
       (stripesWhy ? ' ' + stripesWhy + '; the hottest and coldest day go in the small print instead.' : '') : '');
-    // the crop's days come from the marked days
+    STRIPES_OFF = !!stripesWhy;
     syncCropDays();
     var c = extrasCrop();
-    say('rp-crop-say', ST.crop && !c && TEMP && TEMP.td ? 'Mark the planting day and the harvest day above, then pick them here.' : c && c.stop === 'missing' ? 'The temperature record has a gap, so no stage after it is drawn.' : '');
+    say('rp-crop-say', noTemp ? 'Needs daily highs and lows: see Temps.' : cropWhy() || (!$('rp-crop').value ? 'Plants: pick corn or soybeans first.' : '') || (ST.crop && !c && TEMP && TEMP.td ? 'Mark the planting day and the harvest day above, then pick them here.' : c && c.stop === 'missing' ? 'The temperature record has a gap, so no stage after it is drawn.' : ''));
     var r2 = ST.style === 'r2', long = STATIONS.some(function (s) { var r = s.valid_daterange && s.valid_daterange[0]; return r && +r[1].slice(0, 4) - +r[0].slice(0, 4) + 1 >= HIST_MIN; });
     $('rp-hist').disabled = r2 || (!long && !!STATIONS.length);
     var full = META ? FULL_CACHE.get(META.sid) : null;
@@ -2232,18 +2253,103 @@
       b.type = 'button'; b.className = 'rp-linkbtn'; b.id = 'rp-hist-long'; b.textContent = 'Use the nearest station with ' + HIST_MIN + ' full years';
       hw.appendChild(doc.createTextNode(' ')); hw.appendChild(b);
     }
+    syncLayers();
+  }
+  /* THE LAYERS CARD (2026-10-22, Sig: yes to all six). Ten layers, each one tap on or off. A layer that can't
+     change the print right now is greyed, and its one-line reason shows in its row; tapping it says why under
+     the print. Hottest, coldest is "included" while the daily temperature stripes are on: the stripes name those
+     two days. The count says how many are on the print. */
+  var STRIPES_OFF = false;
+  var LAYER_NAME = { cmp: 'Usual year', normals: 'Month normals', records: 'Remarkable days', frost: 'Frost dates', heat: 'Hottest, coldest',
+    ribbon: 'Warmer or colder each day', crop: 'Crop', plants: 'Plants', ghost: 'Usual-year plants', hist: 'Every year behind yours' };
+  var LAYER_WHERE = { cmp: 'a usual year beside yours, the verdict upper left', normals: 'the usual total in gray under each month',
+    records: 'notes on the line: biggest snow, wettest week', frost: 'two ticks on the date line, spring and fall',
+    heat: 'one line in the small print under the chart', ribbon: 'a stripe a day under the chart, blue colder, rust warmer',
+    crop: 'stages on the ground line, by growing degree days', plants: 'little plants standing on the ground line',
+    ghost: 'gray plants from a usual year beside yours', hist: 'thin gray lines behind yours, one a year' };
+  function heatIncluded() { return !!(ST.ribbon && !(TEMP && TEMP.none) && !STRIPES_OFF); }
+  // why each layer can't change the print right now ('' when it can)
+  function layerWhy() {
+    var noT = TEMP && TEMP.none ? 'no daily highs and lows here for this year' : '', crop = $('rp-crop') ? $('rp-crop').value : '';
+    var hw = $('rp-hist-why');
+    return { cmp: '', records: '', normals: ST.cmp === 'none' ? 'needs a usual year' : '',
+      frost: noT, heat: noT || (heatIncluded() ? 'named on the daily temperature stripes already' : ''), ribbon: noT, crop: noT,
+      plants: noT || (crop ? '' : 'pick corn or soybeans first'), ghost: noT || (crop ? '' : 'pick corn or soybeans first'),
+      hist: $('rp-hist') && $('rp-hist').disabled && !$('rp-hist').getAttribute('data-gift-lock') ? ((hw && !hw.hidden && hw.firstChild ? hw.firstChild.textContent : '') || 'not for this print').replace(/\.$/, '') : '' };
+  }
+  function layerOn(k, why) {
+    if (k === 'cmp') return ST.cmp !== 'none';
+    if (k === 'crop') return !!ST.crop;
+    if (why[k]) return k === 'heat' && heatIncluded();
+    return k === 'hist' ? wantHist() : !!ST[k];
+  }
+  function syncLayers() {
+    var card = $('rp-layers');
+    if (!card) return;
+    var why = layerWhy(), n = 0;
+    ['normals', 'frost', 'heat', 'ribbon', 'plants', 'ghost'].forEach(function (k) {
+      var el = $('rp-' + k);
+      if (el && !el.getAttribute('data-gift-lock')) el.disabled = !!why[k];
+    });
+    var hc = $('rp-heat-chip');
+    if (hc) hc.classList.toggle('rp-inc', heatIncluded());
+    doc.querySelectorAll('[data-crop]').forEach(function (b) { b.setAttribute('aria-disabled', String(!!why.crop)); });
+    Object.keys(LAYER_NAME).forEach(function (k) { if (layerOn(k, why)) n++; });
+    $('rp-lcount').textContent = Object.keys(LAYER_NAME).length + ' in all, ' + n + ' on';
+    var mw = [why.normals ? 'Month normals: ' + why.normals + '.' : '', TEMP && TEMP.none ? 'Frost dates, hottest, coldest: see Temps.' : heatIncluded() ? 'Hottest, coldest: named on the daily stripes.' : ''].filter(Boolean).join(' ');
+    var m = $('rp-marks-why'); m.textContent = mw; m.hidden = !mw;
+  }
+  // the line under the print: what the last tap did, and where on the print to look
+  function layerSaid(k) {
+    var el = $('rp-say');
+    if (!el || !LAYER_NAME[k]) return;
+    var why = layerWhy(), nm = LAYER_NAME[k], on, w = why[k], where = LAYER_WHERE[k];
+    if (k === 'cmp') { on = ST.cmp !== 'none'; if (on) nm = 'Usual year: ' + (ST.cmp === 'station' ? 'this station' : '30-yr normal'); }
+    else if (k === 'crop') { var c = $('rp-crop').value; on = !!c; if (on) nm = c === 'soy' ? 'Soybeans' : 'Corn'; if (!w && on && !ST.crop) w = CROP_HAND.plant && CROP_HAND.harvest ? 'the harvest day has to come after the planting day' : 'set the planting and harvest days in the crop row'; }
+    else on = !!($('rp-' + k) && $('rp-' + k).checked);
+    if (k === 'heat' && heatIncluded()) { el.innerHTML = '<b>Hottest, coldest</b>: included, named on the daily temperature stripes.'; return; }
+    if (k === 'ribbon' && on && heatIncluded()) where += '; the hottest and coldest day are named on it';
+    el.innerHTML = w ? '<b>' + esc(nm) + '</b>: ' + esc(w) + '.' : '<b>' + esc(nm) + (k === 'cmp' && on ? '' : on ? ' on' : ' off') + '</b>' + (on ? ': ' + esc(where) + '.' : '.');
+  }
+  /* The crop days set by hand (2026-10-22: a planting day picked alone went blank again, because the
+     design drops a crop until both days are set and in order, and the boxes were filled back from the design).
+     The boxes keep what the reader set; the design takes the crop once both days make sense. Since the layout
+     of 2026-10-22 the days are set right in the crop row, any day of the print's year; a crop picked fills them
+     from marked days whose words say so. */
+  var CROP_HAND = { plant: '', harvest: '' };
+  // why a crop picked in the box is not on the print yet, in one line ('' when it is, or none is picked)
+  function cropWhy() {
+    var pick = $('rp-crop') ? $('rp-crop').value : '';
+    if (!pick || ST.crop) return '';
+    var name = pick === 'soy' ? 'Soybeans' : 'Corn';
+    if (!CROP_HAND.plant && !CROP_HAND.harvest) return name + (pick === 'soy' ? ' need' : ' needs') + ' the planting day and the harvest day: set them here.';
+    if (!CROP_HAND.plant || !CROP_HAND.harvest) return 'Set the ' + (!CROP_HAND.plant ? 'planting day' : 'harvest day') + ' too.';
+    return 'The harvest day has to come after the planting day.';
   }
   function syncCropDays() {
-    var opts = '<option value="">Pick a marked day</option>' + ST.markers.map(function (m) { return '<option value="' + esc(m.date) + '">' + esc(shortDate(m.date) + (m.label ? ', ' + m.label : '')) + '</option>'; }).join('');
-    ['rp-crop-plant', 'rp-crop-harvest'].forEach(function (id) {
-      var el = $(id); if (!el) return;
-      var v = id === 'rp-crop-plant' ? ST.cropPlant : ST.cropHarvest;
-      if (el.innerHTML !== opts) el.innerHTML = opts;
-      el.value = v && ST.markers.some(function (m) { return m.date === v; }) ? v : '';
-      el.disabled = !$('rp-crop').value;
+    if (ST.crop) CROP_HAND = { plant: ST.cropPlant, harvest: ST.cropHarvest };
+    var y = ST.year || parseInt($('rp-year').value, 10), on = !!$('rp-crop').value, lock = $('rp-crop').disabled;
+    ['plant', 'harvest'].forEach(function (k) {
+      var el = $('rp-crop-' + k), p = k === 'plant' ? 'p' : 'h', mo = $('rp-crop-' + p + 'mo'), dy = $('rp-crop-' + p + 'dy');
+      if (!el || !mo) return;
+      var v = CROP_HAND[k] && y && CROP_HAND[k].slice(0, 4) === String(y) ? CROP_HAND[k] : '', cur = cropDayOf(p, y);
+      // a month picked without its day yet stays as picked; a day set elsewhere (a link, a guess, All off) shows
+      if (v !== cur && !(v === '' && cur === '' )) { mo.value = v ? v.slice(5, 7) : ''; cropDayList(p, y); dy.value = v ? v.slice(8, 10) : ''; }
+      else cropDayList(p, y);
+      el.value = v;
+      if (!el.getAttribute('data-gift-lock')) { mo.disabled = dy.disabled = !on; }
     });
-    var on = !!$('rp-crop').value;
-    $('rp-plants').disabled = !on; $('rp-ghost').disabled = !on;
+    $('rp-cropdays').hidden = !on;
+    doc.querySelectorAll('[data-crop]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-crop') === $('rp-crop').value)); if (lock) b.disabled = true; });
+    if (!$('rp-plants').getAttribute('data-gift-lock')) { $('rp-plants').disabled = !on; $('rp-ghost').disabled = !on; }
+  }
+  // the crop's days: a month and a day from lists, in the print's year (no date box: a typed year once landed in the day)
+  function cropDayOf(p, y) { var mo = $('rp-crop-' + p + 'mo').value, dy = $('rp-crop-' + p + 'dy').value; return y && mo && dy ? y + '-' + mo + '-' + dy : ''; }
+  function cropDayList(p, y) {
+    var mo = $('rp-crop-' + p + 'mo'), sel = $('rp-crop-' + p + 'dy'), was = sel.value, n = daysIn(y, mo.value), h = '<option value="">Day</option>';
+    if (mo.options.length < 13) { var m0 = mo.value; mo.innerHTML = '<option value="">Month</option>' + MON.map(function (m, k) { return '<option value="' + String(k + 1).padStart(2, '0') + '">' + m + '</option>'; }).join(''); mo.value = m0; }
+    for (var d = 1; d <= n; d++) h += '<option value="' + String(d).padStart(2, '0') + '">' + d + '</option>';
+    if (sel.innerHTML !== h) { sel.innerHTML = h; sel.value = +was <= n ? was : ''; }
   }
   // a planting or harvest day among the marked days, by its words, for a crop just picked
   function guessCropDay(re) { var m = ST.markers.filter(function (x) { return re.test(x.label || ''); })[0]; return m ? m.date : ''; }
@@ -2275,7 +2381,7 @@
     if (root.AgRpLogo) return Promise.resolve(true);
     if (!LOGO_P) LOGO_P = new Promise(function (res) {
       var sc = doc.createElement('script');
-      sc.src = '/components/rp-logo.js?v=2';
+      sc.src = '/components/rp-logo.js?v=4';
       sc.onload = function () { res(!!root.AgRpLogo); };
       sc.onerror = function () { LOGO_P = null; res(false); };
       doc.head.appendChild(sc);
@@ -2301,13 +2407,22 @@
     syncLogoUi();
     root.AgRpLogo.load(id).then(function (got) {
       if (my !== LOGO_ASK) return;
-      LOGO.color = got; LOGO.state = 'ready';
+      LOGO.color = got; LOGO.state = 'ready'; LOGO.local = !!got.local;
       return logoInk(my).then(function () { if (my === LOGO_ASK) { syncLogoUi(); logoRedraw(); } });
     }, function (e) {
       if (my !== LOGO_ASK) return;
       LOGO.state = 'missing'; LOGO.msg = e && e.plain ? e.message : 'The logo didn\u2019t load.';
       syncLogoUi();
     });
+  }
+  var LOGO_KEPT = 'Logo added: it\u2019s on your print and saved in this browser. My logo upload is down right now, so it goes up by itself the next time you open this page here. Your order goes through as usual, and I check the logo is in before your proof; if it isn\u2019t, I\u2019ll ask you for the file.';
+  // a logo kept here while the worker was out goes up now (rp-logo.js loads only when one is waiting)
+  function logoKeptNote() { return LOGO && LOGO.local && ST.logo ? ' Logo kept in the buyer\u2019s browser while the site worker was out; it uploads on their next visit here, or ask them for the file.' : ''; }
+  function logoFlush() {
+    var w = '';
+    try { w = root.localStorage.getItem('agsist-rp-logo-wait') || ''; } catch (e) { w = ''; }
+    if (!w || w === '[]') return;
+    logoReady().then(function (ok) { if (ok && root.AgRpLogo.flushWaiting) root.AgRpLogo.flushWaiting().then(function () { if (LOGO && LOGO.local) syncLogoUi(); }); });
   }
   function logoMsg(t, bad) { var el = $('rp-logo-msg'); if (!el) return; el.textContent = t || ''; el.classList.toggle('rp-bad', !!bad); }
   function syncLogoUi() {
@@ -2328,6 +2443,7 @@
     // the quality check, in words: under about 200 pixels an inch at its printed size it may print soft
     var c = LOGO.color, A = root.AgRpLogo, sz = root.AgRainArt.logoSize(ST.style, c.w / c.h);
     var soft = A && A.ppi(c.w, c.h, sz.w, sz.h) < LOGO_PPI;
+    if (LOGO.local && A && A.isWaiting(LOGO.id)) return logoMsg(LOGO_KEPT + (soft ? ' It is small and may print soft; a bigger file prints better.' : ''), false);
     logoMsg(soft ? 'This logo is small and may print soft. If you have a bigger file, use that; I\u2019ll also check it in your proof.' : 'Logo added. It prints about ' + (sz.h / 100).toFixed(1) + ' in tall, next to the name.', false);
   }
   function pickLogo(file) {
@@ -2352,6 +2468,18 @@
           ST.logo = id;
           syncLogoUi(); logoRedraw();
           ga('rain_print_logo', { result: 'ok', kind: kind });
+        }, function (e) {
+          /* The worker out (2026-10-22): the logo stays on the print, kept in
+             this browser under its own id, and goes up on a later visit. */
+          if (!(e && e.offline) || !A.keepLocal) throw e;
+          return A.keepLocal(p.blob).then(function (id) {
+            if (my !== LOGO_ASK) return;
+            LOGO.id = id; LOGO.state = 'ready'; LOGO.local = true;
+            A.remember(id, LOGO.color);
+            ST.logo = id;
+            syncLogoUi(); logoRedraw();
+            ga('rain_print_logo', { result: 'kept', kind: kind });
+          }, function () { throw e; });
         });
       });
     }).catch(function (e) {
@@ -2434,7 +2562,7 @@
     if (!art.querySelector('.rp-ex')) art.innerHTML = '<p class="rp-placeholder">Drawing a year of rain near you\u2026</p>';
     setTimeout(fall, WHERE_MS);
     try {
-      fetch('https://agsist-subs.dnilgis.workers.dev/where', { credentials: 'omit' }).then(function (r) { return r.json(); }).then(function (j) {
+      fetch('https://agsist-api.dnilgis.workers.dev/where', { credentials: 'omit' }).then(function (r) { return r.json(); }).then(function (j) {
         if (done) return;
         var town = j && j.ok && j.city && /^[A-Z]{2}$/.test(j.region_code || '') ? cleanText(j.city + ', ' + j.region_code, LIMITS.place) : '';
         if (!town || mine()) return fall();
@@ -2492,7 +2620,7 @@
     // layout and palette are not on the page any more; they ride along so an old link keeps its code
     return normalize({ place: $('rp-place').value, year: y, station: ST.station,
       layout: ST.layout, palette: ST.palette, size: '12x18', style: pick('rp-style', 'r1'),
-      cmp: $('rp-cmp').value, name: $('rp-name').value, dedication: $('rp-ded').value, markers: markers,
+      cmp: pick('rp-cmp', 'normal'), name: $('rp-name').value, dedication: $('rp-ded').value, markers: markers,
       normals: $('rp-normals').checked, records: $('rp-records').checked,
       crop: $('rp-crop').value, cropPlant: $('rp-crop-plant').value, cropHarvest: $('rp-crop-harvest').value, plants: $('rp-plants').checked, ghost: $('rp-ghost').checked,
       hist: $('rp-hist').checked, frost: $('rp-frost').checked, heat: $('rp-heat').checked, ribbon: $('rp-ribbon').checked,
@@ -2515,12 +2643,13 @@
     if (!sel.querySelector('option[value="' + yr + '"]')) { var o = doc.createElement('option'); o.value = yr; o.textContent = yr; sel.insertBefore(o, sel.firstChild); }
     sel.value = String(yr);
     radios('rp-style').forEach(function (r) { r.checked = r.value === s.style; });
-    $('rp-cmp').value = s.cmp;
+    radios('rp-cmp').forEach(function (r) { r.checked = r.value === s.cmp; });
     $('rp-name').value = s.name;
     $('rp-ded').value = s.dedication;
     $('rp-normals').checked = s.normals;
     $('rp-records').checked = s.records;
-    $('rp-crop').value = s.crop; $('rp-plants').checked = s.plants; $('rp-ghost').checked = s.ghost;
+    $('rp-crop').value = s.crop; if (s === ST) CROP_HAND = { plant: s.cropPlant || '', harvest: s.cropHarvest || '' };
+    $('rp-plants').checked = s.plants; $('rp-ghost').checked = s.ghost;
     $('rp-hist').checked = s.hist; $('rp-frost').checked = s.frost; $('rp-heat').checked = s.heat; $('rp-ribbon').checked = s.ribbon;
     for (var i = 1; i <= LIMITS.markers; i++) {
       var m = s.markers[i - 1];
@@ -2531,8 +2660,6 @@
     }
     syncRows();
     syncYearNote();
-    // a design that uses the folded options opens them, so nothing on the print is out of sight
-    if (s.records || s.logo || s.cmp === 'station' || (s.cmp === 'none' && s.normals) || s.crop || s.hist || s.ribbon) $('rp-more').open = true;
     if (s === ST) syncCropDays();
     radios('rp-logo-ink').forEach(function (r) { r.checked = r.value === (s.logoInk ? '1' : '0'); });
     if (s === ST) wantLogo();
@@ -3685,7 +3812,7 @@
      ticked. The worker (v5.43, POST /rp-remind) keeps the design code and
      starts the email job: the link now, and one reminder the next day unless
      a paid order matches it, then nothing. A changed design can be sent again. */
-  var REMIND_URL = 'https://agsist-subs.dnilgis.workers.dev/rp-remind', MAILME = { code: '', busy: false };
+  var REMIND_URL = 'https://agsist-api.dnilgis.workers.dev/rp-remind', MAILME = { code: '', busy: false };
   function syncMailme(on) {
     var w = $('rp-mailme');
     if (!w) return;
@@ -3709,11 +3836,36 @@
     MAILME.busy = true; $('rp-mailme-go').disabled = true; out.textContent = 'Sending\u2026';
     root.fetch(REMIND_URL, { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: em, code: code, ref: checkoutRef(code, false, shortHit()), daily: daily, source: 'page:rain-print', _gotcha: $('rp-mailme-hp').value }) })
-      .then(function (r) { return r.json().then(function (j) { return r.ok && j && j.ok === true; }, function () { return false; }); }, function () { return false; })
+      .then(function (r) {
+        return r.json().then(function (j) { return r.ok && j && j.ok === true ? true : r.status === 429 || r.status >= 500 ? 'down' : false; },
+          function () { return 'down'; });
+      }, function () { return 'down'; })
+      .then(function (ok) {
+        /* THE WORKER DOWN (2026-10-22): the request goes to Sig by the backup
+           form instead (the address and the design link only, like a signup
+           while the worker is blocked), and he sends it when the worker is
+           back (notes: restore checklist). A refusal the worker means stays
+           a refusal. */
+        if (ok !== 'down' || !root.agsistFormPost || !root.agsistFormPost.formspree) return ok === true;
+        var q = SITE + '?d=' + code;
+        return root.agsistFormPost.formspree({ _subject: 'Rain Print: email me this design (worker down)', form: 'rain-print-remind', email: em,
+          design_url: q, daily: daily ? 'yes' : 'no', page: '/rain-print', at: new Date().toISOString(),
+          note: 'Not sent yet. When the worker is back, open the design link and send it with Email me this design.' })
+          .then(function () { return 'kept'; }, function () { return false; });
+      })
       .then(function (ok) {
         MAILME.busy = false; $('rp-mailme-go').disabled = false;
         // the mail service not answering (2026-10-21: the worker's address was blocked for a day): nothing sent, and a way to keep the design meanwhile
         if (!ok) { out.textContent = 'That didn\u2019t go through, so nothing was sent. Copy link keeps this design as it is; try the email again later.'; return; }
+        if (ok === 'kept') {
+          MAILME.code = code;
+          $('rp-mailme-form').hidden = true;
+          $('rp-mailme-open').setAttribute('aria-expanded', 'false');
+          $('rp-mailme-open').parentNode.hidden = true;
+          out.textContent = 'Saved. It will go through when our system is back; nothing else to do.';
+          ga('rain_print_design_email', { daily: daily ? 1 : 0, kept: 1 });
+          return;
+        }
         MAILME.code = code;
         $('rp-mailme-form').hidden = true;
         $('rp-mailme-open').setAttribute('aria-expanded', 'false');
@@ -3780,14 +3932,74 @@
   /* The order record (orderRecord above) goes to the subs worker before
      Stripe opens. Fail-soft: whatever the worker answers, or after
      PRESS_WAIT_MS with no answer, checkout opens anyway. */
-  var ORDER_URL = 'https://agsist-subs.dnilgis.workers.dev/rp-order', PRESS_WAIT_MS = 2000, PRESS_BUSY = false;
+  var ORDER_URL = 'https://agsist-api.dnilgis.workers.dev/rp-order', PRESS_WAIT_MS = 2000, PRESS_BUSY = false;
+  /* The worker out (2026-10-22, BUILD-RULES 14): a design Stripe holds in
+     full (its own code as the ref) needs nothing more; the webhook or the
+     poll makes the record from Stripe once the worker is back. A hash ref
+     (RPH-, hashRef above) is all Stripe gets of a long design, so the record
+     also goes to Sig by the backup form, BACKUP_WAIT_MS at most before
+     checkout opens; until it is sent it waits in this browser (the outbox). */
+  var BACKUP_WAIT_MS = 3000;
   function pressPost(rec) {
     return new Promise(function (done) {
-      var t = root.setTimeout(done, PRESS_WAIT_MS), end = function () { root.clearTimeout(t); done(); };
+      var t = root.setTimeout(function () { end(false); }, PRESS_WAIT_MS), over = false;
+      function end(ok) {
+        if (over) return;
+        over = true; root.clearTimeout(t);
+        if (ok || !/^(GIFT-)?RPH-/.test(rec.ref)) return done();
+        pressBackup(rec).then(done);
+      }
       try {
-        root.fetch(ORDER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rec) }).then(end, end);
-      } catch (e) { end(); }
+        root.fetch(ORDER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rec) })
+          .then(function (r) { end(!!(r && r.ok)); }, function () { end(false); });
+      } catch (e) { end(false); }
     });
+  }
+  function pressBackup(rec) {
+    var f = { _subject: 'Rain Print order record ' + rec.ref + ' (the site worker didn\u2019t answer)', form: 'rain-print-press',
+      ref: rec.ref, product: rec.product, price: rec.price == null ? '' : String(rec.price), design_code: encodeCode(ST), design_url: rec.design_url,
+      place: rec.place, year: String(rec.year || ''), name: rec.name, markers: rec.markers, dedication: rec.dedication, gift: rec.gift ? 'yes' : 'no',
+      logo: ST.logo || '', logo_note: logoKeptNote().trim(), at: new Date().toISOString() };
+    var id = outboxAdd({ to: 'formspree', fields: f });
+    return new Promise(function (done) {
+      var t = root.setTimeout(done, BACKUP_WAIT_MS);
+      outboxSend({ to: 'formspree', fields: f }).then(function (sent) { if (sent) outboxDrop(id); root.clearTimeout(t); done(); });
+    });
+  }
+  /* THE OUTBOX (2026-10-22): what this browser still owes Sig after a worker
+     or form failure: a long design's order record, or a gift's details when
+     neither the worker nor the backup form took them. Each goes again on the
+     next visit to this page (the way back from Stripe is one), until sent;
+     a month old, it is dropped. Nothing about the buyer but what the gift
+     post itself carries (their own name and email, for the proof). */
+  var OUTBOX_KEY = 'agsist-rp-outbox', OUTBOX_DAYS = 30;
+  function outbox() {
+    var a = null;
+    try { a = JSON.parse(root.localStorage.getItem(OUTBOX_KEY) || '[]'); } catch (e) { a = []; }
+    return (Array.isArray(a) ? a : []).filter(function (x) { return x && x.id && x.fields && Date.now() - (x.t || 0) < OUTBOX_DAYS * 86400000; });
+  }
+  function outboxPut(a) { try { if (a.length) root.localStorage.setItem(OUTBOX_KEY, JSON.stringify(a)); else root.localStorage.removeItem(OUTBOX_KEY); } catch (e) {} }
+  function outboxAdd(x) {
+    var id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    outboxPut(outbox().concat([Object.assign({ id: id, t: Date.now() }, x)]).slice(-20));
+    return id;
+  }
+  function outboxDrop(id) { outboxPut(outbox().filter(function (x) { return x.id !== id; })); }
+  // -> Promise of true once the worker's form or Formspree has it
+  function outboxSend(x) {
+    var send = root.agsistFormPost;
+    if (!send) return Promise.resolve(false);
+    var p = x.to === 'form' ? send(x.kind, x.data, x.fields, { workerMs: 4000 }) : send.formspree ? send.formspree(x.fields) : Promise.reject(new Error('no backup'));
+    return p.then(function () { return true; }, function () { return false; });
+  }
+  var OUTBOX_BUSY = false;
+  function outboxFlush() {
+    if (OUTBOX_BUSY) return;
+    var a = outbox();
+    if (!a.length) { outboxPut(a); return; }
+    OUTBOX_BUSY = true;
+    a.reduce(function (p, x) { return p.then(function () { return outboxSend(x).then(function (ok) { if (ok) outboxDrop(x.id); }); }); }, Promise.resolve())
+      .then(function () { OUTBOX_BUSY = false; }, function () { OUTBOX_BUSY = false; });
   }
   /* What the buyer ordered, kept in this tab (and this browser) for the page
      Stripe sends them back to, and for Back. The design is in the address bar
@@ -3857,7 +4069,7 @@
   }
   function showPaid(p, sv, fire) {
     var box = $('rp-paid'), lines = paidText({ choice: p.choice, today: TODAY, prices: PRICES, saved: sv });
-    box.innerHTML = '<h2>Paid. Thank you.</h2>' + lines.map(function (t) { return '<p>' + esc(t).replace('sig@farmers1st.com', '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>') + '</p>'; }).join('') +
+    box.innerHTML = '<h2>Paid. Thank you.</h2>' + lines.map(function (t) { return '<p>' + esc(t).replace('sig@agsist.com', '<a href="mailto:sig@agsist.com">sig@agsist.com</a>') + '</p>'; }).join('') +
       // more than one (2026-10-16): one for each of the kids, or the home farm and the rented ground
       '<p>One for each of the kids, or for the home farm and the rented ground? Each is its own order, with its own proof.</p>' +
       (sv ? '<p><button type="button" class="btn btn-primary rp-paid-other" id="rp-paid-other">Make another for someone else</button></p>' : '') +
@@ -3894,6 +4106,7 @@
      (RPS-<id>), made now, at the press, once (never on a redraw). If the link
      service fails, or a product has no payment link, the order form takes the
      order with the full design code. */
+  var MINT_WAIT_MS = 4000, GIFT_KEPT = {};
   function pay(opts) {
     var id = PICK;
     proofSay('');
@@ -3918,10 +4131,14 @@
        Sig an order he can't open (2026-10-15). */
     if (link && long && !(opts && opts.minted) && root.AgRpShort && root.AgRpShort.mint) {
       proofSay('Opening checkout\u2026', true);
-      root.AgRpShort.mint(encodeCode(artDesign()), { fresh: true }).then(function (hit) { pay({ minted: true, ok: !!hit }); });
+      // 4 s at most (2026-10-22): past that, or on any failure, the hash ref below
+      root.AgRpShort.mint(encodeCode(artDesign()), { fresh: true, timeout: MINT_WAIT_MS }).then(function (hit) { pay({ minted: true, ok: !!hit }); });
       return;
     }
-    var code = link && long && !(opts && opts.ok) ? '' : refFor();
+    /* No short id (the worker failed, was slow, or rp-short.js didn't load): the
+       hash ref, and the full design goes by the backup form (pressPost). Never
+       the order form for want of a worker (BUILD-RULES 14, 2026-10-22). */
+    var code = !link ? '' : long && !(opts && opts.ok) ? hashRef(encodeCode(ST), ST.gift) : (refFor() || hashRef(encodeCode(ST), ST.gift));
     // a gift goes to Sig first, then to checkout; if it can't be saved, the buyer stays here and is told
     if (gift && link && code && !(opts && opts.giftSent)) {
       var g = pgOrder(code).x, send = root.agsistFormPost;
@@ -3929,12 +4146,15 @@
       var btn = $('rp-proof-order');
       proofSay('Saving the gift details\u2026', true);
       btn.disabled = true;
-      (send ? send('rain-print-order', g, fs) : Promise.reject(new Error('no form helper'))).then(function () {
+      (send ? send('rain-print-order', g, fs, { workerMs: 4000 }) : Promise.reject(new Error('no form helper'))).then(function () {
         btn.disabled = false;
+        if (GIFT_KEPT[code]) { outboxDrop(GIFT_KEPT[code]); delete GIFT_KEPT[code]; }
         pay({ minted: opts && opts.minted, ok: opts && opts.ok, giftSent: true });
       }, function () {
         btn.disabled = false;
         ga('rain_print_gift_save', { result: 'fail', choice: id });
+        // kept in this browser and sent on the next visit (the way back from Stripe), whichever way the buyer goes now
+        if (!GIFT_KEPT[code]) GIFT_KEPT[code] = outboxAdd({ to: 'form', kind: 'rain-print-order', data: g, fields: fs });
         var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
         proofSay('The gift details didn\u2019t save just now. Tap Pay to try again, or <a href="' + esc(u) + '">go to checkout</a> and write their name and your note to ' + ORDER_TO + '.', true);
       });
@@ -3969,7 +4189,8 @@
   function noteInView(note) {
     try {
       var r = note.getBoundingClientRect(), h = root.innerHeight || doc.documentElement.clientHeight;
-      if (r.top < 0 || r.bottom > h) note.scrollIntoView({ behavior: smooth(), block: 'center' });
+      // with the print pinned on a phone the room below it is short: the note comes into view at once, not after a glide
+      if (r.top < 0 || r.bottom > h) note.scrollIntoView({ behavior: pinnedBottom() ? 'instant' : smooth(), block: 'center' });
     } catch (err) {}
   }
   /* The line by the print while it isn't the one in the boxes: a draw on its
@@ -4002,12 +4223,23 @@
      and year from the design, and its name when it has one: what the print
      itself shows) and takes the mark off when the link can't be drawn. Once the
      reader draws another town, year or name, the line says so and links back. */
+  var PART = false;
+  try { PART = new URLSearchParams(root.location.search).get('part') === '1'; } catch (e) { PART = false; }
   var FROM_LINK = doc.documentElement.classList.contains('rp-from-link'), SHARED = null, SHARED_SEEN = false, SHARED_URL = root.location.href;
   function sharedOff() {
     if (!FROM_LINK) return;
     FROM_LINK = false;
     doc.documentElement.classList.remove('rp-from-link');
+    // a design link that can't be drawn opens as an ordinary visit, unless the link also names a place
+    try { if (!(new URLSearchParams(root.location.search).get('place') || '').trim()) doc.documentElement.classList.remove('rp-tool-first'); } catch (e) {}
   }
+  /* A link with a place opens on the tool (2026-10-22, Sig): the headline and photo move under it, but the one tap
+     to last year by Christmas ("Make it 2025, by Christmas", shown for a drawn current year) stays on the first
+     screen, over the print. */
+  if (doc.documentElement.classList.contains('rp-tool-first')) (function () {
+    var x = $('rp-xmas-alt'), flow = doc.querySelector('.rp-flow');
+    if (x && flow && flow.parentNode) flow.parentNode.insertBefore(x, flow);
+  })();
   function sharedSet(s) {
     if (!FROM_LINK || !s || !s.place || !s.year) return;
     SHARED = { place: s.place, year: s.year, name: s.name || '' };
@@ -4021,6 +4253,17 @@
     var t = $('rp-shared-t'), h = same ? 'Shared with you: <b>' + what + '</b>' + nm : 'Shared with you: <a href="' + esc(SHARED_URL) + '">' + what + '</a>' + nm + '. The print here is yours now.';
     if (t.innerHTML !== h) t.innerHTML = h;
     $('rp-shared-own').hidden = !same;
+    /* A QR opened while the link service was down (r.html, ?part=1): the sealed copy carries no
+       name, dedication, marked days or logo (scripts/build_rp_sealed.mjs), so say so, once, plainly. */
+    if (PART && !$('rp-shared-part')) {
+      var pe = doc.createElement('p');
+      pe.id = 'rp-shared-part'; pe.className = 'rp-shared-part';
+      pe.style.cssText = 'margin:.35rem 0 0;font-size:var(--fs-sm);color:var(--text-dim,inherit)';
+      pe.textContent = 'Your name and message show when our system is back.';
+      var sh = $('rp-shared');
+      if (sh && sh.parentNode) sh.parentNode.insertBefore(pe, sh.nextSibling);
+    }
+    if ($('rp-shared-part')) $('rp-shared-part').hidden = !same;
   }
   function syncBar() {
     syncShared();
@@ -4054,10 +4297,29 @@
     }
     if (on && MINI_DIRTY) miniSoon();
     if (on) $('rp-strip-t').textContent = (META ? META.place : ST.place) + ', ' + ST.year;
-    if (st.hidden === on) {
-      st.hidden = !on;
-      doc.documentElement.style.scrollPaddingTop = on ? Math.round(nav + st.offsetHeight + 12) + 'px' : '';
-    }
+    if (st.hidden === on) st.hidden = !on;
+    /* a jump to a box or a chip lands below what is pinned: the slim copy, or (since 2026-10-22) the print itself,
+       which stays pinned under the menu on a phone while the steps scroll */
+    var pin = pinnedBottom(nav), pad = on ? Math.round(nav + st.offsetHeight + 12) + 'px' : pin ? Math.round(pin + 8) + 'px' : '';
+    if (doc.documentElement.style.scrollPaddingTop !== pad) doc.documentElement.style.scrollPaddingTop = pad;
+  }
+  // where the print pinned under the menu ends on a phone (0 when it isn't pinned: a laptop, or a box has the keyboard)
+  function pinnedBottom(nav) {
+    var pv = $('rp-pv');
+    if (!pv || !phone()) return 0;
+    try { if (root.getComputedStyle(pv).position !== 'sticky') return 0; } catch (e) { return 0; }
+    return (nav === undefined ? navBottom() : nav) + pv.offsetHeight;
+  }
+  // the pinned print grows and shrinks (a line under it, the video's buttons): the padding follows it
+  try { if (root.ResizeObserver && $('rp-pv')) new root.ResizeObserver(function () { syncStrip(); }).observe($('rp-pv')); } catch (e) {}
+  // a switch or button reached by Tab or a jump never sits under the pinned print
+  function keepClearOfPin(el) {
+    var lim = pinnedBottom(), pv = $('rp-pv');
+    if (!lim || !el || !el.getBoundingClientRect || (pv && pv.contains(el))) return;
+    // keyboard focus only: a tap focuses on the way down, and moving the page then would lose the tap
+    try { if (!el.matches(':focus-visible')) return; } catch (e) { return; }
+    var r = el.getBoundingClientRect();
+    if (r.top < lim + 4 && r.bottom > 0) try { root.scrollBy({ top: r.top - lim - 8, behavior: 'instant' }); } catch (e) {}
   }
   /* A box the reader just put the keyboard in never sits under the pinned
      copy. Only from the focus handler, never from the scroll: the town box
@@ -4103,6 +4365,7 @@
   function logoWords() {
     if (!LOGO || LOGO.state === 'missing') return 'added, but it didn\u2019t load here; I\u2019ll check it in your proof';
     if (LOGO.state === 'saving') return 'still saving';
+    if (LOGO.local && root.AgRpLogo && root.AgRpLogo.isWaiting(LOGO.id)) return 'added, ' + (ST.logoInk ? 'in the print\u2019s ink color' : 'in its own colors') + '; saved in this browser, it goes up to me on your next visit here';
     return 'added, ' + (ST.logoInk ? 'in the print\u2019s ink color' : 'in its own colors');
   }
   function syncSummary() {
@@ -4188,7 +4451,7 @@
     pgSync();
   }
   /* RIGHT ABOVE PAY (2026-10-17, panels): who the next email comes from and
-     when, so a proof from a farmers1st.com address isn't taken for spam, and a
+     when, so a proof email from Sig isn't taken for spam, and a
      design of this year says it arrives in January before anyone pays. The
      Christmas date on each card holds only if the proof is OK'd the day it
      comes; this says what happens when it isn't. */
@@ -4267,7 +4530,7 @@
     // the worker keeps known fields only, so the checkout and the proof tick ride in the notes
     x.notes = ('Paying now at Stripe checkout' + (ref ? ', reference ' + ref : '') + '. Gift details from the review sheet; no payment link needed.' +
       (x.gift_january ? ' Make it after January 1, once the full year is in.' : '') +
-      (PROOF_OK === encodeCode(ST) ? ' Proof checked on the page: yes.' : ' Proof checked on the page: no.')).slice(0, 2000);
+      (PROOF_OK === encodeCode(ST) ? ' Proof checked on the page: yes.' : ' Proof checked on the page: no.') + logoKeptNote()).slice(0, 2000);
     var bad = !x.gift_to ? ['rp-pg-to', 'Say who the gift is for, or untick \u201cThis is a gift\u201d.']
       : !file && !stripeShips && x.address.length < 10 ? ['rp-pg-addr', theirs ? 'Add their address for the print.' : 'Add your address for the print.']
       : file && theirs && !EMAIL_RE.test(x.gift_email) ? ['rp-pg-email', 'Add their email for the file, or choose Me under Send it to.']
@@ -4398,7 +4661,7 @@
       (x.address ? '\nShip to:\n' + x.address : '') + (x.notes ? '\nNotes: ' + x.notes : '') +
       '\nDesign code: ' + x.design_code + '\nDesign: ' + x.design_url + (x.logo ? '\nLogo: ' + LOGO_LINK + x.logo : '') + '\n';
   }
-  var LOGO_LINK = 'https://agsist-subs.dnilgis.workers.dev/rp-logo/';
+  var LOGO_LINK = 'https://agsist-api.dnilgis.workers.dev/rp-logo/';
   var sending = false;
   function submitOrder(e) {
     e.preventDefault();
@@ -4645,9 +4908,11 @@
     var btn = $('rb-submit'), was = btn.textContent;
     bizSending = true; btn.disabled = true; btn.textContent = 'Sending…'; out.innerHTML = '';
     var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
-    send('rain-print-business', data, fs).then(function () {
-      ga('rain_print_business', { result: 'ok', product: x.product, qty: qn });
-      out.innerHTML = '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll write to ' + esc(x.email) + ' within 1 business day with a quote, then a proof sheet.</p>' +
+    send('rain-print-business', data, fs).then(function (r) {
+      ga('rain_print_business', { result: r && r.queued ? 'kept' : 'ok', product: x.product, qty: qn });
+      // the worker down: kept in this browser (form-post.js, components/outbox.js), never sent anywhere else
+      out.innerHTML = r && r.queued ? '<div class="rp-msg rp-ok" tabindex="-1">' + '<p><b>Saved on this device, not sent yet.</b> Our system is down. Your request and your list stay here and go to me the next time you open agsist.com on this device after it is back; nothing else to do.</p>' +
+        '<p>To get your quote sooner, call or text <a href="tel:+17157972428">715-797-2428</a>. Your list never goes anywhere but to me.</p>' + '</div>' : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll write to ' + esc(x.email) + ' within 1 business day with a quote, then a proof sheet.</p>' +
         '<p>Nothing is printed or charged until you OK both.</p></div>';
       $('rb-form').reset(); syncBizShip(); syncBizTier();
       BIZ_LOGO_ASK++; BIZ_LOGO = null; syncBizLogo(); bizLogoMsg('');
@@ -4830,7 +5095,8 @@
     var NO_LOGO = {}, LOST = {};
     var go = function (f) { return gate.then(function () { if (kind !== 'preview' && !own) throw NO_QR; return logoGate(); }).then(function (ok) { return extrasGate().then(function () { return ok; }); }).then(function (ok) { if (!ok) throw NO_LOGO; if (kind !== 'preview' && lostMsg()) throw LOST; return f(); }); };
     if (fmt === 'svg') {
-      job = go(function () { return fontCss(); }).then(function (css) { return new Blob([buildSvg({ fontCss: css, px: ['18in', '12in'], qrMatrix: own })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return qrNote('SVG saved.'); });
+      // the page's fonts in first, as for the PNG and PDF: the art measures its words with them
+      job = go(function () { return fontsReady().then(fontCss); }).then(function (css) { return new Blob([buildSvg({ fontCss: css, px: ['18in', '12in'], qrMatrix: own })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return qrNote('SVG saved.'); });
     } else {
       job = go(function () { return drawCanvas(kind, own); }).then(function (c) {
         /* the digital file's PDF is the art alone, 12 x 18 in, landscape (it fits a 12 x 18 frame); a print's is the 13 x 19 sheet */
@@ -4989,6 +5255,8 @@
      link comes in as it was made. */
   if (!ST.place) { ST.cmp = 'normal'; ST.normals = true; ST.records = true; ST.frost = true; ST.heat = true; SHOW_EX = !PAID; }
   writeInputs(ST);
+  // what this browser still owes Sig from a press while the worker was out (the outbox, a kept logo) goes now
+  root.setTimeout(function () { outboxFlush(); logoFlush(); }, 1500);
   doc.querySelectorAll('.rp-cy').forEach(function (el) { el.textContent = String(CURRENT_YEAR); });
   // the Christmas lines read right from October 1 through December 25 only
   XMAS_OFF = parseInt(TODAY.slice(5, 7), 10) < 10 || TODAY.slice(5) > '12-25';
@@ -5088,25 +5356,64 @@
   // Canada: mm or inches, English or French (the choice rides in the design)
   radios('rp-units').forEach(function (r) { r.addEventListener('change', function () { ST.units = r.value; restyle(); syncCa(); ga('rain_print_units', { units: r.value }); }); });
   radios('rp-lang').forEach(function (r) { r.addEventListener('change', function () { ST.lang = r.value; restyle(); syncCa(); if (DATA && !BLOCKED) { render(); drawnStatus(); } ga('rain_print_lang', { lang: r.value }); }); });
-  // the normals are NOAA's 30-year normal: showing them makes that the comparison, and another comparison turns them off
-  $('rp-normals').addEventListener('change', function () { if ($('rp-normals').checked) $('rp-cmp').value = 'normal'; restyle(); });
-  $('rp-cmp').addEventListener('change', function () { if ($('rp-cmp').value !== 'normal') $('rp-normals').checked = false; restyle(); });
+  /* The usual year is one switch of three (2026-10-22, Sig: "Show the 30-year normals" and "Compare with" were one
+     thing as two controls). Month normals is the usual month total under each month: it goes with either usual year
+     and is greyed while the switch is Off. */
+  $('rp-normals').addEventListener('change', function () { restyle(); });
+  radios('rp-cmp').forEach(function (r) { r.addEventListener('change', function () { restyle(); }); });
   $('rp-records').addEventListener('change', function () { restyle(); });
   /* The 2026-10-17 options. A crop picked fills its days from marked days whose words say so (Planted,
      Harvest); the temperature switches read the temperature station the first time one is on; the history
      threads change the station (the nearest with 30 full years), so they draw the year again. */
-  $('rp-crop').addEventListener('change', function () {
+  function cropPicked() {
     if ($('rp-crop').value) {
-      if (!$('rp-crop-plant').value) ST.cropPlant = guessCropDay(/plant|seed/i);
-      if (!$('rp-crop-harvest').value) ST.cropHarvest = guessCropDay(/harvest|combin/i);
-      ST.crop = $('rp-crop').value; syncCropDays();
+      if (!CROP_HAND.plant) CROP_HAND.plant = guessCropDay(/plant|seed/i);
+      if (!CROP_HAND.harvest) CROP_HAND.harvest = guessCropDay(/harvest|combin/i);
     }
     syncCropDays(); restyle(); extrasLoad(reqToken);
+  }
+  doc.querySelectorAll('[data-crop]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (b.disabled || b.getAttribute('aria-disabled') === 'true') return;
+      $('rp-crop').value = $('rp-crop').value === b.getAttribute('data-crop') ? '' : b.getAttribute('data-crop');
+      cropPicked();
+      layerSaid('crop');
+    });
+  });
+  ['rp-crop-pmo', 'rp-crop-pdy', 'rp-crop-hmo', 'rp-crop-hdy'].forEach(function (id) {
+    $(id).addEventListener('change', function () {
+      var p = id.charAt(8), k = p === 'p' ? 'plant' : 'harvest', y = ST.year || parseInt($('rp-year').value, 10);
+      cropDayList(p, y);
+      CROP_HAND[k] = $('rp-crop-' + k).value = cropDayOf(p, y);
+      restyle(); extrasLoad(reqToken);
+    });
   });
   ['rp-crop-plant', 'rp-crop-harvest', 'rp-plants', 'rp-ghost', 'rp-frost', 'rp-heat', 'rp-ribbon'].forEach(function (id) {
     $(id).addEventListener('change', function () { restyle(); extrasLoad(reqToken); });
   });
   $('rp-hist').addEventListener('change', histStation);
+  $('rp-layers').addEventListener('change', function (ev) {
+    var t = ev.target, k = t.name === 'rp-cmp' ? 'cmp' : String(t.id || '').replace(/^rp-/, '');
+    if (/^crop-/.test(k)) k = 'crop';
+    syncLayers(); layerSaid(k);
+  });
+  // a greyed chip passes the tap to its label (its box takes no clicks while disabled), which says why
+  $('rp-layers').addEventListener('click', function (ev) {
+    var c = ev.target && ev.target.closest ? ev.target.closest('.rp-chip') : null, i = c && c.querySelector('input');
+    if (i && i.disabled && !i.getAttribute('data-gift-lock')) layerSaid(i.id.replace(/^rp-/, ''));
+    else if (c && c.getAttribute('data-crop') && c.getAttribute('aria-disabled') === 'true') layerSaid('crop');
+  });
+  $('rp-alloff').addEventListener('click', function () {
+    var free = function (el) { return el && !el.disabled && !el.getAttribute('data-gift-lock'); }, hist = free($('rp-hist')) && $('rp-hist').checked;
+    radios('rp-cmp').forEach(function (r) { if (!r.disabled) r.checked = r.value === 'none'; });
+    ['rp-normals', 'rp-records', 'rp-frost', 'rp-heat', 'rp-ribbon', 'rp-plants', 'rp-ghost', 'rp-hist'].forEach(function (id) { var el = $(id); if (el && !el.getAttribute('data-gift-lock')) el.checked = false; });
+    if (!$('rp-crop').getAttribute('data-gift-lock')) $('rp-crop').value = '';
+    syncCropDays();
+    if (hist) histStation(); else { restyle(); extrasLoad(reqToken); }
+    syncLayers();
+    $('rp-say').innerHTML = '<b>All layers off</b>: just your year.';
+    ga('rain_print_layers_off', {});
+  });
   /* The threads change the station (the nearest with HIST_MIN full years), so the year is drawn again:
      the reader's own, the town in the box when the sample is up (2026-10-21, Sig: Chetek 2025 on the
      sample stayed on a gauge with 0 full years and said "Pick the nearest station again"), or the sample
@@ -5319,8 +5626,8 @@
   });
   doc.addEventListener('click', function (ev) {
     var t = ev.target;
-    // the station box is under More options: open it first
-    if (t && t.id === 'rp-chg') { ev.preventDefault(); $('rp-more').open = true; var sl = $('rp-station'); try { sl.scrollIntoView({ behavior: smooth(), block: 'center' }); sl.focus({ preventScroll: true }); } catch (e) {} }
+    // the station box is right under the station line
+    if (t && t.id === 'rp-chg') { ev.preventDefault(); var sl = $('rp-station'); try { sl.scrollIntoView({ behavior: smooth(), block: 'center' }); sl.focus({ preventScroll: true }); } catch (e) {} }
   });
   /* Two example years by the town box (Sig, 2026-10-14; the made-up family
      year went with the example words): a drought and a flood. Each is a plain
@@ -5358,10 +5665,23 @@
     var back = 0;
     doc.addEventListener('focusin', function (e) {
       clearTimeout(back);
-      if (typing(e.target)) { TYPING = true; syncBar(); setTimeout(function () { keepFocusClear(); }, 60); }
-      else back = setTimeout(function () { TYPING = false; syncBar(); }, 450);
+      if (typing(e.target)) { TYPING = true; syncBar(); if ($('rp-stepcol').contains(e.target)) doc.body.classList.add('rp-typing'); setTimeout(function () { keepFocusClear(); }, 60); }
+      else back = setTimeout(function () { TYPING = false; syncBar(); doc.body.classList.remove('rp-typing'); }, 450);
+      if (!typing(e.target)) keepClearOfPin(e.target);
     });
-    doc.addEventListener('focusout', function () { clearTimeout(back); back = setTimeout(function () { TYPING = typing(doc.activeElement); syncBar(); }, 450); });
+    doc.addEventListener('focusout', function () { clearTimeout(back); back = setTimeout(function () { TYPING = typing(doc.activeElement); syncBar(); if (!(TYPING && $('rp-stepcol').contains(doc.activeElement))) doc.body.classList.remove('rp-typing'); }, 450); });
+    /* The strip holds its folded size through a press (2026-10-22). While a box has focus the picture and Up close fold
+       away (rain-print.html); the press on a choice or a button below takes the focus, the strip unfolded over the place
+       pressed, and the release landed on the strip, so the click went to neither (CI, Oct 22: the Print card and
+       "+ Mark another day" missed). From the press until its click is done the strip stays as it was. */
+    var FOLDS = ':is(input:not([type=checkbox]):not([type=radio]),textarea,select)', holdT = 0;
+    var hold = function (on) { clearTimeout(holdT); $('rp-strip').classList.toggle('rp-strip-hold', on); if (on) holdT = setTimeout(function () { hold(false); }, 2000); };
+    doc.addEventListener('pointerdown', function (e) {
+      var st = $('rp-strip'), a = doc.activeElement;
+      if (st.hidden || st.contains(e.target) || !a || !a.matches || !a.matches(FOLDS)) return;
+      hold(true);
+    }, true);
+    ['pointerup', 'pointercancel'].forEach(function (t) { doc.addEventListener(t, function () { if ($('rp-strip').classList.contains('rp-strip-hold')) setTimeout(function () { hold(false); }, 0); }, true); });
   })();
   // Back from Stripe with the page kept as it was: no "Opening checkout" left on the screen
   root.addEventListener('pageshow', function (e) { if (e.persisted) { proofSay(''); syncBar(); } });
@@ -5449,11 +5769,12 @@
   var GIFT = null;
   var LOCK_IDS = { place: ['rp-place', 'rp-go'], year: ['rp-year'], station: ['rp-station'], style: ['rp-style'], cmp: ['rp-cmp'], name: ['rp-name'],
     dedication: ['rp-ded'], markers: [1, 2, 3, 4, 5].reduce(function (a, i) { return a.concat(['rp-m' + i + 'mo', 'rp-m' + i + 'dy', 'rp-m' + i + 'l']); }, []).concat(['rp-add-day']), normals: ['rp-normals'], records: ['rp-records'],
-    crop: ['rp-crop', 'rp-crop-plant', 'rp-crop-harvest', 'rp-plants', 'rp-ghost'], hist: ['rp-hist'], frost: ['rp-frost'], heat: ['rp-heat'], ribbon: ['rp-ribbon'],
+    crop: ['rp-crop', 'rp-crop-plant', 'rp-crop-harvest', 'rp-crop-pmo', 'rp-crop-pdy', 'rp-crop-hmo', 'rp-crop-hdy', 'rp-plants', 'rp-ghost'], hist: ['rp-hist'], frost: ['rp-frost'], heat: ['rp-heat'], ribbon: ['rp-ribbon'],
     logo: ['rp-logo-file', 'rp-logo-remove', 'rp-logo-ink'] };
   function lockInput(field) {
     (LOCK_IDS[field] || []).forEach(function (id) {
-      if (id === 'rp-style') { radios('rp-style').forEach(function (r) { r.disabled = true; }); return; }
+      if (id === 'rp-style' || id === 'rp-cmp') { radios(id).forEach(function (r) { r.disabled = true; }); return; }
+      if (id === 'rp-crop') doc.querySelectorAll('[data-crop]').forEach(function (b) { b.disabled = true; });
       if (id === 'rp-logo-ink') { radios('rp-logo-ink').forEach(function (r) { r.disabled = true; }); return; }
       if (id === 'rp-logo-file') { var pk = $('rp-logo-pick'); if (pk) { pk.setAttribute('aria-disabled', 'true'); pk.style.pointerEvents = 'none'; pk.style.opacity = '.55'; } }
       var el = $(id); if (el) { el.disabled = true; el.setAttribute('data-gift-lock', '1'); }

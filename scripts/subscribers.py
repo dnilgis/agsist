@@ -17,6 +17,12 @@ than v5.4 ignores `format=json` and answers the plain list with a 200, so a
 body that does not parse as a JSON array is read as the plain list. A 4xx on
 the JSON request (a route that refuses the parameter) asks again without it.
 A 5xx or a network failure is not a list and is raised, as before.
+
+OCT 22, 2026: every read goes through scripts/list_source.py. When the worker
+is blocked (the Cloudflare page, no answer, an HTML body) the same records
+come from the private copy of its storage; a JSON refusal (a bad token) is
+still raised. A blocked worker is never read as "the plain list": the block
+page is HTML, not addresses.
 """
 import json
 import re
@@ -24,7 +30,9 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"}
+import list_source
+
+UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@agsist.com)"}
 ZIP_RE = re.compile(r"^\d{5}$")
 EL_RE = re.compile(r"^[0-9a-f]{8}$")
 LID_RE = re.compile(r"^[0-9a-hjkmnp-tv-z]{16}$")   # worker v5.46 link id
@@ -66,19 +74,23 @@ def parse_json(arr):
 
 
 def _get(u):
-    with urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=30) as r:
-        return r.read().decode("utf-8")
+    return list_source.worker_text("GET", u)[1]
 
 
 def fetch(base, token):
     root = base.rstrip("/") + "/list?token=" + urllib.parse.quote(token)
     try:
+        if list_source.mode() == "backup":
+            raise list_source.Blocked(list_source.STATE["why"])
         body = _get(root + "&format=json")
+    except list_source.Blocked:
+        return parse_json(list_source.request("GET", root + "&format=json")), "json"
     except urllib.error.HTTPError as ex:
-        if 400 <= ex.code < 500:
+        if 400 <= ex.code < 500 and ex.code not in (401, 403):
             print("list: format=json refused (HTTP %d); using the plain list" % ex.code)
             return parse_plain(_get(root)), "plain"
         raise
+    list_source.STATE["mode"] = list_source.STATE["mode"] or "worker"
     try:
         arr = json.loads(body)
     except ValueError:
@@ -100,7 +112,7 @@ def fetch_topic(base, token, topic):
     import email_links    # the one lid reader
     u = (base.rstrip("/") + "/notice-list?token=" + urllib.parse.quote(token)
          + "&topic=" + urllib.parse.quote(topic))
-    arr = json.loads(_get(u))
+    arr = list_source.request("GET", u)
     if not isinstance(arr, list):
         raise ValueError("notice-list did not answer with a list")
     out, seen = [], set()

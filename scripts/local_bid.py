@@ -58,7 +58,7 @@ except Exception:                       # pragma: no cover - no tzdata
     CT = None
 
 DEFAULT_BASE = "https://dnilgis.github.io/bids/"
-UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"}
+UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@agsist.com)"}
 
 # bids-network.js / bids-homepage.js constants
 RADIUS_MI = 50              # bids-homepage.js BIDS_RADIUS_MI, fromNetwork radiusMi: 50

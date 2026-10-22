@@ -15,7 +15,7 @@
  */
 (function () {
   'use strict';
-  var WORKER = 'https://agsist-subs.dnilgis.workers.dev';
+  var WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var ZIPS = 'https://dnilgis.github.io/bids/data/zips/';
   var MINE_KEY = 'agsist-hay-mine';
 
@@ -219,11 +219,30 @@
   function post(path, body) {
     return fetch(WORKER + path, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) })
       .then(function (r) {
-        return r.json().catch(function () { return {}; }).then(function (j) {
+        return r.json().then(function (j) { return { j: j, json: true }; }, function () { return { j: {}, json: false }; }).then(function (a) {
+          var j = a.j;
           if (r.ok && j && j.ok) return j;
-          var e = new Error((j && j.error) || ('http ' + r.status)); e.status = r.status; throw e;
+          var e = new Error((j && j.error) || ('http ' + r.status)); e.status = r.status;
+          // the block page, a 5xx, a 429 page or no JSON: the worker did not answer (2026-10-22)
+          e.down = !a.json || r.status >= 500;
+          throw e;
         });
-      });
+      }, function () { var e = new Error('no answer'); e.status = 0; e.down = true; throw e; });
+  }
+  /* THE WORKER DOWN (2026-10-22): a new post or a change is kept in this
+     browser (components/outbox.js) and goes to the worker on the next visit
+     after it is back; a new post's private edit link then shows under
+     "Your posts" on this page. -> true when kept. */
+  function keep(path, b, kind) {
+    if (!window.AgOutbox) return false;
+    var id = window.AgOutbox.add({ url: WORKER + path, body: b, kind: 'hay' + path.replace(/\//g, '-'),
+      label: path === '/hay/post' ? 'your hay board post' : 'the change to your hay board post',
+      after: path === '/hay/post' ? 'hay-mine' : '', meta: { kind: kind } });
+    if (!id) return false;
+    $('hb-out').innerHTML = '<div class="cl-msg ok"><p><b>' + esc(window.AgOutbox.LINE) + '</b></p><p>' +
+      (path === '/hay/post' ? 'Our system is down right now. Your post goes up then, and your private edit link shows on this page under your posts.'
+        : 'Our system is down right now. Your change shows on the board then.') + '</p></div>';
+    return true;
   }
   function zipLL(z) {
     return getJSON(ZIPS + z.slice(0, 2) + '.json', 6000).then(function (t) {
@@ -384,6 +403,7 @@
       return post('/hay/post', b).then(function (j) { if (j.id && j.key) sent(j, b.kind); else $('hb-out').innerHTML = '<div class="cl-msg ok"><p>Thanks.</p></div>'; });
     };
     zipLL(b.zip).then(go, function () { return go(null); }).catch(function (e) {
+      if (e && e.down && keep(S.edit ? '/hay/edit' : '/hay/post', b, b.kind)) { if (!S.edit) { $('hb-form').reset(); syncKind(); } return; }
       var msg = e && e.status === 429 ? 'That is a lot of posts from here today. Try again in an hour.'
         : e && e.status === 404 && !S.edit ? 'The board opens in a day or so. Your post did not go through; try again soon.'
         : e && e.status === 400 ? 'It did not go through: ' + e.message + '.'
@@ -414,6 +434,8 @@
   }
 
   function init() {
+    // a post kept while the worker was down went through: its edit link is now under "Your posts"
+    window.addEventListener('agsist:outbox', function () { renderMine(); load(); });
     var p = prefs(false);
     if (p) {
       if (p.zip) $('hb-zip').value = p.zip;

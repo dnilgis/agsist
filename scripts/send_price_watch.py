@@ -53,6 +53,7 @@ def quoted(s, n=60):
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe  # noqa: E402  (no address in the public log)
 import email_links  # noqa: E402  (k=<link id> links; never an address in one)
+import list_source  # noqa: E402  (the worker, or the private copy of its list)
 
 REPO = Path(__file__).resolve().parent.parent
 PRICES_FILE = REPO / "data" / "prices.json"
@@ -195,7 +196,7 @@ def plan(watchers, quotes, now_ms):
     confirms  [(email, pid, label)]
     fires     [(email, pid, label, close_cents, symbol)]"""
     confirms, fires = [], []
-    for r in watchers:
+    for r in email_links.plain_labels(watchers):   # no em dash in a subject or headline
         e = r["email"]
         for p, pend in (r.get("pend") or {}).items():
             if not pend.get("m") and now_ms - pend.get("ts", 0) <= PEND_TTL_MS:
@@ -212,11 +213,9 @@ def plan(watchers, quotes, now_ms):
 
 def worker(base, path, token_, body=None):
     url = f"{base}/{path}{'&' if '?' in path else '?'}token={urllib.parse.quote(token_)}"
-    req = urllib.request.Request(url, data=json.dumps(body).encode() if body is not None else None,
-                                 headers={"Content-Type": "application/json", "User-Agent": "agsist-price-watch/1"},
-                                 method="POST" if body is not None else "GET")
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode())
+    # 2026-10-22: through scripts/list_source.py: the worker, or the private
+    # copy of its list when it is blocked (marks then go to a journal there)
+    return list_source.request("POST" if body is not None else "GET", url, body, {"User-Agent": "agsist-price-watch/1"})
 
 
 def selftest():
@@ -261,8 +260,8 @@ def selftest():
     LINK_IDS["a@x.com"] = L0
     m = confirm_email("a@x.com", "pB", "Corn (new crop) above $4.50", "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     body = m.get_body(("plain",)).get_content()
-    assert "PO Box 243, Chetek, WI 54728" in body and "price-watch-confirm?k=%s&p=pB&t=%s" % (L0, token(s, L0, "|pc|pB")) in body
-    assert m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click"
+    assert "PO Box 243, Chetek, WI 54728" in body and "a=price-watch-confirm&k=%s&p=pB&t=%s" % (L0, token(s, L0, "|pc|pB")) in body
+    assert m["List-Unsubscribe-Post"] is None
     # a stranger's label: never in the Subject, quoted and at most 60 characters in the body
     mx = confirm_email("a@x.com", "pB", "Reset your account at agsist-help.com\r\nnow " + "x" * 80, "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     bx = mx.get_body(("plain",)).get_content()
@@ -277,11 +276,11 @@ def selftest():
     b3 = m3.get_body(("plain",)).get_content()
     assert "/soybean-futures-prices" in b3 and "/corn-futures-prices" not in b3
     assert "/soybean-futures-prices" in m3.get_body(("html",)).get_content()
-    assert "price-watch-unsubscribe?k=%s&t=%s" % (L0, token(s, L0, "|pw")) in b3
+    assert "a=price-watch-unsubscribe&k=%s&t=%s" % (L0, token(s, L0, "|pw")) in b3
     for mm in (m, mx, m2, m3):
         h0, t0 = mm.get_body(("html",)).get_content(), mm.get_body(("plain",)).get_content()
         assert not [u for u in email_links.hrefs(h0) if "@" in u or "%40" in u.lower()], "v5.46: an @ inside an href"
-        assert not email_links.bad_links(t0) and "?e=" not in t0 + h0 and "@" not in str(mm["List-Unsubscribe"]), "v5.46: an address in a link"
+        assert not email_links.bad_links(t0) and "?e=" not in t0 + h0 and "@" not in email_links.unsub_web(mm), "v5.46: an address in a link"
     try:
         confirm_email("b@x.com", "pB", "x", "https://w.dev", s, "AGSIST", "n@agsist.com", None)
         raise AssertionError("v5.46: a watcher with no link id was given an email")
@@ -373,4 +372,5 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # worker blocked and no usable copy: one warning, exit 0 (an hourly job must not flood Sig with failures)
+    sys.exit(list_source.guard(main, soft=True))

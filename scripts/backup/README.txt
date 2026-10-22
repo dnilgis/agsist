@@ -33,7 +33,7 @@ First time (about 10 minutes)
    This happens the first time only; Windows remembers the login.
    The first copy of the repos can take a while.
 5. It asks for LIST_TOKEN. Copy it from Cloudflare (Workers and Pages,
-   agsist-subs, Settings, Variables and Secrets) or wherever you keep it,
+   agsist-api, Settings, Variables and Secrets) or wherever you keep it,
    paste it (right-click pastes in the window; the typing stays hidden)
    and press Enter. It is saved in list-token.dpapi in this folder, locked
    to your Windows user on this PC. Nobody else can read it, and it does

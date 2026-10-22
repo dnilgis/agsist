@@ -1120,7 +1120,7 @@ async function fetchWithTimeout(resource, options = {}, ms = 8000) {
 
 // Polite identification for government/edu upstreams — several of them 403/502
 // anonymous datacenter fetches. Costs nothing, unblocks a lot.
-const UA = 'AGSIST-FieldScout/1.0 (+https://agsist.com; sig@farmers1st.com)';
+const UA = 'AGSIST-FieldScout/1.0 (+https://agsist.com; sig@agsist.com)';
 function withUA(options = {}) {
   const h = Object.assign({}, options.headers || {});
   if (!h['User-Agent']) h['User-Agent'] = UA;

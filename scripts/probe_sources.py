@@ -31,7 +31,7 @@ import urllib.parse
 import urllib.request
 from collections import Counter
 
-UA = {"User-Agent": "AGSIST-probe/1.0 (+https://agsist.com; sig@farmers1st.com)"}
+UA = {"User-Agent": "AGSIST-probe/1.0 (+https://agsist.com; sig@agsist.com)"}
 
 # ---------------------------------------------------------------- AgTransport
 # Socrata (SODA2). Public read: no key required, app token only raises limits.

@@ -59,6 +59,7 @@ import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import send_elevator_watch as sew  # noqa: E402
 import log_safe  # noqa: E402  (no address in the public log)
 
@@ -168,6 +169,7 @@ def plan(watchers, data, tables, now_ms):
     sends    [(email, wid, label, hits, zip, radius, crop, target, first)]  first: no mark yet
     rearms   [(email, wid, label, best_row)]   every counted place is below: s.on -> false, no mail
     counts   {reason: n} for the log; never an address."""
+    watchers = sew.email_links.plain_labels(watchers)   # no em dash in a subject or headline
     confirms, sends, rearms = [], [], []
     n = {"pending to confirm": 0, "pending already mailed": 0, "pending expired": 0, "pending ZIP unknown": 0,
          "invalid": 0, "no places": 0, "still on": 0, "still below": 0}
@@ -406,16 +408,16 @@ def selftest():
     for part in ("Cents, Bloomer, WI · 17 mi · Oct 2026 · $4.62 · posted Oct 7, 1:41 PM CT",
                  "Near Coop, Chetek, WI · 0 mi", "already, as your alert starts",
                  "until every elevator in range is back below $4.50", "PO Box 243",
-                 "elevator-watch-unsubscribe?k=00000000000000ff&w=new&t=", "Stop all elevator alerts"):
+                 "a=elevator-watch-unsubscribe&k=00000000000000ff&w=new&t=", "Stop all elevator alerts"):
         assert part in body, (part, body)
     assert "Mid Grain" not in body, "a place below the price is not listed"
     assert m["Subject"] == "Corn $4.62: Cents, 17 mi from 54728 (your alert $4.50)", m["Subject"]
-    assert m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click"
+    assert m["List-Unsubscribe-Post"] is None
     assert "already" not in alert_email("f@x.com", "up", got["up"][2], *got["up"][3:], "https://w.dev", "sec", "A",
                                         "n@agsist.com", None).get_body(("plain",)).get_content()
     c = confirm_email("f@x.com", "p1", cf[0][2], "https://w.dev", "sec", "AGSIST", "n@agsist.com", None)
     cb = c.get_body(("plain",)).get_content()
-    assert "elevator-watch-confirm?k=00000000000000ff&w=p1&t=" in cb and "<b>free text</b>" not in c.as_string()
+    assert "a=elevator-watch-confirm&k=00000000000000ff&w=p1&t=" in cb and "<b>free text</b>" not in c.as_string()
     for mm0 in (m, c):
         h0, t0 = mm0.get_body(("html",)).get_content(), mm0.get_body(("plain",)).get_content()
         assert not [u for u in sew.email_links.hrefs(h0) if "@" in u or "%40" in u.lower()], "v5.46: an @ inside an href"
@@ -524,4 +526,5 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # worker blocked and no usable copy: one warning, exit 0 (sew.worker reads through scripts/list_source.py)
+    sys.exit(sew.list_source.guard(main, soft=True))

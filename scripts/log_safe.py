@@ -23,7 +23,10 @@ import ssl
 import sys
 from email.message import EmailMessage
 
-OWNER_DEFAULT = "sig@farmers1st.com"   # already public: site contact address
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
+
+OWNER_DEFAULT = "sig@agsist.com"   # already public: site contact address
 EMAIL_RX = re.compile(r"[A-Za-z0-9._%+'\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
 
 
@@ -100,7 +103,8 @@ def owner_mail(subject, lines):
         run = "\n\nRun: %s/%s/actions/runs/%s" % (
             os.environ.get("GITHUB_SERVER_URL", "https://github.com"),
             os.environ.get("GITHUB_REPOSITORY", ""), os.environ["GITHUB_RUN_ID"])
-    m.set_content("\n".join(str(x) for x in lines) + run
+    # a note that names the worker host says "the subs worker" instead, so the guard never holds back Sig's own notice
+    m.set_content(email_links.scrub_text("\n".join(str(x) for x in lines)) + run
                   + "\n\nThis list is mailed to you and is not printed in the public Actions log.\n")
     try:
         c = smtplib.SMTP(os.environ.get("SMTP_HOST") or "smtp.gmail.com",

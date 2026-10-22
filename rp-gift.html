@@ -36,7 +36,7 @@
      falls back to the empty month line and the bar says why (screen only).
      The card speaks of Sig in the third person on purpose: the person holding
      it does not know him. The Rain Print page itself is in his own voice. -->
-<link rel="preconnect" href="https://agsist-subs.dnilgis.workers.dev" crossorigin>
+<link rel="preconnect" href="https://agsist-api.dnilgis.workers.dev" crossorigin>
 <link rel="preload" href="/fonts/rp-fraunces-opsz.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/rp-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/rp-plex-mono-500.woff2" as="font" type="font/woff2" crossorigin>
@@ -234,15 +234,15 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
   <p id="pvnote" hidden></p>
 </div>
 <p id="msg" role="status">Getting your card&hellip;</p>
-<noscript><p style="max-width:880px;margin:1rem auto;padding:0 16px">This page needs JavaScript to draw the card. Questions: sig@farmers1st.com</p></noscript>
+<noscript><p style="max-width:880px;margin:1rem auto;padding:0 16px">This page needs JavaScript to draw the card. Questions: sig@agsist.com</p></noscript>
 <div id="stage"><div id="fit"></div></div>
 <script src="/components/qr.js?v=11"></script>
-<script src="/components/rp-short.js?v=5"></script>
-<script src="/components/rp-logo.js?v=2"></script>
-<script src="/components/rp-canada.js?v=2"></script>
-<script src="/components/rain-print-art.js?v=21"></script>
-<script src="/components/rain-print.js?v=65"></script>
-<script src="/components/rp-gift.js?v=6"></script>
+<script src="/components/rp-short.js?v=7"></script>
+<script src="/components/rp-logo.js?v=4"></script>
+<script src="/components/rp-canada.js?v=3"></script>
+<script src="/components/rain-print-art.js?v=22"></script>
+<script src="/components/rain-print.js?v=77"></script>
+<script src="/components/rp-gift.js?v=9"></script>
 <script>
 (function () {
   'use strict';
@@ -317,7 +317,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
       o += '<div class="how">' + (qr ? '<div class="qrbox">' + qr + '</div>' : '') + '<p><b>To use it,</b> scan the square, or go to<br><span class="url">agsist.com/rain-print?gift=' + esc(C.code) + '</span><br>' +
         (C.lock ? 'Your design is already picked. Add where it goes and it\u2019s done.' : 'Pick the farm and the year, then press Use my gift.') + '</p></div>';
     }
-    if (withFoot) o += '<p class="foot">Card ' + String(C.no || 0).padStart(4, '0') + ' &middot; agsist.com/rain-print &middot; questions: sig@farmers1st.com</p>';
+    if (withFoot) o += '<p class="foot">Card ' + String(C.no || 0).padStart(4, '0') + ' &middot; agsist.com/rain-print &middot; questions: sig@agsist.com</p>';
     return o;
   }
   // ---- the 8 x 10 card ----
@@ -368,7 +368,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
       : '<p class="use">' + (C.lock ? 'To see your print' : 'To pick the farm and the year') + ', scan the square or go to<br><span class="url">agsist.com/rain-print?gift=' + esc(C.code) + '</span></p><p class="never">Never expires. Use it once.</p>';
     o += '</div></div>';
     o += '<p class="sig">' + (C.product === 'digital' ? 'Made' : 'Drawn and printed') + ' by Sig Lindquist, AGSIST, Chetek, Wisconsin</p>';
-    o += '<p class="foot">Card ' + String(C.no || 0).padStart(4, '0') + ' &middot; agsist.com/rain-print &middot; questions: sig@farmers1st.com</p>';
+    o += '<p class="foot">Card ' + String(C.no || 0).padStart(4, '0') + ' &middot; agsist.com/rain-print &middot; questions: sig@agsist.com</p>';
     return '<div class="c8"><div class="face' + (s && PV ? '' : ' nopv') + '">' + o + '</div></div>';
   }
   /* Light cut marks for the 8 x 10 on a letter sheet: the card's sides are
@@ -443,13 +443,13 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
 
   render();
   var q = new URLSearchParams(location.search), c = q.get('c') || '', k = q.get('k') || '';
-  if (!G || !c || !k) { say('This page prints a gift card from the Print the gift card button in the email you got after buying one. Open that, or write to sig@farmers1st.com.', true); return; }
+  if (!G || !c || !k) { say('This page prints a gift card from the Print the gift card button in the email you got after buying one. Open that, or write to sig@agsist.com.', true); return; }
   G.card(c, k).then(function (j) {
     if (!j.ok) {
-      say(j.status_code === 404 ? 'That card link isn\u2019t right. Use the Print the gift card button in your gift card email, or write to sig@farmers1st.com.' : G.errorText(j), true);
+      say(j.status_code === 404 ? 'That card link isn\u2019t right. Use the Print the gift card button in your gift card email, or write to sig@agsist.com.' : G.errorText(j), true);
       return;
     }
-    if (j.status === 'void') { say('This card was replaced or refunded, so it can\u2019t be printed. If Sig sent you a new link, use that one. Questions: sig@farmers1st.com', true); return; }
+    if (j.status === 'void') { say('This card was replaced or refunded, so it can\u2019t be printed. If Sig sent you a new link, use that one. Questions: sig@agsist.com', true); return; }
     C = j;
     say(j.status === 'redeemed' && !j.prepaid ? 'This card has been used (' + G.dayText(j.redeemed_on) + '). You can still print it as a keepsake.' : '');
     render();

@@ -17,13 +17,30 @@ function series(y, upto) {
     return [d, p, String(t), "0.0", String(t + 9), String(t - 9)];
   });
 }
-/* opts.order: 'ok' (the default), 'fail' (503), 'hang' (never answers) */
+/* opts.order: 'ok' (the default), 'fail' (503), 'hang' (never answers)
+ * opts.worker: the whole subs worker out, as on Oct 21 2026: 'blocked' (every
+ *   route answers Cloudflare's 403 phishing page as HTML, with no CORS headers,
+ *   so the browser's fetch rejects), 'down' (the connection fails), 'hang'
+ *   (never answers). Every call is logged in log.worker.
+ * opts.formspree: 'ok' (the default) or 'fail'; posts are logged in log.formspree. */
+export const BLOCK_PAGE = "<!DOCTYPE html><html><head><title>Suspected phishing site | Cloudflare</title></head><body><h1>Warning: Suspected Phishing</h1></body></html>";
 export async function mocks(ctx, opts, log) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
   const upto = "2026-10-09";
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
     const req = r.request(), u = new URL(req.url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev" && opts.worker) {
+      (log.worker = log.worker || []).push(req.method() + " " + u.pathname);
+      if (opts.worker === "hang") return;
+      if (opts.worker === "down") return r.abort("connectionrefused");
+      return r.fulfill({ status: 403, contentType: "text/html; charset=UTF-8", body: BLOCK_PAGE });
+    }
+    if (u.host === "formspree.io") {
+      const body = req.postData() || "";
+      (log.formspree = log.formspree || []).push({ at: Date.now(), body });
+      return opts.formspree === "fail" ? r.fulfill({ status: 503, headers: h, body: "x" }) : r.fulfill({ headers: h, json: { ok: true } });
+    }
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (req.method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       if (u.pathname === "/rp-order" && req.method() === "POST") {
         log.order.push({ at: Date.now(), body: JSON.parse(req.postData()), stripeBefore: log.stripe.length });

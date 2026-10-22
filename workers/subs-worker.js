@@ -5,6 +5,80 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.53 (2026-10-22): AGSIST.COM ADDRESSES (Sig, Oct 22). The void gift card
+ *   answer says write to sig@agsist.com; no farmers1st.com address is left.
+ * v5.52 (2026-10-22): NEW HOME, agsist-api.dnilgis.workers.dev (Sig, Oct 22,
+ *   after Cloudflare support said a new Worker on the account is his call).
+ *   The same code deploys as the new Worker agsist-api (workers/wrangler.api
+ *   .toml, the same KV) and, until it is retired, as agsist-subs
+ *   (wrangler.subs.toml). Every page now calls the new host. Sig sets fresh
+ *   UNSUB_SECRET and LIST_TOKEN values on the new Worker, so a stop link
+ *   signed with the old secret no longer checks out: every stop route
+ *   (/unsubscribe, /alert-, /notice-, /watch-, /elevator-watch- and
+ *   /price-watch-unsubscribe, /rp-remind/stop, with e= or k=) now answers
+ *   "That unsubscribe link no longer works." with the way to stop anyway:
+ *   email news@agsist.com with the word unsubscribe (a mailto on the page;
+ *   the agsist.com front door adds its own stop line). Nothing is changed
+ *   and each status stays as it was (a k= stop link 403, an e= one 200). Confirm
+ *   links still answer "That link isn't valid." No new binding, no new secret.
+ * v5.51 (2026-10-22): LONGER RAIN PRINT SHORT LINKS (Sig, Oct 22). A new
+ *   POST /rp-short id is the first 8 letters of the code's hash, not 5: the
+ *   sealed QR copies on agsist.com (scripts/build_rp_sealed.mjs) can only be
+ *   opened by guessing an id, and 32^8 = 1.1e12 guesses is years where 32^5
+ *   was an hour. A code that already has a 5, 6 or 7 letter id gets that id
+ *   back (it may be printed); GET /rp-short/<id> reads 5 to 8 letters as
+ *   before. An 8-letter id that holds another code is a 409 (no growth past
+ *   8). No new binding, no new secret.
+ * v5.50 (2026-10-22): A LATE ELEVATOR SAVE KEEPS ITS OWN TIME (Sig, Oct 22).
+ *   POST /elev/save takes entered_at (ISO or ms): when the manager pressed
+ *   Save on agsist.com/post. A save kept on the phone while this worker was
+ *   blocked arrives later; it is stored with that time (bids_updated_at,
+ *   info_updated_at, closed today = that day), not the time it arrived, so
+ *   the board's "Updated 6:10 AM Wed" shows its real age. A save typed
+ *   before the listing's newest change is a 409 {newer:true} and stores
+ *   nothing. More than 31 days old, or not a time: 400. Without entered_at:
+ *   now, as before. No new binding, no new secret.
+ * v5.48 (2026-10-22): FRONT DOOR ON AGSIST.COM (Sig, Oct 22; BUILD-RULES 11).
+ *   No emailed link points at this host any more: every link goes to
+ *   https://agsist.com/e?a=<route>&<the same signed params> (e.html, GitHub
+ *   Pages), and that page asks this worker from the reader's browser.
+ *   New: GET and POST /fd/<route> for the routes an email links to
+ *   (FD_ROUTES: the ten k= routes, /rp-remind/stop, /sponsor-confirm,
+ *   /sponsor-decide). Each runs the route exactly as its old link did and
+ *   answers JSON instead of the page: {ok, title, lines, button, go}, CORS for
+ *   agsist.com, no caching. GET changes nothing (a scanner that runs the
+ *   page's script presses nothing); the page's button POSTs the same params.
+ *   A line holding an address is left out of the JSON. A link that is not
+ *   valid answers ok:false. No secret is set: a 503 in JSON. Old worker links
+ *   (already in inboxes) work exactly as before. No new binding or secret.
+ * v5.47 (2026-10-22): RAIN PRINT TAKES ORDERS THROUGH AN OUTAGE (BUILD-RULES
+ *   14, after the Oct 21 block). The page now goes to Stripe whatever this
+ *   worker does; this version makes the records from Stripe afterward and
+ *   keeps them right under a burst. No new route, binding or secret.
+ *   - A paid session with no press on record (the press post failed) gets
+ *     its record from Stripe's own: the key comes from the session id
+ *     (rpo:<created ms>:<8 hex of SHA-256(session)>), so a webhook, its
+ *     retries (Stripe signs each retry anew, so a late one passes the 5
+ *     minute check) and the poll all land on one record. A design code ref
+ *     fills design_url, place, year, style and name (no_press only when
+ *     there is no design; from_stripe true). The poll in /rp-order/list now
+ *     does the same for a paid session with a design ref and no press, and
+ *     reads Stripe for at least the whole days window, so payments made
+ *     while this worker was out are found even after Stripe stops retrying.
+ *   - Refs take RPH-<10> and GIFT-RPH-<10>: the page's hash of a long
+ *     design's code when no short link could be had; the design went to Sig
+ *     by the backup form (design_by "backup form").
+ *   - Serials: /rp-order/list settles them across every record in the order
+ *     paid: a serial held by an earlier record is taken off a later one, and
+ *     each paid print without one gets the next after the highest in use or
+ *     the counter. The webhook's own first pick starts past the highest on
+ *     record too, and a counter write KV refuses (one write a second to a
+ *     key) no longer fails the webhook. /rp-order/list answers one record per
+ *     paid session.
+ *   - POST /rp-logo?id=<id>: a logo the page kept in the browser while this
+ *     worker was out goes up under the id its design already carries, taken
+ *     only when the id is the PNG's own (12 letters from SHA-256 of the
+ *     bytes, the same letters as before). Without ?id= nothing changes.
  * v5.46 (2026-10-21): NO ADDRESS IN ANY EMAILED LINK (Oct 21: a Daily link
  *   with ?e=<address> on a workers.dev host was reported as phishing and the
  *   host was blocked). Each address gets one link id: 16 letters of
@@ -848,14 +922,14 @@ class NoSecretError extends Error {}
 // removing someone from a list is low harm, a dead stop link is not.
 async function unsubOk(env, msg, t) {
   if (typeof env.UNSUB_SECRET !== "string" || !env.UNSUB_SECRET) {
-    console.error("agsist-subs: UNSUB_SECRET is not set; honouring an unsubscribe WITHOUT checking its token. Set the secret in Cloudflare.");
+    console.error("subs worker: UNSUB_SECRET is not set; honouring an unsubscribe WITHOUT checking its token. Set the secret in Cloudflare.");
     return true;
   }
   return safeEq(t, await hmac16(msg, env.UNSUB_SECRET));
 }
 async function hmac16(email, secret) {
   if (typeof secret !== "string" || !secret)
-    throw new NoSecretError("UNSUB_SECRET is not set on the agsist-subs Worker; refusing to sign or check a token");
+    throw new NoSecretError("UNSUB_SECRET is not set on this Worker; refusing to sign or check a token");
   const key = await crypto.subtle.importKey(
     "raw", new TextEncoder().encode(secret),
     { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
@@ -870,7 +944,7 @@ const LID_RE = /^[0-9a-hjkmnp-tv-z]{16}$/;
 const LID_NEW_MAX = 400;   // new lid: writes in one list call (KV allows 1,000 operations a call)
 async function lidFor(email, secret) {
   if (typeof secret !== "string" || !secret)
-    throw new NoSecretError("UNSUB_SECRET is not set on the agsist-subs Worker; refusing to make a link id");
+    throw new NoSecretError("UNSUB_SECRET is not set on this Worker; refusing to make a link id");
   const key = await crypto.subtle.importKey(
     "raw", new TextEncoder().encode(secret),
     { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
@@ -1050,6 +1124,7 @@ const PUBLIC_POSTS = new Set(["/subscribe", "/notice", "/alert-subscribe", "/wat
   "/rp-short",   // v5.14
   "/rp-gift/check", "/rp-gift/redeem"]);   // v5.16
 PUBLIC_POSTS.add("/elev/me").add("/elev/save");   // v5.20: the elevator portal
+const ELEV_LATE_MAX_MS = 31 * 864e5;   // v5.50: a kept save may arrive up to 31 days late (the outbox keeps 30)
 PUBLIC_POSTS.add("/rp-order");   // v5.36: Rain Print order records
 PUBLIC_POSTS.add("/rp-order/approve");   // v5.37: the buyer approves the proof
 PUBLIC_POSTS.add("/rp-remind");   // v5.43: Email me this design
@@ -1295,7 +1370,7 @@ function noticeTopic(v, anyDate) {
 }
 
 function htmlPage(msg, extraHtml, status) {
-  return new Response(
+  return fdMark(new Response(
     "<!doctype html><meta charset=utf-8><title>AGSIST</title>" +
     "<meta name=robots content=noindex>" +
     // v5.7: without this a phone lays the page out 980px wide and shrinks it,
@@ -1304,7 +1379,53 @@ function htmlPage(msg, extraHtml, status) {
     "<body style=\"font-family:Georgia,serif;max-width:480px;margin:80px auto;" +
     "padding:0 16px;color:#1a1a1a\"><h2>" + msg + "</h2>" + (extraHtml || "") +
     "<p><a href=\"https://agsist.com\">agsist.com</a></p>",
-    { status: status || 200, headers: Object.assign({ "Content-Type": "text/html;charset=utf-8" }, PAGE_HEADERS) });
+    { status: status || 200, headers: Object.assign({ "Content-Type": "text/html;charset=utf-8" }, PAGE_HEADERS) }),
+    msg, extraHtml, status);
+}
+// v5.52: a stop link that does not check out (an old secret, a cut-off link)
+// still tells the reader how to stop. Changes nothing.
+const STOP_MAILTO = "mailto:news@agsist.com?subject=unsubscribe";
+function stopInvalid(status) {
+  return htmlPage("That unsubscribe link no longer works.",
+    "<p>Older AGSIST links stop working after we change how links are signed. Nothing was changed.</p>" +
+    "<p>To stop these emails, email <a href=\"" + STOP_MAILTO + "\">news@agsist.com</a> with the word unsubscribe, " +
+    "or reply STOP to any of them. Sig takes you off by hand within a day.</p>", status);
+}
+// v5.48: the page's parts ride on the Response, so /fd/<route> can answer them as JSON.
+const FD_PAGE = Symbol("fdPage");
+function fdMark(r, msg, extraHtml, status) { r[FD_PAGE] = { msg, extraHtml: extraHtml || "", status: status || 200 }; return r; }
+const FD_ROUTES = new Set(["/unsubscribe", "/alert-unsubscribe", "/notice-unsubscribe", "/daily-elev",
+  "/watch-confirm", "/watch-unsubscribe", "/elevator-watch-confirm", "/elevator-watch-unsubscribe",
+  "/price-watch-confirm", "/price-watch-unsubscribe", "/rp-remind/stop", "/sponsor-confirm", "/sponsor-decide"]);
+function fdText(h) {
+  return String(h || "").replace(/<[^>]*>/g, "").replace(/&middot;/g, "\u00b7").replace(/&quot;/g, "\"")
+    .replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+}
+// {ok, title, lines, button, go} from a page made by htmlPage. Lines with an address are left out.
+function fdJson(p) {
+  const x = p.extraHtml;
+  const lines = [], re = /<p\b[^>]*>([\s\S]*?)<\/p>/gi;
+  let m;
+  while ((m = re.exec(x))) { const t = fdText(m[1]); if (t && !t.includes("@")) lines.push(t); }
+  const b = /<form\b[\s\S]*?<button\b[^>]*>([\s\S]*?)<\/button>/i.exec(x);
+  const a = /<a\b[^>]*href="(https:\/\/agsist\.com[^"]*)"[^>]*>([\s\S]*?)<\/a>/i.exec(x);
+  const title = fdText(p.msg);
+  return { ok: p.status < 400 && !/isn't valid|has expired|no longer on file|no longer works/i.test(title), title, lines,
+    button: b ? fdText(b[1]) : null, go: a ? { href: a[1].replace(/&amp;/g, "&"), text: fdText(a[2]) } : null };
+}
+// GET or POST /fd/<route>?<params>: the route run as its link would, answered in JSON.
+async function fdRoute(req, env, url) {
+  const route = url.pathname.slice(3);
+  const h = Object.assign({ "Cache-Control": "no-store", "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff" }, cors(req));
+  if (!FD_ROUTES.has(route) || (req.method !== "GET" && req.method !== "POST")) return json({ ok: false, error: "not found" }, 404, h);
+  const u = new URL(url.href);
+  u.pathname = route;
+  const hd = new Headers();
+  for (const k of ["CF-Connecting-IP", "Origin", "User-Agent"]) if (req.headers.get(k)) hd.set(k, req.headers.get(k));
+  const r = await handle(new Request(u.href, { method: req.method, headers: hd }), env);
+  const p = r && r[FD_PAGE];
+  if (!p) return json({ ok: false, error: r && r.status === 429 ? "busy" : "error" }, r && r.status >= 400 ? r.status : 500, h);
+  return json(fdJson(p), 200, h);
 }
 // v5.13: the confirm, unsubscribe and sponsor pages carry e= and t= in their
 // address. No script, no framing, no referrer, no caching. Inline style
@@ -1510,7 +1631,9 @@ async function formRateOk(req, env) {
 }
 
 // v5.14: Rain Print short links. rps:<id> = a plain design code, no expiry.
-const RPS_LEN = 5, RPS_MAX_LEN = 8;      // 5 keeps HTTPS://AGSIST.COM/R?<id> at 26 bytes: QR version 2, 25 x 25
+// v5.51 (2026-10-22): new ids are 8 letters (32^8 guesses, not 32^5): HTTPS://AGSIST.COM/R?<id> is 29 bytes,
+// QR version 3, 29 x 29. Ids made before (5 letters, 6 to 7 after a collision) keep working and keep their code.
+const RPS_OLD_LEN = 5, RPS_LEN = 8, RPS_MAX_LEN = 8;
 const RPS_MAX_BYTES = 1024;
 const RPS_B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";   // Crockford: no I L O U
 const RPS_ID_RE = /^[0-9A-HJKMNP-TV-Z]{5,8}$/;
@@ -1591,6 +1714,13 @@ const RPL_ID_RE = /^[0-9a-hjkmnp-tv-z]{12}$/;
 function rplNew() {
   let s = "";
   for (const x of crypto.getRandomValues(new Uint8Array(12))) s += RPL_B32[x & 31];
+  return s;
+}
+// v5.47: a logo's own id, from its bytes (the page makes the same one)
+async function rplContentId(buf) {
+  const h = new Uint8Array(await crypto.subtle.digest("SHA-256", buf));
+  let s = "";
+  for (let i = 0; i < 12; i++) s += RPL_B32[h[i] & 31];
   return s;
 }
 function rplId(v) {
@@ -2197,9 +2327,13 @@ const RPO_PRINTS = ["print12x18", "framed12x18"];
 const RPO_URL_RE = /^https:\/\/agsist\.com\/rain-print\?[A-Za-z0-9%+._~=&-]+$/;
 // The ref Stripe gets (components/rain-print.js checkoutRef): a design code,
 // GIFT-<code>, RPS-<short id> or GIFT-RPS-<short id>, 200 characters at most.
+// v5.47: or RPH-<10> / GIFT-RPH-<10>, a hash of a long design's code made by
+// the page when no short link could be had (the worker out); the design
+// itself came by the press record or the backup form.
+const RPO_RPH_RE = /^(GIFT-)?RPH-[0-9A-HJKMNP-TV-Z]{10}$/;
 function rpoRefOk(ref) {
   if (typeof ref !== "string" || !ref || ref.length > 200) return false;
-  if (/^(GIFT-)?RPS-[0-9A-HJKMNP-TV-Z]{5,8}$/.test(ref)) return true;
+  if (/^(GIFT-)?RPS-[0-9A-HJKMNP-TV-Z]{5,8}$/.test(ref) || RPO_RPH_RE.test(ref)) return true;
   return rpsCodeOk(ref.replace(/^GIFT-/, ""));
 }
 function rpoClean(b) {
@@ -2285,39 +2419,79 @@ function rpoFulfill(r, serial) {
 // written into the record, so they stay once the session is past the window.
 async function rpoList(env, days) {
   const now = Date.now(), since = now - days * 86400e3;
-  const recs = [];
+  // v5.47: every record is read (the serials and the sessions already paid are checked across all of them); the window is for the answer
+  const all = [];
   for (const k of await listKeys(env, "rpo:")) {
     if (!RPO_KEY_RE.test(k)) continue;
     let r = null;
     try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
-    if (r && typeof r === "object" && (r.ts || 0) >= since) { r.key = k; recs.push(r); }
+    if (r && typeof r === "object") { r.key = k; all.push(r); }
   }
-  recs.sort((a, b) => (a.ts || 0) - (b.ts || 0));
+  all.sort((a, b) => (a.ts || 0) - (b.ts || 0) || (a.key < b.key ? -1 : 1));
+  let recs = all.filter(r => (r.ts || 0) >= since);
   let stripe = "no key", sessions = null;
   if (typeof env.STRIPE_READ_KEY === "string" && env.STRIPE_READ_KEY) {
     try {
-      const oldest = recs.length ? recs[0].ts : now;
+      // v5.47: at least the whole window, so a payment made while the worker was out (no press on record) is found too
+      const oldest = Math.min(recs.length ? recs[0].ts : now, since);
       sessions = await rpoSessions(env, Math.floor(oldest / 1000) - 60);
       stripe = "ok";
     } catch (e) { stripe = "could not be read (" + (e && e.message || "error") + ")"; sessions = null; }
   }
   const changed = new Set();
   if (sessions) {
-    const used = new Set(recs.filter(r => r.paid && r.paid.session).map(r => r.paid.session));
+    const used = new Set(all.filter(r => r.paid && r.paid.session).map(r => r.paid.session));
     for (const s of sessions.filter(x => x.paid && x.ref && !used.has(x.id)).sort((a, b) => a.created - b.created)) {
-      const hit = rpoMatch(recs, s);
+      let hit = rpoMatch(recs, s);
+      /* v5.47: paid in Stripe with a design ref and no press on record (the
+         press post never came: the worker was out, Oct 21): the record is
+         made from Stripe's own, as the webhook does, under the same key. */
+      if (!hit && rpoRefOk(s.ref)) {
+        hit = await rpoFromSession(s);
+        if (all.some(r => r.key === hit.key)) continue;
+        all.push(hit); recs.push(hit);
+      }
       if (!hit) continue;
       hit.paid = rpoPaid(s, "poll");
+      used.add(s.id);
       changed.add(hit);
     }
   }
-  let last = await rpoSerialLast(env);
-  const lastBefore = last;
-  for (const r of recs) {
-    if (r.paid && RPO_PRINTS.includes(r.product) && !r.serial) { r.serial = ++last; changed.add(r); }
+  // v5.47: one record per paid session (two deliveries at once could each keep one): a record with a press first, then the oldest key
+  const bySession = new Map();
+  for (const r of all) {
+    const sid = r.paid && r.paid.session;
+    if (!sid) continue;
+    const o = bySession.get(sid);
+    if (!o || (o.no_press && !r.no_press)) bySession.set(sid, r);
   }
-  if (last !== lastBefore) await env.SUBS.put("rpo-serial", JSON.stringify({ last }));
+  const dup = (r) => !!(r.paid && r.paid.session && bySession.get(r.paid.session) !== r);
+  /* v5.47: SERIALS ARE UNIQUE. KV has no atomic add, so two webhooks at once
+     (a burst of orders) can each read the same counter. This pass, which is
+     what Sig's alert, the email job and the Today page all read, is the one
+     place serials are settled: across every record, in the order paid, a
+     serial already held by an earlier one is taken off the later one, and
+     every paid print without one gets the next after the highest in use (or
+     the counter, whichever is higher). Two passes that see the same records
+     settle them the same way. */
+  const prints = all.filter(r => r.paid && RPO_PRINTS.includes(r.product) && !dup(r))
+    .sort((a, b) => (Date.parse(a.paid.at) || 0) - (Date.parse(b.paid.at) || 0) || (a.key < b.key ? -1 : 1));
+  const held = new Set();
+  let top = 0;
+  for (const r of prints) {
+    if (!r.serial) continue;
+    if (held.has(r.serial)) { r.serial = null; changed.add(r); continue; }
+    held.add(r.serial); top = Math.max(top, r.serial);
+  }
+  const counter = await rpoSerialLast(env);
+  let last = Math.max(counter, top);
+  for (const r of prints) {
+    if (!r.serial) { r.serial = ++last; changed.add(r); }
+  }
+  // the records hold the serials; a counter write KV refuses (just written by a webhook) is caught up on the next pass
+  if (last !== counter) { try { await env.SUBS.put("rpo-serial", JSON.stringify({ last })); } catch (e) { /* next pass */ } }
   for (const r of changed) { const k = r.key; delete r.key; await rpoPut(env, k, r); r.key = k; }
+  recs = recs.filter(r => !dup(r)).sort((a, b) => (a.ts || 0) - (b.ts || 0));
   // Without Stripe, a print's suggested serial: the next free ones, in the order pressed.
   let next = last;
   const toks = {};
@@ -2366,6 +2540,26 @@ async function stripeSigProblem(header, raw, secret, nowS) {
   const want = await hmacHex(secret, t + "." + raw);
   return v1.some(v => safeEq(v, want)) ? "" : "bad signature";
 }
+/* v5.47: the record for a paid session with no press on record, from Stripe's
+   own: the key comes from the session (rpo:<created ms>:<8 hex of SHA-256 of
+   the session id>), so the webhook, a retry of it and the poll all write the
+   same record, never two. A design code as the ref is the whole design: its
+   link, place, year, style and name are read from it. RPS- opens through the
+   short link; RPH- has no design here (it came to Sig by the backup form).
+   Nothing about the buyer. */
+async function rpoFromSession(s) {
+  const ts = s.created * 1000;
+  const h = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s.id)));
+  const hex = [...h.slice(0, 4)].map(v => v.toString(16).padStart(2, "0")).join("");
+  const okRef = rpoRefOk(s.ref), rph = okRef && RPO_RPH_RE.test(s.ref);
+  const f = okRef && !rph && !/RPS-/.test(s.ref) ? rpgFields(s.ref) : null;
+  const v2 = f && f[0] === "2";
+  return { key: "rpo:" + ts + ":" + hex, ts, ref: okRef ? s.ref : "", product: RPO_PRODUCT_BY_CENTS[s.sub] || "", price: s.sub / 100,
+    design_url: okRef && !rph ? "https://agsist.com/rain-print?d=" + s.ref : "",
+    place: f ? oneLine(f[1], 80) : "", year: f && /^\d{4}$/.test(f[3]) ? Number(f[3]) : null,
+    style: v2 && f[4] ? ("abcdefgh".indexOf(f[4][4]) >= 4 ? "r2" : "r1") : "", name: f ? oneLine(f[5], 60) : "", markers: "",
+    dedication: "", gift: /^GIFT-/.test(s.ref), no_press: !f, from_stripe: true, design_by: rph ? "backup form" : "" };
+}
 async function rpoWebhookSession(env, x) {
   const s = { id: String(x.id || ""), ref: typeof x.client_reference_id === "string" ? x.client_reference_id : "",
     total: Number(x.amount_total) || 0, sub: Number(x.amount_subtotal) || Number(x.amount_total) || 0, created: Number(x.created) || Math.floor(Date.now() / 1000) };
@@ -2380,20 +2574,17 @@ async function rpoWebhookSession(env, x) {
     if (r && typeof r === "object") { r.key = k; recs.push(r); }
   }
   if (recs.some(r => r.paid && r.paid.session === s.id)) { await env.SUBS.put(evKey, "1", { expirationTtl: RPO_TTL_S }); return { already: true }; }
-  let hit = rpoMatch(recs, s);
-  if (!hit) {
-    // paid with no press on record (a bare payment link, or the press post was lost): kept so Sig still sees it
-    const ts = s.created * 1000;
-    const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(v => v.toString(16).padStart(2, "0")).join("");
-    const okRef = rpoRefOk(s.ref);
-    hit = { key: "rpo:" + ts + ":" + rnd, ts, ref: okRef ? s.ref : "", product: RPO_PRODUCT_BY_CENTS[s.sub] || "", price: s.sub / 100,
-      design_url: okRef ? "https://agsist.com/rain-print?d=" + s.ref : "", place: "", year: null, style: "", name: "", markers: "",
-      dedication: "", gift: /^GIFT-/.test(s.ref), no_press: true };
-  }
+  // paid with no press on record (a bare payment link, or the press post was lost): kept so Sig still sees it (v5.47: rpoFromSession)
+  const hit = rpoMatch(recs, s) || await rpoFromSession(s);
   hit.paid = rpoPaid(s, "webhook");
+  /* A print's serial at once, for the alert. v5.47: the next after the
+     counter or the highest on record, whichever is higher, and a counter
+     write KV refuses (one write a second to a key, a burst) leaves it to
+     the list pass, which settles every serial (rpoList) before Sig sees one. */
   if (RPO_PRINTS.includes(hit.product) && !hit.serial) {
-    hit.serial = (await rpoSerialLast(env)) + 1;
-    await env.SUBS.put("rpo-serial", JSON.stringify({ last: hit.serial }));
+    const top = recs.reduce((m, r) => Math.max(m, Number.isInteger(r.serial) ? r.serial : 0), 0);
+    hit.serial = Math.max(await rpoSerialLast(env), top) + 1;
+    try { await env.SUBS.put("rpo-serial", JSON.stringify({ last: hit.serial })); } catch (e) { hit.serial = null; }
   }
   const k = hit.key; delete hit.key;
   await rpoPut(env, k, hit);
@@ -2409,7 +2600,7 @@ async function rpoDispatch(env) {
   try {
     const r = await fetch("https://api.github.com/repos/dnilgis/agsist/actions/workflows/rp-buyer-email.yml/dispatches", {
       method: "POST",
-      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-subs", "Content-Type": "application/json" },
+      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-api", "Content-Type": "application/json" },
       body: JSON.stringify({ ref: "main", inputs: { dry_run: env.RP_BUYER_EMAIL_LIVE === "1" ? "false" : "true" } }),
     });
     return r.status === 204 ? "started" : "HTTP " + r.status;
@@ -2434,7 +2625,7 @@ async function rprDispatch(env) {
   try {
     const r = await fetch("https://api.github.com/repos/dnilgis/agsist/actions/workflows/rp-design-email.yml/dispatches", {
       method: "POST",
-      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-subs", "Content-Type": "application/json" },
+      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-api", "Content-Type": "application/json" },
       body: JSON.stringify({ ref: "main", inputs: { dry_run: env.RP_DESIGN_EMAIL_LIVE === "1" ? "false" : "true" } }),
     });
     return r.status === 204 ? "started" : "HTTP " + r.status;
@@ -2448,10 +2639,12 @@ export default {
       return await handle(req, env);
     } catch (e) {
       if (!(e instanceof NoSecretError)) throw e;
-      console.error("agsist-subs: " + e.message);
+      console.error("subs worker: " + e.message);
       // The link pages (confirm, unsubscribe, sponsor) answer in HTML; the page
       // POSTs and the token routes in JSON.
       const u = new URL(req.url);
+      if (u.pathname.startsWith("/fd/"))
+        return json({ ok: false, error: "temporarily unavailable" }, 503, Object.assign({ "Cache-Control": "no-store" }, cors(req)));
       if (!PUBLIC_POSTS.has(u.pathname) && !u.searchParams.has("token") && !req.headers.get("Authorization"))
         return new Response("<!doctype html><meta charset=utf-8><title>AGSIST</title><h2>This page is not working right now. Try again later.</h2>",
           { status: 503, headers: Object.assign({ "Content-Type": "text/html;charset=utf-8" }, PAGE_HEADERS) });
@@ -2789,6 +2982,9 @@ async function handle(req, env) {
       });
     }
 
+    // v5.48: the front door. agsist.com/e asks here; old links below work as before.
+    if (path.startsWith("/fd/")) return fdRoute(req, env, url);
+
     // v5.19: the reader's own town, from Cloudflare's request data. Nothing kept.
     if (path === "/where" && req.method === "GET") {
       const cf = req.cf || {}, h = Object.assign({ "Cache-Control": "private, no-store" }, cors(req));
@@ -2809,7 +3005,7 @@ async function handle(req, env) {
     let linkVia = null;
     if (Object.prototype.hasOwnProperty.call(LINK_TAILS, path) && url.searchParams.has("k") && !url.searchParams.has("e")) {
       linkVia = await linkResolve(env, url, path);
-      if (!linkVia) return htmlPage("That link isn't valid.", "", 403);
+      if (!linkVia) return LINK_STOPS.has(path) ? stopInvalid(403) : htmlPage("That link isn't valid.", "", 403);
     }
     const act = (e, t, mid, end) => path + (linkVia
       ? "?k=" + linkVia.k + (mid || "") + "&t=" + encodeURIComponent(linkVia.t)
@@ -2898,7 +3094,7 @@ async function handle(req, env) {
       const t = url.searchParams.get("t") || "";
       const one = url.searchParams.get("topic") ? noticeTopic(url.searchParams.get("topic"), true) : "";
       const valid = EMAIL_RE.test(e) && await unsubOk(env, e, t);
-      if (!valid || one === null) return htmlPage("That unsubscribe link isn't valid.");
+      if (!valid || one === null) return stopInvalid();
       if (req.method === "GET") {
         const action = act(e, t, "", one ? "&topic=" + encodeURIComponent(one) : "");
         return htmlPage(one ? (LIST_ASK[one] || "Stop this notice for this address?") : "Stop every AGSIST notice for this address?",
@@ -2958,7 +3154,7 @@ async function handle(req, env) {
       const valid = EMAIL_RE.test(e) && await unsubOk(env, e, t);
       const isAlert = path === "/alert-unsubscribe";
 
-      if (!valid) return htmlPage("That unsubscribe link isn't valid.");
+      if (!valid) return stopInvalid();
 
       if (req.method === "GET") {
         const action = act(e, t);
@@ -3098,7 +3294,7 @@ async function handle(req, env) {
       const fOk = conf ? /^\d{5}$/.test(f) : (f === "" || /^\d{5}$/.test(f));
       // v5.13: a confirm needs the secret (503 without it); a stop link always works (unsubOk).
       const tokOk = conf ? safeEq(t, await hmac16(e + "|c|" + f, env.UNSUB_SECRET)) : await unsubOk(env, e + (f ? "|w|" + f : "|w"), t);
-      if (!(EMAIL_RE.test(e) && fOk && tokOk)) return htmlPage("That link isn't valid.");
+      if (!(EMAIL_RE.test(e) && fOk && tokOk)) return conf ? htmlPage("That link isn't valid.") : stopInvalid();
       const action = act(e, t, f ? "&f=" + f : "");
       if (req.method === "GET") {
         return htmlPage(
@@ -3387,7 +3583,7 @@ async function handle(req, env) {
       const wOk = conf ? /^[a-f0-9]{8,16}$/.test(w) : (w === "" || /^[a-f0-9]{8,16}$/.test(w));
       // v5.13: a confirm needs the secret (503 without it); a stop link always works (unsubOk).
       const tokOk = conf ? safeEq(t, await hmac16(e + "|ec|" + w, env.UNSUB_SECRET)) : await unsubOk(env, e + (w ? "|ew|" + w : "|ew"), t);
-      if (!(EMAIL_RE.test(e) && wOk && tokOk)) return htmlPage("That link isn't valid.");
+      if (!(EMAIL_RE.test(e) && wOk && tokOk)) return conf ? htmlPage("That link isn't valid.") : stopInvalid();
       const rPeek = await getEWatch(e);
       const label = (w && (rPeek.pend[w] || rPeek.w[w] || {}).label) || "this elevator";
       const action = act(e, t, w ? "&w=" + w : "");
@@ -3524,7 +3720,7 @@ async function handle(req, env) {
       const pOk = conf ? /^[a-f0-9]{8,16}$/.test(p) : (p === "" || /^[a-f0-9]{8,16}$/.test(p));
       // v5.13: a confirm needs the secret (503 without it); a stop link always works (unsubOk).
       const tokOk = conf ? safeEq(t, await hmac16(e + "|pc|" + p, env.UNSUB_SECRET)) : await unsubOk(env, e + (p ? "|pw|" + p : "|pw"), t);
-      if (!(EMAIL_RE.test(e) && pOk && tokOk)) return htmlPage("That link isn't valid.");
+      if (!(EMAIL_RE.test(e) && pOk && tokOk)) return conf ? htmlPage("That link isn't valid.") : stopInvalid();
       const rPeek = await getPWatch(e);
       const label = (p && (rPeek.pend[p] || rPeek.w[p] || {}).label) || "this alert";
       const action = act(e, t, p ? "&p=" + p : "");
@@ -3779,6 +3975,11 @@ async function handle(req, env) {
       const code = b.code;
       if (!rpsCodeOk(code)) return json({ ok: false, error: "invalid code" }, 400, c);
       const full = await rpsHash(code);
+      // v5.51: a code that already has a shorter id (made before Oct 22) keeps it; only new ids are 8 letters
+      for (let len = RPS_OLD_LEN; len < RPS_LEN; len++) {
+        const id = full.slice(0, len);
+        if (await env.SUBS.get("rps:" + id) === code) return json({ ok: true, id }, 200, c);
+      }
       for (let len = RPS_LEN; len <= RPS_MAX_LEN; len++) {
         const id = full.slice(0, len), have = await env.SUBS.get("rps:" + id);
         if (have === code) return json({ ok: true, id }, 200, c);
@@ -3828,7 +4029,16 @@ async function handle(req, env) {
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
       // 60 random bits: two uploads never meet, so nothing is read back first
-      const id = rplNew();
+      let id = rplNew();
+      /* v5.47: ?id= is a logo the page kept while the worker was out, already
+         named in a design: taken only when it is this PNG's own id (12 letters
+         from SHA-256 of the bytes, components/rp-logo.js contentId). */
+      const want = url.searchParams.get("id");
+      if (want !== null) {
+        const own = await rplContentId(buf);
+        if (rplId(want) !== own) return json({ ok: false, error: "id is not this logo's" }, 400, c);
+        id = own;
+      }
       await env.SUBS.put("rpl:" + id, buf, { expirationTtl: RPL_TTL_S, metadata: { w: png.w, h: png.h, ts: Date.now() } });
       return json({ ok: true, id, w: png.w, h: png.h }, 200, c);
     }
@@ -3999,7 +4209,7 @@ async function handle(req, env) {
       let rec = null;
       if (key) try { rec = JSON.parse(await env.SUBS.get(key)); } catch (e) { rec = null; }
       if (!rec) { rpgMemMiss(req); return json({ ok: false, error: "We don't know that code. Check it against the card." }, 404, c); }
-      if (rec.status === "void") return json({ ok: false, error: "This card is no longer active. Write to sig@farmers1st.com." }, 410, c);
+      if (rec.status === "void") return json({ ok: false, error: "This card is no longer active. Write to sig@agsist.com." }, 410, c);
       if (rpgPrepaid(rec)) return json({ ok: false, error: "This gift is already paid for and on its way. There is nothing to fill in." }, 409, c);   // v5.40
       if (rec.status === "redeemed") return json({ ok: false, error: "This card was used on " + rpgDay(rec.redeemed_ts) + "." }, 409, c);
       if (rec.status === "pending" && Date.now() - (rec.pending_ts || 0) <= RPG_PENDING_MS)
@@ -4209,7 +4419,7 @@ async function handle(req, env) {
     }
     if (path === "/rp-remind/stop" && (req.method === "GET" || req.method === "POST")) {
       const k = url.searchParams.get("k") || "", t = url.searchParams.get("t") || "";
-      if (!RPR_KEY_RE.test(k) || !safeEq(t, await rprStopToken(env, k))) return htmlPage("That link isn't valid.");
+      if (!RPR_KEY_RE.test(k) || !safeEq(t, await rprStopToken(env, k))) return stopInvalid();
       if (req.method === "GET") {
         return htmlPage("Stop the reminder about this Rain Print?",
           "<form method=\"POST\" action=\"/rp-remind/stop?k=" + encodeURIComponent(k) + "&t=" + encodeURIComponent(t) + "\">" +
@@ -4362,13 +4572,30 @@ async function handle(req, env) {
         if (t.length > ELEV_NOTE_MAX) return json({ ok: false, error: "note too long (" + ELEV_NOTE_MAX + " at most)" }, 400, c);
         set.note = t || null;
       }
+      /* v5.50: WHEN IT WAS TYPED, NOT WHEN IT ARRIVED. A save kept on the
+         elevator's phone while this worker was blocked (agsist.com/post,
+         components/outbox.js) comes later with entered_at, the time the
+         manager pressed Save. That time is what is stored and shown, so a
+         late price reads as old ("Updated 6:10 AM Wed"), never as new. A
+         save typed before the listing's newest change is refused (409,
+         nothing stored): a delayed save never overwrites a newer one. No
+         entered_at: now, as before. */
+      const nowMs = Date.now();
+      let atMs = nowMs;
+      if (b.entered_at !== undefined && b.entered_at !== null) {
+        const t = typeof b.entered_at === "number" ? b.entered_at : Date.parse(String(b.entered_at));
+        if (!Number.isFinite(t) || t < nowMs - ELEV_LATE_MAX_MS) return json({ ok: false, error: "entered_at is not a time in the last 31 days" }, 400, c);
+        atMs = Math.min(t, nowMs);   // a phone clock ahead of ours never dates a save in the future
+      }
+      const newest = Math.max(Date.parse(rec.bids_updated_at || "") || 0, Date.parse(rec.info_updated_at || "") || 0);
+      if (atMs < newest) return json({ ok: false, error: "A newer save from this elevator is already posted, so this older one was not used.", newer: true, record: elevPublic(rec) }, 409, c);
       if (b.closed_today !== undefined) {
         if (typeof b.closed_today !== "boolean") return json({ ok: false, error: "closed_today must be true or false" }, 400, c);
-        set.closed_until = b.closed_today ? elevEndOfDayCT(Date.now()) : null;
+        set.closed_until = b.closed_today ? elevEndOfDayCT(atMs) : null;
       }
       const noChange = b.no_change === true;
       if (!Object.keys(set).length && !noChange) return json({ ok: false, error: "nothing to save" }, 400, c);
-      const now = new Date().toISOString();
+      const now = new Date(atMs).toISOString();
       let bidsMoved = noChange, infoMoved = false;
       for (const f of Object.keys(set)) {
         if (JSON.stringify(set[f]) === JSON.stringify(rec[f] === undefined ? null : rec[f])) continue;

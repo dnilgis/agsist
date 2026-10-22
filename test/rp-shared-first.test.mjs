@@ -65,7 +65,7 @@ async function mocks(ctx, opts) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
     const u = new URL(r.request().url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (r.request().method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       const m = /^\/rp-short\/([0-9A-Z]{5,8})$/.exec(u.pathname);
       if (m) return m[1] === "K7Q2M" ? r.fulfill({ status: 200, headers: h, json: { code: CODE } }) : r.fulfill({ status: 404, headers: h, json: { missing: true } });
@@ -87,19 +87,27 @@ async function mocks(ctx, opts) {
     return r.abort();
   });
 }
-function serve() {
+/* split: the page's HTML comes in two parts, the second 800 ms later, cut just before the Layers card (the parser
+   stops there, the way a busy phone or CI runner stops halfway) */
+function serve(split = false) {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".woff2": "font/woff2", ".html": "text/html", ".svg": "image/svg+xml", ".jpg": "image/jpeg", ".png": "image/png", ".webp": "image/webp" };
   const srv = createServer((req, res) => {
     const u = new URL(req.url, "http://x");
     const p = normalize(join(ROOT, decodeURIComponent(u.pathname)));
     if (!p.startsWith(ROOT) || !existsSync(p)) { res.writeHead(404); res.end(); return; }
+    if (split && u.pathname === "/rain-print.html") {
+      const h = readFileSync(p, "utf8"), cut = h.indexOf('<section class="rp-step rp-layers"');
+      res.writeHead(200, { "content-type": "text/html" }); res.write(h.slice(0, cut));
+      setTimeout(() => res.end(h.slice(cut)), 800);
+      return;
+    }
     res.writeHead(200, { "content-type": types[extname(p)] || "application/octet-stream" });
     res.end(readFileSync(p));
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-async function withPage(fn, { width = 390, height = 844, maker = false, ...opts } = {}) {
-  const srv = await serve(), port = srv.address().port;
+async function withPage(fn, { width = 390, height = 844, maker = false, split = false, ...opts } = {}) {
+  const srv = await serve(split), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const ctx = await browser.newContext({ viewport: { width, height }, serviceWorkers: "block", hasTouch: width < 900, isMobile: false });
@@ -145,7 +153,8 @@ for (const [label, q] of [["?d=<code>", "?d=" + CODE], ["?d=GIFT-<code>", "?d=GI
       assert.match(L.svg, /2012/, "the print drawn is the shared one");
       assert.doesNotMatch(L.svg, /Johnson|For Dad|Hail/, "no example words on a design from a link");
       assert.ok(L.h1.top > L.art.bottom && L.photo.top > L.art.bottom, "the headline and the photo come after the print");
-      assert.ok(L.place.top > L.h1.top, "the steps follow the headline");
+      // 2026-10-22 (Sig: tool first on links with a place, headline and photo below): the steps come before the headline
+      assert.ok(L.place.top < L.h1.top, "the steps follow the print, the headline after them");
       // no jump: the print's box never moved or resized once it was on screen, and nothing shifted
       assert.equal(new Set(L.tops).size, 1, "the print's box held still: " + L.tops.join(" "));
       assert.ok(L.cls < 0.005, `layout shift ${L.cls.toFixed(4)}: ${L.shifts.join(" | ")}`);
@@ -206,7 +215,9 @@ test("an ordinary visit keeps its order and never shows the line", { skip }, asy
     assert.deepEqual(d, ["block", w < 900 ? "flex" : "grid"], "the wrapper adds no layout of its own");
     // the first screen as it was: the headline at the top, the photo, then the print (390: 954 px; 1280: 492 px, both before this change).
     // 2026-10-19 (board B): the Christmas line names last year by Christmas and this year in January, two lines longer at 390 (1019)
-    assert.equal(L.art.top, w < 900 ? 1019 : 492, `${w}: the print's box where it always was`);
+    // 2026-10-22 (the layout rebuild): the print's wall is slimmer above the frame (8 px on a phone, 18 on a laptop), so
+    // the box sits 14 px (390) and 4 px (1280) higher; the order is the same
+    assert.equal(L.art.top, w < 900 ? 1005 : 488, `${w}: the print's box where it always was`);
     assert.deepEqual(errors, []);
   }, { width: w, height: h });
 });
@@ -228,3 +239,21 @@ test("links that keep the ordinary order: a damaged code, an unknown short link,
     assert.deepEqual(errors, [], what);
   }, { maker });
 });
+
+/* 2026-10-22: a design link or a place link shows the head out of source order on a phone (the print and the steps
+   before the headline, Layers before the town box; a place link too, held the same way). A frame painted while the HTML was half in put the town box and
+   the headline where the rest then pushed them down (CI: "layout shift 0.1011: rp-where:600>0", about 1 in 10 under
+   load). The page holds its first paint until the head is all in (rain-print.html, link rel=expect). */
+for (const [label, q] of [["?d=<code>", "?d=" + CODE], ["?d=RPS-<id>", "?d=RPS-K7Q2M"]]) {
+  test(`phone, ${label}, the page arriving in two parts: nothing on screen moves`, { skip }, async () => {
+    await withPage(async (page, base, errors) => {
+      await page.goto(base + "/rain-print.html" + q);
+      await idle(page);
+      await page.waitForTimeout(800);
+      const L = await layout(page);
+      assert.ok(L.cls < 0.005, `layout shift ${L.cls.toFixed(4)}: ${L.shifts.join(" | ")}`);
+      assert.equal(new Set(L.tops).size, 1, "the print's box held still: " + L.tops.join(" "));
+      assert.deepEqual(errors, []);
+    }, { split: true });
+  });
+}

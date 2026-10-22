@@ -113,13 +113,159 @@ on:
         description: "Sent by the price loop, not by a person. A heartbeat NEVER waits and NEVER overrides the morning floor — it behaves exactly as the old push trigger was meant to. Leave this false when you are the one clicking Run workflow."
         type: boolean
         default: false
+      test_to_sig:
+        description: "Send the newest Daily to Sig only (SIG_TEST_EMAILS, else SIG_TO), read from the private copy of the list as when the worker is blocked. Generates nothing, publishes nothing, sets no day flag; the morning run still goes to everyone."
+        type: boolean
+        default: false
+      format:
+        description: "The Daily email's format. v2 = the rebuilt Daily (scripts/daily_v2.py, live since Oct 22 2026). current = the old format, the one-input rollback. A scheduled run reads the repo variable DAILY_FORMAT (unset = v2), so setting that variable to current rolls the morning send back too."
+        type: choice
+        options: [v2, current]
+        default: v2
 
 jobs:
+  # SIG'S TEST COPY OF THE BACKUP-MODE DAILY (2026-10-22). Run workflow with
+  # test_to_sig ticked: the newest issue already published goes to
+  # SIG_TEST_EMAILS (else SIG_TO) only, with the list read from the private
+  # copy (LIST_SOURCE=backup, the path every sender takes when the subs worker
+  # is blocked): mailto stop link, "Reply STOP" footer, no worker link. No day
+  # flag is read or set, so the morning run is untouched.
+  # PRINT OF THE DAY, for Sig's v2 test copy only (format v2, send_email
+  # ticked). Picks the place (scripts/print_of_day.py), draws its Rain Print
+  # with the county print engine in headless Chromium
+  # (scripts/render_print_of_day.mjs), puts the PNG on agsist.com
+  # (daily/img/print-<date>.png, about 20 KB) and waits until agsist.com serves
+  # those exact bytes. Any failure: no picture, and the email leaves the slot
+  # out. It never stops the email. Commits only that one file, onto main.
+  print-of-day:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.test_to_sig == true && inputs.send_email == true && inputs.format != 'current' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    outputs:
+      pick: ${{ steps.live.outputs.pick }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Pick the place and draw its print
+        id: draw
+        continue-on-error: true
+        run: |
+          pip install -q pillow==12.3.0
+          npm install --silent --prefix "$RUNNER_TEMP/pw" playwright@1.56.1 >/dev/null
+          "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium >/dev/null
+          d=$(TZ=America/Chicago date +%F)
+          python3 scripts/print_of_day.py --date "$d" --out "$RUNNER_TEMP/pick.json"
+          PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" node scripts/render_print_of_day.mjs "$RUNNER_TEMP/pick.json" "daily/img/print-$d.png"
+          python3 scripts/print_of_day.py --compress "daily/img/print-$d.png"
+          echo "date=$d" >> "$GITHUB_OUTPUT"
+      - name: Put the picture on agsist.com and wait until it is served
+        id: live
+        if: ${{ steps.draw.outcome == 'success' }}
+        continue-on-error: true
+        timeout-minutes: 15
+        run: |
+          d="${{ steps.draw.outputs.date }}"; f="daily/img/print-$d.png"
+          cp "$f" "$RUNNER_TEMP/print.png"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for i in 1 2 3; do
+            git fetch -q origin main && git checkout -q -B pod origin/main && mkdir -p daily/img && cp "$RUNNER_TEMP/print.png" "$f" \
+              && git add "$f" && { git diff --cached --quiet || git commit -q -m "Daily print of the day $d"; } \
+              && git push -q origin HEAD:main && break
+            echo "push attempt $i failed; retrying"; sleep 15
+          done
+          url="https://agsist.com/$f"
+          for i in $(seq 1 40); do
+            if curl -fsS -o "$RUNNER_TEMP/live.png" "$url" && cmp -s "$RUNNER_TEMP/live.png" "$RUNNER_TEMP/print.png"; then
+              python3 -c "import json,sys; p=json.load(open(sys.argv[1])); p['image_url']=sys.argv[2]; print('pick='+json.dumps(p,separators=(',',':')))" "$RUNNER_TEMP/pick.json" "$url" >> "$GITHUB_OUTPUT"
+              echo "live: $url"; exit 0
+            fi
+            sleep 15
+          done
+          echo "::warning::the print of the day was not served by agsist.com within 10 minutes; the email leaves the slot out"
+
+  test-to-sig:
+    needs: [print-of-day]
+    if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.test_to_sig == true }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: The list source and link checks
+        run: |
+          python3 scripts/list_source.py --selftest
+          python3 scripts/email_links.py --selftest
+      # v2 only: the print picked above, and the saved fact check of the issue
+      # being sent (the raw branch keeps every run's), which daily_v2.check()
+      # reads to block a wrong number in the subject, headline or lead.
+      - name: The print of the day and the saved fact check (v2)
+        if: ${{ inputs.format != 'current' }}
+        continue-on-error: true
+        env:
+          PICK: ${{ needs.print-of-day.outputs.pick }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          if [ -n "$PICK" ]; then printf '%s' "$PICK" > "$RUNNER_TEMP/print-of-day.json"; else echo "no print of the day: the slot is left out"; fi
+          d=$(ls data/daily-archive/????-??-??.json | sort | tail -1 | xargs basename | cut -c1-10)
+          bash scripts/fetch_private.sh raw || exit 0
+          f=$(git ls-tree --name-only origin/raw daily-fact-check/ | grep "/$d-" | sort -t- -k4,4n | tail -1)
+          if [ -n "$f" ]; then git show "origin/raw:$f" > "$RUNNER_TEMP/fact-check.json"; echo "saved fact check: $f"; else echo "no saved fact check for $d"; fi
+      - name: Send the Daily to Sig only, from the private copy of the list
+        # the same send_email tick every mailer step needs (test_daily_schedule.py)
+        if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
+        env:
+          TEST_TO_SIG:  '1'
+          DAILY_FORMAT: ${{ inputs.format || vars.DAILY_FORMAT || 'v2' }}
+          PRINT_OF_DAY: ${{ runner.temp }}/print-of-day.json
+          FACT_CHECK_JSON: ${{ runner.temp }}/fact-check.json
+          LIST_SOURCE:  backup
+          LOCAL_BIDS:   '1'
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
+          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+          LIST_URL:     ${{ secrets.LIST_URL }}
+          LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          FROM_NAME:    ${{ secrets.FROM_NAME }}
+          REPLY_TO:     ${{ secrets.REPLY_TO }}
+          SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
+          SIG_TO:       ${{ secrets.SIG_TO }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: python scripts/send_daily.py
+
   # If a manual run already generated today's briefing, the scheduled morning
   # run skips regeneration entirely. The Friday 20:00 UTC post-close regen is
   # exempt (hour >= 14) — it exists to overwrite the morning file on purpose.
   # Manual dispatches always run.
   gate:
+    # test_to_sig runs only the test-to-sig job above: nothing is generated or published
+    if: ${{ inputs.test_to_sig != true }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -314,6 +460,33 @@ jobs:
 
       - name: Install dependencies
         run: pip install feedparser==6.0.14 requests==2.34.2 pillow==12.3.0
+
+      # PRINT OF THE DAY (Daily v2, live Oct 22 2026). Drawn FIRST, while the
+      # briefing is still being written, so the picture is on agsist.com long
+      # before the send: pick the place (scripts/print_of_day.py), draw its
+      # Rain Print with the county print engine in headless Chromium
+      # (scripts/render_print_of_day.mjs), commit only daily/img/print-<date>.png
+      # to main. continue-on-error and a 7-minute cap: a failure here leaves
+      # the slot out of the email and never stops or delays anything else.
+      - name: Print of the day, drawn and put on agsist.com
+        id: podraw
+        if: ${{ (github.event_name == 'schedule' || inputs.send_email == true) && (inputs.format || vars.DAILY_FORMAT || 'v2') == 'v2' }}
+        continue-on-error: true
+        timeout-minutes: 7
+        run: |
+          npm install --silent --prefix "$RUNNER_TEMP/pw" playwright@1.56.1 >/dev/null
+          "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium >/dev/null
+          d=$(TZ=America/Chicago date +%F); f="daily/img/print-$d.png"
+          python3 scripts/print_of_day.py --date "$d" --out "$RUNNER_TEMP/pick.json"
+          PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" node scripts/render_print_of_day.mjs "$RUNNER_TEMP/pick.json" "$f"
+          python3 scripts/print_of_day.py --compress "$f"
+          cp "$f" "$RUNNER_TEMP/print.png"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$f"
+          git diff --cached --quiet || git commit -q -m "Daily print of the day $d"
+          for i in 1 2 3; do git pull -q --rebase --autostash origin main && git push -q && break; sleep 10; done
+          echo "file=$f" >> "$GITHUB_OUTPUT"
 
       # The gate's own selftest runs first. It regression-locks the two holes that
       # let the 2026-08-08 briefing publish a 16.9% lean hog rally (2.9x the
@@ -516,7 +689,7 @@ jobs:
           exit 0
 
       # v4.2 (Phase 2 C7): post-critic ops alert. Reads daily.json's
-      # critic_pass.final_scores; emails sig@farmers1st.com if any rule
+      # critic_pass.final_scores; emails sig@agsist.com if any rule
       # scored below 7, if rewrites were applied, or if the critic step
       # failed silently. Quiet success = no email. Catches the silent-drift
       # failure mode that continue-on-error: true otherwise hides.
@@ -699,9 +872,35 @@ jobs:
           python scripts/local_bid.py --selftest
           node scripts/daily-local-bid-checks.mjs
 
+      # The picture drawn at the top of this job is used only once agsist.com
+      # serves those exact bytes. Capped at 3 minutes: past that the email goes
+      # without the slot, at its normal time.
+      - name: Print of the day, is it live
+        if: ${{ steps.podraw.outcome == 'success' && steps.podraw.outputs.file != '' }}
+        continue-on-error: true
+        timeout-minutes: 4
+        env:
+          F: ${{ steps.podraw.outputs.file }}
+        run: |
+          url="https://agsist.com/$F"
+          for i in $(seq 1 12); do
+            if curl -fsS -m 20 -o "$RUNNER_TEMP/live.png" "$url" && cmp -s "$RUNNER_TEMP/live.png" "$RUNNER_TEMP/print.png"; then
+              python3 -c "import json,sys; p=json.load(open(sys.argv[1])); p['image_url']=sys.argv[2]; json.dump(p, open(sys.argv[3],'w'))" "$RUNNER_TEMP/pick.json" "$url" "$RUNNER_TEMP/print-of-day.json"
+              echo "live: $url"; exit 0
+            fi
+            sleep 15
+          done
+          echo "::warning::the print of the day was not served by agsist.com in 3 minutes; the email goes without it"
+
       - name: Send daily email
         if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
         env:
+          # Daily v2 since Oct 22 2026. Roll back with format=current on a manual
+          # run, or the repo variable DAILY_FORMAT=current for the morning run.
+          DAILY_FORMAT: ${{ inputs.format || vars.DAILY_FORMAT || 'v2' }}
+          PRINT_OF_DAY: ${{ runner.temp }}/print-of-day.json
+          # a v2 issue held by the number check mails Sig one alert, here
+          OWNER_TO:     ${{ secrets.SIG_TO }}
           LOCAL_BIDS:   ${{ steps.localbid.outcome == 'success' && '1' || '0' }}
           # new sender env names; falls back to the legacy GMAIL_* secrets so
           # either set works. RECIPIENTS is ignored when LIST_URL is set
@@ -714,6 +913,7 @@ jobs:
           RECIPIENTS:   ${{ secrets.RECIPIENTS }}
           LIST_URL:     ${{ secrets.LIST_URL }}
           LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           FROM_NAME:    ${{ secrets.FROM_NAME }}
           REPLY_TO:     ${{ secrets.REPLY_TO }}

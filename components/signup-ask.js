@@ -59,8 +59,8 @@
   'use strict';
   if (window.AgsistSignup && window.AgsistSignup._v) { window.AgsistSignup.scan(); return; }
 
-  var EP = 'https://agsist-subs.dnilgis.workers.dev/subscribe';
-  var EP_NOTICE = 'https://agsist-subs.dnilgis.workers.dev/notice';
+  var EP = 'https://agsist-api.dnilgis.workers.dev/subscribe';
+  var EP_NOTICE = 'https://agsist-api.dnilgis.workers.dev/notice';
   var NOTICE_KEY = 'agsist_notices';
   var ZIP_LABEL = 'ZIP, for your top local bid in the email';
   var DISMISS_DAYS = 35;
@@ -210,12 +210,15 @@
       });
     }, function () { return { ok: false, status: 0, data: null }; });
   }
+  /* The worker was blocked and loader.js kept the signup on the backup form:
+     {ok:true, queued:true, message}. The plain line to show, or ''. */
+  function queued(res) { return res && res.data && res.data.queued === true ? String(res.data.message || "Got it. You'll be added within a day.") : ''; }
   function errText(res) {
     if (!res || res.status === 0) return 'Could not reach the signup service. Check your connection and try again.';
     var e = res.data && res.data.error ? String(res.data.error) : '';
     if (res.status >= 400 && res.status < 500 && /email/i.test(e)) return 'That email address was not accepted. Check it and try again.';
     return 'That did not go through' + (res.ok || res.status < 400 ? '' : ' (error ' + res.status + ')')
-      + '. Nothing was saved. Try again, or email sig@farmers1st.com and I will add you by hand.';
+      + '. Nothing was saved. Try again, or email sig@agsist.com and I will add you by hand.';
   }
 
   /* ---------- CSS ---------- */
@@ -441,7 +444,8 @@
         el.removeAttribute('data-sa-busy');
         if (res.ok) {
           el.setAttribute('data-sa-done', '1');
-          el.innerHTML = '<p class="sa-ok" tabindex="-1">' + esc(OK + (topic && daily ? ' The morning briefing starts tomorrow.' : '')) + '</p>';
+          // queued (2026-10-22): the worker was blocked and the signup went to the backup form (loader.js)
+          el.innerHTML = '<p class="sa-ok" tabindex="-1">' + esc(queued(res) || OK + (topic && daily ? ' The morning briefing starts tomorrow.' : '')) + '</p>';
           var ok = el.querySelector('.sa-ok'); try { ok.focus({ preventScroll: true }); } catch (x) { ok.focus(); }
           oneMore(el, { gave: topic ? 'notice' : 'daily', topic: topic, email: email, zip: zipUsed || (topic ? zipStart(el) : ''), reports: topic ? true : reports });
           return;
@@ -519,7 +523,7 @@
      address, or the ZIP's first three digits. Never geolocation. Nothing
      shows when nothing fits. GA4: onemore_shown and onemore_added with the
      topics, never the address. */
-  var WORKER = 'https://agsist-subs.dnilgis.workers.dev';
+  var WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var ST_NAMES = {};
   ('AL Alabama|AK Alaska|AZ Arizona|AR Arkansas|CA California|CO Colorado|CT Connecticut|DE Delaware|FL Florida|GA Georgia|HI Hawaii|ID Idaho|IL Illinois|IN Indiana|IA Iowa|KS Kansas|KY Kentucky|LA Louisiana|ME Maine|MD Maryland|MA Massachusetts|MI Michigan|MN Minnesota|MS Mississippi|MO Missouri|MT Montana|NE Nebraska|NV Nevada|NH New Hampshire|NJ New Jersey|NM New Mexico|NY New York|NC North Carolina|ND North Dakota|OH Ohio|OK Oklahoma|OR Oregon|PA Pennsylvania|RI Rhode Island|SC South Carolina|SD South Dakota|TN Tennessee|TX Texas|UT Utah|VT Vermont|VA Virginia|WA Washington|WV West Virginia|WI Wisconsin|WY Wyoming')
     .split('|').forEach(function (s) { ST_NAMES[s.slice(0, 2)] = s.slice(3); });
@@ -793,12 +797,12 @@
           var okIds = [], okTxt = [], err = '';
           rs.forEach(function (r, i) {
             var k = pick[i];
-            if (r && r.ok) { okIds.push(k); okTxt.push(O[k].ok); var rw = row(k); if (rw) rw.parentNode.removeChild(rw); }
+            if (r && r.ok) { okIds.push(k); okTxt.push(queued(r) ? '' : O[k].ok); var rw = row(k); if (rw) rw.parentNode.removeChild(rw); }
             else if (!err) err = errText(r);
           });
           if (okIds.length) track('onemore_added', { from: gave, topics: okIds.join(',') });
           if (!err) {
-            box.innerHTML = '<p class="sa-ok" tabindex="-1">' + esc('Added. ' + okTxt.join(' ')) + '</p>';
+            box.innerHTML = '<p class="sa-ok" tabindex="-1">' + esc(rs.some(queued) ? queued(rs.filter(queued)[0]) : 'Added. ' + okTxt.join(' ')) + '</p>';
             if (barEl && barEl.contains(box)) { placeBar(); setTimeout(function () { closeBar(false); }, 6000); }
             return;
           }

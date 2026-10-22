@@ -62,7 +62,7 @@ cannot be sent.
 Env: GITHUB_TOKEN (actions: read, pages: read), GITHUB_REPOSITORY, LIST_URL,
 LIST_TOKEN, SMTP_USER, SMTP_PASS. Optional: BIDS_READ_TOKEN, STRIPE_READ_KEY,
 SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME, REPORT_TO (else FORMS_TO, else
-SPONSOR_TO, else sig@farmers1st.com), SNAPSHOT (the counts file the workflow
+SPONSOR_TO, else sig@agsist.com), SNAPSHOT (the counts file the workflow
 keeps in the Actions cache between mornings; counts only).
 """
 import html as H
@@ -81,6 +81,7 @@ from email.utils import formataddr, make_msgid
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 import form_digest as FD  # noqa: E402
 
@@ -92,7 +93,7 @@ REPO = "dnilgis/agsist"
 BIDS_REPO = "dnilgis/bids"
 BIDS_INDEX = "https://dnilgis.github.io/bids/data/index.json"
 TODAY_URL = "https://agsist.com/elev-today.html"
-PASTE_STATUS = "https://agsist-subs.dnilgis.workers.dev/elev/paste-status"
+PASTE_STATUS = "https://agsist-api.dnilgis.workers.dev/elev/paste-status"
 # Sites the elevator desk has a paste reader for (components/paste-bids.js SITES).
 PASTE_READERS = {"newcoop.com": ("newcoop", "NEW Cooperative", "https://www.newcoop.com/cash-bids")}
 # dnilgis/bids lib/freshness.mjs: WITHDRAW_H, PASTED_WITHDRAW_H, LATE_H.
@@ -232,7 +233,12 @@ class Sources:
         if not (self.list_base and self.list_token):
             raise LookupError("no LIST_URL / LIST_TOKEN")
         url = "%s/%s%s" % (self.list_base, path, ("?" + urllib.parse.urlencode(q)) if q else "")
-        return self._get(url, {"Authorization": "Bearer %s" % self.list_token})
+        # 2026-10-22: scripts/list_source.py: /count, /list and the other list
+        # routes come from the private copy when the worker is blocked; the
+        # rest raise list_source.Blocked and their section says not read.
+        import list_source
+        return list_source.request("GET", url, None, {"User-Agent": "agsist-morning-report",
+                                                      "Authorization": "Bearer %s" % self.list_token})
 
     def url_json(self, url):
         return self._get(url, {})
@@ -574,6 +580,15 @@ def sec_signups(src, now, rep, snap):
             ms = int(now.timestamp() * 1000)
             ts = [r.get("ts") for r in rows if isinstance(r, dict) and isinstance(r.get("ts"), (int, float))]
             joins = (sum(1 for t in ts if t >= ms - FD.DAY_MS), sum(1 for t in ts if t >= ms - 7 * FD.DAY_MS))
+    except Exception:                                      # noqa: BLE001
+        pass
+    try:
+        import list_source
+        if list_source.mode() == "backup" and isinstance(src, Sources):
+            lines.append("The subs worker is blocked: these counts are from the private copy of the list taken %s. "
+                         "Signups made on the site while it is down go to the Formspree backup (your inbox, subject "
+                         "\"AGSIST signup (worker down)\"); they are kept there and get no email until they are added "
+                         "and confirmed." % (list_source.STATE.get("taken") or "?"))
     except Exception:                                      # noqa: BLE001
         pass
     if cur is not None:
@@ -1604,7 +1619,7 @@ def main():
                   list_token=env("LIST_TOKEN", ""), stripe_key=env("STRIPE_READ_KEY", ""),
                   ga4_prop=env("GA4_PROPERTY_ID", ""), ga4_cred=env("GA4_SERVICE_ACCOUNT", ""), dry=dry,
                   private_token=env("PRIVATE_REPO_TOKEN", ""))
-    to = env("REPORT_TO") or env("FORMS_TO") or env("SPONSOR_TO") or "sig@farmers1st.com"
+    to = env("REPORT_TO") or env("FORMS_TO") or env("SPONSOR_TO") or "sig@agsist.com"
     fn, fa = env("FROM_NAME", "AGSIST"), log_safe.sender_addr()
     snap_path = env("SNAPSHOT", os.path.join(ROOT, ".morning-report", "counts.json"))
     snap = load_snap(snap_path)

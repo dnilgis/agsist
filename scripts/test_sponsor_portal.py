@@ -234,7 +234,7 @@ def main():
         if a.get("ai"):
             check(bool(a["ai"].get("start") and a["ai"].get("end")), "the AI figure carries its export's dates")
         blob = json.dumps(a)
-        check("@" not in blob.replace("sig@farmers1st.com", ""), "no email address is written into the public file")
+        check("@" not in blob.replace("sig@agsist.com", ""), "no email address is written into the public file")
 
     print("\nthe requests box never pretends")
     # 2026-10-11: the post goes through components/form-post.js (the subs
@@ -243,7 +243,7 @@ def main():
     fp = (ROOT / "components" / "form-post.js").read_text()
     check('<script src="/components/form-post.js?v=' in html and "sendForm(" in html and "fetch(" not in html.split("function sendForm")[1].split("\n  }")[0],
           "approval and requests post through the shared form helper")
-    check("agsist-subs.dnilgis.workers.dev/form" in fp and "formspree.io/f/xnjbwepn" in fp,
+    check("agsist-api.dnilgis.workers.dev/form" in fp and "formspree.io/f/xnjbwepn" in fp,
           "requests post to the subs worker, with the site's own Formspree form as the fallback")
     check("That did not go through." in html and "mailto:" in html,
           "a failed request says so and hands over a written email")

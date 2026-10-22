@@ -199,7 +199,7 @@ check(('href="https://agsist.com/?' + TAG + '&utm_content=zip#signup-full"').rep
 # Every agsist.com link in both parts, for every kind of reader, is tagged
 # with this issue's date and names which link it is. The unsubscribe link is
 # the worker's and is never touched.
-URLS = re.compile(r'https?://(?:www\.)?agsist\.com[^\s"<>]*')
+URLS = re.compile(r'https?://(?:www\.)?agsist\.com(?!/e\?)[^\s"<>]*')   # all but the front door (the stop link, checked below)
 for who in ("a@farm.com", "c@farm.com", "d@farm.com", "e@farm.com", "f@farm.com"):
     t, h = text_for(who)
     us = URLS.findall(t) + [u.replace("&amp;", "&") for u in URLS.findall(h)]
@@ -209,9 +209,10 @@ for who in ("a@farm.com", "c@farm.com", "d@farm.com", "e@farm.com", "f@farm.com"
     check(all(u.count("utm_source=") == 1 for u in us), "%s: one utm_source per link" % who)
     unsub = [l for l in t.splitlines() if l.startswith("Unsubscribe: ")]
     lid = send_daily.LINK_IDS.get(who)
-    check(lid and len(unsub) == 1 and "/unsubscribe?k=" + lid + "&t=" in unsub[0] and "utm_" not in unsub[0],
+    check(lid and len(unsub) == 1 and "a=unsubscribe&k=" + lid + "&t=" in unsub[0] and "utm_" not in unsub[0],
           "%s: unsubscribe link carries the link id, untouched: %r" % (who, unsub))
-    check('href="http://127.0.0.1:%d/unsubscribe?k=' % srv.server_port in h and "utm_" not in h.split("/unsubscribe?k=")[1].split('"')[0],
+    _h = h.replace("&amp;", "&")
+    check('href="https://agsist.com/e?a=unsubscribe&k=' in _h and "utm_" not in _h.split("a=unsubscribe&k=")[1].split('"')[0],
           "%s: html unsubscribe untouched" % who)
     # v5.46: no address in any link, in either part or the header
     import email_links  # noqa: E402
@@ -219,7 +220,7 @@ for who in ("a@farm.com", "c@farm.com", "d@farm.com", "e@farm.com", "f@farm.com"
     check(not [u for u in email_links.hrefs(h) if "@" in u or "%40" in u.lower()], "%s: no @ inside any href" % who)
     check(not email_links.bad_links(t) and "farm.com" not in t.replace(who, "") and "/unsubscribe?e=" not in t + h,
           "%s: no address in a text link" % who)
-    check("@" not in str(m["List-Unsubscribe"]).split(">")[0], "%s: List-Unsubscribe link carries no address" % who)
+    check("@" not in email_links.unsub_web(m), "%s: List-Unsubscribe link carries no address" % who)
 contents = set(re.findall(r"utm_content=(\w+)", ta))
 check({"button", "forward"} <= contents, "button and forward named: %r" % contents)
 check(("utm_content=footer" in ha) and ("utm_content=button" in ha), "html footer and button named")

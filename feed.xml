@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 21 Oct 2026 10:49:03 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 22 Oct 2026 20:23:01 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn $4.64 and beans $12.47 hold; crude up 2.2% to $99.24</title>
+      <link>https://agsist.com/daily/2026-10-22</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-22</guid>
+      <pubDate>Thu, 22 Oct 2026 11:03:20 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Corn is at $4.64 overnight, up three-quarters of a cent from Wednesday's $4.63¼ settle, after lower closes. Soybeans are at $12.47, up 1¾ cents, after eight straight lower closes. Crude is the mover at $99.24, up 2.2%, as Houthi strikes on Saudi targets and Iran's ship claims lift oil.
+• Grains stop sliding, barely
+• Crude gains; hogs slip
+Read more: https://agsist.com/daily/2026-10-22</description>
+    </item>
     <item>
       <title>Corn down 6 straight days to $4.59½; beans down 7 to $12.45</title>
       <link>https://agsist.com/daily/2026-10-21</link>
@@ -356,18 +367,6 @@ Action: Live cattle at $221.15: nothing to sell into a 2.4% up day off record lo
 • Cattle Ignore The Grain Fade
 • Crude Reverses On Iran Hope
 Read more: https://agsist.com/daily/2026-09-22</description>
-    </item>
-    <item>
-      <title>Beans flat, diesel at $6.50, crude breaks on Iran thaw</title>
-      <link>https://agsist.com/daily/2026-09-21</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-21</guid>
-      <pubDate>Mon, 21 Sep 2026 10:57:51 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Soybeans sit at $13.10, off a penny and a half, still waiting on Xi. Meanwhile diesel crossed $6.50 a gallon this weekend, a record, while crude fell to $92.97 on Iran diplomacy hopes: two energy stories moving in opposite directions on the same headline.
-Action: Diesel at $6.50/gallon: lock harvest fuel needs now, don't wait for crude's Iran-talk dip to reach the pump.
-• Diesel Record, Crude Breaks
-• Beans Wait On Xi
-Read more: https://agsist.com/daily/2026-09-21</description>
     </item>
   </channel>
 </rss>

@@ -2,7 +2,7 @@
 """Email Sig every subscriber, sorted by what they signed up for.
 
 Run by .github/workflows/subscriber-report.yml (manual button only). Reads the
-agsist-subs worker's token-gated list routes with LIST_TOKEN, builds one CSV per
+agsist-api subs worker's token-gated list routes with LIST_TOKEN, builds one CSV per
 list, and mails them to REPORT_TO (else FROM_ADDR, else SMTP_USER).
 
 The repository is public and so are its Actions logs, so this script prints
@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 from email.message import EmailMessage
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 
 
@@ -143,7 +144,7 @@ def selftest():
 def main():
     if "--selftest" in sys.argv:
         sys.exit(0 if selftest() else 1)
-    base, token = env("LIST_URL", "https://agsist-subs.dnilgis.workers.dev"), env("LIST_TOKEN")
+    base, token = env("LIST_URL", "https://agsist-api.dnilgis.workers.dev"), env("LIST_TOKEN")
     user, pw = env("SMTP_USER"), env("SMTP_PASS")
     sender = log_safe.sender_addr()
     to = env("REPORT_TO") or sender

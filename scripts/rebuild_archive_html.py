@@ -14,6 +14,10 @@ Usage:
     python scripts/rebuild_archive_html.py --dry-run # list only
     python scripts/rebuild_archive_html.py 2026-04-20  # one date
     python scripts/rebuild_archive_html.py --stamp-only  # only the line under the quote strip
+    python scripts/rebuild_archive_html.py --byline-only # only the byline (reply address)
+
+--byline-only does the same for the one <div class="dv3-byline"> line (the
+reply address under each issue, changed 2026-10-22 to sig@agsist.com).
 
 --stamp-only renders each page as above but writes back only the
 <div class="dv3-quote-asof"> line, so a published page keeps every other
@@ -54,18 +58,20 @@ def _no_em_dashes(obj):
 
 
 STAMP_RE = re.compile(r'<div class="dv3-quote-asof">[^<]*</div>')
+BYLINE_RE = re.compile(r'<div class="dv3-byline">(?:(?!</?div)[\s\S])*</div>')
 
 
-def swap_stamp(old_html: str, new_html: str):
-    """old_html with its one quote-strip stamp line taken from new_html.
-    None when either page has no such line or more than one."""
-    a, b = STAMP_RE.findall(old_html), STAMP_RE.findall(new_html)
+def swap_stamp(old_html: str, new_html: str, rx=STAMP_RE):
+    """old_html with its one quote-strip stamp line (or the line rx finds)
+    taken from new_html. None when either page has no such line or more than one."""
+    a, b = rx.findall(old_html), rx.findall(new_html)
     if len(a) != 1 or len(b) != 1:
         return None
     return old_html.replace(a[0], b[0], 1)
 
 
-def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False) -> bool:
+def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False,
+                byline_only: bool = False) -> bool:
     json_path = ARCHIVE_JSON_DIR / f"{date_iso}.json"
     html_path = ARCHIVE_HTML_DIR / f"{date_iso}.html"
 
@@ -92,18 +98,19 @@ def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False) 
     # exist, breaking a preview image that was working.
     html = generate_archive_html(briefing, date_iso, prev_d, next_d,
                                  og_require_file=True)
-    if stamp_only:
+    if stamp_only or byline_only:
+        rx, what = (STAMP_RE, "stamp") if stamp_only else (BYLINE_RE, "byline")
         if not html_path.exists():
             print(f"  [skip] {date_iso} — no published page")
             return False
         old = html_path.read_text()
-        out = swap_stamp(old, html)
+        out = swap_stamp(old, html, rx)
         if out is None:
-            print(f"  [skip] {date_iso} — no single stamp line to swap")
+            print(f"  [skip] {date_iso} — no single {what} line to swap")
             return False
         if out != old:
             html_path.write_text(out)
-            print(f"  [ok]   {date_iso}  stamp line -> {STAMP_RE.findall(out)[0]}")
+            print(f"  [ok]   {date_iso}  {what} line swapped")
         return True
     ARCHIVE_HTML_DIR.mkdir(parents=True, exist_ok=True)
     with open(html_path, "w") as f:
@@ -116,6 +123,7 @@ def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False) 
 def main():
     dry_run = "--dry-run" in sys.argv
     stamp_only = "--stamp-only" in sys.argv
+    byline_only = "--byline-only" in sys.argv
     explicit_dates = [a for a in sys.argv[1:] if not a.startswith("-")]
 
     if explicit_dates:
@@ -134,7 +142,7 @@ def main():
 
     ok = 0
     for date_iso in targets:
-        if rebuild_one(date_iso, dry_run=dry_run, stamp_only=stamp_only):
+        if rebuild_one(date_iso, dry_run=dry_run, stamp_only=stamp_only, byline_only=byline_only):
             ok += 1
 
     print(f"=== Done: {ok}/{len(targets)} {'would be rebuilt' if dry_run else 'rebuilt'} ===")

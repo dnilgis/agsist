@@ -108,7 +108,7 @@ async function mocks(ctx, opts, log) {
   log.posts = 0;
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
     const req = r.request(), u = new URL(req.url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (req.method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       if (u.pathname === "/rp-short" && req.method() === "POST") {
         log.posts++;
@@ -239,11 +239,12 @@ test("every preview carries the standard code, and redraws ask the link service 
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
     assert.equal(await svgQr(page, "#rp-art"), STD, "the page art");
-    // the slim copy that pins under the menu is drawn on a phone, once the print scrolls away
+    // on a phone the print itself stays pinned under the menu while the steps scroll (2026-10-22: it replaces the
+    // slim copy), still with the standard code
     await page.setViewportSize({ width: 390, height: 844 });
     await page.evaluate(() => window.scrollTo(0, document.getElementById("rp-design").getBoundingClientRect().top + scrollY));
-    await page.waitForFunction(() => document.querySelector("#rp-mini svg") && !document.getElementById("rp-strip").hidden, null, { timeout: 10000 });
-    assert.equal(await svgQr(page, "#rp-mini"), STD, "the mini copy");
+    await page.waitForFunction(() => { const r = document.getElementById("rp-art").getBoundingClientRect(); return r.top >= 0 && r.top < 200; }, null, { timeout: 10000 });
+    assert.equal(await svgQr(page, "#rp-art"), STD, "the pinned print");
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.evaluate(() => window.scrollTo(0, 0));
     // redraws: a new name, the other style, a dedication
@@ -257,7 +258,7 @@ test("every preview carries the standard code, and redraws ask the link service 
     await page.waitForFunction(() => document.querySelector("#rp-proof-art svg"), null, { timeout: 10000 });
     assert.equal(await svgQr(page, "#rp-proof-art"), STD, "the up-close view");
     await page.keyboard.press("Escape");
-    await page.click("#rp-more summary");   // Download a preview and Copy link are under More options (2026-10-14)
+    await page.click("#rp-more summary");   // Download a preview and Copy link fold under Your words (2026-10-22)
     const f = await saved(page, () => page.click("#rp-dl"));
     assert.match(f.name, /-preview\.png$/);
     assert.equal(await fileQr(page, f.buf, "image/png"), STD, "the watermarked preview PNG");
@@ -336,7 +337,7 @@ test("an order file with the link service down: no file, a plain message, Try ag
   }, { short: "down" });
 });
 
-test("checkout: no short link for a design that fits; one, at the press, for a long one; the order form if it fails", { skip }, async () => {
+test("checkout: no short link for a design that fits; one, at the press, for a long one; Stripe with a hash ref if it fails", { skip }, async () => {
   await withPage(async (page, base, errors, log) => {
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
@@ -362,22 +363,28 @@ test("checkout: no short link for a design that fits; one, at the press, for a l
     assert.equal(log.posts, 2, "a second press asks the worker again (2026-10-15: never a kept id alone), and gets the same id");
     assert.deepEqual(errors, []);
   });
+  /* The link service failing (2026-10-22, BUILD-RULES 14: checkout never depends on the worker): the press still goes to
+     Stripe, as RPH-<hash of the full code>, and the full design goes to Sig by the press record (here the worker's
+     /rp-order still answers) and, if that fails too, the backup form. Never the order form for want of a short link. */
   await withPage(async (page, base, errors, log) => {
     await page.goto(base + "/rain-print.html?d=" + LONG_CODE);
     await drawn(page);
-    const r = await checkout(page, "print12x18", { wait: 4000 });
-    assert.equal(r.stage, "sheet");
-    await page.waitForFunction(() => document.getElementById("ro-form") && document.getElementById("ro-form").offsetParent !== null, null, { timeout: 15000 });
-    assert.equal(log.posts, 1, "at most one");
-    assert.deepEqual(log.stripe, [], "no checkout without a reference Stripe takes");
-    assert.equal(await page.inputValue("#ro-choice"), "print12x18", "the order form takes the order instead");
-    // and says why, with a way back to checkout (2026-10-15)
-    assert.equal(await page.textContent("#ro-order-note"), "Checkout couldn’t open just now, so send this and I’ll email you a payment link.");
-    assert.equal(await page.isVisible("#ro-retry-go"), true);
-    assert.equal(await page.textContent("#ro-retry-go"), "Try checkout again");
-    await page.click("#ro-retry-go");
-    await page.waitForTimeout(800);
-    assert.equal(log.posts, 2, "Try checkout again asks the worker again");
+    /* the order form must never open on the way to Stripe: watched on the page itself from before the press
+       (once the tab is on Stripe's page there is no #rp-order to look at) */
+    const opened = [];
+    await page.exposeFunction("rpOrderOpened", () => opened.push(1));
+    assert.equal(await page.evaluate(() => {
+      const el = document.getElementById("rp-order");
+      if (!el) return false;
+      new MutationObserver(() => { if (!el.hidden) window.rpOrderOpened(); }).observe(el, { attributes: true, attributeFilter: ["hidden"] });
+      return el.hidden;
+    }), true, "the order form is there and closed before the press");
+    const r = await checkout(page, "print12x18", { wait: 10000 });
+    assert.equal(r.stage, "stripe", JSON.stringify(r));
+    assert.equal(log.posts, 1, "at most one short-link ask");
+    assert.equal(refOf(r.url), RP.hashRef(LONG_CODE, false), "a reference Stripe takes, naming exactly this design");
+    assert.ok(refOf(r.url).length <= 200);
+    assert.equal(opened.length, 0, "no order form on the way to Stripe");
     assert.deepEqual(errors, []);
   }, { short: "fail" });
 });

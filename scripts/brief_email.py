@@ -94,6 +94,8 @@ def utm(url, content, campaign=None, source=UTM_SOURCE):
         return u
     if p.scheme not in ("http", "https") or (p.hostname or "") not in _OURS:
         return u
+    if p.path == "/e":
+        return u     # the email front door (scripts/email_links.py): a signed link, never tagged
     q = [(k, v) for k, v in urllib.parse.parse_qsl(p.query, keep_blank_values=True)
          if not k.startswith("utm_")]
     q += [("utm_source", source), ("utm_medium", "email")]

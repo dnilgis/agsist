@@ -104,6 +104,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe  # noqa: E402  (no address in the public log)
 import email_links  # noqa: E402  (k=<link id> links; never an address in one)
+import list_source  # noqa: E402  (the worker, or the private copy of its list)
 
 REPO = Path(__file__).resolve().parent.parent
 BASIS_DIR = REPO / "data" / "basis"
@@ -564,6 +565,7 @@ def plan_alerts(watchers, net_idx, now_ms):
     sends     [(email, wid, label, kind, old_value, row)]   kind cash|basis fire once; move re-arms
     baselines [(email, wid, label, row, value)]            first sight after confirming: record, mail nothing
     ended     [(email, wid, label, old_period_label, row)] the row now quotes another period: one note, then cleared"""
+    watchers = email_links.plain_labels(watchers)   # no em dash in a subject or headline (labels saved before Oct 22)
     confirms, sends, base, ended = [], [], [], []
     for r in watchers:
         e = r["email"]
@@ -702,6 +704,7 @@ def daily_lines(watchers, net_idx, basis_idx):
     """email -> plain lines for the Daily's "Your elevators" block. One line
     per confirmed watch, from the same rows the alerts read. A watch whose
     row is not on today's board says so; nothing is filled in."""
+    watchers = email_links.plain_labels(watchers)   # no em dash in a subject or headline (labels saved before Oct 22)
     out = {}
     for r in watchers:
         lines, seen = [], set()
@@ -719,7 +722,7 @@ def daily_lines(watchers, net_idx, basis_idx):
                     lines.append(f"{net_name(row)}, {CROP_NAMES[row['crop']]} {row['plabel']}: "
                                  f"{fmt_cash(row['cash'])}, basis {fmt_basis(row['basis'])}, posted {fmt_posted(row['pricedAt'])}")
                 else:
-                    lines.append(f"{(st.get('label') or 'A watched elevator').split(' — ')[0]}, {st.get('crop') or ''} "
+                    lines.append(f"{st.get('_name') or st.get('label') or 'A watched elevator'}, {st.get('crop') or ''} "
                                  f"{st.get('plabel') or ''}: not on the board this morning")
             else:
                 # A plain corn watch's wid is the same hash as the network
@@ -770,6 +773,7 @@ def plan(watchers, basis_idx, now_ms):
     confirms  [(email, wid, label)]
     changes   [(email, wid, label, old_basis, new_row)]
     baselines [(email, wid, label, new_row)]   new watch, a new delivery month, or a key change with the same basis (a rounding/date-only touch)"""
+    watchers = email_links.plain_labels(watchers)   # no em dash in a subject or headline (labels saved before Oct 22)
     confirms, chg, base = [], [], []
     for r in watchers:
         e = r["email"]
@@ -825,11 +829,9 @@ def pend_summary(watchers, basis_idx, net_idx, now_ms):
 
 def worker(base, path, token_, body=None):
     url = f"{base}/{path}{'&' if '?' in path else '?'}token={urllib.parse.quote(token_)}"
-    req = urllib.request.Request(url, data=json.dumps(body).encode() if body is not None else None,
-                                 headers={"Content-Type": "application/json", "User-Agent": "agsist-elevator-watch/1"},
-                                 method="POST" if body is not None else "GET")
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode())
+    # 2026-10-22: through scripts/list_source.py: the worker, or the private
+    # copy of its list when it is blocked (marks then go to a journal there)
+    return list_source.request("POST" if body is not None else "GET", url, body, {"User-Agent": "agsist-elevator-watch/1"})
 
 
 def selftest():
@@ -874,7 +876,8 @@ def selftest():
         "wD": {"basis": row_old["basis"], "changedOn": "2026-09-30", "lastSeen": "2026-09-30"},  # key moved, basis did not (a re-post)
     }
     cf, ch, bs = plan(W, idx, 2000)
-    assert cf == [("a@x.com", "wA", "ADM Altamont, IL — corn")], cf              # wGone not in idx, wMailed already mailed
+    # Oct 22: a label saved with an em dash ("<elevator> — corn") comes out of plan() with a comma
+    assert cf == [("a@x.com", "wA", "ADM Altamont, IL, corn")], cf              # wGone not in idx, wMailed already mailed
     assert [(x[0], x[1]) for x in ch] == [("a@x.com", "wC")], ch
     assert ch[0][3] == row_old["basis"] and ch[0][4] == row_new
     assert sorted(x[1] for x in bs) == ["wB", "wD"], bs                              # new watch, and a same-basis re-post
@@ -907,16 +910,23 @@ def selftest():
 
     m = confirm_email("a@x.com", "wA", "ADM Altamont, IL — corn", "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     body = m.get_body(("plain",)).get_content()
-    assert "PO Box 243, Chetek, WI 54728" in body and "elevator-watch-confirm?k=00000000000000aa&w=wA&t=%s" % token(s, "00000000000000aa", "|ec|wA") in body
-    assert m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click"
+    assert "PO Box 243, Chetek, WI 54728" in body and "a=elevator-watch-confirm&k=00000000000000aa&w=wA&t=%s" % token(s, "00000000000000aa", "|ec|wA") in body
+    assert m["List-Unsubscribe-Post"] is None
     m2 = change_email("a@x.com", "wC", "Chatham Coop, IL — corn", row_old["basis"], row_new, "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     b2 = m2.get_body(("plain",)).get_content()
     assert "PO Box 243" in b2 and "Stop all elevator watches" in b2 and "-25¢" in b2.replace("−", "-") and "-30¢" in b2.replace("−", "-")
-    assert "elevator-watch-unsubscribe?k=00000000000000aa&t=%s" % token(s, "00000000000000aa", "|ew") in b2
-    for mm0 in (m, m2, mm_):
+    assert "a=elevator-watch-unsubscribe&k=00000000000000aa&t=%s" % token(s, "00000000000000aa", "|ew") in b2
+    # Oct 22 (Sig): no em dash in an alert's subject, headline or body, even from a label saved with one
+    m3 = change_email("a@x.com", "wC", ch[0][2], row_old["basis"], row_new, "https://w.dev", s, "AGSIST", "n@agsist.com", None)
+    assert ch[0][2] == "Chatham Coop, IL, corn", ch[0][2]
+    for mm0 in (m3, confirm_email("a@x.com", "wA", cf[0][2], "https://w.dev", s, "AGSIST", "n@agsist.com", None)):
+        assert "\u2014" not in mm0["Subject"] + mm0.get_body(("plain",)).get_content() + mm0.get_body(("html",)).get_content(), mm0["Subject"]
+    assert m3["Subject"].startswith("Chatham Coop, IL, corn, ") and "\u2014" not in m2["Subject"], (m3["Subject"], m2["Subject"])
+    assert not any("\u2014" in x for v in daily_lines(W, {}, idx).values() for x in v), "the Daily's elevator lines"
+    for mm0 in (m, m2, mm_, m3):
         h0, t0 = mm0.get_body(("html",)).get_content(), mm0.get_body(("plain",)).get_content()
         assert not [u for u in email_links.hrefs(h0) if "@" in u or "%40" in u.lower()], "v5.46: an @ inside an href"
-        assert not email_links.bad_links(t0) and "?e=" not in t0 + h0 and "@" not in str(mm0["List-Unsubscribe"]), "v5.46: an address in a link"
+        assert not email_links.bad_links(t0) and "?e=" not in t0 + h0 and "@" not in email_links.unsub_web(mm0), "v5.46: an address in a link"
     try:
         confirm_email("nobody@x.com", "wA", "x", "https://w.dev", s, "AGSIST", "n@agsist.com", None)
         raise AssertionError("v5.46: a watcher with no link id was given an email")
@@ -1050,7 +1060,7 @@ def selftest_alerts():
     mm = opt_alert_email("f@x.com", "up", got["up"][2], "cash", 436, got["up"][5], "https://w.dev", "sec", "AGSIST", "n@agsist.com", None)
     body = mm.get_body(("plain",)).get_content()
     for part in ("Adell Cooperative, Adell, WI, corn Oct 2026", "Cash: $4.52 now, $4.36 when this alert started.", "Oct 3, 11:30 AM CT",
-                 "https://agsist.com/#f1", "fired and is now cleared", "PO Box 243", "elevator-watch-unsubscribe?k=00000000000000ff&w=up&t="):
+                 "https://agsist.com/#f1", "fired and is now cleared", "PO Box 243", "a=elevator-watch-unsubscribe&k=00000000000000ff&w=up&t="):
         assert part in body, part
     assert mm["Subject"] == "Adell Cooperative, Adell, WI, corn Oct 2026: cash reached $4.52", mm["Subject"]
     mv = opt_alert_email("f@x.com", "mv5", got["mv5"][2], "move", -65, got["mv5"][5], "https://w.dev", "sec", "AGSIST", "n@agsist.com", None)
@@ -1183,4 +1193,5 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # worker blocked and no usable copy: one warning, exit 0 (an hourly job must not flood Sig with failures)
+    sys.exit(list_source.guard(main, soft=True))

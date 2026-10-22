@@ -132,4 +132,4 @@ specific page. Each daily briefing has a permanent dated URL.
 - [Embed Tools and Data Feeds](https://agsist.com/developer): embeddable GDU and ARC or PLC widgets, and the open JSON feeds
 - [Changelog](https://agsist.com/changelog): dated list of site changes
 - [About](https://agsist.com/about): who builds AGSIST and why
-- [Contact](https://agsist.com/contact): sig@farmers1st.com
+- [Contact](https://agsist.com/contact): sig@agsist.com

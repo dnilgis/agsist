@@ -47,7 +47,7 @@ export async function mocks(context, { meta = META, worker = "blocked", delay = 
   await context.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
     if (delay && /rcc-acis/.test(r.request().url())) await new Promise((ok) => setTimeout(ok, delay));
     const req = r.request(), u = new URL(req.url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       log.worker.push(req.method() + " " + u.pathname);
       if (worker === "blocked") return r.fulfill({ status: 403, contentType: "text/html", body: "<html><body>Suspected phishing</body></html>" });
       const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };

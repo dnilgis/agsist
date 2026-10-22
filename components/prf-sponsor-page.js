@@ -23,7 +23,7 @@
 (function (root) {
   'use strict';
 
-  var TO = 'sig@farmers1st.com';
+  var TO = 'sig@agsist.com';
   var PAGE = '/prf-sponsor';
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   var MAX = { business: 120, name: 80, email: 254, phone: 30, line: 120, website: 320, message: 1000 };

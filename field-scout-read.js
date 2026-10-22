@@ -1078,7 +1078,7 @@ window.__fsRead = function (FSX) {
       return;
     }
     setBody('fs-risk', rows.join('') + hailSwathHtml() +
-      '<div class="fs-src" style="margin-top:.5rem">A starting risk read from public data, not an underwriting decision. Questions? <a href="mailto:sig@farmers1st.com" style="color:var(--brand,var(--gold))">Sigurd Lindquist &rarr;</a></div>');
+      '<div class="fs-src" style="margin-top:.5rem">A starting risk read from public data, not an underwriting decision. Questions? <a href="mailto:sig@agsist.com" style="color:var(--brand,var(--gold))">Sigurd Lindquist &rarr;</a></div>');
   }
   function riskRow(label, level, color, detail, link){
     // Colorblind-safe: a symbol carries severity independent of color.

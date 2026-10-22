@@ -167,7 +167,7 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
 <script>
 (function () {
   'use strict';
-  var API = 'https://agsist-subs.dnilgis.workers.dev/elev/admin/';
+  var API = 'https://agsist-api.dnilgis.workers.dev/elev/admin/';
   var TOK_KEY = 'agsist-elev-admin-token';
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
@@ -338,7 +338,7 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
       (e.lat != null ? '<br><span class="dim">' + esc(PREC[e.precision] || 'location unknown') + ': ' + esc(e.lat) + ', ' + esc(e.lon) + '</span>' : '') +
       (m.more ? '<br><span class="dim">' + m.more + ' more in the list with that name in that town.</span>' : '') + '</div>';
   }
-  var HOW = { email: 'From the bid sheet they already send (set it up by hand until the bids inbox exists)', phone: 'A private phone link', 'not-sure': 'Not sure yet' };
+  var HOW = { email: 'From the bid sheet they already send (they add bids@agsist.com to it; set it up by hand)', phone: 'A private phone link', 'not-sure': 'Not sure yet' };
   function drawReqs(list, dir) {
     var showDone = $('r-done').checked;
     var rows = list.filter(function (q) { return showDone || q.status === 'pending'; });
@@ -410,7 +410,7 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
   // this page fetches the elevator's site. The rows go to the worker as printed;
   // dnilgis/bids reads them with the same code as a live read.
   var PB = window.AgsistPasteBids;
-  var PUB = 'https://agsist-subs.dnilgis.workers.dev/elev/';
+  var PUB = 'https://agsist-api.dnilgis.workers.dev/elev/';
   var pending = null;
   function ctTime(iso) {
     var d = new Date(iso); if (isNaN(d)) return '';

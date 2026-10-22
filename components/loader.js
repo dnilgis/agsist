@@ -16,6 +16,112 @@
   }
   try { document.documentElement.setAttribute('data-theme', savedTheme() || deviceTheme()); } catch (e) {}
 
+  // NO SIGNUP IS LOST WHEN THE SUBS WORKER IS BLOCKED (2026-10-22). Oct 21,
+  // Cloudflare answered the worker with its phishing page and no CORS, so every
+  // email signup box failed. Every signup on the site posts to one of the
+  // routes below with fetch; when that post cannot reach the worker (the
+  // browser refuses the answer, no answer, or a 403/404/405/5xx that is not
+  // the worker's own JSON) the same signup goes to the Formspree form the site
+  // forms already fall back to (components/form-post.js), tagged with its list,
+  // and the page gets {ok:true, queued:true}. The reader is told plainly:
+  // "Got it. You'll be added within a day." Nothing is mailed to them until
+  // Sig adds them to the list (and, for alerts, they confirm), so a signup
+  // that was never confirmed is kept, never mailed. A refusal the worker
+  // means (its JSON answer: a bad address, too many tries) reaches the page as
+  // before. Never the address in a URL; it travels in the post body only.
+  (function signupFallback() {
+    if (typeof window.fetch !== 'function' || window.agsistSignupFallback) return;
+    // Both worker hosts during the move to agsist-api (Oct 22): a page cached
+    // before the move still posts to the old one.
+    var HOSTS = { 'agsist-api.dnilgis.workers.dev': 1, 'agsist-subs.dnilgis.workers.dev': 1 };
+    var LISTS = { '/subscribe': 'AGSIST Daily', '/notice': 'notice', '/alert-subscribe': 'hail alert',
+      '/watch-subscribe': 'farmland watch', '/elevator-watch-subscribe': 'elevator alert', '/price-watch-subscribe': 'price alert' };
+    var FORMSPREE = 'https://formspree.io/f/xnjbwepn';
+    var QUEUED = "Got it. You'll be added within a day.";
+    var real = window.fetch;
+    function routeOf(u) {
+      try { var x = new URL(String(u), location.href); return HOSTS[x.host] === 1 && LISTS[x.pathname] ? x.pathname : ''; }
+      catch (e) { return ''; }
+    }
+    function fields(body) {
+      var o = {};
+      try {
+        if (typeof body === 'string') {
+          try { o = JSON.parse(body) || {}; } catch (e) { new URLSearchParams(body).forEach(function (v, k) { o[k] = v; }); }
+        } else if (body && typeof body.forEach === 'function') {
+          body.forEach(function (v, k) { o[k] = typeof v === 'string' ? v : ''; });
+        }
+      } catch (e) {}
+      return o && typeof o === 'object' ? o : {};
+    }
+    function say() {
+      try {
+        var old = document.getElementById('signup-queued'); if (old) old.remove();
+        var bar = document.createElement('div');
+        bar.id = 'signup-queued'; bar.setAttribute('role', 'status');
+        bar.style.cssText = 'background:#1f5130;color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9990;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
+        bar.textContent = QUEUED + ' No need to look for a confirmation email for now.';
+        var x = document.createElement('button');
+        x.type = 'button'; x.setAttribute('aria-label', 'Close'); x.textContent = '×';
+        x.style.cssText = 'position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#fff;font-size:1.3rem;cursor:pointer;padding:4px 8px';
+        x.addEventListener('click', function () { bar.remove(); });
+        bar.appendChild(x);
+        document.body.appendChild(bar);
+        setTimeout(function () { if (bar.parentNode) bar.remove(); }, 15000);
+      } catch (e) {}
+    }
+    function queue(route, init, orig, err) {
+      var f = fields(init && init.body), fd = new FormData(), extra = {};
+      var list = LISTS[route] + (f.topic ? ' (' + String(f.topic).slice(0, 60) + ')' : '');
+      Object.keys(f).forEach(function (k) {
+        if (['email', 'zip', 'source', 'topic', 'src'].indexOf(k) < 0 && f[k] !== undefined && f[k] !== null) extra[k] = f[k];
+      });
+      fd.append('_subject', 'AGSIST signup (worker down): ' + list);
+      fd.append('form', 'signup-fallback');
+      fd.append('list', list);
+      fd.append('email', String(f.email || ''));
+      if (/^\d{5}$/.test(String(f.zip || ''))) fd.append('zip', String(f.zip));
+      fd.append('source', String(f.source || f.src || '').slice(0, 60));
+      fd.append('page', location.pathname);
+      if (Object.keys(extra).length) fd.append('details', JSON.stringify(extra).slice(0, 1500));
+      fd.append('note', 'Not on the list yet and not confirmed: add by hand when the worker is back; mail nothing before that.');
+      return real.call(window, FORMSPREE, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.ok ? r.json().catch(function () { return {}; }) : null; })
+        .then(function (j) {
+          if (!j || j.ok === false || j.errors) throw new Error('not sent');
+          window.dispatchEvent(new CustomEvent('agsist:signup-queued', { detail: { list: LISTS[route] } }));
+          say();
+          return new Response(JSON.stringify({ ok: true, queued: true, message: QUEUED }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } });
+        })
+        .catch(function () { if (orig) return orig; throw err || new Error('not sent'); });
+    }
+    window.agsistSignupFallback = { QUEUED: QUEUED, lists: LISTS };
+    // WHAT THIS BROWSER STILL OWES THE WORKER (2026-10-22): a gift card order,
+    // a business quote, a hay post, an elevator's bids or a confirm kept while
+    // the worker was blocked. components/outbox.js sends it once the worker
+    // answers; it is loaded here, on any page, only while something is kept.
+    try {
+      if (!window.AgOutbox && localStorage.getItem('agsist-outbox') && !document.querySelector('script[src^="/components/outbox.js"]')) {
+        var ob = document.createElement('script'); ob.src = '/components/outbox.js?v=3'; ob.defer = true;
+        (document.head || document.documentElement).appendChild(ob);
+      }
+    } catch (e) { /* storage blocked: nothing can be kept either */ }
+    window.fetch = function (input, init) {
+      var url = typeof input === 'string' ? input : (input && input.url) || '';
+      var method = String((init && init.method) || (input && input.method) || 'GET').toUpperCase();
+      var route = method === 'POST' ? routeOf(url) : '';
+      if (!route) return real.apply(this, arguments);
+      return real.apply(this, arguments).then(function (r) {
+        if (r.status === 403 || r.status === 404 || r.status === 405 || r.status >= 500) {
+          // the worker's own JSON is a real answer; anything else is the block page or an outage
+          return r.clone().json().then(function () { return r; }, function () { return queue(route, init, r); });
+        }
+        return r;
+      }, function (err) { return queue(route, init, null, err); });
+    };
+  })();
+
   var BASE = (function () {
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
@@ -24,7 +130,7 @@
   // Component cache version. Bump on every chrome deploy so browsers fetch the
   // new header/footer; between deploys the files cache normally (no refetch /
   // no nav-flash on each page navigation).
-  var CV = '79'; // v79 2026-10-21: footer drops Status (/status retired, Sig; fx/fastfacts); v78 2026-10-21: /here moved into Fast Facts; the ZIP box and the My place tile open /fast-facts (fx/fastfacts); v77 2026-10-21: footer drops the data sources links (Sig); v76 2026-10-21: signup-ask.js?v=12 (One more? offers the WASDE summary and Funds this week, the two standing lists of subs worker v5.44); v75 2026-10-21: site notice bar from data/site-notice.json (outage line, Sig); v74 2026-10-21: Grain on the move (/grain-transport) under Prices, Near you, after Basis vs normal (Sig approved Oct 21); v73 2026-10-20: signup-ask.js?v=11 (One more? after the hail alert and elevator alerts); v72 2026-10-20: footer adds List your elevator, free under Work with us; v71 2026-10-20: menu: "Everything near me" (/here) first in the phone panel's My place row and the ZIP box's link once a ZIP is saved; Yield by state (/usda-quick-stats) under Prices, Reports; Farmland sale index (/farmland-index) under Money & Land, Land, after Farmland Atlas (Sig approved Oct 20); v70 2026-10-20: signup-ask.js?v=10 (One more? after any signup, first-visit bar after engagement, one Daily ask per page); v69 2026-10-19: the menu and footer Daily asks say "every morning", not "every weekday morning" (Sig); v68 2026-10-19: header menu folds at 60em, not 960px, so a reader with a larger default font gets the menu button instead of an overrun menu (a11y); v67 2026-10-18: The Haymow (hay for sale and wanted) in the menu, the phone panel and the footer under Livestock, after Hay; v66 2026-10-18: search.js offers "Everything about <place>" (/here) under a ZIP, town or county; v65 2026-10-18: footer line reads "Updated as each source posts." (Sig); v64 2026-10-18: sponsor-metrics.js loads first on DOMContentLoaded; v63 2026-10-18: footer on one grid (logo + tagline left, daily email box or the daily links and Rain Print line right, six columns on the same grid, one small line with the legal links), Next block as aligned cards (next-links.js?v=3); v62 2026-10-18: the full new menu (Prices | Livestock | Field | Money & Land | Daily, short noun subheads, ZIP chip "Bids near <town>", Free daily email button, phone panel with search, My place row, every group open, Rain Print card; footer band with the daily email and Rain Print line, columns Prices | Livestock | Field | Money & Land | Work with us | About; "Harvest tools moved to Field" note until Nov 1); v61 2026-10-18: menu fixes round 1 (search.js takes a ZIP, drops near me/price words, finds towns with no page; drawer focus trap, aria-modal, focus back to the menu button; aria-controls on dropdowns; footer column names are spans, not <h2> in <summary>; Pod counts, Drought monitor, Planting date, Field Scout and Urea loss risk in the menu; Rain Print for business in the footer; phone header theme switch moved into the menu); v60 2026-10-17: signup-ask.js?v=8 (passes data-after for PRF grid notices); v59 2026-10-17: signup-ask.js?v=7 (briefing box ticked on alert asks); v58 2026-10-17: Custom rates in the menu and footer under Money & Land; v57 2026-10-17: Rain on your field (radar) in the menu and footer under Crop & Field; v56 2026-10-17: high-contrast menu button (forced-colors styles in header.html); v55 2026-10-17: Cash Bid Index in the menu and footer; v54 2026-10-16: Editorial standards in the footer; v53 2026-10-16: Fall anhydrous soil temp and Harvest now or wait in the menu and footer; v52 2026-10-16: Combine loss check and CCC loan calculator in the menu and footer; v51 2026-10-16: Sale barn prices in the menu and footer under Markets; v50 2026-10-16: Hay prices in the menu and footer under Markets; v49 2026-10-16: Nutrient removal value in the menu and footer, grain shrink separator in the no-script menu; v48 2026-10-16: Grain shrink in the menu and footer; v47 2026-10-15: Harvest price tracker named in full and moved to Markets, after Milk (Sig could not find it); v46 2026-10-15: LRP livestock price insurance in the menu and footer; v45 2026-10-15: Grain EMC in the menu and footer; v44 2026-10-14: Manure value and Fast Facts reference tables in the menu and footer; v43 2026-10-13: Rain by county in the menu and footer; v42 2026-10-13: Rain Print and the rain gauge page in the menu and footer; v41 2026-10-12: craft pass, service worker registers from loader.js; v40 2026-10-12: icons on Corn, Soybeans, Wheat, Cattle, Milk and the footer's last four links; v39 2026-10-11: signup-ask.js?v=6 (optional ZIP on Daily asks, one-time notice asks); v38 2026-10-11: menu label Harvest price; v37 2026-10-11: footer supporter strip hidden until a supporter is active, bottom-row Advertise link; v36 2026-10-10: the menu grouped by question, phone drawer folds each question; v35 2026-10-09: ARC or PLC short-answer pages; v34 2026-10-09: ARC or PLC link in the menu and footer; v33 2026-10-09: ARC/PLC calculator; v32 2026-10-09: plainer copy in shared components; v31 2026-10-09: signup wording, card tokens; v30 2026-10-09: one look, variable fonts; v29 2026-10-09: no-jump layout and loading states kit; v28 2026-10-09: menu shows Farmland Atlas once, footer keeps Cash Rent by State; v27 2026-10-09: instant pages, prerender-safe analytics, Updated stamps; v26 2026-10-09: header search button; v25 2026-10-09: em-dash cleanup and link fixes; v24 2026-10-08: footer sponsor pill no longer overlaps on phones; v23 2026-10-08: footer link columns fold into <details> on phones (closed at 700px and under)
+  var CV = '83'; // v83 2026-10-22: fx/fastfacts. /here moved into Fast Facts: the header My place link, the ZIP box and the My place tile open /fast-facts; footer drops Status (/status retired, Sig Oct 21); v82 2026-10-22: outbox.js?v=3 and signup-ask.js?v=15 (the contact line names sig@agsist.com); v81 2026-10-22: the subs worker moves to agsist-api.dnilgis.workers.dev (signup backup takes either host; outbox.js?v=2, signup-ask.js?v=14); v79 2026-10-22: components/outbox.js is loaded on any page while this browser keeps something the blocked worker could not take (it sends it once the worker answers); v78 2026-10-22: signup-ask.js?v=13 (a signup the blocked worker could not take is kept on the backup form: "Got it. You'll be added within a day."); v77 2026-10-21: footer drops the data sources links (Sig); v76 2026-10-21: signup-ask.js?v=13 (One more? offers the WASDE summary and Funds this week, the two standing lists of subs worker v5.44); v75 2026-10-21: site notice bar from data/site-notice.json (outage line, Sig); v74 2026-10-21: Grain on the move (/grain-transport) under Prices, Near you, after Basis vs normal (Sig approved Oct 21); v73 2026-10-20: signup-ask.js?v=11 (One more? after the hail alert and elevator alerts); v72 2026-10-20: footer adds List your elevator, free under Work with us; v71 2026-10-20: menu: "Everything near me" (/here) first in the phone panel's My place row and the ZIP box's link once a ZIP is saved; Yield by state (/usda-quick-stats) under Prices, Reports; Farmland sale index (/farmland-index) under Money & Land, Land, after Farmland Atlas (Sig approved Oct 20); v70 2026-10-20: signup-ask.js?v=10 (One more? after any signup, first-visit bar after engagement, one Daily ask per page); v69 2026-10-19: the menu and footer Daily asks say "every morning", not "every weekday morning" (Sig); v68 2026-10-19: header menu folds at 60em, not 960px, so a reader with a larger default font gets the menu button instead of an overrun menu (a11y); v67 2026-10-18: The Haymow (hay for sale and wanted) in the menu, the phone panel and the footer under Livestock, after Hay; v66 2026-10-18: search.js offers "Everything about <place>" (/here) under a ZIP, town or county; v65 2026-10-18: footer line reads "Updated as each source posts." (Sig); v64 2026-10-18: sponsor-metrics.js loads first on DOMContentLoaded; v63 2026-10-18: footer on one grid (logo + tagline left, daily email box or the daily links and Rain Print line right, six columns on the same grid, one small line with the legal links), Next block as aligned cards (next-links.js?v=3); v62 2026-10-18: the full new menu (Prices | Livestock | Field | Money & Land | Daily, short noun subheads, ZIP chip "Bids near <town>", Free daily email button, phone panel with search, My place row, every group open, Rain Print card; footer band with the daily email and Rain Print line, columns Prices | Livestock | Field | Money & Land | Work with us | About; "Harvest tools moved to Field" note until Nov 1); v61 2026-10-18: menu fixes round 1 (search.js takes a ZIP, drops near me/price words, finds towns with no page; drawer focus trap, aria-modal, focus back to the menu button; aria-controls on dropdowns; footer column names are spans, not <h2> in <summary>; Pod counts, Drought monitor, Planting date, Field Scout and Urea loss risk in the menu; Rain Print for business in the footer; phone header theme switch moved into the menu); v60 2026-10-17: signup-ask.js?v=8 (passes data-after for PRF grid notices); v59 2026-10-17: signup-ask.js?v=7 (briefing box ticked on alert asks); v58 2026-10-17: Custom rates in the menu and footer under Money & Land; v57 2026-10-17: Rain on your field (radar) in the menu and footer under Crop & Field; v56 2026-10-17: high-contrast menu button (forced-colors styles in header.html); v55 2026-10-17: Cash Bid Index in the menu and footer; v54 2026-10-16: Editorial standards in the footer; v53 2026-10-16: Fall anhydrous soil temp and Harvest now or wait in the menu and footer; v52 2026-10-16: Combine loss check and CCC loan calculator in the menu and footer; v51 2026-10-16: Sale barn prices in the menu and footer under Markets; v50 2026-10-16: Hay prices in the menu and footer under Markets; v49 2026-10-16: Nutrient removal value in the menu and footer, grain shrink separator in the no-script menu; v48 2026-10-16: Grain shrink in the menu and footer; v47 2026-10-15: Harvest price tracker named in full and moved to Markets, after Milk (Sig could not find it); v46 2026-10-15: LRP livestock price insurance in the menu and footer; v45 2026-10-15: Grain EMC in the menu and footer; v44 2026-10-14: Manure value and Fast Facts reference tables in the menu and footer; v43 2026-10-13: Rain by county in the menu and footer; v42 2026-10-13: Rain Print and the rain gauge page in the menu and footer; v41 2026-10-12: craft pass, service worker registers from loader.js; v40 2026-10-12: icons on Corn, Soybeans, Wheat, Cattle, Milk and the footer's last four links; v39 2026-10-11: signup-ask.js?v=6 (optional ZIP on Daily asks, one-time notice asks); v38 2026-10-11: menu label Harvest price; v37 2026-10-11: footer supporter strip hidden until a supporter is active, bottom-row Advertise link; v36 2026-10-10: the menu grouped by question, phone drawer folds each question; v35 2026-10-09: ARC or PLC short-answer pages; v34 2026-10-09: ARC or PLC link in the menu and footer; v33 2026-10-09: ARC/PLC calculator; v32 2026-10-09: plainer copy in shared components; v31 2026-10-09: signup wording, card tokens; v30 2026-10-09: one look, variable fonts; v29 2026-10-09: no-jump layout and loading states kit; v28 2026-10-09: menu shows Farmland Atlas once, footer keeps Cash Rent by State; v27 2026-10-09: instant pages, prerender-safe analytics, Updated stamps; v26 2026-10-09: header search button; v25 2026-10-09: em-dash cleanup and link fixes; v24 2026-10-08: footer sponsor pill no longer overlaps on phones; v23 2026-10-08: footer link columns fold into <details> on phones (closed at 700px and under)
                  // v22 2026-09-19: the Farmland Atlas link restored to the Land group, drawer and footer (the 9/13 upload dropped it)
                  // v21 2026-09-13: Farmland Atlas link in the Land group of the header, the drawer and the footer
                  // v20 2026-09-05: sponsor-metrics.js loaded sitewide; footer sponsor card measured on the MRC rule
@@ -469,7 +575,18 @@
       e.stopPropagation();
       var t = dd.querySelector('.nav-btn');
       if (!dd.classList.contains('open') && t) t.click();
-      setTimeout(function () { var inp = dd.querySelector('.nav-ask input[type="email"]'); if (inp) inp.focus(); }, 60);
+      /* The panel fades in, and it is hidden until its fade starts at a frame: on a busy phone or laptop the one try
+         at 60 ms came first, the box could not take the focus, and the button left the reader with nothing in focus
+         (2026-10-22; test/nav-full-oct18.test.mjs). Try each frame until the box has it, while the panel stays open. */
+      setTimeout(function () {
+        var n = 0;
+        (function go() {
+          if (!dd.classList.contains('open')) return;
+          var inp = dd.querySelector('.nav-ask input[type="email"]');
+          if (inp) { inp.focus(); if (document.activeElement === inp) return; }
+          if (++n < 120) requestAnimationFrame(go);
+        })();
+      }, 60);
     });
   }
 
@@ -1006,7 +1123,7 @@
 (function () {
   if (window.AgsistSignup || document.querySelector('script[src*="/components/signup-ask.js"]')) return;
   var s = document.createElement('script');
-  s.src = '/components/signup-ask.js?v=12';
+  s.src = '/components/signup-ask.js?v=15';
   s.async = true;
   (document.head || document.documentElement).appendChild(s);
 })();

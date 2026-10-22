@@ -41,12 +41,13 @@ from email.utils import formataddr, make_msgid
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 
 GMAIL_LIMIT = 500
 WARN_AT = 400
 SUBJECT = "AGSIST: email list is near Gmail's daily limit"
-UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"}
+UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@agsist.com)"}
 
 # Quarterly Grain Stocks, month-day. COPY of the table in
 # scripts/generate_daily.py (release_calendar, `qs_2026`), the one the

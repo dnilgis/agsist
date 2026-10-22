@@ -28,9 +28,9 @@
   'use strict';
   var doc = root.document;
   var $ = function (id) { return doc.getElementById(id); };
-  var ORDER_TO = 'sig@farmers1st.com';
+  var ORDER_TO = 'sig@agsist.com';
   var PHONE = '715-797-2428';
-  var LOGO_LINK = 'https://agsist-subs.dnilgis.workers.dev/rp-logo/';
+  var LOGO_LINK = 'https://agsist-api.dnilgis.workers.dev/rp-logo/';
   var EMAIL_RE = /^[^\s@,;<>"]+@[^\s@,;<>"]+\.[A-Za-z]{2,}$/;
   var TOWNS_MAX = 20000;   // the worker's rain-print-business towns cap (subs-worker.js v5.35)
   var PAGE = '/rain-print-business';
@@ -260,9 +260,11 @@
     var btn = $('rb-submit'), was = btn.textContent;
     sending = true; btn.disabled = true; btn.textContent = 'Sending…'; out.innerHTML = '';
     var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
-    send('rain-print-business', data, fs).then(function () {
-      ga('rain_print_business', { result: 'ok', product: x.product, qty: qn, placement: 'landing' });
-      out.innerHTML = '<div class="rbz-out ok" tabindex="-1"><p><b>Sent.</b> I’ll write to ' + esc(x.email) + ' within 1 business day with a quote, then a proof sheet.</p>' +
+    send('rain-print-business', data, fs).then(function (r) {
+      ga('rain_print_business', { result: r && r.queued ? 'kept' : 'ok', product: x.product, qty: qn, placement: 'landing' });
+      // the worker down: kept in this browser (form-post.js, components/outbox.js), never sent anywhere else
+      out.innerHTML = r && r.queued ? '<div class="rbz-out ok" tabindex="-1">' + '<p><b>Saved on this device, not sent yet.</b> Our system is down. Your request and your list stay here and go to me the next time you open agsist.com on this device after it is back; nothing else to do.</p>' +
+        '<p>To get your quote sooner, call or text <a href="tel:+17157972428">715-797-2428</a>. Your list never goes anywhere but to me.</p>' + '</div>' : '<div class="rbz-out ok" tabindex="-1"><p><b>Sent.</b> I’ll write to ' + esc(x.email) + ' within 1 business day with a quote, then a proof sheet.</p>' +
         '<p>Nothing is printed or charged until you OK both.</p></div>';
       $('rb-form').reset(); syncShip(); syncTier(); csvMsg('');
       LOGO_ASK++; LOGO = null; syncLogo(); logoMsg('');

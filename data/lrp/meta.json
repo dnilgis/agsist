@@ -207,8 +207,8 @@
   "2026": {
    "0801": [
     "20250930",
-    "20261013",
-    271
+    "20261014",
+    272
    ],
    "0802": [
     "20250930",
@@ -217,15 +217,15 @@
    ],
    "0815": [
     "20250930",
-    "20261012",
-    270
+    "20261013",
+    271
    ]
   },
   "2027": {
    "0801": [
     "20260930",
-    "20261013",
-    9
+    "20261014",
+    10
    ],
    "0802": [
     "20260930",
@@ -234,8 +234,8 @@
    ],
    "0815": [
     "20260930",
-    "20261012",
-    8
+    "20261013",
+    9
    ]
   }
  },
@@ -263,7 +263,7 @@
  "checks": {
   "aev_deleted": 0,
   "aev_restated": 399,
-  "aev_rows": 730332,
+  "aev_rows": 730501,
   "last_run": {
    "failed": 0,
    "left": 0,
@@ -272,18 +272,18 @@
    "stopped_for_time": false,
    "unreadable": 0
   },
-  "offer_days_written": 3313,
+  "offer_days_written": 3314,
   "offers_restated": 1,
   "rate_blank": 0,
   "rate_blank_examples": [],
   "rate_cost_off": 37,
   "rate_deleted": 0,
   "rate_price_off": 425998,
-  "rate_rows": 2324713
+  "rate_rows": 2326717
  },
- "files_read": 6932,
+ "files_read": 6934,
  "first_sales_date": "20130701",
- "last_sales_date": "20261021",
+ "last_sales_date": "20261022",
  "offer_days_by_reinsurance_year": {
   "2014": 238,
   "2015": 249,
@@ -298,7 +298,7 @@
   "2024": 248,
   "2025": 250,
   "2026": 251,
-  "2027": 79
+  "2027": 80
  },
  "products": {
   "0801": "Feeder Cattle",

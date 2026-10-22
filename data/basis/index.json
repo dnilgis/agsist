@@ -1,5 +1,5 @@
 {
- "generated":"2026-10-21",
+ "generated":"2026-10-22",
  "units":"integer cents per bushel",
  "note":"Per elevator, per commodity, per contract, per delivery month: the basis now, the basis before it, and the day it changed. Rebuildable in full from the changes-*.json files beside this.",
  "states":{
@@ -16,12 +16,12 @@
   "AR":{
    "rows":95,
    "facilities":19,
-   "kb":4.9
+   "kb":5.0
   },
   "CO":{
    "rows":309,
    "facilities":26,
-   "kb":14.4
+   "kb":14.5
   },
   "DE":{
    "rows":5,
@@ -34,14 +34,14 @@
    "kb":0.3
   },
   "GA":{
-   "rows":36,
+   "rows":38,
    "facilities":11,
-   "kb":2.1
+   "kb":2.2
   },
   "IA":{
-   "rows":13788,
+   "rows":13790,
    "facilities":784,
-   "kb":619.7
+   "kb":619.8
   },
   "ID":{
    "rows":89,
@@ -49,19 +49,19 @@
    "kb":4.1
   },
   "IL":{
-   "rows":10921,
+   "rows":11063,
    "facilities":452,
-   "kb":485.0
+   "kb":493.7
   },
   "IN":{
-   "rows":2054,
+   "rows":2057,
    "facilities":120,
-   "kb":89.2
+   "kb":89.4
   },
   "KS":{
-   "rows":7854,
+   "rows":7885,
    "facilities":438,
-   "kb":341.1
+   "kb":342.8
   },
   "KY":{
    "rows":100,
@@ -79,19 +79,19 @@
    "kb":33.9
   },
   "MN":{
-   "rows":8789,
+   "rows":8855,
    "facilities":334,
-   "kb":384.3
+   "kb":387.5
   },
   "MO":{
    "rows":1241,
    "facilities":99,
-   "kb":54.5
+   "kb":54.6
   },
   "MT":{
    "rows":261,
    "facilities":16,
-   "kb":12.0
+   "kb":12.1
   },
   "NC":{
    "rows":21,
@@ -99,14 +99,14 @@
    "kb":1.4
   },
   "ND":{
-   "rows":7444,
+   "rows":7668,
    "facilities":125,
-   "kb":319.3
+   "kb":328.6
   },
   "NE":{
-   "rows":10810,
+   "rows":10904,
    "facilities":344,
-   "kb":479.0
+   "kb":483.5
   },
   "NY":{
    "rows":10,
@@ -114,14 +114,14 @@
    "kb":0.7
   },
   "OH":{
-   "rows":4870,
+   "rows":4936,
    "facilities":199,
-   "kb":208.2
+   "kb":211.4
   },
   "OK":{
-   "rows":2862,
+   "rows":2898,
    "facilities":94,
-   "kb":123.0
+   "kb":124.7
   },
   "ON":{
    "rows":26,
@@ -144,9 +144,9 @@
    "kb":0.4
   },
   "SD":{
-   "rows":3533,
+   "rows":3541,
    "facilities":177,
-   "kb":155.0
+   "kb":155.4
   },
   "TN":{
    "rows":156,
@@ -169,9 +169,9 @@
    "kb":23.8
   },
   "WI":{
-   "rows":3223,
+   "rows":3249,
    "facilities":179,
-   "kb":142.2
+   "kb":143.5
   },
   "WY":{
    "rows":63,

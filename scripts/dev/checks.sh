@@ -32,7 +32,10 @@ if [ "$LIST" = 0 ] && { picked node-test || picked build_arc_plc; }; then
   ls data/fsa/arcco_*.xls* >/dev/null 2>&1 || bash scripts/pull_raw.sh data/fsa >/dev/null || { echo "FAIL fsa-pull (bash scripts/pull_raw.sh data/fsa)"; fails=$((fails+1)); }
 fi
 NT="$OUT/nt${SHARD:+-${SHARD%/*}of${SHARD#*/}}.out"
-run node-test bash -c "node --test ${SHARD:+--test-shard=$SHARD} > '$NT' 2>&1; grep -E '^# fail 0$' '$NT' >/dev/null || { grep -E '^# (pass|fail)' '$NT'; grep -B2 -A15 -E '^\s*not ok' '$NT' | head -60; exit 1; }"
+# AGSIST_NO_SKIPS=1 (the PR checks set it): a skipped node test fails node-test too, a skip is not a pass
+# (scripts/dev/check-skips.sh; test/skips-allowed.txt holds the either/or pairs it accepts)
+DEV="$PWD/scripts/dev"
+run node-test bash -c "node --test ${SHARD:+--test-shard=$SHARD} > '$NT' 2>&1; grep -E '^# fail 0$' '$NT' >/dev/null || { grep -E '^# (pass|fail)' '$NT'; grep -B2 -A15 -E '^\s*not ok' '$NT' | head -60; exit 1; }; [ \"\${AGSIST_NO_SKIPS:-}\" != 1 ] || bash '$DEV/check-skips.sh' '$NT'"
 run seo python3 scripts/check_seo.py
 run budget python3 scripts/check_site_budget.py
 run layers python3 scripts/check_layers.py
@@ -40,7 +43,7 @@ run place-pct python3 scripts/build_place_pct.py --check
 run nav python3 scripts/inject_static_nav.py --check
 run feeds bash -c 'python3 scripts/build_feeds.py && python3 scripts/test_feeds.py'
 for f in network-checks delivery-checks market-clock-checks network-safety-checks homepage-bids-checks sponsor-checks; do run $f node scripts/$f.mjs; done
-for t in scripts/test_send_loops.py scripts/test_basis_states.py scripts/test_share_images.py scripts/test_fact_check.py scripts/test_sponsor_portal.py scripts/test_rate_card.py; do [ -f $t ] && run "$(basename $t)" python3 $t; done
+for t in scripts/test_send_loops.py scripts/test_list_fallback.py scripts/test_basis_states.py scripts/test_share_images.py scripts/test_fact_check.py scripts/test_sponsor_portal.py scripts/test_rate_card.py; do [ -f $t ] && run "$(basename $t)" python3 $t; done
 run llms bash -c "python3 scripts/build_llms_txt.py --selftest && python3 scripts/build_llms_txt.py --check"
 # number consistency: rule selftests must pass; on the real data it reports only (prints, never fails) until it has run clean
 run numbers bash -c "python3 scripts/check_number_consistency.py --selftest >/dev/null && python3 scripts/check_number_consistency.py > '$OUT/numbers.out' 2>&1; tail -1 '$OUT/numbers.out' >&2; true"

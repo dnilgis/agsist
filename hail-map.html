@@ -360,7 +360,7 @@
 #hm-q,#hm-cty-select{min-height:44px}
 </style>
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"How to check if it hailed at your address","step":[{"@type":"HowToStep","name":"Search your location","text":"Enter your address, town, or ZIP in the search box above the AGSIST hail map, or tap the pin button to use your current location."},{"@type":"HowToStep","name":"Read the report list","text":"The page lists every National Weather Service hail report within 10 miles over the last five years (5 or 25 miles if you pick), with dates, reported stone sizes, and distances."},{"@type":"HowToStep","name":"Check the radar swaths","text":"Tap Check radar swaths at this pin to test your exact point against every archived radar-estimated (MESH) hail swath (an estimate, not a ground measurement) with a dated map link for every day that touched your location."},{"@type":"HowToStep","name":"Share or save the record","text":"Copy link produces a shareable URL that reopens the exact same lookup for anyone you send it to."},{"@type":"HowToStep","name":"Print the report","text":"Use Print report for a dated, sourced document to pair with your own photos for any claim conversation."}]},{"@type":"Dataset","dateModified":"2026-10-21",
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"How to check if it hailed at your address","step":[{"@type":"HowToStep","name":"Search your location","text":"Enter your address, town, or ZIP in the search box above the AGSIST hail map, or tap the pin button to use your current location."},{"@type":"HowToStep","name":"Read the report list","text":"The page lists every National Weather Service hail report within 10 miles over the last five years (5 or 25 miles if you pick), with dates, reported stone sizes, and distances."},{"@type":"HowToStep","name":"Check the radar swaths","text":"Tap Check radar swaths at this pin to test your exact point against every archived radar-estimated (MESH) hail swath (an estimate, not a ground measurement) with a dated map link for every day that touched your location."},{"@type":"HowToStep","name":"Share or save the record","text":"Copy link produces a shareable URL that reopens the exact same lookup for anyone you send it to."},{"@type":"HowToStep","name":"Print the report","text":"Use Print report for a dated, sourced document to pair with your own photos for any claim conversation."}]},{"@type":"Dataset","dateModified":"2026-10-22",
     "name":"AGSIST National Hail Map",
     "description":"Interactive heatmap of five years of US National Weather Service hail Local Storm Reports, showing the geographic frequency of hail across the country.",
     "url":"https://agsist.com/hail-map",
@@ -415,7 +415,7 @@
 
       <div class="hm-head">
         <h1 class="hm-title">National Hail Map: <em>did it hail at your place?</em></h1>
-        <p class="hm-sub page-lede">Free hail tracker for any US address: live NWS hail warnings and today&#x27;s radar swaths. <span id="hm-seed-stats"><!--SEED:hailstats-->64,661 NWS hail reports on the map, 2022 through Oct 20, 2026 · 144 in the 30 days to Oct 21, 2026<!--/SEED--></span></p>
+        <p class="hm-sub page-lede">Free hail tracker for any US address: live NWS hail warnings and today&#x27;s radar swaths. <span id="hm-seed-stats"><!--SEED:hailstats-->64,661 NWS hail reports on the map, 2022 through Oct 20, 2026 · 160 in the 30 days to Oct 22, 2026<!--/SEED--></span></p>
         <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">A radar swath is the band where NOAA radar estimates hail fell; a report is hail someone saw and reported to the National Weather Service. Reports come via the Iowa Environmental Mesonet.</p>
               </div>
 
@@ -426,7 +426,7 @@
         <button type="button" id="hm-gps" title="Use my location" aria-label="Use my location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg></button>
       </div>
       <!-- Recent storm days: baked by scripts/generate_hail_events.py from the storm-day pages it writes. -->
-      <!--SEED:stormdays--><nav class="hm-days" aria-labelledby="hm-days-h"><h2 id="hm-days-h" class="hm-days-h">Recent storm days</h2><ul><li><a href="/hail/2026-10-20"><b>Oct 20</b> 8 reports</a></li><li><a href="/hail/2026-10-19"><b>Oct 19</b> 2 reports</a></li><li><a href="/hail/2026-10-18"><b>Oct 18</b> radar swath</a></li><li><a href="/hail/2026-10-17"><b>Oct 17</b> radar swath</a></li><li><a href="/hail/2026-10-16"><b>Oct 16</b> radar swath</a></li></ul><a class="hm-days-all" href="/hail/">Every storm day &rarr;</a></nav><!--/SEED:stormdays-->
+      <!--SEED:stormdays--><nav class="hm-days" aria-labelledby="hm-days-h"><h2 id="hm-days-h" class="hm-days-h">Recent storm days</h2><ul><li><a href="/hail/2026-10-21"><b>Oct 21</b> 37 reports</a></li><li><a href="/hail/2026-10-20"><b>Oct 20</b> 10 reports</a></li><li><a href="/hail/2026-10-19"><b>Oct 19</b> 2 reports</a></li><li><a href="/hail/2026-10-18"><b>Oct 18</b> radar swath</a></li><li><a href="/hail/2026-10-17"><b>Oct 17</b> radar swath</a></li></ul><a class="hm-days-all" href="/hail/">Every storm day &rarr;</a></nav><!--/SEED:stormdays-->
 
       <div class="hm-now" id="hm-now" role="status" aria-live="polite" hidden></div>
       <div class="hm-mapstack">
@@ -577,7 +577,7 @@
 
       <section class="hm-method" aria-labelledby="hm-method-h" style="margin:1.6rem 0 0;padding:1rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-radius:10px">
         <h2 id="hm-method-h" style="font-size:1.05rem;margin:0 0 .5rem">Who runs this, how it works, how to cite it</h2>
-        <p style="font-size:.88rem;line-height:1.6;margin:0 0 .6rem"><strong>Who:</strong> Sigurd Lindquist, CCA, Wisconsin, the same person behind the rest of <a href="/about">AGSIST</a>. Questions, corrections, press: <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>.</p>
+        <p style="font-size:.88rem;line-height:1.6;margin:0 0 .6rem"><strong>Who:</strong> Sigurd Lindquist, CCA, Wisconsin, the same person behind the rest of <a href="/about">AGSIST</a>. Questions, corrections, press: <a href="mailto:sig@agsist.com">sig@agsist.com</a>.</p>
         <p style="font-size:.88rem;line-height:1.6;margin:0 0 .6rem"><strong>Data &amp; cadence:</strong> The heatmap is NWS Local Storm Reports (hail) via the Iowa Environmental Mesonet: the 5-year base rebuilds monthly, the 30-day layer refreshes daily. Radar swaths are NOAA MRMS MESH, vectorized daily around 3:30&nbsp;AM&nbsp;CT with an intraday rolling-24h layer several times a day. Live warnings poll the National Weather Service API about every 90&nbsp;seconds while the layer is on. The long-term point record is the NOAA NCEI Storm Events Database, 1955&ndash;2020, never mixed with the live record.</p>
         <p style="font-size:.88rem;line-height:1.6;margin:0 0 .6rem"><strong>Known limits:</strong> MESH is a radar algorithm on a ~1&nbsp;km grid; published verification work (NOAA NSSL) finds it tends to run large versus measured stones, which is why every swath here is labeled an estimate. Storm reports are town-level precision and depend on someone reporting, so a quiet spot on the map can just mean nobody called it in.</p>
         <p style="font-size:.88rem;line-height:1.6;margin:0"><strong>Reuse &amp; citation:</strong> Screenshots and embeds are welcome with credit. Suggested line: <em>&ldquo;NWS/NOAA data via agsist.com/hail-map.&rdquo;</em> The underlying records are public. What AGSIST adds is putting them on one map, labeling the estimates and the address lookup.</p>
@@ -1559,7 +1559,7 @@
         btn.disabled=true; stx.textContent='Saving\u2026';
         var rc=document.querySelector('.hm-rchip[aria-pressed="true"]');
         var radius=rc?parseInt(rc.getAttribute('data-r'),10):5;
-        fetch('https://agsist-subs.dnilgis.workers.dev/alert-subscribe',{
+        fetch('https://agsist-api.dnilgis.workers.dev/alert-subscribe',{
           method:'POST',
           headers:{ 'Content-Type':'application/json', 'Accept':'application/json' },
           body: JSON.stringify({ email:v,
@@ -1615,7 +1615,7 @@
           ((L.swaths&&L.swaths.hits&&L.swaths.hits.length)?('<h2 style="font-size:1.05rem;margin-top:1.2rem">Radar-estimated swaths at this point (NOAA MRMS MESH)</h2><ul>'+L.swaths.hits.map(function(h){ return '<li>'+esc(h.d)+', inside the &ge;'+h.band+'&Prime; estimated band</li>'; }).join('')+'</ul><p style="font-size:.85rem;color:#555">Radar estimates, not measurements; checked against '+L.swaths.checked+' archived storm days.</p>'):'')+
           '<table><thead><tr><th>Date</th><th>Size</th><th>Distance</th><th>Near</th></tr></thead><tbody>'+rows+'</tbody></table>'+
           '<p style="font-size:.9rem;background:#f5f2e8;border:1px solid #d8cfa8;padding:.6rem .8rem;border-radius:6px"><strong>Using this for a claim:</strong> this printout confirms the date and the neighborhood. Your own photos confirm the property. Bring both; the adjuster does the rest.</p>'+
-          '<p class="foot">Prepared by <strong>Sigurd Lindquist</strong> &middot; AGSIST &middot; sig@farmers1st.com &middot; agsist.com/hail-map<br>Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet. Reports are town-level precision and depend on someone reporting; absence of reports is not proof of absence of hail. It summarizes public reports and does not replace an engineering or insurance inspection.</p>'+
+          '<p class="foot">Prepared by <strong>Sigurd Lindquist</strong> &middot; AGSIST &middot; sig@agsist.com &middot; agsist.com/hail-map<br>Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet. Reports are town-level precision and depend on someone reporting; absence of reports is not proof of absence of hail. It summarizes public reports and does not replace an engineering or insurance inspection.</p>'+
           '</body></html>');
         w.document.close(); setTimeout(function(){ w.print(); },300);
       });

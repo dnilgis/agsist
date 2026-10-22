@@ -17,7 +17,7 @@
  */
 (function () {
   'use strict';
-  var WORKER = 'https://agsist-subs.dnilgis.workers.dev';
+  var WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var MAX_LOGO = 250 * 1024;
   var $ = function (id) { return document.getElementById(id); };
   var form = $('spa-form');
@@ -139,7 +139,7 @@
     var lines = ['Placement: ' + p.tier + (p.tier === 'page' ? ' (' + p.slot + ')' : ''), 'Business: ' + p.company, 'Website: ' + p.url,
       'Headline: ' + (p.headline || ''), 'Copy: ' + (p.body || ''), 'Contact: ' + p.contact, 'Phone: ' + (p.phone || ''), 'Email: ' + p.email,
       '', '(Logo: I will attach it to this email.)'];
-    return 'mailto:sig@farmers1st.com?subject=' + encodeURIComponent('AGSIST ad: ' + p.company) +
+    return 'mailto:sig@agsist.com?subject=' + encodeURIComponent('AGSIST ad: ' + p.company) +
       '&body=' + encodeURIComponent(lines.join('\n'));
   }
 

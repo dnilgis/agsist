@@ -21,13 +21,28 @@ tomorrow by changing three repo secrets — the script never changes:
     REPLY_TO    optional
     RECIPIENTS  the list — comma or newline separated (fallback)
     LIST_URL    subscriptions worker base URL (e.g.
-                https://agsist-subs.dnilgis.workers.dev) — when set with
+                https://agsist-api.dnilgis.workers.dev) — when set with
                 LIST_TOKEN, the list is fetched live from KV and
                 RECIPIENTS is ignored
     LIST_TOKEN  auth token for the worker's /list endpoint
     UNSUB_SECRET when set with LIST_URL, every email gets a signed
                 one-click unsubscribe link
     DRY_RUN     "1" = render and report, send nothing
+    TEST_TO_SIG "1" = send the newest issue to SIG_TEST_EMAILS (or SIG_TO)
+                only: the list is still read (counts only), no day flag is
+                read or set (daily.yml input test_to_sig; daily.yml also sets
+                LIST_SOURCE=backup there, so it is the backup-mode Daily)
+    LIST_SOURCE "backup" forces the private copy of the list, "worker"
+                forbids it (scripts/list_source.py). Unset: the worker, and
+                the copy when the worker is blocked.
+
+THE WORKER AND THE COPY ARE INTERCHANGEABLE (2026-10-22). The list, the
+elevator watches and the day flag go through scripts/list_source.py. When the
+worker is blocked the same records come from the private copy of its storage
+(8 days old at most), the day flag is claimed in the private repo BEFORE the
+first mail and checked in both places. Every link that goes through the
+worker points at the agsist.com front door, in every mode; that page says when
+the worker is down and offers the mailto stop (scripts/email_links.py).
     BIDS_BASE   where the elevator bids are read for the local line
                 (default https://dnilgis.github.io/bids/; a local mirror
                 directory works for tests)
@@ -71,6 +86,7 @@ import subscribers        # noqa: E402
 import gmail_limit        # noqa: E402
 import log_safe           # noqa: E402  (no address in the public log)
 import email_links        # noqa: E402  (k=<link id> links; never an address in one)
+import list_source        # noqa: E402  (the worker, or the private copy when it is blocked)
 
 REPO = Path(__file__).resolve().parent.parent
 ARCHIVE = REPO / "data" / "daily-archive"
@@ -132,6 +148,12 @@ def env(name, default=None, required=False):
 def load_today():
     today = date.today().isoformat()
     path = ARCHIVE / (today + ".json")
+    if not path.exists() and env("TEST_TO_SIG", "") == "1":
+        # Sig's test copy: the newest issue there is (the morning run has not made today's yet)
+        olds = sorted(p for p in ARCHIVE.glob("????-??-??.json"))
+        if olds:
+            path, today = olds[-1], olds[-1].stem
+            print("test copy: newest issue is " + today)
     if not path.exists():
         print("no briefing dated " + today + " — nothing to send (weekend/holiday/gated). exit 0")
         sys.exit(0)
@@ -158,13 +180,15 @@ def flag(day, set_it=False):
     times generation completes (manual + scheduled runs, re-runs). Returns
     True if already sent. No worker configured -> no dedup (old behavior)."""
     base, token = (os.environ.get("LIST_URL") or "").strip() or None, (os.environ.get("LIST_TOKEN") or "").strip() or None
-    if not (base and token):
+    if not (base and token) and list_source.forced() != "backup":
         return False
-    u = (base.rstrip("/") + "/flag?k=briefed:" + day + "&token=" + urllib.parse.quote(token))
+    # 2026-10-22: the flag is kept in the worker AND the private repo
+    # (scripts/list_source.py); either one set means the day went out. With the
+    # worker blocked the private repo answers alone; neither readable fails closed.
     try:
-        req = urllib.request.Request(u, method="POST" if set_it else "GET", headers={"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"})
-        with urllib.request.urlopen(req, timeout=20) as r:
-            return json.loads(r.read().decode()).get("set", False)
+        if set_it:
+            return list_source.flag_set("briefed:" + day)
+        return list_source.flag_is_set("briefed:" + day)
     except Exception as ex:
         # FAIL CLOSED. This used to return False ("not sent yet") when the
         # worker was unreachable, which meant a flaky network sent the entire
@@ -175,6 +199,27 @@ def flag(day, set_it=False):
               + ": " + str(ex)[:120] + ") — refusing to send rather than risk "
               "emailing the list twice. Rerun once the worker is reachable.")
         return True
+
+
+def test_recipients(subs, how):
+    """TEST_TO_SIG: the SIG_TEST_EMAILS addresses (or SIG_TO) only, each with
+    its own record when it is on the list (so the local lines show), else a
+    bare one. Counts only in the log."""
+    want = [x.strip() for x in (env("SIG_TEST_EMAILS", "") or env("SIG_TO", "") or "").split(",") if "@" in x]
+    if not want:
+        print("FATAL: TEST_TO_SIG needs SIG_TEST_EMAILS (or SIG_TO)")
+        sys.exit(1)
+    have = {str(r["email"]).strip().lower(): r for r in subs}
+    out = []
+    for w in want:
+        r = dict(have.get(w.lower()) or {"email": w, "zip": None, "src": "", "ts": None, "reports": True})
+        r["email"] = w
+        lid = r.get("lid") or list_source.lid_for(w) or email_links.SAMPLE_LID
+        r["lid"] = lid
+        out.append(r)
+    print("test copy to Sig only: %d address(es), %d of them on the list; the list itself has %d"
+          % (len(out), sum(1 for w in want if w.lower() in have), len(subs)))
+    return out, "json" if how == "json" else how
 
 
 def fetch_subscribers():
@@ -253,7 +298,10 @@ def elevator_add_url(email):
     lid = LINK_IDS.get(str(email).strip().lower())
     if not (base and secret and lid):
         return None
-    return email_links.signed(base, "daily-elev", lid, secret, "|de")
+    try:
+        return email_links.signed(base, "daily-elev", lid, secret, "|de")
+    except email_links.Withheld:
+        return None      # (nothing raises it since the front door, Oct 22: the agsist.com page says when the worker is down)
 
 
 def load_elevator_lines(subs=None, how="plain", bids_data=None):
@@ -343,6 +391,93 @@ def load_rain_lines(subs, how, bids_data=None):
     return out
 
 
+# ── the Daily, v2 (Sig, Oct 22 2026: live from the Oct 22 morning send) ─────
+# DAILY_FORMAT=v2 builds the email with scripts/daily_v2.py; anything else
+# (DAILY_FORMAT=current, or unset) builds the old format with brief_email. That
+# is the rollback: daily.yml's format input, or the repo variable DAILY_FORMAT
+# for the scheduled run.
+V2 = {"pod": None, "fact": None, "ready": False}
+
+
+def daily_format():
+    return "v2" if (os.environ.get("DAILY_FORMAT") or "").strip().lower() == "v2" else "current"
+
+
+def v2_setup(b):
+    """The day's print (PRINT_OF_DAY: scripts/print_of_day.py's pick with an
+    image_url once the PNG is live on agsist.com) and the day's fact, once.
+    Any failure leaves that slot out; the email still goes."""
+    if V2["ready"]:
+        return
+    V2["ready"] = True
+    p = (os.environ.get("PRINT_OF_DAY") or "").strip()
+    if p:
+        try:
+            with open(p, encoding="utf-8") as fh:
+                pod = json.load(fh)
+            if isinstance(pod, dict) and pod.get("image_url") and str(pod["image_url"]).startswith("https://agsist.com/"):
+                V2["pod"] = pod
+            else:
+                print("print of the day: no live picture; the slot is left out")
+        except Exception as ex:
+            print("print of the day skipped (" + type(ex).__name__ + ")")
+    else:
+        print("print of the day: none for this send; the slot is left out")
+    try:
+        import daily_fact
+        V2["fact"] = daily_fact.for_day(date.today())
+    except Exception as ex:
+        print("daily fact skipped (" + type(ex).__name__ + ")")
+
+
+def v2_parts(b, to_addr, uurl, mine, loc, rain):
+    import daily_v2
+    v2_setup(b)
+    return daily_v2.build(b, issue_url(b), unsub_url=uurl, elevators=mine, local=loc, forward_url=FORWARD_URL,
+                          rain=rain, pod=V2["pod"], fact=V2["fact"], today=date.today())
+
+
+def v2_hold_alert(day, built, bad):
+    """One email to Sig (OWNER_TO, the SIG_TO secret in daily.yml) the moment
+    the number check holds a live issue: what failed and how to fix and rerun.
+    The day is not flagged, so a rerun sends. Returns True if it went out."""
+    fields = sorted({f["field"] for f in bad})
+    lines = ["The AGSIST Daily for %s did not go to the list: the number check found a wrong number in the %s."
+             % (day, " and ".join(fields)), ""]
+    for f in bad:
+        lines += ["%s: \"%s\"" % (f["field"], str(f.get("quote") or "")[:300]), "  " + f["why"], ""]
+    lines += ["Subject it would have had: " + str(built.get("subject")), "",
+              "Nothing was sent and the day is not marked sent. To fix and rerun:",
+              "1. GitHub, dnilgis/agsist, Actions, Generate Daily Briefing, Run workflow on main: tick send_email, "
+              "format v2. It writes today's issue again and checks it again; if it passes it goes to the list.",
+              "2. To send today's issue as it is, in the old format (which does not run this check): the same, "
+              "with format current.",
+              "3. To skip today: do nothing. Tomorrow's run is not affected."]
+    return log_safe.owner_mail("AGSIST Daily %s held: wrong number in the %s" % (day, " and ".join(fields)), lines)
+
+
+def v2_gate(day, b, alert=False):
+    """The number check that blocks the v2 send (daily_v2.check): a wrong number
+    in the subject, headline or lead. True = clear to send. alert=True (a live
+    send) mails Sig at once when it holds the issue."""
+    import daily_v2
+    built = v2_parts(b, "reader@example.com", None, None, None, None)
+    bad, notes = daily_v2.check(b, built)
+    for n in notes:
+        print("v2 number check: " + n)
+    if bad:
+        print("::error title=Daily held, wrong number::the %s Daily did not go to the list: %s"
+              % (day, "; ".join("%s says \"%s\" (%s)" % (f["field"], str(f.get("quote"))[:120], f["why"]) for f in bad))[:900])
+        if alert:
+            print("alert to Sig: " + ("sent" if v2_hold_alert(day, built, bad) else "NOT sent (see above)"))
+        for f in bad:
+            print("::error title=Daily number check::%s: \"%s\" %s" % (f["field"], str(f.get("quote"))[:200], f["why"]))
+        print("v2 number check: %d wrong number(s) in the subject, headline or lead; the Daily does not send" % len(bad))
+        return False
+    print("v2 number check: passed (subject: %s)" % built["subject"])
+    return True
+
+
 def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     """One issue, two bodies, one message.
 
@@ -360,8 +495,16 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     date_display = b.get("date_display") or b.get("date") or day
     uurl = unsub_url(to_addr)
 
-    prior, _prior_day = brief_email.prior_board(b)
-    subject = brief_email.subject_line(b, prior)
+    v2 = None
+    if daily_format() == "v2":
+        k = str(to_addr).strip().lower()
+        v2 = v2_parts(b, to_addr, uurl, ELEVATOR_LINES.get(k) or None, LOCAL_LINES.get(k) or None, RAIN_LINES.get(k) or None)
+        subject = v2["subject"]
+    else:
+        prior, _prior_day = brief_email.prior_board(b)
+        subject = brief_email.subject_line(b, prior)
+    if env("TEST_TO_SIG", "") == "1":
+        subject = "[test copy] " + subject
 
     msg = EmailMessage()
     msg["Subject"] = subject
@@ -380,12 +523,15 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     mine = ELEVATOR_LINES.get(str(to_addr).strip().lower()) or None
     loc = LOCAL_LINES.get(str(to_addr).strip().lower()) or None
     rain = RAIN_LINES.get(str(to_addr).strip().lower()) or None
-    text = brief_email.render_text(b, issue_url(b), unsub_url=uurl, date_display=date_display, elevators=mine,
-                                   local=loc, forward_url=FORWARD_URL, rain=rain)
-    _issue = issue_url(b)
-    hbody = brief_email.render_html(b, _issue.replace("&", "&amp;"),
-                                    unsub_url=uurl, date_display=date_display, elevators=mine,
-                                    local=loc, forward_url=FORWARD_URL, rain=rain)
+    if v2:
+        text, hbody = v2["text"], v2["html"]
+    else:
+        text = brief_email.render_text(b, issue_url(b), unsub_url=uurl, date_display=date_display, elevators=mine,
+                                       local=loc, forward_url=FORWARD_URL, rain=rain)
+        _issue = issue_url(b)
+        hbody = brief_email.render_html(b, _issue.replace("&", "&amp;"),
+                                        unsub_url=uurl, date_display=date_display, elevators=mine,
+                                        local=loc, forward_url=FORWARD_URL, rain=rain)
 
     # set_content first, add_alternative second: that ordering is what makes it
     # multipart/alternative with the HTML preferred and the text a real
@@ -402,11 +548,20 @@ def main():
     from_name = env("FROM_NAME", "AGSIST Daily")
     reply_to = env("REPLY_TO")
     dry = env("DRY_RUN", "") == "1"
+    test = env("TEST_TO_SIG", "") == "1"
 
-    if not dry and flag(day):
+    if not dry and not test and flag(day):
         print("already sent for " + day + " (day-flag set) — skipping. exit 0")
         return 0
+    if daily_format() == "v2":
+        print("format: v2 (scripts/daily_v2.py)")
+        if not v2_gate(day, b, alert=not (dry or test)):
+            if not dry:
+                return 1
+            print("dry run: the preview below is what WOULD have been blocked")
     subs, how = fetch_subscribers()
+    if test:
+        subs, how = test_recipients(subs, how)
     if how == "json":
         # v5.46: only readers the worker gave a link id; their links carry k=, never the address
         LINK_IDS.clear()
@@ -475,6 +630,12 @@ def main():
     port = int(env("SMTP_PORT") or "587")
     user = env("SMTP_USER", required=True)
     pw = env("SMTP_PASS", required=True)
+    if test:
+        # Sig's copy: no day flag read or set, so the morning run still goes to everyone
+        globals()["flag"] = lambda *a, **k: False
+    elif not list_source.claim("briefed:" + day):
+        # backup mode: the day flag goes into the private repo before the first mail
+        return 1
 
     sent, failed = 0, []
     ctx = ssl.create_default_context()
@@ -557,4 +718,4 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(list_source.guard(main, soft=False))

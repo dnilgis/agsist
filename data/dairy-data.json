@@ -5,8 +5,8 @@
   "all_milk": "https://quickstats.nass.usda.gov/"
  },
  "status": {
-  "class": "ok",
-  "note": "issue date not found",
+  "class": "failed",
+  "note": "last good kept; AMS fetch failed: HTTPError: HTTP Error 403: Forbidden",
   "all_milk": "ok",
   "all_milk_states": "ok"
  },

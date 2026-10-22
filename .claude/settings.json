@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git fetch *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git -c user.name=dnilgis -c user.email=dnilgis@gmail.com commit *)",
+      "Bash(git push origin fx/*)",
+      "Bash(git push -q origin fx/*)",
+      "Bash(git push -u origin fx/*)",
+      "Bash(node --test *)",
+      "Bash(python3 scripts/*)",
+      "Bash(bash scripts/dev/*)",
+      "Bash(scripts/dev/quick.sh *)",
+      "Bash(scripts/dev/verify.sh *)",
+      "Bash(npx playwright test *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(find *)"
+    ],
+    "deny": [
+      "Bash(git push * main)",
+      "Bash(git push * main *)",
+      "Bash(git push *:main)",
+      "Bash(git push *:main *)",
+      "Bash(git push *refs/heads/main*)",
+      "Bash(git push --force*)",
+      "Bash(git push *--force*)",
+      "Bash(git push -f *)",
+      "Bash(git push * -f)",
+      "Bash(git push * -f *)",
+      "Bash(git push * +*)",
+      "Bash(git push --mirror*)",
+      "Bash(git push *--mirror*)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~*)",
+      "Bash(rm -rf /home*)",
+      "Bash(rm -rf /root*)",
+      "Bash(rm -rf .)",
+      "Bash(rm -rf ..*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/scripts/dev/bash-guard.mjs\"; [ -f \"$f\" ] || exit 0; exec node \"$f\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/scripts/dev/verify-gate.mjs\"; [ -f \"$f\" ] || exit 0; exec node \"$f\"",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/scripts/dev/wip-push.sh\"; [ -f \"$f\" ] || exit 0; bash \"$f\"; exit 0",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/scripts/dev/verify-gate.mjs\"; [ -f \"$f\" ] || exit 0; exec node \"$f\"",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/scripts/dev/wip-push.sh\"; [ -f \"$f\" ] || exit 0; bash \"$f\"; exit 0",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/scripts/dev/session-compact.sh\"; [ -f \"$f\" ] || { echo 'Read notes/HANDOFF.md (Now), BUILD-RULES.md and STANDING-DECISIONS.md in the private repo dnilgis/feedbag.'; exit 0; }; bash \"$f\"; exit 0",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

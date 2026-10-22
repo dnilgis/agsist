@@ -91,7 +91,7 @@ async function mocks(ctx, opts, log) {
   let logoBytes = null;
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
     const req = r.request(), u = new URL(req.url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (req.method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       if (u.pathname === "/where") return opts.where ? r.fulfill({ headers: h, json: { ok: true, city: "Chetek", region_code: "WI" } }) : r.fulfill({ status: 500, headers: h, body: "x" });
       if (u.pathname === "/rp-short" && req.method() === "POST") { const b = JSON.parse(req.postData()); SHORT.K7Q2M = b.code; return r.fulfill({ headers: h, json: { ok: true, id: "K7Q2M" } }); }
@@ -223,7 +223,8 @@ test("P1: a logo still saving, or one that didn't load, keeps checkout shut and 
     assert.equal(r.stage, "note");
     assert.deepEqual(log.stripe, []);
     assert.match(r.note, /The logo didn’t load, so it isn’t on the print\. Remove it or choose the file again, then order\./);
-    assert.equal(await page.evaluate(() => document.getElementById("rp-more").open), true, "a design with a logo opens More options, so the logo box is in sight");
+    // 2026-10-22: the logo box is in Your words, never folded away
+    assert.equal(await page.isVisible("#rp-logo-pick"), true, "the logo box is in sight");
   }, { logoGone: true });
 });
 
@@ -459,7 +460,7 @@ test("T9 (page copy): plain words: the nearest weather station, never NOAA's own
 test("T11, T13, T3, P9: logo rights, a mailto, the lost-or-damaged steps, the maker's logo note", () => {
   for (const id of ["rp-logo-help", "rb-logo-help"]) assert.match(HTML.match(new RegExp('id="' + id + '">[^<]*'))[0], /Only a logo you own or have permission to use\./);
   assert.match(HTML, /Your logo is stored on AGSIST&rsquo;s server so the print can use it\./);
-  assert.match(HTML, /Write to me at <a href="mailto:sig@farmers1st\.com">sig@farmers1st\.com<\/a>\.<\/p><\/details>/);
+  assert.match(HTML, /Write to me at <a href="mailto:sig@agsist\.com">sig@agsist\.com<\/a>\.<\/p><\/details>/);
   const faq = HTML.match(/<details><summary>What if something[\s\S]*?<\/details>/)[0];
   assert.match(faq, /If it arrives damaged, glass included, send a photo\. If tracking shows it lost, write to me\./);
   assert.ok(!/lost in the mail[^.]*send a photo/.test(faq), "no photo of a parcel that never came");

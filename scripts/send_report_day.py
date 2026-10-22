@@ -68,6 +68,7 @@ import subscribers        # noqa: E402
 import gmail_limit        # noqa: E402
 import log_safe           # noqa: E402  (no address in the public log)
 import email_links        # noqa: E402  (k=<link id> links; never an address in one)
+import list_source  # noqa: E402  (the worker, or the private copy of its list)
 from local_bid import q_cash_text, q_cents   # noqa: E402  (the site's quarter-cent text)
 from report_bands import surprise as band_surprise, range_context   # noqa: E402  (the one grading rule)
 
@@ -85,7 +86,7 @@ PAGE = "https://agsist.com/whats-priced-in?utm_source=report_email&utm_medium=em
 # Tagged like PAGE, so GA4 splits this email from the Daily (2026-10-19). The
 # site still reads ?ref= for the sign-up source.
 FORWARD_URL = "https://agsist.com/?ref=email-forward&utm_source=report_email&utm_medium=email"
-UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"}
+UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@agsist.com)"}
 TYPES = ("WASDE", "Crop Production", "Grain Stocks")
 # corn, soybeans, wheat: the nearby contract data/prices.json names in `nearby`
 MOVE_CROPS = (("corn", "corn"), ("beans", "soybeans"), ("wheat", "wheat"))
@@ -469,10 +470,9 @@ def flag_get(key):
     base, token = (os.environ.get("LIST_URL") or "").strip(), (os.environ.get("LIST_TOKEN") or "").strip()
     if not (base and token):
         return None
-    u = base.rstrip("/") + "/flag?k=" + urllib.parse.quote(key) + "&token=" + urllib.parse.quote(token)
+    # 2026-10-22: the worker AND the private repo (scripts/list_source.py); either set = sent
     try:
-        with urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=20) as r:
-            return bool(json.loads(r.read().decode()).get("set", False))
+        return bool(list_source.flag_is_set(key))
     except Exception as ex:
         print("flag unreachable (%s: %s)" % (type(ex).__name__, str(ex)[:100]))
         return None
@@ -486,8 +486,8 @@ def flag(day, set_it=False):
     base, token = (os.environ.get("LIST_URL") or "").strip(), (os.environ.get("LIST_TOKEN") or "").strip()
     for key in PENDING_KEYS:
         try:
-            u = base.rstrip("/") + "/flag?k=" + urllib.parse.quote(key) + "&token=" + urllib.parse.quote(token)
-            urllib.request.urlopen(urllib.request.Request(u, method="POST", headers=UA), timeout=20).read()
+            if not list_source.flag_set(key):
+                raise RuntimeError("not saved")
         except Exception as ex:
             print("::error::could not set %s (%s) -- a rerun could send this report again" % (key, type(ex).__name__))
     return True
@@ -600,6 +600,9 @@ def main(argv=()):
     port = int(env("SMTP_PORT", "587") or 587)
     user = env("SMTP_USER", required=True)
     pw = env("SMTP_PASS", required=True)
+    # backup mode: each report's flag goes into the private repo before the first mail
+    if not all(list_source.claim(k) for k in PENDING_KEYS):
+        return 1
 
     # THE SAME LOOP AS send_daily.py, byte for byte between its delimiters, and
     # held to it by scripts/test_send_loops.py: a dropped socket costs one
@@ -715,10 +718,10 @@ def _selftest():
     try:
         m = build_email(date(2026, 9, 30), (s, t, h), "a@farm.com", "AGSIST", "sender@example.com", None)
         _h, _t = m.get_body(("html",)).get_content(), m.get_body(("plain",)).get_content()
-        ok("https://w.dev/unsubscribe?k=" + email_links.SAMPLE_LID + "&t=" + email_links.token("sec", email_links.SAMPLE_LID) in _t,
+        ok("https://agsist.com/e?a=unsubscribe&k=" + email_links.SAMPLE_LID + "&t=" + email_links.token("sec", email_links.SAMPLE_LID) in _t,
            "unsubscribe link by link id in the text part")
         ok(not [u for u in email_links.hrefs(_h) if "@" in u or "%40" in u.lower()], "no @ inside any href")
-        ok(not email_links.bad_links(_t) and "@" not in str(m["List-Unsubscribe"]).split(">")[0], "no address in any text link or the header link")
+        ok(not email_links.bad_links(_t) and "@" not in email_links.unsub_web(m), "no address in any text link or the header link")
         LINK_IDS.pop("a@farm.com")
         m = build_email(date(2026, 9, 30), (s, t, h), "a@farm.com", "AGSIST", "sender@example.com", None)
         ok("/unsubscribe?" not in m.get_body(("plain",)).get_content(), "no link id: no signed link, never an address link")
@@ -783,16 +786,16 @@ def _selftest():
     try:
         mo = build_email(date(2026, 9, 30), (s, t, h), "d@farm.com", "AGSIST", "sender@example.com", None)
         bo = mo.get_body(("plain",)).get_content()
-        want = "https://w.dev/notice-unsubscribe?k=" + L1 + "&t=" + email_links.token("sec", L1) + "&topic=reports"
-        ok(mo["List-Unsubscribe"].startswith("<" + want + ">"), "report-only: one-click stops that list: %s" % mo["List-Unsubscribe"])
+        want = "https://agsist.com/e?a=notice-unsubscribe&k=" + L1 + "&t=" + email_links.token("sec", L1) + "&topic=reports"
+        ok(email_links.unsub_web(mo) == want, "report-only: one-click stops that list: %s" % mo["List-Unsubscribe"])
         ok("you asked for the WASDE summary on agsist.com" in bo and "Stop these report emails: " + want in bo
            and "stops AGSIST Daily too" not in bo, "report-only footer")
         ok(not [u for u in email_links.hrefs(mo.get_body(("html",)).get_content()) if "@" in u or "%40" in u.lower()]
-           and not email_links.bad_links(bo) and "@" not in str(mo["List-Unsubscribe"]).split(">")[0],
+           and not email_links.bad_links(bo) and "@" not in email_links.unsub_web(mo),
            "report-only: no address in any link")
         md_ = build_email(date(2026, 9, 30), (s, t, h), "a@farm.com", "AGSIST", "sender@example.com", None)
         bd = md_.get_body(("plain",)).get_content()
-        ok(("/unsubscribe?k=" + L0) in md_["List-Unsubscribe"] and "Unsubscribe (stops AGSIST Daily too): " in bd,
+        ok(("a=unsubscribe&k=" + L0) in md_["List-Unsubscribe"] and "Unsubscribe (stops AGSIST Daily too): " in bd,
            "a Daily reader's footer is as before")
         LINK_IDS.pop("d@farm.com")
         mn = build_email(date(2026, 9, 30), (s, t, h), "d@farm.com", "AGSIST", "sender@example.com", None)
@@ -817,4 +820,4 @@ def _selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(_selftest())
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(list_source.guard(lambda: main(sys.argv[1:]), soft=False))

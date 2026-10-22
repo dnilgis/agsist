@@ -56,7 +56,7 @@ jobs:
         run: |
           D=data/prf-season-raw/probe
           mkdir -p "$D"
-          get() { curl -sS -L -m 90 -A "agsist.com PRF tracker (sig@farmers1st.com)" -o "$D/$1" -w "$1 %{http_code} %{size_download} %{url_effective}\n" "$2" >> "$D/status.txt" 2>>"$D/errors.txt" || echo "$1 FAILED" >> "$D/status.txt"; }
+          get() { curl -sS -L -m 90 -A "agsist.com PRF tracker (sig@agsist.com)" -o "$D/$1" -w "$1 %{http_code} %{size_download} %{url_effective}\n" "$2" >> "$D/status.txt" 2>>"$D/errors.txt" || echo "$1 FAILED" >> "$D/status.txt"; }
           C=https://ftp.cpc.ncep.noaa.gov/precip/CPC_UNI_PRCP/GAUGE_CONUS
           get cpc-root.html "$C/"
           get cpc-rt.html "$C/RT/"
@@ -88,7 +88,7 @@ jobs:
         run: |
           D=data/prf-season-raw/probe2
           mkdir -p "$D"
-          get() { curl -sS -L -m 300 -A "agsist.com PRF tracker (sig@farmers1st.com)" -o "$D/$1" -w "$1 %{http_code} %{size_download} %{url_effective}\n" "$2" >> "$D/status.txt" 2>>"$D/errors.txt" || echo "$1 FAILED" >> "$D/status.txt"; }
+          get() { curl -sS -L -m 300 -A "agsist.com PRF tracker (sig@agsist.com)" -o "$D/$1" -w "$1 %{http_code} %{size_download} %{url_effective}\n" "$2" >> "$D/status.txt" 2>>"$D/errors.txt" || echo "$1 FAILED" >> "$D/status.txt"; }
           C=https://ftp.cpc.ncep.noaa.gov/precip/CPC_UNI_PRCP/GAUGE_CONUS/DOCU
           get cpc-readme.txt "$C/PRCP_CU_GAUGE_V1.0CONUS_0.25deg.README"
           get cpc-rt.ctl "$C/PRCP_CU_GAUGE_V1.0CONUS_0.25deg.lnx.RT.ctl"
@@ -121,7 +121,7 @@ jobs:
         run: |
           D=data/prf-season-raw/probe3
           mkdir -p "$D"
-          get() { curl -sS -L -m 300 -A "agsist.com PRF tracker (sig@farmers1st.com)" -o "$D/$1" -w "$1 %{http_code} %{size_download} %{url_effective}\n" "$2" >> "$D/status.txt" 2>>"$D/errors.txt" || echo "$1 FAILED" >> "$D/status.txt"; }
+          get() { curl -sS -L -m 300 -A "agsist.com PRF tracker (sig@agsist.com)" -o "$D/$1" -w "$1 %{http_code} %{size_download} %{url_effective}\n" "$2" >> "$D/status.txt" 2>>"$D/errors.txt" || echo "$1 FAILED" >> "$D/status.txt"; }
           N=https://www.ncei.noaa.gov/monitoring-content/data/us/usda
           get readme.docx "$N/Readme.docx"
           get m-initial.html "$N/monthly/initial/"

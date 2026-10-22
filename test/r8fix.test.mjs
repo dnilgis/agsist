@@ -72,7 +72,7 @@ test("glossary.js loads after idle, only through next-links.js, and only on a hi
   assert.match(NEXT_JS, /requestIdleCallback\(fn/);
   assert.match(NEXT_JS, /idle\(glossary\)/);
   assert.match(NEXT_JS, /!PRE\.test\(top\.textContent \|\| ''\)\) return;/);
-  assert.match(NEXT_JS, /\/components\/glossary\.js\?v=2/);
+  assert.match(NEXT_JS, /\/components\/glossary\.js\?v=3/);
   const direct = htmlFiles().filter((f) => /<script src="\/components\/glossary\.js/.test(read(f)));
   assert.deepEqual(direct, [], "no page loads glossary.js itself");
   for (const s of ["build_arc_plc.py", "build_county_rain.py", "build_state_rent_pages.py", "generate_hail_events.py", "make_prf_html.py"])
@@ -109,7 +109,7 @@ test("homepage: one email ask; the compact bar and big band no longer open by th
   assert.doesNotMatch(js, /isDismissed\('agsist_signup_compact_dismissed'\)\)\{var el2=document\.getElementById\('signup-compact'\);if\(el2\)el2\.style\.display='flex'/);
   assert.doesNotMatch(js, /visits<=24/);
   assert.match(js, /if\(toSignup\)\{var el=document\.getElementById\('signup-full'\)/);
-  assert.match(read("index.html"), /\/components\/home\.js\?v=15"/);
+  assert.match(read("index.html"), /\/components\/home\.js\?v=16"/);
 });
 
 test("USDA calendar: What I grow or raise, saved on this device", () => {

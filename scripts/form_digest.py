@@ -52,7 +52,7 @@ The Actions log gets counts only, never a name, address or phone.
     DRY_RUN=1 ...                                print the counts, send and mark nothing
 
 Optional: SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME, FORMS_TO (else
-SPONSOR_TO, else sig@farmers1st.com).
+SPONSOR_TO, else sig@agsist.com).
 """
 import html as H
 import json
@@ -70,6 +70,8 @@ from email.utils import formataddr, make_msgid
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+import list_source  # noqa: E402  (a blocked worker is a skip, not a failed run)
+import email_links  # noqa: E402  (links go to the agsist.com front door; the worker host is never in an email)
 
 try:
     from zoneinfo import ZoneInfo
@@ -98,7 +100,9 @@ RP_CHOICE = {"digital": "Digital file", "print12x18": "13 x 19 print", "framed12
 DESIGN_RE = re.compile(r"https://agsist\.com/rain-print\?[A-Za-z0-9%+._~=&-]+")
 YEAR_RE = re.compile(r"[?&]year=(\d{4})(?:&|$)")
 # A Rain Print logo (worker v5.23): its id, printed as a link to the PNG the buyer uploaded.
-LOGO_URL = "https://agsist-subs.dnilgis.workers.dev/rp-logo/"
+# Oct 22: the link is the agsist.com front door (email_links.front("logo")), which shows the
+# PNG from the worker; no link in an email points at the worker host.
+LOGO_URL = email_links.FRONT + "?a=logo&id="
 LOGO_ID_RE = re.compile(r"[0-9a-hjkmnp-tv-z]{12}")
 RP_DELIVER = {"buyer": "The buyer", "recipient": "The person it is for"}
 # A business quote's product and shipping choice, spelled out.
@@ -413,11 +417,9 @@ def build(posts, to, fn="AGSIST", fa="", top=""):
 
 def worker(base, path, tok, body=None, **q):
     url = "%s/%s?%s" % (base, path, urllib.parse.urlencode(dict(q, token=tok)))
-    data = json.dumps(body).encode() if body is not None else None
-    req = urllib.request.Request(url, data=data, method="POST" if data else "GET",
-                                 headers={"Content-Type": "application/json", "User-Agent": "agsist-form-digest"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode())
+    # 2026-10-22: scripts/list_source.py. The form posts live only on the
+    # worker, so a blocked worker raises list_source.Blocked: run() skips.
+    return list_source.request("POST" if body is not None else "GET", url, body, {"User-Agent": "agsist-form-digest"})
 
 
 def run(base, tok, to, dry, send, fetch=worker, top=None):
@@ -427,6 +429,10 @@ def run(base, tok, to, dry, send, fetch=worker, top=None):
     log = []
     try:
         posts = fetch(base, "form-list", tok, new="1")
+    except list_source.Unavailable as e:
+        # Oct 21: the Cloudflare block page. Not our failure: one warning, exit 0 (Sig had 45,000 "Run failed" emails)
+        log.append("::warning::worker blocked, skipped (form posts are only on the worker: %s)" % e)
+        return 0, log
     except urllib.error.HTTPError as e:
         if e.code == 404:
             log.append("worker has no /form-list yet (deploy workers/subs-worker.js v5.8); nothing to do")
@@ -477,12 +483,8 @@ HAY_DESK = "https://agsist.com/haymow-admin"
 def hay_worker(base, path, tok, body=None, **q):
     """The hay admin routes take the token as a Bearer header only."""
     url = "%s/%s%s" % (base, path, ("?" + urllib.parse.urlencode(q)) if q else "")
-    data = json.dumps(body).encode() if body is not None else None
-    req = urllib.request.Request(url, data=data, method="POST" if data else "GET",
-                                 headers={"Content-Type": "application/json", "User-Agent": "agsist-form-digest",
-                                          "Authorization": "Bearer " + tok})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode())
+    return list_source.request("POST" if body is not None else "GET", url, body,
+                               {"User-Agent": "agsist-form-digest", "Authorization": "Bearer " + tok})
 
 
 def hay_line(p):
@@ -570,6 +572,9 @@ def hay_run(base, tok, to, dry, send, fetch=hay_worker):
     log = []
     try:
         r = fetch(base, "hay/admin/list", tok, new="1")
+    except list_source.Unavailable as ex:
+        log.append("::warning::worker blocked, skipped (hay board: %s)" % ex)
+        return 0, log
     except urllib.error.HTTPError as ex:
         if ex.code == 404:
             log.append("worker has no /hay/admin/list yet (deploy workers/subs-worker.js v5.30); hay board skipped")
@@ -612,7 +617,7 @@ def main():
         print("LIST_URL and LIST_TOKEN are required")
         return 1
     dry = env("DRY_RUN") == "1"
-    to = env("FORMS_TO") or env("SPONSOR_TO") or "sig@farmers1st.com"
+    to = env("FORMS_TO") or env("SPONSOR_TO") or "sig@agsist.com"
     fn, fa = env("FROM_NAME", "AGSIST"), log_safe.sender_addr()
 
     def send(m):
@@ -945,7 +950,9 @@ def selftest():
     lp = dict(rp, logo="k3j9m2p7q8rs")
     t = build([lp], "s")
     ck("a logo is a Logo: line with its link", ("Logo: " + LOGO_URL + "k3j9m2p7q8rs") in t.get_body(("plain",)).get_content())
-    ck("a logo is a link in the html", ('href="' + LOGO_URL + 'k3j9m2p7q8rs"') in t.get_body(("html",)).get_content())
+    ck("a logo is a link in the html", ('href="' + H.escape(LOGO_URL) + 'k3j9m2p7q8rs"') in t.get_body(("html",)).get_content())
+    ck("the logo link is the agsist.com front door, never the worker (Oct 22)",
+       LOGO_URL + "k3j9m2p7q8rs" == email_links.front("logo", [("id", "k3j9m2p7q8rs")]) and "workers.dev" not in t.as_string())
     bad = build([dict(rp, logo="<b>x</b>")], "s").get_body(("html",)).get_content()
     ck("a bad logo id is no link", "<b>x</b>" not in bad and "rp-logo/&lt;" not in bad and "does not look right" in bad)
     ck("no logo, no Logo: line", "Logo:" not in build([rp], "s").get_body(("plain",)).get_content())

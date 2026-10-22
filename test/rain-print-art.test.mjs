@@ -10,6 +10,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
+import { splitRiders } from "./fixtures/rp-label-check.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const ctx = { TextEncoder, TextDecoder, URLSearchParams, btoa, atob, Map, Promise };
@@ -37,7 +38,7 @@ function input(days, extra = {}) {
     axisLen: days.length, ov: RP.overlayDaily(days, normalMap(y)), ovNote: "A usual year: NOAA’s 30-year normal", showNormals: false, markers: [], records: [],
     qr: { matrix: ctx.AgQR.matrix("HTTPS://AGSIST.COM/R?K7Q2M"), serial: "" } }, extra);
 }
-const texts = (svg) => [...svg.matchAll(/<text[^>]*>((?:[^<]|<\/?tspan[^>]*>)*)<\/text>/g)].map((m) => m[1].replace(/<\/?tspan[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&#39;/g, "'"));
+const texts = (svg) => [...splitRiders(svg).matchAll(/<text[^>]*>((?:[^<]|<\/?tspan[^>]*>)*)<\/text>/g)].map((m) => m[1].replace(/<\/?tspan[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&#39;/g, "'"));
 
 // ---------- design code and query string ----------
 const FULL = { place: "Chetek, WI", station: "471667 2", year: 2025, cmp: "normal", name: "The Olson Farm",
@@ -403,13 +404,14 @@ test("the page offers the two styles, the dedication and both switches, and load
   assert.match(html, /name="rp-style" value="r2"><span>Roots</);
   assert.ok(html.indexOf('name="rp-style"') < html.indexOf('id="rp-status"'), "the style picker sits with the first controls");
   assert.match(html, new RegExp(`id="rp-ded" type="text" maxlength="${RP.LIMITS.dedication}"`));
-  assert.match(html, /id="rp-normals"[^>]*><span>Show the 30-year normals</);
-  assert.match(html, /id="rp-records"[^>]*><span>Show remarkable days</);
+  // the two switches are chips in the Layers card since the layout of 2026-10-22
+  assert.match(html, /id="rp-normals"[^>]*><span>Month normals</);
+  assert.match(html, /id="rp-records"[^>]*><span>Remarkable days</);
   assert.ok(!/name="rp-layout"|name="rp-pal"/.test(html), "the old layout and color pickers are gone");
   const i = (s) => html.indexOf(s);
   assert.ok(i("/components/rp-short.js") > 0 && i("/components/rain-print-art.js") > 0);
   assert.ok(i("/components/rp-short.js") < i("/components/rain-print.js?v=") && i("/components/rain-print-art.js") < i("/components/rain-print.js?v="));
-  assert.match(html, /\/components\/rain-print\.js\?v=65"/);
+  assert.match(html, /\/components\/rain-print\.js\?v=77"/);
   for (const f of ["rp-fraunces-opsz.woff2", "rp-fraunces-opsz-400i.woff2", "rp-plex-sans-var.woff2", "rp-plex-sans-400i.woff2"]) {
     assert.ok(html.includes("/fonts/" + f), "the page declares " + f);
     assert.ok(readFileSync(ROOT + "components/rain-print.js", "utf8").includes("/fonts/" + f), "and the export inlines " + f);
@@ -443,7 +445,7 @@ test("D7: QR rows share exact edges, so no pale seam runs through the mark", () 
 
 // ---------- panel 4 (2026-10-14): the print as wall art ----------
 // every <text>, with its size, family and the group it is drawn in
-const sized = (svg) => [...svg.matchAll(/<g data-rp="([^"]+)">((?:(?!<g data-rp=).)*)/g)].flatMap((g) =>
+const sized = (svg) => [...splitRiders(svg).matchAll(/<g data-rp="([^"]+)">((?:(?!<g data-rp=).)*)/g)].flatMap((g) =>
   [...g[2].matchAll(/<text[^>]*font-family="([^"]*)"[^>]*font-size="([\d.]+)"[^>]*>((?:[^<]|<\/?tspan[^>]*>)*)<\/text>/g)].map((m) => ({ rp: g[1], fam: m[1], size: +m[2], s: m[3].replace(/<\/?tspan[^>]*>/g, "") })));
 
 test("the buyer's name is the biggest words on the sheet, in the serif, in both styles, long or short", () => {

@@ -312,17 +312,23 @@ test("checkout never dead-ends: a design code over 200 goes to Stripe as its sho
   assert.equal(RP.checkoutRef(code, false, "HTTPS://AGSIST.COM/R?K7Q2M"), "RPS-K7Q2M");
   assert.equal(RP.checkoutRef(code, true, "HTTPS://AGSIST.COM/R?K7Q2M"), "GIFT-RPS-K7Q2M");
   assert.ok(/^[A-Za-z0-9_-]{1,200}$/.test(RP.checkoutRef(code, true, "HTTPS://AGSIST.COM/R?K7Q2M")));
-  assert.equal(RP.checkoutRef(code, false, null), "", "no short id: no Stripe, the order form opens");
+  assert.equal(RP.checkoutRef(code, false, null), "", "no short id: checkoutRef has none of its own");
+  // 2026-10-22: pay() then goes to Stripe with the hash of the full code (BUILD-RULES 14)
+  assert.match(RP.hashRef(code, false), /^RPH-[0-9A-HJKMNP-TV-Z]{10}$/);
+  assert.match(RP.hashRef(code, true), /^GIFT-RPH-[0-9A-HJKMNP-TV-Z]{10}$/);
   const short = RP.encodeCode({ place: "Chetek, WI", year: 2025 });
   assert.equal(RP.checkoutRef(short, false, null), short, "a code that fits goes as it is");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   // 2026-10-14 (Sig, standard code on previews): no short id is made on a redraw, so pay() makes one at the press when the code is too long
   const P = S.slice(S.indexOf("function pay(opts)"), S.indexOf("function staleInputs"));
   assert.match(P, /if \(link && long && !\(opts && opts\.minted\) && root\.AgRpShort && root\.AgRpShort\.mint\) \{/, "pay() makes the short id at the press, once");
-  // 2026-10-15: asked of the worker at every press (never a kept id alone); a failed ask goes to the order form, not to Stripe with a kept id
-  assert.match(P, /root\.AgRpShort\.mint\(encodeCode\(artDesign\(\)\), \{ fresh: true \}\)/);
-  assert.match(P, /var code = link && long && !\(opts && opts\.ok\) \? '' : refFor\(\);/);
-  assert.match(P, /: refFor\(\);/, "pay() uses the reference");
+  // 2026-10-15: asked of the worker at every press (never a kept id alone, so never Stripe with a kept id)
+  assert.match(P, /root\.AgRpShort\.mint\(encodeCode\(artDesign\(\)\), \{ fresh: true, timeout: MINT_WAIT_MS \}\)/);
+  /* 2026-10-22 (BUILD-RULES 14, after the Oct 21 worker block): a failed or slow ask goes to Stripe as the hash ref
+     (RPH-, the full design by the press record or the backup form), never to the order form for want of the worker;
+     the order form is for a product with no payment link. */
+  assert.match(P, /var code = !link \? '' : long && !\(opts && opts\.ok\) \? hashRef\(encodeCode\(ST\), ST\.gift\) : \(refFor\(\) \|\| hashRef\(encodeCode\(ST\), ST\.gift\)\);/, "pay() uses the reference");
+  assert.match(S, /var MINT_WAIT_MS = 4000/, "the checkout waits 4 s at most for the short link");
   assert.match(P, /closeProof\(true\);[\s\S]{0,140}openOrder\(id, link \? 'Checkout couldn\\u2019t open just now, so send this and I\\u2019ll email you a payment link\.' : ''\);\n  \}/, "and falls back to the order form, saying why");
   // 2026-10-14 (Sig): checkout in the same tab, never a second window
   assert.match(P, /goTo\(u\);/);
@@ -359,7 +365,7 @@ test("the proof view and the order summary are on the page", () => {
 // ---------- gift cards on the page (components/rp-gift.js, worker v5.16) ----------
 test("a ?gift= card is redeemed on the page; the free pre-payment card is gone", () => {
   const H = readFileSync(ROOT + "rain-print.html", "utf8"), S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(H, /<script src="\/components\/rp-gift\.js\?v=6" defer><\/script>/);
+  assert.match(H, /<script src="\/components\/rp-gift\.js\?v=9" defer><\/script>/);
   assert.ok(H.indexOf("/components/rain-print.js?v=") < H.indexOf("/components/rp-gift.js"), "the page script is in place before the gift script runs");
   for (const id of ["rp-gift-banner", "rp-gift-use"]) assert.ok(H.includes(`id="${id}"`), id);
   assert.ok(!/Print a gift card|id="rp-card"|id="rp-giftcard"|rp-carding/.test(H + S), "no free printable card before payment");
@@ -601,8 +607,10 @@ test("outside review, as Sig took it: example years, the framed choice first, th
   // 2026-10-20 (Sig, "do all"): under Pay, the date line, then the promise: numbered, and Sig's guarantee (test/rain-print-conv.test.mjs)
   assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<!--[\s\S]*?-->\s*<p class="rp-arrive" id="rp-arrive" hidden><\/p>\s*<p class="rp-promise" id="rp-promise">Numbered and initialed by hand\. If it&rsquo;s not right, I&rsquo;ll redo it or refund it\.<\/p>/);
   assert.match(S2, /'You see a proof first\. ' \+ GUARANTEE/, "the file gets the proof email too (2026-10-20)");
-  assert.match(HTML, /<select id="rp-cmp" aria-describedby="rp-cmp-hint">/);
-  assert.match(HTML, /id="rp-cmp-hint">Nothing: just your year\. NOAA normal: [^<]+Full record: /);
+  // 2026-10-22: the comparison is the Usual year switch in the Layers card (Off, 30-yr normal, This station); what each
+  // means is in Questions
+  assert.match(HTML, /<input type="radio" name="rp-cmp" value="none"><span>Off<\/span><\/label><label><input type="radio" name="rp-cmp" value="normal" checked><span>30-yr normal<\/span><\/label><label><input type="radio" name="rp-cmp" value="station"><span>This station<\/span>/);
+  assert.match(HTML, /Usual year draws a usual year beside yours: NOAA&rsquo;s 30-year normal, or this station&rsquo;s own average over every year it has kept\./);
   assert.ok(HTML.indexOf('id="rp-biz"') > HTML.indexOf('id="rp-buy"'), "the business section stays below the personal flow");
   assert.equal((HTML.match(/name="rp-style"/g) || []).length, 2, "two styles only");
 });

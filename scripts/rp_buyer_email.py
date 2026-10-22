@@ -3,7 +3,7 @@
 The Rain Print buyer's "here's your print, get ready for it" email (Sig,
 2026-10-20). One email per paid Checkout Session, phone first, from the same
 Gmail sending path the site's other jobs use (SMTP_USER / SMTP_PASS), with
-Reply-To sig@farmers1st.com.
+Reply-To sig@agsist.com.
 
   Which orders  the subs worker's GET /rp-order/list (Bearer LIST_TOKEN): the
                 presses of Pay on /rain-print the worker has matched to a
@@ -32,7 +32,7 @@ Reply-To sig@farmers1st.com.
                 send, so a crash or a rerun can never send it twice; a send
                 that fails after the mark is counted in the log for Sig.
   Sig only      DRY_RUN=1 sends every email to Sig (SIG_TO, default
-                sig@farmers1st.com) and marks nothing. A test-mode session
+                sig@agsist.com) and marks nothing. A test-mode session
                 (livemode false) or a buyer address in SIG_TEST_EMAILS (and
                 SIG_TO) goes to Sig only.
   The files     (Sig, 2026-10-20) a paid DIGITAL file the buyer has approved
@@ -109,10 +109,11 @@ from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-REPLY_TO = "sig@farmers1st.com"
+REPLY_TO = "sig@agsist.com"
 ADDRESS = "AGSIST, PO Box 243, Chetek, WI 54728"
 PRODUCT = {"digital": "digital file", "print12x18": "13 x 19 print", "framed12x18": "13 x 19 framed print"}
 STYLE = {"r1": "Staircase", "r2": "Roots"}
@@ -989,7 +990,7 @@ SIG_URL = ("https://agsist.com/rain-print?place=Chetek%2C+WI&year=2025&station=4
 SIG_REF = "MnxDaGV0ZWssIFdJfDQ3MTY2NyAyfDIwMjV8c3AwYWF8R3VzdHVtIEZhcm18Mml8TW92ZWQgaW4"
 WORDS = ["Your framed print of Chetek, WI, 2025 is ordered. Your proof comes by email by Wednesday, Oct 21. Approve it there, or ask for a change. Nothing prints until you approve it.",
          "It ships within 3 business days after you approve it, and ordered by Dec 9 it arrives by Christmas.",
-         "Nothing by then? Check spam, or write to me at sig@farmers1st.com."]
+         "Nothing by then? Check spam, or write to me at sig@agsist.com."]
 
 
 def order(key, product="framed12x18", session="cs_live_1", **kw):
@@ -1118,55 +1119,55 @@ def selftest():
 
     sent = []
     send = lambda m: sent.append(m)                        # noqa: E731
-    tests = {"sig@farmers1st.com", "dnilgis+test@example.com"}
+    tests = {"sig@agsist.com", "dnilgis+test@example.com"}
     live = {"livemode": True, "email": "buyer@example.com"}
 
     print("who gets it")
     f = Fake({"stripe": "ok", "orders": [order("1")]}, {"cs_live_1": live})
-    code, log = run(f, False, lambda m: (f.calls.append(("send",)), sent.append(m)), "sig@farmers1st.com", tests)
+    code, log = run(f, False, lambda m: (f.calls.append(("send",)), sent.append(m)), "sig@agsist.com", tests)
     ck("a paid order: one email to the buyer", code == 0 and len(sent) == 1 and sent[0]["To"] == "buyer@example.com", [m["To"] for m in sent])
     ck("marked before the send", ("send",) in f.calls and f.calls.index(("worker", "rp-order/mailed")) < f.calls.index(("send",)), f.calls)
-    ck("Reply-To is Sig", sent[0]["Reply-To"] == "sig@farmers1st.com")
+    ck("Reply-To is Sig", sent[0]["Reply-To"] == "sig@agsist.com")
     ck("the log has counts only", all("@" not in x and "Chetek" not in x and "Gustum" not in x and SIG_REF not in x for x in log), log)
     ck("the counts line", log[-1].startswith("sent: 1; to Sig: 0;"), log)
     # run again on the same listing: the mark says already, nothing goes
     sent.clear()
-    run(f, False, send, "sig@farmers1st.com", tests)
+    run(f, False, send, "sig@agsist.com", tests)
     ck("idempotent: a second run sends nothing", sent == [], [m["To"] for m in sent])
     sent.clear()
     f = Fake({"stripe": "ok", "orders": [order("1", mailed={"at": "x", "session": "cs_live_1"})]}, {"cs_live_1": live})
-    run(f, False, send, "sig@farmers1st.com", tests)
+    run(f, False, send, "sig@agsist.com", tests)
     ck("a record already mailed is skipped without asking Stripe", sent == [] and not any(c[0] == "session" for c in f.calls), f.calls)
     sent.clear()
     f = Fake({"stripe": "ok", "orders": [order("1")]}, {"cs_live_1": live})
-    run(f, True, send, "sig@farmers1st.com", tests)
-    ck("dry run: to Sig only, marked nothing", len(sent) == 1 and sent[0]["To"] == "sig@farmers1st.com" and not f.marked
+    run(f, True, send, "sig@agsist.com", tests)
+    ck("dry run: to Sig only, marked nothing", len(sent) == 1 and sent[0]["To"] == "sig@agsist.com" and not f.marked
        and sent[0]["Subject"].startswith("[dry run"), [m["To"] for m in sent])
     sent.clear()
     f = Fake({"stripe": "ok", "orders": [order("1"), order("2", session="cs_test_2"), order("3", session="cs_live_3")]},
-             {"cs_live_1": {"livemode": True, "email": "Sig@Farmers1st.com"}, "cs_test_2": {"livemode": False, "email": "buyer@example.com"},
+             {"cs_live_1": {"livemode": True, "email": "Sig@AGSIST.com"}, "cs_test_2": {"livemode": False, "email": "buyer@example.com"},
               "cs_live_3": {"livemode": True, "email": "dnilgis+test@example.com"}})
-    run(f, False, send, "sig@farmers1st.com", tests)
-    ck("Sig's own orders and test-mode sessions go to Sig only", [m["To"] for m in sent] == ["sig@farmers1st.com"] * 3, [m["To"] for m in sent])
+    run(f, False, send, "sig@agsist.com", tests)
+    ck("Sig's own orders and test-mode sessions go to Sig only", [m["To"] for m in sent] == ["sig@agsist.com"] * 3, [m["To"] for m in sent])
     sent.clear()
     f = Fake({"stripe": "no key", "orders": [order("1")]}, {"cs_live_1": live})
-    code, log = run(f, False, send, "sig@farmers1st.com", tests)
+    code, log = run(f, False, send, "sig@agsist.com", tests)
     ck("no confirmed payments: nothing sent", sent == [] and "no buyer email sent" in log[-1], log)
     f = Fake({"stripe": "ok", "orders": [order("1", status="pay pressed", paid=None)]}, {"cs_live_1": live})
-    run(f, False, send, "sig@farmers1st.com", tests)
+    run(f, False, send, "sig@agsist.com", tests)
     ck("pay pressed only: nothing sent", sent == [])
     f = Fake({"stripe": "ok", "orders": [order("1")]}, {"cs_live_1": {"livemode": True, "email": ""}})
-    code, log = run(f, False, send, "sig@farmers1st.com", tests)
+    code, log = run(f, False, send, "sig@agsist.com", tests)
     ck("no address on the session: nothing, counted", sent == [] and "no address: 1" in log[-1] and not f.marked, log)
     f = Fake({"stripe": "ok", "orders": [order("1")]}, {"cs_live_1": live}, render_fail=True)
-    code, log = run(f, False, send, "sig@farmers1st.com", tests)
+    code, log = run(f, False, send, "sig@agsist.com", tests)
     ck("the pictures fail: nothing sent, nothing marked (the next run tries again)", sent == [] and not f.marked and "render failed: 1" in log[-1], log)
     f = Fake({"stripe": "ok", "orders": [order("1")]}, {"cs_live_1": live})
-    code, log = run(f, False, lambda m: (_ for _ in ()).throw(OSError("smtp")), "sig@farmers1st.com", tests)
+    code, log = run(f, False, lambda m: (_ for _ in ()).throw(OSError("smtp")), "sig@agsist.com", tests)
     ck("a send that fails after the mark: exit 1, counted", code == 1 and "marked, send failed: 1" in log[-1], log)
     f = Fake({"stripe": "ok", "orders": [order("1")]}, {"cs_live_1": live}, mark_fail=True)
     try:
-        run(f, False, send, "sig@farmers1st.com", tests)
+        run(f, False, send, "sig@agsist.com", tests)
         ck("the mark fails: the run stops before sending", False)
     except urllib.error.HTTPError:
         ck("the mark fails: the run stops before sending", sent == [])
@@ -1174,7 +1175,7 @@ def selftest():
     f = Fake({"stripe": "ok", "orders": [order("1")]}, {"cs_live_1": live})
     f.worker = (lambda orig: (lambda path, body=None, **q: (_ for _ in ()).throw(OSError("x")) if path == "form-list" else orig(path, body, **q)))(f.worker)
     sent.clear()
-    code, log = run(f, False, send, "sig@farmers1st.com", tests)
+    code, log = run(f, False, send, "sig@agsist.com", tests)
     ck("gift notes unreadable: every order waits", sent == [] and not f.marked and "waiting: 1" in log[-1], log)
 
     print("\nSig's order alert")
@@ -1184,9 +1185,9 @@ def selftest():
                                          order("3", alerted=None, session="cs_live_3", no_press=True, design_url="", fulfill_url="", place="", year=None,
                                                product="print12x18", serial=5, mailed={"at": "x"})]},
              {"cs_live_1": live, "cs_live_3": {"livemode": True, "email": ""}})
-    code, log = run(f, True, send, "sig@farmers1st.com", tests)
+    code, log = run(f, True, send, "sig@agsist.com", tests)
     alerts = [m for m in sent if m["Subject"].startswith("Rain Print order:")]
-    ck("one alert per paid record, to Sig, even on a dry run", len(alerts) == 2 and all(m["To"] == "sig@farmers1st.com" for m in alerts), [m["Subject"] for m in sent])
+    ck("one alert per paid record, to Sig, even on a dry run", len(alerts) == 2 and all(m["To"] == "sig@agsist.com" for m in alerts), [m["Subject"] for m in sent])
     a = alerts[0].get_content()
     ck("alert subject", alerts[0]["Subject"] == "Rain Print order: Framed, Chetek, WI 2025 ($79.00)", alerts[0]["Subject"])
     ck("alert: what, paid, serial, the maker link", "What: 13 x 19 framed print of Chetek, WI, 2025, Staircase" in a and "Paid: $79.00 ($89.00 less a code)" in a
@@ -1197,14 +1198,14 @@ def selftest():
     ck("alerts marked once", f.alerted == {order("1")["key"], order("3")["key"]})
     ck("the log: counts only", "Order alerts to Sig: 2 sent, 0 failed." in log and all("@" not in x for x in log), log)
     sent.clear()
-    run(f, True, send, "sig@farmers1st.com", tests)
+    run(f, True, send, "sig@agsist.com", tests)
     ck("a second run sends no alert again", not any(m["Subject"].startswith("Rain Print order:") for m in sent), [m["Subject"] for m in sent])
     sent.clear()
     f = Fake({"stripe": "no key", "orders": [order("1", alerted=None, mailed=None, paid={"amount": 19, "session": "cs_live_1", "via": "webhook"}, product="digital")]},
              {"cs_live_1": live})
-    code, log = run(f, False, send, "sig@farmers1st.com", tests)
+    code, log = run(f, False, send, "sig@agsist.com", tests)
     ck("webhook-paid with no read key: Sig's alert goes (buyer not given); no buyer email, counted",
-       [m["To"] for m in sent] == ["sig@farmers1st.com"] and "Buyer (as Stripe sent it): not given" in sent[0].get_content()
+       [m["To"] for m in sent] == ["sig@agsist.com"] and "Buyer (as Stripe sent it): not given" in sent[0].get_content()
        and "no address: 1" in log[-1], (log, [m["To"] for m in sent]))
     ck("no em dashes in the alert", not any("\u2014" in m.get_content() for m in alerts))
 
@@ -1212,14 +1213,14 @@ def selftest():
     f = Fake({"stripe": "ok", "orders": [order("1", approved={"at": "2026-10-21T14:00:00.000Z"}, mailed={"at": "x"}),
                                          order("2", product="digital", approved={"at": "2026-10-21T15:00:00.000Z"}, mailed={"at": "x"}, serial=None)]},
              {"cs_live_1": live})
-    run(f, False, send, "sig@farmers1st.com", tests)
+    run(f, False, send, "sig@agsist.com", tests)
     ap = [m for m in sent if m["Subject"].startswith("Rain Print approved:")]
     ck("an approval: one email to Sig each, with the maker link and what to do",
-       len(ap) == 2 and all(m["To"] == "sig@farmers1st.com" for m in ap) and "Make it: it ships within 3 business days" in ap[0].get_content()
+       len(ap) == 2 and all(m["To"] == "sig@agsist.com" for m in ap) and "Make it: it ships within 3 business days" in ap[0].get_content()
        and "Open to fulfill: " + SIG_URL + "&maker=1&serial=4" in ap[0].get_content() and "Nothing to do: the files go to the buyer by email now" in ap[1].get_content(),
        [m.get_content() for m in ap])
     sent.clear()
-    run(f, False, send, "sig@farmers1st.com", tests)
+    run(f, False, send, "sig@agsist.com", tests)
     ck("an approval alert goes once", not any(m["Subject"].startswith("Rain Print approved:") for m in sent))
     ck("the order alert says waiting for approval", "Approval: waiting for approval" in alert_text(order("1"), ""))
 
@@ -1228,7 +1229,7 @@ def selftest():
     forms = [{"kind": "rain-print-order", "design_code": SIG_REF, "gift": "yes", "gift_to": "Dad Olson", "gift_message": "For every inch\nyou farmed",
               "email": "buyer@example.com", "name": "Jane Buyer", "address": "12 Main St"}]
     f = Fake({"stripe": "ok", "orders": [order("1")]}, {"cs_live_1": live}, forms=forms)
-    run(f, False, send, "sig@farmers1st.com", tests)
+    run(f, False, send, "sig@agsist.com", tests)
     m = sent[0]
     ck("the gift note goes to the letter", ("render", "framed12x18", "For every inch\nyou farmed") in f.calls, f.calls)
     txt = m.get_body(("plain",)).get_content()
@@ -1244,7 +1245,7 @@ def selftest():
        ('href="https://agsist.com/rain-print-approve?k=%s&amp;t=0123456789abcdef"' % k) in htm and ">Approve this print</a>" in htm
        and "buyer@example.com" not in htm.split("Approve this print")[0][-400:], htm[-1500:])
     ck("Ask for a change: a mailto to Sig with the ref in the subject",
-       ('href="mailto:sig@farmers1st.com?subject=Change%%20to%%20my%%20Rain%%20Print%%20%%28ref%%20%s%%29"' % SIG_REF) in htm and ">Ask for a change</a>" in htm, htm[-1500:])
+       ('href="mailto:sig@agsist.com?subject=Change%%20to%%20my%%20Rain%%20Print%%20%%28ref%%20%s%%29"' % SIG_REF) in htm and ">Ask for a change</a>" in htm, htm[-1500:])
     ck("the text part has the approve link too", "Approve this print: https://agsist.com/rain-print-approve?k=%s&t=0123456789abcdef" % k in txt, txt)
     ck("Something wrong? Reply", "Something wrong? Reply to this email" in txt and "Something wrong?</b> Reply to this email" in htm)
     ck("the proof and the letter inline by cid", 'src="cid:proof"' in htm and 'src="cid:letter"' in htm and
@@ -1256,7 +1257,7 @@ def selftest():
     ck("no sponsor", "sponsor" not in (txt + htm).lower())
     sent.clear()
     f = Fake({"stripe": "ok", "orders": [order("1", product="digital")]}, {"cs_live_1": live})
-    run(f, False, send, "sig@farmers1st.com", tests)
+    run(f, False, send, "sig@agsist.com", tests)
     htm = sent[0].get_body(("html",)).get_content()
     ck("a digital file: no letter, the file wording", "cid:letter" not in htm and "your file will not" in htm, htm[-400:])
     ck("a digital file: the files right after the OK", "After you approve it, your files come by email within minutes: a PDF, a PNG and a JPG at 12 x 18 in, 300 dpi, no preview mark, "
@@ -1294,7 +1295,7 @@ def selftest():
         ck("buyer emails: Sig at AGSIST with no RP_FROM_NAME, whatever FROM_NAME says",
            "Sig at AGSIST" in pm["From"] and "Sig at AGSIST" in fmm["From"] and "Sig at AGSIST" in from_after_send(pm) and "Sig at AGSIST" in from_after_send(fmm),
            (pm["From"], fmm["From"]))
-        ck("Sig's own note keeps FROM_NAME", "AGSIST Daily" in from_after_send(sig_note(order("1"), "sig@farmers1st.com", "x")))
+        ck("Sig's own note keeps FROM_NAME", "AGSIST Daily" in from_after_send(sig_note(order("1"), "sig@agsist.com", "x")))
         os.environ["RP_FROM_NAME"] = "Sig Lindquist"
         ck("RP_FROM_NAME changes only the buyer emails", "Sig Lindquist" in build(order("1"), {"proof": None, "letter": None, "words": WORDS}, "b@example.com")["From"])
     finally:
@@ -1309,7 +1310,7 @@ def selftest():
                                       mailed={"at": "x"}, approved=kw.pop("approved", ap_at), approved_alerted={"at": "x"}, fulfill_url=SIG_URL + "&maker=1", **kw)
     sent.clear()
     f = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live})
-    code, log = run(f, False, lambda m: (f.calls.append(("send",)), sent.append(m)), "sig@farmers1st.com", tests)
+    code, log = run(f, False, lambda m: (f.calls.append(("send",)), sent.append(m)), "sig@agsist.com", tests)
     fm = [m for m in sent if m["Subject"].startswith("Your Rain Print files:")]
     ck("approved: one files email, to the buyer", code == 0 and len(fm) == 1 and fm[0]["To"] == "buyer@example.com", [(m["To"], m["Subject"]) for m in sent])
     ck("subject: the files, the town and year", fm and fm[0]["Subject"] == "Your Rain Print files: Chetek, WI, 2025", fm and fm[0]["Subject"])
@@ -1324,67 +1325,67 @@ def selftest():
         "Print the PDF at 100% (Actual size). Turn off Fit to page and Scale to fit", "heavy matte paper", "8 x 12 or 16 x 24 in",
         "A print shop or an online print service")), ftxt)
     ck("each file said in plain words, the guide too", "one page on how to read your print" in ftxt and "12 x 18 in at 300 dpi" in ftxt and "5400 x 3600 px" in ftxt, ftxt)
-    ck("Reply-To Sig, reply line, no em dashes, no sponsor", fm and fm[0]["Reply-To"] == "sig@farmers1st.com" and "Reply to this email" in ftxt
+    ck("Reply-To Sig, reply line, no em dashes, no sponsor", fm and fm[0]["Reply-To"] == "sig@agsist.com" and "Reply to this email" in ftxt
        and "\u2014" not in ftxt + fhtm and "sponsor" not in (ftxt + fhtm).lower())
     notes_ = [m for m in sent if m["Subject"].startswith("Rain Print files sent:")]
-    ck("Sig's one-line note: the files went, no buyer details", len(notes_) == 1 and notes_[0]["To"] == "sig@farmers1st.com"
+    ck("Sig's one-line note: the files went, no buyer details", len(notes_) == 1 and notes_[0]["To"] == "sig@agsist.com"
        and notes_[0].get_content().strip().count("\n") == 0 and "@" not in notes_[0].get_content() and "buyer@example.com" not in str(notes_[0]),
        [m.get_content() for m in notes_])
     ck("the log: counts only, no address, no place", any(x.startswith("files sent: 1;") for x in log)
        and all("@" not in x and "Chetek" not in x and "Gustum" not in x and SIG_REF not in x for x in log), log)
     sent.clear()
-    run(f, False, send, "sig@farmers1st.com", tests)
+    run(f, False, send, "sig@agsist.com", tests)
     ck("once: a second run sends no files", not any(m["Subject"].startswith(("Your Rain Print files:", "Rain Print files sent:")) for m in sent), [m["Subject"] for m in sent])
     sent.clear()
     f = Fake({"stripe": "ok", "orders": [dig(delivered={"at": "x", "how": "email"})]}, {"cs_live_5": live})
-    run(f, False, send, "sig@farmers1st.com", tests)
+    run(f, False, send, "sig@agsist.com", tests)
     ck("a record already delivered: skipped without asking Stripe", sent == [] and not any(c[0] in ("session", "render files") for c in f.calls), f.calls)
     f = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live})
-    run(f, True, send, "sig@farmers1st.com", tests)
-    ck("dry run: the files email to Sig only, nothing marked, no note", [m["To"] for m in sent] == ["sig@farmers1st.com"]
+    run(f, True, send, "sig@agsist.com", tests)
+    ck("dry run: the files email to Sig only, nothing marked, no note", [m["To"] for m in sent] == ["sig@agsist.com"]
        and sent[0]["Subject"] == "[dry run, would go to the buyer] Your Rain Print files: Chetek, WI, 2025" and not f.delivered, [m["Subject"] for m in sent])
     sent.clear()
     f = Fake({"stripe": "ok", "orders": [dig(session="cs_test_6")]}, {"cs_test_6": {"livemode": False, "email": "buyer@example.com"}})
-    run(f, False, send, "sig@farmers1st.com", tests)
-    ck("a test-mode session: the files to Sig only", [m["To"] for m in sent] == ["sig@farmers1st.com"], [m["To"] for m in sent])
+    run(f, False, send, "sig@agsist.com", tests)
+    ck("a test-mode session: the files to Sig only", [m["To"] for m in sent] == ["sig@agsist.com"], [m["To"] for m in sent])
     sent.clear()
     f = Fake({"stripe": "ok", "orders": [dig(approved=None), order("7", approved=ap_at, mailed={"at": "x"}, approved_alerted={"at": "x"})]}, {"cs_live_5": live, "cs_live_1": live})
-    run(f, False, send, "sig@farmers1st.com", tests)
+    run(f, False, send, "sig@agsist.com", tests)
     ck("not approved, or a print: no files", sent == [] and not any(c[0] == "render files" for c in f.calls), [m["Subject"] for m in sent])
     f = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live}, render_fail=True)
-    code, log = run(f, False, send, "sig@farmers1st.com", tests)
+    code, log = run(f, False, send, "sig@agsist.com", tests)
     ck("the files fail to render: nothing sent, nothing marked (the next run tries again)", sent == [] and not f.delivered and any("files render failed: 1" in x for x in log), log)
     f = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live})
-    code, log = run(f, False, lambda m: (_ for _ in ()).throw(OSError("smtp")), "sig@farmers1st.com", tests)
+    code, log = run(f, False, lambda m: (_ for _ in ()).throw(OSError("smtp")), "sig@agsist.com", tests)
     ck("a send that fails after the mark: exit 1, counted", code == 1 and any("files marked, send failed: 1" in x for x in log), log)
     f = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": {"livemode": True, "email": ""}})
-    code, log = run(f, False, send, "sig@farmers1st.com", tests)
+    code, log = run(f, False, send, "sig@agsist.com", tests)
     ck("no address: nothing, counted", sent == [] and not f.delivered and any("files no address: 1" in x for x in log), log)
     forms = [{"kind": "rain-print-order", "design_code": SIG_REF, "gift": "yes", "gift_to": "Dad Olson", "gift_message": "For every inch you farmed",
               "email": "buyer@example.com", "name": "Jane Buyer"}]
     f = Fake({"stripe": "ok", "orders": [dig(gift=True)]}, {"cs_live_5": live}, forms=forms)
     sent.clear()
-    run(f, False, send, "sig@farmers1st.com", tests)
+    run(f, False, send, "sig@agsist.com", tests)
     gtxt = sent[0].get_body(("plain",)).get_content() if sent else ""
     ck("a gift: the note goes on the reading guide, For: in the email, nothing else from the form", ("render files", "digital", "For every inch you farmed") in f.calls
        and "For: Dad Olson" in gtxt and "Jane" not in gtxt, (f.calls, gtxt[:300]))
     sent.clear()
     big = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live}, file_bytes={"pdf": 6 << 20, "png": 7 << 20, "jpg": 5 << 20, "guide": 1 << 20})
-    run(big, False, send, "sig@farmers1st.com", tests)
+    run(big, False, send, "sig@agsist.com", tests)
     bm = [m for m in sent if m["Subject"].startswith("Your Rain Print files:")]
     ck("too big with the JPG: the JPG is left off and the email says so", bm and [p.get_filename().rsplit(".", 1)[1] for p in bm[0].iter_attachments()] == ["pdf", "png", "pdf"]
        and "The JPG was too big to attach with the rest. Reply to this email and I will send it." in bm[0].get_body(("plain",)).get_content(), [m["Subject"] for m in sent])
     sent.clear()
     huge = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live}, file_bytes={"pdf": 14 << 20, "png": 20 << 20, "jpg": 9 << 20, "guide": 2 << 20})
-    code, log = run(huge, False, send, "sig@farmers1st.com", tests)
+    code, log = run(huge, False, send, "sig@agsist.com", tests)
     ck("too big even as the PDF and guide: no buyer email, marked by hand once, Sig told with the maker link",
-       [m["To"] for m in sent] == ["sig@farmers1st.com"] and "too big to attach" in sent[0].get_content() and SIG_URL + "&maker=1" in sent[0].get_content()
+       [m["To"] for m in sent] == ["sig@agsist.com"] and "too big to attach" in sent[0].get_content() and SIG_URL + "&maker=1" in sent[0].get_content()
        and huge.delivered == {dig()["key"]: "hand"} and any("files by hand: 1" in x for x in log), ([m.get_content() for m in sent], log))
     ck("fit_files: under the cap all four go", [f_["kind"] for f_ in fit_files([{"kind": k, "bytes": 1} for k in ("pdf", "png", "jpg", "guide")])] == ["pdf", "png", "jpg", "guide"])
     f = Fake({"stripe": "ok", "orders": [dig()]}, {"cs_live_5": live})
     f.worker = (lambda orig: (lambda path, body=None, **q: (_ for _ in ()).throw(OSError("x")) if path == "form-list" else orig(path, body, **q)))(f.worker)
     sent.clear()
-    code, log = run(f, False, send, "sig@farmers1st.com", tests)
+    code, log = run(f, False, send, "sig@agsist.com", tests)
     ck("gift notes unreadable: the files wait too", sent == [] and not f.delivered and any("files waiting: 1" in x for x in log), log)
 
     print("\nthe gift card (a this-year gift, at once; Sig 2026-10-20)")
@@ -1398,13 +1399,13 @@ def selftest():
                      fulfill_url=GIFT_URL + "&maker=1", approve_t=None, **kw)
     gsent = []
     f = Fake({"stripe": "ok", "orders": [gorder()]}, {"cs_live_7": live}, forms=gform)
-    code, log = run(f, False, lambda m: (f.calls.append(("send", m["Subject"])), gsent.append(m)), "sig@farmers1st.com", tests)
+    code, log = run(f, False, lambda m: (f.calls.append(("send", m["Subject"])), gsent.append(m)), "sig@agsist.com", tests)
     cards = [m for m in gsent if m["Subject"].startswith("Your Rain Print gift card")]
     ck("a paid gift: one card email to the buyer", code == 0 and len(cards) == 1 and cards[0]["To"] == "buyer@example.com", [(m["To"], m["Subject"]) for m in gsent])
     ck("the subject names who it is for", cards[0]["Subject"] == "Your Rain Print gift card for Dad", cards[0]["Subject"])
     ck("the card issued once, for that order, with their words", f.issues == [{"order_key": gorder()["key"], "to": "Dad", "message": "Every inch of the year you farmed."}], f.issues)
     ck("marked gift-mailed before the send", f.calls.index(("gift-mailed",)) < f.calls.index(("send", cards[0]["Subject"])), f.calls)
-    ck("sent as Sig at AGSIST, Reply-To Sig", getattr(cards[0], "rp_buyer", False) and cards[0]["From"].startswith("Sig at AGSIST") and cards[0]["Reply-To"] == "sig@farmers1st.com", cards[0]["From"])
+    ck("sent as Sig at AGSIST, Reply-To Sig", getattr(cards[0], "rp_buyer", False) and cards[0]["From"].startswith("Sig at AGSIST") and cards[0]["Reply-To"] == "sig@agsist.com", cards[0]["From"])
     gh = cards[0].get_body(("html",)).get_content()
     gt = cards[0].get_body(("plain",)).get_content()
     link = "https://agsist.com/rp-gift?c=RP-7K3M-Q9TW-H07F&k=0123456789abcdef"
@@ -1422,7 +1423,7 @@ def selftest():
        "For Dad" in gh and "Chetek, WI &middot; 2026" in gh and "Every inch of the year you farmed." in gh and "Card No. 0007" in gh and "RP-7K3M-Q9TW-H07F" in gh, gh)
     ck("no price and no giver details in the card email", "$" not in gh + gt and "89.00" not in gt and " 89" not in gt and "Pat" not in gh + gt and "pat@example.com" not in gh + gt, gt)
     notes_ = [m for m in gsent if m["Subject"].startswith("Rain Print gift card sent")]
-    ck("Sig gets one line, no buyer details", len(notes_) == 1 and notes_[0]["To"] == "sig@farmers1st.com" and notes_[0]["Subject"] == "Rain Print gift card sent: Chetek, WI 2026"
+    ck("Sig gets one line, no buyer details", len(notes_) == 1 and notes_[0]["To"] == "sig@agsist.com" and notes_[0]["Subject"] == "Rain Print gift card sent: Chetek, WI 2026"
        and "@" not in notes_[0].get_content() and "Pat" not in notes_[0].get_content() and "card No. 0007, ends H07F" in notes_[0].get_content(), [m["Subject"] for m in gsent])
     ck("the log: counts only (no address, name, place or code)", all("@" not in x and "Dad" not in x and "Pat" not in x and "Chetek" not in x and "RP-7K3M" not in x for x in log)
        and "cards sent: 1; cards to Sig: 0; cards waiting: 0; cards no address: 0; card not issued: 0; cards render failed: 0; cards marked, send failed: 0." in log, log)
@@ -1436,36 +1437,36 @@ def selftest():
        and f.calls.index(("worker", "rp-order/mailed")) < f.calls.index(("send", cards[0]["Subject"])), f.calls)
     ck("rendered once, with the card's words as the gift note", [x for x in f.calls if x[0] == "render"] == [("render", "framed12x18", "Every inch of the year you farmed.")], f.calls)
     gsent.clear()
-    run(f, False, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    run(f, False, lambda m: gsent.append(m), "sig@agsist.com", tests)
     ck("exactly once: a second run sends no card and makes no second card", not any(m["Subject"].startswith("Your Rain Print gift card") for m in gsent)
        and len({c_["code"] for c_ in f.cards.values()}) == 1, [m["Subject"] for m in gsent])
     gsent.clear()
     f = Fake({"stripe": "ok", "orders": [gorder(gift_mailed={"at": "x"})]}, {"cs_live_7": live}, forms=gform)
-    run(f, False, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    run(f, False, lambda m: gsent.append(m), "sig@agsist.com", tests)
     ck("a record already gift-mailed: no card asked for, none sent", f.issues == [] and not any(m["Subject"].startswith("Your Rain Print gift card") for m in gsent))
     gsent.clear()
     f = Fake({"stripe": "ok", "orders": [gorder()]}, {"cs_live_7": live}, forms=gform)
-    code, log = run(f, True, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    code, log = run(f, True, lambda m: gsent.append(m), "sig@agsist.com", tests)
     cards = [m for m in gsent if "Your Rain Print gift card" in m["Subject"]]
-    ck("dry run: to Sig only, nothing issued or marked, a stand-in code", len(cards) == 1 and cards[0]["To"] == "sig@farmers1st.com"
+    ck("dry run: to Sig only, nothing issued or marked, a stand-in code", len(cards) == 1 and cards[0]["To"] == "sig@agsist.com"
        and cards[0]["Subject"] == "[dry run, would go to the buyer] Your Rain Print gift card for Dad" and f.issues == [] and not f.gift_mailed
        and "RP-XXXX-XXXX-XXXX" in cards[0].get_body(("plain",)).get_content() and not any(m["Subject"].startswith("Rain Print gift card sent") for m in gsent), [m["Subject"] for m in gsent])
     gsent.clear()
     f = Fake({"stripe": "ok", "orders": [gorder("8")]}, {"cs_live_8": {"livemode": False, "email": "buyer@example.com"}}, forms=gform)
-    run(f, False, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
-    ck("a test-mode session: the card email to Sig only", [m["To"] for m in gsent if m["Subject"].startswith("Your Rain Print gift card")] == ["sig@farmers1st.com"], [m["To"] for m in gsent])
+    run(f, False, lambda m: gsent.append(m), "sig@agsist.com", tests)
+    ck("a test-mode session: the card email to Sig only", [m["To"] for m in gsent if m["Subject"].startswith("Your Rain Print gift card")] == ["sig@agsist.com"], [m["To"] for m in gsent])
     gsent.clear()
     f = Fake({"stripe": "ok", "orders": [gorder()]}, {"cs_live_7": live}, forms=gform)
     f.issue_fail = True
-    code, log = run(f, False, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    code, log = run(f, False, lambda m: gsent.append(m), "sig@agsist.com", tests)
     ck("the card can't be issued: nothing sent, nothing marked, counted", not any("gift card" in m["Subject"] for m in gsent) and not f.gift_mailed
        and any("card not issued: 1" in x for x in log), log)
     f = Fake({"stripe": "ok", "orders": [gorder()]}, {"cs_live_7": live}, forms=gform)
-    code, log = run(f, False, lambda m: (_ for _ in ()).throw(OSError("smtp")) if "gift card" in m["Subject"] else None, "sig@farmers1st.com", tests)
+    code, log = run(f, False, lambda m: (_ for _ in ()).throw(OSError("smtp")) if "gift card" in m["Subject"] else None, "sig@agsist.com", tests)
     ck("a card send that fails after the mark: exit 1, counted", code == 1 and any("cards marked, send failed: 1" in x for x in log), log)
     gsent.clear()
     f = Fake({"stripe": "ok", "orders": [gorder("9", product="digital")]}, {"cs_live_9": live}, forms=[])
-    run(f, False, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    run(f, False, lambda m: gsent.append(m), "sig@agsist.com", tests)
     cards = [m for m in gsent if m["Subject"].startswith("Your Rain Print gift card")]
     dt = cards[0].get_body(("plain",)).get_content() if cards else ""
     ck("a digital gift with no order form post: the file in plain words, a plain subject",
@@ -1474,31 +1475,31 @@ def selftest():
     gsent.clear()
     f = Fake({"stripe": "ok", "orders": [gorder()]}, {"cs_live_7": live}, forms=gform)
     f.worker = (lambda orig: (lambda path, body=None, **q: (_ for _ in ()).throw(OSError("x")) if path == "form-list" else orig(path, body, **q)))(f.worker)
-    code, log = run(f, False, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    code, log = run(f, False, lambda m: gsent.append(m), "sig@agsist.com", tests)
     ck("gift notes unreadable: the card waits (its words could be missed)", f.issues == [] and any("cards waiting: 1" in x for x in log), log)
     f = Fake({"stripe": "ok", "orders": [order("1")]}, {"cs_live_1": live})
-    run(f, False, lambda m: None, "sig@farmers1st.com", tests)
+    run(f, False, lambda m: None, "sig@agsist.com", tests)
     ck("an order that is not a gift gets no card", f.issues == [])
     gsent.clear()
     f = Fake({"stripe": "ok", "orders": [gorder(gift_mailed={"at": "x"})]}, {"cs_live_7": live}, forms=gform)
-    run(f, False, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    run(f, False, lambda m: gsent.append(m), "sig@agsist.com", tests)
     ck("a gift whose card email went (even if its mailed mark was lost): no second email of any kind", gsent == [] and not f.marked, [m["Subject"] for m in gsent])
     gsent.clear()
     f = Fake({"stripe": "ok", "orders": [gorder(mailed={"at": "x", "session": "cs_live_7"})]}, {"cs_live_7": live}, forms=gform)
-    run(f, False, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    run(f, False, lambda m: gsent.append(m), "sig@agsist.com", tests)
     ck("a gift whose preview went before this change: the card email still goes, once, and mailed is not asked again",
        [m["Subject"] for m in gsent if m["To"] == "buyer@example.com"] == ["Your Rain Print gift card for Dad"] and ("worker", "rp-order/mailed") not in f.calls, f.calls)
     gsent.clear()
     f = Fake({"stripe": "ok", "orders": [gorder()]}, {"cs_live_7": live}, forms=gform, render_fail=True)
-    code, log = run(f, False, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    code, log = run(f, False, lambda m: gsent.append(m), "sig@agsist.com", tests)
     ck("the picture fails: nothing sent, issued or marked; the next run tries again", not any(m["To"] == "buyer@example.com" for m in gsent)
        and f.issues == [] and not f.marked and not f.gift_mailed and any("cards render failed: 1" in x for x in log), log)
     gsent.clear()
     f = Fake({"stripe": "ok", "orders": [gorder(), order("1")]}, {"cs_live_7": live, "cs_live_1": live}, forms=gform)
-    run(f, True, lambda m: gsent.append(m), "sig@farmers1st.com", tests)
+    run(f, True, lambda m: gsent.append(m), "sig@agsist.com", tests)
     ck("dry run, a gift and a plain order: one email each, both to Sig", sorted(m["Subject"] for m in gsent) ==
        ["[dry run, would go to the buyer] Your Rain Print gift card for Dad", "[dry run, would go to the buyer] Your Rain Print proof: Chetek, WI, 2025"]
-       and all(m["To"] == "sig@farmers1st.com" for m in gsent), [m["Subject"] for m in gsent])
+       and all(m["To"] == "sig@agsist.com" for m in gsent), [m["Subject"] for m in gsent])
     ck("card_ok: the worker's answer is checked", card_ok({"ok": True, "code": "RP-7K3M-Q9TW-H07F", "card_url": link})
        and not card_ok({"ok": True, "code": "RP-7K3M-Q9TW-H07F", "card_url": "https://evil.example/x"}) and not card_ok({"ok": False}) and not card_ok(None))
 

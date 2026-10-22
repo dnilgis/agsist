@@ -1899,12 +1899,12 @@ function initSignup(){
   form.addEventListener('submit',function(e){
     e.preventDefault();
     var data={};new FormData(form).forEach(function(v,k){data[k]=v;});
-    fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json','Accept':'application/json'}})
+    fetch('https://agsist-api.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json','Accept':'application/json'}})
       .then(function(r){
         if(r.ok){form.style.display='none';if(ok)ok.style.display='block';if(typeof gaEvent==='function')gaEvent('briefing_signup',{page:location.pathname});}
-        else{alert('The signup did not go through. Email sig@farmers1st.com and I will add you by hand.');}
+        else{alert('The signup did not go through. Email sig@agsist.com and I will add you by hand.');}
       })
-      .catch(function(){alert('The signup did not go through. Email sig@farmers1st.com and I will add you by hand.');});
+      .catch(function(){alert('The signup did not go through. Email sig@agsist.com and I will add you by hand.');});
   });
 }
 

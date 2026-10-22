@@ -692,7 +692,7 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
       farm markets website and is not affiliated with any government body.</p>
     <p class="byline">Written and maintained by <b>Sigurd Lindquist</b>, CCA
       in Wisconsin. Corrections and arguments welcome:
-      <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &middot; 715-797-2428.</p>
+      <a href="mailto:sig@agsist.com">sig@agsist.com</a> &middot; 715-797-2428.</p>
     <p class="byline">Citing this page? Attribution: <em>AGSIST 2026 Farm Bill Tracker,
       https://agsist.com/farm-bill</em>. Available at no charge for non-commercial use; a link back
       keeps it that way. Not affiliated with or endorsed by USDA, CBO, CRS or any committee of Congress.</p>
@@ -746,7 +746,7 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
     // This used to be a native POST, which navigated the reader to the worker's
     // raw {"ok":true} body. The `list` field was a Formspree leftover the worker
     // never read, so farm-bill signups silently joined the general briefing.
-    fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{
+    fetch('https://agsist-api.dnilgis.workers.dev/subscribe',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({email:em.value.trim(),source:'farm-bill'})
     }).then(function(r){
@@ -757,7 +757,7 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
       if(btn){btn.disabled=false;btn.textContent=lbl;}
       var w=f.querySelector('.fb-warn');
       if(!w){w=document.createElement('p');w.className='fb-warn';w.style.cssText='margin:.4rem 0 0;font-size:.85rem;color:var(--gold)';f.appendChild(w);}
-      w.textContent='That did not go through. Try again, or email sig@farmers1st.com.';
+      w.textContent='That did not go through. Try again, or email sig@agsist.com.';
     });
   });
 })();

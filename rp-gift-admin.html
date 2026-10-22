@@ -110,7 +110,7 @@ td,th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertic
 <script>
 (function () {
   'use strict';
-  var API = 'https://agsist-subs.dnilgis.workers.dev/rp-gift/';
+  var API = 'https://agsist-api.dnilgis.workers.dev/rp-gift/';
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
   function show(id, html, kind) { var o = $(id); o.innerHTML = html; o.className = 'out' + (kind ? ' ' + kind : ''); }
@@ -144,7 +144,7 @@ td,th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertic
   function fullCode(dc) {
     var m = /^(?:GIFT-)?RPS-([0-9A-Za-z]{5,8})$/.exec(dc);
     if (!m) return Promise.resolve(dc);
-    return fetch('https://agsist-subs.dnilgis.workers.dev/rp-short/' + encodeURIComponent(m[1].toUpperCase()), { cache: 'no-store' })
+    return fetch('https://agsist-api.dnilgis.workers.dev/rp-short/' + encodeURIComponent(m[1].toUpperCase()), { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { return j && j.ok && typeof j.code === 'string' ? j.code : ''; }, function () { return ''; });
   }
   $('issue').addEventListener('submit', function (e) {

@@ -33,12 +33,12 @@ Reads:
                            grid for symbols not in surprises[]
 
 Sends:
-  One plain-text email to sig@farmers1st.com containing:
+  One plain-text email to sig@agsist.com containing:
     1. EMAIL block (top)  — ready to forward to subscribers
     2. SMS block (bottom) — ready to copy into group text
 
 Required GitHub secrets:
-  GMAIL_USER      — sig@farmers1st.com
+  GMAIL_USER      — the Gmail account that sends it
   GMAIL_APP_PASS  — Gmail app password (16 chars)
                     Generate at: myaccount.google.com/apppasswords
 
@@ -59,7 +59,7 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).parent.parent
 TZ = ZoneInfo("America/Chicago")
-RECIPIENT = "sig@farmers1st.com"
+RECIPIENT = "sig@agsist.com"
 SITE = "https://agsist.com"
 
 # ── PRICE GRID — order + display labels ──
@@ -121,6 +121,7 @@ def strip_html(s):
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import market_board   # noqa: E402  ONE definition of "is this the same session's board"
 
 ARCHIVE_DIR = "data/daily-archive"
@@ -437,7 +438,7 @@ def section_footer(today):
         f"Live charts   → {SITE}\n"
         f"\n"
         f"Written by Sigurd Lindquist, CCA.\n"
-        f"Reply at sig@farmers1st.com — I read everything.\n"
+        f"Reply at sig@agsist.com. I read everything.\n"
         f"\n"
         f"Reply STOP to opt out."
     )
@@ -631,7 +632,7 @@ def main():
     headline = (daily.get("headline") or "Daily Brief").strip()
     issue = daily.get("issue_number")
     issue_str = ""  # 2026-10-11: no issue number shown
-    subject = f"AGSIST {issue_str}{today.strftime('%b %-d')} — {headline}"
+    subject = email_links.plain_dashes(f"AGSIST {issue_str}{today.strftime('%b %-d')}: {headline}")
 
     send(subject, email_body, sms_body)
     print(f"Sent {today}: {len(email_body)} char email, {len(sms_body)} char SMS")

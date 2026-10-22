@@ -29,6 +29,7 @@ from datetime import datetime, timedelta, timezone
 from email.message import EmailMessage
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 
 LOOKBACK_DAYS = 8
@@ -272,7 +273,7 @@ def selftest():
     chk(suggest("a@hotmal.com") == "a@hotmail.com", "hotmal.com -> hotmail.com")
     chk(suggest("a@gmail.com") is None, "a correct address is left alone")
     chk(suggest("a@mail.com") is None and suggest("a@gmx.com") is None, "real look-alike providers are never fixed")
-    chk(suggest("a@farmers1st.com") is None, "an ordinary business domain is left alone")
+    chk(suggest("news@agsist.com") is None, "an ordinary business domain is left alone")
     chk(suggest("a@mchsi.co") == "a@mchsi.com", "mchsi.co -> mchsi.com (Iowa ISP)")
     raw = (b"From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>\r\nSubject: Delivery Status Notification (Failure)\r\n"
            b"MIME-Version: 1.0\r\nContent-Type: multipart/report; report-type=delivery-status; boundary=XX\r\n\r\n"
@@ -304,7 +305,7 @@ def main():
     if "--selftest" in sys.argv:
         sys.exit(0 if selftest() else 1)
     dry = "--dry-run" in sys.argv
-    base = env("LIST_URL", "https://agsist-subs.dnilgis.workers.dev")
+    base = env("LIST_URL", "https://agsist-api.dnilgis.workers.dev")
     tok, secret, user, pw = env("LIST_TOKEN"), env("UNSUB_SECRET"), env("SMTP_USER"), env("SMTP_PASS")
     if not (tok and secret and user and pw):
         print("::error::LIST_TOKEN, UNSUB_SECRET, SMTP_USER and SMTP_PASS are required"); sys.exit(1)
