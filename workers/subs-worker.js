@@ -5,6 +5,14 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.51 (2026-10-22): LONGER RAIN PRINT SHORT LINKS (Sig, Oct 22). A new
+ *   POST /rp-short id is the first 8 letters of the code's hash, not 5: the
+ *   sealed QR copies on agsist.com (scripts/build_rp_sealed.mjs) can only be
+ *   opened by guessing an id, and 32^8 = 1.1e12 guesses is years where 32^5
+ *   was an hour. A code that already has a 5, 6 or 7 letter id gets that id
+ *   back (it may be printed); GET /rp-short/<id> reads 5 to 8 letters as
+ *   before. An 8-letter id that holds another code is a 409 (no growth past
+ *   8). No new binding, no new secret.
  * v5.50 (2026-10-22): A LATE ELEVATOR SAVE KEEPS ITS OWN TIME (Sig, Oct 22).
  *   POST /elev/save takes entered_at (ISO or ms): when the manager pressed
  *   Save on agsist.com/post. A save kept on the phone while this worker was
@@ -1598,7 +1606,9 @@ async function formRateOk(req, env) {
 }
 
 // v5.14: Rain Print short links. rps:<id> = a plain design code, no expiry.
-const RPS_LEN = 5, RPS_MAX_LEN = 8;      // 5 keeps HTTPS://AGSIST.COM/R?<id> at 26 bytes: QR version 2, 25 x 25
+// v5.51 (2026-10-22): new ids are 8 letters (32^8 guesses, not 32^5): HTTPS://AGSIST.COM/R?<id> is 29 bytes,
+// QR version 3, 29 x 29. Ids made before (5 letters, 6 to 7 after a collision) keep working and keep their code.
+const RPS_OLD_LEN = 5, RPS_LEN = 8, RPS_MAX_LEN = 8;
 const RPS_MAX_BYTES = 1024;
 const RPS_B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";   // Crockford: no I L O U
 const RPS_ID_RE = /^[0-9A-HJKMNP-TV-Z]{5,8}$/;
@@ -3940,6 +3950,11 @@ async function handle(req, env) {
       const code = b.code;
       if (!rpsCodeOk(code)) return json({ ok: false, error: "invalid code" }, 400, c);
       const full = await rpsHash(code);
+      // v5.51: a code that already has a shorter id (made before Oct 22) keeps it; only new ids are 8 letters
+      for (let len = RPS_OLD_LEN; len < RPS_LEN; len++) {
+        const id = full.slice(0, len);
+        if (await env.SUBS.get("rps:" + id) === code) return json({ ok: true, id }, 200, c);
+      }
       for (let len = RPS_LEN; len <= RPS_MAX_LEN; len++) {
         const id = full.slice(0, len), have = await env.SUBS.get("rps:" + id);
         if (have === code) return json({ ok: true, id }, 200, c);
