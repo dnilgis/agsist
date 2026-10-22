@@ -74,6 +74,15 @@ test("a new visit opens with every layer on; the crop waits for its days", { ski
     assert.match(a, /data-rp="frost:0"/, "the frost marks");
     assert.match(await page.$eval("#rp-lcount", (e) => e.textContent), /^10 in all, 7 on$/);
     assert.match(page.url(), /hist=1&frost=1&heat=1&ribbon=1/, "the link carries what is on");
+    // the 30-year station stays the default (Sig, Oct 22), said in one short line with a tap back to the nearer gauge
+    assert.match(await page.textContent("#rp-source"), /^Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\. /);
+    await page.waitForFunction(() => (document.getElementById("rp-near") || {}).textContent === "Use the nearer Chetek gauge (11 mi)", null, { timeout: 20000 });
+    assert.ok((await page.$eval("#rp-near", (b) => b.getBoundingClientRect().height)) >= 44, "a finger-sized tap");
+    await page.click("#rp-near");
+    await page.waitForFunction(() => /^Weather station: Chetek, WI, 11 mi from Chetek \(volunteer gauge US1WIRS0008\)/.test(document.getElementById("rp-source").textContent) && !document.getElementById("rp-go").disabled, null, { timeout: 30000 });
+    assert.equal(await page.isChecked("#rp-hist"), false, "every year behind goes off with it");
+    assert.match(await page.$eval("#rp-lcount", (e) => e.textContent), /^10 in all, 6 on$/);
+    assert.ok(!/hist=1/.test(page.url()));
     assert.deepEqual(errors, []);
   }, { width, phone: width < 500 });
 });

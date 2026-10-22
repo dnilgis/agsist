@@ -142,7 +142,10 @@ test("browser: Sig's sequence: the town typed while the sample draws is drawn, f
     // the reader's own print (the sample is the same town, so wait for the sample line to go)
     await page.waitForFunction(() => document.getElementById("rp-sample-line").hidden && /days recorded/.test(document.getElementById("rp-source").textContent) && !document.getElementById("rp-go").disabled, null, { timeout: 40000 });
     assert.ok(await page.isChecked("#rp-hist"), "every year behind is on for a new visit");
-    assert.match(await text(page, "rp-source"), /Bloomer, WI, 17 mi from Chetek \(NOAA co-op station 470904\)\. Picked for every year behind yours: the nearest station with 30 or more full years and a good 2025 \(\d+ full years here\)\. The nearest station of all is 1\.9 mi away\. Change station\./);
+    // one short plain line (Sig, 2026-10-22), its last part the tap back to the nearer gauge, named once it is read
+    assert.match(await text(page, "rp-source"), /^Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\. Use the nearer /);
+    await page.waitForFunction(() => document.getElementById("rp-near") && document.getElementById("rp-near").textContent === "Use the nearer Chetek gauge (11 mi)", null, { timeout: 20000 });
+    assert.ok(!/Picked for every year behind|nearest station of all/.test(await text(page, "rp-source")), "no longer paragraph about it");
     assert.equal(await page.inputValue("#rp-place"), "Chetek, WI", "the box says the town as it is spelled");
     assert.equal(await text(page, "rp-pending"), "", "no Not drawn yet: the town is drawn");
     assert.equal(await page.evaluate(() => !!document.querySelector("#rp-sample-line:not([hidden])")), false, "the print is the reader's, not the sample");
@@ -165,7 +168,7 @@ test("browser: the sample with no town typed re-picks its own station for every 
   await withPage(async (page, base, log, errors) => {
     await page.goto(base + "/rain-print.html");
     // every year behind is on for a new visit (2026-10-22), so the sample comes from the nearest long record
-    await drawnFrom(page, /Bloomer, WI, 17 mi from Chetek \(NOAA co-op station 470904\)\. Picked for every year behind yours/);
+    await drawnFrom(page, /Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\./);
     assert.ok(await page.evaluate(() => !document.getElementById("rp-sample-line").hidden), "the sample is up, with the threads");
     assert.equal(await text(page, "rp-hist-why"), "");
     assert.equal(await text(page, "rp-pending"), "");
@@ -173,7 +176,7 @@ test("browser: the sample with no town typed re-picks its own station for every 
     await drawnFrom(page, /volunteer gauge US1WIRS0008/);
     assert.ok(await page.evaluate(() => !document.getElementById("rp-sample-line").hidden), "still the sample, now without the threads");
     await page.check("#rp-hist");
-    await drawnFrom(page, /Bloomer, WI, 17 mi from Chetek \(NOAA co-op station 470904\)\. Picked for every year behind yours/);
+    await drawnFrom(page, /Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\./);
     assert.ok(await page.evaluate(() => !document.getElementById("rp-sample-line").hidden), "and back");
     assert.deepEqual(errors, []);
   }, { width: 390, scheme: "light" });
@@ -182,7 +185,7 @@ test("browser: the sample with no town typed re-picks its own station for every 
 test("browser: a short station picked by hand says so and offers the way back, which works", { skip }, async () => {
   await withPage(async (page, base, log, errors) => {
     await page.goto(base + "/rain-print.html?place=Chetek%2C+WI&year=2025&style=r1&hist=1");
-    await drawnFrom(page, /Bloomer, WI, 17 mi from Chetek .*Picked for every year behind yours/);
+    await drawnFrom(page, /Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\./);
     await page.evaluate(() => { document.getElementById("rp-more").open = true; });
     await page.selectOption("#rp-station", "US1WIRS0008 6");
     await drawnFrom(page, /volunteer gauge US1WIRS0008\) Change station\./);
@@ -190,7 +193,7 @@ test("browser: a short station picked by hand says so and offers the way back, w
     assert.equal(await text(page, "rp-hist-why"), "Chetek, 10.6 mi E has 0 full years; it takes 30. Use the nearest station with 30 full years");
     await shot(page, "hist-short-1280-dark", "#rp-hist");
     await page.click("#rp-hist-long");
-    await drawnFrom(page, /Bloomer, WI, 17 mi from Chetek \(NOAA co-op station 470904\)\. Picked for every year behind yours/);
+    await drawnFrom(page, /Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\./);
     assert.equal(await text(page, "rp-hist-why"), "");
     assert.ok(await page.isChecked("#rp-hist"));
     assert.deepEqual(errors, []);
@@ -203,7 +206,7 @@ test("browser: ZIP 54728 with the worker blocked: the town is found, no page err
     await page.fill("#rp-place", "54728");
     await page.click("#rp-go");
     // the reader's print, not the Chetek sample the blocked worker left up
-    await page.waitForFunction(() => document.getElementById("rp-sample-line").hidden && /from Chetek/.test(document.getElementById("rp-source").textContent) && !document.getElementById("rp-go").disabled, null, { timeout: 40000 });
+    await page.waitForFunction(() => document.getElementById("rp-sample-line").hidden && /from Chetek|^Weather from Bloomer, 17 mi:/.test(document.getElementById("rp-source").textContent) && !document.getElementById("rp-go").disabled, null, { timeout: 40000 });
     assert.equal(await page.inputValue("#rp-place"), "Chetek, WI");
     assert.equal(await page.$eval("#rp-status", (el) => el.classList.contains("rp-bad")), false);
     assert.deepEqual(errors, []);

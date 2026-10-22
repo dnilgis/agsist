@@ -3044,6 +3044,34 @@
     return '<b>' + esc(gaugeWords(m)) + '</b>, ' + esc(distText(m)) + ' (' + esc(sidPlain(m.sid)) + ')' + (w ? '. <span class="rp-why" id="rp-why">' + esc(w.replace(/\.$/, '')) + '</span>' : '') +
       (STATIONS.length > 1 ? (w ? '.' : '') + ' <a href="#rp-station" class="rp-chg" id="rp-chg">Change station</a>' : '');
   }
+  /* A station picked for every year behind yours (Sig, 2026-10-22: the 30-year station stays the default, said in
+     one short plain line): "Weather from Bloomer, 17 mi: the nearest station with 30+ years of records, so every past
+     year can be drawn. Use the nearer Chetek gauge (11 mi)". The last part is a button: it turns every year behind
+     off and draws from the station the page picks without it (named once that is known, read in the background). */
+  function isLongPick(m) { return !!(m && !m.ca && m.why && m.why.long); }
+  function nearWords(n) {
+    if (!n) return 'Use the nearer station';
+    var nm = stationParts(n.name).name || stationName(n.name);
+    return 'Use the nearer ' + nm + ' ' + (/^US1/.test(String(n.sid)) ? 'gauge' : 'station') + ' (' + milesText(miles(n.km)) + ')';
+  }
+  /* Names the way back: the station the page would draw without the threads (the same nearest() rules), read
+     after the long pick from the same cache; only the button's words change, never the print. */
+  function nearerFor(lw, list, year, lat, longSid, my) {
+    root.setTimeout(function () {
+      if (my !== reqToken) return;
+      pickStation(list, year, function (sid, y) { return my === reqToken ? daily(sid, y) : Promise.reject('stale'); }, { lat: lat }).then(function (n) {
+        if (my !== reqToken || !n || !n.chosen || n.chosen.sid === longSid) return;
+        lw.near = { sid: n.chosen.sid, name: n.chosen.name, km: n.chosen.km };
+        var b = $('rp-near'); if (b) b.textContent = nearWords(lw.near);
+      }, function () {});
+    }, 0);
+  }
+  function longHtml(m) {
+    var L0 = m.why.long;
+    return 'Weather from <b>' + esc(stationParts(m.name).name || stationName(m.name)) + '</b>, ' + esc(milesText(miles(m.km))) + ': the nearest station with ' + HIST_MIN +
+      '+ years of records, so every past year can be drawn.' +
+      (L0.over || L0.near ? ' <button type="button" class="rp-linkbtn rp-near" id="rp-near">' + esc(nearWords(L0.near)) + '</button>' : '');
+  }
   /* The credit a Canadian print carries on the page (ECCC Data Servers End-use Licence, section 3). */
   function caCredit() {
     var fr = FR(), src = META && META.src, w = caWords();
@@ -3076,8 +3104,8 @@
     art.innerHTML = '<p class="rp-placeholder">' + esc(NOART) + '</p>';
     art.classList.add('rp-empty');
     $('rp-stats-wrap').hidden = true;
-    $('rp-source').innerHTML = (m.ca ? L('The print will come from this weather station: ', 'Le tirage viendra de cette station météo : ') : 'The print will come from this weather station: ') + gaugeHtml(m) +
-      (m.ca ? '. ' + caCredit() : '. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.');
+    $('rp-source').innerHTML = (isLongPick(m) ? longHtml(m) + ' <br>' : (m.ca ? L('The print will come from this weather station: ', 'Le tirage viendra de cette station météo : ') : 'The print will come from this weather station: ') + gaugeHtml(m) + '.') +
+      (m.ca ? ' ' + caCredit() : ' Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.');
     setDesignRefs();
     showBuy(true);
   }
@@ -3141,7 +3169,7 @@
     if (PREVIEW) $('rp-preview-line').innerHTML = '<b>Preview through ' + esc(longDate(PREVIEW.last)) + '.</b> The print you get shows the full year.';
     if (m.ca && CA()) caText(D, m, OV, later);
     else {
-    $('rp-source').innerHTML = 'Weather station: ' + gaugeHtml(m) + '. ' +
+    $('rp-source').innerHTML = (isLongPick(m) ? longHtml(m) + ' <br>' : 'Weather station: ' + gaugeHtml(m) + '. ') +
       (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (PREVIEW ? ' so far, January 1 through ' + esc(longDate(PREVIEW.last)) : '') + (D.missing ? '; the station sent no report on ' + D.missing + (D.missing === 1 ? ' day, left as a gap' : ' days, left as gaps') + ', not drawn as dry' : '') + '. ' +
       (D.unsplit ? D.unsplit + (D.unsplit === 1 ? ' day was' : ' days were') + ' reported together in a later total; that total is drawn on the day it was reported. ' : '') +
       (PREVIEW && OV ? 'The comparison covers the same days. ' : '') +
@@ -3557,6 +3585,9 @@
           HIST_WHY = ''; picked = r.picked; chosen = r.chosen; seen[chosen.sid] = snowStateOf(picked.days);
           // the page says which and why: a long record, and the nearer station it passed (2026-10-21: never a far station without a word)
           why = { long: { n: r.n, snow: !!r.snow, over: list[0] && list[0].sid !== chosen.sid ? { sid: list[0].sid, name: list[0].name, km: list[0].km } : null } };
+          // the station the page would pick without the threads, for the one-tap way back (read after this draw, from the same cache)
+          var lw = why.long, longSid = chosen.sid;
+          if (lw.over) nearerFor(lw, list, ST.year, g.latitude, longSid, my);
         });
       }
       function nearest(skip) {
@@ -5441,6 +5472,14 @@
     ST.station = ''; run();
   }
   // the station picked under Weather station is short: one tap goes back to the nearest long record
+  // the short station line's "Use the nearer ... gauge": every year behind off, and the page's own pick draws (2026-10-22)
+  $('rp-source').addEventListener('click', function (e) {
+    if (!e.target || e.target.id !== 'rp-near') return;
+    var h = $('rp-hist');
+    if (!h || h.getAttribute('data-gift-lock')) return;
+    h.checked = false;
+    h.dispatchEvent(new Event('change', { bubbles: true }));
+  });
   $('rp-hist-why').addEventListener('click', function (e) {
     if (!e.target || e.target.id !== 'rp-hist-long') return;
     $('rp-hist').checked = true; histStation();
