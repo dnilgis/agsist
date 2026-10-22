@@ -211,6 +211,26 @@
     return '<text x="' + n2(x + dx) + '" y="' + n2(y) + '" font-family="' + esc(o.fam) + '" font-weight="' + o.w + '" font-style="' + (o.it ? 'italic' : 'normal') +
       '" font-size="' + n2(o.size) + '" fill="' + o.fill + '" text-anchor="' + o.anchor + '"' + ls + ' style="font-variant-numeric:lining-nums">' + esc(s) + '</text>';
   }
+  /* Two pieces of words on one baseline, the second riding after the first: the name and its year, the town
+     and its year. One <text>, the second piece a <tspan> that starts gap units after wherever the first
+     one's letters end, in whatever font draws them. The year used to be its own <text> placed by the
+     measured width of the name: when the font that measured was not the font that drew (the web font not
+     in yet, a phone measuring the variable font at another weight, an SVG opened in an app without its
+     fonts), the year sat closer to the name or ran into it (Sig, 2026-10-22: "make sure that the printed
+     year has a space between it and a custom farm name"). a, b: [x, y, words, style]. */
+  function T2(a, b, gap) {
+    var o = st(b[3]);
+    return T(a[0], a[1], a[2], a[3]).replace(/<\/text>$/, '<tspan dx="' + n2(gap) + '" font-weight="' + o.w + '" font-style="' + (o.it ? 'italic' : 'normal') +
+      '" font-size="' + n2(o.size) + '" fill="' + o.fill + '">' + esc(b[2]) + '</tspan></text>');
+  }
+  // [x, y, words, style, gap?]: an entry with a gap rides after the entry before it (T2); one draws the rest
+  function drawRow(list, one) {
+    return list.map(function (t, i) {
+      if (t[4] !== undefined) return '';
+      var nx = list[i + 1];
+      return nx && nx[4] !== undefined ? T2(t, nx, nx[4]) : one(t);
+    }).join('');
+  }
   /* How far the ink of s reaches above and below its baseline, in ems. The fonts
      measure 0.75 at most for capitals, digits and tall letters, 0.95 for an
      accented capital, 0.25 for g, j, p, q and y; these round each one up. */
@@ -1155,10 +1175,11 @@
     var nameSize = 64;
     if (E.name) {
       var nmS = { fam: SERIF, w: 500, size: 64, fill: X.ink }, yrS = { fam: SERIF, w: 400, size: 64, fill: X.ink }, gapX = 26;
-      while (nmS.size > 40 && W(E.name, nmS) + gapX + W(String(E.year), nmS) > 1370 - (TX - X0)) { nmS.size--; yrS.size = nmS.size; }
+      while (nmS.size > 40 && W(E.name, nmS) + gapX + W(String(E.year), yrS) > 1370 - (TX - X0)) { nmS.size--; yrS.size = nmS.size; }
       nameSize = nmS.size;
       title.push([TX - 2, NB, E.name, nmS]);
-      title.push([TX - 2 + W(E.name, nmS) + gapX, NB, String(E.year), yrS]);
+      // where the measure says the year falls (for the room); it is drawn gapX after the name's own letters (T2)
+      title.push([TX - 2 + W(E.name, nmS) + gapX, NB, String(E.year), yrS, gapX]);
     } else title.push([TX - 2, NB, String(E.year), { fam: SERIF, w: 400, size: 64, fill: X.ink }]);
     var plS = { fam: SERIF, w: 400, size: fit(E.place, { fam: SERIF, w: 400, size: 22 }, 1370 - (TX - X0), 16), fill: X.ink };
     title.push([TX, NB + 40, E.place, plS]);
@@ -1509,7 +1530,7 @@
       o.push(G1);
     });
     o.push(G0('ends') + ends.join('') + histLabels.join('') + G1);
-    o.push(G0('title') + title.map(function (t) { return T(t[0], t[1], t[2], t[3]); }).join('') + (E.dedication ? dedText(TX, NB + 70, E.dedication, dedSize, X.fact) : '') + G1);
+    o.push(G0('title') + drawRow(title, function (t) { return T(t[0], t[1], t[2], t[3]); }) + (E.dedication ? dedText(TX, NB + 70, E.dedication, dedSize, X.fact) : '') + G1);
     if (lg) o.push(logoMark(lg));
     o.push(G0('foot') + foot + G1);
     o.push(qrMark(I.qr, QR_R, QR_B));
@@ -1564,7 +1585,7 @@
     E.style2 = true;
     var put = function (list, own) { list.forEach(function (t) { room.text(box(t[0], t[1], t[2], t[3]), own); }); };
     // the dedication in plain italic (2026-10-17, both styles)
-    var draw = function (list) { return list.map(function (t) { return t[3] && t[3].it && t[3].fam === SERIF ? dedText(t[0], t[1], t[2], t[3].size, t[3].fill) : T(t[0], t[1], t[2], t[3]); }).join(''); };
+    var draw = function (list) { return drawRow(list, function (t) { return t[3] && t[3].it && t[3].fam === SERIF ? dedText(t[0], t[1], t[2], t[3].size, t[3].fill) : T(t[0], t[1], t[2], t[3]); }); };
 
     /* The top: the year's totals at the right; at the left the name, in the Staircase's serif and the biggest
        words on the sheet (panel 4, 2026-10-14), the place and year under it, the buyer's line under that. With
@@ -1607,12 +1628,13 @@
       var ps = { fam: SERIF, w: 400, size: 34 }, ys = { fam: SERIF, w: 600, size: 34 }, yw = W(String(E.year), ys) + 18;
       ps.size = ys.size = Math.min(34, nst.size - 8, fit(E.place, ps, leftRoom - yw, 22));
       title.push([TX, py, E.place, ps]);
-      title.push([TX + W(E.place, ps) + 18, py, String(E.year), ys]);
+      title.push([TX + W(E.place, ps) + 18, py, String(E.year), ys, 18]);
     } else {
       var ps = { fam: SERIF, w: 400, size: 60 }, ys = { fam: SERIF, w: 600, size: 60 };
       ps.size = ys.size = fit(E.place + '  ' + E.year, { fam: SERIF, w: 600, size: 60 }, leftRoom, 28);
       title.push([TX, py, E.place, ps]);
-      title.push([TX + W(E.place + '  ', ps), py, String(E.year), ys]);
+      // two spaces' room (0.46 em of the serif), fixed, so no font can close it
+      title.push([TX + W(E.place, ps) + n2(0.46 * ps.size), py, String(E.year), ys, n2(0.46 * ps.size)]);
     }
     // the dedication runs under the totals but stops short of the verdict on its line
     if (E.dedication) {

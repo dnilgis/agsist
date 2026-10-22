@@ -5082,7 +5082,8 @@
     var NO_LOGO = {}, LOST = {};
     var go = function (f) { return gate.then(function () { if (kind !== 'preview' && !own) throw NO_QR; return logoGate(); }).then(function (ok) { return extrasGate().then(function () { return ok; }); }).then(function (ok) { if (!ok) throw NO_LOGO; if (kind !== 'preview' && lostMsg()) throw LOST; return f(); }); };
     if (fmt === 'svg') {
-      job = go(function () { return fontCss(); }).then(function (css) { return new Blob([buildSvg({ fontCss: css, px: ['18in', '12in'], qrMatrix: own })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return qrNote('SVG saved.'); });
+      // the page's fonts in first, as for the PNG and PDF: the art measures its words with them
+      job = go(function () { return fontsReady().then(fontCss); }).then(function (css) { return new Blob([buildSvg({ fontCss: css, px: ['18in', '12in'], qrMatrix: own })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return qrNote('SVG saved.'); });
     } else {
       job = go(function () { return drawCanvas(kind, own); }).then(function (c) {
         /* the digital file's PDF is the art alone, 12 x 18 in, landscape (it fits a 12 x 18 frame); a print's is the 13 x 19 sheet */

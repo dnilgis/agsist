@@ -14,6 +14,12 @@
     {
      "tag": "fixed",
      "page": "/rain-print",
+     "name": "Rain Print: a clear space between your farm name and the year",
+     "text": "The year always sits a clear space after the farm name, and after the town, on the screen and in every file, whatever font your device has loaded."
+    },
+    {
+     "tag": "fixed",
+     "page": "/rain-print",
      "name": "Gift cards, quotes, hay posts and elevator bids keep working when our system is down",
      "text": "When the service behind them is not answering, using a gift card, asking for a business quote, posting on the hay board, saving an elevator's bids or confirming an alert is saved on your device and goes through once it is back. The page says so in one line."
     },
