@@ -200,7 +200,7 @@ test("pages load the outbox, and loader.js loads it anywhere while something is 
   const L = read("components/loader.js");
   assert.match(L, /localStorage\.getItem\('agsist-outbox'\)/);
   assert.match(L, /ob\.src = '\/components\/outbox\.js\?v=2'/);
-  assert.match(L, /var CV = '80'/);
+  assert.match(L, /var CV = '81'/);
   const O = read("components/outbox.js");
   assert.match(O, /var LINE = 'Saved\. It will go through when our system is back and you next open agsist\.com on this device; nothing else to do\.';/);
   assert.doesNotMatch(O + read("components/rp-gift.js") + read("components/haymow.js") + read("components/elev-post.js"), /—/, "no em dashes");
