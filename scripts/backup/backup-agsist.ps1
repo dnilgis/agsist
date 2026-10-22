@@ -22,7 +22,7 @@ Set-StrictMode -Version 2
 $Here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Repos = @('feedbag', 'agsist', 'bids', 'flashgrain')
 $Owner = 'dnilgis'
-$ExportUrl = 'https://agsist-subs.dnilgis.workers.dev/export'
+$ExportUrl = 'https://agsist-api.dnilgis.workers.dev/export'
 $TokenFile = Join-Path $Here 'list-token.dpapi'
 $Keep = 12
 $Inv = [Globalization.CultureInfo]::InvariantCulture
@@ -217,7 +217,7 @@ $token = $null
 $final = Join-Path $KvDir ('kv-' + $Stamp + '.json')
 $partial = $final + '.partial'
 $sb = New-Object System.Text.StringBuilder
-[void]$sb.Append('{"source":"agsist-subs /export","exported_at":"')
+[void]$sb.Append('{"source":"agsist-api /export","exported_at":"')
 [void]$sb.Append((Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ', $Inv))
 [void]$sb.Append('","count":' + $total + ',"keys":[')
 [void]$sb.Append([string]::Join(',', $parts.ToArray()))

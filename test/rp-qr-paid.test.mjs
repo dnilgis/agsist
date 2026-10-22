@@ -108,7 +108,7 @@ async function mocks(ctx, opts, log) {
   log.posts = 0;
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
     const req = r.request(), u = new URL(req.url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (req.method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       if (u.pathname === "/rp-short" && req.method() === "POST") {
         log.posts++;

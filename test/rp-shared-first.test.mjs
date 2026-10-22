@@ -65,7 +65,7 @@ async function mocks(ctx, opts) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
     const u = new URL(r.request().url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (r.request().method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       const m = /^\/rp-short\/([0-9A-Z]{5,8})$/.exec(u.pathname);
       if (m) return m[1] === "K7Q2M" ? r.fulfill({ status: 200, headers: h, json: { code: CODE } }) : r.fulfill({ status: 404, headers: h, json: { missing: true } });

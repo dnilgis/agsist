@@ -51,10 +51,10 @@ test("every extra the panel offers has a sender; versions bumped where they load
   // reports: send_report_day.py mails Daily readers whose reports flag is on
   assert.ok(read("scripts/send_report_day.py").includes("reports !== false"));
   assert.ok(!DASH.test(block) && !/type="checkbox"[^>]*checked/.test(block));
-  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=13';"));
-  assert.ok(read("components/loader.js").includes("var CV = '79';"));
-  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=13"></script>'));
-  assert.ok(read("cash-bids.html").includes("/components/cb-alerts.js?v=4") && read("components/cb-myelev.js").includes("/components/cb-alerts.js?v=4"));
+  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=14';"));
+  assert.ok(read("components/loader.js").includes("var CV = '81';"));
+  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=14"></script>'));
+  assert.ok(read("cash-bids.html").includes("/components/cb-alerts.js?v=5") && read("components/cb-myelev.js").includes("/components/cb-alerts.js?v=5"));
   assert.ok(read("hail-map.html").includes("S.oneMore(box,{gave:'hail'"));
 });
 
@@ -99,7 +99,7 @@ async function newPage(browser, port, posts, o = {}) {
       if (o.noZips) return r.abort();
       return r.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify(/\/50\.json$/.test(u) ? ZIPS50 : {}) });
     }
-    if (u.startsWith("https://agsist-subs.dnilgis.workers.dev/")) {
+    if (u.startsWith("https://agsist-api.dnilgis.workers.dev/")) {
       const p = new URL(u).pathname;
       if (r.request().method() === "GET" && p === "/elevator-watch-options")
         return r.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ ok: true, kinds: ["cash", "move"] }) });

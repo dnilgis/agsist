@@ -5,6 +5,20 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.52 (2026-10-22): NEW HOME, agsist-api.dnilgis.workers.dev (Sig, Oct 22,
+ *   after Cloudflare support said a new Worker on the account is his call).
+ *   The same code deploys as the new Worker agsist-api (workers/wrangler.api
+ *   .toml, the same KV) and, until it is retired, as agsist-subs
+ *   (wrangler.subs.toml). Every page now calls the new host. Sig sets fresh
+ *   UNSUB_SECRET and LIST_TOKEN values on the new Worker, so a stop link
+ *   signed with the old secret no longer checks out: every stop route
+ *   (/unsubscribe, /alert-, /notice-, /watch-, /elevator-watch- and
+ *   /price-watch-unsubscribe, /rp-remind/stop, with e= or k=) now answers
+ *   "That unsubscribe link no longer works." with the way to stop anyway:
+ *   email news@agsist.com with the word unsubscribe (a mailto on the page;
+ *   the agsist.com front door adds its own stop line). Nothing is changed
+ *   and each status stays as it was (a k= stop link 403, an e= one 200). Confirm
+ *   links still answer "That link isn't valid." No new binding, no new secret.
  * v5.51 (2026-10-22): LONGER RAIN PRINT SHORT LINKS (Sig, Oct 22). A new
  *   POST /rp-short id is the first 8 letters of the code's hash, not 5: the
  *   sealed QR copies on agsist.com (scripts/build_rp_sealed.mjs) can only be
@@ -906,14 +920,14 @@ class NoSecretError extends Error {}
 // removing someone from a list is low harm, a dead stop link is not.
 async function unsubOk(env, msg, t) {
   if (typeof env.UNSUB_SECRET !== "string" || !env.UNSUB_SECRET) {
-    console.error("agsist-subs: UNSUB_SECRET is not set; honouring an unsubscribe WITHOUT checking its token. Set the secret in Cloudflare.");
+    console.error("subs worker: UNSUB_SECRET is not set; honouring an unsubscribe WITHOUT checking its token. Set the secret in Cloudflare.");
     return true;
   }
   return safeEq(t, await hmac16(msg, env.UNSUB_SECRET));
 }
 async function hmac16(email, secret) {
   if (typeof secret !== "string" || !secret)
-    throw new NoSecretError("UNSUB_SECRET is not set on the agsist-subs Worker; refusing to sign or check a token");
+    throw new NoSecretError("UNSUB_SECRET is not set on this Worker; refusing to sign or check a token");
   const key = await crypto.subtle.importKey(
     "raw", new TextEncoder().encode(secret),
     { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
@@ -928,7 +942,7 @@ const LID_RE = /^[0-9a-hjkmnp-tv-z]{16}$/;
 const LID_NEW_MAX = 400;   // new lid: writes in one list call (KV allows 1,000 operations a call)
 async function lidFor(email, secret) {
   if (typeof secret !== "string" || !secret)
-    throw new NoSecretError("UNSUB_SECRET is not set on the agsist-subs Worker; refusing to make a link id");
+    throw new NoSecretError("UNSUB_SECRET is not set on this Worker; refusing to make a link id");
   const key = await crypto.subtle.importKey(
     "raw", new TextEncoder().encode(secret),
     { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
@@ -1366,6 +1380,15 @@ function htmlPage(msg, extraHtml, status) {
     { status: status || 200, headers: Object.assign({ "Content-Type": "text/html;charset=utf-8" }, PAGE_HEADERS) }),
     msg, extraHtml, status);
 }
+// v5.52: a stop link that does not check out (an old secret, a cut-off link)
+// still tells the reader how to stop. Changes nothing.
+const STOP_MAILTO = "mailto:news@agsist.com?subject=unsubscribe";
+function stopInvalid(status) {
+  return htmlPage("That unsubscribe link no longer works.",
+    "<p>Older AGSIST links stop working after we change how links are signed. Nothing was changed.</p>" +
+    "<p>To stop these emails, email <a href=\"" + STOP_MAILTO + "\">news@agsist.com</a> with the word unsubscribe, " +
+    "or reply STOP to any of them. Sig takes you off by hand within a day.</p>", status);
+}
 // v5.48: the page's parts ride on the Response, so /fd/<route> can answer them as JSON.
 const FD_PAGE = Symbol("fdPage");
 function fdMark(r, msg, extraHtml, status) { r[FD_PAGE] = { msg, extraHtml: extraHtml || "", status: status || 200 }; return r; }
@@ -1385,7 +1408,7 @@ function fdJson(p) {
   const b = /<form\b[\s\S]*?<button\b[^>]*>([\s\S]*?)<\/button>/i.exec(x);
   const a = /<a\b[^>]*href="(https:\/\/agsist\.com[^"]*)"[^>]*>([\s\S]*?)<\/a>/i.exec(x);
   const title = fdText(p.msg);
-  return { ok: p.status < 400 && !/isn't valid|has expired|no longer on file/i.test(title), title, lines,
+  return { ok: p.status < 400 && !/isn't valid|has expired|no longer on file|no longer works/i.test(title), title, lines,
     button: b ? fdText(b[1]) : null, go: a ? { href: a[1].replace(/&amp;/g, "&"), text: fdText(a[2]) } : null };
 }
 // GET or POST /fd/<route>?<params>: the route run as its link would, answered in JSON.
@@ -2575,7 +2598,7 @@ async function rpoDispatch(env) {
   try {
     const r = await fetch("https://api.github.com/repos/dnilgis/agsist/actions/workflows/rp-buyer-email.yml/dispatches", {
       method: "POST",
-      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-subs", "Content-Type": "application/json" },
+      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-api", "Content-Type": "application/json" },
       body: JSON.stringify({ ref: "main", inputs: { dry_run: env.RP_BUYER_EMAIL_LIVE === "1" ? "false" : "true" } }),
     });
     return r.status === 204 ? "started" : "HTTP " + r.status;
@@ -2600,7 +2623,7 @@ async function rprDispatch(env) {
   try {
     const r = await fetch("https://api.github.com/repos/dnilgis/agsist/actions/workflows/rp-design-email.yml/dispatches", {
       method: "POST",
-      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-subs", "Content-Type": "application/json" },
+      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-api", "Content-Type": "application/json" },
       body: JSON.stringify({ ref: "main", inputs: { dry_run: env.RP_DESIGN_EMAIL_LIVE === "1" ? "false" : "true" } }),
     });
     return r.status === 204 ? "started" : "HTTP " + r.status;
@@ -2614,7 +2637,7 @@ export default {
       return await handle(req, env);
     } catch (e) {
       if (!(e instanceof NoSecretError)) throw e;
-      console.error("agsist-subs: " + e.message);
+      console.error("subs worker: " + e.message);
       // The link pages (confirm, unsubscribe, sponsor) answer in HTML; the page
       // POSTs and the token routes in JSON.
       const u = new URL(req.url);
@@ -2980,7 +3003,7 @@ async function handle(req, env) {
     let linkVia = null;
     if (Object.prototype.hasOwnProperty.call(LINK_TAILS, path) && url.searchParams.has("k") && !url.searchParams.has("e")) {
       linkVia = await linkResolve(env, url, path);
-      if (!linkVia) return htmlPage("That link isn't valid.", "", 403);
+      if (!linkVia) return LINK_STOPS.has(path) ? stopInvalid(403) : htmlPage("That link isn't valid.", "", 403);
     }
     const act = (e, t, mid, end) => path + (linkVia
       ? "?k=" + linkVia.k + (mid || "") + "&t=" + encodeURIComponent(linkVia.t)
@@ -3069,7 +3092,7 @@ async function handle(req, env) {
       const t = url.searchParams.get("t") || "";
       const one = url.searchParams.get("topic") ? noticeTopic(url.searchParams.get("topic"), true) : "";
       const valid = EMAIL_RE.test(e) && await unsubOk(env, e, t);
-      if (!valid || one === null) return htmlPage("That unsubscribe link isn't valid.");
+      if (!valid || one === null) return stopInvalid();
       if (req.method === "GET") {
         const action = act(e, t, "", one ? "&topic=" + encodeURIComponent(one) : "");
         return htmlPage(one ? (LIST_ASK[one] || "Stop this notice for this address?") : "Stop every AGSIST notice for this address?",
@@ -3129,7 +3152,7 @@ async function handle(req, env) {
       const valid = EMAIL_RE.test(e) && await unsubOk(env, e, t);
       const isAlert = path === "/alert-unsubscribe";
 
-      if (!valid) return htmlPage("That unsubscribe link isn't valid.");
+      if (!valid) return stopInvalid();
 
       if (req.method === "GET") {
         const action = act(e, t);
@@ -3269,7 +3292,7 @@ async function handle(req, env) {
       const fOk = conf ? /^\d{5}$/.test(f) : (f === "" || /^\d{5}$/.test(f));
       // v5.13: a confirm needs the secret (503 without it); a stop link always works (unsubOk).
       const tokOk = conf ? safeEq(t, await hmac16(e + "|c|" + f, env.UNSUB_SECRET)) : await unsubOk(env, e + (f ? "|w|" + f : "|w"), t);
-      if (!(EMAIL_RE.test(e) && fOk && tokOk)) return htmlPage("That link isn't valid.");
+      if (!(EMAIL_RE.test(e) && fOk && tokOk)) return conf ? htmlPage("That link isn't valid.") : stopInvalid();
       const action = act(e, t, f ? "&f=" + f : "");
       if (req.method === "GET") {
         return htmlPage(
@@ -3558,7 +3581,7 @@ async function handle(req, env) {
       const wOk = conf ? /^[a-f0-9]{8,16}$/.test(w) : (w === "" || /^[a-f0-9]{8,16}$/.test(w));
       // v5.13: a confirm needs the secret (503 without it); a stop link always works (unsubOk).
       const tokOk = conf ? safeEq(t, await hmac16(e + "|ec|" + w, env.UNSUB_SECRET)) : await unsubOk(env, e + (w ? "|ew|" + w : "|ew"), t);
-      if (!(EMAIL_RE.test(e) && wOk && tokOk)) return htmlPage("That link isn't valid.");
+      if (!(EMAIL_RE.test(e) && wOk && tokOk)) return conf ? htmlPage("That link isn't valid.") : stopInvalid();
       const rPeek = await getEWatch(e);
       const label = (w && (rPeek.pend[w] || rPeek.w[w] || {}).label) || "this elevator";
       const action = act(e, t, w ? "&w=" + w : "");
@@ -3695,7 +3718,7 @@ async function handle(req, env) {
       const pOk = conf ? /^[a-f0-9]{8,16}$/.test(p) : (p === "" || /^[a-f0-9]{8,16}$/.test(p));
       // v5.13: a confirm needs the secret (503 without it); a stop link always works (unsubOk).
       const tokOk = conf ? safeEq(t, await hmac16(e + "|pc|" + p, env.UNSUB_SECRET)) : await unsubOk(env, e + (p ? "|pw|" + p : "|pw"), t);
-      if (!(EMAIL_RE.test(e) && pOk && tokOk)) return htmlPage("That link isn't valid.");
+      if (!(EMAIL_RE.test(e) && pOk && tokOk)) return conf ? htmlPage("That link isn't valid.") : stopInvalid();
       const rPeek = await getPWatch(e);
       const label = (p && (rPeek.pend[p] || rPeek.w[p] || {}).label) || "this alert";
       const action = act(e, t, p ? "&p=" + p : "");
@@ -4394,7 +4417,7 @@ async function handle(req, env) {
     }
     if (path === "/rp-remind/stop" && (req.method === "GET" || req.method === "POST")) {
       const k = url.searchParams.get("k") || "", t = url.searchParams.get("t") || "";
-      if (!RPR_KEY_RE.test(k) || !safeEq(t, await rprStopToken(env, k))) return htmlPage("That link isn't valid.");
+      if (!RPR_KEY_RE.test(k) || !safeEq(t, await rprStopToken(env, k))) return stopInvalid();
       if (req.method === "GET") {
         return htmlPage("Stop the reminder about this Rain Print?",
           "<form method=\"POST\" action=\"/rp-remind/stop?k=" + encodeURIComponent(k) + "&t=" + encodeURIComponent(t) + "\">" +

@@ -24,7 +24,7 @@
      opens the same design (scripts/build_rp_sealed.mjs, test/rp-sealed.test.mjs).
      The text stays hidden for the first 0.7 s, so a normal scan goes straight
      to the design without a flash of this page. -->
-<link rel="preconnect" href="https://agsist-subs.dnilgis.workers.dev" crossorigin>
+<link rel="preconnect" href="https://agsist-api.dnilgis.workers.dev" crossorigin>
 <style>
   :root{--bg:#f6f7f5;--text:#161a18;--muted:rgba(22,26,24,.7);--link:#7a5a12}
   @media (prefers-color-scheme: dark){:root{--bg:#0a0c0d;--text:#e9edeb;--muted:rgba(233,237,235,.7);--link:#d4a23f}}
@@ -47,7 +47,7 @@
 </main>
 <script>
 (function () {
-  var API = 'https://agsist-subs.dnilgis.workers.dev/rp-short/';
+  var API = 'https://agsist-api.dnilgis.workers.dev/rp-short/';
   var gone = false;
   function fail(unknown) {
     if (gone) return;

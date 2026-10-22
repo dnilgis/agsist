@@ -23,7 +23,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (p) => fs.readFileSync(path.join(ROOT, p), "utf8");
 const GATE = read("components/ga-gate.js");
-const API = "https://agsist-subs.dnilgis.workers.dev/ga-ok";
+const API = "https://agsist-api.dnilgis.workers.dev/ga-ok";
 const GA_SRC = "https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H";
 
 // ---------------------------------------------------------------- 1. the gate
@@ -139,7 +139,7 @@ const W = (await import(pathToFileURL(tmp).href)).default;
 fs.unlinkSync(tmp);
 const ENV = { UNSUB_SECRET: "s", SUBS: { async get() { return null; }, async put() { throw new Error("the gate must store nothing"); }, async list() { return { keys: [], list_complete: true }; } } };
 async function ask(cf, origin = "https://agsist.com", method = "GET") {
-  const req = new Request("https://agsist-subs.dnilgis.workers.dev/ga-ok", { method, headers: origin ? { Origin: origin } : {} });
+  const req = new Request("https://agsist-api.dnilgis.workers.dev/ga-ok", { method, headers: origin ? { Origin: origin } : {} });
   if (cf !== undefined) Object.defineProperty(req, "cf", { value: cf });
   const r = await W.fetch(req, ENV);
   return { r, j: r.status === 200 ? await r.json() : null };

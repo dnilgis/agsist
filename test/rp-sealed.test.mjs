@@ -197,7 +197,7 @@ test("/r: worker blocked, down or answering HTML: the print still draws, from th
       const o = await runR("?K7Q2M", w, dir);
       assert.equal(o.replaced, "/rain-print?d=" + BARE.K7Q2M + "&part=1", why);
       assert.equal(o.els.box.className, "", "no message " + why);
-      assert.equal(o.asked[0], "https://agsist-subs.dnilgis.workers.dev/rp-short/K7Q2M", "worker first " + why);
+      assert.equal(o.asked[0], "https://agsist-api.dnilgis.workers.dev/rp-short/K7Q2M", "worker first " + why);
     }
     const o = await runR("?id=4hj8to&fbclid=x", WORKERS["down (no answer at all)"], dir);
     assert.equal(o.replaced, "/rain-print?d=" + BARE["4HJ8T0"] + "&part=1", "a 6-letter id, lower case and look-alikes");

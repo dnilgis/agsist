@@ -56,7 +56,7 @@ test("R.html and r.html are the same page, noindex, with no canonical", () => {
   assert.equal(R, r, "keep R.html and r.html byte-identical");
   assert.match(R, /<meta name="robots" content="noindex, nofollow">/);
   assert.doesNotMatch(R, /rel="canonical"/);
-  assert.match(R, /agsist-subs\.dnilgis\.workers\.dev\/rp-short\//);
+  assert.match(R, /agsist-api\.dnilgis\.workers\.dev\/rp-short\//);
   assert.match(R, /location\.replace\('\/rain-print\?d=' \+ code \+ \(part \? '&part=1' : ''\)\)/);
   assert.match(R, /href="\/rain-print"/);
   assert.doesNotMatch(read("sitemap.xml"), /agsist\.com\/[Rr](<|\?)/);
@@ -80,7 +80,7 @@ test("getShortLink: posts once, caches in memory and localStorage", async () => 
   assert.equal(c.AgRpShort.peek(CODE), null);
   assert.equal(await c.AgRpShort.getShortLink(CODE), "HTTPS://AGSIST.COM/R?AB12C");
   assert.equal(calls.length, 1);
-  assert.equal(calls[0][0], "https://agsist-subs.dnilgis.workers.dev/rp-short");
+  assert.equal(calls[0][0], "https://agsist-api.dnilgis.workers.dev/rp-short");
   assert.deepEqual(calls[0][1], { code: CODE });
   assert.equal(await c.AgRpShort.getShortLink(CODE), "HTTPS://AGSIST.COM/R?AB12C");
   assert.equal(calls.length, 1, "memory cache");
@@ -110,7 +110,7 @@ test("resolve: an id back to its design code, as /r does, for ?d=RPS-<id>", asyn
   const calls = [], st = memStore();
   const c = client({ storage: st, fetchImpl: async (u) => { calls.push(u); return u.endsWith("/AB12C") ? { ok: true, status: 200, json: async () => ({ ok: true, code: CODE }) } : { ok: false, status: 404, json: async () => ({}) }; } });
   assert.deepEqual(JSON.parse(JSON.stringify(await c.AgRpShort.resolve("AB12C"))), { code: CODE });
-  assert.equal(calls[0], "https://agsist-subs.dnilgis.workers.dev/rp-short/AB12C");
+  assert.equal(calls[0], "https://agsist-api.dnilgis.workers.dev/rp-short/AB12C");
   assert.equal(c.AgRpShort.peek(CODE), "HTTPS://AGSIST.COM/R?AB12C", "the pair is kept, so the QR uses the same id");
   assert.deepEqual(JSON.parse(JSON.stringify(await c.AgRpShort.resolve("ZZ9Q8"))), { code: null, missing: true }, "an id the worker doesn't know");
   assert.equal((await c.AgRpShort.resolve("bad id")).code, null);
@@ -195,7 +195,7 @@ async function runR(search, fetchImpl) {
   await new Promise((r) => setTimeout(r, 20));
   return out;
 }
-const API = "https://agsist-subs.dnilgis.workers.dev/rp-short/";
+const API = "https://agsist-api.dnilgis.workers.dev/rp-short/";
 const okCode = async () => ({ ok: true, status: 200, json: async () => ({ ok: true, code: CODE }) });
 
 test("/R: every way the id can arrive opens the design", async () => {

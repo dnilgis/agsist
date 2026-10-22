@@ -51,7 +51,7 @@ test("the .ps1: ASCII, the four repos as mirrors, no token in a URL, DPAPI, coun
   assert.match(p, /git -C \$dir remote update --prune/);
   assert.match(p, /\$url = 'https:\/\/github\.com\/' \+ \$Owner \+ '\/' \+ \$name \+ '\.git'/, "plain https; Git Credential Manager logs in");
   assert.ok(!/token=|@github\.com|x-access-token/i.test(p), "no token in any URL");
-  assert.match(p, /\$ExportUrl = 'https:\/\/agsist-subs\.dnilgis\.workers\.dev\/export'/);
+  assert.match(p, /\$ExportUrl = 'https:\/\/agsist-api\.dnilgis\.workers\.dev\/export'/);
   assert.match(p, /AuthenticationHeaderValue\('Bearer', \$token\)/);
   assert.match(p, /Read-Host -Prompt 'LIST_TOKEN' -AsSecureString/);
   assert.match(p, /ConvertFrom-SecureString \$sec\)/, "DPAPI, current user (no -Key)");

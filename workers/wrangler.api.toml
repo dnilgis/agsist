@@ -1,0 +1,20 @@
+name = "agsist-api"
+main = "subs-worker.js"
+compatibility_date = "2026-09-30"
+# Never wipe settings made in the dashboard on a Git deploy.
+keep_vars = true
+
+# The new home of the subs Worker (Oct 22, 2026): the same code as
+# wrangler.subs.toml, on a new name, after Cloudflare blocked
+# the old agsist-subs host. Host: agsist-api.dnilgis.workers.dev.
+# wrangler.subs.toml stays so the old Worker's build still works.
+
+# The SAME KV store the old Worker uses, so every subscriber, alert, order
+# and listing carries over with nothing to copy. MUST be declared here: a Git
+# deploy sets the Worker's bindings to exactly what this file says.
+[[kv_namespaces]]
+binding = "SUBS"
+id = "9024f0b7ca5948bf9ed98d6135d73357"
+
+# Secrets/vars live on the Worker itself in the dashboard under Settings ->
+# Variables and Secrets (list in workers/README.md). Deploys never touch them.

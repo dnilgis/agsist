@@ -54,7 +54,7 @@ test("the page keeps the key, drops the fragment and sends the saved list as ids
   assert.deepEqual(P.replaced, ["/cash-bids?zip=54728"], "the fragment is gone, the query kept");
   await new Promise((r) => setTimeout(r, 5));
   assert.equal(P.posts.length, 1);
-  assert.equal(P.posts[0].url, "https://agsist-subs.dnilgis.workers.dev/daily-elev/set");
+  assert.equal(P.posts[0].url, "https://agsist-api.dnilgis.workers.dev/daily-elev/set");
   // the same id scripts/daily_elevators.py place_id() makes
   const py = execFileSync("python3", ["-c", "import sys; sys.path.insert(0, 'scripts'); import daily_elevators as d; print(d.place_id('Test Home Grain||Chetek|WI'))"],
     { cwd: ROOT, encoding: "utf8" }).trim();

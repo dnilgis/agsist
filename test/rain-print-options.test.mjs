@@ -424,7 +424,7 @@ async function mocks(c) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
   await c.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
     const u = new URL(r.request().url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev") return r.request().method() === "OPTIONS" ? r.fulfill({ status: 204, headers: h }) : r.fulfill({ status: 503, headers: h, body: "x" });
+    if (u.host === "agsist-api.dnilgis.workers.dev") return r.request().method() === "OPTIONS" ? r.fulfill({ status: 204, headers: h }) : r.fulfill({ status: 503, headers: h, body: "x" });
     if (u.host === "geocoding-api.open-meteo.com") return r.fulfill({ json: { results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] } });
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [STN] } });

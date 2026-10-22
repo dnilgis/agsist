@@ -332,7 +332,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <!-- 2026-10-19: with a saved state, the state line holds its space from the first paint (components/price-local.js reserve(); test/cls-oct19.test.mjs). In this script, not one of its own: a script between here and the hero is a point where the browser may paint. -->
   <script>try{AgPxStamp.reserve(document.querySelector('#hero-band .pl-line'));}catch(e){}try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
   <!-- signup-ask.js stays a plain script here: it fills #hb-ask above before the first paint. Deferred, the ask arrived after paint and pushed the page down (CLS 0.009 to 0.042, 2026-10-12). -->
-  <script src="/components/signup-ask.js?v=13"></script>
+  <script src="/components/signup-ask.js?v=14"></script>
 <section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-10-22" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full" aria-expanded="false">
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><span class="teaser-action">Read today’s briefing &#x2193;</span></div>
@@ -1373,7 +1373,7 @@ try {
     // and the county watch -- see workers/subs-worker.js's WATCH A PRICE TARGET
     // block. pid is derived client-side so the worker never has to parse what an
     // alert means, only store what this page already computed and labeled.
-    var PA_WORKER='https://agsist-subs.dnilgis.workers.dev';
+    var PA_WORKER='https://agsist-api.dnilgis.workers.dev';
     var PA_LABELS={'corn':'Corn','corn-dec':'Corn (new crop)','beans':'Soybeans','beans-nov':'Soybeans (new crop)','wheat':'Chicago SRW wheat','cattle':'Live Cattle'};
     // Byte-identical to scripts/send_price_watch.py's expectations and to
     // components/bids-homepage.js's widFor() -- FNV-1a 32-bit, Math.imul
@@ -1699,8 +1699,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/geo.js?v=32" defer></script>
 <script src="/components/bids-homepage.js?v=39" defer></script>
 <link rel="stylesheet" href="/components/cb-myelev.css?v=2">
-<script src="/components/cb-myelev.js?v=5" defer></script>
-<script src="/components/homepage-extras.js?v=17" defer></script>
+<script src="/components/cb-myelev.js?v=6" defer></script>
+<script src="/components/homepage-extras.js?v=18" defer></script>
 <script src="/components/home-yield.js?v=9" defer></script>
 <script src="/components/home.js?v=15"></script>
 <script src="/components/home-planting.js?v=2" defer></script>

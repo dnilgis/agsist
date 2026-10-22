@@ -17,7 +17,7 @@
    "fails": 0,
    "attemptedAt": "2026-10-13T17:01:55.469Z",
    "platform": "agsist-portal",
-   "url": "https://agsist-subs.dnilgis.workers.dev/elev/feed",
+   "url": "https://agsist-api.dnilgis.workers.dev/elev/feed",
    "provenance": "scraped",
    "pricedAt": "2026-10-13T12:05:00.000Z",
    "checkedAt": "2026-10-13T17:01:55.469Z",

@@ -21,7 +21,7 @@ tomorrow by changing three repo secrets — the script never changes:
     REPLY_TO    optional
     RECIPIENTS  the list — comma or newline separated (fallback)
     LIST_URL    subscriptions worker base URL (e.g.
-                https://agsist-subs.dnilgis.workers.dev) — when set with
+                https://agsist-api.dnilgis.workers.dev) — when set with
                 LIST_TOKEN, the list is fetched live from KV and
                 RECIPIENTS is ignored
     LIST_TOKEN  auth token for the worker's /list endpoint

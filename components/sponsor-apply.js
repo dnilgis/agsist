@@ -17,7 +17,7 @@
  */
 (function () {
   'use strict';
-  var WORKER = 'https://agsist-subs.dnilgis.workers.dev';
+  var WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var MAX_LOGO = 250 * 1024;
   var $ = function (id) { return document.getElementById(id); };
   var form = $('spa-form');

@@ -426,6 +426,8 @@ def selftest():
     for body in ('<a href="https://agsist-subs.dnilgis.workers.dev/unsubscribe?k=%s&amp;t=1">x</a>' % SAMPLE_LID,
                  "Stop: https://AGSIST-SUBS.dnilgis.Workers.Dev/unsubscribe?k=x",
                  "Logo: agsist-subs.dnilgis.workers.dev/rp-logo/k3j9m2p7q8rs",
+                 '<a href="https://agsist-api.dnilgis.workers.dev/unsubscribe?k=%s&amp;t=1">x</a>' % SAMPLE_LID,
+                 "Logo: agsist-api.dnilgis.workers.dev/rp-logo/k3j9m2p7q8rs",
                  '<a href="https%3A%2F%2Fx.workers.dev%2Fy">x</a>',
                  '<img src="https://other.someone.workers.dev/p.png">'):
         m = EmailMessage()
@@ -443,6 +445,10 @@ def selftest():
     m["X-Note"] = "see agsist-subs.dnilgis.workers.dev"
     m.set_content("hi")
     ck("a worker host in another header let through", refused(m))
+    m = EmailMessage()
+    m["List-Unsubscribe"] = "<https://agsist-api.dnilgis.workers.dev/unsubscribe?k=%s&t=1>" % SAMPLE_LID
+    m.set_content("hi")
+    ck("the new worker host (agsist-api) in List-Unsubscribe let through", refused(m))
     old = os.environ.get("LIST_URL")
     os.environ["LIST_URL"] = "https://subs.example.net"
     try:

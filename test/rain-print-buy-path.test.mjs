@@ -59,7 +59,7 @@ async function mocks(ctx, opts) {
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
     const u = new URL(r.request().url());
     if (opts.log) opts.log.push(u.host + u.pathname + "?" + u.search.slice(0, 160));
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (r.request().method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       if (u.pathname === "/rp-short") return opts.shortFail ? r.fulfill({ status: 503, headers: h, body: "x" }) : r.fulfill({ status: 200, headers: h, json: { ok: true, id: "K7Q2M" } });
       if (u.pathname === "/form") return r.fulfill({ status: 200, headers: h, json: { ok: true } });

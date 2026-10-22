@@ -41,7 +41,8 @@ A(r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'CORS f
 A(r.headers.get('Cache-Control') === 'no-store', 'not cached');
 A(store.has('sub:' + E), 'GET changes nothing');
 r = await fd('unsubscribe?k=' + L + '&t=' + t16(L + 'x')); x = await j(r);
-A(x.ok === false && /isn't valid/.test(x.title) && !x.button && store.has('sub:' + E), 'a bad t: not valid, nothing changed');
+A(x.ok === false && /no longer works/.test(x.title) && !x.button && store.has('sub:' + E), 'a bad t: not valid, nothing changed');
+A(x.lines.some((l) => /Older AGSIST links stop working/.test(l)) && x.lines.every((l) => !l.includes('@')), 'v5.52: a bad stop link says why, never an address in the JSON');
 r = await fd('unsubscribe?k=zzzzzzzzzzzzzzzz&t=' + t16('zzzzzzzzzzzzzzzz')); x = await j(r);
 A(x.ok === false && r.status === 200, 'an id with no record: not valid (as JSON, 200 so the page can read it)');
 r = await fd('unsubscribe?k=' + L + '&t=' + t16(L), 'POST'); x = await j(r);

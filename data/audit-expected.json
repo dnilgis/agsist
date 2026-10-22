@@ -2,9 +2,14 @@
  "note": "Requests that return an error ON PURPOSE. The render audit lists these as 'expected' so they stay visible, and does not fail the run for them. Every entry needs a reason, and a reason that is really 'we have not fixed it yet' does not belong here — put it on the list of things to fix instead. An allowlist is how a real regression gets hidden, so this file should stay short.",
  "expected": [
   {
+   "match": "agsist-api.dnilgis.workers.dev/",
+   "status": 404,
+   "reason": "status.html pings the subscription Worker's root (agsist-api, its home since Oct 22) to see if it is alive. The Worker has no route for '/', so it answers 404, and a 404 IS an answer, which is what the ping is testing. The check treats any response as reachable, so this works exactly as intended and the status row reads Online."
+  },
+  {
    "match": "agsist-subs.dnilgis.workers.dev/",
    "status": 404,
-   "reason": "status.html pings the subscription Worker's root to see if it is alive. The Worker has no route for '/', so it answers 404 — and a 404 IS an answer, which is what the ping is testing. The check treats any response as reachable, so this works exactly as intended and the status row reads Online."
+   "reason": "The same ping on the old host (agsist-subs, blocked by Cloudflare Oct 21), kept while either Worker may answer during the move."
   }
  ]
 }
