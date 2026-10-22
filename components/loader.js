@@ -573,7 +573,18 @@
       e.stopPropagation();
       var t = dd.querySelector('.nav-btn');
       if (!dd.classList.contains('open') && t) t.click();
-      setTimeout(function () { var inp = dd.querySelector('.nav-ask input[type="email"]'); if (inp) inp.focus(); }, 60);
+      /* The panel fades in, and it is hidden until its fade starts at a frame: on a busy phone or laptop the one try
+         at 60 ms came first, the box could not take the focus, and the button left the reader with nothing in focus
+         (2026-10-22; test/nav-full-oct18.test.mjs). Try each frame until the box has it, while the panel stays open. */
+      setTimeout(function () {
+        var n = 0;
+        (function go() {
+          if (!dd.classList.contains('open')) return;
+          var inp = dd.querySelector('.nav-ask input[type="email"]');
+          if (inp) { inp.focus(); if (document.activeElement === inp) return; }
+          if (++n < 120) requestAnimationFrame(go);
+        })();
+      }, 60);
     });
   }
 
