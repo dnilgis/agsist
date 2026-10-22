@@ -8,6 +8,30 @@
     {
      "tag": "fixed",
      "page": "/rain-print",
+     "name": "Rain Print on a phone: a tap under the pinned strip counts",
+     "text": "With a box still in focus, a tap on a choice or on Mark another day right under the strip at the top could miss, because the strip opened up over it. The strip now waits until the tap is done."
+    },
+    {
+     "tag": "fixed",
+     "page": "/rain-print",
+     "name": "Rain Print: a shared link opens without a jump",
+     "text": "On a slow phone, a link to someone's print could show the town box and the headline for a moment and then push them down the page. The page now appears once it is all in place."
+    },
+    {
+     "tag": "fixed",
+     "page": "/",
+     "name": "Menu: Free daily email goes straight to the box",
+     "text": "On a slow phone or laptop, the Free daily email button could open the Daily menu without putting the cursor in the email box. It does now."
+    },
+    {
+     "tag": "fixed",
+     "page": "/glossary",
+     "name": "Word explanations stay closed when you close them",
+     "text": "Clicking an underlined word and then pressing Escape could open its explanation again a moment later. Closed now stays closed."
+    },
+    {
+     "tag": "fixed",
+     "page": "/rain-print",
      "name": "Rain Print: a clear space between your farm name and the year",
      "text": "The year always sits a clear space after the farm name, and after the town, on the screen and in every file, whatever font your device has loaded."
     },
