@@ -4164,7 +4164,8 @@
   function noteInView(note) {
     try {
       var r = note.getBoundingClientRect(), h = root.innerHeight || doc.documentElement.clientHeight;
-      if (r.top < 0 || r.bottom > h) note.scrollIntoView({ behavior: smooth(), block: 'center' });
+      // with the print pinned on a phone the room below it is short: the note comes into view at once, not after a glide
+      if (r.top < 0 || r.bottom > h) note.scrollIntoView({ behavior: pinnedBottom() ? 'instant' : smooth(), block: 'center' });
     } catch (err) {}
   }
   /* The line by the print while it isn't the one in the boxes: a draw on its
@@ -4277,8 +4278,10 @@
   function keepClearOfPin(el) {
     var lim = pinnedBottom(), pv = $('rp-pv');
     if (!lim || !el || !el.getBoundingClientRect || (pv && pv.contains(el))) return;
+    // keyboard focus only: a tap focuses on the way down, and moving the page then would lose the tap
+    try { if (!el.matches(':focus-visible')) return; } catch (e) { return; }
     var r = el.getBoundingClientRect();
-    if (r.top < lim + 4 && r.bottom > 0) try { root.scrollBy(0, r.top - lim - 8); } catch (e) {}
+    if (r.top < lim + 4 && r.bottom > 0) try { root.scrollBy({ top: r.top - lim - 8, behavior: 'instant' }); } catch (e) {}
   }
   /* A box the reader just put the keyboard in never sits under the pinned
      copy. Only from the focus handler, never from the scroll: the town box
@@ -5621,11 +5624,11 @@
     var back = 0;
     doc.addEventListener('focusin', function (e) {
       clearTimeout(back);
-      if (typing(e.target)) { TYPING = true; syncBar(); setTimeout(function () { keepFocusClear(); }, 60); }
-      else back = setTimeout(function () { TYPING = false; syncBar(); }, 450);
+      if (typing(e.target)) { TYPING = true; syncBar(); if ($('rp-stepcol').contains(e.target)) doc.body.classList.add('rp-typing'); setTimeout(function () { keepFocusClear(); }, 60); }
+      else back = setTimeout(function () { TYPING = false; syncBar(); doc.body.classList.remove('rp-typing'); }, 450);
       if (!typing(e.target)) keepClearOfPin(e.target);
     });
-    doc.addEventListener('focusout', function () { clearTimeout(back); back = setTimeout(function () { TYPING = typing(doc.activeElement); syncBar(); }, 450); });
+    doc.addEventListener('focusout', function () { clearTimeout(back); back = setTimeout(function () { TYPING = typing(doc.activeElement); syncBar(); if (!(TYPING && $('rp-stepcol').contains(doc.activeElement))) doc.body.classList.remove('rp-typing'); }, 450); });
   })();
   // Back from Stripe with the page kept as it was: no "Opening checkout" left on the screen
   root.addEventListener('pageshow', function (e) { if (e.persisted) { proofSay(''); syncBar(); } });

@@ -665,8 +665,9 @@
     html.rp-from-link .rp-cap-l{min-height:0}
     /* a design link on a phone: the steps follow the print, the headline and photo come after them */
     html.rp-from-link.rp-tool-first .rp-top{order:4}
-    /* a box with the keyboard up: the print lets go, so the box is never under it */
-    body:has(.rp-stepcol :is(input:not([type=checkbox]):not([type=radio]):not([type=date]),textarea):focus) .rp-pv{position:relative;top:auto}
+    /* a box with the keyboard up: the print lets go, so the box is never under it; it pins again a moment after the
+       box is left (components/rain-print.js), never under a tap that is on its way to a button */
+    body.rp-typing .rp-pv{position:relative;top:auto}
     .rp-lrow{display:flex;flex-wrap:wrap;align-items:center;gap:.25rem;padding:.3rem 0}
     .rp-lrow .rp-chips{display:contents}
     .rp-lg{padding:0 .1rem 0 0;font-size:10px;letter-spacing:.04em}
