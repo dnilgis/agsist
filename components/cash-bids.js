@@ -1033,6 +1033,14 @@ function portalClosedLabel(info,nowMs){
   if(day(info.closedUntil)===day(nowMs))return'Closed today';
   return'Closed until '+new Date(info.closedUntil).toLocaleDateString('en-US',{timeZone:'America/Chicago',weekday:'short',month:'short',day:'numeric'});
 }
+/* "6:10 AM Wed" in Central time; past six days, "6:10 AM Oct 14" (a weekday alone could mean this week). */
+function portalWhen(ms,nowMs){
+  var tz={timeZone:'America/Chicago'};
+  var t=new Date(ms).toLocaleTimeString('en-US',Object.assign({hour:'numeric',minute:'2-digit'},tz));
+  var d=(nowMs-ms<6*864e5)?new Date(ms).toLocaleDateString('en-US',Object.assign({weekday:'short'},tz))
+                          :new Date(ms).toLocaleDateString('en-US',Object.assign({month:'short',day:'numeric'},tz));
+  return t+' '+d;
+}
 function portalBadge(info,nowMs){
   var l=portalClosedLabel(info,nowMs);
   return l?'<div class="elev-closed" data-portal-until="'+info.closedUntil+'" title="The elevator marked itself closed. Its last bids still show; call before you haul.">'+escH(l)+'</div>':'';
@@ -1081,6 +1089,7 @@ function groupElevators(bids){
     var e=map[key],cat=b.category||'other';
     /* The elevator's own listing (hours, contact, note), from its shard. */
     if(!e.portal&&b.portal)e.portal=b.portal;
+    if(b.fromPortal)e.fromPortal=true;
     if(!hasPhone(e.phone)&&hasPhone(b.phone))e.phone=b.phone;
     if(!e.commodities[cat])e.commodities[cat]=[];
     e.commodities[cat].push(b);
@@ -1769,7 +1778,13 @@ function renderBids(bids,keepLimit){
        SESSIONS have closed since the board last moved. None means this IS the
        board. One means it has not been touched since the last close, which is
        worth saying plainly rather than as a warning. Two or more is a warning. */
-    if(elev.asOfT!=null){
+    /* AN ELEVATOR THAT POSTS ITS OWN BIDS (agsist.com/post) always says when it
+       last saved them, in its own words of time: "Updated 6:10 AM Wed" (Sig, Oct 22).
+       That time is when the manager pressed Save, even for a save that reached us
+       late (subs worker v5.50), so an old price is plain to see. */
+    if(elev.fromPortal&&elev.asOfT!=null){
+      html+='<div class="elev-posted'+(mktSessionsClosedSince(elev.asOfT,new Date())>=2?' elev-stale':'')+'" title="When this elevator last saved its bids on AGSIST">Updated '+escH(portalWhen(elev.asOfT,Date.now()))+'</div>';
+    }else if(elev.asOfT!=null){
       if(elev.via==='direct'){
         var _cl=mktSessionsClosedSince(elev.asOfT,new Date());
         if(_cl>=1){
@@ -2149,6 +2164,8 @@ function netRowsFrom(shard,distanceMi){
       /* Hours, contact name, note and closed-until, only on shards of
          elevators that post through agsist.com/post. Null for every other. */
       portal:portalInfo(shard.info),
+      /* Posted through agsist.com/post at all (even with no hours or note): the card says when it last saved. */
+      fromPortal:!!(shard.info&&typeof shard.info==='object'&&!Array.isArray(shard.info)),
       commodity:b.commodity||'',
       cashPrice:cash,
       basis:basis,

@@ -164,8 +164,8 @@ test("hay board post: worker blocked, kept with the plain line; back, posted onc
   });
 });
 
-test("elevator bids: worker blocked, the page opens from this phone's last copy and a save is kept; back, saved once", { skip }, async () => {
-  await withSite(async ({ open, state, log, errors }) => {
+test("elevator bids: worker blocked, the page opens from this phone's last copy and a save is kept; back, saved once with its own time", { skip }, async () => {
+  await withSite(async ({ ctx, open, state, log, errors }) => {
     const page = await open();
     state.mode = "up";
     await page.goto("https://agsist.com/post?k=" + KEY);
@@ -177,11 +177,14 @@ test("elevator bids: worker blocked, the page opens from this phone's last copy 
     await page.fill("#ep-note", "Corn dump open till 9");
     await page.click("#ep-save");
     await page.waitForFunction(() => /^Kept on this phone\./.test(document.getElementById("ep-state").textContent));
-    assert.equal(await page.textContent("#ep-state"), "Kept on this phone. Open this page again once our system is back (within 4 hours) and it posts.");
+    assert.equal(await page.textContent("#ep-state"), "Kept on this phone. It posts, with the time you saved it, when our system is back and you open this page again.");
     const k = await outbox(page);
     assert.equal(k.length, 1); assert.equal(k[0].body.note, "Corn dump open till 9");
-    assert.ok(k[0].expires > k[0].t && k[0].expires - k[0].t <= 4 * 3600000, "dropped unsent after 4 hours at most");
+    assert.equal(k[0].expires, undefined, "never dropped for age (Sig, Oct 22): it posts with its own time");
+    assert.equal(k[0].body.entered_at, "2026-10-22T14:00:00.000Z", "the time Save was pressed");
     await shot(page, "elevator-kept");
+    // the worker comes back a day and a half later
+    await ctx.clock.setFixedTime(new Date("2026-10-24T02:30:00Z"));
     state.mode = "up";
     page.on("dialog", (d) => d.accept());
     await page.reload();
@@ -189,6 +192,7 @@ test("elevator bids: worker blocked, the page opens from this phone's last copy 
     await page.waitForTimeout(2500);
     const s = calls(log, "POST /elev/save");
     assert.equal(s.length, 1); assert.equal(s[0].body.k, KEY); assert.equal(s[0].body.note, "Corn dump open till 9");
+    assert.equal(s[0].body.entered_at, "2026-10-22T14:00:00.000Z", "sent late with the time it was typed, not the time it went");
     assert.deepEqual(errors, []);
   });
 });

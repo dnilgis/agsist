@@ -431,10 +431,12 @@
   /* THE WORKER DOWN (2026-10-22). The last listing this phone opened is kept
      here (LAST), so the page still opens with the worker blocked; a save is
      kept in this browser (components/outbox.js) and posts when the worker
-     answers and this page is opened again on this phone. Bids are only good
-     the same morning: a kept save is dropped unsent after KEEP_HOURS or at
-     midnight, whichever comes first, so old prices never post as new. */
-  var LAST = 'elev-last', KEEP_HOURS = 4, LAST_DAYS = 14, OFFLINE = false;
+     answers and this page is opened again on this phone. Every save carries
+     entered_at, the moment Save was pressed; the worker (v5.50) stores that
+     time, not the time a kept save arrives, so the board shows how old the
+     prices really are ("Updated 6:10 AM Wed"), and a kept save never
+     overwrites a newer one (Sig, Oct 22). */
+  var LAST = 'elev-last', LAST_DAYS = 14, OFFLINE = false;
   function keepLast(r) { try { localStorage.setItem(LAST, JSON.stringify({ k: key.trim(), rec: r, t: Date.now() })); } catch (e) {} }
   function lastRec() {
     try {
@@ -443,12 +445,10 @@
     } catch (e) {}
     return null;
   }
-  var KEPT_LINE = 'Kept on this phone. Open this page again once our system is back (within ' + KEEP_HOURS + ' hours) and it posts.';
+  var KEPT_LINE = 'Kept on this phone. It posts, with the time you saved it, when our system is back and you open this page again.';
   function keepSave(body) {
     if (!root.AgOutbox) return false;
-    var mid = new Date(); mid.setHours(24, 0, 0, 0);
-    var id = root.AgOutbox.add({ url: WORKER + '/elev/save', body: body, kind: 'elev-save', label: 'your bids',
-      expires: Math.min(Date.now() + KEEP_HOURS * 3600000, mid.getTime()) });
+    var id = root.AgOutbox.add({ url: WORKER + '/elev/save', body: body, kind: 'elev-save', label: 'your bids' });
     if (!id) return false;
     keepDraft();
     status('ok', KEPT_LINE);
@@ -470,7 +470,7 @@
     var btn = box.querySelector('#ep-save');
     btn.disabled = true; btn.textContent = 'Saving...';
     var body = { k: key, bids: c.bids, hours: { text: form.hours, harvest: form.harvest }, contact: { name: form.cname, phone: phone },
-      note: form.note, closed_today: form.closed };
+      note: form.note, closed_today: form.closed, entered_at: new Date().toISOString() };
     post('/elev/save', body).then(function (j) {
       busy = false; btn.disabled = false; btn.textContent = 'Save';
       if (!j.ok && j._down && keepSave(body)) return;
@@ -479,6 +479,7 @@
           j._status === 403 ? 'This listing has been turned off. Email Sig at ' + SIG_EMAIL + '.' :
           j._status === 404 ? 'This link no longer works. Email Sig at ' + SIG_EMAIL + ' for a new one.' :
           j._status === 429 ? 'Too many saves this hour. Wait a few minutes.' :
+          j._status === 409 && j.newer ? 'A newer save is already posted. Open the page again to see it.' :
           'AGSIST said: ' + String(j.error || 'something went wrong') + '.';
         status('bad', 'Not saved. ' + why + ' Your changes are still here; tap Save to try again.');
         return;
@@ -498,9 +499,10 @@
     busy = true;
     var b = box.querySelector('#ep-nochange');
     b.disabled = true; b.textContent = 'Marking...';
-    post('/elev/save', { k: key, no_change: true }).then(function (j) {
+    var nb = { k: key, no_change: true, entered_at: new Date().toISOString() };
+    post('/elev/save', nb).then(function (j) {
       busy = false;
-      if (!j.ok && j._down && keepSave({ k: key, no_change: true })) { b.textContent = 'No change today'; return; }
+      if (!j.ok && j._down && keepSave(nb)) { b.textContent = 'No change today'; return; }
       if (!j.ok || !j.record) {
         b.textContent = 'No change today';
         status('bad', j._status === 0 ? 'Not marked. No signal or AGSIST could not be reached. Tap again.' : 'Not marked. ' + String(j.error || 'Something went wrong') + '.');
