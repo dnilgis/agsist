@@ -104,6 +104,7 @@ jobs:
           REPLY_TO:     ${{ secrets.REPLY_TO }}
           LIST_URL:     ${{ secrets.LIST_URL }}
           LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           DRY_RUN:      ${{ (github.event_name == 'workflow_dispatch' && inputs.send_email != true) && '1' || '' }}
         run: python scripts/send_report_day.py

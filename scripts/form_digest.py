@@ -70,6 +70,7 @@ from email.utils import formataddr, make_msgid
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+import list_source  # noqa: E402  (a blocked worker is a skip, not a failed run)
 
 try:
     from zoneinfo import ZoneInfo
@@ -413,11 +414,9 @@ def build(posts, to, fn="AGSIST", fa="", top=""):
 
 def worker(base, path, tok, body=None, **q):
     url = "%s/%s?%s" % (base, path, urllib.parse.urlencode(dict(q, token=tok)))
-    data = json.dumps(body).encode() if body is not None else None
-    req = urllib.request.Request(url, data=data, method="POST" if data else "GET",
-                                 headers={"Content-Type": "application/json", "User-Agent": "agsist-form-digest"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode())
+    # 2026-10-22: scripts/list_source.py. The form posts live only on the
+    # worker, so a blocked worker raises list_source.Blocked: run() skips.
+    return list_source.request("POST" if body is not None else "GET", url, body, {"User-Agent": "agsist-form-digest"})
 
 
 def run(base, tok, to, dry, send, fetch=worker, top=None):
@@ -427,6 +426,10 @@ def run(base, tok, to, dry, send, fetch=worker, top=None):
     log = []
     try:
         posts = fetch(base, "form-list", tok, new="1")
+    except list_source.Unavailable as e:
+        # Oct 21: the Cloudflare block page. Not our failure: one warning, exit 0 (Sig had 45,000 "Run failed" emails)
+        log.append("::warning::worker blocked, skipped (form posts are only on the worker: %s)" % e)
+        return 0, log
     except urllib.error.HTTPError as e:
         if e.code == 404:
             log.append("worker has no /form-list yet (deploy workers/subs-worker.js v5.8); nothing to do")
@@ -477,12 +480,8 @@ HAY_DESK = "https://agsist.com/haymow-admin"
 def hay_worker(base, path, tok, body=None, **q):
     """The hay admin routes take the token as a Bearer header only."""
     url = "%s/%s%s" % (base, path, ("?" + urllib.parse.urlencode(q)) if q else "")
-    data = json.dumps(body).encode() if body is not None else None
-    req = urllib.request.Request(url, data=data, method="POST" if data else "GET",
-                                 headers={"Content-Type": "application/json", "User-Agent": "agsist-form-digest",
-                                          "Authorization": "Bearer " + tok})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode())
+    return list_source.request("POST" if body is not None else "GET", url, body,
+                               {"User-Agent": "agsist-form-digest", "Authorization": "Bearer " + tok})
 
 
 def hay_line(p):
@@ -570,6 +569,9 @@ def hay_run(base, tok, to, dry, send, fetch=hay_worker):
     log = []
     try:
         r = fetch(base, "hay/admin/list", tok, new="1")
+    except list_source.Unavailable as ex:
+        log.append("::warning::worker blocked, skipped (hay board: %s)" % ex)
+        return 0, log
     except urllib.error.HTTPError as ex:
         if ex.code == 404:
             log.append("worker has no /hay/admin/list yet (deploy workers/subs-worker.js v5.30); hay board skipped")

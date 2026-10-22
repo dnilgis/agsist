@@ -68,6 +68,7 @@ import subscribers        # noqa: E402
 import gmail_limit        # noqa: E402
 import log_safe           # noqa: E402  (no address in the public log)
 import email_links        # noqa: E402  (k=<link id> links; never an address in one)
+import list_source  # noqa: E402  (the worker, or the private copy of its list)
 from local_bid import q_cash_text, q_cents   # noqa: E402  (the site's quarter-cent text)
 from report_bands import surprise as band_surprise, range_context   # noqa: E402  (the one grading rule)
 
@@ -469,10 +470,9 @@ def flag_get(key):
     base, token = (os.environ.get("LIST_URL") or "").strip(), (os.environ.get("LIST_TOKEN") or "").strip()
     if not (base and token):
         return None
-    u = base.rstrip("/") + "/flag?k=" + urllib.parse.quote(key) + "&token=" + urllib.parse.quote(token)
+    # 2026-10-22: the worker AND the private repo (scripts/list_source.py); either set = sent
     try:
-        with urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=20) as r:
-            return bool(json.loads(r.read().decode()).get("set", False))
+        return bool(list_source.flag_is_set(key))
     except Exception as ex:
         print("flag unreachable (%s: %s)" % (type(ex).__name__, str(ex)[:100]))
         return None
@@ -486,8 +486,8 @@ def flag(day, set_it=False):
     base, token = (os.environ.get("LIST_URL") or "").strip(), (os.environ.get("LIST_TOKEN") or "").strip()
     for key in PENDING_KEYS:
         try:
-            u = base.rstrip("/") + "/flag?k=" + urllib.parse.quote(key) + "&token=" + urllib.parse.quote(token)
-            urllib.request.urlopen(urllib.request.Request(u, method="POST", headers=UA), timeout=20).read()
+            if not list_source.flag_set(key):
+                raise RuntimeError("not saved")
         except Exception as ex:
             print("::error::could not set %s (%s) -- a rerun could send this report again" % (key, type(ex).__name__))
     return True
@@ -600,6 +600,9 @@ def main(argv=()):
     port = int(env("SMTP_PORT", "587") or 587)
     user = env("SMTP_USER", required=True)
     pw = env("SMTP_PASS", required=True)
+    # backup mode: each report's flag goes into the private repo before the first mail
+    if not all(list_source.claim(k) for k in PENDING_KEYS):
+        return 1
 
     # THE SAME LOOP AS send_daily.py, byte for byte between its delimiters, and
     # held to it by scripts/test_send_loops.py: a dropped socket costs one
@@ -817,4 +820,4 @@ def _selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(_selftest())
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(list_source.guard(lambda: main(sys.argv[1:]), soft=False))
