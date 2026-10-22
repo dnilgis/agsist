@@ -80,6 +80,7 @@ def _spark(st, repo=REPO):
         return None
 
 
+@lru_cache(maxsize=256)
 def basis_stats(st, crop, before, repo=REPO):
     """Each live bid's basis now against its own earlier basis, or None."""
     d = _spark(st, repo)
@@ -126,6 +127,7 @@ def basis_text(s):
     return "%s: %s; %s." % (name, lead, typ)
 
 
+@lru_cache(maxsize=64)
 def basis_line(before, state=None, repo=REPO):
     """For the reader's state when it has enough bids, else the farm state whose
     basis is furthest from its own record. {"text", "url", "link", "kind", "n"} or None."""

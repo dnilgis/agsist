@@ -391,22 +391,16 @@ def load_rain_lines(subs, how, bids_data=None):
     return out
 
 
-# ── the Daily, v2 (Sig, Oct 22 2026), behind a switch ─────────────────────
-# DAILY_FORMAT=v2 builds the email with scripts/daily_v2.py, but ONLY for
-# Sig's test copy (TEST_TO_SIG=1) or a preview (DRY_RUN=1). The morning send to
-# the list keeps brief_email until Sig approves a test copy; asked for v2
-# without either, it says so and sends the current format.
+# ── the Daily, v2 (Sig, Oct 22 2026: live from the Oct 22 morning send) ─────
+# DAILY_FORMAT=v2 builds the email with scripts/daily_v2.py; anything else
+# (DAILY_FORMAT=current, or unset) builds the old format with brief_email. That
+# is the rollback: daily.yml's format input, or the repo variable DAILY_FORMAT
+# for the scheduled run.
 V2 = {"pod": None, "fact": None, "ready": False}
 
 
 def daily_format():
-    want = (os.environ.get("DAILY_FORMAT") or "").strip().lower()
-    if want != "v2":
-        return "current"
-    if env("TEST_TO_SIG", "") == "1" or env("DRY_RUN", "") == "1":
-        return "v2"
-    print("::warning::DAILY_FORMAT=v2 is for Sig's test copy and previews only; this send keeps the current format")
-    return "current"
+    return "v2" if (os.environ.get("DAILY_FORMAT") or "").strip().lower() == "v2" else "current"
 
 
 def v2_setup(b):
@@ -443,15 +437,39 @@ def v2_parts(b, to_addr, uurl, mine, loc, rain):
                           rain=rain, pod=V2["pod"], fact=V2["fact"], today=date.today())
 
 
-def v2_gate(day, b):
+def v2_hold_alert(day, built, bad):
+    """One email to Sig (OWNER_TO, the SIG_TO secret in daily.yml) the moment
+    the number check holds a live issue: what failed and how to fix and rerun.
+    The day is not flagged, so a rerun sends. Returns True if it went out."""
+    fields = sorted({f["field"] for f in bad})
+    lines = ["The AGSIST Daily for %s did not go to the list: the number check found a wrong number in the %s."
+             % (day, " and ".join(fields)), ""]
+    for f in bad:
+        lines += ["%s: \"%s\"" % (f["field"], str(f.get("quote") or "")[:300]), "  " + f["why"], ""]
+    lines += ["Subject it would have had: " + str(built.get("subject")), "",
+              "Nothing was sent and the day is not marked sent. To fix and rerun:",
+              "1. GitHub, dnilgis/agsist, Actions, Generate Daily Briefing, Run workflow on main: tick send_email, "
+              "format v2. It writes today's issue again and checks it again; if it passes it goes to the list.",
+              "2. To send today's issue as it is, in the old format (which does not run this check): the same, "
+              "with format current.",
+              "3. To skip today: do nothing. Tomorrow's run is not affected."]
+    return log_safe.owner_mail("AGSIST Daily %s held: wrong number in the %s" % (day, " and ".join(fields)), lines)
+
+
+def v2_gate(day, b, alert=False):
     """The number check that blocks the v2 send (daily_v2.check): a wrong number
-    in the subject, headline or lead. True = clear to send."""
+    in the subject, headline or lead. True = clear to send. alert=True (a live
+    send) mails Sig at once when it holds the issue."""
     import daily_v2
     built = v2_parts(b, "reader@example.com", None, None, None, None)
     bad, notes = daily_v2.check(b, built)
     for n in notes:
         print("v2 number check: " + n)
     if bad:
+        print("::error title=Daily held, wrong number::the %s Daily did not go to the list: %s"
+              % (day, "; ".join("%s says \"%s\" (%s)" % (f["field"], str(f.get("quote"))[:120], f["why"]) for f in bad))[:900])
+        if alert:
+            print("alert to Sig: " + ("sent" if v2_hold_alert(day, built, bad) else "NOT sent (see above)"))
         for f in bad:
             print("::error title=Daily number check::%s: \"%s\" %s" % (f["field"], str(f.get("quote"))[:200], f["why"]))
         print("v2 number check: %d wrong number(s) in the subject, headline or lead; the Daily does not send" % len(bad))
@@ -537,7 +555,7 @@ def main():
         return 0
     if daily_format() == "v2":
         print("format: v2 (scripts/daily_v2.py)")
-        if not v2_gate(day, b):
+        if not v2_gate(day, b, alert=not (dry or test)):
             if not dry:
                 return 1
             print("dry run: the preview below is what WOULD have been blocked")

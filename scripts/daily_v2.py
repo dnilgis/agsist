@@ -5,10 +5,11 @@ actually be excited to open the email every day"). Decisions:
 notes/STANDING-DECISIONS.md "The Daily email", "print of the day",
 "proprietary slot"; the panel record notes/panels/daily-email-2026-10-22.md.
 
-BEHIND A SWITCH. scripts/send_daily.py uses this only with DAILY_FORMAT=v2
-AND either TEST_TO_SIG=1 (Sig's test copy, daily.yml test_to_sig) or
-DRY_RUN=1 (a preview). The morning send to the list keeps scripts/brief_email.py
-until Sig approves a test copy. test/daily-email-v2.test.mjs pins the switch.
+ONE SWITCH. scripts/send_daily.py uses this when DAILY_FORMAT=v2 (Sig
+approved it for the list from the Oct 22 2026 morning send). Rollback:
+daily.yml's format input set to current, or the repo variable DAILY_FORMAT=current
+for the scheduled run; scripts/brief_email.py then builds the old email.
+test/daily-email-v2.test.mjs pins the switch.
 
 WHAT IS IN IT, top to bottom, about two phone screens:
   subject     the day's most newsworthy specific fact: news (a news item or

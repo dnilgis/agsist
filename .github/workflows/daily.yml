@@ -118,10 +118,10 @@ on:
         type: boolean
         default: false
       format:
-        description: "Sig's test copy only (test_to_sig): current = the email as the list gets it; v2 = the rebuilt Daily (scripts/daily_v2.py) for Sig to approve. The morning send to the list never reads this."
+        description: "The Daily email's format. v2 = the rebuilt Daily (scripts/daily_v2.py, live since Oct 22 2026). current = the old format, the one-input rollback. A scheduled run reads the repo variable DAILY_FORMAT (unset = v2), so setting that variable to current rolls the morning send back too."
         type: choice
-        options: [current, v2]
-        default: current
+        options: [v2, current]
+        default: v2
 
 jobs:
   # SIG'S TEST COPY OF THE BACKUP-MODE DAILY (2026-10-22). Run workflow with
@@ -138,7 +138,7 @@ jobs:
   # those exact bytes. Any failure: no picture, and the email leaves the slot
   # out. It never stops the email. Commits only that one file, onto main.
   print-of-day:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.test_to_sig == true && inputs.send_email == true && inputs.format == 'v2' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.test_to_sig == true && inputs.send_email == true && inputs.format != 'current' }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     permissions:
@@ -223,7 +223,7 @@ jobs:
       # being sent (the raw branch keeps every run's), which daily_v2.check()
       # reads to block a wrong number in the subject, headline or lead.
       - name: The print of the day and the saved fact check (v2)
-        if: ${{ inputs.format == 'v2' }}
+        if: ${{ inputs.format != 'current' }}
         continue-on-error: true
         env:
           PICK: ${{ needs.print-of-day.outputs.pick }}
@@ -239,7 +239,7 @@ jobs:
         if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
         env:
           TEST_TO_SIG:  '1'
-          DAILY_FORMAT: ${{ inputs.format }}
+          DAILY_FORMAT: ${{ inputs.format || vars.DAILY_FORMAT || 'v2' }}
           PRINT_OF_DAY: ${{ runner.temp }}/print-of-day.json
           FACT_CHECK_JSON: ${{ runner.temp }}/fact-check.json
           LIST_SOURCE:  backup
@@ -460,6 +460,33 @@ jobs:
 
       - name: Install dependencies
         run: pip install feedparser==6.0.14 requests==2.34.2 pillow==12.3.0
+
+      # PRINT OF THE DAY (Daily v2, live Oct 22 2026). Drawn FIRST, while the
+      # briefing is still being written, so the picture is on agsist.com long
+      # before the send: pick the place (scripts/print_of_day.py), draw its
+      # Rain Print with the county print engine in headless Chromium
+      # (scripts/render_print_of_day.mjs), commit only daily/img/print-<date>.png
+      # to main. continue-on-error and a 7-minute cap: a failure here leaves
+      # the slot out of the email and never stops or delays anything else.
+      - name: Print of the day, drawn and put on agsist.com
+        id: podraw
+        if: ${{ (github.event_name == 'schedule' || inputs.send_email == true) && (inputs.format || vars.DAILY_FORMAT || 'v2') == 'v2' }}
+        continue-on-error: true
+        timeout-minutes: 7
+        run: |
+          npm install --silent --prefix "$RUNNER_TEMP/pw" playwright@1.56.1 >/dev/null
+          "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium >/dev/null
+          d=$(TZ=America/Chicago date +%F); f="daily/img/print-$d.png"
+          python3 scripts/print_of_day.py --date "$d" --out "$RUNNER_TEMP/pick.json"
+          PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" node scripts/render_print_of_day.mjs "$RUNNER_TEMP/pick.json" "$f"
+          python3 scripts/print_of_day.py --compress "$f"
+          cp "$f" "$RUNNER_TEMP/print.png"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$f"
+          git diff --cached --quiet || git commit -q -m "Daily print of the day $d"
+          for i in 1 2 3; do git pull -q --rebase --autostash origin main && git push -q && break; sleep 10; done
+          echo "file=$f" >> "$GITHUB_OUTPUT"
 
       # The gate's own selftest runs first. It regression-locks the two holes that
       # let the 2026-08-08 briefing publish a 16.9% lean hog rally (2.9x the
@@ -845,9 +872,35 @@ jobs:
           python scripts/local_bid.py --selftest
           node scripts/daily-local-bid-checks.mjs
 
+      # The picture drawn at the top of this job is used only once agsist.com
+      # serves those exact bytes. Capped at 3 minutes: past that the email goes
+      # without the slot, at its normal time.
+      - name: Print of the day, is it live
+        if: ${{ steps.podraw.outcome == 'success' && steps.podraw.outputs.file != '' }}
+        continue-on-error: true
+        timeout-minutes: 4
+        env:
+          F: ${{ steps.podraw.outputs.file }}
+        run: |
+          url="https://agsist.com/$F"
+          for i in $(seq 1 12); do
+            if curl -fsS -m 20 -o "$RUNNER_TEMP/live.png" "$url" && cmp -s "$RUNNER_TEMP/live.png" "$RUNNER_TEMP/print.png"; then
+              python3 -c "import json,sys; p=json.load(open(sys.argv[1])); p['image_url']=sys.argv[2]; json.dump(p, open(sys.argv[3],'w'))" "$RUNNER_TEMP/pick.json" "$url" "$RUNNER_TEMP/print-of-day.json"
+              echo "live: $url"; exit 0
+            fi
+            sleep 15
+          done
+          echo "::warning::the print of the day was not served by agsist.com in 3 minutes; the email goes without it"
+
       - name: Send daily email
         if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
         env:
+          # Daily v2 since Oct 22 2026. Roll back with format=current on a manual
+          # run, or the repo variable DAILY_FORMAT=current for the morning run.
+          DAILY_FORMAT: ${{ inputs.format || vars.DAILY_FORMAT || 'v2' }}
+          PRINT_OF_DAY: ${{ runner.temp }}/print-of-day.json
+          # a v2 issue held by the number check mails Sig one alert, here
+          OWNER_TO:     ${{ secrets.SIG_TO }}
           LOCAL_BIDS:   ${{ steps.localbid.outcome == 'success' && '1' || '0' }}
           # new sender env names; falls back to the legacy GMAIL_* secrets so
           # either set works. RECIPIENTS is ignored when LIST_URL is set

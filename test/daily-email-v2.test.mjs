@@ -46,23 +46,40 @@ const job = (name) => {
   return wf.slice(i, j > 0 ? i + 1 + j : undefined);
 };
 
-test("the switch: v2 reaches only Sig's test copy; the morning send never reads it", () => {
-  assert.match(wf, /format:\n\s+description: "Sig's test copy only[^\n]*\n\s+type: choice\n\s+options: \[current, v2\]\n\s+default: current/);
-  const send = job("generate");
-  assert.ok(!/DAILY_FORMAT|PRINT_OF_DAY/.test(send), "the list's send step never sets the format");
+test("the switch: v2 is live for the list, one input or one variable rolls it back", () => {
+  assert.match(wf, /format:\n\s+description: "The Daily email's format[^\n]*\n\s+type: choice\n\s+options: \[v2, current\]\n\s+default: v2/);
+  const FMT = "DAILY_FORMAT: ${{ inputs.format || vars.DAILY_FORMAT || 'v2' }}";
+  const gen = job("generate");
+  const send = gen.slice(gen.indexOf("- name: Send daily email"));
+  assert.ok(send.startsWith("- name: Send daily email"));
+  assert.ok(send.includes(FMT), "the list's send reads the format input, else the repo variable, else v2");
+  assert.match(send, /PRINT_OF_DAY: \$\{\{ runner\.temp \}\}\/print-of-day\.json/);
+  assert.match(send, /OWNER_TO:\s+\$\{\{ secrets\.SIG_TO \}\}/, "a held issue alerts Sig");
   const t = job("test-to-sig");
   assert.match(t, /TEST_TO_SIG:\s+'1'/);
   assert.match(t, /LIST_SOURCE:\s+backup/);
-  assert.match(t, /DAILY_FORMAT: \$\{\{ inputs\.format \}\}/);
-  const occurrences = wf.split("DAILY_FORMAT").length - 1;
-  assert.equal(occurrences, 1, "DAILY_FORMAT is set in one place only");
+  assert.ok(t.includes(FMT));
   const sd = readFileSync(join(ROOT, "scripts/send_daily.py"), "utf8");
-  assert.match(sd, /if env\("TEST_TO_SIG", ""\) == "1" or env\("DRY_RUN", ""\) == "1":\n\s+return "v2"/);
+  assert.match(sd, /return "v2" if \(os\.environ\.get\("DAILY_FORMAT"\) or ""\)\.strip\(\)\.lower\(\) == "v2" else "current"/);
+  assert.match(sd, /v2_gate\(day, b, alert=not \(dry or test\)\)/);
+});
+
+test("the live print never stops or delays the send past its caps", () => {
+  const gen = job("generate");
+  const draw = gen.slice(gen.indexOf("- name: Print of the day, drawn"), gen.indexOf("- name: GATE 0 "));
+  assert.ok(draw.length > 100, "drawn at the top of the job, before the briefing is written");
+  assert.match(draw, /continue-on-error: true\n\s+timeout-minutes: 7/);
+  assert.match(draw, /git add "\$f"/);
+  assert.ok(!/git add -A|git add \./.test(draw));
+  const live = gen.slice(gen.indexOf("- name: Print of the day, is it live"), gen.indexOf("- name: Send daily email"));
+  assert.match(live, /continue-on-error: true\n\s+timeout-minutes: 4/);
+  assert.match(live, /seq 1 12\)[\s\S]*sleep 15/, "at most 3 minutes of waiting");
+  assert.ok(gen.indexOf("- name: Print of the day, drawn") < gen.indexOf("- name: Generate daily briefing"));
 });
 
 test("the print job runs only for a v2 test copy, and commits only its picture", () => {
   const p = job("print-of-day");
-  assert.match(p, /inputs\.test_to_sig == true && inputs\.send_email == true && inputs\.format == 'v2'/);
+  assert.match(p, /inputs\.test_to_sig == true && inputs\.send_email == true && inputs\.format != 'current'/);
   assert.match(p, /continue-on-error: true[\s\S]*continue-on-error: true/, "a failed render never fails the run");
   assert.match(p, /git checkout -q -B pod origin\/main/);
   assert.match(p, /git add "\$f"/);

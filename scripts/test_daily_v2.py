@@ -168,8 +168,8 @@ def main():
     ok("I never knew that" in b["html"] and "Source:" in b["html"], "the day's fact prints with its source")
     # the switch
     import send_daily as S
-    for env, want in (({}, "current"), ({"DAILY_FORMAT": "v2"}, "current"), ({"DAILY_FORMAT": "v2", "TEST_TO_SIG": "1"}, "v2"),
-                      ({"DAILY_FORMAT": "v2", "DRY_RUN": "1"}, "v2"), ({"DAILY_FORMAT": "current", "TEST_TO_SIG": "1"}, "current")):
+    for env, want in (({}, "current"), ({"DAILY_FORMAT": "v2"}, "v2"), ({"DAILY_FORMAT": "v2", "TEST_TO_SIG": "1"}, "v2"),
+                      ({"DAILY_FORMAT": "current"}, "current"), ({"DAILY_FORMAT": "current", "TEST_TO_SIG": "1"}, "current")):
         saved = {k: os.environ.pop(k, None) for k in ("DAILY_FORMAT", "TEST_TO_SIG", "DRY_RUN")}
         os.environ.update(env)
         got = S.daily_format()
@@ -177,6 +177,23 @@ def main():
             os.environ.pop(k, None)
         os.environ.update({k: v for k, v in saved.items() if v is not None})
         ok(got == want, "switch %r -> %s (got %s)" % (env, want, got))
+    # a live issue held by the number check: one alert to Sig, with the field and the rerun steps
+    import log_safe
+    sent = []
+    real = log_safe.owner_mail
+    log_safe.owner_mail = lambda subj, lines: sent.append((subj, lines)) or True
+    try:
+        S.V2.update({"ready": True, "pod": None, "fact": FACT})
+        ok(S.v2_gate("2026-10-21", d21, alert=True) is False, "Oct 21 is held")
+        ok(len(sent) == 1 and "held" in sent[0][0] and "lead" in sent[0][0], "one alert, naming the field: %r" % [x[0] for x in sent])
+        body = "\n".join(sent[0][1]) if sent else ""
+        ok("$4.62" in body and "Run workflow" in body and "format current" in body and "not marked sent" in body,
+           "the alert carries the number and the fix-and-rerun steps")
+        sent.clear()
+        ok(S.v2_gate("2026-10-21", d21, alert=False) is False and not sent, "a test copy or preview is held without an alert")
+        ok(S.v2_gate("2026-10-20", d20, alert=True) is True and not sent, "a clean issue sends, no alert")
+    finally:
+        log_safe.owner_mail = real
     # contrast
     for name, col in V.DARK_COLORS.items():
         ok(contrast(col, V.DARK_CARD) >= 4.5, "dark %s %s on %s: %.2f" % (name, col, V.DARK_CARD, contrast(col, V.DARK_CARD)))
