@@ -5,6 +5,8 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.53 (2026-10-22): AGSIST.COM ADDRESSES (Sig, Oct 22). The void gift card
+ *   answer says write to sig@agsist.com; no farmers1st.com address is left.
  * v5.50 (2026-10-22): A LATE ELEVATOR SAVE KEEPS ITS OWN TIME (Sig, Oct 22).
  *   POST /elev/save takes entered_at (ISO or ms): when the manager pressed
  *   Save on agsist.com/post. A save kept on the phone while this worker was

@@ -10,12 +10,12 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { engine, input, fixedCases, fuzzCases, caseId, DATA } from "./fixtures/rp-label-cases.mjs";
-import { check, HARD, measure, parse } from "./fixtures/rp-label-check.mjs";
+import { check, HARD, measure, parse, splitRiders } from "./fixtures/rp-label-check.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const X = engine(ROOT);
 // a reader's date rides in a <tspan> after its words: read the text whole ("Planted May 21")
-const texts = (svg) => [...svg.matchAll(/<text[^>]*>((?:[^<]|<\/?tspan[^>]*>)*)<\/text>/g)].map((m) => m[1].replace(/<\/?tspan[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">"));
+const texts = (svg) => [...splitRiders(svg).matchAll(/<text[^>]*>((?:[^<]|<\/?tspan[^>]*>)*)<\/text>/g)].map((m) => m[1].replace(/<\/?tspan[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">"));
 
 function draw(spec, real = true) {
   const I = input(X, spec);
