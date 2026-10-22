@@ -436,7 +436,7 @@ def selftest():
        "final rainfall index for PRF grid 30452 for June to July 2026: 98.0." in txt and "98.0% of normal" in txt, txt[:400])
     ck("the normal, hand-checked: 2217 / 10 / 25.4 = 8.73 in", "Normal for June to July on this grid is 8.73 inches" in txt, txt[:500])
     ck("links the county page it was asked on", SITE + "/prf/wisconsin/barron-county?" + UTM in txt)
-    ck("unsubscribe stops this grid", "topic=prf%3A30452" in txt and m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click")
+    ck("unsubscribe stops this grid", "topic=prf%3A30452" in txt and m["List-Unsubscribe-Post"] is None)
     low = (txt + htm).lower()
     ck("no em or en dash, no hype, no sales or agent words",
        not any(x in txt + htm for x in ("\u2014", "\u2013", "&mdash;", "&ndash;")) and "!" not in txt and

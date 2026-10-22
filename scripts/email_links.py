@@ -140,6 +140,24 @@ def front(route, params=()):
     return u
 
 
+def as_worker(u, base, fd=True):
+    """The worker request e.html makes for a front-door link: base/fd/<a>?<the
+    other params> (fd=False: the old worker link). For tests."""
+    p = urllib.parse.urlsplit(u)
+    if "%s://%s%s" % (p.scheme, p.netloc, p.path) != FRONT:
+        raise LinkError("not a front-door link")
+    q = urllib.parse.parse_qsl(p.query, keep_blank_values=True)
+    a = _route(dict(q).get("a"))
+    rest = urllib.parse.urlencode([(k, v) for k, v in q if k != "a"], safe=":")
+    return "%s/%s%s?%s" % (str(base).rstrip("/"), "fd/" if fd else "", a, rest)
+
+
+def unsub_web(msg):
+    """The https link in a message's List-Unsubscribe header, or "" (for tests)."""
+    web = [i for i in re.findall(r"<([^>]*)>", str(msg.get("List-Unsubscribe") or "")) if i.lower().startswith(("http://", "https://"))]
+    return web[0] if web else ""
+
+
 def hrefs(body):
     return [_html.unescape(a or b) for a, b in HREF_RE.findall(body or "")]
 
@@ -318,6 +336,9 @@ def selftest():
     ck("front: rp-remind stop", front("rp-remind/stop", [("k", "rpr:0123456789abcdef:0123456789abcdef"), ("t", "ab")])
        == FRONT + "?a=rp-remind/stop&k=rpr:0123456789abcdef:0123456789abcdef&t=ab")
     ck("front: logo", front("logo", [("id", "k3j9m2p7q8rs")]) == FRONT + "?a=logo&id=k3j9m2p7q8rs")
+    u = signed(W, "watch-confirm", SAMPLE_LID, "sec", "|c|19169", "&f=19169")
+    ck("as_worker: the page's /fd/ request", as_worker(u, W) == W + "/fd/watch-confirm?k=%s&f=19169&t=%s" % (SAMPLE_LID, token("sec", SAMPLE_LID + "|c|19169")))
+    ck("as_worker: the old link", as_worker(front("rp-remind/stop", [("k", "rpr:a:b"), ("t", "1")]), W, False) == W + "/rp-remind/stop?k=rpr:a:b&t=1")
     ck("lid_of", lid_of({"lid": SAMPLE_LID}) == SAMPLE_LID and lid_of({"lid": "x@y.com"}) is None and lid_of({}) is None and lid_of(None) is None)
     ck("link_ids", link_ids([{"email": "A@x.com", "lid": SAMPLE_LID}, {"email": "b@x.com"}]) == {"a@x.com": SAMPLE_LID})
     # the address guard: raw, encoded, double encoded, in text or html
@@ -409,6 +430,7 @@ def selftest():
     m["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
     m.set_content("hi")
     check_message(m)
+    ck("unsub_web", unsub_web(m) == signed(W, "unsubscribe", SAMPLE_LID, "sec"))
     ck("List-Unsubscribe is the mailto plus the page", str(m["List-Unsubscribe"]) == "<%s>, <%s>" % (STOP_MAILTO, signed(W, "unsubscribe", SAMPLE_LID, "sec")))
     ck("no List-Unsubscribe-Post (the page is a GET page)", m["List-Unsubscribe-Post"] is None)
     m = EmailMessage()

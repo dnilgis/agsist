@@ -906,16 +906,16 @@ def selftest():
 
     m = confirm_email("a@x.com", "wA", "ADM Altamont, IL — corn", "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     body = m.get_body(("plain",)).get_content()
-    assert "PO Box 243, Chetek, WI 54728" in body and "elevator-watch-confirm?k=00000000000000aa&w=wA&t=%s" % token(s, "00000000000000aa", "|ec|wA") in body
-    assert m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click"
+    assert "PO Box 243, Chetek, WI 54728" in body and "a=elevator-watch-confirm&k=00000000000000aa&w=wA&t=%s" % token(s, "00000000000000aa", "|ec|wA") in body
+    assert m["List-Unsubscribe-Post"] is None
     m2 = change_email("a@x.com", "wC", "Chatham Coop, IL — corn", row_old["basis"], row_new, "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     b2 = m2.get_body(("plain",)).get_content()
     assert "PO Box 243" in b2 and "Stop all elevator watches" in b2 and "-25¢" in b2.replace("−", "-") and "-30¢" in b2.replace("−", "-")
-    assert "elevator-watch-unsubscribe?k=00000000000000aa&t=%s" % token(s, "00000000000000aa", "|ew") in b2
+    assert "a=elevator-watch-unsubscribe&k=00000000000000aa&t=%s" % token(s, "00000000000000aa", "|ew") in b2
     for mm0 in (m, m2, mm_):
         h0, t0 = mm0.get_body(("html",)).get_content(), mm0.get_body(("plain",)).get_content()
         assert not [u for u in email_links.hrefs(h0) if "@" in u or "%40" in u.lower()], "v5.46: an @ inside an href"
-        assert not email_links.bad_links(t0) and "?e=" not in t0 + h0 and "@" not in str(mm0["List-Unsubscribe"]), "v5.46: an address in a link"
+        assert not email_links.bad_links(t0) and "?e=" not in t0 + h0 and "@" not in email_links.unsub_web(mm0), "v5.46: an address in a link"
     try:
         confirm_email("nobody@x.com", "wA", "x", "https://w.dev", s, "AGSIST", "n@agsist.com", None)
         raise AssertionError("v5.46: a watcher with no link id was given an email")
@@ -1049,7 +1049,7 @@ def selftest_alerts():
     mm = opt_alert_email("f@x.com", "up", got["up"][2], "cash", 436, got["up"][5], "https://w.dev", "sec", "AGSIST", "n@agsist.com", None)
     body = mm.get_body(("plain",)).get_content()
     for part in ("Adell Cooperative, Adell, WI, corn Oct 2026", "Cash: $4.52 now, $4.36 when this alert started.", "Oct 3, 11:30 AM CT",
-                 "https://agsist.com/#f1", "fired and is now cleared", "PO Box 243", "elevator-watch-unsubscribe?k=00000000000000ff&w=up&t="):
+                 "https://agsist.com/#f1", "fired and is now cleared", "PO Box 243", "a=elevator-watch-unsubscribe&k=00000000000000ff&w=up&t="):
         assert part in body, part
     assert mm["Subject"] == "Adell Cooperative, Adell, WI, corn Oct 2026: cash reached $4.52", mm["Subject"]
     mv = opt_alert_email("f@x.com", "mv5", got["mv5"][2], "move", -65, got["mv5"][5], "https://w.dev", "sec", "AGSIST", "n@agsist.com", None)

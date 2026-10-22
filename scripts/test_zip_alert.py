@@ -162,11 +162,14 @@ A(all("fired" not in m for m in marks), "never removed: it re-arms")
 A(state[0]["w"]["a1"]["s"]["on"] is True and state[0]["w"]["a1"]["target_cents"] == 450, state)
 body = outbox[0].get_body(("plain",)).get_content()
 for part in ("Near Coop, Chetek, WI · 0 mi · Oct 2026 · $4.55 · posted Oct 7, 1:41 PM CT",
-             "elevator-watch-unsubscribe?k=0000000000000fex&w=a1&t="):
+             "a=elevator-watch-unsubscribe&k=0000000000000fex&w=a1&t="):
     A(part in body, part)
 A(not [u for u in sew.email_links.hrefs(outbox[0].get_body(("html",)).get_content()) if "@" in u or "%40" in u.lower()]
-  and "@" not in str(outbox[0]["List-Unsubscribe"]), "v5.46: no address inside any link")
-A(outbox[0]["List-Unsubscribe"].startswith("<https://w.example/elevator-watch-unsubscribe?"), "one-click unsubscribe header")
+  and "@" not in sew.email_links.unsub_web(outbox[0]), "v5.46: no address inside any link")
+A(sew.email_links.unsub_web(outbox[0]).startswith("https://agsist.com/e?a=elevator-watch-unsubscribe&"), "unsubscribe header: the front door")
+A(str(outbox[0]["List-Unsubscribe"]).startswith("<" + sew.email_links.STOP_MAILTO + ">, ") and outbox[0]["List-Unsubscribe-Post"] is None,
+  "unsubscribe header: the mailto stop first, no one-click POST (the page is a GET page)")
+A("workers.dev" not in outbox[0].as_string() and "w.example" not in outbox[0].as_string(), "the worker host is nowhere in the email")
 
 # The elevator-watch sender sees the same list and plans nothing for these records.
 A(sew.plan_alerts(state, sew.load_net_index(json.loads((tmp / "index.json").read_text()), NOW), NOW) == ([], [], [], []),

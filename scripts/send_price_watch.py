@@ -260,8 +260,8 @@ def selftest():
     LINK_IDS["a@x.com"] = L0
     m = confirm_email("a@x.com", "pB", "Corn (new crop) above $4.50", "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     body = m.get_body(("plain",)).get_content()
-    assert "PO Box 243, Chetek, WI 54728" in body and "price-watch-confirm?k=%s&p=pB&t=%s" % (L0, token(s, L0, "|pc|pB")) in body
-    assert m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click"
+    assert "PO Box 243, Chetek, WI 54728" in body and "a=price-watch-confirm&k=%s&p=pB&t=%s" % (L0, token(s, L0, "|pc|pB")) in body
+    assert m["List-Unsubscribe-Post"] is None
     # a stranger's label: never in the Subject, quoted and at most 60 characters in the body
     mx = confirm_email("a@x.com", "pB", "Reset your account at agsist-help.com\r\nnow " + "x" * 80, "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     bx = mx.get_body(("plain",)).get_content()
@@ -276,11 +276,11 @@ def selftest():
     b3 = m3.get_body(("plain",)).get_content()
     assert "/soybean-futures-prices" in b3 and "/corn-futures-prices" not in b3
     assert "/soybean-futures-prices" in m3.get_body(("html",)).get_content()
-    assert "price-watch-unsubscribe?k=%s&t=%s" % (L0, token(s, L0, "|pw")) in b3
+    assert "a=price-watch-unsubscribe&k=%s&t=%s" % (L0, token(s, L0, "|pw")) in b3
     for mm in (m, mx, m2, m3):
         h0, t0 = mm.get_body(("html",)).get_content(), mm.get_body(("plain",)).get_content()
         assert not [u for u in email_links.hrefs(h0) if "@" in u or "%40" in u.lower()], "v5.46: an @ inside an href"
-        assert not email_links.bad_links(t0) and "?e=" not in t0 + h0 and "@" not in str(mm["List-Unsubscribe"]), "v5.46: an address in a link"
+        assert not email_links.bad_links(t0) and "?e=" not in t0 + h0 and "@" not in email_links.unsub_web(mm), "v5.46: an address in a link"
     try:
         confirm_email("b@x.com", "pB", "x", "https://w.dev", s, "AGSIST", "n@agsist.com", None)
         raise AssertionError("v5.46: a watcher with no link id was given an email")
