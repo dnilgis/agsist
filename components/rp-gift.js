@@ -121,7 +121,7 @@
   }
   function errorText(j) {
     if (j.status_code === 429) return 'Too many tries from this connection. Wait an hour and try again, or write to sig@farmers1st.com.';
-    if (!j.status_code || j.status_code >= 500) return 'The gift card check didn\u2019t answer. Try again in a minute.';
+    if (!j.status_code || j.status_code >= 500 || j.down) return 'The gift card check didn\u2019t answer. Try again in a minute.';
     return j.error || 'That code didn\u2019t work. Check it against the card.';
   }
 
