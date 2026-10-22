@@ -439,7 +439,7 @@
   }
 
   /* ── the first screen ─────────────────────────────────────────── */
-  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=37';
+  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=38';
   var porMemo = {};
   function loadScript(src, ready) {
     if (ready()) return Promise.resolve(true);
