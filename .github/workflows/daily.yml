@@ -119,12 +119,63 @@ on:
         default: false
 
 jobs:
+  # SIG'S TEST COPY OF THE BACKUP-MODE DAILY (2026-10-22). Run workflow with
+  # test_to_sig ticked: the newest issue already published goes to
+  # SIG_TEST_EMAILS (else SIG_TO) only, with the list read from the private
+  # copy (LIST_SOURCE=backup, the path every sender takes when the subs worker
+  # is blocked): mailto stop link, "Reply STOP" footer, no worker link. No day
+  # flag is read or set, so the morning run is untouched.
+  test-to-sig:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.test_to_sig == true }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: The list source and link checks
+        run: |
+          python3 scripts/list_source.py --selftest
+          python3 scripts/email_links.py --selftest
+      - name: Send the Daily to Sig only, from the private copy of the list
+        # the same send_email tick every mailer step needs (test_daily_schedule.py)
+        if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
+        env:
+          TEST_TO_SIG:  '1'
+          LIST_SOURCE:  backup
+          LOCAL_BIDS:   '1'
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
+          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+          LIST_URL:     ${{ secrets.LIST_URL }}
+          LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          FROM_NAME:    ${{ secrets.FROM_NAME }}
+          REPLY_TO:     ${{ secrets.REPLY_TO }}
+          SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
+          SIG_TO:       ${{ secrets.SIG_TO }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: python scripts/send_daily.py
+
   # If a manual run already generated today's briefing, the scheduled morning
   # run skips regeneration entirely. The Friday 20:00 UTC post-close regen is
   # exempt (hour >= 14) — it exists to overwrite the morning file on purpose.
   # Manual dispatches always run.
   gate:
-    # test_to_sig runs only the test-to-sig job below: nothing is generated or published
+    # test_to_sig runs only the test-to-sig job above: nothing is generated or published
     if: ${{ inputs.test_to_sig != true }}
     runs-on: ubuntu-latest
     permissions:
@@ -756,54 +807,3 @@ jobs:
             echo "page not live yet (try $i of 20)"; sleep 30
           done
           echo "page never came up in 10 minutes; no ping sent, the weekly run covers it"
-
-  # SIG'S TEST COPY OF THE BACKUP-MODE DAILY (2026-10-22). Run workflow with
-  # test_to_sig ticked: the newest issue already published goes to
-  # SIG_TEST_EMAILS (else SIG_TO) only, with the list read from the private
-  # copy (LIST_SOURCE=backup, the path every sender takes when the subs worker
-  # is blocked): mailto stop link, "Reply STOP" footer, no worker link. No day
-  # flag is read or set, so the morning run is untouched.
-  test-to-sig:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.test_to_sig == true }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Engine checkout
-        uses: ./.github/actions/engine
-        with:
-          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
-          mode: ${{ vars.ENGINE_MODE }}
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: The list source and link checks
-        run: |
-          python3 scripts/list_source.py --selftest
-          python3 scripts/email_links.py --selftest
-      - name: Send the Daily to Sig only, from the private copy of the list
-        # the same send_email tick every mailer step needs (test_daily_schedule.py)
-        if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
-        env:
-          TEST_TO_SIG:  '1'
-          LIST_SOURCE:  backup
-          LOCAL_BIDS:   '1'
-          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
-          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
-          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
-          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
-          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
-          LIST_URL:     ${{ secrets.LIST_URL }}
-          LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
-          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
-          FROM_NAME:    ${{ secrets.FROM_NAME }}
-          REPLY_TO:     ${{ secrets.REPLY_TO }}
-          SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
-          SIG_TO:       ${{ secrets.SIG_TO }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
-        run: python scripts/send_daily.py
