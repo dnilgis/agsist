@@ -438,7 +438,7 @@ def section_footer(today):
         f"Live charts   → {SITE}\n"
         f"\n"
         f"Written by Sigurd Lindquist, CCA.\n"
-        f"Reply at sig@agsist.com — I read everything.\n"
+        f"Reply at sig@agsist.com. I read everything.\n"
         f"\n"
         f"Reply STOP to opt out."
     )

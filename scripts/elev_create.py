@@ -54,7 +54,7 @@ Thanks for getting back to me. Happy to get your bids up, and I'll do it however
 
 I tried to find a way to grab them automatically so you wouldn't have to do anything. Bunge has bids up on some of its location pages, but not Haw Creek. I also signed up on the Bunge site to get access to your bids but haven't heard anything back yet. If you know who handles that, or if they can turn on bids for the Haw Creek page, I can pull them from there and you're done.
 
-If you already send out a bid sheet by email or text, just add me to it and I'll take care of the rest.
+If you already send out a bid sheet by email or text, just add bids@agsist.com to it and I'll take care of the rest.
 
 Or here's a page I set up for you where you can put in your own basis, hours and notes:
 
