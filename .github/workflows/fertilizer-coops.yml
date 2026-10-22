@@ -45,10 +45,12 @@ jobs:
           python-version: "3.12"
       # The price sheet parser reads pdftotext -layout columns; pypdf is the
       # fallback only.
-      - name: Install pdftotext and pypdf
-        run: |
-          command -v pdftotext || (sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils)
-          pip install pypdf==6.20.1
+      # pdftotext without apt (pinned and checksummed; apt hung 30 min on Oct 22)
+      - name: pdftotext
+        timeout-minutes: 5
+        uses: ./.github/actions/pdftotext
+      - name: Install pypdf
+        run: pip install pypdf==6.20.1
       - name: Selftest
         run: |
           python scripts/fetch_coop_fert.py --selftest

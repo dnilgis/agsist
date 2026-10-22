@@ -14,6 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # pinned and checksummed, without apt (the old apt line had no update and failed quietly)
+      - name: pdftotext
+        timeout-minutes: 5
+        uses: ./.github/actions/pdftotext
       - name: Download and read
         env:
           IN_MMYY: ${{ github.event.inputs.mmyy }}
@@ -21,7 +25,6 @@ jobs:
           set -u
           M="$IN_MMYY"
           if ! printf '%s' "$M" | grep -Eq '^[0-9]{4}$'; then echo "::error::mmyy must be 4 digits, e.g. 0925"; exit 1; fi
-          sudo apt-get install -y -qq poppler-utils >/dev/null 2>&1 || true
           mkdir -p data/wasde-pdf
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
           ok=0
