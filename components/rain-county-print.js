@@ -32,7 +32,7 @@
      print is drawn, false when it is not (the plain chart stays). The county page's own
      #rc-print mounts itself, as before. */
   root.AgRainCountyPrint = { unpack: unpack, daysOf: daysOf, usualOf: usualOf, mount: mount };   // for test/rain-county-print.test.mjs
-  var ART = '/components/rain-print-art.js?v=20', ENGINE = '/components/rain-print.js?v=68';
+  var ART = '/components/rain-print-art.js?v=21', ENGINE = '/components/rain-print.js?v=69';
   // "Watch it draw" (2026-10-20): loaded only when a reader taps it
   var DRAW = '/components/rain-print-draw.js?v=4';
   var MISS_BLOCK = 31, MIN_DAYS = 60;

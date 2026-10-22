@@ -6,6 +6,12 @@
    "date": "2026-10-22",
    "items": [
     {
+     "tag": "fixed",
+     "page": "/rain-print",
+     "name": "Rain Print: a clear space between your farm name and the year",
+     "text": "The year always sits a clear space after the farm name, and after the town, on the screen and in every file, whatever font your device has loaded."
+    },
+    {
      "tag": "improved",
      "page": "/rain-print",
      "name": "Rain Print: every layer one tap away, with the print in view",
