@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 101,
- "with_known_cadence": 101,
+ "count": 99,
+ "with_known_cadence": 99,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -221,7 +221,6 @@
    "path": "data/basis-states.json",
    "pages": [
     "basis.html",
-    "fast-facts.html",
     "index.html"
    ],
    "written_by": [
@@ -271,8 +270,7 @@
    "path": "data/bids.json",
    "pages": [
     "cash-bids.html",
-    "index.html",
-    "status.html"
+    "index.html"
    ],
    "written_by": [
     "Fetch Grain Bids"
@@ -522,8 +520,7 @@
    "pages": [
     "cattle-futures-prices.html",
     "cot.html",
-    "index.html",
-    "status.html"
+    "index.html"
    ],
    "written_by": [
     "COT Release Watch",
@@ -688,8 +685,7 @@
     "cattle-futures-prices.html",
     "daily.html",
     "developer.html",
-    "index.html",
-    "status.html"
+    "index.html"
    ],
    "written_by": [
     "Generate Daily Briefing"
@@ -718,8 +714,7 @@
   {
    "path": "data/dairy-data.json",
    "pages": [
-    "milk-prices.html",
-    "status.html"
+    "milk-prices.html"
    ],
    "written_by": [
     "Dairy prices"
@@ -979,7 +974,6 @@
   {
    "path": "data/fertilizer-prices.json",
    "pages": [
-    "fast-facts.html",
     "fertilizer.html",
     "urea.html"
    ],
@@ -1029,38 +1023,6 @@
    "touched_by": [
     "Hail data refresh",
     "MESH radar hail swaths \u2014 daily"
-   ],
-   "cadence": "2 launches every day at about 1am, 3am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "41 6 1 * *",
-    "25 8 * * *"
-   ],
-   "max_gap_hours": 24.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
-   "path": "data/hail/manifest.json",
-   "pages": [
-    "status.html"
-   ],
-   "written_by": [
-    "Hail data refresh",
-    "MESH radar hail swaths \u2014 daily"
-   ],
-   "touched_by": [
-    "conditions",
-    "Fetch Crop Progress",
-    "Dairy prices",
-    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Hail data refresh",
-    "MESH radar hail swaths \u2014 daily",
-    "Fetch Prices",
-    "Tools hub dates"
    ],
    "cadence": "2 launches every day at about 1am, 3am Central",
    "curated": false,
@@ -1158,8 +1120,7 @@
    "path": "data/harvest-prices.json",
    "pages": [
     "harvest-price-tracker.html",
-    "index.html",
-    "status.html"
+    "index.html"
    ],
    "written_by": [
     "Harvest price tracker"
@@ -1293,8 +1254,7 @@
   {
    "path": "data/merged-index.json",
    "pages": [
-    "cash-bids.html",
-    "status.html"
+    "cash-bids.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -1712,41 +1672,10 @@
    "why_quiet": null
   },
   {
-   "path": "data/nowcast-direction.json",
-   "pages": [
-    "status.html"
-   ],
-   "written_by": [
-    "cond-yield",
-    "WASDE watch \u2014 grade the report as it lands"
-   ],
-   "touched_by": [
-    "Build Analyst Scorecard",
-    "cond-yield",
-    "WASDE watch \u2014 grade the report as it lands",
-    "yield-panel"
-   ],
-   "cadence": "4 launches on a fixed schedule at about 10am, 10pm Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "18 3 * * 2",
-    "18 3 * * 3",
-    "18 15 * * 3,4",
-    "*/5 16-17 9-12 * *"
-   ],
-   "max_gap_hours": 108.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/outlooks/manifest.json",
    "pages": [
     "drought-monitor.html",
-    "index.html",
-    "status.html"
+    "index.html"
    ],
    "written_by": [
     "Fetch Outlooks (NOAA + USDM)"
@@ -2051,12 +1980,10 @@
    "pages": [
     "cattle-futures-prices.html",
     "developer.html",
-    "fast-facts.html",
     "fertilizer.html",
     "index.html",
     "markets.html",
-    "milk-prices.html",
-    "status.html"
+    "milk-prices.html"
    ],
    "written_by": [
     "Cattle cash prices",
@@ -2761,8 +2688,7 @@
    "path": "data/yield-nowcast.json",
    "pages": [
     "conditions-yield.html",
-    "index.html",
-    "status.html"
+    "index.html"
    ],
    "written_by": [
     "cond-yield"

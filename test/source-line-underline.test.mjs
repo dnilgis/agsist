@@ -20,7 +20,6 @@ const RULES = [
   ["gdu-calculator.html", ".gdu-source a"],
   ["fast-facts.html", ".ff-source a"], ["fast-facts.html", ".ff-src-list a"], ["fast-facts.html", ".ff-ans-note a"], ["fast-facts.html", ".ff-meta a"],
   ["usda-calendar.html", ".cal-foot a"],
-  ["status.html", ".st-note a"],
   ["crop-tour.html", ".ct-note a"], ["pod-counts.html", ".ct-note a"],
   ["changelog.html", ".cl-note a"],
   ["breakeven.html", ".yr-note a"], ["breakeven.html", ".ln-src a"], ["breakeven.html", ".be-budget-note a"],

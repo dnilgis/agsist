@@ -84,6 +84,12 @@
    "items": [
     {
      "tag": "improved",
+     "page": "/fast-facts",
+     "name": "Fast Facts for your place",
+     "text": "Fast Facts opens on your place: one ZIP, then bids, basis, rain, drought, hail, rent and the next report, each dated and sourced. Old /here links land there."
+    },
+    {
+     "tag": "improved",
      "page": "/",
      "name": "A new browser and home-screen icon",
      "text": "The tab icon and the home-screen icon are now a red barn with a gold door on the AGSIST green tile, drawn to stay clear at 16 pixels in light and dark tab strips. The whole icon set is about 50 KB, down from about 650 KB."
@@ -235,7 +241,7 @@
     },
     {
      "tag": "fixed",
-     "page": "/status",
+     "page": "/",
      "name": "Hail feed timestamp survives the monthly rebuild",
      "text": "On the first of each month the hail data rebuild rewrote its manifest without the recent-reports timestamp the status page reads, so the hail feed showed no refresh time for a day and the feed check went red. The rebuild now carries the timestamp."
     }
@@ -1145,7 +1151,7 @@
     },
     {
      "tag": "new",
-     "page": "/status",
+     "page": "/",
      "name": "System Status",
      "text": "Live health check of every AGSIST data feed (grain prices, cash bids, the briefing, weather, hail) tested in your own browser when the page loads, so the status page itself can never go stale."
     },

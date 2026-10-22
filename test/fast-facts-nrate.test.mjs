@@ -83,7 +83,7 @@ test("legume credits follow A2809: no soybean credit for corn, red clover at 80%
   assert.ok(html.includes("80% of the alfalfa credit for a like stand"));
   assert.ok(html.includes("50 lb N/ac on medium and fine soils, none on sands"));
   // A2809 p.40: under 2% organic matter, high end on ALL soils (not only sands).
-  assert.ok(html.includes("high end on any soil under 2% organic matter"));
+  assert.ok(html.includes("High end: any soil under 2% organic matter."));   // Oct 21 (tone): the range in four short lines
   assert.ok(!html.includes("Sandy soils &lt;2% OM use high end"));
 });
 
@@ -106,8 +106,8 @@ test("no em dashes, no 'today's prices', byline and sources on the page", () => 
   assert.ok(!body.includes("—") && !body.includes("&mdash;"), "em dash in fast-facts.html");
   assert.ok(!js.includes("—"), "em dash in fast-facts.js");
   assert.ok(!/today(?:'|&rsquo;|’)s prices/i.test(body));
-  // Sig, Oct 18: no name at the top of a page; it sits in one line at the end
-  assert.ok(html.includes("Written and checked by Sigurd Lindquist, CCA, Chetek, Wisconsin."));
+  // Sig, Oct 18: no name at the top of a page; it sits in one line at the end (Oct 21, tone: a quieter line)
+  assert.ok(html.includes("<p>Sig Lindquist, CCA, Chetek, Wisconsin. No sponsor sets any number here.</p>"));
   assert.ok(!html.includes("By <strong>Sigurd Lindquist, CCA</strong>"));
   assert.ok(html.includes('id="ff-sources"'));
   assert.ok(html.includes("https://www.cornnratecalc.org/"));
@@ -157,13 +157,16 @@ async function open(browser, port, opts = {}) {
   await pg.route("**/*", async (r) => {
     const u = r.request().url();
     const j = (o) => r.fulfill({ contentType: "application/json", body: JSON.stringify(o) });
+    // the co-op sheets (components/fert-pick.js reads them first) are left out: these tests hand the page a price list
+    if (u.includes("/data/fertilizer-coops.json")) return r.fulfill({ status: 404, body: "" });
     if (u.includes("/data/fertilizer-prices.json")) return opts.noFert ? r.fulfill({ status: 404, body: "" }) : j(FERT);
     if (u.includes("/data/prices.json")) return j(PRICES);
     if (u.includes("/data/basis-states.json")) return j(BASIS);
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
     return r.abort();
   });
-  await pg.goto(`http://127.0.0.1:${port}/fast-facts`);
+  // the N box is on the Reference tables tab (Oct 21: My place opens first)
+  await pg.goto(`http://127.0.0.1:${port}/fast-facts#tables`);
   return { pg, errors, ctx };
 }
 const txt = (pg, id) => pg.textContent(id);

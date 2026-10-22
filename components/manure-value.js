@@ -92,8 +92,14 @@
     return null;
   }
   function ok(p) { return p && typeof p.price === 'number' && isFinite(p.price) && p.price > 0; }
+  /* Where a price is from. On /fast-facts (components/place.js loaded) one co-op's price is
+     never named: "one Kansas co-op, posted Sep 24, 2026". */
+  function label(p) {
+    var P = typeof window !== 'undefined' && window.AgPlace;
+    return p.src === 'coop' && p.n === 1 && P && P.fertSrc ? P.fertSrc(p, false) : p.src_label || null;
+  }
   function srcOf(p) {
-    return { key: p.key, name: p.name, symbol: p.symbol, price: p.price, as_of: p.as_of || null, oldest: p.oldest || p.as_of || null, label: p.src_label || null, src: p.src || null, region: p.region || null };
+    return { key: p.key, name: p.name, symbol: p.symbol, price: p.price, as_of: p.as_of || null, oldest: p.oldest || p.as_of || null, label: label(p), src: p.src || null, region: p.region || null };
   }
 
   /* $/lb of N, P2O5 and K2O from fertilizer-prices.json. A product with no
@@ -276,7 +282,7 @@
     var g = grade(a.symbol) || { N: 82 };
     var nh3 = a.price / (2000 * g.N / 100), pct = Math.round((1 - nh3 / pr.n) * 100);
     return 'N is priced at urea, ' + money(pr.n) + ' a lb. At anhydrous ammonia, ' + money(a.price, 0) + ' a ton' +
-      (a.src_label ? ' (' + a.src_label + ')' : '') + ', N is ' + money(nh3) + ' a lb' +
+      (label(a) ? ' (' + label(a) + ')' : '') + ', N is ' + money(nh3) + ' a lb' +
       (pct > 0 ? ', ' + pct + '% less' : pct < 0 ? ', ' + (-pct) + '% more' : ', the same') + '.';
   }
 
@@ -455,6 +461,12 @@
       var s = [];
       var dv = derivation(pr);
       ['n', 'p', 'k'].forEach(function (x) { if (dv[x] !== NQ) s.push(dv[x].replace(/&/g, '&amp;').replace(/</g, '&lt;')); });
+      /* data-mv-calc="short" (Fast Facts): one line of method and the dated sources, no worked formulas */
+      if (s.length && root.getAttribute('data-mv-calc') === 'short') {
+        var seen = {}, srcs = [];
+        ['n', 'p', 'k'].forEach(function (x) { var t = pr.src[x] && (pr.src[x].label || day(pr.src[x].as_of)); if (t && !seen[t]) { seen[t] = 1; srcs.push(t); } });
+        s = ['Price per pound is the ton price over the pounds of nutrient in a ton (N from urea, P from ' + (pr.src.p ? pr.src.p.name : 'MAP') + ' less its N at the urea price, K from potash). Prices: ' + srcs.join('; ').replace(/&/g, '&amp;').replace(/</g, '&lt;') + '.'];
+      }
       set('price-src', s.length ? s.join(' ') + ' Type your own prices to redo it.' : 'Prices did not load. Type your own prices.');
       set('price-sum', pr.n != null ? '(N ' + money(pr.n) + ', P ' + (pr.p != null ? money(pr.p) : NQ) + ', K ' + (pr.k != null ? money(pr.k) : NQ) + ' a lb)' : '');
     }
@@ -473,7 +485,9 @@
   function start() {
     var roots = d.querySelectorAll('[data-mv-calc]');
     Array.prototype.forEach.call(roots, function (r) { mount(r); });
-    var get = w.AG && w.AG.json ? w.AG.json('/data/fertilizer-prices.json')
+    /* the reader's own state's co-op sheets first (components/fert-pick.js), else the shared file */
+    var get = w.AgFertPick ? w.AgFertPick.load().then(function (x) { if (!x) throw new Error('no prices'); return x; })
+      : w.AG && w.AG.json ? w.AG.json('/data/fertilizer-prices.json')
       : fetch('/data/fertilizer-prices.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
     get.then(function (data) {
       var pr = nutrientPrices(data);

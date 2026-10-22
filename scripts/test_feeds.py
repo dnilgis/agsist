@@ -65,38 +65,13 @@ def main():
     check(d.get("generated_by") == "scripts/build_feeds.py",
           "the manifest names the script that writes it")
 
-    print("\nthe status page can actually read the feeds it names")
+    print("\nthe status page is retired (Sig, Oct 21): a redirect stub, linked from nowhere")
+    # The feed checks above still run on every build; the public page that showed
+    # them is gone (it put the plumbing on display). Each page names its own source.
     status = open(os.path.join(ROOT, "status.html")).read()
-    # EVERY tsKey MUST EXIST IN THE FILE IT NAMES. data/cot.json was being read
-    # for a key called "fetched"; it carries "updated". That card showed
-    # "No timestamp" in amber every day, on the page whose whole job is saying
-    # whether a number is current — and nothing anywhere noticed, because a
-    # status page reporting on itself is the one thing it cannot do.
-    import re as _re
-    pairs = _re.findall(r"url:'/([^']+\.json)',\s*tsKey:'([^']+)'", status)
-    check(len(pairs) >= 6, "the status page's feed table was found", "%d pairs" % len(pairs))
-    bad = []
-    for path, key in pairs:
-        fp = os.path.join(ROOT, path)
-        if not os.path.exists(fp):
-            # A data file absent from the CHECKOUT is not a defect in the page.
-            # Three times on 2026-09-01 a stale clone nearly produced a false
-            # report here; on a runner this is a fresh checkout of main and the
-            # file is there. Say which it is rather than failing the build.
-            print("        (skipped, not in this checkout: %s)" % path); continue
-        try:
-            if key not in json.load(open(fp)):
-                bad.append("%s has no \"%s\"" % (path, key))
-        except Exception as e:
-            bad.append("%s (%s)" % (path, type(e).__name__))
-    check(not bad, "every timestamp key the status page reads exists in its file",
-          "; ".join(bad))
-
-    print("\nthe status page covers what the manifest knows about")
-    check("data/feeds.json" in status,
-          "status.html reads the manifest rather than a hand-kept list",
-          "the page knew about 8 feeds on 2026-09-01 while 45 were in use")
-
+    check(len(status) < 1536 and 'content="noindex,follow"' in status and 'href="https://agsist.com/"' in status,
+          "status.html is the noindex redirect stub to the homepage", "%d bytes" % len(status))
+    check("url:'/" not in status, "and it no longer reads any feed")
     print()
     if FAILED:
         print("FAILED (%d): %s" % (len(FAILED), "; ".join(FAILED)))

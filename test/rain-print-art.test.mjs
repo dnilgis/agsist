@@ -173,6 +173,17 @@ test("the normals: month normals only with the switch on; what usual means where
   assert.ok(!t.some((x) => x.startsWith((days.length * 0.09).toFixed(2) + " in")));
 });
 
+test("a year in progress: no usual number under a month not reached yet, and the foot line says the open month is partial", () => {
+  // Oct 21 (skeptic): the county page's drawing printed a gray "0.00" usual under Nov and Dec on Oct 18
+  const days = year(2026).slice(0, 291);
+  const svg = ART.render(input(days, { style: "r1", showNormals: true, axisLen: 365, preview: { last: "2026-10-18" } }));
+  const months = /<g data-rp="months">(.*?)<\/g>/.exec(svg)[1];
+  assert.equal([...months.matchAll(/font-size="11" fill="#A3A8B0"/g)].length, 10, "Jan to Oct only");
+  assert.ok(texts(svg).some((t) => t.includes("the usual month total is the gray number under each month (this month: the days reported so far)")));
+  const full = texts(ART.render(input(year(2025), { style: "r1", showNormals: true })));
+  assert.ok(!full.some((t) => t.includes("this month: the days reported so far")), "a whole year says nothing about a partial month");
+});
+
 test("R2: a snow day shows above the line only; its water still counts in the total", () => {
   const days = year(2025, (i) => (i === 5 ? { p: "0.30", s: 3 } : i === 40 ? { p: "0.60" } : i === 50 ? { p: "0.20" } : { p: "0.00" }));
   const svg = ART.render(input(days, { style: "r2" }));
