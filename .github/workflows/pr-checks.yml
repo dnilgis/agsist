@@ -116,6 +116,8 @@ jobs:
       - name: node tests, shard ${{ matrix.shard }} of 4
         env:
           TMPDIR: ${{ runner.temp }}
+          # a skipped test fails the shard (and so "all checks"): a skip is not a pass
+          AGSIST_NO_SKIPS: '1'
         run: bash scripts/dev/checks.sh --only=node-test --shard=${{ matrix.shard }}/4
       - name: Upload the test log
         if: failure()

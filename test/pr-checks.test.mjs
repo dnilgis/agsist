@@ -158,3 +158,21 @@ test('quick.sh --dry-run: the core, tests that name a changed file, selftests, t
   assert.match(self, /^  test\/pr-checks\.test\.mjs +changed$/m);
   assert.match(read('scripts/dev/quick.sh'), /open the PR and wait for pr-checks/);
 });
+
+test('the node test shards fail on a skipped test, not only on a failed one (Sig, Oct 22: a skip is not a pass)', () => {
+  const run = steps('node-tests').find((s) => /checks\.sh --only=node-test/.test(s));
+  assert.ok(run, 'the shard step');
+  assert.match(run, /^\s+AGSIST_NO_SKIPS: '1'\s*$/m, 'the shard step sets AGSIST_NO_SKIPS=1');
+  const line = read('scripts/dev/checks.sh').split('\n').find((l) => l.startsWith('run node-test '));
+  assert.match(line, /AGSIST_NO_SKIPS/, 'checks.sh node-test reads it');
+  assert.match(line, /\^# skipped 0\$/, 'and wants "# skipped 0" when it is set');
+  // the real thing: a test file that skips fails the line with the variable set, passes without it
+  const dir = fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'noskip-'));
+  fs.writeFileSync(path.join(dir, 'a.test.mjs'), "import { test } from 'node:test'; test('runs', () => {}); test('needs a tool', (t) => t.skip('not here'));\n");
+  // run that one line as checks.sh would, with run() reduced to "run the command"
+  const run2 = (env) => spawnSync('bash', ['-c', `NT='${path.join(dir, 'nt.out')}'; SHARD=; run(){ shift; "$@"; }\n${line}`], { cwd: dir, encoding: 'utf8', env: { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => k !== 'NODE_TEST_CONTEXT')), ...env } });
+  assert.equal(run2({ AGSIST_NO_SKIPS: '' }).status, 0, 'a skip passes locally without the variable');
+  const r = run2({ AGSIST_NO_SKIPS: '1' });
+  assert.equal(r.status, 1, 'and fails with it');
+  assert.match(r.stdout, /needs a tool # SKIP/, 'naming the skipped test');
+});
