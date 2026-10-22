@@ -32,9 +32,9 @@ First time (about 10 minutes)
 4. A browser window opens for GitHub. Sign in as dnilgis and allow it.
    This happens the first time only; Windows remembers the login.
    The first copy of the repos can take a while.
-5. It asks for LIST_TOKEN. Copy it from Cloudflare (Workers and Pages,
-   agsist-api, Settings, Variables and Secrets) or wherever you keep it,
-   paste it (right-click pastes in the window; the typing stays hidden)
+5. It asks for LIST_TOKEN. Paste LIST_TOKEN from your password manager
+   (Bitwarden). Cloudflare never shows a secret again after it is saved.
+   Paste it (right-click pastes in the window; the typing stays hidden)
    and press Enter. It is saved in list-token.dpapi in this folder, locked
    to your Windows user on this PC. Nobody else can read it, and it does
    not work on another PC.
