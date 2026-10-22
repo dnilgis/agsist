@@ -5658,7 +5658,7 @@
     });
     doc.addEventListener('focusout', function () { clearTimeout(back); back = setTimeout(function () { TYPING = typing(doc.activeElement); syncBar(); if (!(TYPING && $('rp-stepcol').contains(doc.activeElement))) doc.body.classList.remove('rp-typing'); }, 450); });
     /* The strip holds its folded size through a press (2026-10-22). While a box has focus the picture and Up close fold
-       away (rain-print.html); the press on a card or button below takes the focus, the strip unfolded over the place
+       away (rain-print.html); the press on a choice or a button below takes the focus, the strip unfolded over the place
        pressed, and the release landed on the strip, so the click went to neither (CI, Oct 22: the Print card and
        "+ Mark another day" missed). From the press until its click is done the strip stays as it was. */
     var FOLDS = ':is(input:not([type=checkbox]):not([type=radio]),textarea,select)', holdT = 0;
