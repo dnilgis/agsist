@@ -220,7 +220,7 @@ test("the request form in a browser: prefill, checks, the post, escaping, the fa
       await p.click("#le-send");
       await p.waitForSelector(".cl-msg.bad");
       const href = await p.getAttribute("#le-mail", "href");
-      assert.ok(href.startsWith("mailto:sig@farmers1st.com?subject=Elevator%20wants%20to%20post%20bids%3A"), href);
+      assert.ok(href.startsWith("mailto:sig@agsist.com?subject=Elevator%20wants%20to%20post%20bids%3A"), href);
       const ta = await p.inputValue("#le-copy-ta");
       assert.ok(ta.includes("Elevator: " + HOSTILE) && ta.includes("How to post: Not sure yet"), ta);
       assert.equal(await p.inputValue("#le-name"), "Pat", "typed values kept after a refusal");

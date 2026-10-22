@@ -111,7 +111,7 @@ test("post.html, elev-admin.html and elev-today.html: noindex, no analytics, not
   const post = read("post.html");
   assert.ok(post.indexOf("window.gtag = function () {}") < post.indexOf("<script src=\"/components/loader.js"));
   assert.match(post, /components\/elev-post\.js\?v=\d+/);
-  assert.match(read("components/elev-post.js"), /sig@farmers1st\.com/);
+  assert.match(read("components/elev-post.js"), /sig@agsist\.com/);
   assert.ok(!/—/.test(read("components/elev-post.js")), "elev-post.js has no em dash");
   for (const f of readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) {
     assert.ok(!/agsist\.com\/(post|elev-admin|elev-today)\b/.test(read(f)), f);

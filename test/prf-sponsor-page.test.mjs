@@ -99,7 +99,7 @@ test("the page: indexable, FAQ in JSON-LD, the terms, no price, no founding, no 
   assert.ok(!/founding/i.test(text));
   assert.ok(!/(states?|slots?) (left|open|available)/i.test(text), "no open-slot counters");
   assert.ok(!/sponsor-apply/.test(text), "PRF slots stay out of /sponsor-apply");
-  assert.ok(text.includes('href="mailto:sig@farmers1st.com?subject=PRF%20state%20sponsor"'), "email Sig is there as the second way");
+  assert.ok(text.includes('href="mailto:sig@agsist.com?subject=PRF%20state%20sponsor"'), "email Sig is there as the second way");
   assert.ok(!/[—]|&mdash;/.test(text), "no em dashes");
   assert.ok(HTML.indexOf("/components/prf-sponsor.js?v=5") < HTML.indexOf("/components/prf-sponsor-page.js"), "the renderer loads before the page script");
   assert.ok(!/data-prf-spon=/.test(HTML), "nothing on this page is swapped for a real sponsor");

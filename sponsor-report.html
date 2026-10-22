@@ -420,7 +420,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   function die(msg) {
     root.innerHTML = '<div class="cp-err"><p class="cp-err-msg">' + msg + '</p>' +
       '<p class="cp-err-contact">Questions about your campaign, or need the link again? ' +
-      'Sigurd Lindquist: <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &middot; ' +
+      'Sigurd Lindquist: <a href="mailto:sig@agsist.com">sig@agsist.com</a> &middot; ' +
       '<a href="tel:+17157972428">715-797-2428</a></p></div>';
   }
   function esc(s) {
@@ -533,7 +533,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 
   function approveHref(d, s) {
     var f = (s.c && s.c.fields) || {};
-    var to = d.approveTo || 'sig@farmers1st.com';
+    var to = d.approveTo || 'sig@agsist.com';
     var subj = 'Approved: ' + (f.advertiser || d.sponsor) + ' ad, proof ' + (s.code || '');
     var body = 'I approve the ad on my AGSIST campaign page with proof code ' + (s.code || '') + '.\n\n' +
       'Headline: ' + (f.headline || '') + '\nButton: ' + (f.cta_text || '') + ' -> ' + (f.cta_url || '') +
@@ -546,7 +546,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     return 'mailto:' + to + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
   }
   function changesHref(d, s) {
-    var to = d.approveTo || 'sig@farmers1st.com';
+    var to = d.approveTo || 'sig@agsist.com';
     return 'mailto:' + to + '?subject=' +
       encodeURIComponent('Changes to our AGSIST ad (proof ' + (s.code || '') + ')') +
       '&body=' + encodeURIComponent('Here is what we would like changed:\n\n');
@@ -716,7 +716,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
      however many times the page re-renders. */
   document.addEventListener('click', function (e) {
     var a = e.target && e.target.closest && e.target.closest('a.cp-btn[href^="mailto:"]');
-    /* ONLY THE ACTION BUTTONS. The plain "sig@farmers1st.com" link further
+    /* ONLY THE ACTION BUTTONS. The plain "sig@agsist.com" link further
        down is a bare address with no subject and no body -- opening a panel
        for it showed an empty subject and an empty message, which is worse
        than doing nothing. An action button always carries a subject. */
@@ -1006,7 +1006,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     h += '<div class="cp-req-go"><button class="cp-btn" type="submit" id="cp-req-send">Send to Sig</button>' +
       '<span class="cp-small" style="margin:0">Nothing changes until Sig confirms it with you.</span></div>';
     h += '<div class="cp-req-out" id="cp-req-out" role="status" aria-live="polite"></div>';
-    h += '<p class="cp-small" style="margin-top:.9rem">Rather talk? <a href="tel:+17157972428">715-797-2428</a> or <a href="mailto:' + esc(d.approveTo || 'sig@farmers1st.com') + '">' + esc(d.approveTo || 'sig@farmers1st.com') + '</a></p>';
+    h += '<p class="cp-small" style="margin-top:.9rem">Rather talk? <a href="tel:+17157972428">715-797-2428</a> or <a href="mailto:' + esc(d.approveTo || 'sig@agsist.com') + '">' + esc(d.approveTo || 'sig@agsist.com') + '</a></p>';
     return h + '</form></section>';
   }
   function wireApprove(d, s) {
@@ -1085,7 +1085,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
         'Current plan: ' + (s.tier ? s.tier.name : 'not recorded'), 'Ad proof code: ' + (s.code || '-'), '', msg].filter(function (x, i) { return x !== '' || i === 6; });
       var body = lines.join('\n');
       var subj = 'AGSIST portal: ' + A[1] + ' (' + (d.sponsor || '') + ')';
-      var to = d.approveTo || 'sig@farmers1st.com';
+      var to = d.approveTo || 'sig@agsist.com';
       /* The address goes in the path as written -- the third place in this
          file that builds a mailto, and the one that was missed when the other
          two were corrected. */
@@ -1170,7 +1170,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   }
 
   function contact(d) {
-    var to = d.approveTo || 'sig@farmers1st.com';
+    var to = d.approveTo || 'sig@agsist.com';
     function when(x) { var t = new Date(x); return isNaN(t) ? '' : t.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }); }
     return '<section class="cp-sec"><div class="cp-card cp-contact"><div class="cp-contact-who"><b>Sig Lindquist</b><span>AGSIST · your contact for this campaign</span></div>' +
       '<div style="display:flex;gap:.5rem;flex-wrap:wrap"><a class="cp-btn cp-btn--ghost" href="mailto:' + esc(to) + '">' + esc(to) + '</a>' +

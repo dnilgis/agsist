@@ -29,7 +29,7 @@ import urllib.request
 from collections import Counter, defaultdict
 
 NASS = "https://quickstats.nass.usda.gov/api/api_GET/"
-UA = {"User-Agent": "AGSIST-probe/1.0 (+https://agsist.com; sig@farmers1st.com)"}
+UA = {"User-Agent": "AGSIST-probe/1.0 (+https://agsist.com; sig@agsist.com)"}
 
 
 def out(*a):

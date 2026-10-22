@@ -53,7 +53,7 @@ CONUS = (24.0, 50.0, -125.0, -66.0)
 
 
 def http(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "AGSIST backfill (sig@farmers1st.com)"})
+    req = urllib.request.Request(url, headers={"User-Agent": "AGSIST backfill (sig@agsist.com)"})
     with urllib.request.urlopen(req, timeout=180) as r:
         return r.read()
 

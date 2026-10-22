@@ -415,7 +415,7 @@ def selftest():
             bad.append("guard let through: " + body[:40])
         except LinkError as ex:
             ck("error names no address", "@" not in str(ex))
-    for body in ('<a href="%s">x</a> Reply to sig@farmers1st.com' % signed(W, "unsubscribe", SAMPLE_LID, "sec").replace("&", "&amp;"),
+    for body in ('<a href="%s">x</a> Reply to news@agsist.com' % signed(W, "unsubscribe", SAMPLE_LID, "sec").replace("&", "&amp;"),
                  "Map: https://www.google.com/maps/@44.9,-91.4,12z",
                  "plain text with no link"):
         try:
@@ -498,7 +498,7 @@ def selftest():
     ck("smtplib guard sends the clean one, subject without the em dash", len(f.sent) == 1 and m["Subject"] == "AGSIST critic, issue #1")
     # List-Unsubscribe: the mailto stop plus the front door, never Post
     m = EmailMessage()
-    m["List-Unsubscribe"] = "<%s>, <mailto:sig@farmers1st.com?subject=unsubscribe>" % signed(W, "unsubscribe", SAMPLE_LID, "sec")
+    m["List-Unsubscribe"] = "<%s>, <mailto:news@agsist.com?subject=unsubscribe>" % signed(W, "unsubscribe", SAMPLE_LID, "sec")
     m["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
     m.set_content("hi")
     check_message(m)

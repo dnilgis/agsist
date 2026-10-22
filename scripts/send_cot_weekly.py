@@ -79,7 +79,7 @@ DEEP = REPO / "data" / "cot-deep.json"
 TAG = "utm_source=cot_email&utm_medium=email"
 PAGE = "https://agsist.com/cot?" + TAG
 FORWARD_URL = "https://agsist.com/cot?ref=email-forward&" + TAG
-UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"}
+UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@agsist.com)"}
 TOPIC = "cot"
 # (key in the COT files, the name in the email)
 MARKETS = (("corn", "Corn"), ("beans", "Soybeans"), ("wheat", "Chicago wheat"),

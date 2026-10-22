@@ -908,7 +908,7 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
         if re.search(r'</?(strong|em|b|i)>', text): F('html','%s contains raw HTML tag (use markdown)'%loc)
     if re.search(r'[\U0001F300-\U0001FAFF]', blob): F('emoji','emoji-as-UI in prose')
     for e in set(re.findall(r'[\w.\-]+@[\w.\-]+', blob)):
-        if e!='sig@farmers1st.com': F('contact','non-canonical email: %s'%e)
+        if e!='sig@agsist.com': F('contact','non-canonical email: %s'%e)
     if re.search(r'\b(wisconsin|minnesota)\b[^.]{0,30}\bfarmers\b', blob): F('scope','regional restriction in copy')
     for bad in ['free forever','no ads ever','no paywalls ever','never any ads']:
         if bad in blob: F('honest-copy','prohibited claim: "%s"'%bad)

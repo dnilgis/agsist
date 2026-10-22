@@ -60,7 +60,7 @@ RAW_DIR = "data/dairy-raw"
 AMS_URL = "https://www.ams.usda.gov/mnreports/dymclassprices.pdf"
 NASS_API = "https://quickstats.nass.usda.gov/api/api_GET/"
 NASS_SHORT = "MILK - PRICE RECEIVED, MEASURED IN $ / CWT"
-UA = "agsist.com dairy feed (contact: sig@farmers1st.com)"
+UA = "agsist.com dairy feed (contact: sig@agsist.com)"
 
 CLASS_RANGE = (5.0, 45.0)      # $/cwt
 LB_RANGE = (0.05, 6.0)         # $/lb

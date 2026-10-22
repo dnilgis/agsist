@@ -52,7 +52,7 @@ The Actions log gets counts only, never a name, address or phone.
     DRY_RUN=1 ...                                print the counts, send and mark nothing
 
 Optional: SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME, FORMS_TO (else
-SPONSOR_TO, else sig@farmers1st.com).
+SPONSOR_TO, else sig@agsist.com).
 """
 import html as H
 import json
@@ -617,7 +617,7 @@ def main():
         print("LIST_URL and LIST_TOKEN are required")
         return 1
     dry = env("DRY_RUN") == "1"
-    to = env("FORMS_TO") or env("SPONSOR_TO") or "sig@farmers1st.com"
+    to = env("FORMS_TO") or env("SPONSOR_TO") or "sig@agsist.com"
     fn, fa = env("FROM_NAME", "AGSIST"), log_safe.sender_addr()
 
     def send(m):

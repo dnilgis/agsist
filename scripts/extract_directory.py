@@ -101,7 +101,7 @@ OUT = ROOT / "data" / "elevator-directory.json"
 # having never once been run.
 BASE = (os.environ.get("BARCHART_BASE") or "").strip() or \
        "https://ondemand.websol.barchart.com/getGrainBids.json"
-UA = "AGSIST/1.0 (+https://agsist.com; sig@farmers1st.com)"
+UA = "AGSIST/1.0 (+https://agsist.com; sig@agsist.com)"
 
 # Every location field the reference documents. Asking for one that a plan does
 # not carry costs nothing -- it simply does not come back -- and the run prints

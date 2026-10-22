@@ -369,14 +369,14 @@ test("Paid, thank you: what was ordered, when the proof comes, Christmas, one pu
   assert.deepEqual(plain(RP.paidText({ choice: "framed12x18", today, prices: J, saved })), [
     "Your framed print of Chetek, WI, 2012 is ordered. Your proof comes by email by Thursday, Oct 15. Approve it there, or ask for a change. Nothing prints until you approve it.",
     "It ships within 3 business days after you approve it, and ordered by Dec 9 it arrives by Christmas.",
-    "Nothing by then? Check spam, or write to me at sig@farmers1st.com."]);
+    "Nothing by then? Check spam, or write to me at sig@agsist.com."]);
   assert.deepEqual(plain(RP.paidText({ choice: "digital", today: "2026-10-16", prices: J, saved: null })), [
     "Your proof comes by email by Monday, Oct 19. Approve it there and your files come by email within minutes, or ask for a change.",
-    "Nothing by then? Check spam, or write to me at sig@farmers1st.com."], "a Friday order: Monday; no saved design: no order line");
+    "Nothing by then? Check spam, or write to me at sig@agsist.com."], "a Friday order: Monday; no saved design: no order line");
   assert.equal(RP.paidText({ choice: "print12x18", today: "2026-11-25", prices: J, saved: null })[0], "Your proof comes by email by Friday, Nov 27. Approve it there, or ask for a change. Nothing prints until you approve it.", "Thanksgiving is skipped");
   assert.equal(RP.paidText({ choice: "framed12x18", today: "2026-12-12", prices: J, saved: null })[1], "It ships within 3 business days after you approve it. Ordered now, it arrives after Christmas.");
   assert.match(RP.paidText({ choice: "framed12x18", today, prices: J, saved: { ...saved, year: 2026, gift: true } })[0], /^Your framed print of Chetek, WI, 2026 is ordered\. Your gift card to print comes by email within minutes, with what they get and how to use it\. The print follows in January, with a proof to you first\.$/);
-  assert.equal(RP.paidText({ choice: "framed12x18", today, prices: J, saved: { ...saved, year: 2026, gift: true } })[1], "No card in a few minutes? Check spam, or write to me at sig@farmers1st.com.", "the card is emailed at once (2026-10-20)");
+  assert.equal(RP.paidText({ choice: "framed12x18", today, prices: J, saved: { ...saved, year: 2026, gift: true } })[1], "No card in a few minutes? Check spam, or write to me at sig@agsist.com.", "the card is emailed at once (2026-10-20)");
   assert.equal(RP.paidText({ choice: "digital", today, prices: J, saved }).length, 2, "a saved framed design is not this file: no order line");
   assert.equal(RP.paidFromUrl("?paid=framed12x18&s={CHECKOUT_SESSION_ID}").session, "", "an unfilled session id is not one");
   assert.equal(RP.paidFromUrl("?paid=poster&s=cs_test_a1b2c3d4"), null);

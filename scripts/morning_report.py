@@ -62,7 +62,7 @@ cannot be sent.
 Env: GITHUB_TOKEN (actions: read, pages: read), GITHUB_REPOSITORY, LIST_URL,
 LIST_TOKEN, SMTP_USER, SMTP_PASS. Optional: BIDS_READ_TOKEN, STRIPE_READ_KEY,
 SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME, REPORT_TO (else FORMS_TO, else
-SPONSOR_TO, else sig@farmers1st.com), SNAPSHOT (the counts file the workflow
+SPONSOR_TO, else sig@agsist.com), SNAPSHOT (the counts file the workflow
 keeps in the Actions cache between mornings; counts only).
 """
 import html as H
@@ -1619,7 +1619,7 @@ def main():
                   list_token=env("LIST_TOKEN", ""), stripe_key=env("STRIPE_READ_KEY", ""),
                   ga4_prop=env("GA4_PROPERTY_ID", ""), ga4_cred=env("GA4_SERVICE_ACCOUNT", ""), dry=dry,
                   private_token=env("PRIVATE_REPO_TOKEN", ""))
-    to = env("REPORT_TO") or env("FORMS_TO") or env("SPONSOR_TO") or "sig@farmers1st.com"
+    to = env("REPORT_TO") or env("FORMS_TO") or env("SPONSOR_TO") or "sig@agsist.com"
     fn, fa = env("FROM_NAME", "AGSIST"), log_safe.sender_addr()
     snap_path = env("SNAPSHOT", os.path.join(ROOT, ".morning-report", "counts.json"))
     snap = load_snap(snap_path)

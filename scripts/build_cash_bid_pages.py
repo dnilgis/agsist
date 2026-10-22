@@ -2992,7 +2992,7 @@ def coverage_faq(companies, counts):
     lead = ("Maybe. AGSIST reads the bids elevators post online, so an elevator that does not post them is not here. ")
     end_t = (" Type your ZIP at the top of this page to see which ones post near you. If you run an elevator, List your elevator puts "
              "your bids on AGSIST free. If you farm and your elevator posts bids online but is missing, send its bid "
-             "page to sig@farmers1st.com.")
+             "page to sig@agsist.com.")
     text = lead + " ".join(parts) + co_t + end_t
     co_h = (f' {n:,} companies with {COMPANY_MIN} or more locations have <a href="/cash-bids/company/">their own page</a>, every '
             f"location on one page." if n else "")
@@ -3000,7 +3000,7 @@ def coverage_faq(companies, counts):
             ' Type your ZIP at the top of this page to see which ones post near you. If you run an elevator, '
             '<a href="/list-your-elevator">List your elevator</a> puts your bids on AGSIST free. If you farm and your '
             'elevator posts bids online but is missing, send its bid page to '
-            '<a href="mailto:sig@farmers1st.com?subject=Missing%20elevator">sig@farmers1st.com</a>.')
+            '<a href="mailto:sig@agsist.com?subject=Missing%20elevator">sig@agsist.com</a>.')
     return html, text
 
 

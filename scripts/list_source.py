@@ -100,7 +100,7 @@ LOCAL_REF = "refs/list-source/private-data"
 # Where flag and journal files are written before scripts/push_raw.sh saves
 # them (it copies from the checkout). LIST_FLAGS_ROOT moves them (selftests).
 FLAG_ROOT = Path(os.environ.get("LIST_FLAGS_ROOT") or ROOT)
-UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"}
+UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@agsist.com)"}
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]{2,}$")    # the worker's EMAIL_RE
 DK_B32 = "0123456789abcdefghjkmnpqrstvwxyz"
 LIST_ROUTES = {"/list": "sub:", "/alert-list": "alert:", "/watch-list": "watch:",

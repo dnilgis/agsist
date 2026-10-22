@@ -194,7 +194,7 @@ PAGES = [
         ("/developer", "Embed Tools and Data Feeds", "embeddable GDU and ARC or PLC widgets, and the open JSON feeds"),
         ("/changelog", "Changelog", "dated list of site changes"),
         ("/about", "About", "who builds AGSIST and why"),
-        ("/contact", "Contact", "sig@farmers1st.com"),
+        ("/contact", "Contact", "sig@agsist.com"),
     ]),
 ]
 

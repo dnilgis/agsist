@@ -32,7 +32,7 @@ import urllib.request
 
 import list_source
 
-UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"}
+UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@agsist.com)"}
 ZIP_RE = re.compile(r"^\d{5}$")
 EL_RE = re.compile(r"^[0-9a-f]{8}$")
 LID_RE = re.compile(r"^[0-9a-hjkmnp-tv-z]{16}$")   # worker v5.46 link id

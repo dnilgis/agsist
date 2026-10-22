@@ -29,7 +29,7 @@ test("1. lost or damaged in shipping: replaced free, same serial number, no $15 
 });
 
 test("2. the phone line sits by Made by on both pages, with a tel link and the email as is", () => {
-  const line = /Questions\? Call or text Sig at <a href="tel:\+17157972428"[^>]*>715-797-2428<\/a>, or write to <a href="mailto:sig@farmers1st\.com"[^>]*>sig@farmers1st\.com<\/a>\./;
+  const line = /Questions\? Call or text Sig at <a href="tel:\+17157972428"[^>]*>715-797-2428<\/a>, or write to <a href="mailto:sig@agsist\.com"[^>]*>sig@agsist\.com<\/a>\./;
   assert.match(RP, line); assert.match(BIZ, line);
   const i = RP.indexOf('id="rp-madeby"'), k = RP.indexOf('id="rp-call"');
   assert.ok(i > 0 && k > i && k - i < 1200, "right under Made by Sig Lindquist in Chetek");

@@ -36,7 +36,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW = os.path.join(ROOT, "data", "land-raw", "layers")
 OUT = os.path.join(ROOT, "data", "land", "field-layers-check.json")
 ORIGIN = "https://agsist.com"
-UA = "AGSIST field layer check (agsist.com; sig@farmers1st.com)"
+UA = "AGSIST field layer check (agsist.com; sig@agsist.com)"
 
 # Two real fields: Story County, Iowa (about 40 ac) and Barron County, Wisconsin (about 40 ac).
 FIELDS = {
