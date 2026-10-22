@@ -49,19 +49,19 @@
    "kb":4.1
   },
   "IL":{
-   "rows":11063,
+   "rows":11068,
    "facilities":452,
    "kb":493.7
   },
   "IN":{
-   "rows":2057,
+   "rows":2061,
    "facilities":120,
-   "kb":89.4
+   "kb":89.6
   },
   "KS":{
-   "rows":7885,
+   "rows":7883,
    "facilities":438,
-   "kb":342.8
+   "kb":342.7
   },
   "KY":{
    "rows":100,
@@ -79,7 +79,7 @@
    "kb":33.9
   },
   "MN":{
-   "rows":8855,
+   "rows":8856,
    "facilities":334,
    "kb":387.5
   },
