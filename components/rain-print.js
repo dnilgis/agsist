@@ -2329,16 +2329,27 @@
   function syncCropDays() {
     if (ST.crop) CROP_HAND = { plant: ST.cropPlant, harvest: ST.cropHarvest };
     var y = ST.year || parseInt($('rp-year').value, 10), on = !!$('rp-crop').value, lock = $('rp-crop').disabled;
-    ['rp-crop-plant', 'rp-crop-harvest'].forEach(function (id) {
-      var el = $(id); if (!el) return;
-      var v = id === 'rp-crop-plant' ? CROP_HAND.plant : CROP_HAND.harvest;
-      if (y) { el.min = y + '-01-01'; el.max = y + '-12-31'; }
-      el.value = v && y && v.slice(0, 4) === String(y) ? v : '';
-      if (!el.getAttribute('data-gift-lock')) el.disabled = !on;
+    ['plant', 'harvest'].forEach(function (k) {
+      var el = $('rp-crop-' + k), p = k === 'plant' ? 'p' : 'h', mo = $('rp-crop-' + p + 'mo'), dy = $('rp-crop-' + p + 'dy');
+      if (!el || !mo) return;
+      var v = CROP_HAND[k] && y && CROP_HAND[k].slice(0, 4) === String(y) ? CROP_HAND[k] : '', cur = cropDayOf(p, y);
+      // a month picked without its day yet stays as picked; a day set elsewhere (a link, a guess, All off) shows
+      if (v !== cur && !(v === '' && cur === '' )) { mo.value = v ? v.slice(5, 7) : ''; cropDayList(p, y); dy.value = v ? v.slice(8, 10) : ''; }
+      else cropDayList(p, y);
+      el.value = v;
+      if (!el.getAttribute('data-gift-lock')) { mo.disabled = dy.disabled = !on; }
     });
     $('rp-cropdays').hidden = !on;
     doc.querySelectorAll('[data-crop]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-crop') === $('rp-crop').value)); if (lock) b.disabled = true; });
     if (!$('rp-plants').getAttribute('data-gift-lock')) { $('rp-plants').disabled = !on; $('rp-ghost').disabled = !on; }
+  }
+  // the crop's days: a month and a day from lists, in the print's year (no date box: a typed year once landed in the day)
+  function cropDayOf(p, y) { var mo = $('rp-crop-' + p + 'mo').value, dy = $('rp-crop-' + p + 'dy').value; return y && mo && dy ? y + '-' + mo + '-' + dy : ''; }
+  function cropDayList(p, y) {
+    var mo = $('rp-crop-' + p + 'mo'), sel = $('rp-crop-' + p + 'dy'), was = sel.value, n = daysIn(y, mo.value), h = '<option value="">Day</option>';
+    if (mo.options.length < 13) { var m0 = mo.value; mo.innerHTML = '<option value="">Month</option>' + MON.map(function (m, k) { return '<option value="' + String(k + 1).padStart(2, '0') + '">' + m + '</option>'; }).join(''); mo.value = m0; }
+    for (var d = 1; d <= n; d++) h += '<option value="' + String(d).padStart(2, '0') + '">' + d + '</option>';
+    if (sel.innerHTML !== h) { sel.innerHTML = h; sel.value = +was <= n ? was : ''; }
   }
   // a planting or harvest day among the marked days, by its words, for a crop just picked
   function guessCropDay(re) { var m = ST.markers.filter(function (x) { return re.test(x.label || ''); })[0]; return m ? m.date : ''; }
@@ -5308,8 +5319,13 @@
       layerSaid('crop');
     });
   });
-  ['rp-crop-plant', 'rp-crop-harvest'].forEach(function (id) {
-    $(id).addEventListener('change', function () { CROP_HAND[id === 'rp-crop-plant' ? 'plant' : 'harvest'] = $(id).value; });
+  ['rp-crop-pmo', 'rp-crop-pdy', 'rp-crop-hmo', 'rp-crop-hdy'].forEach(function (id) {
+    $(id).addEventListener('change', function () {
+      var p = id.charAt(8), k = p === 'p' ? 'plant' : 'harvest', y = ST.year || parseInt($('rp-year').value, 10);
+      cropDayList(p, y);
+      CROP_HAND[k] = $('rp-crop-' + k).value = cropDayOf(p, y);
+      restyle(); extrasLoad(reqToken);
+    });
   });
   ['rp-crop-plant', 'rp-crop-harvest', 'rp-plants', 'rp-ghost', 'rp-frost', 'rp-heat', 'rp-ribbon'].forEach(function (id) {
     $(id).addEventListener('change', function () { restyle(); extrasLoad(reqToken); });
@@ -5317,7 +5333,7 @@
   $('rp-hist').addEventListener('change', histStation);
   $('rp-layers').addEventListener('change', function (ev) {
     var t = ev.target, k = t.name === 'rp-cmp' ? 'cmp' : String(t.id || '').replace(/^rp-/, '');
-    if (k === 'crop-plant' || k === 'crop-harvest') k = 'crop';
+    if (/^crop-/.test(k)) k = 'crop';
     syncLayers(); layerSaid(k);
   });
   // a greyed chip passes the tap to its label (its box takes no clicks while disabled), which says why
@@ -5679,7 +5695,7 @@
   var GIFT = null;
   var LOCK_IDS = { place: ['rp-place', 'rp-go'], year: ['rp-year'], station: ['rp-station'], style: ['rp-style'], cmp: ['rp-cmp'], name: ['rp-name'],
     dedication: ['rp-ded'], markers: [1, 2, 3, 4, 5].reduce(function (a, i) { return a.concat(['rp-m' + i + 'mo', 'rp-m' + i + 'dy', 'rp-m' + i + 'l']); }, []).concat(['rp-add-day']), normals: ['rp-normals'], records: ['rp-records'],
-    crop: ['rp-crop', 'rp-crop-plant', 'rp-crop-harvest', 'rp-plants', 'rp-ghost'], hist: ['rp-hist'], frost: ['rp-frost'], heat: ['rp-heat'], ribbon: ['rp-ribbon'],
+    crop: ['rp-crop', 'rp-crop-plant', 'rp-crop-harvest', 'rp-crop-pmo', 'rp-crop-pdy', 'rp-crop-hmo', 'rp-crop-hdy', 'rp-plants', 'rp-ghost'], hist: ['rp-hist'], frost: ['rp-frost'], heat: ['rp-heat'], ribbon: ['rp-ribbon'],
     logo: ['rp-logo-file', 'rp-logo-remove', 'rp-logo-ink'] };
   function lockInput(field) {
     (LOCK_IDS[field] || []).forEach(function (id) {

@@ -207,7 +207,9 @@ test("an ordinary visit keeps its order and never shows the line", { skip }, asy
     assert.deepEqual(d, ["block", w < 900 ? "flex" : "grid"], "the wrapper adds no layout of its own");
     // the first screen as it was: the headline at the top, the photo, then the print (390: 954 px; 1280: 492 px, both before this change).
     // 2026-10-19 (board B): the Christmas line names last year by Christmas and this year in January, two lines longer at 390 (1019)
-    assert.equal(L.art.top, w < 900 ? 1019 : 492, `${w}: the print's box where it always was`);
+    // 2026-10-22 (the layout rebuild): the print's wall is slimmer above the frame (8 px on a phone, 18 on a laptop), so
+    // the box sits 14 px (390) and 4 px (1280) higher; the order is the same
+    assert.equal(L.art.top, w < 900 ? 1005 : 488, `${w}: the print's box where it always was`);
     assert.deepEqual(errors, []);
   }, { width: w, height: h });
 });

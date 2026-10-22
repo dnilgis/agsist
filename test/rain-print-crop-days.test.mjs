@@ -9,7 +9,7 @@
  * crop row itself, any day of the print's year; a crop is a chip.
  *
  * In a real browser (skipped without Playwright), from the fixture of the Chetek case:
- *   - planted, then harvested, set by hand: both stay, the crop draws, the design code carries it;
+ *   - planted, then harvested, set by hand (a month and a day from lists): both stay, the crop draws, the design code carries it;
  *   - the reverse order does the same;
  *   - days out of order say so in one line, and nothing is drawn;
  *   - Corn with no days says in one line what it needs, and so does the line under the print;
@@ -58,7 +58,8 @@ async function openCrop(page, crop = "corn") {
   await page.click('[data-crop="' + crop + '"]');
   await page.waitForTimeout(300);
 }
-const setDay = async (page, id, v) => { await page.fill("#" + id, v); await page.waitForTimeout(400); };
+// a crop day is a month and a day from lists, like Mark a day (no date box: test/rain-print-order-ui.test.mjs)
+const setDay = async (page, id, v) => { const p = id === "rp-crop-plant" ? "p" : "h"; await page.selectOption("#rp-crop-" + p + "mo", v.slice(5, 7)); await page.selectOption("#rp-crop-" + p + "dy", v.slice(8, 10)); await page.waitForTimeout(400); };
 
 test("browser: planted, then harvested, set by hand: both stay, and the corn draws", { skip }, async () => {
   await withPage(async (page, base, errors) => {
@@ -71,7 +72,7 @@ test("browser: planted, then harvested, set by hand: both stay, and the corn dra
     assert.equal(await val(page, "rp-crop-plant"), "2025-05-10", "the planting day stays picked (it went blank)");
     assert.equal(await text(page, "rp-crop-say"), "Set the harvest day too.");
     assert.equal(await hasCrop(page), false, "no crop until both days are in");
-    await page.fill("#rp-crop-harvest", "2025-10-05");
+    await setDay(page, "rp-crop-harvest", "2025-10-05");
     await cropDrawn(page);
     assert.equal(await val(page, "rp-crop-plant"), "2025-05-10", "the planting day is still there");
     assert.equal(await val(page, "rp-crop-harvest"), "2025-10-05");
@@ -93,7 +94,7 @@ test("browser: the reverse, harvested first then planted, draws the same; out of
     await setDay(page, "rp-crop-harvest", "2025-10-05");
     assert.equal(await val(page, "rp-crop-harvest"), "2025-10-05", "the harvest day stays set");
     assert.equal(await text(page, "rp-crop-say"), "Set the planting day too.");
-    await page.fill("#rp-crop-plant", "2025-05-10");
+    await setDay(page, "rp-crop-plant", "2025-05-10");
     await cropDrawn(page);
     assert.equal(await val(page, "rp-crop-harvest"), "2025-10-05");
     assert.equal(RP.decodeCode(await page.textContent("#rp-code")).crop, "corn");
@@ -135,7 +136,9 @@ test("browser: a crop picked with marked days whose words say so fills its days 
     await cropDrawn(page);
     assert.equal(await val(page, "rp-crop-plant"), "2025-05-08");
     assert.equal(await val(page, "rp-crop-harvest"), "2025-10-24");
-    assert.equal(await page.getAttribute("#rp-crop-plant", "min"), "2025-01-01", "only days of the print's year");
+    assert.deepEqual([await page.inputValue("#rp-crop-pmo"), await page.inputValue("#rp-crop-pdy")], ["05", "08"], "the lists show the day");
+    await page.selectOption("#rp-crop-hmo", "02");
+    assert.equal(await page.$$eval("#rp-crop-hdy option", (o) => o.length - 1), 28, "February 2025 has 28 days");
     assert.deepEqual(errors, [], "no page errors");
   }, { width: 390 });
 });

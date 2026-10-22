@@ -640,8 +640,8 @@
   .rp-lwhy{margin:0;font-size:var(--fs-xs);line-height:1.4;color:var(--text-muted)}
   .rp-lwhy[hidden],.rp-cropdays[hidden]{display:none}
   .rp-cropdays{display:flex;flex-wrap:wrap;gap:.35rem .9rem;font-size:var(--fs-sm);color:var(--text-dim)}
-  .rp-cropdays label{display:inline-flex;align-items:center;gap:.35rem}
-  .rp-cropdays input{width:auto;min-height:36px;padding:.15rem .4rem}
+  .rp-cday{display:inline-flex;align-items:center;gap:.3rem}
+  .rp-cday select.field{width:auto;min-height:36px;padding:.1rem 1.6rem .1rem .45rem}
   .rp-words-x{margin-top:.8rem}
   /* the Where card, short: on a link that already has a place, the Canada hint and the example years step aside */
   .rp-where .rp-step-h{margin:0 0 .55rem}
@@ -830,7 +830,7 @@
           </div>
           <div class="rp-lrow" id="rp-crop-set" role="group" aria-labelledby="rp-lg-crop"><span class="rp-lg" id="rp-lg-crop">Crop</span>
             <span class="rp-chips" id="rp-crop-opts"><input type="hidden" id="rp-crop" value=""><button type="button" class="rp-chip rp-chip-r" data-crop="corn" aria-pressed="false"><span>Corn</span></button><button type="button" class="rp-chip rp-chip-r" data-crop="soy" aria-pressed="false"><span>Soybeans</span></button><label class="rp-chip"><input type="checkbox" id="rp-plants" disabled><span>Plants</span></label><label class="rp-chip"><input type="checkbox" id="rp-ghost" disabled><span>Usual-year plants</span></label></span>
-            <span class="rp-cropdays" id="rp-cropdays" hidden><label>Planted <input type="date" class="field" id="rp-crop-plant" disabled></label><label>Harvested <input type="date" class="field" id="rp-crop-harvest" disabled></label></span>
+            <span class="rp-cropdays" id="rp-cropdays" hidden><input type="hidden" id="rp-crop-plant" value=""><input type="hidden" id="rp-crop-harvest" value=""><span class="rp-cday" role="group" aria-labelledby="rp-cday-p"><span id="rp-cday-p">Planted</span><select class="field rp-mo" id="rp-crop-pmo" aria-label="Month planted" disabled></select><select class="field rp-dy" id="rp-crop-pdy" aria-label="Day planted" disabled></select></span><span class="rp-cday" role="group" aria-labelledby="rp-cday-h"><span id="rp-cday-h">Harvested</span><select class="field rp-mo" id="rp-crop-hmo" aria-label="Month harvested" disabled></select><select class="field rp-dy" id="rp-crop-hdy" aria-label="Day harvested" disabled></select></span></span>
             <p class="rp-lwhy" id="rp-crop-say" aria-live="polite" hidden></p>
           </div>
           <div class="rp-lrow" id="rp-hist-set" role="group" aria-labelledby="rp-lg-hist"><span class="rp-lg" id="rp-lg-hist">History</span>
