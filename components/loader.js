@@ -710,6 +710,8 @@
   // An unsold slot (Sig, Oct 22: "I still want to attract advertisers"): one
   // small, plain "Sponsor this page" link to the sign-up form with the slot
   // picked. No price, no box, no count of open slots. Off with OPEN_SLOT_LINE.
+  // One short line: the link's padding gives a 44 px tap target without making
+  // the line taller (phone page-length budgets, test/price-local.test.mjs).
   var OPEN_SLOT_LINE = true;
   function openSlotLine(rib, id) {
     // only a plain unsold page ribbon (never the homepage card or a PRF slot, which stay off /sponsor-apply)
@@ -717,8 +719,8 @@
     if (!document.getElementById('ag-open-slot-css')) {
       var st = document.createElement('style');
       st.id = 'ag-open-slot-css';
-      st.textContent = 'html body aside.ag-sponsor-ribbon.ag-sponsor-ribbon--open:not(.ag-sponsor-ribbon--sold){display:block!important;margin:1.25rem 0 .5rem;padding:0;border:0;background:none;box-shadow:none;font-size:.8rem;line-height:1.5;color:var(--text-muted)}' +
-        'aside.ag-sponsor-ribbon--open a.ag-open-slot{display:inline-flex;align-items:center;min-height:44px;margin:0;padding:0;background:none;border:0;border-radius:0;box-shadow:none;width:auto;color:var(--text-muted)!important;font-weight:600;text-decoration:underline;text-underline-offset:2px;transform:none}' +
+      st.textContent = 'html body aside.ag-sponsor-ribbon.ag-sponsor-ribbon--open:not(.ag-sponsor-ribbon--sold){display:block!important;margin:0;padding:0;border:0;background:none;box-shadow:none;font-size:.78rem;line-height:1.2;color:var(--text-muted)}' +
+        'aside.ag-sponsor-ribbon--open a.ag-open-slot{display:inline;min-height:0;margin:0;padding:14px 0;background:none;border:0;border-radius:0;box-shadow:none;width:auto;color:var(--text-muted)!important;font-weight:600;text-decoration:underline;text-underline-offset:2px;transform:none}' +
         'aside.ag-sponsor-ribbon--open a.ag-open-slot:hover,aside.ag-sponsor-ribbon--open a.ag-open-slot:focus-visible{color:var(--brand)!important;box-shadow:none;transform:none}' +
         '@media print{html body aside.ag-sponsor-ribbon.ag-sponsor-ribbon--open:not(.ag-sponsor-ribbon--sold){display:none!important}}';
       document.head.appendChild(st);

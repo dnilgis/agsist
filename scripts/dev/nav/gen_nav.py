@@ -491,8 +491,7 @@ ADSPACE = """    <div class="footer-adspace" id="footer-adspace" hidden>
 # Bottom row: one small line (data note), then the legal links. No sources link in the footer (Sig, Oct 21: honest, but the inner workings are not put on display).
 # The legal links stay last: test/nav-full-oct18.test.mjs reads every link after footer-legal.
 BOTTOM = """    <div class="footer-bottom">
-      <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Updated as each source posts. For information, not financial advice.</p>
-      <p class="footer-adv"><a href="/sponsor" data-sponsor-link""" + ADV_GA % "footer_bottom" + """>Advertise with AGSIST</a></p>
+      <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Updated as each source posts. For information, not financial advice. <a href="/sponsor" data-sponsor-link class="footer-adv\"""" + ADV_GA % "footer_bottom" + """>Advertise with AGSIST</a></p>
       <div class="footer-legal">
         <span>&copy; 2026 AGSIST</span><span class="footer-sep">&middot;</span>
         <a href="/privacy">Privacy</a><span class="footer-sep">&middot;</span>
@@ -561,9 +560,9 @@ FOOT_CSS = """  /* 2026-10-18 footer v2 (Sig: "footer seems strained"): one grid
   .footer-small a{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px}
   .footer-small a:hover{color:var(--brand)}
   footer.footer .footer-legal{gap:.5rem}
-  .footer-adv{margin:0;font-size:.82rem;line-height:1.6}
-  .footer-adv a{display:inline-flex;align-items:center;min-height:44px;color:var(--text-dim);font-weight:600;text-decoration:underline;text-underline-offset:2px}
-  .footer-adv a:hover{color:var(--brand)}
+  /* Advertise (Oct 22): in the data line itself, so it adds no row; the padding makes a 44 px tap target
+     without making the line taller (inline padding does not move the line box). */
+  .footer-small a.footer-adv{display:inline;padding:15px 0;margin-left:.35rem;font-weight:600;white-space:nowrap}
   @media (max-width:1100px){
     footer.footer .footer-cols{grid-template-columns:repeat(3,minmax(0,1fr))}
     footer.footer .footer-band{grid-template-columns:repeat(2,minmax(0,1fr))}

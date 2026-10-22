@@ -43,13 +43,13 @@ test("header: Advertise in the bar (wide screens) and beside About in the phone 
   assert.match(loader, /loadComponent\('site-header', '\/components\/header\.html', function \(\) \{ initNav\(\); headerSponsorHide\(noSponsor\); \}\)/);
 });
 
-test("footer: Advertise with AGSIST in the always-open bottom row, outside the folded columns, before the legal links", () => {
+test("footer: Advertise with AGSIST in the always-open bottom row (the data line, so no extra row), before the legal links", () => {
   const bottom = footer.slice(footer.indexOf('<div class="footer-bottom">'));
-  const adv = bottom.indexOf('<p class="footer-adv"><a href="/sponsor" data-sponsor-link');
-  assert.ok(adv > 0, "the bottom-row line");
+  const adv = bottom.indexOf('<a href="/sponsor" data-sponsor-link class="footer-adv"');
+  assert.ok(adv > 0, "the bottom-row link");
   assert.ok(adv < bottom.indexOf('<div class="footer-legal">'), "before the legal links");
-  assert.match(bottom, /<p class="footer-adv"><a href="\/sponsor" data-sponsor-link[^>]*>Advertise with AGSIST<\/a><\/p>/);
-  assert.match(footer, /\.footer-adv a\{[^}]*min-height:44px/, "a 44 px tap target");
+  assert.match(bottom, /<p class="footer-small">[^]*?not financial advice\. <a href="\/sponsor" data-sponsor-link class="footer-adv"[^>]*>Advertise with AGSIST<\/a><\/p>/);
+  assert.match(footer, /\.footer-small a\.footer-adv\{display:inline;padding:15px 0;/, "a 44 px tap target that adds no height");
 });
 
 test("open slot: one plain Sponsor this page link with the slot picked, no price, only on a plain unsold ribbon", () => {
@@ -113,12 +113,12 @@ test("in a browser: phones see Advertise in the footer and the menu, wide screen
     let ctx = await context(browser, 390, 844);
     let pg = await ctx.newPage();
     await pg.goto(base + "/about");
-    await pg.waitForSelector("footer.footer .footer-adv a", { state: "attached", timeout: 15000 });
+    await pg.waitForSelector("footer.footer a.footer-adv", { state: "attached", timeout: 15000 });
     await pg.waitForTimeout(300);
     // the footer columns are folded on a phone; the bottom-row line is not
     assert.equal(await pg.evaluate(() => [...document.querySelectorAll("footer.footer details.footer-col")].every((d) => !d.open)), true, "columns folded");
-    assert.deepEqual(await shown(pg, "footer.footer .footer-adv a"), [true]);
-    const r = await pg.evaluate(() => document.querySelector("footer.footer .footer-adv a").getBoundingClientRect().height);
+    assert.deepEqual(await shown(pg, "footer.footer a.footer-adv"), [true]);
+    const r = await pg.evaluate(() => document.querySelector("footer.footer a.footer-adv").getBoundingClientRect().height);
     assert.ok(r >= 44, `tap target ${r}px`);
     assert.deepEqual(await shown(pg, "#topnav .nav-adv"), [false], "no bar link on a phone (the panel has it)");
     await pg.click("#hamburger");

@@ -96,9 +96,9 @@
   .footer-small a{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px}
   .footer-small a:hover{color:var(--brand)}
   footer.footer .footer-legal{gap:.5rem}
-  .footer-adv{margin:0;font-size:.82rem;line-height:1.6}
-  .footer-adv a{display:inline-flex;align-items:center;min-height:44px;color:var(--text-dim);font-weight:600;text-decoration:underline;text-underline-offset:2px}
-  .footer-adv a:hover{color:var(--brand)}
+  /* Advertise (Oct 22): in the data line itself, so it adds no row; the padding makes a 44 px tap target
+     without making the line taller (inline padding does not move the line box). */
+  .footer-small a.footer-adv{display:inline;padding:15px 0;margin-left:.35rem;font-weight:600;white-space:nowrap}
   @media (max-width:1100px){
     footer.footer .footer-cols{grid-template-columns:repeat(3,minmax(0,1fr))}
     footer.footer .footer-band{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -235,8 +235,7 @@
       <div class="adspace-row" id="adspace-row"></div>
     </div>
     <div class="footer-bottom">
-      <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Updated as each source posts. For information, not financial advice.</p>
-      <p class="footer-adv"><a href="/sponsor" data-sponsor-link onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'footer_bottom'})">Advertise with AGSIST</a></p>
+      <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Updated as each source posts. For information, not financial advice. <a href="/sponsor" data-sponsor-link class="footer-adv" onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'footer_bottom'})">Advertise with AGSIST</a></p>
       <div class="footer-legal">
         <span>&copy; 2026 AGSIST</span><span class="footer-sep">&middot;</span>
         <a href="/privacy">Privacy</a><span class="footer-sep">&middot;</span>
