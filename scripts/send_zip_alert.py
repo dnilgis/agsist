@@ -524,4 +524,5 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # worker blocked and no usable copy: one warning, exit 0 (sew.worker reads through scripts/list_source.py)
+    sys.exit(sew.list_source.guard(main, soft=True))

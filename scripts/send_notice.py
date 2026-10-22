@@ -195,11 +195,10 @@ def render(topic, src, email, base, secret, today, from_addr, reply_to, repo=REP
 
 # ---------------------------------------------------------------- transport
 def http_json(method, url, body=None):
-    data = json.dumps(body).encode() if body is not None else None
-    req = urllib.request.Request(url, data=data, method=method,
-                                 headers=dict(UA, **({"Content-Type": "application/json"} if data else {})))
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode() or "null")
+    # 2026-10-22: scripts/list_source.py: the worker, or the private copy of its
+    # list when it is blocked (a notice-mark then goes to the journal there)
+    import list_source
+    return list_source.request(method, url, body, UA)
 
 
 def smtp_connect():
