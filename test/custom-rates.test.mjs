@@ -172,8 +172,9 @@ test("search finds jobs by the words farmers use", () => {
   assert.equal(money(58, "percent of crop"), "58%");
 });
 
-const PW = "/home/user/node_modules/playwright/index.mjs";
-const CHROME = "/opt/pw-browsers/chromium";
+// the PR checks set PLAYWRIGHT_PATH and CHROMIUM_PATH (pr-checks.yml); the session paths otherwise
+const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
+const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 test("browser: saved location picks the state, only that state's file loads, no sideways scroll at 390 and 1280", async (t) => {
   if (!existsSync(PW) || !existsSync(CHROME)) return t.skip("no Playwright");
   const { chromium } = await import(PW);

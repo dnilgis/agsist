@@ -32,7 +32,10 @@ if [ "$LIST" = 0 ] && { picked node-test || picked build_arc_plc; }; then
   ls data/fsa/arcco_*.xls* >/dev/null 2>&1 || bash scripts/pull_raw.sh data/fsa >/dev/null || { echo "FAIL fsa-pull (bash scripts/pull_raw.sh data/fsa)"; fails=$((fails+1)); }
 fi
 NT="$OUT/nt${SHARD:+-${SHARD%/*}of${SHARD#*/}}.out"
-run node-test bash -c "node --test ${SHARD:+--test-shard=$SHARD} > '$NT' 2>&1; grep -E '^# fail 0$' '$NT' >/dev/null || { grep -E '^# (pass|fail)' '$NT'; grep -B2 -A15 -E '^\s*not ok' '$NT' | head -60; exit 1; }"
+# AGSIST_NO_SKIPS=1 (the PR checks set it): a skipped node test fails node-test too, a skip is not a pass
+# (scripts/dev/check-skips.sh; test/skips-allowed.txt holds the either/or pairs it accepts)
+DEV="$PWD/scripts/dev"
+run node-test bash -c "node --test ${SHARD:+--test-shard=$SHARD} > '$NT' 2>&1; grep -E '^# fail 0$' '$NT' >/dev/null || { grep -E '^# (pass|fail)' '$NT'; grep -B2 -A15 -E '^\s*not ok' '$NT' | head -60; exit 1; }; [ \"\${AGSIST_NO_SKIPS:-}\" != 1 ] || bash '$DEV/check-skips.sh' '$NT'"
 run seo python3 scripts/check_seo.py
 run budget python3 scripts/check_site_budget.py
 run layers python3 scripts/check_layers.py
