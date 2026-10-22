@@ -898,14 +898,14 @@ class NoSecretError extends Error {}
 // removing someone from a list is low harm, a dead stop link is not.
 async function unsubOk(env, msg, t) {
   if (typeof env.UNSUB_SECRET !== "string" || !env.UNSUB_SECRET) {
-    console.error("agsist-subs: UNSUB_SECRET is not set; honouring an unsubscribe WITHOUT checking its token. Set the secret in Cloudflare.");
+    console.error("subs worker: UNSUB_SECRET is not set; honouring an unsubscribe WITHOUT checking its token. Set the secret in Cloudflare.");
     return true;
   }
   return safeEq(t, await hmac16(msg, env.UNSUB_SECRET));
 }
 async function hmac16(email, secret) {
   if (typeof secret !== "string" || !secret)
-    throw new NoSecretError("UNSUB_SECRET is not set on the agsist-subs Worker; refusing to sign or check a token");
+    throw new NoSecretError("UNSUB_SECRET is not set on this Worker; refusing to sign or check a token");
   const key = await crypto.subtle.importKey(
     "raw", new TextEncoder().encode(secret),
     { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
@@ -920,7 +920,7 @@ const LID_RE = /^[0-9a-hjkmnp-tv-z]{16}$/;
 const LID_NEW_MAX = 400;   // new lid: writes in one list call (KV allows 1,000 operations a call)
 async function lidFor(email, secret) {
   if (typeof secret !== "string" || !secret)
-    throw new NoSecretError("UNSUB_SECRET is not set on the agsist-subs Worker; refusing to make a link id");
+    throw new NoSecretError("UNSUB_SECRET is not set on this Worker; refusing to make a link id");
   const key = await crypto.subtle.importKey(
     "raw", new TextEncoder().encode(secret),
     { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
@@ -2565,7 +2565,7 @@ async function rpoDispatch(env) {
   try {
     const r = await fetch("https://api.github.com/repos/dnilgis/agsist/actions/workflows/rp-buyer-email.yml/dispatches", {
       method: "POST",
-      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-subs", "Content-Type": "application/json" },
+      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-api", "Content-Type": "application/json" },
       body: JSON.stringify({ ref: "main", inputs: { dry_run: env.RP_BUYER_EMAIL_LIVE === "1" ? "false" : "true" } }),
     });
     return r.status === 204 ? "started" : "HTTP " + r.status;
@@ -2590,7 +2590,7 @@ async function rprDispatch(env) {
   try {
     const r = await fetch("https://api.github.com/repos/dnilgis/agsist/actions/workflows/rp-design-email.yml/dispatches", {
       method: "POST",
-      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-subs", "Content-Type": "application/json" },
+      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "User-Agent": "agsist-api", "Content-Type": "application/json" },
       body: JSON.stringify({ ref: "main", inputs: { dry_run: env.RP_DESIGN_EMAIL_LIVE === "1" ? "false" : "true" } }),
     });
     return r.status === 204 ? "started" : "HTTP " + r.status;
@@ -2604,7 +2604,7 @@ export default {
       return await handle(req, env);
     } catch (e) {
       if (!(e instanceof NoSecretError)) throw e;
-      console.error("agsist-subs: " + e.message);
+      console.error("subs worker: " + e.message);
       // The link pages (confirm, unsubscribe, sponsor) answer in HTML; the page
       // POSTs and the token routes in JSON.
       const u = new URL(req.url);

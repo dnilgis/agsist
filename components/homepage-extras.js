@@ -490,7 +490,7 @@
   // returning visitor sees "Watching" instead of the button again -- it is
   // NOT the source of truth (double opt-in email confirmation is), so it is
   // never trusted for anything but that one line of UI.
-  var WATCH_WORKER = 'https://agsist-subs.dnilgis.workers.dev';
+  var WATCH_WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var WATCH_KEY = 'agsist_watching';
   function watchedSet(){
     try{ return JSON.parse(window.localStorage.getItem(WATCH_KEY) || '{}'); }catch(e){ return {}; }

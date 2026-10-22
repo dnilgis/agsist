@@ -53,7 +53,7 @@ async function mocks(ctx, mode) {
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
     const u = new URL(r.request().url());
     if (u.host === "buy.stripe.com") return r.fulfill({ status: 200, contentType: "text/html", body: "<p>stripe</p>" });
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (r.request().method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       const m = /^\/rp-short\/([0-9A-Z]+)$/.exec(u.pathname);
       if (m) return SHORT[m[1]] ? r.fulfill({ headers: h, json: { ok: true, code: SHORT[m[1]] } }) : r.fulfill({ status: 404, headers: h, json: { ok: false } });

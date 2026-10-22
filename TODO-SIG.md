@@ -6,7 +6,7 @@ one, add a new `- [ ]` line. This file is public (it is in the site repo), so ke
 names and anything private out of it.
 
 - [ ] Test Stripe with a $19 purchase and refund it
-- [ ] Stripe read-only key: Stripe -> Developers -> API keys -> Create restricted key ("agsist orders"), Checkout Sessions Read and Charges Read, everything else None; copy it (rk_live_...). Then Cloudflare -> Workers & Pages -> agsist-subs -> Settings -> Variables and Secrets -> Add -> type Secret, name STRIPE_READ_KEY, paste, Deploy. That one place feeds the paid marks in the morning email, the Today page and the buyer email. No Actions secret needed.
+- [ ] Stripe read-only key: Stripe -> Developers -> API keys -> Create restricted key ("agsist orders"), Checkout Sessions Read and Charges Read, everything else None; copy it (rk_live_...). Then Cloudflare -> Workers & Pages -> agsist-api -> Settings -> Variables and Secrets -> Add -> type Secret, name STRIPE_READ_KEY, paste, Deploy. That one place feeds the paid marks in the morning email, the Today page and the buyer email. No Actions secret needed.
 - [ ] Take a photo of a framed print on a wall, plus a close-up of the paper
 - [ ] Tap the two Rain Print example years on the live site
 - [ ] Send the Rain Print gift-guide pitches by Oct 31 (the list is in your email)

@@ -81,7 +81,7 @@ test("two waitlist forms, same worker and topic as before, extras folded into th
     assert.ok(new RegExp(`name="count-${n}" value="6\\+"`).test(main));
     assert.ok(new RegExp(`id="rg-gotcha-${n}" name="_gotcha"`).test(main), "honeypot on form " + n);
   }
-  assert.ok(page.includes("'https://agsist-subs.dnilgis.workers.dev/notice'"));
+  assert.ok(page.includes("'https://agsist-api.dnilgis.workers.dev/notice'"));
   assert.ok(/topic: 'rain-gauge', source: 'rain-gauge'/.test(page));
   assert.ok(/\.slice\(0, 280\)/.test(page), "the note stays inside the worker's 280");
   assert.ok(!/body\.(count|use)\b/.test(page), "no new worker fields");

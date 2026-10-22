@@ -43,7 +43,7 @@ async function mocks(ctx, st) {
   const upto = "2026-10-09";
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
     const req = r.request(), u = new URL(req.url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (req.method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       return r.fulfill({ status: 503, headers: h, body: "x" });
     }

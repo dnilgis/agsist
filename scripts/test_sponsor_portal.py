@@ -243,7 +243,7 @@ def main():
     fp = (ROOT / "components" / "form-post.js").read_text()
     check('<script src="/components/form-post.js?v=' in html and "sendForm(" in html and "fetch(" not in html.split("function sendForm")[1].split("\n  }")[0],
           "approval and requests post through the shared form helper")
-    check("agsist-subs.dnilgis.workers.dev/form" in fp and "formspree.io/f/xnjbwepn" in fp,
+    check("agsist-api.dnilgis.workers.dev/form" in fp and "formspree.io/f/xnjbwepn" in fp,
           "requests post to the subs worker, with the site's own Formspree form as the fallback")
     check("That did not go through." in html and "mailto:" in html,
           "a failed request says so and hands over a written email")

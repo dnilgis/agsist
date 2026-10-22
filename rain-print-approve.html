@@ -14,7 +14,7 @@
      The approval is a POST made by this page's script, so a mail scanner that
      only fetches the link approves nothing. Approving twice is fine. Nothing
      about the buyer is in the link. Not in the sitemap. -->
-<link rel="preconnect" href="https://agsist-subs.dnilgis.workers.dev" crossorigin>
+<link rel="preconnect" href="https://agsist-api.dnilgis.workers.dev" crossorigin>
 <style>
   :root{--bg:#f6f7f5;--text:#161a18;--muted:rgba(22,26,24,.72);--link:#7a5a12;--ok:#1f6b3a}
   @media (prefers-color-scheme: dark){:root{--bg:#0a0c0d;--text:#e9edeb;--muted:rgba(233,237,235,.72);--link:#d4a23f;--ok:#7fd19b}}
@@ -40,7 +40,7 @@
 </main>
 <script>
 (function () {
-  var API = 'https://agsist-subs.dnilgis.workers.dev/rp-order/approve';
+  var API = 'https://agsist-api.dnilgis.workers.dev/rp-order/approve';
   var q = new URLSearchParams(location.search), k = q.get('k') || '', t = q.get('t') || '';
   var msg = document.getElementById('msg'), sub = document.getElementById('sub'), wrap = document.getElementById('again-wrap');
   function say(h, s, ok) { msg.textContent = h; msg.className = ok ? 'ok' : ''; sub.textContent = s; }

@@ -130,11 +130,11 @@ test("no sender names a workers.dev host except the API it calls (never in an em
   // file -> the lines allowed to name the host: a default API base or a fetch, and selftest fixtures
   const allowed = {
     "morning_report.py": [/^PASTE_STATUS = /],
-    "subscriber_report.py": [/env\("LIST_URL", "https:\/\/agsist-subs\.dnilgis\.workers\.dev"\)/],
-    "list_hygiene.py": [/env\("LIST_URL", "https:\/\/agsist-subs\.dnilgis\.workers\.dev"\)/],
-    "send_daily.py": [/^\s+https:\/\/agsist-subs\.dnilgis\.workers\.dev\) /],
+    "subscriber_report.py": [/env\("LIST_URL", "https:\/\/agsist-api\.dnilgis\.workers\.dev"\)/],
+    "list_hygiene.py": [/env\("LIST_URL", "https:\/\/agsist-api\.dnilgis\.workers\.dev"\)/],
+    "send_daily.py": [/^\s+https:\/\/agsist-api\.dnilgis\.workers\.dev\) /],
     "brief_email.py": [/^\s+\("https:\/\/agsist-subs\.dnilgis\.workers\.dev\/unsubscribe\?k=0123456789abcdef&t=ab", "x",$/, /^\s+"https:\/\/agsist-subs\.dnilgis\.workers\.dev\/unsubscribe\?k=0123456789abcdef&t=ab"\),$/],
-    "test_list_fallback.py": [/./], "test_sponsor_portal.py": [/./], "email_links.py": [/./], "sponsor_apply.py": [/selftest|agsist-subs\.dnilgis\.workers\.dev", "sec"/],
+    "test_list_fallback.py": [/./], "test_sponsor_portal.py": [/./], "email_links.py": [/./], "sponsor_apply.py": [/selftest|agsist-api\.dnilgis\.workers\.dev", "sec"/],
   };
   let seen = 0;
   for (const f of readdirSync(ROOT + "scripts").filter((x) => x.endsWith(".py"))) {

@@ -28,7 +28,7 @@ const SHOTS = process.env.SHOTS || "";
 if (SHOTS) mkdirSync(SHOTS, { recursive: true });
 const WIDTHS = [390, 1280];
 const read = (f) => readFileSync(join(ROOT, f), "utf8");
-const SUBS = "https://agsist-subs.dnilgis.workers.dev";
+const SUBS = "https://agsist-api.dnilgis.workers.dev";
 const TOK = "test-token-not-real";
 
 /* ---- the worker, in-process ---- */

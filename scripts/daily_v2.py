@@ -862,7 +862,7 @@ def _selftest():
     ok(not code_check(d, {"lead": "Corn is at $4.59½ overnight."}), "a last trade called overnight passes")
     ok(clip("USDA to pay farmers $8 billion for harvest fuel aid; diesel at a record") == "USDA to pay farmers $8 billion for harvest fuel aid", "clip at a clause")
     ok(len(clip("A" * 80)) <= SUBJECT_HARD, "hard cap")
-    ok(shared_host("https://agsist-subs.dnilgis.workers.dev/u?k=1") and not shared_host("https://agsist.com/e?k=1"), "shared hosts")
+    ok(shared_host("https://agsist-subs.dnilgis.workers.dev/u?k=1") and shared_host("https://agsist-api.dnilgis.workers.dev/u?k=1") and not shared_host("https://agsist.com/e?k=1"), "shared hosts")
     print("daily_v2 selftest " + ("FAILED" if fails else "ok"))
     return 1 if fails else 0
 

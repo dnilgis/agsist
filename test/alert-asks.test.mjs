@@ -153,7 +153,7 @@ async function open(browser, port, url, posts) {
   await pg.route("**/*", (r) => {
     const u = r.request().url();
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
-    if (u.startsWith("https://agsist-subs.dnilgis.workers.dev/")) {
+    if (u.startsWith("https://agsist-api.dnilgis.workers.dev/")) {
       posts.push({ path: new URL(u).pathname, body: JSON.parse(r.request().postData() || "{}") });
       return r.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ ok: true }) });
     }

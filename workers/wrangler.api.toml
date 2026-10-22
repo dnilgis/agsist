@@ -6,7 +6,7 @@ keep_vars = true
 
 # The new home of the subs Worker (Oct 22, 2026): the same code as
 # wrangler.subs.toml, on a new name, after Cloudflare blocked
-# agsist-subs.dnilgis.workers.dev. Host: agsist-api.dnilgis.workers.dev.
+# agsist-api.dnilgis.workers.dev. Host: agsist-api.dnilgis.workers.dev.
 # wrangler.subs.toml stays so the old Worker's build still works.
 
 # The SAME KV store the old Worker uses, so every subscriber, alert, order

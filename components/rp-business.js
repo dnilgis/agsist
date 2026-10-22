@@ -30,7 +30,7 @@
   var $ = function (id) { return doc.getElementById(id); };
   var ORDER_TO = 'sig@farmers1st.com';
   var PHONE = '715-797-2428';
-  var LOGO_LINK = 'https://agsist-subs.dnilgis.workers.dev/rp-logo/';
+  var LOGO_LINK = 'https://agsist-api.dnilgis.workers.dev/rp-logo/';
   var EMAIL_RE = /^[^\s@,;<>"]+@[^\s@,;<>"]+\.[A-Za-z]{2,}$/;
   var TOWNS_MAX = 20000;   // the worker's rain-print-business towns cap (subs-worker.js v5.35)
   var PAGE = '/rain-print-business';

@@ -91,7 +91,7 @@ async function mocks(ctx, opts, log) {
   let logoBytes = null;
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
     const req = r.request(), u = new URL(req.url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (req.method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       if (u.pathname === "/where") return opts.where ? r.fulfill({ headers: h, json: { ok: true, city: "Chetek", region_code: "WI" } }) : r.fulfill({ status: 500, headers: h, body: "x" });
       if (u.pathname === "/rp-short" && req.method() === "POST") { const b = JSON.parse(req.postData()); SHORT.K7Q2M = b.code; return r.fulfill({ headers: h, json: { ok: true, id: "K7Q2M" } }); }

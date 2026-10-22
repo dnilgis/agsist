@@ -29,7 +29,7 @@ export async function mocks(ctx, opts, log) {
   const upto = "2026-10-09";
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
     const req = r.request(), u = new URL(req.url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev" && opts.worker) {
+    if (u.host === "agsist-api.dnilgis.workers.dev" && opts.worker) {
       (log.worker = log.worker || []).push(req.method() + " " + u.pathname);
       if (opts.worker === "hang") return;
       if (opts.worker === "down") return r.abort("connectionrefused");
@@ -40,7 +40,7 @@ export async function mocks(ctx, opts, log) {
       (log.formspree = log.formspree || []).push({ at: Date.now(), body });
       return opts.formspree === "fail" ? r.fulfill({ status: 503, headers: h, body: "x" }) : r.fulfill({ headers: h, json: { ok: true } });
     }
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (req.method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       if (u.pathname === "/rp-order" && req.method() === "POST") {
         log.order.push({ at: Date.now(), body: JSON.parse(req.postData()), stripeBefore: log.stripe.length });

@@ -373,7 +373,7 @@
       },
       {
         key:'alerts', name:'Alerts & Subscriptions', desc:'The email briefing and hail-alert service: runs on Cloudflare, independent of the rest.',
-        url:'https://agsist-subs.dnilgis.workers.dev/', ping:true,
+        url:'https://agsist-api.dnilgis.workers.dev/', ping:true,
         check:function(reachable){
           return reachable ? {state:'ok', label:'Online', age:'responding'} : {state:'down', label:'Unreachable', age:'no response'};
         }

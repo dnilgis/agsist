@@ -76,7 +76,7 @@ test("the worker routes (scripts/test_rp_order_worker.mjs)", () => {
 
 test("the page posts the record on the Stripe path only, waits at most 2 s, and never sends an email", () => {
   const S = read("components/rain-print.js");
-  assert.match(S, /var ORDER_URL = 'https:\/\/agsist-subs\.dnilgis\.workers\.dev\/rp-order', PRESS_WAIT_MS = 2000/);
+  assert.match(S, /var ORDER_URL = 'https:\/\/agsist-api\.dnilgis\.workers\.dev\/rp-order', PRESS_WAIT_MS = 2000/);
   const i = S.indexOf("if (link && code) {\n      var u = link"), j = S.indexOf("return;\n    }", i);
   assert.ok(i > 0 && j > i);
   const body = S.slice(i, j);
@@ -88,7 +88,7 @@ test("the page posts the record on the Stripe path only, waits at most 2 s, and 
   const W = read("workers/subs-worker.js");
   assert.match(W, /PUBLIC_POSTS\.add\("\/rp-order"\)/);
   assert.match(W, /"\/rp-order": \[30, 100, 2000\]/);
-  for (const p of ["rain-print.html", "rain-print-business.html", "rp-gift.html"]) assert.match(read(p), /\/components\/rain-print\.js\?v=70"/, p);
+  for (const p of ["rain-print.html", "rain-print-business.html", "rp-gift.html"]) assert.match(read(p), /\/components\/rain-print\.js\?v=73"/, p);
 });
 
 // ---------- in a browser ----------
