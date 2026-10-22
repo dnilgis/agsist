@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-22",
+      "date_display": "Thursday, October 22, 2026",
+      "headline": "Corn $4.64 and beans $12.47 hold; crude up 2.2% to $99.24",
+      "teaser": "Grains stop sliding but barely bounce, while crude climbs 2.2% to $99.24 on fresh Gulf attacks.",
+      "market_mood": "mixed",
+      "surprise_count": 1,
+      "sections": 2,
+      "url": "/daily/2026-10-22",
+      "market_closed": false
+    },
+    {
       "date": "2026-10-21",
       "date_display": "Wednesday, October 21, 2026",
       "headline": "Corn down 6 straight days to $4.59½; beans down 7 to $12.45",
@@ -2547,6 +2558,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-21T10:48:26.457771+00:00",
-  "count": 222
+  "updated": "2026-10-22T11:03:28.189060+00:00",
+  "count": 223
 }
