@@ -190,8 +190,11 @@ test("the printed QR: shortest link that reopens the same report, smallest symbo
   const chetek = P.qrLink({ fips: "55005", zip: "54728" });
   assert.equal(chetek, "HTTPS://AGSIST.COM/H/55005/54728", "the short path 404.html routes back (Oct 19: smallest QR)");
   assert.equal(P.qrLink({ fips: "17019" }), "HTTPS://AGSIST.COM/H/17019");
-  assert.equal(P.qrLink({ fips: "55005", at: { lat: 45.31413, lng: -91.651 } }), "HTTPS://AGSIST.COM/here?f=55005&a=45.3141,-91.6510");
-  assert.equal(P.qrLink({ fips: "55005", zip: "54728", print: { parts: ["week"], more: true } }), "HTTPS://AGSIST.COM/here?f=55005&z=54728&p=66");
+  // Oct 22 panel: a spot or a print choice rides the short path too (was /here?..., a forward hop on every scan and a bigger code)
+  assert.equal(P.qrLink({ fips: "55005", at: { lat: 45.31413, lng: -91.651 } }), "HTTPS://AGSIST.COM/H/55005/A45.3141-91.6510");
+  assert.equal(P.qrLink({ fips: "55005", zip: "54728", print: { parts: ["week"], more: true } }), "HTTPS://AGSIST.COM/H/55005/54728/P66");
+  assert.equal(P.qrLink({ fips: "20057", at: { lat: 37.7528, lng: -100.0171 }, print: { parts: ["week"], more: true } }), "HTTPS://AGSIST.COM/H/20057/A37.7528-100.0171/P66");
+  for (let n = 0; n < 256; n++) assert.doesNotMatch(P.qrLink({ fips: "55005", zip: "54728", print: P.printFromCode(n) }), /here|\?/);
   // no tracking, no label, nothing but the place and the print choice
   assert.doesNotMatch(P.qrLink({ fips: "55005", zip: "54728", q: "Chetek, WI" }), /utm|q=|for=/);
   // the short keys reopen the same report
@@ -201,12 +204,13 @@ test("the printed QR: shortest link that reopens the same report, smallest symbo
   assert.deepEqual(P.parseQuery("?f=55005&a=45.3141,-91.6510").at, { lat: 45.3141, lng: -91.651 });
   for (let n = 1; n < 256; n++) { const c = P.printFromCode(n); if (n & 63) assert.equal(P.printCode(c), n); }
   // module counts at level M, the mode here.js draws with (mixed: letters-and-digits runs packed tight):
-  // version 2 (25 x 25) for a ZIP or a county (was 29 in byte mode), 29 with a print choice, 33 with a point
+  // version 2 (25 x 25) for a ZIP or a county (was 29 in byte mode), with a print choice too (was 29), 29 with a point (was 33)
   const M = (u) => Q.matrix(u, null, "mixed", 10).length;
   assert.equal(M(chetek), 25);
   assert.equal(M(P.qrLink({ fips: "17019" })), 25);
-  assert.equal(M(P.qrLink({ fips: "55005", zip: "54728", print: { parts: ["week"], more: true } })), 29);
-  assert.equal(M(P.qrLink({ fips: "55005", at: { lat: 45.31413, lng: -91.651 } })), 33);
+  assert.equal(M(P.qrLink({ fips: "55005", zip: "54728", print: { parts: ["week"], more: true } })), 25);
+  assert.equal(M(P.qrLink({ fips: "55005", at: { lat: 45.31413, lng: -91.651 } })), 29);
+  assert.equal(M(P.qrLink({ fips: "20057", at: { lat: 37.7528, lng: -100.0171 }, print: { parts: ["week"], more: true } })), 29);
   // the short paths go back to the same page through 404.html
   const RL = require(ROOT + "components/report-link.js");
   // (Oct 21: they open Fast Facts, where the place page moved; a /here link still shortens the same)
@@ -214,6 +218,18 @@ test("the printed QR: shortest link that reopens the same report, smallest symbo
   assert.equal(RL.full("/h/17019"), "https://agsist.com/fast-facts?f=17019");
   assert.equal(RL.short("https://agsist.com/here?f=17019"), "HTTPS://AGSIST.COM/H/17019");
   assert.equal(RL.short("https://agsist.com/fast-facts?f=17019"), "HTTPS://AGSIST.COM/H/17019");
+  // every short form the page prints opens the same place and print choice, and shortens back to itself
+  for (const pl of [{ fips: "55005", zip: "54728", print: { parts: ["week"], more: true } }, { fips: "55005", at: { lat: 45.31413, lng: -91.651 } }, { fips: "20057", at: { lat: 37.7528, lng: -100.0171 }, print: { parts: ["week", "fingerprint"], more: false, rain: true } }]) {
+    const s = P.qrLink(pl), full = RL.full("/" + s.slice(19)), q = P.parseQuery(full.split("?")[1]);
+    assert.equal(RL.short(full), s, s);
+    assert.equal(q.fips, pl.fips);
+    if (pl.zip) assert.equal(q.zip, pl.zip); else assert.deepEqual(q.at, { lat: +pl.at.lat.toFixed(4), lng: +pl.at.lng.toFixed(4) });
+    assert.equal(P.printCode(q.print), P.printCode(pl.print));
+  }
+  // nothing else shortens: an unknown key, a ZIP and a point together, a print code out of range
+  assert.equal(RL.short("https://agsist.com/fast-facts?f=55005&q=Chetek"), null);
+  assert.equal(RL.short("https://agsist.com/fast-facts?f=55005&z=54728&a=45.3141,-91.6510"), null);
+  assert.equal(RL.full("/H/55005/P999"), null);
 });
 
 test("this week on the site's own files", () => {

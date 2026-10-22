@@ -96,9 +96,13 @@
     if (n !== 63) q.push('p=' + n);
     // the common case goes as a short path (404.html routes /H/ back here, components/report-link.js):
     // all QR letters-and-digits, 25 x 25 instead of 29 x 29 (Sig, Oct 19: smallest QR always)
-    if (q.length === 1) return 'HTTPS://AGSIST.COM/H/' + place.fips;
-    if (q.length === 2 && place.zip) return 'HTTPS://AGSIST.COM/H/' + place.fips + '/' + place.zip;
-    return 'HTTPS://AGSIST.COM/here?' + q.join('&');
+    // Oct 22 panel: a spot or a print choice rides the same short path (it was /here?..., one more hop
+    // through the forward forever): H/<fips>[/<ZIP> | /A<lat><lng>][/P<print code>], all QR letters and digits
+    var h = 'HTTPS://AGSIST.COM/H/' + place.fips;
+    if (place.zip) h += '/' + place.zip;
+    else if (place.at) { var lo = (+place.at.lng).toFixed(4); h += '/A' + (+place.at.lat).toFixed(4) + (lo.charAt(0) === '-' ? '' : '+') + lo; }
+    if (n !== 63) h += '/P' + n;
+    return h;
   }
   /* The &print= value for a choice; '' when it is the default (everything, no more detail). */
   function printParam(choice) {
@@ -265,7 +269,7 @@
     if (v == null) return 'n/a';
     var dp = m.dp == null ? 1 : m.dp;
     if (m.unit === '$/ac') return '$' + fixed(v, 0);
-    if (/^%/.test(m.unit)) return fixed(v, dp) + '%';
+    if (/^%/.test(m.unit)) return fixed(v, dp) + '%' + (m.unit === '% of weeks' ? ' of weeks' : '');   // the drought weeks figure is a share of weeks (Oct 22 panel: "weeks" over a bare percent)
     if (m.unit === 'deg F') return fixed(v, dp) + '°F';
     if (m.unit === 'paid out / premium') return '$' + fixed(v, 2);
     return fixed(v, dp) + ' ' + (m.unit === 'head / 1,000 ac' ? 'head per 1,000 ac' : m.unit);
@@ -1002,7 +1006,10 @@
   function factDaily(d) {
     var label = 'This morning’s Daily';
     if (!d || !(d.teaser || d.headline)) return na(label, 'the briefing did not load', ['Read the Daily', '/daily']);
-    return { label: label, value: d.teaser || d.headline, date: isoDay(d.generated_at) || d.date || '', ctx: '', src: ['Read the Daily', '/daily'], long: true };
+    /* A teaser that carries a dollar figure (Oct 22: "crude climbs 2.2% to $99.24") is a price from
+       before the open, so the row says the letter is out and the link carries the rest. */
+    var t = d.teaser || d.headline, priced = /\$\d/.test(t);
+    return { label: label, value: priced ? 'Out this morning' : t, date: isoDay(d.generated_at) || d.date || '', ctx: priced ? 'Its prices are from before the open; the futures rows have the latest.' : '', src: ['Read the Daily', '/daily'], long: !priced };
   }
   /* State pages a link can open, for all 50 states. A state left out has no such page;
      test/fast-facts-front.test.mjs checks every link on disk. Cash bids come from

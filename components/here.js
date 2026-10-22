@@ -614,7 +614,7 @@
     el.textContent = 'Against its own history: too new to compare yet' + (t.length === rows.length ? '' : ' for ' + t.length + ' of these') + '.';
   }
   function elevHistory(rows, mine) {
-    var net = window.AGSIST_BIDS_NET, today = new Date().toISOString().slice(0, 10), sts = {};
+    var net = window.AGSIST_BIDS_NET, today = centralDay(), sts = {};   // the reader's Central day, as the ARC or PLC row (Oct 22: not the UTC date)
     rows.forEach(function (r) { if (r.st) sts[r.st] = 1; });
     Object.keys(sts).forEach(function (st) {
       if (!/^[A-Z]{2}$/.test(st)) return;
