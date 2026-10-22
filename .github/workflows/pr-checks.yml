@@ -66,11 +66,16 @@ jobs:
           cache-dependency-path: .github/workflows/pr-checks.yml
       - name: Python packages
         run: pip install --quiet --disable-pip-version-check pillow==12.3.0 numpy==2.5.3 pandas==3.0.5 openpyxl==3.1.5 matplotlib==3.11.2 pypdf==6.17.0 requests==2.34.2 scipy==1.18.1 shapely==2.2.0 pyyaml==6.0.2 lxml==6.1.3 pdfplumber==0.11.10
-      # pdftotext (poppler-utils), as fertilizer-coops.yml installs it: the price sheet
-      # reader reads its -layout columns (pypdf is only the fallback), and the
-      # fetch_coop_fert.py --selftest case "the PDF itself reads the same" needs it.
+      # pdftotext (poppler-utils): the price sheet reader reads its -layout columns
+      # (pypdf is only the fallback), and two node tests fail without it:
+      # fert-coops "the reader's selftest passes" (fetch_coop_fert.py --selftest, "the
+      # PDF itself reads the same") and rescore7-selftests. Not from apt: on Oct 22 the
+      # apt install sat silent on the slow mirror until the 30 minute job limit, twice.
+      # A pinned, checksummed Ubuntu build unpacked without apt and cached
+      # (.github/actions/pdftotext); any failure stops here within 5 minutes.
       - name: pdftotext
-        run: command -v pdftotext || { sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils; }
+        timeout-minutes: 5
+        uses: ./.github/actions/pdftotext
 
       # ffmpeg with ffprobe: the Rain Print MP4 writer test decodes its file with it and
       # skips without it (and a skip fails these checks). Not from apt: on Oct 22 the

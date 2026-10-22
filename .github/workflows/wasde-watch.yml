@@ -110,11 +110,12 @@ jobs:
       # `apt-get update` first, the install failed, the `|| true` hid it, and
       # pdftotext was missing. Here the index is refreshed and the binary is
       # run before anything relies on it, so a missing tool is a red step.
+      # Oct 22: apt itself hung 30 min on the slow mirror, so the binary now comes
+      # pinned and checksummed without apt (.github/actions/pdftotext), which also
+      # runs it and fails loudly.
       - name: Install pdftotext
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq poppler-utils
-          pdftotext -v
+        timeout-minutes: 5
+        uses: ./.github/actions/pdftotext
 
       # THE READER, BEFORE THE NETWORK. Twenty-odd hand-worked cases, no key,
       # under a second — and this job runs up to fifty times a month, so a

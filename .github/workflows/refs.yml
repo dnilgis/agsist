@@ -70,11 +70,10 @@ jobs:
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           mode: ${{ vars.ENGINE_MODE }}
 
+      # pinned and checksummed, without apt (apt hung 30 min on the slow mirror Oct 22)
       - name: Install poppler (pdftotext)
-        run: |
-          sudo apt-get update -qq >/dev/null
-          sudo apt-get install -y -qq poppler-utils >/dev/null
-          pdftotext -v 2>&1 | head -1
+        timeout-minutes: 5
+        uses: ./.github/actions/pdftotext
 
       - name: Check the input
         run: |

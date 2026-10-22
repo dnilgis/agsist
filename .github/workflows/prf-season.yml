@@ -48,6 +48,11 @@ jobs:
         run: |
           if [ -f scripts/fetch_prf_season.py ]; then python scripts/fetch_prf_season.py --selftest; fi
 
+      - name: pdftotext for the probe
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'probe' }}
+        timeout-minutes: 5
+        continue-on-error: true  # the probe still saves the PDF without it
+        uses: ./.github/actions/pdftotext
       - name: Probe
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'probe' }}
         env:
@@ -75,7 +80,6 @@ jobs:
           get rma-ri-page.html "https://www.rma.usda.gov/policy-procedure/insurance-plans/pasture-rangeland-forage"
           # the index service also returns the interval rain in mm: one grid, one call, to compare later
           get rma-api-30025.json "https://public-rma.fpac.usda.gov/apps/PrfWebApi/PrfExternalIndexes/GetIndexValues?intervalType=BiMonthly&sampleYearMinimum=2024&sampleYearMaximum=2026&gridId=30025"
-          sudo apt-get -qq install -y poppler-utils >/dev/null 2>&1 || true
           [ -s "$D/rma-processing-2027.pdf" ] && pdftotext -layout "$D/rma-processing-2027.pdf" "$D/rma-processing-2027.txt" || true
           ls -la "$D"; cat "$D/status.txt"; cat "$D/errors.txt" || true
           bash scripts/push_raw.sh "prf-season probe" "$D"
