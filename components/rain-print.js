@@ -2232,18 +2232,15 @@
   // the options panel: what each switch can do for this print, and why one can't
   function syncExtrasUi() {
     var say = function (id, t) { var el = $(id); if (el) { el.textContent = t || ''; el.hidden = !t; } };
-    var tempBox = $('rp-temp-opts');
-    if (!tempBox) return;
+    if (!$('rp-temp-opts')) return;
     var noTemp = TEMP && TEMP.none;
-    tempBox.hidden = !!noTemp;
-    $('rp-crop-opts').hidden = !!noTemp;
     var stripesWhy = !noTemp && ST.ribbon && TEMP && TEMP.td ? ((extrasTemp() || {}).foot || []).filter(function (t) { return /^Temperature stripes left off/.test(t); })[0] : '';
     say('rp-temp-why', noTemp ? TEMP.none : TEMP && TEMP.tm ? (TEMP.tm.same ? 'Temperatures from the same station as the rain.' : 'Temperatures from ' + TEMP.tm.name + ', ' + TEMP.tm.words + ': the nearest station with daily highs and lows for ' + META.year + '.') +
       (stripesWhy ? ' ' + stripesWhy + '; the hottest and coldest day go in the small print instead.' : '') : '');
-    // the crop's days come from the marked days
+    STRIPES_OFF = !!stripesWhy;
     syncCropDays();
     var c = extrasCrop();
-    say('rp-crop-say', noTemp ? '' : cropWhy() || (ST.crop && !c && TEMP && TEMP.td ? 'Mark the planting day and the harvest day above, then pick them here.' : c && c.stop === 'missing' ? 'The temperature record has a gap, so no stage after it is drawn.' : ''));
+    say('rp-crop-say', noTemp ? 'Needs daily highs and lows: see Temps.' : cropWhy() || (!$('rp-crop').value ? 'Plants: pick corn or soybeans first.' : '') || (ST.crop && !c && TEMP && TEMP.td ? 'Mark the planting day and the harvest day above, then pick them here.' : c && c.stop === 'missing' ? 'The temperature record has a gap, so no stage after it is drawn.' : ''));
     var r2 = ST.style === 'r2', long = STATIONS.some(function (s) { var r = s.valid_daterange && s.valid_daterange[0]; return r && +r[1].slice(0, 4) - +r[0].slice(0, 4) + 1 >= HIST_MIN; });
     $('rp-hist').disabled = r2 || (!long && !!STATIONS.length);
     var full = META ? FULL_CACHE.get(META.sid) : null;
@@ -2256,32 +2253,92 @@
       b.type = 'button'; b.className = 'rp-linkbtn'; b.id = 'rp-hist-long'; b.textContent = 'Use the nearest station with ' + HIST_MIN + ' full years';
       hw.appendChild(doc.createTextNode(' ')); hw.appendChild(b);
     }
+    syncLayers();
   }
-  /* The crop days picked by hand (2026-10-22: a planting day picked alone went blank again, because the
+  /* THE LAYERS CARD (2026-10-22, Sig: yes to all six). Ten layers, each one tap on or off. A layer that can't
+     change the print right now is greyed, and its one-line reason shows in its row; tapping it says why under
+     the print. Hottest, coldest is "included" while the daily temperature stripes are on: the stripes name those
+     two days. The count says how many are on the print. */
+  var STRIPES_OFF = false;
+  var LAYER_NAME = { cmp: 'Usual year', normals: 'Month normals', records: 'Remarkable days', frost: 'Frost dates', heat: 'Hottest, coldest',
+    ribbon: 'Warmer or colder each day', crop: 'Crop', plants: 'Plants', ghost: 'Usual-year plants', hist: 'Every year behind yours' };
+  var LAYER_WHERE = { cmp: 'a usual year beside yours, the verdict upper left', normals: 'the usual total in gray under each month',
+    records: 'notes on the line: biggest snow, wettest week', frost: 'two ticks on the date line, spring and fall',
+    heat: 'one line in the small print under the chart', ribbon: 'a stripe a day under the chart, blue colder, rust warmer',
+    crop: 'stages on the ground line, by growing degree days', plants: 'little plants standing on the ground line',
+    ghost: 'gray plants from a usual year beside yours', hist: 'thin gray lines behind yours, one a year' };
+  function heatIncluded() { return !!(ST.ribbon && !(TEMP && TEMP.none) && !STRIPES_OFF); }
+  // why each layer can't change the print right now ('' when it can)
+  function layerWhy() {
+    var noT = TEMP && TEMP.none ? 'no daily highs and lows here for this year' : '', crop = $('rp-crop') ? $('rp-crop').value : '';
+    var hw = $('rp-hist-why');
+    return { cmp: '', records: '', normals: ST.cmp === 'none' ? 'needs a usual year: pick 30-yr normal or This station' : '',
+      frost: noT, heat: noT || (heatIncluded() ? 'named on the daily temperature stripes already' : ''), ribbon: noT, crop: noT,
+      plants: noT || (crop ? '' : 'pick corn or soybeans first'), ghost: noT || (crop ? '' : 'pick corn or soybeans first'),
+      hist: $('rp-hist') && $('rp-hist').disabled && !$('rp-hist').getAttribute('data-gift-lock') ? ((hw && !hw.hidden && hw.firstChild ? hw.firstChild.textContent : '') || 'not for this print').replace(/\.$/, '') : '' };
+  }
+  function layerOn(k, why) {
+    if (k === 'cmp') return ST.cmp !== 'none';
+    if (k === 'crop') return !!ST.crop;
+    if (why[k]) return k === 'heat' && heatIncluded();
+    return k === 'hist' ? wantHist() : !!ST[k];
+  }
+  function syncLayers() {
+    var card = $('rp-layers');
+    if (!card) return;
+    var why = layerWhy(), n = 0;
+    ['normals', 'frost', 'heat', 'ribbon', 'plants', 'ghost'].forEach(function (k) {
+      var el = $('rp-' + k);
+      if (el && !el.getAttribute('data-gift-lock')) el.disabled = !!why[k];
+    });
+    var hc = $('rp-heat-chip');
+    if (hc) hc.classList.toggle('rp-inc', heatIncluded());
+    doc.querySelectorAll('[data-crop]').forEach(function (b) { b.setAttribute('aria-disabled', String(!!why.crop)); });
+    Object.keys(LAYER_NAME).forEach(function (k) { if (layerOn(k, why)) n++; });
+    $('rp-lcount').textContent = Object.keys(LAYER_NAME).length + ' in all, ' + n + ' on';
+    var mw = [why.normals ? 'Month normals: ' + why.normals + '.' : '', TEMP && TEMP.none ? 'Frost dates, hottest, coldest: see Temps.' : heatIncluded() ? 'Hottest, coldest: named on the daily stripes.' : ''].filter(Boolean).join(' ');
+    var m = $('rp-marks-why'); m.textContent = mw; m.hidden = !mw;
+  }
+  // the line under the print: what the last tap did, and where on the print to look
+  function layerSaid(k) {
+    var el = $('rp-say');
+    if (!el || !LAYER_NAME[k]) return;
+    var why = layerWhy(), nm = LAYER_NAME[k], on, w = why[k], where = LAYER_WHERE[k];
+    if (k === 'cmp') { on = ST.cmp !== 'none'; if (on) nm = 'Usual year: ' + (ST.cmp === 'station' ? 'this station' : '30-yr normal'); }
+    else if (k === 'crop') { var c = $('rp-crop').value; on = !!c; if (on) nm = c === 'soy' ? 'Soybeans' : 'Corn'; if (!w && on && !ST.crop) w = cropWhy().replace(/^(Corn|Soybeans) needs? /, 'needs ').replace(/\.$/, ''); }
+    else on = !!($('rp-' + k) && $('rp-' + k).checked);
+    if (k === 'heat' && heatIncluded()) { el.innerHTML = '<b>Hottest, coldest</b>: included, named on the daily temperature stripes.'; return; }
+    if (k === 'ribbon' && on && heatIncluded()) where += '; the hottest and coldest day are named on it';
+    el.innerHTML = w ? '<b>' + esc(nm) + '</b>: ' + esc(w) + '.' : '<b>' + esc(nm) + (k === 'cmp' && on ? '' : on ? ' on' : ' off') + '</b>' + (on ? ': ' + esc(where) + '.' : '.');
+  }
+  /* The crop days set by hand (2026-10-22: a planting day picked alone went blank again, because the
      design drops a crop until both days are set and in order, and the boxes were filled back from the design).
-     The boxes keep what the reader picked; the design takes the crop once both days make sense. */
+     The boxes keep what the reader set; the design takes the crop once both days make sense. Since the layout
+     of 2026-10-22 the days are set right in the crop row, any day of the print's year; a crop picked fills them
+     from marked days whose words say so. */
   var CROP_HAND = { plant: '', harvest: '' };
   // why a crop picked in the box is not on the print yet, in one line ('' when it is, or none is picked)
   function cropWhy() {
     var pick = $('rp-crop') ? $('rp-crop').value : '';
     if (!pick || ST.crop) return '';
     var name = pick === 'soy' ? 'Soybeans' : 'Corn';
-    if (!ST.markers.length) return name + (pick === 'soy' ? ' need' : ' needs') + ' the planting day and the harvest day: mark them under Mark a day, then pick them here.';
-    if (!CROP_HAND.plant || !CROP_HAND.harvest) return 'Pick the ' + (!CROP_HAND.plant && !CROP_HAND.harvest ? 'planting day and the harvest day' : !CROP_HAND.plant ? 'planting day' : 'harvest day') + ' from your marked days' + (ST.markers.length < 2 ? ', or mark one more day above' : '') + '.';
+    if (!CROP_HAND.plant && !CROP_HAND.harvest) return name + (pick === 'soy' ? ' need' : ' needs') + ' the planting day and the harvest day: set them here.';
+    if (!CROP_HAND.plant || !CROP_HAND.harvest) return 'Set the ' + (!CROP_HAND.plant ? 'planting day' : 'harvest day') + ' too.';
     return 'The harvest day has to come after the planting day.';
   }
   function syncCropDays() {
     if (ST.crop) CROP_HAND = { plant: ST.cropPlant, harvest: ST.cropHarvest };
-    var opts = '<option value="">Pick a marked day</option>' + ST.markers.map(function (m) { return '<option value="' + esc(m.date) + '">' + esc(shortDate(m.date) + (m.label ? ', ' + m.label : '')) + '</option>'; }).join('');
+    var y = ST.year || parseInt($('rp-year').value, 10), on = !!$('rp-crop').value, lock = $('rp-crop').disabled;
     ['rp-crop-plant', 'rp-crop-harvest'].forEach(function (id) {
       var el = $(id); if (!el) return;
       var v = id === 'rp-crop-plant' ? CROP_HAND.plant : CROP_HAND.harvest;
-      if (el.innerHTML !== opts) el.innerHTML = opts;
-      el.value = v && ST.markers.some(function (m) { return m.date === v; }) ? v : '';
-      el.disabled = !$('rp-crop').value;
+      if (y) { el.min = y + '-01-01'; el.max = y + '-12-31'; }
+      el.value = v && y && v.slice(0, 4) === String(y) ? v : '';
+      if (!el.getAttribute('data-gift-lock')) el.disabled = !on;
     });
-    var on = !!$('rp-crop').value;
-    $('rp-plants').disabled = !on; $('rp-ghost').disabled = !on;
+    $('rp-cropdays').hidden = !on;
+    doc.querySelectorAll('[data-crop]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-crop') === $('rp-crop').value)); if (lock) b.disabled = true; });
+    if (!$('rp-plants').getAttribute('data-gift-lock')) { $('rp-plants').disabled = !on; $('rp-ghost').disabled = !on; }
   }
   // a planting or harvest day among the marked days, by its words, for a crop just picked
   function guessCropDay(re) { var m = ST.markers.filter(function (x) { return re.test(x.label || ''); })[0]; return m ? m.date : ''; }
@@ -2552,7 +2609,7 @@
     // layout and palette are not on the page any more; they ride along so an old link keeps its code
     return normalize({ place: $('rp-place').value, year: y, station: ST.station,
       layout: ST.layout, palette: ST.palette, size: '12x18', style: pick('rp-style', 'r1'),
-      cmp: $('rp-cmp').value, name: $('rp-name').value, dedication: $('rp-ded').value, markers: markers,
+      cmp: pick('rp-cmp', 'normal'), name: $('rp-name').value, dedication: $('rp-ded').value, markers: markers,
       normals: $('rp-normals').checked, records: $('rp-records').checked,
       crop: $('rp-crop').value, cropPlant: $('rp-crop-plant').value, cropHarvest: $('rp-crop-harvest').value, plants: $('rp-plants').checked, ghost: $('rp-ghost').checked,
       hist: $('rp-hist').checked, frost: $('rp-frost').checked, heat: $('rp-heat').checked, ribbon: $('rp-ribbon').checked,
@@ -2575,7 +2632,7 @@
     if (!sel.querySelector('option[value="' + yr + '"]')) { var o = doc.createElement('option'); o.value = yr; o.textContent = yr; sel.insertBefore(o, sel.firstChild); }
     sel.value = String(yr);
     radios('rp-style').forEach(function (r) { r.checked = r.value === s.style; });
-    $('rp-cmp').value = s.cmp;
+    radios('rp-cmp').forEach(function (r) { r.checked = r.value === s.cmp; });
     $('rp-name').value = s.name;
     $('rp-ded').value = s.dedication;
     $('rp-normals').checked = s.normals;
@@ -2592,8 +2649,6 @@
     }
     syncRows();
     syncYearNote();
-    // a design that uses the folded options opens them, so nothing on the print is out of sight
-    if (s.records || s.logo || s.cmp === 'station' || (s.cmp === 'none' && s.normals) || s.crop || s.hist || s.ribbon) $('rp-more').open = true;
     if (s === ST) syncCropDays();
     radios('rp-logo-ink').forEach(function (r) { r.checked = r.value === (s.logoInk ? '1' : '0'); });
     if (s === ST) wantLogo();
@@ -5220,19 +5275,29 @@
   // Canada: mm or inches, English or French (the choice rides in the design)
   radios('rp-units').forEach(function (r) { r.addEventListener('change', function () { ST.units = r.value; restyle(); syncCa(); ga('rain_print_units', { units: r.value }); }); });
   radios('rp-lang').forEach(function (r) { r.addEventListener('change', function () { ST.lang = r.value; restyle(); syncCa(); if (DATA && !BLOCKED) { render(); drawnStatus(); } ga('rain_print_lang', { lang: r.value }); }); });
-  // the normals are NOAA's 30-year normal: showing them makes that the comparison, and another comparison turns them off
-  $('rp-normals').addEventListener('change', function () { if ($('rp-normals').checked) $('rp-cmp').value = 'normal'; restyle(); });
-  $('rp-cmp').addEventListener('change', function () { if ($('rp-cmp').value !== 'normal') $('rp-normals').checked = false; restyle(); });
+  /* The usual year is one switch of three (2026-10-22, Sig: "Show the 30-year normals" and "Compare with" were one
+     thing as two controls). Month normals is the usual month total under each month: it goes with either usual year
+     and is greyed while the switch is Off. */
+  $('rp-normals').addEventListener('change', function () { restyle(); });
+  radios('rp-cmp').forEach(function (r) { r.addEventListener('change', function () { restyle(); }); });
   $('rp-records').addEventListener('change', function () { restyle(); });
   /* The 2026-10-17 options. A crop picked fills its days from marked days whose words say so (Planted,
      Harvest); the temperature switches read the temperature station the first time one is on; the history
      threads change the station (the nearest with 30 full years), so they draw the year again. */
-  $('rp-crop').addEventListener('change', function () {
+  function cropPicked() {
     if ($('rp-crop').value) {
       if (!CROP_HAND.plant) CROP_HAND.plant = guessCropDay(/plant|seed/i);
       if (!CROP_HAND.harvest) CROP_HAND.harvest = guessCropDay(/harvest|combin/i);
     }
     syncCropDays(); restyle(); extrasLoad(reqToken);
+  }
+  doc.querySelectorAll('[data-crop]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (b.disabled || b.getAttribute('aria-disabled') === 'true') return;
+      $('rp-crop').value = $('rp-crop').value === b.getAttribute('data-crop') ? '' : b.getAttribute('data-crop');
+      cropPicked();
+      layerSaid('crop');
+    });
   });
   ['rp-crop-plant', 'rp-crop-harvest'].forEach(function (id) {
     $(id).addEventListener('change', function () { CROP_HAND[id === 'rp-crop-plant' ? 'plant' : 'harvest'] = $(id).value; });
@@ -5241,6 +5306,28 @@
     $(id).addEventListener('change', function () { restyle(); extrasLoad(reqToken); });
   });
   $('rp-hist').addEventListener('change', histStation);
+  $('rp-layers').addEventListener('change', function (ev) {
+    var t = ev.target, k = t.name === 'rp-cmp' ? 'cmp' : String(t.id || '').replace(/^rp-/, '');
+    if (k === 'crop-plant' || k === 'crop-harvest') k = 'crop';
+    syncLayers(); layerSaid(k);
+  });
+  // a greyed chip passes the tap to its label (its box takes no clicks while disabled), which says why
+  $('rp-layers').addEventListener('click', function (ev) {
+    var c = ev.target && ev.target.closest ? ev.target.closest('.rp-chip') : null, i = c && c.querySelector('input');
+    if (i && i.disabled && !i.getAttribute('data-gift-lock')) layerSaid(i.id.replace(/^rp-/, ''));
+    else if (c && c.getAttribute('data-crop') && c.getAttribute('aria-disabled') === 'true') layerSaid('crop');
+  });
+  $('rp-alloff').addEventListener('click', function () {
+    var free = function (el) { return el && !el.disabled && !el.getAttribute('data-gift-lock'); }, hist = free($('rp-hist')) && $('rp-hist').checked;
+    radios('rp-cmp').forEach(function (r) { if (!r.disabled) r.checked = r.value === 'none'; });
+    ['rp-normals', 'rp-records', 'rp-frost', 'rp-heat', 'rp-ribbon', 'rp-plants', 'rp-ghost', 'rp-hist'].forEach(function (id) { var el = $(id); if (el && !el.getAttribute('data-gift-lock')) el.checked = false; });
+    if (!$('rp-crop').getAttribute('data-gift-lock')) $('rp-crop').value = '';
+    syncCropDays();
+    if (hist) histStation(); else { restyle(); extrasLoad(reqToken); }
+    syncLayers();
+    $('rp-say').innerHTML = '<b>All layers off</b>: just your year.';
+    ga('rain_print_layers_off', {});
+  });
   /* The threads change the station (the nearest with HIST_MIN full years), so the year is drawn again:
      the reader's own, the town in the box when the sample is up (2026-10-21, Sig: Chetek 2025 on the
      sample stayed on a gauge with 0 full years and said "Pick the nearest station again"), or the sample
@@ -5453,8 +5540,8 @@
   });
   doc.addEventListener('click', function (ev) {
     var t = ev.target;
-    // the station box is under More options: open it first
-    if (t && t.id === 'rp-chg') { ev.preventDefault(); $('rp-more').open = true; var sl = $('rp-station'); try { sl.scrollIntoView({ behavior: smooth(), block: 'center' }); sl.focus({ preventScroll: true }); } catch (e) {} }
+    // the station box is right under the station line
+    if (t && t.id === 'rp-chg') { ev.preventDefault(); var sl = $('rp-station'); try { sl.scrollIntoView({ behavior: smooth(), block: 'center' }); sl.focus({ preventScroll: true }); } catch (e) {} }
   });
   /* Two example years by the town box (Sig, 2026-10-14; the made-up family
      year went with the example words): a drought and a flood. Each is a plain
@@ -5587,7 +5674,8 @@
     logo: ['rp-logo-file', 'rp-logo-remove', 'rp-logo-ink'] };
   function lockInput(field) {
     (LOCK_IDS[field] || []).forEach(function (id) {
-      if (id === 'rp-style') { radios('rp-style').forEach(function (r) { r.disabled = true; }); return; }
+      if (id === 'rp-style' || id === 'rp-cmp') { radios(id).forEach(function (r) { r.disabled = true; }); return; }
+      if (id === 'rp-crop') doc.querySelectorAll('[data-crop]').forEach(function (b) { b.disabled = true; });
       if (id === 'rp-logo-ink') { radios('rp-logo-ink').forEach(function (r) { r.disabled = true; }); return; }
       if (id === 'rp-logo-file') { var pk = $('rp-logo-pick'); if (pk) { pk.setAttribute('aria-disabled', 'true'); pk.style.pointerEvents = 'none'; pk.style.opacity = '.55'; } }
       var el = $(id); if (el) { el.disabled = true; el.setAttribute('data-gift-lock', '1'); }
