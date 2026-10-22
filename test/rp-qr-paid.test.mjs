@@ -336,7 +336,7 @@ test("an order file with the link service down: no file, a plain message, Try ag
   }, { short: "down" });
 });
 
-test("checkout: no short link for a design that fits; one, at the press, for a long one; the order form if it fails", { skip }, async () => {
+test("checkout: no short link for a design that fits; one, at the press, for a long one; Stripe with a hash ref if it fails", { skip }, async () => {
   await withPage(async (page, base, errors, log) => {
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
@@ -362,22 +362,18 @@ test("checkout: no short link for a design that fits; one, at the press, for a l
     assert.equal(log.posts, 2, "a second press asks the worker again (2026-10-15: never a kept id alone), and gets the same id");
     assert.deepEqual(errors, []);
   });
+  /* The link service failing (2026-10-22, BUILD-RULES 14: checkout never depends on the worker): the press still goes to
+     Stripe, as RPH-<hash of the full code>, and the full design goes to Sig by the press record (here the worker's
+     /rp-order still answers) and, if that fails too, the backup form. Never the order form for want of a short link. */
   await withPage(async (page, base, errors, log) => {
     await page.goto(base + "/rain-print.html?d=" + LONG_CODE);
     await drawn(page);
-    const r = await checkout(page, "print12x18", { wait: 4000 });
-    assert.equal(r.stage, "sheet");
-    await page.waitForFunction(() => document.getElementById("ro-form") && document.getElementById("ro-form").offsetParent !== null, null, { timeout: 15000 });
-    assert.equal(log.posts, 1, "at most one");
-    assert.deepEqual(log.stripe, [], "no checkout without a reference Stripe takes");
-    assert.equal(await page.inputValue("#ro-choice"), "print12x18", "the order form takes the order instead");
-    // and says why, with a way back to checkout (2026-10-15)
-    assert.equal(await page.textContent("#ro-order-note"), "Checkout couldn’t open just now, so send this and I’ll email you a payment link.");
-    assert.equal(await page.isVisible("#ro-retry-go"), true);
-    assert.equal(await page.textContent("#ro-retry-go"), "Try checkout again");
-    await page.click("#ro-retry-go");
-    await page.waitForTimeout(800);
-    assert.equal(log.posts, 2, "Try checkout again asks the worker again");
+    const r = await checkout(page, "print12x18", { wait: 10000 });
+    assert.equal(r.stage, "stripe", JSON.stringify(r));
+    assert.equal(log.posts, 1, "at most one short-link ask");
+    assert.equal(refOf(r.url), RP.hashRef(LONG_CODE, false), "a reference Stripe takes, naming exactly this design");
+    assert.ok(refOf(r.url).length <= 200);
+    assert.equal(await page.evaluate(() => document.getElementById("rp-order").hidden), true, "no order form");
     assert.deepEqual(errors, []);
   }, { short: "fail" });
 });

@@ -411,6 +411,13 @@ test("an order request that went: \"Sent.\" stays, even when the form is opened 
     dedication: "For Grandpa Erling, sixty harvests on the home place. Love, all of us",
     markers: [{ date: "2025-05-08", label: "Planted beans" }, { date: "2025-07-04", label: "Hay all in" }, { date: "2025-10-24", label: "Harvest done" }] };
   await withPage(async (page, base, errors) => {
+    /* the order form is for a product with no payment link (since 2026-10-22 a short link that fails no longer
+       opens it: checkout goes on with a hash ref, BUILD-RULES 14), so the links are taken out here */
+    await page.route(/\/data\/rain-print\.json/, async (r) => {
+      const j = await (await r.fetch()).json();
+      j.payment_links = { digital: null, print12x18: null, framed12x18: null };
+      return r.fulfill({ json: j });
+    });
     await page.goto(base + "/rain-print.html?d=" + RP.encodeCode(LONG));
     await idle(page);
     await openSheet(page);
@@ -420,7 +427,7 @@ test("an order request that went: \"Sent.\" stays, even when the form is opened 
     await page.fill("#ro-name", "Ray"); await page.fill("#ro-email", "ray@example.com"); await page.fill("#ro-address", "123 Farm Rd, Chetek WI 54728");
     await page.click("#ro-submit");
     await page.waitForFunction(() => /^Sent\./.test(document.getElementById("ro-out").textContent), null, { timeout: 15000 });
-    // Check it and pay again, the same design: the checkout can't open, the form comes back, and "Sent." is still there
+    // Check it and pay again, the same design: no checkout for it, the form comes back, and "Sent." is still there
     await page.click("#rp-pay");
     await page.waitForSelector("#rp-proof[open]");
     await page.check("#rp-proof-ok");
