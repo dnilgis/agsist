@@ -83,7 +83,7 @@ test("pages and components call the new host", () => {
   assert.ok(read("scripts/build_atlas_pages.py").includes("var U='" + NEW + "/watch-subscribe'"), "the Atlas watch script builder");
   assert.ok(read("farmland-atlas/watch.js").startsWith("(function(){var U='" + NEW + "/watch-subscribe'"));
   const sw = read("sw.js");
-  assert.match(sw, /var CACHE_VERSION = 233;/);
+  assert.match(sw, /var CACHE_VERSION = 236;/);
   assert.ok(sw.includes("'agsist-api.dnilgis.workers.dev',") && sw.includes("'workers.dev',"), "never cached, either host");
   const ex = JSON.parse(read("data/audit-expected.json")).expected.map((e) => e.match);
   assert.ok(ex.includes("agsist-api.dnilgis.workers.dev/") && ex.includes("agsist-subs.dnilgis.workers.dev/"), "status ping expected on either host");

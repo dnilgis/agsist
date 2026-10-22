@@ -354,7 +354,8 @@ test("the proof view and the order summary are on the page", () => {
   assert.match(S, /if \(!mine\(\)\) runSample\(\)/, "no answer: the sample, never over a town the reader typed");
   // 2026-10-14 (Sig): example words are gray hints only, shown on a new visit's print at the top and never in the design
   // and from 2026-10-17 (Sig) the frost marks and the hottest and coldest day are on for a new visit too
-  assert.match(S, /if \(!ST\.place\) \{ ST\.cmp = 'normal'; ST\.normals = true; ST\.records = true; ST\.frost = true; ST\.heat = true; SHOW_EX = !PAID; \}/, "a new visit: empty boxes, remarkable days, frost and the hottest and coldest day on (Sig, 2026-10-15 and 10-17)");
+  // and from 2026-10-22 (Sig) every layer: the daily temperature stripes and every year behind too
+  assert.match(S, /if \(!ST\.place\) \{ ST\.cmp = 'normal'; ST\.normals = true; ST\.records = true; ST\.frost = true; ST\.heat = true; ST\.ribbon = true; ST\.hist = true; SHOW_EX = !PAID; \}/, "a new visit: empty boxes, every layer on (Sig, 2026-10-15, 10-17 and 10-22)");
   assert.ok(!/withExample|exampleLeft|clearExample|EX_OK/.test(S), "no example guard, no bounce, no Clear the example");
   assert.match(S, /name: ex \? EXAMPLE\.name : ST\.name/, "the example is drawn only where asked (the preview at the top)");
   assert.match(S, /PROOF_VIEW = PICK === 'framed12x18' \? 'framed' : 'print';/, "the sheet shows what step 3 picked");
