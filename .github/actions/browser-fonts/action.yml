@@ -1,0 +1,65 @@
+name: browser fonts
+description: >
+  The fonts `playwright install --with-deps chromium` used to add on ubuntu-24.04, without apt.
+  That step ran apt-get update and install every run: it upgraded eight packages the runner
+  already had and added nine new ones, and on Oct 22, 2026 it took 11 minutes on the slow
+  mirror. On the runner image Chromium's libraries are all there already (the job checks
+  with ldd); only these fonts are missing (the two xfonts packages with no font files in
+  them are left out). Each .deb is taken by exact version from Ubuntu's noble release pocket
+  (never removed), checked against its sha256 from that pocket's Packages index, unpacked
+  with dpkg-deb into ~/.local/share/fonts, and cached by this list. A cache hit touches no
+  network; any failure stops here, loudly. Give the step that uses this a timeout-minutes.
+
+runs:
+  using: composite
+  steps:
+    - name: Cache the fonts
+      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4.2.3
+      with:
+        path: ~/.local/share/fonts/pinned
+        key: browser-fonts-noble-v1-${{ hashFiles('.github/actions/browser-fonts/action.yml') }}
+    - name: browser fonts
+      shell: bash
+      env:
+        # package, pool path (noble), sha256 (noble main/universe amd64 Packages index)
+        FONT_DEBS: |
+          fonts-freefont-ttf pool/main/f/fonts-freefont/fonts-freefont-ttf_20211204+svn4273-2_all.deb c8283ec9ca390e6ad8d2114cb0942182db62bb97f5142c2f955218fc5f2027b4
+          fonts-ipafont-gothic pool/universe/f/fonts-ipafont/fonts-ipafont-gothic_00303-21ubuntu1_all.deb 71e63f0f88cca672fbb24ed27873d799d8c37233f001aa0bbcdc2f303b1b98a2
+          fonts-tlwg-loma-otf pool/universe/f/fonts-tlwg/fonts-tlwg-loma-otf_0.7.3-1_all.deb 888038637a15d11993e3a9ddd50f6391a704918b2e38fe75b2f4d74b4fcfda9a
+          fonts-unifont pool/universe/u/unifont/fonts-unifont_15.1.01-1build1_all.deb 56c9d46ce8223fa29c28eaeb99cabfc3a3159d3eec58f0bbbea839953f4cf363
+          fonts-wqy-zenhei pool/universe/f/fonts-wqy-zenhei/fonts-wqy-zenhei_0.9.45-8_all.deb 496969d65dc5664a3291e678d5cbef6815dc308ee5bf37b656c00af2cb490410
+          xfonts-cyrillic pool/universe/x/xfonts-cyrillic/xfonts-cyrillic_1.0.5+nmu1_all.deb d4a63d4da9f6d58467ccaa22b7b26c009ab46b07f0b1be2138d3bb037e74d2cb
+          xfonts-scalable pool/main/x/xfonts-scalable/xfonts-scalable_1.0.3-1.3_all.deb 517f73a4f6e37332addffe6ff1795d5371f2f9c0863781efc31c4613f69993de
+      run: |
+        set -euo pipefail
+        D="$HOME/.local/share/fonts/pinned"
+        if [ ! -f "$D/.done" ]; then
+          rm -rf "$D"; mkdir -p "$D"
+          W="$RUNNER_TEMP/font-debs"; mkdir -p "$W/x"
+          while read -r name pool sha; do
+            [ -n "$name" ] || continue
+            F="${pool##*/}"; ok=0
+            # Launchpad keeps every published build at this address for good; the pool keeps release-pocket builds
+            for u in "https://launchpad.net/ubuntu/+archive/primary/+files/$F" \
+                     "https://archive.ubuntu.com/ubuntu/$pool" \
+                     "https://azure.archive.ubuntu.com/ubuntu/$pool"; do
+              if curl -fsSL --connect-timeout 15 --max-time 120 --retry 2 --retry-delay 3 -o "$W/$F" "$u" \
+                 && echo "$sha  $W/$F" | sha256sum -c --quiet -; then ok=1; echo "$F from $u"; break; fi
+              echo "::warning::$F: no good copy from $u"; rm -f "$W/$F"
+            done
+            [ "$ok" = 1 ] || { echo "::error::could not get $F with the pinned sha256"; exit 1; }
+            dpkg-deb -x "$W/$F" "$W/x"
+          done <<< "$FONT_DEBS"
+          # only the font files; fontconfig reads ~/.local/share/fonts and everything under it
+          find "$W/x" -type f \( -name '*.ttf' -o -name '*.ttc' -o -name '*.otf' -o -name '*.pfb' -o -name '*.pcf.gz' \) -exec cp -t "$D" {} +
+          rm -rf "$W"
+          touch "$D/.done"
+        fi
+        fc-cache -f "$HOME/.local/share/fonts" >/dev/null
+        n=$(find "$D" -type f ! -name .done | wc -l)
+        [ "$n" -ge 7 ] || { echo "::error::only $n font files under $D"; exit 1; }
+        fams=$(fc-list : family file | grep -F "$D/" || true)
+        for fam in "FreeSans" "IPAGothic" "Loma" "Unifont" "WenQuanYi Zen Hei"; do
+          case "$fams" in *"$fam"*) ;; *) echo "::error::fontconfig does not see $fam under $D"; exit 1 ;; esac
+        done
+        echo "$n font files; fontconfig sees FreeSans, IPAGothic, Loma, Unifont, WenQuanYi Zen Hei"

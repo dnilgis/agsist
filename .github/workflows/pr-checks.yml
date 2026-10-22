@@ -125,14 +125,24 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: pw-chromium-${{ runner.os }}-${{ env.PW_VERSION }}
+      # The system side without apt: `install --with-deps` ran apt-get update and install every run (it upgraded
+      # eight packages the runner already had and added nine fonts) and took 11 minutes on the slow mirror on
+      # Oct 22. The runner image has every library Chromium needs (checked below with ldd, so a new image that
+      # lacks one fails here by name); the fonts come pinned and checksummed (.github/actions/browser-fonts).
+      - name: Browser fonts
+        timeout-minutes: 5
+        uses: ./.github/actions/browser-fonts
       - name: Playwright, Chromium and jsqr
+        timeout-minutes: 10
         run: |
           PW="$RUNNER_TEMP/pw"
           mkdir -p "$PW"
           npm install --no-save --no-audit --no-fund --prefix "$PW" "playwright@$PW_VERSION" "jsqr@$JSQR_VERSION"
-          "$PW/node_modules/.bin/playwright" install --with-deps chromium
+          "$PW/node_modules/.bin/playwright" install chromium
           CH=$(ls -d "$HOME"/.cache/ms-playwright/chromium-*/chrome-linux*/chrome | head -1)
           [ -x "$CH" ] || { echo "::error::no Chromium binary under ~/.cache/ms-playwright"; exit 1; }
+          miss=$(ldd "$CH" | grep "not found" || true)
+          [ -z "$miss" ] || { echo "::error::Chromium is missing system libraries (the runner image changed): $miss"; exit 1; }
           {
             echo "PLAYWRIGHT_PATH=$PW/node_modules/playwright/index.mjs"
             echo "CHROMIUM_PATH=$CH"
