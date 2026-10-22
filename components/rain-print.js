@@ -923,6 +923,30 @@
     return m ? (gift ? GIFT_PREFIX : '') + 'RPS-' + m[1] : '';
   }
 
+  /* THE HASH REFERENCE (2026-10-22, after the Oct 21 worker block; BUILD-RULES
+     14: checkout never depends on the worker). A design past Stripe's 200
+     characters goes to checkout as its short-link id, which only the worker
+     can make. When the worker can't be reached, it goes as RPH-<10 letters>
+     instead (GIFT-RPH-... for this year's January gift): a hash of the full
+     design code, made here with no outside service. It names exactly one
+     design: the same code always gives the same ref, and Sig gets the full
+     code itself by the backup form (pressBackup below, Formspree) and the
+     buyer's browser keeps it until that is sent. Stripe alone can't hold
+     such a design (its payment links take nothing longer than 200
+     characters from the page), so this is the honest second copy, not a
+     cut-down code. Letters: the short ids' own (no I, L, O, U). */
+  var REF_B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+  function hashRef(code, gift) {
+    var s = String(code || ''), h1 = 0xdeadbeef ^ s.length, h2 = 0x41c6ce57 ^ s.length;
+    for (var i = 0; i < s.length; i++) { var ch = s.charCodeAt(i); h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677); }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    var out = '', a = h1 >>> 7, b = h2 >>> 7;
+    for (var k = 0; k < 5; k++) { out += REF_B32[a & 31]; a >>>= 5; }
+    for (k = 0; k < 5; k++) { out += REF_B32[b & 31]; b >>>= 5; }
+    return (gift ? GIFT_PREFIX : '') + 'RPH-' + out;
+  }
+
   /* THE ORDER RECORD (2026-10-20, Sig: a $19 payment showed in Stripe with no
      design on it; client_reference_id sits on the Checkout Session, not on
      the payment page). Every press of Pay that opens Stripe posts this to the
@@ -1786,7 +1810,7 @@
     designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, SHEET: SHEET, sheetBoxes: sheetBoxes, safeInArt: safeInArt, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
-    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, orderRecord: orderRecord, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
+    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, hashRef: hashRef, orderRecord: orderRecord, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, snowTraceRaw: snowTraceRaw, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, jpegWithDpi: jpegWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, placeShown: placeShown, missRank: missRank, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
     cropInput: cropInput, tempInput: tempInput, histInput: histInput, withoutTemp: withoutTemp, tempStationOk: tempStationOk, tempWords: tempWords, TEMP_KINDS: TEMP_KINDS, HIST_MIN: HIST_MIN, TEMP_GAP_OK: TEMP_GAP_OK, OPT_FLAGS: OPT_FLAGS };
   root.RainPrint = api;
@@ -2275,7 +2299,7 @@
     if (root.AgRpLogo) return Promise.resolve(true);
     if (!LOGO_P) LOGO_P = new Promise(function (res) {
       var sc = doc.createElement('script');
-      sc.src = '/components/rp-logo.js?v=2';
+      sc.src = '/components/rp-logo.js?v=3';
       sc.onload = function () { res(!!root.AgRpLogo); };
       sc.onerror = function () { LOGO_P = null; res(false); };
       doc.head.appendChild(sc);
@@ -2301,13 +2325,22 @@
     syncLogoUi();
     root.AgRpLogo.load(id).then(function (got) {
       if (my !== LOGO_ASK) return;
-      LOGO.color = got; LOGO.state = 'ready';
+      LOGO.color = got; LOGO.state = 'ready'; LOGO.local = !!got.local;
       return logoInk(my).then(function () { if (my === LOGO_ASK) { syncLogoUi(); logoRedraw(); } });
     }, function (e) {
       if (my !== LOGO_ASK) return;
       LOGO.state = 'missing'; LOGO.msg = e && e.plain ? e.message : 'The logo didn\u2019t load.';
       syncLogoUi();
     });
+  }
+  var LOGO_KEPT = 'Logo added: it\u2019s on your print and saved in this browser. My logo upload is down right now, so it goes up by itself the next time you open this page here. Your order goes through as usual, and I check the logo is in before your proof; if it isn\u2019t, I\u2019ll ask you for the file.';
+  // a logo kept here while the worker was out goes up now (rp-logo.js loads only when one is waiting)
+  function logoKeptNote() { return LOGO && LOGO.local && ST.logo ? ' Logo kept in the buyer\u2019s browser while the site worker was out; it uploads on their next visit here, or ask them for the file.' : ''; }
+  function logoFlush() {
+    var w = '';
+    try { w = root.localStorage.getItem('agsist-rp-logo-wait') || ''; } catch (e) { w = ''; }
+    if (!w || w === '[]') return;
+    logoReady().then(function (ok) { if (ok && root.AgRpLogo.flushWaiting) root.AgRpLogo.flushWaiting().then(function () { if (LOGO && LOGO.local) syncLogoUi(); }); });
   }
   function logoMsg(t, bad) { var el = $('rp-logo-msg'); if (!el) return; el.textContent = t || ''; el.classList.toggle('rp-bad', !!bad); }
   function syncLogoUi() {
@@ -2328,6 +2361,7 @@
     // the quality check, in words: under about 200 pixels an inch at its printed size it may print soft
     var c = LOGO.color, A = root.AgRpLogo, sz = root.AgRainArt.logoSize(ST.style, c.w / c.h);
     var soft = A && A.ppi(c.w, c.h, sz.w, sz.h) < LOGO_PPI;
+    if (LOGO.local && A && A.isWaiting(LOGO.id)) return logoMsg(LOGO_KEPT + (soft ? ' It is small and may print soft; a bigger file prints better.' : ''), false);
     logoMsg(soft ? 'This logo is small and may print soft. If you have a bigger file, use that; I\u2019ll also check it in your proof.' : 'Logo added. It prints about ' + (sz.h / 100).toFixed(1) + ' in tall, next to the name.', false);
   }
   function pickLogo(file) {
@@ -2352,6 +2386,18 @@
           ST.logo = id;
           syncLogoUi(); logoRedraw();
           ga('rain_print_logo', { result: 'ok', kind: kind });
+        }, function (e) {
+          /* The worker out (2026-10-22): the logo stays on the print, kept in
+             this browser under its own id, and goes up on a later visit. */
+          if (!(e && e.offline) || !A.keepLocal) throw e;
+          return A.keepLocal(p.blob).then(function (id) {
+            if (my !== LOGO_ASK) return;
+            LOGO.id = id; LOGO.state = 'ready'; LOGO.local = true;
+            A.remember(id, LOGO.color);
+            ST.logo = id;
+            syncLogoUi(); logoRedraw();
+            ga('rain_print_logo', { result: 'kept', kind: kind });
+          }, function () { throw e; });
         });
       });
     }).catch(function (e) {
@@ -3781,13 +3827,73 @@
      Stripe opens. Fail-soft: whatever the worker answers, or after
      PRESS_WAIT_MS with no answer, checkout opens anyway. */
   var ORDER_URL = 'https://agsist-subs.dnilgis.workers.dev/rp-order', PRESS_WAIT_MS = 2000, PRESS_BUSY = false;
+  /* The worker out (2026-10-22, BUILD-RULES 14): a design Stripe holds in
+     full (its own code as the ref) needs nothing more; the webhook or the
+     poll makes the record from Stripe once the worker is back. A hash ref
+     (RPH-, hashRef above) is all Stripe gets of a long design, so the record
+     also goes to Sig by the backup form, BACKUP_WAIT_MS at most before
+     checkout opens; until it is sent it waits in this browser (the outbox). */
+  var BACKUP_WAIT_MS = 3000;
   function pressPost(rec) {
     return new Promise(function (done) {
-      var t = root.setTimeout(done, PRESS_WAIT_MS), end = function () { root.clearTimeout(t); done(); };
+      var t = root.setTimeout(function () { end(false); }, PRESS_WAIT_MS), over = false;
+      function end(ok) {
+        if (over) return;
+        over = true; root.clearTimeout(t);
+        if (ok || !/^(GIFT-)?RPH-/.test(rec.ref)) return done();
+        pressBackup(rec).then(done);
+      }
       try {
-        root.fetch(ORDER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rec) }).then(end, end);
-      } catch (e) { end(); }
+        root.fetch(ORDER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rec) })
+          .then(function (r) { end(!!(r && r.ok)); }, function () { end(false); });
+      } catch (e) { end(false); }
     });
+  }
+  function pressBackup(rec) {
+    var f = { _subject: 'Rain Print order record ' + rec.ref + ' (the site worker didn\u2019t answer)', form: 'rain-print-press',
+      ref: rec.ref, product: rec.product, price: rec.price == null ? '' : String(rec.price), design_code: encodeCode(ST), design_url: rec.design_url,
+      place: rec.place, year: String(rec.year || ''), name: rec.name, markers: rec.markers, dedication: rec.dedication, gift: rec.gift ? 'yes' : 'no',
+      logo: ST.logo || '', logo_note: logoKeptNote().trim(), at: new Date().toISOString() };
+    var id = outboxAdd({ to: 'formspree', fields: f });
+    return new Promise(function (done) {
+      var t = root.setTimeout(done, BACKUP_WAIT_MS);
+      outboxSend({ to: 'formspree', fields: f }).then(function (sent) { if (sent) outboxDrop(id); root.clearTimeout(t); done(); });
+    });
+  }
+  /* THE OUTBOX (2026-10-22): what this browser still owes Sig after a worker
+     or form failure: a long design's order record, or a gift's details when
+     neither the worker nor the backup form took them. Each goes again on the
+     next visit to this page (the way back from Stripe is one), until sent;
+     a month old, it is dropped. Nothing about the buyer but what the gift
+     post itself carries (their own name and email, for the proof). */
+  var OUTBOX_KEY = 'agsist-rp-outbox', OUTBOX_DAYS = 30;
+  function outbox() {
+    var a = null;
+    try { a = JSON.parse(root.localStorage.getItem(OUTBOX_KEY) || '[]'); } catch (e) { a = []; }
+    return (Array.isArray(a) ? a : []).filter(function (x) { return x && x.id && x.fields && Date.now() - (x.t || 0) < OUTBOX_DAYS * 86400000; });
+  }
+  function outboxPut(a) { try { if (a.length) root.localStorage.setItem(OUTBOX_KEY, JSON.stringify(a)); else root.localStorage.removeItem(OUTBOX_KEY); } catch (e) {} }
+  function outboxAdd(x) {
+    var id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    outboxPut(outbox().concat([Object.assign({ id: id, t: Date.now() }, x)]).slice(-20));
+    return id;
+  }
+  function outboxDrop(id) { outboxPut(outbox().filter(function (x) { return x.id !== id; })); }
+  // -> Promise of true once the worker's form or Formspree has it
+  function outboxSend(x) {
+    var send = root.agsistFormPost;
+    if (!send) return Promise.resolve(false);
+    var p = x.to === 'form' ? send(x.kind, x.data, x.fields, { workerMs: 4000 }) : send.formspree ? send.formspree(x.fields) : Promise.reject(new Error('no backup'));
+    return p.then(function () { return true; }, function () { return false; });
+  }
+  var OUTBOX_BUSY = false;
+  function outboxFlush() {
+    if (OUTBOX_BUSY) return;
+    var a = outbox();
+    if (!a.length) { outboxPut(a); return; }
+    OUTBOX_BUSY = true;
+    a.reduce(function (p, x) { return p.then(function () { return outboxSend(x).then(function (ok) { if (ok) outboxDrop(x.id); }); }); }, Promise.resolve())
+      .then(function () { OUTBOX_BUSY = false; }, function () { OUTBOX_BUSY = false; });
   }
   /* What the buyer ordered, kept in this tab (and this browser) for the page
      Stripe sends them back to, and for Back. The design is in the address bar
@@ -3894,6 +4000,7 @@
      (RPS-<id>), made now, at the press, once (never on a redraw). If the link
      service fails, or a product has no payment link, the order form takes the
      order with the full design code. */
+  var MINT_WAIT_MS = 4000, GIFT_KEPT = {};
   function pay(opts) {
     var id = PICK;
     proofSay('');
@@ -3918,10 +4025,14 @@
        Sig an order he can't open (2026-10-15). */
     if (link && long && !(opts && opts.minted) && root.AgRpShort && root.AgRpShort.mint) {
       proofSay('Opening checkout\u2026', true);
-      root.AgRpShort.mint(encodeCode(artDesign()), { fresh: true }).then(function (hit) { pay({ minted: true, ok: !!hit }); });
+      // 4 s at most (2026-10-22): past that, or on any failure, the hash ref below
+      root.AgRpShort.mint(encodeCode(artDesign()), { fresh: true, timeout: MINT_WAIT_MS }).then(function (hit) { pay({ minted: true, ok: !!hit }); });
       return;
     }
-    var code = link && long && !(opts && opts.ok) ? '' : refFor();
+    /* No short id (the worker failed, was slow, or rp-short.js didn't load): the
+       hash ref, and the full design goes by the backup form (pressPost). Never
+       the order form for want of a worker (BUILD-RULES 14, 2026-10-22). */
+    var code = !link ? '' : long && !(opts && opts.ok) ? hashRef(encodeCode(ST), ST.gift) : (refFor() || hashRef(encodeCode(ST), ST.gift));
     // a gift goes to Sig first, then to checkout; if it can't be saved, the buyer stays here and is told
     if (gift && link && code && !(opts && opts.giftSent)) {
       var g = pgOrder(code).x, send = root.agsistFormPost;
@@ -3929,12 +4040,15 @@
       var btn = $('rp-proof-order');
       proofSay('Saving the gift details\u2026', true);
       btn.disabled = true;
-      (send ? send('rain-print-order', g, fs) : Promise.reject(new Error('no form helper'))).then(function () {
+      (send ? send('rain-print-order', g, fs, { workerMs: 4000 }) : Promise.reject(new Error('no form helper'))).then(function () {
         btn.disabled = false;
+        if (GIFT_KEPT[code]) { outboxDrop(GIFT_KEPT[code]); delete GIFT_KEPT[code]; }
         pay({ minted: opts && opts.minted, ok: opts && opts.ok, giftSent: true });
       }, function () {
         btn.disabled = false;
         ga('rain_print_gift_save', { result: 'fail', choice: id });
+        // kept in this browser and sent on the next visit (the way back from Stripe), whichever way the buyer goes now
+        if (!GIFT_KEPT[code]) GIFT_KEPT[code] = outboxAdd({ to: 'form', kind: 'rain-print-order', data: g, fields: fs });
         var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
         proofSay('The gift details didn\u2019t save just now. Tap Pay to try again, or <a href="' + esc(u) + '">go to checkout</a> and write their name and your note to ' + ORDER_TO + '.', true);
       });
@@ -4103,6 +4217,7 @@
   function logoWords() {
     if (!LOGO || LOGO.state === 'missing') return 'added, but it didn\u2019t load here; I\u2019ll check it in your proof';
     if (LOGO.state === 'saving') return 'still saving';
+    if (LOGO.local && root.AgRpLogo && root.AgRpLogo.isWaiting(LOGO.id)) return 'added, ' + (ST.logoInk ? 'in the print\u2019s ink color' : 'in its own colors') + '; saved in this browser, it goes up to me on your next visit here';
     return 'added, ' + (ST.logoInk ? 'in the print\u2019s ink color' : 'in its own colors');
   }
   function syncSummary() {
@@ -4267,7 +4382,7 @@
     // the worker keeps known fields only, so the checkout and the proof tick ride in the notes
     x.notes = ('Paying now at Stripe checkout' + (ref ? ', reference ' + ref : '') + '. Gift details from the review sheet; no payment link needed.' +
       (x.gift_january ? ' Make it after January 1, once the full year is in.' : '') +
-      (PROOF_OK === encodeCode(ST) ? ' Proof checked on the page: yes.' : ' Proof checked on the page: no.')).slice(0, 2000);
+      (PROOF_OK === encodeCode(ST) ? ' Proof checked on the page: yes.' : ' Proof checked on the page: no.') + logoKeptNote()).slice(0, 2000);
     var bad = !x.gift_to ? ['rp-pg-to', 'Say who the gift is for, or untick \u201cThis is a gift\u201d.']
       : !file && !stripeShips && x.address.length < 10 ? ['rp-pg-addr', theirs ? 'Add their address for the print.' : 'Add your address for the print.']
       : file && theirs && !EMAIL_RE.test(x.gift_email) ? ['rp-pg-email', 'Add their email for the file, or choose Me under Send it to.']
@@ -4989,6 +5104,8 @@
      link comes in as it was made. */
   if (!ST.place) { ST.cmp = 'normal'; ST.normals = true; ST.records = true; ST.frost = true; ST.heat = true; SHOW_EX = !PAID; }
   writeInputs(ST);
+  // what this browser still owes Sig from a press while the worker was out (the outbox, a kept logo) goes now
+  root.setTimeout(function () { outboxFlush(); logoFlush(); }, 1500);
   doc.querySelectorAll('.rp-cy').forEach(function (el) { el.textContent = String(CURRENT_YEAR); });
   // the Christmas lines read right from October 1 through December 25 only
   XMAS_OFF = parseInt(TODAY.slice(5, 7), 10) < 10 || TODAY.slice(5) > '12-25';
