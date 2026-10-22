@@ -108,13 +108,15 @@
     return fetch(API + path, { method: 'POST', body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined,
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' } })
       .then(function (r) {
-        return r.json().catch(function () { return {}; }).then(function (j) {
-          j = j && typeof j === 'object' ? j : {};
+        return r.json().then(function (j) { return { j: j, json: true }; }, function () { return { j: {}, json: false }; }).then(function (a) {
+          var j = a.j && typeof a.j === 'object' ? a.j : {};
           j.status_code = r.status;
           if (!r.ok) j.ok = false;
+          // the block page, a 5xx or no JSON at all: the worker did not answer (2026-10-22)
+          if (!r.ok && (!a.json || r.status >= 500)) j.down = true;
           return j;
         });
-      }, function () { return { ok: false, status_code: 0 }; })
+      }, function () { return { ok: false, status_code: 0, down: true }; })
       .then(function (j) { if (t) clearTimeout(t); return j; });
   }
   function errorText(j) {
@@ -127,6 +129,17 @@
     var G = { ok: !!j.ok, usable: false, code: code, kind: j.kind, product: j.product, to: j.to || '', from_line: j.from_line || '',
       ships: j.ships || 'now', status: j.status, redeemed_on: j.redeemed_on || null, lock: null, locked: [], text: '', error: '',
       prepaid: !!j.ok && j.prepaid === true && j.status === 'redeemed', head: '', steps: [], note: '' };
+    if (!j.ok && j.down && j.deferrable) {
+      /* THE WORKER DOWN (2026-10-22): the card can't be checked, so the
+         order is taken and kept in this browser (components/outbox.js); the
+         worker checks and uses the card when it answers again. */
+      G.ok = true; G.usable = true; G.deferred = true; G.head = 'A gift for you';
+      G.text = 'Our system is down, so your card can\u2019t be checked right now. Make your print and tap Use my gift; your order is saved and goes through when our system is back.';
+      G.steps = ['Our system is down, so your card can\u2019t be checked right now. You can still use it.',
+        'Type the farm or town and pick a year, then tap Use my gift and fill in the order. It is saved on this device and goes through when our system is back.'];
+      G.note = 'If the giver already picked a design, the card keeps that one; this page tells you on your next visit, and you can send it again.';
+      return G;
+    }
     if (!j.ok) { G.error = errorText(j); return G; }
     if (j.lock && j.lock.design_code) {
       var d = null;
@@ -187,7 +200,7 @@
     el.setAttribute('role', 'status');
     var html;
     if (G.ok && (G.usable || G.prepaid)) {
-      html = '<p class="rpg-h"><b>' + esc(G.head) + '</b></p><p>' + (G.prepaid ? esc(product(G.product).charAt(0).toUpperCase() + product(G.product).slice(1)) : 'Your card covers ' + esc(product(G.product))) + '.</p>' +
+      html = '<p class="rpg-h"><b>' + esc(G.head) + '</b></p><p>' + (G.deferred ? 'Your card covers what the giver paid for' : G.prepaid ? esc(product(G.product).charAt(0).toUpperCase() + product(G.product).slice(1)) : 'Your card covers ' + esc(product(G.product))) + '.</p>' +
         (G.usable ? '<ol class="rpg-steps">' + G.steps.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ol>'
           : G.steps.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('')) +
         (G.note ? '<p class="rpg-note">' + esc(G.note) + '</p>' : '') +
@@ -229,6 +242,7 @@
     var c = norm(code);
     var go = function (cc) {
       return post('check', { code: cc }).then(function (j) {
+        if (j.down && root.AgOutbox) j.deferrable = true;
         var G = stateFrom(j, cc);
         // a prepaid card is only looked at: a later visit in this tab is the ordinary page
         if (G.ok && !G.prepaid) remember(cc);
@@ -252,11 +266,19 @@
       if (order && order[k] != null && order[k] !== '') body[k] = order[k];
     });
     return post('redeem', body).then(function (j) {
+      // the worker down: kept in this browser, sent when it answers (components/outbox.js)
+      if (!j.ok && j.down && root.AgOutbox) {
+        var id = root.AgOutbox.add({ url: API + 'redeem', body: body, label: 'your Rain Print gift card order', kind: 'rp-gift-redeem' });
+        if (id) { G.usable = false; G.status = 'queued'; try { root.sessionStorage.removeItem(KEY); } catch (e) {} return { ok: true, queued: true }; }
+      }
       if (j.ok) { G.usable = false; G.status = 'redeemed'; try { root.sessionStorage.removeItem(KEY); } catch (e) {} return j; }
       return { ok: false, error: errorText(j), status: j.status_code };
     });
   }
   function doneHtml(G, r, choice) {
+    if (r && r.queued) return '<div class="rp-msg rp-ok" tabindex="-1"><p><b>' + esc(root.AgOutbox ? root.AgOutbox.LINE : 'Saved.') + '</b></p>' +
+      '<p>Our system is down right now. When it is back, your card is checked and used, and I email you ' +
+      ((choice || (G && G.product)) === 'digital' ? 'the finished file' : 'a proof') + ' as usual.</p></div>';
     var jan = r && r.ships === 'january', when = jan ? ' in January, once the full year is in' : ' within 1 business day';
     var file = (choice || (G && G.product)) === 'digital';
     return '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Your gift is in.</b> ' + (file
