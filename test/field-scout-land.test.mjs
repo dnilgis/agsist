@@ -167,7 +167,7 @@ test("lazy: the land card is not on Field Scout's first screen and loads by vers
   assert.doesNotMatch(read("field-scout.html"), /field-scout-land\.js/);
   assert.match(read("field-scout-read.js"), /var FS_LAND_SRC='\/field-scout-land\.js\?v=\d+'/);
   assert.match(read("field-scout-read.js"), /section\('land',ICONS\.rent,'Parcel, Owner &amp; Sales','fs-land'\)/);
-  assert.match(read("field-scout.js"), /FS_READ_SRC='\/field-scout-read\.js\?v=11'/);
+  assert.match(read("field-scout.js"), /FS_READ_SRC='\/field-scout-read\.js\?v=12'/);   // v12: bids-network.js v8 (fx/fastfacts, past main v11)
 });
 
 test("the land report is one shared page with a query parameter, kept out of search", () => {

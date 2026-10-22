@@ -22,7 +22,7 @@ tabs.forEach(function(b){b.addEventListener('click',function(){switchTab(b);if(h
   // tabs are sticky now: jump the reader to the top of the fresh panel so a deep
   // scroll position from the last tab doesn't strand them mid-table
   var p=document.getElementById('tab-'+b.dataset.tab);
-  if(p){var y=p.getBoundingClientRect().top+window.pageYOffset-70;if(Math.abs(window.pageYOffset-y)>40)window.scrollTo({top:Math.max(0,y),behavior:'smooth'});}
+  if(p){var y=p.getBoundingClientRect().top+window.pageYOffset-70;if(Math.abs(window.pageYOffset-y)>40)window.scrollTo({top:Math.max(0,y),behavior:(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth')});}
 });});
 document.addEventListener('keydown',function(e){
   if(!e.target.classList||!e.target.classList.contains('ff-tab'))return;
@@ -63,8 +63,13 @@ var ECO_TYPED={};   /* cost-builder boxes the reader typed in */
    source, so they are not priced here (the lime calculator takes your $/ton).
    AG.json (components/util.js) makes one request per file for the whole page. */
 function getJSON(u){return (window.AG&&AG.json)?AG.json(u):fetch(u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
-/* Short source with its region: "Kansas co-ops, Oct 6" / "USDA Illinois, Oct 2". */
+/* Short source with its region: "Kansas co-ops, Oct 6" / "USDA Illinois, Oct 2". One co-op's
+   price is never named on this page (it is indexed): "one Kansas co-op, Sep 24", worded by
+   components/place.js fertSrc, the same line the My place card prints. */
+function oneCoop(p){return !!(p&&p.src==='coop'&&p.n===1&&window.AgPlace&&AgPlace.fertSrc);}
+function fertLong(p){return oneCoop(p)?AgPlace.fertSrc(p,false):(p&&p.src_label)||'';}
 function fertShort(p){
+  if(oneCoop(p))return AgPlace.fertSrc(p,true);
   if(p&&p.short_label)return p.short_label;
   var d=p&&p.as_of?new Date(p.as_of+'T12:00:00'):null;
   var when=d&&!isNaN(d)?d.toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
@@ -75,11 +80,13 @@ function fertGrade(sym){if(!sym)return null;var a=String(sym).trim().split('-');
 var N_POSTED={};
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function loadFertPrices(){
-  getJSON('/data/fertilizer-prices.json').then(function(data){
+  /* the reader's own state's co-op sheets first, else the middle of every current sheet
+     (components/fert-pick.js, the one chooser for every calculator) */
+  (window.AgFertPick?AgFertPick.load():getJSON('/data/fertilizer-prices.json')).then(function(data){
     if(!data||!data.prices)return;
     function key(k){return data.prices.find(function(p){return p.key===k&&p.price>0;})||null;}
     var el=document.getElementById('fert-date');
-    if(el&&data.updated){var d=new Date(data.updated+'T12:00:00');el.textContent='Posted through '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'. Co-op posted cash prices, each named with its region. Call to confirm.';
+    if(el&&data.updated){var d=new Date(data.updated+'T12:00:00');var stn=data.state&&window.AgFertPick?AgFertPick.NAMES[data.state]:'';el.textContent='Co-op posted cash prices through '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+(stn?', '+stn+' sheets first when there are any':'')+'. Call to confirm.';
       if((Date.now()-d.getTime())/864e5>30){el.style.color='var(--gold)';}}
     var urea=key('urea'), potash=key('potash'), ams=key('ams'), phos=key('map')||key('dap'), aa=key('anhydrous');
     var wrap=document.getElementById('fert-pills');
@@ -107,16 +114,16 @@ function loadFertPrices(){
       var mvx=(pd.nut==='P'&&window.AgManure)?window.AgManure.nutrientPrices(data):null;
       if(mvx&&mvx.p!=null&&mvx.pNcredit!=null){
         pplb=mvx.p;
-        deriv.push(p.name+' $'+price+' a ton, less '+Math.round(mvx.pNlb)+' lb of N at the urea price ($'+Math.round(mvx.pNcredit)+'), / '+Math.round(2000*pct)+' lb of P2O5 = $'+pplb.toFixed(2)+' a lb of P2O5 ('+p.src_label+').');
+        deriv.push(p.name+' $'+price+' a ton, less '+Math.round(mvx.pNlb)+' lb of N at the urea price ($'+Math.round(mvx.pNcredit)+'), / '+Math.round(2000*pct)+' lb of P2O5 = $'+pplb.toFixed(2)+' a lb of P2O5 ('+fertLong(p)+').');
       } else
-      deriv.push(p.name+' $'+price+' / (2,000 lb x '+g[pd.nut]+'% '+pd.label+') = $'+pplb.toFixed(2)+' a lb of '+pd.label+(pd.nut==='P'?', no N credit (no urea price)':'')+' ('+p.src_label+').');
+      deriv.push(p.name+' $'+price+' / (2,000 lb x '+g[pd.nut]+'% '+pd.label+') = $'+pplb.toFixed(2)+' a lb of '+pd.label+(pd.nut==='P'?', no N credit (no urea price)':'')+' ('+fertLong(p)+').');
       var btn=document.createElement('button');
       btn.className='fert-pill';
       btn.setAttribute('type','button');
       btn.setAttribute('aria-pressed','false');
-      btn.setAttribute('aria-label',p.name+' $'+price+'/ton, '+p.src_label+': $'+pplb.toFixed(3)+'/lb '+pd.label);
+      btn.setAttribute('aria-label',p.name+' $'+price+'/ton, '+fertLong(p)+': $'+pplb.toFixed(3)+'/lb '+pd.label);
       btn.innerHTML='<span class="fert-pill-body"><span class="fert-pill-name">'+esc(p.name)+'</span>'
-        +'<span class="fert-pill-sym">'+esc(p.symbol)+' · '+esc(fertShort(p))+'</span></span>'
+        +'<span class="fert-pill-sym">'+esc(p.symbol)+' · $'+pplb.toFixed(2)+'/lb '+esc(pd.label)+' · '+esc(fertShort(p))+'</span></span>'
         +'<span class="fert-pill-price">$'+price+'</span>';
       btn.addEventListener('click',function(){
         document.querySelectorAll('.fert-pill').forEach(function(x){x.classList.remove('active');x.setAttribute('aria-pressed','false');});
@@ -124,19 +131,16 @@ function loadFertPrices(){
         if(pd.nut==='N'&&pd.ncPct){
           setNForm(pd.ncPct,price);
           var top=document.getElementById('ff-ans');
-          if(top&&top.scrollIntoView){try{top.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){}}
+          if(top&&top.scrollIntoView){try{top.scrollIntoView({behavior:(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'),block:'start'});}catch(e){}}
         }
       });
       wrap.appendChild(btn);
     });
+    /* one line of method, not a worked formula per product (Sig: undershare); each pill
+       carries its own $/lb, price and dated source */
     var dv=document.getElementById('fert-deriv');
-    if(!dv){
-      var how=document.createElement('details');how.className='fert-how';
-      how.innerHTML='<summary>How each $/lb is worked out</summary>';
-      dv=document.createElement('ul');dv.id='fert-deriv';dv.className='fert-deriv';
-      how.appendChild(dv);wrap.parentNode.insertBefore(how,wrap.nextSibling);
-    }
-    dv.innerHTML=deriv.map(function(x){return '<li>'+esc(x)+'</li>';}).join('');
+    if(!dv){dv=document.createElement('p');dv.id='fert-deriv';dv.className='fert-deriv';wrap.parentNode.insertBefore(dv,wrap.nextSibling);}
+    dv.textContent=deriv.length?'Price per pound is the ton price over the pounds of nutrient in a ton. MAP\u2019s N is taken out at the urea price.':'';
     // The N box at the top starts on anhydrous when a co-op posts it, else urea.
     var first=N_POSTED['82']?'82':(N_POSTED['46']?'46':null);
     if(first){
@@ -319,18 +323,18 @@ function fillCorn(){
     // week card: what most of the Corn Belt is doing, hedged
     var wk=isoWeekNow();
     var W={
-      16:['planting is rolling','Corn planters are rolling across the Belt. Check soil temp ≥50°F and scout for black cutworm as fields green.',['stages']],
-      18:['corn VE–V1','Early corn is spiking. Stand counts now save replant regrets later.',['stages']],
+      16:['planting is rolling','Corn planting is underway. Check soil temp ≥50°F and scout for black cutworm as fields green.',['stages']],
+      18:['corn VE–V1','Early corn is spiking. Count stands now.',['stages']],
       20:['corn V1–V2 · beans in','Corn at V1–V2, beans going in. Cutworm and slugs on the watch list.',['stages','pest']],
       22:['corn V2–V4','Side-dress window opening. Weed escapes show now. Check your MOA rotation.',['stages','pest']],
       24:['corn V4–V6','Side-dress window closing at V6. Rapid N uptake starts now.',['stages']],
       26:['corn V8–V12 · beans V3–R1','Corn stacking leaves fast. First rootworm beetles show; start counting.',['stages','pest']],
-      28:['corn VT–R1: pollination','THE weather-sensitive window. Japanese beetles clipping silks? 3+ per ear, silks clipped under 1 inch, pollination not done is the threshold.',['pest']],
+      28:['corn VT–R1: pollination','Weather matters most now. Japanese beetles clipping silks? 3+ per ear, silks clipped under 1 inch, pollination not done is the threshold.',['pest']],
       30:['corn ~R2 · beans ~R3','Blister corn, pod-set beans. Worth a walk: rootworm beetles, soybean aphid (250/plant, over 80% of plants, rising).',['pest']],
       32:['corn R3–R4 · beans R4','Aphid pressure peaks. Grain-fill weather sets the top end of yield.',['pest']],
       34:['corn ~R5 · beans R5','Dent corn, seed-fill beans. Late diseases and stink bugs in beans.',['stages','pest']],
-      36:['corn R5–R6 · beans R6','Push-test stalks: rots pick lodging candidates. Line up dry-down logistics.',['stages']],
-      38:['maturity: black layer','Corn hitting black layer. Moisture checks beat calendar dates for harvest order.',['stages']],
+      36:['corn R5–R6 · beans R6','Push-test stalks to find fields that may lodge. Plan drying.',['stages']],
+      38:['maturity: black layer','Corn hitting black layer. Go by moisture, not the calendar.',['stages']],
       40:['harvest','Combines rolling. Watch bin moisture targets and shrink math.',['stages']],
       42:['harvest wrap-up','Soil sampling season: plan P and K from the new tests.',['pk']]
     };
@@ -429,7 +433,7 @@ function calcNC(){
   // Where each number came from.
   var src=[];
   var posted=N_POSTED[fertSel.value];
-  if(!nTyped&&posted&&Math.round(ton)===posted.price)src.push(form+': '+posted.row.src_label);
+  if(!nTyped&&posted&&Math.round(ton)===posted.price)src.push(form+': '+fertLong(posted.row));
   else src.push('N price: yours');
   var st=g('ans-state'), b=st&&BASIS[st.value];
   if(cornTyped)src.push('corn price: yours');
@@ -689,7 +693,7 @@ function initStages(){
     R4:['Dough. Kernel contents doughy.','About half of final dry weight in. Stalks cannibalize if N or K is short.'],
     R5:['Dent. Kernels dented, milk line showing.','Watch for stalk rots and Diplodia ear rot. Plan harvest order.'],
     'R5.5':['Full dent, milk line moving down.','Silage harvest window opens.'],
-    R6:['Black layer. Kernel dry weight at its most.','Moisture near 30\u201335%. Moisture checks beat calendar dates for harvest order.']
+    R6:['Black layer. Kernel dry weight at its most.','Moisture near 30\u201335%. Go by moisture, not the calendar.']
   };
   var BEAN_NOTES={
     VE:['Unifoliate leaves through the soil.','Check stand. Seedcorn maggot or pythium risk in cold wet soils.'],
@@ -724,7 +728,7 @@ function initStages(){
         document.querySelectorAll('#'+markId+' .sv-mark').forEach(function(m){m.classList.remove('active');});
         div.classList.add('active');
         detail.innerHTML='<div class="sv-detail-stage">'+st.s+'</div>'
-          +'<div class="sv-detail-gdu">~'+g+' GDUs from planting (86/50 method)</div>'
+          +'<div class="sv-detail-gdu">~'+g+' GDUs from planting (highs capped at 86°F, lows floored at 50°F)</div>'
           +'<div class="sv-detail-desc">'+st.desc+'</div>'
           +(st.mgmt?'<div class="sv-detail-mgmt"><svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> '+st.mgmt+'</div>':'');
       });
@@ -739,41 +743,24 @@ function initStages(){
 
 /* ─── STATE STATS ─────────────────────────────────────────────────── */
 var stateInited=false;
-var stateData={};
+var NO_YIELD_PAGE='AK CT HI ME MA NH RI VT';   // no /yield/<state> page (components/place.js NO_PAGE.yield)
 var STATE_NAMES={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
 function initStateStats(){
+  /* Crop size by state lives on /yield/<state> and /usda-quick-stats (the same USDA NASS file,
+     data/state-stats.json); this tab only points there, so the numbers are kept in one place (Oct 22). */
   if(stateInited)return;
   stateInited=true;
-  var sel=document.getElementById('ff-state-select');
+  var sel=document.getElementById('ff-state-select'),content=document.getElementById('state-content');
   var mine=savedState();
   if(sel&&mine&&sel.querySelector('option[value="'+mine+'"]'))sel.value=mine;
-  var activeState=(sel&&sel.value)||'IA';
-  function renderState(code){
-    var content=document.getElementById('state-content');if(!content)return;
-    var s=stateData&&stateData[code];
-    if(!s){content.innerHTML='<div style="grid-column:1/-1;color:var(--text-muted);font-size:.84rem;line-height:1.7;padding:1rem 0">Per-state corn, soybean &amp; wheat detail for <strong style="color:var(--text)">'+(STATE_NAMES[code]||code)+'</strong>, acreage, yield, and production: is in the USDA NASS database, the authoritative national source. <a href="https://quickstats.nass.usda.gov/" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;white-space:nowrap">Open USDA NASS Quick Stats &rarr;</a></div>';return;}
-    var safe=function(v,u){return v!=null?v+(u?u:''):'-';};
-    content.innerHTML='<div class="ff-shdr"><div><div class="ff-sname">'+s.name+'</div><div class="ff-smeta">'+s.meta+'</div></div></div>'
-      +'<div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="ff-card-title rp corn">Corn</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Planted</span><span class="ff-rv">'+safe(s.corn_acres_planted,' M ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Harvested</span><span class="ff-rv">'+safe(s.corn_acres_harvested,' M ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Yield</span><span class="ff-rv gold">'+safe(s.corn_yield,' bu/ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv">'+safe(s.corn_prod,' M bu')+'</span></div></div>'
-      +'<div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></span><span class="ff-card-title rp beans">Soybeans</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Planted</span><span class="ff-rv">'+safe(s.bean_acres_planted,' M ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Harvested</span><span class="ff-rv">'+safe(s.bean_acres_harvested,' M ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Yield</span><span class="ff-rv gold">'+safe(s.bean_yield,' bu/ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv">'+safe(s.bean_prod,' M bu')+'</span></div></div>'
-      +(s.wheat_yield?'<div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span><span class="ff-card-title rp wheat">Winter Wheat</span></div>'
-      +(s.wheat_meta&&s.wheat_meta!==s.meta?'<div class="ff-row"><span class="ff-rl" style="font-size:.74rem">'+s.wheat_meta+'</span></div>':'')
-      +'<div class="ff-row"><span class="ff-rl">Yield</span><span class="ff-rv gold">'+safe(s.wheat_yield,' bu/ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv">'+safe(s.wheat_prod,' M bu')+'</span></div></div>':'');
+  function show(code){
+    if(!content)return;
+    var name=STATE_NAMES[code]||code,page=NO_YIELD_PAGE.indexOf(code)<0;
+    var href=page?'/yield/'+name.toLowerCase().replace(/ /g,'-'):'/usda-quick-stats';
+    content.innerHTML='<p class="ff-sub" style="grid-column:1/-1"><a href="'+href+'">'+(page?name+' corn, soybean and wheat yield by year':'Corn, soybean and wheat by state ('+name+' is in the USDA NASS state list there)')+' &rarr;</a></p>';
   }
-  fetch('/data/state-stats.json').then(function(r){return r.ok?r.json():null;}).then(function(data){
-    if(data&&data.stateStats)stateData=data.stateStats;
-    renderState(activeState);
-  }).catch(function(){renderState(activeState);});
-  if(sel){sel.addEventListener('change',function(){activeState=sel.value;renderState(activeState);});}
+  show((sel&&sel.value)||'IA');
+  if(sel)sel.addEventListener('change',function(){show(sel.value);});
 }
 
 })();

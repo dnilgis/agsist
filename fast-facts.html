@@ -11,12 +11,15 @@
 <link rel="stylesheet" href="/components/styles.css?v=26">
 <script src="/components/util.js?v=19"></script>
 <link rel="stylesheet" href="/components/manure-value.css?v=3">
+<link rel="stylesheet" href="/components/here.css?v=5">
+<link rel="stylesheet" href="/components/print-sheet.css?v=1">
+<noscript><style>.ff-panel{display:block!important}</style></noscript>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 <title>Fast Facts: Corn N Rates, P&amp;K by Soil Test, Manure Value, Crop Stages | AGSIST</title>
-<meta name="description" content="Ag Fast Facts reference tables: corn N rates, P&amp;K by soil test, manure value, crop removal, growth stages, pest thresholds, herbicide groups and conversions.">
+<meta name="description" content="Bids, basis, rain, drought, rent and land value for your county, each dated and sourced, plus farm reference tables: corn N rates, P and K, manure, crop stages and thresholds.">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <link rel="canonical" href="https://agsist.com/fast-facts">
@@ -24,26 +27,27 @@
 <meta property="og:site_name" content="AGSIST">
 <meta property="og:locale" content="en_US">
 <meta property="og:title" content="Fast Facts: Corn N Rates, P&amp;K by Soil Test, Manure Value, Crop Stages | AGSIST">
-<meta property="og:description" content="Corn N rates, P&amp;K recommendations, manure value calculator, crop staging, pest thresholds, herbicide MOA, GDU, state stats. Free.">
+<meta property="og:description" content="The numbers for one place by ZIP: bids, basis, rain, drought, rent, land value, the next report. Plus the farm reference tables.">
 <meta property="og:url" content="https://agsist.com/fast-facts">
-<meta property="og:image" content="https://agsist.com/img/og/fast-facts.jpg?v=35dc15fd">
+<meta property="og:image" content="https://agsist.com/img/og/fast-facts.jpg?v=ccb18aa5">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Fast Facts: farm reference tables. N rates, P and K, manure, crop removal, growth stages and thresholds.">
+<meta property="og:image:alt" content="Fast Facts. Bids, basis, rain, rent and land value for your ZIP, plus the farm reference tables.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@agsist">
 <meta name="twitter:creator" content="@agsist">
 <meta name="twitter:title" content="Ag Fast Facts: farm reference tables | AGSIST">
-<meta name="twitter:description" content="N rates, P&amp;K tables, manure value, crop staging, GDU, pest thresholds, state stats. Free.">
-<meta name="twitter:image" content="https://agsist.com/img/og/fast-facts.jpg?v=35dc15fd">
+<meta name="twitter:description" content="The numbers for one place by ZIP: bids, basis, rain, drought, rent, land value. Plus the farm reference tables.">
+<meta name="twitter:image" content="https://agsist.com/img/og/fast-facts.jpg?v=ccb18aa5">
 <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set, the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string), and the reader scrolls, taps or types on the shown page. Then /components/ga-gate.js asks our worker if the visit comes from a cloud server network (Sig, Oct 20) and loads GA only on a clear no. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+<script>/* Fast Facts tabs (My place, Reference tables), set before first paint from the #hash. A saved place or a place link opens My place; any other first visit opens the tables. Old #state, #us and #print links open My place. Without this script both panels show in order. */(function(d,l){var T={place:1,tables:1},r=d.documentElement,M={'s-corn-basis':'f-corn-basis','s-soy-basis':'f-soy-basis','s-corn-prog':'f-progress','s-soy-prog':'f-soy-progress','u-corn-fut':'f-corn-fut','u-soy-fut':'f-soy-fut','u-wheat-fut':'f-wheat-fut','u-corn-prog':'f-progress','u-soy-prog':'f-soy-progress','u-usda':'f-usda','u-fert':'f-fert','u-daily':'f-daily'};function saved(){try{var o=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(o&&/^\d{5}$/.test(String(o.zip||'')))return true;return /^\d{5}$/.test(String(localStorage.getItem('agsist_user_zip')||localStorage.getItem('agsist_zip')||''));}catch(e){return false;}}var mine=/[?&](zip|fips|at|q|f|z|a)=/.test(l.search)||saved();if(mine)r.classList.add('fx-pend');var h0=l.hash.slice(1);if(M[h0]){try{history.replaceState(null,'',l.pathname+l.search+'#'+M[h0]);}catch(e){}}function pick(){var h=l.hash.slice(1);if(T[h])return h;if(h==='state'||h==='us'||h==='print'||/^(f|h|s|u)-/.test(h))return 'place';if(h&&h!=='main')return 'tables';return r.getAttribute('data-fx')||(mine?'place':'tables');}function set(t){r.setAttribute('data-fx',t);var a=d.querySelectorAll('.fx-tab');for(var i=0;i<a.length;i++){var on=a[i].getAttribute('data-t')===t;a[i].setAttribute('aria-selected',on?'true':'false');a[i].tabIndex=on?0:-1;}try{r.dispatchEvent(new CustomEvent('fx-tab',{detail:t}));}catch(e){}}set(pick());addEventListener('hashchange',function(){set(pick());});d.addEventListener('DOMContentLoaded',function(){set(r.getAttribute('data-fx'));});function go(a){var t=a.getAttribute('data-t');try{history.replaceState(null,'',l.pathname+l.search+'#'+t);}catch(x){}set(t);}d.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a.fx-tab');if(!a)return;e.preventDefault();go(a);});d.addEventListener('keydown',function(e){var a=e.target.closest&&e.target.closest('a.fx-tab');if(!a)return;var b=[].slice.call(d.querySelectorAll('.fx-tab')),i=b.indexOf(a),k=e.key,n=null;if(k==='ArrowRight')n=b[(i+1)%b.length];else if(k==='ArrowLeft')n=b[(i+b.length-1)%b.length];else if(k==='Home')n=b[0];else if(k==='End')n=b[b.length-1];else if(k===' '||k==='Spacebar'){e.preventDefault();go(a);return;}if(!n)return;e.preventDefault();n.focus();go(n);});})(document,location);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());/* A place link carries a ZIP or coordinates; Analytics gets the bare path only. */gtag('set',{page_location:location.origin+location.pathname});gtag('config','G-6KXCTD5Z9H',{page_location:location.origin+location.pathname,page_referrer:document.referrer?document.referrer.split('?')[0]:''});</script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type": "Question", "name": "How much nitrogen should I apply to corn?", "acceptedAnswer": {"@type": "Answer", "text": "It depends on your soil, the last crop and the N:corn price ratio: the price of a pound of N divided by the price of a bushel of corn. UW Extension A2809 (Mar 2026 web edition, read Oct 16, 2026), from Wisconsin trials, gives corn after soybeans on high-yield loamy soil 140 lb N at a 0.05 ratio, 120 at 0.10, 105 at 0.15 and 90 at 0.20. Corn after corn on the same soil gets 190, 165, 150 and 135. Subtract manure and legume credits. The box at the top of this page works out the ratio from posted N and corn prices. Outside Wisconsin, use your state's MRTN rates."}}, {"@type": "Question", "name": "What is my manure worth in fertilizer value?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply the total N, P2O5 and K2O in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. That is the value of all of it. A crop can use 80% of the P2O5 and K2O and 25 to 65% of the N the first year, by UW Extension A2809. The Manure tab has the pounds by manure type and a calculator at dated posted prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field."}}, {"@type": "Question", "name": "What is the economic threshold for soybean aphid?", "acceptedAnswer": {"@type": "Answer", "text": "250 aphids per plant on average, aphids on more than 80% of plants, and the population rising. That threshold runs through R5. University of Minnesota Extension sets no threshold for R6."}}, {"@type": "Question", "name": "How do I calculate growing degree units for corn?", "acceptedAnswer": {"@type": "Answer", "text": "GDU (base 50°F) = [(daily max temp, capped at 86°F) + (daily min temp, floor at 50°F)] / 2 - 50. Accumulate daily from planting."}}, {"@type": "Question", "name": "When is it worth spraying Japanese beetles on corn silks?", "acceptedAnswer": {"@type": "Answer", "text": "Iowa State says spray only when all three are true: three or more beetles per ear, silks clipped to less than an inch, and pollination not done yet. Feeding is worse at the field edge, so look across the whole field before you make the call."}}, {"@type": "Question", "name": "When do I start and stop scouting beans for aphids?", "acceptedAnswer": {"@type": "Answer", "text": "Minnesota Extension says start in mid to late June and keep going until R6.5, when pods and leaves begin to yellow, whatever the calendar says. Once a field has aphids, check it every week, because they build fast."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type": "Question", "name": "How much nitrogen should I apply to corn?", "acceptedAnswer": {"@type": "Answer", "text": "It depends on your soil, the last crop and the N:corn price ratio: the price of a pound of N divided by the price of a bushel of corn. UW Extension A2809 (Mar 2026 web edition), from Wisconsin trials, gives corn after soybeans on high-yield loamy soil 140 lb N at a 0.05 ratio, 120 at 0.10, 105 at 0.15 and 90 at 0.20. Corn after corn on the same soil gets 190, 165, 150 and 135. Subtract manure and legume credits. The N box on the Reference tables tab works out the ratio from posted N and corn prices. Outside Wisconsin, use your state's MRTN rates."}}, {"@type": "Question", "name": "What is my manure worth in fertilizer value?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply the total N, P2O5 and K2O in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. That is the value of all of it. A crop can use 80% of the P2O5 and K2O and 25 to 65% of the N the first year, by UW Extension A2809. The Manure tab has the pounds by manure type and a calculator at dated posted prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field."}}, {"@type": "Question", "name": "What is the economic threshold for soybean aphid?", "acceptedAnswer": {"@type": "Answer", "text": "250 aphids per plant on average, aphids on more than 80% of plants, and the population rising. That threshold runs through R5. University of Minnesota Extension sets no threshold for R6."}}, {"@type": "Question", "name": "How do I calculate growing degree units for corn?", "acceptedAnswer": {"@type": "Answer", "text": "GDU (base 50°F) = [(daily max temp, capped at 86°F) + (daily min temp, floor at 50°F)] / 2 - 50. Accumulate daily from planting."}}, {"@type": "Question", "name": "When is it worth spraying Japanese beetles on corn silks?", "acceptedAnswer": {"@type": "Answer", "text": "Iowa State says spray only when all three are true: three or more beetles per ear, silks clipped to less than an inch, and pollination not done yet. Feeding is worse at the field edge, so look across the whole field before you make the call."}}, {"@type": "Question", "name": "When do I start and stop scouting beans for aphids?", "acceptedAnswer": {"@type": "Answer", "text": "Minnesota Extension says start in mid to late June and keep going until R6.5, when pods and leaves begin to yellow, whatever the calendar says. Once a field has aphids, check it every week, because they build fast."}}]}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
-{"@type":"WebPage","@id":"https://agsist.com/fast-facts#webpage","url":"https://agsist.com/fast-facts","name":"Fast Facts: Corn N Rates, P&K by Soil Test, Manure Value, Crop Stages","description":"Corn N rate at posted N and corn prices (UW A2809 MRTN), P and K by soil test, manure nutrient value, lime, micronutrients, crop stages, insect thresholds, herbicide groups and conversions.","inLanguage":"en-US","isPartOf":{"@type":"WebSite","name":"AGSIST","url":"https://agsist.com/"},"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"dateModified":"2026-10-16","isAccessibleForFree":true,"citation":[{"@type":"CreativeWork","name":"Nutrient application guidelines for field, vegetable, and fruit crops in Wisconsin (A2809)","author":"Carrie A.M. Laboski and John B. Peters","publisher":"University of Wisconsin-Madison Division of Extension","url":"https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf"},{"@type":"CreativeWork","name":"Corn Growth Stages and GDU (NCH-40)","publisher":"Purdue University","url":"https://www.extension.purdue.edu/extmedia/nch/nch-40.html"}]},
+{"@type":"WebPage","@id":"https://agsist.com/fast-facts#webpage","url":"https://agsist.com/fast-facts","name":"Fast Facts: Corn N Rates, P&K by Soil Test, Manure Value, Crop Stages","description":"Corn N rate at posted N and corn prices (UW A2809 MRTN), P and K by soil test, manure nutrient value, lime, micronutrients, crop stages, insect thresholds, herbicide groups and conversions.","inLanguage":"en-US","isPartOf":{"@type":"WebSite","name":"AGSIST","url":"https://agsist.com/"},"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"dateModified":"2026-10-22","isAccessibleForFree":true,"citation":[{"@type":"CreativeWork","name":"Nutrient application guidelines for field, vegetable, and fruit crops in Wisconsin (A2809)","author":"Carrie A.M. Laboski and John B. Peters","publisher":"University of Wisconsin-Madison Division of Extension","url":"https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf"},{"@type":"CreativeWork","name":"Corn Growth Stages and GDU (NCH-40)","publisher":"Purdue University","url":"https://www.extension.purdue.edu/extmedia/nch/nch-40.html"}]},
 {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Fast Facts","item":"https://agsist.com/fast-facts"}]}
 ]}
 </script>
@@ -57,7 +61,7 @@
 .ff-page{max-width:980px;margin:0 auto;padding:0 1rem 4rem;}
 .ff-hero{padding:var(--page-top) 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
 .ff-eyebrow{font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
-.ff-hero h1{font-family:var(--font-display);font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;}
+.ff-hero .ff-h{font-family:var(--font-display);font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;}
 .ff-hero p{font-size:.82rem;color:var(--text-dim);line-height:1.55;max-width:680px;margin:0;}
 .ff-tabs{display:flex;flex-wrap:nowrap;gap:.3rem;margin-bottom:1.5rem;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:sticky;top:0;z-index:60;background:linear-gradient(var(--bg,#0a0c0d) 82%,transparent);padding:.5rem 0 .7rem;}
 .ff-tabs::-webkit-scrollbar{display:none}
@@ -105,7 +109,7 @@
 .ff-t tr:hover td{background:rgba(255,255,255,.03);}
 .ff-t .tg td{color:var(--green);font-weight:700;font-family:'JetBrains Mono',monospace;font-size:0.757rem;letter-spacing:.05em;background:rgba(58,139,60,.08);}
 .ff-t .tg td.tl{color:var(--green);font-family:'JetBrains Mono',monospace;}
-/* light theme: the shared green sits just under 4.5:1 on the tinted group rows */
+
 html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--green:#276c43;color:#276c43}
 .ff-t .hi{color:var(--gold);font-weight:700;}.ff-t .ze{color:var(--text-muted);}.ff-t .re{color:#e05c5c;}.ff-t .gr{color:var(--green);}.ff-t .act{background:rgba(230,176,66,.12)!important;}
 .ff-calc{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--card-r);padding:1.2rem 1.3rem;margin-bottom:1rem;}
@@ -138,7 +142,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .fert-banner-date{font-size:0.755rem;color:var(--text-muted);}
 .fert-pills{display:flex;flex-wrap:wrap;gap:.4rem;}
 .fert-deriv{list-style:none;margin:.6rem 0 0;padding:0;font-size:.78rem;color:var(--text-muted);line-height:1.5}.fert-deriv li{margin:.15rem 0}
-/* FIX: fert-pill min-height:44px: reliable touch target in the field */
+
 .fert-pill{display:flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.3rem .6rem;cursor:pointer;transition:all .15s;min-height:44px;}
 .fert-pill:hover{border-color:var(--gold);}
 .fert-pill.active{border-color:var(--gold);background:rgba(230,176,66,.08);}
@@ -150,7 +154,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .sv-wrap{position:relative;margin:1rem 0;}
 .sv-track{height:8px;border-radius:4px;background:linear-gradient(90deg,#1b3a10,#2d6e1f,#5fc28a,#5aaa5c,#d4a23f,#d4902a,#c07020,#a84030);margin-bottom:.5rem;}
 .sv-marks{display:flex;overflow-x:auto;padding-bottom:.3rem;}
-/* FIX: sv-mark min-height:44px: critical for gloved field use on a phone */
+
 .sv-mark{flex:1;min-width:36px;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;}
 .sv-dot{width:11px;height:11px;border-radius:50%;border:2px solid var(--border);background:var(--surface);margin-bottom:.2rem;transition:all .2s;flex-shrink:0;}
 .sv-mark:hover .sv-dot,.sv-mark.active .sv-dot{background:var(--gold-fill,var(--gold));border-color:var(--gold);transform:scale(1.2);}
@@ -217,7 +221,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .ff-print-btn:hover{border-color:var(--gold);color:var(--gold);}
 .ff-source{font-size:0.763rem;color:var(--text-muted);text-align:center;margin-top:1.5rem;}
 .ff-source a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
-/* FIX: two-line overflow-x pattern */
+
 
 
 .ff-page{overflow-x:clip;}
@@ -231,7 +235,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   .eco-total-bar{flex-direction:column;gap:.2rem;text-align:center;}
   .eco-price-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
   .eco-price-val{font-size:1.05rem;}
-  .ff-hero h1{font-size:1.4rem;}
+  .ff-hero .ff-h{font-size:1.4rem;}
   .ff-h2{font-size:.95rem;}
   .fert-pill-price{white-space:nowrap;font-size:0.787rem;}
   .eco-section{padding:.9rem 1rem;}
@@ -244,7 +248,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   .ff-tab{font-size:0.755rem;padding:.35rem .6rem;}
 }
 
-/* ── Corn N rate at posted prices (top box, 2026-10-16) ── */
+
 .ff-ans{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;background:var(--surface);padding:.85rem 1rem 1rem;margin:0 0 .8rem;}
 .ff-ans-t{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:0;}
 .ff-ans-out{display:flex;align-items:flex-end;gap:.4rem 1rem;flex-wrap:wrap;margin:.3rem 0 .2rem;}
@@ -306,7 +310,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   .fert-pill{padding:.25rem .6rem;}
   .ff-hero .page-lede{font-size:.95rem;}
 }
-/* phones: 40px tap targets, 16px form text (no iOS zoom) */
+
 @media(max-width:640px){#nc-fert{min-height:40px}}
 </style>
 </head>
@@ -326,7 +330,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
         <b>Field:</b> Weather: <a href="/rain-radar">Rain on your field</a> · <a href="/rain">Rain by county</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray advisory</a> · <a href="/fall-nitrogen">Soil temp (fall anhydrous)</a> · <a href="/rain-print">Rain Print</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · Crop: <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/urea">Urea loss</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/pod-counts">Pod counts</a> · Harvest and bins: <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a><br>
         <b>Money &amp; Land:</b> Land: <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/farmland-index">Farmland sale index</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · Programs: <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · Selling: <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
         <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/news">The Wire</a> · <a href="/archive">Archive</a><br>
-        <b>My place:</b> <a href="/here">Everything near me</a><br>
+        <b>My place:</b> <a href="/fast-facts">Everything near me</a><br>
         <b>More:</b> <a href="/about">About</a> · <a href="/contact">Contact</a>
       </nav>
     </div>
@@ -414,16 +418,46 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
   <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol></defs></svg><style></style>
 <main id="main" tabindex="-1" class="ff-page">
+<div class="fx-top">
+<h1 class="fx-h1">Fast Facts</h1>
+<p class="fx-lede page-lede">Bids, basis, rain, drought, rent and land value for your place, each with its source and date. Then the farm reference tables: corn N rates, P and K by soil test, manure, crop stages, pest thresholds and conversions.</p>
+</div>
+<nav class="fx-tabs" role="tablist" aria-label="Fast Facts"><a class="fx-tab" role="tab" href="#place" data-t="place" id="fx-t-place" aria-controls="place">My place</a><a class="fx-tab" role="tab" href="#tables" data-t="tables" id="fx-t-tables" aria-controls="tables">Reference tables</a></nav>
+<section class="fx-panel h" id="place" role="tabpanel" aria-labelledby="fx-t-place">
+<div id="h-find"><p class="h-ask" id="h-ask">Your ZIP, once. It stays on this device.</p><form id="h-form" class="h-box" role="search" autocomplete="off"><label for="h-q" class="sr-only">ZIP, town and state, or county</label><input id="h-q" type="text" inputmode="search" placeholder="ZIP, town and state, or county" maxlength="80" aria-describedby="h-status"><button type="submit">Show this place</button></form><div class="h-alt"><button type="button" id="h-locate">Use my location</button><details id="h-map-box"><summary>Pick on a map</summary><div id="h-map"></div></details><button type="button" id="h-keep" class="h-keep" hidden>Keep <span id="h-keep-l"></span></button></div><noscript><p>Looking up a place needs JavaScript. The reference tables are on this page too.</p></noscript></div>
+<p id="h-status" class="h-status" role="status" aria-live="polite"></p><div id="h-choices" class="h-chips"></div>
+<div id="h-tools" class="h-tools" hidden><button type="button" id="h-change" class="h-change">Change place <span id="h-change-l"></span></button><button type="button" id="h-pr-go" class="h-pr-go"><svg class="ic" aria-hidden="true"><use href="#i-printer"/></svg> Print</button><details id="h-pr-box" class="h-pr-box"><summary>Print options</summary><fieldset><legend>On the paper</legend><label><input type="checkbox" name="part" value="sentence" checked> The summary line</label><label><input type="checkbox" name="part" value="week" checked> The four cards</label><label><input type="checkbox" name="part" value="fingerprint" checked> How it ranks in its state</label><label><input type="checkbox" name="part" value="unusual" checked> Against its neighbors</label><label><input type="checkbox" name="part" value="long" checked> The long view</label><label><input type="checkbox" name="part" value="sources" checked> Sources</label><label><input type="checkbox" id="h-pr-rain"> This year&rsquo;s rain, drawn</label><label class="h-pr-more"><input type="checkbox" id="h-pr-more"> More detail: the table of years</label></fieldset></details></div>
+<div id="h-place" hidden>
+<h2 id="h-title" class="fx-ph" tabindex="-1"></h2><p id="h-where" class="h-where"></p>
+<div id="h-sec-week" class="fx-cards">
+<section class="fx-card"><h3>Price</h3><div class="fx-row" id="f-corn-bid"><p class="fx-l">Corn bid</p><div class="fx-w"></div></div><div class="fx-row" id="f-soy-bid"><p class="fx-l">Soybean bid</p><div class="fx-w"></div></div><div class="fx-row" id="f-corn-basis"><p class="fx-l">Corn basis</p><div class="fx-w"></div></div><div class="fx-row" id="f-soy-basis"><p class="fx-l">Soybean basis</p><div class="fx-w"></div></div><div class="fx-row" id="f-corn-fut"><p class="fx-l">Corn futures</p><div class="fx-w"></div></div><div class="fx-row" id="f-soy-fut"><p class="fx-l">Soybean futures</p><div class="fx-w"></div></div><div class="fx-row" id="f-wheat-fut"><p class="fx-l">Wheat futures</p><div class="fx-w"></div></div></section>
+<section class="fx-card"><h3>Field</h3><div class="fx-row" id="f-rain"><p class="fx-l">Rain since Jan 1</p><div class="fx-w"></div></div><div class="fx-row" id="f-drought"><p class="fx-l">Drought</p><div class="fx-w"></div></div><div class="fx-row" id="f-hail"><p class="fx-l">Hail, last 30 days</p><div class="fx-w"></div></div><div class="fx-row" id="f-progress"><p class="fx-l">Corn harvested</p><div class="fx-w"></div></div><div class="fx-row" id="f-soy-progress"><p class="fx-l">Soybeans harvested</p><div class="fx-w"></div></div></section>
+<section class="fx-card"><h3>Land and programs</h3><div class="fx-row" id="f-rent"><p class="fx-l">Cash rent</p><div class="fx-w"></div></div><div class="fx-row" id="f-land"><p class="fx-l">Farmland value</p><div class="fx-w"></div></div><div class="fx-row" id="f-sales"><p class="fx-l">Recorded farm sales</p><div class="fx-w"></div></div><div class="fx-row" id="f-loss"><p class="fx-l">Crop insurance paid out per $1 of total premium (farmer and federal shares)</p><div class="fx-w"></div></div><div class="fx-row" id="f-arcplc"><p class="fx-l">ARC or PLC sign-up</p><div class="fx-w"></div></div></section>
+<section class="fx-card"><h3>Today</h3><div class="fx-row" id="f-usda"><p class="fx-l">Next on the USDA calendar</p><div class="fx-w"></div></div><div class="fx-row" id="f-fert"><p class="fx-l">Fertilizer</p><div class="fx-w"></div></div><div class="fx-row" id="f-daily"><p class="fx-l">This morning&rsquo;s Daily</p><div class="fx-w"></div></div></section>
+</div>
+<div id="h-part-sentence" class="h-part"><p id="h-sent" class="h-sent"></p></div>
+<section id="h-odd" class="h-odd" aria-labelledby="h-odd-h" hidden><h3 id="h-odd-h">What stands out here against its own record</h3><ul id="h-odd-l" class="h-odd-l"></ul></section>
+<nav class="h-deep" aria-labelledby="h-deep-l"><span id="h-deep-l" class="h-deep-l">More for this place:</span> <span id="h-links" class="h-links"></span></nav>
+<details id="h-more" class="fx-more"><summary>More about this county</summary>
+<section id="h-first" class="h-first" aria-label="This year&rsquo;s rain"><p id="h-rank" class="h-rank" aria-live="polite"></p><div id="h-rp-box" class="h-rp-box"></div><p id="h-rank-sub" class="h-src"></p><details id="h-years" class="h-math" hidden><summary>Every year at this station</summary><div class="h-math-b"></div></details></section>
+<div id="h-sections">
+<section class="h-sec" id="h-sec-fingerprint" aria-labelledby="h-fp-h"><h2 id="h-fp-h">How it ranks in its state</h2><div id="h-fp" class="fp" role="img"></div><p id="h-fp-d" class="h-src" aria-live="polite"></p><details class="h-tbl"><summary>The numbers, as a table</summary><div class="h-tw"><table id="h-fp-t"></table></div></details></section>
+<section class="h-sec" id="h-sec-unusual" aria-labelledby="h-un-h"><h2 id="h-un-h">Against its neighbors</h2><div id="h-un"></div></section>
+<section class="h-sec" id="h-sec-long" aria-labelledby="h-long-h"><h2 id="h-long-h">The long view</h2><div id="h-long"></div></section>
+<section class="h-sec h-elev" id="h-elev" aria-labelledby="h-elev-h"><h2 id="h-elev-h">Elevators near here against their neighbors</h2><div id="h-elev-b"></div></section>
+</div>
+</details>
+<p id="h-nb" class="h-nb"></p>
+</div>
+</section>
+<div class="fx-panel" id="tables" role="tabpanel" aria-labelledby="fx-t-tables">
 <div class="ff-hero">
-  <div class="ff-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Free reference tables, with current prices</div>
-  <h1>Fast Facts: farm reference tables</h1>
+  <div class="ff-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Reference tables, with current prices</div>
+  <h2 class="ff-h">Fast Facts: farm reference tables</h2>
   <p class="page-lede">How much N to put on corn at posted prices, then P and K by soil test, manure, lime, crop stages, pest thresholds and conversions.</p>
-  <div class="ff-meta">Checked Oct 16, 2026 &middot; rates from UW Extension A2809 (Wisconsin) unless a table names another source &middot; <a href="#ff-sources">Sources</a></div>
+  <div class="ff-meta">Updated Oct 22, 2026; tables checked Oct 16, 2026 &middot; rates from UW Extension A2809 (Wisconsin) unless a table names another source &middot; <a href="#ff-sources">Sources</a></div>
 </div>
 
-<!-- Corn N rate at posted prices: A2809 Table 6.1 (components/a2809.js) at the
-     posted N price and new-crop corn. Fills in from data/fertilizer-prices.json,
-     data/prices.json and data/basis-states.json; empty boxes say so, never a made-up price. -->
 <section class="ff-ans" id="ff-ans" aria-labelledby="ff-ans-t">
   <h2 class="ff-ans-t" id="ff-ans-t"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Corn N rate at posted prices</h2>
   <div class="ff-ans-out" aria-live="polite">
@@ -449,7 +483,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <span>$/lb N <b id="nc-nlb">-</b></span><span>N:corn <b id="nc-ratio">-</b></span><span>A2809 column <b id="nc-col">-</b></span>
   </div>
   <p class="ff-ans-src" id="ans-src"></p>
-  <p class="ff-ans-note" id="ans-note">Rates are A2809 Table 6.1 as UW posts it today (Mar 2026 web edition, read Oct 16, 2026), from Wisconsin trials, starter included. If UW posts a newer table, these rates change with it. Subtract manure and second-year alfalfa credits; after corn or a forage legume, also first-year legume credits. Outside Wisconsin, run the same prices in <a href="https://www.cornnratecalc.org/">Iowa State's Corn N Rate Calculator</a>, which several Corn Belt states use for their own rates. <a href="#nitrogen" data-jump="nitrogen">Full table and credits &rarr;</a></p>
+  <p class="ff-ans-note" id="ans-note">Rates from UW A2809 Table 6.1 (Mar 2026 edition), Wisconsin trials, starter included. Subtract manure and second-year alfalfa credits; after corn or a forage legume, also first-year legume credits. Outside Wisconsin, run the same prices in <a href="https://www.cornnratecalc.org/">Iowa State's Corn N Rate Calculator</a>, which several Corn Belt states use for their own rates. <a href="#nitrogen" data-jump="nitrogen">Full table and credits &rarr;</a></p>
   <p class="ff-ans-note ff-ans-fall" id="ans-fall" hidden>Fall anhydrous: wait until 4-inch soil stays under 50&deg;F. <a href="/fall-nitrogen">Soil temps near you</a>.</p>
 </section>
 <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="fast-facts"></aside>
@@ -472,7 +506,6 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <button id="tab-btn-statestats" class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-statestats" data-tab="statestats"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg> State Stats</button>
 </nav>
 
-<!-- NITROGEN TAB -->
 <div class="ff-panel active" id="tab-nitrogen" role="tabpanel" aria-labelledby="tab-btn-nitrogen" tabindex="0">
 <div class="fert-banner" id="fert-banner">
   <div class="fert-banner-head">
@@ -482,8 +515,8 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <div class="fert-pills" id="fert-pills"><span style="font-size:0.78rem;color:var(--text-muted)">Loading prices&hellip;</span></div>
 </div>
 <div class="ff-h2" id="n-table">Corn N Rates by Soil and Price Ratio (A2809 Table 6.1)</div>
-<p class="ff-sub">Total lb N/ac, starter included. The big number is the rate with the most return to N (MRTN); under it, every rate within $1/ac of that return. N:corn ratio = $ per lb of N &divide; $ per bu of corn. The column for the prices in the box at the top is marked.</p>
-<div class="ff-warn"><strong>Which end of the range (A2809):</strong> upper end if residue covers more than half the soil at planting or all the N comes from manure; low end on loamy soils over 10% organic matter, or when N is likely left over from last year (or use the high end less a PPNT credit); high end on any soil under 2% organic matter; middle to low end for corn after small grains on loamy soil and on sands with 2 to 9.9% organic matter.</div>
+<p class="ff-sub">Total lb N/ac, starter included. The big number is the rate with the most return to N (MRTN, the maximum return to nitrogen); under it, every rate within $1/ac of that return. N:corn ratio = $ per lb of N &divide; $ per bu of corn. The column for the prices in the box at the top is marked.</p>
+<div class="ff-warn"><strong>Which end of the range (A2809):</strong><br>Upper end: more than half the soil covered by residue, or all N from manure.<br>Low end: over 10% organic matter, or N left from last year. Or take the high end less the N a spring soil nitrate test (PPNT) finds.<br>High end: any soil under 2% organic matter.<br>Middle to low: corn after small grains, and sands with 2 to 9.9% organic matter.</div>
 <div class="ff-tw ff-tw-n" tabindex="0" role="region" aria-label="Corn N rates table"><table class="ff-t" id="nc-table">
 <thead>
   <tr><th class="tl" rowspan="2">Soil Type &amp; Previous Crop</th><th colspan="4">N:Corn Price Ratio</th></tr>
@@ -547,11 +580,9 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <tr><td class="tl">K-Mag (0-0-22)</td><td class="ze">0</td><td class="ze">0</td><td class="hi">22</td><td>22% S, 10.8% Mg</td><td>n/a</td></tr>
   <tr><td class="tl">9-18-9 starter liquid</td><td>9</td><td>18</td><td>9</td><td>n/a</td><td>11.1</td></tr>
 </tbody></table></div>
-<div class="ff-note"><strong>K-Mag:</strong> 22% K&#x2082;O, 22% S and 10.8% Mg are the guaranteed minimums on the maker's <a href="https://cropnutrition.com/wp-content/uploads/2024/04/2025_K-Mag_Granular_Data_Sheet.pdf">2025 K-Mag Granular data sheet</a> (revised Jan 2025, read Oct 15, 2026).</div>
+<div class="ff-note"><strong>K-Mag:</strong> 22% K&#x2082;O, 22% S and 10.8% Mg are the guaranteed minimums on the maker's <a href="https://cropnutrition.com/wp-content/uploads/2024/04/2025_K-Mag_Granular_Data_Sheet.pdf">2025 K-Mag Granular data sheet</a> (revised Jan 2025).</div>
 <div class="ff-note"><strong>Liquid weights:</strong> 1 gal water = 8.34 lb &middot; UAN 28% = 10.6 lb/gal &middot; UAN 32% = 11.1 lb/gal &middot; 10-34-0 = 11.6 lb/gal</div>
-</div><!-- /tab-nitrogen -->
-
-<!-- ECONOMICS TAB -->
+</div>
 <div class="ff-panel" id="tab-economics" role="tabpanel" aria-labelledby="tab-btn-economics" tabindex="0" aria-hidden="true">
 <div class="ff-h2">Market Prices <span class="live-badge" id="eco-live-badge" style="display:none;margin-left:.5rem"><span class="b-dot"></span>Delayed</span></div>
 <div class="eco-price-grid">
@@ -580,9 +611,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   The Break-Even Calculator adds a what-if sensitivity table, profit gauge, and printable report.<br><br>
   <a href="/breakeven" style="color:var(--gold);font-weight:700;font-family:'JetBrains Mono',monospace;font-size:0.795rem;text-decoration:none">&rarr; Open Break-Even Calculator</a>
 </div>
-</div><!-- /tab-economics -->
-
-<!-- P&K TAB -->
+</div>
 <div class="ff-panel" id="tab-pk" role="tabpanel" aria-labelledby="tab-btn-pk" tabindex="0" aria-hidden="true">
 <div class="ff-h2">Soil Test Interpreter</div>
 <p class="ff-sub">Enter your soil tests. Get the P&#x2082;O&#x2085; and K&#x2082;O rate from UW Extension A2809 (Wisconsin): soil test categories from Tables 7.1 and 7.2, rates from Table 7.4. P is the Bray P1 test. Other states set their own categories, so check yours.</p>
@@ -731,11 +760,9 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <tr><td class="tl">7.6&ndash;8.5</td><td class="re">535</td><td>520</td><td class="hi">480</td><td>240</td><td>120</td><td class="ze">0</td></tr>
   <tr><td class="tl">8.6&ndash;9.5</td><td class="re">595</td><td>580</td><td class="hi">540</td><td>270</td><td>135</td><td class="ze">0</td></tr>
 </tbody></table></div>
-<div class="ff-note">Seeding-year alfalfa (1.5&ndash;2.5 ton): 65, 55, 25, 15 and 0 lb P&#x2082;O&#x2085;; 160, 145, 105, 55, 25 and 0 lb K&#x2082;O, Very Low to Excessively High. Keeping a stand more than 3 years, A2809 raises topdressed K&#x2082;O by 20%. Silage and alfalfa take the whole plant, so retest every 2 years. Source: <a href="https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf">UW Extension A2809</a> (Laboski and Peters), read Oct 16, 2026.</div>
+<div class="ff-note">Seeding-year alfalfa (1.5&ndash;2.5 ton): 65, 55, 25, 15 and 0 lb P&#x2082;O&#x2085;; 160, 145, 105, 55, 25 and 0 lb K&#x2082;O, Very Low to Excessively High. Keeping a stand more than 3 years, A2809 raises topdressed K&#x2082;O by 20%. Silage and alfalfa take the whole plant, so retest every 2 years. Source: <a href="https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf">UW Extension A2809</a> (Laboski and Peters).</div>
 <div class="ff-note"><strong>Olsen P users:</strong> A2809 categories are for the Bray P1 test. A2809 gives no Olsen conversion, so ask your lab for Bray P1 or use your state's Olsen guide.</div>
-</div><!-- /tab-pk -->
-
-<!-- CROP REMOVAL TAB -->
+</div>
 <div class="ff-panel" id="tab-removal" role="tabpanel" aria-labelledby="tab-btn-removal" tabindex="0" aria-hidden="true">
 <div class="ff-h2">Nutrients Removed at Harvest</div>
 <div class="ff-tw" tabindex="0" role="region" aria-label="Nutrients Removed at Harvest table, scrolls sideways"><table class="ff-t">
@@ -796,9 +823,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-ri"><div class="ff-ril">Bu / Acre</div><div class="ff-riv green" id="corn-buac">-</div></div>
   </div>
 </div>
-</div><!-- /tab-removal -->
-
-<!-- MANURE TAB -->
+</div>
 <div class="ff-panel" id="tab-manure" role="tabpanel" aria-labelledby="tab-btn-manure" tabindex="0" aria-hidden="true">
 <div class="ff-h2">Total and Available Nutrient Content by Manure Type</div>
 <p class="ff-sub">Total N, P&#x2082;O&#x2085; and K&#x2082;O in the manure, then what a crop can use the first year: N by time to incorporation [second-year N in brackets], P&#x2082;O&#x2085; and K&#x2082;O. Solid in lb/ton, liquid in lb/1,000 gal. Book values from UW Extension A2809 (R-11-2012), Tables 9.2 and 9.3; the first year counts 80% of the P and K and 25 to 65% of the N (Table 9.1). Farm manure varies a lot, so a manure test beats this table.</p>
@@ -829,11 +854,11 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <tr><td class="tl">Solid (lb/ton)</td><td class="hi">10</td><td class="hi">6</td><td class="hi">8</td><td>2 [1]</td><td>3 [1]</td><td>4 [1]</td><td>5</td><td>6</td></tr>
 </tbody></table></div>
 <!--/MV:POUNDS-->
-<div class="ff-note ff-mvlink"><strong>What is it worth in dollars?</strong> <a href="/manure-value">Full manure value page</a>: all the N, P and K in dollars per 1,000 gal and per ton for every type at dated posted prices, with the first-year part beside it, a worked dairy example on 80 acres, and a calculator that takes your own manure test.</div>
+<div class="ff-note ff-mvlink"><strong>What is it worth in dollars?</strong> More on the <a href="/manure-value">manure value page</a>, with a calculator for your own test.</div>
 
 <div class="ff-h2" id="manure-calc">Manure Value Calculator</div>
 <p class="ff-sub">The N, P&#x2082;O&#x2085; and K&#x2082;O in the manure at dated posted prices: an acre, per 1,000 gal or ton, and for the field. All the pounds count, with the first-year part under the total; type your own test and it uses your pounds. The same calculator as on <a href="/manure-value#calculator">the manure value page</a>.</p>
-<div class="mvc" data-mv-calc><p class="ff-sub">The calculator needs JavaScript.</p></div>
+<div class="mvc" data-mv-calc="short"><p class="ff-sub">The calculator needs JavaScript.</p></div>
 
 <div class="ff-h2">Application Rate Calculator</div>
 <div class="ff-calc">
@@ -849,9 +874,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-ri"><div class="ff-ril">Application Rate</div><div class="ff-riv green" id="man-rate">-</div></div>
   </div>
 </div>
-</div><!-- /tab-manure -->
-
-<!-- SOIL HEALTH TAB -->
+</div>
 <div class="ff-panel" id="tab-soilhealth" role="tabpanel" aria-labelledby="tab-btn-soilhealth" tabindex="0" aria-hidden="true">
 <div class="ff-h2">Soil pH Targets</div>
 <div class="ff-g2">
@@ -910,7 +933,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-ri"><div class="ff-ril">Guidance</div><div class="ff-riv dim" id="lime-note">-</div></div>
     <div class="ff-ri"><div class="ff-ril">Est. Cost/Acre</div><div class="ff-riv gold" id="lime-cost">-</div></div>
   </div>
-  <div class="ff-cn">How it works: A2809 Table 5.1 gives tons of 60&ndash;69 NI lime from your water pH and buffer pH (the Sikora buffer on a Wisconsin soil report). Your lime = that &times; 65 &divide; NI (use the middle of the grade, 85 for 80&ndash;89). Lime only when water pH is more than 0.2 below target. Minimum 2 ton of 60&ndash;69 lime (1.5 of 80&ndash;89); never over 12 ton. NI is not the same as CCE: use the NI on the lime label or ask the quarry. Example: buffer 6.5, water 6.0, target 6.8 is 195 &minus; 28.4 &times; 6.5 + 0.144 &times; 6.0 = 11.3 ton of 60&ndash;69 lime, or 8.5 ton of 80&ndash;89. Cost uses the price you type; lime prices swing with haul distance. Source: <a href="https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf">UW Extension A2809</a>, Chapter 5, read Oct 16, 2026. Other states use other buffers and formulas; use your state&#8217;s guide outside Wisconsin.</div>
+  <div class="ff-cn">How it works: A2809 Table 5.1 gives tons of 60&ndash;69 NI lime from your water pH and buffer pH (the Sikora buffer pH, the lime-need number on a Wisconsin soil report). Your lime = that &times; 65 &divide; NI (use the middle of the grade, 85 for 80&ndash;89). Lime only when water pH is more than 0.2 below target. Minimum 2 ton of 60&ndash;69 lime (1.5 of 80&ndash;89); never over 12 ton. NI is not the same as CCE: use the NI on the lime label or ask the quarry. Example: buffer 6.5, water 6.0, target 6.8 is 195 &minus; 28.4 &times; 6.5 + 0.144 &times; 6.0 = 11.3 ton of 60&ndash;69 lime, or 8.5 ton of 80&ndash;89. Cost uses the price you type; lime prices swing with haul distance. Source: <a href="https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf">UW Extension A2809</a>, Chapter 5. Other states use other buffers and formulas; use your state&#8217;s guide outside Wisconsin.</div>
 </div>
 <div class="ff-h2">Micronutrient Soil Tests (A2809 Table 8.4)</div>
 <div class="ff-tw" tabindex="0" role="region" aria-label="Micronutrient soil test categories table"><table class="ff-t">
@@ -943,11 +966,9 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   </div>
 </div>
 <div class="ff-note"><strong>Tissue tests:</strong> A2809 prints no corn or soybean tissue table, so none is printed here. Use the sufficiency ranges your lab prints with the result.</div>
-</div><!-- /tab-soilhealth -->
-<!-- CROP STAGES TAB -->
-<div class="ff-panel" id="tab-stages" role="tabpanel" aria-labelledby="tab-btn-stages" tabindex="0" aria-hidden="true">
+</div><div class="ff-panel" id="tab-stages" role="tabpanel" aria-labelledby="tab-btn-stages" tabindex="0" aria-hidden="true">
 <div class="ff-h2">Corn Growth Stages: Interactive GDU Timeline</div>
-<p class="ff-sub">Tap any stage for its GDUs, what the plant is doing and what to watch. GDUs from planting, 86/50 method, for a 2,700-GDU hybrid (Purdue NCH-40), the same table as the <a href="/gdu-calculator">GDU calculator</a>.</p>
+<p class="ff-sub">Tap any stage for its GDUs, what the plant is doing and what to watch. GDUs from planting (highs capped at 86&deg;F, lows floored at 50&deg;F), for a 2,700-GDU hybrid (Purdue NCH-40), the same table as the <a href="/gdu-calculator">GDU calculator</a>.</p>
 <div class="sv-wrap" id="corn-sv-wrap">
   <div class="sv-track"></div>
   <div class="sv-marks" id="corn-sv-marks"></div>
@@ -976,9 +997,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   </div>
 </div>
 <p class="ff-sub" style="margin-top:1rem"><a href="/gdu-calculator">GDU calculator</a>: GDUs from your planting date on real weather. <a href="/spray">Spray conditions</a>: wind, temperature, humidity and inversion risk where you are.</p>
-</div><!-- /tab-stages -->
-
-<!-- PEST & WEED TAB -->
+</div>
 <div class="ff-panel" id="tab-pest" role="tabpanel" aria-labelledby="tab-btn-pest" tabindex="0" aria-hidden="true">
 <div class="ff-h2">Economic Thresholds: Key Insects</div>
 <div class="ff-tw" tabindex="0" role="region" aria-label="Economic thresholds for key insects table"><table class="ff-t ff-pest">
@@ -992,8 +1011,8 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <tr class="tg"><td class="tl" colspan="3">Soybean</td></tr>
   <tr><td class="tl">Soybean Aphid</td><td class="tl"><span class="sev-high">250 aphids/plant average, on more than 80% of plants, increasing</span><span class="pn">Scout weekly from mid to late June until R6.5. Average plants from across the field, not the edges. No threshold is set for R6 (UMN).</span></td><td class="tl">Through R5</td></tr>
 </tbody></table></div>
-<p class="ff-sub">Western bean cutworm, European corn borer, bean leaf beetle, leaf feeders on soybeans and spider mites: use your state's current field crop pest guide (Wisconsin's is A3646). I print a threshold here only after checking it against a saved copy of its source.</p>
-<div class="ff-note" id="pest-sources"><strong>Where these numbers come from</strong> (read Oct 15, 2026): University of Wisconsin <a href="https://corn.aae.wisc.edu/Management/pdfs/L023_CornIPM_insect.pdf">Corn IPM insect scouting sheet L023</a> (Feb 2000), black cutworm and armyworm worksheets; SDSU Extension, <a href="https://extension.sdstate.edu/monitor-your-corn-corn-rootworm-adults-inform-management-next-year-and-avoid-substantial-silk">Monitor Your Corn for Corn Rootworm Adults</a>, silk feeding section; Iowa State ICM News, <a href="https://crops.extension.iastate.edu/post/watch-out-these-silk-feeding-insects">Watch out for these silk feeding insects</a>, Jul 9, 2024 (also the Japanese beetle row); University of Wisconsin, <a href="https://corn.aae.wisc.edu/Management/pdfs/L023_CornIPM_insect.pdf">Corn IPM insect scouting sheet L023</a>, corn rootworm worksheet, root protection for the following year; University of Minnesota Extension, <a href="https://extension.umn.edu/soybean-pest-management/scouting-soybean-aphid">Scouting for soybean aphid</a>, economic threshold through R5; Iowa State ICM News, <a href="https://crops.extension.iastate.edu/post/why-use-economic-threshold-soybean-aphid">Why use the economic threshold for soybean aphid?</a>, Aug 28, 2017.</div>
+<p class="ff-sub">Western bean cutworm, European corn borer, bean leaf beetle, leaf feeders on soybeans and spider mites: use your state's current field crop pest guide (Wisconsin's is A3646).</p>
+<div class="ff-note" id="pest-sources"><strong>Sources:</strong> University of Wisconsin <a href="https://corn.aae.wisc.edu/Management/pdfs/L023_CornIPM_insect.pdf">Corn IPM insect scouting sheet L023</a> (Feb 2000), black cutworm and armyworm worksheets; SDSU Extension, <a href="https://extension.sdstate.edu/monitor-your-corn-corn-rootworm-adults-inform-management-next-year-and-avoid-substantial-silk">Monitor Your Corn for Corn Rootworm Adults</a>, silk feeding section; Iowa State ICM News, <a href="https://crops.extension.iastate.edu/post/watch-out-these-silk-feeding-insects">Watch out for these silk feeding insects</a>, Jul 9, 2024 (also the Japanese beetle row); University of Wisconsin, <a href="https://corn.aae.wisc.edu/Management/pdfs/L023_CornIPM_insect.pdf">Corn IPM insect scouting sheet L023</a>, corn rootworm worksheet, root protection for the following year; University of Minnesota Extension, <a href="https://extension.umn.edu/soybean-pest-management/scouting-soybean-aphid">Scouting for soybean aphid</a>, economic threshold through R5; Iowa State ICM News, <a href="https://crops.extension.iastate.edu/post/why-use-economic-threshold-soybean-aphid">Why use the economic threshold for soybean aphid?</a>, Aug 28, 2017.</div>
 <div class="ff-h2">Herbicide MOA Reference: Common Classes</div>
 <div class="ff-tw" tabindex="0" role="region" aria-label="Herbicide groups table"><table class="ff-t ff-stack">
 <thead><tr><th class="tl">MOA Group</th><th class="tl">Site of Action</th><th class="tl">Common AI / Products</th><th class="tl">Crops</th><th class="tl">Resistance Notes</th></tr></thead>
@@ -1008,10 +1027,8 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <tr><td data-th="Group" class="tl"><span class="moa-badge moa-other">Group 15</span></td><td data-th="Site of action" class="tl">Very-long-chain fatty acid (VLCFA) inhibitor</td><td data-th="Products" class="tl">S-metolachlor (Dual II Magnum), acetochlor (Warrant, Harness), dimethenamid-P (Outlook), pyroxasulfone (Zidua)</td><td data-th="Crops" class="tl">Corn, soybean</td><td data-th="Resistance" class="tl" style="font-size:0.775rem">The main soil residual for waterhemp. Resistance confirmed in Illinois populations in 2019, the first in a broadleaf weed; still rare.</td></tr>
   <tr><td data-th="Group" class="tl"><span class="moa-badge moa-other">Group 27</span></td><td data-th="Site of action" class="tl">HPPD inhibitor</td><td data-th="Products" class="tl">Callisto, Laudis, Impact, Balance</td><td data-th="Crops" class="tl">Corn</td><td data-th="Resistance" class="tl" style="font-size:0.775rem">Strong on waterhemp; some populations now resist it (see below).</td></tr>
 </tbody></table></div>
-<div class="ff-alert"><strong>Waterhemp management priority across the Corn Belt:</strong> Waterhemp has confirmed resistance to seven site-of-action groups: 2, 4, 5, 9, 14, 15 and 27. Groups 2 and 9 are widespread; resistance to 4, 15 and 27 is in some populations, and fields with five- and six-way resistant waterhemp are on record. That makes it the highest resistance-management priority in most corn and soybean regions. Use 3+ effective MOA programs with a soil residual, and do not rely on post-only programs.<br><span style="font-size:.8rem">Sources (checked Oct 17, 2026): Ohio State Extension fact sheet <a href="https://ohioline.osu.edu/factsheet/anr-78">ANR-78</a> (a Missouri population resistant to Groups 2, 4, 5, 9, 14 and 27); University of Illinois, Group 15 resistance in Champaign and McLean county waterhemp (<a href="https://www.dtnpf.com/agriculture/web/ag/news/article/2019/04/01/illinois-scientists-find-new-tough">DTN, Apr 2019</a>); the <a href="https://www.weedscience.org/">International Herbicide-Resistant Weed Database</a> lists each case.</span></div>
-</div><!-- /tab-pest -->
-
-<!-- REFERENCE TAB -->
+<div class="ff-alert"><strong>Waterhemp management priority across the Corn Belt:</strong> Waterhemp has confirmed resistance to seven site-of-action groups: 2, 4, 5, 9, 14, 15 and 27. Groups 2 and 9 are widespread; resistance to 4, 15 and 27 is in some populations, and fields with five- and six-way resistant waterhemp are on record. That makes it the highest resistance-management priority in most corn and soybean regions. Use 3+ effective MOA programs with a soil residual, and do not rely on post-only programs.<br><span style="font-size:.8rem">Sources: Ohio State Extension fact sheet <a href="https://ohioline.osu.edu/factsheet/anr-78">ANR-78</a> (a Missouri population resistant to Groups 2, 4, 5, 9, 14 and 27); University of Illinois, Group 15 resistance in Champaign and McLean county waterhemp (<a href="https://www.dtnpf.com/agriculture/web/ag/news/article/2019/04/01/illinois-scientists-find-new-tough">DTN, Apr 2019</a>); the <a href="https://www.weedscience.org/">International Herbicide-Resistant Weed Database</a> lists each case.</span></div>
+</div>
 <div class="ff-panel" id="tab-reference" role="tabpanel" aria-labelledby="tab-btn-reference" tabindex="0" aria-hidden="true">
 <div class="ff-h2">Quick Reference: Conversion Factors</div>
 <div class="ff-g3">
@@ -1085,30 +1102,22 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <tr><td class="tl">May 30</td><td>82%</td><td>89%</td></tr>
   <tr><td class="tl">Jun 4</td><td class="re">76%</td><td class="re">84%</td></tr>
 </tbody></table></div>
-<p class="ff-sub">Percent of the most grain those trials made. Source: <a href="https://extension.umn.edu/corn-planting/planting-date-considerations-corn">UMN Extension, Planting date considerations for corn</a> (read Oct 16, 2026). Farther south the drop starts later; your state's extension has its own trials.</p>
+<p class="ff-sub">Percent of the most grain those trials made. Source: <a href="https://extension.umn.edu/corn-planting/planting-date-considerations-corn">UMN Extension, Planting date considerations for corn</a>. Farther south the drop starts later; your state's extension has its own trials.</p>
 <button onclick="window.print()" class="ff-print-btn"><svg class="ic" aria-hidden="true"><use href="#i-printer"/></svg> Print This Reference Page</button>
-</div><!-- /tab-reference -->
-
-<!-- STATE STATS TAB -->
-<div class="ff-panel" id="tab-statestats" role="tabpanel" aria-labelledby="tab-btn-statestats" tabindex="0" aria-hidden="true">
-<div class="ff-h2">State-Level Production Data</div>
-<p class="ff-sub">U.S. crop production at a glance, with per-state detail from USDA NASS: the national source for acreage, yield, and production across all 50 states.</p>
-<div class="ff-scontent" style="margin:.25rem 0 1rem">
-  <div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="ff-card-title rp corn">U.S. Corn: 2025</span></div><div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv gold">17.0 B bu</span></div><div class="ff-row"><span class="ff-rl">Avg yield</span><span class="ff-rv">186.5 bu/ac</span></div><div class="ff-row"><span class="ff-rl">Harvested</span><span class="ff-rv">91.3 M ac</span></div></div>
-  <div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></span><span class="ff-card-title rp beans">U.S. Soybeans: 2025</span></div><div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv gold">4.26 B bu</span></div><div class="ff-row"><span class="ff-rl">Avg yield</span><span class="ff-rv">53.0 bu/ac</span></div><div class="ff-row"><span class="ff-rl">Harvested</span><span class="ff-rv">80.4 M ac</span></div></div>
 </div>
-<p class="ff-sub" style="font-size:0.775rem">National totals: USDA NASS Crop Production 2025 Summary (final). Select any state for its full USDA NASS profile.</p>
+<div class="ff-panel" id="tab-statestats" role="tabpanel" aria-labelledby="tab-btn-statestats" tabindex="0" aria-hidden="true">
+<div class="ff-h2">Crop size by state</div>
+<p class="ff-sub">Corn, soybean and wheat acres, yield and production for each state, from USDA NASS, live on one page per state. Pick a state for its link. U.S. totals and every state side by side: <a href="/usda-quick-stats">Yield by state</a>.</p>
 <div class="ff-state-picker">
-  <label class="ff-spl" for="ff-state-select">Select state</label>
+  <label class="ff-spl" for="ff-state-select">State</label>
   <select id="ff-state-select" style="font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.55rem .7rem;min-height:44px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:6px;min-width:200px">
     <option value="AL">Alabama</option><option value="AK">Alaska</option><option value="AZ">Arizona</option><option value="AR">Arkansas</option><option value="CA">California</option><option value="CO">Colorado</option><option value="CT">Connecticut</option><option value="DE">Delaware</option><option value="FL">Florida</option><option value="GA">Georgia</option><option value="HI">Hawaii</option><option value="ID">Idaho</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="IA" selected>Iowa</option><option value="KS">Kansas</option><option value="KY">Kentucky</option><option value="LA">Louisiana</option><option value="ME">Maine</option><option value="MD">Maryland</option><option value="MA">Massachusetts</option><option value="MI">Michigan</option><option value="MN">Minnesota</option><option value="MS">Mississippi</option><option value="MO">Missouri</option><option value="MT">Montana</option><option value="NE">Nebraska</option><option value="NV">Nevada</option><option value="NH">New Hampshire</option><option value="NJ">New Jersey</option><option value="NM">New Mexico</option><option value="NY">New York</option><option value="NC">North Carolina</option><option value="ND">North Dakota</option><option value="OH">Ohio</option><option value="OK">Oklahoma</option><option value="OR">Oregon</option><option value="PA">Pennsylvania</option><option value="RI">Rhode Island</option><option value="SC">South Carolina</option><option value="SD">South Dakota</option><option value="TN">Tennessee</option><option value="TX">Texas</option><option value="UT">Utah</option><option value="VT">Vermont</option><option value="VA">Virginia</option><option value="WA">Washington</option><option value="WV">West Virginia</option><option value="WI">Wisconsin</option><option value="WY">Wyoming</option>
   </select>
 </div>
 <div id="state-content" class="ff-scontent">
-  <div style="grid-column:1/-1;color:var(--text-muted);font-size:0.795rem;padding:1rem 0">Loading state data&hellip;</div>
+  <p class="ff-sub" style="grid-column:1/-1"><a href="/usda-quick-stats">Corn, soybean and wheat by state, USDA NASS &rarr;</a></p>
 </div>
-</div><!-- /tab-statestats -->
-
+</div>
 <nav class="ff-toc" aria-label="All sections">
   <b>All sections:</b> <a href="#nitrogen">Nitrogen</a> &middot; <a href="#economics">Economics</a> &middot; <a href="#pk">P and K</a> &middot; <a href="#removal">Crop removal</a> &middot; <a href="#manure">Manure</a> &middot; <a href="#soilhealth">Soil health</a> &middot; <a href="#stages">Crop stages</a> &middot; <a href="#pest">Pest and weed</a> &middot; <a href="#reference">Reference</a> &middot; <a href="#statestats">State stats</a> &middot; <a href="/manure-value">Manure value</a>
 </nav>
@@ -1128,7 +1137,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 </style>
 <section class="faq agf" aria-labelledby="agf-t">
 <h2 class="agf-t" id="agf-t">Common questions</h2>
-<details><summary>How much nitrogen should I apply to corn?</summary><div class="agf-a">It depends on your soil, the last crop and the N:corn price ratio: the price of a pound of N divided by the price of a bushel of corn. UW Extension A2809 (Mar 2026 web edition, read Oct 16, 2026), from Wisconsin trials, gives corn after soybeans on high-yield loamy soil 140 lb N at a 0.05 ratio, 120 at 0.10, 105 at 0.15 and 90 at 0.20. Corn after corn on the same soil gets 190, 165, 150 and 135. Subtract manure and legume credits. The box at the top of this page works out the ratio from posted N and corn prices. Outside Wisconsin, use your state's MRTN rates.</div></details>
+<details><summary>How much nitrogen should I apply to corn?</summary><div class="agf-a">It depends on your soil, the last crop and the N:corn price ratio: the price of a pound of N divided by the price of a bushel of corn. UW Extension A2809 (Mar 2026 web edition), from Wisconsin trials, gives corn after soybeans on high-yield loamy soil 140 lb N at a 0.05 ratio, 120 at 0.10, 105 at 0.15 and 90 at 0.20. Corn after corn on the same soil gets 190, 165, 150 and 135. Subtract manure and legume credits. The N box on the Reference tables tab works out the ratio from posted N and corn prices. Outside Wisconsin, use your state's MRTN rates.</div></details>
 <details><summary>What is my manure worth in fertilizer value?</summary><div class="agf-a">Multiply the total N, P2O5 and K2O in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. That is the value of all of it. A crop can use 80% of the P2O5 and K2O and 25 to 65% of the N the first year, by UW Extension A2809. The Manure tab has the pounds by manure type and a calculator at dated posted prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field.</div></details>
 <details><summary>What is the economic threshold for soybean aphid?</summary><div class="agf-a">250 aphids per plant on average, aphids on more than 80% of plants, and the population rising. That threshold runs through R5. University of Minnesota Extension sets no threshold for R6.</div></details>
 <details><summary>How do I calculate growing degree units for corn?</summary><div class="agf-a">GDU (base 50°F) = [(daily max temp, capped at 86°F) + (daily min temp, floor at 50°F)] / 2 - 50. Accumulate daily from planting.</div></details>
@@ -1140,19 +1149,19 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <h2 id="ff-sources-t">Sources</h2>
 <p>Every number on this page comes from one of these, read on the date shown. Prices are dated where they appear. Found a wrong number? Email <a href="mailto:sig@agsist.com">sig@agsist.com</a> and I will fix it.</p>
 <ul class="ff-src-list">
-  <li><a href="https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf">UW Extension A2809</a>, Laboski and Peters, Nutrient application guidelines for field, vegetable, and fruit crops in Wisconsin (Mar 2026 web edition, read Oct 16, 2026): corn N (Table 6.1), legume and green manure credits (9.4 to 9.6), P and K (4.2, 7.1, 7.2, 7.4), crop removal and target pH (4.2), lime (5.1, 5.2), micronutrients (8.2 to 8.5), manure (9.1 to 9.3).</li>
+  <li><a href="https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf">UW Extension A2809</a>, Laboski and Peters, Mar 2026.</li>
   <li><a href="https://www.extension.purdue.edu/extmedia/nch/nch-40.html">Purdue NCH-40</a>: corn GDU by stage, the same table as the <a href="/gdu-calculator">GDU calculator</a>.</li>
-  <li>Insects: UW L023 corn IPM scouting sheet, SDSU Extension, Iowa State ICM News and UMN Extension, each linked under the threshold table (read Oct 15, 2026).</li>
+  <li>Insects: UW L023 corn IPM scouting sheet, SDSU Extension, Iowa State ICM News and UMN Extension, each linked under the threshold table.</li>
   <li><a href="https://crops.extension.iastate.edu/cropnews/2019/09/grain-drying-considerations-fall">Iowa State, Grain drying considerations this fall</a> (2019): propane per bushel per point. <a href="https://extension.umn.edu/corn-planting/planting-date-considerations-corn">UMN Extension</a>: planting date and frost.</li>
   <li><a href="https://cropnutrition.com/wp-content/uploads/2024/04/2025_K-Mag_Granular_Data_Sheet.pdf">K-Mag Granular data sheet</a> (2025): K-Mag analysis.</li>
-  <li>Prices: fertilizer from co-op posted cash prices (<a href="/fertilizer">fertilizer prices</a>, each named with its co-ops and date); corn, soybean and wheat futures are delayed CBOT closes; state corn basis is the median of AGSIST elevator bids this week (<a href="/cash-bids">cash bids</a>).</li>
+  <li>Prices: fertilizer from co-op posted cash prices (<a href="/fertilizer">fertilizer prices</a>, dated); corn, soybean and wheat futures are delayed CBOT closes; state corn basis is the median of AGSIST elevator bids this week (<a href="/cash-bids">cash bids</a>).</li>
   <li><a href="https://www.cornnratecalc.org/">Iowa State Corn N Rate Calculator</a> for N rates outside Wisconsin. <a href="https://quickstats.nass.usda.gov/">USDA NASS</a> for state production.</li>
 </ul>
-<p>Written and checked by Sigurd Lindquist, CCA, Chetek, Wisconsin. No sponsor or seller sets any number on this page.</p>
+<p>Sig Lindquist, CCA, Chetek, Wisconsin. No sponsor sets any number here.</p>
 </section>
+</div><!-- /tables -->
 
-</main><!-- /ff-page -->
-<div id="site-footer">
+</main><div id="site-footer">
 <!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
   <!-- Static footer for crawlers and no-JS (loader.js swaps in the live footer). Edit here, then run scripts/inject_static_nav.py. -->
   <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
@@ -1160,21 +1169,27 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/news">The Wire</a> · <a href="/archive">Archive</a> · <a href="/rain-print">Rain Print: your farm’s year of rain, framed</a><br>
     <b>Prices:</b> <a href="/cash-bids">Cash bids near me</a> · <a href="/cash-bids/states">Bids by state</a> · <a href="/basis">Basis vs normal</a> · <a href="/grain-transport">Grain on the move</a> · <a href="/cash-bid-index">Cash Bid Index</a> · <a href="/fertilizer">Fertilizer prices</a> · <a href="/corn-futures-prices">Corn</a> · <a href="/soybean-futures-prices">Soybeans</a> · <a href="/wheat-futures-prices">Wheat</a> · <a href="/harvest-price-tracker">Harvest price tracker</a> · <a href="/markets">All markets</a> · <a href="/usda-calendar">USDA calendar</a> · <a href="/whats-priced-in">What&rsquo;s priced in</a> · <a href="/conditions">Crop progress</a> · <a href="/conditions-yield">Crop size</a> · <a href="/usda-quick-stats">Yield by state</a> · <a href="/crop-tour">Crop tour</a> · <a href="/cot">Fund positions (COT)</a> · <a href="/tariffs">Tariffs and trade</a> · <a href="/scorecard">Prediction bot</a> · <a href="/elevators">For elevators</a><br>
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a> · <a href="/manure-value">Manure value</a> · <a href="/drought-monitor">Drought monitor</a><br>
-    <b>Field:</b> <a href="/rain-radar">Rain on your field</a> · <a href="/rain">Rain by county</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray advisory</a> · <a href="/fall-nitrogen">Soil temp (fall anhydrous)</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/urea">Urea loss</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/pod-counts">Pod counts</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts reference tables</a><br>
+    <b>Field:</b> <a href="/rain-radar">Rain on your field</a> · <a href="/rain">Rain by county</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray advisory</a> · <a href="/fall-nitrogen">Soil temp (fall anhydrous)</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/urea">Urea loss</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/pod-counts">Pod counts</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/farmland-index">Farmland sale index</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a> · <a href="/foreign-land">Foreign-owned land</a><br>
     <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
-    <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/status">Status</a> · <a href="/changelog">What&rsquo;s new</a><br>
+    <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<!-- FIX: loader.js defer: prevents render-blocking -->
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/manure-value.js?v=8" defer></script>
+<script src="/components/layers.js?v=1" defer></script>
+<script src="/components/place.js?v=5" defer></script>
+<script src="/components/qr.js?v=11" defer></script>
+<script src="/components/bids-network.js?v=8" defer></script>
+<script src="/components/print-sheet.js?v=1" defer></script>
+<script src="/components/here.js?v=21" defer></script>
+<script src="/components/fert-pick.js?v=1" defer></script>
+<script src="/components/manure-value.js?v=10" defer></script>
 <script src="/components/a2809.js?v=2" defer></script>
 <script src="/components/gdu-stages.js?v=1" defer></script>
 <script src="/components/price-local.js?v=7" defer></script>
-<script src="/components/fast-facts.js?v=12" defer></script>
+<script src="/components/fast-facts.js?v=13" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

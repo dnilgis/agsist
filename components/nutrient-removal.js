@@ -229,23 +229,13 @@
   function all(sel) { return Array.prototype.slice.call(d.querySelectorAll(sel)); }
   function unitWord(c) { return c.basis === 'bu' ? 'bu' : c.basis === 'dm' ? 'dry ton' : 'ton'; }
 
-  /* Co-op names for a price row, from data/fertilizer-coops.json (the same
-     read that builds the price file). '' until that file loads. */
-  var COOPS = {};
-  function coopNames(row) {
-    var n = (row.coops || []).map(function (id) { return COOPS[id]; }).filter(Boolean);
-    if (!n.length || n.length !== (row.coops || []).length) return '';
-    return n.length === 1 ? n[0] : n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1];
-  }
-
   function fillPrices(pr, data) {
     var box = $('#nr-prices'); if (!box) return;
     var items = [['N', 'n', 'lb N'], ['P₂O₅', 'p', 'lb P₂O₅'], ['K₂O', 'k', 'lb K₂O']].map(function (a) {
       var x = pr[a[1]];
       if (!x) return '<li>' + a[0] + ' a lb<b>no price</b>none in the list</li>';
-      var who = a[1] === 'p' ? coopNames(x.row) : '';      // the phosphate pick names its co-ops (N and K are the middle of many)
       return '<li>' + a[0] + ' a lb<b>' + money(x.usd) + '</b>' + esc(x.row.name) + (a[1] === 'p' && x.nLb ? ', N credited at the urea price' : '') +
-        '<br><span>' + esc(x.row.label) + '</span>' + (who ? '<br><span>' + esc(who) + '</span>' : '') + '</li>';
+        '<br><span>' + esc(x.row.label) + '</span></li>';
     }).join('');
     box.innerHTML = items;
     var dv = derivation(pr), math = $('#nr-math');
@@ -383,15 +373,11 @@
 
   function getJson(u) { return fetch(u).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   function start() {
-    getJson('/data/fertilizer-prices.json').then(function (data) {
+    /* the reader's own state's co-op sheets first (components/fert-pick.js); no co-op is named */
+    (root.AgFertPick ? root.AgFertPick.load() : getJson('/data/fertilizer-prices.json')).then(function (data) {
       var pr = data ? nutrientPrices(data) : { n: null, p: null, k: null };
       if (!data) noPrices(); else { fillPrices(pr, data); fillTable(pr); }
       calc(pr);
-      if (!data) return;
-      getJson('/data/fertilizer-coops.json').then(function (cj) {     // names only; the prices never come from here
-        ((cj && cj.coops) || []).forEach(function (c) { if (c && c.id && c.name) COOPS[c.id] = c.name + (c.town ? ' (' + c.town + ')' : ''); });
-        if (Object.keys(COOPS).length) fillPrices(pr, data);
-      });
     });
   }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', start); else start();

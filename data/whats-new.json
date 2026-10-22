@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-21-fast-facts",
+   "date": "2026-10-21",
+   "title": "Fast Facts for your place",
+   "line": "Fast Facts has two tabs: your place by ZIP (bids, basis, rain, drought, rent, each dated and sourced) and the reference tables. Print makes a two-page sheet.",
+   "link": "/fast-facts"
+  },
+  {
    "id": "2026-10-21-feeder-weekly",
    "date": "2026-10-21",
    "title": "Feeder prices by region and weight",
@@ -13,7 +20,7 @@
    "date": "2026-10-18",
    "title": "One place, all its numbers",
    "line": "Type a ZIP, town or county and get one page about it: where it ranks in its state, what sits far from its neighbors, and this week's bids, rain, drought and hail.",
-   "link": "/here"
+   "link": "/fast-facts"
   },
   {
    "id": "2026-10-18-haymow",

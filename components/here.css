@@ -1,4 +1,4 @@
-/* /here: the one box and the place page (components/here.js). */
+/* Fast Facts: My place (components/here.js; was /here) beside the Reference tables. */
 .h{max-width:900px;margin:0 auto;padding:1rem 1rem 3rem}
 .h .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
 .h h1{font-size:clamp(1.35rem,4.4vw,1.95rem);line-height:1.2;margin:0 0 .4rem;color:var(--text)}
@@ -18,7 +18,8 @@
 .h-alt summary{list-style:none}.h-alt summary::-webkit-details-marker{display:none}
 .h-alt details[open]{flex:1 1 100%}
 .h-alt details[open] summary{margin-bottom:.5rem}
-.h-status{font-size:.9rem;color:var(--text-muted);min-height:1.3em;margin:.2rem 0 .4rem}
+.h-status{font-size:.9rem;color:var(--text-muted);margin:.2rem 0 .4rem}
+.h-status:empty{display:none}
 .h-status.err{color:var(--red,#d9534f)}
 .h-chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0 .6rem}
 .h-chip{font:inherit;font-size:.86rem;min-height:40px;padding:0 .75rem;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text);cursor:pointer}
@@ -79,11 +80,11 @@ html.h-has .h-land{display:none}
 .h-deep{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .6rem;margin:.6rem 0 .3rem}
 .h-deep-l{font-size:.8rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
 .h-links{display:flex;flex-wrap:wrap;gap:.25rem .9rem;margin:0;font-size:.9rem}
-.h-links a{display:inline-flex;align-items:center;min-height:32px}
+.h-links a{display:inline-flex;align-items:center;min-height:44px}
 .h-pr{margin:.4rem 0 0}
-.h-pr>button,#h-pr-go{font:inherit;font-size:.92rem;min-height:44px;padding:0 1rem;border-radius:10px;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--border)}
-#h-pr-go{background:var(--gold-fill);color:#111;border-color:var(--gold-fill);font-weight:700;margin-top:.5rem}
+.h-pr>button{font:inherit;font-size:.92rem;min-height:44px;padding:0 1rem;border-radius:10px;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--border)}
 .h-pr-box{border:1px solid var(--border);border-radius:10px;padding:.7rem .85rem;margin:.5rem 0 0;background:var(--surface);max-width:34rem}
+.h-tools .h-pr-box{border:0;background:none;padding:0}
 .h-pr-box fieldset{border:0;margin:0;padding:0}
 .h-pr-box legend{font-size:.86rem;font-weight:700;color:var(--text);margin:0 0 .3rem}
 .h-pr-box label{display:flex;align-items:center;gap:.5rem;min-height:36px;font-size:.92rem;color:var(--text-dim);cursor:pointer}
@@ -92,111 +93,22 @@ html.h-has .h-land{display:none}
 .h-pr-only,.h-pr-qr{display:none}
 .lv-grid{display:block}
 
-/* The printed report: a designed sheet, not a print of the screen. Letter, black and white safe,
-   nothing under 9pt. html.pr-off-<part> drops a part; html.pr-more prints the two tables. */
+/* Printing: the page hands components/print-sheet.js a sheet (the one printed format on the site).
+   With no place open, the browser prints the page itself, without the chrome. */
 @media print{
-  @page{size:letter;margin:.6in .6in .65in;
-    @top-left{content:"AGSIST";font:700 9pt/1 Helvetica,Arial,sans-serif;letter-spacing:.12em;color:#000}
-    @top-right{font:9pt/1 Helvetica,Arial,sans-serif;color:#444}
-    @bottom-left{content:"agsist.com/here";font:9pt/1 Helvetica,Arial,sans-serif;color:#444}
-    @bottom-right{content:"Page " counter(page) " of " counter(pages);font:9pt/1 Helvetica,Arial,sans-serif;color:#444}}
-  @page:first{@top-left{content:none}@top-right{content:none}}
+  #site-header,#site-footer,.skip,.fx-tabs,#h-find,.h-tools,.h-status,.h-chips,.h-deep,[id^="next-"],.next-links,.ag-sponsor-ribbon{display:none!important}
   :root,:root[data-theme]{--text:#000;--text-dim:#1a1a1a;--text-muted:#444;--surface:#fff;--border:#bbb;--gold:#000;--brand:#000;--link:#000;color-scheme:light}
-  html,body{background:#fff!important;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  body{font-size:10.5pt}
-  #site-header,#site-footer,#topnav,.nav,.drawer,.draw-ov,footer.footer,.skip,.skip-link,.breadcrumb,.h-box,.h-alt,.h-chips,.h-status,.h-land,.h-deep,.h-pr,.h-nb,#h-title,#h-where,#h-part-sentence,
-  #h-sec-fingerprint>.h-src,#h-fp,#h-fp-d,.h-tbl>summary,[id^="next-"],.next-links{display:none!important}
-  .h{max-width:none;padding:0}
-  .h p,.h li{font-size:10.5pt;line-height:1.45;color:#1a1a1a}
-  .h-src{font-size:9pt!important;color:#444!important}
-  .h a{color:#000;text-decoration:none}
-  .h-sec{margin:0;padding:.18in 0 0;border-top:0}
-  .h h2{font-size:15pt;margin:0 0 .1in;padding-bottom:.05in;border-bottom:2pt solid #000;break-after:avoid}
-  .h h3{font-size:9pt;color:#444;letter-spacing:.08em}
-  .h-flag{font-size:9pt;color:#000;border-color:#000}
-
-  /* page one */
-  .h-pr-only{display:block}
-  .pc-head{display:flex!important;flex-flow:row nowrap;justify-content:space-between;align-items:baseline;gap:.2in;border-bottom:3pt solid #000;padding-bottom:.06in;font-size:9.5pt;color:#333}
-  .pc-head>span{display:inline!important;margin:0}
-  .pc-brand{font-weight:800;font-size:15pt;letter-spacing:.14em;color:#000}
-  .pc-name{font-size:25pt!important;line-height:1.05;margin:.16in 0 .05in!important;border:0!important;padding:0!important;letter-spacing:-.01em}
-  .pc-from{font-size:9.5pt!important;color:#444!important;margin:0 0 .16in!important}
-  .pc-sent{font-size:12pt!important;line-height:1.4!important;color:#000!important;border-left:5pt solid #000;padding:.02in 0 .02in .16in;margin:0 0 .18in!important}
-  .pc-tiles{display:grid;grid-template-columns:repeat(3,1fr);border-top:1pt solid #000;border-left:1pt solid #000;margin:0 0 .2in}
-  .pc-t{border-right:1pt solid #000;border-bottom:1pt solid #000;padding:.08in .11in .07in;break-inside:avoid}
-  .pc-t p{margin:0!important}
-  .pc-l{font-size:9pt!important;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#333!important}
-  .pc-v{font-size:21pt!important;font-weight:800;line-height:1.15!important;color:#000!important;font-variant-numeric:tabular-nums;margin:.02in 0!important}
-  .pc-r{font-size:9.5pt!important;line-height:1.3!important;color:#111!important}
-  .pc-r b{display:inline-block;margin-left:.04in;padding:0 .05in;background:#000;color:#fff;font-size:9pt}
-  .pc-s{font-size:9pt!important;line-height:1.25!important;color:#555!important;margin-top:.05in!important}
-  .pc-na{font-size:13pt;color:#555;font-weight:600}
-  .pc-h{break-after:avoid;font-size:11pt!important;text-transform:none!important;letter-spacing:0!important;color:#000!important;margin:0 0 .06in!important}
-  .pd{break-inside:avoid}
-  .pd-r{display:grid;grid-template-columns:1.1in 1fr 1.65in;align-items:center;gap:.1in;min-height:.18in;line-height:1.1;border-bottom:.5pt solid #ddd}
-  .pd-l{font-size:9.5pt;color:#111}
-  .pd-v{font-size:9.5pt;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;color:#000}
-  .pd-tr{position:relative;height:.16in}
-  .pd-tr::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1.2pt solid #999}
-  .pd-tr::after{content:"";position:absolute;left:50%;top:15%;bottom:15%;border-left:1pt dashed #777}
-  .pd-dot{position:absolute;top:50%;width:.12in;height:.12in;margin:-.06in 0 0 -.06in;border-radius:50%;background:#fff;border:1.6pt solid #000;z-index:1}
-  .pd-band .pd-dot{background:#000;width:.14in;height:.14in;margin:-.07in 0 0 -.07in}
-  .pd-band .pd-l,.pd-band .pd-v{font-weight:800}
-  .pd-na .pd-tr::before{border-top-style:dotted}
-  .pd-na .pd-v{color:#555}
-  .pd-ax{border-bottom:1pt solid #000;min-height:.18in}
-  .pd-ax .pd-tr{display:flex;justify-content:space-between;align-items:flex-end;font-size:9pt;color:#444}
-  .pd-ax .pd-tr::before,.pd-ax .pd-tr::after{display:none}
-  .pd-ax .pd-v{font-size:9pt;color:#444}
-  .pc-key{font-size:9pt!important;line-height:1.35!important;color:#444!important;margin:.08in 0 0!important}
-  .pc-key b{color:#000}
-
-  /* the rest, from page two */
-  #h-sections{break-before:auto}
-  .h-week{grid-template-columns:repeat(2,1fr);gap:.12in}
-  .wk{border:1pt solid #000;border-radius:0;padding:.07in .11in .03in;break-inside:avoid;background:#fff}
-  .wk p{font-size:10pt}
-  .wk-n{font-size:16pt!important;font-weight:800}
-  .h-un{margin:.04in 0 .1in .2in}
-  .h-un li{margin:0 0 .04in}
-  .lv-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.18in .26in}
-  .lv-row{margin:0;break-inside:avoid}
-  .lv-h{font-size:9.5pt;line-height:1.35}
-  .lv-h b{display:block;font-size:11pt}
-  .lv-svg{height:.6in;border-bottom:1pt solid #000}
-  .lv-svg rect{fill:#8c8c8c;opacity:1}
-  .lv-svg rect.hi{fill:#000}
-  .lv-ax{font-size:9pt;color:#444;margin:.02in 0 0}
-  .h-tbl{display:none;margin:.1in 0}
-  html.pr-more .h-tbl{display:block}
-  html.pr-more details.h-tbl::details-content{content-visibility:visible;display:contents}
-  .h table{font-size:9.5pt}
-  .h th,.h td{color:#000;border-bottom:.5pt solid #999;padding:.03in .05in}
-  .h thead th{color:#000;border-bottom:1.2pt solid #000;font-family:Helvetica,Arial,sans-serif;text-transform:none;letter-spacing:0;white-space:normal;font-size:9pt}
-  .h tbody th{font-family:Helvetica,Arial,sans-serif}
-  .h-tw{overflow:visible}
-  #h-sec-fingerprint{display:none}
-  html.pr-more #h-sec-fingerprint{display:block;break-before:page}
-  html.pr-more #h-sec-fingerprint h2::after{content:" (full table)"}
-  #h-sec-long details.h-tbl{break-before:auto}
-  #h-part-sources{break-inside:avoid}
-  .h-un li{break-inside:avoid}
-  .h-src-l{padding-left:.2in}
-  .h-src-l li{font-size:9.5pt}
-  .pc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.25in}
-  .pc-qr{flex:none;width:.85in;text-align:center;margin-top:.14in}
-  .pc-qr svg{width:.85in;height:.85in;display:block}
-  .pc-qr p{font-size:9pt!important;line-height:1.15!important;margin:.03in 0 0!important;color:#333!important}
-  .h-pr-qr{display:block;margin:.18in 0 0;padding:.08in 0 0;border-top:2pt solid #000;break-inside:avoid;break-after:avoid}
-  .h-pr-qr p{font-size:9.5pt!important;margin:0!important;word-break:break-all}
-  .by-end{font-size:9.5pt!important;color:#000!important;margin:.12in 0 0!important}
-  .by-end a{color:#000}
-
-  html.pr-off-sentence .pc-sent,html.pr-off-week #h-sec-week,html.pr-off-fingerprint .pc-fp,html.pr-off-fingerprint #h-sec-fingerprint,
-  html.pr-off-unusual #h-sec-unusual,html.pr-off-long #h-sec-long,html.pr-off-sources #h-part-sources{display:none!important}
+  html,body{background:#fff!important;color:#000!important}
 }
-
+/* the year's rain on the printed sheet (the county page's chart classes, in black) */
+@media print{
+  .agps .rc-yr{fill:none;stroke:#000;stroke-width:2}
+  .agps .rc-us{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:4 3}
+  .agps .rc-grid{stroke:#ccc;stroke-width:.6}
+  .agps .rc-ax{stroke:#000;stroke-width:.8}
+  .agps .rc-lab,.agps .rc-yl{font:9px/1 system-ui,sans-serif;fill:#000}
+  .agps .agps-rain svg{width:6.2in;height:auto;display:block}
+}
 /* The first screen (Oct 19): the ranked line, the county station's year drawn (the county rain
    page's figure classes, components/rain-county.css), and what is unusual against its own past. */
 .h-first{margin:.5rem 0 .8rem}
@@ -225,12 +137,66 @@ html.h-has .h-land{display:none}
 .h-el li{margin:0 0 .5rem;padding:0 0 .4rem;border-bottom:1px solid var(--border);font-size:.92rem}
 .h-el-h{display:block;font-size:.84rem;color:var(--text-muted)}
 .h-el-h:empty{display:none}
-@media print{
-  .h-first .h-math,.h-first .rc-print-styles,.h-rp-ph,.h-elev{display:none!important}
-  html.pr-off-sentence #h-first{display:none!important}
-  .h-first{break-inside:avoid}
-  .h-rank-l{font-size:16pt}
-  .h-rp-box .rc-chart svg{max-width:6.5in}
-  .h-odd{border:1pt solid #000}
-}
 @media(min-width:700px){.h-rp-box .rc-chart{max-width:680px}}
+
+/* The tabs (Oct 21): the head script in fast-facts.html sets html[data-fx] before paint;
+   without it every panel shows, in order. */
+.fx-top{padding:var(--page-top,1.2rem) 0 .4rem}
+.fx-top .fx-lede{font-size:.95rem;line-height:1.55;color:var(--text-dim);max-width:44rem;margin:.3rem 0 0}
+.fx-tabs{display:flex;gap:.3rem;overflow-x:auto;scrollbar-width:none;margin:.6rem 0 1rem;padding:0 0 .1rem;border-bottom:1px solid var(--border)}
+.fx-tabs::-webkit-scrollbar{display:none}
+.fx-tab{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 .85rem;font-size:.92rem;font-weight:600;color:var(--text-muted);text-decoration:none;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.fx-tab:hover{color:var(--text)}
+.fx-tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--gold-fill)}
+.fx-tab:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+html[data-fx] .fx-panel{display:none}
+html[data-fx="place"] #place,html[data-fx="tables"] #tables{display:block}
+.ff-page .h{max-width:none;margin:0;padding:0 0 1.5rem}
+.fx-ph{font-size:clamp(1.2rem,4vw,1.55rem)!important;margin:.2rem 0 .3rem!important}
+.h-ask{font-size:.95rem!important;color:var(--text)!important;margin:0 0 .2rem!important}
+.h-change{font:inherit;font-size:.86rem;min-height:44px;padding:0 .8rem;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text-dim);cursor:pointer;margin:0 0 .4rem}
+.h-change span{color:var(--text);font-weight:600}
+/* the four cards and their rows */
+.fx-cards{display:grid;grid-template-columns:1fr;gap:.7rem;margin:.8rem 0}
+@media(min-width:760px){.fx-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.fx-card{border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:.55rem .85rem .2rem;min-width:0}
+.fx-card h3{margin:.15rem 0 .2rem!important}
+.fx-row{padding:.45rem 0;border-top:1px solid var(--border)}
+.fx-card h3+.fx-row{border-top:0}
+.fx-l{font-size:.74rem!important;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)!important;margin:0 0 .1rem!important}
+.fx-b{margin:0!important;font-size:.92rem!important;line-height:1.45!important}
+.fx-v{font-family:var(--font-mono);font-size:1.12rem;font-weight:800;color:var(--text)}
+.fx-v.fx-vl{font-family:inherit;font-size:.98rem;font-weight:700}
+.fx-v.fx-na{font-family:inherit;font-size:.95rem;font-weight:700;color:var(--text-muted)}
+.fx-wait{color:var(--text-muted)!important}
+.fx-s{display:block;font-size:.78rem;color:var(--text-muted);margin-top:.1rem}
+.fx-s a{color:var(--text-muted);text-decoration:underline;text-underline-offset:2px;display:inline-block;padding:.85rem 0;margin:-.85rem 0}
+.fx-row:target{background:color-mix(in srgb,var(--gold) 12%,transparent);border-radius:6px}
+.fx-more{margin:1rem 0 .4rem;border:1px solid var(--border);border-radius:10px;padding:0 .85rem}
+.fx-more>summary{cursor:pointer;min-height:48px;display:flex;align-items:center;font-weight:700;color:var(--text)}
+.fx-more[open]{padding-bottom:.8rem}
+.fx-sel{font:inherit;font-size:16px;min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text)}
+.fx-pl{font-size:.86rem;color:var(--text-muted)}
+#print .h-pr-box{max-width:36rem}
+/* the place's tools: Change place, Print and the print options (Oct 21: Print is a button, not a tab) */
+.h-tools{display:flex;flex-wrap:wrap;align-items:flex-start;gap:.5rem;margin:0 0 .5rem}
+.h-tools[hidden],.fx-row[hidden]{display:none}
+.h-tools .h-change{margin:0}
+.h-pr-go{font:inherit;font-size:.9rem;font-weight:700;min-height:44px;padding:0 .95rem;border-radius:999px;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--border);display:inline-flex;align-items:center;gap:.4rem}
+.h-pr-go .ic{width:16px;height:16px}
+.h-pr-go[disabled]{opacity:.6;cursor:progress}
+.h-tools .h-pr-box{flex:1 1 100%;margin:-.3rem 0 0;max-width:36rem}
+.h-pr-box[open]>fieldset{border:1px solid var(--border);border-radius:10px;padding:.5rem .85rem;background:var(--surface)}
+.h-pr-box>summary{cursor:pointer;min-height:44px;display:inline-flex;align-items:center;font-size:.86rem;color:var(--link,var(--brand));text-decoration:underline;text-underline-offset:2px}
+.h-pr-box[open]{padding-bottom:.6rem}
+.h-pr-box label{min-height:44px}
+.h-keep{font:inherit;font-size:.95rem;min-height:46px;padding:0 1rem;border-radius:10px;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--border)}
+/* a place is on its way (saved ZIP or a place link): hold the room so nothing jumps when the cards land */
+html.fx-pend #place{min-height:1900px}
+@media(min-width:760px){html.fx-pend #place{min-height:1250px}}
+/* without JavaScript the place box cannot work: hide it (data-fx is set only by the head script) */
+html:not([data-fx]) #h-form,html:not([data-fx]) .h-alt,html:not([data-fx]) .h-ask{display:none}
+[data-theme="dark"] .h-box input::placeholder{color:#9a9a9a}
+@media(prefers-reduced-motion:reduce){.fx-row:target{transition:none}}
+/* a place is open: on a phone the lede gives its room to the numbers */
+@media(max-width:700px){html.h-has .fx-lede,html.fx-pend .fx-lede{display:none}}

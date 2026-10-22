@@ -62,8 +62,7 @@ HEAD = """# AGSIST
 How fresh the numbers are: futures prices and cash bids refresh about every 15
 minutes. Prices are delayed exchange quotes from the Yahoo Finance feed, not an
 official CME feed. The AGSIST Daily briefing publishes each morning. Every other
-page states its own source and date on the page, and /status shows whether each
-feed is current right now. Nothing on the site is financial or trading advice.
+page states its own source and date on the page. Nothing on the site is financial or trading advice.
 
 Sources: cash bids read from AGSIST's own network of elevator bid boards (each
 elevator's own posted board); weather from Open-Meteo and NOAA; crop, price and
@@ -135,7 +134,7 @@ PAGES = [
         ("/rain-gauge", "Rain Gauge (in the works)", "a rain gauge Sig is building: a clear tube in front of a printed scale, read by eye or logged with a phone photo, field by field; a prototype now, aiming for before planting 2027, no price set; waitlist by email"),
         ("/field-scout", "Field Scout", "draw a field and see its soils, crop history, weather, drought and nearby bids"),
         ("/fertilizer", "Fertilizer Prices", "the middle cash price per ton that farm co-ops post for anhydrous, urea, UAN, DAP, potash and more, read each weekday from their own websites and credited by name, each price with its region and date"),
-        ("/fast-facts", "Ag Fast Facts", "on-farm reference tables: corn N rates, P and K by soil test, crop removal, manure nutrients, crop stages, pest thresholds, herbicide groups, conversions; each tab has its own #link"),
+        ("/fast-facts", "Ag Fast Facts", "one place by ZIP, town or county: the best corn and soybean bids within 50 miles, state basis, futures, rain since Jan 1, drought, hail, crop progress, cash rent, land value, recorded sales, insurance losses, ARC or PLC sign-up, the next USDA report and posted fertilizer, every row dated and sourced, with the state and US figures beside the place; and the on-farm reference tables: corn N rates, P and K by soil test, crop removal, manure nutrients, crop stages, pest thresholds, herbicide groups, conversions; each tab has its own #link"),
         ("/manure-value", "Manure Value", "what dairy, hog, beef, poultry and horse manure is worth per 1,000 gallons and per ton at current co-op posted fertilizer prices (P from MAP or DAP with its N credited): the value of all the N, P and K by UW A2809's typical totals, with the part a crop can use the first year beside it, an acre and for a whole field, a worked dairy example and a calculator that takes your own manure test"),
         ("/tools", "All Tools", "every AGSIST calculator on one page"),
     ]),
@@ -151,7 +150,6 @@ PAGES = [
         ("/harvest-or-wait", "Harvest now or wait", "Corn drying cost now vs after field drydown, against the field loss you expect; break-even loss when you do not know it"),
         ("/fall-nitrogen", "Fall anhydrous soil temperature", "Measured 4 in soil temperature by county against the 50 F line for fall anhydrous, from NOAA, NRCS and state mesonet stations; never says go"),
         ("/commodity-loan", "Commodity Loan Calculator", "marketing assistance loan on stored grain: bushels x county loan rate, CCC interest per bushel per month, against the carry; not an eligibility check"),
-        ("/here", "One place, all its numbers", "type a ZIP, town or county and get one page about that county: a one-line summary from the numbers, where it ranks in its state on 17 Farmland Atlas figures, the figures furthest from its neighbors, this week's bids, basis vs normal, rain, drought, hail and the next USDA report, and the long view by year; every figure sourced and dated, missing figures say why"),
         ("/combine-loss", "Combine Loss Check", "harvest loss from beans or kernels counted on the ground behind the combine (UNL rules: 4 beans or 2 kernels per sq ft = 1 bu/ac), with ears, in bu/ac and dollars at your bid"),
         ("/nutrient-removal", "Nutrient Removal Value Calculator", "pounds of P2O5 and K2O removed per ton, bale and acre when you bale corn stalks or small grain straw, chop silage, sell hay or haul grain (UW A2809 Table 4.2), priced at posted co-op fertilizer prices; N and S withheld until sourced"),
         ("/hay-prices", "Hay Prices by State", "This week's USDA AMS hay trades by state, grade and bale type ($ a ton, each report dated), beside USDA NASS monthly prices received for alfalfa, other hay and all hay, every published state, the same month last year and 3 years of history; withheld states say so"),
@@ -190,7 +188,6 @@ PAGES = [
     ("About this site", [
         ("/data-sources", "Data Sources", "where every number comes from"),
         ("/glossary", "Farm Market Glossary", "plain definitions of basis, cash bid, futures, settle, nearby, carry, WASDE, ending stocks, managed money, NASS, RMA, FSA, CRP, cwt, shrink and other words the site uses"),
-        ("/status", "Status", "whether each data feed is current right now"),
         ("/developer", "Embed Tools and Data Feeds", "embeddable GDU and ARC or PLC widgets, and the open JSON feeds"),
         ("/changelog", "Changelog", "dated list of site changes"),
         ("/about", "About", "who builds AGSIST and why"),

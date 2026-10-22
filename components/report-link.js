@@ -13,7 +13,8 @@
                        L classes, Z every deed type, N how many, D newest first
      F/ land report    P outline, S the Field Scout filters (cf=)
      S/ hail report    +lat-lon (4 places), R miles, D date of loss
-     H/ place page     <county FIPS>[/<ZIP>] (/here?f=[&z=])
+     H/ place page     <county FIPS>[/<ZIP> | /A<lat><lng>][/P<print code>] (/fast-facts?f=[&z= | &a=][&p=];
+                       /here forwards there, Oct 21; spot and print code Oct 22)
 
    Numbers: an outline is whole numbers of 1/100000 degree, each with its sign, the first
    point as it is (no + on the first number) and every next one as the step from the one
@@ -121,10 +122,18 @@
     if (q.day) { var d = shortDate(q.day); if (!d) return null; out += 'D' + d; }
     return out;
   }
-  function shortHere(q) {   // /here?f=<county FIPS>&z=<ZIP>, nothing else
-    var keys = Object.keys(q).sort().join(',');
-    if (keys === 'f' && /^\d{5}$/.test(q.f)) return 'H/' + q.f;
-    return keys === 'f,z' && /^\d{5}$/.test(q.f) && /^\d{5}$/.test(q.z) ? 'H/' + q.f + '/' + q.z : null;
+  function shortHere(q) {   // /fast-facts or /here ?f=<county FIPS>[&z=<ZIP> | &a=<lat>,<lng>][&p=<print code>], nothing else
+    var out, a;
+    if (!/^\d{5}$/.test(q.f || '') || Object.keys(q).some(function (k) { return 'fzap'.indexOf(k) < 0 || k.length !== 1; })) return null;
+    if (q.a != null && q.z != null) return null;
+    out = 'H/' + q.f;
+    if (q.z != null) { if (!/^\d{5}$/.test(q.z)) return null; out += '/' + q.z; }
+    if (q.a != null) {
+      if (!(a = /^([+-]?\d{1,2}\.\d{4}),([+-]?\d{1,3}\.\d{4})$/.exec(q.a))) return null;
+      out += '/A' + a[1].replace(/^\+/, '') + (a[2].charAt(0) === '-' ? a[2] : '+' + a[2].replace(/^\+/, ''));
+    }
+    if (q.p != null) { if (!/^\d{1,3}$/.test(q.p) || +q.p > 255) return null; out += '/P' + q.p; }
+    return out;
   }
   function short(u) {
     u = String(u || '');
@@ -134,7 +143,7 @@
     if (path === '/comp-report') body = shortComp(q);
     else if (path === '/field-report') body = shortLand(q);
     else if (path === '/hail-map') body = shortHail(q);
-    else if (path === '/here') body = shortHere(q);
+    else if (path === '/here' || path === '/fast-facts') body = shortHere(q);
     return body ? SHORT + body : null;
   }
 
@@ -193,7 +202,11 @@
     if (!m) return null;
     var kind = m[1].toUpperCase(), body = m[2].toUpperCase();
     if (kind === 'S') return fullHail(body);
-    if (kind === 'H') { var h = /^(\d{5})(?:\/(\d{5}))?\/?$/.exec(body); return h ? HOST + '/here?f=' + h[1] + (h[2] ? '&z=' + h[2] : '') : null; }
+    if (kind === 'H') {
+      var h = /^(\d{5})(?:\/(\d{5})|\/A([+-]?\d{1,2}\.\d{4})([+-]\d{1,3}\.\d{4}))?(?:\/P(\d{1,3}))?\/?$/.exec(body);
+      if (!h || (h[5] != null && +h[5] > 255)) return null;
+      return HOST + '/fast-facts?f=' + h[1] + (h[2] ? '&z=' + h[2] : h[3] ? '&a=' + (+h[3]).toFixed(4) + ',' + (+h[4]).toFixed(4) : '') + (h[5] != null ? '&p=' + h[5] : '');
+    }
     if (kind === 'C' || kind === 'F') return full(kind + body);
     return null;
   }
