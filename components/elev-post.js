@@ -443,7 +443,7 @@
     } catch (e) {}
     return null;
   }
-  var KEPT_LINE = 'Saved. Your bids post when our system is back, if that is within ' + KEEP_HOURS + ' hours and you open this page again on this phone; nothing else to do. After that, save again.';
+  var KEPT_LINE = 'Kept on this phone. Open this page again once our system is back (within ' + KEEP_HOURS + ' hours) and it posts.';
   function keepSave(body) {
     if (!root.AgOutbox) return false;
     var mid = new Date(); mid.setHours(24, 0, 0, 0);

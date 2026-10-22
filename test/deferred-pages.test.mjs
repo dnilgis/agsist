@@ -83,13 +83,15 @@ async function withSite(fn, { width = 1280, height = 900 } = {}) {
 }
 const outbox = (page) => page.evaluate(() => JSON.parse(localStorage.getItem("agsist-outbox") || "[]"));
 const calls = (log, c) => log.worker.filter((x) => x.call === c);
-async function shot(page, name) {
+async function shot(page, name, sel) {
   if (!SHOTS) return;
   fs.mkdirSync(SHOTS, { recursive: true });
   const was = page.viewportSize();
   for (const w of [390, 1280]) {
     await page.setViewportSize({ width: w, height: w === 390 ? 844 : 900 });
-    await page.waitForTimeout(150);
+    await page.waitForTimeout(300);
+    if (sel) await page.locator(sel).first().evaluate((el) => el.scrollIntoView({ block: "center", behavior: "instant" }));
+    await page.waitForTimeout(300);
     await page.screenshot({ path: path.join(SHOTS, name + "-" + w + ".png") });
   }
   await page.setViewportSize(was);
@@ -120,7 +122,7 @@ test("business quote: worker blocked, the list is kept here and never sent to Fo
     assert.equal(log.formspree.length, 0, "the list never goes to Formspree");
     const k = await outbox(page);
     assert.equal(k.length, 1); assert.equal(k[0].body.kind, "rain-print-business"); assert.match(k[0].body.towns, /Olson Farm/);
-    await shot(page, "business-kept");
+    await shot(page, "business-kept", "#rb-out");
     state.mode = "up";
     const a = await open(), b = await open();
     await Promise.all([a.goto("https://agsist.com/rain-print-business"), b.goto("https://agsist.com/haymow")]);
@@ -150,7 +152,7 @@ test("hay board post: worker blocked, kept with the plain line; back, posted onc
     assert.match(await page.textContent("#hb-out"), /your private edit link shows on this page/);
     const k = await outbox(page);
     assert.equal(k.length, 1); assert.equal(k[0].url, W + "/hay/post"); assert.equal(k[0].body.phone, "715-555-0100");
-    await shot(page, "hay-kept");
+    await shot(page, "hay-kept", "#hb-out");
     state.mode = "up";
     assert.equal(await drains(page, "https://agsist.com/haymow", log, "POST /hay/post"), 1);
     const mine = await page.evaluate(() => JSON.parse(localStorage.getItem("agsist-hay-mine") || "[]"));
@@ -174,8 +176,8 @@ test("elevator bids: worker blocked, the page opens from this phone's last copy 
     assert.match(await page.textContent("#ep-state"), /Our system is down right now/);
     await page.fill("#ep-note", "Corn dump open till 9");
     await page.click("#ep-save");
-    await page.waitForFunction(() => /^Saved\. Your bids post when our system is back/.test(document.getElementById("ep-state").textContent));
-    assert.match(await page.textContent("#ep-state"), /if that is within 4 hours and you open this page again on this phone; nothing else to do\. After that, save again\./);
+    await page.waitForFunction(() => /^Kept on this phone\./.test(document.getElementById("ep-state").textContent));
+    assert.equal(await page.textContent("#ep-state"), "Kept on this phone. Open this page again once our system is back (within 4 hours) and it posts.");
     const k = await outbox(page);
     assert.equal(k.length, 1); assert.equal(k[0].body.note, "Corn dump open till 9");
     assert.ok(k[0].expires > k[0].t && k[0].expires - k[0].t <= 4 * 3600000, "dropped unsent after 4 hours at most");
@@ -246,7 +248,7 @@ test("Email me this design: worker blocked, it goes to Sig by the backup form wi
     assert.equal(f.length, 1);
     assert.match(f[0], /reader@example\.com/); assert.match(f[0], /agsist\.com\/rain-print\?d=/);
     assert.equal((await outbox(page)).length, 0, "not kept in the browser: Sig has it");
-    await shot(page, "emailme-kept");
+    await shot(page, "emailme-kept", "#rp-mailme-out");
     assert.deepEqual(errors.filter((e) => !/ResizeObserver/.test(e)), []);
   });
 });

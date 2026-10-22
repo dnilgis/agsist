@@ -124,7 +124,7 @@
     if (keepMode) {
       keepMode = false;
       var id = window.AgOutbox.add({ url: urlFor(), method: 'POST', okIf: 'json', kind: 'fd-' + a, label: 'your alert confirm' });
-      if (id) say('Saved', [window.AgOutbox.LINE], true);
+      if (id) say('Kept for later', [window.AgOutbox.LINE], true);
       else say('This is not working right now', ['This browser could not keep it. Try the link again later. Nothing was changed.']);
       return;
     }
