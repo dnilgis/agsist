@@ -87,19 +87,27 @@ async function mocks(ctx, opts) {
     return r.abort();
   });
 }
-function serve() {
+/* split: the page's HTML comes in two parts, the second 800 ms later, cut just before the Layers card (the parser
+   stops there, the way a busy phone or CI runner stops halfway) */
+function serve(split = false) {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".woff2": "font/woff2", ".html": "text/html", ".svg": "image/svg+xml", ".jpg": "image/jpeg", ".png": "image/png", ".webp": "image/webp" };
   const srv = createServer((req, res) => {
     const u = new URL(req.url, "http://x");
     const p = normalize(join(ROOT, decodeURIComponent(u.pathname)));
     if (!p.startsWith(ROOT) || !existsSync(p)) { res.writeHead(404); res.end(); return; }
+    if (split && u.pathname === "/rain-print.html") {
+      const h = readFileSync(p, "utf8"), cut = h.indexOf('<section class="rp-step rp-layers"');
+      res.writeHead(200, { "content-type": "text/html" }); res.write(h.slice(0, cut));
+      setTimeout(() => res.end(h.slice(cut)), 800);
+      return;
+    }
     res.writeHead(200, { "content-type": types[extname(p)] || "application/octet-stream" });
     res.end(readFileSync(p));
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-async function withPage(fn, { width = 390, height = 844, maker = false, ...opts } = {}) {
-  const srv = await serve(), port = srv.address().port;
+async function withPage(fn, { width = 390, height = 844, maker = false, split = false, ...opts } = {}) {
+  const srv = await serve(split), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const ctx = await browser.newContext({ viewport: { width, height }, serviceWorkers: "block", hasTouch: width < 900, isMobile: false });
@@ -231,3 +239,21 @@ test("links that keep the ordinary order: a damaged code, an unknown short link,
     assert.deepEqual(errors, [], what);
   }, { maker });
 });
+
+/* 2026-10-22: a design link or a place link shows the head out of source order on a phone (the print and the steps
+   before the headline, Layers before the town box; a place link too, held the same way). A frame painted while the HTML was half in put the town box and
+   the headline where the rest then pushed them down (CI: "layout shift 0.1011: rp-where:600>0", about 1 in 10 under
+   load). The page holds its first paint until the head is all in (rain-print.html, link rel=expect). */
+for (const [label, q] of [["?d=<code>", "?d=" + CODE], ["?d=RPS-<id>", "?d=RPS-K7Q2M"]]) {
+  test(`phone, ${label}, the page arriving in two parts: nothing on screen moves`, { skip }, async () => {
+    await withPage(async (page, base, errors) => {
+      await page.goto(base + "/rain-print.html" + q);
+      await idle(page);
+      await page.waitForTimeout(800);
+      const L = await layout(page);
+      assert.ok(L.cls < 0.005, `layout shift ${L.cls.toFixed(4)}: ${L.shifts.join(" | ")}`);
+      assert.equal(new Set(L.tops).size, 1, "the print's box held still: " + L.tops.join(" "));
+      assert.deepEqual(errors, []);
+    }, { split: true });
+  });
+}
