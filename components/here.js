@@ -370,7 +370,10 @@
     fill('f-rent', P.factCol(by.rent, 'Cash rent', (' ' + P.NO_PAGE.rent + ' ').indexOf(' ' + st + ' ') < 0 ? '/rent/' + slug : atlas, 'Non-irrigated cropland.'));
     var lv = P.factCol(by.land_value, 'Farmland value', atlas, 'Farmer-reported land and buildings, ' + ((by.land_value && by.land_value.year) || 2022) + ' Census.');
     fill('f-land', lv);
-    fill('f-loss', P.factCol(by.loss_ratio, 'Crop insurance paid out per $1 of total premium (farmer and federal shares)', atlas, by.loss_ratio && by.loss_ratio.years ? by.loss_ratio.years + ' together.' : ''));
+    var lr = P.factCol(by.loss_ratio, 'Crop insurance paid out per $1 of total premium (farmer and federal shares)', atlas, by.loss_ratio && by.loss_ratio.years ? by.loss_ratio.years + ' together.' : '');
+    var worst = by.loss_ratio && lr.value != null ? P.lossWorst(S.county, by.loss_ratio.years) : null;
+    if (worst) lr.ctx += ' Worst single year: $' + worst.ratio.toFixed(2) + ' in ' + worst.year + '.';
+    fill('f-loss', lr);
     var bids = loadBids(fips, w);
     basis('f-', st, bids, fromWords(w));
     futures('f-');

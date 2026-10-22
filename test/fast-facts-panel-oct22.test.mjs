@@ -83,3 +83,21 @@ test("retired pages forward, stay out of the sitemap, and nothing links to them"
   for (const f of files) assert.doesNotMatch(read(f), /href="\/(here|status|fastfacts)["?#]|'\/here\?/, f);
   for (const e of JSON.parse(read("data/changelog.json")).entries || []) assert.ok(!/^\/(here|status|fastfacts)\b/.test(e.page || ""), e.title);
 });
+
+test("the loss ratio row names the worst single year of its span, from the county's own RMA years", () => {
+  const C = (f) => JSON.parse(read("data/atlas/counties/" + f + ".json"));
+  // recomputed by hand from sob.per_year: indemnity / total premium, 2016-2025
+  for (const [f, year, ratio] of [["55005", 2019, "0.76"], ["19169", 2020, "4.25"], ["20057", 2022, "1.90"]]) {
+    const w = P.lossWorst(C(f), "2016-2025");
+    assert.equal(w.year, year, f);
+    assert.equal(w.ratio.toFixed(2), ratio, f);
+    const py = C(f).sob.per_year;
+    for (let y = 2016; y <= 2025; y++) assert.ok(py[y].indem / py[y].prem <= w.ratio + 1e-12, f + " " + y);
+  }
+  // a year missing from the span: nothing, never a worst year out of part of it
+  const c = C("55005"); delete c.sob.per_year["2019"];
+  assert.equal(P.lossWorst(c, "2016-2025"), null);
+  assert.equal(P.lossWorst(null, "2016-2025"), null);
+  assert.equal(P.lossWorst(C("55005"), "2016 to date"), null);
+  assert.match(read("components/here.js"), /' Worst single year: \$' \+ worst\.ratio\.toFixed\(2\) \+ ' in ' \+ worst\.year \+ '\.'/);
+});

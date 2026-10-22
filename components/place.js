@@ -956,6 +956,20 @@
     return { label: label, value: c.unit === 'paid out / premium' ? '$' + fixed(c.value, 2) : fmt(c.value, c), date: c.year ? String(c.year) : c.years || '',
       ctx: [lead, words].filter(Boolean).join(' '), src: [src, href], paper: src };
   }
+  /* The worst single year inside the loss ratio's span (Oct 22 panel, lender: "the worst recent years at
+     a glance"), from the county's own RMA years: indemnity over total premium, every year of the span on
+     file or nothing. { year, ratio } or null. */
+  function lossWorst(county, years) {
+    var s = county && county.sob, m = /^(\d{4})-(\d{4})$/.exec(String(years || '')), best = null;
+    if (!s || s.status !== 'ok' || !s.per_year || !m) return null;
+    for (var y = +m[1]; y <= +m[2]; y++) {
+      var r = s.per_year[String(y)];
+      if (!r || !(r.prem > 0) || r.indem == null) return null;
+      var v = r.indem / r.prem;
+      if (!best || v > best.ratio) best = { year: y, ratio: v };
+    }
+    return best;
+  }
   /* Recorded farm sales: the Atlas sales tile (components/atlas-sales.js AtlasSales.tile), worded the same. */
   function factSales(t, st, href) {
     var label = 'Recorded farm sales';
@@ -1042,7 +1056,7 @@
     deeper: deeper, parsePrint: parsePrint, printParam: printParam, printCode: printCode, printFromCode: printFromCode, qrLink: qrLink, parseQuery: parseQuery, parsePoint: parsePoint, classify: classify,
     splitState: splitState, normName: normName, stateFromName: stateFromName, findCounty: findCounty,
     countyInState: countyInState, countyAt: countyAt, stateOf: stateOf, rankIn: rankIn, profile: profile,
-    sentence: sentence, fmt: fmt, fmtShort: fmtShort, ordinal: ordinal, miles: miles, rainSoFar: rainSoFar,
+    sentence: sentence, fmt: fmt, fmtShort: fmtShort, lossWorst: lossWorst, ordinal: ordinal, miles: miles, rainSoFar: rainSoFar,
     droughtNow: droughtNow, hailNear: hailNear, basisVsNormal: basisVsNormal, stateBasis: stateBasis,
     bestBids: bestBids, nextReport: nextReport, longView: longView, stSlug: stSlug
   };
