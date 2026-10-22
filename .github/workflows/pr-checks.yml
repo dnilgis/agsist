@@ -31,6 +31,10 @@ concurrency:
 env:
   PW_VERSION: '1.56.1'
   JSQR_VERSION: '1.4.0'
+  # the static ffmpeg for the node tests (BtbN/FFmpeg-Builds release asset and its sha256)
+  FFMPEG_TAG: 'autobuild-2026-09-30-13-08'
+  FFMPEG_BUILD: 'n8.1.3-9-g29e619e767-linux64-gpl-8.1'
+  FFMPEG_SHA256: '97ce978979194b5cf7e06a5e68020dbdaa7a4f3294c5452b6a1bc347100dbb79'
   OMP_NUM_THREADS: '1'
 
 jobs:
@@ -69,41 +73,31 @@ jobs:
         run: command -v pdftotext || { sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils; }
 
       # ffmpeg with ffprobe: the Rain Print MP4 writer test decodes its file with it and
-      # skips without it (and a skip fails these checks). Apt hung past 10 minutes on two
-      # runs (Oct 22), so the .debs are kept in the cache per runner image and put in with
-      # dpkg: a cache hit needs no network and no apt. A miss downloads them once, each
-      # phase bounded and timestamped. Any failure stops here, loudly.
-      - name: runner image
-        id: image
-        run: echo "id=${ImageOS:-unknown}-${ImageVersion:-unknown}" >> "$GITHUB_OUTPUT"
-      - name: Cache the ffmpeg packages
+      # skips without it (and a skip fails these checks). Not from apt: on Oct 22 the
+      # runners' Ubuntu mirror crawled (1 MB in 14 s) and the install hit every time cap.
+      # A static build from BtbN/FFmpeg-Builds on GitHub releases, pinned to a month-end
+      # tag (those are kept) and checked against its sha256, cached by that version.
+      # Any failure stops here, loudly.
+      - name: Cache ffmpeg
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4.2.3
         with:
-          path: ~/ffmpeg-debs
-          key: ffmpeg-debs-${{ steps.image.outputs.id }}-v1
+          path: ~/ffmpeg-static
+          key: ffmpeg-static-${{ env.FFMPEG_BUILD }}
       - name: ffmpeg
-        timeout-minutes: 8
-        env:
-          DEBIAN_FRONTEND: noninteractive
+        timeout-minutes: 5
         run: |
           set -euo pipefail
-          t(){ echo "$(date -u +%T) $*"; }
-          D="$HOME/ffmpeg-debs"
-          APT=(-o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o DPkg::Lock::Timeout=120)
-          if ! command -v ffprobe >/dev/null; then
-            if ! ls "$D"/*.deb >/dev/null 2>&1; then
-              t "cache miss: apt-get update"
-              sudo -E timeout 180 apt-get "${APT[@]}" update -q < /dev/null
-              t "download ffmpeg and what it needs on this image"
-              mkdir -p "$D/partial"
-              sudo -E timeout 240 apt-get "${APT[@]}" install -y -q --no-install-recommends --download-only -o Dir::Cache::archives="$D" ffmpeg < /dev/null
-              sudo rm -rf "$D/partial" "$D/lock"; sudo chown -R "$(id -u):$(id -g)" "$D"
-            fi
-            t "install $(ls "$D"/*.deb | wc -l) packages with dpkg"
-            sudo rm -f /var/lib/man-db/auto-update
-            sudo -E timeout 240 dpkg -i "$D"/*.deb < /dev/null > /dev/null
+          D="$HOME/ffmpeg-static"
+          if [ ! -x "$D/ffprobe" ] || [ ! -x "$D/ffmpeg" ]; then
+            F="ffmpeg-$FFMPEG_BUILD.tar.xz"
+            curl -fsSL --retry 3 --max-time 180 -o "$RUNNER_TEMP/$F" "https://github.com/BtbN/FFmpeg-Builds/releases/download/$FFMPEG_TAG/$F"
+            echo "$FFMPEG_SHA256  $RUNNER_TEMP/$F" | sha256sum -c -
+            mkdir -p "$D"
+            tar -xJf "$RUNNER_TEMP/$F" -C "$D" --strip-components=2 "ffmpeg-$FFMPEG_BUILD/bin/ffmpeg" "ffmpeg-$FFMPEG_BUILD/bin/ffprobe"
+            rm -f "$RUNNER_TEMP/$F"
           fi
-          t "$(ffprobe -version | head -1)"
+          echo "$D" >> "$GITHUB_PATH"
+          "$D/ffprobe" -version | head -1
 
       # The elevator desk and chaos-fix browser tests read the bids data
       # (dnilgis/bids, public) at BIDS_PATH, as they read the local clone beside
