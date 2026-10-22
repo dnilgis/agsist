@@ -57,6 +57,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
 .bar{max-width:880px;margin:0 auto;padding:18px 16px 8px}
 .bar h1{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:1.45rem;margin:0 0 .2rem}
 .bar p{margin:.2rem 0;color:var(--dim);font-size:.92rem}
+#help a{color:inherit;text-decoration:underline;text-underline-offset:2px;display:inline-block;min-height:24px}
 .sizes{display:flex;flex-wrap:wrap;gap:.45rem;margin:.7rem 0 .4rem}
 .sizes button,.go{font:inherit;font-size:.9rem;font-weight:600;min-height:40px;padding:0 .85rem;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer}
 .sizes button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);color:var(--accent)}
@@ -69,6 +70,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
 #pvnote{font-weight:500}
 #pvnote.bad{color:var(--warn);font-weight:600}
 #stage{max-width:880px;margin:0 auto 3rem;padding:8px 16px;box-sizing:border-box;overflow:hidden}
+@media (max-width:599px){.bar,#msg,#stage{padding-left:12px;padding-right:12px}}   /* phones use the screen (Sig, 2026-10-22) */
 #fit{transform-origin:top left}
 .sheet{background:var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.18),0 8px 24px rgba(0,0,0,.12);position:relative;overflow:hidden;color:var(--ink);
   -webkit-print-color-adjust:exact;print-color-adjust:exact;box-sizing:border-box}
@@ -232,6 +234,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
   </div>
   <p id="sizehelp">One 8 x 10 card. Set the printer’s paper size to 8 x 10, or pick 8 x 10 on letter paper.</p>
   <p id="pvnote" hidden></p>
+  <p id="help">Questions or trouble? Call or text Sig: <a href="tel:+17157972428">715-797-2428</a> or email <a href="mailto:sig@agsist.com">sig@agsist.com</a>.</p>
 </div>
 <p id="msg" role="status">Getting your card&hellip;</p>
 <noscript><p style="max-width:880px;margin:1rem auto;padding:0 16px">This page needs JavaScript to draw the card. Questions: sig@agsist.com</p></noscript>

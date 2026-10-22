@@ -1865,6 +1865,10 @@
   var CHOICE = { digital: 'Digital file', print12x18: '13 x 19 print', framed12x18: '13 x 19 framed print' };
   var PRODUCTS = ['digital', 'print12x18', 'framed12x18'];
   var ORDER_TO = 'sig@agsist.com';
+  /* Sig, 2026-10-22: "if someone is having problems they can always call me or email". The help line goes with every
+     failure on the way to an order (the draw, checkout, the order form) and sits by Pay on the review sheet. */
+  var HELP_HTML = 'Questions or trouble? Call or text Sig: <a href="tel:+17157972428">715-797-2428</a> or email <a href="mailto:' + ORDER_TO + '">' + ORDER_TO + '</a>.';
+  function helpLine(on) { var h = $('rp-help'); if (h) h.hidden = !on; }
 
   var ST = fromParams(root.location.search);
   var EXT_WAIT = false, NORM_WAIT = false, BUY_NOTE_CODE = '', XMAS_OFF = true;
@@ -3293,6 +3297,7 @@
     // NOAA or the town lookup slow: a plain note with Try again, not the warning color (2026-10-16)
     setStatus(againWords(keepWords(want, ST, err)), !(err && err.retry));
     $('rp-retry-row').hidden = !(err && err.retry);
+    helpLine(true);
   }
   function failDraw(err) {
     DATA = null; META = null; PREVIEW = null; SETTLE = false; NOART = ''; EXT = null; NORM30 = null;
@@ -3312,6 +3317,7 @@
     // a slow NOAA is nobody's fault: said plainly, with Try again, not in the warning color (2026-10-16)
     setStatus(againWords(err && err.message ? err.message : 'The print didn\u2019t draw. Try again. If it fails twice, try another town or year.'), !(err && err.retry));
     $('rp-retry-row').hidden = !(err && err.retry);
+    helpLine(true);
   }
   /* The same failure again (2026-10-17, money panel: after a town lookup 504,
      a second Draw looked like it did nothing, because the same words came
@@ -3419,6 +3425,7 @@
     art.setAttribute('aria-busy', 'true');
     BLOCKED = ''; DRAWING = true;
     $('rp-retry-row').hidden = true;
+    helpLine(false);
     if (!preset) $('rp-pick').hidden = true;
     showBuy(!!DATA);
     var g, chosen, picked, autoPick = false, why = null, artShown = false, readErr = null, seen = SNOW_SEEN[ST.year] = SNOW_SEEN[ST.year] || {};
@@ -4593,7 +4600,7 @@
     flushRedraw();
     var box = $('rp-order'), note = $('ro-order-note');
     if (!ORDER_NOTE_0) ORDER_NOTE_0 = note.innerHTML;
-    if (why) note.textContent = why; else note.innerHTML = ORDER_NOTE_0;
+    if (why) note.innerHTML = esc(why) + ' ' + HELP_HTML; else note.innerHTML = ORDER_NOTE_0;
     note.classList.toggle('rp-bad', !!why);
     $('ro-retry').hidden = !why;
     box.hidden = false;
@@ -4729,7 +4736,7 @@
         x.choice = GIFT.product;
         root.AgRpGift.redeem(GIFT, x).then(function (r) {
           ga('rain_print_gift_redeem', { result: r.ok ? 'ok' : 'fail' });
-          out.innerHTML = r.ok ? root.AgRpGift.doneHtml(GIFT, r, x.choice || GIFT.product) : '<p class="rp-msg rp-bad">' + esc(r.error || 'That didn\u2019t go through. Try again, or write to ' + ORDER_TO + '.') + '</p>';
+          out.innerHTML = r.ok ? root.AgRpGift.doneHtml(GIFT, r, x.choice || GIFT.product) : '<p class="rp-msg rp-bad">' + esc(r.error || 'That didn\u2019t go through. Try again.') + ' ' + HELP_HTML + '</p>';
           if (r.ok) { $('ro-form').reset(); syncGiftUse(); $('rp-gift-use-wrap').hidden = true; }
           try { out.firstChild.focus(); } catch (err) {}
         }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
@@ -4755,7 +4762,7 @@
         ga('rain_print_order', { result: 'fail', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
         var body = orderText(x);
         var href = 'mailto:' + ORDER_TO + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
-        out.innerHTML = '<div class="rp-msg rp-bad"><p><b>That didn\u2019t go through, so nothing was sent.</b></p><p>Email it to ' + ORDER_TO + ' instead. The order is written out below.</p>' +
+        out.innerHTML = '<div class="rp-msg rp-bad"><p><b>That didn\u2019t go through, so nothing was sent.</b></p><p>Email it to ' + ORDER_TO + ' instead. The order is written out below. Or call or text Sig: <a href="tel:+17157972428">715-797-2428</a>.</p>' +
           '<p><a class="rp-btn2" id="ro-mail" href="' + esc(href) + '">Email the order</a></p><textarea readonly rows="7" aria-label="Your order, as text">' + esc(body) + '</textarea></div>';
         try { $('ro-mail').focus(); } catch (err) {}
       }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
@@ -4923,7 +4930,7 @@
       ga('rain_print_business', { result: 'fail', product: x.product, qty: qn });
       var body = bizText(x);
       var href = 'mailto:' + ORDER_TO + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
-      out.innerHTML = '<div class="rp-msg rp-bad"><p><b>That didn’t go through, so nothing was sent.</b></p><p>Email it to ' + ORDER_TO + ' instead. The request is written out below.</p>' +
+      out.innerHTML = '<div class="rp-msg rp-bad"><p><b>That didn’t go through, so nothing was sent.</b></p><p>Email it to ' + ORDER_TO + ' instead. The request is written out below. Or call or text Sig: <a href="tel:+17157972428">715-797-2428</a>.</p>' +
         '<p><a class="rp-btn2" id="rb-mail" href="' + esc(href) + '">Email the request</a></p><textarea readonly rows="7" aria-label="Your quote request, as text">' + esc(body) + '</textarea></div>';
       try { $('rb-mail').focus(); } catch (err) {}
     }).then(function () { bizSending = false; btn.disabled = false; btn.textContent = was; });
