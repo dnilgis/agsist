@@ -2891,8 +2891,10 @@
      seconds (2026-10-15). updateUrlNow writes it at once (checkout, leaving). */
   var URL_T = 0, URL_LOG = [], URL_LAZY = false;
   function updateUrl() {
-    // a draw writes it at once; typing (URL_LAZY, the redraw after a pause) waits for the pause
-    if (!URL_LAZY && !URL_T) { updateUrlNow(); return; }
+    /* a draw writes it at once; typing (URL_LAZY, the redraw after a pause) waits for the pause, and so does
+       anything else that redraws while the typing's own redraw is still due (REDRAW_T): a layer that comes in
+       mid-word (the station history, the records) wrote the half-typed name at once (2026-10-23) */
+    if (!URL_LAZY && !URL_T && !REDRAW_T) { updateUrlNow(); return; }
     clearTimeout(URL_T);
     URL_T = setTimeout(updateUrlNow, 400);
   }
@@ -3696,6 +3698,10 @@
   var REDRAW_T = 0;
   function redrawSoon() {
     clearTimeout(REDRAW_T);
+    /* each key pushes back an address write that is still waiting: it is written once the typing stops, not 400 ms
+       after the last redraw. A phone that stalls on one key (over 150 ms) redraws mid-word, and that write went out
+       while the reader was still typing (2026-10-23). Pushed back, never dropped: leaving the page still writes it. */
+    if (URL_T) { clearTimeout(URL_T); URL_T = setTimeout(updateUrlNow, 400); }
     REDRAW_T = setTimeout(function () { (root.requestAnimationFrame || setTimeout)(function () { if (REDRAW_T) { REDRAW_T = 0; URL_LAZY = true; try { render(); } finally { URL_LAZY = false; } } }); }, 150);
   }
   function flushRedraw(drop) {
