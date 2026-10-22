@@ -70,10 +70,15 @@ jobs:
           python scripts/probe_field_layers.py --selftest
           python scripts/build_land_summary.py --selftest
           OMP_NUM_THREADS=1 python scripts/build_land_index.py --selftest
+      - name: pdftotext for the probe
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        timeout-minutes: 5
+        continue-on-error: true  # without it the layouts are saved as PDF only
+        uses: ./.github/actions/pdftotext
       - name: Probe transfer sources (raw capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: |
-          sudo apt-get install -y -qq poppler-utils >/dev/null 2>&1 || echo "no pdftotext; layouts saved as PDF only"
+          command -v pdftotext >/dev/null || echo "no pdftotext; layouts saved as PDF only"
           python scripts/fetch_land_sales.py --probe
       - name: Wisconsin RETR screens in a browser (explore only)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.task == 'wi-explore' }}

@@ -1,0 +1,60 @@
+name: pdftotext
+description: >
+  Puts a pinned pdftotext (poppler-utils, Ubuntu 24.04 build) on PATH without apt.
+  On Oct 22, 2026 `apt-get update && apt-get install poppler-utils` sat silent on the
+  runners' slow Ubuntu mirror until the 30 minute job limit, twice, before any test ran.
+  This takes the two .deb files by exact version, checks each against its sha256
+  (from Ubuntu's signed noble-updates index), unpacks them into the home folder with
+  dpkg-deb (no apt, no sudo, no package database) and caches the result by version.
+  A cache hit touches no network. A miss is two small downloads (about 1.3 MB), each
+  try capped at 2 minutes; any failure, a bad checksum or a missing library stops
+  here, loudly. Give the step that uses this a timeout-minutes as well.
+
+runs:
+  using: composite
+  steps:
+    - name: Cache pdftotext
+      id: cache
+      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4.2.3
+      with:
+        path: ~/poppler-pinned
+        key: poppler-pinned-24.02.0-1ubuntu9.11-${{ runner.os }}-${{ runner.arch }}-noble
+    - name: pdftotext
+      shell: bash
+      env:
+        POPPLER_VERSION: '24.02.0-1ubuntu9.11'
+        # sha256 of each .deb, from Ubuntu's noble-updates main amd64 Packages index
+        LIBPOPPLER_SHA256: 'fb25ad9d2bf31bf67840b8516bedc1a9bfc8f70d319c3eb9d341f722668e0151'
+        POPPLER_UTILS_SHA256: 'babf881b89893f843701116f9f32917d19fa94dec337940b6dbeb27fe1a26fc8'
+      run: |
+        set -euo pipefail
+        D="$HOME/poppler-pinned"
+        if [ ! -x "$D/root/usr/bin/pdftotext" ]; then
+          rm -rf "$D"; mkdir -p "$D/root"
+          W="$RUNNER_TEMP/poppler-debs"; mkdir -p "$W"
+          for pair in "libpoppler134 $LIBPOPPLER_SHA256" "poppler-utils $POPPLER_UTILS_SHA256"; do
+            set -- $pair; F="${1}_${POPPLER_VERSION}_amd64.deb"; ok=0
+            # Launchpad keeps every published build at this address for good; the
+            # Ubuntu pool drops a version once a newer one replaces it.
+            for u in "https://launchpad.net/ubuntu/+archive/primary/+files/$F" \
+                     "https://archive.ubuntu.com/ubuntu/pool/main/p/poppler/$F" \
+                     "https://security.ubuntu.com/ubuntu/pool/main/p/poppler/$F"; do
+              if curl -fsSL --connect-timeout 15 --max-time 120 --retry 2 --retry-delay 3 -o "$W/$F" "$u" \
+                 && echo "$2  $W/$F" | sha256sum -c --quiet -; then ok=1; echo "$F from $u"; break; fi
+              echo "::warning::$F: no good copy from $u"; rm -f "$W/$F"
+            done
+            [ "$ok" = 1 ] || { echo "::error::could not get $F with the pinned sha256"; exit 1; }
+            dpkg-deb -x "$W/$F" "$D/root"
+          done
+          rm -rf "$W"
+        fi
+        L="$D/root/usr/lib/x86_64-linux-gnu"
+        mkdir -p "$D/bin"
+        for t in pdftotext pdfinfo; do
+          printf '#!/bin/sh\nLD_LIBRARY_PATH="%s${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" exec "%s" "$@"\n' "$L" "$D/root/usr/bin/$t" > "$D/bin/$t"
+          chmod +x "$D/bin/$t"
+        done
+        miss=$(LD_LIBRARY_PATH="$L" ldd "$D/root/usr/bin/pdftotext" | grep "not found" || true)
+        [ -z "$miss" ] || { echo "::error::pdftotext is missing system libraries: $miss"; exit 1; }
+        echo "$D/bin" >> "$GITHUB_PATH"
+        v=$("$D/bin/pdftotext" -v 2>&1); echo "${v%%$'\n'*}"
