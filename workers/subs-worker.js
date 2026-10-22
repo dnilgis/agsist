@@ -5,6 +5,19 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.48 (2026-10-22): FRONT DOOR ON AGSIST.COM (Sig, Oct 22; BUILD-RULES 11).
+ *   No emailed link points at this host any more: every link goes to
+ *   https://agsist.com/e?a=<route>&<the same signed params> (e.html, GitHub
+ *   Pages), and that page asks this worker from the reader's browser.
+ *   New: GET and POST /fd/<route> for the routes an email links to
+ *   (FD_ROUTES: the ten k= routes, /rp-remind/stop, /sponsor-confirm,
+ *   /sponsor-decide). Each runs the route exactly as its old link did and
+ *   answers JSON instead of the page: {ok, title, lines, button, go}, CORS for
+ *   agsist.com, no caching. GET changes nothing (a scanner that runs the
+ *   page's script presses nothing); the page's button POSTs the same params.
+ *   A line holding an address is left out of the JSON. A link that is not
+ *   valid answers ok:false. No secret is set: a 503 in JSON. Old worker links
+ *   (already in inboxes) work exactly as before. No new binding or secret.
  * v5.47 (2026-10-22): RAIN PRINT TAKES ORDERS THROUGH AN OUTAGE (BUILD-RULES
  *   14, after the Oct 21 block). The page now goes to Stripe whatever this
  *   worker does; this version makes the records from Stripe afterward and
@@ -1323,7 +1336,7 @@ function noticeTopic(v, anyDate) {
 }
 
 function htmlPage(msg, extraHtml, status) {
-  return new Response(
+  return fdMark(new Response(
     "<!doctype html><meta charset=utf-8><title>AGSIST</title>" +
     "<meta name=robots content=noindex>" +
     // v5.7: without this a phone lays the page out 980px wide and shrinks it,
@@ -1332,7 +1345,44 @@ function htmlPage(msg, extraHtml, status) {
     "<body style=\"font-family:Georgia,serif;max-width:480px;margin:80px auto;" +
     "padding:0 16px;color:#1a1a1a\"><h2>" + msg + "</h2>" + (extraHtml || "") +
     "<p><a href=\"https://agsist.com\">agsist.com</a></p>",
-    { status: status || 200, headers: Object.assign({ "Content-Type": "text/html;charset=utf-8" }, PAGE_HEADERS) });
+    { status: status || 200, headers: Object.assign({ "Content-Type": "text/html;charset=utf-8" }, PAGE_HEADERS) }),
+    msg, extraHtml, status);
+}
+// v5.48: the page's parts ride on the Response, so /fd/<route> can answer them as JSON.
+const FD_PAGE = Symbol("fdPage");
+function fdMark(r, msg, extraHtml, status) { r[FD_PAGE] = { msg, extraHtml: extraHtml || "", status: status || 200 }; return r; }
+const FD_ROUTES = new Set(["/unsubscribe", "/alert-unsubscribe", "/notice-unsubscribe", "/daily-elev",
+  "/watch-confirm", "/watch-unsubscribe", "/elevator-watch-confirm", "/elevator-watch-unsubscribe",
+  "/price-watch-confirm", "/price-watch-unsubscribe", "/rp-remind/stop", "/sponsor-confirm", "/sponsor-decide"]);
+function fdText(h) {
+  return String(h || "").replace(/<[^>]*>/g, "").replace(/&middot;/g, "\u00b7").replace(/&quot;/g, "\"")
+    .replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+}
+// {ok, title, lines, button, go} from a page made by htmlPage. Lines with an address are left out.
+function fdJson(p) {
+  const x = p.extraHtml;
+  const lines = [], re = /<p\b[^>]*>([\s\S]*?)<\/p>/gi;
+  let m;
+  while ((m = re.exec(x))) { const t = fdText(m[1]); if (t && !t.includes("@")) lines.push(t); }
+  const b = /<form\b[\s\S]*?<button\b[^>]*>([\s\S]*?)<\/button>/i.exec(x);
+  const a = /<a\b[^>]*href="(https:\/\/agsist\.com[^"]*)"[^>]*>([\s\S]*?)<\/a>/i.exec(x);
+  const title = fdText(p.msg);
+  return { ok: p.status < 400 && !/isn't valid|has expired|no longer on file/i.test(title), title, lines,
+    button: b ? fdText(b[1]) : null, go: a ? { href: a[1].replace(/&amp;/g, "&"), text: fdText(a[2]) } : null };
+}
+// GET or POST /fd/<route>?<params>: the route run as its link would, answered in JSON.
+async function fdRoute(req, env, url) {
+  const route = url.pathname.slice(3);
+  const h = Object.assign({ "Cache-Control": "no-store", "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff" }, cors(req));
+  if (!FD_ROUTES.has(route) || (req.method !== "GET" && req.method !== "POST")) return json({ ok: false, error: "not found" }, 404, h);
+  const u = new URL(url.href);
+  u.pathname = route;
+  const hd = new Headers();
+  for (const k of ["CF-Connecting-IP", "Origin", "User-Agent"]) if (req.headers.get(k)) hd.set(k, req.headers.get(k));
+  const r = await handle(new Request(u.href, { method: req.method, headers: hd }), env);
+  const p = r && r[FD_PAGE];
+  if (!p) return json({ ok: false, error: r && r.status === 429 ? "busy" : "error" }, r && r.status >= 400 ? r.status : 500, h);
+  return json(fdJson(p), 200, h);
 }
 // v5.13: the confirm, unsubscribe and sponsor pages carry e= and t= in their
 // address. No script, no framing, no referrer, no caching. Inline style
@@ -2548,6 +2598,8 @@ export default {
       // The link pages (confirm, unsubscribe, sponsor) answer in HTML; the page
       // POSTs and the token routes in JSON.
       const u = new URL(req.url);
+      if (u.pathname.startsWith("/fd/"))
+        return json({ ok: false, error: "temporarily unavailable" }, 503, Object.assign({ "Cache-Control": "no-store" }, cors(req)));
       if (!PUBLIC_POSTS.has(u.pathname) && !u.searchParams.has("token") && !req.headers.get("Authorization"))
         return new Response("<!doctype html><meta charset=utf-8><title>AGSIST</title><h2>This page is not working right now. Try again later.</h2>",
           { status: 503, headers: Object.assign({ "Content-Type": "text/html;charset=utf-8" }, PAGE_HEADERS) });
@@ -2884,6 +2936,9 @@ async function handle(req, env) {
         }, cors(req)),
       });
     }
+
+    // v5.48: the front door. agsist.com/e asks here; old links below work as before.
+    if (path.startsWith("/fd/")) return fdRoute(req, env, url);
 
     // v5.19: the reader's own town, from Cloudflare's request data. Nothing kept.
     if (path === "/where" && req.method === "GET") {

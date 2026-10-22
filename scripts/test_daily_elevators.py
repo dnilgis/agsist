@@ -273,7 +273,7 @@ check("@" not in log and "example.com" not in log, "the log names no address: " 
 check("1 reader(s) with their own elevators, 2 with a near-you line" in log, "the log counts: " + log)
 want_t = hmac.new(b"sec", b"000000000000rdr1|de", hashlib.sha256).hexdigest()[:16]
 r1 = lines["made-up-reader@example.com"]
-check(r1["add_url"] == os.environ["LIST_URL"] + "/daily-elev?k=000000000000rdr1&t=" + want_t,
+check(r1["add_url"] == "https://agsist.com/e?a=daily-elev&k=000000000000rdr1&t=" + want_t,
       "the footer link carries the link id, signed like the unsubscribe link (v5.46): " + str(r1["add_url"]))
 check("@" not in r1["add_url"] and "%40" not in r1["add_url"], "the footer link carries no address")
 check(lines["nothing@example.com"] == {"mine": [], "near": [], "add_url": send_daily.elevator_add_url("nothing@example.com")},

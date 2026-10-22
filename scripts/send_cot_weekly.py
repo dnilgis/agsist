@@ -640,12 +640,12 @@ def _selftest():
     LINK_IDS["a@farm.com"] = L0
     try:
         m = build_email(as_of.isoformat(), (s, t, h), "A@farm.com", "AGSIST", "sender@example.com", None)
-        want = "https://w.dev/notice-unsubscribe?k=" + L0 + "&t=" + email_links.token("sec", L0) + "&topic=cot"
-        ok(m["List-Unsubscribe"].startswith("<" + want + ">") and m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click", m["List-Unsubscribe"])
+        want = "https://agsist.com/e?a=notice-unsubscribe&k=" + L0 + "&t=" + email_links.token("sec", L0) + "&topic=cot"
+        ok(email_links.unsub_web(m) == want and m["List-Unsubscribe-Post"] is None, m["List-Unsubscribe"])
         ok(want in m.get_body(("plain",)).get_content(), "the stop link stops this list only")
         _h, _t = m.get_body(("html",)).get_content(), m.get_body(("plain",)).get_content()
         ok(not [u for u in email_links.hrefs(_h) if "@" in u or "%40" in u.lower()], "no @ inside any href")
-        ok(not email_links.bad_links(_t) and "@" not in str(m["List-Unsubscribe"]).split(">")[0], "no address in any text link or the header link")
+        ok(not email_links.bad_links(_t) and "@" not in email_links.unsub_web(m), "no address in any text link or the header link")
         LINK_IDS.pop("a@farm.com")
         m = build_email(as_of.isoformat(), (s, t, h), "a@farm.com", "AGSIST", "sender@example.com", None)
         ok("notice-unsubscribe?" not in m.get_body(("plain",)).get_content(), "no link id: no signed link, never an address link")
@@ -691,7 +691,7 @@ def _selftest():
         ok("would send to 2 reader(s)" in log and "list: 2 reader(s) on Funds this week" in log, log[-400:])
         ok("1 reader(s) had no link id this run and are not mailed" in log, "a reader without a link id is skipped, by count")
         ok("jane" not in log and "farm.com" not in log and "ranch" not in log, "no reader address in the log")
-        ok("notice-unsubscribe?k=" + email_links.SAMPLE_LID in log and "%40" not in log, "the preview uses a made-up link id, no address")
+        ok("a=notice-unsubscribe&k=" + email_links.SAMPLE_LID in log and "%40" not in log, "the preview uses a made-up link id, no address")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     ok(re.match(r"^[\w:.-]{1,64}$", flag_key(as_of)) and flag_key(as_of) == "cot:2026-10-13", "flag key fits the worker's pattern")

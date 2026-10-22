@@ -40,8 +40,9 @@ THE WORKER AND THE COPY ARE INTERCHANGEABLE (2026-10-22). The list, the
 elevator watches and the day flag go through scripts/list_source.py. When the
 worker is blocked the same records come from the private copy of its storage
 (8 days old at most), the day flag is claimed in the private repo BEFORE the
-first mail and checked in both places, and every link that went through the
-worker is a mailto stop link or left out (scripts/email_links.py).
+first mail and checked in both places. Every link that goes through the
+worker points at the agsist.com front door, in every mode; that page says when
+the worker is down and offers the mailto stop (scripts/email_links.py).
     BIDS_BASE   where the elevator bids are read for the local line
                 (default https://dnilgis.github.io/bids/; a local mirror
                 directory works for tests)
@@ -300,7 +301,7 @@ def elevator_add_url(email):
     try:
         return email_links.signed(base, "daily-elev", lid, secret, "|de")
     except email_links.Withheld:
-        return None      # backup mode: this page is on the blocked worker, so the link is left out
+        return None      # (nothing raises it since the front door, Oct 22: the agsist.com page says when the worker is down)
 
 
 def load_elevator_lines(subs=None, how="plain", bids_data=None):

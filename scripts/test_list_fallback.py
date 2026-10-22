@@ -11,8 +11,9 @@ JSON) and a made-up copy of the worker's storage, with a fake mail server:
   * the Daily's day flag in either place (worker or private repo) -> skipped,
     including when the worker comes back mid-day saying "not set"
   * no link to the worker host in any body or header; the stop link is the
-    mailto and the footer says "Reply STOP to stop these emails."; no
-    reader's address in any href
+    agsist.com front door (its page says when the worker is down; Oct 22),
+    List-Unsubscribe is the mailto plus that page, and the footer says
+    "Reply STOP to stop these emails."; no reader's address in any href
   * an alert mailed in backup mode is not mailed again next run (the journal)
   * a blocked worker is a warning and exit 0 for the hourly jobs and the
     forms digest, an error for the Daily when there is no usable copy
@@ -109,8 +110,11 @@ def links_ok(m, what, reader):
     every = "\n".join(hs)
     hrefs = [u for h in hs for u in email_links.hrefs(h)]
     check(HOST not in every and HOST not in str(m["List-Unsubscribe"]), what + ": a link to the blocked worker host")
-    check(str(m["List-Unsubscribe"]) == "<" + email_links.STOP_MAILTO + ">" and m["List-Unsubscribe-Post"] is None,
-          what + ": List-Unsubscribe is not the mailto alone: " + str(m["List-Unsubscribe"]))
+    web = email_links.unsub_web(m)
+    check(str(m["List-Unsubscribe"]).startswith("<" + email_links.STOP_MAILTO + ">") and m["List-Unsubscribe-Post"] is None
+          and (not web or web.startswith(email_links.FRONT + "?a=")),
+          what + ": List-Unsubscribe is not the mailto plus the front door: " + str(m["List-Unsubscribe"]))
+    check("workers.dev" not in every + str(m), what + ": a workers.dev host in the email")
     check(all(email_links.STOP_LINE in h for h in hs), what + ": the footer does not say Reply STOP in every part")
     check(any(email_links.STOP_MAILTO in u for u in hrefs) or any(email_links.STOP_MAILTO in h for h in hs),
           what + ": no mailto stop link in the body")
@@ -257,7 +261,7 @@ try:
     srd.LINK_IDS["a@farm.com"] = list_source.lid_for("a@farm.com")
     try:
         u = srd.unsub_url("a@farm.com")
-        check(u == email_links.STOP_MAILTO, "report day: stop link is not the mailto: %s" % u)
+        check(u.startswith(email_links.FRONT + "?a=unsubscribe&k="), "report day: stop link is not the front door: %s" % u)
     except Exception as ex:                                # noqa: BLE001
         fails.append("report day stop link raised %s" % type(ex).__name__)
     rows = list_source.load("notice", topic="reports")
@@ -269,7 +273,7 @@ try:
     write_copy(extra=[{"name": "alert:h@farm.com", "value": json.dumps({"lat": 45.3, "lon": -91.6, "radius_mi": 5, "ts": 1})}])
     ws = check_alerts.fetch_watchers()
     check(len(ws) == 1 and email_links.lid_of(ws[0]) and list_source.mode() == "backup", "hail: the copy's alert list")
-    check(check_alerts.stop_url(ws[0]) == email_links.STOP_MAILTO, "hail: stop link is not the mailto")
+    check(check_alerts.stop_url(ws[0]).startswith(email_links.FRONT + "?a=alert-unsubscribe&k="), "hail: stop link is not the front door")
 
     # ------------------------------------------------------------ county watch: mailed once, then the journal holds it
     import send_watch
