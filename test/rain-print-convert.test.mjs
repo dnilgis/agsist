@@ -155,6 +155,8 @@ test("a phone buyer sees the date it should arrive by the button, per product", 
     await page.selectOption("#rp-m1mo", "07");
     await page.selectOption("#rp-m1dy", "04");
     await page.locator('.rp-prod[data-choice="print12x18"]').click();
+    // the line updates after the click; read it once it has (twice in CI on Oct 22 it was read a moment early)
+    await page.waitForFunction(() => document.getElementById("rp-arrive").textContent === "Order by Dec 10 for Christmas delivery.", null, { timeout: 5000 }).catch(() => {});
     assert.equal(await page.textContent("#rp-arrive"), "Order by Dec 10 for Christmas delivery.");
     assert.equal(await page.textContent("#rp-arrive-est"), "Ordered today, it should arrive by about Wednesday, Oct 28.");
     await page.locator('.rp-prod[data-choice="digital"]').click();

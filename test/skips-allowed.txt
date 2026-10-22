@@ -1,0 +1,5 @@
+# Skips the PR checks accept with AGSIST_NO_SKIPS=1 (scripts/dev/check-skips.sh). One line per test, exactly as
+# node --test prints it after "ok N - ": "<test name> # SKIP <reason>". Only one half of an either/or pair belongs
+# here, and only while its other half runs in the same checks (test/pr-checks.test.mjs holds that). Anything else
+# that skips fails the PR checks: install what it needs in pr-checks.yml instead.
+without FSA's 2026 file, no county carries a benchmark the calculator could use # SKIP official file loaded
