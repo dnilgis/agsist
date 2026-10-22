@@ -330,6 +330,37 @@ A(/Authorization/.test(r.headers.get('Access-Control-Allow-Headers')), 'prefligh
   r = await admin('/elev/admin/paste', full); j = await r.json(); A(r.status === 200 && j.rows === 828, 'a full board fits: ' + JSON.stringify(full).length + ' bytes');
 }
 
+// ---- v5.50: a late save keeps the time it was typed; a newer save always wins ----
+{
+  const ROW = [{ crop: 'corn', period: 'Nov', start: '2026-11-01', end: '2026-11-30', futures: 'ZCZ26', basis: -0.41 }];
+  const ROW2 = [{ crop: 'corn', period: 'Nov', start: '2026-11-01', end: '2026-11-30', futures: 'ZCZ26', basis: -0.39 }];
+  const ROW3 = [{ crop: 'corn', period: 'Nov', start: '2026-11-01', end: '2026-11-30', futures: 'ZCZ26', basis: -0.37 }];
+  // the listing's newest change, a moment ago
+  r = await pub('/elev/save', { k: K4, bids: ROW, note: 'live' }); A(r.status === 200, 'v5.50: a live save ' + r.status);
+  const live = rec('bunge-ladoga-in');
+  // a save typed two hours ago, kept on the phone, arriving now: older than the newest, refused, nothing stored
+  const typed = new Date(Date.parse(live.bids_updated_at) - 2 * 3600e3).toISOString();
+  r = await pub('/elev/save', { k: K4, bids: ROW2, note: 'kept', entered_at: typed }); j = await r.json();
+  A(r.status === 409 && j.ok === false && j.newer === true, 'v5.50: a delayed save older than the newest change is refused');
+  A(JSON.stringify(rec('bunge-ladoga-in')) === JSON.stringify(live), 'v5.50: and nothing it carried is stored (the newer save wins)');
+  // a late save typed after the newest change: stored with the time it was typed, not the time it arrived
+  const later = new Date(Math.min(Date.now() - 60e3, Date.parse(live.bids_updated_at) + 1000)).toISOString();
+  const typedMs = Math.max(Date.parse(later), Date.parse(live.bids_updated_at) + 1);
+  r = await pub('/elev/save', { k: K4, bids: ROW3, note: 'late', entered_at: typedMs }); j = await r.json();
+  const L = rec('bunge-ladoga-in');
+  A(r.status === 200 && L.bids[0].basis === -0.37 && L.note === 'late', 'v5.50: a late save typed after the newest change is stored');
+  A(Date.parse(L.bids_updated_at) === typedMs && Date.parse(L.info_updated_at) === typedMs, 'v5.50: with its own entry time, not the delivery time');
+  A(j.record.bids_updated_at === L.bids_updated_at, 'v5.50: the answer carries that time');
+  // a phone clock ahead of ours never dates a save in the future
+  r = await pub('/elev/save', { k: K4, note: 'ahead', entered_at: Date.now() + 3600e3 }); A(r.status === 200, 'v5.50: a clock ahead is taken');
+  A(Date.parse(rec('bunge-ladoga-in').info_updated_at) <= Date.now(), 'v5.50: as now at most');
+  for (const [v, why] of [['not a time', 'text'], [Date.now() - 40 * 864e5, 'over 31 days old'], [{}, 'an object']]) {
+    r = await pub('/elev/save', { k: K4, note: 'x' + why, entered_at: v }); A(r.status === 400, 'v5.50: entered_at ' + why + ' refused');
+  }
+  // no entered_at: now, as before
+  r = await pub('/elev/save', { k: K4, note: 'plain' }); A(r.status === 200 && Date.now() - Date.parse(rec('bunge-ladoga-in').info_updated_at) < 5000, 'v5.50: no entered_at is now');
+}
+
 // ---- every existing route still answers ----
 r = await w.fetch(new Request(H + '/nope'), env); A(r.status === 404, 'unknown path 404');
 r = await get('/elev/me'); A(r.status === 404, 'GET /elev/me is not a route');
