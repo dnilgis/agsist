@@ -70,7 +70,8 @@ jobs:
       - name: pdftotext and ffmpeg
         timeout-minutes: 10
         run: |
-          command -v pdftotext && command -v ffprobe || { sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils ffmpeg; }
+          # the man-db trigger alone takes minutes on these runners; nothing here reads man pages
+          command -v pdftotext && command -v ffprobe || { sudo rm -f /var/lib/man-db/auto-update; sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends poppler-utils ffmpeg; }
           ffprobe -version | head -1
 
       # The elevator desk and chaos-fix browser tests read the bids data
