@@ -2266,7 +2266,7 @@
     var pick = $('rp-crop') ? $('rp-crop').value : '';
     if (!pick || ST.crop) return '';
     var name = pick === 'soy' ? 'Soybeans' : 'Corn';
-    if (!ST.markers.length) return name + ' needs the planting day and the harvest day: mark them under Mark a day, then pick them here.';
+    if (!ST.markers.length) return name + (pick === 'soy' ? ' need' : ' needs') + ' the planting day and the harvest day: mark them under Mark a day, then pick them here.';
     if (!CROP_HAND.plant || !CROP_HAND.harvest) return 'Pick the ' + (!CROP_HAND.plant && !CROP_HAND.harvest ? 'planting day and the harvest day' : !CROP_HAND.plant ? 'planting day' : 'harvest day') + ' from your marked days' + (ST.markers.length < 2 ? ', or mark one more day above' : '') + '.';
     return 'The harvest day has to come after the planting day.';
   }
