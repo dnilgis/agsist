@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Your AGSIST email | AGSIST</title>
+<!-- The front door (Sig, Oct 22 2026; BUILD-RULES 11). Every link AGSIST
+     emails comes here: /e?a=<route>&<signed params> (scripts/email_links.py).
+     This page asks the subs worker from the reader's browser (GET /fd/<route>,
+     JSON, subs worker v5.48) and its button POSTs the same params, so a mail
+     scanner that only fetches the link changes nothing. No address is ever in
+     the link. If the worker cannot be reached the page says so and offers the
+     mailto stop. Not in the sitemap. Test: test/frontdoor-page.test.mjs. -->
+<style>
+  :root{--bg:#f6f7f5;--text:#161a18;--muted:rgba(22,26,24,.72);--link:#7a5a12;--ok:#1f6b3a;--btn:#1f6b3a}
+  @media (prefers-color-scheme: dark){:root{--bg:#0a0c0d;--text:#e9edeb;--muted:rgba(233,237,235,.72);--link:#d4a23f;--ok:#7fd19b;--btn:#2a8a4c}}
+  html,body{background:var(--bg)}
+  body{margin:0;color:var(--text);font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+  main{max-width:520px;margin:0 auto;padding:3.5rem 16px}
+  .tag{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 .4rem}
+  h1{font-size:1.5rem;line-height:1.25;margin:0 0 .8rem;overflow-wrap:anywhere}
+  h1.ok{color:var(--ok)}
+  p{color:var(--muted);margin:.5rem 0}
+  a{color:var(--link)}
+  button{font:inherit;font-weight:600;padding:.7rem 1.2rem;border-radius:8px;border:0;background:var(--btn);color:#fff;cursor:pointer;min-height:44px}
+  button[disabled]{opacity:.6;cursor:default}
+  img{max-width:100%;height:auto;background:#fff;border-radius:6px}
+</style>
+</head>
+<body>
+<main>
+<p class="tag">AGSIST email</p>
+<h1 id="msg">One moment</h1>
+<div id="lines"><p>Checking your link.</p></div>
+<p id="act-wrap" hidden><button type="button" id="act"></button></p>
+<p id="go-wrap" hidden><a id="go" href="https://agsist.com/"></a></p>
+<p id="again-wrap" hidden><button type="button" id="again">Try again</button></p>
+<p><a href="/">agsist.com</a></p>
+<noscript><p>This page needs JavaScript. To stop emails, email <a href="mailto:news@agsist.com?subject=unsubscribe">news@agsist.com</a> with the word unsubscribe.</p></noscript>
+</main>
+<script>
+(function () {
+  var WORKER = 'https://agsist-subs.dnilgis.workers.dev';
+  var STOP = 'mailto:news@agsist.com?subject=unsubscribe';
+  // the routes an email links to (subs worker FD_ROUTES); true = a stop link
+  var ROUTES = { 'unsubscribe': 1, 'alert-unsubscribe': 1, 'notice-unsubscribe': 1, 'watch-unsubscribe': 1,
+    'elevator-watch-unsubscribe': 1, 'price-watch-unsubscribe': 1, 'rp-remind/stop': 1,
+    'daily-elev': 0, 'watch-confirm': 0, 'elevator-watch-confirm': 0, 'price-watch-confirm': 0,
+    'sponsor-confirm': 0, 'sponsor-decide': 0 };
+  var KEEP = ['k', 't', 'f', 'w', 'p', 'topic', 'i', 'd'];
+  var q = new URLSearchParams(location.search), a = q.get('a') || '';
+  var $ = function (id) { return document.getElementById(id); };
+  var msg = $('msg'), lines = $('lines'), act = $('act'), go = $('go');
+
+  function el(tag, text, href) {
+    var n = document.createElement(tag);
+    if (href) n.href = href;
+    n.textContent = text;
+    return n;
+  }
+  function say(title, ls, ok) {
+    msg.textContent = title;
+    msg.className = ok ? 'ok' : '';
+    lines.textContent = '';
+    (ls || []).forEach(function (l) { lines.appendChild(typeof l === 'string' ? el('p', l) : l); });
+    $('act-wrap').hidden = $('go-wrap').hidden = $('again-wrap').hidden = true;
+  }
+  function stopLine() {
+    var p = el('p', 'To stop these emails now, email ');
+    p.appendChild(el('a', 'news@agsist.com', STOP));
+    p.appendChild(document.createTextNode(' with the word unsubscribe.'));
+    return p;
+  }
+  // the worker could not be reached (blocked, no CORS, a page instead of JSON, slow, down)
+  function down() {
+    say('This is not working right now', ROUTES[a] ? [stopLine(), 'Or try again later.'] : ['Try again later. Nothing was changed.']);
+    $('again-wrap').hidden = false;
+  }
+  function ask(method) {
+    var s = new URLSearchParams();
+    KEEP.forEach(function (n) { if (q.has(n)) s.set(n, q.get(n)); });
+    var c = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = setTimeout(function () { if (c) c.abort(); }, 10000);
+    return fetch(WORKER + '/fd/' + a + '?' + s.toString(), { method: method, signal: c ? c.signal : undefined,
+      credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer' })
+      .then(function (r) {
+        clearTimeout(timer);
+        if (!/json/i.test(r.headers.get('Content-Type') || '')) throw new Error('not json');
+        return r.json();
+      })
+      .then(function (j) {
+        if (!j || typeof j !== 'object' || typeof j.title !== 'string' || !j.title) throw new Error('shape');
+        return j;
+      }, function (e) { clearTimeout(timer); throw e; });
+  }
+  function show(j) {
+    var ls = Array.isArray(j.lines) ? j.lines.filter(function (l) { return typeof l === 'string'; }) : [];
+    if (j.ok === false && ROUTES[a]) ls = ls.concat([stopLine()]);
+    say(j.title, ls, j.ok !== false && !j.button);
+    if (j.button) { act.textContent = j.button; act.disabled = false; $('act-wrap').hidden = false; }
+    if (j.go && typeof j.go.href === 'string' && /^https:\/\/agsist\.com\//.test(j.go.href)) {
+      go.href = j.go.href; go.textContent = j.go.text || 'Open it on agsist.com'; $('go-wrap').hidden = false;
+    }
+  }
+  function load() {
+    say('One moment', ['Checking your link.']);
+    ask('GET').then(show, down);
+  }
+  act.addEventListener('click', function () {
+    act.disabled = true;
+    ask('POST').then(show, down);
+  });
+  $('again').addEventListener('click', load);
+
+  if (a === 'logo') {
+    var id = q.get('id') || '';
+    if (!/^[0-9a-hjkmnp-tv-z]{12}$/.test(id)) { say('This link is not complete', ['Check the email it came in.']); return; }
+    var img = new Image();
+    img.alt = 'Logo ' + id;
+    img.onload = function () { say('Logo ' + id, [img]); };
+    img.onerror = function () { say('This is not working right now', ['The logo is not loading. Try again later.']); };
+    img.src = WORKER + '/rp-logo/' + id;
+    return;
+  }
+  if (!Object.prototype.hasOwnProperty.call(ROUTES, a) || !q.get('t')) {
+    say('This link is not complete', ['Tap the link in your email again.', stopLine()]);
+    return;
+  }
+  load();
+})();
+</script>
+</body>
+</html>
