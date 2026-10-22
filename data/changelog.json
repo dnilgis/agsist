@@ -7,6 +7,12 @@
    "items": [
     {
      "tag": "fixed",
+     "page": "/daily",
+     "name": "Signups, alerts and Rain Print orders move to a new home",
+     "text": "The service behind email signups, alerts, the hay board, elevator bids and Rain Print orders moves to a new address on our side. Nothing to do: the pages already use it. An old unsubscribe link that no longer works says how to stop the emails anyway."
+    },
+    {
+     "tag": "fixed",
      "page": "/rain-print",
      "name": "Gift cards, quotes, hay posts and elevator bids keep working when our system is down",
      "text": "When the service behind them is not answering, using a gift card, asking for a business quote, posting on the hay board, saving an elevator's bids or confirming an alert is saved on your device and goes through once it is back. The page says so in one line."

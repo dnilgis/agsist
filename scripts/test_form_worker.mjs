@@ -737,7 +737,7 @@ r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Acce
   r = await go('/unsubscribe?e=' + encodeURIComponent(E) + '&t=' + t16(K), 'POST'); A(store.has('sub:' + E), 'v5.46: a k token is not an address token');
   // bad ids
   const ghost = 'zzzzzzzzzzzzzzzz';
-  r = await go('/unsubscribe?k=' + ghost + '&t=' + t16(ghost)); A(r.status === 403 && (await r.text()).includes("isn't valid"), 'v5.46: an id with no lid: record is 403');
+  r = await go('/unsubscribe?k=' + ghost + '&t=' + t16(ghost)); { const h = await r.text(); A(r.status === 403 && h.includes("That unsubscribe link no longer works.") && h.includes('href="mailto:news@agsist.com?subject=unsubscribe"'), 'v5.46: an id with no lid: record is 403 (v5.52: with the way to stop by email)'); }
   r = await go('/unsubscribe?k=ABC@x&t=' + t16('abc@x')); A(r.status === 403, 'v5.46: a malformed id is 403');
   r = await go('/unsubscribe?k=' + K); A(r.status === 403, 'v5.46: no t is 403');
   // the Daily unsubscribe by k last (it ends the address's other lists too)
