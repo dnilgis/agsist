@@ -391,6 +391,75 @@ def load_rain_lines(subs, how, bids_data=None):
     return out
 
 
+# ── the Daily, v2 (Sig, Oct 22 2026), behind a switch ─────────────────────
+# DAILY_FORMAT=v2 builds the email with scripts/daily_v2.py, but ONLY for
+# Sig's test copy (TEST_TO_SIG=1) or a preview (DRY_RUN=1). The morning send to
+# the list keeps brief_email until Sig approves a test copy; asked for v2
+# without either, it says so and sends the current format.
+V2 = {"pod": None, "fact": None, "ready": False}
+
+
+def daily_format():
+    want = (os.environ.get("DAILY_FORMAT") or "").strip().lower()
+    if want != "v2":
+        return "current"
+    if env("TEST_TO_SIG", "") == "1" or env("DRY_RUN", "") == "1":
+        return "v2"
+    print("::warning::DAILY_FORMAT=v2 is for Sig's test copy and previews only; this send keeps the current format")
+    return "current"
+
+
+def v2_setup(b):
+    """The day's print (PRINT_OF_DAY: scripts/print_of_day.py's pick with an
+    image_url once the PNG is live on agsist.com) and the day's fact, once.
+    Any failure leaves that slot out; the email still goes."""
+    if V2["ready"]:
+        return
+    V2["ready"] = True
+    p = (os.environ.get("PRINT_OF_DAY") or "").strip()
+    if p:
+        try:
+            with open(p, encoding="utf-8") as fh:
+                pod = json.load(fh)
+            if isinstance(pod, dict) and pod.get("image_url") and str(pod["image_url"]).startswith("https://agsist.com/"):
+                V2["pod"] = pod
+            else:
+                print("print of the day: no live picture; the slot is left out")
+        except Exception as ex:
+            print("print of the day skipped (" + type(ex).__name__ + ")")
+    else:
+        print("print of the day: none for this send; the slot is left out")
+    try:
+        import daily_fact
+        V2["fact"] = daily_fact.for_day(date.today())
+    except Exception as ex:
+        print("daily fact skipped (" + type(ex).__name__ + ")")
+
+
+def v2_parts(b, to_addr, uurl, mine, loc, rain):
+    import daily_v2
+    v2_setup(b)
+    return daily_v2.build(b, issue_url(b), unsub_url=uurl, elevators=mine, local=loc, forward_url=FORWARD_URL,
+                          rain=rain, pod=V2["pod"], fact=V2["fact"], today=date.today())
+
+
+def v2_gate(day, b):
+    """The number check that blocks the v2 send (daily_v2.check): a wrong number
+    in the subject, headline or lead. True = clear to send."""
+    import daily_v2
+    built = v2_parts(b, "reader@example.com", None, None, None, None)
+    bad, notes = daily_v2.check(b, built)
+    for n in notes:
+        print("v2 number check: " + n)
+    if bad:
+        for f in bad:
+            print("::error title=Daily number check::%s: \"%s\" %s" % (f["field"], str(f.get("quote"))[:200], f["why"]))
+        print("v2 number check: %d wrong number(s) in the subject, headline or lead; the Daily does not send" % len(bad))
+        return False
+    print("v2 number check: passed (subject: %s)" % built["subject"])
+    return True
+
+
 def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     """One issue, two bodies, one message.
 
@@ -408,8 +477,14 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     date_display = b.get("date_display") or b.get("date") or day
     uurl = unsub_url(to_addr)
 
-    prior, _prior_day = brief_email.prior_board(b)
-    subject = brief_email.subject_line(b, prior)
+    v2 = None
+    if daily_format() == "v2":
+        k = str(to_addr).strip().lower()
+        v2 = v2_parts(b, to_addr, uurl, ELEVATOR_LINES.get(k) or None, LOCAL_LINES.get(k) or None, RAIN_LINES.get(k) or None)
+        subject = v2["subject"]
+    else:
+        prior, _prior_day = brief_email.prior_board(b)
+        subject = brief_email.subject_line(b, prior)
     if env("TEST_TO_SIG", "") == "1":
         subject = "[test copy] " + subject
 
@@ -430,12 +505,15 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     mine = ELEVATOR_LINES.get(str(to_addr).strip().lower()) or None
     loc = LOCAL_LINES.get(str(to_addr).strip().lower()) or None
     rain = RAIN_LINES.get(str(to_addr).strip().lower()) or None
-    text = brief_email.render_text(b, issue_url(b), unsub_url=uurl, date_display=date_display, elevators=mine,
-                                   local=loc, forward_url=FORWARD_URL, rain=rain)
-    _issue = issue_url(b)
-    hbody = brief_email.render_html(b, _issue.replace("&", "&amp;"),
-                                    unsub_url=uurl, date_display=date_display, elevators=mine,
-                                    local=loc, forward_url=FORWARD_URL, rain=rain)
+    if v2:
+        text, hbody = v2["text"], v2["html"]
+    else:
+        text = brief_email.render_text(b, issue_url(b), unsub_url=uurl, date_display=date_display, elevators=mine,
+                                       local=loc, forward_url=FORWARD_URL, rain=rain)
+        _issue = issue_url(b)
+        hbody = brief_email.render_html(b, _issue.replace("&", "&amp;"),
+                                        unsub_url=uurl, date_display=date_display, elevators=mine,
+                                        local=loc, forward_url=FORWARD_URL, rain=rain)
 
     # set_content first, add_alternative second: that ordering is what makes it
     # multipart/alternative with the HTML preferred and the text a real
@@ -457,6 +535,12 @@ def main():
     if not dry and not test and flag(day):
         print("already sent for " + day + " (day-flag set) — skipping. exit 0")
         return 0
+    if daily_format() == "v2":
+        print("format: v2 (scripts/daily_v2.py)")
+        if not v2_gate(day, b):
+            if not dry:
+                return 1
+            print("dry run: the preview below is what WOULD have been blocked")
     subs, how = fetch_subscribers()
     if test:
         subs, how = test_recipients(subs, how)

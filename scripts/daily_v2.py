@@ -93,13 +93,14 @@ DARK = """
   .up{color:%s!important}
   .down{color:%s!important}
   a.link{color:%s!important}
+  a.mute.link{color:%s!important}
   .rule{background:#332d24!important}
   .cell{border-bottom-color:#332d24!important}
   .pic{border-color:#4a4236!important}
   .btn{background:#e3b955!important;color:#191510!important}
 }
 """ % (DARK_CARD, DARK_COLORS["ink"], DARK_COLORS["mute"], DARK_COLORS["gold"], DARK_COLORS["lab"],
-       DARK_COLORS["up"], DARK_COLORS["down"], DARK_COLORS["link"])
+       DARK_COLORS["up"], DARK_COLORS["down"], DARK_COLORS["link"], DARK_COLORS["mute"])
 
 NUM_WORDS = r"\b(two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|dozen|half|million|billion)\b"
 EVENT_RE = re.compile(r"\b(webinar|workshop|register|registration|field day|conference|seminar|town hall|"
@@ -567,12 +568,12 @@ def _board_html(daily):
 
 def _watch(daily):
     out = []
-    for w in (daily.get("watch_list") or [])[:3]:
+    for w in (daily.get("watch_list") or [])[:2]:
         when, desc = BE.strip_md(w.get("time")), BE.strip_md(w.get("desc"))
         if desc:
             out.append((when, desc))
     for ev in events(daily):
-        if len(out) >= 4:
+        if len(out) >= 3:
             break
         out.append(("Event", ev["desc"]))
     return out
@@ -593,7 +594,7 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
                       pad="4px 0 0", size=16))
     # the reader's own bids
     if isinstance(local, dict) and local.get("head"):
-        det = "".join('<br><span class="mute" style="font-size:13px;color:%s">%s</span>' % (MUTE, e(d)) for d in (local.get("detail") or [])[:1])
+        det = ""   # the delivery and basis detail stays on the web page
         note = ('<br><span class="mute" style="font-size:13px;color:%s">%s</span>' % (MUTE, e(local["note"]))) if local.get("note") else ""
         b.append('<tr><td style="padding:14px 0 0"><table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0"><tr>'
                  '<td class="ink" style="border-left:3px solid %s;padding:3px 0 3px 12px;font-family:%s;font-size:15px;line-height:1.5;color:%s">'
@@ -690,7 +691,7 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
     for x in items:
         L.append("- " + x["text"] + ((" " + BE.utm(x["url"], "today-" + x["kind"], camp)) if x.get("url") else ""))
     if isinstance(local, dict) and local.get("head"):
-        L += ["", local["head"]] + ["  " + d for d in (local.get("detail") or [])[:1]] + (["  " + local["note"]] if local.get("note") else [])
+        L += ["", local["head"]] + (["  " + local["note"]] if local.get("note") else [])
     if isinstance(elevators, dict):
         L += BE._elevator_block_text(elevators)
     if here:
