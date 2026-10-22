@@ -159,7 +159,14 @@ jobs:
               raise SystemExit(0)
           m["From"] = sender
           m["To"] = to
-          m.set_content("\n".join(body))
+          text = "\n".join(body)
+          try:
+              import sys; sys.path.insert(0, "scripts")
+              import email_links   # no worker host in any email: named as "the subs worker", and the send guard
+              text = email_links.scrub_text(text)
+          except ImportError:
+              text = text.replace(".workers.dev", " worker")
+          m.set_content(text)
           try:
               port = int(os.environ.get("SMTP_PORT") or 587)
               s = smtplib.SMTP(host, port, timeout=30)

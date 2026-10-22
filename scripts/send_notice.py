@@ -415,7 +415,7 @@ def selftest():
     u = unsub_link("https://w.dev/", "sec", L0, T)
     q = urllib.parse.parse_qs(urllib.parse.urlsplit(u).query)
     ck("unsubscribe link: link id, topic, worker path, no address (v5.46)",
-       u.startswith("https://w.dev/notice-unsubscribe?k=" + L0 + "&") and q["k"] == [L0] and q["topic"] == [T] and "e" not in q
+       u.startswith("https://agsist.com/e?a=notice-unsubscribe&k=" + L0 + "&") and q["k"] == [L0] and q["topic"] == [T] and "e" not in q
        and "@" not in u and "%40" not in u)
     ck("token is HMAC-SHA256 of the link id, first 16 hex (the daily's recipe)",
        q["t"] == [hmac.new(b"sec", L0.encode(), hashlib.sha256).hexdigest()[:16]])
@@ -429,8 +429,10 @@ def selftest():
             "const env={UNSUB_SECRET:'sec',SUBS:{async get(k){return k==='lid:" + L0 + "'?'a@farm.com':null},async put(){},async delete(){},"
             "async list(){return {keys:[],list_complete:true}}}};"
             "for (const u of process.argv.slice(2)){const r=await w.fetch(new Request(u),env);"
-            "console.log((await r.text()).includes('Stop this notice for this address?')?'valid':'invalid');}")
-        bad = u.replace("&t=" + q["t"][0], "&t=0000000000000000")
+            "console.log((await r.json()).title==='Stop this notice for this address?'?'valid':'invalid');}")
+        # what e.html asks: <worker>/fd/notice-unsubscribe?<the same params>
+        bad = email_links.as_worker(u.replace("&t=" + q["t"][0], "&t=0000000000000000"), "https://w.dev")
+        u = email_links.as_worker(u, "https://w.dev")
         try:
             r = subprocess.run([node, "--input-type=module", "-e", js, str(REPO / "workers" / "subs-worker.js"), u, bad],
                                capture_output=True, text=True, timeout=60)
@@ -454,8 +456,8 @@ def selftest():
     ck("footer and postal address, both parts", POSTAL in txt and POSTAL in htm and "Unsubscribe: " + unsub_link("https://w.dev", "sec", L0, T) in txt)
     ck("no @ inside any href, no address in a text link (v5.46)",
        not [x for x in email_links.hrefs(htm) if "@" in x or "%40" in x.lower()] and not email_links.bad_links(txt))
-    ck("List-Unsubscribe one-click header", m["List-Unsubscribe"] == "<%s>" % unsub_link("https://w.dev", "sec", L0, T)
-       and m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click")
+    ck("List-Unsubscribe one-click header", m["List-Unsubscribe"] == "<%s>, <%s>" % (email_links.STOP_MAILTO, unsub_link("https://w.dev", "sec", L0, T))
+       and m["List-Unsubscribe-Post"] is None)
     low = (txt + htm).lower()
     ck("no em or en dash, no hype, no insurance or Farmers First",
        not any(x in txt + htm for x in ("\u2014", "\u2013", "&mdash;", "&ndash;")) and "!" not in txt and

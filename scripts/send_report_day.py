@@ -718,10 +718,10 @@ def _selftest():
     try:
         m = build_email(date(2026, 9, 30), (s, t, h), "a@farm.com", "AGSIST", "sender@example.com", None)
         _h, _t = m.get_body(("html",)).get_content(), m.get_body(("plain",)).get_content()
-        ok("https://w.dev/unsubscribe?k=" + email_links.SAMPLE_LID + "&t=" + email_links.token("sec", email_links.SAMPLE_LID) in _t,
+        ok("https://agsist.com/e?a=unsubscribe&k=" + email_links.SAMPLE_LID + "&t=" + email_links.token("sec", email_links.SAMPLE_LID) in _t,
            "unsubscribe link by link id in the text part")
         ok(not [u for u in email_links.hrefs(_h) if "@" in u or "%40" in u.lower()], "no @ inside any href")
-        ok(not email_links.bad_links(_t) and "@" not in str(m["List-Unsubscribe"]).split(">")[0], "no address in any text link or the header link")
+        ok(not email_links.bad_links(_t) and "@" not in email_links.unsub_web(m), "no address in any text link or the header link")
         LINK_IDS.pop("a@farm.com")
         m = build_email(date(2026, 9, 30), (s, t, h), "a@farm.com", "AGSIST", "sender@example.com", None)
         ok("/unsubscribe?" not in m.get_body(("plain",)).get_content(), "no link id: no signed link, never an address link")
@@ -786,16 +786,16 @@ def _selftest():
     try:
         mo = build_email(date(2026, 9, 30), (s, t, h), "d@farm.com", "AGSIST", "sender@example.com", None)
         bo = mo.get_body(("plain",)).get_content()
-        want = "https://w.dev/notice-unsubscribe?k=" + L1 + "&t=" + email_links.token("sec", L1) + "&topic=reports"
-        ok(mo["List-Unsubscribe"].startswith("<" + want + ">"), "report-only: one-click stops that list: %s" % mo["List-Unsubscribe"])
+        want = "https://agsist.com/e?a=notice-unsubscribe&k=" + L1 + "&t=" + email_links.token("sec", L1) + "&topic=reports"
+        ok(email_links.unsub_web(mo) == want, "report-only: one-click stops that list: %s" % mo["List-Unsubscribe"])
         ok("you asked for the WASDE summary on agsist.com" in bo and "Stop these report emails: " + want in bo
            and "stops AGSIST Daily too" not in bo, "report-only footer")
         ok(not [u for u in email_links.hrefs(mo.get_body(("html",)).get_content()) if "@" in u or "%40" in u.lower()]
-           and not email_links.bad_links(bo) and "@" not in str(mo["List-Unsubscribe"]).split(">")[0],
+           and not email_links.bad_links(bo) and "@" not in email_links.unsub_web(mo),
            "report-only: no address in any link")
         md_ = build_email(date(2026, 9, 30), (s, t, h), "a@farm.com", "AGSIST", "sender@example.com", None)
         bd = md_.get_body(("plain",)).get_content()
-        ok(("/unsubscribe?k=" + L0) in md_["List-Unsubscribe"] and "Unsubscribe (stops AGSIST Daily too): " in bd,
+        ok(("a=unsubscribe&k=" + L0) in md_["List-Unsubscribe"] and "Unsubscribe (stops AGSIST Daily too): " in bd,
            "a Daily reader's footer is as before")
         LINK_IDS.pop("d@farm.com")
         mn = build_email(date(2026, 9, 30), (s, t, h), "d@farm.com", "AGSIST", "sender@example.com", None)

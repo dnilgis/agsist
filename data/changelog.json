@@ -6,6 +6,12 @@
    "date": "2026-10-22",
    "items": [
     {
+     "tag": "improved",
+     "page": "/daily",
+     "name": "Email links open a page on agsist.com",
+     "text": "Unsubscribe, confirm and alert links in our emails now open a page on agsist.com and nothing happens until you press its button. If the service behind it is not answering, the page says so and you can stop the emails by writing to news@agsist.com."
+    },
+    {
      "tag": "fixed",
      "page": "/rain-print",
      "name": "Rain Print crop days stay picked",

@@ -46,6 +46,7 @@ from zoneinfo import ZoneInfo
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 sys.path.insert(0, str(HERE))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 import send_notice as SN               # noqa: E402  transport, render, unsubscribe link, mark
 import build_state_rent_pages as BR    # noqa: E402  state_stats, money, names, release dates
@@ -365,7 +366,7 @@ def selftest():
        "The middle Iowa county paid $260 an acre for non-irrigated cropland, across 5 counties with a published rent, up 4.0% from 2026 in the same 5 counties." in txt, txt[:500])
     ck("highest county", "Highest county: Boone at $300." in txt)
     ck("links the state page", SITE + "/rent/iowa/?" + UTM in txt)
-    ck("unsubscribe stops this topic", "topic=rent%3Aia" in txt and m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click")
+    ck("unsubscribe stops this topic", "topic=rent%3Aia" in txt and m["List-Unsubscribe-Post"] is None)
     ck("no dashes, no hype", not any(x in txt + htm for x in ("—", "–", "&mdash;")) and "!" not in txt)
     mw = SN.render("rent:wi", "", "a@example.com", "https://w.dev", "sec", datetime(2027, 8, 25).date(), "news@agsist.com", None, tmp)
     ck("a release known only by its commit names no date", "for Wisconsin. The middle" in mw.get_body(("plain",)).get_content())
