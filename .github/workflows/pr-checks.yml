@@ -65,14 +65,45 @@ jobs:
       # pdftotext (poppler-utils), as fertilizer-coops.yml installs it: the price sheet
       # reader reads its -layout columns (pypdf is only the fallback), and the
       # fetch_coop_fert.py --selftest case "the PDF itself reads the same" needs it.
-      # ffmpeg (with ffprobe): the Rain Print MP4 writer test decodes its file with it,
-      # and skips without it. A hung apt mirror fails here in minutes, not at the job limit.
-      - name: pdftotext and ffmpeg
-        timeout-minutes: 10
+      - name: pdftotext
+        run: command -v pdftotext || { sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils; }
+
+      # ffmpeg with ffprobe: the Rain Print MP4 writer test decodes its file with it and
+      # skips without it (and a skip fails these checks). Apt hung past 10 minutes on two
+      # runs (Oct 22), so the .debs are kept in the cache per runner image and put in with
+      # dpkg: a cache hit needs no network and no apt. A miss downloads them once, each
+      # phase bounded and timestamped. Any failure stops here, loudly.
+      - name: runner image
+        id: image
+        run: echo "id=${ImageOS:-unknown}-${ImageVersion:-unknown}" >> "$GITHUB_OUTPUT"
+      - name: Cache the ffmpeg packages
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4.2.3
+        with:
+          path: ~/ffmpeg-debs
+          key: ffmpeg-debs-${{ steps.image.outputs.id }}-v1
+      - name: ffmpeg
+        timeout-minutes: 8
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
-          # the man-db trigger alone takes minutes on these runners; nothing here reads man pages
-          command -v pdftotext && command -v ffprobe || { sudo rm -f /var/lib/man-db/auto-update; sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends poppler-utils ffmpeg; }
-          ffprobe -version | head -1
+          set -euo pipefail
+          t(){ echo "$(date -u +%T) $*"; }
+          D="$HOME/ffmpeg-debs"
+          APT=(-o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o DPkg::Lock::Timeout=120)
+          if ! command -v ffprobe >/dev/null; then
+            if ! ls "$D"/*.deb >/dev/null 2>&1; then
+              t "cache miss: apt-get update"
+              sudo -E timeout 180 apt-get "${APT[@]}" update -q < /dev/null
+              t "download ffmpeg and what it needs on this image"
+              mkdir -p "$D/partial"
+              sudo -E timeout 240 apt-get "${APT[@]}" install -y -q --no-install-recommends --download-only -o Dir::Cache::archives="$D" ffmpeg < /dev/null
+              sudo rm -rf "$D/partial" "$D/lock"; sudo chown -R "$(id -u):$(id -g)" "$D"
+            fi
+            t "install $(ls "$D"/*.deb | wc -l) packages with dpkg"
+            sudo rm -f /var/lib/man-db/auto-update
+            sudo -E timeout 240 dpkg -i "$D"/*.deb < /dev/null > /dev/null
+          fi
+          t "$(ffprobe -version | head -1)"
 
       # The elevator desk and chaos-fix browser tests read the bids data
       # (dnilgis/bids, public) at BIDS_PATH, as they read the local clone beside
