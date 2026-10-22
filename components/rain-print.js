@@ -182,7 +182,8 @@
      ghost: the same crop on a usual year's temperatures; hist: every full year the station kept, behind the
      year (Staircase); frost: the last and first frost marked on the date line; heat: the hottest and coldest
      day in the foot line; ribbon: each day's high and low in a thin band. A new design starts with frost and
-     heat on (the page and a hand-written link); a code or tool link made before them opens as it was made. */
+     heat on (the page and a hand-written link); a code or tool link made before them opens as it was made.
+     Since 2026-10-22 (Sig) a new design also starts with ribbon and hist on; codes and tool links still open as made. */
   var CROP_KEYS = { corn: 'c', soy: 's' }, CROP_R = { c: 'corn', s: 'soy' }, OPT_FLAGS = ['plants', 'ghost', 'hist', 'frost', 'heat', 'ribbon'], OPT_LETTER = 'pghftr';
   function flag(v) { return v === true || v === '1' || v === 1; }
   // a stored logo's id (subs worker v5.23): 12 characters of lowercase Crockford base32
@@ -802,8 +803,9 @@
       style: q.get('style'), dedication: q.get('dedication'), normals: dflt('normals', cmp === 'normal'), records: dflt('records', true),
       logo: q.get('logo'), logoInk: q.get('logoInk'), units: q.get('u'), lang: q.get('lang'),
       // the options: a hand link gets a new visitor's frost marks and hottest and coldest day; a tool link as it was made
-      crop: q.get('crop'), cropPlant: q.get('plant'), cropHarvest: q.get('harvest'), plants: q.get('plants'), ghost: q.get('ghost'), hist: q.get('hist'),
-      frost: dflt('frost', true), heat: dflt('heat', true), ribbon: q.get('ribbon') });
+      crop: q.get('crop'), cropPlant: q.get('plant'), cropHarvest: q.get('harvest'), plants: q.get('plants'), ghost: q.get('ghost'),
+      // (Sig, 2026-10-22: every layer on by default) a hand link also gets the daily temperature stripes and every year behind
+      frost: dflt('frost', true), heat: dflt('heat', true), ribbon: dflt('ribbon', true), hist: dflt('hist', true) });
   }
   // URLSearchParams leaves * as it is, and the worker's design_url rule has no * (2026-10-14, panel 3)
   function designUrl(x) { return SITE + '?' + String(toParams(x)).replace(/\*/g, '%2A'); }
@@ -5253,7 +5255,10 @@
      print to display the remarkable days on page load"); the print at the top
      wears the example words until the reader does something. A design from a
      link comes in as it was made. */
-  if (!ST.place) { ST.cmp = 'normal'; ST.normals = true; ST.records = true; ST.frost = true; ST.heat = true; SHOW_EX = !PAID; }
+  /* Every layer on (Sig, 2026-10-22: "show by default all options such as hi low temp, temp, historical lines on
+     staircase"): the daily temperature stripes (which name the hottest and coldest day) and every year behind yours
+     join them. The crop and its plants need the reader's planting and harvest days, so they wait for those. */
+  if (!ST.place) { ST.cmp = 'normal'; ST.normals = true; ST.records = true; ST.frost = true; ST.heat = true; ST.ribbon = true; ST.hist = true; SHOW_EX = !PAID; }
   writeInputs(ST);
   // what this browser still owes Sig from a press while the worker was out (the outbox, a kept logo) goes now
   root.setTimeout(function () { outboxFlush(); logoFlush(); }, 1500);
