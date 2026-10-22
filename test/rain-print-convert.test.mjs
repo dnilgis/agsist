@@ -157,9 +157,7 @@ test("a phone buyer sees the date it should arrive by the button, per product", 
     await page.locator('.rp-prod[data-choice="print12x18"]').click();
     // the line updates after the click; read it once it has (twice in CI on Oct 22 it was read a moment early)
     await page.waitForFunction(() => document.getElementById("rp-arrive").textContent === "Order by Dec 10 for Christmas delivery.", null, { timeout: 5000 }).catch(() => {});
-    // if it still has not, say what the page was in (which radio is checked, any page error) so a CI-only miss can be read
-    const state = await page.evaluate(() => [...document.querySelectorAll('input[name="rp-product"]')].map((r) => r.value + (r.checked ? "*" : "") + (r.disabled ? "(off)" : "")).join(" "));
-    assert.equal(await page.textContent("#rp-arrive"), "Order by Dec 10 for Christmas delivery.", "radios: " + state + "; page errors: " + JSON.stringify(errors));
+    assert.equal(await page.textContent("#rp-arrive"), "Order by Dec 10 for Christmas delivery.");
     assert.equal(await page.textContent("#rp-arrive-est"), "Ordered today, it should arrive by about Wednesday, Oct 28.");
     await page.locator('.rp-prod[data-choice="digital"]').click();
     assert.equal(await page.isVisible("#rp-arrive"), false, "the file has no mail date");
