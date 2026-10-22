@@ -1,7 +1,18 @@
 {
- "updated": "2026-10-21",
+ "updated": "2026-10-22",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-22",
+   "items": [
+    {
+     "tag": "fixed",
+     "page": "/rain-print",
+     "name": "Rain Print orders go through when our order service is down",
+     "text": "Pay now always opens checkout, even when the service that saves designs and logos is not answering. Your design goes with the payment, and a logo that can't be saved yet is kept on your device and sent on your next visit."
+    }
+   ]
+  },
   {
    "date": "2026-10-21",
    "items": [
