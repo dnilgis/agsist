@@ -429,7 +429,7 @@ F_PRICES = dedupe([it[:3] for it in flat(PRICES)] + [("/usda-quick-stats", "USDA
                                                       ("/scorecard", "Prediction bot", "i-clipboard-check"),
                                                       ("/elevators", "For elevators", "i-warehouse")])
 F_LIVE = [it[:3] for it in flat(LIVESTOCK)]
-F_FIELD = dedupe([it[:3] for it in flat(FIELD)] + [("/fast-facts", "Fast Facts reference tables", "i-book-open")])
+F_FIELD = dedupe([it[:3] for it in flat(FIELD)] + [("/fast-facts", "Fast Facts", "i-book-open")])
 F_MONEY = dedupe([it[:3] for it in flat(MONEY)] + [("/foreign-land", "Foreign-owned land", "i-landmark")])
 F_WORK = [("/sponsor", "Advertise", "i-chart-column"),
           ("/rain-print-business", "Rain Print for business", "i-cloud-rain"),

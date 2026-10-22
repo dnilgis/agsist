@@ -137,7 +137,7 @@ LINES = {
     "drought-monitor": ("Drought", "This week's US Drought Monitor map, and what each category means for crops."),
     "elevators": ("Elevators", "Every elevator we track, and how to claim and post your own bids."),
     "farmland-atlas": ("Farmland Atlas", "Land value, rent, heat, water and risk for every county on one map."),
-    "fast-facts": ("Fast Facts", "N rates, P and K, manure, crop removal, growth stages and thresholds."),
+    "fast-facts": ("Fast Facts", "Bids, basis, rain, rent and land value for your ZIP, plus the farm reference tables."),
     "fall-nitrogen": ("Fall nitrogen", "Soil at 4 inches near your county, against the 50 degree line."),
     "field-scout": ("Field Scout", "Draw a field: soils, crop history, weather, drought and cash bids nearby."),
     "foreign-land": ("Foreign-held land", "Who owns US farmland from abroad, county by county, from USDA."),
