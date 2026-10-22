@@ -3030,7 +3030,8 @@
   // "<b>Cameron, WI (2 mi NE of Cameron)</b>, 3.1 mi from Chetek (NOAA co-op station 471667)"
   // and, when the pick traded miles for a snowfall record (or looked and found none): "Picked over a gauge 1.9 mi away because it records snowfall too."
   function gaugeHtml(m) {
-    var w = pickWhy(m.why, m.year);
+    // the nearest station also has the years: nothing to explain (2026-10-22, Sig: no long paragraph about it)
+    var w = m.why && m.why.long && !m.why.long.over && !m.ca ? '' : pickWhy(m.why, m.year);
     if (m.ca && CA()) {
       var lg = LOC().lang, fr = lg === 'fr';
       w = !m.why ? '' : m.why.over && m.why.over.fuller ? (fr ? 'Choisie plutôt qu’une station à ' : 'Picked over a station ') + CA().kmText(m.why.over.km, lg) +
@@ -3048,7 +3049,8 @@
      one short plain line): "Weather from Bloomer, 17 mi: the nearest station with 30+ years of records, so every past
      year can be drawn. Use the nearer Chetek gauge (11 mi)". The last part is a button: it turns every year behind
      off and draws from the station the page picks without it (named once that is known, read in the background). */
-  function isLongPick(m) { return !!(m && !m.ca && m.why && m.why.long); }
+  // only when the long record passed a nearer station; the nearest station that also has the years reads as any other
+  function isLongPick(m) { return !!(m && !m.ca && m.why && m.why.long && m.why.long.over); }
   function nearWords(n) {
     if (!n) return 'Use the nearer station';
     var nm = stationParts(n.name).name || stationName(n.name);
@@ -3070,7 +3072,7 @@
     var L0 = m.why.long;
     return 'Weather from <b>' + esc(stationParts(m.name).name || stationName(m.name)) + '</b>, ' + esc(milesText(miles(m.km))) + ': the nearest station with ' + HIST_MIN +
       '+ years of records, so every past year can be drawn.' +
-      (L0.over || L0.near ? ' <button type="button" class="rp-linkbtn rp-near" id="rp-near">' + esc(nearWords(L0.near)) + '</button>' : '');
+      (L0.over ? ' <button type="button" class="rp-linkbtn rp-near" id="rp-near">' + esc(nearWords(L0.near)) + '</button>' : '');
   }
   /* The credit a Canadian print carries on the page (ECCC Data Servers End-use Licence, section 3). */
   function caCredit() {
