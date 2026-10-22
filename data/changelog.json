@@ -241,7 +241,7 @@
     },
     {
      "tag": "fixed",
-     "page": "/status",
+     "page": "/",
      "name": "Hail feed timestamp survives the monthly rebuild",
      "text": "On the first of each month the hail data rebuild rewrote its manifest without the recent-reports timestamp the status page reads, so the hail feed showed no refresh time for a day and the feed check went red. The rebuild now carries the timestamp."
     }
@@ -1151,7 +1151,7 @@
     },
     {
      "tag": "new",
-     "page": "/status",
+     "page": "/",
      "name": "System Status",
      "text": "Live health check of every AGSIST data feed (grain prices, cash bids, the briefing, weather, hail) tested in your own browser when the page loads, so the status page itself can never go stale."
     },

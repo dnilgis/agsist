@@ -743,41 +743,24 @@ function initStages(){
 
 /* ─── STATE STATS ─────────────────────────────────────────────────── */
 var stateInited=false;
-var stateData={};
+var NO_YIELD_PAGE='AK CT HI ME MA NH RI VT';   // no /yield/<state> page (components/place.js NO_PAGE.yield)
 var STATE_NAMES={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
 function initStateStats(){
+  /* Crop size by state lives on /yield/<state> and /usda-quick-stats (the same USDA NASS file,
+     data/state-stats.json); this tab only points there, so the numbers are kept in one place (Oct 22). */
   if(stateInited)return;
   stateInited=true;
-  var sel=document.getElementById('ff-state-select');
+  var sel=document.getElementById('ff-state-select'),content=document.getElementById('state-content');
   var mine=savedState();
   if(sel&&mine&&sel.querySelector('option[value="'+mine+'"]'))sel.value=mine;
-  var activeState=(sel&&sel.value)||'IA';
-  function renderState(code){
-    var content=document.getElementById('state-content');if(!content)return;
-    var s=stateData&&stateData[code];
-    if(!s){content.innerHTML='<div style="grid-column:1/-1;color:var(--text-muted);font-size:.84rem;line-height:1.7;padding:1rem 0">Per-state corn, soybean &amp; wheat detail for <strong style="color:var(--text)">'+(STATE_NAMES[code]||code)+'</strong>, acreage, yield, and production: is in the USDA NASS database, the authoritative national source. <a href="https://quickstats.nass.usda.gov/" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;white-space:nowrap">Open USDA NASS Quick Stats &rarr;</a></div>';return;}
-    var safe=function(v,u){return v!=null?v+(u?u:''):'-';};
-    content.innerHTML='<div class="ff-shdr"><div><div class="ff-sname">'+s.name+'</div><div class="ff-smeta">'+s.meta+'</div></div></div>'
-      +'<div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="ff-card-title rp corn">Corn</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Planted</span><span class="ff-rv">'+safe(s.corn_acres_planted,' M ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Harvested</span><span class="ff-rv">'+safe(s.corn_acres_harvested,' M ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Yield</span><span class="ff-rv gold">'+safe(s.corn_yield,' bu/ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv">'+safe(s.corn_prod,' M bu')+'</span></div></div>'
-      +'<div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></span><span class="ff-card-title rp beans">Soybeans</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Planted</span><span class="ff-rv">'+safe(s.bean_acres_planted,' M ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Harvested</span><span class="ff-rv">'+safe(s.bean_acres_harvested,' M ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Yield</span><span class="ff-rv gold">'+safe(s.bean_yield,' bu/ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv">'+safe(s.bean_prod,' M bu')+'</span></div></div>'
-      +(s.wheat_yield?'<div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span><span class="ff-card-title rp wheat">Winter Wheat</span></div>'
-      +(s.wheat_meta&&s.wheat_meta!==s.meta?'<div class="ff-row"><span class="ff-rl" style="font-size:.74rem">'+s.wheat_meta+'</span></div>':'')
-      +'<div class="ff-row"><span class="ff-rl">Yield</span><span class="ff-rv gold">'+safe(s.wheat_yield,' bu/ac')+'</span></div>'
-      +'<div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv">'+safe(s.wheat_prod,' M bu')+'</span></div></div>':'');
+  function show(code){
+    if(!content)return;
+    var name=STATE_NAMES[code]||code,page=NO_YIELD_PAGE.indexOf(code)<0;
+    var href=page?'/yield/'+name.toLowerCase().replace(/ /g,'-'):'/usda-quick-stats';
+    content.innerHTML='<p class="ff-sub" style="grid-column:1/-1"><a href="'+href+'">'+(page?name+' corn, soybean and wheat yield by year':'Corn, soybean and wheat by state ('+name+' is in the USDA NASS state list there)')+' &rarr;</a></p>';
   }
-  fetch('/data/state-stats.json').then(function(r){return r.ok?r.json():null;}).then(function(data){
-    if(data&&data.stateStats)stateData=data.stateStats;
-    renderState(activeState);
-  }).catch(function(){renderState(activeState);});
-  if(sel){sel.addEventListener('change',function(){activeState=sel.value;renderState(activeState);});}
+  show((sel&&sel.value)||'IA');
+  if(sel)sel.addEventListener('change',function(){show(sel.value);});
 }
 
 })();
