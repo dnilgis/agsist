@@ -76,10 +76,14 @@ test("the frame: only what Sig has said, no made-up sizes", () => {
 
 test("R2: the year-in-numbers FAQ makes sense before anything is drawn", () => {
   assert.ok(!/Under More options, The year in numbers shows/.test(HTML), "the old wording is gone, page and structured data");
-  assert.match(HTML, /<details><summary>Can I see the year&rsquo;s total for free\?<\/summary><p>Yes\. Drawing it is free and so are the numbers\. Once your year is drawn, open More options, then The year in numbers\. It shows the year&rsquo;s rain/);
-  assert.match(HTML, /"text": "Yes\. Drawing it is free and so are the numbers\. Once your year is drawn, open More options, then The year in numbers\. It shows the year’s rain/);
-  // the panel it names is where it says: under More options, shown once a year is drawn
+  // 2026-10-22: More options is gone (the Layers card); The year in numbers sits under Your words
+  assert.match(HTML, /<details><summary>Can I see the year&rsquo;s total for free\?<\/summary><p>Yes\. Drawing it is free and so are the numbers\. Once your year is drawn, open The year in numbers, under Your words\. It shows the year&rsquo;s rain/);
+  assert.match(HTML, /"text": "Yes\. Drawing it is free and so are the numbers\. Once your year is drawn, open The year in numbers, under Your words\. It shows the year’s rain/);
+  // the panel it names is where it says: in the Your words step, shown once a year is drawn
   assert.match(HTML, /<details class="rp-stats-d"><summary>The year in numbers<\/summary>/);
+  const words = HTML.indexOf('id="rp-design"'), stats = HTML.indexOf('class="rp-stats-d"');
+  assert.ok(words > 0 && stats > words && stats < HTML.indexOf('id="rp-buy"'), "under Your words");
+  assert.ok(!/More options/.test(HTML.replace(/<style>[\s\S]*?<\/style>/g, "")), "nothing names More options any more");
 });
 
 test("Christmas cutoffs: the data file agrees with a hand count, and the slack is zero (reported, dates unchanged)", () => {

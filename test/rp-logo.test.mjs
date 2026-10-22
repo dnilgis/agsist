@@ -192,10 +192,11 @@ test("exports carry the logo at full resolution: the same data URL, inside the p
 // ---------- the page ----------
 test("the page: the upload under the name, its help line, the color switch, the proof row, orders, quote form", () => {
   const H = read("rain-print.html"), E = read("components/rain-print.js");
-  // 2026-10-14 (the approved flow): the logo is one of the folded options under "More options", after the words
-  assert.ok(H.indexOf('id="rp-ded"') < H.indexOf('class="rp-dates"') && H.indexOf('class="rp-dates"') < H.indexOf('id="rp-more"') && H.indexOf('id="rp-more"') < H.indexOf('id="rp-logo"'), "in More options, after the name, the line and the days");
-  // (2026-10-17: crop, temperatures and history joined the list)
-  assert.match(H, /<summary>More options: compare, station, normals, remarkable days, crop, temperatures, history, logo<\/summary>/);
+  // 2026-10-22 (the layout rebuild): the logo is in Your words, open, after the name, the line and the days; the preview,
+  // the link and the numbers fold under it
+  assert.ok(H.indexOf('id="rp-ded"') < H.indexOf('class="rp-dates"') && H.indexOf('class="rp-dates"') < H.indexOf('id="rp-logo"') && H.indexOf('id="rp-logo"') < H.indexOf('id="rp-more"'), "in Your words, after the name, the line and the days");
+  assert.ok(H.indexOf('id="rp-design"') < H.indexOf('id="rp-logo"') && H.indexOf('id="rp-logo"') < H.indexOf('id="rp-buy"'));
+  assert.match(H, /<summary>Preview, link and the year in numbers<\/summary>/);
   assert.match(H, />Add a logo \(optional\)</);
   assert.match(H, /Your farm or business logo\. It prints small, next to the name\. A big, clear file prints best\./);
   assert.match(H, /value="1" checked><span>Ink color<\/span>/);

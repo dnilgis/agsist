@@ -607,8 +607,10 @@ test("outside review, as Sig took it: example years, the framed choice first, th
   // 2026-10-20 (Sig, "do all"): under Pay, the date line, then the promise: numbered, and Sig's guarantee (test/rain-print-conv.test.mjs)
   assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<!--[\s\S]*?-->\s*<p class="rp-arrive" id="rp-arrive" hidden><\/p>\s*<p class="rp-promise" id="rp-promise">Numbered and initialed by hand\. If it&rsquo;s not right, I&rsquo;ll redo it or refund it\.<\/p>/);
   assert.match(S2, /'You see a proof first\. ' \+ GUARANTEE/, "the file gets the proof email too (2026-10-20)");
-  assert.match(HTML, /<select id="rp-cmp" aria-describedby="rp-cmp-hint">/);
-  assert.match(HTML, /id="rp-cmp-hint">Nothing: just your year\. NOAA normal: [^<]+Full record: /);
+  // 2026-10-22: the comparison is the Usual year switch in the Layers card (Off, 30-yr normal, This station); what each
+  // means is in Questions
+  assert.match(HTML, /<input type="radio" name="rp-cmp" value="none"><span>Off<\/span><\/label><label><input type="radio" name="rp-cmp" value="normal" checked><span>30-yr normal<\/span><\/label><label><input type="radio" name="rp-cmp" value="station"><span>This station<\/span>/);
+  assert.match(HTML, /Usual year draws a usual year beside yours: NOAA&rsquo;s 30-year normal, or this station&rsquo;s own average over every year it has kept\./);
   assert.ok(HTML.indexOf('id="rp-biz"') > HTML.indexOf('id="rp-buy"'), "the business section stays below the personal flow");
   assert.equal((HTML.match(/name="rp-style"/g) || []).length, 2, "two styles only");
 });

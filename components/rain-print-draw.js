@@ -967,7 +967,7 @@
   var CSS = '.rpd-host{position:relative}.rpd-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:3;background:transparent}' +
     '.rpd-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .6rem;margin:.6rem auto 0;max-width:680px;font-size:var(--fs-xs,.85rem);line-height:1.45}' +
     '.rpd-bar .rpd-say{flex:1 1 100%;margin:0;color:inherit;opacity:.85}.rpd-bar .rpd-fmt{display:inline-flex;gap:.3rem;flex-wrap:wrap}' +
-    '.rpd-bar label{display:inline-flex;align-items:center;gap:.3rem;cursor:pointer}.rpd-bar .rpd-wind{opacity:.9}' +
+    '.rpd-bar label{display:inline-flex;align-items:center;gap:.3rem;cursor:pointer}.rpd-bar .rpd-wind input{margin:0}.rpd-bar .rpd-close{margin-left:auto}' +
     '.rpd-bar button{min-height:40px}.rpd-prog{display:block;width:100%;height:4px;border-radius:2px;background:color-mix(in srgb,currentColor 20%,transparent);overflow:hidden}' +
     '.rpd-prog i{display:block;height:100%;width:0;background:currentColor}.rpd-hide{display:none!important}';
   function addCss() { if (doc.getElementById('rpd-css')) return; var s = doc.createElement('style'); s.id = 'rpd-css'; s.textContent = CSS; doc.head.appendChild(s); }
@@ -996,8 +996,9 @@
       if (!j) r.checked = true;
       lab.appendChild(r); lab.appendChild(doc.createTextNode(FORMATS[k].label)); fmtBox.appendChild(lab);
     });
-    var windLab = el('label', { class: 'rpd-wind' }), windBox = el('input', { type: 'checkbox' });
-    windLab.appendChild(windBox); windLab.appendChild(doc.createTextNode(' Wind (modeled)'));
+    /* Wind is the video's alone (2026-10-22, Sig): a labeled on/off chip that says so; the print never draws it */
+    var windLab = el('label', { class: 'chip rpd-wind', title: 'Each day\u2019s strongest gust, modeled, not measured. In the video only, never on the print.' }), windBox = el('input', { type: 'checkbox' });
+    windLab.appendChild(windBox); windLab.appendChild(doc.createTextNode(' Wind, video only'));
     if (!isFinite(+src.lat) || !isFinite(+src.lon)) windLab.classList.add('rpd-hide');
     var make = el('button', { type: 'button', class: 'chip rpd-make' }, 'Make a video');
     var share = el('button', { type: 'button', class: 'chip rpd-share rpd-hide' }, 'Share video');
@@ -1006,7 +1007,8 @@
     var shut = el('button', { type: 'button', class: 'chip rpd-close', 'aria-label': 'Close the video and show the print' }, 'Done');
     var prog = el('span', { class: 'rpd-prog rpd-hide', 'aria-hidden': 'true' }), progI = el('i');
     prog.appendChild(progI);
-    [say, replay, fmtBox, windLab, make, share, save, still, shut, prog].forEach(function (x) { bar.appendChild(x); });
+    // the buttons first, in one row where the print's own buttons were: Replay, Wind, Make a video, Done
+    [replay, windLab, make, shut, fmtBox, share, save, still, prog, say].forEach(function (x) { bar.appendChild(x); });
     after.parentNode.insertBefore(bar, after.nextSibling);
     var me = { host: host, cv: cv, bar: bar, S: null, raf: 0, file: null, busy: false, src: src, from: o.from || 'page' };
     CUR = me;
@@ -1141,7 +1143,9 @@
       var RP2 = root.RainPrint, s = RP2 && RP2.drawInput && RP2.drawInput();
       if (!s) return;
       var wall = doc.getElementById('rp-wall');
-      open(s, { host: art, after: wall, from: 'page', getSrc: function () { return RP2.drawInput(); } });
+      var me = open(s, { host: art, after: wall, from: 'page', getSrc: function () { return RP2.drawInput(); } });
+      // while it plays, the video's buttons take the place of the print's own (Style, Watch it draw, Up close)
+      if (me && wall) { wall.classList.add('rp-watching'); me.onClose = function () { wall.classList.remove('rp-watching'); }; }
     });
     if (RP && !RP.drawVideo) RP.drawVideo = function () { b.click(); };
   }

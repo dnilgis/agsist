@@ -245,13 +245,16 @@ test("one picker, framed first: the button, the print's look, the phone bar and 
     await page.locator("#rp-pay").scrollIntoViewIfNeeded();
     await settle(page);
     assert.equal(await page.isVisible("#rp-bar"), false, "no bar while the step 3 button shows");
-    // the slim copy pins under the menu, and a focused box stays below it
+    // the print itself stays pinned under the menu while the steps scroll (2026-10-22, the layout rebuild: it replaces
+    // the slim copy), and a focused box is never under it
     await page.evaluate(() => window.scrollTo(0, document.getElementById("rp-design").getBoundingClientRect().top + scrollY - 40));
     await settle(page);
-    assert.equal(await page.isVisible("#rp-strip"), true, "the print pins under the menu once it scrolls away");
+    const pin = await page.evaluate(() => { const a = document.getElementById("rp-art").getBoundingClientRect(), n = document.querySelector(".nav").getBoundingClientRect().bottom; return { top: Math.round(a.top - n), bottom: Math.round(a.bottom) }; });
+    assert.ok(pin.top >= 0 && pin.top < 40 && pin.bottom < 844, "the print is pinned under the menu: " + JSON.stringify(pin));
     await page.focus("#rp-ded");
     await settle(page);
-    const gap = await page.evaluate(() => document.getElementById("rp-ded").getBoundingClientRect().top - document.getElementById("rp-strip").getBoundingClientRect().bottom);
+    const gap = await page.evaluate(() => { const d = document.getElementById("rp-ded").getBoundingClientRect(), st = document.getElementById("rp-strip"), pv = document.getElementById("rp-pv").getBoundingClientRect();
+      const over = !st.hidden ? st.getBoundingClientRect().bottom : pv.bottom > 0 && pv.top < d.top ? pv.bottom : 0; return Math.round(d.top - over); });
     assert.ok(gap >= 0, "the focused box is below the pinned print (" + gap + " px)");
     await shot(page, "strip-390-" + theme);
     await page.evaluate(() => document.activeElement.blur());

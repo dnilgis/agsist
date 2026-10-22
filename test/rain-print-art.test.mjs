@@ -392,13 +392,14 @@ test("the page offers the two styles, the dedication and both switches, and load
   assert.match(html, /name="rp-style" value="r2"><span>Roots</);
   assert.ok(html.indexOf('name="rp-style"') < html.indexOf('id="rp-status"'), "the style picker sits with the first controls");
   assert.match(html, new RegExp(`id="rp-ded" type="text" maxlength="${RP.LIMITS.dedication}"`));
-  assert.match(html, /id="rp-normals"[^>]*><span>Show the 30-year normals</);
-  assert.match(html, /id="rp-records"[^>]*><span>Show remarkable days</);
+  // the two switches are chips in the Layers card since the layout of 2026-10-22
+  assert.match(html, /id="rp-normals"[^>]*><span>Month normals</);
+  assert.match(html, /id="rp-records"[^>]*><span>Remarkable days</);
   assert.ok(!/name="rp-layout"|name="rp-pal"/.test(html), "the old layout and color pickers are gone");
   const i = (s) => html.indexOf(s);
   assert.ok(i("/components/rp-short.js") > 0 && i("/components/rain-print-art.js") > 0);
   assert.ok(i("/components/rp-short.js") < i("/components/rain-print.js?v=") && i("/components/rain-print-art.js") < i("/components/rain-print.js?v="));
-  assert.match(html, /\/components\/rain-print\.js\?v=67"/);
+  assert.match(html, /\/components\/rain-print\.js\?v=68"/);
   for (const f of ["rp-fraunces-opsz.woff2", "rp-fraunces-opsz-400i.woff2", "rp-plex-sans-var.woff2", "rp-plex-sans-400i.woff2"]) {
     assert.ok(html.includes("/fonts/" + f), "the page declares " + f);
     assert.ok(readFileSync(ROOT + "components/rain-print.js", "utf8").includes("/fonts/" + f), "and the export inlines " + f);

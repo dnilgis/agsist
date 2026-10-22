@@ -7,6 +7,12 @@
    "items": [
     {
      "tag": "improved",
+     "page": "/rain-print",
+     "name": "Rain Print: every layer one tap away, with the print in view",
+     "text": "The print stays on screen while you change it. The layers are one card of on and off switches, a greyed one says why, and a line under the print says what your last tap changed. The crop's planting and harvest days are set right in the crop row."
+    },
+    {
+     "tag": "improved",
      "page": "/daily",
      "name": "Email links open a page on agsist.com",
      "text": "Unsubscribe, confirm and alert links in our emails now open a page on agsist.com and nothing happens until you press its button. If the service behind it is not answering, the page says so and you can stop the emails by writing to news@agsist.com."
