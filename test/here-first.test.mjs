@@ -223,14 +223,16 @@ test("its own history: real rows are too new to compare; the kinds on a hand-bui
   assert.equal(P.basisHistory(m, "WI|COOP X|CHETEK", "corn", "ZCZ26", "NOV26", 392, "2026-10-19").status, "none");
 });
 
-test("a real shard path from the bids index answers: data/ + the index's shard field", { skip: !existsSync("/home/user/bids/data/merged-index.json") && "no bids checkout here" }, () => {
-  const idx = JSON.parse(readFileSync("/home/user/bids/data/merged-index.json", "utf8"));
+// the bids checkout: BIDS_PATH in CI (pr-checks.yml clones dnilgis/bids data there), the local clone otherwise
+const BIDS = (process.env.BIDS_PATH || "/home/user/bids/").replace(/\/?$/, "/");
+test("a real shard path from the bids index answers: data/ + the index's shard field", { skip: !existsSync(BIDS + "data/merged-index.json") && "no bids checkout at " + BIDS }, () => {
+  const idx = JSON.parse(readFileSync(BIDS + "data/merged-index.json", "utf8"));
   assert.equal(idx.shards.dir, "data/merged");
   const withShard = idx.places.filter((p) => p.shard);
   assert.ok(withShard.length > 100);
   for (const p of withShard.slice(0, 25)) {
     assert.match(p.shard, /^merged\/[a-z0-9][a-z0-9._-]{0,160}\.json$/i);
-    if (!idx.shards.orphaned.includes(p.shard.slice(7))) assert.ok(existsSync("/home/user/bids/data/" + p.shard), "data/" + p.shard + " is on disk");
+    if (!idx.shards.orphaned.includes(p.shard.slice(7))) assert.ok(existsSync(BIDS + "data/" + p.shard), "data/" + p.shard + " is on disk");
   }
 });
 
