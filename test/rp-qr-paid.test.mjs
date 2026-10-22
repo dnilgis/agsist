@@ -368,12 +368,22 @@ test("checkout: no short link for a design that fits; one, at the press, for a l
   await withPage(async (page, base, errors, log) => {
     await page.goto(base + "/rain-print.html?d=" + LONG_CODE);
     await drawn(page);
+    /* the order form must never open on the way to Stripe: watched on the page itself from before the press
+       (once the tab is on Stripe's page there is no #rp-order to look at) */
+    const opened = [];
+    await page.exposeFunction("rpOrderOpened", () => opened.push(1));
+    assert.equal(await page.evaluate(() => {
+      const el = document.getElementById("rp-order");
+      if (!el) return false;
+      new MutationObserver(() => { if (!el.hidden) window.rpOrderOpened(); }).observe(el, { attributes: true, attributeFilter: ["hidden"] });
+      return el.hidden;
+    }), true, "the order form is there and closed before the press");
     const r = await checkout(page, "print12x18", { wait: 10000 });
     assert.equal(r.stage, "stripe", JSON.stringify(r));
     assert.equal(log.posts, 1, "at most one short-link ask");
     assert.equal(refOf(r.url), RP.hashRef(LONG_CODE, false), "a reference Stripe takes, naming exactly this design");
     assert.ok(refOf(r.url).length <= 200);
-    assert.equal(await page.evaluate(() => document.getElementById("rp-order").hidden), true, "no order form");
+    assert.equal(opened.length, 0, "no order form on the way to Stripe");
     assert.deepEqual(errors, []);
   }, { short: "fail" });
 });
