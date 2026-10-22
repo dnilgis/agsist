@@ -232,7 +232,12 @@ class Sources:
         if not (self.list_base and self.list_token):
             raise LookupError("no LIST_URL / LIST_TOKEN")
         url = "%s/%s%s" % (self.list_base, path, ("?" + urllib.parse.urlencode(q)) if q else "")
-        return self._get(url, {"Authorization": "Bearer %s" % self.list_token})
+        # 2026-10-22: scripts/list_source.py: /count, /list and the other list
+        # routes come from the private copy when the worker is blocked; the
+        # rest raise list_source.Blocked and their section says not read.
+        import list_source
+        return list_source.request("GET", url, None, {"User-Agent": "agsist-morning-report",
+                                                      "Authorization": "Bearer %s" % self.list_token})
 
     def url_json(self, url):
         return self._get(url, {})
@@ -574,6 +579,15 @@ def sec_signups(src, now, rep, snap):
             ms = int(now.timestamp() * 1000)
             ts = [r.get("ts") for r in rows if isinstance(r, dict) and isinstance(r.get("ts"), (int, float))]
             joins = (sum(1 for t in ts if t >= ms - FD.DAY_MS), sum(1 for t in ts if t >= ms - 7 * FD.DAY_MS))
+    except Exception:                                      # noqa: BLE001
+        pass
+    try:
+        import list_source
+        if list_source.mode() == "backup" and isinstance(src, Sources):
+            lines.append("The subs worker is blocked: these counts are from the private copy of the list taken %s. "
+                         "Signups made on the site while it is down go to the Formspree backup (your inbox, subject "
+                         "\"AGSIST signup (worker down)\"); they are kept there and get no email until they are added "
+                         "and confirmed." % (list_source.STATE.get("taken") or "?"))
     except Exception:                                      # noqa: BLE001
         pass
     if cur is not None:

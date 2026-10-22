@@ -27,7 +27,8 @@ gets the same rows from whichever place answers.
 
 WHEN THE WORKER COUNTS AS BLOCKED (and only then is the copy used):
   * no answer: DNS, refused, reset, TLS, timeout
-  * an HTTP error whose body is not JSON (the Cloudflare block page)
+  * an HTTP error whose body is an HTML page (the Cloudflare block page),
+    or a 5xx whose body is not JSON
   * a 200 whose body is an HTML page
 A JSON error from a working worker ({"ok":false} on a bad token, a 400) is
 a real error and is raised as before: those must still fail the run.
@@ -194,9 +195,11 @@ def worker_text(method, url, body=None, headers=None, timeout=30):
             raw = ex.read().decode("utf-8", "replace")
         except Exception:                                   # noqa: BLE001
             raw = ""
-        if raw.strip() and _is_json(raw):
-            raise urllib.error.HTTPError(ex.url, ex.code, ex.msg, ex.hdrs, io.BytesIO(raw.encode()))
-        raise Blocked("HTTP %d, not JSON: %s" % (ex.code, first_line(raw)))
+        # an HTML page (the Cloudflare block page) or a 5xx that is not ours: blocked.
+        # JSON, or an empty 4xx, is the worker itself answering: raised as it is.
+        if raw.lstrip()[:1] == "<" or (ex.code >= 500 and not _is_json(raw)):
+            raise Blocked("HTTP %d, not JSON: %s" % (ex.code, first_line(raw)))
+        raise urllib.error.HTTPError(ex.url, ex.code, ex.msg, ex.hdrs, io.BytesIO(raw.encode()))
     except (urllib.error.URLError, socket.timeout, TimeoutError, ConnectionError,
             http.client.HTTPException, ssl.SSLError) as ex:
         raise Blocked("no answer (%s)" % type(ex).__name__)

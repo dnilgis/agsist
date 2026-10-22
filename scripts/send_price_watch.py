@@ -53,6 +53,7 @@ def quoted(s, n=60):
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe  # noqa: E402  (no address in the public log)
 import email_links  # noqa: E402  (k=<link id> links; never an address in one)
+import list_source  # noqa: E402  (the worker, or the private copy of its list)
 
 REPO = Path(__file__).resolve().parent.parent
 PRICES_FILE = REPO / "data" / "prices.json"
@@ -212,11 +213,9 @@ def plan(watchers, quotes, now_ms):
 
 def worker(base, path, token_, body=None):
     url = f"{base}/{path}{'&' if '?' in path else '?'}token={urllib.parse.quote(token_)}"
-    req = urllib.request.Request(url, data=json.dumps(body).encode() if body is not None else None,
-                                 headers={"Content-Type": "application/json", "User-Agent": "agsist-price-watch/1"},
-                                 method="POST" if body is not None else "GET")
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode())
+    # 2026-10-22: through scripts/list_source.py: the worker, or the private
+    # copy of its list when it is blocked (marks then go to a journal there)
+    return list_source.request("POST" if body is not None else "GET", url, body, {"User-Agent": "agsist-price-watch/1"})
 
 
 def selftest():
@@ -373,4 +372,5 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # worker blocked and no usable copy: one warning, exit 0 (an hourly job must not flood Sig with failures)
+    sys.exit(list_source.guard(main, soft=True))
