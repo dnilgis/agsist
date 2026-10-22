@@ -1,0 +1,102 @@
+{
+  "schema": "agsist-daily-facts/1",
+  "about": "The Daily's 'I never knew that' pool. Every entry carries the source's name, a link a reader can open, the date the source was read, and the source's own words the fact rests on. An entry without them is never shown (scripts/daily_fact.py, test/daily-email-v2.test.mjs). The old quote pool (data/quote-pool.json) stays off.",
+  "facts": [
+    {
+      "id": "hail-vivian",
+      "fact": "The biggest hailstone ever recovered in the US fell at Vivian, South Dakota, on June 23, 2010: 8 inches across and 1 lb 15 oz.",
+      "source": "NOAA National Severe Storms Laboratory, Severe Weather 101: Hail",
+      "url": "https://www.nssl.noaa.gov/education/svrwx101/hail/",
+      "checked": "2026-10-18",
+      "quote": "The largest hailstone recovered in the United States fell in Vivian, South Dakota, on June 23, 2010, with a diameter of 8 inches and a circumference of 18.62 inches. It weighed 1 lb 15 oz."
+    },
+    {
+      "id": "hail-speed",
+      "fact": "Hailstones bigger than 4 inches across can fall at over 100 mph. Hail under an inch falls at 9 to 25 mph.",
+      "source": "NOAA National Severe Storms Laboratory, Severe Weather 101: Hail",
+      "url": "https://www.nssl.noaa.gov/education/svrwx101/hail/",
+      "checked": "2026-10-18",
+      "quote": "For small hailstones (<1-inch in diameter), the expected fall speed is between 9 and 25 mph. ... it is possible for very large hailstones (diameters exceeding 4-inches) to fall at over 100 mph."
+    },
+    {
+      "id": "corn-two-kernels",
+      "fact": "2 corn kernels on every square foot behind the combine add up to a bushel an acre left in the field.",
+      "source": "Iowa State University Integrated Crop Management (Hanna, 2010)",
+      "url": "https://crops.extension.iastate.edu/cropnews/2010/09/minimize-amount-corn-left-ground-behind-combine",
+      "checked": "2026-10-16",
+      "quote": "Two corn kernels per square foot or a single three-quarter pound ear in 436 square feet (0.01 acre) equals one bushel per acre of corn loss"
+    },
+    {
+      "id": "corn-one-ear",
+      "fact": "One dropped ear in a 20 by 22 foot patch behind an 8-row head is a bushel an acre lost.",
+      "source": "Iowa State University Integrated Crop Management (Hanna, 2010)",
+      "url": "https://crops.extension.iastate.edu/cropnews/2010/09/minimize-amount-corn-left-ground-behind-combine",
+      "checked": "2026-10-16",
+      "quote": "Finding just one ear by kicking through residue in a 20 x 22 foot area behind an 8-row cornhead equals one bushel per acre loss."
+    },
+    {
+      "id": "corn-cornhead-losses",
+      "fact": "Over half of corn harvest losses happen at the cornhead, where the combine's loss sensors cannot see them.",
+      "source": "Iowa State University Integrated Crop Management (Hanna, 2010)",
+      "url": "https://crops.extension.iastate.edu/cropnews/2010/09/minimize-amount-corn-left-ground-behind-combine",
+      "checked": "2026-10-16",
+      "quote": "Over half of corn harvest losses occur at the cornhead and are not able to be measured by grain loss sensors on the rear of the combine."
+    },
+    {
+      "id": "soy-four-beans",
+      "fact": "4 to 5 soybeans on the ground per square foot add up to a bushel an acre lost.",
+      "source": "Nebraska Extension CropWatch: Harvest soybeans at 13% moisture",
+      "url": "https://cropwatch.unl.edu/harvest-soybeans-13-moisture",
+      "checked": "2026-10-16",
+      "quote": "Four to five beans on the ground per square foot can add up to one bushel per acre loss."
+    },
+    {
+      "id": "corn-water-car",
+      "fact": "Corn at 20% moisture is like five rail cars of grain where one whole car is water.",
+      "source": "Purdue University Corny News (Nielsen): grain moisture and water shrink",
+      "url": "https://www.agry.purdue.edu/ext/corn/news/timeless/WaterShrink.html",
+      "checked": "2026-10-16",
+      "quote": "if the grain moisture content was 20%, that would be equivalent to four grain cars of absolute dry matter and one grain car of water"
+    },
+    {
+      "id": "cattle-july-2026",
+      "fact": "There were 94.2 million cattle and calves on US farms on July 1, 2026. The 2026 calf crop was put at 32.5 million head, down 2% from 2025.",
+      "source": "USDA NASS, July 2026 Cattle report news release",
+      "url": "https://www.nass.usda.gov/Newsroom/2026/07-24-2026.php",
+      "checked": "2026-10-18",
+      "quote": "There were 94.2 million head of cattle and calves on U.S. farms as of July 1, 2026 ... U.S. calf crop was estimated at 32.5 million head, down 2% from 2025."
+    },
+    {
+      "id": "beef-cows-july-2026",
+      "fact": "The US had 28.5 million beef cows on July 1, 2026, down 1% from a year earlier.",
+      "source": "USDA NASS, July 2026 Cattle report news release",
+      "url": "https://www.nass.usda.gov/Newsroom/2026/07-24-2026.php",
+      "checked": "2026-10-18",
+      "quote": "There are 28.5 million beef cows in the United States as of July 1, 2026, down 1% from last year."
+    },
+    {
+      "id": "loan-rates-2026",
+      "fact": "The 2026 national average marketing loan rate is $2.42 a bushel for corn and $6.82 for soybeans.",
+      "source": "USDA FSA, 2026 National Average Loan Rates",
+      "url": "https://www.fsa.usda.gov/sites/default/files/2026-04/2026-National-Average-Loan-Rates.pdf",
+      "checked": "2026-10-16",
+      "quote": "Corn $2.42 per bushel ... Soybeans $6.82 per bushel"
+    },
+    {
+      "id": "flat-storage",
+      "fact": "Flat storage holds about 0.8 bushel for every cubic foot of grain: length times width times depth times 0.8.",
+      "source": "Nebraska Extension CropWatch: How to estimate bushels in a grain bin",
+      "url": "https://cropwatch.unl.edu/how-estimate-bushels-grain-bin/",
+      "checked": "2026-10-16",
+      "quote": "For rectangular flat storage buildings, the math is simpler. Multiply length (ft) by width (ft) by grain depth (ft) by 0.8 bushels per cubic foot."
+    },
+    {
+      "id": "normals-decade",
+      "fact": "The 'normal' rain on a weather page is a 30-year average that NOAA redoes every 10 years. Today's normals cover 1991 to 2020.",
+      "source": "NOAA National Centers for Environmental Information, U.S. Climate Normals",
+      "url": "https://www.ncei.noaa.gov/products/land-based-station/us-climate-normals",
+      "checked": "2026-10-16",
+      "quote": "NCEI generates the official U.S. normals every 10 years ... The 1991–2020 U.S. Climate Normals are the latest in a series of decadal normals first produced in the 1950s."
+    }
+  ]
+}
