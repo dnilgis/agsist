@@ -129,7 +129,7 @@ test("the month picker can be held to the months the grass needs rain, and says 
 });
 
 test("the sponsor offer, in a browser: under Find your grid on the empty page, under the answer once a grid opens", async (t) => {
-  const PW = "/home/user/node_modules/playwright/index.mjs", CH = "/opt/pw-browsers/chromium";
+  const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs", CH = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
   const { existsSync } = await import("node:fs");
   if (!existsSync(PW) || !existsSync(CH)) { t.skip("no Playwright here"); return; }
   const { chromium } = await import(PW);
