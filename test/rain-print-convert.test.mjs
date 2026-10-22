@@ -64,7 +64,7 @@ async function mocks(ctx, opts = {}) {
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
     const u = new URL(r.request().url());
     if (u.host === "buy.stripe.com") return stripePage(r, opts.stripe);
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (r.request().method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       if (u.pathname === "/where") return opts.where ? r.fulfill({ headers: h, json: { ok: true, city: "Chetek", region_code: "WI" } }) : r.fulfill({ status: 503, headers: h, body: "x" });
       const m = /^\/rp-short\/([0-9A-Z]+)$/.exec(u.pathname);

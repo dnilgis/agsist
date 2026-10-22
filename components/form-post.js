@@ -38,7 +38,7 @@
  */
 (function () {
   'use strict';
-  var WORKER = 'https://agsist-subs.dnilgis.workers.dev/form';
+  var WORKER = 'https://agsist-api.dnilgis.workers.dev/form';
   var FORMSPREE = 'https://formspree.io/f/xnjbwepn';
   var FALLBACK = { 403: 1, 404: 1, 405: 1 };
   // kinds with a customer list (rain-print-business: the towns box, names and addresses); see WORKER_ONLY above

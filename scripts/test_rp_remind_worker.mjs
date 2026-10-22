@@ -106,7 +106,7 @@ for (const b of [{ key: 'rpr:zz', stage: 'sent' }, { key: k, stage: 'paid' }]) {
 const k2 = recs().find(x => JSON.parse(store.get(x)).email === 'a@b.com');
 const t2 = (await (await admin('/rp-remind/list')).json()).rows.find(x => x.key === k2).stop_t;
 r = await w.fetch(new Request('https://x.dev/rp-remind/stop?k=' + k2 + '&t=0000000000000000'), env);
-A(/isn.t valid/.test(await r.text()), 'a wrong stop token');
+{ const h = await r.text(); A(/no longer works/.test(h) && h.includes('mailto:news@agsist.com?subject=unsubscribe'), 'a wrong stop token'); }
 r = await w.fetch(new Request('https://x.dev/rp-remind/stop?k=' + k2 + '&t=' + t2), env);
 A(/Stop the reminder/.test(await r.text()) && !JSON.parse(store.get(k2)).done, 'GET only asks');
 r = await w.fetch(new Request('https://x.dev/rp-remind/stop?k=' + k2 + '&t=' + t2, { method: 'POST' }), env);

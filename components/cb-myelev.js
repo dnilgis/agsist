@@ -48,7 +48,7 @@
 (function(){
   'use strict';
   var KEY = 'agsist-my-elevators', MAX = 6;
-  var DAILY_KEY = 'agsist-daily-key', WORKER = 'https://agsist-subs.dnilgis.workers.dev';
+  var DAILY_KEY = 'agsist-daily-key', WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var NET = 'https://dnilgis.github.io/bids/';
   var CROPS = ['corn', 'soybeans', 'wheat', 'sorghum', 'oats'];
   var NAMES = { corn:'Corn', soybeans:'Soy', wheat:'Wheat', sorghum:'Sorghum', oats:'Oats' };
@@ -452,7 +452,7 @@
   function loadAlerts(){
     if(document.querySelector('script[src*="cb-alerts.js"]')) return;
     var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/cb-alerts.css?v=2'; document.head.appendChild(l);
-    var s = document.createElement('script'); s.src = '/components/cb-alerts.js?v=4'; s.defer = true;
+    var s = document.createElement('script'); s.src = '/components/cb-alerts.js?v=5'; s.defer = true;
     s.onload = function(){ mounts.forEach(function(m){ m.force = true; draw(m); }); }; document.head.appendChild(s);
   }
   window.addEventListener('storage', function(e){ if(e.key === KEY) changed(); });

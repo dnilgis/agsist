@@ -2381,7 +2381,7 @@
     if (root.AgRpLogo) return Promise.resolve(true);
     if (!LOGO_P) LOGO_P = new Promise(function (res) {
       var sc = doc.createElement('script');
-      sc.src = '/components/rp-logo.js?v=3';
+      sc.src = '/components/rp-logo.js?v=4';
       sc.onload = function () { res(!!root.AgRpLogo); };
       sc.onerror = function () { LOGO_P = null; res(false); };
       doc.head.appendChild(sc);
@@ -2562,7 +2562,7 @@
     if (!art.querySelector('.rp-ex')) art.innerHTML = '<p class="rp-placeholder">Drawing a year of rain near you\u2026</p>';
     setTimeout(fall, WHERE_MS);
     try {
-      fetch('https://agsist-subs.dnilgis.workers.dev/where', { credentials: 'omit' }).then(function (r) { return r.json(); }).then(function (j) {
+      fetch('https://agsist-api.dnilgis.workers.dev/where', { credentials: 'omit' }).then(function (r) { return r.json(); }).then(function (j) {
         if (done) return;
         var town = j && j.ok && j.city && /^[A-Z]{2}$/.test(j.region_code || '') ? cleanText(j.city + ', ' + j.region_code, LIMITS.place) : '';
         if (!town || mine()) return fall();
@@ -3812,7 +3812,7 @@
      ticked. The worker (v5.43, POST /rp-remind) keeps the design code and
      starts the email job: the link now, and one reminder the next day unless
      a paid order matches it, then nothing. A changed design can be sent again. */
-  var REMIND_URL = 'https://agsist-subs.dnilgis.workers.dev/rp-remind', MAILME = { code: '', busy: false };
+  var REMIND_URL = 'https://agsist-api.dnilgis.workers.dev/rp-remind', MAILME = { code: '', busy: false };
   function syncMailme(on) {
     var w = $('rp-mailme');
     if (!w) return;
@@ -3932,7 +3932,7 @@
   /* The order record (orderRecord above) goes to the subs worker before
      Stripe opens. Fail-soft: whatever the worker answers, or after
      PRESS_WAIT_MS with no answer, checkout opens anyway. */
-  var ORDER_URL = 'https://agsist-subs.dnilgis.workers.dev/rp-order', PRESS_WAIT_MS = 2000, PRESS_BUSY = false;
+  var ORDER_URL = 'https://agsist-api.dnilgis.workers.dev/rp-order', PRESS_WAIT_MS = 2000, PRESS_BUSY = false;
   /* The worker out (2026-10-22, BUILD-RULES 14): a design Stripe holds in
      full (its own code as the ref) needs nothing more; the webhook or the
      poll makes the record from Stripe once the worker is back. A hash ref
@@ -4223,6 +4223,8 @@
      and year from the design, and its name when it has one: what the print
      itself shows) and takes the mark off when the link can't be drawn. Once the
      reader draws another town, year or name, the line says so and links back. */
+  var PART = false;
+  try { PART = new URLSearchParams(root.location.search).get('part') === '1'; } catch (e) { PART = false; }
   var FROM_LINK = doc.documentElement.classList.contains('rp-from-link'), SHARED = null, SHARED_SEEN = false, SHARED_URL = root.location.href;
   function sharedOff() {
     if (!FROM_LINK) return;
@@ -4251,6 +4253,17 @@
     var t = $('rp-shared-t'), h = same ? 'Shared with you: <b>' + what + '</b>' + nm : 'Shared with you: <a href="' + esc(SHARED_URL) + '">' + what + '</a>' + nm + '. The print here is yours now.';
     if (t.innerHTML !== h) t.innerHTML = h;
     $('rp-shared-own').hidden = !same;
+    /* A QR opened while the link service was down (r.html, ?part=1): the sealed copy carries no
+       name, dedication, marked days or logo (scripts/build_rp_sealed.mjs), so say so, once, plainly. */
+    if (PART && !$('rp-shared-part')) {
+      var pe = doc.createElement('p');
+      pe.id = 'rp-shared-part'; pe.className = 'rp-shared-part';
+      pe.style.cssText = 'margin:.35rem 0 0;font-size:var(--fs-sm);color:var(--text-dim,inherit)';
+      pe.textContent = 'Your name and message show when our system is back.';
+      var sh = $('rp-shared');
+      if (sh && sh.parentNode) sh.parentNode.insertBefore(pe, sh.nextSibling);
+    }
+    if ($('rp-shared-part')) $('rp-shared-part').hidden = !same;
   }
   function syncBar() {
     syncShared();
@@ -4648,7 +4661,7 @@
       (x.address ? '\nShip to:\n' + x.address : '') + (x.notes ? '\nNotes: ' + x.notes : '') +
       '\nDesign code: ' + x.design_code + '\nDesign: ' + x.design_url + (x.logo ? '\nLogo: ' + LOGO_LINK + x.logo : '') + '\n';
   }
-  var LOGO_LINK = 'https://agsist-subs.dnilgis.workers.dev/rp-logo/';
+  var LOGO_LINK = 'https://agsist-api.dnilgis.workers.dev/rp-logo/';
   var sending = false;
   function submitOrder(e) {
     e.preventDefault();
@@ -5657,6 +5670,18 @@
       if (!typing(e.target)) keepClearOfPin(e.target);
     });
     doc.addEventListener('focusout', function () { clearTimeout(back); back = setTimeout(function () { TYPING = typing(doc.activeElement); syncBar(); if (!(TYPING && $('rp-stepcol').contains(doc.activeElement))) doc.body.classList.remove('rp-typing'); }, 450); });
+    /* The strip holds its folded size through a press (2026-10-22). While a box has focus the picture and Up close fold
+       away (rain-print.html); the press on a choice or a button below takes the focus, the strip unfolded over the place
+       pressed, and the release landed on the strip, so the click went to neither (CI, Oct 22: the Print card and
+       "+ Mark another day" missed). From the press until its click is done the strip stays as it was. */
+    var FOLDS = ':is(input:not([type=checkbox]):not([type=radio]),textarea,select)', holdT = 0;
+    var hold = function (on) { clearTimeout(holdT); $('rp-strip').classList.toggle('rp-strip-hold', on); if (on) holdT = setTimeout(function () { hold(false); }, 2000); };
+    doc.addEventListener('pointerdown', function (e) {
+      var st = $('rp-strip'), a = doc.activeElement;
+      if (st.hidden || st.contains(e.target) || !a || !a.matches || !a.matches(FOLDS)) return;
+      hold(true);
+    }, true);
+    ['pointerup', 'pointercancel'].forEach(function (t) { doc.addEventListener(t, function () { if ($('rp-strip').classList.contains('rp-strip-hold')) setTimeout(function () { hold(false); }, 0); }, true); });
   })();
   // Back from Stripe with the page kept as it was: no "Opening checkout" left on the screen
   root.addEventListener('pageshow', function (e) { if (e.persisted) { proofSay(''); syncBar(); } });

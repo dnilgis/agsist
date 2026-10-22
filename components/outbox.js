@@ -40,6 +40,12 @@
   var LINE = 'Saved. It will go through when our system is back and you next open agsist.com on this device; nothing else to do.';
   var CONTACT = 'sig@agsist.com';
 
+  // The worker moved to agsist-api on Oct 22 (same storage behind both). Either
+  // host is taken; whatever was kept goes to the new one, since the old one is
+  // the host Cloudflare blocked.
+  var WORKER_RE = /^https:\/\/agsist-(?:api|subs)\.dnilgis\.workers\.dev\//;
+  var API_HOST = 'https://agsist-api.dnilgis.workers.dev/';
+  function target(u) { return u.replace(WORKER_RE, API_HOST); }
   function now() { return Date.now(); }
   function read() {
     var a = null;
@@ -57,7 +63,7 @@
     } catch (e) { return false; }
   }
   function add(o) {
-    if (!o || typeof o.url !== 'string' || !/^https:\/\/agsist-subs\.dnilgis\.workers\.dev\//.test(o.url)) return '';
+    if (!o || typeof o.url !== 'string' || !WORKER_RE.test(o.url)) return '';
     var id = now().toString(36) + Math.random().toString(36).slice(2, 8);
     var x = { id: id, t: now(), url: o.url, method: o.method || 'POST', label: String(o.label || 'What you saved').slice(0, 120),
       kind: o.kind || '', okIf: o.okIf === 'json' ? 'json' : 'ok' };
@@ -91,7 +97,7 @@
     var init = { method: x.method, credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer', signal: ctl ? ctl.signal : undefined,
       headers: { Accept: 'application/json' } };
     if (x.body !== undefined) { init.body = JSON.stringify(x.body); init.headers['Content-Type'] = 'application/json'; }
-    return root.fetch(x.url, init).then(function (r) {
+    return root.fetch(target(x.url), init).then(function (r) {
       clearTimeout(timer);
       return r.json().then(function (j) { return { status: r.status, ok: r.ok, json: true, j: j }; },
         function () { return { status: r.status, ok: r.ok, json: false, j: null }; });

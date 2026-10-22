@@ -30,7 +30,7 @@
 (function () {
   'use strict';
   if (window.CBSignup) { window.CBSignup.scan(); return; }
-  var WORKER = 'https://agsist-subs.dnilgis.workers.dev';
+  var WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var MILES = 25;                                  /* one of cb-alerts.js RADII */
   var CROPS = ['corn', 'soybeans', 'wheat', 'sorghum', 'oats'];
   var NAMES = { corn: 'corn', soybeans: 'soybeans', wheat: 'wheat', sorghum: 'sorghum', oats: 'oats' };

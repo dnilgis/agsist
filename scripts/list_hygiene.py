@@ -305,7 +305,7 @@ def main():
     if "--selftest" in sys.argv:
         sys.exit(0 if selftest() else 1)
     dry = "--dry-run" in sys.argv
-    base = env("LIST_URL", "https://agsist-subs.dnilgis.workers.dev")
+    base = env("LIST_URL", "https://agsist-api.dnilgis.workers.dev")
     tok, secret, user, pw = env("LIST_TOKEN"), env("UNSUB_SECRET"), env("SMTP_USER"), env("SMTP_PASS")
     if not (tok and secret and user and pw):
         print("::error::LIST_TOKEN, UNSUB_SECRET, SMTP_USER and SMTP_PASS are required"); sys.exit(1)

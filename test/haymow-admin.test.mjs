@@ -44,7 +44,7 @@ test("the token goes only in the Authorization header; the page calls only /hay/
   assert.doesNotMatch(A, /[?&]token=/, "the token never goes in a URL");
   assert.doesNotMatch(script, /console\./, "nothing is logged");
   assert.match(script, /Authorization: 'Bearer ' \+ tok/);
-  assert.match(script, /var API = 'https:\/\/agsist-subs\.dnilgis\.workers\.dev\/hay\/admin\/';/);
+  assert.match(script, /var API = 'https:\/\/agsist-api\.dnilgis\.workers\.dev\/hay\/admin\/';/);
   assert.equal((script.match(/fetch\(/g) || []).length, 1, "one fetch, through call()");
   assert.match(script, /fetch\(API \+ path,/);
   const paths = [...script.matchAll(/call\('([a-z]+)'/g)].map((m) => m[1]);
@@ -97,7 +97,7 @@ test("in a browser: newest first, filters, contacts on demand, Hide / Clear / Ma
       const store = posts(), calls = [], urls = [];
       p.on("request", (r) => urls.push(r.url()));
       await p.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
-      await p.route("https://agsist-subs.dnilgis.workers.dev/**", async (r) => {
+      await p.route("https://agsist-api.dnilgis.workers.dev/**", async (r) => {
         const u = new URL(r.request().url()), body = r.request().postData() ? JSON.parse(r.request().postData()) : null;
         const send = (j, s = 200) => r.fulfill({ status: s, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify(j) });
         calls.push([r.request().method(), u.pathname + u.search, body, r.request().headers().authorization]);
@@ -172,7 +172,7 @@ test("in a browser: newest first, filters, contacts on demand, Hide / Clear / Ma
       assert.ok(calls.every((c) => /^\/hay\/admin\/(list|hide|clear|mark)$/.test(c[1])), "only /hay/admin/*, nothing in the query");
       assert.ok(calls.filter((c) => c[3] !== "Bearer nope").every((c) => c[3] === "Bearer tok"), "the token in the header");
       assert.ok(!urls.some((u) => /tok/.test(new URL(u).search + new URL(u).hash)), "the token is in no address");
-      assert.ok(!urls.some((u) => !u.startsWith(origin) && !u.startsWith("https://agsist-subs.dnilgis.workers.dev/hay/admin/")), "no other host");
+      assert.ok(!urls.some((u) => !u.startsWith(origin) && !u.startsWith("https://agsist-api.dnilgis.workers.dev/hay/admin/")), "no other host");
       assert.deepEqual(errors, []);
       await ctx.close();
     }

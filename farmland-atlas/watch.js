@@ -1,4 +1,4 @@
-(function(){var U='https://agsist-subs.dnilgis.workers.dev/watch-subscribe';
+(function(){var U='https://agsist-api.dnilgis.workers.dev/watch-subscribe';
 document.querySelectorAll('form.watch').forEach(function(F){F.addEventListener('submit',function(ev){
 ev.preventDefault();var m=F.querySelector('.wm'),b=F.querySelector('button'),em=F.elements.email.value.trim();
 if(!em)return;b.disabled=true;m.textContent='Sending...';

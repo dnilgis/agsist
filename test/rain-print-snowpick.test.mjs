@@ -200,7 +200,7 @@ const META = [
 async function mocks(context, meta, log) {
   await context.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
     const u = new URL(r.request().url());
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       const m = /^\/rp-short\/([0-9A-Z]+)$/.exec(u.pathname);
       if (m && m[1] === "SN0W1") return r.fulfill({ headers: { "Access-Control-Allow-Origin": "*" }, json: { ok: true, code: RP.encodeCode({ place: "Chetek, WI", year: 2025, station: "US1WIBR0002 6", style: "r2" }) } });
       return r.fulfill({ status: 503, headers: { "Access-Control-Allow-Origin": "*" }, body: "x" });

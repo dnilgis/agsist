@@ -60,7 +60,7 @@ export async function mocks(ctx, opts = {}) {
       const y = +String(sdate).slice(0, 4);
       return r.fulfill({ headers: h, json: { meta: { name: CHETEK.name, state: "WI", ll: CHETEK.ll }, data: standInYear(y, opts.kind || "wet") } });
     }
-    if (u.host === "agsist-subs.dnilgis.workers.dev") return r.fulfill({ status: 503, headers: h, body: "x" });
+    if (u.host === "agsist-api.dnilgis.workers.dev") return r.fulfill({ status: 503, headers: h, body: "x" });
     return r.abort();
   });
 }

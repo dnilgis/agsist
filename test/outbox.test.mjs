@@ -15,7 +15,7 @@ import vm from "node:vm";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(ROOT + p, "utf8");
-const W = "https://agsist-subs.dnilgis.workers.dev";
+const W = "https://agsist-api.dnilgis.workers.dev";
 const BLOCK = "<!DOCTYPE html><html><title>Suspected phishing site | Cloudflare</title></html>";
 
 function storage() {
@@ -196,11 +196,11 @@ test("business quote: the list is kept in the browser, never sent to Formspree, 
 });
 
 test("pages load the outbox, and loader.js loads it anywhere while something is kept", () => {
-  for (const p of ["rain-print.html", "rain-print-business.html", "haymow.html", "post.html", "e.html"]) assert.match(read(p), /<script src="\/components\/outbox\.js\?v=2"/, p);
+  for (const p of ["rain-print.html", "rain-print-business.html", "haymow.html", "post.html", "e.html"]) assert.match(read(p), /<script src="\/components\/outbox\.js\?v=3"/, p);
   const L = read("components/loader.js");
   assert.match(L, /localStorage\.getItem\('agsist-outbox'\)/);
-  assert.match(L, /ob\.src = '\/components\/outbox\.js\?v=2'/);
-  assert.match(L, /var CV = '80'/);
+  assert.match(L, /ob\.src = '\/components\/outbox\.js\?v=3'/);
+  assert.match(L, /var CV = '82'/);
   const O = read("components/outbox.js");
   assert.match(O, /var LINE = 'Saved\. It will go through when our system is back and you next open agsist\.com on this device; nothing else to do\.';/);
   assert.doesNotMatch(O + read("components/rp-gift.js") + read("components/haymow.js") + read("components/elev-post.js"), /—/, "no em dashes");

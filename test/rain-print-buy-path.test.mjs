@@ -59,7 +59,7 @@ async function mocks(ctx, opts) {
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
     const u = new URL(r.request().url());
     if (opts.log) opts.log.push(u.host + u.pathname + "?" + u.search.slice(0, 160));
-    if (u.host === "agsist-subs.dnilgis.workers.dev") {
+    if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (r.request().method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       if (u.pathname === "/rp-short") return opts.shortFail ? r.fulfill({ status: 503, headers: h, body: "x" }) : r.fulfill({ status: 200, headers: h, json: { ok: true, id: "K7Q2M" } });
       if (u.pathname === "/form") return r.fulfill({ status: 200, headers: h, json: { ok: true } });
@@ -100,6 +100,8 @@ async function withPage(fn, { width = 390, height = 844, ...opts } = {}) {
   try {
     const ctx = await browser.newContext({ viewport: { width, height }, serviceWorkers: "block", hasTouch: width < 900, isMobile: false });
     await makerFlag(ctx);   // Sig's browser: maker mode is gated (fixtures/rp-maker.mjs)
+    // a scroll in progress, smooth ones too, from its first frame to its scrollend (openSheet waits for it)
+    await ctx.addInitScript(() => { window.__scrolling = false; addEventListener("scroll", () => { window.__scrolling = true; }, true); addEventListener("scrollend", () => { window.__scrolling = false; }, true); });
     await ctx.clock.setFixedTime(new Date("2026-10-15T17:00:00Z"));
     await mocks(ctx, opts);
     const page = await ctx.newPage();
@@ -295,8 +297,18 @@ async function drawChetek(page, base, place = "Chetek, WI") {
    while it tapped; on a phone it could end with Pay just under the menu, the
    pinned copy (#rp-strip) came up over it between press and release, and the
    tap went to the pinned copy: no sheet, most runs (2026-10-19). */
+/* The page scrolls smoothly (html{scroll-behavior:smooth}), so the scroll that brought the name box into view can still
+   be running; an instant jump made during it was carried on past by the animation, and Pay ended up off screen (CI,
+   Oct 22). Wait for that scroll to end (scrollend; under load its frames can stall for 150 ms, so a still scrollY is
+   no proof), then a few frames held still, then jump. withPage tracks it from the first frame. */
+const still = (page) => page.waitForFunction(() => !window.__scrolling, null, { timeout: 10000 }).then(() => page.evaluate(() => new Promise((ok) => {
+  let last = scrollY, same = 0;
+  const f = () => { if (window.__scrolling) same = 0; else if (scrollY === last) same++; else { same = 0; last = scrollY; } if (same >= 5) ok(); else requestAnimationFrame(f); };
+  requestAnimationFrame(f);
+})));
 async function openSheet(page) {
   await idle(page);
+  await still(page);
   await page.$eval("#rp-pay", (b) => b.scrollIntoView({ block: "center", behavior: "instant" }));
   await page.waitForTimeout(250);
   const over = await page.$eval("#rp-pay", (b) => { const r = b.getBoundingClientRect(), e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return b.contains(e) ? "" : e ? e.id || e.className || e.nodeName : "off screen"; });

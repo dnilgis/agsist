@@ -1559,7 +1559,7 @@
         btn.disabled=true; stx.textContent='Saving\u2026';
         var rc=document.querySelector('.hm-rchip[aria-pressed="true"]');
         var radius=rc?parseInt(rc.getAttribute('data-r'),10):5;
-        fetch('https://agsist-subs.dnilgis.workers.dev/alert-subscribe',{
+        fetch('https://agsist-api.dnilgis.workers.dev/alert-subscribe',{
           method:'POST',
           headers:{ 'Content-Type':'application/json', 'Accept':'application/json' },
           body: JSON.stringify({ email:v,

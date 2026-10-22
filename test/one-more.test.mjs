@@ -84,9 +84,9 @@ test("hail-map and gdu-calculator: one Daily ask each, honest about what the Dai
 });
 
 test("versions: signup-ask.js v12 where it loads (Oct 21), home.js v15", () => {
-  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=14';"));
+  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=15';"));
   const idx = read("index.html");
-  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=14"></script>'));
+  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=15"></script>'));
   assert.ok(idx.includes('<script src="/components/home.js?v=16"></script>'));
   assert.ok(read("privacy.html").includes("for one year, so the signup prompts stop until then."));
 });
@@ -152,7 +152,7 @@ async function newPage(browser, port, posts, o = {}) {
   await pg.route("**/*", (r) => {
     const u = r.request().url();
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
-    if (u.startsWith("https://agsist-subs.dnilgis.workers.dev/") && r.request().method() === "POST") {
+    if (u.startsWith("https://agsist-api.dnilgis.workers.dev/") && r.request().method() === "POST") {
       const p = new URL(u).pathname;
       posts.push({ path: p, body: JSON.parse(r.request().postData() || "{}") });
       return r.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ ok: true }) });

@@ -4,7 +4,7 @@
  * rules (Global Privacy Control, the /privacy switch, automated browsers,
  * prerender) already allow analytics.
  *
- * This file asks the agsist-subs worker, GET /ga-ok, whether the visit comes
+ * This file asks the subs worker (agsist-api), GET /ga-ok, whether the visit comes
  * from a cloud or hosting network (Cloudflare's ASN for the request; the
  * worker keeps no address). {"ok":false} keeps GA off. Since Oct 21 (Sig: the
  * worker was blocked for a day and GA counted nobody) an error, an odd answer,
@@ -15,7 +15,7 @@
  * not kept, so the next page asks again.
  */
 (function (w, d) {
-  var K = 'agsist-ga-ok', API = 'https://agsist-subs.dnilgis.workers.dev/ga-ok';
+  var K = 'agsist-ga-ok', API = 'https://agsist-api.dnilgis.workers.dev/ga-ok';
   var SRC = 'https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';
   var loaded = false;
   function load() {

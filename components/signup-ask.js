@@ -59,8 +59,8 @@
   'use strict';
   if (window.AgsistSignup && window.AgsistSignup._v) { window.AgsistSignup.scan(); return; }
 
-  var EP = 'https://agsist-subs.dnilgis.workers.dev/subscribe';
-  var EP_NOTICE = 'https://agsist-subs.dnilgis.workers.dev/notice';
+  var EP = 'https://agsist-api.dnilgis.workers.dev/subscribe';
+  var EP_NOTICE = 'https://agsist-api.dnilgis.workers.dev/notice';
   var NOTICE_KEY = 'agsist_notices';
   var ZIP_LABEL = 'ZIP, for your top local bid in the email';
   var DISMISS_DAYS = 35;
@@ -523,7 +523,7 @@
      address, or the ZIP's first three digits. Never geolocation. Nothing
      shows when nothing fits. GA4: onemore_shown and onemore_added with the
      topics, never the address. */
-  var WORKER = 'https://agsist-subs.dnilgis.workers.dev';
+  var WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var ST_NAMES = {};
   ('AL Alabama|AK Alaska|AZ Arizona|AR Arkansas|CA California|CO Colorado|CT Connecticut|DE Delaware|FL Florida|GA Georgia|HI Hawaii|ID Idaho|IL Illinois|IN Indiana|IA Iowa|KS Kansas|KY Kentucky|LA Louisiana|ME Maine|MD Maryland|MA Massachusetts|MI Michigan|MN Minnesota|MS Mississippi|MO Missouri|MT Montana|NE Nebraska|NV Nevada|NH New Hampshire|NJ New Jersey|NM New Mexico|NY New York|NC North Carolina|ND North Dakota|OH Ohio|OK Oklahoma|OR Oregon|PA Pennsylvania|RI Rhode Island|SC South Carolina|SD South Dakota|TN Tennessee|TX Texas|UT Utah|VT Vermont|VA Virginia|WA Washington|WV West Virginia|WI Wisconsin|WY Wyoming')
     .split('|').forEach(function (s) { ST_NAMES[s.slice(0, 2)] = s.slice(3); });

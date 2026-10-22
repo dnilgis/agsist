@@ -158,7 +158,7 @@ test("the request form in a browser: prefill, checks, the post, escaping, the fa
       const p = await page(browser, width);
       const posts = [];
       let answer = { status: 200, body: { ok: true } };
-      await p.route("https://agsist-subs.dnilgis.workers.dev/**", async (r) => {
+      await p.route("https://agsist-api.dnilgis.workers.dev/**", async (r) => {
         posts.push(JSON.parse(r.request().postData() || "{}"));
         await r.fulfill({ status: answer.status, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify(answer.body) });
       });
@@ -248,7 +248,7 @@ test("Sig's desk: requests with the roster match, Make the listing, Dismiss", { 
           name: "X", role: "Y", phone: "515-555-0100", email: "x@example.com", crops: "corn", how: "email" } };
       const calls = [];
       await p.route("https://dnilgis.github.io/bids/data/directory.json", (r) => r.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify(ROSTER) }));
-      await p.route("https://agsist-subs.dnilgis.workers.dev/**", async (r) => {
+      await p.route("https://agsist-api.dnilgis.workers.dev/**", async (r) => {
         const u = new URL(r.request().url()), body = r.request().postData() ? JSON.parse(r.request().postData()) : null;
         calls.push([u.pathname, body, r.request().headers().authorization]);
         const send = (j, s = 200) => r.fulfill({ status: s, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify(j) });

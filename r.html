@@ -20,9 +20,11 @@
      the subs worker (v5.14, GET /rp-short/<id>) and opens /rain-print?d=<code>.
      R.html and r.html are the same bytes (GitHub Pages paths are case-sensitive;
      the QR uses /R, a typed link may use /r). test/rp-short.test.mjs checks that.
+     Worker blocked, down or slower than 3 s: the sealed copy in data/rp-sealed/
+     opens the same design (scripts/build_rp_sealed.mjs, test/rp-sealed.test.mjs).
      The text stays hidden for the first 0.7 s, so a normal scan goes straight
      to the design without a flash of this page. -->
-<link rel="preconnect" href="https://agsist-subs.dnilgis.workers.dev" crossorigin>
+<link rel="preconnect" href="https://agsist-api.dnilgis.workers.dev" crossorigin>
 <style>
   :root{--bg:#f6f7f5;--text:#161a18;--muted:rgba(22,26,24,.7);--link:#7a5a12}
   @media (prefers-color-scheme: dark){:root{--bg:#0a0c0d;--text:#e9edeb;--muted:rgba(233,237,235,.7);--link:#d4a23f}}
@@ -45,7 +47,7 @@
 </main>
 <script>
 (function () {
-  var API = 'https://agsist-subs.dnilgis.workers.dev/rp-short/';
+  var API = 'https://agsist-api.dnilgis.workers.dev/rp-short/';
   var gone = false;
   function fail(unknown) {
     if (gone) return;
@@ -69,17 +71,70 @@
   }
   if (!/^[0-9A-HJKMNP-TV-Z]{5,8}$/.test(id)) { fail(true); return; }
   if (typeof fetch !== 'function') { fail(false); return; }
-  var t = setTimeout(function () { fail(false); }, 8000);
+  function go(code, part) { gone = true; location.replace('/rain-print?d=' + code + (part ? '&part=1' : '')); }
+  var CODE_RE = /^[A-Za-z0-9_-]{8,400}$/;
+  var t = setTimeout(function () { fail(false); }, 20000);
+  // The worker first, for 3 s. A JSON 404 from it is a real "no such link".
+  // Anything else (blocked, down, an HTML page, slow): the sealed copy below.
+  var asked = false;
+  function sealedOnce() { if (asked || gone) return; asked = true; sealed(); }
+  var wt = setTimeout(sealedOnce, 3000);
   fetch(API + id).then(function (r) {
-    if (r.status === 404) return { missing: true };
+    if (r.status === 404) return r.json().then(function (j) { return j && typeof j === 'object' ? { missing: true } : null; });
     return r.ok ? r.json() : null;
   }).then(function (j) {
-    clearTimeout(t);
+    if (asked) return;
+    clearTimeout(wt);
     var code = j && typeof j.code === 'string' ? j.code : '';
-    if (!/^[A-Za-z0-9_-]{8,400}$/.test(code)) { fail(!!(j && j.missing)); return; }
-    gone = true;
-    location.replace('/rain-print?d=' + code);
-  }).catch(function () { clearTimeout(t); fail(false); });
+    if (CODE_RE.test(code)) { clearTimeout(t); go(code); return; }
+    if (j && j.missing) { clearTimeout(t); fail(true); return; }
+    sealedOnce();
+  }).catch(function () { clearTimeout(wt); sealedOnce(); });
+
+  /* THE SEALED COPY (Oct 22, 2026): with the worker down, the id opens a file
+     on agsist.com that only the id can find and read. scripts/build_rp_sealed.mjs
+     writes it from the private copy of the worker's storage, with these same
+     constants; its header has the threat model (the repo is public, so a
+     guesser must run this whole derivation per guessed id). No id, no list
+     and no plaintext is published. */
+  function sealed() {
+    var S = null, E = null;
+    try { S = crypto.subtle; E = new TextEncoder(); } catch (e) { S = null; }
+    if (!S || !E) { clearTimeout(t); fail(false); return; }
+    var SALT = 'agsist.com/r sealed v1', ITERATIONS = 600000, NAME_BYTES = 16, name = '', key = null;
+    var none = new Uint8Array(0);
+    S.importKey('raw', E.encode(id), 'PBKDF2', false, ['deriveBits']).then(function (pw) {
+      return S.deriveBits({ name: 'PBKDF2', salt: E.encode(SALT), iterations: ITERATIONS, hash: 'SHA-256' }, pw, 256);
+    }).then(function (bits) {
+      return S.importKey('raw', bits, 'HKDF', false, ['deriveBits', 'deriveKey']);
+    }).then(function (ikm) {
+      return Promise.all([
+        S.deriveBits({ name: 'HKDF', hash: 'SHA-256', salt: none, info: E.encode('name') }, ikm, NAME_BYTES * 8),
+        S.deriveKey({ name: 'HKDF', hash: 'SHA-256', salt: none, info: E.encode('key') }, ikm, { name: 'AES-GCM', length: 256 }, false, ['decrypt'])
+      ]);
+    }).then(function (two) {
+      var b = new Uint8Array(two[0]);
+      for (var i = 0; i < b.length; i++) name += (b[i] < 16 ? '0' : '') + b[i].toString(16);
+      key = two[1];
+      return fetch('/data/rp-sealed/' + name + '.bin');
+    }).then(function (r) {
+      if (r.status === 404) return 'missing';
+      return r.ok ? r.arrayBuffer() : null;
+    }).then(function (buf) {
+      if (buf === 'missing') return 'missing';
+      var u = buf ? new Uint8Array(buf) : null;
+      if (!u || u.length < 29 || u[0] !== 1) return null;
+      return S.decrypt({ name: 'AES-GCM', iv: u.slice(1, 13), additionalData: E.encode(name) }, key, u.slice(13)).then(function (pt) {
+        return new TextDecoder().decode(pt).replace(/\.+$/, '');
+      });
+    }).then(function (code) {
+      clearTimeout(t);
+      if (code === 'missing') { fail(true); return; }
+      // the sealed copy has no name, dedication, marked days or logo: the page says they come back later
+      if (typeof code === 'string' && CODE_RE.test(code)) { go(code, true); return; }
+      fail(false);
+    }).catch(function () { clearTimeout(t); fail(false); });
+  }
 })();
 </script>
 </body>

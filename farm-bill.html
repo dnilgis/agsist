@@ -746,7 +746,7 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
     // This used to be a native POST, which navigated the reader to the worker's
     // raw {"ok":true} body. The `list` field was a Formspree leftover the worker
     // never read, so farm-bill signups silently joined the general briefing.
-    fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{
+    fetch('https://agsist-api.dnilgis.workers.dev/subscribe',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({email:em.value.trim(),source:'farm-bill'})
     }).then(function(r){
