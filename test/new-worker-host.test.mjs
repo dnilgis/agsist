@@ -76,10 +76,13 @@ test("no live file names the old worker host except the allowed lines", () => {
 });
 
 test("pages and components call the new host", () => {
-  for (const f of ["e.html", "r.html", "R.html", "status.html", "components/rp-short.js", "components/signup-ask.js",
+  for (const f of ["e.html", "r.html", "R.html", "components/rp-short.js", "components/signup-ask.js",
     "components/ga-gate.js", "components/form-post.js", "components/rain-print.js", "farmland-atlas/watch.js"]) {
     assert.ok(read(f).includes("agsist-api.dnilgis.workers.dev"), f);
   }
+  // status.html was retired to a forward to the homepage (Sig, Oct 21; fx/fastfacts): it calls no worker on either host
+  assert.match(read("status.html"), /<link rel="canonical" href="https:\/\/agsist\.com\/">/);
+  assert.doesNotMatch(read("status.html"), /workers\.dev/);
   assert.ok(read("scripts/build_atlas_pages.py").includes("var U='" + NEW + "/watch-subscribe'"), "the Atlas watch script builder");
   assert.ok(read("farmland-atlas/watch.js").startsWith("(function(){var U='" + NEW + "/watch-subscribe'"));
   const sw = read("sw.js");
