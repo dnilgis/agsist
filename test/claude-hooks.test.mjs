@@ -115,7 +115,7 @@ test('verify gate: blocks on skipped>0 (exit 2, plain reason) and passes on 0', 
   assert.equal(r.status, 2, r.stderr);
   assert.match(r.stderr, /skipped 2 test/);
   assert.match(r.stderr, /needs jsqr/);
-  assert.ok(!/—/.test(r.stderr), 'no em dash');
+  assert.ok(!/\u2014/.test(r.stderr), 'no em dash');
   const b = gateRepo({ skipped: 0 });
   const r2 = gate({ hook_event_name: 'Stop', cwd: b.w, transcript_path: b.tx, stop_hook_active: false }, b.w);
   assert.equal(r2.status, 0, r2.stderr);
