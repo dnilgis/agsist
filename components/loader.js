@@ -748,11 +748,10 @@
         var today;
         try { today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date()); }
         catch (e) { today = new Date().toISOString().slice(0, 10); }
+        // nobody holds the slot: the one small Sponsor this page link (a slot sold for a later start stays blank)
+        if (!noSponsor && (!sp || sp.active === false)) openSlotLine(rib, id);
         if (!sp || sp.active === false || !sp.company || !/^https?:\/\//.test(sp.url || '') ||
-            !/^\d{4}-\d{2}-\d{2}$/.test(sp.start || '') || sp.start > today) {
-          if (!noSponsor && (!sp || sp.active === false)) openSlotLine(rib, id);
-          return;
-        }
+            !/^\d{4}-\d{2}-\d{2}$/.test(sp.start || '') || sp.start > today) return;
         rib.classList.add('ag-sponsor-ribbon--sold');
         rib.setAttribute('data-sponsor-slot', 'page:' + id);
         rib.setAttribute('aria-label', 'Sponsored: ' + sp.company);
