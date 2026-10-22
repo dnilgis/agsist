@@ -14,6 +14,12 @@
     {
      "tag": "fixed",
      "page": "/rain-print",
+     "name": "The QR on a Rain Print opens when our link service is down",
+     "text": "Scanning the QR on a printed Rain Print opens the print even when the service behind our short links is not answering. A link we don't know still says so."
+    },
+    {
+     "tag": "fixed",
+     "page": "/rain-print",
      "name": "Rain Print: a clear space between your farm name and the year",
      "text": "The year always sits a clear space after the farm name, and after the town, on the screen and in every file, whatever font your device has loaded."
     },

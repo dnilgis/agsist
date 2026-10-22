@@ -4223,6 +4223,8 @@
      and year from the design, and its name when it has one: what the print
      itself shows) and takes the mark off when the link can't be drawn. Once the
      reader draws another town, year or name, the line says so and links back. */
+  var PART = false;
+  try { PART = new URLSearchParams(root.location.search).get('part') === '1'; } catch (e) { PART = false; }
   var FROM_LINK = doc.documentElement.classList.contains('rp-from-link'), SHARED = null, SHARED_SEEN = false, SHARED_URL = root.location.href;
   function sharedOff() {
     if (!FROM_LINK) return;
@@ -4251,6 +4253,17 @@
     var t = $('rp-shared-t'), h = same ? 'Shared with you: <b>' + what + '</b>' + nm : 'Shared with you: <a href="' + esc(SHARED_URL) + '">' + what + '</a>' + nm + '. The print here is yours now.';
     if (t.innerHTML !== h) t.innerHTML = h;
     $('rp-shared-own').hidden = !same;
+    /* A QR opened while the link service was down (r.html, ?part=1): the sealed copy carries no
+       name, dedication, marked days or logo (scripts/build_rp_sealed.mjs), so say so, once, plainly. */
+    if (PART && !$('rp-shared-part')) {
+      var pe = doc.createElement('p');
+      pe.id = 'rp-shared-part'; pe.className = 'rp-shared-part';
+      pe.style.cssText = 'margin:.35rem 0 0;font-size:var(--fs-sm);color:var(--text-dim,inherit)';
+      pe.textContent = 'Your name and message show when our system is back.';
+      var sh = $('rp-shared');
+      if (sh && sh.parentNode) sh.parentNode.insertBefore(pe, sh.nextSibling);
+    }
+    if ($('rp-shared-part')) $('rp-shared-part').hidden = !same;
   }
   function syncBar() {
     syncShared();
