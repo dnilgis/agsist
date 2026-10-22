@@ -24,16 +24,16 @@
  *
  * THREAT MODEL. The repo is public, so anyone can list the file names. To
  * open one they must guess its id and run the full KDF for every guess:
- * there is no shortcut from a name back to an id. Ids today are 5 Crockford
- * base32 letters (32^5 = 33.5 million; 6 to 8 only after a collision).
+ * there is no shortcut from a name back to an id. Ids made before Oct 22,
+ * 2026 are 5 Crockford base32 letters (32^5 = 33.5 million).
  * At 600,000 iterations one CPU core does about 5 guesses a second (about 73
  * core-days for every 5-letter id); a high-end gaming GPU does on the order of
  * 15,000 a second, so a determined attacker with one could open every print
  * in under an hour. What they would get: the design codes (place, station,
- * year, the name line and dedication a buyer typed). It is a speed bump, not
- * a vault: worth it while printed QRs must work without the worker; longer
- * ids on new prints (8 letters: 32^8 = 1.1e12 guesses) would make it years.
- * The worker itself limits a reader to 30 unknown ids an hour.
+ * year, style and layer choices; never a name, dedication, marked day or
+ * logo, which are stripped before sealing). New short links are 8 letters
+ * (subs worker v5.49): 32^8 = 1.1e12 guesses, years on that GPU. The worker
+ * itself limits a reader to 30 unknown ids an hour.
  *
  * Usage (sponsor-report.yml, daily, after fetching the private copy):
  *   node scripts/build_rp_sealed.mjs <kv-backup.json[.gz]> [--out data/rp-sealed]
@@ -45,6 +45,7 @@ import { webcrypto as wc } from "node:crypto";
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, unlinkSync, existsSync } from "node:fs";
 import { gunzipSync } from "node:zlib";
 import path from "node:path";
+import vm from "node:vm";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const subtle = wc.subtle;
@@ -58,6 +59,34 @@ export const CODE_RE = /^[A-Za-z0-9_-]{8,400}$/;
 const enc = new TextEncoder();
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 export const OUT_DEFAULT = path.join(ROOT, "data", "rp-sealed");
+
+/* NOTHING PERSONAL IS SEALED (Sig, Oct 22). Before sealing, the design is
+   decoded with the page's own code (components/rain-print.js) and drawn
+   again without what a buyer typed or added: the name line, the dedication,
+   the marked days and their labels, the logo, the gift flag. What stays:
+   place, station, year, style and the layer choices. /r says "Your name and
+   message show when our system is back." -> the stripped code, or '' when
+   the design can't be read (that id gets no sealed file). */
+let RP = null;
+function rainPrint() {
+  if (RP) return RP;
+  const c = { TextEncoder, TextDecoder, URLSearchParams, btoa, atob };
+  c.window = c;
+  vm.runInNewContext(readFileSync(path.join(ROOT, "components", "rain-print.js"), "utf8"), c);
+  RP = c.RainPrint;
+  return RP;
+}
+export const PERSONAL = ["name", "dedication", "markers", "logo", "logoInk", "gift", "gift_to", "giftTo", "giftMsg"];
+export function strip(code) {
+  const R = rainPrint();
+  const d = R.decodeCode(String(code || ""));
+  if (!d) return "";
+  const x = Object.assign({}, d, { name: "", dedication: "", markers: [], logo: "", gift: false });
+  const out = R.encodeCode(x);
+  const back = out ? R.decodeCode(out) : null;
+  if (!back || back.name || back.dedication || (back.markers && back.markers.length) || back.logo || back.gift) return "";
+  return CODE_RE.test(out) ? out : "";
+}
 
 const hex = (u8) => Array.from(u8, (b) => b.toString(16).padStart(2, "0")).join("");
 
@@ -92,7 +121,7 @@ export async function open(buf, d) {
   }
 }
 
-/* {id: code} from the worker storage copy (list_source.py's format:
+/* {id: stripped code} from the worker storage copy (list_source.py's format:
    {taken, keys: [{name, value | value_b64, ...}]}). */
 export function records(raw) {
   const buf = raw[0] === 0x1f && raw[1] === 0x8b ? gunzipSync(raw) : raw;
@@ -103,7 +132,9 @@ export function records(raw) {
     const id = k.name.slice(4);
     let v = typeof k.value === "string" ? k.value : null;
     if (v === null && typeof k.value_b64 === "string") { try { v = Buffer.from(k.value_b64, "base64").toString("utf8"); } catch (e) { v = null; } }
-    if (ID_RE.test(id) && typeof v === "string" && CODE_RE.test(v)) out[id] = v;
+    if (!ID_RE.test(id) || typeof v !== "string" || !CODE_RE.test(v)) continue;
+    const bare = strip(v);
+    if (bare) out[id] = bare;
   }
   return out;
 }

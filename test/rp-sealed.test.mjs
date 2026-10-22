@@ -34,10 +34,12 @@ vm.runInNewContext(read("components/rain-print.js"), ctx);
 const RP = ctx.RainPrint;
 const CODES = {
   K7Q2M: RP.encodeCode({ place: "Testville, WI", station: "USC00470000", year: 2025, palette: "paper", name: "The Made-Up Farm" }),
-  ZX9PQ: RP.encodeCode({ place: "Nowhere, IA", station: "USC00130000", year: 2024, palette: "paper", name: "Pat and Lee Example",
-    markers: [{ date: "2024-06-01", label: "Planted the last field" }] }),
+  ZX9PQ: RP.encodeCode({ place: "Nowhere, IA", station: "USC00130000", year: 2024, palette: "paper", style: "r2", normals: true, name: "Pat and Lee Example",
+    dedication: "For Grandpa Example", logo: "abcdefghjkmn", crop: "corn", cropPlant: "2024-05-01", cropHarvest: "2024-10-10",
+    markers: [{ date: "2024-06-01", label: "Planted the last field" }, { date: "2024-08-02", label: "Made-up wedding" }] }),
   "4HJ8T0": RP.encodeCode({ place: "Sample, MN", station: "USC00210000", year: 2023, palette: "paper", name: "X" }),
 };
+const BARE = Object.fromEntries(Object.entries(CODES).map(([k, v]) => [k, S.strip(v)]));
 const kvDoc = (recs, extra = []) => gzipSync(JSON.stringify({ taken: "2026-10-22T00:00:00Z", count: 0,
   keys: Object.entries(recs).map(([id, v]) => ({ name: "rps:" + id, value: v })).concat(extra) }));
 const tmp = () => mkdtempSync(path.join(os.tmpdir(), "rps-"));
@@ -60,6 +62,32 @@ test("the derivation is pinned, and r.html and R.html use the same constants", a
   const src = read("scripts/build_rp_sealed.mjs");
   assert.match(src, /THREAT MODEL/);
   assert.match(src, /32\^5 = 33\.5 million/);
+});
+
+test("a sealed file opened with the right id holds no personal field: no name, dedication, marked days, labels or logo", async () => {
+  const dir = tmp();
+  try {
+    await S.build(S.records(kvDoc(CODES)), dir);
+    for (const [id, code] of Object.entries(CODES)) {
+      const full = RP.decodeCode(code), d = await S.derive(id);
+      const opened = await S.open(readFileSync(path.join(dir, d.name + ".bin")), d);
+      assert.ok(opened, id);
+      const x = RP.decodeCode(opened);
+      assert.equal(x.name, ""); assert.equal(x.dedication, ""); assert.equal(x.markers.length, 0); assert.equal(x.logo, ""); assert.equal(x.gift, false);
+      for (const k of ["place", "station", "year", "style", "layout", "palette", "size", "cmp", "normals", "records", "crop", "cropPlant", "cropHarvest"]) assert.deepEqual(x[k], full[k], id + " keeps " + k);
+      const raw = Buffer.from(opened.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8");
+      for (const w of ["Example", "Grandpa", "Planted", "wedding", "Made-Up Farm", "abcdefghjkmn"]) assert.ok(!raw.includes(w), id + " has no " + w);
+    }
+    assert.ok(RP.decodeCode(CODES.ZX9PQ).name, "the fixture really had a name");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("/r: a print opened from the sealed copy tells the reader the name and message come back later", () => {
+  const R = read("r.html"), JS = read("components/rain-print.js");
+  assert.match(R, /if \(typeof code === 'string' && CODE_RE\.test\(code\)\) \{ go\(code, true\); return; \}/);
+  assert.match(R, /location\.replace\('\/rain-print\?d=' \+ code \+ \(part \? '&part=1' : ''\)\)/);
+  assert.match(JS, /pe\.textContent = 'Your name and message show when our system is back\.';/);
+  assert.match(JS, /PART = new URLSearchParams\(root\.location\.search\)\.get\('part'\) === '1'/);
 });
 
 test("seal and open round-trip; a wrong id or a moved file does not open", async () => {
@@ -167,12 +195,12 @@ test("/r: worker blocked, down or answering HTML: the print still draws, from th
     await S.build(S.records(kvDoc(CODES)), dir);
     for (const [why, w] of Object.entries(WORKERS)) {
       const o = await runR("?K7Q2M", w, dir);
-      assert.equal(o.replaced, "/rain-print?d=" + CODES.K7Q2M, why);
+      assert.equal(o.replaced, "/rain-print?d=" + BARE.K7Q2M + "&part=1", why);
       assert.equal(o.els.box.className, "", "no message " + why);
       assert.equal(o.asked[0], "https://agsist-subs.dnilgis.workers.dev/rp-short/K7Q2M", "worker first " + why);
     }
     const o = await runR("?id=4hj8to&fbclid=x", WORKERS["down (no answer at all)"], dir);
-    assert.equal(o.replaced, "/rain-print?d=" + CODES["4HJ8T0"], "a 6-letter id, lower case and look-alikes");
+    assert.equal(o.replaced, "/rain-print?d=" + BARE["4HJ8T0"] + "&part=1", "a 6-letter id, lower case and look-alikes");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -182,7 +210,7 @@ test("/r: a worker that hangs gets 3 s, then the sealed file opens", async () =>
     await S.build(S.records(kvDoc(CODES)), dir);
     const t0 = Date.now();
     const o = await runR("?ZX9PQ", () => new Promise(() => {}), dir, 8000);
-    assert.equal(o.replaced, "/rain-print?d=" + CODES.ZX9PQ);
+    assert.equal(o.replaced, "/rain-print?d=" + BARE.ZX9PQ + "&part=1");
     assert.ok(Date.now() - t0 >= 2900, "waited for the worker first");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

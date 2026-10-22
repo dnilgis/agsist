@@ -71,7 +71,7 @@
   }
   if (!/^[0-9A-HJKMNP-TV-Z]{5,8}$/.test(id)) { fail(true); return; }
   if (typeof fetch !== 'function') { fail(false); return; }
-  function go(code) { gone = true; location.replace('/rain-print?d=' + code); }
+  function go(code, part) { gone = true; location.replace('/rain-print?d=' + code + (part ? '&part=1' : '')); }
   var CODE_RE = /^[A-Za-z0-9_-]{8,400}$/;
   var t = setTimeout(function () { fail(false); }, 20000);
   // The worker first, for 3 s. A JSON 404 from it is a real "no such link".
@@ -130,7 +130,8 @@
     }).then(function (code) {
       clearTimeout(t);
       if (code === 'missing') { fail(true); return; }
-      if (typeof code === 'string' && CODE_RE.test(code)) { go(code); return; }
+      // the sealed copy has no name, dedication, marked days or logo: the page says they come back later
+      if (typeof code === 'string' && CODE_RE.test(code)) { go(code, true); return; }
       fail(false);
     }).catch(function () { clearTimeout(t); fail(false); });
   }
