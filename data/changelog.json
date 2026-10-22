@@ -6,6 +6,12 @@
    "date": "2026-10-22",
    "items": [
     {
+     "tag": "fixed",
+     "page": "/rain-print",
+     "name": "The QR on a Rain Print opens when our link service is down",
+     "text": "Scanning the QR on a printed Rain Print opens the print even when the service behind our short links is not answering. A link we don't know still says so."
+    },
+    {
      "tag": "improved",
      "page": "/rain-print",
      "name": "Rain Print: every layer one tap away, with the print in view",
