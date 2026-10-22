@@ -350,7 +350,8 @@ test("Rain Print pages: the footer shows no sponsor link (Advertise or PRF spons
       await pg.waitForSelector("footer.footer", { timeout: 15000 });
       await pg.waitForTimeout(300);
       const vis = await pg.evaluate(() => [...document.querySelectorAll('footer.footer a[href^="/sponsor"], footer.footer a[href="/prf-sponsor"]')].map((a) => !!a.getClientRects().length));
-      assert.equal(vis.length, 2, path);
+      // Advertise and PRF sponsor under Work with us, and (Oct 22) Advertise with AGSIST in the bottom row
+      assert.equal(vis.length, 3, path);
       assert.ok(vis.every((v) => v === shown), `${path}: ${vis}`);
     }
     await ctx.close();
