@@ -160,9 +160,13 @@
     pop.hidden = false; place(btn);
     btn.setAttribute('aria-expanded', 'true');
     open = btn; pinned = !!pin;
+    /* a tap or click decides: the hover's own open or close still waiting must not undo it (2026-10-22: a click
+       then Escape inside the hover's 250 ms, and the waiting hover opened it again; test/fresh-visitor.test.mjs) */
+    if (pin) clearTimeout(hoverT);
   }
 
   function close(focusBack) {
+    clearTimeout(hoverT);   // closed is closed: no waiting hover opens it again
     if (!open) return;
     var b = open; open = null; pinned = false;
     b.setAttribute('aria-expanded', 'false');
