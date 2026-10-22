@@ -2243,7 +2243,7 @@
     // the crop's days come from the marked days
     syncCropDays();
     var c = extrasCrop();
-    say('rp-crop-say', ST.crop && !c && TEMP && TEMP.td ? 'Mark the planting day and the harvest day above, then pick them here.' : c && c.stop === 'missing' ? 'The temperature record has a gap, so no stage after it is drawn.' : '');
+    say('rp-crop-say', noTemp ? '' : cropWhy() || (ST.crop && !c && TEMP && TEMP.td ? 'Mark the planting day and the harvest day above, then pick them here.' : c && c.stop === 'missing' ? 'The temperature record has a gap, so no stage after it is drawn.' : ''));
     var r2 = ST.style === 'r2', long = STATIONS.some(function (s) { var r = s.valid_daterange && s.valid_daterange[0]; return r && +r[1].slice(0, 4) - +r[0].slice(0, 4) + 1 >= HIST_MIN; });
     $('rp-hist').disabled = r2 || (!long && !!STATIONS.length);
     var full = META ? FULL_CACHE.get(META.sid) : null;
@@ -2257,11 +2257,25 @@
       hw.appendChild(doc.createTextNode(' ')); hw.appendChild(b);
     }
   }
+  /* The crop days picked by hand (2026-10-22: a planting day picked alone went blank again, because the
+     design drops a crop until both days are set and in order, and the boxes were filled back from the design).
+     The boxes keep what the reader picked; the design takes the crop once both days make sense. */
+  var CROP_HAND = { plant: '', harvest: '' };
+  // why a crop picked in the box is not on the print yet, in one line ('' when it is, or none is picked)
+  function cropWhy() {
+    var pick = $('rp-crop') ? $('rp-crop').value : '';
+    if (!pick || ST.crop) return '';
+    var name = pick === 'soy' ? 'Soybeans' : 'Corn';
+    if (!ST.markers.length) return name + (pick === 'soy' ? ' need' : ' needs') + ' the planting day and the harvest day: mark them under Mark a day, then pick them here.';
+    if (!CROP_HAND.plant || !CROP_HAND.harvest) return 'Pick the ' + (!CROP_HAND.plant && !CROP_HAND.harvest ? 'planting day and the harvest day' : !CROP_HAND.plant ? 'planting day' : 'harvest day') + ' from your marked days' + (ST.markers.length < 2 ? ', or mark one more day above' : '') + '.';
+    return 'The harvest day has to come after the planting day.';
+  }
   function syncCropDays() {
+    if (ST.crop) CROP_HAND = { plant: ST.cropPlant, harvest: ST.cropHarvest };
     var opts = '<option value="">Pick a marked day</option>' + ST.markers.map(function (m) { return '<option value="' + esc(m.date) + '">' + esc(shortDate(m.date) + (m.label ? ', ' + m.label : '')) + '</option>'; }).join('');
     ['rp-crop-plant', 'rp-crop-harvest'].forEach(function (id) {
       var el = $(id); if (!el) return;
-      var v = id === 'rp-crop-plant' ? ST.cropPlant : ST.cropHarvest;
+      var v = id === 'rp-crop-plant' ? CROP_HAND.plant : CROP_HAND.harvest;
       if (el.innerHTML !== opts) el.innerHTML = opts;
       el.value = v && ST.markers.some(function (m) { return m.date === v; }) ? v : '';
       el.disabled = !$('rp-crop').value;
@@ -2566,7 +2580,8 @@
     $('rp-ded').value = s.dedication;
     $('rp-normals').checked = s.normals;
     $('rp-records').checked = s.records;
-    $('rp-crop').value = s.crop; $('rp-plants').checked = s.plants; $('rp-ghost').checked = s.ghost;
+    $('rp-crop').value = s.crop; if (s === ST) CROP_HAND = { plant: s.cropPlant || '', harvest: s.cropHarvest || '' };
+    $('rp-plants').checked = s.plants; $('rp-ghost').checked = s.ghost;
     $('rp-hist').checked = s.hist; $('rp-frost').checked = s.frost; $('rp-heat').checked = s.heat; $('rp-ribbon').checked = s.ribbon;
     for (var i = 1; i <= LIMITS.markers; i++) {
       var m = s.markers[i - 1];
@@ -5214,11 +5229,13 @@
      threads change the station (the nearest with 30 full years), so they draw the year again. */
   $('rp-crop').addEventListener('change', function () {
     if ($('rp-crop').value) {
-      if (!$('rp-crop-plant').value) ST.cropPlant = guessCropDay(/plant|seed/i);
-      if (!$('rp-crop-harvest').value) ST.cropHarvest = guessCropDay(/harvest|combin/i);
-      ST.crop = $('rp-crop').value; syncCropDays();
+      if (!CROP_HAND.plant) CROP_HAND.plant = guessCropDay(/plant|seed/i);
+      if (!CROP_HAND.harvest) CROP_HAND.harvest = guessCropDay(/harvest|combin/i);
     }
     syncCropDays(); restyle(); extrasLoad(reqToken);
+  });
+  ['rp-crop-plant', 'rp-crop-harvest'].forEach(function (id) {
+    $(id).addEventListener('change', function () { CROP_HAND[id === 'rp-crop-plant' ? 'plant' : 'harvest'] = $(id).value; });
   });
   ['rp-crop-plant', 'rp-crop-harvest', 'rp-plants', 'rp-ghost', 'rp-frost', 'rp-heat', 'rp-ribbon'].forEach(function (id) {
     $(id).addEventListener('change', function () { restyle(); extrasLoad(reqToken); });

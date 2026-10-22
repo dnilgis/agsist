@@ -14,6 +14,12 @@
     {
      "tag": "fixed",
      "page": "/rain-print",
+     "name": "Rain Print crop days stay picked",
+     "text": "Picking the planting day, then the harvest day, for corn or soybeans no longer clears the first one. A crop with no days marked yet says what it needs."
+    },
+    {
+     "tag": "fixed",
+     "page": "/rain-print",
      "name": "Rain Print orders go through when our order service is down",
      "text": "Pay now always opens checkout, even when the service that saves designs and logos is not answering. Your design goes with the payment, and a logo that can't be saved yet is kept on your device and sent on your next visit."
     }
