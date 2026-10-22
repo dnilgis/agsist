@@ -59,6 +59,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe  # noqa: E402  (no address in the public log)
+import email_links  # noqa: E402  (links go to the agsist.com front door; the worker host is never in an email)
 
 try:
     from zoneinfo import ZoneInfo
@@ -315,9 +316,10 @@ def ad_lines(a):
 def emails_for(action, a, base, secret, card, today, sig):
     """-> [(to, EmailMessage-kwargs)] for one planned action. Pure."""
     price = money(rate(card, a["tier"]))
-    dec = lambda d: "%s/sponsor-decide?i=%s&d=%s&t=%s" % (base, a["id"], d, token(secret, a["id"] + "|sd|" + d))
+    # Oct 22: the agsist.com front door asks the worker's page from the browser; base only has to be set
+    dec = lambda d: email_links.front("sponsor-decide", [("i", a["id"]), ("d", d), ("t", token(secret, a["id"] + "|sd|" + d))])
     if action == "confirm":
-        go = "%s/sponsor-confirm?i=%s&t=%s" % (base, a["id"], token(secret, a["id"] + "|sc"))
+        go = email_links.front("sponsor-confirm", [("i", a["id"]), ("t", token(secret, a["id"] + "|sc"))])
         # The address is unconfirmed, so company and contact are a stranger's
         # words: kept out of the Subject, quoted and short in the body.
         return [(a["email"], dict(subject="Confirm your AGSIST ad", paras=[
@@ -579,6 +581,18 @@ def selftest():
     ck("invoice reminder names the month", "Oct 10, 2026 to Nov 9, 2026" in em[0][1]["paras"][0], em[0][1]["paras"][0])
     m = msg("a@b.com", fa="x@agsist.com", **emails_for("confirm", A(company="<b>x</b>"), "https://w.dev", "sec", card, today, "s")[0][1])
     ck("html escapes what the applicant typed", "<b>x</b>" not in m.get_body(("html",)).get_content())
+    em = emails_for("confirm", A(), "https://agsist-subs.dnilgis.workers.dev", "sec", card, today, "sig@x.com")
+    ck("the confirm link is the agsist.com front door, never the worker (Oct 22)",
+       em[0][1]["button"][1] == email_links.FRONT + "?a=sponsor-confirm&i=a1b2c3d4e5f6&t=" + token("sec", "a1b2c3d4e5f6|sc"))
+    em = emails_for("notify", A(status="confirmed"), "https://agsist-subs.dnilgis.workers.dev", "sec", card, today, "sig@x.com")
+    us = [em[0][1]["button"][1]] + [x[1] for x in em[0][1].get("links") or []]
+    ck("Sig's decide links are the front door too", us and all(u.startswith(email_links.FRONT + "?a=sponsor-decide&i=a1b2c3d4e5f6&d=") for u in us), us)
+    m = msg("sig@x.com", fa="x@agsist.com", **em[0][1])
+    try:
+        email_links.check_hosts(m)
+        ck("no worker host in the email", "workers.dev" not in m.as_string())
+    except email_links.LinkError:
+        ck("no worker host in the email", False)
 
     print()
     if fails:

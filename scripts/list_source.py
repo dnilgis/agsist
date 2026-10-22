@@ -57,9 +57,10 @@ copy's rows are read with the journal applied, so an alert is not mailed
 twice. When the worker answers again the journal is replayed into it, then
 emptied.
 
-LINKS: in backup mode scripts/email_links.py turns every stop link into the
-mailto below and leaves every other worker link out (no link may point at the
-blocked host), and the footer says "Reply STOP to stop these emails".
+LINKS: every emailed link goes to the agsist.com front door in every mode
+(scripts/email_links.py, Oct 22); that page says so when the worker is down
+and offers the mailto below. In backup mode the footer also says "Reply STOP
+to stop these emails". No link may point at the worker host.
 
 Counts only in the log; never an address, never a secret.
 

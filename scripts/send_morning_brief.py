@@ -121,6 +121,7 @@ def strip_html(s):
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import market_board   # noqa: E402  ONE definition of "is this the same session's board"
 
 ARCHIVE_DIR = "data/daily-archive"
@@ -631,7 +632,7 @@ def main():
     headline = (daily.get("headline") or "Daily Brief").strip()
     issue = daily.get("issue_number")
     issue_str = ""  # 2026-10-11: no issue number shown
-    subject = f"AGSIST {issue_str}{today.strftime('%b %-d')} — {headline}"
+    subject = email_links.plain_dashes(f"AGSIST {issue_str}{today.strftime('%b %-d')}: {headline}")
 
     send(subject, email_body, sms_body)
     print(f"Sent {today}: {len(email_body)} char email, {len(sms_body)} char SMS")

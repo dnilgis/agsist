@@ -435,8 +435,8 @@ def selftest():
              "lid": email_links.SAMPLE_LID}
         m = build_email(w, "2026-07-01", 1.0, "AGSIST Hail Alerts", "alerts@example.com", None)
         h, t = m.get_body(("html",)).get_content(), m.get_body(("plain",)).get_content()
-        want = "https://w.dev/alert-unsubscribe?k=%s&t=%s" % (email_links.SAMPLE_LID, email_links.token("sec", email_links.SAMPLE_LID))
-        if want not in t or want not in h or str(m["List-Unsubscribe"]) != "<" + want + ">":
+        want = "https://agsist.com/e?a=alert-unsubscribe&k=%s&t=%s" % (email_links.SAMPLE_LID, email_links.token("sec", email_links.SAMPLE_LID))
+        if want not in t or want not in h or str(m["List-Unsubscribe"]) != "<%s>, <%s>" % (email_links.STOP_MAILTO, want):
             bad.append("stop link by link id in text, html and header")
         if [u for u in email_links.hrefs(h) if "@" in u or "%40" in u.lower()]:
             bad.append("an @ inside an href")

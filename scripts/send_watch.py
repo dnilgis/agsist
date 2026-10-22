@@ -228,12 +228,12 @@ def selftest():
     LINK_IDS.update(email_links.link_ids([{"email": "a@x.com", "lid": L0}]))
     m = confirm_email("a@x.com", "19169", C["19169"], "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     body = m.get_body(("plain",)).get_content()
-    assert "PO Box 243, Chetek, WI 54728" in body and "watch-confirm?k=%s&f=19169&t=%s" % (L0, token(s, L0, "|c|19169")) in body, body
-    assert "watch-unsubscribe?k=%s&f=19169&t=%s" % (L0, token(s, L0, "|w|19169")) in str(m["List-Unsubscribe"])
-    assert m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click"
+    assert "PO Box 243, Chetek, WI 54728" in body and "a=watch-confirm&k=%s&f=19169&t=%s" % (L0, token(s, L0, "|c|19169")) in body, body
+    assert "a=watch-unsubscribe&k=%s&f=19169&t=%s" % (L0, token(s, L0, "|w|19169")) in str(m["List-Unsubscribe"])
+    assert m["List-Unsubscribe-Post"] is None
     m2 = change_email("a@x.com", "19169", C["19169"], ["x to y"], "https://w.dev", s, "AGSIST", "n@agsist.com", None, "https://agsist.com/p")
     assert "PO Box 243" in m2.get_body(("plain",)).get_content() and "Stop all county watches" in m2.get_body(("plain",)).get_content()
-    assert "watch-unsubscribe?k=%s&t=%s" % (L0, token(s, L0, "|w")) in m2.get_body(("plain",)).get_content()
+    assert "a=watch-unsubscribe&k=%s&t=%s" % (L0, token(s, L0, "|w")) in m2.get_body(("plain",)).get_content()
     # v5.46: no address inside any link of either email
     for mm in (m, m2):
         h, t = mm.get_body(("html",)).get_content(), mm.get_body(("plain",)).get_content()
