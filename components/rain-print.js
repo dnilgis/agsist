@@ -4258,10 +4258,27 @@
     }
     if (on && MINI_DIRTY) miniSoon();
     if (on) $('rp-strip-t').textContent = (META ? META.place : ST.place) + ', ' + ST.year;
-    if (st.hidden === on) {
-      st.hidden = !on;
-      doc.documentElement.style.scrollPaddingTop = on ? Math.round(nav + st.offsetHeight + 12) + 'px' : '';
-    }
+    if (st.hidden === on) st.hidden = !on;
+    /* a jump to a box or a chip lands below what is pinned: the slim copy, or (since 2026-10-22) the print itself,
+       which stays pinned under the menu on a phone while the steps scroll */
+    var pin = pinnedBottom(nav), pad = on ? Math.round(nav + st.offsetHeight + 12) + 'px' : pin ? Math.round(pin + 8) + 'px' : '';
+    if (doc.documentElement.style.scrollPaddingTop !== pad) doc.documentElement.style.scrollPaddingTop = pad;
+  }
+  // where the print pinned under the menu ends on a phone (0 when it isn't pinned: a laptop, or a box has the keyboard)
+  function pinnedBottom(nav) {
+    var pv = $('rp-pv');
+    if (!pv || !phone()) return 0;
+    try { if (root.getComputedStyle(pv).position !== 'sticky') return 0; } catch (e) { return 0; }
+    return (nav === undefined ? navBottom() : nav) + pv.offsetHeight;
+  }
+  // the pinned print grows and shrinks (a line under it, the video's buttons): the padding follows it
+  try { if (root.ResizeObserver && $('rp-pv')) new root.ResizeObserver(function () { syncStrip(); }).observe($('rp-pv')); } catch (e) {}
+  // a switch or button reached by Tab or a jump never sits under the pinned print
+  function keepClearOfPin(el) {
+    var lim = pinnedBottom(), pv = $('rp-pv');
+    if (!lim || !el || !el.getBoundingClientRect || (pv && pv.contains(el))) return;
+    var r = el.getBoundingClientRect();
+    if (r.top < lim + 4 && r.bottom > 0) try { root.scrollBy(0, r.top - lim - 8); } catch (e) {}
   }
   /* A box the reader just put the keyboard in never sits under the pinned
      copy. Only from the focus handler, never from the scroll: the town box
@@ -5606,6 +5623,7 @@
       clearTimeout(back);
       if (typing(e.target)) { TYPING = true; syncBar(); setTimeout(function () { keepFocusClear(); }, 60); }
       else back = setTimeout(function () { TYPING = false; syncBar(); }, 450);
+      if (!typing(e.target)) keepClearOfPin(e.target);
     });
     doc.addEventListener('focusout', function () { clearTimeout(back); back = setTimeout(function () { TYPING = typing(doc.activeElement); syncBar(); }, 450); });
   })();
