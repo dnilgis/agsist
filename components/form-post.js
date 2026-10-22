@@ -14,6 +14,9 @@
  *   agsistFormPost(kind, data, formspreeFields) -> Promise
  *     resolves {ok:true, via:'worker'|'formspree'}, rejects when neither took it.
  *     formspreeFields is what goes to Formspree (defaults to data).
+ *   agsistFormPost(kind, data, formspreeFields, {workerMs}) waits workerMs for
+ *     the worker instead of 12 s (a checkout waiting on it, 2026-10-22).
+ *   agsistFormPost.formspree(fields) -> Promise: Formspree alone.
  *   agsistFormPost.worker(kind, data) -> Promise
  *     resolves {ok:true, via:'worker'} or the string 'fallback'; rejects on a
  *     refusal. For a plain HTML form that falls back by submitting itself.
@@ -39,14 +42,14 @@
   // and goes to Formspree like any other worker failure.
   var TIMEOUT_MS = 12000;
 
-  function toWorker(kind, data) {
+  function toWorker(kind, data, ms) {
     var body = { kind: kind };
     Object.keys(data || {}).forEach(function (k) { body[k] = data[k]; });
     var ctl = typeof AbortController === 'function' ? new AbortController() : null;
     var timer = null;
     var late = new Promise(function (resolve) {
       // 'slow': the worker may still have taken it, so the Formspree copy says it may repeat (panel 3 F11)
-      timer = setTimeout(function () { if (ctl) ctl.abort(); resolve('slow'); }, TIMEOUT_MS);
+      timer = setTimeout(function () { if (ctl) ctl.abort(); resolve('slow'); }, ms || TIMEOUT_MS);
     });
     var sent = fetch(WORKER, {
       method: 'POST', body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined,
@@ -93,8 +96,10 @@
       }, function (e) { clearTimeout(timer); throw e && e.message === 'not sent' ? e : new Error('not sent'); });
   }
 
-  function post(kind, data, formspreeFields) {
-    return toWorker(kind, data).then(function (x) {
+  /* o.workerMs: a shorter wait for the worker than TIMEOUT_MS, for a press
+     that has a checkout waiting on it (Rain Print's gift post, 4 s, 2026-10-22). */
+  function post(kind, data, formspreeFields, o) {
+    return toWorker(kind, data, o && o.workerMs).then(function (x) {
       if ((x === 'fallback' || x === 'slow') && WORKER_ONLY[kind]) {
         var e = new Error('not sent'); e.workerOnly = true; e.slow = x === 'slow';
         throw e;
@@ -103,6 +108,10 @@
     });
   }
   post.WORKER_ONLY = WORKER_ONLY;
+  /* Straight to the backup form, for what the worker never takes (a Rain
+     Print order record when the worker is out, 2026-10-22). Resolves
+     {ok:true, via:'formspree'}, rejects when it didn't go. */
+  post.formspree = function (fields) { return toFormspree(fields, false); };
   // the plain-HTML forms only need to know to fall back
   post.worker = function (kind, data) { return toWorker(kind, data).then(function (x) { return x === 'slow' ? 'fallback' : x; }); };
   window.agsistFormPost = post;

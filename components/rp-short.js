@@ -17,6 +17,7 @@
  *     reused.
  *   AgRpShort.mint(code, {fresh: true}) -> the same, but always asks the
  *     worker (a kept id is not trusted alone): the checkout press.
+ *     {timeout: ms} gives up sooner than TIMEOUT_MS (checkout: 4 s, 2026-10-22).
  *   AgRpShort.peek(code) -> the cached link right now, or null. No request.
  *   AgRpShort.resolve(id) -> Promise of {code, missing}: the design code an
  *     id stands for (GET /rp-short/<id>, as /r does), for ?d=RPS-<id>.
@@ -55,14 +56,14 @@
     return null;
   }
 
-  function ask(code) {
+  function ask(code, ms) {
     if (inflight[code]) return inflight[code];
     var p = new Promise(function (resolve) {
       var done = false, t = null;
       function end(v) { if (!done) { done = true; if (t) clearTimeout(t); delete inflight[code]; resolve(v); } }
       try {
         if (typeof root.fetch !== 'function') return end(null);
-        t = setTimeout(function () { end(null); }, TIMEOUT_MS);
+        t = setTimeout(function () { end(null); }, ms || TIMEOUT_MS);
         root.fetch(WORKER, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code }) })
           .then(function (r) { return r.ok ? r.json() : null; })
           .then(function (j) {
@@ -109,8 +110,9 @@
       // opts.fresh: ask the worker even with an id kept here, so the id Stripe gets is one the worker has (checkout, 2026-10-15)
       var hit = opts && opts.fresh ? null : peek(code);
       if (hit) return Promise.resolve(hit);
-      if (waiting && waiting.code === code) { clearTimeout(waiting.timer); var w = waiting; waiting = null; ask(code).then(w.resolve); return w.promise; }
-      return ask(code);
+      var ms = opts && opts.timeout;
+      if (waiting && waiting.code === code) { clearTimeout(waiting.timer); var w = waiting; waiting = null; ask(code, ms).then(w.resolve); return w.promise; }
+      return ask(code, ms);
     } catch (e) {
       return Promise.resolve(null);
     }

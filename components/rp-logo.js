@@ -10,6 +10,8 @@
  *     1600 px, transparency is kept, and it goes out as a PNG (2 MB at most);
  *   - the PNG is stored by the subs worker (v5.23): POST /rp-logo answers an
  *     id, GET /rp-logo/<id> gives it back. The design carries the id.
+ *   - when the worker can't be reached (2026-10-22), the PNG is kept in this
+ *     browser and goes up later under the same id (KEPT IN THIS BROWSER below).
  * "Ink color" (the default) prints the logo in the print's own dark ink: one
  * color, its shape from its alpha and how dark each pixel is, so a JPG's white
  * background drops out. It is made here from the stored PNG each time
@@ -208,16 +210,24 @@
      PNG on a slow farm uplink takes about half that. */
   var UPLOAD_MS = 60000;
   var NOT_SAVED = 'The logo couldn\u2019t be saved just now, so it\u2019s not on the print. Try again in a minute, or email it to me with your order.';
-  function upload(blob) {
+  /* offline: the worker couldn't be reached or answered as if it were out (no
+     answer, a network error, a 403, 5xx or anything but its own JSON; Oct 21
+     2026: Cloudflare's block page). Then the page keeps the logo here
+     (keepLocal) instead of dropping it. A refusal the worker means (too big,
+     too many) is not offline. */
+  function offline(msg) { var e = err(msg || NOT_SAVED); e.offline = true; return e; }
+  function upload(blob, asId) {
     var ctl = typeof AbortController === 'function' ? new AbortController() : null;
     var t = setTimeout(function () { if (ctl) ctl.abort(); }, root.AgRpLogo && root.AgRpLogo.UPLOAD_MS || UPLOAD_MS);
     var opts = { method: 'POST', headers: { 'Content-Type': 'image/png' }, body: blob, credentials: 'omit' };
     if (ctl) opts.signal = ctl.signal;
-    return fetch(BASE + '/rp-logo', opts).then(function (r) {
+    // asId: a logo kept in this browser goes up under the id its design already carries (the worker checks it is this PNG's own)
+    return fetch(BASE + '/rp-logo' + (asId ? '?id=' + asId : ''), opts).then(function (r) {
       clearTimeout(t);
-      return r.json().catch(function () { return {}; }).then(function (j) {
+      return r.json().catch(function () { return null; }).then(function (j) {
         var id = cleanId(j && j.id);
         if (r.ok && j && j.ok && id) return id;
+        if (!j || r.status === 403 || r.status >= 500) throw offline();
         // the worker's cap for everyone that day is not about this reader (F3)
         throw err(r.status === 429 && j && j.error === 'busy today' ? 'Lots of people are using this today. Try again tomorrow, or email the logo to me with your order.'
           : r.status === 429 ? 'Too many logos from here today. Try again later, or email the logo with your order.'
@@ -226,8 +236,77 @@
       });
     }, function () {
       clearTimeout(t);
-      throw err(NOT_SAVED);
+      throw offline();
     });
+  }
+
+  /* KEPT IN THIS BROWSER (2026-10-22, BUILD-RULES 14). When the upload can't
+     reach the worker, the PNG is kept in IndexedDB under its own id: 12
+     letters from SHA-256 of the PNG's bytes, the same letters the worker
+     uses, so the worker makes the same id from the same bytes (POST
+     /rp-logo?id=, subs worker v5.47) and nothing in the design changes when
+     it goes up. The id goes on a waiting list (localStorage WAIT_KEY), and
+     flushWaiting() sends each one on the next visit to the page, until the
+     worker has it. load() reads a kept one from here when the worker can't. */
+  var B32 = '0123456789abcdefghjkmnpqrstvwxyz', WAIT_KEY = 'agsist-rp-logo-wait', DB = 'agsist-rp', STORE = 'logos';
+  function contentId(blob) {
+    if (!(root.crypto && root.crypto.subtle)) return Promise.reject(err(NOT_SAVED));
+    return blob.arrayBuffer().then(function (buf) { return root.crypto.subtle.digest('SHA-256', buf); }).then(function (h) {
+      var b = new Uint8Array(h), s = '';
+      for (var i = 0; i < 12; i++) s += B32[b[i] & 31];
+      return s;
+    });
+  }
+  function db() {
+    return new Promise(function (res, rej) {
+      try {
+        var q = root.indexedDB.open(DB, 1);
+        q.onupgradeneeded = function () { q.result.createObjectStore(STORE); };
+        q.onsuccess = function () { res(q.result); };
+        q.onerror = function () { rej(q.error || err(NOT_SAVED)); };
+      } catch (e) { rej(e); }
+    });
+  }
+  function dbDo(mode, fn) {
+    return db().then(function (d) {
+      return new Promise(function (res, rej) {
+        var tx = d.transaction(STORE, mode), q = fn(tx.objectStore(STORE));
+        tx.oncomplete = function () { d.close(); res(q && q.result); };
+        tx.onerror = tx.onabort = function () { d.close(); rej(tx.error || err(NOT_SAVED)); };
+      });
+    });
+  }
+  function waiting() {
+    var a = null;
+    try { a = JSON.parse(root.localStorage.getItem(WAIT_KEY) || '[]'); } catch (e) { a = []; }
+    return (Array.isArray(a) ? a : []).filter(function (id) { return ID_RE.test(id); });
+  }
+  function setWaiting(a) { try { if (a.length) root.localStorage.setItem(WAIT_KEY, JSON.stringify(a)); else root.localStorage.removeItem(WAIT_KEY); } catch (e) {} }
+  // blob (the PNG process() made) -> Promise of its id, kept here and waiting to go up
+  function keepLocal(blob) {
+    return contentId(blob).then(function (id) {
+      return dbDo('readwrite', function (st) { return st.put(blob, id); }).then(function () {
+        var a = waiting();
+        if (a.indexOf(id) < 0) setWaiting(a.concat([id]).slice(-10));
+        return id;
+      });
+    });
+  }
+  function localBlob(id) { return dbDo('readonly', function (st) { return st.get(id); }).then(function (b) { if (!b) throw err('The logo in this design isn’t on file any more.'); return b; }); }
+  function isWaiting(id) { return waiting().indexOf(cleanId(id)) >= 0; }
+  var FLUSHING = null;
+  // -> Promise of how many are still waiting
+  function flushWaiting() {
+    if (FLUSHING) return FLUSHING;
+    var a = waiting();
+    FLUSHING = a.reduce(function (p, id) {
+      return p.then(function () {
+        return localBlob(id).then(function (b) { return upload(b, id); }).then(function (got) {
+          if (got === id) setWaiting(waiting().filter(function (x) { return x !== id; }));
+        }, function () {});
+      });
+    }, Promise.resolve()).then(function () { FLUSHING = null; return waiting().length; });
+    return FLUSHING;
   }
   /* id -> Promise<{url (data URL), w, h}>: the stored PNG, read as a data URL
      so a canvas drawing the print is never tainted. */
@@ -236,16 +315,18 @@
     id = cleanId(id);
     if (!id) return Promise.reject(err('That logo id isn’t right.'));
     if (LOADS[id]) return LOADS[id];
+    // the worker's copy, or the one kept in this browser while the worker was out (keepLocal)
+    var local = false, kept = function (e) { return localBlob(id).then(function (b) { local = true; return b; }, function () { throw e; }); };
     LOADS[id] = fetch(BASE + '/rp-logo/' + id, { credentials: 'omit' }).then(function (r) {
       if (!r.ok) throw err(r.status === 404 ? 'The logo in this design isn’t on file any more.' : 'The logo didn’t load.');
       return r.blob();
-    }).then(function (b) {
+    }, function () { throw err('The logo didn’t load.'); }).then(null, kept).then(function (b) {
       return b.slice(0, 8).arrayBuffer().then(function (h) {
         if (kindOf(new Uint8Array(h)) !== 'png') throw err('The logo didn’t load.');
         return blobUrl(new Blob([b], { type: 'image/png' }));
       });
     }).then(function (url) {
-      return loadImg(url).then(function (img) { return { url: url, w: img.naturalWidth, h: img.naturalHeight }; });
+      return loadImg(url).then(function (img) { return { url: url, w: img.naturalWidth, h: img.naturalHeight, local: local }; });
     });
     LOADS[id].catch(function () { delete LOADS[id]; });
     return LOADS[id];
@@ -256,6 +337,7 @@
     kindOf: kindOf, trimBox: trimBox, inkPixels: inkPixels, ppi: ppi, cleanId: cleanId, ID_RE: ID_RE,
     MAX_FILE: MAX_FILE, MAX_SIDE: MAX_SIDE, MAX_PNG: MAX_PNG, NAMES: NAMES, BASE: BASE,
     process: process, inkUrl: inkUrl, upload: upload, load: load, remember: remember, UPLOAD_MS: UPLOAD_MS,
+    keepLocal: keepLocal, flushWaiting: flushWaiting, isWaiting: isWaiting, contentId: contentId, WAIT_KEY: WAIT_KEY,
     ACCEPT: 'image/png,image/jpeg,image/webp,image/svg+xml,.png,.jpg,.jpeg,.webp,.svg'
   };
 })(typeof window !== 'undefined' ? window : this);
