@@ -31,6 +31,10 @@ concurrency:
 env:
   PW_VERSION: '1.56.1'
   JSQR_VERSION: '1.4.0'
+  # the static ffmpeg for the node tests (BtbN/FFmpeg-Builds release asset and its sha256)
+  FFMPEG_TAG: 'autobuild-2026-09-30-13-08'
+  FFMPEG_BUILD: 'n8.1.3-9-g29e619e767-linux64-gpl-8.1'
+  FFMPEG_SHA256: '97ce978979194b5cf7e06a5e68020dbdaa7a4f3294c5452b6a1bc347100dbb79'
   OMP_NUM_THREADS: '1'
 
 jobs:
@@ -67,6 +71,33 @@ jobs:
       # fetch_coop_fert.py --selftest case "the PDF itself reads the same" needs it.
       - name: pdftotext
         run: command -v pdftotext || { sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils; }
+
+      # ffmpeg with ffprobe: the Rain Print MP4 writer test decodes its file with it and
+      # skips without it (and a skip fails these checks). Not from apt: on Oct 22 the
+      # runners' Ubuntu mirror crawled (1 MB in 14 s) and the install hit every time cap.
+      # A static build from BtbN/FFmpeg-Builds on GitHub releases, pinned to a month-end
+      # tag (those are kept) and checked against its sha256, cached by that version.
+      # Any failure stops here, loudly.
+      - name: Cache ffmpeg
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4.2.3
+        with:
+          path: ~/ffmpeg-static
+          key: ffmpeg-static-${{ env.FFMPEG_BUILD }}
+      - name: ffmpeg
+        timeout-minutes: 5
+        run: |
+          set -euo pipefail
+          D="$HOME/ffmpeg-static"
+          if [ ! -x "$D/ffprobe" ] || [ ! -x "$D/ffmpeg" ]; then
+            F="ffmpeg-$FFMPEG_BUILD.tar.xz"
+            curl -fsSL --retry 3 --max-time 180 -o "$RUNNER_TEMP/$F" "https://github.com/BtbN/FFmpeg-Builds/releases/download/$FFMPEG_TAG/$F"
+            echo "$FFMPEG_SHA256  $RUNNER_TEMP/$F" | sha256sum -c -
+            mkdir -p "$D"
+            tar -xJf "$RUNNER_TEMP/$F" -C "$D" --strip-components=2 "ffmpeg-$FFMPEG_BUILD/bin/ffmpeg" "ffmpeg-$FFMPEG_BUILD/bin/ffprobe"
+            rm -f "$RUNNER_TEMP/$F"
+          fi
+          echo "$D" >> "$GITHUB_PATH"
+          "$D/ffprobe" -version | head -1
 
       # The elevator desk and chaos-fix browser tests read the bids data
       # (dnilgis/bids, public) at BIDS_PATH, as they read the local clone beside
@@ -113,9 +144,19 @@ jobs:
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/pull_raw.sh data/fsa
+      # Tests that compare with origin/main (no new schedule) or read the saved sources
+      # (origin/references, in the private repo since Oct 20) skip without them.
+      - name: origin/main and the references branch
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          git fetch -q --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+          bash scripts/fetch_private.sh references
       - name: node tests, shard ${{ matrix.shard }} of 4
         env:
           TMPDIR: ${{ runner.temp }}
+          # a skipped test fails the shard (and so "all checks"): a skip is not a pass
+          AGSIST_NO_SKIPS: '1'
         run: bash scripts/dev/checks.sh --only=node-test --shard=${{ matrix.shard }}/4
       - name: Upload the test log
         if: failure()

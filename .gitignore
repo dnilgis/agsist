@@ -73,3 +73,6 @@ build/shots/
 # scripts/backfill_*.py and scripts/history_append.py, saved to the private raw
 # branch with scripts/push_raw.sh, never to main.
 /history/
+
+# scripts/dev/verify.sh writes its last test run here for the Stop hook (Oct 22); per checkout, never committed
+/.verify/
