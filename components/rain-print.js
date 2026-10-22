@@ -2272,7 +2272,7 @@
   function layerWhy() {
     var noT = TEMP && TEMP.none ? 'no daily highs and lows here for this year' : '', crop = $('rp-crop') ? $('rp-crop').value : '';
     var hw = $('rp-hist-why');
-    return { cmp: '', records: '', normals: ST.cmp === 'none' ? 'needs a usual year: pick 30-yr normal or This station' : '',
+    return { cmp: '', records: '', normals: ST.cmp === 'none' ? 'needs a usual year' : '',
       frost: noT, heat: noT || (heatIncluded() ? 'named on the daily temperature stripes already' : ''), ribbon: noT, crop: noT,
       plants: noT || (crop ? '' : 'pick corn or soybeans first'), ghost: noT || (crop ? '' : 'pick corn or soybeans first'),
       hist: $('rp-hist') && $('rp-hist').disabled && !$('rp-hist').getAttribute('data-gift-lock') ? ((hw && !hw.hidden && hw.firstChild ? hw.firstChild.textContent : '') || 'not for this print').replace(/\.$/, '') : '' };

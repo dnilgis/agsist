@@ -597,6 +597,8 @@
   html.rp-tool-first .rp-flow{order:1}
   html.rp-tool-first .rp-top{order:2;margin:2rem 0 0}
   html.rp-tool-first .rp-start{display:none}
+  /* the place is already drawn: the layers come first, the town box right under them */
+  html.rp-tool-first .rp-layers{order:-1}
   .rp-say{margin:.35rem 0 0;min-height:1.45em;font-size:var(--fs-xs);line-height:1.45;color:var(--text-dim)}
   .rp-say b{color:var(--text);font-weight:600}
   .rp-wall.rp-watching .rp-view{display:none}
@@ -609,15 +611,15 @@
   .rp-layers-h{margin:0;font-size:var(--fs-lg);line-height:1.25}
   .rp-lcount{font-size:var(--fs-xs);color:var(--text-muted)}
   .rp-alloff{margin-left:auto;min-height:32px;font-size:var(--fs-sm)}
-  .rp-lrow{display:grid;grid-template-columns:5.4rem minmax(0,1fr);gap:.35rem .5rem;align-items:start;padding:.45rem 0;border-top:1px solid var(--border)}
+  .rp-lrow{display:grid;grid-template-columns:4.4rem minmax(0,1fr);gap:.3rem .35rem;align-items:start;padding:.4rem 0;border-top:1px solid var(--border)}
   .rp-lh+.rp-lrow{border-top:0}
-  .rp-lg{grid-column:1;padding-top:.45rem;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+  .rp-lg{grid-column:1;padding-top:.5rem;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)}
   .rp-lrow>:not(.rp-lg){grid-column:2;min-width:0}
-  .rp-chips{display:flex;flex-wrap:wrap;gap:.35rem}
+  .rp-chips{display:flex;flex-wrap:wrap;gap:.3rem}
   .rp-chip{position:relative;display:inline-flex;margin:0;padding:0;border:0;background:none;font:inherit;cursor:pointer}
   .rp-chip input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:1}
   .rp-chip input:disabled{pointer-events:none}
-  .rp-chip>span{display:inline-flex;align-items:center;gap:.4rem;min-height:34px;padding:.15rem .75rem .15rem .55rem;border:1px solid var(--border-2);border-radius:999px;background:var(--bg);font-size:var(--fs-sm);font-weight:600;line-height:1.2;color:var(--text-dim);white-space:nowrap}
+  .rp-chip>span{display:inline-flex;align-items:center;gap:.3rem;min-height:32px;padding:.1rem .55rem .1rem .42rem;border:1px solid var(--border-2);border-radius:999px;background:var(--bg);font-size:13.5px;font-weight:600;line-height:1.2;color:var(--text-dim);white-space:nowrap}
   .rp-chip>span::before{content:"";flex:none;width:14px;height:14px;box-sizing:border-box;border:1.5px solid var(--text-muted);border-radius:4px;background:transparent}
   .rp-chip-r>span::before{border-radius:50%}
   .rp-chip input:checked+span,.rp-chip[aria-pressed="true"]>span{background:var(--brand-fill);border-color:var(--brand-fill);color:#0a0c0d}
@@ -630,7 +632,7 @@
   .rp-chip input:focus-visible+span,.rp-chip:focus-visible>span{outline:2px solid var(--gold);outline-offset:2px}
   .rp-chip:focus{outline:none}
   .rp-lseg{gap:0}
-  .rp-lseg span{min-height:34px;padding:.15rem .7rem;border-radius:0;font-size:var(--fs-sm);white-space:nowrap}
+  .rp-lseg span{min-height:32px;padding:.1rem .55rem;border-radius:0;font-size:13.5px;white-space:nowrap}
   .rp-lseg label+label span{margin-left:-1px}
   .rp-lseg label:first-child span{border-radius:var(--r-sm) 0 0 var(--r-sm)}
   .rp-lseg label:last-child span{border-radius:0 var(--r-sm) var(--r-sm) 0}
@@ -639,35 +641,53 @@
   .rp-cropdays{display:flex;flex-wrap:wrap;gap:.35rem .9rem;font-size:var(--fs-sm);color:var(--text-dim)}
   .rp-cropdays label{display:inline-flex;align-items:center;gap:.35rem}
   .rp-cropdays input{width:auto;min-height:36px;padding:.15rem .4rem}
-  .rp-stn{display:block;margin:.2rem 0 .5rem}
   .rp-words-x{margin-top:.8rem}
+  /* the Where card, short: on a link that already has a place, the Canada hint and the example years step aside */
+  .rp-where .rp-step-h{margin:0 0 .55rem}
+  html.rp-tool-first .rp-ca-hint,html.rp-tool-first .rp-stories{display:none}
+  .rp-stn{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:.5rem;margin:.2rem 0 .3rem}
+  .rp-stn>span{font-size:var(--fs-xs);font-weight:600;color:var(--text-dim)}
+  .rp-stn select{min-height:40px}
+  @media(min-width:600px){.rp-form{grid-template-columns:minmax(0,1fr) auto;align-items:end}.rp-form .rp-place{grid-column:1/-1}.rp-form .btn{width:auto;min-height:44px;padding:0 1.2rem}}
   @media(max-width:899px){
     /* the print pins under the menu while the options are worked */
     .rp-pv{position:sticky;top:var(--rp-nav,64px);z-index:30;margin:0 -16px;padding:0 0 6px;background:var(--bg);border-bottom:1px solid var(--border)}
     .rp-pv .rp-wall{margin:0;padding:8px 16px 0}
     .rp-pv .rp-frame{max-width:330px}
     .rp-pv .rp-cap{padding:4px 0 6px;gap:.3rem .6rem}
-    .rp-pv .rp-cap-l{flex-basis:100%;text-align:center}
+    .rp-pv .rp-cap-l{flex-basis:100%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .rp-pv .rp-view{width:100%;justify-content:center;flex-wrap:nowrap;gap:.3rem}
-    .rp-pv .rp-view .chip,.rp-pv .rp-view .rp-seg span{min-height:34px;padding:.15rem .6rem}
+    .rp-pv .rp-view .rp-seg{flex-wrap:nowrap}
+    .rp-pv .rp-view .chip,.rp-pv .rp-view .rp-seg span{min-height:34px;padding:.15rem .6rem;white-space:nowrap}
     .rp-say,.rp-pv .rpd-bar,.rp-pv .rp-pending{margin-left:16px;margin-right:16px}
     .rp-say{margin-top:.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     html.rp-from-link .rp-cap-l{min-height:0}
     /* a box with the keyboard up: the print lets go, so the box is never under it */
     body:has(.rp-stepcol :is(input:not([type=checkbox]):not([type=radio]):not([type=date]),textarea):focus) .rp-pv{position:relative;top:auto}
-    .rp-lrow{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;padding:.35rem 0}
+    .rp-lrow{display:flex;flex-wrap:wrap;align-items:center;gap:.25rem;padding:.3rem 0}
     .rp-lrow .rp-chips{display:contents}
-    .rp-lg{padding:0 .15rem 0 0;font-size:10.5px}
+    .rp-lg{padding:0 .1rem 0 0;font-size:10px;letter-spacing:.04em}
     .rp-lwhy,.rp-cropdays{flex-basis:100%}
-    .rp-chip>span{min-height:32px;padding:.1rem .6rem .1rem .45rem;font-size:13px;gap:.3rem}
-    .rp-chip>span::before{width:13px;height:13px}
-    .rp-lseg span{min-height:32px;padding:.1rem .55rem;font-size:13px}
-    .rp-layers{padding:10px 10px 4px}
+    .rp-chip>span{min-height:31px;padding:.05rem .5rem .05rem .38rem;font-size:13px;gap:.28rem}
+    .rp-chip>span::before{width:12px;height:12px}
+    .rp-lseg span{min-height:31px;padding:.05rem .5rem;font-size:13px}
+    .rp-layers{padding:9px 8px 3px}
+    /* a phone on a link with a place: the name in one line, the town, year and Draw in one row */
+    .rp-toolname{font-size:var(--fs-sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 .4rem}
+    .rp-step-h{font-size:var(--fs-md);margin:0 0 .55rem}
+    html.rp-tool-first .rp-form{grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:.4rem}
+    html.rp-tool-first .rp-form .rp-place{grid-column:1/-1}
+    html.rp-tool-first .rp-form .field>span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    html.rp-tool-first .rp-form .btn{width:auto;min-height:44px;padding:0 .8rem}
+    .rp-pv .rpd-bar{gap:.3rem}
+    .rp-pv .rpd-bar .chip{min-height:34px;padding:.1rem .55rem}
+    .rp-pv .rpd-bar .rpd-say{font-size:12px;line-height:1.35;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+    .rp-lh{margin:0 0 .1rem}
   }
-  @media(max-width:899px) and (pointer:coarse){.rp-chip>span,.rp-lseg span{min-height:36px}}
+  
   @media(min-width:900px){
     .rp{max-width:1120px}
-    .rp-flow{grid-template-columns:minmax(0,1fr) 400px;gap:1.25rem}
+    .rp-flow{grid-template-columns:minmax(0,1fr) 412px;gap:1.2rem}
     .rp-wall{padding:18px 20px 2px}
     .rp-frame,.rp-cap{max-width:none}
   }
@@ -734,7 +754,7 @@
             </span>
           </figcaption>
         </figure>
-        <p class="rp-say" id="rp-say" aria-live="polite"></p>
+        <p class="rp-say" id="rp-say" aria-live="polite">Tap a layer to put it on the print.</p>
         <p class="rp-pending" id="rp-pending" aria-live="polite" hidden></p>
       </div>
 
