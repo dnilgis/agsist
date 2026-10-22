@@ -51,7 +51,7 @@ test("each page has one ask, the standard one, and no hand-made signup form", ()
     assert.equal(asks.length, 1, p);
     assert.ok(asks[0].includes(`data-source="${src}"`), p + ": its own source");
     assert.ok(!/id="signup-(card|form|email|btn)"/.test(h), p + ": no custom signup card left");
-    assert.ok(!h.includes("agsist-subs.dnilgis.workers.dev/subscribe"), p + ": no page-local POST to /subscribe");
+    assert.ok(!h.includes("agsist-api.dnilgis.workers.dev/subscribe"), p + ": no page-local POST to /subscribe");
     assert.ok(!DASH.test(asks[0]), p + ": no dashes in the ask");
     assert.ok(/\/components\/loader\.js\?v=\d+/.test(h), p + ": loader.js brings signup-ask.js");
   }
@@ -133,7 +133,7 @@ async function open(browser, port, url, posts, answer) {
   await pg.route("**/*", (r) => {
     const u = r.request().url();
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
-    if (u.startsWith("https://agsist-subs.dnilgis.workers.dev/") && r.request().method() === "POST") {
+    if (u.startsWith("https://agsist-api.dnilgis.workers.dev/") && r.request().method() === "POST") {
       const p = new URL(u).pathname;
       posts.push({ path: p, body: JSON.parse(r.request().postData() || "{}") });
       const a = answer(p);

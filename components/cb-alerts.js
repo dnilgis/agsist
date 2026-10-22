@@ -30,7 +30,7 @@
    Success is shown only on HTTP 2xx with {ok:true}. */
 (function(){
   'use strict';
-  var WORKER = 'https://agsist-subs.dnilgis.workers.dev';
+  var WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var NET = 'https://dnilgis.github.io/bids/';
   var RADII = [10, 25, 50, 75, 100];
   var CROPS = ['corn', 'soybeans', 'wheat', 'sorghum', 'oats'];

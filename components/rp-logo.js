@@ -22,7 +22,7 @@
  */
 (function (root) {
   'use strict';
-  var BASE = 'https://agsist-subs.dnilgis.workers.dev';
+  var BASE = 'https://agsist-api.dnilgis.workers.dev';
   var MAX_FILE = 10 * 1024 * 1024, MAX_SIDE = 1600, MAX_PNG = 2 * 1024 * 1024, WORK_SIDE = 3200;
   var ID_RE = /^[0-9a-hjkmnp-tv-z]{12}$/;
   var NAMES = { png: 'PNG', jpeg: 'JPG', webp: 'WebP', svg: 'SVG' };

@@ -40,10 +40,10 @@
 <p><a href="/">agsist.com</a></p>
 <noscript><p>This page needs JavaScript. To stop emails, email <a href="mailto:news@agsist.com?subject=unsubscribe">news@agsist.com</a> with the word unsubscribe.</p></noscript>
 </main>
-<script src="/components/outbox.js?v=1"></script>
+<script src="/components/outbox.js?v=2"></script>
 <script>
 (function () {
-  var WORKER = 'https://agsist-subs.dnilgis.workers.dev';
+  var WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var STOP = 'mailto:news@agsist.com?subject=unsubscribe';
   // the routes an email links to (subs worker FD_ROUTES); true = a stop link
   var ROUTES = { 'unsubscribe': 1, 'alert-unsubscribe': 1, 'notice-unsubscribe': 1, 'watch-unsubscribe': 1,

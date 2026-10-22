@@ -30,7 +30,7 @@
   'use strict';
   if (root.AgRpShort) return;
 
-  var WORKER = 'https://agsist-subs.dnilgis.workers.dev/rp-short';
+  var WORKER = 'https://agsist-api.dnilgis.workers.dev/rp-short';
   var BASE = 'HTTPS://AGSIST.COM/R?';
   var KEY = 'agsist-rps:';
   // 3 s (was 1.2, 2026-10-14 panel 3 F3): a pause while typing a name no longer makes a short id of its own

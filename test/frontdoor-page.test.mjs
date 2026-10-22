@@ -26,7 +26,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => fs.readFileSync(ROOT + p, "utf8");
 const PAGE = read("e.html");
-const W = "https://agsist-subs.dnilgis.workers.dev";
+const W = "https://agsist-api.dnilgis.workers.dev";
 const SHOTS = process.env.FD_SHOTS || "";
 
 test("the page by its source: noindex, no nav weight, routes match the worker and the link maker", () => {

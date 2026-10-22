@@ -38,6 +38,7 @@ on:
       - 'scripts/audience_from_exports.py'
       - 'scripts/build_audience.py'
       - 'data/audience.json'
+      - 'scripts/build_rp_sealed.mjs'
 
 concurrency:
   group: sponsor-report
@@ -49,7 +50,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     permissions:
       contents: write
     steps:
@@ -125,11 +126,29 @@ jobs:
           GA4_SERVICE_ACCOUNT: ${{ secrets.GA4_SERVICE_ACCOUNT }}
         run: python3 scripts/build_sponsor_report.py
 
+      # THE RAIN PRINT QR WITHOUT THE WORKER (Oct 22, 2026). A printed QR opens
+      # agsist.com/r?<id>; when the subs worker does not answer, /r opens a
+      # sealed file from data/rp-sealed/ instead. This writes those files from
+      # the private daily copy of the worker's storage: one file per short
+      # link, named and locked by a slow derivation of its id, so no id and no
+      # design is published (scripts/build_rp_sealed.mjs has the threat model).
+      # Counts only in the log. Never stops the sponsor reports.
+      - name: Rain Print QR backup
+        continue-on-error: true
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          bash scripts/fetch_private.sh private-data || exit 0
+          git show origin/private-data:kv-backup/latest.json.gz > "$RUNNER_TEMP/kv.json.gz" || exit 0
+          node scripts/build_rp_sealed.mjs "$RUNNER_TEMP/kv.json.gz"
+          rm -f "$RUNNER_TEMP/kv.json.gz"
+
       - name: Commit
         run: |
           git config user.name  "agsist-bot"
           git config user.email "bot@agsist.com"
           git add data/sponsors data/audience.json 2>/dev/null || true
+          git add -A data/rp-sealed 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "no change"
             exit 0

@@ -45,7 +45,7 @@
   'use strict';
   if (root.AgRpGift) return;
 
-  var API = 'https://agsist-subs.dnilgis.workers.dev/rp-gift/';
+  var API = 'https://agsist-api.dnilgis.workers.dev/rp-gift/';
   var KEY = 'agsist-rp-gift';
   var TIMEOUT_MS = 12000;
   var B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';

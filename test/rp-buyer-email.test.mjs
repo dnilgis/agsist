@@ -184,7 +184,7 @@ test("in a browser: the approve page posts once, says approved, already approved
     await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
       const req = r.request(), h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
       if (req.method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
-      if (req.url() === "https://agsist-subs.dnilgis.workers.dev/rp-order/approve") { posts.push(JSON.parse(req.postData())); return r.fulfill({ status: answer.status, headers: h, json: answer.json }); }
+      if (req.url() === "https://agsist-api.dnilgis.workers.dev/rp-order/approve") { posts.push(JSON.parse(req.postData())); return r.fulfill({ status: answer.status, headers: h, json: answer.json }); }
       return r.abort();
     });
     const page = await ctx.newPage();

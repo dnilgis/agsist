@@ -76,7 +76,7 @@ test("the worker routes (scripts/test_rp_order_worker.mjs)", () => {
 
 test("the page posts the record on the Stripe path only, waits at most 2 s, and never sends an email", () => {
   const S = read("components/rain-print.js");
-  assert.match(S, /var ORDER_URL = 'https:\/\/agsist-subs\.dnilgis\.workers\.dev\/rp-order', PRESS_WAIT_MS = 2000/);
+  assert.match(S, /var ORDER_URL = 'https:\/\/agsist-api\.dnilgis\.workers\.dev\/rp-order', PRESS_WAIT_MS = 2000/);
   const i = S.indexOf("if (link && code) {\n      var u = link"), j = S.indexOf("return;\n    }", i);
   assert.ok(i > 0 && j > i);
   const body = S.slice(i, j);

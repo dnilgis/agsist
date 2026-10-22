@@ -998,7 +998,7 @@ POSTAL = "AGSIST, PO Box 243, Chetek, WI 54728"
 # watch.js 429s (2026-10-19): the worker answers 429 for three reasons, and
 # the reader is told which: error "limit" (5 counties an address), "busy
 # today" (the day's cap for everyone) and the per-connection rate limit.
-WATCH_JS = """(function(){var U='https://agsist-subs.dnilgis.workers.dev/watch-subscribe';
+WATCH_JS = """(function(){var U='https://agsist-api.dnilgis.workers.dev/watch-subscribe';
 document.querySelectorAll('form.watch').forEach(function(F){F.addEventListener('submit',function(ev){
 ev.preventDefault();var m=F.querySelector('.wm'),b=F.querySelector('button'),em=F.elements.email.value.trim();
 if(!em)return;b.disabled=true;m.textContent='Sending...';

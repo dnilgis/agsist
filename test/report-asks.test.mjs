@@ -136,7 +136,7 @@ async function newPage(browser, port, posts, o = {}) {
   await pg.route("**/*", (r) => {
     const u = r.request().url();
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
-    if (u.startsWith("https://agsist-subs.dnilgis.workers.dev/") && r.request().method() === "POST") {
+    if (u.startsWith("https://agsist-api.dnilgis.workers.dev/") && r.request().method() === "POST") {
       const p = new URL(u).pathname;
       const b = JSON.parse(r.request().postData() || "{}");
       posts.push({ path: p, body: b });

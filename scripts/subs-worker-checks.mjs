@@ -254,7 +254,7 @@ let t = await sig('rent@farm.com');
 r = await call('/notice-unsubscribe?e=rent@farm.com&t=' + t + '&topic=rent:wi');
 A(r.status === 200 && (await r.text()).includes('Nothing happens') && 'rent:wi' in note('rent@farm.com').t, 'notice unsubscribe GET changes nothing');
 r = await call('/notice-unsubscribe?e=rent@farm.com&t=bad', 'POST');
-A((await r.text()).includes("isn't valid") && store.has('note:rent@farm.com'), 'notice unsubscribe with a bad token removes nothing');
+A((await r.text()).includes("That unsubscribe link no longer works.") && store.has('note:rent@farm.com'), 'notice unsubscribe with a bad token removes nothing');
 r = await call('/notice-unsubscribe?e=rent@farm.com&t=' + t + '&topic=rent:wi', 'POST');
 A(!('rent:wi' in note('rent@farm.com').t) && ('arcplc:' + D1) in note('rent@farm.com').t, 'notice unsubscribe one topic');
 r = await call('/notice-unsubscribe?e=rent@farm.com&t=' + t, 'POST');
@@ -573,7 +573,7 @@ for (const [p, b] of Object.entries(goodBodies)) {
   F.st.set('sub:u@farm.com', '{}');
   for (const bad of [t.slice(0, 15), t + '0', t.toUpperCase(), t.slice(1) + t[0], '']) {
     r = await req(F.env, '/unsubscribe?e=u@farm.com&t=' + bad, { m: 'POST' });
-    A((await r.text()).includes("isn't valid") && F.st.has('sub:u@farm.com'), 'unsubscribe refuses a near-miss token ' + JSON.stringify(bad));
+    A((await r.text()).includes("That unsubscribe link no longer works.") && F.st.has('sub:u@farm.com'), 'unsubscribe refuses a near-miss token ' + JSON.stringify(bad));
   }
   r = await req(F.env, '/unsubscribe?e=u@farm.com&t=' + t, { m: 'POST' });
   A(!F.st.has('sub:u@farm.com'), 'the right token still unsubscribes');
@@ -679,7 +679,7 @@ for (const [p, b] of Object.entries(goodBodies)) {
     A(r.status === 200 && !F.st.has(key + 'x@farm.com'), 'secret unset: ' + p.split('?')[0] + ' still works');
   }
   r = await req(F.env, '/unsubscribe?e=not-an-email&t=1', { m: 'POST' });
-  A((await r.text()).includes("isn't valid"), 'secret unset: a bad address is still refused');
+  A((await r.text()).includes("That unsubscribe link no longer works."), 'secret unset: a bad address is still refused');
   A(errs.some(m => /UNSUB_SECRET is not set; honouring an unsubscribe WITHOUT checking/.test(m)), 'secret unset: each unchecked unsubscribe logs a loud error');
   errs.length = 0;
   // confirming (a new subscription) needs the secret

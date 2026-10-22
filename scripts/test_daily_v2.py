@@ -156,6 +156,8 @@ def main():
     # links: a worker-host unsubscribe is never printed
     b = build(d21, unsub_url="https://agsist-subs.dnilgis.workers.dev/unsubscribe?k=0123456789abcdef&t=1")
     ok("workers.dev" not in b["html"] and "workers.dev" not in b["text"] and "reply with subject line: unsubscribe" in b["text"], "worker host dropped")
+    b = build(d21, unsub_url="https://agsist-api.dnilgis.workers.dev/unsubscribe?k=0123456789abcdef&t=1")
+    ok("workers.dev" not in b["html"] and "workers.dev" not in b["text"], "the new worker host (agsist-api) dropped too")
     b = build(d21, unsub_url="https://agsist.com/e?r=unsubscribe&k=0123456789abcdef&t=1")
     ok("https://agsist.com/e?r=unsubscribe" in b["text"], "the front door unsubscribe stays")
     # facts

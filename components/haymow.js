@@ -15,7 +15,7 @@
  */
 (function () {
   'use strict';
-  var WORKER = 'https://agsist-subs.dnilgis.workers.dev';
+  var WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var ZIPS = 'https://dnilgis.github.io/bids/data/zips/';
   var MINE_KEY = 'agsist-hay-mine';
 

@@ -93,7 +93,7 @@ REPO = "dnilgis/agsist"
 BIDS_REPO = "dnilgis/bids"
 BIDS_INDEX = "https://dnilgis.github.io/bids/data/index.json"
 TODAY_URL = "https://agsist.com/elev-today.html"
-PASTE_STATUS = "https://agsist-subs.dnilgis.workers.dev/elev/paste-status"
+PASTE_STATUS = "https://agsist-api.dnilgis.workers.dev/elev/paste-status"
 # Sites the elevator desk has a paste reader for (components/paste-bids.js SITES).
 PASTE_READERS = {"newcoop.com": ("newcoop", "NEW Cooperative", "https://www.newcoop.com/cash-bids")}
 # dnilgis/bids lib/freshness.mjs: WITHDRAW_H, PASTED_WITHDRAW_H, LATE_H.

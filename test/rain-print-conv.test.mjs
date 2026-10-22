@@ -142,7 +142,7 @@ async function withPage(fn, { width = 1280, height = 900, clock = "2026-10-20T17
     await ctx.clock.setFixedTime(new Date(clock));
     const log = { order: [], stripe: [], remind: [] };
     await mocks(ctx, {}, log);
-    await ctx.route(/agsist-subs\.dnilgis\.workers\.dev\/rp-remind$/, (r) => {
+    await ctx.route(/agsist-api\.dnilgis\.workers\.dev\/rp-remind$/, (r) => {
       const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
       if (r.request().method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       log.remind.push(JSON.parse(r.request().postData()));

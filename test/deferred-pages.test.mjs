@@ -22,7 +22,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
-const W = "https://agsist-subs.dnilgis.workers.dev";
+const W = "https://agsist-api.dnilgis.workers.dev";
 const SHOTS = process.env.DEFERRED_SHOTS || "";
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
@@ -57,7 +57,7 @@ async function withSite(fn, { width = 1280, height = 900 } = {}) {
         return r.fulfill({ status: 200, contentType: TYPES[path.extname(p)] || "application/octet-stream", body: fs.readFileSync(p) });
       }
       if (u.host === "formspree.io") { log.formspree.push(q.postData() || ""); return r.fulfill({ headers: { "Access-Control-Allow-Origin": "*" }, json: { ok: true } }); }
-      if (u.host === "agsist-subs.dnilgis.workers.dev") {
+      if (u.host === "agsist-api.dnilgis.workers.dev") {
         if (q.method() !== "OPTIONS") log.tried.push(q.method() + " " + u.pathname);
         if (state.mode === "blocked") return r.fulfill({ status: 403, contentType: "text/html; charset=UTF-8", body: BLOCK });
         if (state.mode === "down") return r.abort("connectionrefused");
@@ -229,10 +229,10 @@ test("Email me this design: worker blocked, it goes to Sig by the backup form wi
     // NOAA and the town lookup answered with made-up data (the same fixture the Rain Print tests use)
     const fx = { order: [], stripe: [] };
     await mocks(ctx, {}, fx);
-    await ctx.route(/^https?:\/\/(agsist\.com|formspree\.io|agsist-subs\.dnilgis\.workers\.dev)\//, async (r) => {
+    await ctx.route(/^https?:\/\/(agsist\.com|formspree\.io|agsist-api\.dnilgis\.workers\.dev)\//, async (r) => {
       const q = r.request(), u = new URL(q.url());
       if (u.host === "formspree.io") { log.formspree.push(q.postData() || ""); return r.fulfill({ headers: { "Access-Control-Allow-Origin": "*" }, json: { ok: true } }); }
-      if (u.host === "agsist-subs.dnilgis.workers.dev") { log.tried.push(q.method() + " " + u.pathname); return r.fulfill({ status: 403, contentType: "text/html", body: BLOCK }); }
+      if (u.host === "agsist-api.dnilgis.workers.dev") { log.tried.push(q.method() + " " + u.pathname); return r.fulfill({ status: 403, contentType: "text/html", body: BLOCK }); }
       let p = path.normalize(path.join(ROOT, decodeURIComponent(u.pathname)));
       if (!path.extname(p) && fs.existsSync(p + ".html")) p += ".html";
       if (!p.startsWith(ROOT) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) return r.fulfill({ status: 404, body: "" });

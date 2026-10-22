@@ -581,10 +581,10 @@ def selftest():
     ck("invoice reminder names the month", "Oct 10, 2026 to Nov 9, 2026" in em[0][1]["paras"][0], em[0][1]["paras"][0])
     m = msg("a@b.com", fa="x@agsist.com", **emails_for("confirm", A(company="<b>x</b>"), "https://w.dev", "sec", card, today, "s")[0][1])
     ck("html escapes what the applicant typed", "<b>x</b>" not in m.get_body(("html",)).get_content())
-    em = emails_for("confirm", A(), "https://agsist-subs.dnilgis.workers.dev", "sec", card, today, "sig@x.com")
+    em = emails_for("confirm", A(), "https://agsist-api.dnilgis.workers.dev", "sec", card, today, "sig@x.com")
     ck("the confirm link is the agsist.com front door, never the worker (Oct 22)",
        em[0][1]["button"][1] == email_links.FRONT + "?a=sponsor-confirm&i=a1b2c3d4e5f6&t=" + token("sec", "a1b2c3d4e5f6|sc"))
-    em = emails_for("notify", A(status="confirmed"), "https://agsist-subs.dnilgis.workers.dev", "sec", card, today, "sig@x.com")
+    em = emails_for("notify", A(status="confirmed"), "https://agsist-api.dnilgis.workers.dev", "sec", card, today, "sig@x.com")
     us = [em[0][1]["button"][1]] + [x[1] for x in em[0][1].get("links") or []]
     ck("Sig's decide links are the front door too", us and all(u.startswith(email_links.FRONT + "?a=sponsor-decide&i=a1b2c3d4e5f6&d=") for u in us), us)
     m = msg("sig@x.com", fa="x@agsist.com", **em[0][1])

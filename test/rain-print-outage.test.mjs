@@ -275,7 +275,7 @@ test("worker blocked: a logo that can't upload stays on the print and in this br
     assert.doesNotMatch(await page.textContent("#rp-logo-msg"), /didn.t load/);
     // the worker answers again: the kept logo goes up under its own id, once
     opts.worker = "";
-    await ctx.route(/agsist-subs\.dnilgis\.workers\.dev\/rp-logo/, (rt) => {
+    await ctx.route(/agsist-api\.dnilgis\.workers\.dev\/rp-logo/, (rt) => {
       const req = rt.request(), h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
       if (req.method() === "OPTIONS") return rt.fulfill({ status: 204, headers: h });
       if (req.method() === "POST") { ups.push({ url: req.url(), bytes: req.postDataBuffer() }); return rt.fulfill({ headers: h, json: { ok: true, id: new URL(req.url()).searchParams.get("id"), w: 40, h: 40 } }); }
