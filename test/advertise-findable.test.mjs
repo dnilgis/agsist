@@ -178,3 +178,16 @@ test("in a browser: an unsold slot shows one Sponsor this page link; a sold one 
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
+
+test("/sponsor: who reads AGSIST sits in the first screen, from the same audience file as the list below", () => {
+  const h = read("sponsor.html");
+  const hero = h.slice(h.indexOf('<section class="sp-hero"'), h.indexOf("</section>", h.indexOf('<section class="sp-hero"')));
+  for (const k of ["views", "users", "subs"]) assert.match(hero, new RegExp(`<span data-a="${k}">[\\d,]+</span>`), k);
+  assert.ok(hero.indexOf('class="sp-reach"') < hero.indexOf('class="sp-btn"'), "before the button");
+  assert.match(hero, /<a class="sp-btn" href="\/sponsor-apply">/);
+  assert.match(hero, /href="tel:\+17157972428">715-797-2428<\/a>/);
+  assert.match(hero, /href="mailto:sig@agsist\.com/);
+  // the page refreshes every data-a span from data/audience.json on load
+  assert.match(h, /querySelectorAll\('\[data-a="' \+ k \+ '"\]'\)/);
+  assert.match(h, /your state&rsquo;s cash bids \(the state page and every town page in it\)/);
+});
