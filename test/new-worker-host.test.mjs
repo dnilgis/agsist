@@ -36,6 +36,7 @@ test("wrangler.api.toml is wrangler.subs.toml with the new name", () => {
   assert.equal(subs[0], 'name = "agsist-subs"', "the old Worker's build file is unchanged");
   assert.deepEqual(api.slice(1), subs.slice(1), "same main, date, keep_vars and KV binding");
   assert.ok(api.includes("keep_vars = true") && api.includes('binding = "SUBS"'));
+  assert.ok(api.includes("workers_dev = true") && api.includes("preview_urls = false"), "the workers.dev address stays on");
   assert.match(read("workers/README.md"), /npx wrangler@4\.149\.0 deploy --config wrangler\.api\.toml/);
 });
 

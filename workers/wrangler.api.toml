@@ -3,6 +3,10 @@ main = "subs-worker.js"
 compatibility_date = "2026-09-30"
 # Never wipe settings made in the dashboard on a Git deploy.
 keep_vars = true
+# Keep the workers.dev address on, and no per-version preview URLs: a deploy
+# from the dashboard once left the new Worker with no address at all.
+workers_dev = true
+preview_urls = false
 
 # The new home of the subs Worker (Oct 22, 2026): the same code as
 # wrangler.subs.toml, on a new name, after Cloudflare blocked
