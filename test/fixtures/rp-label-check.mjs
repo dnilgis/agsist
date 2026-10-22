@@ -252,3 +252,11 @@ export function counts(issues, soft = false) {
   return c;
 }
 export const HARD = (issues) => issues.filter((i) => i.kind !== "grid");
+
+/* A piece of words that rides after another in one <text> (a <tspan dx>: the year after the farm name or the
+   town, 2026-10-22) is its own piece on the print: this writes it as its own <text>, in its own font, for the
+   tests that read a print's words one piece at a time. */
+export function splitRiders(svg) {
+  return svg.replace(/(<text[^>]*font-family="([^"]*)"[^>]*>)([^<]*)<tspan dx="[\d.]+"([^>]*)>([^<]*)<\/tspan><\/text>/g,
+    (m, open, fam, a, attrs, b) => open + a + '</text><text font-family="' + fam + '"' + attrs + ">" + b + "</text>");
+}
