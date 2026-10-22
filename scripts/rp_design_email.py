@@ -56,6 +56,9 @@ import smtplib
 import ssl
 import sys
 import urllib.parse
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import email_links  # noqa: E402  (links go to the agsist.com front door; the worker host is never in an email)
 import urllib.request
 from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
@@ -187,7 +190,9 @@ def paid_match(row, orders, buyer_of):
 # ───────────────────────────── the emails ─────────────────────────────
 
 def stop_url(base, row):
-    return "%s/rp-remind/stop?k=%s&t=%s" % (base, urllib.parse.quote(row["key"], safe=""), urllib.parse.quote(str(row.get("stop_t") or ""), safe=""))
+    """The reminder's stop link: the agsist.com front door (Oct 22), which asks
+    the worker's /rp-remind/stop from the reader's browser. base only has to be set."""
+    return email_links.front("rp-remind/stop", [("k", row["key"]), ("t", str(row.get("stop_t") or ""))])
 
 
 def words(row, stage, prices, today):
@@ -237,7 +242,7 @@ def build(row, stage, to, base, prices, today):
         '<p style="margin:0 0 14px">%s</p>%s%s%s<p style="margin:0 0 18px">Sig</p>'
         '<p style="margin:0;font-size:13px;color:#666">%s<br>%s</p></body></html>'
         % (H.escape(paras[0]), btn, p, stop_h, H.escape(foot[0]), H.escape(foot[1])), subtype="html")
-    return m
+    return email_links.check_message(m)
 
 
 # ───────────────────────────── run ─────────────────────────────
@@ -421,7 +426,9 @@ def selftest():
     ck("now: the link carries the design", (SITE + "?d=" + code) in body, body)
     ck("now: subject", sent[0]["Subject"] == "Your Rain Print design: Chetek, WI, 2025", sent[0]["Subject"])
     ck("now: says one reminder, then nothing", "one reminder tomorrow unless you order it. Then nothing more about it." in body)
-    ck("now: stop link", "https://subs.example/rp-remind/stop?k=rpr%3A" in body and sent[0]["List-Unsubscribe"])
+    ck("now: stop link, the agsist.com front door", email_links.FRONT + "?a=rp-remind/stop&k=rpr:" in body
+       and email_links.unsub_web(sent[0]).startswith(email_links.FRONT + "?a=rp-remind/stop&k=rpr:") and sent[0]["List-Unsubscribe-Post"] is None)
+    ck("now: the worker host is nowhere in the email", "subs.example" not in sent[0].as_string() and "workers.dev" not in sent[0].as_string())
     ck("now: the story line, no em dash", STORY in body and "\u2014" not in body)
     ck("log: no address", not any("@" in x for x in log), str(log))
     # a second run: nothing (sent, not yet a day)

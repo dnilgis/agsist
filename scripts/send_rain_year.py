@@ -55,6 +55,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 sys.path.insert(0, str(HERE))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 import send_notice as SN          # noqa: E402  transport, render, unsubscribe link, mark
 import build_county_rain as BCR   # noqa: E402  done_year, answer, the page's own sentences
@@ -368,8 +369,11 @@ def selftest():
     ck("links the county page it was asked on", SITE + "/rain/iowa/story-county?" + UTM in txt)
     ck("links the Rain Print for that place and year", SITE + "/rain-print?place=Ames%2C+IA&year=2026" in txt)
     ck("every agsist.com link in the email is tagged rain_year (2026-10-19)",
-       all(UTM in u for u in re.findall(r'https://agsist\.com/[^\s"<>]*', txt + htm.replace("&amp;", "&"))),
-       [u for u in re.findall(r'https://agsist\.com/[^\s"<>]*', txt) if UTM not in u])
+       all(UTM in u for u in re.findall(r'https://agsist\.com/(?!e\?)[^\s"<>]*', txt + htm.replace("&amp;", "&"))),
+       [u for u in re.findall(r'https://agsist\.com/(?!e\?)[^\s"<>]*', txt) if UTM not in u])
+    ck("the stop link is the front door, untagged (2026-10-22)",
+       "Unsubscribe: " + SN.email_links.FRONT + "?a=notice-unsubscribe&k=" in txt and "utm_" not in txt.split(SN.email_links.FRONT)[1].split()[0],
+       txt[-400:])
     ck("one email, said so", "There won't be another for this county and year." in txt)
     ck("a county page ask gets no Rain Print ask line", "You asked on Rain Print" not in txt)
     mr = SN.render(T, RP_SRC, "a@example.com", "https://w.dev", "sec", date(2027, 1, 4), "news@agsist.com", None, tmp)
@@ -382,7 +386,7 @@ def selftest():
     ck("a Rain Print ask links its county's rain page", SITE + "/rain/iowa/story-county?" + UTM in tr2, tr2[:600])
     del cm["19169"]["slug"]
     ck("a Rain Print ask, county slug unknown: the state page", SITE + "/rain/iowa?" + UTM in tr)
-    ck("unsubscribe stops this topic", "topic=rainyear%3A2026%3A19169" in txt and m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click")
+    ck("unsubscribe stops this topic", "topic=rainyear%3A2026%3A19169" in txt and m["List-Unsubscribe-Post"] is None)
     low = (txt + htm).lower()
     ck("no em or en dash, no hype", not any(x in txt + htm for x in ("—", "–", "&mdash;", "&ndash;"))
        and "!" not in txt and not any(x in low for x in ("don't miss", "act now", "hurry", "insurance")))

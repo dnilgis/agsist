@@ -71,6 +71,7 @@ from email.utils import formataddr, make_msgid
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 import list_source  # noqa: E402  (a blocked worker is a skip, not a failed run)
+import email_links  # noqa: E402  (links go to the agsist.com front door; the worker host is never in an email)
 
 try:
     from zoneinfo import ZoneInfo
@@ -99,7 +100,9 @@ RP_CHOICE = {"digital": "Digital file", "print12x18": "13 x 19 print", "framed12
 DESIGN_RE = re.compile(r"https://agsist\.com/rain-print\?[A-Za-z0-9%+._~=&-]+")
 YEAR_RE = re.compile(r"[?&]year=(\d{4})(?:&|$)")
 # A Rain Print logo (worker v5.23): its id, printed as a link to the PNG the buyer uploaded.
-LOGO_URL = "https://agsist-subs.dnilgis.workers.dev/rp-logo/"
+# Oct 22: the link is the agsist.com front door (email_links.front("logo")), which shows the
+# PNG from the worker; no link in an email points at the worker host.
+LOGO_URL = email_links.FRONT + "?a=logo&id="
 LOGO_ID_RE = re.compile(r"[0-9a-hjkmnp-tv-z]{12}")
 RP_DELIVER = {"buyer": "The buyer", "recipient": "The person it is for"}
 # A business quote's product and shipping choice, spelled out.
@@ -947,7 +950,9 @@ def selftest():
     lp = dict(rp, logo="k3j9m2p7q8rs")
     t = build([lp], "s")
     ck("a logo is a Logo: line with its link", ("Logo: " + LOGO_URL + "k3j9m2p7q8rs") in t.get_body(("plain",)).get_content())
-    ck("a logo is a link in the html", ('href="' + LOGO_URL + 'k3j9m2p7q8rs"') in t.get_body(("html",)).get_content())
+    ck("a logo is a link in the html", ('href="' + H.escape(LOGO_URL) + 'k3j9m2p7q8rs"') in t.get_body(("html",)).get_content())
+    ck("the logo link is the agsist.com front door, never the worker (Oct 22)",
+       LOGO_URL + "k3j9m2p7q8rs" == email_links.front("logo", [("id", "k3j9m2p7q8rs")]) and "workers.dev" not in t.as_string())
     bad = build([dict(rp, logo="<b>x</b>")], "s").get_body(("html",)).get_content()
     ck("a bad logo id is no link", "<b>x</b>" not in bad and "rp-logo/&lt;" not in bad and "does not look right" in bad)
     ck("no logo, no Logo: line", "Logo:" not in build([rp], "s").get_body(("plain",)).get_content())

@@ -29,6 +29,7 @@ from datetime import datetime, timedelta, timezone
 from email.message import EmailMessage
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 
 LOOKBACK_DAYS = 8
