@@ -10,12 +10,14 @@ with the same signed link the confirm email would carry, so no email is sent.
 import base64, hashlib, hmac, json, os, sys, urllib.parse, urllib.request
 
 UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com)"}
+# The public signup routes take posts only from the site (publicGate checks Origin).
+SITE = {"Origin": "https://agsist.com"}
 
 
 def post(url, body=None):
     data = json.dumps(body).encode() if body is not None else b""
     req = urllib.request.Request(url, data=data, method="POST",
-                                 headers=dict(UA, **({"Content-Type": "application/json"} if body is not None else {})))
+                                 headers=dict(UA, **SITE, **({"Content-Type": "application/json"} if body is not None else {})))
     try:
         with urllib.request.urlopen(req, timeout=30) as r:
             return r.status, r.read().decode("utf-8", "replace")
