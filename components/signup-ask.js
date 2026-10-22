@@ -218,7 +218,7 @@
     var e = res.data && res.data.error ? String(res.data.error) : '';
     if (res.status >= 400 && res.status < 500 && /email/i.test(e)) return 'That email address was not accepted. Check it and try again.';
     return 'That did not go through' + (res.ok || res.status < 400 ? '' : ' (error ' + res.status + ')')
-      + '. Nothing was saved. Try again, or email sig@farmers1st.com and I will add you by hand.';
+      + '. Nothing was saved. Try again, or email sig@agsist.com and I will add you by hand.';
   }
 
   /* ---------- CSS ---------- */

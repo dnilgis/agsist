@@ -37,7 +37,7 @@ import time
 import urllib.error
 import urllib.request
 
-UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36 AGSIST-land-data/1.0 (agsist.com; sig@farmers1st.com)"
+UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36 AGSIST-land-data/1.0 (agsist.com; sig@agsist.com)"
 HOME = "https://www.revenue.wi.gov/Pages/ERETR/data-home.aspx"
 # data-home.aspx only redirects here; used when www.revenue.wi.gov does not answer
 TAP = "https://tap.revenue.wi.gov/RETRHistoric"

@@ -38,7 +38,7 @@
 
   var KEY = 'agsist-outbox', LOCK = 'agsist-outbox-lock', MAX = 30, DAYS = 30, LEASE_MS = 60000, SEND_MS = 15000;
   var LINE = 'Saved. It will go through when our system is back and you next open agsist.com on this device; nothing else to do.';
-  var CONTACT = 'sig@farmers1st.com';
+  var CONTACT = 'sig@agsist.com';
 
   // The worker moved to agsist-api on Oct 22 (same storage behind both). Either
   // host is taken; whatever was kept goes to the new one, since the old one is

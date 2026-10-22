@@ -15,7 +15,7 @@ name: Site forms digest
 # list on /notice-list; counts only, in the email and in the log.
 # Secrets: the same ones the sponsor job uses -- LIST_URL, LIST_TOKEN,
 # SMTP_USER, SMTP_PASS. Optional: SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME,
-# FORMS_TO (else SPONSOR_TO, else sig@farmers1st.com).
+# FORMS_TO (else SPONSOR_TO, else sig@agsist.com).
 
 on:
   schedule:

@@ -413,7 +413,7 @@ test("rp-gift.js: the same code rules as the worker, and the banner words", () =
   assert.equal(G.dayText("Dec 28, 2026"), "Dec 28, 2026");
   // Sig speaks for himself on the Rain Print page, and the promises match the page's.
   const v = G._state({ ok: true, status: "void" }, good).text;
-  assert.equal(v, "This card is no longer active. Write to me at sig@farmers1st.com and I’ll sort it out.");
+  assert.equal(v, "This card is no longer active. Write to me at sig@agsist.com and I’ll sort it out.");
   assert.equal(G.errorText({ status_code: 0 }), "The gift card check didn’t answer. Try again in a minute.");
   assert.equal(G.errorText({ status_code: 503 }), "The gift card check didn’t answer. Try again in a minute.");
   assert.match(lk.text, /comes in January, once the full year is in\.$/);

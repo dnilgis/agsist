@@ -120,7 +120,7 @@
       .then(function (j) { if (t) clearTimeout(t); return j; });
   }
   function errorText(j) {
-    if (j.status_code === 429) return 'Too many tries from this connection. Wait an hour and try again, or write to sig@farmers1st.com.';
+    if (j.status_code === 429) return 'Too many tries from this connection. Wait an hour and try again, or write to sig@agsist.com.';
     if (!j.status_code || j.status_code >= 500 || j.down) return 'The gift card check didn\u2019t answer. Try again in a minute.';
     return j.error || 'That code didn\u2019t work. Check it against the card.';
   }
@@ -160,8 +160,8 @@
       G.note = jan;
       return G;
     }
-    if (G.status === 'redeemed') G.text = 'This card was used on ' + dayText(G.redeemed_on) + '. If that wasn\u2019t you, write to sig@farmers1st.com.';
-    else if (G.status === 'void') G.text = 'This card is no longer active. Write to me at sig@farmers1st.com and I\u2019ll sort it out.';
+    if (G.status === 'redeemed') G.text = 'This card was used on ' + dayText(G.redeemed_on) + '. If that wasn\u2019t you, write to sig@agsist.com.';
+    else if (G.status === 'void') G.text = 'This card is no longer active. Write to me at sig@agsist.com and I\u2019ll sort it out.';
     else if (G.status === 'pending') G.text = 'This card is being used right now. Try again in two minutes.';
     else {
       G.usable = true;

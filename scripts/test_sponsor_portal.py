@@ -234,7 +234,7 @@ def main():
         if a.get("ai"):
             check(bool(a["ai"].get("start") and a["ai"].get("end")), "the AI figure carries its export's dates")
         blob = json.dumps(a)
-        check("@" not in blob.replace("sig@farmers1st.com", ""), "no email address is written into the public file")
+        check("@" not in blob.replace("sig@agsist.com", ""), "no email address is written into the public file")
 
     print("\nthe requests box never pretends")
     # 2026-10-11: the post goes through components/form-post.js (the subs

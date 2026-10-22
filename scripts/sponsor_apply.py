@@ -407,7 +407,7 @@ def main():
         print("LIST_URL, LIST_TOKEN and UNSUB_SECRET are required")
         return 1
     dry = env("DRY_RUN") == "1"
-    sig = env("SPONSOR_TO", "sig@farmers1st.com")
+    sig = env("SPONSOR_TO", "sig@agsist.com")
     fn, fa, rt = env("FROM_NAME", "AGSIST"), log_safe.sender_addr(), env("REPLY_TO") or sig
     card = json.loads((REPO / "data" / "rate-card.json").read_text())
     slots_by_id = {s["id"]: s for s in json.loads((REPO / "data" / "sponsor-slots.json").read_text()).get("slots", [])}

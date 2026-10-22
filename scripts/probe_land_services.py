@@ -36,7 +36,7 @@ REG = os.path.join(ROOT, "data", "land", "parcel-services.json")
 RAW = os.path.join(ROOT, "data", "land-raw", "services")
 GEO = os.path.join(ROOT, "data", "atlas", "counties.geo.json")
 ORIGIN = "https://agsist.com"
-UA = "AGSIST land service check (agsist.com; sig@farmers1st.com)"
+UA = "AGSIST land service check (agsist.com; sig@agsist.com)"
 COUNTY_TOTAL = {"WI": 72, "MN": 87, "IA": 99, "IL": 102, "ND": 53, "SD": 66, "NE": 93, "IN": 92, "OH": 88, "KS": 105, "MO": 115, "MI": 83}
 STNAME = {"WI": "Wisconsin", "MN": "Minnesota", "IA": "Iowa", "IL": "Illinois", "ND": "North Dakota", "SD": "South Dakota",
           "NE": "Nebraska", "IN": "Indiana", "OH": "Ohio", "KS": "Kansas", "MO": "Missouri", "MI": "Michigan"}

@@ -1150,7 +1150,7 @@ window.hydrateDaily = function(data) {
         spAttr.classList.add('daily-spattr--paid');
         spAttr.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-circle"/></svg> Today\u2019s sponsor: <strong>'+escHtml(spNm)+'</strong> \u2192';
         if(spHref){spAttr.href=spHref;spAttr.target='_blank';spAttr.rel='sponsored noopener';}
-        else{spAttr.removeAttribute('target');spAttr.rel='sponsored';spAttr.href='mailto:sig@farmers1st.com';}
+        else{spAttr.removeAttribute('target');spAttr.rel='sponsored';spAttr.href='mailto:sig@agsist.com';}
       }
     }
   }

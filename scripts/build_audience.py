@@ -76,7 +76,7 @@ HOME_STATE = "WI"       # AGSIST is run from Chetek; shown, not ranked
 # and Bing had no row for it at all. One day behind put a false cliff at the end
 # of every chart and dragged the 7-day engagement rate from about 62% to 52%.
 LAG = 2
-UA = "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"
+UA = "AGSIST-automation/1.0 (+https://agsist.com; sig@agsist.com)"
 
 STATES = {
     "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA",

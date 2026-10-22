@@ -33,12 +33,12 @@ Reads:
                            grid for symbols not in surprises[]
 
 Sends:
-  One plain-text email to sig@farmers1st.com containing:
+  One plain-text email to sig@agsist.com containing:
     1. EMAIL block (top)  — ready to forward to subscribers
     2. SMS block (bottom) — ready to copy into group text
 
 Required GitHub secrets:
-  GMAIL_USER      — sig@farmers1st.com
+  GMAIL_USER      — the Gmail account that sends it
   GMAIL_APP_PASS  — Gmail app password (16 chars)
                     Generate at: myaccount.google.com/apppasswords
 
@@ -59,7 +59,7 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).parent.parent
 TZ = ZoneInfo("America/Chicago")
-RECIPIENT = "sig@farmers1st.com"
+RECIPIENT = "sig@agsist.com"
 SITE = "https://agsist.com"
 
 # ── PRICE GRID — order + display labels ──
@@ -438,7 +438,7 @@ def section_footer(today):
         f"Live charts   → {SITE}\n"
         f"\n"
         f"Written by Sigurd Lindquist, CCA.\n"
-        f"Reply at sig@farmers1st.com — I read everything.\n"
+        f"Reply at sig@agsist.com. I read everything.\n"
         f"\n"
         f"Reply STOP to opt out."
     )

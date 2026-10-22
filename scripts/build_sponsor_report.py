@@ -68,7 +68,7 @@ SLOT_DIMENSION = None       # e.g. "customEvent:slot"
 VIEWABLE_EVENTS = ["sponsor_viewable"]
 
 # Where an approval lands. Per-sponsor override in sponsors.json: approve_to.
-APPROVE_TO = "sig@farmers1st.com"
+APPROVE_TO = "sig@agsist.com"
 
 # EMPTY, ON PURPOSE -- see the note above. Every impression event this site has
 # ever fired came from a slot advertising the slot. There is no sponsor history

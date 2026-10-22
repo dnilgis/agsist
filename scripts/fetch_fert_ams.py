@@ -63,7 +63,7 @@ REPORT_ID = "3195"
 AMS_URL = "https://www.ams.usda.gov/mnreports/ams_3195.pdf"
 PAGE_URL = "https://mymarketnews.ams.usda.gov/viewReport/3195"
 REPORT_NAME = "USDA AMS Illinois Production Cost Report (Bi-weekly)"
-UA = "agsist.com fertilizer feed (contact: sig@farmers1st.com)"
+UA = "agsist.com fertilizer feed (contact: sig@agsist.com)"
 
 MAX_MOVE = 0.60
 MIN_PRODUCTS = 3

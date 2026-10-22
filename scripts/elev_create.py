@@ -3,7 +3,7 @@
 
 Run by .github/workflows/elev-create.yml (Actions -> "Add elevator to portal").
 The link is a password for that listing, and Actions logs are public, so it is
-NEVER printed: it goes only by email to FORMS_TO (else sig@farmers1st.com).
+NEVER printed: it goes only by email to FORMS_TO (else sig@agsist.com).
 Same secrets as form_digest.py: LIST_URL, LIST_TOKEN, SMTP_*.
 
 Input comes as environment variables EL_ID, EL_NAME, EL_TOWN, EL_STATE, EL_ZIP,
@@ -54,7 +54,7 @@ Thanks for getting back to me. Happy to get your bids up, and I'll do it however
 
 I tried to find a way to grab them automatically so you wouldn't have to do anything. Bunge has bids up on some of its location pages, but not Haw Creek. I also signed up on the Bunge site to get access to your bids but haven't heard anything back yet. If you know who handles that, or if they can turn on bids for the Haw Creek page, I can pull them from there and you're done.
 
-If you already send out a bid sheet by email or text, just add me to it and I'll take care of the rest.
+If you already send out a bid sheet by email or text, just add bids@agsist.com to it and I'll take care of the rest.
 
 Or here's a page I set up for you where you can put in your own basis, hours and notes:
 
@@ -114,7 +114,7 @@ def main():
             print('That id already exists. For a new link use "New link" on agsist.com/elev-admin.')
         return 1
     link = r.get("link", "")
-    to = env("FORMS_TO") or "sig@farmers1st.com"
+    to = env("FORMS_TO") or "sig@agsist.com"
     m = message(to, rec, link)
     m["From"] = formataddr((env("FROM_NAME", "AGSIST"), log_safe.sender_addr()))
     conn = smtplib.SMTP(env("SMTP_HOST", "smtp.gmail.com"), int(env("SMTP_PORT", "587")), timeout=30)

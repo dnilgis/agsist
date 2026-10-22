@@ -73,7 +73,7 @@ except Exception:                                          # noqa: BLE001
     CHICAGO = dt.timezone(dt.timedelta(hours=-6))
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-REPLY_TO = "sig@farmers1st.com"
+REPLY_TO = "sig@agsist.com"
 ADDRESS = "AGSIST, PO Box 243, Chetek, WI 54728"
 FROM_NAME = "Sig at AGSIST"
 SITE = "https://agsist.com/rain-print"
@@ -419,7 +419,7 @@ def selftest():
 
     # 1. a new ask: the link now, once; marked before the send
     f = Fake([row(1)], [])
-    code_, log = run(f, False, send, "sig@farmers1st.com", now_ms=NOW + 60e3, today="2026-10-20")
+    code_, log = run(f, False, send, "sig@agsist.com", now_ms=NOW + 60e3, today="2026-10-20")
     ck("now: one email", len(sent) == 1 and sent[0]["To"] == "reader1@farm.com", str([m["To"] for m in sent]))
     ck("now: marked sent first", f.marks == [(row(1)["key"], "sent", None)], str(f.marks))
     body = sent[0].get_body(("plain",)).get_content()
@@ -433,20 +433,20 @@ def selftest():
     ck("log: no address", not any("@" in x for x in log), str(log))
     # a second run: nothing (sent, not yet a day)
     sent.clear()
-    run(f, False, send, "sig@farmers1st.com", now_ms=NOW + 2 * H_, today="2026-10-20")
+    run(f, False, send, "sig@agsist.com", now_ms=NOW + 2 * H_, today="2026-10-20")
     ck("now: never twice", not sent)
 
     # 2. the next day, nothing paid: one reminder, marked first, then never again
     sent.clear()
     f = Fake([row(2, sent={"at": "x"})], [{"key": "rpo:1:aa", "status": "paid", "ref": "OTHER", "place": "Ames, IA", "year": 2012, "ts": NOW + H_}])
-    run(f, False, send, "sig@farmers1st.com", now_ms=NOW + 21 * H_, today="2026-10-21")
+    run(f, False, send, "sig@agsist.com", now_ms=NOW + 21 * H_, today="2026-10-21")
     ck("reminder: one", len(sent) == 1 and f.marks == [(row(2)["key"], "reminded", None)], str(f.marks))
     rb = sent[0].get_body(("plain",)).get_content() if sent else ""
     ck("reminder: Christmas dates while they hold", "Order it framed by Dec 9, or as a print by Dec 10 for Christmas delivery." in rb, rb)
     ck("reminder: guarantee", GUARANTEE in rb)
     ck("reminder: only one", "This is the only reminder." in rb)
     sent.clear()
-    run(f, False, send, "sig@farmers1st.com", now_ms=NOW + 30 * H_, today="2026-10-21")
+    run(f, False, send, "sig@agsist.com", now_ms=NOW + 30 * H_, today="2026-10-21")
     ck("reminder: never a second", not sent)
 
     # 3. a paid order matching the design: no reminder, marked done, never after
@@ -458,32 +458,32 @@ def selftest():
     ]:
         sent.clear()
         f = Fake([row(3, sent={"at": "x"})], [o], buyers)
-        run(f, False, send, "sig@farmers1st.com", now_ms=NOW + 22 * H_, today="2026-10-21")
+        run(f, False, send, "sig@agsist.com", now_ms=NOW + 22 * H_, today="2026-10-21")
         ck("paid (%s): no reminder" % name, not sent and f.marks == [(row(3)["key"], "done", "paid")], str(f.marks))
     # an RPS ref
     sent.clear()
     f = Fake([row(4, sent={"at": "x"}, ref="RPS-K7Q2M")], [{"key": "rpo:6:aa", "status": "paid", "ref": "GIFT-RPS-K7Q2M", "ts": NOW + H_}])
-    run(f, False, send, "sig@farmers1st.com", now_ms=NOW + 22 * H_, today="2026-10-21")
+    run(f, False, send, "sig@agsist.com", now_ms=NOW + 22 * H_, today="2026-10-21")
     ck("paid (RPS ref): no reminder", not sent)
     # an unpaid press of the same design does not count
     sent.clear()
     f = Fake([row(5, sent={"at": "x"})], [{"key": "rpo:7:aa", "status": "pay pressed", "ref": code, "ts": NOW + H_}])
-    run(f, False, send, "sig@farmers1st.com", now_ms=NOW + 22 * H_, today="2026-10-21")
+    run(f, False, send, "sig@agsist.com", now_ms=NOW + 22 * H_, today="2026-10-21")
     ck("unpaid press: the reminder still goes", len(sent) == 1)
     # done (stopped or paid) rows: nothing, ever
     sent.clear()
     f = Fake([row(6, done={"why": "stopped"}), row(7, sent={"at": "x"}, done={"why": "paid"})], [])
-    run(f, False, send, "sig@farmers1st.com", now_ms=NOW + 22 * H_, today="2026-10-21")
+    run(f, False, send, "sig@agsist.com", now_ms=NOW + 22 * H_, today="2026-10-21")
     ck("done: nothing", not sent and not f.marks)
     # order records down: the reminder waits
     sent.clear()
     f = Fake([row(8, sent={"at": "x"})], [], orders_fail=True)
-    code_, log = run(f, False, send, "sig@farmers1st.com", now_ms=NOW + 22 * H_, today="2026-10-21")
+    code_, log = run(f, False, send, "sig@agsist.com", now_ms=NOW + 22 * H_, today="2026-10-21")
     ck("orders down: no reminder", not sent and "reminder waits on orders: 1" in log[-1], str(log))
     # too late: closed, nothing sent
     sent.clear()
     f = Fake([row(9, sent={"at": "x"})], [])
-    run(f, False, send, "sig@farmers1st.com", now_ms=NOW + 80 * H_, today="2026-10-24")
+    run(f, False, send, "sig@agsist.com", now_ms=NOW + 80 * H_, today="2026-10-24")
     ck("too late: closed quietly", not sent and f.marks == [(row(9)["key"], "done", "late")])
     # after the cutoff: no Christmas line; this year's print: January
     s, paras, _ = words(row(10), "reminder", Fake([], []).prices(), "2026-12-11")
@@ -495,11 +495,11 @@ def selftest():
     # dry run: to Sig, nothing marked, only fresh asks
     sent.clear()
     f = Fake([row(12), row(13, ts=NOW - 10 * H_)], [])
-    run(f, True, send, "sig@farmers1st.com", now_ms=NOW + 60e3, today="2026-10-20")
-    ck("dry run: to Sig only, nothing marked", [m["To"] for m in sent] == ["sig@farmers1st.com"] and not f.marks, str([m["To"] for m in sent]))
+    run(f, True, send, "sig@agsist.com", now_ms=NOW + 60e3, today="2026-10-20")
+    ck("dry run: to Sig only, nothing marked", [m["To"] for m in sent] == ["sig@agsist.com"] and not f.marks, str([m["To"] for m in sent]))
     # a send that fails after the mark is counted, not retried
     f = Fake([row(14)], [])
-    code_, log = run(f, False, lambda m: (_ for _ in ()).throw(OSError("smtp")), "sig@farmers1st.com", now_ms=NOW + 60e3, today="2026-10-20")
+    code_, log = run(f, False, lambda m: (_ for _ in ()).throw(OSError("smtp")), "sig@agsist.com", now_ms=NOW + 60e3, today="2026-10-20")
     ck("send failed: counted, exit 1", code_ == 1 and "marked, send failed: 1" in log[-1], str(log))
     # words: no em dash anywhere
     for st in ("now", "reminder"):

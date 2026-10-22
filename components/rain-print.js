@@ -1741,8 +1741,8 @@
         xm = t <= cut ? ', and ordered by ' + shortDate(cut) + ' it arrives by Christmas.' : '. Ordered now, it arrives after Christmas.';
       out.push('It ships within ' + ship + ' business days after you approve it' + (xm || '.'));
     }
-    out.push(sv && sv.gift ? 'No card in a few minutes? Check spam, or write to me at sig@farmers1st.com.'
-      : by && !(sv && sv.settle) ? 'Nothing by then? Check spam, or write to me at sig@farmers1st.com.' : 'Questions? Write to me at sig@farmers1st.com.');
+    out.push(sv && sv.gift ? 'No card in a few minutes? Check spam, or write to me at sig@agsist.com.'
+      : by && !(sv && sv.settle) ? 'Nothing by then? Check spam, or write to me at sig@agsist.com.' : 'Questions? Write to me at sig@agsist.com.');
     return out;
   }
 
@@ -1862,7 +1862,7 @@
   }
   var CHOICE = { digital: 'Digital file', print12x18: '13 x 19 print', framed12x18: '13 x 19 framed print' };
   var PRODUCTS = ['digital', 'print12x18', 'framed12x18'];
-  var ORDER_TO = 'sig@farmers1st.com';
+  var ORDER_TO = 'sig@agsist.com';
 
   var ST = fromParams(root.location.search);
   var EXT_WAIT = false, NORM_WAIT = false, BUY_NOTE_CODE = '', XMAS_OFF = true;
@@ -4069,7 +4069,7 @@
   }
   function showPaid(p, sv, fire) {
     var box = $('rp-paid'), lines = paidText({ choice: p.choice, today: TODAY, prices: PRICES, saved: sv });
-    box.innerHTML = '<h2>Paid. Thank you.</h2>' + lines.map(function (t) { return '<p>' + esc(t).replace('sig@farmers1st.com', '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>') + '</p>'; }).join('') +
+    box.innerHTML = '<h2>Paid. Thank you.</h2>' + lines.map(function (t) { return '<p>' + esc(t).replace('sig@agsist.com', '<a href="mailto:sig@agsist.com">sig@agsist.com</a>') + '</p>'; }).join('') +
       // more than one (2026-10-16): one for each of the kids, or the home farm and the rented ground
       '<p>One for each of the kids, or for the home farm and the rented ground? Each is its own order, with its own proof.</p>' +
       (sv ? '<p><button type="button" class="btn btn-primary rp-paid-other" id="rp-paid-other">Make another for someone else</button></p>' : '') +
@@ -4451,7 +4451,7 @@
     pgSync();
   }
   /* RIGHT ABOVE PAY (2026-10-17, panels): who the next email comes from and
-     when, so a proof from a farmers1st.com address isn't taken for spam, and a
+     when, so a proof email from Sig isn't taken for spam, and a
      design of this year says it arrives in January before anyone pays. The
      Christmas date on each card holds only if the proof is OK'd the day it
      comes; this says what happens when it isn't. */

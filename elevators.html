@@ -57,7 +57,7 @@
     {"@type":"Question","name":"How current are the cash bid prices?",
      "acceptedAnswer":{"@type":"Answer","text":"AGSIST reads each elevator's board on a short repeating cycle, day and night. A bid is the last price that elevator posted, shown with the time it was read, so it can trail the futures if the elevator has not updated its board. Always confirm the bid with the elevator before you load or haul."}},
     {"@type":"Question","name":"My elevator isn’t showing up. What can I do?",
-     "acceptedAnswer":{"@type":"Answer","text":"It shows up once AGSIST reads its board. Some smaller independents do not post bids online at all, and some we have not added yet. Use the form on this page or email sig@farmers1st.com and I will see whether it can be added. The network grows most weeks."}},
+     "acceptedAnswer":{"@type":"Answer","text":"It shows up once AGSIST reads its board. Some smaller independents do not post bids online at all, and some we have not added yet. Use the form on this page or email sig@agsist.com and I will see whether it can be added. The network grows most weeks."}},
     {"@type":"Question","name":"How are bids ordered?",
      "acceptedAnswer":{"@type":"Answer","text":"Nearest first, by distance from the ZIP you enter. On the Cash Bids page you can sort by best cash price, best basis or name instead. No elevator pays for placement."}},
     {"@type":"Question","name":"Can an elevator pay to rank higher?",
@@ -415,7 +415,7 @@ button,a,[role="button"]{touch-action:manipulation}
       <label class="cl-chk"><input type="checkbox" name="hosted_board" value="yes"> Tell me about a hosted bid board for our website</label>
       <div class="cl-go">
         <button type="submit" class="cl-btn" id="cl-send">Claim our board</button>
-        <p class="cl-note">Goes to Sig at <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>. Nothing changes on the site until he confirms it with you.</p>
+        <p class="cl-note">Goes to Sig at <a href="mailto:sig@agsist.com">sig@agsist.com</a>. Nothing changes on the site until he confirms it with you.</p>
       </div>
     </form>
     <div class="cl-out" id="cl-out" role="status" aria-live="polite"></div>
@@ -438,7 +438,7 @@ button,a,[role="button"]{touch-action:manipulation}
     </div>
     <div class="el-faq-item">
       <div class="el-faq-q" role="button" tabindex="0" aria-expanded="false">My elevator isn&rsquo;t showing up. What can I do?</div>
-      <div class="el-faq-a"><div class="el-faq-ai">It shows up once AGSIST reads its board. Some smaller independents do not post bids online at all, and some we have not added yet. Use the form on this page or email sig@farmers1st.com and I will see whether it can be added. The network grows most weeks.</div></div>
+      <div class="el-faq-a"><div class="el-faq-ai">It shows up once AGSIST reads its board. Some smaller independents do not post bids online at all, and some we have not added yet. Use the form on this page or email sig@agsist.com and I will see whether it can be added. The network grows most weeks.</div></div>
     </div>
     <div class="el-faq-item">
       <div class="el-faq-q" role="button" tabindex="0" aria-expanded="false">How are bids ordered?</div>
@@ -451,7 +451,7 @@ button,a,[role="button"]{touch-action:manipulation}
   </div>
 
   <div class="el-disc">
-    Cash bids are read from each elevator's own posted board and can trail a change the elevator has not posted yet. Confirm the price with the elevator before you deliver. AGSIST is not a licensed commodity broker and this is not trading advice. Contact: <a href="mailto:sig@farmers1st.com" style="color:var(--gold)">sig@farmers1st.com</a> &middot; <a href="tel:+17157972428" style="color:var(--gold)">715-797-2428</a>
+    Cash bids are read from each elevator's own posted board and can trail a change the elevator has not posted yet. Confirm the price with the elevator before you deliver. AGSIST is not a licensed commodity broker and this is not trading advice. Contact: <a href="mailto:sig@agsist.com" style="color:var(--gold)">sig@agsist.com</a> &middot; <a href="tel:+17157972428" style="color:var(--gold)">715-797-2428</a>
   </div>
 </main>
 <div id="site-footer">
@@ -810,7 +810,7 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
    ANALYTICS: claim_submit with result ok|fail. No field values, ever. */
 (function () {
   'use strict';
-  var TO = 'sig@farmers1st.com';
+  var TO = 'sig@agsist.com';
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   var f = document.getElementById('cl-form');
   var out = document.getElementById('cl-out');

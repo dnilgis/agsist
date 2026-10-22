@@ -460,7 +460,7 @@ test("T9 (page copy): plain words: the nearest weather station, never NOAA's own
 test("T11, T13, T3, P9: logo rights, a mailto, the lost-or-damaged steps, the maker's logo note", () => {
   for (const id of ["rp-logo-help", "rb-logo-help"]) assert.match(HTML.match(new RegExp('id="' + id + '">[^<]*'))[0], /Only a logo you own or have permission to use\./);
   assert.match(HTML, /Your logo is stored on AGSIST&rsquo;s server so the print can use it\./);
-  assert.match(HTML, /Write to me at <a href="mailto:sig@farmers1st\.com">sig@farmers1st\.com<\/a>\.<\/p><\/details>/);
+  assert.match(HTML, /Write to me at <a href="mailto:sig@agsist\.com">sig@agsist\.com<\/a>\.<\/p><\/details>/);
   const faq = HTML.match(/<details><summary>What if something[\s\S]*?<\/details>/)[0];
   assert.match(faq, /If it arrives damaged, glass included, send a photo\. If tracking shows it lost, write to me\./);
   assert.ok(!/lost in the mail[^.]*send a photo/.test(faq), "no photo of a parcel that never came");

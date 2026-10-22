@@ -17,7 +17,7 @@
 (function (root) {
   'use strict';
 
-  var TO = 'sig@farmers1st.com';
+  var TO = 'sig@agsist.com';
   var PAGE = '/list-your-elevator';
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   /* The worker's dirid rule, the same characters refused. */

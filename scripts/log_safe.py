@@ -26,7 +26,7 @@ from email.message import EmailMessage
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 
-OWNER_DEFAULT = "sig@farmers1st.com"   # already public: site contact address
+OWNER_DEFAULT = "sig@agsist.com"   # already public: site contact address
 EMAIL_RX = re.compile(r"[A-Za-z0-9._%+'\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
 
 

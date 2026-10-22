@@ -1073,7 +1073,7 @@ function renderToday(data,why){
   var byline='<div class="dv3-byline">'+
     'By <strong>Sigurd Lindquist</strong>, CCA. '+
     '<a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a>. '+
-    'Reply at <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>. I read everything.'+
+    'Reply at <a href="mailto:sig@agsist.com">sig@agsist.com</a>. I read everything.'+
   '</div>';
 
   // Source + permalink
@@ -1257,7 +1257,7 @@ if(form){
     req.then(function(res){
       if(res.ok){done();return;}
       btn.disabled=false;btn.textContent=label;
-      fail(S?S.errText(res):(res.status===0?'Could not reach the signup service. Check your connection and try again.':'That did not go through (error '+res.status+'). Nothing was saved. Try again, or email sig@farmers1st.com and I will add you by hand.'),
+      fail(S?S.errText(res):(res.status===0?'Could not reach the signup service. Check your connection and try again.':'That did not go through (error '+res.status+'). Nothing was saved. Try again, or email sig@agsist.com and I will add you by hand.'),
         res.status>=400&&res.status<500?em:null);
     });
   });

@@ -18,7 +18,7 @@
   'use strict';
 
   var WORKER = 'https://agsist-api.dnilgis.workers.dev';
-  var SIG_EMAIL = 'sig@farmers1st.com';
+  var SIG_EMAIL = 'sig@agsist.com';
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var CODES = 'FGHJKMNQUVXZ';
   /* The same table as the worker's ELEV_FUT. */

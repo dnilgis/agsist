@@ -123,7 +123,7 @@ for (const path of PAGES) {
   const url = BASE + path;
   for (const [device, width, height] of [["desktop", 1400, 900], ["mobile", 390, 780]]) {
     const ctx = await browser.newContext({ viewport: { width, height },
-      userAgent: "AGSIST-audit/1.0 (+https://agsist.com; sig@farmers1st.com)" });
+      userAgent: "AGSIST-audit/1.0 (+https://agsist.com; sig@agsist.com)" });
     const page = await ctx.newPage();
 
     const errors = [], badRes = [], deadRes = [], okRes = [];

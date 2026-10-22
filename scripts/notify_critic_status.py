@@ -41,7 +41,7 @@ import email_links  # noqa: E402  (every send refuses a link to the worker host;
 import log_safe  # noqa: E402  sender_addr (SES-safe From) and mask_text (no address in the log)
 
 DAILY_PATH = REPO_ROOT / "data" / "daily.json"
-ALERT_TO = "sig@farmers1st.com"
+ALERT_TO = "sig@agsist.com"
 
 
 def send(subject: str, body: str) -> bool:

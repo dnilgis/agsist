@@ -106,8 +106,8 @@ test("title says prototype, like the page; share copy matches the share screen",
   assert.ok(!main.includes("for that field and nothing else"));
 });
 test("the warranty says where to write, as a link, on the card, in the FAQ and in the JSON-LD", () => {
-  assert.equal((main.match(/Send me a photo and tell me what happened\. Write to me at <a href="mailto:sig@farmers1st\.com">sig@farmers1st\.com<\/a>\./g) || []).length, 2);
-  assert.ok(JSON.stringify(ld).includes("Write to me at sig@farmers1st.com."));
+  assert.equal((main.match(/Send me a photo and tell me what happened\. Write to me at <a href="mailto:sig@agsist\.com">sig@agsist\.com<\/a>\./g) || []).length, 2);
+  assert.ok(JSON.stringify(ld).includes("Write to me at sig@agsist.com."));
 });
 test("phone layout: no badge over the funnel, readable phone screens, a full-width email box", () => {
   assert.match(page, /@media\(max-width:899px\)\{\.rg-cbadge\{display:none\}\}/);

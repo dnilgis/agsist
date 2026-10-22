@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 OUT = ROOT / "data" / "signups.json"
 CT = ZoneInfo("America/Chicago")
-UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"}
+UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@agsist.com)"}
 SRC_RE = re.compile(r"[^a-z0-9:_./-]")
 DAYS = 30
 

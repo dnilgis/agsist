@@ -78,7 +78,7 @@ CONFIG = "scripts/coop_fert_sources.json"
 OUT = "data/fertilizer-coops.json"
 HIST = "data/fertilizer-coops-history.json"
 FIX_DIR = "test/fixtures/coop-fert"
-UA = "agsist.com fertilizer price reader (contact: sig@farmers1st.com)"
+UA = "agsist.com fertilizer price reader (contact: sig@agsist.com)"
 
 STALE_DAYS = 60
 MIN_MEDIAN = 2          # a middle price from 2 co-ops up (2: the average of the two)

@@ -42,7 +42,7 @@ jobs:
       - name: Commit updated hail data
         run: |
           git config user.name "agsist-bot"
-          git config user.email "sig@farmers1st.com"
+          git config user.email "sig@agsist.com"
           git add data/hail data/field-scout
           if git diff --cached --quiet; then
             echo "No changes to commit."

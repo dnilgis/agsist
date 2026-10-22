@@ -7,7 +7,7 @@ name: Sponsor sign-ups
 # ends one. Applications live in the subs worker (KV prefix sapp:).
 # Secrets: the same ones the watch jobs use -- LIST_URL, LIST_TOKEN,
 # UNSUB_SECRET, SMTP_USER, SMTP_PASS. Optional: SMTP_HOST, SMTP_PORT,
-# FROM_ADDR, FROM_NAME, REPLY_TO, SPONSOR_TO (defaults to sig@farmers1st.com).
+# FROM_ADDR, FROM_NAME, REPLY_TO, SPONSOR_TO (defaults to sig@agsist.com).
 
 on:
   schedule:

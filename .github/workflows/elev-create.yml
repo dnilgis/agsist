@@ -2,7 +2,7 @@
 # Actions -> "Add elevator to portal" -> Run workflow -> fill in -> Run.
 # The link is a password for the listing and this repo's logs are public, so it
 # is never printed: scripts/elev_create.py sends it to FORMS_TO (else
-# sig@farmers1st.com). Do not put anything private in these fields: run inputs
+# sig@agsist.com). Do not put anything private in these fields: run inputs
 # are visible in the run page. Same secrets as the form digest.
 name: Add elevator to portal
 

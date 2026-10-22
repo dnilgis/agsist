@@ -86,7 +86,7 @@ PAGE = "https://agsist.com/whats-priced-in?utm_source=report_email&utm_medium=em
 # Tagged like PAGE, so GA4 splits this email from the Daily (2026-10-19). The
 # site still reads ?ref= for the sign-up source.
 FORWARD_URL = "https://agsist.com/?ref=email-forward&utm_source=report_email&utm_medium=email"
-UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"}
+UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@agsist.com)"}
 TYPES = ("WASDE", "Crop Production", "Grain Stocks")
 # corn, soybeans, wheat: the nearby contract data/prices.json names in `nearby`
 MOVE_CROPS = (("corn", "corn"), ("beans", "soybeans"), ("wheat", "wheat"))

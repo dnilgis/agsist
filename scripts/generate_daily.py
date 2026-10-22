@@ -2958,7 +2958,7 @@ SPONSOR_HOUSE_AD = {
     "headline": "Sponsor the AGSIST Daily Briefing: $149 a month, first month free.",
     "body": "One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations, who read it every morning before the open. Rate locked in for 12 months from start date. No minimum, cancel anytime. First month free.",
     "cta_text": "Become the sponsor",
-    "cta_url": "mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20sponsor%20inquiry",
+    "cta_url": "mailto:sig@agsist.com?subject=AGSIST%20Daily%20sponsor%20inquiry",
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": True,
 }
@@ -3211,7 +3211,7 @@ def render_byline_block_html():
     return ('<div class="dv3-byline">'
             'By <strong>Sigurd Lindquist</strong>, CCA. '
             '<a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a>. '
-            'Reply at <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>. I read everything.'
+            'Reply at <a href="mailto:sig@agsist.com">sig@agsist.com</a>. I read everything.'
             '</div>')
 
 

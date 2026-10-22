@@ -312,7 +312,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
     b2b = ("<p class=\"hs-pro\">Insurance, roofing and ag firms that use this data with clients can license it as an "
         "embeddable widget. See "
         "<a href=\"/sponsor\">details on the sponsor page</a> or email "
-        "<a href=\"mailto:sig@farmers1st.com\">sig@farmers1st.com</a>.</p>\n")
+        "<a href=\"mailto:sig@agsist.com\">sig@agsist.com</a>.</p>\n")
 
     dataset_ld = ("{\"@type\":\"Dataset\",\"name\":\"" + esc(name) + " hail reports by county\","
         "\"description\":\"" + str(n_yrs) + " years of National Weather Service hail Local Storm Reports for " + esc(name) + ", aggregated by county with peak months and " + share_word(dmg_in) + ".\","

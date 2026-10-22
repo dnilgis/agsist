@@ -5,6 +5,8 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.53 (2026-10-22): AGSIST.COM ADDRESSES (Sig, Oct 22). The void gift card
+ *   answer says write to sig@agsist.com; no farmers1st.com address is left.
  * v5.52 (2026-10-22): NEW HOME, agsist-api.dnilgis.workers.dev (Sig, Oct 22,
  *   after Cloudflare support said a new Worker on the account is his call).
  *   The same code deploys as the new Worker agsist-api (workers/wrangler.api
@@ -4207,7 +4209,7 @@ async function handle(req, env) {
       let rec = null;
       if (key) try { rec = JSON.parse(await env.SUBS.get(key)); } catch (e) { rec = null; }
       if (!rec) { rpgMemMiss(req); return json({ ok: false, error: "We don't know that code. Check it against the card." }, 404, c); }
-      if (rec.status === "void") return json({ ok: false, error: "This card is no longer active. Write to sig@farmers1st.com." }, 410, c);
+      if (rec.status === "void") return json({ ok: false, error: "This card is no longer active. Write to sig@agsist.com." }, 410, c);
       if (rpgPrepaid(rec)) return json({ ok: false, error: "This gift is already paid for and on its way. There is nothing to fill in." }, 409, c);   // v5.40
       if (rec.status === "redeemed") return json({ ok: false, error: "This card was used on " + rpgDay(rec.redeemed_ts) + "." }, 409, c);
       if (rec.status === "pending" && Date.now() - (rec.pending_ts || 0) <= RPG_PENDING_MS)
