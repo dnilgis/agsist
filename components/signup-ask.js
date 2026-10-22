@@ -210,6 +210,9 @@
       });
     }, function () { return { ok: false, status: 0, data: null }; });
   }
+  /* The worker was blocked and loader.js kept the signup on the backup form:
+     {ok:true, queued:true, message}. The plain line to show, or ''. */
+  function queued(res) { return res && res.data && res.data.queued === true ? String(res.data.message || "Got it. You'll be added within a day.") : ''; }
   function errText(res) {
     if (!res || res.status === 0) return 'Could not reach the signup service. Check your connection and try again.';
     var e = res.data && res.data.error ? String(res.data.error) : '';
@@ -441,7 +444,8 @@
         el.removeAttribute('data-sa-busy');
         if (res.ok) {
           el.setAttribute('data-sa-done', '1');
-          el.innerHTML = '<p class="sa-ok" tabindex="-1">' + esc(OK + (topic && daily ? ' The morning briefing starts tomorrow.' : '')) + '</p>';
+          // queued (2026-10-22): the worker was blocked and the signup went to the backup form (loader.js)
+          el.innerHTML = '<p class="sa-ok" tabindex="-1">' + esc(queued(res) || OK + (topic && daily ? ' The morning briefing starts tomorrow.' : '')) + '</p>';
           var ok = el.querySelector('.sa-ok'); try { ok.focus({ preventScroll: true }); } catch (x) { ok.focus(); }
           oneMore(el, { gave: topic ? 'notice' : 'daily', topic: topic, email: email, zip: zipUsed || (topic ? zipStart(el) : ''), reports: topic ? true : reports });
           return;
@@ -793,12 +797,12 @@
           var okIds = [], okTxt = [], err = '';
           rs.forEach(function (r, i) {
             var k = pick[i];
-            if (r && r.ok) { okIds.push(k); okTxt.push(O[k].ok); var rw = row(k); if (rw) rw.parentNode.removeChild(rw); }
+            if (r && r.ok) { okIds.push(k); okTxt.push(queued(r) ? '' : O[k].ok); var rw = row(k); if (rw) rw.parentNode.removeChild(rw); }
             else if (!err) err = errText(r);
           });
           if (okIds.length) track('onemore_added', { from: gave, topics: okIds.join(',') });
           if (!err) {
-            box.innerHTML = '<p class="sa-ok" tabindex="-1">' + esc('Added. ' + okTxt.join(' ')) + '</p>';
+            box.innerHTML = '<p class="sa-ok" tabindex="-1">' + esc(rs.some(queued) ? queued(rs.filter(queued)[0]) : 'Added. ' + okTxt.join(' ')) + '</p>';
             if (barEl && barEl.contains(box)) { placeBar(); setTimeout(function () { closeBar(false); }, 6000); }
             return;
           }
