@@ -28,6 +28,13 @@
  * (an Error with .workerOnly true, and .slow true when the worker only went
  * quiet and may still have it). The page keeps the list and says to call or
  * try again. Every other kind keeps the Formspree fallback.
+ *
+ * THE OUTBOX (2026-10-22): with components/outbox.js on the page, a
+ * WORKER_ONLY post the worker did not take is kept in this browser and
+ * resolves {ok:true, via:'outbox', queued:true}; the page says so plainly,
+ * and the post goes to the worker on the next visit after it is back. Still
+ * never to Formspree. Without outbox.js (or with storage blocked) it rejects
+ * as before.
  */
 (function () {
   'use strict';
@@ -42,9 +49,14 @@
   // and goes to Formspree like any other worker failure.
   var TIMEOUT_MS = 12000;
 
-  function toWorker(kind, data, ms) {
+  var OUTBOX_LABEL = { 'rain-print-business': 'your Rain Print business quote request' };
+  function workerBody(kind, data) {
     var body = { kind: kind };
     Object.keys(data || {}).forEach(function (k) { body[k] = data[k]; });
+    return body;
+  }
+  function toWorker(kind, data, ms) {
+    var body = workerBody(kind, data);
     var ctl = typeof AbortController === 'function' ? new AbortController() : null;
     var timer = null;
     var late = new Promise(function (resolve) {
@@ -101,6 +113,11 @@
   function post(kind, data, formspreeFields, o) {
     return toWorker(kind, data, o && o.workerMs).then(function (x) {
       if ((x === 'fallback' || x === 'slow') && WORKER_ONLY[kind]) {
+        /* Kept in this browser instead (components/outbox.js, 2026-10-22):
+           the list never leaves it until the worker itself answers again. */
+        var kept = window.AgOutbox ? window.AgOutbox.add({ url: WORKER, body: workerBody(kind, data), kind: kind,
+          label: OUTBOX_LABEL[kind] || 'your request' }) : '';
+        if (kept) return { ok: true, via: 'outbox', queued: true, slow: x === 'slow' };
         var e = new Error('not sent'); e.workerOnly = true; e.slow = x === 'slow';
         throw e;
       }

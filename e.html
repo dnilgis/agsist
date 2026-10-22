@@ -40,6 +40,7 @@
 <p><a href="/">agsist.com</a></p>
 <noscript><p>This page needs JavaScript. To stop emails, email <a href="mailto:news@agsist.com?subject=unsubscribe">news@agsist.com</a> with the word unsubscribe.</p></noscript>
 </main>
+<script src="/components/outbox.js?v=2"></script>
 <script>
 (function () {
   var WORKER = 'https://agsist-subs.dnilgis.workers.dev';
@@ -74,16 +75,26 @@
     return p;
   }
   // the worker could not be reached (blocked, no CORS, a page instead of JSON, slow, down)
+  // a confirm can wait (2026-10-22): the reader's press is kept on this device
+  // (components/outbox.js) and sent when the worker answers again
+  var LATER = { 'watch-confirm': 1, 'elevator-watch-confirm': 1, 'price-watch-confirm': 1 }, keepMode = false;
   function down() {
     say('This is not working right now', ROUTES[a] ? [stopLine(), 'Or try again later.'] : ['Try again later. Nothing was changed.']);
     $('again-wrap').hidden = false;
+    if (LATER[a] && window.AgOutbox) {
+      lines.appendChild(el('p', 'Our system is down right now. You can confirm now and it goes through when the system is back.'));
+      keepMode = true; act.textContent = 'Confirm when it is back'; act.disabled = false; $('act-wrap').hidden = false;
+    }
   }
-  function ask(method) {
+  function urlFor() {
     var s = new URLSearchParams();
     KEEP.forEach(function (n) { if (q.has(n)) s.set(n, q.get(n)); });
+    return WORKER + '/fd/' + a + '?' + s.toString();
+  }
+  function ask(method) {
     var c = typeof AbortController === 'function' ? new AbortController() : null;
     var timer = setTimeout(function () { if (c) c.abort(); }, 10000);
-    return fetch(WORKER + '/fd/' + a + '?' + s.toString(), { method: method, signal: c ? c.signal : undefined,
+    return fetch(urlFor(), { method: method, signal: c ? c.signal : undefined,
       credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer' })
       .then(function (r) {
         clearTimeout(timer);
@@ -110,6 +121,13 @@
   }
   act.addEventListener('click', function () {
     act.disabled = true;
+    if (keepMode) {
+      keepMode = false;
+      var id = window.AgOutbox.add({ url: urlFor(), method: 'POST', okIf: 'json', kind: 'fd-' + a, label: 'your alert confirm' });
+      if (id) say('Kept for later', [window.AgOutbox.LINE], true);
+      else say('This is not working right now', ['This browser could not keep it. Try the link again later. Nothing was changed.']);
+      return;
+    }
     ask('POST').then(show, down);
   });
   $('again').addEventListener('click', load);
