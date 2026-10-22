@@ -84,10 +84,10 @@ test("hail-map and gdu-calculator: one Daily ask each, honest about what the Dai
 });
 
 test("versions: signup-ask.js v12 where it loads (Oct 21), home.js v15", () => {
-  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=13';"));
+  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=14';"));
   const idx = read("index.html");
-  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=13"></script>'));
-  assert.ok(idx.includes('<script src="/components/home.js?v=15"></script>'));
+  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=14"></script>'));
+  assert.ok(idx.includes('<script src="/components/home.js?v=16"></script>'));
   assert.ok(read("privacy.html").includes("for one year, so the signup prompts stop until then."));
 });
 
