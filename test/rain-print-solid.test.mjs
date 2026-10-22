@@ -223,7 +223,8 @@ test("P1: a logo still saving, or one that didn't load, keeps checkout shut and 
     assert.equal(r.stage, "note");
     assert.deepEqual(log.stripe, []);
     assert.match(r.note, /The logo didn’t load, so it isn’t on the print\. Remove it or choose the file again, then order\./);
-    assert.equal(await page.evaluate(() => document.getElementById("rp-more").open), true, "a design with a logo opens More options, so the logo box is in sight");
+    // 2026-10-22: the logo box is in Your words, never folded away
+    assert.equal(await page.isVisible("#rp-logo-pick"), true, "the logo box is in sight");
   }, { logoGone: true });
 });
 

@@ -2305,7 +2305,7 @@
     if (!el || !LAYER_NAME[k]) return;
     var why = layerWhy(), nm = LAYER_NAME[k], on, w = why[k], where = LAYER_WHERE[k];
     if (k === 'cmp') { on = ST.cmp !== 'none'; if (on) nm = 'Usual year: ' + (ST.cmp === 'station' ? 'this station' : '30-yr normal'); }
-    else if (k === 'crop') { var c = $('rp-crop').value; on = !!c; if (on) nm = c === 'soy' ? 'Soybeans' : 'Corn'; if (!w && on && !ST.crop) w = cropWhy().replace(/^(Corn|Soybeans) needs? /, 'needs ').replace(/\.$/, ''); }
+    else if (k === 'crop') { var c = $('rp-crop').value; on = !!c; if (on) nm = c === 'soy' ? 'Soybeans' : 'Corn'; if (!w && on && !ST.crop) w = CROP_HAND.plant && CROP_HAND.harvest ? 'the harvest day has to come after the planting day' : 'set the planting and harvest days in the crop row'; }
     else on = !!($('rp-' + k) && $('rp-' + k).checked);
     if (k === 'heat' && heatIncluded()) { el.innerHTML = '<b>Hottest, coldest</b>: included, named on the daily temperature stripes.'; return; }
     if (k === 'ribbon' && on && heatIncluded()) where += '; the hottest and coldest day are named on it';
@@ -4191,7 +4191,16 @@
     if (!FROM_LINK) return;
     FROM_LINK = false;
     doc.documentElement.classList.remove('rp-from-link');
+    // a design link that can't be drawn opens as an ordinary visit, unless the link also names a place
+    try { if (!(new URLSearchParams(root.location.search).get('place') || '').trim()) doc.documentElement.classList.remove('rp-tool-first'); } catch (e) {}
   }
+  /* A link with a place opens on the tool (2026-10-22, Sig): the headline and photo move under it, but the one tap
+     to last year by Christmas ("Make it 2025, by Christmas", shown for a drawn current year) stays on the first
+     screen, over the print. */
+  if (doc.documentElement.classList.contains('rp-tool-first')) (function () {
+    var x = $('rp-xmas-alt'), flow = doc.querySelector('.rp-flow');
+    if (x && flow && flow.parentNode) flow.parentNode.insertBefore(x, flow);
+  })();
   function sharedSet(s) {
     if (!FROM_LINK || !s || !s.place || !s.year) return;
     SHARED = { place: s.place, year: s.year, name: s.name || '' };

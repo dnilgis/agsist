@@ -145,7 +145,8 @@ for (const [label, q] of [["?d=<code>", "?d=" + CODE], ["?d=GIFT-<code>", "?d=GI
       assert.match(L.svg, /2012/, "the print drawn is the shared one");
       assert.doesNotMatch(L.svg, /Johnson|For Dad|Hail/, "no example words on a design from a link");
       assert.ok(L.h1.top > L.art.bottom && L.photo.top > L.art.bottom, "the headline and the photo come after the print");
-      assert.ok(L.place.top > L.h1.top, "the steps follow the headline");
+      // 2026-10-22 (Sig: tool first on links with a place, headline and photo below): the steps come before the headline
+      assert.ok(L.place.top < L.h1.top, "the steps follow the print, the headline after them");
       // no jump: the print's box never moved or resized once it was on screen, and nothing shifted
       assert.equal(new Set(L.tops).size, 1, "the print's box held still: " + L.tops.join(" "));
       assert.ok(L.cls < 0.005, `layout shift ${L.cls.toFixed(4)}: ${L.shifts.join(" | ")}`);

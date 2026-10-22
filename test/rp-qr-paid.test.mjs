@@ -239,11 +239,12 @@ test("every preview carries the standard code, and redraws ask the link service 
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
     assert.equal(await svgQr(page, "#rp-art"), STD, "the page art");
-    // the slim copy that pins under the menu is drawn on a phone, once the print scrolls away
+    // on a phone the print itself stays pinned under the menu while the steps scroll (2026-10-22: it replaces the
+    // slim copy), still with the standard code
     await page.setViewportSize({ width: 390, height: 844 });
     await page.evaluate(() => window.scrollTo(0, document.getElementById("rp-design").getBoundingClientRect().top + scrollY));
-    await page.waitForFunction(() => document.querySelector("#rp-mini svg") && !document.getElementById("rp-strip").hidden, null, { timeout: 10000 });
-    assert.equal(await svgQr(page, "#rp-mini"), STD, "the mini copy");
+    await page.waitForFunction(() => { const r = document.getElementById("rp-art").getBoundingClientRect(); return r.top >= 0 && r.top < 200; }, null, { timeout: 10000 });
+    assert.equal(await svgQr(page, "#rp-art"), STD, "the pinned print");
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.evaluate(() => window.scrollTo(0, 0));
     // redraws: a new name, the other style, a dedication
@@ -257,7 +258,7 @@ test("every preview carries the standard code, and redraws ask the link service 
     await page.waitForFunction(() => document.querySelector("#rp-proof-art svg"), null, { timeout: 10000 });
     assert.equal(await svgQr(page, "#rp-proof-art"), STD, "the up-close view");
     await page.keyboard.press("Escape");
-    await page.click("#rp-more summary");   // Download a preview and Copy link are under More options (2026-10-14)
+    await page.click("#rp-more summary");   // Download a preview and Copy link fold under Your words (2026-10-22)
     const f = await saved(page, () => page.click("#rp-dl"));
     assert.match(f.name, /-preview\.png$/);
     assert.equal(await fileQr(page, f.buf, "image/png"), STD, "the watermarked preview PNG");
