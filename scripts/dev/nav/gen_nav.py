@@ -204,6 +204,7 @@ def drawer(theme_btn_d):
                '<span class="draw-rp-t">Your farm&rsquo;s year of rain, framed</span><span class="draw-rp-go" aria-hidden="true">&rarr;</span></a>\n')
     out.append('  <div class="draw-sec draw-end">\n'
                '    <a href="/about" class="draw-item">' + ic("i-book-open") + 'About</a>\n'
+               '    <a href="/sponsor" class="draw-item" data-sponsor-link' + ADV_GA % "menu_phone" + '>' + ic("i-chart-column") + 'Advertise with AGSIST</a>\n'
                '    <a href="/contact" class="draw-item">' + ic("i-mail") + 'Contact</a>\n'
                '    <div class="draw-theme">\n'
                '      <span id="theme-lbl-d">Display mode</span>\n'
@@ -215,12 +216,21 @@ def drawer(theme_btn_d):
     return "".join(out)
 
 
+# Advertise (Sig, Oct 22: "there is no place to easily find a place to inquire about advertising").
+# A quiet text link at the left of the header actions on wide screens, a row beside About in the
+# phone panel, and a plain line in the footer's bottom row (the footer columns fold on phones).
+# data-sponsor-link: loader.js hides it wherever the page hides /sponsor (Rain Print pages).
+ADV_GA = """ onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'%s'})\""""
+ADV_TOP = '<a href="/sponsor" class="nav-adv" data-sponsor-link' + ADV_GA % "header" + '>Advertise</a>'
+
+
 PIN = ('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/>'
        '<circle cx="12" cy="9.5" r="2.5"/></svg>')
 
 
 def actions(theme_btn):
     return ('    <div class="nav-actions">\n'
+            f'      {ADV_TOP}\n'
             '      <div class="zip-wrap">\n'
             '        <button type="button" class="zip-chip" id="zip-chip" aria-haspopup="dialog" aria-expanded="false" aria-controls="zip-pop">'
             f'{PIN}<span class="zip-chip-t" id="zip-chip-t">Set your ZIP</span></button>\n'
@@ -311,6 +321,10 @@ STYLE = r"""<style>
 .nav-email{min-height:44px;padding:0 .9rem;font:inherit;font-size:.82rem;font-weight:700;color:#0a0c0d;background:#d4a23f;border:0;border-radius:var(--r-sm);white-space:nowrap;cursor:pointer}
 .nav-email:hover,.nav-email:focus-visible{filter:brightness(1.08)}
 .nav-email[hidden]{display:none}
+/* Advertise: quiet text at the left of the actions, only where the bar has room for it. */
+.nav-adv{display:none;align-items:center;min-height:44px;padding:0 .3rem;font-size:.8rem;font-weight:600;color:var(--text-muted);text-decoration:none;white-space:nowrap}
+.nav-adv:hover,.nav-adv:focus-visible{color:var(--brand)}
+@media (min-width:1200px){.nav-adv{display:inline-flex}}
 @media (max-width:1360px){.nav-btn .nav-ic{display:none}.nav-btn{padding:.45rem .6rem}}
 @media (max-width:1100px){.nav-email{display:none}.zip-chip{max-width:150px}}
 @media (max-width:1060px){.nav-btn{padding:.45rem .42rem;font-size:.8rem}.zip-chip{max-width:136px}.zip-chip svg{display:none}.nav-logo{margin-right:.75rem}}
@@ -399,7 +413,7 @@ def fb_header():
                 parts.append((f"{sub}: " if sub else "") + ls)
         rows.append(f"        <b>{name}:</b> " + " · ".join(parts))
     rows.append('        <b>My place:</b> <a href="/fast-facts">Everything near me</a>')
-    rows.append('        <b>More:</b> <a href="/about">About</a> · <a href="/contact">Contact</a>')
+    rows.append('        <b>More:</b> <a href="/about">About</a> · <a href="/sponsor">Advertise with AGSIST</a> · <a href="/contact">Contact</a>')
     body = "<br>\n".join(rows)
     return ('  <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->\n'
             '  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">\n'
@@ -478,6 +492,7 @@ ADSPACE = """    <div class="footer-adspace" id="footer-adspace" hidden>
 # The legal links stay last: test/nav-full-oct18.test.mjs reads every link after footer-legal.
 BOTTOM = """    <div class="footer-bottom">
       <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Updated as each source posts. For information, not financial advice.</p>
+      <p class="footer-adv"><a href="/sponsor" data-sponsor-link""" + ADV_GA % "footer_bottom" + """>Advertise with AGSIST</a></p>
       <div class="footer-legal">
         <span>&copy; 2026 AGSIST</span><span class="footer-sep">&middot;</span>
         <a href="/privacy">Privacy</a><span class="footer-sep">&middot;</span>
@@ -546,6 +561,9 @@ FOOT_CSS = """  /* 2026-10-18 footer v2 (Sig: "footer seems strained"): one grid
   .footer-small a{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px}
   .footer-small a:hover{color:var(--brand)}
   footer.footer .footer-legal{gap:.5rem}
+  .footer-adv{margin:0;font-size:.82rem;line-height:1.6}
+  .footer-adv a{display:inline-flex;align-items:center;min-height:44px;color:var(--text-dim);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+  .footer-adv a:hover{color:var(--brand)}
   @media (max-width:1100px){
     footer.footer .footer-cols{grid-template-columns:repeat(3,minmax(0,1fr))}
     footer.footer .footer-band{grid-template-columns:repeat(2,minmax(0,1fr))}

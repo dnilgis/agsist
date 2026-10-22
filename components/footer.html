@@ -96,6 +96,9 @@
   .footer-small a{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px}
   .footer-small a:hover{color:var(--brand)}
   footer.footer .footer-legal{gap:.5rem}
+  .footer-adv{margin:0;font-size:.82rem;line-height:1.6}
+  .footer-adv a{display:inline-flex;align-items:center;min-height:44px;color:var(--text-dim);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+  .footer-adv a:hover{color:var(--brand)}
   @media (max-width:1100px){
     footer.footer .footer-cols{grid-template-columns:repeat(3,minmax(0,1fr))}
     footer.footer .footer-band{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -233,6 +236,7 @@
     </div>
     <div class="footer-bottom">
       <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Updated as each source posts. For information, not financial advice.</p>
+      <p class="footer-adv"><a href="/sponsor" data-sponsor-link onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'footer_bottom'})">Advertise with AGSIST</a></p>
       <div class="footer-legal">
         <span>&copy; 2026 AGSIST</span><span class="footer-sep">&middot;</span>
         <a href="/privacy">Privacy</a><span class="footer-sep">&middot;</span>
