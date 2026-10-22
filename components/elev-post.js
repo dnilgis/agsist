@@ -174,8 +174,10 @@
     return fetch(WORKER + path, { method: 'POST', cache: 'no-store', referrerPolicy: 'no-referrer',
       headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       .then(function (r) {
-        return r.json().catch(function () { return {}; }).then(function (j) { j = j || {}; j._status = r.status; return j; });
-      }, function () { return { ok: false, _status: 0 }; });
+        // no JSON (Cloudflare's block page) or a 5xx: the worker did not answer (2026-10-22)
+        return r.json().then(function (j) { j = j || {}; j._status = r.status; if (r.status >= 500) j._down = true; return j; },
+          function () { return { ok: false, _status: r.status, _down: true }; });
+      }, function () { return { ok: false, _status: 0, _down: true }; });
   }
 
   function message(title, html) {
@@ -183,6 +185,7 @@
   }
   var MAIL = '<a href="mailto:' + SIG_EMAIL + '">' + SIG_EMAIL + '</a>';
   function refused(j) {
+    if (j._down && j._status) return message('Could not reach AGSIST', 'Our system is down right now. Open the link again later. If it keeps happening, email Sig at ' + MAIL + '.');
     if (j._status === 403) return message('This listing is turned off', 'Your bids are not showing on AGSIST right now. To turn the listing back on, email Sig at ' + MAIL + '.');
     if (j._status === 429) return message('Too many tries', 'This phone has opened the page a lot in the last hour. Wait a while and open it again. If it keeps happening, email Sig at ' + MAIL + '.');
     if (j._status === 0 || j._status >= 500) return message('Could not reach AGSIST', 'Check your signal and open the link again. If it keeps happening, email Sig at ' + MAIL + '.');
@@ -425,6 +428,33 @@
     }
   }
 
+  /* THE WORKER DOWN (2026-10-22). The last listing this phone opened is kept
+     here (LAST), so the page still opens with the worker blocked; a save is
+     kept in this browser (components/outbox.js) and posts when the worker
+     answers and this page is opened again on this phone. Bids are only good
+     the same morning: a kept save is dropped unsent after KEEP_HOURS or at
+     midnight, whichever comes first, so old prices never post as new. */
+  var LAST = 'elev-last', KEEP_HOURS = 4, LAST_DAYS = 14, OFFLINE = false;
+  function keepLast(r) { try { localStorage.setItem(LAST, JSON.stringify({ k: key.trim(), rec: r, t: Date.now() })); } catch (e) {} }
+  function lastRec() {
+    try {
+      var d = JSON.parse(localStorage.getItem(LAST) || 'null');
+      if (d && d.k === key.trim() && d.rec && Date.now() - d.t < LAST_DAYS * 86400000) return d.rec;
+    } catch (e) {}
+    return null;
+  }
+  var KEPT_LINE = 'Saved. Your bids post when our system is back, if that is within ' + KEEP_HOURS + ' hours and you open this page again on this phone; nothing else to do. After that, save again.';
+  function keepSave(body) {
+    if (!root.AgOutbox) return false;
+    var mid = new Date(); mid.setHours(24, 0, 0, 0);
+    var id = root.AgOutbox.add({ url: WORKER + '/elev/save', body: body, kind: 'elev-save', label: 'your bids',
+      expires: Math.min(Date.now() + KEEP_HOURS * 3600000, mid.getTime()) });
+    if (!id) return false;
+    keepDraft();
+    status('ok', KEPT_LINE);
+    return true;
+  }
+
   function save() {
     if (busy) return;
     var c = checkRows(form.bids);
@@ -439,9 +469,11 @@
     busy = true;
     var btn = box.querySelector('#ep-save');
     btn.disabled = true; btn.textContent = 'Saving...';
-    post('/elev/save', { k: key, bids: c.bids, hours: { text: form.hours, harvest: form.harvest }, contact: { name: form.cname, phone: phone },
-      note: form.note, closed_today: form.closed }).then(function (j) {
+    var body = { k: key, bids: c.bids, hours: { text: form.hours, harvest: form.harvest }, contact: { name: form.cname, phone: phone },
+      note: form.note, closed_today: form.closed };
+    post('/elev/save', body).then(function (j) {
       busy = false; btn.disabled = false; btn.textContent = 'Save';
+      if (!j.ok && j._down && keepSave(body)) return;
       if (!j.ok || !j.record) {
         var why = j._status === 0 ? 'No signal or AGSIST could not be reached.' :
           j._status === 403 ? 'This listing has been turned off. Email Sig at ' + SIG_EMAIL + '.' :
@@ -451,7 +483,7 @@
         status('bad', 'Not saved. ' + why + ' Your changes are still here; tap Save to try again.');
         return;
       }
-      rec = j.record;
+      rec = j.record; keepLast(rec);
       form = fromRecord(rec); base = snapshot(form);
       try { localStorage.removeItem(DRAFT()); } catch (e) {}
       draw();
@@ -468,6 +500,7 @@
     b.disabled = true; b.textContent = 'Marking...';
     post('/elev/save', { k: key, no_change: true }).then(function (j) {
       busy = false;
+      if (!j.ok && j._down && keepSave({ k: key, no_change: true })) { b.textContent = 'No change today'; return; }
       if (!j.ok || !j.record) {
         b.textContent = 'No change today';
         status('bad', j._status === 0 ? 'Not marked. No signal or AGSIST could not be reached. Tap again.' : 'Not marked. ' + String(j.error || 'Something went wrong') + '.');
@@ -483,22 +516,31 @@
     });
   }
 
-  root.addEventListener('beforeunload', function (e) { if (form && dirty()) { e.preventDefault(); e.returnValue = ''; } });
+  // a save kept while the worker was down went through: show the listing as the worker has it now
+  root.addEventListener('agsist:outbox', function (e) {
+    if (e && e.detail && e.detail.sent && e.detail.sent.length && !busy) { LEAVING = true; try { localStorage.removeItem(DRAFT()); } catch (x) {} location.reload(); }
+  });
+  var LEAVING = false;
+  root.addEventListener('beforeunload', function (e) { if (form && dirty() && !LEAVING) { e.preventDefault(); e.returnValue = ''; } });
 
   /* ── start ── */
   if (!/^[a-zA-Z2-7]{24}$/.test(key.trim())) { refused({ _status: 404 }); return; }
   var pricesP = (root.AG && root.AG.json ? root.AG.json('/data/prices.json') : fetch('/data/prices.json').then(function (r) { return r.json(); }))
     .then(function (d) { prices = d; if (form) paintAll(); }, function () { prices = null; });
   post('/elev/me', { k: key.trim() }).then(function (j) {
+    var kept = !j.ok && j._down ? lastRec() : null;
+    if (kept) { OFFLINE = true; j = { ok: true, record: kept }; }
     if (!j.ok || !j.record) return refused(j);
     rec = j.record;
+    if (!OFFLINE) keepLast(rec);
     var saved = fromRecord(rec);
     base = snapshot(saved);
     var draft = takeDraft();
     form = draft || saved;
     if (!form.bids.length && !draft) form.bids.push(newRow([], today));
     draw();
-    if (draft && dirty()) status('dirty', 'Brought back changes you had not saved. Tap Save to post them.');
+    if (OFFLINE) status('bad', 'Our system is down right now, so this is your listing as this phone last saw it. You can still change it and tap Save.');
+    else if (draft && dirty()) status('dirty', 'Brought back changes you had not saved. Tap Save to post them.');
     document.title = rec.name + ', ' + rec.town + ' | Post your bids | AGSIST';
     return pricesP;
   });

@@ -179,6 +179,7 @@
     })).then(function (out) {
       running = null;
       out = out || { sent: [], kept: 0, refused: [] };
+      try { if (out.sent.length || out.refused.length) root.dispatchEvent(new root.CustomEvent('agsist:outbox', { detail: out })); } catch (e) {}
       if (!quiet) {
         if (out.refused.length) bar(['Something you saved while our system was down did not go through.'].concat(out.refused,
           ['Write to ' + CONTACT + ' if you need a hand.']), true);
