@@ -221,8 +221,8 @@ test("weight, copy and the rules: small, lazy on county pages, no sponsor, no em
   assert.match(js, /agsist\.com\/rain-print/);
   const county = read("rain/wisconsin/barron-county.html");
   assert.ok(!/rain-print-draw/.test(county), "county pages carry no copy of the player; it loads on a tap");
-  assert.match(read("components/rain-county-print.js"), /DRAW = '\/components\/rain-print-draw\.js\?v=3'/);
-  assert.match(read("rain-print.html"), /<script src="\/components\/rain-print-draw\.js\?v=3" defer><\/script>/);
+  assert.match(read("components/rain-county-print.js"), /DRAW = '\/components\/rain-print-draw\.js\?v=4'/);
+  assert.match(read("rain-print.html"), /<script src="\/components\/rain-print-draw\.js\?v=4" defer><\/script>/);
   assert.match(read("components/rain-print.js"), /api\.drawInput = function/);
   assert.match(read("components/rain-print-art.js"), /lastGeom: function/);
 });
