@@ -107,7 +107,7 @@
     var top = doc.querySelector('[data-glossary-root]') || doc.querySelector('main');
     var off = function (el) { return el && el.getAttribute('data-glossary') === 'off'; };
     if (!top || off(doc.documentElement) || off(doc.body) || !PRE.test(top.textContent || '')) return;
-    var g = doc.createElement('script'); g.src = '/components/glossary.js?v=2'; g.defer = true; doc.body.appendChild(g);
+    var g = doc.createElement('script'); g.src = '/components/glossary.js?v=3'; g.defer = true; doc.body.appendChild(g);
   }
   function idle(fn) {
     var go = function () { if (window.requestIdleCallback) window.requestIdleCallback(fn, { timeout: 3000 }); else setTimeout(fn, 1200); };

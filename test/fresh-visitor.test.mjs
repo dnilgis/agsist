@@ -206,6 +206,10 @@ test("in a browser: first use only, never in nav, links or headings; Next block 
         assert.ok(await p.locator("#gl-pop").isVisible(), "popover opens on tap");
         await p.keyboard.press("Escape");
         assert.equal(await btn.getAttribute("aria-expanded"), "false", "Escape closes");
+        // and stays closed: the click came with a hover, whose 250 ms open was still waiting and opened it again (Oct 22)
+        await p.waitForTimeout(400);
+        assert.equal(await btn.getAttribute("aria-expanded"), "false", "Escape closes, and it stays closed");
+        assert.equal(await p.locator("#gl-pop").isVisible(), false, "the popover stays shut");
       }
       await ctx.close();
     }
