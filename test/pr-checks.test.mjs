@@ -112,7 +112,11 @@ test('the FSA files are pulled before the checks in every job that runs them, wi
     const run = s.findIndex((x) => /checks\.sh/.test(x));
     assert.ok(pull >= 0 && pull < run, `${j}: pull before the checks`);
     assert.match(s[pull], /\n        env:\n          PRIVATE_REPO_TOKEN: \$\{\{ secrets\.PRIVATE_REPO_TOKEN \}\}\n/);
-    assert.equal(s.filter((x) => /PRIVATE_REPO_TOKEN: /.test(x)).length, 1, `${j}: the key reaches the pull step only`);
+    // the key reaches only the steps that read the private repo: the FSA pull, and (node tests) the references fetch
+    const keyed = s.filter((x) => /PRIVATE_REPO_TOKEN: /.test(x));
+    const refs = s.filter((x) => /run: \|\n\s+git fetch -q --no-tags --depth=1 origin \+refs\/heads\/main:refs\/remotes\/origin\/main\n\s+bash scripts\/fetch_private\.sh references\s*$/.test(x));
+    assert.equal(keyed.length, j === 'node-tests' ? 2 : 1, `${j}: the key reaches the private-repo steps only`);
+    if (j === 'node-tests') { assert.equal(refs.length, 1, 'the references step runs only the two fetches'); assert.ok(keyed.includes(refs[0])); assert.ok(s.indexOf(refs[0]) < run, 'before the tests'); }
   }
 });
 
@@ -165,14 +169,33 @@ test('the node test shards fail on a skipped test, not only on a failed one (Sig
   assert.match(run, /^\s+AGSIST_NO_SKIPS: '1'\s*$/m, 'the shard step sets AGSIST_NO_SKIPS=1');
   const line = read('scripts/dev/checks.sh').split('\n').find((l) => l.startsWith('run node-test '));
   assert.match(line, /AGSIST_NO_SKIPS/, 'checks.sh node-test reads it');
-  assert.match(line, /\^# skipped 0\$/, 'and wants "# skipped 0" when it is set');
+  assert.match(line, /check-skips\.sh/, 'and hands the output to scripts/dev/check-skips.sh when it is set');
   // the real thing: a test file that skips fails the line with the variable set, passes without it
   const dir = fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'noskip-'));
   fs.writeFileSync(path.join(dir, 'a.test.mjs'), "import { test } from 'node:test'; test('runs', () => {}); test('needs a tool', (t) => t.skip('not here'));\n");
   // run that one line as checks.sh would, with run() reduced to "run the command"
-  const run2 = (env) => spawnSync('bash', ['-c', `NT='${path.join(dir, 'nt.out')}'; SHARD=; run(){ shift; "$@"; }\n${line}`], { cwd: dir, encoding: 'utf8', env: { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => k !== 'NODE_TEST_CONTEXT')), ...env } });
+  const run2 = (env) => spawnSync('bash', ['-c', `NT='${path.join(dir, 'nt.out')}'; SHARD=; DEV='${path.join(root, 'scripts/dev')}'; run(){ shift; "$@"; }\n${line}`], { cwd: dir, encoding: 'utf8', env: { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => k !== 'NODE_TEST_CONTEXT')), ...env } });
   assert.equal(run2({ AGSIST_NO_SKIPS: '' }).status, 0, 'a skip passes locally without the variable');
   const r = run2({ AGSIST_NO_SKIPS: '1' });
   assert.equal(r.status, 1, 'and fails with it');
   assert.match(r.stdout, /needs a tool # SKIP/, 'naming the skipped test');
+});
+
+test('skips the PR checks accept: only the listed halves of an either/or pair, and the list stays short', () => {
+  const allow = read('test/skips-allowed.txt').split('\n').filter((l) => l && !l.startsWith('#'));
+  assert.ok(allow.length <= 3, `test/skips-allowed.txt is for either/or pairs only (${allow.length} lines)`);
+  for (const l of allow) assert.match(l, /^.+ # SKIP .+$/, l);
+  // each listed skip's other half is a real test that runs where this one skips
+  const pairs = { "without FSA's 2026 file, no county carries a benchmark the calculator could use # SKIP official file loaded": ['test/arc-plc.test.mjs', 'FSA official county figures, when the file is loaded'] };
+  for (const l of allow) { assert.ok(pairs[l], `say in this test which test is the other half of: ${l}`); assert.ok(read(pairs[l][0]).includes(pairs[l][1]), pairs[l][1]); }
+  const dir = fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'skips-'));
+  const nt = path.join(dir, 'nt.out');
+  const go = (body) => { fs.writeFileSync(nt, body); return spawnSync('bash', [path.join(root, 'scripts/dev/check-skips.sh'), nt], { encoding: 'utf8' }); };
+  assert.equal(go('ok 1 - a\n# pass 1\n# fail 0\n# skipped 0\n').status, 0, 'no skip');
+  assert.equal(go(`    ok 3 - ${allow[0]}\n# pass 1\n# fail 0\n# skipped 1\n`).status, 0, 'a listed skip');
+  const r = go(`    ok 3 - ${allow[0]}\nok 4 - reads the QR # SKIP jsqr is not installed\n# skipped 2\n`);
+  assert.equal(r.status, 1, 'any other skip fails');
+  assert.match(r.stdout, /reads the QR # SKIP jsqr is not installed/);
+  assert.doesNotMatch(r.stdout, /official file loaded/, 'only the unlisted one is named');
+  assert.equal(go('# skipped 1\n').status, 1, 'a count it cannot match to lines fails');
 });

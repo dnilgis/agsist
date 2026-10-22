@@ -65,8 +65,13 @@ jobs:
       # pdftotext (poppler-utils), as fertilizer-coops.yml installs it: the price sheet
       # reader reads its -layout columns (pypdf is only the fallback), and the
       # fetch_coop_fert.py --selftest case "the PDF itself reads the same" needs it.
-      - name: pdftotext
-        run: command -v pdftotext || { sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils; }
+      # ffmpeg (with ffprobe): the Rain Print MP4 writer test decodes its file with it,
+      # and skips without it. A hung apt mirror fails here in minutes, not at the job limit.
+      - name: pdftotext and ffmpeg
+        timeout-minutes: 10
+        run: |
+          command -v pdftotext && command -v ffprobe || { sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils ffmpeg; }
+          ffprobe -version | head -1
 
       # The elevator desk and chaos-fix browser tests read the bids data
       # (dnilgis/bids, public) at BIDS_PATH, as they read the local clone beside
@@ -113,6 +118,14 @@ jobs:
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/pull_raw.sh data/fsa
+      # Tests that compare with origin/main (no new schedule) or read the saved sources
+      # (origin/references, in the private repo since Oct 20) skip without them.
+      - name: origin/main and the references branch
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          git fetch -q --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+          bash scripts/fetch_private.sh references
       - name: node tests, shard ${{ matrix.shard }} of 4
         env:
           TMPDIR: ${{ runner.temp }}
