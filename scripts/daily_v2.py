@@ -318,7 +318,8 @@ def market_items(daily):
         txt = "%s has settled %s %d days running, %s %s" % (name, s0[1], s0[0], px(key, s0[2]), _wday(s0[3]) or "")
         for name, s1, key in bits[1:]:
             txt = txt.strip() + "; %s %d%s, %s" % (name, s1[0], "" if s1[1] == s0[1] else " " + s1[1], px(key, s1[2]))
-        items.append({"text": txt.strip() + ".", "kind": "market", "field": "harvest-prices"})
+        txt = txt.strip()
+        items.append({"text": txt[0].upper() + txt[1:] + ".", "kind": "market", "field": "harvest-prices"})
     rows = {r["key"]: r for r in board_rows(daily)}
     c = rows.get("corn-dec") or rows.get("corn")
     b = rows.get("beans-nov") or rows.get("beans")
@@ -327,10 +328,13 @@ def market_items(daily):
             txt = ("Overnight: corn %s (%s), beans %s (%s) at %s vs %s's settle."
                    % (px(c["key"], c["last"]), mv(c["key"], c), px(b["key"], b["last"]), mv(b["key"], b),
                       _clock(c.get("at")) or "this morning", _wday(c.get("prev_date")) or "the last"))
-        else:
+        elif c.get("kind") == "settle" and _wday(c.get("date")):
             txt = ("%s's settle: corn %s (%s), beans %s (%s)."
-                   % (_wday(c.get("date")) or "Last", px(c["key"], c["last"]), mv(c["key"], c),
+                   % (_wday(c.get("date")), px(c["key"], c["last"]), mv(c["key"], c),
                       px(b["key"], b["last"]), mv(b["key"], b)))
+        else:
+            txt = ("Board: corn %s (%s), beans %s (%s)."
+                   % (px(c["key"], c["last"]), mv(c["key"], c), px(b["key"], b["last"]), mv(b["key"], b)))
         items.append({"text": txt, "kind": "market", "field": "locked_changes"})
     return items, st
 
@@ -421,8 +425,8 @@ def subject(daily, news=None, today=None):
     if bm:
         label, p, q = bm
         when = ("overnight" if q.get("kind") == "last" else (_wday(q.get("date")) or "")).strip()
-        return clip("%s %s %.1f%% %s to %s" % (label, "up" if p > 0 else "down", abs(p), when, px(q["key"], q["last"]))
-                    .replace("  ", " ")), "market", "locked_changes"
+        txt = "%s %s %.1f%% %s to %s" % (label, "up" if p > 0 else "down", abs(p), when, px(q["key"], q["last"]))
+        return clip(txt.replace("  ", " ")), "market", "locked_changes"
     ranks = [r for r in rank_items(daily) if r["pct"] <= 5 or r["pct"] >= 95]
     if ranks:
         return clip(ranks[0]["text"].split(" (")[0]), "rank", "price-stats"
