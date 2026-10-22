@@ -1,0 +1,24 @@
+name: Add the signups kept during the worker block (one-time)
+
+# Run once by hand (Oct 22, 2026). Adds the signups that came in by the backup
+# form while agsist-subs was blocked straight to their lists, as Sig asked: no
+# confirm email. Reads private/pending-signups.jsonl (feedbag, private-data).
+# Prints counts only. Safe to run again: each route keeps one record per address.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: python3 scripts/restore_signups.py
