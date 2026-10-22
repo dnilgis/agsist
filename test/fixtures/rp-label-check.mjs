@@ -108,22 +108,27 @@ export function parse(svg, opt = {}) {
     // a <tspan> inside a text (a reader's date after its words) is measured in its own size and weight
     if (tag === "tspan" && cur) {
       if (close) { if (cur.fs.length > 1) cur.fs.pop(); }
-      else if (!self) { const p = cur.fs[cur.fs.length - 1]; cur.fs.push({ ...p, size: +(a["font-size"] || p.size), w: +(a["font-weight"] || p.w), it: a["font-style"] ? a["font-style"] === "italic" : p.it }); }
+      else if (!self) {
+        const p = cur.fs[cur.fs.length - 1];
+        cur.fs.push({ ...p, size: +(a["font-size"] || p.size), w: +(a["font-weight"] || p.w), it: a["font-style"] ? a["font-style"] === "italic" : p.it });
+        // a dx (the year riding after the name, 2026-10-22) moves the pen before the tspan's words
+        if (a.dx) cur.runs.push({ s: "", f: cur.fs[cur.fs.length - 1], dx: +a.dx });
+      }
       continue;
     }
     if (tag === "text") {
       if (close) {
         if (cur) {
-          const runs = cur.runs.map((r) => ({ s: unesc(r.s), f: r.f })), s = runs.map((r) => r.s).join(""), o = cur.o;
+          const runs = cur.runs.map((r) => ({ s: unesc(r.s), f: r.f, dx: r.dx || 0 })), s = runs.map((r) => r.s).join(""), o = cur.o;
           const size = Math.min(...cur.sizes, ...runs.map((r) => r.f.size));
           const ls = +(o["letter-spacing"] || 0), n = [...s].length;
-          const sum = runs.reduce((t, r) => t + meas(r.s, r.f), 0), adv = sum + ls * n, ink = sum + ls * Math.max(0, n - 1);
+          const sum = runs.reduce((t, r) => t + r.dx + meas(r.s, r.f), 0), adv = sum + ls * n, ink = sum + ls * Math.max(0, n - 1);
           const anchor = o["text-anchor"] || "start", x = +o.x, y = +o.y;
           const x0 = anchor === "middle" ? x - adv / 2 : anchor === "end" ? x - adv : x;
           const vs = runs.map((r) => inkV(r.s, r.f)), v = { a: Math.max(0, ...vs.map((q) => q.a)), d: Math.max(0, ...vs.map((q) => q.d)) };
           // each glyph's own ink box too, for text that only nearly touches (a comma far from the name above it)
           const glyphs = []; let gx = x0;
-          for (const r of runs) for (const ch of r.s) { const gw = meas(ch, r.f), gv = inkV(ch, r.f); if (ch !== " ") glyphs.push({ x: gx, y: y - gv.a, w: gw, h: gv.a + gv.d }); gx += gw + ls; }
+          for (const r of runs) { gx += r.dx; for (const ch of r.s) { const gw = meas(ch, r.f), gv = inkV(ch, r.f); if (ch !== " ") glyphs.push({ x: gx, y: y - gv.a, w: gw, h: gv.a + gv.d }); gx += gw + ls; } }
           texts.push({ s, size, owner: cur.owner, rp: cur.rp, x: x0, y: y - v.a, w: ink, h: v.a + v.d, glyphs, runs: runs.map((r) => ({ s: r.s, size: r.f.size, w: r.f.w })) });
         }
         cur = null;
@@ -247,3 +252,11 @@ export function counts(issues, soft = false) {
   return c;
 }
 export const HARD = (issues) => issues.filter((i) => i.kind !== "grid");
+
+/* A piece of words that rides after another in one <text> (a <tspan dx>: the year after the farm name or the
+   town, 2026-10-22) is its own piece on the print: this writes it as its own <text>, in its own font, for the
+   tests that read a print's words one piece at a time. */
+export function splitRiders(svg) {
+  return svg.replace(/(<text[^>]*font-family="([^"]*)"[^>]*>)([^<]*)<tspan dx="[\d.]+"([^>]*)>([^<]*)<\/tspan><\/text>/g,
+    (m, open, fam, a, attrs, b) => open + a + '</text><text font-family="' + fam + '"' + attrs + ">" + b + "</text>");
+}
