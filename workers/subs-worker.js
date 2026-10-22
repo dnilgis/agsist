@@ -5,7 +5,7 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
- * v5.49 (2026-10-22): LONGER RAIN PRINT SHORT LINKS (Sig, Oct 22). A new
+ * v5.51 (2026-10-22): LONGER RAIN PRINT SHORT LINKS (Sig, Oct 22). A new
  *   POST /rp-short id is the first 8 letters of the code's hash, not 5: the
  *   sealed QR copies on agsist.com (scripts/build_rp_sealed.mjs) can only be
  *   opened by guessing an id, and 32^8 = 1.1e12 guesses is years where 32^5
@@ -13,6 +13,15 @@
  *   back (it may be printed); GET /rp-short/<id> reads 5 to 8 letters as
  *   before. An 8-letter id that holds another code is a 409 (no growth past
  *   8). No new binding, no new secret.
+ * v5.50 (2026-10-22): A LATE ELEVATOR SAVE KEEPS ITS OWN TIME (Sig, Oct 22).
+ *   POST /elev/save takes entered_at (ISO or ms): when the manager pressed
+ *   Save on agsist.com/post. A save kept on the phone while this worker was
+ *   blocked arrives later; it is stored with that time (bids_updated_at,
+ *   info_updated_at, closed today = that day), not the time it arrived, so
+ *   the board's "Updated 6:10 AM Wed" shows its real age. A save typed
+ *   before the listing's newest change is a 409 {newer:true} and stores
+ *   nothing. More than 31 days old, or not a time: 400. Without entered_at:
+ *   now, as before. No new binding, no new secret.
  * v5.48 (2026-10-22): FRONT DOOR ON AGSIST.COM (Sig, Oct 22; BUILD-RULES 11).
  *   No emailed link points at this host any more: every link goes to
  *   https://agsist.com/e?a=<route>&<the same signed params> (e.html, GitHub
@@ -1099,6 +1108,7 @@ const PUBLIC_POSTS = new Set(["/subscribe", "/notice", "/alert-subscribe", "/wat
   "/rp-short",   // v5.14
   "/rp-gift/check", "/rp-gift/redeem"]);   // v5.16
 PUBLIC_POSTS.add("/elev/me").add("/elev/save");   // v5.20: the elevator portal
+const ELEV_LATE_MAX_MS = 31 * 864e5;   // v5.50: a kept save may arrive up to 31 days late (the outbox keeps 30)
 PUBLIC_POSTS.add("/rp-order");   // v5.36: Rain Print order records
 PUBLIC_POSTS.add("/rp-order/approve");   // v5.37: the buyer approves the proof
 PUBLIC_POSTS.add("/rp-remind");   // v5.43: Email me this design
@@ -1596,7 +1606,7 @@ async function formRateOk(req, env) {
 }
 
 // v5.14: Rain Print short links. rps:<id> = a plain design code, no expiry.
-// v5.49 (2026-10-22): new ids are 8 letters (32^8 guesses, not 32^5): HTTPS://AGSIST.COM/R?<id> is 29 bytes,
+// v5.51 (2026-10-22): new ids are 8 letters (32^8 guesses, not 32^5): HTTPS://AGSIST.COM/R?<id> is 29 bytes,
 // QR version 3, 29 x 29. Ids made before (5 letters, 6 to 7 after a collision) keep working and keep their code.
 const RPS_OLD_LEN = 5, RPS_LEN = 8, RPS_MAX_LEN = 8;
 const RPS_MAX_BYTES = 1024;
@@ -3940,7 +3950,7 @@ async function handle(req, env) {
       const code = b.code;
       if (!rpsCodeOk(code)) return json({ ok: false, error: "invalid code" }, 400, c);
       const full = await rpsHash(code);
-      // v5.49: a code that already has a shorter id (made before Oct 22) keeps it; only new ids are 8 letters
+      // v5.51: a code that already has a shorter id (made before Oct 22) keeps it; only new ids are 8 letters
       for (let len = RPS_OLD_LEN; len < RPS_LEN; len++) {
         const id = full.slice(0, len);
         if (await env.SUBS.get("rps:" + id) === code) return json({ ok: true, id }, 200, c);
@@ -4537,13 +4547,30 @@ async function handle(req, env) {
         if (t.length > ELEV_NOTE_MAX) return json({ ok: false, error: "note too long (" + ELEV_NOTE_MAX + " at most)" }, 400, c);
         set.note = t || null;
       }
+      /* v5.50: WHEN IT WAS TYPED, NOT WHEN IT ARRIVED. A save kept on the
+         elevator's phone while this worker was blocked (agsist.com/post,
+         components/outbox.js) comes later with entered_at, the time the
+         manager pressed Save. That time is what is stored and shown, so a
+         late price reads as old ("Updated 6:10 AM Wed"), never as new. A
+         save typed before the listing's newest change is refused (409,
+         nothing stored): a delayed save never overwrites a newer one. No
+         entered_at: now, as before. */
+      const nowMs = Date.now();
+      let atMs = nowMs;
+      if (b.entered_at !== undefined && b.entered_at !== null) {
+        const t = typeof b.entered_at === "number" ? b.entered_at : Date.parse(String(b.entered_at));
+        if (!Number.isFinite(t) || t < nowMs - ELEV_LATE_MAX_MS) return json({ ok: false, error: "entered_at is not a time in the last 31 days" }, 400, c);
+        atMs = Math.min(t, nowMs);   // a phone clock ahead of ours never dates a save in the future
+      }
+      const newest = Math.max(Date.parse(rec.bids_updated_at || "") || 0, Date.parse(rec.info_updated_at || "") || 0);
+      if (atMs < newest) return json({ ok: false, error: "A newer save from this elevator is already posted, so this older one was not used.", newer: true, record: elevPublic(rec) }, 409, c);
       if (b.closed_today !== undefined) {
         if (typeof b.closed_today !== "boolean") return json({ ok: false, error: "closed_today must be true or false" }, 400, c);
-        set.closed_until = b.closed_today ? elevEndOfDayCT(Date.now()) : null;
+        set.closed_until = b.closed_today ? elevEndOfDayCT(atMs) : null;
       }
       const noChange = b.no_change === true;
       if (!Object.keys(set).length && !noChange) return json({ ok: false, error: "nothing to save" }, 400, c);
-      const now = new Date().toISOString();
+      const now = new Date(atMs).toISOString();
       let bidsMoved = noChange, infoMoved = false;
       for (const f of Object.keys(set)) {
         if (JSON.stringify(set[f]) === JSON.stringify(rec[f] === undefined ? null : rec[f])) continue;

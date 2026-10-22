@@ -171,7 +171,7 @@ test("the worker accepts every code rain-print.js encodes, at the page's limits"
       headers: { "Content-Type": "application/json", Origin: "https://agsist.com" }, body: JSON.stringify({ code }) }), env);
     const j = await r.json();
     assert.equal(r.status, 200, d.place + " " + JSON.stringify(j));
-    // v5.49: new ids are 8 letters (QR version 3, 29 x 29); the old 5-letter ones stay version 2
+    // v5.51: new ids are 8 letters (QR version 3, 29 x 29); the old 5-letter ones stay version 2
     assert.equal(j.id.length, 8);
     assert.equal(QR.matrix("HTTPS://AGSIST.COM/R?" + j.id).length, 29);
     const g = await w.fetch(new Request("https://x.dev/rp-short/" + j.id), env);

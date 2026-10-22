@@ -3836,11 +3836,36 @@
     MAILME.busy = true; $('rp-mailme-go').disabled = true; out.textContent = 'Sending\u2026';
     root.fetch(REMIND_URL, { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: em, code: code, ref: checkoutRef(code, false, shortHit()), daily: daily, source: 'page:rain-print', _gotcha: $('rp-mailme-hp').value }) })
-      .then(function (r) { return r.json().then(function (j) { return r.ok && j && j.ok === true; }, function () { return false; }); }, function () { return false; })
+      .then(function (r) {
+        return r.json().then(function (j) { return r.ok && j && j.ok === true ? true : r.status === 429 || r.status >= 500 ? 'down' : false; },
+          function () { return 'down'; });
+      }, function () { return 'down'; })
+      .then(function (ok) {
+        /* THE WORKER DOWN (2026-10-22): the request goes to Sig by the backup
+           form instead (the address and the design link only, like a signup
+           while the worker is blocked), and he sends it when the worker is
+           back (notes: restore checklist). A refusal the worker means stays
+           a refusal. */
+        if (ok !== 'down' || !root.agsistFormPost || !root.agsistFormPost.formspree) return ok === true;
+        var q = SITE + '?d=' + code;
+        return root.agsistFormPost.formspree({ _subject: 'Rain Print: email me this design (worker down)', form: 'rain-print-remind', email: em,
+          design_url: q, daily: daily ? 'yes' : 'no', page: '/rain-print', at: new Date().toISOString(),
+          note: 'Not sent yet. When the worker is back, open the design link and send it with Email me this design.' })
+          .then(function () { return 'kept'; }, function () { return false; });
+      })
       .then(function (ok) {
         MAILME.busy = false; $('rp-mailme-go').disabled = false;
         // the mail service not answering (2026-10-21: the worker's address was blocked for a day): nothing sent, and a way to keep the design meanwhile
         if (!ok) { out.textContent = 'That didn\u2019t go through, so nothing was sent. Copy link keeps this design as it is; try the email again later.'; return; }
+        if (ok === 'kept') {
+          MAILME.code = code;
+          $('rp-mailme-form').hidden = true;
+          $('rp-mailme-open').setAttribute('aria-expanded', 'false');
+          $('rp-mailme-open').parentNode.hidden = true;
+          out.textContent = 'Saved. It will go through when our system is back; nothing else to do.';
+          ga('rain_print_design_email', { daily: daily ? 1 : 0, kept: 1 });
+          return;
+        }
         MAILME.code = code;
         $('rp-mailme-form').hidden = true;
         $('rp-mailme-open').setAttribute('aria-expanded', 'false');
@@ -4883,9 +4908,11 @@
     var btn = $('rb-submit'), was = btn.textContent;
     bizSending = true; btn.disabled = true; btn.textContent = 'Sending…'; out.innerHTML = '';
     var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
-    send('rain-print-business', data, fs).then(function () {
-      ga('rain_print_business', { result: 'ok', product: x.product, qty: qn });
-      out.innerHTML = '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll write to ' + esc(x.email) + ' within 1 business day with a quote, then a proof sheet.</p>' +
+    send('rain-print-business', data, fs).then(function (r) {
+      ga('rain_print_business', { result: r && r.queued ? 'kept' : 'ok', product: x.product, qty: qn });
+      // the worker down: kept in this browser (form-post.js, components/outbox.js), never sent anywhere else
+      out.innerHTML = r && r.queued ? '<div class="rp-msg rp-ok" tabindex="-1">' + '<p><b>Saved on this device, not sent yet.</b> Our system is down. Your request and your list stay here and go to me the next time you open agsist.com on this device after it is back; nothing else to do.</p>' +
+        '<p>To get your quote sooner, call or text <a href="tel:+17157972428">715-797-2428</a>. Your list never goes anywhere but to me.</p>' + '</div>' : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll write to ' + esc(x.email) + ' within 1 business day with a quote, then a proof sheet.</p>' +
         '<p>Nothing is printed or charged until you OK both.</p></div>';
       $('rb-form').reset(); syncBizShip(); syncBizTier();
       BIZ_LOGO_ASK++; BIZ_LOGO = null; syncBizLogo(); bizLogoMsg('');

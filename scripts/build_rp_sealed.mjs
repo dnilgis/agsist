@@ -32,7 +32,7 @@
  * in under an hour. What they would get: the design codes (place, station,
  * year, style and layer choices; never a name, dedication, marked day or
  * logo, which are stripped before sealing). New short links are 8 letters
- * (subs worker v5.49): 32^8 = 1.1e12 guesses, years on that GPU. The worker
+ * (subs worker v5.51): 32^8 = 1.1e12 guesses, years on that GPU. The worker
  * itself limits a reader to 30 unknown ids an hour.
  *
  * Usage (sponsor-report.yml, daily, after fetching the private copy):

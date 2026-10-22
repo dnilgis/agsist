@@ -342,7 +342,7 @@ A(rp.design_code.length && b64u('1|Chetek WI|123|2025|sp0a|') === rp.design_code
 for (const [c, why] of [[codeOpt, 'options after ~'], [codeLoc, 'the units letter']]) { r = await rps({ code: c }); j = await r.json(); A(r.status === 200 && j.ok === true, 'rp-short v5.27: takes a code with ' + why); }
 r = await rps({ code: b64u('2|Ames, IA||2012|spnad~x|') }); A(r.status === 400, 'rp-short v5.27: an unknown option letter is refused');
 r = await rps({ code: codeA }); j = await r.json();
-A(r.status === 200 && j.ok === true && j.id === want(codeA).slice(0, 8), 'rp-short v5.49: a new id is the first 8 of Crockford base32 of SHA-256 ' + j.id);
+A(r.status === 200 && j.ok === true && j.id === want(codeA).slice(0, 8), 'rp-short v5.51: a new id is the first 8 of Crockford base32 of SHA-256 ' + j.id);
 A(/^[0-9A-HJKMNP-TV-Z]{8}$/.test(j.id), 'rp-short: id has no I L O U');
 A(r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'rp-short: CORS for agsist.com');
 const idA = j.id;
@@ -352,22 +352,22 @@ r = await rps({ code: codeA }); j = await r.json();
 A(r.status === 200 && j.id === idA && rpsKeys().length === nk, 'rp-short: idempotent, same id and nothing new stored');
 r = await rps({ code: codeB }); j = await r.json();
 A(r.status === 200 && j.id === want(codeB).slice(0, 8) && j.id !== idA, 'rp-short: deterministic for a second code');
-// v5.49: a code minted before Oct 22 keeps its 5, 6 or 7 letter id (it may be printed), and the old id still opens it
+// v5.51: a code minted before Oct 22 keeps its 5, 6 or 7 letter id (it may be printed), and the old id still opens it
 const codeC = b64u('1|Chetek, WI|471667 2|2023|snna|The Olson Farm'), fullC = want(codeC);
 store.set('rps:' + fullC.slice(0, 5), codeC);
 nk = rpsKeys().length;
 r = await rps({ code: codeC }); j = await r.json();
-A(r.status === 200 && j.id === fullC.slice(0, 5) && rpsKeys().length === nk, 'rp-short v5.49: an old 5-letter id is given back, nothing new stored ' + j.id);
+A(r.status === 200 && j.id === fullC.slice(0, 5) && rpsKeys().length === nk, 'rp-short v5.51: an old 5-letter id is given back, nothing new stored ' + j.id);
 r = await call('/rp-short/' + fullC.slice(0, 5).toLowerCase()); j = await r.json();
-A(r.status === 200 && j.code === codeC, 'rp-short v5.49: an old 5-letter id still opens its design');
+A(r.status === 200 && j.code === codeC, 'rp-short v5.51: an old 5-letter id still opens its design');
 const codeD = b64u('1|Chetek, WI|471667 2|2022|snna|'), fullD = want(codeD);
 store.set('rps:' + fullD.slice(0, 5), codeA); store.set('rps:' + fullD.slice(0, 7), codeD);
-r = await rps({ code: codeD }); j = await r.json(); A(r.status === 200 && j.id === fullD.slice(0, 7), 'rp-short v5.49: an old 7-letter id is given back too');
+r = await rps({ code: codeD }); j = await r.json(); A(r.status === 200 && j.id === fullD.slice(0, 7), 'rp-short v5.51: an old 7-letter id is given back too');
 // a 5-letter id another code holds no longer matters: the new id is 8 letters
 const codeF = b64u('1|Chetek, WI|471667 2|2020|snna|'), fullF = want(codeF);
 store.set('rps:' + fullF.slice(0, 5), codeB);
 r = await rps({ code: codeF }); j = await r.json();
-A(r.status === 200 && j.id === fullF.slice(0, 8) && store.get('rps:' + fullF.slice(0, 5)) === codeB, 'rp-short v5.49: an old id held by another code is left alone; the new id is 8');
+A(r.status === 200 && j.id === fullF.slice(0, 8) && store.get('rps:' + fullF.slice(0, 5)) === codeB, 'rp-short v5.51: an old id held by another code is left alone; the new id is 8');
 const codeE = b64u('1|Chetek, WI|471667 2|2021|snna|'), fullE = want(codeE);
 store.set('rps:' + fullE.slice(0, 8), codeA);
 r = await rps({ code: codeE }); A(r.status === 409, 'rp-short: the 8-letter id taken by another code is a 409, nothing overwritten');

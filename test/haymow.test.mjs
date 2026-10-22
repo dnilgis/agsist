@@ -58,7 +58,7 @@ test("no contacts or listings in the HTML", () => {
   assert.doesNotMatch(body.replace(/<script[\s\S]*?<\/script>/g, ""), /[^\s@"]+@[^\s@"]+\.[a-z]{2,}/i, "no email addresses");
   assert.match(page, /<ul id="hb-list" class="hb-list"><\/ul>/, "the list is empty until the page loads it");
   assert.match(page, /name="_gotcha"/, "honeypot field");
-  assert.match(page, /<script src="\/components\/haymow\.js\?v=1"><\/script>/);
+  assert.match(page, /<script src="\/components\/haymow\.js\?v=2"><\/script>/);
 });
 
 test("page copy rules: no em dash, name only at the end, no paid spots", () => {
