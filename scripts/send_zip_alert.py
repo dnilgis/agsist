@@ -59,6 +59,7 @@ import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import send_elevator_watch as sew  # noqa: E402
 import log_safe  # noqa: E402  (no address in the public log)
 
@@ -168,6 +169,7 @@ def plan(watchers, data, tables, now_ms):
     sends    [(email, wid, label, hits, zip, radius, crop, target, first)]  first: no mark yet
     rearms   [(email, wid, label, best_row)]   every counted place is below: s.on -> false, no mail
     counts   {reason: n} for the log; never an address."""
+    watchers = sew.email_links.plain_labels(watchers)   # no em dash in a subject or headline
     confirms, sends, rearms = [], [], []
     n = {"pending to confirm": 0, "pending already mailed": 0, "pending expired": 0, "pending ZIP unknown": 0,
          "invalid": 0, "no places": 0, "still on": 0, "still below": 0}

@@ -35,6 +35,8 @@ worker cannot be reached, says so in two lines and offers the mailto stop.
                          sets List-Unsubscribe to the mailto stop plus the
                          front-door page and drops List-Unsubscribe-Post
     check_hosts(msg)     the worker-host half alone (every mail we send)
+    tidy_subject(msg)    an em dash in the Subject becomes a comma (every mail)
+    plain_dashes(s), plain_labels(watchers)   the same for stored watch labels
     check_text(s)        the address check for one body
     hrefs(html)          every href in an HTML body (for the selftests)
 
@@ -158,6 +160,36 @@ def unsub_web(msg):
     return web[0] if web else ""
 
 
+DASH_RE = re.compile(r"\s*(?:\u2014|&mdash;|\s\u2013\s)\s*")
+
+
+def plain_dashes(s):
+    """No em dash in a subject or headline (Sig's rule): " \u2014 " becomes ", "."""
+    return DASH_RE.sub(", ", str(s or "")).strip(", ") if s else s
+
+
+def plain_labels(watchers):
+    """A copy of a watch list with every stored label free of em dashes
+    (labels saved before Oct 22 read "<elevator> \u2014 corn"). _name keeps the
+    part before the old dash, the elevator alone."""
+    out = []
+    for r in watchers or []:
+        if not isinstance(r, dict):
+            out.append(r)
+            continue
+        r = dict(r)
+        for part in ("pend", "w"):
+            if isinstance(r.get(part), dict):
+                d = {}
+                for k, st in r[part].items():
+                    if isinstance(st, dict) and isinstance(st.get("label"), str):
+                        st = dict(st, label=plain_dashes(st["label"]), _name=plain_dashes(st["label"].split(" \u2014 ")[0]))
+                    d[k] = st
+                r[part] = d
+        out.append(r)
+    return out
+
+
 def hrefs(body):
     return [_html.unescape(a or b) for a, b in HREF_RE.findall(body or "")]
 
@@ -198,6 +230,15 @@ def worker_names(body):
     for h in worker_hosts():
         out += [h] * s.count(h)
     return out
+
+
+def scrub_text(s):
+    """For Sig's own run notes (log_safe): a worker URL or host becomes "the subs worker"."""
+    s = re.sub(r"https?://[^\s<>\"']*\.workers\.dev[^\s<>\"']*", "the subs worker", str(s or ""), flags=re.I)
+    s = SHARED_RE.sub("the subs worker", s)
+    for h in worker_hosts():
+        s = re.sub(r"(?:https?://)?" + re.escape(h) + r"[^\s<>\"']*", "the subs worker", s, flags=re.I)
+    return s
 
 
 def blocked_links(body):
@@ -249,6 +290,15 @@ def check_hosts(msg):
     return msg
 
 
+def tidy_subject(msg):
+    """The last net for Sig's no-em-dash rule: a Subject with one gets a comma instead."""
+    s = msg.get("Subject")
+    if s is not None and DASH_RE.search(str(s)):
+        del msg["Subject"]
+        msg["Subject"] = plain_dashes(str(s))
+    return msg
+
+
 def _list_unsubscribe(msg):
     """The mailto stop plus the front-door page (a GET page, so no
     List-Unsubscribe-Post: RFC 8058 one-click is a POST, which GitHub Pages
@@ -275,6 +325,7 @@ def check_message(msg):
             if part.get_content_disposition() != "attachment":
                 _with_stop_line(part)
     _list_unsubscribe(msg)
+    tidy_subject(msg)
     check_hosts(msg)
     for part in _text_parts(msg):
         check_text(part.get_content())
@@ -288,6 +339,7 @@ def _guard_smtp():
     orig = smtplib.SMTP.send_message
 
     def send_message(self, msg, *a, **k):
+        tidy_subject(msg)
         check_hosts(msg)
         return orig(self, msg, *a, **k)
     send_message._agsist_guard = True
@@ -418,12 +470,13 @@ def selftest():
         pass
     m = EmailMessage()
     m["From"], m["To"] = "news@agsist.com", "made-up@example.com"
+    m["Subject"] = "AGSIST critic \u2014 issue #1"
     m.set_content("https://agsist.com/daily")
     try:
         f.send_message(m)
     except LinkError:
         bad.append("smtplib refused a clean message")
-    ck("smtplib guard sends the clean one", len(f.sent) == 1)
+    ck("smtplib guard sends the clean one, subject without the em dash", len(f.sent) == 1 and m["Subject"] == "AGSIST critic, issue #1")
     # List-Unsubscribe: the mailto stop plus the front door, never Post
     m = EmailMessage()
     m["List-Unsubscribe"] = "<%s>, <mailto:sig@farmers1st.com?subject=unsubscribe>" % signed(W, "unsubscribe", SAMPLE_LID, "sec")
@@ -445,6 +498,19 @@ def selftest():
     m.set_content("hi")
     m.add_alternative('<a href="https://agsist.com/x?e=a%40b.com">x</a>', subtype="html")
     ck("html part address let through", refused(m))
+    ck("plain_dashes", plain_dashes("Badger Grain Supply, LLC, Wheeler, WI \u2014 corn, NOVEMBER: basis moved to \u221266\u00a2")
+       == "Badger Grain Supply, LLC, Wheeler, WI, corn, NOVEMBER: basis moved to \u221266\u00a2"
+       and plain_dashes("Oct\u2013Nov") == "Oct\u2013Nov" and plain_dashes("a &mdash; b") == "a, b")
+    pl = plain_labels([{"email": "x", "w": {"a": {"label": "Co-op, Town, WI \u2014 corn"}, "b": None}, "pend": {"c": {"label": "Plain"}}}])
+    ck("plain_labels", pl[0]["w"]["a"]["label"] == "Co-op, Town, WI, corn" and pl[0]["w"]["a"]["_name"] == "Co-op, Town, WI"
+       and pl[0]["w"]["b"] is None and pl[0]["pend"]["c"]["label"] == "Plain")
+    m = EmailMessage()
+    m["Subject"] = "Co-op, Town, WI \u2014 corn, NOVEMBER: basis moved to \u221266\u00a2"
+    m.set_content("hi")
+    check_message(m)
+    ck("check_message: no em dash in the subject", m["Subject"] == "Co-op, Town, WI, corn, NOVEMBER: basis moved to \u221266\u00a2")
+    ck("scrub_text", scrub_text("HTTP 403 at https://agsist-subs.dnilgis.workers.dev/list?format=json and agsist-subs.dnilgis.workers.dev")
+       == "HTTP 403 at the subs worker and the subs worker")
     ck("hrefs unescapes", hrefs('<a href="a?x=1&amp;y=2">') == ["a?x=1&y=2"])
     # backup mode: the same links, the footer says STOP, the host stays refused
     global FALLBACK, BLOCKED_HOST

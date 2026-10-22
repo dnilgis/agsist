@@ -196,7 +196,7 @@ def plan(watchers, quotes, now_ms):
     confirms  [(email, pid, label)]
     fires     [(email, pid, label, close_cents, symbol)]"""
     confirms, fires = [], []
-    for r in watchers:
+    for r in email_links.plain_labels(watchers):   # no em dash in a subject or headline
         e = r["email"]
         for p, pend in (r.get("pend") or {}).items():
             if not pend.get("m") and now_ms - pend.get("ts", 0) <= PEND_TTL_MS:

@@ -53,6 +53,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 sys.path.insert(0, str(HERE))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 import send_notice as SN          # noqa: E402  transport, render, unsubscribe link
 

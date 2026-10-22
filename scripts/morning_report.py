@@ -81,6 +81,7 @@ from email.utils import formataddr, make_msgid
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 import form_digest as FD  # noqa: E402
 
