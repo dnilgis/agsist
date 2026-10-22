@@ -3,7 +3,7 @@
 
     python3 scripts/test_zip_alert.py
 
-send_zip_alert.py --selftest checks the pure parts. This runs main() itself,
+send_zip_alert.py's own selftest checks the pure parts. This runs main() itself,
 in-process, against fixture files (a merged index, a ZIP table, the worker's
 list), with the network, the worker and SMTP all replaced:
   1. DRY_RUN=1 from fixtures: prints what it would do; any SMTP connection,

@@ -272,6 +272,17 @@ def check_text(body):
         raise LinkError("refusing to send: %d link(s) carry an email address" % n)
 
 
+def _content(part):
+    """A text part's words, for an EmailMessage or a legacy MIMEText alike."""
+    try:
+        return part.get_content()
+    except AttributeError:
+        raw = part.get_payload(decode=True)
+        if isinstance(raw, bytes):
+            return raw.decode(part.get_content_charset() or "utf-8", "replace")
+        return str(part.get_payload() or "")
+
+
 def _text_parts(msg):
     for part in msg.walk():
         if part.get_content_maintype() == "text":
@@ -284,7 +295,7 @@ def check_hosts(msg):
         if worker_names(v):
             raise LinkError("refusing to send: the %s header names the subs worker host" % k)
     for part in _text_parts(msg):
-        n = len(worker_names(part.get_content()))
+        n = len(worker_names(_content(part)))
         if n:
             raise LinkError("refusing to send: %d link(s) or mention(s) of the subs worker host (links go to %s)" % (n, FRONT))
     return msg
@@ -328,7 +339,7 @@ def check_message(msg):
     tidy_subject(msg)
     check_hosts(msg)
     for part in _text_parts(msg):
-        check_text(part.get_content())
+        check_text(_content(part))
     return msg
 
 
@@ -476,6 +487,14 @@ def selftest():
         f.send_message(m)
     except LinkError:
         bad.append("smtplib refused a clean message")
+    from email.mime.text import MIMEText
+    lm = MIMEText("see https://agsist-subs.dnilgis.workers.dev/x", "plain", "utf-8")
+    try:
+        check_hosts(lm)
+        bad.append("a legacy MIMEText with a worker link let through")
+    except LinkError:
+        pass
+    ck("a clean legacy MIMEText passes", check_hosts(MIMEText("hi https://agsist.com/", "plain", "utf-8")) is not None)
     ck("smtplib guard sends the clean one, subject without the em dash", len(f.sent) == 1 and m["Subject"] == "AGSIST critic, issue #1")
     # List-Unsubscribe: the mailto stop plus the front door, never Post
     m = EmailMessage()
