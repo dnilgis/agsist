@@ -1225,6 +1225,16 @@ def rain_print_line(snap_ct):
     return '<p class="rp-promo" data-rain-print-promo hidden></p>'
 
 
+# Sponsor slot (Sig, Oct 22: "I still want to attract advertisers"). One slot per
+# state: the state page and every town page in it carry the same empty aside,
+# the same form scripts/stamp_rates.py writes on every other page (no text, no
+# price). components/loader.js fills it when data/page-sponsors.json has a
+# sponsor for the slot, or else shows one small "Sponsor this page" link.
+# scripts/stamp_rates.py lists the state slots in data/sponsor-slots.json.
+def sponsor_slot(ssl):
+    return f'<aside class="ag-sponsor-ribbon" data-slot="cash-bids-{ssl}"></aside>'
+
+
 def page_end(ftr, table=False, signup=False, hist=False, promo=False):
     return f"""</main>
 {ftr}
@@ -2224,6 +2234,7 @@ def build_town_page(t, ctx):
   read successfully in the last {SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="{esc(live)}">live page</a>
   has the newest board and nearby elevators. Basis is cash minus the futures contract named under it.{near_note}{hold_note}{HIST_NOTE if hist_html else ''}</div>
+  {sponsor_slot(ssl)}
   {county_line(t, center, ctx)}
   <p class="cbt-sub">{' &middot; '.join(links)}</p>
 """
@@ -2823,6 +2834,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   over a weekend still counts on Monday. Specialty bids (white, organic, non-GMO, high-oleic, identity-preserved)
   are left out of the basis. A middle number needs at least {BM.MIN_STAT} elevators on the same futures month.{wow_note}
   Prices move through the day; call the elevator before you haul.</div>
+  {sponsor_slot(ssl)}
   <p class="cbt-sub" style="margin-top:18px"><a href="/cash-bids">Cash bids by ZIP</a> &middot; <a href="/basis#by-state">Basis in every state, and USDA regions vs normal</a></p>
   <h2>Other states</h2>
   <p class="cbt-cloud">{others}</p>
@@ -3823,6 +3835,8 @@ def selftest():
         assert bool(got) == on, d
         assert got in ("", '<p class="rp-promo" data-rain-print-promo hidden></p>')
     assert "rain-print-promo.js" in page_end("", promo=True) and "rain-print-promo.js" not in page_end("")
+    # the sponsor slot: one per state, empty (no text, no price), the same form as every other page
+    assert sponsor_slot("north-dakota") == '<aside class="ag-sponsor-ribbon" data-slot="cash-bids-north-dakota"></aside>'
     import build_company_pages as CO      # the company pages, built inside build_all()
     CO.selftest()
     # sets pass 2026-10-18: two spring wheat contracts that both read "Dec '26" are told apart by exchange

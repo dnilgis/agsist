@@ -68,6 +68,9 @@
     .sp-h1{font-family:var(--font-display);font-size:clamp(1.6rem,4.6vw,2.5rem);font-weight:700;line-height:1.12;color:var(--text);margin:.4rem 0 .7rem;text-transform:uppercase;}
     .sp-h1 span{color:var(--ad-orange);}
     .sp-sub{font-size:1.05rem;margin:0 0 1.2rem;max-width:58ch;}
+    .sp-reach{font-size:.98rem;margin:0 0 .8rem;max-width:62ch;}
+    .sp-reach strong{color:var(--text);}
+    .sp-reach a{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px;white-space:nowrap;}
     .sp-sub strong{color:var(--text);}
     .sp-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.95rem 1.6rem;background:var(--ad-orange);color:var(--sp-on-orange,#0a1a0a);border:2px solid var(--ad-orange);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;min-height:48px;box-shadow:0 4px 14px rgba(var(--ad-orange-rgb),.22);}
     .sp-btn:hover{background:var(--ad-orange-hi);border-color:var(--ad-orange-hi);color:var(--sp-on-orange,#0a1a0a);}
@@ -163,7 +166,7 @@
         <b>Money &amp; Land:</b> Land: <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/farmland-index">Farmland sale index</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · Programs: <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · Selling: <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
         <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/news">The Wire</a> · <a href="/archive">Archive</a><br>
         <b>My place:</b> <a href="/fast-facts">Everything near me</a><br>
-        <b>More:</b> <a href="/about">About</a> · <a href="/contact">Contact</a>
+        <b>More:</b> <a href="/about">About</a> · <a href="/sponsor">Advertise with AGSIST</a> · <a href="/contact">Contact</a>
       </nav>
     </div>
   </header>
@@ -175,6 +178,9 @@
 
       <section class="sp-hero" aria-labelledby="sp-h1">
         <h1 class="sp-h1" id="sp-h1">Put your business in front of <span>the farmers who use AGSIST.</span></h1>
+        <p class="sp-reach">Farmers come here for cash bids, futures and farm numbers:
+          <strong><span data-a="views">14,928</span> page views</strong> from <span data-a="users">6,304</span> readers in 28 days,
+          and the morning email goes to <strong><span data-a="subs">155</span> subscribers</strong>. <a href="#who">Sources below</a></p>
         <p class="sp-sub page-lede">Ads from <strong>$15 to $149 a month</strong>. <strong>First month free.</strong> No card, no contract, cancel any time.</p>
         <a class="sp-btn" href="/sponsor-apply">Start your sponsorship &rarr;</a>
         <p class="sp-contact">Rather talk first? Call or email Sig: <a href="tel:+17157972428">715-797-2428</a> &middot; <a href="mailto:sig@agsist.com?subject=AGSIST%20sponsorship">sig@agsist.com</a></p>
@@ -197,7 +203,7 @@
           <div class="sp-tier-name">Own a page</div>
           <div class="sp-tier-price">$29<small> /month per page</small></div>
           <div class="sp-sketch" aria-hidden="true"><i></i><b class="k-ribbon"></b><i style="width:80%"></i><i style="width:60%"></i></div>
-          <p>A sponsor ribbon on one page you pick: Cash Bids, the futures pages, Break-Even, Fertilizer, or your state&rsquo;s cash rent page. One business per page, so a competitor can&rsquo;t take it.</p>
+          <p>A sponsor ribbon on one page you pick: Cash Bids, the futures pages, Fast Facts, Break-Even, Fertilizer, your state&rsquo;s cash bids (the state page and every town page in it), or your state&rsquo;s cash rent page. One business per page, so a competitor can&rsquo;t take it.</p>
           <span class="sp-status sp-status--wait" data-status="page" hidden></span>
           <a class="sp-tier-go" href="/sponsor-apply?tier=page">Pick your page &rarr;</a>
         </div>
@@ -215,10 +221,10 @@
 
       <!-- Every figure below is read from data/audience.json (Google Analytics, Bing Webmaster Tools,
            the email list), dated, and refreshed from that file on load. Nothing here is typed from memory. -->
-      <h2 class="sp-h2">Who sees it</h2>
+      <h2 class="sp-h2" id="who">Who sees it</h2>
       <ul class="sp-list">
-        <li><strong>Farmers come here to price grain and run numbers.</strong> <span data-a="views">11,110</span> page views from <span data-a="users">4,565</span> readers in the 28 days <span data-a="win">Sep 15 to Oct 12, 2026</span>, some of it automated. Cash Bids alone had <span data-a="cash">2,198</span>. <span class="sp-src">Google Analytics.</span></li>
-        <li><strong>The Sponsor card is on the homepage and in the email.</strong> The homepage had <span data-a="home">1,745</span> views in those 28 days, and the briefing email goes to <span data-a="subs">143</span> subscribers <span class="sp-src">(<span data-a="subsAsOf">Oct 14, 2026</span>)</span>.</li>
+        <li><strong>Farmers come here to price grain and run numbers.</strong> <span data-a="views">14,928</span> page views from <span data-a="users">6,304</span> readers in the 28 days <span data-a="win">Sep 23 to Oct 20, 2026</span>, some of it automated. Cash Bids alone had <span data-a="cash">2,098</span>. <span class="sp-src">Google Analytics.</span></li>
+        <li><strong>The Sponsor card is on the homepage and in the email.</strong> The homepage had <span data-a="home">1,974</span> views in those 28 days, and the briefing email goes to <span data-a="subs">155</span> subscribers <span class="sp-src">(<span data-a="subsAsOf">Oct 20, 2026</span>)</span>.</li>
         <li><strong>Bing and Copilot cite AGSIST pages in their answers.</strong> About <span data-a="ai">1,615</span> citations a day, <span data-a="aiwin">Aug 19 to Sep 17, 2026</span>, the latest window Bing has reported. A citation is a link in an answer, not a visit. <span class="sp-src">Bing Webmaster Tools.</span></li>
       </ul>
 

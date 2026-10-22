@@ -293,6 +293,9 @@ def msg(to, subject, paras, button=None, fn="AGSIST", fa="", rt=None, links=None
 
 
 def what(a):
+    if a["tier"] == "page" and a["slot"].startswith("cash-bids-"):
+        # a state's cash bid pages (scripts/build_cash_bid_pages.py sponsor_slot)
+        return "%s (/cash-bids/%s/ and its town pages)" % (TIER_NAME.get("page", "page"), a["slot"][len("cash-bids-"):])
     return "%s (%s)" % (TIER_NAME.get(a["tier"], a["tier"]), "/" + a["slot"] if a["tier"] == "page" and not a["slot"].startswith("rent-")
                         else ("rent page " + a["slot"][5:].upper() if a["tier"] == "page" else "footer" if a["tier"] == "supporter" else "briefing"))
 
