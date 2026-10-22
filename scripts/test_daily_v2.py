@@ -110,6 +110,16 @@ def main():
         stamp, _ = V.board_stamp(daily, rows)
         ok(re.match(r"Last trade \d+:\d\d a\.m\. CT, change from \w+day's settle$", stamp), "%s: honest stamp %r" % (d, stamp))
         ok(" close" not in stamp, "%s: never 'close' over a last trade" % d)
+    # a news subject must be a farm story
+    b19 = build(load("2026-10-19"))
+    ok("India" not in b19["subject"] and "crude import" not in b19["subject"] and b19["subject_from"] != "news",
+       "Oct 19: India's crude import bill is not the subject: %s" % b19["subject"])
+    b20s = build(load("2026-10-20"))
+    ok(b20s["subject"] == "$8 billion emergency diesel relief for farmers" and b20s["subject_from"] == "news",
+       "Oct 20: the diesel relief item can still be the subject: %s" % b20s["subject"])
+    ok(any("India" in x["text"] for x in b19["items"]), "Oct 19: the item still sits in Today")
+    ok("India" not in b19["preheader"], "Oct 19: nor the preheader: %s" % b19["preheader"])
+    ok(not b19["preheader"].startswith("Corn has settled lower"), "the preheader is not the subject's story again: %s" % b19["preheader"])
     # the check that blocks
     d21, d20 = load("2026-10-21"), load("2026-10-20")
     b21 = build(d21)

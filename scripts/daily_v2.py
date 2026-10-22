@@ -107,7 +107,26 @@ EVENT_RE = re.compile(r"\b(webinar|workshop|register|registration|field day|conf
                       r"listening session|open house|livestream|live stream|live session|will host|hosts? a)\b", re.I)
 MARKETISH = re.compile(r"52-week|\brange\b|last trade|settle|percentile|futures|\bclose\b", re.I)
 ELEVATOR = re.compile(r"elevator", re.I)
+# A news subject must be a farm story (Sig, Oct 22): grains, oilseeds, livestock,
+# dairy, farm policy and payments, inputs, farm weather, farm exports, farmland.
+# Crude or macro news qualifies only when the item itself names a farm input or
+# farm price (diesel relief does; a country's crude import bill does not).
+FARM = re.compile(r"\b(corn|soy\w*|beans?|wheat|grains?|oilseeds?|canola|sorghum|oats|barley|rice|cotton|"
+                  r"cattle|beef|cows?|calf|calves|hogs?|pork|swine|dairy|milk|poultry|chickens?|eggs?|turkeys?|lamb|sheep|"
+                  r"hpai|avian|livestock|farms?|farmers?|farming|ranch\w*|crops?|harvest|planting|acres?|farmland|"
+                  r"usda|fsa|rma|nass|crp|arc|plc|ethanol|biofuels?|biodiesel|rins?|renewable fuel|"
+                  r"fertili[sz]er|nitrogen|anhydrous|urea|potash|phosphate|diesel|herbicides?|pesticides?|"
+                  r"seeds?|drought|frost|cash rents?|land values?|grain storage)\b", re.I)
+
+
 ORD = {1: "1st", 2: "2nd", 3: "3rd"}
+
+
+def farm_story(item, daily=None):
+    """The item's own headline words (the news title, or the day's number and
+    its unit) name something on the farm. The body is not read: a crude story
+    whose last clause says freight "eventually hits diesel" is still a crude story."""
+    return bool(FARM.search(item["text"]))
 
 
 def e(s):
@@ -413,7 +432,7 @@ def subject(daily, news=None, today=None):
     """(subject, where it came from, the field it rests on)."""
     news = news_items(daily) if news is None else news
     for x in news:
-        if not ELEVATOR.search(x["text"]):
+        if not ELEVATOR.search(x["text"]) and farm_story(x, daily):
             return clip(x["text"]), "news", x["field"]
     iso = _iso_day(daily)
     for crop, key, name in (("corn", "corn-dec", "Corn"), ("soybeans", "beans-nov", "Beans")):
@@ -454,13 +473,15 @@ def today_items(daily, today=None):
     return items[:TODAY_MAX]
 
 
-def preheader(local, items, subj):
+def preheader(local, items, subj, sfield=None):
     if isinstance(local, dict) and local.get("head"):
         return BE.strip_md(local["head"])
-    for x in items:
-        if x["text"].rstrip(".") != subj and not x["text"].startswith(subj):
+    rest = [x for x in items if x["text"].rstrip(".") != subj and not x["text"].startswith(subj)
+            and not (sfield and x.get("field") == sfield)]
+    for x in rest:      # a farm line first: a crude or macro item is not the hook
+        if x.get("kind") != "news" or farm_story(x):
             return x["text"]
-    return ""
+    return rest[0]["text"] if rest else ""
 
 
 # ── only here ────────────────────────────────────────────────────────────
@@ -509,7 +530,10 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
     news = news_items(daily)
     subj, sfrom, sfield = subject(daily, news, today)
     items = today_items(daily, today)
-    pre = preheader(local, items, subj)
+    # the subject's story leads the Today list
+    lead = [x for x in items if x.get("field") == sfield or (sfrom == "market" and x.get("field") == sfield)]
+    items = lead[:1] + [x for x in items if x not in lead[:1]]
+    pre = preheader(local, items, subj, sfield)
     here = only_here(daily, rain, loc)
     if unsub_url and shared_host(unsub_url):
         unsub_url = None          # BUILD-RULES 11: nothing a reader clicks on a shared host
