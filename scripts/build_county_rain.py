@@ -50,6 +50,7 @@ import build_prf_states as S  # noqa: E402  boot() and text_of()
 import cross_links as XL  # noqa: E402  same-county links between the county sets
 import seo_caps as CAPS  # noqa: E402  the site's one title and description cap (was 165 for descriptions here)
 import pointer_pages as PP  # noqa: E402
+import nearest_towns as NT  # noqa: E402  town bid pages nearest the county middle (Oct 23, 2026)
 import inject_static_nav as nav  # noqa: E402
 import county_stories as CS  # noqa: E402
 
@@ -796,6 +797,19 @@ def county_page(ctx):
     ]
     faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faq)
     plain_chart, print_fig = chart(c, year, name, noun, ready)
+    # One date in the lead (Oct 23, 2026): the dated story names the day it was written from
+    # ("Through Oct 13, ..."). When that is not the day the totals run through, it moves below
+    # the figures and says plainly what each date is, so the answer is never followed by a second date.
+    story_top = story_below = ""
+    if ctx.get("story"):
+        sp = '<p class="rc-story">' + e(ctx["story"]) + "</p>"
+        m_ = re.match(r"\s*[Tt]hrough ([A-Z][a-z]{2} \d{1,2})\b", ctx["story"])
+        if m_ and m_.group(1) != short_date(asof):
+            story_below = (sp + f'<p class="rc-fine">This paragraph was written from the record through {m_.group(1)}. '
+                           f'The totals above run through {short_date(asof)}.</p>')
+        else:
+            story_top = sp + chr(10) + "    "
+    near_towns = NT.links_html(ROOT, ctx.get("lat"), ctx.get("lon"), st, f"Cash bids by town near {e(name)}:", "rc-fine")
     h1 = (f"How much rain did {e(full_c)} get in {year}?" if done else f"How much rain has {e(full_c)} had in {year}?")
     return head(title, desc, url, ld, img=share_img(st)) + f"""
 <body>
@@ -807,7 +821,7 @@ def county_page(ctx):
     <p class="rc-asof">{'All of ' + str(year) + ', Jan 1 to Dec 31' if whole else (str(year) + ', Jan 1 to ' + short_date(asof) + ', the last day reported' if done else 'As of ' + long_date(asof) + ', the latest day this ' + noun + ' has reported')}</p>
     <h1>{h1}</h1>
     <p class="rc-answer">{ans.replace(inches_word(c['total']), '<b>' + inches_word(c['total']) + '</b>', 1)}</p>
-    {('<p class="rc-story">' + e(ctx['story']) + '</p>' + chr(10) + '    ') if ctx.get('story') else ''}<dl class="rc-figs">{figs_html}</dl>
+    {story_top}<dl class="rc-figs">{figs_html}</dl>{story_below}
     {radar_line(st, name, stw)}
     {plain_chart}
     <h2>Month by month</h2>
@@ -823,6 +837,7 @@ def county_page(ctx):
     <h2>Questions</h2>
     <div class="rc-faq">{faq_html}</div>
     {('<h2>Next door</h2><ul class="rc-next">' + nb_html + '</ul>') if nb_html else ''}
+    {near_towns}
     <p class="rc-fine">{more_html}</p>
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; updated daily. NOAA&rsquo;s daily numbers come in a few days late and are sometimes corrected.</p>
   </div>
@@ -978,7 +993,7 @@ def hub_page(files, built):
 def sitemap(urls):
     body = "".join(f"  <url><loc>{u}</loc><lastmod>{m}</lastmod></url>\n" for u, m in urls)
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<!-- Rain by county. Written by scripts/build_county_rain.py; lastmod is the day the NOAA records were read. -->\n'
+            '<!-- Rain by county. Written by scripts/build_county_rain.py; lastmod is the last day the station behind the page reported (the day its numbers last changed); a state or the hub, its newest county. -->\n'
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + body + "</urlset>\n")
 
 
@@ -1042,7 +1057,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
             nbrs = [(pages[f][0] + ("" if C[f]["st"] == st else ", " + C[f]["st"]), pages[f][1],
                      pages[f][2] + ("" if pages[f][3] == c["as_of"] else f" to {short_date(pages[f][3])}")) for f in nb[:4]]
             body = county_page({"c": c, "st": st, "fips": fips, "year": d["year"], "d": d, "slug": C[fips]["slug"],
-                                "nbrs": nbrs, "n_ok": c.get("n_ok", 1),
+                                "nbrs": nbrs, "n_ok": c.get("n_ok", 1), "lat": C[fips].get("lat"), "lon": C[fips].get("lon"),
                                 "day": daily.get(st, {}).get(fips),
                                 "story": CS.story_for(stories.get(st, {}).get(fips), dict(CS.page_now(c, d), facts=CS.facts(c, d, st)))})
             body = nav.fill_fonts(body)
@@ -1050,7 +1065,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
             if len(body.encode()) > MAX_KB * 1024:
                 raise SystemExit(f"{rel} would be {len(body.encode()) // 1024} KB, over {MAX_KB} KB")
             want[rel] = body
-            urls.append((f"{ORIGIN}/rain/{st_slug}/{C[fips]['slug']}", day))
+            urls.append((f"{ORIGIN}/rain/{st_slug}/{C[fips]['slug']}", c["as_of"]))
         if d["counties"]:
             none_rows = []
             for fips, x in sorted(d["none"].items(), key=lambda kv: kv[1]["name"]):
@@ -1061,11 +1076,11 @@ def build(data_dir, C=None, NB=None, img_root=None):
                 else:
                     none_rows.append((x["name"], None, None, bool(x.get("held"))))
             want[f"rain/{st_slug}.html"] = nav.fill_fonts(state_page(st, d, pages, none_rows))
-            urls.insert(0, (f"{ORIGIN}/rain/{st_slug}", day))
+            urls.insert(0, (f"{ORIGIN}/rain/{st_slug}", max((c["as_of"] for fp, c in d["counties"].items() if fp in C), default=day)))
     if pages:
         built = max(d["fetched"][:10] for d in files.values())
         want["rain.html"] = hub_page(files, built)
-        urls.insert(0, (f"{ORIGIN}/rain", built))
+        urls.insert(0, (f"{ORIGIN}/rain", max(m for _u, m in urls)))
     urls = [urls[0]] + sorted(urls[1:]) if pages else []
     want["sitemap-rain.xml"] = sitemap(urls)
     return want

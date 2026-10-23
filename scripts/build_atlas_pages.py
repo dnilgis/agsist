@@ -61,6 +61,7 @@ import county_yield as CY  # noqa: E402  (one fit, one withholding rule, one set
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
 import seo_caps as CAPS  # noqa: E402  the site's one title and description cap
+import nearest_towns as NT  # noqa: E402  town bid pages nearest a county middle (Oct 23, 2026)
 from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
 from atlas_layers_p1 import FULL_YEAR_MAPS, years_covered, practice_share, irrigated_share  # noqa: E402  one full-year gate, one way to name a gap
 
@@ -1128,6 +1129,51 @@ def sales_tile(W, f, st):
     return t
 
 
+def sales_facts(W, f, st):
+    """The numbers the page leads with for search (Oct 23, 2026): count, median per acre,
+    middle half and date span of the recorded market sales, from the same summary entry and the
+    same rule as the tile (a median exists only with min_n sales; under it nothing is returned,
+    so no description or answer carries a number the tile withholds). No names. -> dict or None."""
+    sm = sales_summary(W, st)
+    if not sm or not sm.get("windows"):
+        return None
+    c = (sm.get("counties") or {}).get(f)
+    m = (c or {}).get("med")
+    if not m:
+        return None
+    return {"n": m["n"], "med": m["med"], "q1": m.get("q1"), "q3": m.get("q3"), "span": _sspan(sm["windows"]["cur"]),
+            "through": sm["through"], "min_acres": sm.get("min_acres") or 20, "record": sm.get("record") or SALES_SOURCES[st]["record"]}
+
+
+def sales_sentence(lab, sf):
+    """'Barron County, WI: 42 recorded farm sales, Oct 2025 to Sep 2026, median $5,578 an acre.'"""
+    return "%s: %d recorded farm sale%s, %s, median %s an acre." % (lab, sf["n"], "" if sf["n"] == 1 else "s", sf["span"], money(sf["med"]))
+
+
+def sales_faq(lab, sf):
+    """(question, answer) for the visible Q&A and the FAQPage markup. Counted deeds, not modeled."""
+    a = ("%d recorded market sales of %d or more acres, %s, with a median of %s an acre" % (sf["n"], sf["min_acres"], sf["span"], money(sf["med"])))
+    if sf.get("q1") and sf.get("q3"):
+        a += "; the middle half of sales fell between %s and %s an acre" % (money(sf["q1"]), money(sf["q3"]))
+    a += (". Sales are dated through %s. These are counted deed records from %s, not a model or an appraisal, and no buyer or seller is named."
+          % (_sday(sf["through"]), sf["record"]))
+    return "What has farmland sold for in %s?" % lab, a
+
+
+def sales_desc(lab, sf, rec):
+    """Meta description: the sales sentence first, then the county's rent if it fits in 160."""
+    lead = sales_sentence(lab, sf)
+    rent = None
+    if rec.get("rent_dry_usd_ac") is not None:
+        rent = "Cash rent %s an acre (%s)." % (money(rec["rent_dry_usd_ac"]), rec["rent_dry_year"])
+    elif rec.get("rent_irr_usd_ac") is not None:
+        rent = "Irrigated cash rent %s an acre (%s)." % (money(rec["rent_irr_usd_ac"]), rec["rent_irr_year"])
+    for tail in (rent, "County averages from public records."):
+        if tail and len(lead + " " + tail) <= CAPS.DESC_MAX:
+            return lead + " " + tail
+    return lead
+
+
 def sales_key(t):
     """The tile in key() markup, full width under the others, marked for atlas-sales.js to redraw
     from the file it reads (so a newer summary never sits beside an older tile)."""
@@ -1811,6 +1857,9 @@ def county_page(W, f, d, stamp):
     if len(desc) > 300:
         desc = desc[:297].rsplit(" ", 1)[0] + "..."
     meta_desc = county_desc(desc)
+    sfacts = sales_facts(W, f, st)
+    if sfacts:
+        meta_desc = sales_desc("%s, %s" % (lab, st), sfacts, rec)
     thin = is_thin(rec)
     if thin:
         W.thin.add(f)
@@ -2241,6 +2290,11 @@ def county_page(W, f, d, stamp):
     S5 = S5.replace(rain_note, "") if rain_note else S5
     LV_NAMES = {"milk": "Class III milk futures", "feeders": "Feeder cattle futures", "cattle": "Live cattle futures", "hogs": "Lean hog futures",
                 "hay": "Hay, %s price received" % stn}
+    sales_faq_html = ""
+    if sfacts:
+        q_, a_ = sales_faq("%s, %s" % (lab, stn), sfacts)
+        sales_faq_html = '<h3 id="sales-faq">%s</h3><p>%s</p>' % (esc(q_), esc(a_))
+    town_links = NT.links_html(W.root, ctr[0], ctr[1], st, "Cash bids by town near the middle of %s:" % esc(lab), "note") if ctr else ""
     C_GRAIN = ('<section class="card" aria-labelledby="c-grain"><h2 id="c-grain">Grain and prices <small>within 50 miles</small></h2>'
                + live_row("corn-bid", "Corn bid") + live_row("soy-bid", "Soybean bid")
                + live_row("corn-basis", "Corn basis") + live_row("soy-basis", "Soybean basis")
@@ -2248,17 +2302,17 @@ def county_page(W, f, d, stamp):
                + "".join(live_row(k, LV_NAMES[k]) for k in lines)
                + '<p class="note">Bids are posted elevator prices within 50 miles of the county middle, best and nearest, never a buyer\'s name. '
                'Not a contract; call before you haul. %s</p>'
-               '<p class="note">%s<a href="/fast-facts?fips=%s">Bids from your own ZIP or farm, in Fast Facts</a></p></section>'
+               '<p class="note">%s<a href="/fast-facts?fips=%s">Bids from your own ZIP or farm, in Fast Facts</a></p>%s</section>'
                % ("Livestock lines show where the 2022 Census counts %s head or more: milk for milk cows, feeder cattle for beef cows, live cattle for cattle on feed, hogs for hogs, hay for all cattle." % fmt(HEAD_MIN, 0),
                   ('<a href="/cash-bids/%s/">%s cash bids by town</a> · ' % (slugify(stn), esc(stn))) if os.path.isdir(os.path.join(W.root, "cash-bids", slugify(stn))) else "",
-                  esc(f)))
+                  esc(f), town_links))
     C_WX = ('<section class="card" aria-labelledby="c-wx"><h2 id="c-wx">Weather and the season</h2>'
             + live_row("rain", "Rain since Jan 1") + live_row("drought", "Drought this week") + live_row("hail", "Hail, last 30 days")
             + rain_note + S5 + "</section>")
     C_CROPS = ('<section class="card" aria-labelledby="c-crops"><h2 id="c-crops">Crops</h2>'
                + live_row("corn-progress", "Corn harvested") + live_row("soy-progress", "Soybeans harvested") + S3 + "</section>")
     C_LAND = ('<section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2>'
-              + S1 + S2 + sales_block(W, f, lab, st) + "</section>")
+              + S1 + S2 + sales_block(W, f, lab, st) + sales_faq_html + "</section>")
     arc_link = ('<p class="note">Benchmarks, payments and the choice for each crop: <a href="%s">ARC or PLC in %s</a>.</p>' % (arc_url, esc(lab))) if arc_url else (
         ('<p class="note">No county ARC or PLC estimate here. <a href="/arc-plc/%s">ARC or PLC in %s</a>.</p>' % (slugify(stn), esc(stn)))
         if os.path.exists(os.path.join(W.root, "arc-plc", slugify(stn) + ".html")) else "")
@@ -2352,6 +2406,8 @@ try{{gaEvent('atlas_county_page',{{fips:rec.fips}});}}catch(e){{}}
                              and rec.get(n) is not None],
         "distribution": [{"@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": f"{SITE}/{OUT}/data/{st.lower()}.csv"}],
     }]
+    if sfacts:
+        ld.append({"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q_, "acceptedAnswer": {"@type": "Answer", "text": a_}}]})
     ck = card_key(CARD_V, lab, st, rec["rent_dry_usd_ac"], rec["rent_dry_year"], None if rec["value_flag"] else rec["value_usd_ac"], bool(rec["value_flag"]),
                   rec["corn_yield_median_bu_ac"], rec["claims_per_100_usd"])
     W.cards["counties"][f] = {"n": lab, "s": stn, "st": st, "r": rec["rent_dry_usd_ac"], "ry": rec["rent_dry_year"],

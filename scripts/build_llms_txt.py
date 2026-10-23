@@ -27,6 +27,7 @@ llms.txt, in their place, so the two builders never fight over them.
 
 Stdlib only. Offline.
 """
+import json
 import os
 import re
 import sys
@@ -312,12 +313,45 @@ def norm(p):
     return p if p in ("/",) else p.rstrip("/")
 
 
+_MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+def numbers_block(root=REPO):
+    """'Numbers as of <date>' (Oct 23, 2026): the newest Cash Bid Index edition's corn and
+    soybean counts, average cash bid and average basis, read from data/cash-index/editions.json
+    (written by scripts/cash_bid_index.py). Stated, not described: an answer engine that reads
+    only this file gets the figures and the period they cover. Nothing is estimated here; a
+    crop with no figure in the edition is left out, and no edition means no block.
+    -> list of lines (empty when there is nothing to state)."""
+    try:
+        ed = json.load(open(os.path.join(root, "data", "cash-index", "editions.json"), encoding="utf-8"))["editions"]
+        e = max(ed, key=lambda x: x["month"])
+        day = e["last_day"]
+        when = "%s %d, %s" % (_MON[int(day[5:7]) - 1], int(day[8:10]), day[:4])
+    except (OSError, ValueError, KeyError, TypeError, IndexError):
+        return []
+    lines = []
+    for crop, word in (("corn", "Corn"), ("soybeans", "Soybeans")):
+        o = ((e.get("crops") or {}).get(crop) or {}).get("overall") or {}
+        n, cash, bas, bn = o.get("n"), o.get("avg_cash"), o.get("avg_basis_cents"), o.get("basis_n")
+        if not (isinstance(n, int) and n > 0 and isinstance(cash, (int, float)) and isinstance(bas, (int, float))):
+            continue
+        lines.append("- %s: %s elevators, average cash bid $%.2f, average basis %+d cents%s." % (
+            word, format(n, ","), cash, round(bas), (" (%s elevators with a basis)" % format(bn, ",")) if isinstance(bn, int) and bn != n else ""))
+    if not lines:
+        return []
+    return ["", "## Numbers as of " + when, "",
+            "AGSIST Cash Bid Index, %s, counted from the elevator boards AGSIST reads (%s):" % (
+                e.get("label") or day, "https://agsist.com/cash-bid-index"), ""] + lines
+
+
 def build(current_text, root=REPO):
     """Return (text, problems). problems lists what --check fails on."""
     locs = sitemap_locs(root)
     problems = []
     cur_lines = (current_text or "").split("\n")
     out = [HEAD.rstrip("\n")]
+    out.extend(numbers_block(root))
     listed = set()
     for heading, items in PAGES:
         lines = []
@@ -398,6 +432,27 @@ def selftest():
            "a bare /path in a description counts")
         w("robots.txt", "Sitemap: https://agsist.com/sitemap-gone.xml\n")
         ok(sitemap_coverage("", d) == ["robots.txt lists sitemap-gone.xml but there is no such file"], "missing sitemap file caught")
+    # the numbers block, hand-worked from a fixture edition (Oct 1 to 15: corn 1,651 elevators,
+    # $4.5137 average, basis -40.77 on 1,615 of them; soybeans 1,450, $12.2530, -58.95)
+    with tempfile.TemporaryDirectory() as d:
+        os.makedirs(os.path.join(d, "data", "cash-index"))
+        fx = {"editions": [
+            {"month": "2026-09", "label": "September 2026", "last_day": "2026-09-30",
+             "crops": {"corn": {"overall": {"n": 9, "avg_cash": 1.0, "avg_basis_cents": -1.0}}}},
+            {"month": "2026-10", "label": "October 1 to 15, 2026, partial month", "last_day": "2026-10-15", "crops": {
+                "corn": {"overall": {"n": 1651, "avg_cash": 4.5137, "avg_basis_cents": -40.77, "basis_n": 1615}},
+                "soybeans": {"overall": {"n": 1450, "avg_cash": 12.253, "avg_basis_cents": -58.95, "basis_n": 1450}}}}]}
+        json.dump(fx, open(os.path.join(d, "data", "cash-index", "editions.json"), "w"))
+        nb = numbers_block(d)
+        ok("## Numbers as of Oct 15, 2026" in nb, "block dated by the newest edition's last day: %s" % nb)
+        ok("- Corn: 1,651 elevators, average cash bid $4.51, average basis -41 cents (1,615 elevators with a basis)." in nb, "corn line: %s" % nb)
+        ok("- Soybeans: 1,450 elevators, average cash bid $12.25, average basis -59 cents." in nb, "soybean line: %s" % nb)
+        ok(not any(" - " in x or "\u2014" in x for x in nb), "no dash")
+        fx["editions"][1]["crops"]["soybeans"] = {"overall": {"n": 3}}
+        json.dump(fx, open(os.path.join(d, "data", "cash-index", "editions.json"), "w"))
+        ok(not any("Soybeans" in x for x in numbers_block(d)), "a crop with no average is left out, not guessed")
+        os.remove(os.path.join(d, "data", "cash-index", "editions.json"))
+        ok(numbers_block(d) == [], "no edition file: no block")
     # the real list: no retired URL, one refresh statement, no em dash
     t, probs = build(open(os.path.join(REPO, OUT), encoding="utf-8").read() if os.path.exists(os.path.join(REPO, OUT)) else "")
     for gone in ("/presell-calculator", "/ag-odds", "/embed)", "/cash-rent", "/land-tenure", "/storage-crunch", "/basis-map", "/cash-bids-national"):
