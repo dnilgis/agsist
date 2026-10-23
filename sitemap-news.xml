@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- AGSIST Daily issues from the last two days, for Google News. Written by scripts/generate_daily.py on every publish; an empty list is normal on a quiet weekend. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
-  <url><loc>https://agsist.com/daily/2026-10-23</loc><news:news><news:publication><news:name>AGSIST</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-10-23T05:48:06-05:00</news:publication_date><news:title>Corn slips to $4.58¾ and beans hold $12.53 as WTI tops $101</news:title></news:news></url>
+  <url><loc>https://agsist.com/daily/2026-10-23</loc><news:news><news:publication><news:name>AGSIST</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-10-23T05:48:06-05:00</news:publication_date><news:title>Corn slips 4½¢ to $4.56 as crude climbs 3.7% to $103</news:title></news:news></url>
   <url><loc>https://agsist.com/daily/2026-10-22</loc><news:news><news:publication><news:name>AGSIST</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-10-22T06:03:20-05:00</news:publication_date><news:title>Corn $4.64 and beans $12.47 hold; crude up 2.2% to $99.24</news:title></news:news></url>
-  <url><loc>https://agsist.com/daily/2026-10-21</loc><news:news><news:publication><news:name>AGSIST</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-10-21T05:48:17-05:00</news:publication_date><news:title>Corn down 6 straight days to $4.59½; beans down 7 to $12.45</news:title></news:news></url>
 </urlset>
