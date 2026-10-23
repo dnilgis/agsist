@@ -28,7 +28,7 @@ haul-grain-bu	Grain hauling	Hauling corn, field to farm storage or elevator (16 
 	Grain hauling	Hauling soybeans (18 mile limit; $0.056 a bushel a mile beyond)	bushel	0.242			82
 	Silage	Chopping, hauling and filling the silo	ton	14.44	11.50	17.00	24
 	Silage	Chopping and hauling	ton	11.62	9.75	13.00	25
-	Silage	Chopping only	ton	9.48	6.00	11.00	21
+silage-chop-ton	Silage	Chopping only	ton	9.48	6.00	11.00	21
 	Silage	Hauling only	ton	1.93	0.30	4.25	23
 mow-hay	Haying	Mowing or swathing hay	acre	17.71	10	25	49
 	Haying	Mowing or swathing forage	acre	17.47	10	25	30
@@ -75,10 +75,10 @@ drill-soy-notill	Planting, minimum or no-till, no fertilizer or chemical	Soybean
 	Planting, minimum or no-till, with fertilizer	Soybeans, drilling	acre	24.71	13	32	38
 	Planting, other	Grass seeding	acre	21.19	15	35	21
 	Planting, other	Alfalfa-legume seeding	acre	21.88	17	28.5	26
-	Planting, other	Cover crop drilling, regular till	acre	20.04	5	28	27
+drill-cover	Planting, other	Cover crop drilling, regular till	acre	20.04	5	28	27
 	Planting, other	Cover crop drilling, minimum or no-till	acre	22.51	16	30	49
 	Chemical application	Row crop cultivation with fertilizer application	acre	16.93	8.50	32.00	14
-	Chemical application	Row crop cultivation without fertilizer application	acre	16.05	7.50	30.00	19
+cultivate-row	Chemical application	Row crop cultivation without fertilizer application	acre	16.05	7.50	30.00	19
 fert-dry	Chemical application	Dry fertilizer application	acre	8.40	5.50	15.00	131
 fert-liquid	Chemical application	Liquid fertilizer application	acre	8.28	3.00	24.00	137
 nh3	Chemical application	Anhydrous ammonia application	acre	21.51	6.50	32.00	82
@@ -87,11 +87,11 @@ spray-ground	Chemical application	Herbicide, ground rig	acre	8.57	5.00	18.00	196
 	Chemical application	Insecticide/fungicide, aerial	acre	10.23	7.00	13.50	48
 	Chemical application	Insecticide/fungicide, ground rig	acre	8.74	5.00	20.00	136
 	Machine rental	Combine	hour	247.50	100	875	8
-	Machine rental	Skid loader	hour	95.56	80	120	9
+skid-rent	Machine rental	Skid loader	hour	95.56	80	120	9
 	Machine rental	Corn header	acre	11.22	8	20	9
 	Machine rental	No till drill	acre	17.20	10	22	5
 	Machine rental	Tractor, 250+ hp	hour	203.43	80	260	7
-	Livestock hauling	Belly semi truck, one-way load charge	mile	4.88	4.00	5.50	8
+haul-cattle-semi	Livestock hauling	Belly semi truck, one-way load charge	mile	4.88	4.00	5.50	8
 	Livestock hauling	Flat cattle truck, one-way load charge	mile	5.22	1.60	6.00	21
 	Terracing and dozing	Terracing	foot	1.85	1.10	2.50	11
 	Terracing and dozing	Dozing	hour	202.86	150	275	21

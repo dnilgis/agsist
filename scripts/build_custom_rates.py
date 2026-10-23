@@ -58,57 +58,96 @@ UNITS = {
     "pound", "linear foot", "percent of crop",
 }
 
-# The few jobs farmers ask about most, under one name, so the page can set
-# states side by side. Each state's own wording still shows in the table.
-KEYS = {
-    "combine-corn": "Combine corn",
-    "combine-soy": "Combine soybeans",
-    "combine-smallgrain": "Combine wheat or small grain",
-    "harvest-haul-corn": "Corn: combine, cart and haul to the farm",
-    "harvest-haul-soy": "Soybeans: combine, cart and haul to the farm",
-    "plant-row": "Plant row crops, no fertilizer",
-    "plant-row-fert": "Plant row crops with fertilizer",
-    "plant-notill": "No-till plant corn",
-    "drill-soy": "Drill soybeans",
-    "drill-soy-notill": "No-till drill soybeans",
-    "drill-smallgrain": "Drill small grain",
-    "spray-ground": "Spray, ground rig",
-    "spray-tractor": "Spray, tractor and sprayer",
-    "spray-aerial": "Spray, airplane",
-    "spray-drone": "Spray, drone",
-    "fert-dry": "Spread dry fertilizer",
-    "fert-liquid": "Apply liquid fertilizer",
-    "nh3": "Apply anhydrous ammonia",
-    "lime-ton": "Spread lime",
-    "chisel": "Chisel plow",
-    "disk-tandem": "Tandem or finishing disk",
-    "disk-chisel": "Disk-chisel",
-    "field-cult": "Field cultivate",
-    "vertical-till": "Vertical tillage",
-    "subsoil": "Subsoil or rip",
-    "strip-till": "Strip till",
-    "moldboard": "Moldboard plow",
-    "land-roll": "Roll land",
-    "mow-hay": "Mow hay",
-    "mow-cond": "Mow and condition hay",
-    "rake": "Rake hay",
-    "ted": "Ted hay",
-    "swath": "Swath",
-    "bale-smallsq": "Bale small squares",
-    "bale-largesq": "Bale large squares",
-    "bale-round": "Bale round bales",
-    "bale-round-net": "Bale round bales, net wrap",
-    "grain-cart": "Grain cart",
-    "haul-grain-bu": "Haul grain by truck",
-    "dry-corn-pt": "Dry corn, per point",
-    "custom-farm-corn": "Custom farm corn, all trips",
-    "custom-farm-soy": "Custom farm soybeans, all trips",
-    "mow-crp": "Mow CRP or pasture",
-    "tub-grind": "Tub grind hay",
-    "backhoe": "Backhoe",
-    "manure-inject": "Inject liquid manure",
-    "manure-dragline": "Liquid manure by drag line",
-}
+# The jobs more than one survey prices, under one name, so the page can set
+# states side by side and take the middle. Each state's own wording still shows.
+# Grouped by the page's categories (Sig, Oct 23: categories on top, every kind of
+# planter, drill and combine under its category), in the order the page lists them.
+CATS = [("tillage", "Tillage"), ("planting", "Planting"), ("spray", "Spraying and fertilizing"),
+        ("harvest", "Harvest"), ("hauling", "Hauling"), ("hay", "Hay and forage"),
+        ("livestock", "Livestock"), ("other", "Other")]
+CAT_NAME = dict(CATS)
+KEYED = [
+    ("tillage", [("chisel", "Chisel plow"), ("disk-chisel", "Disk-chisel"), ("moldboard", "Moldboard plow"),
+                 ("subsoil", "Subsoil or rip"), ("strip-till", "Strip till"), ("vertical-till", "Vertical tillage"),
+                 ("disk-tandem", "Tandem or finishing disk"), ("field-cult", "Field cultivate"),
+                 ("cultivate-row", "Row cultivate"), ("rotary-hoe", "Rotary hoe"), ("land-roll", "Roll land"),
+                 ("stalk-chop", "Chop stalks")]),
+    ("planting", [("plant-row", "Planter, no fertilizer"), ("plant-row-fert", "Planter with fertilizer"),
+                  ("plant-notill", "No-till planter, corn"), ("drill-soy", "Drill soybeans"),
+                  ("drill-soy-notill", "No-till drill, soybeans"), ("drill-smallgrain", "Drill wheat or small grain"),
+                  ("drill-cover", "Drill a cover crop")]),
+    ("spray", [("spray-ground", "Spray, self-propelled or ground rig"), ("spray-tractor", "Spray, tractor and pull-type sprayer"),
+               ("spray-aerial", "Spray by airplane"), ("spray-drone", "Spray by drone"),
+               ("fert-dry", "Spread dry fertilizer"), ("fert-liquid", "Apply liquid fertilizer"),
+               ("sidedress-liquid", "Side-dress liquid fertilizer"), ("nh3", "Apply anhydrous"),
+               ("lime-ton", "Spread lime"), ("manure-solid-ton", "Spread solid manure"),
+               ("manure-inject", "Inject liquid manure"), ("manure-dragline", "Liquid manure by drag hose")]),
+    ("harvest", [("combine-corn", "Combine corn"), ("combine-soy", "Combine soybeans"),
+                 ("combine-smallgrain", "Combine wheat or small grain"),
+                 ("harvest-haul-corn", "Corn: combine, cart and haul home"),
+                 ("harvest-haul-soy", "Soybeans: combine, cart and haul home"),
+                 ("harvest-haul-smallgrain", "Wheat: combine, cart and haul home"),
+                 ("grain-cart", "Grain cart"), ("dry-corn-pt", "Dry corn")]),
+    ("hauling", [("haul-grain-bu", "Haul grain by truck")]),
+    ("hay", [("mow-hay", "Mow hay"), ("mow-cond", "Mow and condition hay"), ("swath", "Swath"),
+             ("rake", "Rake hay"), ("ted", "Ted hay"), ("merge-hay", "Merge windrows"),
+             ("bale-smallsq", "Bale small squares"), ("bale-largesq", "Bale large squares"),
+             ("bale-round", "Bale round bales"), ("bale-round-net", "Bale round bales, net wrap"),
+             ("silage-chop-ton", "Chop silage"), ("tub-grind", "Tub grind hay")]),
+    ("livestock", [("haul-cattle-semi", "Haul cattle by semi")]),
+    ("other", [("custom-farm-corn", "Custom farm corn, every trip"), ("custom-farm-soy", "Custom farm soybeans, every trip"),
+               ("mow-crp", "Mow CRP or pasture"), ("skid-rent", "Rent a skid loader"), ("backhoe", "Backhoe"),
+               ("store-bin-month", "Store grain in a bin")]),
+]
+KEYS = {k: lab for _, ks in KEYED for k, lab in ks}
+KEY_CAT = {k: c for c, ks in KEYED for k, _ in ks}
+
+# Every other row goes to a category by its own words (first rule that fits), then
+# by its survey section. A few sections decide first (silage hauling is forage
+# work). Order matters: "hauling cattle" is livestock, "grain cart" is harvest,
+# "hauling liquid manure" is fertilizing, "bale and haul" is hay.
+SEC_FIRST = [("hay", r"^silage|corn silage"), ("other", r"labor|wages|full-service|machinery and operator|custom contract|custom farming"),
+             ("planting", r"^grain planting|^planting|^row crop planting|^small grain seeding|^drilling")]
+CAT_RULES = [
+    ("livestock", r"cattle|livestock|calves|pregnan|worming|\bhogs?\b"),
+    ("other", r"custom farming|lawn|fence|brush|\bmow\w* (pasture|grass|crp)|controlled burning|storage charge|elevator storage|bin rental|grain bin storage|tiling|\btile\b|drainage|excavator|track hoe|backhoe"),
+    ("tillage", r"strip till|cultivat"),
+    ("harvest", r"grain cart|combin|swathing (grain|canola)"),
+    ("spray", r"manure"),
+    ("hay", r"\bbal(e|ed|es|ing)\b|silage|\bmow"),
+    ("hauling", r"haul|truck|semi\b|loaded mile|over base|extra charge per 10 miles|\d+ or more miles"),
+    ("planting", r"plant|drill|seed|seeding"),
+    ("hay", r"\bhay\b|forage|windrow|swath|\brak(e|ing)\b|\btedd?(ing)?\b|merg|earlage|snaplage|stover"),
+    ("spray", r"spray|herbicide|fungicide|insecticide|pesticide|fertili[sz]|anhydrous|\blime\b|nitrogen|side-?dress|chemical|aerial|drone|\buav\b|electrocution|selective targeting|ditches"),
+    ("harvest", r"harvest|dry(ing)?\b|moisture|corn head|soybean head|header|sorghum|sunflower|ear corn"),
+    ("tillage", r"till|disk|disc(ing)?\b|chisel|plow|rip(per|ping)?\b|subsoil|hoe|roll(ing)?\b|stalk|rock picking|finishing|sweeps|harrow|cultipack|undercutter"),
+]
+SEC_RULES = [
+    ("hauling", r"^haul"), ("hay", r"hay|forage|silage"), ("livestock", r"livestock|cattle"),
+    ("spray", r"spray|fertili|chemical|pesticide|aerial|weed|manure"), ("planting", r"plant|drill|seed"),
+    ("harvest", r"harvest|combin|dry"), ("hauling", r"haul"), ("tillage", r"till|soil prep|land prep"),
+]
+UNIT_CAT = {"head": "livestock", "head / day": "livestock"}
+
+
+def category(sec, op, key=None, unit=""):
+    """The page category for one survey row. Keyed rows follow their key; the rest go by their words."""
+    if key:
+        return KEY_CAT[key]
+    if unit in UNIT_CAT:
+        return UNIT_CAT[unit]
+    o, s = op.lower(), sec.lower()
+    for c, rx in SEC_FIRST:
+        if re.search(rx, s):
+            return c
+    for c, rx in CAT_RULES:
+        if re.search(rx, o):
+            return c
+    for c, rx in SEC_RULES:
+        if re.search(rx, s):
+            return c
+    return "other"
+
 
 # Shared land borders, for the neighbor comparison.
 BORDERS = {
@@ -304,6 +343,7 @@ def validate(meta, rows, where="tsv"):
             row["lo"], row["hi"] = round(lo * scale, 4), round(hi * scale, 4)
         if key:
             row["k"] = key
+        row["c"] = category(sec, op, key, u)
         if printed:
             row["p"] = printed
         if src == "2":
@@ -377,6 +417,86 @@ def index_doc(docs):
             "built": STAMP, "states": states, "keys": KEYS, "common": common,
             "borders": {st: [x for x in BORDERS.get(st, "").split()] for st in sorted(BORDERS)},
             "names": STATE_NAMES,
+            "not_covered": NOT_COVERED}
+
+
+# The going rate. For each job more than one survey prices: the middle of the
+# state surveys' own averages, the lowest and highest of those averages, and how
+# many surveys. Each state counts once (no weighting by answers); a state's
+# number is its survey's average as printed (Missouri also prints a median; the
+# average is used so every state is read the same way). Nothing is inflated or
+# adjusted. A survey whose rate year is more than AGE_MAX years behind the
+# newest survey is shown with its year but left out of the middle (the rent
+# tiles' rule, Sig Oct 19). Rows in a different unit from the job's usual unit
+# are shown beside it, never mixed in. Fewer than MIN_BLEND surveys: no middle,
+# each number shown on its own.
+AGE_MAX = 3
+MIN_BLEND = 3
+
+
+def rate_year(d):
+    return d.get("rate_year") or d["survey_year"]
+
+
+def median(vals):
+    v = sorted(vals)
+    n = len(v)
+    return v[n // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2
+
+
+def blend_doc(docs, idx):
+    newest = max(rate_year(d) for d in docs.values())
+    cutoff = newest - AGE_MAX
+    ops, cats = {}, []
+    for cat, ks in KEYED:
+        keep = []
+        for k, label in ks:
+            ent = [(st, r) for st in sorted(docs) for r in docs[st]["rows"] if r.get("k") == k]
+            if not ent:
+                continue
+            count = {}
+            for _, r in ent:
+                count[r["u"]] = count.get(r["u"], 0) + 1
+            unit = sorted(count, key=lambda u: (-count[u], u))[0]
+            by, other, old = {}, {}, {}
+            for st, r in ent:
+                v = [r["a"], r.get("lo"), r.get("hi"), r["n"], r["o"]]
+                if r["u"] != unit:
+                    other[st] = v + [r["u"]]
+                elif rate_year(docs[st]) < cutoff:
+                    old[st] = v
+                else:
+                    by[st] = v
+            vals = [v[0] for v in by.values()]
+            op = {"label": label, "cat": cat, "u": unit, "n": len(vals), "by": by}
+            if vals:
+                yrs = [rate_year(docs[st]) for st in by]
+                op["y"] = [min(yrs), max(yrs)]
+                op["ans"] = sum(v[3] for v in by.values())
+            if len(vals) >= MIN_BLEND:
+                op["md"] = round(median(vals), 4)
+            if len(vals) >= 2:
+                op["lo"], op["hi"] = min(vals), max(vals)
+            if other:
+                op["other"] = other
+            if old:
+                op["old"] = old
+            ops[k] = op
+            keep.append(k)
+        cats.append([cat, CAT_NAME[cat], keep])
+    states = {}
+    for s in idx["states"]:
+        d = docs[s["st"]]
+        states[s["st"]] = {"name": s["name"], "slug": s["slug"], "year": s["year"], "ry": rate_year(d),
+                           "survey": s["survey"], "publisher": s["publisher"], "url": s["url"], "spread": s["spread"],
+                           "neighbors": s["neighbors"], "rows": s["rows"], "in_blend": rate_year(d) >= cutoff,
+                           "by_cat": {c: sum(1 for r in d["rows"] if r["c"] == c) for c, _ in CATS}}
+    return {"note": "The going rate for custom farm work: for each job, the middle of the state surveys' own averages, with the lowest and highest of them and the number of surveys. Built by scripts/build_custom_rates.py from the same survey rows as each state file (data/custom-rates/<st>.json). Each state counts once; nothing is inflated or adjusted.",
+            "built": STAMP,
+            "rule": {"middle": "median of the state survey averages", "min_surveys": MIN_BLEND, "age_max": AGE_MAX,
+                     "newest": newest, "oldest_in_middle": cutoff,
+                     "words": "Each state counts once. A survey of rates from before %d is shown but left out of the middle. A job needs %d surveys for a middle; with fewer, each number stands on its own." % (cutoff, MIN_BLEND)},
+            "cats": cats, "states": states, "ops": ops, "names": STATE_NAMES, "borders": idx["borders"],
             "not_covered": NOT_COVERED}
 
 
@@ -520,7 +640,7 @@ def state_page(d, idx):
   <meta name="twitter:image" content="{og}">
   <script>try{{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}}catch(e){{}}</script>
   <link rel="stylesheet" href="/components/styles.css?v=26">
-  <link rel="stylesheet" href="/components/custom-rates.css?v=3">
+  <link rel="stylesheet" href="/components/custom-rates.css?v=4">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <script type="application/ld+json">{ld}</script>
@@ -599,6 +719,117 @@ def faq_main(docs, idx):
     return qs
 
 
+def short_unit(u):
+    return {"acre": "an acre", "hour": "an hour", "bushel": "a bushel", "bale": "a bale", "ton": "a ton",
+            "mile": "a mile", "loaded mile": "a loaded mile", "1,000 gallon": "per 1,000 gallons",
+            "point per bushel": "a bushel a point", "bushel / month": "a bushel a month"}.get(u, unit_label(u))
+
+
+def yr_span(y):
+    return "%d rates" % y[0] if y[0] == y[1] else "%d to %d rates" % (y[0], y[1])
+
+
+def bar_html(op, cls="crb"):
+    """The range bar: zero at the left; the band is the lowest to highest state average; a dot per
+    state; the tick is the middle. Drawn from the numbers only, so it says nothing the row does not."""
+    vals = [v[0] for v in op["by"].values()]
+    if not vals:
+        return ""
+    top = max(vals) * 1.15
+    pc = lambda v: "%d" % round(100.0 * v / top)
+    out = ['<span class="%s" aria-hidden="true">' % cls]
+    if len(vals) >= 2:
+        out.append('<s style="left:%s%%;width:%s%%"></s>' % (pc(min(vals)), "%d" % round(100.0 * (max(vals) - min(vals)) / top)))
+    # one dot per state, in state-code order (the page script reads them in that order)
+    out.extend('<i style="left:%s%%"></i>' % pc(op["by"][st][0]) for st in sorted(op["by"]))
+    if "md" in op:
+        out.append('<b style="left:%s%%"></b>' % pc(op["md"]))
+    out.append("</span>")
+    return "".join(out)
+
+
+def rate_cells(op):
+    """(big number, the line under it) for one job, in words that hold for any number of surveys."""
+    u, n = op["u"], op["n"]
+    if "md" in op:
+        return money(op["md"], u), "middle of %d surveys" % n
+    if n == 2:
+        return "%s to %s" % (money(op["lo"], u), money(op["hi"], u)), "2 surveys, too few for a middle"
+    if n == 1:
+        st = next(iter(op["by"]))
+        return money(op["by"][st][0], u), "%s only" % STATE_NAMES[st]
+    return "", "not in a current survey"
+
+
+def hero_block(b, k="combine-corn"):
+    op = b["ops"][k]
+    big, under = rate_cells(op)
+    u = op["u"]
+    rng = ("States run %s to %s %s." % (money(op["lo"], u), money(op["hi"], u), short_unit(u))) if "lo" in op else ""
+    who = ", ".join("%s %s" % (b["states"][st]["name"], money(v[0], u)) for st, v in sorted(op["by"].items(), key=lambda x: -x[1][0]))
+    return ('<p class="crh-k" id="cr-ak">%s <small>%s</small></p>\n'
+            '<p class="crh-v"><b id="cr-av">%s</b> <small id="cr-au">%s</small></p>\n'
+            '<p class="crh-s" id="cr-as">The %s across %d state surveys (%s). %s</p>\n'
+            '%s\n'
+            '<p class="crh-key">Each dot is a state survey\'s average, the dark line is the middle, and your state is the gold dot. The bar starts at zero.</p>\n'
+            '<p class="crh-me" id="cr-me">%s.</p>\n'
+            '<p class="crh-cost" id="cr-cost"></p>\n') % (
+        esc(op["label"]), esc(unit_label(u)), big, esc(short_unit(u)),
+        "middle" if "md" in op else "rate", op["n"], yr_span(op["y"]), rng,
+        bar_html(op, "crb crb-l"), esc(who))
+
+
+def nav_block(b):
+    return "\n".join('        <a href="#%s">%s <small>%d</small></a>' % (c, esc(name), len(ks)) for c, name, ks in b["cats"] if ks)
+
+
+def cats_block(b, docs):
+    out = []
+    for c, name, ks in b["cats"]:
+        lines = sum(1 for d in docs.values() for r in d["rows"] if r.get("c") == c)
+        rows = []
+        for k in ks:
+            op = b["ops"][k]
+            big, under = rate_cells(op)
+            u = op["u"]
+            rng = ("%s to %s" % (money(op["lo"], u), money(op["hi"], u))) if ("lo" in op and "md" in op) else ""
+            rows.append(
+                '<li class="cro" id="%s"><button type="button" class="cro-b" aria-expanded="false">'
+                '<span class="cro-n">%s <small>%s</small></span>'
+                '<span class="cro-v"><b>%s</b> <small>%s</small></span>'
+                '%s'
+                '<span class="cro-r">%s<small>%s</small></span>'
+                '</button><div class="cro-d" hidden></div></li>' % (
+                    k, esc(op["label"]), esc(unit_label(u)), big, esc(under), bar_html(op),
+                    ("states run " + rng) if rng else "", " %s" % yr_span(op["y"]) if op.get("y") else ""))
+        out.append(
+            '<section class="crc" id="%s" data-cat="%s">\n<h2 class="crc-h"><button type="button" class="crc-t" aria-expanded="true"><span class="crc-tt">%s<span class="crc-p">%s</span></span><small>%d job%s</small></button></h2>\n'
+            '<ul class="cro-l">\n%s\n</ul>\n<div class="crc-st" data-cat="%s" data-lines="%d"></div>\n</section>' % (
+                c, c, esc(name), esc(", ".join(b["ops"][k]["label"] for k in ks)), len(ks), "" if len(ks) == 1 else "s", "\n".join(rows), c, lines))
+    return "\n".join(out)
+
+
+def how_block(b, docs):
+    r = b["rule"]
+    inb = [s for s in b["states"].values() if s["in_blend"]]
+    outb = [s for s in b["states"].values() if not s["in_blend"]]
+    li = "".join('<li><a href="/custom-rates/%s">%s</a>, %s: %s, %s. <a href="%s" rel="nofollow">The survey</a>.%s</li>\n' % (
+        s["slug"], esc(s["name"]), ("%d rates" % s["ry"]) if s["ry"] != s["year"] else s["year"], esc(s["survey"]), esc(s["publisher"]), esc(s["url"]),
+        "" if s["in_blend"] else " Too old for the middle; shown with its year.") for s in b["states"].values())
+    return ('<p>For each job I take each state survey\'s own average, as the survey printed it, and show the middle one. Half the states sit at or above it, half at or below. Under it you get the lowest and highest of the state averages and how many surveys priced the job. Tap a job and every state\'s number is there with its year, how many answered, and the lowest and highest answer that survey printed.</p>\n'
+            '<p>Each state counts once, however many people answered. I don\'t inflate older surveys or adjust anything. A survey of rates from before %d is shown with its year but kept out of the middle. A job needs %d surveys before I give a middle; with fewer, each number stands on its own. Surveys word jobs their own way (combine only, or combine, cart and haul), so I only line up jobs that read the same, and each state\'s wording is under its number.</p>\n'
+            '<p>%d surveys, %s. Read the data: <a href="/data/custom-rates/blend.json">blend.json</a> (the going rates), <a href="/data/custom-rates/index.json">index.json</a> and one file per state beside it.</p>\n'
+            '<ul class="srcs">\n%s</ul>\n<p class="fine">Not here yet: %s</p>\n') % (
+        r["oldest_in_middle"], r["min_surveys"], len(inb), yr_span([min(s["ry"] for s in inb), max(s["ry"] for s in inb)]),
+        li, " ".join(esc(NOT_COVERED[k]) for k in sorted(NOT_COVERED)))
+
+
+HERO_RE = re.compile(r"(<!-- cr:hero \(scripts/build_custom_rates.py\) -->)(.*?)(<!-- /cr:hero -->)", re.S)
+NAV_RE = re.compile(r"(<!-- cr:nav \(scripts/build_custom_rates.py\) -->)(.*?)(<!-- /cr:nav -->)", re.S)
+CATS_RE = re.compile(r"(<!-- cr:cats \(scripts/build_custom_rates.py\) -->)(.*?)(<!-- /cr:cats -->)", re.S)
+HOW_RE = re.compile(r"(<!-- cr:how \(scripts/build_custom_rates.py\) -->)(.*?)(<!-- /cr:how -->)", re.S)
+
+
 SUM_RE = re.compile(r"(<!-- cr:summary \(scripts/build_custom_rates.py\) -->)(.*?)(<!-- /cr:summary -->)", re.S)
 
 
@@ -613,12 +844,10 @@ def summary_block(docs, idx):
             r = by.get(k)
             cells.append("<td>%s</td>" % (("%s<small>/%s</small>" % (money(r["a"], r["u"]), "ac" if r["u"] == "acre" else esc(r["u"]))) if r else "<span class=\"na\">not in survey</span>"))
         rows.append('<tr><th scope="row"><a href="/custom-rates/%s">%s</a> <small>%s</small></th>%s</tr>' % (s["slug"], esc(s["name"]), year_label(s), "".join(cells)))
-    return ("\n      <div class=\"cr-tw\"><table class=\"cr-t cr-sum\">\n        <caption>State survey averages. Each state's own wording and full table are on its page.</caption>\n"
+    return ("\n      <div class=\"cr-tw\"><table class=\"cr-t cr-sum\">\n        <caption>Four common jobs, each state survey\'s average.</caption>\n"
             "        <thead><tr><th scope=\"col\">State, survey year</th><th scope=\"col\">Combine corn</th><th scope=\"col\">Combine soybeans</th><th scope=\"col\">Plant, no fertilizer</th><th scope=\"col\">Spray, ground</th></tr></thead>\n"
             "        <tbody>\n        " + "\n        ".join(rows) + "\n        </tbody>\n      </table></div>\n"
-            "      <ul class=\"srcs\">\n" + "".join('        <li><a href="/custom-rates/%s">%s</a>: %s, %s. <a href="%s" rel="nofollow">The survey</a>.</li>\n' % (
-                s["slug"], esc(s["name"]), esc(s["survey"]), esc(s["publisher"]), esc(s["url"])) for s in idx["states"]) +
-            "      </ul>\n      <p class=\"fine\">Not here yet: " + " ".join(esc(NOT_COVERED[k]) for k in sorted(NOT_COVERED)) + "</p>\n      ")
+            "      <p class=\"fine\">Each state's own survey average, the year it covers, and its whole table on the state's page. The surveys and their links are under How I figure the going rate.</p>\n      ")
 
 
 def build(src_dir=SRC):
@@ -634,14 +863,21 @@ def build(src_dir=SRC):
         if len(page.encode()) > PAGE_KB * 1024:
             errs.append("%s page: %d KB, over %d" % (st, len(page.encode()) // 1024, PAGE_KB))
         files[os.path.join(PAGES, d["slug"] + ".html")] = page
+    blend = blend_doc(docs, idx) if docs else None
     if idx:
         files[os.path.join(OUT, "index.json")] = json.dumps(idx, separators=(",", ":"), ensure_ascii=False) + "\n"
+        files[os.path.join(OUT, "blend.json")] = json.dumps(blend, separators=(",", ":"), ensure_ascii=False) + "\n"
         if os.path.exists(MAIN):
             main = open(MAIN, encoding="utf-8").read()
             if not SUM_RE.search(main):
                 errs.append("custom-rates.html: no cr:summary markers")
             else:
                 main = SUM_RE.sub(lambda m: m.group(1) + summary_block(docs, idx) + m.group(3), main, count=1)
+                for rx, body in ((HERO_RE, "\n" + hero_block(blend)), (NAV_RE, "\n" + nav_block(blend) + "\n"),
+                                 (CATS_RE, "\n" + cats_block(blend, docs) + "\n"), (HOW_RE, "\n" + how_block(blend, docs))):
+                    if not rx.search(main):
+                        errs.append("custom-rates.html: no marker %s" % rx.pattern[:20])
+                    main = rx.sub(lambda m, body=body: m.group(1) + body + m.group(3), main, count=1)
                 qs = faq_main(docs, idx)
                 fh = "".join('\n        <details><summary>%s</summary><p>%s</p></details>' % (esc(q), esc(a)) for q, a in qs) + "\n      "
                 ld = {"@context": "https://schema.org", "@graph": [
@@ -791,7 +1027,7 @@ def selftest():
     c, e = run_md(["\tH\tX\tacre\t20\t40\t10\t30\t3"])
     ok(e and "median 40.0 outside" in e[0], "median outside range refused")
     c, e = run_md(["\tA\tFence removal\tfoot\t\t1.25\t\t\t\tmedian-only"])
-    ok(not e and c[0] == {"s": "A", "o": "Fence removal", "u": "foot", "md": 1.25, "p": "median-only"}, "median-only row has no average, range or count: %s %s" % (c, e))
+    ok(not e and c[0] == {"s": "A", "o": "Fence removal", "u": "foot", "md": 1.25, "c": "other", "p": "median-only"}, "median-only row has no average, range or count: %s %s" % (c, e))
     c, e = run_md(["\tA\tX\tfoot\t2\t1.25\t\t\t\tmedian-only"])
     ok(e and "carries no average" in e[0], "median-only row with an average refused")
     c, e = run_md(["\tA\tX\tfoot\t\t1.25\t\t\t4\tmedian-only"])

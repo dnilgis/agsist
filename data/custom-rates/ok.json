@@ -22,7 +22,8 @@
    "o": "Discing, offset",
    "u": "acre",
    "a": 10.79,
-   "n": 12
+   "n": 12,
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -30,14 +31,16 @@
    "u": "acre",
    "a": 12.27,
    "n": 11,
-   "k": "disk-tandem"
+   "k": "disk-tandem",
+   "c": "tillage"
   },
   {
    "s": "Tillage",
    "o": "Blade or wide sweeps",
    "u": "acre",
    "a": 13.17,
-   "n": 6
+   "n": 6,
+   "c": "tillage"
   },
   {
    "s": "Fertilizer and chemical",
@@ -45,7 +48,8 @@
    "u": "acre",
    "a": 6.09,
    "n": 64,
-   "k": "fert-dry"
+   "k": "fert-dry",
+   "c": "spray"
   },
   {
    "s": "Fertilizer and chemical",
@@ -53,14 +57,17 @@
    "u": "acre",
    "a": 5.82,
    "n": 20,
-   "k": "fert-liquid"
+   "k": "fert-liquid",
+   "c": "spray"
   },
   {
    "s": "Fertilizer and chemical",
    "o": "Applying liquid fertilizer, side-dress",
    "u": "acre",
    "a": 7.88,
-   "n": 8
+   "n": 8,
+   "k": "sidedress-liquid",
+   "c": "spray"
   },
   {
    "s": "Fertilizer and chemical",
@@ -68,7 +75,8 @@
    "u": "ton",
    "a": 9.92,
    "n": 6,
-   "k": "lime-ton"
+   "k": "lime-ton",
+   "c": "spray"
   },
   {
    "s": "Fertilizer and chemical",
@@ -76,7 +84,8 @@
    "u": "acre",
    "a": 6.48,
    "n": 56,
-   "k": "spray-ground"
+   "k": "spray-ground",
+   "c": "spray"
   },
   {
    "s": "Fertilizer and chemical",
@@ -84,21 +93,24 @@
    "u": "acre",
    "a": 10.2,
    "n": 13,
-   "k": "spray-aerial"
+   "k": "spray-aerial",
+   "c": "spray"
   },
   {
    "s": "Fertilizer and chemical",
    "o": "Ground application, fungicides with boom sprayer",
    "u": "acre",
    "a": 5.33,
-   "n": 10
+   "n": 10,
+   "c": "spray"
   },
   {
    "s": "Fertilizer and chemical",
    "o": "Air application, fungicides",
    "u": "acre",
    "a": 7.53,
-   "n": 8
+   "n": 8,
+   "c": "spray"
   },
   {
    "s": "Planting",
@@ -106,7 +118,8 @@
    "u": "acre",
    "a": 12.55,
    "n": 10,
-   "k": "drill-smallgrain"
+   "k": "drill-smallgrain",
+   "c": "planting"
   },
   {
    "s": "Haying",
@@ -114,7 +127,8 @@
    "u": "acre",
    "a": 16.19,
    "n": 27,
-   "k": "mow-hay"
+   "k": "mow-hay",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -122,7 +136,8 @@
    "u": "acre",
    "a": 4.22,
    "n": 27,
-   "k": "rake"
+   "k": "rake",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -130,7 +145,8 @@
    "u": "acre",
    "a": 16.09,
    "n": 116,
-   "k": "swath"
+   "k": "swath",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -138,7 +154,8 @@
    "u": "bale",
    "a": 2.05,
    "n": 20,
-   "k": "bale-smallsq"
+   "k": "bale-smallsq",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -146,21 +163,24 @@
    "u": "bale",
    "a": 17.58,
    "n": 8,
-   "k": "bale-largesq"
+   "k": "bale-largesq",
+   "c": "hay"
   },
   {
    "s": "Haying",
    "o": "Baling a round bale, 4-foot width",
    "u": "bale",
    "a": 14.67,
-   "n": 22
+   "n": 22,
+   "c": "hay"
   },
   {
    "s": "Haying",
    "o": "Cutting, raking, baling round bales, 4-foot width",
    "u": "bale",
    "a": 22.56,
-   "n": 166
+   "n": 166,
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -168,14 +188,16 @@
    "u": "bale",
    "a": 16.16,
    "n": 123,
-   "k": "bale-round"
+   "k": "bale-round",
+   "c": "hay"
   },
   {
    "s": "Haying",
    "o": "Cutting, raking, baling round bales, 5-foot width",
    "u": "bale",
    "a": 25.55,
-   "n": 175
+   "n": 175,
+   "c": "hay"
   },
   {
    "s": "Small grain harvest",
@@ -183,21 +205,24 @@
    "u": "acre",
    "a": 23.89,
    "n": 61,
-   "k": "combine-smallgrain"
+   "k": "combine-smallgrain",
+   "c": "harvest"
   },
   {
    "s": "Small grain harvest",
    "o": "Base rate for combining small grains (plus $0.24 a bushel over about 21.68 bushels an acre)",
    "u": "acre",
    "a": 23.61,
-   "n": 38
+   "n": 38,
+   "c": "harvest"
   },
   {
    "s": "Small grain harvest",
    "o": "Flat rate for hauling small grains",
    "u": "bushel",
    "a": 0.24,
-   "n": 28
+   "n": 28,
+   "c": "hauling"
   },
   {
    "s": "Small grain harvest",
@@ -205,56 +230,65 @@
    "u": "acre",
    "a": 27.11,
    "n": 9,
-   "k": "combine-soy"
+   "k": "combine-soy",
+   "c": "harvest"
   },
   {
    "s": "Livestock",
    "o": "Pregnancy test cattle",
    "u": "head",
    "a": 4.78,
-   "n": 27
+   "n": 27,
+   "c": "livestock"
   },
   {
    "s": "Livestock",
    "o": "Worming cattle",
    "u": "head",
    "a": 4.43,
-   "n": 20
+   "n": 20,
+   "c": "livestock"
   },
   {
    "s": "Livestock",
    "o": "Hauling cattle, belly semi truck",
    "u": "mile",
    "a": 3.92,
-   "n": 21
+   "n": 21,
+   "k": "haul-cattle-semi",
+   "c": "livestock"
   },
   {
    "s": "Miscellaneous",
    "o": "Brush hogging",
    "u": "hour",
    "a": 55.24,
-   "n": 29
+   "n": 29,
+   "c": "other"
   },
   {
    "s": "Miscellaneous",
    "o": "Dozing (D6 or smaller)",
    "u": "hour",
    "a": 107.44,
-   "n": 43
+   "n": 43,
+   "c": "other"
   },
   {
    "s": "Miscellaneous",
    "o": "Dozing (D7 or larger)",
    "u": "hour",
    "a": 143.18,
-   "n": 17
+   "n": 17,
+   "c": "other"
   },
   {
    "s": "Miscellaneous",
    "o": "Welding",
    "u": "hour",
    "a": 54.46,
-   "n": 28
+   "n": 28,
+   "c": "other"
   }
  ]
 }

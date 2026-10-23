@@ -22,7 +22,9 @@
    "o": "Rotary hoeing",
    "u": "acre",
    "a": 9.4,
-   "n": 5
+   "n": 5,
+   "k": "rotary-hoe",
+   "c": "tillage"
   },
   {
    "s": "Land preparation",
@@ -30,7 +32,8 @@
    "u": "acre",
    "a": 19.13,
    "n": 20,
-   "k": "chisel"
+   "k": "chisel",
+   "c": "tillage"
   },
   {
    "s": "Land preparation",
@@ -38,7 +41,8 @@
    "u": "acre",
    "a": 17.12,
    "n": 26,
-   "k": "vertical-till"
+   "k": "vertical-till",
+   "c": "tillage"
   },
   {
    "s": "Land preparation",
@@ -46,7 +50,8 @@
    "u": "acre",
    "a": 15.19,
    "n": 18,
-   "k": "disk-tandem"
+   "k": "disk-tandem",
+   "c": "tillage"
   },
   {
    "s": "Land preparation",
@@ -54,7 +59,8 @@
    "u": "acre",
    "a": 16.59,
    "n": 25,
-   "k": "field-cult"
+   "k": "field-cult",
+   "c": "tillage"
   },
   {
    "s": "Land preparation",
@@ -62,7 +68,8 @@
    "u": "acre",
    "a": 22.0,
    "n": 17,
-   "k": "subsoil"
+   "k": "subsoil",
+   "c": "tillage"
   },
   {
    "s": "Fertilizer application, ground",
@@ -70,7 +77,8 @@
    "u": "acre",
    "a": 7.74,
    "n": 27,
-   "k": "fert-dry"
+   "k": "fert-dry",
+   "c": "spray"
   },
   {
    "s": "Fertilizer application, ground",
@@ -78,14 +86,16 @@
    "u": "acre",
    "a": 8.56,
    "n": 17,
-   "k": "fert-liquid"
+   "k": "fert-liquid",
+   "c": "spray"
   },
   {
    "s": "Fertilizer application, ground",
    "o": "Knifing-in liquid fertilizer",
    "u": "acre",
    "a": 14.58,
-   "n": 17
+   "n": 17,
+   "c": "spray"
   },
   {
    "s": "Fertilizer application, ground",
@@ -93,21 +103,24 @@
    "u": "acre",
    "a": 15.21,
    "n": 12,
-   "k": "nh3"
+   "k": "nh3",
+   "c": "spray"
   },
   {
    "s": "Fertilizer application, ground",
    "o": "Side-dress anhydrous application",
    "u": "acre",
    "a": 15.35,
-   "n": 17
+   "n": 17,
+   "c": "spray"
   },
   {
    "s": "Fertilizer application, ground",
    "o": "Spreading manure",
    "u": "acre",
    "a": 15.39,
-   "n": 9
+   "n": 9,
+   "c": "spray"
   },
   {
    "s": "Chemical application",
@@ -115,7 +128,8 @@
    "u": "acre",
    "a": 8.4,
    "n": 10,
-   "k": "spray-tractor"
+   "k": "spray-tractor",
+   "c": "spray"
   },
   {
    "s": "Chemical application",
@@ -125,7 +139,8 @@
    "n": 40,
    "lo": 6.7,
    "hi": 10.0,
-   "k": "spray-ground"
+   "k": "spray-ground",
+   "c": "spray"
   },
   {
    "s": "Chemical application",
@@ -133,21 +148,24 @@
    "u": "acre",
    "a": 13.31,
    "n": 18,
-   "k": "spray-aerial"
+   "k": "spray-aerial",
+   "c": "spray"
   },
   {
    "s": "Precision agriculture",
    "o": "Precision fertilizer application",
    "u": "acre",
    "a": 7.9,
-   "n": 14
+   "n": 14,
+   "c": "spray"
   },
   {
    "s": "Precision agriculture",
    "o": "Precision chemical application",
    "u": "acre",
    "a": 9.0,
-   "n": 7
+   "n": 7,
+   "c": "spray"
   },
   {
    "s": "Grain planting",
@@ -157,7 +175,8 @@
    "n": 31,
    "lo": 16.4,
    "hi": 29.5,
-   "k": "plant-row"
+   "k": "plant-row",
+   "c": "planting"
   },
   {
    "s": "Grain planting",
@@ -165,14 +184,16 @@
    "u": "acre",
    "a": 22.79,
    "n": 24,
-   "k": "plant-notill"
+   "k": "plant-notill",
+   "c": "planting"
   },
   {
    "s": "Grain planting",
    "o": "Conventional till soybeans, 15 inch rows",
    "u": "acre",
    "a": 21.64,
-   "n": 18
+   "n": 18,
+   "c": "planting"
   },
   {
    "s": "Grain planting",
@@ -181,7 +202,8 @@
    "a": 21.94,
    "n": 31,
    "lo": 16.8,
-   "hi": 27.0
+   "hi": 27.0,
+   "c": "planting"
   },
   {
    "s": "Grain planting",
@@ -189,7 +211,8 @@
    "u": "acre",
    "a": 18.33,
    "n": 6,
-   "k": "drill-soy"
+   "k": "drill-soy",
+   "c": "planting"
   },
   {
    "s": "Grain planting",
@@ -197,14 +220,16 @@
    "u": "acre",
    "a": 19.5,
    "n": 8,
-   "k": "drill-soy-notill"
+   "k": "drill-soy-notill",
+   "c": "planting"
   },
   {
    "s": "Grain planting",
    "o": "No-till small grains",
    "u": "acre",
    "a": 19.46,
-   "n": 12
+   "n": 12,
+   "c": "planting"
   },
   {
    "s": "Grain harvesting",
@@ -214,7 +239,8 @@
    "n": 53,
    "lo": 28.8,
    "hi": 45.1,
-   "k": "combine-corn"
+   "k": "combine-corn",
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -224,7 +250,8 @@
    "n": 54,
    "lo": 28.1,
    "hi": 43.8,
-   "k": "combine-soy"
+   "k": "combine-soy",
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -232,7 +259,8 @@
    "u": "acre",
    "a": 32.37,
    "n": 15,
-   "k": "combine-smallgrain"
+   "k": "combine-smallgrain",
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -240,7 +268,8 @@
    "u": "acre",
    "a": 43.88,
    "n": 26,
-   "k": "harvest-haul-corn"
+   "k": "harvest-haul-corn",
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -248,14 +277,17 @@
    "u": "acre",
    "a": 40.79,
    "n": 28,
-   "k": "harvest-haul-soy"
+   "k": "harvest-haul-soy",
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
    "o": "Small grain, combine and haul to bin",
    "u": "acre",
    "a": 41.14,
-   "n": 7
+   "n": 7,
+   "k": "harvest-haul-smallgrain",
+   "c": "harvest"
   },
   {
    "s": "Machinery and operator for all growing and harvesting operations",
@@ -263,7 +295,8 @@
    "u": "acre",
    "a": 122.34,
    "n": 8,
-   "k": "custom-farm-corn"
+   "k": "custom-farm-corn",
+   "c": "other"
   },
   {
    "s": "Machinery and operator for all growing and harvesting operations",
@@ -271,7 +304,8 @@
    "u": "acre",
    "a": 107.23,
    "n": 8,
-   "k": "custom-farm-soy"
+   "k": "custom-farm-soy",
+   "c": "other"
   },
   {
    "s": "On-farm corn drying",
@@ -279,6 +313,7 @@
    "u": "bushel",
    "a": 0.19,
    "n": 11,
+   "c": "harvest",
    "p": "cents"
   },
   {
@@ -287,6 +322,7 @@
    "u": "bushel",
    "a": 0.32,
    "n": 10,
+   "c": "harvest",
    "p": "cents"
   },
   {
@@ -298,6 +334,7 @@
    "lo": 0.126,
    "hi": 0.251,
    "k": "haul-grain-bu",
+   "c": "hauling",
    "p": "cents"
   },
   {
@@ -306,7 +343,8 @@
    "u": "acre",
    "a": 20.1,
    "n": 10,
-   "k": "mow-cond"
+   "k": "mow-cond",
+   "c": "hay"
   },
   {
    "s": "Hay, straw or corn stover",
@@ -314,7 +352,8 @@
    "u": "acre",
    "a": 8.17,
    "n": 6,
-   "k": "ted"
+   "k": "ted",
+   "c": "hay"
   },
   {
    "s": "Hay, straw or corn stover",
@@ -322,7 +361,8 @@
    "u": "acre",
    "a": 11.44,
    "n": 9,
-   "k": "rake"
+   "k": "rake",
+   "c": "hay"
   },
   {
    "s": "Hay, straw or corn stover",
@@ -330,7 +370,8 @@
    "u": "bale",
    "a": 1.12,
    "n": 9,
-   "k": "bale-smallsq"
+   "k": "bale-smallsq",
+   "c": "hay"
   },
   {
    "s": "Hay, straw or corn stover",
@@ -338,7 +379,8 @@
    "u": "bale",
    "a": 13.17,
    "n": 6,
-   "k": "bale-largesq"
+   "k": "bale-largesq",
+   "c": "hay"
   },
   {
    "s": "Hay, straw or corn stover",
@@ -346,7 +388,8 @@
    "u": "bale",
    "a": 19.58,
    "n": 13,
-   "k": "bale-round"
+   "k": "bale-round",
+   "c": "hay"
   },
   {
    "s": "Miscellaneous",
@@ -354,6 +397,7 @@
    "u": "foot",
    "a": 0.95,
    "n": 6,
+   "c": "other",
    "p": "cents"
   },
   {
@@ -362,14 +406,16 @@
    "u": "acre",
    "a": 30.85,
    "n": 9,
-   "k": "mow-crp"
+   "k": "mow-crp",
+   "c": "other"
   },
   {
    "s": "Miscellaneous",
    "o": "Bulldozing (blade 9 feet wide or less)",
    "u": "hour",
    "a": 129.0,
-   "n": 9
+   "n": 9,
+   "c": "other"
   }
  ]
 }

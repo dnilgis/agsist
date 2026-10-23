@@ -17,7 +17,7 @@ field-cult	Land tillage	Field cultivating	acre	17.80	10.00	30.00	20
 vertical-till	Land tillage	Vertical tillage	acre	21.02	14.00	30.00	21
 disk-tandem	Land tillage	Finishing disk	acre	20.46	10.00	29.10	11
 	Land tillage	Offset disk	acre	20.33	15.00	27.00	6
-	Land tillage	Row cultivating	acre	19.22	12.00	40.00	8
+cultivate-row	Land tillage	Row cultivating	acre	19.22	12.00	40.00	8
 	Land tillage	Row cultivating with fertilizer	acre	22.39	15.00	50.00	7
 subsoil	Land tillage	Subsoiling (16-20 inches deep)	acre	26.22	18.00	35.00	10
 strip-till	Land tillage	Strip tillage	acre	29.90	18.00	50.00	10
@@ -34,7 +34,7 @@ plant-notill	Planting	Planting corn (with fertilizer), no-till	acre	25.02	17.00	
 	Planting	Planting corn (without fertilizer), no-till	acre	22.54	14.00	28.00	12
 fert-dry	Fertilizer and chemical application	Bulk dry fertilizer, broadcast	acre	8.90	5.75	17.00	43
 fert-liquid	Fertilizer and chemical application	Liquid fertilizer, broadcast	acre	9.00	4.50	10.50	11
-	Fertilizer and chemical application	Liquid side-dressing with drop nozzles	acre	13.35	8.00	17.50	20
+sidedress-liquid	Fertilizer and chemical application	Liquid side-dressing with drop nozzles	acre	13.35	8.00	17.50	20
 	Fertilizer and chemical application	Lime application	acre	17.14	12.00	31.00	7
 lime-ton	Fertilizer and chemical application	Lime application	ton	20.41	5.00	65.00	11
 	Fertilizer and chemical application	Fungicide, ground application	acre	11.90	8.00	20.00	41
@@ -46,7 +46,7 @@ combine-soy	Harvesting and combining (flat rate)	Combining soybeans	acre	37.13	2
 combine-smallgrain	Harvesting and combining (flat rate)	Combining small grains, straight	acre	36.80	26.00	46.00	30
 harvest-haul-corn	Harvesting and combining (flat rate)	Harvest corn (combine, grain cart, haul local to farm)	acre	47.36	35.00	65.00	14
 harvest-haul-soy	Harvesting and combining (flat rate)	Harvest soybeans (combine, grain cart, haul local to farm)	acre	47.07	35.00	65.00	14
-	Harvesting and combining (flat rate)	Harvest wheat (combine, grain cart, haul local to farm)	acre	46.50	38.00	65.00	8
+harvest-haul-smallgrain	Harvesting and combining (flat rate)	Harvest wheat (combine, grain cart, haul local to farm)	acre	46.50	38.00	65.00	8
 	Harvesting and combining (flat rate)	Corn stalks, large bales	bale	13.90	10.50	17.00	5
 mow-hay	Forage harvesting	Mowing hay	acre	16.20	13.00	22.00	10
 mow-cond	Forage harvesting	Mowing and conditioning hay	acre	15.42	10.00	20.00	19
@@ -63,4 +63,4 @@ haul-grain-bu	Crop hauling and trucking	Hauling corn (average maximum one-way tr
 	Miscellaneous	Corn drying	bushel	0.10	0.02	0.20	6
 dry-corn-pt	Miscellaneous	Corn drying	point per bushel	0.06	0.04	0.07	8
 manure-dragline	Miscellaneous	Liquid manure applied by drag line	1,000 gallon	14.90	10.00	30.00	10
-	Miscellaneous	Skid steer loader rental	hour	50.83	35.00	85.00	6
+skid-rent	Miscellaneous	Skid steer loader rental	hour	50.83	35.00	85.00	6

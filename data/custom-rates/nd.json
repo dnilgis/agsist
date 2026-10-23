@@ -29,7 +29,8 @@
    "n": 6,
    "lo": 10.0,
    "hi": 17.0,
-   "k": "moldboard"
+   "k": "moldboard",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -38,7 +39,8 @@
    "a": 16.92,
    "n": 13,
    "lo": 5.0,
-   "hi": 35.0
+   "hi": 35.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -48,7 +50,8 @@
    "n": 15,
    "lo": 6.0,
    "hi": 25.0,
-   "k": "chisel"
+   "k": "chisel",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -58,7 +61,8 @@
    "n": 4,
    "lo": 12.0,
    "hi": 30.0,
-   "k": "subsoil"
+   "k": "subsoil",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -68,7 +72,8 @@
    "n": 11,
    "lo": 10.0,
    "hi": 24.0,
-   "k": "disk-chisel"
+   "k": "disk-chisel",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -78,7 +83,8 @@
    "n": 19,
    "lo": 5.0,
    "hi": 22.0,
-   "k": "field-cult"
+   "k": "field-cult",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -87,7 +93,8 @@
    "a": 12.8,
    "n": 5,
    "lo": 10.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -97,7 +104,8 @@
    "n": 11,
    "lo": 10.0,
    "hi": 32.0,
-   "k": "disk-tandem"
+   "k": "disk-tandem",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -106,7 +114,9 @@
    "a": 9.0,
    "n": 4,
    "lo": 5.0,
-   "hi": 13.0
+   "hi": 13.0,
+   "k": "rotary-hoe",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -116,7 +126,8 @@
    "n": 20,
    "lo": 5.0,
    "hi": 40.0,
-   "k": "vertical-till"
+   "k": "vertical-till",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -126,7 +137,8 @@
    "n": 27,
    "lo": 2.0,
    "hi": 18.0,
-   "k": "land-roll"
+   "k": "land-roll",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -135,7 +147,8 @@
    "a": 9.86,
    "n": 7,
    "lo": 4.0,
-   "hi": 15.0
+   "hi": 15.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -144,7 +157,8 @@
    "a": 9.67,
    "n": 9,
    "lo": 5.0,
-   "hi": 15.0
+   "hi": 15.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -153,7 +167,9 @@
    "a": 11.5,
    "n": 4,
    "lo": 9.5,
-   "hi": 15.0
+   "hi": 15.0,
+   "k": "cultivate-row",
+   "c": "tillage"
   },
   {
    "s": "Small grain seeding",
@@ -162,7 +178,8 @@
    "a": 23.25,
    "n": 24,
    "lo": 3.0,
-   "hi": 40.0
+   "hi": 40.0,
+   "c": "planting"
   },
   {
    "s": "Small grain seeding",
@@ -171,7 +188,8 @@
    "a": 18.33,
    "n": 9,
    "lo": 8.0,
-   "hi": 25.0
+   "hi": 25.0,
+   "c": "planting"
   },
   {
    "s": "Small grain seeding",
@@ -180,7 +198,8 @@
    "a": 22.29,
    "n": 34,
    "lo": 10.0,
-   "hi": 40.0
+   "hi": 40.0,
+   "c": "planting"
   },
   {
    "s": "Small grain seeding",
@@ -189,7 +208,8 @@
    "a": 23.32,
    "n": 17,
    "lo": 12.5,
-   "hi": 40.0
+   "hi": 40.0,
+   "c": "planting"
   },
   {
    "s": "Small grain seeding",
@@ -199,7 +219,8 @@
    "n": 23,
    "lo": 3.0,
    "hi": 30.0,
-   "k": "drill-smallgrain"
+   "k": "drill-smallgrain",
+   "c": "planting"
   },
   {
    "s": "Small grain seeding",
@@ -208,7 +229,8 @@
    "a": 20.57,
    "n": 7,
    "lo": 14.0,
-   "hi": 40.0
+   "hi": 40.0,
+   "c": "planting"
   },
   {
    "s": "Small grain seeding",
@@ -217,7 +239,8 @@
    "a": 17.43,
    "n": 20,
    "lo": 8.0,
-   "hi": 30.0
+   "hi": 30.0,
+   "c": "planting"
   },
   {
    "s": "Small grain seeding",
@@ -226,7 +249,8 @@
    "a": 21.04,
    "n": 26,
    "lo": 10.0,
-   "hi": 30.0
+   "hi": 30.0,
+   "c": "planting"
   },
   {
    "s": "Row crop planting",
@@ -236,7 +260,8 @@
    "n": 29,
    "lo": 15.0,
    "hi": 75.0,
-   "k": "plant-row-fert"
+   "k": "plant-row-fert",
+   "c": "planting"
   },
   {
    "s": "Row crop planting",
@@ -245,7 +270,8 @@
    "a": 25.86,
    "n": 14,
    "lo": 15.0,
-   "hi": 40.0
+   "hi": 40.0,
+   "c": "planting"
   },
   {
    "s": "Row crop planting",
@@ -254,7 +280,8 @@
    "a": 29.25,
    "n": 12,
    "lo": 15.0,
-   "hi": 47.0
+   "hi": 47.0,
+   "c": "planting"
   },
   {
    "s": "Row crop planting",
@@ -264,7 +291,8 @@
    "n": 28,
    "lo": 12.5,
    "hi": 35.0,
-   "k": "plant-row"
+   "k": "plant-row",
+   "c": "planting"
   },
   {
    "s": "Row crop planting",
@@ -273,7 +301,8 @@
    "a": 19.21,
    "n": 14,
    "lo": 12.0,
-   "hi": 25.0
+   "hi": 25.0,
+   "c": "planting"
   },
   {
    "s": "Row crop planting",
@@ -282,7 +311,8 @@
    "a": 19.15,
    "n": 10,
    "lo": 10.0,
-   "hi": 26.0
+   "hi": 26.0,
+   "c": "planting"
   },
   {
    "s": "Row crop planting",
@@ -291,7 +321,8 @@
    "a": 25.96,
    "n": 23,
    "lo": 18.0,
-   "hi": 40.0
+   "hi": 40.0,
+   "c": "planting"
   },
   {
    "s": "Row crop planting",
@@ -301,7 +332,8 @@
    "n": 15,
    "lo": 14.0,
    "hi": 35.0,
-   "k": "plant-notill"
+   "k": "plant-notill",
+   "c": "planting"
   },
   {
    "s": "Fertilizer application",
@@ -311,7 +343,8 @@
    "n": 147,
    "lo": 5.0,
    "hi": 40.0,
-   "k": "fert-dry"
+   "k": "fert-dry",
+   "c": "spray"
   },
   {
    "s": "Fertilizer application",
@@ -320,7 +353,8 @@
    "a": 20.15,
    "n": 13,
    "lo": 8.0,
-   "hi": 35.0
+   "hi": 35.0,
+   "c": "spray"
   },
   {
    "s": "Fertilizer application",
@@ -330,7 +364,8 @@
    "n": 23,
    "lo": 4.0,
    "hi": 20.0,
-   "k": "fert-liquid"
+   "k": "fert-liquid",
+   "c": "spray"
   },
   {
    "s": "Fertilizer application",
@@ -339,7 +374,8 @@
    "a": 11.25,
    "n": 6,
    "lo": 5.0,
-   "hi": 22.0
+   "hi": 22.0,
+   "c": "spray"
   },
   {
    "s": "Fertilizer application",
@@ -349,7 +385,8 @@
    "n": 9,
    "lo": 8.0,
    "hi": 26.0,
-   "k": "nh3"
+   "k": "nh3",
+   "c": "spray"
   },
   {
    "s": "Fertilizer application",
@@ -358,7 +395,8 @@
    "a": 18.0,
    "n": 9,
    "lo": 8.0,
-   "hi": 28.0
+   "hi": 28.0,
+   "c": "spray"
   },
   {
    "s": "Pesticide application",
@@ -368,7 +406,8 @@
    "n": 111,
    "lo": 3.0,
    "hi": 26.5,
-   "k": "spray-ground"
+   "k": "spray-ground",
+   "c": "spray"
   },
   {
    "s": "Pesticide application",
@@ -377,7 +416,8 @@
    "a": 8.22,
    "n": 27,
    "lo": 3.0,
-   "hi": 12.0
+   "hi": 12.0,
+   "c": "spray"
   },
   {
    "s": "Pesticide application",
@@ -386,7 +426,8 @@
    "a": 8.65,
    "n": 22,
    "lo": 5.0,
-   "hi": 15.0
+   "hi": 15.0,
+   "c": "spray"
   },
   {
    "s": "Pesticide application",
@@ -395,7 +436,8 @@
    "a": 8.45,
    "n": 46,
    "lo": 4.25,
-   "hi": 12.0
+   "hi": 12.0,
+   "c": "spray"
   },
   {
    "s": "Pesticide application",
@@ -404,7 +446,8 @@
    "a": 8.68,
    "n": 63,
    "lo": 4.25,
-   "hi": 13.0
+   "hi": 13.0,
+   "c": "spray"
   },
   {
    "s": "Pesticide application",
@@ -413,7 +456,8 @@
    "a": 8.72,
    "n": 43,
    "lo": 4.0,
-   "hi": 13.0
+   "hi": 13.0,
+   "c": "spray"
   },
   {
    "s": "Pesticide application",
@@ -422,7 +466,8 @@
    "a": 9.76,
    "n": 29,
    "lo": 4.5,
-   "hi": 15.0
+   "hi": 15.0,
+   "c": "spray"
   },
   {
    "s": "Pesticide application",
@@ -432,7 +477,8 @@
    "n": 40,
    "lo": 6.0,
    "hi": 15.0,
-   "k": "spray-aerial"
+   "k": "spray-aerial",
+   "c": "spray"
   },
   {
    "s": "Pesticide application",
@@ -441,7 +487,8 @@
    "a": 10.0,
    "n": 34,
    "lo": 8.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "spray"
   },
   {
    "s": "Pesticide application",
@@ -450,7 +497,8 @@
    "a": 11.25,
    "n": 20,
    "lo": 8.25,
-   "hi": 25.0
+   "hi": 25.0,
+   "c": "spray"
   },
   {
    "s": "Haying",
@@ -460,7 +508,8 @@
    "n": 11,
    "lo": 6.0,
    "hi": 25.0,
-   "k": "mow-hay"
+   "k": "mow-hay",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -470,7 +519,8 @@
    "n": 16,
    "lo": 6.5,
    "hi": 25.0,
-   "k": "mow-cond"
+   "k": "mow-cond",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -480,7 +530,8 @@
    "n": 11,
    "lo": 7.0,
    "hi": 25.0,
-   "k": "swath"
+   "k": "swath",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -490,7 +541,8 @@
    "n": 14,
    "lo": 2.0,
    "hi": 12.0,
-   "k": "rake"
+   "k": "rake",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -500,7 +552,8 @@
    "n": 6,
    "lo": 1.0,
    "hi": 9.0,
-   "k": "bale-smallsq"
+   "k": "bale-smallsq",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -510,7 +563,8 @@
    "n": 4,
    "lo": 8.0,
    "hi": 15.0,
-   "k": "bale-largesq"
+   "k": "bale-largesq",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -520,7 +574,8 @@
    "n": 21,
    "lo": 5.0,
    "hi": 30.0,
-   "k": "bale-round"
+   "k": "bale-round",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -529,7 +584,8 @@
    "a": 15.27,
    "n": 13,
    "lo": 5.0,
-   "hi": 60.0
+   "hi": 60.0,
+   "c": "hay"
   },
   {
    "s": "Other custom work",
@@ -538,7 +594,8 @@
    "a": 280.0,
    "n": 8,
    "lo": 100.0,
-   "hi": 500.0
+   "hi": 500.0,
+   "c": "hay"
   },
   {
    "s": "Other custom work",
@@ -547,7 +604,8 @@
    "a": 104.09,
    "n": 22,
    "lo": 20.0,
-   "hi": 200.0
+   "hi": 200.0,
+   "c": "other"
   },
   {
    "s": "Other custom work",
@@ -556,7 +614,8 @@
    "a": 67.5,
    "n": 6,
    "lo": 20.0,
-   "hi": 125.0
+   "hi": 125.0,
+   "c": "other"
   },
   {
    "s": "Other custom work",
@@ -565,7 +624,8 @@
    "a": 2.38,
    "n": 4,
    "lo": 2.0,
-   "hi": 3.0
+   "hi": 3.0,
+   "c": "livestock"
   },
   {
    "s": "Harvesting grain crops",
@@ -575,6 +635,7 @@
    "n": 10,
    "lo": 8.0,
    "hi": 45.0,
+   "c": "harvest",
    "src": 2
   },
   {
@@ -585,6 +646,7 @@
    "n": 7,
    "lo": 10.0,
    "hi": 18.6,
+   "c": "harvest",
    "src": 2
   },
   {
@@ -595,6 +657,7 @@
    "n": 24,
    "lo": 15.0,
    "hi": 55.0,
+   "c": "harvest",
    "src": 2
   },
   {
@@ -605,6 +668,7 @@
    "n": 11,
    "lo": 10.0,
    "hi": 60.0,
+   "c": "harvest",
    "src": 2
   },
   {
@@ -616,6 +680,7 @@
    "lo": 13.0,
    "hi": 60.0,
    "k": "combine-smallgrain",
+   "c": "harvest",
    "src": 2
   },
   {
@@ -627,6 +692,7 @@
    "lo": 20.0,
    "hi": 100.0,
    "k": "combine-corn",
+   "c": "harvest",
    "src": 2
   },
   {
@@ -637,6 +703,7 @@
    "n": 13,
    "lo": 18.0,
    "hi": 60.0,
+   "c": "harvest",
    "src": 2
   },
   {
@@ -648,6 +715,7 @@
    "lo": 12.5,
    "hi": 60.0,
    "k": "combine-soy",
+   "c": "harvest",
    "src": 2
   },
   {
@@ -658,6 +726,7 @@
    "n": 15,
    "lo": 15.0,
    "hi": 60.0,
+   "c": "harvest",
    "src": 2
   },
   {
@@ -668,6 +737,7 @@
    "n": 35,
    "lo": 12.75,
    "hi": 60.0,
+   "c": "harvest",
    "src": 2
   },
   {
@@ -678,6 +748,7 @@
    "n": 7,
    "lo": 22.0,
    "hi": 50.0,
+   "c": "harvest",
    "src": 2
   },
   {
@@ -688,6 +759,7 @@
    "n": 13,
    "lo": 12.0,
    "hi": 200.0,
+   "c": "hay",
    "src": 2
   },
   {
@@ -698,6 +770,7 @@
    "n": 12,
    "lo": 45.0,
    "hi": 240.0,
+   "c": "hay",
    "src": 2
   },
   {
@@ -708,6 +781,7 @@
    "n": 25,
    "lo": 0.25,
    "hi": 1.95,
+   "c": "planting",
    "src": 2
   },
   {
@@ -718,6 +792,7 @@
    "n": 10,
    "lo": 22.0,
    "hi": 150.0,
+   "c": "other",
    "src": 2
   },
   {
@@ -728,6 +803,7 @@
    "n": 9,
    "lo": 30.0,
    "hi": 250.0,
+   "c": "other",
    "src": 2
   },
   {
@@ -738,6 +814,7 @@
    "n": 10,
    "lo": 125.0,
    "hi": 400.0,
+   "c": "harvest",
    "src": 2
   },
   {
@@ -748,6 +825,7 @@
    "n": 18,
    "lo": 0.05,
    "hi": 1.0,
+   "c": "harvest",
    "src": 2
   },
   {
@@ -758,6 +836,7 @@
    "n": 19,
    "lo": 0.04,
    "hi": 0.55,
+   "c": "harvest",
    "src": 2
   },
   {
@@ -768,6 +847,7 @@
    "n": 27,
    "lo": 0.05,
    "hi": 0.8,
+   "c": "hauling",
    "src": 2
   },
   {
@@ -779,6 +859,7 @@
    "lo": 0.03,
    "hi": 0.48,
    "k": "haul-grain-bu",
+   "c": "hauling",
    "src": 2
   },
   {
@@ -789,6 +870,7 @@
    "n": 14,
    "lo": 3.0,
    "hi": 10.0,
+   "c": "hauling",
    "src": 2
   },
   {
@@ -799,6 +881,7 @@
    "n": 21,
    "lo": 2.0,
    "hi": 30.0,
+   "c": "livestock",
    "src": 2
   },
   {
@@ -809,6 +892,8 @@
    "n": 24,
    "lo": 1.0,
    "hi": 10.0,
+   "k": "haul-cattle-semi",
+   "c": "livestock",
    "src": 2
   }
  ]
