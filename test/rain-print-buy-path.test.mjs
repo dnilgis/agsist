@@ -110,7 +110,16 @@ async function withPage(fn, { width = 390, height = 844, ...opts } = {}) {
     await ctx.addInitScript(() => { const s = new CSSStyleSheet(); s.replaceSync("html{scroll-behavior:auto!important}"); document.adoptedStyleSheets = [...document.adoptedStyleSheets, s]; });
     // a scroll in progress, smooth ones too, from its first frame to its scrollend (openSheet waits for it)
     await ctx.addInitScript(() => { window.__scrolling = false; addEventListener("scroll", () => { window.__scrolling = true; }, true); addEventListener("scrollend", () => { window.__scrolling = false; }, true); });
-    await ctx.clock.setFixedTime(new Date("2026-10-15T17:00:00Z"));
+    /* Today is Oct 15, 2026; only the date is held, the timers and performance.now stay the browser's own.
+       Playwright's clock (ctx.clock.setFixedTime) also takes over setTimeout, and it dates a new timer from its own
+       count, which only catches up with real time when something reads the time: under load a 150 ms debounce set by
+       a key came due after 40 to 130 ms of real time, so the print redrew between letters the page had not seen a
+       pause between ("21 letters, 6 redraws, 2 pauses over 150 ms", Oct 23). */
+    await ctx.addInitScript((t) => {
+      const D = Date;
+      class Fixed extends D { constructor(...a) { if (a.length) super(...a); else super(t); } static now() { return t; } }
+      window.Date = new Proxy(Fixed, { apply: () => new D(t).toString() });
+    }, Date.parse("2026-10-15T17:00:00Z"));
     await mocks(ctx, opts);
     const page = await ctx.newPage();
     const errors = [];
