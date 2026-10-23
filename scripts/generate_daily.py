@@ -3432,7 +3432,7 @@ def render_action_block_html(action, bot_call=None):
     if bot_call:
         label = (bot_call.get("label") or "BOT CALL") if isinstance(bot_call, dict) else "BOT CALL"
         src = ('<p class="dv3-action-src">From the AGSIST prediction bot, a fixed statistical rule '
-               'graded by code. Not advice. <a href="/scorecard">Record and method &rarr;</a></p>')
+               'graded by code. Not advice. <a href="/usda-calendar#scorecard">Record and method &rarr;</a></p>')
     return (f'<div class="dv3-takeaway dv3-action" role="note" aria-label="Today\'s action">'
             f'<span class="dv3-takeaway-label">{label}</span>'
             f'<p class="dv3-takeaway-text">{html_esc_preserve_strong(text)}</p>'
@@ -5336,7 +5336,7 @@ def insert_bot_call(briefing, today=None, path=None):
         "record": {k: live.get(k) for k in keep},
         "backtest": {k: bt.get(k) for k in keep},
         "source": "data/predictions.json",
-        "url": "/scorecard",
+        "url": "/usda-calendar#scorecard",
     }
     print(f"  [bot] The Action: {text}")
     return briefing

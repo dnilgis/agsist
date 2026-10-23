@@ -83,8 +83,8 @@ PAGES = [
          "each state's best bids, median corn and soybean basis with the number of elevators behind it, and every elevator's bid, at /cash-bids/<state>/"),
         ("/cash-bids/iowa/des-moines", "Cash Bids by Town",
          "each town's nearest-delivery corn and soybean bid and basis, the elevator and the date it posted, at /cash-bids/<state>/<town>"),
-        ("/basis", "Basis by State and vs Normal",
-         "your state's median corn and soybean basis, USDA regions against their own 5-year same-week normal, barge rates, and this fall's grain vs bin space"),
+        ("/basis", "Bids and Basis by State",
+         "your state's median corn and soybean basis, every state with a current bid and how many elevators and towns have one, USDA regions against their own 5-year same-week normal, barge rates, and this fall's grain vs bin space"),
         ("/grain-transport", "Grain on the Move",
          "weekly barge rates, BNSF and UP shuttle railcar bids, grain tons through Lock 27, grain car orders past due and Gulf vs PNW ocean freight, each against its 5-year normal, and how basis has moved with freight in river and rail regions"),
         ("/corn-futures-prices", "Corn Futures", "CBOT corn with 52-week and 5-year context"),
@@ -93,29 +93,22 @@ PAGES = [
         ("/cattle-futures-prices", "Cattle Futures", "live and feeder cattle, the feeder/live ratio and a cost-of-gain break-even"),
         ("/milk-prices", "Milk Prices", "Class III and IV, cheese and butter, and the component formula behind the milk check"),
         ("/markets", "Markets", "grains, livestock, milk, energy and metals in one view"),
-        ("/elevators", "For Elevators", "the map of every elevator AGSIST tracks, and how an elevator claims its board"),
-        ("/list-your-elevator", "List Your Elevator", "how an elevator not on AGSIST yet asks to be added, and the ways to send its bids: a bid sheet, the posting page, or a link to its own board"),
+        ("/list-your-elevator", "List Your Elevator", "how an elevator posts its own bids free (a bid sheet, the posting page, or a link to its own board), how a listed elevator fixes its name, town or phone, and the map of every elevator AGSIST tracks"),
     ]),
     ("What will USDA say, and what moves the price?", [
-        ("/usda-calendar", "USDA Report Calendar", "every USDA report date"),
-        ("/whats-priced-in", "What's Priced In", "trade expectations before each USDA report, and how each report graded against them"),
+        ("/usda-calendar", "USDA Report Calendar", "every USDA report date; what the trade expects before each big report and how each one graded against it; and the prediction bot scorecard, a fixed rule calling corn, soybeans, Chicago and KC wheat higher or lower about four weeks out, every call graded by code, the backtest kept apart from the live record"),
         ("/usda-quick-stats", "USDA Crop Data by State", "yields, acres, production and prices by state for corn, soybeans and wheat, from USDA NASS"),
         ("/yield/iowa", "Yield by Year, by State", "each state's corn and soybean yield by year since 2010, at /yield/<state>"),
         ("/cot", "Fund Positioning (COT)", "weekly CFTC managed-money positioning for 11 ag markets, and whether positioning has predicted price"),
-        ("/scorecard", "Prediction Bot Scorecard",
-         "a fixed statistical rule calls whether corn, soybeans, Chicago and KC wheat close higher or lower about four weeks out, one call per crop for each weekly CFTC report, every call graded by code against Yahoo Finance daily closes, with the backtest kept apart from the live record"),
         ("/tariffs", "Tariff Tracker", "current tariff rates on US corn, soybean, wheat and pork exports"),
     ]),
     ("How big is this crop?", [
-        ("/conditions-yield", "2026 Crop Size: Every Forecast", "every US corn and soybean yield forecast side by side: USDA, the Pro Farmer tour, private estimates and AGSIST's ratings model"),
-        ("/crop-tour", "Pro Farmer Crop Tour", "the tour's state results and national estimate, set against USDA's, with the tour's record since 2015"),
-        ("/conditions", "Crop Conditions Ranked", "each state's good-to-excellent share ranked against the same week of every year USDA rated it"),
-        ("/pod-counts", "Do Pod Counts Predict Soybean Yield?", "what 28 state-years of crop tour pod counts actually predict"),
+        ("/crop-tour", "Pro Farmer Crop Tour", "the tour's state results and national estimate, set against USDA's, with the tour's record since 2015, and what 28 state-years of its soybean pod counts actually predict"),
+        ("/conditions", "Crop Conditions and Crop Size", "each state's good-to-excellent share and harvest pace ranked against the same week of every year USDA rated it, and every 2026 corn and soybean yield forecast side by side: USDA, the Pro Farmer tour, private estimates and AGSIST's ratings model"),
         ("/yield-estimator", "Yield Estimator", "corn ear counts and soybean pod counts turned into bushels per acre"),
     ]),
     ("What's happening in my fields?", [
-        ("/hail-map", "Hail Map", "did it hail at your place: NWS hail reports, radar-estimated swaths, warnings, free hail alerts, and county rankings"),
-        ("/hail/", "Hail Storm Log", "one page per significant US hail day, at /hail/YYYY-MM-DD"),
+        ("/hail-map", "Hail Map", "did it hail at your place: NWS hail reports, radar-estimated swaths, warnings, free hail alerts, county rankings, and the storm log, one page per significant US hail day at /hail/YYYY-MM-DD"),
         ("/hail-map/iowa", "Hail by State", "each state's hail counties, peak months and storm days, at /hail-map/<state>"),
         ("/spray", "Spray Conditions", "can I spray today, by the hour, plus a tank-mix calculator"),
         ("/urea", "Urea Volatilization Risk", "nitrogen loss risk for surface-applied urea in the days ahead"),
@@ -180,9 +173,8 @@ PAGES = [
         ("/foreign-land", "Foreign-Owned Farmland", "USDA AFIDA disclosures mapped by county"),
     ]),
     ("Every morning", [
-        ("/daily", "AGSIST Daily", "today's morning briefing"),
+        ("/daily", "AGSIST Daily", "today's morning briefing, and what just moved: dated market events the moment they are measurable (USDA surprises, positioning extremes, 52-week highs and lows)"),
         ("/archive", "Briefing Archive", "every past briefing, by month, at /daily/YYYY-MM-DD"),
-        ("/news", "The Wire", "dated market events the moment they are measurable: USDA surprises, positioning extremes, 52-week highs and lows"),
         ("/", "AGSIST Homepage", "today's prices, the briefing, local bids, weather and the farm and trade odds board"),
     ]),
     ("About this site", [
@@ -258,7 +250,7 @@ def top_level_pages(root=REPO):
         if not loc.startswith(HOST):
             continue
         p = loc[len(HOST):] or "/"
-        if SET_RE.match(p) and p not in ("/hail/",):
+        if SET_RE.match(p):
             continue
         out.append(p)
     return out

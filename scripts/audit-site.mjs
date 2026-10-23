@@ -59,7 +59,7 @@ const ONLY = argv.reduce((a, v, i) => (v === "--page" ? a.concat(argv[i + 1]) : 
    same thing ten times while making the report too long to read. --all exists
    for when the template itself changes. */
 const DEFAULT_PAGES = [
-  "/", "/cash-bids", "/elevators", "/hail-map", "/daily", "/markets",
+  "/", "/cash-bids", "/list-your-elevator", "/hail-map", "/daily", "/markets",
   "/basis", "/spray", "/urea", "/changelog", "/sponsor",
   "/corn-futures-prices", "/soybean-futures-prices", "/breakeven", "/tools",
 ];

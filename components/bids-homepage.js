@@ -1786,7 +1786,7 @@
       + '<span class="bh-sep" aria-hidden="true">·</span>'
       + '<a class="bh-fl" href="/contact">Wrong number?</a>'
       + '<span class="bh-sep" aria-hidden="true">·</span>'
-      + '<a class="bh-fl r7-claim" href="/elevators#claim" data-track="claim_board">Claim your board</a>'
+      + '<a class="bh-fl r7-claim" href="/list-your-elevator#claim" data-track="claim_board">Claim your board</a>'
       + '</div>';
     html += '<div class="bh-tip" id="bh-tip"' + (tipOpen ? '' : ' hidden') + '>'
       + '<div><b>Basis</b> is the cash bid minus the futures price it is quoted against. −62¢ Dec means 62¢ under December futures. Less negative is stronger.</div>'

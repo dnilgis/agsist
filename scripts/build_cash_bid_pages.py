@@ -832,7 +832,7 @@ def known_section(t, known, z=""):
                   for e in ks[:KNOWN_MAX])
     more = len(ks) - KNOWN_MAX
     more_html = (f'<li style="color:var(--text-muted)">and {more} more on the '
-                 f'<a href="/elevators#coverage-map">coverage map</a></li>') if more > 0 else ""
+                 f'<a href="/list-your-elevator#coverage">coverage map</a></li>') if more > 0 else ""
     return (f'<h2>Also in {esc(t["name"])}, bids not read yet</h2>'
             f'<p class="cbt-sub">AGSIST knows these elevators are here but does not read their bids yet, so no '
             f'price is shown for them.</p><ul class="cbt-list">{lis}{more_html}</ul>')

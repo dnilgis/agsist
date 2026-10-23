@@ -687,7 +687,7 @@ def explore_nav():
                                  L("/cash-lease", "Cash Farm Lease"), L("/foreign-land", "Foreign-Owned Land")])
             + '<br><span style="color:var(--text-dim);font-weight:700">Markets:</span> '
             + " &middot; ".join([L("/markets", "Futures"), L("/cash-bids", "Cash Bids"), L("/basis", "Basis vs Normal"),
-                                 L("/whats-priced-in", "What&rsquo;s Priced In"), L("/cot", "COT")])
+                                 L("/usda-calendar#priced-in", "What&rsquo;s Priced In"), L("/cot", "COT")])
             + '<br><span style="color:var(--text-dim);font-weight:700">Field:</span> '
             + " &middot; ".join([L("/conditions", "Crop Conditions Rank"), L("/drought-monitor", "Drought Monitor"),
                                  L("/hail-map", "Hail Map"), L("/breakeven", "Break-Even"), L("/daily", "Daily Briefing")])

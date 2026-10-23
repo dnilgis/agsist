@@ -91,7 +91,7 @@ def metric_class(metric_label):
 # forecasts, because that is a call made with the answer in hand.
 NOWCAST_PATH = "data/nowcast-direction.json"
 NOWCAST_ID = "agsist"            # must match the roster id in analyst-estimates.json
-NOWCAST_LINK = "https://agsist.com/conditions-yield"  # same form the typed rows use
+NOWCAST_LINK = "https://agsist.com/conditions#crop-size"  # same form the typed rows use
 NOWCAST_CROP_KEY = {"corn": "corn_yield", "soybeans": "soy_yield"}
 
 

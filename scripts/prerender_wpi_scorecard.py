@@ -128,7 +128,7 @@ def sc_next_report(n):
     return ('<b style="color:var(--text)">' + (when + ': ' if when else '') + '</b>' +
             esc(n.get("report", "Next USDA report")) + ': ' +
             esc(n.get("metric") or "the next USDA numbers") + '. See '
-            '<a href="/whats-priced-in" style="color:var(--gold)">what the trade has '
+            '<a href="/usda-calendar#priced-in" style="color:var(--gold)">what the trade has '
             'priced in</a> before the number drops.')
 
 
@@ -819,12 +819,12 @@ def home_usda_card(wpi):
         '<div class="usda-cal-card gs-card">'
         '<div class="gs-head">'
         f'<span class="gs-t">{esc(rpt)} &middot; {_short_day(date)}</span>'
-        '<a href="/whats-priced-in" class="gs-src">USDA, graded</a></div>'
+        '<a href="/usda-calendar#priced-in" class="gs-src">USDA, graded</a></div>'
         f'<div class="gs-line">{line}</div>'
         '<details class="gs-more"><summary>Every figure against the trade</summary>'
         + "".join(items) +
         '<p>Graded on the distance from the trade average: 0.5% for a yield, 1% for '
-        'production, 2% for stocks. <a href="/whats-priced-in">What&rsquo;s Priced In</a></p>'
+        'production, 2% for stocks. <a href="/usda-calendar#priced-in">What&rsquo;s Priced In</a></p>'
         '</details></div>'
     )
 

@@ -23,7 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import usda_dates  # noqa: E402  (the single date table)
 
 TIME_CT = "11:00 AM CT"
-PAGE = "agsist.com/whats-priced-in"
+PAGE = "agsist.com/usda-calendar"
 FIXED = "report-day"
 
 
@@ -117,7 +117,7 @@ def _selftest():
     ck(usda_dates.major_reports(sep30) == ["Grain Stocks"], "Sep 30: Grain Stocks")
     ck(usda_dates.major_reports(oct8) == [], "Oct 8: nothing")
     it = watch_item(oct9)
-    ck(it["desc"] == "USDA WASDE and Crop Production. Graded against the trade survey on agsist.com/whats-priced-in.",
+    ck(it["desc"] == "USDA WASDE and Crop Production. Graded against the trade survey on agsist.com/usda-calendar.",
        it["desc"])
     ck(len(it["desc"].split()) <= 20, "the fixed line fits the 20-word watch cap")
 
