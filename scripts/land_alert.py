@@ -180,13 +180,14 @@ def fresh(f, month_last):
 
 
 def row(r, d):
-    """The only shape a sale leaves this module in: no names, no parcel, no legal, no document."""
+    """The only shape a sale leaves this module in: no names, no parcel, no legal, no document.
+    pt is the township's or town's public point (the gazetteer's), never a parcel's."""
     a = BLS.num(r.get("acres"))
     with_bldg = "with buildings" in str(r.get("conv") or "").lower()
     return {"when": r["when"], "basis": "recorded" if r["has_rec"] else "sale date", "acres": a,
             "price": BLS.js_round(BLS.num(r.get("price")) or 0), "ppa": r.get("ppa"),
-            "place": r.get("muniName") or None, "county": r.get("county"), "st": r["st"], "mi": d,
-            "bldg": with_bldg}
+            "place": r.get("muniName") or None, "county": r.get("county"), "fips": r.get("fips"), "st": r["st"], "mi": d,
+            "pt": r["pt"], "bldg": with_bldg}
 
 
 def windows(year, m0):
@@ -335,7 +336,7 @@ def selftest():
     ck("counted, not listed: one under 10 acres, one without acres, one not placed", rep["small"] == 1 and rep["no_acres"] == 1 and rep["unplaced"] == 1,
        (rep["small"], rep["no_acres"], rep["unplaced"]))
     ck("with buildings marked; $/acre from the shared rule", rep["rows"][2]["bldg"] is True and rep["rows"][0]["ppa"] == 5000)
-    ck("a row carries no name, parcel, legal or document", all(set(r) == {"when", "basis", "acres", "price", "ppa", "place", "county", "st", "mi", "bldg"} for r in rep["rows"])
+    ck("a row carries no name, parcel, legal or document", all(set(r) == {"when", "basis", "acres", "price", "ppa", "place", "county", "fips", "st", "mi", "pt", "bldg"} for r in rep["rows"])
        and not re.search(r"SELLERNAME|BUYERNAME|SECRET LEGAL|P-0|D0", json.dumps(rep)))
     med = rep["median"]
     ck("median: both windows have 10+ sales and compare, so both print with their counts", med["cur"] and med["cur"]["n"] >= 10 and med["prev"]["n"] >= 10, med)
