@@ -110,6 +110,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/build_cash_bid_pages.py --print-new /tmp/new-urls.txt
 
+      # Each state page carries its sponsor slot (cash-bids-<state>); the list the
+      # sponsor sign-up form offers is read off the pages, so it follows a state
+      # that gains or loses its page.
+      - name: Sponsor slot list
+        run: python scripts/stamp_rates.py
+
       # The site search index reads these town pages (and the atlas, state and
       # top-level pages already in the checkout), so towns and elevators in
       # search follow every rebuild. If the index fails (too big), the old one
@@ -133,7 +139,7 @@ jobs:
           git config user.email "bot@agsist.com"
           # cash-bids.html: only its og:/twitter: description (network counts and time) is rewritten
           # basis.html: only its SEED:statepick and SEED:staterank blocks (the state basis) are rewritten
-          git add -A cash-bids data/pointers sitemap-cash-bids.xml cash-bids.html basis.html data/state-basis data/basis-states.json data/elevator-counts.json data/search-index.json data/search-elevators.json data/search-places.json img/og/cash-bids.jpg
+          git add -A cash-bids data/pointers data/sponsor-slots.json sitemap-cash-bids.xml cash-bids.html basis.html data/state-basis data/basis-states.json data/elevator-counts.json data/search-index.json data/search-elevators.json data/search-places.json img/og/cash-bids.jpg
           if git diff --staged --quiet; then echo "no change"; echo "changed=0" >> "$GITHUB_OUTPUT"; exit 0; fi
           git diff --staged --shortstat
           git commit -q -m "pages: rebuild /cash-bids town pages from the elevator network"

@@ -362,14 +362,20 @@ check("the footer strip ships hidden and empty; loader.js shows it only for an a
   assert.match(fn, /s\.active === true/);
 });
 // Oct 18 menu (Sig approved): the one Advertise link moved from the bottom row to the "Work with us" column.
-check("the footer keeps exactly one quiet Advertise link, in the Work with us column", () => {
+// Oct 22 (Sig: "I don't see it in the footer or header"): the column folds on phones, so the always-open
+// bottom row gets one plain "Advertise with AGSIST" line too. Exactly those two, nothing else.
+check("the footer keeps one quiet Advertise link in the Work with us column and one in the bottom row", () => {
   const i = FOOTER.indexOf('<span class="footer-h">Work with us</span>');
   assert.ok(i > 0, "no Work with us column");
   const col = FOOTER.slice(i, FOOTER.indexOf("</details>", i));
   const links = col.match(/<a [^>]*href="\/sponsor[^"]*"[^>]*>(?:<svg[\s\S]*?<\/svg>)?[^<]*<\/a>/g) || [];
   assert.equal(links.length, 1, links.length + " sponsor links in the Work with us column");
   assert.match(links[0], />Advertise<\/a>$/);
-  assert.equal((FOOTER.match(/href="\/sponsor/g) || []).length, 1, "a second sponsor link elsewhere in the footer");
+  const bottom = FOOTER.slice(FOOTER.indexOf('<div class="footer-bottom">'));
+  const low = bottom.match(/<a [^>]*href="\/sponsor[^"]*"[^>]*>[^<]*<\/a>/g) || [];
+  assert.equal(low.length, 1, low.length + " sponsor links in the bottom row");
+  assert.match(low[0], /^<a href="\/sponsor" data-sponsor-link[^>]*>Advertise with AGSIST<\/a>$/);
+  assert.equal((FOOTER.match(/href="\/sponsor/g) || []).length, 2, "a third sponsor link elsewhere in the footer");
 });
 check("the homepage: nothing for an unsold slot, the ad for a sold one", () => {
   assert.match(INDEX, /id="daily-sponsor"[^>]*style="display:none"/, "the briefing slot is visible before the data says it is sold");

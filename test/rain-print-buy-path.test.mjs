@@ -100,6 +100,14 @@ async function withPage(fn, { width = 390, height = 844, ...opts } = {}) {
   try {
     const ctx = await browser.newContext({ viewport: { width, height }, serviceWorkers: "block", hasTouch: width < 900, isMobile: false });
     await makerFlag(ctx);   // Sig's browser: maker mode is gated (fixtures/rp-maker.mjs)
+    /* Playwright's own scrolls are instant. Before a fill, click or check it scrolls the box into view itself, and
+       html{scroll-behavior:smooth} (styles.css) made that a glide it does not wait for. Under load the glide's first
+       frames stall with scrollY unchanged, and a jump made by the page during it does not stop it: the glide carried
+       the page past Pay ("off screen", 1 in about 80 runs at 8 at once, Oct 22) or moved Pay between Playwright's
+       hit check and its press (the tap went to #rp-pay-wrap). A reader's own finger scroll is never animated by that
+       rule, and every glide the page makes itself names its behavior (smooth() in rain-print.js), so those still
+       glide here as on a phone. Only the rule's default goes. */
+    await ctx.addInitScript(() => { const s = new CSSStyleSheet(); s.replaceSync("html{scroll-behavior:auto!important}"); document.adoptedStyleSheets = [...document.adoptedStyleSheets, s]; });
     // a scroll in progress, smooth ones too, from its first frame to its scrollend (openSheet waits for it)
     await ctx.addInitScript(() => { window.__scrolling = false; addEventListener("scroll", () => { window.__scrolling = true; }, true); addEventListener("scrollend", () => { window.__scrolling = false; }, true); });
     await ctx.clock.setFixedTime(new Date("2026-10-15T17:00:00Z"));

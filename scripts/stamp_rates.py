@@ -49,8 +49,10 @@ def label(card, tier):
 
 def pages():
     out = []
+    # cash-bids/<state>/index.html: one slot per state; its town pages carry the same
+    # data-slot (scripts/build_cash_bid_pages.py) and are not read here.
     for pat in ("*.html", "rent/*.html", "basis/*.html", "yield/*.html", "hail-map/*.html", "prf/*.html",
-                "components/*.html"):
+                "cash-bids/*/index.html", "components/*.html"):
         out += sorted(ROOT.glob(pat))
     return out
 
@@ -70,7 +72,7 @@ def empty_ribbon(attrs, sid):
 
 NAMES = {"whats-priced-in": "What's Priced In", "breakeven": "Break-Even Calculator",
          "conditions-yield": "Ratings vs Yield", "conditions": "Crop Conditions", "basis": "Basis vs Normal",
-         "elevators": "Elevator Coverage Map", "fast-facts": "Reference Tables",
+         "elevators": "Elevator Coverage Map", "fast-facts": "Fast Facts",
          "foreign-land": "Foreign-Owned Land", "spray": "Spray Advisory", "urea": "Urea Volatilization Risk",
          "archive": "Daily Archive", "tools": "All Tools", "cash-lease": "Cash Farm Lease"}
 
@@ -100,6 +102,11 @@ def slot_entry(rel, text, known):
                                for w in x.replace("-", " ").replace("cot", "COT").replace("usda", "USDA").replace("gdu", "GDU").split())
     if parts and parts[0] == "prf" and len(parts) > 1:
         name = "PRF insurance in " + words(parts[1])
+    elif parts and parts[0] == "cash-bids" and len(parts) > 1:
+        name = words(parts[1]) + " cash bids"
+        pitch = pitch or (known.get(sid) or {}).get("pitch") or (
+            "Your name beside the cash bids on the %s page and every %s town page. One category-exclusive slot."
+            % (words(parts[1]), words(parts[1])))
     elif parts and parts[0] == "rent":
         name = (words(parts[1]) + " cash rent") if len(parts) > 1 else "Cash rent by state"
     else:
