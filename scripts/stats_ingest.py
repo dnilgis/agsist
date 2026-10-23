@@ -41,7 +41,7 @@ from site_usage_report import (UrllibTransport, google_token, load_key, err_text
 REPO = Path(__file__).resolve().parent.parent
 
 GA4_REPORTS = {
-    "pages": (["date", "pagePath"], ["screenPageViews", "activeUsers", "sessions", "userEngagementDuration", "entrances"]),
+    "pages": (["date", "pagePath"], ["screenPageViews", "activeUsers", "sessions", "userEngagementDuration"]),
     "sources": (["date", "sessionSource", "sessionMedium", "sessionCampaignName"], ["sessions", "activeUsers", "newUsers", "engagedSessions"]),
     "landing": (["date", "landingPagePlusQueryString"], ["sessions", "activeUsers", "newUsers"]),
     "events": (["date", "eventName", "pagePath"], ["eventCount", "totalUsers"]),
@@ -274,7 +274,7 @@ def selftest():
         assert rc == 0, rc
         g = json.loads(gzip.open(out / "ga4" / "2026-10-20.json.gz").read())
         assert set(g["reports"]) == set(GA4_REPORTS), g["reports"].keys()
-        assert g["reports"]["pages"][0] == ["x", 3, 3, 3, 3, 3], g["reports"]["pages"][0]
+        assert g["reports"]["pages"][0] == ["x", 3, 3, 3, 3], g["reports"]["pages"][0]
         s = json.loads(gzip.open(out / "gsc" / "2026-10-19.json.gz").read())
         assert s["reports"]["query_page"][0] == ["k", "k", 2, 9, 0.22, 4.4], s["reports"]["query_page"][0]
         m = json.loads((out / "manifest.json").read_text())
