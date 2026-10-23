@@ -164,7 +164,7 @@ test("only two things: no second gauge, concept, second list, or anything Sig dr
 });
 test("the existing gauge keeps the live page's own words", () => {
   const g = text(sec("gauge"));
-  for (const s of ["The station is 12 miles away. Your field got 2 inches nobody recorded.", "This gauge logs every rain to your phone, field by field. No battery, no app. Read it by eye like any gauge, or scan the code on it, take a photo, and the rain goes into your log for that field.",
+  for (const s of ["The station is 12 miles away. Your field got 2 inches nobody recorded.", "Scan the code on this gauge, take a photo, and the rain goes into your log for that field, on your phone. No battery, no app. Or read it by eye like any gauge.",
     "a prototype on my bench in Chetek", "Wood post or T-post", "How it would work", "Why I’m building it", "Who it’s for", "A season next to a standard gauge"])
     assert.ok(g.includes(s), "kept: " + s);
   assert.ok(!/reports on its own|on batteries|every tip|dashboard|subscription/i.test(g));
