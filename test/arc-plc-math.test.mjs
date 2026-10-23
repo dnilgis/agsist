@@ -6,7 +6,7 @@
  * across every state (bushel and pound crops, irrigated and not, mismatch, pending, withheld,
  * no 2027 price, state-average yields):
  *   pages:  the server-rendered "Show the math" block, cut from the committed county pages
- *   sheets: the <main> of each committed <county>-sheet.html
+ *   sheets: the <main> of each committed <county>-sheet.html (stub files removed Oct 23, 2026)
  *   data:   the same counties' math records as the new build writes them from the same inputs
  * The first tests render the shipped JS on that data and require the old output exactly.
  * The rest check the live tree: every county page's math file renders, agrees with the page's
@@ -190,20 +190,28 @@ test("every county page: its math file renders, and the page's FAQ and cards say
   assert.ok(cards >= 10000, `only ${cards} card answers checked`);
 });
 
-test("county pages carry key numbers and the shared sheet link; old sheet URLs are tiny forwards; no sheet in a sitemap", () => {
+test("county pages carry key numbers and the shared sheet link; old sheet URLs forward from 404.html; no sheet in a sitemap", () => {
   let n = 0;
+  // Oct 23, 2026: the 2,772 stub files went; 404.html sends an old /arc-plc/<state>/<county>-sheet URL to the shared sheet
+  const nf = readFileSync(ROOT + "404.html", "utf8");
+  const route = nf.match(/<script>(\(function\(\)\{var m=\/\^\\\/arc-plc[\s\S]*?)<\/script>/);
+  assert.ok(route, "404.html carries the old sheet URL route");
+  const go = (pathname, search = "", hash = "") => {
+    const ctx = { location: { pathname, search, hash, replace(u) { ctx.to = u; } }, window: {} };
+    vm.runInNewContext(route[1], ctx);
+    return ctx.to;
+  };
+  assert.equal(go("/arc-plc/iowa/story-county-sheet", "?x=1", "#crops"), "/arc-plc/sheet?c=iowa/story-county&x=1#crops", "query and hash kept");
+  assert.equal(go("/arc-plc/iowa/story-county"), undefined, "a county page is not a sheet");
+  assert.equal(go("/cash-bids/iowa"), undefined, "other 404s are left alone");
   for (const [sd, f] of countyPages()) {
     const html = readFileSync(ROOT + `arc-plc/${sd}/${f}`, "utf8");
     const slug = f.replace(/\.html$/, "");
     assert.ok(html.includes(`href="/arc-plc/sheet?c=${sd}/${slug}"`), `${f}: sheet link`);
     assert.ok(!html.includes(`${slug}-sheet"`), `${f}: no link to the old sheet URL`);
     assert.ok(html.includes('<h2 id="key-numbers">Key numbers</h2>'), `${f}: key numbers`);
-    const stub = ROOT + `arc-plc/${sd}/${slug}-sheet.html`;
-    assert.ok(existsSync(stub), `${slug}-sheet.html kept for links made before 2026-10-10`);
-    const s = readFileSync(stub, "utf8");
-    assert.ok(Buffer.byteLength(s) < 1024, `${slug}-sheet.html is ${Buffer.byteLength(s)} bytes`);
-    assert.ok(s.includes(`url=/arc-plc/sheet?c=${sd}/${slug}"`) && s.includes(`location.replace("/arc-plc/sheet?c=${sd}/${slug}"`)
-      && s.includes(`rel="canonical" href="https://agsist.com/arc-plc/${sd}/${slug}"`), `${slug}-sheet.html forwards`);
+    assert.ok(!existsSync(ROOT + `arc-plc/${sd}/${slug}-sheet.html`), `${slug}-sheet.html: no stub file (404.html forwards)`);
+    assert.equal(go(`/arc-plc/${sd}/${slug}-sheet`, "", "#print"), `/arc-plc/sheet?c=${sd}/${slug}#print`, `${slug}-sheet forwards`);
     n++;
   }
   assert.ok(n >= 2700, `only ${n} counties`);
