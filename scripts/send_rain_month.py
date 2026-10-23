@@ -165,7 +165,7 @@ def rain_print_lines(c, st, year, m, today, repo):
     cut = BCR.rp_cutoffs()
     if cut and cut[0][:4] == str(today.year) and today.month >= 10 and today.isoformat() <= cut[0]:
         last = today.year - 1
-        return ("Rain Print: %s's rain drawn as a print, with your name and dates on it%s. Order %d's framed by %s and it comes "
+        return ("Rain Print: %s's rain drawn as a print, with your name and dates on it%s. Order the %d print framed by %s and it comes "
                 "by Christmas; this year's can go under the tree as a gift card, with the print in January. "
                 % (name, price, last, BCR.short_date(cut[0])), SITE + tag(BCR.rain_print_href_last(c, st, last)))
     if m == 11:
@@ -574,7 +574,7 @@ def selftest():
     ck("links the county page", SITE + "/rain/wisconsin/barron-county?" + UTM in txt)
     ck("sources and dates", "NOAA daily records through RCC-ACIS, read Oct 20, 2026" in txt and "NOAA GHCN-Daily for the same station" in txt and "U.S. Drought Monitor" in txt)
     ck("Rain Print once, at the bottom, Christmas wording before Dec 9",
-       txt.count("Rain Print:") == 1 and "Order 2025's framed by Dec 9 and it comes by Christmas" in txt and txt.index("Rain Print:") > txt.index("Month by month")
+       txt.count("Rain Print:") == 1 and "Order the 2025 print framed by Dec 9 and it comes by Christmas" in txt and txt.index("Rain Print:") > txt.index("Month by month")
        and SITE + "/rain-print?place=Cumberland%2C+WI&year=2025" in txt, txt)
     p12, _ = compose("55005", 2026, 8, data, w, Records(fake_ghcn), date(2026, 12, 10), tmp)
     t12 = render("55005", "a@example.com", "https://w.dev", "sec", email_links.SAMPLE_LID, p12, "news@agsist.com").get_body(("plain",)).get_content()

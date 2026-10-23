@@ -322,6 +322,9 @@ def bars_html(vals, f):
         return ""
     num = []
     for v in vals:
+        if v in ("T", "S"):
+            num.append(0.0)              # a trace adds nothing; an S day is inside the next multi-day reading
+            continue
         try:
             num.append(float(str(v).rstrip("A")))
         except ValueError:
@@ -333,6 +336,8 @@ def bars_html(vals, f):
     for i, x in enumerate(num):
         if x is None:
             h, col, tip = 3, "#c9c2b4", "%s %d: no report" % (R.MONTHS[f["m"]], i + 1)
+        elif vals[i] == "S":
+            h, col, tip = 3, "#d9c48f", "%s %d: counted in a later reading that covers several days" % (R.MONTHS[f["m"]], i + 1)
         else:
             h = max(1, int(round(H_PX * x / scale))) if x > 0 else 1
             col = "#2f6f8f" if x > 0 else "#e7e1d5"
@@ -344,6 +349,8 @@ def bars_html(vals, f):
            if num[big] else "Not one day with measurable rain.")
     if any(x is None for x in num):
         cap += " Gray: no report that day."
+    if "S" in vals:
+        cap += " Tan: rain counted in a later reading that covers several days."
     return ('<table role="img" aria-label="%s" cellpadding="0" cellspacing="0" style="width:100%%;max-width:420px;border-collapse:collapse;'
             'table-layout:fixed;border-bottom:1px solid #8a7f6a;margin:4px 0 4px"><tr>%s</tr></table>'
             '<p style="font-size:12px;color:#6b6b6b;line-height:1.4;margin:0 0 14px">%s</p>') % (
@@ -432,9 +439,10 @@ def selftest():
        "field line bands")
     # bars
     vals = ["0.00"] * 30
-    vals[8], vals[14], vals[20] = "1.20", "0.40A", "M"
+    vals[8], vals[13], vals[14], vals[20], vals[21] = "1.20", "S", "0.40A", "M", "T"
     b = bars_html(vals, f)
-    ok(b.count("<td ") == 30 and "Biggest: 1.20 inches on September 9." in b and "Gray: no report that day." in b and "several days in one reading" in b, "day bars", b[-300:])
+    ok(b.count("<td ") == 30 and "Biggest: 1.20 inches on September 9." in b and "Gray: no report that day." in b and "several days in one reading" in b
+       and "Tan: rain counted in a later reading" in b and b.count("#d9c48f") == 1 and b.count("#c9c2b4") == 1, "day bars", b[-300:])
     ok(bars_html([], f) == "", "no days, no bars")
     # the ask
     off = {"live": False, "ask": "Email me {county}’s rain at the start of each month.", "btn": "Email me", "ok": "Done.", "note": "One a month."}
