@@ -8,7 +8,8 @@
           data-source="page:cash-bids"></div>
 
    Optional: data-variant="hero" (the homepage hero line), data-reports="0",
-   data-note="..." (one quiet line under the field).
+   data-note="..." (one quiet line under the field), data-stack (keep the stacked
+   layout at any width: an ask in a results panel).
    Without data-source the source is "page:<slug of this path>".
 
    Every AGSIST Daily ask carries an optional ZIP box ("ZIP, for your top
@@ -235,7 +236,9 @@
     '.sa-in{grid-column:1}.sa-b{grid-column:2}.sa-m{grid-column:1/-1}',
     /* wide: one row, line | field | button */
     '@media (min-width:900px){.sa-f{grid-template-columns:minmax(0,1fr) minmax(12rem,20rem) auto;gap:6px 10px}.sa-l{grid-column:1}.sa-in{grid-column:2}.sa-b{grid-column:3}}',
-    '.sa-l{min-width:0;font-size:.9375rem;font-weight:600;line-height:1.35;color:var(--text)}',
+    /* data-stack: an ask in a narrow column of a wide page (a results panel): keep the stacked layout at any width */
+    '@media (min-width:900px){.sa-ask--stack .sa-f{grid-template-columns:minmax(0,1fr) auto}.sa-ask--stack .sa-l{grid-column:1/-1}.sa-ask--stack .sa-in{grid-column:1}.sa-ask--stack .sa-b{grid-column:2}}',
+    '.sa-l{min-width:0;font-size:.9375rem;font-weight:600;line-height:1.35;color:var(--text);text-transform:none;letter-spacing:normal}',
         '.sa-in{min-width:0;width:100%;box-sizing:border-box;min-height:44px;padding:.5rem .7rem;font:inherit;font-size:1rem;color:var(--text);background:var(--surface,#fff);border:1px solid var(--border-2,var(--border));border-radius:6px}',
     '.sa-in::placeholder{color:var(--text-muted);opacity:1}',
     '.sa-in:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}',
@@ -386,6 +389,7 @@
     /* the ZIP box: a Daily ask always has one; a notice ask only with the Daily box ticked */
     var zipLater = topic ? true : (variant === 'hero' || variant === 'bar');
     el.classList.add('sa-ask', 'sa-ask--' + variant);
+    if (el.hasAttribute('data-stack')) el.classList.add('sa-ask--stack');
     el.innerHTML = '<form class="sa-f" novalidate>'
       + (variant === 'hero' ? '<span class="sa-box">' : '')
       + '<label class="sa-l" for="' + iid + '">' + esc(copy) + '</label>'
@@ -488,6 +492,7 @@
     var n = ++seq, iid = 'sa-e-' + n, mid = 'sa-m-' + n, pid = 'sa-p-' + n;
     el.setAttribute('data-sa-pwsym', sym); el.setAttribute('data-sa-id', askId);
     el.classList.add('sa-ask', 'sa-ask--page');
+    if (el.hasAttribute('data-stack')) el.classList.add('sa-ask--stack');
     el.innerHTML = '<form class="sa-f" novalidate>'
       + '<label class="sa-l" for="' + iid + '">Email me when ' + esc(PW_NAME[sym]) + ' futures reach my break-even</label>'
       + '<input class="sa-in" id="' + iid + '" type="email" name="email" autocomplete="email" inputmode="email" placeholder="your@email.com" required aria-describedby="' + mid + '">'

@@ -701,7 +701,7 @@ def state_cloud(states, exclude=None):
 
 
 def rent_ask(st, name, yr):
-    """The page's one signup ask, right under the first answer (the hero figures; Sig, Oct 23:
+    """The page's one signup ask, right under the first answer (the big median card; Sig, Oct 23:
     the generic bar goes, one page-matched ask replaces it): one email when USDA puts out the
     next county rents for this state. components/signup-ask.js draws it and posts topic
     rent:<st> to the subs worker's /notice (v5.11), read by scripts/send_rent_notice.py; it puts
@@ -979,6 +979,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
       <div class="rs-rel">These are the {yr} county rents, the newest NASS has put out{f" (released {COUNTY_RENT_RELEASED[yr]})" if yr in COUNTY_RENT_RELEASED else ""}. NASS says county rents come out in late August every year, and they have every year since 2019; the {yr + 1} date is not on its calendar yet.</div>
     </div>
   </div>
+  {rent_ask(st, name, yr)}
   {atlas_line(atlas_state_href(st))}{arc_line(st)}
   <div class="rs-hero">
     <div class="rs-stat"><div class="v">{money(s['median'])}</div><div class="l">median rent /ac &middot; {yr}</div><div class="s">{plabel}, {s['n']} counties</div></div>
@@ -986,8 +987,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
     <div class="rs-stat">{delta_html(s['dec'], s['dec_n'], f'vs {yr-9}')}</div>
     <div class="rs-stat"><div class="v">{money(s['hi'][0][1]) if s['hi'] else '-'}</div><div class="l">top county</div><div class="s">{esc(s['hi'][0][0]) if s['hi'] else ''}</div></div>{sa_tile}
   </div>
-  {('<div class="rs-hero">' + other_tiles + '</div>') if other_tiles else ''}{pasture_prf}
-  {rent_ask(st, name, yr)}"""
+  {('<div class="rs-hero">' + other_tiles + '</div>') if other_tiles else ''}{pasture_prf}"""
     ground_html, ground_js = ground_panel(st, d, s, aslug)
     page = head(title, desc, f"/rent/{sl}", jsonld) + f"""
 <body>
@@ -1353,7 +1353,8 @@ def selftest():
         assert "SEED:rentstate" in ia and "FAQPage" in ia and "canonical" in ia
         # the one signup ask: under the hero figures, before the county table, topic rent:ia
         assert ia.count("data-signup-ask") == 1 and 'data-topic="rent:ia"' in ia, "IA rent ask"
-        assert ia.index("rs-hero") < ia.index("data-signup-ask") < ia.index('id="counties"'), "rent ask sits under the hero, above the table"
+        assert ia.index("The median Iowa county paid") < ia.index("data-signup-ask") < ia.index('class="rs-hero"'), "rent ask sits right under the median card"
+        assert ia.index("data-signup-ask") < ia.index('id="counties"'), "rent ask sits under the median card, above the table"
         assert 'data-signup-ask="Email me when USDA updates Iowa cash rents."' in ia
         assert "September 1" in ia, "IA termination notice missing"
         # One notice table, cash-lease.html's (panel Oct 20, seat D1)
