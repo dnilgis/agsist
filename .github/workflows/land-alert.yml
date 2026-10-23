@@ -9,8 +9,10 @@ name: Monthly land sale email
 # THE LIST GETS NOTHING UNTIL SIG TURNS IT ON: the scheduled run sends only when the repo
 # variable LANDSALES_MONTHLY_LIVE is 1, and so does a manual "send" (the script refuses a send
 # without it too). Until then a scheduled run is a dry run: counts and samples in the log.
-# The script also refuses preview and send through Sig's Google account (BUILD-RULES 12):
-# SMTP_* must hold the agsist.com sending service and FROM_ADDR an agsist.com address.
+# AND THE LIST GETS NOTHING THROUGH SIG'S GOOGLE ACCOUNT (BUILD-RULES 12): a send also needs
+# the SMTP_* secrets to be the agsist.com sending service (Plan A) and FROM_ADDR an agsist.com
+# address; the script refuses otherwise, even with the variable on. A preview goes to Sig's
+# own test inbox on whatever route is set.
 #
 #   mode dry      (default) counts the list and renders the samples. Sends nothing.
 #   mode preview  Sig's test inbox only (SIG_TEST_EMAILS, else SIG_TO), one email per sample

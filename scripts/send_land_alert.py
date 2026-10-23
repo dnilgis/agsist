@@ -27,10 +27,13 @@ MODES (the same three as send_rain_month.py):
            passes the repo variable) and the month is the one just ended.
 
 THE SENDING ROUTE (BUILD-RULES 12): site email never goes out through Sig's own Google account.
-preview and send refuse to connect when SMTP_HOST is unset (it would fall back to Gmail), names a
-Google server, the SMTP login is a Google or farmers1st.com account, or the From address is not an
-agsist.com address. So nothing leaves through this script until the agsist.com sending service
-(Plan A, Brevo) is in the SMTP_* secrets. Dry runs and sample files need no route.
+Plan A (the agsist.com sending service, Brevo) is a swap of the SMTP_* and FROM_ADDR secrets; the
+code has no other Plan A switch. So a send to the list refuses to connect, on top of
+LANDSALES_MONTHLY_LIVE, when SMTP_HOST is unset (it would fall back to Gmail), names a Google
+server, the SMTP login is a Google or farmers1st.com account, or the From address is not an
+agsist.com address: until Plan A is in the secrets the list gets nothing even with the variable
+on. A preview goes to Sig's own test inbox through whatever route is set (the lead's call, Oct 23);
+it is run again once Plan A is in, so the spam check scores the real route.
 
     python3 scripts/send_land_alert.py                                  # dry run
     PREVIEW=1 python3 scripts/send_land_alert.py                        # Sig's test inbox only
@@ -364,7 +367,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     except RuntimeError as ex:
         out("FATAL: " + str(ex))
         return 1
-    if mode in ("preview", "send"):
+    if mode == "send":
         why = route_refusal(from_addr)
         if why:
             out("refused: %s. BUILD-RULES 12: this list goes out only through the agsist.com sending service, never Sig's Google account. Nothing sent." % why)
@@ -754,8 +757,14 @@ def selftest():
     rc, log = go(["--send"], w, s, "2026-10-03 10:00", {"LANDSALES_MONTHLY_LIVE": "1", "SMTP_HOST": "smtp.gmail.com"})
     ck("live through a Google server: refused before the list is read or SMTP opened", rc == 1 and not s.opened and not w.log and "BUILD-RULES 12" in log, log)
     w, s = Worker(), SMTP()
-    rc, log = go([], w, s, "2026-10-03 10:00", {"PREVIEW": "1", "SIG_TO": "sig@example.org"}, r_env=False)
-    ck("preview with no SMTP_HOST (the Gmail fallback): refused, nothing sent", rc == 1 and not s.opened and "smtp.gmail.com" in log, log)
+    rc, log = go(["--send"], w, s, "2026-10-03 10:00", {"LANDSALES_MONTHLY_LIVE": "1"}, r_env=False)
+    ck("live with no SMTP_HOST (the Gmail fallback): refused, nothing read or sent", rc == 1 and not s.opened and not w.log and "smtp.gmail.com" in log, log)
+    w, s = Worker(), SMTP()
+    rc, log = go(["--send"], w, s, "2026-10-03 10:00", {"LANDSALES_MONTHLY_LIVE": "1", "SMTP_HOST": "smtp.gmail.com", "SMTP_USER": "sig@farmers1st.com", "FROM_ADDR": "sig@farmers1st.com"})
+    ck("live on today's route (Sig's Google account): refused, the address never printed", rc == 1 and not s.opened and not w.log and "farmers1st" not in log, log)
+    w, s = Worker(), SMTP()
+    rc, log = go(["--sample", "54001"], w, s, "2026-10-03 10:00", {"PREVIEW": "1", "SIG_TO": "sig@example.org", "SMTP_HOST": "smtp.gmail.com"})
+    ck("preview to Sig's test inbox goes on the current route (the list is not touched)", rc == 0 and s.sent == ["sig@example.org"] and not w.log, log)
     ck("dry run: counts, samples with a made-up address", "list: 6 land sale sign-up(s)" in go([], Worker(), SMTP(), "2026-10-03 10:00", r_env=False)[1]
        and "k=" + email_links.SAMPLE_LID in go(["--sample", "54001"], Worker(), SMTP(), "2026-10-03 10:00", r_env=False)[1])
 
