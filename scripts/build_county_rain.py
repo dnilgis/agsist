@@ -1177,6 +1177,35 @@ def selftest():
            and f"read {long_date(d['fetched'][:10])}; updated daily." in story, "the county page: data date up top, read date and updated daily")
         ok(f"read {long_date(d['fetched'][:10])}; updated daily." in want["rain/iowa.html"], "the state page: updated daily")
         ok("the pages are updated every day and each one says the day its numbers run through" in want["rain.html"], "the hub: updated every day")
+        # the share cards are redrawn on Mondays only: a page prints the alt saved with the card it points at,
+        # and only while the hash matches; otherwise a plain alt with no numbers or dates
+        global IMG_ROOT
+        keep_root = IMG_ROOT
+        try:
+            IMG_ROOT = os.path.join(t, "img_root")
+            os.makedirs(os.path.join(IMG_ROOT, "img", "og"))
+            open(os.path.join(IMG_ROOT, "img", "og", "rain-ia.jpg"), "wb").write(b"monday card")
+            open(os.path.join(IMG_ROOT, "img", "og", "rain-la.jpg"), "wb").write(b"redrawn by hand")
+            open(os.path.join(IMG_ROOT, "img", "og", "rain.jpg"), "wb").write(b"us card")
+            import hashlib
+            hv = lambda b: hashlib.sha1(b).hexdigest()[:8]
+            json.dump({"rain-ia": {"v": hv(b"monday card"), "alt": "Map of Iowa ... through Oct 18, 2026."},
+                       "rain-la": {"v": hv(b"older card"), "alt": "Map of Louisiana ... through Oct 11, 2026."}},
+                      open(os.path.join(IMG_ROOT, RAIN_SIDECAR), "w"))
+            _HASH.clear()
+            u_ia, a_ia = share_img("IA")
+            u_la, a_la = share_img("LA")
+            u_ks, a_ks = share_img("KS")
+            u_us, a_us = share_img(None)
+            ok(u_ia.endswith("rain-ia.jpg?v=" + hv(b"monday card")) and a_ia == "Map of Iowa ... through Oct 18, 2026.",
+               f"the card's own saved alt, its own through day: {a_ia}")
+            ok(a_la == "Map of Louisiana by parish, shaded by rain as a percent of a usual year.", f"a saved alt for another file is never printed: {a_la}")
+            ok(u_ks.endswith("rain.jpg?v=" + hv(b"us card")) and a_ks is None, "a state with no card falls back to the hub's, no alt")
+            ok(a_us == "Map of the US by county, shaded by rain as a percent of a usual year." and not re.search(r"\d", a_us),
+               f"the hub with no saved alt: plain, no numbers: {a_us}")
+        finally:
+            IMG_ROOT = keep_root
+            _HASH.clear()
         for rel, body in want.items():
             if rel.endswith(".html"):
                 low = S.text_of(re.sub(r"<script.*?</script>", "", body, flags=re.S)).lower()

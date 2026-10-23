@@ -1201,6 +1201,27 @@ def selftest():
     assert text("224&ndash;200 &middot; Apr") == "224-200 · Apr"
     assert not is_indexable('<meta name="robots" content="noindex,follow">')
     assert is_indexable('<meta name="robots" content="index, follow">')
+    # county rain cards: Mondays only (Sig, Oct 23 2026)
+    import shutil
+    import tempfile
+    t = tempfile.mkdtemp()
+    try:
+        os.makedirs(os.path.join(t, "img", "og"))
+        for n, b in (("rain", b"us"), ("rain-wi", b"wi"), ("rain-ia", b"ia")):
+            open(os.path.join(t, "img", "og", n + ".jpg"), "wb").write(b)
+        json.dump({"rain": {"v": sha8(b"us"), "alt": "a"}, "rain-wi": {"v": sha8(b"wi"), "alt": "b"},
+                   "rain-ia": {"v": sha8(b"old"), "alt": "c"}}, open(os.path.join(t, RAIN_SIDECAR), "w"))
+        ns = {"rain", "rain-wi", "rain-ia", "rain-ks"}
+        mon, tue, sun = date(2026, 10, 26), date(2026, 10, 27), date(2026, 11, 1)
+        assert rain_cards_to_draw(ns, mon, t) == ns, "Monday: every rain card"
+        assert rain_cards_to_draw(ns, tue, t) == {"rain-ia", "rain-ks"}, rain_cards_to_draw(ns, tue, t)   # a changed file, a missing one
+        assert rain_cards_to_draw({"rain", "rain-wi"}, sun, t) == set(), "Sunday: the drawn cards stay"
+        os.remove(os.path.join(t, RAIN_SIDECAR))
+        assert rain_cards_to_draw({"rain"}, tue, t) == {"rain"}, "no saved alt: drawn, so the alt is saved"
+    finally:
+        shutil.rmtree(t)
+    assert central_today(datetime(2026, 10, 27, 4, 30, tzinfo=timezone.utc)) == date(2026, 10, 26), "the day is Central's"
+    assert rain_card_names() >= {"rain", "rain-wi", "rain-ia"} and not any(n.startswith("rain-print") for n in rain_card_names())
     print("[share] selftest ok")
 
 
@@ -1213,7 +1234,8 @@ def main(argv):
     only = None
     if "--only" in argv:
         only = [x.strip() for x in argv[argv.index("--only") + 1].split(",") if x.strip()]
-    build(only, strict="--strict" in argv, rain_now="--rain-now" in argv)
+    today = date.fromisoformat(argv[argv.index("--today") + 1]) if "--today" in argv else None   # tests: the rain card day
+    build(only, strict="--strict" in argv, today=today, rain_now="--rain-now" in argv)
     return 0
 
 
