@@ -444,11 +444,35 @@ def morning_read(stw):
 IMG_ROOT = ROOT   # where the share images are read from (to put their hash in the URL)
 
 
-def share_img(st, alt):
+RAIN_SIDECAR = os.path.join("img", "og", "rain-cards.json")   # scripts/build_share_images.py RAIN_SIDECAR
+
+
+def card_alt(rel, v, st):
+    """The alt text for the card file as it is now. The cards are redrawn only on Mondays
+    (Sig, Oct 23 2026) while the pages rebuild every day, so the alt is the one saved with
+    the drawn card (img/og/rain-cards.json), printed only while its hash is this file's:
+    it gives the card's own "through" day, never today's numbers on last week's map.
+    No saved alt for this file: a plain one with no numbers or dates."""
+    if RAIN_SIDECAR not in _HASH:
+        try:
+            with open(os.path.join(IMG_ROOT, RAIN_SIDECAR), encoding="utf-8") as f:
+                _HASH[RAIN_SIDECAR] = json.load(f)
+        except (OSError, ValueError):
+            _HASH[RAIN_SIDECAR] = {}
+    side = _HASH[RAIN_SIDECAR] if isinstance(_HASH[RAIN_SIDECAR], dict) else {}
+    e_ = side.get(os.path.basename(rel)[:-4])
+    if isinstance(e_, dict) and e_.get("v") == v and e_.get("alt"):
+        return e_["alt"]
+    if st:
+        return f"Map of {R.STATES.get(st, st)} by {R.UNIT.get(st, ('county',))[0]}, shaded by rain as a percent of a usual year."
+    return "Map of the US by county, shaded by rain as a percent of a usual year."
+
+
+def share_img(st):
     """(image URL, alt) for a state's pages (st) or the hub (None): the card
     scripts/build_share_images.py draws, img/og/rain-<st>.jpg or img/og/rain.jpg,
-    with ?v=<hash> so Messages and Facebook fetch a new one when the data
-    changes. A state card not drawn yet falls back to the hub's card."""
+    with ?v=<hash> so Messages and Facebook fetch a new one when the card is
+    redrawn (Mondays). A state card not drawn yet falls back to the hub's card."""
     import hashlib
     for rel in ([R.share_image(st)] if st else []) + [R.share_image(None)]:
         p = os.path.join(IMG_ROOT, rel)
@@ -458,7 +482,8 @@ def share_img(st, alt):
                 with open(p, "rb") as f:
                     _HASH[p] = hashlib.sha1(f.read()).hexdigest()[:8]
         if _HASH[p]:
-            return f"{ORIGIN}/{rel}?v={_HASH[p]}", (alt if rel == R.share_image(st) or not st else None)
+            mine = rel == R.share_image(st) or not st
+            return f"{ORIGIN}/{rel}?v={_HASH[p]}", (card_alt(rel, _HASH[p], st if st and mine else None) if mine else None)
     return f"{ORIGIN}/{R.share_image(None)}", None
 
 
@@ -770,7 +795,7 @@ def county_page(ctx):
     faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faq)
     plain_chart, print_fig = chart(c, year, name, noun, ready)
     h1 = (f"How much rain did {e(full_c)} get in {year}?" if done else f"How much rain has {e(full_c)} had in {year}?")
-    return head(title, desc, url, ld, img=share_img(st, ctx.get("alt") or R.share_alt(d))) + f"""
+    return head(title, desc, url, ld, img=share_img(st)) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
@@ -877,7 +902,7 @@ def state_page(st, d, pages, none_rows):
     ]
     by = by[0] + by[1:].lower()
     h1 = f"How much rain has {e(stn)} had in {year}? {by}" if not done else f"How much rain did {e(stn)} get in {year}? {by}"
-    return head(title, desc, url, ld, img=share_img(st, R.share_alt(d))) + f"""
+    return head(title, desc, url, ld, img=share_img(st)) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
@@ -924,7 +949,7 @@ def hub_page(files, built):
          "dateModified": built, "inLanguage": "en-US", "author": AUTHOR, "publisher": PUBLISHER},
         crumbs_ld([("Home", ORIGIN + "/"), ("Rain by county", url)]),
     ]
-    page = head(title, desc, url, ld, img=share_img(None, R.share_alt_us(files))) + f"""
+    page = head(title, desc, url, ld, img=share_img(None)) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
@@ -1006,7 +1031,6 @@ def build(data_dir, C=None, NB=None, img_root=None):
     for st, d in sorted(files.items(), key=lambda kv: R.STATES[kv[0]]):
         st_slug = R.slug(R.STATES[st])
         day = d["fetched"][:10]
-        alt = R.share_alt(d)
         for fips, c in sorted(d["counties"].items()):
             if fips not in C:
                 continue
@@ -1016,7 +1040,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
             nbrs = [(pages[f][0] + ("" if C[f]["st"] == st else ", " + C[f]["st"]), pages[f][1],
                      pages[f][2] + ("" if pages[f][3] == c["as_of"] else f" to {short_date(pages[f][3])}")) for f in nb[:4]]
             body = county_page({"c": c, "st": st, "fips": fips, "year": d["year"], "d": d, "slug": C[fips]["slug"],
-                                "nbrs": nbrs, "n_ok": c.get("n_ok", 1), "alt": alt,
+                                "nbrs": nbrs, "n_ok": c.get("n_ok", 1),
                                 "day": daily.get(st, {}).get(fips),
                                 "story": CS.story_for(stories.get(st, {}).get(fips), dict(CS.page_now(c, d), facts=CS.facts(c, d, st)))})
             body = nav.fill_fonts(body)
