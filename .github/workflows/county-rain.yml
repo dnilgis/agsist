@@ -83,7 +83,7 @@ jobs:
       # drawn by scripts/build_share_images.py from data/rain. Before the pages,
       # because build_county_rain.py puts each image's hash in its URL.
       # Best effort: a share card must never block the data commit.
-      # Mondays only (Sig, Oct 23 2026): any other day the cards are left byte for
+      # The cards are redrawn on Mondays only (Sig, Oct 23 2026); any other day they stay byte for
       # byte as drawn (the script decides, America/Chicago), so the pages' og:image
       # hash does not move; each card's own "Jan 1 to <day>" keeps it true, and the
       # alt saved with it in img/og/rain-cards.json is the one the pages print.
