@@ -8,13 +8,17 @@ name: county rain
 # Both happen here, in one commit: a push made with this workflow's token does
 # not start other workflows, so nothing else would build the pages.
 #
-# Mondays 13:23 UTC (morning in Central), after NOAA's weekend reports are in.
-# Jan 2 fetches the finished year (through Dec 31); every run in January does,
-# so late reports still land. RCC-ACIS cannot be reached from the sandbox this
-# was built in; the first real fetch is a workflow_dispatch on main.
+# Every day 13:23 UTC (morning in Central; Sig, Oct 23 2026: before that, once a week).
+# NOAA's daily reports come in a few days late, so each run re-reads the whole
+# year and the pages say the last day each station reported.
+# January: every run fetches the finished year (through Dec 31), so late
+# reports still land all month; the new year's pages start Feb 1. Jan 2 14:41
+# stays as its own run, a day after the year ends, in case the 13:23 run is
+# dropped. RCC-ACIS cannot be reached from the sandbox this was built in; the
+# first real fetch is a workflow_dispatch on main.
 on:
   schedule:
-    - cron: "23 13 * * 1"      # Mondays 13:23 UTC
+    - cron: "23 13 * * *"      # every day 13:23 UTC
     - cron: "41 14 2 1 *"      # Jan 2 14:41 UTC, the finished year
   workflow_dispatch:
     inputs:
@@ -79,6 +83,10 @@ jobs:
       # drawn by scripts/build_share_images.py from data/rain. Before the pages,
       # because build_county_rain.py puts each image's hash in its URL.
       # Best effort: a share card must never block the data commit.
+      # The cards are redrawn on Mondays only (Sig, Oct 23 2026); any other day they stay byte for
+      # byte as drawn (the script decides, America/Chicago), so the pages' og:image
+      # hash does not move; each card's own "Jan 1 to <day>" keeps it true, and the
+      # alt saved with it in img/og/rain-cards.json is the one the pages print.
       - name: Share image
         continue-on-error: true
         run: |
@@ -101,7 +109,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg prf farmland-atlas arc-plc 2>/dev/null || true
+          git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json prf farmland-atlas arc-plc 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           N=$(ls data/rain/*.json 2>/dev/null | wc -l)
           git commit -q -m "data: county rain ($N states)"
@@ -115,8 +123,9 @@ jobs:
       # The January full-year rain email (subs worker v5.28, topic
       # rainyear:<year>:<fips>, asked on the county rain pages). January only,
       # after the finished year is committed, so the email and the page match.
-      # Each address is mailed once (marked after the send); later Mondays in
-      # January catch late stations. No new schedule: it rides this one.
+      # Each address is mailed once (marked after the send); the later daily
+      # runs in January catch late stations. Not on Jan 1 (send_rain_year.py
+      # FIRST_DAY): the first send is Jan 2. No new schedule: it rides this one.
       - name: Rain year emails (January only)
         env:
           LIST_URL: ${{ secrets.LIST_URL }}

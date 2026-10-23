@@ -616,14 +616,15 @@
        gauge     the rain gauge waitlist (topic rain-gauge, the list /rain-gauge
                  keeps; Sig writes to it when the first batch is ready), after
                  a rain-year notice or a hail alert, never twice. Its words are
-                 data/rain-print.json gauge_hook when that is set, else GAUGE_HOOK.
+                 data/rain-print.json gauge_hook (line, then link) when set, else GAUGE_HOOK.
      The waitlist form on /rain-gauge gets the panel too (gave notice,
      topic rain-gauge), found by its form the way the cash bid box is. */
   var GAUGE_HOOK = 'The rain gauge waitlist: a better gauge is in the works, and the list hears first';
   function gaugeHook() {
     return getJ('/data/rain-print.json').then(function (c) {
-      var h = c && typeof c.gauge_hook === 'string' ? c.gauge_hook.trim() : '';
-      return h && h.length <= 160 ? h : GAUGE_HOOK;
+      /* gauge_hook is {line, link} (components/rain-print-promo.js gaugeHook: the same limits) */
+      var g = c && c.gauge_hook, ok = function (t, n) { return typeof t === 'string' && t.trim() && t.length <= n && !/[\u2013\u2014]/.test(t); };
+      return g && ok(g.line, 90) && ok(g.link, 60) ? g.line.trim() + ' ' + g.link.trim() : GAUGE_HOOK;
     });
   }
   var NET = 'https://dnilgis.github.io/bids/';
@@ -692,7 +693,7 @@
   /* host: the ask the reader just used. ctx: {gave: daily|notice|zip|price|county|hail|elevator,
      email, topic?, zip?, fips?, had?: [ids already asked for], after?: put the panel after this element,
      reports?: false when the Daily was just taken without report days, lat?, lon?: the spot they gave,
-     place?: its name} */
+     place?: its name, only?: [ids the page allows]} */
   function oneMore(host, ctx) {
     ctx = ctx || {};
     var email = String(ctx.email || '').trim();
@@ -769,7 +770,8 @@
       var lead = kind.hail ? ['hail'] : kind.futures ? ['price', 'cot', 'reports', 'wasde'] : kind.report ? ['reports', 'wasde', 'cot', 'price'] : [];
       /* a notice or alert: the Daily first, then what fits the page, then the gauge */
       var order = gave === 'daily' ? lead.concat(base) : ['daily'].concat(lead, base.slice(1));
-      var ids = order.filter(function (k) { return O[k]; }).slice(0, 3);
+      /* ctx.only: the ids a page allows (the rain gauge waitlist offers the Daily alone, Sig 2026-10-23) */
+      var ids = order.filter(function (k) { return O[k] && (!ctx.only || ctx.only.indexOf(k) >= 0); }).slice(0, 3);
       if (!ids.length) { box.parentNode.removeChild(box); return; }
       var n = ++mseq;
       box.setAttribute('role', 'group'); box.setAttribute('aria-labelledby', 'sa-mh-' + n);

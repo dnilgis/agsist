@@ -1,5 +1,7 @@
 /* Cross-promotion rule (Sig, Oct 13): at most one promo a page, after the
- * main content. Oct 16: state rain pages carry the rain gauge line; county
+ * main content. Oct 23: state rain and hail pages carry
+ * the "auto" slot (/rain and /hail-map keep their typed Rain Print line) (Rain Print through Dec 24, the gauge hook Dec 26 through
+ * May; test/gauge-hook.test.mjs has the dates). Oct 16: state rain pages carried the rain gauge line; county
  * rain pages keep their Rain Print block only; town cash-bid pages carry the
  * Rain Print gift line from Nov 1 to Dec 24 (scripts/build_cash_bid_pages.py
  * rain_print_line, checked by its --selftest).
@@ -14,14 +16,14 @@ import { fileURLToPath } from "node:url";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const slots = (h) => (h.match(/data-rain-print-promo/g) || []).length;
 
-test("each state rain page: one gauge line, after the table, with its script", () => {
+test("each state rain page: one auto line, after the table, with its script", () => {
   const states = readdirSync(ROOT + "rain").filter((f) => f.endsWith(".html"));
   assert.equal(states.length, 50);
   for (const f of states) {
     const h = readFileSync(ROOT + "rain/" + f, "utf8");
     assert.equal(slots(h), 1, f);
-    assert.ok(h.includes('data-rain-print-promo="gauge"'), f);
-    assert.ok(h.indexOf('data-rain-print-promo="gauge"') > h.indexOf("</table>"), f + ": after the main table");
+    assert.ok(h.includes('data-rain-print-promo="auto"'), f);
+    assert.ok(h.indexOf('data-rain-print-promo="auto"') > h.indexOf("</table>"), f + ": after the main table");
     assert.match(h, /rain-print-promo\.js\?v=\d+" defer/);
   }
 });
@@ -72,21 +74,26 @@ test("markets and futures pages: one Rain Print gift line, after the FAQ, with i
 // gauge line (scripts/generate_hail_states.py); /hail-map already carries its one Rain Print line, so the
 // gauge line is not added there on top of it.
 const inMain = (h) => h.slice(h.indexOf("<main"), h.indexOf("</main>"));
-test("each state hail page: one gauge line after the content, and no Rain Print promo beside it", () => {
+test("each state hail page: one auto line after the content, and no Rain Print promo beside it", () => {
   const states = readdirSync(ROOT + "hail-map").filter((f) => f.endsWith(".html"));
   assert.equal(states.length, 51);
   for (const f of states) {
     const m = inMain(readFileSync(ROOT + "hail-map/" + f, "utf8"));
     assert.equal(slots(m), 1, f);
-    assert.ok(m.includes('<p class="rp-promo" data-rain-print-promo="gauge" hidden></p>'), f);
-    assert.ok(m.indexOf('data-rain-print-promo="gauge"') > m.indexOf('class="hs-src"'), f + ": after the content");
+    assert.ok(m.includes('<p class="rp-promo" data-rain-print-promo="auto" hidden></p>'), f);
+    assert.ok(m.indexOf('data-rain-print-promo="auto"') > m.indexOf('class="hs-src"'), f + ": after the content");
     assert.ok(!/href="\/rain-print/.test(m), f + ": no second promo");
   }
-  assert.match(readFileSync(ROOT + "scripts/generate_hail_states.py", "utf8"), /data-rain-print-promo=\\"gauge\\"/);
+  assert.match(readFileSync(ROOT + "scripts/generate_hail_states.py", "utf8"), /data-rain-print-promo=\\"auto\\"/);
 });
-test("/hail-map: one cross-promo, the Rain Print line after the FAQ, no gauge line stacked on it", () => {
+test("/hail-map: one cross-promo, the Rain Print line after the FAQ, no gauge or auto line stacked on it", () => {
   const m = inMain(readFileSync(ROOT + "hail-map.html", "utf8"));
   assert.equal((m.match(/class="rp-promo"/g) || []).length, 1);
-  assert.equal(slots(m), 0, "no gauge slot on top of the Rain Print line");
+  assert.equal(slots(m), 0, "no slot on top of the Rain Print line");
   assert.ok(!/href="\/rain-gauge"/.test(m));
+});
+test("/rain: its typed Rain Print line is its one promo, no slot beside it", () => {
+  const m = inMain(readFileSync(ROOT + "rain.html", "utf8"));
+  assert.equal(slots(m), 0);
+  assert.equal((m.match(/href="\/rain-print"/g) || []).length, 1);
 });

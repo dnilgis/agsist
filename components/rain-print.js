@@ -175,16 +175,18 @@
   function defaults() {
     return { place: '', station: '', year: null, layout: 'staircase', palette: 'paper', size: '12x18', cmp: 'none', name: '', markers: [], gift: false,
       style: 'r1', dedication: '', normals: false, records: false, logo: '', logoInk: true, units: '', lang: '',
-      crop: '', cropPlant: '', cropHarvest: '', plants: false, ghost: false, hist: false, frost: false, heat: false, ribbon: false };
+      hist: false, frost: false, heat: false, ribbon: false };
   }
-  /* The 2026-10-17 options (Sig). crop: '' | 'corn' | 'soy', placed between the planting and harvest days
-     (cropPlant, cropHarvest: dates in the year, picked from the marked days); plants: draw the little plants;
-     ghost: the same crop on a usual year's temperatures; hist: every full year the station kept, behind the
+  /* The 2026-10-17 options (Sig). hist: every full year the station kept, behind the
      year (Staircase); frost: the last and first frost marked on the date line; heat: the hottest and coldest
      day in the foot line; ribbon: each day's high and low in a thin band. A new design starts with frost and
      heat on (the page and a hand-written link); a code or tool link made before them opens as it was made.
-     Since 2026-10-22 (Sig) a new design also starts with ribbon and hist on; codes and tool links still open as made. */
-  var CROP_KEYS = { corn: 'c', soy: 's' }, CROP_R = { c: 'corn', s: 'soy' }, OPT_FLAGS = ['plants', 'ghost', 'hist', 'frost', 'heat', 'ribbon'], OPT_LETTER = 'pghftr';
+     Since 2026-10-22 (Sig) a new design also starts with ribbon and hist on; codes and tool links still open as made.
+     NO CROP LAYERS (2026-10-23, Sig: no plant outlines or any of that on the prints). The crop, its planting and
+     harvest days, the plant drawings (plants) and the usual-year plants (ghost) are gone from the design: a code or
+     link made with them opens and draws without them, no error. Only Sig's order view can still draw one, for an
+     order paid before that day, and only when he asks (orderCrop, ORDER_CROP). */
+  var OPT_FLAGS = ['hist', 'frost', 'heat', 'ribbon'], OPT_LETTER = 'hftr';
   function flag(v) { return v === true || v === '1' || v === 1; }
   // a stored logo's id (subs worker v5.23): 12 characters of lowercase Crockford base32
   function cleanLogo(v) {
@@ -221,24 +223,44 @@
     s.units = x.units === 'mm' || x.units === 'in' ? x.units : '';
     s.lang = x.lang === 'fr' || x.lang === 'en' ? x.lang : '';
     OPT_FLAGS.forEach(function (k) { s[k] = flag(x[k]); });
-    var cp = s.year ? dayIndex(s.year, x.cropPlant) : -1, ch = s.year ? dayIndex(s.year, x.cropHarvest) : -1;
-    if (CROP_KEYS[x.crop] && cp >= 0 && ch > cp) { s.crop = x.crop; s.cropPlant = x.cropPlant; s.cropHarvest = x.cropHarvest; }
-    else s.plants = s.ghost = false;   // the plant switches mean nothing without a crop
     return s;
   }
-  // the options in the code's key field: "~" + crop letter and the two days (base 36, two letters each) + one letter per switch on
+  // the options in the code's key field: "~" + one letter per switch on
   function optCode(s) {
-    var t = s.crop ? CROP_KEYS[s.crop] + ('0' + dayIndex(s.year, s.cropPlant).toString(36)).slice(-2) + ('0' + dayIndex(s.year, s.cropHarvest).toString(36)).slice(-2) : '';
+    var t = '';
     OPT_FLAGS.forEach(function (k, i) { if (s[k]) t += OPT_LETTER[i]; });
     return t ? '~' + t : '';
   }
+  /* A code made before 2026-10-23 may carry a crop first (a letter, c or s, and the planting and harvest days,
+     base 36, two letters each) and p (plant drawings) and g (usual-year plants): still read, so the code opens. */
   var OPT_RE = /^(?:([cs])([0-9a-z]{2})([0-9a-z]{2}))?(p?)(g?)(h?)(f?)(t?)(r?)$/;
-  function optDecode(t, year) {
+  function optDecode(t) {
     var m = OPT_RE.exec(t), o = {};
     if (!m || !t) return null;
-    if (m[1]) { o.crop = CROP_R[m[1]]; o.cropPlant = isoFromDay(year, parseInt(m[2], 36)); o.cropHarvest = isoFromDay(year, parseInt(m[3], 36)); if (!o.cropPlant || !o.cropHarvest) return null; }
-    OPT_FLAGS.forEach(function (k, i) { o[k] = !!m[4 + i]; });
+    OPT_FLAGS.forEach(function (k, i) { o[k] = !!m[6 + i]; });
     return o;
+  }
+  /* The crop of an order paid before 2026-10-23, for Sig's order view only (ORDER_CROP): from a link's d= code or
+     its crop=, plant=, harvest=, plants=, ghost=. -> {crop, cropPlant, cropHarvest, plants, ghost} or null. Pure. */
+  function orderCrop(search) {
+    var q = new URLSearchParams(String(search || '').replace(/^\?/, '')), x = null, year;
+    if (q.get('d')) {
+      var raw = '';
+      try { raw = b64urlUtf8(q.get('d')); } catch (e) { return null; }
+      var f = raw.split('|'), k = f[4] || '', ti = f[0] === '2' ? k.indexOf('~') : -1, m = ti >= 0 ? OPT_RE.exec(k.slice(ti + 1)) : null;
+      year = parseInt(f[3], 10);
+      if (!m || !m[1]) return null;
+      x = { crop: m[1] === 'c' ? 'corn' : 'soy', cropPlant: isoFromDay(year, parseInt(m[2], 36)), cropHarvest: isoFromDay(year, parseInt(m[3], 36)), plants: !!m[4], ghost: !!m[5] };
+    } else {
+      year = parseInt(q.get('year'), 10);
+      x = { crop: q.get('crop'), cropPlant: q.get('plant'), cropHarvest: q.get('harvest'), plants: flag(q.get('plants')), ghost: flag(q.get('ghost')) };
+    }
+    var cp = dayIndex(year, x.cropPlant), ch = dayIndex(year, x.cropHarvest);
+    return (x.crop === 'corn' || x.crop === 'soy') && cp >= 0 && ch > cp ? x : null;
+  }
+  // an order crop back into a link, so the order view keeps it through a reload
+  function orderCropQuery(c) {
+    return 'oldcrop=1&crop=' + c.crop + '&plant=' + c.cropPlant + '&harvest=' + c.cropHarvest + (c.plants ? '&plants=1' : '') + (c.ghost ? '&ghost=1' : '');
   }
   /* What the print is drawn in: the design's own choice, else the place's default
      (Canada: mm and cm, French in Quebec; components/rp-canada.js). ca: the design's
@@ -727,7 +749,7 @@
     var k = f[4] || '', x5 = v2 ? XFLAG.indexOf(k[4]) : -1, logo = '', logoInk = true, units = '', lang = '', opt = {};
     // the 2026-10-17 options ride at the end of the key field after a ~ (a code made before them has none)
     var ti = v2 ? k.indexOf('~') : -1;
-    if (ti >= 0) { opt = optDecode(k.slice(ti + 1), parseInt(f[3], 10)); if (!opt) return null; k = k.slice(0, ti); }
+    if (ti >= 0) { opt = optDecode(k.slice(ti + 1)); if (!opt) return null; k = k.slice(0, ti); }
     if (v2 && (k.length === 6 || k.length === 19) && LOCF.indexOf(k[k.length - 1]) >= 0) {
       var li = LOCF.indexOf(k[k.length - 1]) + 1;
       units = LOC_U[Math.floor(li / 3)]; lang = LOC_L[li % 3];
@@ -754,7 +776,7 @@
       cmp: CMP_R[k[2]], size: SIZE_R[k[3]], name: f[5], markers: markers, gift: gift,
       style: v2 ? (x5 & 4 ? 'r2' : 'r1') : null, dedication: ded, normals: v2 && (x5 & 1) === 1, records: v2 && (x5 & 2) === 2,
       logo: logo, logoInk: logoInk, units: units, lang: lang,
-      crop: opt.crop, cropPlant: opt.cropPlant, cropHarvest: opt.cropHarvest, plants: opt.plants, ghost: opt.ghost, hist: opt.hist, frost: opt.frost, heat: opt.heat, ribbon: opt.ribbon });
+      hist: opt.hist, frost: opt.frost, heat: opt.heat, ribbon: opt.ribbon });
     return s.place ? s : null;
   }
 
@@ -775,7 +797,6 @@
     if (s.logo) { q.set('logo', s.logo); q.set('logoInk', s.logoInk ? '1' : '0'); }
     if (s.units) q.set('u', s.units);
     if (s.lang) q.set('lang', s.lang);
-    if (s.crop) { q.set('crop', s.crop); q.set('plant', s.cropPlant); q.set('harvest', s.cropHarvest); }
     OPT_FLAGS.forEach(function (k) { if (s[k]) q.set(k, '1'); });
     s.markers.forEach(function (m, i) { q.set('m' + (i + 1), m.date + (m.label ? ' ' + m.label : '')); });
     if (s.gift) q.set('gift', '1');
@@ -803,7 +824,7 @@
       style: q.get('style'), dedication: q.get('dedication'), normals: dflt('normals', cmp === 'normal'), records: dflt('records', true),
       logo: q.get('logo'), logoInk: q.get('logoInk'), units: q.get('u'), lang: q.get('lang'),
       // the options: a hand link gets a new visitor's frost marks and hottest and coldest day; a tool link as it was made
-      crop: q.get('crop'), cropPlant: q.get('plant'), cropHarvest: q.get('harvest'), plants: q.get('plants'), ghost: q.get('ghost'),
+      // (crop=, plant=, harvest=, plants=, ghost= of a link made before 2026-10-23 are left out: no crop layers)
       // (Sig, 2026-10-22: every layer on by default) a hand link also gets the daily temperature stripes and every year behind
       frost: dflt('frost', true), heat: dflt('heat', true), ribbon: dflt('ribbon', true), hist: dflt('hist', true) });
   }
@@ -1520,7 +1541,7 @@
   }
   /* ---------- the 2026-10-17 options, as the art takes them (pure: the tests run these) ----------
      Temperatures come from the nearest station with daily highs and lows for the year (the print's own
-     gauge when it keeps them: tempStationOk); the crop's usual year from NOAA's 1991-2020 normals at that
+     gauge when it keeps them: tempStationOk); an order's crop's usual year from NOAA's 1991-2020 normals at that
      station; the history from the station's own full years (components/rain-print-extras.js says what
      counts as full). Nothing is drawn that the data doesn't hold. */
   var TEMP_GAP_OK = 10, HIST_MIN = 30;
@@ -1532,8 +1553,8 @@
   function tempWords(tm) { return tm.same ? 'Temperatures from the same station' : 'Temperatures: ' + tm.name + (tm.words ? ', ' + tm.words : ''); }
   // "3.1 mi away" from a distance in km (the temperature station's, from the town)
   function tempAway(km) { return milesText(miles(km)) + ' away'; }
-  /* s: the design; td: the temperature station's year (AgRainExtras.tempDays); tdN: its 1991-2020 normals
-     (or null); -> the art's input.crop, or null (no crop, or nothing to place). */
+  /* s: an order's crop (orderCrop: Sig's order view only, since 2026-10-23); td: the temperature station's year
+     (AgRainExtras.tempDays); tdN: its 1991-2020 normals (or null); -> the art's input.crop, or null (no crop, or nothing to place). */
   function cropInput(s, td, tdN) {
     var X = X_();
     if (!X || !s.crop || !td || !X.CROPS[s.crop]) return null;
@@ -1814,7 +1835,7 @@
     bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, hashRef: hashRef, orderRecord: orderRecord, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, snowTraceRaw: snowTraceRaw, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, jpegWithDpi: jpegWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, placeShown: placeShown, missRank: missRank, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
-    cropInput: cropInput, tempInput: tempInput, histInput: histInput, withoutTemp: withoutTemp, tempStationOk: tempStationOk, tempWords: tempWords, TEMP_KINDS: TEMP_KINDS, HIST_MIN: HIST_MIN, TEMP_GAP_OK: TEMP_GAP_OK, OPT_FLAGS: OPT_FLAGS };
+    cropInput: cropInput, orderCrop: orderCrop, tempInput: tempInput, histInput: histInput, withoutTemp: withoutTemp, tempStationOk: tempStationOk, tempWords: tempWords, TEMP_KINDS: TEMP_KINDS, HIST_MIN: HIST_MIN, TEMP_GAP_OK: TEMP_GAP_OK, OPT_FLAGS: OPT_FLAGS };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
 
@@ -2129,7 +2150,7 @@
   // the maker's files wait for the options' data, so the file Sig prints shows what the buyer saw
   function extrasGate() { return Promise.resolve(EXTRAS_P).then(function () { return true; }, function () { return true; }); }
   var TEMP_ELEMS = ['pcpn', 'avgt', 'snow', 'maxt', 'mint'];
-  function wantTemp() { return !!(ST.crop || ST.frost || ST.heat || ST.ribbon); }
+  function wantTemp() { return !!(orderCropOn() || ST.frost || ST.heat || ST.ribbon); }
   function wantHist() { return !!(ST.hist && ST.style !== 'r2'); }
   function extrasReady() {
     if (root.AgRainExtras && root.AgGduStages) return Promise.resolve(true);
@@ -2161,7 +2182,7 @@
       var jobs = [];
       if (wantHist() && !FULL_CACHE.has(META.sid)) jobs.push(stationExtremes(META.sid).then(function (x) { FULL_CACHE.set(META.sid, root.AgRainExtras.fullYears(x.rows, 1)); }, function () { FULL_CACHE.set(META.sid, null); }));
       if (wantTemp() && TEMP_KEY !== key) { TEMP_KEY = key; TEMP = null; TEMP_P = tempFind(key); }
-      if (wantTemp()) jobs.push(TEMP_P.then(function () { return ((ST.crop && ST.ghost) || ST.ribbon) && TEMP && TEMP.sid && (TEMP.norm === undefined || TEMP.norm === false) ? tempNormal(TEMP.sid, META.year).then(function (n) { TEMP.norm = n; }) : null; }));
+      if (wantTemp()) jobs.push(TEMP_P.then(function () { return ((orderCropOn() && ORDER_CROP.ghost) || ST.ribbon) && TEMP && TEMP.sid && (TEMP.norm === undefined || TEMP.norm === false) ? tempNormal(TEMP.sid, META.year).then(function (n) { TEMP.norm = n; }) : null; }));
       if (ST.frost || ST.heat || ST.ribbon) jobs.push(recordsReady());
       return Promise.all(jobs);
     }).then(function () { if (my === reqToken && DATA) { syncExtrasUi(); render(); } });
@@ -2170,7 +2191,7 @@
     var X = root.AgRainExtras, year = META.year, last = PREVIEW ? DATA.days.length - 1 : undefined;
     var mine = X.tempDays(DATA.raw, year);
     if (META.ca || tempStationOk(mine, last)) {
-      TEMP = tempStationOk(mine, last) ? { sid: META.sid, td: mine, rows: DATA.raw, tm: { same: true } } : { none: 'This station keeps no daily highs and lows for ' + year + ', so frost, the hottest and coldest day, crop stages and the temperature band are off.' };
+      TEMP = tempStationOk(mine, last) ? { sid: META.sid, td: mine, rows: DATA.raw, tm: { same: true } } : { none: 'This station keeps no daily highs and lows for ' + year + ', so frost, the hottest and coldest day and the temperature band are off.' };
       return Promise.resolve(TEMP);
     }
     var town = META.city;
@@ -2195,16 +2216,16 @@
       });
     }).then(function (best) {
       if (TEMP_KEY !== key) return;
-      TEMP = best || { none: 'No weather station near ' + town + ' kept daily highs and lows for ' + year + ', so frost, the hottest and coldest day, crop stages and the temperature band are off.' };
-    }).then(null, function () { if (TEMP_KEY === key) { TEMP = { none: 'The temperature records didn’t load just now, so frost, the hottest and coldest day, crop stages and the temperature band are off. Try again in a minute.', failed: true }; TEMP_KEY = ''; } });
+      TEMP = best || { none: 'No weather station near ' + town + ' kept daily highs and lows for ' + year + ', so frost, the hottest and coldest day and the temperature band are off.' };
+    }).then(null, function () { if (TEMP_KEY === key) { TEMP = { none: 'The temperature records didn’t load just now, so frost, the hottest and coldest day and the temperature band are off. Try again in a minute.', failed: true }; TEMP_KEY = ''; } });
   }
   function tempFound() {
     if (!TEMP || !TEMP.td || !root.AgRainRecords) return [];
     if (TEMP.found === undefined) { try { TEMP.found = root.AgRainRecords.find({ year: META.year, sid: TEMP.sid, daily: TEMP.rows, dailyElems: TEMP_ELEMS }, { kinds: TEMP_KINDS }); } catch (e) { TEMP.found = []; } }
     return TEMP.found;
   }
-  function extrasCrop() { return ST.crop && TEMP && TEMP.td ? cropInput(ST, TEMP.td, TEMP.norm || null) : null; }
-  function extrasTemp() { return TEMP && TEMP.td ? tempInput(ST, TEMP.td, tempFound(), TEMP.tm, !!ST.crop, TEMP.norm) : null; }
+  function extrasCrop() { return orderCropOn() && TEMP && TEMP.td ? cropInput(ORDER_CROP, TEMP.td, TEMP.norm || null) : null; }
+  function extrasTemp() { return TEMP && TEMP.td ? tempInput(ST, TEMP.td, tempFound(), TEMP.tm, orderCropOn(), TEMP.norm) : null; }
   function extrasHist() { return wantHist() && META && FULL_CACHE.get(META.sid) ? histInput(FULL_CACHE.get(META.sid), META.year) : null; }
   /* Every year behind: the nearest station whose full record reaches HIST_MIN full years and whose year is good
      (at most MISS_OK unrecorded days), from those whose record spans 30 years or more, up to four read.
@@ -2244,9 +2265,6 @@
     say('rp-temp-why', noTemp ? TEMP.none : TEMP && TEMP.tm ? (TEMP.tm.same ? 'Temperatures from the same station as the rain.' : 'Temperatures from ' + TEMP.tm.name + ', ' + TEMP.tm.words + ': the nearest station with daily highs and lows for ' + META.year + '.') +
       (stripesWhy ? ' ' + stripesWhy + '; the hottest and coldest day go in the small print instead.' : '') : '');
     STRIPES_OFF = !!stripesWhy;
-    syncCropDays();
-    var c = extrasCrop();
-    say('rp-crop-say', noTemp ? 'Needs daily highs and lows: see Temps.' : cropWhy() || (!$('rp-crop').value ? 'Plants: pick corn or soybeans first.' : '') || (ST.crop && !c && TEMP && TEMP.td ? 'Mark the planting day and the harvest day above, then pick them here.' : c && c.stop === 'missing' ? 'The temperature record has a gap, so no stage after it is drawn.' : ''));
     var r2 = ST.style === 'r2', long = STATIONS.some(function (s) { var r = s.valid_daterange && s.valid_daterange[0]; return r && +r[1].slice(0, 4) - +r[0].slice(0, 4) + 1 >= HIST_MIN; });
     $('rp-hist').disabled = r2 || (!long && !!STATIONS.length);
     var full = META ? FULL_CACHE.get(META.sid) : null;
@@ -2261,31 +2279,28 @@
     }
     syncLayers();
   }
-  /* THE LAYERS CARD (2026-10-22, Sig: yes to all six). Ten layers, each one tap on or off. A layer that can't
+  /* THE LAYERS CARD (2026-10-22, Sig: yes to all six). Seven layers since the crop ones went (2026-10-23), each one tap on or off. A layer that can't
      change the print right now is greyed, and its one-line reason shows in its row; tapping it says why under
      the print. Hottest, coldest is "included" while the daily temperature stripes are on: the stripes name those
      two days. The count says how many are on the print. */
   var STRIPES_OFF = false;
   var LAYER_NAME = { cmp: 'Usual year', normals: 'Month normals', records: 'Remarkable days', frost: 'Frost dates', heat: 'Hottest, coldest',
-    ribbon: 'Warmer or colder each day', crop: 'Crop', plants: 'Plants', ghost: 'Usual-year plants', hist: 'Every year behind yours' };
+    ribbon: 'Warmer or colder each day', hist: 'Every year behind yours' };
   var LAYER_WHERE = { cmp: 'a usual year beside yours, the verdict upper left', normals: 'the usual total in gray under each month',
     records: 'notes on the line: biggest snow, wettest week', frost: 'two ticks on the date line, spring and fall',
     heat: 'one line in the small print under the chart', ribbon: 'a stripe a day under the chart, blue colder, rust warmer',
-    crop: 'stages on the ground line, by growing degree days', plants: 'little plants standing on the ground line',
-    ghost: 'gray plants from a usual year beside yours', hist: 'thin gray lines behind yours, one a year' };
+    hist: 'thin gray lines behind yours, one a year' };
   function heatIncluded() { return !!(ST.ribbon && !(TEMP && TEMP.none) && !STRIPES_OFF); }
   // why each layer can't change the print right now ('' when it can)
   function layerWhy() {
-    var noT = TEMP && TEMP.none ? 'no daily highs and lows here for this year' : '', crop = $('rp-crop') ? $('rp-crop').value : '';
+    var noT = TEMP && TEMP.none ? 'no daily highs and lows here for this year' : '';
     var hw = $('rp-hist-why');
     return { cmp: '', records: '', normals: ST.cmp === 'none' ? 'needs a usual year' : '',
-      frost: noT, heat: noT || (heatIncluded() ? 'named on the daily temperature stripes already' : ''), ribbon: noT, crop: noT,
-      plants: noT || (crop ? '' : 'pick corn or soybeans first'), ghost: noT || (crop ? '' : 'pick corn or soybeans first'),
+      frost: noT, heat: noT || (heatIncluded() ? 'named on the daily temperature stripes already' : ''), ribbon: noT,
       hist: $('rp-hist') && $('rp-hist').disabled && !$('rp-hist').getAttribute('data-gift-lock') ? ((hw && !hw.hidden && hw.firstChild ? hw.firstChild.textContent : '') || 'not for this print').replace(/\.$/, '') : '' };
   }
   function layerOn(k, why) {
     if (k === 'cmp') return ST.cmp !== 'none';
-    if (k === 'crop') return !!ST.crop;
     if (why[k]) return k === 'heat' && heatIncluded();
     return k === 'hist' ? wantHist() : !!ST[k];
   }
@@ -2293,13 +2308,12 @@
     var card = $('rp-layers');
     if (!card) return;
     var why = layerWhy(), n = 0;
-    ['normals', 'frost', 'heat', 'ribbon', 'plants', 'ghost'].forEach(function (k) {
+    ['normals', 'frost', 'heat', 'ribbon'].forEach(function (k) {
       var el = $('rp-' + k);
       if (el && !el.getAttribute('data-gift-lock')) el.disabled = !!why[k];
     });
     var hc = $('rp-heat-chip');
     if (hc) hc.classList.toggle('rp-inc', heatIncluded());
-    doc.querySelectorAll('[data-crop]').forEach(function (b) { b.setAttribute('aria-disabled', String(!!why.crop)); });
     Object.keys(LAYER_NAME).forEach(function (k) { if (layerOn(k, why)) n++; });
     $('rp-lcount').textContent = Object.keys(LAYER_NAME).length + ' in all, ' + n + ' on';
     var mw = [why.normals ? 'Month normals: ' + why.normals + '.' : '', TEMP && TEMP.none ? 'Frost dates, hottest, coldest: see Temps.' : heatIncluded() ? 'Hottest, coldest: named on the daily stripes.' : ''].filter(Boolean).join(' ');
@@ -2311,54 +2325,19 @@
     if (!el || !LAYER_NAME[k]) return;
     var why = layerWhy(), nm = LAYER_NAME[k], on, w = why[k], where = LAYER_WHERE[k];
     if (k === 'cmp') { on = ST.cmp !== 'none'; if (on) nm = 'Usual year: ' + (ST.cmp === 'station' ? 'this station' : '30-yr normal'); }
-    else if (k === 'crop') { var c = $('rp-crop').value; on = !!c; if (on) nm = c === 'soy' ? 'Soybeans' : 'Corn'; if (!w && on && !ST.crop) w = CROP_HAND.plant && CROP_HAND.harvest ? 'the harvest day has to come after the planting day' : 'set the planting and harvest days in the crop row'; }
     else on = !!($('rp-' + k) && $('rp-' + k).checked);
     if (k === 'heat' && heatIncluded()) { el.innerHTML = '<b>Hottest, coldest</b>: included, named on the daily temperature stripes.'; return; }
     if (k === 'ribbon' && on && heatIncluded()) where += '; the hottest and coldest day are named on it';
     el.innerHTML = w ? '<b>' + esc(nm) + '</b>: ' + esc(w) + '.' : '<b>' + esc(nm) + (k === 'cmp' && on ? '' : on ? ' on' : ' off') + '</b>' + (on ? ': ' + esc(where) + '.' : '.');
   }
-  /* The crop days set by hand (2026-10-22: a planting day picked alone went blank again, because the
-     design drops a crop until both days are set and in order, and the boxes were filled back from the design).
-     The boxes keep what the reader set; the design takes the crop once both days make sense. Since the layout
-     of 2026-10-22 the days are set right in the crop row, any day of the print's year; a crop picked fills them
-     from marked days whose words say so. */
-  var CROP_HAND = { plant: '', harvest: '' };
-  // why a crop picked in the box is not on the print yet, in one line ('' when it is, or none is picked)
-  function cropWhy() {
-    var pick = $('rp-crop') ? $('rp-crop').value : '';
-    if (!pick || ST.crop) return '';
-    var name = pick === 'soy' ? 'Soybeans' : 'Corn';
-    if (!CROP_HAND.plant && !CROP_HAND.harvest) return name + (pick === 'soy' ? ' need' : ' needs') + ' the planting day and the harvest day: set them here.';
-    if (!CROP_HAND.plant || !CROP_HAND.harvest) return 'Set the ' + (!CROP_HAND.plant ? 'planting day' : 'harvest day') + ' too.';
-    return 'The harvest day has to come after the planting day.';
-  }
-  function syncCropDays() {
-    if (ST.crop) CROP_HAND = { plant: ST.cropPlant, harvest: ST.cropHarvest };
-    var y = ST.year || parseInt($('rp-year').value, 10), on = !!$('rp-crop').value, lock = $('rp-crop').disabled;
-    ['plant', 'harvest'].forEach(function (k) {
-      var el = $('rp-crop-' + k), p = k === 'plant' ? 'p' : 'h', mo = $('rp-crop-' + p + 'mo'), dy = $('rp-crop-' + p + 'dy');
-      if (!el || !mo) return;
-      var v = CROP_HAND[k] && y && CROP_HAND[k].slice(0, 4) === String(y) ? CROP_HAND[k] : '', cur = cropDayOf(p, y);
-      // a month picked without its day yet stays as picked; a day set elsewhere (a link, a guess, All off) shows
-      if (v !== cur && !(v === '' && cur === '' )) { mo.value = v ? v.slice(5, 7) : ''; cropDayList(p, y); dy.value = v ? v.slice(8, 10) : ''; }
-      else cropDayList(p, y);
-      el.value = v;
-      if (!el.getAttribute('data-gift-lock')) { mo.disabled = dy.disabled = !on; }
-    });
-    $('rp-cropdays').hidden = !on;
-    doc.querySelectorAll('[data-crop]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-crop') === $('rp-crop').value)); if (lock) b.disabled = true; });
-    if (!$('rp-plants').getAttribute('data-gift-lock')) { $('rp-plants').disabled = !on; $('rp-ghost').disabled = !on; }
-  }
-  // the crop's days: a month and a day from lists, in the print's year (no date box: a typed year once landed in the day)
-  function cropDayOf(p, y) { var mo = $('rp-crop-' + p + 'mo').value, dy = $('rp-crop-' + p + 'dy').value; return y && mo && dy ? y + '-' + mo + '-' + dy : ''; }
-  function cropDayList(p, y) {
-    var mo = $('rp-crop-' + p + 'mo'), sel = $('rp-crop-' + p + 'dy'), was = sel.value, n = daysIn(y, mo.value), h = '<option value="">Day</option>';
-    if (mo.options.length < 13) { var m0 = mo.value; mo.innerHTML = '<option value="">Month</option>' + MON.map(function (m, k) { return '<option value="' + String(k + 1).padStart(2, '0') + '">' + m + '</option>'; }).join(''); mo.value = m0; }
-    for (var d = 1; d <= n; d++) h += '<option value="' + String(d).padStart(2, '0') + '">' + d + '</option>';
-    if (sel.innerHTML !== h) { sel.innerHTML = h; sel.value = +was <= n ? was : ''; }
-  }
-  // a planting or harvest day among the marked days, by its words, for a crop just picked
-  function guessCropDay(re) { var m = ST.markers.filter(function (x) { return re.test(x.label || ''); })[0]; return m ? m.date : ''; }
+  /* AN ORDER'S CROP (2026-10-23). The crop layers are gone (Sig: no plant outlines or any of that on the prints).
+     A print paid for before that day with a crop on it can still be drawn as it was bought, only in Sig's order
+     view (MAKER, the gated ?maker= key) and only when the link also says oldcrop=1; nothing sets that by itself,
+     so a new order's proof and files are drawn as the buyer saw them. The crop stays out of the design (ST): it is
+     never in a code, a short link, a gift card or the address bar's design, only here. */
+  var ORDER_CROP = MAKER && /(?:^|[?&])oldcrop=1(?:&|$)/.test(root.location.search) ? orderCrop(root.location.search) : null;
+  // on while the print's year is the crop's year
+  function orderCropOn() { return !!(ORDER_CROP && META && ORDER_CROP.cropPlant.slice(0, 4) === String(META.year)); }
 
   // ---------------------------------------------------------------- the logo
   /* LOGO: the picture behind ST.logo, or a file just picked while it saves:
@@ -2628,7 +2607,6 @@
       layout: ST.layout, palette: ST.palette, size: '12x18', style: pick('rp-style', 'r1'),
       cmp: pick('rp-cmp', 'normal'), name: $('rp-name').value, dedication: $('rp-ded').value, markers: markers,
       normals: $('rp-normals').checked, records: $('rp-records').checked,
-      crop: $('rp-crop').value, cropPlant: $('rp-crop-plant').value, cropHarvest: $('rp-crop-harvest').value, plants: $('rp-plants').checked, ghost: $('rp-ghost').checked,
       hist: $('rp-hist').checked, frost: $('rp-frost').checked, heat: $('rp-heat').checked, ribbon: $('rp-ribbon').checked,
       // the logo is not a box: its id rides along from the design, the color switch is read
       logo: ST.logo, logoInk: pick('rp-logo-ink', ST.logoInk ? '1' : '0') !== '0',
@@ -2654,8 +2632,6 @@
     $('rp-ded').value = s.dedication;
     $('rp-normals').checked = s.normals;
     $('rp-records').checked = s.records;
-    $('rp-crop').value = s.crop; if (s === ST) CROP_HAND = { plant: s.cropPlant || '', harvest: s.cropHarvest || '' };
-    $('rp-plants').checked = s.plants; $('rp-ghost').checked = s.ghost;
     $('rp-hist').checked = s.hist; $('rp-frost').checked = s.frost; $('rp-heat').checked = s.heat; $('rp-ribbon').checked = s.ribbon;
     for (var i = 1; i <= LIMITS.markers; i++) {
       var m = s.markers[i - 1];
@@ -2666,7 +2642,6 @@
     }
     syncRows();
     syncYearNote();
-    if (s === ST) syncCropDays();
     radios('rp-logo-ink').forEach(function (r) { r.checked = r.value === (s.logoInk ? '1' : '0'); });
     if (s === ST) wantLogo();
     if ($('rp-name-n')) { syncCounts(); syncDates(); }
@@ -2911,7 +2886,7 @@
     URL_LOG = URL_LOG.filter(function (t) { return now - t < 30000; });
     if (URL_LOG.length >= 60) { URL_T = setTimeout(updateUrlNow, 30000 - (now - URL_LOG[0]) + 50); return; }
     URL_LOG.push(now);
-    var q = toParams(ST) + (MAKER ? '&maker=1' + (SERIAL ? '&serial=' + SERIAL.replace(/\D/g, '') : '') : '') +
+    var q = toParams(ST) + (MAKER ? '&maker=1' + (SERIAL ? '&serial=' + SERIAL.replace(/\D/g, '') : '') + (ORDER_CROP ? '&' + orderCropQuery(ORDER_CROP) : '') : '') +
       // the product picked, so Back and a reload keep it (framed, the default, stays out of the address)
       (PICK && PICK !== 'framed12x18' ? '&pick=' + PICK : '');
     var to = root.location.pathname + '?' + q;
@@ -4119,16 +4094,21 @@
      reads first: one AGSIST Daily ask (components/signup-ask.js: an empty email box and a button,
      nothing ticked, gone for a reader already on the Daily) and one line about the rain gauge,
      in data/rain-print.json gauge_hook's words when set. */
-  var GAUGE_LINE = 'Also in the works: a better rain gauge.';
+  var GAUGE_LINE = 'Also in the works: a better rain gauge.', GAUGE_LINK = 'Get on the list';
   function paidMore(box) {
     var m = $('rp-paid-more');
     if (!m) { m = doc.createElement('div'); m.id = 'rp-paid-more'; m.className = 'rp-paid-more'; box.parentNode.insertBefore(m, box.nextSibling); }
-    function hook() { return PRICES && typeof PRICES.gauge_hook === 'string' && PRICES.gauge_hook.trim().length <= 160 ? PRICES.gauge_hook.trim() : ''; }
+    /* gauge_hook is {line, link}, held to components/rain-print-promo.js gaugeHook's limits */
+    function hook() {
+      var g = PRICES && PRICES.gauge_hook, ok = function (t, n) { return typeof t === 'string' && t.trim() && t.length <= n && !/[\u2013\u2014]/.test(t); };
+      return g && ok(g.line, 90) && ok(g.link, 60) ? { line: g.line.trim(), link: g.link.trim() } : null;
+    }
+    var h0 = hook();
     m.innerHTML = '<div data-signup-ask="AGSIST Daily: the markets and your top local bid, free, every morning" data-source="page:rain-print-paid"></div>' +
-      '<p class="rp-paid-gauge"><span>' + esc(hook() || GAUGE_LINE) + '</span> <a href="/rain-gauge" data-placement="rain-print-paid">Get on the list</a></p>';
+      '<p class="rp-paid-gauge"><span>' + esc(h0 ? h0.line : GAUGE_LINE) + '</span> <a href="/rain-gauge" data-placement="rain-print-paid">' + esc(h0 ? h0.link : GAUGE_LINK) + '</a></p>';
     m.hidden = false;
     // the prices file may still be on its way: its words replace the default when it lands
-    if (!PRICES) Promise.resolve(PRICES_P).then(function () { var t = hook(), sp = m.querySelector('.rp-paid-gauge span'); if (t && sp) sp.textContent = t; });
+    if (!PRICES) Promise.resolve(PRICES_P).then(function () { var h = hook(), sp = m.querySelector('.rp-paid-gauge span'), a = m.querySelector('.rp-paid-gauge a'); if (h && sp && a) { sp.textContent = h.line; a.textContent = h.link; } });
     var g = m.querySelector('.rp-paid-gauge a');
     g.addEventListener('click', function () { ga('rain_gauge_promo_click', { placement: 'rain-print-paid' }); });
     if (root.AgsistSignup && root.AgsistSignup.mount) root.AgsistSignup.mount(m.querySelector('[data-signup-ask]'));
@@ -4421,8 +4401,9 @@
     if (META) rows.push(['Weather station', gaugeWords(META) + ', ' + distText(META)]);
     rows.push(['Compared with', ST.cmp === 'normal' ? 'NOAA 30-year normal' : ST.cmp === 'station' ? 'The station\u2019s full record' : 'Nothing']);
     // the 2026-10-17 options, so the proof and the order say exactly what prints
-    if (ST.crop) rows.push(['Crop', ({ corn: 'Corn', soy: 'Soybeans' })[ST.crop] + ', planted ' + shortDate(ST.cropPlant) + ', harvested ' + shortDate(ST.cropHarvest) +
-      (ST.plants ? ', with plant drawings' : ', stages labeled') + (ST.ghost ? ', against a usual year' : '')]);
+    // an order paid before 2026-10-23 with a crop, drawn on Sig's order view only (ORDER_CROP)
+    if (orderCropOn()) rows.push(['Crop', ({ corn: 'Corn', soy: 'Soybeans' })[ORDER_CROP.crop] + ', planted ' + shortDate(ORDER_CROP.cropPlant) + ', harvested ' + shortDate(ORDER_CROP.cropHarvest) +
+      (ORDER_CROP.plants ? ', with plant drawings' : ', stages labeled') + (ORDER_CROP.ghost ? ', against a usual year' : '') + ' (an order from before Oct 23, 2026)']);
     var tw = [];
     if (ST.frost) tw.push('frost marks'); if (ST.heat) tw.push('hottest and coldest day'); if (ST.ribbon) tw.push('daily temperature stripes');
     if (tw.length) rows.push(['Temperatures', tw.join(', ') + (TEMP && TEMP.tm ? '; from ' + (TEMP.tm.same ? 'the same station' : TEMP.tm.name + ', ' + TEMP.tm.words) : '')]);
@@ -5322,7 +5303,7 @@
      link comes in as it was made. */
   /* Every layer on (Sig, 2026-10-22: "show by default all options such as hi low temp, temp, historical lines on
      staircase"): the daily temperature stripes (which name the hottest and coldest day) and every year behind yours
-     join them. The crop and its plants need the reader's planting and harvest days, so they wait for those. */
+     join them. Every layer means the seven on the Layers card; the crop layers are gone (2026-10-23, Sig). */
   if (!ST.place) { ST.cmp = 'normal'; ST.normals = true; ST.records = true; ST.frost = true; ST.heat = true; ST.ribbon = true; ST.hist = true; SHOW_EX = !PAID; }
   writeInputs(ST);
   // what this browser still owes Sig from a press while the worker was out (the outbox, a kept logo) goes now
@@ -5432,53 +5413,25 @@
   $('rp-normals').addEventListener('change', function () { restyle(); });
   radios('rp-cmp').forEach(function (r) { r.addEventListener('change', function () { restyle(); }); });
   $('rp-records').addEventListener('change', function () { restyle(); });
-  /* The 2026-10-17 options. A crop picked fills its days from marked days whose words say so (Planted,
-     Harvest); the temperature switches read the temperature station the first time one is on; the history
-     threads change the station (the nearest with 30 full years), so they draw the year again. */
-  function cropPicked() {
-    if ($('rp-crop').value) {
-      if (!CROP_HAND.plant) CROP_HAND.plant = guessCropDay(/plant|seed/i);
-      if (!CROP_HAND.harvest) CROP_HAND.harvest = guessCropDay(/harvest|combin/i);
-    }
-    syncCropDays(); restyle(); extrasLoad(reqToken);
-  }
-  doc.querySelectorAll('[data-crop]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      if (b.disabled || b.getAttribute('aria-disabled') === 'true') return;
-      $('rp-crop').value = $('rp-crop').value === b.getAttribute('data-crop') ? '' : b.getAttribute('data-crop');
-      cropPicked();
-      layerSaid('crop');
-    });
-  });
-  ['rp-crop-pmo', 'rp-crop-pdy', 'rp-crop-hmo', 'rp-crop-hdy'].forEach(function (id) {
-    $(id).addEventListener('change', function () {
-      var p = id.charAt(8), k = p === 'p' ? 'plant' : 'harvest', y = ST.year || parseInt($('rp-year').value, 10);
-      cropDayList(p, y);
-      CROP_HAND[k] = $('rp-crop-' + k).value = cropDayOf(p, y);
-      restyle(); extrasLoad(reqToken);
-    });
-  });
-  ['rp-crop-plant', 'rp-crop-harvest', 'rp-plants', 'rp-ghost', 'rp-frost', 'rp-heat', 'rp-ribbon'].forEach(function (id) {
+  /* The 2026-10-17 options. The temperature switches read the temperature station the first time one is on; the
+     history threads change the station (the nearest with 30 full years), so they draw the year again. */
+  ['rp-frost', 'rp-heat', 'rp-ribbon'].forEach(function (id) {
     $(id).addEventListener('change', function () { restyle(); extrasLoad(reqToken); });
   });
   $('rp-hist').addEventListener('change', histStation);
   $('rp-layers').addEventListener('change', function (ev) {
     var t = ev.target, k = t.name === 'rp-cmp' ? 'cmp' : String(t.id || '').replace(/^rp-/, '');
-    if (/^crop-/.test(k)) k = 'crop';
     syncLayers(); layerSaid(k);
   });
   // a greyed chip passes the tap to its label (its box takes no clicks while disabled), which says why
   $('rp-layers').addEventListener('click', function (ev) {
     var c = ev.target && ev.target.closest ? ev.target.closest('.rp-chip') : null, i = c && c.querySelector('input');
     if (i && i.disabled && !i.getAttribute('data-gift-lock')) layerSaid(i.id.replace(/^rp-/, ''));
-    else if (c && c.getAttribute('data-crop') && c.getAttribute('aria-disabled') === 'true') layerSaid('crop');
   });
   $('rp-alloff').addEventListener('click', function () {
     var free = function (el) { return el && !el.disabled && !el.getAttribute('data-gift-lock'); }, hist = free($('rp-hist')) && $('rp-hist').checked;
     radios('rp-cmp').forEach(function (r) { if (!r.disabled) r.checked = r.value === 'none'; });
-    ['rp-normals', 'rp-records', 'rp-frost', 'rp-heat', 'rp-ribbon', 'rp-plants', 'rp-ghost', 'rp-hist'].forEach(function (id) { var el = $(id); if (el && !el.getAttribute('data-gift-lock')) el.checked = false; });
-    if (!$('rp-crop').getAttribute('data-gift-lock')) $('rp-crop').value = '';
-    syncCropDays();
+    ['rp-normals', 'rp-records', 'rp-frost', 'rp-heat', 'rp-ribbon', 'rp-hist'].forEach(function (id) { var el = $(id); if (el && !el.getAttribute('data-gift-lock')) el.checked = false; });
     if (hist) histStation(); else { restyle(); extrasLoad(reqToken); }
     syncLayers();
     $('rp-say').innerHTML = '<b>All layers off</b>: just your year.';
@@ -5801,6 +5754,8 @@
         return;
       }
       if (ref.gift) s.gift = true;
+      // Sig's order view of an order paid before 2026-10-23: the crop rides in the short link's code (ORDER_CROP)
+      if (MAKER && !ORDER_CROP && /(?:^|[?&])oldcrop=1(?:&|$)/.test(root.location.search)) ORDER_CROP = orderCrop('d=' + r.code);
       ST = s;
       // a design from a link comes in as it was made: no example words on it (they went on an RPS- design with no name of its own)
       SHOW_EX = false;
@@ -5847,12 +5802,11 @@
   var GIFT = null;
   var LOCK_IDS = { place: ['rp-place', 'rp-go'], year: ['rp-year'], station: ['rp-station'], style: ['rp-style'], cmp: ['rp-cmp'], name: ['rp-name'],
     dedication: ['rp-ded'], markers: [1, 2, 3, 4, 5].reduce(function (a, i) { return a.concat(['rp-m' + i + 'mo', 'rp-m' + i + 'dy', 'rp-m' + i + 'l']); }, []).concat(['rp-add-day']), normals: ['rp-normals'], records: ['rp-records'],
-    crop: ['rp-crop', 'rp-crop-plant', 'rp-crop-harvest', 'rp-crop-pmo', 'rp-crop-pdy', 'rp-crop-hmo', 'rp-crop-hdy', 'rp-plants', 'rp-ghost'], hist: ['rp-hist'], frost: ['rp-frost'], heat: ['rp-heat'], ribbon: ['rp-ribbon'],
+    hist: ['rp-hist'], frost: ['rp-frost'], heat: ['rp-heat'], ribbon: ['rp-ribbon'],
     logo: ['rp-logo-file', 'rp-logo-remove', 'rp-logo-ink'] };
   function lockInput(field) {
     (LOCK_IDS[field] || []).forEach(function (id) {
       if (id === 'rp-style' || id === 'rp-cmp') { radios(id).forEach(function (r) { r.disabled = true; }); return; }
-      if (id === 'rp-crop') doc.querySelectorAll('[data-crop]').forEach(function (b) { b.disabled = true; });
       if (id === 'rp-logo-ink') { radios('rp-logo-ink').forEach(function (r) { r.disabled = true; }); return; }
       if (id === 'rp-logo-file') { var pk = $('rp-logo-pick'); if (pk) { pk.setAttribute('aria-disabled', 'true'); pk.style.pointerEvents = 'none'; pk.style.opacity = '.55'; } }
       var el = $(id); if (el) { el.disabled = true; el.setAttribute('data-gift-lock', '1'); }

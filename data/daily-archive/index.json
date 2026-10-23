@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-23",
+      "date_display": "Friday, October 23, 2026",
+      "headline": "Corn slips to $4.58¾ and beans hold $12.53 as WTI tops $101",
+      "teaser": "Corn slips to $4.58¾ and beans hold $12.53 as WTI tops $101.",
+      "market_mood": "mixed",
+      "surprise_count": 1,
+      "sections": 3,
+      "url": "/daily/2026-10-23",
+      "market_closed": false
+    },
+    {
       "date": "2026-10-22",
       "date_display": "Thursday, October 22, 2026",
       "headline": "Corn $4.64 and beans $12.47 hold; crude up 2.2% to $99.24",
@@ -2558,6 +2569,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-22T11:03:28.189060+00:00",
-  "count": 223
+  "updated": "2026-10-23T10:48:12.917887+00:00",
+  "count": 224
 }

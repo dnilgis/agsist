@@ -4,7 +4,7 @@
  *
  * Checks, on the shipped pages, from the Chetek fixture (test/fixtures/rp-chetek-oct21.mjs):
  *   - a new visit opens with every layer on: the usual year, month normals, remarkable days, frost, hottest and coldest,
- *     the daily temperature stripes and every year behind (the crop waits for its days);
+ *     the daily temperature stripes and every year behind: all seven layers (no crop layers since Oct 23, Sig);
  *   - a phone (390 and 375, touch): one 12px gutter, cards 12px inside, nothing wider than the screen, no word nearer the
  *     edge than the gutter, and every tap in the tool at least 44px tall;
  *   - the help line (call or text Sig, or email) sits by Pay on the review sheet, shows when a draw fails, and is on the
@@ -58,13 +58,13 @@ test("the help line: by Pay on the review sheet, under a failed draw, on the gif
   for (const h of [rp, read("rp-gift.html")]) assert.ok(!/Questions or trouble[^<]*—/.test(h), "no em dashes");
 });
 
-test("a new visit opens with every layer on; the crop waits for its days", { skip }, async () => {
+test("a new visit opens with every layer on, all seven; no crop layers", { skip }, async () => {
   for (const width of [390, 1280]) await withPage(async (page, base, errors) => {
     await page.goto(base + "/rain-print.html");
     await page.waitForTimeout(2000);
     for (const id of ["rp-normals", "rp-records", "rp-frost", "rp-heat", "rp-ribbon", "rp-hist"]) assert.equal(await page.$eval("#" + id, (e) => e.checked), true, id + " on");
     assert.equal(await page.$eval('input[name="rp-cmp"]:checked', (e) => e.value), "normal");
-    assert.equal(await page.$eval("#rp-crop", (e) => e.value), "");
+    assert.equal(await page.$$eval("#rp-crop, #rp-plants, #rp-ghost, [data-crop]", (a) => a.length), 0, "no crop controls");
     await page.fill("#rp-place", "Chetek, WI");
     await page.press("#rp-place", "Enter");
     await drawn(page);
@@ -72,7 +72,8 @@ test("a new visit opens with every layer on; the crop waits for its days", { ski
     assert.match(a, /data-rp="ribbon"/, "the daily temperature stripes are on the print");
     assert.match(a, /data-rp="hist"/, "every year behind yours is on the print");
     assert.match(a, /data-rp="frost:0"/, "the frost marks");
-    assert.match(await page.$eval("#rp-lcount", (e) => e.textContent), /^10 in all, 7 on$/);
+    assert.match(await page.$eval("#rp-lcount", (e) => e.textContent), /^7 in all, 7 on$/, "every layer on");
+    assert.ok(!/data-rp="crop"/.test(a), "no crop on the print");
     assert.match(page.url(), /hist=1&frost=1&heat=1&ribbon=1/, "the link carries what is on");
     // the 30-year station stays the default (Sig, Oct 22), said in one short line with a tap back to the nearer gauge
     assert.match(await page.textContent("#rp-source"), /^Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\. /);
@@ -81,7 +82,7 @@ test("a new visit opens with every layer on; the crop waits for its days", { ski
     await page.click("#rp-near");
     await page.waitForFunction(() => /^Weather station: Chetek, WI, 11 mi from Chetek \(volunteer gauge US1WIRS0008\)/.test(document.getElementById("rp-source").textContent) && !document.getElementById("rp-go").disabled, null, { timeout: 30000 });
     assert.equal(await page.isChecked("#rp-hist"), false, "every year behind goes off with it");
-    assert.match(await page.$eval("#rp-lcount", (e) => e.textContent), /^10 in all, 6 on$/);
+    assert.match(await page.$eval("#rp-lcount", (e) => e.textContent), /^7 in all, 6 on$/);
     assert.ok(!/hist=1/.test(page.url()));
     assert.deepEqual(errors, []);
   }, { width, phone: width < 500 });

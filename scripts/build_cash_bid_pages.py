@@ -1216,7 +1216,7 @@ SIGNUP_JS = '<script src="/components/cb-signup.js?v=2" defer></script>\n'
 # one slot carries the quiet "see a year of rain here" line instead (mode
 # "see", shown while promote is on), so a town page always has exactly one.
 RP_PROMO_SEASON = ((11, 1), (12, 24))
-RP_PROMO_JS = '<script src="/components/rain-print-promo.js?v=4" defer></script>\n'
+RP_PROMO_JS = '<script src="/components/rain-print-promo.js?v=6" defer></script>\n'
 
 
 RP_GIFT_SLOT = '<p class="rp-promo" data-rain-print-promo hidden></p>'

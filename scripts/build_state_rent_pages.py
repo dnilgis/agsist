@@ -714,7 +714,7 @@ def rent_ask(st, name, yr):
 # while data/rain-print.json's promote window runs (through the framed Christmas order-by
 # date, Dec 9 in 2026); otherwise it stays hidden and takes no space.
 RP_LAND = '<p class="rp-promo" data-rain-print-promo="land" hidden></p>'
-RP_PROMO_JS = '<script src="/components/rain-print-promo.js?v=5" defer></script>'
+RP_PROMO_JS = '<script src="/components/rain-print-promo.js?v=7" defer></script>'
 
 
 GROUND_MIN = 3   # counties with both a current dryland rent and a trend before the panel shows

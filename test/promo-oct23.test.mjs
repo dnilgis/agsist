@@ -32,14 +32,15 @@ test("one cross-promo a page, after the answer, with its script", () => {
   const pages = {
     "conditions.html": ['data-rain-print-promo="see"', 'class="cd-panel cd-faq-panel"'],
     "spray.html": ['data-rain-print-promo="see"', 'id="section-faq"'],
-    "rain-radar.html": ['data-rain-print-promo="gauge"', 'class="rr-faq"'],
+    // /rain-radar: the gauge helper's "auto" line (see, or the gauge hook by date) is its one slot (Oct 23)
+    "rain-radar.html": ['data-rain-print-promo="auto"', 'class="rr-faq"'],
   };
   for (const [f, [slot, after]] of Object.entries(pages)) {
     const h = read(f), m = inMain(h);
     assert.equal(promos(m), 1, f + ": exactly one promo");
     assert.ok(m.includes(`<p class="rp-promo" ${slot} hidden></p>`), f + ": the slot, hidden until filled");
     assert.ok(m.indexOf(slot) > m.indexOf(after), f + ": after the answer and the questions");
-    assert.match(h, /rain-print-promo\.js\?v=5" defer/, f);
+    assert.match(h, /rain-print-promo\.js\?v=7" defer/, f);
   }
   // /hail-map keeps its one Rain Print line (Oct 19 rule): the gauge waits on Sig's swap after Dec 10
   const hm = inMain(read("hail-map.html"));
@@ -65,7 +66,7 @@ test("rent pages: the notice ask right under the county table, one land line aft
     assert.ok(!/data-daily="on"|checked/.test(h.slice(h.lastIndexOf("<div", at), h.indexOf("</div>", at))), f + ": nothing ticked");
     assert.equal(promos(inMain(h)), 1, f);
     assert.ok(h.indexOf('data-rain-print-promo="land"') > h.lastIndexOf('class="rs-faq"'), f + ": after the FAQ");
-    assert.match(h, /rain-print-promo\.js\?v=5" defer/, f);
+    assert.match(h, /rain-print-promo\.js\?v=7" defer/, f);
   }
   assert.equal(promos(inMain(read("rent/index.html"))), 0, "the hub carries none");
 });
@@ -132,8 +133,9 @@ test("Paid view: a Daily ask with an empty box, and the gauge line, under the th
   const fn = rp.slice(rp.indexOf("  function paidMore(box) {"), rp.indexOf("  function showPaid("));
   assert.match(fn, /data-signup-ask="AGSIST Daily: the markets and your top local bid, free, every morning" data-source="page:rain-print-paid"/);
   assert.ok(!/checked|data-daily/.test(fn));
-  assert.match(fn, /<a href="\/rain-gauge" data-placement="rain-print-paid">Get on the list<\/a>/);
-  assert.match(rp, /var GAUGE_LINE = 'Also in the works: a better rain gauge\.';/);
+  assert.match(fn, /<a href="\/rain-gauge" data-placement="rain-print-paid">' \+ esc\(h0 \? h0\.link : GAUGE_LINK\) \+ '<\/a>/);
+  assert.match(rp, /var GAUGE_LINE = 'Also in the works: a better rain gauge\.', GAUGE_LINK = 'Get on the list';/);
+  assert.match(fn, /ok\(g\.line, 90\) && ok\(g\.link, 60\)/, "the hook's own limits (rain-print-promo.js gaugeHook)");
   assert.ok(!DASH.test(fn));
 });
 

@@ -16,6 +16,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { createServer } from "node:http";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -68,13 +69,21 @@ test("every county rain page asks once, for its own county and year, and says wh
 test("the rain year sender rides county-rain.yml, in January only, with no new schedule", () => {
   const y = read(".github/workflows/county-rain.yml");
   const crons = [...y.matchAll(/- cron: "([^"]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(crons, ["23 13 * * 1", "41 14 2 1 *"], "the two schedules it already had");
+  // Sig, Oct 23 2026: the rain pages rebuild every day (was Mondays, "23 13 * * 1"); the Jan 2 run stays
+  assert.deepEqual(crons, ["23 13 * * *", "41 14 2 1 *"], "every day at 13:23 UTC, and the Jan 2 finished-year run");
   assert.ok(y.includes("python scripts/send_rain_year.py --selftest"), "offline selftest first");
   const at = y.indexOf("python3 scripts/send_rain_year.py --send");
   assert.ok(at > y.indexOf("- name: Commit"), "the send runs after the finished year is committed");
   assert.match(y.slice(y.lastIndexOf("- name:", at), at), /date \+%m\)" != "01" \]; then .* exit 0; fi/, "January only");
   const s = read("scripts/send_rain_year.py");
   assert.ok(s.includes('TOPIC_RE = re.compile(r"rainyear:(\\d{4}):(\\d{5})")'), "reads the same topic the page posts");
+  // a daily schedule must not mean more email: never on Jan 1, one email per address (marked after the send)
+  assert.ok(s.includes("FIRST_DAY = 2") && /today\.day < FIRST_DAY/.test(s), "nothing on Jan 1, the first send is Jan 2");
+  assert.match(s, /if not SN\.mark\(http, base, tok, e, t, sleep\):/, "every send is marked before the next");
+  const st = execFileSync("python3", ["scripts/send_rain_year.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
+  assert.match(st, /ok {3}daily runs through January: each address mailed exactly once/);
+  assert.match(st, /ok {3}Jan 1: nothing read, nothing sent/);
+  assert.match(st, /OK: 0 failure\(s\)/);
   assert.ok(!/print\([^)]*\be\b[,)]/.test(s), "never prints an address");
 });
 

@@ -444,11 +444,35 @@ def morning_read(stw):
 IMG_ROOT = ROOT   # where the share images are read from (to put their hash in the URL)
 
 
-def share_img(st, alt):
+RAIN_SIDECAR = os.path.join("img", "og", "rain-cards.json")   # scripts/build_share_images.py RAIN_SIDECAR
+
+
+def card_alt(rel, v, st):
+    """The alt text for the card file as it is now. The cards are redrawn only on Mondays
+    (Sig, Oct 23 2026) while the pages rebuild every day, so the alt is the one saved with
+    the drawn card (img/og/rain-cards.json), printed only while its hash is this file's:
+    it gives the card's own "through" day, never today's numbers on last week's map.
+    No saved alt for this file: a plain one with no numbers or dates."""
+    if RAIN_SIDECAR not in _HASH:
+        try:
+            with open(os.path.join(IMG_ROOT, RAIN_SIDECAR), encoding="utf-8") as f:
+                _HASH[RAIN_SIDECAR] = json.load(f)
+        except (OSError, ValueError):
+            _HASH[RAIN_SIDECAR] = {}
+    side = _HASH[RAIN_SIDECAR] if isinstance(_HASH[RAIN_SIDECAR], dict) else {}
+    e_ = side.get(os.path.basename(rel)[:-4])
+    if isinstance(e_, dict) and e_.get("v") == v and e_.get("alt"):
+        return e_["alt"]
+    if st:
+        return f"Map of {R.STATES.get(st, st)} by {R.UNIT.get(st, ('county',))[0]}, shaded by rain as a percent of a usual year."
+    return "Map of the US by county, shaded by rain as a percent of a usual year."
+
+
+def share_img(st):
     """(image URL, alt) for a state's pages (st) or the hub (None): the card
     scripts/build_share_images.py draws, img/og/rain-<st>.jpg or img/og/rain.jpg,
-    with ?v=<hash> so Messages and Facebook fetch a new one when the data
-    changes. A state card not drawn yet falls back to the hub's card."""
+    with ?v=<hash> so Messages and Facebook fetch a new one when the card is
+    redrawn (Mondays). A state card not drawn yet falls back to the hub's card."""
     import hashlib
     for rel in ([R.share_image(st)] if st else []) + [R.share_image(None)]:
         p = os.path.join(IMG_ROOT, rel)
@@ -458,7 +482,8 @@ def share_img(st, alt):
                 with open(p, "rb") as f:
                     _HASH[p] = hashlib.sha1(f.read()).hexdigest()[:8]
         if _HASH[p]:
-            return f"{ORIGIN}/{rel}?v={_HASH[p]}", (alt if rel == R.share_image(st) or not st else None)
+            mine = rel == R.share_image(st) or not st
+            return f"{ORIGIN}/{rel}?v={_HASH[p]}", (card_alt(rel, _HASH[p], st if st and mine else None) if mine else None)
     return f"{ORIGIN}/{R.share_image(None)}", None
 
 
@@ -508,15 +533,17 @@ FOOT = """  </main>
 </body>
 </html>
 """
-# State pages (Sig, 2026-10-16): the one cross-promotion is the rain gauge
-# waitlist line, after the table (components/rain-print-promo.js "gauge":
-# "Want a better rain gauge? Sig is designing one. Get updates."). County
-# pages keep their Rain Print block and nothing else.
-GAUGE_SLOT = '<p class="rp-promo" data-rain-print-promo="gauge" hidden></p>'
+# State pages (Sig, 2026-10-23): the one cross-promotion is the
+# "auto" line after the table (components/rain-print-promo.js): Rain Print
+# through Dec 24, the rain gauge hook from Dec 26 through May (gauge_window
+# and gauge_hook in data/rain-print.json). County pages keep their Rain Print
+# block and nothing else. The hub (rain.html) keeps its typed Rain Print line
+# (test/rain-print-links-in.test.mjs), which is its one promo.
+GAUGE_SLOT = '<p class="rp-promo" data-rain-print-promo="auto" hidden></p>'
 # rain.html only: glossary marks and the Next block (data/next-links.json)
 FOOT_NAT = FOOT.replace("</body>", '  <script src="/components/next-links.js?v=3" defer></script>\n</body>')
 FOOT_GAUGE = FOOT.replace('  <script src="/components/loader.js?v=19" defer></script>\n',
-                          '  <script src="/components/loader.js?v=19" defer></script>\n  <script src="/components/rain-print-promo.js?v=4" defer></script>\n')
+                          '  <script src="/components/loader.js?v=19" defer></script>\n  <script src="/components/rain-print-promo.js?v=6" defer></script>\n')
 
 
 def crumbs_ld(items):
@@ -770,7 +797,7 @@ def county_page(ctx):
     faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faq)
     plain_chart, print_fig = chart(c, year, name, noun, ready)
     h1 = (f"How much rain did {e(full_c)} get in {year}?" if done else f"How much rain has {e(full_c)} had in {year}?")
-    return head(title, desc, url, ld, img=share_img(st, ctx.get("alt") or R.share_alt(d))) + f"""
+    return head(title, desc, url, ld, img=share_img(st)) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
@@ -797,7 +824,7 @@ def county_page(ctx):
     <div class="rc-faq">{faq_html}</div>
     {('<h2>Next door</h2><ul class="rc-next">' + nb_html + '</ul>') if nb_html else ''}
     <p class="rc-fine">{more_html}</p>
-    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; rebuilt weekly. NOAA&rsquo;s daily numbers come in a few days late and are sometimes corrected.</p>
+    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; updated daily. NOAA&rsquo;s daily numbers come in a few days late and are sometimes corrected.</p>
   </div>
 {FOOT}"""
 
@@ -877,7 +904,7 @@ def state_page(st, d, pages, none_rows):
     ]
     by = by[0] + by[1:].lower()
     h1 = f"How much rain has {e(stn)} had in {year}? {by}" if not done else f"How much rain did {e(stn)} get in {year}? {by}"
-    return head(title, desc, url, ld, img=share_img(st, R.share_alt(d))) + f"""
+    return head(title, desc, url, ld, img=share_img(st)) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
@@ -893,7 +920,7 @@ def state_page(st, d, pages, none_rows):
     <p class="rc-fine">Rain and usual are in inches. Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each {u1} page has the month by month table and how the station was picked.</p>
     {none_html}
     {GAUGE_SLOT}
-    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; rebuilt weekly. <a href="/rain">Every state</a> &middot; <a href="/rain-print">Rain Print</a></p>
+    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; updated daily. <a href="/rain">Every state</a> &middot; <a href="/rain-print">Rain Print</a></p>
   </div>
 {FOOT_GAUGE}"""
 
@@ -924,7 +951,7 @@ def hub_page(files, built):
          "dateModified": built, "inLanguage": "en-US", "author": AUTHOR, "publisher": PUBLISHER},
         crumbs_ld([("Home", ORIGIN + "/"), ("Rain by county", url)]),
     ]
-    page = head(title, desc, url, ld, img=share_img(None, R.share_alt_us(files))) + f"""
+    page = head(title, desc, url, ld, img=share_img(None)) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
@@ -939,7 +966,7 @@ def hub_page(files, built):
       <li>Each county page uses one weather station inside that county, and only a station that reported at least 90% of the days {"in " + yw if done else "this year"}. Counties without one are listed on the state page with the nearest county that has one.</li>
       <li>A day the station did not report is unknown, not dry. It adds nothing to the total and nothing to the usual year either.</li>
       <li>Usual is NOAA&rsquo;s daily normal for that station, added up over the same days it reported.</li>
-      <li>Every page says the latest day its station has reported. NOAA&rsquo;s daily numbers come in a few days late, and the pages are rebuilt about once a week.</li>
+      <li>Every page says the latest day its station has reported. NOAA&rsquo;s daily numbers come in a few days late, so the pages are updated every day and each one says the day its numbers run through.</li>
     </ul>
     <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws it from the same NOAA records.</p>
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.</p>
@@ -1006,7 +1033,6 @@ def build(data_dir, C=None, NB=None, img_root=None):
     for st, d in sorted(files.items(), key=lambda kv: R.STATES[kv[0]]):
         st_slug = R.slug(R.STATES[st])
         day = d["fetched"][:10]
-        alt = R.share_alt(d)
         for fips, c in sorted(d["counties"].items()):
             if fips not in C:
                 continue
@@ -1016,7 +1042,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
             nbrs = [(pages[f][0] + ("" if C[f]["st"] == st else ", " + C[f]["st"]), pages[f][1],
                      pages[f][2] + ("" if pages[f][3] == c["as_of"] else f" to {short_date(pages[f][3])}")) for f in nb[:4]]
             body = county_page({"c": c, "st": st, "fips": fips, "year": d["year"], "d": d, "slug": C[fips]["slug"],
-                                "nbrs": nbrs, "n_ok": c.get("n_ok", 1), "alt": alt,
+                                "nbrs": nbrs, "n_ok": c.get("n_ok", 1),
                                 "day": daily.get(st, {}).get(fips),
                                 "story": CS.story_for(stories.get(st, {}).get(fips), dict(CS.page_now(c, d), facts=CS.facts(c, d, st)))})
             body = nav.fill_fonts(body)
@@ -1147,6 +1173,45 @@ def selftest():
            "the answer comes first, in plain words")
         ok(f"({c['pct']}% of usual)" in story and ("less than a usual year to date" in story or "more than a usual year to date" in story), "the comparison sentence")
         ok("<title>How Much Rain Has Story County, Iowa, Had in 2026? | AGSIST</title>" in story, "title")
+        # 2026-10-23 (Sig): the pages are rebuilt every day, not Mondays; each says the day it was read
+        # and the day its numbers run through, and none says weekly
+        ok('<p class="rc-asof">As of Oct 12, 2026, the latest day this station has reported</p>' in story
+           and f"read {long_date(d['fetched'][:10])}; updated daily." in story, "the county page: data date up top, read date and updated daily")
+        ok(f"read {long_date(d['fetched'][:10])}; updated daily." in want["rain/iowa.html"], "the state page: updated daily")
+        ok("the pages are updated every day and each one says the day its numbers run through" in want["rain.html"], "the hub: updated every day")
+        # the share cards are redrawn on Mondays only: a page prints the alt saved with the card it points at,
+        # and only while the hash matches; otherwise a plain alt with no numbers or dates
+        global IMG_ROOT
+        keep_root = IMG_ROOT
+        try:
+            IMG_ROOT = os.path.join(t, "img_root")
+            os.makedirs(os.path.join(IMG_ROOT, "img", "og"))
+            open(os.path.join(IMG_ROOT, "img", "og", "rain-ia.jpg"), "wb").write(b"monday card")
+            open(os.path.join(IMG_ROOT, "img", "og", "rain-la.jpg"), "wb").write(b"redrawn by hand")
+            open(os.path.join(IMG_ROOT, "img", "og", "rain.jpg"), "wb").write(b"us card")
+            import hashlib
+            hv = lambda b: hashlib.sha1(b).hexdigest()[:8]
+            json.dump({"rain-ia": {"v": hv(b"monday card"), "alt": "Map of Iowa ... through Oct 18, 2026."},
+                       "rain-la": {"v": hv(b"older card"), "alt": "Map of Louisiana ... through Oct 11, 2026."}},
+                      open(os.path.join(IMG_ROOT, RAIN_SIDECAR), "w"))
+            _HASH.clear()
+            u_ia, a_ia = share_img("IA")
+            u_la, a_la = share_img("LA")
+            u_ks, a_ks = share_img("KS")
+            u_us, a_us = share_img(None)
+            ok(u_ia.endswith("rain-ia.jpg?v=" + hv(b"monday card")) and a_ia == "Map of Iowa ... through Oct 18, 2026.",
+               f"the card's own saved alt, its own through day: {a_ia}")
+            ok(a_la == "Map of Louisiana by parish, shaded by rain as a percent of a usual year.", f"a saved alt for another file is never printed: {a_la}")
+            ok(u_ks.endswith("rain.jpg?v=" + hv(b"us card")) and a_ks is None, "a state with no card falls back to the hub's, no alt")
+            ok(a_us == "Map of the US by county, shaded by rain as a percent of a usual year." and not re.search(r"\d", a_us),
+               f"the hub with no saved alt: plain, no numbers: {a_us}")
+        finally:
+            IMG_ROOT = keep_root
+            _HASH.clear()
+        for rel, body in want.items():
+            if rel.endswith(".html"):
+                low = S.text_of(re.sub(r"<script.*?</script>", "", body, flags=re.S)).lower()
+                ok(not re.search(r"\bweekly\b|once a week|every week|mondays?\b", low), f"{rel}: still says weekly or Mondays")
         ok(re.search(r'<meta name="description" content="27\.61 inches of rain in Story County, Iowa, in 2026', story) is not None, "description carries the number")
         ok("/rain-print?place=Ames%2C+IA&amp;year=2026&amp;station=130203+2" in story, "Rain Print link draws that place and year")
         gc = rain_print_href({"station": {"raw": "GARDEN CITY EXP STN", "sid": "142980 2"}}, "KS", 2026)
