@@ -516,10 +516,10 @@ def seo_quick_stats(c):
     # vintage the numbers are (which month's forecast, or final) and the
     # description leads with the largest states' numbers.
     kind = _qs_kind(ia)
-    title = (f"Corn & Soybean Yield by State: "
+    title = (f"Corn & Soybean Yield per Acre by State: "
              f"{kind.replace('forecast', 'Forecast').replace('final', 'Final')}{SUFFIX}")
     if len(title) > TITLE_MAX:
-        title = f"Corn & Soybean Yield by State, {ia.get('year')}{SUFFIX}"
+        title = f"Corn & Soybean Yield per Acre by State: USDA {ia.get('year')}{SUFFIX}"
     corn = _qs_top(ss, ia, "corn", 3)
     # 2026-10-17: three soybean states, not one. Search Console, Jul 15 to Oct 14:
     # "average soybean yield per acre by state" drew 406 impressions at position
