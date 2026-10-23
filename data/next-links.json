@@ -25,25 +25,25 @@
    "links": [
     {
      "href": "/conditions",
-     "text": "Crop ratings and harvest progress",
-     "why": "This week's USDA numbers by state"
+     "text": "Crop progress and size",
+     "why": "This week's ratings and every yield forecast"
     },
     {
-     "href": "/whats-priced-in",
-     "text": "What's priced in",
-     "why": "What the trade expects before each report"
+     "href": "/corn-futures-prices",
+     "text": "Corn futures today",
+     "why": "Where the board is now"
     },
     {
-     "href": "/conditions-yield",
-     "text": "2026 crop size forecasts",
-     "why": "Every forecast in one place"
+     "href": "/cot",
+     "text": "Fund positions (COT)",
+     "why": "What the funds hold"
     }
    ]
   },
   "/usda-quick-stats": {
    "links": [
     {
-     "href": "/conditions-yield",
+     "href": "/conditions#crop-size",
      "text": "2026 crop size forecasts",
      "why": "Every forecast in one place"
     },
@@ -176,7 +176,7 @@
   "/crop-tour": {
    "links": [
     {
-     "href": "/conditions-yield",
+     "href": "/conditions#crop-size",
      "text": "2026 crop size forecasts",
      "why": "Every forecast in one place"
     },
@@ -214,9 +214,9 @@
   "/hail-map": {
    "links": [
     {
-     "href": "/hail/",
-     "text": "Hail by state",
-     "why": "County rankings and storm days"
+     "href": "/spray",
+     "text": "Spray advisory",
+     "why": "Can I spray today"
     },
     {
      "href": "/rain-radar",
@@ -251,7 +251,7 @@
   "/yield-estimator": {
    "links": [
     {
-     "href": "/conditions-yield",
+     "href": "/conditions#crop-size",
      "text": "2026 crop size forecasts",
      "why": "Every forecast in one place"
     },
@@ -490,25 +490,6 @@
     }
    ]
   },
-  "/elevators": {
-   "links": [
-    {
-     "href": "/cash-bids",
-     "text": "Cash bids near me",
-     "why": "What elevators near your ZIP pay today"
-    },
-    {
-     "href": "/basis",
-     "text": "Basis vs normal",
-     "why": "Is your local basis strong or weak for the date?"
-    },
-    {
-     "href": "/list-your-elevator",
-     "text": "List your elevator",
-     "why": "Add or fix your bids"
-    }
-   ]
-  },
   "/drought-monitor": {
    "links": [
     {
@@ -531,9 +512,9 @@
   "/conditions": {
    "links": [
     {
-     "href": "/conditions-yield",
-     "text": "2026 crop size forecasts",
-     "why": "Every forecast in one place"
+     "href": "/crop-tour",
+     "text": "Pro Farmer crop tour",
+     "why": "The tour against USDA, and pod counts"
     },
     {
      "href": "/yield-estimator",
@@ -623,24 +604,6 @@
     }
    ]
   },
-  "/conditions-yield": {
-   "links": [
-    {
-     "href": "/conditions",
-     "text": "Crop ratings and harvest progress",
-     "why": "This week's USDA numbers by state"
-    },
-    {
-     "href": "/usda-calendar",
-     "text": "USDA report calendar",
-     "why": "When the next report comes out"
-    },
-    {
-     "href": "/corn-futures-prices",
-     "text": "Corn futures today"
-    }
-   ]
-  },
   "/cash-lease": {
    "links": [
     {
@@ -657,23 +620,6 @@
      "href": "/farmland-atlas",
      "text": "Farmland Atlas",
      "why": "Land values and sales by county"
-    }
-   ]
-  },
-  "/whats-priced-in": {
-   "links": [
-    {
-     "href": "/usda-calendar",
-     "text": "USDA report calendar",
-     "why": "When the next report comes out"
-    },
-    {
-     "href": "/corn-futures-prices",
-     "text": "Corn futures today"
-    },
-    {
-     "href": "/soybean-futures-prices",
-     "text": "Soybean futures today"
     }
    ]
   },
@@ -695,25 +641,6 @@
     }
    ],
    "signup": false
-  },
-  "/pod-counts": {
-   "links": [
-    {
-     "href": "/yield-estimator",
-     "text": "Yield estimator",
-     "why": "Count ears and kernels in your field"
-    },
-    {
-     "href": "/conditions",
-     "text": "Crop ratings and harvest progress",
-     "why": "This week's USDA numbers by state"
-    },
-    {
-     "href": "/store-or-sell",
-     "text": "Sell now or store?",
-     "why": "The carry against your storage cost"
-    }
-   ]
   },
   "/contact": {
    "links": [
@@ -747,28 +674,9 @@
      "why": "The carry against your storage cost"
     },
     {
-     "href": "/basis-map",
-     "text": "Basis map",
-     "why": "Basis across the country"
-    }
-   ]
-  },
-  "/hail": {
-   "links": [
-    {
-     "href": "/hail-map",
-     "text": "Hail map",
-     "why": "Did hail hit your place?"
-    },
-    {
-     "href": "/rain-radar",
-     "text": "Rain on your field",
-     "why": "Radar totals at your address"
-    },
-    {
-     "href": "/rain",
-     "text": "Rain by county",
-     "why": "This year against normal"
+     "href": "/grain-transport",
+     "text": "Grain on the move",
+     "why": "Barge, rail and freight against normal"
     }
    ]
   },
@@ -861,25 +769,6 @@
    ],
    "signup": false
   },
-  "/scorecard": {
-   "links": [
-    {
-     "href": "/breakeven",
-     "text": "Break-even calculator",
-     "why": "Your cost per bushel by county"
-    },
-    {
-     "href": "/store-or-sell",
-     "text": "Sell now or store?",
-     "why": "The carry against your storage cost"
-    },
-    {
-     "href": "/daily",
-     "text": "Today's briefing",
-     "why": "The markets in a few minutes, every morning"
-    }
-   ]
-  },
   "/farmland-atlas": {
    "links": [
     {
@@ -945,9 +834,9 @@
      "why": "The markets in a few minutes, every morning"
     },
     {
-     "href": "/news",
-     "text": "The Wire",
-     "why": "Farm news, sorted"
+     "href": "/daily#moved",
+     "text": "What just moved",
+     "why": "Dated moves between briefings"
     },
     {
      "href": "/editorial-standards",
@@ -1283,8 +1172,9 @@
      "why": "What elevators near your ZIP pay today"
     },
     {
-     "href": "/elevators",
-     "text": "Elevator directory"
+     "href": "/basis#states",
+     "text": "Bids and basis by state",
+     "why": "Every state with a current bid"
     },
     {
      "href": "/contact",
@@ -1328,25 +1218,6 @@
      "href": "/custom-rates",
      "text": "Custom rates",
      "why": "What custom work costs by state"
-    }
-   ]
-  },
-  "/news": {
-   "links": [
-    {
-     "href": "/daily",
-     "text": "Today's briefing",
-     "why": "The markets in a few minutes, every morning"
-    },
-    {
-     "href": "/archive",
-     "text": "Briefing archive",
-     "why": "Every past Daily"
-    },
-    {
-     "href": "/markets",
-     "text": "Commodity prices today",
-     "why": "Every futures price on one board"
     }
    ]
   },
