@@ -521,6 +521,7 @@
                  (POST /elevator-watch-subscribe, scripts/send_zip_alert.py),
                  the body components/cb-signup.js sends;
        rainyear  their county's full-year rain total, one email in January
+                 (after a monthly county rain signup too, rain-month:<fips>)
                  (rainyear:<year>:<fips>, scripts/send_rain_year.py), when
                  data/rain has the county and its year is still going;
        rent      their state's next county cash rent release (rent:<st>,
@@ -699,7 +700,8 @@
     var gave = ctx.gave || 'daily', topic = String(ctx.topic || ''), had = ctx.had || [gave];
     var given = /^\d{5}$/.test(String(ctx.zip || '')) ? String(ctx.zip) : '';
     var spot = isFinite(ctx.lat) && isFinite(ctx.lon) && ctx.lat !== null && ctx.lon !== null ? { lat: +ctx.lat, lon: +ctx.lon, label: String(ctx.place || '') } : null;
-    var fips = String(ctx.fips || (/^rainyear:\d{4}:(\d{5})$/.exec(topic) || [])[1] || '');
+    /* 2026-10-23: the monthly county rain ask (rain-month:<fips>, subs worker v5.54) names its county too */
+    var fips = String(ctx.fips || (/^(?:rainyear:\d{4}|rain-month):(\d{5})$/.exec(topic) || [])[1] || '');
     var kind = pageKind();
     css();
     var box = document.createElement('div');

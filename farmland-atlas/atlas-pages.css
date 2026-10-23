@@ -69,3 +69,34 @@
 .ap .watch button{font:inherit;font-size:.82rem;font-weight:700;color:var(--text);background:var(--surface,#12161a);border:1px solid var(--gold);border-radius:8px;padding:.5rem .95rem;min-height:40px;cursor:pointer}
 .ap .watch button:hover{color:var(--gold)}.ap .watch .wm{margin:.5rem 0 0;font-size:.82rem;color:var(--text)}.ap .watch .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 @media print{.ap .act,.ap .watch,#site-header,#site-footer{display:none}}
+.ap .act a,.ap .act button,.ap .watch button,.ap .watch input[type=email]{min-height:44px}
+.ap .ch-btns{display:flex;flex-wrap:wrap;gap:.5rem;margin:.2rem 0 1rem}
+.ap .ch-btns a{display:inline-flex;align-items:center;min-height:44px;padding:0 1rem;border-radius:10px;border:1px solid var(--border);background:var(--surface,#12161a);color:var(--text);font-weight:700;font-size:.9rem;text-decoration:none}
+.ap .ch-btns a:hover{border-color:var(--gold);color:var(--gold)}
+.ap .ch-btns a.pri{background:var(--gold);border-color:var(--gold);color:#111}.ap .ch-btns a.pri:hover{color:#111;filter:brightness(1.06)}
+.ap .so h2{margin-top:.6rem}
+.ap .so-g{display:grid;grid-template-columns:minmax(0,1fr);gap:.6rem;margin:0 0 1rem}
+@media(min-width:760px){.ap .so-g{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ap .so-t{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:.7rem .85rem;background:var(--surface,#12161a)}
+.ap .so-t .big{font-family:var(--font-mono);font-size:1.55rem;font-weight:700;line-height:1.1}
+.ap .so-t .what{margin:.3rem 0 .25rem;font-size:.86rem;line-height:1.45;color:var(--text)}
+.ap .so-t .src{margin:0;font-size:.74rem;color:var(--text-muted)}
+.ap .chg{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:1rem 0;align-items:start}
+@media(min-width:900px){.ap .chg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ap .card{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--surface,#12161a);min-width:0}
+.ap .card h2{font-family:var(--font-display);font-size:1.1rem;font-weight:800;letter-spacing:0;text-transform:none;color:var(--text);margin:.1rem 0 .4rem;padding:0;border:0;display:flex;justify-content:space-between;gap:.6rem;align-items:baseline}
+.ap .card h2 small{font-family:var(--font-mono);font-size:.7rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em}
+.ap .card h3,.ap .card section.as h2{font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:1.1rem 0 .4rem;padding-bottom:.25rem;border-bottom:1px solid var(--border);display:block}
+.ap .lv .r{font-family:inherit;font-weight:400}
+.ap .lv .r:empty::before{content:"Reading the newest figure...";color:var(--text-muted);font-size:.8rem}
+.ap .lv .lvv{font-family:var(--font-mono);font-weight:700;font-size:.95rem;color:var(--text)}
+.ap .lv .lvv.na{font-family:inherit;font-weight:600;color:var(--text-dim)}
+.ap .lv .lc{color:var(--text-dim);font-size:.82rem;line-height:1.5}
+.ap .lv .ls{display:block;color:var(--text-muted);font-size:.74rem;margin-top:.1rem}
+.ap .lv .ls a,.ap .note a,.ap .gaps a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.ap .gaps{border:1px dashed var(--border-2,var(--border));border-radius:12px;padding:.4rem 1rem .6rem;margin:1rem 0}
+.ap .gaps h2{margin-top:.6rem;border:0}
+.ap .gaps ul{margin:0;padding-left:1.1rem;font-size:.86rem;line-height:1.55;color:var(--text-dim)}.ap .gaps li{margin:.25rem 0}
+.ap .act.rcw button{min-height:44px}
+@media (max-width:640px){.ap{padding:0 12px 3rem}.ap .card{padding:10px 12px}.ap .ch-btns a{flex:1 1 auto;justify-content:center}}
+@media print{.ap .ch-btns,.ap .gaps{display:none}.ap .card{break-inside:avoid}}

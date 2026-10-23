@@ -357,9 +357,9 @@
   /* The four cards. Every row is in the page already (an anchor a link can open); each fills
      in as its file answers, or says why not. */
   var PLACE_ROWS = ['f-corn-bid', 'f-soy-bid', 'f-corn-basis', 'f-soy-basis', 'f-corn-fut', 'f-soy-fut', 'f-wheat-fut', 'f-rain', 'f-drought', 'f-hail', 'f-progress', 'f-soy-progress',
-    'f-rent', 'f-land', 'f-sales', 'f-loss', 'f-arcplc', 'f-usda', 'f-fert', 'f-daily'];
+    'f-rent', 'f-land', 'f-sales', 'f-loss', 'f-arcplc', 'f-custom', 'f-usda', 'f-fert', 'f-daily'];
   var CARDS = [['Price', ['f-corn-bid', 'f-soy-bid', 'f-corn-basis', 'f-soy-basis', 'f-corn-fut', 'f-soy-fut', 'f-wheat-fut']], ['Field', ['f-rain', 'f-drought', 'f-hail', 'f-progress', 'f-soy-progress']],
-    ['Land and programs', ['f-rent', 'f-land', 'f-sales', 'f-loss', 'f-arcplc']], ['Today', ['f-usda', 'f-fert']]];
+    ['Land and programs', ['f-rent', 'f-land', 'f-sales', 'f-loss', 'f-arcplc', 'f-custom']], ['Today', ['f-usda', 'f-fert']]];
   function loadCards(fips) {
     var p = S.prof, st = p.st, w = S.where, slug = P.stSlug(st);
     function mine() { return S.prof && S.prof.fips === fips; }
@@ -393,6 +393,7 @@
       if (!mine()) return;
       fill('f-arcplc', P.factArcPlc(f, centralDay(), p.flags.indexOf('c') >= 0 ? '/arc-plc/' + slug + '/' + p.slug : '/arc-plc'));
     });
+    getJSON('/data/custom-rates/blend.json').then(function (f) { if (mine()) fill('f-custom', P.factCustom(f, st)); });
     usda('f-usda');
     fert('f-fert', st);
     daily('f-daily');

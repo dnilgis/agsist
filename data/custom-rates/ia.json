@@ -24,7 +24,9 @@
    "a": 14.55,
    "n": 32,
    "lo": 8.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "k": "stalk-chop",
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -34,7 +36,8 @@
    "n": 17,
    "lo": 14.0,
    "hi": 24.0,
-   "k": "moldboard"
+   "k": "moldboard",
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -44,7 +47,8 @@
    "n": 37,
    "lo": 10.0,
    "hi": 28.0,
-   "k": "chisel"
+   "k": "chisel",
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -54,7 +58,8 @@
    "n": 58,
    "lo": 10.0,
    "hi": 34.0,
-   "k": "disk-chisel"
+   "k": "disk-chisel",
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -64,7 +69,8 @@
    "n": 79,
    "lo": 12.0,
    "hi": 30.0,
-   "k": "vertical-till"
+   "k": "vertical-till",
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -74,7 +80,8 @@
    "n": 20,
    "lo": 15.0,
    "hi": 30.0,
-   "k": "strip-till"
+   "k": "strip-till",
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -83,7 +90,8 @@
    "a": 29.65,
    "n": 21,
    "lo": 17.0,
-   "hi": 40.0
+   "hi": 40.0,
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -92,7 +100,8 @@
    "a": 28.15,
    "n": 16,
    "lo": 17.0,
-   "hi": 39.0
+   "hi": 39.0,
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -101,7 +110,8 @@
    "a": 28.35,
    "n": 18,
    "lo": 17.0,
-   "hi": 37.0
+   "hi": 37.0,
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -111,7 +121,8 @@
    "n": 36,
    "lo": 13.0,
    "hi": 35.0,
-   "k": "subsoil"
+   "k": "subsoil",
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -120,7 +131,8 @@
    "a": 27.2,
    "n": 28,
    "lo": 15.0,
-   "hi": 40.0
+   "hi": 40.0,
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -129,7 +141,8 @@
    "a": 26.1,
    "n": 48,
    "lo": 12.25,
-   "hi": 40.0
+   "hi": 40.0,
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -139,7 +152,8 @@
    "n": 59,
    "lo": 10.0,
    "hi": 30.0,
-   "k": "disk-tandem"
+   "k": "disk-tandem",
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -148,7 +162,8 @@
    "a": 23.75,
    "n": 22,
    "lo": 16.0,
-   "hi": 30.0
+   "hi": 30.0,
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -157,7 +172,8 @@
    "a": 12.8,
    "n": 23,
    "lo": 7.0,
-   "hi": 18.0
+   "hi": 18.0,
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -166,7 +182,8 @@
    "a": 19.8,
    "n": 52,
    "lo": 10.0,
-   "hi": 33.0
+   "hi": 33.0,
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -176,7 +193,8 @@
    "n": 82,
    "lo": 7.6,
    "hi": 32.0,
-   "k": "field-cult"
+   "k": "field-cult",
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -185,7 +203,8 @@
    "a": 18.5,
    "n": 23,
    "lo": 10.0,
-   "hi": 30.0
+   "hi": 30.0,
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -194,7 +213,9 @@
    "a": 17.45,
    "n": 18,
    "lo": 12.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "k": "cultivate-row",
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -203,7 +224,8 @@
    "a": 17.35,
    "n": 8,
    "lo": 15.0,
-   "hi": 18.75
+   "hi": 18.75,
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -212,7 +234,9 @@
    "a": 12.85,
    "n": 28,
    "lo": 8.0,
-   "hi": 17.0
+   "hi": 17.0,
+   "k": "rotary-hoe",
+   "c": "tillage"
   },
   {
    "s": "Tillage",
@@ -222,7 +246,8 @@
    "n": 56,
    "lo": 4.0,
    "hi": 18.0,
-   "k": "land-roll"
+   "k": "land-roll",
+   "c": "tillage"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -232,7 +257,8 @@
    "n": 47,
    "lo": 16.0,
    "hi": 50.0,
-   "k": "plant-row-fert"
+   "k": "plant-row-fert",
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -242,7 +268,8 @@
    "n": 69,
    "lo": 15.0,
    "hi": 38.0,
-   "k": "plant-row"
+   "k": "plant-row",
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -251,7 +278,8 @@
    "a": 28.5,
    "n": 49,
    "lo": 13.0,
-   "hi": 47.0
+   "hi": 47.0,
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -260,7 +288,8 @@
    "a": 31.25,
    "n": 71,
    "lo": 14.0,
-   "hi": 56.0
+   "hi": 56.0,
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -270,7 +299,8 @@
    "n": 76,
    "lo": 15.0,
    "hi": 46.0,
-   "k": "plant-notill"
+   "k": "plant-notill",
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -279,7 +309,8 @@
    "a": 30.0,
    "n": 58,
    "lo": 16.0,
-   "hi": 45.0
+   "hi": 45.0,
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -288,7 +319,8 @@
    "a": 28.45,
    "n": 7,
    "lo": 24.0,
-   "hi": 34.0
+   "hi": 34.0,
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -297,7 +329,8 @@
    "a": 3.75,
    "n": 70,
    "lo": 0.5,
-   "hi": 10.0
+   "hi": 10.0,
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -306,7 +339,8 @@
    "a": 3.9,
    "n": 52,
    "lo": 1.0,
-   "hi": 10.0
+   "hi": 10.0,
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -315,7 +349,8 @@
    "a": 3.65,
    "n": 45,
    "lo": 1.0,
-   "hi": 10.0
+   "hi": 10.0,
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -324,7 +359,8 @@
    "a": 5.05,
    "n": 51,
    "lo": 2.0,
-   "hi": 10.0
+   "hi": 10.0,
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -334,7 +370,8 @@
    "n": 33,
    "lo": 14.0,
    "hi": 28.0,
-   "k": "drill-soy"
+   "k": "drill-soy",
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -344,7 +381,8 @@
    "n": 40,
    "lo": 15.0,
    "hi": 32.0,
-   "k": "drill-soy-notill"
+   "k": "drill-soy-notill",
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -353,7 +391,8 @@
    "a": 21.8,
    "n": 36,
    "lo": 10.0,
-   "hi": 30.0
+   "hi": 30.0,
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -363,7 +402,8 @@
    "n": 30,
    "lo": 10.0,
    "hi": 27.0,
-   "k": "drill-smallgrain"
+   "k": "drill-smallgrain",
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -372,7 +412,8 @@
    "a": 15.65,
    "n": 19,
    "lo": 8.0,
-   "hi": 25.0
+   "hi": 25.0,
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -381,7 +422,8 @@
    "a": 18.65,
    "n": 16,
    "lo": 10.0,
-   "hi": 30.0
+   "hi": 30.0,
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -390,7 +432,8 @@
    "a": 14.7,
    "n": 25,
    "lo": 10.0,
-   "hi": 18.0
+   "hi": 18.0,
+   "c": "planting"
   },
   {
    "s": "Planting, Drilling, and Seeding",
@@ -399,7 +442,9 @@
    "a": 19.05,
    "n": 39,
    "lo": 9.0,
-   "hi": 25.0
+   "hi": 25.0,
+   "k": "drill-cover",
+   "c": "planting"
   },
   {
    "s": "Spraying (materials not included)",
@@ -409,7 +454,8 @@
    "n": 35,
    "lo": 5.0,
    "hi": 14.0,
-   "k": "spray-tractor"
+   "k": "spray-tractor",
+   "c": "spray"
   },
   {
    "s": "Spraying (materials not included)",
@@ -418,7 +464,8 @@
    "a": 12.3,
    "n": 10,
    "lo": 7.0,
-   "hi": 18.0
+   "hi": 18.0,
+   "c": "spray"
   },
   {
    "s": "Spraying (materials not included)",
@@ -428,7 +475,8 @@
    "n": 121,
    "lo": 5.0,
    "hi": 18.0,
-   "k": "spray-ground"
+   "k": "spray-ground",
+   "c": "spray"
   },
   {
    "s": "Spraying (materials not included)",
@@ -437,7 +485,8 @@
    "a": 11.15,
    "n": 65,
    "lo": 6.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "spray"
   },
   {
    "s": "Spraying (materials not included)",
@@ -446,7 +495,8 @@
    "a": 12.2,
    "n": 8,
    "lo": 8.5,
-   "hi": 16.0
+   "hi": 16.0,
+   "c": "spray"
   },
   {
    "s": "Spraying (materials not included)",
@@ -455,7 +505,8 @@
    "a": 90.45,
    "n": 40,
    "lo": 25.0,
-   "hi": 145.0
+   "hi": 145.0,
+   "c": "spray"
   },
   {
    "s": "Spraying (materials not included)",
@@ -465,7 +516,8 @@
    "n": 54,
    "lo": 9.0,
    "hi": 18.0,
-   "k": "spray-aerial"
+   "k": "spray-aerial",
+   "c": "spray"
   },
   {
    "s": "Spraying (materials not included)",
@@ -475,7 +527,8 @@
    "n": 47,
    "lo": 8.0,
    "hi": 16.0,
-   "k": "spray-drone"
+   "k": "spray-drone",
+   "c": "spray"
   },
   {
    "s": "Fertilizer Application (materials not included)",
@@ -485,7 +538,8 @@
    "n": 59,
    "lo": 4.0,
    "hi": 13.5,
-   "k": "fert-dry"
+   "k": "fert-dry",
+   "c": "spray"
   },
   {
    "s": "Fertilizer Application (materials not included)",
@@ -495,7 +549,8 @@
    "n": 35,
    "lo": 5.0,
    "hi": 15.0,
-   "k": "fert-liquid"
+   "k": "fert-liquid",
+   "c": "spray"
   },
   {
    "s": "Fertilizer Application (materials not included)",
@@ -504,7 +559,9 @@
    "a": 14.1,
    "n": 38,
    "lo": 9.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "k": "sidedress-liquid",
+   "c": "spray"
   },
   {
    "s": "Fertilizer Application (materials not included)",
@@ -513,7 +570,8 @@
    "a": 13.25,
    "n": 26,
    "lo": 8.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "spray"
   },
   {
    "s": "Fertilizer Application (materials not included)",
@@ -523,7 +581,8 @@
    "n": 79,
    "lo": 7.0,
    "hi": 28.0,
-   "k": "nh3"
+   "k": "nh3",
+   "c": "spray"
   },
   {
    "s": "Fertilizer Application (materials not included)",
@@ -532,7 +591,8 @@
    "a": 13.45,
    "n": 42,
    "lo": 8.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "spray"
   },
   {
    "s": "Fertilizer Application (materials not included)",
@@ -541,7 +601,8 @@
    "a": 13.55,
    "n": 15,
    "lo": 8.0,
-   "hi": 18.0
+   "hi": 18.0,
+   "c": "spray"
   },
   {
    "s": "Fertilizer Application (materials not included)",
@@ -551,7 +612,8 @@
    "n": 31,
    "lo": 5.0,
    "hi": 14.0,
-   "k": "lime-ton"
+   "k": "lime-ton",
+   "c": "spray"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -561,7 +623,8 @@
    "n": 119,
    "lo": 25.0,
    "hi": 80.0,
-   "k": "combine-corn"
+   "k": "combine-corn",
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -570,7 +633,8 @@
    "a": 50.6,
    "n": 61,
    "lo": 25.0,
-   "hi": 80.0
+   "hi": 80.0,
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -579,7 +643,8 @@
    "a": 12.55,
    "n": 34,
    "lo": 5.0,
-   "hi": 30.0
+   "hi": 30.0,
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -589,7 +654,8 @@
    "n": 94,
    "lo": 24.0,
    "hi": 70.0,
-   "k": "combine-soy"
+   "k": "combine-soy",
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -598,7 +664,8 @@
    "a": 47.0,
    "n": 21,
    "lo": 26.0,
-   "hi": 70.0
+   "hi": 70.0,
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -607,7 +674,8 @@
    "a": 48.2,
    "n": 95,
    "lo": 24.0,
-   "hi": 80.0
+   "hi": 80.0,
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -617,7 +685,8 @@
    "n": 13,
    "lo": 35.0,
    "hi": 65.0,
-   "k": "combine-smallgrain"
+   "k": "combine-smallgrain",
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -627,7 +696,8 @@
    "n": 67,
    "lo": 40.0,
    "hi": 175.0,
-   "k": "harvest-haul-corn"
+   "k": "harvest-haul-corn",
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -637,7 +707,8 @@
    "n": 68,
    "lo": 32.0,
    "hi": 175.0,
-   "k": "harvest-haul-soy"
+   "k": "harvest-haul-soy",
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -646,7 +717,8 @@
    "a": 3.95,
    "n": 46,
    "lo": 1.0,
-   "hi": 8.0
+   "hi": 8.0,
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -655,7 +727,8 @@
    "a": 49.7,
    "n": 19,
    "lo": 30.0,
-   "hi": 100.0
+   "hi": 100.0,
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -665,7 +738,8 @@
    "n": 21,
    "lo": 0.025,
    "hi": 0.09,
-   "k": "dry-corn-pt"
+   "k": "dry-corn-pt",
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -674,7 +748,8 @@
    "a": 0.05,
    "n": 10,
    "lo": 0.025,
-   "hi": 0.06
+   "hi": 0.06,
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -683,7 +758,8 @@
    "a": 0.085,
    "n": 37,
    "lo": 0.02,
-   "hi": 0.16
+   "hi": 0.16,
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -693,7 +769,8 @@
    "n": 72,
    "lo": 3.0,
    "hi": 22.0,
-   "k": "grain-cart"
+   "k": "grain-cart",
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -702,7 +779,8 @@
    "a": 8.1,
    "n": 72,
    "lo": 2.0,
-   "hi": 19.0
+   "hi": 19.0,
+   "c": "harvest"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -711,7 +789,8 @@
    "a": 0.095,
    "n": 28,
    "lo": 0.04,
-   "hi": 0.15
+   "hi": 0.15,
+   "c": "hauling"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -720,7 +799,8 @@
    "a": 0.125,
    "n": 27,
    "lo": 0.05,
-   "hi": 0.24
+   "hi": 0.24,
+   "c": "hauling"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -729,7 +809,8 @@
    "a": 0.135,
    "n": 96,
    "lo": 0.06,
-   "hi": 0.5
+   "hi": 0.5,
+   "c": "hauling"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -739,7 +820,8 @@
    "n": 97,
    "lo": 0.09,
    "hi": 0.35,
-   "k": "haul-grain-bu"
+   "k": "haul-grain-bu",
+   "c": "hauling"
   },
   {
    "s": "Harvesting, Drying, and Hauling Grain",
@@ -748,7 +830,8 @@
    "a": 0.405,
    "n": 46,
    "lo": 0.18,
-   "hi": 0.65
+   "hi": 0.65,
+   "c": "hauling"
   },
   {
    "s": "Harvesting Forages",
@@ -758,7 +841,8 @@
    "n": 20,
    "lo": 9.5,
    "hi": 21.0,
-   "k": "mow-hay"
+   "k": "mow-hay",
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -768,7 +852,8 @@
    "n": 31,
    "lo": 10.0,
    "hi": 25.0,
-   "k": "mow-cond"
+   "k": "mow-cond",
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -778,7 +863,8 @@
    "n": 24,
    "lo": 7.5,
    "hi": 15.0,
-   "k": "rake"
+   "k": "rake",
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -787,7 +873,9 @@
    "a": 12.4,
    "n": 5,
    "lo": 8.0,
-   "hi": 13.0
+   "hi": 13.0,
+   "k": "merge-hay",
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -797,7 +885,8 @@
    "n": 12,
    "lo": 8.0,
    "hi": 15.0,
-   "k": "ted"
+   "k": "ted",
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -807,7 +896,8 @@
    "n": 5,
    "lo": 15.0,
    "hi": 22.0,
-   "k": "swath"
+   "k": "swath",
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -817,7 +907,8 @@
    "n": 16,
    "lo": 0.5,
    "hi": 1.5,
-   "k": "bale-smallsq"
+   "k": "bale-smallsq",
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -827,7 +918,8 @@
    "n": 7,
    "lo": 13.0,
    "hi": 18.0,
-   "k": "bale-largesq"
+   "k": "bale-largesq",
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -837,7 +929,8 @@
    "n": 11,
    "lo": 10.0,
    "hi": 20.0,
-   "k": "bale-round"
+   "k": "bale-round",
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -847,7 +940,8 @@
    "n": 39,
    "lo": 12.0,
    "hi": 20.0,
-   "k": "bale-round-net"
+   "k": "bale-round-net",
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -856,7 +950,8 @@
    "a": 14.5,
    "n": 8,
    "lo": 10.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -865,7 +960,8 @@
    "a": 16.85,
    "n": 31,
    "lo": 12.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -874,7 +970,8 @@
    "a": 3.25,
    "n": 11,
    "lo": 1.5,
-   "hi": 5.0
+   "hi": 5.0,
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -883,7 +980,8 @@
    "a": 0.29,
    "n": 6,
    "lo": 0.18,
-   "hi": 0.38
+   "hi": 0.38,
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -892,7 +990,8 @@
    "a": 118.0,
    "n": 5,
    "lo": 90.0,
-   "hi": 150.0
+   "hi": 150.0,
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -901,7 +1000,8 @@
    "a": 77.4,
    "n": 5,
    "lo": 50.0,
-   "hi": 98.0
+   "hi": 98.0,
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -910,7 +1010,9 @@
    "a": 9.2,
    "n": 10,
    "lo": 7.0,
-   "hi": 12.0
+   "hi": 12.0,
+   "k": "silage-chop-ton",
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -919,7 +1021,8 @@
    "a": 11.3,
    "n": 8,
    "lo": 9.0,
-   "hi": 15.0
+   "hi": 15.0,
+   "c": "hay"
   },
   {
    "s": "Harvesting Forages",
@@ -928,7 +1031,8 @@
    "a": 84.75,
    "n": 8,
    "lo": 65.0,
-   "hi": 100.0
+   "hi": 100.0,
+   "c": "hay"
   },
   {
    "s": "Miscellaneous Services",
@@ -937,7 +1041,8 @@
    "a": 114.05,
    "n": 34,
    "lo": 50.0,
-   "hi": 200.0
+   "hi": 200.0,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -946,7 +1051,8 @@
    "a": 14.25,
    "n": 7,
    "lo": 12.5,
-   "hi": 16.7
+   "hi": 16.7,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -955,7 +1061,8 @@
    "a": 16.95,
    "n": 13,
    "lo": 4.15,
-   "hi": 27.8
+   "hi": 27.8,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -965,7 +1072,8 @@
    "n": 9,
    "lo": 100.0,
    "hi": 425.0,
-   "k": "tub-grind"
+   "k": "tub-grind",
+   "c": "hay"
   },
   {
    "s": "Miscellaneous Services",
@@ -975,7 +1083,8 @@
    "n": 16,
    "lo": 11.0,
    "hi": 29.0,
-   "k": "manure-inject"
+   "k": "manure-inject",
+   "c": "spray"
   },
   {
    "s": "Miscellaneous Services",
@@ -985,7 +1094,8 @@
    "n": 9,
    "lo": 12.5,
    "hi": 21.0,
-   "k": "manure-dragline"
+   "k": "manure-dragline",
+   "c": "spray"
   },
   {
    "s": "Miscellaneous Services",
@@ -994,7 +1104,9 @@
    "a": 7.2,
    "n": 7,
    "lo": 5.0,
-   "hi": 9.0
+   "hi": 9.0,
+   "k": "manure-solid-ton",
+   "c": "spray"
   },
   {
    "s": "Miscellaneous Services",
@@ -1003,7 +1115,8 @@
    "a": 78.85,
    "n": 13,
    "lo": 50.0,
-   "hi": 100.0
+   "hi": 100.0,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1012,7 +1125,8 @@
    "a": 42.7,
    "n": 7,
    "lo": 35.0,
-   "hi": 50.0
+   "hi": 50.0,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1021,7 +1135,8 @@
    "a": 6.65,
    "n": 13,
    "lo": 4.0,
-   "hi": 9.5
+   "hi": 9.5,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1030,7 +1145,8 @@
    "a": 7.95,
    "n": 18,
    "lo": 3.0,
-   "hi": 12.5
+   "hi": 12.5,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1039,7 +1155,8 @@
    "a": 0.08,
    "n": 12,
    "lo": 0.03,
-   "hi": 0.12
+   "hi": 0.12,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1048,7 +1165,8 @@
    "a": 0.12,
    "n": 29,
    "lo": 0.05,
-   "hi": 0.2
+   "hi": 0.2,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1057,7 +1175,9 @@
    "a": 4.7,
    "n": 9,
    "lo": 3.5,
-   "hi": 5.75
+   "hi": 5.75,
+   "k": "haul-cattle-semi",
+   "c": "livestock"
   },
   {
    "s": "Miscellaneous Services",
@@ -1066,7 +1186,8 @@
    "a": 17.55,
    "n": 16,
    "lo": 12.0,
-   "hi": 22.5
+   "hi": 22.5,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1075,7 +1196,8 @@
    "a": 1.6,
    "n": 5,
    "lo": 1.25,
-   "hi": 2.0
+   "hi": 2.0,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1084,7 +1206,8 @@
    "a": 1.7,
    "n": 7,
    "lo": 1.05,
-   "hi": 2.3
+   "hi": 2.3,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1093,7 +1216,8 @@
    "a": 1.15,
    "n": 12,
    "lo": 0.5,
-   "hi": 1.75
+   "hi": 1.75,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1103,7 +1227,8 @@
    "n": 23,
    "lo": 70.0,
    "hi": 200.0,
-   "k": "backhoe"
+   "k": "backhoe",
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1112,7 +1237,8 @@
    "a": 161.65,
    "n": 15,
    "lo": 100.0,
-   "hi": 225.0
+   "hi": 225.0,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1121,7 +1247,8 @@
    "a": 161.65,
    "n": 6,
    "lo": 125.0,
-   "hi": 210.0
+   "hi": 210.0,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1130,7 +1257,8 @@
    "a": 89.15,
    "n": 18,
    "lo": 50.0,
-   "hi": 120.0
+   "hi": 120.0,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1139,7 +1267,8 @@
    "a": 83.85,
    "n": 15,
    "lo": 40.0,
-   "hi": 110.0
+   "hi": 110.0,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1149,7 +1278,8 @@
    "n": 47,
    "lo": 12.0,
    "hi": 50.0,
-   "k": "mow-crp"
+   "k": "mow-crp",
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1158,7 +1288,8 @@
    "a": 33.35,
    "n": 25,
    "lo": 20.0,
-   "hi": 60.0
+   "hi": 60.0,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1167,7 +1298,8 @@
    "a": 103.2,
    "n": 45,
    "lo": 20.0,
-   "hi": 150.0
+   "hi": 150.0,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1176,7 +1308,8 @@
    "a": 56.65,
    "n": 30,
    "lo": 20.0,
-   "hi": 100.0
+   "hi": 100.0,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1185,7 +1318,8 @@
    "a": 105.55,
    "n": 18,
    "lo": 25.0,
-   "hi": 200.0
+   "hi": 200.0,
+   "c": "other"
   },
   {
    "s": "Miscellaneous Services",
@@ -1194,7 +1328,8 @@
    "a": 11.15,
    "n": 8,
    "lo": 5.0,
-   "hi": 19.25
+   "hi": 19.25,
+   "c": "hauling"
   },
   {
    "s": "Custom Farming (tillage, planting, pest control, harvesting, hauling to farm, no drying)",
@@ -1204,7 +1339,8 @@
    "n": 64,
    "lo": 74.5,
    "hi": 375.0,
-   "k": "custom-farm-corn"
+   "k": "custom-farm-corn",
+   "c": "other"
   },
   {
    "s": "Custom Farming (tillage, planting, pest control, harvesting, hauling to farm, no drying)",
@@ -1214,7 +1350,8 @@
    "n": 63,
    "lo": 65.0,
    "hi": 353.0,
-   "k": "custom-farm-soy"
+   "k": "custom-farm-soy",
+   "c": "other"
   },
   {
    "s": "Custom Farming (tillage, planting, pest control, harvesting, hauling to farm, no drying)",
@@ -1223,7 +1360,8 @@
    "a": 186.15,
    "n": 13,
    "lo": 70.0,
-   "hi": 290.0
+   "hi": 290.0,
+   "c": "other"
   },
   {
    "s": "Farm Labor Wages for Operating Machinery",
@@ -1232,7 +1370,8 @@
    "a": 24.45,
    "n": 81,
    "lo": 15.0,
-   "hi": 40.0
+   "hi": 40.0,
+   "c": "other"
   },
   {
    "s": "Farm Labor Wages for Operating Machinery",
@@ -1241,7 +1380,8 @@
    "a": 22.95,
    "n": 105,
    "lo": 15.0,
-   "hi": 40.0
+   "hi": 40.0,
+   "c": "other"
   },
   {
    "s": "Bin Rental Rates",
@@ -1250,7 +1390,9 @@
    "a": 0.03,
    "n": 22,
    "lo": 0.01,
-   "hi": 0.06
+   "hi": 0.06,
+   "k": "store-bin-month",
+   "c": "other"
   },
   {
    "s": "Bin Rental Rates",
@@ -1259,7 +1401,8 @@
    "a": 0.19,
    "n": 45,
    "lo": 0.1,
-   "hi": 0.45
+   "hi": 0.45,
+   "c": "other"
   },
   {
    "s": "Machinery Rental Rates",
@@ -1268,7 +1411,8 @@
    "a": 0.34,
    "n": 18,
    "lo": 0.14,
-   "hi": 0.5
+   "hi": 0.5,
+   "c": "other"
   },
   {
    "s": "Machinery Rental Rates",
@@ -1277,7 +1421,8 @@
    "a": 11.6,
    "n": 11,
    "lo": 5.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "harvest"
   },
   {
    "s": "Machinery Rental Rates",
@@ -1286,7 +1431,8 @@
    "a": 13.45,
    "n": 9,
    "lo": 5.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "harvest"
   },
   {
    "s": "Machinery Rental Rates",
@@ -1295,7 +1441,8 @@
    "a": 6.7,
    "n": 7,
    "lo": 6.0,
-   "hi": 12.0
+   "hi": 12.0,
+   "c": "harvest"
   },
   {
    "s": "Machinery Rental Rates",
@@ -1304,7 +1451,8 @@
    "a": 5.85,
    "n": 6,
    "lo": 5.0,
-   "hi": 10.0
+   "hi": 10.0,
+   "c": "harvest"
   },
   {
    "s": "Machinery Rental Rates",
@@ -1313,7 +1461,8 @@
    "a": 0.2,
    "n": 5,
    "lo": 0.18,
-   "hi": 0.22
+   "hi": 0.22,
+   "c": "hauling"
   },
   {
    "s": "Machinery Rental Rates",
@@ -1322,7 +1471,8 @@
    "a": 0.08,
    "n": 7,
    "lo": 0.05,
-   "hi": 0.12
+   "hi": 0.12,
+   "c": "other"
   },
   {
    "s": "Machinery Rental Rates",
@@ -1331,7 +1481,8 @@
    "a": 0.1,
    "n": 8,
    "lo": 0.07,
-   "hi": 0.13
+   "hi": 0.13,
+   "c": "other"
   },
   {
    "s": "Machinery Rental Rates",
@@ -1340,7 +1491,9 @@
    "a": 97.5,
    "n": 8,
    "lo": 80.0,
-   "hi": 120.0
+   "hi": 120.0,
+   "k": "skid-rent",
+   "c": "other"
   },
   {
    "s": "Machinery Rental Rates",
@@ -1349,7 +1502,8 @@
    "a": 7.05,
    "n": 8,
    "lo": 5.0,
-   "hi": 9.0
+   "hi": 9.0,
+   "c": "spray"
   },
   {
    "s": "Machinery Rental Rates",
@@ -1358,7 +1512,10 @@
    "a": 9.5,
    "n": 8,
    "lo": 3.0,
-   "hi": 15.0
+   "hi": 15.0,
+   "c": "spray"
   }
- ]
+ ],
+ "counts": true,
+ "page": true
 }
