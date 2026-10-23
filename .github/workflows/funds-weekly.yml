@@ -1,0 +1,90 @@
+name: Funds This Week (by hand)
+
+# "Funds this week": the short COT email to the readers on the worker's cot
+# list (scripts/send_cot_weekly.py). This file runs it BY HAND ONLY:
+#
+#   mode dry      (default) renders this week's email into the log with a
+#                 made-up reader and counts the list. Sends nothing.
+#   mode preview  one copy to Sig only (SIG_TEST_EMAILS, else SIG_TO), even
+#                 for an older report. No list mail, no flag read or set.
+#   mode send     the list, once per report: the cot:<as-of> flag is read
+#                 before and set after, and a report more than 3 days past
+#                 its release is refused.
+#
+# The weekly send rides on cot-release-watch.yml, right after it commits a
+# new report, and goes to the list only once the repo variable
+# FUNDS_WEEKLY_LIVE is 1. That covers the Monday releases after a federal
+# holiday without a cron of its own.
+#
+# NO SCHEDULE HERE: a new scheduled workflow needs Sig's OK first
+# (STANDING-DECISIONS, Oct 21). If he would rather have a fixed time than
+# the variable above, the proposed trigger is:
+#
+#   schedule:
+#     - cron: '13 21 * * 1,5'   # Mon and Fri 21:13 UTC: 5:13 PM EDT / 4:13 PM EST,
+#                               # after CFTC's 3:30 PM ET release and the data commit;
+#                               # Monday catches a holiday-delayed report, and the
+#                               # flag and the 3-day rule make a spare run a no-op
+#
+# with SEND set for the scheduled run. Secrets: the same as the
+# cot-release-watch send step, plus SIG_TO / SIG_TEST_EMAILS for a preview.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'dry = render only; preview = Sig only; send = the Funds this week list'
+        type: choice
+        options: [dry, preview, send]
+        default: dry
+
+permissions:
+  contents: read
+
+# one queue with the COT data jobs, so a send never runs beside the run
+# that is committing the report (or beside the send that run makes)
+concurrency:
+  group: fetch-cot
+  cancel-in-progress: false
+
+jobs:
+  funds-weekly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Test the Funds this week sender and its loop
+        run: |
+          python scripts/send_cot_weekly.py --selftest
+          python3 scripts/test_send_loops.py
+
+      - name: Funds this week (${{ inputs.mode }})
+        env:
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
+          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+          FROM_NAME:    ${{ secrets.FROM_NAME }}
+          REPLY_TO:     ${{ secrets.REPLY_TO }}
+          LIST_URL:     ${{ secrets.LIST_URL }}
+          LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SIG_TO:       ${{ secrets.SIG_TO }}
+          SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
+          PREVIEW:      ${{ inputs.mode == 'preview' && '1' || '' }}
+          SEND:         ${{ inputs.mode == 'send' && '1' || '' }}
+        run: python scripts/send_cot_weekly.py

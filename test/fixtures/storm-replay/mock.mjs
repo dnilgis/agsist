@@ -1,7 +1,7 @@
 /* The storm replay's network, answered from the made-up storm (storm.mjs).
  * serve() serves the repo; mock(page, opts) answers every outside source,
  * and opts can take one down: { radar: 'down', lightning: 'down'|'stale',
- * clouds: 'down', reports: 'down', hours: 'down', lightningInfo: 'picture' }. */
+ * clouds: 'down', reports: 'down', hours: 'down'|'empty', lightningInfo: 'picture' }. */
 import { readFileSync, existsSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
@@ -32,7 +32,12 @@ export async function mock(page, port, opts = {}) {
     const url = r.request().url();
     const u = new URL(url);
     if (u.host === `127.0.0.1:${port}`) {
-      if (u.pathname === "/data/hail/mesh/hours.json") return opts.hours === "down" ? r.fulfill({ status: 404, body: "" }) : json(r, F.hours());
+      if (u.pathname === "/data/hail/mesh/hours.json") {
+        if (opts.hours === "down") return r.fulfill({ status: 404, body: "" });
+        // the shape the live job wrote Oct 21-23, 2026: a file, but not one hour in it
+        if (opts.hours === "empty") return json(r, { meta: { hours_kept: 48, as_of: null, missing: ["2026-07-15T03:00:00Z"] }, hours: [] });
+        return json(r, F.hours());
+      }
       if (u.pathname === "/data/radar-rain/index.json") return r.fulfill({ status: 200, contentType: "application/json", body: readFileSync(HERE + "rain-index.json") });
       if (u.pathname === "/data/radar-rain/wi.bin") return r.fulfill({ status: 200, contentType: "application/octet-stream", body: readFileSync(HERE + "rain.bin") });
       return r.continue();

@@ -170,6 +170,186 @@
    "pitch": "Your name beside the yield estimator. One category-exclusive slot."
   },
   {
+   "id": "cash-bids-alabama",
+   "page": "/cash-bids/alabama",
+   "name": "Alabama cash bids",
+   "pitch": "Your name beside the cash bids on the Alabama page and every Alabama town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-arkansas",
+   "page": "/cash-bids/arkansas",
+   "name": "Arkansas cash bids",
+   "pitch": "Your name beside the cash bids on the Arkansas page and every Arkansas town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-colorado",
+   "page": "/cash-bids/colorado",
+   "name": "Colorado cash bids",
+   "pitch": "Your name beside the cash bids on the Colorado page and every Colorado town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-florida",
+   "page": "/cash-bids/florida",
+   "name": "Florida cash bids",
+   "pitch": "Your name beside the cash bids on the Florida page and every Florida town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-georgia",
+   "page": "/cash-bids/georgia",
+   "name": "Georgia cash bids",
+   "pitch": "Your name beside the cash bids on the Georgia page and every Georgia town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-idaho",
+   "page": "/cash-bids/idaho",
+   "name": "Idaho cash bids",
+   "pitch": "Your name beside the cash bids on the Idaho page and every Idaho town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-illinois",
+   "page": "/cash-bids/illinois",
+   "name": "Illinois cash bids",
+   "pitch": "Your name beside the cash bids on the Illinois page and every Illinois town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-indiana",
+   "page": "/cash-bids/indiana",
+   "name": "Indiana cash bids",
+   "pitch": "Your name beside the cash bids on the Indiana page and every Indiana town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-iowa",
+   "page": "/cash-bids/iowa",
+   "name": "Iowa cash bids",
+   "pitch": "Your name beside the cash bids on the Iowa page and every Iowa town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-kansas",
+   "page": "/cash-bids/kansas",
+   "name": "Kansas cash bids",
+   "pitch": "Your name beside the cash bids on the Kansas page and every Kansas town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-kentucky",
+   "page": "/cash-bids/kentucky",
+   "name": "Kentucky cash bids",
+   "pitch": "Your name beside the cash bids on the Kentucky page and every Kentucky town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-louisiana",
+   "page": "/cash-bids/louisiana",
+   "name": "Louisiana cash bids",
+   "pitch": "Your name beside the cash bids on the Louisiana page and every Louisiana town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-michigan",
+   "page": "/cash-bids/michigan",
+   "name": "Michigan cash bids",
+   "pitch": "Your name beside the cash bids on the Michigan page and every Michigan town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-minnesota",
+   "page": "/cash-bids/minnesota",
+   "name": "Minnesota cash bids",
+   "pitch": "Your name beside the cash bids on the Minnesota page and every Minnesota town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-missouri",
+   "page": "/cash-bids/missouri",
+   "name": "Missouri cash bids",
+   "pitch": "Your name beside the cash bids on the Missouri page and every Missouri town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-montana",
+   "page": "/cash-bids/montana",
+   "name": "Montana cash bids",
+   "pitch": "Your name beside the cash bids on the Montana page and every Montana town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-nebraska",
+   "page": "/cash-bids/nebraska",
+   "name": "Nebraska cash bids",
+   "pitch": "Your name beside the cash bids on the Nebraska page and every Nebraska town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-new-york",
+   "page": "/cash-bids/new-york",
+   "name": "New York cash bids",
+   "pitch": "Your name beside the cash bids on the New York page and every New York town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-north-dakota",
+   "page": "/cash-bids/north-dakota",
+   "name": "North Dakota cash bids",
+   "pitch": "Your name beside the cash bids on the North Dakota page and every North Dakota town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-ohio",
+   "page": "/cash-bids/ohio",
+   "name": "Ohio cash bids",
+   "pitch": "Your name beside the cash bids on the Ohio page and every Ohio town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-oklahoma",
+   "page": "/cash-bids/oklahoma",
+   "name": "Oklahoma cash bids",
+   "pitch": "Your name beside the cash bids on the Oklahoma page and every Oklahoma town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-oregon",
+   "page": "/cash-bids/oregon",
+   "name": "Oregon cash bids",
+   "pitch": "Your name beside the cash bids on the Oregon page and every Oregon town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-pennsylvania",
+   "page": "/cash-bids/pennsylvania",
+   "name": "Pennsylvania cash bids",
+   "pitch": "Your name beside the cash bids on the Pennsylvania page and every Pennsylvania town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-south-carolina",
+   "page": "/cash-bids/south-carolina",
+   "name": "South Carolina cash bids",
+   "pitch": "Your name beside the cash bids on the South Carolina page and every South Carolina town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-south-dakota",
+   "page": "/cash-bids/south-dakota",
+   "name": "South Dakota cash bids",
+   "pitch": "Your name beside the cash bids on the South Dakota page and every South Dakota town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-tennessee",
+   "page": "/cash-bids/tennessee",
+   "name": "Tennessee cash bids",
+   "pitch": "Your name beside the cash bids on the Tennessee page and every Tennessee town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-texas",
+   "page": "/cash-bids/texas",
+   "name": "Texas cash bids",
+   "pitch": "Your name beside the cash bids on the Texas page and every Texas town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-washington",
+   "page": "/cash-bids/washington",
+   "name": "Washington cash bids",
+   "pitch": "Your name beside the cash bids on the Washington page and every Washington town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-wisconsin",
+   "page": "/cash-bids/wisconsin",
+   "name": "Wisconsin cash bids",
+   "pitch": "Your name beside the cash bids on the Wisconsin page and every Wisconsin town page. One category-exclusive slot."
+  },
+  {
+   "id": "cash-bids-wyoming",
+   "page": "/cash-bids/wyoming",
+   "name": "Wyoming cash bids",
+   "pitch": "Your name beside the cash bids on the Wyoming page and every Wyoming town page. One category-exclusive slot."
+  },
+  {
    "id": "rent-al",
    "page": "/rent/alabama",
    "name": "Alabama cash rent",
