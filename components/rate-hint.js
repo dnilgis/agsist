@@ -1,9 +1,10 @@
 /* rate-hint.js: the custom rate going rate beside a calculator's own input (2026-10-23).
+ * (data-cr-job, not data-rate: a data-rate attribute on a page with a sponsor ribbon reads as hidden price text, scripts/test_rate_card.py)
  *
  * A calculator puts one empty line where the hint belongs:
- *   <p class="rate-hint" data-rate="dry-corn-pt" data-for="hw-cpp" data-scale="100" data-fmt="cents"
+ *   <p class="rate-hint" data-cr-job="dry-corn-pt" data-for="hw-cpp" data-scale="100" data-fmt="cents"
  *      data-radio="hw-cost:point" data-what="Custom corn drying"></p>
- * data-rate     a job key in data/custom-rates/blend.json, or "corn:custom-farm-corn,soybeans:custom-farm-soy"
+ * data-cr-job   a job key in data/custom-rates/blend.json, or "corn:custom-farm-corn,soybeans:custom-farm-soy"
  *               with data-crop="<select id>" to follow the page's crop picker
  * data-for      the input the "Use the middle" button fills
  * data-scale    multiply the survey's dollars by this for the input's unit (100 = cents)
@@ -52,7 +53,7 @@
     return String(Math.round(x * m) / m);
   }
   function key(el) {
-    var r = el.getAttribute('data-rate') || '';
+    var r = el.getAttribute('data-cr-job') || '';
     if (r.indexOf(':') < 0) return r;
     var sel = document.getElementById(el.getAttribute('data-crop') || ''), c = sel ? sel.value : '';
     var hit = r.split(',').map(function (p) { return p.split(':'); }).filter(function (p) { return p[0] === c; })[0];
@@ -88,7 +89,7 @@
     ['input', 'change'].forEach(function (t) { inp.dispatchEvent(new Event(t, { bubbles: true })); });
   }
   function boot() {
-    var els = Array.prototype.slice.call(document.querySelectorAll('.rate-hint[data-rate]'));
+    var els = Array.prototype.slice.call(document.querySelectorAll('.rate-hint[data-cr-job]'));
     if (!els.length) return;
     if (!document.getElementById('rate-hint-css')) { var st = document.createElement('style'); st.id = 'rate-hint-css'; st.textContent = CSS; document.head.appendChild(st); }
     load(function (b) {

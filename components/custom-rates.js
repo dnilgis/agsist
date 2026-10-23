@@ -38,7 +38,7 @@
     'point per bushel': [50000, 'bushels, 5 points each'], 'bushel / month': [20000, 'bushels for a month'] };
   var PTS = 5;
   var SPREAD = { minmax: 'lowest to highest answer', trimmed: 'without the single lowest and highest answer',
-    sd: 'a band of one standard deviation', none: 'no range printed' };
+    sd: 'a band of one standard deviation', none: 'no range printed', mid80: 'the middle 80 percent of answers' };
 
   function money(v, u) {
     if (v == null) return '';

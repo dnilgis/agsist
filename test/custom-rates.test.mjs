@@ -225,7 +225,7 @@ test("calculators read the one blend file and fill only on a tap", () => {
   assert.equal((hint.match(/inp\.value = /g) || []).length, 1, "the input is written in one place only: the tap");
   for (const [f, k] of [["breakeven.html", "custom-farm-corn"], ["harvest-or-wait.html", "dry-corn-pt"], ["grain-shrink.html", "dry-corn-pt"], ["grain-bin-calculator.html", "dry-corn-pt"]]) {
     const h = read(f);
-    assert.match(h, new RegExp('class="rate-hint"[^>]*data-rate="[^"]*' + k), f);
+    assert.match(h, new RegExp('class="rate-hint"[^>]*data-cr-job="[^"]*' + k), f);
     assert.match(h, /<script src="\/components\/rate-hint\.js\?v=\d+" defer><\/script>/, f);
   }
 });
