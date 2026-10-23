@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-bake_crop_size.py -- the top of /conditions-yield ("2026 crop size: every
+bake_crop_size.py -- the crop size section of /conditions (#crop-size; was /conditions-yield, "2026 crop size: every
 forecast"), baked into the HTML from the three files it shows.
 
   data/yield-panel.json        every published forecast (build_yield_benchmarks.py)
@@ -15,7 +15,7 @@ whole, a crawler reads the forecasts, and there is one renderer instead of a
 page copy and a pipeline copy to keep in step. The page's JavaScript for these
 three blocks was removed in the same change.
 
-Regions in conditions-yield.html: CS:panel, CS:week, CS:corn, CS:beans,
+Regions in conditions.html: CS:panel, CS:week, CS:corn, CS:beans,
 CS:record. Idempotent; --check exits 1 when the page is out of date.
 
     python3 scripts/bake_crop_size.py [--check | --selftest]
@@ -27,7 +27,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PAGE = ROOT / "conditions-yield.html"
+PAGE = ROOT / "conditions.html"
 MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
@@ -92,7 +92,7 @@ def panel(d):
                if verdicts else "Other published forecasts, beside ours.")
     graded = any((d["crops"].get(k) or {}).get("graded") for k in LABEL)
     foot = ["Everything here was published by somebody else and is linked to where they published it. "
-            "Our own figure is read from the nowcast file below, so the two always match.",
+            "Our own figure is the nowcast below, so the two always match.",
             "Scored against USDA’s January final, misses included." if graded else
             "Nobody is scored until USDA prints the January final."]
     if d.get("cross_checked"):
@@ -311,13 +311,13 @@ def main():
     out = bake(src, _load(ROOT / "data/yield-panel.json"), _load(ROOT / "data/yield-nowcast.json"),
                _load(ROOT / "data/nowcast-direction.json"), date.today().isoformat())
     if out == src:
-        print("conditions-yield.html crop-size blocks already in sync.")
+        print("conditions.html crop-size blocks already in sync.")
         return 0
     if "--check" in sys.argv:
-        print("conditions-yield.html crop-size blocks OUT OF DATE: run scripts/bake_crop_size.py")
+        print("conditions.html crop-size blocks OUT OF DATE: run scripts/bake_crop_size.py")
         return 1
     PAGE.write_text(out, encoding="utf-8")
-    print("Baked the crop-size blocks into conditions-yield.html.")
+    print("Baked the crop-size blocks into conditions.html.")
     return 0
 
 

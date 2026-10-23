@@ -656,7 +656,10 @@ def seo_conditions(c):
         # only a rating from this week's report is printed beside it
         srd = str((d.get("soybeans") or {}).get("report_date") or rd or "")[:10]
         gl = f"Corn is {ge:g}% good to excellent" + (f", soybeans {soy:g}%" if soy is not None and srd == str(rd)[:10] else "")
-        desc_h = next((x for x in (f"{hl}. {gl}. Every state ranked against its own record.", f"{hl}. {gl}.", f"{hl}.")
+        # the page also carries every yield forecast for the year (#crop-size, merged Oct 22, 2026)
+        yr = f"{_rd.year} " if wk else ""
+        desc_h = next((x for x in (f"{hl}. {gl}. State ranks and every {yr}yield forecast.",
+                                   f"{hl}. {gl}. Every state ranked against its own record.", f"{hl}. {gl}.", f"{hl}.")
                        if len(x) <= DESC_MAX), f"{hl}.")
         title = next((t for t in cands if len(t) <= TITLE_MAX), None)
         if title and len(desc_h) <= DESC_MAX:
@@ -667,8 +670,9 @@ def seo_conditions(c):
     cands.append(f"USDA Crop Conditions: Corn {ge:g}% Good-Excellent{SUFFIX}")
     title = next(t for t in cands if len(t) <= TITLE_MAX)
     return (title,
-            f"{lead}. Every state's rating ranked "
-            f"against its own record for this week.")
+            next(x for x in (f"{lead}. Every state ranked against its own record, and every yield forecast.",
+                             f"{lead}. Every state's rating ranked against its own record for this week.")
+                 if len(x) <= DESC_MAX or x.endswith("this week.")))
 
 
 def _px(prices, key):
@@ -1275,7 +1279,8 @@ PAGES = {
     # Added 2026-09-13. Both pages carried a HAND-TYPED number in their search
     # snippet: conditions-yield quoted an R-squared that had already drifted
     # from the file it describes, conditions quoted nothing current at all.
-    "conditions-yield.html": (seo_cond_yield,    frozenset({"title", "desc"})),
+    # Oct 22, 2026: /conditions-yield merged into /conditions (#crop-size) and is a
+    # forward page now; seo_cond_yield stays for its selftest and is not baked.
     "conditions.html":       (seo_conditions,    frozenset({"title", "desc"})),
     # Added 2026-10-06. markets and fertilizer keep their descriptive
     # og:image:alt. Since 2026-10-15 no page here owns its alt: the share

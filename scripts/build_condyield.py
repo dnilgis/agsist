@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-build_condyield.py  —  AGSIST /conditions-yield page baker.
+build_condyield.py: bakes the crop size research on /conditions (was its own page,
+/conditions-yield, until Oct 22, 2026).
 
 Reads data/cond-yield/fit.json and bakes every static region of
-conditions-yield.html: the ranked state table, the four hero tiles, the
+conditions.html (#crop-size): the ranked state table, the four hero tiles, the
 one-line seed summary, the "data refreshed" stamp, the meta description and
 the FAQ answer inside the JSON-LD.
 
@@ -76,7 +77,7 @@ def rows_for(data, crop):
         # Late in the season the newest week can have under min_n paired years
         # (past ratings ended before it). Then the row uses the newest week at
         # or before it that has a fit, and says so (fit_week vs latest_week).
-        # conditions-yield.html's map (buildVerdicts) applies the same rule.
+        # the map on /conditions (buildVerdicts) applies the same rule.
         fw = fit_week(weeks, wk)
         if fw is None:
             continue
@@ -301,8 +302,11 @@ def bake_faq(html, rows):
     ans = faq_answer(rows)
     if ans is None:
         return html
-    m = re.search(r'(<script type="application/ld\+json">)(.*?)(</script>)', html, re.S)
-    assert m, "JSON-LD block missing"
+    # The FAQPage sits in its own JSON-LD block on /conditions (the crop size section moved
+    # there from /conditions-yield on Oct 22, 2026), so find the block that carries it.
+    m = next((b for b in re.finditer(r'(<script type="application/ld\+json">)(.*?)(</script>)', html, re.S)
+              if '"FAQPage"' in b.group(2)), None)
+    assert m, "JSON-LD FAQPage block missing"
     doc = json.loads(m.group(2))
     nodes = doc.get("@graph", [doc]) if isinstance(doc, dict) else doc
     hit = 0
@@ -330,9 +334,10 @@ def gauntlet(html, rows):
     p = DivBalance()
     p.feed(html)
     assert not p.bad and p.depth == 0, "div balance broken"
-    m = re.search(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
-    assert m, "JSON-LD block missing"
-    json.loads(m.group(1))
+    blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
+    assert blocks, "JSON-LD block missing"
+    for b in blocks:
+        json.loads(b)
     baked_rows = html.count('class="cy-sel"')
     assert baked_rows == len(rows), \
         f"table baked {baked_rows} rows, expected {len(rows)}"
@@ -404,7 +409,7 @@ def main():
         return selftest()
 
     root = Path(__file__).resolve().parent.parent
-    html_path = Path(args.html) if args.html else root / "conditions-yield.html"
+    html_path = Path(args.html) if args.html else root / "conditions.html"
     json_path = Path(args.json) if args.json else root / "data" / "cond-yield" / "fit.json"
 
     data = json.loads(json_path.read_text(encoding="utf-8"))
@@ -443,14 +448,14 @@ def main():
     gauntlet(baked, rows)
 
     if baked == html:
-        print("conditions-yield.html already in sync.")
+        print("conditions.html crop size research already in sync.")
         return 0
     if args.check:
-        print("conditions-yield.html OUT OF SYNC with fit.json — run the baker.")
+        print("conditions.html crop size research OUT OF SYNC with fit.json: run the baker.")
         return 1
     html_path.write_text(baked, encoding="utf-8")
     top = rows[0]
-    print(f"Baked conditions-yield.html — week {top['week']}, {len(rows)} states, "
+    print(f"Baked conditions.html crop size research, week {top['week']}, {len(rows)} states, "
           f"top {top['name']} {round(top['r2']*100)}%.")
     return 0
 
