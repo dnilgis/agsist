@@ -157,7 +157,7 @@ def week(d):
     if hb.get("week_ending") and str(hb["week_ending"]) > str(c["week_ending"]):
         # A late-season week refused by build_yield_nowcast.py: the figures are
         # the last good week's, and the page says so with both dates.
-        return (f'ratings week ending {esc(c["week_ending"])}, the last week with enough history '
+        return (f'built from the {md(c["week_ending"])} ratings, the last week with enough history '
                 f'&middot; no nowcast from the {md(hb["week_ending"])} ratings: this late in the season only '
                 f'{esc(hb.get("backtest_years"))} past years can be checked, {esc(hb.get("need"))} needed')
     return f'ratings week ending {esc(c["week_ending"])} &middot; updates Tuesdays'
@@ -288,7 +288,7 @@ def selftest():
     nd = {"crops": {"corn": {"week_ending": "2026-10-04"}},
           "held_back": {"week_ending": "2026-10-11", "backtest_years": 9, "need": 10}}
     w = week(nd)
-    ck("ratings week ending 2026-10-04, the last week with enough history" in w and "Oct 11" in w
+    ck("built from the Oct 4 ratings, the last week with enough history" in w and "Oct 11" in w
        and "only 9 past years" in w and "10 needed" in w, "a refused late week is named beside the week shown")
     ck(week({"crops": {"corn": {"week_ending": "2026-10-11"}}, "held_back": {"week_ending": "2026-10-11"}})
        == "ratings week ending 2026-10-11 &middot; updates Tuesdays", "a stale refusal record is ignored")

@@ -61,7 +61,7 @@ test("national rented share: the numbers the legend line prints", () => {
   const h = read("farmland-atlas.html");
   assert.match(h, /if\(L\.key==='ten_rent'\) html=tenNatLine\(\)\+html;/);
   assert.match(read("components/atlas-tenure.js"), /window\.AgTenureData\?window\.AgTenureData\(\)/);
-  assert.match(h, /atlas-tenure\.js\?v=2/);
+  assert.match(h, /atlas-tenure\.js\?v=3/);
 });
 
 test("in Chromium: #l=ten_rent shows the national line by the legend, and tenure.json loads once", { skip }, async () => {
