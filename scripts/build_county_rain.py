@@ -533,15 +533,17 @@ FOOT = """  </main>
 </body>
 </html>
 """
-# State pages (Sig, 2026-10-16): the one cross-promotion is the rain gauge
-# waitlist line, after the table (components/rain-print-promo.js "gauge":
-# "Want a better rain gauge? Sig is designing one. Get updates."). County
-# pages keep their Rain Print block and nothing else.
-GAUGE_SLOT = '<p class="rp-promo" data-rain-print-promo="gauge" hidden></p>'
+# State pages (Sig, 2026-10-23): the one cross-promotion is the
+# "auto" line after the table (components/rain-print-promo.js): Rain Print
+# through Dec 24, the rain gauge hook from Dec 26 through May (gauge_window
+# and gauge_hook in data/rain-print.json). County pages keep their Rain Print
+# block and nothing else. The hub (rain.html) keeps its typed Rain Print line
+# (test/rain-print-links-in.test.mjs), which is its one promo.
+GAUGE_SLOT = '<p class="rp-promo" data-rain-print-promo="auto" hidden></p>'
 # rain.html only: glossary marks and the Next block (data/next-links.json)
 FOOT_NAT = FOOT.replace("</body>", '  <script src="/components/next-links.js?v=3" defer></script>\n</body>')
 FOOT_GAUGE = FOOT.replace('  <script src="/components/loader.js?v=19" defer></script>\n',
-                          '  <script src="/components/loader.js?v=19" defer></script>\n  <script src="/components/rain-print-promo.js?v=4" defer></script>\n')
+                          '  <script src="/components/loader.js?v=19" defer></script>\n  <script src="/components/rain-print-promo.js?v=6" defer></script>\n')
 
 
 def crumbs_ld(items):

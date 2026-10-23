@@ -386,7 +386,7 @@ def page(ctx):
     {('<nav class="prf-links prf-st-links" aria-label="PRF next door"><b>PRF next door:</b> ' + nb_html + '</nav>') if nb_html else ''}
     <p class="prf-fine">{more}</p>
     {rain}
-    <p class="rp-promo" data-rain-print-promo="see" hidden></p><script src="/components/rain-print-promo.js?v=2" defer></script>
+    <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
   </div>
   </main>
   <div id="site-footer"></div>

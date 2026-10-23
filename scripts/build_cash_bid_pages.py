@@ -1214,7 +1214,7 @@ SIGNUP_JS = '<script src="/components/cb-signup.js?v=2" defer></script>\n'
 # has promote on and today is inside promote_from..promote_until. Nothing
 # else promotes on these pages.
 RP_PROMO_SEASON = ((11, 1), (12, 24))
-RP_PROMO_JS = '<script src="/components/rain-print-promo.js?v=4" defer></script>\n'
+RP_PROMO_JS = '<script src="/components/rain-print-promo.js?v=6" defer></script>\n'
 
 
 def rain_print_line(snap_ct):
