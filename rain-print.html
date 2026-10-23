@@ -344,7 +344,7 @@
   .rp-prod-t{font-weight:700;color:var(--text);line-height:1.3}
   .rp-prod-s{font-size:var(--fs-xs);color:var(--text-dim);line-height:1.4}
   .rp .rp-prod .rp-price{font-size:1.2rem}
-  .rp-box-d{margin:0 0 .8rem}
+  .rp-box-d{margin:0 0 1rem}
   .rp-onwall{margin:.8rem 0 .4rem}
   .rp-onwall-i{position:relative}
   .rp-onwall img{display:block;width:100%;height:auto}
@@ -356,7 +356,8 @@
   .rp-call{margin:.25rem 0 0}
   .rp-call a{color:inherit;text-decoration:underline;text-underline-offset:2px}
   .rp-box ul{margin:0;padding:0 0 0 1.05rem;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.5}
-  .rp-pay{width:100%;min-height:52px;font-size:1.05rem;font-weight:700}
+  /* room around the buy button (2026-10-23, Sig: a cleaner path to checkout) */
+  .rp-pay{width:100%;min-height:52px;margin:.2rem 0 .3rem;font-size:1.05rem;font-weight:700}
   .rp-pay:disabled,.rp-bar .btn:disabled{opacity:.55;cursor:not-allowed}
   .rp-promise{margin:.3rem 0 0;font-size:var(--fs-sm);color:var(--text-dim);text-align:center}
   .rp-arrive{margin:.5rem 0 0;font-size:var(--fs-sm);font-weight:600;color:var(--text);text-align:center}
@@ -382,14 +383,14 @@
   /* phone: start from the first screen (2026-10-17, panels: the town box sat below the fold) */
   .rp-start{display:none;margin:.7rem 0 0}
   @media (max-width:899px){.rp-start{display:block}.rp-start .btn{width:100%}}
-  .rp-another{margin:.2rem 0 .4rem;font-size:var(--fs-sm)}
+  .rp-another{margin:.6rem 0 .4rem;font-size:var(--fs-sm)}
   .rp-another[hidden]{display:none}
   /* the year-finished email card (2026-10-19): the step column is narrow at every width, so the label stays on its own line */
   .rp-yearask[hidden]{display:none}
   .rp-yearask .sa-ask{margin:.9rem 0 .4rem}
   .rp-yearask .sa-f{grid-template-columns:minmax(0,1fr) auto}
   .rp-yearask .sa-l{grid-column:1/-1}.rp-yearask .sa-in{grid-column:1}.rp-yearask .sa-b{grid-column:2}
-  .rp-pay-wrap .rp-gift-pre{margin:0 0 .5rem}
+  .rp-pay-wrap .rp-gift-pre{margin:0 0 .9rem}
   .rp-pgift{border-top:1px solid var(--border);padding-top:10px}
   .rp-pg-box{display:flex;flex-direction:column;gap:.6rem;margin:.6rem 0 0}
   .rp-pg-box .rp-note{margin:0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.5}
@@ -509,6 +510,7 @@
   .rp-proof-call a,.rp-help a{display:inline-block;min-height:24px;color:var(--link);text-decoration:underline;text-underline-offset:2px}
   .rp-help[hidden]{display:none}
   .rp-near{min-height:44px;text-align:left}   /* the one-tap way back to the nearer station (2026-10-22) */
+  #rp-near{display:block}   /* on its own line, so the sentence before it reads straight (2026-10-23) */
   a[href^="tel:"]{white-space:nowrap}   /* the phone number never breaks across two lines */
   .rp-proof-act>p{margin:.45rem 0 0;font-size:var(--fs-xs);color:var(--text-dim);text-align:center}
   .rp-popts{display:grid;gap:12px}
