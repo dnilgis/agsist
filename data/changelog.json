@@ -1,7 +1,54 @@
 {
- "updated": "2026-10-22",
+ "updated": "2026-10-23",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-23",
+   "items": [
+    {
+     "tag": "improved",
+     "page": "/daily#moved",
+     "name": "What just moved is on the Daily page",
+     "text": "The dated list of market moves between briefings (a USDA number that missed the trade, funds at a one-year extreme, a contract outside its 52-week range) is a section of the Daily page now. Its RSS feed is unchanged."
+    },
+    {
+     "tag": "improved",
+     "page": "/conditions#crop-size",
+     "name": "Crop size joins crop progress",
+     "text": "Every 2026 corn and soybean yield forecast, our ratings model and its graded record, and how much the weekly ratings are worth by state, are on the crop conditions page now."
+    },
+    {
+     "tag": "improved",
+     "page": "/usda-calendar#priced-in",
+     "name": "What's priced in and the bot scorecard join the USDA calendar",
+     "text": "Before each big report: the number to beat, how the last one landed, the analyst record and the prediction bot's calls, on the same page as the report dates."
+    },
+    {
+     "tag": "improved",
+     "page": "/crop-tour#pod-counts",
+     "name": "Pod counts join the crop tour page",
+     "text": "What 28 state-years of tour pod counts predict, and the 2026 tour read that way, sit under the tour results."
+    },
+    {
+     "tag": "improved",
+     "page": "/hail-map#history",
+     "name": "The storm log is on the hail map",
+     "text": "Every significant hail day since 2022, by year, with reports, the largest stone and a page for each day, is a section of the hail map."
+    },
+    {
+     "tag": "improved",
+     "page": "/basis#states",
+     "name": "Bids by state joins the basis page",
+     "text": "Every state with a current bid, and how many elevators and towns have one, sits beside each state's basis."
+    },
+    {
+     "tag": "improved",
+     "page": "/list-your-elevator#coverage",
+     "name": "One page for elevators",
+     "text": "Posting your bids, fixing your name, town or phone, and the map of every elevator we read are on one page. Hours and a note show beside your bids when you post them yourself."
+    }
+   ]
+  },
   {
    "date": "2026-10-22",
    "items": [
@@ -131,7 +178,7 @@
     },
     {
      "tag": "fixed",
-     "page": "/news",
+     "page": "/daily#moved",
      "name": "One corn move on the Wire twice",
      "text": "On October 9 the Wire posted December corn's 3.9% drop twice, once as December corn and once as corn, worded two different ways. It now keeps one."
     }
@@ -187,7 +234,7 @@
    "items": [
     {
      "tag": "new",
-     "page": "/elevators",
+     "page": "/list-your-elevator#coverage",
      "name": "Elevators can claim their board, free",
      "text": "An elevator or co-op can now claim its listing from the elevators page: we check the name and town with them, put their phone on the call button and read their own board through the day. It is free. Payment never changes bid order or ranking."
     },
@@ -252,13 +299,13 @@
    "items": [
     {
      "tag": "new",
-     "page": "/whats-priced-in",
+     "page": "/usda-calendar#priced-in",
      "name": "September Grain Stocks graded against the actual print",
      "text": "Corn stocks printed 2.095 billion bushels, above the entire pre-report trade range (1.843–2.005B), a real miss versus what the trade had priced in. Soybean stocks printed 0.315B, a mild bullish surprise inside the trade range. Wheat stocks printed 1.846B; no trade estimate was ever on file for it, so it is shown ungraded rather than scored against a guess."
     },
     {
      "tag": "new",
-     "page": "/whats-priced-in",
+     "page": "/usda-calendar#priced-in",
      "name": "Grain Stocks joins What's Priced In",
      "text": "What's Priced In covered WASDE only. It now also carries the quarterly Grain Stocks report: today's corn and soybean trade estimates, graded against the actual print once USDA releases it, the same way WASDE already is. No usable wheat trade estimate was found for this cycle, so wheat is shown withheld rather than guessed."
     },
@@ -340,7 +387,7 @@
     },
     {
      "tag": "fixed",
-     "page": "/scorecard#old-scorecard",
+     "page": "/usda-calendar#old-scorecard",
      "name": "The headline hit rate is now the machine-checked calls only, and weekend repeats count once",
      "text": "The headline blended older calls we had graded by hand with the ones checked by machine, which flattered the number. It now shows only the machine-checked calls: 17 of 83, or 20.5%. The older calls are listed separately. Weekend briefings that repeated Friday's call were counted two or three times against the same Monday close; 9 repeats are now counted once."
     },
@@ -452,13 +499,13 @@
     },
     {
      "tag": "fixed",
-     "page": "/news",
+     "page": "/daily#moved",
      "name": "The wire kept filing the same story",
      "text": "Corn made a new 52-week high on four days in September and the wire printed the same six words each time, twice word for word. It now says which high it took out and by how much, so a run of new highs reads as one developing story rather than one story filed four times."
     },
     {
      "tag": "fixed",
-     "page": "/news",
+     "page": "/daily#moved",
      "name": "“Biggest corn net long in a year” for a one-contract week",
      "text": "Managed money's corn net long went from +414,459 contracts to +414,460 and we published it as the biggest position in a year. That is one contract in 414,460, and it was true only because the yardstick we measured against included the week we were measuring. An extreme now has to be reached by a week that actually moved, measured against the position's own 52-week range. The item has been taken off the page."
     },
@@ -488,13 +535,13 @@
     },
     {
      "tag": "fixed",
-     "page": "/whats-priced-in",
+     "page": "/usda-calendar#priced-in",
      "name": "A #1 that was built on two different kinds of call",
      "text": "The forecaster board averaged a soybean ending-stocks miss and a corn yield miss into one accuracy number, which is how one name reached the top of the board on a record that was really two yield calls. Yield calls and supply calls are now scored in separate groups and the page says which group a table is showing. It also stops printing a finishing order at all until there are enough scored calls to support one."
     },
     {
      "tag": "improved",
-     "page": "/whats-priced-in",
+     "page": "/usda-calendar#priced-in",
      "name": "Closest of who filed is not the same as beating the market",
      "text": "Both “closest” badges this board had ever awarded sat on forecasts that landed further from the USDA print than the free trade consensus in the column beside them. A badge now only says a forecast beat the trade when it did; the rest say, in words, that it was the closest of those who filed and still wider than the consensus. Every average now carries the spread of the calls behind it."
     },
@@ -524,7 +571,7 @@
     },
     {
      "tag": "fixed",
-     "page": "/conditions-yield",
+     "page": "/conditions#crop-size",
      "name": "What the accuracy number is measuring",
      "text": "The page said the model explained a share “of final yield”. It does not. It explains that share of how Iowa's final yield differs from its trend, which is a much narrower claim and the one the number actually supports. The wording is corrected everywhere it appeared on the page."
     },
@@ -624,7 +671,7 @@
     },
     {
      "tag": "new",
-     "page": "/elevators",
+     "page": "/list-your-elevator#coverage",
      "name": "Coverage map",
      "text": "A map of every grain elevator AGSIST tracks nationwide. Green is one we read direct; grey is one we know about and are working through. Click a pin to see what is there. If your elevator is grey, the form on that page is the fastest way to move it up."
     },
@@ -831,7 +878,7 @@
     },
     {
      "tag": "fixed",
-     "page": "/whats-priced-in",
+     "page": "/usda-calendar#priced-in",
      "name": "Report pages advertised a report that had already happened",
      "text": "Three hand-written blocks named the August WASDE by name and went stale the moment it printed -- including a heading that said \"the August WASDE\" directly above a card showing September, and a box telling readers to prepare for a report that was three days past. They are built from the data now, so they roll to the next report on their own."
     },
@@ -843,7 +890,7 @@
     },
     {
      "tag": "fixed",
-     "page": "/whats-priced-in",
+     "page": "/usda-calendar#priced-in",
      "name": "We printed the wrong closing price for WASDE day",
      "text": "Wednesday's report-card entry said December corn settled up 19 cents at $4.81 and November beans up 10 cents at $11.83. Both were wrong: we read a quote taken while the board was still moving instead of the settlement our own archive recorded hours later. The real report-day closes were $4.78 on December corn, up 15 cents, and $11.84 on November beans, up 12 cents. The direction and the story were right; the numbers were not, and on a site that grades other people's numbers that is not a small thing. Corrected everywhere it appeared, including the note that carries market context into each morning's briefing."
     },
@@ -890,13 +937,13 @@
    "items": [
     {
      "tag": "new",
-     "page": "/whats-priced-in",
+     "page": "/usda-calendar#priced-in",
      "name": "August WASDE scored: USDA printed corn 180.7, soybeans 52.7",
      "text": "USDA's first survey-based 2026 yields landed August 12: corn 180.7 bu/acre (down 2.3 from July, 1.3 under the trade's 182.0) and soybeans 52.7 (down 0.3, in line with the trade's 52.9). More acres kept both crops huge -- 16.013 billion bushels of corn and a record 4.519 billion of soybeans -- but the market traded the yield cut: December corn settled up 15 cents at $4.78. The analyst board is now scored, the report card is on the record, and the crop tour page carries the new USDA benchmark the scouts will test next week."
     },
     {
      "tag": "new",
-     "page": "/conditions-yield",
+     "page": "/conditions#crop-size",
      "name": "Our first yield direction calls: both missed",
      "text": "Before the report we locked two directional calls from our model: corn revises UP from 183.0, soybeans revise UP from 53.0. USDA revised both DOWN. Two calls, two misses, graded by arithmetic and kept on the record -- that is the whole point of the ledger. For what it is worth, our locked levels (183.6 and 53.8) were closer to the print than the model's July numbers would have been, and the trade consensus had the direction right. The record starts 0-for-2 and stays public either way."
     },
@@ -919,7 +966,7 @@
     },
     {
      "tag": "improved",
-     "page": "/scorecard#old-scorecard",
+     "page": "/usda-calendar#old-scorecard",
      "name": "Yesterday's Call, redesigned: one-day calls now sized to one-day moves",
      "text": "Since deterministic grading began in June, the daily call hit 4 of 43 -- a 9.3% record we publish rather than hide. The direction reads were not the problem: on those same 43 calls the direction alone was right 39.5% of the time. The problem was the claim itself, which demanded the price reach a specific level by the NEXT close, at distances that averaged more than a full typical trading day away. Corn's average session moves about 5 cents; the calls were asking for 7 or more, plus the right direction, in one day. Starting today the called level must sit inside a band computed from each market's own last-20-day average move (widened automatically on USDA report days, which trade a different regime), and the model sees its full graded record -- every hit and miss, by instrument -- before it makes today's call. The grading itself is unchanged, byte for byte. The old record stays on the scorecard, frozen and labeled, and the new series starts at zero in public, the same way we handled the switch to deterministic grading in June."
     },
@@ -954,13 +1001,13 @@
     },
     {
      "tag": "fixed",
-     "page": "/conditions-yield",
+     "page": "/conditions#crop-size",
      "name": "Ratings vs Yield",
      "text": "The ranked table on this page was hand-written and never regenerated, so it had drifted three weeks behind the live data and openly contradicted the verdict box directly above it: Pennsylvania read 25% in the table and 65% in the box. The state ranked first under the heading \"ranked by what this week's number is worth\" was not the top state any more either. The table, the four headline tiles, the summary line and the page description now all come from the same file the verdict reads, and rebuild themselves every time the weekly fit runs."
     },
     {
      "tag": "fixed",
-     "page": "/scorecard#old-scorecard",
+     "page": "/usda-calendar#old-scorecard",
      "name": "Call Scorecard: two real problems",
      "text": "Twenty-three graded rows showed the write-up for one call next to the grade for a different one, left over from the date bug fixed Aug 4. Those rows now show the call that was actually scored, rebuilt from the recorded market, direction and level, and say so underneath; the original wording stays in that day's briefing. Second, the headline hit rate was blending two different eras: calls before Jun 24 could only be graded by the briefing's own account of itself, while everything since is checked against the closes. Split out, that is 26 of 36 self-graded against 3 of 40 checked. Both numbers are now on the page. The checked one is the honest one and it is not flattering."
     },
@@ -1056,7 +1103,7 @@
     },
     {
      "tag": "fixed",
-     "page": "/elevators",
+     "page": "/list-your-elevator#coverage",
      "name": "Elevator listing form",
      "text": "The form elevators use to get their bids listed was collecting facility, contact and phone details and then discarding all of them: only the email reached anything, and that quietly went onto the briefing list. It now builds the full request in your own email app so you can see exactly what gets sent, and the page no longer claims a message arrived when it hadn't. If you sent one before today, it never reached us; please send it again."
     },
@@ -1221,13 +1268,13 @@
    "items": [
     {
      "tag": "fixed",
-     "page": "/scorecard#old-scorecard",
+     "page": "/usda-calendar#old-scorecard",
      "name": "Call Scorecard",
      "text": "Found and fixed a grading bug: since June 26, each morning's grade compared the call against the same day's close instead of the prior day's. Nightly re-scoring meant most published outcomes were still right, but two rows contradicted their own writeups: both now carry a regrade note, and the scorecard shows a plain incident note. The original text stays as published."
     },
     {
      "tag": "improved",
-     "page": "/whats-priced-in",
+     "page": "/usda-calendar#priced-in",
      "name": "What's Priced In",
      "text": "August WASDE card shows USDA's current number as the one to beat rather than inventing survey ranges before they exist; analysts still building a track record now appear on the board instead of a false empty state."
     }
@@ -1300,7 +1347,7 @@
    "items": [
     {
      "tag": "new",
-     "page": "/scorecard#old-scorecard",
+     "page": "/usda-calendar#old-scorecard",
      "name": "Call Scorecard",
      "text": "Every daily-briefing market call is now graded against the next session and published: hits, misses, and the running record. The yield nowcast joined an analyst board next to USDA's number."
     },

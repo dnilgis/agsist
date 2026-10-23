@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-23-merges",
+   "date": "2026-10-23",
+   "title": "Fewer pages, each one fuller",
+   "line": "Seven pages joined the page you already use: crop size on crop conditions, what's priced in on the USDA calendar, pod counts on the crop tour, the storm log on the hail map, bids by state on basis, the wire on the Daily.",
+   "link": "/usda-calendar#priced-in"
+  },
+  {
    "id": "2026-10-21-fast-facts",
    "date": "2026-10-21",
    "title": "Fast Facts for your place",
@@ -62,7 +69,7 @@
    "date": "2026-10-18",
    "title": "Bids by state",
    "line": "Every state with cash bids on one page, with the towns and elevators in each.",
-   "link": "/cash-bids/states"
+   "link": "/basis#states"
   },
   {
    "id": "2026-10-18-elevators",

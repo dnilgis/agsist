@@ -1292,7 +1292,7 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
     ${showDesc?`<div class="cal-desc">${r.desc}</div>`:''}
     ${r.link&&r.type==='fsa'?`<div class="cal-links"><a href="${r.link}" onclick="calEvent('calendar_link',{to:'${r.link}',report:'${r.name}'})"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> ARC or PLC calculator &rarr;</a> <a href="${FSA_SRC}" rel="noopener">FSA notice</a></div>`:''}
     ${r.link&&r.type==='livestock'?`<div class="cal-links"><a href="${r.link}" onclick="calEvent('calendar_link',{to:'${r.link}',report:'${r.name}'})"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> ${r.linkText} &rarr;</a></div>`:''}
-    ${r.type==='wasde'?`<div class="cal-links"><a href="/whats-priced-in" onclick="calEvent('calendar_link',{to:'/whats-priced-in',report:'${r.name}'})"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> What's priced in &rarr;</a></div>`:''}
+    ${r.type==='wasde'?`<div class="cal-links"><a href="#priced-in" onclick="calEvent('calendar_link',{to:'/whats-priced-in',report:'${r.name}'})"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> What's priced in &rarr;</a></div>`:''}
   </div>
 </div>`;
       });
