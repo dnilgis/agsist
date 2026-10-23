@@ -445,8 +445,8 @@ def selftest():
        "the ask: county, topic, wording from the data key", a)
     ok(ask_html("Barron County", "55000", conf=on) == "" and ask_html("X", "5500", conf=on) == "", "a FIPS the worker refuses gets no ask")
     real = ask_conf()
-    ok(real.get("live") is False and "{county}" in real.get("ask", "") and not re.search("[–—]", json.dumps(real, ensure_ascii=False)),
-       "data/rain-month.json: off, names the county, no dashes")
+    ok(isinstance(real.get("live"), bool) and all(real.get(k) for k in ("ask", "btn", "ok", "note")) and "{county}" in real.get("ask", "") and not re.search("[–—]", json.dumps(real, ensure_ascii=False)),
+       "data/rain-month.json: a live switch, the four lines, names the county, no dashes")
     txt = " ".join([month_words(f, c), ytd_words(f, c), rank_words(f, c, rk), drought_words(w, "01001")] + [x for t in FIELD.values() for x in t] + [DROUGHT_FIELD])
     ok(not re.search("[–—]|&mdash;|&ndash;|!", txt), "no dashes, no exclamation marks")
     print("\n%s: %d failure(s)" % ("FAIL" if fails else "OK", len(fails)))
