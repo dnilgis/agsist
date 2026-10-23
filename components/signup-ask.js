@@ -459,6 +459,81 @@
   }
   function scan() { Array.prototype.forEach.call(document.querySelectorAll('[data-signup-ask]'), mount); }
 
+  /* ---------- a price watch ask (2026-10-23) ----------
+     One email when a futures price reaches a number the page already worked out
+     (the break-even calculator's "futures needed at your basis"). It is the
+     homepage's price alert, not a new list: POST /price-watch-subscribe with the
+     same body (priceBody), double opt-in, one email when the close crosses, sent
+     by scripts/send_price_watch.py. Only the contracts that sender and the worker
+     accept: corn-dec, beans-nov, wheat.
+       <div data-price-ask hidden></div>
+       AgsistSignup.priceAsk(el, {symbol: 'corn-dec', usd: 4.58, source: 'page:breakeven'})
+     Call it again whenever the number moves: the price box follows until the
+     reader types in it, and an email already typed is never wiped. A symbol the
+     sender does not take, or no number, hides it and returns false. */
+  var PW_NAME = { 'corn-dec': 'December corn', 'beans-nov': 'November soybeans', wheat: 'Chicago wheat' };
+  function priceAsk(el, o) {
+    o = o || {};
+    var sym = String(o.symbol || ''), usd = +o.usd;
+    if (!el || !PW_NAME[sym] || !(usd >= 0.01 && usd <= 1000)) { if (el && !el.getAttribute('data-sa-done')) el.hidden = true; return false; }
+    if (el.getAttribute('data-sa-done') || el.getAttribute('data-sa-busy')) return true;
+    var price = el.querySelector('.sa-pw');
+    if (price && el.getAttribute('data-sa-pwsym') === sym) {
+      if (price.getAttribute('data-touched') !== '1') price.value = usd.toFixed(2);
+      el.hidden = false;
+      return true;
+    }
+    css();
+    var source = String(o.source || ('page:' + slug())).slice(0, 60), askId = askIdOf(source, 'pricewatch');
+    var n = ++seq, iid = 'sa-e-' + n, mid = 'sa-m-' + n, pid = 'sa-p-' + n;
+    el.setAttribute('data-sa-pwsym', sym); el.setAttribute('data-sa-id', askId);
+    el.classList.add('sa-ask', 'sa-ask--page');
+    el.innerHTML = '<form class="sa-f" novalidate>'
+      + '<label class="sa-l" for="' + iid + '">Email me when ' + esc(PW_NAME[sym]) + ' futures reach my break-even</label>'
+      + '<input class="sa-in" id="' + iid + '" type="email" name="email" autocomplete="email" inputmode="email" placeholder="your@email.com" required aria-describedby="' + mid + '">'
+      + '<button class="sa-b" type="submit">Set alert</button>'
+      + '<div class="sa-z"><label class="sa-zl" for="' + pid + '">Futures price to watch, $ a bushel</label>'
+      + '<input class="sa-zin sa-pw" id="' + pid + '" type="text" inputmode="decimal" value="' + usd.toFixed(2) + '"></div>'
+      + '<p class="sa-m" id="' + mid + '" role="status" aria-live="polite"></p>'
+      + '<p class="sa-n">A futures price, not a cash bid. One email when the close reaches it, then it stops.</p>'
+      + '</form>';
+    el.hidden = false;
+    seen(el, askId);
+    var form = el.querySelector('form'), input = el.querySelector('.sa-in'), btn = el.querySelector('.sa-b'), msg = el.querySelector('.sa-m');
+    price = el.querySelector('.sa-pw');
+    price.addEventListener('input', function () { price.setAttribute('data-touched', '1'); price.removeAttribute('aria-invalid'); });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = (input.value || '').trim(), dollars = parseFloat(String(price.value).replace(/[$,\s]/g, ''));
+      if (!(dollars >= 0.01 && dollars <= 1000)) {
+        msg.textContent = 'Enter a price between $0.01 and $1000.';
+        price.setAttribute('aria-invalid', 'true'); price.focus(); return;
+      }
+      if (!EMAIL_RE.test(email)) {
+        msg.textContent = 'Enter a real email address.';
+        input.setAttribute('aria-invalid', 'true'); input.focus(); return;
+      }
+      input.removeAttribute('aria-invalid'); msg.textContent = '';
+      btn.disabled = true; btn.textContent = 'Sending…';
+      el.setAttribute('data-sa-busy', '1');
+      post(WORKER + '/price-watch-subscribe', priceBody(email, el.getAttribute('data-sa-pwsym'), 'above', dollars)).then(function (res) {
+        el.removeAttribute('data-sa-busy');
+        if (res.ok) {
+          el.setAttribute('data-sa-done', '1');
+          track('price_watch_signup', { symbol: sym, source: source, ask_id: askId });
+          el.innerHTML = '<p class="sa-ok" tabindex="-1">' + esc(queued(res) || 'Check your email to confirm the alert. Nothing is sent until you press that link.') + '</p>';
+          var ok = el.querySelector('.sa-ok'); try { ok.focus({ preventScroll: true }); } catch (x) { ok.focus(); }
+          oneMore(el, { gave: 'price', had: ['price'], email: email });
+          return;
+        }
+        btn.disabled = false; btn.textContent = 'Set alert';
+        msg.textContent = res.data && res.data.error === 'limit' ? 'You already have 5 price alerts set, the most one address can track at once.' : errText(res);
+        input.focus();
+      });
+    });
+    return true;
+  }
+
   /* Once the reader signs up anywhere on the page, every other ask goes. */
   function hideOthers() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-signup-ask],[data-signup-hide]'), function (el) {
@@ -655,7 +730,7 @@
     };
   }
   /* The futures alert body: the same as index.html's price alert (paId, PA_LABELS). */
-  var PA_LABELS = { corn: 'Corn', beans: 'Soybeans', wheat: 'Chicago SRW wheat', cattle: 'Live Cattle' };
+  var PA_LABELS = { corn: 'Corn', 'corn-dec': 'Corn (new crop)', beans: 'Soybeans', 'beans-nov': 'Soybeans (new crop)', wheat: 'Chicago SRW wheat', cattle: 'Live Cattle' };
   function paId(symbol, direction, targetCents) {
     var s = (symbol + '|' + direction + '|' + targetCents).toUpperCase();
     var h = 0x811c9dc5;
@@ -918,6 +993,12 @@
        itself (2026-10-12; its county pages keep it, Sig Oct 20). */
     if (/^\/(daily|field-scout|rain-print|sponsor|sponsor-kit|sponsor-apply|sponsor-report|store-or-sell|prf)(\.html)?$/.test(p)
         || /^\/daily\/[^/]+$/.test(p)) return false;
+    /* Page types with one page-matched ask (Sig, 2026-10-23: the bar opened 0.5% of the time it
+       showed). The bar stays off them even when the reader has already asked, which hides the ask:
+       the state pages' rent notice (not the /rent hub), the four futures pages, ARC/PLC and its
+       county pages, and the break-even, grain bin and yield tools. */
+    if (/^\/rent\/[^/]+$/.test(p) || /^\/(corn|soybean|wheat|cattle)-futures-prices(\.html)?$/.test(p)
+        || /^\/arc-plc(\.html)?(\/|$)/.test(p) || /^\/(breakeven|grain-bin-calculator|yield-estimator)(\.html)?$/.test(p)) return false;
     if (isSignedUp() || isDismissed(BAR_KEY)) return false;
     try { if (Date.now() < +(localStorage.getItem('agsist_bar_snooze') || 0)) return false; } catch (e) {}
     try { if (sessionStorage.getItem(BAR_SEEN) === '1') return false; } catch (e) {}
@@ -971,7 +1052,7 @@
     isSignedUp: isSignedUp, setSignedUp: setSignedUp,
     isDismissed: isDismissed, setDismissed: setDismissed,
     zip: zip, subscribe: subscribe, notice: notice, okText: okText, errText: errText,
-    source: sourceFor, mount: mount, scan: scan, css: css,
+    source: sourceFor, mount: mount, scan: scan, css: css, priceAsk: priceAsk,
     oneMore: oneMore, seen: seen, dismissed: dismissed
   };
 

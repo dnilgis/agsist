@@ -701,11 +701,13 @@ def state_cloud(states, exclude=None):
 
 
 def rent_ask(st, name, yr):
-    """One line under the county table: one email when NASS puts out the next
-    year's county rents for this state. components/signup-ask.js draws it and
-    posts topic rent:<st> to the subs worker's /notice (v5.11); it puts nobody
-    on AGSIST Daily unless they tick the box for it."""
-    return (f'<div data-signup-ask="Email me when the {yr + 1} county rents for {name} come out." data-topic="rent:{st.lower()}" '
+    """The page's one signup ask, right under the first answer (the hero figures; Sig, Oct 23:
+    the generic bar goes, one page-matched ask replaces it): one email when USDA puts out the
+    next county rents for this state. components/signup-ask.js draws it and posts topic
+    rent:<st> to the subs worker's /notice (v5.11), read by scripts/send_rent_notice.py; it puts
+    nobody on AGSIST Daily unless they tick the box for it. The release year it names is the
+    one the component works out (rentYear), the same year the ok line says."""
+    return (f'<div data-signup-ask="Email me when USDA updates {name} cash rents." data-topic="rent:{st.lower()}" '
             f'data-ok="Done. One email when USDA puts out the {yr + 1} {name} county rents, usually in August."></div>')
 
 
@@ -984,7 +986,8 @@ def build_state_page(st, d, s, all_states, aslug=None):
     <div class="rs-stat">{delta_html(s['dec'], s['dec_n'], f'vs {yr-9}')}</div>
     <div class="rs-stat"><div class="v">{money(s['hi'][0][1]) if s['hi'] else '-'}</div><div class="l">top county</div><div class="s">{esc(s['hi'][0][0]) if s['hi'] else ''}</div></div>{sa_tile}
   </div>
-  {('<div class="rs-hero">' + other_tiles + '</div>') if other_tiles else ''}{pasture_prf}"""
+  {('<div class="rs-hero">' + other_tiles + '</div>') if other_tiles else ''}{pasture_prf}
+  {rent_ask(st, name, yr)}"""
     ground_html, ground_js = ground_panel(st, d, s, aslug)
     page = head(title, desc, f"/rent/{sl}", jsonld) + f"""
 <body>
@@ -1004,7 +1007,6 @@ def build_state_page(st, d, s, all_states, aslug=None):
   fitted on the same practice as the rent: the figure the Atlas county page divides rent by for rent per bushel, and the
   one its rent share calculator starts from.</p>
   {county_table(st, s, aslug)}
-  {rent_ask(st, name, yr)}
   <h2>{name} median county rent by year</h2>
   <p class="sub">Median of counties published each year ({plabel}). Years with no survey
   are left blank.</p>
@@ -1349,6 +1351,10 @@ def selftest():
         assert s["primary"] == "nonirr", "IA primary type wrong"
         assert money(s["median"]) in ia, "IA median not baked into page"
         assert "SEED:rentstate" in ia and "FAQPage" in ia and "canonical" in ia
+        # the one signup ask: under the hero figures, before the county table, topic rent:ia
+        assert ia.count("data-signup-ask") == 1 and 'data-topic="rent:ia"' in ia, "IA rent ask"
+        assert ia.index("rs-hero") < ia.index("data-signup-ask") < ia.index('id="counties"'), "rent ask sits under the hero, above the table"
+        assert 'data-signup-ask="Email me when USDA updates Iowa cash rents."' in ia
         assert "September 1" in ia, "IA termination notice missing"
         # One notice table, cash-lease.html's (panel Oct 20, seat D1)
         assert len(NOTICE_RULES) >= 20 and all(NOTICE_RULES[k].get("d") for k in ("IA", "OH", "MN", "WI", "MO")), NOTICE_RULES.keys()
