@@ -105,9 +105,9 @@
   #rg-form-1 .rg-go-row{margin:.8rem 0 0}
   .rg-more .rg-grid{grid-template-columns:minmax(0,9rem) minmax(0,1fr)}
   .rg-more .rg-zip{grid-column:1}
-  .rg-more{margin:.8rem 0 0}
-  .rg-more>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:var(--fs-sm);font-weight:600;color:var(--text-dim)}
-  .rg-more[open]>summary{margin-bottom:.5rem}
+  .rg details.rg-more{margin:.5rem 0 0;padding:0;border:0;border-radius:0;background:none;max-width:none}
+  .rg .rg-more>summary{display:list-item;min-height:0;padding:.7rem 0;font-size:var(--fs-sm);font-weight:600;color:var(--text-dim)}
+  .rg .rg-more[open]>summary{border-bottom:0;margin-bottom:.3rem}
   .rg-done{grid-area:form;padding:16px;background:var(--surface);border:1px solid var(--border-g);border-top:3px solid var(--green,var(--brand-fill));border-radius:var(--r-md)}
   .rg-done:focus{outline:none}
   #main .rg .rg-done h2{margin:0 0 .4rem;font-size:var(--fs-lg);line-height:1.25;color:var(--text)}
@@ -238,7 +238,7 @@
       <p class="rg-lede">This gauge logs every rain to your phone, field by field. No battery, no app. Read it by eye like any gauge, or scan the code on it, take a photo, and the rain goes into your log for that field.</p>
       <form class="rg-form" id="rg-form-1" data-n="1" novalidate aria-labelledby="rg-form-h-1">
           <h2 class="rg-form-h" id="rg-form-h-1">Get the first-batch price</h2>
-          <p class="rg-form-lead">Everyone on the waitlist hears first and gets the first-batch price. I haven&rsquo;t set it yet. It will be barely over what each one costs me to make, and it holds even if the first batch runs out before your turn. Free to join.</p>
+          <p class="rg-form-lead">Everyone on the waitlist hears first and gets the first-batch price. No price is set yet. It will be barely over my cost, and it holds even if the first batch runs out before your turn.</p>
           <div class="rg-grid rg-grid-1">
             <label class="field rg-email"><span>Email</span><input type="email" id="rg-email-1" name="email" autocomplete="email" inputmode="email" required maxlength="254"></label>
           </div>

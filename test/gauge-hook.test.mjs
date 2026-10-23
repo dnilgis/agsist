@@ -141,7 +141,7 @@ test("/rain-gauge: honest numbers only, no count, no timer, no popup, no foundin
   // the price promise, said plainly at the top
   const top = h.slice(h.indexOf('id="rg-form-1"'), h.indexOf("</form>", h.indexOf('id="rg-form-1"')));
   assert.match(top, /<h2 class="rg-form-h" id="rg-form-h-1">Get the first-batch price<\/h2>/);
-  assert.match(top, /barely over what each one costs me to make, and it holds even if the first batch runs out before your turn/);
+  assert.match(top, /No price is set yet\. It will be barely over my cost, and it holds even if the first batch runs out before your turn\./);
   // why join now: the short list right after the hero
   const now = h.slice(h.indexOf('id="now"'), h.indexOf("</section>", h.indexOf('id="now"')));
   assert.equal((now.match(/<li>/g) || []).length, 4);
