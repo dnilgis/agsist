@@ -1015,6 +1015,22 @@
     return { label: pick.name, value: '$' + fixed(Math.round(pick.price), 0) + ' a ton', date: isoDay(pick.as_of || file.updated),
       ctx: (where ? where.charAt(0).toUpperCase() + where.slice(1) + '. ' : '') + 'Cash price; call to confirm.', src: ['Fertilizer prices', '/fertilizer'], paper: 'Co-op posted prices' };
   }
+  /* Custom combining: the reader's state survey when there is one, beside the middle of the state
+     custom rate surveys (data/custom-rates/blend.json, the file /custom-rates reads). */
+  function factCustom(b, st) {
+    var label = 'Custom combining, corn', href = '/custom-rates' + (st ? '?st=' + st : '') + '#combine-corn';
+    var op = b && b.ops && b.ops['combine-corn'];
+    if (!op || op.md == null) return na(label, 'the custom rate file did not load', ['Custom rates', '/custom-rates']);
+    var s = st && b.states && b.states[st];
+    if (s && s.same_as) { st = s.same_as; s = b.states[st]; }  // Delaware reads the Maryland and Delaware survey
+    var v = s && op.by[st];
+    var yrs = op.y[0] === op.y[1] ? op.y[0] + ' rates' : op.y[0] + ' to ' + op.y[1] + ' rates';
+    var mid = 'the middle of ' + op.n + ' state surveys (' + yrs + ') is $' + fixed(op.md, 2);
+    if (v) return { label: label, value: '$' + fixed(v[0], 2) + ' an acre', ctx: s.name + '\u2019s ' + (s.ry !== s.year ? s.ry + ' rates' : s.year) + ' survey, ' + v[3] + ' answers; ' + mid + '.',
+      src: ['Custom rates by job', href], paper: s.name + ' custom rate survey' };
+    return { label: label, value: '$' + fixed(op.md, 2) + ' an acre', ctx: (st ? 'No ' + ((b.names && b.names[st]) || st) + ' survey of its own; ' : '') + mid.charAt(0).toUpperCase() + mid.slice(1) + '.',
+      src: ['Custom rates by job', href], paper: 'State custom rate surveys' };
+  }
   /* The Daily: this morning's teaser, with no price of its own (the futures rows carry the price,
      with the time; the letter's prices are from before the open). */
   function factDaily(d) {
@@ -1046,7 +1062,7 @@
 
   return {
     factBid: factBid, factFutures: factFutures, factBasis: factBasis, factRain: factRain, factDrought: factDrought, factHail: factHail,
-    factProgress: factProgress, factCol: factCol, factSales: factSales, factArcPlc: factArcPlc, factUsda: factUsda, factFert: factFert,
+    factProgress: factProgress, factCol: factCol, factSales: factSales, factArcPlc: factArcPlc, factUsda: factUsda, factFert: factFert, factCustom: factCustom,
     factDaily: factDaily, fertSrc: fertSrc, srcName: srcName, centsFrac: centsFrac, deliveryWords: deliveryWords, stateLinks: stateLinks, NO_PAGE: NO_PAGE,
     rainFigure: rainFigure, rainChart: rainChart, rankSoFar: rankSoFar, rankWordsRain: rankWordsRain, windowTotals: windowTotals, RANK_MIN: RANK_MIN,
     ownPast: ownPast, unusualHere: unusualHere, ownWords: ownWords, OWN_MIN: OWN_MIN, OWN_MAX: OWN_MAX,

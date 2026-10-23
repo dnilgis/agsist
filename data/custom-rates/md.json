@@ -1,0 +1,866 @@
+{
+ "state": "MD",
+ "name": "Maryland and Delaware",
+ "slug": "maryland-and-delaware",
+ "survey": "Custom Work Charges in Maryland and Delaware (University of Maryland Extension FS-683, updated March 2025), Table 1",
+ "publisher": "University of Maryland Extension, with the University of Delaware",
+ "survey_year": 2025,
+ "collected": "Mail and online survey in the fall of 2024; 61 custom operators and farmers gave the rates they charge",
+ "sources": [
+  {
+   "url": "https://extension.umd.edu/resource/custom-work-charges-maryland-and-delaware-fs-683/",
+   "ref": "cr-mdde-fs683"
+  }
+ ],
+ "spread": "minmax",
+ "spread_label": "lowest to highest answer",
+ "includes": "Reported rates include charges for machines, power, fuel, lube and the labor/operator. They do not include chemicals, seed or other materials, except hay baling materials and where noted (spreading lime includes the lime).",
+ "range_note": "The range is the lowest and highest answer. The guide prints the average and the median but not how many answered each job; a job whose lowest, highest, median and average are all one number may rest on a single answer, so it is shown but never lined up with other states. The bed forming and plastic laying line names no unit and is left out.",
+ "rows": [
+  {
+   "s": "Custom work charges",
+   "o": "Stalk Cutting/Chopping",
+   "u": "acre",
+   "a": 27.84,
+   "md": 20.0,
+   "lo": 15.0,
+   "hi": 60.0,
+   "k": "stalk-chop",
+   "c": "tillage"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Plowing-Chisel",
+   "u": "acre",
+   "a": 25.55,
+   "md": 23.55,
+   "lo": 17.5,
+   "hi": 60.0,
+   "k": "chisel",
+   "c": "tillage"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Plowing-Moldboard",
+   "u": "acre",
+   "a": 32.17,
+   "md": 26.5,
+   "lo": 20.0,
+   "hi": 60.0,
+   "k": "moldboard",
+   "c": "tillage"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Disking-Heavy",
+   "u": "acre",
+   "a": 26.64,
+   "md": 22.5,
+   "lo": 18.15,
+   "hi": 60.0,
+   "c": "tillage"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Disking With Cultipacker/Rolling Baskets",
+   "u": "acre",
+   "a": 25.56,
+   "md": 22.0,
+   "lo": 18.0,
+   "hi": 60.0,
+   "c": "tillage"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Cultivating",
+   "u": "acre",
+   "a": 14.75,
+   "md": 15.0,
+   "lo": 12.0,
+   "hi": 18.0,
+   "k": "cultivate-row",
+   "c": "tillage"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Cultipacking",
+   "u": "acre",
+   "a": 8.67,
+   "md": 6.0,
+   "lo": 5.0,
+   "hi": 15.0,
+   "c": "tillage"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Sub-soiling (Ripping)",
+   "u": "acre",
+   "a": 30.3,
+   "md": 26.5,
+   "lo": 20.0,
+   "hi": 50.0,
+   "k": "subsoil",
+   "c": "tillage"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Soil Finishing (Field Cultivator)",
+   "u": "acre",
+   "a": 25.67,
+   "md": 20.0,
+   "lo": 16.0,
+   "hi": 65.0,
+   "k": "field-cult",
+   "c": "tillage"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Vertical Tillage",
+   "u": "acre",
+   "a": 19.5,
+   "md": 19.0,
+   "lo": 12.0,
+   "hi": 28.0,
+   "k": "vertical-till",
+   "c": "tillage"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Strip Till",
+   "u": "acre",
+   "a": 27.83,
+   "md": 20.0,
+   "lo": 20.0,
+   "hi": 45.0,
+   "k": "strip-till",
+   "c": "tillage"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Corn Planting-Conventional w/ Fertilizer",
+   "u": "acre",
+   "a": 29.38,
+   "md": 25.0,
+   "lo": 20.0,
+   "hi": 75.0,
+   "k": "plant-row-fert",
+   "c": "planting"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Corn Planting-Conventional w/o Fertilizer",
+   "u": "acre",
+   "a": 27.23,
+   "md": 22.0,
+   "lo": 18.0,
+   "hi": 75.0,
+   "k": "plant-row",
+   "c": "planting"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Corn Planting- No-Till w/ Fertilizer",
+   "u": "acre",
+   "a": 27.76,
+   "md": 24.0,
+   "lo": 16.0,
+   "hi": 75.0,
+   "c": "planting"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Corn Planting- No-Till w/o Fertilizer",
+   "u": "acre",
+   "a": 27.57,
+   "md": 22.5,
+   "lo": 15.0,
+   "hi": 75.0,
+   "k": "plant-notill",
+   "c": "planting"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Soybean Planting-Conventional",
+   "u": "acre",
+   "a": 29.13,
+   "md": 23.5,
+   "lo": 17.5,
+   "hi": 75.0,
+   "c": "planting"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Soybean Planting-No-Till",
+   "u": "acre",
+   "a": 27.1,
+   "md": 25.0,
+   "lo": 16.0,
+   "hi": 75.0,
+   "c": "planting"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Drilling-Small Grain",
+   "u": "acre",
+   "a": 26.05,
+   "md": 24.0,
+   "lo": 11.0,
+   "hi": 75.0,
+   "k": "drill-smallgrain",
+   "c": "planting"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Seeding-Grass Drilling/No-Till",
+   "u": "acre",
+   "a": 31.85,
+   "md": 26.15,
+   "lo": 15.0,
+   "hi": 50.0,
+   "c": "planting"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Seeding-Grass Broadcast",
+   "u": "acre",
+   "a": 24.19,
+   "md": 20.0,
+   "lo": 12.0,
+   "hi": 55.0,
+   "c": "planting"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Seeding-Small Grain Broadcast",
+   "u": "acre",
+   "a": 12.6,
+   "md": 12.0,
+   "lo": 8.0,
+   "hi": 20.0,
+   "c": "planting"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Seeding-Aerial",
+   "u": "acre",
+   "a": 17.11,
+   "md": 15.0,
+   "lo": 12.0,
+   "hi": 28.0,
+   "c": "planting"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Fertilizer Application-Dry",
+   "u": "acre",
+   "a": 11.72,
+   "md": 11.0,
+   "lo": 8.5,
+   "hi": 20.0,
+   "k": "fert-dry",
+   "c": "spray"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Fertilizer Application-Liquid",
+   "u": "acre",
+   "a": 13.21,
+   "md": 12.0,
+   "lo": 7.5,
+   "hi": 19.0,
+   "k": "fert-liquid",
+   "c": "spray"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Fertilizer Application-Side Dress",
+   "u": "acre",
+   "a": 13.78,
+   "md": 13.0,
+   "lo": 10.0,
+   "hi": 20.0,
+   "c": "spray"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Lime-Includes Lime, Application",
+   "u": "ton",
+   "a": 43.41,
+   "md": 48.7,
+   "lo": 8.5,
+   "hi": 75.0,
+   "c": "spray"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Manure Loading",
+   "u": "ton",
+   "a": 6.58,
+   "md": 4.0,
+   "lo": 2.0,
+   "hi": 20.0,
+   "c": "spray"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Manure Spreading-Liquid",
+   "u": "gallon",
+   "a": 0.06,
+   "md": 0.06,
+   "lo": 0.05,
+   "hi": 0.06,
+   "c": "spray"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Manure Spreading-Solid",
+   "u": "ton",
+   "a": 14.1,
+   "md": 15.0,
+   "lo": 5.5,
+   "hi": 25.0,
+   "k": "manure-solid-ton",
+   "c": "spray"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Manure Spreading-Litter",
+   "u": "ton",
+   "a": 12.49,
+   "md": 11.5,
+   "lo": 2.5,
+   "hi": 25.0,
+   "c": "spray"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Manure Hauling",
+   "u": "ton",
+   "a": 8.85,
+   "md": 7.0,
+   "lo": 4.0,
+   "hi": 18.8,
+   "c": "spray"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Spraying-Pesticide Ground",
+   "u": "acre",
+   "a": 14.01,
+   "md": 12.0,
+   "lo": 7.0,
+   "hi": 50.0,
+   "k": "spray-ground",
+   "c": "spray"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Spraying-Pesticide Aerial",
+   "u": "acre",
+   "a": 14.36,
+   "md": 12.5,
+   "lo": 10.0,
+   "hi": 28.0,
+   "k": "spray-aerial",
+   "c": "spray"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Mowing Hay",
+   "u": "acre",
+   "a": 15.98,
+   "md": 16.0,
+   "lo": 5.0,
+   "hi": 28.0,
+   "k": "mow-hay",
+   "c": "hay"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Mowing and Conditioning Hay",
+   "u": "acre",
+   "a": 21.0,
+   "md": 23.0,
+   "lo": 5.0,
+   "hi": 35.0,
+   "k": "mow-cond",
+   "c": "hay"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Raking Hay",
+   "u": "acre",
+   "a": 12.2,
+   "md": 12.0,
+   "lo": 5.0,
+   "hi": 20.0,
+   "k": "rake",
+   "c": "hay"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Bailing-Small Squares",
+   "u": "bale",
+   "a": 1.7,
+   "md": 1.35,
+   "lo": 1.0,
+   "hi": 5.0,
+   "k": "bale-smallsq",
+   "c": "hay"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Bailing- Large Square Bales",
+   "u": "bale",
+   "a": 12.21,
+   "md": 10.0,
+   "lo": 5.0,
+   "hi": 20.0,
+   "k": "bale-largesq",
+   "c": "hay"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Bailing-large Round",
+   "u": "bale",
+   "a": 15.01,
+   "md": 15.0,
+   "lo": 5.0,
+   "hi": 25.0,
+   "k": "bale-round",
+   "c": "hay"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Mow, Rake, Bale Hay - No Haul",
+   "u": "bale",
+   "a": 19.66,
+   "md": 20.0,
+   "lo": 5.0,
+   "hi": 37.0,
+   "c": "hay"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Round Bale Wrapping",
+   "u": "bale",
+   "a": 13.0,
+   "md": 12.0,
+   "lo": 10.0,
+   "hi": 18.0,
+   "c": "hay"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Field Chop, Haul, and Fill Silo",
+   "u": "ton",
+   "a": 10.0,
+   "md": 10.0,
+   "lo": 10.0,
+   "hi": 10.0,
+   "c": "hauling"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Combining - Corn",
+   "u": "acre",
+   "a": 40.03,
+   "md": 40.0,
+   "lo": 30.0,
+   "hi": 52.0,
+   "k": "combine-corn",
+   "c": "harvest"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Combining - Soybeans",
+   "u": "acre",
+   "a": 39.63,
+   "md": 40.0,
+   "lo": 30.0,
+   "hi": 55.0,
+   "k": "combine-soy",
+   "c": "harvest"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Combining - Small Grains",
+   "u": "acre",
+   "a": 39.55,
+   "md": 40.0,
+   "lo": 30.0,
+   "hi": 50.0,
+   "k": "combine-smallgrain",
+   "c": "harvest"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Custom Farming Corn",
+   "u": "acre",
+   "a": 170.0,
+   "md": 170.0,
+   "lo": 170.0,
+   "hi": 170.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Custom Farming Soybean",
+   "u": "acre",
+   "a": 100.0,
+   "md": 100.0,
+   "lo": 100.0,
+   "hi": 100.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Custom Farming Small Grains",
+   "u": "acre",
+   "a": 125.0,
+   "md": 125.0,
+   "lo": 125.0,
+   "hi": 125.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Hauling Grain - Local",
+   "u": "bushel",
+   "a": 0.19,
+   "md": 0.2,
+   "lo": 0.1,
+   "hi": 0.35,
+   "c": "hauling"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Hauling Grain - Long Distance",
+   "u": "bushel",
+   "a": 0.39,
+   "md": 0.4,
+   "lo": 0.18,
+   "hi": 0.6,
+   "c": "hauling"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Storing Grains",
+   "u": "bushel / month",
+   "a": 0.07,
+   "md": 0.08,
+   "lo": 0.03,
+   "hi": 0.12,
+   "k": "store-bin-month",
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Drying Grains",
+   "u": "point",
+   "a": 0.07,
+   "md": 0.07,
+   "lo": 0.03,
+   "hi": 0.12,
+   "c": "harvest"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Grinding Feed",
+   "u": "cwt",
+   "a": 0.95,
+   "md": 0.95,
+   "lo": 0.4,
+   "hi": 1.5,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Mixing Feed",
+   "u": "cwt",
+   "a": 2.0,
+   "md": 2.0,
+   "lo": 2.0,
+   "hi": 2.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Grinding and Mixing Feed",
+   "u": "cwt",
+   "a": 2.13,
+   "md": 2.13,
+   "lo": 0.75,
+   "hi": 3.5,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Soil Testing",
+   "u": "sample",
+   "a": 19.25,
+   "md": 15.0,
+   "lo": 8.0,
+   "hi": 40.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Nutrient Management Planning",
+   "u": "acre",
+   "a": 8.1,
+   "md": 3.0,
+   "lo": 2.0,
+   "hi": 30.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "General Farm Labor",
+   "u": "hour",
+   "a": 20.37,
+   "md": 20.0,
+   "lo": 15.0,
+   "hi": 40.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Skilled Farm Labor",
+   "u": "hour",
+   "a": 30.73,
+   "md": 25.0,
+   "lo": 15.0,
+   "hi": 90.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Machinery Repair",
+   "u": "hour",
+   "a": 103.34,
+   "md": 100.0,
+   "lo": 49.4,
+   "hi": 200.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Machinery Operation",
+   "u": "hour",
+   "a": 34.73,
+   "md": 30.0,
+   "lo": 25.0,
+   "hi": 75.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Backhoe Rental",
+   "u": "hour",
+   "a": 118.75,
+   "md": 125.0,
+   "lo": 75.0,
+   "hi": 150.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Bobcat Rental",
+   "u": "hour",
+   "a": 95.57,
+   "md": 87.5,
+   "lo": 44.59,
+   "hi": 150.0,
+   "k": "skid-rent",
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Bulldozer Rental",
+   "u": "hour",
+   "a": 120.0,
+   "md": 100.0,
+   "lo": 100.0,
+   "hi": 160.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Bush Hogging",
+   "u": "hour",
+   "a": 84.3,
+   "md": 60.0,
+   "lo": 17.5,
+   "hi": 150.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Excavator Rental",
+   "u": "hour",
+   "a": 100.22,
+   "md": 100.0,
+   "lo": 50.0,
+   "hi": 160.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Tractor Rental- <80 HP",
+   "u": "hour",
+   "a": 40.13,
+   "md": 32.4,
+   "lo": 23.0,
+   "hi": 65.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Tractor Rental- 80-120 HP",
+   "u": "hour",
+   "a": 54.5,
+   "md": 54.5,
+   "lo": 34.0,
+   "hi": 75.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Tractor Rental 120-160 HP",
+   "u": "hour",
+   "a": 57.63,
+   "md": 47.9,
+   "lo": 45.0,
+   "hi": 80.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Tractor Rental >160 HP",
+   "u": "hour",
+   "a": 74.08,
+   "md": 69.65,
+   "lo": 57.0,
+   "hi": 100.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Posthole Digging",
+   "u": "hole",
+   "a": 4.67,
+   "md": 5.0,
+   "lo": 4.0,
+   "hi": 5.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Post Driving",
+   "u": "hole",
+   "a": 7.25,
+   "md": 7.25,
+   "lo": 2.5,
+   "hi": 12.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Snow Removal",
+   "u": "hour",
+   "a": 138.72,
+   "md": 125.0,
+   "lo": 50.0,
+   "hi": 250.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Trenching",
+   "u": "foot",
+   "a": 4.25,
+   "md": 4.0,
+   "lo": 4.0,
+   "hi": 5.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Clearing Land",
+   "u": "hour",
+   "a": 187.5,
+   "md": 175.0,
+   "lo": 150.0,
+   "hi": 250.0,
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Mowing CRP Acres",
+   "u": "acre",
+   "a": 26.42,
+   "md": 25.0,
+   "lo": 13.5,
+   "hi": 50.0,
+   "k": "mow-crp",
+   "c": "other"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Mowing",
+   "u": "acre",
+   "a": 45.65,
+   "md": 27.5,
+   "lo": 13.5,
+   "hi": 200.0,
+   "c": "hay"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Tree Planting",
+   "u": "plant",
+   "a": 47.5,
+   "md": 47.5,
+   "lo": 3.0,
+   "hi": 92.0,
+   "c": "planting"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Vegetative Buffer Planting",
+   "u": "acre",
+   "a": 67.5,
+   "md": 67.5,
+   "lo": 35.0,
+   "hi": 100.0,
+   "c": "planting"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Livestock Hauling w/ Trailer",
+   "u": "loaded mile",
+   "a": 3.37,
+   "md": 3.5,
+   "lo": 2.6,
+   "hi": 4.0,
+   "c": "livestock"
+  },
+  {
+   "s": "Custom work charges",
+   "o": "Honey Bee Hive Rental",
+   "u": "hive",
+   "a": 80.0,
+   "md": 80.0,
+   "lo": 60.0,
+   "hi": 100.0,
+   "c": "other"
+  }
+ ],
+ "counts": false,
+ "page": false,
+ "states": [
+  "MD",
+  "DE"
+ ]
+}
