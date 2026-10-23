@@ -9,7 +9,7 @@ coverage towns, rain-gauge town names), so a town page with no known point is si
 offered. Nothing is fetched. No prices are read: a link and a distance, nothing that moves
 daily except which towns have a page.
 
-    nearest(root, lat, lon, k=3, max_mi=40) -> [{"name", "st", "url", "mi"}]
+    nearest(root, lat, lon, k=3, max_mi=60) -> [{"name", "st", "url", "mi"}]
     links_html(root, lat, lon, county_state, lead) -> '<p>...</p>' or ''
 """
 import glob
@@ -22,7 +22,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 TOWN_T = re.compile(r"Cash Grain Bids in (.+), ([A-Z]{2}) Today")
-MAX_MI = 40
+MAX_MI = 60
 _CACHE = {}
 
 

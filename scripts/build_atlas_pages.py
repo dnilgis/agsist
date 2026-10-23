@@ -1146,7 +1146,7 @@ def sales_facts(W, f, st):
 
 
 def sales_sentence(lab, sf):
-    """'Barron County: 42 recorded farm sales, Oct 2025 to Sep 2026, median $5,578 an acre.'"""
+    """'Barron County, WI: 42 recorded farm sales, Oct 2025 to Sep 2026, median $5,578 an acre.'"""
     return "%s: %d recorded farm sale%s, %s, median %s an acre." % (lab, sf["n"], "" if sf["n"] == 1 else "s", sf["span"], money(sf["med"]))
 
 
@@ -1859,7 +1859,7 @@ def county_page(W, f, d, stamp):
     meta_desc = county_desc(desc)
     sfacts = sales_facts(W, f, st)
     if sfacts:
-        meta_desc = sales_desc(lab, sfacts, rec)
+        meta_desc = sales_desc("%s, %s" % (lab, st), sfacts, rec)
     thin = is_thin(rec)
     if thin:
         W.thin.add(f)
@@ -2292,7 +2292,7 @@ def county_page(W, f, d, stamp):
                 "hay": "Hay, %s price received" % stn}
     sales_faq_html = ""
     if sfacts:
-        q_, a_ = sales_faq(lab, sfacts)
+        q_, a_ = sales_faq("%s, %s" % (lab, stn), sfacts)
         sales_faq_html = '<h3 id="sales-faq">%s</h3><p>%s</p>' % (esc(q_), esc(a_))
     town_links = NT.links_html(W.root, ctr[0], ctr[1], st, "Cash bids by town near the middle of %s:" % esc(lab), "note") if ctr else ""
     C_GRAIN = ('<section class="card" aria-labelledby="c-grain"><h2 id="c-grain">Grain and prices <small>within 50 miles</small></h2>'
