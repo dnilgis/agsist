@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>AGSIST Wire: What Just Moved</title>
-    <link>https://agsist.com/news</link>
+    <link>https://agsist.com/daily</link>
     <description>Dated grain and livestock market events the moment they are measurable: USDA report surprises, one-year positioning extremes, 52-week highs and lows, crop rating swings. Measured, not aggregated.</description>
     <language>en-us</language>
     <lastBuildDate>Thu, 15 Oct 2026 00:23:22 +0000</lastBuildDate>
@@ -17,7 +17,7 @@
     </item>
     <item>
       <title>October WASDE: 2026/27 corn ending stocks came in bearish</title>
-      <link>https://agsist.com/whats-priced-in</link>
+      <link>https://agsist.com/usda-calendar#priced-in</link>
       <description>Trade looked for 1.677 bil bu; USDA printed 1.849 bil bu, +10.3% versus the survey average, inside the range, near the top. 3 of 7 graded figures in line. 1 had no trade estimate.</description>
       <guid isPermaLink="false">agsist-news-wasde:2026-10-09:2026/27 corn ending stocks</guid>
       <pubDate>Fri, 09 Oct 2026 12:00:00 +0000</pubDate>
@@ -57,7 +57,7 @@
     </item>
     <item>
       <title>September Grain Stocks: Corn stocks, all positions, Sept 1 came in bearish</title>
-      <link>https://agsist.com/whats-priced-in</link>
+      <link>https://agsist.com/usda-calendar#priced-in</link>
       <description>Trade looked for 1.918 B bu; USDA printed 2.095 B bu — +9.2% versus the survey.</description>
       <guid isPermaLink="false">agsist-news-wasde:2026-09-30:Corn stocks, all positions, Sept 1</guid>
       <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
@@ -145,7 +145,7 @@
     </item>
     <item>
       <title>September WASDE: 2026/27 soybean yield came in bearish</title>
-      <link>https://agsist.com/whats-priced-in</link>
+      <link>https://agsist.com/usda-calendar#priced-in</link>
       <description>Trade looked for 52.5 bu/acre; USDA printed 52.8 bu/acre — +0.6% versus the survey.</description>
       <guid isPermaLink="false">agsist-news-wasde:2026-09-11:2026/27 soybean yield</guid>
       <pubDate>Fri, 11 Sep 2026 12:00:00 +0000</pubDate>

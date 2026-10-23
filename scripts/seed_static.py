@@ -34,6 +34,7 @@ import re
 import sys
 from datetime import datetime, timezone
 
+from moved_pages import repoint  # links to the pages merged Oct 22, 2026 go to their new home
 import pricefmt  # grain price text, the twin of components/util.js AG.px
 from contract_calendar import is_expired, _parse as _contract_ym
 try:
@@ -964,59 +965,59 @@ def hero_futures_seeds(q, fetched):
 # --- /news -------------------------------------------------------------------
 NEWS_KIND = {"usda": "USDA", "positioning": "Positioning", "board": "Board",
              "crop": "Crop", "weather": "Weather"}
-NEWS_MAX = 10
+NEWS_MAX = 30    # newest lines baked into /daily (the wire file keeps more)
+NEWS_OPEN = 5    # shown open on /daily; the rest behind "Show older"
 DOW = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 MONFULL = ["January", "February", "March", "April", "May", "June", "July",
            "August", "September", "October", "November", "December"]
 
 
 def seed_news(today):
+    """What just moved, baked into /daily (Oct 22, 2026: /news merged into the Daily page).
+    Every line carries its own date, so an old line is still a true dated fact: the list
+    is never blanked for age. The stamp names the newest line, not the last time the
+    file was written (a quiet wire leaves the file alone)."""
     d = _load_json("data/news.json")
-    upd = _iso_date((d or {}).get("updated"))
     seeds = {}
-    datemod = None
-    if not d or _stale(upd, today, "news"):
-        why = (f"the wire file was last written {_mdy(upd)}" if upd else "the wire file is missing")
+    items = [i for i in ((d or {}).get("items") or []) if isinstance(i, dict)][:NEWS_MAX]
+    if not d:
         seeds["newsupd"] = "-"
-        seeds["newslist"] = ('\n      <div class="nw-empty">No current items: ' + why +
-                             '. The <a href="/daily" style="color:var(--gold)">morning briefing</a> runs every morning regardless.</div>\n    ')
-    else:
-        u = str(d.get("updated"))
-        seeds["newsupd"] = f"Updated {_mdy(upd)}, {u[11:16]} UTC"
-        datemod = upd.isoformat()
-        items = (d.get("items") or [])[:NEWS_MAX]
-        if not items:
-            seeds["newslist"] = ('\n      <div class="nw-empty">Nothing has moved enough to post as of ' + _mdy(upd) +
-                                 '. Quiet markets can go days without one.</div>\n    ')
-        else:
-            out, last = ["\n"], None
-            for i in items:
-                ts = str(i.get("ts") or "")
-                day = _iso_date(ts)
-                if day and day != last:
-                    out.append(f'      <div class="nw-day">{DOW[day.weekday()]}, {MONFULL[day.month - 1]} {day.day}, {day.year}</div>\n')
-                    last = day
-                url = str(i.get("url") or "/")
-                if not url.startswith("/"):
-                    url = "/"                       # the wire links to its own pages only
-                clock = "" if i.get("day_only") or len(ts) < 16 else f'<span class="nw-time">{ts[11:16]} UTC</span>'
-                kind = NEWS_KIND.get(i.get("kind"), i.get("kind") or "")
-                out.append(
-                    f'      <a class="nw-item{" is-high" if i.get("significance") == "high" else ""}" href="{H.escape(url, quote=True)}">'
-                    f'<div class="nw-top"><span class="nw-kind">{_e(kind)}</span>{clock}</div>'
-                    f'<div class="nw-h">{_e(i.get("headline") or "")}</div>'
-                    f'<p class="nw-d">{_e(i.get("detail") or "")}</p>'
-                    + (f'<div class="nw-src">{_e(i["source"])}</div>' if i.get("source") else "")
-                    + "</a>\n")
-            out.append("    ")
-            seeds["newslist"] = "".join(out)
-
-    def stamp(t):
-        if not datemod:
-            return t
-        return re.sub(r'("dateModified":")(\d{4}-\d{2}-\d{2})(")',
-                      lambda m: m.group(1) + datemod + m.group(3), t, count=1)
-    return _write_seeds("news.html", seeds, stamp)
+        seeds["newslist"] = ('\n      <div class="nw-empty">The list could not be read just now. '
+                             'The briefing above is unaffected.</div>\n    ')
+        return _write_seeds("daily.html", seeds)
+    newest = _iso_date(str(items[0].get("ts") or "")) if items else None
+    seeds["newsupd"] = f"Newest line {_mdy(newest)}" if newest else "-"
+    if not items:
+        seeds["newslist"] = ('\n      <div class="nw-empty">Nothing has moved enough to post yet. '
+                             'Quiet markets can go a week or more without one.</div>\n    ')
+        return _write_seeds("daily.html", seeds)
+    out, last = ["\n"], None
+    for n, i in enumerate(items):
+        if n == NEWS_OPEN:
+            out.append(f'      <details class="nw-more"><summary>Show {len(items) - NEWS_OPEN} older</summary>\n')
+            last = None
+        ts = str(i.get("ts") or "")
+        day = _iso_date(ts)
+        if day and day != last:
+            out.append(f'      <div class="nw-day">{DOW[day.weekday()]}, {MONFULL[day.month - 1]} {day.day}, {day.year}</div>\n')
+            last = day
+        url = repoint(str(i.get("url") or "/"))
+        if not url.startswith("/"):
+            url = "/"                       # the wire links to its own pages only
+        clock = "" if i.get("day_only") or len(ts) < 16 else f'<span class="nw-time">{ts[11:16]} UTC</span>'
+        kind = NEWS_KIND.get(i.get("kind"), i.get("kind") or "")
+        out.append(
+            f'      <a class="nw-item{" is-high" if i.get("significance") == "high" else ""}" href="{H.escape(url, quote=True)}">'
+            f'<div class="nw-top"><span class="nw-kind">{_e(kind)}</span>{clock}</div>'
+            f'<div class="nw-h">{_e(i.get("headline") or "")}</div>'
+            f'<p class="nw-d">{_e(i.get("detail") or "")}</p>'
+            + (f'<div class="nw-src">{_e(i["source"])}</div>' if i.get("source") else "")
+            + "</a>\n")
+    if len(items) > NEWS_OPEN:
+        out.append("      </details>\n")
+    out.append("    ")
+    seeds["newslist"] = "".join(out)
+    return _write_seeds("daily.html", seeds)
 
 
 # --- /conditions ---------------------------------------------------------------

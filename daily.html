@@ -58,7 +58,7 @@
       "@type": "WebPage",
       "@id": "https://agsist.com/daily#webpage",
       "url": "https://agsist.com/daily",
-      "dateModified": "2026-10-22",
+      "dateModified": "2026-10-23",
       "name": "Daily Ag Briefing: Market Morning Report | AGSIST",
       "description": "Free morning agricultural market briefing for US ag producers across grain, livestock, dairy, and specialty operations. Published every morning before the market open, weekends included.",
       "isPartOf": { "@id": "https://agsist.com/#website" }
@@ -82,6 +82,11 @@
           "@type": "Question",
           "name": "How do I get the daily briefing by email?",
           "acceptedAnswer": { "@type": "Answer", "text": "Tap ‘Get it in your inbox’ on this page and enter your email. It arrives each morning before the open, and the same briefing is posted here. Unsubscribe anytime." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the What just moved list?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A dated line each time a number AGSIST reads makes a real move between briefings: a USDA figure that missed the trade, funds at a one-year extreme, a contract outside its 52-week range, a crop rating that swung. Each line links to the page that shows the work. It has an RSS feed at agsist.com/news.xml." }
         }
       ]
     }
@@ -101,6 +106,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-hero-left .dv3-eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
 .dv3-hero-left .dv3-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--gold-fill,var(--gold));}
 .dv3-hero-left .dv3-sub{font-size:.82rem;color:var(--text-dim);line-height:1.55;margin:0;}
+.dv3-hero-left .dv3-sub a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
 .dv3-hero-meta{font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:var(--text-muted);margin-top:.4rem;letter-spacing:.04em;}
 .dv3-hero-meta b{color:var(--green);font-weight:700;}
 .dv3-subscribe-btn{padding:.5rem 1.1rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;cursor:pointer;text-transform:none;letter-spacing:0;white-space:nowrap;transition:filter .15s;min-height:44px}
@@ -383,6 +389,29 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 .dv3-modal-fine{font-size:0.775rem;color:var(--text-muted);text-align:center;margin-top:.5rem;}
 
 /* FAQ */
+.nw{margin:0 0 2.2rem;scroll-margin-top:84px}
+.nw-h2{font-family:var(--font-display);font-size:1.25rem;font-weight:800;color:var(--text);margin:0 0 .35rem}
+.nw-lede{color:var(--text-dim);font-size:.95rem;line-height:1.6;margin:0 0 .3rem;max-width:64ch}
+.nw-meta{font-family:'JetBrains Mono',monospace;font-size:.8125rem;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:.2rem .9rem;align-items:center;margin:0 0 .4rem}
+.nw-meta a{color:var(--gold);display:inline-flex;align-items:center;min-height:44px;text-decoration:underline;text-decoration-color:var(--border-2);text-underline-offset:4px}
+.nw-day{font-family:'JetBrains Mono',monospace;font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);margin:1.1rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+.nw-item{display:block;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--border-2);border-radius:10px;padding:.8rem .9rem;margin:0 0 .55rem}
+.nw-item:hover{border-color:var(--border-2);border-left-color:var(--gold)}
+.nw-item:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.nw-item.is-high{border-left-color:var(--gold)}
+.nw-top{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.25rem}
+.nw-kind{font-family:'JetBrains Mono',monospace;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.nw-time{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--text-muted);margin-left:auto}
+.nw-h{font-size:1rem;font-weight:700;line-height:1.35;margin:0 0 .2rem;color:var(--text)}
+.nw-d{font-size:.92rem;line-height:1.55;color:var(--text-dim);margin:0}
+.nw-src{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--text-muted);margin-top:.35rem}
+.nw-empty{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;color:var(--text-dim);line-height:1.6}
+.nw-more>summary{display:inline-flex;align-items:center;min-height:44px;padding:0 1rem;border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.77rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);cursor:pointer;list-style:none;margin:.2rem 0 .4rem}
+.nw-more>summary::-webkit-details-marker{display:none}
+.nw-more[open]>summary{display:none}
+.nw-note{color:var(--text-muted);font-size:.85rem;line-height:1.6;margin:.6rem 0 0;max-width:70ch}
+.nw-note b{color:var(--text-dim)}
+@media(max-width:520px){.nw-time{margin-left:0;width:100%}}
 .dv3-faq{border-top:1px solid var(--border);}
 .dv3-faq-item{border-bottom:1px solid var(--border);}
 .dv3-faq-item summary{cursor:pointer;padding:.75rem .1rem;font-size:1rem;font-weight:600;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between;}
@@ -491,7 +520,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
     <div class="dv3-hero-left">
       <div class="dv3-eyebrow page-kicker"><span class="dv3-eyebrow-dot"></span> AGSIST Daily &middot; Every morning before the open</div>
       <h1>Daily Ag Briefing</h1>
-      <p class="dv3-sub page-lede">Grain and livestock markets in a few minutes, before the open. Free, no account needed.</p>
+      <p class="dv3-sub page-lede">Grain and livestock markets in a few minutes, before the open, and <a href="#moved">what just moved</a> since. Free, no account needed.</p>
       <div class="dv3-hero-meta" id="dv3-hero-meta" aria-live="polite"></div>
     </div>
     <button class="dv3-subscribe-btn" id="dv3-sub-btn"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Get it in your inbox</button>
@@ -504,6 +533,49 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
   <aside class="ya" data-your-area="daily" data-after="#dv3-today .dv3-quote-asof" hidden></aside><script src="/components/your-area.js?v=2" defer></script>
   <aside class="dl" data-daily-local data-before="#dv3-today .dv3-quotes" data-after="#dv3-today .dv3-quote-asof" hidden></aside><script src="/components/daily-local.js?v=2" defer></script>
   <p class="rp-promo" data-rain-print-promo="briefing" hidden></p><script src="/components/rain-print-promo.js?v=2" defer></script>
+
+  <section class="nw" id="moved" aria-labelledby="moved-h">
+    <h2 class="nw-h2" id="moved-h">What just moved</h2>
+    <p class="nw-lede">Between briefings, one dated line each time a number this site reads makes a real move: a USDA figure that missed the trade, funds at a one-year extreme, a contract outside its 52-week range, a crop rating that swung. Each line links to the page that shows the work.</p>
+    <p class="nw-meta"><span id="nw-updated"><!--SEED:newsupd-->Newest line Oct 9, 2026<!--/SEED--></span> <a href="/news.xml">RSS feed</a></p>
+    <div class="nw-list" id="nw-list"><!--SEED:newslist-->
+      <div class="nw-day">Friday, October 9, 2026</div>
+      <a class="nw-item" href="/corn-futures-prices"><div class="nw-top"><span class="nw-kind">Board</span></div><div class="nw-h">December corn down 3.9% on the day</div><p class="nw-d">Closed $4.80½, −19¾¢ on the session.</p><div class="nw-src">Yahoo Finance close via the AGSIST board</div></a>
+      <a class="nw-item is-high" href="/usda-calendar#priced-in"><div class="nw-top"><span class="nw-kind">USDA</span></div><div class="nw-h">October WASDE: 2026/27 corn ending stocks came in bearish</div><p class="nw-d">Trade looked for 1.677 bil bu; USDA printed 1.849 bil bu, +10.3% versus the survey average, inside the range, near the top. 3 of 7 graded figures in line. 1 had no trade estimate.</p><div class="nw-src">USDA, graded against the pre-report survey</div></a>
+      <div class="nw-day">Thursday, October 8, 2026</div>
+      <a class="nw-item" href="/wheat-futures-prices"><div class="nw-top"><span class="nw-kind">Board</span></div><div class="nw-h">KC wheat down 2.6% on the day</div><p class="nw-d">Settled $7.37, -19.75 cents on the session.</p><div class="nw-src">CME settlement via the AGSIST board</div></a>
+      <div class="nw-day">Wednesday, October 7, 2026</div>
+      <a class="nw-item" href="/wheat-futures-prices"><div class="nw-top"><span class="nw-kind">Board</span></div><div class="nw-h">Wheat down 2.6% on the day</div><p class="nw-d">Settled $6.86, -18.25 cents on the session.</p><div class="nw-src">CME settlement via the AGSIST board</div></a>
+      <div class="nw-day">Sunday, October 4, 2026</div>
+      <a class="nw-item" href="/conditions"><div class="nw-top"><span class="nw-kind">Crop</span></div><div class="nw-h">Corn ratings fell 3 points</div><p class="nw-d">54% good-to-excellent, 3 points down on the week.</p><div class="nw-src">USDA NASS Crop Progress</div></a>
+      <details class="nw-more"><summary>Show 16 older</summary>
+      <div class="nw-day">Wednesday, September 30, 2026</div>
+      <a class="nw-item" href="/wheat-futures-prices"><div class="nw-top"><span class="nw-kind">Board</span></div><div class="nw-h">Wheat down 2.7% on the day</div><p class="nw-d">Settled $6.76, -18.5 cents on the session.</p><div class="nw-src">CME settlement via the AGSIST board</div></a>
+      <a class="nw-item is-high" href="/usda-calendar#priced-in"><div class="nw-top"><span class="nw-kind">USDA</span></div><div class="nw-h">September Grain Stocks: Corn stocks, all positions, Sept 1 came in bearish</div><p class="nw-d">Trade looked for 1.918 B bu; USDA printed 2.095 B bu, +9.2% versus the survey.</p><div class="nw-src">USDA, graded against the pre-report survey</div></a>
+      <a class="nw-item" href="/corn-futures-prices"><div class="nw-top"><span class="nw-kind">Board</span></div><div class="nw-h">December corn down 3.2% on the day</div><p class="nw-d">Settled $5.05, -16.5 cents on the session.</p><div class="nw-src">CME settlement via the AGSIST board</div></a>
+      <div class="nw-day">Tuesday, September 29, 2026</div>
+      <a class="nw-item is-high" href="/cot"><div class="nw-top"><span class="nw-kind">Positioning</span></div><div class="nw-h">Managed money pushed its soybean meal net long to another one-year high</div><p class="nw-d">Net +207,578 contracts as of September 29, 2026, from +191,087 the week before.</p><div class="nw-src">CFTC Commitments of Traders</div></a>
+      <div class="nw-day">Tuesday, September 22, 2026</div>
+      <a class="nw-item is-high" href="/cot"><div class="nw-top"><span class="nw-kind">Positioning</span></div><div class="nw-h">Managed money pushed its soybeans net long to another one-year high</div><p class="nw-d">Net +265,159 contracts as of September 22, 2026, from +241,501 the week before.</p><div class="nw-src">CFTC Commitments of Traders</div></a>
+      <a class="nw-item is-high" href="/cot"><div class="nw-top"><span class="nw-kind">Positioning</span></div><div class="nw-h">Managed money pushed its soybean meal net long to another one-year high</div><p class="nw-d">Net +191,087 contracts as of September 22, 2026, from +183,111 the week before.</p><div class="nw-src">CFTC Commitments of Traders</div></a>
+      <a class="nw-item is-high" href="/corn-futures-prices"><div class="nw-top"><span class="nw-kind">Board</span></div><div class="nw-h">Corn took its 52-week high to $5.43</div><p class="nw-d">$5.43 a bushel, 7.0 cents above the $5.36 it made on 16 September.</p><div class="nw-src">CME settlement via the AGSIST board</div></a>
+      <div class="nw-day">Wednesday, September 16, 2026</div>
+      <a class="nw-item is-high" href="/corn-futures-prices"><div class="nw-top"><span class="nw-kind">Board</span></div><div class="nw-h">Corn took its 52-week high to $5.36</div><p class="nw-d">$5.36 a bushel, 2.0 cents above the $5.34 it made on 15 September.</p><div class="nw-src">CME settlement via the AGSIST board</div></a>
+      <a class="nw-item is-high" href="/soybean-futures-prices"><div class="nw-top"><span class="nw-kind">Board</span></div><div class="nw-h">Soybeans closed at a 52-week high</div><p class="nw-d">$13.19 a bushel, the highest it has settled in a year.</p><div class="nw-src">CME settlement via the AGSIST board</div></a>
+      <div class="nw-day">Tuesday, September 15, 2026</div>
+      <a class="nw-item" href="/cot"><div class="nw-top"><span class="nw-kind">Positioning</span></div><div class="nw-h">Managed money flipped net short in chicago wheat</div><p class="nw-d">Net +4,873 to -3,674 contracts in a week, as of September 15, 2026.</p><div class="nw-src">CFTC Commitments of Traders</div></a>
+      <a class="nw-item is-high" href="/cot"><div class="nw-top"><span class="nw-kind">Positioning</span></div><div class="nw-h">Managed money pushed its soybean meal net long to another one-year high</div><p class="nw-d">Net +183,111 contracts as of September 15, 2026, from +157,689 the week before.</p><div class="nw-src">CFTC Commitments of Traders</div></a>
+      <a class="nw-item is-high" href="/corn-futures-prices"><div class="nw-top"><span class="nw-kind">Board</span></div><div class="nw-h">Corn closed at a 52-week high</div><p class="nw-d">$5.34 a bushel, the highest it has settled in a year.</p><div class="nw-src">CME settlement via the AGSIST board</div></a>
+      <div class="nw-day">Friday, September 11, 2026</div>
+      <a class="nw-item is-high" href="/usda-calendar#priced-in"><div class="nw-top"><span class="nw-kind">USDA</span></div><div class="nw-h">September WASDE: 2026/27 soybean yield came in bearish</div><p class="nw-d">Trade looked for 52.5 bu/acre; USDA printed 52.8 bu/acre, +0.6% versus the survey.</p><div class="nw-src">USDA WASDE, graded against the pre-report survey</div></a>
+      <div class="nw-day">Tuesday, September 8, 2026</div>
+      <a class="nw-item is-high" href="/cot"><div class="nw-top"><span class="nw-kind">Positioning</span></div><div class="nw-h">Managed money holds its biggest corn net long in a year</div><p class="nw-d">Net +414,459 contracts as of September 08, 2026, from +401,003 the week before.</p><div class="nw-src">CFTC Commitments of Traders</div></a>
+      <a class="nw-item is-high" href="/cot"><div class="nw-top"><span class="nw-kind">Positioning</span></div><div class="nw-h">Managed money holds its biggest soybeans net long in a year</div><p class="nw-d">Net +257,258 contracts as of September 08, 2026, from +234,920 the week before.</p><div class="nw-src">CFTC Commitments of Traders</div></a>
+      <a class="nw-item is-high" href="/cot"><div class="nw-top"><span class="nw-kind">Positioning</span></div><div class="nw-h">Managed money holds its biggest soybean meal net long in a year</div><p class="nw-d">Net +157,689 contracts as of September 08, 2026, from +157,179 the week before.</p><div class="nw-src">CFTC Commitments of Traders</div></a>
+      </details>
+    <!--/SEED--></div>
+    <p class="nw-note"><b>What earns a line.</b> Only a move the data itself defines: a bound the source file already carries (a 52-week high, a one-year positioning extreme, last week&rsquo;s crop rating) or a plain percentage move on the day. No stories from other outlets. Quiet markets can go a week or more without one.</p>
+  </section>
 
   <div class="dv3-arc-label" style="display:flex;align-items:center;justify-content:space-between;">
     <span>Recent briefings &middot; archive</span>
@@ -531,6 +603,10 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
     <details class="dv3-faq-item">
       <summary>How do I get the daily briefing by email?</summary>
       <p>Tap &#8216;Get it in your inbox&#8217; on this page and enter your email. It arrives each morning before the open, and the same briefing is posted here. Unsubscribe anytime.</p>
+    </details>
+    <details class="dv3-faq-item">
+      <summary>What is the What just moved list?</summary>
+      <p>A dated line each time a number AGSIST reads makes a real move between briefings: a USDA figure that missed the trade, funds at a one-year extreme, a contract outside its 52-week range, a crop rating that swung. Each line links to the page that shows the work. It has an RSS feed at <a href="/news.xml">agsist.com/news.xml</a>.</p>
     </details>
   </div>
 
@@ -1290,6 +1366,42 @@ renderArchive();
     }
   }catch(e){/* old browsers without URLSearchParams */}
 })();
+})();
+</script>
+<script>
+/* What just moved: the baked list (seed_static.py seed_news) refreshed from data/news.json.
+   Same shape as the bake: newest 5 open, older lines behind "Show older", dates from each line. */
+(function(){
+  'use strict';
+  var box=document.getElementById('nw-list'), upd=document.getElementById('nw-updated');
+  if(!box||!window.fetch) return;
+  var KIND={usda:'USDA',positioning:'Positioning',board:'Board',crop:'Crop',weather:'Weather'};
+  var MOVED={'/news':'/daily#moved','/conditions-yield':'/conditions#crop-size','/whats-priced-in':'/usda-calendar#priced-in','/scorecard':'/usda-calendar#scorecard','/pod-counts':'/crop-tour#pod-counts','/hail/':'/hail-map#history','/cash-bids/states':'/basis#states','/elevators':'/list-your-elevator#coverage'};
+  var DOW=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function nd(t){return String(t==null?'':t).replace(/\s*\u2014\s*/g,', ');}
+  function day(ts){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(ts||'');if(!m)return '';var d=new Date(Date.UTC(+m[1],m[2]-1,+m[3]));return DOW[d.getUTCDay()]+', '+MON[d.getUTCMonth()]+' '+(+m[3])+', '+m[1];}
+  function link(u){u=String(u||'/');if(u.charAt(0)!=='/')return '/';var m=/^([^?#]*)(\?[^#]*)?(#.*)?$/.exec(u),p=m[1].replace(/\.html$/,'');if(p==='/hail')p='/hail/';var t=MOVED[p];if(!t)return u;var b=t.split('#');return b[0]+(m[2]||'')+(m[3]&&m[3]!=='#'?m[3]:'#'+b[1]);}
+  fetch('/data/news.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
+    var items=((d&&d.items)||[]).slice(0,30);
+    if(!items.length) return;
+    var h='',last='',open=5;
+    items.forEach(function(i,n){
+      if(n===open){h+='<details class="nw-more"><summary>Show '+(items.length-open)+' older</summary>';last='';}
+      var dl=day(i.ts);
+      if(dl&&dl!==last){h+='<div class="nw-day">'+esc(dl)+'</div>';last=dl;}
+      var clock=(i.day_only||String(i.ts||'').length<16)?'':'<span class="nw-time">'+esc(String(i.ts).slice(11,16))+' UTC</span>';
+      h+='<a class="nw-item'+(i.significance==='high'?' is-high':'')+'" href="'+esc(link(i.url))+'"><div class="nw-top"><span class="nw-kind">'+esc(KIND[i.kind]||i.kind||'')+'</span>'+clock+'</div>'
+        +'<div class="nw-h">'+esc(nd(i.headline))+'</div><p class="nw-d">'+esc(nd(i.detail))+'</p>'+(i.source?'<div class="nw-src">'+esc(nd(i.source))+'</div>':'')+'</a>';
+    });
+    if(items.length>open) h+='</details>';
+    var wasOpen=box.querySelector('details[open]');
+    box.innerHTML=h;
+    if(wasOpen){var dd=box.querySelector('details');if(dd)dd.open=true;}
+    var first=day(items[0].ts);
+    if(upd&&first) upd.textContent='Newest line '+first.replace(/^\w+, /,'').replace(/^(\w{3})\w*/,'$1');
+  }).catch(function(){});
 })();
 </script>
   <script src="/components/next-links.js?v=3" defer></script>
