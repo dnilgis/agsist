@@ -139,8 +139,8 @@ test("Sig, 2026-10-14: the first-batch price holds for everyone on the waitlist,
 const ORDER = ["gauge", "rg-faq-h", "waitlist", "rain-print"];
 const sec = (id) => { const i = main.indexOf(`id="${id}"`); assert.ok(i > 0, "section " + id); const nx = ORDER[ORDER.indexOf(id) + 1]; return main.slice(i, nx ? main.indexOf(`id="${nx}"`) : main.indexOf('class="rg-by"')); };
 test("the page runs in order: the gauge, its waitlist right after the intro, questions, second form, then Rain Print", () => {
-  // Oct 23 (Sig): one hook up top, the first-batch price form under it, then "why get on the list now"
-  const at = ['id="gauge"', '<h1 id="rg-gauge-h">The station is 12 miles away. Your field got 2 inches nobody recorded.</h1>', 'class="rg-lede"', 'id="rg-form-1"', 'class="rg-side"', 'id="now"',
+  // Oct 23 (Sig): a plain headline, the waitlist form with the first-batch price promise, then "what the waitlist gets you"
+  const at = ['id="gauge"', '<h1 id="rg-gauge-h">A rain gauge that keeps its own log</h1>', 'class="rg-lede"', 'id="rg-form-1"', 'class="rg-side"', 'id="now"',
     'id="rg-faq-h"', 'id="rg-form-2"', 'id="rain-print"', 'class="rg-by"'].map((k) => main.indexOf(k));
   for (let i = 0; i < at.length; i++) assert.ok(at[i] > 0 && (i === 0 || at[i] > at[i - 1]), "order at " + i);
   assert.equal((main.match(/<h1\b/g) || []).length, 1);
@@ -164,7 +164,7 @@ test("only two things: no second gauge, concept, second list, or anything Sig dr
 });
 test("the existing gauge keeps the live page's own words", () => {
   const g = text(sec("gauge"));
-  for (const s of ["The station is 12 miles away. Your field got 2 inches nobody recorded.", "Scan the code on this gauge, take a photo, and the rain goes into your log for that field, on your phone. No battery, no app. Or read it by eye like any gauge.",
+  for (const s of ["A rain gauge that keeps its own log", "Read it like any gauge, or scan the code and the reading goes into your log for that field. No battery, no app.",
     "a prototype on my bench in Chetek", "Wood post or T-post", "How it would work", "Why I’m building it", "Who it’s for", "A season next to a standard gauge"])
     assert.ok(g.includes(s), "kept: " + s);
   assert.ok(!/reports on its own|on batteries|every tip|dashboard|subscription/i.test(g));

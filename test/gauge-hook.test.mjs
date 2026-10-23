@@ -1,8 +1,8 @@
 /* The rain gauge hook and the "auto" promo slot (Sig, Oct 23 2026: "make a good hook for people to sign up for
  * the rain gauge, first batch intro price ... make it sell itself somehow"). Honest only: no count, no deadline,
  * no countdown, no popup, never "founding", no accuracy claim.
- *   1. One hook, gauge_hook in data/rain-print.json: the /rain-gauge headline, the promo lines, the line under
- *      /rain-print and the Next cards all say it word for word.
+ *   1. One hook, gauge_hook in data/rain-print.json: the promo lines, the line under /rain-print and the Next
+ *      cards say it word for word. Oct 23, Sig: "something less dramatic or cringey": a plain, calm line.
  *   2. "auto": rain, weather, PRF, ARC/PLC and Fast Facts pages show Rain Print through Dec 24, nothing on
  *      Christmas Day, the gauge hook Dec 26 through May 31, then Rain Print again. Bids, markets and rent pages
  *      never take "auto"; their gift line ends Dec 9. One cross-promo a page.
@@ -120,8 +120,11 @@ test("one copy of the promo script: every page loads the same version", () => {
 });
 
 test("the hook is said the same everywhere the gauge is linked with words of its own", () => {
+  // the /rain-gauge headline is its own plain line (Sig, Oct 23: "something less dramatic"); the hook says the same thing
   const g = read("rain-gauge.html");
-  assert.ok(g.includes('<h1 id="rg-gauge-h">' + J.gauge_hook.line + "</h1>"), "the /rain-gauge headline is the hook");
+  assert.ok(g.includes('<h1 id="rg-gauge-h">A rain gauge that keeps its own log</h1>'));
+  assert.equal(J.gauge_hook.line, "I'm building a rain gauge that keeps a log for each field.");
+  assert.equal(J.gauge_hook.link, "Join the waitlist");
   assert.ok(read("rain-print.html").includes(J.gauge_hook.line + ' <a href="/rain-gauge" style="color:var(--brand)">' + J.gauge_hook.link + "</a>."), "the line under /rain-print");
   const next = JSON.parse(read("data/next-links.json"));
   let n = 0;
@@ -141,12 +144,14 @@ test("/rain-gauge: honest numbers only, no count, no timer, no popup, no foundin
   assert.ok(!/\b(days|hours) (left|to go)|ends (on|in)|offer ends|deadline/i.test(h), "no deadline");
   // the price promise, said plainly at the top
   const top = h.slice(h.indexOf('id="rg-form-1"'), h.indexOf("</form>", h.indexOf('id="rg-form-1"')));
-  assert.match(top, /<h2 class="rg-form-h" id="rg-form-h-1">Get the first-batch price<\/h2>/);
-  assert.match(top, /No price is set yet\. It will be barely over my cost, and it holds even if the first batch runs out before your turn\./);
-  // why join now: the short list right after the hero
+  assert.match(top, /<h2 class="rg-form-h" id="rg-form-h-1">Get on the waitlist<\/h2>/);
+  assert.match(top, /No price is set yet\. It will be barely over my cost, and it holds even if the first batch runs out before your turn\. Free to join\./);
+  // what the waitlist gets you: the short list right after the hero, said plainly (no "why now" pitch)
+  assert.match(h, /<h3 class="sec-h" id="rg-now-h">What the waitlist gets you<\/h3>/);
+  assert.ok(!/why get on the list now|don.t miss|act now|reserve yours|be first in line/i.test(h), "no sales-pitch lines");
   const now = h.slice(h.indexOf('id="now"'), h.indexOf("</section>", h.indexOf('id="now"')));
   assert.equal((now.match(/<li>/g) || []).length, 4);
-  for (const k of ["first-batch price", "hear first", "good-faith lifetime warranty", "Made in Chetek"]) assert.ok(now.toLowerCase().includes(k.toLowerCase()), k);
+  for (const k of ["first-batch price", "No price is set yet", "hears before anyone else", "good-faith lifetime warranty", "Made in Chetek"]) assert.ok(now.toLowerCase().includes(k.toLowerCase()), k);
   // the Rain Print of your own field, said as not built yet
   assert.match(h, /a <a href="\/rain-print">Rain Print<\/a> of your own field, instead of the nearest weather station\. That part isn&rsquo;t built yet\./);
   // the confirmation never promises an email that no sender sends
