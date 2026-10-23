@@ -264,7 +264,7 @@ def page(ctx):
     nb_html = (" ".join(f'<a href="{h}">{e(n)}</a>' for n, h in nbrs)) if nbrs else ""
     more = " &middot; ".join(f'<a href="{h}">{t}</a>' for t, h in links)
     # The county's own rain page when it is live, else the state rain page (scripts/cross_links.py,
-    # Oct 19, 2026). Rain county pages come and go week to week: this build never reads data/rain,
+    # Oct 19, 2026). Rain county pages come and go day to day: this build never reads data/rain,
     # only whether the page is there, and county-rain.yml re-stamps the link when the rain set moves.
     rain = (f'<p class="prf-fine">{XL.rain_link(ROOT, rain_slug(RAIN_STATES[stc]), e(RAIN_STATES[stc]), sl, e(name))}</p>'
             if stc in RAIN_STATES else "")

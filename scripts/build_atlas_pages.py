@@ -1881,7 +1881,7 @@ def county_page(W, f, d, stamp):
     if ok(Sm):
         S5 += fact("Days with hail 1 inch or larger", f1(Sm["hail_1in_days_per_year"]) + " a year", "reports, %s–%s; a zero is no report, not proof of no hail" % (Sm["from"], Sm["to"]))
     # The county's own rain page when it is live, else the state rain page (scripts/cross_links.py,
-    # Oct 19, 2026). Rain county pages come and go week to week: this build never reads data/rain,
+    # Oct 19, 2026). Rain county pages come and go day to day: this build never reads data/rain,
     # only whether the page is there, and county-rain.yml re-stamps the link when the rain set moves.
     if st in RAIN_STATES:
         S5 += '<p class="note">%s</p>' % XL.rain_link(W.root, rain_slug(RAIN_STATES[st]), esc(RAIN_STATES[st]),

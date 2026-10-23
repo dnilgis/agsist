@@ -40,6 +40,21 @@ test("sitemap-rain.xml is in robots.txt; the rain folder has a budget; the workf
   assert.match(wf, /workflow_dispatch/);
 });
 
+// Sig, Oct 23 2026: the county rain pages rebuild every day (they were Mondays only).
+test("the rain pages rebuild every day, and the job watcher expects a run every day", () => {
+  const wf = readFileSync(ROOT + ".github/workflows/county-rain.yml", "utf8");
+  const crons = [...wf.matchAll(/- cron: "([^"]+)"/g)].map((m) => m[1]);
+  assert.ok(crons.includes("23 13 * * *"), "a run every day at 13:23 UTC: " + crons);
+  assert.ok(crons.includes("41 14 2 1 *"), "the Jan 2 finished-year run stays");
+  assert.ok(!crons.some((c) => /\*\s+[0-6](-[0-6])?$/.test(c)), "no weekday-only clock left: " + crons);
+  assert.doesNotMatch(wf, /Mondays/, "the workflow's own notes no longer say Mondays");
+  const ch = readFileSync(ROOT + "scripts/cron_health.py", "utf8");
+  assert.match(ch, /\("county-rain\.yml", \["23 13 \* \* \*", "41 14 2 1 \*"\], 240,/, "cron_health watches the same two clocks");
+  const fetch = readFileSync(ROOT + "scripts/fetch_county_rain.py", "utf8");
+  assert.match(fetch, /if today\.month == 1:\s+return today\.year - 1, f"\{today\.year - 1\}-12-31"/,
+    "every January run, daily now, still fetches the finished year so late reports land");
+});
+
 test("every shipped county page is small and has its answer in the HTML", () => {
   const dir = ROOT + "rain";
   if (!existsSync(dir)) return;
@@ -53,6 +68,9 @@ test("every shipped county page is small and has its answer in the HTML", () => 
       assert.ok(html.length < 25 * 1024, rel + " is over 25 KB");
       assert.match(html, /<p class="rc-answer"><b>\d+\.\d\d inch(es)?<\/b> of rain/, rel + " has no answer up top");
       assert.ok(!html.includes("—") && !html.includes("&mdash;"), rel + " has an em dash");
+      assert.match(html, /<p class="rc-asof">(As of [A-Z][a-z]{2} \d{1,2}, \d{4}, the latest day this [a-z]+ has reported|All of \d{4}, Jan 1 to Dec 31|\d{4}, Jan 1 to [A-Z][a-z]{2} \d{1,2}, the last day reported)<\/p>/, rel + " shows its data date");
+      assert.match(html, /read [A-Z][a-z]+ \d{1,2}, \d{4}; updated daily\./, rel + " says it is updated daily, with the day it was read");
+      assert.doesNotMatch(html, /rebuilt weekly|once a week/, rel + " still says weekly");
       assert.ok(locs.has("https://agsist.com/" + rel.replace(/\.html$/, "")), rel + " is not in sitemap-rain.xml");
     }
   }
