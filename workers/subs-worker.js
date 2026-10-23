@@ -5,6 +5,23 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.55 (2026-10-23): MONTHLY LAND SALE EMAIL (Sig, Oct 23: new list, sender
+ *   and schedule approved). /notice takes one more topic, landsales:<ZIP>:
+ *   <miles>, a 5-digit ZIP (not 00000) and a radius of 10, 25 or 50, asked
+ *   beside the recorded sales (Field Scout, the comp report, Fast Facts, the
+ *   Atlas county pages): one email on the 3rd of each month with the farm
+ *   sales recorded the month before within that radius
+ *   (scripts/send_land_alert.py, .github/workflows/land-alert.yml). A reader
+ *   may keep more than one ZIP or radius (each its own topic, NOTE_MAX caps).
+ *   It recurs, so it keeps one more field:
+ *     mo   "YYYY-MM", the newest month mailed, written by POST /notice-mark
+ *          {email, topic, month}. A landsales topic needs month there (a real
+ *          month, 2000 to next year); mo never moves back.
+ *   /notice-list returns mo on the rows that have it. The stop link carries
+ *   no ZIP (BUILD-RULES 10): /notice-unsubscribe with &topic=landsales asks
+ *   "Stop the monthly land sale email for this address?" and stops every
+ *   landsales topic of that address, nothing else. Every other topic and
+ *   route answers exactly as before. No new binding and no new secret.
  * v5.53 (2026-10-22): AGSIST.COM ADDRESSES (Sig, Oct 22). The void gift card
  *   answer says write to sig@agsist.com; no farmers1st.com address is left.
  * v5.52 (2026-10-22): NEW HOME, agsist-api.dnilgis.workers.dev (Sig, Oct 22,
@@ -1343,9 +1360,25 @@ function prfInterval(v) {
 const LIST_TOPICS = ["reports", "cot"];
 const LIST_ASK = { reports: "Stop the WASDE and report-day emails for this address?", cot: "Stop Funds this week for this address?" };
 const LIST_DONE = { reports: "Stopped. No more WASDE or report-day emails.", cot: "Stopped. No more Funds this week emails." };
+// v5.55: the monthly land sale email. A topic names the reader's ZIP and radius;
+// the stop link names only the list ("landsales"), never the ZIP (BUILD-RULES 10).
+const LAND_MILES = [10, 25, 50];
+const LAND_ALL = "landsales";
+const LAND_ASK = "Stop the monthly land sale email for this address?";
+const LAND_DONE = "Stopped. No more monthly land sale emails.";
+// "YYYY-MM", the month a landsales email was for
+function landMonth(v) {
+  const s = String(v == null ? "" : v).trim();
+  const m = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(s);
+  if (!m || +m[1] < 2000 || +m[1] > new Date().getUTCFullYear() + 1) return null;
+  return s;
+}
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();
   if (t === "rain-gauge") return t;
+  // v5.55: landsales:<ZIP>:<10|25|50>
+  const ls = /^landsales:(\d{5}):(\d{2})$/.exec(t);
+  if (ls) return ls[1] !== "00000" && LAND_MILES.includes(+ls[2]) ? t : null;
   if (LIST_TOPICS.includes(t)) return t;
   const pg = /^prf:(\d+)$/.exec(t);
   if (pg) return prfGridOk(pg[1]) ? t : null;
@@ -3092,12 +3125,14 @@ async function handle(req, env) {
     if (path === "/notice-unsubscribe") {
       const e = (url.searchParams.get("e") || "").trim().toLowerCase();
       const t = url.searchParams.get("t") || "";
-      const one = url.searchParams.get("topic") ? noticeTopic(url.searchParams.get("topic"), true) : "";
+      const tq = String(url.searchParams.get("topic") || "").trim().toLowerCase();
+      // v5.55: topic=landsales stops every landsales:<ZIP>:<miles> of the address
+      const one = tq === LAND_ALL ? LAND_ALL : tq ? noticeTopic(tq, true) : "";
       const valid = EMAIL_RE.test(e) && await unsubOk(env, e, t);
       if (!valid || one === null) return stopInvalid();
       if (req.method === "GET") {
         const action = act(e, t, "", one ? "&topic=" + encodeURIComponent(one) : "");
-        return htmlPage(one ? (LIST_ASK[one] || "Stop this notice for this address?") : "Stop every AGSIST notice for this address?",
+        return htmlPage(one ? (LIST_ASK[one] || (one === LAND_ALL ? LAND_ASK : "Stop this notice for this address?")) : "Stop every AGSIST notice for this address?",
           "<p>" + escHtml(e) + "</p>" +
           "<form method=\"POST\" action=\"" + action + "\">" +
           "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">Yes, stop it</button></form>" +
@@ -3109,7 +3144,8 @@ async function handle(req, env) {
         // v5.44: which standing lists this POST took the address off, for /count
         const gone = LIST_TOPICS.filter(l => r && r.t && typeof r.t === "object" && (l in r.t) && (!one || one === l));
         if (one && r && r.t && typeof r.t === "object") {
-          delete r.t[one];
+          if (one === LAND_ALL) { for (const k of Object.keys(r.t)) if (k.startsWith(LAND_ALL + ":")) delete r.t[k]; }
+          else delete r.t[one];
           if (Object.keys(r.t).length) await env.SUBS.put("note:" + e, JSON.stringify(r));
           else await env.SUBS.delete("note:" + e);
         } else {
@@ -3117,6 +3153,7 @@ async function handle(req, env) {
         }
         for (const l of gone) await countUnsub(env, l, req);
         if (one && LIST_DONE[one]) return htmlPage(LIST_DONE[one]);
+        if (one === LAND_ALL) return htmlPage(LAND_DONE);
         return htmlPage(one ? "Stopped. No email about this one." : "Stopped. No more AGSIST notices.");
       }
     }
@@ -3405,6 +3442,7 @@ async function handle(req, env) {
           if (v && v.note) row.note = v.note;
           if (v && v.after) row.after = v.after;   // v5.29: prf only
           if (v && v.iv) row.iv = v.iv;
+          if (v && v.mo) row.mo = v.mo;            // v5.55: landsales only
           out.push(row);
         }
       }
@@ -3422,11 +3460,18 @@ async function handle(req, env) {
       // v5.29: a prf topic recurs; the mark carries the interval it was for
       const iv = topic.startsWith("prf:") ? prfInterval(b.interval) : null;
       if (topic.startsWith("prf:") && !iv) return json({ ok: false, error: "bad args" }, 400);
+      // v5.55: a landsales topic recurs; the mark carries the month it was for
+      const lmo = topic.startsWith(LAND_ALL + ":") ? landMonth(b.month) : null;
+      if (topic.startsWith(LAND_ALL + ":") && !lmo) return json({ ok: false, error: "bad args" }, 400);
       if (!r || !r.t || !(topic in r.t)) return json({ ok: true, skipped: true });   // stopped while the job ran
       if (iv) {
         const cur = r.t[topic];
         if (!cur.iv || iv > cur.iv) cur.iv = iv;
         if (b.quiet !== true) cur.sent = Date.now();
+      } else if (lmo) {
+        const cur = r.t[topic];
+        if (!cur.mo || lmo > cur.mo) cur.mo = lmo;
+        cur.sent = Date.now();
       } else r.t[topic].sent = Date.now();
       await env.SUBS.put("note:" + email, JSON.stringify(r));
       return json({ ok: true });
