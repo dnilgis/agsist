@@ -977,7 +977,7 @@ def _selftest():
         _h, _t = m.get_body(("html",)).get_content(), m.get_body(("plain",)).get_content()
         ok(not [u for u in email_links.hrefs(_h) if "@" in u or "%40" in u.lower()], "no @ inside any href")
         ok(not email_links.bad_links(_t) and "@" not in email_links.unsub_web(m), "no address in any text link or the header link")
-        ok(not email_links.SHARED_RE.search(_h + _t + str(m["List-Unsubscribe"])), "no workers.dev host anywhere")
+        ok(not email_links.SHARED_RE.search(_h + _t + str(m["List-Unsubscribe"])), "no shared host anywhere")
         LINK_IDS.pop("a@farm.com")
         m = build_email(as_of.isoformat(), (s, t, h), "a@farm.com", "AGSIST", "sender@example.com", None)
         ok("notice-unsubscribe?" not in m.get_body(("plain",)).get_content(), "no link id: no signed link, never an address link")
