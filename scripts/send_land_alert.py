@@ -261,9 +261,10 @@ def render(email, base, secret, lid, parts, from_addr, preview=False):
             for r in v:
                 when = LA.short_day(r["when"]) + (" (deed date)" if mixed and r["basis"] == "sale date" else "")
                 where = (r["place"] + ", " if r.get("place") else "") + "%s Co., %s" % (r["county"], r["st"]) + (", with buildings" if r.get("bldg") else "")
-                h.append("<tr>" + TD % ("", e(when)) + TD % (";text-align:right", e(LA.acres_text(r["acres"])))
-                         + TD % (";text-align:right", e(LA.money(r["ppa"]) if r.get("ppa") is not None else "n/a"))
-                         + TD % (";text-align:right", e(LA.money(r["price"]))) + TD % ("", e(where))
+                NW = ";white-space:nowrap"
+                h.append("<tr>" + TD % (NW, e(when)) + TD % (NW + ";text-align:right", e(LA.acres_text(r["acres"])))
+                         + TD % (NW + ";text-align:right", e(LA.money(r["ppa"]) if r.get("ppa") is not None else "n/a"))
+                         + TD % (NW + ";text-align:right", e(LA.money(r["price"]))) + TD % ("", e(where))
                          + TD % (";text-align:right", "%d" % LA.BLS.js_round(r["mi"])) + "</tr>")
             htm.append("".join(h) + "</tbody></table>")
             txt.append("\n".join(sale_line(r, mixed) for r in v))
