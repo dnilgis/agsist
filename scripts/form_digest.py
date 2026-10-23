@@ -306,11 +306,13 @@ def rp_options(url):
     q = urllib.parse.parse_qs(urllib.parse.urlsplit(url).query)
     on = lambda k: q.get(k, [""])[0] == "1"
     out = []
+    # a crop layer: only a design made before Oct 23, 2026 has one (Sig: no crop layers since); it does not print
+    # unless Sig says so (his order view with oldcrop=1), so the order mail says that next to it
     crop = q.get("crop", [""])[0]
     if crop in RP_CROP:
-        out.append("%s, planted %s, harvested %s%s%s" % (RP_CROP[crop], _md(q.get("plant", [""])[0]), _md(q.get("harvest", [""])[0]),
-                                                         ", plant drawings" if on("plants") else ", stages labeled",
-                                                         ", against a usual year" if on("ghost") else ""))
+        out.append("%s, planted %s, harvested %s%s%s (old crop layer: not printed unless you say so)" % (
+            RP_CROP[crop], _md(q.get("plant", [""])[0]), _md(q.get("harvest", [""])[0]),
+            ", plant drawings" if on("plants") else ", stages labeled", ", against a usual year" if on("ghost") else ""))
     if on("hist"):
         out.append("every year behind (Staircase)")
     for k, words in (("frost", "frost marks"), ("heat", "hottest and coldest day"), ("ribbon", "daily temperature band")):
@@ -1017,7 +1019,8 @@ def selftest():
     # 2026-10-17: the Rain Print options come out of the design link in plain words
     opt_url = ("https://agsist.com/rain-print?place=Ames%2C+IA&year=2012&style=r1&crop=corn&plant=2012-05-01&harvest=2012-10-20"
                "&plants=1&ghost=1&frost=1&heat=1&ribbon=1&hist=1")
-    ck("rain print options in words", rp_options(opt_url) == "Corn, planted May 1, harvested Oct 20, plant drawings, against a usual year; "
+    ck("rain print options in words", rp_options(opt_url) == "Corn, planted May 1, harvested Oct 20, plant drawings, against a usual year "
+       "(old crop layer: not printed unless you say so); "
        "every year behind (Staircase); frost marks; hottest and coldest day; daily temperature band", rp_options(opt_url))
     ck("no options, no line", rp_options("https://agsist.com/rain-print?place=X&year=2012") == "")
     t = build([dict(rp, design_url=opt_url)], "s").get_body(("plain",)).get_content()
