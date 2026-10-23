@@ -608,7 +608,7 @@
   @media print{
     body > *{display:none!important}
     body > #print-record-wrap{display:block!important;color:#000;font-family:Georgia,'Times New Roman',serif;font-size:12pt;line-height:1.5}
-    #print-record-wrap h1{font-family:'Courier New',monospace;font-size:15pt;letter-spacing:.08em;margin:0 0 2pt}
+    #print-record-wrap .rec-h{font-weight:700;font-family:'Courier New',monospace;font-size:15pt;letter-spacing:.08em;margin:0 0 2pt}
     #print-record-wrap .pr-sub{font-size:9pt;color:#444;margin:0 0 14pt}
     #print-record-wrap table{width:100%;border-collapse:collapse;margin:0 0 12pt}
     #print-record-wrap th,#print-record-wrap td{text-align:left;padding:4pt 6pt;border-bottom:1px solid #bbb;font-size:10.5pt}
@@ -1144,7 +1144,7 @@
                 '<tr><td>Net value after shrink'+($('drying-row').style.display!=='none'?' &amp; drying':'')+'</td><td class="pr-big">'+$('rNetVal').textContent+'</td></tr>';
     }
     $('print-record-wrap').innerHTML=
-      '<h1>AGSIST: GRAIN BIN RECORD</h1>'+
+      '<div class="rec-h">AGSIST: GRAIN BIN RECORD</div>'+
       '<p class="pr-sub">Printed '+now.toLocaleDateString()+' &middot; agsist.com/grain-bin-calculator</p>'+
       '<table><thead><tr><th>Item</th><th>Value</th></tr></thead><tbody>'+rowsHtml+'</tbody></table>'+
       '<p class="pr-note">Estimates from stated dimensions at 1 bu = 1.2445 ft&sup3;. Shrink = (moisture in &minus; target moisture) &times; shrink per point, the same points the drying charge uses; drying is figured on wet market bushels. Not a scale ticket; settle on delivered weight. Free calculator: agsist.com/grain-bin-calculator</p>';
