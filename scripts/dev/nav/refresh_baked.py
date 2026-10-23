@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Swap the new static header/footer into every generated page that already carries the
 static-nav markers (the same block the builders write via inject_static_nav.block), and
-bootstrap cash-bids/states.html from the current state pages. Usage: refresh_baked.py <worktree>"""
+(--states) bake the "Bids by state" list on /basis#states from the current state pages
+(it was cash-bids/states.html until Oct 22, 2026). Usage: refresh_baked.py <worktree> [--states]"""
 import datetime as dt
 import json
 import os
@@ -38,9 +39,7 @@ print("refreshed", n, dirs)
 
 if "--states" in sys.argv:
     import build_cash_bid_pages as CB
-    import build_state_basis_pages as SB
     counts = json.load(open("data/elevator-counts.json"))
-    gen = CB.parse_ts(counts["generated"])
     smetas = []
     code = {v: k for k, v in CB.STATE_NAMES.items()}
     for d in sorted(os.listdir("cash-bids")):
@@ -61,8 +60,6 @@ if "--states" in sys.argv:
                        "towns": int(m.group(1)) if m else 0,
                        "elevators": (counts["states"].get(st) or {}).get("elevators", 0),
                        "latest": max(times) if times else None})
-    ctx = {"chrome": SB.static_chrome("."), "snap_ct": gen.astimezone(CB.CT)}
-    page, meta = CB.build_states_hub(smetas, ctx)
-    open(os.path.join("cash-bids", CB.STATES_HUB), "w", encoding="utf-8").write(page)
-    print("states hub:", len(smetas), "states,", sum(1 for m in smetas if m["indexable"]), "with a bid;",
-          len(page) // 1024, "KB")
+    html = CB.states_list_html([m for m in smetas if m["indexable"]], [m for m in smetas if not m["indexable"]])
+    CB.stamp_states_list("basis.html", html)
+    print("states list on /basis:", len(smetas), "states,", sum(1 for m in smetas if m["indexable"]), "with a bid")
