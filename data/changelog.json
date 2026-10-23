@@ -1,7 +1,24 @@
 {
- "updated": "2026-10-22",
+ "updated": "2026-10-23",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-23",
+   "items": [
+    {
+     "tag": "improved",
+     "page": "/rain",
+     "name": "County rain pages: the last 7 and 30 days at the gauge",
+     "text": "Each county rain page now gives the rain its station caught over the last 7 and 30 days it reported, with the dates, beside the total for the year. A window with a missing day shows no number."
+    },
+    {
+     "tag": "fixed",
+     "page": "/rain",
+     "name": "County rain pages: the short story at the top stays in step with the numbers",
+     "text": "The dated story under the answer now keeps only the sentences that still match the page. Barron County's had said this year was 4.49 inches behind last year while the page below said 3.63."
+    }
+   ]
+  },
   {
    "date": "2026-10-22",
    "items": [

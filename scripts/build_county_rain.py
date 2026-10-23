@@ -55,7 +55,7 @@ import county_stories as CS  # noqa: E402
 
 ROOT = R.ROOT
 MAX_KB = 25
-CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=5">'
+CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=6">'
 ORIGIN = "https://agsist.com"
 M3, ML = R.MONTHS, R.MONTHS_LONG
 
@@ -1237,6 +1237,26 @@ def selftest():
         ok("As of Oct 12, 2026" in story, "as-of date shown")
         ok('<svg viewBox' in story and 'class="rc-us"' in story, "chart with the usual line")
         ok("1991 to 2020" in story, "normals period named when ACIS confirmed it")
+        # 2026-10-23: the gauge's last 7 and 30 days, summed from the same daily file the print draws
+        sd = json.load(open(os.path.join(data, "daily", "ia.json"), encoding="utf-8"))["counties"]["19169"]
+        sv = R.unpack_days(sd["p"])
+        want7 = sum(0.0 if x == "T" else float(x) for x in sv[-7:])
+        want30 = sum(0.0 if x == "T" else float(x) for x in sv[-30:])
+        clean7 = not any(x in ("M", "S") or x.endswith("A") for x in sv[-7:])
+        clean30 = not any(x in ("M", "S") or x.endswith("A") for x in sv[-30:])
+        ok(recent(c, sd, 7) == ((round(want7, 2), "2026-10-06") if clean7 else None), f"last 7 days: {recent(c, sd, 7)} vs {want7}")
+        ok(((f"<dt>Last 7 days, Oct 6 to 12</dt><dd>{inch(want7)} <small>in</small></dd>" in story) == clean7)
+           and ((f"<dt>Last 30 days, Sep 13 to Oct 12</dt><dd>{inch(want30)} <small>in</small></dd>" in story) == clean30),
+           "the last 7 and 30 days show as figures, with their days, only when every day has its own reading")
+        ok(("How much rain fell in Story County in the last week?" in story) == clean7, "last week in the questions")
+        gap = dict(sd, p=R.pack_days(sv[:-3] + ["M"] + sv[-2:]))
+        ok(recent(c, gap, 7) is None and recent(c, gap, 30) is None, "a missing day in the window: no figure, never a guess")
+        multi = dict(sd, p=R.pack_days(sv[:-2] + ["S", "1.10A"]))
+        ok(recent(c, multi, 7) is None, "a multi-day reading in the window: no figure")
+        ok(recent(c, dict(sd, p=R.pack_days(sv[:-1])), 7) is None, "days that do not match the page's count: no figure")
+        ok(recent(c, dict(sd, p=R.pack_days(sv[:-7] + ["T"] * 7)), 7) == (0.0, "2026-10-06"), "traces count as nothing, as on the rest of the page")
+        ok(span_words("2026-10-06", "2026-10-12") == "Oct 6 to 12" and span_words("2026-09-13", "2026-10-12") == "Sep 13 to Oct 12", "span words")
+        ok(story.count('href="/rain-gauge"') == 1 and GAUGE_LINE in story.split("Why this")[1], "the one rain gauge link, in the line about your own gauge")
         ok('href="/rain/iowa/polk-county"' in story or 'href="/rain/iowa/marshall-county"' in story, "next-door links")
         # a neighbor whose station stops earlier says to which day
         dn = os.path.join(t, "nbr")

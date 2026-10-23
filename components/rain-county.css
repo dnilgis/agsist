@@ -12,6 +12,8 @@
 .rc-answer { font-size: 1.18rem; line-height: 1.5; color: var(--text); max-width: 40em; margin: 0 0 1rem; }
 .rc-answer b { color: var(--brand); }
 .rc-figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .6rem; margin: 0 0 1.2rem; padding: 0; }
+/* six figures (the year, usual, percent, last year, last 7 and 30 days): two even rows of three on a wide screen, not five and an orphan */
+@media (min-width: 700px) { .rc-figs:has(> div:nth-child(6)) { grid-template-columns: repeat(3, 1fr); } }
 .rc-figs div { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: .65rem .8rem; }
 .rc-figs dt { font-size: var(--fs-xs); color: var(--text-muted); margin: 0 0 .2rem; }
 .rc-figs dd { margin: 0; font-size: 1.3rem; font-weight: 700; font-family: var(--font-mono, monospace); color: var(--text); }
@@ -77,9 +79,9 @@
 /* the county's year as a Rain Print (components/rain-county-print.js draws it
    over the plain chart once the figure scrolls near). The sheet is white in
    both themes, like the print. */
-.rc-print-styles { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 .5rem; }
+.rc-print-styles { display: flex; flex-wrap: wrap; gap: .4rem; margin: 1.25rem 0 .5rem; }   /* a gap under the year's list it now follows (2026-10-23) */
 .rc-print-styles[hidden] { display: none; }
-.rc-print-styles button { font: inherit; font-size: var(--fs-sm); min-height: 40px; padding: .3rem .85rem; border-radius: var(--r-pill); border: 1px solid var(--border-g); background: var(--surface); color: var(--text); cursor: pointer; }
+.rc-print-styles button { font: inherit; font-size: var(--fs-sm); min-height: 44px; padding: .3rem .85rem; border-radius: var(--r-pill); border: 1px solid var(--border-g); background: var(--surface); color: var(--text); cursor: pointer; }
 .rc-print-styles button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
 .rc-print-styles .rc-zoom { margin-left: auto; }
 .rc-print-on .rc-print-art { background: #fff; border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 6px 18px rgba(0,0,0,.18); overflow: hidden; }
