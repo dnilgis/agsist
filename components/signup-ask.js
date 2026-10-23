@@ -670,7 +670,7 @@
   /* host: the ask the reader just used. ctx: {gave: daily|notice|zip|price|county|hail|elevator,
      email, topic?, zip?, fips?, had?: [ids already asked for], after?: put the panel after this element,
      reports?: false when the Daily was just taken without report days, lat?, lon?: the spot they gave,
-     place?: its name} */
+     place?: its name, only?: [ids the page allows]} */
   function oneMore(host, ctx) {
     ctx = ctx || {};
     var email = String(ctx.email || '').trim();
@@ -741,7 +741,8 @@
       var base = gave === 'daily' ? ['zip', 'rainyear', 'rent', 'daily'] : ['daily', 'rainyear', 'rent', 'zip'];
       var lead = kind.hail ? ['hail'] : kind.futures ? ['price', 'cot', 'reports', 'wasde'] : kind.report ? ['reports', 'wasde', 'cot', 'price'] : [];
       var order = gave === 'daily' ? lead.concat(base) : ['daily'].concat(lead, base.slice(1));
-      var ids = order.filter(function (k) { return O[k]; }).slice(0, 3);
+      /* ctx.only: the ids a page allows (the rain gauge waitlist offers the Daily alone, Sig 2026-10-23) */
+      var ids = order.filter(function (k) { return O[k] && (!ctx.only || ctx.only.indexOf(k) >= 0); }).slice(0, 3);
       if (!ids.length) { box.parentNode.removeChild(box); return; }
       var n = ++mseq;
       box.setAttribute('role', 'group'); box.setAttribute('aria-labelledby', 'sa-mh-' + n);
