@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""moved_pages.py: the pages merged into another page on Oct 22, 2026 (Sig approved the seven
-merges from the Oct 21 pages board), in one table.
+"""moved_pages.py: the pages merged into another page on Oct 22 and 23, 2026 (Sig approved the
+seven merges from the Oct 21 pages board, then /foreign-land and /archive), in one table.
 
   MOVED       old path -> (new path, section anchor). The one list every builder and test reads.
   repoint(u)  an internal link to an old page -> its new home ("/whats-priced-in#corn" ->
@@ -34,12 +34,17 @@ MOVED = {
                           "Bids by state are on the basis page now."),
     "/elevators": ("/list-your-elevator", "coverage", "elevators.html",
                    "Elevator coverage and claiming a board are on List your elevator now."),
+    # Oct 23, 2026 (Sig approved three more): foreign-held land into the Atlas, the archive into the Daily
+    "/foreign-land": ("/farmland-atlas", "foreign", "foreign-land.html",
+                      "Foreign-held farmland is in the Farmland Atlas now."),
+    "/archive": ("/daily", "past", "archive.html", "Past briefings are on the Daily page now."),
 }
 # Spellings that reach the same old page.
 ALIASES = {"/news.html": "/news", "/conditions-yield.html": "/conditions-yield",
            "/whats-priced-in.html": "/whats-priced-in", "/scorecard.html": "/scorecard",
            "/pod-counts.html": "/pod-counts", "/hail": "/hail/", "/hail/index.html": "/hail/",
-           "/cash-bids/states.html": "/cash-bids/states", "/elevators.html": "/elevators"}
+           "/cash-bids/states.html": "/cash-bids/states", "/elevators.html": "/elevators",
+           "/foreign-land.html": "/foreign-land", "/archive.html": "/archive"}
 
 _LINK = re.compile(r"^(/[^?#]*)(\?[^#]*)?(#.*)?$")
 

@@ -2,12 +2,6 @@
  "_": "Every open page slot, read off the ribbons by scripts/stamp_rates.py. Do not edit by hand.",
  "slots": [
   {
-   "id": "archive",
-   "page": "/archive",
-   "name": "Daily Archive",
-   "pitch": "Your name beside every past briefing. One category-exclusive slot."
-  },
-  {
    "id": "basis",
    "page": "/basis",
    "name": "Basis vs Normal",
@@ -72,12 +66,6 @@
    "page": "/field-scout",
    "name": "Field Scout",
    "pitch": "Your name beside Field Scout. One category-exclusive slot."
-  },
-  {
-   "id": "foreign-land",
-   "page": "/foreign-land",
-   "name": "Foreign-Owned Land",
-   "pitch": "Your name beside the foreign-owned farmland numbers. One category-exclusive slot."
   },
   {
    "id": "gdu",

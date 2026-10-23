@@ -90,7 +90,7 @@ def name_html(it):
 DAILY = [
     (None, [("/daily", "Today&rsquo;s briefing", "i-sunrise"),
             SIGNUP,
-            ("/archive", "Archive", "i-archive")]),
+            ("/daily#past", "Past briefings", "i-archive")]),
 ]
 GROUPS = [("markets", "Prices", "i-chart-candlestick", PRICES),
           ("livestock", "Livestock", "i-beef", LIVESTOCK),
@@ -437,7 +437,7 @@ def dedupe(items):
 F_PRICES = dedupe([it[:3] for it in flat(PRICES)] + [("/usda-quick-stats", "USDA crop data by state", "i-database")])
 F_LIVE = [it[:3] for it in flat(LIVESTOCK)]
 F_FIELD = dedupe([it[:3] for it in flat(FIELD)] + [("/fast-facts", "Fast Facts", "i-book-open")])
-F_MONEY = dedupe([it[:3] for it in flat(MONEY)] + [("/foreign-land", "Foreign-owned land", "i-landmark")])
+F_MONEY = dedupe([it[:3] for it in flat(MONEY)])
 F_WORK = [("/sponsor", "Advertise", "i-chart-column"),
           ("/rain-print-business", "Rain Print for business", "i-cloud-rain"),
           ("/prf-sponsor", "PRF sponsor", "i-shield-check"),
@@ -450,7 +450,7 @@ F_ABOUT = [("/about", "About", "i-book-open"),
            ("/changelog", "What&rsquo;s new", "i-scroll-text")]
 FCOLS = [("Prices", F_PRICES), ("Livestock", F_LIVE), ("Field", F_FIELD), ("Money &amp; Land", F_MONEY),
          ("Work with us", F_WORK), ("About", F_ABOUT)]
-F_DAILY = [("/daily", "Today&rsquo;s briefing"), ("/archive", "Archive")]
+F_DAILY = [("/daily", "Today&rsquo;s briefing"), ("/daily#past", "Past briefings")]
 
 
 def flink(it):
@@ -587,7 +587,7 @@ def build_footer():
 
 
 def fb_footer():
-    groups, seen = [], {"/daily", "/archive", "/rain-print"}
+    groups, seen = [], {"/daily", "/daily#past", "/rain-print"}
     for name, items in FCOLS:
         keep = [it for it in items if it[0] not in seen]
         seen.update(it[0] for it in keep)
@@ -609,10 +609,11 @@ def all_hrefs():
         hs |= {it[0] for it in flat(subs)}
     for _, items in FCOLS:
         hs |= {it[0] for it in items}
-    return hs | {"/about", "/contact", "/rain-print", "/daily", "/archive", "/privacy", "/accessibility", "/terms"}
+    return hs | {"/about", "/contact", "/rain-print", "/daily", "/privacy", "/accessibility", "/terms"}
 
 
 def exists(h):
+    h = h.split("#")[0]
     p = h.strip("/")
     if h == "/":
         return True

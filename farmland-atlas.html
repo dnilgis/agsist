@@ -39,94 +39,244 @@
   <meta name="twitter:image" content="https://agsist.com/img/og/farmland-atlas.jpg?v=a18c5228">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Dataset",
-        "@id": "https://agsist.com/farmland-atlas#dataset",
-        "name": "AGSIST Farmland Atlas: county night heat, water, loss record, land value, CRP, drought, energy and wells",
-        "description": "County-level records for the United States, county by county: July and August mean daily minimum temperature by decade since 1900 and the trend since 1976 (NOAA NCEI nClimDiv county); irrigated share of harvested cropland (USDA Census of Agriculture 2022) and groundwater share of irrigation withdrawals (USGS 2015; crop irrigation where USGS splits it out, all irrigation including golf courses elsewhere); crop insurance indemnities by cause of loss and the county loss ratio since 1989 (USDA RMA Summary of Business); census land and buildings value per acre 2012-2022 and rent-to-value; CRP acres by year and contract expirations (USDA FSA); weeks per year in severe drought since 2000 (U.S. Drought Monitor); solar, wind and battery MW operating and proposed (EIA Form 860); registered wells (Nebraska) and water rights (Kansas); county cash rent, the irrigated rent premium and county corn yield trend (USDA NASS). Layers are published separately and never combined into a score. Each layer covers the counties its own source publishes; the coverage of a layer is stated county by county, and several layers are still short of every county.",
-        "url": "https://agsist.com/farmland-atlas",
-        "license": "https://www.usa.gov/government-works",
-        "isAccessibleForFree": true,
-        "creator": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"},
-        "temporalCoverage": "1895/..",
-        "spatialCoverage": {"@type": "Place", "name": "United States"},
-        "measurementTechnique": "Monthly mean of daily minimum temperature aggregated by decade; ordinary least squares trend 1976 onward with 95% confidence interval; ratios of published census and survey acres; summation of RMA cause-of-loss indemnities by peril group",
-        "variableMeasured": [
-          {"@type": "PropertyValue", "name": "July mean daily minimum temperature", "unitText": "degrees Fahrenheit"},
-          {"@type": "PropertyValue", "name": "July minimum temperature trend since 1976", "unitText": "degrees Fahrenheit per decade"},
-          {"@type": "PropertyValue", "name": "Irrigated share of harvested cropland, 2022", "unitText": "ratio"},
-          {"@type": "PropertyValue", "name": "Groundwater share of irrigation withdrawals, 2015", "unitText": "ratio"},
-          {"@type": "PropertyValue", "name": "Crop insurance indemnity by cause of loss, 1989 onward", "unitText": "USD"},
-          {"@type": "PropertyValue", "name": "Cash rent, non-irrigated and irrigated cropland", "unitText": "USD per acre per year"},
-          {"@type": "PropertyValue", "name": "Crop insurance loss ratio, indemnity over total premium, 1989 onward", "unitText": "ratio"},
-          {"@type": "PropertyValue", "name": "Estimated market value of land and buildings, 2012, 2017, 2022", "unitText": "USD per acre"},
-          {"@type": "PropertyValue", "name": "CRP acres enrolled by year and expiring by fiscal year", "unitText": "acres"},
-          {"@type": "PropertyValue", "name": "Weeks per year with at least half the county in D2 or worse drought, 2000 onward", "unitText": "weeks"},
-          {"@type": "PropertyValue", "name": "Solar, wind and battery nameplate capacity, operating and proposed", "unitText": "MW"},
-          {"@type": "PropertyValue", "name": "Registered wells and water rights (Nebraska, Kansas)", "unitText": "count, feet, year"},
-          {"@type": "PropertyValue", "name": "Irrigation wells on state registers (MN, MI, OH, WI, OK, CA, AZ, ID, OR, NV)", "unitText": "count, feet"},
-          {"@type": "PropertyValue", "name": "April-September precipitation, 1991-2020 normal and recent seasons (NOAA nClimDiv county)", "unitText": "inches, percent"},
-          {"@type": "PropertyValue", "name": "Last spring and first fall freeze, frost-free days, corn growing degree days (NOAA nClimGrid daily county)", "unitText": "date, days, GDD"},
-          {"@type": "PropertyValue", "name": "Hail and severe wind report days (NOAA Storm Events, 2010 on)", "unitText": "days per year"},
-          {"@type": "PropertyValue", "name": "Cattle, beef cows, milk cows, hogs, permanent pasture (Census of Agriculture 2017, 2022)", "unitText": "head, acres"}
-        ],
-        "distribution": [
-          {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/atlas/atlas.json"}
-        ]
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Dataset",
+      "@id": "https://agsist.com/farmland-atlas#dataset",
+      "name": "AGSIST Farmland Atlas: county night heat, water, loss record, land value, CRP, drought, energy and wells",
+      "description": "County-level records for the United States, county by county: July and August mean daily minimum temperature by decade since 1900 and the trend since 1976 (NOAA NCEI nClimDiv county); irrigated share of harvested cropland (USDA Census of Agriculture 2022) and groundwater share of irrigation withdrawals (USGS 2015; crop irrigation where USGS splits it out, all irrigation including golf courses elsewhere); crop insurance indemnities by cause of loss and the county loss ratio since 1989 (USDA RMA Summary of Business); census land and buildings value per acre 2012-2022 and rent-to-value; CRP acres by year and contract expirations (USDA FSA); weeks per year in severe drought since 2000 (U.S. Drought Monitor); solar, wind and battery MW operating and proposed (EIA Form 860); registered wells (Nebraska) and water rights (Kansas); county cash rent, the irrigated rent premium and county corn yield trend (USDA NASS). Layers are published separately and never combined into a score. Each layer covers the counties its own source publishes; the coverage of a layer is stated county by county, and several layers are still short of every county.",
+      "url": "https://agsist.com/farmland-atlas",
+      "license": "https://www.usa.gov/government-works",
+      "isAccessibleForFree": true,
+      "creator": {
+        "@type": "Organization",
+        "name": "AGSIST",
+        "url": "https://agsist.com"
       },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"},
-          {"@type": "ListItem", "position": 2, "name": "Farmland Atlas", "item": "https://agsist.com/farmland-atlas"}
-        ]
+      "temporalCoverage": "1895/..",
+      "spatialCoverage": {
+        "@type": "Place",
+        "name": "United States"
       },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Why are heat and water graded separately instead of combined into one score?",
-            "acceptedAnswer": {"@type": "Answer", "text": "Because a combined score hides which problem a county has. A county with cool nights and a falling aquifer is a different purchase from a county with hot nights and rain-fed ground, and one number would call them the same."}
-          },
-          {
-            "@type": "Question",
-            "name": "What does the July night temperature measure?",
-            "acceptedAnswer": {"@type": "Answer", "text": "The monthly mean of each day's minimum temperature for the county, in degrees Fahrenheit, from NOAA NCEI's nClimDiv county dataset, which runs from 1895. July is the silking month for corn across most of these states. Extension research puts the harm line for corn at nightly lows above 70 F, so a July whose average low was at or above 70 F is counted as a hot July."}
-          },
-          {
-            "@type": "Question",
-            "name": "Where does the crop insurance loss record come from?",
-            "acceptedAnswer": {"@type": "Answer", "text": "USDA Risk Management Agency's Summary of Business cause-of-loss files, one per crop year since 1989. Each indemnity is grouped by the peril that caused it: heat and drought, excess moisture and flood, hail, wind, freeze and frost, irrigation failure, price decline, and other. Dollar totals and shares come from these files. The loss ratio comes from RMA's county Summary of Business instead, which carries premium on every policy; the cause-of-loss files carry premium only on policies that had a loss."}
-          },
-          {
-            "@type": "Question",
-            "name": "How does irrigated rent compare with dry rent?",
-            "acceptedAnswer": {"@type": "Answer", "text": "Irrigated cropland cash rent divided by non-irrigated cash rent, same county, same year, from the USDA NASS Cash Rents Survey. A multiple rather than a dollar gap, because rents rose almost everywhere and a dollar gap widens even when nothing about the water changed. Irrigated rent also pays for the well, pump and pivot, so the multiple is not the price of water alone. Its direction is called only where the 95% interval of the fitted trend excludes zero and dry rent is at least $25 an acre."}
-          },
-          {
-            "@type": "Question",
-            "name": "What is a crop insurance loss ratio and why does it matter for land?",
-            "acceptedAnswer": {"@type": "Answer", "text": "Indemnities paid divided by total premium, from USDA RMA's Summary of Business county files, every policy since 1989 except the rainfall and vegetation index pasture plans (PRF), which are counted separately. The open crop year is left out. At 1.00 the county's insurance book paid out what it took in; above it, claims exceeded the whole premium, the farmer's share and the federal subsidy together. Insurers, lenders and anyone pricing a lease look at it because it is the longest continuous record of how often crops in that county have failed against what was expected, with the dollars attached."}
-          },
-          {
-            "@type": "Question",
-            "name": "Where does the land value come from, and is it an appraisal?",
-            "acceptedAnswer": {"@type": "Answer", "text": "The USDA Census of Agriculture, which asks every operator the market value of their land and buildings and publishes the average per acre by county for 2012, 2017 and 2022. It is not an appraisal and not a sale price; it is what operators reported, buildings included. This page shows it as published and divides the county's non-irrigated cash rent by it."}
-          },
-          {
-            "@type": "Question",
-            "name": "Why are irrigation wells shown for some states and not others?",
-            "acceptedAnswer": {"@type": "Answer", "text": "Because only some states publish an open well register with an irrigation code that can be read and checked. The Atlas reads Nebraska's registered wells and Kansas's WIMAS water rights, and from September 2026 the registers of Minnesota, Michigan, Ohio, Wisconsin, Oklahoma, California, Arizona, Idaho, Oregon and Nevada, each where that month's pull succeeds. Registers differ in what they count and how far back they go, so compare a county with its own state. A county in any other state reads \"no open register read yet\"."}
+      "measurementTechnique": "Monthly mean of daily minimum temperature aggregated by decade; ordinary least squares trend 1976 onward with 95% confidence interval; ratios of published census and survey acres; summation of RMA cause-of-loss indemnities by peril group",
+      "variableMeasured": [
+        {
+          "@type": "PropertyValue",
+          "name": "July mean daily minimum temperature",
+          "unitText": "degrees Fahrenheit"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "July minimum temperature trend since 1976",
+          "unitText": "degrees Fahrenheit per decade"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Irrigated share of harvested cropland, 2022",
+          "unitText": "ratio"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Groundwater share of irrigation withdrawals, 2015",
+          "unitText": "ratio"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Crop insurance indemnity by cause of loss, 1989 onward",
+          "unitText": "USD"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Cash rent, non-irrigated and irrigated cropland",
+          "unitText": "USD per acre per year"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Crop insurance loss ratio, indemnity over total premium, 1989 onward",
+          "unitText": "ratio"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Estimated market value of land and buildings, 2012, 2017, 2022",
+          "unitText": "USD per acre"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "CRP acres enrolled by year and expiring by fiscal year",
+          "unitText": "acres"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Weeks per year with at least half the county in D2 or worse drought, 2000 onward",
+          "unitText": "weeks"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Solar, wind and battery nameplate capacity, operating and proposed",
+          "unitText": "MW"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Registered wells and water rights (Nebraska, Kansas)",
+          "unitText": "count, feet, year"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Irrigation wells on state registers (MN, MI, OH, WI, OK, CA, AZ, ID, OR, NV)",
+          "unitText": "count, feet"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "April-September precipitation, 1991-2020 normal and recent seasons (NOAA nClimDiv county)",
+          "unitText": "inches, percent"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Last spring and first fall freeze, frost-free days, corn growing degree days (NOAA nClimGrid daily county)",
+          "unitText": "date, days, GDD"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Hail and severe wind report days (NOAA Storm Events, 2010 on)",
+          "unitText": "days per year"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Cattle, beef cows, milk cows, hogs, permanent pasture (Census of Agriculture 2017, 2022)",
+          "unitText": "head, acres"
+        }
+      ],
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://agsist.com/data/atlas/atlas.json"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://agsist.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Farmland Atlas",
+          "item": "https://agsist.com/farmland-atlas"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why are heat and water graded separately instead of combined into one score?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because a combined score hides which problem a county has. A county with cool nights and a falling aquifer is a different purchase from a county with hot nights and rain-fed ground, and one number would call them the same."
           }
-        ]
-      }
-    ]
-  }
-  </script>
+        },
+        {
+          "@type": "Question",
+          "name": "What does the July night temperature measure?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The monthly mean of each day's minimum temperature for the county, in degrees Fahrenheit, from NOAA NCEI's nClimDiv county dataset, which runs from 1895. July is the silking month for corn across most of these states. Extension research puts the harm line for corn at nightly lows above 70 F, so a July whose average low was at or above 70 F is counted as a hot July."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where does the crop insurance loss record come from?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "USDA Risk Management Agency's Summary of Business cause-of-loss files, one per crop year since 1989. Each indemnity is grouped by the peril that caused it: heat and drought, excess moisture and flood, hail, wind, freeze and frost, irrigation failure, price decline, and other. Dollar totals and shares come from these files. The loss ratio comes from RMA's county Summary of Business instead, which carries premium on every policy; the cause-of-loss files carry premium only on policies that had a loss."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does irrigated rent compare with dry rent?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Irrigated cropland cash rent divided by non-irrigated cash rent, same county, same year, from the USDA NASS Cash Rents Survey. A multiple rather than a dollar gap, because rents rose almost everywhere and a dollar gap widens even when nothing about the water changed. Irrigated rent also pays for the well, pump and pivot, so the multiple is not the price of water alone. Its direction is called only where the 95% interval of the fitted trend excludes zero and dry rent is at least $25 an acre."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a crop insurance loss ratio and why does it matter for land?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Indemnities paid divided by total premium, from USDA RMA's Summary of Business county files, every policy since 1989 except the rainfall and vegetation index pasture plans (PRF), which are counted separately. The open crop year is left out. At 1.00 the county's insurance book paid out what it took in; above it, claims exceeded the whole premium, the farmer's share and the federal subsidy together. Insurers, lenders and anyone pricing a lease look at it because it is the longest continuous record of how often crops in that county have failed against what was expected, with the dollars attached."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where does the land value come from, and is it an appraisal?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The USDA Census of Agriculture, which asks every operator the market value of their land and buildings and publishes the average per acre by county for 2012, 2017 and 2022. It is not an appraisal and not a sale price; it is what operators reported, buildings included. This page shows it as published and divides the county's non-irrigated cash rent by it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why are irrigation wells shown for some states and not others?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because only some states publish an open well register with an irrigation code that can be read and checked. The Atlas reads Nebraska's registered wells and Kansas's WIMAS water rights, and from September 2026 the registers of Minnesota, Michigan, Ohio, Wisconsin, Oklahoma, California, Arizona, Idaho, Oregon and Nevada, each where that month's pull succeeds. Registers differ in what they count and how far back they go, so compare a county with its own state. A county in any other state reads \"no open register read yet\"."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much American farmland does China own?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not much: 247,659 acres at the end of 2024, about 0.5% of the foreign-held acres in USDA's AFIDA detail files (our sum of the rows; Hong Kong is listed on its own, 144,090 acres). Canada holds 16.1 million. Chinese-connected holdings are politically sensitive and several states have restricted them, but by acreage they are a small slice. Since 2023 the filings carry specific flags for secondary interests from China, Iran, Russia, and North Korea."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is 46 million acres a lot?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "USDA puts it at 3.6% of privately held agricultural land. In USDA’s detail files it has nearly doubled since 2010, from 24.8 million row-summed acres to 47.2 million, and that growth is the more important number. About 22 million of the 47 million acres are forest."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is so much of it forest?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because global timber companies and investment funds own large tracts of U.S. timberland, and forest counts as agricultural land under AFIDA. Roughly 22 of the 47 million acres are forest, the single biggest reason raw AFIDA totals get misread as \"foreign corn ground.\""
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "My county shows nothing. Does that mean no foreign ownership?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It means no disclosed holdings. AFIDA relies on self-reporting with civil penalties for failure to file; federal auditors have found compliance gaps. Absence of a filing is evidence, not proof."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where can I get the raw data?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "USDA FSA publishes the detailed holdings files annually, linked below. The Atlas adds them up without changing any figure."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 
 <style>
 button,a,[role="button"]{touch-action:manipulation}
@@ -476,6 +626,57 @@ details.fa-arith .body a{color:var(--gold)}
 
 /* phones: 40px tap targets, 16px form text (no iOS zoom) */
 @media(max-width:640px){.fa-gtab,.fa-tab,#fa-sws button,#fa-rk-more,.fa-rk-l button{min-height:40px}details.fa-vd summary{padding:.6rem 0}}
+
+/* Foreign-held farmland fold (was /foreign-land, Oct 23, 2026) */
+.fl-box{padding:.4rem 0 0}
+.fl-lead{font-size:1rem;line-height:1.6;color:var(--text);margin:.3rem 0 .6rem}
+.fl-facts{display:flex;flex-direction:column;gap:.4rem;font-size:.9rem;line-height:1.55;color:var(--text-dim);margin:0 0 .6rem}
+.fl-facts b{color:var(--text)}
+.fl-small{font-size:.86rem;line-height:1.6;color:var(--text-dim);margin:.5rem 0}
+.fl-small a,.fl-box a{color:var(--gold)}
+.fl-mut{color:var(--text-muted)}
+.fl-na{color:var(--text-muted);font-size:.9rem}
+.fl-box .vp-ver{margin:.8rem 0}
+.fl-panel{border:1px solid var(--border);border-radius:10px;margin:1rem 0;background:var(--surface)}
+.fl-panel-hd{padding:.6rem .9rem;border-bottom:1px solid var(--border)}
+.fl-panel-t{font-family:var(--font-mono);font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.fl-panel-b{padding:.8rem .9rem}
+.fl-detail{display:none}.fl-detail.on{display:block}
+.fl-dt-head{display:flex;flex-wrap:wrap;gap:.3rem .8rem;align-items:baseline}
+.fl-dt-name{font-weight:700;color:var(--text)}.fl-dt-ac{font-family:var(--font-mono);font-size:.85rem;color:var(--text-dim)}
+.fl-bars{display:flex;align-items:flex-end;gap:3px;height:96px;margin-top:.6rem}
+.fl-bar{flex:1;background:var(--gold);border-radius:2px 2px 0 0;position:relative;min-width:6px}
+.fl-bar.gap{background:none;border:1px dashed var(--border-2);height:20px}
+.fl-bar-y{position:absolute;bottom:-1.2em;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:.6rem;color:var(--text-muted)}
+.fl-2col{display:grid;grid-template-columns:1fr;gap:1rem}
+@media(min-width:720px){.fl-2col{grid-template-columns:1fr 1fr}}
+.fl-tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.fl-tbl th{text-align:left;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);padding:.35rem .3rem}
+.fl-tbl td{border-bottom:1px solid var(--border);padding:.4rem .3rem;color:var(--text-dim)}
+.fl-tbl td.num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.fl-split{display:flex;height:14px;border-radius:4px;overflow:hidden;margin:.3rem 0}
+.fl-stat-l{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.fl-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.8rem}
+.fl-stat-v{font-family:var(--font-mono);font-size:1.4rem;color:var(--text);margin:.2rem 0}
+.fl-stat-m{font-size:.78rem;color:var(--text-muted);line-height:1.45}
+.fl-chart{width:100%;height:auto;display:block}
+.fl-note{border-left:3px solid var(--gold);padding:.5rem .8rem;font-size:.88rem;line-height:1.6;color:var(--text-dim);margin:1rem 0}
+.fl-note strong{color:var(--text)}
+@media (max-width:900px){
+  .fl-box .vp-grid{width:100%;height:auto;display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+  .fl-box .vp-tile{position:static;width:auto;height:auto;aspect-ratio:1;padding:0;border-radius:5px;display:flex;align-items:center;justify-content:center;grid-column:var(--gc);grid-row:var(--gr)}
+  .fl-box .vp-tile .vp-tge{display:none}
+  .fl-box .vp-tile .vp-tst{font-size:0.74rem}
+  .fl-box .vp-tile:hover{transform:none}
+  .fl-box .vp-ver{display:block;padding:16px 18px}
+  .fl-box .vp-big{font-size:3.1rem;display:inline-block;vertical-align:middle;margin-right:12px}
+  .fl-box .vp-word{font-size:1.02rem;display:inline-block;vertical-align:middle}
+  .fl-box .vp-sent{font-size:.9rem;margin-top:10px}
+  .fl-box .vp-ver select{margin-bottom:10px}
+}
+.fl-box .vp-maplab,.fl-box .vp-leg{font-size:.8rem;color:var(--text-muted);margin:.4rem 0}
+.fl-box .vp-leg{display:flex;flex-wrap:wrap;gap:.3rem .9rem}.fl-box .vp-leg b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:.3rem;vertical-align:-1px}
+.fl-bar-y{font-size:.55rem;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -492,7 +693,7 @@ details.fa-arith .body a{color:var(--gold)}
         <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a> · <a href="/manure-value">Manure value</a> · <a href="/drought-monitor">Drought monitor</a><br>
         <b>Field:</b> Weather: <a href="/rain-radar">Rain on your field</a> · <a href="/rain">Rain by county</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray advisory</a> · <a href="/fall-nitrogen">Soil temp (fall anhydrous)</a> · <a href="/rain-print">Rain Print</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · Crop: <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/urea">Urea loss</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · Harvest and bins: <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a><br>
         <b>Money &amp; Land:</b> Land: <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/farmland-index">Farmland sale index</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · Programs: <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · Selling: <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-        <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/archive">Archive</a><br>
+        <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/daily#past">Past briefings</a><br>
         <b>My place:</b> <a href="/fast-facts">Everything near me</a><br>
         <b>More:</b> <a href="/about">About</a> · <a href="/sponsor">Advertise with AGSIST</a> · <a href="/contact">Contact</a>
       </nav>
@@ -609,6 +810,76 @@ details.fa-arith .body a{color:var(--gold)}
 
     <details class="fa-fold" id="fa-tenure"><summary>Rented vs owner-farmed, 1997 to 2022</summary><div id="fa-tenure-box"></div></details>
 
+    <details class="fa-fold" id="fa-foreign"><summary>Foreign-held farmland, 2010 to 2024</summary>
+    <div class="fl-box" id="foreign">
+      <p class="fl-lead">USDA counts <strong>46.3 million acres</strong> of U.S. agricultural land held by foreign investors at the end of 2024, 3.6% of privately held agricultural land, and nearly double 2010, spread across <strong>2,559 counties</strong>. The biggest holder is <strong>Canada</strong>, not China, and <strong>nearly half of it is forest</strong>, not corn ground. Every number below comes from USDA&rsquo;s disclosure files.</p>
+      <p class="fl-facts"><span><b>China:</b> 247,659 acres, 0.5% of foreign-held acres (USDA AFIDA, Dec 31, 2024).</span>
+      <span id="fl-confirm"><b>Who is behind it:</b> 2.9 million of the 47.2 million acres in USDA&rsquo;s detail files (6.2%) name no foreign country (USDA codes 998 and 999). The files also say which holdings are owned and which are leases of 10 years or more. We have not added up that split yet, so there is no owned-outright number here; <a href="https://farmdocdaily.illinois.edu/?p=42961" rel="noopener">farmdoc daily (Sep 23, 2026)</a> has one.</span></p>
+      <p class="fl-mut fl-small">46.3 million acres of U.S. agricultural land held by foreign investors as of Dec 31, 2024 (USDA AFIDA report) &middot; the detail file&rsquo;s rows sum to 47,241,820, and the county and country figures here use the rows &middot; 2,559 counties &middot; up from 24,841,588 row-summed acres in 2010 &middot; largest holder country: Canada &middot; 47% of the acreage is forest land &middot; source: USDA FSA AFIDA disclosure filings &middot; page data refreshed 2026-07-18</p>
+      <p class="fl-small">The county map is the Atlas map above: <a href="#l=afida" class="fl-layer">show foreign-held acres on it</a>, then pick a county for its record here. AFIDA is a self-reporting law, so a county with none reported may hold none <em>or</em> may not have filed.</p>
+      <p class="fl-small" id="fl-pick">Pick a county on the map above to see its foreign-held acres by year, the holder countries and what kind of land it is.</p>
+  <section class="vp-ver" aria-live="polite">
+    <div><select id="vp-sel" aria-label="Pick a state"></select><div class="vp-geo" id="vp-geo"></div></div>
+    <div class="vp-big" id="vp-big">&hellip;</div>
+    <div><div class="vp-word" id="vp-word"></div><div class="vp-sent" id="vp-sent">Loading&hellip;</div></div>
+  </section>
+  <div class="vp-maplab">Foreign-held agricultural acres by state: tap a state</div>
+  <div class="vp-grid" id="vp-grid"></div>
+  <div class="vp-leg"><span><b style="background:#af3a32"></b>most acres</span><span><b style="background:#a8823c"></b>middle</span><span><b style="background:#396d4f"></b>least</span><span><b style="background:#14181a;border:1px dashed #2a3133"></b>no data</span></div>
+  <section class="fl-panel fl-detail" id="fl-detail" aria-live="polite">
+    <div class="fl-panel-hd"><span class="fl-panel-t">The county picked on the map</span></div>
+    <div class="fl-panel-b">
+      <div class="fl-dt-head"><span class="fl-dt-name" id="fl-dt-name">-</span><span class="fl-dt-ac" id="fl-dt-ac"></span></div>
+      <div class="fl-bars" id="fl-dt-bars"></div>
+      <div style="height:16px"></div>
+      <div class="fl-2col">
+        <div>
+          <div class="fl-stat-l" style="margin-bottom:6px">Holder countries (latest year)</div>
+          <table class="fl-tbl" id="fl-dt-countries"></table>
+        </div>
+        <div>
+          <div class="fl-stat-l" style="margin-bottom:6px">What kind of land</div>
+          <div class="fl-split" id="fl-dt-split"></div>
+          <div id="fl-dt-splitleg" style="font-size:.8rem;color:#8a948f;line-height:1.7"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="fl-panel" aria-labelledby="fl-nat-t">
+    <div class="fl-panel-hd"><span class="fl-panel-t" id="fl-nat-t">The national trend: 2010 to 2024</span></div>
+    <div class="fl-panel-b">
+      <div class="fl-stats" style="margin-bottom:16px">
+        <div class="fl-stat"><div class="fl-stat-l">Foreign-held, 2024</div><div class="fl-stat-v" id="fl-s-total">-</div><div class="fl-stat-m">acres in the rows of USDA&rsquo;s detail file; USDA&rsquo;s report counts 46.3M</div></div>
+        <div class="fl-stat"><div class="fl-stat-l">Since 2010</div><div class="fl-stat-v" id="fl-s-growth">-</div><div class="fl-stat-m">from 24.8M acres: a near-doubling</div></div>
+        <div class="fl-stat"><div class="fl-stat-l">#1 holder country</div><div class="fl-stat-v" id="fl-s-top">-</div><div class="fl-stat-m">not the one the headlines lead with</div></div>
+        <div class="fl-stat"><div class="fl-stat-l">Share that is forest</div><div class="fl-stat-v" id="fl-s-forest">-</div><div class="fl-stat-m">much of it corporate timberland</div></div>
+      </div>
+      <svg class="fl-chart" id="fl-nat-chart" viewBox="0 0 900 300" role="img" aria-label="Foreign-held U.S. agricultural acres by year, 2010 to 2024"></svg>
+      <p style="font-size:13.4px;color:#8a948f;margin:8px 0 0">Gaps at 2015 and 2021: USDA&rsquo;s downloadable detail files skip those years, so the line breaks there instead of guessing across the gap. In some counties 2022 is a one-year jump that falls back in 2023: Autauga County, AL reports 61,371 acres in 2020, 104,884 in 2022 and 58,741 in 2023. The files do not say why.</p>
+    </div>
+  </section>
+
+  <section class="fl-panel">
+    <div class="fl-panel-hd"><span class="fl-panel-t">Two tables worth arguing about</span></div>
+    <div class="fl-panel-b fl-2col">
+      <div>
+        <div class="fl-stat-l" style="margin-bottom:6px">Top counties by foreign-held acres (2024)</div>
+        <table class="fl-tbl" id="fl-top-counties"></table>
+      </div>
+      <div>
+        <div class="fl-stat-l" style="margin-bottom:6px">Holder countries, national (2024)</div>
+        <table class="fl-tbl" id="fl-top-countries"></table>
+      </div>
+    </div>
+  </section>
+
+  <div class="fl-note"><strong>What this data is, and is not.</strong> AFIDA is a federal disclosure law: foreign persons and entities must report U.S. agricultural land holdings, including leases of 10+ years. It is <strong>self-reported</strong>, so it is only as complete as compliance, and federal GAO auditors have flagged gaps (GAO-24-106337). Acreage here is the sum of the rows in USDA&rsquo;s detail file; for 2024 that is 47.24 million acres, above the 46.3 million in USDA&rsquo;s published report, so the headline uses USDA&rsquo;s figure and the maps, county and country figures use the rows. County percentages of total farmland are not shown yet. They need a matching county denominator, and a wrong percentage is worse than none. The raw source is linked below.</div>
+
+      <p class="fl-small fl-mut">USDA Farm Service Agency, Agricultural Foreign Investment Disclosure Act (AFIDA) detailed holdings files, 2010&ndash;2024, via <a href="https://www.fsa.usda.gov/resources/economic-policy-analysis/afida/annual-reports-underlying-data" rel="noopener">fsa.usda.gov</a>. Our sums of the rows run above USDA&rsquo;s published headline (47.24 million vs 46.3 million for 2024). USDA also hosts its own <a href="https://www.usda.gov/us-foreign-owned-ag-lands" rel="noopener">ArcGIS dashboard</a>. Data years 2015 and 2021 are not in USDA&rsquo;s downloadable file set. Page data refreshed 2026-07-18; AFIDA updates annually.</p>
+    </div>
+    </details>
+
     <details class="fa-fold" id="fa-bystate" hidden>
       <summary>Where July nights are warming, by state</summary>
       <p>Each county has one July a year since 1976, so its own trend has to be large before the 95% interval clears zero. The whole-record fit, every July since 1895, has more years; in some states it finds warming in more counties and in others in fewer, because the early 1900s were warm in some regions. Both columns count counties whose own interval clears zero.</p>
@@ -649,7 +920,6 @@ details.fa-arith .body a{color:var(--gold)}
     <h2>The rest of the land record on AGSIST</h2>
     <div class="fa-rel">
       <a href="/rent/"><b>Cash Rent by State</b><span>Every NASS rent estimate by state and county, irrigated and not, with the history.</span></a>
-      <a href="/foreign-land"><b>Foreign-Owned Land</b><span>AFIDA holdings by state, county and holder country since 2010.</span></a>
       <a href="/drought-monitor"><b>Drought Monitor</b><span>This week's map and the seasonal outlooks.</span></a>
       <a href="/hail-map"><b>Hail Map</b><span>Radar hail swaths and the storm record, down to the field.</span></a>
       <a href="/prf"><b>PRF Insurance Calculator</b><span>What pasture and hay rainfall insurance would have paid on your grid, every year since 1951.</span></a>
@@ -679,6 +949,11 @@ details.fa-arith .body a{color:var(--gold)}
     <details><summary>What is a crop insurance loss ratio and why does it matter for land?</summary><p>Indemnities paid divided by total premium, from USDA RMA's Summary of Business county files, every policy since 1989 except the rainfall and vegetation index pasture plans (PRF), which are counted separately. The open crop year is left out. At 1.00 the county's insurance book paid out what it took in; above it, claims exceeded the whole premium, the farmer's share and the federal subsidy together. Insurers, lenders and anyone pricing a lease look at it because it is the longest continuous record of how often crops in that county have failed against what was expected, with the dollars attached.</p></details>
     <details><summary>Where does the land value come from, and is it an appraisal?</summary><p>The USDA Census of Agriculture, which asks every operator the market value of their land and buildings and publishes the average per acre by county for 2012, 2017 and 2022. It is not an appraisal and not a sale price; it is what operators reported, buildings included. This page shows it as published and divides the county's non-irrigated cash rent by it.</p></details>
     <details><summary>Why are irrigation wells shown for some states and not others?</summary><p>Because only some states publish an open well register with an irrigation code that can be read and checked. The Atlas reads Nebraska's registered wells and Kansas's WIMAS water rights, and from September 2026 the registers of Minnesota, Michigan, Ohio, Wisconsin, Oklahoma, California, Arizona, Idaho, Oregon and Nevada, each where that month's pull succeeds. Registers differ in what they count and how far back they go, so compare a county with its own state. A county in any other state reads "no open register read yet".</p></details>
+    <details><summary>How much American farmland does China own?</summary><p>Not much: 247,659 acres at the end of 2024, about 0.5% of the foreign-held acres in USDA's AFIDA detail files (our sum of the rows; Hong Kong is listed on its own, 144,090 acres). Canada holds 16.1 million. Chinese-connected holdings are politically sensitive and several states have restricted them, but by acreage they are a small slice. Since 2023 the filings carry specific flags for secondary interests from China, Iran, Russia, and North Korea.</p></details>
+    <details><summary>Is 46 million acres a lot?</summary><p>USDA puts it at 3.6% of privately held agricultural land. In USDA&rsquo;s detail files it has nearly doubled since 2010, from 24.8 million row-summed acres to 47.2 million, and that growth is the more important number. About 22 million of the 47 million acres are forest.</p></details>
+    <details><summary>Why is so much of it forest?</summary><p>Because global timber companies and investment funds own large tracts of U.S. timberland, and forest counts as agricultural land under AFIDA. Roughly 22 of the 47 million acres are forest, the single biggest reason raw AFIDA totals get misread as "foreign corn ground."</p></details>
+    <details><summary>My county shows nothing. Does that mean no foreign ownership?</summary><p>It means no <em>disclosed</em> holdings. AFIDA relies on self-reporting with civil penalties for failure to file; federal auditors have found compliance gaps. Absence of a filing is evidence, not proof.</p></details>
+    <details><summary>Where can I get the raw data?</summary><p>USDA FSA publishes the detailed holdings files annually, linked below. The Atlas adds them up without changing any figure.</p></details>
   </section>
 
   <section class="fa-sec" id="fa-parcel">
@@ -705,11 +980,11 @@ details.fa-arith .body a{color:var(--gold)}
   <!-- Static footer for crawlers and no-JS (loader.js swaps in the live footer). Edit here, then run scripts/inject_static_nav.py. -->
   <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
     <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
-    <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/archive">Archive</a> · <a href="/rain-print">Rain Print: your farm’s year of rain, framed</a><br>
+    <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/daily#past">Past briefings</a> · <a href="/rain-print">Rain Print: your farm’s year of rain, framed</a><br>
     <b>Prices:</b> <a href="/cash-bids">Cash bids near me</a> · <a href="/basis">Bids and basis by state</a> · <a href="/grain-transport">Grain on the move</a> · <a href="/cash-bid-index">Cash Bid Index</a> · <a href="/fertilizer">Fertilizer prices</a> · <a href="/corn-futures-prices">Corn</a> · <a href="/soybean-futures-prices">Soybeans</a> · <a href="/wheat-futures-prices">Wheat</a> · <a href="/harvest-price-tracker">Harvest price tracker</a> · <a href="/markets">All markets</a> · <a href="/usda-calendar">USDA calendar and what&rsquo;s priced in</a> · <a href="/conditions">Crop progress and size</a> · <a href="/usda-quick-stats">Yield by state</a> · <a href="/crop-tour">Crop tour</a> · <a href="/cot">Fund positions (COT)</a> · <a href="/tariffs">Tariffs and trade</a><br>
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a> · <a href="/manure-value">Manure value</a> · <a href="/drought-monitor">Drought monitor</a><br>
     <b>Field:</b> <a href="/rain-radar">Rain on your field</a> · <a href="/rain">Rain by county</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray advisory</a> · <a href="/fall-nitrogen">Soil temp (fall anhydrous)</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/urea">Urea loss</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
-    <b>Money &amp; Land:</b> <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/farmland-index">Farmland sale index</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a> · <a href="/foreign-land">Foreign-owned land</a><br>
+    <b>Money &amp; Land:</b> <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/farmland-index">Farmland sale index</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
     <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
@@ -2108,7 +2383,7 @@ function renderOwnership(fips){
       h+=fact('Held by foreign persons, '+ly, ac?fmt(ac,0)+' acres':'none disclosed', 'agricultural land, as filed under AFIDA');
       if(ac&&top&&top[0]) h+=fact('Largest holder country', /^999/.test(String(top[0]))?'No predominant country':/^998/.test(String(top[0]))?'No country listed':String(top[0]).toLowerCase().replace(/\b[a-z]/g,function(x){return x.toUpperCase();}));
     } else h+=fact('Held by foreign persons',''+A.why,'',true);
-    h+='<p class="fa-na" style="grid-column:1/-1">Rented vs owner-farmed since 1997 for every state is in the national picture below the map. More on <a href="/foreign-land">foreign-owned land</a>.</p>';
+    h+='<p class="fa-na" style="grid-column:1/-1">Rented vs owner-farmed since 1997 for every state is in the national picture below the map. More on foreign-held land in <a href="#foreign">the national picture</a>.</p>';
     var slot=$('fa-own-slot'); if(slot) slot.innerHTML=h;
     var t=$('fa-t-rented'), c=ATLAS.counties[fips];
     if(t&&c){ var stat=s22!=null?stateStat('rented',c.state,fips):null;
@@ -2376,6 +2651,19 @@ function go(){if(!d.open||d.getAttribute('data-on'))return;d.setAttribute('data-
 var s=document.createElement('script');s.src='/components/atlas-tenure.js?v=2';s.onload=function(){window.AgTenure.mount(box).then(function(){if(!box.querySelector('table'))d.removeAttribute('data-on');});};
 s.onerror=function(){box.textContent='The tenure section did not load. Close and open it to try again.';d.removeAttribute('data-on');};document.head.appendChild(s);}
 d.addEventListener('toggle',go);if(/(^|[#&])l=ten_rent(&|$)/.test(location.hash)){d.open=true;}})();
+</script>
+<script>/* the foreign-held fold (was /foreign-land) loads its own file only when opened */
+(function(){var d=document.getElementById('fa-foreign');if(!d)return;
+function go(){if(!d.open||d.getAttribute('data-on'))return;d.setAttribute('data-on','1');
+var s=document.createElement('script');s.src='/components/atlas-foreign.js?v=1';s.onload=function(){window.AgForeign.load().then(function(ok){if(!ok)d.removeAttribute('data-on');});};
+s.onerror=function(){d.removeAttribute('data-on');};document.head.appendChild(s);}
+d.addEventListener('toggle',go);
+function want(){return /(^|[#&])(foreign|fl-[a-z-]+)(&|$)/.test(location.hash);}
+if(want()){d.open=true;setTimeout(function(){var t=document.getElementById('foreign');if(t)t.scrollIntoView();},50);}
+window.addEventListener('hashchange',function(){if(want()&&!d.open)d.open=true;});
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a.fl-layer');if(!a)return;e.preventDefault();
+var h=(location.hash||'').replace(/^#/,'').split('&').filter(function(p){return p&&p.slice(0,2)!=='l=';});h.push('l=afida');location.hash=h.join('&');
+var m=document.getElementById('fa-app')||document.querySelector('.fa-map');if(m)m.scrollIntoView({behavior:'smooth'});});})();
 </script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
