@@ -17,7 +17,8 @@ never the files below.
   arc-plc/sheet.html              /arc-plc/sheet?c=<state>/<county>, the one
                                   printable counter sheet (noindex), built in the
                                   browser (components/arc-plc-sheet.js, qr.js)
-  arc-plc/<state>/<county>-sheet.html  old sheet URLs: tiny pages that forward
+  (old /arc-plc/<state>/<county>-sheet URLs: no files since Oct 23, 2026; 404.html forwards them
+   to /arc-plc/sheet?c=<state>/<county>, query and hash kept)
   data/arc-plc/hub/<crop>.json    the crop pages' county lists, filled on open
   components/arc-plc-form.js      the calculator's inputs for the county pages
   embed/arc-plc.html              the embeddable calculator (noindex)
@@ -2592,7 +2593,7 @@ def quick_county(c, D):
 
 # ---------------------------------------------------------------- the simple page (county answer cards, finder, counter sheet)
 AUTHOR = {"@type": "Person", "name": "Sigurd Lindquist", "url": f"{SITE}/about", "jobTitle": "Certified Crop Adviser (CCA)"}
-SHEET_SUFFIX = "-sheet"   # /arc-plc/<state>/<county>-sheet: old counter sheet URLs, now tiny stubs that forward to /arc-plc/sheet
+SHEET_SUFFIX = "-sheet"   # /arc-plc/<state>/<county>-sheet: old counter sheet URLs; 404.html forwards them to /arc-plc/sheet
 OUT_SHEET = f"{OUT_DIR}/sheet.html"   # /arc-plc/sheet?c=<state>/<county>: the one counter sheet page (noindex), built in the browser
 ICON_SVG = {
     "pick": '<svg class="ap-ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="currentColor" stroke="currentColor" stroke-width="1.5"/></svg>',
@@ -3094,15 +3095,6 @@ def sheet_shell(D):
 
 def sheet_href(S, c):
     return f"/arc-plc/sheet?c={S['slug']}/{c['s']}"
-
-
-def sheet_stub(S, c):
-    """An old /arc-plc/<state>/<county>-sheet URL (live 2026-10-09 to 10-10): a few hundred bytes that forward to the shared sheet."""
-    to = sheet_href(S, c)
-    return (f'<!DOCTYPE html>\n<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,follow">'
-            f'<link rel="canonical" href="{SITE}/arc-plc/{S["slug"]}/{c["s"]}"><meta http-equiv="refresh" content="0; url={to}">'
-            f'<title>{esc(c["n"])} counter sheet</title><script>location.replace("{to}"+location.hash)</script></head>'
-            f'<body><p><a href="{to}">{esc(c["n"])}, {esc(S["n"])}: counter sheet for the FSA office</a></p></body></html>\n')
 
 
 OUT_MATH = f"{OUT_STATE_JSON}/math"   # data/arc-plc/math/<ST>.json: "Show the math" and the counter sheet, loaded on demand
@@ -3703,8 +3695,6 @@ def render_all(D):
         for c in S["c"]:
             page, m = county_page(st, S, c, D, ch)
             out[f"{OUT_DIR}/{S['slug']}/{c['s']}.html"] = page
-            if D["fsa"]:
-                out[f"{OUT_DIR}/{S['slug']}/{c['s']}{SHEET_SUFFIX}.html"] = sheet_stub(S, c)
             stats["counties"] += 1
             if m["indexable"]:
                 urls.append((m["path"], "0.5", lm))
@@ -3792,7 +3782,8 @@ def main_build(root=".", check=False):
     # a page this build no longer writes (a state or county left the data) stays as a pointer to its
     # parent (scripts/pointer_pages.py), never a 404; the per-state data files go as before
     gone = sorted(existing_outputs(root) - set(out))
-    pages = [r for r in gone if r.endswith(".html")]
+    # an old counter sheet URL is no file at all (Oct 23, 2026): 404.html forwards it, so its stub goes
+    pages = [r for r in gone if r.endswith(".html") and not r.endswith(SHEET_SUFFIX + ".html")]
     changed, orphans = PP.settle(root, "arc-plc", pages, arc_parent, real=lambda r: r in out, check=check,
                                  name_for=arc_name)
     stale += [r + " (pointer)" for r in changed]
@@ -4009,10 +4000,11 @@ def selftest():
         ck("budget: arc-plc/ over its folder budget refuses", any("over its" in b for b in budget_problems(small)[0]))
     finally:
         SB.FOLDER_MB[OUT_DIR] = _cap
-    stub = sheet_stub({"slug": "wisconsin", "n": "Wisconsin"}, {"s": "chippewa-county", "n": "Chippewa County"})
-    ck("old sheet URL: a stub under 1 KB that forwards to the shared sheet, canonical to the county",
-       len(stub.encode()) < 1024 and 'url=/arc-plc/sheet?c=wisconsin/chippewa-county"' in stub and 'location.replace("/arc-plc/sheet?c=wisconsin/chippewa-county"' in stub
-       and 'rel="canonical" href="https://agsist.com/arc-plc/wisconsin/chippewa-county"' in stub and "noindex" in stub, str(len(stub)))
+    nf = open(os.path.join(ROOT, "404.html"), encoding="utf-8").read()
+    ck("old sheet URL: no stub file is written, and 404.html forwards it to the shared sheet with its query and hash",
+       "sheet_stub" not in globals() and
+       "/^\\/arc-plc\\/([a-z-]+)\\/([a-z0-9-]+)-sheet(?:\\.html)?\\/?$/" in nf
+       and "location.replace('/arc-plc/sheet?c='+m[1]+'/'+m[2]+(location.search?'&'+location.search.slice(1):'')+location.hash)" in nf)
     vp = vpack({"verdict": "lean_arc", "plc": 0.905, "arc": 5.2049, "diff": -4.2999, "plc_wins": 0, "arc_wins": 4, "n": 11,
                 "rows": [{"arc": 1}, {"arc": 0}, {"arc": 2}], "borrowed": True})
     # 0.905 -> $0.91 (half up after rnd); 5.2049 -> $5.20; |gap| 4.2999 -> $4.30, whole dollars 4; ARC-CO paid in 2 rows; borrowed flag 1
