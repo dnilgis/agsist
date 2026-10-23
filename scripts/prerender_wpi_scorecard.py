@@ -14,8 +14,8 @@ Client JS still fetches the JSON and overwrites innerHTML at runtime, so
 hydration is unchanged — the bake only changes what non-JS readers see.
 
 Regions:
-  whats-priced-in.html : PRERENDER:wp-result  (latest-report banner, 5-day window)
-                         PRERENDER:wp-nexthead (the <h2> that names the next report)
+  usda-calendar.html   : PRERENDER:wp-result  (latest-report banner, 5-day window)
+                         PRERENDER:wp-nexthead (the heading that names the next report)
                          PRERENDER:wp-farmbox (the "here is what to do about it" box)
                          PRERENDER:wp-next    (next-report expectation card)
                          PRERENDER:wp-history (scored track record)
@@ -43,8 +43,10 @@ import sys
 from pathlib import Path
 from datetime import datetime, timezone
 
-WPI_HTML = "whats-priced-in.html"
-SC_HTML = "scorecard.html"
+# Oct 22, 2026: both pages became sections of /usda-calendar (#priced-in, #scorecard); the old
+# addresses are forward pages. The regions and the Dataset stamp now live there.
+WPI_HTML = "usda-calendar.html"
+SC_HTML = "usda-calendar.html"
 WPI_JSON = "data/whats-priced-in.json"
 AS_JSON = "data/analyst-scorecard.json"
 SC_JSON = "data/scorecard.json"
@@ -870,8 +872,11 @@ def bake_wpi(check_only=False):
                                    asd.get("min_n"), pcls, asd.get("ordinal_min_n")),
                          WPI_HTML)
     if wpi.get("updated"):
-        src = re.sub(r'("dateModified":")(\d{4}-\d{2}-\d{2})(")',
-                     lambda m: m.group(1) + wpi["updated"] + m.group(3), src, count=1)
+        # only the What's priced in Dataset block: the calendar's own markup keeps its date
+        def _stamp(b):
+            return re.sub(r'("dateModified":")(\d{4}-\d{2}-\d{2})(")',
+                          lambda m: m.group(1) + wpi["updated"] + m.group(3), b.group(0), count=1)
+        src = re.sub(r'<script type="application/ld\+json" id="wp-dataset-ld">.*?</script>', _stamp, src, count=1, flags=re.S)
     return orig, src, WPI_HTML
 
 

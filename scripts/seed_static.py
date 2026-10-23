@@ -136,7 +136,7 @@ def render_desc(tmpl, **kw):
 # the loop above; these get it too because their content changes daily)
 DATEMOD_ONLY = ["index.html", "markets.html", "daily.html",
                 "cash-bids.html", "spray.html", "urea.html",
-                "cot.html", "whats-priced-in.html", "drought-monitor.html",
+                "cot.html", "drought-monitor.html",
                 "hail-map.html"]
 
 # sitemap <lastmod> bump list — the daily-changing URLs Google should recrawl
@@ -1275,7 +1275,7 @@ def seed_conditions(today):
     return _write_seeds("conditions.html", seeds)
 
 
-# --- /scorecard ----------------------------------------------------------------
+# --- the prediction bot scorecard (/usda-calendar#scorecard; was /scorecard) ------
 PB_VERDICT = {"not_enough": "Not enough calls yet.", "coin_flip": "Coin flip.",
               "held_up": "This one held up.", "worse_than_coin": "Worse than a coin flip."}
 # "crowded" is the COT page's word for its own measure (cot_analysis.py); the
@@ -1337,7 +1337,7 @@ def _pb_verdict(r, label, R):
 
 
 def _pb_why(c):
-    """The Why cell. Same words as why() in scorecard.html. For a trend call
+    """The Why cell. Same words as why() in components/bot-scorecard.js. For a trend call
     the fund rank is said to be what let the trend decide (2026-10-16: "13-week
     trend up (87th percentile ...)" read as if the percentile were the trend)."""
     s = PB_SIGNAL.get(c.get("signal"), c.get("signal") or "")
@@ -1362,7 +1362,7 @@ def _pb_cents(x):
 def _pb_stand(c):
     """Where an open call stands: the bot's latest close of the same contract
     against the entry. Not a grade and never counted. Same words as stand()
-    in scorecard.html."""
+    in components/bot-scorecard.js."""
     if c.get("status") == "graded":
         return "Graded: right" if c.get("outcome") == "hit" else "Graded: wrong"
     if c.get("status") != "open":
@@ -1396,7 +1396,7 @@ PB_PLAIN_COIN = {"coin_flip": "no better than a coin flip", "worse_than_coin": "
 def pb_plain(d):
     """One plain sentence for the top of /scorecard: what the backtest says, why
     the page exists anyway, and when the open calls get graded. The same words
-    as plainLine() in scorecard.html."""
+    as plainLine() in components/bot-scorecard.js."""
     ba = ((d.get("backtest") or {}).get("records") or {}).get("all") or {}
     out = []
     first = _iso_date(ba.get("first"))
@@ -1430,7 +1430,7 @@ def seed_scorecard(today):
         seeds["pb:bycrop"] = f'<tr><td colspan="6">{why}.</td></tr>'
         seeds["pb:pb-updated"] = "-"
         seeds["pb:pb-plain"] = ""
-        return _write_seeds("scorecard.html", seeds)
+        return _write_seeds("usda-calendar.html", seeds)
     labels = {c["key"]: c["label"] for c in d.get("crops") or []}
     R = d.get("rules") or {}
     seeds["pb:pb-plain"] = pb_plain(d)
@@ -1483,7 +1483,7 @@ def seed_scorecard(today):
         rows.append(f"<tr><td>{_e(c['label'])}</td><td class=\"num\">{lv}</td><td class=\"num\">{ls}</td>"
                     f"<td class=\"num\">{bv}</td><td class=\"num\">{bs}</td><td>{bvt}</td></tr>")
     seeds["pb:bycrop"] = "".join(rows) or '<tr><td colspan="6">n/a</td></tr>'
-    return _write_seeds("scorecard.html", seeds)
+    return _write_seeds("usda-calendar.html", seeds)
 
 
 # --- /basis --------------------------------------------------------------------
