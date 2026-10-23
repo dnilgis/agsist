@@ -8,7 +8,7 @@ name: county rain
 # Both happen here, in one commit: a push made with this workflow's token does
 # not start other workflows, so nothing else would build the pages.
 #
-# Every day 13:23 UTC (morning in Central; Sig, Oct 23 2026: was Mondays only).
+# Every day 13:23 UTC (morning in Central; Sig, Oct 23 2026: before that, once a week).
 # NOAA's daily reports come in a few days late, so each run re-reads the whole
 # year and the pages say the last day each station reported.
 # January: every run fetches the finished year (through Dec 31), so late
