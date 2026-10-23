@@ -12,7 +12,7 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 test("no copy of the WASDE-day corn drop says nearly 4%", () => {
   assert.equal(((4.7975 - 5.0025) / 5.0025 * 100).toFixed(1), "-4.1");
   for (const f of ["data/daily-archive/2026-10-10.json", "data/daily-archive/2026-10-11.json", "data/daily-archive/index.json",
-    "daily/2026-10-10.html", "daily/2026-10-11.html", "daily.html", "archive.html", "feed.xml"]) {
+    "daily/2026-10-10.html", "daily/2026-10-11.html", "daily.html", "feed.xml"]) {   // daily.html carries the past-briefings list since Oct 23, 2026
     const s = readFileSync(join(ROOT, f), "utf8");
     assert.ok(!/near(ly |-)4%/.test(s), f + " still says nearly 4%");
   }

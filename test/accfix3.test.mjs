@@ -132,12 +132,12 @@ test("spray, urea, conditions, cot, scout, pod counts: corrected wording", () =>
   assert.ok(!read("cot.html").includes("routinely 20 to 50 cents"));
   assert.match(read("components/cot-market.js"), /ord\(pShown\(p, c\.crowded\)\)/);
   assert.match(read("field-scout.html"), /often 10 to 30 bushels an acre versus rotated corn/);
-  assert.match(read("pod-counts.html"), /pooled it is a little over &plusmn;8/);
+  assert.match(read("crop-tour.html"), /pooled it is a little over &plusmn;8/);
   assert.ok(2.056 * 3.95 > 8, "pooled band 8.12");
 });
 
 test("what's priced in: finishing order rule, Oct 9 corn, sources, closest", () => {
-  const w = read("whats-priced-in.html");
+  const w = read("usda-calendar.html");   // What's priced in is a section of the calendar since Oct 22, 2026
   assert.ok(!w.includes("A ranking needs at least two forecasters"));
   assert.match(w, /A finishing order needs at least two forecasters with/);
   assert.match(w, /corn ending stocks landed 10\.3% over the average and read in line on a day December corn fell 20&frac12;&cent;/);
@@ -170,7 +170,7 @@ test("harvest tracker, planting date, rent, crop tour, farm bill, rain, yield es
   assert.equal(Math.round(62.5 * 10) / 10, 62.5);
   assert.match(read("rain-radar.html"), /about six square miles/);
   assert.ok(2.8 * 2 > 5.5, "2.8 x 2 miles is 5.6 square miles");
-  const sc = read("scorecard.html");
+  const sc = read("usda-calendar.html");   // the bot scorecard is a section of the calendar since Oct 22, 2026
   assert.ok(!sc.includes("2,736 windows"));
   assert.match(sc, /weekly calls\)\./);
   assert.match(read("fertilizer.html"), /from Kansas and Wisconsin co-ops/);

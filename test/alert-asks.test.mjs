@@ -110,12 +110,12 @@ test("company pages carry the town pages' bid email box with their own ZIP field
   assert.ok(cbs.includes("'<input type=\"tel\" class=\"cbs-zip\""), "with data-zip-input the box shows its own ZIP field");
 });
 
-test("What's Priced In asks for the WASDE summary (Oct 21: its own list), which send_report_day.py sends", () => {
-  const h = read("whats-priced-in.html");
+test("The USDA calendar, with What's Priced In, asks once for the WASDE summary (Oct 21: its own list), which send_report_day.py sends", () => {
+  const h = read("usda-calendar.html");
   const asks = h.match(/<div data-signup-ask="[^"]*"[^>]*><\/div>/g) || [];
   assert.equal(asks.length, 1);
   assert.ok(asks[0].includes('data-signup-ask="Email me the WASDE summary when it drops"'), "Sig's words");
-  assert.ok(asks[0].includes('data-topic="reports"') && asks[0].includes('data-source="report:wasde:whats-priced-in"'), "the report-day list alone, tagged");
+  assert.ok(asks[0].includes('data-topic="reports"') && asks[0].includes('data-source="report:wasde:usda-calendar"'), "the report-day list alone, tagged");
   assert.ok(!asks[0].includes("Comes with AGSIST Daily") && !asks[0].includes("data-daily"), "no longer the Daily");
   assert.ok(!DASH.test(asks[0]));
   assert.match(read("scripts/send_report_day.py"), /TYPES = \("WASDE", "Crop Production", "Grain Stocks"\)/);
