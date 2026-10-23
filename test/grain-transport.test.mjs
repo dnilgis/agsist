@@ -76,10 +76,26 @@ test("first screen: the answer, the basis line and six numbers, baked for crawle
   assert.match(page, /<!--SEED:gtbasis-->[^<]+<!--\/SEED:gtbasis-->/);
   const now = /<!--SEED:gtnow-->([\s\S]*?)<!--\/SEED:gtnow-->/.exec(page)[1];
   assert.equal((now.match(/class="gt-tile/g) || []).length, 6);
-  for (const s of ["barge-st-louis", "railcar-bnsf-shuttle", "railcar-up-shuttle", "locks-lock27", "carorders-all", "ocean-spread"]) assert.ok(now.includes(`data-s="${s}"`), s);
+  for (const s of ["barge-st-louis", "railcar-bnsf-shuttle", "railcar-up-shuttle", "locks-lock27", "carorders-all"]) assert.ok(now.includes(`data-s="${s}"`), s);
+  // the sixth is the Gulf/PNW ocean spread, or, while USDA's ocean table cannot be read, Gulf ship loadings
+  assert.ok(/data-s="(ocean-spread|vessels-gulf-loaded)"/.test(now), "sixth tile");
+  // the baked tiles are exactly the ones index.json names, in order (the script redraws from it)
+  const idxp = join(ROOT, "data/transport/moves/index.json");
+  if (existsSync(idxp)) {
+    const ids = JSON.parse(readFileSync(idxp, "utf8")).tiles.map((t) => t.id);
+    assert.deepEqual([...now.matchAll(/data-s="([^"]+)"/g)].map((m) => m[1]), ids);
+  }
+  // a source that is down is said in plain words, never as an error message
+  assert.doesNotMatch(now, /Error|could not match|column/);
   assert.match(page, /<link rel="canonical" href="https:\/\/agsist\.com\/grain-transport">/);
   assert.match(page, /"jobTitle":"Certified Crop Adviser \(CCA\)"/);
   assert.match(page, /class="by-end"/);
+});
+
+test("the page script never prints a source's error text to a reader", () => {
+  const js = page.slice(page.indexOf("function missWhy"));
+  assert.ok(js.length > 1000, "missWhy is in the page script");
+  assert.doesNotMatch(js, /\.error\b/, "no s.error / conn.error in what the script writes");
 });
 
 test("data budget: data/transport/moves stays under 5 MB, one file per series", () => {
