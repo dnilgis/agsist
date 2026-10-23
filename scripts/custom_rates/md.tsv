@@ -1,0 +1,97 @@
+# state: MD
+# states: MD DE
+# name: Maryland and Delaware
+# survey: Custom Work Charges in Maryland and Delaware (University of Maryland Extension FS-683, updated March 2025), Table 1
+# publisher: University of Maryland Extension, with the University of Delaware
+# survey_year: 2025
+# collected: Mail and online survey in the fall of 2024; 61 custom operators and farmers gave the rates they charge
+# url: https://extension.umd.edu/resource/custom-work-charges-maryland-and-delaware-fs-683/
+# ref: cr-mdde-fs683
+# spread: minmax
+# counts: none
+# verify: window
+# page: none
+# includes: Reported rates include charges for machines, power, fuel, lube and the labor/operator. They do not include chemicals, seed or other materials, except hay baling materials and where noted (spreading lime includes the lime).
+# range_note: The range is the lowest and highest answer. The guide prints the average and the median but not how many answered each job; a job whose lowest, highest, median and average are all one number may rest on a single answer, so it is shown but never lined up with other states. The bed forming and plastic laying line names no unit and is left out.
+key	section	operation	unit	avg	md	lo	hi	n
+stalk-chop	Custom work charges	Stalk Cutting/Chopping	acre	27.84	20.00	15.00	60.00	
+chisel	Custom work charges	Plowing-Chisel	acre	25.55	23.55	17.50	60.00	
+moldboard	Custom work charges	Plowing-Moldboard	acre	32.17	26.50	20.00	60.00	
+	Custom work charges	Disking-Heavy	acre	26.64	22.50	18.15	60.00	
+	Custom work charges	Disking With Cultipacker/Rolling Baskets	acre	25.56	22.00	18.00	60.00	
+cultivate-row	Custom work charges	Cultivating	acre	14.75	15.00	12.00	18.00	
+	Custom work charges	Cultipacking	acre	8.67	6.00	5.00	15.00	
+subsoil	Custom work charges	Sub-soiling (Ripping)	acre	30.30	26.50	20.00	50.00	
+field-cult	Custom work charges	Soil Finishing (Field Cultivator)	acre	25.67	20.00	16.00	65.00	
+vertical-till	Custom work charges	Vertical Tillage	acre	19.50	19.00	12.00	28.00	
+strip-till	Custom work charges	Strip Till	acre	27.83	20.00	20.00	45.00	
+plant-row-fert	Custom work charges	Corn Planting-Conventional w/ Fertilizer	acre	29.38	25.00	20.00	75.00	
+plant-row	Custom work charges	Corn Planting-Conventional w/o Fertilizer	acre	27.23	22.00	18.00	75.00	
+	Custom work charges	Corn Planting- No-Till w/ Fertilizer	acre	27.76	24.00	16.00	75.00	
+plant-notill	Custom work charges	Corn Planting- No-Till w/o Fertilizer	acre	27.57	22.50	15.00	75.00	
+	Custom work charges	Soybean Planting-Conventional	acre	29.13	23.50	17.50	75.00	
+	Custom work charges	Soybean Planting-No-Till	acre	27.10	25.00	16.00	75.00	
+drill-smallgrain	Custom work charges	Drilling-Small Grain	acre	26.05	24.00	11.00	75.00	
+	Custom work charges	Seeding-Grass Drilling/No-Till	acre	31.85	26.15	15.00	50.00	
+	Custom work charges	Seeding-Grass Broadcast	acre	24.19	20.00	12.00	55.00	
+	Custom work charges	Seeding-Small Grain Broadcast	acre	12.60	12.00	8.00	20.00	
+	Custom work charges	Seeding-Aerial	acre	17.11	15.00	12.00	28.00	
+fert-dry	Custom work charges	Fertilizer Application-Dry	acre	11.72	11.00	8.50	20.00	
+fert-liquid	Custom work charges	Fertilizer Application-Liquid	acre	13.21	12.00	7.50	19.00	
+	Custom work charges	Fertilizer Application-Side Dress	acre	13.78	13.00	10.00	20.00	
+	Custom work charges	Lime-Includes Lime, Application	ton	43.41	48.70	8.50	75.00	
+	Custom work charges	Manure Loading	ton	6.58	4.00	2.00	20.00	
+	Custom work charges	Manure Spreading-Liquid	gallon	0.06	0.06	0.05	0.06	
+manure-solid-ton	Custom work charges	Manure Spreading-Solid	ton	14.10	15.00	5.50	25.00	
+	Custom work charges	Manure Spreading-Litter	ton	12.49	11.50	2.50	25.00	
+	Custom work charges	Manure Hauling	ton	8.85	7.00	4.00	18.80	
+spray-ground	Custom work charges	Spraying-Pesticide Ground	acre	14.01	12.00	7.00	50.00	
+spray-aerial	Custom work charges	Spraying-Pesticide Aerial	acre	14.36	12.50	10.00	28.00	
+mow-hay	Custom work charges	Mowing Hay	acre	15.98	16.00	5.00	28.00	
+mow-cond	Custom work charges	Mowing and Conditioning Hay	acre	21.00	23.00	5.00	35.00	
+rake	Custom work charges	Raking Hay	acre	12.20	12.00	5.00	20.00	
+bale-smallsq	Custom work charges	Bailing-Small Squares	bale	1.70	1.35	1.00	5.00	
+bale-largesq	Custom work charges	Bailing- Large Square Bales	bale	12.21	10.00	5.00	20.00	
+bale-round	Custom work charges	Bailing-large Round	bale	15.01	15.00	5.00	25.00	
+	Custom work charges	Mow, Rake, Bale Hay - No Haul	bale	19.66	20.00	5.00	37.00	
+	Custom work charges	Round Bale Wrapping	bale	13.00	12.00	10.00	18.00	
+	Custom work charges	Field Chop, Haul, and Fill Silo	ton	10.00	10.00	10.00	10.00	
+combine-corn	Custom work charges	Combining - Corn	acre	40.03	40.00	30.00	52.00	
+combine-soy	Custom work charges	Combining - Soybeans	acre	39.63	40.00	30.00	55.00	
+combine-smallgrain	Custom work charges	Combining - Small Grains	acre	39.55	40.00	30.00	50.00	
+	Custom work charges	Custom Farming Corn	acre	170.00	170.00	170.00	170.00	
+	Custom work charges	Custom Farming Soybean	acre	100.00	100.00	100.00	100.00	
+	Custom work charges	Custom Farming Small Grains	acre	125.00	125.00	125.00	125.00	
+	Custom work charges	Hauling Grain - Local	bushel	0.19	0.20	0.10	0.35	
+	Custom work charges	Hauling Grain - Long Distance	bushel	0.39	0.40	0.18	0.60	
+store-bin-month	Custom work charges	Storing Grains	bushel / month	0.07	0.08	0.03	0.12	
+	Custom work charges	Drying Grains	point	0.07	0.07	0.03	0.12	
+	Custom work charges	Grinding Feed	cwt	0.95	0.95	0.40	1.50	
+	Custom work charges	Mixing Feed	cwt	2.00	2.00	2.00	2.00	
+	Custom work charges	Grinding and Mixing Feed	cwt	2.13	2.13	0.75	3.50	
+	Custom work charges	Soil Testing	sample	19.25	15.00	8.00	40.00	
+	Custom work charges	Nutrient Management Planning	acre	8.10	3.00	2.00	30.00	
+	Custom work charges	General Farm Labor	hour	20.37	20.00	15.00	40.00	
+	Custom work charges	Skilled Farm Labor	hour	30.73	25.00	15.00	90.00	
+	Custom work charges	Machinery Repair	hour	103.34	100.00	49.40	200.00	
+	Custom work charges	Machinery Operation	hour	34.73	30.00	25.00	75.00	
+	Custom work charges	Backhoe Rental	hour	118.75	125.00	75.00	150.00	
+skid-rent	Custom work charges	Bobcat Rental	hour	95.57	87.50	44.59	150.00	
+	Custom work charges	Bulldozer Rental	hour	120.00	100.00	100.00	160.00	
+	Custom work charges	Bush Hogging	hour	84.30	60.00	17.50	150.00	
+	Custom work charges	Excavator Rental	hour	100.22	100.00	50.00	160.00	
+	Custom work charges	Tractor Rental- <80 HP	hour	40.13	32.40	23.00	65.00	
+	Custom work charges	Tractor Rental- 80-120 HP	hour	54.50	54.50	34.00	75.00	
+	Custom work charges	Tractor Rental 120-160 HP	hour	57.63	47.90	45.00	80.00	
+	Custom work charges	Tractor Rental >160 HP	hour	74.08	69.65	57.00	100.00	
+	Custom work charges	Posthole Digging	hole	4.67	5.00	4.00	5.00	
+	Custom work charges	Post Driving	hole	7.25	7.25	2.50	12.00	
+	Custom work charges	Snow Removal	hour	138.72	125.00	50.00	250.00	
+	Custom work charges	Trenching	foot	4.25	4.00	4.00	5.00	
+	Custom work charges	Clearing Land	hour	187.50	175.00	150.00	250.00	
+mow-crp	Custom work charges	Mowing CRP Acres	acre	26.42	25.00	13.50	50.00	
+	Custom work charges	Mowing	acre	45.65	27.50	13.50	200.00	
+	Custom work charges	Tree Planting	plant	47.50	47.50	3.00	92.00	
+	Custom work charges	Vegetative Buffer Planting	acre	67.50	67.50	35.00	100.00	
+	Custom work charges	Livestock Hauling w/ Trailer	loaded mile	3.37	3.50	2.60	4.00	
+	Custom work charges	Honey Bee Hive Rental	hive	80.00	80.00	60.00	100.00	

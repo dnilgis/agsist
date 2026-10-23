@@ -15,7 +15,7 @@ disk-tandem	Tillage	Discing, tandem	acre	12.27			11
 	Tillage	Blade or wide sweeps	acre	13.17			6
 fert-dry	Fertilizer and chemical	Applying bulk dry fertilizer	acre	6.09			64
 fert-liquid	Fertilizer and chemical	Applying liquid fertilizer	acre	5.82			20
-	Fertilizer and chemical	Applying liquid fertilizer, side-dress	acre	7.88			8
+sidedress-liquid	Fertilizer and chemical	Applying liquid fertilizer, side-dress	acre	7.88			8
 lime-ton	Fertilizer and chemical	Lime application	ton	9.92			6
 spray-ground	Fertilizer and chemical	Ground application, herbicides with boom sprayer	acre	6.48			56
 spray-aerial	Fertilizer and chemical	Air application, herbicides	acre	10.20			13
@@ -37,7 +37,7 @@ combine-smallgrain	Small grain harvest	Combining wheat and small grains (flat ra
 combine-soy	Small grain harvest	Combining soybeans (flat rate)	acre	27.11			9
 	Livestock	Pregnancy test cattle	head	4.78			27
 	Livestock	Worming cattle	head	4.43			20
-	Livestock	Hauling cattle, belly semi truck	mile	3.92			21
+haul-cattle-semi	Livestock	Hauling cattle, belly semi truck	mile	3.92			21
 	Miscellaneous	Brush hogging	hour	55.24			29
 	Miscellaneous	Dozing (D6 or smaller)	hour	107.44			43
 	Miscellaneous	Dozing (D7 or larger)	hour	143.18			17
