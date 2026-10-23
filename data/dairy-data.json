@@ -1,12 +1,12 @@
 {
- "updated": "2026-10-15T07:09:42Z",
+ "updated": "2026-10-23T19:59:13Z",
  "sources": {
   "class": "https://www.ams.usda.gov/mnreports/dymclassprices.pdf",
   "all_milk": "https://quickstats.nass.usda.gov/"
  },
  "status": {
-  "class": "failed",
-  "note": "last good kept; AMS fetch failed: HTTPError: HTTP Error 403: Forbidden",
+  "class": "ok",
+  "note": "issue date not found",
   "all_milk": "ok",
   "all_milk_states": "ok"
  },

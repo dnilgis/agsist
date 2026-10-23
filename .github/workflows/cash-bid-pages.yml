@@ -116,6 +116,17 @@ jobs:
       - name: Sponsor slot list
         run: python scripts/stamp_rates.py
 
+      # The county rain and Farmland Atlas pages link the nearest town pages
+      # (scripts/nearest_towns.py: only towns whose page exists and is indexable).
+      # A rebuild here can add a town or mark one noindex, so both county page
+      # sets are rebuilt in the same commit; otherwise their links go stale and
+      # every PR's --check fails (Oct 23, 2026: Rockwell IA added, Hawkeye IA noindex).
+      # Both generators are offline and read only committed files.
+      - name: Rebuild county rain and Atlas town links
+        run: |
+          python scripts/build_county_rain.py
+          python scripts/build_atlas_pages.py
+
       # The site search index reads these town pages (and the atlas, state and
       # top-level pages already in the checkout), so towns and elevators in
       # search follow every rebuild. If the index fails (too big), the old one
@@ -139,7 +150,7 @@ jobs:
           git config user.email "bot@agsist.com"
           # cash-bids.html: only its og:/twitter: description (network counts and time) is rewritten
           # basis.html: only its SEED:statepick and SEED:staterank blocks (the state basis) are rewritten
-          git add -A cash-bids data/pointers data/sponsor-slots.json sitemap-cash-bids.xml cash-bids.html basis.html data/state-basis data/basis-states.json data/elevator-counts.json data/search-index.json data/search-elevators.json data/search-places.json img/og/cash-bids.jpg
+          git add -A cash-bids data/pointers data/sponsor-slots.json sitemap-cash-bids.xml cash-bids.html basis.html data/state-basis data/basis-states.json data/elevator-counts.json data/search-index.json data/search-elevators.json data/search-places.json img/og/cash-bids.jpg rain sitemap-rain.xml farmland-atlas sitemap-atlas.xml
           if git diff --staged --quiet; then echo "no change"; echo "changed=0" >> "$GITHUB_OUTPUT"; exit 0; fi
           git diff --staged --shortstat
           git commit -q -m "pages: rebuild /cash-bids town pages from the elevator network"

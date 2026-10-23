@@ -309,14 +309,22 @@ def card_lrp():
         cells = [text(c) for c in re.findall(r"<t[hd][^>]*>(.*?)</t[hd]>", tr, re.S)]
         if len(cells) == 4 and cells[2].startswith("$"):
             rows[cells[0].split(",")[0]] = cells[1:]
-    lv, cov, prem = rows["Feeder steers"]
     table = [(lab, rows[k][2], "a cwt")
              for k, lab in (("Feeder steers", "Feeder steers"), ("Fed steers and heifers", "Fed cattle"), ("Hogs", "Hogs")) if k in rows]
     when = day.split(" ", 1)[1]     # "Oct 15, 2026"
+    # the lead is feeder steers; on a day RMA offered no cattle (Oct 23, 2026) it is the first
+    # animal that was offered, named as such, and with nothing offered the card says so
+    lead = next(((k, lab) for k, lab in (("Feeder steers", "feeder steers"), ("Fed steers and heifers", "fed cattle"),
+                                          ("Hogs", "hogs")) if k in rows), None)
+    if lead is None:
+        return a_card("lrp", "LRP calculator", f"RMA's offers for sales on {when}",
+                      f"RMA posted no LRP offers for sales on {when}. The calculator and the record are on the page.",
+                      big="None", unit="offered that sales day", ctx="RMA sets offers each sales day.")
+    lv, cov, prem = rows[lead[0]]
     return a_card("lrp", "LRP calculator", f"RMA's offers for sales on {when}",
-                  f"LRP for sales on {when}: {lv} coverage at {cov} a cwt on feeder steers, 13 weeks, "
+                  f"LRP for sales on {when}: {lv} coverage at {cov} a cwt on {lead[1]}, 13 weeks, "
                   f"costs {prem} a cwt after the subsidy.",
-                  big=prem, unit=f"a cwt for a {cov} floor on feeder steers",
+                  big=prem, unit=f"a cwt for a {cov} floor on {lead[1]}",
                   ctx=f"{lv} coverage, 13 weeks, after the subsidy. Your premium per head is on the page.",
                   table=table, table_title="Premium, top level, 13 wk")
 
