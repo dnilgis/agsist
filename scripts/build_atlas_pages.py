@@ -1569,7 +1569,7 @@ SHORT_UNIT = ((" County", " Co."), (" planning region", " Region"), (" reporting
 
 
 def county_title(W, f, rec, max_len=60):
-    """'<Label>, <State> Cash Rent <year>: $X/Acre | AGSIST' when a rent is
+    """'<Label>, <State> Farm Facts · Cash Rent <year>: $X/Acre | AGSIST' when a rent is
     published (non-irrigated, else irrigated, named), with the survey year the
     figure carries. No rent: a title that does not say rent. Shortened in
     steps to stay within max_len where it can."""
@@ -1590,7 +1590,13 @@ def county_title(W, f, rec, max_len=60):
         tail = ": Farmland Value and Risk"
     else:
         tail = ": Farmland Record"
+    # County farm facts (Sig, Oct 23, 2026): the page's name leads where it fits, the rent stays in
+    # the title (the query the page is found by); else the older title, shortened as before
+    ff = (" Farm Facts · " + tail.lstrip(" :")) if tail.startswith(" ") else (" Farm Facts" + (tail if "Record" not in tail else ""))
     tries = []
+    for l_, s_ in ((lab, stn), (lab, st), (short, stn), (short, st)):
+        t = "%s, %s%s" % (l_, s_, ff)
+        tries += [t + " | AGSIST", t]
     for l_, s_ in ((lab, stn), (short, stn), (lab, st), (short, st)):
         t = "%s, %s%s" % (l_, s_, tail)
         tries += [t + " | AGSIST", t]
@@ -2279,7 +2285,7 @@ def county_page(W, f, d, stamp):
 <h1>{esc(lab)}, {esc(stn)}</h1>
 <p class="sub">{esc(desc)} Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp)}; the rows marked with a date load the newest reading when the page opens.</p>
 {btns}
-{story_html}{warn}{stands_html(stands_out(W, f, d))}<div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
+{stands_html(stands_out(W, f, d))}{story_html}{warn}<div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
 <div class="act">
   <a href="/farmland-atlas#{esc(f)}">Open on the map</a>
   <a href="/farmland-atlas/compare#{esc(f)}">Compare</a>{act_rent}
