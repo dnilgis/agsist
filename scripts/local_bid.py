@@ -329,6 +329,18 @@ def is_special_grade(b):
     return bool(SPECIAL_GRADE.search(str(b.get("commodity") or "")))
 
 
+def can_set_best(b):
+    """THE one test for "may this row set a best / highest bid". Same rule as
+    AG.bidFilter.canSetBest in components/bid-filter.js (test/bid-filter.test.mjs
+    keeps the two word lists identical): a plain bushel bid, not a special grade
+    (organic, non-GMO, white, feed, durum, spring wheat), not a meal or cwt quote,
+    inside its crop's price band. A labelled HRS row is NOT given the wheat-class
+    pass that is_special_grade() gives it: the futures pages price SRW, and the
+    web picker has no such exception."""
+    return (not SPECIAL_GRADE.search(str(b.get("commodity") or ""))
+            and not not_per_bushel(b) and plausible(b))
+
+
 def classify_commodity(name):
     n = (name or "").lower()
     if NOT_PER_BUSHEL.search(n):

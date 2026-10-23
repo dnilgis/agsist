@@ -22,7 +22,8 @@
    THE RULE FOR "BEST". Boards within 50 miles whose price was posted in the
    last 36 hours; among them the nearest open delivery month; the highest
    cash in it, the nearer board on a tie. Special grades (non-GMO, organic,
-   white, feed) and Canadian-dollar boards are left out. Nothing within 50
+   white, feed, durum, spring wheat: the one word list in components/bid-filter.js)
+   and Canadian-dollar boards are left out. Nothing within 50
    miles says so; a missing yesterday leaves the change out, never a zero.
 
    NO LOCATION: a ZIP box. The ZIP is saved as agsist_zip in this browser
@@ -34,7 +35,7 @@
   var RADIUS = 50, STALE_H = 36, DAY = 864e5;
   var CROPS = [['corn', 'Corn'], ['soybeans', 'Soybeans']];
   var BAND = { corn: [2, 12], soybeans: [6, 32] };
-  var SPECIAL = /non[- ]?gmo|organic|\bwhite\b|\bfeed\b/i;
+  var SPECIAL = /non[- ]?gmo|organic|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' };
