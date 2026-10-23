@@ -639,3 +639,18 @@ test("a remarkable day's date and the biggest rain's date print gray, after the 
     assert.ok(t.some((x) => x.includes("Biggest rain: 2.24 in Jun 26")) && !t.some((x) => x.includes("in, Jun 26")), style + ": no comma");
   }
 });
+
+// 2026-10-23, a real print (Saint Croix Falls 2025, Staircase): the year's total and the usual year ended 0.4 in apart and "usual" was drawn over "your year"
+test("Staircase: the 'your year' and 'usual' line ends never overlap, however close the totals", () => {
+  const days = year(2025), D = RP.derive(days);
+  const baseTotal = D.total;
+  for (const k of [0.99, 0.995, 1, 1.004, 1.012, 1.03]) {
+    const per = (baseTotal * k) / days.length, m = new Map();
+    days.forEach((x) => m.set(x.date.slice(5), per));
+    const html = ART.render(input(days, { style: "r1", ov: RP.overlayDaily(days, m), ovNote: "A usual year: NOAA’s 30-year normal" }));
+    const at = (w) => { const r = new RegExp('<text[^>]*? y="([0-9.]+)"[^>]*>' + w + "</text>").exec(html); return r ? +r[1] : null; };
+    const a = at("your year"), b = at("usual");
+    assert.ok(a !== null && b !== null, "both ends are drawn (k=" + k + ")");
+    assert.ok(Math.abs(a - b) >= 17.9, "ends are " + Math.abs(a - b).toFixed(1) + " units apart (k=" + k + ")");
+  }
+});
