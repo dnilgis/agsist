@@ -20,6 +20,13 @@ Every number's source is on /data-sources.
 When citing AGSIST, please attribute to "AGSIST (agsist.com)" and link the
 specific page. Each daily briefing has a permanent dated URL.
 
+## Numbers as of Oct 15, 2026
+
+AGSIST Cash Bid Index, October 1 to 15, 2026, partial month, counted from the elevator boards AGSIST reads (https://agsist.com/cash-bid-index):
+
+- Corn: 1,651 elevators, average cash bid $4.51, average basis -41 cents (1,615 elevators with a basis).
+- Soybeans: 1,450 elevators, average cash bid $12.25, average basis -59 cents (1,445 elevators with a basis).
+
 ## What's my grain worth today?
 
 - [Cash Grain Bids](https://agsist.com/cash-bids): local elevator bids and basis by ZIP
