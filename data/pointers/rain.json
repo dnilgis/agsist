@@ -21,6 +21,10 @@
    "to": "/rain/arkansas",
    "since": "2026-10-14"
   },
+  "rain/arkansas/crawford-county.html": {
+   "to": "/rain/arkansas",
+   "since": "2026-10-23"
+  },
   "rain/arkansas/desha-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-10-14"
@@ -29,14 +33,6 @@
    "to": "/rain/arkansas",
    "since": "2026-10-15"
   },
-  "rain/california/san-benito-county.html": {
-   "to": "/rain/california",
-   "since": "2026-10-19"
-  },
-  "rain/florida/lafayette-county.html": {
-   "to": "/rain/florida",
-   "since": "2026-10-19"
-  },
   "rain/georgia/bacon-county.html": {
    "to": "/rain/georgia",
    "since": "2026-10-14"
@@ -44,6 +40,10 @@
   "rain/georgia/dawson-county.html": {
    "to": "/rain/georgia",
    "since": "2026-10-19"
+  },
+  "rain/georgia/harris-county.html": {
+   "to": "/rain/georgia",
+   "since": "2026-10-23"
   },
   "rain/georgia/murray-county.html": {
    "to": "/rain/georgia",
@@ -64,6 +64,10 @@
   "rain/illinois/richland-county.html": {
    "to": "/rain/illinois",
    "since": "2026-10-19"
+  },
+  "rain/iowa/winnebago-county.html": {
+   "to": "/rain/iowa",
+   "since": "2026-10-23"
   },
   "rain/kentucky/green-county.html": {
    "to": "/rain/kentucky",
@@ -93,11 +97,11 @@
    "to": "/rain/mississippi",
    "since": "2026-10-15"
   },
-  "rain/mississippi/panola-county.html": {
+  "rain/mississippi/leake-county.html": {
    "to": "/rain/mississippi",
-   "since": "2026-10-19"
+   "since": "2026-10-23"
   },
-  "rain/mississippi/tishomingo-county.html": {
+  "rain/mississippi/panola-county.html": {
    "to": "/rain/mississippi",
    "since": "2026-10-19"
   },
@@ -125,10 +129,6 @@
    "to": "/rain/missouri",
    "since": "2026-10-15"
   },
-  "rain/montana/petroleum-county.html": {
-   "to": "/rain/montana",
-   "since": "2026-10-19"
-  },
   "rain/new-york/schoharie-county.html": {
    "to": "/rain/new-york",
    "since": "2026-10-15"
@@ -144,6 +144,10 @@
   "rain/oklahoma/love-county.html": {
    "to": "/rain/oklahoma",
    "since": "2026-10-14"
+  },
+  "rain/oregon/clatsop-county.html": {
+   "to": "/rain/oregon",
+   "since": "2026-10-23"
   },
   "rain/oregon/tillamook-county.html": {
    "to": "/rain/oregon",
@@ -173,6 +177,14 @@
    "to": "/rain/south-dakota",
    "since": "2026-10-15"
   },
+  "rain/south-dakota/turner-county.html": {
+   "to": "/rain/south-dakota",
+   "since": "2026-10-23"
+  },
+  "rain/tennessee/johnson-county.html": {
+   "to": "/rain/tennessee",
+   "since": "2026-10-23"
+  },
   "rain/tennessee/overton-county.html": {
    "to": "/rain/tennessee",
    "since": "2026-10-19"
@@ -201,10 +213,6 @@
    "to": "/rain/texas",
    "since": "2026-10-14"
   },
-  "rain/texas/hudspeth-county.html": {
-   "to": "/rain/texas",
-   "since": "2026-10-19"
-  },
   "rain/texas/kent-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
@@ -214,10 +222,6 @@
    "since": "2026-10-14"
   },
   "rain/virginia/appomattox-county.html": {
-   "to": "/rain/virginia",
-   "since": "2026-10-19"
-  },
-  "rain/virginia/dickenson-county.html": {
    "to": "/rain/virginia",
    "since": "2026-10-19"
   },
