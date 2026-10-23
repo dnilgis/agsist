@@ -51,5 +51,9 @@
   "promote": true,
   "promote_from": "2026-10-14",
   "promote_until": "2026-12-09",
-  "briefing_line": "A year of your farm's rain, printed and framed for the wall: a Christmas gift for the farmer who has everything. agsist.com/rain-print"
+  "briefing_line": "A year of your farm's rain, printed and framed for the wall: a Christmas gift for the farmer who has everything. agsist.com/rain-print",
+  "_gauge_hook": "The rain gauge's one hook (Sig, 2026-10-23): line is one short sentence (90 characters at most), link is the link label (60 at most), no dashes. Every place that links /rain-gauge with words of its own uses these two: the promo lines (components/rain-print-promo.js \"gauge\" and \"auto\"), the line under /rain-print and the Next cards (data/next-links.json \"why\"); test/gauge-hook.test.mjs checks they agree. The /rain-gauge headline is the same line. Honest only: no count, no deadline, no price, no accuracy claim.",
+  "gauge_hook": {"line": "The station is 12 miles away. Your field got 2 inches nobody recorded.", "link": "Get the rain gauge at the first-batch price"},
+  "_gauge_window": "The one promo slot on rain, weather, PRF, ARC/PLC and Fast Facts pages (data-rain-print-promo=\"auto\", Sig 2026-10-23): the Rain Print line (\"see\") through rain_print_until, nothing after it until from (Christmas Day), the gauge hook from..until (YYYY-MM-DD, America/Chicago, inclusive), then the Rain Print line again. Bids, markets and rent pages keep the gift line, which ends at promote_until.",
+  "gauge_window": {"rain_print_until": "2026-12-24", "from": "2026-12-26", "until": "2027-05-31"}
 }

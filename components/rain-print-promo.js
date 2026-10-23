@@ -6,13 +6,24 @@
      <p class="rp-promo" data-rain-print-promo="briefing" hidden></p> the briefing line (promote + window + briefing_line)
      <aside class="rp-card" data-rain-print-promo="card" hidden></aside>  the homepage card (promote)
      <p class="rp-promo" data-rain-print-promo="see" hidden></p>      "See a year of rain here as a print" (promote)
-     <p class="rp-promo" data-rain-print-promo="gauge" hidden></p>    "Want a better rain gauge?" (always)
+     <p class="rp-promo" data-rain-print-promo="gauge" hidden></p>    the rain gauge hook (gauge_hook)
+     <p class="rp-promo" data-rain-print-promo="auto" hidden></p>     "see" or the gauge hook, by date (gauge_window)
 
    Switches, in data/rain-print.json:
      "promote": true                     on since launch (2026-10-13); false hides all but "gauge"
      "promote_from" / "promote_until"    YYYY-MM-DD, America/Chicago, inclusive (the gift line)
      "framed_christmas_cutoff"           the card's Christmas wording runs promote_from..this date
      "briefing_line": "..."              optional; the one line on /daily (null = none)
+     "gauge_hook": {line, link}          the rain gauge's one line and link label, used wherever
+                                         the gauge is linked (Sig, 2026-10-23); missing or bad = no gauge line
+     "gauge_window": {from, until, rain_print_until}
+                                         "auto" (rain, weather, PRF, ARC/PLC and Fast Facts pages, Sig
+                                         2026-10-23): the gauge hook from..until inclusive; nothing after
+                                         rain_print_until and before from (Christmas Day); "see" any other day.
+                                         A bad window leaves "auto" on "see".
+
+   Bids, markets and rent pages never take "auto": they keep the gift line,
+   which ends at promote_until (Dec 9).
 
    The card: Christmas wording from promote_from through the framed order-by
    date; then, through Dec 24 and only while the gift flow is in the data
@@ -42,8 +53,24 @@
   }
   function shortDate(iso) { var p = iso.split('-').map(Number); return MON[p[1] - 1] + ' ' + p[2]; }
   // The text for one line placement, or '' for none.
+  // The gauge hook from data/rain-print.json: {line, link}, or null when it is
+  // missing, empty, too long or carries a dash the house style rules out.
+  function gaugeHook(cfg) {
+    var g = cfg && cfg.gauge_hook, ok = function (t, n) { return typeof t === 'string' && t.trim() && t.length <= n && !/[\u2013\u2014]/.test(t); };
+    if (!g || !ok(g.line, 90) || !ok(g.link, 60)) return null;
+    return { line: g.line.trim(), link: g.link.trim() };
+  }
+  // "auto": which line a rain, weather, PRF, ARC/PLC or Fast Facts page shows today.
+  function autoMode(cfg, today) {
+    var w = cfg && cfg.gauge_window;
+    if (!w || !ISO.test(w.from || '') || !ISO.test(w.until || '') || w.from > w.until || !ISO.test(today || '')) return 'see';
+    if (today >= w.from && today <= w.until) return 'gauge';
+    if (ISO.test(w.rain_print_until || '') && today > w.rain_print_until && today < w.from) return '';
+    return 'see';
+  }
   function lineFor(cfg, mode, today) {
-    if (mode === 'gauge') return 'Want a better rain gauge? Sig is designing one. Get updates.';
+    if (mode === 'auto') { mode = autoMode(cfg, today); if (!mode) return ''; }
+    if (mode === 'gauge') { var h = gaugeHook(cfg); return h ? h.line + ' ' + h.link + '.' : ''; }
     if (mode === 'see') {
       if (!cfg || cfg.promote !== true) return '';
       return 'See a year of rain at your place, drawn as a print for the wall.';
@@ -90,7 +117,7 @@
     if (/^\d{5}$/.test(String(zip || '')) && y > 1900) return '/rain-print?place=' + zip + '&year=' + (y - 1);
     return '/rain-print';
   }
-  var api = { isOn: isOn, lineFor: lineFor, cardFor: cardFor, xmasLine: xmasLine, seeHref: seeHref, chicagoToday: chicagoToday };
+  var api = { isOn: isOn, lineFor: lineFor, cardFor: cardFor, xmasLine: xmasLine, seeHref: seeHref, chicagoToday: chicagoToday, gaugeHook: gaugeHook, autoMode: autoMode };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.AgsistRainPromo = api;
 
@@ -145,17 +172,23 @@
       }
       var t = lineFor(cfg, mode, today);
       if (!t) continue;
+      if (mode === 'auto') { mode = autoMode(cfg, today); place = 'auto-' + mode; }
       css();
-      var href = mode === 'gauge' ? '/rain-gauge' : mode === 'see' ? seeHref(savedZip(), today) : '/rain-print';
+      if (mode === 'gauge') {
+        // the hook's line, then its link label as the link (gauge_hook)
+        var gh = gaugeHook(cfg);
+        el.innerHTML = esc(gh.line) + ' <a href="/rain-gauge" data-placement="' + esc(place) + '">' + esc(gh.link) + '</a>.';
+        el.hidden = false;
+        track(el.querySelector('a'), 'rain_gauge_promo_click');
+        continue;
+      }
+      var href = mode === 'see' ? seeHref(savedZip(), today) : '/rain-print';
       el.innerHTML = '<a href="' + esc(href) + '" data-placement="' + esc(place) + '">' + esc(t) + '</a>';
       el.hidden = false;
-      track(el.firstChild, mode === 'gauge' ? 'rain_gauge_promo_click' : 'rain_print_promo_click');
+      track(el.firstChild, 'rain_print_promo_click');
     }
   }
-  // the gauge line needs no data; everything else reads the switch
-  var needCfg = false;
-  for (var k = 0; k < els.length; k++) if (els[k].getAttribute('data-rain-print-promo') !== 'gauge') needCfg = true;
-  if (!needCfg) { fill(null); return; }
+  // every line reads data/rain-print.json (the gauge hook lives there too); no file, no line
   fetch('/data/rain-print.json', { cache: 'no-cache' })
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (cfg) { fill(cfg); })
