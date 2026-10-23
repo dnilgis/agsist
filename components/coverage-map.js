@@ -97,7 +97,7 @@
   var RADIUS = { read: 4.2, quiet: 4.2, known: 2.6 };
   /* Grey is drawn smaller and underneath on purpose: it is the larger number
      by far, and at full weight it buries the green the page exists to show.
-     Smaller, not hidden — the whole argument is that it is visible. */
+     Smaller, not hidden, the whole argument is that it is visible. */
   var ORDER = ['known', 'quiet', 'read'];
 
   covData
@@ -114,7 +114,7 @@
         zoomControl: true, attributionControl: true,
         worldCopyJump: true, zoomSnap: 0.5, wheelDebounceTime: 25,
         /* ZOOM STOPS AT 9. The tile version allowed 16, which put a pin on a
-           specific building — and about 73% of these pins (81% of elevators) are
+           specific building, and about 73% of these pins (81% of elevators) are
            town or county centroids. Zoom 9 is a county-sized
            view, which is as precise as this data honestly gets. */
         minZoom: 3, maxZoom: 9
@@ -152,7 +152,7 @@
          REQUIRED" tile in place of the map. Nothing here noticed: the tiles
          returned 200, so the tileerror guard below never fired and
          basemap-checks went green while the live page was defaced. Esri's
-         keyless endpoints are the same bet one repricing behind — their own
+         keyless endpoints are the same bet one repricing behind, their own
          staff will not state the licence for commercial use of them.
 
          Measured before choosing: the 51 US state outlines, simplified with
@@ -251,8 +251,8 @@
       /* WHAT THE PIN ACTUALLY CLAIMS ABOUT WHERE IT IS. Standing rule 45: a
          town centroid drawn as a street address is the same lie as a made-up
          number, only quieter. */
-      /* Standing rule 45 still applies — a town centroid drawn as a street
-         address is a quiet lie — but the reader needs the caveat, not the
+      /* Standing rule 45 still applies, a town centroid drawn as a street
+         address is a quiet lie, but the reader needs the caveat, not the
          mechanism. */
       var PREC = {
         street: 'Located to the street address.',

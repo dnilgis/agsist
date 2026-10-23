@@ -1,7 +1,7 @@
 /* /scorecard opens with one plain sentence (Oct 15 review): what the backtest
  * says, why the page exists anyway, and that the open calls are not graded
  * until their grading day. The baked copy (scripts/seed_static.py pb_plain)
- * and the live copy (plainLine in scorecard.html) must say the same words. */
+ * and the live copy (plainLine in components/bot-scorecard.js) must say the same words. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
@@ -39,7 +39,7 @@ test("baked plain sentence: backtest verdict, why we publish, open calls not gra
   const one = pyPlain({ ...FIX, calls: [{ status: "open", exit_day: "2026-11-02" }] });
   assert.match(one, /The open call is not graded until Nov 2, 2026/);
   assert.ok(!/open call/.test(pyPlain({ ...FIX, calls: [] })), "no open calls, no open-call clause");
-  const page = readFileSync(join(ROOT, "scorecard.html"), "utf8");
+  const page = readFileSync(join(ROOT, "usda-calendar.html"), "utf8")   /* the scorecard is a section of the USDA calendar since Oct 22, 2026 */;
   const seeded = page.match(/<!--SEED:pb:pb-plain-->(.*?)<!--\/SEED-->/)[1];
   assert.match(seeded, /^In plain words: replayed on history since \d{4}/);
 });
@@ -47,7 +47,7 @@ test("baked plain sentence: backtest verdict, why we publish, open calls not gra
 test("the live sentence in the browser matches the baked one", { skip }, async () => {
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
-    if (p === "/scorecard") p = "/scorecard.html";
+    if (p === "/usda-calendar") p = "/usda-calendar.html";
     const f = normalize(join(ROOT, p));
     if (!f.startsWith(ROOT) || !existsSync(f)) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": { ".js": "text/javascript", ".json": "application/json", ".html": "text/html", ".css": "text/css" }[extname(f)] || "application/octet-stream" });
@@ -62,7 +62,7 @@ test("the live sentence in the browser matches the baked one", { skip }, async (
     const errors = [];
     pg.on("pageerror", (e) => errors.push(String(e)));
     await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
-    await pg.goto(`http://127.0.0.1:${port}/scorecard`);
+    await pg.goto(`http://127.0.0.1:${port}/usda-calendar#scorecard`);
     await pg.waitForFunction(() => document.getElementById("pb-updated") && document.getElementById("pb-updated").textContent.trim() !== "", null, { timeout: 15000 });
     await pg.waitForTimeout(500);
     const live = (await pg.textContent("#pb-plain")).trim();

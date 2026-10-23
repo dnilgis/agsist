@@ -3,7 +3,7 @@
    Loaded by the page when a reader nears the section (or opens the page on one of its links);
    until then the baked HTML (scripts/prerender_wpi_scorecard.py, scripts/seed_static.py) shows. */
 (function(){
-  function daysUntil(d){/* AUDIT 2026-08-11: compare calendar DATES, not noon-anchored ceil — the old version said 'tomorrow' all report-day morning */var t=new Date(d+'T00:00:00');var now=new Date();now.setHours(0,0,0,0);return Math.round((t-now)/86400000);}
+  function daysUntil(d){/* AUDIT 2026-08-11: compare calendar DATES, not noon-anchored ceil, the old version said 'tomorrow' all report-day morning */var t=new Date(d+'T00:00:00');var now=new Date();now.setHours(0,0,0,0);return Math.round((t-now)/86400000);}
   /* A LOCAL ONE ON PURPOSE. There is an identical esc() further down the page,
      but it lives inside the scorecard's own IIFE and is not visible from this
      one. Reaching for it renders the whole panel as "briefly unavailable":
@@ -178,7 +178,7 @@
   function fmtNum(n,u){return (n==null)?'n/a':(n+(u?('\u00a0'+u):''));}
   /* AN EMPTY SURPRISE IS NOT "IN LINE". Both builders used to return "in line"
      when there was no consensus to compare against, and the page rendered
-     `r.surprise||'in line'` on top of that — so a metric nobody had filed an
+     `r.surprise||'in line'` on top of that, so a metric nobody had filed an
      estimate for was published as having landed where the trade expected. */
   function tagText(s){return s?s:'no trade estimate';}
   function tagCls(s){return (s==='bullish')?'bull':(s==='bearish'?'bear':'flat');}
@@ -253,13 +253,13 @@
      The building rows were computed, published into the JSON, and rendered
      only when the ranked table was EMPTY. On 2026-09-09 that meant one row on
      the page: Arlan Suderman, ranked #1, alone, at 1.81% average error and a
-     0% beat-trade rate — while Jerry Gulke at 0.03%, Robert McClure at 0.98%
+     0% beat-trade rate, while Jerry Gulke at 0.03%, Robert McClure at 0.98%
      and the house model at 1.85% sat in a hidden array. The page ranked the
      least accurate forecaster on record first and said nothing about the three
      it was not showing.
 
      They are one table now, with a rule across it. Above the rule is the
-     ranking, which still needs three scored calls to enter — a two-call
+     ranking, which still needs three scored calls to enter, a two-call
      leaderboard is noise and that threshold is not moving. Below it are the
      records still building, greyed, with how many calls each still needs. */
   /* THE SPREAD TRAVELS WITH THE MEAN. 2.11% over four calls that ran 1.60% to

@@ -47,13 +47,13 @@ test("yield estimator: title, H1 and the open tab all say soybean", () => {
   assert.ok(!h.slice(h.indexOf("2026-10-17: Soybeans opens first"), h.indexOf("2026-10-17: Soybeans opens first") + 400).includes("—"));
 });
 
-test("pod counts research page links the soybean calculator above the fold", () => {
-  const h = read("pod-counts.html");
-  const top = h.slice(h.indexOf("<h1"), h.indexOf('<h2 class="pc-h2"'));
+test("pod counts research (crop tour #pod-counts since Oct 22, 2026) links the soybean calculator at its top", () => {
+  const h = read("crop-tour.html");
+  const top = h.slice(h.indexOf('<section class="pc-wrap" id="pod-counts"'), h.indexOf('<h3 class="pc-h2"'));
   assert.match(top, /The <a href="\/yield-estimator">soybean yield calculator<\/a> works it from plants, pods per plant, seeds per pod and seed size\./);
   // and the calculator's soybean tab links back
   const bean = h && read("yield-estimator.html");
-  assert.ok(bean.slice(bean.indexOf('id="ye-bean"')).includes('href="/pod-counts"'));
+  assert.ok(bean.slice(bean.indexOf('id="ye-bean"')).includes('href="/crop-tour#pod-counts"'));
 });
 
 test("quick stats: the description names the three largest soybean states, from the data", () => {

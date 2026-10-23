@@ -75,7 +75,7 @@ test("soybean examples are current and the tab links the pod-count check", () =>
   for (const [id, args] of [["high", "130,36,2.5,3000"], ["avg", "132,30,2.5,3000"], ["low", "120,25,2.4,3000"]])
     assert.ok(html.includes(`getElementById('qf-bean-${id}').addEventListener('click',function(){beanFill(${args});})`), `button ${id} fills ${args}`);
   const bean = html.slice(html.indexOf('id="ye-bean"'), html.indexOf("<!--FAQ:START-->"));
-  assert.ok(bean.includes('href="/pod-counts"'), "the soybean tab links /pod-counts");
+  assert.ok(bean.includes('href="/crop-tour#pod-counts"'), "the soybean tab links the pod counts study");
 });
 
 test("corn examples still land on their labels at 85,000", () => {

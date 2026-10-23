@@ -2,7 +2,7 @@
  * (labeled not graded, never counted), the Chicago wheat reason that read as
  * if the fund percentile were the trend, one date per missed call, and the
  * next entry close named with any federal holiday that moves it. The baked
- * cells (scripts/seed_static.py) and the live ones (scorecard.html) must say
+ * cells (scripts/seed_static.py) and the live ones (components/bot-scorecard.js) must say
  * the same words; the browser half checks that against a fixture file.
  *
  * Hand checks: Dec corn entered 497.25 on Oct 5, closed 478.25 on Oct 15:
@@ -22,7 +22,7 @@ const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
-const page = readFileSync(join(ROOT, "scorecard.html"), "utf8");
+const page = readFileSync(join(ROOT, "usda-calendar.html"), "utf8")   /* the scorecard is a section of the USDA calendar since Oct 22, 2026 */;
 
 const CALLS = [
   { crop: "corn", status: "open", direction: "down", signal: "crowded_long", cot_pct: 97.4, trend_pct: 3.93, entry: 497.25, contract: "Dec '26", exit_day: "2026-11-02", made: "2026-10-05", mark: { date: "2026-10-15", close: 478.25 } },
@@ -86,7 +86,7 @@ test("live page renders the same cells, one date per miss", { skip }, async () =
   fix.skipped = ["corn", "beans", "wheat", "kcwheat"].map((k) => ({ crop: k, report: "2026-10-06", date: "2026-10-15", reason: "missed: no run at its entry close on 2026-10-13; never made late" }));
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
-    if (p === "/scorecard") p = "/scorecard.html";
+    if (p === "/usda-calendar") p = "/usda-calendar.html";
     if (p === "/data/predictions.json") { res.writeHead(200, { "content-type": "application/json" }); res.end(JSON.stringify(fix)); return; }
     const f = normalize(join(ROOT, p));
     if (!f.startsWith(ROOT) || !existsSync(f)) { res.writeHead(404); res.end(); return; }
@@ -102,7 +102,7 @@ test("live page renders the same cells, one date per miss", { skip }, async () =
     const errors = [];
     pg.on("pageerror", (e) => errors.push(String(e)));
     await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
-    await pg.goto(`http://127.0.0.1:${port}/scorecard`);
+    await pg.goto(`http://127.0.0.1:${port}/usda-calendar#scorecard`);
     await pg.waitForFunction(() => /Next calls/.test(document.getElementById("pb-next").textContent), null, { timeout: 15000 });
     const cells = await pg.$$eval("#pb-latest tbody tr", (rs) => rs.map((r) => [...r.cells].map((c) => c.textContent)));
     assert.deepEqual(cells.map((r) => r[5]), WANT_STAND);

@@ -121,8 +121,8 @@ test("USDA calendar: What I grow or raise, saved on this device", () => {
 });
 
 test("scorecard: the reader's state cash line sits under the calls; milk 2025 changes fold", () => {
-  const s = read("scorecard.html");
-  const i = s.indexOf('id="pb-latest"'), j = s.indexOf('data-state-bid="corn soybeans wheat"'), k = s.indexOf("<h2>By crop</h2>");
+  const s = read("usda-calendar.html");   // the bot scorecard is a section of the calendar since Oct 22, 2026
+  const i = s.indexOf('id="pb-latest"'), j = s.indexOf('data-state-bid="corn soybeans wheat"'), k = s.indexOf('<h3 class="pb-h">By crop</h3>');
   assert.ok(i > 0 && j > i && k > j, "state line between the latest calls and By crop");
   assert.match(s, /components\/price-local\.js\?v=\d+" defer/);
   assert.match(read("milk-prices.html"), /<details class="dp-states" id="dp-reform-list"><summary>The five changes, with dates<\/summary>/);
