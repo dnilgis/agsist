@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 22 Oct 2026 20:23:01 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 23 Oct 2026 10:48:45 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn slips to $4.58¾ and beans hold $12.53 as WTI tops $101</title>
+      <link>https://agsist.com/daily/2026-10-23</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-23</guid>
+      <pubDate>Fri, 23 Oct 2026 10:48:06 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Corn is at $4.58¾ overnight, down 1¾ cents from Thursday's $4.60½ settle. Beans are flat at $12.53¼, and USDA's October yields are still the supply story. Crude is the mover, up 1.6% to $101.09 as Houthi attacks threaten Saudi energy sites.
+• Grains hold near lows
+• Cattle ease from highs
+• Energy runs higher
+Read more: https://agsist.com/daily/2026-10-23</description>
+    </item>
     <item>
       <title>Corn $4.64 and beans $12.47 hold; crude up 2.2% to $99.24</title>
       <link>https://agsist.com/daily/2026-10-22</link>
@@ -354,19 +366,6 @@ Action: Corn: no action above $5.29, but a settle below $5.27 says the China pop
 • Grains Fade The Summit Pop
 • Cattle Cool After Placement Pop
 Read more: https://agsist.com/daily/2026-09-23</description>
-    </item>
-    <item>
-      <title>Corn rallies on China hopes; cattle jump 2.4%</title>
-      <link>https://agsist.com/daily/2026-09-22</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-22</guid>
-      <pubDate>Tue, 22 Sep 2026 11:13:34 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Corn ran 15 cents to three-week highs and beans gained 24 cents overnight on fresh hope for a US-China trade deal, but both gave it back into the close, corn settling $5.38 and beans $13.19, both down on the day. Cattle didn't fade: $221.15, up 2.4% on record low placements.
-Action: Live cattle at $221.15: nothing to sell into a 2.4% up day off record low placements, hold for $222 confirmation.
-• Grains Fade The China Pop
-• Cattle Ignore The Grain Fade
-• Crude Reverses On Iran Hope
-Read more: https://agsist.com/daily/2026-09-22</description>
     </item>
   </channel>
 </rss>
