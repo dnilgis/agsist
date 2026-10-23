@@ -31,7 +31,7 @@ WHICH MONTH. A sale belongs to the month it was recorded (filed): Wisconsin rows
 filed date (rec); Illinois rows carry it from the land-data run after Oct 23, 2026. A county file
 without a rec column is listed by its sale (deed) date instead, and the email says "sale date"
 for those rows. A state's sales are read for month M only when its files were fetched after M
-ended (fresh); otherwise the reader waits for the next catch-up run.
+ended (fresh); otherwise the reader waits (a late land run is followed by a send dispatched by hand).
 
 WHAT IS LISTED: market sales recorded in the month, 10 acres or more with the acres known,
 nearest first, at most MAX_ROWS. Market sales with the acres not stated and those under 10

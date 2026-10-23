@@ -118,8 +118,8 @@ CHECKS = [
     ("county-rain.yml", ["23 13 * * 1"], 240, False, "rain so far this year by county (RCC-ACIS) and the /rain pages, Mondays"),
     ("rain-monthly.yml", ["41 14 2 * *"], 240, False,
      "the monthly county rain email (fetch, pages, then the list once RAIN_MONTHLY_LIVE is 1), the 2nd of each month"),
-    ("land-alert.yml", ["47 15 3-5 * *"], 240, False,
-     "the monthly land sale email (after the land data run on the 3rd; the list only once LANDSALES_MONTHLY_LIVE is 1), the 3rd with the 4th and 5th to catch up"),
+    ("land-alert.yml", ["47 15 3 * *"], 240, False,
+     "the monthly land sale email (after the land data run on the 3rd; the list only once LANDSALES_MONTHLY_LIVE is 1), the 3rd of each month"),
     # The watchers themselves (2026-10-20). GitHub's own cron runs the site check hours
     # late (3 h and 6 h on Oct 18 and 19, nothing on Oct 17), so 8 h is the limit.
     ("daily-site-check.yml", ["37 11 * * *"], 480, False, "the morning site check and its issue, GitHub cron 11:37 UTC"),

@@ -20,14 +20,14 @@ name: Monthly land sale email
 #   mode send     the list, the month just ended, once per reader, topic and month (the
 #                 worker's mo mark). Needs LANDSALES_MONTHLY_LIVE=1.
 #
-# The 3rd, 15:47 UTC: after land-data.yml (the 3rd, 09:23 UTC, up to 150 minutes) has
-# fetched and committed the month's transfers. The 4th and 5th are catch-up runs for a
-# late or failed land run (a state whose files were not fetched since the month ended
-# waits) or a run cut short; a reader already mailed for the month is never mailed again.
-# It runs after the 2nd-of-month rain email, never on the same day.
+# The 3rd, 15:47 UTC (the schedule Sig approved): after land-data.yml (the 3rd, 09:23 UTC,
+# up to 150 minutes) has fetched and committed the month's transfers. A state whose files
+# were not fetched since the month ended waits; a late land run is caught up by dispatching
+# mode send by hand. A reader already mailed for the month is never mailed again, so a rerun
+# is safe. It runs a day after the 2nd-of-month rain email, never on the same day.
 on:
   schedule:
-    - cron: "47 15 3-5 * *"
+    - cron: "47 15 3 * *"
   workflow_dispatch:
     inputs:
       mode:

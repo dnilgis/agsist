@@ -97,7 +97,7 @@ print(json.dumps(out))
 
 test("the gate in the workflow: the list only with LANDSALES_MONTHLY_LIVE=1, scheduled or by hand", () => {
   const crons = [...WF.matchAll(/- cron: "([^"]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(crons, ["47 15 3-5 * *"], "the 3rd, after land-data, with the 4th and 5th to catch up");
+  assert.deepEqual(crons, ["47 15 3 * *"], "the 3rd, after land-data (the schedule Sig approved)");
   const rain = fs.existsSync(path.join(ROOT, ".github/workflows/rain-monthly.yml")) ? read(".github/workflows/rain-monthly.yml") : "";
   const rd = /- cron: "\d+ \d+ (\d+)/.exec(rain);
   if (rd) assert.notEqual(rd[1], "3", "never on the rain email's day");
@@ -185,6 +185,6 @@ test("the morning report, signups and cron health know the list; signups count b
   assert.match(read("scripts/morning_report.py"), /\("land-alert\.yml", "send_land_alert\.py", "Monthly land sales", "email"\)/);
   assert.match(read("scripts/morning_report.py"), /"landsales": "land sales"/);
   assert.match(read("scripts/build_signups.py"), /if kind == "landsales":\n\s+sub = sub\.rsplit\(":", 1\)\[-1\] \+ " mi"/);
-  assert.match(read("scripts/cron_health.py"), /\("land-alert\.yml", \["47 15 3-5 \* \*"\]/);
+  assert.match(read("scripts/cron_health.py"), /\("land-alert\.yml", \["47 15 3 \* \*"\]/);
   assert.match(read("scripts/list_source.py"), /elif t\.startswith\("rain-month:"\) or t\.startswith\("landsales:"\):/);
 });
