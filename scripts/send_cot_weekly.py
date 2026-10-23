@@ -266,8 +266,18 @@ def sentence(r):
     """What the funds hold and what they did, in one sentence."""
     s = "Managed money is %s %s contracts" % (side(r["net"]), NOUN[r["key"]])
     if r["chg"] is not None:
-        ch = "unchanged" if r["chg"] == 0 else ("up %s" % comma(r["chg"]) if r["chg"] > 0 else "down %s" % comma(r["chg"]))
-        s += ", %s %s" % (ch, "from the week before" if r["chg_since"] is None else "since " + md(r["chg_since"]))
+        # The size of the position on its own side, said as such: "down 3,725"
+        # under a net short that had just GROWN read as the opposite (the COT
+        # card's rule, cot-page.js). more / fewer is the same on both sides.
+        net, prev = r["net"], r["net"] - r["chg"]
+        then = "the week before" if r["chg_since"] is None else "on " + md(r["chg_since"])
+        if r["chg"] == 0:
+            ch = "unchanged from " + then
+        elif net and prev and (net > 0) != (prev > 0):
+            ch = "flipped from %s %s" % (side(prev), then)
+        else:
+            ch = "%s %s than %s" % (comma(r["chg"]), "more" if abs(net) > abs(prev) else "fewer", then)
+        s += ", " + ch
     return s + "."
 
 
@@ -848,7 +858,7 @@ def _selftest():
     ok(c.get("y1") == {"lo": -100000, "hi": 300000, "pct": 75, "n": 52}, "corn 1-year range %r" % c.get("y1"))
     # 3 years: lo -250,000, hi 300,000 -> 450,000 / 550,000 = 81.8% -> 82%
     ok((c.get("y3") or {}).get("pct") == 82 and c["y3"]["lo"] == -250000 and c["y3"]["hi"] == 300000, "corn 3-year range %r" % c.get("y3"))
-    ok(sentence(c) == "Managed money is net long 200,000 corn contracts, down 60,000 from the week before.", sentence(c))
+    ok(sentence(c) == "Managed money is net long 200,000 corn contracts, 60,000 fewer than the week before.", sentence(c))
     ok(rank_line(c) == "That is the 99th percentile of 171 weekly reports since 2023 (top 1%, crowded long).", rank_line(c))
     ok(note(c) == "If funds head for the exit, 200,000 contracts of selling sit between here and flat. Worth a look this week "
        "at unpriced bushels, or unbought needs if you are a buyer. Not a call on price.", note(c))
@@ -856,7 +866,8 @@ def _selftest():
     bn = R.get("beans") or {}
     # beans 1 yr: lo -60,000, hi 100,000 -> 20,000 / 160,000 = 12.5% -> 12% (round half to even)
     ok(bn.get("chg") == 5000 and (bn.get("y1") or {}).get("pct") == 12, "beans %r" % bn)
-    ok(sentence(bn).startswith("Managed money is net short 40,000 soybean contracts, up 5,000 from the week before"), sentence(bn))
+    # beans: net short 45,000 -> 40,000, the short 5,000 smaller: "fewer", never "up" under a short
+    ok(sentence(bn) == "Managed money is net short 40,000 soybean contracts, 5,000 fewer than the week before.", sentence(bn))
     ok(rank_line(bn) == "That is the 2nd percentile of 171 weekly reports since 2023 (bottom 2%, crowded short)." and
        "40,000 contracts of buying" in (note(bn) or ""), (rank_line(bn), note(bn)))
     lc = R.get("livecattle") or {}
@@ -897,7 +908,10 @@ def _selftest():
     c2["corn"]["prev"] = h2["history"]["corn"][-2]["net"]
     with contextlib.redirect_stdout(io.StringIO()):
         r2 = {r["key"]: r for r in prepare(now, c2, h2, deep, ana)[2]}
-    ok(r2["corn"]["chg_since"] == date(2026, 9, 29) and "since Sep 29" in sentence(r2["corn"]), sentence(r2["corn"]))
+    ok(r2["corn"]["chg_since"] == date(2026, 9, 29) and sentence(r2["corn"]).endswith("150,000 more than on Sep 29."), sentence(r2["corn"]))
+    # a short that grew, and a side that flipped
+    ok(sentence(dict(bn, net=-50000, chg=-10000, chg_since=None)).endswith("net short 50,000 soybean contracts, 10,000 more than the week before."), "short grew")
+    ok(sentence(dict(bn, net=-5000, chg=-15000, chg_since=None)).endswith("net short 5,000 soybean contracts, flipped from net long 10,000 the week before."), "flip")
     # a deep file that does not reach this report: no 3-year range, the ranking still from the analysis file
     d2 = json.loads(json.dumps(deep))
     for v in d2["commodities"].values():
