@@ -65,7 +65,8 @@ for st, d in CS._B().load(data).items():
                 bad.append((fips, ch))
         if not isinstance(e.get("facts"), dict) or CS.validate(e.get("story", ""), e["facts"]):
             bad.append((fips, "fails its own facts"))
-        shown += CS.story_for(e, CS.page_now(c, d)) is not None
+        # the build checks a dated story against today's facts too (2026-10-23): a sentence no longer true comes off
+        shown += CS.story_for(e, dict(CS.page_now(c, d), facts=CS.facts(c, d, st))) is not None
 print(json.dumps({"bad": bad, "shown": shown}))
 `]);
   const r = JSON.parse(out);
