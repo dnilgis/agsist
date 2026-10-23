@@ -76,7 +76,7 @@ test("the fresh job is county-rain.yml's own fetch, build and commit, in its que
     "python scripts/fetch_county_rain.py --check", "python scripts/build_county_rain.py\n", "python scripts/build_county_rain.py --check",
     "python scripts/cross_links.py --stamp", "python scripts/check_seo.py", "python scripts/check_site_budget.py",
     "python3 scripts/build_share_images.py --only rain",
-    'git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg prf farmland-atlas arc-plc 2>/dev/null || true',
+    'git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json prf farmland-atlas arc-plc 2>/dev/null || true',
     'git commit -q -m "data: county rain ($N states)"']) {
     assert.ok(cr.includes(line), "county-rain.yml still has: " + line);
     assert.ok(WF.includes(line), "rain-monthly.yml has it too: " + line);
