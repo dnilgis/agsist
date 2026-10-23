@@ -1021,7 +1021,9 @@
     var label = 'Custom combining, corn', href = '/custom-rates' + (st ? '?st=' + st : '') + '#combine-corn';
     var op = b && b.ops && b.ops['combine-corn'];
     if (!op || op.md == null) return na(label, 'the custom rate file did not load', ['Custom rates', '/custom-rates']);
-    var s = st && b.states && b.states[st], v = s && op.by[st];
+    var s = st && b.states && b.states[st];
+    if (s && s.same_as) { st = s.same_as; s = b.states[st]; }  // Delaware reads the Maryland and Delaware survey
+    var v = s && op.by[st];
     var yrs = op.y[0] === op.y[1] ? op.y[0] + ' rates' : op.y[0] + ' to ' + op.y[1] + ' rates';
     var mid = 'the middle of ' + op.n + ' state surveys (' + yrs + ') is $' + fixed(op.md, 2);
     if (v) return { label: label, value: '$' + fixed(v[0], 2) + ' an acre', ctx: s.name + '\u2019s ' + (s.ry !== s.year ? s.ry + ' rates' : s.year) + ' survey, ' + v[3] + ' answers; ' + mid + '.',

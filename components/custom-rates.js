@@ -55,8 +55,26 @@
   function unitLabel(u) { return u === 'percent of crop' ? 'of the crop' : 'per ' + (ULAB[u] || u); }
   function shortUnit(u) { return SHORT[u] || unitLabel(u); }
   function span(y) { return !y ? '' : y[0] === y[1] ? y[0] + ' rates' : y[0] + ' to ' + y[1] + ' rates'; }
-  function stName(c) { return (S.b && S.b.names[c]) || c; }
-  function yl(c) { var s = S.b.states[c]; return s.ry !== s.year ? s.ry + ' rates' : String(s.year); }
+  function stName(c) { var s = S.b && S.b.states[c]; return (s && !s.same_as && s.name) || (S.b && S.b.names[c]) || c; }
+  /* the survey a state reads: Delaware reads the Maryland and Delaware survey */
+  function sv(c) { var s = S.b && c && S.b.states[c]; return s && s.same_as ? s.same_as : c; }
+  function yl(c) { var s = S.b.states[sv(c)]; return s.ry !== s.year ? s.ry + ' rates' : String(s.year); }
+  function ans(n) { return n == null ? 'answers not printed' : n + ' answers'; }
+  /* what owning and running the machine costs (machinery cost estimates), beside the going rate; never in the middle */
+  function diy(k, op) {
+    var out = [];
+    (S.b.diy || []).forEach(function (d) {
+      var v = d.ops[k]; if (!v) return;
+      var mon = d.published.split('-'), when = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+mon[1] - 1] + ' ' + mon[0];
+      var cmp = '';
+      if (op.md != null) {
+        var dd = op.md - v[0];
+        cmp = Math.abs(dd) < 0.005 ? ' The going rate is right at it.' : ' The going rate is ' + money(Math.abs(dd), op.u) + (dd > 0 ? ' over' : ' under') + ' it.';
+      }
+      out.push('Doing it yourself: ' + money(v[0], v[1]) + ' ' + shortUnit(v[1]) + ' (' + d.name + ', ' + when + ', ' + v[2].toLowerCase() + '). That is the cost to own and run the machine, not a rate anyone charged.' + cmp);
+    });
+    return out;
+  }
 
   /* ---- search (the words farmers use) ---- */
   var SYN = {
@@ -125,9 +143,10 @@
   }
   /* the reader's state beside the middle, in one sentence */
   function mine(op) {
-    var st = S.st, b = S.b;
+    var b = S.b, st0 = S.st, st = sv(S.st);
     if (!st) return 'Pick your state above to see its own survey beside the middle.';
     var s = b.states[st];
+    var who = !s ? '' : st0 !== st ? 'The ' + s.name + ' ' + yl(st) + ' survey, which ' + b.names[st0] + ' shares' : stName(st) + '\'s ' + yl(st) + ' survey';
     if (!s) {
       var nc = b.not_covered[st], nb = (b.borders[st] || []).filter(function (x) { return op.by[x] || (op.old && op.old[x]); });
       return 'No ' + stName(st) + ' survey here.' + (nc ? ' ' + nc : '') + (nb.length ? ' Next door: ' + nb.map(function (x) {
@@ -141,11 +160,11 @@
         var d = v[0] - op.md;
         rel = Math.abs(d) < 0.005 ? ', right at the middle' : ', ' + money(Math.abs(d), op.u) + (d > 0 ? ' over' : ' under') + ' the middle';
       }
-      return stName(st) + '\'s ' + yl(st) + ' survey: ' + money(v[0], op.u) + ' ' + shortUnit(op.u) + rel + ' (' + v[3] + ' answers' + (v[1] != null ? ', ' + money(v[1], op.u) + ' to ' + money(v[2], op.u) : '') + ').';
+      return who + ': ' + money(v[0], op.u) + ' ' + shortUnit(op.u) + rel + ' (' + ans(v[3]) + (v[1] != null ? ', ' + money(v[1], op.u) + ' to ' + money(v[2], op.u) : '') + ').';
     }
-    if (op.old && op.old[st]) return stName(st) + '\'s ' + yl(st) + ' survey: ' + money(op.old[st][0], op.u) + ' ' + shortUnit(op.u) + '. Too old for the middle, so shown on its own.';
-    if (op.other && op.other[st]) return stName(st) + '\'s survey prices this ' + unitLabel(op.other[st][5]) + ': ' + money(op.other[st][0], op.other[st][5]) + '. A different unit, so it is not in the middle.';
-    return stName(st) + '\'s ' + yl(st) + ' survey does not price this job the same way. Its own lines are under each category below.';
+    if (op.old && op.old[st]) return who + ': ' + money(op.old[st][0], op.u) + ' ' + shortUnit(op.u) + '. Too old for the middle, so shown on its own.';
+    if (op.other && op.other[st]) return who + ' prices this ' + unitLabel(op.other[st][5]) + ': ' + money(op.other[st][0], op.other[st][5]) + '. A different unit, so it is not in the middle.';
+    return who + ' does not price this job the same way. Its own lines are under each category below.';
   }
   function costLine(op, k) {
     var q = QTY[op.u];
@@ -154,7 +173,7 @@
     var c = function (v) { return dollars(v * n * f); };
     var mid = op.md != null ? c(op.md) + ' at the middle' : op.n === 1 ? c(op.by[Object.keys(op.by)[0]][0]) + ' at ' + stName(Object.keys(op.by)[0]) + '\'s average' : '';
     var rng = op.lo != null ? (mid ? '. ' : '') + c(op.lo) + ' to ' + c(op.hi) + ' across the states' : '';
-    var me = S.st && op.by[S.st] ? '. ' + stName(S.st) + '\'s average: ' + c(op.by[S.st][0]) : '';
+    var me = S.st && op.by[sv(S.st)] ? '. ' + stName(sv(S.st)) + '\'s average: ' + c(op.by[sv(S.st)][0]) : '';
     return '<label class="cr-qty">For <input type="number" inputmode="numeric" min="0" step="any" data-qu="' + esc(op.u) + '" value="' + n + '" aria-label="How many ' + esc(q[1]) + '"> ' + esc(q[1]) + '</label>: ' +
       '<b>' + mid + '</b>' + rng + me + '.';
   }
@@ -172,39 +191,42 @@
       (op.lo != null ? ' States run ' + money(op.lo, op.u) + ' to ' + money(op.hi, op.u) + ' ' + shortUnit(op.u) + '.' : '') +
       ' <a href="#' + esc(k) + '" data-open="' + esc(k) + '">Every state</a> &middot; <a href="#how">How I figure it</a>';
     var old = $('cr-answer').querySelector('.crb-l');
-    var nb = document.createElement('div'); nb.innerHTML = bar(op, 'crb crb-l', S.st);
+    var nb = document.createElement('div'); nb.innerHTML = bar(op, 'crb crb-l', sv(S.st));
     if (old && nb.firstChild) old.parentNode.replaceChild(nb.firstChild, old);
     $('cr-me').textContent = mine(op);
+    var dl = diy(k, op), dx = $('cr-diy');
+    if (dx) { dx.textContent = dl.join(' '); dx.hidden = !dl.length; }
     $('cr-cost').innerHTML = costLine(op, k);
     all('.cr-chip').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-crk') === k ? 'true' : 'false'); });
   }
 
   /* ---- a job's detail: every state's number ---- */
   function detail(k) {
-    var op = S.b.ops[k], b = S.b, nb = S.st ? (b.borders[S.st] || []) : [];
+    var op = S.b.ops[k], b = S.b, me = sv(S.st), nb = me && b.states[me] && b.states[me].neighbors ? b.states[me].neighbors : S.st ? (b.borders[S.st] || []) : [];
     var order = Object.keys(op.by).sort(function (x, y) {
-      var w = function (s) { return s === S.st ? 0 : nb.indexOf(s) >= 0 ? 1 : 2; };
+      var w = function (s) { return s === me ? 0 : nb.indexOf(s) >= 0 ? 1 : 2; };
       return w(x) - w(y) || op.by[y][0] - op.by[x][0];
     });
     var row = function (s, v, cls, note, u) {
-      return '<tr' + (cls ? ' class="' + cls + '"' : '') + '><th scope="row">' + esc(stName(s)) + ' <small>' + yl(s) + (s === S.st ? ', your state' : nb.indexOf(s) >= 0 ? ', next door' : '') + '</small>' +
+      return '<tr' + (cls ? ' class="' + cls + '"' : '') + '><th scope="row">' + esc(stName(s)) + ' <small>' + yl(s) + (s === me ? ', your state' : nb.indexOf(s) >= 0 ? ', next door' : '') + '</small>' +
         '<span class="w">' + esc(v[4]) + (note ? ' <em>' + esc(note) + '</em>' : '') + '</span></th>' +
         '<td>' + money(v[0], u || op.u) + (u ? ' <small>' + esc(unitLabel(u)) + '</small>' : '') + '<span class="rgm">' + (v[1] != null ? money(v[1], u || op.u) + ' to ' + money(v[2], u || op.u) : 'no range printed') + '</span></td>' +
-        '<td class="rg">' + (v[1] != null ? money(v[1], u || op.u) + ' to ' + money(v[2], u || op.u) : 'no range printed') + '</td><td>' + v[3] + '</td></tr>';
+        '<td class="rg">' + (v[1] != null ? money(v[1], u || op.u) + ' to ' + money(v[2], u || op.u) : 'no range printed') + '</td><td>' + (v[3] == null ? '<span class="na">not printed</span>' : v[3]) + '</td></tr>';
     };
-    var rows = order.map(function (s) { return row(s, op.by[s], s === S.st ? 'me' : ''); });
-    if (op.old) Object.keys(op.old).forEach(function (s) { rows.push(row(s, op.old[s], 'old' + (s === S.st ? ' me' : ''), 'Too old for the middle.')); });
-    if (op.other) Object.keys(op.other).forEach(function (s) { rows.push(row(s, op.other[s], 'old' + (s === S.st ? ' me' : ''), 'A different unit, not in the middle.', op.other[s][5])); });
+    var rows = order.map(function (s) { return row(s, op.by[s], s === me ? 'me' : ''); });
+    if (op.old) Object.keys(op.old).forEach(function (s) { rows.push(row(s, op.old[s], 'old' + (s === me ? ' me' : ''), 'Too old for the middle.')); });
+    if (op.other) Object.keys(op.other).forEach(function (s) { rows.push(row(s, op.other[s], 'old' + (s === me ? ' me' : ''), 'A different unit, not in the middle.', op.other[s][5])); });
     var used = order.concat(Object.keys(op.old || {}), Object.keys(op.other || {}));
     var spreads = {};
     used.forEach(function (s) { var sp = b.states[s].spread; if (sp !== 'minmax') (spreads[sp] = spreads[sp] || []).push(stName(s)); });
     var sp = Object.keys(spreads).map(function (x) { return spreads[x].join(' and ') + ': ' + SPREAD[x]; }).join('; ');
-    var none = S.st && b.states[S.st] && !used.some(function (s) { return s === S.st; }) ? '<p class="fine">' + esc(stName(S.st)) + '\'s survey does not price this job the same way. Its own lines are under each category.</p>' : '';
-    var nobody = S.st && !nb.some(function (s) { return used.indexOf(s) >= 0; }) && b.states[S.st] ? '<p class="fine">No bordering state has a survey on this page yet that prices this job.</p>' : '';
+    var none = me && b.states[me] && !used.some(function (s) { return s === me; }) ? '<p class="fine">' + esc(stName(me)) + '\'s survey does not price this job the same way. Its own lines are under each category.</p>' : '';
+    var dl = diy(k, op).map(function (x) { return '<p class="crd-diy">' + esc(x) + '</p>'; }).join('');
+    var nobody = me && !nb.some(function (s) { return used.indexOf(s) >= 0; }) && b.states[me] ? '<p class="fine">No bordering state has a survey on this page yet that prices this job.</p>' : '';
     var inSheet = S.sheet.indexOf(k) >= 0;
     return '<div class="cr-tw"><table class="cr-t crd-t"><caption>Each state survey\'s average, ' + esc(unitLabel(op.u)) + '. Answers ran: the lowest and highest answer it printed.</caption>' +
       '<thead><tr><th scope="col">State and the survey\'s words</th><th scope="col">Average</th><th scope="col" class="rg">Answers ran</th><th scope="col">Answers</th></tr></thead><tbody>' +
-      rows.join('') + '</tbody></table></div>' + none + nobody +
+      rows.join('') + '</tbody></table></div>' + none + nobody + dl +
       (costLine(op, k) ? '<p class="crd-cost">' + costLine(op, k) + '</p>' : '') +
       '<p class="crd-act"><button type="button" class="cr-btn' + (inSheet ? ' on' : '') + '" data-sheet="' + esc(k) + '" aria-pressed="' + inSheet + '">' + (inSheet ? 'On my sheet' : 'Add to my sheet') + '</button>' +
       '<button type="button" class="cr-btn" data-show="' + esc(k) + '">Show at the top</button></p>' +
@@ -227,7 +249,7 @@
     Object.keys(S.b.ops).forEach(function (k) {
       var li = $(k); if (!li) return;
       var sts = Object.keys(S.b.ops[k].by).sort(), dots = all('.crb i', li);
-      dots.forEach(function (d, i) { d.classList.toggle('me', sts[i] === S.st); });
+      dots.forEach(function (d, i) { d.classList.toggle('me', sts[i] === sv(S.st)); });
     });
   }
 
@@ -254,11 +276,11 @@
       var rg = r.lo == null ? 'not printed' : money(r.lo, r.u) + ' to ' + money(r.hi, r.u);
       return '<tr><th scope="row">' + esc(r.o) + (r.p === 'cents' ? ' <small>(printed in cents)</small>' : '') + '</th>' +
         '<td class="av">' + money(r.a, r.u) + ' <small>' + esc(unitLabel(r.u)) + '</small>' + (r.md == null ? '' : '<span class="mdn">median ' + money(r.md, r.u) + '</span>') +
-        '<span class="rgm">' + (r.lo == null ? '' : 'range ' + rg) + '</span></td><td class="rg">' + rg + '</td><td>' + r.n + '</td></tr>';
+        '<span class="rgm">' + (r.lo == null ? '' : 'range ' + rg) + '</span></td><td class="rg">' + rg + '</td><td>' + (r.n == null ? '<span class="na">not printed</span>' : r.n) + '</td></tr>';
     }).join('');
   }
   function stateLines(box, open) {
-    var c = box.getAttribute('data-cat'), st = S.st, s = st && S.b.states[st];
+    var c = box.getAttribute('data-cat'), st = sv(S.st), s = st && S.b.states[st], st0 = S.st;
     var name = S.b.cats.filter(function (x) { return x[0] === c; })[0][1];
     if (!s) { box.innerHTML = st ? '<p class="fine">No ' + esc(stName(st)) + ' survey here, so there are no state lines to add.</p>' : ''; return; }
     var head = function (n) {
@@ -268,13 +290,13 @@
     if (n === 0) { box.innerHTML = '<p class="fine">' + esc(s.name) + '\'s survey has no ' + esc(name.toLowerCase()) + ' lines.</p>'; return; }
     if (!open) { box.innerHTML = head(n); return; }
     stateDoc(st, function (d) {
-      if (!d || S.st !== st) return;
+      if (!d || S.st !== st0) return;
       var rows = d.rows.filter(function (r) { return r.c === c; });
       var shown = S.q ? rows.filter(function (r) { return matches(S.q, r.s + ' ' + r.o + ' ' + r.u); }) : rows;
       box.innerHTML = head(rows.length) + (shown.length ?
-        '<div class="cr-tw"><table class="cr-t cr-full"><caption>' + esc(d.name) + ', ' + (d.rate_year ? d.rate_year + ' rates' : d.survey_year) + ', as the survey printed it: average' + (d.rows.some(function (r) { return r.md != null; }) ? ', median' : '') + ' and ' + esc(d.spread_label) + '. Answers = how many reported that job.</caption>' +
+        '<div class="cr-tw"><table class="cr-t cr-full"><caption>' + esc(d.name) + ', ' + (d.rate_year ? d.rate_year + ' rates' : d.survey_year) + ', as the survey printed it: average' + (d.rows.some(function (r) { return r.md != null; }) ? ', median' : '') + ' and ' + esc(d.spread_label) + '.' + (d.counts === false ? ' This survey does not print how many answered each job.' : ' Answers = how many reported that job.') + '</caption>' +
         '<thead><tr><th scope="col">Job</th><th scope="col">Average</th><th scope="col" class="rg">Range</th><th scope="col">Answers</th></tr></thead><tbody>' + lineRows(d, shown) + '</tbody></table></div>' +
-        '<p class="fine"><a href="/custom-rates/' + esc(d.slug) + '">' + esc(d.name) + '\'s whole survey on one page</a></p>'
+        (d.page === false ? '<p class="fine">' + esc(d.range_note) + ' <a href="' + esc(d.sources[0].url) + '" rel="nofollow">The survey</a>.</p>' : '<p class="fine"><a href="/custom-rates/' + esc(d.slug) + '">' + esc(d.name) + '\'s whole survey on one page</a></p>')
         : '<p class="fine">No ' + esc(d.name) + ' job matches "' + esc(S.q) + '" in this category.</p>');
     });
   }
@@ -292,12 +314,12 @@
         if (hit) { any++; shown++; if (!first) first = k; }
       });
       var box = sec.querySelector('.crc-st');
-      if (q && S.st && S.b.states[S.st]) { box.setAttribute('data-open', '1'); stateLines(box, true); }
+      if (q && S.st && S.b.states[sv(S.st)]) { box.setAttribute('data-open', '1'); stateLines(box, true); }
       sec.classList.toggle('nohit', !!q && !any);
       if (q) openCat(sec, true);
     });
     if (q && first) hero(first);
-    var stn = S.st && S.b.states[S.st] ? S.b.states[S.st].name : '';
+    var stn = S.st && S.b.states[sv(S.st)] ? S.b.states[sv(S.st)].name : '';
     $('cr-count').textContent = !q ? '' : shown ? shown + ' job' + (shown === 1 ? '' : 's') + ' across states match "' + q + '"' + (stn ? '; ' + stn + '\'s own lines are under each category.' : '.') :
       'No job across states matches "' + q + '". Try one word, like combine, plant, spray, haul or bale.' + (stn ? ' ' + stn + '\'s own lines that match are below.' : '');
   }
@@ -358,7 +380,7 @@
     refreshOpen();
   }
   function printSpec(keys) {
-    var b = S.b, st = S.st && b.states[S.st] ? S.st : '';
+    var b = S.b, st = S.st && b.states[sv(S.st)] ? sv(S.st) : '';
     var head = ['Job', 'Going rate', 'States run', 'Surveys'].concat(st ? [b.states[st].name + ' ' + yl(st)] : []);
     var row = function (k) {
       var op = b.ops[k], c = cells(op), u = ' ' + shortUnit(op.u);
@@ -369,7 +391,7 @@
       b.cats.filter(function (c) { return c[2].length; }).map(function (c) { return { h: c[1], table: { head: head, rows: c[2].map(row) } }; });
     var used = {};
     (keys || Object.keys(b.ops)).forEach(function (k) { Object.keys(b.ops[k].by).forEach(function (s) { used[s] = 1; }); });
-    var link = 'https://agsist.com/custom-rates' + (st || keys ? '?' + [st ? 'st=' + st : '', keys ? 'j=' + keys.join('.') : ''].filter(Boolean).join('&') : '');
+    var link = 'https://agsist.com/custom-rates' + (st || keys ? '?' + [st ? 'st=' + S.st : '', keys ? 'j=' + keys.join('.') : ''].filter(Boolean).join('&') : '');
     return {
       kicker: 'Custom farm rates', title: keys ? 'My custom rates' : 'The going rate for custom work',
       sub: 'The middle of the state custom rate surveys, ' + b.rule.oldest_in_middle + ' rates or newer' + (st ? ', with ' + b.states[st].name + '\'s own survey' : ''),
@@ -418,9 +440,9 @@
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function (b) {
         S.b = b;
-        var sel = $('cr-st'), cov = Object.keys(b.states), rest = Object.keys(b.names).filter(function (x) { return !b.states[x]; });
+        var sel = $('cr-st'), cov = Object.keys(b.names).filter(function (x) { return b.states[x]; }), rest = Object.keys(b.names).filter(function (x) { return !b.states[x]; });
         sel.innerHTML = '<option value="">Pick a state</option><optgroup label="States with a survey">' +
-          cov.map(function (s) { return '<option value="' + s + '">' + esc(b.states[s].name) + ' (' + yl(s) + ')</option>'; }).join('') +
+          cov.map(function (s) { var x = b.states[s]; return '<option value="' + s + '">' + esc(b.names[s]) + ' (' + (x.same_as ? 'shares ' + esc(b.states[x.same_as].name) + ', ' : '') + yl(s) + ')</option>'; }).join('') +
           '</optgroup><optgroup label="No survey here yet">' + rest.map(function (s) { return '<option value="' + s + '">' + esc(b.names[s]) + '</option>'; }).join('') + '</optgroup>';
         sel.addEventListener('change', function () { setState(sel.value); });
         $('cr-jobs').innerHTML = Object.keys(b.ops).map(function (k) { return '<option value="' + esc(b.ops[k].label) + '">'; }).join('');
@@ -429,7 +451,7 @@
           clearTimeout(t);
           t = setTimeout(function () {
             var v = qi.value.trim(), hit = Object.keys(b.ops).filter(function (k) { return b.ops[k].label.toLowerCase() === v.toLowerCase(); })[0];
-            S.q = hit ? '' : v;
+            S.q = v;
             search();
             if (hit) hero(hit);
           }, 140);

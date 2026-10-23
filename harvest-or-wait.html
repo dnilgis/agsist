@@ -144,6 +144,7 @@
           <label><input type="radio" name="hw-cost" value="lp" checked> LP at $<input id="hw-lp" type="number" inputmode="decimal" step="0.01" min="0" max="10" placeholder="1.60" aria-label="LP price, dollars a gallon"> a gallon, burning <input id="hw-gal" type="number" inputmode="decimal" step="0.001" min="0.005" max="0.05" value="0.018" aria-label="Gallons per bushel per point"> gal a bushel a point</label>
           <label><input type="radio" name="hw-cost" value="point"> <input id="hw-cpp" type="number" inputmode="decimal" step="0.1" min="0" max="20" placeholder="4.0" aria-label="Drying cost, cents a wet bushel a point"> &cent; a wet bushel a point (your dryer, or the elevator's drying charge)</label>
         </div>
+        <p class="rate-hint" data-per="a bushel a point" data-rate="dry-corn-pt" data-for="hw-cpp" data-scale="100" data-fmt="cents" data-radio="hw-cost:point" data-what="Custom corn drying" data-note="What custom operators charge to dry corn, fuel and labor in."></p>
         <p class="hw-src">0.018 gallons is Iowa State's average for a high-temperature dryer; they give 0.010 to 0.025 depending on the dryer and the weather.</p>
       </div>
 
@@ -275,5 +276,6 @@
   <script src="/components/harvest-wait.js?v=1" defer></script>
   <script src="/components/harvest-wait-ui.js?v=1" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
+<script src="/components/rate-hint.js?v=1" defer></script>
 </body>
 </html>

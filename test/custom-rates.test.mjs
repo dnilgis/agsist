@@ -23,6 +23,7 @@ const page = read("custom-rates.html");
 const js = read("components/custom-rates.js");
 const css = read("components/custom-rates.css");
 const idx = JSON.parse(read("data/custom-rates/index.json"));
+const blend = JSON.parse(read("data/custom-rates/blend.json"));
 const doc = (st) => JSON.parse(read(`data/custom-rates/${st}.json`));
 const row = (d, o, u) => d.rows.find((r) => r.o === o && (!u || r.u === u));
 
@@ -96,7 +97,7 @@ test("Missouri is G302 revised March 2026: 2025 rates, average, median, range an
 });
 
 test("every state file is sane and the index matches", () => {
-  const files = readdirSync(join(ROOT, "data/custom-rates")).filter((f) => f !== "index.json");
+  const files = readdirSync(join(ROOT, "data/custom-rates")).filter((f) => f !== "index.json" && f !== "blend.json");
   assert.deepEqual(files.map((f) => f.slice(0, 2).toUpperCase()).sort(), idx.states.map((s) => s.st).sort());
   for (const s of idx.states) {
     const d = doc(s.st.toLowerCase());
@@ -108,7 +109,9 @@ test("every state file is sane and the index matches", () => {
         assert.ok(r.md > 0 && r.a == null && r.n == null && r.lo == null && r.hi == null && !r.k, `${s.st} ${r.o} median only`);
         continue;
       }
-      assert.ok(r.a > 0 && Number.isInteger(r.n) && r.n > 0, `${s.st} ${r.o}`);
+      // a survey that prints no count per job (Pennsylvania 2022, Maryland and Delaware) has none, never a made-up one
+      if (d.counts === false) assert.ok(r.a > 0 && r.n === undefined, `${s.st} ${r.o} no count`);
+      else assert.ok(r.a > 0 && Number.isInteger(r.n) && r.n > 0, `${s.st} ${r.o}`);
       if (r.lo != null) assert.ok(r.lo <= r.a && r.a <= r.hi, `${s.st} ${r.o} average inside its range`);
       if (r.md != null && r.lo != null) assert.ok(r.lo <= r.md && r.md <= r.hi, `${s.st} ${r.o} median inside its range`);
     }
@@ -118,7 +121,7 @@ test("every state file is sane and the index matches", () => {
   for (const [k, by] of Object.entries(idx.common)) {
     for (const [st, v] of Object.entries(by)) {
       const r = doc(st.toLowerCase()).rows.find((x) => x.k === k);
-      assert.deepEqual([r.a, r.u, r.n], [v[0], v[1], v[4]], `${k} ${st}`);
+      assert.deepEqual([r.a, r.u, r.n ?? null], [v[0], v[1], v[4]], `${k} ${st}`);
     }
   }
 });
@@ -135,6 +138,7 @@ test("page structure, plain words, no em dashes", () => {
   assert.equal(ld["@graph"].find((x) => x["@type"] === "WebApplication").author.jobTitle, "Certified Crop Adviser (CCA)");
   for (const [n, s] of [["page", page], ["js", js], ["css", css]]) assert.ok(!s.includes("—"), `${n}: em dash`);
   for (const s of idx.states) {
+    if (s.page === false) { assert.ok(!existsSync(join(ROOT, `custom-rates/${s.slug}.html`)), `${s.slug}: no page of its own (no new pages)`); continue; }
     const h = read(`custom-rates/${s.slug}.html`);
     assert.ok(!h.includes("—"), `${s.slug}: em dash`);
     assert.ok(Buffer.byteLength(h) < 60 * 1024, `${s.slug} under 60 KB`);
@@ -152,7 +156,11 @@ test("honest empty and failure states", () => {
   assert.match(js, /did not load/);
   assert.match(js, /No ' \+ esc\(d\.name\) \+ ' job matches/);
   assert.match(js, /No bordering state has a survey on this page yet/);
-  assert.match(js, /not in survey/);
+  assert.match(page, /not in survey/);
+  assert.match(js, /not printed/);
+  assert.match(js, /Too old for the middle/);
+  assert.match(js, /too few for a middle/);
+  assert.match(js, /not a rate anyone charged/);
 });
 
 test("search finds jobs by the words farmers use", () => {
@@ -172,14 +180,62 @@ test("search finds jobs by the words farmers use", () => {
   assert.equal(money(58, "percent of crop"), "58%");
 });
 
+test("the going rate is the middle of the state averages, each state once, nothing inflated", () => {
+  const med = (v) => { const s = [...v].sort((a, b) => a - b), n = s.length; return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2; };
+  // combine corn, worked by hand from the state files: 34.61 36.97 38.47 40.03 [41.87] 43.87 46.05 47.56 49.29
+  const cc = blend.ops["combine-corn"];
+  assert.equal(cc.n, 9);
+  assert.equal(cc.md, 41.87);
+  assert.deepEqual([cc.lo, cc.hi], [34.61, 49.29]);
+  assert.deepEqual(cc.y, [2024, 2026]);
+  assert.ok(cc.old && cc.old.PA && !cc.by.PA, "Pennsylvania 2022 is shown with its year but kept out of the middle");
+  for (const [k, op] of Object.entries(blend.ops)) {
+    const vals = Object.values(op.by).map((v) => v[0]);
+    for (const [st, v] of Object.entries(op.by)) {
+      const r = doc(st.toLowerCase()).rows.find((x) => x.k === k);
+      assert.equal(v[0], r.a, `${k} ${st}: the survey's own average, unchanged`);
+      assert.equal(r.u, op.u, `${k} ${st}: one unit in the middle`);
+      const s = blend.states[st];
+      assert.ok(s.ry >= blend.rule.oldest_in_middle, `${k} ${st}: ${s.ry} is new enough`);
+    }
+    if (vals.length >= blend.rule.min_surveys) assert.equal(op.md, Math.round(med(vals) * 1e4) / 1e4, k);
+    else assert.equal(op.md, undefined, `${k}: too few surveys for a middle`);
+    for (const st of Object.keys(op.old || {})) assert.ok(blend.states[st].ry < blend.rule.oldest_in_middle, `${k} ${st} old`);
+    for (const st of Object.keys(op.other || {})) assert.notEqual(op.other[st][5], op.u, `${k} ${st} other unit`);
+  }
+  // a newer survey wins within a state: Wisconsin is the 2025 survey now, not 2024
+  assert.equal(doc("wi").survey_year, 2025);
+  assert.deepEqual((({ a, md, lo, hi, n }) => ({ a, md, lo, hi, n }))(row(doc("wi"), "Combining corn")), { a: 38.47, md: 38, lo: 26, hi: 55, n: 34 });
+  // Delaware reads the Maryland and Delaware survey, which counts once
+  assert.deepEqual(blend.states.DE, { same_as: "MD", name: "Delaware" });
+  assert.equal(blend.states.MD.name, "Maryland and Delaware");
+  assert.ok(!Object.values(blend.ops).some((op) => op.by.DE), "Delaware never counts twice");
+  // a line whose low, high, median and average are one number may be one answer: never lined up
+  for (const r of doc("md").rows) if (r.lo === r.hi && r.lo != null) assert.ok(!r.k, `${r.o} is not in the comparison`);
+  // machinery cost estimates are costs, shown beside the rate, never in the middle
+  const il = blend.diy.find((d) => /Illinois/.test(d.name));
+  assert.deepEqual(il.ops["combine-corn"], [54.4, "acre", "Corn"]);
+  assert.ok(!Object.keys(blend.states).includes("MI") && !Object.keys(blend.states).includes("IL"), "no cost estimate is treated as a survey");
+  for (const [k, v] of Object.entries(il.ops)) assert.equal(v[1], blend.ops[k].u, `${k}: same unit as the going rate`);
+});
+
+test("calculators read the one blend file and fill only on a tap", () => {
+  const hint = read("components/rate-hint.js");
+  assert.match(hint, /\/data\/custom-rates\/blend\.json/);
+  assert.equal((hint.match(/inp\.value = /g) || []).length, 1, "the input is written in one place only: the tap");
+  for (const [f, k] of [["breakeven.html", "custom-farm-corn"], ["harvest-or-wait.html", "dry-corn-pt"], ["grain-shrink.html", "dry-corn-pt"], ["grain-bin-calculator.html", "dry-corn-pt"]]) {
+    const h = read(f);
+    assert.match(h, new RegExp('class="rate-hint"[^>]*data-rate="[^"]*' + k), f);
+    assert.match(h, /<script src="\/components\/rate-hint\.js\?v=\d+" defer><\/script>/, f);
+  }
+});
+
 // the PR checks set PLAYWRIGHT_PATH and CHROMIUM_PATH (pr-checks.yml); the session paths otherwise
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
-test("browser: saved location picks the state, only that state's file loads, no sideways scroll at 390 and 1280", async (t) => {
-  if (!existsSync(PW) || !existsSync(CHROME)) return t.skip("no Playwright");
-  const { chromium } = await import(PW);
+function serve() {
   const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
-  const srv = createServer((req, res) => {
+  return createServer((req, res) => {
     let p = decodeURIComponent(req.url.split("?")[0]);
     if (p.endsWith("/")) p += "index.html";
     let f = normalize(join(ROOT, p));
@@ -188,6 +244,11 @@ test("browser: saved location picks the state, only that state's file loads, no 
     res.writeHead(200, { "content-type": types[extname(f)] || "application/octet-stream" });
     res.end(readFileSync(f));
   });
+}
+test("browser: the going rate first, saved state beside it, only the needed files, search, no sideways scroll at 390 and 1280", async (t) => {
+  if (!existsSync(PW) || !existsSync(CHROME)) return t.skip("no Playwright");
+  const { chromium } = await import(PW);
+  const srv = serve();
   await new Promise((r) => srv.listen(0, "127.0.0.1", r));
   const base = `http://127.0.0.1:${srv.address().port}`;
   const b = await chromium.launch({ executablePath: CHROME });
@@ -199,39 +260,81 @@ test("browser: saved location picks the state, only that state's file loads, no 
       const got = [];
       p.on("request", (r) => { const m = r.url().match(/data\/custom-rates\/([a-z]+)\.json/); if (m) got.push(m[1]); });
       await p.goto(base + "/custom-rates", { waitUntil: "networkidle" });
-      await p.waitForSelector("#cr-body tr");
+      await p.waitForFunction(() => /Nebraska/.test(document.getElementById("cr-me").textContent));
       assert.equal(await p.inputValue("#cr-st"), "NE");
-      assert.deepEqual(got.sort(), ["index", "ne"], "loads the index and the chosen state only");
+      assert.deepEqual(got.sort(), ["blend"], "the first screen reads the blend file only");
+      assert.match(await p.textContent("#cr-av"), /^\$41\.87$/, "combine corn's middle is the first answer");
+      assert.match(await p.textContent("#cr-me"), /Nebraska's 2026 survey: \$49\.29 an acre, \$7\.42 over the middle \(42 answers/);
+      assert.match(await p.textContent("#cr-diy"), /Doing it yourself: \$54\.40 an acre/);
+      // every tap target at least 44 px tall (the site glossary's inline words are words in a sentence), the side gutter 12 px on a phone
+      const small = await p.evaluate(() => [...document.querySelectorAll(".cr button:not(.gl-term), .cr select, .cr input, .crn a")].filter((e) => e.offsetParent && e.getBoundingClientRect().height < 44).map((e) => e.outerHTML.slice(0, 60)));
+      assert.deepEqual(small, [], `taps under 44 px at ${w}`);
+      if (w === 390) assert.equal(await p.evaluate(() => Math.round(document.querySelector(".crh").getBoundingClientRect().left)), 12);
       const [sw, cw] = await p.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
       assert.ok(sw <= cw, `no sideways scroll at ${w}: ${sw} > ${cw}`);
+      // a job's own row opens every state's number, Nebraska first
+      if (w === 390) await p.click("#harvest .crc-t");
+      await p.click("#combine-soy .cro-b");
+      const d = await p.textContent("#combine-soy .cro-d");
+      assert.match(d, /^Each state survey's average/);
+      assert.ok(d.indexOf("Nebraska") < d.indexOf("Iowa"), "the reader's state first");
+      // search: the jobs across states, and Nebraska's own lines, which load its file only now
       await p.fill("#cr-q", "combine soybeans");
-      await p.waitForTimeout(300);
-      assert.match(await p.textContent("#cr-body"), /Combining soybeans, flat rate/);
-      assert.match(await p.textContent("#cr-cmp"), /Iowa|Kansas|Missouri/);
+      await p.waitForFunction(() => /Combining soybeans, flat rate/.test(document.querySelector("#harvest .crc-st").textContent));
+      assert.ok(got.includes("ne") && got.length === 2, "Nebraska's file loads when its lines are asked for: " + got);
+      assert.match(await p.textContent("#cr-count"), /match "combine soybeans"/);
       await p.fill("#cr-q", "zzzz");
-      await p.waitForTimeout(300);
-      assert.match(await p.textContent("#cr-body"), /No Nebraska job matches/);
-      const sp = await ctx.newPage();
-      await sp.goto(base + "/custom-rates/iowa", { waitUntil: "networkidle" });
-      const [sw2, cw2] = await sp.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
-      assert.ok(sw2 <= cw2, `state page no sideways scroll at ${w}`);
-      // Missouri: medians and the median-only rows fit, in the app and on its page
-      for (const u of ["/custom-rates?st=MO", "/custom-rates/missouri"]) {
-        const mp = await ctx.newPage();
-        await mp.goto(base + u, { waitUntil: "networkidle" });
-        if (u.includes("?")) {
-          await mp.waitForSelector("#cr-body tr");
-          const body = await mp.textContent("#cr-body");
-          assert.match(body, /no average printed/);
-          assert.match(body, /median \$40\.00/);
-          assert.match(await mp.textContent("#cr-cap"), /average, median and lowest to highest answer/);
-        }
-        const [sw3, cw3] = await mp.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
-        assert.ok(sw3 <= cw3, `${u} no sideways scroll at ${w}: ${sw3} > ${cw3}`);
-        await mp.close();
-      }
+      await p.waitForFunction(() => /No job across states matches "zzzz"/.test(document.getElementById("cr-count").textContent));
       await ctx.close();
     }
+    // Delaware reads the shared survey; Missouri's medians and median-only lines; a state page; Pennsylvania old
+    const ctx = await b.newContext({ viewport: { width: 390, height: 900 } });
+    const p = await ctx.newPage();
+    await p.goto(base + "/custom-rates?st=DE", { waitUntil: "networkidle" });
+    await p.waitForFunction(() => /Maryland and Delaware 2025 survey, which Delaware shares: \$40\.03/.test(document.getElementById("cr-me").textContent));
+    await p.goto(base + "/custom-rates?st=MO&q=aerial", { waitUntil: "networkidle" });
+    await p.waitForFunction(() => /no average printed/.test(document.getElementById("cr-cats").textContent));
+    assert.match(await p.textContent("#cr-cats"), /median \$13\.00 per acre, few answers/);
+    await p.goto(base + "/custom-rates?st=PA&k=combine-soy", { waitUntil: "networkidle" });
+    await p.waitForFunction(() => /Pennsylvania's 2022 survey: \$38\.70 an acre\. Too old for the middle/.test(document.getElementById("cr-me").textContent));
+    for (const u of ["/custom-rates/iowa", "/custom-rates/missouri"]) {
+      await p.goto(base + u, { waitUntil: "networkidle" });
+      const [sw, cw] = await p.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
+      assert.ok(sw <= cw, `${u} no sideways scroll`);
+    }
+    // an old link to the tool's parts lands on the answer
+    await p.goto(base + "/custom-rates#cr-cmp", { waitUntil: "networkidle" });
+    await ctx.close();
+  } finally {
+    await b.close();
+    srv.close();
+  }
+});
+
+test("browser: a calculator's hint fills only on a tap, and one more tap puts the reader's number back", async (t) => {
+  if (!existsSync(PW) || !existsSync(CHROME)) return t.skip("no Playwright");
+  const { chromium } = await import(PW);
+  const srv = serve();
+  await new Promise((r) => srv.listen(0, "127.0.0.1", r));
+  const base = `http://127.0.0.1:${srv.address().port}`;
+  const b = await chromium.launch({ executablePath: CHROME });
+  try {
+    const p = await b.newPage({ viewport: { width: 390, height: 900 } });
+    await p.goto(base + "/harvest-or-wait", { waitUntil: "networkidle" });
+    await p.waitForSelector('.rate-hint button[data-rh="use"]');
+    assert.equal(await p.inputValue("#hw-cpp"), "", "nothing is filled on load");
+    assert.match(await p.textContent(".rate-hint"), /middle 5\.5\u00a2 a bushel a point \(5\u00a2 to 6\u00a2, 3 surveys/);
+    await p.fill("#hw-cpp", "4.2");
+    await p.click('.rate-hint button[data-rh="use"]');
+    assert.equal(await p.inputValue("#hw-cpp"), "5.5");
+    assert.ok(await p.isChecked('input[name="hw-cost"][value="point"]'));
+    await p.click('.rate-hint button[data-rh="back"]');
+    assert.equal(await p.inputValue("#hw-cpp"), "4.2", "the reader's own number comes back");
+    await p.goto(base + "/breakeven", { waitUntil: "networkidle" });
+    await p.waitForSelector('.rate-hint button[data-rh="use"]');
+    assert.equal(await p.inputValue("#machinery"), "210");
+    await p.selectOption("#crop", "wheat");
+    await p.waitForFunction(() => document.querySelector(".rate-hint").textContent === "");
   } finally {
     await b.close();
     srv.close();

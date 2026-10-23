@@ -64,6 +64,7 @@
     if (!op || !op.n) { el.innerHTML = ''; return; }
     var inp = document.getElementById(el.getAttribute('data-for'));
     var mid = op.md != null ? op.md : null, st = homeState(), s = st && b.states[st];
+    if (s && s.same_as) { st = s.same_as; s = b.states[st]; }  // Delaware reads the Maryland and Delaware survey
     var what = el.getAttribute('data-what') || op.label;
     var h = '<b>' + esc(what) + ', state surveys:</b> ';
     var per = el.getAttribute('data-per') ? ' ' + esc(el.getAttribute('data-per')) : '';
