@@ -6,6 +6,12 @@
    "date": "2026-10-23",
    "items": [
     {
+     "tag": "new",
+     "page": "/birth-year-weather-gift",
+     "name": "Two new gift pages for Rain Print: the year someone was born and the year you married",
+     "text": "Birth year weather gift and wedding year weather gift explain how to pick the year and the place, what the print shows, what it costs and when to order. Each links to the free page where you draw it."
+    },
+    {
      "tag": "improved",
      "page": "/farmland-atlas",
      "name": "County pages open with what farmland sold for, and link to nearby town bids",
