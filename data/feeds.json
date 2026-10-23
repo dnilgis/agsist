@@ -2079,6 +2079,7 @@
   {
    "path": "data/rain-print.json",
    "pages": [
+    "birth-year-weather-gift.html",
     "cattle-futures-prices.html",
     "corn-futures-prices.html",
     "farm-anniversary-gifts.html",
@@ -2089,6 +2090,7 @@
     "rain-gauge.html",
     "rain-print.html",
     "soybean-futures-prices.html",
+    "wedding-year-weather-gift.html",
     "wheat-futures-prices.html"
    ],
    "written_by": [],
