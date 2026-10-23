@@ -246,8 +246,8 @@ test("the replay's code loads only when a reader opens it", () => {
   for (const page of ["hail-map.html", "rain-radar.html"]) {
     const html = readFileSync(ROOT + page, "utf8");
     assert.doesNotMatch(html, /<script[^>]+storm-replay/, page + " does not load the replay up front");
-    assert.match(html, /ld\('\/components\/storm-replay-core\.js\?v=1'\)/, page + " loads the core on open");
-    assert.match(html, /ld\('\/components\/storm-replay\.js\?v=1'\)/, page);
+    assert.match(html, /ld\('\/components\/storm-replay-core\.js\?v=2'\)/, page + " loads the core on open");
+    assert.match(html, /ld\('\/components\/storm-replay\.js\?v=2'\)/, page);
     assert.ok(html.includes("[?&]sr=1(&|$)"), page + " opens a shared replay");
   }
   assert.match(readFileSync(ROOT + "hail-map.html", "utf8"), /id="hm-replay"/);

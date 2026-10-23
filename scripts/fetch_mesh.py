@@ -63,6 +63,11 @@ SIMPLIFY_DEG = 0.02 # ring simplification tolerance
 KEEP_INDEX_DAYS = 400
 
 
+def warn(msg):
+    """A GitHub annotation (the selftest swaps this out so it never raises one)."""
+    print("::warning::" + msg, flush=True)
+
+
 def log(*a):
     print(*a, flush=True)
 
@@ -480,14 +485,20 @@ def run_hours(now=None):
     ends = hour_ends(now)
     todo = [e for e in ends if iso_z(e) not in old]
     log("MESH hours: %d in window, %d already read, %d to fetch" % (len(ends), len(ends) - len(todo), len(todo)))
-    listings, fresh = {}, {}
+    listings, fresh, seen = {}, {}, {}
     for e in reversed(todo):              # newest first: a cut-off run still has the latest storm
         day = e.date()
         if day not in listings:
             url = ARCHIVE60.format(y=day.year, m=day.month, d=day.day)
             r = http_get(url, timeout=30)
-            listings[day] = (url, re.findall(r'href="(MESH_Max_60min[^"]+\.grib2\.gz)"', r.text)
-                             if r is not None and r.status_code == 200 else [])
+            names = (re.findall(r'href="(MESH_Max_60min[^"]+\.grib2\.gz)"', r.text)
+                     if r is not None and r.status_code == 200 else [])
+            listings[day] = (url, names)
+            # Oct 21-23, 2026: every hour came back "no file" with nothing to say why. Say it.
+            seen[day.isoformat()] = {"http": r.status_code if r is not None else None, "files": len(names),
+                                     "first": names[0] if names else None, "last": names[-1] if names else None}
+            log("  listing %s: HTTP %s, %d files%s" % (url, seen[day.isoformat()]["http"], len(names),
+                                                      (" (%s .. %s)" % (names[0], names[-1])) if names else ""))
         url, names = listings[day]
         name = pick_hour_file(names, e)
         if not name:
@@ -505,6 +516,10 @@ def run_hours(now=None):
         fresh[iso_z(e)] = hour_features(vals, lons, lats, iso_z(e))
         log("  hour ending %s: %d bands" % (iso_z(e), len(fresh[iso_z(e)])))
     hours, missing = merge_hours(old, fresh, ends)
+    if seen and not any(v["files"] for v in seen.values()):
+        # an annotation outlives the job log: the run's check page says it even after the log is gone
+        warn("MESH hours: no 60-minute files listed (%s)" % "; ".join(
+            "%s HTTP %s" % (k, v["http"]) for k, v in sorted(seen.items())))
     doc = {
         "meta": {
             "source": "NOAA MRMS MESH 60-minute maximum via Iowa State mtarchive",
@@ -515,6 +530,7 @@ def run_hours(now=None):
             "generated": iso_z(now),
             "as_of": hours[-1]["end"] if hours else None,
             "missing": missing,
+            "listings": seen,   # per day read this run: HTTP status and how many 60-minute files it listed
         },
         "hours": hours,
     }
@@ -547,6 +563,29 @@ def selftest_hours():
     f = hour_features(blob, lons, lats, "2026-07-14T21:00:00Z")
     assert f and all(x["properties"]["hour_end"] == "2026-07-14T21:00:00Z" for x in f)
     assert [x["properties"]["thresh_in"] for x in f] == [0.75, 1.0], [x["properties"] for x in f]
+    # a listing with no 60-minute files is written down with its status (Oct 21-23, 2026: 48 hours
+    # missing for three days and nothing in the file said why)
+    import tempfile
+    global OUTDIR, http_get, warn
+    keep_out, keep_get, keep_warn = OUTDIR, http_get, warn
+    warned = []
+
+    class Resp:
+        def __init__(self, code, text=""):
+            self.status_code, self.text = code, text
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            OUTDIR = tmp
+            http_get = lambda u, timeout: Resp(404)  # noqa: E731
+            warn = warned.append
+            run_hours(now=datetime(2026, 10, 22, 23, 57, tzinfo=timezone.utc))
+            m = json.load(open(os.path.join(tmp, HOURS_FILE)))["meta"]
+            assert m["listings"] == {"2026-10-22": {"http": 404, "files": 0, "first": None, "last": None},
+                                     "2026-10-21": {"http": 404, "files": 0, "first": None, "last": None}}, m["listings"]
+            assert len(m["missing"]) == HOURS_KEEP and m["as_of"] is None
+            assert warned and "HTTP 404" in warned[0], warned
+    finally:
+        OUTDIR, http_get, warn = keep_out, keep_get, keep_warn
     log("SELFTEST hours OK")
 
 
