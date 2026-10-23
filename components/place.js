@@ -443,15 +443,25 @@
 
   /* Best and nearest bid per crop from a bids snapshot ({ bids: [...] } rows with cashPrice, distance, lat/lon).
      Rows marked verified:false, or with no price, never count. Distances from (lat, lng) when given. */
+  /* components/bid-filter.js is the one test for "may this row be a best bid" (no
+     organic / non-GMO / white / feed / durum / spring wheat, no meal or cwt quote,
+     price inside the crop's band). Fast Facts loads it; the county pages load
+     place.js on their own and do not yet (county-home.js is pinned by hash in
+     every atlas page), so there the rows pass as they always did. */
+  function bidFilter() {
+    try { if (typeof module === 'object' && module.exports) return require('./bid-filter.js'); } catch (e) { /* not found: unfiltered */ }
+    return (typeof window !== 'undefined' && window.AG && window.AG.bidFilter) || null;
+  }
   var OUTLIER_BASIS = 0.75;   // a bid whose basis sits this far from the crop's median nearby never counts as best
   function bestBids(snap, lat, lng, radius) {
     radius = radius || BID_MILES;
-    var by = {}, out = {};
+    var by = {}, out = {}, BF = bidFilter();
     if (!snap || !snap.bids) return out;
     snap.bids.forEach(function (b) {
       var crop = String(b.crop || b.category || b.commodity || '').toLowerCase();
       if (/^soy/.test(crop)) crop = 'soybeans'; else if (/^corn/.test(crop)) crop = 'corn'; else if (/wheat/.test(crop)) crop = 'wheat'; else return;
       if (b.verified === false || typeof b.cashPrice !== 'number' || !isFinite(b.cashPrice) || b.cashPrice <= 0) return;
+      if (BF && !BF.canSetBest(b)) return;
       var d = lat != null && lng != null && b.lat != null && b.lon != null ? miles(lat, lng, b.lat, b.lon) : b.distance;
       if (d == null || d > radius) return;
       (by[crop] = by[crop] || []).push({ crop: crop, price: b.cashPrice, basis: typeof b.basis === 'number' ? b.basis : null,

@@ -1436,7 +1436,16 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
      for this crop, so the honest answer is the best one anywhere plus a
      distance of null, which renderBasisCard turns into a label that says it
      is not near them. */
-  return{bid:bestBid(cropBids),distance:null};
+  /* AND THE NATIONAL PICK SKIPS A BASIS OUTLIER. scripts/fetch_bids.py flags
+     (basisOdd) a network board whose basis sits far from the other boards on
+     its contract in its state: Riceville IA soybeans, +$1.40 against a -$0.65
+     Iowa middle, was "the highest checked bid in the sample" for 16 of 50 grid
+     ZIPs. It can still be a reader's LOCAL bid, where the town says what it is;
+     it cannot be the one number offered to someone it is nowhere near. */
+  var nat=[];
+  for(var o=0;o<cropBids.length;o++){if(!cropBids[o].basisOdd)nat.push(cropBids[o]);}
+  if(nat.length===0)return null;
+  return{bid:bestBid(nat),distance:null};
 }
 
 
