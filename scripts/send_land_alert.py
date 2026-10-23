@@ -141,9 +141,10 @@ def scout_url(r):
     return "%s/field-scout?at=%.3f,%.3f&fips=%s" % (SITE, lat, lon, r["fips"])
 
 
-def sale_line(r):
-    """One sale in words: date, acres, $/acre, price, where, how far. Nothing else."""
-    when = LA.short_day(r["when"]) + (" (sale date)" if r["basis"] == "sale date" else "")
+def sale_line(r, mark=True):
+    """One sale in words: date, acres, $/acre, price, where, how far. Nothing else.
+    mark: say "(deed date)" on a row listed by its deed date (an email that mixes the two)."""
+    when = LA.short_day(r["when"]) + (" (deed date)" if mark and r["basis"] == "sale date" else "")
     per = "%s an acre" % LA.money(r["ppa"]) if r.get("ppa") is not None else "price per acre not figured"
     where = (r["place"] + ", " if r.get("place") else "") + "%s County, %s" % (r["county"], r["st"])
     mi = int(LA.BLS.js_round(r["mi"]))
@@ -187,14 +188,14 @@ def compose(zip5, radius, year, m0, land, zips, today, repo, need_fresh=True):
     n = rep["n"]
     subject = "Farm sales within %d miles of %s, %s: %d recorded" % (radius, zip5, mon, n)
     near = rep["rows"][0]
-    pre = "Nearest: " + sale_line(near).split(": ", 1)[1]
+    pre = "Nearest: " + sale_line(near, False).split(": ", 1)[1]
     blocks = [("h1", "Farm sales recorded in %s %d within %d miles of %s" % (mon, year, radius, here)),
               ("p", "Here are the farm sales recorded in %s within %d miles of your ZIP, nearest first, from the state transfer records. "
                     "I show the acres, the price and where each one is. I never show who bought or sold." % (mon, radius))]
     by_sale = sorted({r["st"] for r in rep["rows"] if r["basis"] == "sale date"})
     if by_sale:
-        blocks.append(("p", "%s sales are listed by the date on the deed: the copy of the %s file I read does not carry the recording date yet."
-                       % (" and ".join(LA.STATE_NAMES[s] for s in by_sale), " and ".join(LA.STATE_NAMES[s] for s in by_sale))))
+        blocks.append(("p", "%s sales are listed by the date on the deed for now: my copy of the state's file does not carry the recording date yet."
+                       % " and ".join(LA.STATE_NAMES[s] for s in by_sale)))
     blocks.append(("sales", rep["rows"]))
     extra = []
     if rep["more"]:
@@ -247,20 +248,22 @@ def render(email, base, secret, lid, parts, from_addr, preview=False):
             htm.append(P % (e(t) + '<a href="%s" style="color:#8a5a00">%s</a>' % (e(u), e(u.split("?")[0].replace("https://", "")))))
             txt.append(t + u)
         elif k == "sales":
+            mixed = len({r["basis"] for r in v}) > 1
+            head = "Recorded" if all(r["basis"] == "recorded" for r in v) else ("Date" if mixed else "Deed date")
             TD = '<td style="padding:6px 8px 6px 0;border-top:1px solid #e6dfd0;vertical-align:top;font-size:14px%s">%s</td>'
             TH = '<th scope="col" style="text-align:%s;padding:0 8px 4px 0;font-size:12px;color:#6b6b6b;font-weight:normal">%s</th>'
             h = ['<table role="presentation" style="border-collapse:collapse;width:100%;margin:0 0 14px"><thead><tr>'
-                 + "".join(TH % (al, x) for al, x in (("left", "Recorded"), ("right", "Acres"), ("right", "$/acre"), ("right", "Price"),
+                 + "".join(TH % (al, x) for al, x in (("left", head), ("right", "Acres"), ("right", "$/acre"), ("right", "Price"),
                                                       ("left", "Where"), ("right", "Miles"))) + "</tr></thead><tbody>"]
             for r in v:
-                when = LA.short_day(r["when"]) + (" (sale date)" if r["basis"] == "sale date" else "")
+                when = LA.short_day(r["when"]) + (" (deed date)" if mixed and r["basis"] == "sale date" else "")
                 where = (r["place"] + ", " if r.get("place") else "") + "%s Co., %s" % (r["county"], r["st"]) + (", with buildings" if r.get("bldg") else "")
                 h.append("<tr>" + TD % ("", e(when)) + TD % (";text-align:right", e(LA.acres_text(r["acres"])))
                          + TD % (";text-align:right", e(LA.money(r["ppa"]) if r.get("ppa") is not None else "n/a"))
                          + TD % (";text-align:right", e(LA.money(r["price"]))) + TD % ("", e(where))
                          + TD % (";text-align:right", "%d" % LA.BLS.js_round(r["mi"])) + "</tr>")
             htm.append("".join(h) + "</tbody></table>")
-            txt.append("\n".join(sale_line(r) for r in v))
+            txt.append("\n".join(sale_line(r, mixed) for r in v))
     text = "\n\n".join(txt) + "\n\n-- \n" + SN.FOOT_LINE + "\nUnsubscribe: " + stop + "\n" + SN.POSTAL + "\n"
     foot = '%s<br><a href="%s" style="color:#6b6b6b">Unsubscribe</a><br>%s' % (e(SN.FOOT_LINE), e(stop), e(SN.POSTAL))
     doc = ('<!doctype html><html><head><meta charset="utf-8">'
@@ -637,8 +640,14 @@ def selftest():
     # the reasons a reader gets nothing
     ck("an empty month sends nothing", compose("54001", 25, 2026, 7, land, zips, today, tmp)[1] == "empty")
     ck("a ZIP far from Illinois and Wisconsin: outside", compose("75001", 50, 2026, 8, land, zips, today, tmp)[1] == "outside")
-    ck("an unknown ZIP: bad-zip; the table not read: zip-table",
-       compose("99999", 25, 2026, 8, land, zips, today, tmp)[1] == "bad-zip" and compose("54001", 25, 2026, 8, land, Zips(data={"54001": False}) if False else type("Z", (), {"coord": lambda s, z: False, "town": lambda s, z: None})(), today, tmp)[1] == "zip-table")
+    class NoTable:
+        def coord(self, z):
+            return False
+
+        def town(self, z):
+            return None
+    ck("an unknown ZIP: bad-zip; the ZIP table not read: zip-table (the next run tries again)",
+       compose("99999", 25, 2026, 8, land, zips, today, tmp)[1] == "bad-zip" and compose("54001", 25, 2026, 8, land, NoTable(), today, tmp)[1] == "zip-table")
     ck("files not fetched since the month ended: wait-data", compose("54001", 25, 2026, 9, land, zips, "2026-11-03", tmp)[1] == "wait-data")
     ck("no town for the ZIP: the ZIP alone", "within 25 miles of 54002\n" in render("a@example.com", "https://w.dev", "sec", email_links.SAMPLE_LID,
        compose("54002", 25, 2026, 8, land, zips, today, tmp)[0], "news@agsist.com").get_body(("plain",)).get_content())
@@ -795,6 +804,18 @@ def selftest():
     outd = os.path.join(tmp, "out")
     rc, log = go(["--out", outd, "--month", "2026-09", "--sample", "54001:25"], Worker(), SMTP(), "2026-10-23 09:00", {"SEND": "1", "LANDSALES_MONTHLY_LIVE": "1"})
     ck("--out writes the samples and never sends", rc == 0 and os.path.isfile(os.path.join(outd, "land-sales-54001-25mi-2026-09.html")), log)
+    # a state file without the recorded date (Illinois before the Oct 23 fetch change): listed by deed date, and said once
+    import json
+    fp = os.path.join(tmp, "data", "land", "wi", "55999.json")
+    f = json.load(open(fp))
+    f["cols"], f["rows"] = f["cols"][:-1], [x[:-1] for x in f["rows"]]
+    json.dump(f, open(fp, "w"))
+    pd, _ = compose("54001", 25, 2026, 8, LA.Land(tmp), zips, today, tmp)
+    md = render("a@example.com", "https://w.dev", "sec", email_links.SAMPLE_LID, pd, "news@agsist.com")
+    td, hd = md.get_body(("plain",)).get_content(), md.get_body(("html",)).get_content()
+    ck("no recorded date in the file: listed by deed date, said once, the table headed Deed date",
+       "Wisconsin sales are listed by the date on the deed for now" in td and "Sep 2: 80 acres" in td and "(deed date)" not in td
+       and "Deed date</th>" in hd and "Recorded</th>" not in hd, td[:700])
     shutil.rmtree(tmp, ignore_errors=True)
     print("\n%s: %d failure(s)" % ("FAIL" if fails else "OK", len(fails)))
     return 1 if fails else 0
