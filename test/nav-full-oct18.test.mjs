@@ -28,19 +28,19 @@ const SUB_RE = /<span class="nav-sub">[^<]*<\/span>/;
 const linkName = (s) => text(s.replace(SUB_RE, ""));
 const SUBLINES = { "/haymow": "Hay for sale and wanted" };
 
-// The approved outline, labels exact.
+// The approved outline, labels exact. Oct 22-23, 2026: the merged pages left it (scripts/moved_pages.py).
 const MENU = {
   markets: ["Prices", {
-    "Near you": [["/cash-bids", "Cash bids near me"], ["/cash-bids/states", "Bids by state"], ["/basis", "Basis vs normal"], ["/grain-transport", "Grain on the move"], ["/cash-bid-index", "Cash Bid Index"], ["/fertilizer", "Fertilizer prices"]],
+    "Near you": [["/cash-bids", "Cash bids near me"], ["/basis", "Bids and basis by state"], ["/grain-transport", "Grain on the move"], ["/cash-bid-index", "Cash Bid Index"], ["/fertilizer", "Fertilizer prices"]],
     Futures: [["/corn-futures-prices", "Corn"], ["/soybean-futures-prices", "Soybeans"], ["/wheat-futures-prices", "Wheat"], ["/harvest-price-tracker", "Harvest price tracker"], ["/markets", "All markets →"]],
-    Reports: [["/usda-calendar", "USDA calendar"], ["/whats-priced-in", "What’s priced in"], ["/conditions", "Crop progress"], ["/conditions-yield", "Crop size"], ["/usda-quick-stats", "Yield by state"], ["/crop-tour", "Crop tour"], ["/cot", "Fund positions (COT)"], ["/tariffs", "Tariffs and trade"]],
+    Reports: [["/usda-calendar", "USDA calendar and what’s priced in"], ["/conditions", "Crop progress and size"], ["/usda-quick-stats", "Yield by state"], ["/crop-tour", "Crop tour"], ["/cot", "Fund positions (COT)"], ["/tariffs", "Tariffs and trade"]],
   }],
   livestock: ["Livestock", {
     "": [["/cattle-auction-prices", "Sale barn prices"], ["/cattle-futures-prices", "Cattle futures"], ["/milk-prices", "Milk"], ["/hay-prices", "Hay"], ["/haymow", "The Haymow"], ["/lrp", "LRP"], ["/prf", "PRF"], ["/manure-value", "Manure value"], ["/drought-monitor", "Drought monitor"]],
   }],
   field: ["Field", {
     Weather: [["/rain-radar", "Rain on your field"], ["/rain", "Rain by county"], ["/hail-map", "Hail map"], ["/spray", "Spray advisory"], ["/fall-nitrogen", "Soil temp (fall anhydrous)"], ["/rain-print", "Rain Print"], ["/rain-gauge", "Rain gauge waitlist"]],
-    Crop: [["/gdu-calculator", "GDU"], ["/planting-date", "Planting date"], ["/urea", "Urea loss"], ["/nutrient-removal", "Nutrient removal"], ["/field-scout", "Field Scout"], ["/yield-estimator", "Yield estimator"], ["/pod-counts", "Pod counts"]],
+    Crop: [["/gdu-calculator", "GDU"], ["/planting-date", "Planting date"], ["/urea", "Urea loss"], ["/nutrient-removal", "Nutrient removal"], ["/field-scout", "Field Scout"], ["/yield-estimator", "Yield estimator"]],
     "Harvest and bins": [["/harvest-or-wait", "Harvest now or wait"], ["/grain-emc", "Grain drying (EMC)"], ["/grain-shrink", "Grain shrink"], ["/grain-bin-calculator", "Bin calculator"], ["/combine-loss", "Combine loss"], ["/tools", "All tools →"]],
   }],
   money: ["Money & Land", {
@@ -48,7 +48,7 @@ const MENU = {
     Programs: [["/arc-plc", "ARC or PLC"], ["/prf", "PRF"], ["/lrp", "LRP"], ["/farm-bill", "Farm bill"]],
     Selling: [["/store-or-sell", "Sell or store"], ["/breakeven", "Break-even"], ["/commodity-loan", "CCC loan"]],
   }],
-  daily: ["Daily", { "": [["/daily", "Today’s briefing"], ["/news", "The Wire"], ["/archive", "Archive"]] }],
+  daily: ["Daily", { "": [["/daily", "Today’s briefing"], ["/daily#past", "Past briefings"]] }],
 };
 
 function deskPanel(id) {
@@ -135,16 +135,17 @@ test("every link in the menu, the footer and both no-script copies opens a page 
     }
   }
   assert.deepEqual(miss, []);
-  // /cash-bids/states is built with the town pages, never as cash-bids/index.html (it would capture /cash-bids)
+  // /cash-bids/states is the forward page to /basis#states (Oct 22, 2026), never cash-bids/index.html (it would capture /cash-bids)
   assert.ok(!existsSync(join(ROOT, "cash-bids/index.html")));
-  const sh = read("cash-bids/states.html");
-  assert.match(sh, /<h1>Cash grain bids by state<\/h1>/);
-  assert.match(sh, /<a href="\/cash-bids\/iowa\/">Iowa<\/a> <span class="cbt-mut">&middot; \d+ elevators? in \d+ towns?<\/span>/);
-  assert.match(read("scripts/build_cash_bid_pages.py"), /hub_page, hub_meta = build_states_hub\(smetas, ctx\)/, "rebuilt on every cash-bid run");
+  assert.match(read("cash-bids/states.html"), /<link rel="canonical" href="https:\/\/agsist.com\/basis">/);
+  const sh = read("basis.html");
+  assert.match(sh, /<h3 class="bs-sub" id="states">Cash bids by state<\/h3>/);
+  assert.match(sh, /<a href="\/cash-bids\/iowa\/">Iowa<\/a> <span class="mut">\d+ elevators? in \d+ towns?<\/span>/);
+  assert.match(read("scripts/build_cash_bid_pages.py"), /stamp_basis_hub\(hub, doc, states_html\)/, "rebuilt on every cash-bid run");
 });
 
-test("no em dashes in what a reader sees in the menu, the footer, the fallbacks and the states page", () => {
-  for (const f of ["components/header.html", "components/footer.html", "components/header-fallback.html", "components/footer-fallback.html", "cash-bids/states.html"]) {
+test("no em dashes in what a reader sees in the menu, the footer, the fallbacks and the states list", () => {
+  for (const f of ["components/header.html", "components/footer.html", "components/header-fallback.html", "components/footer-fallback.html", "basis.html"]) {
     const seen = read(f).replace(/<!--[\s\S]*?-->/g, "").replace(/\/\*[\s\S]*?\*\//g, "");
     assert.doesNotMatch(seen, /—|&mdash;/, f);
   }
@@ -271,8 +272,8 @@ test("phone: one tap on the menu shows every group's links; desktop panels stay 
     const hidden = await pg.evaluate(() => [...document.querySelectorAll("#drawer .draw-grp a.draw-item")].filter((a) => !a.getClientRects().length).map((a) => a.getAttribute("href")));
     assert.deepEqual(hidden, [], "every group link is shown without another tap");
     const n = await pg.evaluate(() => document.querySelectorAll("#drawer .draw-grp a.draw-item").length);
-    assert.equal(n, 6 + 5 + 8 + 9 + 7 + 7 + 6 + 5 + 4 + 3 + 3,
-      "Near you 6 with Grain on the move (2026-10-21); Livestock has 9 since The Haymow (2026-10-18); Reports 8 with Yield by state, Land 5 with Farmland sale index (2026-10-20)");
+    assert.equal(n, 5 + 5 + 6 + 9 + 7 + 6 + 6 + 5 + 4 + 3 + 2,
+      "Near you 5 and Reports 6 since the merges (Oct 22, 2026: Bids by state, What's priced in and Crop size joined the pages beside them), Crop 6 (Pod counts on the crop tour), Daily 2 (The Wire and the archive on the Daily page); Livestock has 9 since The Haymow (2026-10-18); Land 5 with Farmland sale index (2026-10-20)");
     assert.ok(await pg.evaluate(() => document.getElementById("drawer").scrollWidth <= 390), "no sideways scroll in the panel");
     // the moved note shows before Nov 1 and stays closed once dismissed
     assert.ok(await pg.isVisible("#drawer .nav-moved"));

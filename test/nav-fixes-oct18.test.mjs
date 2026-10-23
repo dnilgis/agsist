@@ -24,7 +24,8 @@ try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chrom
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
 const header = read("components/header.html"), footer = read("components/footer.html");
-const NEW_MENU = ["/pod-counts", "/drought-monitor", "/planting-date", "/field-scout", "/urea"];
+// Pod counts became a section of the crop tour page (Oct 22, 2026), which is in the menu itself
+const NEW_MENU = ["/crop-tour", "/drought-monitor", "/planting-date", "/field-scout", "/urea"];
 
 test("footer-only tools are in the desktop menu, the phone drawer and the no-script header", () => {
   // 2026-10-18 full menu: Drought monitor moved to Livestock, so look across the whole desktop menu
