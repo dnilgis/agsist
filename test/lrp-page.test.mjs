@@ -270,18 +270,22 @@ test("the record page says what the record can say, at today's subsidy, and poin
   assert.match(hero, /at today&rsquo;s subsidy/);
   assert.ok(hero.includes(L.money(BT.record["all/feeder/95-100/13"].net_now)), "hero shows today's-subsidy figures");
   assert.match(hero, /<span>\d+ of 100<\/span>/);
-  assert.match(hero, /600 head of steers at 850 lb \(8\.5 cwt\)/, "600 head, not 600-lb steers (the rancher's misread)");
+  // the worked lot needs that sales day's weight 2 steer offer; RMA posts none on some days (Oct 23, 2026)
+  const lotDay = TODAY.offers.some((o) => o.c === "0801" && o.t === "810" && o.len === 13);
+  if (lotDay) assert.match(hero, /600 head of steers at 850 lb \(8\.5 cwt\)/, "600 head, not 600-lb steers (the rancher's misread)");
+  else assert.ok(!/600 head/.test(hero), "no worked lot on a day with no steer offer, rather than a stale price");
   assert.match(hero, /Since July 2020 it paid back/, "hogs never read as paying for themselves without the current regime beside it");
   assert.match(RECORD, /at the subsidy in force that year/);
   /* the lot line also says what the same lot did at the subsidy each year really had, and since July 2020 */
+  assert.match(RECORD, /<link rel="canonical" href="https:\/\/agsist\.com\/lrp\/record">/);
   const lot = /<p class="lot">(.*?)<\/p>/s.exec(hero);
+  if (!lotDay) { assert.ok(!lot, "no lot line without that day's steer offer"); return; }
   assert.ok(lot, "lot line");
   const cp = +/covered at \$([\d,.]+) a cwt/.exec(lot[1])[1].replace(/,/g, "");
   const head = cp * 8.5, w = (x) => `${x >= 0 ? "ahead" : "behind"} ${L.money(Math.abs(x))}`;
   const all = BT.record["all/feeder/95-100/13"], cur = BT.record["current/feeder/95-100/13"];
   const want = `At the subsidy in force each year it came out ${w(all.net / 100 * head)} a head; since July 2020, ${w(cur.net / 100 * head)}.`;
   assert.ok(lot[1].includes(want), `expected "${want}" in: ${lot[1]}`);
-  assert.match(RECORD, /<link rel="canonical" href="https:\/\/agsist\.com\/lrp\/record">/);
 });
 
 test("the calculator leads: definition, then the inputs, then one answer; the record is one link away", () => {
@@ -434,8 +438,11 @@ test("changing the animal keeps the typed weight and head (it used to reset to 8
 });
 
 test("the weight picks RMA's weight class (handbook section 23A(3))", () => {
-  const off = TODAY.offers;
-  const ry = TODAY.ry;
+  // a saved sales day with cattle offers: RMA posts none on some days (Oct 23, 2026), and the
+  // weight classes are only defined where offers exist
+  const DAY = JSON.parse(read("test/fixtures/lrp-offers-2026-10-22.json"));
+  const off = DAY.offers;
+  const ry = DAY.ry;
   // feeder steers: under 600 lb is weight 1 (809), 600 to 1,000 lb weight 2 (810)
   assert.equal(L.inferType(off, "0801", "steers", 5.5, ry), "809");
   assert.equal(L.inferType(off, "0801", "steers", 5.99, ry), "809");
