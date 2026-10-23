@@ -5,7 +5,7 @@
  *   - no buyer or seller name, parcel, legal or document number in any email, checked on
  *     the real county files for both samples (Chetek 54728, Charleston IL 61920);
  *   - the gate: nothing reaches the list without LANDSALES_MONTHLY_LIVE=1, in the workflow
- *     and in the script; and never through Sig's Google account (BUILD-RULES 12);
+ *     and in the script (the route is the Daily's until Plan A: Sig, Oct 23);
  *   - the unsubscribe: front door, link id, UNSUB_SECRET hmac, topic=landsales, no ZIP;
  *   - an empty month sends nothing; the radius math; Illinois and Wisconsin only;
  *   - the ask on Field Scout, the comp report, Fast Facts and the Atlas county pages.
@@ -39,7 +39,6 @@ test("the selftests: the radius, the list, the gate, the route, the stop link th
   const out = py(["scripts/send_land_alert.py", "--selftest"]);
   assert.match(out, /OK: 0 failure\(s\)/);
   for (const name of ["gate: --send without LANDSALES_MONTHLY_LIVE sends nothing, reads nothing, exits 1",
-    "live through a Google server: refused before the list is read or SMTP opened",
     "no names, parcel numbers, legal descriptions or document numbers, anywhere",
     "the worker asks, stops every land sale topic and nothing else, and refuses a forged token",
     "an empty month (nothing recorded in August) mails nobody and marks nobody",
@@ -111,7 +110,7 @@ test("the gate in the workflow: the list only with LANDSALES_MONTHLY_LIVE=1, sch
   assert.match(WF, /if \[ "\$ASKED_SEND" = 1 \] && \[ "\$SEND" != 1 \]; then\n\s+echo "::error::[^"]*LANDSALES_MONTHLY_LIVE[^"]*"\n\s+exit 1/);
   assert.ok(!/--send/.test(WF.split("\n").filter((l) => !l.trim().startsWith("#")).join("\n")), "the workflow never passes --send");
   assert.ok(WF.indexOf("python scripts/send_land_alert.py --selftest") > 0 && WF.indexOf("python scripts/send_land_alert.py --selftest") < WF.indexOf("python3 scripts/send_land_alert.py $ARGS"), "selftest first");
-  assert.ok(WF.includes("SMTP_USER: ${{ secrets.SMTP_USER }}") && !/GMAIL_/.test(WF), "no Gmail fallback secrets");
+  assert.ok(WF.includes("SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}") && WF.includes("FROM_ADDR: ${{ secrets.FROM_ADDR }}"), "the Daily's route (Sig, Oct 23: until Plan A)");
   assert.ok(WF.includes("SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}") && WF.includes("SIG_TO: ${{ secrets.SIG_TO }}"));
   assert.match(WF, /- uses: actions\/checkout@v4\n\s+with:\n\s+ref: main\n\s+- name: Engine checkout\n/, "the engine checkout right after the checkout");
   assert.match(WF, /permissions:\n\s+contents: read/);
@@ -126,12 +125,6 @@ test("the gate in the script: SEND=1 without LANDSALES_MONTHLY_LIVE=1 reads noth
     assert.match(out, /refused: LANDSALES_MONTHLY_LIVE is not 1/);
     assert.ok(!/could not read the list|to mail/.test(out), "the list was never read");
   }
-  // live, but SMTP still points at Gmail (today's secrets): refused
-  let rc = 0, out = "";
-  try { out = py(["scripts/send_land_alert.py"], { SEND: "1", LANDSALES_MONTHLY_LIVE: "1", SMTP_HOST: "smtp.gmail.com", FROM_ADDR: "news@agsist.com", LIST_URL: "http://127.0.0.1:9", LIST_TOKEN: "x", UNSUB_SECRET: "x" }); }
-  catch (e) { rc = e.status; out = String(e.stdout); }
-  assert.equal(rc, 1);
-  assert.match(out, /refused: SMTP_HOST is a Google mail server\. BUILD-RULES 12/);
 });
 
 test("the unsubscribe link: front door, link id, UNSUB_SECRET hmac, topic=landsales and no ZIP", () => {
