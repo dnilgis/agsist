@@ -1070,5 +1070,7 @@
    "p": "median-only"
   }
  ],
+ "counts": true,
+ "page": true,
  "rate_year": 2025
 }

@@ -417,5 +417,7 @@
    "n": 9,
    "c": "other"
   }
- ]
+ ],
+ "counts": true,
+ "page": true
 }

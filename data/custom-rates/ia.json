@@ -1515,5 +1515,7 @@
    "hi": 15.0,
    "c": "spray"
   }
- ]
+ ],
+ "counts": true,
+ "page": true
 }

@@ -676,5 +676,7 @@
    "c": "other"
   }
  ],
+ "counts": true,
+ "page": true,
  "withheld": "The State Summary's dryland corn contract farming row repeats the CRP mowing row's numbers exactly and has no matching detail table, so it is left out. The summary labels small grain hauling \"cents per bushel\"; the detail table says \"flat rate per bushel\" and shows dollars, so it is listed per bushel."
 }

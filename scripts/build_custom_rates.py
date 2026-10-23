@@ -49,13 +49,14 @@ SPREADS = {
     "trimmed": "range without the single lowest and highest answer",
     "sd": "average plus and minus one standard deviation (about two thirds of answers)",
     "none": "no range printed",
+    "mid80": "middle 80 percent of answers (the lowest and highest tenth left out)",
 }
 UNITS = {
     "acre", "hour", "bushel", "bale", "ton", "mile", "loaded mile", "point per bushel", "1,000 gallon",
     "foot", "foot of bag", "head", "head / day", "cwt", "gross bushel", "pivot", "metered hour",
     "bushel / month", "bushel / year", "bushel / round trip", "horsepower / hour", "hour / head row",
     "hour / foot of blade", "hour / foot of blower", "bale / loaded mile", "load weighed",
-    "pound", "linear foot", "percent of crop",
+    "pound", "linear foot", "percent of crop", "gallon", "point", "sample", "hole", "hive", "plant",
 }
 
 # The jobs more than one survey prices, under one name, so the page can set
@@ -114,7 +115,7 @@ CAT_RULES = [
     ("tillage", r"strip till|cultivat"),
     ("harvest", r"grain cart|combin|swathing (grain|canola)"),
     ("spray", r"manure"),
-    ("hay", r"\bbal(e|ed|es|ing)\b|silage|\bmow"),
+    ("hay", r"\bbal(e|ed|es|ing)\b|bailing|silage|\bmow"),
     ("hauling", r"haul|truck|semi\b|loaded mile|over base|extra charge per 10 miles|\d+ or more miles"),
     ("planting", r"plant|drill|seed|seeding"),
     ("hay", r"\bhay\b|forage|windrow|swath|\brak(e|ing)\b|\btedd?(ing)?\b|merg|earlage|snaplage|stover"),
@@ -182,7 +183,7 @@ NOT_COVERED = {
     "KY": "Kentucky's guide averages other states' surveys, so it is not a Kentucky survey.",
 }
 STAMP = "2026-10-17"
-UNIT_LABEL = {"1,000 gallon": "1,000 gallons", "head / day": "head a day", "bushel / month": "bushel a month",
+UNIT_LABEL = {"point": "point of moisture", "1,000 gallon": "1,000 gallons", "head / day": "head a day", "bushel / month": "bushel a month",
               "bushel / year": "bushel a year", "bushel / round trip": "bushel, round trip",
               "horsepower / hour": "horsepower-hour", "hour / head row": "hour per row of head",
               "hour / foot of blade": "hour per foot of blade", "hour / foot of blower": "hour per foot of blower",
@@ -252,7 +253,9 @@ def validate(meta, rows, where="tsv"):
             errs.append("%s: a numbers_only source keeps no saved copy (drop ref)" % where)
         if not re.fullmatch(r"20\d\d-\d\d(-\d\d)?", meta.get("published", "")):
             errs.append("%s: numbers_only needs published: YYYY-MM" % where)
-    elif not meta.get("ref"):
+    elif not meta.get("ref") and not meta.get("src_pdf"):
+        # src_pdf: a survey copy Sig downloaded that is not on the references branch yet; --verify-refs
+        # reads it from CR_SRC_DIR (never committed to this repo)
         errs.append("%s: missing meta ref" % where)
     for k, v in meta.items():
         if "—" in v:
@@ -282,10 +285,17 @@ def validate(meta, rows, where="tsv"):
                 continue
             n = None
         else:
-            if not re.fullmatch(r"\d+", r["n"].strip()):
+            if meta.get("counts") == "none":
+                # the survey does not print how many answered each job: nothing is made up
+                if r["n"].strip():
+                    errs.append("%s: counts none, but the row has a count" % at)
+                    continue
+                n = None
+            elif not re.fullmatch(r"\d+", r["n"].strip()):
                 errs.append("%s: n must be a whole number" % at)
                 continue
-            n = int(r["n"])
+            else:
+                n = int(r["n"])
             if avg is None or avg <= 0:
                 errs.append("%s: average missing" % at)
                 continue
@@ -301,7 +311,7 @@ def validate(meta, rows, where="tsv"):
             if lo is not None and meta.get("spread") == "none":
                 errs.append("%s: a range on a survey marked spread none" % at)
                 continue
-            if n < 1:
+            if n is not None and n < 1:
                 errs.append("%s: no answers" % at)
                 continue
         u = r["unit"].strip()
@@ -336,7 +346,9 @@ def validate(meta, rows, where="tsv"):
         if printed == MEDIAN_ONLY:
             row = {"s": sec, "o": op, "u": u, "md": round(md * scale, 4)}
         else:
-            row = {"s": sec, "o": op, "u": u, "a": round(avg * scale, 4), "n": n}
+            row = {"s": sec, "o": op, "u": u, "a": round(avg * scale, 4)}
+            if n is not None:
+                row["n"] = n
             if md is not None:
                 row["md"] = round(md * scale, 4)
         if lo is not None:
@@ -367,7 +379,14 @@ def load_states(src_dir=SRC):
         st = meta.get("state", "")
         if st != fn[:-4].upper():
             errs.append("%s: state %r does not match the file name" % (where, st))
-        if STATE_NAMES.get(st) != meta.get("name"):
+        region = meta.get("states", "").split()
+        if region:
+            # one survey for two or more states (Maryland and Delaware): each state reads it, it counts once
+            if region[0] != st or any(x not in STATE_NAMES for x in region):
+                errs.append("%s: states %r must start with %s and be state codes" % (where, region, st))
+            if meta.get("name") != " and ".join(STATE_NAMES[x] for x in region if x in STATE_NAMES):
+                errs.append("%s: name %r is not the region's states" % (where, meta.get("name")))
+        elif STATE_NAMES.get(st) != meta.get("name"):
             errs.append("%s: name %r is not %s's name" % (where, meta.get("name"), st))
         states[st] = (meta, clean, rows)
     return states, errs
@@ -375,13 +394,16 @@ def load_states(src_dir=SRC):
 
 def state_doc(meta, rows):
     srcs = [{"url": meta["url"], "numbers_only": True, "published": meta["published"]} if meta.get("numbers_only")
-            else {"url": meta["url"], "ref": meta["ref"]}]
+            else {"url": meta["url"], "ref": meta["ref"]} if meta.get("ref") else {"url": meta["url"]}]
     if meta.get("url2"):
         srcs.append({"url": meta["url2"], "ref": meta.get("ref2", "")})
     d = {"state": meta["state"], "name": meta["name"], "slug": slug(meta["name"]), "survey": meta["survey"],
          "publisher": meta["publisher"], "survey_year": int(meta["survey_year"]), "collected": meta["collected"],
          "sources": srcs, "spread": meta["spread"], "spread_label": SPREADS[meta["spread"]],
-         "includes": meta["includes"], "range_note": meta["range_note"], "rows": rows}
+         "includes": meta["includes"], "range_note": meta["range_note"], "rows": rows,
+         "counts": meta.get("counts") != "none", "page": meta.get("page") != "none"}
+    if meta.get("states"):
+        d["states"] = meta["states"].split()
     if meta.get("withheld"):
         d["withheld"] = meta["withheld"]
     # rate_year: the year the rates were charged, when a survey says it is not its own year
@@ -390,6 +412,10 @@ def state_doc(meta, rows):
     if meta.get("rate_year"):
         d["rate_year"] = int(meta["rate_year"])
     return d
+
+
+def state_href(s):
+    return "/custom-rates/" + s["slug"] if s.get("page", True) else "/custom-rates?st=" + s["st"]
 
 
 def year_label(s):
@@ -402,16 +428,18 @@ def index_doc(docs):
     states = []
     for st in covered:
         d = docs[st]
-        nb = [x for x in BORDERS.get(st, "").split() if x in docs]
+        region = d.get("states", [st])
+        nb = sorted({x for r in region for x in BORDERS.get(r, "").split() if x in docs and x not in region})
         states.append({"st": st, "name": d["name"], "slug": d["slug"], "year": d["survey_year"],
                        **({"rate_year": d["rate_year"], "yl": "%d rates" % d["rate_year"]} if d.get("rate_year") else {}),
                        "survey": d["survey"], "publisher": d["publisher"], "url": d["sources"][0]["url"],
-                       "rows": len(d["rows"]), "spread": d["spread"], "neighbors": nb})
+                       "rows": len(d["rows"]), "spread": d["spread"], "neighbors": nb, "page": d["page"],
+                       **({"states": d["states"]} if d.get("states") else {})})
     common = {}
     for st in covered:
         for r in docs[st]["rows"]:
             if "k" in r:
-                c = [r["a"], r["u"], r.get("lo"), r.get("hi"), r["n"], r["o"]]
+                c = [r["a"], r["u"], r.get("lo"), r.get("hi"), r.get("n"), r["o"]]
                 common.setdefault(r["k"], {})[st] = c
     return {"note": "Custom farm work rates as each state survey published them. Built by scripts/build_custom_rates.py from scripts/custom_rates/*.tsv; every number is from the survey named in its state file.",
             "built": STAMP, "states": states, "keys": KEYS, "common": common,
@@ -444,6 +472,49 @@ def median(vals):
     return v[n // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2
 
 
+DIY = os.path.join(SRC, "diy")
+
+
+def load_diy(src_dir=DIY):
+    """Machinery cost estimates: what owning and running the machine costs, never a rate charged. Shown
+    beside the going rate as "do it yourself", never in the middle. One file per source in scripts/custom_rates/diy/."""
+    out, errs = [], []
+    if not os.path.isdir(src_dir):
+        return out, errs
+    for fn in sorted(os.listdir(src_dir)):
+        if not fn.endswith(".tsv"):
+            continue
+        meta, rows, cols = {}, {}, None
+        for i, line in enumerate(open(os.path.join(src_dir, fn), encoding="utf-8").read().splitlines(), 1):
+            if not line.strip():
+                continue
+            if line.startswith("#"):
+                m = re.match(r"#\s*([a-z_]+):\s*(.*)$", line)
+                if m:
+                    meta[m.group(1)] = m.group(2).strip()
+                continue
+            f = line.split("\t")
+            if cols is None:
+                cols = f
+                continue
+            r = dict(zip(cols, f))
+            k = r.get("key", "")
+            if k not in KEYS or k in rows:
+                errs.append("diy/%s:%d: unknown or repeated key %r" % (fn, i, k))
+                continue
+            try:
+                rows[k] = [num(r["cost"]), r["unit"], r["operation"]]
+            except (ValueError, KeyError):
+                errs.append("diy/%s:%d: cost must be a number" % (fn, i))
+        for kk in ("name", "what", "publisher", "published", "basis", "files"):
+            if not meta.get(kk):
+                errs.append("diy/%s: missing meta %s" % (fn, kk))
+        if "\u2014" in json.dumps(meta) + json.dumps(rows):
+            errs.append("diy/%s: em dash" % fn)
+        out.append((fn, meta, rows))
+    return out, errs
+
+
 def blend_doc(docs, idx):
     newest = max(rate_year(d) for d in docs.values())
     cutoff = newest - AGE_MAX
@@ -460,7 +531,7 @@ def blend_doc(docs, idx):
             unit = sorted(count, key=lambda u: (-count[u], u))[0]
             by, other, old = {}, {}, {}
             for st, r in ent:
-                v = [r["a"], r.get("lo"), r.get("hi"), r["n"], r["o"]]
+                v = [r["a"], r.get("lo"), r.get("hi"), r.get("n"), r["o"]]
                 if r["u"] != unit:
                     other[st] = v + [r["u"]]
                 elif rate_year(docs[st]) < cutoff:
@@ -472,7 +543,7 @@ def blend_doc(docs, idx):
             if vals:
                 yrs = [rate_year(docs[st]) for st in by]
                 op["y"] = [min(yrs), max(yrs)]
-                op["ans"] = sum(v[3] for v in by.values())
+                op["ans"] = sum(v[3] for v in by.values() if v[3])
             if len(vals) >= MIN_BLEND:
                 op["md"] = round(median(vals), 4)
             if len(vals) >= 2:
@@ -490,13 +561,24 @@ def blend_doc(docs, idx):
         states[s["st"]] = {"name": s["name"], "slug": s["slug"], "year": s["year"], "ry": rate_year(d),
                            "survey": s["survey"], "publisher": s["publisher"], "url": s["url"], "spread": s["spread"],
                            "neighbors": s["neighbors"], "rows": s["rows"], "in_blend": rate_year(d) >= cutoff,
+                           "page": d["page"], "counts": d["counts"],
                            "by_cat": {c: sum(1 for r in d["rows"] if r["c"] == c) for c, _ in CATS}}
+        # a state that shares a survey (Delaware reads the Maryland and Delaware survey)
+        for x in d.get("states", [])[1:]:
+            states[x] = {"same_as": s["st"], "name": STATE_NAMES[x]}
+    diy_list, _ = load_diy()
+    diy = []
+    for fn, meta, rows in diy_list:
+        # a cost only shows beside a job in the same unit as the going rate
+        keep = {k: v for k, v in rows.items() if k in ops and ops[k]["u"] == v[1]}
+        diy.append({"name": meta["name"], "what": meta["what"], "publisher": meta["publisher"], "published": meta["published"],
+                    "basis": meta["basis"], "ops": keep})
     return {"note": "The going rate for custom farm work: for each job, the middle of the state surveys' own averages, with the lowest and highest of them and the number of surveys. Built by scripts/build_custom_rates.py from the same survey rows as each state file (data/custom-rates/<st>.json). Each state counts once; nothing is inflated or adjusted.",
             "built": STAMP,
             "rule": {"middle": "median of the state survey averages", "min_surveys": MIN_BLEND, "age_max": AGE_MAX,
                      "newest": newest, "oldest_in_middle": cutoff,
                      "words": "Each state counts once. A survey of rates from before %d is shown but left out of the middle. A job needs %d surveys for a middle; with fewer, each number stands on its own." % (cutoff, MIN_BLEND)},
-            "cats": cats, "states": states, "ops": ops, "names": STATE_NAMES, "borders": idx["borders"],
+            "cats": cats, "states": states, "ops": ops, "diy": diy, "names": STATE_NAMES, "borders": idx["borders"],
             "not_covered": NOT_COVERED}
 
 
@@ -611,8 +693,8 @@ def state_page(d, idx):
             body.append('<tr><th scope="row">%s%s</th><td class="av">%s <small>%s</small>%s<span class="rgm">%s</span></td><td class="rg">%s</td><td>%d</td></tr>' % (
                 esc(r["o"]), note, money(r["a"], r["u"]), esc(unit_label(r["u"])), mdn, ("range " + rg) if "lo" in r else "", rg, r["n"]))
     me = next(s for s in idx["states"] if s["st"] == st)
-    nb = ", ".join('<a href="/custom-rates/%s">%s (%s)</a>' % (s["slug"], esc(s["name"]), year_label(s)) for s in idx["states"] if s["st"] in me["neighbors"])
-    others = " &middot; ".join('<a href="/custom-rates/%s">%s</a>' % (s["slug"], esc(s["name"])) for s in idx["states"] if s["st"] != st)
+    nb = ", ".join('<a href="%s">%s (%s)</a>' % (state_href(s), esc(s["name"]), year_label(s)) for s in idx["states"] if s["st"] in me["neighbors"])
+    others = " &middot; ".join('<a href="%s">%s</a>' % (state_href(s), esc(s["name"])) for s in idx["states"] if s["st"] != st)
     srcl = " and ".join('<a href="%s" rel="nofollow">%s</a>' % (esc(s["url"]), "the survey" if i == 0 else "the second part") for i, s in enumerate(d["sources"]))
     faq_html = "".join('<details><summary>%s</summary><p>%s</p></details>' % (esc(q), esc(a)) for q, a in faq)
     withheld = ('<p class="fine">%s</p>' % esc(d["withheld"])) if d.get("withheld") else ""
@@ -696,7 +778,7 @@ def faq_main(docs, idx):
         for s in idx["states"]:
             r = next((x for x in docs[s["st"]]["rows"] if x.get("k") == k), None)
             if r:
-                out.append("%s %s (%s%d survey, %d answers)" % (s["name"], money(r["a"], r["u"]), ("%d rates, " % s["rate_year"]) if s.get("rate_year") else "", s["year"], r["n"]))
+                out.append("%s %s (%s%d survey, %s)" % (s["name"], money(r["a"], r["u"]), ("%d rates, " % s["rate_year"]) if s.get("rate_year") else "", s["year"], ("%d answers" % r["n"]) if r.get("n") else "answers not printed"))
         return out
     names = ", ".join("%s (%s)" % (s["name"], year_label(s)) for s in idx["states"])
     qs = [("What does custom combining cost per acre?",
@@ -811,11 +893,10 @@ def cats_block(b, docs):
 
 def how_block(b, docs):
     r = b["rule"]
-    inb = [s for s in b["states"].values() if s["in_blend"]]
-    outb = [s for s in b["states"].values() if not s["in_blend"]]
-    li = "".join('<li><a href="/custom-rates/%s">%s</a>, %s: %s, %s. <a href="%s" rel="nofollow">The survey</a>.%s</li>\n' % (
-        s["slug"], esc(s["name"]), ("%d rates" % s["ry"]) if s["ry"] != s["year"] else s["year"], esc(s["survey"]), esc(s["publisher"]), esc(s["url"]),
-        "" if s["in_blend"] else " Too old for the middle; shown with its year.") for s in b["states"].values())
+    inb = [s for s in b["states"].values() if s.get("in_blend")]
+    li = "".join('<li><a href="%s">%s</a>, %s: %s, %s. <a href="%s" rel="nofollow">The survey</a>.%s</li>\n' % (
+        state_href(dict(s, st=st)), esc(s["name"]), ("%d rates" % s["ry"]) if s["ry"] != s["year"] else s["year"], esc(s["survey"]), esc(s["publisher"]), esc(s["url"]),
+        "" if s["in_blend"] else " Too old for the middle; shown with its year.") for st, s in b["states"].items() if not s.get("same_as"))
     return ('<p>For each job I take each state survey\'s own average, as the survey printed it, and show the middle one. Half the states sit at or above it, half at or below. Under it you get the lowest and highest of the state averages and how many surveys priced the job. Tap a job and every state\'s number is there with its year, how many answered, and the lowest and highest answer that survey printed.</p>\n'
             '<p>Each state counts once, however many people answered. I don\'t inflate older surveys or adjust anything. A survey of rates from before %d is shown with its year but kept out of the middle. A job needs %d surveys before I give a middle; with fewer, each number stands on its own. Surveys word jobs their own way (combine only, or combine, cart and haul), so I only line up jobs that read the same, and each state\'s wording is under its number.</p>\n'
             '<p>%d surveys, %s. Read the data: <a href="/data/custom-rates/blend.json">blend.json</a> (the going rates), <a href="/data/custom-rates/index.json">index.json</a> and one file per state beside it.</p>\n'
@@ -843,7 +924,7 @@ def summary_block(docs, idx):
         for k in ("combine-corn", "combine-soy", "plant-row", "spray-ground"):
             r = by.get(k)
             cells.append("<td>%s</td>" % (("%s<small>/%s</small>" % (money(r["a"], r["u"]), "ac" if r["u"] == "acre" else esc(r["u"]))) if r else "<span class=\"na\">not in survey</span>"))
-        rows.append('<tr><th scope="row"><a href="/custom-rates/%s">%s</a> <small>%s</small></th>%s</tr>' % (s["slug"], esc(s["name"]), year_label(s), "".join(cells)))
+        rows.append('<tr><th scope="row"><a href="%s">%s</a> <small>%s</small></th>%s</tr>' % (state_href(s), esc(s["name"]), year_label(s), "".join(cells)))
     return ("\n      <div class=\"cr-tw\"><table class=\"cr-t cr-sum\">\n        <caption>Four common jobs, each state survey\'s average.</caption>\n"
             "        <thead><tr><th scope=\"col\">State, survey year</th><th scope=\"col\">Combine corn</th><th scope=\"col\">Combine soybeans</th><th scope=\"col\">Plant, no fertilizer</th><th scope=\"col\">Spray, ground</th></tr></thead>\n"
             "        <tbody>\n        " + "\n        ".join(rows) + "\n        </tbody>\n      </table></div>\n"
@@ -852,11 +933,14 @@ def summary_block(docs, idx):
 
 def build(src_dir=SRC):
     states, errs = load_states(src_dir)
+    errs += load_diy()[1]
     docs = {st: state_doc(m, rows) for st, (m, rows, _) in states.items()}
     idx = index_doc(docs) if docs else None
     files = {}
     for st, d in docs.items():
         files[os.path.join(OUT, st.lower() + ".json")] = json.dumps(d, indent=1, ensure_ascii=False) + "\n"
+        if not d["page"]:
+            continue
         page = state_page(d, idx)
         if "—" in page:
             errs.append("%s page: em dash" % st)
@@ -911,15 +995,28 @@ def verify_refs(src_dir=SRC):
     states, errs = load_states(src_dir)
     cache, bad = {}, []
     rev = "origin/references"
+    # CR_REFS_GIT: a clone that holds the current references branch (the private repo), when this
+    # checkout's origin/references is the old public copy
+    repo = os.environ.get("CR_REFS_GIT") or ROOT
 
-    def text(ref):
-        if ref not in cache:
+    def text(ref, how=None):
+        key = (ref, how)
+        if key not in cache:
             try:
-                cache[ref] = subprocess.run(["git", "-C", ROOT, "show", "%s:refs/%s.txt" % (rev, ref)],
-                                            capture_output=True, check=True).stdout.decode("utf-8", "replace")
-            except subprocess.CalledProcessError:
-                cache[ref] = None
-        return cache[ref]
+                if how == "pdf":
+                    # the saved .txt clips the last column of some PDFs (Pennsylvania 2022): read the PDF itself
+                    import tempfile
+                    raw = subprocess.run(["git", "-C", repo, "show", "%s:refs/%s.pdf" % (rev, ref)], capture_output=True, check=True).stdout
+                    with tempfile.NamedTemporaryFile(suffix=".pdf") as fh:
+                        fh.write(raw)
+                        fh.flush()
+                        cache[key] = subprocess.run(["pdftotext", "-layout", fh.name, "-"], capture_output=True, check=True).stdout.decode("utf-8", "replace")
+                else:
+                    cache[key] = subprocess.run(["git", "-C", repo, "show", "%s:refs/%s.txt" % (rev, ref)],
+                                                capture_output=True, check=True).stdout.decode("utf-8", "replace")
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                cache[key] = None
+        return cache[key]
 
     def toks(s):
         s = re.sub(r"(\d+\.\d)\s(\d)\b", r"\1\2", s)  # Purdue's text layer splits "9.4 0"
@@ -944,9 +1041,28 @@ def verify_refs(src_dir=SRC):
                 st, meta["numbers_only"], len(raw), meta["url"], len(raw) - mo, mo, meta["published"]))
             continue
         lines, raws, seqs = {}, {}, {}
+        how = meta.get("verify")
+        if meta.get("src_pdf") and not meta.get("ref"):
+            sd = os.environ.get("CR_SRC_DIR", "")
+            fp = os.path.join(sd, meta["src_pdf"]) if sd else ""
+            if not fp or not os.path.exists(fp):
+                print("  %s: skipped, %s is not on the references branch yet; set CR_SRC_DIR to the folder that holds it" % (st, meta["src_pdf"]))
+                continue
+            try:
+                cache[(meta["src_pdf"], "src")] = subprocess.run(["pdftotext", "-layout", fp, "-"], capture_output=True, check=True).stdout.decode("utf-8", "replace")
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                bad.append("%s: could not read %s" % (st, fp))
+                continue
+            meta = dict(meta, ref=meta["src_pdf"])
+            how = "src"
         for k in ("ref", "ref2"):
             if meta.get(k):
-                t = text(meta[k])
+                t = text(meta[k], how)
+                if t is not None and how == "window":
+                    # the saved page prints each number on its own line (Maryland and Delaware's table):
+                    # join each line with the four after it, so a row's name and its numbers sit together
+                    ls = [l for l in t.splitlines() if l.strip()]
+                    t = "\n".join(" ".join(ls[i:i + 5]) for i in range(len(ls)))
                 if t is None:
                     bad.append("%s: refs/%s.txt is not on %s (bash scripts/fetch_private.sh references)" % (st, meta[k], rev))
                     lines[k], raws[k] = [], []
@@ -962,14 +1078,32 @@ def verify_refs(src_dir=SRC):
             hits = [i for i, L in enumerate(lines.get(k, [])) if want <= L]
             if r.get("md", "").strip() and r["n"].strip():
                 # a survey that prints a median: average, median, low, high and count, in that order
-                order = [float(r[c].replace(",", "")) for c in ("avg", "md", "lo", "hi", "n") if r.get(c, "").strip()]
+                # (or the order its "order" line gives: Wisconsin 2025 prints average, range, median, count)
+                cols = meta.get("order", "avg md lo hi n").split()
+                order = [float(r[c].replace(",", "")) for c in cols if r.get(c, "").strip()]
                 hits = [i for i in hits if in_order(order, seqs[k][i])]
+            if how == "window":
+                # a window holds two rows' numbers at most; it must start at this row's own name
+                head = re.sub(r"\s+", " ", r["operation"].lower())[:14]
+                hits = [i for i in hits if raws[k][i].startswith(head)]
             if r.get("printed", "").strip() == MEDIAN_ONLY:
                 # one number alone proves little: the line must also carry the job's name
                 head = re.sub(r"\s+", " ", r["operation"].lower())[:14]
                 hits = [i for i in hits if head in raws[k][i]]
             if not hits:
                 bad.append("%s line %d (%s): %s not found together on one line of refs/%s.txt" % (st, r["_line"], r["operation"], sorted(want), meta.get(k)))
+    sd = os.environ.get("CR_SRC_DIR", "")
+    for fn, meta, rows in load_diy()[0]:
+        files = [os.path.join(sd, f) for f in meta.get("files", "").split()]
+        if not sd or not all(os.path.exists(f) for f in files):
+            print("  diy/%s: skipped, its PDFs are not on the references branch yet; set CR_SRC_DIR to the folder that holds them" % fn)
+            continue
+        txt = "\n".join(subprocess.run(["pdftotext", "-layout", f, "-"], capture_output=True).stdout.decode("utf-8", "replace") for f in files)
+        ls = [re.sub(r"\s+", " ", l).lower() for l in txt.splitlines()]
+        for k, (cost, unit, op) in rows.items():
+            vs = {"%.2f" % cost, ("%.2f" % cost).lstrip("0")}  # Illinois prints $0.14 and $.88
+            if not any(op.lower() in l and any(re.search(r"(^|[ $])" + re.escape(v) + r"\b", l) for v in vs) for l in ls):
+                bad.append("diy/%s %s: %s %s not found on a line with its name" % (fn, k, op, v))
     return errs + bad
 
 

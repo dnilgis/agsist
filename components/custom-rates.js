@@ -130,7 +130,7 @@
     var s = b.states[st];
     if (!s) {
       var nc = b.not_covered[st], nb = (b.borders[st] || []).filter(function (x) { return op.by[x] || (op.old && op.old[x]); });
-      return 'No ' + stName(st) + ' survey here' + (nc ? ': ' + nc : '.') + (nb.length ? ' Next door: ' + nb.map(function (x) {
+      return 'No ' + stName(st) + ' survey here.' + (nc ? ' ' + nc : '') + (nb.length ? ' Next door: ' + nb.map(function (x) {
         var v = op.by[x] || op.old[x]; return stName(x) + ' ' + money(v[0], op.u) + ' (' + yl(x) + ')';
       }).join(', ') + '.' : '');
     }
@@ -476,8 +476,10 @@
         if (b.ops[k]) S.k = k;
         var uq = p.get('q');
         if (uq) { qi.value = uq; S.q = uq.trim(); }
+        var first = pickStart();
+        S.st = first;
         sheetUi();
-        setState(pickStart(), true);
+        setState(first, true);
         if (S.q) search();
         goHash();
         if (window.AgPrintSheet) window.AgPrintSheet.attach(function () { return S.b ? printSpec(S.sheet.length ? S.sheet.slice() : null) : null; });

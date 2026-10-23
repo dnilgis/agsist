@@ -1,66 +1,84 @@
 # state: WI
 # name: Wisconsin
-# survey: Custom Rates for 2024 Wisconsin Farm Operations (2024 Wisconsin Custom Rate Survey)
+# survey: Custom Rates for 2025 Wisconsin Farm Operations (2026 Wisconsin Custom Rate Survey, of 2025 rates)
 # publisher: University of Wisconsin-Madison Division of Extension
-# survey_year: 2024
-# collected: Online survey launched March 2025; 161 respondents who performed, hired or knew 2024 custom rates in Wisconsin
-# url: https://juneau.extension.wisc.edu/files/2025/06/Custom-Rates-for-2024-Wisconsin-Farm-Operations-.pdf
-# ref: cr-wi-2024-pdf
+# survey_year: 2025
+# collected: Online survey launched March 2026; 135 Wisconsin farmers, farm managers and custom operators who did, hired or knew custom work in the 2025 season
+# url: https://farms.extension.wisc.edu/articles/custom-rates-for-2025-wisconsin-farm-operations/
+# src_pdf: wisconsin-2025.pdf
+# order: avg lo hi md n
 # spread: minmax
-# includes: The custom rates reported in this survey include fuel cost unless otherwise stated. Average is the simple average of all reported rates; Range is the minimum and maximum reported values.
-# range_note: The range is the lowest and highest answer. Rows whose unit or grouping the report leaves unclear (the baling lines in the forage table, the seeding sub-rows and the first corn harvest line) are left out.
-key	section	operation	unit	avg	lo	hi	n
-chisel	Land tillage	Chisel plowing	acre	21.69	12.00	30.00	16
-	Land tillage	Disk with ripper	acre	21.92	10.00	30.00	12
-	Land tillage	Disking with harrow or cultipacker	acre	21.88	16.00	30.00	8
-field-cult	Land tillage	Field cultivating	acre	17.80	10.00	30.00	20
-vertical-till	Land tillage	Vertical tillage	acre	21.02	14.00	30.00	21
-disk-tandem	Land tillage	Finishing disk	acre	20.46	10.00	29.10	11
-	Land tillage	Offset disk	acre	20.33	15.00	27.00	6
-cultivate-row	Land tillage	Row cultivating	acre	19.22	12.00	40.00	8
-	Land tillage	Row cultivating with fertilizer	acre	22.39	15.00	50.00	7
-subsoil	Land tillage	Subsoiling (16-20 inches deep)	acre	26.22	18.00	35.00	10
-strip-till	Land tillage	Strip tillage	acre	29.90	18.00	50.00	10
-	Drilling	Drilling alfalfa, conventional	acre	18.57	10.00	28.00	15
-drill-soy	Drilling	Drilling soybeans, conventional	acre	19.15	13.00	26.00	17
-drill-smallgrain	Drilling	Drilling small grains, conventional	acre	20.41	10.00	32.00	16
-	Drilling	Drilling alfalfa, no-till	acre	22.71	14.00	30.00	14
-drill-soy-notill	Drilling	Drilling soybeans, no-till	acre	22.40	15.00	30.00	21
-	Drilling	Drilling small grains, no-till	acre	22.75	15.00	32.00	24
-plant-row-fert	Planting	Planting corn (with fertilizer), conventional	acre	24.99	18.00	35.00	31
-plant-row	Planting	Planting corn (without fertilizer), conventional	acre	23.36	14.00	35.00	14
-	Planting	Planting alfalfa, clover, etc., conventional	acre	21.73	15.00	28.00	11
-plant-notill	Planting	Planting corn (with fertilizer), no-till	acre	25.02	17.00	33.00	26
-	Planting	Planting corn (without fertilizer), no-till	acre	22.54	14.00	28.00	12
-fert-dry	Fertilizer and chemical application	Bulk dry fertilizer, broadcast	acre	8.90	5.75	17.00	43
-fert-liquid	Fertilizer and chemical application	Liquid fertilizer, broadcast	acre	9.00	4.50	10.50	11
-sidedress-liquid	Fertilizer and chemical application	Liquid side-dressing with drop nozzles	acre	13.35	8.00	17.50	20
-	Fertilizer and chemical application	Lime application	acre	17.14	12.00	31.00	7
-lime-ton	Fertilizer and chemical application	Lime application	ton	20.41	5.00	65.00	11
-	Fertilizer and chemical application	Fungicide, ground application	acre	11.90	8.00	20.00	41
-spray-ground	Fertilizer and chemical application	Herbicide, boom sprayer	acre	11.48	6.75	40.00	42
-	Fertilizer and chemical application	Herbicide, broadcast or banded (only)	acre	9.66	6.75	11.50	8
-combine-corn	Harvesting and combining (flat rate)	Combining corn	acre	38.39	26.00	76.00	46
-combine-soy	Harvesting and combining (flat rate)	Combining soybeans	acre	37.13	26.00	55.00	46
-	Harvesting and combining (flat rate)	Combining small grains from swath	acre	39.17	32.00	46.00	6
-combine-smallgrain	Harvesting and combining (flat rate)	Combining small grains, straight	acre	36.80	26.00	46.00	30
-harvest-haul-corn	Harvesting and combining (flat rate)	Harvest corn (combine, grain cart, haul local to farm)	acre	47.36	35.00	65.00	14
-harvest-haul-soy	Harvesting and combining (flat rate)	Harvest soybeans (combine, grain cart, haul local to farm)	acre	47.07	35.00	65.00	14
-harvest-haul-smallgrain	Harvesting and combining (flat rate)	Harvest wheat (combine, grain cart, haul local to farm)	acre	46.50	38.00	65.00	8
-	Harvesting and combining (flat rate)	Corn stalks, large bales	bale	13.90	10.50	17.00	5
-mow-hay	Forage harvesting	Mowing hay	acre	16.20	13.00	22.00	10
-mow-cond	Forage harvesting	Mowing and conditioning hay	acre	15.42	10.00	20.00	19
-rake	Forage harvesting	Raking hay	acre	9.46	4.00	16.00	12
-ted	Forage harvesting	Tedding hay	acre	10.57	5.50	18.00	10
-	Forage harvesting	Windrowing hay	acre	12.58	10.00	17.50	6
-	Forage harvesting	Chopping only	hour	789.79	300.00	1100.00	7
-	Forage harvesting	Self-propelled chopper	hour	887.40	707.00	1000.00	5
-	Forage harvesting	Trucking, 1 man 1 truck	hour	132.74	113.70	150.00	5
-haul-grain-bu	Crop hauling and trucking	Hauling corn (average maximum one-way trip 22 miles)	bushel	0.17	0.08	0.29	32
-	Crop hauling and trucking	Hauling soybeans (average maximum one-way trip 21.69 miles)	bushel	0.18	0.10	0.29	27
-	Crop hauling and trucking	Hauling wheat (average maximum one-way trip 20.83 miles)	bushel	0.18	0.10	0.25	15
-	Crop hauling and trucking	Extra charge per 10 miles over base mileage, corn	bushel	0.05	0.02	0.10	6
-	Miscellaneous	Corn drying	bushel	0.10	0.02	0.20	6
-dry-corn-pt	Miscellaneous	Corn drying	point per bushel	0.06	0.04	0.07	8
-manure-dragline	Miscellaneous	Liquid manure applied by drag line	1,000 gallon	14.90	10.00	30.00	10
-skid-rent	Miscellaneous	Skid steer loader rental	hour	50.83	35.00	85.00	6
+# includes: The reported rates include fuel. Average is the mean of all reported rates; range is the lowest and highest; median is the middle answer; responses is how many usable answers each line had.
+# range_note: The range is the lowest and highest answer. The report's fertilizer and chemical table is headed 2024; it reads as a slip, since every other table and its percent changes are 2025. Its small round bale and 4x5 round bale lines print the same five numbers, so neither is lined up with other states. Its "maximum one-way mileage" lines are miles, not dollars, and are left out. Wisconsin's April 2025 preliminary release (2024 answers raised to 2025 with Iowa's year-over-year changes) is not used: nothing here is inflated.
+key	section	operation	unit	avg	md	lo	hi	n
+chisel	Land tillage	Chisel Plowing	acre	22.13	22.00	14.00	35.00	15
+	Land tillage	Disk/ripper	acre	25.00	24.00	18.00	35.00	9
+	Land tillage	Disking with Harrow or Cultipacker	acre	22.14	20.00	18.00	32.00	7
+field-cult	Land tillage	Field Cultivating	acre	18.82	18.00	10.00	32.00	17
+vertical-till	Land tillage	Vertical tillage	acre	21.67	25.00	11.00	30.00	15
+disk-tandem	Land tillage	Finishing disk	acre	18.80	17.00	15.00	28.00	5
+	Land tillage	Offset Disk	acre	21.75	20.00	15.00	32.00	4
+subsoil	Land tillage	Subsoiling (16-20 in. deep)	acre	25.14	24.00	20.00	35.00	7
+	Drilling	Drilling alfalfa, conventional	acre	21.28	22.00	15.00	30.00	16
+drill-soy	Drilling	Drilling soybeans, conventional	acre	21.04	22.00	15.00	30.00	13
+drill-smallgrain	Drilling	Drilling small grains, conventional	acre	22.42	22.00	15.00	30.00	12
+	Drilling	Drilling alfalfa, no-till	acre	21.89	23.25	15.00	25.00	14
+drill-soy-notill	Drilling	Drilling soybeans, no-till	acre	22.59	22.50	15.00	35.00	11
+	Drilling	Drilling small grains, no-till	acre	22.29	22.25	15.00	35.00	14
+	Drilling	Drilling small grains, without fertilizer	acre	22.80	23.00	16.00	30.00	10
+plant-row-fert	Planting	Planting corn (with fertilizer), conventional	acre	25.41	25.00	15.00	37.50	17
+	Planting	Planting soybeans (with fertilizer), conventional	acre	26.42	25.50	15.00	37.50	6
+plant-row	Planting	Planting corn (without fertilizer), conventional	acre	23.22	25.00	10.00	35.00	9
+	Planting	Planting soybeans (without fertilizer), conventional	acre	24.50	25.00	10.00	35.00	8
+	Planting	Planting corn (with fertilizer), no-till	acre	27.18	28.00	17.50	35.00	19
+	Planting	Planting soybeans (with fertilizer), no-till	acre	30.00	30.00	25.00	35.00	5
+plant-notill	Planting	Planting corn (without fertilizer), no-till	acre	26.38	25.50	15.00	40.00	8
+	Planting	Planting soybeans (without fertilizer), no-till	acre	25.86	25.00	17.00	35.00	7
+fert-dry	Fertilizer and chemical application	Bulk Dry, Broadcast	acre	9.89	9.00	6.00	25.00	26
+fert-liquid	Fertilizer and chemical application	Liquid, Broadcast	acre	12.61	11.00	8.00	20.00	9
+sidedress-liquid	Fertilizer and chemical application	Liquid, Side-Dressing with Drop Nozzles	acre	15.88	15.00	11.25	30.00	10
+lime-ton	Fertilizer and chemical application	Lime application	ton	31.71	22.00	10.00	75.00	7
+	Fertilizer and chemical application	Fungicide, ground application	acre	12.17	11.00	9.00	25.00	16
+spray-ground	Fertilizer and chemical application	Herbicide, boom sprayer	acre	11.01	10.50	8.00	18.00	29
+	Fertilizer and chemical application	Herbicide, broadcast or banded only, liquid	acre	13.50	13.00	10.00	20.00	6
+combine-corn	Harvesting and combining (flat rate)	Combining corn	acre	38.47	38.00	26.00	55.00	34
+	Harvesting and combining (flat rate)	Combining small grains from swath	acre	35.38	36.50	24.00	42.00	8
+combine-smallgrain	Harvesting and combining (flat rate)	Combining small grains straight	acre	37.12	38.00	25.00	50.00	17
+combine-soy	Harvesting and combining (flat rate)	Combining soybeans	acre	38.45	38.00	26.00	55.00	29
+harvest-haul-corn	Harvesting and combining (flat rate)	Harvest corn (combine, grain cart, haul local to farm)	acre	51.08	44.00	33.00	75.00	13
+	Harvesting and combining (flat rate)	Corn stalks, large bales	bale	17.17	16.00	10.00	25.00	6
+harvest-haul-soy	Harvesting and combining (flat rate)	Harvest soybeans (combine, grain cart, haul local to farm)	acre	50.27	45.00	32.00	75.00	11
+harvest-haul-smallgrain	Harvesting and combining (flat rate)	Harvest wheat (combine, grain cart, haul local to farm)	acre	48.18	42.00	32.00	75.00	11
+	Harvesting and combining (flat rate)	Swathing	acre	17.75	15.00	13.00	28.00	4
+mow-hay	Forage harvesting	Mowing hay	acre	18.27	17.00	13.00	25.00	11
+mow-cond	Forage harvesting	Mowing & conditioning hay	acre	16.48	16.50	12.00	22.00	15
+rake	Forage harvesting	Raking hay	acre	11.77	12.00	5.00	18.00	11
+ted	Forage harvesting	Tedding hay	acre	9.83	10.00	5.00	18.00	9
+	Forage harvesting	Windrowing hay	acre	13.40	13.25	10.00	17.00	10
+	Forage harvesting	Round bales, small bales	bale	11.83	12.00	7.50	16.00	9
+	Forage harvesting	Round bales, large bales over 1,500 pounds	bale	11.43	11.00	8.00	15.00	7
+	Forage harvesting	Round bales, 4x5	bale	11.83	12.00	7.50	16.00	9
+	Forage harvesting	Round bales, 5x6	bale	13.40	12.00	8.00	20.00	5
+bale-largesq	Forage harvesting	Square bales, large (over 250 pounds)	bale	13.22	14.00	8.00	16.50	9
+	Forage harvesting	Moving large round bales from field to storage	bale	4.00	4.75	1.50	5.00	4
+	Forage harvesting	Chopping Only	hour	801.25	775.00	275.00	1390.00	24
+	Forage harvesting	Chopping and Hauling Only	hour	785.00	832.50	450.00	1025.00	4
+	Forage harvesting	Self-Propelled Chopper	hour	798.46	850.00	275.00	1050.00	13
+	Crop hauling and trucking	Hauling corn silage	hour	135.79	125.00	100.00	250.00	14
+	Crop hauling and trucking	Hauling silage	hour	131.43	125.00	80.00	250.00	14
+haul-grain-bu	Crop hauling and trucking	Hauling corn	bushel	0.18	0.15	0.10	0.35	14
+	Crop hauling and trucking	Hauling soybeans	bushel	0.22	0.18	0.10	0.50	15
+	Crop hauling and trucking	Hauling all wheat	bushel	0.19	0.17	0.14	0.35	10
+	Crop hauling and trucking	Extra charge per 10 miles over base mileage, corn	bushel	0.09	0.09	0.04	0.15	6
+	Crop hauling and trucking	Extra charge per 10 miles over base mileage, soybeans	bushel	0.10	0.10	0.05	0.15	4
+dry-corn-pt	Miscellaneous	Corn drying	point per bushel	0.06	0.06	0.05	0.07	4
+manure-dragline	Miscellaneous	Liquid manure applied by drag line	1,000 gallon	17.50	16.50	10.00	30.00	7
+	Miscellaneous	Manure, loading	hour	145.90	155.00	110.00	157.50	5
+	Miscellaneous	Manure, spreading	acre	147.38	157.25	115.00	160.00	4
+	Miscellaneous	Manure, agitation boat	hour	327.86	340.00	200.00	400.00	7
+	Miscellaneous	Manure, aerating liquid manure in a storage tank	hour	345.00	350.00	300.00	380.00	4
+	Miscellaneous	Rental, tractors	hour	52.00	49.00	25.00	85.00	4
+	Miscellaneous	Rental, 2-wheel drive, 150-250 hp	hour	71.33	44.00	35.00	200.00	6
+	Miscellaneous	Rental, 4-wheel drive, under 175 hp	hour	76.17	87.50	42.00	100.00	6
+	Miscellaneous	Rental, 4-wheel drive, over 175 hp	hour	117.44	125.00	50.00	250.00	9
+skid-rent	Miscellaneous	Rental, skid steer loader	hour	67.50	80.00	25.00	85.00	4

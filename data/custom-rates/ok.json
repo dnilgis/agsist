@@ -290,5 +290,7 @@
    "n": 28,
    "c": "other"
   }
- ]
+ ],
+ "counts": true,
+ "page": true
 }

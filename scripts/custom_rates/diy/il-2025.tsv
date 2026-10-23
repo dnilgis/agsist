@@ -1,0 +1,34 @@
+# name: Illinois machinery cost estimates
+# what: What it costs to own and run the machine yourself, not a rate anyone charged
+# publisher: University of Illinois, Department of Agricultural and Consumer Economics (Dale Lattz and Gary Schnitkey)
+# published: 2025-08
+# basis: New machinery held 10 years (combine 7), diesel at $3.00 a gallon, labor at $22.00 an hour, overhead (depreciation, interest, insurance, housing, repairs); no profit. Field operations are sized for a 1,400 acre grain farm; the combine is 470 hp on 2,500 acres; bales assume 1.3 tons an acre.
+# files: illinois-machinery-cost-field-ops-2025-08.pdf illinois-machinery-cost-harvest-2025-08.pdf illinois-machinery-cost-forage-2025-08.pdf
+key	operation	unit	cost
+chisel	Chisel plow	acre	19.50
+moldboard	Moldboard plow	acre	54.50
+vertical-till	Vertical tillage, rolling basket	acre	18.50
+strip-till	Strip tillage (strips only)	acre	26.10
+subsoil	In line ripper	acre	29.90
+field-cult	Field cultivator	acre	15.30
+disk-tandem	Tandem disk	acre	18.30
+rotary-hoe	Rotary hoe	acre	8.50
+cultivate-row	Row cultivating	acre	19.50
+plant-row	Conventional planter	acre	24.40
+plant-notill	No-till planter	acre	29.60
+drill-smallgrain	Grain drill	acre	21.20
+drill-soy-notill	No-till drill	acre	37.20
+spray-ground	Self-propelled	acre	6.10
+spray-tractor	Pull-type	acre	6.80
+nh3	Anhydrous ammonia	acre	22.10
+fert-liquid	Liquid fertilizer applicator	acre	11.60
+combine-corn	Corn	acre	54.40
+combine-soy	Soybean	acre	47.60
+grain-cart	Corn	acre	20.20
+haul-grain-bu	Grain Hauling	bushel	0.14
+mow-hay	Rotary Mower	acre	23.10
+mow-cond	Pull-type Mower/Conditioner	acre	27.40
+ted	Tedder	acre	13.10
+bale-smallsq	50 lb. square bale	bale	0.88
+bale-largesq	1,000 lb. square bale	bale	15.23
+bale-round	1,000 lb. round bale	bale	17.08

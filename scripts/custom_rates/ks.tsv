@@ -8,7 +8,7 @@
 # ref: cr-ks-2026
 # spread: minmax
 # includes: The prices include charges for machinery, power, fuel, and the operator. They do not include chemicals, seeds, and other materials unless specified; hay baling materials are the one exception. KDA and K-State say the prices should not be regarded as official or established rates.
-# range_note: Rows are the report's STATE lines (district tables are in the report). The range is the lowest and highest rate reported. The report's table for hauling round bales by the ton disagrees with its own text (which calls it per hour), so that line is left out.
+# range_note: Rows are the report's STATE lines (district tables are in the report). The range is the lowest and highest rate reported. The report's table for hauling round bales by the ton disagrees with its own text (which calls it per hour), so that line is left out. The report's text gives mowing or swathing forage as $17.74 an acre; its table prints $17.47, the number used here.
 key	section	operation	unit	avg	lo	hi	n
 	Grain harvesting	Wheat, base rate (plus $0.303 a bushel above 26 bushels an acre)	acre	30.91	20	42	138
 	Grain harvesting	Wheat, extra charge for high yield (above 26 bushels an acre)	bushel	0.303			132
