@@ -111,7 +111,7 @@ def state_storm_days(days, abbr):
 def storm_days_html(name, sdays):
     if not sdays:
         return ("<section class=\"hs-days\"><h2>Storm days in " + esc(name) + "</h2><p>None of the storm days in "
-                "<a href=\"/hail/\">the storm log</a> carry a report from " + esc(name) + ".</p></section>\n")
+                "<a href=\"/hail-map#history\">the storm log</a> carry a report from " + esc(name) + ".</p></section>\n")
     lis = "".join(
         "<li><a href=\"/hail/" + d + "\">" + esc(datetime.strptime(d, "%Y-%m-%d").strftime("%b ") + str(int(d[8:])) + ", " + d[:4])
         + "</a> <span>" + f"{n:,}" + " report" + ("" if n == 1 else "s") + " here</span></li>"
@@ -120,7 +120,7 @@ def storm_days_html(name, sdays):
     return ("<section class=\"hs-days\" id=\"storm-days\"><h2>Storm days in " + esc(name) + "</h2>"
             "<p>Days in the storm log with at least one NWS hail report from " + esc(name) + ", newest first. Each page maps that day across the country. "
             "The storm log keeps only the big hail days nationwide, so this is not every day it hailed here." + more + "</p>"
-            "<ul>" + lis + "</ul><p><a href=\"/hail/\">Every storm day in the storm log &rarr;</a></p></section>\n")
+            "<ul>" + lis + "</ul><p><a href=\"/hail-map#history\">Every storm day in the storm log &rarr;</a></p></section>\n")
 
 
 def merge_counties(rows, n_yrs):
@@ -477,7 +477,7 @@ def selftest():
     ok(state_storm_days(days, "IA") == [], "no IA days")
     h = storm_days_html("Nebraska", state_storm_days(days, "NE"))
     ok('href="/hail/2026-06-02"' in h and "2 reports here" in h and "6 reports here" in h, "days html: " + h)
-    ok('href="/hail/"' in storm_days_html("Iowa", []), "empty state still links the log")
+    ok('href="/hail-map#history"' in storm_days_html("Iowa", []), "empty state still links the log")
     rows = [{"county": "Dane", "total": 190, "avg": 38.0, "peak": "Apr", "dmg_pct": 39}]
     html = page_html("WI", "Wisconsin", rows, [2022, 2023, 2024, 2025, 2026], 1.0, "2026-10-10", 4.75, [])
     ok('<td class="num">40.0</td>' in html, "avg = 190 / 4.75 = 40.0")
