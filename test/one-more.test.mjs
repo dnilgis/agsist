@@ -63,7 +63,9 @@ test("every topic the panel offers has a sender that reads it", () => {
   const ids = [...block.matchAll(/\bO\.(\w+) = \{/g)].map((m) => m[1]).sort();
   // Oct 20: hail, price and reports added (test/one-more-alerts.test.mjs checks their senders)
   // Oct 21: cot and wasde, the two standing lists (test/one-more-alerts.test.mjs checks their senders)
-  assert.deepEqual(ids, ["cot", "daily", "hail", "price", "rainyear", "rent", "reports", "wasde", "zip"], "only these");
+  // Oct 23: gauge, the rain gauge waitlist (topic rain-gauge, the list the worker keeps for /rain-gauge)
+  assert.deepEqual(ids, ["cot", "daily", "gauge", "hail", "price", "rainyear", "rent", "reports", "wasde", "zip"], "only these");
+  assert.ok(read("workers/subs-worker.js").includes('if (topic === "rain-gauge") {'), "the worker keeps the gauge list");
   assert.ok(!DASH.test(block), "no dashes in the panel");
   assert.ok(!/type="checkbox"[^>]*checked/.test(block), "no box starts ticked");
   assert.ok(!/navigator\.geolocation/.test(SA), "never geolocation");

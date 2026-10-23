@@ -1212,17 +1212,23 @@ SIGNUP_JS = '<script src="/components/cb-signup.js?v=2" defer></script>\n'
 # carries the line only from Nov 1 to Dec 24 of the snapshot's Central date;
 # components/rain-print-promo.js then shows it only while data/rain-print.json
 # has promote on and today is inside promote_from..promote_until. Nothing
-# else promotes on these pages.
+# else promotes on these pages. Oct 23 (Sig): out of the gift season the same
+# one slot carries the quiet "see a year of rain here" line instead (mode
+# "see", shown while promote is on), so a town page always has exactly one.
 RP_PROMO_SEASON = ((11, 1), (12, 24))
 RP_PROMO_JS = '<script src="/components/rain-print-promo.js?v=4" defer></script>\n'
 
 
+RP_GIFT_SLOT = '<p class="rp-promo" data-rain-print-promo hidden></p>'
+RP_SEE_SLOT = '<p class="rp-promo" data-rain-print-promo="see" hidden></p>'
+
+
 def rain_print_line(snap_ct):
-    """The empty, hidden gift-line slot for a town page, or '' out of season."""
+    """The one empty, hidden promo slot for a town page: the gift line in season, else the see line."""
     md = (snap_ct.month, snap_ct.day)
     if not (RP_PROMO_SEASON[0] <= md <= RP_PROMO_SEASON[1]):
-        return ""
-    return '<p class="rp-promo" data-rain-print-promo hidden></p>'
+        return RP_SEE_SLOT
+    return RP_GIFT_SLOT
 
 
 # Sponsor slot (Sig, Oct 22: "I still want to attract advertisers"). One slot per
@@ -3828,12 +3834,12 @@ def selftest():
     _selftest_restricted()
     _selftest_pasted()
     _selftest_off_feed()
-    # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
+    # the Rain Print slot: the gift line Nov 1 to Dec 24, the see line the rest of the year (Oct 23), one hidden slot either way
     for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
                   (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
         got = rain_print_line(dt.datetime(d.year, d.month, d.day, 12))
-        assert bool(got) == on, d
-        assert got in ("", '<p class="rp-promo" data-rain-print-promo hidden></p>')
+        assert got == (RP_GIFT_SLOT if on else RP_SEE_SLOT), d
+        assert RP_GIFT_SLOT == '<p class="rp-promo" data-rain-print-promo hidden></p>'
     assert "rain-print-promo.js" in page_end("", promo=True) and "rain-print-promo.js" not in page_end("")
     # the sponsor slot: one per state, empty (no text, no price), the same form as every other page
     assert sponsor_slot("north-dakota") == '<aside class="ag-sponsor-ribbon" data-slot="cash-bids-north-dakota"></aside>'
