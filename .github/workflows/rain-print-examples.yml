@@ -1,57 +1,44 @@
 name: rain print examples
 
-# The real NOAA answers behind the two example links on /rain-print (2012 Ames,
-# 1993 Des Moines), saved to data/rain-print-examples/<slug>.json so the page's
-# own engine can draw them offline, exactly as it would live.
-#   scripts/fetch_rain_print_examples.mjs  runs components/rain-print.js's own
-#                                          request chain and keeps every answer
-# Past years don't change, so this runs by hand only: once to fill the files,
-# and again if the example links or the engine's requests change. It commits to
-# the branch it was run on (main, or a branch being tested before it merges).
-# RCC-ACIS cannot be reached from the sandbox this was built in.
+# SCRATCH BRANCH ONLY (scratch/rp-press-data): a one-time data run for the press
+# pitch images. GitHub only dispatches a workflow whose file is on the default
+# branch, so this branch's copy of this existing dispatch-only file does the run
+# (as the Oct 21 St. Croix Falls side branch did). Run it with
+#   gh workflow run rain-print-examples.yml --ref scratch/rp-press-data -R dnilgis/agsist
+# It opens rain-print.html for each design in .github/rp-press/designs.txt and
+# keeps every NOAA RCC-ACIS and Open-Meteo answer the page asks for, then uploads
+# them as the run artifact "rp-press-data". It writes nothing to the repository.
 on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: rain-print-examples
   cancel-in-progress: false
 
 jobs:
-  examples:
+  record:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
-      - name: Engine checkout
-        uses: ./.github/actions/engine
-        with:
-          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
-          mode: ${{ vars.ENGINE_MODE }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - name: Fetch
-        run: node scripts/fetch_rain_print_examples.mjs
-
-      - name: Check
+      - name: Playwright
         run: |
-          node scripts/fetch_rain_print_examples.mjs --check
-          python3 scripts/check_site_budget.py
-
-      - name: Commit
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A data/rain-print-examples
-          if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -q -m "data: rain print examples"
-          for i in 1 2 3 4 5; do
-            git rebase --abort 2>/dev/null || true
-            if git pull -q --rebase --autostash origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME"; then exit 0; fi
-            sleep $((20 * i))
-          done
-          echo "push failed after 5 attempts"; exit 1
+          mkdir -p /tmp/rp-pw && cd /tmp/rp-pw && npm init -y >/dev/null
+          npm install --no-audit --no-fund playwright-core@1.56.1
+      - name: Record
+        env:
+          PLAYWRIGHT_PATH: /tmp/rp-pw/node_modules/playwright-core/index.mjs
+          CHROMIUM_PATH: /usr/bin/google-chrome
+          OUT: ${{ runner.temp }}/rp-press
+        run: bash .github/rp-press/run.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rp-press-data
+          path: ${{ runner.temp }}/rp-press
+          retention-days: 14

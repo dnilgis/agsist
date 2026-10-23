@@ -1,0 +1,10 @@
+# slug|query (a hand link, as a story link opens: every layer and option on, the default design)
+chetek-wi-2026|place=Chetek%2C+WI&year=2026
+eau-claire-wi-2026|place=Eau+Claire%2C+WI&year=2026
+fargo-nd-2026|place=Fargo%2C+ND&year=2026
+lancaster-pa-2011|place=Lancaster%2C+PA&year=2011
+madison-wi-2018|place=Madison%2C+WI&year=2018
+champaign-il-2012|place=Champaign%2C+IL&year=2012
+springfield-il-2012|place=Springfield%2C+IL&year=2012
+des-moines-ia-1993|place=Des+Moines%2C+IA&year=1993
+cedar-rapids-ia-2008|place=Cedar+Rapids%2C+IA&year=2008
