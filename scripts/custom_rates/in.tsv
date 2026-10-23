@@ -10,7 +10,7 @@
 # includes: Unless otherwise stated, the rates include payments for fuel, operator labor, and machinery ownership costs.
 # range_note: Purdue does not print a low-high range. Where 30 or more answered, it prints the average plus and minus one standard deviation, where about two thirds of answers fall; that band is shown in the range column. Rows with fewer than five answers are left out.
 key	section	operation	unit	avg	lo	hi	n	printed
-	Land preparation	Rotary hoeing	acre	9.40			5
+rotary-hoe	Land preparation	Rotary hoeing	acre	9.40			5
 chisel	Land preparation	Chisel plowing	acre	19.13			20
 vertical-till	Land preparation	Vertical tillage	acre	17.12			26
 disk-tandem	Land preparation	Disking with tandem disk	acre	15.19			18
@@ -39,7 +39,7 @@ combine-soy	Grain harvesting	Soybeans, combine only	acre	35.94	28.1	43.8	54
 combine-smallgrain	Grain harvesting	Small grain, combine only	acre	32.37			15
 harvest-haul-corn	Grain harvesting	Corn, combine and haul to bin	acre	43.88			26
 harvest-haul-soy	Grain harvesting	Soybeans, combine and haul to bin	acre	40.79			28
-	Grain harvesting	Small grain, combine and haul to bin	acre	41.14			7
+harvest-haul-smallgrain	Grain harvesting	Small grain, combine and haul to bin	acre	41.14			7
 custom-farm-corn	Machinery and operator for all growing and harvesting operations	Corn	acre	122.34			8
 custom-farm-soy	Machinery and operator for all growing and harvesting operations	Soybeans	acre	107.23			8
 	On-farm corn drying	Five points of moisture removed	bushel	19			11	cents
