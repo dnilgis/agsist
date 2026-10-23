@@ -2209,17 +2209,22 @@
     "prf-sponsor.html",
     "sponsor.html"
    ],
-   "written_by": [],
+   "written_by": [
+    "cash-bid-pages"
+   ],
    "touched_by": [
+    "cash-bid-pages",
     "Rebuild Feed Manifest"
    ],
-   "cadence": "maintained by hand, not on a schedule",
+   "cadence": "1 launch every day at about 7pm Central",
    "curated": true,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
-   "max_gap_hours": null,
+   "crons": [
+    "19 */6 * * *"
+   ],
+   "max_gap_hours": 6.0,
    "quiet": null,
    "why_quiet": null
   },

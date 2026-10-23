@@ -61,10 +61,12 @@
   });
 
   function fillSlots() {
-    var sel = $('spa-slot'), groups = { tools: [], rent: [] };
-    S.slots.forEach(function (s) { (s.page.indexOf('/rent/') === 0 ? groups.rent : groups.tools).push(s); });
+    var sel = $('spa-slot'), groups = { tools: [], bids: [], rent: [] };
+    S.slots.forEach(function (s) {
+      (s.page.indexOf('/rent/') === 0 ? groups.rent : s.page.indexOf('/cash-bids/') === 0 ? groups.bids : groups.tools).push(s);
+    });
     var html = '';
-    [['tools', 'Tools and markets'], ['rent', 'Cash rent by state']].forEach(function (g) {
+    [['tools', 'Tools and markets'], ['bids', 'Cash bids by state (the state page and its town pages)'], ['rent', 'Cash rent by state']].forEach(function (g) {
       if (!groups[g[0]].length) return;
       html += '<optgroup label="' + g[1] + '">';
       groups[g[0]].forEach(function (s) {

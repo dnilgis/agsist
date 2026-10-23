@@ -217,7 +217,9 @@ test("an ordinary visit keeps its order and never shows the line", { skip }, asy
     // 2026-10-19 (board B): the Christmas line names last year by Christmas and this year in January, two lines longer at 390 (1019)
     // 2026-10-22 (the layout rebuild): the print's wall is slimmer above the frame (8 px on a phone, 18 on a laptop), so
     // the box sits 14 px (390) and 4 px (1280) higher; the order is the same
-    assert.equal(L.art.top, w < 900 ? 1005 : 488, `${w}: the print's box where it always was`);
+    // 2026-10-22 (Sig: phones use the screen): one 12px gutter instead of 31px, so the words above the print take
+    // fewer lines at 390 and the box sits 39 px higher; 1280 unchanged; the order is the same
+    assert.equal(L.art.top, w < 900 ? 966 : 488, `${w}: the print's box where it always was`);
     assert.deepEqual(errors, []);
   }, { width: w, height: h });
 });

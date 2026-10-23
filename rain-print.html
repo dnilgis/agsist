@@ -505,6 +505,11 @@
   .rp-proof-pin{margin-top:auto}
   .rp-proof-when{margin:0;font-size:var(--fs-sm);line-height:1.4;color:var(--text)}
   .rp-proof-first{margin:0;font-size:var(--fs-xs);color:var(--text-dim);text-align:center}
+  .rp-proof-call{margin:0;font-size:var(--fs-xs);color:var(--text-dim);text-align:center;line-height:1.5}
+  .rp-proof-call a,.rp-help a{display:inline-block;min-height:24px;color:var(--link);text-decoration:underline;text-underline-offset:2px}
+  .rp-help[hidden]{display:none}
+  .rp-near{min-height:44px;text-align:left}   /* the one-tap way back to the nearer station (2026-10-22) */
+  a[href^="tel:"]{white-space:nowrap}   /* the phone number never breaks across two lines */
   .rp-proof-act>p{margin:.45rem 0 0;font-size:var(--fs-xs);color:var(--text-dim);text-align:center}
   .rp-popts{display:grid;gap:12px}
   .rp-popt-l{display:block;margin:0 0 5px;font-size:var(--fs-xs);font-weight:600;color:var(--text-muted)}
@@ -698,6 +703,28 @@
     .rp-wall{padding:18px 20px 2px}
     .rp-frame,.rp-cap{max-width:none}
   }
+  /* Phones use the screen (Sig, 2026-10-22: "the padding next to containers was not so big"): the page had the shared
+     gutter (15px) and this page's own 16px on top of it, so the cards started 31px in and their words 46px in. Now one
+     12px gutter, cards with 12px inside; the print and the pinned strip run edge to edge. */
+  @media(max-width:599px){
+    #main.main{padding-left:12px;padding-right:12px}
+    .rp{padding-left:0;padding-right:0}
+    .rp-wall{margin:0 -12px;padding-left:12px;padding-right:12px}
+    .rp-pv{margin:0 -12px}
+    .rp-pv .rp-wall{margin:0;padding:8px 12px 0}
+    .rp-say,.rp-pv .rpd-bar,.rp-pv .rp-pending{margin-left:12px;margin-right:12px}
+    .rp-step{padding:12px 12px 14px}
+    .rp-strip{padding-left:12px;padding-right:12px}
+    .rp-bar{padding-left:12px;padding-right:12px}
+  }
+  /* A finger gets 44px everywhere in the tool (Sig's rule): the layer chips keep their slim look and get the height as
+     a margin of their own that still takes the tap; the print's buttons under it are 44px tall. */
+  @media(pointer:coarse) and (max-width:899px){
+    .rp-lrow{row-gap:0}
+    .rp-lrow .rp-chip,.rp-lrow .rp-lseg label{padding-top:6.5px;padding-bottom:6.5px}
+    .rp-alloff,.rp-cday select.field,.rp-stn select{min-height:44px}
+    .rp-pv .rp-view .chip,.rp-pv .rp-view .rp-seg span,.rp-pv .rpd-bar .chip{min-height:44px}
+  }
   /* No sponsors on Rain Print (Sig's rule, 2026-10-18): the shared footer's Advertise link, its supporter strip and the
      static footer's Sponsor link stay hidden on this page. Done here, not in loader.js or footer.html. */
   #site-footer a[href^="/sponsor"],#site-footer a[href^="/sponsor"]+.footer-sep,#site-footer #footer-adspace{display:none!important}
@@ -719,7 +746,7 @@
         <b>Money &amp; Land:</b> Land: <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/farmland-index">Farmland sale index</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · Programs: <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · Selling: <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
         <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/news">The Wire</a> · <a href="/archive">Archive</a><br>
         <b>My place:</b> <a href="/fast-facts">Everything near me</a><br>
-        <b>More:</b> <a href="/about">About</a> · <a href="/contact">Contact</a>
+        <b>More:</b> <a href="/about">About</a> · <a href="/sponsor">Advertise with AGSIST</a> · <a href="/contact">Contact</a>
       </nav>
     </div>
   </header>
@@ -786,6 +813,7 @@
           <p class="rp-note rp-back" id="rp-back" hidden></p>
           <div class="rp-pick" id="rp-pick" role="group" aria-label="Which town?" hidden></div>
           <p class="rp-retry-row" id="rp-retry-row" hidden><button type="button" class="btn btn-secondary" id="rp-retry">Try again</button></p>
+          <p class="rp-note rp-help" id="rp-help" hidden>Questions or trouble? Call or text Sig: <a href="tel:+17157972428">715-797-2428</a> or email <a href="mailto:sig@agsist.com">sig@agsist.com</a>.</p>
           <p class="rp-stories" id="rp-stories">Or look at one first: <a class="rp-story" href="/rain-print?place=Ames%2C+IA&amp;year=2012&amp;cmp=normal">2012 Ames, the drought</a> &middot; <a class="rp-story" href="/rain-print?place=Des+Moines%2C+IA&amp;year=1993&amp;cmp=normal">1993 Des Moines, the flood</a>. <a class="rp-why-link" href="#rp-why-h">Not sure which year?</a></p>
           <p class="rp-preview-line" id="rp-preview-line" hidden></p>
           <p class="rp-source" id="rp-source"></p>
@@ -1220,6 +1248,7 @@
           <button type="button" class="btn btn-primary" id="rp-proof-order">Pay $89 at checkout</button>
           <p class="rp-proof-first" id="rp-proof-first">You see a proof first, and get a full refund any time before I print.</p>
           <p class="rp-proof-msg" id="rp-proof-msg" role="alert" hidden></p>
+          <p class="rp-proof-call" id="rp-proof-call">Questions or trouble? Call or text Sig: <a href="tel:+17157972428">715-797-2428</a> or email <a href="mailto:sig@agsist.com">sig@agsist.com</a>.</p>
         </div>
       </div>
     </div>
@@ -1234,7 +1263,7 @@
   <script src="/components/rp-short.js?v=7" defer></script>
   <script src="/components/rp-canada.js?v=3" defer></script>
   <script src="/components/rain-print-art.js?v=22" defer></script>
-  <script src="/components/rain-print.js?v=77" defer></script>
+  <script src="/components/rain-print.js?v=79" defer></script>
   <script src="/components/rain-print-draw.js?v=4" defer></script>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/rp-gift.js?v=9" defer></script>

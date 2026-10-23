@@ -284,15 +284,24 @@ test("every option round-trips through the design code and the query string", ()
   assert.ok(!re.test(key.replace("~", "~x")), "and refuses a letter it doesn't know");
 });
 
-test("a code or tool link made before the options opens as it was made; a hand link and a new visit get frost and heat", () => {
+test("a code or tool link made before the options opens as it was made; a hand link and a new visit get every layer (Sig, Oct 22)", () => {
   const old = Buffer.from("2|Ames, IA|130200 2|2012|spnad|The Olson Farm", "utf8").toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   const d = RP.decodeCode(old);
   assert.ok(d && !d.frost && !d.heat && !d.crop && !d.hist && !d.ribbon, "an old code: no new options");
   const tool = RP.fromParams("?place=Ames%2C+IA&year=2012&style=r1");
-  assert.ok(!tool.frost && !tool.heat, "a tool link (style=) without them: off");
+  assert.ok(!tool.frost && !tool.heat && !tool.ribbon && !tool.hist && !tool.normals && !tool.records, "a tool link (style=) without them: off, as it was made");
   const hand = RP.fromParams("?place=Ames%2C+IA&year=2012");
-  assert.ok(hand.frost && hand.heat && !hand.ribbon && !hand.crop, "a hand link: frost and hottest and coldest on, the rest off");
+  assert.ok(hand.frost && hand.heat && hand.ribbon && hand.hist && hand.normals && hand.records && hand.cmp === "normal" && !hand.crop && !hand.plants && !hand.ghost,
+    "a hand link: every layer on (frost, hottest and coldest, the daily stripes, every year behind, normals, remarkable days); the crop waits for its days");
   assert.ok(!RP.fromParams("?place=Ames%2C+IA&year=2012&frost=0").frost, "unless it says frost=0");
+  for (const k of ["ribbon", "hist"]) assert.equal(RP.fromParams("?place=Ames%2C+IA&year=2012&" + k + "=0")[k], false, "unless it says " + k + "=0");
+  // a code made by the tool before Oct 22 with only frost and heat on (key "~fh") opens with just those, and so does its link
+  const was = RP.normalize({ place: "Ames, IA", station: "130200 2", year: 2012, cmp: "normal", normals: true, records: true, frost: true, heat: true });
+  const wasCode = RP.encodeCode(was), back = RP.decodeCode(wasCode);
+  assert.ok(back.frost && back.heat && !back.ribbon && !back.hist, "an Oct 21 code: frost and heat, no stripes, no threads");
+  assert.deepEqual(RP.fromParams("?d=" + wasCode), back, "the same through ?d=");
+  const wasLink = RP.fromParams("?" + RP.toParams(was));
+  assert.ok(wasLink.frost && wasLink.heat && !wasLink.ribbon && !wasLink.hist, "and through the tool's own link");
   // a crop with its days out of order, or without days, is no crop; the plant switches mean nothing without one
   assert.equal(RP.normalize(Object.assign({}, OPT, { cropHarvest: "2012-04-01" })).crop, "");
   assert.equal(RP.normalize(Object.assign({}, OPT, { cropPlant: "" })).plants, false);
