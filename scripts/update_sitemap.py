@@ -36,7 +36,7 @@ CADENCE = {
     "/markets": 1,
     "/cash-bids": 1,
     "/basis": 1,          # state basis baked in by build_cash_bid_pages.py
-    "/daily": 1,
+    "/daily": 1,  # past briefings (/daily#past) live here since Oct 23, 2026
     "/corn-futures-prices": 1,
     "/soybean-futures-prices": 1,
     "/wheat-futures-prices": 1,

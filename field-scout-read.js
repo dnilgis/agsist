@@ -1986,7 +1986,7 @@ window.__fsRead = function (FSX) {
           var share = denom ? Math.round(ac/denom*100) : null;
           var tops=(arec.top||[]).slice(0,2).filter(function(x){ return !/NO PREDOMINANT/i.test(x[0]); });
           var chips=tops.map(function(x){ return '<span class="fs-cchip">'+esc(String(x[0]).replace(/\b\w+/g,function(w){return w.charAt(0)+w.slice(1).toLowerCase();}))+' '+Math.round(x[1]).toLocaleString('en-US')+'</span>'; }).join('');
-          html+='<p class="fs-cline">Foreign owners hold <strong>'+Math.round(ac).toLocaleString('en-US')+' ac</strong> in this county'+(share!=null?' ('+share+'% of farmland)':'')+' as of '+aly+'. '+chips+' <a class="fs-act-link" href="/foreign-land" target="_blank" rel="noopener">Who owns the ground &rarr;</a></p>';
+          html+='<p class="fs-cline">Foreign owners hold <strong>'+Math.round(ac).toLocaleString('en-US')+' ac</strong> in this county'+(share!=null?' ('+share+'% of farmland)':'')+' as of '+aly+'. '+chips+' <a class="fs-act-link" href="/farmland-atlas#foreign" target="_blank" rel="noopener">Who owns the ground &rarr;</a></p>';
           FSX.FIELD.county.afida={ acres:ac, year:aly, share:share };
         }
       }

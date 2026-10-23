@@ -153,7 +153,7 @@ PAGES = [
         ("/custom-rates", "Custom Farm Rates by State", "what hired combining, planting, spraying, tillage, hauling and baling cost, as each state's university or state survey published it (average, range, unit, survey year, link): Iowa, Kansas, Nebraska, North Dakota, Wisconsin, Indiana, Ohio, Missouri, Oklahoma; one page per state at /custom-rates/<state>"),
         ("/rent/", "Cash Rent by State", "USDA county cash rent for every published state, one page per state at /rent/<state>"),
         ("/farmland-atlas", "Farmland Atlas",
-         "every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>"),
+         "every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>, and foreign-held farmland by state, county and holder country from USDA AFIDA filings since 2010"),
         ("/farmland-index", "Illinois Farmland Sale Index",
          "what Illinois farm ground sold for each quarter since 2018, from the state's PTAX-203 sale declarations: arm's-length bare-land sales of 20+ acres, county mix and tract size held fixed, 2018 = 100, with 90% ranges, the latest quarter marked provisional, USDA NASS cropland value as a separate line, county medians by year, price-to-rent multiples and buyer-type shares; no names"),
         ("/farmland-atlas/compare", "Compare Counties", "up to three counties side by side"),
@@ -170,11 +170,9 @@ PAGES = [
          "the 95-100% coverage record per $100 of coverage on every RMA sales day since July 2013; 36 walk-forward tests of lower coverage levels and a best-so-far rule under one Holm family, none kept; each test year by year; the method, gaps and subsidy table"),
         ("/farm-bill", "Farm Bill", "what the 2026 farm bill fight changes for a farm, where it stands, and where the money goes"),
         ("/cash-lease", "Cash Farm Lease", "a fillable, printable plain-English cash lease with state termination notes"),
-        ("/foreign-land", "Foreign-Owned Farmland", "USDA AFIDA disclosures mapped by county"),
     ]),
     ("Every morning", [
-        ("/daily", "AGSIST Daily", "today's morning briefing, and what just moved: dated market events the moment they are measurable (USDA surprises, positioning extremes, 52-week highs and lows)"),
-        ("/archive", "Briefing Archive", "every past briefing, by month, at /daily/YYYY-MM-DD"),
+        ("/daily", "AGSIST Daily", "today's morning briefing; what just moved: dated market events the moment they are measurable (USDA surprises, positioning extremes, 52-week highs and lows); and every past briefing, by month with a search, each at /daily/YYYY-MM-DD"),
         ("/", "AGSIST Homepage", "today's prices, the briefing, local bids, weather and the farm and trade odds board"),
     ]),
     ("About this site", [

@@ -46,6 +46,24 @@
      "page": "/list-your-elevator#coverage",
      "name": "One page for elevators",
      "text": "Posting your bids, fixing your name, town or phone, and the map of every elevator we read are on one page. Hours and a note show beside your bids when you post them yourself."
+    },
+    {
+     "tag": "improved",
+     "page": "/farmland-atlas#foreign",
+     "name": "Foreign-held farmland is in the Farmland Atlas",
+     "text": "The state picker, the national trend since 2010, the top counties and the holder countries are a section of the Atlas's national picture. Pick a county on the Atlas map for its own record."
+    },
+    {
+     "tag": "improved",
+     "page": "/daily#past",
+     "name": "Past briefings are on the Daily page",
+     "text": "Every briefing since March 2026, by month, with a search, sits under today's briefing."
+    },
+    {
+     "tag": "improved",
+     "page": "/arc-plc",
+     "name": "Old counter sheet links still open",
+     "text": "A counter sheet link from before Oct 10 opens the county's sheet as before, without a separate page for each county."
     }
    ]
   },

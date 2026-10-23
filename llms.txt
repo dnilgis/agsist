@@ -97,7 +97,7 @@ specific page. Each daily briefing has a permanent dated URL.
 
 - [Custom Farm Rates by State](https://agsist.com/custom-rates): what hired combining, planting, spraying, tillage, hauling and baling cost, as each state's university or state survey published it (average, range, unit, survey year, link): Iowa, Kansas, Nebraska, North Dakota, Wisconsin, Indiana, Ohio, Missouri, Oklahoma; one page per state at /custom-rates/<state>
 - [Cash Rent by State](https://agsist.com/rent/): USDA county cash rent for every published state, one page per state at /rent/<state>
-- [Farmland Atlas](https://agsist.com/farmland-atlas): every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>
+- [Farmland Atlas](https://agsist.com/farmland-atlas): every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>, and foreign-held farmland by state, county and holder country from USDA AFIDA filings since 2010
 - [Illinois Farmland Sale Index](https://agsist.com/farmland-index): what Illinois farm ground sold for each quarter since 2018, from the state's PTAX-203 sale declarations: arm's-length bare-land sales of 20+ acres, county mix and tract size held fixed, 2018 = 100, with 90% ranges, the latest quarter marked provisional, USDA NASS cropland value as a separate line, county medians by year, price-to-rent multiples and buyer-type shares; no names
 - [Compare Counties](https://agsist.com/farmland-atlas/compare): up to three counties side by side
 - [Farmland Atlas Data](https://agsist.com/farmland-atlas/data): the county table as a CSV, every column with its unit and source
@@ -110,12 +110,10 @@ specific page. Each daily briefing has a permanent dated URL.
 - [LRP Record and Tests](https://agsist.com/lrp/record): the 95-100% coverage record per $100 of coverage on every RMA sales day since July 2013; 36 walk-forward tests of lower coverage levels and a best-so-far rule under one Holm family, none kept; each test year by year; the method, gaps and subsidy table
 - [Farm Bill](https://agsist.com/farm-bill): what the 2026 farm bill fight changes for a farm, where it stands, and where the money goes
 - [Cash Farm Lease](https://agsist.com/cash-lease): a fillable, printable plain-English cash lease with state termination notes
-- [Foreign-Owned Farmland](https://agsist.com/foreign-land): USDA AFIDA disclosures mapped by county
 
 ## Every morning
 
-- [AGSIST Daily](https://agsist.com/daily): today's morning briefing, and what just moved: dated market events the moment they are measurable (USDA surprises, positioning extremes, 52-week highs and lows)
-- [Briefing Archive](https://agsist.com/archive): every past briefing, by month, at /daily/YYYY-MM-DD
+- [AGSIST Daily](https://agsist.com/daily): today's morning briefing; what just moved: dated market events the moment they are measurable (USDA surprises, positioning extremes, 52-week highs and lows); and every past briefing, by month with a search, each at /daily/YYYY-MM-DD
 - [AGSIST Homepage](https://agsist.com/): today's prices, the briefing, local bids, weather and the farm and trade odds board
 
 ## About this site

@@ -761,7 +761,7 @@ def sc_list_html(d, limit=25):
     if len(recs) > limit:
         more = (f'<p class="sc-note" style="margin-top:.7rem">Showing the latest {limit} of '
                 f'{n_graded} graded calls{pend}. The full record loads on this page with '
-                f'JavaScript, and every briefing is readable in the <a href="/archive">archive</a>.</p>')
+                f'JavaScript, and every briefing is readable under <a href="/daily#past">past briefings</a>.</p>')
     return rows + more
 
 
