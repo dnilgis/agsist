@@ -2655,12 +2655,20 @@ d.addEventListener('toggle',go);if(/(^|[#&])l=ten_rent(&|$)/.test(location.hash)
 </script>
 <script>/* the foreign-held fold (was /foreign-land) loads its own file only when opened */
 (function(){var d=document.getElementById('fa-foreign');if(!d)return;
+var land=null;
 function go(){if(!d.open||d.getAttribute('data-on'))return;d.setAttribute('data-on','1');
-var s=document.createElement('script');s.src='/components/atlas-foreign.js?v=1';s.onload=function(){window.AgForeign.load().then(function(ok){if(!ok)d.removeAttribute('data-on');});};
-s.onerror=function(){d.removeAttribute('data-on');};document.head.appendChild(s);}
+var s=document.createElement('script');s.src='/components/atlas-foreign.js?v=1';s.onload=function(){window.AgForeign.load().then(function(ok){if(!ok)d.removeAttribute('data-on');if(land)land();},function(){if(land)land();});};
+s.onerror=function(){d.removeAttribute('data-on');if(land)land();};document.head.appendChild(s);}
 d.addEventListener('toggle',go);
 function want(){return /(^|[#&])(foreign|fl-[a-z-]+)(&|$)/.test(location.hash);}
-if(want()){d.open=true;setTimeout(function(){var t=document.getElementById('foreign');if(t)t.scrollIntoView();},50);}
+/* A link to #foreign (the old /foreign-land forwards here) lands once the section has its
+   numbers, not before: jumping first and filling after shoved the page under the reader.
+   The id comes off until then so the browser does not jump early on its own, and the
+   jump also waits for the map above to finish filling in. */
+if(want()){var box=document.getElementById('foreign'),moved=false;if(box)box.removeAttribute('id');
+['wheel','touchstart','keydown','pointerdown'].forEach(function(t){window.addEventListener(t,function(){moved=true;},{once:true,passive:true});});
+var t0=Date.now();land=function(){var l=document.getElementById('fa-loading');if(l&&l.offsetHeight&&Date.now()-t0<6000){setTimeout(function(){if(land)land();},150);return;}land=null;if(box)box.id='foreign';d.style.scrollMarginTop='72px';var at=function(){if(moved||!want())return;var y=d.getBoundingClientRect().top;if(Math.abs(y-72)>8)d.scrollIntoView();};at();[400,1200,2500].forEach(function(ms){setTimeout(at,ms);});};
+setTimeout(function(){if(land)land();},6000);d.open=true;go();}
 window.addEventListener('hashchange',function(){if(want()&&!d.open)d.open=true;});
 document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a.fl-layer');if(!a)return;e.preventDefault();
 var h=(location.hash||'').replace(/^#/,'').split('&').filter(function(p){return p&&p.slice(0,2)!=='l=';});h.push('l=afida');location.hash=h.join('&');
