@@ -1,0 +1,104 @@
+name: Monthly land sale email
+
+# New farm sales recorded last month within 10, 25 or 50 miles of a reader's ZIP, one email
+# on the 3rd of each month to the readers who asked beside the recorded sales (subs worker
+# v5.55, topic landsales:<ZIP>:<miles>; scripts/send_land_alert.py, numbers from
+# scripts/land_alert.py). Sig approved the list, the sender and this schedule on Oct 23, 2026.
+# Illinois and Wisconsin only; Indiana is held (see scripts/land_alert.py).
+#
+# THE LIST GETS NOTHING UNTIL SIG TURNS IT ON: the scheduled run sends only when the repo
+# variable LANDSALES_MONTHLY_LIVE is 1, and so does a manual "send" (the script refuses a send
+# without it too). Until then a scheduled run is a dry run: counts and samples in the log.
+# The route is the Daily's SMTP_* and FROM_ADDR secrets (Sig, Oct 23: until Plan A sending is
+# migrated, new list emails go the way the Daily does; BUILD-RULES 12 stays the target).
+#
+#   mode dry      (default) counts the list and renders the samples. Sends nothing.
+#   mode preview  Sig's test inbox only (SIG_TEST_EMAILS, else SIG_TO), one email per sample
+#                 (Chetek 54728 and Charleston, IL 61920, 25 miles, or the sample input), any
+#                 month. BUILD-RULES 13: the copy that goes through the spam and link checkers
+#                 before the list gets anything.
+#   mode send     the list, the month just ended, once per reader, topic and month (the
+#                 worker's mo mark). Needs LANDSALES_MONTHLY_LIVE=1.
+#
+# The 3rd, 15:47 UTC (the schedule Sig approved): after land-data.yml (the 3rd, 09:23 UTC,
+# up to 150 minutes) has fetched and committed the month's transfers. A state whose files
+# were not fetched since the month ended waits; a late land run is caught up by dispatching
+# mode send by hand. A reader already mailed for the month is never mailed again, so a rerun
+# is safe. It runs a day after the 2nd-of-month rain email, never on the same day.
+on:
+  schedule:
+    - cron: "47 15 3 * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'dry = render only; preview = Sig only; send = the list (needs LANDSALES_MONTHLY_LIVE=1)'
+        type: choice
+        options: [dry, preview, send]
+        default: dry
+      month:
+        description: 'YYYY-MM for dry or preview (empty: the month just ended; a send is always that month)'
+        required: false
+        default: ''
+      sample:
+        description: 'Samples for dry or preview, ZIP:miles comma-separated (empty: 54728:25,61920:25)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  email:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    concurrency:
+      group: land-alert-email
+      cancel-in-progress: false
+    steps:
+      # main, not the commit that started the run: the transfers land-data.yml just pushed
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test the sender first
+        run: |
+          python scripts/land_alert.py --selftest
+          python scripts/send_land_alert.py --selftest
+
+      - name: Monthly land sale email (${{ github.event_name == 'schedule' && 'scheduled' || inputs.mode }})
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          SIG_TO: ${{ secrets.SIG_TO }}
+          SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
+          LANDSALES_MONTHLY_LIVE: ${{ vars.LANDSALES_MONTHLY_LIVE }}
+          PREVIEW: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'preview' && '1' || '' }}
+          SEND: ${{ ((github.event_name == 'schedule' && vars.LANDSALES_MONTHLY_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && vars.LANDSALES_MONTHLY_LIVE == '1')) && '1' || '' }}
+          ASKED_SEND: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && '1' || '' }}
+          MONTH: ${{ github.event_name == 'workflow_dispatch' && inputs.mode != 'send' && inputs.month || '' }}
+          SAMPLE: ${{ github.event_name == 'workflow_dispatch' && inputs.sample || '' }}
+        run: |
+          if [ "$ASKED_SEND" = 1 ] && [ "$SEND" != 1 ]; then
+            echo "::error::mode send, but the repo variable LANDSALES_MONTHLY_LIVE is not 1: the list gets nothing. Nothing sent."
+            exit 1
+          fi
+          ARGS=""
+          if [ -n "$MONTH" ]; then ARGS="$ARGS --month $MONTH"; fi
+          if [ -n "$SAMPLE" ]; then ARGS="$ARGS --sample $SAMPLE"; fi
+          # shellcheck disable=SC2086
+          python3 scripts/send_land_alert.py $ARGS

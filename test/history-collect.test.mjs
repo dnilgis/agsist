@@ -123,7 +123,8 @@ test('no workflow gained a schedule: every cron line is already on origin/main',
   assert.ok(n > 50, `found ${n} cron lines; the reader lost them`);
   // A schedule Sig has approved in so many words (STANDING-DECISIONS), exactly as approved and nothing else:
   //   Oct 23 2026: the monthly "my county's rain" email, "new list, sender and schedule approved", on the 2nd.
-  const APPROVED = { 'rain-monthly.yml': ['41 14 2 * *'] };
+  //   Oct 23 2026: the monthly land-sale alert email, "new list, sender and monthly schedule approved", on the 3rd.
+  const APPROVED = { 'rain-monthly.yml': ['41 14 2 * *'], 'land-alert.yml': ['47 15 3 * *'] };
   const left = added.filter((a) => !Object.entries(APPROVED).some(([f, cs]) => cs.some((c) => a === `${f}: cron '${c}' (new workflow)` || a === `${f}: cron '${c}'`)));
   assert.deepEqual(left, [], 'a new schedule is Sig\'s decision: list it in the report, do not add it');
 });
