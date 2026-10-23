@@ -440,7 +440,7 @@ test("changing the animal keeps the typed weight and head (it used to reset to 8
 test("the weight picks RMA's weight class (handbook section 23A(3))", () => {
   // a saved sales day with cattle offers: RMA posts none on some days (Oct 23, 2026), and the
   // weight classes are only defined where offers exist
-  const DAY = JSON.parse(read("test/fixtures/lrp/today-2026-10-22.json"));
+  const DAY = JSON.parse(read("test/fixtures/lrp-offers-2026-10-22.json"));
   const off = DAY.offers;
   const ry = DAY.ry;
   // feeder steers: under 600 lb is weight 1 (809), 600 to 1,000 lb weight 2 (810)
