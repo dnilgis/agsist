@@ -5,6 +5,19 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.54 (2026-10-23): MONTHLY COUNTY RAIN (Sig, Oct 23: new list, sender
+ *   and schedule approved). /notice takes one more topic, rain-month:<county
+ *   FIPS> (5 digits with a real state code, as rainyear), asked on the county
+ *   rain pages: one email on the 2nd of each month with that county's month
+ *   just ended (scripts/send_rain_month.py, .github/workflows/rain-monthly.yml).
+ *   It recurs, so it keeps one more field:
+ *     mo   "YYYY-MM", the newest month mailed, written by POST /notice-mark
+ *          {email, topic, month}. A rain-month topic needs month there (a
+ *          real month, 2000 to next year); mo never moves back.
+ *   /notice-list returns mo on the rows that have it. /notice-unsubscribe with
+ *   &topic=rain-month:<fips> asks "Stop the monthly rain email for this
+ *   county?" and stops that one county. Every other topic and route answers
+ *   exactly as before. No new binding and no new secret.
  * v5.53 (2026-10-22): AGSIST.COM ADDRESSES (Sig, Oct 22). The void gift card
  *   answer says write to sig@agsist.com; no farmers1st.com address is left.
  * v5.52 (2026-10-22): NEW HOME, agsist-api.dnilgis.workers.dev (Sig, Oct 22,
@@ -1343,12 +1356,24 @@ function prfInterval(v) {
 const LIST_TOPICS = ["reports", "cot"];
 const LIST_ASK = { reports: "Stop the WASDE and report-day emails for this address?", cot: "Stop Funds this week for this address?" };
 const LIST_DONE = { reports: "Stopped. No more WASDE or report-day emails.", cot: "Stopped. No more Funds this week emails." };
+// v5.54: "YYYY-MM", the month a rain-month email was for
+function rainMonth(v) {
+  const s = String(v == null ? "" : v).trim();
+  const m = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(s);
+  if (!m || +m[1] < 2000 || +m[1] > new Date().getUTCFullYear() + 1) return null;
+  return s;
+}
+const RAIN_MONTH_ASK = "Stop the monthly rain email for this county?";
+const RAIN_MONTH_DONE = "Stopped. No more monthly rain emails for this county.";
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();
   if (t === "rain-gauge") return t;
   if (LIST_TOPICS.includes(t)) return t;
   const pg = /^prf:(\d+)$/.exec(t);
   if (pg) return prfGridOk(pg[1]) ? t : null;
+  // v5.54: rain-month:<county FIPS>, the monthly county rain email
+  const rm = /^rain-month:(\d{5})$/.exec(t);
+  if (rm) return RAIN_ST_FIPS.has(+rm[1].slice(0, 2)) && rm[1].slice(2) !== "000" ? t : null;
   let ry = /^rainyear:(\d{4}):(\d{5})$/.exec(t);
   if (ry) {
     if (!RAIN_ST_FIPS.has(+ry[2].slice(0, 2)) || ry[2].slice(2) === "000") return null;
@@ -3097,7 +3122,7 @@ async function handle(req, env) {
       if (!valid || one === null) return stopInvalid();
       if (req.method === "GET") {
         const action = act(e, t, "", one ? "&topic=" + encodeURIComponent(one) : "");
-        return htmlPage(one ? (LIST_ASK[one] || "Stop this notice for this address?") : "Stop every AGSIST notice for this address?",
+        return htmlPage(one ? (LIST_ASK[one] || (one.startsWith("rain-month:") ? RAIN_MONTH_ASK : "Stop this notice for this address?")) : "Stop every AGSIST notice for this address?",
           "<p>" + escHtml(e) + "</p>" +
           "<form method=\"POST\" action=\"" + action + "\">" +
           "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">Yes, stop it</button></form>" +
@@ -3117,6 +3142,7 @@ async function handle(req, env) {
         }
         for (const l of gone) await countUnsub(env, l, req);
         if (one && LIST_DONE[one]) return htmlPage(LIST_DONE[one]);
+        if (one && one.startsWith("rain-month:")) return htmlPage(RAIN_MONTH_DONE);
         return htmlPage(one ? "Stopped. No email about this one." : "Stopped. No more AGSIST notices.");
       }
     }
@@ -3405,6 +3431,7 @@ async function handle(req, env) {
           if (v && v.note) row.note = v.note;
           if (v && v.after) row.after = v.after;   // v5.29: prf only
           if (v && v.iv) row.iv = v.iv;
+          if (v && v.mo) row.mo = v.mo;            // v5.54: rain-month only
           out.push(row);
         }
       }
@@ -3422,11 +3449,18 @@ async function handle(req, env) {
       // v5.29: a prf topic recurs; the mark carries the interval it was for
       const iv = topic.startsWith("prf:") ? prfInterval(b.interval) : null;
       if (topic.startsWith("prf:") && !iv) return json({ ok: false, error: "bad args" }, 400);
+      // v5.54: a rain-month topic recurs; the mark carries the month it was for
+      const mo = topic.startsWith("rain-month:") ? rainMonth(b.month) : null;
+      if (topic.startsWith("rain-month:") && !mo) return json({ ok: false, error: "bad args" }, 400);
       if (!r || !r.t || !(topic in r.t)) return json({ ok: true, skipped: true });   // stopped while the job ran
       if (iv) {
         const cur = r.t[topic];
         if (!cur.iv || iv > cur.iv) cur.iv = iv;
         if (b.quiet !== true) cur.sent = Date.now();
+      } else if (mo) {
+        const cur = r.t[topic];
+        if (!cur.mo || mo > cur.mo) cur.mo = mo;
+        cur.sent = Date.now();
       } else r.t[topic].sent = Date.now();
       await env.SUBS.put("note:" + email, JSON.stringify(r));
       return json({ ok: true });

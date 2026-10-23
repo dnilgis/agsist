@@ -1,0 +1,10 @@
+{
+  "schema": "agsist-rain-month-ask/1",
+  "about": "The monthly county rain email ask on the county rain pages (scripts/rain_month.py ask_html reads this; scripts/send_rain_month.py sends it). {county} is the county's name as the page prints it. live false: no page shows the ask yet.",
+  "live": false,
+  "topic": "rain-month:{fips}",
+  "ask": "Email me {county}’s rain at the start of each month.",
+  "btn": "Email me",
+  "ok": "Done. It comes on the 2nd of each month, with the month just ended.",
+  "note": "One short email a month: the month and the year so far against usual, at this page’s station. Stop any time."
+}
