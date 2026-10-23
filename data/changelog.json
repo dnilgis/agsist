@@ -1,7 +1,18 @@
 {
- "updated": "2026-10-22",
+ "updated": "2026-10-23",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-23",
+   "items": [
+    {
+     "tag": "new",
+     "page": "/field-scout",
+     "name": "A monthly email with new farm sales near you",
+     "text": "Give a ZIP and pick 10, 25 or 50 miles, and once a month you get the farm sales recorded within it the month before: the date, acres, price per acre and township, Illinois and Wisconsin for now. Never who bought or sold. Ask on Field Scout, the comp report, Fast Facts or a Farmland Atlas county page."
+    }
+   ]
+  },
   {
    "date": "2026-10-22",
    "items": [
