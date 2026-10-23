@@ -187,6 +187,7 @@
 
 
 </style>
+<script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
 </head>
 <body>
 <style>.ic-sp{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;display:inline-block}</style><svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-banknote" viewBox="0 0 24 24"><rect width="20" height="12" x="2" y="6" rx="2" />
@@ -321,6 +322,11 @@
           <p id="be-sub" hidden class="be-sub"></p>
           <div class="result-row"><span class="result-label" id="futLabel">Futures needed at your basis</span><span class="result-value" id="futNeeded"><!--BAKE:be-cpb-->$4.58/bu<!--/BAKE--></span></div>
           <p id="fut-sub" hidden class="be-sub"></p>
+          <!-- 2026-10-23 (Sig): the page's one signup ask, under the answer. The futures price this page worked out, as a price watch (components/signup-ask.js priceAsk; the homepage alert's route); on a contract the watch cannot follow, the Daily ask stands in. Never both. -->
+          <div class="be-ask" id="be-ask">
+            <div id="be-price-ask" data-price-ask data-stack hidden></div>
+            <div id="be-daily-ask" data-stack data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:breakeven"></div>
+          </div>
           <p id="split-note" hidden style="font-size:0.8rem;color:var(--text-dim);line-height:1.55;margin:.35rem 0 .2rem;border-left:2px solid var(--gold);padding-left:.6rem"></p>
           <div class="result-row"><span class="result-label">Gross Revenue/Acre</span><span class="result-value" id="revenue">- &middot; enter a price</span></div>
           <div class="result-row"><span class="result-label">Net Profit/Loss</span><span class="result-value" id="profit">- &middot; enter a price</span></div>
@@ -350,7 +356,6 @@
       </div>
     </div>
   <aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="breakeven"></aside>
-    <div data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:breakeven"></div>
   <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
 
@@ -437,7 +442,7 @@
     cl:{name:'central Illinois, low-productivity',corn:{yield:233,seed:134,chemicals:121,insurance:37,machinery:179,labor:27,overhead:115,land:279},soybeans:{yield:71,seed:78,chemicals:73,insurance:12,machinery:161,labor:27,overhead:90,land:279}},
     s:{name:'southern Illinois',corn:{yield:197,seed:132,chemicals:110,insurance:37,machinery:195,labor:27,overhead:111,land:186},soybeans:{yield:60,seed:80,chemicals:72,insurance:15,machinery:178,labor:25,overhead:85,land:186}}}};
   </script>
-  <script src="/components/breakeven.js?v=5" defer></script>
+  <script src="/components/breakeven.js?v=6" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 <script src="/components/rate-hint.js?v=1" defer></script>
 </body>

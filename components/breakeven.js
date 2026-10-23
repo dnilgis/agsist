@@ -200,6 +200,23 @@
     var s = SRC.fertilizer; if (!s || s.k !== 'fert') return;
     var f = fertFor(crop(), num('yield')); if (f) $('fertilizer').value = f.usd;
   }
+  /* The page's one signup ask (Sig, 2026-10-23), under the answer: "email me when the futures
+     price I need shows up". It watches the same figure the "Futures needed" row shows, on the
+     contract on screen, and only a contract the price watch sender follows (December corn,
+     November soybeans, wheat). On any other (the next crop's contract) the Daily ask stands in:
+     one of the two shows, never both. components/signup-ask.js may load after this file. */
+  var WATCH_SYM = { corn: 'corn-dec', soybeans: 'beans-nov', wheat: 'wheat' }, _askTries = 0;
+  function syncAsk(usd) {
+    var S = W.AgsistSignup, pe = $('be-price-ask'), de = $('be-daily-ask');
+    if (!pe || !de) return;
+    if (!S || !S.priceAsk) { if (_askTries++ < 40) setTimeout(function () { syncAsk(usd); }, 250); return; }
+    var c = crop(), ck = contractFor(c), on = WATCH_SYM[c] === ck && usd > 0
+      && S.priceAsk(pe, { symbol: ck, usd: usd, source: 'page:breakeven' });
+    if (pe.getAttribute('data-sa-done')) on = true;
+    if (!on) pe.hidden = true;
+    /* the Daily ask draws itself (data-signup-ask); a Daily reader's page hides it */
+    de.style.display = on ? 'none' : '';
+  }
   function calcBreakeven() {
     syncFert();
     var yldVal = num('yield') || 0, price = num('price') || 0, costs = {};
@@ -253,6 +270,7 @@
     var flEl = $('futLabel'); if (flEl) flEl.textContent = 'Futures needed at your ' + (basis && !bBad ? (basis > 0 ? '+' : '\u2212') + Math.abs(basis).toFixed(2) + ' basis' : 'basis');
     var fsEl = $('fut-sub'); if (fsEl) { var as = beOK && basisAssumed(); fsEl.hidden = !as; fsEl.textContent = as ? 'Basis 0 assumed; enter yours.' : ''; }
     var fnEl = $('futNeeded'); if (fnEl) fnEl.textContent = !beOK ? BEWHY : bBad ? DASH + ' \xb7 ' + BWHY : '$' + (beBu - basis).toFixed(2) + '/bu';
+    syncAsk(beOK && !bBad ? beBu - basis : 0);
     var snEl = $('split-note');
     if (snEl) {
       if (splitLive && ok && (rOK || oOK)) {

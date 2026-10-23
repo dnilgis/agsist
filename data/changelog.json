@@ -16,6 +16,12 @@
      "page": "/farmland-atlas",
      "name": "County pages open with what farmland sold for, and link to nearby town bids",
      "text": "Where we have recorded sales, a county page now leads with how many farms sold in the last 12 months and the median price per acre, with the dates. County pages and county rain pages link to the closest towns with cash bids. A rain page no longer gives two different dates in its first lines."
+    },
+    {
+     "tag": "improved",
+     "page": "/rent/",
+     "name": "One email ask that fits the page",
+     "text": "State rent pages ask for an email when USDA updates that state's cash rents, right under the median. The break-even, grain bin and yield pages ask once, under the answer, and the break-even page can email you when December corn, November soybeans or wheat futures reach the price it works out. The sign-up bar at the bottom no longer shows on these pages, the futures pages or ARC/PLC."
     }
    ]
   },

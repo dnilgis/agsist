@@ -120,7 +120,7 @@ test("signup-ask.js shows the queued line in place of its own text, cache versio
   const sa = read("components/signup-ask.js");
   assert.ok(sa.includes("esc(queued(res) || OK"), "the ask shows the queued line");
   assert.ok(sa.includes("res.data.queued === true"));
-  assert.ok(LOADER.includes("s.src = '/components/signup-ask.js?v=17';"));
+  assert.ok(LOADER.includes("s.src = '/components/signup-ask.js?v=18';"));
   assert.ok(/var CACHE_VERSION = (\d+);/.exec(read("sw.js"))[1] >= 220);
   assert.ok(!/—/.test(wrapper()), "no em dash");
 });
