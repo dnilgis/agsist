@@ -5,8 +5,9 @@
  *   - a link with a place opens on the tool: the Layers card is in the first screen at 390 and 1280, the headline below;
  *   - the print stays pinned in view while the options are worked, and a switch reached by a jump or Tab is never under it;
  *   - one tap per layer redraws the print, the count follows, the line under the print says what changed and where;
- *   - a layer that can't change the print is greyed with its one-line reason (Month normals without a usual year;
- *     Plants without a crop); hottest and coldest is "included" while the daily stripes are on;
+ *   - a layer that can't change the print is greyed with its one-line reason (Month normals without a usual year);
+ *     hottest and coldest is "included" while the daily stripes are on;
+ *   - seven layers since the crop ones came off (Sig, Oct 23): no crop, plant or usual-year plant control anywhere;
  *   - All off leaves just the year;
  *   - Watch it draw swaps the print's buttons for Replay, Wind (video only), Make a video, Done, under the print;
  *   - a new visit keeps the headline first, with frost and hottest and coldest on (Sig's defaults);
@@ -44,11 +45,15 @@ const text = (page, id) => page.$eval("#" + id, (el) => (el.hidden ? "" : el.tex
 const art = (page) => page.$eval("#rp-art", (el) => el.innerHTML);
 const rect = (page, sel) => page.$eval(sel, (el) => { const r = (el.closest("label") || el).getBoundingClientRect(); return { top: Math.round(r.top), bottom: Math.round(r.bottom) }; });
 
-test("the page: one Layers card, ten layers, the usual year one switch of three, long help in Questions", () => {
+test("the page: one Layers card, seven layers, no crop controls, the usual year one switch of three, long help in Questions", () => {
   const card = HTML.slice(HTML.indexOf('id="rp-layers"'), HTML.indexOf('id="rp-design"'));
-  for (const id of ["rp-normals", "rp-records", "rp-frost", "rp-heat", "rp-ribbon", "rp-plants", "rp-ghost", "rp-hist"]) assert.ok(card.includes('id="' + id + '"'), id + " is a chip in the card");
+  for (const id of ["rp-normals", "rp-records", "rp-frost", "rp-heat", "rp-ribbon", "rp-hist"]) assert.ok(card.includes('id="' + id + '"'), id + " is a chip in the card");
   assert.equal((card.match(/name="rp-cmp"/g) || []).length, 3, "Off, 30-yr normal, This station");
-  assert.equal((card.match(/data-crop="/g) || []).length, 2, "Corn and Soybeans");
+  // no crop layers (Sig, Oct 23: "I don't want to offer the plant outlines or any of that as an image on the prints")
+  assert.ok(!/data-crop=|id="rp-(crop|plants|ghost|cropdays|crop-set|crop-say|crop-[a-z]+)"|Usual-year plants/.test(HTML), "no crop control on the page");
+  assert.ok(!/>Corn<|>Soybeans<|>Plants<|>Crop</.test(card), "no crop chip in the Layers card");
+  assert.ok(!/How are the crop stages placed|little plants|Usual-year plants|corn or soybean stages/.test(HTML), "no crop words in Questions or the structured data");
+  assert.match(card, /id="rp-lcount">7 in all</);
   assert.ok(!/<select id="rp-cmp"/.test(HTML), "no second control for the comparison");
   const body = HTML.slice(HTML.indexOf("<body"));
   assert.ok(!/class="rp-opts-note|Frost is a low of 32&deg;F or colder: the last one in spring/.test(body), "the long help left the option list");
@@ -91,7 +96,7 @@ test("one tap per layer: the print, the count and the line under it follow; grey
   for (const width of [390, 1280]) await withPage(async (page, base, errors) => {
     await page.goto(base + LINK);
     await drawn(page);
-    assert.equal(await text(page, "rp-lcount"), "10 in all, 0 on");
+    assert.equal(await text(page, "rp-lcount"), "7 in all, 0 on");
     // Month normals goes with a usual year: greyed, with its reason, and a tap says why under the print
     assert.equal(await page.$eval("#rp-normals", (e) => e.disabled), true);
     assert.match(await text(page, "rp-marks-why"), /^Month normals: needs a usual year\./);
@@ -107,7 +112,7 @@ test("one tap per layer: the print, the count and the line under it follow; grey
     await page.click("label:has(#rp-frost)");
     await page.waitForFunction(() => /data-rp="frost:0"/.test(document.getElementById("rp-art").innerHTML), null, { timeout: 20000 });
     assert.equal(await text(page, "rp-say"), "Frost dates on: two ticks on the date line, spring and fall.");
-    assert.equal(await text(page, "rp-lcount"), "10 in all, 3 on");
+    assert.equal(await text(page, "rp-lcount"), "7 in all, 3 on");
     // hottest and coldest: on its own, then included with the daily stripes
     await page.click("label:has(#rp-heat)");
     await page.waitForTimeout(300);
@@ -118,14 +123,13 @@ test("one tap per layer: the print, the count and the line under it follow; grey
     assert.equal(await page.$eval("#rp-heat", (e) => e.disabled), true);
     await page.click("label:has(#rp-heat)", { force: true });
     assert.equal(await text(page, "rp-say"), "Hottest, coldest: included, named on the daily temperature stripes.");
-    assert.equal(await text(page, "rp-lcount"), "10 in all, 5 on");
-    // Plants without a crop: greyed with its reason; a crop brings them back
-    assert.equal(await page.$eval("#rp-plants", (e) => e.disabled), true);
-    assert.equal(await text(page, "rp-crop-say"), "Plants: pick corn or soybeans first.");
+    assert.equal(await text(page, "rp-lcount"), "7 in all, 5 on");
+    // no crop controls on the maker (Sig, Oct 23)
+    assert.equal(await page.$$eval("#rp-crop, #rp-plants, #rp-ghost, [data-crop], #rp-crop-set", (a) => a.length), 0, "no crop controls");
     // All off: just the year
     await page.click("#rp-alloff");
     await page.waitForTimeout(500);
-    assert.equal(await text(page, "rp-lcount"), "10 in all, 0 on");
+    assert.equal(await text(page, "rp-lcount"), "7 in all, 0 on");
     assert.equal(await text(page, "rp-say"), "All layers off: just your year.");
     const a = await art(page);
     assert.ok(!/data-rp="(frost:0|ribbon|crop)"/.test(a) && !/Hottest day/.test(a), "nothing but the year");
