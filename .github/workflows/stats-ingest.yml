@@ -1,0 +1,74 @@
+name: Stats ingest (GA4 + Search Console + Bing, private)
+
+# Daily raw numbers for later joining on date + page (Sig, Oct 23 2026: "all
+# available tracking reporting, full ingestion and correlation"). Pulls GA4
+# pages, sources, landing pages with query strings (the ?from= pitch links),
+# events, devices and geo; Search Console query x page and device x country;
+# and the Bing Webmaster snapshot. Writes private/stats/ and saves it to the
+# private repo's private-data branch with scripts/push_raw.sh. Nothing is
+# committed here and the log prints counts only, because this repo and its
+# Actions logs are public. Same secrets as site-usage.yml and bing-reports.yml.
+#
+# Daily 12:47 UTC, off the hour, refreshing the last 4 days (GA4 and Search
+# Console fill in late). Run by hand with days up to 500 to backfill.
+
+on:
+  schedule:
+    - cron: '47 12 * * *'
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Days to pull (1 to 500; 480 backfills about 16 months)"
+        type: string
+        default: "4"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: stats-ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install google-auth (pinned)
+        run: pip install --disable-pip-version-check 'google-auth==2.40.3' 'requests==2.32.3'
+
+      - name: Selftest (offline, fake transports)
+        run: python3 scripts/stats_ingest.py --selftest
+
+      - name: Pull
+        env:
+          DAYS: ${{ inputs.days || '4' }}
+          GA4_PROPERTY_ID:          ${{ secrets.GA4_PROPERTY_ID }}
+          GA4_SERVICE_ACCOUNT:      ${{ secrets.GA4_SERVICE_ACCOUNT }}
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          GSC_SITE:                 ${{ vars.GSC_SITE }}
+          BING_API_KEY1:            ${{ secrets.BING_API_KEY1 }}
+          BING_API_KEY:             ${{ secrets.BING_API_KEY }}
+        run: |
+          case "$DAYS" in ''|*[!0-9]*) echo "::error::days is a number"; exit 1;; esac
+          python3 scripts/stats_ingest.py --days "$DAYS"
+
+      - name: Save (private repo, private-data branch)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: bash scripts/push_raw.sh "stats ingest" private/stats
