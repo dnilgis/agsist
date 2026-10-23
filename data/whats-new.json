@@ -9,6 +9,13 @@
    "link": "/usda-calendar#priced-in"
   },
   {
+   "id": "2026-10-23-county-rain-week",
+   "date": "2026-10-23",
+   "title": "County rain: the last week and month",
+   "line": "Each county rain page now gives the rain its station caught over the last 7 and 30 days it reported, with the dates, next to the year so far.",
+   "link": "/rain"
+  },
+  {
    "id": "2026-10-21-fast-facts",
    "date": "2026-10-21",
    "title": "Fast Facts for your place",
@@ -69,7 +76,7 @@
    "date": "2026-10-18",
    "title": "Bids by state",
    "line": "Every state with cash bids on one page, with the towns and elevators in each.",
-   "link": "/basis#states"
+   "link": "/cash-bids/states"
   },
   {
    "id": "2026-10-18-elevators",

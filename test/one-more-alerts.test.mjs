@@ -51,9 +51,9 @@ test("every extra the panel offers has a sender; versions bumped where they load
   // reports: send_report_day.py mails Daily readers whose reports flag is on
   assert.ok(read("scripts/send_report_day.py").includes("reports !== false"));
   assert.ok(!DASH.test(block) && !/type="checkbox"[^>]*checked/.test(block));
-  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=15';"));
-  assert.ok(read("components/loader.js").includes("var CV = '86';"));   // 86: fx/merges (the merged pages in the menu), past 85; 85: fx/advertise (Advertise in the menu and footer bottom row), past main 83 (84 fx/rpdefaults)
-  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=15"></script>'));
+  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=16';"));
+  assert.ok(read("components/loader.js").includes("var CV = '96';"));   // 96: fx/merges (the merged pages in the menu), past 92 on main and 93 to 95 in open PRs; 92: fx/rainmonthly (signup-ask.js?v=16); was 85: fx/advertise (Advertise in the menu and footer bottom row)
+  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=16"></script>'));
   assert.ok(read("cash-bids.html").includes("/components/cb-alerts.js?v=5") && read("components/cb-myelev.js").includes("/components/cb-alerts.js?v=5"));
   assert.ok(read("hail-map.html").includes("S.oneMore(box,{gave:'hail'"));
 });
