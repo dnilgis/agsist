@@ -709,6 +709,14 @@ def rent_ask(st, name, yr):
             f'data-ok="Done. One email when USDA puts out the {yr + 1} {name} county rents, usually in August."></div>')
 
 
+# The one cross-promo on a state rent page (Sig, Oct 23 2026): a Rain Print gift line for
+# landlords and tenants, after the content. components/rain-print-promo.js fills it only
+# while data/rain-print.json's promote window runs (through the framed Christmas order-by
+# date, Dec 9 in 2026); otherwise it stays hidden and takes no space.
+RP_LAND = '<p class="rp-promo" data-rain-print-promo="land" hidden></p>'
+RP_PROMO_JS = '<script src="/components/rain-print-promo.js?v=5" defer></script>'
+
+
 GROUND_MIN = 3   # counties with both a current dryland rent and a trend before the panel shows
 
 GROUND_JS = """<script>
@@ -1017,6 +1025,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   what the acre can actually gross, year by year) &middot; put a number in a <a href="/cash-lease?st={st}">printable {name} cash lease</a>{notice_note(st)} &middot;
   check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price{prf_rel}.</div>
   {faq_html(faq)}
+  {RP_LAND}
   <h2>Other states</h2>
   {state_cloud(all_states, exclude=st)}
   <p class="sub" style="font-size:.75rem;margin:18px 0">Source: USDA NASS Quick Stats, Cash Rents Survey county
@@ -1026,6 +1035,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
 {explore_nav()}
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19"></script>
+{RP_PROMO_JS}
 {SORT_JS}{ground_js}
 </body>
 </html>
@@ -1384,6 +1394,11 @@ def selftest():
             pg = open(os.path.join(td, f"{slug(STATE_NAMES[st_])}.html")).read()
             assert pg.count('class="rs-atlas"') == 1, f"{st_}: Atlas line missing"
             assert pg.count(f'data-topic="rent:{st_.lower()}"') == 1, f"{st_}: rent release ask missing"
+            # the rent ask sits right under the county table; one cross-promo, the land line, after the FAQ
+            assert pg.index('data-topic="rent:') - pg.rindex('</table>', 0, pg.index('data-topic="rent:')) < 900, f"{st_}: rent ask not under the table"
+            assert pg.count('data-rain-print-promo') == 1 and pg.count(RP_LAND) == 1, f"{st_}: one land line"
+            assert pg.index(RP_LAND) > pg.rindex('class="rs-faq"'), f"{st_}: land line after the FAQ"
+            assert pg.count(RP_PROMO_JS) == 1, f"{st_}: promo script"
             for h_ in _re.findall(r'href="/farmland-atlas/([^"#]+)"', pg):
                 assert os.path.exists(os.path.join("farmland-atlas", h_ + "index.html" if h_.endswith("/") else h_ + ".html")), f"{st_}: {h_} has no page"
         hub = open(os.path.join(td, "index.html")).read()
