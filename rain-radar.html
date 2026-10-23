@@ -230,7 +230,7 @@ if(note)note.textContent='Opening the replay\u2026';
 p=p||ld('/components/storm-replay-core.js?v=2').then(function(){return window.AgRadarRain?0:ld('/components/radar-rain.js?v=1');}).then(function(){return ld('/components/storm-replay.js?v=2');});
 p.then(function(){if(note)note.textContent='';window.AgStormReplay.open(o||{});},function(){p=null;if(note)note.textContent='The replay did not load. Check your signal and try again.';});};
 if(/[?&]sr=1(&|$)/.test(location.search))window.addEventListener('load',function(){window.agsistStormReplay({});});})();</script>
-<script src="/components/radar-rain-page.js?v=5" defer></script>
+<script src="/components/radar-rain-page.js?v=6" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

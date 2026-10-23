@@ -2098,7 +2098,7 @@ def county_page(W, f, d, stamp):
             S5 += fact("Corn growing degree days, May to September", fmt(gd["median"], 0),
                        "middle of %s–%s%s" % (Fr["from"], Fr["to"], ("; %d–%d averaged %s" % (gd["recent"]["from"], gd["recent"]["to"], fmt(gd["recent"]["mean"], 0))) if get(gd, "recent", "mean") is not None else ""))
     # The county's own rain page when it is live, else the state rain page (scripts/cross_links.py,
-    # Oct 19, 2026). Rain county pages come and go week to week: this build never reads data/rain,
+    # Oct 19, 2026). Rain county pages come and go day to day: this build never reads data/rain,
     # only whether the page is there, and county-rain.yml re-stamps the link when the rain set moves.
     if st in RAIN_STATES:
         S5 += '<p class="note">%s</p>' % XL.rain_link(W.root, rain_slug(RAIN_STATES[st]), esc(RAIN_STATES[st]),

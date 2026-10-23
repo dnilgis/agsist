@@ -36,6 +36,18 @@ set's builder writes the URL into every page; this script draws the image.
   prf/*       -> img/og/prf.jpg       (scripts/build_prf_card.py)
   daily/*     -> data/social/card-<date>.jpg (scripts/build_social_card.py)
 lrp/record.html gets its own card, img/og/lrp-record.jpg (SUB_PAGES); --only lrp draws both.
+
+COUNTY RAIN CARDS ONCE A WEEK (Sig, Oct 23 2026). The /rain pages rebuild every day, but
+rain.jpg and rain-<st>.jpg are redrawn only on Mondays (America/Chicago), and only by
+county-rain.yml (--only rain), which rebuilds the pages right after. Any other day the
+files are left byte for byte as they are, so git sees no change and every page's
+og:image ?v= hash stays put. Each card prints its own "Jan 1 to <day>", so a card from
+Monday stays true all week. The alt text that describes each card is saved with it in
+img/og/rain-cards.json ({card: {v: hash, alt}}); scripts/build_county_rain.py prints
+that alt only while the hash still matches the file, so a page never describes a newer
+map than the one it shows. A card that is missing, or whose file no longer matches its
+saved hash, is drawn on any day. A full run (share-images.yml) never draws the rain
+cards: it does not rebuild the /rain pages. --rain-now draws them today (by hand).
 img/og/agsist.jpg is the plain fallback card.
 
 Never fails a data workflow: a page whose data cannot be read gets its title
@@ -52,7 +64,7 @@ import json
 import os
 import re
 import sys
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import share_cards as SC  # noqa: E402
@@ -945,7 +957,50 @@ def write_if_changed(path, data):
     return True
 
 
-def build(only=None, strict=False):
+RAIN_WEEKDAY = 0                         # Monday
+RAIN_SIDECAR = "img/og/rain-cards.json"  # the alt text drawn with each county rain card
+
+
+def rain_card_names():
+    return {"rain"} | {n for n in SETS if n.startswith("rain-") and len(n) == 7}
+
+
+def central_today(now=None):
+    from zoneinfo import ZoneInfo
+    return (now or datetime.now(timezone.utc)).astimezone(ZoneInfo("America/Chicago")).date()
+
+
+def load_rain_sidecar(root=ROOT):
+    try:
+        with open(os.path.join(root, RAIN_SIDECAR), encoding="utf-8") as f:
+            j = json.load(f)
+        return j if isinstance(j, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def sha8(data):
+    return hashlib.sha1(data).hexdigest()[:8]
+
+
+def rain_cards_to_draw(names, today, root=ROOT):
+    """The county rain cards to draw today: all of them on a Monday; any other day only a
+    card that is missing or whose file no longer matches the hash saved with its alt."""
+    if today.weekday() == RAIN_WEEKDAY:
+        return set(names)
+    side, out = load_rain_sidecar(root), set()
+    for n in names:
+        p = os.path.join(root, "img", "og", n + ".jpg")
+        if not os.path.exists(p) or not isinstance(side.get(n), dict):
+            out.add(n)
+            continue
+        with open(p, "rb") as f:
+            if sha8(f.read()) != side[n].get("v"):
+                out.add(n)
+    return out
+
+
+def build(only=None, strict=False, today=None, rain_now=False):
     changed, failed = [], []
     pages = [p for p in indexable_roots() if p not in KEEP and p not in OWNED]
     for p in KEEP:
@@ -959,6 +1014,17 @@ def build(only=None, strict=False):
         if "rain" in only:      # the county rain workflow: the national card and every state's
             only |= {n for n in SETS if n.startswith("rain-") and len(n) == 7}
         names &= only
+    rain = names & rain_card_names()
+    if rain and not (only and "rain" in only):
+        names -= rain        # a full run never draws the rain cards (see COUNTY RAIN CARDS)
+    elif rain and not rain_now:
+        day = today or central_today()
+        draw = rain_cards_to_draw(rain, day)
+        if rain - draw:
+            print(f"[share] county rain cards: {len(rain - draw)} kept as drawn (redrawn on Mondays; {day.isoformat()} is a "
+                  f"{day.strftime('%A')}){', drawing ' + ', '.join(sorted(draw)) if draw else ''}")
+        names -= rain - draw
+    side = load_rain_sidecar() if names & rain_card_names() else None
     # pages that borrow a card go last, so they point at the card just drawn
     for name in sorted(names, key=lambda n: (n in KEEP, n)):
         if name in KEEP:
@@ -981,12 +1047,18 @@ def build(only=None, strict=False):
         img_rel = f"img/og/{name}.jpg"
         if write_if_changed(os.path.join(ROOT, img_rel), data):
             changed.append(img_rel)
+        if side is not None and name in rain_card_names():
+            side[name] = {"v": sha8(data), "alt": clean_alt(spec["alt"])}
         if name in SUB_PAGES:
             _write_page(SUB_PAGES[name], img_rel, data, clean_alt(spec["alt"]), changed)
             continue
         if name in SETS or name in IMAGE_ONLY:
             continue
         _write_page(name, img_rel, data, clean_alt(spec["alt"]), changed)
+    if side is not None:
+        body = json.dumps(dict(sorted(side.items())), indent=1, ensure_ascii=False) + "\n"
+        if write_if_changed(os.path.join(ROOT, RAIN_SIDECAR), body.encode("utf-8")):
+            changed.append(RAIN_SIDECAR)
     borrow(changed)
     print(f"[share] {len(names)} cards, {len(changed)} files changed" + (f", {len(failed)} fell back: {failed}" if failed else ""))
     return changed, failed
@@ -1129,6 +1201,27 @@ def selftest():
     assert text("224&ndash;200 &middot; Apr") == "224-200 · Apr"
     assert not is_indexable('<meta name="robots" content="noindex,follow">')
     assert is_indexable('<meta name="robots" content="index, follow">')
+    # county rain cards: Mondays only (Sig, Oct 23 2026)
+    import shutil
+    import tempfile
+    t = tempfile.mkdtemp()
+    try:
+        os.makedirs(os.path.join(t, "img", "og"))
+        for n, b in (("rain", b"us"), ("rain-wi", b"wi"), ("rain-ia", b"ia")):
+            open(os.path.join(t, "img", "og", n + ".jpg"), "wb").write(b)
+        json.dump({"rain": {"v": sha8(b"us"), "alt": "a"}, "rain-wi": {"v": sha8(b"wi"), "alt": "b"},
+                   "rain-ia": {"v": sha8(b"old"), "alt": "c"}}, open(os.path.join(t, RAIN_SIDECAR), "w"))
+        ns = {"rain", "rain-wi", "rain-ia", "rain-ks"}
+        mon, tue, sun = date(2026, 10, 26), date(2026, 10, 27), date(2026, 11, 1)
+        assert rain_cards_to_draw(ns, mon, t) == ns, "Monday: every rain card"
+        assert rain_cards_to_draw(ns, tue, t) == {"rain-ia", "rain-ks"}, rain_cards_to_draw(ns, tue, t)   # a changed file, a missing one
+        assert rain_cards_to_draw({"rain", "rain-wi"}, sun, t) == set(), "Sunday: the drawn cards stay"
+        os.remove(os.path.join(t, RAIN_SIDECAR))
+        assert rain_cards_to_draw({"rain"}, tue, t) == {"rain"}, "no saved alt: drawn, so the alt is saved"
+    finally:
+        shutil.rmtree(t)
+    assert central_today(datetime(2026, 10, 27, 4, 30, tzinfo=timezone.utc)) == date(2026, 10, 26), "the day is Central's"
+    assert rain_card_names() >= {"rain", "rain-wi", "rain-ia"} and not any(n.startswith("rain-print") for n in rain_card_names())
     print("[share] selftest ok")
 
 
@@ -1141,7 +1234,8 @@ def main(argv):
     only = None
     if "--only" in argv:
         only = [x.strip() for x in argv[argv.index("--only") + 1].split(",") if x.strip()]
-    build(only, strict="--strict" in argv)
+    today = date.fromisoformat(argv[argv.index("--today") + 1]) if "--today" in argv else None   # tests: the rain card day
+    build(only, strict="--strict" in argv, today=today, rain_now="--rain-now" in argv)
     return 0
 
 

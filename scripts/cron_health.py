@@ -115,7 +115,9 @@ CHECKS = [
     ("prf.yml", ["23 10 * * 3"], 240, False, "weekly PRF data refresh, Wednesdays; a full run after the August ADM takes about two hours"),
     ("prf-outlook.yml", ["47 15 * * 4", "17 11 * * 5"], 240, False, "PRF long-range outlook (CPC, ENSO, Drought Monitor), Thursdays and Fridays"),
     ("climate-indices.yml", ["37 14 9 * *"], 240, False, "NOAA PDO and AMO for the PRF optimizer test, monthly on the 9th"),
-    ("county-rain.yml", ["23 13 * * 1"], 240, False, "rain so far this year by county (RCC-ACIS) and the /rain pages, Mondays"),
+    # Daily since Oct 23, 2026 (was Mondays): a missed day is late by the next morning, not a week later.
+    ("county-rain.yml", ["23 13 * * *", "41 14 2 1 *"], 240, False,
+     "rain so far this year by county (RCC-ACIS) and the /rain pages, every day, plus the Jan 2 finished-year run"),
     ("rain-monthly.yml", ["41 14 2 * *"], 240, False,
      "the monthly county rain email (fetch, pages, then the list once RAIN_MONTHLY_LIVE is 1), the 2nd of each month"),
     # The watchers themselves (2026-10-20). GitHub's own cron runs the site check hours
@@ -608,6 +610,27 @@ def selftest():
             except Exception:
                 ok = False
         check(ok, "%s: gate clock read from the workflow (%s)" % (wf, "; ".join(cr) or "none"))
+
+    # a watched clock that is written here must be the workflow's own (Oct 23, 2026: county-rain.yml
+    # went daily; a row left on its old Monday clock would call six days of missed runs "ok")
+    for wf, crons, *_ in CHECKS:
+        if crons is None:
+            continue
+        try:
+            text = open(os.path.join(WF_DIR, wf), encoding="utf-8").read()
+        except OSError:
+            continue
+        own = re.findall(r"""^\s*-\s*cron:\s*["']([^"']+)["']""", text, re.M)
+        if own and wf in ("county-rain.yml", "prf.yml", "daily-site-check.yml"):
+            check(sorted(own) == sorted(crons), "%s: the clock watched here is the workflow's own (%s vs %s)" % (wf, crons, own))
+    rain = next(c for c in CHECKS if c[0] == "county-rain.yml")
+    check(max_spacing_minutes(rain[1]) == 1440, "county rain: the longest gap its clock allows is one day")
+    s, tick, _, _ = judge(rain[1], rain[2], T("2026-10-24 18:00"), [], False)
+    check(s == "late" and tick == "2026-10-24T13:23Z", "county rain: a Saturday with no run is late that day")
+    s, *_ = judge(rain[1], rain[2], T("2026-10-24 18:00"), [R(3, "2026-10-24 13:40")], False)
+    check(s == "ok", "county rain: the day's run serves the day's tick")
+    s, tick, *_ = judge(rain[1], rain[2], T("2027-01-02 19:00"), [], False)
+    check(s == "late" and tick == "2027-01-02T14:41Z", "county rain: Jan 2 judges the finished-year run")
 
     # briefing file check
     import tempfile
