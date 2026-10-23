@@ -160,6 +160,9 @@ CURATED = {
     # scripts/custom_rates/*.tsv. Each state survey comes out every one to
     # three years, so there is no cadence to keep.
     "data/custom-rates/index.json",
+    # The going rate across those surveys, built with them (read by /custom-rates, the
+    # calculators' rate hints and Fast Facts).
+    "data/custom-rates/blend.json",
 }
 
 # ── feeds another repository publishes, and this one only reads ─────────────
