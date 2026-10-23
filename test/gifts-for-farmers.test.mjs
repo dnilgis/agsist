@@ -88,7 +88,7 @@ test("the homepage's Christmas card links here; the other cards still link /rain
   assert.equal(P.cardFor(J, y + "-11-20").href, "/gifts-for-farmers");
   assert.equal(P.cardFor(J, y + "-12-10").href, "/rain-print");
   assert.equal(P.cardFor(J, y + "-10-13").href, "/rain-print");
-  assert.match(readFileSync(ROOT + "index.html", "utf8"), /rain-print-promo\.js\?v=4/, "the homepage loads the new copy");
+  assert.match(readFileSync(ROOT + "index.html", "utf8"), /rain-print-promo\.js\?v=5/, "the homepage loads the new copy");
   const rp = readFileSync(ROOT + "rain-print.html", "utf8");
   assert.equal((rp.match(/href="\/gifts-for-farmers"/g) || []).length, 1);
 });

@@ -99,7 +99,7 @@ test("see lines: ARC/PLC county and cash-bid town generators carry one tiny slot
 
 test("signup asks: the sample link under Daily page asks only; no ticked box; no bar on Fast Facts", () => {
   const sa = read("components/signup-ask.js");
-  assert.match(sa, /\(!topic && variant === 'page' \? '<p class="sa-n sa-see"><a href="\/daily" data-sa-sample>See this morning\\u2019s email<\/a><\/p>' : ''\)/);
+  assert.match(sa, /\(!topic && variant === 'page' \? '<a class="sa-see" href="\/daily" data-sa-sample>See this morning\\u2019s email<\/a>' : ''\)/);
   assert.ok(!/type="checkbox"[^>]*checked/.test(sa), "no box starts ticked");
   assert.match(sa, /\^\\\/\(daily\|field-scout\|fast-facts\|rain-print\|/);
   // the gauge offer: after a rain-year notice or a hail alert, never on the gauge's own signup, never twice

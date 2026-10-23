@@ -257,7 +257,7 @@
     '.sa-d{grid-column:1/-1;min-height:44px;padding:2px 0;align-items:center}',
     '.sa-n{grid-column:1/-1;margin:0;font-size:.8125rem;line-height:1.4;color:var(--text-muted)}',
     /* the sample link under a Daily page ask (2026-10-23): show the email, not a claim about it */
-    '.sa-see a{display:inline-flex;align-items:center;min-height:44px;color:var(--text-muted);text-decoration:underline;text-underline-offset:2px}',
+    '.sa-see{display:inline-flex;align-items:center;min-height:44px;font-size:.8125rem;line-height:1.3;color:var(--text-muted);text-decoration:underline;text-underline-offset:2px}',
     '.sa-ok{margin:0;font-size:.9375rem;font-weight:700;line-height:1.4;color:var(--green)}',
     '.sa-ok:focus{outline:none}',
     /* page asks: a quiet band, one line plus a field */
@@ -396,10 +396,12 @@
       + '<button class="sa-b" type="submit">' + esc(BTN) + '</button>'
       + (withDaily ? '<label class="sa-optin sa-d" for="' + did + '"><input type="checkbox" id="' + did + '"> Also send the morning briefing</label>' : '')
       + (topic && !withDaily ? '' : '<div class="sa-z"' + (zipLater ? ' hidden' : '') + '><label class="sa-zl" for="' + zid + '">' + ZIP_LABEL + '</label>'
-        + '<input class="sa-zin" id="' + zid + '" type="text" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Optional"></div>')
+        + '<input class="sa-zin" id="' + zid + '" type="text" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Optional">'
+        /* the sample (2026-10-23): this morning's issue, beside the ZIP box so it costs no height */
+        + (!topic && variant === 'page' ? '<a class="sa-see" href="/daily" data-sa-sample>See this morning\u2019s email</a>' : '')
+        + '</div>')
       + '<p class="sa-m" id="' + mid + '" role="status" aria-live="polite"></p>'
       + (note ? '<p class="sa-n">' + esc(note) + '</p>' : '')
-      + (!topic && variant === 'page' ? '<p class="sa-n sa-see"><a href="/daily" data-sa-sample>See this morning\u2019s email</a></p>' : '')
       + '</form>';
     el.hidden = false;
     seen(el, askId);

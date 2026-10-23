@@ -28,7 +28,7 @@ const DASH = /[–—]|&mdash;|&ndash;/;
 test("every extra the panel offers has a sender; versions bumped where they load", () => {
   const block = SA.slice(SA.indexOf('/* ---------- "One more?"'), SA.indexOf("/* Signups drawn by other scripts."));
   const ids = [...block.matchAll(/\bO\.(\w+) = \{/g)].map((m) => m[1]).sort();
-  assert.deepEqual(ids, ["cot", "daily", "hail", "price", "rainyear", "rent", "reports", "wasde", "zip"]);
+  assert.deepEqual(ids, ["cot", "daily", "gauge", "hail", "price", "rainyear", "rent", "reports", "wasde", "zip"]);   // gauge: Oct 23, the rain gauge waitlist (test/promo-oct23.test.mjs)
   // cot and wasde (Oct 21): the two standing lists, each read by its sender
   assert.ok(/\btopic: 'cot', daily: false/.test(block) && read("scripts/send_cot_weekly.py").includes('TOPIC = "cot"'), "cot: send_cot_weekly.py reads it");
   assert.ok(/\btopic: 'reports', daily: false/.test(block) && read("scripts/send_report_day.py").includes('subscribers.fetch_topic(base, token, "reports")'), "wasde: send_report_day.py reads topic reports");
