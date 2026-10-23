@@ -4090,6 +4090,29 @@
     try { $('rp-design').scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {}
     try { $('rp-name').focus({ preventScroll: true }); } catch (e) {}
   }
+  /* Under the Paid view (2026-10-23, Sig's Oct 23 promo asks), in its own box so the thank-you
+     reads first: one AGSIST Daily ask (components/signup-ask.js: an empty email box and a button,
+     nothing ticked, gone for a reader already on the Daily) and one line about the rain gauge,
+     in data/rain-print.json gauge_hook's words when set. */
+  var GAUGE_LINE = 'Also in the works: a better rain gauge.', GAUGE_LINK = 'Get on the list';
+  function paidMore(box) {
+    var m = $('rp-paid-more');
+    if (!m) { m = doc.createElement('div'); m.id = 'rp-paid-more'; m.className = 'rp-paid-more'; box.parentNode.insertBefore(m, box.nextSibling); }
+    /* gauge_hook is {line, link}, held to components/rain-print-promo.js gaugeHook's limits */
+    function hook() {
+      var g = PRICES && PRICES.gauge_hook, ok = function (t, n) { return typeof t === 'string' && t.trim() && t.length <= n && !/[\u2013\u2014]/.test(t); };
+      return g && ok(g.line, 90) && ok(g.link, 60) ? { line: g.line.trim(), link: g.link.trim() } : null;
+    }
+    var h0 = hook();
+    m.innerHTML = '<div data-signup-ask="AGSIST Daily: the markets and your top local bid, free, every morning" data-source="page:rain-print-paid"></div>' +
+      '<p class="rp-paid-gauge"><span>' + esc(h0 ? h0.line : GAUGE_LINE) + '</span> <a href="/rain-gauge" data-placement="rain-print-paid">' + esc(h0 ? h0.link : GAUGE_LINK) + '</a></p>';
+    m.hidden = false;
+    // the prices file may still be on its way: its words replace the default when it lands
+    if (!PRICES) Promise.resolve(PRICES_P).then(function () { var h = hook(), sp = m.querySelector('.rp-paid-gauge span'), a = m.querySelector('.rp-paid-gauge a'); if (h && sp && a) { sp.textContent = h.line; a.textContent = h.link; } });
+    var g = m.querySelector('.rp-paid-gauge a');
+    g.addEventListener('click', function () { ga('rain_gauge_promo_click', { placement: 'rain-print-paid' }); });
+    if (root.AgsistSignup && root.AgsistSignup.mount) root.AgsistSignup.mount(m.querySelector('[data-signup-ask]'));
+  }
   function showPaid(p, sv, fire) {
     var box = $('rp-paid'), lines = paidText({ choice: p.choice, today: TODAY, prices: PRICES, saved: sv });
     box.innerHTML = '<h2>Paid. Thank you.</h2>' + lines.map(function (t) { return '<p>' + esc(t).replace('sig@agsist.com', '<a href="mailto:sig@agsist.com">sig@agsist.com</a>') + '</p>'; }).join('') +
@@ -4098,6 +4121,7 @@
       (sv ? '<p><button type="button" class="btn btn-primary rp-paid-other" id="rp-paid-other">Make another for someone else</button></p>' : '') +
       '<p>' + (sv ? '<button type="button" class="rp-linkbtn" id="rp-paid-again">Same words, another town or year</button> or ' : '') + '<a href="/rain-print" id="rp-paid-new">Make another</a></p>';
     box.hidden = false;
+    paidMore(box);
     if (sv) $('rp-paid-other').addEventListener('click', function () { anotherForSomeone('paid', p.choice); });
     if (sv) $('rp-paid-again').addEventListener('click', function () {
       ga('rain_print_again', { choice: p.choice });

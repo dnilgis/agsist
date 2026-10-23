@@ -63,7 +63,9 @@ test("every topic the panel offers has a sender that reads it", () => {
   const ids = [...block.matchAll(/\bO\.(\w+) = \{/g)].map((m) => m[1]).sort();
   // Oct 20: hail, price and reports added (test/one-more-alerts.test.mjs checks their senders)
   // Oct 21: cot and wasde, the two standing lists (test/one-more-alerts.test.mjs checks their senders)
-  assert.deepEqual(ids, ["cot", "daily", "hail", "price", "rainyear", "rent", "reports", "wasde", "zip"], "only these");
+  // Oct 23: gauge, the rain gauge waitlist (topic rain-gauge, the list the worker keeps for /rain-gauge)
+  assert.deepEqual(ids, ["cot", "daily", "gauge", "hail", "price", "rainyear", "rent", "reports", "wasde", "zip"], "only these");
+  assert.ok(read("workers/subs-worker.js").includes('if (topic === "rain-gauge") {'), "the worker keeps the gauge list");
   assert.ok(!DASH.test(block), "no dashes in the panel");
   assert.ok(!/type="checkbox"[^>]*checked/.test(block), "no box starts ticked");
   assert.ok(!/navigator\.geolocation/.test(SA), "never geolocation");
@@ -84,9 +86,9 @@ test("hail-map and gdu-calculator: one Daily ask each, honest about what the Dai
 });
 
 test("versions: signup-ask.js v12 where it loads (Oct 21), home.js v15", () => {
-  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=17';"));
+  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=18';"));
   const idx = read("index.html");
-  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=17"></script>'));
+  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=18"></script>'));
   assert.ok(idx.includes('<script src="/components/home.js?v=16"></script>'));
   assert.ok(read("privacy.html").includes("for one year, so the signup prompts stop until then."));
 });

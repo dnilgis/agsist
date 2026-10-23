@@ -44,7 +44,7 @@
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
 <meta name="twitter:title"       content="Daily Ag Briefing | AGSIST">
-<meta name="twitter:description" content="Morning market briefing for working US ag producers. Published every morning before the market open, weekends included.">
+<meta name="twitter:description" content="Morning market briefing for working US ag producers. Published every morning, weekends included.">
 <meta name="twitter:image"       content="https://agsist.com/img/og/daily.jpg?v=bfd46a26">
 
 <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set, the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string), and the reader scrolls, taps or types on the shown page. Then /components/ga-gate.js asks our worker if the visit comes from a cloud server network (Sig, Oct 20) and loads GA only on a clear no. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
@@ -60,7 +60,7 @@
       "url": "https://agsist.com/daily",
       "dateModified": "2026-10-23",
       "name": "Daily Ag Briefing: Market Morning Report | AGSIST",
-      "description": "Free morning agricultural market briefing for US ag producers across grain, livestock, dairy, and specialty operations. Published every morning before the market open, weekends included.",
+      "description": "Free morning agricultural market briefing for US ag producers across grain, livestock, dairy, and specialty operations. Published every morning, weekends included.",
       "isPartOf": { "@id": "https://agsist.com/#website" }
     },
     {
@@ -540,7 +540,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
   <div class="dv3-modal">
     <button class="dv3-modal-close" id="dv3-modal-close" aria-label="Close subscribe dialog"><svg class="dv3-ic" aria-hidden="true"><use href="#i-x"/></svg></button>
     <h2 id="dv3-modal-title"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Get the Daily briefing</h2>
-    <p>Join the email list at no charge and the AGSIST Daily lands in your inbox every morning before the market open: grain, livestock, dairy, weather, and what to watch. Unsubscribe anytime.</p>
+    <p>Join the email list at no charge and the AGSIST Daily lands in your inbox every morning: grain, livestock, dairy, weather, and what to watch. Unsubscribe anytime.</p>
     <form id="dv3-sub-form" action="https://agsist-api.dnilgis.workers.dev/subscribe" method="POST">
       <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
       <label class="dv3-zip-l" for="dv3-zip">ZIP, for your top local bid in the email</label>
@@ -660,7 +660,7 @@ function renderToday(data,why){
       if(rb)rb.addEventListener('click',function(){rb.disabled=true;rb.textContent='Trying\u2026';loadToday();});
       return;
     }
-    el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">Today\'s briefing isn\'t up yet. It posts every morning before the market open.<br><br><a href="/" style="color:var(--gold)">\u2190 Return to dashboard</a></p></div>';
+    el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">Today\'s briefing isn\'t up yet. It posts every morning.<br><br><a href="/" style="color:var(--gold)">\u2190 Return to dashboard</a></p></div>';
     // AUDIT 2026-08-11: don't dead-end — offer the most recent archived
     // briefing right here (the archive index is a cheap fetch).
     fetch('/data/daily-archive/index.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(ix){ix=agsND(ix);

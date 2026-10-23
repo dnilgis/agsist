@@ -28,7 +28,7 @@ const DASH = /[–—]|&mdash;|&ndash;/;
 test("every extra the panel offers has a sender; versions bumped where they load", () => {
   const block = SA.slice(SA.indexOf('/* ---------- "One more?"'), SA.indexOf("/* Signups drawn by other scripts."));
   const ids = [...block.matchAll(/\bO\.(\w+) = \{/g)].map((m) => m[1]).sort();
-  assert.deepEqual(ids, ["cot", "daily", "hail", "price", "rainyear", "rent", "reports", "wasde", "zip"]);
+  assert.deepEqual(ids, ["cot", "daily", "gauge", "hail", "price", "rainyear", "rent", "reports", "wasde", "zip"]);   // gauge: Oct 23, the rain gauge waitlist (test/promo-oct23.test.mjs)
   // cot and wasde (Oct 21): the two standing lists, each read by its sender
   assert.ok(/\btopic: 'cot', daily: false/.test(block) && read("scripts/send_cot_weekly.py").includes('TOPIC = "cot"'), "cot: send_cot_weekly.py reads it");
   assert.ok(/\btopic: 'reports', daily: false/.test(block) && read("scripts/send_report_day.py").includes('subscribers.fetch_topic(base, token, "reports")'), "wasde: send_report_day.py reads topic reports");
@@ -51,9 +51,9 @@ test("every extra the panel offers has a sender; versions bumped where they load
   // reports: send_report_day.py mails Daily readers whose reports flag is on
   assert.ok(read("scripts/send_report_day.py").includes("reports !== false"));
   assert.ok(!DASH.test(block) && !/type="checkbox"[^>]*checked/.test(block));
-  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=17';"));
-  assert.ok(read("components/loader.js").includes("var CV = '93';"));   // 93: fx/gauge (signup-ask.js?v=17, oneMore only); 92 was fx/rainmonthly; 85 was fx/advertise
-  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=17"></script>'));
+  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=18';"));
+  assert.ok(read("components/loader.js").includes("var CV = '94';"));   // 94: fx/promo (signup-ask.js?v=18); 93 was fx/gauge (signup-ask.js?v=17, oneMore only); 92 was fx/rainmonthly; 85 was fx/advertise
+  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=18"></script>'));
   assert.ok(read("cash-bids.html").includes("/components/cb-alerts.js?v=5") && read("components/cb-myelev.js").includes("/components/cb-alerts.js?v=5"));
   assert.ok(read("hail-map.html").includes("S.oneMore(box,{gave:'hail'"));
 });

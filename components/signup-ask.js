@@ -256,6 +256,8 @@
     '.sa-zin[aria-invalid="true"]{border-color:var(--red)}',
     '.sa-d{grid-column:1/-1;min-height:44px;padding:2px 0;align-items:center}',
     '.sa-n{grid-column:1/-1;margin:0;font-size:.8125rem;line-height:1.4;color:var(--text-muted)}',
+    /* the sample link under a Daily page ask (2026-10-23): show the email, not a claim about it */
+    '.sa-see{display:inline-flex;align-items:center;min-height:44px;font-size:.8125rem;line-height:1.3;color:var(--text-muted);text-decoration:underline;text-underline-offset:2px}',
     '.sa-ok{margin:0;font-size:.9375rem;font-weight:700;line-height:1.4;color:var(--green)}',
     '.sa-ok:focus{outline:none}',
     /* page asks: a quiet band, one line plus a field */
@@ -394,7 +396,10 @@
       + '<button class="sa-b" type="submit">' + esc(BTN) + '</button>'
       + (withDaily ? '<label class="sa-optin sa-d" for="' + did + '"><input type="checkbox" id="' + did + '"> Also send the morning briefing</label>' : '')
       + (topic && !withDaily ? '' : '<div class="sa-z"' + (zipLater ? ' hidden' : '') + '><label class="sa-zl" for="' + zid + '">' + ZIP_LABEL + '</label>'
-        + '<input class="sa-zin" id="' + zid + '" type="text" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Optional"></div>')
+        + '<input class="sa-zin" id="' + zid + '" type="text" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Optional">'
+        /* the sample (2026-10-23): this morning's issue, beside the ZIP box so it costs no height */
+        + (!topic && variant === 'page' ? '<a class="sa-see" href="/daily" data-sa-sample>See this morning\u2019s email</a>' : '')
+        + '</div>')
       + '<p class="sa-m" id="' + mid + '" role="status" aria-live="polite"></p>'
       + (note ? '<p class="sa-n">' + esc(note) + '</p>' : '')
       + '</form>';
@@ -416,6 +421,8 @@
     /* the page's own ZIP box may have been filled since the ask was drawn */
     input.addEventListener('focus', function () { if (zrow && zrow.hidden && !topic) showZip(true); else fillZip(); });
     if (dbox) dbox.addEventListener('change', function () { showZip(dbox.checked); });
+    var sample = el.querySelector('[data-sa-sample]');
+    if (sample) sample.addEventListener('click', function () { track('daily_sample_click', { ask_id: askId }); });
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var email = (input.value || '').trim();
@@ -604,7 +611,22 @@
      data/zip-grid.json picks the ZIP files, the bids network's data/zips
      gives the centers; nothing within 15 mi leaves it blank). Source tags
      onemore:<what they gave>, with onemore:hail-alert and
-     onemore:elevator-watch for the hail alert and the elevator alerts. */
+     onemore:elevator-watch for the hail alert and the elevator alerts.
+     2026-10-23 (Sig, Oct 23 promo asks):
+       gauge     the rain gauge waitlist (topic rain-gauge, the list /rain-gauge
+                 keeps; Sig writes to it when the first batch is ready), after
+                 a rain-year notice or a hail alert, never twice. Its words are
+                 data/rain-print.json gauge_hook (line, then link) when set, else GAUGE_HOOK.
+     The waitlist form on /rain-gauge gets the panel too (gave notice,
+     topic rain-gauge), found by its form the way the cash bid box is. */
+  var GAUGE_HOOK = 'The rain gauge waitlist: a better gauge is in the works, and the list hears first';
+  function gaugeHook() {
+    return getJ('/data/rain-print.json').then(function (c) {
+      /* gauge_hook is {line, link} (components/rain-print-promo.js gaugeHook: the same limits) */
+      var g = c && c.gauge_hook, ok = function (t, n) { return typeof t === 'string' && t.trim() && t.length <= n && !/[\u2013\u2014]/.test(t); };
+      return g && ok(g.line, 90) && ok(g.link, 60) ? g.line.trim() + ' ' + g.link.trim() : GAUGE_HOOK;
+    });
+  }
   var NET = 'https://dnilgis.github.io/bids/';
   var SRC_TAG = { hail: 'hail-alert', elevator: 'elevator-watch' };
   var HAIL_MI = 10;
@@ -696,9 +718,10 @@
       var wantHail = kind.hail && had.indexOf('hail') < 0;
       var hs = wantHail && window.AGSIST_HAIL_SPOT, hailP = !wantHail ? Promise.resolve(null)
         : (hs && isFinite(hs.lat) && isFinite(hs.lon) ? Promise.resolve({ lat: +hs.lat, lon: +hs.lon, label: String(hs.label || 'the spot on the map') }) : zipCenter(zipv));
-      return Promise.all([rainOffer(fips), hailP]).then(function (a) { build(zipv, st, a[0], a[1]); });
+      var wantGauge = (gave === 'hail' || (gave === 'notice' && /^rainyear:/.test(topic))) && had.indexOf('gauge') < 0 && !noticeDone('rain-gauge');
+      return Promise.all([rainOffer(fips), hailP, wantGauge ? gaugeHook() : null]).then(function (a) { build(zipv, st, a[0], a[1], a[2]); });
     });
-    function build(zipv, st, rain, hspot) {
+    function build(zipv, st, rain, hspot, ghook) {
       var O = {};
       /* after a hail alert the Daily carries an optional ZIP box, filled when a ZIP is known */
       var dz = gave === 'hail';
@@ -740,8 +763,12 @@
         label: esc('The WASDE summary: what USDA printed against the trade, the afternoon of each big report'),
         send: function () { return notice({ email: email, source: source, topic: 'reports', daily: false, askId: 'onemore' }); },
         ok: 'The WASDE summary comes the afternoon of each big USDA report.' };
-      var base = gave === 'daily' ? ['zip', 'rainyear', 'rent', 'daily'] : ['daily', 'rainyear', 'rent', 'zip'];
+      if (ghook && topic !== 'rain-gauge') O.gauge = { label: esc(ghook),
+        send: function () { return notice({ email: email, source: source, topic: 'rain-gauge', daily: false, askId: 'onemore' }); },
+        ok: 'You are on the rain gauge waitlist. You will hear from me when the first batch is ready.' };
+      var base = gave === 'daily' ? ['zip', 'rainyear', 'rent', 'daily'] : ['daily', 'gauge', 'rainyear', 'rent', 'zip'];
       var lead = kind.hail ? ['hail'] : kind.futures ? ['price', 'cot', 'reports', 'wasde'] : kind.report ? ['reports', 'wasde', 'cot', 'price'] : [];
+      /* a notice or alert: the Daily first, then what fits the page, then the gauge */
       var order = gave === 'daily' ? lead.concat(base) : ['daily'].concat(lead, base.slice(1));
       /* ctx.only: the ids a page allows (the rain gauge waitlist offers the Daily alone, Sig 2026-10-23) */
       var ids = order.filter(function (k) { return O[k] && (!ctx.only || ctx.only.indexOf(k) >= 0); }).slice(0, 3);
@@ -838,6 +865,11 @@
       if (p && p.checked) had.push('zip');
       var c1 = { gave: had[0] || 'daily', had: had, email: (f.querySelector('.cbs-em') || {}).value, zip: host.getAttribute('data-zip') || (z && z.value) || '' };
       watchFor(host, function () { return !!host.querySelector('.cbs-done'); }, function () { oneMore(host, c1); });
+    } else if (f.matches('form.rg-form')) {
+      /* the rain gauge waitlist (rain-gauge.html): done when its script locks the form */
+      var em = f.querySelector('input[type=email]'), gz = f.querySelector('input[name=zip]');
+      var c3 = { gave: 'notice', topic: 'rain-gauge', had: ['gauge'], email: em && em.value, zip: gz && /^\d{5}$/.test(gz.value) ? gz.value : '', after: f };
+      if (em) watchFor(f, function () { return em.disabled; }, function () { oneMore(f.parentNode, c3); });
     } else if (f.matches('form.watch[data-fips]')) {
       var c2 = { gave: 'county', email: f.elements.email && f.elements.email.value, fips: f.getAttribute('data-fips'), after: f };
       var wm = f.querySelector('.wm');
@@ -915,8 +947,10 @@
     /* No sticky bar where it covers the work or is the wrong ask: the briefing
        and its archive (/daily/2026-10-11), the field tools and print sheets,
        the sponsor pages, the store-or-sell worksheet (2026-10-11), and /prf
-       itself (2026-10-12; its county pages keep it, Sig Oct 20). */
-    if (/^\/(daily|field-scout|rain-print|sponsor|sponsor-kit|sponsor-apply|sponsor-report|store-or-sell|prf)(\.html)?$/.test(p)
+       itself (2026-10-12; its county pages keep it, Sig Oct 20). Fast Facts
+       (2026-10-23): its one ask is the inline Daily ask under the first card,
+       drawn only once a place is open, so the bar never stands in for it. */
+    if (/^\/(daily|field-scout|fast-facts|rain-print|sponsor|sponsor-kit|sponsor-apply|sponsor-report|store-or-sell|prf)(\.html)?$/.test(p)
         || /^\/daily\/[^/]+$/.test(p)) return false;
     if (isSignedUp() || isDismissed(BAR_KEY)) return false;
     try { if (Date.now() < +(localStorage.getItem('agsist_bar_snooze') || 0)) return false; } catch (e) {}

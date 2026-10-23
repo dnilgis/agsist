@@ -42,13 +42,15 @@ test("town cash-bid pages carry at most one promo slot", () => {
       if (!f.endsWith(".html")) continue;
       const h = readFileSync(dir + st + "/" + f, "utf8");
       assert.ok(slots(h) <= 1, st + "/" + f);
-      if (slots(h)) { assert.match(h, /data-rain-print-promo hidden/); assert.match(h, /rain-print-promo\.js\?v=\d+" defer/); }
+      // the gift line in its season, else (Oct 23) the "see" line: never both, never anything else
+      if (slots(h)) { assert.match(h, /<p class="rp-promo" data-rain-print-promo(="see")? hidden><\/p>/); assert.match(h, /rain-print-promo\.js\?v=\d+" defer/); }
       n++;
     }
   }
   assert.ok(n > 500);
   const py = readFileSync(ROOT + "scripts/build_cash_bid_pages.py", "utf8");
   assert.match(py, /RP_PROMO_SEASON = \(\(11, 1\), \(12, 24\)\)/);
+  assert.match(py, /RP_SEE_SLOT = '<p class="rp-promo" data-rain-print-promo="see" hidden><\/p>'/);
 });
 
 test("markets and futures pages: one Rain Print gift line, after the FAQ, with its script (Oct 17)", () => {
