@@ -238,7 +238,12 @@
     '@media (min-width:900px){.sa-f{grid-template-columns:minmax(0,1fr) minmax(12rem,20rem) auto;gap:6px 10px}.sa-l{grid-column:1}.sa-in{grid-column:2}.sa-b{grid-column:3}}',
     /* data-stack: an ask in a narrow column of a wide page (a results panel): keep the stacked layout at any width */
     '@media (min-width:900px){.sa-ask--stack .sa-f{grid-template-columns:minmax(0,1fr) auto}.sa-ask--stack .sa-l{grid-column:1/-1}.sa-ask--stack .sa-in{grid-column:1}.sa-ask--stack .sa-b{grid-column:2}}',
-    '.sa-l{min-width:0;font-size:.9375rem;font-weight:600;line-height:1.35;color:var(--text);text-transform:none;letter-spacing:normal}',
+    '.sa-l{min-width:0;font-size:.9375rem;font-weight:600;line-height:1.35;color:var(--text)}',
+    /* a calculator's own "label" rule (.panel label: mono, small caps) must not restyle an ask inside its panel */
+    '.sa-ask .sa-l,.sa-ask .sa-zl,.sa-ask .sa-optin{font-family:var(--font-body,Inter,system-ui,sans-serif);font-weight:400;text-transform:none;letter-spacing:normal;margin:0}',
+    '.sa-ask .sa-l{font-size:.9375rem;font-weight:600;color:var(--text)}',
+    '.sa-ask .sa-zl{font-size:.875rem;color:var(--text-muted)}',
+    '.sa-ask .sa-optin{display:flex;font-size:.875rem;color:var(--text)}',
         '.sa-in{min-width:0;width:100%;box-sizing:border-box;min-height:44px;padding:.5rem .7rem;font:inherit;font-size:1rem;color:var(--text);background:var(--surface,#fff);border:1px solid var(--border-2,var(--border));border-radius:6px}',
     '.sa-in::placeholder{color:var(--text-muted);opacity:1}',
     '.sa-in:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}',
