@@ -390,8 +390,9 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
         "\n<nav class=\"hs-states\" aria-label=\"Hail by state\"><h2>Hail in other states</h2><div class=\"hs-states-grid\">" + all_state_links(name) + "</div></nav>\n"
         + b2b +
         "\n<div class=\"hs-src\">Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet, " + str(years[0]) + "\u2013" + str(years[-1]) + ". Reports depend on someone reporting, so population and spotter density bias the counts. Compiled by Sigurd Lindquist \u00b7 AGSIST.</div>\n"
-        # one quiet promo line, filled by components/rain-print-promo.js; empty and hidden when off
-        "<p class=\"rp-promo\" data-rain-print-promo=\"gauge\" hidden></p><script src=\"/components/rain-print-promo.js?v=2\" defer></script>\n"
+        # one quiet promo line, filled by components/rain-print-promo.js ("auto": Rain Print through Dec 24,
+        # the rain gauge hook Dec 26 through May, Sig 2026-10-23); empty and hidden when off
+        "<p class=\"rp-promo\" data-rain-print-promo=\"auto\" hidden></p><script src=\"/components/rain-print-promo.js?v=6\" defer></script>\n"
         "</div>\n</main>\n<div id=\"site-footer\"></div>\n"
         "<script src=\"" + asset_url("/components/loader.js") + "\" defer></script>\n</body>\n</html>\n")
 
