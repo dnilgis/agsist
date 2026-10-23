@@ -13,8 +13,7 @@ C = W / "components"
 # (href, label, icon[, "all"])
 PRICES = [
     ("Near you", [("/cash-bids", "Cash bids near me", "i-banknote"),
-                  ("/cash-bids/states", "Bids by state", "i-map"),
-                  ("/basis", "Basis vs normal", "i-chart-column"),
+                  ("/basis", "Bids and basis by state", "i-chart-column"),
                   ("/grain-transport", "Grain on the move", "i-map"),
                   ("/cash-bid-index", "Cash Bid Index", "i-chart-column"),
                   ("/fertilizer", "Fertilizer prices", "i-leaf")]),
@@ -23,10 +22,8 @@ PRICES = [
                  ("/wheat-futures-prices", "Wheat", "i-wheat"),
                  ("/harvest-price-tracker", "Harvest price tracker", "i-trending-up"),
                  ("/markets", "All markets", "i-chart-candlestick", "all")]),
-    ("Reports", [("/usda-calendar", "USDA calendar", "i-calendar"),
-                 ("/whats-priced-in", "What&rsquo;s priced in", "i-dices"),
-                 ("/conditions", "Crop progress", "i-sun"),
-                 ("/conditions-yield", "Crop size", "i-target"),
+    ("Reports", [("/usda-calendar", "USDA calendar and what&rsquo;s priced in", "i-calendar"),
+                 ("/conditions", "Crop progress and size", "i-sun"),
                  ("/usda-quick-stats", "Yield by state", "i-database"),
                  ("/crop-tour", "Crop tour", "i-map"),
                  ("/cot", "Fund positions (COT)", "i-chart-column"),
@@ -56,8 +53,7 @@ FIELD = [
               ("/urea", "Urea loss", "i-flask-conical"),
               ("/nutrient-removal", "Nutrient removal", "i-sprout"),
               ("/field-scout", "Field Scout", "i-satellite"),
-              ("/yield-estimator", "Yield estimator", "i-package"),
-              ("/pod-counts", "Pod counts", "i-target")]),
+              ("/yield-estimator", "Yield estimator", "i-package")]),
     ("Harvest and bins", [("/harvest-or-wait", "Harvest now or wait", "i-tractor"),
                           ("/grain-emc", "Grain drying (EMC)", "i-thermometer"),
                           ("/grain-shrink", "Grain shrink", "i-warehouse"),
@@ -94,7 +90,6 @@ def name_html(it):
 DAILY = [
     (None, [("/daily", "Today&rsquo;s briefing", "i-sunrise"),
             SIGNUP,
-            ("/news", "The Wire", "i-newspaper"),
             ("/archive", "Archive", "i-archive")]),
 ]
 GROUPS = [("markets", "Prices", "i-chart-candlestick", PRICES),
@@ -439,9 +434,7 @@ def dedupe(items):
     return out
 
 
-F_PRICES = dedupe([it[:3] for it in flat(PRICES)] + [("/usda-quick-stats", "USDA crop data by state", "i-database"),
-                                                      ("/scorecard", "Prediction bot", "i-clipboard-check"),
-                                                      ("/elevators", "For elevators", "i-warehouse")])
+F_PRICES = dedupe([it[:3] for it in flat(PRICES)] + [("/usda-quick-stats", "USDA crop data by state", "i-database")])
 F_LIVE = [it[:3] for it in flat(LIVESTOCK)]
 F_FIELD = dedupe([it[:3] for it in flat(FIELD)] + [("/fast-facts", "Fast Facts", "i-book-open")])
 F_MONEY = dedupe([it[:3] for it in flat(MONEY)] + [("/foreign-land", "Foreign-owned land", "i-landmark")])
@@ -457,7 +450,7 @@ F_ABOUT = [("/about", "About", "i-book-open"),
            ("/changelog", "What&rsquo;s new", "i-scroll-text")]
 FCOLS = [("Prices", F_PRICES), ("Livestock", F_LIVE), ("Field", F_FIELD), ("Money &amp; Land", F_MONEY),
          ("Work with us", F_WORK), ("About", F_ABOUT)]
-F_DAILY = [("/daily", "Today&rsquo;s briefing"), ("/news", "The Wire"), ("/archive", "Archive")]
+F_DAILY = [("/daily", "Today&rsquo;s briefing"), ("/archive", "Archive")]
 
 
 def flink(it):
@@ -594,7 +587,7 @@ def build_footer():
 
 
 def fb_footer():
-    groups, seen = [], {"/daily", "/news", "/archive", "/rain-print"}
+    groups, seen = [], {"/daily", "/archive", "/rain-print"}
     for name, items in FCOLS:
         keep = [it for it in items if it[0] not in seen]
         seen.update(it[0] for it in keep)
@@ -616,7 +609,7 @@ def all_hrefs():
         hs |= {it[0] for it in flat(subs)}
     for _, items in FCOLS:
         hs |= {it[0] for it in items}
-    return hs | {"/about", "/contact", "/rain-print", "/daily", "/news", "/archive", "/privacy", "/accessibility", "/terms"}
+    return hs | {"/about", "/contact", "/rain-print", "/daily", "/archive", "/privacy", "/accessibility", "/terms"}
 
 
 def exists(h):
@@ -629,7 +622,7 @@ def exists(h):
 
 
 if __name__ == "__main__":
-    missing = sorted(h for h in all_hrefs() if not exists(h) and h != "/cash-bids/states")
+    missing = sorted(h for h in all_hrefs() if not exists(h))
     if missing:
         raise SystemExit(f"links with no page: {missing}")
     build_header()
