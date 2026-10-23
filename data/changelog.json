@@ -1,7 +1,18 @@
 {
- "updated": "2026-10-22",
+ "updated": "2026-10-23",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-23",
+   "items": [
+    {
+     "tag": "improved",
+     "page": "/farmland-atlas",
+     "name": "County pages open with what farmland sold for, and link to nearby town bids",
+     "text": "Where we have recorded sales, a county page now leads with how many farms sold in the last 12 months and the median price per acre, with the dates. County pages and county rain pages link to the closest towns with cash bids. A rain page no longer gives two different dates in its first lines."
+    }
+   ]
+  },
   {
    "date": "2026-10-22",
    "items": [
