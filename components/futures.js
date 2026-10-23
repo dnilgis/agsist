@@ -1288,6 +1288,20 @@ function bidCash(b){
 }
 
 
+/* The place a bid is printed under: its own town and state. The sample grid's
+   label is used only when the bid sits AT a grid ZIP (exactGrid). `city` can
+   hold the elevator's name (Baring: city "Baring Elevator", town "Baring"), so
+   town comes first. With no town at all, the facility name; the nearest grid
+   point's name only as the last resort, because it is a different town. */
+function bidLabel(b,exactGrid,nearGrid){
+  if(exactGrid&&exactGrid.label)return exactGrid.label;
+  var t=String(b.town||b.city||'').trim();
+  if(t)return t+(b.state?', '+b.state:'');
+  if(b.facility)return b.facility;
+  return nearGrid&&nearGrid.label?nearGrid.label:'-';
+}
+
+
 function findBestBidForCrop(bids,nearestGridResult,cropKey){
   if(!bids||!bids.length)return null;
   var cropBids=[];
@@ -1297,6 +1311,20 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
     if(c===cropKey)cropBids.push(b);
   }
   if(cropBids.length===0)return null;
+
+  /* ONLY A PLAIN BUSHEL BID CAN BE "THE BEST". components/bid-filter.js is the
+     one test the home page and the Daily also use: no special grade (organic,
+     non-GMO, white, feed, durum, spring wheat), no meal or cwt quote, and a
+     price inside the crop's own band. 2026-10-23: this page had none of it, and
+     Baring Elevator MO "Organic Yellow Corn" $11.50 was the highest checked bid
+     in the sample for 13 of 50 grid ZIPs. With no filter script on the page
+     nothing is picked at all: no number beats a wrong one. */
+  var BF=window.AG&&window.AG.bidFilter;
+  if(!BF)return null;
+  var plain=[];
+  for(var q=0;q<cropBids.length;q++){if(BF.canSetBest(cropBids[q]))plain.push(cropBids[q]);}
+  if(plain.length===0)return null;
+  cropBids=plain;
 
   /* WITHHOLD BEFORE SELECTING, ON EVERY BRANCH -- not just the fallback.
      `verified` is false where cash minus basis disagrees with what every other
@@ -1551,18 +1579,28 @@ function renderBasisCard(data){
       (b.deliveryStart?String(b.deliveryStart).slice(0,10)+(b.deliveryEnd?' \u2013 '+String(b.deliveryEnd).slice(0,10):''):null)||
       (b.delivery_start?b.delivery_start+(b.delivery_end?' \u2013 '+b.delivery_end:''):null);
 
-    // Resolve the BID\'s actual location for the header label.
-    var bidGrid=null;
+    /* THE BID'S OWN PLACE, NOT THE NEAREST GRID ZIP'S NAME.
+       This used to find the grid entry nearest the bid's coordinates and print
+       THAT entry's label, so a bid at Baring, MO read "Columbia, MO" -- a town
+       88 miles away -- and Riceville, IA read as whichever sample ZIP sat
+       closest. The grid label is used only when the bid's own ZIP is a grid
+       ZIP. Otherwise the line names the bid's own town and state, and the
+       mileage is measured from the bid's own coordinates when it has them
+       (the nearest grid point is only a stand-in when it has none). */
+    var bidGrid=null,gridHit=false;
     if(b.zip){
-      for(var i=0;i<grid.length;i++)if(grid[i].zip===b.zip){bidGrid=grid[i];break;}
+      for(var i=0;i<grid.length;i++)if(grid[i].zip===b.zip){bidGrid=grid[i];gridHit=true;break;}
     }
     /* lon, not lng. The feed writes lat/lon; zero of 584 rows have an
        `lng` key, so this branch was reached 142 times in 150 and ran 0. */
     var bLng=(b.lng!=null)?b.lng:b.lon;
-    if(!bidGrid&&b.lat!=null&&bLng!=null){
+    var bidLat=null,bidLng=null;
+    if(gridHit){bidLat=bidGrid.lat;bidLng=bidGrid.lng;}
+    else if(b.lat!=null&&bLng!=null){bidLat=Number(b.lat);bidLng=Number(bLng);}
+    if(!bidGrid&&bidLat!=null){
       var nd=Infinity;
       for(var j=0;j<grid.length;j++){
-        var d=haversineMi(b.lat,bLng,grid[j].lat,grid[j].lng);
+        var d=haversineMi(bidLat,bidLng,grid[j].lat,grid[j].lng);
         if(d<nd){nd=d;bidGrid=grid[j];}
       }
     }
@@ -1573,14 +1611,14 @@ function renderBasisCard(data){
 
     // Header label: show BID\'s location + distance from user
     if(locEl){
-      var label=bidGrid?bidGrid.label:((b.town||b.city)?((b.town||b.city)+(b.state?', '+b.state:'')):(b.facility||'-'));
+      var label=bidLabel(b,gridHit?bidGrid:null,bidGrid);
       var locStr=label;
-      if(bidGrid&&userLoc.lat!=null&&userLoc.lng!=null&&bidGrid.lat!=null){
-        var dMi=haversineMi(userLoc.lat,userLoc.lng,bidGrid.lat,bidGrid.lng);
-        if(dMi<2)locStr+=' \u00b7 your area';
-        else locStr+=' \u00b7 '+Math.round(dMi)+' mi from you';
-      }else if(bidGrid&&userLoc.zip&&bidGrid.zip===userLoc.zip){
-        locStr+=' \u00b7 your ZIP';
+      if(bidLat!=null&&userLoc.lat!=null&&userLoc.lng!=null){
+        var dMi=haversineMi(userLoc.lat,userLoc.lng,bidLat,bidLng);
+        if(dMi<2)locStr+=' · your area';
+        else locStr+=' · '+Math.round(dMi)+' mi from you';
+      }else if(gridHit&&userLoc.zip&&bidGrid.zip===userLoc.zip){
+        locStr+=' · your ZIP';
       }else if(match.distance!==null){
         /* A LOCAL BID WHOSE FACILITY ZIP IS NOT ITSELF A GRID ZIP. It was
            returned by the radius query run around the reader's own grid ZIP,
@@ -1588,7 +1626,7 @@ function renderBasisCard(data){
            mileage from. Say the true thing rather than nothing: an
            unqualified "Sun Prairie, WI" reads as a bid the reader can place,
            which it is, but it should not look like an exact distance either. */
-        locStr+=' \u00b7 within range of you';
+        locStr+=' · within range of you';
       }else if(match.distance===null){
         /* SAY SO WHEN IT IS NOT NEAR THEM. findBestBidForCrop returns
            distance:null only from the fallback branch -- the highest verified
@@ -1598,7 +1636,7 @@ function renderBasisCard(data){
            city name and no distance, which reads exactly like a local bid.
            A number the reader cannot act on locally has to say that it is
            not local; that is cheaper than being quietly wrong. */
-        locStr+=' \u00b7 not near you: highest checked bid in the sample';
+        locStr+=' · not near you: highest checked bid in the sample';
       }
       locEl.textContent=locStr;
     }
