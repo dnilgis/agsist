@@ -656,8 +656,10 @@ SENDS = (
     ("elevator-watch.yml", "send_elevator_watch.py", "Elevator alerts"),
     ("elevator-watch.yml", "send_zip_alert.py", "ZIP price alerts"),
     ("farmland-atlas-watch.yml", "send_watch.py", "County watch"),
+    # 2026-10-23: the monthly land sale email (subs worker v5.55), its "email" job
+    ("land-alert.yml", "send_land_alert.py", "Monthly land sales", "email"),
 )
-NOTICE_KINDS = {"rent": "rent", "arcplc": "ARC/PLC", "prf": "PRF", "rainyear": "rain year", "rain-gauge": "rain gauge"}
+NOTICE_KINDS = {"rent": "rent", "arcplc": "ARC/PLC", "prf": "PRF", "rainyear": "rain year", "landsales": "land sales", "rain-gauge": "rain gauge"}
 # 2026-10-21: the two standing lists on /notice (subs worker v5.44), each its
 # own row in the Signups table, from /count lists {n, by_source, unsubs}.
 SIGNUP_LISTS = (("reports", "WASDE summary"), ("cot", "Funds this week"))
