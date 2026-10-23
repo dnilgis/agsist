@@ -158,9 +158,14 @@ test("3. rain: the lead never shows two different dates; the story says what its
     }
   }
   assert.ok(below > 500, "pages whose story moved below the figures: " + below);
+  // Barron, in its own data's date (the pages rebuild daily, so no fixed day here)
   const b = read("rain/wisconsin/barron-county.html");
-  assert.match(b, /through Oct 18\. That is 1\.40 inches less/);
-  assert.match(b, /This paragraph was written from the record through Oct 13\. The totals above run through Oct 18\./);
+  const asOf = new Date(json("data/rain/wi.json").counties["55005"].as_of + "T12:00:00Z");
+  const day = asOf.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+  assert.match(b, new RegExp(`through ${day}\\. That is \\d+\\.\\d{2} inches (less|more)`), "Barron lead through " + day);
+  const bs = b.match(/This paragraph was written from the record through ([A-Z][a-z]{2} \d{1,2})\. The totals above run through ([A-Z][a-z]{2} \d{1,2})\./);
+  assert.ok(bs, "Barron says what its story's date is");
+  assert.equal(bs[2], day);
 });
 
 test("3. rain sitemap: a county page's lastmod is the last day its station reported", () => {
@@ -168,7 +173,7 @@ test("3. rain sitemap: a county page's lastmod is the last day its station repor
   const lm = (path) => (sm.match(new RegExp(`<loc>https://agsist.com${path}</loc><lastmod>([^<]*)</lastmod>`)) || [])[1];
   const wi = json("data/rain/wi.json");
   assert.equal(lm("/rain/wisconsin/barron-county"), wi.counties["55005"].as_of);
-  assert.equal(lm("/rain/wisconsin/barron-county"), "2026-10-18");
+  assert.match(wi.counties["55005"].as_of, /^\d{4}-\d{2}-\d{2}$/);
   const all = [...sm.matchAll(/<lastmod>([^<]*)</g)].map((x) => x[1]);
   assert.ok(new Set(all).size > 3, "more than one lastmod");
   assert.ok(all.every((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)));
