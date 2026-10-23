@@ -569,6 +569,27 @@
         rows.map(function (y) { var me = y[0] === fig.year; return '<tr' + (me ? ' class="h-me"' : '') + '><th scope="row">' + y[0] + (me ? ' (this year)' : '') + '</th><td>' + y[1].toFixed(2) + '</td></tr>'; }).join('') + '</tbody></table></div>';
     };
   }
+  /* The buy link under the print (2026-10-23), built the way a county rain page builds its own
+     (scripts/build_county_rain.py rain_print_href): the station's town and state, the year,
+     this station unless it missed more days than a print allows (RP_MISS_BLOCK, 31), and the
+     station's lat,lon so a town name Rain Print cannot find never blocks the map. The town is
+     the station's plain name with its offset and airport words dropped. */
+  var RP_MISS_BLOCK = 31, AIR_W = /^(airport|international|regional|municipal|field|industrial|intl|ap|muni)$/i;
+  function rpTown(name) {
+    var w = String(name || '').split(',')[0].trim().split(/\s+/);
+    while (w.length > 1 && AIR_W.test(w[w.length - 1])) w.pop();
+    return w.join(' ');
+  }
+  function rpHref(fig) {
+    var st = String(fig.st || '').toUpperCase(), town = rpTown(fig.station && fig.station.name);
+    var q = new URLSearchParams();
+    q.set('place', town ? town.slice(0, 32 - st.length - 2).replace(/\s+$/, '') + ', ' + st : fig.place);
+    q.set('year', String(fig.year));
+    if ((fig.missing || 0) <= RP_MISS_BLOCK && fig.station && fig.station.sid) q.set('station', String(fig.station.sid).replace(/[^A-Za-z0-9 ]/g, '').trim().slice(0, 16));
+    var ll = fig.station && fig.station.ll;
+    if (ll && isFinite(ll[0]) && isFinite(ll[1])) q.set('ll', (+ll[1]).toFixed(4) + ',' + (+ll[0]).toFixed(4));
+    return '/rain-print?' + q.toString();
+  }
   function drawFigure(fig) {
     var cap = 'Inches of rain added up day by day from Jan 1' + (fig.usual != null ? ', solid line, against the usual year at this ' + fig.noun + ' (dashed), counted on the same days' : '') + '. Days with no report add nothing.';
     var pcap = 'Every day of ' + fig.year + (fig.done ? '' : ' so far') + ' at this ' + fig.noun + ', drawn by Rain Print. A gap is a day with no report.' + (fig.done ? '' : ' The empty months are still to come.') +
@@ -576,8 +597,10 @@
     $('h-rp-box').innerHTML = '<figure class="rc-chart rc-print h-rp" id="h-rp" data-st="' + esc(fig.st) + '" data-fips="' + esc(fig.fips) + '" data-year="' + fig.year + '" data-days="' + fig.days + '" data-total="' + fig.total.toFixed(2) + '" data-place="' + esc(fig.place) + '" data-gauge="' + esc(fig.gauge) + '"' +
       (fig.mn ? ' data-mn="' + esc(fig.mn) + '" data-usual="' + fig.usual.toFixed(2) + '" data-norm="' + esc(fig.norm) + '"' : '') + '>' +
       '<div class="rc-print-styles" role="group" aria-label="Print style" hidden><button type="button" data-style="r1" aria-pressed="true">Staircase</button><button type="button" data-style="r2" aria-pressed="false">Roots</button><button type="button" class="rc-zoom" aria-pressed="false">Up close</button></div>' +
-      '<div class="rc-print-art">' + P.rainChart(fig) + '</div><figcaption><span class="rc-cap-chart">' + esc(cap) + '</span><span class="rc-cap-print" hidden>' + pcap + '</span></figcaption></figure>';
-    var el = $('h-rp');
+      '<div class="rc-print-art">' + P.rainChart(fig) + '</div><figcaption><span class="rc-cap-chart">' + esc(cap) + '</span><span class="rc-cap-print" hidden>' + pcap + '</span></figcaption></figure>'
+      '<p class="h-rp-buy"><a href="' + esc(rpHref(fig)) + '" data-placement="fast-facts">Make this one with your name &rarr;</a></p>';
+    var el = $('h-rp'), buy = document.querySelector('.h-rp-buy a');
+    if (buy) buy.addEventListener('click', function () { track('rain_print_promo_click', { placement: 'fast-facts', page: location.pathname }); });
     loadScript(RCP, function () { return !!(window.AgRainCountyPrint && window.AgRainCountyPrint.mount); }).then(function (ok) {
       if (ok && el.isConnected) window.AgRainCountyPrint.mount(el);
     });
