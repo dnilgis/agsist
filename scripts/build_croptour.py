@@ -1266,7 +1266,7 @@ def render_benchnote(data):
 # tick. The remaining 100 - 2*MAXW is gutter the printed value lives in, so the
 # biggest miss in the table can never shove its own label into the next column.
 PAPER_CARD = (
-    '<div class="ct-paper"><a class="ct-paper-a" href="/pod-counts">'
+    '<div class="ct-paper"><a class="ct-paper-a" href="#pod-counts">'
     '<span class="ct-paper-k">Working paper</span>'
     '<span class="ct-paper-t">Do pod counts predict soybean yield?</span>'
     '<span class="ct-paper-d">The tour counts pods and publishes no state bean '
@@ -1274,7 +1274,7 @@ PAPER_CARD = (
     'week. We measured what those counts actually predict, against USDA&rsquo;s '
     'final state numbers, and what the rule of thumb everyone repeats '
     'gets wrong.</span>'
-    '<span class="ct-paper-go">Read it &rarr;</span></a></div>')
+    '<span class="ct-paper-go">Read it below &darr;</span></a></div>')
 
 
 BAR_MAXW = 34.0
@@ -1535,7 +1535,8 @@ SECTIONS = {
                 "far the tour's final corn number landed from USDA's final yield: left of the "
                 "line means the tour called it too small, right means too big."),
         # PAPER_CARD is literal, not spliced, and DELIBERATELY CARRIES NO
-        # FIGURES. The study's numbers live on /pod-counts and nothing on this
+        # FIGURES. The study's numbers live in the pod counts section further down
+        # this page (#pod-counts; its own page until Oct 22, 2026) and nothing on this
         # page bakes them, so a figure here would be a second writer that goes
         # quietly stale the day the panel is extended past 2025.
         #
@@ -2581,8 +2582,11 @@ def main():
     upd = latest_update(data)
     baked = splice(baked, "stamp", f"Updated {pretty(upd)} &middot; "
                                    f"{st['n']} tours scored")
-    baked, n = re.subn(r'("dateModified":")\d{4}-\d{2}-\d{2}(")',
-                       r"\g<1>" + upd + r"\g<2>", baked)
+    # Only the page's own JSON-LD block (the first): the pod counts Article and Dataset in the
+    # block after it keep their own dates.
+    _m = re.search(r'<script type="application/ld\+json">.*?</script>', baked, re.S)
+    _blk, n = re.subn(r'("dateModified":")\d{4}-\d{2}-\d{2}(")', r"\g<1>" + upd + r"\g<2>", _m.group(0))
+    baked = baked[:_m.start()] + _blk + baked[_m.end():]
     # This page carries two: the WebPage node and the Dataset node. Both should
     # move together. Zero means the JSON-LD block was renamed or lost.
     assert n >= 1, "no dateModified found in the JSON-LD — head block changed?"
