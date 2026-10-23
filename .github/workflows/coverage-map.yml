@@ -1,6 +1,6 @@
 name: Coverage map — the elevator directory, drawn
 
-# /elevators shows every grain elevator AGSIST tracks: green where we read the
+# /list-your-elevator#coverage (was /elevators) shows every grain elevator AGSIST tracks: green where we read the
 # elevator's own board, grey where it is still in the queue. The source of
 # truth is dnilgis/bids, which publishes its directory to GitHub Pages, so this
 # repository holds no copy of the elevator list — it renders one.
@@ -16,7 +16,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/build_coverage_map.mjs'
-      - 'elevators.html'
+      - 'list-your-elevator.html'
 
 concurrency:
   group: coverage-map
