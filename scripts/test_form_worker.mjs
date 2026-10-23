@@ -28,7 +28,7 @@ let n = 0; const A = (c, m) => { if (!c) { console.log('FAIL', m); process.exit(
 const forms = () => [...store.keys()].filter(k => k.startsWith('form:'));
 
 const claim = { kind: 'claim', elevator: 'Chetek Co-op', town: 'Chetek', state: 'wi', contact_name: 'Al Smith', role: 'Manager',
-  email: 'Al@Chetek.coop', phone: '715-555-0100', bid_page_url: 'chetekcoop.com/bids', hosted_board: 'yes', page: '/elevators#claim', extra: 'dropped' };
+  email: 'Al@Chetek.coop', phone: '715-555-0100', bid_page_url: 'chetekcoop.com/bids', hosted_board: 'yes', page: '/list-your-elevator#claim', extra: 'dropped' };
 
 let r = await post(claim); let j = await r.json();
 A(r.status === 200 && j.ok === true, 'claim stored');
