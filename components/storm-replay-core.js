@@ -380,7 +380,7 @@
     } else if (hail.ok && hail.daily) {
       var dd = hail.daily;
       head.push('Hail estimated ' + (dd.onField ? 'at' : 'near') + ' your field');
-      lines.push({ kind: 'hail', tag: 'estimate', text: 'Radar estimated hail ' + (dd.onField ? 'at your field' : miTxt(dd.mi) + ' from your field') + ' that day, up to ' + hailIn(dd.maxIn) + '. The hour-by-hour file keeps 2 days, so the time of day is not known here.' });
+      lines.push({ kind: 'hail', tag: 'estimate', text: 'Radar estimated hail ' + (dd.onField ? 'at your field' : miTxt(dd.mi) + ' from your field') + ' that day, up to ' + hailIn(dd.maxIn) + '. ' + (hail.why === 'old' ? 'The hour-by-hour file keeps 2 days' : 'The hour-by-hour estimate is not on file for this window') + ', so the time of day is not known here.' });
     } else if (hail.ok) {
       lines.push({ kind: 'hail', tag: 'estimate', text: 'No radar-estimated hail within ' + NEAR_HAIL_MI + ' miles of your field' + (hail.coverage && hail.coverage.read < hail.coverage.need ? ' in the ' + hail.coverage.read + ' of ' + hail.coverage.need + ' hours on file.' : ' in this window.') });
     }

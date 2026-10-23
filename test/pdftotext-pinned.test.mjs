@@ -59,3 +59,15 @@ test('the PR checks node test job gets pdftotext before the tests', () => {
   assert.ok(at > 0, 'node-tests uses the action');
   assert.ok(at < job.indexOf('checks.sh --only=node-test'), 'before the tests');
 });
+
+test('a job that uses a pinned Ubuntu 24.04 build runs on ubuntu-24.04, not ubuntu-latest (moving to Ubuntu 26)', () => {
+  const y = noComments(read(`${WFD}/pr-checks.yml`));
+  const jobs = y.slice(y.search(/^jobs:\s*$/m)).split(/\n(?=  [A-Za-z0-9_-]+:\s*\n)/).slice(1);
+  let n = 0;
+  for (const j of jobs) {
+    if (!/uses: \.\/\.github\/actions\/(pdftotext|browser-fonts)\s*$/m.test(j)) continue;
+    n++;
+    assert.match(j, /^    runs-on: ubuntu-24\.04\s*(#.*)?$/m, j.split('\n')[0]);
+  }
+  assert.ok(n >= 1, 'the node test job uses them');
+});

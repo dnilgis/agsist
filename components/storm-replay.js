@@ -652,7 +652,9 @@
     return getJSON('/data/hail/mesh/hours.json', 12000).then(function (doc) {
       var hs = (doc && doc.hours) || [];
       var first = hs.length ? Date.parse(hs[0].end) - HOUR : null, asOf = doc && doc.meta && Date.parse(doc.meta.as_of);
-      if (first == null || e <= first) throw Object.assign(new Error('old'), { old: true, doc: doc });
+      // an hourly file with no hours at all is not "too far back": it has nothing yet
+      if (first == null) throw Object.assign(new Error('empty'), { empty: true, doc: doc });
+      if (e <= first) throw Object.assign(new Error('old'), { old: true, doc: doc });
       var out = { state: 'ok', doc: doc, hours: C.hailHours(doc, lat, lon, s, e), coverage: C.hoursCoverage(doc, s, e), asOf: asOf };
       if (asOf && e - asOf > C.HOURS_STALE_H * HOUR && now - asOf > C.HOURS_STALE_H * HOUR) { out.state = 'stale'; out.since = asOf; }
       return out;
@@ -671,7 +673,7 @@
             fcs.forEach(function (fc) { if (fc && fc.features) feats = feats.concat(fc.features); });
             var fc = { type: 'FeatureCollection', features: feats };
             R.data.dailyFc = fc;
-            return { state: err && err.old ? 'old' : 'nohours', daily: C.dailyHail(fc, lat, lon), hours: [] };
+            return { state: err && err.old ? 'old' : err && err.empty ? 'empty' : 'nohours', daily: C.dailyHail(fc, lat, lon), hours: [] };
           });
       }).catch(function () { return { state: 'down', hours: [] }; });
     }).then(function (res) {
@@ -783,7 +785,7 @@
     var lres = lt && lt.state === 'ok' ? C.lightningStrikes(lt.readings) : null;
     var cap = C.caption({
       start: start(), end: end(), tz: R.tz,
-      hail: { ok: /^(ok|stale|old|nohours)$/.test(hd.state || ''), hours: hd.hours, coverage: hd.coverage, daily: hd.daily },
+      hail: { ok: /^(ok|stale|old|nohours|empty)$/.test(hd.state || ''), why: hd.state, hours: hd.hours, coverage: hd.coverage, daily: hd.daily },
       reports: { ok: rp.state === 'ok', list: rp.list },
       rain: { ok: rn.ok, v: rn.v, start: rn.start, end: rn.end },
       lightning: lres ? { ok: true, strikes: lres.strikes, read: lres.read, total: lres.total, peak: lres.peak } : { ok: false }
@@ -821,6 +823,7 @@
       : hd.state === 'stale' ? C.CREDITS.swaths.name + ' has not updated since ' + C.when(hd.since, tz, ref) + '.'
       : hd.state === 'old' ? C.CREDITS.swaths.name + ': hour by hour is kept 2 days; this shows the whole day’s swath, with no clock.'
       : hd.state === 'nohours' ? C.CREDITS.swaths.name + ': the hour-by-hour file did not load; this shows the 24-hour swath, with no clock.'
+      : hd.state === 'empty' ? C.CREDITS.swaths.name + ': hour by hour has no hours on file right now; this shows the whole day’s swath, with no clock.'
       : hd.state === 'down' ? C.CREDITS.swaths.name + ': our hail file did not load just now.'
       : C.CREDITS.swaths.name + ': loading.';
     add(cls(hd.state === 'ok' ? 'ok' : hd.state === 'down' ? 'down' : hd.state === 'loading' ? 'ok' : 'warn'), ht, 'swaths');

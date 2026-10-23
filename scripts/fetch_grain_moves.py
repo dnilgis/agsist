@@ -434,10 +434,14 @@ def shape_railcar(cli, today):
     cols = columns(cli.meta(ds))
     cm = {"date": date_col(cols)}
     cm["rr"] = pick(cols, r"railroad|carrier|company|rail_?road")
-    cm["deliv"] = pick(cols, r"deliver|month", not_pattern=r"report", used=(cm["date"],))
+    # USDA's own table: month_bid_on is a NUMBER named "Month Bid For" and sits before the bid
+    # itself, and "month" is the report month (real schema, Oct 2026). The delivery month is
+    # the text year_month_bid_for ("2026-10"); the bid is the column named just "bid".
+    cm["deliv"] = (pick(cols, r"bid.?for|deliver", types=("text", "calendar_date", "date", "floating_timestamp"))
+                   or pick(cols, r"deliver", not_pattern=r"report", used=(cm["date"],)))
     cm["shuttle"] = pick(cols, r"shuttle|service|train.?type|car.?type")
     cm["kind"] = pick(cols, r"bid.?offer|bid.?type|^type$|measure|side", not_pattern=r"shuttle|train|car")
-    cm["value"] = (pick(cols, r"bid", types=("number", "money", "double"), not_pattern=r"offer")
+    cm["value"] = (pick(cols, r"bid", types=("number", "money", "double"), not_pattern=r"offer|month|year|week|date")
                    or pick(cols, r"average|value|price|amount|premium", types=("number", "money", "double")))
     need(cm, "date", "rr", "value")
     rows = cli.rows(ds, {"$where": f"{cm['date']} >= '{cutoff(today, YEARS_PULLED)}'", "$limit": 50000})
@@ -539,6 +543,11 @@ def shape_car_orders(cli, today):
     cm = {"date": date_col(cols), "rr": pick(cols, r"railroad|carrier|company")}
     due = [c["field"] for c in cols if c["type"] in ("number", "double")
            and re.search(r"past.?due|overdue|late|unfilled|\bdays?\b", c["field"] + " " + c["name"], re.I)]
+    # USDA's "total" (Total Unfilled Orders) is the sum of the 1-10 and 11+ day columns beside
+    # it: when a total is there it is the one number read, never added to its own parts.
+    tot = [f for f in due if re.search(r"total", f + " " + next(c["name"] for c in cols if c["field"] == f), re.I)]
+    if tot:
+        due = tot[:1]
     cm["past_due"] = ",".join(due) or None
     cm["metric"] = None
     if not due:
@@ -584,7 +593,7 @@ def shape_train_speed(cli, today):
     ds = SRC["train_speed"]["ds"]
     cols = columns(cli.meta(ds))
     cm = {"date": date_col(cols), "rr": pick(cols, r"railroad|carrier|company"),
-          "type": pick(cols, r"train.?type|type|category|service", types=("text",)),
+          "type": pick(cols, r"train.?type|commodity|type|category|service", types=("text",)),
           "value": pick(cols, r"speed|mph|value", types=("number", "double"))}
     need(cm, "date", "rr", "type", "value")
     rows = cli.rows(ds, {"$where": f"{cm['date']} >= '{cutoff(today, YEARS_PULLED)}'", "$limit": 50000})
@@ -608,6 +617,9 @@ def shape_carloads(cli, today):
     cm = {"date": date_col(cols), "comm": pick(cols, r"commodity|category|type", types=("text",)),
           "value": pick(cols, r"carload|cars|value|count", types=("number", "double")),
           "rr": pick(cols, r"railroad|carrier|company"), "ctry": pick(cols, r"country|region|nation", types=("text",))}
+    # USDA posts each railroad's grain cars twice, Originated and Received; a car handed from one
+    # railroad to another is in both. Only cars originated are counted (AAR's weekly figure).
+    cm["kind"] = pick(cols, r"\btype\b|originat|received", types=("text",), used=(cm["comm"],))
     need(cm, "date", "comm", "value")
     rows = cli.rows(ds, {"$where": f"{cm['date']} >= '{cutoff(today, YEARS_PULLED)}'", "$limit": 50000})
     by = defaultdict(float)
@@ -620,6 +632,8 @@ def shape_carloads(cli, today):
             continue
         if cm["rr"] and re.search(r"total|all", str(r.get(cm["rr"], "")), re.I):
             continue  # a total row on top of the railroads would double count
+        if cm["kind"] and not re.search(r"originat", str(r.get(cm["kind"], "")), re.I):
+            continue
         by[d] += v
     pts = sorted(by.items())
     if not pts:
@@ -1075,6 +1089,31 @@ TILES = [  # (series id, short label, what "up" means for the farmer)
     ("carorders-all", "Grain car orders past due"),
     ("ocean-spread", "Gulf minus PNW ocean freight"),
 ]
+# A tile whose own series has never been read gives its place to a real one
+# (USDA's ocean rate table kscj-g8km answered with no columns at all, Oct 2026).
+TILE_FALLBACK = {"ocean-spread": ("vessels-gulf-loaded", "Grain ships loaded at the Gulf")}
+
+
+def tiles_for(docs):
+    """[(series id, label)] for the first screen: each tile's own series when it
+    has a week to show, else its fallback when that one does, else the tile as is
+    (it then says it is not available)."""
+    out = []
+    for sid, lab in TILES:
+        fb = TILE_FALLBACK.get(sid)
+        if not (docs.get(sid) or {}).get("latest") and fb and (docs.get(fb[0]) or {}).get("latest"):
+            sid, lab = fb
+        out.append((sid, lab))
+    return out
+
+
+def miss_reason(status):
+    """Plain words for a tile with nothing to show; never an error message."""
+    if not status:
+        return "not read yet"
+    if status.get("last_good"):
+        return "USDA's table could not be read this week; last read " + fmt_day(status["last_good"])
+    return "USDA's table could not be read"
 
 
 def fmt_val(doc):
@@ -1098,9 +1137,8 @@ def fmt_day(d):
 def tile_html(sid, label, doc, status):
     esc = html.escape
     if not doc or not doc.get("latest"):
-        why = status.get("error") if status else "not read yet"
         return (f'<div class="gt-tile gt-miss" data-s="{sid}"><p class="gt-tl">{esc(label)}</p>'
-                f'<p class="gt-tv">&mdash;</p><p class="gt-tm">Not available: {esc(str(why)[:90])}</p></div>')
+                f'<p class="gt-tv">&mdash;</p><p class="gt-tm">Not available: {esc(miss_reason(status))}</p></div>')
     chg = doc.get("chg")
     unit = doc["unit"]
     c = ""
@@ -1182,7 +1220,7 @@ def bake(page_path, docs, status, conn=None):
         return False
     src = open(page_path, encoding="utf-8").read()
     tiles = "".join(tile_html(sid, lab, docs.get(sid), status.get(src_of(sid)))
-                    for sid, lab in TILES)
+                    for sid, lab in tiles_for(docs))
     new = re.sub(r"<!--SEED:gtnow-->.*?<!--/SEED:gtnow-->", lambda m: f"<!--SEED:gtnow-->{tiles}<!--/SEED:gtnow-->",
                  src, flags=re.S)
     new = re.sub(r"<!--SEED:gtans-->.*?<!--/SEED:gtans-->",
@@ -1272,7 +1310,7 @@ def build(cli, today, out_dir, repo=REPO, page=None):
                 conn = old
         print(f"::warning::grain moves: connection failed: {conn.get('error')}")
     json.dump(conn, open(os.path.join(out_dir, "connection.json"), "w"), separators=(",", ":"))
-    tiles = [{"id": sid, "label": lab} for sid, lab in TILES]
+    tiles = [{"id": sid, "label": lab} for sid, lab in tiles_for(docs)]
     index = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "today": today.isoformat(),
              "tiles": tiles, "answer": answer(docs), "basis_line": basis_line(conn), "sources": status,
              "series": sorted(docs), "benchmark_verified": BENCHMARK_VERIFIED,
@@ -1395,7 +1433,97 @@ def selftest():
             assert s2["railcar"]["status"] == "failed" and "could not match" in s2["railcar"]["error"]
             assert s2["railcar"]["columns_found"] == ["nothing_useful"]
             assert d2["railcar-bnsf-shuttle"]["status"] == "failed" and d2["railcar-bnsf-shuttle"]["latest"]
+    real_usda_checks()
     print("selftest ok: parsers, weekly shaping, normals, correlation gate, our weekly basis, fixtures build, degraded source")
+
+
+def real_usda_checks():
+    """USDA's own column lists and rows (AgTransport, read Oct 21, 2026, saved to raw
+    history/agtransport/). The made-up fixtures above once let three of these through:
+    the railcar value read the delivery month (BNSF shuttle "$11" where USDA posted
+    $575), car orders added the total to its own parts, carloads added cars received
+    to cars originated. Each case here is the real table."""
+    def C(*cols):
+        return {"columns": [{"fieldName": f, "name": n, "dataTypeName": t} for f, n, t in cols]}
+    meta = {
+        "cvu8-kpyk": C(("date", "Date", "calendar_date"), ("week", "Week", "number"), ("month", "Month", "number"),
+                       ("year", "Year", "number"), ("company", "Company", "text"), ("month_bid_on", "Month Bid For", "number"),
+                       ("year_bid_on", "Year Bid For", "number"), ("near_month", "Near-Month Indicator", "checkbox"),
+                       ("train_type", "Train_Type", "text"), ("bid", "Bid", "number"),
+                       ("year_month_bid_for", "Year-Month Bid For", "text")),
+        "57pa-stwn": C(("date", "Week Ending Date", "calendar_date"), ("submission_date", "Submission Date", "calendar_date"),
+                       ("week", "Week", "number"), ("month", "Month", "number"), ("year", "Year", "number"),
+                       ("railroad", "Railroad", "text"), ("state", "State", "text"), ("placed", "Placed", "number"),
+                       ("filled", "Filled", "number"), ("unfilledlte10days", "Unfilled Orders, 1 to 10 Days Past Due", "number"),
+                       ("unfilledgt10days", "Unfilled Orders, 11+ Days Past Due", "number"),
+                       ("total", "Total Unfilled Orders", "number"), ("geocoded_column", "State Point", "point")),
+        "tb7q-kn5i": C(("date", "Week Ending Date", "calendar_date"), ("submission_date", "Submission Date", "calendar_date"),
+                       ("week", "Week", "number"), ("month", "Month", "number"), ("year", "Year", "number"),
+                       ("railroad", "Railroad", "text"), ("commodity", "Commodity", "text"), ("type", "Type", "text"),
+                       ("carloads", "Carloads", "number")),
+        "2wy9-nmz4": C(("date", "Week Ending Date", "calendar_date"), ("submission_date", "Submission Date", "calendar_date"),
+                       ("week", "Week", "number"), ("month", "Month", "number"), ("year", "Year", "number"),
+                       ("railroad", "Railroad", "text"), ("commodity", "Commodity", "text"), ("mph", "MPH", "number")),
+        "kscj-g8km": {"columns": []},
+    }
+    T = "T00:00:00.000"
+    rail = []   # (date, company, month_bid_on, train_type, bid, year_month_bid_for)
+    for d, co, mo, tt, bid, ym in [
+            ("2026-10-01", "BNSF", 10, "Non_Shuttle", 0, "2026-10"), ("2026-10-01", "BNSF", 11, "Non_Shuttle", 100, "2026-11"),
+            ("2026-10-01", "UP", 11, "Non_Shuttle", 100, "2026-11"), ("2026-10-01", "UP", 10, "Shuttle", 125, "2026-10"),
+            ("2026-10-01", "UP", 10, "Non_Shuttle", 25, "2026-10"), ("2026-10-01", "BNSF", 10, "Shuttle", 575, "2026-10"),
+            ("2026-10-08", "BNSF", 10, "Non_Shuttle", 0, "2026-10"), ("2026-10-08", "BNSF", 12, "Shuttle", 200, "2026-12"),
+            ("2026-10-08", "UP", 11, "Non_Shuttle", 25, "2026-11"), ("2026-10-08", "UP", 12, "Shuttle", 250, "2026-12"),
+            ("2026-10-08", "UP", 11, "Shuttle", 300, "2026-11"), ("2026-10-08", "UP", 10, "Shuttle", 400, "2026-10"),
+            ("2026-10-08", "BNSF", 11, "Non_Shuttle", 50, "2026-11"), ("2026-10-08", "BNSF", 10, "Shuttle", 575, "2026-10")]:
+        rail.append({"date": d + T, "week": "40", "month": "10", "year": "2026", "company": co, "month_bid_on": str(mo),
+                     "year_bid_on": "2026", "near_month": mo == 10, "train_type": tt, "bid": str(bid), "year_month_bid_for": ym})
+    orders = [{"date": "2026-10-09" + T, "railroad": rr, "state": st, "unfilledlte10days": str(a), "unfilledgt10days": str(b),
+               "total": str(a + b)} for rr, st, a, b in [("BNSF", "OR", 1, 0), ("UP", "WA", 0, 1), ("UP", "MN", 0, 6),
+                                                         ("BNSF", "SD", 43, 3)]]
+    loads = [{"date": "2026-10-10" + T, "railroad": rr, "commodity": c, "type": k, "carloads": str(n)} for rr, c, k, n in [
+        ("BNSF", "Grain", "Originated", 12846), ("UP", "Grain", "Received", 2160), ("UP", "Grain Mill Products", "Originated", 3263),
+        ("UP", "Grain", "Originated", 6292), ("BNSF", "Grain", "Received", 87), ("BNSF", "Grain Mill Products", "Received", 947)]]
+    speed = [{"date": "2026-10-09" + T, "railroad": rr, "commodity": c, "mph": str(v)} for rr, c, v in [
+        ("BNSF", "Coal", 21.9), ("UP", "Coal", 26.4), ("UP", "Grain", 23.1), ("BNSF", "Grain", 24.6)]]
+    rows = {"cvu8-kpyk": rail, "57pa-stwn": orders, "tb7q-kn5i": loads, "2wy9-nmz4": speed}
+
+    class Real:
+        def meta(self, ds):
+            return meta[ds]
+
+        def rows(self, ds, params):
+            return rows[ds]
+
+    today = date(2026, 10, 21)
+    docs, cm, _ = shape_railcar(Real(), today)
+    assert cm["value"] == "bid" and cm["deliv"] == "year_month_bid_for", cm
+    assert docs["railcar-bnsf-shuttle"]["latest"] == {"date": "2026-10-08", "value": 575.0}, docs["railcar-bnsf-shuttle"]["latest"]
+    assert docs["railcar-up-shuttle"]["latest"] == {"date": "2026-10-08", "value": 400.0}
+    assert docs["railcar-up-shuttle"]["prev"] == {"date": "2026-10-01", "value": 125.0}
+    # UP single car on Oct 8 posted no October bid: the nearest month is November
+    assert docs["railcar-up-nonshuttle"]["latest"]["value"] == 25.0
+    docs, cm, _ = shape_car_orders(Real(), today)
+    assert cm["past_due"] == "total", cm
+    assert docs["carorders-all"]["latest"]["value"] == 54.0 and docs["carorders-bnsf"]["latest"]["value"] == 47.0
+    docs, cm, _ = shape_carloads(Real(), today)
+    assert docs["carloads-grain"]["latest"]["value"] == 12846 + 6292, docs["carloads-grain"]["latest"]
+    docs, cm, _ = shape_train_speed(Real(), today)
+    assert docs["speed-bnsf"]["latest"]["value"] == 24.6 and docs["speed-up"]["latest"]["value"] == 23.1
+    try:
+        shape_ocean(Real(), today)
+        raise AssertionError("an ocean table with no columns must not read")
+    except SchemaError:
+        pass
+    # a tile that was never read gives its place to a real series; a miss says so in plain words
+    have = {"vessels-gulf-loaded": {"latest": {"date": "2026-10-08", "value": 28.0}}}
+    assert dict(tiles_for(have))["vessels-gulf-loaded"] == "Grain ships loaded at the Gulf"
+    assert "ocean-spread" in dict(tiles_for({**have, "ocean-spread": {"latest": {"date": "2026-10-08", "value": 9.0}}}))
+    failed = {"status": "failed", "error": "SchemaError: could not match column(s): date, gulf, pnw", "last_good": None}
+    h = tile_html("ocean-spread", "Gulf minus PNW ocean freight", None, failed)
+    assert "Error" not in h and "column" not in h and "USDA&#x27;s table could not be read" in h, h
+    assert "last read Oct 14, 2026" in miss_reason({"status": "failed", "last_good": "2026-10-14"})
+    assert "Not available: not read yet" in tile_html("x", "x", None, None)
 
 
 def main():
