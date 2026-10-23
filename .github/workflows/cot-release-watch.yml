@@ -379,6 +379,11 @@ jobs:
       # rerun or a forced run from mailing anyone twice. A manual run is a dry
       # run unless send_email is ticked. Readers: the worker's cot list (v5.44).
       # Secrets: the report-day sender's. No new secret.
+      # Oct 23: the script is a dry run unless SEND=1. The run after a new
+      # report sends to the list only once the repo variable FUNDS_WEEKLY_LIVE
+      # is 1 (Sig's OK for a new scheduled email, STANDING-DECISIONS Oct 21);
+      # until then it renders and counts, and sends nothing. Preview to Sig
+      # only: funds-weekly.yml, mode preview.
       - name: Test the Funds this week sender and its loop
         id: cot_mail_test
         if: ${{ !cancelled() && steps.commit.outcome == 'success' }}
@@ -400,5 +405,5 @@ jobs:
           LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
-          DRY_RUN:      ${{ (github.event_name == 'workflow_dispatch' && inputs.send_email != true) && '1' || '' }}
+          SEND:         ${{ ((github.event_name != 'workflow_dispatch' && vars.FUNDS_WEEKLY_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.send_email == true)) && '1' || '' }}
         run: python scripts/send_cot_weekly.py
