@@ -73,6 +73,7 @@ def empty_ribbon(attrs, sid):
 NAMES = {"whats-priced-in": "What's Priced In", "breakeven": "Break-Even Calculator",
          "conditions-yield": "Ratings vs Yield", "conditions": "Crop Conditions", "basis": "Basis vs Normal",
          "elevators": "Elevator Coverage Map", "fast-facts": "Fast Facts",
+         "usda-calendar": "USDA Calendar: What's Priced In", "list-your-elevator": "Elevator Coverage Map",
          "foreign-land": "Foreign-Owned Land", "spray": "Spray Advisory", "urea": "Urea Volatilization Risk",
          "archive": "Daily Archive", "tools": "All Tools", "cash-lease": "Cash Farm Lease"}
 
