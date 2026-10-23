@@ -24,7 +24,8 @@
    "a": 20.69,
    "n": 27,
    "lo": 7.0,
-   "hi": 30.0
+   "hi": 30.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -34,7 +35,8 @@
    "n": 29,
    "lo": 7.0,
    "hi": 26.0,
-   "k": "disk-tandem"
+   "k": "disk-tandem",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -43,7 +45,8 @@
    "a": 14.75,
    "n": 8,
    "lo": 8.0,
-   "hi": 28.0
+   "hi": 28.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -53,7 +56,8 @@
    "n": 8,
    "lo": 17.0,
    "hi": 36.0,
-   "k": "chisel"
+   "k": "chisel",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -62,7 +66,8 @@
    "a": 36.0,
    "n": 8,
    "lo": 28.0,
-   "hi": 60.0
+   "hi": 60.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -72,7 +77,8 @@
    "n": 15,
    "lo": 15.0,
    "hi": 35.0,
-   "k": "subsoil"
+   "k": "subsoil",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -82,7 +88,8 @@
    "n": 16,
    "lo": 9.0,
    "hi": 26.0,
-   "k": "field-cult"
+   "k": "field-cult",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -92,7 +99,8 @@
    "n": 18,
    "lo": 14.0,
    "hi": 28.0,
-   "k": "vertical-till"
+   "k": "vertical-till",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -102,7 +110,8 @@
    "n": 9,
    "lo": 14.0,
    "hi": 36.0,
-   "k": "strip-till"
+   "k": "strip-till",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -111,7 +120,8 @@
    "a": 26.71,
    "n": 14,
    "lo": 18.0,
-   "hi": 36.0
+   "hi": 36.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -120,7 +130,8 @@
    "a": 15.29,
    "n": 7,
    "lo": 12.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -129,7 +140,9 @@
    "a": 21.33,
    "n": 6,
    "lo": 12.0,
-   "hi": 40.0
+   "hi": 40.0,
+   "k": "cultivate-row",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -138,7 +151,8 @@
    "a": 18.75,
    "n": 8,
    "lo": 12.0,
-   "hi": 26.0
+   "hi": 26.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -147,7 +161,8 @@
    "a": 21.62,
    "n": 13,
    "lo": 12.0,
-   "hi": 50.0
+   "hi": 50.0,
+   "c": "tillage"
   },
   {
    "s": "Planting and post planting",
@@ -156,7 +171,8 @@
    "a": 17.86,
    "n": 14,
    "lo": 10.0,
-   "hi": 25.0
+   "hi": 25.0,
+   "c": "planting"
   },
   {
    "s": "Planting and post planting",
@@ -166,7 +182,8 @@
    "n": 31,
    "lo": 15.0,
    "hi": 40.0,
-   "k": "drill-smallgrain"
+   "k": "drill-smallgrain",
+   "c": "planting"
   },
   {
    "s": "Planting and post planting",
@@ -176,7 +193,8 @@
    "n": 6,
    "lo": 18.0,
    "hi": 25.0,
-   "k": "drill-soy"
+   "k": "drill-soy",
+   "c": "planting"
   },
   {
    "s": "Planting and post planting",
@@ -186,7 +204,8 @@
    "n": 26,
    "lo": 15.0,
    "hi": 40.0,
-   "k": "drill-soy-notill"
+   "k": "drill-soy-notill",
+   "c": "planting"
   },
   {
    "s": "Planting and post planting",
@@ -195,7 +214,8 @@
    "a": 30.0,
    "n": 8,
    "lo": 15.0,
-   "hi": 45.0
+   "hi": 45.0,
+   "c": "planting"
   },
   {
    "s": "Planting and post planting",
@@ -204,7 +224,9 @@
    "a": 22.27,
    "n": 28,
    "lo": 15.0,
-   "hi": 30.0
+   "hi": 30.0,
+   "k": "drill-cover",
+   "c": "planting"
   },
   {
    "s": "Planting and post planting",
@@ -213,7 +235,8 @@
    "a": 26.36,
    "n": 14,
    "lo": 15.0,
-   "hi": 49.0
+   "hi": 49.0,
+   "c": "planting"
   },
   {
    "s": "Planting and post planting",
@@ -223,7 +246,8 @@
    "n": 8,
    "lo": 20.0,
    "hi": 44.0,
-   "k": "plant-row"
+   "k": "plant-row",
+   "c": "planting"
   },
   {
    "s": "Planting and post planting",
@@ -232,7 +256,8 @@
    "a": 30.01,
    "n": 20,
    "lo": 20.0,
-   "hi": 50.0
+   "hi": 50.0,
+   "c": "planting"
   },
   {
    "s": "Planting and post planting",
@@ -241,7 +266,8 @@
    "a": 25.95,
    "n": 15,
    "lo": 18.0,
-   "hi": 36.0
+   "hi": 36.0,
+   "c": "planting"
   },
   {
    "s": "Planting and post planting",
@@ -250,7 +276,8 @@
    "a": 28.26,
    "n": 17,
    "lo": 20.0,
-   "hi": 42.0
+   "hi": 42.0,
+   "c": "planting"
   },
   {
    "s": "Planting and post planting",
@@ -259,7 +286,8 @@
    "a": 29.14,
    "n": 11,
    "lo": 20.0,
-   "hi": 45.0
+   "hi": 45.0,
+   "c": "planting"
   },
   {
    "s": "Haying and baling",
@@ -269,7 +297,8 @@
    "n": 7,
    "lo": 10.0,
    "hi": 25.0,
-   "k": "mow-hay"
+   "k": "mow-hay",
+   "c": "hay"
   },
   {
    "s": "Haying and baling",
@@ -279,7 +308,8 @@
    "n": 15,
    "lo": 5.0,
    "hi": 12.5,
-   "k": "rake"
+   "k": "rake",
+   "c": "hay"
   },
   {
    "s": "Haying and baling",
@@ -289,7 +319,8 @@
    "n": 17,
    "lo": 14.0,
    "hi": 25.0,
-   "k": "swath"
+   "k": "swath",
+   "c": "hay"
   },
   {
    "s": "Haying and baling",
@@ -298,7 +329,8 @@
    "a": 9.67,
    "n": 6,
    "lo": 4.0,
-   "hi": 15.0
+   "hi": 15.0,
+   "c": "hay"
   },
   {
    "s": "Haying and baling",
@@ -308,7 +340,8 @@
    "n": 26,
    "lo": 12.0,
    "hi": 25.0,
-   "k": "bale-round-net"
+   "k": "bale-round-net",
+   "c": "hay"
   },
   {
    "s": "Haying and baling",
@@ -317,7 +350,8 @@
    "a": 21.22,
    "n": 9,
    "lo": 18.0,
-   "hi": 27.0
+   "hi": 27.0,
+   "c": "hay"
   },
   {
    "s": "Haying and baling",
@@ -326,7 +360,8 @@
    "a": 4.82,
    "n": 11,
    "lo": 2.0,
-   "hi": 7.0
+   "hi": 7.0,
+   "c": "hay"
   },
   {
    "s": "Small grain harvest",
@@ -336,7 +371,8 @@
    "n": 9,
    "lo": 36.0,
    "hi": 65.0,
-   "k": "combine-smallgrain"
+   "k": "combine-smallgrain",
+   "c": "harvest"
   },
   {
    "s": "Small grain harvest",
@@ -345,7 +381,8 @@
    "a": 33.57,
    "n": 7,
    "lo": 30.0,
-   "hi": 45.0
+   "hi": 45.0,
+   "c": "harvest"
   },
   {
    "s": "Small grain harvest",
@@ -354,7 +391,8 @@
    "a": 0.21,
    "n": 11,
    "lo": 0.15,
-   "hi": 0.33
+   "hi": 0.33,
+   "c": "hauling"
   },
   {
    "s": "Application of fertilizer",
@@ -364,7 +402,8 @@
    "n": 14,
    "lo": 8.0,
    "hi": 17.0,
-   "k": "fert-dry"
+   "k": "fert-dry",
+   "c": "spray"
   },
   {
    "s": "Application of fertilizer",
@@ -373,7 +412,8 @@
    "a": 12.48,
    "n": 12,
    "lo": 9.0,
-   "hi": 22.0
+   "hi": 22.0,
+   "c": "spray"
   },
   {
    "s": "Application of fertilizer",
@@ -383,7 +423,8 @@
    "n": 22,
    "lo": 8.0,
    "hi": 25.0,
-   "k": "fert-liquid"
+   "k": "fert-liquid",
+   "c": "spray"
   },
   {
    "s": "Application of fertilizer",
@@ -392,7 +433,8 @@
    "a": 15.25,
    "n": 18,
    "lo": 9.5,
-   "hi": 23.0
+   "hi": 23.0,
+   "c": "spray"
   },
   {
    "s": "Application of fertilizer",
@@ -402,7 +444,8 @@
    "n": 16,
    "lo": 10.0,
    "hi": 25.0,
-   "k": "nh3"
+   "k": "nh3",
+   "c": "spray"
   },
   {
    "s": "Insect, disease and weed control",
@@ -412,7 +455,8 @@
    "n": 29,
    "lo": 7.0,
    "hi": 12.5,
-   "k": "spray-ground"
+   "k": "spray-ground",
+   "c": "spray"
   },
   {
    "s": "Insect, disease and weed control",
@@ -422,7 +466,8 @@
    "n": 6,
    "lo": 13.0,
    "hi": 20.0,
-   "k": "spray-drone"
+   "k": "spray-drone",
+   "c": "spray"
   },
   {
    "s": "Harvesting grains and soybeans",
@@ -431,7 +476,8 @@
    "a": 50.7,
    "n": 30,
    "lo": 25.0,
-   "hi": 82.0
+   "hi": 82.0,
+   "c": "harvest"
   },
   {
    "s": "Harvesting grains and soybeans",
@@ -440,7 +486,8 @@
    "a": 0.32,
    "n": 8,
    "lo": 0.26,
-   "hi": 0.45
+   "hi": 0.45,
+   "c": "harvest"
   },
   {
    "s": "Harvesting grains and soybeans",
@@ -450,7 +497,8 @@
    "n": 42,
    "lo": 30.0,
    "hi": 82.0,
-   "k": "combine-corn"
+   "k": "combine-corn",
+   "c": "harvest"
   },
   {
    "s": "Harvesting grains and soybeans",
@@ -459,7 +507,8 @@
    "a": 58.6,
    "n": 10,
    "lo": 47.0,
-   "hi": 75.0
+   "hi": 75.0,
+   "c": "harvest"
   },
   {
    "s": "Harvesting grains and soybeans",
@@ -468,7 +517,8 @@
    "a": 0.34,
    "n": 8,
    "lo": 0.26,
-   "hi": 0.45
+   "hi": 0.45,
+   "c": "harvest"
   },
   {
    "s": "Harvesting grains and soybeans",
@@ -478,7 +528,8 @@
    "n": 38,
    "lo": 28.0,
    "hi": 85.0,
-   "k": "combine-soy"
+   "k": "combine-soy",
+   "c": "harvest"
   },
   {
    "s": "Hauling operations",
@@ -487,7 +538,8 @@
    "a": 0.14,
    "n": 31,
    "lo": 0.05,
-   "hi": 0.28
+   "hi": 0.28,
+   "c": "hauling"
   },
   {
    "s": "Hauling operations",
@@ -496,7 +548,8 @@
    "a": 0.15,
    "n": 39,
    "lo": 0.06,
-   "hi": 0.28
+   "hi": 0.28,
+   "c": "hauling"
   },
   {
    "s": "Hauling operations",
@@ -505,7 +558,8 @@
    "a": 0.15,
    "n": 15,
    "lo": 0.1,
-   "hi": 0.25
+   "hi": 0.25,
+   "c": "hauling"
   },
   {
    "s": "Hauling operations",
@@ -514,7 +568,8 @@
    "a": 0.15,
    "n": 34,
    "lo": 0.06,
-   "hi": 0.27
+   "hi": 0.27,
+   "c": "hauling"
   },
   {
    "s": "Hauling operations",
@@ -524,7 +579,8 @@
    "n": 6,
    "lo": 4.0,
    "hi": 8.0,
-   "k": "grain-cart"
+   "k": "grain-cart",
+   "c": "harvest"
   },
   {
    "s": "Hauling operations",
@@ -534,7 +590,8 @@
    "n": 22,
    "lo": 0.07,
    "hi": 0.3,
-   "k": "haul-grain-bu"
+   "k": "haul-grain-bu",
+   "c": "hauling"
   },
   {
    "s": "Other custom services",
@@ -543,7 +600,9 @@
    "a": 0.02,
    "n": 7,
    "lo": 0.01,
-   "hi": 0.04
+   "hi": 0.04,
+   "k": "store-bin-month",
+   "c": "other"
   },
   {
    "s": "Other custom services",
@@ -552,7 +611,8 @@
    "a": 0.03,
    "n": 6,
    "lo": 0.01,
-   "hi": 0.06
+   "hi": 0.06,
+   "c": "other"
   },
   {
    "s": "Other custom services",
@@ -561,7 +621,8 @@
    "a": 154.29,
    "n": 7,
    "lo": 100.0,
-   "hi": 250.0
+   "hi": 250.0,
+   "c": "other"
   },
   {
    "s": "Other custom services",
@@ -570,7 +631,8 @@
    "a": 14.19,
    "n": 9,
    "lo": 5.0,
-   "hi": 35.0
+   "hi": 35.0,
+   "c": "other"
   },
   {
    "s": "Other custom services",
@@ -579,7 +641,8 @@
    "a": 161.11,
    "n": 9,
    "lo": 50.0,
-   "hi": 250.0
+   "hi": 250.0,
+   "c": "other"
   },
   {
    "s": "Other custom services",
@@ -588,7 +651,8 @@
    "a": 357.14,
    "n": 7,
    "lo": 100.0,
-   "hi": 1000.0
+   "hi": 1000.0,
+   "c": "other"
   },
   {
    "s": "Other custom services",
@@ -597,7 +661,8 @@
    "a": 158.57,
    "n": 7,
    "lo": 85.0,
-   "hi": 400.0
+   "hi": 400.0,
+   "c": "other"
   },
   {
    "s": "Custom contract farming",
@@ -607,8 +672,11 @@
    "n": 6,
    "lo": 100.0,
    "hi": 180.0,
-   "k": "custom-farm-soy"
+   "k": "custom-farm-soy",
+   "c": "other"
   }
  ],
+ "counts": true,
+ "page": true,
  "withheld": "The State Summary's dryland corn contract farming row repeats the CRP mowing row's numbers exactly and has no matching detail table, so it is left out. The summary labels small grain hauling \"cents per bushel\"; the detail table says \"flat rate per bushel\" and shows dollars, so it is listed per bushel."
 }

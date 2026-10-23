@@ -1,0 +1,138 @@
+# state: PA
+# name: Pennsylvania
+# survey: Pennsylvania's 2022 Machinery Custom Rates Report (USDA NASS Northeastern Regional Field Office, with the Pennsylvania Department of Agriculture)
+# publisher: USDA National Agricultural Statistics Service, Pennsylvania
+# survey_year: 2022
+# collected: Voluntary reports from nearly 1,400 custom operators and farmers across Pennsylvania
+# url: https://www.nass.usda.gov/Statistics_by_State/Pennsylvania/Publications/Machinery_Custom_Rates/2022%20Custom%20Rates.pdf
+# ref: cr-pa-2022
+# spread: mid80
+# counts: none
+# verify: pdf
+# page: none
+# includes: Rates include hiring the machine with fuel and operator and leave out seed, fertilizer and other materials unless the job says otherwise. Baling includes twine or plastic wrap.
+# range_note: The average is the report's State figure, the straight average of all reports. The range is the middle 80 percent of answers (the lowest and highest tenth are not published). The report does not print how many answered each job. Jobs with no State figure (only Mountain or Valley, or withheld) and the mileage and moisture lines are left out.
+key	section	operation	unit	avg	lo	hi	n
+	Tillage	1 Pass Field Prep	acre	21.40	15.00	25.00	
+chisel	Tillage	Chisel Plowing	acre	26.30	15.00	35.00	
+	Tillage	Disking, Disking Shallow	acre	21.20	12.00	25.00	
+	Tillage	Disking, w/ Harrow or Cultipacker	acre	23.90	15.00	37.50	
+moldboard	Tillage	Moldboard Plowing	acre	36.10	18.00	50.00	
+vertical-till	Tillage	Vertical Tillage	acre	21.90	12.00	28.00	
+	Drilling	Drill 7 or 9 inch row, Conventional till	acre	26.10	18.00	40.00	
+	Drilling	Drill 7 or 9 inch row, No till	acre	22.30	11.00	30.00	
+	Drilling	Drilling Alfalfa, Conventional till	acre	21.60	18.00	28.00	
+	Drilling	Drilling Alfalfa, No till	acre	23.60	12.00	30.00	
+drill-smallgrain	Drilling	Drilling Small Grains, Conventional till	acre	19.50	12.00	25.00	
+	Drilling	Drilling Small Grains, No till	acre	22.90	14.00	30.00	
+drill-soy	Drilling	Drilling Soybeans, Conventional till	acre	24.50	20.00	30.00	
+drill-soy-notill	Drilling	Drilling Soybeans, No till	acre	25.10	15.00	30.50	
+	Drilling	Drilling Small Grains, w/o Fertilizer	acre	22.90	15.00	28.00	
+	Drilling	Drilling Small Grains, Seeding and Drilling combined, w/o Fertilizer	acre	23.10	14.00	30.00	
+	Seeding	Air Seeding (w/ Fertilizer), Corn, Conventional Till	acre	28.30	21.00	32.00	
+	Seeding	Air Seeding (w/ Fertilizer), Corn, No Till	acre	29.00	20.00	38.50	
+	Seeding	Air Seeding (w/ Fertilizer), Small Grains, Conventional Till	acre	23.50	10.00	29.60	
+	Seeding	Air Seeding (w/ Fertilizer), Small Grains, No Till	acre	24.40	15.00	35.00	
+	Seeding	Air Seeding (w/ Fertilizer), Soybeans, Conventional Till	acre	29.40	25.00	42.00	
+	Seeding	Air Seeding (w/ Fertilizer), Soybeans, No Till	acre	30.60	21.00	40.00	
+	Seeding	Air Seeding (w/o Fertilizer), Corn, Conventional Till	acre	25.40	20.00	33.00	
+	Seeding	Air Seeding (w/o Fertilizer), Corn, No Till	acre	25.80	18.00	30.00	
+	Seeding	Air Seeding (w/o Fertilizer), Small Grains, No Till	acre	24.20	18.00	29.00	
+	Seeding	Air Seeding (w/o Fertilizer), Soybeans, Conventional Till	acre	26.70	21.00	32.00	
+	Seeding	Air Seeding (w/o Fertilizer), Soybeans, No Till	acre	27.00	20.00	35.00	
+	Seeding	Planting Alfalfa, clover, etc, No Till	acre	26.10	22.00	35.00	
+plant-row-fert	Seeding	Planting Corn, w/ Fertilizer, Conventional Till	acre	28.90	20.00	37.00	
+	Seeding	Planting Corn, w/ Fertilizer, No Till	acre	30.00	22.00	36.00	
+plant-row	Seeding	Planting Corn, w/o Fertilizer, Conventional Till	acre	28.10	22.00	40.00	
+plant-notill	Seeding	Planting Corn, w/o Fertilizer, No Till	acre	28.50	20.00	33.00	
+	Seeding	Planting Grass Seeding, No Till	acre	26.90	21.00	35.00	
+	Seeding	Planting Small Grains, Conventional Till	acre	24.90	18.00	35.00	
+	Seeding	Planting Small Grains, No Till	acre	26.10	18.00	30.00	
+	Seeding	Planting Soybeans, w/ Fertilizer, Conventional Till	acre	28.70	25.00	35.00	
+	Seeding	Planting Soybeans, w/ Fertilizer, No Till	acre	29.70	25.00	35.00	
+	Seeding	Planting Soybeans, w/o Fertilizer, Conventional Till	acre	27.90	21.70	37.00	
+	Seeding	Planting Soybeans, w/o Fertilizer, No Till	acre	29.00	20.00	35.00	
+	Seeding	Planting Wheat, Conventional Till	acre	24.90	21.00	32.00	
+	Seeding	Planting Wheat, No Till	acre	25.90	20.00	35.00	
+	Fertilizer and Chemicals	Ground Spraying for Weeds	acre	16.50	10.00	42.00	
+fert-dry	Fertilizer and Chemicals	Bulk Dry, Broadcast	acre	14.20	8.00	17.00	
+fert-liquid	Fertilizer and Chemicals	Liquid, Broadcast	acre	19.50	10.00	35.00	
+sidedress-liquid	Fertilizer and Chemicals	Liquid, Side-Dressing w/ Drop Nozzles	acre	15.90	10.00	16.50	
+	Fertilizer and Chemicals	Lime Application	acre	17.90	9.00	30.00	
+lime-ton	Fertilizer and Chemicals	Lime Application	ton	33.70	5.00	55.00	
+	Fertilizer and Chemicals	Manure, Dry Application	acre	23.20	8.00	55.00	
+	Fertilizer and Chemicals	Manure: Loading	hour	86.60	15.00	120.00	
+	Fertilizer and Chemicals	Manure: Spreading	acre	69.30	15.00	130.00	
+	Fertilizer and Chemicals	Air Application, Fungicide	acre	19.90	11.00	28.00	
+spray-aerial	Fertilizer and Chemicals	Air Application, Herbicide	acre	14.90	11.00	21.00	
+	Fertilizer and Chemicals	Air Application, Insecticide	acre	16.50	11.00	24.00	
+	Fertilizer and Chemicals	Ground Application, Fungicide	acre	14.40	10.00	18.50	
+spray-ground	Fertilizer and Chemicals	Ground Application, Herbicide, Boom Sprayer	acre	15.60	10.00	20.00	
+	Fertilizer and Chemicals	Ground Application, Herbicide, Broadcast or Banded only, Liquid	acre	14.70	12.00	25.00	
+	Fertilizer and Chemicals	Ground Application, Insecticide, Broadcast or Banded only, Liquid	acre	13.40	10.00	16.50	
+	Fertilizer and Chemicals	Plant Growth Regulators, Ground Application	acre	16.20	10.00	20.00	
+combine-corn	Harvest and Combining	Combining Corn	acre	38.60	30.00	48.00	
+	Harvest and Combining	Combining Small Grains, from swath	acre	36.60	25.00	55.00	
+combine-smallgrain	Harvest and Combining	Combining Small Grains, Straight	acre	38.50	30.00	48.00	
+combine-soy	Harvest and Combining	Combining Soybeans	acre	38.70	32.00	48.00	
+	Harvest and Combining	Combining Other	acre	38.00	31.00	48.00	
+	Harvest and Combining	Crop Handling, Dry Corn	bushel	0.28	0.20	0.40	
+	Harvest and Combining	Crop Handling, Shelling Corn	bushel	0.32	0.15	0.50	
+	Harvest and Combining	Ear Corn Picking, Farm Use	acre	33.70	18.00	50.00	
+harvest-haul-corn	Harvest and Combining	Harvest, Corn, Combine, Grain Cart, Haul to Local Farm	acre	44.50	32.00	65.00	
+	Harvest and Combining	Harvest, Corn, Corn Stalks, Large Bales	bale	8.35	7.50	9.95	
+harvest-haul-soy	Harvest and Combining	Harvest, Soybeans, Combine, Grain Cart, Haul to Local Farm	acre	42.50	30.00	60.00	
+harvest-haul-smallgrain	Harvest and Combining	Harvest, Wheat, Combine, Grain Cart, Haul to Local Farm	acre	43.20	30.00	64.00	
+stalk-chop	Harvest and Combining	Shredding Corn Stalks	acre	17.70	10.00	25.00	
+	Harvest and Combining	Corn Harvest, excluding Hauling Charge, base rate	acre	39.20	30.00	50.00	
+	Harvest and Combining	Soybean Harvest, excluding Hauling Charge, base rate	acre	38.60	30.00	45.00	
+mow-hay	Hay Harvest	Mowing Hay	acre	19.90	14.00	25.00	
+mow-cond	Hay Harvest	Mowing and Conditioning Hay	acre	21.20	14.00	30.00	
+rake	Hay Harvest	Raking Hay	acre	12.40	7.00	18.00	
+swath	Hay Harvest	Swathing Hay	acre	17.40	10.00	25.00	
+ted	Hay Harvest	Tedding Hay	acre	12.30	7.00	17.00	
+	Hay Harvest	Windrowing Hay	acre	14.90	10.00	18.75	
+bale-round	Hay Harvest	Baling, Round Bales, Small Bales, <1500 pounds	bale	9.75	6.00	17.00	
+	Hay Harvest	Baling, Round Bales, Large Bales, >1500 pounds	bale	9.90	7.00	14.00	
+	Hay Harvest	Baling, Round Bales, 4 x 5	bale	9.00	6.00	12.00	
+	Hay Harvest	Baling, Round Bales, 4 x 5, Cutting, Raking, and Baling	bale	19.00	8.00	32.00	
+bale-smallsq	Hay Harvest	Baling, Square Bales, Small, <250 pounds	bale	2.90	0.95	8.00	
+bale-largesq	Hay Harvest	Baling, Square Bales, Large, >250 pounds	bale	13.30	7.50	15.00	
+	Hay Harvest	Cost of all haying operations, Small Square Bales	bale	2.45	0.80	3.50	
+	Crops Hauling and Trucking	Barley Hauling, base charge	bushel	0.27	0.23	0.30	
+haul-grain-bu	Crops Hauling and Trucking	Corn Hauling, base charge	bushel	0.28	0.12	0.46	
+	Crops Hauling and Trucking	Grains and Oilseeds Hauling, base charge	bushel	0.28	0.20	0.35	
+	Crops Hauling and Trucking	Oats Hauling, base charge	bushel	0.28	0.20	0.40	
+	Crops Hauling and Trucking	Soybeans Hauling, base charge	bushel	0.29	0.12	0.43	
+	Crops Hauling and Trucking	All Wheat Hauling, base charge	bushel	0.27	0.15	0.40	
+	Silage and Haylage Making	Bagging Silage	ton	5.45	2.90	8.50	
+	Silage and Haylage Making	Blower	hour	44.10	20.00	70.00	
+	Silage and Haylage Making	Chopping Silage, Corn, Chopping Only	hour	305.00	110.00	455.00	
+	Silage and Haylage Making	Chopping Silage, Corn, Chopping and Hauling Only	hour	338.00	165.00	600.00	
+	Silage and Haylage Making	Chopping Silage, Corn, Chopping and Hauling Only	ton	7.30	5.00	9.65	
+	Silage and Haylage Making	Chopping Silage, Corn, Chopping, Hauling, and Filling	hour	473.00	250.00	640.00	
+	Silage and Haylage Making	Chopping Silage, Other Silage, Chopping Only	hour	349.00	250.00	440.00	
+	Silage and Haylage Making	Chopping Silage, Other Silage, Chopping and Hauling Only	hour	360.00	275.00	660.00	
+	Silage and Haylage Making	Chopping Silage, Other Silage, Chopping, Hauling, and Filling	hour	505.00	375.00	750.00	
+	Silage and Haylage Making	Pull-type Chopper and Tractor	hour	102.00	50.00	125.00	
+	Silage and Haylage Making	Self-Propelled Chopper	hour	330.00	160.00	450.00	
+	Silage and Haylage Making	Labor, 1 Person, 1 Truck	hour	128.00	70.00	250.00	
+	Silage and Haylage Making	Labor, 1 Person, 2 Wagons, 1 Tractor	hour	133.00	75.00	200.00	
+	Silage and Haylage Making	Labor, 2 People, 2 Wagons, 2 Tractors	hour	211.00	100.00	500.00	
+	Seed Cleaning	Small Grains (Wheat, Barley, Oats), Seed Cleaning Only	bushel	0.99	0.60	1.25	
+	Grain Drying	Corn Drying, base rate	bushel	0.28	0.05	0.60	
+	Manure Removal and Spreading	Dry Manure Spreading	ton	11.10	6.40	14.00	
+	Manure Removal and Spreading	Liquid Manure Removal and Spreading	1,000 gallon	11.00	6.00	19.00	
+	Manure Removal and Spreading	Liquid Manure Spreading	1,000 gallon	10.20	4.50	20.00	
+	Livestock Services	Cattle, Artificial Insemination	head	16.30	7.00	35.00	
+	Livestock Services	Cattle, Feeding Weaned Calves	head	2.20	1.50	2.75	
+	Livestock Services	Cattle Hauling, Gooseneck Trailer	mile	2.15	1.00	3.50	
+	Livestock Services	Cattle, Pregnancy Testing	head	5.50	2.95	10.00	
+	Livestock Services	Sheep, Sheering	head	8.75	5.00	15.00	
+	Land Preparation and Other Services	Brush Hogging	hour	92.70	60.00	125.00	
+	Land Preparation and Other Services	Excavator	hour	111.00	85.00	150.00	
+skid-rent	Tractor and Machine Rental	Skid-steer Loader	hour	32.40	15.00	45.00	
+	Tractor and Machine Rental	Tractor, 2-wheel drive, 100-150 HP	hour	34.70	13.00	60.00	
+	Tractor and Machine Rental	Tractor, 4-wheel drive, less than 175 HP	hour	38.30	14.00	55.00	
+	Tractor and Machine Rental	Tractor, 4-wheel drive, over 175 HP	hour	74.90	35.00	125.00	
+	Tractor and Machine Rental	Combine	acre	37.90	25.00	45.00	

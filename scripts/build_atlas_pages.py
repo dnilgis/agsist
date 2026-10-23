@@ -439,6 +439,19 @@ class World:
     def mapped(self, f):
         return f in self.geo and f in self.NB
 
+    def center(self, f):
+        """(lat, lng) of the county middle from data/atlas/pct/<ST>.json (the point Fast Facts
+        measures from when it opens a county), or None."""
+        st = self.C[f]["state"]
+        cache = self.__dict__.setdefault("_ctr", {})
+        if st not in cache:
+            try:
+                cache[st] = json.load(open(os.path.join(self.root, DATA, "pct", st + ".json"), encoding="utf-8")).get("counties") or {}
+            except Exception:
+                cache[st] = {}
+        c = (cache[st].get(f) or {}).get("c")
+        return (c[0], c[1]) if isinstance(c, list) and len(c) == 2 else None
+
     def _label(self, f, c):
         name = c["name"]
         if f not in self.geo:
@@ -993,6 +1006,37 @@ CSS = """
 .ap .watch button{font:inherit;font-size:.82rem;font-weight:700;color:var(--text);background:var(--surface,#12161a);border:1px solid var(--gold);border-radius:8px;padding:.5rem .95rem;min-height:40px;cursor:pointer}
 .ap .watch button:hover{color:var(--gold)}.ap .watch .wm{margin:.5rem 0 0;font-size:.82rem;color:var(--text)}.ap .watch .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 @media print{.ap .act,.ap .watch,#site-header,#site-footer{display:none}}
+.ap .act a,.ap .act button,.ap .watch button,.ap .watch input[type=email]{min-height:44px}
+.ap .ch-btns{display:flex;flex-wrap:wrap;gap:.5rem;margin:.2rem 0 1rem}
+.ap .ch-btns a{display:inline-flex;align-items:center;min-height:44px;padding:0 1rem;border-radius:10px;border:1px solid var(--border);background:var(--surface,#12161a);color:var(--text);font-weight:700;font-size:.9rem;text-decoration:none}
+.ap .ch-btns a:hover{border-color:var(--gold);color:var(--gold)}
+.ap .ch-btns a.pri{background:var(--gold);border-color:var(--gold);color:#111}.ap .ch-btns a.pri:hover{color:#111;filter:brightness(1.06)}
+.ap .so h2{margin-top:.6rem}
+.ap .so-g{display:grid;grid-template-columns:minmax(0,1fr);gap:.6rem;margin:0 0 1rem}
+@media(min-width:760px){.ap .so-g{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ap .so-t{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:.7rem .85rem;background:var(--surface,#12161a)}
+.ap .so-t .big{font-family:var(--font-mono);font-size:1.55rem;font-weight:700;line-height:1.1}
+.ap .so-t .what{margin:.3rem 0 .25rem;font-size:.86rem;line-height:1.45;color:var(--text)}
+.ap .so-t .src{margin:0;font-size:.74rem;color:var(--text-muted)}
+.ap .chg{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:1rem 0;align-items:start}
+@media(min-width:900px){.ap .chg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ap .card{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--surface,#12161a);min-width:0}
+.ap .card h2{font-family:var(--font-display);font-size:1.1rem;font-weight:800;letter-spacing:0;text-transform:none;color:var(--text);margin:.1rem 0 .4rem;padding:0;border:0;display:flex;justify-content:space-between;gap:.6rem;align-items:baseline}
+.ap .card h2 small{font-family:var(--font-mono);font-size:.7rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em}
+.ap .card h3,.ap .card section.as h2{font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:1.1rem 0 .4rem;padding-bottom:.25rem;border-bottom:1px solid var(--border);display:block}
+.ap .lv .r{font-family:inherit;font-weight:400}
+.ap .lv .r:empty::before{content:"Reading the newest figure...";color:var(--text-muted);font-size:.8rem}
+.ap .lv .lvv{font-family:var(--font-mono);font-weight:700;font-size:.95rem;color:var(--text)}
+.ap .lv .lvv.na{font-family:inherit;font-weight:600;color:var(--text-dim)}
+.ap .lv .lc{color:var(--text-dim);font-size:.82rem;line-height:1.5}
+.ap .lv .ls{display:block;color:var(--text-muted);font-size:.74rem;margin-top:.1rem}
+.ap .lv .ls a,.ap .note a,.ap .gaps a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.ap .gaps{border:1px dashed var(--border-2,var(--border));border-radius:12px;padding:.4rem 1rem .6rem;margin:1rem 0}
+.ap .gaps h2{margin-top:.6rem;border:0}
+.ap .gaps ul{margin:0;padding-left:1.1rem;font-size:.86rem;line-height:1.55;color:var(--text-dim)}.ap .gaps li{margin:.25rem 0}
+.ap .act.rcw button{min-height:44px}
+@media (max-width:640px){.ap{padding:0 12px 3rem}.ap .card{padding:10px 12px}.ap .ch-btns a{flex:1 1 auto;justify-content:center}}
+@media print{.ap .ch-btns,.ap .gaps{display:none}.ap .card{break-inside:avoid}}
 """
 POSTAL = "AGSIST, PO Box 243, Chetek, WI 54728"
 # watch.js 429s (2026-10-19): the worker answers 429 for three reasons, and
@@ -1525,7 +1569,7 @@ SHORT_UNIT = ((" County", " Co."), (" planning region", " Region"), (" reporting
 
 
 def county_title(W, f, rec, max_len=60):
-    """'<Label>, <State> Cash Rent <year>: $X/Acre | AGSIST' when a rent is
+    """'<Label>, <State> Farm Facts · Cash Rent <year>: $X/Acre | AGSIST' when a rent is
     published (non-irrigated, else irrigated, named), with the survey year the
     figure carries. No rent: a title that does not say rent. Shortened in
     steps to stay within max_len where it can."""
@@ -1546,7 +1590,13 @@ def county_title(W, f, rec, max_len=60):
         tail = ": Farmland Value and Risk"
     else:
         tail = ": Farmland Record"
+    # County farm facts (Sig, Oct 23, 2026): the page's name leads where it fits, the rent stays in
+    # the title (the query the page is found by); else the older title, shortened as before
+    ff = (" Farm Facts · " + tail.lstrip(" :")) if tail.startswith(" ") else (" Farm Facts" + (tail if "Record" not in tail else ""))
     tries = []
+    for l_, s_ in ((lab, stn), (lab, st), (short, stn), (short, st)):
+        t = "%s, %s%s" % (l_, s_, ff)
+        tries += [t + " | AGSIST", t]
     for l_, s_ in ((lab, stn), (short, stn), (lab, st), (short, st)):
         t = "%s, %s%s" % (l_, s_, tail)
         tries += [t + " | AGSIST", t]
@@ -1566,6 +1616,154 @@ def county_desc(lede_text):
         if len(lede_text + tail) <= 160:
             return lede_text + tail
     return lede_text
+
+
+# ------------------------------------------------- county farm facts (Oct 23, 2026)
+# The Atlas county page is the county home (Sig, Oct 23: vision panel Oct 22, build 3,
+# laid out like the Barron mock). It keeps every figure the Atlas page carried and adds:
+#   - "Stands out": up to three figures ranked against the county's OWN record, each
+#     with the length of that record and its source. Only a record high or low, or a
+#     high or low not seen in 10 or more years, earns a tile. Nothing earned, no section.
+#   - live rows (components/county-home.js, the Fast Facts row builders in place.js):
+#     bids within 50 mi of the county middle, basis, futures, rain to date, drought this
+#     week, hail, harvest pace, ARC/PLC sign-up. Nothing that changes daily is baked, so
+#     a price move never rewrites 3,148 pages or their "Figures as of" date.
+#   - price lines by what the county raises, from the 2022 Census head counts already in
+#     the county file: milk where it has 1,000 or more milk cows, feeder cattle where
+#     1,000 or more beef cows, live cattle where 1,000 or more on feed, hogs where 1,000
+#     or more hogs, the state hay price where 1,000 or more cattle and NASS prices hay
+#     in the state. One round number for every line, printed on the page.
+# One definition per measure (county-spec.md): rain percent is the county gauge's year
+# to date against the 1991-2020 normal for the same days (the rain page and Fast Facts
+# use it); drought weeks are weeks with half the county or more in D2 or worse (the
+# Atlas history); "this week" is the share of the county, never a second week count.
+HEAD_MIN = 1000
+LIVESTOCK_LINES = (("milk", "milk_cows"), ("feeders", "beef_cows"), ("cattle", "on_feed"), ("hogs", "hogs"))
+CH_JS = "components/county-home.js"
+
+
+def ch_v(root):
+    p = os.path.join(root, CH_JS)
+    try:
+        return hashlib.sha1(open(p, "rb").read()).hexdigest()[:8]
+    except OSError:
+        return "0"
+
+
+def head_count(d, k):
+    L = d.get("livestock") or {}
+    if not ok(L):
+        return None
+    v = get(L, k, "value")
+    return v if isinstance(v, (int, float)) else None
+
+
+def hay_states(W):
+    if not hasattr(W, "_hay"):
+        try:
+            h = json.load(open(os.path.join(W.root, "data", "hay", "hay-prices.json"), encoding="utf-8"))
+            W._hay = set((h.get("names") or {}).keys())
+        except Exception:
+            W._hay = set()
+    return W._hay
+
+
+def price_lines(W, f, d):
+    """Which price lines the county's own livestock earns (HEAD_MIN head, 2022 Census)."""
+    out = [k for k, col in LIVESTOCK_LINES if (head_count(d, col) or 0) >= HEAD_MIN]
+    if (head_count(d, "cattle") or 0) >= HEAD_MIN and W.C[f]["state"] in hay_states(W):
+        out.append("hay")
+    return out
+
+
+def own_record(series, unit_fmt, what, src, latest_year=None, min_n=10, gap=10):
+    """A figure against the county's own record. series {year: value}. Returns a tile dict or None.
+    A record high or low over min_n or more years, or the highest (lowest) since a year at least
+    `gap` years back. The record's length is always said."""
+    ys = sorted(y for y, v in series.items() if v is not None)
+    if len(ys) < min_n:
+        return None
+    y = latest_year if latest_year in series and series.get(latest_year) is not None else ys[-1]
+    v = series[y]
+    before = [(k, series[k]) for k in ys if k < y]
+    if len(before) < min_n - 1:
+        return None
+    n = len(before) + 1
+    for hi in (True, False):
+        beat = [k for k, x in before if (x >= v if hi else x <= v)]
+        word = "highest" if hi else "lowest"
+        if not beat:
+            ties = ""
+            return {"big": unit_fmt(v), "what": "%s, %d: the %s of %d %s since %d%s." % (what, y, word, n, src[1], ys[0], ties), "src": src[0]}
+        last = max(beat)
+        if y - last >= gap and len([k for k in ys if last < k < y]) >= gap - 2:
+            return {"big": unit_fmt(v), "what": "%s, %d: the %s since %d (%d %s on record since %d)." % (what, y, word, last, n, src[1], ys[0]), "src": src[0]}
+    return None
+
+
+def stands_out(W, f, d):
+    tiles = []
+    R, Y, Dr = d.get("rent") or {}, d.get("yield") or {}, d.get("drought") or {}
+    RL = W.rent_latest
+    rv = R.get("nonirr") if ok(R) else None
+    if rv and rv.get("value") is not None and RL and rv.get("year") == RL:
+        ser = {int(k): v for k, v in (R.get("series_nonirr") or {}).items()}
+        t = own_record(ser, money, "Non-irrigated cash rent", ("USDA NASS Cash Rents Survey, %d" % RL, "surveys"), rv["year"])
+        if t:
+            x = R.get("nonirr_change10")
+            if x and x.get("pct") is not None and x.get("from") is not None:
+                t["what"] = t["what"][:-1] + "; %s %s%% from %s in %s." % ("up" if x["pct"] >= 0 else "down", fmt(abs(x["pct"]), 0), money(x["from"]), x["from_year"])
+            tiles.append(t)
+    if ok(Y) and Y.get("hist") and not CY.ends_early(Y.get("last_year"), RL):
+        ser = {int(k): v for k, v in Y["hist"].items()}
+        t = own_record(ser, lambda v: f1(v) + " bu", "Corn yield, all practices", ("USDA NASS county yields, %s" % Y.get("last_year"), "published years"), int(Y["last_year"]))
+        if t:
+            tiles.append(t)
+    py = Dr.get("partial_year") if ok(Dr) else None
+    if py and py.get("d2") and Dr.get("series"):
+        full = {int(k): v["d2"] for k, v in Dr["series"].items()
+                if v.get("maps", 0) >= FULL_YEAR_MAPS and int(k) <= Dr["last_full_year"]}
+        miss = drought_missing(Dr)
+        if len(full) >= 10:
+            more = [y for y, v in full.items() if v >= py["d2"]]
+            n_ = py["d2"]
+            if not more:
+                w = "more than any full year since %d" % min(full)
+            elif py["year"] - max(more) >= 10:
+                w = "the most since %d (%d weeks)" % (max(more), full[max(more)])
+            else:
+                w = None
+            if w:
+                tiles.append({"big": "%d week%s" % (n_, "" if n_ == 1 else "s"),
+                              "what": "With half the county or more in severe drought (D2) or worse in %d so far, %s.%s" % (
+                                  py["year"], w, (" No count for %s: that year's maps are incomplete here." % " or ".join(map(str, miss))) if miss else ""),
+                              "src": "U.S. Drought Monitor weekly maps, %d to %d (%d maps this year)" % (Dr["first_year"], py["year"], py.get("maps") or 0)})
+    return tiles[:3]
+
+
+def stands_html(tiles):
+    if not tiles:
+        return ""
+    return ('<section class="so" aria-label="What stands out"><h2>Stands out against its own record</h2><div class="so-g">%s</div></section>'
+            % "".join('<div class="so-t"><div class="big">%s</div><p class="what">%s</p><p class="src">%s</p></div>' % (esc(t["big"]), esc(t["what"]), esc(t["src"])) for t in tiles))
+
+
+def live_row(k, label):
+    """A row county-home.js fills from the shared files. Until it does, the stylesheet says it is
+    reading (an empty .r), so a crawler or a reader without JavaScript never sees a stale number."""
+    return '<div class="fact st lv" data-k="%s"><span class="l">%s</span><span class="r"></span></div>' % (k, esc(label))
+
+
+def gaps_html(W, f, d, st):
+    """Not on this page yet: true for this county, each with where it would come from."""
+    g = ["This year's growing degree days and first fall freeze for the county. The normals above are here; the current year is not yet.",
+         "County crop condition and harvest pace. USDA publishes them by state, not by county, so the state line stands in."]
+    if not has_sales(W, st):
+        g.append("Recorded farm sale prices. We read county deed records for Illinois and Wisconsin so far, not %s." % STATE_NAMES.get(st, st))
+    g.append("Number of farms and farm size, from the 2022 Census of Agriculture county tables.")
+    g.append("Soils, slope, wetlands and flood zones for one field. Those load at the field in <a href=\"/field-scout\">Field Scout</a>, not on a county page.")
+    return ('<section class="gaps" aria-label="Not on this page yet"><h2>Not on this page yet</h2><ul>%s</ul></section>'
+            % "".join("<li>%s</li>" % (x if "<a " in x else esc(x)) for x in g))
 
 
 def county_page(W, f, d, stamp):
@@ -1619,8 +1817,7 @@ def county_page(W, f, d, stamp):
     rent_link = ('<a href="/rent/%s">%s cash rent by county</a>' % (slugify(stn), esc(stn))) if st in W.rent_states else ""
     act_rent = ("\n  " + rent_link) if rent_link else ""
     # the county's ARC/PLC page, written by build_arc_plc.py only where a benchmark estimate exists
-    if os.path.exists(os.path.join(W.root, "arc-plc", W.slug[f] + ".html")):
-        act_rent += '\n  <a href="/arc-plc/%s">ARC or PLC for 2026 and 2027</a>' % W.slug[f]
+    arc_url = ("/arc-plc/" + W.slug[f]) if os.path.exists(os.path.join(W.root, "arc-plc", W.slug[f] + ".html")) else None
 
     # ---- key tiles
     def val_sub():
@@ -1710,7 +1907,7 @@ def county_page(W, f, d, stamp):
     if len(si) > 2:
         sets.append({"d": si, "c": BLUE, "n": "irrigated", "dash": True})
     ch = lines_svg(sets, "Cash rent by survey year, dollars per acre", money) if sets else ""
-    S1 += "<h2>Cash rent</h2>" + ch
+    S1 += "<h3>Cash rent</h3>" + ch
     if ch:
         S1 += '<p class="note">Dollars per acre, USDA NASS county survey. A break in a line is a year with no published survey.</p>'
     if rent_link:
@@ -1739,10 +1936,13 @@ def county_page(W, f, d, stamp):
     # The county's own PRF page (scripts/build_prf_counties.py, prf/<state>/<county>.html,
     # same slug as this page) when it is on disk, else the state's.
     prf_sl = slugify(stn)
-    if (pas_rent or (pas_ac or 0) >= 10000) and os.path.exists(os.path.join(W.root, "prf", W.slug[f] + ".html")):
-        S1 += '<p class="note">Insuring pasture or hay? See <a href="/prf/%s">PRF rainfall insurance in %s</a>: its grids, county values and record.</p>' % (W.slug[f], esc(lab))
-    elif (pas_rent or (pas_ac or 0) >= 10000) and os.path.exists(os.path.join(W.root, "prf", prf_sl + ".html")):
-        S1 += '<p class="note">Insuring pasture or hay? See <a href="/prf/%s">PRF rainfall insurance in %s</a>.</p>' % (prf_sl, esc(stn))
+    # the Programs card links the county's PRF page wherever one is live (it was here, for pasture counties only)
+    prf_html = ""
+    if os.path.exists(os.path.join(W.root, "prf", W.slug[f] + ".html")):
+        prf_html = ('<p class="note">%sPRF rainfall insurance for pasture and hay in %s: its grids, county values and record are on <a href="/prf/%s">the county PRF page</a>.</p>'
+                    % ("Insuring pasture or hay? " if (pas_rent or (pas_ac or 0) >= 10000) else "", esc(lab), W.slug[f]))
+    elif os.path.exists(os.path.join(W.root, "prf", prf_sl + ".html")):
+        prf_html = '<p class="note">Insuring pasture or hay? See <a href="/prf/%s">PRF rainfall insurance in %s</a>.</p>' % (prf_sl, esc(stn))
     rr = W.rrev.get(f)
     if rr and rr.get("p") is not None:
         if rr.get("rent") is not None:
@@ -1765,7 +1965,7 @@ def county_page(W, f, d, stamp):
         S1 += ('<div class="act rcw"><button type="button" id="rc-open" data-st="%s" data-fips="%s" aria-expanded="false">Rent share calculator and history</button></div>'
                '<div id="rc-box" hidden></div>' % (esc(W.rent_st.get(f, st)), esc(f)))
 
-    S2 = "<h2>Land value</h2>"
+    S2 = "<h3>Land value</h3>"
     if ok(V):
         S2 += fact("Land and buildings, %s" % V["latest_year"], money(V["latest"]) + "/ac", "operators' own estimate, not a sale price")
         vs = {int(k): v for k, v in (V.get("values") or {}).items() if v and v.get("per_acre") is not None}
@@ -1795,7 +1995,7 @@ def county_page(W, f, d, stamp):
                    ("NASS withheld this county\'s %s census value; the census figures shown are this county\'s own." % V.get("latest_year") if ok(V) else "This county has no census value here."))
     S2 += uni_survey_note(W, st)
 
-    S3 = "<h2>Corn yield</h2>"
+    S3 = "<h3>Corn yield</h3>"
     if ok(Y):
         hist = {int(k): v for k, v in (Y.get("hist") or {}).items()}
         S3 += bars_svg(hist, "County corn yield by year, bushels per acre", lambda v: f1(v), ref=Y.get("median"), ref_label="median %s" % f1(Y["median"]))
@@ -1817,7 +2017,7 @@ def county_page(W, f, d, stamp):
     else:
         S3 += fwith("County corn yield", why(Y))
 
-    S4 = "<h2>Crop insurance record</h2>"
+    S4 = "<h3>Crop insurance record</h3>"
     if ok(S):
         per = {int(k): v for k, v in (S.get("per_year") or {}).items() if v.get("ratio") is not None}
         closed = {y: v["ratio"] for y, v in per.items() if not per[y].get("partial")}
@@ -1850,7 +2050,7 @@ def county_page(W, f, d, stamp):
         top = sorted((k for k, v in Lo["share_all"].items() if v), key=lambda k: -Lo["share_all"][k])[:3]
         S4 += fact("Largest causes of loss, %s–%s" % (Lo["first_year"], Lo["last_year"]), " · ".join("%s %s" % (CAUSE.get(k, k), share_words(Lo["share_all"][k])) for k in top), "share of dollars paid")
 
-    S5 = "<h2>Drought and weather</h2>"
+    S5 = "<h3>Drought, year by year</h3>"
     if ok(Dr):
         # only full years: a year the file is short of is a gap in the chart, never a zero bar
         ser = {int(k): v["d2"] for k, v in (Dr.get("series") or {}).items() if v.get("maps", 0) >= FULL_YEAR_MAPS and int(k) <= Dr["last_full_year"]}
@@ -1865,6 +2065,9 @@ def county_page(W, f, d, stamp):
         if Dr.get("last5"):
             l5m = [y for y in miss if Dr["last5"]["from"] <= y <= Dr["last5"]["to"]]
             S5 += fact("Last five full years, %s" % years_covered(Dr["last5"]["from"], Dr["last5"]["to"], l5m), "%s weeks" % fmt(Dr["last5"]["d2"], 0))
+        py_ = Dr.get("partial_year")
+        if py_ and py_.get("maps"):
+            S5 += fact("%d so far" % py_["year"], "%s week%s" % (fmt(py_["d2"], 0), "" if py_["d2"] == 1 else "s"), "half the county or more in D2, %d weekly maps" % py_["maps"])
     else:
         S5 += fwith("Drought", why(Dr))
     if ok(d.get("heat")) and jr:
@@ -1876,10 +2079,24 @@ def county_page(W, f, d, stamp):
             S5 += fact("Trend in July lows since %s" % tr.get("from"), sgn(tr["per_decade"], 2) + " °F a decade", tr.get("direction"))
     Cl, Sm = d.get("climate") or {}, d.get("storms") or {}
     if ok(Cl) and Cl.get("gs_normal_in") is not None:
-        S5 += fact("Rain, April to September", f1(Cl["gs_normal_in"]) + " in",
-                   ("1991–2020 normal; last ten years %s%% of it" % Cl["gs_recent"]["pct_of_normal"]) if get(Cl, "gs_recent", "pct_of_normal") is not None else "1991–2020 normal")
+        # inches, not a percent: the one rain percent on this page is the gauge's year to date (county-spec.md)
+        S5 += fact("Rain, April to September, usual", f1(Cl["gs_normal_in"]) + " in",
+                   ("1991–2020 county normal, NOAA; the %d–%d seasons averaged %s in" % (Cl["gs_recent"]["from"], Cl["gs_recent"]["to"], f1(Cl["gs_recent"]["mean_in"])))
+                   if get(Cl, "gs_recent", "mean_in") is not None else "1991–2020 county normal, NOAA")
     if ok(Sm):
         S5 += fact("Days with hail 1 inch or larger", f1(Sm["hail_1in_days_per_year"]) + " a year", "reports, %s–%s; a zero is no report, not proof of no hail" % (Sm["from"], Sm["to"]))
+    Fr = d.get("frost") or {}
+    if ok(Fr):
+        lsf, fff, ffd = Fr.get("last_spring_freeze") or {}, Fr.get("first_fall_freeze") or {}, Fr.get("frost_free_days") or {}
+        if lsf.get("median") and fff.get("median"):
+            S5 += fact("Last spring freeze, first fall freeze", "%s, %s" % (lsf["median"], fff["median"]),
+                       "middle dates %s–%s, NOAA county-average daily low of 32 °F or colder" % (Fr["from"], Fr["to"]))
+        if ffd.get("median") is not None:
+            S5 += fact("Frost-free days", ("at least " if ffd.get("at_least") else "") + fmt(ffd["median"], 0), "middle of %s–%s" % (Fr["from"], Fr["to"]))
+        gd = Fr.get("gdd") or {}
+        if gd.get("median") is not None:
+            S5 += fact("Corn growing degree days, May to September", fmt(gd["median"], 0),
+                       "middle of %s–%s%s" % (Fr["from"], Fr["to"], ("; %d–%d averaged %s" % (gd["recent"]["from"], gd["recent"]["to"], fmt(gd["recent"]["mean"], 0))) if get(gd, "recent", "mean") is not None else ""))
     # The county's own rain page when it is live, else the state rain page (scripts/cross_links.py,
     # Oct 19, 2026). Rain county pages come and go week to week: this build never reads data/rain,
     # only whether the page is there, and county-rain.yml re-stamps the link when the rain set moves.
@@ -1887,7 +2104,7 @@ def county_page(W, f, d, stamp):
         S5 += '<p class="note">%s</p>' % XL.rain_link(W.root, rain_slug(RAIN_STATES[st]), esc(RAIN_STATES[st]),
                                                       W.slug[f].split("/", 1)[1], esc(lab))
 
-    S6 = "<h2>Land, water and programs</h2>"
+    S6 = ""
     if ok(Wt):
         sh = Wt.get("irrigated_share_2022") or {}
         if sh.get("share") is not None and sh.get("reported") is False:
@@ -1907,22 +2124,24 @@ def county_page(W, f, d, stamp):
                 S6 += fact(label, share_words(practice_share(Pr, pk)) + " of cropland", "%s ac" % fmt(x["acres"], 0))
     elif Pr.get("status"):
         S6 += fwith("Tile drainage and tillage", why(Pr))
+    SP = ""
     if ok(Cr):
         ser = {int(k): v for k, v in (Cr.get("series") or {}).items()}
         if len(ser) > 3:
-            S6 += bars_svg(ser, "CRP acres enrolled by year", lambda v: fmt(v, 0), every=5)
-            S6 += '<p class="note">Acres enrolled in the Conservation Reserve Program, USDA FSA, by fiscal year.</p>'
+            SP += "<h3>Conservation Reserve Program</h3>"
+            SP += bars_svg(ser, "CRP acres enrolled by year", lambda v: fmt(v, 0), every=5)
+            SP += '<p class="note">Acres enrolled in the Conservation Reserve Program, USDA FSA, by fiscal year.</p>'
         if get(Cr, "latest", "acres") is not None:
-            S6 += fact("CRP enrolled, %s" % Cr["latest"]["year"], fmt(Cr["latest"]["acres"], 0) + " ac",
+            SP += fact("CRP enrolled, %s" % Cr["latest"]["year"], fmt(Cr["latest"]["acres"], 0) + " ac",
                        ("%s%% of harvested cropland + CRP" % fmt(Cr["share_of_cropland"]["pct"], 1)) if get(Cr, "share_of_cropland", "pct") is not None else None)
         if Cr.get("expiring_next3"):
             x = Cr["expiring_next3"]
             ce = (100.0 * x["acres"] / Cr["latest"]["acres"]) if x.get("acres") is not None and get(Cr, "latest", "acres") else x.get("share_of_enrolled_pct")
-            S6 += fact("CRP expiring FY%s–%s" % (x["from"], x["to"]), fmt(x["acres"], 0) + " ac", share_words(ce / 100) + " of enrolled acres" if ce is not None else None)
+            SP += fact("CRP expiring FY%s–%s" % (x["from"], x["to"]), fmt(x["acres"], 0) + " ac", share_words(ce / 100) + " of enrolled acres" if ce is not None else None)
         if get(Cr, "rate", "usd_per_acre") is not None:
-            S6 += fact("CRP average rental payment, FY%s" % Cr["rate"]["year"], money(Cr["rate"]["usd_per_acre"]) + "/ac", "all contracts in force, old ones included; not today's offer")
+            SP += fact("CRP average rental payment, FY%s" % Cr["rate"]["year"], money(Cr["rate"]["usd_per_acre"]) + "/ac", "all contracts in force, old ones included; not today's offer")
     elif Cr.get("status"):
-        S6 += fwith("CRP", why(Cr))
+        SP += fwith("CRP", why(Cr))
     if ok(Wl):
         if Wl.get("kind") == "state_register":
             S6 += fact("Irrigation wells on record", fmt(Wl.get("irrigation_wells"), 0), Wl.get("register"))
@@ -1943,6 +2162,11 @@ def county_page(W, f, d, stamp):
         S6 += fact("Cattle and calves, 2022", "none reported")
     elif ok(Lv) and get(Lv, "cattle", "value") is not None:
         S6 += fact("Cattle and calves, 2022", fmt(Lv["cattle"]["value"], 0), (sgn(Lv["cattle_change"]["pct"], 1) + "% since 2017") if Lv.get("cattle_change") else None)
+    if ok(Lv):
+        for lab_, k_ in (("Milk cows, 2022", "milk_cows"), ("Beef cows, 2022", "beef_cows"), ("Cattle on feed, 2022", "on_feed"), ("Hogs and pigs, 2022", "hogs")):
+            v_ = head_count(d, k_)
+            if v_:
+                S6 += fact(lab_, fmt(v_, 0), "head, Census of Agriculture")
     own = rs
     o02 = W.ten_share(f, "2002")
     if own is not None:
@@ -2010,27 +2234,70 @@ def county_page(W, f, d, stamp):
         OUT, slugify(stn), esc(stn),
         ('<a href="/%s/%s">%s →</a>' % (OUT, W.slug[nx], esc(W.label[nx]))) if nx else "")
 
+    # ---- county farm facts: the cards (Oct 23, 2026)
+    ctr = W.center(f)
+    lines = price_lines(W, f, d)
+    rain_note = ('<p class="note">%s</p>' % XL.rain_link(W.root, rain_slug(RAIN_STATES[st]), esc(RAIN_STATES[st]), W.slug[f].split("/", 1)[1], esc(lab))) if st in RAIN_STATES else ""
+    S5 = S5.replace(rain_note, "") if rain_note else S5
+    LV_NAMES = {"milk": "Class III milk futures", "feeders": "Feeder cattle futures", "cattle": "Live cattle futures", "hogs": "Lean hog futures",
+                "hay": "Hay, %s price received" % stn}
+    C_GRAIN = ('<section class="card" aria-labelledby="c-grain"><h2 id="c-grain">Grain and prices <small>within 50 miles</small></h2>'
+               + live_row("corn-bid", "Corn bid") + live_row("soy-bid", "Soybean bid")
+               + live_row("corn-basis", "Corn basis") + live_row("soy-basis", "Soybean basis")
+               + live_row("corn-fut", "Corn futures") + live_row("soy-fut", "Soybean futures")
+               + "".join(live_row(k, LV_NAMES[k]) for k in lines)
+               + '<p class="note">Bids are posted elevator prices within 50 miles of the county middle, best and nearest, never a buyer\'s name. '
+               'Not a contract; call before you haul. %s</p>'
+               '<p class="note">%s<a href="/fast-facts?fips=%s">Bids from your own ZIP or farm, in Fast Facts</a></p></section>'
+               % ("Livestock lines show where the 2022 Census counts %s head or more: milk for milk cows, feeder cattle for beef cows, live cattle for cattle on feed, hogs for hogs, hay for all cattle." % fmt(HEAD_MIN, 0),
+                  ('<a href="/cash-bids/%s/">%s cash bids by town</a> · ' % (slugify(stn), esc(stn))) if os.path.isdir(os.path.join(W.root, "cash-bids", slugify(stn))) else "",
+                  esc(f)))
+    C_WX = ('<section class="card" aria-labelledby="c-wx"><h2 id="c-wx">Weather and the season</h2>'
+            + live_row("rain", "Rain since Jan 1") + live_row("drought", "Drought this week") + live_row("hail", "Hail, last 30 days")
+            + rain_note + S5 + "</section>")
+    C_CROPS = ('<section class="card" aria-labelledby="c-crops"><h2 id="c-crops">Crops</h2>'
+               + live_row("corn-progress", "Corn harvested") + live_row("soy-progress", "Soybeans harvested") + S3 + "</section>")
+    C_LAND = ('<section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2>'
+              + S1 + S2 + sales_block(W, f, lab, st) + "</section>")
+    arc_link = ('<p class="note">Benchmarks, payments and the choice for each crop: <a href="%s">ARC or PLC in %s</a>.</p>' % (arc_url, esc(lab))) if arc_url else (
+        ('<p class="note">No county ARC or PLC estimate here. <a href="/arc-plc/%s">ARC or PLC in %s</a>.</p>' % (slugify(stn), esc(stn)))
+        if os.path.exists(os.path.join(W.root, "arc-plc", slugify(stn) + ".html")) else "")
+    C_PROG = ('<section class="card" aria-labelledby="c-prog"><h2 id="c-prog">Programs and risk</h2>'
+              + live_row("arc", "ARC or PLC sign-up") + arc_link + prf_html + S4 + SP + "</section>")
+    C_FARMS = ('<section class="card" aria-labelledby="c-farms"><h2 id="c-farms">What farms here look like</h2>' + S6
+               + '<p class="note">USDA Census of Agriculture 2022, except wells (state well register) and power (EIA Form 860).</p></section>') if S6 else ""
+    heads = "".join(' data-h-%s="%s"' % (k, fmt(head_count(d, col), 0)) for k, col in LIVESTOCK_LINES if k in lines)
+    live_cfg = ('<div id="ch-live" hidden data-fips="%s" data-st="%s"%s data-lv="%s"%s data-rain="%s" data-arc="%s"></div>'
+                '<script defer src="/%s?v=%s"></script>' % (
+                    esc(f), esc(st), (' data-lat="%s" data-lng="%s"' % (ctr[0], ctr[1])) if ctr else "", ",".join(lines), heads,
+                    esc(re.search(r'href="([^"]+)"', rain_note).group(1)) if rain_note else "", esc(arc_url or "/arc-plc"), CH_JS, ch_v(W.root)))
+    btns = ('<div class="ch-btns"><a class="pri" href="/farmland-atlas/sheet#%s">Print this sheet</a>'
+            '<a href="/fast-facts?fips=%s">My place (Fast Facts)</a><a href="#watch">Email me what changes</a></div>' % (esc(f), esc(f)))
+
     cite = ("AGSIST Farmland Atlas. %s, %s. Figures as of %s, from USDA NASS, USDA RMA, USDA FSA, the U.S. Drought Monitor and NOAA. %s"
             % (lab, stn, stamp, url))
     csv_id = "rec"
     rec_json = json.dumps(rec, ensure_ascii=False).replace("</", "<\\/")
     body = f"""
-<main class="ap">
+<main class="ap ch">
 {crumb_vis}
-<div class="kick">Farmland Atlas · county record</div>
+<div class="kick">County farm facts</div>
 <h1>{esc(lab)}, {esc(stn)}</h1>
-<p class="sub">{esc(desc)} County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp)}.</p>
-{story_html}{warn}<div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
+<p class="sub">{esc(desc)} Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp)}; the rows marked with a date load the newest reading when the page opens.</p>
+{btns}
+{stands_html(stands_out(W, f, d))}{story_html}{warn}<div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
 <div class="act">
   <a href="/farmland-atlas#{esc(f)}">Open on the map</a>
-  <a href="/farmland-atlas/compare#{esc(f)}">Compare</a>
-  <a href="/farmland-atlas/sheet#{esc(f)}">Printable sheet</a>{act_rent}
+  <a href="/farmland-atlas/compare#{esc(f)}">Compare</a>{act_rent}
   <button type="button" id="dl">Download CSV</button>
   <button type="button" id="cp">Copy link</button>
 </div>
 {read_html}
-{watch_form(f, lab, stn)}
-{S1}{S2}{sales_block(W, f, lab, st)}{S3}{S4}{S5}{S6}{ND}
+<div class="chg">{C_GRAIN}{C_WX}{C_CROPS}{C_LAND}{C_PROG}{C_FARMS}</div>
+<div id="watch">{watch_form(f, lab, stn)}</div>
+{ND}
+{gaps_html(W, f, d, st)}
+{live_cfg}
 <h2>Cite this page</h2>
 <div class="cite"><code>{esc(cite)}</code><br>Every figure is a county average from the sources named below. Rent ranks count every county with a published rent in the same survey year, within the state (the same counties as the state rent page); other ranks count counties with 10,000 acres or more in farms. Methods: <a href="/farmland-atlas/methods">how each figure is built</a>. Downloads: <a href="/farmland-atlas/data">all counties, CSV</a>.</div>
 <details><summary>Sources, dates and arithmetic</summary>
@@ -2381,6 +2648,10 @@ def build(root=".", out_root=None, only=None, quiet=False):
             st_ = sales_tile(W, f, W.C[f]["state"])
             if st_:
                 fig["sales_tile"] = [st_["val"], st_["sub"]]
+            # the county farm facts figures baked on the page (Oct 23, 2026): frost and GDD normals,
+            # head counts, this year's drought weeks, the season rain mean, the stands-out tiles
+            fig["farm_facts"] = [d.get("frost"), d.get("livestock"), get(d, "drought", "partial_year"),
+                                 get(d, "climate", "gs_recent", "mean_in"), stands_out(W, f, d), price_lines(W, f, d)]
             h = hashlib.sha1(json.dumps(fig, sort_keys=True,
                                         default=str).encode("utf-8")).hexdigest()[:12]
             date = prev[f][1] if f in prev and prev[f][0] == h else W.built
