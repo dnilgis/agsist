@@ -202,6 +202,12 @@ test("missing sources are left out of the caption, never filled in", () => {
   assert.match(quiet.lines.find((l) => l.kind === "reports").text, /Quiet can mean nobody called it in/);
   const daily = C.caption({ start: F.START, end: F.END, tz: TZ, hail: { ok: true, hours: [], daily: { maxIn: 1.5, mi: 0, onField: true } }, reports: { ok: false }, rain: { ok: false }, lightning: { ok: false } });
   assert.match(daily.lines[0].text, /the time of day is not known here/);
+  // why the clock is missing is said truly: past what the hourly file keeps, or no hours on file at all
+  // (Oct 21-23, 2026: hours.json had 0 hours and the live replay said "keeps 2 days")
+  const dayOnly = (why) => C.caption({ start: F.START, end: F.END, tz: TZ, hail: { ok: true, why, hours: [], daily: { maxIn: 2, mi: 0, onField: true } }, reports: { ok: false }, rain: { ok: false }, lightning: { ok: false } }).lines[0].text;
+  assert.match(dayOnly("old"), /The hour-by-hour file keeps 2 days/);
+  assert.doesNotMatch(dayOnly("empty"), /keeps 2 days/);
+  assert.match(dayOnly("empty"), /The hour-by-hour estimate is not on file for this window, so the time of day is not known here\./);
 });
 
 /* ---------- a source that is down says so ---------- */

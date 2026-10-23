@@ -133,6 +133,21 @@ test("sources that are down say so, and the caption leaves them out", { skip, ti
   } finally { await s.done(); }
 });
 
+test("an hourly hail file with no hours says so, never that the window is too old", { skip, timeout: 120000 }, async () => {
+  const s = await setup(390, { hours: "empty" });
+  try {
+    const { pg } = s;
+    await pg.goto(`http://127.0.0.1:${s.port}/hail-map${shareQuery()}`);
+    await pg.waitForSelector(".sr", { timeout: 20000 });
+    await pg.waitForFunction(() => [...document.querySelectorAll("#sr-src li")].some((li) => /^Radar hail estimate:/.test(li.textContent)), null, { timeout: 30000 });
+    const src = await srcText(pg);
+    assert.ok(src.includes("Radar hail estimate: hour by hour has no hours on file right now; this shows the whole day\u2019s swath, with no clock."), src.join(" | "));
+    assert.ok(!src.some((t) => /kept 2 days/.test(t)), src.join(" | "));
+    assert.ok(!(await pg.$eval("#sr-lines", (e) => e.textContent)).includes("keeps 2 days"));
+    assert.deepEqual(s.errors, []);
+  } finally { await s.done(); }
+});
+
 test("lightning counts that cannot be read are left out and said so", { skip, timeout: 120000 }, async () => {
   const s = await setup(390, { lightningInfo: "picture" });
   try {
