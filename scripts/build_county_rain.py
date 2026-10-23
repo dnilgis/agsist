@@ -609,6 +609,10 @@ def county_page(ctx):
     if len(desc) > CAPS.DESC_MAX:
         desc = f"{inch(c['total'])} inches of rain in {full}, {span}, {year}{pct_bit}."
     stw = c["station"]
+    # CoCoRaHS data is CC BY 4.0: a page drawn from one of its volunteer gauges credits it by name
+    # in the byline. The prose keeps Sig's plain words (Oct 15); the credit line is Sig's call (Oct 23).
+    cocorahs_credit = (' Volunteer gauge data: <a href="https://www.cocorahs.org/" rel="noopener">CoCoRaHS</a>.'
+                       if stw["net"] == "cocorahs" else "")
     noun = "gauge" if stw["net"] == "cocorahs" else "station"     # one word for it on the whole page
     norm_words = (f"NOAA&rsquo;s 1991 to 2020 daily normals for this {noun}" if d["normals"] == "1991-2020"
                   else f"NOAA&rsquo;s current 30-year daily normals for this {noun}")
@@ -839,7 +843,7 @@ def county_page(ctx):
     {('<h2>Next door</h2><ul class="rc-next">' + nb_html + '</ul>') if nb_html else ''}
     {near_towns}
     <p class="rc-fine">{more_html}</p>
-    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; updated daily. NOAA&rsquo;s daily numbers come in a few days late and are sometimes corrected.</p>
+    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; updated daily. NOAA&rsquo;s daily numbers come in a few days late and are sometimes corrected.{cocorahs_credit}</p>
   </div>
 {FOOT}"""
 
@@ -1418,8 +1422,12 @@ def selftest():
         ok('"description":"Daily precipitation from the weather station AMES 8 WSW' in story, "the Dataset names a weather station as one")
         ok("have a weather station inside" in want.get("rain/iowa.html", "") and ">NOAA station</th>" not in want.get("rain/iowa.html", ""), "state page does not call every gauge NOAA's")
         ok("the NOAA station in" not in want["rain.html"] and "One NOAA station per county" not in want["rain.html"], "hub does not call every gauge NOAA's")
-        bad = [k for k, b in want.items() if "CoCoRaHS" in b]
-        ok(not bad, f"no page names CoCoRaHS (Sig: weather station, volunteer rain gauge): {bad[:3]}")
+        # the prose never names CoCoRaHS (Sig, Oct 15: weather station, volunteer rain gauge); the byline credits it
+        # on a gauge's page and nowhere else (CC BY 4.0, Sig Oct 23)
+        bad = [k for k, b in want.items() if "CoCoRaHS" in b.replace('Volunteer gauge data: <a href="https://www.cocorahs.org/" rel="noopener">CoCoRaHS</a>.', "")]
+        ok(not bad, f"no page names CoCoRaHS outside its credit line: {bad[:3]}")
+        ok("Volunteer gauge data: <a href=\"https://www.cocorahs.org/\"" in jef, "a CoCoRaHS gauge's page credits CoCoRaHS")
+        ok("cocorahs.org" not in story, "a weather station's page does not")
         ks = want.get("rain/kansas/riley-county.html", "")
         ok(ks and "1991 to 2020" not in ks and "current 30-year" in ks, "normals period not claimed when ACIS did not confirm it")
         ok(ks and "read the gauge after more than one day" in ks, "accumulated reports explained")
