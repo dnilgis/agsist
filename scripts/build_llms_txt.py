@@ -131,6 +131,8 @@ PAGES = [
         ("/rain-print-business", "Rain Print for Businesses", "Customer Christmas gifts for co-ops and elevators: a Rain Print of each customer's own town and year, from 5 prints, delivered prices, one proof sheet, net 30"),
         ("/farmer-retirement-gifts", "Farmer Retirement Gifts", "Gift ideas for a retiring farmer, with a Rain Print of a year on the farm as one option; no store links"),
         ("/farm-anniversary-gifts", "Farm Anniversary Gifts", "Gift ideas for a farm anniversary or a farmer who has everything, with a Rain Print of the founding or a remembered year as one option"),
+        ("/birth-year-weather-gift", "Birth Year Weather Gift", "A Rain Print of the year someone was born: every rain and snow at the nearest weather station, with the birthday marked"),
+        ("/wedding-year-weather-gift", "Wedding Year Weather Gift", "A Rain Print of the year a couple married: every rain and snow at the nearest weather station, with the wedding day marked"),
         ("/prf-sponsor", "PRF State Sponsor", "how a business sponsors the PRF pages for one or more states: what the sponsor slot shows and how to ask; price on request"),
         ("/rain-gauge", "Rain Gauge (in the works)", "a rain gauge Sig is building: a clear tube in front of a printed scale, read by eye or logged with a phone photo, field by field; a prototype now, aiming for before planting 2027, no price set; waitlist by email"),
         ("/field-scout", "Field Scout", "draw a field and see its soils, crop history, weather, drought and nearby bids"),
