@@ -303,10 +303,12 @@ test("browser: a link, a short link or a saved design that names the gauge keeps
   });
 });
 
+/* hist=0: since 2026-10-22 a hand link has every year behind on, which takes the nearest long record instead
+   (test/rain-print-chetek-oct21.test.mjs); the snow pick below is the pick whenever the threads are off. */
 test("browser: no snow station inside the slack: the gauge draws and the line says so", { skip }, async () => {
   const far = META.map((m) => m.sids[0] === "US1WIBR0002 6" ? m : { ...m, ll: [m.ll[0], TOWN.lat + (m.ll[1] > TOWN.lat ? 1 : -1) * 14 / 69] });
   await withPage(async (page, base, log, errors) => {
-    await page.goto(base + "/rain-print.html?place=Chetek%2C+WI&year=2025");
+    await page.goto(base + "/rain-print.html?place=Chetek%2C+WI&year=2025&hist=0");
     await drawn(page);
     assert.match(await page.textContent("#rp-source"), /volunteer gauge US1WIBR0002\)\. None of the stations within 12 mi kept a full snowfall record for 2025, so the print draws no snow\. Change station\./);
     assert.deepEqual(log, ["US1WIBR0002 6", "477113 2", "471205 2"], "the nearest three read at once, each once; none past the slack is taken");
@@ -317,7 +319,7 @@ test("browser: no snow station inside the slack: the gauge draws and the line sa
 test("browser: the gauge on NOAA's snowfall list, but its 2025 draws no snow: Rice Lake is taken after the real days are read", { skip }, async () => {
   const listed = META.map((m) => m.sids[0] === "US1WIBR0002 6" ? { ...m, snow: ["2009-05-01", "2026-10-10"], data: { snow: "holes" } } : m);
   await withPage(async (page, base, log, errors) => {
-    await page.goto(base + "/rain-print.html?place=Chetek%2C+WI&year=2025");
+    await page.goto(base + "/rain-print.html?place=Chetek%2C+WI&year=2025&hist=0");
     await drawn(page);
     assert.match(await page.textContent("#rp-source"), /^Weather station: Rice Lake, WI, 9\.0 mi from Chetek \(NOAA co-op station 477113\)\. Picked over a gauge 1\.9 mi away because it records snowfall too\./);
     assert.deepEqual(log.slice(0, 2), ["US1WIBR0002 6", "477113 2"]);

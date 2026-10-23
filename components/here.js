@@ -504,7 +504,7 @@
 
   /* The county station's year of rain, drawn by the county rain page's own Rain Print, and
      ranked against the same days of every earlier year the station kept in full (NOAA). */
-  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=37';
+  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=38';
   var porMemo = {};
   function porRows(sid) {
     if (porMemo[sid]) return porMemo[sid];
