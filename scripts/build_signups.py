@@ -119,6 +119,8 @@ def build(records, notices, today):
             sub = topic.split(":", 1)[1] if ":" in topic else ""
             if kind == "rainyear":
                 sub = sub.split(":", 1)[0]          # by year; the county list would be thousands of lines
+            if kind == "rain-month":
+                sub = sub[:2]                       # by state FIPS, for the same reason (subs worker v5.54)
             if sub:
                 t["detail"][sub[:20]] = t["detail"].get(sub[:20], 0) + 1
         out["notices"] = sorted(nt.values(), key=lambda x: -x["total"])
