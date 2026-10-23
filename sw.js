@@ -37,7 +37,7 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 261;
+var CACHE_VERSION = 262;  // v262 2026-10-23: fx/labelfix (renumbered past main 261). Rain Print Staircase: the "your year" and "usual" line-end words are kept 18 units apart (they overlapped when the year ended within 0.4 in of the usual year); rain-print-art.js v23.
 // v261 2026-10-23: fx/bidfilter (slot 261; 260 is fx/promo). The highest checked bid on the corn, soybean and wheat futures pages is a plain bushel bid: no organic, non-GMO, white or spring wheat row sets it, a flagged basis outlier cannot be the national pick, and the bid is named under its own town (bid-filter.js v1, futures.js v27, place.js v7, daily-local.js v3).
 // v259 2026-10-23: fx/nocrops (slot 256, past 255 on main; was 251). Rain Print without the crop layers (Sig, Oct 23): no corn or soybean stages, plant outlines or usual-year plants; old links open without them; rain-print.js v82. (renumbered at ship)
 // v258 2026-10-23: fx/raindaily (past 254 on main; slot 258). County rain pages rebuild every day (were Mondays): pages say updated daily; /rain-radar gauge line no longer says reports come once a week (radar-rain-page.js?v=6).
