@@ -96,7 +96,7 @@
     el.innerHTML = '<p class="la-h" id="' + hid + '">' + esc(HEAD) + '</p><p class="la-s">' + esc(SUB) + '</p>'
       + '<form class="la-f" novalidate>'
       + '<label class="la-fl la-fe" for="' + eid + '">Email<input class="la-in" id="' + eid + '" type="email" name="email" autocomplete="email" inputmode="email" placeholder="your@email.com" required aria-describedby="' + msgid + '"></label>'
-      + '<label class="la-fl la-fz" for="' + zid + '">Your ZIP<input class="la-in" id="' + zid + '" type="text" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="54728"></label>'
+      + '<label class="la-fl la-fz" for="' + zid + '">Your ZIP<input class="la-in" id="' + zid + '" type="text" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="5 digits"></label>'
       + '<label class="la-fl la-fm" for="' + mid + '">Within<select class="la-sel" id="' + mid + '" name="miles">'
       + MILES.map(function (m) { return '<option value="' + m + '"' + (m === DEF ? ' selected' : '') + '>' + m + ' miles</option>'; }).join('')
       + '</select></label>'
