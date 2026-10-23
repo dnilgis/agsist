@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-23-futures-best-bid",
+   "date": "2026-10-23",
+   "title": "Futures pages: the highest bid is a plain bushel bid",
+   "line": "Organic, non-GMO, white and spring wheat bids no longer set the highest checked bid on the corn, soybean and wheat futures pages, and the bid is named under its own town.",
+   "link": "/corn-futures-prices"
+  },
+  {
    "id": "2026-10-23-rain-print-layers",
    "date": "2026-10-23",
    "title": "Rain Print: a simpler set of layers",
