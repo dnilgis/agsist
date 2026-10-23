@@ -124,7 +124,7 @@
       map.on('mouseout', function () { map.scrollWheelZoom.disable(); });
 
       /* TWO REAL BASEMAPS, FOLLOWING THE SITE'S OWN THEME.
-         Both carry roads, water and place names —
+         Both carry roads, water and place names ,
          light_all, which was here, is a near-white slab with almost nothing on
          it. Same host as the other five maps on this site, free with
          attribution, no key.

@@ -163,8 +163,8 @@ test("component: no em dashes, under 5 KB gzipped, reads storage only", () => {
 
 const PAGES = [
   ["cot.html", "cot", 'id="cot-verdict-banner"'],
-  ["scorecard.html", "scorecard", 'id="pb-latest"'],
-  ["whats-priced-in.html", "wpi", "<!-- /PRERENDER:wp-farmbox -->"],
+  // What's priced in and the bot scorecard are sections of /usda-calendar since Oct 22, 2026: one box, the WPI one
+  ["usda-calendar.html", "wpi", "<!-- /PRERENDER:wp-farmbox -->"],
   ["daily.html", "daily", 'id="dv3-today"'],
 ];
 for (const [f, mode, after] of PAGES) {

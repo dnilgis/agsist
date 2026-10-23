@@ -10,7 +10,7 @@ import vm from "node:vm";
 const ROOT = new URL("../", import.meta.url).pathname;
 
 test("the real pages: unsold ribbons are empty asides with only a slot id", () => {
-  for (const [f, id] of [["whats-priced-in.html", "whats-priced-in"], ["fertilizer.html", "fertilizer"], ["rent/iowa.html", "rent-ia"], ["rent/index.html", "rent-hub"]]) {
+  for (const [f, id] of [["usda-calendar.html", "whats-priced-in"] /* the slot moved with its section, Oct 22, 2026 */, ["fertilizer.html", "fertilizer"], ["rent/iowa.html", "rent-ia"], ["rent/index.html", "rent-hub"]]) {
     const h = readFileSync(ROOT + f, "utf8");
     const m = /<aside class="ag-sponsor-ribbon"([^>]*)>([\s\S]*?)<\/aside>/.exec(h);
     assert.ok(m, f + " lost its ribbon");
