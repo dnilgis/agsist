@@ -177,8 +177,8 @@ test("where the ask shows, and how it loads", () => {
   const L = read("components/loader.js");
   assert.match(L, /s\.src = '\/components\/land-alert\.js\?v=1';/);
   assert.match(L, /document\.querySelector\('\[data-land-alert\],section\[data-atlas-sales="county"\]'\)/);
-  assert.match(L, /var CV = '93';/);
-  assert.ok(Number(/var CACHE_VERSION = (\d+);/.exec(read("sw.js"))[1]) >= 250);
+  assert.match(L, /var CV = '95';/);
+  assert.ok(Number(/var CACHE_VERSION = (\d+);/.exec(read("sw.js"))[1]) >= 252);
 });
 
 test("the morning report, signups and cron health know the list; signups count by radius, never a ZIP", () => {
@@ -186,5 +186,5 @@ test("the morning report, signups and cron health know the list; signups count b
   assert.match(read("scripts/morning_report.py"), /"landsales": "land sales"/);
   assert.match(read("scripts/build_signups.py"), /if kind == "landsales":\n\s+sub = sub\.rsplit\(":", 1\)\[-1\] \+ " mi"/);
   assert.match(read("scripts/cron_health.py"), /\("land-alert\.yml", \["47 15 3-5 \* \*"\]/);
-  assert.match(read("scripts/list_source.py"), /elif t\.startswith\("landsales:"\):/);
+  assert.match(read("scripts/list_source.py"), /elif t\.startswith\("rain-month:"\) or t\.startswith\("landsales:"\):/);
 });

@@ -712,6 +712,50 @@ for (const [p, b] of Object.entries(goodBodies)) {
   r = await req(F.env, '/list', { m: 'OPTIONS' }); A(/Authorization/.test(r.headers.get('Access-Control-Allow-Headers')), 'the preflight allows Authorization');
 }
 
+// v5.54: rain-month:<county FIPS>, the monthly county rain email (its own store)
+{
+  const F = fresh();
+  const nt = (e) => JSON.parse(F.st.get('note:' + e) || 'null');
+  r = await req(F.env, '/notice', { body: { email: 'Month@Example.com', topic: 'rain-month:55005', source: 'page:rain/wisconsin/barron-county', daily: false } });
+  j = await r.json();
+  A(r.status === 200 && j.ok === true && j.topic === 'rain-month:55005' && j.daily === false, 'rain-month: a county FIPS is stored');
+  A(nt('month@example.com').t['rain-month:55005'].src === 'page:rain/wisconsin/barron-county' && !F.st.has('sub:month@example.com'), 'rain-month: keeps the page; not on the Daily without the box');
+  for (const [tp, why] of [['rain-month:99001', 'no such state'], ['rain-month:03001', 'state code 03'], ['rain-month:55000', 'a state, not a county'],
+      ['rain-month:5500', 'four digits'], ['rain-month:', 'no county'], ['rain-month:55005:2026', 'extra part'], ['rain-month:55005x', 'junk'], ['rainmonth:55005', 'no dash']]) {
+    r = await req(F.env, '/notice', { body: { email: 'monthbad@example.com', topic: tp } });
+    A(r.status === 400 && (await r.json()).ok === false, 'rain-month refuses ' + why);
+  }
+  A(!F.st.has('note:monthbad@example.com'), 'a refused rain-month topic stores nothing');
+  r = await req(F.env, '/notice-list?token=tok&topic=rain-month:', { m: 'GET' });
+  let L = await r.json();
+  A(L.length === 1 && L[0].topic === 'rain-month:55005' && !('mo' in L[0]) && L[0].lid === lidOf('month@example.com'), '/notice-list?topic=rain-month: with its link id, no mo yet');
+  for (const [mo, why] of [[undefined, 'no month'], ['2026-13', 'month 13'], ['2026-9', 'one digit'], ['1999-12', 'before 2000'], ['junk', 'junk']]) {
+    r = await req(F.env, '/notice-mark?token=tok', { body: { email: 'month@example.com', topic: 'rain-month:55005', month: mo } });
+    A(r.status === 400, 'rain-month: /notice-mark refuses ' + why);
+  }
+  r = await req(F.env, '/notice-mark?token=tok', { body: { email: 'month@example.com', topic: 'rain-month:55005', month: '2026-09' } });
+  A((await r.json()).ok === true && nt('month@example.com').t['rain-month:55005'].mo === '2026-09' && Number.isFinite(nt('month@example.com').t['rain-month:55005'].sent), 'rain-month: the mark records the month and sent');
+  r = await req(F.env, '/notice-mark?token=tok', { body: { email: 'month@example.com', topic: 'rain-month:55005', month: '2026-08' } });
+  A(nt('month@example.com').t['rain-month:55005'].mo === '2026-09', 'rain-month: mo never moves back');
+  r = await req(F.env, '/notice-mark?token=tok', { body: { email: 'month@example.com', topic: 'rain-month:55005', month: '2026-10' } });
+  A(nt('month@example.com').t['rain-month:55005'].mo === '2026-10', 'rain-month: the next month moves it on');
+  r = await req(F.env, '/notice-list?token=tok&topic=rain-month:', { m: 'GET' });
+  L = await r.json();
+  A(L.length === 1 && L[0].mo === '2026-10', '/notice-list returns mo');
+  r = await req(F.env, '/notice-mark?token=tok', { body: { email: 'gone@example.com', topic: 'rain-month:55005', month: '2026-10' } });
+  A((await r.json()).skipped === true, 'rain-month: a stopped address is skipped');
+  // the stop link: asks for this county, stops only it
+  await req(F.env, '/notice', { body: { email: 'month@example.com', topic: 'rain-month:19169' } });
+  const lid = lidOf('month@example.com'), t16 = crypto.createHmac('sha256', 'sec').update(lid).digest('hex').slice(0, 16);
+  const q = '?k=' + lid + '&t=' + t16 + '&topic=' + encodeURIComponent('rain-month:55005');
+  r = await req(F.env, '/notice-unsubscribe' + q, { m: 'GET' });
+  let h = await r.text();
+  A(r.status === 200 && h.includes('Stop the monthly rain email for this county?'), 'rain-month stop link asks about this county');
+  r = await req(F.env, '/notice-unsubscribe' + q, { m: 'POST' });
+  h = await r.text();
+  A(h.includes('Stopped. No more monthly rain emails for this county.') && !nt('month@example.com').t['rain-month:55005'] && nt('month@example.com').t['rain-month:19169'], 'rain-month stop removes that county only');
+}
+
 // v5.55: landsales:<ZIP>:<10|25|50>, the monthly land sale email (its own store)
 {
   const F = fresh();

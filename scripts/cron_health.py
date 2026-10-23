@@ -116,6 +116,8 @@ CHECKS = [
     ("prf-outlook.yml", ["47 15 * * 4", "17 11 * * 5"], 240, False, "PRF long-range outlook (CPC, ENSO, Drought Monitor), Thursdays and Fridays"),
     ("climate-indices.yml", ["37 14 9 * *"], 240, False, "NOAA PDO and AMO for the PRF optimizer test, monthly on the 9th"),
     ("county-rain.yml", ["23 13 * * 1"], 240, False, "rain so far this year by county (RCC-ACIS) and the /rain pages, Mondays"),
+    ("rain-monthly.yml", ["41 14 2 * *"], 240, False,
+     "the monthly county rain email (fetch, pages, then the list once RAIN_MONTHLY_LIVE is 1), the 2nd of each month"),
     ("land-alert.yml", ["47 15 3-5 * *"], 240, False,
      "the monthly land sale email (after the land data run on the 3rd; the list only once LANDSALES_MONTHLY_LIVE is 1), the 3rd with the 4th and 5th to catch up"),
     # The watchers themselves (2026-10-20). GitHub's own cron runs the site check hours

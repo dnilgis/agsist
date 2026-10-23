@@ -634,7 +634,41 @@ def story_for(entry, now):
         return None
     if age > MAX_AGE_DAYS or through > dt.date.fromisoformat(now["as_of"]):
         return None
-    return s.strip() if not validate(s, f) else None
+    if validate(s, f):
+        return None
+    s = s.strip()
+    cur = now.get("facts")
+    if not cur or cur.get("through_iso") == f.get("through_iso"):
+        return s
+    return still_true(s, f, cur)
+
+
+def _then_now(f, cur):
+    """Today's facts with the story's own through day kept, so a sentence passes
+    only when what it says is still what the page says now."""
+    h = dict(cur, through=f["through"], through_iso=f["through_iso"])
+    if cur.get("last_year") and f.get("last_year"):
+        h["last_year"] = dict(cur["last_year"], through=f["last_year"]["through"])
+    return h
+
+
+def still_true(s, f, cur):
+    """The dated story as it may print beside newer numbers (2026-10-23: 1,353 county
+    pages led with a last-year gap the page below no longer gave, 26 with the wrong
+    side of usual). Every claim must still match today's facts; a sentence that no
+    longer does is dropped, the rest stay if they still make a story (the validator's
+    own length, count and 'Through <day>' rules). Nothing true enough: None."""
+    import itertools
+    h = _then_now(f, cur)
+    if not validate(s, h):
+        return s
+    sents = [x.strip() for x in re.split(r"(?<=\.)\s+", s) if x.strip()]
+    for k in range(len(sents) - 1, MIN_SENT - 1, -1):
+        for keep in itertools.combinations(sents, k):
+            t = " ".join(keep)
+            if not validate(t, h):
+                return t
+    return None
 
 
 # ---------------------------------------------------------------- selftest
@@ -821,6 +855,38 @@ def selftest():
         bad_s = good.replace("12.89", "12.98")
         ok(story_for(dict(e, story=bad_s), now) is None, "a stored story that fails the validator never shows")
         ok(story_for(dict(e, story=good.replace("Through Oct 13, September", "September")), now) is None, "an undated story never shows")
+        # the real case (2026-10-23): Barron County, WI, story through Oct 13 on a page through Oct 18.
+        # The lead said "4.49 inches less than last year" while the page below said 3.63.
+        bf = {"biggest_day": {"date": "Apr 28", "in": "2.02", "label": "biggest single day"}, "county": "Barron County",
+              "days_in_year_so_far": 286, "days_missing": 0, "days_reported": 286, "gauge": "weather station",
+              "gauge_from_middle": "11 miles from the middle of the county", "gauge_where": "in Cumberland",
+              "last_year": {"compare": {"days_both_reported": 285, "diff_in": "4.49", "dir": "less", "every_day": False,
+                                        "means": "2026 against 2025, on the days both years reported"},
+                            "days_missed": 1, "through": "Oct 13", "total_in": "31.55", "year": 2025},
+              "longest_dry_stretch": {"days": 11, "from": "Feb 7", "means": "days in a row with nothing in the gauge, not even a trace",
+                                      "still_going": False, "to": "Feb 17"},
+              "multi_day_reports": 0, "pct_of_usual": 94, "state": "Wisconsin", "through": "Oct 13", "through_iso": "2026-10-13",
+              "total_in": "27.06", "usual_in": "28.88", "vs_usual": {"diff_in": "1.82", "dir": "less", "word": "drier than usual"},
+              "wettest_month": {"in": "6.25", "month": "April"}, "whole_year": False, "year": 2026, "year_over": False}
+        bs = ("Through Oct 13, the weather station in Cumberland had April as its wettest month at 6.25 inches, and the biggest single day came "
+              "Apr 28 with 2.02 inches. The longest dry stretch ran 11 days, Feb 7 to Feb 17, with nothing in the gauge, not even a trace. "
+              "On the days both years reported, this year is 4.49 inches less than last year.")
+        ok(validate(bs, bf) == [], f"Barron's stored story passes against its own facts: {validate(bs, bf)}")
+        bnow = dict(bf, through="Oct 18", through_iso="2026-10-18", days_in_year_so_far=291, days_reported=291, total_in="28.05",
+                    usual_in="29.45", pct_of_usual=95, vs_usual={"diff_in": "1.40", "dir": "less", "word": "drier than usual"},
+                    last_year=dict(bf["last_year"], through="Oct 18", total_in="31.68",
+                                   compare=dict(bf["last_year"]["compare"], days_both_reported=290, diff_in="3.63")))
+        be = {"story": bs, "hash": facts_hash(bf), "through": "2026-10-13", "sid": "471923 2", "facts": bf}
+        bn = {"sid": "471923 2", "county": "Barron County", "year": 2026, "as_of": "2026-10-18", "read": "2026-10-20"}
+        ok(story_for(be, bn) == bs, "without today's facts the dated story prints whole, as before")
+        kept_b = story_for(be, dict(bn, facts=bnow))
+        ok(kept_b == bs.rsplit(" On the days", 1)[0], f"the stale last-year sentence comes off, the true ones stay: {kept_b}")
+        ok(story_for(be, dict(bn, facts=dict(bnow, last_year=bf["last_year"], days_in_year_so_far=286))) is not None, "nothing moved: kept")
+        flip = dict(bnow, last_year=dict(bnow["last_year"], compare=dict(bnow["last_year"]["compare"], dir="more", diff_in="0.50")))
+        ok("last year" not in (story_for(be, dict(bn, facts=flip)) or ""), "last year now on the other side: that sentence never prints")
+        moved = dict(bnow, wettest_month={"in": "7.10", "month": "October"}, biggest_day={"date": "Oct 17", "in": "3.10", "label": "biggest single day"},
+                     longest_dry_stretch=dict(bf["longest_dry_stretch"], days=14, **{"from": "Sep 30", "to": "Oct 13"}))
+        ok(story_for(be, dict(bn, facts=moved)) is None, "every sentence out of date: no story, never a guess")
         # the page: the story under the answer only when its hash matches
         st_dir = os.path.join(data, "stories")
         os.makedirs(st_dir)

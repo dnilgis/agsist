@@ -706,7 +706,7 @@ def selftest():
     ck("a send is only for the month just ended", rc == 1 and not s.sent and not w.log, log)
     # the route is the Daily's (Sig, Oct 23: until Plan A); a preview goes to Sig's test inbox on it
     w, s = Worker(), SMTP()
-    rc, log = go(["--sample", "54001"], w, s, "2026-10-03 10:00", {"PREVIEW": "1", "SIG_TO": "sig@example.org", "SMTP_HOST": "smtp.gmail.com"})
+    rc, log = go(["--sample", "54001"], w, s, "2026-10-03 10:00", {"PREVIEW": "1", "SIG_TO": "sig@example.org", "SMTP_HOST": "smtp.example.net"})
     ck("preview to Sig's test inbox on the current route (the list is not touched)", rc == 0 and s.sent == ["sig@example.org"] and not w.log, log)
     ck("dry run: counts, samples with a made-up address", "list: 6 land sale sign-up(s)" in go([], Worker(), SMTP(), "2026-10-03 10:00", r_env=False)[1]
        and "k=" + email_links.SAMPLE_LID in go(["--sample", "54001"], Worker(), SMTP(), "2026-10-03 10:00", r_env=False)[1])

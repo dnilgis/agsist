@@ -119,6 +119,8 @@ def build(records, notices, today):
             sub = topic.split(":", 1)[1] if ":" in topic else ""
             if kind == "rainyear":
                 sub = sub.split(":", 1)[0]          # by year; the county list would be thousands of lines
+            if kind == "rain-month":
+                sub = sub[:2]                       # by state FIPS, for the same reason (subs worker v5.54)
             if kind == "landsales":
                 sub = sub.rsplit(":", 1)[-1] + " mi"   # by radius; never a reader's ZIP (subs worker v5.55)
             if sub:

@@ -1,0 +1,187 @@
+name: Monthly county rain email
+
+# "My county's rain", one email on the 2nd of each month for the month just
+# ended, to the readers who asked on a county rain page (subs worker v5.54,
+# topic rain-month:<fips>; scripts/send_rain_month.py). Sig approved the list,
+# the sender and this schedule on Oct 23, 2026.
+#
+# THE LIST GETS NOTHING UNTIL SIG TURNS IT ON: the scheduled run sends only
+# when the repo variable RAIN_MONTHLY_LIVE is 1, and so does a manual "send"
+# (the script refuses a send without it too). Until then a scheduled run is a
+# dry run: counts and a sample in the log.
+#
+#   mode dry      (default) counts the list and renders a sample with a
+#                 made-up reader. Sends nothing.
+#   mode preview  Sig's test inbox only (SIG_TEST_EMAILS, else SIG_TO), one
+#                 email per sample county (Barron 55005 and Story 19169, or
+#                 the fips input), any month. BUILD-RULES 13: the copy that
+#                 goes through the spam and link checkers first.
+#   mode send     the list, the month just ended, once per reader and month
+#                 (the worker's mo mark). Needs RAIN_MONTHLY_LIVE=1.
+#
+# The 2nd, 14:41 UTC (morning in Central), the one schedule Sig approved.
+# GitHub sometimes drops a scheduled fire: if the 2nd's run is missing or cut
+# short, run this by hand with mode send and fetch ticked; a reader already
+# mailed for the month is never mailed again. Each scheduled run first fetches
+# the county rain data and rebuilds the /rain pages exactly as county-rain.yml
+# does, in the same queue, so the email and the page carry the same numbers
+# from the same files. A manual run fetches only when "fetch" is ticked.
+on:
+  schedule:
+    - cron: "41 14 2 * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'dry = render only; preview = Sig only; send = the list (needs RAIN_MONTHLY_LIVE=1)'
+        type: choice
+        options: [dry, preview, send]
+        default: dry
+      month:
+        description: 'YYYY-MM for dry or preview (empty: the month just ended; a send is always that month)'
+        required: false
+        default: ''
+      fips:
+        description: 'Sample county FIPS for dry or preview, comma-separated (empty: 55005,19169)'
+        required: false
+        default: ''
+      fetch:
+        description: 'Fetch the county rain data and rebuild the pages first'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  # The same steps as county-rain.yml (test/rain-monthly.test.mjs holds them
+  # to it), in its queue, so the two never write data/rain at once.
+  fresh:
+    if: github.event_name == 'schedule' || inputs.fetch == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    concurrency:
+      group: county-rain
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Offline first
+        run: |
+          python scripts/fetch_county_rain.py --selftest
+          python scripts/build_county_rain.py --selftest
+
+      - name: Fetch
+        id: fetch
+        continue-on-error: true
+        timeout-minutes: 45
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          set -o pipefail
+          python scripts/fetch_county_rain.py 2>&1 | tee county-rain.log
+
+      - name: Share image
+        continue-on-error: true
+        run: |
+          pip install --quiet pillow==12.3.0
+          python3 scripts/build_share_images.py --only rain
+
+      - name: Check the data, build the pages, check the budget
+        run: |
+          python scripts/fetch_county_rain.py --check
+          python scripts/build_county_rain.py
+          python scripts/build_county_rain.py --check
+          python scripts/cross_links.py --selftest
+          python scripts/cross_links.py --stamp
+          python scripts/check_seo.py
+          python scripts/check_site_budget.py
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg prf farmland-atlas arc-plc 2>/dev/null || true
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          N=$(ls data/rain/*.json 2>/dev/null | wc -l)
+          git commit -q -m "data: county rain ($N states)"
+          for i in 1 2 3 4 5; do
+            git rebase --abort 2>/dev/null || true
+            if git pull -q --rebase --autostash origin main && git push -q; then exit 0; fi
+            sleep $((20 * i))
+          done
+          echo "push failed after 5 attempts"; exit 1
+
+      - name: Say which state failed
+        if: steps.fetch.outcome == 'failure'
+        run: |
+          grep -E "FAILED|refusing|time cap" county-rain.log || true
+          echo "::warning::A county rain state failed or the run hit its time cap; those states kept their published files. See the Fetch step."
+
+  email:
+    needs: fresh
+    # after a fresh fetch that went through, or with no fetch asked for; a failed
+    # fetch sends nothing (the next catch-up day tries again)
+    if: always() && (needs.fresh.result == 'success' || needs.fresh.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    concurrency:
+      group: rain-monthly-email
+      cancel-in-progress: false
+    steps:
+      # main, not the commit that started the run: the data the fresh job just pushed
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test the sender first
+        run: |
+          python scripts/rain_month.py --selftest
+          python scripts/send_rain_month.py --selftest
+
+      - name: Monthly county rain (${{ github.event_name == 'schedule' && 'scheduled' || inputs.mode }})
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          SIG_TO: ${{ secrets.SIG_TO }}
+          SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
+          RAIN_MONTHLY_LIVE: ${{ vars.RAIN_MONTHLY_LIVE }}
+          PREVIEW: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'preview' && '1' || '' }}
+          SEND: ${{ ((github.event_name == 'schedule' && vars.RAIN_MONTHLY_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && vars.RAIN_MONTHLY_LIVE == '1')) && '1' || '' }}
+          ASKED_SEND: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && '1' || '' }}
+          MONTH: ${{ github.event_name == 'workflow_dispatch' && inputs.mode != 'send' && inputs.month || '' }}
+          FIPS: ${{ github.event_name == 'workflow_dispatch' && inputs.fips || '' }}
+        run: |
+          if [ "$ASKED_SEND" = 1 ] && [ "$SEND" != 1 ]; then
+            echo "::error::mode send, but the repo variable RAIN_MONTHLY_LIVE is not 1: the list gets nothing. Nothing sent."
+            exit 1
+          fi
+          ARGS=""
+          if [ -n "$MONTH" ]; then ARGS="$ARGS --month $MONTH"; fi
+          if [ -n "$FIPS" ]; then ARGS="$ARGS --fips $FIPS"; fi
+          # shellcheck disable=SC2086
+          python3 scripts/send_rain_month.py $ARGS
