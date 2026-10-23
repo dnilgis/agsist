@@ -41,7 +41,7 @@ test("the selftests: the page's numbers, the gate, the stop link the worker take
 
 test("the gate in the workflow: the list only with RAIN_MONTHLY_LIVE=1, scheduled or by hand", () => {
   const crons = [...WF.matchAll(/- cron: "([^"]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(crons, ["41 14 2-4 * *"], "the 2nd, with the 3rd and 4th to catch up");
+  assert.deepEqual(crons, ["41 14 2 * *"], "the 2nd of each month, the schedule Sig approved (Oct 23)");
   assert.match(WF, /options: \[dry, preview, send\]\n\s+default: dry/);
   assert.ok(WF.includes("SEND: ${{ ((github.event_name == 'schedule' && vars.RAIN_MONTHLY_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && vars.RAIN_MONTHLY_LIVE == '1')) && '1' || '' }}"),
     "SEND=1 only with the variable, on both triggers");

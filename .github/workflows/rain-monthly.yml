@@ -19,15 +19,16 @@ name: Monthly county rain email
 #   mode send     the list, the month just ended, once per reader and month
 #                 (the worker's mo mark). Needs RAIN_MONTHLY_LIVE=1.
 #
-# The 2nd, 14:41 UTC (morning in Central), with the 3rd and the 4th as
-# catch-up runs for a dropped fire or a run cut short; a reader already
+# The 2nd, 14:41 UTC (morning in Central), the one schedule Sig approved.
+# GitHub sometimes drops a scheduled fire: if the 2nd's run is missing or cut
+# short, run this by hand with mode send and fetch ticked; a reader already
 # mailed for the month is never mailed again. Each scheduled run first fetches
 # the county rain data and rebuilds the /rain pages exactly as county-rain.yml
 # does, in the same queue, so the email and the page carry the same numbers
 # from the same files. A manual run fetches only when "fetch" is ticked.
 on:
   schedule:
-    - cron: "41 14 2-4 * *"
+    - cron: "41 14 2 * *"
   workflow_dispatch:
     inputs:
       mode:
