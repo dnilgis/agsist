@@ -295,7 +295,10 @@ test("the homepage card's seasonal wording, the see line and the gauge line", ()
   }
   assert.equal(P.lineFor(J, "see", "2026-10-13"), "See a year of rain at your place, drawn as a print for the wall.");
   assert.equal(P.lineFor({ ...J, promote: false }, "see", "2026-10-13"), "");
-  assert.equal(P.lineFor(null, "gauge", "2026-10-13"), "Want a better rain gauge? Sig is designing one. Get updates.", "the gauge line needs no switch");
+  // Oct 23 (Sig): the gauge line is the gauge hook in data/rain-print.json; no data, no line
+  assert.equal(P.lineFor(J, "gauge", "2026-10-13"), J.gauge_hook.line + " " + J.gauge_hook.link + ".");
+  assert.equal(P.lineFor(null, "gauge", "2026-10-13"), "", "no data file, no gauge line");
+  assert.equal(P.lineFor({ ...J, gauge_hook: { line: "A \u2014 dash", link: "x" } }, "gauge", "2026-10-13"), "", "a dash in the hook shows nothing");
   assert.equal(P.seeHref("54728", "2026-10-13"), "/rain-print?place=54728&year=2025", "a saved ZIP opens last year, drawn");
   assert.equal(P.seeHref("", "2026-10-13"), "/rain-print");
   assert.equal(P.seeHref("5472", "2026-10-13"), "/rain-print");
