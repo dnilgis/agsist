@@ -96,10 +96,17 @@ test('the browser tests find Playwright and Chromium under the names they read, 
   assert.ok(browser.length > 50, `${browser.length} browser tests`);
   for (const t of browser) assert.match(t, /process\.env\.PLAYWRIGHT_PATH|from ['"]playwright['"]/);
   const s = steps('node-tests');
-  const install = s.findIndex((x) => /playwright" install --with-deps chromium/.test(x));
+  const install = s.findIndex((x) => /playwright" install chromium\s*$/m.test(x));
+  const fonts = s.findIndex((x) => /uses: \.\/\.github\/actions\/browser-fonts\s*$/m.test(x));
   const launch = s.findIndex((x) => /chromium\.launch\(\{ executablePath: process\.env\.CHROMIUM_PATH \}\)/.test(x));
   const run = s.findIndex((x) => /checks\.sh/.test(x));
   assert.ok(install >= 0 && launch > install && run > launch, 'install, then launch, then the tests');
+  // the system side never comes from apt (Oct 22: --with-deps took 11 minutes on the slow mirror)
+  assert.ok(fonts >= 0 && fonts < launch, 'the pinned fonts are in before the browser launches');
+  for (const x of s) assert.doesNotMatch(x, /--with-deps|install-deps|apt-get/, 'no apt in the node test job');
+  assert.match(s[install], /ldd "\$CH" \| grep "not found"/, 'a library missing from the runner image fails by name');
+  assert.match(s[install], /^\s+timeout-minutes: \d+\s*$/m, 'the install step has a time limit');
+  assert.match(s[fonts], /^\s+timeout-minutes: \d+\s*$/m, 'the fonts step has a time limit');
   for (const v of ['PLAYWRIGHT_PATH', 'CHROMIUM_PATH', 'JSQR_PATH']) assert.match(s[install], new RegExp(`echo "${v}=`), v);
   assert.match(s[install], /\[ -x "\$CH" \] \|\| \{ echo "::error::/, 'no binary is an error, not a skip');
   assert.match(code, /path: ~\/\.cache\/ms-playwright\n\s+key: pw-chromium-\$\{\{ runner\.os \}\}-\$\{\{ env\.PW_VERSION \}\}/, 'the browser is cached per Playwright version');

@@ -2637,7 +2637,7 @@
 (function(){var p=null;function ld(s){return new Promise(function(ok,no){var e=document.createElement('script');e.src=s;e.onload=ok;e.onerror=no;document.head.appendChild(e);});}
 window.agsistStormReplay=function(o,note){if(!window.L){if(note)note.textContent='The map did not load, so the replay cannot open. Try again in a minute.';return;}
 if(note)note.textContent='Opening the replay\u2026';
-p=p||ld('/components/storm-replay-core.js?v=1').then(function(){return window.AgRadarRain?0:ld('/components/radar-rain.js?v=1');}).then(function(){return ld('/components/storm-replay.js?v=1');});
+p=p||ld('/components/storm-replay-core.js?v=2').then(function(){return window.AgRadarRain?0:ld('/components/radar-rain.js?v=1');}).then(function(){return ld('/components/storm-replay.js?v=2');});
 p.then(function(){if(note)note.textContent='';window.AgStormReplay.open(o||{});},function(){p=null;if(note)note.textContent='The replay did not load. Check your signal and try again.';});};
 if(/[?&]sr=1(&|$)/.test(location.search))window.addEventListener('load',function(){window.agsistStormReplay({});});})();</script>
 <script>document.getElementById('hm-replay').addEventListener('click',function(){var p=window.agsistHailPin;if(p)window.agsistStormReplay({lat:p.lat,lon:p.lon,label:p.label},document.getElementById('hm-replay-note'));});</script>
