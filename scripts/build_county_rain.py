@@ -195,6 +195,32 @@ def print_ready(c, day):
     return (c.get("missing") or 0) <= RP_MISS_BLOCK and c["days"] >= RP_MIN_DAYS and len(R.unpack_days(day["p"])) == c["days"]
 
 
+def recent(c, day, n):
+    """Rain at the gauge over the last n days of the page (its as-of day and the n - 1
+    before it): (inches, first day iso), or None unless every one of those days has its
+    own reading (2026-10-23: "how much rain has fallen here" is often about this week).
+    A missing day, or a day whose rain went into a later multi-day reading, leaves it
+    off; a trace counts as nothing, as on the rest of the page."""
+    if not day or not day.get("p"):
+        return None
+    v = R.unpack_days(day["p"])
+    if len(v) != c["days"] or len(v) < n:
+        return None
+    tot = 0.0
+    for x in v[-n:]:
+        if x in ("M", "S") or x.endswith("A"):
+            return None
+        if x != "T":
+            tot += float(x)
+    first = dt.date.fromisoformat(c["as_of"]) - dt.timedelta(days=n - 1)
+    return round(tot, 2), first.isoformat()
+
+
+def span_words(a, b):
+    """'Oct 12 to 18', or 'Sep 19 to Oct 18' across a month."""
+    return f"{short_date(a)} to {b[8:].lstrip('0') if a[:7] == b[:7] else short_date(b)}"
+
+
 def print_snow(day, year):
     """Does the print on the county page draw snow? The engine's rule, step for step
     (components/rain-county-print.js daysOf, then rain-print.js lastRecorded, closeOpenS
@@ -503,6 +529,11 @@ def crumbs_ld(items):
 RP_ANY_YEAR = 'Want another year, like the drought or the year you married? <a href="/rain-print">Rainfall art of any town and year</a>.'
 
 
+# the one plain mention of the AGSIST rain gauge on a county rain page: a link inside the
+# sentence that already says why a reader's own gauge differs (promo audit 2026-10-23)
+GAUGE_LINE = 'Your own <a href="/rain-gauge">rain gauge</a> can read differently a few miles away.'
+
+
 def radar_line(st, name, stw):
     """One line to /rain-radar (NOAA MRMS radar and gauge estimate) at the
     county's station. MRMS covers the lower 48 only, so none in AK or HI."""
@@ -564,6 +595,10 @@ def county_page(ctx):
         figs.append(("Percent of usual", f"{c['pct']}%"))
     if c.get("last"):
         figs.append((f"{year - 1}" if whole else f"{year - 1} by {short_date(c['last']['through'])}", f"{inch(c['last']['total'])} <small>in</small>"))
+    r7, r30 = (None, None) if done else (recent(c, ctx.get("day"), 7), recent(c, ctx.get("day"), 30))
+    for r, n in ((r7, 7), (r30, 30)):
+        if r:
+            figs.append((f"Last {n} days, {span_words(r[1], asof)}", f"{inch(r[0])} <small>in</small>"))
     figs_html = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in figs)
     # ---- month table
     has_us = c["usual"] is not None
@@ -599,6 +634,11 @@ def county_page(ctx):
         faq.append((f"Was {name} wetter or drier than usual in {year}?" if done else f"Is {name} wetter or drier than usual in {year}?",
                     f"{word}{'' if done else ' so far'}. {where_words(c)[0].upper() + where_words(c)[1:]} had {inches_word(c['total'])} "
                     f"{'in ' + str(year) if whole else 'from Jan 1 to ' + short_date(asof)}, {p}% of the usual {inches_word(c['usual'])} for the same days."))
+    if r7:
+        faq.append((f"How much rain fell in {name} in the last week?",
+                    f"{inches_word(r7[0])} from {short_date(r7[1])} to {short_date(asof)} at {where_words(c)}"
+                    + (f", and {inches_word(r30[0])} over the last 30 days, {span_words(r30[1], asof)}." if r30 else ".")
+                    + f" Those are the latest days the {noun} has reported; NOAA&rsquo;s daily numbers come in a few days late."))
     if c.get("wet_month"):
         m, v = c["wet_month"]
         facts.append(f"<li><b>Wettest month:</b> {ML[m]}, {inches_word(v)}.</li>")
@@ -656,11 +696,11 @@ def county_page(ctx):
     n_ok = c.get("n_ok", 1)
     if n_ok <= 1:
         pick_p = (f"Why this {noun}: it is the only one inside {e(name)} that reported at least 90% of the days in {year}. "
-                  "Your own rain gauge can read differently a few miles away.")
+                  + GAUGE_LINE)
     else:
         pick_p = (f"Why this {noun}: {n_ok} stations inside {e(name)} reported at least 90% of the days in {year}. "
                   + {4: PICK_RULE_4, 3: PICK_RULE_3, 2: PICK_RULE_2}.get(d.get("pick"), PICK_RULE_1)
-                  + " Your own rain gauge can read differently a few miles away.")
+                  + " " + GAUGE_LINE)
     # ---- next door and links
     nb_html = "".join(f'<li><a class="rc-nb" href="{h}">{e(n)} <small>{v}</small></a></li>' for n, h, v in ctx["nbrs"])
     more = [(f"Rain in {e(stn)}, county by county", f"/rain/{st_slug}")]
@@ -747,12 +787,12 @@ def county_page(ctx):
     {table}
     {year_ask(name, year, fips) if not done else ''}
     {('<h2>' + str(year) + (' in' if done else ' so far in') + ' ' + e(name) + '</h2>' + facts_html) if facts_html else ''}
+    {print_fig}
+    {sell}
     <h2>The station, and what usual means</h2>
     <p>{station_p}</p>
     <p>{usual_p}</p>
     <p class="rc-fine">{pick_p}</p>
-    {print_fig}
-    {sell}
     <h2>Questions</h2>
     <div class="rc-faq">{faq_html}</div>
     {('<h2>Next door</h2><ul class="rc-next">' + nb_html + '</ul>') if nb_html else ''}
@@ -978,7 +1018,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
             body = county_page({"c": c, "st": st, "fips": fips, "year": d["year"], "d": d, "slug": C[fips]["slug"],
                                 "nbrs": nbrs, "n_ok": c.get("n_ok", 1), "alt": alt,
                                 "day": daily.get(st, {}).get(fips),
-                                "story": CS.story_for(stories.get(st, {}).get(fips), CS.page_now(c, d))})
+                                "story": CS.story_for(stories.get(st, {}).get(fips), dict(CS.page_now(c, d), facts=CS.facts(c, d, st)))})
             body = nav.fill_fonts(body)
             rel = f"rain/{st_slug}/{C[fips]['slug']}.html"
             if len(body.encode()) > MAX_KB * 1024:
@@ -1123,9 +1163,13 @@ def selftest():
         ok('class="rc-us"' in story.split('id="rc-print"')[0] and 'class="rc-us"' not in pf and pf.startswith(' data-st="ia"')
            and ' hidden ' in pf.split(">")[0] and 'class="rc-print-styles"' in pf,
            "the plain chart is up top; the print figure, hidden until drawn, carries the style picker")
-        ok(story.index("<h2>The station") < story.index('id="rc-print"') < story.index("<h2>Questions</h2>")
+        # 2026-10-23 promo audit: the print and its offer come up above the method text (it sat
+        # five phone screens down, under "Why this station"), still after the answer and the farm numbers
+        ok(story.index("<h2>Month by month</h2>") < story.index("so far in Story County</h2>") < story.index('id="rc-print"')
+           < story.index('class="rc-sell"') < story.index("<h2>The station") < story.index("<h2>Questions</h2>")
+           and story.index('data-signup-ask=') < story.index('id="rc-print"')
            and story.index("<h2>Month by month</h2>") < story.index('class="rc-print-styles"'),
-           "the print and its picker come after the farm content: month table, the year so far, the station")
+           "the print and its picker come after the farm content (month table, the year so far) and before the station method")
         pr = rp_prices()
         ok(pr and f"This is Story County&rsquo;s 2026 so far, drawn as a Rain Print. Put your name and dates on it: framed ${pr[0]}, print ${pr[1]}." in story,
            "the cross-sell line under the print names the county and the prices from data/rain-print.json")

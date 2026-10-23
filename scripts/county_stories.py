@@ -634,7 +634,41 @@ def story_for(entry, now):
         return None
     if age > MAX_AGE_DAYS or through > dt.date.fromisoformat(now["as_of"]):
         return None
-    return s.strip() if not validate(s, f) else None
+    if validate(s, f):
+        return None
+    s = s.strip()
+    cur = now.get("facts")
+    if not cur or cur.get("through_iso") == f.get("through_iso"):
+        return s
+    return still_true(s, f, cur)
+
+
+def _then_now(f, cur):
+    """Today's facts with the story's own through day kept, so a sentence passes
+    only when what it says is still what the page says now."""
+    h = dict(cur, through=f["through"], through_iso=f["through_iso"])
+    if cur.get("last_year") and f.get("last_year"):
+        h["last_year"] = dict(cur["last_year"], through=f["last_year"]["through"])
+    return h
+
+
+def still_true(s, f, cur):
+    """The dated story as it may print beside newer numbers (2026-10-23: 1,353 county
+    pages led with a last-year gap the page below no longer gave, 26 with the wrong
+    side of usual). Every claim must still match today's facts; a sentence that no
+    longer does is dropped, the rest stay if they still make a story (the validator's
+    own length, count and 'Through <day>' rules). Nothing true enough: None."""
+    import itertools
+    h = _then_now(f, cur)
+    if not validate(s, h):
+        return s
+    sents = [x.strip() for x in re.split(r"(?<=\.)\s+", s) if x.strip()]
+    for k in range(len(sents) - 1, MIN_SENT - 1, -1):
+        for keep in itertools.combinations(sents, k):
+            t = " ".join(keep)
+            if not validate(t, h):
+                return t
+    return None
 
 
 # ---------------------------------------------------------------- selftest
