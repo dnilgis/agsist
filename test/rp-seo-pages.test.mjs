@@ -26,7 +26,9 @@ for (const [slug, from, other] of [["birth-year-weather-gift", "birthyear", "wed
     assert.ok(HTML.match(/name="description" content="([^"]*)"/)[1].length < 155);
     assert.match(HTML, /<meta name="robots" content="index, follow/);
     assert.match(HTML, new RegExp('<link rel="canonical"\\s+href="https://agsist\\.com/' + slug + '">'));
-    assert.match(HTML, /og:image"\s+content="https:\/\/agsist\.com\/img\/og\/rain-print\.jpg/);
+    // the share-image job may give the page its own card (scripts/build_share_images.py); either way it is a card that exists
+    const og = (HTML.match(/og:image"\s+content="https:\/\/agsist\.com\/(img\/og\/[a-z0-9-]+\.jpg)/) || [])[1];
+    assert.ok(og && existsSync(ROOT + og), "og:image is an AGSIST share card that exists: " + og);
     assert.equal((BODY.match(/<h1>/g) || []).length, 1);
     const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
     assert.ok(ld["@graph"].find((g) => g["@type"] === "BreadcrumbList"));
