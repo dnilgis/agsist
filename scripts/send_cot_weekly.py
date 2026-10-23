@@ -262,23 +262,41 @@ def ordinal(n):
     return "%d%s" % (n, "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th"))
 
 
+def change(r):
+    """The week's move in the position on its own side, or None.
+    "down 3,725" under a net short that had just GROWN read as the opposite
+    (the COT card's rule, cot-page.js); more / fewer is the same on both sides."""
+    if r["chg"] is None:
+        return None
+    net, prev = r["net"], r["net"] - r["chg"]
+    then = "the week before" if r["chg_since"] is None else "on " + md(r["chg_since"])
+    if r["chg"] == 0:
+        return "unchanged from " + then
+    if net and prev and (net > 0) != (prev > 0):
+        return "flipped from %s %s" % (side(prev), then)
+    return "%s %s than %s" % (comma(r["chg"]), "more" if abs(net) > abs(prev) else "fewer", then)
+
+
 def sentence(r):
     """What the funds hold and what they did, in one sentence."""
-    s = "Managed money is %s %s contracts" % (side(r["net"]), NOUN[r["key"]])
-    if r["chg"] is not None:
-        # The size of the position on its own side, said as such: "down 3,725"
-        # under a net short that had just GROWN read as the opposite (the COT
-        # card's rule, cot-page.js). more / fewer is the same on both sides.
-        net, prev = r["net"], r["net"] - r["chg"]
-        then = "the week before" if r["chg_since"] is None else "on " + md(r["chg_since"])
-        if r["chg"] == 0:
-            ch = "unchanged from " + then
-        elif net and prev and (net > 0) != (prev > 0):
-            ch = "flipped from %s %s" % (side(prev), then)
-        else:
-            ch = "%s %s than %s" % (comma(r["chg"]), "more" if abs(net) > abs(prev) else "fewer", then)
-        s += ", " + ch
-    return s + "."
+    ch = change(r)
+    return "Managed money is %s %s contracts%s." % (side(r["net"]), NOUN[r["key"]], (", " + ch) if ch else "")
+
+
+def short_line(r):
+    """The phone line under a market's name (which already shows the net):
+    the change, then where it ranks with its sample."""
+    ch = change(r)
+    k = r.get("rank")
+    if not k:
+        rk = rank_line(r)
+    elif (k["record_high"] and r["net"] > 0) or (k["record_low"] and r["net"] < 0):
+        rk = "The biggest net %s, as a share of open interest, in %s weeks since %s." % (
+            "long" if r["net"] > 0 else "short", format(k["weeks"], ","), k["since"])
+    else:
+        rk = "%s percentile of %s weeks since %s (%s)." % (ordinal(k["shown"]), format(k["weeks"], ","), k["since"],
+                                                         k["word"] + (", crowded " + k["crowded"] if k["crowded"] else ""))
+    return ((ch[0].upper() + ch[1:] + ". ") if ch else "") + rk
 
 
 def rank_line(r):
@@ -310,7 +328,7 @@ def note(r):
 def range_line(r):
     if not r["y1"]:
         return ""
-    return "1-year range: %s to %s (%d weekly reports)." % (side(r["y1"]["lo"]), side(r["y1"]["hi"]), r["y1"]["n"])
+    return "%d-week range: %s to %s." % (r["y1"]["n"], side(r["y1"]["lo"]), side(r["y1"]["hi"]))
 
 
 def verdict(rows):
@@ -336,9 +354,9 @@ def compose(as_of, released, rows, gaps=(), preview=False):
     if as_of.weekday() != 1:
         when = when.replace("as of Tuesday, ", "as of %s, " % as_of.strftime("%A"))
     v = verdict(rows)
-    intro = ("\"Managed money\" is CFTC's name for hedge funds and commodity trading advisers. The percentile ranks "
-             "their net as a share of open interest against every weekly report on record, the same ranking the COT "
-             "page shows: 0 is the most short, 100 the most long.")
+    intro = ("\"Managed money\" is CFTC's name for hedge funds and commodity trading advisers. Percentiles rank their net, "
+             "as a share of open interest, against every weekly report on record, as the COT page does: 0 is the most "
+             "short, 100 the most long.")
     src = ("Source: CFTC Commitments of Traders, Disaggregated, futures only, report as of %s%s. Percentiles and "
            "ranges are figured by AGSIST from those weekly reports. This is where the funds stood, not where prices go next."
            % (md(as_of), (", released " + md(released)) if released else ""))
@@ -362,20 +380,20 @@ def compose(as_of, released, rows, gaps=(), preview=False):
     parts.append(P % ("0 0 4px", "12px/1.5 sans-serif", "#6b6b6b", esc(intro)))
     for r in rows:
         k = r.get("rank")
-        parts.append('<div style="margin:10px 0 0;padding:10px 0 0;border-top:1px solid #e6e1d6">')
-        parts.append(P % ("0 0 2px", "700 12px/1.4 monospace", "#6b6b6b", esc(r["name"].upper()) + ' <span style="letter-spacing:0;font-weight:700;color:#14100a">'
+        parts.append('<div style="margin:8px 0 0;padding:8px 0 0;border-top:1px solid #e6e1d6">')
+        parts.append(P % ("0 0 1px", "700 12px/1.4 monospace", "#6b6b6b", esc(r["name"].upper()) + ' <span style="letter-spacing:0;font-weight:700;color:#14100a">'
                           + esc(side(r["net"]).replace("net ", "").upper()) + "</span>"))
-        parts.append(P % ("0 0 4px", "15px/1.5 sans-serif", "#14100a", esc(sentence(r)) + " " + esc(rank_line(r))))
+        parts.append(P % ("0 0 3px", "15px/1.45 sans-serif", "#14100a", esc(short_line(r))))
         if k:
             parts.append(bar(k["shown"]))
         n_ = note(r)
         if n_:
-            parts.append(P % ("4px 0 0", "13px/1.45 sans-serif", "#14100a", esc(n_)))
+            parts.append(P % ("3px 0 0", "13px/1.4 sans-serif", "#14100a", esc(n_)))
         if own_tested(r, v):
             parts.append(P % ("4px 0 0", "13px/1.45 sans-serif", "#14100a", esc(own_tested(r, v))))
         rl = range_line(r)
         if rl:
-            parts.append(P % ("3px 0 0", "12px/1.45 sans-serif", "#6b6b6b", esc(rl)))
+            parts.append(P % ("2px 0 0", "12px/1.4 sans-serif", "#6b6b6b", esc(rl)))
         parts.append("</div>")
     for name, why in gaps:
         parts.append('<div style="margin:10px 0 0;padding:10px 0 0;border-top:1px solid #e6e1d6">'
@@ -862,7 +880,8 @@ def _selftest():
     ok(rank_line(c) == "That is the 99th percentile of 171 weekly reports since 2023 (top 1%, crowded long).", rank_line(c))
     ok(note(c) == "If funds head for the exit, 200,000 contracts of selling sit between here and flat. Worth a look this week "
        "at unpriced bushels, or unbought needs if you are a buyer. Not a call on price.", note(c))
-    ok(range_line(c) == "1-year range: net short 100,000 to net long 300,000 (52 weekly reports).", range_line(c))
+    ok(range_line(c) == "52-week range: net short 100,000 to net long 300,000.", range_line(c))
+    ok(short_line(c) == "60,000 fewer than the week before. 99th percentile of 171 weeks since 2023 (top 1%, crowded long).", short_line(c))
     bn = R.get("beans") or {}
     # beans 1 yr: lo -60,000, hi 100,000 -> 20,000 / 160,000 = 12.5% -> 12% (round half to even)
     ok(bn.get("chg") == 5000 and (bn.get("y1") or {}).get("pct") == 12, "beans %r" % bn)
@@ -890,6 +909,7 @@ def _selftest():
     with contextlib.redirect_stdout(io.StringIO()):
         r6 = {r["key"]: r for r in prepare(now, cot, hist, deep, a3)[2]}
     ok(rank_line(r6["corn"]) == "That is the biggest net long, as a share of open interest, in 171 weekly reports since 2023.", rank_line(r6["corn"]))
+    ok(short_line(r6["corn"]).endswith("The biggest net long, as a share of open interest, in 171 weeks since 2023."), short_line(r6["corn"]))
     # TWO FILES MUST NEVER DISAGREE IN FRONT OF A READER: the ranking is withheld, with the reason
     for label, mut, why in (("an older ranking file", lambda x: x.update(date="2026-10-06"), "the ranking is not up to this report yet"),
                             ("a different net", lambda x: x.update(net=199999), "the ranking file and this week's position do not match"),
@@ -939,7 +959,8 @@ def _selftest():
     ok(not re.search(r"\b(will|expect|likely|forecast|should|buy|sell)\b", t.lower().replace("not where prices go next", "")), "no prediction words")
     ok(t.count("Managed money is ") == 4, "one sentence a market")
     ok(t.count("Not a call on price.") == 3 and h.count("Not a call on price.") == 3, "a marketing line for the 3 off-middle markets only")
-    ok(h.count("percentile of 171 weekly reports since 2023") == 4, "the sample beside every percentile")
+    ok(h.count("percentile of 171 weeks since 2023") == 4 and t.count("percentile of 171 weekly reports since 2023") == 4,
+       "the sample beside every percentile, in both bodies")
     m = build_email(as_of.isoformat(), (s, t, h), "a@farm.com", "AGSIST", "sender@example.com", None)
     os.environ.setdefault("LIST_URL", "")
     body, hb = m.get_body(("plain",)).get_content(), m.get_body(("html",)).get_content()
