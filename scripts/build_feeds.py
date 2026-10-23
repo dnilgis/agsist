@@ -395,7 +395,12 @@ def main():
         # 2026-10-15: /cot's two page scripts moved to components/cot-page.js and
         # components/cot-analysis.js (cot.html reads cot.json and cot-history.json
         # through them).
-        for js in sorted(set(re.findall(r"""<script[^>]+src=["']/(components/(?:(?:home|prf|cot)(?:-[\w-]+)?|cash-bids)\.js)""", text))):
+        # 2026-10-23: the pages merged on Oct 22 (scripts/moved_pages.py) load their section's
+        # own script when the reader reaches it, so the page names it in a string, not a tag:
+        # /usda-calendar reads data/analyst-scorecard.json through components/priced-in.js.
+        own = set(re.findall(r"""<script[^>]+src=["']/(components/(?:(?:home|prf|cot)(?:-[\w-]+)?|cash-bids)\.js)""", text))
+        own |= set(re.findall(r"""["']/(components/(?:priced-in|bot-scorecard|coverage-map|elevator-claim|atlas-foreign|daily-archive)\.js)""", text))
+        for js in sorted(own):
             if os.path.exists(js):
                 text += "\n" + read(js)
         for m in set(re.findall(r"(?<!\}/)(?<!atlas/)(?<!open-meteo\.com/)data/[\w/.-]+\.json", text)):   # "/farmland-atlas/data/x.json" and "/{OUT}/data/x.json" are the Atlas's own files, not data/x.json; "api.open-meteo.com/data/..." is Open-Meteo's run-time file (spray page), not ours

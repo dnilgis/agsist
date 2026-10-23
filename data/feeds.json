@@ -8,8 +8,7 @@
   {
    "path": "data/afida/county.json",
    "pages": [
-    "farmland-atlas.html",
-    "foreign-land.html"
+    "farmland-atlas.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -49,7 +48,7 @@
   {
    "path": "data/analyst-scorecard.json",
    "pages": [
-    "whats-priced-in.html"
+    "usda-calendar.html"
    ],
    "written_by": [
     "Build Analyst Scorecard",
@@ -342,7 +341,7 @@
   {
    "path": "data/cond-yield/fit.json",
    "pages": [
-    "conditions-yield.html"
+    "conditions.html"
    ],
    "written_by": [
     "cond-yield"
@@ -446,7 +445,7 @@
   {
    "path": "data/cot-deep.json",
    "pages": [
-    "scorecard.html"
+    "usda-calendar.html"
    ],
    "written_by": [
     "COT Deep History Rebuild",
@@ -653,7 +652,6 @@
   {
    "path": "data/daily-archive/index.json",
    "pages": [
-    "archive.html",
     "daily.html"
    ],
    "written_by": [
@@ -868,8 +866,8 @@
   {
    "path": "data/elevator-coverage.json",
    "pages": [
-    "elevators.html",
-    "index.html"
+    "index.html",
+    "list-your-elevator.html"
    ],
    "written_by": [
     "Coverage map \u2014 the elevator directory, drawn"
@@ -1645,7 +1643,7 @@
   {
    "path": "data/news.json",
    "pages": [
-    "news.html"
+    "daily.html"
    ],
    "written_by": [
     "The wire"
@@ -1719,7 +1717,7 @@
   {
    "path": "data/predictions-backtest.json",
    "pages": [
-    "scorecard.html"
+    "usda-calendar.html"
    ],
    "written_by": [
     "Prediction bot \u2014 call and grade"
@@ -1745,7 +1743,7 @@
   {
    "path": "data/predictions.json",
    "pages": [
-    "scorecard.html"
+    "usda-calendar.html"
    ],
    "written_by": [
     "Prediction bot \u2014 call and grade"
@@ -2539,9 +2537,9 @@
   {
    "path": "data/us-states.geo.json",
    "pages": [
-    "elevators.html",
     "farmland-atlas.html",
-    "hail-map.html"
+    "hail-map.html",
+    "list-your-elevator.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -2630,7 +2628,7 @@
    "path": "data/whats-priced-in.json",
    "pages": [
     "index.html",
-    "whats-priced-in.html"
+    "usda-calendar.html"
    ],
    "written_by": [
     "COT Release Watch",
@@ -2692,7 +2690,7 @@
   {
    "path": "data/yield-nowcast.json",
    "pages": [
-    "conditions-yield.html",
+    "conditions.html",
     "index.html"
    ],
    "written_by": [
@@ -2730,7 +2728,7 @@
   {
    "path": "data/yield-panel.json",
    "pages": [
-    "conditions-yield.html"
+    "conditions.html"
    ],
    "written_by": [
     "yield-panel"
