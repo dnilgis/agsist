@@ -508,16 +508,15 @@ FOOT = """  </main>
 </body>
 </html>
 """
-# State pages and the hub (Sig, 2026-10-23): the one cross-promotion is the
+# State pages (Sig, 2026-10-23): the one cross-promotion is the
 # "auto" line after the table (components/rain-print-promo.js): Rain Print
 # through Dec 24, the rain gauge hook from Dec 26 through May (gauge_window
 # and gauge_hook in data/rain-print.json). County pages keep their Rain Print
-# block and nothing else.
+# block and nothing else. The hub (rain.html) keeps its typed Rain Print line
+# (test/rain-print-links-in.test.mjs), which is its one promo.
 GAUGE_SLOT = '<p class="rp-promo" data-rain-print-promo="auto" hidden></p>'
 # rain.html only: glossary marks and the Next block (data/next-links.json)
 FOOT_NAT = FOOT.replace("</body>", '  <script src="/components/next-links.js?v=3" defer></script>\n</body>')
-FOOT_NAT_GAUGE = FOOT_NAT.replace('  <script src="/components/loader.js?v=19" defer></script>\n',
-                                  '  <script src="/components/loader.js?v=19" defer></script>\n  <script src="/components/rain-print-promo.js?v=6" defer></script>\n')
 FOOT_GAUGE = FOOT.replace('  <script src="/components/loader.js?v=19" defer></script>\n',
                           '  <script src="/components/loader.js?v=19" defer></script>\n  <script src="/components/rain-print-promo.js?v=6" defer></script>\n')
 
@@ -944,10 +943,10 @@ def hub_page(files, built):
       <li>Usual is NOAA&rsquo;s daily normal for that station, added up over the same days it reported.</li>
       <li>Every page says the latest day its station has reported. NOAA&rsquo;s daily numbers come in a few days late, and the pages are rebuilt about once a week.</li>
     </ul>
-    {GAUGE_SLOT}
+    <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws it from the same NOAA records.</p>
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.</p>
   </div>
-{FOOT_NAT_GAUGE}"""
+{FOOT_NAT}"""
     return nav.render(page, "rain.html", nav.block("header"), nav.block("footer"))
 
 

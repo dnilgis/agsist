@@ -82,7 +82,8 @@ test("bids, markets and rent pages keep the gift line, which ends Dec 9", () => 
 });
 
 test("every rain, weather, PRF, ARC/PLC and Fast Facts page with the slot: one auto slot in the body, with its script", () => {
-  const pages = ["rain.html", "hail-map.html", "drought-monitor.html", "rain-radar.html", "arc-plc.html", "fast-facts.html"];
+  // /rain and /hail-map keep their typed Rain Print line (test/rain-print-links-in.test.mjs): that is their one promo
+  const pages = ["drought-monitor.html", "rain-radar.html", "arc-plc.html", "fast-facts.html"];
   for (const d of ["rain", "hail-map"]) for (const f of readdirSync(join(ROOT, d))) if (f.endsWith(".html")) pages.push(d + "/" + f);
   // the PRF state pages (a state folder beside each); explainers like /prf/how-prf-works carry no slot
   for (const f of readdirSync(join(ROOT, "prf"))) if (f.endsWith(".html") && existsSync(join(ROOT, "prf", f.slice(0, -5)))) pages.push("prf/" + f);
