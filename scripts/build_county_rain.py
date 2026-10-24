@@ -948,11 +948,11 @@ def state_page(st, d, pages, none_rows, recs=None):
     <p class="rc-asof">{'All of ' + str(year) if done else 'As of ' + long_date(asofs[-1])}</p>
     <h1>{h1}</h1>
     <p class="rc-answer">{lede}</p>
+    {state_records_html(recs, st)}
     <div class="rc-scroll" tabindex="0" role="region" aria-label="Every {u1}, scrolls sideways"><table class="rc-t rc-t-wide"><caption class="rc-sr">Rain {'in' if done else 'so far in'} {year} by {u1}, {e(stn)}</caption>
     <thead><tr><th scope="col">{UNIT_HEAD.get(st, "County")}</th><th scope="col">Rain</th><th scope="col">Usual</th><th scope="col">% usual</th><th scope="col">Station</th><th scope="col">Through</th></tr></thead>
     <tbody>{''.join(rows)}</tbody></table></div>
     <p class="rc-fine">Rain and usual are in inches. Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each {u1} page has the month by month table and how the station was picked.</p>
-    {state_records_html(recs, st)}
     {none_html}
     {GAUGE_SLOT}
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; updated daily. <a href="/rain">Every state</a> &middot; <a href="/rain-print">Rain Print</a></p>
@@ -974,19 +974,25 @@ def hub_records(data_dir, pages, within=1):
     return [dict(o, url=pages[o["fips"]][1]) for o in rs if not o["one_gauge"] and o["fips"] in pages]
 
 
+SHOW_RECORDS = 5   # /rain shows the five longest records; the rest open under "See all" (Sig, Oct 24 2026)
+
+
 def records_html(recs):
     if not recs:
         return ""
-    li = []
-    for side in ("wettest", "driest"):
-        for o in sorted((o for o in recs if o["side"] == side), key=lambda o: o["first"]):
-            li.append(f'<li><a href="{e(o["url"])}">{e(o["county"])}, {e(o["state"])}</a>: {side} on record by {short_date(o["as_of"])}, '
-                      f'of {o["years"]} years ({o["first"]} on). {inch(o["total"])} in., {o["pct"]}% of usual.</li>')
+    # longest record first, wet and dry together, so the five shown are the strongest claims
+    order = sorted(recs, key=lambda o: (o["first"], o["side"], o["county"]))
+    def li(o):
+        return (f'<li><a href="{e(o["url"])}">{e(o["county"])}, {e(o["state"])}</a>: {o["side"]} on record by {short_date(o["as_of"])}, '
+                f'of {o["years"]} years ({o["first"]} on). {inch(o["total"])} in., {o["pct"]}% of usual.</li>')
+    top, rest = order[:SHOW_RECORDS], order[SHOW_RECORDS:]
+    more = (f'\n    <details class="rc-more"><summary>See all {len(order)} record counties</summary><ul class="rc-list">{"".join(li(o) for o in rest)}</ul></details>'
+            if rest else "")
     return (f'    <h2 id="records">Records right now</h2>\n'
             f'    <p>Counties whose station has had its {"wettest or driest" if len({o["side"] for o in recs}) > 1 else recs[0]["side"]} '
-            f'year to date on record. Only years the station reported fully are counted. A record where the station and the county '
+            f'year to date on record, longest records first. Only years the station reported fully are counted. A record where the station and the county '
             f'average differ by 25 points or more is left off: that is one gauge, not the county.</p>\n'
-            f'    <ul class="rc-list">{"".join(li)}</ul>\n')
+            f'    <ul class="rc-list">{"".join(li(o) for o in top)}</ul>{more}\n')
 
 
 def hub_page(files, built, recs=None):
@@ -1021,9 +1027,9 @@ def hub_page(files, built, recs=None):
   <div class="rc">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <span aria-current="page">Rain by county</span></nav>
     <h1>{f"How much rain did your county get in {yw}?" if done else "How much rain has your county had this year?"}</h1>
-    <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.</p>
-    <ul class="rc-states">{''.join(rows)}</ul>
-{records_html(recs)}    <h2>How the numbers are counted</h2>
+    <p class="rc-answer">{"First, the counties having a record year. Then pick" if recs else "Pick"} your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.</p>
+{records_html(recs)}    <ul class="rc-states">{''.join(rows)}</ul>
+    <h2>How the numbers are counted</h2>
     <ul class="rc-list">
       <li>Each county page uses one weather station inside that county, and only a station that reported at least 90% of the days {"in " + yw if done else "this year"}. Counties without one are listed on the state page with the nearest county that has one.</li>
       <li>A day the station did not report is unknown, not dry. It adds nothing to the total and nothing to the usual year either.</li>
