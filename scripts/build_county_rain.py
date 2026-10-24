@@ -825,7 +825,7 @@ def county_page(ctx):
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/rain">Rain by county</a> &rsaquo; <a href="/rain/{st_slug}">{e(stn)}</a> &rsaquo; <span aria-current="page">{e(name)}</span></nav>
     <p class="rc-asof">{'All of ' + str(year) + ', Jan 1 to Dec 31' if whole else (str(year) + ', Jan 1 to ' + short_date(asof) + ', the last day reported' if done else 'As of ' + long_date(asof) + ', the latest day this ' + noun + ' has reported')}</p>
     <h1>{h1}</h1>
-    <p class="rc-answer">{ans.replace(inches_word(c['total']), '<b>' + inches_word(c['total']) + '</b>', 1)}</p>
+    <p class="rc-answer">{ans.replace(inches_word(c['total']), '<b>' + inches_word(c['total']) + '</b>', 1)}</p>{gap_note(c, ctx.get("ctx"), noun)}
     {story_top}<dl class="rc-figs">{figs_html}</dl>{story_below}
     {radar_line(st, name, stw)}
     {plain_chart}
@@ -1079,6 +1079,19 @@ def load_context(data_dir, files):
 
 def ordinal(n):
     return f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
+
+
+def gap_note(c, x, noun):
+    """Under the answer, when the station and the PRISM county average are 25+ points of usual apart (Sig, Oct 24
+    2026: say it where it is read, not only in the facts list): the station is one gauge, not the county."""
+    g = (x or {}).get("grid")
+    if not g or not g.get("usual") or g["usual"] < 1 or c.get("pct") is None:
+        return ""
+    gp = round(100 * g["total"] / g["usual"])
+    if abs(gp - c["pct"]) < 25:
+        return ""
+    return (f'\n    <p class="rc-fine"><b>One {noun}, not the whole county:</b> averaged over {e(c["name"])}, rain is {gp}% of usual, '
+            f'against {c["pct"]}% at this {noun}. Rain fell unevenly here this year. More under Across the county below.</p>')
 
 
 def context_facts(c, x, noun, edate):

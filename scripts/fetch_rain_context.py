@@ -46,6 +46,7 @@ BACKOFF_S = (15, 45)
 MAX_MINUTES = 20
 FIRST_YEAR = 1850          # ACIS answers "M" for years before a station began
 MIN_YEARS = 30             # fewer counted years than this: no "on record" line
+NO_GRID = {"AK", "HI"}
 YTD = {"name": "pcpn", "interval": "dly", "duration": "ytd", "reduce": "sum", "area_reduce": "county_mean"}
 
 
@@ -130,9 +131,13 @@ def build_state(src, d):
     year = int(edate[:4])
     sf = state_fips(d)
     out = {}
-    g = src.get(GRID_URL, {"state": st.lower(), "grid": "21", "date": edate, "elems": [YTD]})
-    n = src.get(GRID2_URL, {"state": st.lower(), "grid": "ncei-norm:91-20", "date": edate, "elems": [YTD]})
-    gv, nv = area_values(g, sf), area_values(n, sf)
+    # PRISM and the gridded normals cover the lower 48 only: Alaska and Hawaii get the rank, no county average
+    # (2026-10-24: ACIS answered 400 for both and the whole state was skipped, rank included)
+    gv = nv = {}
+    if st not in NO_GRID:
+        g = src.get(GRID_URL, {"state": st.lower(), "grid": "21", "date": edate, "elems": [YTD]})
+        n = src.get(GRID2_URL, {"state": st.lower(), "grid": "ncei-norm:91-20", "date": edate, "elems": [YTD]})
+        gv, nv = area_values(g, sf), area_values(n, sf)
     for f in d["counties"]:
         if f in gv:
             out.setdefault(f, {})["grid"] = {"total": gv[f], "usual": nv.get(f)}
@@ -224,6 +229,16 @@ def selftest():
         ok("rank" not in c["counties"].get("55003", {}), "a station with no record gets no rank")
         ok("27045" not in c["counties"], "a Minnesota county in the bounding box is dropped")
         ok(c["fetched"] == "x", "fetched carried over")
+        # Alaska: no grid asked at all, the rank still written
+        asked = []
+        class Spy(Saved):
+            def get(self, url, params):
+                asked.append(url)
+                return Saved.get(self, url, dict(params, _st="wi")) if url == MULTI_URL else {"error": "outside the grid"}
+        dak = dict(d, state="AK", counties={"02020": dict(d["counties"]["55005"])})
+        rak = build_state(Spy(fx), dak)
+        ok(GRID_URL not in asked and GRID2_URL not in asked, "no grid asked for Alaska")
+        ok("rank" in rak["counties"].get("02020", {}) and "grid" not in rak["counties"]["02020"], "Alaska keeps its rank")
     print("fetch_rain_context selftest:", "ok" if not fails else "FAIL " + "; ".join(fails))
     return 1 if fails else 0
 
