@@ -44,6 +44,7 @@ GA4_REPORTS = {
     "pages": (["date", "pagePath"], ["screenPageViews", "activeUsers", "sessions", "userEngagementDuration"]),
     "sources": (["date", "sessionSource", "sessionMedium", "sessionCampaignName"], ["sessions", "activeUsers", "newUsers", "engagedSessions"]),
     "landing": (["date", "landingPagePlusQueryString"], ["sessions", "activeUsers", "newUsers"]),
+    "landing_source": (["date", "landingPage", "sessionSource", "sessionMedium"], ["sessions", "engagedSessions"]),
     "events": (["date", "eventName", "pagePath"], ["eventCount", "totalUsers"]),
     "devices": (["date", "deviceCategory", "newVsReturning"], ["activeUsers", "sessions"]),
     "geo": (["date", "country", "region", "city"], ["activeUsers", "sessions"]),
