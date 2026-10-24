@@ -157,7 +157,9 @@
   var PRINTABLE = /[^\u0020-\u007e\u00a0-\u00ff\u2013\u2014\u2018\u2019\u201c\u201d\u2022\u2026\u0152\u0153]/g;
   function printable(s) { return String(s == null ? '' : s).replace(/\uFE0F|\u200D/g, '').replace(PRINTABLE, ''); }
   function hasUnprintable(s) { PRINTABLE.lastIndex = 0; var r = PRINTABLE.test(String(s || '')); PRINTABLE.lastIndex = 0; return r; }
-  function cleanSid(s) { return String(s == null ? '' : s).replace(/[^A-Za-z0-9 ]/g, '').trim().slice(0, 16); }
+  // an exact-spot id ("spot:45.31,-91.65", see THE EXACT SPOT) is kept whole when it is exactly that shape
+  var SPOT_RE = /^spot:-?\d{1,2}\.\d{2},-?\d{1,3}\.\d{2}$/;
+  function cleanSid(s) { var t = String(s == null ? '' : s).trim(); return SPOT_RE.test(t) ? t : t.replace(/[^A-Za-z0-9 ]/g, '').trim().slice(0, 16); }
   function isLeap(y) { return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; }
   function dayIndex(year, iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ''));
@@ -1039,6 +1041,7 @@
      "Rice Lake Municipal Airport". */
   function sidPlain(sid, lang) {
     if (root.AgRpCanada && root.AgRpCanada.isSid(sid)) return root.AgRpCanada.sidPlain(sid, lang);
+    if (isSpot(sid)) { var sl = spotLL(sid); return 'PRISM estimate at ' + sl.lat.toFixed(2) + ', ' + sl.lon.toFixed(2); }
     var p = String(sid || '').trim().split(/\s+/);
     if (/^US1/.test(p[0])) return 'volunteer gauge ' + p[0];
     return (p[1] === '2' ? 'NOAA co-op station ' : 'NOAA station ') + p[0];
@@ -1234,6 +1237,45 @@
   }
   function isoMinusDays(iso, n) { return new Date(Date.parse(iso + 'T00:00:00Z') - n * 86400000).toISOString().slice(0, 10); }
   function lastDayOf(year) { return year === CURRENT_YEAR ? TODAY : year + '-12-31'; }
+  /* THE EXACT SPOT (2026-10-24, Sig: "a PRISM rainfall for that exact location if a person prefers that over a
+     gauge"). A pseudo station "spot:<lat>,<lon>" (2 decimals, about 1 km; PRISM's cells are 4 km) read from
+     RCC-ACIS GridData: grid 21 (PRISM daily, lower 48, 1981 on) for rain and temperature, and grid2
+     ncei-norm:91-20 for the usual. GridData has no snowfall, so a spot print is rain only. It is an estimate made
+     from nearby gauges, and the page says so. Never auto-picked: it is offered at the end of the station list.
+     All three asks were run by hand from agsist.com on 2026-10-24 (both hosts answer the page). */
+  var SPOT_FIRST = 1981;
+  function isSpot(sid) { return /^spot:/.test(String(sid || '')); }
+  function spotSid(lat, lon) { return 'spot:' + (+lat).toFixed(2) + ',' + (+lon).toFixed(2); }
+  function spotLL(sid) { var p = String(sid).slice(5).split(','); return { lat: +p[0], lon: +p[1] }; }
+  function spotOk(lat, lon, year, ca) { return !ca && year >= SPOT_FIRST && lat >= 24 && lat <= 50 && lon >= -125 && lon <= -66; }
+  var SPOT_NAME = 'This exact spot (PRISM estimate)';
+  function spotAsk(host, sid, sdate, edate, elems, grid) {
+    var L_ = spotLL(sid), params = JSON.stringify({ loc: L_.lon.toFixed(2) + ',' + L_.lat.toFixed(2), grid: grid || '21', sdate: sdate, edate: edate, elems: elems });
+    return safeFetch('https://' + host + '/GridData?params=' + encodeURIComponent(params)).then(function (r) { return r.json(); });
+  }
+  function spotVal(v) { return v === undefined || v === null || +v <= -998 ? 'M' : v; }
+  // the station shape daily() reads: [date, pcpn, avgt, snow, maxt, mint]; snow is always 'M' (none on the grid)
+  function spotYearJson(sid, year) {
+    var L_ = spotLL(sid);
+    return spotAsk('data.rcc-acis.org', sid, year + '-01-01', lastDayOf(year), 'pcpn,avgt,maxt,mint').then(function (j) {
+      if (j.error || !Array.isArray(j.data)) return j;
+      return { meta: { name: SPOT_NAME, state: '', ll: [L_.lon, L_.lat] },
+        data: j.data.map(function (r) { return [r[0], spotVal(r[1]), spotVal(r[2]), 'M', spotVal(r[3]), spotVal(r[4])]; }) };
+    });
+  }
+  function spotPorJson(sid) {
+    return spotAsk('data.rcc-acis.org', sid, SPOT_FIRST + '-01-01', TODAY, 'pcpn,avgt').then(function (j) {
+      if (j.error || !Array.isArray(j.data)) return j;
+      return { data: j.data.map(function (r) { return [r[0], spotVal(r[1]), spotVal(r[2])]; }) };
+    });
+  }
+  // the normal is one value per calendar day: asked for a non-leap year, so Feb 29 has none
+  function spotNormalJson(sid) {
+    return spotAsk('grid2.rcc-acis.org', sid, '2025-01-01', '2025-12-31', 'pcpn', 'ncei-norm:91-20').then(function (j) {
+      if (j.error || !Array.isArray(j.data)) return j;
+      return { data: j.data.map(function (r) { return [r[0], spotVal(r[1])]; }) };
+    });
+  }
   /* THE STATION LIST (2026-10-15: snowfall too). Two StnMeta asks over the
      same box: precipitation (the list, as before) and snowfall, so each
      station knows before any drawing whether its snowfall record spans the
@@ -1432,7 +1474,7 @@
     var open = lastYearOpen(year), key = sid + '|' + year + (open ? '|open' : '');
     if (DAILY_CACHE.has(key)) return Promise.resolve(DAILY_CACHE.get(key));
     var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: year + '-01-01', edate: lastDayOf(year), elems: 'pcpn,avgt,snow,maxt,mint', meta: 'name,state,ll' });
-    var ask = CA() && CA().isSid(sid) ? CA().yearJson(safeFetch, sid, year, caEnv(year)) : safeFetch(u).then(function (r) { return r.json(); });
+    var ask = isSpot(sid) ? spotYearJson(sid, year) : CA() && CA().isSid(sid) ? CA().yearJson(safeFetch, sid, year, caEnv(year)) : safeFetch(u).then(function (r) { return r.json(); });
     return ask.then(function (j) {
       if (j.error || !Array.isArray(j.data)) throw new Error('That station has no rain record for this year. Pick another one under Weather station.');
       var days = [];
@@ -1466,7 +1508,7 @@
   function stationExtremes(sid) {
     if (EXT_CACHE.has(sid)) return Promise.resolve(EXT_CACHE.get(sid));
     var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: 'por', edate: 'por', elems: 'pcpn,avgt' });
-    var ask = CA() && CA().isSid(sid) ? CA().porJson(safeFetch, sid) : safeFetch(u).then(function (r) { return r.json(); });
+    var ask = isSpot(sid) ? spotPorJson(sid) : CA() && CA().isSid(sid) ? CA().porJson(safeFetch, sid) : safeFetch(u).then(function (r) { return r.json(); });
     return ask.then(function (j) {
       if (j.error || !Array.isArray(j.data)) throw new Error(j.error || 'no data');
       var maxDaily = 0, curYear = null, curYearTotal = 0, curMonth = null, curMonthTotal = 0, maxAnnual = 0, maxMonthly = 0;
@@ -1509,7 +1551,7 @@
       var params = JSON.stringify({ sid: sid, sdate: year + '-01-01', edate: year + '-12-31', elems: [{ name: 'pcpn', normal: code }] });
       return safeFetch('https://data.rcc-acis.org/StnData?params=' + encodeURIComponent(params)).then(function (r) { return r.json(); });
     };
-    var first = CA() && CA().isSid(sid) ? CA().normalJson(safeFetch, sid, year) : ask('91').then(function (j) { return j && !j.error && Array.isArray(j.data) ? j : ask(1); });
+    var first = isSpot(sid) ? spotNormalJson(sid) : CA() && CA().isSid(sid) ? CA().normalJson(safeFetch, sid, year) : ask('91').then(function (j) { return j && !j.error && Array.isArray(j.data) ? j : ask(1); });
     return first.then(function (j) {
       if (j.error || !Array.isArray(j.data)) throw new Error(j.error || 'no data');
       var byDate = new Map();
@@ -2159,7 +2201,7 @@
   }
   function tempNormal(sid, year) {
     // a Canadian station has no ACIS normals: none, and the print says so
-    if (CA() && CA().isSid(sid)) return Promise.resolve(null);
+    if ((CA() && CA().isSid(sid)) || isSpot(sid)) return Promise.resolve(null);
     var params = JSON.stringify({ sid: sid, sdate: year + '-01-01', edate: year + '-12-31', elems: [{ name: 'maxt', normal: '91' }, { name: 'mint', normal: '91' }] });
     return safeFetch('https://data.rcc-acis.org/StnData?params=' + encodeURIComponent(params)).then(function (r) { return r.json(); })
       .then(function (j) { return j && !j.error && Array.isArray(j.data) ? root.AgRainExtras.normalTemps(j.data, year) : null; }, function () { return false; });
@@ -2208,7 +2250,7 @@
         return best;
       });
     };
-    var near = STATIONS.filter(function (x) { return x.sid !== META.sid && !(CA() && CA().isSid(x.sid)); }).slice(0, 5);
+    var near = STATIONS.filter(function (x) { return x.sid !== META.sid && !isSpot(x.sid) && !(CA() && CA().isSid(x.sid)); }).slice(0, 5);
     return tryList(near).then(function (best) {
       if (best) return best;
       return tempStationsNear(META.lat, META.lon, year).then(function (list) {
@@ -2233,7 +2275,7 @@
      when none of the four does, the nearest long record stands. -> {chosen, picked, n (full years)} or null */
   function pickLong(list, year, onTry, lat) {
     var yrs = function (s) { var r = s.valid_daterange && s.valid_daterange[0]; return r ? +r[1].slice(0, 4) - +r[0].slice(0, 4) + 1 : 0; };
-    var cands = list.filter(function (s) { return yrs(s) >= HIST_MIN && !(CA() && CA().isSid(s.sid)); }).slice(0, 4);
+    var cands = list.filter(function (s) { return yrs(s) >= HIST_MIN && !isSpot(s.sid) && !(CA() && CA().isSid(s.sid)); }).slice(0, 4);
     return extrasReady().then(function () {
       var i = 0, keep = null;
       var next = function () {
@@ -3078,13 +3120,19 @@
   }
   /* This year, too thin to draw: a plain message instead of art. The order stays
      open; Sig draws the print from the full year in January. */
+  // the data line under the print: a station's NOAA record, or the spot's PRISM estimate
+  function spotCredit(m) {
+    return m && isSpot(m.sid)
+      ? 'Rain for this spot is a daily PRISM estimate (PRISM Climate Group, Oregon State University, 4 km grid) made from nearby gauges, through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>; the usual year is NOAA&rsquo;s 1991-2020 gridded normal. It is not a gauge reading, it has no snowfall, and its record starts in ' + SPOT_FIRST + '. '
+      : 'Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ';
+  }
   function renderNoArt() {
     var m = META;
     art.innerHTML = '<p class="rp-placeholder">' + esc(NOART) + '</p>';
     art.classList.add('rp-empty');
     $('rp-stats-wrap').hidden = true;
     $('rp-source').innerHTML = (isLongPick(m) ? longHtml(m) + ' <br>' : (m.ca ? L('The print will come from this weather station: ', 'Le tirage viendra de cette station météo : ') : 'The print will come from this weather station: ') + gaugeHtml(m) + '.') +
-      (m.ca ? ' ' + caCredit() : ' Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.');
+      (m.ca ? ' ' + caCredit() : ' ' + spotCredit(m).trim());
     setDesignRefs();
     showBuy(true);
   }
@@ -3157,7 +3205,7 @@
       (later ? (later === 1 ? 'Your date after ' : 'Your dates after ') + esc(longDate(PREVIEW.last)) + ' will be on the finished print. ' : '') +
       (PREVIEW && !ST.gift ? 'NOAA hasn\u2019t sent the rest of ' + ST.year + ' from this station yet; the print you get shows the full year. ' : '') +
       (usualWords() ? esc(usualWords()) + ' ' : '') +
-      'Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ' +
+      spotCredit(m) +
       (ST.records && PREVIEW ? ' Remarkable days are marked once the year is over.' : '') +
       (ST.records && !PREVIEW && root.AgRainRecords && !EXT_WAIT && !(EXT && EXT.rows) ? ' The station history didn’t load, so the year and month records are left off.' + (LOAD_FAIL.has('por|' + m.sid) ? ' Press Draw again.' : '') : '') +
       (ST.records && SKIPPED.length ? ' Left off the print for space: ' + esc(SKIPPED.join(', ')) + '.' : '') +
@@ -3588,7 +3636,11 @@
       if (!picked && ST.gift) { chosen = STATIONS[0]; picked = { meta: {}, days: [], d: derive([]) }; }
       if (!picked) { var none = new Error('None of the stations near ' + g.name + ' sent back ' + ST.year + '. Try again in a minute.'); none.retry = true; none.status = readErr && readErr.status; throw none; }
       ST.station = chosen.sid;
+      var spotHere = spotOk(g.latitude, g.longitude, ST.year, !!(chosen.ca || (CA() && CA().isSid(chosen.sid)))) ? spotSid(g.latitude, g.longitude) : '';
+      if (spotHere && !STATIONS.some(function (s) { return s.sid === spotHere; }))
+        STATIONS = STATIONS.concat([{ sid: spotHere, name: SPOT_NAME, spot: true, km: 0, ll: [spotLL(spotHere).lon, spotLL(spotHere).lat], valid_daterange: [[SPOT_FIRST + '-01-01', lastDayOf(ST.year)]] }]);
       sel.innerHTML = STATIONS.map(function (s) {
+        if (isSpot(s.sid)) return '<option value="' + esc(s.sid) + '">' + esc(SPOT_NAME) + ': estimate for ' + esc(g.name) + ' itself, rain only, ' + SPOT_FIRST + ' on</option>';
         var w = s.ca && CA() ? CA().snowWord(seen && seen[s.sid], s.snowOk, LOC().lang) : snowWord(s, seen);
         return '<option value="' + esc(s.sid) + '">' + esc(stationName(s.name)) + ', ' + (s.ca && CA() ? CA().kmText(s.km, LOC().lang) + ', ' + s.valid_daterange[0][0].slice(0, 4) + '\u2013' + s.valid_daterange[0][1].slice(0, 4)
           : milesText(miles(s.km)) + ', ' + s.valid_daterange[0][0].slice(0, 4) + '\u2013' + s.valid_daterange[0][1].slice(0, 4)) + (w ? ', ' + w : '') + '</option>';

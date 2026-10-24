@@ -266,7 +266,10 @@ def _selftest():
         ok(lines, "a line for %s" % z)
         for x in lines:
             ok(re.search(r"\d", x["text"]) and not COUNT_LINE.search(x["text"]) and "—" not in x["text"], "insight, not a count: " + x["text"])
-    one = for_reader("2026-10-21", "50010", loc=locs["50010"])
+    # the rain data moves every day: ask as of its newest day, so the check never ages out (2026-10-24: a fixed
+    # "2026-10-21" failed once every station had reported past it)
+    newest = max(str(c.get("as_of") or "") for _, _, _, c in _stations(REPO))
+    one = for_reader(max(newest, "2026-10-21"), "50010", loc=locs["50010"])
     ok(one and one[0]["st"] == "IA", "the reader's own state")
     ok(any(x["kind"] == "rain_vs_normal" and "% of normal" in x["text"] for x in one), "the reader's own rain")
     ok(len(for_reader("2026-10-21", None)) == 1, "no ZIP: the basis line only")
