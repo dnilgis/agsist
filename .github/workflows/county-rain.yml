@@ -56,6 +56,7 @@ jobs:
       - name: Offline first
         run: |
           python scripts/fetch_county_rain.py --selftest
+          python scripts/fetch_rain_context.py --selftest
           python scripts/build_county_rain.py --selftest
           python scripts/send_rain_year.py --selftest
 
@@ -77,6 +78,19 @@ jobs:
           if [ -n "$YEAR" ]; then ARGS="$ARGS --year $YEAR"; fi
           # shellcheck disable=SC2086
           python scripts/fetch_county_rain.py $ARGS 2>&1 | tee county-rain.log
+
+      # Two more lines per county page (scripts/fetch_rain_context.py): the PRISM county
+      # average against NOAA's gridded normal, and where this year sits in the station's own
+      # record. Best effort, 20-minute cap: a state that fails keeps its last context file,
+      # and the pages print the lines only when the context is from this same fetch.
+      - name: Context (county average, on record)
+        continue-on-error: true
+        timeout-minutes: 25
+        env:
+          PYTHONUNBUFFERED: "1"
+          STATES: ${{ github.event.inputs.states }}
+        run: |
+          if [ -n "$STATES" ]; then python scripts/fetch_rain_context.py --states "$STATES"; else python scripts/fetch_rain_context.py; fi
 
       # Share images (og:image): the US county map for /rain and one map per
       # state for its state and county pages (img/og/rain.jpg, img/og/rain-<st>.jpg),

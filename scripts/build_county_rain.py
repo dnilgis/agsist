@@ -708,6 +708,7 @@ def county_page(ctx):
     if c["acc"]:
         facts.append(f"<li>On {c['acc']} {'report' if c['acc'] == 1 else 'reports'} the observer read the gauge after more than one day. "
                      "That rain counts on the day it was read, so it is in the totals but not split by day.</li>")
+    facts += context_facts(c, ctx.get("ctx"), noun, ctx.get("edate") or asof)
     facts_html = f'<ul class="rc-list">{"".join(facts)}</ul>' if facts else ""
     # ---- station
     miss = c["missing"]
@@ -1015,6 +1016,50 @@ def load(data_dir):
     return files
 
 
+def load_context(data_dir, files):
+    """{st: {fips: {grid, rank}}} from data/rain/context/<st>.json (scripts/fetch_rain_context.py),
+    only for states whose context is from the same fetch as the state file."""
+    out = {}
+    for st, d in files.items():
+        p = os.path.join(data_dir, "context", st.lower() + ".json")
+        if os.path.exists(p):
+            x = json.load(open(p, encoding="utf-8"))
+            if x.get("state") == st and x.get("fetched") == d["fetched"]:
+                out[st] = x.get("counties") or {}
+    return out
+
+
+def ordinal(n):
+    return f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
+
+
+def context_facts(c, x, noun, edate):
+    """Two lines from the context file: where this year sits in the station's own record, and
+    the PRISM county average against NOAA's gridded normal (a check on the one gauge)."""
+    out = []
+    r = (x or {}).get("rank")
+    if r:
+        day = short_date(c["as_of"])
+        if r["wetter"] == 0:
+            head = f"the most rain by {day} in {r['n']} years on record here ({r['first']} on)"
+        elif r["drier"] == 0:
+            head = f"the least rain by {day} in {r['n']} years on record here ({r['first']} on)"
+        else:
+            head = (f"{ordinal(r['wetter'] + 1)} wettest by {day} of {r['n']} years on record here ({r['first']} on); "
+                    f"the last wetter year was {r['last_wetter']}, the last drier one {r['last_drier']}")
+        out.append(f"<li><b>On record:</b> {head}. Years with too many missed days are not counted.</li>")
+    g = (x or {}).get("grid")
+    if g and g.get("usual") and g["usual"] >= 1:
+        gp = round(100 * g["total"] / g["usual"])
+        line = (f"<li><b>Across the county:</b> about {inch(g['total'])} inches, {gp}% of usual, Jan 1 to {short_date(edate)}, "
+                f"from the PRISM 4 km grid averaged over {e(c['name'])} (usual: NOAA&rsquo;s 1991-2020 gridded normal).")
+        if c.get("pct") is not None and abs(gp - c["pct"]) >= 15:
+            line += (f" That is {abs(gp - c['pct'])} points {'below' if gp < c['pct'] else 'above'} this {noun}: "
+                     f"rain falls unevenly, and one {noun} can catch or miss a storm.")
+        out.append(line + "</li>")
+    return out
+
+
 def load_daily(data_dir, files):
     """{st: {fips: packed days}} from data/rain/daily/<st>.json, for states whose
     daily file is from the same fetch as the state file (same year and fetch time)."""
@@ -1041,6 +1086,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
     NB = NB if NB is not None else R.neighbors()
     files = load(data_dir)
     daily = load_daily(data_dir, files)
+    context = load_context(data_dir, files)
     stories = CS.load_stories(data_dir)   # data/rain/stories/<st>.json: dated stories, same station, at most 35 days old
     pages = {}   # fips -> (name, href, total text)
     for st, d in files.items():
@@ -1063,6 +1109,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
             body = county_page({"c": c, "st": st, "fips": fips, "year": d["year"], "d": d, "slug": C[fips]["slug"],
                                 "nbrs": nbrs, "n_ok": c.get("n_ok", 1), "lat": C[fips].get("lat"), "lon": C[fips].get("lon"),
                                 "day": daily.get(st, {}).get(fips),
+                                "ctx": context.get(st, {}).get(fips), "edate": d["edate"],
                                 "story": CS.story_for(stories.get(st, {}).get(fips), dict(CS.page_now(c, d), facts=CS.facts(c, d, st)))})
             body = nav.fill_fonts(body)
             rel = f"rain/{st_slug}/{C[fips]['slug']}.html"
