@@ -1500,7 +1500,9 @@ details.wr>summary{align-items:center!important}
 #idx1-calc-result{font-family:"JetBrains Mono",monospace;font-size:.824rem;font-weight:700;color:var(--text-dim)}
 .idx1-extras-fine{font-size:.706rem;color:var(--text-muted);margin-top:.4rem;line-height:1.5}
 .idx1-extras-line{max-width:1400px;margin:.4rem auto 0;padding:0 1rem;font-family:"JetBrains Mono",monospace;font-size:.706rem;color:var(--text-dim)}
-.idx1-home-prompt{display:flex;align-items:center;gap:.6rem;max-width:1400px;margin:0 auto;padding:.55rem 1rem;background:var(--surface);border-bottom:1px solid var(--border)}
+/* Pinned to the bottom of the screen (2026-10-24): Chrome fires beforeinstallprompt whenever it likes, and in the
+   page flow the banner pushed the hero down 56px (CLS 0.145 at 1280 in CI). Fixed, it moves nothing. */
+.idx1-home-prompt{display:flex;align-items:center;gap:.6rem;position:fixed;left:0;right:0;bottom:0;z-index:60;margin:0;padding:.55rem 1rem calc(.55rem + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);box-shadow:0 -2px 10px rgba(0,0,0,.12)}
 /* v4.5 weather legibility pass — dissolve box-in-box, full-bleed on phones, bigger type */
 .wx-card #wx-data .wx-summary-card{background:none;border:0;border-radius:0;padding:1rem 0 0;border-top:1px solid var(--border)}
 .wx-card .wx-7day-strip{gap:.45rem}
