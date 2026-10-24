@@ -974,19 +974,25 @@ def hub_records(data_dir, pages, within=1):
     return [dict(o, url=pages[o["fips"]][1]) for o in rs if not o["one_gauge"] and o["fips"] in pages]
 
 
+SHOW_RECORDS = 5   # /rain shows the five longest records; the rest open under "See all" (Sig, Oct 24 2026)
+
+
 def records_html(recs):
     if not recs:
         return ""
-    li = []
-    for side in ("wettest", "driest"):
-        for o in sorted((o for o in recs if o["side"] == side), key=lambda o: o["first"]):
-            li.append(f'<li><a href="{e(o["url"])}">{e(o["county"])}, {e(o["state"])}</a>: {side} on record by {short_date(o["as_of"])}, '
-                      f'of {o["years"]} years ({o["first"]} on). {inch(o["total"])} in., {o["pct"]}% of usual.</li>')
+    # longest record first, wet and dry together, so the five shown are the strongest claims
+    order = sorted(recs, key=lambda o: (o["first"], o["side"], o["county"]))
+    def li(o):
+        return (f'<li><a href="{e(o["url"])}">{e(o["county"])}, {e(o["state"])}</a>: {o["side"]} on record by {short_date(o["as_of"])}, '
+                f'of {o["years"]} years ({o["first"]} on). {inch(o["total"])} in., {o["pct"]}% of usual.</li>')
+    top, rest = order[:SHOW_RECORDS], order[SHOW_RECORDS:]
+    more = (f'\n    <details class="rc-more"><summary>See all {len(order)} record counties</summary><ul class="rc-list">{"".join(li(o) for o in rest)}</ul></details>'
+            if rest else "")
     return (f'    <h2 id="records">Records right now</h2>\n'
             f'    <p>Counties whose station has had its {"wettest or driest" if len({o["side"] for o in recs}) > 1 else recs[0]["side"]} '
-            f'year to date on record. Only years the station reported fully are counted. A record where the station and the county '
+            f'year to date on record, longest records first. Only years the station reported fully are counted. A record where the station and the county '
             f'average differ by 25 points or more is left off: that is one gauge, not the county.</p>\n'
-            f'    <ul class="rc-list">{"".join(li)}</ul>\n')
+            f'    <ul class="rc-list">{"".join(li(o) for o in top)}</ul>{more}\n')
 
 
 def hub_page(files, built, recs=None):
@@ -1021,7 +1027,7 @@ def hub_page(files, built, recs=None):
   <div class="rc">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <span aria-current="page">Rain by county</span></nav>
     <h1>{f"How much rain did your county get in {yw}?" if done else "How much rain has your county had this year?"}</h1>
-    <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.</p>
+    <p class="rc-answer">{"First, the counties having a record year. Then pick" if recs else "Pick"} your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.</p>
 {records_html(recs)}    <ul class="rc-states">{''.join(rows)}</ul>
     <h2>How the numbers are counted</h2>
     <ul class="rc-list">
