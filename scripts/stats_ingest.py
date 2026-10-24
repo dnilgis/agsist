@@ -189,6 +189,40 @@ def bing(env, get, log):
     return out, errs
 
 
+def counts_only(c):
+    """The worker /count answer, numbers only: top-level ints and the ints one level down (notices by
+    topic). Anything else (text, lists) is dropped, so no address or name can ever reach the file."""
+    out = {}
+    for k, v in (c or {}).items():
+        if isinstance(v, bool):
+            continue
+        if isinstance(v, int):
+            out[k] = v
+        elif isinstance(v, dict):
+            sub = {kk: vv for kk, vv in v.items() if isinstance(vv, int) and not isinstance(vv, bool)}
+            if sub:
+                out[k] = sub
+    return out
+
+
+def lists(env, worker_get, log):
+    base, tok = (env.get("LIST_URL") or "").strip().rstrip("/"), (env.get("LIST_TOKEN") or "").strip()
+    if not (base and tok):
+        raise SourceError("LIST_URL / LIST_TOKEN not set")
+    c = worker_get(base + "/count", tok)
+    if not isinstance(c, dict) or not c.get("ok"):
+        raise SourceError("the worker /count did not answer ok")
+    out = counts_only(c)
+    out.pop("ok", None)
+    log(f"[stats] lists: {len(out)} counts read")     # how many, never the numbers (public log)
+    return out
+
+
+def worker_count(url, tok):
+    import list_source        # same route as the morning report (worker, else the private copy)
+    return list_source.request("GET", url, None, {"User-Agent": "agsist-stats", "Authorization": "Bearer %s" % tok})
+
+
 def url_get(url):
     import urllib.request
     import urllib.error
@@ -207,7 +241,8 @@ def write_gz(path, obj):
         json.dump(obj, f, separators=(",", ":"))
 
 
-def run(env, out, days, today, transport, token_fn, get, log=print):
+def run(env, out, days, today, transport, token_fn, get, log=print, worker_get=None):
+    worker_get = worker_get or worker_count
     ga_end = today - timedelta(days=1)
     gs_end = today - timedelta(days=2)
     ga_start = ga_end - timedelta(days=days - 1)
@@ -241,6 +276,13 @@ def run(env, out, days, today, transport, token_fn, get, log=print):
     except Exception as e:
         man["sources"]["bing"] = {"error": str(e)[:300]}
         log(f"[stats] bing failed: {str(e)[:200]}")
+    try:
+        ls = lists(env, worker_get, log)
+        write_gz(out / "lists" / f"{today.isoformat()}.json.gz", {"date": today.isoformat(), "fetched": stamp, "counts": ls})
+        man["sources"]["lists"] = {"snapshot": today.isoformat(), "keys": len(ls)}
+    except Exception as e:
+        man["sources"]["lists"] = {"error": str(e)[:300]}
+        log(f"[stats] lists failed: {str(e)[:200]}")
     out.mkdir(parents=True, exist_ok=True)
     (out / "manifest.json").write_text(json.dumps(man, indent=1) + "\n")
     return 0 if ok else 1
@@ -282,6 +324,18 @@ def selftest():
         assert m["sources"]["ga4"]["end"] == "2026-10-22" and m["sources"]["gsc"]["end"] == "2026-10-21", m
         assert m["sources"]["bing"]["methods"] == sorted(BING_METHODS), m
         assert not any("tok" in l or "apikey" in l for l in logs), "a secret reached the log"
+        # lists: numbers only, whatever the worker sends
+        env2 = {**env, "LIST_URL": "https://w.dev/", "LIST_TOKEN": "sek"}
+        seen = []
+        fake_w = lambda u, k: (seen.append((u, k)), {"ok": True, "daily": 167, "alerts": 4, "email": "a@b.c",
+                                                     "notices": {"rent:ia": 2, "who": "a@b.c"}, "flag": True, "rows": [1]})[1]
+        logs2 = []
+        run(env2, out, 1, date(2026, 10, 23), fake_transport, lambda i, s: "tok", lambda u: (200, json.dumps({"d": [1]})),
+            logs2.append, fake_w)
+        L = json.loads(gzip.open(out / "lists" / "2026-10-23.json.gz").read())["counts"]
+        assert L == {"daily": 167, "alerts": 4, "notices": {"rent:ia": 2}}, L
+        assert seen == [("https://w.dev/count", "sek")], seen
+        assert not any("167" in l or "sek" in l for l in logs2), "a count or the token reached the public log"
         # one source failing leaves the others
         rc = run({**env, "GA4_PROPERTY_ID": ""}, out, 1, date(2026, 10, 23), fake_transport,
                  lambda i, s: "tok", lambda u: (500, ""), logs.append)
