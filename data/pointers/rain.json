@@ -69,10 +69,6 @@
    "to": "/rain/iowa",
    "since": "2026-10-23"
   },
-  "rain/kentucky/green-county.html": {
-   "to": "/rain/kentucky",
-   "since": "2026-10-15"
-  },
   "rain/kentucky/wayne-county.html": {
    "to": "/rain/kentucky",
    "since": "2026-10-14"
@@ -104,6 +100,10 @@
   "rain/mississippi/panola-county.html": {
    "to": "/rain/mississippi",
    "since": "2026-10-19"
+  },
+  "rain/mississippi/pontotoc-county.html": {
+   "to": "/rain/mississippi",
+   "since": "2026-10-24"
   },
   "rain/missouri/dallas-county.html": {
    "to": "/rain/missouri",
