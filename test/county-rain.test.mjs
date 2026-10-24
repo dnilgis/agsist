@@ -85,7 +85,7 @@ test("rain share cards: redrawn on Mondays only, and every page describes the ca
   const side = JSON.parse(readFileSync(ROOT + "img/og/rain-cards.json", "utf8"));
   const sha8 = (p) => createHash("sha1").update(readFileSync(ROOT + p)).digest("hex").slice(0, 8);
   for (const [name, e] of Object.entries(side)) {
-    assert.match(name, /^rain(-[a-z]{2})?$/, name);
+    assert.match(name, /^rain(-[a-z]{2}|-records)?$/, name);
     assert.equal(e.v, sha8(`img/og/${name}.jpg`), name + ": the saved alt is for the file on disk");
     assert.ok(e.alt && !/[—–]/.test(e.alt), name + ": an alt, no dashes");
   }

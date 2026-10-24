@@ -947,7 +947,34 @@ def state_page(st, d, pages, none_rows):
 
 # ---------------------------------------------------------------- hub
 
-def hub_page(files, built):
+def hub_records(data_dir, pages):
+    """Counties at their wettest or driest year to date on record (scripts/rain_records.py), each with its
+    page; a record that is one gauge and not the county (station and county average 25+ points apart) is left off."""
+    try:
+        import rain_records as RR
+        rs = RR.rows(data_dir, within=1)
+    except Exception as ex:  # noqa: BLE001  a records failure never blocks the pages
+        print(f"rain records skipped ({type(ex).__name__})")
+        return []
+    return [dict(o, url=pages[o["fips"]][1]) for o in rs if not o["one_gauge"] and o["fips"] in pages]
+
+
+def records_html(recs):
+    if not recs:
+        return ""
+    li = []
+    for side in ("wettest", "driest"):
+        for o in sorted((o for o in recs if o["side"] == side), key=lambda o: o["first"]):
+            li.append(f'<li><a href="{e(o["url"])}">{e(o["county"])}, {e(o["state"])}</a>: {side} on record by {short_date(o["as_of"])}, '
+                      f'of {o["years"]} years ({o["first"]} on). {inch(o["total"])} in., {o["pct"]}% of usual.</li>')
+    return (f'    <h2 id="records">Records right now</h2>\n'
+            f'    <p>Counties whose station has had its {"wettest or driest" if len({o["side"] for o in recs}) > 1 else recs[0]["side"]} '
+            f'year to date on record. Only years the station reported fully are counted. A record where the station and the county '
+            f'average differ by 25 points or more is left off: that is one gauge, not the county.</p>\n'
+            f'    <ul class="rc-list">{"".join(li)}</ul>\n')
+
+
+def hub_page(files, built, recs=None):
     url = f"{ORIGIN}/rain"
     years = sorted({d["year"] for d in files.values()})
     yw = str(years[-1]) if len(years) == 1 else "this year"
@@ -981,7 +1008,7 @@ def hub_page(files, built):
     <h1>{f"How much rain did your county get in {yw}?" if done else "How much rain has your county had this year?"}</h1>
     <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.</p>
     <ul class="rc-states">{''.join(rows)}</ul>
-    <h2>How the numbers are counted</h2>
+{records_html(recs)}    <h2>How the numbers are counted</h2>
     <ul class="rc-list">
       <li>Each county page uses one weather station inside that county, and only a station that reported at least 90% of the days {"in " + yw if done else "this year"}. Counties without one are listed on the state page with the nearest county that has one.</li>
       <li>A day the station did not report is unknown, not dry. It adds nothing to the total and nothing to the usual year either.</li>
@@ -1130,7 +1157,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
             urls.insert(0, (f"{ORIGIN}/rain/{st_slug}", max((c["as_of"] for fp, c in d["counties"].items() if fp in C), default=day)))
     if pages:
         built = max(d["fetched"][:10] for d in files.values())
-        want["rain.html"] = hub_page(files, built)
+        want["rain.html"] = hub_page(files, built, hub_records(data_dir, pages))
         urls.insert(0, (f"{ORIGIN}/rain", max(m for _u, m in urls)))
     urls = [urls[0]] + sorted(urls[1:]) if pages else []
     want["sitemap-rain.xml"] = sitemap(urls)
