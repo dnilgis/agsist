@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-23T01:32:36Z",
+ "updated": "2026-10-24T01:36:29Z",
  "source": "USDA AMS Livestock, Poultry and Grain Market News, state hay reports",
  "note": "Confirmed trades as AMS reports them, $ per ton, by grade and bale type. Each report has its own date. Not blended with the NASS monthly prices in hay-prices.json.",
  "reports": [
@@ -151,7 +151,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -159,15 +159,15 @@
    "state": "AL",
    "state_name": "Alabama",
    "title": "Alabama Direct Report (Bi-Weekly)",
-   "heading": "Direct Hay Weighted Average Report for week ending 10/2/2026",
-   "date": "2026-10-01",
-   "week_ending": "2026-10-02",
-   "last_reported": "2026-09-14",
+   "heading": "Direct Hay Weighted Average Report for week ending 10/16/2026",
+   "date": "2026-10-23",
+   "week_ending": "2026-10-16",
+   "last_reported": "2026-09-28",
    "tons": {
     "hay": {
-     "week": 918.0,
-     "last": 877.0,
-     "year": 1013.0
+     "week": 735.0,
+     "last": 918.0,
+     "year": 1039.0
     },
     "straw": {
      "week": 13.0,
@@ -175,12 +175,12 @@
      "year": 0.0
     },
     "total": {
-     "week": 931.0,
-     "last": 890.0,
-     "year": 1013.0
+     "week": 748.0,
+     "last": 931.0,
+     "year": 1039.0
     }
    },
-   "comment": "Hay prices steady. Trade moderate, with moderate supply and light demand.",
+   "comment": "Hay prices steady. Trade moderate, with good supply and moderate demand.",
    "rows": [
     {
      "kind": "hay",
@@ -190,7 +190,7 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Medium Round",
-     "qty": 3.0,
+     "qty": 4.5,
      "lo": 150.0,
      "hi": 150.0,
      "avg": 150.0,
@@ -220,10 +220,10 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Large Round",
-     "qty": 91.5,
-     "lo": 160.0,
+     "qty": 28.5,
+     "lo": 200.0,
      "hi": 200.0,
-     "avg": 176.26,
+     "avg": 200.0,
      "freight": "F.O.B.",
      "desc": ""
     },
@@ -235,10 +235,10 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Medium Round",
-     "qty": 77.5,
+     "qty": 76.0,
      "lo": 150.0,
      "hi": 200.0,
-     "avg": 171.18,
+     "avg": 173.82,
      "freight": "F.O.B.",
      "desc": ""
     },
@@ -250,25 +250,10 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Small Square",
-     "qty": 269.75,
+     "qty": 340.25,
      "lo": 280.0,
      "hi": 440.0,
-     "avg": 338.21,
-     "freight": "F.O.B.",
-     "desc": ""
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Bermuda Grass",
-     "grade": "Good",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Large Round",
-     "qty": 18.0,
-     "lo": 100.0,
-     "hi": 100.0,
-     "avg": 100.0,
+     "avg": 330.03,
      "freight": "F.O.B.",
      "desc": ""
     },
@@ -280,10 +265,10 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Medium Round",
-     "qty": 372.0,
-     "lo": 100.0,
+     "qty": 196.5,
+     "lo": 120.0,
      "hi": 120.0,
-     "avg": 107.63,
+     "avg": 120.0,
      "freight": "F.O.B.",
      "desc": ""
     },
@@ -295,7 +280,7 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Medium Round",
-     "qty": 86.0,
+     "qty": 89.0,
      "lo": 80.0,
      "hi": 80.0,
      "avg": 80.0,
@@ -332,7 +317,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -342,7 +327,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -508,7 +493,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -1529,7 +1514,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -1539,7 +1524,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -1549,7 +1534,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -1559,7 +1544,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -1645,7 +1630,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -1655,7 +1640,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -1761,7 +1746,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -1987,7 +1972,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -1997,7 +1982,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2128,7 +2113,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2259,7 +2244,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2485,7 +2470,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2493,53 +2478,38 @@
    "state": "CA",
    "state_name": "California",
    "title": "California Direct Hay Report",
-   "heading": "Direct Hay Weighted Average Report for week ending 10/9/2026",
-   "date": "2026-10-09",
-   "week_ending": "2026-10-09",
-   "last_reported": "2026-09-21",
+   "heading": "Direct Hay Weighted Average Report for week ending 10/23/2026",
+   "date": "2026-10-23",
+   "week_ending": "2026-10-23",
+   "last_reported": "2026-10-05",
    "tons": {
     "hay": {
-     "week": 7300.0,
-     "last": 25550.0,
-     "year": 4325.0
+     "week": 7230.0,
+     "last": 7300.0,
+     "year": 6015.0
     },
     "total": {
-     "week": 7300.0,
-     "last": 25550.0,
-     "year": 4325.0
+     "week": 7230.0,
+     "last": 7300.0,
+     "year": 6015.0
     }
    },
-   "comment": "Compared to last report: Trade activity and demand good on retail hay and dairy hay. In southeast California, Retail #1 alfalfa 3-tie bales sold $35-40/per ton higher than two weeks ago. Growers are attributing the price jump due to a tightening supply. According to the U.S.",
+   "comment": "Compared to last report: Trade activity and demand were good on retail and dairy hay. In the North San Juaquin Valley and southeast regions, Retail alfalfa 3-tie bales sold $25/ton higher than two weeks ago. Dry cow and stock hay traded $5/ton higher. The next available hay report will be Friday, November 06, 2026.",
    "rows": [
     {
      "kind": "hay",
      "organic": false,
      "commodity": "Alfalfa",
-     "grade": "Premium/Supreme",
+     "grade": "Supreme",
      "basis": "trade",
      "region": "Central San Joaquin Valley",
      "bale": "Large Square 3x4",
-     "qty": 185.0,
-     "lo": 270.0,
-     "hi": 270.0,
-     "avg": 270.0,
-     "freight": "F.O.B.-Dairy",
-     "desc": "> 5th Cut"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Premium/Supreme",
-     "basis": "trade",
-     "region": "Central San Joaquin Valley",
-     "bale": "Large Square 3x4",
-     "qty": 1000.0,
+     "qty": 1500.0,
      "lo": 353.0,
      "hi": 353.0,
      "avg": 353.0,
      "freight": "Delivered-Dairy",
-     "desc": "4th Cut"
+     "desc": "New Crop"
     },
     {
      "kind": "hay",
@@ -2549,12 +2519,42 @@
      "basis": "trade",
      "region": "North Inter-Mountains",
      "bale": "Large Square 3x4",
-     "qty": 550.0,
+     "qty": 1000.0,
      "lo": 240.0,
      "hi": 240.0,
      "avg": 240.0,
      "freight": "F.O.B.-Dairy",
-     "desc": "4th Cut"
+     "desc": "New Crop"
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Corn Stalk",
+     "grade": "",
+     "basis": "trade",
+     "region": "North Inter-Mountains",
+     "bale": "Large Square 3x4",
+     "qty": 70.0,
+     "lo": 70.0,
+     "hi": 70.0,
+     "avg": 70.0,
+     "freight": "F.O.B.-Feedlot",
+     "desc": "New Crop"
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Wheat",
+     "grade": "Good",
+     "basis": "trade",
+     "region": "North Inter-Mountains",
+     "bale": "Large Square 3x4",
+     "qty": 300.0,
+     "lo": 155.0,
+     "hi": 155.0,
+     "avg": 155.0,
+     "freight": "F.O.B.",
+     "desc": "New Crop"
     },
     {
      "kind": "hay",
@@ -2564,274 +2564,169 @@
      "basis": "trade",
      "region": "North San Joaquin Valley",
      "bale": "Large Square 3x4",
-     "qty": 200.0,
-     "lo": 265.0,
-     "hi": 265.0,
-     "avg": 265.0,
-     "freight": "F.O.B.-Dairy",
-     "desc": "> 5th Cut"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Good",
-     "basis": "trade",
-     "region": "North San Joaquin Valley",
-     "bale": "Large Square 3x4",
-     "qty": 200.0,
-     "lo": 250.0,
-     "hi": 250.0,
-     "avg": 250.0,
-     "freight": "F.O.B.",
-     "desc": "> 5th Cut"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa/Grass Mix",
-     "grade": "Fair",
-     "basis": "trade",
-     "region": "North San Joaquin Valley",
-     "bale": "Small Square 3 Tie",
-     "qty": 125.0,
-     "lo": 210.0,
-     "hi": 210.0,
-     "avg": 210.0,
-     "freight": "F.O.B.-Farm/Ranch",
-     "desc": "> 5th Cut"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Sudan",
-     "grade": "Utility/Fair",
-     "basis": "trade",
-     "region": "Sacramento Valley",
-     "bale": "Large Square 3x4",
-     "qty": 200.0,
-     "lo": 100.0,
-     "hi": 100.0,
-     "avg": 100.0,
-     "freight": "F.O.B.",
-     "desc": "New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Premium",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Small Square 3 Tie",
-     "qty": 75.0,
-     "lo": 255.0,
-     "hi": 255.0,
-     "avg": 255.0,
-     "freight": "F.O.B.-Retail",
-     "desc": "Covered / 5th Cut"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Premium",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Small Square 3 Tie",
-     "qty": 225.0,
-     "lo": 280.0,
-     "hi": 300.0,
-     "avg": 288.89,
-     "freight": "F.O.B.-Retail",
-     "desc": "New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Premium",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Small Square 3 Tie",
-     "qty": 950.0,
-     "lo": 240.0,
-     "hi": 300.0,
-     "avg": 254.21,
-     "freight": "F.O.B.-Retail",
-     "desc": "> 5th Cut"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Good/Premium",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Large Square 3x4",
-     "qty": 300.0,
-     "lo": 220.0,
-     "hi": 220.0,
-     "avg": 220.0,
-     "freight": "F.O.B.-Dairy",
-     "desc": "3rd Cut"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Good",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Small Square 3 Tie",
-     "qty": 25.0,
-     "lo": 235.0,
-     "hi": 235.0,
-     "avg": 235.0,
-     "freight": "F.O.B.-Retail",
-     "desc": "5th Cut"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Good",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Small Square 3 Tie",
-     "qty": 100.0,
-     "lo": 265.0,
-     "hi": 265.0,
-     "avg": 265.0,
-     "freight": "F.O.B.-Retail",
-     "desc": "New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Fair/Good",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Large Square 3x4",
-     "qty": 100.0,
-     "lo": 205.0,
-     "hi": 205.0,
-     "avg": 205.0,
-     "freight": "F.O.B.-Dairy",
-     "desc": "5th Cut"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Fair",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Large Square 3x4",
-     "qty": 80.0,
-     "lo": 160.0,
-     "hi": 160.0,
-     "avg": 160.0,
-     "freight": "F.O.B.-Feedlot",
-     "desc": "New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Fair",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Large Square 3x4",
-     "qty": 400.0,
-     "lo": 210.0,
-     "hi": 220.0,
-     "avg": 215.0,
-     "freight": "F.O.B.-Dairy",
-     "desc": "New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Utility/Fair",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Large Square 3x4",
-     "qty": 500.0,
-     "lo": 180.0,
-     "hi": 180.0,
-     "avg": 180.0,
-     "freight": "F.O.B.-Dairy",
-     "desc": "> 5th Cut"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa/Grass Mix",
-     "grade": "Good",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Large Square 3x4",
-     "qty": 100.0,
-     "lo": 175.0,
-     "hi": 175.0,
-     "avg": 175.0,
-     "freight": "F.O.B.-Feedlot",
-     "desc": "New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Giant Bermuda Grass",
-     "grade": "Premium",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Small Square 3 Tie",
-     "qty": 25.0,
+     "qty": 985.0,
      "lo": 270.0,
      "hi": 270.0,
      "avg": 270.0,
-     "freight": "F.O.B.-Retail",
-     "desc": "4th Cut"
+     "freight": "F.O.B.-Dairy",
+     "desc": "New Crop"
     },
     {
      "kind": "hay",
      "organic": false,
-     "commodity": "Giant Bermuda Grass",
+     "commodity": "Alfalfa",
      "grade": "Premium",
      "basis": "trade",
      "region": "Southeast",
      "bale": "Small Square 3 Tie",
      "qty": 150.0,
-     "lo": 275.0,
-     "hi": 275.0,
-     "avg": 275.0,
+     "lo": 300.0,
+     "hi": 300.0,
+     "avg": 300.0,
      "freight": "F.O.B.-Retail",
      "desc": "> 5th Cut"
     },
     {
      "kind": "hay",
      "organic": false,
-     "commodity": "Klein Grass",
-     "grade": "Fair/Good",
+     "commodity": "Alfalfa",
+     "grade": "Premium",
+     "basis": "trade",
+     "region": "Southeast",
+     "bale": "Small Square 3 Tie",
+     "qty": 1000.0,
+     "lo": 270.0,
+     "hi": 325.0,
+     "avg": 298.13,
+     "freight": "F.O.B.-Retail",
+     "desc": "New Crop"
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Alfalfa",
+     "grade": "Good",
      "basis": "trade",
      "region": "Southeast",
      "bale": "Large Square 3x4",
-     "qty": 140.0,
-     "lo": 123.0,
-     "hi": 123.0,
-     "avg": 123.0,
-     "freight": "F.O.B.-Export",
+     "qty": 225.0,
+     "lo": 205.0,
+     "hi": 205.0,
+     "avg": 205.0,
+     "freight": "F.O.B.-Dairy",
+     "desc": "New Crop"
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Alfalfa",
+     "grade": "Good",
+     "basis": "trade",
+     "region": "Southeast",
+     "bale": "Large Square 3x4",
+     "qty": 350.0,
+     "lo": 200.0,
+     "hi": 200.0,
+     "avg": 200.0,
+     "freight": "F.O.B.",
+     "desc": "New Crop"
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Alfalfa",
+     "grade": "Good",
+     "basis": "trade",
+     "region": "Southeast",
+     "bale": "Large Square 3x4",
+     "qty": 500.0,
+     "lo": 210.0,
+     "hi": 210.0,
+     "avg": 210.0,
+     "freight": "F.O.B.-Dairy",
+     "desc": "Grassy / New Crop"
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Alfalfa",
+     "grade": "Good",
+     "basis": "trade",
+     "region": "Southeast",
+     "bale": "Small Square 3 Tie",
+     "qty": 150.0,
+     "lo": 220.0,
+     "hi": 260.0,
+     "avg": 241.67,
+     "freight": "F.O.B.-Retail",
+     "desc": "New Crop"
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Alfalfa",
+     "grade": "Utility/Fair",
+     "basis": "trade",
+     "region": "Southeast",
+     "bale": "Large Square 3x4",
+     "qty": 250.0,
+     "lo": 185.0,
+     "hi": 195.0,
+     "avg": 191.0,
+     "freight": "F.O.B.-Dairy",
+     "desc": ""
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Bermuda Grass",
+     "grade": "Good",
+     "basis": "trade",
+     "region": "Southeast",
+     "bale": "Large Square 3x4",
+     "qty": 100.0,
+     "lo": 150.0,
+     "hi": 150.0,
+     "avg": 150.0,
+     "freight": "F.O.B.",
+     "desc": "Bleached / New Crop"
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Bermuda Grass",
+     "grade": "Good",
+     "basis": "trade",
+     "region": "Southeast",
+     "bale": "Large Square 3x4",
+     "qty": 300.0,
+     "lo": 150.0,
+     "hi": 150.0,
+     "avg": 150.0,
+     "freight": "F.O.B.",
+     "desc": "Excessive Moisture / New Crop"
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Giant Bermuda Grass",
+     "grade": "Premium",
+     "basis": "trade",
+     "region": "Southeast",
+     "bale": "Small Square 3 Tie",
+     "qty": 350.0,
+     "lo": 250.0,
+     "hi": 270.0,
+     "avg": 257.14,
+     "freight": "F.O.B.-Retail",
      "desc": "New Crop"
     }
    ],
    "per_bale_tables": 12,
    "skipped": {
     "ask": 0,
-    "contract": 6,
-    "other_unit": 8
+    "contract": 0,
+    "other_unit": 12
    },
    "kind": "direct",
    "biweekly": false,
@@ -2841,7 +2736,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2851,7 +2746,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2861,7 +2756,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2871,7 +2766,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2881,7 +2776,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2891,7 +2786,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2901,7 +2796,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2911,7 +2806,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2921,7 +2816,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2931,7 +2826,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2941,7 +2836,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   },
   {
@@ -2951,7 +2846,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-23T01:32:36Z"
+    "checked": "2026-10-24T01:36:29Z"
    }
   }
  ]
