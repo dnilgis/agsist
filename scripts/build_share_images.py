@@ -667,26 +667,6 @@ def card_rain_print():
                f"the line, snow above, from NOAA records. A year of rain on your farm, framed. {sub}."}
 
 
-def card_rain_records():
-    """img/og/rain-records.jpg, for posting (Sig, Oct 24 2026): counties at their wettest or driest year to
-    date on record (scripts/rain_records.py), one-gauge records left off. Drawn with the rain cards (Mondays)."""
-    import county_rain as R
-    import rain_records as RR
-    rs = [o for o in RR.rows(os.path.join(ROOT, "data", "rain"), within=1) if not o["one_gauge"]]
-    wet = sorted((o for o in rs if o["side"] == "wettest"), key=lambda o: o["first"])
-    dry = sorted((o for o in rs if o["side"] == "driest"), key=lambda o: o["first"])
-    asof = md(d_iso(max(o["as_of"] for o in rs))) if rs else ""
-    if not rs:
-        title, ctx = "No county is at a record year to date today", "Rain so far this year for every county, from NOAA stations."
-    else:
-        title = (f"{len(wet)} {'county' if len(wet) == 1 else 'counties'} at their wettest year to date on record, "
-                 f"{len(dry)} at their driest")
-        bits = [f"Wettest, records back to {o['first']}: {o['county']}, {o['state']}" for o in wet[:1]] + \
-               [f"Driest, back to {o['first']}: {o['county']}, {o['state']}" for o in dry[:1]]
-        ctx = ". ".join(bits) + f". Through {asof}."
-    return a_card("rain", "Record rain", BYLINE, f"{title}. {ctx}", title=title, ctx=ctx)
-
-
 def card_rain_gauge():
     return {"kind": "PHOTO", "args": dict(
         photo_path=os.path.join(ROOT, "img/rain-gauge/gauge-front.jpg"), head="A rain gauge that keeps its own log.",
@@ -881,7 +861,6 @@ def rain_state_sets():
 
 
 SETS.update(rain_state_sets())
-SETS["rain-records"] = lambda: card_rain_records()
 
 
 def render(spec):
@@ -991,7 +970,7 @@ RAIN_SIDECAR = "img/og/rain-cards.json"  # the alt text drawn with each county r
 
 
 def rain_card_names():
-    return {"rain", "rain-records"} | {n for n in SETS if n.startswith("rain-") and len(n) == 7}
+    return {"rain"} | {n for n in SETS if n.startswith("rain-") and len(n) == 7}
 
 
 def central_today(now=None):
@@ -1041,7 +1020,7 @@ def build(only=None, strict=False, today=None, rain_now=False):
         if "lrp" in only:       # the LRP workflow: /lrp and /lrp/record
             only.add("lrp-record")
         if "rain" in only:      # the county rain workflow: the national card and every state's
-            only |= {n for n in SETS if n.startswith("rain-") and len(n) == 7} | {"rain-records"}
+            only |= {n for n in SETS if n.startswith("rain-") and len(n) == 7}
         names &= only
     rain = names & rain_card_names()
     if rain and not (only and "rain" in only):

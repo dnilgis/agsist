@@ -871,7 +871,21 @@ def middle(cs):
     return p[k] if len(p) % 2 else (p[k - 1] + p[k]) / 2
 
 
-def state_page(st, d, pages, none_rows):
+def state_records_html(recs, st):
+    """The state's counties within 3 places of their wettest or driest year to date on record (one-gauge records
+    left off), in the state page itself: no separate page (Sig, Oct 24 2026)."""
+    rs = [o for o in (recs or []) if o["state"] == st]
+    if not rs:
+        return ""
+    li = "".join(f'<li><a href="{e(o["url"])}">{e(o["county"])}</a>: '
+                 f'{"the " + o["side"] if o["place"] == 1 else ordinal(o["place"]) + " " + o["side"]} by {short_date(o["as_of"])} '
+                 f'of {o["years"]} years on record ({o["first"]} on), {o["pct"]}% of usual.</li>'
+                 for o in sorted(rs, key=lambda o: (o["place"], o["side"], o["county"])))
+    return (f'<h2 id="records">Near a record</h2><p>Counties whose station is having one of its three wettest or driest '
+            f'years to date on record. Only years the station reported fully are counted.</p><ul class="rc-list">{li}</ul>')
+
+
+def state_page(st, d, pages, none_rows, recs=None):
     stn = R.STATES[st]
     st_slug = R.slug(stn)
     url = f"{ORIGIN}/rain/{st_slug}"
@@ -938,6 +952,7 @@ def state_page(st, d, pages, none_rows):
     <thead><tr><th scope="col">{UNIT_HEAD.get(st, "County")}</th><th scope="col">Rain</th><th scope="col">Usual</th><th scope="col">% usual</th><th scope="col">Station</th><th scope="col">Through</th></tr></thead>
     <tbody>{''.join(rows)}</tbody></table></div>
     <p class="rc-fine">Rain and usual are in inches. Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each {u1} page has the month by month table and how the station was picked.</p>
+    {state_records_html(recs, st)}
     {none_html}
     {GAUGE_SLOT}
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; updated daily. <a href="/rain">Every state</a> &middot; <a href="/rain-print">Rain Print</a></p>
@@ -947,12 +962,12 @@ def state_page(st, d, pages, none_rows):
 
 # ---------------------------------------------------------------- hub
 
-def hub_records(data_dir, pages):
+def hub_records(data_dir, pages, within=1):
     """Counties at their wettest or driest year to date on record (scripts/rain_records.py), each with its
     page; a record that is one gauge and not the county (station and county average 25+ points apart) is left off."""
     try:
         import rain_records as RR
-        rs = RR.rows(data_dir, within=1)
+        rs = RR.rows(data_dir, within=within)
     except Exception as ex:  # noqa: BLE001  a records failure never blocks the pages
         print(f"rain records skipped ({type(ex).__name__})")
         return []
@@ -1122,6 +1137,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
                 pages[fips] = (c["name"], f"/rain/{R.slug(R.STATES[st])}/{C[fips]['slug']}",
                                f"{inch(c['total'])} in" + (f", {c['pct']}%" if c["pct"] is not None else ""), c["as_of"])
     want, urls = {}, []
+    near = None
     for st, d in sorted(files.items(), key=lambda kv: R.STATES[kv[0]]):
         st_slug = R.slug(R.STATES[st])
         day = d["fetched"][:10]
@@ -1153,7 +1169,9 @@ def build(data_dir, C=None, NB=None, img_root=None):
                     none_rows.append((x["name"], nn, pages[nf][1], bool(x.get("held"))))
                 else:
                     none_rows.append((x["name"], None, None, bool(x.get("held"))))
-            want[f"rain/{st_slug}.html"] = nav.fill_fonts(state_page(st, d, pages, none_rows))
+            if near is None:
+                near = hub_records(data_dir, pages, within=3)
+            want[f"rain/{st_slug}.html"] = nav.fill_fonts(state_page(st, d, pages, none_rows, near))
             urls.insert(0, (f"{ORIGIN}/rain/{st_slug}", max((c["as_of"] for fp, c in d["counties"].items() if fp in C), default=day)))
     if pages:
         built = max(d["fetched"][:10] for d in files.values())
