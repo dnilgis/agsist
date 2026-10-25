@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 24 Oct 2026 10:55:44 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 25 Oct 2026 10:55:12 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn ends the week at $4.56; crude up 3.8% to $103</title>
+      <link>https://agsist.com/daily/2026-10-25</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-25</guid>
+      <pubDate>Sun, 25 Oct 2026 10:54:38 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Corn ended the week at **$4.56**, down 4½ cents, and soybeans edged up to $12.56½. Grains barely moved, but crude gained 3.8% to $103.27. That is the number that reaches your fuel and fertilizer bills next season, not the corn price.
+• Grains finish the week quiet
+• Cattle hold near highs
+• Crude gains; gas drops
+Read more: https://agsist.com/daily/2026-10-25</description>
+    </item>
     <item>
       <title>Corn ends the week at $4.56 as crude gains 3.8% to $103</title>
       <link>https://agsist.com/daily/2026-10-24</link>
@@ -353,19 +365,6 @@ Action: Live cattle at $218.95: nothing to do ahead of Cattle on Feed at 2:00 PM
 • Cattle Slips Again, Report Looms
 • Grains Stay Parked
 Read more: https://agsist.com/daily/2026-09-25</description>
-    </item>
-    <item>
-      <title>Crude runs to $93 as Hormuz traffic stays thin</title>
-      <link>https://agsist.com/daily/2026-09-24</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-24</guid>
-      <pubDate>Thu, 24 Sep 2026 11:08:49 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Crude added 2.1% to $93.19 and it isn't demand talking, it's one vessel crossing the Strait of Hormuz Wednesday, stuck below the 10-day average with the Iran-Hormuz cycle still refusing to fully unwind.
-Action: Lock diesel needs now; a close above $6.55 on the rack price is the next reason to pre-buy fall fuel, not wait.
-• Crude Runs On Thin Hormuz Traffic
-• Grains Give Back More Ground
-• Cattle Grind Higher Again
-Read more: https://agsist.com/daily/2026-09-24</description>
     </item>
   </channel>
 </rss>

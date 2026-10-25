@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-25",
+      "date_display": "Sunday, October 25, 2026",
+      "headline": "Corn ends the week at $4.56; crude up 3.8% to $103",
+      "teaser": "Grains were quiet Friday while crude gained 3.8% to $103.27.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-10-25",
+      "market_closed": true
+    },
+    {
       "date": "2026-10-24",
       "date_display": "Saturday, October 24, 2026",
       "headline": "Corn ends the week at $4.56 as crude gains 3.8% to $103",
@@ -2580,6 +2591,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-24T10:55:10.095787+00:00",
-  "count": 225
+  "updated": "2026-10-25T10:54:43.929266+00:00",
+  "count": 226
 }
