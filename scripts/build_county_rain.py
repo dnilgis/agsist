@@ -584,6 +584,17 @@ def year_ask(name, year, fips):
             f'data-note="One email: the year&rsquo;s total against a usual year, and a link to the month by month page."></div>')
 
 
+def month_ask(name, fips):
+    """The monthly county rain email (topic rain-month:<fips>, scripts/rain_month.py
+    ask_html, sent on the 2nd by scripts/send_rain_month.py). While
+    data/rain-month.json says live: true it takes the January ask's place, one ask
+    per page; "One more?" then offers that county's January total
+    (components/signup-ask.js). Imported here, not at the top: rain_month
+    imports this module."""
+    import rain_month as RM
+    return RM.ask_html(name, fips)
+
+
 def county_page(ctx):
     c, st, fips, year, d = ctx["c"], ctx["st"], ctx["fips"], ctx["year"], ctx["d"]
     stn = R.STATES[st]
@@ -831,7 +842,7 @@ def county_page(ctx):
     {plain_chart}
     <h2>Month by month</h2>
     {table}
-    {year_ask(name, year, fips) if not done else ''}
+    {(month_ask(name, fips) or year_ask(name, year, fips)) if not done else ''}
     {('<h2>' + str(year) + (' in' if done else ' so far in') + ' ' + e(name) + '</h2>' + facts_html) if facts_html else ''}
     {print_fig}
     {sell}
@@ -1392,14 +1403,24 @@ def selftest():
            "the dates come from data/rain-print.json, and this year's gift card stays")
         ok(f'<p class="rc-fine">{RP_ANY_YEAR}</p>' in sell_blk and story.count('href="/rain-print"') == 1,
            "one plain link to the bare /rain-print, inside the same promo block")
-        # the January full-year email (subs worker v5.28): one ask, under the month table, Daily box not pre-ticked
-        ok(story.count("data-signup-ask=") == 1 and 'data-topic="rainyear:2026:19169" data-ok=' in story
-           and "data-daily" not in story,
-           "one rainyear ask for this county and year, morning briefing box not pre-ticked")
-        ok(story.index("<h2>Month by month</h2>") < story.index('data-topic="rainyear:') < story.index("<h2>The station"),
-           "the ask sits under the month by month table")
-        ok("Email me Story County&rsquo;s full 2026 rain total in January." in story and "once NOAA has all of 2026" in story,
-           "the ask says what comes and when")
+        # one ask under the month table, Daily box not pre-ticked: the monthly email while
+        # data/rain-month.json is live, else the January full-year email (subs worker v5.28)
+        import rain_month as RM
+        if RM.ask_conf().get("live"):
+            ok(story.count("data-signup-ask=") == 1 and 'data-topic="rain-month:19169"' in story
+               and "rainyear:" not in story and "data-daily" not in story,
+               "one monthly rain ask for this county, no January ask beside it, morning briefing box not pre-ticked")
+            ok(story.index("<h2>Month by month</h2>") < story.index('data-topic="rain-month:') < story.index("<h2>The station"),
+               "the ask sits under the month by month table")
+            ok("Email me Story County&rsquo;s rain at the start of each month." in story, "the ask names the county")
+        else:
+            ok(story.count("data-signup-ask=") == 1 and 'data-topic="rainyear:2026:19169" data-ok=' in story
+               and "data-daily" not in story,
+               "one rainyear ask for this county and year, morning briefing box not pre-ticked")
+            ok(story.index("<h2>Month by month</h2>") < story.index('data-topic="rainyear:') < story.index("<h2>The station"),
+               "the ask sits under the month by month table")
+            ok("Email me Story County&rsquo;s full 2026 rain total in January." in story and "once NOAA has all of 2026" in story,
+               "the ask says what comes and when")
         fin = county_page({"c": dict(c, as_of="2026-12-31"), "st": "IA", "fips": "19169", "year": 2026, "d": dict(d, edate="2026-12-31"),
                            "slug": "story-county", "nbrs": [], "n_ok": 1})
         ok("data-signup-ask" not in fin, "a finished year has no ask (the email is about the year so far)")
