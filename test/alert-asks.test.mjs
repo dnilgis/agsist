@@ -42,11 +42,33 @@ function countyPages() {
 test("every county rain page asks once, for its own county and year, and says what comes", () => {
   const pages = countyPages();
   assert.ok(pages.length > 2000, "county rain pages found: " + pages.length);
+  // while data/rain-month.json is live the monthly email takes the January ask's place (one ask a page)
+  const RM = JSON.parse(read("data/rain-month.json"));
+  const att = (t) => t.replace(/&/g, "&amp;").replace(/’/g, "&rsquo;");
   let asked = 0;
   for (const p of pages) {
     const h = read(p);
-    const asks = [...h.matchAll(/<div data-signup-ask="([^"]*)" data-topic="rainyear:(\d{4}):(\d{5})" data-ok="([^"]*)" data-note="([^"]*)"><\/div>/g)];
     const any = (h.match(/data-signup-ask/g) || []).length;
+    if (RM.live === true) {
+      const m = /<div data-signup-ask="([^"]*)" data-topic="rain-month:(\d{5})" data-btn="([^"]*)" data-ok="([^"]*)" data-note="([^"]*)"><\/div>/.exec(h);
+      assert.ok(!h.includes("rainyear:"), p + ": no January ask beside the monthly one");
+      if (!m) { assert.equal(any, 0, p + ": a signup ask that is not the monthly rain ask"); continue; }
+      assert.equal(any, 1, p + ": one ask a page");
+      const [, copy, fips, btn, ok, note] = m;
+      const c = RAIN[fips];
+      assert.ok(c, p + ": the ask's FIPS " + fips + " is a county in data/rain");
+      assert.ok(!c.done, p + ": no ask once the year is finished");
+      const name = c.name.replace(/&/g, "&amp;");
+      assert.equal(copy, att(RM.ask).replace("{county}", name), p + ": the ask names the county");
+      assert.equal(btn, att(RM.btn), p);
+      assert.equal(ok, att(RM.ok), p);
+      assert.equal(note, att(RM.note), p);
+      assert.ok(!DASH.test(copy + ok + note), p + ": no dashes");
+      assert.ok(h.indexOf("<h2>Month by month</h2>") < h.indexOf("data-signup-ask"), p + ": under the month table");
+      asked++;
+      continue;
+    }
+    const asks = [...h.matchAll(/<div data-signup-ask="([^"]*)" data-topic="rainyear:(\d{4}):(\d{5})" data-ok="([^"]*)" data-note="([^"]*)"><\/div>/g)];
     const m = asks[0];
     if (!m) { assert.equal(any, 0, p + ": a signup ask that is not the rainyear ask"); continue; }
     assert.equal(any, 1, p + ": one ask a page");
@@ -172,10 +194,12 @@ async function open(browser, port, url, posts) {
   return pg;
 }
 
-test("county rain page: the ask posts rainyear for that county; the Daily box starts empty and is ticked by the reader", { skip, timeout: 60000 }, async () => {
+test("county rain page: the ask posts that county's rain email (monthly while data/rain-month.json is live, else January); the Daily box starts empty and is ticked by the reader", { skip, timeout: 60000 }, async () => {
   const p = "rain/iowa/story-county.html", h = read(p);
-  const m = /data-topic="(rainyear:\d{4}:\d{5})"/.exec(h);
+  const live = JSON.parse(read("data/rain-month.json")).live === true;
+  const m = (live ? /data-topic="(rain-month:19169)"/ : /data-topic="(rainyear:\d{4}:19169)"/).exec(h);
   assert.ok(m, "the Story County page has the ask");
+  assert.equal((h.match(/data-signup-ask=/g) || []).length, 1, "one ask on the page");
   const srv = await serve(), port = srv.address().port, posts = [];
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
@@ -193,7 +217,9 @@ test("county rain page: the ask posts rainyear for that county; the Daily box st
     const n = posts.filter((x) => x.path === "/notice");
     assert.equal(n.length, 1);
     assert.deepEqual({ ...n[0].body }, { email: "reader@example.com", source: "page:rain/iowa/story-county", topic: m[1], daily: true, reports: true, zip: "50010" });
-    assert.match(await ask.locator(".sa-ok").textContent(), /^Done\. One email in January, once NOAA has all of \d{4} for Story County\. The morning briefing starts tomorrow\.$/);
+    assert.match(await ask.locator(".sa-ok").textContent(), live
+      ? /^Done\. It comes on the 2nd of each month, with the month just ended\. The morning briefing starts tomorrow\.$/
+      : /^Done\. One email in January, once NOAA has all of \d{4} for Story County\. The morning briefing starts tomorrow\.$/);
   } finally { await browser.close(); srv.close(); }
 });
 
