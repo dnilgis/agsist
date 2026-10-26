@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 25 Oct 2026 10:55:12 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 26 Oct 2026 10:48:44 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn dips 3¢ to $4.53, beans lose 16¢ to $12.40</title>
+      <link>https://agsist.com/daily/2026-10-26</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-26</guid>
+      <pubDate>Mon, 26 Oct 2026 10:48:12 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Soybeans gave back 16 cents overnight to $12.40, and meal fell harder at 1.8%, while corn barely moved at $4.53. Beans are carrying the grain market lower today. A bushel of beans is worth about 16 cents less than it was at Friday's close.
+• Beans lead grains lower
+• Cattle hold near highs
+• Crude slips; gas gains
+Read more: https://agsist.com/daily/2026-10-26</description>
+    </item>
     <item>
       <title>Corn ends the week at $4.56; crude up 3.8% to $103</title>
       <link>https://agsist.com/daily/2026-10-25</link>
@@ -353,18 +365,6 @@ Action: Nothing to do at $5.29 corn; a close back below $5.20 confirms Friday's 
 • Grains Bounce On Empty News
 • Cattle Flat, Feeders Firm Ahead Of COF
 Read more: https://agsist.com/daily/2026-09-26</description>
-    </item>
-    <item>
-      <title>Grains sit still, cattle slip again before COF</title>
-      <link>https://agsist.com/daily/2026-09-25</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-25</guid>
-      <pubDate>Fri, 25 Sep 2026 11:16:16 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Corn eased to $5.17, beans barely moved at $13.04, and neither market gave you a reason to do anything today. Cattle is the real story: down 0.8% to $218.95, a second straight session lower with USDA's Cattle on Feed still hours away at 2:00 PM CT.
-Action: Live cattle at $218.95: nothing to do ahead of Cattle on Feed at 2:00 PM CT, but a close under $216.50 is the next sell.
-• Cattle Slips Again, Report Looms
-• Grains Stay Parked
-Read more: https://agsist.com/daily/2026-09-25</description>
     </item>
   </channel>
 </rss>
