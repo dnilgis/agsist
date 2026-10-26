@@ -57,13 +57,21 @@
    "to": "/rain/idaho",
    "since": "2026-10-19"
   },
-  "rain/iowa/winnebago-county.html": {
-   "to": "/rain/iowa",
-   "since": "2026-10-23"
+  "rain/kentucky/metcalfe-county.html": {
+   "to": "/rain/kentucky",
+   "since": "2026-10-26"
+  },
+  "rain/kentucky/russell-county.html": {
+   "to": "/rain/kentucky",
+   "since": "2026-10-26"
   },
   "rain/kentucky/wayne-county.html": {
    "to": "/rain/kentucky",
    "since": "2026-10-14"
+  },
+  "rain/louisiana/franklin-parish.html": {
+   "to": "/rain/louisiana",
+   "since": "2026-10-26"
   },
   "rain/maryland/talbot-county.html": {
    "to": "/rain/maryland",
@@ -76,6 +84,10 @@
   "rain/minnesota/cottonwood-county.html": {
    "to": "/rain/minnesota",
    "since": "2026-10-19"
+  },
+  "rain/minnesota/watonwan-county.html": {
+   "to": "/rain/minnesota",
+   "since": "2026-10-26"
   },
   "rain/mississippi/copiah-county.html": {
    "to": "/rain/mississippi",
@@ -117,16 +129,20 @@
    "to": "/rain/missouri",
    "since": "2026-10-15"
   },
+  "rain/montana/wheatland-county.html": {
+   "to": "/rain/montana",
+   "since": "2026-10-26"
+  },
   "rain/new-york/schoharie-county.html": {
    "to": "/rain/new-york",
    "since": "2026-10-15"
   },
+  "rain/north-dakota/nelson-county.html": {
+   "to": "/rain/north-dakota",
+   "since": "2026-10-26"
+  },
   "rain/north-dakota/sheridan-county.html": {
    "to": "/rain/north-dakota",
-   "since": "2026-10-19"
-  },
-  "rain/ohio/auglaize-county.html": {
-   "to": "/rain/ohio",
    "since": "2026-10-19"
   },
   "rain/oklahoma/love-county.html": {
@@ -161,14 +177,6 @@
    "to": "/rain/south-dakota",
    "since": "2026-10-15"
   },
-  "rain/south-dakota/turner-county.html": {
-   "to": "/rain/south-dakota",
-   "since": "2026-10-23"
-  },
-  "rain/tennessee/johnson-county.html": {
-   "to": "/rain/tennessee",
-   "since": "2026-10-23"
-  },
   "rain/tennessee/overton-county.html": {
    "to": "/rain/tennessee",
    "since": "2026-10-19"
@@ -196,6 +204,10 @@
   "rain/texas/delta-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
+  },
+  "rain/texas/donley-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-10-26"
   },
   "rain/texas/kent-county.html": {
    "to": "/rain/texas",
