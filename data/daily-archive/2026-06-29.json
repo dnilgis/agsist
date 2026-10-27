@@ -7,7 +7,7 @@
   "one_number": {
     "value": "60%",
     "unit": "share of US soybeans now crushed domestically",
-    "context": "Three or four years ago, more than 60% of US soybeans were exported. That share has now flipped, with domestic crush, driven by biofuel demand under the EPA's finalized RFS Set 2 rule, absorbing the majority. That structural shift is what is behind soybean oil's 6.9% run today: the RVO volumes locked in for 2026-2027 are unprecedented, and the market is pricing the feedstock demand accordingly. Meal and oil splitting apart is not noise, it is the biofuel trade repricing in real time."
+    "context": "Three or four years ago, more than 60% of US soybeans were exported. That share has now flipped, with domestic crush absorbing the majority, alongside biofuel demand under the EPA's finalized RFS Set 2 rule. That structural shift is what is behind soybean oil's 6.9% run today: the RVO volumes locked in for 2026-2027 are unprecedented, and the market is pricing the feedstock demand accordingly. Meal and oil splitting apart is not noise, it is the biofuel trade repricing in real time."
   },
   "yesterdays_call": {},
   "todays_call": {
@@ -124,7 +124,7 @@
     },
     {
       "time": "Daily",
-      "desc": "Strait of Hormuz tanker traffic: if vessel slowdowns persist past 48 hours, the crude premium that deflated through May starts rebuilding, and diesel input costs follow."
+      "desc": "Strait of Hormuz tanker traffic: if vessel slowdowns persist past 48 hours, watch whether the crude premium that deflated through May rebuilds, and diesel input costs with it."
     },
     {
       "time": "Daily",
