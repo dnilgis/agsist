@@ -154,6 +154,26 @@
   function placeHit(name, url) {
     return { e: { type: 0, title: 'Everything about ' + name, sub: 'Ranks, what is unusual, this week', url: url, i: -1, tt: [], kt: [], wt: [] }, s: 0 };
   }
+  /* Farm sales (2026-10-27): Illinois, Wisconsin and Indiana, where the recorded sales are. A county opens
+     its "Farmland sales in <County>" page; a town or ZIP opens Fast Facts at its sales within 25 miles. */
+  var LAND_ST = { IL: 'illinois', WI: 'wisconsin', IN: 'indiana' };
+  var LAND_ZIP = /^(6[0-2]\d|5[34]\d|4[67]\d)/;
+  function landHit(e) {
+    if (!e) return null;
+    if (e.type === 3 && LAND_ST[e.st]) {
+      var m = /^\/farmland-atlas\/[a-z-]+\/([a-z0-9-]+)$/.exec(e.url || '');
+      if (!m) return null;
+      return { e: { type: 0, title: 'Land sales near here: ' + e.title, sub: 'Recorded farm sales, acres and price per acre', url: '/land-sales/' + LAND_ST[e.st] + '/' + m[1], i: -1, tt: [], kt: [], wt: [] }, s: 0 };
+    }
+    if ((e.type === 2 || e.type === 6) && LAND_ST[e.st]) {
+      return { e: { type: 0, title: 'Land sales near ' + e.title, sub: 'Farm sales within 25 miles', url: '/fast-facts?q=' + encodeURIComponent(e.title) + '#h-land-sales', i: -1, tt: [], kt: [], wt: [] }, s: 0 };
+    }
+    return null;
+  }
+  function zipLandHit(z) {
+    if (!LAND_ZIP.test(z)) return null;
+    return { e: { type: 0, title: 'Land sales near ' + z, sub: 'Farm sales within 25 miles', url: '/fast-facts?zip=' + z + '#h-land-sales', i: -1, tt: [], kt: [], wt: [] }, s: 0 };
+  }
   function pageHit(items, url) {
     for (var i = 0; i < items.length; i++) if (items[i].type === 0 && items[i].url === url) return items[i];
     return null;
@@ -176,7 +196,8 @@
     if (zip) {
       rest = rest.filter(function (w) { return !FILLER[w] && !/^(zip|code|cash|bids?|grain|elevators?)$/.test(w); });
       var more = rest.length ? search(items, rest.join(' '), local) : [];
-      return [zipHit(zip), placeHit('ZIP ' + zip, '/fast-facts?zip=' + zip)].concat(more);
+      var zl = zipLandHit(zip);
+      return [zipHit(zip), placeHit('ZIP ' + zip, '/fast-facts?zip=' + zip)].concat(zl ? [zl] : [], more);
     }
     var kept = qt.filter(function (w) { return !FILLER[w]; });
     var filler = kept.length && kept.length < qt.length;
@@ -191,6 +212,9 @@
     if (filler && hits.length && GRAIN[hits[0].e.url]) raise(hits, items, '/cash-bids', 1);
     // a town or county on top: the one-place page for it rides second (/fast-facts, was /here)
     if (hits.length && (hits[0].e.type === 2 || hits[0].e.type === 3 || hits[0].e.type === 6)) hits.splice(1, 0, placeHit(hits[0].e.title, '/fast-facts?q=' + encodeURIComponent(hits[0].e.title)));
+    /* and, in Illinois and Wisconsin, its farm sales third */
+    var lh = hits.length > 1 ? landHit(hits[0].e) : null;
+    if (lh) hits.splice(2, 0, lh);
     return hits;
   }
 
