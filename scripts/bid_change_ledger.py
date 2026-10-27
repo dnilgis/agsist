@@ -15,10 +15,15 @@ Pages; scripts/push_raw.sh with RAW_BRANCH=private-data):
   private/ledger/bid-changes/YYYY/YYYY-MM-DD.json.gz   one file per Central-time day
       cols: elevId, board, crop, commodity, delivery, futuresMonth, kind,
             basisFrom, basisTo, cashFrom, cashTo, seenAt, prevSeenAt
-      kind  basis  the basis moved (cents per bushel, as the board posts it)
+      kind  basis    the basis moved, and the cash with it: the elevator changed the bid
+                     (cents per bushel, as the board posts it)
+            futures  the basis moved under an unchanged cash price (a fixed cash bid with the
+                     futures moving): kept so nothing is hidden, not an elevator change
             cash   a board that posts no basis moved its cash price
-            new    a bid that was not on the board at the read before
-            gone   a bid that was on the board and is not on this read
+            new    a bid not on the board in the last 24 hours
+            gone   a bid missing from every read for 24 hours (shorter is a partial read:
+                   the bid stays, and its next window runs from the last read that showed it)
+      Boards not priced in US dollars are left out, as the AGSIST merge leaves them out.
       "changed between prevSeenAt and seenAt" is the claim, at poll resolution.
       It is never the elevator's own minute. A cash move with the basis unchanged
       is the futures moving, not the elevator, and is not a row.
@@ -158,8 +163,14 @@ def basis_cents(b):
 
 
 # ------------------------------------------------------------------ one board read
+_PRICE_LIKE = re.compile(r"^\$?\d+(\.\d+)?[a-z]?$")
+
+
 def read_board(doc):
-    """A board file -> (ok, checkedAt ts, pricedAt, loc, {key: row}) or None if it is not a board."""
+    """A board file -> (ok, checkedAt ts, pricedAt, loc, {key: [cash, basis cents, futures cents]})
+    or None if it is not a board. ok is False for a failed read, an empty read and a board not
+    priced in US dollars (the AGSIST merge drops those too; Canadian boards float a cent with the
+    exchange rate on every read)."""
     if not isinstance(doc, dict) or not isinstance(doc.get("bids"), list) or not isinstance(doc.get("source"), dict):
         return None
     src = doc["source"]
@@ -175,32 +186,58 @@ def read_board(doc):
         com = " ".join(str(b.get("commodity") or "").split())
         dl = " ".join(str(b.get("delivery") or "").split())
         fm = " ".join(str(b.get("futuresMonth") or "").split())
+        # Some boards put the futures PRICE in the month column ("6.5150s"); keyed on, every
+        # futures tick would read as a bid gone and a new one posted.
+        if _PRICE_LIKE.match(fm):
+            fm = ""
         k = "\x1f".join((com, dl, fm))
         if k in rows:          # first row wins on an exact repeat, as every other reader does
             continue
         rows[k] = [cash, basis, num(b.get("futuresPriceCents"), 4)]
-    ok = (doc.get("status") or "ok") == "ok" and bool(rows)
+    ok = ((doc.get("status") or "ok") == "ok" and bool(rows)
+          and (doc.get("currency") or "USD") == "USD")
     return ok, parse_ts(doc.get("checkedAt")), doc.get("pricedAt"), loc, rows
 
 
-def diff_board(old_rows, new_rows):
-    """-> [(key, kind, basisFrom, basisTo, cashFrom, cashTo)] between two good reads."""
-    out = []
-    for k, (cash, basis, _f) in new_rows.items():
-        o = old_rows.get(k)
+GONE_HOURS = 24   # a bid missing from reads this long is gone; shorter is a partial read
+
+
+def diff_board(old, new_rows, now, prev_ok):
+    """One good read against what the board last showed.
+
+    old: {key: [cash, basis, futures, lastSeen ts]}. -> (changes, rows) where each change is
+    (key, kind, basisFrom, basisTo, cashFrom, cashTo, prevSeen ts) and rows is the new state.
+      basis    the basis moved and so did the cash: the elevator changed it
+      futures  the basis moved but the cash did not: a fixed cash price with the futures moving
+               under it, kept so nothing is hidden, but it is not the elevator changing a bid
+      cash     a board that posts no basis moved its cash price
+      new      a bid not shown in the last GONE_HOURS
+      gone     a bid missing from every read for GONE_HOURS
+    A cash move with the basis unchanged is the futures moving and is not a row. A bid missing
+    from a read for less than GONE_HOURS is a partial read: it stays, and when it is back its
+    window runs from the last read that showed it."""
+    out, rows = [], {}
+    for k, (cash, basis, fut) in new_rows.items():
+        o = old.get(k)
+        rows[k] = [cash, basis, fut, now]
         if o is None:
-            out.append((k, "new", None, basis, None, cash))
+            out.append((k, "new", None, basis, None, cash, prev_ok))
             continue
-        ocash, obasis = o[0], o[1]
+        ocash, obasis, last = o[0], o[1], o[3]
         if obasis is not None or basis is not None:
             if obasis != basis:
-                out.append((k, "basis", obasis, basis, ocash, cash))
+                kind = "futures" if (cash is not None and cash == ocash) else "basis"
+                out.append((k, kind, obasis, basis, ocash, cash, last))
         elif ocash != cash:
-            out.append((k, "cash", None, None, ocash, cash))
-    for k, o in old_rows.items():
-        if k not in new_rows:
-            out.append((k, "gone", o[1], None, o[0], None))
-    return out
+            out.append((k, "cash", None, None, ocash, cash, last))
+    for k, o in old.items():
+        if k in new_rows:
+            continue
+        if now - o[3] >= GONE_HOURS * 3600:
+            out.append((k, "gone", o[1], None, o[0], None, o[3]))
+        else:
+            rows[k] = o
+    return out, rows
 
 
 # ------------------------------------------------------------------ git
@@ -379,7 +416,8 @@ def day_doc(day, rows, meta):
         "note": ("Bid changes seen in dnilgis/bids git history (scripts/bid_change_ledger.py). Each row is one bid "
                  "that differs between two consecutive good reads of one board: it changed after prevSeenAt and at "
                  "or before seenAt (poll resolution, never the elevator's own minute). basis in cents per bushel, "
-                 "cash in dollars, as the board posted them. kind: basis | cash (a board with no basis) | new | gone. "
+                 "cash in dollars, as the board posted them. kind: basis (the elevator moved it) | futures (basis moved under an "
+                 "unchanged cash price) | cash (a board with no basis) | new | gone (missing 24 h). Boards not in US dollars are left out. "
                  "pricedAt and the snapshot posted field are batch times and are not used. day = Central-time day of "
                  "the bids commit."),
         "cols": COLS,
@@ -421,7 +459,9 @@ def snapshot_doc(state, at_ts, places, states_at):
             continue
         loc, pl = b.get("loc") or {}, places.get(slug) or {}
         st = pl.get("state") or states_at.get(slug) or ""
-        for k, (cash, basis, fut) in b["rows"].items():
+        for k, (cash, basis, fut, last) in b["rows"].items():
+            if last != b["okAt"]:
+                continue       # not on the board's latest read
             com, dl, fm = k.split("\x1f")
             s, e = delivery_dates(dl)
             bids.append({
@@ -547,15 +587,17 @@ def walk(git, state, out, until_ts=None, max_minutes=None, snaps=None, log=print
                 polls += 1
                 nboards.add(slug)
                 b = boards.get(slug)
-                if b is not None and b.get("okAt") and seen > b["okAt"]:
+                if b is None:
+                    state_rows = {k: v + [seen] for k, v in new_rows.items()}
+                else:
+                    if seen <= b["okAt"]:
+                        continue       # an older read committed late: never step back in time
                     e = elev(slug)
-                    for k, kind, bf, bt, cf, ct in diff_board(b["rows"], new_rows):
+                    changes, state_rows = diff_board(b["rows"], new_rows, seen, b["okAt"])
+                    for k, kind, bf, bt, cf, ct, prev in changes:
                         com, dl, fm = k.split("\x1f")
-                        rows.append([e, slug, classify(com), com, dl, fm, kind, bf, bt, cf, ct, iso(seen), iso(b["okAt"])])
-                elif b is not None and b.get("okAt") and seen <= b["okAt"]:
-                    continue       # an older read committed late: never step back in time
-                boards[slug] = {"okAt": seen, "pricedAt": priced, "loc": loc,
-                                "rows": {k: v for k, v in new_rows.items()}}
+                        rows.append([e, slug, classify(com), com, dl, fm, kind, bf, bt, cf, ct, iso(seen), iso(prev)])
+                boards[slug] = {"okAt": seen, "pricedAt": priced, "loc": loc, "rows": state_rows}
             if want_snap and not snap_taken:
                 tct = dt.datetime.fromtimestamp(ts, ct_zone())
                 last = ci == len(cs) - 1
@@ -736,12 +778,24 @@ def selftest():
     ck("a file that is not a board is None", read_board({"generated": "x", "sources": []}) is None)
     ck("not-board names are never fetched", not is_board_path("data/directory.json") and not is_board_path("data/merged-all.json")
        and not is_board_path("data/merged/x.json") and is_board_path("data/albertlea.json") and not is_board_path("data/registry-ia.json"))
-    d = diff_board({"a\x1fb\x1fc": [4.0, -45, None], "g\x1fg\x1fg": [1, 2, None], "q\x1fq\x1fq": [5.0, None, None]},
-                   {"a\x1fb\x1fc": [4.1, -40, None], "n\x1fn\x1fn": [3, -1, None], "q\x1fq\x1fq": [5.2, None, None]})
-    ck("diff: basis move, cash-only board move, new and gone", sorted(x[1] for x in d) == ["basis", "cash", "gone", "new"]
-       and [x for x in d if x[1] == "basis"][0][2:] == (-45, -40, 4.0, 4.1))
+    H = 3600
+    d, st_rows = diff_board({"a\x1fb\x1fc": [4.0, -45, None, 0], "g\x1fg\x1fg": [1, 2, None, 0], "q\x1fq\x1fq": [5.0, None, None, 0],
+                             "p\x1fp\x1fp": [6.0, -10, None, 20 * H], "f\x1ff\x1ff": [6.25, -3, 628.25, 0]},
+                            {"a\x1fb\x1fc": [4.1, -40, None], "n\x1fn\x1fn": [3, -1, None], "q\x1fq\x1fq": [5.2, None, None],
+                             "f\x1ff\x1ff": [6.25, -4, 629.25]}, 25 * H, 24 * H)
+    kinds = {x[0][0]: x[1] for x in d}
+    ck("diff: basis move, futures-only move, cash-only board, new, gone after 24 h",
+       kinds == {"a": "basis", "f": "futures", "q": "cash", "n": "new", "g": "gone"}
+       and [x for x in d if x[1] == "basis"][0][2:] == (-45, -40, 4.0, 4.1, 0))
+    ck("a bid missing for under 24 h is a partial read: kept, no row", "p\x1fp\x1fp" in st_rows and "p" not in kinds
+       and "g\x1fg\x1fg" not in st_rows)
+    ck("a new bid's window starts at the board's last good read", [x for x in d if x[1] == "new"][0][6] == 24 * H)
     ck("a cash move with the basis unchanged is not a row (the futures moved)",
-       diff_board({"k": [4.0, -45, None]}, {"k": [4.2, -45, None]}) == [])
+       diff_board({"k": [4.0, -45, None, 0]}, {"k": [4.2, -45, None]}, 1, 0)[0] == [])
+    ck("a futures price in the month column is not part of the key",
+       list(read_board(board("2026-10-19T14:00:00Z", [["Wheat - Hrs", "October", "6.5150s", 5.61, -0.9, -90]]))[4]) == ["Wheat - Hrs\x1fOctober\x1f"])
+    ck("a board not in US dollars is not a good read",
+       read_board(dict(board("2026-10-19T14:00:00Z", [corn + [4.1, -0.45, -45]]), currency="CAD"))[0] is False)
     ck("dates: explicit range and month only", delivery_dates("01 Sep 2026 to 30 Nov 2026") == ("2026-09-01", "2026-11-30")
        and delivery_dates("Dec 2026") == ("2026-12-01", "2026-12-31") and delivery_dates("FH Sep 26") == (None, None)
        and delivery_dates("NEARBY") == (None, None))
@@ -789,16 +843,19 @@ def selftest():
            and rows[0]["cashFrom"] == 4.12 and rows[0]["cashTo"] == 4.2 and rows[0]["crop"] == "corn")
         ck("the broken read is not a read; the cash-only move at 16:00 is not a row; directory.json not read",
            d19["counts"]["reads"] == 3 and d19["counts"]["notBoards"] == 0)
-        d20 = [dict(zip(read_day(out, "2026-10-20")["cols"], x)) for x in read_day(out, "2026-10-20")["rows"]]
-        ck("Oct 20: the soybean bid is gone", [x["kind"] for x in d20] == ["gone"] and d20[0]["crop"] == "soybeans")
+        ck("Oct 20: the soybean bid missing for 18 h is not gone yet", read_day(out, "2026-10-20")["rows"] == [])
         sp = os.path.join(out, OUT_DIR, "state.json.gz")
         write_file(sp, gz(st))
         st2 = load_state(sp)
         r2 = walk(Git(repo), st2, out, until_ts=None, log=logs.append)
         d21 = [dict(zip(read_day(out, "2026-10-21")["cols"], x)) for x in read_day(out, "2026-10-21")["rows"]]
+        b21 = [x for x in d21 if x["kind"] == "basis"]
         ck("the next run picks up where the state stopped: only Oct 21, its change from -40 to -50",
-           [x[0] for x in r2["days"]] == ["2026-10-21"] and len(d21) == 1 and d21[0]["basisFrom"] == -40 and d21[0]["basisTo"] == -50
-           and d21[0]["prevSeenAt"] == "2026-10-20T15:00:00Z")
+           [x[0] for x in r2["days"]] == ["2026-10-21"] and len(b21) == 1 and b21[0]["basisFrom"] == -40 and b21[0]["basisTo"] == -50
+           and b21[0]["prevSeenAt"] == "2026-10-20T15:00:00Z")
+        g21 = [x for x in d21 if x["kind"] == "gone"]
+        ck("Oct 21: the soybean bid is gone, last seen Oct 19 21:00", len(g21) == 1 and g21[0]["crop"] == "soybeans"
+           and g21[0]["prevSeenAt"] == "2026-10-19T21:00:00Z")
         r3 = walk(Git(repo), st2, out, log=logs.append)
         ck("a third run with nothing new writes nothing", r3["days"] == [])
         ck("no phone, no email in any ledger file", not any(re.search(r"@|555-0100", gzip.decompress(open(os.path.join(dp, f), "rb").read()).decode())
