@@ -258,11 +258,13 @@ jobs:
         with:
           persist-credentials: false
           ref: main
+          # Patterns, not file or folder names, for what it only reads (the NASS yields, the
+          # basis logs): build_feeds.py takes a workflow that names a feed as its writer.
           sparse-checkout: |
             /scripts/
             /data/ids/
-            /data/nass/
-            /data/basis/changes-*.json
+            /data/nass/corn-yield*
+            /data/basis/changes-*
             /.github/actions/engine/
             /.github/engine-paths
           sparse-checkout-cone-mode: false
