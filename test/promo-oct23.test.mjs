@@ -6,7 +6,7 @@
  *   - the Daily is "every morning", never a clock time.
  * What was built: Fast Facts buy link and its one Daily ask (no bar there), "See this morning's
  * email" under the Daily page asks, the rent land line, the Paid view's Daily ask and gauge line,
- * the gauge in "One more?" after a rain-year notice or a hail alert, the waitlist's own "One more?",
+ * the gauge in "One more?" after a county rain notice or a hail alert,
  * the auto lines (conditions, spray, ARC/PLC counties: Rain Print through Dec 24, then the gauge), the gauge line on
  * /rain-radar, the homepage card's early place, the Daily email's forward line and order-by date.
  * The browser parts need Playwright and Chromium and skip where they are missing.
@@ -46,8 +46,9 @@ test("one cross-promo a page, after the answer, with its script", () => {
   const hm = inMain(read("hail-map.html"));
   assert.equal((hm.match(/class="rp-promo"/g) || []).length, 1);
   assert.ok(!/href="\/rain-gauge"/.test(hm));
-  // Fast Facts: no promo slot; its Rain Print is the place's own print with a buy link
-  assert.equal(promos(read("fast-facts.html")), 0);
+  // Fast Facts: one slot, the gauge helper's "auto" line (test/gauge-hook.test.mjs); the buy link under the place's own print is not a slot
+  assert.equal(promos(read("fast-facts.html")), 1);
+  assert.ok(read("fast-facts.html").includes('data-rain-print-promo="auto"'));
   // the homepage: one card, one early marker (the card moves, it is never doubled)
   const ix = read("index.html");
   assert.equal((ix.match(/data-rain-print-promo/g) || []).length, 1);
@@ -101,12 +102,14 @@ test("signup asks: the sample link under Daily page asks only; no ticked box; no
   assert.match(sa, /\(!topic && variant === 'page' \? '<a class="sa-see" href="\/daily" data-sa-sample>See this morning\\u2019s email<\/a>' : ''\)/);
   assert.ok(!/type="checkbox"[^>]*checked/.test(sa), "no box starts ticked");
   assert.match(sa, /\^\\\/\(daily\|field-scout\|fast-facts\|rain-print\|/);
-  // the gauge offer: after a rain-year notice or a hail alert, never on the gauge's own signup, never twice
-  assert.match(sa, /var wantGauge = \(gave === 'hail' \|\| \(gave === 'notice' && \/\^rainyear:\/\.test\(topic\)\)\) && had\.indexOf\('gauge'\) < 0 && !noticeDone\('rain-gauge'\);/);
+  // the gauge offer: after a county rain notice or a hail alert, never on the gauge's own signup, never twice
+  assert.match(sa, /var wantGauge = \(gave === 'hail' \|\| \(gave === 'notice' && \/\^\(rainyear\|rain-month\):\/\.test\(topic\)\)\) && had\.indexOf\('gauge'\) < 0 && !noticeDone\('rain-gauge'\);/);
+  assert.match(sa, /if \(ghook && topic !== 'rain-gauge'\) O\.gauge/, "never on the gauge's own signup");
   assert.match(sa, /topic: 'rain-gauge', daily: false, askId: 'onemore'/);
   assert.match(sa, /c\.gauge_hook/, "its words come from data/rain-print.json gauge_hook when set");
-  // the waitlist's own One more?: found by its form, so rain-gauge.html is not touched
-  assert.match(sa, /f\.matches\('form\.rg-form'\)/);
+  // the waitlist's own One more? is rain-gauge.html's (only: the Daily), never a second one from here
+  assert.ok(!/form\.rg-form/.test(sa));
+  assert.match(read("rain-gauge.html"), /topic: 'rain-gauge', email: email, zip: zip, only: \['daily'\]/);
   // Fast Facts: one ask, a Daily ask, after the first card
   const ff = read("fast-facts.html");
   const asks = ff.match(/<div[^>]*data-signup-ask[^>]*><\/div>/g) || [];
@@ -204,34 +207,13 @@ const noEmailIn = async (pg) => {
   assert.ok(!dl.includes(EMAIL), "no address in dataLayer");
 };
 
-test("in a browser: the gauge waitlist gets One more? with the Daily, unticked; no gauge row on its own signup", { skip, timeout: 90000 }, async () => {
-  const srv = await serve(), port = srv.address().port, posts = [];
-  const browser = await chromium.launch({ executablePath: CHROME });
-  try {
-    const pg = await newPage(browser, port, posts);
-    await go(pg, port, "/rain-gauge.html");
-    await pg.waitForFunction(() => window.AgsistSignup && window.AgsistSignup.oneMore);
-    await pg.fill("#rg-email-1", EMAIL);
-    await pg.click("#rg-go-1");
-    const more = pg.locator("#rg-form-1 + [data-sa-more]");
-    await more.locator(".sa-mh").waitFor();
-    const keys = await more.locator("[data-k]").evaluateAll((a) => a.map((x) => x.getAttribute("data-k")));
-    assert.equal(keys[0], "daily");
-    assert.ok(!keys.includes("gauge"));
-    for (const c of await more.locator('input[type="checkbox"]').all()) assert.equal(await c.isChecked(), false);
-    assert.equal(posts.filter((p) => p.path === "/notice").length, 1, "the waitlist signup only, until they tick");
-    await noEmailIn(pg);
-    await pg.context().close();
-  } finally { await browser.close(); srv.close(); }
-});
-
-test("in a browser: after the county rain-year notice, One more? offers the gauge, unticked, and adds it only when ticked", { skip, timeout: 90000 }, async () => {
+test("in a browser: after the county rain notice, One more? offers the gauge, unticked, and adds it only when ticked", { skip, timeout: 90000 }, async () => {
   const srv = await serve(), port = srv.address().port, posts = [];
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const pg = await newPage(browser, port, posts);
     await go(pg, port, "/rain/iowa/adams-county.html");
-    const ask = pg.locator('[data-topic^="rainyear:"]').first();
+    const ask = pg.locator('[data-topic^="rain-month:"]').first();   // the county rain pages' ask since fx/rainmonthly
     await ask.locator(".sa-in").waitFor();
     assert.equal(await ask.locator(".sa-d input").isChecked(), false, "the Daily box starts empty");
     await ask.locator(".sa-in").fill(EMAIL);

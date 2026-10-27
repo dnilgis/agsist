@@ -701,10 +701,10 @@
      2026-10-23 (Sig, Oct 23 promo asks):
        gauge     the rain gauge waitlist (topic rain-gauge, the list /rain-gauge
                  keeps; Sig writes to it when the first batch is ready), after
-                 a rain-year notice or a hail alert, never twice. Its words are
-                 data/rain-print.json gauge_hook (line, then link) when set, else GAUGE_HOOK.
-     The waitlist form on /rain-gauge gets the panel too (gave notice,
-     topic rain-gauge), found by its form the way the cash bid box is. */
+                 a county rain notice (rainyear: or rain-month:) or a hail alert,
+                 never twice. Its words are data/rain-print.json gauge_hook (line,
+                 then link) when set, else GAUGE_HOOK. The waitlist's own One more?
+                 is rain-gauge.html's (only: the Daily). */
   var GAUGE_HOOK = 'The rain gauge waitlist: a better gauge is in the works, and the list hears first';
   function gaugeHook() {
     return getJ('/data/rain-print.json').then(function (c) {
@@ -804,7 +804,7 @@
       var wantHail = kind.hail && had.indexOf('hail') < 0;
       var hs = wantHail && window.AGSIST_HAIL_SPOT, hailP = !wantHail ? Promise.resolve(null)
         : (hs && isFinite(hs.lat) && isFinite(hs.lon) ? Promise.resolve({ lat: +hs.lat, lon: +hs.lon, label: String(hs.label || 'the spot on the map') }) : zipCenter(zipv));
-      var wantGauge = (gave === 'hail' || (gave === 'notice' && /^rainyear:/.test(topic))) && had.indexOf('gauge') < 0 && !noticeDone('rain-gauge');
+      var wantGauge = (gave === 'hail' || (gave === 'notice' && /^(rainyear|rain-month):/.test(topic))) && had.indexOf('gauge') < 0 && !noticeDone('rain-gauge');
       return Promise.all([rainOffer(fips), hailP, wantGauge ? gaugeHook() : null]).then(function (a) { build(zipv, st, a[0], a[1], a[2]); });
     });
     function build(zipv, st, rain, hspot, ghook) {
@@ -951,11 +951,6 @@
       if (p && p.checked) had.push('zip');
       var c1 = { gave: had[0] || 'daily', had: had, email: (f.querySelector('.cbs-em') || {}).value, zip: host.getAttribute('data-zip') || (z && z.value) || '' };
       watchFor(host, function () { return !!host.querySelector('.cbs-done'); }, function () { oneMore(host, c1); });
-    } else if (f.matches('form.rg-form')) {
-      /* the rain gauge waitlist (rain-gauge.html): done when its script locks the form */
-      var em = f.querySelector('input[type=email]'), gz = f.querySelector('input[name=zip]');
-      var c3 = { gave: 'notice', topic: 'rain-gauge', had: ['gauge'], email: em && em.value, zip: gz && /^\d{5}$/.test(gz.value) ? gz.value : '', after: f };
-      if (em) watchFor(f, function () { return em.disabled; }, function () { oneMore(f.parentNode, c3); });
     } else if (f.matches('form.watch[data-fips]')) {
       var c2 = { gave: 'county', email: f.elements.email && f.elements.email.value, fips: f.getAttribute('data-fips'), after: f };
       var wm = f.querySelector('.wm');
