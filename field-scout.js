@@ -389,7 +389,8 @@
         return {
           id:f.id, name:f.name, pts:f.pts, acres:f.acres,
           notes: typeof f.notes==='string' ? f.notes : '',
-          photos: Array.isArray(f.photos) ? f.photos.filter(function(p){ return p && typeof p.dataUrl==='string'; }) : []
+          photos: Array.isArray(f.photos) ? f.photos.filter(function(p){ return p && typeof p.dataUrl==='string'; }) : [],
+          editedAt: typeof f.editedAt==='number' ? f.editedAt : undefined   // last change, so a restore can say which copy is newer
         };
       });
     } catch(e){ return []; }
@@ -403,7 +404,8 @@
     if(name===null) return;
     var pts = latlngs(activePoly).map(function(p){ return [+p.lat.toFixed(6), +p.lng.toFixed(6)]; });
     var arr = loadSavedFields();
-    arr.unshift({ id:Date.now(), name:(name||'Untitled').slice(0,40), pts:pts, acres:+polyAcres(activePoly).toFixed(1), notes:'', photos:[] });
+    var now=Date.now();
+    arr.unshift({ id:now, name:(name||'Untitled').slice(0,40), pts:pts, acres:+polyAcres(activePoly).toFixed(1), notes:'', photos:[], editedAt:now });
     persistSavedFields(arr);
     _activeFieldId = arr[0].id;        // start tracking this field for changed-since
     saveSnap(_activeFieldId, fieldSnapshot());  // baseline = current conditions
@@ -474,7 +476,8 @@
     if(!f || !ta) return;
     var arr=loadSavedFields();
     var row=arr.filter(function(x){ return x.id===_activeFieldId; })[0]; if(!row) return;
-    row.notes = ta.value.slice(0,4000);
+    var v=ta.value.slice(0,4000); if(v===row.notes) return;
+    row.notes = v; row.editedAt = Date.now();
     persistSavedFields(arr);
   }
   function deleteSavedField(id){
@@ -507,8 +510,20 @@
     var wrap = document.getElementById('fs-saved');
     if(!wrap) return;
     var arr = loadSavedFields();
-    if(!arr.length){ wrap.hidden = true; return; }
     wrap.hidden = false;
+    // Back up and restore (field-scout-backup.js on the tap). With no fields saved, only the restore shows:
+    // that is the reader whose phone was cleared.
+    var bkAt=lsNum('agsist-fs-backup-at'), DAY=864e5;
+    var bk='<input type="file" id="fs-restore-file" accept=".json,.geojson,.kml,application/json,application/geo+json,application/vnd.google-earth.kml+xml" hidden>';
+    if(!arr.length){
+      wrap.innerHTML = '<p class="fs-bk-empty">No saved fields on this device. <button type="button" class="fs-bk-link" id="fs-restore-btn">Restore from a backup</button></p>'+bk;
+    } else {
+      var nag = arr.length>=3 && Date.now()-Math.max(bkAt, lsNum('agsist-fs-backup-nag'))>30*DAY;
+      bk = (nag ? '<p class="fs-bk-remind" id="fs-bk-remind">Your '+arr.length+' fields, notes and photos live only on this device'+(bkAt?' (last backup '+new Date(bkAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})+')':'')+'. A backup file keeps them if the phone is cleared or lost. <button type="button" class="fs-bk-link" id="fs-bk-later">Not now</button></p>' : '')+
+        '<div class="fs-bk-row"><button type="button" class="fs-save-btn" id="fs-backup">Back up all my fields</button><button type="button" class="fs-save-btn" id="fs-restore-btn">Restore from a backup</button>'+
+        '<small class="fs-bk-meta">'+(bkAt ? 'Last backup '+new Date(bkAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'No backup yet')+'. Saved to this device as one file; nothing is sent to us.</small></div>'+bk;
+    }
+    if(!arr.length){ wireBackup(wrap); return; }
     wrap.innerHTML = '<div class="fs-saved-label">Your saved fields <small>(this device only)</small></div>' +
       '<div class="fs-saved-list">' + arr.map(function(f){
         var hasNotes = !!((f.notes&&f.notes.trim()) || (f.photos&&f.photos.length));
@@ -516,9 +531,19 @@
           '<button class="fs-saved-open" data-id="'+f.id+'" type="button" title="Open '+esc(f.name)+(hasNotes?', has notes':'')+'">'+esc(f.name)+' <small>'+f.acres+'ac</small>'+(hasNotes?' <small class="fs-saved-note-ind" aria-hidden="true">&#9998;</small>':'')+'</button>'+
           '<button class="fs-saved-del" data-del="'+f.id+'" type="button" aria-label="Delete '+esc(f.name)+'">&times;</button>'+
         '</span>';
-      }).join('') + '</div>';
+      }).join('') + '</div>' + bk;
+    wireBackup(wrap);
     wrap.querySelectorAll('.fs-saved-open').forEach(function(b){ b.addEventListener('click', function(){ openSavedField(+b.getAttribute('data-id')); }); });
     wrap.querySelectorAll('.fs-saved-del').forEach(function(b){ b.addEventListener('click', function(){ deleteSavedField(+b.getAttribute('data-del')); }); });
+  }
+
+  function lsNum(k){ try{ return +localStorage.getItem(k)||0; }catch(e){ return 0; } }
+  function wireBackup(wrap){
+    var fi=wrap.querySelector('#fs-restore-file'), rb=wrap.querySelector('#fs-restore-btn'), bb=wrap.querySelector('#fs-backup'), later=wrap.querySelector('#fs-bk-later');
+    if(rb && fi) rb.addEventListener('click', function(){ fi.click(); });   // the picker opens on the tap itself
+    if(fi) fi.addEventListener('change', function(){ var f=fi.files&&fi.files[0]; fi.value=''; if(f) fsLate(loadBackup, 'restoreFromFile', [f]); });
+    if(bb) bb.addEventListener('click', function(){ fsLate(loadBackup, 'backupAll', []); });
+    if(later) later.addEventListener('click', function(){ try{ localStorage.setItem('agsist-fs-backup-nag', String(Date.now())); }catch(e){} renderSavedFields(); });
   }
 
   // ── Geo helpers ─────────────────────────────────────────────────────
@@ -1056,7 +1081,7 @@
   // touch or key press, or when a field is picked. The print report, boundary
   // export and note photos are field-scout-extras.js, fetched on their buttons.
   // Both reach this file's variables through FSX (getters, so always the live value).
-  var FS_READ_SRC='/field-scout-read.js?v=12', FS_EXTRAS_SRC='/field-scout-extras.js?v=2';
+  var FS_READ_SRC='/field-scout-read.js?v=12', FS_EXTRAS_SRC='/field-scout-extras.js?v=3';
   var RM=null, XM=null, _rmP=null, _xmP=null;
   var FSX=Object.defineProperties({}, {
     map:{get:function(){ return map; }, set:function(v){ map=v; }},
@@ -1078,6 +1103,7 @@
     N2A:{get:function(){ return N2A; }},
     NOMINATIM_REV:{get:function(){ return NOMINATIM_REV; }},
     PHOTO_CAP:{get:function(){ return PHOTO_CAP; }},
+    acresOfRing:{get:function(){ return acresOfRing; }},
     countUp:{get:function(){ return countUp; }},
     crop:{get:function(){ return crop; }},
     currentFieldName:{get:function(){ return currentFieldName; }},
@@ -1130,6 +1156,12 @@
     if(!_xmP) _xmP=loadRead().then(function(){ return fsScript(FS_EXTRAS_SRC, '__fsExtras'); })
       .then(function(f){ XM=XM||f(FSX); return XM; }, function(e){ _xmP=null; throw e; });
     return _xmP;
+  }
+  // Back up all fields and restore from a file: its own small file, no read needed first
+  var FS_BACKUP_SRC='/field-scout-backup.js?v=1', _bkP=null;
+  function loadBackup(){
+    if(!_bkP) _bkP=fsScript(FS_BACKUP_SRC, '__fsBackup').then(function(f){ return f(FSX); }, function(e){ _bkP=null; throw e; });
+    return _bkP;
   }
   function fsLate(load, name, args){
     return load().then(function(M){ return M[name].apply(null, args); },

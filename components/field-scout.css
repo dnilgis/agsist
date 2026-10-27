@@ -620,6 +620,31 @@
     .fs-notes-cap{font-size:0.8rem;color:var(--brand,var(--gold));margin-top:.6rem;line-height:1.5}
     .fs-notes-note{font-size:0.78rem;color:var(--text-muted);line-height:1.5;margin-top:.7rem}
     .fs-saved-note-ind{color:var(--brand,var(--gold));margin-left:.2rem}
+    /* ── Back up and restore saved fields (field-scout-backup.js) ─────── */
+    .fs-bk-row{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-top:.75rem}
+    .fs-bk-row .fs-save-btn{min-height:44px}
+    .fs-bk-meta{flex:1 1 100%;font-size:.78rem;color:var(--text-muted);line-height:1.5}
+    .fs-bk-empty{margin:0;font-size:.84rem;color:var(--text-muted);line-height:1.5}
+    .fs-bk-link{background:none;border:none;padding:.6rem .1rem;min-height:44px;color:var(--brand,var(--gold));font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
+    .fs-bk-remind{margin:.75rem 0 0;font-size:.84rem;color:var(--text-dim);line-height:1.5;border-left:3px solid var(--brand,var(--gold));padding:.1rem 0 .1rem .6rem}
+    .fs-bk-remind .fs-bk-link{min-height:0;padding:0 .2rem;font-weight:400;color:var(--text-muted)}
+    .fs-restore{flex:1 1 100%;margin-top:.8rem;background:var(--surface);border:1px solid var(--brand,var(--gold));border-radius:var(--card-r,10px);padding:.9rem 1rem;color:var(--text);min-width:0;overflow-wrap:anywhere}
+    .fs-restore-h{margin:0 0 .3rem;font-size:1rem;outline:none}
+    .fs-restore-sub{margin:.2rem 0 .6rem;font-size:.84rem;color:var(--text-dim);line-height:1.5}
+    .fs-restore-grp{margin-top:.7rem}
+    .fs-restore-l{font-family:'JetBrains Mono',monospace;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--brand,var(--gold));font-weight:700}
+    .fs-restore-list{list-style:none;margin:.35rem 0 0;padding:0;font-size:.88rem;line-height:1.5}
+    .fs-restore-list li{padding:.25rem 0;border-bottom:1px solid var(--border)}
+    .fs-restore-list small{color:var(--text-muted)}
+    .fs-restore-pick{border:none;margin:0;padding:0}
+    .fs-restore-pick legend{font-weight:700;padding:0;margin-bottom:.2rem}
+    .fs-restore-pick label,.fs-restore-ph{display:flex;align-items:center;gap:.5rem;min-height:44px;font-size:.88rem;cursor:pointer}
+    .fs-restore-pick input,.fs-restore-ph input{width:20px;height:20px;flex:0 0 auto;accent-color:var(--brand,var(--gold))}
+    .fs-restore-err{margin:.4rem 0;font-size:.9rem;color:var(--red);line-height:1.5}
+    .fs-restore-msg{margin:.6rem 0 0;font-size:.88rem;line-height:1.5}
+    .fs-restore-msg:empty{display:none}
+    .fs-restore-acts{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
+    .fs-restore-acts .fs-save-btn{min-height:44px;min-width:96px;justify-content:center}
 /* 2026-10-06: these panels stay dark in light mode, so gold inside them
    stays the bright gold (the page around them takes the darker text gold). */
 [data-theme="light"] .fs-stage{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f;--pd-gold:#d4a23f;--ib-gold:#d4a23f;--ib-gold2:#d4a23f;--wp-gold2:#e6b042;--as-gold2:#e6b042}

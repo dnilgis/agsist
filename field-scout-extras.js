@@ -44,6 +44,7 @@ window.__fsExtras = function (FSX) {
       row.photos = row.photos || [];
       if(row.photos.length>=PHOTO_CAP){ flashHint('Up to '+PHOTO_CAP+' photos per field.'); return; }
       row.photos.push({ id:Date.now().toString(36)+Math.random().toString(36).slice(2,7), dataUrl:dataUrl, addedAt:Date.now() });
+      row.editedAt=Date.now();
       if(!persistSavedFields(arr)){
         // the browser's quota said no — back the photo out and say so plainly, no invented ceiling
         flashHint('Storage on this device is full for saved photos; delete a photo or a saved field to add more.');
@@ -59,6 +60,7 @@ window.__fsExtras = function (FSX) {
     var arr=loadSavedFields();
     var row=arr.filter(function(x){ return x.id===FSX._activeFieldId; })[0]; if(!row) return;
     row.photos=(row.photos||[]).filter(function(p){ return String(p.id)!==String(photoId); });
+    row.editedAt=Date.now();
     persistSavedFields(arr);
     renderNotesSectionInPlace();
     renderSavedFields();
