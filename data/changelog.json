@@ -6,12 +6,6 @@
    "date": "2026-10-27",
    "items": [
     {
-     "tag": "new",
-     "page": "/fast-facts",
-     "name": "What changed this week, on a map, in Fast Facts",
-     "text": "Open your place in Fast Facts and the top now says what changed this week: the drought category, the top posted corn bid within 50 miles, county basis against the state middle, and new recorded farm sales, each with its date and source. A state map shows which counties got drier or wetter on the Drought Monitor, the corn buyers within 50 miles and your place. Anything we cannot back with a file says so instead of guessing."
-    },
-    {
      "tag": "fixed",
      "page": "/",
      "name": "Phones: no more text against the screen edge at the end of a page",
