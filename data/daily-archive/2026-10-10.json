@@ -1,6 +1,6 @@
 {
   "headline": "Corn drops 4.1% Friday on WASDE; cattle hold the gains",
-  "lead": "Corn settled at $4.80 Friday, down almost 20 cents, after WASDE numbers came in heavier than the trade wanted. Cattle didn't blink, closing at $224.60, up 1.2% on the week. Every bushel still in the bin is worth less than it was Thursday morning.",
+  "lead": "Corn settled at $4.80 Friday, down almost 20 cents, after WASDE numbers came in heavier than the trade wanted. Cattle didn't blink, closing at $224.60, up 1.2% on the week. December corn futures settled 20½ cents below Thursday. What that means for corn in the bin depends on your local bid and basis. (Corrected Oct 27, see the note below.)",
   "teaser": "Corn took a hard hit on WASDE Friday while cattle and feeders kept climbing.",
   "one_number": {
     "value": "93%",
@@ -301,6 +301,10 @@
     {
       "date": "2026-10-15",
       "text": "An earlier version understated corn's drop on WASDE day. December corn settled at $5.00¼ on Oct 8 and $4.79¾ on Oct 9, WASDE day, down 4.1%."
+    },
+    {
+      "date": "2026-10-27",
+      "text": "The opening said \"Every bushel still in the bin is worth less than it was Thursday morning.\" A futures move alone does not show what stored corn is worth; a cash bid also moves with local basis. December corn futures settled at $5.00¼ on Oct 8 and $4.79¾ on Oct 9, down 20½ cents."
     }
   ]
 }

@@ -12,6 +12,12 @@
      "text": "The Oct 11, 16, 18, 22 and 25 issues had a line the numbers did not back: an expired hog contract, a cash value read from futures, a date that had not come yet, an overnight trade called a close, and a fuel cost claim with no source. Each line is fixed where it stood, and the old wording is kept in a correction note on the page. The Oct 25 planting line from this year's contracts is corrected the same way."
     },
     {
+     "tag": "fixed",
+     "page": "/daily",
+     "name": "Six more Daily lines corrected the same way",
+     "text": "The Oct 10, 15, 21 and 26 issues had lines of the same kinds: a cash value read from futures (Oct 10, 21 and 26), an expired hog contract quoted as current and a reason for crude's drop with no source (Oct 15), and early trades called the day before's closes (Oct 21). Each is fixed where it stood, with the old wording kept in a dated note on the page."
+    },
+    {
      "tag": "improved",
      "page": "/daily",
      "name": "The Daily checks those six kinds of claims before it goes out",

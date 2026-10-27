@@ -335,7 +335,7 @@ def r_future_as_past(sent, ctx):
     return False
 
 
-_HELD = re.compile(r"\b(every|each|your|a) bushels?\b|\bbushels? (?:of [\w-]+ (?:corn|beans|soybeans|wheat) )?(?:sitting |stored )?in (?:the|your) bins?\b"
+_HELD = re.compile(r"\b(every|each|your|a) bushels?\b|\b(?:every|each|your|a) (?:corn|soybean|bean|wheat) bushels?\b|\bbushels? (?:of [\w-]+ (?:corn|beans|soybeans|wheat) )?(?:sitting |stored )?in (?:the|your) bins?\b"
                    r"|\bin (?:the|your) bins?\b|\bstored (?:corn|beans|soybeans|wheat|grain)\b"
                    r"|\byour (?:corn|beans|soybeans|wheat|grain|crop)\b"
                    r"|\bcash (?:corn|beans|soybeans|wheat|grain|prices?|bids?|values?)\b", re.I)
@@ -519,6 +519,8 @@ def _selftest():
     expect("cash-from-futures", "Cash corn is 15 cents lower this morning.", c11, True)
     expect("cash-from-futures", "Cash corn bids at 212 elevators averaged $4.12, down 6 cents.", c11, False)
     expect("cash-from-futures", "December corn futures fell 20½ cents.", c11, False)
+    # Oct 21: the same claim with the crop named first
+    expect("cash-from-futures", "A corn bushel is worth about 15 cents less than a week ago.", c11, True)
     expect("cash-from-futures", "Every bushel coming out of the field is being sold into a market that already has plenty.", c11, False)
 
     # Oct 25: a 2.8 ratio from Nov '26 beans and Dec '26 corn read as next spring's planting call
