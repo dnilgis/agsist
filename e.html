@@ -12,7 +12,10 @@
      JSON, subs worker v5.48) and its button POSTs the same params, so a mail
      scanner that only fetches the link changes nothing. No address is ever in
      the link. If the worker cannot be reached the page says so and offers the
-     mailto stop. Not in the sitemap. Test: test/frontdoor-page.test.mjs. -->
+     mailto stop. Not in the sitemap. Test: test/frontdoor-page.test.mjs.
+     Oct 27 2026 (subs worker v5.57): a route may ask for a field (the ZIP for
+     "Your county this week", a=daily-cw); it is typed here and sent in the
+     POST body, never in a link. -->
 <style>
   :root{--bg:#f6f7f5;--text:#161a18;--muted:rgba(22,26,24,.72);--link:#7a5a12;--ok:#1f6b3a;--btn:#1f6b3a}
   @media (prefers-color-scheme: dark){:root{--bg:#0a0c0d;--text:#e9edeb;--muted:rgba(233,237,235,.72);--link:#d4a23f;--ok:#7fd19b;--btn:#2a8a4c}}
@@ -26,6 +29,7 @@
   a{color:var(--link)}
   button{font:inherit;font-weight:600;padding:.7rem 1.2rem;border-radius:8px;border:0;background:var(--btn);color:#fff;cursor:pointer;min-height:44px}
   button[disabled]{opacity:.6;cursor:default}
+  input{font:inherit;padding:.6rem .7rem;border:1px solid var(--muted);border-radius:8px;background:var(--bg);color:var(--text);width:8em;min-height:44px;box-sizing:border-box}
   img{max-width:100%;height:auto;background:#fff;border-radius:6px}
 </style>
 </head>
@@ -34,6 +38,7 @@
 <p class="tag">AGSIST email</p>
 <h1 id="msg">One moment</h1>
 <div id="lines"><p>Checking your link.</p></div>
+<p id="fields" hidden></p>
 <p id="act-wrap" hidden><button type="button" id="act"></button></p>
 <p id="go-wrap" hidden><a id="go" href="https://agsist.com/"></a></p>
 <p id="again-wrap" hidden><button type="button" id="again">Try again</button></p>
@@ -48,7 +53,7 @@
   // the routes an email links to (subs worker FD_ROUTES); true = a stop link
   var ROUTES = { 'unsubscribe': 1, 'alert-unsubscribe': 1, 'notice-unsubscribe': 1, 'watch-unsubscribe': 1,
     'elevator-watch-unsubscribe': 1, 'price-watch-unsubscribe': 1, 'rp-remind/stop': 1,
-    'daily-elev': 0, 'watch-confirm': 0, 'elevator-watch-confirm': 0, 'price-watch-confirm': 0,
+    'daily-elev': 0, 'daily-cw': 0, 'watch-confirm': 0, 'elevator-watch-confirm': 0, 'price-watch-confirm': 0,
     'sponsor-confirm': 0, 'sponsor-decide': 0 };
   var KEEP = ['k', 't', 'f', 'w', 'p', 'topic', 'i', 'd'];
   var q = new URLSearchParams(location.search), a = q.get('a') || '';
@@ -66,7 +71,27 @@
     msg.className = ok ? 'ok' : '';
     lines.textContent = '';
     (ls || []).forEach(function (l) { lines.appendChild(typeof l === 'string' ? el('p', l) : l); });
-    $('act-wrap').hidden = $('go-wrap').hidden = $('again-wrap').hidden = true;
+    $('act-wrap').hidden = $('go-wrap').hidden = $('again-wrap').hidden = $('fields').hidden = true;
+    $('fields').textContent = ''; hidden = [];
+  }
+  // a field the worker's page asks for (v5.57): typed here, sent in the POST body only
+  var hidden = [];
+  function fields(fs) {
+    var box = $('fields');
+    (Array.isArray(fs) ? fs : []).forEach(function (f) {
+      if (!f || !/^[a-z]{1,8}$/.test(String(f.name || ''))) return;
+      if (f.type === 'hidden') { hidden.push([f.name, String(f.value || '')]); return; }
+      var i = document.createElement('input');
+      i.name = f.name; i.type = 'text'; i.maxLength = 5; i.inputMode = 'numeric'; i.autocomplete = 'postal-code';
+      i.setAttribute('aria-label', f.label || f.name); i.placeholder = f.name === 'zip' ? 'ZIP' : '';
+      box.appendChild(i); box.hidden = false;
+    });
+  }
+  function bodyOf() {
+    var s = new URLSearchParams();
+    hidden.forEach(function (h) { s.set(h[0], h[1]); });
+    Array.prototype.forEach.call($('fields').querySelectorAll('input'), function (i) { s.set(i.name, i.value.trim()); });
+    return s.toString();
   }
   function stopLine() {
     var p = el('p', 'To stop these emails now, email ');
@@ -91,11 +116,13 @@
     KEEP.forEach(function (n) { if (q.has(n)) s.set(n, q.get(n)); });
     return WORKER + '/fd/' + a + '?' + s.toString();
   }
-  function ask(method) {
+  function ask(method, body) {
     var c = typeof AbortController === 'function' ? new AbortController() : null;
     var timer = setTimeout(function () { if (c) c.abort(); }, 10000);
-    return fetch(urlFor(), { method: method, signal: c ? c.signal : undefined,
-      credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer' })
+    var o = { method: method, signal: c ? c.signal : undefined,
+      credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer' };
+    if (body) { o.body = body; o.headers = { 'Content-Type': 'application/x-www-form-urlencoded' }; }
+    return fetch(urlFor(), o)
       .then(function (r) {
         clearTimeout(timer);
         if (!/json/i.test(r.headers.get('Content-Type') || '')) throw new Error('not json');
@@ -110,6 +137,7 @@
     var ls = Array.isArray(j.lines) ? j.lines.filter(function (l) { return typeof l === 'string'; }) : [];
     if (j.ok === false && ROUTES[a]) ls = ls.concat([stopLine()]);
     say(j.title, ls, j.ok !== false && !j.button);
+    if (j.button) fields(j.fields);
     if (j.button) { act.textContent = j.button; act.disabled = false; $('act-wrap').hidden = false; }
     if (j.go && typeof j.go.href === 'string' && /^https:\/\/agsist\.com\//.test(j.go.href)) {
       go.href = j.go.href; go.textContent = j.go.text || 'Open it on agsist.com'; $('go-wrap').hidden = false;
@@ -128,7 +156,7 @@
       else say('This is not working right now', ['This browser could not keep it. Try the link again later. Nothing was changed.']);
       return;
     }
-    ask('POST').then(show, down);
+    ask('POST', bodyOf()).then(show, down);
   });
   $('again').addEventListener('click', load);
 
