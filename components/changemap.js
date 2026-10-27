@@ -349,6 +349,7 @@
     '.cm-svg path{stroke:var(--bg);stroke-width:1.2;vector-effect:non-scaling-stroke}' +
     '.cm-held{fill:rgba(132,160,168,.30)}.cm-none{fill:rgba(132,160,168,.10)}' +
     '.cm-worse{fill:var(--red)}.cm-better{fill:var(--blue)}' +
+    '.cm-meo,.cm-ring,.cm-pt,.cm-you{pointer-events:none}' +
     '.cm-svg path.cm-meo{fill:none;stroke:var(--text);stroke-width:2.4}' +
     '.cm-svg path.cm-ring{fill:none;stroke:var(--gold);stroke-width:1.6;stroke-dasharray:5 4}' +
     '.cm-pt{fill:var(--surface);stroke:var(--text);stroke-width:1;vector-effect:non-scaling-stroke}' +
