@@ -135,6 +135,13 @@ jobs:
           RAW_BRANCH: private-data
           RAW_SOFT: '1'
         run: bash scripts/pull_raw.sh private/data/cron-health.json
+      # The re-test engine's last run (counts and test ids only), for the Monday lines.
+      - name: Get the re-test engine summary (private repo)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: bash scripts/pull_raw.sh private/ledger/tests/latest.json
       - name: Build and send
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -228,3 +235,51 @@ jobs:
         run: |
           python3 scripts/bid_change_ledger.py --selftest > /dev/null || { echo "::warning::bid change ledger selftest failed; not run"; exit 0; }
           bash scripts/bid_change_ledger.sh || echo "::warning::bid change ledger did not finish; the next morning carries on from the saved state"
+
+  # Oct 27 (Sig, god's-eye panel "yes to all"; task 25): the weekly re-test engine. Re-runs every
+  # spec in scripts/insight_registry.json and appends one result row per spec to the private-data
+  # branch (private/ledger/tests/). Rides this job's once-a-morning gate: no schedule of its own;
+  # the script works only on Sundays (Central), or as a catch-up when the last run is 9 days old,
+  # and the next morning's email lists the result in counts and test ids. Publishes nothing. Its
+  # own job, beside the email, so it can never hold up or fail the report.
+  insight-retest:
+    needs: gate
+    if: needs.gate.outputs.go == '1' && inputs.dry_run != true
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    continue-on-error: true
+    concurrency:
+      group: insight-retest
+      cancel-in-progress: false
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: main
+          sparse-checkout: |
+            /scripts/
+            /data/ids/
+            /data/nass/
+            /data/basis/changes-*.json
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numpy
+        run: pip install --quiet --disable-pip-version-check numpy==2.5.4
+      - name: Re-test the registered relationships (private-data branch only)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: |
+          python3 scripts/insight_engine.py --selftest > /dev/null || { echo "::warning::re-test engine selftest failed; not run"; exit 0; }
+          bash scripts/insight_engine.sh || echo "::warning::re-test engine did not finish; it catches up on a later morning"

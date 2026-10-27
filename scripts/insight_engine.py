@@ -1025,7 +1025,7 @@ def is_due(ledger, today):
         return True, "no run yet"
     if last >= today:
         return False, "already ran %s" % last
-    if today.weekday() == WEEKDAY_RUN and (today - last).days >= 6:
+    if today.weekday() == WEEKDAY_RUN:
         return True, "Sunday re-test"
     if (today - last).days >= CATCH_UP_DAYS:
         return True, "catch-up: last run %s" % last
@@ -1354,10 +1354,15 @@ def selftest():
         before = open(result_path(led, d("2026-11-01"))).read()
         ck("a second run the same day refuses and leaves the day's file as it was", run(ns) == 2
            and open(result_path(led, d("2026-11-01"))).read() == before)
-        ck("not due again until Sunday", not is_due(led, d("2026-11-03"))[0] and is_due(led, d("2026-11-08"))[0]
-           and is_due(led, d("2026-11-10"))[0] and not is_due(led, d("2026-11-07"))[0])
+        ck("not due again until Sunday; a missed Sunday catches up 9 days on", not is_due(led, d("2026-11-03"))[0]
+           and is_due(led, d("2026-11-08"))[0] and is_due(led, d("2026-11-10"))[0] and not is_due(led, d("2026-11-07"))[0])
+        led2 = os.path.join(tmp, "ledger2")
+        os.makedirs(os.path.join(led2, "results", "2026"))
+        open(result_path(led2, "2026-11-04"), "w").close()
+        ck("a first run midweek still runs again that Sunday", is_due(led2, d("2026-11-08"))[0]
+           and not is_due(led2, d("2026-11-06"))[0])
         written = sorted(os.path.relpath(os.path.join(dp, fn), tmp) for dp, _, fns in os.walk(tmp) for fn in fns)
-        ck("writes only inside the ledger folder", [p for p in written if p.startswith("ledger/")] == ["ledger/latest.json", "ledger/results/2026/2026-11-01.jsonl"], written)
+        ck("writes only inside the ledger folder", sorted(set(written) - {"reg.json", "data/ids/elevators.json", "ledger2/results/2026/2026-11-04.jsonl"}) == ["ledger/latest.json", "ledger/results/2026/2026-11-01.jsonl"], written)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
