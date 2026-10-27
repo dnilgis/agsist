@@ -15,6 +15,8 @@ Usage:
     python scripts/rebuild_archive_html.py 2026-04-20  # one date
     python scripts/rebuild_archive_html.py --stamp-only  # only the line under the quote strip
     python scripts/rebuild_archive_html.py --byline-only # only the byline (reply address)
+    python scripts/rebuild_archive_html.py --text-only 2026-10-16  # only what an archive JSON edit changed
+    python scripts/rebuild_archive_html.py --text-only --base=HEAD~1 2026-10-16  # JSON already committed
 
 --byline-only does the same for the one <div class="dv3-byline"> line (the
 reply address under each issue, changed 2026-10-22 to sig@agsist.com).
@@ -23,6 +25,13 @@ reply address under each issue, changed 2026-10-22 to sig@agsist.com).
 <div class="dv3-quote-asof"> line, so a published page keeps every other
 byte (2026-10-17 audit N2: a full rebuild of the 33 pages that said "not CME
 settlements" would also have changed their quote links, styles and scripts).
+
+--text-only (2026-10-27, dated corrections) is for a hand edit to an archive
+JSON: a corrected line plus its note in 'corrections'. It renders the JSON as
+committed (git HEAD) and as it is now with the same current template, takes
+only the spans that differ, and writes each into the published page where its
+surrounding text matches exactly once. Every other byte of the page stays as
+published. A span it cannot place exactly once stops that page unchanged.
 
 Pre-v3.6 archive JSONs don't have chart_series or locked_prices,
 so their rebuilt pages show no sparkline row. That's expected.
@@ -70,8 +79,60 @@ def swap_stamp(old_html: str, new_html: str, rx=STAMP_RE):
     return old_html.replace(a[0], b[0], 1)
 
 
+_TOKEN_RE = re.compile(r"<[^>]*>|[^<\s]+|\s+")
+
+
+def patch_text(published: str, old_render: str, new_render: str, ctx: int = 12):
+    """published with every span where new_render differs from old_render
+    applied. Renders are compared as tags, words and spaces. Each change is
+    placed by its old text plus rendered text on each side (up to ctx tokens a
+    side, fewer when the template around it has moved on), and that anchor must
+    occur exactly once in published. None when any change cannot be placed."""
+    import difflib
+    ot, nt = _TOKEN_RE.findall(old_render), _TOKEN_RE.findall(new_render)
+    sm = difflib.SequenceMatcher(None, ot, nt, autojunk=False)
+    groups = []
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        if tag == "equal":
+            continue
+        if groups and i1 - groups[-1][1] <= 4:  # a few shared words apart: one change
+            groups[-1] = [groups[-1][0], i2, groups[-1][2], j2]
+        else:
+            groups.append([i1, i2, j1, j2])
+    out = published
+    for i1, i2, j1, j2 in groups:
+        old_mid, new_mid = "".join(ot[i1:i2]), "".join(nt[j1:j2])
+        placed = False
+        for kl, kr in sorted(((l, r) for l in range(ctx + 1) for r in range(ctx + 1) if l + r >= 2),
+                             key=lambda lr: -(lr[0] + lr[1])):
+            left, right = "".join(ot[max(0, i1 - kl):i1]), "".join(ot[i2:i2 + kr])
+            anchor = left + old_mid + right
+            # a pure insert needs real text on both sides to know where it goes
+            if not old_mid and (not left.strip() or not right.strip()):
+                continue
+            if out.count(anchor) == 1:
+                out = out.replace(anchor, left + new_mid + right, 1)
+                placed = True
+                break
+        if not placed:
+            return None
+    return out
+
+
+def _committed_json(json_path: Path, base: str = "HEAD"):
+    import subprocess
+    rel = json_path.resolve().relative_to(REPO_ROOT)
+    try:
+        raw = subprocess.run(["git", "-C", str(REPO_ROOT), "show", f"{base}:{rel.as_posix()}"],
+                             capture_output=True, text=True, check=True).stdout
+        return json.loads(raw)
+    except (subprocess.CalledProcessError, json.JSONDecodeError):
+        return None
+
+
 def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False,
-                byline_only: bool = False) -> bool:
+                byline_only: bool = False, text_only: bool = False,
+                base: str = "HEAD") -> bool:
     json_path = ARCHIVE_JSON_DIR / f"{date_iso}.json"
     html_path = ARCHIVE_HTML_DIR / f"{date_iso}.html"
 
@@ -98,6 +159,24 @@ def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False,
     # exist, breaking a preview image that was working.
     html = generate_archive_html(briefing, date_iso, prev_d, next_d,
                                  og_require_file=True)
+    if text_only:
+        old_json = _committed_json(json_path, base)
+        if old_json is None or not html_path.exists():
+            print(f"  [skip] {date_iso}: no committed JSON or no published page")
+            return False
+        old_html = generate_archive_html(_no_em_dashes(old_json), date_iso, prev_d, next_d,
+                                         og_require_file=True)
+        if old_html == html:
+            print(f"  [ok]   {date_iso}  JSON unchanged, page left as is")
+            return True
+        pub = html_path.read_text()
+        out = patch_text(pub, old_html, html)
+        if out is None:
+            print(f"  [err]  {date_iso}: a changed span does not match the published page once; page left as is")
+            return False
+        html_path.write_text(out)
+        print(f"  [ok]   {date_iso}  changed text written into the published page")
+        return True
     if stamp_only or byline_only:
         rx, what = (STAMP_RE, "stamp") if stamp_only else (BYLINE_RE, "byline")
         if not html_path.exists():
@@ -120,10 +199,29 @@ def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False,
     return True
 
 
+def selftest() -> int:
+    old = '<div class="a">Hogs sat flat at $75.55.</div><p>same</p><aside></aside><nav>x</nav>'
+    new = '<div class="a">December hogs settled at $66.925.</div><p>same</p><aside>Correction</aside><nav>x</nav>'
+    pub = '<style>new css</style>' + old + '<script>v=2</script>'
+    out = patch_text(pub, old, new)
+    assert out == '<style>new css</style>' + new + '<script>v=2</script>', out
+    # an anchor found twice, or not at all, leaves the page alone
+    assert patch_text(old + old, old, new) is None
+    assert patch_text('<div class="a">other text</div>', old, new) is None
+    assert patch_text(pub, old, old) == pub
+    print("rebuild_archive_html selftest: ok")
+    return 0
+
+
 def main():
+    if "--selftest" in sys.argv:
+        return selftest()
     dry_run = "--dry-run" in sys.argv
     stamp_only = "--stamp-only" in sys.argv
     byline_only = "--byline-only" in sys.argv
+    text_only = "--text-only" in sys.argv
+    # --base=<ref>: the commit whose JSON the published page was made from (default HEAD)
+    base = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--base=")), "HEAD")
     explicit_dates = [a for a in sys.argv[1:] if not a.startswith("-")]
 
     if explicit_dates:
@@ -142,10 +240,13 @@ def main():
 
     ok = 0
     for date_iso in targets:
-        if rebuild_one(date_iso, dry_run=dry_run, stamp_only=stamp_only, byline_only=byline_only):
+        if rebuild_one(date_iso, dry_run=dry_run, stamp_only=stamp_only, byline_only=byline_only,
+                       text_only=text_only, base=base):
             ok += 1
 
     print(f"=== Done: {ok}/{len(targets)} {'would be rebuilt' if dry_run else 'rebuilt'} ===")
+    if text_only and ok < len(targets):
+        return 1
     return 0
 
 

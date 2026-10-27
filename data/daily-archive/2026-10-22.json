@@ -10,7 +10,7 @@
   "sections": [
     {
       "title": "Grains stop sliding, barely",
-      "body": "- Dec corn is at **$4.64** overnight, up ¾ cent, the first higher close after a streak of lower ones.\n- Soybeans are at $12.47, up 1¾ cents, and Wednesday was the eighth lower close in a row.\n- Wheat held near $6.28 as talk of Black Sea peace talks gave winter wheat some support.",
+      "body": "- Dec corn traded at **$4.64** overnight, ¾ cent above Wednesday's $4.63¼ settle. (Corrected Oct 27, see the note below.)\n- Soybeans are at $12.47, up 1¾ cents, and Wednesday was the eighth lower close in a row.\n- Wheat held near $6.28 as talk of Black Sea peace talks gave winter wheat some support.",
       "so_what": "Both grains moved less than two cents; the slide paused, nothing more.",
       "conviction_level": "low",
       "overnight_surprise": false
@@ -494,5 +494,11 @@
     "consistency": [],
     "dry_run": false
   },
-  "first_published_at": "2026-10-22T11:03:20.916084+00:00"
+  "first_published_at": "2026-10-22T11:03:20.916084+00:00",
+  "corrections": [
+    {
+      "date": "2026-10-27",
+      "text": "The grain section said Dec corn at $4.64 overnight was \"the first higher close after a streak of lower ones.\" An overnight trade is not a close. The $4.64 was a trade read at 6:00 AM CT Thursday, ¾ cent above Wednesday's $4.63¼ settle."
+    }
+  ]
 }

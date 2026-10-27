@@ -1040,6 +1040,25 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
     except Exception as _e:
         W('usda-revision', 'revision check could not run (%s: %s)' % (type(_e).__name__, _e))
 
+    # ── claims a futures quote cannot carry (2026-10-27) ─────────────────
+    # scripts/daily_claims.py, the same rules the generator's prompt states and
+    # the generator and critic cut by. The three read against the data
+    # (expired contract, a last trade called a close, a close on a date after
+    # the issue) block; the three read from wording (a cash value from futures,
+    # a planting call from this year's contracts, a cause nobody is named as
+    # saying) WARN, per the rule that prose heuristics never hard-block.
+    try:
+        import daily_claims
+        _ctx = daily_claims.context(prices or {}, daily_claims.issue_date(daily, today), daily.get('quote_strip'))
+        for _rule, _loc, _s in daily_claims.lint(daily, _ctx):
+            _m = '%s: %r' % (_loc, _s[:160])
+            if _rule in daily_claims.BLOCKING and daily_claims.CUTTABLE(_loc):
+                F('claim:' + _rule, _m)
+            else:
+                W('claim:' + _rule, _m)
+    except Exception as _e:
+        W('claim', 'claim check could not run (%s: %s)' % (type(_e).__name__, _e))
+
     passed=not any(s=='FAIL' for s,_,_ in issues)
     return passed, issues
 

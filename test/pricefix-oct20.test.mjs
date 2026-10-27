@@ -44,10 +44,10 @@ test("2: Monday 7:18 PM CT file of the day's last trades says As of Oct 19, Last
   assert.equal(badge(d, "2026-10-20T08:00:00Z").t, "As of Oct 19");
   // a live overnight quote read in session is still Delayed
   const live = { fetched: "2026-10-20T01:30:00Z", quotes: { "corn-nearby": { close: 466, close_kind: "last", close_date: "2026-10-20" } } };
-  assert.equal(badge(live, "2026-10-20T01:40:00Z").t, "Delayed 15 min");
+  assert.equal(badge(live, "2026-10-20T01:40:00Z").t, "Delayed 10 to 25 min");
   // and the day session too
   const day = { fetched: "2026-10-20T15:00:00Z", quotes: { "corn-nearby": { close: 466, close_kind: "last", close_date: "2026-10-20" } } };
-  assert.equal(badge(day, "2026-10-20T15:10:00Z").t, "Delayed 15 min");
+  assert.equal(badge(day, "2026-10-20T15:10:00Z").t, "Delayed 10 to 25 min");
   // a settle file is unchanged
   const st = { fetched: "2026-10-20T05:00:00Z", quotes: { "corn-nearby": { close: 466, close_kind: "settle", close_date: "2026-10-19", settled: true } } };
   assert.equal(badge(st, "2026-10-20T05:10:00Z").t, "Settle Oct 19");

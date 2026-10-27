@@ -632,7 +632,7 @@ test("one name per thing, one sun note, the file's types, and the file's return 
   assert.match(S, /\['Marked days', ST\.markers\.length/, "the sheet's row has step 2's name");
   assert.ok(!/internet connection/.test(S), "near you, not 'going by your internet connection'");
   assert.match(S, /\$\('rp-ships'\)\.hidden = PICK === 'digital';/);
-  assert.match(S, /why\.hidden = late \|\| \(giftMode\(\) && canOrder\(\)\) \|\| PICK === 'digital';/);
+  assert.match(S, /why\.hidden = late \|\| giftYear\(\) \|\| PICK === 'digital';/, "this year's gift never shows the Christmas mail sum, loading or not");
   const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
   const offers = ld["@graph"].find((g) => g.offers).offers;
   const dig = offers.find((o) => o.sku === "rp-digital");

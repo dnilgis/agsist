@@ -80,7 +80,7 @@ test('every page that leads with a grain price draws the overnight line', () => 
   for (const p of ['corn', 'soybean', 'wheat']) assert.match(read(`${p}-futures-prices.html`), /id="hero-chg">[\s\S]{0,120}<\/div><div class="ph-ovn" id="hero-ovn" hidden><\/div><script>[^<]*m>=1140&&d!=='Fri'&&d!=='Sat'\)\|\|\(m<465&&d!=='Sat'&&d!=='Sun'\)/, p);
   for (const p of ['index.html', 'markets.html']) assert.match(read(p), /price-local\.js\?v=7/, p);
   assert.match(read('index.html'), /geo\.js\?v=32/);
-  assert.match(read('index.html'), /home-yield\.js\?v=9/);
+  assert.match(read('index.html'), /home-yield\.js\?v=10/);
 });
 
 test('the bake calls an overnight price an overnight trade and titles the settle', () => {
