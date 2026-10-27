@@ -1717,10 +1717,11 @@ def head(title, desc, path, jsonld, indexable=True, fonts="", og_title=None, og_
 </head>"""
 
 
-# The one cross-promo on a county page (Sig, Oct 23 2026): the quiet Rain Print "see" line
-# after the questions (components/rain-print-promo.js fills it while data/rain-print.json
-# has promote on; otherwise it stays hidden and takes no space). About 130 bytes a page.
-RP_SEE = '<p class="rp-promo ap-noprint" data-rain-print-promo="see" hidden></p>'
+# The one cross-promo on a county page (Sig, Oct 23 2026): the quiet "auto" line after the
+# questions, as on the hub (components/rain-print-promo.js: the Rain Print "see" line through
+# Dec 24, the rain gauge hook Dec 26 to May 31, from data/rain-print.json; hidden and taking no
+# space otherwise). About 130 bytes a page.
+RP_SEE = '<p class="rp-promo ap-noprint" data-rain-print-promo="auto" hidden></p>'
 RP_PROMO_JS = '<script src="/components/rain-print-promo.js?v=6" defer></script>'
 
 

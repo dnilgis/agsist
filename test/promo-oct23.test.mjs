@@ -7,7 +7,7 @@
  * What was built: Fast Facts buy link and its one Daily ask (no bar there), "See this morning's
  * email" under the Daily page asks, the rent land line, the Paid view's Daily ask and gauge line,
  * the gauge in "One more?" after a rain-year notice or a hail alert, the waitlist's own "One more?",
- * the see lines (conditions, spray, ARC/PLC counties, cash-bid towns), the gauge line on
+ * the auto lines (conditions, spray, ARC/PLC counties: Rain Print through Dec 24, then the gauge), the gauge line on
  * /rain-radar, the homepage card's early place, the Daily email's forward line and order-by date.
  * The browser parts need Playwright and Chromium and skip where they are missing.
  *
@@ -30,8 +30,8 @@ const promos = (h) => (h.match(/data-rain-print-promo/g) || []).length + (h.matc
 
 test("one cross-promo a page, after the answer, with its script", () => {
   const pages = {
-    "conditions.html": ['data-rain-print-promo="see"', 'class="cd-panel cd-faq-panel"'],
-    "spray.html": ['data-rain-print-promo="see"', 'id="section-faq"'],
+    "conditions.html": ['data-rain-print-promo="auto"', 'class="cd-panel cd-faq-panel"'],
+    "spray.html": ['data-rain-print-promo="auto"', 'id="section-faq"'],
     // /rain-radar: the gauge helper's "auto" line (see, or the gauge hook by date) is its one slot (Oct 23)
     "rain-radar.html": ['data-rain-print-promo="auto"', 'class="rr-faq"'],
   };
@@ -40,7 +40,7 @@ test("one cross-promo a page, after the answer, with its script", () => {
     assert.equal(promos(m), 1, f + ": exactly one promo");
     assert.ok(m.includes(`<p class="rp-promo" ${slot} hidden></p>`), f + ": the slot, hidden until filled");
     assert.ok(m.indexOf(slot) > m.indexOf(after), f + ": after the answer and the questions");
-    assert.match(h, /rain-print-promo\.js\?v=7" defer/, f);
+    assert.match(h, /rain-print-promo\.js\?v=6" defer/, f);   // one version sitewide (test/gauge-hook.test.mjs)
   }
   // /hail-map keeps its one Rain Print line (Oct 19 rule): the gauge waits on Sig's swap after Dec 10
   const hm = inMain(read("hail-map.html"));
@@ -66,7 +66,7 @@ test("rent pages: the notice ask unticked, one land line after the FAQ", () => {
     assert.ok(!/data-daily="on"|checked/.test(h.slice(h.lastIndexOf("<div", at), h.indexOf("</div>", at))), f + ": nothing ticked");
     assert.equal(promos(inMain(h)), 1, f);
     assert.ok(h.indexOf('data-rain-print-promo="land"') > h.lastIndexOf('class="rs-faq"'), f + ": after the FAQ");
-    assert.match(h, /rain-print-promo\.js\?v=7" defer/, f);
+    assert.match(h, /rain-print-promo\.js\?v=6" defer/, f);
   }
   assert.equal(promos(inMain(read("rent/index.html"))), 0, "the hub carries none");
 });
@@ -87,15 +87,13 @@ test("the land line runs through the framed order-by date only, from the data", 
   assert.match(src, /if \(c\.angle === 'christmas'\) \{\s+var early = doc\.querySelector\('\[data-rp-card-early\]'\);/);
 });
 
-test("see lines: ARC/PLC county and cash-bid town generators carry one tiny slot", () => {
+test("ARC/PLC county pages: the generator carries one tiny auto slot after the questions; town pages keep the gift line only", () => {
   const ap = read("scripts/build_arc_plc.py");
-  assert.match(ap, /RP_SEE = '<p class="rp-promo ap-noprint" data-rain-print-promo="see" hidden><\/p>'/);
+  assert.match(ap, /RP_SEE = '<p class="rp-promo ap-noprint" data-rain-print-promo="auto" hidden><\/p>'/);
   assert.match(ap, /\{f'<div class="ap-faq ap-noprint">[^\n]+\n  \{RP_SEE\}\n/);
   assert.match(ap, /tail\(ftr, calc=True, math=official, promo=True\)/);
-  const cb = read("scripts/build_cash_bid_pages.py");
-  assert.match(cb, /return RP_SEE_SLOT\n    return RP_GIFT_SLOT/);
-  assert.equal(execFileSync("python3", ["-c", "import sys,datetime as d;sys.path.insert(0,'scripts');import build_cash_bid_pages as B;print(B.rain_print_line(d.datetime(2026,10,23,12)));print(B.rain_print_line(d.datetime(2026,11,2,12)))"], { cwd: ROOT, encoding: "utf8" }).trim(),
-    '<p class="rp-promo" data-rain-print-promo="see" hidden></p>\n<p class="rp-promo" data-rain-print-promo hidden></p>');
+  // cash-bid town pages: bids pages never take a see or auto line (test/gauge-hook.test.mjs, the gauge helper's rule)
+  assert.ok(!/data-rain-print-promo="(see|auto)"/.test(read("scripts/build_cash_bid_pages.py")));
 });
 
 test("signup asks: the sample link under Daily page asks only; no ticked box; no bar on Fast Facts", () => {
