@@ -22,6 +22,12 @@
      "page": "/rain-print",
      "name": "Rain Print says when this year's print ships as soon as you pick the year",
      "text": "Picking this year showed a past year's arrival date and Christmas lines while the town was still loading, or after it failed. Every delivery line now follows the year you picked: this year's print ships in January."
+    },
+    {
+     "tag": "fixed",
+     "page": "/usda-calendar",
+     "name": "USDA calendar lists every 2026 Cattle on Feed, Crop Production and Hogs and Pigs release",
+     "text": "Nineteen 2026 release dates were missing from the calendar and its subscribe files, from January Cattle on Feed to September Hogs and Pigs. They are back, each from NASS's own 2026 release calendar."
     }
    ]
   },

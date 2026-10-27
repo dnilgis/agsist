@@ -27,8 +27,8 @@ test("every livestock and dairy row is in the .ics at 3:00 PM Eastern", () => {
   assert.ok(live.length >= 10);
   const flat = ICS.replace(/\r\n /g, "");
   for (const r of live) {
-    // 3 PM ET is 19:00Z under daylight time (to Nov 1, 2026), 20:00Z after
-    const z = r.date < "2026-11-01" ? "190000Z" : "200000Z";
+    // 3 PM ET is 19:00Z under daylight time (Mar 8 to Nov 1, 2026), 20:00Z outside it
+    const z = r.date >= "2026-03-08" && r.date < "2026-11-01" ? "190000Z" : "200000Z";
     assert.ok(flat.includes("DTSTART:" + r.date.replace(/-/g, "") + "T" + z + "\r\nDTEND"), r.name + " " + r.date);
   }
   assert.match(flat, /SUMMARY:Cattle on Feed/);
