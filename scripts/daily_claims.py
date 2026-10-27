@@ -19,8 +19,8 @@ lines, and each was a claim the numbers in the issue could not support:
 Each rule below is one of those, written so the real line fails and the
 corrected line passes (see the selftest). One definition, used three times:
 the generator's prompt (PROMPT_RULES), the generator and the critic after a
-rewrite (strip: the sentence is cut, never reworded), and briefing_gate (any
-left blocks the send).
+rewrite (strip: the sentence is cut, never reworded), and briefing_gate (a
+data rule left blocks the send, a wording rule left is a warning).
 
   context(prices, issue_date, quote_strip)  what the rules need to know
   lint(briefing, ctx)   -> [(rule, loc, sentence)]
@@ -402,6 +402,10 @@ RULES = [
 ]
 
 
+# read against the data, so briefing_gate blocks on them; the rest WARN there
+BLOCKING = ("expired-contract", "close-before-settle", "future-as-past")
+
+
 def lint(briefing, ctx):
     """[(rule, loc, sentence)] for every sentence that breaks a rule."""
     hits = []
@@ -449,12 +453,6 @@ def strip(briefing, ctx):
         for name, s in items:
             log.append(f"{loc}: cut [{name}] {s!r}")
     return briefing, log
-
-
-def gate_hits(briefing, ctx):
-    """What briefing_gate blocks on: hits in fields strip can cut. A hit in a
-    headline or title is left to the gate's WARN (there is no sentence to cut)."""
-    return [h for h in lint(briefing, ctx) if CUTTABLE(h[1])]
 
 
 # ── selftest: the real lines ───────────────────────────────────────────────
