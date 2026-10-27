@@ -40,7 +40,11 @@
   ];
 
   /* Sites with a paste reader. The Today page lists every other site as
-     "no paste reader yet". */
+     "no paste reader yet". Adding a site is one entry here (key, name, its bid
+     page, its hosts without "www.", its boards from dnilgis/bids) plus its
+     reader in parse(), plus the same key in the worker's PASTE_SITES. The Send
+     to AGSIST bookmark needs no change: the desk takes the page only from an
+     https origin on one of these hosts (or www. in front of one). */
   var SITES = {
     newcoop: { name: 'NEW Cooperative', page: 'https://www.newcoop.com/cash-bids', hosts: ['newcoop.com'], boards: NEWCOOP_BOARDS }
   };
@@ -50,6 +54,27 @@
     if (SITES[x]) return x;
     for (var k in SITES) if (SITES[k].hosts.indexOf(x) >= 0) return k;
     return null;
+  }
+
+  /* The site key for a page origin ("https://www.newcoop.com"), or null.
+     https only, no port, no user, and the host must be one of the site's
+     hosts exactly (or www. plus one): "newcoop.com.example.net" and
+     "http://www.newcoop.com" are not NEW Cooperative. */
+  function siteForOrigin(o) {
+    var m = /^https:\/\/([a-z0-9-]+(?:\.[a-z0-9-]+)+)$/.exec(String(o || ''));
+    if (!m) return null;
+    var h = m[1];
+    for (var k in SITES) {
+      var hs = SITES[k].hosts;
+      for (var i = 0; i < hs.length; i++) if (h === hs[i] || h === 'www.' + hs[i]) return k;
+    }
+    return null;
+  }
+  /* Every origin a site's bid page can be on, for the desk's "ready" signal. */
+  function origins(site) {
+    var out = [];
+    ((SITES[site] || {}).hosts || []).forEach(function (h) { out.push('https://' + h, 'https://www.' + h); });
+    return out;
   }
 
   var RE = {
@@ -184,7 +209,36 @@
     };
   }
 
-  var api = { SITES: SITES, siteFor: siteFor, NEWCOOP_BOARDS: NEWCOOP_BOARDS, botCheck: botCheck, parseHtml: parseHtml,
+  /* Whether a read is clean enough to save with no one looking: every check
+     read() makes passed, and every board we have for the site came through
+     with rows (NEW Cooperative: 66 of 66). Anything less waits for Save. */
+  function clean(site, r) {
+    var boards = ((SITES[site] || {}).boards || []).length;
+    if (!r || r.error) return { ok: false, why: (r && r.error) || 'Nothing was read.' };
+    if (!boards) return { ok: false, why: 'There is no paste reader for that site yet.' };
+    var empty = r.matched.filter(function (l) { return !l.rows.length; }).map(function (l) { return l.name; });
+    if (r.matched.length !== boards) return { ok: false, why: 'only ' + r.matched.length + ' of ' + boards + ' boards came through.' };
+    if (empty.length) return { ok: false, why: empty.length + ' board(s) came through with no rows (' + empty.join(', ') + ').' };
+    return { ok: true, why: 'all ' + boards + ' boards came through, ' + r.rows + ' rows.' };
+  }
+
+  /* The Send to AGSIST bookmark (elev-today.html). On the elevator's bid page,
+     in Sig's own browser, it copies the page (a spare, in case the new tab is
+     cut off from it) and opens the desk at #send. When the desk says it is
+     ready, and only to https://agsist.com, it hands over the page's HTML. It
+     holds no token and no list of sites: the desk decides which pages it takes. */
+  function sendBookmarklet() {
+    return "javascript:(function(){var A='https://agsist.com',h=document.documentElement.outerHTML,w,t=document.createElement('textarea');"
+      + "t.value=h;t.setAttribute('readonly','');t.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(t);"
+      + "try{t.select();t.setSelectionRange(0,h.length);document.execCommand('copy')}catch(e){}document.body.removeChild(t);"
+      + "w=window.open(A+'/elev-admin.html?from='+encodeURIComponent(location.hostname)+'#send','_blank');"
+      + "if(!w){alert('The page is copied. Open agsist.com/elev-admin.html#send and tap Paste from clipboard.');return}"
+      + "function m(e){if(e.origin!==A||e.source!==w||!e.data||e.data.type!=='agsist-send-ready')return;removeEventListener('message',m);"
+      + "w.postMessage({type:'agsist-send-page',html:h},A)}addEventListener('message',m);"
+      + "setTimeout(function(){removeEventListener('message',m)},120000)})()";
+  }
+
+  var api = { SITES: SITES, siteFor: siteFor, siteForOrigin: siteForOrigin, origins: origins, clean: clean, sendBookmarklet: sendBookmarklet, NEWCOOP_BOARDS: NEWCOOP_BOARDS, botCheck: botCheck, parseHtml: parseHtml,
               parseText: parseText, parse: parse, match: match, read: read };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.AgsistPasteBids = api;
