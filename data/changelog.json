@@ -46,6 +46,42 @@
      "page": "/usda-calendar",
      "name": "USDA calendar lists every 2026 Cattle on Feed, Crop Production and Hogs and Pigs release",
      "text": "Nineteen 2026 release dates were missing from the calendar and its subscribe files, from January Cattle on Feed to September Hogs and Pigs. They are back, each from NASS's own 2026 release calendar."
+    },
+    {
+     "tag": "new",
+     "page": "/fast-facts",
+     "name": "Fast Facts: make the county's Rain Print your own",
+     "text": "Under the county's year of rain in Fast Facts, one link opens that same print in Rain Print, ready for your name. There is also one place to sign up for the Daily, right after the price card, with your ZIP already in it."
+    },
+    {
+     "tag": "improved",
+     "page": "/daily",
+     "name": "See this morning's email before you sign up",
+     "text": "Under the Daily sign-up boxes there is a link to this morning's issue, so you can see what comes before you give an address."
+    },
+    {
+     "tag": "new",
+     "page": "/rain-gauge",
+     "name": "The rain gauge waitlist, one more tick away",
+     "text": "After the county rain-year email or a hail alert, the One more? box also offers the rain gauge waitlist, unticked. The waitlist itself now offers the Daily the same way."
+    },
+    {
+     "tag": "improved",
+     "page": "/rent/",
+     "name": "Rent pages: a gift line for the landlord or the tenant",
+     "text": "Through the framed Christmas order-by date, each state rent page carries one quiet Rain Print line after the questions."
+    },
+    {
+     "tag": "improved",
+     "page": "/daily",
+     "name": "The Daily email: forward line up top, Christmas order-by date",
+     "text": "Forward to a neighbor now sits right under Today. Through Dec 9 the Print of the day says the Christmas order-by dates."
+    },
+    {
+     "tag": "fixed",
+     "page": "/gifts-for-farmers",
+     "name": "No ads on the gift guide",
+     "text": "The gift guide no longer shows the Advertise links, the same as the Rain Print pages."
     }
    ]
   },
