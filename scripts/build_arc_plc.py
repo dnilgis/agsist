@@ -160,7 +160,7 @@ STYLES_V = "26"
 LOADER_V = "19"
 ASOF_V = "1"
 QR_V = "11"   # components/qr.js on its own (10: an alphanumeric mode for the Rain Print standard code, 2026-10-14; 11: mixed mode and versions to 40 for the printed report QRs, 2026-10-19)
-CALC_V = "14"   # 14: arcfix (Oct 20, 2026): no "Ask FSA" (range answers in arc-plc-simple.js and arc-plc-math.js), the 2025 and 50-cent lines (arc-plc-simple.css), the landlord line on the counter sheet (arc-plc-sheet.js), "at your price only" (arc-plc.js), the main page's first line (arc-plc.css); 13: both 12s together (fx/nightmoney + fx/nightseo, 2026-10-19); 12 (nightseo): one rounding for the benchmark yield (byf, night audit Oct 19, 2026); 12 (nightmoney): no expected dollars where the price swings are borrowed from corn, county-yield wording (money audit 3); 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
+CALC_V = "15"   # 15: fx/trust (Oct 27, 2026): "Pick PLC" / "Pick ARC-CO" read "PLC expected to pay more" / "ARC-CO expected to pay more", with the assumptions beside the calculator answer (arc-plc.js, arc-plc-math.js); 14: arcfix (Oct 20, 2026): no "Ask FSA" (range answers in arc-plc-simple.js and arc-plc-math.js), the 2025 and 50-cent lines (arc-plc-simple.css), the landlord line on the counter sheet (arc-plc-sheet.js), "at your price only" (arc-plc.js), the main page's first line (arc-plc.css); 13: both 12s together (fx/nightmoney + fx/nightseo, 2026-10-19); 12 (nightseo): one rounding for the benchmark yield (byf, night audit Oct 19, 2026); 12 (nightmoney): no expected dollars where the price swings are borrowed from corn, county-yield wording (money audit 3); 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2026))   # years with both an FSA county yield and a price change; 2025 counts once its final MYA is out
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap, at least 1 SE, and MIN_WINS winning years
@@ -469,7 +469,7 @@ def scen_eval(erp, bp, loan, py, parts, center, ratios, price=None, borrowed=Fal
     return out
 
 
-VWORD = {"plc": "Pick PLC", "arc": "Pick ARC-CO", "lean_plc": "Leans PLC", "lean_arc": "Leans ARC-CO",
+VWORD = {"plc": "PLC expected to pay more", "arc": "ARC-CO expected to pay more", "lean_plc": "Leans PLC", "lean_arc": "Leans ARC-CO",
          "close": "Close, either one", "none": "Neither expected to pay", "withheld": "Not enough history to say",
          "mismatch": "No typical-farm answer", "noprice": "No 2027 price yet", "pending": "Waiting on USDA's closing 2025 price"}
 NOCALL = ("withheld", "mismatch", "noprice", "pending")   # no answer, for the reason in the words
@@ -510,7 +510,7 @@ def verdict_line(v):
         tail_ = (f"{WORD[other]} did not pay more in any of the {v['n']} years, but the gap is within the normal swing" if ow == 0 else
                  f"but the gap is within the normal swing, so {WORD[other]} is a defensible choice")
         return f"Leans {WORD[side]}: expected about {usd(abs(v['diff']))} more per base acre; {tail_} ({nums}).{note}"
-    return f"Pick {WORD[w_]} ({nums}).{note}"
+    return f"{WORD[w_]} expected to pay more on these assumptions ({nums}).{note}"
 
 
 # 2026-10-19 money audit 3: a crop with no October futures history of its own
@@ -555,7 +555,7 @@ def verdict_line_borrowed(v):
         tail_ = (f"{WORD[other]} did not pay more in any of the {v['n']} years, but the gap is within the normal swing" if ow == 0 else
                  f"the gap is within the normal swing, so {WORD[other]} is a defensible choice")
         return f"Leans {WORD[side]}: {tail_} ({nums}).{note}"
-    return f"Pick {WORD[w_]} ({nums}).{note}"
+    return f"{WORD[w_]} expected to pay more on these assumptions ({nums}).{note}"
 
 
 # ---------------------------------------------------------------- formatting
@@ -1920,7 +1920,7 @@ def faq_items(D):
 
 
 TIERS = ("plc", "lean_plc", "close", "lean_arc", "arc", "none", "withheld", "noprice", "pending", "mismatch")
-TIER_HEAD = {"plc": "Pick PLC", "lean_plc": "Leans PLC", "close": "Close", "lean_arc": "Leans ARC-CO", "arc": "Pick ARC-CO",
+TIER_HEAD = {"plc": "PLC expected to pay more", "lean_plc": "Leans PLC", "close": "Close", "lean_arc": "Leans ARC-CO", "arc": "ARC-CO expected to pay more",
              "none": "Neither pays", "withheld": "Too few years", "noprice": "No 2027 price", "pending": "Waiting on USDA", "mismatch": "No typical farm"}
 
 
@@ -2048,7 +2048,7 @@ def method_html(D):
     would only repeat the 2026 answer. Type a 2027 price in the calculator to see the dollars.</li>
     <li><b>2027 county yield.</b> For the same year as the price, the county&rsquo;s yield against its benchmark, from FSA&rsquo;s own files. {dy_source_text(D)}.
     A county with fewer than {MIN_SCEN} years uses its state&rsquo;s average for that crop and practice (at least {MIN_STATE_N} counties a year).</li>
-    <li><b>The call.</b> With at least {MIN_SCEN} years: <b>Pick</b> when the expected gap is more than t times its standard error (t from Student&rsquo;s t for the number of years,
+    <li><b>The call.</b> With at least {MIN_SCEN} years: <b>Expected to pay more</b> when the expected gap is more than t times its standard error (t from Student&rsquo;s t for the number of years,
     2.26 for 10 and 2.23 for 11), at least {usd(MIN_GAP)} per base acre, and the leading program paid more in at least {MIN_WINS} of the years; <b>Leans</b> when the gap is at least
     {usd(LEAN_GAP)} and at least one standard error, and the leader paid more in at least {MIN_WINS} years; otherwise <b>close, either one</b>. When both expected payments round
     to $0: <b>neither expected to pay</b>. Expected dollars are shown beside the call, except for the 2026 crops whose spread is borrowed (above): there the call stands and the dollars are not printed.</li>
@@ -2481,7 +2481,7 @@ def state_page(st, S, D, ch, nav_states):
     return page, {"path": path, "indexable": indexable, "title": title, "desc": desc, "table": tjson}
 
 
-SHORT = {"plc": "Pick PLC", "arc": "Pick ARC-CO", "lean_plc": "Leans PLC", "lean_arc": "Leans ARC-CO",
+SHORT = {"plc": "PLC expected to pay more", "arc": "ARC-CO expected to pay more", "lean_plc": "Leans PLC", "lean_arc": "Leans ARC-CO",
          "close": "Close, either one", "none": "Neither expected to pay"}
 
 
