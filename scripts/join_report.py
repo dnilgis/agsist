@@ -65,9 +65,7 @@ FLOORS = {
     # (was 199 of 251, 79.3%, on an elevators.json from Oct 18). Room below 1.0 for a pass whose ids
     # step fails soft and leaves the last elevators.json in place.
     "bids places to ids":      (0.95, None),      # 248 of 248
-    # "bids places carry elevId": (0.95, None),   # 248 of 248 on the new writer. Floor added in the follow-up
-    #   change, once the bids run on main writes elevId (data/bids.json is rewritten every 15 minutes, so it
-    #   cannot ride this change). The row is still printed every run.
+    "bids places carry elevId": (0.95, None),     # 253 of 253 on the bids run of Oct 27 21:08 UTC (new writer)
     "basis keys to ids":       (0.998, None),     # 3,556 of 3,559
 }
 
