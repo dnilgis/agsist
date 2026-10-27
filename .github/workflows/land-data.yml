@@ -155,6 +155,12 @@ jobs:
       - name: Build the farmland sale index
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: OMP_NUM_THREADS=1 python scripts/build_land_index.py
+      # The farm sale pages (/land-sales/: one per IL and WI county, the monthly update, the hub and its
+      # sitemap) and their data (data/land-sales/, names only under data/land/names/, robots-blocked).
+      # Offline; refuses to write a buyer or seller name outside data/land/.
+      - name: Build the farm sale pages
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        run: python scripts/build_land_sales.py
       - name: Save raw answers to the raw branch
         if: ${{ !cancelled() }}
         env:
@@ -174,6 +180,7 @@ jobs:
           rm -rf /tmp/ld && mkdir -p /tmp/ld
           [ -d data/land ] && cp -r --parents data/land /tmp/ld/ || true
           [ -f farmland-index.html ] && cp farmland-index.html /tmp/ld/ || true
+          [ -d land-sales ] && cp -r --parents land-sales data/land-sales sitemap-land-sales.xml /tmp/ld/ || true
           [ -n "$(ls -A /tmp/ld)" ] || { echo "No output; nothing to commit."; exit 0; }
           BR="${GITHUB_REF_NAME:-main}"
           for i in 1 2 3 4 5; do
@@ -181,8 +188,10 @@ jobs:
             git reset --hard "origin/$BR"
             mkdir -p data && cp -r /tmp/ld/data/. data/
             [ -f /tmp/ld/farmland-index.html ] && cp /tmp/ld/farmland-index.html . || true
+            [ -d /tmp/ld/land-sales ] && cp -r /tmp/ld/land-sales . && cp /tmp/ld/sitemap-land-sales.xml . || true
             python3 scripts/land_keep_stamp_only.py data/land   # a file whose only change is a timestamp is not data
             git add data/land farmland-index.html
+            [ -d land-sales ] && git add land-sales data/land-sales sitemap-land-sales.xml || true
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Update land data $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
