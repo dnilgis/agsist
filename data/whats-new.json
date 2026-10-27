@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-27-fast-facts-rain-print",
+   "date": "2026-10-27",
+   "title": "Fast Facts: make the county's Rain Print your own",
+   "line": "Under the county's year of rain, one link opens the same print in Rain Print, ready for your name.",
+   "link": "/fast-facts"
+  },
+  {
    "id": "2026-10-27-field-scout-backup",
    "date": "2026-10-27",
    "title": "Field Scout: back up your saved fields",
