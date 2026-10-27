@@ -65,7 +65,7 @@ test("cash-bids: the no-ZIP sample is deferred, loads nothing up front, and does
   assert.match(CB, /<script src="\/components\/cb-sample\.js\?v=\d+" defer><\/script>/);
   assert.ok(!/price-local\.js/.test(CB), "price-local.js is loaded only when the sample is needed");
   const js = read("components/cb-sample.js");
-  assert.match(js, /price-local\.js\?v=3/);
+  assert.match(js, /price-local\.js\?v=8/);
   const now = Date.parse("2026-10-17T20:00:00Z");
   const bs = { generated: "2026-10-17T19:37:08Z", min_n: 3, states: {
     IA: { name: "Iowa", path: "/cash-bids/iowa/#basis", elevators: 348, crops: {

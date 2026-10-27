@@ -164,7 +164,7 @@ import build_cash_bid_pages as CB  # noqa: E402
 check(CB.loc_co({"n": 203, "companies": 23}) == "203 locations, 23 companies", "loc_co words")
 check(CB.loc_co({"n": 1, "companies": 1}) == "1 location, 1 company", "loc_co singular")
 check(CB.loc_co({"n": 7}) == "7 elevators", "an older record without companies keeps its words")
-check("—" not in CB.CO_RULE and len(CB.CO_RULE) < 160, "the matching rule is one short line, no em dash")
+check("\u2014" not in CB.CO_RULE and len(CB.CO_RULE) < 160, "the matching rule is one short line, no em dash")
 
 for f in fails:
     print("FAIL: " + f)
