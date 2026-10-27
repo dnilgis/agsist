@@ -39,6 +39,7 @@ one month; a two-month or mid-month delivery matches only itself; two candidates
     its date)
   - any other common days: the survivor's row as it is (counted: conflicts, and how many disagree)
 Usage also: python3 scripts/build_basis_join.py --stitch-stats   counts per outcome on today's data/basis
+            python3 scripts/build_basis_join.py --stitch-dump    every stitched contract as JSON (the parity test)
 
 Usage: python3 scripts/build_basis_join.py            write data/ids/basis-join/
        python3 scripts/build_basis_join.py --check    exit 1 when the committed file is not what this builds
@@ -241,10 +242,8 @@ def series(rows, keys, crop, sym, delivery):
     return acc, hows
 
 
-def stitch_stats(root=ROOT):
-    """Counts per outcome over every stitched id's own contracts on today's data/basis."""
-    from collections import Counter
-    c, ids, with_old = Counter(), 0, 0
+def stitch_each(root=ROOT):
+    """(state, elevId, (crop, SYMBOL, DELIVERY), row, hows) for every own contract of every stitched id."""
     for name in sorted(os.listdir(OUT)) if os.path.isdir(OUT) else []:
         if name == "index.json":
             continue
@@ -254,16 +253,27 @@ def stitch_stats(root=ROOT):
         p = os.path.join(root, "data", "basis", doc["state"] + ".json")
         rows = shard_rows(json.load(open(p, encoding="utf-8"))) if os.path.exists(p) else {}
         for eid, keys in doc["s"].items():
-            ids += 1
-            got = False
-            for (crop, sym, dl) in rows.get("|".join(_n(x) for x in keys[0].split("|", 2)[1:])) or {}:
-                _row, hows = series(rows, keys, crop, sym, dl)
-                for h in hows:
-                    c[h] += 1
-                got = got or any(h in ("joined", "overlap_agree") for h in hows)
-            with_old += got
-    return {"ids": ids, "ids_with_older_rows": with_old, "contracts": dict(sorted(c.items())),
-            "conflicts": c["overlap_agree"] + c["overlap_disagree"] + c["overlap_unknown"] + c["survivor_first"]}
+            own = rows.get("|".join(_n(x) for x in keys[0].split("|", 2)[1:])) or {}
+            if not own:
+                yield doc["state"], eid, None, None, []
+            for ck in own:
+                row, hows = series(rows, keys, *ck)
+                yield doc["state"], eid, ck, row, hows
+
+
+def stitch_stats(root=ROOT):
+    """Counts per outcome over every stitched id's own contracts on today's data/basis."""
+    from collections import Counter
+    c, ids, with_old = Counter(), set(), set()
+    for _st, eid, _ck, _row, hows in stitch_each(root):
+        ids.add(eid)
+        for h in hows:
+            c[h] += 1
+        if any(h in ("joined", "overlap_agree") for h in hows):
+            with_old.add(eid)
+    return {"ids": len(ids), "ids_with_older_rows": len(with_old), "contracts": dict(sorted(c.items())),
+            "conflicts": c["overlap_agree"] + c["overlap_disagree"] + c["overlap_unknown"] + c["survivor_first"],
+            "disagree": c["overlap_disagree"]}
 
 
 def text(doc):
@@ -363,6 +373,9 @@ def main(argv):
         return selftest()
     if "--stitch-stats" in argv:
         print(json.dumps(stitch_stats()))
+        return 0
+    if "--stitch-dump" in argv:     # every stitched contract, for test/basis-stitch.test.mjs (JS and Python agree)
+        print(json.dumps([[st, eid, list(ck) if ck else None, row, hows] for st, eid, ck, row, hows in stitch_each()]))
         return 0
     el = json.load(open(os.path.join(ROOT, "data", "ids", "elevators.json"), encoding="utf-8"))
     led = json.load(open(os.path.join(ROOT, "data", "ids", "elevator-ids.json"), encoding="utf-8"))
