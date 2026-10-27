@@ -58,6 +58,34 @@ jobs:
           SCAN: ${{ inputs.scan }}
         run: |
           if [ -n "$SCAN" ]; then python scripts/fetch_hay_ams.py --probe --scan "$SCAN"; else python scripts/fetch_hay_ams.py --probe; fi
+      - name: TEMP MARS report list (probe only)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        continue-on-error: true
+        env:
+          MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
+        run: |
+          mkdir -p data/hay-ams-raw/mars
+          B=https://marsapi.ams.usda.gov/services/v1.2/reports
+          curl -sS -m 120 -u "$MARS_API_KEY:" "$B" -o data/hay-ams-raw/mars/reports.json || true
+          for s in bls-ap 2246 3729 2243 2244 2245 3723; do
+            curl -sS -m 120 -u "$MARS_API_KEY:" "$B/$s?lastReports=1" -o "data/hay-ams-raw/mars/report-$s.json" || true
+          done
+          python3 - <<'EOF'
+          import json, glob
+          try:
+              d = json.load(open("data/hay-ams-raw/mars/reports.json"))
+          except Exception as e:
+              print("reports list not JSON:", e, open("data/hay-ams-raw/mars/reports.json", "rb").read(200)); d = []
+          rows = d if isinstance(d, list) else d.get("results") or []
+          print("MARS reports listed:", len(rows))
+          want = {"2246","3729","2243","2244","2245","3723","1215","2046","1917","2713","1860","2167","2039","1703","1825","2528"}
+          for r in rows:
+              blob = json.dumps(r).lower()
+              if str(r.get("slug_id")) in want or "bls" in blob or "retail" in (r.get("report_title") or "").lower():
+                  print("LIST", json.dumps(r)[:600])
+          for f in sorted(glob.glob("data/hay-ams-raw/mars/report-*.json")):
+              print("FILE", f, open(f, "rb").read(1500).decode("utf-8", "replace").replace("\n", " "))
+          EOF
       # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
       # Runs even when the probe step failed part way, so what it did capture is kept. The listing stays on main too: the normal run reads it.
       - name: Save the probe's raw files to the raw branch

@@ -25,7 +25,7 @@
     {"id": "tama-ia", "name": "Tama Livestock Auction", "town": "Tama", "state": "IA", "lat": 41.97, "lon": -92.58, "slug": "2156", "match": "tama", "check": true, "also": ["2144"]},
     {"id": "congerville-il", "name": "Reel Livestock", "town": "Congerville", "state": "IL", "lat": 40.62, "lon": -89.21, "slug": "2045", "match": "reel livestock|congerville", "check": true},
     {"id": "fairview-il", "name": "Fairview Livestock", "town": "Fairview", "state": "IL", "lat": 40.64, "lon": -90.16, "slug": "2048", "match": "fairview", "check": true},
-    {"id": "greenville-il", "name": "Greenville Livestock Auction", "town": "Greenville", "state": "IL", "lat": 38.89, "lon": -89.41, "slug": "2043", "match": "greenville, il|greenville livestock", "check": true},
+    {"id": "greenville-il", "name": "Greenville Livestock Auction", "town": "Greenville", "state": "IL", "lat": 38.89, "lon": -89.41, "slug": "2043", "match": "greenville, il|greenville livestock", "check": true, "also": ["2046"]},
     {"id": "walnut-il", "name": "Walnut Livestock Auction", "town": "Walnut", "state": "IL", "lat": 41.56, "lon": -89.59, "slug": "2044", "match": "walnut", "check": true},
     {"id": "rockville-in", "name": "Indianapolis Stockyards", "town": "Rockville", "state": "IN", "lat": 39.76, "lon": -87.23, "slug": "1966", "match": "indianapolis stockyards|rockville", "check": true},
     {"id": "dodge-city-ks", "name": "Winter Livestock", "town": "Dodge City", "state": "KS", "lat": 37.75, "lon": -100.02, "slug": "1889", "match": "dodge city"},
@@ -37,7 +37,7 @@
     {"id": "green-city-mo", "name": "Green City Livestock Auction", "town": "Green City", "state": "MO", "lat": 40.27, "lon": -92.95, "slug": "1254", "match": "green city", "check": true},
     {"id": "new-cambria-mo", "name": "New Cambria Livestock Market", "town": "New Cambria", "state": "MO", "lat": 39.77, "lon": -92.75, "slug": "1248", "match": "new cambria", "check": true},
     {"id": "phillipsburg-mo", "name": "Mid-Missouri Stockyards", "town": "Phillipsburg", "state": "MO", "lat": 37.55, "lon": -92.78, "slug": "3654", "match": "mid[- ]missouri|phillipsburg"},
-    {"id": "springfield-mo", "name": "Springfield Livestock Marketing Center", "town": "Springfield", "state": "MO", "lat": 37.21, "lon": -93.29, "slug": "1255", "match": "springfield, mo|springfield livestock"},
+    {"id": "springfield-mo", "name": "Springfield Livestock Marketing Center", "town": "Springfield", "state": "MO", "lat": 37.21, "lon": -93.29, "slug": "1255", "match": "springfield, mo|springfield livestock", "also": ["1215"]},
     {"id": "unionville-mo", "name": "Unionville Livestock Market", "town": "Unionville", "state": "MO", "lat": 40.48, "lon": -93.0, "slug": "1237", "match": "unionville", "check": true},
     {"id": "vienna-mo", "name": "South Central Regional Stockyards", "town": "Vienna", "state": "MO", "lat": 38.19, "lon": -91.95, "slug": "1817", "match": "south central regional|vienna, mo"},
     {"id": "west-plains-mo", "name": "Ozarks Regional Stockyards", "town": "West Plains", "state": "MO", "lat": 36.73, "lon": -91.85, "slug": "1249", "match": "ozarks regional|west plains"},
@@ -66,7 +66,7 @@
     {"id": "ada-ok", "name": "Southern Oklahoma Livestock", "town": "Ada", "state": "OK", "lat": 34.77, "lon": -96.68, "slug": "1830", "match": "southern oklahoma|ada, ok", "check": true},
     {"id": "apache-ok", "name": "Apache Livestock Auction", "town": "Apache", "state": "OK", "lat": 34.89, "lon": -98.36, "slug": "1829", "match": "apache", "check": true},
     {"id": "beaver-ok", "name": "Beaver Livestock Auction", "town": "Beaver", "state": "OK", "lat": 36.82, "lon": -100.52, "slug": "3794", "match": "beaver", "check": true},
-    {"id": "el-reno-ok", "name": "OKC West Livestock Auction", "town": "El Reno", "state": "OK", "lat": 35.53, "lon": -97.95, "slug": "1281", "check": true, "match": "okc west|el reno", "also": ["1278"]},
+    {"id": "el-reno-ok", "name": "OKC West Livestock Auction", "town": "El Reno", "state": "OK", "lat": 35.53, "lon": -97.95, "slug": "1281", "check": true, "match": "okc west|el reno", "also": ["1278", "1825"]},
     {"id": "mcalester-ok", "name": "McAlester Union Stockyards", "town": "McAlester", "state": "OK", "lat": 34.93, "lon": -95.77, "slug": "1827", "match": "mcalester"},
     {"id": "okc-ok", "name": "Oklahoma National Stockyards", "town": "Oklahoma City", "state": "OK", "lat": 35.47, "lon": -97.57, "slug": "1280", "match": "oklahoma national|oklahoma city"},
     {"id": "tulsa-ok", "name": "Tulsa Stockyards", "town": "Tulsa", "state": "OK", "lat": 36.15, "lon": -95.99, "slug": "1832", "match": "tulsa", "check": true},
@@ -89,7 +89,10 @@
     {"id": "marshall-va", "name": "Fauquier Livestock Exchange", "town": "Marshall", "state": "VA", "lat": 38.86, "lon": -77.86, "slug": "2173", "check": true, "match": "fauquier|marshall, va"},
     {"id": "toppenish-wa", "name": "Toppenish Livestock Auction", "town": "Toppenish", "state": "WA", "lat": 46.38, "lon": -120.31, "slug": "2132", "match": "toppenish"},
     {"id": "riverton-wy", "name": "Winter Livestock Auction", "town": "Riverton", "state": "WY", "lat": 43.02, "lon": -108.38, "slug": "2104", "match": "riverton"},
-    {"id": "torrington-wy", "name": "Torrington Livestock", "town": "Torrington", "state": "WY", "lat": 42.06, "lon": -104.18, "slug": "2103", "match": "torrington", "also": ["2101"]}
+    {"id": "torrington-wy", "name": "Torrington Livestock", "town": "Torrington", "state": "WY", "lat": 42.06, "lon": -104.18, "slug": "2103", "match": "torrington", "also": ["2101"]},
+    {"id": "greencastle-pa", "name": "Greencastle Livestock Auction", "town": "Greencastle", "state": "PA", "lat": 39.79, "lon": -77.73, "slug": "1917", "match": "greencastle", "check": true},
+    {"id": "superior-video-tx", "name": "Superior Livestock", "town": "Fort Worth", "state": "TX", "lat": 32.75, "lon": -97.33, "slug": "2713", "match": "superior", "check": true},
+    {"id": "kalona-ia-ams", "name": "Kalona Sales Barn", "town": "Kalona", "state": "IA", "lat": 41.48, "lon": -91.71, "slug": "2528", "match": "kalona", "check": true}
   ],
  "state_reports": [
     {"id": "mo-weekly", "state": "MO", "slug": "1821", "match": "missouri.*(summary|weekly)"},
@@ -112,7 +115,9 @@
     {"id": "co-weekly", "state": "CO", "slug": "1907", "check": true, "match": "colorado.*(summary|weekly)"},
     {"id": "in-weekly", "state": "IN", "slug": "1976", "check": true, "match": "indiana.*(summary|weekly)"},
     {"id": "ok-weekly", "state": "OK", "slug": "1831", "check": true, "match": "oklahoma.*(summary|weekly)"},
-    {"id": "nm-weekly", "state": "NM", "slug": "1784", "check": true, "match": "new mexico.*(summary|weekly)"}
+    {"id": "nm-weekly", "state": "NM", "slug": "1784", "check": true, "match": "new mexico.*(summary|weekly)"},
+    {"id": "ut-weekly", "state": "UT", "slug": "2039", "check": true, "match": "utah.*(summary|weekly)"},
+    {"id": "fl-daily", "state": "FL", "label": "daily summary", "slug": "1703", "check": true, "match": "florida daily"}
   ],
  "own_reports": [
     {"id": "withee-wi", "name": "Premier Livestock & Auctions", "town": "Withee", "state": "WI", "lat": 44.95, "lon": -90.6, "sale": "Feeder cattle the 1st, 2nd and 3rd Tuesday; calves and fed cattle Mon and Tue; dairy Wed", "site": "https://premierlivestockandauctions.com/market-reports/", "parser": "premier", "parser_checked": true},
