@@ -1,7 +1,18 @@
 {
- "updated": "2026-10-23",
+ "updated": "2026-10-27",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-27",
+   "items": [
+    {
+     "tag": "fixed",
+     "page": "/terms",
+     "name": "Pages now agree with each other on price delay, grading, privacy and what a result covers",
+     "text": "About, Terms and the price pages now give the same delay as Data Sources: a grain or livestock futures price is about 10 to 25 minutes old while markets trade. What's Priced In has one grading rule. The privacy summary says what goes to outside services and what an alert stores, and each alert type says how often it can email. ARC/PLC says which program is expected to pay more on its stated assumptions instead of Pick. Cash bids' Net after hauling counts only the hauling cost you entered."
+    }
+   ]
+  },
   {
    "date": "2026-10-23",
    "items": [
