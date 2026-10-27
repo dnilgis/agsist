@@ -28,12 +28,23 @@ THE METHOD
     the state's best basis.
   - headline = the contract most elevators in the state price against; its
     MEDIAN, with n (the elevators behind it) always printed beside it
+  - COMPANIES (2026-10-27, god's-eye panel decision 4): beside n, the
+    number of companies behind the same bids (companies_behind()). n counts
+    locations; one firm with 50 of Kansas's 203 corn boards moves the middle
+    more than its one vote as a company. A company is every board that shares
+    a printed name or a website with another (a co-op whose board and its
+    second site name it two ways is one), and every CHS-branded business is
+    CHS. Unsure matches are folded, never split, so the count errs low: three
+    GROWMARK FS co-ops on one shared site count as one. A firm owned by
+    another under a different name and site can still count apart; there is
+    no parent list yet, and no company-weighted middle until there is.
   - week-over-week: the median of matched-pair changes (same board, crop,
     commodity, period and contract) against a snapshot about seven days back,
     with how many pairs it rests on; omitted, never estimated, without one
 
 Selftest: python3 scripts/basis_method.py --selftest
 """
+import re
 import statistics
 import sys
 
@@ -51,6 +62,67 @@ OUTLIER_FLOOR = 0.15  # $/bu: the robust SD is never taken as less than this
 # state runs to about 55c; the boards this is for sit a dollar or more away
 # (Iowa soybeans +$1.40 against -$0.63; Nebraska soybeans -$1.40 against
 # -$0.59, 81c under).
+
+
+# Hosts many unrelated firms share: never evidence that two boards are one company.
+SHARED_HOSTS = frozenset({"facebook.com", "m.facebook.com", "sites.google.com", "agricharts.com", "dtn.com",
+                          "dtnpf.com", "barchart.com", "cihedging.com", "gradable.com", "bushelpowered.com",
+                          "grainbids.com", "linktr.ee", "wixsite.com", "weebly.com", "squarespace.com"})
+# Parent brands that own every business sold under their name. CHS Inc. runs
+# its owned retail units as "CHS <place>" ("CHS Herman", "CHS Dakota Plains Ag"),
+# each with its own site, so neither name nor website would join them.
+PARENT_BRANDS = ((re.compile(r"^chs\b", re.I), "CHS"),)
+_LEGAL_TAIL = re.compile(r"[\s,._-]*\b(inc|incorporated|llc|l\.l\.c|ltd|lp|co|corp|company)\b\.?[\s,._-]*$", re.I)
+
+
+def name_key(op):
+    """'Farmers Elevator & Exchange, Inc.' and 'Farmers Elevator & Exchange'
+    are one name; letters and digits only, legal tails off."""
+    s = (op or "").strip()
+    for _ in range(2):
+        t = _LEGAL_TAIL.sub("", s).strip()
+        s = t or s
+    return re.sub(r"[^a-z0-9]+", "", s.lower())
+
+
+def site_key(url):
+    """The board's website host without www, or '' when it says nothing about
+    who owns the board (none, or a host many firms share)."""
+    m = re.match(r"^\s*https?://([^/\s?#:]+)", url or "", re.I)
+    h = m.group(1).lower() if m else ""
+    h = h[4:] if h.startswith("www.") else h
+    return "" if h in SHARED_HOSTS else h
+
+
+def companies_behind(rows):
+    """How many companies stand behind these rows (each with operator and an
+    optional site, the board's website). Boards join when they share a name
+    key, a site key or a parent brand; the count is the joined groups."""
+    parent = {}
+
+    def find(x):
+        while parent.setdefault(x, x) != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for i, r in enumerate(rows):
+        op = r.get("operator") or ""
+        keys = [f"n:{name_key(op)}" if name_key(op) else f"row:{i}"]
+        sk = site_key(r.get("site"))
+        if sk:
+            keys.append(f"s:{sk}")
+        for pat, brand in PARENT_BRANDS:
+            if pat.search(op.strip()):
+                keys.append(f"p:{brand}")
+        for k in keys[1:]:
+            parent[find(k)] = find(keys[0])
+        find(keys[0])
+    rowroots = set()
+    for i, r in enumerate(rows):
+        op = r.get("operator") or ""
+        rowroots.add(find(f"n:{name_key(op)}" if name_key(op) else f"row:{i}"))
+    return len(rowroots)
 
 
 def median(vals):
@@ -114,7 +186,7 @@ def state_basis(rows, prev_map):
     each with source, group, crop, commodity, period, contract, basis, cash,
     priced, city, operator and fut_off. prev_map: match_key -> basis a week
     back, or None. -> {group: {rows, contracts: [stat...], no_contract,
-    suspect, outliers}}; a stat is {contract, n, rows, outliers} plus median,
+    suspect, outliers}}; a stat is {contract, n, companies, rows, outliers} plus median,
     lo, hi, asof_*, strong, weak and wow_* when n >= MIN_STAT."""
     by_group = {}
     for r in rows:
@@ -138,7 +210,7 @@ def state_basis(rows, prev_map):
             crs, outl = robust_split(crs0)
             all_out += outl
             vals = [r["basis"] for r in crs]
-            st = {"contract": con, "n": len(crs), "rows": crs,
+            st = {"contract": con, "n": len(crs), "companies": companies_behind(crs), "rows": crs,
                   "outliers": sorted(outl, key=lambda r: -abs(r["outlier"]["dist"]))}
             if len(crs) >= MIN_STAT:
                 st["median"] = round(median(vals), 4)
@@ -173,6 +245,7 @@ def headline_json(st):
     con = st["contract"]
     rec = {"contract": f"{con[0]}{MONTH_CODES[con[1]]}{con[2] % 100:02d}",
            "label": f"{MONTH_ABBR[con[1]]} '{con[2] % 100:02d}", "n": st["n"],
+           **({"companies": st["companies"]} if "companies" in st else {}),
            "outliers": len(st.get("outliers") or [])}
     if "median" in st:
         rec.update({"median": round(st["median"], 4), "lo": st["lo"], "hi": st["hi"]})
@@ -231,6 +304,22 @@ def selftest():
     so = relative_outlier(1.40, nb[:3], state_median=-0.63)
     assert so and so["via"] == "state" and abs(so["dist"] - 2.03) < 1e-9
     assert relative_outlier(0.10, nb[:3], state_median=-0.63) is None
+    # companies: one name, one site or one parent brand is one company; never a shared host
+    def cr(op, site=""):
+        return {"operator": op, "site": site}
+    assert companies_behind([cr("AgMark LLC."), cr("AgMark LLC.", "https://www.agmarkllc.com/"),
+                             cr("AgMark LLC.", "https://agmarkresp.agricharts.com/")]) == 1
+    assert companies_behind([cr("Farmers Elevator & Exchange"), cr("Farmers Elevator & Exchange, Inc.")]) == 1
+    assert companies_behind([cr("Farmers Cooperative", "https://farmersco-operative.agricharts.com/"),
+                             cr("Farmers Cooperative Dorchester", "https://farmersco-operative.agricharts.com")]) == 1, \
+        "one co-op's two names on one site is one company"
+    assert companies_behind([cr("CHS Herman", "https://www.chs-herman.com/"), cr("CHS Brandon (South Dakota/Minnesota)",
+                             "https://www.chsbrandon.com/"), cr("Chester Grain")]) == 2, "CHS units are CHS; Chester is not"
+    assert companies_behind([cr("Ag Co A", "https://www.facebook.com/a"), cr("Ag Co B", "https://facebook.com/b"),
+                             cr("Ag Co C", "")]) == 3, "a shared host or no site joins nothing"
+    assert companies_behind([cr(""), cr("")]) == 2, "a board with no name is its own company, never joined by blank"
+    assert companies_behind([]) == 0
+    assert "companies" in h and h["companies"] == 9 and headline_json(h)["companies"] == 9
     print("basis_method selftest OK")
 
 

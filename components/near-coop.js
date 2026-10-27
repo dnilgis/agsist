@@ -7,6 +7,7 @@
    missing number stays missing. Tests: test/near-coop.test.mjs. */
 (function (root) {
   'use strict';
+  function locCo(n,m){return typeof m!=='number'?n+' elevator'+(n===1?'':'s'):n+' location'+(n===1?'':'s')+', '+m+' compan'+(m===1?'y':'ies');}
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' };
   var DAY = 864e5, FAR_MI = 150;
@@ -93,7 +94,7 @@
     for (var k in qs) if (qs[k] && qs[k].ticker === t && typeof qs[k].close === 'number') { q = qs[k]; break; }
     if (!q || !isDay(q.close_date) || Math.abs(age(q.close_date + 'T12:00:00Z', Date.parse(bs.generated))) > 5) return null;
     var cash = Math.round(Math.round((q.close + b.median * 100) * 1e6) / 1e6) / 100;
-    return { cash: cash, close: q.close, closeDate: q.close_date, basis: b.median, label: b.label || b.contract, n: b.n, name: s.name || stName(st), asOf: bs.generated, path: s.path || '' };
+    return { cash: cash, close: q.close, closeDate: q.close_date, basis: b.median, label: b.label || b.contract, n: b.n, companies: b.companies, name: s.name || stName(st), asOf: bs.generated, path: s.path || '' };
   }
   function basisWords(m) { var c = Math.round(m * 1e4) / 100; return Math.abs(c) < 0.125 ? 'even' : qc(c) + '¢ ' + (c < 0 ? 'under' : 'over'); }
   function cornWords(sc) {
@@ -148,7 +149,7 @@
       var r = n.lb / sc.cash, rf = n.lb / (sc.close / 100);
       out.push('<b>N:corn at ' + esc(sc.name) + ' basis: ' + r.toFixed(3) + '</b>. ' + esc(n.name) + (n.region ? ' (' + esc(n.region) + ' co-ops, middle)' : '') + ' at ' + usd(n.price) + ' a ton is ' + usd2(n.lb) + ' a lb of N. ' +
         cornWords(sc) + ' is about ' + usd2(sc.cash) + ' cash. On futures alone the ratio is ' + rf.toFixed(3) + '; basis makes N ' + (r > rf ? 'dearer' : 'cheaper') + ' against your corn.');
-      src.push('N: ' + esc(n.label) + '. Basis: median of ' + sc.n + ' AGSIST network elevators in ' + esc(sc.name) + ', bids as of ' + ct(sc.asOf) + '.');
+      src.push('N: ' + esc(n.label) + '. Basis: median of ' + locCo(sc.n, sc.companies).replace(/^\d+ /, '$&AGSIST network ') + ' in ' + esc(sc.name) + ', bids as of ' + ct(sc.asOf) + '.');
     }
     if (list.length) src.unshift('Co-op prices as each co-op posted them. Call to confirm.');
     src.push(milesNote(list));
@@ -163,7 +164,7 @@
     var v = stover && pr ? NR.value({ p: stover.p, k: stover.k, n: null }, pr) : null;
     if (sc && v && v.pk != null) {
       out.push('<b>A dry ton of stalks is about ' + (v.pk / sc.cash).toFixed(1) + ' bushels of your corn.</b> Putting its P and K back costs ' + usd2(v.pk) + ' at the co-op prices this page uses; ' + cornWords(sc) + ' is about ' + usd2(sc.cash) + ' cash.');
-      src.push('Basis: median of ' + sc.n + ' AGSIST network elevators in ' + esc(sc.name) + ', bids as of ' + ct(sc.asOf) + '.');
+      src.push('Basis: median of ' + locCo(sc.n, sc.companies).replace(/^\d+ /, '$&AGSIST network ') + ' in ' + esc(sc.name) + ', bids as of ' + ct(sc.asOf) + '.');
     }
     var list = coops(o.coops, o.places, loc).filter(function (c) { return rowOf(c, 'potash'); });
     var inSt = list.filter(function (c) { return c.state === loc.state; }), c = inSt[0] || list[0];

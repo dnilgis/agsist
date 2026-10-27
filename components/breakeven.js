@@ -37,7 +37,7 @@
   function day(iso) { var m = /^(\d{4})-(\d\d)-(\d\d)/.exec(iso || ''); return m ? MON[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : ''; }
   function money(v) { return '$' + (Math.abs(v) % 1 ? Math.abs(v).toFixed(2) : Math.round(Math.abs(v)).toLocaleString('en-US')); }
 
-  var MORE_JS = '/components/breakeven-more.js?v=2', _hadSaved = false;
+  var MORE_JS = '/components/breakeven-more.js?v=3', _hadSaved = false;
   var _livePrices = null, _pricesFetched = null, _beYear = '0', _yearPicked = false, _suppressSeed = false, _region = 'n';
   var SRC = {};          /* field id -> {k: kind, t: text} */
   var _ls = null; try { _ls = W.localStorage; } catch (e) { _ls = null; }

@@ -11,6 +11,8 @@
    too few elevators on one futures month is outlined and left empty, never filled in. */
 (function (root) {
   'use strict';
+  /* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
+  function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
 
   /* Cents bands. Gray is within 10 cents of futures either way. */
   var BANDS = [
@@ -111,7 +113,7 @@
         op = b.op; cls += ' bm-has';
       }
       var tip = has
-        ? (v.name + ': ' + cents(cv) + ' vs ' + c.label + ', n = ' + c.n + ' elevator' + (c.n === 1 ? '' : 's'))
+        ? (v.name + ': ' + cents(cv) + ' vs ' + c.label + ', ' + locCo(c.n, c.companies))
         : (v ? v.name + ': too few elevators on one futures month for a middle number' : p.st + ': no elevators in the network');
       var a = has && v.path ? '<a href="' + esc(v.path) + '" class="bm-a" data-tip="' + esc(tip) + '" aria-label="' + esc(tip) + '">' : '';
       s.push(a + '<path class="' + cls + '" d="' + p.d + '" style="fill:' + fill + ';fill-opacity:' + op + '"'
@@ -126,7 +128,7 @@
     host.innerHTML = s.join('') + legend
       + '<p class="bm-tip" id="bm-tip" aria-live="polite">Tap or point at a state. Each state is against the futures month most of its elevators name; the table below says which.</p>'
       + '<p class="bm-foot">AGSIST network elevators, snapshot of ' + esc(String(doc.generated || '').slice(0, 10))
-      + '. Middle bid (median), n = elevators. Not every elevator in the state.</p>';
+      + '. Middle bid (median), with how many locations and companies it rests on. Not every elevator in the state.</p>';
     var tipEl = host.querySelector('#bm-tip');
     function show(e) {
       var t = e.target && e.target.closest && e.target.closest('[data-tip]');

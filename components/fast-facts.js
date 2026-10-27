@@ -4,6 +4,8 @@
    components/manure-value.js, shared with /manure-value. */
 (function(){
 'use strict';
+/* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
+function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
 
 /* ─── TAB SYSTEM ─────────────────────────────────────────────────────── */
 var tabs=document.querySelectorAll('.ff-tab');
@@ -278,7 +280,7 @@ function loadBasis(){
     codes.sort(function(a,b){return d.states[a].name<d.states[b].name?-1:1;});
     codes.forEach(function(c){
       var st=d.states[c], cr=st.crops.corn;
-      BASIS[c]={name:st.name, median:cr.median, n:cr.n, label:cr.label};
+      BASIS[c]={name:st.name, median:cr.median, n:cr.n, companies:cr.companies, label:cr.label};
       var o=document.createElement('option');o.value=c;o.textContent=st.name;sel.appendChild(o);
     });
     var pick=savedState();
@@ -439,7 +441,7 @@ function calcNC(){
   if(cornTyped)src.push('corn price: yours');
   else if(CORN.fut!=null){
     var cl=(CORN.label==='nearby'?'nearby':CORN.label)+' corn futures $'+CORN.fut.toFixed(2)+(CORN.date?', CBOT close '+fmtDay(CORN.date):'')+', delayed';
-    if(b)cl+=(b.median<0?' less ':' plus ')+'$'+Math.abs(b.median).toFixed(2)+', the median '+b.name+' corn basis this week ('+b.n+' elevators, against '+b.label+')';
+    if(b)cl+=(b.median<0?' less ':' plus ')+'$'+Math.abs(b.median).toFixed(2)+', the median '+b.name+' corn basis this week ('+locCo(b.n,b.companies)+', against '+b.label+')';
     src.push(cl);
   }
   t('ans-src',src.join(' · '));

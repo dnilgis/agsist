@@ -14,6 +14,7 @@
    Tests: test/your-area.test.mjs. */
 (function (root) {
   'use strict';
+  function locCo(n,m){return m==null?n+' elevator'+(n==1?'':'s'):n+' location'+(n==1?'':'s')+', '+m+' compan'+(m==1?'y':'ies');}
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' };
   var CROPS = [['corn', 'Corn'], ['soybeans', 'Soybeans']];
@@ -94,7 +95,7 @@
         crops[c[0]] = b;
         var s = '<b>' + c[1] + '</b> basis ' + basisWords(b.median) + ' ' + esc(b.label || b.contract);
         var w = wowWords(b.wow);
-        s += (w ? ', ' + w : '') + ' (' + b.n + ' elevator' + (b.n === 1 ? '' : 's') + ').';
+        s += (w ? ', ' + w : '') + ' (' + locCo(b.n, b.companies) + ').';
         var q = quoteFor(o.prices, b.contract);
         /* Only an exchange settle is called settled (2026-10-17: this line said
            "Nov '26 closed $12.60½" for a 1:46 p.m. trade; CBOT settled $12.61¼).

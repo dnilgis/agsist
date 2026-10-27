@@ -1,6 +1,8 @@
 /* components/ys-tariffs.js: /tariffs lines of the "Your area" box (components/your-state.js). */
 (function (Y) {
   'use strict';
+  /* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
+  function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   var h = Y.h;
   /* cents to a board's quarter: 56.5 -> "56½" (as components/your-area.js prints it) */
   function qc(c) {
@@ -19,7 +21,7 @@
       if (b && typeof b.median === 'number' && isFinite(b.median)) {
         var cc = Math.round(b.median * 1e6) / 1e4;
         s += (s ? ' ' : '') + 'Basis ' + (Math.abs(cc) < 0.125 ? 'even with' : qc(cc) + '¢ ' + (cc < 0 ? 'under' : 'over')) + ' ' + h.esc(b.label || b.contract) +
-          (typeof b.wow === 'number' ? ', ' + (b.wow ? qc(b.wow) + '¢ ' + (b.wow > 0 ? 'stronger' : 'weaker') : 'unchanged') + ' on the week' : '') + ' (' + b.n + ' elevator' + (b.n === 1 ? '' : 's') + ').';
+          (typeof b.wow === 'number' ? ', ' + (b.wow ? qc(b.wow) + '¢ ' + (b.wow > 0 ? 'stronger' : 'weaker') : 'unchanged') + ' on the week' : '') + ' (' + locCo(b.n, b.companies) + ').';
         based = true;
       }
       if (s) out.push('<b>' + c[2] + '</b>: ' + s);

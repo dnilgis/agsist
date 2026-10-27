@@ -100,6 +100,12 @@
      "page": "/gifts-for-farmers",
      "name": "No ads on the gift guide",
      "text": "The gift guide no longer shows the Advertise links, the same as the Rain Print pages."
+    },
+    {
+     "tag": "improved",
+     "page": "/basis",
+     "name": "State basis shows how many companies stand behind it",
+     "text": "Each state's middle basis now says how many locations and how many companies it rests on, for example Kansas corn at 203 locations, 23 companies. One company with many locations can pull the middle more than a single buyer would."
     }
    ]
   },

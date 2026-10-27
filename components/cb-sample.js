@@ -41,12 +41,12 @@
         asOf = c.asOf;
         var main = c.cash != null ? '$' + c.cash.toFixed(2) : c.basis;
         return '<td class="cbs-n"><b>' + esc(main) + '</b><span class="cbs-m">' + (c.cash != null ? esc(c.basis) + ' ' : '') +
-          esc(c.fut + c.label) + ' &middot; ' + c.n + ' elev.</span></td>';
+          esc(c.fut + c.label) + '<br><span style="white-space:nowrap">' + c.n + ' loc.' + (typeof c.companies === 'number' ? ', ' + c.companies + ' co.' : '') + '</span></span></td>';
       }).join('');
       rows += '<tr><th scope="row"><a href="' + esc(bs.states[st].path || '/cash-bids') + '">' + esc(bs.states[st].name) + '</a></th>' + tds + '</tr>';
     });
     return '<h3 class="cbs-h">Today&rsquo;s middle bid, before you type a ZIP</h3>' +
-      '<p class="cbs-f">The middle bid at elevators in each state. &ldquo;Under&rdquo; means that many cents a bushel below the futures month named; that gap is the basis. &ldquo;Elev.&rdquo; is how many elevators were counted.</p>' +
+      '<p class="cbs-f">The middle bid at elevators in each state. &ldquo;Under&rdquo; means that many cents a bushel below the futures month named; that gap is the basis. &ldquo;Loc.&rdquo; is how many locations were counted, &ldquo;co.&rdquo; how many companies run them.</p>' +
       '<table class="cbs-t"><thead><tr><th scope="col">State</th><th scope="col">Corn</th><th scope="col">Soybeans</th></tr></thead><tbody>' + rows + '</tbody></table>' +
       '<p class="cbs-f">About: ' + (on ? 'futures at ' + esc(on) + ' plus ' : '') + 'each state&rsquo;s median basis at AGSIST network elevators' +
       (asOf ? ', ' + esc(asOf) : '') + '. The five states with the most elevators. Your ZIP gives the real bids near you.</p>';
@@ -68,7 +68,7 @@
     if (root.AgPxStamp && root.AgPxStamp.cell) return Promise.resolve(root.AgPxStamp);
     return new Promise(function (ok) {
       var s = doc.createElement('script');
-      s.src = '/components/price-local.js?v=3';
+      s.src = '/components/price-local.js?v=8';
       s.onload = function () { ok(root.AgPxStamp || null); };
       s.onerror = function () { ok(null); };
       doc.head.appendChild(s);

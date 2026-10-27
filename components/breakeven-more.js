@@ -13,6 +13,8 @@
    Tests: test/breakeven-h2h.test.mjs, test/breakeven-best.test.mjs. */
 (function () {
   'use strict';
+  /* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
+  function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   var W = window, D = document, B = W.AgBE;
   if (!B || W.AgBECounty) return;
   var $ = B.$, esc = B.esc, money = B.money, day = B.day, crop = B.crop, cropYear = B.cropYear, setSrc = B.setSrc, lsGet = B.lsGet, lsSet = B.lsSet;
@@ -57,7 +59,7 @@
     if (!isFinite(gen) || Date.now() - gen > MAXAGE) return { why: 'the state basis file is out of date' };
     if (!con) return { wait: true };
     if (e.contract !== con) return { why: name + '&rsquo;s elevators price ' + cr + ' against ' + esc(e.label) + ', not the contract picked, so there is no matching basis' };
-    return { v: e.median, t: name + ' median ' + cr + ' basis, ' + e.n + ' elevators, ' + esc(e.label) + ' delivery, as of ' + day(new Date(gen).toISOString().slice(0, 10)) };
+    return { v: e.median, t: name + ' median ' + cr + ' basis, ' + locCo(e.n, e.companies) + ', ' + esc(e.label) + ' delivery, as of ' + day(new Date(gen).toISOString().slice(0, 10)) };
   }
   function basisFill() {
     return basisData().then(function () {

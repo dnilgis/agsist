@@ -89,7 +89,7 @@ test("versions: signup-ask.js v12 where it loads (Oct 21), home.js v15", () => {
   assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=19';"));
   const idx = read("index.html");
   assert.ok(idx.includes('<script src="/components/signup-ask.js?v=19"></script>'));
-  assert.ok(idx.includes('<script src="/components/home.js?v=16"></script>'));
+  assert.ok(idx.includes('<script src="/components/home.js?v=17"></script>'));
   assert.ok(read("privacy.html").includes("for one year, so the signup prompts stop until then."));
 });
 
