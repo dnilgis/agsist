@@ -67,6 +67,7 @@ Sends individually (one To: per message — no exposed CC lists, better
 deliverability), throttled, with a List-Unsubscribe header. Individual
 failures are reported and tolerated; total failure exits nonzero.
 """
+import hashlib
 import json
 import os
 import smtplib
@@ -75,7 +76,7 @@ import urllib.request
 import urllib.parse
 import sys
 import time
-from datetime import date
+from datetime import date, timedelta
 from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 from pathlib import Path
@@ -459,6 +460,79 @@ def load_rain_lines(subs, how, bids_data=None):
 COUNTY_LINES = {}
 COUNTY_WEEKDAY = 3   # Thursday, the Drought Monitor's release day
 
+# THE HOLDOUT (Oct 27 2026; growth seat 9's keep or cut rule: after 4 Thursdays keep the block if
+# its tagged clicks beat the Daily's other sections and holdout-vs-block 14-day return favors the
+# block; cut it by 8 Thursdays if not). One reader in five who ticked it (CW_HOLDOUT_PCT) does not
+# get the block on the first 8 Thursdays (Oct 29 to Dec 17 2026); from Dec 24 everyone who ticked
+# it does. The arm is a hash of the address with a fixed salt: the same every run with nothing
+# stored, and never logged or written anywhere (counts only). During the test, plus 14 days for the
+# last Thursday's return window, every agsist.com link in a ticked reader's Daily carries
+# utm_term=cw-block or cw-hold (the arm, never the reader), so GA4 can count each arm's return
+# visits from the Daily. COUNTY_GROUP is address -> arm, filled once by main().
+CW_HOLDOUT_FIRST = date(2026, 10, 29)
+CW_HOLDOUT_THURSDAYS = 8
+CW_HOLDOUT_PCT = 20
+CW_HOLDOUT_SALT = "agsist county week holdout v1|"
+CW_RETURN_DAYS = 14
+COUNTY_GROUP = {}
+# Address -> {"url", "on"}: the reader's signed footer link to turn the block on (or off), filled
+# once by main() for every reader on a JSON list (subs worker v5.57 /daily-cw).
+COUNTY_ASK = {}
+
+
+def cw_holdout(email):
+    """True when this address is in the holdout arm (about CW_HOLDOUT_PCT in 100)."""
+    h = hashlib.sha256((CW_HOLDOUT_SALT + str(email).strip().lower()).encode("utf-8")).digest()
+    return int.from_bytes(h[:4], "big") % 100 < CW_HOLDOUT_PCT
+
+
+def _day(day):
+    try:
+        return date.fromisoformat(str(day)[:10])
+    except ValueError:
+        return None
+
+
+def cw_holdout_on(day):
+    """True on the days the holdout readers go without the block: the first 8 Thursdays."""
+    d = _day(day)
+    return d is not None and CW_HOLDOUT_FIRST <= d < CW_HOLDOUT_FIRST + timedelta(weeks=CW_HOLDOUT_THURSDAYS)
+
+
+def cw_group(email, day):
+    """"cw-hold" or "cw-block" for a reader who ticked the block, from the first holdout Thursday
+    to 14 days after the last one; None outside that window."""
+    d = _day(day)
+    last = CW_HOLDOUT_FIRST + timedelta(weeks=CW_HOLDOUT_THURSDAYS - 1)
+    if d is None or not (CW_HOLDOUT_FIRST <= d <= last + timedelta(days=CW_RETURN_DAYS)):
+        return None
+    return "cw-hold" if cw_holdout(email) else "cw-block"
+
+
+def county_ask_url(email):
+    """The reader's signed link to turn the block on or off (subs worker v5.57 /daily-cw):
+    k=<link id>, t = HMAC of the id + "|cw", the way /daily-elev is signed. None without
+    LIST_URL, UNSUB_SECRET or a link id."""
+    base, secret = (os.environ.get("LIST_URL") or "").strip(), (os.environ.get("UNSUB_SECRET") or "").strip()
+    lid = LINK_IDS.get(str(email).strip().lower())
+    if not (base and secret and lid):
+        return None
+    return email_links.signed(base, "daily-cw", lid, secret, "|cw")
+
+
+def load_county_ask(subs, how):
+    """Address -> {"url", "on"} for every reader on a JSON list (an older list does not say who
+    ticked it, so it gets no link). The box is never pre-ticked: the link only opens a page that
+    asks."""
+    out = {}
+    if how != "json":
+        return out
+    for r in subs:
+        u = county_ask_url(r["email"])
+        if u:
+            out[str(r["email"]).strip().lower()] = {"url": u, "on": r.get("cw") is True}
+    return out
+
 
 def county_week_day(day):
     """True when the issue's day is a Thursday (COUNTY_WEEK=0 turns it off)."""
@@ -470,11 +544,21 @@ def county_week_day(day):
         return False
 
 
+def cw_arm_line(c, day):
+    """The holdout counts for the log the morning report reads (counts only)."""
+    on = cw_holdout_on(day)
+    return ("your county this week arms: %d ticked, %d in the block arm, %d in the holdout arm (%d%%, %s); "
+            "%d got a block, %d held out who would have had one"
+            % (c["ticked"], c["ticked"] - c["arm_hold"], c["arm_hold"], CW_HOLDOUT_PCT,
+               "holding out today" if on else "not holding out today", c["block"], c["held_out"]))
+
+
 def load_county_week(subs, how, day, bids_data=None, runner=None):
     """(address -> {county, st, url, block}, counts). runner(input dict) -> output
     dict replaces the node call in tests."""
     import re
-    counts = {"ticked": 0, "ticked_no_zip": 0, "zips": 0, "block": 0, "no_change": 0, "not_placed": 0}
+    counts = {"ticked": 0, "ticked_no_zip": 0, "zips": 0, "block": 0, "no_change": 0, "not_placed": 0,
+              "arm_hold": 0, "held_out": 0}
     if how != "json" or not county_week_day(day):
         return {}, counts
     want = {}
@@ -482,6 +566,8 @@ def load_county_week(subs, how, day, bids_data=None, runner=None):
         if r.get("cw") is not True:
             continue
         counts["ticked"] += 1
+        if cw_holdout(r["email"]):
+            counts["arm_hold"] += 1
         z = str(r.get("zip") or "").strip()[:5]
         if not re.match(r"^\d{5}$", z):
             counts["ticked_no_zip"] += 1
@@ -524,9 +610,13 @@ def load_county_week(subs, how, day, bids_data=None, runner=None):
             counts["no_change"] += len(want[z])
             continue
         blk = {"county": r.get("county"), "st": r.get("st"), "url": r.get("url"), "block": r["block"]}
+        hold = cw_holdout_on(day)
         for em in want[z]:
+            if hold and cw_holdout(em):
+                counts["held_out"] += 1      # would have had a block; the holdout goes without
+                continue
             out[em] = blk
-        counts["block"] += len(want[z])
+            counts["block"] += 1
     return out, counts
 
 
@@ -569,11 +659,12 @@ def v2_setup(b):
         print("daily fact skipped (" + type(ex).__name__ + ")")
 
 
-def v2_parts(b, to_addr, uurl, mine, loc, rain, county=None):
+def v2_parts(b, to_addr, uurl, mine, loc, rain, county=None, county_ask=None, group=None):
     import daily_v2
     v2_setup(b)
     return daily_v2.build(b, issue_url(b), unsub_url=uurl, elevators=mine, local=loc, forward_url=FORWARD_URL,
-                          rain=rain, pod=V2["pod"], fact=V2["fact"], today=date.today(), county=county)
+                          rain=rain, pod=V2["pod"], fact=V2["fact"], today=date.today(), county=county,
+                          county_ask=county_ask, group=group)
 
 
 def v2_hold_alert(day, built, bad):
@@ -638,7 +729,7 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     if daily_format() == "v2":
         k = str(to_addr).strip().lower()
         v2 = v2_parts(b, to_addr, uurl, ELEVATOR_LINES.get(k) or None, LOCAL_LINES.get(k) or None, RAIN_LINES.get(k) or None,
-                      COUNTY_LINES.get(k) or None)
+                      COUNTY_LINES.get(k) or None, COUNTY_ASK.get(k) or None, COUNTY_GROUP.get(k))
         subject = v2["subject"]
     else:
         prior, _prior_day = brief_email.prior_board(b)
@@ -741,8 +832,15 @@ def main():
             print("your county this week: %d ticked (%d with no ZIP), %d ZIP(s) read once each, %d reader(s) get a block, "
                   "%d with no change (no block), %d not placed" % (_cwc["ticked"], _cwc["ticked_no_zip"], _cwc["zips"],
                                                                    _cwc["block"], _cwc["no_change"], _cwc["not_placed"]))
+            print(cw_arm_line(_cwc, day))
     except Exception as ex:
         print("your county this week skipped (" + type(ex).__name__ + ")")
+    try:
+        COUNTY_ASK.update(load_county_ask(subs, how))
+        COUNTY_GROUP.update({str(r["email"]).strip().lower(): g for r in subs if r.get("cw") is True
+                             for g in [cw_group(r["email"], day)] if g})
+    except Exception as ex:
+        print("your county this week link skipped (" + type(ex).__name__ + ")")
     gmail_limit.check(len(recipients), sum(1 for r in subs if r.get("reports") is not False),
                       date.fromisoformat(day), dry=dry)
 
