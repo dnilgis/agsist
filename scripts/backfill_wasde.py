@@ -337,7 +337,7 @@ def selftest():
     with open(os.path.join(FIX, "data-2026-10.csv"), encoding="utf-8") as f:
         rows, stats = extract(f.read(), "t")
     ck("only U.S. corn, soybeans and wheat kept", rows and all(r[6] == "United States" for r in rows)
-       and {r[5] for r in rows} <= {"Corn", "Soybeans", "Wheat"} and stats["rows_read"] > len(rows), (stats, {r[5] for r in rows}))
+       and {r[5] for r in rows} == {"Corn", "Soybeans", "Wheat", "All Wheat"} and stats["rows_read"] > len(rows), (stats, {r[5] for r in rows}))
 
     with tempfile.TemporaryDirectory() as d:
         opener, calls = fixture_opener()
