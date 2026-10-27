@@ -59,14 +59,14 @@
    "kb":89.9
   },
   "KS":{
-   "rows":8011,
+   "rows":8010,
    "facilities":438,
-   "kb":348.2
+   "kb":348.1
   },
   "KY":{
-   "rows":100,
+   "rows":101,
    "facilities":9,
-   "kb":5.0
+   "kb":5.1
   },
   "LA":{
    "rows":5,
@@ -114,12 +114,12 @@
    "kb":0.7
   },
   "OH":{
-   "rows":5184,
+   "rows":5185,
    "facilities":199,
    "kb":221.9
   },
   "OK":{
-   "rows":3034,
+   "rows":3035,
    "facilities":94,
    "kb":130.4
   },
@@ -171,7 +171,7 @@
   "WI":{
    "rows":3377,
    "facilities":179,
-   "kb":150.3
+   "kb":149.2
   },
   "WY":{
    "rows":63,
