@@ -277,6 +277,7 @@
     "Fetch Grain Bids"
    ],
    "touched_by": [
+    "Bid change ledger (dispatch only)",
     "Fetch Grain Bids",
     "Morning report",
     "Tools hub dates"
@@ -786,7 +787,9 @@
    "touched_by": [
     "Accuracy pass",
     "API jobs (one-time)",
+    "Bid change ledger (dispatch only)",
     "cash-bid-pages",
+    "Morning report",
     "Rebuild Feed Manifest"
    ],
    "cadence": "published by dnilgis/bids, rebuilt with the elevator roster",
@@ -1218,6 +1221,8 @@
    ],
    "written_by": [],
    "touched_by": [
+    "Bid change ledger (dispatch only)",
+    "Morning report",
     "Rebuild Feed Manifest"
    ],
    "cadence": "published by dnilgis/bids, every reader pass",

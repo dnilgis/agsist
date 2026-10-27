@@ -684,7 +684,8 @@ def compare(ledger, basis_dir, since, until, key_ids=None):
     key_ids = basis_key_ids() if key_ids is None else key_ids
     pad_since = (dt.date.fromisoformat(since) - dt.timedelta(days=3)).isoformat()
     pad_until = (dt.date.fromisoformat(until) + dt.timedelta(days=1)).isoformat()
-    lr = [r for r in ledger_rows(ledger, pad_since, pad_until) if r["kind"] == "basis"]
+    # basis and futures rows both date a basis move; the basis log does not tell them apart
+    lr = [r for r in ledger_rows(ledger, pad_since, pad_until) if r["kind"] in ("basis", "futures")]
     boards_seen = {r["elevId"] for r in ledger_rows(ledger, pad_since, pad_until) if r["elevId"]}
     idx = {}
     for r in lr:
@@ -726,7 +727,7 @@ def compare(ledger, basis_dir, since, until, key_ids=None):
 def spread(ledger, basis_dir, day, since, key_ids=None):
     """The basis log's catch-up day: on which days did the ledger see those same moves happen?"""
     key_ids = basis_key_ids() if key_ids is None else key_ids
-    lr = [r for r in ledger_rows(ledger, since, day) if r["kind"] == "basis" and r["elevId"]]
+    lr = [r for r in ledger_rows(ledger, since, day) if r["kind"] in ("basis", "futures") and r["elevId"]]
     boards_seen = {r["elevId"] for r in ledger_rows(ledger, since, day) if r["elevId"]}
     by = {}
     for r in lr:
