@@ -28,7 +28,15 @@ test("python selftest: pointer helper", () => {
 
 test("the backfill is there: dropped cash-bids, rain and ARC/PLC pages and /elevator-websites", () => {
   const n = (pre) => Object.keys(manifest).filter((k) => k.startsWith(pre)).length;
-  assert.ok(n("cash-bids/") >= 42, `cash-bids pointers ${n("cash-bids/")}`);
+  /* The 45 cash-bids pointers of Oct 26: each address must still answer, as a
+     pointer or as its live town page again (Frontier's boards came back Oct 27
+     and 32 Nebraska towns returned as real pages). A count floor broke on good news. */
+  const cbBackfill = JSON.parse(fs.readFileSync(path.join(ROOT, "test/fixtures/pointers/cash-bids-backfill-2026-10-26.json"), "utf8"));
+  assert.equal(cbBackfill.length, 45);
+  for (const rel of cbBackfill) {
+    assert.ok(manifest[rel] || fs.existsSync(path.join(ROOT, rel)), `${rel}: neither a pointer nor a live page`);
+    if (!manifest[rel]) assert.ok(!fs.readFileSync(path.join(ROOT, rel), "utf8").includes('content="noindex, follow"'), `${rel}: live again, so not a pointer`);
+  }
   assert.ok(n("rain/") >= 39, `rain pointers ${n("rain/")}`);
   assert.ok(n("arc-plc/connecticut") >= 9, `arc-plc pointers ${n("arc-plc/connecticut")}`);
   assert.equal(manifest["elevator-websites.html"]?.to, "/cash-bids");

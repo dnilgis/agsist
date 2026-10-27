@@ -54,6 +54,9 @@ const newWords = (h, ly) => h
   .replace(/No typical-farm answer: FSA&rsquo;s county average PLC yield is above this benchmark yield\. Run your own PLC yield\./g,
     "No one typical farm: FSA&rsquo;s county average PLC yield is above this benchmark yield. Across PLC yields of 60% to 100% of the benchmark: depends on your PLC yield. Run your own PLC yield in the calculator below.")
   .replace(/Ask FSA/g, "Depends on your PLC yield")
+  // fx/trust (Oct 27, 2026): a firm call names the program expected to pay more, on the stated assumptions
+  .replace(/Pick (PLC|ARC-CO) \(/g, "$1 expected to pay more on these assumptions (")
+  .replace(/Pick (PLC|ARC-CO)/g, "$1 expected to pay more")
   .replace(/County PLC yield is above the benchmark\./g, "County PLC yield is above the benchmark, so we ran 60% to 100% of it.");
 
 test("the fixtures cover what they must: 50+ counties, 20+ states, every kind of answer", () => {

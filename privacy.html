@@ -159,11 +159,11 @@
     <div class="legal-page">
 
       <h1>Privacy policy</h1>
-      <p class="updated">Last updated: Oct 20, 2026</p>
+      <p class="updated">Last updated: Oct 27, 2026</p>
 
       <div class="tldr">
         <strong>Summary</strong>
-        AGSIST counts visits with Google Analytics, unless your browser sends Global Privacy Control or you turn it off below. If you give me your email, it is used for what you signed up for and kept until you stop. Some features send what they need, like a ZIP code or a town, to the services named on this page. Rain Print payments go through Stripe, and I never see your card. Nothing is sold.
+        AGSIST counts visits with Google Analytics, unless your browser sends Global Privacy Control or you turn it off below. Some features send the place you ask about (your browser&rsquo;s location, a ZIP code or a town) to the outside services named on this page. If you sign up for an email, your address is stored on AGSIST&rsquo;s server with what you asked to watch (for a hail alert, the spot you pinned), used only for that, and kept until you stop. Rain Print payments go through Stripe, and I never see your card. Nothing is sold.
       </div>
 
       <h2 id="analytics">Analytics on or off</h2>
@@ -217,13 +217,15 @@
       <p>Each of these stores your email address on Cloudflare together with what you asked for, and nothing else.</p>
       <ul>
         <li><strong>AGSIST Daily</strong>: your email, the page you signed up on, and when.</li>
-        <li><strong>Price alerts</strong>: your email, the contract, above or below, and your target price. An alert fires once and is then deleted.</li>
-        <li><strong>Elevator watch</strong>: your email and the elevator you picked.</li>
+        <li><strong>Futures price alert</strong> (home page): your email, the contract, above or below, and your target price. It fires once, when the price reaches your target, and is then deleted.</li>
+        <li><strong>Elevator cash alert</strong> (Watch on an elevator, cash bids): your email, the elevator, crop, delivery and your target price. It fires once, when a new posting reaches your target, and then clears itself.</li>
+        <li><strong>Elevator basis watch</strong> (Watch on an elevator, cash bids): your email, the elevator, crop and delivery. It emails each new posting that changes the posted basis, and keeps doing so until you stop it.</li>
+        <li><strong>Nearby price crossing</strong> (ZIP Watch, cash bids): your email, your ZIP, the distance, the crop and your target price. It emails when an elevator in range posts at or above your price, then not again until every one is back below it and one crosses again, so it can repeat.</li>
         <li><strong>County watch</strong> (Farmland Atlas). Your email and the county codes you watch.</li>
-        <li><strong>Hail alerts</strong>: your email, the spot you pinned, its place name and the radius you chose.</li>
+        <li><strong>Hail alerts</strong>: your email, the spot you pinned, its place name and the radius you chose. At most one email for each day radar-estimated hail reaches your area, so it can repeat.</li>
         <li><strong>Rain gauge updates</strong> (<a href="/rain-gauge">rain gauge page</a>): your email, when, and, only if you fill them in, your ZIP and your note on what you would want the gauge to do.</li>
       </ul>
-      <p>Price alerts, elevator watches and county watches start only after you confirm from a link in an email. An unconfirmed request is not mailed again, and its link stops working after 14 days. Up to five of each per address.</p>
+      <p>An elevator alert or watch whose delivery stops being posted ends with one email saying so. Futures price alerts, elevator alerts and watches, nearby price crossings and county watches start only after you confirm from a link in an email. An unconfirmed request is not mailed again, and its link stops working after 14 days. Up to five of each per address.</p>
       <p>Everything is kept until you stop it. Every email carries an unsubscribe link: it opens a page with one button, and pressing it removes you right away. Watch and alert emails let you stop one item or all of them. Mail apps that offer a one-click unsubscribe use the same route. You can also email me and I will remove you by hand. Your browser also keeps its own list of elevators you watch (<code>agsist_watching</code>) so the page can mark them; that list never leaves your device.</p>
 
       <h2 id="rain-print">Rain Print</h2>

@@ -26,6 +26,12 @@ const WANT = [
   ["2026-10-23", "Cattle on Feed"], ["2026-11-20", "Cattle on Feed"], ["2026-12-18", "Cattle on Feed"],
   ["2026-10-23", "Cold Storage"], ["2026-11-24", "Cold Storage"], ["2026-12-23", "Cold Storage"],
   ["2026-12-23", "Quarterly Hogs and Pigs"],
+  /* Earlier 2026 releases, added 2026-10-27 from NASS's own 2026 Agricultural
+     Statistics Board Calendar (references branch copy, fetched 2026-10-16). */
+  ["2026-01-23", "Cattle on Feed"], ["2026-02-20", "Cattle on Feed"], ["2026-03-20", "Cattle on Feed"],
+  ["2026-04-17", "Cattle on Feed"], ["2026-05-22", "Cattle on Feed"], ["2026-06-18", "Cattle on Feed"],
+  ["2026-07-24", "Cattle on Feed"], ["2026-08-21", "Cattle on Feed"], ["2026-09-18", "Cattle on Feed"],
+  ["2026-03-26", "Quarterly Hogs and Pigs"], ["2026-06-25", "Quarterly Hogs and Pigs"], ["2026-09-24", "Quarterly Hogs and Pigs"],
 ];
 
 test("livestock and dairy reports carry USDA's published dates, at 3:00 PM ET", () => {

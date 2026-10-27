@@ -55,6 +55,7 @@ jobs:
             cat /tmp/budget.txt
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+          grep '^WARNING:' /tmp/budget.txt | while IFS= read -r line; do echo "::warning title=Site size budget::${line#WARNING: }"; done
           if [ "$rc" -ne 0 ]; then
             grep '^OVER:' /tmp/budget.txt | while IFS= read -r line; do echo "::error title=Site size budget::${line#OVER: }"; done
             exit 1

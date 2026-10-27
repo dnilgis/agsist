@@ -23,6 +23,19 @@ the same commit and say why in the message.
   python3 scripts/check_site_budget.py            # report, exit 1 on any fail
   python3 scripts/check_site_budget.py --json     # machine-readable report
   python3 scripts/check_site_budget.py --selftest
+  python3 scripts/check_site_budget.py --tree origin/main   # measure a commit, not the working tree
+
+How it counts: every file in the checkout (or, with --tree, every blob in that
+commit's tree) except .git, dot folders, the tooling folders in SKIP_DIRS and
+files git ignores, at its size on disk in bytes; 1 MB = 1,048,576 bytes. A sparse
+or partial checkout holds only part of the tree, so the walk would undercount
+(Oct 27: a sparse worktree read 25.9 MB of 817); there it measures HEAD's tree
+instead and says so.
+
+NOT_READER_FACING lists what Pages serves today that no reader loads (tooling,
+tests, fixtures, workflow-only data). It counts toward the total because Pages
+publishes it; the report prints it so a publish-only-the-site deploy can be
+weighed (notes/panels/godseye-2026-10-26/size-trim-plan.md in feedbag).
 """
 import json
 import os
@@ -30,6 +43,9 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# WARN_MB prints a warning (and a ::warning:: annotation in the site-budget
+# workflow) so the 900 MB stop is never a surprise; FAIL_MB fails the check.
+# Pages' own hard stop is 1024 MB.
 WARN_MB = 850
 FAIL_MB = 900
 
@@ -78,6 +94,62 @@ PAGE_EXCEPTIONS = {
 
 SKIP_DIRS = {".git", ".github", "node_modules", "__pycache__", ".claude"}
 
+# Published today but not loaded by any reader (measured Oct 27, 2026 from
+# origin/main: no page, component or worker references them). A prefix ending
+# in "/" is a folder; anything else is one file. scripts/pages_publish.py leaves
+# these out of a filtered Pages artifact.
+NOT_READER_FACING = (
+    "scripts/", "test/", "build/", "references/", "workers/",
+    "CLAUDE.md", "TODO-SIG.md", ".gitignore",
+    # workflow inputs and outputs read only by scripts/ (Oct 27 grep of every
+    # page, component and worker)
+    "data/prf-stories/", "data/atlas-stories/", "data/cash-bids-stories/",
+    "data/wasde-pdf/", "data/site-inventory.json", "data/rain-print-examples/",
+    "data/elevator-directory.json",
+)
+
+
+def reader_facing(rel):
+    """False for a path in NOT_READER_FACING (rel uses / or os.sep)."""
+    rel = rel.replace(os.sep, "/")
+    for p in NOT_READER_FACING:
+        if (p.endswith("/") and rel.startswith(p)) or rel == p:
+            return False
+    return True
+
+
+def is_sparse(root):
+    """True when root is a git checkout that holds only part of its tree."""
+    import subprocess
+    try:
+        out = subprocess.run(["git", "-C", root, "config", "--bool", "core.sparseCheckout"],
+                             capture_output=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return out.stdout.decode().strip() == "true"
+
+
+def walk_tree(root, rev):
+    """Yield (relative_path, bytes) for every blob in rev's tree that Pages would
+    publish, by the same rules as walk(). Reads git objects, so it works in a
+    sparse or blobless checkout. Raises RuntimeError when git cannot list rev."""
+    import subprocess
+    out = subprocess.run(["git", "-C", root, "ls-tree", "-r", "-l", "-z", rev],
+                         capture_output=True, timeout=300)
+    if out.returncode != 0:
+        raise RuntimeError(f"git ls-tree {rev} failed: {out.stderr.decode('utf-8', 'replace').strip()}")
+    for rec in out.stdout.decode("utf-8", "replace").split("\0"):
+        if not rec or "\t" not in rec:
+            continue
+        meta, path = rec.split("\t", 1)
+        m = meta.split()
+        if len(m) < 4 or m[1] != "blob" or m[3] == "-":
+            continue
+        parts = path.split("/")
+        if any(d in SKIP_DIRS or d.startswith(".") for d in parts[:-1]):
+            continue
+        yield os.path.normpath(path), int(m[3])
+
 
 def ignored_files(root):
     """Files git ignores in this checkout. They are never committed, so Pages never
@@ -112,12 +184,25 @@ def walk(root):
                 pass
 
 
-def measure(root=ROOT):
+def measure(root=ROOT, rev=None):
+    source = "working tree"
+    if rev is None and is_sparse(root):
+        rev = "HEAD"
+        source = "git tree HEAD (sparse checkout: the working tree holds only part of the site)"
+    elif rev is not None:
+        source = f"git tree {rev}"
+    files = walk(root) if rev is None else walk_tree(root, rev)
     total = 0
+    not_reader = 0
+    sizes = {}
     folders = {}
     html = {}
-    for rel, n in walk(root):
+    for rel, n in files:
         total += n
+        if rel.replace(os.sep, "/") in FILE_KB:
+            sizes[rel.replace(os.sep, "/")] = n
+        if not reader_facing(rel):
+            not_reader += n
         top = rel.split(os.sep, 1)[0] if os.sep in rel else "(root files)"
         folders[top] = folders.get(top, 0) + n
         if rel.endswith(".html") and top != "(root files)":
@@ -127,6 +212,7 @@ def measure(root=ROOT):
     total_mb = mb(total)
     if total > FAIL_MB * 1048576:
         over.append(f"published total {total_mb} MB is over {FAIL_MB} MB (Pages stops deploying at 1 GB)")
+    warn = total > WARN_MB * 1048576
     for top, n in folders.items():
         if top == "(root files)":
             continue
@@ -134,9 +220,9 @@ def measure(root=ROOT):
         if n > cap * 1048576:
             over.append(f"{top}/ is {mb(n)} MB, budget {cap} MB")
     for rel, cap in FILE_KB.items():
-        p = os.path.join(root, rel)
-        if os.path.exists(p) and os.path.getsize(p) > cap * 1024:
-            over.append(f"{rel} is {round(os.path.getsize(p) / 1024)} KB, cap {cap} KB")
+        n = sizes.get(rel)
+        if n is not None and n > cap * 1024:
+            over.append(f"{rel} is {round(n / 1024)} KB, cap {cap} KB")
     fat = []
     excused = []
     for top, pages in html.items():
@@ -157,7 +243,10 @@ def measure(root=ROOT):
         "total_mb": total_mb,
         "warn_mb": WARN_MB,
         "fail_mb": FAIL_MB,
-        "warn": total > WARN_MB * 1048576,
+        "warn": warn,
+        "headroom_mb": round(FAIL_MB - total / 1048576, 1),
+        "not_reader_facing_mb": mb(not_reader),
+        "source": source,
         "folders": {k: mb(v) for k, v in sorted(folders.items(), key=lambda kv: -kv[1])},
         "over": over,
         "excused": [f"{r} {kb} KB: {PAGE_EXCEPTIONS[r.replace(os.sep, '/')]}" for r, kb in excused],
@@ -198,6 +287,17 @@ def selftest():
             DEFAULT_FOLDER_MB, FAIL_MB = 25, 0
             ok(any("published total" in o for o in measure(d)["over"]), "total budget enforced")
             FAIL_MB = saved[0]
+            # the warning band: over WARN_MB warns without failing, under it is quiet
+            WARN_MB = 0
+            r = measure(d)
+            ok(r["warn"] and not any("published total" in o for o in r["over"]),
+               f"over WARN_MB warns, does not fail: {r['warn']} {r['over']}")
+            WARN_MB = 1
+            ok(not measure(d)["warn"], "under WARN_MB no warning")
+            WARN_MB = saved[1]
+            r = measure(d)
+            ok(abs(r["headroom_mb"] - (FAIL_MB - r["total_mb"])) < 0.2,
+               f"headroom is FAIL_MB minus the total: {r['headroom_mb']}")
             with open(os.path.join(d, "gen", "hist.json"), "w") as f:
                 f.write("x" * 3000)
             FILE_KB["gen/hist.json"] = 2
@@ -216,9 +316,41 @@ def selftest():
             if subprocess.run(["git", "init", "-q", d], capture_output=True).returncode == 0:
                 r = measure(d)
                 ok(r["folders"].get("data") == 1.0, f"an ignored raw file unpacked for a local build does not count: {r['folders']}")
+                # the tree of a commit measures the same as its full checkout, and a
+                # sparse checkout of it is measured from that tree, not undercounted
+                os.makedirs(os.path.join(d, "scripts"))
+                with open(os.path.join(d, "scripts", "tool.py"), "w") as f:
+                    f.write("x" * 524_288)
+                os.makedirs(os.path.join(d, ".github"))
+                with open(os.path.join(d, ".github", "w.yml"), "w") as f:
+                    f.write("x" * 2_000_000)
+                g = ["git", "-C", d, "-c", "user.name=t", "-c", "user.email=t@t"]
+                subprocess.run(g + ["add", "-A"], capture_output=True)
+                if subprocess.run(g + ["commit", "-q", "-m", "t"], capture_output=True).returncode == 0:
+                    full = measure(d)
+                    tree = measure(d, rev="HEAD")
+                    ok(tree["total_mb"] == full["total_mb"] == 1.5,
+                       f"tree and checkout agree, .github and ignored files left out: {tree['total_mb']} {full['total_mb']}")
+                    ok(tree["not_reader_facing_mb"] == 0.5, f"scripts/ counts as not reader-facing: {tree['not_reader_facing_mb']}")
+                    subprocess.run(g + ["sparse-checkout", "set", "--no-cone", "/scripts/"], capture_output=True)
+                    if is_sparse(d):
+                        sp = measure(d)
+                        ok(sp["total_mb"] == 1.5 and "sparse" in sp["source"],
+                           f"a sparse checkout is measured from its tree: {sp['total_mb']} {sp['source']}")
+                    else:
+                        fails.append("sparse checkout could not be set up in the selftest")
+                    try:
+                        measure(d, rev="no-such-rev")
+                        fails.append("a bad --tree commit must raise, not read as 0 MB")
+                    except RuntimeError:
+                        pass
     finally:
         FAIL_MB, WARN_MB, SET_PAGE_KB, SET_MIN, DEFAULT_FOLDER_MB = saved
         FILE_KB.pop("gen/hist.json", None)
+    ok(not reader_facing("scripts/x.py") and not reader_facing("CLAUDE.md")
+       and not reader_facing("data/prf-stories/a.json") and reader_facing("data/prf/a.json")
+       and reader_facing("rain/iowa/story-county.html") and reader_facing("test.html"),
+       "NOT_READER_FACING matches folders by prefix and files exactly")
     for f in fails:
         print("FAIL", f)
     print("site budget selftest:", "ok" if not fails else f"{len(fails)} failure(s)")
@@ -228,15 +360,27 @@ def selftest():
 def main(argv):
     if "--selftest" in argv:
         return selftest()
-    r = measure()
+    rev = None
+    if "--tree" in argv:
+        i = argv.index("--tree")
+        if i + 1 >= len(argv):
+            print("--tree needs a commit, e.g. --tree origin/main")
+            return 2
+        rev = argv[i + 1]
+    try:
+        r = measure(rev=rev)
+    except RuntimeError as e:
+        print("FAIL:", e)
+        return 2
     if "--json" in argv:
         print(json.dumps(r, indent=2))
         return 1 if r["over"] else 0
-    print(f"published size {r['total_mb']} MB (warn {WARN_MB}, fail {FAIL_MB}, Pages limit 1024)")
+    print(f"published size {r['total_mb']} MB (warn {WARN_MB}, fail {FAIL_MB}, Pages limit 1024), measured from the {r['source']}")
     for k, v in list(r["folders"].items())[:8]:
         print(f"  {k:20s}{v:8.1f} MB")
+    print(f"not loaded by readers (NOT_READER_FACING): {r['not_reader_facing_mb']} MB; headroom to the {FAIL_MB} MB stop: {r['headroom_mb']} MB")
     if r["warn"] and not r["over"]:
-        print(f"WARNING: over {WARN_MB} MB")
+        print(f"WARNING: published size {r['total_mb']} MB is over {WARN_MB} MB; the check fails at {FAIL_MB} MB ({r['headroom_mb']} MB left)")
     for e in r["excused"]:
         print("EXCUSED (fix and remove from PAGE_EXCEPTIONS):", e)
     for o in r["over"]:

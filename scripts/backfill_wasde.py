@@ -415,7 +415,7 @@ def run_esmis(fetcher, out, budget, log=print, max_pages=200, pages=None):
 # The TXT is read where there is one; else the PDF's text (pdftotext -layout), the same tables.
 # XLS needs a library this stdlib job does not carry and the XML layout is not on file yet, so they
 # are listed in the index and left for a reader built from a saved copy.
-READER = 1                                      # bump when read_wasde_text.py reads differently: every report is read again
+READER = 2                                      # bump when read_wasde_text.py reads differently: every report is read again
 
 
 def pick_file(urls):

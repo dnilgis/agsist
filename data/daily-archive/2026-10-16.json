@@ -17,7 +17,7 @@
     },
     {
       "title": "Cattle firm, feeders hold",
-      "body": "- Live cattle gained 0.7% to **$227.52** on cash hopes, while feeders eked out a 0.2% gain to $343.98.\n- Packing plant closures are leaving some feeders with fewer places to sell, even as the board holds up.\n- Hogs sat flat at $75.55, no fresh news to move them either way.",
+      "body": "- Live cattle gained 0.7% to **$227.52** on cash hopes, while feeders eked out a 0.2% gain to $343.98.\n- Packing plant closures are leaving some feeders with fewer places to sell, even as the board holds up.\n- December hogs, the front month since the October contract expired Oct 14, settled at $66.925 on Oct 16, up 35 cents. (Corrected Oct 27, see the note below.)",
       "so_what": "Cattle demand is steady, but where to sell is getting harder for some feeders.",
       "conviction_level": "low",
       "overnight_surprise": false
@@ -370,6 +370,10 @@
     {
       "date": "2026-10-17",
       "text": "The hog price in this issue, $75.55, was the October contract, which expired Oct 14. December lean hogs settled at $66.925 on Oct 16, up 35 cents. Other prices here were afternoon trades read before the settle; the Oct 16 settles were corn $4.74¼ (down 3¾ cents), soybeans $12.61¼ (down 1¾ cents), wheat $6.60½ (down 9½ cents), live cattle $227.55 and feeder cattle $343.625. Crude oil's $99.25 was a 1:46 p.m. trade, not the close."
+    },
+    {
+      "date": "2026-10-27",
+      "text": "The cattle section said \"Hogs sat flat at $75.55, no fresh news to move them either way.\" That was the October contract, which stopped trading Oct 14, quoted as if it were current. The line now gives December lean hogs, the front month: $66.925 at the Oct 16 settle, up 35 cents."
     }
   ]
 }

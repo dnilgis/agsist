@@ -77,6 +77,17 @@
   </details>
 
   <h2 class="td-sec">Grab helper</h2>
+  <div class="td-item" id="send">
+    <h3>Send to AGSIST</h3>
+    <p class="td-why">One tap on a bid site that blocks our reader (NEW Cooperative). On their bid page, in your own browser, once the bids show, tap it: a new tab opens the desk, the page goes straight into the paste box, and it saves by itself when every board came through. If anything is short, it shows what it read and waits for Save. It holds no token; the desk uses the one already in that browser.</p>
+    <div class="td-acts"><a class="td-bm" id="sbm" href="#">Send to AGSIST</a><button type="button" class="td-btn2" id="scopy">Copy the code</button></div>
+    <p class="td-note"><b>Computer:</b> drag the Send to AGSIST button to the bookmarks bar. On the bid page, click it.</p>
+    <p class="td-note"><b>iPhone (Safari):</b> bookmark any page, then Bookmarks, Edit, tap the new one, name it Send to AGSIST and paste the code over its address. On the bid page, tap the Bookmarks button and tap Send to AGSIST. Allow the pop-up if Safari asks.</p>
+    <p class="td-note"><b>Android (Chrome):</b> bookmark any page, edit it, name it agsend and paste the code as its address. On the bid page, tap the address bar, type agsend and tap the bookmark in the list. Chrome on Android runs it only from the address bar, not from the bookmarks list.</p>
+    <p class="td-note"><b>If a phone will not run it:</b> on the bid page, long-press, Select All, Copy. Then open <a href="/elev-admin.html#send">the send page</a> and tap Paste from clipboard. It reads and saves the same way.</p>
+    <p class="td-note">Paste the token into the desk once, in the same browser you tap from.</p>
+    <code class="td-code" id="sbmcode"></code>
+  </div>
   <div class="td-item">
     <h3>Copy for AGSIST</h3>
     <p class="td-why">Save this once as a bookmark. On an elevator's bid page, in your own browser, tap it: it copies the page and opens the paste box for that site. It sends nothing anywhere itself and holds no token.</p>
@@ -85,7 +96,7 @@
     <code class="td-code" id="bmcode"></code>
   </div>
 </main>
-<script src="/components/paste-bids.js?v=1"></script>
+<script src="/components/paste-bids.js?v=2"></script>
 <script src="/components/today-core.js?v=1"></script>
 <script>
 (function () {
@@ -112,6 +123,15 @@
   $('bm').setAttribute('href', BM);
   $('bm').addEventListener('click', function (e) { e.preventDefault(); });
   $('bmcode').textContent = BM;
+  /* Send to AGSIST: the same page, handed to the desk with no copy and paste. */
+  var SBM = PB.sendBookmarklet();
+  $('sbm').setAttribute('href', SBM);
+  $('sbm').addEventListener('click', function (e) { e.preventDefault(); });
+  $('sbmcode').textContent = SBM;
+  $('scopy').addEventListener('click', function () {
+    var b = this, ok = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy the code'; }, 2000); };
+    try { navigator.clipboard.writeText(SBM).then(ok, function () { window.prompt('Copy this:', SBM); }); } catch (e) { window.prompt('Copy this:', SBM); }
+  });
 
   var done = store(DONE_KEY) || {};
 

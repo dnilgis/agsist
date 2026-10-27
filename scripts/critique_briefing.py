@@ -538,6 +538,10 @@ def apply_rewrite(briefing, critique):
         briefing, _sl = streak_words.apply(briefing, streak_words.from_files())
         for line in _sl:
             print(f"  [streak] {line}")
+        import daily_claims    # and a rewrite gets no claim a quote cannot carry
+        briefing, _cl = daily_claims.strip(briefing, daily_claims.from_files(briefing))
+        for line in _cl:
+            print(f"  [claims] {line}")
         n = briefing_cut.word_count(briefing)
         print(f"  Word count after rewrite: {n} (ceiling {briefing_cut.HARD_CEILING})")
         if isinstance(briefing.get("meta"), dict):

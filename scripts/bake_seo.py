@@ -920,9 +920,9 @@ def _known_trade(q):
 # 2026-10-18: "CBOT" leads. Search Console, Jul to Oct 14: "cbot live" 281
 # impressions at 9.2 and "c bot live" 99 at 7.0, no clicks, while the title
 # was a date line ("Ag Markets Oct 16") with no CBOT in it. The description
-# says delayed or settle, never "live": quotes are 15 minutes behind.
+# says delayed or settle, never "live": quotes are 10 to 25 minutes behind (data-sources).
 MARKETS_PLAIN = ("CBOT Grain Prices Today: Corn, Soybeans, Wheat" + SUFFIX,
-                 "Corn, soybean, wheat, cattle and crude futures on one board, 15-minute delayed "
+                 "Corn, soybean, wheat, cattle and crude futures on one board, delayed "
                  "in session, with settles, cash bids and USDA dates. Free.")
 
 
@@ -1023,7 +1023,7 @@ def seo_markets(c):
     head = (f"Settles {mdY(cd)}: " +
             ", ".join(f"{nm.lower() if i else nm}{(' ' + ct) if ct else ''} {px}"
                       for i, (_, nm, px, ct) in enumerate(picks)) + ".")
-    tail = " Quotes 15-min delayed, free."
+    tail = " Quotes delayed 10 to 25 min, free."
     desc = head + tail if len(head + tail) <= DESC_MAX else head
     while len(desc) > DESC_MAX and len(picks) > 1:   # shed the least-searched quote
         picks = picks[:-1]
