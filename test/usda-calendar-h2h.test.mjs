@@ -2,7 +2,8 @@
  *  - NASS livestock and dairy reports are on the calendar, with the dates and
  *    times USDA ESMIS lists under "Upcoming releases" (read 2026-10-15)
  *  - January 2027 says USDA has not posted its dates, instead of the list
- *    jumping from December to March
+ *    jumping from December to March (2026-10-27: the WASDE dates are posted,
+ *    so January shows the WASDE and says the NASS dates are still to come)
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -54,8 +55,37 @@ test("a Livestock & Dairy filter, tag, legend and source", () => {
   assert.match(CAL, /\$\{r\.link&&r\.type==='fsa'\?/);
 });
 
-test("January 2027 is a plain note until USDA posts the dates", () => {
-  assert.ok(!REPORTS.some((r) => r.date.startsWith("2027-01")), "no guessed January 2027 dates");
+test("January 2027 holds only what USDA has posted, and says what is still to come", () => {
+  /* 2026-10-27: USDA's WASDE page posts the 2027 WASDE dates (read 2026-10-27
+     and 2026-10-24); NASS has not posted its 2027 calendar. So January 2027
+     carries the Jan 12 WASDE and nothing guessed, and says the Crop Production
+     summary and Grain Stocks dates are still to come. */
+  const jan = REPORTS.filter((r) => r.date.startsWith("2027-01"));
+  assert.deepEqual(jan.map((r) => [r.date, r.name, r.time]), [["2027-01-12", "WASDE", "12:00 PM ET"]]);
+  assert.ok(!REPORTS.some((r) => r.date >= "2027-01-01" && (r.type === "supply" || r.type === "stocks" || r.type === "livestock")),
+    "no guessed 2027 NASS dates");
+  assert.match(CAL, /USDA NASS has not posted its 2027 report dates yet\./);
+  assert.match(CAL, /const JAN_NASS_PENDING=!REPORTS\.some\(r=>r\.date\.slice\(0,7\)===JAN_KEY&&\(r\.type==='supply'\|\|r\.type==='stocks'\)\)/);
+  assert.match(CAL, /if\(key===JAN_KEY&&JAN_NASS_PENDING\)html\+=JAN_NASS_NOTE;/);
+  // the whole-year note stays for a year whose WASDE dates are not posted either
   assert.match(CAL, /USDA has not posted its 2027 report dates yet\./);
-  assert.match(CAL, /const JAN_KEY='2027-01', JAN_PENDING=!REPORTS\.some/);
+});
+
+test("the 2027 WASDE rows are the twelve USDA posted, the same table as scripts/usda_dates.py", () => {
+  const PY = readFileSync(ROOT + "scripts/usda_dates.py", "utf8");
+  const m = /WASDE_2027 = \{([^}]*)\}/.exec(PY);
+  assert.ok(m, "WASDE_2027 in usda_dates.py");
+  const tbl = [...m[1].matchAll(/date\(2027, (\d+), (\d+)\)/g)]
+    .map(([, mo, d]) => "2027-" + mo.padStart(2, "0") + "-" + d.padStart(2, "0")).sort();
+  const page = REPORTS.filter((r) => r.name === "WASDE" && r.date.startsWith("2027")).map((r) => r.date).sort();
+  const usda = ["2027-01-12", "2027-02-10", "2027-03-10", "2027-04-09", "2027-05-12", "2027-06-11",
+    "2027-07-09", "2027-08-12", "2027-09-10", "2027-10-08", "2027-11-10", "2027-12-10"];
+  assert.deepEqual(page, usda);
+  assert.deepEqual(tbl, usda);
+  for (const r of REPORTS.filter((x) => x.name === "WASDE" && x.date.startsWith("2027"))) {
+    assert.equal(r.time, "12:00 PM ET");
+    const wd = new Date(r.date + "T12:00:00Z").getUTCDay();
+    assert.ok(wd >= 1 && wd <= 5, r.date + " is a weekday");
+  }
+  assert.match(CAL, /2027 WASDE dates, read 2026-10-27 from USDA's WASDE page/);
 });

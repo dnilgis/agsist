@@ -6,8 +6,9 @@
  * (nass.usda.gov/Publications/Calendar/2026/, copy fetched 2026-10-16), and
  * each must be on the page, in the .ics files, on the weekday USDA set.
  *
- * Not here: the twelve 2027 WASDE dates the same check read on usda.gov. That
- * page could not be opened from here and has no saved copy yet, so they wait.
+ * Not here: the twelve 2027 WASDE dates the same check read on usda.gov. They
+ * were added 2026-10-27 after a second read of that page gave the same twelve;
+ * test/usda-calendar-h2h.test.mjs checks them.
  *
  *   node --test test/usda-calendar-2026-gaps.test.mjs
  */
