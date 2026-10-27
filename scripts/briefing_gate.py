@@ -1052,7 +1052,9 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
         _ctx = daily_claims.context(prices or {}, daily_claims.issue_date(daily, today), daily.get('quote_strip'))
         for _rule, _loc, _s in daily_claims.lint(daily, _ctx):
             _m = '%s: %r' % (_loc, _s[:160])
-            if _rule in daily_claims.BLOCKING and daily_claims.CUTTABLE(_loc):
+            # a headline cannot be cut, but it is never sent failing (Sig, Oct 27):
+            # scripts/headline_fix.py rewrites it before this gate runs.
+            if _rule in daily_claims.BLOCKING and (daily_claims.CUTTABLE(_loc) or _loc == 'headline'):
                 F('claim:' + _rule, _m)
             else:
                 W('claim:' + _rule, _m)
