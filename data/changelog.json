@@ -8,6 +8,12 @@
     {
      "tag": "fixed",
      "page": "/daily",
+     "name": "Oct 21 Daily headline corrected",
+     "text": "The headline said corn was down 6 straight days to $4.59½ and beans down 7 to $12.45. Those were early Wednesday trades, not settles. It now gives the Oct 20 settles, $4.62 and $12.48¼, with the old wording kept in a dated note on the page."
+    },
+    {
+     "tag": "fixed",
+     "page": "/daily",
      "name": "Five Daily lines corrected, each with a dated note",
      "text": "The Oct 11, 16, 18, 22 and 25 issues had a line the numbers did not back: an expired hog contract, a cash value read from futures, a date that had not come yet, an overnight trade called a close, and a fuel cost claim with no source. Each line is fixed where it stood, and the old wording is kept in a correction note on the page. The Oct 25 planting line from this year's contracts is corrected the same way."
     },
