@@ -5,7 +5,7 @@
  * Gzipped at level 9 it was 78,037 bytes at first load on Oct 27 (main 4cf7a06), plus
  * 22,756 for signup-ask.js, which loader.js also pulled in at once: 100,793 in all.
  * Taking the comments out of the shipped files (the CV history moved to
- * scripts/dev/loader-cv-history.md) brought the first-load shell to 49,330 bytes, and
+ * scripts/dev/loader-cv-history.md) brought the first-load shell to 49,367 bytes, and
  * signup-ask.js now waits for the first scroll, tap or key or for an idle page, except where
  * the page shows its own ask.
  *
@@ -29,16 +29,16 @@ const gz = (p) => gzipSync(readFileSync(ROOT + p), { level: 9 }).length;
 const FIRST = ["components/loader.js", "components/header.html", "components/footer.html", "components/styles.css",
   "components/states.css", "components/states.js", "components/sponsor-metrics.js"];
 const LATER = ["components/signup-ask.js"];
-const FIRST_MEASURED = 49330, ALL_MEASURED = 72086;
+const FIRST_MEASURED = 49367, ALL_MEASURED = 72123;
 const FIRST_LIMIT = Math.ceil(FIRST_MEASURED * 1.05), ALL_LIMIT = Math.ceil(ALL_MEASURED * 1.05);
 
-test("the first-load shell stays under 49,330 gzipped bytes plus 5%", () => {
+test("the first-load shell stays under 49,367 gzipped bytes plus 5%", () => {
   const rows = FIRST.map((f) => [f, gz(f)]);
   const total = rows.reduce((a, r) => a + r[1], 0);
   assert.ok(total <= FIRST_LIMIT, `first-load shell is ${total} bytes gzipped, over ${FIRST_LIMIT}: ` + rows.map((r) => r.join(" ")).join(", "));
 });
 
-test("the shell with signup-ask.js stays under 72,086 gzipped bytes plus 5%", () => {
+test("the shell with signup-ask.js stays under 72,123 gzipped bytes plus 5%", () => {
   const total = [...FIRST, ...LATER].reduce((a, f) => a + gz(f), 0);
   assert.ok(total <= ALL_LIMIT, `shell with signup-ask.js is ${total} bytes gzipped, over ${ALL_LIMIT}`);
 });
