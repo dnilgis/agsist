@@ -264,6 +264,7 @@ _NOW_WORDS = re.compile(r"\b(overnight|this morning|so far|early trade|trading a
 _NOW_CLOSE = re.compile(r"\b(higher|lower|up|down|firmer|weaker)\s+close\b|\bclos(?:e|ed|ing)\s+(higher|lower|up|down)\b", re.I)
 
 
+_SERIES = re.compile(r"\b(straight|consecutive|in a row)\b", re.I)
 _PAST_DAY = re.compile(r"\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday|yesterday|last week|the week|prior|previous)('s)?\b", re.I)
 
 
@@ -280,6 +281,8 @@ def r_close_before_settle(sent, ctx):
         return False
     prices = _prices_with_family(sent)
     for w in words:
+        if w.group(1).lower() in ("closes", "settles", "finishes") or _SERIES.search(sent[max(0, w.start() - 14):w.end() + 12]):
+            continue          # "eight straight lower closes", "the eighth lower close in a row": past sessions
         past = _names_past_session(sent, w)
         if prices:
             px, fam, grain, pos = min(prices, key=lambda p: abs(p[3] - w.start()))
@@ -329,10 +332,28 @@ def r_future_as_past(sent, ctx):
     return False
 
 
+_HELD = re.compile(r"\b(every|each|your|a) bushels?\b|\bbushels? (?:of [\w-]+ (?:corn|beans|soybeans|wheat) )?(?:sitting |stored )?in (?:the|your) bins?\b"
+                   r"|\bin (?:the|your) bins?\b|\bstored (?:corn|beans|soybeans|wheat|grain)\b"
+                   r"|\byour (?:corn|beans|soybeans|wheat|grain|crop)\b"
+                   r"|\bcash (?:corn|beans|soybeans|wheat|grain|prices?|bids?|values?)\b", re.I)
+_VALUE = re.compile(r"\b(worth|value[sd]?|lost|gained|cost(?:s|ing)? you|made you|added|richer|poorer|"
+                    r"(?:up|down|higher|lower|more|less) (?:by )?(?:about |nearly |roughly )?\d+[¼½¾]? cents?|"
+                    r"\d+[¼½¾]? cents? (?:more|less|higher|lower|a bushel|per bushel))\b", re.I)
+_CASH_DATA = re.compile(r"\b(elevators?|posted|co-?ops?|locations|our (?:bid )?panel|bids? (?:at|from|posted))\b", re.I)
+_HEDGED = re.compile(r"\b(depends|check (?:your|the)|local bid|your bid|basis decides)\b", re.I)
+
+
+def r_cash_from_futures(sent, ctx):
+    """A cash or per-bushel value for a farmer's grain, with no posted bid in sight."""
+    return bool(_HELD.search(sent) and _VALUE.search(sent)
+                and not _CASH_DATA.search(sent) and not _HEDGED.search(sent))
+
+
 RULES = [
     ("expired-contract", r_expired),
     ("close-before-settle", r_close_before_settle),
     ("future-as-past", r_future_as_past),
+    ("cash-from-futures", r_cash_from_futures),
 ]
 
 
@@ -431,6 +452,7 @@ def _selftest():
     expect("close-before-settle", "Corn is up overnight, the first higher close in a week.", c22, True)
     expect("close-before-settle", "Corn settled Wednesday at $4.63¼, up 1¼ cents.", c22, False)
     expect("close-before-settle", "A close above $4.70 would turn the chart.", c22, False)
+    expect("close-before-settle", "Soybeans are at $12.47, up 1¾ cents, after eight straight lower closes.", c22, False)
     expect("close-before-settle", "Corn is at $4.64, close to Wednesday's settle.", c22, False)
 
     # Oct 18 (a Sunday): Friday was Oct 16; Oct 23 was five days out
@@ -444,6 +466,17 @@ def _selftest():
     expect("future-as-past", "Placements on Oct 23 came in 4% below a year ago.", c18, True)
     expect("future-as-past", "Corn settled Oct 16 at $4.74¼.", c18, False)
     expect("future-as-past", "Dec 31 is the deadline.", context({}, date(2026, 1, 5)), False)
+
+    # Oct 11: a 20½ cent December futures drop read as the value of stored corn
+    c11 = context({}, date(2026, 10, 11))
+    expect("cash-from-futures", "Every bushel of old-crop corn sitting in the bin is worth about 19 cents less than it was Thursday.", c11, True)
+    expect("cash-from-futures", "December corn futures settled 20½ cents below Thursday. What that means for corn in the bin "
+           "depends on your local bid and basis.", c11, False)
+    expect("cash-from-futures", "That cost you 20 cents a bushel on unpriced corn in the bin.", c11, True)
+    expect("cash-from-futures", "Cash corn is 15 cents lower this morning.", c11, True)
+    expect("cash-from-futures", "Cash corn bids at 212 elevators averaged $4.12, down 6 cents.", c11, False)
+    expect("cash-from-futures", "December corn futures fell 20½ cents.", c11, False)
+    expect("cash-from-futures", "Every bushel coming out of the field is being sold into a market that already has plenty.", c11, False)
 
     # strip cuts the sentence and keeps the bullets
     b = {"sections": [{"title": "Cattle firm", "body": "- Live cattle gained 0.7% to **$227.52**.\n"
