@@ -1683,7 +1683,7 @@ def state_compare(picks, summ, sname):
         same = next((x for x in stats if r["contract"] and x["contract"] == r["contract"]), None)
         if same is None:
             head = stats[0]
-            mid = f"{pricefmt.basis(head['median'] * 100)} vs {contract_label(head['contract'])}, {head['n']} elevators"
+            mid = f"{pricefmt.basis(head['median'] * 100)} vs {contract_label(head['contract'])}, {loc_co(head)}"
             why = ("posts no futures month with its basis" if not r["contract"] else
                    f"quotes basis vs {contract_label(r['contract'])}, a month too few {sname} elevators use")
             out.append({"crop": c, "name": name, "why": why, "mid": mid,
@@ -1691,7 +1691,7 @@ def state_compare(picks, summ, sname):
             continue
         d = round((r["basis"] - same["median"]) * 400) / 4      # to the quarter cent boards post in
         rel = "even with" if abs(d) < 0.25 else (pricefmt.basis(abs(d)).lstrip("+") + (" stronger than" if d > 0 else " weaker than"))
-        smid = f"{pricefmt.basis(same['median'] * 100)}, {same['n']} elevators"
+        smid = f"{pricefmt.basis(same['median'] * 100)}, {loc_co(same)}"
         out.append({"crop": c, "line": f"{ADJ[c].capitalize()} basis at {name}, {_basis_plain(r)}, is {rel} the {sname} "
                                         f"middle ({smid}).",
                     "faq": f"That is {rel} the {sname} middle ({smid})."})
@@ -2236,6 +2236,22 @@ def _plural(n, one, many=None):
     return one if n == 1 else (many or one + "s")
 
 
+def loc_co(st, bold=False):
+    """'203 locations, 23 companies': how many boards a state middle rests on
+    and how many companies run them (BM.companies_behind). A record without
+    the company count (an older file) keeps its old words, 'N elevators'."""
+    n, m = st["n"], st.get("companies")
+    b = (lambda x: f"<b>{x}</b>") if bold else str
+    if m is None:
+        return f"{b(n)} {_plural(n, 'elevator')}"
+    return f"{b(n)} {_plural(n, 'location')}, {b(m)} {_plural(m, 'company', 'companies')}"
+
+
+# one line wherever the company count first shows on a page (the god's-eye panel's skeptic: say how firms are matched)
+CO_RULE = ("Companies: boards that share a name or a website count as one, and CHS counts once; a firm owned by "
+           "another under a different name may still count apart.")
+
+
 def basis_stat(g, st, prev_gen):
     """One crop's headline: median vs the named contract, n beside it, the
     range, and the week's matched-pair change when there is one."""
@@ -2254,7 +2270,7 @@ def basis_stat(g, st, prev_gen):
         out = f' ({k} more left out as {_plural(k, "outlier")}, listed below)'
     return (f'<div class="cbt-stat"><div class="v">{money_basis(st["median"])}</div>'
             f'<div class="l">{SB.CROP_LABEL[g]}: middle basis vs {contract_label(con)} {esc(root)}</div>'
-            f'<div class="s">n = <b>{st["n"]}</b> {_plural(st["n"], "elevator")}{out} &middot; range '
+            f'<div class="s">{loc_co(st, bold=True)}{out} &middot; range '
             f'{money_basis(st["lo"])} to {money_basis(st["hi"])}{wow}</div></div>')
 
 
@@ -2377,8 +2393,8 @@ def state_faq_pairs(sname, bests, summ, town_paths, labels, n_el, n_towns, snap_
             bg.append(ADJ[g])
             lead = (f"The middle {ADJ[g]} basis in {sname} is" if not bas else
                     f"For {SB.CROP_LABEL[g].lower()} it is")
-            bas.append(f"{lead} {SB.plain_basis(h['median'])} vs {SB.contract_plain(h['contract'])}, across {h['n']} "
-                       f"{_plural(h['n'], 'elevator')} (range {SB.plain_basis(h['lo'])} to {SB.plain_basis(h['hi'])}).")
+            bas.append(f"{lead} {SB.plain_basis(h['median'])} vs {SB.contract_plain(h['contract'])}, across {loc_co(h)} "
+                       f"(range {SB.plain_basis(h['lo'])} to {SB.plain_basis(h['hi'])}).")
     if bas:
         qs.append((f"What is the {' and '.join(bg)} basis in {sname}?",
                    " ".join(bas) + " Basis is cash minus futures; the middle is the median elevator, each counted once "
@@ -2456,7 +2472,7 @@ def basis_section(st, summ, prev_gen, town_paths=None):
     html_ = f'<h2 id="basis">{esc(sname)} basis today</h2>'
     html_ += (f'<p class="cbt-sub">Basis is cash minus futures, $/bu. The number is the middle bid (median) of the '
               f'elevators below, each counted once at its nearest delivery, against the futures month most of them '
-              f'name. n is how many elevators it rests on.</p>')
+              f'name, with how many locations and companies it rests on. {CO_RULE}</p>')
     if blocks:
         html_ += f'<div class="cbt-hero">{"".join(blocks)}</div>'
     if notes:
@@ -2577,6 +2593,8 @@ def basis_states_doc(summaries, ctx, elevators):
                        "bid per elevator at its nearest open delivery, against the futures month most of the "
                        "state's elevators name. Unnamed months, misread boards and outliers (more than 5 robust "
                        "standard deviations, and never less than 75 cents, from the median) are left out. "
+                       "n = locations behind the median; companies = how many companies run them (boards that "
+                       "share a name or a website count once, every CHS business counts as CHS). "
                        "wow = median change of bids posted in both snapshots, in cents. scripts/basis_method.py."),
             "min_n": BM.MIN_STAT, "states": states}
 
@@ -2585,7 +2603,7 @@ def _cell(c):
     if not c or "median" not in c:
         return '<td class="n"><span class="mut">too few</span></td>'
     return (f'<td class="n">{money_basis(c["median"])}<br><span class="mut">vs {esc(c["label"])} &middot; '
-            f'n={c["n"]}</span></td>')
+            f'{loc_co(c)}</span></td>')
 
 
 def hub_rank_html(doc):
@@ -2603,6 +2621,7 @@ def hub_rank_html(doc):
          f'{fmt_day(parse_ts(doc["generated"]))} &middot; strongest corn basis first</caption>'
          f'<tr><th>State</th><th style="text-align:right">Corn</th><th style="text-align:right">Soybeans</th></tr>'
          f'{trs}</table></div>')
+    t += f'<p class="bs-seed">{CO_RULE}</p>'
     if thin:
         t += (f'<p class="bs-seed">Too few elevators on one futures month for a middle number: '
               + ", ".join(esc(n) for n in thin) + ".</p>")
@@ -2622,7 +2641,7 @@ def hub_pick_html(doc, st="IA"):
             continue
         wk = (f'; {SB.cents_delta(c["wow"])} in a week ({c["wow_n"]} bids both weeks)' if "wow" in c else "")
         parts.append(f'<li><b>{SB.CROP_LABEL[g]}</b> {money_basis(c["median"])} vs {esc(c["label"])} '
-                     f'<span class="mut">n = {c["n"]} {_plural(c["n"], "elevator")}{wk}</span></li>')
+                     f'<span class="mut">{loc_co(c)}{wk}</span></li>')
     if not parts:
         return ""
     return (f'<ul class="bs-pick-l">{"".join(parts)}</ul><p class="bs-seed">Middle bid of {esc(v["name"])} '
@@ -3519,7 +3538,7 @@ def selftest():
             < fr.index('<div class="cbt-top">'), "answer, table, state line, then the hold box"
         cmp_ = re.search(r'<p class="cbt-cmp">(.*?)</p>', fr).group(1)
         assert cmp_.startswith("Corn basis at Op kept, \u221225\u00a2 vs Dec &#x27;26, is 6\u00bd\u00a2 stronger than the "
-                               "Nebraska middle (\u221231\u00bd\u00a2, 6 elevators)."), cmp_
+                               "Nebraska middle (\u221231\u00bd\u00a2, 6 locations, 6 companies)."), cmp_
         assert "Soybean basis" not in cmp_, "fewer than three soybean bids on Nov '26: no middle, no comparison"
         # three questions answered from the page's own numbers; the visible FAQ and
         # the FAQPage JSON-LD say the same words
@@ -3542,7 +3561,7 @@ def selftest():
                              "(Fremont) for delivery by Oct 9, posted Oct 7, 2026. The highest soybean bid is $9.85"), a1
         assert '<div class="v">$3.95</div>' in ne and '<div class="v">$9.85</div>' in ne, "answer prices are the cards'"
         assert nfaq[1]["acceptedAnswer"]["text"].startswith(
-            "The middle corn basis in Nebraska is \u221231\u00bd\u00a2 vs Dec '26, across 6 elevators (range "), nfaq[1]
+            "The middle corn basis in Nebraska is \u221231\u00bd\u00a2 vs Dec '26, across 6 locations, 6 companies (range "), nfaq[1]
         assert ne.index('class="cbt-faq"') > ne.index('id="basis"'), "FAQ after the basis block"
         wp = next(g for g in blks[0]["@graph"] if g["@type"] == "WebPage")
         sm_lm = re.search(r"<loc>https://agsist\.com/cash-bids/nebraska/fremont</loc><lastmod>([^<]+)</lastmod>",
@@ -3610,7 +3629,7 @@ def selftest():
         assert '<h2 id="basis">Nebraska basis today</h2>' in ne and 'href="/cash-bids/nebraska/#basis"' in fr
         assert ne.index('id="best"') < ne.index('id="basis"') < ne.index('id="elevators"') < ne.index('id="towns"')
         assert "\u221231\u00bd\u00a2</span></div><div class=\"l\">Corn: middle basis vs Dec '26" in ne, "median of six Dec bids (-31.5c, as posted, not rounded to -32)"
-        assert "n = <b>6</b> elevators" in ne and "$3.95</div><div class=\"l\">Top corn bid" in ne
+        assert "<b>6</b> locations, <b>6</b> companies" in ne and CO_RULE in ne and "$3.95</div><div class=\"l\">Top corn bid" in ne
         assert "read as a misread board and left out" in ne and 'data-state-table="NE"' in ne
         assert "/components/state-bids.js?v=2" in ne and "/basis/" not in ne
         assert re.search(r'<meta name="twitter:description" content="Bids from \d+ elevators across 2 Nebraska towns\. '
@@ -3624,7 +3643,7 @@ def selftest():
                   data_dir=dd, hub=hubp)
         bs = json.load(open(os.path.join(dd, "basis-states.json")))
         ne_c = bs["states"]["NE"]["crops"]["corn"]
-        assert ne_c["median"] == -0.315 and ne_c["n"] == 6 and ne_c["label"] == "Dec '26", ne_c
+        assert ne_c["median"] == -0.315 and ne_c["n"] == 6 and ne_c["companies"] == 6 and ne_c["label"] == "Dec '26", ne_c
         tbl = json.load(open(os.path.join(dd, "state-basis", "NE.json")))
         assert tbl["cols"][0] == "crop" and any(r[-1] == "suspect" for r in tbl["rows"]), tbl["rows"]
         assert any(r[3] == "/cash-bids/nebraska/fremont" for r in tbl["rows"])
@@ -3637,7 +3656,7 @@ def selftest():
         assert bs["states"]["NE"]["elevators"] == 7
         hub_html = open(hubp).read()
         assert 'href="/cash-bids/nebraska/#basis"' in hub_html and "old" not in hub_html, hub_html
-        assert 'href="/cash-bids/iowa/#basis"' in hub_html and "n=3" in hub_html
+        assert 'href="/cash-bids/iowa/#basis"' in hub_html and "3 locations, 3 companies" in hub_html and CO_RULE in hub_html
         thin = hub_rank_html({"generated": "2026-10-07T18:00:00Z", "states": {"MO": {
             "name": "Missouri", "path": "/cash-bids/missouri/#basis",
             "crops": {"corn": {"n": 2, "label": "Dec '26", "contract": "ZCZ26", "outliers": 0}}}}})
