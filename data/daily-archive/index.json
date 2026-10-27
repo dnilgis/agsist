@@ -538,7 +538,7 @@
     {
       "date": "2026-09-09",
       "date_display": "Wednesday, September 9, 2026",
-      "headline": "BRENT HITS $100; GRAINS AND CATTLE FOLLOW",
+      "headline": "BRENT HITS $100; GRAINS AND CATTLE HIGHER TOO",
       "teaser": "Iranian tankers hit, Brent at $100, harvest diesel tightening. This is the session that matters.",
       "market_mood": "volatile",
       "surprise_count": 2,
@@ -680,7 +680,7 @@
       "date": "2026-08-28",
       "date_display": "Friday, August 28, 2026",
       "headline": "WHEAT RUNS, BEANS HOLD; HEATWAVE BIDS THE COMPLEX",
-      "teaser": "Heatwave bids wheat 21 cents higher. Corn didn't follow. That gap matters.",
+      "teaser": "Heatwave bids wheat 21 cents higher. Corn eased. That gap matters.",
       "market_mood": "mixed",
       "surprise_count": 6,
       "sections": 4,
@@ -2465,7 +2465,7 @@
     {
       "date": "2026-03-24",
       "date_display": "Tuesday, March 24, 2026",
-      "headline": "CRUDE OIL CRATERS 10% — GRAIN COMPLEX FOLLOWS",
+      "headline": "CRUDE OIL CRATERS 10%; GRAINS LOWER TOO",
       "teaser": "Energy markets imploded overnight — here's what it means for your spring planting budget.",
       "market_mood": "volatile",
       "surprise_count": 8,
@@ -2565,7 +2565,7 @@
     {
       "date": "2026-03-10",
       "date_display": "Tuesday, March 10, 2026",
-      "headline": "CRUDE OIL CRASHES 24% — GRAINS FOLLOW DEEPER",
+      "headline": "CRUDE OIL CRASHES 24%; GRAINS FALL TOO",
       "teaser": "Oil's historic crash triggers broad grain selloff — but lower input costs create silver lining.",
       "market_mood": "volatile",
       "surprise_count": 12,
@@ -2613,6 +2613,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-27T11:56:58.309124+00:00",
+  "updated": "2026-10-27T18:18:49.818388+00:00",
   "count": 228
 }
