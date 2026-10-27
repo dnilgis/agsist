@@ -62,10 +62,12 @@ function elevatorNames() {
   for (const f of ["data/ids/elevators.json", "data/elevator-coverage.json", "data/elevator-directory.json"]) {
     if (!fs.existsSync(path.join(ROOT, f))) continue;
     const t = read(f);
-    for (const m of t.matchAll(/"((?:[^"\\]|\\.){6,90})"/g)) s.add(m[1].toUpperCase());
+    for (const m of t.matchAll(/"((?:[^"\\]|\\.){6,90})"/g)) s.add(bizKey(m[1]));
   }
   return s;
 }
+// letters and digits only, so "Rose Acre Farms, Inc" on a return and "Rose Acre Farms, Inc." in the list are one business
+function bizKey(v) { return String(v).toUpperCase().replace(/[^A-Z0-9]+/g, ""); }
 
 test("robots.txt blocks the names folder, and nothing reopens it", () => {
   const r = read("robots.txt");
@@ -104,7 +106,7 @@ test("no buyer or seller name in any published page, sitemap or data file outsid
     for (const l of (r.stdout || "").split("\n").filter(Boolean)) { const k = l.indexOf(":"); hits.push([l.slice(0, k), l.slice(k + 1)]); }
   }
   const biz = elevatorNames();
-  const bad = hits.filter(([f, n]) => !biz.has(n.toUpperCase()));
+  const bad = hits.filter(([f, n]) => !biz.has(bizKey(n)));
   fs.rmSync(tmp, { recursive: true, force: true });
   assert.deepEqual(bad.slice(0, 10), [], `${bad.length} buyer or seller name(s) outside data/land/`);
   // and the generated sale pages carry no name of any kind, elevator or not
@@ -122,7 +124,7 @@ test("the builder: selftest, a fresh build matches the committed files, and it r
 });
 
 test("the pages: the tap and the remove link, plain words, withheld sections say why, small", () => {
-  assert.ok(PAGES.length > 170, "a page per IL and WI county, the hub and the month: " + PAGES.length);
+  assert.ok(PAGES.length > 260, "a page per IL, WI and IN county, the hub and the month: " + PAGES.length);
   const month = PAGES.filter((p) => /land-sales\/\d{4}-\d{2}\.html$/.test(p));
   assert.ok(month.length >= 1, "a dated monthly update page");
   for (const p of PAGES) {
@@ -138,7 +140,7 @@ test("the pages: the tap and the remove link, plain words, withheld sections say
     }
     assert.match(t, /\/components\/land-sales\.js\?v=\d+/, `${p}: loads the tap`);
     assert.match(t, /<link rel="canonical" href="https:\/\/agsist\.com\/land-sales\//, `${p}: canonical`);
-    assert.match(t, /Source: .*(Illinois Department of Revenue|Wisconsin Department of Revenue)/, `${p}: the source is credited where the sales show`);
+    assert.match(t, /Source: .*(Illinois Department of Revenue|Wisconsin Department of Revenue|Indiana Department of Local Government Finance)/, `${p}: the source is credited where the sales show`);
   }
   const m = read(month.sort().pop());
   for (const h of ["Biggest buyers", "Biggest sales", "Unusual prices", "Best value per acre"]) assert.ok(m.includes(">" + h + "</h2>"), "month section " + h);
@@ -157,7 +159,7 @@ test("the coverage table: every state, honest statuses, the live count matches t
   const cov = JSON.parse(read("data/land-sales/coverage.json"));
   assert.equal(cov.states.length, 50, "50 states");
   const live = cov.states.filter((s) => s.status === "live").map((s) => s.st).sort();
-  assert.deepEqual(live, ["IL", "WI"]);
+  assert.deepEqual(live, ["IL", "IN", "WI"], "Indiana turned on (Sig, Oct 27)");
   for (const s of cov.states) {
     assert.ok(cov.labels[s.status], `${s.st}: a status with a label`);
     assert.ok(s.tile && s.tile.length === 2, `${s.st}: a map tile`);
@@ -165,10 +167,13 @@ test("the coverage table: every state, honest statuses, the live count matches t
   }
   for (const st of ["AK", "ID", "KS", "LA", "MS", "MO", "MT", "NM", "ND", "TX", "UT", "WY"])
     assert.equal(cov.states.find((s) => s.st === st).status, "nondisclosure", st + " is listed as not public record");
-  assert.equal(cov.states.find((s) => s.st === "IN").status, "held", "Indiana: Field Scout only (Sig, Oct 18)");
-  for (const st of ["illinois", "wisconsin"]) assert.ok(fs.existsSync(path.join(ROOT, "land-sales", st)), "pages for " + st);
-  assert.ok(!fs.existsSync(path.join(ROOT, "land-sales", "indiana")), "no Indiana pages while it is held");
-  assert.match(read("land-sales/index.html"), /Sales reported for 2 states: Illinois and Wisconsin\./);
+  for (const st of ["illinois", "wisconsin", "indiana"]) assert.ok(fs.readdirSync(path.join(ROOT, "land-sales", st)).length > 70, "pages for " + st);
+  assert.match(read("land-sales/index.html"), /Sales reported for 3 states: Illinois, Indiana and Wisconsin\./);
+  // Indiana's records differ from IL and WI: the pages say what they carry, and no email ask sits beside Indiana-only sales
+  const inPage = read("land-sales/indiana/adams-county.html");
+  assert.match(inPage, /Indiana&#x27;s sales disclosure forms carry the sale date, not a recording date, and the town is the parcel&#x27;s mailing town/);
+  assert.ok(!/data-land-alert/.test(inPage), "the monthly email is IL and WI only: no ask on an Indiana county page");
+  assert.match(read("land-sales/illinois/adams-county.html"), /data-land-alert/);
 });
 
 test("data files: no names, only the published fields", () => {
@@ -176,7 +181,7 @@ test("data files: no names, only the published fields", () => {
   assert.match(L.month, /^\d{4}-\d{2}$/);
   assert.ok(fs.existsSync(path.join(ROOT, "land-sales", L.month + ".html")), "latest.json points at a built page");
   for (const t of L.top) assert.deepEqual(Object.keys(t).sort(), ["acres", "basis", "county", "id", "place", "ppa", "price", "st", "when"]);
-  for (const st of ["il", "wi"]) {
+  for (const st of ["il", "wi", "in"]) {
     const f = JSON.parse(read(`data/land-sales/${st}.json`));
     assert.deepEqual(f.cols, ["id", "when", "recorded", "acres", "price", "ppa", "place", "lat", "lng", "flag", "bldg"]);
     assert.equal(f.names_dir, `/data/land/names/${st}/`);
@@ -217,12 +222,13 @@ test("where the sales show: Atlas county pages, IL and WI rent pages, homepage, 
   const loader = read("components/loader.js");
   assert.match(loader, /\/components\/land-sales\.js\?v=1/);
   assert.match(loader, /section\[data-atlas-sales="county"\]/);
-  assert.match(loader, /rent\\\/\(illinois\|wisconsin\)/);
+  assert.match(loader, /rent\\\/\(illinois\|wisconsin\|indiana\)/);
+  assert.match(loader, /farmland-atlas\\\/indiana/, "Indiana's Atlas county pages load it too");
   assert.match(read("index.html"), /<a class="land-cell" id="land-sales" href="\/land-sales\/" data-land-sales="home"[^>]* hidden>/, "the homepage card waits for its data");
   assert.match(read("fast-facts.html"), /<div class="ls-near" id="h-land-sales" data-land-sales="near" hidden><\/div>/, "Fast Facts host (an h- hash opens My place)");
   const s = read("components/search.js");
   assert.match(s, /'Land sales near here: '/);
-  assert.match(s, /LAND_ST = \{ IL: 'illinois', WI: 'wisconsin' \}/, "only where the sales are");
+  assert.match(s, /LAND_ST = \{ IL: 'illinois', WI: 'wisconsin', IN: 'indiana' \}/, "only where the sales are");
   const oh = read("scripts/only_here.py");
   assert.match(oh, /import daily_land_line/, "the Daily line rides in Only here");
   const d = py(["scripts/daily_land_line.py", "--selftest"]);

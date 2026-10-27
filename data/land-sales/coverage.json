@@ -3,13 +3,12 @@
  "checked": "2026-10-27",
  "labels": {
   "live": "Sales on these pages",
-  "held": "In Field Scout only for now",
   "request": "State file on request or for a fee",
   "county": "Public, county by county; not built yet",
   "nondisclosure": "Sale prices not public record",
   "unchecked": "Not checked yet"
  },
- "note": "Checked Oct 27, 2026. A state marked not public record is from the common lists and our own search; where it says to check, we have not read the state law ourselves yet. Auction results are public where a state keeps prices private, and are next on the list for those states.",
+ "note": "Checked Oct 27, 2026. Indiana turned on Oct 27 (Sig). A state marked not public record is from the common lists and our own search; where it says to check, we have not read the state law ourselves yet. Auction results are public where a state keeps prices private, and are next on the list for those states.",
  "states": [
   {
    "status": "unchecked",
@@ -181,8 +180,8 @@
    ]
   },
   {
-   "status": "held",
-   "source": "State sales disclosure forms (Department of Local Government Finance, published free by year on STATS Indiana)",
+   "status": "live",
+   "source": "State sales disclosure forms (Department of Local Government Finance, published free by year on STATS Indiana), farm parcels from 2021; the sale date, and the town is the parcel's mailing town",
    "names": "Yes",
    "cadence": "State posts weekly in season; read here monthly",
    "terms": "Public record, free download",

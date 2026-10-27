@@ -28,8 +28,11 @@ A sale whose id is in data/land-sales/removed.json keeps no names at all.
 WORDS: "unusual price", with plain possible reasons (family sale, part interest, buildings or timber
 included); never "questionable" or any word that accuses anyone.
 
-STATES: Illinois and Wisconsin (land_alert.STATES). Indiana is held off every page beyond Field Scout
-and the comp report (Sig, Oct 18); the coverage table says so. data/land-sales/coverage.json is the
+STATES: Illinois, Wisconsin and Indiana (Sig, Oct 27: "Yes turn on Indiana"; it was held to Field Scout
+and the comp report since Oct 18). The monthly land sale email (land_alert.STATES) is still IL and WI, so
+the email ask is not put beside Indiana-only sales. Indiana's records differ and the pages say so
+(IN_NOTE): the date is the sale date on the disclosure form (no recording date), and the place is the
+parcel's postal town, placed at its ZIP's middle, not a township. data/land-sales/coverage.json is the
 per-state source table, kept by hand; this script only draws it and counts the states with sales.
 
 HONEST NUMBERS: a section with too few sales is withheld and says why. "Usual" is the county's
@@ -58,9 +61,13 @@ import build_land_summary as BLS   # noqa: E402
 import land_alert as LA             # noqa: E402
 
 ORIGIN = "https://agsist.com"
-STATES = LA.STATES
-SLUG = LA.STATE_SLUGS
-NAME = LA.STATE_NAMES
+STATES = ("IL", "WI", "IN")
+SLUG = dict(LA.STATE_SLUGS, IN="indiana")
+NAME = dict(LA.STATE_NAMES, IN="Indiana")
+SOURCES = dict(LA.SOURCES, IN="Indiana Department of Local Government Finance, sales disclosure forms (from STATS Indiana), farm parcels")
+EMAIL_STATES = LA.STATES               # the monthly email covers these; the ask shows only beside them
+IN_NOTE = ("Indiana's sales disclosure forms carry the sale date, not a recording date, and the town is the parcel's mailing town, "
+           "placed at the middle of its ZIP code rather than a township. Our Indiana copy starts with 2021 forms.")
 LIST_MIN_ACRES = LA.LIST_MIN_ACRES      # 10: a listed sale
 COMP_MIN_ACRES = BLS.MIN_ACRES          # 20: a sale that sets or is judged against the usual price
 MIN_COMPS = BLS.MIN_N                   # 5 comparable sales before anything is called unusual
@@ -79,6 +86,11 @@ REMOVE_TO = "sig@agsist.com"            # the site's own contact address (contac
 
 UP_WHY = "a house or buildings, timber or hunting ground, a building site or development land, or a neighbor paying more for the piece next door"
 DOWN_WHY = "a family or neighbor sale, a part interest, wooded, wet or poorer ground, no road access, or a land contract"
+
+
+def and_list(xs):
+    xs = list(xs)
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1] if xs else ""
 
 
 def e(s):
@@ -186,7 +198,10 @@ class Data:
         try:
             return json.load(open(self.repo / "data" / "land" / st.lower() / "summary.json", encoding="utf-8"))
         except (OSError, ValueError):
-            return None
+            pass
+        # no Atlas summary for this state (Indiana): the same numbers by the same rule, in memory only
+        files = [f for f in (self.land.file(st, c["fips"]) for c in self.land.index(st).get("counties") or []) if f]
+        return BLS.build_state(st, files) if files else None
 
 
 def latest_month(d):
@@ -255,6 +270,7 @@ def month_build(d, year, m0):
     out["fresh"] = all(v["fresh"] for v in per_state.values())
     out["biggest"] = listed[:TOP_SALES] if len(listed) >= MIN_LISTED else None
     out["biggest_acres"] = by_acres[:TOP_SALES] if len(listed) >= MIN_LISTED else None
+    out["biggest_acres_all"] = by_acres
     out["biggest_why"] = None if out["biggest"] else "only %d sales of %d acres or more recorded" % (len(listed), LIST_MIN_ACRES)
     bl = []
     for (st, bk), b in buyers.items():
@@ -400,7 +416,7 @@ def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa",
 def src_line(d, states):
     parts = []
     for st in states:
-        parts.append("%s, read %s" % (LA.SOURCES[st], day(d.fetched[st])))
+        parts.append("%s, read %s" % (SOURCES[st], day(d.fetched[st])))
     return "Source: " + "; ".join(parts) + "."
 
 
@@ -432,7 +448,7 @@ def month_page(d, M, early, coverage, archive):
     key, lab = M["month"], M["label"]
     url = "%s/land-sales/%s" % (ORIGIN, key)
     nf = "/data/land/names/%s.json" % key
-    sts = " and ".join(NAME[s] for s in M["states"])
+    sts = and_list([NAME[s] for s in M["states"]])
     title = "Farmland sales, %s: biggest buyers and sales in %s | AGSIST" % (lab, sts)
     big = M.get("biggest") or []
     desc = ("%d farm sales of %d acres or more in %s, %s: the biggest buyers and sales, unusual prices and the best value per acre, "
@@ -453,7 +469,9 @@ def month_page(d, M, early, coverage, archive):
                 lead_big(M)))
     if any(M["per_state"][s]["basis"] == "sale date" for s in M["states"]):
         b.append('<p class="ls-fine">* %s sales are dated by the deed for now, so a sale signed late in the month may still be filed after this was read and show up next month.</p>'
-                 % " and ".join(NAME[s] for s in M["states"] if M["per_state"][s]["basis"] == "sale date"))
+                 % and_list([NAME[s] for s in M["states"] if M["per_state"][s]["basis"] == "sale date"]))
+    if "IN" in M["states"]:
+        b.append('<p class="ls-fine">%s</p>' % e(IN_NOTE))
     b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales-month"></div></div>')
     # buyers
     b.append('<h2 id="buyers">Biggest buyers</h2>')
@@ -517,7 +535,7 @@ def coverage_html(cov, d):
     n = sum(1 for r in rows if r.get("status") == "live")
     live = [r["name"] for r in rows if r.get("status") == "live"]
     h = ['<h2 id="coverage">Where the sales come from</h2>',
-         '<p class="ls-cov-n">Sales reported for %d states: %s. The goal is every state; below is where each one stands.</p>' % (n, e(" and ".join(live))),
+         '<p class="ls-cov-n">Sales reported for %d states: %s. The goal is every state; below is where each one stands.</p>' % (n, e(and_list(live))),
          '<div class="ls-map" role="img" aria-label="Map of states by whether their farm sales are on this site">']
     for r in rows:
         if r.get("tile"):
@@ -560,9 +578,12 @@ def county_page(d, st, c, page, u, n12, summ, early, latest):
          "<h1>Farmland sales in %s</h1>" % e(cn),
          '<p class="ls-ans">%d farm sales of %d acres or more in the last 12 months. %s</p>' % (n12, LIST_MIN_ACRES, e(mid))]
     if latest and latest.get("month"):
-        b.append('<p>All of %s and %s together: <a href="/land-sales/%s">the %s update</a>, with the biggest buyers and unusual prices.</p>'
-                 % (e(NAME["IL"]), e(NAME["WI"]), latest["month"], e(latest["label"])))
-    b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales-county"></div></div>')
+        b.append('<p>All of %s together: <a href="/land-sales/%s">the %s update</a>, with the biggest buyers and unusual prices.</p>'
+                 % (e(and_list([NAME[x] for x in latest["states"]])), latest["month"], e(latest["label"])))
+    if st == "IN":
+        b.append('<p class="ls-fine">%s</p>' % e(IN_NOTE))
+    if st in EMAIL_STATES:
+        b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales-county"></div></div>')
     b.append("<h2>The latest sales</h2>")
     if page:
         b.append(sale_table(page, nf, caption="Newest first, %s" % cn))
@@ -587,14 +608,14 @@ def county_page(d, st, c, page, u, n12, summ, early, latest):
 
 def index_page(d, latest, counties, early, coverage, archive):
     url = ORIGIN + "/land-sales/"
-    title = "Farmland Sales by County: Illinois and Wisconsin Recorded Sales | AGSIST"
+    title = "Farmland Sales by County: %s Recorded Sales | AGSIST" % ", ".join(NAME[x] for x in d.states)
     desc = "Recorded farm sales by county with acres, price and price per acre, a monthly update of the biggest buyers and sales, and where every state's sales come from."
     ld = [crumbs([("AGSIST", ORIGIN + "/"), ("Farmland sales", url)])]
     b = [head(title, desc, url, ld, early), '<div class="ls-w">', "<h1>Farmland sales</h1>"]
     if latest:
         big = latest.get("top") or []
         b.append('<p class="ls-ans">The %s update: %d farm sales of %d acres or more in %s.%s <a href="/land-sales/%s">See the biggest buyers, sales and unusual prices</a>.</p>'
-                 % (e(latest["label"]), latest["n"], LIST_MIN_ACRES, e(" and ".join(NAME[s] for s in latest["states"])),
+                 % (e(latest["label"]), latest["n"], LIST_MIN_ACRES, e(and_list([NAME[s] for s in latest["states"]])),
                     (" The largest by acres: %s acres in %s County, %s, for %s." % (acres(big[0]["acres"]), e(big[0]["county"]), big[0]["st"], money(big[0]["price"]))) if big else "",
                     latest["month"]))
     b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales"></div></div>')
@@ -648,7 +669,9 @@ def build(repo=REPO):
         latest = {"month": key, "label": M["label"], "url": "/land-sales/" + key, "published": pub, "states": d.states,
                   "n": M["n"], "per_state": {s: M["per_state"][s]["n"] for s in d.states}, "top": top,
                   "n_unusual": M["n_unusual"], "n_buyers": M["n_buyers"],
-                  "sources": {s: LA.SOURCES[s] for s in d.states}, "fetched": d.fetched}
+                  "top_state": {st: next(({k: p[k] for k in ("id", "st", "county", "place", "when", "basis", "acres", "price", "ppa")}
+                                          for p in (M.get("biggest_acres_all") or []) if p["st"] == st), None) for st in d.states},
+                  "sources": {s: SOURCES[s] for s in d.states}, "fetched": d.fetched}
         out["land-sales/%s.html" % key] = month_page(d, M, early, coverage, archive)
         out["data/land/names/%s.json" % key] = dump(mnames)
         out["data/land-sales/latest.json"] = dump(latest)
@@ -657,7 +680,7 @@ def build(repo=REPO):
     for st in d.states:
         summ = d.summary(st)
         through = (summ or {}).get("through") or BLS.month_end_before(d.fetched[st]).isoformat()
-        sfile = {"state": st, "name": NAME[st], "through": through, "fetched": d.fetched[st], "source": LA.SOURCES[st],
+        sfile = {"state": st, "name": NAME[st], "through": through, "fetched": d.fetched[st], "source": SOURCES[st],
                  "names_dir": "/data/land/names/%s/" % st.lower(), "counties": {}}
         counties[st] = []
         for c, rows in d.counties[st]:

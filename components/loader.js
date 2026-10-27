@@ -1177,13 +1177,14 @@
 
 // ── Farm sales in front of readers (2026-10-27, Sig) ─────────────────
 // components/land-sales.js: the "Show buyer and seller" tap on the /land-sales/ pages, "Latest farm
-// sales here" on the Atlas county pages (IL, WI), the monthly update line on the IL and WI rent
+// sales here" on the Atlas county pages (IL, WI, IN), the monthly update line on the IL, WI and IN rent
 // pages, the homepage Land card and Fast Facts' sales within 25 miles. Nothing loads elsewhere.
 (function () {
   function go() {
     if (window.AgLandSales || document.querySelector('script[src^="/components/land-sales.js"]')) return;
     if (!document.querySelector('[data-land-sales],button.ls-nm,section[data-atlas-sales="county"]')
-        && !/^\/rent\/(illinois|wisconsin)(\.html)?\/?$/.test(location.pathname)) return;
+        && !/^\/rent\/(illinois|wisconsin|indiana)(\.html)?\/?$/.test(location.pathname)
+        && !/^\/farmland-atlas\/indiana\/[a-z0-9-]+/.test(location.pathname)) return;
     var s = document.createElement('script');
     s.src = '/components/land-sales.js?v=1';
     s.async = true;
