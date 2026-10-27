@@ -1,0 +1,6 @@
+WasdeNumber,ReportDate,ReportTitle,Attribute,ReliabilityProjection,Commodity,Region,MarketYear,ProjEstFlag,AnnualQuarterFlag,Value,Unit,ReleaseDate,ReleaseTime,ForecastYear,ForecastMonth
+675,September 2026,U.S. Feed Grains and Corn Supply and Use,Ending Stocks,,Corn,United States,2026/27,Proj.,Annual,1500,Million Bushels,2026-09-11,12:00:00 PM,2026,9
+675,September 2026,U.S. Feed Grains and Corn Supply and Use,Production,,Corn,United States,2026/27,Proj.,Annual,15800,Million Bushels,2026-09-11,12:00:00 PM,2026,9
+675,September 2026,U.S. Feed Grains and Corn Supply and Use,Yield per Harvested Acre,,Corn,United States,2026/27,Proj.,Annual,178.0,Bushels,2026-09-11,12:00:00 PM,2026,9
+675,September 2026,U.S. Soybeans and Products Supply and Use (Domestic Measure),Ending Stocks,,Soybeans,United States,2026/27,Proj.,Annual,300,Million Bushels,2026-09-11,12:00:00 PM,2026,9
+675,September 2026,U.S. Wheat Supply and Use,Ending Stocks,,Wheat,United States,2026/27,Proj.,Annual,700,Million Bushels,2026-09-11,12:00:00 PM,2026,9
