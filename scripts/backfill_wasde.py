@@ -744,7 +744,7 @@ def main():
     ap.add_argument("--esmis-files", action="store_true")
     ap.add_argument("--newest", type=int, default=0)
     ap.add_argument("--update-due", action="store_true")
-    ap.add_argument("--from", dest="year_from", type=int, default=2010)
+    ap.add_argument("--from", dest="year_from", type=int, default=None)
     ap.add_argument("--to", dest="year_to", type=int, default=9999)
     ap.add_argument("--max-minutes", type=float, default=0)
     a = ap.parse_args()
@@ -762,9 +762,9 @@ def main():
     if a.esmis_files:
         a_to = a.year_to
         man, _ = run_esmis_files(fe, OUT, budget, H.Saver("history/wasde", "history backfill wasde esmis"),
-                                 year_from=a.year_from if a.year_from != 2010 else 0, year_to=a_to, newest=a.newest)
+                                 year_from=a.year_from or 0, year_to=a_to, newest=a.newest)
         return 0 if man.totals()["complete"] else 1
-    man = run_csv(fe, OUT, a.year_from, a.year_to, budget, H.Saver("history/wasde", "history backfill wasde"))
+    man = run_csv(fe, OUT, a.year_from or 2010, a.year_to, budget, H.Saver("history/wasde", "history backfill wasde"))
     t = man.totals()
     print(f"wasde: {t['complete']} of {t['chunks']} file(s) complete, {t['rows']} U.S. grain rows, {t['first']} to {t['last']}")
     return 0 if t["complete"] else 1

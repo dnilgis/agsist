@@ -93,7 +93,8 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # 20, not 10: the archive step below has its own 8 minute cap on top of the grading.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Engine checkout
@@ -190,8 +191,42 @@ jobs:
           # the calendar title rolls to the next WASDE once this one printed
           python scripts/bake_seo.py --page usda-calendar.html || true
 
+      # THE WASDE ARCHIVE, AFTER EACH REPORT (Sig, Oct 27: "Wasde should auto update").
+      # No new schedule: this job already runs through every release window, so the
+      # archive rides along as one step. Soft (continue-on-error): grading the print is
+      # what this workflow is for, and nothing here may turn it red or hold it up.
+      # --update-due exits 3, and nothing else runs, unless a WASDE is out that
+      # data/wasde-history does not have yet (and never before the first full build has
+      # been checked and published by hand from wasde-archive.yml). When it is due: the
+      # saved archive from the private raw branch, the two newest ESMIS listing pages,
+      # at most three new report files read, the raw copy saved back, the site files
+      # rebuilt. ESMIS can post a few minutes after usda.gov; the next run tries again.
+      - name: Update the WASDE archive from ESMIS
+        id: archive
+        if: ${{ inputs.dry_run != true }}
+        continue-on-error: true
+        timeout-minutes: 8
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          rc=0; python3 scripts/backfill_wasde.py --update-due || rc=$?
+          if [ "$rc" -eq 3 ]; then exit 0; fi
+          [ "$rc" -eq 0 ] || exit "$rc"
+          python3 scripts/read_wasde_text.py --selftest > /dev/null
+          python3 scripts/backfill_wasde.py --selftest > /dev/null
+          python3 scripts/build_wasde_history.py --selftest > /dev/null
+          # Not RAW_SOFT: a run without the saved manifest would push a fresh one over it.
+          if ! bash scripts/pull_raw.sh history/wasde; then
+            echo "::warning::WASDE archive: the saved archive could not be read; the next run tries again"; exit 0
+          fi
+          python3 scripts/backfill_wasde.py --esmis --pages 2
+          python3 scripts/backfill_wasde.py --esmis-files --newest 3
+          RAW_SOFT=1 bash scripts/push_raw.sh "wasde archive update" history/wasde
+          python3 scripts/build_wasde_history.py | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ -n "$(git status --porcelain -- data/wasde-history)" ]; then echo "new=1" >> "$GITHUB_OUTPUT"; fi
+
       - name: Commit
-        if: steps.read.outputs.filled == '1' || steps.pdf.outputs.new == '1'
+        if: steps.read.outputs.filled == '1' || steps.pdf.outputs.new == '1' || steps.archive.outputs.new == '1'
         run: |
           set -e
           git config user.name "AGSIST Bot"
@@ -200,6 +235,9 @@ jobs:
             git add data/analyst-estimates.json data/wpi-history.json data/wasde.json data/wasde-pdf data/nowcast-direction.json \
                     data/analyst-scorecard.json data/whats-priced-in.json \
                     whats-priced-in.html scorecard.html cot.html index.html usda-calendar.html 2>/dev/null || true
+            # its own line: before the archive is first published the folder does not exist, and
+            # one missing path makes git add stage nothing at all
+            if [ -d data/wasde-history ]; then git add data/wasde-history; fi
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "wasde: graded the $(date -u +%Y-%m-%d) print"
             if git push; then echo "Pushed on attempt $i."; exit 0; fi
