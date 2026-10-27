@@ -6,7 +6,12 @@
  *     demand, data/wasde-history/;
  *   - .github/workflows/wasde-archive.yml: dispatch only (no new schedule);
  *   - components/wasde-history.js: "How this estimate moved" on /whats-priced-in.
- * Fixtures only (test/fixtures/wasde-archive, invented numbers); no network.
+ *   - scripts/read_wasde_text.py (brief 09, Oct 27): each report's own U.S. tables, read
+ *     from the ESMIS TXT or PDF text, since usda.gov's data page refuses the runners;
+ *   - .github/workflows/wasde-watch.yml: one soft step keeps the archive current after
+ *     each report (Sig, Oct 27: "Wasde should auto update"; no new schedule).
+ * Fixtures only (test/fixtures/wasde-archive, invented numbers; test/fixtures/wasde-esmis,
+ * an excerpt of the real October 2026 report plus invented layouts); no network.
  *
  *   node --test test/wasde-archive.test.mjs
  */
@@ -35,6 +40,7 @@ function step(file, name) {
 }
 
 for (const [script, done] of [
+  ['scripts/read_wasde_text.py', /read_wasde_text selftest: 0 failure\(s\)/],
   ['scripts/backfill_wasde.py', /backfill_wasde selftest: 0 failure\(s\)/],
   ['scripts/build_wasde_history.py', /build_wasde_history selftest: 0 failure\(s\)/],
 ]) {
@@ -47,6 +53,9 @@ for (const [script, done] of [
 
 test('the fixtures say their numbers are invented', () => {
   assert.match(read('test/fixtures/wasde-archive/README.md'), /Every number here is invented for the tests; none is a USDA figure/);
+  const r = read('test/fixtures/wasde-esmis/README.md');
+  assert.match(r, /old-layout\.txt[\s\S]*Every number in this file is invented for the tests; none is a USDA figure/);
+  assert.match(r, /wasde-2026-10-09\.txt[\s\S]*USDA's published figures/, 'the real excerpt says it is real');
 });
 
 test('wasde-archive.yml is dispatch only: no schedule, no other trigger', () => {
@@ -54,7 +63,8 @@ test('wasde-archive.yml is dispatch only: no schedule, no other trigger', () => 
   const on = y.slice(y.indexOf('\non:'), y.indexOf('\npermissions:'));
   assert.match(on, /^\s+workflow_dispatch:/m);
   assert.doesNotMatch(y, /schedule:|cron:|workflow_run:|\bpush:|pull_request:|repository_dispatch:/);
-  assert.match(on, /options: \[csv, esmis\]/);
+  assert.match(on, /options: \[csv, esmis, files\]/);
+  assert.match(on, /publish:\n\s+description: [^\n]+\n\s+type: boolean\n\s+default: false/, 'publishing is a choice, off by default');
 });
 
 test('wasde-archive.yml: resumes from raw, saves the raw history there, commits only the small site files', () => {
@@ -72,11 +82,48 @@ test('wasde-archive.yml: resumes from raw, saves the raw history there, commits 
   const c = step('wasde-archive.yml', 'Commit the site files');
   assert.match(c, /git add data\/wasde-history\n/);
   assert.doesNotMatch(c, /git add [^\n]*history\/wasde/, 'raw history never reaches main');
-  assert.match(step('wasde-archive.yml', 'Build the site files'), /if: \$\{\{ inputs\.mode == 'csv' \}\}/);
+  const b = step('wasde-archive.yml', 'Build the site files');
+  assert.match(b, /if: \$\{\{ inputs\.mode != 'esmis' \}\}/);
+  assert.match(b, /if \[ "\$PUBLISH" = "true" \]; then out=data\/wasde-history; else out="\$RUNNER_TEMP\/wasde-history"; fi/,
+    'unpublished, the build never touches data/wasde-history');
+  assert.match(c, /if: \$\{\{ inputs\.mode != 'esmis' && inputs\.publish \}\}/, 'nothing is committed unless publish is set');
+  assert.match(f, /--esmis-files "\$\{args\[@\]\}"/);
+  assert.match(step('wasde-archive.yml', 'Install pdftotext'), /if: \$\{\{ inputs\.mode == 'files' \}\}/);
+});
+
+// ---------------------------------------------------------------- the auto-update (wasde-watch.yml)
+test('wasde-watch: the archive update is one soft step in the existing job, no new schedule', () => {
+  const y = read('.github/workflows/wasde-watch.yml');
+  const crons = [...noComments(y).matchAll(/cron: "([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(crons, ['*/5 16-17 9-12 * *'], 'the one schedule it had');
+  const jobs = noComments(y).slice(noComments(y).indexOf('\njobs:'));
+  assert.deepEqual([...jobs.matchAll(/^  ([a-z][\w-]*):$/gm)].map((m) => m[1]), ['gate', 'grade'], 'no new job');
+  const a = step('wasde-watch.yml', 'Update the WASDE archive from ESMIS');
+  assert.match(a, /continue-on-error: true/, 'it can never turn the grading red');
+  assert.match(a, /timeout-minutes: [1-9]\n/);
+  assert.match(a, /if: \$\{\{ inputs\.dry_run != true \}\}/);
+  const body = noComments(a);
+  const gate = body.indexOf('--update-due');
+  assert.ok(gate > 0 && gate < body.indexOf('pull_raw.sh'), 'the gate runs before any network');
+  assert.match(body, /if \[ "\$rc" -eq 3 \]; then exit 0; fi/);
+  assert.match(body, /if ! RAW_SOFT= bash scripts\/pull_raw\.sh history\/wasde; then/, 'never runs on without the saved manifest');
+  assert.match(a, /RAW_SOFT: '1'/, 'the save is soft, as every publishing job saves');
+  assert.match(body, /--esmis --pages 2\n/);
+  assert.match(body, /--esmis-files --newest 3\n/);
+  assert.match(body, /\n\s+bash scripts\/push_raw\.sh "wasde archive update" history\/wasde\n/);
+  assert.match(body, /python3 scripts\/build_wasde_history\.py/);
+  const steps = [...y.matchAll(/^      - name: (.+)$/gm)].map((m) => m[1]);
+  assert.ok(steps.indexOf('Update the WASDE archive from ESMIS') > steps.indexOf("Rebuild the page's data")
+    && steps.indexOf('Update the WASDE archive from ESMIS') < steps.indexOf('Commit'), 'after the grading, before the commit');
+  const c = step('wasde-watch.yml', 'Commit');
+  assert.match(c, /steps\.archive\.outputs\.new == '1'/);
+  assert.match(c, /\n\s+if \[ -d data\/wasde-history \]; then git add data\/wasde-history; fi\n/, 'its own git add, so a missing folder never empties the grading commit');
+  assert.doesNotMatch(c, /git add [^\n]*history\/wasde/, 'raw history never reaches main');
 });
 
 test('raw WASDE history is ignored on main', () => {
-  for (const p of ['history/wasde/manifest.json', 'history/wasde/files/oce-wasde-report-data-2026-10.csv.gz', 'history/wasde/us-grains/x.csv.gz']) {
+  for (const p of ['history/wasde/manifest.json', 'history/wasde/files/oce-wasde-report-data-2026-10.csv.gz', 'history/wasde/us-grains/x.csv.gz',
+    'history/wasde/esmis/manifest.json', 'history/wasde/esmis/text/2026-10-09.txt.gz']) {
     const r = spawnSync('git', ['check-ignore', '-q', '--no-index', p], { cwd: root });
     assert.equal(r.status, 0, `${p} is ignored`);
   }
@@ -99,7 +146,8 @@ test('whats-priced-in: the section is hidden until history exists, credits USDA,
   assert.ok(at > 0, 'hidden by default');
   const sec = h.slice(at, h.indexOf('</details>', at));
   assert.match(sec, /<h2>How this estimate moved<\/h2>/);
-  assert.match(sec, /Source: <a href="https:\/\/www\.usda\.gov\/historical-wasde-report-data-3"/);
+  assert.match(sec, /Source: <a href="https:\/\/esmis\.nal\.usda\.gov\/publication\/world-agricultural-supply-and-demand-estimates"[^>]*>USDA World Agricultural Outlook Board, monthly WASDE reports<\/a> \(USDA ESMIS archive\)/,
+    'the credit names the archive the figures are read from');
   assert.match(sec, /data-wh-body/);
   assert.doesNotMatch(sec, /—/, 'no em dash');
   assert.match(h, /<script src="\/components\/wasde-history\.js\?v=\d+" defer><\/script>/);
@@ -145,6 +193,19 @@ test('component: a line\'s path, oldest first, with each change and status', () 
   assert.deepEqual(old.map((x) => [x.flag, x.change]), [['projected', ''], ['estimated', '-20']]);
   assert.equal(W.summary('Corn', '2030/31', 'Ending Stocks', 'x', []), 'No figure on file for this line and year.');
   assert.deepEqual(W.path(corn, '2030/31', si), []);
+});
+
+test('component: older market years come from their decade file, named only as the build names them', () => {
+  const W = lib();
+  const doc = { years: { '2026/27': {} }, parts: [{ name: 'corn-1990s.json', years: ['1995/96', '1996/97'] },
+    { name: '../x.json', years: ['1980/81'] }, { name: 'https://x.example/corn-1970s.json', years: ['1975/76'] }] };
+  assert.deepEqual(W.partFor(doc, '1996/97'), doc.parts[0]);
+  assert.equal(W.partFor(doc, '2026/27'), null, 'a year the crop file holds');
+  assert.equal(W.partFor(doc, '1980/81'), null, 'a path is refused');
+  assert.equal(W.partFor(doc, '1975/76'), null, 'another host is refused');
+  assert.deepEqual(W.allYears(doc), ['2026/27', '1996/97', '1995/96', '1980/81', '1975/76']);
+  doc.years['1996/97'] = {};
+  assert.equal(W.partFor(doc, '1996/97'), null, 'once loaded, not fetched again');
 });
 
 test('component: share link round trip, and a bad one is ignored', () => {
