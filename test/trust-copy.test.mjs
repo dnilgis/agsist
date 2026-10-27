@@ -42,3 +42,18 @@ test("no page calls the futures live or puts the delay at 15 minutes", () => {
   assert.match(terms, /about 10 to 25 minutes old/);
   assert.match(terms, /time of its quote/);
 });
+
+/* 2. What's Priced In grades on the distance from the trade AVERAGE (bands per kind of
+   number); the survey's low and high are context. The methods paragraph once called the
+   surprise thresholds "the edges of the trade range", a second definition. And the
+   "No report data yet" box sat in the page text (hidden by CSS) beside the results; it is
+   written only when the data really is a sample. */
+test("What's Priced In has one grading definition and no empty-state text beside results", () => {
+  const h = read("whats-priced-in.html");
+  assert.ok(!/edges of the trade range|ends of the trade range/.test(h), "a second, range-edge definition of the thresholds");
+  assert.match(h, /surprise thresholds<\/b> on the report card are the trade average minus and plus that same band/);
+  assert.match(h, /<div class="wp-sample" id="wp-sample"><\/div>/, "the sample box is empty in the page text");
+  const visible = h.replace(/<script[\s\S]*?<\/script>/g, "");
+  assert.ok(!/No report data yet/.test(visible), "No report data yet is in the page text");
+  assert.match(h, /if\(d\.sample\)\{var ws=document\.getElementById\('wp-sample'\);ws\.textContent='No report data yet/);
+});
