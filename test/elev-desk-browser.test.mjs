@@ -69,7 +69,7 @@ function blocked(ix) {
 
 /* ---- the browser ---- */
 const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".png": "image/png", ".ico": "image/x-icon", ".woff2": "font/woff2", ".svg": "image/svg+xml" };
-/* o: {width, token, worker: 'ok'|'down'|'500'|'slow', seed: async (env) => {}} */
+/* o: {width, token, worker: 'ok'|'down'|'500'|'slow', seed: async (env) => {}, newcoop: html, pages: {origin: html}} */
 async function open(browser, path, o = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: o.width || 1280, height: o.height || 800 } });
   await ctx.grantPermissions(["clipboard-read", "clipboard-write"], { origin: "https://agsist.com" }).catch(() => {});
@@ -111,6 +111,7 @@ async function open(browser, path, o = {}) {
     }
     if (u.origin === "https://api.github.com") return route.fulfill({ status: 200, contentType: "application/json", headers: { "access-control-allow-origin": "*" }, body: '{"workflow_runs":[]}' });
     if (u.origin === "https://www.newcoop.com" && o.newcoop) return route.fulfill({ status: 200, contentType: "text/html", body: o.newcoop });
+    if (o.pages && o.pages[u.origin] != null) return route.fulfill({ status: 200, contentType: "text/html", body: o.pages[u.origin] });
     S.outside.push(u.origin);
     return route.abort();
   });
@@ -431,4 +432,184 @@ test("the Copy for AGSIST bookmark on NEW Cooperative's page: copy, open the des
   await desk.waitForFunction(() => /^Saved/.test(document.getElementById("p-res").textContent));
   assert.ok(await inView(desk, "#p-res"));
   await S.ctx.close();
+});
+
+/* ---- Send to AGSIST (Oct 27): one tap on the bid page, the desk reads it and saves a clean read ---- */
+function fullPage() {
+  const a = SRC.indexOf('<h1 class="text-4xl'), b = SRC.indexOf('<h1 class="text-4xl', a + 10);
+  const afton = SRC.slice(a, b), have = new Set(["Afton", "Creston 1", "Creston 2", "LuVerne"]);
+  const more = P.NEWCOOP_BOARDS.map((x) => x[1]).filter((n) => !have.has(n));
+  return SRC.slice(0, b) + more.map((n) => afton.replace(/>Afton\s*</, ">" + n + "<")).join("") + SRC.slice(b);
+}
+const FULL = fullPage();
+const SEND = P.sendBookmarklet();
+/* run the bookmark on a page, as a tap does; resolves with the desk tab it opens */
+async function tapSend(S, pageUrl) {
+  const site = await S.ctx.newPage();   // its own errors are the mock serving the board for its script tags; only the desk's count
+  await site.goto(pageUrl);
+  const [desk] = await Promise.all([S.ctx.waitForEvent("page"), site.evaluate((code) => { (0, eval)(decodeURIComponent(code.replace(/^javascript:/, ""))); }, SEND)]);
+  desk.on("pageerror", (e) => S.errs.push(e.message));
+  await desk.waitForLoadState("load");
+  return { site, desk };
+}
+const posts = (S) => S.calls.filter((c) => c === "POST /elev/admin/paste").length;
+
+test("Today shows Send to AGSIST beside the copy bookmark, with steps for computer, iPhone and Android, and the bookmark holds no token", { skip }, async () => {
+  for (const width of WIDTHS) {
+    const S = await open(await br(), "/elev-today.html", { width, token: TOK });
+    const pg = S.pg;
+    assert.equal(await pg.getAttribute("#sbm", "href"), SEND);
+    assert.equal(await pg.locator("#sbmcode").innerText(), SEND);
+    assert.ok(await pg.isVisible("#bm"), "the old Copy for AGSIST bookmark is still there");
+    const t = await pg.locator("#send").innerText();
+    for (const re of [/Computer:/, /iPhone \(Safari\):/, /Android \(Chrome\):/, /Select All, Copy/]) assert.match(t, re);
+    assert.equal(await pg.getAttribute('#send a[href="/elev-admin.html#send"]', "href"), "/elev-admin.html#send");
+    assert.ok(!SEND.includes(TOK));
+    assert.ok(!/—/.test(t), "no em dash");
+    await pg.click("#scopy");
+    await pg.waitForFunction(() => document.getElementById("scopy").textContent === "Copied");
+    assert.equal(await pg.evaluate(() => navigator.clipboard.readText()), SEND);
+    await shot(pg, `today-send-${width}`);
+    assert.ok(await noSideScroll(pg) <= 0, "no side scroll");
+    assert.deepEqual(S.errs, []);
+    await S.ctx.close();
+  }
+});
+
+for (const width of WIDTHS) test(`${width}px: Send to AGSIST on NEW Cooperative's whole board: the desk reads it and saves it with no tap`, { skip }, async () => {
+  const S = await open(await br(), "/elev-today.html", { width, token: TOK, newcoop: FULL });
+  const { site, desk } = await tapSend(S, "https://www.newcoop.com/cash-bids");
+  const u = new URL(desk.url());
+  assert.equal(u.pathname + u.hash, "/elev-admin.html#send");
+  assert.equal(u.searchParams.get("from"), "www.newcoop.com");
+  assert.ok(!desk.url().includes(TOK), "no token in the address");
+  await desk.waitForFunction(() => /^Saved/.test(document.getElementById("p-res").textContent), null, { timeout: 15000 });
+  await shot(desk, `send-clean-${width}`);
+  assert.match(await desk.locator("#p-res").innerText(), /^Saved .*: \d+ rows at 66 locations\./);
+  assert.equal(posts(S), 1, "saved with no tap on Save");
+  assert.ok(await inView(desk, "#p-res"), "the answer is on screen");
+  assert.equal(posts(S), 1, "saved once");
+  const saved = JSON.parse(S.store.get("paste:newcoop"));
+  assert.equal(saved.locations.length, 66);
+  assert.deepEqual(saved.locations[0].rows[0], { commodity: "Corn", delivery: "10/1/2026 - 10/31/2026", cash: "$4.26", basis: "-35", future: "461-4", change: "-5-4" });
+  assert.ok(!S.calls.some((c) => c.includes(TOK)), "the token is never in an address");
+  assert.ok(await noSideScroll(desk) <= 0);
+  assert.deepEqual(S.errs, []);
+  assert.deepEqual([...new Set(S.outside)], [], "nothing fetched outside the mocks");
+  await site.close();
+  await S.ctx.close();
+});
+
+test("Send to AGSIST on a short page (4 of 66 boards): the desk shows what it read and waits for Save", { skip }, async () => {
+  const S = await open(await br(), "/elev-today.html", { width: 390, token: TOK, newcoop: SRC });
+  const { desk } = await tapSend(S, "https://www.newcoop.com/cash-bids");
+  await desk.waitForSelector("#p-save:not([hidden])");
+  await desk.waitForTimeout(800);
+  assert.match(await desk.locator("#p-out").innerText(), /^Not saved yet: only 4 of 66 boards came through\. Check the list, then press Save if it looks right\./);
+  assert.match(await desk.locator("#p-prev").innerText(), /4 of 66 boards found/);
+  assert.equal(posts(S), 0, "nothing sent to the worker");
+  assert.ok(!S.store.has("paste:newcoop"));
+  await shot(desk, "send-short-390");
+  await desk.locator("#p-save").scrollIntoViewIfNeeded();
+  await desk.click("#p-save");
+  await desk.waitForFunction(() => /^Saved/.test(document.getElementById("p-res").textContent));
+  assert.equal(JSON.parse(S.store.get("paste:newcoop")).locations.length, 4, "Save still saves what was read");
+  assert.deepEqual(S.errs, []);
+  await S.ctx.close();
+});
+
+test("Send to AGSIST with no token in the desk: the whole board is read, nothing is sent, and it says where the token goes", { skip }, async () => {
+  const S = await open(await br(), "/elev-today.html", { width: 390, newcoop: FULL });
+  const { desk } = await tapSend(S, "https://www.newcoop.com/cash-bids");
+  await desk.waitForSelector("#p-save:not([hidden])");
+  await desk.waitForTimeout(500);
+  assert.match(await desk.locator("#p-res").innerText(), /token box at the top of this page is empty/);
+  assert.equal(posts(S), 0);
+  await S.ctx.close();
+});
+
+/* A page that is not a supported bid site opens the desk and posts the whole board at it anyway. */
+const PUSHER = (target) => `<html><body><p>not a bid site</p><script>
+  window.got = [];
+  addEventListener("message", (e) => window.got.push(e.origin + " " + JSON.stringify(e.data)));
+  window.go = (html) => { window.w = window.open("https://agsist.com/elev-admin.html${target}", "_blank");
+    window.t = setInterval(() => { try { window.w.postMessage({ type: "agsist-send-page", html }, "*"); } catch (e) {} }, 100); };
+</script></body></html>`;
+test("a message from any origin but the supported bid site is ignored: other sites, plain http, a lookalike host", { skip }, async () => {
+  const bad = ["https://www.cargill.com", "http://www.newcoop.com", "https://newcoop.com.example.net", "https://shop.newcoop.com"];
+  const pages = Object.fromEntries(bad.map((o) => [o, PUSHER("#send")]));
+  const S = await open(await br(), "/elev-today.html", { width: 390, token: TOK, pages });
+  for (const o of bad) {
+    const site = await S.ctx.newPage();
+    await site.goto(o + "/cash-bids");
+    const [desk] = await Promise.all([S.ctx.waitForEvent("page"), site.evaluate((h) => window.go(h), FULL)]);
+    await desk.waitForLoadState("load");
+    await desk.waitForTimeout(1500);
+    assert.equal(await desk.inputValue("#p-in"), "", o + ": nothing put in the paste box");
+    assert.equal(await desk.locator("#p-prev").innerText(), "", o + ": nothing read");
+    assert.ok(await desk.isHidden("#p-save"), o);
+    assert.deepEqual(await site.evaluate(() => window.got), [], o + ": the desk never told it it was ready");
+    await desk.close(); await site.close();
+  }
+  /* and the bookmark itself, tapped on a site with no reader: said plainly, nothing taken */
+  const { desk } = await tapSend(S, "https://www.cargill.com/cash-bids");
+  await desk.waitForTimeout(800);
+  assert.match(await desk.locator("#p-out").innerText(), /There is no reader for www\.cargill\.com yet, so nothing was taken from it/);
+  assert.equal(await desk.inputValue("#p-in"), "");
+  assert.equal(posts(S), 0, "nothing sent to the worker");
+  assert.ok(!S.store.has("paste:newcoop"));
+  assert.deepEqual(S.errs, []);
+  await S.ctx.close();
+});
+
+test("from NEW Cooperative's own origin, a message from a frame that did not open the desk is ignored; the opener's is taken", { skip }, async () => {
+  const page = `<html><body><script>
+    window.got = [];
+    window.go = () => new Promise((ok) => {
+      window.w = window.open("https://agsist.com/elev-admin.html#send", "_blank");
+      addEventListener("message", (e) => { if (e.source === window.w && e.data && e.data.type === "agsist-send-ready") { window.got.push("ready"); ok(); } });
+    });
+    window.fromFrame = (html) => { const f = document.createElement("iframe"); f.srcdoc = "<p>x</p>"; document.body.appendChild(f);
+      return new Promise((ok) => { f.onload = () => { f.contentWindow.eval("parent.w.postMessage({ type: 'agsist-send-page', html: parent.H }, 'https://agsist.com')"); ok(); }; }); };
+  </script></body></html>`;
+  const S = await open(await br(), "/elev-today.html", { width: 1280, token: TOK, pages: { "https://www.newcoop.com": page } });
+  const site = await S.ctx.newPage();
+  await site.goto("https://www.newcoop.com/cash-bids");
+  const [desk] = await Promise.all([S.ctx.waitForEvent("page"), site.evaluate(() => window.go())]);
+  await desk.waitForLoadState("load");
+  await site.waitForFunction(() => window.got.length === 1);
+  await site.evaluate((h) => { window.H = h; return window.fromFrame(h); }, FULL);
+  await desk.waitForTimeout(1000);
+  assert.equal(await desk.inputValue("#p-in"), "", "a frame is not the opener");
+  assert.equal(posts(S), 0);
+  await site.evaluate((h) => window.w.postMessage({ type: "agsist-send-page", html: h }, "https://agsist.com"), FULL);
+  await desk.waitForFunction(() => /^Saved/.test(document.getElementById("p-res").textContent), null, { timeout: 15000 });
+  assert.equal(posts(S), 1);
+  /* a second message after the first is not read again */
+  await site.evaluate((h) => window.w.postMessage({ type: "agsist-send-page", html: h }, "https://agsist.com"), SRC);
+  await desk.waitForTimeout(500);
+  assert.equal(await desk.inputValue("#p-in"), "", "the saved paste stays cleared");
+  assert.equal(posts(S), 1);
+  assert.deepEqual(S.errs, []);
+  await S.ctx.close();
+});
+
+test("the phone way: the send page opened by itself, Paste from clipboard with the whole board copied, reads and saves the same way", { skip }, async () => {
+  const S = await open(await br(), "/elev-admin.html#send", { width: 390, token: TOK });
+  const pg = S.pg;
+  await pg.waitForFunction(() => /No bid page sent anything/.test(document.getElementById("p-out").textContent));
+  const text = P.read("newcoop", FULL).body.locations.length && FULL;
+  await pg.evaluate((t) => navigator.clipboard.writeText(t), text);
+  await pg.click("#p-clip");
+  await pg.waitForFunction(() => /^Saved/.test(document.getElementById("p-res").textContent), null, { timeout: 15000 });
+  assert.equal(JSON.parse(S.store.get("paste:newcoop")).locations.length, 66);
+  /* the same page at #paste (the old way) still waits for Save */
+  const T = await open(await br(), "/elev-admin.html?paste=newcoop#paste", { width: 390, token: TOK });
+  await T.pg.evaluate((t) => navigator.clipboard.writeText(t), FULL);
+  await T.pg.click("#p-clip");
+  await T.pg.waitForSelector("#p-save:not([hidden])");
+  await T.pg.waitForTimeout(500);
+  assert.ok(!T.calls.includes("POST /elev/admin/paste"), "the old paste box never saves by itself");
+  assert.deepEqual(S.errs, []);
+  await S.ctx.close(); await T.ctx.close();
 });
