@@ -506,6 +506,13 @@ def run(root, got=None, now=None):
     out = []
     for src in cfg["reports"]:
         slug = pick_slug(src, listing)
+        if src.get("hold"):
+            # a report whose layout no saved copy has checked yet (the hay auctions, Oct 27 2026):
+            # the probe saves its text; nothing from it is published until a fixture checks the parser
+            b = merge(old.get(src["id"]), src, None, "held: waiting on a checked copy of this report", now_iso, slug)
+            b.pop("rows", None)
+            out.append(b)
+            continue
         g = (got.get(slug) if got is not None else (fetch(slug) if slug else None)) or (None, None, "not fetched")
         rep, why = read_one(src, slug, g)
         out.append(merge(old.get(src["id"]), src, rep, why, now_iso, slug))
@@ -749,6 +756,12 @@ def selftest():
         again = run(dp, got={}, now=datetime.datetime(2026, 10, 17, tzinfo=datetime.timezone.utc))
         ck("a run that reads nothing keeps the last good issue, marked not refreshed",
            again is not None and again["reports"][0]["date"] == "2026-10-16" and again["reports"][0]["status"]["ok"] is False)
+        (dp / SOURCES).write_text(json.dumps({"reports": [{"id": "sd-direct", "state": "SD", "slug": "3183"},
+                                                           {"id": "ia-auction", "state": "IA", "slug": "3183", "hold": True}]}))
+        held = run(dp, got={"3183": (None, sd_txt, None)}, now=datetime.datetime(2026, 10, 18, tzinfo=datetime.timezone.utc))
+        hb = [r for r in held["reports"] if r["id"] == "ia-auction"][0]
+        ck("a held report is fetched by the probe only: the run publishes no rows from it, and says why",
+           not hb.get("rows") and hb["status"]["ok"] is False and hb["status"]["note"].startswith("held"), hb)
         (dp / OUT).unlink()
         ck("an empty first run writes no file", run(dp, got={}) is None and not (dp / OUT).exists())
 
