@@ -5,6 +5,14 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.56 (2026-10-27): YOUR COUNTY THIS WEEK (Sig, Oct 27: lines inside the existing
+ *   Daily, no new list, sender or cron). POST /subscribe (JSON or form) and /notice
+ *   with daily:true take one more optional field, cw, read like reports (a boolean
+ *   or the words a form sends): the reader ticked "Thursdays, what changed in my
+ *   county" in the Daily ask. The box is never pre-ticked. Not given = the stored
+ *   value is left alone. Kept on sub:<email> only when true, so every other record
+ *   is byte-for-byte what it was; /list?format=json adds cw:true to those rows and
+ *   /count adds daily_county_week (a count). A /daily-elev save keeps it.
  * v5.55 (2026-10-23): MONTHLY LAND SALE EMAIL (Sig, Oct 23: new list, sender
  *   and schedule approved). /notice takes one more topic, landsales:<ZIP>:
  *   <miles>, a 5-digit ZIP (not 00000) and a radius of 10, 25 or 50, asked
@@ -1279,6 +1287,8 @@ function subRecord(email, raw) {
     reports: r.reports !== false,
     // v5.42: only when the reader has saved elevators, so every other record is unchanged
     ...(subEl(r.el).length ? { el: subEl(r.el) } : {}),
+    // v5.56: only when the reader ticked "Your county this week"
+    ...(r.cw === true ? { cw: true } : {}),
   };
 }
 // v5.42: the elevator ids a Daily record may carry: 8 hex, no repeats, 6 at most.
@@ -1297,8 +1307,8 @@ function subEl(v) {
 // v5.4 merge, shared by /subscribe and /notice (daily:true). A bad ZIP is
 // dropped, never a reason to refuse the subscribe; the first ts is kept; zip,
 // reports and src change only when the request carries them.
-async function putSub(env, email, src, zipIn, repIn) {
-  const zip = subZip(zipIn), reports = subBool(repIn);
+async function putSub(env, email, src, zipIn, repIn, cwIn) {
+  const zip = subZip(zipIn), reports = subBool(repIn), cw = subBool(cwIn);
   src = String(src || "").slice(0, 60);
   let prev = null;
   try { const v = await env.SUBS.get("sub:" + email); prev = v ? JSON.parse(v) : null; } catch (e) { prev = null; }
@@ -1312,6 +1322,8 @@ async function putSub(env, email, src, zipIn, repIn) {
   rec.reports = reports !== null ? reports : prev.reports !== false;
   // v5.42: a second sign-up keeps the reader's saved elevators.
   if (subEl(prev.el).length) rec.el = subEl(prev.el);
+  // v5.56: "Your county this week", kept only when true; not given = left as it was
+  if (cw !== null ? cw : prev.cw === true) rec.cw = true;
   await env.SUBS.put("sub:" + email, JSON.stringify(rec), { metadata: rec });
 }
 
@@ -3074,17 +3086,17 @@ async function handle(req, env) {
 
     // ---------- daily briefing: subscribe ----------
     if (path === "/subscribe" && req.method === "POST") {
-      let email = "", src = "", trap = "", zipIn = null, repIn = null;
+      let email = "", src = "", trap = "", zipIn = null, repIn = null, cwIn = null;
       const ct = req.headers.get("Content-Type") || "";
       try {
         if (ct.includes("json")) {
           const b = await req.json();
           email = b.email || ""; src = b.source || ""; trap = b._gotcha || "";
-          zipIn = b.zip; repIn = b.reports;
+          zipIn = b.zip; repIn = b.reports; cwIn = b.cw;
         } else {
           const f = await req.formData();
           email = f.get("email") || ""; src = f.get("source") || ""; trap = f.get("_gotcha") || "";
-          zipIn = f.get("zip"); repIn = f.get("reports");
+          zipIn = f.get("zip"); repIn = f.get("reports"); cwIn = f.get("cw");
         }
       } catch (e) { /* validation below */ }
       email = String(email).trim().toLowerCase();
@@ -3093,7 +3105,7 @@ async function handle(req, env) {
         return json({ ok: false, error: "invalid email" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
-      await putSub(env, email, src, zipIn, repIn);
+      await putSub(env, email, src, zipIn, repIn, cwIn);
       return json({ ok: true }, 200, cors(req));
     }
 
@@ -3137,7 +3149,7 @@ async function handle(req, env) {
       }
       await env.SUBS.put("note:" + email, JSON.stringify(r));
       const daily = subBool(b.daily) === true;
-      if (daily) await putSub(env, email, src, b.zip, b.reports);
+      if (daily) await putSub(env, email, src, b.zip, b.reports, b.cw);
       return json({ ok: true, topic, daily }, 200, cors(req));
     }
 
@@ -3298,6 +3310,7 @@ async function handle(req, env) {
       if (subZip(sub.zip)) rec.zip = subZip(sub.zip);
       rec.reports = sub.reports !== false;
       if (ids.length) rec.el = ids;
+      if (sub.cw === true) rec.cw = true;   // v5.56
       await env.SUBS.put("sub:" + d.e, JSON.stringify(rec), { metadata: rec });
       if (b.forget === true) await env.SUBS.delete("dk:" + k);
       return json({ ok: true, n: ids.length }, 200, c);
@@ -3412,10 +3425,11 @@ async function handle(req, env) {
       // v5.4: totals for the private dashboard. Counts only, no addresses.
       if (!authed) return json({ ok: false }, 403);
       const subs = await subAll(env);   // v5.13: metadata, as /list
-      let withZip = 0, withEl = 0;
+      let withZip = 0, withEl = 0, withCw = 0;
       const bySource = {};
       for (const r of subs) {
         if (r.zip) withZip++;
+        if (r.cw === true) withCw++;
         if (r.el && r.el.length) withEl++;
         const s = r.src || "(none)";
         bySource[s] = (bySource[s] || 0) + 1;
@@ -3425,6 +3439,7 @@ async function handle(req, env) {
         daily: subs.length,
         daily_with_zip: withZip,
         daily_with_elevators: withEl,   // v5.42
+        daily_county_week: withCw,      // v5.56
         alerts: (await listKeys(env, "alert:")).length,
         ewatch: (await listKeys(env, "ewatch:")).length,
         pwatch: (await listKeys(env, "pwatch:")).length,

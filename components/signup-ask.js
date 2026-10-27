@@ -51,8 +51,13 @@
        setDismissed, zip, subscribe, okText. The homepage's watch and price
        alert opt-ins and its signup band call subscribe() from here.
 
+   Your county this week (2026-10-27, Sig: inside the existing Daily, no new list):
+   every Daily ask's ZIP row carries one more box, "Thursdays, add what changed in
+   my county", never pre-ticked. Ticked, the signup sends cw:true (worker v5.56)
+   and needs a ZIP; unticked, nothing is sent and a stored choice is left alone.
+
    Contract (SIGNUP.md, worker v5.4): POST /subscribe {email, source, reports,
-   zip?}. A signup succeeds only on HTTP ok AND data.ok === true. Older
+   zip?, cw?}. A signup succeeds only on HTTP ok AND data.ok === true. Older
    workers ignore zip and reports and still subscribe the address.
 
    Honesty: no subscriber count, no timer, no box ticked without its label. */
@@ -64,6 +69,7 @@
   var EP_NOTICE = 'https://agsist-api.dnilgis.workers.dev/notice';
   var NOTICE_KEY = 'agsist_notices';
   var ZIP_LABEL = 'ZIP, for your top local bid in the email';
+  var CW_LABEL = 'Thursdays, add what changed in my county: drought, nearby corn bids, land sales';
   var DISMISS_DAYS = 35;
   var BAR_KEY = 'agsist_signup_bar_dismissed';
   var BAR_TEXT = 'AGSIST Daily: your local top bid and the markets, free, every morning';
@@ -175,6 +181,7 @@
     var body = { email: String(o.email || '').trim(), source: sourceFor(o.source), reports: o.reports !== false };
     var z = /^\d{5}$/.test(String(o.zip || '')) ? String(o.zip) : (o.zipField ? '' : zip());
     if (z) body.zip = z;
+    if (o.cw === true) body.cw = true;
     return post(EP, body).then(function (res) {
       if (res.ok) signedUp(body.source, o.askId);
       return res;
@@ -295,6 +302,7 @@
     '.sa-optin{display:flex;align-items:flex-start;gap:8px;min-height:44px;padding:6px 0;font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.875rem;line-height:1.4;color:var(--text);cursor:pointer}',
     '.sa-optin input{flex:none;width:20px;height:20px;margin:0;accent-color:var(--gold);cursor:pointer}',
     '.sa-optin[hidden]{display:none}',
+    '.sa-z .sa-cw{flex:1 1 100%}',
     '.sa-optmsg{font-size:.875rem;line-height:1.4;margin-top:4px}',
     '.sa-optmsg.is-ok{color:var(--green)}.sa-optmsg.is-err{color:var(--red)}',
     /* the second-visit bar */
@@ -393,7 +401,7 @@
     var BTN = topic ? (arc ? arc.btn : (el.getAttribute('data-btn') || 'Email me')) : (variant === 'hero' ? 'Sign up' : 'Sign up free');
     var OK = topic ? (arc ? arc.ok : (el.getAttribute('data-ok') || 'Done. One email when it’s out.')) : okText();
     var withDaily = topic && !isSignedUp();
-    var n = ++seq, iid = 'sa-e-' + n, mid = 'sa-m-' + n, zid = 'sa-z-' + n, did = 'sa-d-' + n;
+    var n = ++seq, iid = 'sa-e-' + n, mid = 'sa-m-' + n, zid = 'sa-z-' + n, did = 'sa-d-' + n, cid = 'sa-c-' + n;
     /* the ZIP box: a Daily ask always has one; a notice ask only with the Daily box ticked */
     var zipLater = topic ? true : (variant === 'hero' || variant === 'bar');
     el.classList.add('sa-ask', 'sa-ask--' + variant);
@@ -409,6 +417,7 @@
         + '<input class="sa-zin" id="' + zid + '" type="text" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Optional">'
         /* the sample (2026-10-23): this morning's issue, beside the ZIP box so it costs no height */
         + (!topic && variant === 'page' ? '<a class="sa-see" href="/daily" data-sa-sample>See this morning\u2019s email</a>' : '')
+        + (!topic ? '<label class="sa-optin sa-cw" for="' + cid + '"><input type="checkbox" id="' + cid + '"> ' + CW_LABEL + '</label>' : '')
         + '</div>')
       + '<p class="sa-m" id="' + mid + '" role="status" aria-live="polite"></p>'
       + (note ? '<p class="sa-n">' + esc(note) + '</p>' : '')
@@ -416,7 +425,7 @@
     el.hidden = false;
     seen(el, askId);
     var form = el.querySelector('form'), input = el.querySelector('.sa-in'), btn = el.querySelector('.sa-b'), msg = el.querySelector('.sa-m');
-    var zrow = el.querySelector('.sa-z'), zin = el.querySelector('.sa-zin'), dbox = el.querySelector('.sa-d input');
+    var zrow = el.querySelector('.sa-z'), zin = el.querySelector('.sa-zin'), dbox = el.querySelector('.sa-d input'), cbox = el.querySelector('.sa-cw input');
     var zipTouched = false;
     function fillZip() { if (zin && !zipTouched) zin.value = zipStart(el); }
     function showZip(on) {
@@ -448,6 +457,12 @@
         zin.setAttribute('aria-invalid', 'true'); zin.focus();
         return;
       }
+      var cw = !!(cbox && cbox.checked && zipShown);
+      if (cw && !zv) {
+        msg.textContent = 'The county lines need your ZIP. Add it, or untick the box.';
+        zin.setAttribute('aria-invalid', 'true'); zin.focus();
+        return;
+      }
       msg.textContent = '';
       btn.disabled = true; btn.textContent = 'Sending…';
       el.setAttribute('data-sa-busy', '1');
@@ -455,7 +470,7 @@
       var req;
       var zipUsed = zipShown ? zv : zipStart(el);
       if (topic) req = notice({ email: email, source: source, topic: topic, daily: daily, zip: zv, year: year, askId: askId, after: el.getAttribute('data-after') || '' });
-      else if (zipShown) req = subscribe({ email: email, source: source, reports: reports, zip: zv, zipField: true, askId: askId });
+      else if (zipShown) req = subscribe({ email: email, source: source, reports: reports, zip: zv, zipField: true, askId: askId, cw: cw });
       else req = subscribe({ email: email, source: source, reports: reports, zip: zipUsed, askId: askId });
       req.then(function (res) {
         el.removeAttribute('data-sa-busy');

@@ -553,7 +553,7 @@ def _a(url, text, camp=None, content=None, cls="link", color=GOLD):
 
 # ── the email ────────────────────────────────────────────────────────────
 def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_url=None, today=None,
-          rain=None, pod=None, fact=None, loc=None):
+          rain=None, pod=None, fact=None, loc=None, county=None):
     """{"subject", "subject_from", "subject_field", "preheader", "html", "text", "slots"}."""
     camp = BE.campaign_of(daily)
     iso = _iso_day(daily)
@@ -583,13 +583,59 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
             fact = None
     pod = pod if (isinstance(pod, dict) and pod.get("image_url") and pod.get("why") and pod.get("make_url")) else None
     offer = BE.rain_print_offer(rain, today)
-    slots = {"today": len(items), "only_here": len(here), "print": bool(pod), "fact": bool(fact)}
+    cw = county_block(county)
+    slots = {"today": len(items), "only_here": len(here), "print": bool(pod), "fact": bool(fact), "county": bool(cw)}
     html = _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain, local, elevators,
-                      site_href, unsub_url, forward_url, today)
+                      site_href, unsub_url, forward_url, today, county=cw)
     text = _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, elevators,
-                      site_href, unsub_url, forward_url, today)
+                      site_href, unsub_url, forward_url, today, county=cw)
     return {"subject": subj, "subject_from": sfrom, "subject_field": sfield, "preheader": pre,
             "html": html, "text": text, "slots": slots, "items": items}
+
+
+# ── Your county this week (Sig, Oct 27 2026: inside the existing slots, Thursdays) ──
+# The block is made by components/change-lines.js through scripts/county_week.mjs (send_daily.py
+# load_county_week): only readers who ticked it in the Daily ask and saved a place, only on
+# Thursdays, and only when something changed. It rides in the "Only here" slot. Its one link is
+# tagged utm_content=countyweek so its click share can be counted against the other sections.
+CW_CONTENT = "countyweek"
+CW_KINDS = ("changed", "level", "held")
+
+
+def county_block(c):
+    """The block as the email draws it, or None: a county, a site path and at least one changed row."""
+    if not isinstance(c, dict) or not isinstance(c.get("block"), dict):
+        return None
+    rows = [r for r in (c["block"].get("rows") or []) if isinstance(r, dict) and r.get("kind") in CW_KINDS
+            and str(r.get("text") or "").strip() and str(r.get("date") or "").strip() and str(r.get("src") or "").strip()]
+    if not any(r["kind"] == "changed" for r in rows):
+        return None
+    url = str(c.get("url") or "")
+    if not re.match(r"^/[a-z0-9/_?=.-]*$", url):
+        return None
+    name, st = str(c.get("county") or "").strip(), str(c.get("st") or "").strip()
+    if not name or not re.match(r"^[A-Z]{2}$", st):
+        return None
+    return {"title": "Your county this week: %s, %s" % (name, st), "rows": rows, "url": SITE + url,
+            "link": "%s home" % name}
+
+
+def _county_html(cw, camp):
+    out = [_row('<strong>%s</strong>' % e(cw["title"]), pad="12px 0 0")]
+    for r in cw["rows"]:
+        out.append(_row('<strong>%s.</strong> %s' % (e(r["label"]), e(r["text"])), pad="4px 0 0", size=14))
+        out.append('<tr><td class="mute" style="padding:1px 0 0;font-family:%s;font-size:12px;line-height:1.4;color:%s">%s &middot; %s</td></tr>'
+                   % (SANS, MUTE, e(r["date"]), e(r["src"])))
+    out.append(_row(_a(cw["url"], cw["link"] + " →", camp, CW_CONTENT), pad="6px 0 0", size=14))
+    return out
+
+
+def _county_text(cw, camp):
+    out = ["", cw["title"]]
+    for r in cw["rows"]:
+        out.append("- %s. %s (%s; %s)" % (r["label"], r["text"], r["date"], r["src"]))
+    out.append(cw["link"] + ": " + BE.utm(cw["url"], CW_CONTENT, camp))
+    return out
 
 
 def _label(text, cls="mute", color=MUTE, pad=20):
@@ -643,7 +689,7 @@ def _watch(daily):
 
 
 def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain, local, elevators,
-               site_href, unsub_url, forward_url, today):
+               site_href, unsub_url, forward_url, today, county=None):
     date_display = BE.strip_md(daily.get("date")) or iso
     b = ['<div class="mute" style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;'
          'font-size:1px;line-height:1px">%s%s</div>' % (e(pre), PRE_PAD),
@@ -669,11 +715,13 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
     if mine:
         b.append(mine)
     # Only here
-    if here:
+    if here or county:
         b.append(_rule())
         b.append(_label("Only here", cls="lab", color=GREEN, pad=14))
         for x in here:
             b.append(_row("%s %s" % (e(x["text"]), _a(SITE + x["url"], x["link"], camp, "onlyhere-" + x["kind"])), pad="3px 0 0"))
+        if county:
+            b += _county_html(county, camp)
     # Print of the day
     if pod:
         b.append(_rule())
@@ -752,7 +800,7 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
 
 
 def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, elevators,
-               site_href, unsub_url, forward_url, today):
+               site_href, unsub_url, forward_url, today, county=None):
     L = ["AGSIST DAILY, " + (BE.strip_md(daily.get("date")) or iso), "", "TODAY"]
     for x in items:
         L.append("- " + x["text"] + ((" " + BE.utm(x["url"], "today-" + x["kind"], camp)) if x.get("url") else ""))
@@ -762,8 +810,10 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
         L += ["", local["head"]] + (["  " + local["note"]] if local.get("note") else [])
     if isinstance(elevators, dict):
         L += BE._elevator_block_text(elevators)
-    if here:
+    if here or county:
         L += ["", "ONLY HERE"] + ["- %s %s" % (x["text"], BE.utm(SITE + x["url"], "onlyhere-" + x["kind"], camp)) for x in here]
+        if county:
+            L += _county_text(county, camp)
     if pod:
         L += ["", "PRINT OF THE DAY", pod["why"], "Make yours: " + BE.utm(SITE + pod["make_url"], "print-make", camp)]
         if offer and isinstance(rain, dict) and rain.get("zip"):

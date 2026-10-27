@@ -270,7 +270,7 @@
     if (s.status !== 'ok') return s;
     var what = 'recorded farm sale' + (s.n === 1 && s.exact ? '' : 's') + ' of ' + SALES_MIN_ACRES + ' acres or more';
     var date = 'records through ' + md(s.through) + (s.fetched ? ', read ' + md(s.fetched) : '');
-    if (s.stale) return { status: 'held', label: 'Land sales', short: 'no new recorded farm sales read since ' + md(s.fetched), date: date, src: s.source, s: s };
+    if (s.stale) return { status: 'held', label: 'Land sales', short: 'no new recorded farm sales this week (the state record was last read ' + md(s.fetched) + ')', date: date, src: s.source, s: s };
     if (s.n === 0) return { status: 'held', label: 'Land sales', short: 'no new ' + what + ' dated in ' + s.month, date: date, src: s.source, s: s };
     var count = (s.exact ? s.n : 'at least ' + s.n) + ' ' + what;
     return { status: 'changed', label: 'Land sales', s: s, lead: (s.exact ? s.n : 'at least ' + s.n) + ' recorded farm sale' + (s.n === 1 && s.exact ? '' : 's') + ' dated in ' + s.month,
@@ -324,16 +324,6 @@
     }
     return null;
   }
-  /* "Barron County", "Orleans Parish"; a name that already says what it is stays as it is */
-  function countyName(row, st) {
-    var n = String((row && row[1]) || '').trim(), slug = String((row && row[2]) || '');
-    if (!n) return '';
-    if (/\b(County|Parish|Borough|Census Area|Municipality|city|City and Borough)$/.test(n)) return n;
-    if (st === 'LA' || /-parish$/.test(slug)) return n + ' Parish';
-    if (st === 'AK') return n;
-    if (/-city$/.test(slug)) return n + ' city';
-    return n + ' County';
-  }
   function weekAgo(today) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(today || ''));
     if (!m) return null;
@@ -374,7 +364,7 @@
     nearCorn: nearCorn, topBid: topBid, bidLine: bidLine, periodWords: periodWords, fnv: fnv,
     contractKey: contractKey, countyBasis: countyBasis, basisLine: basisLine,
     newSales: newSales, salesLine: salesLine, summary: summary, linesHtml: linesHtml,
-    countyAt: countyAt, countyName: countyName, weekAgo: weekAgo, weekLines: weekLines, weekBlock: weekBlock,
+    countyAt: countyAt, weekAgo: weekAgo, weekLines: weekLines, weekBlock: weekBlock,
     USDM_SPLIT: USDM_SPLIT, USDM_RESHAPE: USDM_RESHAPE, RING_MI: RING_MI, WEEK_MI: WEEK_MI, MIN_BASIS_N: MIN_BASIS_N,
     FEATURED: FEATURED, SALES_MIN_ACRES: SALES_MIN_ACRES, SALES_STATES: SALES_STATES
   };
