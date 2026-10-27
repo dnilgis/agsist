@@ -48,6 +48,8 @@ run llms bash -c "python3 scripts/build_llms_txt.py --selftest && python3 script
 # number consistency: rule selftests must pass; on the real data it reports only (prints, never fails) until it has run clean
 run numbers bash -c "python3 scripts/check_number_consistency.py --selftest >/dev/null && python3 scripts/check_number_consistency.py > '$OUT/numbers.out' 2>&1; tail -1 '$OUT/numbers.out' >&2; true"
 run site-check python3 scripts/daily_site_check.py --selftest
+# a correction USDA published (data/usda-corrections.json) is shown beside the printed figure wherever it is used
+run usda-corrections bash -c "python3 scripts/usda_corrections.py --selftest >/dev/null && python3 scripts/usda_corrections.py --check"
 run ids python3 scripts/build_ids.py --selftest
 run basis-join bash -c "python3 scripts/build_basis_join.py --selftest && python3 scripts/build_basis_join.py --check"
 # county code table and per data set join rates (scripts/join_report.py FLOORS): a rate below its floor fails
