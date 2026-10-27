@@ -849,3 +849,4 @@ html :is(.breadcrumb, .bc, .hm-bc, .fs-bc, .pb-bc, .cal-bc, .qs-bc) a { color: v
 .tbl td { font-size: var(--fs-sm) }
 .tbl :is(th, td).num, .num { text-align: right; font-variant-numeric: tabular-nums }
 .price { font-family: var(--font-mono); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.01em }
+@media (max-width: 640px) { p.by-end, nav.next-links:not([style*="width"]) { padding-left: max(0px, calc(16px - (100vw - 100%) / 2)); padding-right: max(0px, calc(16px - (100vw - 100%) / 2)) } }

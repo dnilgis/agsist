@@ -666,8 +666,8 @@ def head(title, desc, path, jsonld, indexable):
   <meta name="theme-color" content="#0a0c0d">
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}}catch(e){{}}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){{var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){{w.gtag=function(){{w.dataLayer.push(arguments);}};}}try{{off=w.localStorage.getItem('agsist-ga-off')==='1';}}catch(e){{}}if(n.globalPrivacyControl===true){{off=true;}}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){{off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){{return;}}i=function(){{if(s||d.prerendering){{return;}}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);}};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){{w.addEventListener(t,i,{{capture:true,passive:true}});}});}})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){{try{{gtag('event',n,p||{{}});}}catch(e){{}}}}</script>
-  <link rel="preload" href="/components/styles.css?v=26" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=26">
+  <link rel="preload" href="/components/styles.css?v=27" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=27">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -1050,7 +1050,7 @@ def stub_html(final_path, title, msg, noindex=True, keep_hash=False):
 <title>{esc(title)}</title>
 {robots}<link rel="canonical" href="{SITE}{base}">
 <meta http-equiv="refresh" content="0; url={esc(final_path)}">
-<link rel="stylesheet" href="/components/styles.css?v=26">
+<link rel="stylesheet" href="/components/styles.css?v=27">
 <script>location.replace({json.dumps(base)}+location.search+{js_hash});</script>
 </head>
 <body>
