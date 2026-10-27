@@ -43,6 +43,11 @@ def ok(c, m):
         print("FAIL", m)
 
 
+# the Oct 21 lead as it was sent (corrected in the archive Oct 27)
+D21_SENT_LEAD = ("Corn closed Tuesday at $4.59½, its sixth lower close in a row, and soybeans at $12.45 made it seven. "
+                 "A corn bushel is worth about 15 cents less than a week ago. Harvest is pushing the selling, and nothing new came overnight.")
+
+
 def load(d):
     with open(os.path.join(REPO, "data", "daily-archive", d + ".json"), encoding="utf-8") as f:
         return json.load(f)
@@ -122,6 +127,11 @@ def main():
     ok(not b19["preheader"].startswith("Corn has settled lower"), "the preheader is not the subject's story again: %s" % b19["preheader"])
     # the check that blocks
     d21, d20 = load("2026-10-21"), load("2026-10-20")
+    # the archive lead was corrected Oct 27 (dated note); the check is tested on the lead as it went out
+    ok("(Corrected Oct 27" in d21["lead"] and "$4.62" in d21["lead"], "Oct 21: the archive carries the corrected lead")
+    ok(not [f for f in V.check(d21, build(d21))[0] if f["field"] == "lead"], "Oct 21: the corrected lead passes the code check")
+    d21 = dict(d21, lead=D21_SENT_LEAD)
+    d21.pop("corrections", None)
     b21 = build(d21)
     bad, _ = V.check(d21, b21)
     ok(any(f["field"] == "lead" and "$4.62" in f["why"] for f in bad), "Oct 21: the lead's wrong close blocks the send")
