@@ -1,7 +1,24 @@
 {
- "updated": "2026-10-23",
+ "updated": "2026-10-27",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-27",
+   "items": [
+    {
+     "tag": "fixed",
+     "page": "/daily",
+     "name": "Five Daily lines corrected, each with a dated note",
+     "text": "The Oct 11, 16, 18, 22 and 25 issues had a line the numbers did not back: an expired hog contract, a cash value read from futures, a date that had not come yet, an overnight trade called a close, and a fuel cost claim with no source. Each line is fixed where it stood, and the old wording is kept in a correction note on the page. The Oct 25 planting line from this year's contracts is corrected the same way."
+    },
+    {
+     "tag": "improved",
+     "page": "/daily",
+     "name": "The Daily checks those six kinds of claims before it goes out",
+     "text": "A line that quotes an expired contract, calls a trade a close, puts a result on a future date, reads a cash price from futures alone, makes a planting call from this year's contracts or gives a cause nobody is named as saying is cut before the Daily is sent. The issue as it was emailed is now kept apart from later updates to its page."
+    }
+   ]
+  },
   {
    "date": "2026-10-23",
    "items": [
