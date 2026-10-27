@@ -370,6 +370,49 @@ def is_in_season() -> bool:
     return 4 <= m <= 11
 
 
+COND_KEYS = ("good_excellent", "report_date", "good_excellent_prev_week", "good_excellent_prev_year")
+
+
+def hold_last_condition(result: dict, path: str, today=None, max_age_days: int = 14) -> list[str]:
+    """Oct 27, 2026: a later run that day got no condition rows back from Quick
+    Stats and wrote good_excellent and report_date as null over the 56% read
+    that morning, blanking the conditions card. When this run has no condition
+    reading for a crop but the file on disk has one for the same season, no
+    more than max_age_days old, keep it and say so. Never invents a value."""
+    from datetime import date as _d
+    try:
+        with open(path) as f:
+            old = json.load(f)
+    except Exception:
+        return []
+    today = today or _d.today()
+    held = []
+    for key in ("corn", "soybeans", "winter_wheat", "spring_wheat"):
+        new_c, old_c = result.get(key), (old or {}).get(key)
+        if not isinstance(new_c, dict) or not isinstance(old_c, dict):
+            continue
+        if new_c.get("good_excellent") is not None or old_c.get("good_excellent") is None:
+            continue
+        rd = old_c.get("report_date")
+        try:
+            age = (today - _d.fromisoformat(str(rd)[:10])).days
+        except Exception:
+            continue
+        if not (0 <= age <= max_age_days) or str(rd)[:4] != str(today.year):
+            continue
+        for k in COND_KEYS:
+            if new_c.get(k) is None and old_c.get(k) is not None:
+                new_c[k] = old_c[k]
+        new_c["condition_held_from"] = rd
+        held.append(key)
+    if held and not result.get("report_date"):
+        result["report_date"] = (old or {}).get("report_date") or result[held[0]].get("report_date")
+    if held:
+        print(f"  condition held from the last good read for {', '.join(held)} (no rows this run)", flush=True)
+    return held
+
+
+
 def main():
     os.makedirs("data", exist_ok=True)
 
@@ -528,6 +571,8 @@ def main():
         print("\nNo data returned — writing off-season placeholder.")
         result["in_season"] = False
 
+    hold_last_condition(result, OUT_FILE)
+
     with open(OUT_FILE, "w") as f:
         json.dump(result, f, indent=2)
     print(f"\nWritten {OUT_FILE}")
@@ -620,6 +665,28 @@ def selftest():
     check(st.get("KS", {}).get("winter_wheat_planted", {}).get("pct") == 41, "Kansas wheat planted 41 kept")
     check("AR" not in st, "a state week eight weeks old is not shown as this week", st.get("AR"))
     check(st["KS"]["winter_wheat_planted"]["avg5"] is None, "no history -> 5-year avg withheld (None)")
+
+    print("HOLD THE LAST GOOD CONDITION READ (Oct 27, 2026: a later run wrote nulls)")
+    import tempfile
+    from datetime import date as _d
+    old = {"report_date": "2026-10-25", "corn": {"good_excellent": 56, "report_date": "2026-10-25",
+           "good_excellent_prev_week": 56, "harvest_pct": 55}}
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as tf:
+        json.dump(old, tf)
+    new = {"report_date": None, "corn": {"good_excellent": None, "report_date": None,
+           "good_excellent_prev_week": None, "harvest_pct": 60}, "soybeans": None}
+    held = hold_last_condition(new, tf.name, today=_d(2026, 10, 27))
+    check(held == ["corn"] and new["corn"]["good_excellent"] == 56, "no rows this run: the Oct 25 56% is kept", new)
+    check(new["corn"]["harvest_pct"] == 60, "this run's harvest figure is not replaced")
+    check(new["corn"]["condition_held_from"] == "2026-10-25" and new["report_date"] == "2026-10-25",
+          "held reading says where it came from; report date filled")
+    new2 = {"corn": {"good_excellent": 58, "report_date": "2026-11-01"}}
+    check(hold_last_condition(new2, tf.name, today=_d(2026, 11, 2)) == [] and new2["corn"]["good_excellent"] == 58,
+          "a fresh reading is never replaced")
+    new3 = {"corn": {"good_excellent": None, "report_date": None}}
+    check(hold_last_condition(new3, tf.name, today=_d(2026, 11, 20)) == [] and new3["corn"]["good_excellent"] is None,
+          "a reading older than 14 days is not carried forward")
+    os.unlink(tf.name)
 
     print()
     if fails:
