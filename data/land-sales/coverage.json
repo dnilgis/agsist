@@ -1,0 +1,665 @@
+{
+ "about": "Per-state source table for farm sales (Sig, Oct 27, 2026: every state if possible). Kept by hand. status: live (sales on the land-sales pages), held (in Field Scout and the comp report only), request (a state file exists but on request or for a fee), county (public, county by county, not built), nondisclosure (sale prices not public record; auction results only), unchecked. scripts/build_land_sales.py draws it and counts the live states.",
+ "checked": "2026-10-27",
+ "labels": {
+  "live": "Sales on these pages",
+  "held": "In Field Scout only for now",
+  "request": "State file on request or for a fee",
+  "county": "Public, county by county; not built yet",
+  "nondisclosure": "Sale prices not public record",
+  "unchecked": "Not checked yet"
+ },
+ "note": "Checked Oct 27, 2026. A state marked not public record is from the common lists and our own search; where it says to check, we have not read the state law ourselves yet. Auction results are public where a state keeps prices private, and are next on the list for those states.",
+ "states": [
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "AL",
+   "name": "Alabama",
+   "tile": [
+    8,
+    7
+   ]
+  },
+  {
+   "status": "nondisclosure",
+   "source": "Commonly listed as a state where sale prices are not public record; our own check of the state law is still to do. Auction results would be the public source.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "AK",
+   "name": "Alaska",
+   "tile": [
+    1,
+    1
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "AZ",
+   "name": "Arizona",
+   "tile": [
+    3,
+    6
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "AR",
+   "name": "Arkansas",
+   "tile": [
+    6,
+    6
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "CA",
+   "name": "California",
+   "tile": [
+    2,
+    5
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "CO",
+   "name": "Colorado",
+   "tile": [
+    4,
+    5
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "CT",
+   "name": "Connecticut",
+   "tile": [
+    11,
+    4
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "DE",
+   "name": "Delaware",
+   "tile": [
+    11,
+    5
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "FL",
+   "name": "Florida",
+   "tile": [
+    10,
+    8
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "GA",
+   "name": "Georgia",
+   "tile": [
+    9,
+    7
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "HI",
+   "name": "Hawaii",
+   "tile": [
+    1,
+    8
+   ]
+  },
+  {
+   "status": "nondisclosure",
+   "source": "Commonly listed as a state where sale prices are not public record; our own check of the state law is still to do. Auction results would be the public source.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "ID",
+   "name": "Idaho",
+   "tile": [
+    3,
+    3
+   ]
+  },
+  {
+   "status": "live",
+   "source": "State transfer declarations (Illinois Department of Revenue, MyDec PTAX-203, on the state open data portal), farm parcels",
+   "names": "Yes",
+   "cadence": "State posts weekly; read here monthly",
+   "terms": "Public record, state open data",
+   "st": "IL",
+   "name": "Illinois",
+   "tile": [
+    7,
+    3
+   ]
+  },
+  {
+   "status": "held",
+   "source": "State sales disclosure forms (Department of Local Government Finance, published free by year on STATS Indiana)",
+   "names": "Yes",
+   "cadence": "State posts weekly in season; read here monthly",
+   "terms": "Public record, free download",
+   "st": "IN",
+   "name": "Indiana",
+   "tile": [
+    7,
+    4
+   ]
+  },
+  {
+   "status": "county",
+   "source": "Declaration of value at each county recorder and assessor; a few county assessors post agricultural sales lists; no free statewide copy found",
+   "names": "Varies by county",
+   "cadence": "Varies by county",
+   "terms": "Varies by county",
+   "st": "IA",
+   "name": "Iowa",
+   "tile": [
+    6,
+    4
+   ]
+  },
+  {
+   "status": "nondisclosure",
+   "source": "Sales go to the state on a certificate of value; no free public file of sale prices found. Auction results are the public source.",
+   "names": "No public prices",
+   "cadence": "Auction results as posted",
+   "terms": "Prices not public record",
+   "st": "KS",
+   "name": "Kansas",
+   "tile": [
+    5,
+    6
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "KY",
+   "name": "Kentucky",
+   "tile": [
+    7,
+    5
+   ]
+  },
+  {
+   "status": "nondisclosure",
+   "source": "Commonly listed as a state where sale prices are not public record; our own check of the state law is still to do. Auction results would be the public source.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "LA",
+   "name": "Louisiana",
+   "tile": [
+    6,
+    7
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "ME",
+   "name": "Maine",
+   "tile": [
+    12,
+    1
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "MD",
+   "name": "Maryland",
+   "tile": [
+    10,
+    5
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "MA",
+   "name": "Massachusetts",
+   "tile": [
+    11,
+    3
+   ]
+  },
+  {
+   "status": "county",
+   "source": "Each local assessor and county equalization office; no free statewide file found",
+   "names": "Varies",
+   "cadence": "Varies",
+   "terms": "Varies",
+   "st": "MI",
+   "name": "Michigan",
+   "tile": [
+    8,
+    3
+   ]
+  },
+  {
+   "status": "request",
+   "source": "State certificate of real estate value (eCRV); the bulk weekly extract is sent on request, the free search shows one sale at a time",
+   "names": "Yes",
+   "cadence": "Weekly extract",
+   "terms": "Bulk copy on request",
+   "st": "MN",
+   "name": "Minnesota",
+   "tile": [
+    6,
+    3
+   ]
+  },
+  {
+   "status": "nondisclosure",
+   "source": "Commonly listed as a state where sale prices are not public record; our own check of the state law is still to do. Auction results would be the public source.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "MS",
+   "name": "Mississippi",
+   "tile": [
+    7,
+    7
+   ]
+  },
+  {
+   "status": "nondisclosure",
+   "source": "Deeds at each county recorder; no free public file of sale prices found (some counties assess from sales). Auction results are the public source.",
+   "names": "Deeds name parties; prices usually not",
+   "cadence": "Auction results as posted",
+   "terms": "Prices not public record in most counties",
+   "st": "MO",
+   "name": "Missouri",
+   "tile": [
+    6,
+    5
+   ]
+  },
+  {
+   "status": "nondisclosure",
+   "source": "Commonly listed as a state where sale prices are not public record; our own check of the state law is still to do. Auction results would be the public source.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "MT",
+   "name": "Montana",
+   "tile": [
+    4,
+    3
+   ]
+  },
+  {
+   "status": "request",
+   "source": "Real estate transfer statement (Form 521) and the state sales file, queried for the public on request for a fee",
+   "names": "To check",
+   "cadence": "By request",
+   "terms": "Fee",
+   "st": "NE",
+   "name": "Nebraska",
+   "tile": [
+    5,
+    5
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "NV",
+   "name": "Nevada",
+   "tile": [
+    3,
+    4
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "NH",
+   "name": "New Hampshire",
+   "tile": [
+    12,
+    2
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "NJ",
+   "name": "New Jersey",
+   "tile": [
+    10,
+    4
+   ]
+  },
+  {
+   "status": "nondisclosure",
+   "source": "Commonly listed as a state where sale prices are not public record; our own check of the state law is still to do. Auction results would be the public source.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "NM",
+   "name": "New Mexico",
+   "tile": [
+    4,
+    6
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "NY",
+   "name": "New York",
+   "tile": [
+    10,
+    3
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "NC",
+   "name": "North Carolina",
+   "tile": [
+    8,
+    6
+   ]
+  },
+  {
+   "status": "nondisclosure",
+   "source": "Each county tax director keeps sales; no free statewide file found. Auction results are the public source.",
+   "names": "To check",
+   "cadence": "Auction results as posted",
+   "terms": "To check",
+   "st": "ND",
+   "name": "North Dakota",
+   "tile": [
+    5,
+    3
+   ]
+  },
+  {
+   "status": "county",
+   "source": "Each county auditor; many post transfer lists, one county at a time",
+   "names": "Usually",
+   "cadence": "Varies by county",
+   "terms": "Varies by county",
+   "st": "OH",
+   "name": "Ohio",
+   "tile": [
+    8,
+    4
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "OK",
+   "name": "Oklahoma",
+   "tile": [
+    5,
+    7
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "OR",
+   "name": "Oregon",
+   "tile": [
+    2,
+    4
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "PA",
+   "name": "Pennsylvania",
+   "tile": [
+    9,
+    4
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "RI",
+   "name": "Rhode Island",
+   "tile": [
+    12,
+    4
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "SC",
+   "name": "South Carolina",
+   "tile": [
+    9,
+    6
+   ]
+  },
+  {
+   "status": "county",
+   "source": "Each county Director of Equalization; a few post yearly agricultural sales lists",
+   "names": "Varies by county",
+   "cadence": "Yearly where posted",
+   "terms": "Varies by county",
+   "st": "SD",
+   "name": "South Dakota",
+   "tile": [
+    5,
+    4
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "TN",
+   "name": "Tennessee",
+   "tile": [
+    7,
+    6
+   ]
+  },
+  {
+   "status": "nondisclosure",
+   "source": "Commonly listed as a state where sale prices are not public record; our own check of the state law is still to do. Auction results would be the public source.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "TX",
+   "name": "Texas",
+   "tile": [
+    5,
+    8
+   ]
+  },
+  {
+   "status": "nondisclosure",
+   "source": "Commonly listed as a state where sale prices are not public record; our own check of the state law is still to do. Auction results would be the public source.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "UT",
+   "name": "Utah",
+   "tile": [
+    3,
+    5
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "VT",
+   "name": "Vermont",
+   "tile": [
+    11,
+    2
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "VA",
+   "name": "Virginia",
+   "tile": [
+    9,
+    5
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "WA",
+   "name": "Washington",
+   "tile": [
+    2,
+    3
+   ]
+  },
+  {
+   "status": "unchecked",
+   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "WV",
+   "name": "West Virginia",
+   "tile": [
+    8,
+    5
+   ]
+  },
+  {
+   "status": "live",
+   "source": "State transfer returns (Wisconsin Department of Revenue, electronic real estate transfer returns), farm and forest classes",
+   "names": "Yes",
+   "cadence": "State posts monthly; read here monthly",
+   "terms": "Public record, free state download",
+   "st": "WI",
+   "name": "Wisconsin",
+   "tile": [
+    7,
+    2
+   ]
+  },
+  {
+   "status": "nondisclosure",
+   "source": "Commonly listed as a state where sale prices are not public record; our own check of the state law is still to do. Auction results would be the public source.",
+   "names": "To check",
+   "cadence": "",
+   "terms": "To check",
+   "st": "WY",
+   "name": "Wyoming",
+   "tile": [
+    4,
+    4
+   ]
+  }
+ ]
+}

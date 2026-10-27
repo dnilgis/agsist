@@ -1,0 +1,4 @@
+{
+ "about": "Sale ids (from the land-sales pages) whose buyer and seller names are taken off the site at the owner's request. Ids only, never a name. scripts/build_land_sales.py writes no names for these.",
+ "sales": []
+}
