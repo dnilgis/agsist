@@ -4,6 +4,7 @@ Moved out of the `var CV` comment in components/loader.js on 2026-10-27 (fx/shel
 downloading it on every page. CV is appended as ?v= to header.html, footer.html and analytics.html; bump it
 for any menu or footer change. Newest first. Add a line here with each bump.
 
+- v99 2026-10-27: fx/promo2 (redo of fx/promo, #57). signup-ask.js?v=19: the See this morning's email link beside the ZIP box on Daily page asks, the rain gauge waitlist in One more? after a rain-year notice or a hail alert, One more? after the gauge waitlist, no bar on Fast Facts
 - v98 2026-10-27: fx/shelldiet. Shell diet: comments out of loader.js, styles.css, header.html and footer.html; this history moved here; signup-ask.js loads on the first scroll, tap or key, or when the page is idle, except on pages that show their own ask (those load it at once, as before).
 - v97 2026-10-27: fx/fsbackup (past fx/landsales 96, which ships first). Field Scout backup and restore: new field-scout files reach returning readers
 - v96 2026-10-27: fx/landsales (unassigned slot, renumber at ship). Loads components/land-sales.js?v=1 on the land-sales pages, the Atlas county pages, the IL and WI rent pages, the homepage Land card and Fast Facts; search.js (loaded by CV) offers Land sales near here for an Illinois or Wisconsin ZIP, town or county

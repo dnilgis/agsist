@@ -1717,7 +1717,14 @@ def head(title, desc, path, jsonld, indexable=True, fonts="", og_title=None, og_
 </head>"""
 
 
-def tail(ftr, calc=False, math=False, hub=False):
+# The one cross-promo on a county page (Sig, Oct 23 2026): the quiet Rain Print "see" line
+# after the questions (components/rain-print-promo.js fills it while data/rain-print.json
+# has promote on; otherwise it stays hidden and takes no space). About 130 bytes a page.
+RP_SEE = '<p class="rp-promo ap-noprint" data-rain-print-promo="see" hidden></p>'
+RP_PROMO_JS = '<script src="/components/rain-print-promo.js?v=6" defer></script>'
+
+
+def tail(ftr, calc=False, math=False, hub=False, promo=False):
     s = f"""{ftr}
 <script src="/components/asof.js?v={ASOF_V}" defer></script>
 <script src="/components/loader.js?v={LOADER_V}" defer></script>
@@ -1730,6 +1737,8 @@ def tail(ftr, calc=False, math=False, hub=False):
         s += f'\n<script src="/components/arc-plc-math.js?v={CALC_V}" defer></script>'
     if hub:  # glossary marks and the Next block (data/next-links.json), hub page only
         s += '\n<script src="/components/next-links.js?v=3" defer></script>'
+    if promo:
+        s += '\n' + RP_PROMO_JS
     return s + "\n</body>\n</html>\n"
 
 
@@ -3588,6 +3597,7 @@ def county_page(st, S, c, D, ch):
   {form_shell(D, first, st, c['f']) if official else form_html(D, first, st, c['f'])}
   </details>
   {f'<div class="ap-faq ap-noprint"><h2>Questions about {esc(cname)}</h2>{faq_html}</div>' if faqs else ''}
+  {RP_SEE}
   <p class="ap-disc">An estimate, not a USDA determination. Source: <a href="{FSA_DATA}" rel="noopener">FSA ARC/PLC program data</a>. <a href="{OFFICE}" rel="noopener">Find your county office</a>.</p>
   <div class="method-note"><b>Method</b> &middot; Each program&rsquo;s expected payment per base acre across past years&rsquo; price and county yield swings, centered on USDA&rsquo;s 2026/27 price; <a href="/arc-plc#method">the full method</a>. &middot; Reviewed by Sigurd Lindquist, CCA</div>
   <p class="ap-small ap-noprint">Related: {' &middot; '.join(rel)}</p>
@@ -3595,7 +3605,7 @@ def county_page(st, S, c, D, ch):
 </main>
 <script>document.addEventListener('click',function(e){{var a=e.target.closest&&e.target.closest('[data-share]');if(!a||!navigator.share)return;e.preventDefault();navigator.share({{title:a.getAttribute('data-title'),url:a.getAttribute('data-share')}}).catch(function(){{}});}});</script>
 """
-    page = head(title, desc, path, jsonld, official, fonts) + body + tail(ftr, calc=True, math=official)
+    page = head(title, desc, path, jsonld, official, fonts) + body + tail(ftr, calc=True, math=official, promo=True)
     return page, {"path": path, "indexable": official, "title": title, "desc": desc, "lead": lead, "st": st}
 
 
@@ -3963,6 +3973,9 @@ def selftest():
         D = compute(inp)
         S = D["states"]["WI"]
         cp, cm = county_page("WI", S, S["c"][0], D, ("", "", ""))
+        # one Rain Print "see" line after the questions, its script once, no other promo (Oct 23)
+        assert cp.count("data-rain-print-promo") == 1 and cp.count(RP_SEE) == 1 and cp.count(RP_PROMO_JS) == 1, "county see line"
+        assert cp.index(RP_SEE) < cp.index("</main>") and ('class="ap-faq' not in cp or cp.index(RP_SEE) > cp.index('class="ap-faq')), "see line after the questions"
         sp, sm = state_page("WI", S, D, ("", "", ""), [S])
         # the benchmark and both practices are in the page (Key numbers); the working behind them (Olympic average,
         # trigger yield, break-even) is in data/arc-plc/math/WI.json, which components/arc-plc-math.js lays out on open

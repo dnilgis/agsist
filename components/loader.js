@@ -99,7 +99,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '98';
+  var CV = '99';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -890,7 +890,7 @@
     EV.forEach(function (t) { window.removeEventListener(t, go, true); });
     if (window.AgsistSignup || document.querySelector('script[src*="/components/signup-ask.js"]')) return;
     var s = document.createElement('script');
-    s.src = '/components/signup-ask.js?v=18';
+    s.src = '/components/signup-ask.js?v=19';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
