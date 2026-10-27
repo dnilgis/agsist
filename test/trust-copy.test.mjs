@@ -112,3 +112,17 @@ test("ARC/PLC says which program is expected to pay more, with the assumptions b
   assert.match(read("scripts/build_arc_plc.py"), /VWORD = \{"plc": "PLC expected to pay more", "arc": "ARC-CO expected to pay more"/);
 });
 
+/* 5. Cash bids. "Total Net" and the FAQ's "The top one pays you the most" claimed more
+   than the math does: the net is the load at the posted bid minus the round-trip hauling
+   cost the reader entered. Discounts, shrink, waits and delivery terms are not in it. */
+test("cash bids net is limited to the hauling cost the reader entered", () => {
+  const h = read("cash-bids.html"), js = read("components/cash-bids.js");
+  assert.ok(!/pays you the most/.test(h), "the FAQ says the top one pays you the most");
+  assert.ok(!/>Total Net</.test(h) && !/data-l="Total net"/.test(js), "Total Net is back");
+  assert.equal((h.match(/The top one nets the most after the hauling cost you entered\. Discounts, shrink, waits and delivery terms are not in that number/g) || []).length, 2,
+    "the FAQ and its structured-data copy say the same");
+  assert.match(h, />Net after hauling<\/th>/);
+  assert.match(js, /after round-trip hauling at the \$'\+fpm\.toFixed\(2\)\+' a mile you entered/);
+  assert.match(js, /Discounts, shrink and delivery terms are not counted: call to confirm before you haul\./);
+  assert.match(h, /components\/cash-bids\.js\?v=13/);
+});

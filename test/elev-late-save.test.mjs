@@ -36,7 +36,7 @@ test("a card for an elevator that posts its own bids always says when it last sa
   assert.match(CB, /fromPortal:!!\(shard\.info&&typeof shard\.info==='object'&&!Array\.isArray\(shard\.info\)\),/);
   assert.match(CB, /if\(b\.fromPortal\)e\.fromPortal=true;/);
   assert.match(CB, /if\(elev\.fromPortal&&elev\.asOfT!=null\)\{\n\s+html\+='<div class="elev-posted'\+\(mktSessionsClosedSince\(elev\.asOfT,new Date\(\)\)>=2\?' elev-stale':''\)\+'" title="When this elevator last saved its bids on AGSIST">Updated '\+escH\(portalWhen\(elev\.asOfT,Date\.now\(\)\)\)\+'<\/div>';/);
-  assert.match(read("cash-bids.html"), /<script src="\/components\/cash-bids\.js\?v=12"><\/script>/);
+  assert.match(read("cash-bids.html"), /<script src="\/components\/cash-bids\.js\?v=13"><\/script>/);
 });
 
 test("the page sends the time Save was pressed with every save, and a kept save is never dropped for age", () => {
