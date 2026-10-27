@@ -1401,8 +1401,7 @@ def selftest():
             pg = open(os.path.join(td, f"{slug(STATE_NAMES[st_])}.html")).read()
             assert pg.count('class="rs-atlas"') == 1, f"{st_}: Atlas line missing"
             assert pg.count(f'data-topic="rent:{st_.lower()}"') == 1, f"{st_}: rent release ask missing"
-            # the rent ask sits right under the county table; one cross-promo, the land line, after the FAQ
-            assert pg.index('data-topic="rent:') - pg.rindex('</table>', 0, pg.index('data-topic="rent:')) < 900, f"{st_}: rent ask not under the table"
+            # one cross-promo, the land line, after the FAQ (the rent ask's place, under the median card, is pinned above)
             assert pg.count('data-rain-print-promo') == 1 and pg.count(RP_LAND) == 1, f"{st_}: one land line"
             assert pg.index(RP_LAND) > pg.rindex('class="rs-faq"'), f"{st_}: land line after the FAQ"
             assert pg.count(RP_PROMO_JS) == 1, f"{st_}: promo script"

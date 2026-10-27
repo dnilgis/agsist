@@ -55,14 +55,14 @@ test("one cross-promo a page, after the answer, with its script", () => {
   assert.ok(ix.indexOf("data-rp-card-early") > ix.indexOf('id="f-prices"') && ix.indexOf("data-rp-card-early") < ix.indexOf('id="s7-month"'), "right under the prices");
 });
 
-test("rent pages: the notice ask right under the county table, one land line after the FAQ", () => {
+test("rent pages: the notice ask unticked, one land line after the FAQ", () => {
   const dir = path.join(ROOT, "rent");
   const states = fs.readdirSync(dir).filter((f) => f.endsWith(".html") && f !== "index.html");
   assert.equal(states.length, 47);
   for (const f of states) {
     const h = read("rent/" + f), at = h.indexOf('data-topic="rent:');
     assert.ok(at > 0, f);
-    assert.ok(at - h.lastIndexOf("</table>", at) < 900, f + ": under the county table");
+    // where the ask sits (under the median card) is test/alert-asks.test.mjs's (fx/pageasks, Oct 23)
     assert.ok(!/data-daily="on"|checked/.test(h.slice(h.lastIndexOf("<div", at), h.indexOf("</div>", at))), f + ": nothing ticked");
     assert.equal(promos(inMain(h)), 1, f);
     assert.ok(h.indexOf('data-rain-print-promo="land"') > h.lastIndexOf('class="rs-faq"'), f + ": after the FAQ");
