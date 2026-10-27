@@ -373,8 +373,8 @@
            Same computation, second rendering. Not a second calculation. */
         var _tb=document.getElementById('ticker-age');
         if(_tb){
-          /* r7-prices 2026-10-01 (7b): the quotes are delayed about 15
-             minutes while the market trades, and after the close they are the
+          /* r7-prices 2026-10-01 (7b): the quotes are about 10 to 25
+             minutes old while the market trades, and after the close they are the
              settle. This reads the file's own fetch time against the CBOT grain
              sessions (Central time): day 8:30 AM-1:20 PM, overnight 7:00 PM-
              7:45 AM. Until 1:35 PM a quote may still be pre-settle. Full-closure
@@ -409,7 +409,7 @@
             var hn=holName(dayT);
             /* 2026-10-19 (P1): the settle check comes before the session
                check. Sunday 7:31 PM CT is inside the overnight session, but the
-               file held the Oct 16 settles and the badge said "Delayed 15 min".
+               file held the Oct 16 settles and the badge still called them a delayed live quote.
                "Delayed" is said only for a last trade read in session (not
                an evening file holding the day's last trade, settled:true). */
             if(cq.close_kind==='settle'&&cq.close_date){
@@ -418,7 +418,7 @@
               return{t:'Settle '+lbl(sd)+(sy!==+ct(new Date()).year?', '+sy:''),live:false,title:(hn?'Markets closed for '+hn+'. ':'')+'Settles for '+lbl(sd)+', '+new Date(sd).getUTCFullYear()+' (the CME settle as Yahoo Finance posts it). '+read};
             }
             if(day||night){
-              if(age<=45&&cq.close_kind==='last'&&!cq.settled)return{t:'Delayed 15 min',live:true,title:'Futures prices delayed about 15 minutes. '+read};
+              if(age<=45&&cq.close_kind==='last'&&!cq.settled)return{t:'Delayed 10 to 25 min',live:true,title:'Futures prices about 10 to 25 minutes old: a 10-minute exchange delay, fetched about every 15 minutes. '+read};
               /* 2026-10-20: an evening file holding the day's last trades
                  (settled:true) is not a 7:18 PM price: the quotes are the
                  1:20 PM grain and 1:05 PM livestock last trades. Name their

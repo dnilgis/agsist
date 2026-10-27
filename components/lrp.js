@@ -586,7 +586,7 @@
     var clock = centralClock(F.toISOString()).replace(/^[A-Z][a-z]{2} \d+, /, '');
     if (m < 785) {
       var age = ((now || new Date()).getTime() - F.getTime()) / 60000;
-      if (age <= 45) return { kind: 'delayed', text: 'were at <b>' + price + '</b> at ' + clock + ' (delayed about 15 minutes, trading still open)' };
+      if (age <= 45) return { kind: 'delayed', text: 'were at <b>' + price + '</b> at ' + clock + ' (delayed about 10 to 25 minutes, trading still open)' };
       return { kind: 'intraday', text: 'were at <b>' + price + '</b> at ' + clock + ' on ' + ymdLong(day).replace(/, \d{4}$/, '') + ', mid-session, before the close' };
     }
     if (m < 800) return { kind: 'unsettled', text: 'were at <b>' + price + '</b> at ' + clock + ', just after the 1:05 p.m. close; the closing price may not be final yet' };
