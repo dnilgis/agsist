@@ -32,6 +32,8 @@ const FIXED = [
   ["2026-10-26", "A bushel of beans is worth about 16 cents less than it was at Friday's close."],
   ["2026-10-21", "Corn closed Tuesday at $4.59½, its sixth lower close in a row, and soybeans at $12.45 made it seven."],
   ["2026-10-21", "A corn bushel is worth about 15 cents less than a week ago."],
+  // the Oct 21 headline (and email subject): the 5:46 a.m. trades counted as the end of a run of lower settles
+  ["2026-10-21", "Corn down 6 straight days to $4.59½; beans down 7 to $12.45"],
 ];
 const esc = (s) => s.replace(/"/g, "&quot;");
 
@@ -125,4 +127,20 @@ for b in (b18, b22):
 
 test("rebuild_archive_html --text-only selftest", () => {
   assert.match(py(["scripts/rebuild_archive_html.py", "--selftest"]), /selftest: ok/);
+});
+
+test("gate flags the Oct 21 headline as it went out, and not the corrected one", () => {
+  // the issue's own strip: 5:46 a.m. CT trades, Oct 20 settles as prev. A headline cannot be
+  // cut, so the gate reports it (WARN today) rather than cutting it.
+  const out = py(["-c", `
+import json, sys, datetime as dt; sys.path.insert(0, "scripts")
+import briefing_gate as bg
+b = json.load(open("data/daily-archive/2026-10-21.json"))
+old = {"date": b["date"], "headline": "Corn down 6 straight days to $4.59\\u00bd; beans down 7 to $12.45", "quote_strip": b["quote_strip"]}
+new = {"date": b["date"], "headline": b["headline"], "quote_strip": b["quote_strip"]}
+for x in (old, new):
+    ok, iss = bg.run(x, None, today=dt.date(2026, 10, 27), archive_dir=None)
+    print([c for s, c, m in iss if c.startswith("claim:") and m.startswith("headline")])
+`]);
+  assert.match(out, /\['claim:close-before-settle'\]\n\[\]/, out);
 });

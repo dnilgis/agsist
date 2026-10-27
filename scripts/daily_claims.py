@@ -277,8 +277,36 @@ def _names_past_session(sent, w):
     return bool(_PAST_DAY.search(before) or _PAST_DAY.match(after.strip()))
 
 
+# "down 6 straight days to $4.59½", "beans down 7 to $12.45": a run of lower
+# (or higher) sessions ending at a price. Only read when the sentence counts a
+# run (straight, in a row, streak), so "up 2 to $4.64" alone is not one.
+_STREAK_TO = re.compile(r"\b(?:down|up|lower|higher)\s+(?:\d{1,2}|two|three|four|five|six|seven|eight|nine|ten|\w+th)\s+"
+                        r"(?:(?:straight|consecutive)\s+)?(?:(?:days?|sessions?|closes?|settles?)\s+)?(?:in a row\s+)?"
+                        r"(?:to|at)\s+(?=\$)", re.I)
+_RUN = re.compile(r"\b(straight|consecutive|in a row|streak)\b", re.I)
+
+
+def _streak_at_trade(sent, ctx):
+    """A run of sessions counted to a price that is a trade (Oct 21 headline:
+    the run was of settles, the price was the 5:46 a.m. trade)."""
+    if not _RUN.search(sent):
+        return False
+    prices = _prices_with_family(sent)
+    for m in _STREAK_TO.finditer(sent):
+        hit = [p for p in prices if p[3] == m.end()]
+        if not hit:
+            continue
+        px, fam, grain, _ = hit[0]
+        trades, settles = ctx["trades"].get(fam) or set(), ctx["settles"].get(fam) or set()
+        if any(_near(px, t, grain) for t in trades) and not any(_near(px, v, grain) for v in settles):
+            return True
+    return False
+
+
 def r_close_before_settle(sent, ctx):
     """'Close' or 'settle' tied to a price that is a trade, not a settlement."""
+    if _streak_at_trade(sent, ctx):
+        return True
     words = [w for w in CLOSE_WORD.finditer(sent)]
     if not words:
         return False
@@ -497,6 +525,18 @@ def _selftest():
     expect("close-before-settle", "A close above $4.70 would turn the chart.", c22, False)
     expect("close-before-settle", "Soybeans are at $12.47, up 1¾ cents, after eight straight lower closes.", c22, False)
     expect("close-before-settle", "Corn is at $4.64, close to Wednesday's settle.", c22, False)
+
+    # Oct 21 headline: the strip read 5:46 a.m. CT trades (corn $4.59½, beans $12.45);
+    # Oct 20 settles $4.62 and $12.48¼ (data/daily-archive/2026-10-21.json quote_strip)
+    c21 = context({}, date(2026, 10, 21),
+                  {"quotes": [{"key": "corn-dec", "last": 4.595, "prev": 4.62, "kind": "last"},
+                              {"key": "beans-nov", "last": 12.45, "prev": 12.4825, "kind": "last"}]})
+    expect("close-before-settle", "Corn down 6 straight days to $4.59½; beans down 7 to $12.45", c21, True)
+    expect("close-before-settle", "Beans down 7 straight sessions to $12.45 as harvest rolls on.", c21, True)
+    expect("close-before-settle", "Corn settled lower 6 days straight, $4.62 on Oct 20; beans 7 days, $12.48¼", c21, False)
+    expect("close-before-settle", "Corn down 6 straight days to $4.62; beans down 7 to $12.48¼", c21, False)
+    expect("close-before-settle", "Corn is down 2½ cents to $4.59½ overnight.", c21, False)
+    expect("close-before-settle", "Corn is up 2 to $4.59½ overnight after a six-day slide.", c21, False)
 
     # Oct 18 (a Sunday): Friday was Oct 16; Oct 23 was five days out
     c18 = context({}, date(2026, 10, 18))
