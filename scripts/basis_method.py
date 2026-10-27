@@ -35,9 +35,12 @@ THE METHOD
     a printed name or a website with another (a co-op whose board and its
     second site name it two ways is one), and every CHS-branded business is
     CHS. Unsure matches are folded, never split, so the count errs low: three
-    GROWMARK FS co-ops on one shared site count as one. A firm owned by
-    another under a different name and site can still count apart; there is
-    no parent list yet, and no company-weighted middle until there is.
+    GROWMARK FS co-ops on one shared site count as one. A board with a parent
+    in data/ids/board-parents.json (scripts/board_parents.py: evidence on the
+    board itself, such as being listed on that firm's own bid page) joins its
+    parent; a board without one is counted as before. A firm owned by another
+    under a different name and site, with no such evidence, can still count
+    apart; no company-weighted middle until the parent list is fuller.
   - week-over-week: the median of matched-pair changes (same board, crop,
     commodity, period and contract) against a snapshot about seven days back,
     with how many pairs it rests on; omitted, never estimated, without one
@@ -96,8 +99,10 @@ def site_key(url):
 
 def companies_behind(rows):
     """How many companies stand behind these rows (each with operator and an
-    optional site, the board's website). Boards join when they share a name
-    key, a site key or a parent brand; the count is the joined groups."""
+    optional site, the board's website, and an optional parent from
+    data/ids/board-parents.json). Boards join when they share a name key, a
+    site key, a parent brand or a parent; the count is the joined groups. A
+    row's dest (the buyer it delivers to) never joins anything."""
     parent = {}
 
     def find(x):
@@ -114,7 +119,10 @@ def companies_behind(rows):
             keys.append(f"s:{sk}")
         for pat, brand in PARENT_BRANDS:
             if pat.search(op.strip()):
-                keys.append(f"p:{brand}")
+                keys.append(f"p:{name_key(brand)}")
+        if name_key(r.get("parent")):
+            # the parent is a firm that posts under its own name: join the boards printing it
+            keys.append(f"n:{name_key(r.get('parent'))}")
         for k in keys[1:]:
             parent[find(k)] = find(keys[0])
         find(keys[0])

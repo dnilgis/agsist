@@ -5,6 +5,7 @@ Writes, under data/ids/:
   elevators.json     one record per physical facility, with every key and spelling it was seen under
   elevator-ids.json  the id ledger: which key holds which id, AGSIST-minted ids, merges and splits
   ambiguous.json     keys that matched more than one facility; listed, never guessed
+  board-parents.json parent company and destination buyer per bids board, from evidence (board_parents.py)
   parcel-rules.json  the parcel key rule per state, in words, and the repeat-sale counts
   parcel-key-fixtures.json  pid -> key pairs from this file; test/ids.test.mjs checks parcel-key.js agrees
 
@@ -768,6 +769,19 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
     write_json(os.path.join(out_dir, "ambiguous.json"),
                {"note": "Keys that matched more than one facility at the strongest step that matched at all. Each has its own "
                         "record; fix by hand with a ledger line, never by guessing.", "keys": ambiguous})
+    # parent company and destination per board (scripts/board_parents.py); the bids repo's board index
+    # holds each board's page URL. Unreadable: the last file stays, said so, the ids are unaffected.
+    try:
+        index = bids_repo_doc(bids_dir, "data/index.json")
+    except Exception as e:      # noqa: BLE001  (a missing or unreadable index must not cost the ids)
+        index = None
+        log(f"[ids] board parents not rebuilt: data/index.json not readable ({type(e).__name__})")
+    if index:
+        import board_parents
+        bp = board_parents.build(directory, index, today)
+        write_json(os.path.join(out_dir, "board-parents.json"), bp)
+        log(f"[ids] board parents: {bp['counts']['with_parent']} of {bp['counts']['live_boards']} live boards with a "
+            f"parent {bp['counts']['parent_by_rule']}, {bp['counts']['with_dest']} with a destination")
     if do_parcels:
         prules, fixtures = parcel_outputs(root)
         write_json(os.path.join(out_dir, "parcel-rules.json"), prules)
