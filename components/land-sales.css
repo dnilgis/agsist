@@ -1,0 +1,55 @@
+/* Farm sale pages (/land-sales/, scripts/build_land_sales.py) and the blocks components/land-sales.js
+   draws on the Atlas county pages, the IL and WI rent pages, the homepage and Fast Facts.
+   Colors from components/styles.css tokens, so light and dark both work. */
+.ls-w { max-width: 1000px; margin: 0 auto; padding: 0 16px 2.5rem; }
+.ls-w h1 { margin: .3rem 0 .7rem; }
+.ls-w h2 { font-size: var(--fs-xl, 1.3rem); margin: 2rem 0 .5rem; line-height: 1.25; }
+.ls-w p { line-height: 1.6; margin: 0 0 .8rem; max-width: 48em; }
+.ls-w a, .ls-feat a, .ls-rent a, .ls-near a { color: var(--brand, var(--gold)); }
+.ls-bc { font-size: var(--fs-sm, .9rem); color: var(--text-muted); margin: .8rem 0 0; }
+.ls-ans { font-size: 1.12rem; color: var(--text); }
+.ls-fine { font-size: var(--fs-sm, .86rem); color: var(--text-muted); }
+.ls-held { color: var(--text-muted); font-style: italic; }
+.ls-why { font-size: var(--fs-sm, .9rem); }
+.ls-ask { margin: 1rem 0 1.4rem; max-width: 40em; }
+.ls-tw { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 1rem; max-width: 100%; }
+.ls-t { border-collapse: collapse; width: 100%; font-size: .92rem; }
+.ls-t caption { text-align: left; font-weight: 700; padding: 0 0 .35rem; color: var(--text); }
+.ls-t th, .ls-t td { text-align: left; padding: .4rem .55rem .4rem 0; border-top: 1px solid var(--border); vertical-align: top; }
+.ls-t th { font-size: .8rem; font-weight: 600; color: var(--text-muted); border-top: 0; }
+.ls-t .n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ls-nm { font: inherit; font-size: .82rem; color: var(--brand, var(--gold)); background: none; border: 1px solid var(--border-g, var(--border)); border-radius: var(--r-pill, 999px); padding: .12rem .55rem; cursor: pointer; white-space: nowrap; }
+.ls-nm:focus-visible { outline: 2px solid var(--brand, var(--gold)); outline-offset: 2px; }
+.ls-nv { font-size: .86rem; color: var(--text); }
+.ls-rm { font-size: .78rem; margin-left: .3rem; }
+.ls-cos { list-style: none; padding: 0; margin: 0 0 1rem; columns: 4 11em; column-gap: 1.2rem; }
+.ls-cos li { break-inside: avoid; padding: .12rem 0; }
+.ls-cos span { color: var(--text-muted); font-size: .8rem; }
+.ls-cov-n { font-weight: 600; }
+.ls-map { display: grid; grid-template-columns: repeat(12, minmax(0, 2.6rem)); grid-auto-rows: 2.1rem; gap: 3px; margin: .4rem 0 .6rem; max-width: 100%; }
+.ls-s { display: flex; align-items: center; justify-content: center; font-size: .72rem; font-weight: 700; border-radius: 3px; color: var(--text); background: var(--surface); border: 1px solid var(--border); }
+.ls-k { display: inline-block; width: .9rem; height: .9rem; border-radius: 2px; vertical-align: -.12rem; border: 1px solid var(--border); margin-left: .5rem; }
+.ls-key { font-size: .82rem; color: var(--text-muted); }
+/* map tiles by status */
+.ls-st-live { background: #2e7d4f; color: #fff; border-color: #2e7d4f; }
+.ls-st-held { background: #8fbf9f; color: #10261a; border-color: #8fbf9f; }
+.ls-st-request { background: #d9b45a; color: #2a1f00; border-color: #d9b45a; }
+.ls-st-county { background: #e6d6a8; color: #2a1f00; border-color: #e6d6a8; }
+.ls-st-nondisclosure { background: #9a7d8f; color: #fff; border-color: #9a7d8f; }
+.ls-src summary { cursor: pointer; font-weight: 600; margin: .4rem 0; }
+.ls-src td { font-size: .84rem; }
+@media (max-width: 520px) { .ls-map { grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 1.6rem; } .ls-s { font-size: .6rem; } }
+/* the blocks on other pages */
+.ls-feat { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md, 8px); padding: .9rem 1rem; margin: 1rem 0; }
+.ls-feat h2 { margin: 0 0 .4rem; font-size: 1.1rem; }
+.ls-feat p { margin: .4rem 0 0; }
+@media (max-width: 760px) { .ls-feat { grid-template-columns: 1fr; } }
+.ls-ul { list-style: none; padding: 0; margin: 0; }
+.ls-ul li { padding: .35rem 0; border-top: 1px solid var(--border); line-height: 1.5; }
+.ls-ul li:first-child { border-top: 0; }
+.ls-d { color: var(--text-muted); font-size: .86rem; }
+.ls-note { font-size: .8rem; color: var(--text-muted); }
+.ls-rent { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md, 8px); padding: .6rem .8rem; margin: .8rem 0; line-height: 1.55; }
+.ls-near { margin: .8rem 0; }
+.ls-near h3 { margin: 0 0 .3rem; font-size: 1rem; }
+@media print { .ls-nm, .ls-rm, .ls-feat .ls-feat-r { display: none !important; } }

@@ -47,6 +47,7 @@ every land sale email of that address and nothing else.
 """
 import argparse
 import html as H
+import json
 import os
 import re
 import smtplib
@@ -122,6 +123,22 @@ def scout_url(r):
     return "%s/field-scout?at=%.3f,%.3f&fips=%s" % (SITE, lat, lon, r["fips"])
 
 
+def update_states(repo):
+    """The states the update page covers (data/land-sales/latest.json), in words."""
+    try:
+        sts = json.load(open(Path(repo) / "data" / "land-sales" / "latest.json", encoding="utf-8")).get("states") or []
+    except (OSError, ValueError):
+        sts = []
+    n = [LA.STATE_NAMES.get(s, s) for s in sts] or ["Illinois", "Wisconsin"]
+    return n[0] if len(n) == 1 else ", ".join(n[:-1]) + " and " + n[-1]
+
+
+def update_url(year, m0, repo):
+    """The month's land sales update page (scripts/build_land_sales.py) when it is in this checkout, else None."""
+    p = "land-sales/%04d-%02d" % (year, m0 + 1)
+    return SITE + "/" + p if (Path(repo) / (p + ".html")).is_file() else None
+
+
 def sale_line(r, mark=True):
     """One sale in words: date, acres, $/acre, price, where, how far. Nothing else.
     mark: say "(deed date)" on a row listed by its deed date (an email that mixes the two)."""
@@ -173,7 +190,9 @@ def compose(zip5, radius, year, m0, land, zips, today, repo, need_fresh=True):
     blocks = [("h1", "Farm sales recorded in %s %d within %d miles of %s" % (mon, year, radius, here)),
               ("p", "Here are the farm sales recorded in %s within %d miles of your ZIP, nearest first, from the state transfer records. "
                     "I show the acres, the price and where each one is. I never show who bought or sold." % (mon, radius))]
-    by_sale = sorted({r["st"] for r in rep["rows"] if r["basis"] == "sale date"})
+    by_sale = sorted({r["st"] for r in rep["rows"] if r["basis"] == "sale date" and r["st"] != "IN"})
+    if any(r["st"] == "IN" for r in rep["rows"]):
+        blocks.append(("p", LA.IN_NOTE))
     if by_sale:
         blocks.append(("p", "%s sales are listed by the date on the deed for now: my copy of the state's file does not carry the recording date yet."
                        % " and ".join(LA.STATE_NAMES[s] for s in by_sale)))
@@ -193,6 +212,9 @@ def compose(zip5, radius, year, m0, land, zips, today, repo, need_fresh=True):
     for r in rep["rows"]:
         cn[(r["st"], r["county"])] = cn.get((r["st"], r["county"]), 0) + 1
     top = max(cn, key=lambda k: (cn[k], -min(x["mi"] for x in rep["rows"] if (x["st"], x["county"]) == k)))
+    up = update_url(year, m0, repo)
+    if up:
+        blocks.append(("link", ("The whole month across %s: the biggest buyers, the biggest sales, unusual prices and the best value per acre: " % update_states(repo), tag(up))))
     blocks.append(("link", ("Every recorded sale around a field, on a map, with a free comparable sales report: ", tag(scout_url(near)))))
     blocks.append(("link", ("%s County's sale prices and land record in the Farmland Atlas: " % top[1], tag(atlas_url(top[0], top[1], repo)))))
     reads = "; ".join("%s, read %s" % (LA.SOURCES[s], LA.long_day(rep["read"][s])) for s in sorted(rep["read"]) if s in LA.SOURCES)
@@ -565,6 +587,30 @@ def selftest():
     ck("subject: radius, ZIP, month and the count", m["Subject"] == "Farm sales within 25 miles of 54001, September: 2 recorded", m["Subject"])
     ck("the sales, nearest first: date, acres, $/acre, price, where, miles",
        "Sep 10: 80 acres at $5,000 an acre ($400,000), Near town, Testing County, WI, 7 miles\nSep 3: 40 acres at $7,500 an acre ($300,000, with buildings), Mid town, Testing County, WI, 14 miles" in txt, txt[:900])
+    ck("no monthly update page in the checkout: no link to one", "land-sales/2026-09" not in txt)
+    os.makedirs(os.path.join(tmp, "land-sales"), exist_ok=True)
+    open(os.path.join(tmp, "land-sales", "2026-09.html"), "w").write("x")
+    t2 = render("a@example.com", "https://w.dev", "sec", email_links.SAMPLE_LID, compose("54001", 25, 2026, 8, land, zips, today, tmp)[0],
+                "news@agsist.com").get_body(("plain",)).get_content()
+    ck("the month's update page linked once it is built", "the biggest buyers, the biggest sales, unusual prices and the best value per acre: https://agsist.com/land-sales/2026-09?" in t2, t2[-1400:])
+    os.remove(os.path.join(tmp, "land-sales", "2026-09.html"))
+    # Indiana (Sig, Oct 27): an Indiana ZIP gets its sales, the email says what Indiana's records carry, no names
+    import json
+    os.makedirs(os.path.join(tmp, "data", "land", "in"), exist_ok=True)
+    icols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt", "grantor", "grantee", "ac1"]
+    json.dump({"state": "IN", "county": "Hoosier", "fips": "18999", "fetched_utc": "2026-10-03T11:00:00Z", "acres_rule": 2, "cols": icols,
+               "coverage": {"from": "2021-01-01"}, "munis": {"0": ["Testtown", 40.05, -85.5]},
+               "rows": [["IN-DOC-1", "2026-09-15", 1200000, 80, None, 1, "4", "Sale; land only", "PIN-IN-1", "0", "LEGALIN 1", 0,
+                         "SELLER HOOSIERONE", "BUYER HOOSIERTWO", None]]},
+              open(os.path.join(tmp, "data", "land", "in", "18999.json"), "w"))
+    json.dump({"counties": [{"fips": "18999", "name": "Hoosier", "lat": 40.05, "lng": -85.5}]}, open(os.path.join(tmp, "data", "land", "in", "index.json"), "w"))
+    zin = Zips(data={"46001": (40.0, -85.5, "Testtown, IN")})
+    pin, why_in = compose("46001", 25, 2026, 8, LA.Land(tmp), zin, today, tmp)
+    tin = render("a@example.com", "https://w.dev", "sec", email_links.SAMPLE_LID, pin, "news@agsist.com").get_body(("plain",)).get_content() if pin else ""
+    ck("an Indiana ZIP gets its Indiana sale", why_in == "send" and "Sep 15: 80 acres at $15,000 an acre ($1,200,000), Testtown, Hoosier County, IN" in tin, tin[:900])
+    ck("the email says what Indiana's records carry", LA.IN_NOTE in tin)
+    ck("no Indiana name, parcel, legal or document", not re.search(r"HOOSIERONE|HOOSIERTWO|PIN-IN|LEGALIN|IN-DOC", tin))
+    ck("the Indiana source with its read date", "Indiana Department of Local Government Finance, sales disclosure forms (from STATS Indiana), farm parcels, read Oct 3, 2026" in tin)
     ck("the 26-mile sale and July's are not in it", "150 acres" not in txt and "Jul" not in txt.split("Sig\n")[0])
     ck("the HTML table has the same two rows and its headings", htm.count("<tr>") == 3 and "Recorded</th>" in htm and "Miles</th>" in htm)
     ck("no names, parcel numbers, legal descriptions or document numbers, anywhere",

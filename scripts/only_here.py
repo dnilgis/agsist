@@ -289,7 +289,17 @@ def for_reader(before, z=None, repo=REPO, loc=None):
                 out.append(rr)
         except Exception as ex:
             print("only here: rain records skipped (%s)" % type(ex).__name__)
-    return out[:2]
+    out = out[:2]
+    # farm sales near a ZIP reader, in the days after the monthly update (scripts/daily_land_line.py)
+    if loc:
+        try:
+            import daily_land_line
+            ll = daily_land_line.line(loc[:2], before, repo)
+            if ll:
+                out.append(ll)
+        except Exception as ex:
+            print("only here: land sales skipped (%s)" % type(ex).__name__)
+    return out
 
 
 COUNT_LINE = re.compile(r"\b[\d,]+ of (?:the )?[\d,]+ elevators\b|\b[\d,]+ elevators\b", re.I)

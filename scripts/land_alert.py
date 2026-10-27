@@ -12,11 +12,11 @@ THE DATA is the same county transfer files Field Scout, the comp report and the 
 (build_land_summary.row_objs, sale_rows, market_sale, stat_ok: the port of field-scout-land.js
 that test/land-rule.test.mjs holds to the page row for row). Nothing here re-decides it.
 
-STATES: Illinois and Wisconsin only (STATES). Indiana is held: its sales are live in Field
-Scout and the comp report, but Sig's Oct 18 call keeps them off any page beyond those two, and
-the Atlas waits on a check of Indiana's deed types and acres against the market-sale rule. The
-email reuses that rule and prints a derived median, so Indiana stays out until Sig says it may
-go in. Minnesota (eCRV) is not in the data at all.
+STATES: Illinois, Wisconsin and Indiana (STATES). Indiana was held from Oct 18 until Sig turned it on,
+Oct 27 2026 ("Yes turn on Indiana": the land sale pages and this email). Indiana's records differ
+(IN_NOTE): the sales disclosure form carries the sale date, not a recording date, and places the sale
+at the parcel's mailing town, whose point is that ZIP's Census centroid, not a township; the email
+says so whenever an Indiana sale is in it. Minnesota (eCRV) is not in the data at all.
 
 WHERE A SALE IS. A transfer file places each sale at its township, town, village or city (the
 "muni" code), whose point is the Census county subdivision gazetteer's internal point
@@ -61,9 +61,11 @@ REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import build_land_summary as BLS   # noqa: E402  the shared market-sale rule
 
-STATES = ("IL", "WI")               # Indiana held (see above); MN not in the data
-STATE_NAMES = {"IL": "Illinois", "WI": "Wisconsin"}
-STATE_SLUGS = {"IL": "illinois", "WI": "wisconsin"}
+STATES = ("IL", "WI", "IN")         # Indiana on since Oct 27, 2026 (see above); MN not in the data
+STATE_NAMES = {"IL": "Illinois", "WI": "Wisconsin", "IN": "Indiana"}
+STATE_SLUGS = {"IL": "illinois", "WI": "wisconsin", "IN": "indiana"}
+IN_NOTE = ("Indiana sales carry the sale date from the state's sales disclosure form, not a recording date, and the town is "
+           "the parcel's mailing town, placed at the middle of its ZIP code rather than a township, so distances to them are rougher.")
 MILES = (10, 25, 50)
 DEFAULT_MILES = 25
 EARTH_MI = 3958.8
@@ -79,6 +81,7 @@ MONTHS = ["January", "February", "March", "April", "May", "June", "July", "Augus
 SOURCES = {
     "IL": "Illinois Department of Revenue, MyDec transfer declarations (PTAX-203), farm parcels",
     "WI": "Wisconsin Department of Revenue, electronic real estate transfer returns, farm and forest classes",
+    "IN": "Indiana Department of Local Government Finance, sales disclosure forms (from STATS Indiana), farm parcels",
 }
 
 
@@ -373,7 +376,7 @@ def selftest():
     r4 = month_report(Land(tmp), zipll, 25, 2026, 8, today)
     ck("no filed date in the file: listed by sale date, marked sale date",
        [r["when"] for r in r4["rows"]] == ["2026-09-02", "2026-09-20", "2026-09-11"] and all(r["basis"] == "sale date" for r in r4["rows"]), r4["rows"])
-    ck("Indiana is not a state this email reads", "IN" not in STATES and Land().states == ("IL", "WI"))
+    ck("Indiana is a state this email reads (Sig, Oct 27)", "IN" in STATES and Land().states == ("IL", "WI", "IN"))
     print("\n%s: %d failure(s)" % ("FAIL" if fails else "OK", len(fails)))
     return 1 if fails else 0
 

@@ -14,6 +14,8 @@ Disallow: /test/
 # Property transfer files (buyer and seller names from state records) are read
 # by the field scout land card for one picked parcel; not for search indexes.
 Disallow: /data/land/
+# Buyer and seller names behind the "Show buyer and seller" tap on the land-sales pages live in
+# /data/land/names/ (blocked by the line above; never in a page, a sitemap or a snippet).
 # The Atlas county sales summary holds no names and the indexed county pages draw from it
 Allow: /data/land/*/summary.json
 
@@ -25,3 +27,4 @@ Sitemap: https://agsist.com/sitemap-arc-plc.xml
 Sitemap: https://agsist.com/sitemap-prf.xml
 Sitemap: https://agsist.com/sitemap-rain.xml
 Sitemap: https://agsist.com/sitemap-news.xml
+Sitemap: https://agsist.com/sitemap-land-sales.xml
