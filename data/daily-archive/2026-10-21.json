@@ -1,6 +1,6 @@
 {
   "headline": "Corn down 6 straight days to $4.59½; beans down 7 to $12.45",
-  "lead": "Corn closed Tuesday at $4.59½, its sixth lower close in a row, and soybeans at $12.45 made it seven. A corn bushel is worth about 15 cents less than a week ago. Harvest is pushing the selling, and nothing new came overnight.",
+  "lead": "Dec corn settled Tuesday at $4.62, its sixth lower settle in a row, and Nov soybeans settled at $12.48¼, their seventh; early Wednesday corn traded at $4.59½ and beans at $12.45. (Corrected Oct 27, see the note below.) Dec corn futures are 21¼ cents below last Wednesday's $4.80¾ settle; what that means for corn in the bin depends on your local bid and basis. (Corrected Oct 27, see the note below.) Harvest is pushing the selling, and nothing new came overnight.",
   "teaser": "Corn and beans keep sliding on harvest selling while crude holds near $100 and cattle push higher.",
   "one_number": {
     "value": "$20",
@@ -490,5 +490,15 @@
     ],
     "dry_run": false
   },
-  "first_published_at": "2026-10-21T10:48:17.871916+00:00"
+  "first_published_at": "2026-10-21T10:48:17.871916+00:00",
+  "corrections": [
+    {
+      "date": "2026-10-27",
+      "text": "The opening said \"Corn closed Tuesday at $4.59½, its sixth lower close in a row, and soybeans at $12.45 made it seven.\" Those prices were trades read at 5:46 a.m. CT Wednesday, not Tuesday's closes. December corn settled at $4.62 on Oct 20 and November soybeans at $12.48¼; the counts of lower settles in a row were right."
+    },
+    {
+      "date": "2026-10-27",
+      "text": "The opening said \"A corn bushel is worth about 15 cents less than a week ago.\" A futures move alone does not show what stored corn is worth; a cash bid also moves with local basis. December corn futures traded at $4.59½ early Oct 21, 21¼ cents below the $4.80¾ settle of Oct 14."
+    }
+  ]
 }

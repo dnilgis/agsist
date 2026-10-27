@@ -25,6 +25,13 @@ const FIXED = [
   ["2026-10-22", "the first higher close after a streak of lower ones."],
   ["2026-10-25", "Diesel and fertilizer costs follow crude, so higher oil matters for next season's input bills."],
   ["2026-10-25", "favors beans when acres are planned for next spring."],
+  // the next three, found by running the guards over the whole archive (Oct 27)
+  ["2026-10-10", "Every bushel still in the bin is worth less than it was Thursday morning."],
+  ["2026-10-15", "Hogs are nearly flat at $75.55, just below Wednesday's $75.60."],
+  ["2026-10-15", "The pullback follows word that the administration may ease sanctions on tankers moving Russian, Iranian and Venezuelan oil, adding supply to a tight tanker market."],
+  ["2026-10-26", "A bushel of beans is worth about 16 cents less than it was at Friday's close."],
+  ["2026-10-21", "Corn closed Tuesday at $4.59½, its sixth lower close in a row, and soybeans at $12.45 made it seven."],
+  ["2026-10-21", "A corn bushel is worth about 15 cents less than a week ago."],
 ];
 const esc = (s) => s.replace(/"/g, "&quot;");
 
@@ -56,13 +63,32 @@ sys.path.insert(0, "scripts")
 import daily_claims as dc
 from datetime import date
 bad = []
-for d in ("2026-10-11", "2026-10-16", "2026-10-18", "2026-10-22", "2026-10-25"):
+for d in ("2026-10-10", "2026-10-11", "2026-10-15", "2026-10-16", "2026-10-18", "2026-10-21", "2026-10-22", "2026-10-25", "2026-10-26"):
     b = json.load(open(f"data/daily-archive/{d}.json"))
     ctx = dc.context({"planting_ratio": {"crop_year": 2027, "value": 2.47}}, dc.issue_date(b), b.get("quote_strip"))
     bad += [(d,) + h for h in dc.lint(b, ctx)]
 print(len(bad), bad)
 `]);
   assert.match(out, /^0 /, out);
+});
+
+test("Oct 15 hogs: the old line fails and the corrected one passes, against prices.json as the issue read it", () => {
+  // data/prices.json at git c168ae6c570 (2026-10-15 10:46 UTC): HEV26 75.55 and HEZ26 66.075, both the Oct 14 settles
+  const out = py(["-c", `
+import json, sys
+sys.path.insert(0, "scripts")
+import daily_claims as dc
+from datetime import date
+prices = {"quotes": {
+    "hogs": {"ticker": "HE=F", "close": 75.55, "close_date": "2026-10-14"},
+    "hogs-oct26": {"ticker": "HEV26.CME", "close": 75.55, "close_date": "2026-10-14"},
+    "hogs-dec26": {"ticker": "HEZ26.CME", "close": 66.075, "close_date": "2026-10-14"}}}
+b = json.load(open("data/daily-archive/2026-10-15.json"))
+ctx = dc.context(prices, date(2026, 10, 15), b.get("quote_strip"))
+old = {"sections": [{"body": "- Hogs are nearly flat at $75.55, just below Wednesday's $75.60."}]}
+print([r for r, _, _ in dc.lint(old, ctx)], [r for r, _, _ in dc.lint(b, ctx)])
+`]);
+  assert.match(out, /^\['expired-contract'\] \[\]/, out);
 });
 
 test("claim guards run in the prompt, the generator's cut, the critic and the gate", () => {

@@ -39,11 +39,13 @@ runs:
           while read -r name pool sha; do
             [ -n "$name" ] || continue
             F="${pool##*/}"; ok=0
-            # Launchpad keeps every published build at this address for good; the pool keeps release-pocket builds
-            for u in "https://launchpad.net/ubuntu/+archive/primary/+files/$F" \
+            # Azure's Ubuntu mirror first: the runners live in Azure, and Launchpad crawled to the
+            # 5 minute step limit twice on Oct 27. Every pool keeps release-pocket builds; Launchpad
+            # (every published build, for good) stays as the last resort.
+            for u in "https://azure.archive.ubuntu.com/ubuntu/$pool" \
                      "https://archive.ubuntu.com/ubuntu/$pool" \
-                     "https://azure.archive.ubuntu.com/ubuntu/$pool"; do
-              if curl -fsSL --connect-timeout 15 --max-time 120 --retry 2 --retry-delay 3 -o "$W/$F" "$u" \
+                     "https://launchpad.net/ubuntu/+archive/primary/+files/$F"; do
+              if curl -fsSL --connect-timeout 10 --max-time 60 --retry 1 --retry-delay 3 -o "$W/$F" "$u" \
                  && echo "$sha  $W/$F" | sha256sum -c --quiet -; then ok=1; echo "$F from $u"; break; fi
               echo "::warning::$F: no good copy from $u"; rm -f "$W/$F"
             done
