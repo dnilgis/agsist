@@ -13,7 +13,10 @@ Here, a scored spec is:
   holdout   beats its benchmark on data the fit never saw: the bootstrap range of the gain
             (or of the contagion net) sits above zero and the sign is the one registered
   placebo   the real gain beats the shuffled ones: p = (1 + shuffles at least as good) / (1 + N),
-            1,000 shuffles, 5,000 when p is under 0.01 (the ledger line needs at least 3,200)
+            1,000 shuffles, 5,000 when p is under 0.01, 20,000 when p is within 10 times the
+            ledger line (the line, 0.05 / M, needs more than 3,200 just to be reachable). Weekly
+            series shuffle 8-week blocks; state-years shuffle states within a year; elevators
+            shuffle which facility's change series sits where, within its state
   family    Holm within its family (every spec registered in the family counts; one not
             scored counts as p = 1)
   ledger    Bonferroni across the whole ledger: p x M <= 0.05, M = the tests spent before the
@@ -24,6 +27,11 @@ Here, a scored spec is:
             its first result, or the run broke)
   eligible  HOLDS, the same sign on the spec's last scored re-test, and no sig_yes yet
 A first HOLDS is never eligible: it needs one re-test with the same sign first.
+
+BENCHMARKS. A level is scored against persistence (the last value known that Friday). A change
+is scored against the target's own last known change (a fit-years regression), and the model adds
+x to that, so a predictor that only carries the target's own past earns nothing (seat 4's T1
+placebo). State yield is scored against each state's own trend. Contagion against a control ring.
 
 HONEST-NUMBERS RULES IT KEEPS. Predictors are read only once released (each series' release lag
 in the registry; the decision time is the Friday). Seasonal means, trends and slopes come from
