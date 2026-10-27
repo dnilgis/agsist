@@ -1,6 +1,6 @@
 {
  "schema": "agsist-elevator-ids/1",
- "note": "Which id each key holds. A key keeps its id; ids are never renumbered or reused. minted: AGSIST ids (a + 5 digits) with the key that first held each; into: merged into a bids-repo elevId. events: every merge and split. Rules: scripts/build_ids.py.",
+ "note": "Which id each key holds. A key keeps its id; ids are never renumbered or reused. minted: AGSIST ids (a + 5 digits) with the key that first held each; into: merged into a bids-repo elevId. events: every merge and split. retired: bids-repo ids the bids repo folded into another row (into), never used again; their keys hold the survivor. Rules: scripts/build_ids.py.",
  "next": 538,
  "minted": {
   "a00001": {
@@ -41,15 +41,18 @@
   },
   "a00010": {
    "first": "basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|ROGGEN",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e7pqw0z5m3"
   },
   "a00011": {
    "first": "basis:GA|AGROWSTAR|BONAIRE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ephaj0s75r"
   },
   "a00012": {
    "first": "basis:GA|AGROWSTAR|DAVISBORO",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ep2xng3kq1"
   },
   "a00013": {
    "first": "basis:GA|CAIN AGRA|MARSHALLVILLE",
@@ -101,7 +104,8 @@
   },
   "a00025": {
    "first": "basis:IA|ARCHER COOP GRAIN CO|ARCHER",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e3hjwvfm5t"
   },
   "a00026": {
    "first": "basis:IA|ARCHER COOP GRAIN CO|SHELDON",
@@ -181,7 +185,8 @@
   },
   "a00045": {
    "first": "basis:IA|FRONTIER COOPERATIVE|COUNCIL BLUFFS",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eyd8hz2wqy"
   },
   "a00046": {
    "first": "basis:IA|GOLD-EAGLE COOPERATIVE|CLARION",
@@ -193,7 +198,8 @@
   },
   "a00048": {
    "first": "basis:IA|GOLDEN GRAIN ENERGY|MASON CITY",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e5g3v2mzmp"
   },
   "a00049": {
    "first": "basis:IA|GREEN PLAINS|SHENANDOAH",
@@ -253,7 +259,8 @@
   },
   "a00063": {
    "first": "basis:IA|LINN COOP OIL COMPANY|CEDAR RAPIDS",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ehnj514xzq"
   },
   "a00064": {
    "first": "basis:IA|LOUIS DREYFUS - GRAND JUNCTION|GRAND JUNCTION",
@@ -269,7 +276,8 @@
   },
   "a00067": {
    "first": "basis:IA|MID-IOWA COOPERATIVE|HOLLAND",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eskrcnwtrw"
   },
   "a00068": {
    "first": "basis:IA|MID-IOWA COOPERATIVE|IOWA FALLS",
@@ -289,11 +297,13 @@
   },
   "a00072": {
    "first": "basis:IA|NEXUS COOPERATIVE|CARPENTER",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eyva8d3bc1"
   },
   "a00073": {
    "first": "basis:IA|NEXUS COOPERATIVE|CHAPIN",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ehsqyp5tc1"
   },
   "a00074": {
    "first": "basis:IA|NEXUS COOPERATIVE|CHARLES CITY",
@@ -301,35 +311,43 @@
   },
   "a00075": {
    "first": "basis:IA|NEXUS COOPERATIVE|DEWAR",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ek2rnwvshj"
   },
   "a00076": {
    "first": "basis:IA|NEXUS COOPERATIVE|ELGIN",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ehg6w9byjk"
   },
   "a00077": {
    "first": "basis:IA|NEXUS COOPERATIVE|HARLAN",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e1rfsrbjgh"
   },
   "a00078": {
    "first": "basis:IA|NEXUS COOPERATIVE|MARBLE ROCK",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eyc33qtsrd"
   },
   "a00079": {
    "first": "basis:IA|NEXUS COOPERATIVE|NORTHWOOD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e6r4z55spr"
   },
   "a00080": {
    "first": "basis:IA|NEXUS COOPERATIVE|OELWEIN",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eep9r7zwrv"
   },
   "a00081": {
    "first": "basis:IA|NEXUS COOPERATIVE|ROCKFORD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "emn34qsbt1"
   },
   "a00082": {
    "first": "basis:IA|NEXUS COOPERATIVE|RUDD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ebb5wppn38"
   },
   "a00083": {
    "first": "basis:IA|NEXUS COOPERATIVE|SHELL ROCK",
@@ -337,15 +355,18 @@
   },
   "a00084": {
    "first": "basis:IA|NEXUS COOPERATIVE|STACYVILLE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ecm9x3eqhj"
   },
   "a00085": {
    "first": "basis:IA|NEXUS COOPERATIVE|SUMNER",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ejdz8z7bgr"
   },
   "a00086": {
    "first": "basis:IA|NEXUS COOPERATIVE|TOETERVILLE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ewzzwxqwxb"
   },
   "a00087": {
    "first": "basis:IA|POET BIOREFINING|COON RAPIDS",
@@ -473,19 +494,23 @@
   },
   "a00118": {
    "first": "basis:IL|ASSUMPTION COOP|ASSUMPTION",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ev1vmhfx9c"
   },
   "a00119": {
    "first": "basis:IL|ASSUMPTION COOP|PALMER",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ey4d8q9za5"
   },
   "a00120": {
    "first": "basis:IL|ASSUMPTION COOP|PANA",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e86phejjgr"
   },
   "a00121": {
    "first": "basis:IL|ASSUMPTION COOP|WESTERVELT",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e9nje7tjpy"
   },
   "a00122": {
    "first": "basis:IL|BALK GRAIN AND TRUCKING, INC.|SAVANNA",
@@ -537,11 +562,13 @@
   },
   "a00134": {
    "first": "basis:IL|FARMERS COOPERATIVE ASSOCIATION - VARNA|VARNA",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ey1dtdnyvc"
   },
   "a00135": {
    "first": "basis:IL|GATEWAY FS|FULTS",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e2bt2byq07"
   },
   "a00136": {
    "first": "basis:IL|GRAYMONT CO-OP ASSOCIATION|GRAYMONT",
@@ -637,7 +664,8 @@
   },
   "a00159": {
    "first": "basis:IL|TETTENS GRAIN|HENNEPIN",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eggxhcvtx3"
   },
   "a00160": {
    "first": "basis:IL|TETTENS GRAIN|PRINCETON",
@@ -813,27 +841,33 @@
   },
   "a00203": {
    "first": "basis:KS|FARMERS COOP OF DORCHESTER|BEATTIE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ejewb979pp"
   },
   "a00204": {
    "first": "basis:KS|FARMERS COOP OF DORCHESTER|BLUE RAPIDS",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e7x7v000vz"
   },
   "a00205": {
    "first": "basis:KS|FARMERS COOP OF DORCHESTER|FRANKFORT",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e1564bmx25"
   },
   "a00206": {
    "first": "basis:KS|FARMERS COOP OF DORCHESTER|HANOVER",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ezkh9xpmb0"
   },
   "a00207": {
    "first": "basis:KS|FARMERS COOP OF DORCHESTER|MARIETTA",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ea431amncr"
   },
   "a00208": {
    "first": "basis:KS|FARMERS COOP OF DORCHESTER|WATERVILLE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e72ajgt7bp"
   },
   "a00209": {
    "first": "basis:KS|FARMERS COOPERATIVE ASSOCIATION|CHETOPA",
@@ -1053,23 +1087,28 @@
   },
   "a00263": {
    "first": "basis:MN|NEXUS COOPERATIVE|ADAMS",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "egjjav4b0a"
   },
   "a00264": {
    "first": "basis:MN|NEXUS COOPERATIVE|ALDEN",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e36h6rkv60"
   },
   "a00265": {
    "first": "basis:MN|NEXUS COOPERATIVE|BLOOMING PRAIRIE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eewk6jygmp"
   },
   "a00266": {
    "first": "basis:MN|NEXUS COOPERATIVE|BROWNSDALE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "evz192cfh7"
   },
   "a00267": {
    "first": "basis:MN|NEXUS COOPERATIVE|EMMONS",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e710js3fyh"
   },
   "a00268": {
    "first": "basis:MN|NEXUS COOPERATIVE|LANSING",
@@ -1077,11 +1116,13 @@
   },
   "a00269": {
    "first": "basis:MN|NEXUS COOPERATIVE|LEROY",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "epr32qgrc2"
   },
   "a00270": {
    "first": "basis:MN|NEXUS COOPERATIVE|LONDON",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ekp4qd0a9k"
   },
   "a00271": {
    "first": "basis:MN|NEXUS COOPERATIVE|OAKLAND",
@@ -1089,7 +1130,8 @@
   },
   "a00272": {
    "first": "basis:MN|NEXUS COOPERATIVE|ROSE CREEK",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e203h3ma6e"
   },
   "a00273": {
    "first": "basis:MN|POET BIOREFINING|BINGHAM LAKE",
@@ -1289,11 +1331,13 @@
   },
   "a00322": {
    "first": "basis:ND|MAPLE RIVER GRAIN|CASSELTON",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ebp4nx20mg"
   },
   "a00323": {
    "first": "basis:ND|MAPLE RIVER GRAIN|VALLEY CITY",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "etmj3zv9ve"
   },
   "a00324": {
    "first": "basis:ND|PLAINS GRAIN & AGRONOMY|ENDERLIN",
@@ -1373,51 +1417,63 @@
   },
   "a00343": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|BLUE SPRINGS",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eq03cwvjsv"
   },
   "a00344": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|BURCHARD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ey0g3zxjff"
   },
   "a00345": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|CORDOVA",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e2wrs3sd24"
   },
   "a00346": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|DAYKIN",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ehjfzq9h54"
   },
   "a00347": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|DORCHESTER",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ejmjz841bd"
   },
   "a00348": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|EMERALD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ek9ve8wvcj"
   },
   "a00349": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|EXETER",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eq73a93j8h"
   },
   "a00350": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|FAIRMONT",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eaae2zsg3q"
   },
   "a00351": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|FIRTH",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e0yt5x31gv"
   },
   "a00352": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|HALLAM",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eg6fbvxqb6"
   },
   "a00353": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|JANSEN",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e0fafnpzpd"
   },
   "a00354": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|KRAMER",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "egt7xxb3r8"
   },
   "a00355": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|LINCOLN",
@@ -1425,23 +1481,28 @@
   },
   "a00356": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|LUSHTON",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ehjbf1kbj5"
   },
   "a00357": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|MCCOOL JUNCTION",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e52faxg96a"
   },
   "a00358": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|MILLIGAN",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e4z6cnjsjb"
   },
   "a00359": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|ODELL",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ewha5gd0h9"
   },
   "a00360": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|OHIOWA",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ea6rcmw2vs"
   },
   "a00361": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|PAWNEE",
@@ -1449,15 +1510,18 @@
   },
   "a00362": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|PICKRELL",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ejmzaxcber"
   },
   "a00363": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|PLEASANT DALE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "esz58cx4qy"
   },
   "a00364": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|PLYMOUTH",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e66s72mbab"
   },
   "a00365": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|RAYMOND",
@@ -1465,19 +1529,23 @@
   },
   "a00366": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|STERLING",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eery4mvtkv"
   },
   "a00367": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|SWANTON",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e9f6cedqsv"
   },
   "a00368": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|VIRGINIA",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ewa3bnw8em"
   },
   "a00369": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|WILBER",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "extasr98hc"
   },
   "a00370": {
    "first": "basis:NE|FARMERS UNION COOPERATIVE CO.|FRIEND",
@@ -1485,7 +1553,8 @@
   },
   "a00371": {
    "first": "basis:NE|FRENCHMAN VALLEY COOP|GRANT",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ep1x19vk7g"
   },
   "a00372": {
    "first": "basis:NE|FRENCHMAN VALLEY FARMERS COOPERATIVE, INC.|CHAPPELL",
@@ -1493,11 +1562,13 @@
   },
   "a00373": {
    "first": "basis:NE|FRONTIER COOPERATIVE|ADAMS",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "es3z3wf02r"
   },
   "a00374": {
    "first": "basis:NE|FRONTIER COOPERATIVE|DAVID CITY",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e6tjbprrv3"
   },
   "a00375": {
    "first": "basis:NE|GREEN PLAINS|YORK",
@@ -1537,11 +1608,13 @@
   },
   "a00384": {
    "first": "basis:OH|CENTRAL OHIO FARMERS CO-OP|MOUNT GILEAD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eq5mf12xbw"
   },
   "a00385": {
    "first": "basis:OH|CENTRAL OHIO FARMERS CO-OP|MOUNT VERNON",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e29qvpet42"
   },
   "a00386": {
    "first": "basis:OH|GERALD GRAIN CENTER|WAUSEON",
@@ -1569,7 +1642,8 @@
   },
   "a00392": {
    "first": "basis:OH|MERCER LANDMARK|ROCKFORD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e0ykb4h2tx"
   },
   "a00393": {
    "first": "basis:OH|OTTAWA FEED AND GRAIN CO.|OTTAWA",
@@ -1589,7 +1663,8 @@
   },
   "a00397": {
    "first": "basis:OH|RIDGEVILLE ELEVATOR|FAYETTE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ed1pzt3yj3"
   },
   "a00398": {
    "first": "basis:OH|RIDGEVILLE ELEVATOR|RIDGEVILLE CORNERS",
@@ -1637,7 +1712,8 @@
   },
   "a00409": {
    "first": "basis:SD|AGTEGRA|IPSWICH",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eb5mfk3z9k"
   },
   "a00410": {
    "first": "basis:SD|AGTEGRA|REDFIELD",
@@ -1813,11 +1889,13 @@
   },
   "a00453": {
    "first": "basis:WY|FRENCHMAN VALLEY COOP|BURNS",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ep14efwqny"
   },
   "a00454": {
    "first": "basis:WY|FRENCHMAN VALLEY COOP|PINE BLUFFS",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e8qpv4f3f1"
   },
   "a00455": {
    "first": "dir:10273",
@@ -1845,7 +1923,8 @@
   },
   "a00461": {
    "first": "dir:18852",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eyx74fca4a"
   },
   "a00462": {
    "first": "dir:19066",
@@ -1865,7 +1944,8 @@
   },
   "a00466": {
    "first": "dir:25940",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ek9wkh4k7a"
   },
   "a00467": {
    "first": "dir:25992",
@@ -1925,11 +2005,13 @@
   },
   "a00481": {
    "first": "dir:37397",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e2cphgcczt"
   },
   "a00482": {
    "first": "dir:37400",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ej8m0ekd8f"
   },
   "a00483": {
    "first": "dir:37441",
@@ -1937,7 +2019,8 @@
   },
   "a00484": {
    "first": "dir:37540",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e0yf1jq24x"
   },
   "a00485": {
    "first": "dir:37935",
@@ -1973,7 +2056,8 @@
   },
   "a00493": {
    "first": "dir:47809",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ebqq3nbf3x"
   },
   "a00494": {
    "first": "dir:50136",
@@ -2005,7 +2089,8 @@
   },
   "a00501": {
    "first": "dir:77665",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ed2ehhhsgh"
   },
   "a00502": {
    "first": "dir:77695",
@@ -2041,7 +2126,8 @@
   },
   "a00510": {
    "first": "dir:81891",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ex2gn12qmh"
   },
   "a00511": {
    "first": "dir:82239",
@@ -2077,7 +2163,8 @@
   },
   "a00519": {
    "first": "dir:85372",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eyhtb3makj"
   },
   "a00520": {
    "first": "dir:85511",
@@ -2085,7 +2172,8 @@
   },
   "a00521": {
    "first": "dir:85554",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e91sptc0c5"
   },
   "a00522": {
    "first": "dir:85821",
@@ -2149,10 +2237,2121 @@
   },
   "a00537": {
    "first": "dir:87820",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "evzwpjq41a"
   }
  },
- "events": [],
+ "retired": {
+  "e01qpxm5wa": {
+   "into": "ehhdgf0crs",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e049c48vt9": {
+   "into": "egz19x9jv6",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e09rkdcdxb": {
+   "into": "e49yjwzwvv",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e0hed776yr": {
+   "into": "e2myy50ta1",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e0nfx32mar": {
+   "into": "ef7wxjzrp7",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e0v3rt1g4h": {
+   "into": "ebsf77fnha",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e101bewh9c": {
+   "into": "ekz4vr8164",
+   "on": "2026-10-27",
+   "rule": "near+operator"
+  },
+  "e10c5sddjj": {
+   "into": "esbt7re4mk",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e122fcqpee": {
+   "into": "ewabb5r18e",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e1mnx2h330": {
+   "into": "epdpaqe1wa",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e1p8fv13ad": {
+   "into": "ejqdsejz4y",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e1ydqdzfj3": {
+   "into": "eczzvmffhp",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e27mdjqgsh": {
+   "into": "e62xehfm81",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e2ctc74ev7": {
+   "into": "ectmtqbyfe",
+   "on": "2026-10-27",
+   "rule": "near+operator"
+  },
+  "e2n8pryb4h": {
+   "into": "e1vtwncbm5",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e3129xf26a": {
+   "into": "e7fnj8a7m3",
+   "on": "2026-10-27",
+   "rule": "near+operator"
+  },
+  "e356zcxg15": {
+   "into": "enax56jtn7",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e3aa1zehhv": {
+   "into": "efhtt0z6rn",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e3fkz9ykhc": {
+   "into": "e3cvf0cgb8",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e3gr72n2hc": {
+   "into": "ejtjhb7qmd",
+   "on": "2026-10-27",
+   "rule": "near+operator"
+  },
+  "e3hbxp9zgg": {
+   "into": "e3qq69skp9",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e3kzahba42": {
+   "into": "e9hgzzsw7g",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e3tjbz41dz": {
+   "into": "ebnp6gk2jk",
+   "on": "2026-10-27",
+   "rule": "near+operator"
+  },
+  "e4es0v3mt3": {
+   "into": "enyqqpjcdb",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e4g48k1bem": {
+   "into": "ezsyvf2bxd",
+   "on": "2026-10-27",
+   "rule": "near+operator"
+  },
+  "e4nbfba1sp": {
+   "into": "e389hq1pzv",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e59rjnzpvd": {
+   "into": "ep572n7w8y",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e5b1p2tg47": {
+   "into": "e3ma049fmc",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e5d3z6cnyb": {
+   "into": "e8sr5vk66t",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e5f2azhg3c": {
+   "into": "e9k6qr2f7w",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e5fgx9gy4x": {
+   "into": "ehexg1ag19",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e5ty13b6vh": {
+   "into": "e1wq5a9anx",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e5z138qcjt": {
+   "into": "e9jjggdetm",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e6b2nhxd7s": {
+   "into": "e2fwg61ztz",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e6kk7y5vkh": {
+   "into": "ewdh2j596b",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e6kxxq36xp": {
+   "into": "e7r8vd6w67",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e6m950n7bx": {
+   "into": "ebr7wmsfy3",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e7a916caka": {
+   "into": "evn8e9pngn",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e7vxhxfvpa": {
+   "into": "esrgeggxpx",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e7zcc5ykx3": {
+   "into": "e8qwdx4r8v",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e81zn0emzf": {
+   "into": "e1308tcjg2",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e8j46eta28": {
+   "into": "ec96b6301z",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e8q16qgg75": {
+   "into": "erayeqrwjp",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e9e471f0sp": {
+   "into": "e783hwvh7h",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "e9wz83nkxh": {
+   "into": "ew0tjn8t41",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ea758j1xy7": {
+   "into": "eq4pgrxk46",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "eah045dfdf": {
+   "into": "e3b3twrxh0",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "eanbcd1dz3": {
+   "into": "ejvw0yf3yr",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "eat4vty5zk": {
+   "into": "etd6raa3jg",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "eb1zcbnza3": {
+   "into": "e11v66p39b",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ebav6dfqbg": {
+   "into": "eb1ye7qd7n",
+   "on": "2026-10-27",
+   "rule": "near+operator"
+  },
+  "ebc6fxeptd": {
+   "into": "edjnjd3gx5",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ebk64mkm61": {
+   "into": "ee9s9qcgjf",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ebmw5avr70": {
+   "into": "ecy06re57f",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ebsytf6qxy": {
+   "into": "e8jam8a9cw",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ebxza3tgjf": {
+   "into": "evj4086djn",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ebyf31qhfd": {
+   "into": "ejvw0yf3yr",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ec070m8nhk": {
+   "into": "e9frf2n90z",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ec6p2p72cs": {
+   "into": "e4q853gs8j",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ecay1jzc45": {
+   "into": "ev3yyf8nmr",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ecmg4nnjr8": {
+   "into": "err4n0ywx4",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ecwqbjgbs7": {
+   "into": "esmrps1vby",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ed2nhs86s1": {
+   "into": "e7azwjggak",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ed4m07qgr8": {
+   "into": "eahrr1p0dq",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ed5rwevv3p": {
+   "into": "e9xs287xs7",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "edns0b3760": {
+   "into": "edb75dr5a4",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "edqvwrbqkm": {
+   "into": "ernfzav5bw",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ee46y3574r": {
+   "into": "etj8pts7dh",
+   "on": "2026-10-27",
+   "rule": "near+operator"
+  },
+  "ee502nrmd5": {
+   "into": "ehsqyp5tc1",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "eetwt0affq": {
+   "into": "e011hgtdgf",
+   "on": "2026-10-27",
+   "rule": "near+operator"
+  },
+  "eevegjbdw9": {
+   "into": "e3wvzbn5y3",
+   "on": "2026-10-27",
+   "rule": "near+operator"
+  },
+  "eeymd5c10a": {
+   "into": "ey1dtdnyvc",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ef3myfhs0p": {
+   "into": "e4bws2aca3",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ef9983dn3q": {
+   "into": "ez7yaq8md0",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "eftaz9qz2k": {
+   "into": "efkzsb2eaq",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "eg67dtx7tx": {
+   "into": "e2c6ge9anz",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "egca5dzqrb": {
+   "into": "ezvwgta5fp",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "egddtt02m0": {
+   "into": "eqbgkq61bk",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "egf6smcp98": {
+   "into": "ev07vww1p4",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "egg71gf45v": {
+   "into": "er21x0m4ne",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "egsmmrz54r": {
+   "into": "eaktn61ab0",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "egv7sf474q": {
+   "into": "eef2vr1k62",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "eh0j8vaerb": {
+   "into": "ewrefkab9t",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "eh9askr9yg": {
+   "into": "e5wpq70vbz",
+   "on": "2026-10-27",
+   "rule": "near+alias"
+  },
+  "ehtamc8kpd": {
+   "into": "e7wg7g6gbm",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ej3gf0jt90": {
+   "into": "e261bv72y7",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ej97gqf2tr": {
+   "into": "eqknjy8em7",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ejjb8zfb13": {
+   "into": "eawdyxe5et",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ejrkrcsdb7": {
+   "into": "eedpfw6eme",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ejzfgr847g": {
+   "into": "e7z7bba3nv",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ek2ref31nz": {
+   "into": "esytqvrr95",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ek3fncdkzb": {
+   "into": "e3cxz3wyxe",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ek7ttxkphd": {
+   "into": "e2b33gqv4q",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ekk6s3k70s": {
+   "into": "enxzefs03v",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ekmc43r7ye": {
+   "into": "emc58bnmnq",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ekw38m860d": {
+   "into": "eqhe312001",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "em0e145mgd": {
+   "into": "ehqn92atrv",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "em1ye16x5g": {
+   "into": "eecxsxez3e",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "em7rzkar6a": {
+   "into": "es9hsmx2eb",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "em87a432rr": {
+   "into": "e5anxv6rn6",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "en2n1rrbbe": {
+   "into": "epbxbd4c02",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "en3m1m9r55": {
+   "into": "e6paazzke9",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "en4jrhs993": {
+   "into": "e0hc0srdw2",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "en4w7arf17": {
+   "into": "ed0fjmcwb4",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "en93apwz57": {
+   "into": "ej40ytfg6n",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "enpj1jnmyx": {
+   "into": "eavzhpjmg7",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ep7dx7wg7e": {
+   "into": "ecfr89n9nn",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "epmrcvrrxz": {
+   "into": "egwy72s7y8",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "epsww33mfh": {
+   "into": "ej6cyj834z",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "epxmwsd0cm": {
+   "into": "e4c63b6g81",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "epzga68877": {
+   "into": "e18ha9321x",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "eqgwjd664h": {
+   "into": "e3gza51zvd",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "eqtqygw11g": {
+   "into": "em1catmqyb",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "er6nkq0rhn": {
+   "into": "ezsvwq42aq",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "er6qcnhz3s": {
+   "into": "exqf57q6nm",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "er9ansytyq": {
+   "into": "eegahbr863",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "erf9hpc2bz": {
+   "into": "ehc0rzfqah",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ery984t053": {
+   "into": "ebecya47yd",
+   "on": "2026-10-27",
+   "rule": "near+alias"
+  },
+  "es398e1gtp": {
+   "into": "ec1etj4w76",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "esg5933s5j": {
+   "into": "es15t5vea6",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ess8zwvydy": {
+   "into": "e7tzsm2afe",
+   "on": "2026-10-27",
+   "rule": "near+alias"
+  },
+  "esz3twa0vr": {
+   "into": "egz19x9jv6",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "etn2v6zg9m": {
+   "into": "e44wmedd48",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "etnhpymsm6": {
+   "into": "efezj0znsm",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "etphtk76ga": {
+   "into": "e9gpt5fpjn",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ev3cmg8074": {
+   "into": "e826hmvmnb",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ev7z98283q": {
+   "into": "e9xs287xs7",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "evg3mktg96": {
+   "into": "ej9t1x95ft",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "evrpk0cdd0": {
+   "into": "etarnz8x43",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ew725krxq3": {
+   "into": "ehez8hts87",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ewhnrtck92": {
+   "into": "ente6qsavd",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ewkpmrfe8f": {
+   "into": "em4paqezrn",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ex9h0k6dte": {
+   "into": "ef9cqn0nbg",
+   "on": "2026-10-27",
+   "rule": "near+operator"
+  },
+  "exx35trt94": {
+   "into": "e6q0g1djyk",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ey5xem7fe7": {
+   "into": "eyp1m2cfrh",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ey6wywgj5h": {
+   "into": "edeswgvfcg",
+   "on": "2026-10-27",
+   "rule": "near+operator"
+  },
+  "eyr3x3wb4x": {
+   "into": "evs7yaaxyz",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "eyxbwa9dtn": {
+   "into": "esrebakghd",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ez0234rrvn": {
+   "into": "ed8t81yfds",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ezdyfvm5c5": {
+   "into": "eq5kv3kac7",
+   "on": "2026-10-27",
+   "rule": "phone"
+  },
+  "ezgp80aa0j": {
+   "into": "e311rj7m84",
+   "on": "2026-10-27",
+   "rule": "phone"
+  }
+ },
+ "events": [
+  {
+   "on": "2026-10-27",
+   "merge": "a00010",
+   "into": "e7pqw0z5m3",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00011",
+   "into": "ephaj0s75r",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00012",
+   "into": "ep2xng3kq1",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00025",
+   "into": "e3hjwvfm5t",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00045",
+   "into": "eyd8hz2wqy",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00048",
+   "into": "e5g3v2mzmp",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00063",
+   "into": "ehnj514xzq",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00067",
+   "into": "eskrcnwtrw",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00072",
+   "into": "eyva8d3bc1",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00073",
+   "into": "ehsqyp5tc1",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00075",
+   "into": "ek2rnwvshj",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00076",
+   "into": "ehg6w9byjk",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00077",
+   "into": "e1rfsrbjgh",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00078",
+   "into": "eyc33qtsrd",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00079",
+   "into": "e6r4z55spr",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00080",
+   "into": "eep9r7zwrv",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00081",
+   "into": "emn34qsbt1",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00082",
+   "into": "ebb5wppn38",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00084",
+   "into": "ecm9x3eqhj",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00085",
+   "into": "ejdz8z7bgr",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00086",
+   "into": "ewzzwxqwxb",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00118",
+   "into": "ev1vmhfx9c",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00119",
+   "into": "ey4d8q9za5",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00120",
+   "into": "e86phejjgr",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00121",
+   "into": "e9nje7tjpy",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00134",
+   "into": "ey1dtdnyvc",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00135",
+   "into": "e2bt2byq07",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00159",
+   "into": "eggxhcvtx3",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00203",
+   "into": "ejewb979pp",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00204",
+   "into": "e7x7v000vz",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00205",
+   "into": "e1564bmx25",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00206",
+   "into": "ezkh9xpmb0",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00207",
+   "into": "ea431amncr",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00208",
+   "into": "e72ajgt7bp",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00263",
+   "into": "egjjav4b0a",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00264",
+   "into": "e36h6rkv60",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00265",
+   "into": "eewk6jygmp",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00266",
+   "into": "evz192cfh7",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00267",
+   "into": "e710js3fyh",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00269",
+   "into": "epr32qgrc2",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00270",
+   "into": "ekp4qd0a9k",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00272",
+   "into": "e203h3ma6e",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "split": "a00301",
+   "moved": [
+    "dir:86414"
+   ],
+   "to": [
+    "ea51wc4kmz"
+   ],
+   "why": "some keys now match a bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00322",
+   "into": "ebp4nx20mg",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00323",
+   "into": "etmj3zv9ve",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00343",
+   "into": "eq03cwvjsv",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00344",
+   "into": "ey0g3zxjff",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00345",
+   "into": "e2wrs3sd24",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00346",
+   "into": "ehjfzq9h54",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00347",
+   "into": "ejmjz841bd",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00348",
+   "into": "ek9ve8wvcj",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00349",
+   "into": "eq73a93j8h",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00350",
+   "into": "eaae2zsg3q",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00351",
+   "into": "e0yt5x31gv",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00352",
+   "into": "eg6fbvxqb6",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00353",
+   "into": "e0fafnpzpd",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00354",
+   "into": "egt7xxb3r8",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00356",
+   "into": "ehjbf1kbj5",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00357",
+   "into": "e52faxg96a",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00358",
+   "into": "e4z6cnjsjb",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00359",
+   "into": "ewha5gd0h9",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00360",
+   "into": "ea6rcmw2vs",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00362",
+   "into": "ejmzaxcber",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00363",
+   "into": "esz58cx4qy",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00364",
+   "into": "e66s72mbab",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00366",
+   "into": "eery4mvtkv",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00367",
+   "into": "e9f6cedqsv",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00368",
+   "into": "ewa3bnw8em",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00369",
+   "into": "extasr98hc",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00371",
+   "into": "ep1x19vk7g",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00373",
+   "into": "es3z3wf02r",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00374",
+   "into": "e6tjbprrv3",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00384",
+   "into": "eq5mf12xbw",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00385",
+   "into": "e29qvpet42",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00392",
+   "into": "e0ykb4h2tx",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00397",
+   "into": "ed1pzt3yj3",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "split": "a00398",
+   "moved": [
+    "dir:81870"
+   ],
+   "to": [
+    "ec0zmbcgzc"
+   ],
+   "why": "some keys now match a bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00409",
+   "into": "eb5mfk3z9k",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00453",
+   "into": "ep14efwqny",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00454",
+   "into": "e8qpv4f3f1",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00461",
+   "into": "eyx74fca4a",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00466",
+   "into": "ek9wkh4k7a",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00481",
+   "into": "e2cphgcczt",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00482",
+   "into": "ej8m0ekd8f",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00484",
+   "into": "e0yf1jq24x",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00493",
+   "into": "ebqq3nbf3x",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00501",
+   "into": "ed2ehhhsgh",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00510",
+   "into": "ex2gn12qmh",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00519",
+   "into": "eyhtb3makj",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00521",
+   "into": "e91sptc0c5",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "merge": "a00537",
+   "into": "evzwpjq41a",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e01qpxm5wa",
+   "into": "ehhdgf0crs",
+   "why": "folded into ehhdgf0crs by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e049c48vt9",
+   "into": "egz19x9jv6",
+   "why": "folded into egz19x9jv6 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e09rkdcdxb",
+   "into": "e49yjwzwvv",
+   "why": "folded into e49yjwzwvv by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e0hed776yr",
+   "into": "e2myy50ta1",
+   "why": "folded into e2myy50ta1 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e0nfx32mar",
+   "into": "ef7wxjzrp7",
+   "why": "folded into ef7wxjzrp7 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e0v3rt1g4h",
+   "into": "ebsf77fnha",
+   "why": "folded into ebsf77fnha by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e101bewh9c",
+   "into": "ekz4vr8164",
+   "why": "folded into ekz4vr8164 by the bids repo (mergedFrom, rule near+operator)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e10c5sddjj",
+   "into": "esbt7re4mk",
+   "why": "folded into esbt7re4mk by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e122fcqpee",
+   "into": "ewabb5r18e",
+   "why": "folded into ewabb5r18e by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e1mnx2h330",
+   "into": "epdpaqe1wa",
+   "why": "folded into epdpaqe1wa by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e1p8fv13ad",
+   "into": "ejqdsejz4y",
+   "why": "folded into ejqdsejz4y by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e1ydqdzfj3",
+   "into": "eczzvmffhp",
+   "why": "folded into eczzvmffhp by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e27mdjqgsh",
+   "into": "e62xehfm81",
+   "why": "folded into e62xehfm81 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e2ctc74ev7",
+   "into": "ectmtqbyfe",
+   "why": "folded into ectmtqbyfe by the bids repo (mergedFrom, rule near+operator)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e2n8pryb4h",
+   "into": "e1vtwncbm5",
+   "why": "folded into e1vtwncbm5 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e3129xf26a",
+   "into": "e7fnj8a7m3",
+   "why": "folded into e7fnj8a7m3 by the bids repo (mergedFrom, rule near+operator)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e356zcxg15",
+   "into": "enax56jtn7",
+   "why": "folded into enax56jtn7 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e3aa1zehhv",
+   "into": "efhtt0z6rn",
+   "why": "folded into efhtt0z6rn by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e3fkz9ykhc",
+   "into": "e3cvf0cgb8",
+   "why": "folded into e3cvf0cgb8 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e3gr72n2hc",
+   "into": "ejtjhb7qmd",
+   "why": "folded into ejtjhb7qmd by the bids repo (mergedFrom, rule near+operator)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e3hbxp9zgg",
+   "into": "e3qq69skp9",
+   "why": "folded into e3qq69skp9 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e3kzahba42",
+   "into": "e9hgzzsw7g",
+   "why": "folded into e9hgzzsw7g by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e3tjbz41dz",
+   "into": "ebnp6gk2jk",
+   "why": "folded into ebnp6gk2jk by the bids repo (mergedFrom, rule near+operator)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e4es0v3mt3",
+   "into": "enyqqpjcdb",
+   "why": "folded into enyqqpjcdb by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e4g48k1bem",
+   "into": "ezsyvf2bxd",
+   "why": "folded into ezsyvf2bxd by the bids repo (mergedFrom, rule near+operator)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e4nbfba1sp",
+   "into": "e389hq1pzv",
+   "why": "folded into e389hq1pzv by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e59rjnzpvd",
+   "into": "ep572n7w8y",
+   "why": "folded into ep572n7w8y by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e5b1p2tg47",
+   "into": "e3ma049fmc",
+   "why": "folded into e3ma049fmc by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e5d3z6cnyb",
+   "into": "e8sr5vk66t",
+   "why": "folded into e8sr5vk66t by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e5f2azhg3c",
+   "into": "e9k6qr2f7w",
+   "why": "folded into e9k6qr2f7w by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e5fgx9gy4x",
+   "into": "ehexg1ag19",
+   "why": "folded into ehexg1ag19 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e5ty13b6vh",
+   "into": "e1wq5a9anx",
+   "why": "folded into e1wq5a9anx by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e5z138qcjt",
+   "into": "e9jjggdetm",
+   "why": "folded into e9jjggdetm by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e6b2nhxd7s",
+   "into": "e2fwg61ztz",
+   "why": "folded into e2fwg61ztz by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e6kk7y5vkh",
+   "into": "ewdh2j596b",
+   "why": "folded into ewdh2j596b by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e6kxxq36xp",
+   "into": "e7r8vd6w67",
+   "why": "folded into e7r8vd6w67 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e6m950n7bx",
+   "into": "ebr7wmsfy3",
+   "why": "folded into ebr7wmsfy3 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e7a916caka",
+   "into": "evn8e9pngn",
+   "why": "folded into evn8e9pngn by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e7vxhxfvpa",
+   "into": "esrgeggxpx",
+   "why": "folded into esrgeggxpx by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e7zcc5ykx3",
+   "into": "e8qwdx4r8v",
+   "why": "folded into e8qwdx4r8v by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e81zn0emzf",
+   "into": "e1308tcjg2",
+   "why": "folded into e1308tcjg2 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e8j46eta28",
+   "into": "ec96b6301z",
+   "why": "folded into ec96b6301z by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e8q16qgg75",
+   "into": "erayeqrwjp",
+   "why": "folded into erayeqrwjp by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e9e471f0sp",
+   "into": "e783hwvh7h",
+   "why": "folded into e783hwvh7h by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "e9wz83nkxh",
+   "into": "ew0tjn8t41",
+   "why": "folded into ew0tjn8t41 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ea758j1xy7",
+   "into": "eq4pgrxk46",
+   "why": "folded into eq4pgrxk46 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eah045dfdf",
+   "into": "e3b3twrxh0",
+   "why": "folded into e3b3twrxh0 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eanbcd1dz3",
+   "into": "ejvw0yf3yr",
+   "why": "folded into ejvw0yf3yr by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eat4vty5zk",
+   "into": "etd6raa3jg",
+   "why": "folded into etd6raa3jg by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eb1zcbnza3",
+   "into": "e11v66p39b",
+   "why": "folded into e11v66p39b by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ebav6dfqbg",
+   "into": "eb1ye7qd7n",
+   "why": "folded into eb1ye7qd7n by the bids repo (mergedFrom, rule near+operator)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ebc6fxeptd",
+   "into": "edjnjd3gx5",
+   "why": "folded into edjnjd3gx5 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ebk64mkm61",
+   "into": "ee9s9qcgjf",
+   "why": "folded into ee9s9qcgjf by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ebmw5avr70",
+   "into": "ecy06re57f",
+   "why": "folded into ecy06re57f by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ebsytf6qxy",
+   "into": "e8jam8a9cw",
+   "why": "folded into e8jam8a9cw by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ebxza3tgjf",
+   "into": "evj4086djn",
+   "why": "folded into evj4086djn by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ebyf31qhfd",
+   "into": "ejvw0yf3yr",
+   "why": "folded into ejvw0yf3yr by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ec070m8nhk",
+   "into": "e9frf2n90z",
+   "why": "folded into e9frf2n90z by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ec6p2p72cs",
+   "into": "e4q853gs8j",
+   "why": "folded into e4q853gs8j by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ecay1jzc45",
+   "into": "ev3yyf8nmr",
+   "why": "folded into ev3yyf8nmr by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ecmg4nnjr8",
+   "into": "err4n0ywx4",
+   "why": "folded into err4n0ywx4 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ecwqbjgbs7",
+   "into": "esmrps1vby",
+   "why": "folded into esmrps1vby by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ed2nhs86s1",
+   "into": "e7azwjggak",
+   "why": "folded into e7azwjggak by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ed4m07qgr8",
+   "into": "eahrr1p0dq",
+   "why": "folded into eahrr1p0dq by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ed5rwevv3p",
+   "into": "e9xs287xs7",
+   "why": "folded into e9xs287xs7 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "edns0b3760",
+   "into": "edb75dr5a4",
+   "why": "folded into edb75dr5a4 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "edqvwrbqkm",
+   "into": "ernfzav5bw",
+   "why": "folded into ernfzav5bw by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ee46y3574r",
+   "into": "etj8pts7dh",
+   "why": "folded into etj8pts7dh by the bids repo (mergedFrom, rule near+operator)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ee502nrmd5",
+   "into": "ehsqyp5tc1",
+   "why": "folded into ehsqyp5tc1 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eetwt0affq",
+   "into": "e011hgtdgf",
+   "why": "folded into e011hgtdgf by the bids repo (mergedFrom, rule near+operator)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eevegjbdw9",
+   "into": "e3wvzbn5y3",
+   "why": "folded into e3wvzbn5y3 by the bids repo (mergedFrom, rule near+operator)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eeymd5c10a",
+   "into": "ey1dtdnyvc",
+   "why": "folded into ey1dtdnyvc by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ef3myfhs0p",
+   "into": "e4bws2aca3",
+   "why": "folded into e4bws2aca3 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ef9983dn3q",
+   "into": "ez7yaq8md0",
+   "why": "folded into ez7yaq8md0 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eftaz9qz2k",
+   "into": "efkzsb2eaq",
+   "why": "folded into efkzsb2eaq by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eg67dtx7tx",
+   "into": "e2c6ge9anz",
+   "why": "folded into e2c6ge9anz by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "egca5dzqrb",
+   "into": "ezvwgta5fp",
+   "why": "folded into ezvwgta5fp by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "egddtt02m0",
+   "into": "eqbgkq61bk",
+   "why": "folded into eqbgkq61bk by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "egf6smcp98",
+   "into": "ev07vww1p4",
+   "why": "folded into ev07vww1p4 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "egg71gf45v",
+   "into": "er21x0m4ne",
+   "why": "folded into er21x0m4ne by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "egsmmrz54r",
+   "into": "eaktn61ab0",
+   "why": "folded into eaktn61ab0 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "egv7sf474q",
+   "into": "eef2vr1k62",
+   "why": "folded into eef2vr1k62 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eh0j8vaerb",
+   "into": "ewrefkab9t",
+   "why": "folded into ewrefkab9t by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eh9askr9yg",
+   "into": "e5wpq70vbz",
+   "why": "folded into e5wpq70vbz by the bids repo (mergedFrom, rule near+alias)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ehtamc8kpd",
+   "into": "e7wg7g6gbm",
+   "why": "folded into e7wg7g6gbm by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ej3gf0jt90",
+   "into": "e261bv72y7",
+   "why": "folded into e261bv72y7 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ej97gqf2tr",
+   "into": "eqknjy8em7",
+   "why": "folded into eqknjy8em7 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ejjb8zfb13",
+   "into": "eawdyxe5et",
+   "why": "folded into eawdyxe5et by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ejrkrcsdb7",
+   "into": "eedpfw6eme",
+   "why": "folded into eedpfw6eme by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ejzfgr847g",
+   "into": "e7z7bba3nv",
+   "why": "folded into e7z7bba3nv by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ek2ref31nz",
+   "into": "esytqvrr95",
+   "why": "folded into esytqvrr95 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ek3fncdkzb",
+   "into": "e3cxz3wyxe",
+   "why": "folded into e3cxz3wyxe by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ek7ttxkphd",
+   "into": "e2b33gqv4q",
+   "why": "folded into e2b33gqv4q by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ekk6s3k70s",
+   "into": "enxzefs03v",
+   "why": "folded into enxzefs03v by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ekmc43r7ye",
+   "into": "emc58bnmnq",
+   "why": "folded into emc58bnmnq by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ekw38m860d",
+   "into": "eqhe312001",
+   "why": "folded into eqhe312001 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "em0e145mgd",
+   "into": "ehqn92atrv",
+   "why": "folded into ehqn92atrv by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "em1ye16x5g",
+   "into": "eecxsxez3e",
+   "why": "folded into eecxsxez3e by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "em7rzkar6a",
+   "into": "es9hsmx2eb",
+   "why": "folded into es9hsmx2eb by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "em87a432rr",
+   "into": "e5anxv6rn6",
+   "why": "folded into e5anxv6rn6 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "en2n1rrbbe",
+   "into": "epbxbd4c02",
+   "why": "folded into epbxbd4c02 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "en3m1m9r55",
+   "into": "e6paazzke9",
+   "why": "folded into e6paazzke9 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "en4jrhs993",
+   "into": "e0hc0srdw2",
+   "why": "folded into e0hc0srdw2 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "en4w7arf17",
+   "into": "ed0fjmcwb4",
+   "why": "folded into ed0fjmcwb4 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "en93apwz57",
+   "into": "ej40ytfg6n",
+   "why": "folded into ej40ytfg6n by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "enpj1jnmyx",
+   "into": "eavzhpjmg7",
+   "why": "folded into eavzhpjmg7 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ep7dx7wg7e",
+   "into": "ecfr89n9nn",
+   "why": "folded into ecfr89n9nn by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "epmrcvrrxz",
+   "into": "egwy72s7y8",
+   "why": "folded into egwy72s7y8 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "epsww33mfh",
+   "into": "ej6cyj834z",
+   "why": "folded into ej6cyj834z by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "epxmwsd0cm",
+   "into": "e4c63b6g81",
+   "why": "folded into e4c63b6g81 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "epzga68877",
+   "into": "e18ha9321x",
+   "why": "folded into e18ha9321x by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eqgwjd664h",
+   "into": "e3gza51zvd",
+   "why": "folded into e3gza51zvd by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eqtqygw11g",
+   "into": "em1catmqyb",
+   "why": "folded into em1catmqyb by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "er6nkq0rhn",
+   "into": "ezsvwq42aq",
+   "why": "folded into ezsvwq42aq by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "er6qcnhz3s",
+   "into": "exqf57q6nm",
+   "why": "folded into exqf57q6nm by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "er9ansytyq",
+   "into": "eegahbr863",
+   "why": "folded into eegahbr863 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "erf9hpc2bz",
+   "into": "ehc0rzfqah",
+   "why": "folded into ehc0rzfqah by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ery984t053",
+   "into": "ebecya47yd",
+   "why": "folded into ebecya47yd by the bids repo (mergedFrom, rule near+alias)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "es398e1gtp",
+   "into": "ec1etj4w76",
+   "why": "folded into ec1etj4w76 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "esg5933s5j",
+   "into": "es15t5vea6",
+   "why": "folded into es15t5vea6 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ess8zwvydy",
+   "into": "e7tzsm2afe",
+   "why": "folded into e7tzsm2afe by the bids repo (mergedFrom, rule near+alias)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "esz3twa0vr",
+   "into": "egz19x9jv6",
+   "why": "folded into egz19x9jv6 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "etn2v6zg9m",
+   "into": "e44wmedd48",
+   "why": "folded into e44wmedd48 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "etnhpymsm6",
+   "into": "efezj0znsm",
+   "why": "folded into efezj0znsm by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "etphtk76ga",
+   "into": "e9gpt5fpjn",
+   "why": "folded into e9gpt5fpjn by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ev3cmg8074",
+   "into": "e826hmvmnb",
+   "why": "folded into e826hmvmnb by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ev7z98283q",
+   "into": "e9xs287xs7",
+   "why": "folded into e9xs287xs7 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "evg3mktg96",
+   "into": "ej9t1x95ft",
+   "why": "folded into ej9t1x95ft by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "evrpk0cdd0",
+   "into": "etarnz8x43",
+   "why": "folded into etarnz8x43 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ew725krxq3",
+   "into": "ehez8hts87",
+   "why": "folded into ehez8hts87 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ewhnrtck92",
+   "into": "ente6qsavd",
+   "why": "folded into ente6qsavd by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ewkpmrfe8f",
+   "into": "em4paqezrn",
+   "why": "folded into em4paqezrn by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ex9h0k6dte",
+   "into": "ef9cqn0nbg",
+   "why": "folded into ef9cqn0nbg by the bids repo (mergedFrom, rule near+operator)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "exx35trt94",
+   "into": "e6q0g1djyk",
+   "why": "folded into e6q0g1djyk by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ey5xem7fe7",
+   "into": "eyp1m2cfrh",
+   "why": "folded into eyp1m2cfrh by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ey6wywgj5h",
+   "into": "edeswgvfcg",
+   "why": "folded into edeswgvfcg by the bids repo (mergedFrom, rule near+operator)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eyr3x3wb4x",
+   "into": "evs7yaaxyz",
+   "why": "folded into evs7yaaxyz by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "eyxbwa9dtn",
+   "into": "esrebakghd",
+   "why": "folded into esrebakghd by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ez0234rrvn",
+   "into": "ed8t81yfds",
+   "why": "folded into ed8t81yfds by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ezdyfvm5c5",
+   "into": "eq5kv3kac7",
+   "why": "folded into eq5kv3kac7 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-27",
+   "retire": "ezgp80aa0j",
+   "into": "e311rj7m84",
+   "why": "folded into e311rj7m84 by the bids repo (mergedFrom, rule phone)"
+  }
+ ],
  "keys": {
   "basis:AL|AGREX INC|MONTGOMERY": "a00001",
   "basis:AL|BUNGE|DECATUR": "eezwa2de11",
@@ -2192,7 +4391,7 @@
   "basis:CO|FLAGLER COOPERATIVE ASSOCIATION|FLAGLER": "eph8w3m0bb",
   "basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|COMMERCE CITY": "emxsc3m52d",
   "basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|PIERCE": "ep75yk0ka4",
-  "basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|ROGGEN": "a00010",
+  "basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|ROGGEN": "e7pqw0z5m3",
   "basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|ROGGEN ELEVATOR - MAIN OFFICE": "e7pqw0z5m3",
   "basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|WATKINS": "es3e2mmh2k",
   "basis:CO|SEIBERT EQUITY CO-OP|SEIBERT EQUITY COOP": "emd1na4tzk",
@@ -2204,10 +4403,10 @@
   "basis:DE|LAUREL GRAIN COMPANY|LAUREL": "e3bc7p34v0",
   "basis:FL|SCOULARVIEW|LAKE CITY": "e06xmatnq9",
   "basis:GA|ADM|VALDOSTA": "eat3w4gsjc",
-  "basis:GA|AGROWSTAR|BONAIRE": "a00011",
+  "basis:GA|AGROWSTAR|BONAIRE": "ephaj0s75r",
   "basis:GA|AGROWSTAR|BONAIRE, GA": "ephaj0s75r",
   "basis:GA|AGROWSTAR|CALHOUN, GA": "ehepbvw7c4",
-  "basis:GA|AGROWSTAR|DAVISBORO": "a00012",
+  "basis:GA|AGROWSTAR|DAVISBORO": "ep2xng3kq1",
   "basis:GA|AGROWSTAR|DAVISBORO, GA": "ep2xng3kq1",
   "basis:GA|AGROWSTAR|ROSIER, GA": "ewten4bcz4",
   "basis:GA|AGROWSTAR|SYLVANIA, GA": "e636vhsgyz",
@@ -2230,14 +4429,14 @@
   "basis:IA|AGSTATE|GRANVILLE": "a00022",
   "basis:IA|AGSTATE|HOSPERS": "a00023",
   "basis:IA|AGSTATE|MAURICE": "a00024",
-  "basis:IA|AGSTATE|SHELDON": "evrpk0cdd0",
+  "basis:IA|AGSTATE|SHELDON": "etarnz8x43",
   "basis:IA|ARCHER COOP GRAIN CO.|ARCHER COOP": "e3hjwvfm5t",
   "basis:IA|ARCHER COOP GRAIN CO.|DIRECT SHIP AGP SHELDON": "erxv00cfb4",
-  "basis:IA|ARCHER COOP GRAIN CO|ARCHER": "a00025",
+  "basis:IA|ARCHER COOP GRAIN CO|ARCHER": "e3hjwvfm5t",
   "basis:IA|ARCHER COOP GRAIN CO|SHELDON": "a00026",
   "basis:IA|AURORA ELEVATOR INC.|AURORA": "ew8p5yx9v8",
   "basis:IA|BALK GRAIN AND TRUCKING, INC.|ADM": "e7fnj8a7m3",
-  "basis:IA|BALK GRAIN AND TRUCKING, INC.|CLINTON": "e3129xf26a",
+  "basis:IA|BALK GRAIN AND TRUCKING, INC.|CLINTON": "e7fnj8a7m3",
   "basis:IA|BARTLETT GRAIN COMPANY, LLC|COUNCIL BLUFFS": "a00027",
   "basis:IA|BARTLETT GRAIN COMPANY, LLC|HAMBURG": "ekfpfqrs9m",
   "basis:IA|BIG RIVER RESOURCES|DYERSVILLE": "evw8fy33bd",
@@ -2278,7 +4477,7 @@
   "basis:IA|CASH BID JSI SITE - AG STATE|WEBB": "eqq20wtw9h",
   "basis:IA|CEDAR COUNTY COOP|ADM - CLINTON": "eym4ymyfs4",
   "basis:IA|CEDAR COUNTY COOP|CARGILL - CR": "eavzhpjmg7",
-  "basis:IA|CEDAR COUNTY COOP|CEDAR RAPIDS": "enpj1jnmyx",
+  "basis:IA|CEDAR COUNTY COOP|CEDAR RAPIDS": "eavzhpjmg7",
   "basis:IA|CEDAR COUNTY COOP|CLINTON": "a00030",
   "basis:IA|CEDAR COUNTY COOP|TIPTON": "e9dcwq8b1b",
   "basis:IA|CENTRAL FARM SERVICE|DOLLIVER": "ex2ptp8mmj",
@@ -2286,7 +4485,7 @@
   "basis:IA|CENTRAL VALLEY AG|AKRON": "evbm6txk6d",
   "basis:IA|CENTRAL VALLEY AG|BUNGE COUNCIL BLUFFS": "ebnp6gk2jk",
   "basis:IA|CENTRAL VALLEY AG|CARGILL SIOUX CITY": "enp9j6a638",
-  "basis:IA|CENTRAL VALLEY AG|COUNCIL BLUFFS": "e3tjbz41dz",
+  "basis:IA|CENTRAL VALLEY AG|COUNCIL BLUFFS": "ebnp6gk2jk",
   "basis:IA|CENTRAL VALLEY AG|HINTON": "ex6d4ekq86",
   "basis:IA|CENTRAL VALLEY AG|OYENS": "ewn4h7m4tc",
   "basis:IA|CENTRAL VALLEY AG|PLYMOUTH ENERGY-MERRILL": "evbepn2ts7",
@@ -2307,7 +4506,7 @@
   "basis:IA|CHS ILLINOIS|DAVENPORT": "es9p1vse66",
   "basis:IA|CHS RIVER TERMINALS & PROCESSING PLANTS|ABSOLUTE ENERGY": "e3704ztyzk",
   "basis:IA|CIRCLE J GRAIN|CIRCLE J MARENGO": "ezsyvf2bxd",
-  "basis:IA|CIRCLE J GRAIN|MARENGO": "e4g48k1bem",
+  "basis:IA|CIRCLE J GRAIN|MARENGO": "ezsyvf2bxd",
   "basis:IA|COGDILL FARM SUPPLY|DOW CITY": "epstr0d85k",
   "basis:IA|COGDILL FARM SUPPLY|DUNLAP": "e1gwfcwh74",
   "basis:IA|COGDILL FARM SUPPLY|HARLAN": "a00031",
@@ -2344,10 +4543,10 @@
   "basis:IA|DUNKERTON CO-OP|DUNKERTON": "efmw4dh36x",
   "basis:IA|DUNKERTON CO-OP|SHELL ROCK SOY PROCESSING": "esv7cwpbb4",
   "basis:IA|DUNKERTON COOP|CEDAR RAPIDS": "a00033",
-  "basis:IA|DUNKERTON COOP|CEDAR RAPIDS DIRECT": "ej3gf0jt90",
+  "basis:IA|DUNKERTON COOP|CEDAR RAPIDS DIRECT": "e261bv72y7",
   "basis:IA|DUNKERTON COOP|DUNKERTON": "efmw4dh36x",
   "basis:IA|DUNKERTON COOP|SHELL ROCK": "a00034",
-  "basis:IA|EASTLAND FEED & GRAIN INC.|CEDAR RAPIDS": "eevegjbdw9",
+  "basis:IA|EASTLAND FEED & GRAIN INC.|CEDAR RAPIDS": "e3wvzbn5y3",
   "basis:IA|EASTLAND FEED & GRAIN INC.|CLINTON": "a00035",
   "basis:IA|EASTLAND FEED & GRAIN INC.|DYERSVILLE": "eavx8njvga",
   "basis:IA|EASTLAND FEED & GRAIN, INC|ADM CLINTON TERMINAL": "ejyspxhyhg",
@@ -2355,7 +4554,7 @@
   "basis:IA|EASTLAND FEED & GRAIN, INC|BIG RIVER DYERSVILLE": "e10mg1g1w7",
   "basis:IA|EASTLAND FEED & GRAIN, INC|CARGILL - CEDAR RAPIDS": "e3wvzbn5y3",
   "basis:IA|EDGEWOOD FEED MILL INC|EDGEWOOD": "a00036",
-  "basis:IA|ELITE OCTANE|ATLANTIC": "e2ctc74ev7",
+  "basis:IA|ELITE OCTANE|ATLANTIC": "ectmtqbyfe",
   "basis:IA|ELITE OCTANE|ELITE OCTANE": "ectmtqbyfe",
   "basis:IA|FAAS FEED & GRAIN|WEBSTER CITY": "essg65z7cr",
   "basis:IA|FAAS FEED & GRAIN|WEBSTER/KESWICK": "e5by370bqp",
@@ -2389,18 +4588,18 @@
   "basis:IA|FARMERS WIN COOPERATIVE|SUMNER": "e1rq8dgbkj",
   "basis:IA|FARMERS WIN COOPERATIVE|VALERO": "ebsf77fnha",
   "basis:IA|FARMERS WIN COOPERATIVE|VISERION": "ey734h2jkj",
-  "basis:IA|FARMERS WIN COOP|CHARLES CITY": "e0v3rt1g4h",
+  "basis:IA|FARMERS WIN COOP|CHARLES CITY": "ebsf77fnha",
   "basis:IA|FARMERS WIN COOP|CRESCO": "a00041",
-  "basis:IA|FARMERS WIN COOP|FAIRBANK": "ef9983dn3q",
-  "basis:IA|FARMERS WIN COOP|FREDERICKSBURG": "e1ydqdzfj3",
+  "basis:IA|FARMERS WIN COOP|FAIRBANK": "ez7yaq8md0",
+  "basis:IA|FARMERS WIN COOP|FREDERICKSBURG": "eczzvmffhp",
   "basis:IA|FARMERS WIN COOP|HAWKEYE": "eercgpher1",
-  "basis:IA|FARMERS WIN COOP|LAWLER": "e59rjnzpvd",
-  "basis:IA|FARMERS WIN COOP|MASON CITY": "ebsytf6qxy",
+  "basis:IA|FARMERS WIN COOP|LAWLER": "ep572n7w8y",
+  "basis:IA|FARMERS WIN COOP|MASON CITY": "e8jam8a9cw",
   "basis:IA|FARMERS WIN COOP|MCGREGOR": "ed6xkx8sxc",
   "basis:IA|FARMERS WIN COOP|RIDGEWAY": "ej9kjtbq2j",
   "basis:IA|FARMERS WIN COOP|SHELL ROCK": "e3y1ds3kcg",
   "basis:IA|FARMERS WIN COOP|SUMNER": "e1rq8dgbkj",
-  "basis:IA|FARMERS WIN COOP|WAVERLY": "eg67dtx7tx",
+  "basis:IA|FARMERS WIN COOP|WAVERLY": "e2c6ge9anz",
   "basis:IA|FIVE STAR COOPERATIVE|BURCHINAL": "edqesvwc43",
   "basis:IA|FIVE STAR COOPERATIVE|CHARLES CITY": "eynxk0313k",
   "basis:IA|FIVE STAR COOPERATIVE|DOUGHERTY": "ea8h9ptydz",
@@ -2412,7 +4611,7 @@
   "basis:IA|FIVE STAR COOPERATIVE|LAWLER": "egjg9yhq2m",
   "basis:IA|FIVE STAR COOPERATIVE|LIME SPRINGS": "ez1k62rqbb",
   "basis:IA|FIVE STAR COOPERATIVE|MASON CITY": "a00042",
-  "basis:IA|FIVE STAR COOPERATIVE|N. WASH": "ec070m8nhk",
+  "basis:IA|FIVE STAR COOPERATIVE|N. WASH": "e9frf2n90z",
   "basis:IA|FIVE STAR COOPERATIVE|NASHUA": "epsxb9ezqy",
   "basis:IA|FIVE STAR COOPERATIVE|NEW HAMPTON": "ernvb9fy1c",
   "basis:IA|FIVE STAR COOPERATIVE|NORTH WASHINGTON": "egrss5jb3z",
@@ -2423,7 +4622,7 @@
   "basis:IA|FIVE STAR COOPERATIVE|VENTURA": "et90nznsa9",
   "basis:IA|FJ KROB|WALKER": "a00043",
   "basis:IA|FREMONT FARMS|MALCOM": "a00044",
-  "basis:IA|FRONTIER COOPERATIVE|COUNCIL BLUFFS": "a00045",
+  "basis:IA|FRONTIER COOPERATIVE|COUNCIL BLUFFS": "eyd8hz2wqy",
   "basis:IA|FRONTIER COOPERATIVE|SIRE CB": "e37vd7xwx3",
   "basis:IA|FS GRAIN|ADM - CLINTON CORN": "ekz8tqgy53",
   "basis:IA|FS GRAIN|CLINTON": "e0kqmj4qvy",
@@ -2447,7 +4646,7 @@
   "basis:IA|GOLD-EAGLE COOPERATIVE|WESLEY": "e31tyh7nqt",
   "basis:IA|GOLD-EAGLE COOPERATIVE|WODEN": "e22q8x8fak",
   "basis:IA|GOLDEN GRAIN ENERGY|GOLDEN GRAIN ENERGY": "e5g3v2mzmp",
-  "basis:IA|GOLDEN GRAIN ENERGY|MASON CITY": "a00048",
+  "basis:IA|GOLDEN GRAIN ENERGY|MASON CITY": "e5g3v2mzmp",
   "basis:IA|GREEN PLAINS|SHENANDOAH": "a00049",
   "basis:IA|HEARTLAND CO-OP|ALLEMAN": "ege3h1dh5n",
   "basis:IA|HEARTLAND CO-OP|BOONEVILLE": "eas5r8vhey",
@@ -2531,7 +4730,7 @@
   "basis:IA|HEARTLAND COOP|MISSOURI VALLEY": "evtswse2am",
   "basis:IA|HEARTLAND COOP|MITCHELLVILLE": "en2k2ctf78",
   "basis:IA|HEARTLAND COOP|MODALE": "ejet7m38wp",
-  "basis:IA|HEARTLAND COOP|MODAMIN": "ewkpmrfe8f",
+  "basis:IA|HEARTLAND COOP|MODAMIN": "em4paqezrn",
   "basis:IA|HEARTLAND COOP|MONROE": "ewhsb79314",
   "basis:IA|HEARTLAND COOP|NEWTON": "e90n924hzv",
   "basis:IA|HEARTLAND COOP|PRAIRIE CITY": "e5beqn7dyg",
@@ -2568,20 +4767,20 @@
   "basis:IA|INNOVATIVE AG SERVICES|BUNGEDBQ": "ehhdgf0crs",
   "basis:IA|INNOVATIVE AG SERVICES|CARGILL CR": "edjnjd3gx5",
   "basis:IA|INNOVATIVE AG SERVICES|CARGILL IF": "epdpaqe1wa",
-  "basis:IA|INNOVATIVE AG SERVICES|CEDAR RAPIDS": "ebc6fxeptd",
+  "basis:IA|INNOVATIVE AG SERVICES|CEDAR RAPIDS": "edjnjd3gx5",
   "basis:IA|INNOVATIVE AG SERVICES|CENTRAL CITY": "a00054",
   "basis:IA|INNOVATIVE AG SERVICES|CENTRAL CY": "ex5qhs6bgx",
   "basis:IA|INNOVATIVE AG SERVICES|CGB CLAY": "esrgeggxpx",
-  "basis:IA|INNOVATIVE AG SERVICES|CLAYTON": "e7vxhxfvpa",
+  "basis:IA|INNOVATIVE AG SERVICES|CLAYTON": "esrgeggxpx",
   "basis:IA|INNOVATIVE AG SERVICES|CLEVES": "etvd56mqfk",
-  "basis:IA|INNOVATIVE AG SERVICES|CLINTON": "e5d3z6cnyb",
-  "basis:IA|INNOVATIVE AG SERVICES|DES MOINES": "e1mnx2h330",
-  "basis:IA|INNOVATIVE AG SERVICES|DUBUQUE": "e01qpxm5wa",
-  "basis:IA|INNOVATIVE AG SERVICES|EAGLE GROVE": "ec6p2p72cs",
+  "basis:IA|INNOVATIVE AG SERVICES|CLINTON": "e8sr5vk66t",
+  "basis:IA|INNOVATIVE AG SERVICES|DES MOINES": "epdpaqe1wa",
+  "basis:IA|INNOVATIVE AG SERVICES|DUBUQUE": "ehhdgf0crs",
+  "basis:IA|INNOVATIVE AG SERVICES|EAGLE GROVE": "e4q853gs8j",
   "basis:IA|INNOVATIVE AG SERVICES|ELKADER": "e3hyf7dtbt",
   "basis:IA|INNOVATIVE AG SERVICES|ELLSWORTH": "e8b7rdg73m",
   "basis:IA|INNOVATIVE AG SERVICES|ELMA": "e7zrt1fcpg",
-  "basis:IA|INNOVATIVE AG SERVICES|FAIRBANK": "ey5xem7fe7",
+  "basis:IA|INNOVATIVE AG SERVICES|FAIRBANK": "eyp1m2cfrh",
   "basis:IA|INNOVATIVE AG SERVICES|FARLEY": "e761vsv5pm",
   "basis:IA|INNOVATIVE AG SERVICES|FAULKNER": "ep1r20e1gd",
   "basis:IA|INNOVATIVE AG SERVICES|GARDEN CITY": "ebcf2r9hyj",
@@ -2590,17 +4789,17 @@
   "basis:IA|INNOVATIVE AG SERVICES|HOMELAND": "es15t5vea6",
   "basis:IA|INNOVATIVE AG SERVICES|HUBBARD": "emgjbd0v63",
   "basis:IA|INNOVATIVE AG SERVICES|INDEPENDEN": "egwy72s7y8",
-  "basis:IA|INNOVATIVE AG SERVICES|INDEPENDENCE": "epmrcvrrxz",
+  "basis:IA|INNOVATIVE AG SERVICES|INDEPENDENCE": "egwy72s7y8",
   "basis:IA|INNOVATIVE AG SERVICES|IOWA FALLS": "a00055",
-  "basis:IA|INNOVATIVE AG SERVICES|LAWLER": "esg5933s5j",
+  "basis:IA|INNOVATIVE AG SERVICES|LAWLER": "es15t5vea6",
   "basis:IA|INNOVATIVE AG SERVICES|LAWN HILL": "esbt7re4mk",
   "basis:IA|INNOVATIVE AG SERVICES|MANCHESTER": "ef04bcc80p",
-  "basis:IA|INNOVATIVE AG SERVICES|MASON CITY": "e09rkdcdxb",
+  "basis:IA|INNOVATIVE AG SERVICES|MASON CITY": "e49yjwzwvv",
   "basis:IA|INNOVATIVE AG SERVICES|MASONVILLE": "e7a66nwv6a",
-  "basis:IA|INNOVATIVE AG SERVICES|MCGREGOR": "es398e1gtp",
+  "basis:IA|INNOVATIVE AG SERVICES|MCGREGOR": "ec1etj4w76",
   "basis:IA|INNOVATIVE AG SERVICES|MONONA": "ek480w7fbg",
   "basis:IA|INNOVATIVE AG SERVICES|MONTICELLO": "evac8683mn",
-  "basis:IA|INNOVATIVE AG SERVICES|NEW PROVIDENCE": "e10c5sddjj",
+  "basis:IA|INNOVATIVE AG SERVICES|NEW PROVIDENCE": "esbt7re4mk",
   "basis:IA|INNOVATIVE AG SERVICES|ORAN": "edsbegyprv",
   "basis:IA|INNOVATIVE AG SERVICES|OWASA": "ej5xcejk86",
   "basis:IA|INNOVATIVE AG SERVICES|PINE LAKE": "efkzsb2eaq",
@@ -2611,7 +4810,7 @@
   "basis:IA|INNOVATIVE AG SERVICES|SF IA FALL": "e3b3twrxh0",
   "basis:IA|INNOVATIVE AG SERVICES|SHELL ROCK": "a00056",
   "basis:IA|INNOVATIVE AG SERVICES|SHRK SOYPR": "e806apn431",
-  "basis:IA|INNOVATIVE AG SERVICES|STEAMBOAT ROCK": "eftaz9qz2k",
+  "basis:IA|INNOVATIVE AG SERVICES|STEAMBOAT ROCK": "efkzsb2eaq",
   "basis:IA|INNOVATIVE AG SERVICES|UNION": "e9y3z7g90p",
   "basis:IA|INNOVATIVE AG SERVICES|VALERO": "enz2da1fzv",
   "basis:IA|INNOVATIVE AG SERVICES|VISERION": "ec1etj4w76",
@@ -2653,7 +4852,7 @@
   "basis:IA|LANDUS COOPERATIVE|BRITT": "eb2mdcebra",
   "basis:IA|LANDUS COOPERATIVE|CASEY": "et1a9vh7pq",
   "basis:IA|LANDUS COOPERATIVE|CHURDAN": "e5qgg754pp",
-  "basis:IA|LANDUS COOPERATIVE|CLARKSVILLE": "ed2nhs86s1",
+  "basis:IA|LANDUS COOPERATIVE|CLARKSVILLE": "e7azwjggak",
   "basis:IA|LANDUS COOPERATIVE|COLLINS": "eat5w1bpfx",
   "basis:IA|LANDUS COOPERATIVE|CONRAD": "e9hgzzsw7g",
   "basis:IA|LANDUS COOPERATIVE|DAWSON": "ecf1fyq9b8",
@@ -2664,7 +4863,7 @@
   "basis:IA|LANDUS COOPERATIVE|GOWRIE": "ek1tqff1r4",
   "basis:IA|LANDUS COOPERATIVE|GRANT": "ew8gvjam97",
   "basis:IA|LANDUS COOPERATIVE|GREENE": "e12cghzvcs",
-  "basis:IA|LANDUS COOPERATIVE|GRUNDY CENTER": "e3kzahba42",
+  "basis:IA|LANDUS COOPERATIVE|GRUNDY CENTER": "e9hgzzsw7g",
   "basis:IA|LANDUS COOPERATIVE|HAMLIN": "ewsn01xzhj",
   "basis:IA|LANDUS COOPERATIVE|IDA GROVE": "eeapy76mr3",
   "basis:IA|LANDUS COOPERATIVE|JEFFERSON": "ek1ptw7qt3",
@@ -2701,7 +4900,7 @@
   "basis:IA|LINN COOP OIL COMPANY|ALBURNETT & SPRINGVILLE ELEVATOR": "e7ppqmvm5p",
   "basis:IA|LINN COOP OIL COMPANY|CARGILL (BEANS)": "etstdfjqnw",
   "basis:IA|LINN COOP OIL COMPANY|CARGILL (STARCH)": "ed0wc4zq8e",
-  "basis:IA|LINN COOP OIL COMPANY|CEDAR RAPIDS": "a00063",
+  "basis:IA|LINN COOP OIL COMPANY|CEDAR RAPIDS": "ehnj514xzq",
   "basis:IA|LINN COOP OIL COMPANY|INGREDION": "edwt7p1qfc",
   "basis:IA|LITTLE SIOUX CORN PROCESSORS|MARCUS PLANT": "e2z48cba26",
   "basis:IA|LOUIS DREYFUS - GRAND JUNCTION|GRAND JUNCTION": "a00064",
@@ -2716,14 +4915,14 @@
   "basis:IA|MID-IOWA COOPERATIVE|CEDAR FALLS": "ehb9t6vhs0",
   "basis:IA|MID-IOWA COOPERATIVE|CEDAR RAPIDS": "a00066",
   "basis:IA|MID-IOWA COOPERATIVE|CONRAD": "e8xx37xq8k",
-  "basis:IA|MID-IOWA COOPERATIVE|DES MOINES": "ez0234rrvn",
-  "basis:IA|MID-IOWA COOPERATIVE|EARLVILLE": "ek7ttxkphd",
+  "basis:IA|MID-IOWA COOPERATIVE|DES MOINES": "ed8t81yfds",
+  "basis:IA|MID-IOWA COOPERATIVE|EARLVILLE": "e2b33gqv4q",
   "basis:IA|MID-IOWA COOPERATIVE|EDDY": "edhs1mbsnd",
   "basis:IA|MID-IOWA COOPERATIVE|EDGEWOOD": "e507ds65mn",
-  "basis:IA|MID-IOWA COOPERATIVE|FAIRBANK": "e27mdjqgsh",
+  "basis:IA|MID-IOWA COOPERATIVE|FAIRBANK": "e62xehfm81",
   "basis:IA|MID-IOWA COOPERATIVE|GREEN MOUNTAIN": "enaqb44sex",
   "basis:IA|MID-IOWA COOPERATIVE|HAVERHILL": "eq9gw6axrv",
-  "basis:IA|MID-IOWA COOPERATIVE|HOLLAND": "a00067",
+  "basis:IA|MID-IOWA COOPERATIVE|HOLLAND": "eskrcnwtrw",
   "basis:IA|MID-IOWA COOPERATIVE|HUDSON": "emwathna5t",
   "basis:IA|MID-IOWA COOPERATIVE|IOWA FALLS": "a00068",
   "basis:IA|MID-IOWA COOPERATIVE|JESUP": "eg6zbd9pt8",
@@ -2734,8 +4933,8 @@
   "basis:IA|MID-IOWA COOPERATIVE|LISCOMB": "eghjch5yrz",
   "basis:IA|MID-IOWA COOPERATIVE|MIDWAY": "ewabb5r18e",
   "basis:IA|MID-IOWA COOPERATIVE|MILL JUNCTION": "eskrcnwtrw",
-  "basis:IA|MID-IOWA COOPERATIVE|NEVADA": "ee46y3574r",
-  "basis:IA|MID-IOWA COOPERATIVE|PARKERSBURG": "ep7dx7wg7e",
+  "basis:IA|MID-IOWA COOPERATIVE|NEVADA": "etj8pts7dh",
+  "basis:IA|MID-IOWA COOPERATIVE|PARKERSBURG": "ecfr89n9nn",
   "basis:IA|MID-IOWA COOPERATIVE|PINELAKE": "eq49fddqhn",
   "basis:IA|MID-IOWA COOPERATIVE|POET F.B.": "e62xehfm81",
   "basis:IA|MID-IOWA COOPERATIVE|POET IA FALLS": "exmrbmcrn2",
@@ -2745,7 +4944,7 @@
   "basis:IA|MID-IOWA COOPERATIVE|SINCLAIR": "ecfr89n9nn",
   "basis:IA|MID-IOWA COOPERATIVE|STATE CENTER": "e0nykvdsr7",
   "basis:IA|MID-IOWA COOPERATIVE|STEAMBOAT ROCK": "em1pm1qg1y",
-  "basis:IA|MID-IOWA COOPERATIVE|TOLEDO": "e122fcqpee",
+  "basis:IA|MID-IOWA COOPERATIVE|TOLEDO": "ewabb5r18e",
   "basis:IA|MID-IOWA COOPERATIVE|WATERLOO": "e36mbdc39h",
   "basis:IA|MOGLER FARMS LLC|ALVORD": "a00070",
   "basis:IA|NELSON GRAIN, INC.|MARSHALLTOWN": "e5vg0dff27",
@@ -2780,11 +4979,11 @@
   "basis:IA|NEW COOPERATIVE, INC.|GLIDDEN": "e2n2j5v1mm",
   "basis:IA|NEW COOPERATIVE, INC.|GREENVILLE": "e87m8eagq9",
   "basis:IA|NEW COOPERATIVE, INC.|GRUVER": "e6yx8pm0ab",
-  "basis:IA|NEW COOPERATIVE, INC.|HARCOURT": "ef3myfhs0p",
+  "basis:IA|NEW COOPERATIVE, INC.|HARCOURT": "e4bws2aca3",
   "basis:IA|NEW COOPERATIVE, INC.|HORNICK": "e3rrham8kc",
   "basis:IA|NEW COOPERATIVE, INC.|HUMBOLDT": "exny0cg9bt",
   "basis:IA|NEW COOPERATIVE, INC.|HUMESTON": "e1mspjwg0x",
-  "basis:IA|NEW COOPERATIVE, INC.|JEFFERSON": "e3aa1zehhv",
+  "basis:IA|NEW COOPERATIVE, INC.|JEFFERSON": "efhtt0z6rn",
   "basis:IA|NEW COOPERATIVE, INC.|KLEMME": "e6ce60vcp8",
   "basis:IA|NEW COOPERATIVE, INC.|KNIERIM": "ead0x59e7s",
   "basis:IA|NEW COOPERATIVE, INC.|KNOKE": "eyasbv91xd",
@@ -2798,7 +4997,7 @@
   "basis:IA|NEW COOPERATIVE, INC.|MALLARD": "es2yqf1fk5",
   "basis:IA|NEW COOPERATIVE, INC.|MAPLETON": "e1kw4f1e4a",
   "basis:IA|NEW COOPERATIVE, INC.|MILFORD": "ewp9r3vv8v",
-  "basis:IA|NEW COOPERATIVE, INC.|MOORLAND": "e6kxxq36xp",
+  "basis:IA|NEW COOPERATIVE, INC.|MOORLAND": "e7r8vd6w67",
   "basis:IA|NEW COOPERATIVE, INC.|ONAWA": "edy2pyacey",
   "basis:IA|NEW COOPERATIVE, INC.|OSCEOLA": "e9y7qzwtph",
   "basis:IA|NEW COOPERATIVE, INC.|OTHO": "e7670zc491",
@@ -2822,48 +5021,48 @@
   "basis:IA|NEW COOPERATIVE, INC.|WOOLSTOCK": "epvpdj0vmn",
   "basis:IA|NEW VISION CO-OP|AGP SHELDON": "ewjframhqh",
   "basis:IA|NEW VISION CO-OP|POET ASHTON": "e5anxv6rn6",
-  "basis:IA|NEW VISION COOP|ASHTON": "em87a432rr",
+  "basis:IA|NEW VISION COOP|ASHTON": "e5anxv6rn6",
   "basis:IA|NEW VISION COOP|SHELDON": "a00071",
   "basis:IA|NEXUS COOPERATIVE|AGP EAGLE GROVE, IA": "e3yxz3j8hg",
   "basis:IA|NEXUS COOPERATIVE|AGP MANNING, IA": "emr4kpq80q",
   "basis:IA|NEXUS COOPERATIVE|AGP MASON CITY, IA": "exe7f4q1hd",
   "basis:IA|NEXUS COOPERATIVE|CARGILL IOWA FALLS, IA": "efdggq02m7",
-  "basis:IA|NEXUS COOPERATIVE|CARPENTER": "a00072",
+  "basis:IA|NEXUS COOPERATIVE|CARPENTER": "eyva8d3bc1",
   "basis:IA|NEXUS COOPERATIVE|CARPENTER, IA": "eyva8d3bc1",
-  "basis:IA|NEXUS COOPERATIVE|CHAPIN": "a00073",
+  "basis:IA|NEXUS COOPERATIVE|CHAPIN": "ehsqyp5tc1",
   "basis:IA|NEXUS COOPERATIVE|CHAPIN, IA": "ehsqyp5tc1",
   "basis:IA|NEXUS COOPERATIVE|CHARLES CITY": "a00074",
   "basis:IA|NEXUS COOPERATIVE|DENISON, IA": "et54vagnc1",
-  "basis:IA|NEXUS COOPERATIVE|DEWAR": "a00075",
+  "basis:IA|NEXUS COOPERATIVE|DEWAR": "ek2rnwvshj",
   "basis:IA|NEXUS COOPERATIVE|DEWAR, IA": "ek2rnwvshj",
-  "basis:IA|NEXUS COOPERATIVE|ELGIN": "a00076",
+  "basis:IA|NEXUS COOPERATIVE|ELGIN": "ehg6w9byjk",
   "basis:IA|NEXUS COOPERATIVE|ELGIN, IA": "ehg6w9byjk",
-  "basis:IA|NEXUS COOPERATIVE|HARLAN": "a00077",
+  "basis:IA|NEXUS COOPERATIVE|HARLAN": "e1rfsrbjgh",
   "basis:IA|NEXUS COOPERATIVE|HARLAN, IA": "e1rfsrbjgh",
   "basis:IA|NEXUS COOPERATIVE|MANLY, IA": "e1b28bp43m",
-  "basis:IA|NEXUS COOPERATIVE|MARBLE ROCK": "a00078",
+  "basis:IA|NEXUS COOPERATIVE|MARBLE ROCK": "eyc33qtsrd",
   "basis:IA|NEXUS COOPERATIVE|MARBLE ROCK, IA": "eyc33qtsrd",
   "basis:IA|NEXUS COOPERATIVE|MASON CITY": "eyj76jtfpy",
-  "basis:IA|NEXUS COOPERATIVE|NORTHWOOD": "a00079",
+  "basis:IA|NEXUS COOPERATIVE|NORTHWOOD": "e6r4z55spr",
   "basis:IA|NEXUS COOPERATIVE|NORTHWOOD, IA": "e6r4z55spr",
-  "basis:IA|NEXUS COOPERATIVE|OELWEIN": "a00080",
+  "basis:IA|NEXUS COOPERATIVE|OELWEIN": "eep9r7zwrv",
   "basis:IA|NEXUS COOPERATIVE|OELWEIN, IA": "eep9r7zwrv",
   "basis:IA|NEXUS COOPERATIVE|POET FAIRBANK, IA": "ekr2jj8was",
-  "basis:IA|NEXUS COOPERATIVE|ROCKFORD": "a00081",
+  "basis:IA|NEXUS COOPERATIVE|ROCKFORD": "emn34qsbt1",
   "basis:IA|NEXUS COOPERATIVE|ROCKFORD, IA": "emn34qsbt1",
-  "basis:IA|NEXUS COOPERATIVE|RUDD": "a00082",
+  "basis:IA|NEXUS COOPERATIVE|RUDD": "ebb5wppn38",
   "basis:IA|NEXUS COOPERATIVE|RUDD, IA": "ebb5wppn38",
   "basis:IA|NEXUS COOPERATIVE|SHELL ROCK": "a00083",
   "basis:IA|NEXUS COOPERATIVE|SHELLROCK, IA": "e08hrq7ata",
-  "basis:IA|NEXUS COOPERATIVE|STACYVILLE": "a00084",
+  "basis:IA|NEXUS COOPERATIVE|STACYVILLE": "ecm9x3eqhj",
   "basis:IA|NEXUS COOPERATIVE|STACYVILLE, IA": "ecm9x3eqhj",
-  "basis:IA|NEXUS COOPERATIVE|SUMNER": "a00085",
+  "basis:IA|NEXUS COOPERATIVE|SUMNER": "ejdz8z7bgr",
   "basis:IA|NEXUS COOPERATIVE|SUMNER, IA": "ejdz8z7bgr",
-  "basis:IA|NEXUS COOPERATIVE|TOETERVILLE": "a00086",
+  "basis:IA|NEXUS COOPERATIVE|TOETERVILLE": "ewzzwxqwxb",
   "basis:IA|NEXUS COOPERATIVE|TOETERVILLE, IA": "ewzzwxqwxb",
   "basis:IA|NEXUS COOPERATIVE|VALERO CHARLES CITY, IA": "ev4rkxwapd",
   "basis:IA|NORTH IOWA COOPERATIVE|CLEAR LAKE": "eb76mrcqk9",
-  "basis:IA|NORTH IOWA COOPERATIVE|MASON CITY": "en93apwz57",
+  "basis:IA|NORTH IOWA COOPERATIVE|MASON CITY": "ej40ytfg6n",
   "basis:IA|NORTH IOWA COOPERATIVE|PLYMOUTH": "eqs5j93eeg",
   "basis:IA|NORTH IOWA COOPERATIVE|PORTLAND": "ej40ytfg6n",
   "basis:IA|NORTH IOWA COOPERATIVE|THORNTON": "eb2qc0q4fk",
@@ -2871,7 +5070,7 @@
   "basis:IA|NUTRITION SERVICE CO., LLC.|RICEVILLE": "eesgwkxhqx",
   "basis:IA|OSAGE CO-OP ELEVATOR|OSAGE": "emjfs260jb",
   "basis:IA|OSAGE CO-OP ELEVATOR|OSAGE COOP": "emjfs260jb",
-  "basis:IA|POET BIOREFINING|ASHTON": "ess8zwvydy",
+  "basis:IA|POET BIOREFINING|ASHTON": "e7tzsm2afe",
   "basis:IA|POET BIOREFINING|COON RAPIDS": "a00087",
   "basis:IA|POET BIOREFINING|CORNING": "ekmz8pzhj7",
   "basis:IA|POET BIOREFINING|FAIRBANK": "a00088",
@@ -2910,9 +5109,9 @@
   "basis:IA|PRO COOPERATIVE|GILMORE CITY.IA": "ep1gsjp8jk",
   "basis:IA|PRO COOPERATIVE|GRAETTINGER.IA": "e4bgnc61hc",
   "basis:IA|PRO COOPERATIVE|HAVELOCK.IA": "eywavw6g2w",
-  "basis:IA|PRO COOPERATIVE|MANSON": "etnhpymsm6",
+  "basis:IA|PRO COOPERATIVE|MANSON": "efezj0znsm",
   "basis:IA|PRO COOPERATIVE|MANSON.IA": "efezj0znsm",
-  "basis:IA|PRO COOPERATIVE|PIONEER": "ecmg4nnjr8",
+  "basis:IA|PRO COOPERATIVE|PIONEER": "err4n0ywx4",
   "basis:IA|PRO COOPERATIVE|PIONEER.IA": "err4n0ywx4",
   "basis:IA|PRO COOPERATIVE|PLOVER.IA": "eegjc30vqq",
   "basis:IA|PRO COOPERATIVE|POCAHONTAS.IA": "e0jwy2pv6m",
@@ -2931,14 +5130,14 @@
   "basis:IA|RIVER VALLEY COOPERATIVE|CLINTON": "a00095",
   "basis:IA|RIVER VALLEY COOPERATIVE|DEWITT": "ekeqk7ge0q",
   "basis:IA|RIVER VALLEY COOPERATIVE|DONAHUE": "ezmvh17vb0",
-  "basis:IA|RIVER VALLEY COOPERATIVE|DYERSVILLE": "edqvwrbqkm",
+  "basis:IA|RIVER VALLEY COOPERATIVE|DYERSVILLE": "ernfzav5bw",
   "basis:IA|RIVER VALLEY COOPERATIVE|MARTELLE": "ef6xrtc69c",
   "basis:IA|RIVER VALLEY COOPERATIVE|OLIN": "ee5vs3dzzt",
   "basis:IA|RIVER VALLEY COOPERATIVE|RYAN": "e3rb3ec2pe",
   "basis:IA|SCHMADEKE FEED MILL|CLARKSVILLE": "e29ywt8cvd",
   "basis:IA|SCHMADEKE FEED MILL|SCHMADEKE FEED MILL-CLARKSVILLE": "e29ywt8cvd",
   "basis:IA|SCOULARVIEW|HANCOCK": "e2r68ze6t8",
-  "basis:IA|SEABOARD FOODS|IOWA FALLS": "eah045dfdf",
+  "basis:IA|SEABOARD FOODS|IOWA FALLS": "e3b3twrxh0",
   "basis:IA|SHELL ROCK SOY PROCESSING LLC|SHELL ROCK": "a00096",
   "basis:IA|SHELL ROCK SOY PROCESSING LLC|SHELL ROCK SOY ORIGINATION": "evxyn8k0ye",
   "basis:IA|SILVEREDGE COOPERATIVE|EDGEWOOD": "ev04ye1t4m",
@@ -2968,11 +5167,11 @@
   "basis:IA|TAMA BENTON COOP|CEDAR RAPIDS": "a00099",
   "basis:IA|TAMA BENTON COOP|CLUTIER": "ebc2xy61sd",
   "basis:IA|TAMA BENTON COOP|DYSART": "ef2bbraegz",
-  "basis:IA|TAMA BENTON COOP|SHELL ROCK": "ex9h0k6dte",
+  "basis:IA|TAMA BENTON COOP|SHELL ROCK": "ef9cqn0nbg",
   "basis:IA|TAMA BENTON COOP|STEAMBOAT ROCK": "a00100",
   "basis:IA|TAMA BENTON COOP|VINTON": "evx61w2rp7",
   "basis:IA|TETTENS GRAIN|ADM-CLINTON": "eb1ye7qd7n",
-  "basis:IA|TETTENS GRAIN|CLINTON": "ebav6dfqbg",
+  "basis:IA|TETTENS GRAIN|CLINTON": "eb1ye7qd7n",
   "basis:IA|THE ANDERSONS|DENISON": "ehckfrhp44",
   "basis:IA|THE MILL, INC.|COLWELL": "e8d8kfrphx",
   "basis:IA|THE SCOULAR COMPANY|EMERSON": "a00101",
@@ -3057,19 +5256,19 @@
   "basis:IL|ALLIANCE GRAIN CO.|BELLFLOWER": "eha12jf4na",
   "basis:IL|ALLIANCE GRAIN CO.|CABERY": "e23n115gga",
   "basis:IL|ALLIANCE GRAIN CO.|CULLOM": "ey0d2cv254",
-  "basis:IL|ALLIANCE GRAIN CO.|GIBSON CITY": "epzga68877",
+  "basis:IL|ALLIANCE GRAIN CO.|GIBSON CITY": "e18ha9321x",
   "basis:IL|ALLIANCE GRAIN CO.|REDDICK": "a00117",
   "basis:IL|ALLIANCE GRAIN CO.|SIBLEY": "e5yrjz4cvw",
   "basis:IL|ALLIANCE GRAIN|GIBSON CITY - WEST": "e18ha9321x",
   "basis:IL|ALTO INGREDIENTS, INC.|PEKIN": "e1gh8q5ecp",
-  "basis:IL|ASSUMPTION COOP|ASSUMPTION": "a00118",
+  "basis:IL|ASSUMPTION COOP|ASSUMPTION": "ev1vmhfx9c",
   "basis:IL|ASSUMPTION COOP|ASSUMPTION FACILITY": "e4sn84jb9v",
   "basis:IL|ASSUMPTION COOP|OWANECO": "esncb15pq3",
-  "basis:IL|ASSUMPTION COOP|PALMER": "a00119",
+  "basis:IL|ASSUMPTION COOP|PALMER": "ey4d8q9za5",
   "basis:IL|ASSUMPTION COOP|PALMER FACILITY": "evc4jpc38t",
-  "basis:IL|ASSUMPTION COOP|PANA": "a00120",
+  "basis:IL|ASSUMPTION COOP|PANA": "e86phejjgr",
   "basis:IL|ASSUMPTION COOP|PANA FACILITY": "e02gjc98ye",
-  "basis:IL|ASSUMPTION COOP|WESTERVELT": "a00121",
+  "basis:IL|ASSUMPTION COOP|WESTERVELT": "e9nje7tjpy",
   "basis:IL|ASSUMPTION COOP|WESTERVELT FACILITY": "ekbdc8tx04",
   "basis:IL|ATKINSON GRAIN & FERTILIZER INC.|HENNEPIN": "ej7g60mkkr",
   "basis:IL|ATKINSON GRAIN & FERTILIZER, INC.|ATKINSON": "eeymr1wjge",
@@ -3078,14 +5277,14 @@
   "basis:IL|ATKINSON GRAIN & FERTILIZER, INC.|HENNEPIN": "ej7g60mkkr",
   "basis:IL|B.A.B. GRAIN|AUBURN": "ec9dja0g87",
   "basis:IL|B.A.B. GRAIN|DECATUR": "ex1be38b6f",
-  "basis:IL|B.A.B. GRAIN|WAVERLY": "egddtt02m0",
+  "basis:IL|B.A.B. GRAIN|WAVERLY": "eqbgkq61bk",
   "basis:IL|BAB GRAIN|AUBURN": "ec9dja0g87",
   "basis:IL|BAB GRAIN|WAVERLY RAIL": "eqbgkq61bk",
   "basis:IL|BALK GRAIN AND TRUCKING, INC.|CGB-MT. CARROLL": "edsr084ks3",
   "basis:IL|BALK GRAIN AND TRUCKING, INC.|MT CARROLL": "eptrx32m06",
   "basis:IL|BALK GRAIN AND TRUCKING, INC.|SAVANNA": "a00122",
   "basis:IL|BALK GRAIN AND TRUCKING, INC.|SAVANNA DEPOT/AREA 51": "eqknjy8em7",
-  "basis:IL|BALK GRAIN AND TRUCKING, INC.|THOMSON": "ej97gqf2tr",
+  "basis:IL|BALK GRAIN AND TRUCKING, INC.|THOMSON": "eqknjy8em7",
   "basis:IL|BALK GRAIN AND TRUCKING, INC.|VISERION GRAIN": "e30jm2y0nd",
   "basis:IL|BARTLETT GRAIN COMPANY, LLC|SOUTH JACKSONVILLE": "edj21wsekj",
   "basis:IL|BIG RIVER RESOURCES|GALVA": "e58dd455fr",
@@ -3121,7 +5320,7 @@
   "basis:IL|CHS ILLINOIS|WAVERLY": "e5bb8ha5s3",
   "basis:IL|CISSNA PARK CO-OP|CISSNA PARK": "e6schtqxvc",
   "basis:IL|CISSNA PARK CO-OP|CISSNA PARK WOODWORTH & RANKIN": "em0hcvs0h3",
-  "basis:IL|CONSOLIDATED GRAIN & BARGE|ALBANY": "ev7z98283q",
+  "basis:IL|CONSOLIDATED GRAIN & BARGE|ALBANY": "e9xs287xs7",
   "basis:IL|CONSOLIDATED GRAIN & BARGE|DWIGHT": "e2af3xb7c3",
   "basis:IL|CONSOLIDATED GRAIN & BARGE|FITHIAN": "egzv90pnn4",
   "basis:IL|CONSOLIDATED GRAIN & BARGE|FREEPORT": "emvpv590n4",
@@ -3144,7 +5343,7 @@
   "basis:IL|EARLVILLE FARMERS COOP ELEVATOR CO|NORTHERN CROSSING": "exaqmrmsnb",
   "basis:IL|EARLVILLE FARMERS COOP ELEVATOR CO|RIVER": "ef095kgdt8",
   "basis:IL|EASTLAND FEED & GRAIN INC.|ALBANY": "e7xjxb7e4n",
-  "basis:IL|EASTLAND FEED & GRAIN INC.|HENNEPIN": "ey6wywgj5h",
+  "basis:IL|EASTLAND FEED & GRAIN INC.|HENNEPIN": "edeswgvfcg",
   "basis:IL|EASTLAND FEED & GRAIN INC.|LENA": "eaa8zwm4bn",
   "basis:IL|EASTLAND FEED & GRAIN INC.|MT. CARROLL": "e9c9zt216c",
   "basis:IL|EASTLAND FEED & GRAIN INC.|PERU": "esfj3kx70x",
@@ -3174,7 +5373,7 @@
   "basis:IL|EVERGREEN FS|DOWNS": "e15ct0wsyz",
   "basis:IL|EVERGREEN FS|MCLEAN": "ezx4f94zap",
   "basis:IL|EVERGREEN FS|TOWANDA": "ew14je1vmd",
-  "basis:IL|FARMERS COOPERATIVE ASSOCIATION - VARNA|VARNA": "a00134",
+  "basis:IL|FARMERS COOPERATIVE ASSOCIATION - VARNA|VARNA": "ey1dtdnyvc",
   "basis:IL|FARMERS COOPERATIVE ASSOCIATION|VARNA": "ey1dtdnyvc",
   "basis:IL|FARMERS GRAIN COMPANY OF DORANS|DORANS": "e4mcfh5etf",
   "basis:IL|FARMERS GRAIN COMPANY OF ROSEVILLE|ROSEVILLE": "e2mns5dzz6",
@@ -3186,18 +5385,18 @@
   "basis:IL|FS GRAIN|ADM - MORRIS": "e3ej6cs9hz",
   "basis:IL|FS GRAIN|ADM - NORTHERN CROSSING": "ecm7acw3qj",
   "basis:IL|FS GRAIN|ADM - OTTAWA": "ezqh7mnh0v",
-  "basis:IL|FS GRAIN|ALBANY": "ed5rwevv3p",
+  "basis:IL|FS GRAIN|ALBANY": "e9xs287xs7",
   "basis:IL|FS GRAIN|ASHTON": "e2fnc6mk2y",
-  "basis:IL|FS GRAIN|BLOOMINGTON": "e3hbxp9zgg",
+  "basis:IL|FS GRAIN|BLOOMINGTON": "e3qq69skp9",
   "basis:IL|FS GRAIN|BOURBONNAIS": "ehpgxpqb49",
   "basis:IL|FS GRAIN|BUDA": "ecd2xs1bhh",
-  "basis:IL|FS GRAIN|BUREAU JUNCTION": "eb1zcbnza3",
+  "basis:IL|FS GRAIN|BUREAU JUNCTION": "e11v66p39b",
   "basis:IL|FS GRAIN|CGB - ALBANY": "e9xs287xs7",
   "basis:IL|FS GRAIN|CGB - HENNEPIN": "e11v66p39b",
   "basis:IL|FS GRAIN|CHS - ANNAWAN/PATRIOT": "e37e462jre",
   "basis:IL|FS GRAIN|CHS - ELBURN/ MORRIS": "e647xrzw27",
   "basis:IL|FS GRAIN|CRESTON": "ec4pr6ve7h",
-  "basis:IL|FS GRAIN|DOWNS, IL 61736": "exx35trt94",
+  "basis:IL|FS GRAIN|DOWNS, IL 61736": "e6q0g1djyk",
   "basis:IL|FS GRAIN|FITCHMOOR": "ejrpqc3d75",
   "basis:IL|FS GRAIN|GRAND RIDGE": "e11vcqywve",
   "basis:IL|FS GRAIN|HARMON": "eh0aktr1a7",
@@ -3213,7 +5412,7 @@
   "basis:IL|FS GRAIN|POLO": "ebxrn0nzss",
   "basis:IL|FS GRAIN|RANSOM": "eq500erbhg",
   "basis:IL|FS GRAIN|ROUTE 30": "eb0jgf8s85",
-  "basis:IL|FS GRAIN|SAVANNA": "ea758j1xy7",
+  "basis:IL|FS GRAIN|SAVANNA": "eq4pgrxk46",
   "basis:IL|FS GRAIN|SERENA": "e88zszs79g",
   "basis:IL|FS GRAIN|VISERION - SAVANNA": "eq4pgrxk46",
   "basis:IL|FS GRAIN|YUTON": "e3xrxcxdmc",
@@ -3221,7 +5420,7 @@
   "basis:IL|GATEWAY FS, INC.|ROSAMOND": "etmetqhcqg",
   "basis:IL|GATEWAY FS|CARLYLE": "e1c1bxh08k",
   "basis:IL|GATEWAY FS|EVANSVILLE": "epcrvjd544",
-  "basis:IL|GATEWAY FS|FULTS": "a00135",
+  "basis:IL|GATEWAY FS|FULTS": "e2bt2byq07",
   "basis:IL|GATEWAY FS|NASHVILLE": "etyey09152",
   "basis:IL|GATEWAY FS|OAKDALE": "ezkywbtsp0",
   "basis:IL|GATEWAY FS|PERCY": "e01zgcfwxk",
@@ -3307,7 +5506,7 @@
   "basis:IL|PRIMIENT GRAIN|COWDEN": "ef132kma8v",
   "basis:IL|PRIMIENT GRAIN|DARROW": "e826hmvmnb",
   "basis:IL|PRIMIENT GRAIN|DECATUR": "esweanh0br",
-  "basis:IL|PRIMIENT GRAIN|FARMER CITY": "eh0j8vaerb",
+  "basis:IL|PRIMIENT GRAIN|FARMER CITY": "ewrefkab9t",
   "basis:IL|PRIMIENT GRAIN|FINDLAY": "ej1cvzmvjg",
   "basis:IL|PRIMIENT GRAIN|HEYWORTH": "esbpnq7pn4",
   "basis:IL|PRIMIENT GRAIN|LE ROY": "ehdb4c8et5",
@@ -3315,28 +5514,28 @@
   "basis:IL|PRIMIENT GRAIN|MATTOON": "ep3rfa4prh",
   "basis:IL|PRIMIENT GRAIN|PARNELL": "ewrefkab9t",
   "basis:IL|PRIMIENT GRAIN|PITTWOOD": "ep9tm9g4hs",
-  "basis:IL|PRIMIENT GRAIN|SHELDON": "ev3cmg8074",
+  "basis:IL|PRIMIENT GRAIN|SHELDON": "e826hmvmnb",
   "basis:IL|PRIMIENT GRAIN|WAPELLA": "eb7kzgkk6q",
   "basis:IL|PRIMIENT GRAIN|WATSEKA": "e6mvy42zpr",
   "basis:IL|RAMSEY GRAIN, INC.|RAMSEY GRAIN": "e9tjk3czve",
   "basis:IL|RAMSEY GRAIN, INC.|ROCHESTER": "a00155",
   "basis:IL|RANDOLPH COOPERATIVE GRAIN CO.|HEYWORTH": "ea6gwvdb3w",
   "basis:IL|RANDOLPH COOPERATIVE GRAIN CO.|RANDOLPH": "e0vee92pqm",
-  "basis:IL|RCM CO-OP|ATHENS": "ekw38m860d",
+  "basis:IL|RCM CO-OP|ATHENS": "eqhe312001",
   "basis:IL|RCM CO-OP|CULVER/BURTONVIEW": "eqhe312001",
   "basis:IL|RCM CO-OP|MECHANICSBURG": "e3cvrr5x02",
-  "basis:IL|RCM CO-OP|PLEASANT PLAINS": "ecwqbjgbs7",
+  "basis:IL|RCM CO-OP|PLEASANT PLAINS": "esmrps1vby",
   "basis:IL|RCM CO-OP|RIVERTON": "ev6h5bpy0c",
   "basis:IL|RCM CO-OP|RPA": "esmrps1vby",
   "basis:IL|RIVER VALLEY COOPERATIVE|ADM- CREVE COEUR": "e6paazzke9",
   "basis:IL|RIVER VALLEY COOPERATIVE|ALTO ICP": "es9hsmx2eb",
   "basis:IL|RIVER VALLEY COOPERATIVE|BRADFORD": "eea91sep3z",
   "basis:IL|RIVER VALLEY COOPERATIVE|CGB-HENNEPIN": "e8qwdx4r8v",
-  "basis:IL|RIVER VALLEY COOPERATIVE|CREVE COEUR": "en3m1m9r55",
+  "basis:IL|RIVER VALLEY COOPERATIVE|CREVE COEUR": "e6paazzke9",
   "basis:IL|RIVER VALLEY COOPERATIVE|HENNEPIN": "eyyfq065nb",
   "basis:IL|RIVER VALLEY COOPERATIVE|MARQUIS ENERGY": "em86kw2svr",
-  "basis:IL|RIVER VALLEY COOPERATIVE|PEKIN": "em7rzkar6a",
-  "basis:IL|RIVER VALLEY COOPERATIVE|PRINCETON": "e7zcc5ykx3",
+  "basis:IL|RIVER VALLEY COOPERATIVE|PEKIN": "es9hsmx2eb",
+  "basis:IL|RIVER VALLEY COOPERATIVE|PRINCETON": "e8qwdx4r8v",
   "basis:IL|RIVER VALLEY COOPERATIVE|PRINCEVILLE": "ed3bkrax9z",
   "basis:IL|RIVER VALLEY COOPERATIVE|PUTNAM": "e0ekjnbxn1",
   "basis:IL|RIVER VALLEY COOPERATIVE|SPEER": "ecag091nnw",
@@ -3360,13 +5559,13 @@
   "basis:IL|SORELLS FARM SUPPLY|RAYMOND": "etfjn568k3",
   "basis:IL|STANFORD GRAIN COMPANY|STANFORD": "ehe86tg25d",
   "basis:IL|STEPHENSON SERVICE COMPANY|LENA": "a00158",
-  "basis:IL|STEPHENSON SERVICE COMPANY|PEARL CITY": "e0nfx32mar",
+  "basis:IL|STEPHENSON SERVICE COMPANY|PEARL CITY": "ef7wxjzrp7",
   "basis:IL|TETTENS GRAIN|BOCKER RUFF": "ekjjx5t3v5",
   "basis:IL|TETTENS GRAIN|CGB-HENNEPIN": "etakxatpva",
   "basis:IL|TETTENS GRAIN|CHS-ANNAWAN": "efzcz7tqpc",
   "basis:IL|TETTENS GRAIN|CHS-ROCHELLE": "ehqyh2nfr6",
   "basis:IL|TETTENS GRAIN|FS GRAIN-HARMON": "e5vmy10zfm",
-  "basis:IL|TETTENS GRAIN|HENNEPIN": "a00159",
+  "basis:IL|TETTENS GRAIN|HENNEPIN": "eggxhcvtx3",
   "basis:IL|TETTENS GRAIN|MAPLEHURST-AMBOY": "ebg742hy7e",
   "basis:IL|TETTENS GRAIN|MARQUIS GRAIN": "eggxhcvtx3",
   "basis:IL|TETTENS GRAIN|PRINCETON": "a00160",
@@ -3374,7 +5573,7 @@
   "basis:IL|TETTENS GRAIN|TETTENS - DIXON": "e7gdj02e35",
   "basis:IL|TETTENS GRAIN|TETTENS - GALT": "ecgrams4p4",
   "basis:IL|TETTENS GRAIN|TETTENS - MILLEDGEVILLE": "ee755fdtn6",
-  "basis:IL|THE EQUITY|CHRISMAN": "e8j46eta28",
+  "basis:IL|THE EQUITY|CHRISMAN": "ec96b6301z",
   "basis:IL|THE EQUITY|EFFINGHAM": "e42vv1d8gq",
   "basis:IL|THE EQUITY|HORACE": "ec96b6301z",
   "basis:IL|THE EQUITY|MARTINSVILLE": "e78kqsccwx",
@@ -3423,7 +5622,7 @@
   "basis:IL|TOTAL GRAIN MARKETING|WILLOW HILL": "en0f5rfa47",
   "basis:IL|TOTAL GRAIN MARKETING|WINDSOR": "eqnnb1depr",
   "basis:IL|TREMONT CO-OPERATIVE GRAIN CO.|ADWELL": "ebz591w5f6",
-  "basis:IL|TREMONT CO-OPERATIVE GRAIN CO.|DELAVAN": "em0e145mgd",
+  "basis:IL|TREMONT CO-OPERATIVE GRAIN CO.|DELAVAN": "ehqn92atrv",
   "basis:IL|TREMONT CO-OPERATIVE GRAIN CO.|PEKIN": "a00167",
   "basis:IL|TREMONT CO-OPERATIVE GRAIN CO.|TOBOGGAN": "ehqn92atrv",
   "basis:IL|TREMONT CO-OPERATIVE GRAIN CO.|TREMONT": "e7k2m55n4k",
@@ -3472,7 +5671,7 @@
   "basis:IN|ADM|NEWBURGH": "eme2x6dd16",
   "basis:IN|ADM|RENSSELAER": "erz5bgpfpp",
   "basis:IN|ADM|ROCKPORT": "e9183d3a9j",
-  "basis:IN|AG PLUS, INC.|WOODBURN": "egf6smcp98",
+  "basis:IN|AG PLUS, INC.|WOODBURN": "ev07vww1p4",
   "basis:IN|AG PLUS, INC|CHURUBUSCO": "e2xamgtfaq",
   "basis:IN|AG PLUS, INC|EDGERTON": "ev07vww1p4",
   "basis:IN|AG PLUS, INC|GARRETT": "ecs65xjhmm",
@@ -3502,8 +5701,8 @@
   "basis:IN|GEMSTONE|GEMSTONE": "em1dj2ghjv",
   "basis:IN|H & B SPECIALTIES, INC.|MADISON": "e4h6vvr0sw",
   "basis:IN|H&B SPECIALTIES, INC.|CINCY": "ead32ceg9x",
-  "basis:IN|HANENKRATT GRAIN|IDAVILLE": "em1ye16x5g",
-  "basis:IN|HANENKRATT GRAIN|MONTICELLO": "ehtamc8kpd",
+  "basis:IN|HANENKRATT GRAIN|IDAVILLE": "eecxsxez3e",
+  "basis:IN|HANENKRATT GRAIN|MONTICELLO": "e7wg7g6gbm",
   "basis:IN|INCO GRAIN, LTD.|GOODLAND": "ew61ajym7c",
   "basis:IN|INCO GRAIN|INCO GRAIN": "e977h8hqgb",
   "basis:IN|IROQUOIS BIO-ENERGY|RENSSELAER": "e48ampr38d",
@@ -3527,10 +5726,10 @@
   "basis:IN|KOKOMO GRAIN CO.|BURLINGTON": "efnspz5ppa",
   "basis:IN|KOKOMO GRAIN CO.|EDINBURGH": "ezf47w4ftv",
   "basis:IN|KOKOMO GRAIN CO.|EMPORIA": "esytqvrr95",
-  "basis:IN|KOKOMO GRAIN CO.|FRANKFORT": "e5f2azhg3c",
+  "basis:IN|KOKOMO GRAIN CO.|FRANKFORT": "e9k6qr2f7w",
   "basis:IN|KOKOMO GRAIN CO.|KOKOMO": "efxhb85jfh",
   "basis:IN|KOKOMO GRAIN CO.|LAFAYETTE": "a00181",
-  "basis:IN|KOKOMO GRAIN CO.|MARKLEVILLE": "ek2ref31nz",
+  "basis:IN|KOKOMO GRAIN CO.|MARKLEVILLE": "esytqvrr95",
   "basis:IN|KOKOMO GRAIN CO.|T-L LAF": "et242ngjry",
   "basis:IN|KOKOMO GRAIN CO.|WINAMAC": "e3d736jqng",
   "basis:IN|LANDUS COOPERATIVE|RUSHVILLE": "e8qr2ma1w5",
@@ -3564,7 +5763,7 @@
   "basis:IN|THE FARMERS COOPERATIVE CO.|WOLCOTT": "a00183",
   "basis:IN|THE MENNEL MILLING COMPANY|MEXICO": "e4pjabjx3f",
   "basis:IN|WHEATFIELD GRAIN|BELSTRA MILLING": "edb75dr5a4",
-  "basis:IN|WHEATFIELD GRAIN|DEMOTTE": "edns0b3760",
+  "basis:IN|WHEATFIELD GRAIN|DEMOTTE": "edb75dr5a4",
   "basis:IN|WHEATFIELD GRAIN|FAIR OAKS": "eqj557vf35",
   "basis:IN|WHEATFIELD GRAIN|MOROCCO": "e3sh1779xf",
   "basis:IN|WHEATFIELD GRAIN|RENSSELAER": "e7dx6ztrfc",
@@ -3656,12 +5855,12 @@
   "basis:KS|AGMARK LLC|GREENLEAF": "eq26aqgky0",
   "basis:KS|AGMARK LLC|HOLTON": "ezn23w4288",
   "basis:KS|AGMARK LLC|LEONARDVILLE": "et8xqq7ky4",
-  "basis:KS|AGMARK LLC|LINN": "e6b2nhxd7s",
+  "basis:KS|AGMARK LLC|LINN": "e2fwg61ztz",
   "basis:KS|AGMARK LLC|MERIDEN": "eejtx539ah",
   "basis:KS|AGMARK LLC|MILTONVALE": "egv851yww2",
   "basis:KS|AGMARK LLC|OVERBROOK": "ehnd7d31f0",
   "basis:KS|AGMARK LLC|SCRANTON": "e4mngf512r",
-  "basis:KS|AGMARK LLC|TOPEKA": "en4w7arf17",
+  "basis:KS|AGMARK LLC|TOPEKA": "ed0fjmcwb4",
   "basis:KS|AGRI TRAILS COOP|CARLTON": "epxq5tkqrw",
   "basis:KS|AGRI TRAILS COOP|CHAPMAN": "ek47a2d24z",
   "basis:KS|AGRI TRAILS COOP|COUNCIL GROVE": "eazsmdhvfx",
@@ -3735,7 +5934,7 @@
   "basis:KS|COMARK EQUITY ALLIANCE LLC|ANTHONY - NORTH": "ehte7scfw4",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|ANTHONY - SOUTH": "evwc1tcpwj",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|ARK CITY FEEDMILL": "ejqdsejz4y",
-  "basis:KS|COMARK EQUITY ALLIANCE LLC|ARKANSAS CITY": "e1p8fv13ad",
+  "basis:KS|COMARK EQUITY ALLIANCE LLC|ARKANSAS CITY": "ejqdsejz4y",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|ASHTON": "e5vdapjp9d",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|ATLANTA": "emvfqf76jt",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|ATTICA": "expvcfcnzw",
@@ -3744,7 +5943,7 @@
   "basis:KS|COMARK EQUITY ALLIANCE LLC|BENTLEY": "e311rj7m84",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|BURDEN": "ey7x3x8asw",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|BURLINGTON": "e125ysym0b",
-  "basis:KS|COMARK EQUITY ALLIANCE LLC|BURRTON": "ebyf31qhfd",
+  "basis:KS|COMARK EQUITY ALLIANCE LLC|BURRTON": "ejvw0yf3yr",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|CALDWELL": "ead9w5jfrv",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|CANADA": "emj3q5jgrg",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|CANTON": "ermhb27dk0",
@@ -3752,7 +5951,7 @@
   "basis:KS|COMARK EQUITY ALLIANCE LLC|CLYDE": "epp86xyztd",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|COLUMBUS": "e9nz41vqzt",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|COLUMBUS EAST": "eyjb4d6pxm",
-  "basis:KS|COMARK EQUITY ALLIANCE LLC|CONWAY SPRINGS": "e2n8pryb4h",
+  "basis:KS|COMARK EQUITY ALLIANCE LLC|CONWAY SPRINGS": "e1vtwncbm5",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|CONWAY SPRINGS EAST": "e1vtwncbm5",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|CORWIN": "ea1ebzjnr7",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|DUQUOIN": "ebr4xfdhzj",
@@ -3760,7 +5959,7 @@
   "basis:KS|COMARK EQUITY ALLIANCE LLC|FAULKNER": "eqtw0dces4",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|GEUDA SPRINGS": "e0cpermbfq",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|HACKNEY": "esd889cdh8",
-  "basis:KS|COMARK EQUITY ALLIANCE LLC|HALSTEAD": "esz3twa0vr",
+  "basis:KS|COMARK EQUITY ALLIANCE LLC|HALSTEAD": "egz19x9jv6",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|HALSTEAD WEST": "egz19x9jv6",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|HARDTNER": "eess1913em",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|HARPER": "erwve3hkaj",
@@ -3805,17 +6004,17 @@
   "basis:KS|FARMERS COOP CONWAY SPRINGS|BELLE PLAINE": "e9sk9c8wzs",
   "basis:KS|FARMERS COOP CONWAY SPRINGS|CONWAY SPRINGS": "ee7r12b3qh",
   "basis:KS|FARMERS COOP ELEVATOR - MORGANVILLE COOP|MORGANVILLE": "erq55nk352",
-  "basis:KS|FARMERS COOP OF DORCHESTER|BEATTIE": "a00203",
-  "basis:KS|FARMERS COOP OF DORCHESTER|BLUE RAPIDS": "a00204",
+  "basis:KS|FARMERS COOP OF DORCHESTER|BEATTIE": "ejewb979pp",
+  "basis:KS|FARMERS COOP OF DORCHESTER|BLUE RAPIDS": "e7x7v000vz",
   "basis:KS|FARMERS COOP OF DORCHESTER|EMPORIA": "ex2mg8pevs",
-  "basis:KS|FARMERS COOP OF DORCHESTER|FRANKFORT": "a00205",
-  "basis:KS|FARMERS COOP OF DORCHESTER|HANOVER": "a00206",
-  "basis:KS|FARMERS COOP OF DORCHESTER|MARIETTA": "a00207",
-  "basis:KS|FARMERS COOP OF DORCHESTER|MARYSVILLE": "e81zn0emzf",
-  "basis:KS|FARMERS COOP OF DORCHESTER|WATERVILLE": "a00208",
-  "basis:KS|FARMERS COOPERATIVE ASSOCIATION|BAXTER SPRINGS": "e6kk7y5vkh",
+  "basis:KS|FARMERS COOP OF DORCHESTER|FRANKFORT": "e1564bmx25",
+  "basis:KS|FARMERS COOP OF DORCHESTER|HANOVER": "ezkh9xpmb0",
+  "basis:KS|FARMERS COOP OF DORCHESTER|MARIETTA": "ea431amncr",
+  "basis:KS|FARMERS COOP OF DORCHESTER|MARYSVILLE": "e1308tcjg2",
+  "basis:KS|FARMERS COOP OF DORCHESTER|WATERVILLE": "e72ajgt7bp",
+  "basis:KS|FARMERS COOPERATIVE ASSOCIATION|BAXTER SPRINGS": "ewdh2j596b",
   "basis:KS|FARMERS COOPERATIVE ASSOCIATION|CHETOPA": "a00209",
-  "basis:KS|FARMERS COOPERATIVE ASSOCIATION|COLUMBUS": "ekmc43r7ye",
+  "basis:KS|FARMERS COOPERATIVE ASSOCIATION|COLUMBUS": "emc58bnmnq",
   "basis:KS|FARMERS COOPERATIVE ASSOCIATION|GALENA": "e3v5asc6es",
   "basis:KS|FARMERS COOPERATIVE DORCHESTER|BEATTIE": "ejewb979pp",
   "basis:KS|FARMERS COOPERATIVE DORCHESTER|BLUE RAPIDS": "e7x7v000vz",
@@ -3826,9 +6025,9 @@
   "basis:KS|FARMERS COOPERATIVE DORCHESTER|MARIETTA": "ea431amncr",
   "basis:KS|FARMERS COOPERATIVE DORCHESTER|WATERVILLE": "e72ajgt7bp",
   "basis:KS|FARMERS COOPERATIVE DORCHESTER|{BUNGE - EMPORIA}": "ej6psryg26",
-  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|BURRTON": "eanbcd1dz3",
-  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|HALSTEAD": "e049c48vt9",
-  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|MT. HOPE": "egv7sf474q",
+  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|BURRTON": "ejvw0yf3yr",
+  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|HALSTEAD": "egz19x9jv6",
+  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|MT. HOPE": "eef2vr1k62",
   "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|SEDGWICK": "a00210",
   "basis:KS|FARMERS COOPERATIVE EQUITY COMPANY|ISABEL": "expefsm2zd",
   "basis:KS|FARMERS COOPERATIVE EQUITY COMPANY|NASHVILLE": "ee8jnwg8gk",
@@ -3995,7 +6194,7 @@
   "basis:KS|SCOULARVIEW|MINNEAPOLIS": "e18xbsx09t",
   "basis:KS|SCOULARVIEW|MONUMENT": "e6pns2r1eq",
   "basis:KS|SEK COOP INC.|SEVERY": "eyte1yj2gx",
-  "basis:KS|SKYLAND GRAIN|CUNNINGHAM": "ed4m07qgr8",
+  "basis:KS|SKYLAND GRAIN|CUNNINGHAM": "eahrr1p0dq",
   "basis:KS|SKYLAND GRAIN|CUNNINGHAM AREA": "eahrr1p0dq",
   "basis:KS|STAFFORD COUNTY FLOUR MILLS|HUDSON": "ez6afav0t2",
   "basis:KS|THE ELLSWORTH COOP|CLAFLIN": "a00216",
@@ -4086,7 +6285,7 @@
   "basis:MN|AGMARK LLC|GAYLORD": "edvmjh4hht",
   "basis:MN|AGTEGRA|AGP DAWSON": "e8w3055b00",
   "basis:MN|AL-CORN CLEAN FUEL|AL-CORN": "e2myy50ta1",
-  "basis:MN|AL-CORN CLEAN FUEL|CLAREMONT": "e0hed776yr",
+  "basis:MN|AL-CORN CLEAN FUEL|CLAREMONT": "e2myy50ta1",
   "basis:MN|AL-CORN CLEAN FUEL|HCP": "eedymvf9hp",
   "basis:MN|AL-CORN CLEAN FUEL|WINTHROP": "a00225",
   "basis:MN|ALBERT LEA ELEVATOR|ALBERT LEA": "e9xgkhya8a",
@@ -4122,7 +6321,7 @@
   "basis:MN|CENTRAL REGION COOPERATIVE|LESUEUR": "a00235",
   "basis:MN|CENTRAL REGION COOPERATIVE|NEW ULM": "a00236",
   "basis:MN|CENTRAL REGION COOPERATIVE|SLEEPY EYE": "a00237",
-  "basis:MN|CENTRAL REGION COOPERATIVE|WINTHROP": "eh9askr9yg",
+  "basis:MN|CENTRAL REGION COOPERATIVE|WINTHROP": "e5wpq70vbz",
   "basis:MN|CENTRAL UNITED COOP|BIRD ISLAND": "er8qt89xw8",
   "basis:MN|CENTRAL UNITED COOP|BROWNTON": "escfzzk2s4",
   "basis:MN|CENTRAL UNITED COOP|BUFFALO LAKE": "eym1xmtm38",
@@ -4300,35 +6499,35 @@
   "basis:MN|NEW VISION COOP|ADRIAN": "em4d3c07t9",
   "basis:MN|NEW VISION COOP|BEAVER CREEK": "e4x484axrx",
   "basis:MN|NEW VISION COOP|ELLSWORTH": "emyznk633n",
-  "basis:MN|NEW VISION COOP|FAIRMONT": "e8q16qgg75",
-  "basis:MN|NEW VISION COOP|HILLS": "eyr3x3wb4x",
+  "basis:MN|NEW VISION COOP|FAIRMONT": "erayeqrwjp",
+  "basis:MN|NEW VISION COOP|HILLS": "evs7yaaxyz",
   "basis:MN|NEW VISION COOP|MAGNOLIA": "er2eac8xw2",
   "basis:MN|NEW VISION COOP|MANKATO": "e1t9ev88eg",
   "basis:MN|NEW VISION COOP|MOUNTAIN LAKE": "e3h90amkjp",
   "basis:MN|NEW VISION COOP|READING": "e1cjryjc04",
   "basis:MN|NEW VISION COOP|WILMONT": "e32hpwnhv9",
   "basis:MN|NEW VISION COOP|WINDOM": "e0wdrba8rg",
-  "basis:MN|NEXUS COOPERATIVE|ADAMS": "a00263",
+  "basis:MN|NEXUS COOPERATIVE|ADAMS": "egjjav4b0a",
   "basis:MN|NEXUS COOPERATIVE|ADAMS, MN": "egjjav4b0a",
-  "basis:MN|NEXUS COOPERATIVE|ALDEN": "a00264",
+  "basis:MN|NEXUS COOPERATIVE|ALDEN": "e36h6rkv60",
   "basis:MN|NEXUS COOPERATIVE|ALDEN, MN": "e36h6rkv60",
-  "basis:MN|NEXUS COOPERATIVE|BLOOMING PRAIRIE": "a00265",
+  "basis:MN|NEXUS COOPERATIVE|BLOOMING PRAIRIE": "eewk6jygmp",
   "basis:MN|NEXUS COOPERATIVE|BLOOMING PRAIRIE, MN": "eewk6jygmp",
-  "basis:MN|NEXUS COOPERATIVE|BROWNSDALE": "a00266",
+  "basis:MN|NEXUS COOPERATIVE|BROWNSDALE": "evz192cfh7",
   "basis:MN|NEXUS COOPERATIVE|BROWNSDALE, MN": "evz192cfh7",
   "basis:MN|NEXUS COOPERATIVE|CONGER": "eas86k4jx5",
-  "basis:MN|NEXUS COOPERATIVE|EMMONS": "a00267",
+  "basis:MN|NEXUS COOPERATIVE|EMMONS": "e710js3fyh",
   "basis:MN|NEXUS COOPERATIVE|EMMONS, MN": "e710js3fyh",
   "basis:MN|NEXUS COOPERATIVE|LANSING": "a00268",
   "basis:MN|NEXUS COOPERATIVE|LANSING, MN": "ecajpzx23w",
-  "basis:MN|NEXUS COOPERATIVE|LEROY": "a00269",
+  "basis:MN|NEXUS COOPERATIVE|LEROY": "epr32qgrc2",
   "basis:MN|NEXUS COOPERATIVE|LEROY, MN": "epr32qgrc2",
-  "basis:MN|NEXUS COOPERATIVE|LONDON": "a00270",
+  "basis:MN|NEXUS COOPERATIVE|LONDON": "ekp4qd0a9k",
   "basis:MN|NEXUS COOPERATIVE|LONDON, MN": "ekp4qd0a9k",
   "basis:MN|NEXUS COOPERATIVE|MINNESOTA LAKE": "ew22nmsvrw",
   "basis:MN|NEXUS COOPERATIVE|OAKLAND": "a00271",
   "basis:MN|NEXUS COOPERATIVE|OAKLAND, MN": "e0bd11ergj",
-  "basis:MN|NEXUS COOPERATIVE|ROSE CREEK": "a00272",
+  "basis:MN|NEXUS COOPERATIVE|ROSE CREEK": "e203h3ma6e",
   "basis:MN|NEXUS COOPERATIVE|ROSE CREEK, MN": "e203h3ma6e",
   "basis:MN|NEXUS COOPERATIVE|WELLS": "ev95n8p69y",
   "basis:MN|PEMBERTON GRAIN LLC|PEMBERTON": "en7a6ge16n",
@@ -4348,7 +6547,7 @@
   "basis:MN|RED WING GRAIN|LAKE CITY": "a00279",
   "basis:MN|RED WING GRAIN|LEWISTON": "a00280",
   "basis:MN|RED WING GRAIN|PINE ISLAND": "a00281",
-  "basis:MN|RED WING GRAIN|RED WING": "ew725krxq3",
+  "basis:MN|RED WING GRAIN|RED WING": "ehez8hts87",
   "basis:MN|RED WING GRAIN|ST PETER": "a00282",
   "basis:MN|RED WING GRAIN|STEWARTVILLE": "a00283",
   "basis:MN|RED WING GRAIN|WANAMINGO": "a00284",
@@ -4484,7 +6683,7 @@
   "basis:MO|RAY-CARROLL|BRUNSWICK": "a00309",
   "basis:MO|RAY-CARROLL|SLATER": "a00310",
   "basis:MO|RICKETTS FARM SERVICE|SALISBURY": "a00311",
-  "basis:MO|SCOULAR COMPANY - MISSOURI|BUTTERFIELD": "ejjb8zfb13",
+  "basis:MO|SCOULAR COMPANY - MISSOURI|BUTTERFIELD": "eawdyxe5et",
   "basis:MO|SCOULARVIEW|BUTTERFIELD": "eawdyxe5et",
   "basis:MO|SCOULARVIEW|HARRISONVILLE": "e9gpt5fpjn",
   "basis:MO|SHOW-ME MFA AGRI SERVICES|CENTRALIA": "eak5ep15wn",
@@ -4508,6 +6707,7 @@
   "basis:MT|COLUMBIA GRAIN|FORT BENTON": "a00313",
   "basis:MT|COLUMBIA GRAIN|GREAT FALLS": "evgsmwc4bf",
   "basis:MT|MOUNTAIN VIEW CO-OP|DUTTON": "eadsmj8t7r",
+  "basis:MT|SCOULARVIEW|BUTTE": "ea620m6q46",
   "basis:NC|CARGILL US|FAYETTEVILLE": "etyryfdr5d",
   "basis:NC|CARGILL US|SELMA": "ewes821sye",
   "basis:NC|SMITHFIELD GRAIN - EAST|BENTONVILLE": "eb9ehpm57e",
@@ -4586,7 +6786,7 @@
   "basis:ND|DAKOTA MIDLAND GRAIN|BALFOUR": "eeeszwek0h",
   "basis:ND|DAKOTA MIDLAND GRAIN|BALFOUR, ND": "eeeszwek0h",
   "basis:ND|DAKOTA MIDLAND GRAIN|NORWICH": "epvxgc4bqq",
-  "basis:ND|DAKOTA MIDLAND GRAIN|VOLITAIRE": "ezdyfvm5c5",
+  "basis:ND|DAKOTA MIDLAND GRAIN|VOLITAIRE": "eq5kv3kac7",
   "basis:ND|DAKOTA MIDLAND GRAIN|VOLTAIRE": "eq5kv3kac7",
   "basis:ND|EMBDEN GRAIN COMPANY|EMBDEN": "e36fm280es",
   "basis:ND|FARMERS COOP ELEVATOR LIDGERWOOD-GENESEO|GENESEO": "a00318",
@@ -4603,21 +6803,21 @@
   "basis:ND|JAMES VALLEY GRAIN, LLC|OAKES": "e26ny7mv63",
   "basis:ND|JAMES VALLEY GRAIN, LLC|VERONA": "eytjxekppw",
   "basis:ND|LARSON GRAIN|LAMOURE": "ev3aq6ak8d",
-  "basis:ND|MAPLE RIVER GRAIN|CASSELTON": "a00322",
+  "basis:ND|MAPLE RIVER GRAIN|CASSELTON": "ebp4nx20mg",
   "basis:ND|MAPLE RIVER GRAIN|CASSELTON - TERMINAL": "exc97nx7gn",
   "basis:ND|MAPLE RIVER GRAIN|DURBIN": "ex66sdw218",
   "basis:ND|MAPLE RIVER GRAIN|LEONARD": "e6z5kb9thx",
   "basis:ND|MAPLE RIVER GRAIN|LYNCHBURG": "ek517rfee2",
   "basis:ND|MAPLE RIVER GRAIN|PEAK": "eyvb19xx0z",
   "basis:ND|MAPLE RIVER GRAIN|PROSPER": "ednyhfmrpr",
-  "basis:ND|MAPLE RIVER GRAIN|VALLEY CITY": "a00323",
+  "basis:ND|MAPLE RIVER GRAIN|VALLEY CITY": "etmj3zv9ve",
   "basis:ND|MILNOR GRAIN COMPANY|MILNOR": "ebm2d9dwvx",
   "basis:ND|MINN-KOTA AG PRODUCTS, INC.|COLFAX": "egz0mjkrwm",
   "basis:ND|MINN-KOTA AG PRODUCTS, INC.|WAHPETON": "ew9rbznkxn",
   "basis:ND|MINN-KOTA AG PRODUCTS, INC.|WEST TERMINAL": "em1catmqyb",
   "basis:ND|MINN-KOTA AG PRODUCTS, INC.|WYNDMERE": "e9kq4tapm2",
   "basis:ND|MINN-KOTA AG PRODUCTS|COLFAX": "egz0mjkrwm",
-  "basis:ND|MINN-KOTA AG PRODUCTS|MOORETON": "eqtqygw11g",
+  "basis:ND|MINN-KOTA AG PRODUCTS|MOORETON": "em1catmqyb",
   "basis:ND|MINN-KOTA AG PRODUCTS|WAHPETON": "ew9rbznkxn",
   "basis:ND|MINN-KOTA AG PRODUCTS|WYNDMERE": "e9kq4tapm2",
   "basis:ND|NORTH PRAIRIE AG - NPA COOP|NEKOMA": "ettzyadhxv",
@@ -4630,7 +6830,7 @@
   "basis:ND|THARALDSON ETHANOL|CASSELTON": "a00327",
   "basis:ND|TRONSON GRAIN, LLC|TOLNA": "e8n47m4qxn",
   "basis:ND|UNITED QUALITY COOP|NEW TOWN": "ep3szk7zhk",
-  "basis:ND|VALLEY UNITED CO-OP|HILLSBORO": "epxmwsd0cm",
+  "basis:ND|VALLEY UNITED CO-OP|HILLSBORO": "e4c63b6g81",
   "basis:ND|VALLEY UNITED CO-OP|REYNOLDS": "egktc8kgbv",
   "basis:ND|VALLEY UNITED COOP|ALTON": "e4c63b6g81",
   "basis:ND|VALLEY UNITED COOP|REYNOLDS-BUXTON": "exphtfek27",
@@ -4655,7 +6855,7 @@
   "basis:NE|AG VALLEY CO-OP|LOGAN": "epbxbd4c02",
   "basis:NE|AG VALLEY CO-OP|MAYWOOD": "etby8qtza8",
   "basis:NE|AG VALLEY CO-OP|NORTH PLATTE": "es45arp3yv",
-  "basis:NE|AG VALLEY CO-OP|STAPLETON": "en2n1rrbbe",
+  "basis:NE|AG VALLEY CO-OP|STAPLETON": "epbxbd4c02",
   "basis:NE|AGP|DAVID CITY": "ex0k8sxvd1",
   "basis:NE|AURORA COOPERATIVE|AURORA SOUTH": "ebqxad3109",
   "basis:NE|AURORA COOPERATIVE|BYRON": "evvs94r858",
@@ -4685,46 +6885,46 @@
   "basis:NE|CENTRAL VALLEY AG|BANCROFT": "a00333",
   "basis:NE|CENTRAL VALLEY AG|BEE": "et8pb6f9cm",
   "basis:NE|CENTRAL VALLEY AG|BENEDICT": "e755rekvav",
-  "basis:NE|CENTRAL VALLEY AG|BLAIR": "eat4vty5zk",
+  "basis:NE|CENTRAL VALLEY AG|BLAIR": "etd6raa3jg",
   "basis:NE|CENTRAL VALLEY AG|BOW VALLEY": "er21x0m4ne",
   "basis:NE|CENTRAL VALLEY AG|BRADSHAW": "eej3pmgtam",
   "basis:NE|CENTRAL VALLEY AG|CARGILL ALBION": "e15mgbs2z5",
   "basis:NE|CENTRAL VALLEY AG|CARGILL BLAIR": "etd6raa3jg",
-  "basis:NE|CENTRAL VALLEY AG|COLUMBUS": "e3gr72n2hc",
+  "basis:NE|CENTRAL VALLEY AG|COLUMBUS": "ejtjhb7qmd",
   "basis:NE|CENTRAL VALLEY AG|DAVID CITY": "e1asv4sm9g",
   "basis:NE|CENTRAL VALLEY AG|DAYKIN": "a00334",
   "basis:NE|CENTRAL VALLEY AG|DAYKIN MILLING LLC": "ewmhgbzwhx",
   "basis:NE|CENTRAL VALLEY AG|EAST HUB": "evj4086djn",
   "basis:NE|CENTRAL VALLEY AG|ELGIN": "e3h4axwq99",
-  "basis:NE|CENTRAL VALLEY AG|FREMONT": "e101bewh9c",
+  "basis:NE|CENTRAL VALLEY AG|FREMONT": "ekz4vr8164",
   "basis:NE|CENTRAL VALLEY AG|FULLERTON": "ev40hbxaxp",
   "basis:NE|CENTRAL VALLEY AG|GOTHENBURG": "a00335",
   "basis:NE|CENTRAL VALLEY AG|GREEN PLAINS CENTRAL CITY": "en3dz2yq6g",
   "basis:NE|CENTRAL VALLEY AG|GREEN PLAINS YORK": "eerke3kk8y",
   "basis:NE|CENTRAL VALLEY AG|GRESHAM": "ebd9r9wx9b",
   "basis:NE|CENTRAL VALLEY AG|HAMPTON": "e9hs0d43t2",
-  "basis:NE|CENTRAL VALLEY AG|HARTINGTON": "egg71gf45v",
+  "basis:NE|CENTRAL VALLEY AG|HARTINGTON": "er21x0m4ne",
   "basis:NE|CENTRAL VALLEY AG|HOOPER": "eg0r4r41f8",
   "basis:NE|CENTRAL VALLEY AG|HORDVILLE": "eked3j8yt2",
   "basis:NE|CENTRAL VALLEY AG|HOWELLS MILLING LLC": "eb8vahbb3g",
   "basis:NE|CENTRAL VALLEY AG|HUMPHREY": "e8cn1h5e90",
   "basis:NE|CENTRAL VALLEY AG|HUSKER AG PLAINVIEW": "exe1cgmmw4",
   "basis:NE|CENTRAL VALLEY AG|LAUREL": "ehatracrgx",
-  "basis:NE|CENTRAL VALLEY AG|LINCOLN": "e5fgx9gy4x",
+  "basis:NE|CENTRAL VALLEY AG|LINCOLN": "ehexg1ag19",
   "basis:NE|CENTRAL VALLEY AG|MG WALDBAUM - BLOOMFIELD": "epzeyg4f7b",
   "basis:NE|CENTRAL VALLEY AG|MG WALDBAUM - WAKEFIELD": "evtk24w7zq",
   "basis:NE|CENTRAL VALLEY AG|MONROE": "ebj4qpp7wn",
   "basis:NE|CENTRAL VALLEY AG|NIEWOHNER FEEDLOT": "e00w7ppz45",
   "basis:NE|CENTRAL VALLEY AG|NORFOLK CRUSH LLC": "esmw1tgbwf",
-  "basis:NE|CENTRAL VALLEY AG|OAKLAND": "ebxza3tgjf",
+  "basis:NE|CENTRAL VALLEY AG|OAKLAND": "evj4086djn",
   "basis:NE|CENTRAL VALLEY AG|PETERSBURG": "ee38qxr4x3",
   "basis:NE|CENTRAL VALLEY AG|POLK": "eve9m9j40k",
-  "basis:NE|CENTRAL VALLEY AG|RISING": "erf9hpc2bz",
+  "basis:NE|CENTRAL VALLEY AG|RISING": "ehc0rzfqah",
   "basis:NE|CENTRAL VALLEY AG|RISING CITY": "ehc0rzfqah",
   "basis:NE|CENTRAL VALLEY AG|ROYAL": "efccjbxr03",
   "basis:NE|CENTRAL VALLEY AG|SANDHILLS RENEWABLE ENERGY LLC": "et8wdvavbv",
   "basis:NE|CENTRAL VALLEY AG|SCRIBNER": "ecz0t4a47j",
-  "basis:NE|CENTRAL VALLEY AG|SEWARD": "etn2v6zg9m",
+  "basis:NE|CENTRAL VALLEY AG|SEWARD": "e44wmedd48",
   "basis:NE|CENTRAL VALLEY AG|SHELBY": "e2wpf097yj",
   "basis:NE|CENTRAL VALLEY AG|SIOUXLAND ETHANOL": "e051gbnvdf",
   "basis:NE|CENTRAL VALLEY AG|ST EDWARD": "exem3r28g1",
@@ -4799,39 +6999,39 @@
   "basis:NE|ELKHORN VALLEY GRAIN|DUNBAR": "ej9t1x95ft",
   "basis:NE|ELKHORN VALLEY GRAIN|HADAR": "embfnm9jmz",
   "basis:NE|ELKHORN VALLEY GRAIN|WAHOO": "e3gza51zvd",
-  "basis:NE|FARMERS COOP OF DORCHESTER|ADAMS": "en4jrhs993",
+  "basis:NE|FARMERS COOP OF DORCHESTER|ADAMS": "e0hc0srdw2",
   "basis:NE|FARMERS COOP OF DORCHESTER|BARNESTON": "a00341",
   "basis:NE|FARMERS COOP OF DORCHESTER|BEATRICE": "a00342",
-  "basis:NE|FARMERS COOP OF DORCHESTER|BLUE SPRINGS": "a00343",
-  "basis:NE|FARMERS COOP OF DORCHESTER|BURCHARD": "a00344",
-  "basis:NE|FARMERS COOP OF DORCHESTER|CORDOVA": "a00345",
+  "basis:NE|FARMERS COOP OF DORCHESTER|BLUE SPRINGS": "eq03cwvjsv",
+  "basis:NE|FARMERS COOP OF DORCHESTER|BURCHARD": "ey0g3zxjff",
+  "basis:NE|FARMERS COOP OF DORCHESTER|CORDOVA": "e2wrs3sd24",
   "basis:NE|FARMERS COOP OF DORCHESTER|DAVID CITY": "e2f4jaqmm3",
-  "basis:NE|FARMERS COOP OF DORCHESTER|DAYKIN": "a00346",
-  "basis:NE|FARMERS COOP OF DORCHESTER|DORCHESTER": "a00347",
-  "basis:NE|FARMERS COOP OF DORCHESTER|EMERALD": "a00348",
-  "basis:NE|FARMERS COOP OF DORCHESTER|EXETER": "a00349",
-  "basis:NE|FARMERS COOP OF DORCHESTER|FAIRMONT": "a00350",
-  "basis:NE|FARMERS COOP OF DORCHESTER|FIRTH": "a00351",
-  "basis:NE|FARMERS COOP OF DORCHESTER|HALLAM": "a00352",
-  "basis:NE|FARMERS COOP OF DORCHESTER|JANSEN": "a00353",
-  "basis:NE|FARMERS COOP OF DORCHESTER|KRAMER": "a00354",
+  "basis:NE|FARMERS COOP OF DORCHESTER|DAYKIN": "ehjfzq9h54",
+  "basis:NE|FARMERS COOP OF DORCHESTER|DORCHESTER": "ejmjz841bd",
+  "basis:NE|FARMERS COOP OF DORCHESTER|EMERALD": "ek9ve8wvcj",
+  "basis:NE|FARMERS COOP OF DORCHESTER|EXETER": "eq73a93j8h",
+  "basis:NE|FARMERS COOP OF DORCHESTER|FAIRMONT": "eaae2zsg3q",
+  "basis:NE|FARMERS COOP OF DORCHESTER|FIRTH": "e0yt5x31gv",
+  "basis:NE|FARMERS COOP OF DORCHESTER|HALLAM": "eg6fbvxqb6",
+  "basis:NE|FARMERS COOP OF DORCHESTER|JANSEN": "e0fafnpzpd",
+  "basis:NE|FARMERS COOP OF DORCHESTER|KRAMER": "egt7xxb3r8",
   "basis:NE|FARMERS COOP OF DORCHESTER|LINCOLN": "a00355",
-  "basis:NE|FARMERS COOP OF DORCHESTER|LUSHTON": "a00356",
-  "basis:NE|FARMERS COOP OF DORCHESTER|MCCOOL JUNCTION": "a00357",
-  "basis:NE|FARMERS COOP OF DORCHESTER|MILFORD": "eyxbwa9dtn",
-  "basis:NE|FARMERS COOP OF DORCHESTER|MILLIGAN": "a00358",
-  "basis:NE|FARMERS COOP OF DORCHESTER|ODELL": "a00359",
-  "basis:NE|FARMERS COOP OF DORCHESTER|OHIOWA": "a00360",
+  "basis:NE|FARMERS COOP OF DORCHESTER|LUSHTON": "ehjbf1kbj5",
+  "basis:NE|FARMERS COOP OF DORCHESTER|MCCOOL JUNCTION": "e52faxg96a",
+  "basis:NE|FARMERS COOP OF DORCHESTER|MILFORD": "esrebakghd",
+  "basis:NE|FARMERS COOP OF DORCHESTER|MILLIGAN": "e4z6cnjsjb",
+  "basis:NE|FARMERS COOP OF DORCHESTER|ODELL": "ewha5gd0h9",
+  "basis:NE|FARMERS COOP OF DORCHESTER|OHIOWA": "ea6rcmw2vs",
   "basis:NE|FARMERS COOP OF DORCHESTER|PAWNEE": "a00361",
-  "basis:NE|FARMERS COOP OF DORCHESTER|PICKRELL": "a00362",
-  "basis:NE|FARMERS COOP OF DORCHESTER|PLEASANT DALE": "a00363",
-  "basis:NE|FARMERS COOP OF DORCHESTER|PLYMOUTH": "a00364",
+  "basis:NE|FARMERS COOP OF DORCHESTER|PICKRELL": "ejmzaxcber",
+  "basis:NE|FARMERS COOP OF DORCHESTER|PLEASANT DALE": "esz58cx4qy",
+  "basis:NE|FARMERS COOP OF DORCHESTER|PLYMOUTH": "e66s72mbab",
   "basis:NE|FARMERS COOP OF DORCHESTER|RAYMOND": "a00365",
-  "basis:NE|FARMERS COOP OF DORCHESTER|STERLING": "a00366",
-  "basis:NE|FARMERS COOP OF DORCHESTER|SWANTON": "a00367",
-  "basis:NE|FARMERS COOP OF DORCHESTER|VIRGINIA": "a00368",
-  "basis:NE|FARMERS COOP OF DORCHESTER|WILBER": "a00369",
-  "basis:NE|FARMERS COOP OF DORCHESTER|YORK": "e5b1p2tg47",
+  "basis:NE|FARMERS COOP OF DORCHESTER|STERLING": "eery4mvtkv",
+  "basis:NE|FARMERS COOP OF DORCHESTER|SWANTON": "e9f6cedqsv",
+  "basis:NE|FARMERS COOP OF DORCHESTER|VIRGINIA": "ewa3bnw8em",
+  "basis:NE|FARMERS COOP OF DORCHESTER|WILBER": "extasr98hc",
+  "basis:NE|FARMERS COOP OF DORCHESTER|YORK": "e3ma049fmc",
   "basis:NE|FARMERS COOPERATIVE DORCHESTER|BARNES": "e3x3fq0mv6",
   "basis:NE|FARMERS COOPERATIVE DORCHESTER|BARNESTON": "e8vfr09zac",
   "basis:NE|FARMERS COOPERATIVE DORCHESTER|BEATRICE": "etbzjsj9wx",
@@ -4875,10 +7075,10 @@
   "basis:NE|FARMERS PRIDE COOP|OSMOND": "ev285d6wjh",
   "basis:NE|FARMERS UNION COOPERATIVE CO.|FRIEND": "a00370",
   "basis:NE|FARMERS UNION COOPERATIVE COMPANY|FARMERS UNION COOP": "eakd3f0f6z",
-  "basis:NE|FIRST RATE TRADE LLC|DUNBAR": "evg3mktg96",
-  "basis:NE|FIRST RATE TRADE LLC|WAHOO": "eqgwjd664h",
+  "basis:NE|FIRST RATE TRADE LLC|DUNBAR": "ej9t1x95ft",
+  "basis:NE|FIRST RATE TRADE LLC|WAHOO": "e3gza51zvd",
   "basis:NE|FORDYCE, FARMERS NON-STOCK COOP|FORDYCE CO-OP": "e5a0decnn0",
-  "basis:NE|FRENCHMAN VALLEY COOP|GRANT": "a00371",
+  "basis:NE|FRENCHMAN VALLEY COOP|GRANT": "ep1x19vk7g",
   "basis:NE|FRENCHMAN VALLEY FARMERS COOPERATIVE, INC.|BENKELMAN": "e6wzf30462",
   "basis:NE|FRENCHMAN VALLEY FARMERS COOPERATIVE, INC.|CHAPPELL": "a00372",
   "basis:NE|FRENCHMAN VALLEY FARMERS COOPERATIVE, INC.|CULBERTSON": "e4kzeayqkj",
@@ -4893,7 +7093,7 @@
   "basis:NE|FRENCHMAN VALLEY FARMERS COOPERATIVE, INC.|PALISADE": "en87rk58dm",
   "basis:NE|FRENCHMAN VALLEY FARMERS COOPERATIVE, INC.|VENANGO": "e9sdv14tcm",
   "basis:NE|FRENCHMAN VALLEY FARMERS COOPERATIVE, INC.|WAUNETA": "eytghgs3bp",
-  "basis:NE|FRONTIER COOPERATIVE|ADAMS": "a00373",
+  "basis:NE|FRONTIER COOPERATIVE|ADAMS": "es3z3wf02r",
   "basis:NE|FRONTIER COOPERATIVE|AVOCA": "eh2077x425",
   "basis:NE|FRONTIER COOPERATIVE|BELLWOOD": "e7ns30tmbb",
   "basis:NE|FRONTIER COOPERATIVE|BENNET": "extm67s02p",
@@ -4905,7 +7105,7 @@
   "basis:NE|FRONTIER COOPERATIVE|CERESCO": "ebghzzv38k",
   "basis:NE|FRONTIER COOPERATIVE|COLUMBUS": "e5j7xq0r2y",
   "basis:NE|FRONTIER COOPERATIVE|COOK": "et998d56mm",
-  "basis:NE|FRONTIER COOPERATIVE|DAVID CITY": "a00374",
+  "basis:NE|FRONTIER COOPERATIVE|DAVID CITY": "e6tjbprrv3",
   "basis:NE|FRONTIER COOPERATIVE|DAVID CITY - ELEVATOR": "e6tjbprrv3",
   "basis:NE|FRONTIER COOPERATIVE|DUNCAN": "e93z4g1333",
   "basis:NE|FRONTIER COOPERATIVE|DWIGHT": "ej9gbta9r4",
@@ -4925,7 +7125,7 @@
   "basis:NE|FRONTIER COOPERATIVE|OSCEOLA": "ej6hrq9g0d",
   "basis:NE|FRONTIER COOPERATIVE|OTOE": "ekwhmwh8kk",
   "basis:NE|FRONTIER COOPERATIVE|PALMYRA": "e98ttx0ydm",
-  "basis:NE|FRONTIER COOPERATIVE|PLATTSMOUTH": "er9ansytyq",
+  "basis:NE|FRONTIER COOPERATIVE|PLATTSMOUTH": "eegahbr863",
   "basis:NE|FRONTIER COOPERATIVE|PRAGUE": "en5dsdb6mn",
   "basis:NE|FRONTIER COOPERATIVE|SCHUYLER": "eedd2xfs2h",
   "basis:NE|FRONTIER COOPERATIVE|SILVER CREEK": "efvgq7dzna",
@@ -4974,7 +7174,7 @@
   "basis:NE|SCOULARVIEW|LAMAR": "enwny577qa",
   "basis:NE|SCOULARVIEW|MADRID": "eptvcq27vx",
   "basis:NE|SIOUXLAND ETHANOL LLC|SIOUXLAND ETHANOL": "ebszn1ha4r",
-  "basis:NE|THE SCOULAR COMPANY|FREMONT": "ery984t053",
+  "basis:NE|THE SCOULAR COMPANY|FREMONT": "ebecya47yd",
   "basis:NE|THE SCOULAR COMPANY|GRANT": "e8dyxbkac5",
   "basis:NE|THE SCOULAR COMPANY|MADRID": "a00378",
   "basis:NE|THE SCOULAR COMPANY|OGALLALA": "e9rn6dkj1e",
@@ -4991,7 +7191,7 @@
   "basis:OH|ADM|COLUMBUS": "e84k065kym",
   "basis:OH|ADM|FOSTORIA": "e55vzz81vr",
   "basis:OH|ADM|TOLEDO": "ex43gn5r0h",
-  "basis:OH|BAMBAUER FERTILIZER & SEED INC|NEW KNOXVILLE": "egsmmrz54r",
+  "basis:OH|BAMBAUER FERTILIZER & SEED INC|NEW KNOXVILLE": "eaktn61ab0",
   "basis:OH|BAMBAUER FERTILIZER & SEED INC|PEMBERTON": "evqk7gtbv3",
   "basis:OH|BAMBAUER FERTILIZER AND SEED|BAMBAUER CASH BIDS": "eaktn61ab0",
   "basis:OH|BRENNCO PORK INC.|ELIDA": "a00380",
@@ -5010,12 +7210,12 @@
   "basis:OH|CENTRAL OHIO FARMERS CO-OP|FREDRICKTOWN": "a00383",
   "basis:OH|CENTRAL OHIO FARMERS CO-OP|MARION": "eds6cf6y38",
   "basis:OH|CENTRAL OHIO FARMERS CO-OP|MONNETT": "enwkbwsts6",
-  "basis:OH|CENTRAL OHIO FARMERS CO-OP|MOUNT GILEAD": "a00384",
-  "basis:OH|CENTRAL OHIO FARMERS CO-OP|MOUNT VERNON": "a00385",
+  "basis:OH|CENTRAL OHIO FARMERS CO-OP|MOUNT GILEAD": "eq5mf12xbw",
+  "basis:OH|CENTRAL OHIO FARMERS CO-OP|MOUNT VERNON": "e29qvpet42",
   "basis:OH|CENTRAL OHIO FARMERS CO-OP|MT GILEAD": "eq5mf12xbw",
   "basis:OH|CENTRAL OHIO FARMERS CO-OP|MT VERNON": "e29qvpet42",
   "basis:OH|CENTRAL OHIO FARMERS CO-OP|NEW BLOOM": "ew0tjn8t41",
-  "basis:OH|CENTRAL OHIO FARMERS CO-OP|NEW BLOOMINGTON": "e9wz83nkxh",
+  "basis:OH|CENTRAL OHIO FARMERS CO-OP|NEW BLOOMINGTON": "ew0tjn8t41",
   "basis:OH|CENTRAL OHIO FARMERS CO-OP|PROSPECT": "e35rfwe0gt",
   "basis:OH|CENTRAL OHIO FARMERS CO-OP|WALDO": "e0mv8tf68w",
   "basis:OH|COUNTYLINE COOPERATIVE INC.|GIBSONBURG": "e772aas2r5",
@@ -5085,7 +7285,7 @@
   "basis:OH|LEGACY FARMERS COOP|CUSTAR": "ezcw1nmwad",
   "basis:OH|LEGACY FARMERS COOP|DEFIANCE": "a00391",
   "basis:OH|LEGACY FARMERS COOP|DESHLER": "es9v22ey9f",
-  "basis:OH|LEGACY FARMERS COOP|FINDLAY": "ek3fncdkzb",
+  "basis:OH|LEGACY FARMERS COOP|FINDLAY": "e3cxz3wyxe",
   "basis:OH|LEGACY FARMERS COOP|FOSTORIA": "e53bbd72cv",
   "basis:OH|LEGACY FARMERS COOP|MCCOMB": "ebpkk08pjd",
   "basis:OH|LEGACY FARMERS COOP|MT. BLANCHARD": "efrhfjjs4j",
@@ -5097,7 +7297,7 @@
   "basis:OH|LUCKEY FARMERS, INC.|GRAYTOWN": "enpp29tha9",
   "basis:OH|LUCKEY FARMERS, INC.|HASKINS": "evf57aedd8",
   "basis:OH|MERCER LANDMARK|ANTWERP": "ejdv0vs7w5",
-  "basis:OH|MERCER LANDMARK|CELINA": "e356zcxg15",
+  "basis:OH|MERCER LANDMARK|CELINA": "enax56jtn7",
   "basis:OH|MERCER LANDMARK|COLDWATER GRAIN NORTH": "e0ykb4h2tx",
   "basis:OH|MERCER LANDMARK|CONVOY": "e4tk0nr69x",
   "basis:OH|MERCER LANDMARK|ELGIN": "ezmy8v65dj",
@@ -5113,14 +7313,14 @@
   "basis:OH|MERCER LANDMARK|NEW WESTON": "e4m0kqrksx",
   "basis:OH|MERCER LANDMARK|PAULDING": "ezwy2k8rmj",
   "basis:OH|MERCER LANDMARK|PAYNE": "ed6rfwfd4v",
-  "basis:OH|MERCER LANDMARK|ROCKFORD": "a00392",
+  "basis:OH|MERCER LANDMARK|ROCKFORD": "e0ykb4h2tx",
   "basis:OH|MERCER LANDMARK|SHERWOOD": "e09qhapey0",
   "basis:OH|MERCER LANDMARK|ST MARYS": "e4w23q4942",
   "basis:OH|NORTHERN OHIO GRAIN COOP, INC.|WESTON": "efnmzqf7j5",
   "basis:OH|OTTAWA FEED AND GRAIN CO.|OTTAWA": "a00393",
   "basis:OH|PANDORA GRAIN & SUPPLY, INC.|BEAVERDAM": "ej8m0ekd8f",
   "basis:OH|PANDORA GRAIN & SUPPLY, INC.|BLUFFTON": "ewvnfc7z3m",
-  "basis:OH|PETTISVILLE GRAIN|PETTISVILLE": "e6m950n7bx",
+  "basis:OH|PETTISVILLE GRAIN|PETTISVILLE": "ebr7wmsfy3",
   "basis:OH|POET BIOREFINING|FOSTORIA": "a00394",
   "basis:OH|POET BIOREFINING|LEIPSIC": "a00395",
   "basis:OH|POET GRAIN|FOSTORIA": "exjf644fkq",
@@ -5131,11 +7331,11 @@
   "basis:OH|PREMIER GRAIN, LLC|SABINA": "enrtrepcv1",
   "basis:OH|PREMIER GRAIN, LLC|SOUTH SALEM": "a00396",
   "basis:OH|PREMIER GRAIN, LLC|WILMINGTON": "e89q9hy5w7",
-  "basis:OH|RIDGEVILLE ELEVATOR|FAYETTE": "a00397",
+  "basis:OH|RIDGEVILLE ELEVATOR|FAYETTE": "ed1pzt3yj3",
   "basis:OH|RIDGEVILLE ELEVATOR|RIDGEVILLE CORNERS": "a00398",
   "basis:OH|RIDGEVILLE ELEVATOR|RIDGEVILLE ELEVATOR- FAYETTE BRANCH": "ed1pzt3yj3",
   "basis:OH|RIDGEVILLE ELEVATOR|RIDGEVILLE ELEVATOR- RIDGEVILLE CORNERS": "ea2xyw2922",
-  "basis:OH|SCOTT EQUITY EXCHANGE|DELPHOS": "ejzfgr847g",
+  "basis:OH|SCOTT EQUITY EXCHANGE|DELPHOS": "e7z7bba3nv",
   "basis:OH|SCOTT EQUITY EXCHANGE|DELPHOS-DS": "e7z7bba3nv",
   "basis:OH|SCOTT EQUITY EXCHANGE|SCOTT": "ewbc9bnbam",
   "basis:OH|SCOTT EQUITY EXCHANGE|VAN WERT": "emp947de39",
@@ -5185,7 +7385,7 @@
   "basis:OH|WINCHESTER AG SERVICE|WINCHESTER": "ehhbpmxmqg",
   "basis:OH|ZOLDPETTISVILLE GRAIN CO.|PETTISVILLE": "ebr7wmsfy3",
   "basis:OK|ADM|ENID": "eaxaxvbhzg",
-  "basis:OK|AG CHOICE|AFTON": "ejrkrcsdb7",
+  "basis:OK|AG CHOICE|AFTON": "eedpfw6eme",
   "basis:OK|AG CHOICE|MIAMI": "ec9jhawhqp",
   "basis:OK|AG CHOICE|WELCH": "ed05w3gp8x",
   "basis:OK|AMERICAN PLAINS CO-OP|ALINE": "egm67011m3",
@@ -5201,7 +7401,7 @@
   "basis:OK|CHS TEXOMA (OKLAHOMA/TEXAS)|OKARCHE": "exqf57q6nm",
   "basis:OK|CHS WESTERN OKLAHAMA|HINTON": "e9m4rjg3bd",
   "basis:OK|CHS WESTERN OKLAHAMA|KINGFISHER": "edsrhv4sph",
-  "basis:OK|CHS WESTERN OKLAHAMA|OKARCHE": "er6qcnhz3s",
+  "basis:OK|CHS WESTERN OKLAHAMA|OKARCHE": "exqf57q6nm",
   "basis:OK|CHS WESTERN OKLAHAMA|PIEDMONT": "ew0tnr2kn7",
   "basis:OK|COMARK EQUITY ALLIANCE LLC|ALVA A": "e8jnnyfg51",
   "basis:OK|COMARK EQUITY ALLIANCE LLC|AMORITA": "e612qmbtfb",
@@ -5270,10 +7470,10 @@
   "basis:OK|COMARK EQUITY ALLIANCE LLC|WAYNOKA": "e6xvf7evpp",
   "basis:OK|COMARK EQUITY ALLIANCE LLC|WEATHERFORD": "e6h90f178h",
   "basis:OK|GARDEN CITY COO-OP|HOOKER ELEVATOR": "e3e9vnkw9c",
-  "basis:OK|SHAWNEE MILLING CO|CASHION": "ecay1jzc45",
-  "basis:OK|SHAWNEE MILLING CO|MINCO": "e4es0v3mt3",
+  "basis:OK|SHAWNEE MILLING CO|CASHION": "ev3yyf8nmr",
+  "basis:OK|SHAWNEE MILLING CO|MINCO": "enyqqpjcdb",
   "basis:OK|SHAWNEE MILLING CO|OKARCHE": "ev5z3hjbv7",
-  "basis:OK|SHAWNEE MILLING CO|SHAWNEE": "e3fkz9ykhc",
+  "basis:OK|SHAWNEE MILLING CO|SHAWNEE": "e3cvf0cgb8",
   "basis:OK|ZSHAWNEE FEED OLD|CASHION": "ev3yyf8nmr",
   "basis:OK|ZSHAWNEE FEED OLD|MINCO": "enyqqpjcdb",
   "basis:OK|ZSHAWNEE FEED OLD|OKARCHE/KINGFISHER": "ep62qv0cyw",
@@ -5308,7 +7508,7 @@
   "basis:SD|AGTEGRA|HIGHMORE": "enxwxzye1e",
   "basis:SD|AGTEGRA|HOUGHTON": "evwqw1v4pk",
   "basis:SD|AGTEGRA|HURON": "essfmz6fjb",
-  "basis:SD|AGTEGRA|IPSWICH": "a00409",
+  "basis:SD|AGTEGRA|IPSWICH": "eb5mfk3z9k",
   "basis:SD|AGTEGRA|JAVA": "e7ztrec9e0",
   "basis:SD|AGTEGRA|KENNEBEC": "err82tzet0",
   "basis:SD|AGTEGRA|LEBANON": "eeeqzd24w9",
@@ -5428,7 +7628,7 @@
   "basis:SD|MADISON FARMER'S ELEVATOR|MADISON": "e1v2bcjns6",
   "basis:SD|MADISON FARMER'S ELEVATOR|RAMONA": "epmt5nr6tq",
   "basis:SD|NEW CENTURY FS|YANKTON": "ecbm9ftfvy",
-  "basis:SD|NUGEN ENERGY, LLC|MARION": "eetwt0affq",
+  "basis:SD|NUGEN ENERGY, LLC|MARION": "e011hgtdgf",
   "basis:SD|NUGEN ENERGY, LLC|NUGEN MARION": "e011hgtdgf",
   "basis:SD|POET BIOREFINING|CHANCELLOR": "exved0ys2z",
   "basis:SD|POET BIOREFINING|GROTON": "ev9c1wpva0",
@@ -5460,7 +7660,7 @@
   "basis:SD|SOUTHEAST FARMERS|MECKLING": "er2pk3xj3t",
   "basis:SD|SOUTHEAST FARMERS|TERMINAL": "eae94eaw1g",
   "basis:SD|VALLEY SPRINGS FARMERS COOP|VALLEY SPRINGS": "ehxkgda35t",
-  "basis:SD|WEST-CON|ABERDEEN": "e7a916caka",
+  "basis:SD|WEST-CON|ABERDEEN": "evn8e9pngn",
   "basis:SD|WHEATON DUMONT CO-OP|ABERDEEN": "ekpvbkatvx",
   "basis:SD|WHEATON DUMONT CO-OP|BRITTON": "a00430",
   "basis:SD|WHEATON DUMONT|AGP DLVD ABERDEEN, SD": "egfb42xy87",
@@ -5602,7 +7802,7 @@
   "basis:WI|HARTMANN FARMS LLC|LODI": "ea0ysjzj7b",
   "basis:WI|INNOVATIVE AG SERVICES|BUNGEPDC": "ee9s9qcgjf",
   "basis:WI|INNOVATIVE AG SERVICES|CUBA CITY": "empfewdsfh",
-  "basis:WI|INNOVATIVE AG SERVICES|PRAIRIE DU CHIEN": "ebk64mkm61",
+  "basis:WI|INNOVATIVE AG SERVICES|PRAIRIE DU CHIEN": "ee9s9qcgjf",
   "basis:WI|INSIGHT FS|IXONIA": "ew1n3g1zrb",
   "basis:WI|INSIGHT FS|JEFFERSON": "ej08tr9e4y",
   "basis:WI|INSIGHT FS|SPRING GREEN": "a00440",
@@ -5612,7 +7812,7 @@
   "basis:WI|MEDFORD COOPERATIVE|MEDFORD COOPERATIVE": "ew7m06c83v",
   "basis:WI|MELROSE FARM SERVICE INC_MOBILE|MELROSE FARM SERVICE": "ezvwgta5fp",
   "basis:WI|MELROSE FARM SERVICE INC_|COUNTRY FARM SUPPLY": "e5fm802d5g",
-  "basis:WI|MELROSE FARM SERVICE INC|MELROSE": "egca5dzqrb",
+  "basis:WI|MELROSE FARM SERVICE INC|MELROSE": "ezvwgta5fp",
   "basis:WI|MEYER BROTHERS GRAIN|ELK MOUND": "egj4h0chb1",
   "basis:WI|MIDWEST COMMODITY SERVICE, INC.|BALDWIN": "ecbd1eskdj",
   "basis:WI|MIDWEST COMMODITY SERVICES INC.|BALDWIN": "a00442",
@@ -5703,14 +7903,15 @@
   "basis:WI|WINCHESTER AG SERVICE, INC|CHIPPEWA FALLS": "eq60vezx68",
   "basis:WI|WOLF RIVER GRAIN LLC|STEVENS POINT": "ef1x183z59",
   "basis:WI|WOLF RIVER GRAIN|WOLF RIVER GRAIN": "ef1x183z59",
-  "basis:WY|FRENCHMAN VALLEY COOP|BURNS": "a00453",
-  "basis:WY|FRENCHMAN VALLEY COOP|PINE BLUFFS": "a00454",
+  "basis:WY|FRENCHMAN VALLEY COOP|BURNS": "ep14efwqny",
+  "basis:WY|FRENCHMAN VALLEY COOP|PINE BLUFFS": "e8qpv4f3f1",
   "basis:WY|FRENCHMAN VALLEY FARMERS COOPERATIVE, INC.|BURNS": "ep14efwqny",
   "basis:WY|FRENCHMAN VALLEY FARMERS COOPERATIVE, INC.|PINE BLUFFS": "e8qpv4f3f1",
   "basis:WY|PINEBLUFFS FEED & GRAIN|PINE BLUFFS": "esjpqqqkr4",
   "basis:WY|PINEBLUFFS FEED & GRAIN|PINEBLUFFS FEED": "esjpqqqkr4",
   "basis:WY|THE MASCHHOFFS|ALBIN": "ed5sam9fkx",
   "bids:ADM|Corn Processing|Decatur|IL": "e6b9deqk60",
+  "bids:ADM|Elevator|Lincoln|NE": "ebsk8p46t6",
   "bids:ADM|Lincoln Premium Poultry|Fremont|NE": "ec0m7jfj41",
   "bids:ADM|Soy Processing|Decatur|IL": "ezk9c693bk",
   "bids:ADM|Soy Processing|Fremont|NE": "e5rgq90b00",
@@ -5726,9 +7927,12 @@
   "bids:ADM||Havana|IL": "ej8re5fxpt",
   "bids:ADM||Hensler|ND": "e9kd9vqdh8",
   "bids:ADM||Hutchinson|KS": "e8pnxq2f04",
+  "bids:ADM||Indianapolis|IN": "ev1yjkvfdd",
   "bids:ADM||Jackson|TN": "evbmpg5gks",
+  "bids:ADM||Lacon|IL": "e4nyfacaf8",
   "bids:ADM||Logansport|IN": "et33qkhjgf",
   "bids:ADM||Mankato|MN": "eyy4xc0vvj",
+  "bids:ADM||Memphis|TN": "ec15w2w3a0",
   "bids:ADM||Mexico|MO": "epcyyqt4sf",
   "bids:ADM||Spokane|WA": "erbj1pv080",
   "bids:ADM||St. Paul|MN": "e3hz8pkdmv",
@@ -5751,11 +7955,14 @@
   "bids:AgMark LLC.||Pauline|KS": "ed0fjmcwb4",
   "bids:AgRail LLC||AgRail|IL": "epfaz8gfq0",
   "bids:AgWrx Coop||Agp Aberdeen|SD": "e8zct696td",
+  "bids:Agassiz Valley Grain||AVG Barnesville|MN": "ejycnm5gka",
+  "bids:Agri Trails Coop||Chapman|KS": "ek47a2d24z",
   "bids:Agri Trails Coop||Council Grove|KS": "eazsmdhvfx",
   "bids:Agtegra||AGP Aberdeen|SD": "e3zc92fsa6",
   "bids:Agtegra||AGP West|SD": "e9ftsqe30c",
   "bids:Agtegra||Andover|SD": "ed21fepb3k",
   "bids:Agtegra||Bristol|SD": "e7t7jpd15s",
+  "bids:Agtegra||Faulkton|SD": "ent2yk9k6q",
   "bids:Agtegra||Grebner|SD": "evqkkw8ess",
   "bids:Agtegra||Redfield Elevator|SD": "epxy1rk8zr",
   "bids:Agtegra||West Terminal|SD": "efv9rhc6dm",
@@ -5786,6 +7993,7 @@
   "bids:CHS River Terminals & Processing Plants||Absolute Energy|IA": "e3704ztyzk",
   "bids:CHS River Terminals & Processing Plants||Fairmont|MN": "ej5703cv24",
   "bids:CHS River Terminals & Processing Plants||Savage|MN": "e9afwyjazr",
+  "bids:CHS River Terminals & Processing Plants||Winona|MN": "er3a6bgdh9",
   "bids:CHS South Central (North Dakota)||Sterling|ND": "ernytrhb1d",
   "bids:CHS Southwest Grain (North Dakota/South Dakota)||New Salem|ND": "etzaek5vf9",
   "bids:CHS Sun Basin Growers|Bruce Elevator|Othello|WA": "evx7be37f8",
@@ -5800,6 +8008,7 @@
   "bids:Central Valley Ag||ADM Fremont|NE": "ekz4vr8164",
   "bids:Central Valley Ag||ADM Lincoln|NE": "ehexg1ag19",
   "bids:Central Valley Ag||AGP David City|NE": "e8wzw056ez",
+  "bids:Central Valley Ag||Bunge Council Bluffs|IA": "ebnp6gk2jk",
   "bids:Central Valley Ag||Cargill Blair|NE": "etd6raa3jg",
   "bids:Central Valley Ag||Green Plains York|NE": "eerke3kk8y",
   "bids:CoMark Equity Alliance LLC||BANNER|OK": "eekdnhpay3",
@@ -5809,11 +8018,13 @@
   "bids:CoMark Equity Alliance LLC||CALDWELL|KS": "ead9w5jfrv",
   "bids:CoMark Equity Alliance LLC||CANTON|KS": "ermhb27dk0",
   "bids:CoMark Equity Alliance LLC||CHICKASHA|OK": "e9nwvvyh5s",
+  "bids:CoMark Equity Alliance LLC||CLEARWATER|KS": "epf9znw8yq",
   "bids:CoMark Equity Alliance LLC||COLUMBUS EAST|KS": "eyjb4d6pxm",
   "bids:CoMark Equity Alliance LLC||COLUMBUS|KS": "e9nz41vqzt",
   "bids:CoMark Equity Alliance LLC||CONWAY SPRINGS EAST|KS": "e1vtwncbm5",
   "bids:CoMark Equity Alliance LLC||HALSTEAD WEST|KS": "egz19x9jv6",
   "bids:CoMark Equity Alliance LLC||MT HOPE|KS": "eef2vr1k62",
+  "bids:CoMark Equity Alliance LLC||PETERSBURG TX|TX": "ertktvytp1",
   "bids:CoMark Equity Alliance LLC||TUTTLE|OK": "echsscy3j8",
   "bids:CoMark Equity Alliance LLC||UNION CITY|OK": "e171c7m645",
   "bids:CoMark Equity Alliance LLC||WELLINGTON GRAIN TERMINAL|KS": "eqrwysh0ts",
@@ -5830,46 +8041,62 @@
   "bids:Dumas Co-op Elevators||Mwell|TX": "epxh1ja0x9",
   "bids:Dunkerton Co-op||Shell Rock Soy Processing|IA": "esv7cwpbb4",
   "bids:E-Energy Adams||E Energy Adams, LLC|NE": "ekg8ngnbrs",
+  "bids:Eastland Feed & Grain, Inc||Aztalan Jefferson, WI|WI": "etc0bntj1v",
   "bids:Eastland Feed & Grain, Inc||Badger|WI": "e4tqzmcn1n",
   "bids:Eastland Feed & Grain, Inc||Big River Dyersville|IA": "e10mg1g1w7",
+  "bids:Eastland Feed & Grain, Inc||Bunge - Warren|IL": "eraaqtf0fq",
   "bids:Eastland Feed & Grain, Inc||Cargill - Cedar Rapids|IA": "e3wvzbn5y3",
   "bids:Eastland Feed & Grain, Inc||Honey Creek Mill|WI": "erhnt55182",
   "bids:Eastland Feed & Grain, Inc||Pearl Valley Egg|IL": "edmkxmswy2",
   "bids:Eastland Feed & Grain, Inc||Viserion Savanna|IL": "ej9jh4gdb1",
   "bids:FS Grain||Holder|IL": "eesbg9w540",
   "bids:FS Grain||McLean|IL": "eh9kjsp3qp",
+  "bids:FS Grain||Viserion - Savanna|IL": "eq4pgrxk46",
   "bids:Farmers Cooperative Dorchester||BEATRICE|NE": "etbzjsj9wx",
   "bids:Farmers Cooperative Dorchester||BLUE RAPIDS|KS": "e7x7v000vz",
   "bids:Farmers Cooperative Dorchester||DORCHESTER|NE": "ejmjz841bd",
+  "bids:Farmers Cooperative Dorchester||EXETER|NE": "eq73a93j8h",
   "bids:Farmers Cooperative Dorchester||FAIRMONT|NE": "eaae2zsg3q",
   "bids:Farmers Cooperative Dorchester||FRANKFORT-SHUTTLE LOCATION|KS": "edas794a45",
   "bids:Farmers Cooperative Dorchester||FRANKFORT|KS": "e1564bmx25",
+  "bids:Farmers Cooperative Dorchester||{ADM - Lincoln}|NE": "edb03ytxwb",
+  "bids:Farmers Cooperative Dorchester||{E-ENERGY ADAMS}|NE": "e0hc0srdw2",
   "bids:Farmers Cooperative Dorchester||{GREEN PLAINS - YORK}|NE": "e3ma049fmc",
+  "bids:Farmers Elevator & Exchange, Inc.||Cedar Rapids|IA": "env893tdbj",
+  "bids:Farmers Win Cooperative||Cresco|IA": "e5cpezkas0",
+  "bids:Flash Grain||Granton|WI": "ebqgww8r5r",
   "bids:Frenchman Valley Farmers Cooperative, Inc.||Burns|WY": "ep14efwqny",
   "bids:Frenchman Valley Farmers Cooperative, Inc.||Pine Bluffs|WY": "e8qpv4f3f1",
+  "bids:Frontier Cooperative||Sire CB|IA": "e37vd7xwx3",
   "bids:Full Circle Ag||AGP-Aberdeen|SD": "ebn7vhdmrb",
   "bids:Global Grain||Topeka|KS": "e9scak3h3g",
   "bids:Grainland Farmers||Roanoke|IL": "egfw1xj467",
   "bids:Heartland Co-op||Council Bluffs|IA": "escncvss9k",
   "bids:Heartland Feeds||West Mansfield|OH": "e9mwpa259a",
+  "bids:Heritage Coop||Kenton|OH": "eee9kyrz9a",
   "bids:Heritage Coop||Marysville|OH": "ebaz5px8p5",
   "bids:Heritage Coop||Mechanicsburg|OH": "e766rvw3js",
   "bids:Heritage Coop||Nashport|OH": "esm85j1xtp",
   "bids:Heritage Coop||Richwood|OH": "evsjtj3e89",
+  "bids:Home City Grain, Inc.||Home|KS": "erhhf6t32v",
   "bids:Hoven Equity Exchange||AGP - Direct Ship|SD": "e5x4qs87tx",
   "bids:Hoven Equity Exchange||Glacial Lakes Energy - Direct Ship|SD": "e7s7rprw6z",
   "bids:Hugoson Feedmill and Pork||Hugoson Feedmill|MN": "e1ppz1xnrd",
   "bids:Hull Feed & Produce, Inc||Hull Feed & Produce, Inc.|IA": "eh5qw3bj7j",
   "bids:Innovative Ag Services||AGP Eagle|IA": "e4q853gs8j",
   "bids:Innovative Ag Services||BungeDBQ|IA": "ehhdgf0crs",
+  "bids:Innovative Ag Services||Cargill IF|IA": "epdpaqe1wa",
   "bids:Innovative Ag Services||Poet Jewel|IA": "ebcc2fef9a",
   "bids:Innovative Ag Services||SF Ia Fall|IA": "e3b3twrxh0",
   "bids:JBS Live Pork||Smithton, MO Feed Mill|MO": "eh8xr788vb",
   "bids:James Valley Grain, LLC||AGP - Aberdeen, SD|SD": "ex6cpvw8za",
+  "bids:Jersey County Grain||White Hall|IL": "e4556xsvtz",
   "bids:Kalmbach Feeds||Upper Sandusky|OH": "e9zh9wgrd5",
   "bids:Kansas Ethanol||Lyons|KS": "eb0rsw251p",
+  "bids:Kanza Cooperative||Andale|KS": "ebh4ayc65e",
   "bids:Kanza Cooperative||CCGP|KS": "edrggbhmbn",
   "bids:Knightstown Elevator||Knightstown|IN": "ee27nsyknx",
+  "bids:Kokomo Grain Co.||Adm Fkt|IN": "e9k6qr2f7w",
   "bids:Kokomo Grain Co.||Amboy|IN": "ezen1jckjn",
   "bids:Kokomo Grain Co.||Anderson|IN": "e41m2wtt5n",
   "bids:Kokomo Grain Co.||Edinburgh|IN": "ezf47w4ftv",
@@ -5882,6 +8109,7 @@
   "bids:Legacy Farmers Cooperative||Fostoria|OH": "e53bbd72cv",
   "bids:Legacy Farmers Cooperative||West Findlay|OH": "e3cxz3wyxe",
   "bids:Legacy Grain Cooperative||Legacy Grain|IL": "e6xydgm3bz",
+  "bids:Linn Coop Oil Company||Cargill (Starch)|IA": "ed0wc4zq8e",
   "bids:Litchfield Farmers Grain||Litchfield|IL": "ernhhsszxd",
   "bids:Maple River Grain||Casselton - Terminal|ND": "exc97nx7gn",
   "bids:Maple River Grain||Dilworth|MN": "ew3htk21rb",
@@ -5894,12 +8122,15 @@
   "bids:Mercer Landmark||Latty Grain|OH": "eysb24dhk4",
   "bids:Michigan Agricultural Commodities||Breckenridge|MI": "e2xkvewns5",
   "bids:Michigan Agricultural Commodities||Middleton|MI": "eq8gmn4449",
+  "bids:Mid-Iowa Cooperative||CARGILL IA FALLS|IA": "ebsda0a9n2",
+  "bids:Mid-Iowa Cooperative||CARGILL STARCH|IA": "ee0f5cb22n",
   "bids:Mid-Iowa Cooperative||CEDAR FALLS|IA": "ehb9t6vhs0",
   "bids:Mid-Iowa Cooperative||KLOSTERMANN|IA": "e2b33gqv4q",
   "bids:Mid-Iowa Cooperative||SHELL ROCK SOY PROC|IA": "ec0rqyyggz",
   "bids:Minn-Kota Ag Products, Inc.||Breckenridge|MN": "ef3dvv4qqr",
   "bids:Minn-Kota Ag Products, Inc.||West Terminal|ND": "em1catmqyb",
   "bids:Minnesota Valley Grain||Webster|MN": "e9fxqqczvr",
+  "bids:NEW Cooperative, Inc.||Essex|IA": "ekp29dc30w",
   "bids:NEW Cooperative, Inc.||Red Oak|IA": "eck4xk3rjs",
   "bids:New Vision Co-op||ADM Mankato|MN": "ep824x6ehs",
   "bids:New Vision Co-op||BEAVER CREEK|MN": "e4x484axrx",
@@ -5907,15 +8138,22 @@
   "bids:New Vision Co-op||ELLSWORTH|MN": "emyznk633n",
   "bids:New Vision Co-op||HILLS TERMINAL|MN": "evs7yaaxyz",
   "bids:New Vision Co-op||MANKATO|MN": "e1t9ev88eg",
+  "bids:New Vision Co-op||MOUNTAIN LAKE|MN": "e3h90amkjp",
   "bids:Nexus Cooperative||AGP Eagle Grove, IA|IA": "e3yxz3j8hg",
   "bids:Nexus Cooperative||Cargill Iowa Falls, IA|IA": "efdggq02m7",
   "bids:Nexus Cooperative||Stacyville, IA|IA": "ecm9x3eqhj",
+  "bids:Nexus Cooperative||Toeterville, IA|IA": "ewzzwxqwxb",
   "bids:Northside Elevator, Inc.||Arcadia|WI": "ee9m7enpk7",
   "bids:Northside Elevator, Inc.||Loyal|WI": "epnx2w7k99",
   "bids:Nutrition Service Co. LLC||Embarrass|WI": "e6trcevsw1",
   "bids:Nutrition Service Co. LLC||Riceville|IA": "eesgwkxhqx",
   "bids:One Earth Energy||Gibson City|IL": "egen6s750h",
+  "bids:POET Grain||Cloverdale|IN": "enkc894fxj",
+  "bids:POET Grain||Fostoria|OH": "exjf644fkq",
+  "bids:POET Grain||Gowrie|IA": "etn949d8kj",
   "bids:POET Grain||Groton|SD": "en7tx5098r",
+  "bids:POET Grain||Hudson|SD": "e9hzhqta0w",
+  "bids:POET Grain||Jewell|IA": "enwzxqgeh7",
   "bids:POET Grain||Laddonia|MO": "e3911yst55",
   "bids:POET Grain||Lake Crystal|MN": "e29pn28z2c",
   "bids:POET Grain||Shelbyville|IN": "ej38bs2hxx",
@@ -5930,13 +8168,25 @@
   "bids:Primient Grain||Lafayette|IN": "ea8wys1es9",
   "bids:Primient Grain||LeRoy|IL": "ehdb4c8et5",
   "bids:Primient Grain||Parnell|IL": "ewrefkab9t",
+  "bids:Quality Roasting, Inc.||Owen|WI": "ensz85e9yg",
   "bids:Riceland Foods||Des Arc|AR": "e8mk5z4vm5",
   "bids:Riceland Foods||Hazen|AR": "e5ftf2xp4b",
   "bids:Riceland Foods||Stuttgart|AR": "eqey1fx6ry",
+  "bids:Ridgeville Elevator||Ridgeville Elevator- Ridgeville Corners|OH": "ea2xyw2922",
+  "bids:River Valley Cooperative||ADM- Creve Coeur|IL": "e6paazzke9",
+  "bids:River Valley Cooperative||ALTO ICP|IL": "es9hsmx2eb",
+  "bids:River Valley Cooperative||Big River - Dyersville|IA": "ernfzav5bw",
+  "bids:River Valley Cooperative||Speer|IL": "ecag091nnw",
+  "bids:Rooney Grain||Chippewa Falls|WI": "ex2gn12qmh",
+  "bids:See-Mor Grain||See-Mor Grain|WI": "ezwx4wsvks",
   "bids:Shell Rock Soy Processing LLC||Shell Rock Soy Origination|IA": "evxyn8k0ye",
+  "bids:Sorells Farm Supply||Raymond|IL": "etfjn568k3",
   "bids:Stafford County Flour Mills||Hudson|KS": "ez6afav0t2",
   "bids:Tama Benton Cooperative||DS-ADM|IA": "ehttvjy7g2",
   "bids:Tama Benton Cooperative||DS-PEN|IA": "ehk5f6tqkk",
+  "bids:Tama Benton Cooperative||DS-SHELLROCK|IA": "ef9cqn0nbg",
+  "bids:The Equity||Horace|IL": "ec96b6301z",
+  "bids:The Equity||Westfield|IL": "e75hbgmwxm",
   "bids:Total Grain Marketing||Arcola|IL": "e7m2vbgas4",
   "bids:Total Grain Marketing||Cadwell|IL": "e20fcpjtk2",
   "bids:Total Grain Marketing||Champaign|IL": "ea3cxbcde4",
@@ -5944,11 +8194,13 @@
   "bids:Tri-Cities Grain, LLC.||TCG Bids|WA": "eyhtm9gj9t",
   "bids:United Cooperative||Belmont Grain|WI": "e31pffb41j",
   "bids:United Cooperative||Boscobel Grain|WI": "e46skphmcs",
+  "bids:United Wisconsin Grain Producers||Friesland|WI": "ec92pry9cv",
   "bids:Valley United Coop||Alton|ND": "e4c63b6g81",
   "bids:Valley United Coop||Halstad|MN": "exzd9bd8m9",
   "bids:Wheaton Dumont||AGP DLVD ABERDEEN, SD|SD": "egfb42xy87",
   "bids:Wheaton Grain||Chippewa Falls|WI": "ewxf7ap08q",
   "bids:Wolf River Grain||Wolf River Grain|WI": "ef1x183z59",
+  "bids:iframe - Pearl City Elevator, Inc.||Adkins Energy|IL": "es6rbep7jr",
   "bids:zShawnee Feed Old||Minco|OK": "enyqqpjcdb",
   "bids:zShawnee Feed Old||Shawnee|OK": "e3cvf0cgb8",
   "bids:zWest-Con||DLVD AGP ABERDEEN|SD": "evn8e9pngn",
@@ -5979,7 +8231,7 @@
   "dir:18213": "a00460",
   "dir:18621": "e54cwjn400",
   "dir:1865": "e2fegmr7pm",
-  "dir:18852": "a00461",
+  "dir:18852": "eyx74fca4a",
   "dir:18890": "efa62bcfh2",
   "dir:19066": "a00462",
   "dir:19231": "a00463",
@@ -5990,7 +8242,7 @@
   "dir:19988": "a00138",
   "dir:20012": "e530xcpzv6",
   "dir:20122": "eqv9mrqsrw",
-  "dir:20407": "eeymd5c10a",
+  "dir:20407": "ey1dtdnyvc",
   "dir:20416": "e1dtq2weka",
   "dir:20505": "a00097",
   "dir:20534": "er2jpa2nac",
@@ -6005,7 +8257,7 @@
   "dir:21059": "ekwx58f23r",
   "dir:21070": "ej1ywjkedk",
   "dir:21074": "e31ycpxa39",
-  "dir:21078": "ee502nrmd5",
+  "dir:21078": "ehsqyp5tc1",
   "dir:21104": "epkq096ks0",
   "dir:21107": "et7n9keqt7",
   "dir:21120": "e8thqv8js9",
@@ -6019,12 +8271,12 @@
   "dir:21979": "ej9wkwhfsy",
   "dir:22579": "ewfsdz31xg",
   "dir:22890": "eyzy8ww0cg",
-  "dir:22892": "em1ye16x5g",
+  "dir:22892": "eecxsxez3e",
   "dir:24359": "e2hhcemxx2",
   "dir:24795": "ecqmz3k2kn",
   "dir:25629": "e58dd455fr",
   "dir:25937": "exjses2fe1",
-  "dir:25940": "a00466",
+  "dir:25940": "ek9wkh4k7a",
   "dir:25942": "e1ytw55ebc",
   "dir:25944": "et5v9xc4w1",
   "dir:25951": "e7mgbexw56",
@@ -6032,7 +8284,7 @@
   "dir:25992": "a00467",
   "dir:26110": "ejejjkxgh3",
   "dir:26112": "en2607mva1",
-  "dir:26279": "a00063",
+  "dir:26279": "ehnj514xzq",
   "dir:26460": "eejevng7ey",
   "dir:26723": "eb7x1xh3se",
   "dir:27300": "e5g8ga9kr1",
@@ -6071,7 +8323,7 @@
   "dir:31504": "ez6afav0t2",
   "dir:31806": "ejcsrfcxcj",
   "dir:31841": "a00433",
-  "dir:32103": "e9e471f0sp",
+  "dir:32103": "e783hwvh7h",
   "dir:3238": "ew8p5yx9v8",
   "dir:32733": "e1e1bgnk4j",
   "dir:3327": "e66yqfbf0g",
@@ -6089,7 +8341,7 @@
   "dir:36052": "a00474",
   "dir:36163": "eqshhfx45g",
   "dir:36286": "edz6th83kg",
-  "dir:36480": "ebmw5avr70",
+  "dir:36480": "ecy06re57f",
   "dir:36563": "ex881k87m7",
   "dir:36572": "emtpsp7p1q",
   "dir:36716": "a00475",
@@ -6107,8 +8359,8 @@
   "dir:36985": "exaqmrmsnb",
   "dir:36989": "enpe954yjs",
   "dir:36990": "egqmnh00z6",
-  "dir:36996": "er6nkq0rhn",
-  "dir:36998": "ewhnrtck92",
+  "dir:36996": "ezsvwq42aq",
+  "dir:36998": "ente6qsavd",
   "dir:37001": "e5jdgtyea8",
   "dir:37009": "e65pn6yxad",
   "dir:37016": "etm0b0he7n",
@@ -6142,22 +8394,22 @@
   "dir:37388": "etqnn38938",
   "dir:37390": "eb5enyedww",
   "dir:37391": "een8n1pfh5",
-  "dir:37397": "a00481",
-  "dir:37400": "a00482",
+  "dir:37397": "e2cphgcczt",
+  "dir:37400": "ej8m0ekd8f",
   "dir:37432": "ena3dgq5v1",
   "dir:37438": "egq4857n7b",
   "dir:37441": "a00483",
   "dir:37445": "a00156",
   "dir:37446": "e8d8kfrphx",
   "dir:3745": "ey74w9pn4h",
-  "dir:37456": "e5z138qcjt",
+  "dir:37456": "e9jjggdetm",
   "dir:37458": "e51etf7n74",
   "dir:37460": "ej7hb95h89",
   "dir:37461": "e1egdte6hk",
   "dir:37518": "exna57hbe2",
   "dir:37526": "e7zdda3qme",
   "dir:37530": "ebg4rwvjd3",
-  "dir:37540": "a00484",
+  "dir:37540": "e0yf1jq24x",
   "dir:37545": "e15m9sc5fc",
   "dir:37548": "escrbx90n0",
   "dir:37554": "e5jpk7ytrj",
@@ -6229,11 +8481,11 @@
   "dir:46908": "ex4j45mrkx",
   "dir:46976": "eygc4c12pd",
   "dir:47041": "a00492",
-  "dir:47185": "e2ctc74ev7",
+  "dir:47185": "ectmtqbyfe",
   "dir:47250": "e6schtqxvc",
   "dir:4777": "ehd6a555qj",
   "dir:47799": "ew02nhs5hc",
-  "dir:47809": "a00493",
+  "dir:47809": "ebqq3nbf3x",
   "dir:48033": "a00225",
   "dir:48215": "eh4767se1h",
   "dir:48222": "esbzts7wmd",
@@ -6254,11 +8506,11 @@
   "dir:52126": "eeyhwg2r9v",
   "dir:5229": "e4pqas9r92",
   "dir:52306": "ex3eexfmfr",
-  "dir:52414": "eetwt0affq",
+  "dir:52414": "e011hgtdgf",
   "dir:52499": "e3jz5tv5cp",
   "dir:52528": "ejr4jpdmgv",
   "dir:5267": "e5zcwmdcpc",
-  "dir:53379": "ecay1jzc45",
+  "dir:53379": "ev3yyf8nmr",
   "dir:53927": "entak5e5rr",
   "dir:53970": "es2hwjpw8y",
   "dir:54321": "erq55nk352",
@@ -6283,7 +8535,7 @@
   "dir:59256": "e78p2w2xqg",
   "dir:59513": "emq1qtsqyc",
   "dir:59774": "e0swn8pzb1",
-  "dir:59928": "e5ty13b6vh",
+  "dir:59928": "e1wq5a9anx",
   "dir:59930": "edrdejt9tw",
   "dir:60207": "eyjbrdp9dy",
   "dir:60374": "e6re3r90wq",
@@ -6300,7 +8552,7 @@
   "dir:63332": "e1ppz1xnrd",
   "dir:63577": "e5vvtx8j3r",
   "dir:63651": "eyte1yj2gx",
-  "dir:64066": "a00048",
+  "dir:64066": "e5g3v2mzmp",
   "dir:64357": "e5q00frj93",
   "dir:64498": "en20h8jy7g",
   "dir:64585": "exg2hhnn5k",
@@ -6309,7 +8561,7 @@
   "dir:66001": "a00181",
   "dir:67656": "exx2cp8a2w",
   "dir:70730": "eewajm12gx",
-  "dir:70837": "e4g48k1bem",
+  "dir:70837": "ezsyvf2bxd",
   "dir:70859": "eb2qc0q4fk",
   "dir:71648": "eb5sx1bk22",
   "dir:7218": "ey3n0m9m7w",
@@ -6346,9 +8598,9 @@
   "dir:76126": "ev6h5bpy0c",
   "dir:76808": "en60nwypx8",
   "dir:77326": "e9zthe7shq",
-  "dir:77665": "a00501",
+  "dir:77665": "ed2ehhhsgh",
   "dir:77695": "a00502",
-  "dir:77749": "etphtk76ga",
+  "dir:77749": "e9gpt5fpjn",
   "dir:77910": "ejsyrhbe3m",
   "dir:77923": "ejsg672k0x",
   "dir:78105": "e2x804dgnf",
@@ -6390,11 +8642,11 @@
   "dir:81590": "e9v2rvgpr7",
   "dir:81607": "a00508",
   "dir:81617": "ed1bzr6tmg",
-  "dir:81638": "ezgp80aa0j",
+  "dir:81638": "e311rj7m84",
   "dir:81820": "a00509",
   "dir:81828": "eq8bmm29jz",
-  "dir:81870": "a00398",
-  "dir:81891": "a00510",
+  "dir:81870": "ec0zmbcgzc",
+  "dir:81891": "ex2gn12qmh",
   "dir:82037": "ebasfttx33",
   "dir:82095": "eg48dx26pp",
   "dir:82178": "ep7mnfb080",
@@ -6446,7 +8698,7 @@
   "dir:84027": "a00516",
   "dir:84057": "ekt6qhnm5x",
   "dir:84076": "ep1xqywh6s",
-  "dir:84088": "ess8zwvydy",
+  "dir:84088": "e7tzsm2afe",
   "dir:84133": "en91ah4jcv",
   "dir:84144": "e3f6jd1bj5",
   "dir:84154": "e2jh7enet3",
@@ -6481,7 +8733,7 @@
   "dir:84821": "edf8hchmpn",
   "dir:84860": "ebgvg6nad1",
   "dir:84866": "ejsfbqmhhf",
-  "dir:84903": "evg3mktg96",
+  "dir:84903": "ej9t1x95ft",
   "dir:84906": "eke86npkyc",
   "dir:84988": "egc3atjygm",
   "dir:85029": "eak5ep15wn",
@@ -6494,7 +8746,7 @@
   "dir:85362": "emd4jxjy9s",
   "dir:85364": "ecd1xcge2q",
   "dir:85371": "eb0fk4n8pf",
-  "dir:85372": "a00519",
+  "dir:85372": "eyhtb3makj",
   "dir:85376": "et6dpe2qqp",
   "dir:85424": "edm7eah8aj",
   "dir:85428": "egm1qg1rpy",
@@ -6505,7 +8757,7 @@
   "dir:85514": "e00p6as2yp",
   "dir:85524": "ecza11m4k4",
   "dir:85529": "efbchd589f",
-  "dir:85554": "a00521",
+  "dir:85554": "e91sptc0c5",
   "dir:85571": "e1gfnkxpq4",
   "dir:85594": "a00247",
   "dir:85610": "egyc6tjv94",
@@ -6526,7 +8778,7 @@
   "dir:85929": "edtjc79v8v",
   "dir:85938": "e9garegfmp",
   "dir:85942": "epa9k4kbtc",
-  "dir:85947": "epsww33mfh",
+  "dir:85947": "ej6cyj834z",
   "dir:85962": "e2pb66yd29",
   "dir:85975": "emrmykrgh0",
   "dir:85981": "eesrqm3rn4",
@@ -6553,7 +8805,7 @@
   "dir:86191": "eer4hmne38",
   "dir:86194": "eazv4a08hw",
   "dir:86198": "e3bw73te8m",
-  "dir:86225": "ekk6s3k70s",
+  "dir:86225": "enxzefs03v",
   "dir:86227": "a00525",
   "dir:86229": "ehs8bkq7ha",
   "dir:86291": "eyfnkrev3y",
@@ -6563,7 +8815,7 @@
   "dir:86336": "e1che95qa1",
   "dir:86392": "evf57aedd8",
   "dir:86396": "erbtxegkdr",
-  "dir:86414": "a00301",
+  "dir:86414": "ea51wc4kmz",
   "dir:86426": "eyea5c0zfy",
   "dir:86427": "a00051",
   "dir:86431": "a00526",
@@ -6602,7 +8854,7 @@
   "dir:86899": "esvgverxq9",
   "dir:86900": "ee6230qkye",
   "dir:86915": "ea3gjezbgz",
-  "dir:86931": "eh9askr9yg",
+  "dir:86931": "e5wpq70vbz",
   "dir:86941": "e2kcevf6a8",
   "dir:86955": "a00532",
   "dir:86956": "ewdqgjcfzh",
@@ -6633,7 +8885,7 @@
   "dir:87492": "em2qt5v432",
   "dir:87515": "ezbd9y94d6",
   "dir:87529": "edzb7zdfzb",
-  "dir:87533": "e4nbfba1sp",
+  "dir:87533": "e389hq1pzv",
   "dir:87535": "eby2p9401f",
   "dir:87536": "ez2gb1q60x",
   "dir:87543": "et8wdvavbv",
@@ -6668,7 +8920,7 @@
   "dir:87797": "e2z73p2knv",
   "dir:87799": "etbktf6kc7",
   "dir:87812": "efqfm8khj2",
-  "dir:87820": "a00537",
+  "dir:87820": "evzwpjq41a",
   "dir:87964": "enxhdh8vhz",
   "dir:88004": "exeaeyy956",
   "dir:88005": "eskeyh6zy9",
