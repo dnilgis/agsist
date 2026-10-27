@@ -1,0 +1,164 @@
+name: WASDE archive (dispatch only)
+
+# Every past WASDE and each figure's month-to-month revisions (brief 04, Oct 26;
+# Sig: go). DISPATCH ONLY: no schedule (a new schedule is Sig's decision;
+# test/wasde-archive.test.mjs and test/history-collect.test.mjs).
+#
+#   mode csv    USDA's historical WASDE report data, April 2010 on: every source
+#               file as published goes to the PRIVATE raw branch (history/wasde/),
+#               then the small per-crop revision files the /whats-priced-in
+#               section loads on demand are rebuilt and committed
+#               (data/wasde-history/, about 0.2 MB in all).
+#   mode esmis  the NAL ESMIS listing, every release from Sep 17, 1973: release
+#               dates and file links to history/wasde/esmis/index.json on raw.
+#               Inventory only; the pre-2010 PDFs are the next step.
+#
+# Resumable: the saved manifest says which files are done; dispatch again until
+# the summary says every file is complete. usda.gov is not reachable from the
+# build sandbox, so this runs here.
+#   gh workflow run wasde-archive.yml -R dnilgis/agsist --ref main -f mode=csv
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "csv (2010 on, builds the site files) or esmis (1973 on, inventory)"
+        type: choice
+        options: [csv, esmis]
+        required: true
+        default: csv
+      from:
+        description: "csv: first year (blank = 2010)"
+        type: string
+        default: ""
+      to:
+        description: "csv: last year (blank = all)"
+        type: string
+        default: ""
+      max_minutes:
+        description: "Stop starting new files after this many minutes"
+        type: string
+        default: "120"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wasde-archive
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      MODE: ${{ inputs.mode }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftests (no network)
+        run: |
+          python3 scripts/history_lib.py --selftest
+          python3 scripts/backfill_wasde.py --selftest
+          python3 scripts/build_wasde_history.py --selftest
+      # What is already saved. A path that is not on raw yet is a first run; a branch
+      # that cannot be read stops the run, because a fresh manifest pushed over the
+      # saved one would forget what is done.
+      - name: The saved archive (private raw branch)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          rc=0
+          out=$(bash scripts/pull_raw.sh history/wasde 2>&1) || rc=$?
+          echo "$out"
+          if [ "$rc" -ne 0 ]; then
+            if printf '%s' "$out" | grep -q "is not on the raw branch"; then
+              echo "first run: starting fresh"
+            else
+              echo "::error::could not read the raw branch; not starting"; exit 1
+            fi
+          fi
+      - name: Fetch
+        env:
+          FROM: ${{ inputs.from }}
+          TO: ${{ inputs.to }}
+          MAXMIN: ${{ inputs.max_minutes }}
+          HISTORY_PUSH: '1'
+          RAW_SOFT: '1'
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          args=()
+          for v in "$FROM" "$TO" "$MAXMIN"; do
+            case "$v" in *[!0-9]*) echo "::error::years and minutes are numbers ($v)"; exit 1;; esac
+          done
+          if [ -n "$MAXMIN" ]; then args+=(--max-minutes "$MAXMIN"); fi
+          if [ "$MODE" = "esmis" ]; then
+            python3 scripts/backfill_wasde.py --esmis "${args[@]}"
+          else
+            if [ -n "$FROM" ]; then args+=(--from "$FROM"); fi
+            if [ -n "$TO" ]; then args+=(--to "$TO"); fi
+            python3 scripts/backfill_wasde.py "${args[@]}"
+          fi
+      # Soft, as every job that publishes site data saves (test/private-repo.test.mjs): a
+      # failed save is a warning, and the next dispatch fetches what the manifest lacks.
+      - name: Save to the raw branch
+        if: ${{ !cancelled() }}
+        env:
+          RAW_SOFT: '1'
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          [ -d history/wasde ] || { echo "nothing written"; exit 0; }
+          bash scripts/push_raw.sh "wasde archive $MODE" history/wasde
+      - name: Build the site files
+        if: ${{ inputs.mode == 'csv' }}
+        run: python3 scripts/build_wasde_history.py
+      - name: Commit the site files
+        if: ${{ inputs.mode == 'csv' }}
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          for i in 1 2 3 4 5; do
+            git add data/wasde-history
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "wasde archive: revision history through $(python3 -c 'import json;print(json.load(open("data/wasde-history/index.json"))["through"])')"
+            if git push; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; rebasing..."
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}" || true
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
+      - name: Summary
+        if: ${{ !cancelled() }}
+        run: |
+          python3 - >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          import json
+          try:
+              m = json.load(open("history/wasde/manifest.json"))
+              t = m.get("totals") or {}
+              left = [k for k, c in sorted(m["chunks"].items()) if not c.get("complete")]
+              print(f"### WASDE archive\n\n{t.get('complete')} of {t.get('chunks')} files complete, {t.get('rows')} U.S. grain rows, {t.get('first')} to {t.get('last')}.\n")
+              print(f"Not complete ({len(left)}): {', '.join(left[:40])}" if left else "Every file is complete.")
+          except OSError:
+              print("No CSV manifest.")
+          try:
+              e = json.load(open("history/wasde/esmis/index.json"))
+              print(f"\nESMIS: {e['count']} releases listed, {e['first']} to {e['last']}.")
+          except OSError:
+              pass
+          try:
+              ix = json.load(open("data/wasde-history/index.json"))
+              sizes = ", ".join("%s %s" % (c, v.get("bytes")) for c, v in ix["crops"].items())
+              gaps = ", ".join(ix["months_with_no_report_on_file"]) or "none"
+              print(f"\nSite files: {ix['reports']} reports, {ix['first']} to {ix['through']}; withheld {len(ix['withheld'])}; "
+                    f"no report on file: {gaps}; bytes {sizes}.")
+          except (OSError, KeyError):
+              pass
+          EOF
