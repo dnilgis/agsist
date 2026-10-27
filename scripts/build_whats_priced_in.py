@@ -45,6 +45,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from report_bands import surprise as band_surprise, gap_pct as band_gap_pct  # noqa: E402
 from report_bands import range_context, consensus_lock, ConsensusLockError, RULE_CHANGED  # noqa: E402
 from report_bands import band_for  # noqa: E402
+import usda_corrections as UC  # noqa: E402
 
 EST_PATH  = "data/wpi-estimates.json"
 ANALYST_PATH = "data/analyst-estimates.json"
@@ -642,9 +643,42 @@ def build_history(rows, ranges=None, meta=None, moves=None):
                                    "move is typed in without a dated source." % _long_date(r.get("date")))
         if r.get("reaction_source"):
             row["reaction_source"] = r["reaction_source"]
+        # USDA CORRECTED THE PRINT LATER (NASS, Oct 23, 2026: September's corn
+        # yield 178.5 -> 178.8). The row keeps what USDA printed and the grade
+        # it got; beside it, the same rule graded against the corrected figure,
+        # whether that changed the verdict, and a dated line for the page.
+        cr = correction_for_row(r, row, lo, hi, mt.get("direction") or "supply")
+        if cr:
+            row["nass_correction"] = cr
         out.append(row)
     # newest first
     out.sort(key=lambda x: x.get("date") or "", reverse=True)
+    return out
+
+
+def correction_for_row(r, row, lo=None, hi=None, direction="supply"):
+    """The correction beside a track-record row whose USDA figure NASS later
+    corrected, graded by the one rule; None for every other row."""
+    crop, metric = UC.crop_metric(r.get("metric") or r.get("label"))
+    if not crop:
+        return None
+    cv = UC.for_value(r.get("actual"), r.get("date"), crop, metric)
+    if not cv:
+        return None
+    k = float(cv["corrected"])
+    out = UC.tag(cv)
+    if row.get("surprise"):
+        sc = band_surprise(r.get("expected"), k, r.get("metric") or "", lo, hi, direction)
+        gp = band_gap_pct(r.get("expected"), k)
+        out.update({"surprise": sc, "gap_pct": gp, "context": range_context(k, lo, hi),
+                    "changed": sc != row["surprise"]})
+        tail = "Against %s it is %s%s%% vs trade, %s." % (
+            cv["corrected"], "+" if (gp or 0) > 0 else "", gp,
+            ("now " + sc) if out["changed"] else ("still " + sc))
+    else:
+        out["changed"] = False
+        tail = ""
+    out["note"] = UC.note(cv, tail)
     return out
 
 
@@ -1062,6 +1096,26 @@ def _selftest():
     assert not by["2026/27 wheat ending stocks"]["reaction"]           # no wheat settles on file
     assert build_latest_result(rows)["biggest_surprise"]["reaction"].startswith("Dec '26 corn")
     _os.remove(hpp)
+
+    # ── NASS CORRECTED SEPTEMBER'S CORN YIELD (Oct 23, 2026) ───────────────
+    # The real row: trade 178.1 (Dow Jones, 173.2 to 182.9), printed 178.5.
+    # +0.22% in line; against the corrected 178.8, +0.39%, still inside the
+    # 0.5% yield band: still in line. The printed row is not touched.
+    rows = build_history([{"date": "2026-09-11", "report": "September WASDE", "metric": "2026/27 corn yield",
+                           "expected": 178.1, "actual": 178.5, "unit": "bu/acre"},
+                          {"date": "2026-09-11", "report": "September WASDE", "metric": "2026/27 soybean yield",
+                           "expected": 52.5, "actual": 52.8, "unit": "bu/acre"}],
+                         {("2026-09-11", "2026/27 corn yield"): (173.2, 182.9)})
+    by = {r["metric"]: r for r in rows}
+    c = by["2026/27 corn yield"]
+    assert c["actual"] == 178.5 and c["surprise"] == "in line" and c["gap_pct"] == 0.2, c
+    nc = c["nass_correction"]
+    assert nc["corrected"] == 178.8 and nc["surprise"] == "in line" and nc["gap_pct"] == 0.4 \
+        and nc["changed"] is False, nc
+    assert nc["note"] == ("USDA correction, Oct 23, 2026: NASS corrected its September 11 Crop Production corn "
+                          "yield to 178.8 bu/acre, from 178.5 as first printed. Against 178.8 it is +0.4% vs "
+                          "trade, still in line."), nc["note"]
+    assert "nass_correction" not in by["2026/27 soybean yield"]
 
     # ── THE LOCK STOPS THE BUILD ────────────────────────────────────────────
     bad = {"reports": [{"report": "November WASDE", "date": "2026-11-10", "metrics": [
