@@ -208,11 +208,12 @@ def report_meta(text):
 
 
 def find_tables(lines):
-    """-> {crop: (start, end)} line ranges of each table body."""
+    """-> {crop: [(start, end), ...]} line ranges of every place a table's title is printed
+    (a contents page can print the title too; the reader takes the first range that reads)."""
     out = {}
     for crop, _, _, title, anchor, stop in TABLES:
         for i, ln in enumerate(lines):
-            if title.search(ln) and "..." not in ln and crop not in out:
+            if title.search(ln) and "..." not in ln:
                 j = i + 1
                 while j < len(lines) and j - i < 120:
                     if "\f" in lines[j] or (j > i + 2 and stop.search(lines[j])):
@@ -220,7 +221,7 @@ def find_tables(lines):
                     if any(t[3].search(lines[j]) for t in TABLES if t[0] != crop):
                         break
                     j += 1
-                out[crop] = (i + 1, j)
+                out.setdefault(crop, []).append((i + 1, j))
     return out
 
 
@@ -374,8 +375,10 @@ def read_report(text, rel_date, file_label, scan=False):
         if crop not in found:
             rep["tables"][crop] = {"refused": "not_found"}
             continue
-        a, b = found[crop]
-        cells, st = read_table(lines[a:b], crop, rel_date, scan=scan)
+        for a, b in found[crop]:
+            cells, st = read_table(lines[a:b], crop, rel_date, scan=scan)
+            if cells:
+                break
         st["rows"] = len(cells)
         rep["tables"][crop] = st
         for name, unit, col, v in cells:
@@ -393,8 +396,9 @@ def excerpt(text, max_lines=140):
     """The cover lines and the three tables, for the raw copy (a full report is ten times this)."""
     lines = text.replace("\r\n", "\n").replace("\f", "\n").split("\n")
     keep = lines[:12]
-    for a, b in find_tables(lines).values():
-        keep += ["", "-----"] + lines[max(0, a - 1):min(b, a + max_lines)]
+    for spans in find_tables(lines).values():
+        for a, b in spans[:3]:
+            keep += ["", "-----"] + lines[max(0, a - 1):min(b, a + max_lines)]
     return "\n".join(keep) + "\n"
 
 
@@ -436,6 +440,9 @@ def selftest():
     ck("footnote marks dropped from labels", "Food, Seed & Industrial" in {r[4] for r in rows}
        and "Ethanol & by-products" in {r[4] for r in rows})
     ck("rows in the extract layout", all(len(r) == len(HEAD) for r in rows) and rows[0][6] == "United States")
+    toc = t.replace("WASDE - 676", "WASDE - 676\nU.S. Wheat Supply and Use                    11\nU.S. Feed Grain and Corn Supply and Use      12", 1)
+    rows_toc, rep_toc = read_report(toc, "2026-10-09", "esmis-2026-10-09-pdf")
+    ck("a contents line with the title does not hide the table", len(rows_toc) == len(rows), rep_toc["tables"])
     _, rep2 = read_report(t, "2026-09-11", "x")
     ck("a report whose cover is another date is refused", rep2["refused"] and "cover_date" in rep2["refused"], rep2)
     rows3, rep3 = read_report(t, "2026-10", "x")

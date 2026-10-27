@@ -14,8 +14,10 @@ the old ESMIS files use ids that differ per file):
           themselves stay the official record.
   esmis   the NAL ESMIS archive, every release from September 17, 1973:
           crawls the listing pages and records each release date and the
-          file links it shows (PDF, TXT, XLS, XML). Inventory only, nothing is
-          downloaded yet; reading the pre-2010 PDFs is the second step.
+          file links it shows (PDF, TXT, XLS, XML), then (--esmis-files) reads
+          each report's own U.S. tables from its TXT, else its PDF's text
+          (scripts/read_wasde_text.py). Since Oct 27 this is the route: the
+          usda.gov data page answers GitHub runners with HTTP 403.
 
 What lands in history/wasde/ (never main: /history/ is in .gitignore):
   landing.html                the data page as fetched (proof of what was linked)
@@ -23,6 +25,9 @@ What lands in history/wasde/ (never main: /history/ is in .gitignore):
   us-grains/<chunk>.csv.gz    the U.S. corn, soybean and wheat rows of that file,
                               read by scripts/build_wasde_history.py
   esmis/index.json            release date -> file links (esmis mode)
+  esmis/manifest.json         one chunk per release read (esmis-files mode)
+  esmis/text/<date>.txt.gz    the cover and the three U.S. tables as read
+  us-grains/esmis-<date>.csv.gz  that report's U.S. grain rows
   manifest.json               one chunk per source file; a complete chunk is
                               skipped on the next run (history_lib.Manifest)
 
@@ -35,7 +40,8 @@ What lands in history/wasde/ (never main: /history/ is in .gitignore):
     python3 scripts/backfill_wasde.py --update-due                 exit 0 when a WASDE is out the site files lack
 
 The sandbox cannot reach usda.gov; history-backfill.yml / wasde-archive.yml
-run this in GitHub Actions. Stdlib only.
+run this in GitHub Actions. Stdlib only, plus the pdftotext binary for
+the reports ESMIS carries only as PDF.
 """
 import argparse
 import csv
