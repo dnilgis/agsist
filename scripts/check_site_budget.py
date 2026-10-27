@@ -106,6 +106,7 @@ NOT_READER_FACING = (
     "data/prf-stories/", "data/atlas-stories/", "data/cash-bids-stories/",
     "data/wasde-pdf/", "data/site-inventory.json", "data/rain-print-examples/",
     "data/elevator-directory.json",
+    "data/ids/geo-crosswalk.json",   # read by scripts/join_report.py and builds only (Oct 27)
 )
 
 
