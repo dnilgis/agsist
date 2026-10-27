@@ -106,9 +106,12 @@ jobs:
             if [ -n "$TO" ]; then args+=(--to "$TO"); fi
             python3 scripts/backfill_wasde.py "${args[@]}"
           fi
+      # Soft, as every job that publishes site data saves (test/private-repo.test.mjs): a
+      # failed save is a warning, and the next dispatch fetches what the manifest lacks.
       - name: Save to the raw branch
         if: ${{ !cancelled() }}
         env:
+          RAW_SOFT: '1'
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           [ -d history/wasde ] || { echo "nothing written"; exit 0; }
