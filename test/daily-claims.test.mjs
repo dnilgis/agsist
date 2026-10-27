@@ -144,3 +144,47 @@ for x in (old, new):
 `]);
   assert.match(out, /\['claim:close-before-settle'\]\n\[\]/, out);
 });
+
+test("every archived issue passes the cause rule (Oct 27, option C: 73 older lines reworded in place)", () => {
+  // Reader-facing fields of every data/daily-archive/<date>.json, plus the headline and teaser
+  // copies in index.json (archive lists, feed). Dated correction notes quote old wording and are
+  // not read. A new hit means a line states a market cause with no one named as saying so.
+  const out = py(["-c", `
+import glob, json, os, re, sys
+sys.path.insert(0, "scripts")
+import daily_claims as dc
+bad = []
+n = 0
+for f in sorted(glob.glob("data/daily-archive/2*.json")):
+    b = json.load(open(f))
+    n += 1
+    for loc, text in dc.fields(b):
+        for line in text.split("\\n"):
+            for s in dc.sentences(re.sub(r"^\\s*-\\s+", "", line)):
+                if dc.r_cause_without_source(s.replace("**", ""), {}):
+                    bad.append((os.path.basename(f), loc, s))
+for e in json.load(open("data/daily-archive/index.json"))["briefings"]:
+    for k in ("headline", "teaser"):
+        for s in dc.sentences(e.get(k) or ""):
+            if dc.r_cause_without_source(s.replace("**", ""), {}):
+                bad.append(("index.json", e["date"] + "." + k, s))
+print(n, len(bad), bad[:10])
+`]);
+  const [n, hits] = out.trim().split(" ").map(Number);
+  assert.ok(n > 200, "archive not read: " + out);
+  assert.equal(hits, 0, out);
+});
+
+test("reworded cause lines: the old wording is gone from the page and the new is there", () => {
+  // three of the 73 (private before/after log has the rest)
+  const cases = [
+    ["2026-09-09", "Brent hits $100; grains and cattle follow", "Brent hits $100; grains and cattle higher too"],
+    ["2026-10-13", "Both markets are flat because USDA", "Both markets are flat with USDA&#x27;s record crop numbers already out."],
+    ["2026-07-04", "a 4% session move driven by fund liquidation", "a 4% session move ahead of the July 4 holiday"],
+  ];
+  for (const [d, old, now] of cases) {
+    const html = read(`daily/${d}.html`);
+    assert.ok(!html.includes(old), `${d}: old wording still on the page`);
+    assert.ok(html.includes(now) || html.includes(now.replace("&#x27;", "'")) || html.includes(now.replace("&#x27;", "&#39;")), `${d}: new wording missing`);
+  }
+});

@@ -7,6 +7,12 @@
    "items": [
     {
      "tag": "fixed",
+     "page": "/daily",
+     "name": "Older Daily issues: reworded lines that stated a market cause without a source",
+     "text": "Some older Daily issues gave a reason for a price move as fact with no source behind it. Those lines now give the facts side by side, or say who reported the reason. Every price and date is unchanged."
+    },
+    {
+     "tag": "fixed",
      "page": "/",
      "name": "Phones: no more text against the screen edge at the end of a page",
      "text": "The Made by line and the Next cards at the bottom of many pages ran right to the edge of a phone screen. They now keep the same side margin as the rest of the page."
