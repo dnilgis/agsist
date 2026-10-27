@@ -858,6 +858,23 @@ def _period_dates(period, crop=None, label=None):
     return start, end
 
 
+def board_keys(e):
+    """{elevId, fips, fipsSure} of one board from the feed's elevators block; only the
+    keys it states. A bad or missing value is left out, never guessed."""
+    out = {}
+    if not isinstance(e, dict):
+        return out
+    eid = e.get("elevId")
+    if isinstance(eid, str) and _re_mod.fullmatch(r"e[0-9a-z]{6,16}", eid):
+        out["elevId"] = eid
+    f = e.get("fips")
+    if isinstance(f, str) and _re_mod.fullmatch(r"\d{5}", f):
+        out["fips"] = f
+        if isinstance(e.get("fipsSure"), bool):
+            out["fipsSure"] = e["fipsSure"]
+    return out
+
+
 def network_rows(grid, base=None):
     """Every network bid, in the row shape this file's downstream expects.
 
@@ -895,6 +912,11 @@ def network_rows(grid, base=None):
     dropped_stale = 0
     dropped_currency = 0
     n_held = 0
+    # THE BOARD'S PERMANENT ID AND COUNTY (2026-10-27, god's-eye panel build 1). The feed's
+    # `elevators` block gives each board (row `source`) its elevId, county fips and fipsSure
+    # (false when the point sits near a county line). Carried on every network row, so
+    # data/bids.json, the basis log and the snapshots join on the id, never on spelling.
+    ids_of = doc.get("elevators") if isinstance(doc.get("elevators"), dict) else {}
     for b in bids:
         if not b:
             continue
@@ -974,6 +996,7 @@ def network_rows(grid, base=None):
             # price it was quoted against. scripts/bid_snapshots.py reads them
             # from bids-full.json; the slim browser file drops every "_" key
             # (slim_dump_rows), so data/bids.json does not grow.
+            **board_keys(ids_of.get(b.get("source") or "")),
             "_board": b.get("source") or "",
             "_posted": b.get("pricedAt") or None,
             "_fut": (round(b["futuresCents"] / 100, 4)
@@ -2713,6 +2736,39 @@ def selftest():
         net = network_rows(grid_n, base=tmp)
     ck("the stale row is not merged", not any(r["cashPrice"] == 9.99 for r in net))
     ck("a refused board's row is not merged", not any(r["cashPrice"] == 8.88 for r in net))
+
+    # THE BOARD'S ID AND COUNTY RIDE ON EVERY ROW (2026-10-27). Real rows from the feed of
+    # 2026-10-27T18:07:59Z: Abbyville KS (street point, sure) and Assumption Coop's Assumption IL
+    # board (a ZIP-centroid point near a county line: fipsSure false).
+    ids_feed = {"schema": "agsist-merged-all/1", "elevators": {
+        "abbyvillecoop-abbyville": {"elevId": "epb8e8r7nr", "fips": "20155", "fipsVia": "point", "fipsSure": True},
+        "acoop2-assumptionfacility": {"elevId": "e4sn84jb9v", "fips": "17021", "fipsVia": "town-point", "fipsSure": False},
+        "noplace-board": {"elevId": "e70jxdw992", "fips": None},
+        "bad-board": {"elevId": "Abbyville", "fips": "201"}},
+        "bids": [dict(feed["bids"][0], operator="Abbyville Farmers Co-op Grain Co.", city="Abbyville",
+                      source="abbyvillecoop-abbyville", pricedAt="2026-10-27T18:00:42.584Z"),
+                 dict(feed["bids"][0], operator="Assumption Coop", city="Assumption", state="IL",
+                      source="acoop2-assumptionfacility", cash=5.11),
+                 dict(feed["bids"][0], operator="Aurora Cooperative", city="", source="noplace-board", cash=5.12),
+                 dict(feed["bids"][0], operator="Bad Co", source="bad-board", cash=5.13),
+                 dict(feed["bids"][0], operator="Unlisted Co", source="not-in-block", cash=5.14)]}
+    with open(os.path.join(tmp, "data", "merged-all.json"), "w") as f:
+        json.dump(ids_feed, f)
+    buf = io.StringIO()
+    with redirect_stdout(buf), redirect_stderr(buf):
+        inet = {r["facility"]: r for r in network_rows(grid_n, base=tmp)}
+    ab, asm = inet.get("Abbyville Farmers Co-op Grain Co.", {}), inet.get("Assumption Coop", {})
+    ck("a network row carries its board's elevId, fips and fipsSure",
+       (ab.get("elevId"), ab.get("fips"), ab.get("fipsSure")) == ("epb8e8r7nr", "20155", True))
+    ck("fipsSure false is kept as false, not dropped",
+       (asm.get("elevId"), asm.get("fips"), asm.get("fipsSure")) == ("e4sn84jb9v", "17021", False))
+    ck("a board with no county keeps its id and carries no fips",
+       inet.get("Aurora Cooperative", {}).get("elevId") == "e70jxdw992" and "fips" not in inet.get("Aurora Cooperative", {}))
+    ck("a malformed id or county is left out, never guessed",
+       not any(k in inet.get("Bad Co", {}) for k in ("elevId", "fips", "fipsSure")))
+    ck("a board the block does not list carries no id", "elevId" not in inet.get("Unlisted Co", {}))
+    ck("the ids survive into the slim browser file (they are not full-file-only keys)",
+       slim_dump_rows([ab])[0].get("elevId") == "epb8e8r7nr")
 
     # A BOARD SKIPPED THIS PASS (not asked) counts while its last good read is
     # within HELD_SKIP_HOURS of the snapshot, and carries that read time;

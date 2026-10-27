@@ -176,9 +176,14 @@ def read_json(path):
 def bids_repo_doc(bids_dir, rel):
     if bids_dir:
         return read_json(os.path.join(bids_dir, rel))
-    req = urllib.request.Request(NETWORK_BASE.rstrip("/") + "/" + rel, headers={"User-Agent": "agsist-ids (+agsist.com)"})
+    req = urllib.request.Request(NETWORK_BASE.rstrip("/") + "/" + rel,
+                                 headers={"User-Agent": "agsist-ids (+agsist.com)", "Accept-Encoding": "gzip"})
     with urllib.request.urlopen(req, timeout=180) as r:
-        return json.loads(r.read().decode("utf-8"))
+        raw = r.read()
+        if (r.headers.get("Content-Encoding") or "").lower() == "gzip":
+            import gzip
+            raw = gzip.decompress(raw)
+        return json.loads(raw.decode("utf-8"))
 
 
 def load_schedules(path):

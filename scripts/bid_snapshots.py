@@ -56,7 +56,9 @@ IDS_LEDGER = os.path.join(ROOT, "data", "ids", "elevator-ids.json")
 IDS_RECORDS = os.path.join(ROOT, "data", "ids", "elevators.json")
 # In the file each location is LOC_COLS followed by its own list of rows (ROW_COLS). The key
 # (facility|branch|city|state) is not stored: rows_of() rebuilds it. Nesting saves about 15%.
-LOC_COLS = ["id", "facility", "branch", "city", "town", "state", "zip", "lat", "lon", "board"]
+LOC_COLS = ["id", "facility", "branch", "city", "town", "state", "zip", "lat", "lon", "board", "fips", "fipsSure"]
+# fips, fipsSure (2026-10-27): the board's county and whether its point is clear of a county line, as the
+# bids feed gives them (fetch_bids.board_keys). Older snapshots have ten loc columns; rows_of() reads either.
 ROW_COLS = ["commodity", "category", "delivery", "start", "end", "cash", "basis",
             "futures", "futuresPrice", "posted", "src"]
 # THE FLOOR (Oct 21). The record from Aug 20 to Oct 16 holds 40 to 340 locations a day
@@ -109,14 +111,17 @@ def load_ids(ledger_path=IDS_LEDGER, records_path=IDS_RECORDS):
     try:
         led = json.load(open(ledger_path, encoding="utf-8"))
         minted = led.get("minted") or {}
+        retired = led.get("retired") or {}
 
         def final(i):
+            # an AGSIST id merged into a bids-repo id, and a bids-repo id the bids repo folded (retired)
             seen = set()
-            while i in minted and minted[i].get("into") and i not in seen:
+            while i not in seen and ((i in minted and minted[i].get("into")) or (i in retired and retired[i].get("into"))):
                 seen.add(i)
-                i = minted[i]["into"]
+                i = (minted.get(i) or {}).get("into") or retired[i]["into"]
             return i
         keys = {k: final(v) for k, v in (led.get("keys") or {}).items() if isinstance(v, str)}
+        keys.update({"retired:" + i: final(i) for i in retired})
     except (OSError, ValueError, AttributeError):
         pass
     try:
@@ -140,6 +145,7 @@ def num(v, nd=4):
 def build(doc, day, ids=None, partial=None, origin=None):
     """The snapshot dict for one day from a bids file (full or slim)."""
     keys, boards = ids if ids is not None else load_ids()
+    retired_into = {k[8:]: v for k, v in keys.items() if k.startswith("retired:")}
     bids = [b for b in (doc.get("bids") or []) if isinstance(b, dict)]
     # A board slug joins to an id only when it is one place in today's rows.
     places_of = {}
@@ -157,15 +163,19 @@ def build(doc, day, ids=None, partial=None, origin=None):
         k = place_str(b.get("facility"), b.get("branch"), b.get("city"), st)
         if k not in loc_ix:
             board = clean(b.get("_board"))
-            eid = None
-            if board and len(places_of.get(board, ())) == 1:
+            # the row's own board id first (the bids feed's elevId), then the ids ledger
+            eid = clean(b.get("elevId")) or None
+            if eid and eid in retired_into:
+                eid = retired_into[eid]
+            if not eid and board and len(places_of.get(board, ())) == 1:
                 eid = boards.get(board)
             eid = eid or keys.get("bids:" + k) or keys.get(f"basis:{st}|{norm(b.get('facility'))}|{norm(b.get('city'))}")
             joined += eid is not None
             loc_ix[k] = len(locs)
             locs.append([eid, k, clean(b.get("facility")), clean(b.get("branch")), clean(b.get("city")),
                          clean(b.get("town")), st, clean(b.get("zip"))[:5],
-                         num(b.get("lat"), 5), num(b.get("lon"), 5), board or None])
+                         num(b.get("lat"), 5), num(b.get("lon"), 5), board or None,
+                         b.get("fips") or None, b["fipsSure"] if isinstance(b.get("fipsSure"), bool) else None])
         li = loc_ix[k]
         delivery = clean(b.get("deliveryMonth") or b.get("delivery"))
         sym = clean(b.get("symbol"))
@@ -197,10 +207,12 @@ def build(doc, day, ids=None, partial=None, origin=None):
         "source": doc.get("source"),
         "partial": partial,
         "note": ("One AGSIST cash bid snapshot per Central-time weekday (scripts/bid_snapshots.py). "
-                 "locs: one entry per elevator location, locCols then its rows (id = permanent elevator id "
-                 "from data/ids when it joins, else null; join key = facility|branch|city|state). Each row "
+                 "locs: one entry per elevator location, locCols then its rows (id = permanent elevator id: "
+                 "the bids feed's elevId for the board, else from data/ids when it joins, else null; join key = "
+                 "facility|branch|city|state; fips and fipsSure as the bids feed gives them). Each row "
                  "(rowCols) is one commodity and delivery at that location. cash and basis in dollars per bushel as posted; futuresPrice as the elevator "
-                 "quoted it, null when not given (never derived). posted = when the elevator posted it."),
+                 "quoted it, null when not given (never derived). posted = the board time the bids feed gives (pricedAt); "
+                 "it is often a read or batch time, not when the elevator changed the bid."),
         "locCols": LOC_COLS, "rowCols": ROW_COLS,
         "counts": {"locs": len(locs), "rows": len(rows), "locsWithId": joined, "dupesDropped": dupes},
         "locs": nested,
@@ -439,6 +451,25 @@ def selftest():
     ck("no phone, no notes, no email anywhere", privacy_problems(snap) == []
        and "phone" not in rs[0] and "notes" not in rs[0])
     ck("same input gives the same bytes", encode(build(doc, "2026-10-19", ids=ids)) == encode(snap))
+    # REAL ROWS (2026-10-27): the bids feed's own board id and county ride on each row. Abbyville KS is
+    # sure; Assumption IL sits on a ZIP centroid near a county line (fipsSure false). A row that names a
+    # retired id (Roggen's folded e8921vvzs3) lands on the survivor.
+    ab = dict(row, facility="Abbyville Farmers Co-op Grain Co.", city="Abbyville", state="KS", _board="abbyvillecoop-abbyville",
+              elevId="epb8e8r7nr", fips="20155", fipsSure=True)
+    asm = dict(row, facility="Assumption Coop", city="Assumption", state="IL", _board="acoop2-assumptionfacility",
+               elevId="e4sn84jb9v", fips="17021", fipsSure=False)
+    rog = dict(row, facility="Roggen Farmers Elevator Association", city="Roggen", state="CO", _board="x", elevId="e8921vvzs3")
+    s3 = build(dict(doc, bids=[ab, asm, rog]), "2026-10-27",
+               ids=({"retired:e8921vvzs3": "e7pqw0z5m3"}, {"abbyvillecoop-abbyville": "ewrongslug"}))
+    r3 = {r["facility"]: r for r in rows_of(decode(encode(s3)))}
+    ck("the row's own elevId wins, with its fips and fipsSure",
+       (r3["Abbyville Farmers Co-op Grain Co."]["locId"], r3["Abbyville Farmers Co-op Grain Co."]["fips"],
+        r3["Abbyville Farmers Co-op Grain Co."]["fipsSure"]) == ("epb8e8r7nr", "20155", True))
+    ck("fipsSure false is kept", r3["Assumption Coop"]["fipsSure"] is False and r3["Assumption Coop"]["fips"] == "17021")
+    ck("a retired id lands on its survivor", r3["Roggen Farmers Elevator Association"]["locId"] == "e7pqw0z5m3")
+    ck("an old ten-column snapshot still reads", rows_of(dict(snap, locCols=LOC_COLS[:10],
+                                                               locs=[l[:10] + l[-1:] for l in snap["locs"]]))[0]["locId"]
+       == rows_of(snap)[0]["locId"])
     two = build(dict(doc, bids=[row, dict(row, city="Boyceville")]), "2026-10-19", ids=ids)
     ck("a board with two places joins by slug for neither", [l[0] for l in two["locs"]] == [None, None])
     with tempfile.TemporaryDirectory() as d:
