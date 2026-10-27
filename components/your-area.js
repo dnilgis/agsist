@@ -14,8 +14,7 @@
    Tests: test/your-area.test.mjs. */
 (function (root) {
   'use strict';
-  /* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
-  function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
+  function locCo(n,m){return m==null?n+' elevator'+(n==1?'':'s'):n+' location'+(n==1?'':'s')+', '+m+' compan'+(m==1?'y':'ies');}
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' };
   var CROPS = [['corn', 'Corn'], ['soybeans', 'Soybeans']];
