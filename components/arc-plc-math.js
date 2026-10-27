@@ -85,7 +85,7 @@
   /* ---------------------------------------------------------- words (mirror the build's) */
   var DLABEL = { all: 'All practices', irr: 'Irrigated', non: 'Non-irrigated' };
   var WORD = { plc: 'PLC', arc: 'ARC-CO' };
-  var VWORD = { plc: 'Pick PLC', arc: 'Pick ARC-CO', lean_plc: 'Leans PLC', lean_arc: 'Leans ARC-CO', close: 'Close, either one', none: 'Neither expected to pay',
+  var VWORD = { plc: 'PLC expected to pay more', arc: 'ARC-CO expected to pay more', lean_plc: 'Leans PLC', lean_arc: 'Leans ARC-CO', close: 'Close, either one', none: 'Neither expected to pay',
     withheld: 'Not enough history to say', mismatch: 'No typical-farm answer', noprice: 'No 2027 price yet', pending: "Waiting on USDA's closing 2025 price" };
   var NOCALL = { withheld: 1, mismatch: 1, noprice: 1, pending: 1 };
   var SHORT = { plc: 1, arc: 1, lean_plc: 1, lean_arc: 1, close: 1, none: 1 };
@@ -134,7 +134,7 @@
       if (B) return 'Leans ' + WORD[side] + ': ' + tail + ' (' + nums + ').' + note;
       return 'Leans ' + WORD[side] + ': expected about ' + usd(v.diff / 100) + ' more per base acre; ' + tail + ' (' + nums + ').' + note;
     }
-    return 'Pick ' + WORD[w_] + ' (' + nums + ').' + note;
+    return WORD[w_] + ' expected to pay more on these assumptions (' + nums + ').' + note;
   }
   function whyText(v, cy, cd, by, py) {
     var maxPlc = Math.max(0, cy.erp - Math.max(0, cy.loan)) * py * 0.85;

@@ -101,7 +101,7 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
 
   <section id="paste">
     <h2>Paste bids</h2>
-    <p>For a site that will not let our reader in. Open their bid page in your own browser, wait for the bids to show, copy the page (the Copy for AGSIST bookmark, the page source, or select all), then paste it here.</p>
+    <p>For a site that will not let our reader in. Open their bid page in your own browser, wait for the bids to show, copy the page (the Copy for AGSIST bookmark, the page source, or select all), then paste it here. The Send to AGSIST bookmark does all of that in one tap.</p>
     <div class="row">
       <div><label for="p-site">Site</label><select id="p-site"></select></div>
       <div><label>&nbsp;</label><a id="p-open" class="btnlink" target="_blank" rel="noopener noreferrer">Open their bid page</a></div>
@@ -163,7 +163,7 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
     <div id="list"></div>
   </section>
 </main>
-<script src="/components/paste-bids.js?v=1"></script>
+<script src="/components/paste-bids.js?v=2"></script>
 <script>
 (function () {
   'use strict';
@@ -443,14 +443,14 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
     setOpen();
     $('p-clip').addEventListener('click', function () {
       if (!navigator.clipboard || !navigator.clipboard.readText) { show('p-out', 'This browser will not hand over the clipboard. Long-press the box and paste.', 'bad'); return; }
-      navigator.clipboard.readText().then(function (t) { $('p-in').value = t; readIt(); },
+      navigator.clipboard.readText().then(function (t) { $('p-in').value = t; var r = readIt(); if (sendMode) autoSave(r); },
         function () { show('p-out', 'The clipboard was not handed over. Long-press the box and paste.', 'bad'); });
     });
     $('p-read').addEventListener('click', readIt);
     function readIt() {
       pending = null; $('p-save').hidden = true; $('p-prev').innerHTML = ''; show('p-res', '');
       var r = PB.read(site(), $('p-in').value);
-      if (r.error) { show('p-out', esc(r.error), 'bad'); return; }
+      if (r.error) { show('p-out', esc(r.error), 'bad'); return r; }
       var boards = PB.SITES[site()].boards.length;
       var h = '<div class="pv"><b>' + r.matched.length + ' of ' + boards + ' boards found, ' + r.rows + ' rows</b> (from ' + esc(r.kind) + ').';
       h += '<ul>' + r.matched.map(function (l) {
@@ -465,6 +465,7 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
       show('p-out', 'Check the list, then save. The time saved is the "as of" time on the site.', '');
       pending = r.body; $('p-save').hidden = false;
       if (tokMiss()) show('p-res', 'The token box at the top of this page is empty: paste LIST_TOKEN there before you save. <a href="#tok">Go to the token box</a>', 'bad');
+      return r;
     }
     // Oct 20: the answer to Save went into #p-out, above a 50-board preview,
     // off screen, so the button looked dead. It goes in #p-res, right under the
@@ -506,6 +507,51 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
       });
     });
     if (q.get('paste') && location.hash === '#paste') { try { $('paste').scrollIntoView(); } catch (e) {} }
+
+    // ---------- Send to AGSIST (the bookmark on elev-today.html) ----------
+    // The bookmark opens this page at #send from the elevator's bid page and
+    // hands over that page's HTML once this page says it is ready. The page is
+    // taken only from the tab that opened this one, and only when that tab is
+    // on a site in PB.SITES (https, the site's own host). The token never
+    // leaves this page: it is not in the bookmark, the address or a message.
+    // A clean read (PB.clean: every check passes and every board came
+    // through) saves at once; anything else shows the preview and waits for Save.
+    var sendMode = location.hash === '#send', got = false;
+    function autoSave(r) {
+      if (!r || r.error) return;
+      var c = PB.clean(site(), r);
+      if (!c.ok) { show('p-out', 'Not saved yet: ' + esc(c.why) + ' Check the list, then press Save if it looks right.', 'bad'); return; }
+      if (!$('tok').value.trim()) return;   // readIt has already said so, by Save
+      show('p-out', 'Clean read: ' + esc(c.why) + ' Saving it now.', '');
+      $('p-save').click();
+    }
+    if (sendMode) {
+      var from = q.get('from'), fromSite = from ? PB.siteFor(from) : null;
+      try { $('paste').scrollIntoView(); } catch (e) {}
+      if (from && !fromSite) show('p-out', 'There is no reader for ' + esc(from) + ' yet, so nothing was taken from it. It is on the Today list with its board count.', 'bad');
+      else {
+        if (fromSite) { $('p-site').value = fromSite; setOpen(); }
+        addEventListener('message', function (e) {
+          if (got || !window.opener || e.source !== window.opener) return;
+          var s = PB.siteForOrigin(e.origin), d = e.data;
+          if (!s || !d || d.type !== 'agsist-send-page' || typeof d.html !== 'string' || d.html.length > 8e6) return;
+          got = true;
+          if (site() !== s) { $('p-site').value = s; setOpen(); }
+          $('p-in').value = d.html;
+          autoSave(readIt());
+        });
+        if (window.opener) {
+          show('p-out', 'Waiting for the bid page...', '');
+          // To the opener only, and only if it is on a site we read; the browser drops it otherwise.
+          var to = fromSite ? PB.origins(fromSite) : [].concat.apply([], Object.keys(PB.SITES).map(PB.origins));
+          to.forEach(function (o) { try { window.opener.postMessage({ type: 'agsist-send-ready' }, o); } catch (e) {} });
+        }
+        setTimeout(function () {
+          if (got) return;
+          show('p-out', 'No bid page sent anything. If you copied the page (the bookmark copies it too), tap Paste from clipboard: it reads and saves the same way.', '');
+        }, window.opener ? 6000 : 0);
+      }
+    }
   })();
 
   tokMiss();

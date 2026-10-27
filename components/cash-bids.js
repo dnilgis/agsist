@@ -1461,7 +1461,7 @@ function renderWTD(){
     if(tossup){
       wtdWinner.innerHTML='<strong>Toss-up.</strong> After hauling, '+escH(bannerName(winner.elev))+' nets '+(gain>0?'+':'')+fmtMoney(gain)+' on this '+bu.toLocaleString()+'-bu load, '+(Math.round(gain/bu*1000)/10)+'\u00a2/bu over your closest elevator: under '+WTD_TOSSUP_CENTS+'\u00a2/bu, so neither is the clear pick. Fuel on '+ROAD_NOTE+'.';
     }else
-    wtdWinner.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> <strong>'+escH(bannerName(winner.elev))+'</strong> nets you <strong style="color:var(--green)">'+(gain>0?'+':'')+fmtMoney(gain)+'</strong> more than your closest elevator on this '+bu.toLocaleString()+'-bu load, after round-trip fuel on '+ROAD_NOTE+'.';
+    wtdWinner.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> <strong>'+escH(bannerName(winner.elev))+'</strong> nets you <strong style="color:var(--green)">'+(gain>0?'+':'')+fmtMoney(gain)+'</strong> more than your closest elevator on this '+bu.toLocaleString()+'-bu load, after round-trip hauling at the $'+fpm.toFixed(2)+' a mile you entered, on '+ROAD_NOTE+'. Discounts, shrink and delivery terms are not counted: call to confirm before you haul.';
     gaEvent('wtd_calc',{commodity:comm,bushels:bu,fpm:fpm,winner:winner.elev.facility,gain:Math.round(gain)});
   }else{wtdWinner.style.display='none';wtdWinner.classList.remove('wtd-tossup');}
   var _toss=wtdWinner.classList.contains('wtd-tossup')&&wtdWinner.style.display!=='none';
@@ -1484,8 +1484,8 @@ function renderWTD(){
     html+='<td><div class="wt-name">'+escH(r.elev.facility)+'</div><div class="wt-sub">'+subTxt+'</div></td>';
     html+='<td data-l="Cash/bu" class="wt-cash r">'+(r.rk.remark?escH(cbRank.priceText(r.rk,fmtPx)):'$'+fmtPx(r.ppu))+'</td>';
     html+='<td data-l="Road miles (est.)" class="wt-dist r" title="'+r.dist.toFixed(0)+' mi straight line x '+ROAD_FACTOR+'">'+r.road.toFixed(0)+' mi</td>';
-    html+='<td data-l="Round-trip fuel" class="wt-fuel r">&minus;'+fmtMoney(r.fuel)+'</td>';
-    html+='<td data-l="Total net" class="wt-net r'+(i===0&&!_toss?' best':'')+'">'+fmtMoney(r.net)+'</td>';
+    html+='<td data-l="Round-trip hauling" class="wt-fuel r">&minus;'+fmtMoney(r.fuel)+'</td>';
+    html+='<td data-l="Net after hauling" class="wt-net r'+(i===0&&!_toss?' best':'')+'">'+fmtMoney(r.net)+'</td>';
     html+='<td data-l="vs closest" class="wt-delta '+dcls+'">'+dstr+'</td></tr>';
   }
   if(others.length)html+='<tr><td colspan="7" class="wtd-empty">Comparing '+escH(clsName(cls))+' wheat only. Also posted nearby, a different wheat and not compared: '+escH(others.join(', '))+'.</td></tr>';

@@ -5,7 +5,7 @@
   "one_number": {
     "value": "2.8",
     "unit": "soybean to corn price ratio",
-    "context": "Soybeans at $12.56½ against Dec corn at $4.56 give a ratio near 2.8. That favors beans when acres are planned for next spring."
+    "context": "Soybeans at $12.56½ against Dec corn at $4.56 give a ratio near 2.8. Those are this year's crop contracts; for next spring, compare next-crop bids and your costs. (Corrected Oct 27, see the note below.)"
   },
   "sections": [
     {
@@ -24,7 +24,7 @@
     },
     {
       "title": "Crude gains; gas drops",
-      "body": "- WTI crude gained 3.8% to **$103.27** as the Iran war keeps tanker freight at record highs.\n- Natural gas fell 5.6% to $2.64, near the bottom of its 52-week range.\n- Diesel and fertilizer costs follow crude, so higher oil matters for next season's input bills.",
+      "body": "- WTI crude gained 3.8% to **$103.27** as the Iran war keeps tanker freight at record highs.\n- Natural gas fell 5.6% to $2.64, near the bottom of its 52-week range.\n- This issue did not check diesel or fertilizer prices, and crude's move alone does not show where input bills go. (Corrected Oct 27, see the note below.)",
       "so_what": "Oil and gas moved opposite ways, so input costs depend on which one you buy.",
       "conviction_level": "medium",
       "overnight_surprise": false
@@ -481,5 +481,15 @@
     "consistency": [],
     "dry_run": false
   },
-  "first_published_at": "2026-10-25T10:54:38.928626+00:00"
+  "first_published_at": "2026-10-25T10:54:38.928626+00:00",
+  "corrections": [
+    {
+      "date": "2026-10-27",
+      "text": "The energy section said \"Diesel and fertilizer costs follow crude, so higher oil matters for next season's input bills.\" No diesel price, fertilizer price or source backed that, and natural gas fell 5.6% the same day. The line now says only what was checked."
+    },
+    {
+      "date": "2026-10-27",
+      "text": "The Number said the 2.8 soybean to corn ratio \"favors beans when acres are planned for next spring.\" That ratio uses November 2026 soybeans and December 2026 corn, this year's crop, so it is not a planting comparison for next year."
+    }
+  ]
 }

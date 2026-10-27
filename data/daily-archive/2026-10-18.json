@@ -42,7 +42,7 @@
     },
     {
       "time": "Next week's cash trade",
-      "desc": "Cash cattle firm above Friday's (Oct 23) $227.55 close supports the rally; steady or lower fades it."
+      "desc": "October live cattle futures settled at $227.55 on Friday, Oct 16. A firmer cash cattle trade this week supports the rally; steady or lower cash fades it. (Corrected Oct 27, see the note below.)"
     }
   ],
   "source_summary": "CME Group settlements, ICE, EIA, USDA, AgWeb, Feedstuffs, Beef Magazine, OilPrice.com",
@@ -437,5 +437,11 @@
     "consistency": [],
     "dry_run": false
   },
-  "first_published_at": "2026-10-18T15:24:25.422745+00:00"
+  "first_published_at": "2026-10-18T15:24:25.422745+00:00",
+  "corrections": [
+    {
+      "date": "2026-10-27",
+      "text": "The watch list said \"Cash cattle firm above Friday's (Oct 23) $227.55 close supports the rally; steady or lower fades it.\" The Friday before this issue was Oct 16, not Oct 23, and $227.55 was the October live cattle futures settle that day, not a cash cattle price. The line now keeps the two apart."
+    }
+  ]
 }

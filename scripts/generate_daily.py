@@ -900,6 +900,13 @@ def load_prices():
                 "pct_change": pct, "direction": "up" if pct > 0 else "down",
                 "surprise_magnitude": round(abs(pct) / threshold, 1)})
     surprises.sort(key=lambda x: x["surprise_magnitude"], reverse=True)
+    # 2026-10-27: the only ratio a planting line may use is next year's
+    # (fetch_prices.planting_ratio); the Oct 25 issue read this year's nearby
+    # ratio as next spring's acreage call.
+    _pr = data.get("planting_ratio") or {}
+    if _pr.get("value") and _pr.get("label"):
+        price_lines.append(f"  PLANTING RATIO ({_pr.get('crop_year')} crop): {_pr['label']} = {float(_pr['value']):.2f}"
+                           " [the only ratio for an acreage or planting line]")
     return ({"price_block": "\n".join(price_lines), "locked_prices": locked_prices,
              "locked_changes": locked_changes,
              "fetched": fetched, "surprises": surprises, "quotes": quotes}, surprises)
@@ -2116,6 +2123,14 @@ Output as the yesterdays_call object in the JSON: {{"outcome": your best read ('
 
     # v4.6: alias the module-level constants into local scope for the f-string below.
     CALENDAR_FACTS_2026_LOCAL = CALENDAR_FACTS_2026
+    # 2026-10-27: what a futures quote cannot carry (scripts/daily_claims.py, one
+    # definition shared with the cut below, the critic and the gate).
+    try:
+        import daily_claims as _dc
+        CLAIM_RULES_LOCAL = _dc.PROMPT_RULES
+    except Exception as _e:
+        print(f"  [warn] claim rules skipped ({type(_e).__name__}: {_e})")
+        CLAIM_RULES_LOCAL = ""
     try:
         _wk = weekly_release_line()
     except Exception as _e:                  # never block the prompt on it
@@ -2143,6 +2158,8 @@ FIRST PERSON, AND THE ONE HARD LINE:
 - First person only where it sounds natural, and only to frame an opinion: "I'd keep an eye on $5.00." "I think the market already knew that." "My read is the bounce is thin." "We'll see Thursday."
 - NEVER invent an experience, a conversation, a place or an action Sig did not report. No "I talked to elevators today", "my neighbor said", "a buyer told me", "I sold some corn", "we hauled beans", "around here the combines are parked", "I'm hearing". You do not know what Sig did today. Every sentence like that is a made-up fact under a real man's name. A machine scans for them after you finish: a draft with one is thrown out and regenerated, and any left after that are cut.
 - Most briefings need no first person at all. When in doubt, leave it out.
+
+{CLAIM_RULES_LOCAL}
 
 How Sig writes, in his own words: "I thought that was backwards." "I fix things fast when I know about them." "I won't pretend that's forever." "Keep one price." Short, plain, says it once.
 
@@ -2322,7 +2339,7 @@ For genuinely once-a-decade events, you may use "historic" once. Otherwise descr
 
 15. MACRO EVENT ANCHORING. The first time any briefing in a given week references an ongoing geopolitical or macro event (Iran tensions, Hormuz disruption, election cycle, Fed pivot, trade war, etc.), include a single anchoring clause that establishes what the event is and roughly when it began. Example: "...as Iran-Iraq tensions over the Strait of Hormuz, ongoing since March, eased on diplomatic progress." Subsequent briefings in the same week can reference shorthand. The reader who lands on this briefing for the first time should be able to follow the macro thread.
 
-16. CLEAN OUTPUT MECHANICS. (a) NEVER write internal field names (one_number, watch_list, outside_the_pit, so_what) in reader-facing prose; say "today's number" or restructure the sentence. A published issue once printed "the one_number today". (b) Percent-of-range figures are 0-100 by definition; if a close sits at or beyond the top of its 52-week range, write "at the top of its 52-week range" or "a fresh 52-week high", never "102% of the range". (c) If the current spread/ratio setup (bean/corn ratio, carry structure) is genuinely at a decision threshold, it earns ONE bolded sentence inside the relevant section, with the acreage/storage logic stated CORRECTLY (a high bean/corn ratio pulls acres toward beans); there is no standalone spread block. (d) NEVER use emoji or pictographic symbols in ANY field, headline, titles, bodies, everywhere. Plain text only; the page chrome supplies its own glyphs. (e) THE LEAD MUST BE NEW. The headline, lead and teaser may only be built on something that happened since the previous briefing: an overnight or prior-session price move, a report released, a forecast that changed, a story in today's news block. A fact that was equally true a week ago cannot lead, however important it is. Two published failures, both caught by the reader and not by any check here: on 2026-08-26 the briefing promised a Pro Farmer number that had already been published, and on 2026-08-28, eight days after the tour ended, it led with "PRO FARMER DONE; SEPTEMBER WASDE HOLDS THE ANSWER" over the sentence "The Pro Farmer tour is in the rearview." Nothing about that had changed in over a week. The seasonal and background context in this prompt exists to keep you from getting the CALENDAR wrong; it is not a source of stories, and an instruction telling you NOT to say something is never itself the thing to say. Before finalizing, ask of the headline: what changed to make this true today? If the honest answer is "nothing", the day is a quiet one, lead with the price action and say it was quiet. A quiet day reported as quiet is a good briefing. A stale fact dressed as news is not.
+16. CLEAN OUTPUT MECHANICS. (a) NEVER write internal field names (one_number, watch_list, outside_the_pit, so_what) in reader-facing prose; say "today's number" or restructure the sentence. A published issue once printed "the one_number today". (b) Percent-of-range figures are 0-100 by definition; if a close sits at or beyond the top of its 52-week range, write "at the top of its 52-week range" or "a fresh 52-week high", never "102% of the range". (c) If the current spread/ratio setup (bean/corn ratio, carry structure) is genuinely at a decision threshold, it earns ONE bolded sentence inside the relevant section, with the acreage/storage logic stated CORRECTLY (a high bean/corn ratio pulls acres toward beans). An acreage or planting line uses only next year's contracts (the PLANTING RATIO line, Nov and Dec of next year); this year's contracts and the nearby ratio are a storage and marketing fact, never a planting call. There is no standalone spread block. (d) NEVER use emoji or pictographic symbols in ANY field, headline, titles, bodies, everywhere. Plain text only; the page chrome supplies its own glyphs. (e) THE LEAD MUST BE NEW. The headline, lead and teaser may only be built on something that happened since the previous briefing: an overnight or prior-session price move, a report released, a forecast that changed, a story in today's news block. A fact that was equally true a week ago cannot lead, however important it is. Two published failures, both caught by the reader and not by any check here: on 2026-08-26 the briefing promised a Pro Farmer number that had already been published, and on 2026-08-28, eight days after the tour ended, it led with "PRO FARMER DONE; SEPTEMBER WASDE HOLDS THE ANSWER" over the sentence "The Pro Farmer tour is in the rearview." Nothing about that had changed in over a week. The seasonal and background context in this prompt exists to keep you from getting the CALENDAR wrong; it is not a source of stories, and an instruction telling you NOT to say something is never itself the thing to say. Before finalizing, ask of the headline: what changed to make this true today? If the honest answer is "nothing", the day is a quiet one, lead with the price action and say it was quiet. A quiet day reported as quiet is a good briefing. A stale fact dressed as news is not.
 
 ══ OUTPUT, return valid JSON with EXACTLY these fields ══
 
@@ -5657,6 +5674,18 @@ def main():
             print(f"  [streak] {_l}")
     except Exception as _e:
         print(f"  [warn] streak check skipped ({type(_e).__name__}: {_e})")
+    # 2026-10-27: claims a futures quote cannot carry (expired contract, a last
+    # trade called a close, a future date stated as past, a cash value from a
+    # futures move, a planting call from this year's contracts, a cause nobody
+    # is named as saying). scripts/daily_claims.py cuts the sentence, never
+    # rewords it; briefing_gate blocks any left.
+    try:
+        import daily_claims as _dc
+        briefing, _dcl = _dc.strip(briefing, _dc.from_files(briefing, str(REPO_ROOT)))
+        for _l in _dcl:
+            print(f"  [claims] {_l}")
+    except Exception as _e:
+        print(f"  [warn] claim check skipped ({type(_e).__name__}: {_e})")
 
     # v5.1 the cut, in this order: drop what the prompt retired, then cut to
     # the budget deterministically (weakest block first), then grade the call

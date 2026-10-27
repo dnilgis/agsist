@@ -574,7 +574,7 @@ test("futures wording: a mid-session quote is never called a close (Oct 16 bug)"
   const fetched = "2026-10-16T15:45:00Z";
   const live = L.futuresStamp(f, fetched, new Date("2026-10-16T16:00:00Z"));
   assert.equal(live.kind, "delayed");
-  assert.match(live.text, /were at <b>\$338\.52<\/b> at 10:45 a\.m\. CT \(delayed about 15 minutes/);
+  assert.match(live.text, /were at <b>\$338\.52<\/b> at 10:45 a\.m\. CT \(delayed about 10 to 25 minutes/);
   assert.ok(!/closed/.test(live.text));
   const old = L.futuresStamp(f, fetched, new Date("2026-10-16T19:30:00Z"));
   assert.equal(old.kind, "intraday", "an old file read mid-session stays mid-session");

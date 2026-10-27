@@ -64,3 +64,53 @@ test('every saved cell passes the Worker\'s own check (workers/subs-worker.js PA
   for (const l of P.read('newcoop', HTML).body.locations)
     for (const r of l.rows) for (const [f, x] of Object.entries(re)) assert.ok(x.test(r[f]), `${l.name} ${f} ${r[f]}`);
 });
+
+/* Send to AGSIST (Oct 27): the desk takes a page only from a site in SITES, and
+   saves it with no one looking only when every board came through. */
+function fullPage() {
+  const a = HTML.indexOf('<h1 class="text-4xl'), b = HTML.indexOf('<h1 class="text-4xl', a + 10);
+  const afton = HTML.slice(a, b), have = new Set(['Afton', 'Creston 1', 'Creston 2', 'LuVerne']);
+  const more = P.NEWCOOP_BOARDS.map((x) => x[1]).filter((n) => !have.has(n));
+  return HTML.slice(0, b) + more.map((n) => afton.replace(/>Afton\s*</, '>' + n + '<')).join('') + HTML.slice(b);
+}
+
+test('siteForOrigin: https and the site\'s own host only', () => {
+  assert.equal(P.siteForOrigin('https://www.newcoop.com'), 'newcoop');
+  assert.equal(P.siteForOrigin('https://newcoop.com'), 'newcoop');
+  for (const o of ['http://www.newcoop.com', 'https://www.newcoop.com:8443', 'https://newcoop.com.example.net', 'https://evilnewcoop.com',
+    'https://shop.newcoop.com', 'https://agsist.com', 'null', '', undefined, 'https://user@www.newcoop.com'])
+    assert.equal(P.siteForOrigin(o), null, String(o));
+  assert.deepEqual(P.origins('newcoop'), ['https://newcoop.com', 'https://www.newcoop.com']);
+  assert.deepEqual(P.origins('cargill'), []);
+  for (const k of Object.keys(P.SITES)) for (const o of P.origins(k)) assert.equal(P.siteForOrigin(o), k, 'every origin a site lists maps back to it');
+});
+
+test('clean: the whole board saves by itself; a short page, an empty board or a refused paste do not', () => {
+  const full = P.read('newcoop', fullPage());
+  assert.equal(full.matched.length, 66);
+  assert.deepEqual(P.clean('newcoop', full), { ok: true, why: 'all 66 boards came through, ' + full.rows + ' rows.' });
+  const short = P.clean('newcoop', P.read('newcoop', HTML));
+  assert.equal(short.ok, false);
+  assert.match(short.why, /only 4 of 66 boards came through/);
+  const emptyOne = fullPage().replace(/(>Badger<[\s\S]*?<tbody[^>]*>)[\s\S]*?(<\/tbody>)/, '$1$2');
+  const e = P.read('newcoop', emptyOne);
+  assert.equal(e.matched.length, 66, 'Badger is still a heading');
+  assert.match(P.clean('newcoop', e).why, /1 board\(s\) came through with no rows \(Badger\)/);
+  assert.equal(P.clean('newcoop', P.read('newcoop', '<title>Just a moment...</title><script>window._cf_chl_opt={}</script>')).ok, false);
+  assert.equal(P.clean('cargill', full).ok, false);
+  assert.equal(P.clean('newcoop', null).ok, false);
+  assert.equal(P.clean('newcoop', P.read('newcoop', TEXT)).ok, false, 'the short select-all text is not clean either');
+});
+
+test('the Send to AGSIST bookmark: hands the page only to https://agsist.com, after it says ready, and holds no token or site list', () => {
+  const b = P.sendBookmarklet();
+  assert.match(b, /^javascript:\(function\(\)\{/);
+  assert.ok(!/%/.test(b), 'no % in it, so a browser decoding the bookmark cannot change it');
+  assert.match(b, /A='https:\/\/agsist\.com'/);
+  assert.match(b, /\/elev-admin\.html\?from='\+encodeURIComponent\(location\.hostname\)\+'#send'/);
+  assert.match(b, /e\.origin!==A\|\|e\.source!==w\|\|!e\.data\|\|e\.data\.type!=='agsist-send-ready'/);
+  assert.match(b, /w\.postMessage\(\{type:'agsist-send-page',html:h\},A\)/);
+  assert.ok(!/postMessage\([^)]*'\*'/.test(b), 'never to any origin');
+  assert.ok(!/token|LIST_TOKEN|localStorage|Bearer|newcoop/i.test(b), 'no token, no storage, no site list');
+  new Function(b.replace(/^javascript:/, ''));   // it parses
+});

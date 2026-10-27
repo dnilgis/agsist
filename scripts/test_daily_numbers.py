@@ -253,7 +253,12 @@ def test_watch_dates():
     print("6. a weekday beside a settle takes the settle's date")
     import watch_dates as wd
     oct18 = json.load(open(REPO / "data" / "daily-archive" / "2026-10-18.json"))
+    # The published line was corrected on Oct 27 (dated note in 'corrections');
+    # the line as it went out is quoted word for word in that note.
     item = [w for w in oct18["watch_list"] if "$227.55" in w.get("desc", "")][0]
+    note = [c["text"] for c in oct18.get("corrections") or [] if "Friday's (Oct 23)" in c.get("text", "")]
+    check(len(note) == 1 and "Friday's (Oct 23)" not in item["desc"], "the Oct 18 line is corrected, the old line kept in the note")
+    item = dict(item, desc=re.search(r'"(Cash cattle firm[^"]+)"', note[0] if note else "").group(1)) if note else item
     check("Friday's (Oct 23) $227.55" in item["desc"], "fixture: the Oct 18 issue said Friday's (Oct 23)")
     undated = dict(item, desc=item["desc"].replace("Friday's (Oct 23)", "Friday's"))
     # Live cattle settles as data/prices.json carried them on Oct 18-20 2026.

@@ -2280,6 +2280,10 @@
     {"id": "cr-mdde-fs683", "kind": "html",
      "url": "https://extension.umd.edu/resource/custom-work-charges-maryland-and-delaware-fs-683/",
      "title": "University of Maryland Extension FS-683 Custom Work Charges in Maryland and Delaware",
-     "why": "/custom-rates blend: newer or added state custom rate survey (operation, unit, average, range, year)"}
+     "why": "/custom-rates blend: newer or added state custom rate survey (operation, unit, average, range, year)"},
+    {"id": "usda-wasde-schedule", "kind": "html",
+     "url": "https://www.usda.gov/about-usda/general-information/staff-offices/office-chief-economist/commodity-markets/wasde-report",
+     "title": "USDA Office of the Chief Economist: WASDE report and release schedule",
+     "why": "/usda-calendar: the 2027 WASDE release dates (an outside check read all twelve on Oct 24, 2026; not yet on the page)"}
 ]
 }
