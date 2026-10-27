@@ -1,0 +1,120 @@
+{
+ "source": {
+  "name": "USDA World Agricultural Outlook Board, monthly WASDE reports (USDA ESMIS archive)",
+  "url": "https://esmis.nal.usda.gov/publication/world-agricultural-supply-and-demand-estimates"
+ },
+ "sources": [
+  {
+   "name": "USDA World Agricultural Outlook Board, monthly WASDE reports (USDA ESMIS archive)",
+   "url": "https://esmis.nal.usda.gov/publication/world-agricultural-supply-and-demand-estimates"
+  }
+ ],
+ "note": "Each figure as that month's WASDE printed it, read from the U.S. supply and use tables of the report itself. A column that does not add up on its own balance sheet is left out, never corrected.",
+ "first": "1995-01-12",
+ "through": "2026-10-09",
+ "reports": 374,
+ "months_with_no_report_on_file": [
+  "1995-02",
+  "1995-08",
+  "1996-01",
+  "2000-04",
+  "2006-03",
+  "2013-10",
+  "2019-01",
+  "2025-10"
+ ],
+ "withheld_count": 0,
+ "withheld": [],
+ "left_out": {
+  "last_months_column": 16411,
+  "not_a_number": 914,
+  "other_copy_of_the_same_report": 176
+ },
+ "crops": {
+  "corn": {
+   "file": "/data/wasde-history/corn.json",
+   "label": "Corn",
+   "reports": 374,
+   "market_years": [
+    "1992/93",
+    "2026/27"
+   ],
+   "lines": 20,
+   "bytes": 173804,
+   "parts": [
+    {
+     "name": "corn-1990s.json",
+     "bytes": 35298
+    }
+   ]
+  },
+  "soybeans": {
+   "file": "/data/wasde-history/soybeans.json",
+   "label": "Soybeans",
+   "reports": 374,
+   "market_years": [
+    "1992/93",
+    "2026/27"
+   ],
+   "lines": 14,
+   "bytes": 147841,
+   "parts": [
+    {
+     "name": "soybeans-1990s.json",
+     "bytes": 29275
+    }
+   ]
+  },
+  "wheat": {
+   "file": "/data/wasde-history/wheat.json",
+   "label": "Wheat",
+   "reports": 374,
+   "market_years": [
+    "1992/93",
+    "2026/27"
+   ],
+   "lines": 19,
+   "bytes": 166422,
+   "parts": [
+    {
+     "name": "wheat-1990s.json",
+     "bytes": 35672
+    }
+   ]
+  }
+ },
+ "esmis": {
+  "reports_tried": 699,
+  "read": 375,
+  "status": {
+   "cover_date_1995-02-10_is_not_1995-02-12": 1,
+   "cover_date_1995-08-11_is_not_1995-08-14": 1,
+   "cover_date_2000-04-11_is_not_2000-04-01": 1,
+   "cover_date_2001-05-10_is_not_2001-05-09": 1,
+   "cover_date_2006-03-10_is_not_2006-03-13": 1,
+   "cover_date_2008-05-05_is_not_2008-05-07": 1,
+   "cover_date_2008-12-11_is_not_2008-12-12": 1,
+   "no_rows": 18,
+   "no_text_layer": 298,
+   "no_txt_or_pdf": 1,
+   "read": 375
+  },
+  "file_type": {
+   "pdf": 370,
+   "txt": 328
+  },
+  "scans": 297,
+  "columns_withheld": 0,
+  "tables_refused": {
+   "most_rows_do_not_fit_the_header": 2,
+   "not_found": 52
+  },
+  "not_complete": [],
+  "listing": {
+   "releases": 701,
+   "with_files": 699,
+   "unlisted": 0,
+   "unplaced": 2
+  }
+ }
+}
