@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 27 Oct 2026 08:23:17 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 27 Oct 2026 10:48:38 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn slips ½¢ to $4.54½ after three lower closes</title>
+      <link>https://agsist.com/daily/2026-10-27</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-27</guid>
+      <pubDate>Tue, 27 Oct 2026 10:47:59 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Dec corn is at $4.54½ overnight, ½ cent under Monday's settle, and has given back a few cents all week. Beans are up 7½ cents to $12.48¾ after Monday's drop.
+• Corn quiet, beans bounce
+• Crude firm, gas gains
+• Cattle firm, hogs lower
+Read more: https://agsist.com/daily/2026-10-27</description>
+    </item>
     <item>
       <title>Corn dips 3¢ to $4.53, beans lose 16¢ to $12.40</title>
       <link>https://agsist.com/daily/2026-10-26</link>
@@ -353,18 +365,6 @@ Action: Diesel-dependent harvest budgets: crude above $96.13 and running, lock f
 • Crude Runs On Iran Fear
 • Beans Slip On Empty China News
 Read more: https://agsist.com/daily/2026-09-28</description>
-    </item>
-    <item>
-      <title>Grains climb Friday, cattle stall before COF week</title>
-      <link>https://agsist.com/daily/2026-09-26</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-26</guid>
-      <pubDate>Sat, 26 Sep 2026 14:34:23 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Corn closed Friday at $5.29, up 1.7% on the week's last session, and wheat gained 1.8% to $7.04 on nothing more than a bearish China trade story running out of sellers. Cattle held flat at $218.85 with a Cattle on Feed report still ahead.
-Action: Nothing to do at $5.29 corn; a close back below $5.20 confirms Friday's bounce was just short-covering.
-• Grains Bounce On Empty News
-• Cattle Flat, Feeders Firm Ahead Of COF
-Read more: https://agsist.com/daily/2026-09-26</description>
     </item>
   </channel>
 </rss>

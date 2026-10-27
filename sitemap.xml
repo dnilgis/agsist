@@ -107,7 +107,7 @@
   <!-- Daily Briefing -->
   <url><loc>https://agsist.com/daily</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/news</loc><lastmod>2026-10-17</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://agsist.com/archive</loc><lastmod>2026-10-26</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/archive</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
 
   <!-- Info -->
   <url><loc>https://agsist.com/about</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
@@ -717,4 +717,5 @@
   <url><loc>https://agsist.com/daily/2026-10-24</loc><lastmod>2026-10-24</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/daily/2026-10-25</loc><lastmod>2026-10-25</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/daily/2026-10-26</loc><lastmod>2026-10-26</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
+  <url><loc>https://agsist.com/daily/2026-10-27</loc><lastmod>2026-10-27</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
 </urlset>
