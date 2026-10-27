@@ -217,13 +217,13 @@
         var blk = L.weekBlock(L.weekLines({ fips: fips, st: st, stName: stName, name: name, lat: lat, lng: lng, today: centralDay() },
           { drought: a[0], index: a[1], prev: a[2], states: a[3], prices: a[4], sales: a[5] }));
         if (!blk) return;
-        var h = '<h2 id="c-week-h">This week here <small>bids within ' + L.WEEK_MI + ' mi of the county middle</small></h2>' +
+        var h = '<h2 id="c-week-h">This week here <small>bids within ' + L.WEEK_MI + ' mi</small></h2>' +
           '<p class="cw-lead">' + esc(blk.lead) + '</p><ul>';
         blk.rows.forEach(function (r) {
           h += '<li><b>' + esc(r.label) + '.</b> ' + esc(r.text) + '<span class="ls">' + esc(r.date) + ' &middot; ' + esc(r.src) + '</span></li>';
         });
         if (blk.off.length) h += '<li class="cw-off"><b>Not shown.</b> ' + esc(blk.off.map(function (o) { return o.label + ': ' + o.why; }).join('; ')) + '.</li>';
-        sec.innerHTML = h + '</ul>';
+        sec.innerHTML = h + '</ul><p class="note">Bids are measured from the county middle. The same lines go out in Thursday\u2019s Daily to readers who ask for their county.</p>';
         sec.hidden = false;
       });
     });
