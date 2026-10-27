@@ -23,9 +23,15 @@ How a table is read (no column is ever guessed):
   - a header whose months do not include the report's month refuses the table
     (a misfiled report), and so does a market year printed twice with no month.
 
+Layouts read (reader 2, from the real text of the Oct 27 run): 1995-2011 TXT and PDF print the crop line
+with its unit ("SOYBEANS:   Million acres"), labels over two lines ("Area" / "Planted", "Yield per
+harvested" / "acre") and "Ending stocks, total"; April 1996 soybeans have no SOYBEANS line; 2011-2015
+PDFs print the months beside CORN and some month names last letter first ("arM"); 2016 on TXT squeezes
+words ("Avg.FarmPrice") and stars figures ("86.1**"). A title is a whole line, never prose that names it.
+
 Honest numbers: each column is checked against the balance sheet (beginning
-stocks + production + imports = supply; domestic + exports = use; supply - use =
-ending stocks, inside rounding). A column that fails is withheld whole and
+stocks + production + imports = supply; domestic + exports = use (soybeans: crush + exports + seed +
+residual = use); supply - use = ending stocks, inside rounding). A column that fails is withheld whole and
 counted. For a scanned report (OCR text, 1973 to 1994) a column must pass at
 least one check to be kept: a misread digit must never reach the page.
 
