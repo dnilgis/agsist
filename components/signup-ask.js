@@ -264,8 +264,9 @@
     '.sa-zin[aria-invalid="true"]{border-color:var(--red)}',
     '.sa-d{grid-column:1/-1;min-height:44px;padding:2px 0;align-items:center}',
     '.sa-n{grid-column:1/-1;margin:0;font-size:.8125rem;line-height:1.4;color:var(--text-muted)}',
-    /* the sample link under a Daily page ask (2026-10-23): show the email, not a claim about it */
-    '.sa-see{display:inline-flex;align-items:center;min-height:44px;font-size:.8125rem;line-height:1.3;color:var(--text-muted);text-decoration:underline;text-underline-offset:2px}',
+    /* the sample link under a Daily page ask (2026-10-23): show the email, not a claim about it.
+       Two classes deep so the footer's own link color and no-underline rule do not win. */
+    '.sa-z .sa-see{display:inline-flex;align-items:center;min-height:44px;font-size:.8125rem;line-height:1.3;color:var(--text-muted);text-decoration:underline;text-underline-offset:2px}',
     '.sa-ok{margin:0;font-size:.9375rem;font-weight:700;line-height:1.4;color:var(--green)}',
     '.sa-ok:focus{outline:none}',
     /* page asks: a quiet band, one line plus a field */
