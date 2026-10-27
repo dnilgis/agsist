@@ -6,7 +6,7 @@
   "one_number": {
     "value": "$71.75",
     "unit": "Silver price per ounce",
-    "context": "This 7.1% overnight spike signals serious money fleeing to safety — typically driven by currency concerns, geopolitical risk, or inflation fears. For farmers, precious metals moves this large often precede broader commodity rallies as the same forces (weak dollar, supply concerns) eventually lift agricultural prices. Watch for spillover effects into grains within 2-4 weeks."
+    "context": "This 7.1% overnight spike came with no reason named in this issue; moves like it have come with currency worries, geopolitical risk or inflation fears. For farmers, precious metals moves this large often precede broader commodity rallies as the same forces (weak dollar, supply concerns) eventually lift agricultural prices. Watch for spillover effects into grains within 2-4 weeks."
   },
   "sections": [
     {
@@ -39,7 +39,7 @@
     {
       "title": "Safe Haven Surge",
       "icon": "💰",
-      "body": "Gold's 3.2% rally to $4,487 and silver's explosive 7.1% jump to $71.75 scream flight-to-safety. <strong>Metals moves this large typically precede broader commodity strength</strong> as the same forces — currency instability, supply chain concerns, geopolitical risk — eventually lift agricultural prices. The dollar index barely budged at 100.00, so this isn't purely currency-driven. Bitcoin fell 1.0% to $70,219, showing traditional safe havens outperforming crypto. For agriculture, precious metals surges often lead grains by 2-4 weeks when driven by inflation or supply concerns.",
+      "body": "Gold's 3.2% rally to $4,487 and silver's explosive 7.1% jump to $71.75 scream flight-to-safety. <strong>Metals moves this large typically precede broader commodity strength</strong> as the same forces — currency instability, supply chain concerns, geopolitical risk — eventually lift agricultural prices. The dollar index barely budged at 100.00, so this isn't purely currency-driven. Bitcoin fell 1.0% to $70,219, showing traditional safe havens outperforming crypto. For agriculture, precious metals surges have at times come 2-4 weeks before grain rallies, a pattern this issue did not test.",
       "bottom_line": "Explosive metals rally may preview broader commodity strength ahead.",
       "conviction_level": "high",
       "overnight_surprise": true,

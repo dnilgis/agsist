@@ -7,7 +7,7 @@
   "one_number": {
     "value": "14.1%",
     "unit": "lean hog single-session decline",
-    "context": "Lean hogs closing at $84.33 after a 14.1% drop is a magnitude-7x overnight surprise with no routine explanation. For context, hogs were at $94.78 as recently as Monday. A move of this size in a liquid contract typically involves either a structural demand shock, a disease headline, or forced fund liquidation at scale. Check your exposure before the open tomorrow because moves this size rarely close cleanly in one session."
+    "context": "Lean hogs closing at $84.33 after a 14.1% drop is a magnitude-7x overnight surprise with no routine explanation. For context, hogs were at $94.78 as recently as Monday. A move of this size in a liquid contract typically involves either a structural demand shock, a disease headline, or forced fund liquidation at scale. Check your exposure before the open tomorrow; moves this size rarely close cleanly in one session."
   },
   "yesterdays_call": {
     "outcome": "didnt",
@@ -42,7 +42,7 @@
     {
       "title": "Wheat Runs on Hormuz Rebuild",
       "icon": "🌾",
-      "body": "Chicago wheat closed $6.63, up 18 cents, a 2.8% session that earns its place as the day's clearest directional grain story. The Brent futures curve flipping into backwardation this week, noted in oilprice.com reporting, is the tell: the Strait of Hormuz premium, which had been deflating since late April on diplomatic progress, is rebuilding fast after the U.S.-Iran ceasefire broke down. Japan's trade chief publicly declared Hormuz transits off-limits today. **That kind of headline moves wheat faster than corn or beans because Black Sea and Middle Eastern origin wheat depends on the same shipping arteries.** The IMO warning to shippers not to risk Hormuz passage, published this morning, puts a floor under the geopolitical premium. Next real resistance is $6.85. Below $6.45, the run stalls.",
+      "body": "Chicago wheat closed $6.63, up 18 cents, a 2.8% session that earns its place as the day's clearest directional grain story. The Brent futures curve flipping into backwardation this week, noted in oilprice.com reporting, is the tell: the Strait of Hormuz premium, which had been deflating since late April on diplomatic progress, is rebuilding fast after the U.S.-Iran ceasefire broke down. Japan's trade chief publicly declared Hormuz transits off-limits today. **Black Sea and Middle Eastern origin wheat depends on the same shipping arteries.** Next real resistance is $6.85. Below $6.45, the run stalls.",
       "catalyst": "U.S.-Iran ceasefire breakdown; Brent flips to backwardation; Japan trade chief declares Hormuz off-limits.",
       "bottom_line": "Wheat's 18-cent run is Hormuz risk repricing, not a crop story. Watch whether it holds $6.50 tomorrow.",
       "conviction_level": "high",
