@@ -756,5 +756,51 @@ for (const [p, b] of Object.entries(goodBodies)) {
   A(h.includes('Stopped. No more monthly rain emails for this county.') && !nt('month@example.com').t['rain-month:55005'] && nt('month@example.com').t['rain-month:19169'], 'rain-month stop removes that county only');
 }
 
+// v5.55: landsales:<ZIP>:<10|25|50>, the monthly land sale email (its own store)
+{
+  const F = fresh();
+  const nt = (e) => JSON.parse(F.st.get('note:' + e) || 'null');
+  r = await req(F.env, '/notice', { body: { email: 'Land@Example.com', topic: 'landsales:54728:25', source: 'page:field-scout', daily: false } });
+  j = await r.json();
+  A(r.status === 200 && j.ok === true && j.topic === 'landsales:54728:25' && j.daily === false, 'landsales: a ZIP and radius are stored');
+  A(nt('land@example.com').t['landsales:54728:25'].src === 'page:field-scout' && !F.st.has('sub:land@example.com'), 'landsales: keeps the page; not on the Daily without the box');
+  r = await req(F.env, '/notice', { body: { email: 'land@example.com', topic: 'landsales:61820:10' } });
+  A((await r.json()).ok === true && Object.keys(nt('land@example.com').t).length === 2, 'landsales: a second ZIP is its own topic');
+  for (const [tp, why] of [['landsales:54728:30', 'radius 30'], ['landsales:54728:5', 'one digit'], ['landsales:54728:025', 'three digits'], ['landsales:00000:25', 'ZIP 00000'],
+      ['landsales:5472:25', 'four-digit ZIP'], ['landsales:54728', 'no radius'], ['landsales:54728:25:x', 'extra part'], ['landsales', 'the list name alone'], ['landsale:54728:25', 'misspelled']]) {
+    r = await req(F.env, '/notice', { body: { email: 'landbad@example.com', topic: tp } });
+    A(r.status === 400 && (await r.json()).ok === false, 'landsales refuses ' + why);
+  }
+  A(!F.st.has('note:landbad@example.com'), 'a refused landsales topic stores nothing');
+  r = await req(F.env, '/notice-list?token=tok&topic=landsales:', { m: 'GET' });
+  let L = await r.json();
+  A(L.length === 2 && L.every((x) => x.topic.startsWith('landsales:') && !('mo' in x) && x.lid === lidOf('land@example.com')), '/notice-list?topic=landsales: with its link id, no mo yet');
+  for (const [mo, why] of [[undefined, 'no month'], ['2026-13', 'month 13'], ['2026-9', 'one digit'], ['1999-12', 'before 2000'], ['junk', 'junk']]) {
+    r = await req(F.env, '/notice-mark?token=tok', { body: { email: 'land@example.com', topic: 'landsales:54728:25', month: mo } });
+    A(r.status === 400, 'landsales: /notice-mark refuses ' + why);
+  }
+  r = await req(F.env, '/notice-mark?token=tok', { body: { email: 'land@example.com', topic: 'landsales:54728:25', month: '2026-09' } });
+  A((await r.json()).ok === true && nt('land@example.com').t['landsales:54728:25'].mo === '2026-09' && Number.isFinite(nt('land@example.com').t['landsales:54728:25'].sent), 'landsales: the mark records the month and sent');
+  r = await req(F.env, '/notice-mark?token=tok', { body: { email: 'land@example.com', topic: 'landsales:54728:25', month: '2026-08' } });
+  A(nt('land@example.com').t['landsales:54728:25'].mo === '2026-09', 'landsales: mo never moves back');
+  r = await req(F.env, '/notice-list?token=tok&topic=landsales:', { m: 'GET' });
+  L = await r.json();
+  A(L.find((x) => x.topic === 'landsales:54728:25').mo === '2026-09' && !('mo' in L.find((x) => x.topic === 'landsales:61820:10')), '/notice-list returns mo where it is set');
+  r = await req(F.env, '/notice-mark?token=tok', { body: { email: 'gone@example.com', topic: 'landsales:54728:25', month: '2026-10' } });
+  A((await r.json()).skipped === true, 'landsales: a stopped address is skipped');
+  // the stop link: topic=landsales (no ZIP in the link), stops every landsales topic and nothing else
+  await req(F.env, '/notice', { body: { email: 'land@example.com', topic: 'rent:wi' } });
+  const lid = lidOf('land@example.com'), t16 = crypto.createHmac('sha256', 'sec').update(lid).digest('hex').slice(0, 16);
+  const q = '?k=' + lid + '&t=' + t16 + '&topic=landsales';
+  r = await req(F.env, '/notice-unsubscribe' + q, { m: 'GET' });
+  let h = await r.text();
+  A(r.status === 200 && h.includes('Stop the monthly land sale email for this address?') && Object.keys(nt('land@example.com').t).length === 3, 'landsales stop link asks and changes nothing on GET');
+  r = await req(F.env, '/notice-unsubscribe' + q, { m: 'POST' });
+  h = await r.text();
+  A(h.includes('Stopped. No more monthly land sale emails.') && JSON.stringify(Object.keys(nt('land@example.com').t)) === '["rent:wi"]', 'landsales stop removes every landsales topic, keeps the rent notice');
+  r = await req(F.env, '/notice-unsubscribe?k=' + lid + '&t=0000000000000000&topic=landsales', { m: 'GET' });
+  A(!(await r.text()).includes('Stop the monthly land sale email'), 'landsales stop link with a forged token does not ask');
+}
+
 if (fails.length) { for (const f of fails) console.log('FAIL', f); console.log(ok + ' passed, ' + fails.length + ' failed'); process.exit(1); }
 console.log('subs-worker-checks: ' + ok + ' passed');

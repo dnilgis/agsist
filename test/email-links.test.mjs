@@ -47,6 +47,7 @@ const SELFTESTS = [
   ["scripts/send_prf_notice.py", /OK: 0 failure\(s\)/],
   ["scripts/send_rain_year.py", /OK: 0 failure\(s\)/],
   ["scripts/send_rain_month.py", /OK: 0 failure\(s\)/],
+  ["scripts/send_land_alert.py", /OK: 0 failure\(s\)/],
   ["scripts/send_rent_notice.py", /OK: 0 failure\(s\)/],
   ["scripts/send_cot_weekly.py", /send_cot_weekly selftest ok/],
 ];
