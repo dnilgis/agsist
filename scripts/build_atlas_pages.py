@@ -1021,6 +1021,12 @@ CSS = """
 .ap .so-t .src{margin:0;font-size:.74rem;color:var(--text-muted)}
 .ap .chg{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:1rem 0;align-items:start}
 @media(min-width:900px){.ap .chg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ap .cw{margin:1rem 0 0;border-left:3px solid var(--gold)}
+.ap .cw .cw-lead{margin:0 0 .3rem;font-weight:600;line-height:1.4}
+.ap .cw ul{margin:0;padding:0;list-style:none}
+.ap .cw li{padding:.4rem 0;border-top:1px solid var(--border);font-size:.92rem;line-height:1.45}
+.ap .cw li:first-child{border-top:0}
+.ap .cw .ls{display:block;font-size:.78rem;color:var(--text-muted)}
 .ap .card{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--surface,#12161a);min-width:0}
 .ap .card h2{font-family:var(--font-display);font-size:1.1rem;font-weight:800;letter-spacing:0;text-transform:none;color:var(--text);margin:.1rem 0 .4rem;padding:0;border:0;display:flex;justify-content:space-between;gap:.6rem;align-items:baseline}
 .ap .card h2 small{font-family:var(--font-mono);font-size:.7rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em}
@@ -2321,9 +2327,9 @@ def county_page(W, f, d, stamp):
     C_FARMS = ('<section class="card" aria-labelledby="c-farms"><h2 id="c-farms">What farms here look like</h2>' + S6
                + '<p class="note">USDA Census of Agriculture 2022, except wells (state well register) and power (EIA Form 860).</p></section>') if S6 else ""
     heads = "".join(' data-h-%s="%s"' % (k, fmt(head_count(d, col), 0)) for k, col in LIVESTOCK_LINES if k in lines)
-    live_cfg = ('<div id="ch-live" hidden data-fips="%s" data-st="%s"%s data-lv="%s"%s data-rain="%s" data-arc="%s"></div>'
+    live_cfg = ('<div id="ch-live" hidden data-fips="%s" data-st="%s" data-name="%s"%s data-lv="%s"%s data-rain="%s" data-arc="%s"></div>'
                 '<script defer src="/%s?v=%s"></script>' % (
-                    esc(f), esc(st), (' data-lat="%s" data-lng="%s"' % (ctr[0], ctr[1])) if ctr else "", ",".join(lines), heads,
+                    esc(f), esc(st), esc(lab), (' data-lat="%s" data-lng="%s"' % (ctr[0], ctr[1])) if ctr else "", ",".join(lines), heads,
                     esc(re.search(r'href="([^"]+)"', rain_note).group(1)) if rain_note else "", esc(arc_url or "/arc-plc"), CH_JS, ch_v(W.root)))
     btns = ('<div class="ch-btns"><a class="pri" href="/farmland-atlas/sheet#%s">Print this sheet</a>'
             '<a href="/fast-facts?fips=%s">My place (Fast Facts)</a><a href="#watch">Email me what changes</a></div>' % (esc(f), esc(f)))
@@ -2347,6 +2353,7 @@ def county_page(W, f, d, stamp):
   <button type="button" id="cp">Copy link</button>
 </div>
 {read_html}
+<section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"></section>
 <div class="chg">{C_GRAIN}{C_WX}{C_CROPS}{C_LAND}{C_PROG}{C_FARMS}</div>
 <div id="watch">{watch_form(f, lab, stn)}</div>
 {ND}

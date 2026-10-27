@@ -448,6 +448,88 @@ def load_rain_lines(subs, how, bids_data=None):
     return out
 
 
+# YOUR COUNTY THIS WEEK (Sig, Oct 27 2026: inside the existing Daily slots; no
+# new list, sender or cron). Address -> the block daily_v2 draws in "Only here",
+# filled once by main() like LOCAL_LINES. Only on Thursdays, only for a reader
+# who ticked it in the Daily ask (cw, subs worker v5.56) and has a saved ZIP,
+# and only when something changed in their county (no change, no block). The
+# lines are components/change-lines.js, run by scripts/county_week.mjs: each
+# ZIP once, sent on stdin under an opaque key, never written to a file, never
+# printed. Anything failing leaves the block out; the briefing still goes.
+COUNTY_LINES = {}
+COUNTY_WEEKDAY = 3   # Thursday, the Drought Monitor's release day
+
+
+def county_week_day(day):
+    """True when the issue's day is a Thursday (COUNTY_WEEK=0 turns it off)."""
+    if (os.environ.get("COUNTY_WEEK") or "").strip() == "0":
+        return False
+    try:
+        return date.fromisoformat(str(day)[:10]).weekday() == COUNTY_WEEKDAY
+    except ValueError:
+        return False
+
+
+def load_county_week(subs, how, day, bids_data=None, runner=None):
+    """(address -> {county, st, url, block}, counts). runner(input dict) -> output
+    dict replaces the node call in tests."""
+    import re
+    counts = {"ticked": 0, "ticked_no_zip": 0, "zips": 0, "block": 0, "no_change": 0, "not_placed": 0}
+    if how != "json" or not county_week_day(day):
+        return {}, counts
+    want = {}
+    for r in subs:
+        if r.get("cw") is not True:
+            continue
+        counts["ticked"] += 1
+        z = str(r.get("zip") or "").strip()[:5]
+        if not re.match(r"^\d{5}$", z):
+            counts["ticked_no_zip"] += 1
+            continue
+        want.setdefault(z, []).append(str(r["email"]).strip().lower())
+    if not want:
+        return {}, counts
+    import local_bid
+    data = bids_data or local_bid.BidsData()
+    places, keys = [], {}
+    for i, z in enumerate(sorted(want)):
+        c, t = data.zip_coord(z), data.zip_town(z) or ""
+        m = re.search(r",\s*([A-Z]{2})$", t)
+        if not c or not m:
+            counts["not_placed"] += len(want[z])
+            continue
+        k = "p%d" % i
+        keys[k] = z
+        places.append({"k": k, "lat": c[0], "lng": c[1], "st": m.group(1)})
+    counts["zips"] = len(places)
+    if not places:
+        return {}, counts
+    inp = {"today": str(day)[:10], "index": data.index(), "places": places}
+    if runner is None:
+        import subprocess
+        res = subprocess.run(["node", str(REPO / "scripts" / "county_week.mjs")], input=json.dumps(inp),
+                             capture_output=True, text=True, timeout=180)
+        if res.returncode != 0:
+            raise RuntimeError("county_week.mjs exit %d" % res.returncode)
+        got = json.loads(res.stdout or "{}")
+    else:
+        got = runner(inp)
+    out = {}
+    for k, z in keys.items():
+        r = got.get(k) if isinstance(got, dict) else None
+        if not isinstance(r, dict) or r.get("status") != "ok":
+            counts["not_placed"] += len(want[z])
+            continue
+        if not r.get("block"):
+            counts["no_change"] += len(want[z])
+            continue
+        blk = {"county": r.get("county"), "st": r.get("st"), "url": r.get("url"), "block": r["block"]}
+        for em in want[z]:
+            out[em] = blk
+        counts["block"] += len(want[z])
+    return out, counts
+
+
 # ── the Daily, v2 (Sig, Oct 22 2026: live from the Oct 22 morning send) ─────
 # DAILY_FORMAT=v2 builds the email with scripts/daily_v2.py; anything else
 # (DAILY_FORMAT=current, or unset) builds the old format with brief_email. That
@@ -487,11 +569,11 @@ def v2_setup(b):
         print("daily fact skipped (" + type(ex).__name__ + ")")
 
 
-def v2_parts(b, to_addr, uurl, mine, loc, rain):
+def v2_parts(b, to_addr, uurl, mine, loc, rain, county=None):
     import daily_v2
     v2_setup(b)
     return daily_v2.build(b, issue_url(b), unsub_url=uurl, elevators=mine, local=loc, forward_url=FORWARD_URL,
-                          rain=rain, pod=V2["pod"], fact=V2["fact"], today=date.today())
+                          rain=rain, pod=V2["pod"], fact=V2["fact"], today=date.today(), county=county)
 
 
 def v2_hold_alert(day, built, bad):
@@ -555,7 +637,8 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     v2 = None
     if daily_format() == "v2":
         k = str(to_addr).strip().lower()
-        v2 = v2_parts(b, to_addr, uurl, ELEVATOR_LINES.get(k) or None, LOCAL_LINES.get(k) or None, RAIN_LINES.get(k) or None)
+        v2 = v2_parts(b, to_addr, uurl, ELEVATOR_LINES.get(k) or None, LOCAL_LINES.get(k) or None, RAIN_LINES.get(k) or None,
+                      COUNTY_LINES.get(k) or None)
         subject = v2["subject"]
     else:
         prior, _prior_day = brief_email.prior_board(b)
@@ -650,6 +733,16 @@ def main():
     except Exception as ex:
         # An extra, like the local line: anything wrong sends the generic line.
         print("own rain print line skipped (" + type(ex).__name__ + ")")
+    try:
+        _cw, _cwc = load_county_week(subs, how, day)
+        COUNTY_LINES.update(_cw)
+        if county_week_day(day):
+            # counts only: never a reader's address, ZIP or county
+            print("your county this week: %d ticked (%d with no ZIP), %d ZIP(s) read once each, %d reader(s) get a block, "
+                  "%d with no change (no block), %d not placed" % (_cwc["ticked"], _cwc["ticked_no_zip"], _cwc["zips"],
+                                                                   _cwc["block"], _cwc["no_change"], _cwc["not_placed"]))
+    except Exception as ex:
+        print("your county this week skipped (" + type(ex).__name__ + ")")
     gmail_limit.check(len(recipients), sum(1 for r in subs if r.get("reports") is not False),
                       date.fromisoformat(day), dry=dry)
 

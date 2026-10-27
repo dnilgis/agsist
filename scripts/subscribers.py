@@ -7,7 +7,8 @@ subscribers.py -- the AGSIST Daily list, as records, from the subs worker.
 records: [{"email", "zip", "src", "ts", "reports"}] (and "el", the saved
 elevator ids, on a record that has them: worker v5.42; and "lid", the
 reader's link id, worker v5.46: every signed link carries k=<lid>, never the
-address, see email_links.py), one per address, in the
+address, see email_links.py; and "cw": True, worker v5.56, when the reader
+ticked "Your county this week" in the Daily ask), one per address, in the
 order the worker listed them. how: "json" (worker v5.4+, zips and the
 report-day opt-in are known) or "plain" (an older worker: addresses only,
 every zip None and every reports True -- the v5.4 default).
@@ -66,6 +67,9 @@ def parse_json(arr):
         el = [str(x).lower() for x in el if isinstance(x, str) and EL_RE.match(x.lower())]
         if el:
             rec["el"] = el[:6]
+        # worker v5.56: the reader ticked "Your county this week" in the Daily ask (only when true)
+        if r.get("cw") is True:
+            rec["cw"] = True
         lid = str(r.get("lid") or "").strip().lower()
         if LID_RE.match(lid):
             rec["lid"] = lid

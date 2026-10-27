@@ -420,6 +420,8 @@ def _sub_record(email, raw):
             el.append(i)
     if el:
         out["el"] = el[:6]
+    if r.get("cw") is True:
+        out["cw"] = True      # subs worker v5.56: "Your county this week" ticked
     return out
 
 
@@ -587,7 +589,8 @@ def counts(now=None):
             kind = k.split(":")[1]
             forms[kind] = forms.get(kind, 0) + 1
     return {"ok": True, "daily": len(subs), "daily_with_zip": sum(1 for r in subs if r["zip"]),
-            "daily_with_elevators": sum(1 for r in subs if r.get("el")), "alerts": n("alert:"), "ewatch": n("ewatch:"),
+            "daily_with_elevators": sum(1 for r in subs if r.get("el")),
+            "daily_county_week": sum(1 for r in subs if r.get("cw") is True), "alerts": n("alert:"), "ewatch": n("ewatch:"),
             "pwatch": n("pwatch:"), "watch": n("watch:"), "by_source": by, "secret": bool(_env("UNSUB_SECRET")),
             "forms": forms, "unsubs": {}, "notice": len(notes), "notices": nby, "lists": lists,
             "source": "backup", "taken": STATE["taken"]}

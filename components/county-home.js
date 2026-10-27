@@ -15,6 +15,10 @@
    the county or more in D2 or worse), so the "some of the county, N weeks in a row" streak
    Fast Facts adds is left off here.
 
+   This week here (Oct 27, 2026): the Daily's Thursday "Your county this week" block, mirrored. The
+   lines are components/change-lines.js (the same code the Daily and Fast Facts run), measured 30 mi
+   from the county middle. Nothing changed this week: no block, by the same rule as the email.
+
    Fails soft: a file that does not answer turns its row into "not in right now", never a
    blank or an old number shown as new. Every row names its source and date. */
 (function () {
@@ -190,6 +194,40 @@
       fill('soy-progress', P.factProgress(f, st, 'soybeans'));
     });
   }
+  /* ── this week here: the Daily's Thursday block, from components/change-lines.js */
+  var CL_JS = '/components/change-lines.js?v=1';
+  function week() {
+    var sec = document.getElementById('c-week'), net = window.AGSIST_BIDS_NET;
+    if (!sec || lat == null || lng == null) return;
+    loadScript(CL_JS, function () { return !!window.AgChangeLines; }).then(function (ok) {
+      if (!ok) return;
+      var L = window.AgChangeLines, idxP = net && net.index ? net.index().then(null, function () { return null; }) : Promise.resolve(null);
+      var ss = L.SALES_STATES[st];
+      var prevP = idxP.then(function (idx) {
+        var sts = {};
+        if (idx) L.nearCorn(idx, lat, lng, L.WEEK_MI).forEach(function (r) { if (/^[A-Z]{2}$/.test(r.st)) sts[r.st] = 1; });
+        var ks = Object.keys(sts);
+        return Promise.all(ks.map(function (k) { return getJSON('/data/bids-prev/' + k + '.json'); })).then(function (fs) {
+          var o = {}; ks.forEach(function (k, i) { o[k] = fs[i]; }); return o;
+        });
+      });
+      return Promise.all([getJSON('/data/drought/county-week.json'), idxP, prevP, getJSON('/data/basis-states.json'), getJSON('/data/prices.json'),
+        ss ? getJSON('/data/land-sales/' + ss + '.json') : Promise.resolve(null)]).then(function (a) {
+        var name = D.name || 'This county', stName = (P && P.STATES && P.STATES[st]) || st;
+        var blk = L.weekBlock(L.weekLines({ fips: fips, st: st, stName: stName, name: name, lat: lat, lng: lng, today: centralDay() },
+          { drought: a[0], index: a[1], prev: a[2], states: a[3], prices: a[4], sales: a[5] }));
+        if (!blk) return;
+        var h = '<h2 id="c-week-h">This week here <small>bids within ' + L.WEEK_MI + ' mi</small></h2>' +
+          '<p class="cw-lead">' + esc(blk.lead) + '</p><ul>';
+        blk.rows.forEach(function (r) {
+          h += '<li><b>' + esc(r.label) + '.</b> ' + esc(r.text) + '<span class="ls">' + esc(r.date) + ' &middot; ' + esc(r.src) + '</span></li>';
+        });
+        if (blk.off.length) h += '<li class="cw-off"><b>Not shown.</b> ' + esc(blk.off.map(function (o) { return o.label + ': ' + o.why; }).join('; ')) + '.</li>';
+        sec.innerHTML = h + '</ul><p class="note">Bids are measured from the county middle. The same lines go out in Thursday\u2019s Daily to readers who ask for their county.</p>';
+        sec.hidden = false;
+      });
+    });
+  }
   function centralDay() { try { return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }); } catch (e) { return new Date().toISOString().slice(0, 10); } }
   function arc() { getJSON('/data/arc-plc.json').then(function (f) { fill('arc', P.factArcPlc(f, centralDay(), D.arc || '/arc-plc')); }); }
 
@@ -201,6 +239,7 @@
       var b = lat == null ? Promise.resolve(null) : loadScript('/components/bids-network.js?v=8', function () { return !!window.AGSIST_BIDS_NET; }).then(bids);
       basis(b.then(null, function () { return null; }));
       futures(); hay(); weather(); crops(); arc();
+      b.then(week, week);
     });
   }
   /* after the page has drawn: the shared files are the ones Fast Facts reads, so they are often cached */

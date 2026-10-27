@@ -52,6 +52,8 @@ def main():
             body = {"email": e, "source": r.get("source") or "signup-fallback", "reports": bool(d.get("reports"))}
             if r.get("zip"):
                 body["zip"] = r["zip"]
+            if d.get("cw") is True:
+                body["cw"] = True      # "Your county this week" ticked (subs worker v5.56)
             code, txt = post(base + "/subscribe", body)
             ok = code == 200 and '"ok":true' in txt
             kind = "daily"

@@ -22,7 +22,8 @@
   var LS_ZIP = 'agsist_user_zip';
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var SALES_JS = '/components/atlas-sales.js?v=c3fa7673';
-  var CM_JS = '/components/changemap.js?v=1';
+  var CL_JS = '/components/change-lines.js?v=1';
+  var CM_JS = '/components/changemap.js?v=2';
   var S = { seq: 0, where: null, prof: null, county: null, pct: null, sales: {}, depth: null, print: { parts: P.PRINT_PARTS.slice(), more: false, rain: false }, started: false, facts: {}, user: false };
   var memo = {};
 
@@ -408,7 +409,9 @@
     box.hidden = true; box.innerHTML = '';
     var top = $('cm-top'); if (top) top.innerHTML = '';
     function mine() { return S.prof && S.prof.fips === fips; }
-    loadScript(CM_JS, function () { return !!window.AgChangeMap; }).then(function (ok) {
+    loadScript(CL_JS, function () { return !!window.AgChangeLines; }).then(function (ok) {
+      return ok && loadScript(CM_JS, function () { return !!window.AgChangeMap; });
+    }).then(function (ok) {
       if (!ok || !mine()) return;
       window.AgChangeMap.draw(box, { fips: fips, st: p.st, stName: p.stName, name: p.name, lat: +w.lat, lng: +w.lng, net: window.AGSIST_BIDS_NET, mine: mine });
     });
