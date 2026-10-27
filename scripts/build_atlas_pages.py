@@ -1236,8 +1236,8 @@ def head(title, desc, canon, extra_ld=None, robots=None, image=None, alt=None, f
   <meta name="theme-color" content="#0a0c0d">
   <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
   {GA}
-  <link rel="preload" href="/components/styles.css?v=26" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=26">
+  <link rel="preload" href="/components/styles.css?v=27" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=27">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">

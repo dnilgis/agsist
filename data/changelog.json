@@ -7,6 +7,18 @@
    "items": [
     {
      "tag": "fixed",
+     "page": "/",
+     "name": "Phones: no more text against the screen edge at the end of a page",
+     "text": "The Made by line and the Next cards at the bottom of many pages ran right to the edge of a phone screen. They now keep the same side margin as the rest of the page."
+    },
+    {
+     "tag": "improved",
+     "page": "/cash-bids",
+     "name": "Small fixes from the vision panel",
+     "text": "Cash bids: the Best price tag names the delivery you picked. Rain by county: pick your state first, records below. Spray: conditions are estimated for your location, not measured in your field. The Atlas and Daily pages say what to open when the page does not load."
+    },
+    {
+     "tag": "fixed",
      "page": "/daily",
      "name": "Oct 21 Daily headline corrected",
      "text": "The headline said corn was down 6 straight days to $4.59½ and beans down 7 to $12.45. Those were early Wednesday trades, not settles. It now gives the Oct 20 settles, $4.62 and $12.48¼, with the old wording kept in a dated note on the page."

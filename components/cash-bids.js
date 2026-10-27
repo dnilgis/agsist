@@ -1316,7 +1316,16 @@ function bbcAgo(asOf){
   if(m<24*60)return Math.floor(m/60)+'h ago';
   return new Date(t).toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
+/* THE BEST PRICE TAG SAYS WHICH DELIVERY (vision panel Oct 25, fix 1). It said
+   "soonest delivery, months differ" even with Delivery set to one month, when
+   every card is on that month. [text, title] for a Delivery value. */
+function bestTag(del){
+  if(del==='all')return['soonest delivery, months differ','Each elevator is ranked on the soonest delivery it will take. Those months are not the same at every elevator; set Delivery to one month to compare like with like.'];
+  return[(del==='harvest'?'harvest':delLabel(del))+' delivery','Every elevator here is ranked on this delivery only.'];
+}
 function renderBestBids(elevators){
+  var tg=$('bbc-tag');
+  if(tg){var bt=bestTag(currentDelivery);tg.textContent=bt[0];tg.title=bt[1];}
   var COMMS=[{key:'corn',label:'Corn',emoji:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>',cls:'corn-t'},{key:'soybeans',label:'Soybeans',emoji:'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg>',cls:'beans-t'},{key:'wheat',label:'Wheat',emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>',cls:'wheat-t'}];
   var html='';
   /* One crop chosen at the top: only its row. */
