@@ -1190,7 +1190,7 @@
     {
      "href": "/rain-gauge",
      "text": "Rain gauge",
-     "why": "Waitlist for the first batch"
+     "why": "Join the waitlist"
     },
     {
      "href": "/farmer-retirement-gifts",
@@ -1438,7 +1438,7 @@
     {
      "href": "/rain-gauge",
      "text": "Rain gauge",
-     "why": "Waitlist for the first batch"
+     "why": "Join the waitlist"
     },
     {
      "href": "/rain-print-business",
@@ -1523,6 +1523,42 @@
      "why": "This week by county"
     }
    ]
+  },
+  "/birth-year-weather-gift": {
+   "links": [
+    {
+     "href": "/rain-print",
+     "text": "Rain Print",
+     "why": "Your farm's year of rain, printed"
+    },
+    {
+     "href": "/gifts-for-farmers",
+     "text": "Gifts for farmers"
+    },
+    {
+     "href": "/wedding-year-weather-gift",
+     "text": "Wedding year weather gift"
+    }
+   ],
+   "signup": false
+  },
+  "/wedding-year-weather-gift": {
+   "links": [
+    {
+     "href": "/rain-print",
+     "text": "Rain Print",
+     "why": "Your farm's year of rain, printed"
+    },
+    {
+     "href": "/gifts-for-farmers",
+     "text": "Gifts for farmers"
+    },
+    {
+     "href": "/birth-year-weather-gift",
+     "text": "Birth year weather gift"
+    }
+   ],
+   "signup": false
   }
  }
 }

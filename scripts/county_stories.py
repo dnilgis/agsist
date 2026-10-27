@@ -502,7 +502,7 @@ You get the facts the page already shows, as JSON. Use only those facts. The pag
 Write:
 - 2 to 4 sentences, 120 to 600 characters, one paragraph, plain text.
 - In Sig's voice: plain farm words, short sentences, a little dry. The way a neighbor would say it at the elevator, not a news story.
-- The answer above your paragraph gives the latest total and how far it is from a usual year, and it updates every week. You may give the total or the comparison as of your through day, but lead with what that answer does not tell: pick the two or three facts that tell this county's year best (the wettest month, the biggest rain, the longest dry stretch, last year). Do not list them all.
+- The answer above your paragraph gives the latest total and how far it is from a usual year, and it updates every day. You may give the total or the comparison as of your through day, but lead with what that answer does not tell: pick the two or three facts that tell this county's year best (the wettest month, the biggest rain, the longest dry stretch, last year). Do not list them all.
 - Numbers exactly as the facts print them: inches with two decimals as given (or rounded to one decimal), percents as given, days as given, dates as "Aug 5" (three-letter month, no period). Write every number in digits.
 - Every amount sits next to what it measures: the wettest month's inches with that month, the biggest rain's inches with its date, the dry stretch's days with its dates.
 - The difference from a usual year only with its direction (more or less), and only if vs_usual is given. This year against last year only if last_year.compare is given; if it is not on every day, say it is on the days both years reported.
@@ -887,6 +887,17 @@ def selftest():
         moved = dict(bnow, wettest_month={"in": "7.10", "month": "October"}, biggest_day={"date": "Oct 17", "in": "3.10", "label": "biggest single day"},
                      longest_dry_stretch=dict(bf["longest_dry_stretch"], days=14, **{"from": "Sep 30", "to": "Oct 13"}))
         ok(story_for(be, dict(bn, facts=moved)) is None, "every sentence out of date: no story, never a guess")
+        # 2026-10-23: county-rain.yml rebuilds the pages every day (was Mondays). Each day's build checks the
+        # dated story against that day's facts, so the lead follows the page day by day, never a week behind.
+        day1 = dict(bf, through="Oct 14", through_iso="2026-10-14", days_in_year_so_far=287, days_reported=287,
+                    last_year=dict(bf["last_year"], through="Oct 14"))
+        seq = [(day1, "2026-10-16", bs), (bnow, "2026-10-20", bs.rsplit(" On the days", 1)[0])]
+        for fa, rd, exp_s in seq:
+            got = story_for(be, dict(bn, as_of=fa["through_iso"], read=rd, facts=fa))
+            ok(got == exp_s, f"daily build read {rd}, facts through {fa['through']}: {got!r}")
+            ok(got == story_for(be, dict(bn, as_of=fa["through_iso"], read=rd, facts=fa)), f"daily build read {rd}: same data, same story")
+        ok(story_for(be, dict(bn, read="2026-11-17", facts=bnow)) is not None and story_for(be, dict(bn, read="2026-11-18", facts=bnow)) is None,
+           f"a daily build shows the dated story up to {MAX_AGE_DAYS} days after its through day, then drops it until the monthly refresh")
         # the page: the story under the answer only when its hash matches
         st_dir = os.path.join(data, "stories")
         os.makedirs(st_dir)

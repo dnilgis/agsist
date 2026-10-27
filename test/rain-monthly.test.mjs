@@ -76,7 +76,7 @@ test("the fresh job is county-rain.yml's own fetch, build and commit, in its que
     "python scripts/fetch_county_rain.py --check", "python scripts/build_county_rain.py\n", "python scripts/build_county_rain.py --check",
     "python scripts/cross_links.py --stamp", "python scripts/check_seo.py", "python scripts/check_site_budget.py",
     "python3 scripts/build_share_images.py --only rain",
-    'git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg prf farmland-atlas arc-plc 2>/dev/null || true',
+    'git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json prf farmland-atlas arc-plc 2>/dev/null || true',
     'git commit -q -m "data: county rain ($N states)"']) {
     assert.ok(cr.includes(line), "county-rain.yml still has: " + line);
     assert.ok(WF.includes(line), "rain-monthly.yml has it too: " + line);
@@ -121,7 +121,8 @@ print(json.dumps(out))
     // year to date: the page's rows added up
     const yt = c.months.slice(0, r.m + 1).reduce((a, x) => a + x[0], 0);
     assert.ok(r.txt.includes(`: ${yt.toFixed(2)} inches. That is `), fips + ": year to date " + yt.toFixed(2));
-    assert.ok(r.txt.includes("The station's past record did not load this time"), fips + ": a record that did not load says so");
+    const noun = c.station.net === "cocorahs" ? "gauge" : "station";
+    assert.ok(r.txt.includes(`The ${noun}'s past record did not load this time`), fips + ": a record that did not load says so (" + noun + ")");
     assert.ok(/Drought Monitor, map valid [A-Z][a-z]{2} \d+, \d{4}: /.test(r.txt) || r.txt.includes("has no county figure"), fips + ": drought line");
     assert.equal((r.txt.match(/In the field: /g) || []).length, 1, fips + ": one field line");
     assert.equal((r.txt.match(/Rain Print:/g) || []).length, 1, fips + ": Rain Print once");

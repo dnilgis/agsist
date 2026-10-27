@@ -22,7 +22,7 @@ vertical-till	Land tillage	Vertical or turbo tillage	acre	21.31	14	28	18
 strip-till	Land tillage	Strip tilling	acre	25.67	14	36	9
 	Land tillage	Strip tilling with fertilizer application	acre	26.71	18	36	14
 	Land tillage	Rolling stalk chopper, not PTO driven	acre	15.29	12	20	7
-	Land tillage	Cultivation tillage, conventional	acre	21.33	12	40	6
+cultivate-row	Land tillage	Cultivation tillage, conventional	acre	21.33	12	40	6
 	Land tillage	Cultivation tillage, handling residue	acre	18.75	12	26	8
 	Land tillage	Cultivation tillage, hill or ditch	acre	21.62	12	50	13
 	Planting and post planting	Drilling small grains, conventional drill	acre	17.86	10	25	14
@@ -30,7 +30,7 @@ drill-smallgrain	Planting and post planting	Drilling small grains, no-till drill
 drill-soy	Planting and post planting	Drilling soybeans, conventional drill	acre	22.33	18	25	6
 drill-soy-notill	Planting and post planting	Drilling soybeans, no-till drill	acre	24.02	15	40	26
 	Planting and post planting	Seeding CRP ground	acre	30	15	45	8
-	Planting and post planting	Seeding cover crops, drill	acre	22.27	15	30	28
+drill-cover	Planting and post planting	Seeding cover crops, drill	acre	22.27	15	30	28
 	Planting and post planting	Planting row crops, no coulters, with band applicator	acre	26.36	15	49	14
 plant-row	Planting and post planting	Planting row crops, no coulters, without band applicator	acre	29.19	20	44	8
 	Planting and post planting	Planting row crops, coulters, with band applicator	acre	30.01	20	50	20
@@ -66,7 +66,7 @@ combine-soy	Harvesting grains and soybeans	Combining soybeans, flat rate	acre	50
 	Hauling operations	Hauling soybeans, field to local storage (15 miles or less)	bushel	0.15	0.06	0.27	34
 grain-cart	Hauling operations	Grain from combine with tractor and grain cart to edge of field	acre	5.83	4	8	6
 haul-grain-bu	Hauling operations	Grain with truck to storage or elevator, flat rate	bushel	0.16	0.07	0.30	22
-	Other custom services	Grain bin storage, no air or electric charge included	bushel / month	0.02	0.01	0.04	7
+store-bin-month	Other custom services	Grain bin storage, no air or electric charge included	bushel / month	0.02	0.01	0.04	7
 	Other custom services	Grain bin storage, with air or electric charge included	bushel / month	0.03	0.01	0.06	6
 	Other custom services	Mowing grass (CRP or pasture)	hour	154.29	100	250	7
 	Other custom services	Checking pivots during irrigation season	acre	14.19	5	35	9

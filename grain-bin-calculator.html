@@ -154,6 +154,7 @@
 /* phones: 40px tap targets, 16px form text (no iOS zoom) */
 @media(max-width:640px){.vol-toggle{min-height:40px}}
 </style>
+<script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
 </head>
 <body>
 <style>.ic-sp{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;display:inline-block}</style><svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-clipboard-copy" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
@@ -319,6 +320,7 @@
             <div>
               <label for="dryingCost">Drying ($/pt per wet bu)</label>
               <input type="number" id="dryingCost" value="0" step="0.005" placeholder="e.g. 0.035" inputmode="decimal" oninput="calc()">
+              <p class="rate-hint" data-per="a bushel a point" data-cr-job="dry-corn-pt" data-for="dryingCost" data-round="3" data-what="Custom corn drying" data-note="What custom operators charge to dry corn, fuel and labor in."></p>
             </div>
             <div>
               <label for="pack">Pack Factor (%)</label>
@@ -447,6 +449,8 @@
           <div class="field-hint" id="room-note"></div>
           <div class="result-row"><span class="result-label" id="rMktLabel">Market bushels (56 lb)</span><span class="result-value" id="rMktBu">-</span></div>
           <div class="result-row"><span class="result-label">Weight</span><span class="result-value" id="rWeight">-</span></div>
+          <!-- 2026-10-23 (Sig): the page's one signup ask, right under the answer. aria-live off: the results above read out as they change, this does not. -->
+          <div class="gb-ask" aria-live="off" aria-atomic="false"><div data-stack data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:grain-bin-calculator"></div></div>
 
           <!-- v2: volume details collapsed by default — engineering internals hidden -->
           <button class="vol-toggle" onclick="toggleVol(this)" aria-expanded="false">&#9654; Show volume breakdown</button>
@@ -597,7 +601,6 @@
       </ul>
     </div>
 
-    <div data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:grain-bin-calculator"></div>
   <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
 
@@ -607,7 +610,7 @@
   @media print{
     body > *{display:none!important}
     body > #print-record-wrap{display:block!important;color:#000;font-family:Georgia,'Times New Roman',serif;font-size:12pt;line-height:1.5}
-    #print-record-wrap h1{font-family:'Courier New',monospace;font-size:15pt;letter-spacing:.08em;margin:0 0 2pt}
+    #print-record-wrap .rec-h{font-weight:700;font-family:'Courier New',monospace;font-size:15pt;letter-spacing:.08em;margin:0 0 2pt}
     #print-record-wrap .pr-sub{font-size:9pt;color:#444;margin:0 0 14pt}
     #print-record-wrap table{width:100%;border-collapse:collapse;margin:0 0 12pt}
     #print-record-wrap th,#print-record-wrap td{text-align:left;padding:4pt 6pt;border-bottom:1px solid #bbb;font-size:10.5pt}
@@ -1143,7 +1146,7 @@
                 '<tr><td>Net value after shrink'+($('drying-row').style.display!=='none'?' &amp; drying':'')+'</td><td class="pr-big">'+$('rNetVal').textContent+'</td></tr>';
     }
     $('print-record-wrap').innerHTML=
-      '<h1>AGSIST: GRAIN BIN RECORD</h1>'+
+      '<div class="rec-h">AGSIST: GRAIN BIN RECORD</div>'+
       '<p class="pr-sub">Printed '+now.toLocaleDateString()+' &middot; agsist.com/grain-bin-calculator</p>'+
       '<table><thead><tr><th>Item</th><th>Value</th></tr></thead><tbody>'+rowsHtml+'</tbody></table>'+
       '<p class="pr-note">Estimates from stated dimensions at 1 bu = 1.2445 ft&sup3;. Shrink = (moisture in &minus; target moisture) &times; shrink per point, the same points the drying charge uses; drying is figured on wet market bushels. Not a scale ticket; settle on delivered weight. Free calculator: agsist.com/grain-bin-calculator</p>';
@@ -1170,5 +1173,6 @@
   })();
   </script>
   <script src="/components/next-links.js?v=3" defer></script>
+<script src="/components/rate-hint.js?v=1" defer></script>
 </body>
 </html>

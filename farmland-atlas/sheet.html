@@ -7,7 +7,7 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <title>County Farmland Sheet: Rent, Value and Risk | AGSIST</title>
+  <title>County Farm Facts Sheet: Rent, Value and Risk | AGSIST</title>
   <meta name="description" content="A one-page printable sheet for any US county: cash rent against the neighbours, land value, corn yield, the crop insurance record, drought, night heat and water, from public records.">
   <link rel="canonical" href="https://agsist.com/farmland-atlas/sheet">
   <meta name="robots" content="noindex,follow">
@@ -239,10 +239,10 @@ function render(){
   var c=A.counties[F], d=D, st=d.state, R=d.rent||{}, V=d.value||{}, Y=d['yield']||{}, S=d.sob||{}, Lo=d.loss||{}, Dr=d.drought||{}, W=d.water||{}, E=d.energy||{}, Wl=d.wells||{}, C=d.crp||{}, Pr=d.practices||{};
   var jul=get(d,'heat','months','jul')||{}, stateName=ST[st]||st, built=String(A.generated||'').slice(0,10);
   var url='https://agsist.com/farmland-atlas#'+F;
-  document.title=cname(d)+', '+st+' farmland sheet: rent, value, risk | AGSIST';
+  document.title=cname(d)+', '+st+' farm facts sheet: rent, value, risk | AGSIST';
   var qr='';
   try{ var q=qrcode(0,'M'); q.addData(url); q.make(); qr=q.createSvgTag({cellSize:2,margin:0,scalable:true}).replace('<svg','<svg aria-hidden="true" focusable="false"'); }catch(e){ qr=''; }
-  var h='<header class="hd"><div><div class="kick">AGSIST Farmland Atlas · county sheet</div><h1>'+esc(cname(d))+', '+esc(stateName)+'</h1>'
+  var h='<header class="hd"><div><div class="kick">AGSIST · County farm facts, printed</div><h1>'+esc(cname(d))+', '+esc(stateName)+'</h1>'
     +'<div class="sub">County figures from public records, built '+esc(built)+'. County averages, not an appraisal of any farm. FIPS '+esc(F)+'.</div></div>'
     +'<div class="qr">'+qr+'agsist.com/farmland-atlas#'+esc(F)+'</div></header>';
 

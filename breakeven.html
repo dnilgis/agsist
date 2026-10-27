@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
   <link rel="manifest"                            href="/manifest.json">
   <title>Corn &amp; Soybean Break-Even Price per Bushel Calculator | AGSIST</title>
-  <meta name="description" content="Example: $1,085 an acre at 237 bu/ac is a $4.58 corn break-even; Dec '27 futures are near $4.98. Put in your own costs for corn, soybeans or wheat.">
+  <meta name="description" content="Example: $1,085 an acre at 237 bu/ac is a $4.58 corn break-even; Dec '27 futures are near $4.94½. Put in your own costs for corn, soybeans or wheat.">
   <meta name="author" content="Sigurd Lindquist">
   <meta name="keywords"    content="farm break even calculator, farmer corn break even calculator, soybean break even price, cost per bushel calculator, crop profit calculator, farm cost analysis, break-even price corn">
   <meta name="robots"      content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -24,7 +24,7 @@
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
   <meta property="og:title"        content="Corn &amp; Soybean Break-Even Price per Bushel Calculator | AGSIST">
-  <meta property="og:description"  content="Example: $1,085 an acre at 237 bu/ac is a $4.58 corn break-even; Dec '27 futures are near $4.98. Put in your own costs for corn, soybeans or wheat.">
+  <meta property="og:description"  content="Example: $1,085 an acre at 237 bu/ac is a $4.58 corn break-even; Dec '27 futures are near $4.94½. Put in your own costs for corn, soybeans or wheat.">
   <meta property="og:url"          content="https://agsist.com/breakeven">
   <meta property="og:image"        content="https://agsist.com/img/og/breakeven.jpg?v=cad343a2">
   <meta property="og:image:width"  content="1200">
@@ -34,7 +34,7 @@
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:creator"     content="@agsist">
   <meta name="twitter:title"       content="Corn &amp; Soybean Break-Even Price per Bushel Calculator | AGSIST">
-  <meta name="twitter:description" content="Example: $1,085 an acre at 237 bu/ac is a $4.58 corn break-even; Dec '27 futures are near $4.98. Put in your own costs for corn, soybeans or wheat.">
+  <meta name="twitter:description" content="Example: $1,085 an acre at 237 bu/ac is a $4.58 corn break-even; Dec '27 futures are near $4.94½. Put in your own costs for corn, soybeans or wheat.">
   <meta name="twitter:image"       content="https://agsist.com/img/og/breakeven.jpg?v=cad343a2">
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set, the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string), and the reader scrolls, taps or types on the shown page. Then /components/ga-gate.js asks our worker if the visit comes from a cloud server network (Sig, Oct 20) and loads GA only on a clear no. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
@@ -187,6 +187,7 @@
 
 
 </style>
+<script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
 </head>
 <body>
 <style>.ic-sp{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;display:inline-block}</style><svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-banknote" viewBox="0 0 24 24"><rect width="20" height="12" x="2" y="6" rx="2" />
@@ -279,12 +280,12 @@
               <div class="input-wrap"><label style="font-size:0.787rem" for="chemicals">Chemicals <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="chemicals" min="0" value="101" inputmode="numeric"><span class="ln-src" id="src-chemicals" hidden></span></div>
               <div class="input-wrap"><label style="font-size:0.787rem" for="insurance">Crop Insurance <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="insurance" min="0" value="37" inputmode="numeric"><span class="ln-src" id="src-insurance" hidden></span></div>
             </div>
-            <p class="be-fert-src" style="font-size:.76rem;color:var(--text-muted);line-height:1.5;margin:.5rem 0 0"><!--FERT:SRC-->Fertilizer default, corn: $160 an acre = 120 lb N, 90 lb P&#8322;O&#8325; and 69 lb K&#8322;O for 237 bu, at prices posted through Oct 14, 2026. N: 120 lb an acre, the rate with the most return to N in UW A2809 Table 6.1 for corn after soybeans on high-yield loamy soil (profitable range 105 to 130; 165 after corn), from Wisconsin trials. It is the 0.10 column for a 0.102 N:corn price ratio: anhydrous $832.10 a ton / (2,000 lb x 82% N) = $0.51 a lb of N (Kansas co-ops, middle of 4, posted Oct 1 to Oct 14, 2026), against Dec '27 corn futures $4.99 (Oct 22, 2026 close), the same rate <a href="/fast-facts#nitrogen">Fast Facts</a> gives at these prices. It does not follow your yield. Your state's MRTN rate and your credits beat it. P and K: 0.38 and 0.29 lb a bushel (UW A2809 grain removal), and they follow your yield until you type your own. Soybeans and wheat use their own rates. How the P and K prices are worked out: MAP $980.00 a ton, less 220 lb of N at the urea price ($147), / 1040 lb of P2O5 = $0.80 a lb of P2O5 (Kansas co-ops, average of 2, posted Oct 6 to Oct 12, 2026); potash $477.68 a ton / (2,000 lb x 60% K2O) = $0.40 a lb of K2O (Kansas co-ops, middle of 4, posted Oct 1 to Oct 14, 2026). <a href="/fertilizer">Fertilizer prices</a>.<!--/FERT:SRC--></p>
+            <p class="be-fert-src" style="font-size:.76rem;color:var(--text-muted);line-height:1.5;margin:.5rem 0 0"><!--FERT:SRC-->Fertilizer default, corn: $160 an acre = 120 lb N, 90 lb P&#8322;O&#8325; and 69 lb K&#8322;O for 237 bu, at prices posted through Oct 14, 2026. N: 120 lb an acre, the rate with the most return to N in UW A2809 Table 6.1 for corn after soybeans on high-yield loamy soil (profitable range 105 to 130; 165 after corn), from Wisconsin trials. It is the 0.10 column for a 0.103 N:corn price ratio: anhydrous $832.10 a ton / (2,000 lb x 82% N) = $0.51 a lb of N (Kansas co-ops, middle of 4, posted Oct 1 to Oct 14, 2026), against Dec '27 corn futures $4.95 (Oct 26, 2026 close), the same rate <a href="/fast-facts#nitrogen">Fast Facts</a> gives at these prices. It does not follow your yield. Your state's MRTN rate and your credits beat it. P and K: 0.38 and 0.29 lb a bushel (UW A2809 grain removal), and they follow your yield until you type your own. Soybeans and wheat use their own rates. How the P and K prices are worked out: MAP $980.00 a ton, less 220 lb of N at the urea price ($147), / 1040 lb of P2O5 = $0.80 a lb of P2O5 (Kansas co-ops, average of 2, posted Oct 6 to Oct 12, 2026); potash $477.68 a ton / (2,000 lb x 60% K2O) = $0.40 a lb of K2O (Kansas co-ops, middle of 4, posted Oct 1 to Oct 14, 2026). <a href="/fertilizer">Fertilizer prices</a>.<!--/FERT:SRC--></p>
           </div>
           <div style="margin-bottom:20px">
             <h2 class="sec-label" style="margin:0 0 8px">OPERATING COSTS ($/ac)</h2>
             <div class="input-grid-2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
-              <div class="input-wrap"><label style="font-size:0.787rem" for="machinery">Machinery <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="machinery" min="0" value="210" inputmode="numeric"><span class="ln-src" id="src-machinery" hidden></span></div>
+              <div class="input-wrap"><label style="font-size:0.787rem" for="machinery">Machinery <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="machinery" min="0" value="210" inputmode="numeric"><span class="ln-src" id="src-machinery" hidden></span><p class="rate-hint" data-per="an acre" data-cr-job="corn:custom-farm-corn,soybeans:custom-farm-soy" data-crop="crop" data-for="machinery" data-round="0" data-what="Hiring every trip done" data-note="That rate has the operator in it, so it covers your labor line too."></p></div>
               <div class="input-wrap"><label style="font-size:0.787rem" for="labor">Labor <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="labor" min="0" value="25" inputmode="numeric"><span class="ln-src" id="src-labor" hidden></span></div>
               <div class="input-wrap"><label style="font-size:0.787rem" for="land">Land Rent/Cost <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="land" min="0" value="293" inputmode="numeric"><span class="ln-src" id="src-land" hidden></span>
               <button type="button" id="split-toggle" aria-expanded="false" style="margin-top:6px;background:none;border:none;color:var(--gold,#d4a23f);font-size:0.78rem;cursor:pointer;padding:4px 0;min-height:44px;text-decoration:underline;text-align:left">Split owned vs rented ground &rarr;</button>
@@ -321,6 +322,11 @@
           <p id="be-sub" hidden class="be-sub"></p>
           <div class="result-row"><span class="result-label" id="futLabel">Futures needed at your basis</span><span class="result-value" id="futNeeded"><!--BAKE:be-cpb-->$4.58/bu<!--/BAKE--></span></div>
           <p id="fut-sub" hidden class="be-sub"></p>
+          <!-- 2026-10-23 (Sig): the page's one signup ask, under the answer. The futures price this page worked out, as a price watch (components/signup-ask.js priceAsk; the homepage alert's route); on a contract the watch cannot follow, the Daily ask stands in. Never both. -->
+          <div class="be-ask" id="be-ask">
+            <div id="be-price-ask" data-price-ask data-stack hidden></div>
+            <div id="be-daily-ask" data-stack data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:breakeven"></div>
+          </div>
           <p id="split-note" hidden style="font-size:0.8rem;color:var(--text-dim);line-height:1.55;margin:.35rem 0 .2rem;border-left:2px solid var(--gold);padding-left:.6rem"></p>
           <div class="result-row"><span class="result-label">Gross Revenue/Acre</span><span class="result-value" id="revenue">- &middot; enter a price</span></div>
           <div class="result-row"><span class="result-label">Net Profit/Loss</span><span class="result-value" id="profit">- &middot; enter a price</span></div>
@@ -350,7 +356,6 @@
       </div>
     </div>
   <aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="breakeven"></aside>
-    <div data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:breakeven"></div>
   <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
 
@@ -425,7 +430,7 @@
   /* What the bakers rewrite and the tests read; the calculator is components/breakeven.js.
      CROP_DEFAULTS corn and soybeans are farmdoc's 2027 northern Illinois lines (BUDGETS.r.n), fertilizer is baked
      from the posted co-op prices (scripts/bake_fert_defaults.py). Wheat is this page's own example. */
-  /*FERT:JS*/var FERT={n:0.6695,p:0.8007,k:0.3981,asof:'2026-10-14',r:{corn:[0,0.38,0.29],soybeans:[0,0.8,1.4],wheat:[1.2,0.5,0.35]},nf:{corn:[120,0.5074,'anhydrous']},cf:{usd:4.9875,label:"Dec '27",date:'2026-10-22'}};/*/FERT:JS*/
+  /*FERT:JS*/var FERT={n:0.6695,p:0.8007,k:0.3981,asof:'2026-10-14',r:{corn:[0,0.38,0.29],soybeans:[0,0.8,1.4],wheat:[1.2,0.5,0.35]},nf:{corn:[120,0.5074,'anhydrous']},cf:{usd:4.945,label:"Dec '27",date:'2026-10-26'}};/*/FERT:JS*/
   var CROP_DEFAULTS={corn:{yield:237,price:'',basis:0,seed:137,fertilizer:160,chemicals:101,insurance:37,machinery:210,labor:25,land:293,overhead:122},soybeans:{yield:71,price:'',basis:0,seed:84,fertilizer:85,chemicals:63,insurance:16,machinery:171,labor:24,land:293,overhead:79},wheat:{yield:70,price:'',basis:0,seed:40,fertilizer:94,chemicals:50,insurance:25,machinery:90,labor:30,land:200,overhead:45}};
   /* farmdoc daily, "Illinois Crop Budgets for 2027", farmdoc daily (16):157, Sep 1, 2026, Table 1 (original release Aug 2026).
      machinery = machine hire/lease + utilities + machine repair + fuel and oil + light vehicle + machinery depreciation (their total power costs);
@@ -437,7 +442,8 @@
     cl:{name:'central Illinois, low-productivity',corn:{yield:233,seed:134,chemicals:121,insurance:37,machinery:179,labor:27,overhead:115,land:279},soybeans:{yield:71,seed:78,chemicals:73,insurance:12,machinery:161,labor:27,overhead:90,land:279}},
     s:{name:'southern Illinois',corn:{yield:197,seed:132,chemicals:110,insurance:37,machinery:195,labor:27,overhead:111,land:186},soybeans:{yield:60,seed:80,chemicals:72,insurance:15,machinery:178,labor:25,overhead:85,land:186}}}};
   </script>
-  <script src="/components/breakeven.js?v=5" defer></script>
+  <script src="/components/breakeven.js?v=6" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
+<script src="/components/rate-hint.js?v=1" defer></script>
 </body>
 </html>

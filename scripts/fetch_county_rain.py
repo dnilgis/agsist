@@ -2,7 +2,7 @@
 """fetch_county_rain.py: this year's rain so far in every US county, one
 NOAA station per county, written to data/rain/<st>.json.
 
-Run by .github/workflows/county-rain.yml (Mondays, Jan 2, and by hand).
+Run by .github/workflows/county-rain.yml (every day, Jan 2 again, and by hand).
 RCC-ACIS (data.rcc-acis.org) cannot be reached from the sandbox this was
 built in; the workflow makes the real fetch on a GitHub runner.
 
@@ -58,7 +58,7 @@ TIMEOUT_S = 180
 BACKOFF_S = (15, 45, 120)
 MAX_MINUTES = 40
 NORMALS = (("91", "1991-2020"), ("1", None))
-UA = "agsist.com county rain (https://agsist.com/rain; weekly)"
+UA = "agsist.com county rain (https://agsist.com/rain; daily)"
 
 
 def central_today():

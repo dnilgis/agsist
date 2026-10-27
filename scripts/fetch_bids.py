@@ -27,6 +27,9 @@ from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
 from urllib.parse import urlencode
 
+import basis_method as _bm      # the one basis outlier rule (scripts/basis_method.py)
+import local_bid as _lb         # the one best-bid eligibility test (can_set_best)
+
 API_KEY = os.environ.get("BARCHART_API_KEY", "")
 BASE_URL = "https://ondemand.websol.barchart.com/getGrainBids.json"
 MAX_DISTANCE = 60  # miles from each ZIP
@@ -1029,6 +1032,38 @@ def merge_network(barchart_rows, grid, base=None, roster=None):
     return kept
 
 
+def network_basis_outliers(bids):
+    """id(row) -> why, for network rows whose basis is an outlier among the
+    network rows of the same state, crop and futures contract.
+
+    Uses basis_method.robust_split (5 robust SDs from the median, the SD never
+    under 15c, so nothing within 75c of the middle is ever cut, and no group
+    under 5 rows is judged). Only plain bushel bids with a basis in dollars
+    (under 5 in size; a bigger figure may be cents, and the unit is not this
+    function's to guess) make up the cohort, so a special grade cannot move
+    the middle. Rows without a symbol or state are in no cohort."""
+    groups = {}
+    for b in bids:
+        bs = b.get("basis")
+        if (b.get("source") != "network" or isinstance(bs, bool) or not isinstance(bs, (int, float))
+                or abs(bs) >= 5 or not b.get("symbol") or not b.get("state")
+                or b.get("category") not in ("corn", "soybeans", "wheat") or not _lb.can_set_best(b)):
+            continue
+        groups.setdefault((b["state"], b["category"], _norm_symbol(b["symbol"])), []).append(b)
+    out = {}
+    for (st, cat, sym), rows in groups.items():
+        wrap = [{"basis": r["basis"], "row": r} for r in rows]
+        _kept, odd = _bm.robust_split(wrap)
+        for w in odd:
+            d = w["outlier"]
+            sign = "+" if w["basis"] >= 0 else "-"
+            msign = "+" if d["median"] >= 0 else "-"
+            out[id(w["row"])] = (f"basis {sign}${abs(w['basis']):.2f} sits ${abs(d['dist']):.2f} "
+                                 f"{'over' if d['dist'] > 0 else 'under'} the middle ({msign}${abs(d['median']):.2f}) "
+                                 f"of {len(rows)} network bids on {sym} in {st}")
+    return out
+
+
 def verify_bids(bids, detail=None):
     """Mark every row `verified` true or false. Returns (n_ok, n_bad).
 
@@ -1103,6 +1138,7 @@ def verify_bids(bids, detail=None):
             cat_span[cat] = (min(lo, m), max(hi, m))
 
     n_ok = n_bad = 0
+    net_odd = network_basis_outliers(bids)
     for b in bids:
         # Rows from the AGSIST elevator network (dnilgis/bids) were verified
         # by that repository's own board checks before they were published
@@ -1111,6 +1147,21 @@ def verify_bids(bids, detail=None):
         # cohort check cannot see them; running it would refuse every one for
         # having no cohort. Trust the upstream verification and move on.
         if b.get("source") == "network":
+            # `basisOdd` IS NOT A VERDICT ON THE ROW. It is a flag that this board's
+            # basis sits far from the other network boards on its contract in its
+            # state (basis_method.robust_split, same constants as the state pages
+            # and /cash-bids "Best"). Riceville IA soybeans at +$1.40 against a
+            # -$0.65 Iowa middle (2026-10-23) is internally consistent -- cash
+            # minus basis is the right futures -- so the cohort check could not
+            # catch it, and it was "the highest checked bid in the sample" for 16
+            # of 50 grid ZIPs. The row stays verified and still answers LOCALLY
+            # (36 of 22,976 rows carry the flag, most of them real plant bids such
+            # as Kansas Ethanol +25c in KS); it only cannot be the NATIONAL pick,
+            # where there is no local context to say it is a processor's price.
+            if id(b) in net_odd:
+                b["basisOdd"] = True
+            else:
+                b.pop("basisOdd", None)
             b["verified"] = True
             b.pop("unverifiedWhy", None)
             n_ok += 1
@@ -1172,6 +1223,15 @@ def verified_only(bids):
     verify_bids() has simply not been run, and this must not silently empty
     a page that never had the guard."""
     return [b for b in bids if b.get("verified", True)]
+
+def selectable(bids):
+    """The rows a page may pick a BEST bid from: verified, and a plain bushel
+    bid (no special grade, no meal or cwt quote, inside the crop's price band).
+    The futures pages apply the same test (components/bid-filter.js) before they
+    pick; this keeps the slim file and the ported pick on the same rows. Before
+    2026-10-23 neither did: Baring Elevator MO "Organic Yellow Corn" $11.50 was
+    the highest checked corn bid for 13 of 50 grid ZIPs."""
+    return [b for b in verified_only(bids) if _lb.can_set_best(b)]
 
 # ── WHAT THE GUARD WITHHELD, WRITTEN DOWN ─────────────────────────────────
 # The run log prints twelve withheld rows and then "... and N more". The rest
@@ -1580,7 +1640,7 @@ def page_pick(bids, grid_zip, crop):
     crop_bids = [b for b in bids if _page_crop(b.get("commodity")) == crop]
     if not crop_bids:
         return None
-    crop_bids = verified_only(crop_bids)     # every branch, as the pages do
+    crop_bids = selectable(crop_bids)        # every branch, as the pages do
     if not crop_bids:
         return None
 
@@ -1594,7 +1654,10 @@ def page_pick(bids, grid_zip, crop):
         if local:
             return min(local, key=_bid_order)
 
-    return min(crop_bids, key=_bid_order)
+    # THE NATIONAL PICK SKIPS A BASIS OUTLIER (verify_bids sets basisOdd); the
+    # page does the same. Local answers above keep it.
+    nat = [b for b in crop_bids if not b.get("basisOdd")]
+    return min(nat, key=_bid_order) if nat else None
 
 
 def slim_dump_rows(rows):
@@ -1632,7 +1695,7 @@ def slim_for_browser(bids, grid):
     keep = {id(b): b for b in bids if b.get("zip") in set(gz)}
 
     for crop in ("corn", "beans", "wheat"):
-        cb = verified_only([b for b in bids
+        cb = selectable([b for b in bids
                             if _page_crop(b.get("commodity")) == crop])
         if not cb:
             continue
@@ -1662,8 +1725,10 @@ def slim_for_browser(bids, grid):
                 if not _is_closed(b) and str(b.get("deliveryEnd") or "")[:10] >= _plus_days(35):
                     keep[id(b)] = b
                     break
-        top = min(cb, key=_bid_order)
-        keep[id(top)] = top
+        nat = [b for b in cb if not b.get("basisOdd")]      # as page_pick: the national pick skips a basis outlier
+        if nat:
+            top = min(nat, key=_bid_order)
+            keep[id(top)] = top
     # IN KEY ORDER. See the note above: the pages break a tie by array order,
     # so the array order has to be the key order or the two disagree on every
     # tie and nothing in the build can tell.
@@ -2230,6 +2295,40 @@ def selftest():
        page_pick(rows2, "11111", "corn")["cashPrice"] == 9.99)
     ck("the national top is NOT shown to a reader who has a local bid",
        page_pick(rows2, "53705", "corn")["cashPrice"] != 9.99)
+
+    # ── REAL ROWS, 2026-10-23: what may be "the highest checked bid" ─────────
+    # Baring Elevator MO "Organic Yellow Corn" $11.50 (no basis) was the
+    # national corn pick for 13 of 50 grid ZIPs; Riceville IA soybeans, basis
+    # +$1.40 against an Iowa middle near -$0.40, was the soybean pick for 16.
+    def _real(fac, city, st, zp, com, cat, cash, basis, sym):
+        return {"facility": fac, "city": city, "state": st, "zip": zp, "sourceZip": "",
+                "commodity": com, "category": cat, "cashPrice": cash, "basis": basis,
+                "symbol": sym, "source": "network", "deliveryStart": "2026-10-01",
+                "deliveryEnd": "2026-10-31", "deliveryMonth": "10/01/2026"}
+    baring = _real("Baring Elevator", "Baring Elevator", "MO", "63531", "Organic Yellow Corn", "corn", 11.5, None, "")
+    plain_corn = _real("Dumas Co-op Elevators", "Dumas", "TX", "79029", "Corn", "corn", 5.15, -0.40, "ZCZ26")
+    ck("an organic corn row cannot set the national pick",
+       page_pick([baring, plain_corn], "11111", "corn") is plain_corn)
+    ck("...and is dropped from the slim file's national row too",
+       baring not in slim_for_browser([baring, plain_corn], [{"zip": "11111"}]))
+    ck("a bushel price outside its crop's band cannot set a pick",
+       page_pick([_real("X", "Y", "IA", "50010", "Corn", "corn", 120.083, -0.4, "ZCZ26"), plain_corn], "11111", "corn") is plain_corn)
+    _ia = [(-0.85, 11.68), (-0.55, 12.0), (-0.5, 12.05), (-0.5, 12.05), (-0.45, 12.1), (-0.43, 12.12),
+           (-0.42, 12.13), (-0.33, 12.22), (-0.3, 12.25), (-0.25, 12.3), (-0.25, 12.3), (-0.15, 12.4)]
+    iowa = [_real("Co-op %d" % i, "Town %d" % i, "IA", "5%04d" % i, "Soybeans", "soybeans", c, b, "ZSX26")
+            for i, (b, c) in enumerate(_ia)]
+    rice = _real("Nutrition Service Co. LLC", "Riceville", "IA", "50466", "SOYBEANS", "soybeans", 13.95, 1.4, "ZSX26")
+    ohio = _real("Heritage Coop", "Marysville", "OH", "43040", "Soybeans", "soybeans", 12.25, -0.30, "ZSX26")
+    soy = iowa + [rice, ohio]
+    verify_bids(soy)
+    ck("Riceville's +$1.40 basis is flagged against the real Iowa middle",
+       rice.get("basisOdd") is True and not any(r.get("basisOdd") for r in iowa + [ohio]))
+    ck("...and stays verified, because it can still be a local bid",
+       rice["verified"] is True)
+    ck("...but cannot be the national soybean pick",
+       page_pick(soy, "11111", "beans") is not rice and page_pick(soy, "11111", "beans")["cashPrice"] == 12.4)
+    ck("...and the slim file does not keep it as the national row",
+       rice not in slim_for_browser(soy, [{"zip": "11111"}]))
 
     slim2 = slim_for_browser(rows2, grid2)
     ck("the slim file keeps what each grid ZIP needs",

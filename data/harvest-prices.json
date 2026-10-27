@@ -1,6 +1,6 @@
 {
  "crop_year": 2026,
- "updated": "2026-10-22",
+ "updated": "2026-10-26",
  "source": "CBOT futures settlements averaged per RMA Commodity Exchange Price Provisions",
  "commodities": [
   {
@@ -17,7 +17,7 @@
    "harvest": {
     "status": "running",
     "price": null,
-    "running_avg": 4.84,
+    "running_avg": 4.81,
     "window": "October",
     "series": [
      {
@@ -97,12 +97,22 @@
      },
      {
       "d": "2026-10-22",
-      "s": 4.6025,
-      "p": true,
+      "s": 4.605,
       "a": 4.84
+     },
+     {
+      "d": "2026-10-23",
+      "s": 4.56,
+      "a": 4.82
+     },
+     {
+      "d": "2026-10-26",
+      "s": 4.55,
+      "p": true,
+      "a": 4.81
      }
     ],
-    "days_counted": 16,
+    "days_counted": 18,
     "days_total": 22
    }
   },
@@ -120,7 +130,7 @@
    "harvest": {
     "status": "running",
     "price": null,
-    "running_avg": 12.75,
+    "running_avg": 12.72,
     "window": "October",
     "series": [
      {
@@ -200,12 +210,22 @@
      },
      {
       "d": "2026-10-22",
-      "s": 12.535,
-      "p": true,
+      "s": 12.53,
       "a": 12.75
+     },
+     {
+      "d": "2026-10-23",
+      "s": 12.565,
+      "a": 12.74
+     },
+     {
+      "d": "2026-10-26",
+      "s": 12.4225,
+      "p": true,
+      "a": 12.72
      }
     ],
-    "days_counted": 16,
+    "days_counted": 18,
     "days_total": 22
    }
   }
@@ -297,15 +317,25 @@
     },
     {
      "d": "2026-10-22",
-     "s": 4.6025,
-     "p": true,
+     "s": 4.605,
      "a": 4.84
+    },
+    {
+     "d": "2026-10-23",
+     "s": 4.56,
+     "a": 4.82
+    },
+    {
+     "d": "2026-10-26",
+     "s": 4.55,
+     "p": true,
+     "a": 4.81
     }
    ],
-   "days_counted": 16,
+   "days_counted": 18,
    "status": "running",
    "price": null,
-   "running_avg": 4.84
+   "running_avg": 4.81
   },
   {
    "key": "ZSX26.CBT|2026-10-01|2026-10-31",
@@ -393,15 +423,25 @@
     },
     {
      "d": "2026-10-22",
-     "s": 12.535,
-     "p": true,
+     "s": 12.53,
      "a": 12.75
+    },
+    {
+     "d": "2026-10-23",
+     "s": 12.565,
+     "a": 12.74
+    },
+    {
+     "d": "2026-10-26",
+     "s": 12.4225,
+     "p": true,
+     "a": 12.72
     }
    ],
-   "days_counted": 16,
+   "days_counted": 18,
    "status": "running",
    "price": null,
-   "running_avg": 12.75
+   "running_avg": 12.72
   }
  ]
 }

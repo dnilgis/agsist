@@ -178,7 +178,7 @@ test("where the ask shows, and how it loads", () => {
   assert.match(L, /s\.src = '\/components\/land-alert\.js\?v=1';/);
   assert.match(L, /document\.querySelector\('\[data-land-alert\],section\[data-atlas-sales="county"\]'\)/);
   assert.match(L, /var CV = '95';/);
-  assert.ok(Number(/var CACHE_VERSION = (\d+);/.exec(read("sw.js"))[1]) >= 252);
+  assert.ok(Number(/var CACHE_VERSION = (\d+);/.exec(read("sw.js"))[1]) >= 264);
 });
 
 test("the morning report, signups and cron health know the list; signups count by radius, never a ZIP", () => {

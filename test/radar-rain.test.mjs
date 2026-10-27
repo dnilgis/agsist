@@ -167,5 +167,8 @@ test("a real map under the rain: USGS National Map only, credited, with a fallba
   // the rain still draws over the site's own outline and keeps the field pin
   assert.match(js, /\/data\/us-states\.geo\.json/);
   assert.match(js, /circleMarker\(\[pt\.lat, pt\.lon\]/);
-  assert.ok(page.includes("/components/radar-rain-page.js?v=5"));
+  assert.ok(page.includes("/components/radar-rain-page.js?v=6"));
+  // Oct 23, 2026: the county gauges are read every day now; the lag is NOAA's, not a weekly run
+  assert.doesNotMatch(js, /once a week/);
+  assert.match(js, /NOAA posts gauge reports a few days late, so this week runs behind the totals above\./);
 });

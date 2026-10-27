@@ -10,10 +10,15 @@ January it reads the unsent rainyear:<last year>: sign-ups from GET
 year, and marks it with POST /notice-mark only after the send went through.
 A marked address is never mailed again, so any number of runs is safe.
 
-WHEN IT SENDS. Only in January (America/Chicago), for last year. It runs as a
-step of county-rain.yml (Jan 2 and every Monday), right after that run fetched
-and committed the finished year into data/rain/<st>.json, so the email and the
-county page carry the same numbers. A county is due when its state's file is
+WHEN IT SENDS. Only in January (America/Chicago), for last year, from Jan 2
+(FIRST_DAY). It runs as a step of county-rain.yml (every day since Oct 23, 2026,
+was Mondays; plus Jan 2), right after that run fetched and committed the
+finished year into data/rain/<st>.json, so the email and the county page carry
+the same numbers. Jan 1's run (7:23 am Central) fetches through Dec 31 while
+many gauges have not sent Dec 31 yet, so it never mails; the year's first
+emails go on Jan 2, as they did when the job ran on Mondays and Jan 2. Daily
+runs never mean more email: each address is mailed once and marked, so the
+other January days only reach the counties whose station came in late. A county is due when its state's file is
 the finished year (fetched through Dec 31, build_county_rain.done_year) AND
 its station reported through Dec 31. A station that is still late waits;
 from Jan 20 on it is mailed anyway, saying the last day the station reported.
@@ -63,6 +68,7 @@ import county_rain as R           # noqa: E402  state names, county slugs
 
 SITE = SN.SITE
 UTM = "utm_source=rain_year&utm_medium=email"
+FIRST_DAY = 2          # nothing on Jan 1: the Dec 31 reports are still coming in (see WHEN IT SENDS)
 LATE_DAY = 20          # from Jan 20, a late station is mailed with its last day; a county with no page gets a plain note
 TOPIC_RE = re.compile(r"rainyear:(\d{4}):(\d{5})")
 SRC_RE = re.compile(r"page:(rain/[a-z0-9-]+/[a-z0-9-]+)")
@@ -188,6 +194,9 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     year = a.year or today.year - 1
     if not (a.any_day and a.year) and not (today.month == 1 and year == today.year - 1):
         out("rainyear: not January (%s, America/Chicago). Nothing to do." % today.isoformat())
+        return 0
+    if not (a.any_day and a.year) and today.day < FIRST_DAY:
+        out("rainyear: %s is before Jan %d; the Dec 31 reports are still coming in. Nothing to do." % (today.isoformat(), FIRST_DAY))
         return 0
     if cmap is None:
         _c = {}
@@ -464,6 +473,28 @@ def selftest():
     s3 = SMTP()
     rc, log = go(["--send"], w, s3, "2027-01-25 09:00")
     ck("Jan 25: the late station goes; the unfinished state still waits", s3.sent == ["late@example.com"], s3.sent)
+    # 2026-10-23: county-rain.yml runs every day. Jan 1 mails nobody; every day after that, twice a
+    # day on Jan 2 (13:23 and 14:41 UTC), each address still gets exactly one email
+    w, sd = Worker(), SMTP()
+    rc, log = go(["--send"], w, sd, "2027-01-01 07:30")
+    ck("Jan 1: nothing read, nothing sent", rc == 0 and not w.log and not sd.sent and "before Jan 2" in log, log)
+    for day in range(2, 32):
+        for hm in (("07:30", "08:50") if day == 2 else ("07:30",)):
+            rc, log = go(["--send"], w, sd, "2027-01-%02d %s" % (day, hm))
+            ck("daily run Jan %d %s: exit 0" % (day, hm), rc == 0, log)
+    rc, log = go(["--send"], w, sd, "2027-02-01 07:30")
+    ck("daily runs through January: each address mailed exactly once",
+       sorted(sd.sent) == ["late@example.com", "one@example.com", "two@example.com"] and sorted(w.marks) == sorted(sd.sent), (sd.sent, w.marks))
+    ck("daily runs: the full-year ones on Jan 2, the late station on Jan 20, not before",
+       len(w.log) == 31 and sd.sent[:2] == ["one@example.com", "two@example.com"] and sd.sent[2] == "late@example.com", (sd.sent, len(w.log)))
+    w, s = Worker(), SMTP()
+    rc, log = go(["--send"], w, s, "2027-01-02 07:30")
+    late_after = list(s.sent)
+    for day in range(3, 20):
+        go(["--send"], w, s, "2027-01-%02d 07:30" % day)
+    ck("the late station waits every day until Jan 20", s.sent == late_after and "late@example.com" not in s.sent, s.sent)
+    go(["--send"], w, s, "2027-01-20 07:30")
+    ck("and goes on Jan 20", s.sent[-1:] == ["late@example.com"], s.sent)
     w, s = Worker(), SMTP(refuse={"one@example.com", "two@example.com"})
     rc, log = go(["--send"], w, s, "2027-01-04 09:00")
     ck("all refused: exit 1, nothing marked", rc == 1 and not w.marks, log)

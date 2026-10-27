@@ -10,7 +10,7 @@ the lever named for them.
 THE RAIN LINK. PRF, Atlas and ARC/PLC county pages each carry one link marked
 data-xl="rain": the county's own rain page when it is a live page (not a
 pointer), else the state rain page, which every county page had before. The
-rain set changes week to week and those three builders do not run then, so
+rain set changes day to day and those three builders do not run then, so
 scripts/build_county_rain.py's workflow (county-rain.yml) runs `stamp` right
 after it builds: every marked link is rewritten to what rain_link() says now.
 The builders call rain_link() too, so a builder's --check and the stamp agree.

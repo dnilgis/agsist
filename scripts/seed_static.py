@@ -2952,7 +2952,7 @@ def seed_futures_pages(prices, today):
             note = ("Live cattle " + state_words(live)[0] + (" at" if live is False else " near") + " <strong>$" + lc + "</strong>" + stale
                     + ((" &middot; feeders near $" + gf) if gf else "")
                     + " &middot; $/cwt &middot; as of " + flabel
-                    + " &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours. Reload for the latest.")
+                    + " &middot; Yahoo Finance, delayed, updated every 15 min in session.")
             t, c2 = seed_between(t, "note", note)
             changed = c1 or c2
         else:

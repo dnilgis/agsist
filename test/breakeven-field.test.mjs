@@ -26,7 +26,7 @@ test("the switch is in the answer box and the ? is a real 40px button", () => {
   assert.match(ans, /id="be-yr2" role="radiogroup" aria-label="Crop year"/);
   assert.match(HTML, /\.hint-icon\{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;/);
   assert.doesNotMatch(HTML, /\.hint-icon::before\{content:"";position:absolute;inset:-12px;\}/);
-  assert.match(HTML, /breakeven\.js\?v=5/); // v5 2026-10-19: flat A2809 corn N (money audit 1)
+  assert.match(HTML, /breakeven\.js\?v=6/); // v6 2026-10-23: the page ask under the answer (fx/pageasks); v5 2026-10-19: flat A2809 corn N (money audit 1)
 });
 
 function serve() {

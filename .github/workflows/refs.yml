@@ -62,6 +62,7 @@ jobs:
             scripts/private_remote.sh
             references/sources.json
             /.github/actions/engine/
+            /.github/actions/pdftotext/
             /.github/engine-paths
           sparse-checkout-cone-mode: false
       - name: Engine checkout

@@ -55,7 +55,7 @@ test("Christmas dates come from data/rain-print.json, never from the page", () =
   assert.ok(!/\b20\d\d\b/.test(ARTICLE.replace(/\/img\/photos\/[\w.-]+/g, "")), "no year written into the article");
   assert.match(HTML, /fetch\('\/data\/rain-print\.json'/);
   assert.match(HTML, /P\.xmasLine\(cfg, today\)/);
-  assert.match(HTML, /rain-print-promo\.js\?v=5" defer/);
+  assert.match(HTML, /rain-print-promo\.js\?v=6" defer/);
   // the shared line, against the shipped file
   const short = (iso) => P.xmasLine({ print_christmas_cutoff: iso, framed_christmas_cutoff: iso }, iso.slice(0, 4) + "-10-02").match(/by (\w+ \d+)/)[1];
   const pc = short(J.print_christmas_cutoff), fc = short(J.framed_christmas_cutoff);
@@ -88,7 +88,7 @@ test("the homepage's Christmas card links here; the other cards still link /rain
   assert.equal(P.cardFor(J, y + "-11-20").href, "/gifts-for-farmers");
   assert.equal(P.cardFor(J, y + "-12-10").href, "/rain-print");
   assert.equal(P.cardFor(J, y + "-10-13").href, "/rain-print");
-  assert.match(readFileSync(ROOT + "index.html", "utf8"), /rain-print-promo\.js\?v=4/, "the homepage loads the new copy");
+  assert.match(readFileSync(ROOT + "index.html", "utf8"), /rain-print-promo\.js\?v=6/, "the homepage loads the new copy");
   const rp = readFileSync(ROOT + "rain-print.html", "utf8");
   assert.equal((rp.match(/href="\/gifts-for-farmers"/g) || []).length, 1);
 });

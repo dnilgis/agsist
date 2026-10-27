@@ -35,7 +35,7 @@ const RP = ctx.RainPrint;
 const CODES = {
   K7Q2M: RP.encodeCode({ place: "Testville, WI", station: "USC00470000", year: 2025, palette: "paper", name: "The Made-Up Farm" }),
   ZX9PQ: RP.encodeCode({ place: "Nowhere, IA", station: "USC00130000", year: 2024, palette: "paper", style: "r2", normals: true, name: "Pat and Lee Example",
-    dedication: "For Grandpa Example", logo: "abcdefghjkmn", crop: "corn", cropPlant: "2024-05-01", cropHarvest: "2024-10-10",
+    dedication: "For Grandpa Example", logo: "abcdefghjkmn", hist: true, frost: true, ribbon: true,
     markers: [{ date: "2024-06-01", label: "Planted the last field" }, { date: "2024-08-02", label: "Made-up wedding" }] }),
   "4HJ8T0": RP.encodeCode({ place: "Sample, MN", station: "USC00210000", year: 2023, palette: "paper", name: "X" }),
 };
@@ -74,7 +74,7 @@ test("a sealed file opened with the right id holds no personal field: no name, d
       assert.ok(opened, id);
       const x = RP.decodeCode(opened);
       assert.equal(x.name, ""); assert.equal(x.dedication, ""); assert.equal(x.markers.length, 0); assert.equal(x.logo, ""); assert.equal(x.gift, false);
-      for (const k of ["place", "station", "year", "style", "layout", "palette", "size", "cmp", "normals", "records", "crop", "cropPlant", "cropHarvest"]) assert.deepEqual(x[k], full[k], id + " keeps " + k);
+      for (const k of ["place", "station", "year", "style", "layout", "palette", "size", "cmp", "normals", "records", "hist", "frost", "heat", "ribbon"]) assert.deepEqual(x[k], full[k], id + " keeps " + k);
       const raw = Buffer.from(opened.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8");
       for (const w of ["Example", "Grandpa", "Planted", "wedding", "Made-Up Farm", "abcdefghjkmn"]) assert.ok(!raw.includes(w), id + " has no " + w);
     }

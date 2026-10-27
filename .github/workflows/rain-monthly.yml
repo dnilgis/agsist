@@ -110,7 +110,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg prf farmland-atlas arc-plc 2>/dev/null || true
+          git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json prf farmland-atlas arc-plc 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           N=$(ls data/rain/*.json 2>/dev/null | wc -l)
           git commit -q -m "data: county rain ($N states)"

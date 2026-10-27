@@ -2237,6 +2237,7 @@ def build_main(D, ch):
   Run an extension office or co-op site? <a href="/developer#arc-plc">Embed the calculator</a>.</p>
   <details class="ap-det"><summary>Sources</summary><ul class="ap-src">{srcs}<li><a href="https://quickstats.nass.usda.gov/" rel="noopener">USDA NASS Quick Stats</a> (season-average prices)</li></ul></details>
   <p class="ap-small">Related: <a href="/farm-bill">Farm bill tracker</a> &middot; <a href="/breakeven">Break-even calculator</a> &middot; <a href="/harvest-price-tracker">Harvest price and pre-sell</a></p>
+  <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
 </main>
 """
     return head(title, desc, "/arc-plc", jsonld, True, fonts, og_title=og_title) + body + tail(ftr, calc=True, hub=True), {

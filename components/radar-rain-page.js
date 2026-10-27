@@ -179,7 +179,7 @@
         dayLabel(wk.from) + ' to ' + dayLabel(wk.to) + ' (each day ending about 7 am):</p>' +
         '<div class="rr-gv"><span><b>' + inTxt(wk.gauge) + '</b> gauge</span><span><b>' + inTxt(wk.radar) + '</b> radar at the gauge</span></div>' +
         '<p class="fine">' + (Math.abs(diff) < 5 ? 'Within 0.05 in of each other that week.' : 'Radar read ' + (diff > 0 ? 'more' : 'less') + ' than the gauge by ' + (Math.abs(diff) / 100).toFixed(2) + ' in that week.') +
-        ' Gauge reports reach me about once a week, so this week runs behind the totals above.</p>';
+        ' NOAA posts gauge reports a few days late, so this week runs behind the totals above.</p>';
     } else {
       html = '<p class="rr-gk">Beside a real gauge</p><p>The nearest county gauge I track is ' + who + ', ' + mi + ' away, but it missed a day or reported a multi-day total in its last 7 days of reports, so there is no clean week to put beside radar.</p>';
     }

@@ -1369,8 +1369,12 @@
     var ends = [], endBoxes = [], EX = X1 + 12, endY = y(E.total), endN = E.cmp ? y(E.normalRec) : null;
     if (full) {
       var yw = tr('your year'), uw = tr('usual');
-      ends.push(T(EX, endY + 5, yw, { size: 15, w: 500, fill: C.rain })); endBoxes.push(box(EX, endY + 5, yw, { size: 15, w: 500 }));
-      if (E.cmp) { ends.push(T(EX, endN + 5, uw, { size: 15, fill: C.mute })); endBoxes.push(box(EX, endN + 5, uw, { size: 15 })); }
+      /* The two word ends sit 18 units apart at least (2026-10-23, a 2025 print whose year and usual ended 0.4 in apart drew
+         "usual" over "your year"): when the lines end closer than that, each label moves half the shortfall, the higher line's up. */
+      var yOff = 0, nOff = 0;
+      if (E.cmp && Math.abs(endY - endN) < 18) { var nudge = (18 - Math.abs(endY - endN)) / 2; if (endY <= endN) { yOff = -nudge; nOff = nudge; } else { yOff = nudge; nOff = -nudge; } }
+      ends.push(T(EX, endY + 5 + yOff, yw, { size: 15, w: 500, fill: C.rain })); endBoxes.push(box(EX, endY + 5 + yOff, yw, { size: 15, w: 500 }));
+      if (E.cmp) { ends.push(T(EX, endN + 5 + nOff, uw, { size: 15, fill: C.mute })); endBoxes.push(box(EX, endN + 5 + nOff, uw, { size: 15 })); }
       var gap = E.cmp ? E.normalRec - E.total : 0;
       if (E.cmp && Math.abs(gap) >= 0.5 && Math.abs(endY - endN) > 60) {
         var bx = X1 + 6, ya = Math.min(endY, endN) + 16, yb = Math.max(endY, endN) - 16, mid = (ya + yb) / 2, bt = rainAmt(Math.abs(gap), 'tot') + (LOC.fr ? (gap > 0 ? ' de moins' : ' de plus') : gap > 0 ? ' short' : ' more');

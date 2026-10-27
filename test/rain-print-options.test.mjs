@@ -1,5 +1,7 @@
-/* Rain Print options of 2026-10-17 (Sig): crop stages, every year behind your year,
- * frost marks, the hottest and coldest day, the temperature ribbon.
+/* Rain Print options of 2026-10-17 (Sig): every year behind your year, frost marks, the hottest and coldest
+ * day, the temperature ribbon. The crop layers (crop stages, plant drawings, usual-year plants) came off the
+ * page on 2026-10-23 (Sig); their drawing stays for an order paid before then (Sig's order view only), so the
+ * stage and art checks below feed the order's crop straight in.
  *
  * Pure checks, by hand from the sources:
  *   - growing degree days the GDU calculator's way (86/50, from the planting day);
@@ -8,9 +10,11 @@
  *   - the days ahead of or behind a usual year;
  *   - full years, the remarkable-years picker and the rank note;
  *   - frost dates and the hottest and coldest day from the records layer, withheld when a gap could change them;
- *   - the design code, the query string and the short-link rule carry every option; old codes open as made.
- * In a real browser (skipped without Playwright): the page draws the options from a link, the
- * options panel follows, the URL, the code, the order's design link and the proof sheet carry them.
+ *   - the design code, the query string and the short-link rule carry every option; old codes open as made,
+ *     and an old code or link with a crop opens without it.
+ * In a real browser (skipped without Playwright): the page draws the options from a link (an old one with a
+ * crop: drawn without it), the options panel follows, the URL, the code, the order's design link and the proof
+ * sheet carry them.
  * RP_SHOTS=<dir> saves the options panel at 390 and 1280 px.
  *
  *   node --test test/rain-print-options.test.mjs
@@ -67,7 +71,7 @@ test("soybean stages by hand: 20 GDU a day from May 10; emergence and V3 only", 
   assert.match(X.CROPS.soy.foot, /soybean flowering and maturity depend on day length and variety, so they are not drawn/);
   // the usual-year note for soybeans, by hand: 24 a day reaches V3 400 on day 17 (May 26), 20 a day on day 20 (May 29): 3 days ahead
   const warm = X.tempDays(temps(2025, () => [84, 64]), 2025);
-  const s = RP.normalize({ place: "Ames, IA", year: 2025, crop: "soy", cropPlant: "2025-05-10", cropHarvest: "2025-10-15", plants: true, ghost: true });
+  const s = { crop: "soy", cropPlant: "2025-05-10", cropHarvest: "2025-10-15", plants: true, ghost: true };   // an order's crop (RP.orderCrop)
   const c = RP.cropInput(s, warm, td);
   assert.deepEqual(plain(c.note), { key: "V3", days: 3, text: "3 days ahead of a usual year" });
   assert.deepEqual(plain(c.ghost.map((g) => g.key)), ["VE", "V3"]);
@@ -97,8 +101,8 @@ test("days ahead of or behind a usual year: the key stage only, and only when bo
   assert.equal(X.compare(a, a, "R1").text, "Same day as a usual year");
   const cut = X.cropStages("corn", usual, "2025-05-01", "2025-06-01");
   assert.equal(X.compare(cut, b, "R1"), null, "not reached by harvest: no note");
-  // the engine's crop input carries it, with its foot-line words
-  const s = RP.normalize({ place: "Ames, IA", year: 2025, crop: "corn", cropPlant: "2025-05-01", cropHarvest: "2025-10-31", plants: true, ghost: true });
+  // the engine's crop input (an order's crop, RP.orderCrop) carries it, with its foot-line words
+  const s = { crop: "corn", cropPlant: "2025-05-01", cropHarvest: "2025-10-31", plants: true, ghost: true };
   const c = RP.cropInput(s, warm, usual);
   assert.equal(c.note.text, "11 days ahead of a usual year");
   assert.ok(c.foot.some((t) => /Purdue NCH-40/.test(t)) && c.foot.some((t) => /NOAA 1991 to 2020 normal temperatures/.test(t)));
@@ -262,21 +266,22 @@ test("the remarkable days give up their temperature days to the temperature laye
 // ---------- the design code, the link, the short link ----------
 const OPT = { place: "Ames, IA", station: "130200 2", year: 2012, style: "r1", cmp: "normal", name: "The Olson Farm",
   markers: [{ date: "2012-05-01", label: "Planted" }, { date: "2012-10-20", label: "Harvest done" }],
-  crop: "corn", cropPlant: "2012-05-01", cropHarvest: "2012-10-20", plants: true, ghost: true, hist: true, frost: true, heat: true, ribbon: true };
+  hist: true, frost: true, heat: true, ribbon: true };
+const SWITCHES = ["hist", "frost", "heat", "ribbon"];
 test("every option round-trips through the design code and the query string", () => {
   const s = RP.normalize(OPT), code = RP.encodeCode(s), back = RP.decodeCode(code);
-  for (const k of ["crop", "cropPlant", "cropHarvest", "plants", "ghost", "hist", "frost", "heat", "ribbon"]) assert.deepEqual(back[k], s[k], k);
+  for (const k of SWITCHES) assert.equal(back[k], true, k);
   const fromQ = RP.fromParams("?" + RP.toParams(s));
-  for (const k of ["crop", "cropPlant", "cropHarvest", "plants", "ghost", "hist", "frost", "heat", "ribbon"]) assert.deepEqual(fromQ[k], s[k], "query " + k);
-  assert.match(RP.toParams(s), /crop=corn&plant=2012-05-01&harvest=2012-10-20&plants=1&ghost=1&hist=1&frost=1&heat=1&ribbon=1/);
+  for (const k of SWITCHES) assert.equal(fromQ[k], true, "query " + k);
+  assert.match(RP.toParams(s), /hist=1&frost=1&heat=1&ribbon=1/);
   // each switch alone
-  for (const k of ["plants", "ghost", "hist", "frost", "heat", "ribbon"]) {
-    const one = RP.normalize(Object.assign({}, OPT, { plants: false, ghost: false, hist: false, frost: false, heat: false, ribbon: false }, { [k]: true }));
+  for (const k of SWITCHES) {
+    const one = RP.normalize(Object.assign({}, OPT, { hist: false, frost: false, heat: false, ribbon: false }, { [k]: true }));
     const d = RP.decodeCode(RP.encodeCode(one));
-    for (const j of ["plants", "ghost", "hist", "frost", "heat", "ribbon"]) assert.equal(d[j], j === k, k + " alone: " + j);
+    for (const j of SWITCHES) assert.equal(d[j], j === k, k + " alone: " + j);
   }
   // a gift code and the short-link rule keep them
-  assert.equal(RP.decodeCode(RP.encodeCode(Object.assign({}, s, { gift: true }))).crop, "corn");
+  assert.equal(RP.decodeCode(RP.encodeCode(Object.assign({}, s, { gift: true }))).ribbon, true);
   const W = read("workers/subs-worker.js"), rule = /if \(!\(v2 \? (\/.*?\/) : \/\^\[a-z0-9\]\{4\}\$\/\)\.test\(f\[4\]\)\) return false;/.exec(W)[1];
   const re = new Function("return " + rule)();
   const key = atob(code.replace(/-/g, "+").replace(/_/g, "/")).split("|")[4];
@@ -292,7 +297,7 @@ test("a code or tool link made before the options opens as it was made; a hand l
   assert.ok(!tool.frost && !tool.heat && !tool.ribbon && !tool.hist && !tool.normals && !tool.records, "a tool link (style=) without them: off, as it was made");
   const hand = RP.fromParams("?place=Ames%2C+IA&year=2012");
   assert.ok(hand.frost && hand.heat && hand.ribbon && hand.hist && hand.normals && hand.records && hand.cmp === "normal" && !hand.crop && !hand.plants && !hand.ghost,
-    "a hand link: every layer on (frost, hottest and coldest, the daily stripes, every year behind, normals, remarkable days); the crop waits for its days");
+    "a hand link: every layer on (frost, hottest and coldest, the daily stripes, every year behind, normals, remarkable days); no crop layers");
   assert.ok(!RP.fromParams("?place=Ames%2C+IA&year=2012&frost=0").frost, "unless it says frost=0");
   for (const k of ["ribbon", "hist"]) assert.equal(RP.fromParams("?place=Ames%2C+IA&year=2012&" + k + "=0")[k], false, "unless it says " + k + "=0");
   // a code made by the tool before Oct 22 with only frost and heat on (key "~fh") opens with just those, and so does its link
@@ -302,10 +307,62 @@ test("a code or tool link made before the options opens as it was made; a hand l
   assert.deepEqual(RP.fromParams("?d=" + wasCode), back, "the same through ?d=");
   const wasLink = RP.fromParams("?" + RP.toParams(was));
   assert.ok(wasLink.frost && wasLink.heat && !wasLink.ribbon && !wasLink.hist, "and through the tool's own link");
-  // a crop with its days out of order, or without days, is no crop; the plant switches mean nothing without one
-  assert.equal(RP.normalize(Object.assign({}, OPT, { cropHarvest: "2012-04-01" })).crop, "");
-  assert.equal(RP.normalize(Object.assign({}, OPT, { cropPlant: "" })).plants, false);
-  assert.equal(RP.normalize(Object.assign({}, OPT, { crop: "sunflower" })).crop, "", "no sunflowers");
+});
+
+/* No crop layers (Sig, 2026-10-23: "I don't want to offer the plant outlines or any of that as an image on the prints").
+   A code made before that day carries the crop in its key field ("~" + c or s + the planting and harvest days, base 36,
+   + p for plant drawings, g for usual-year plants); a link carries crop=, plant=, harvest=, plants=, ghost=. */
+const b64u = (t) => Buffer.from(t, "utf8").toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const d36 = (n) => ("0" + n.toString(36)).slice(-2);
+// Ames, IA, 2012: corn planted May 1 (day 121), harvested Oct 20 (day 293), plants and usual-year plants, every year behind, frost, heat, stripes
+const OLD_CROP_CODE = b64u("2|Ames, IA|130200 2|2012|spnad~c" + d36(121) + d36(293) + "pghftr|The Olson Farm|3d|Planted|85|Harvest done");
+test("an old code with a crop opens cleanly, drawn without the crop; its other options stay", () => {
+  const d = RP.decodeCode(OLD_CROP_CODE);
+  assert.ok(d, "the code opens (no error)");
+  assert.equal(d.place, "Ames, IA"); assert.equal(d.year, 2012); assert.equal(d.name, "The Olson Farm");
+  assert.deepEqual(plain(d.markers), [{ date: "2012-05-01", label: "Planted" }, { date: "2012-10-20", label: "Harvest done" }]);
+  for (const k of SWITCHES) assert.equal(d[k], true, k + " stays on");
+  for (const k of ["crop", "cropPlant", "cropHarvest", "plants", "ghost"]) assert.ok(!(k in d), "no " + k + " in the design");
+  // the same through ?d=, and a code made from it now is the same code without the crop
+  assert.deepEqual(RP.fromParams("?d=" + OLD_CROP_CODE), d);
+  const now = RP.encodeCode(d), key = atob(now.replace(/-/g, "+").replace(/_/g, "/")).split("|")[4];
+  assert.equal(key, "spnad~hftr", "the new code's options: every year behind, frost, heat, stripes; no crop");
+  assert.equal(RP.encodeCode(RP.normalize(OPT)), RP.encodeCode(Object.assign({}, OPT, { crop: "corn", cropPlant: "2012-05-01", cropHarvest: "2012-10-20", plants: true, ghost: true })),
+    "crop fields handed in make no difference to the code");
+  // a crop with odd days, a crop alone or only p and g still open (no error), drawn without them
+  for (const t of ["~czzzzpg", "~c0000", "~pg", "~s" + d36(121) + d36(100) + "f"]) {
+    const x = RP.decodeCode(b64u("2|Ames, IA|130200 2|2012|spnad" + t + "|X"));
+    assert.ok(x && x.place === "Ames, IA" && !("crop" in x), t + " opens without a crop");
+  }
+  // the short-link worker still takes the old key field, so an old short link or QR keeps working
+  const W = read("workers/subs-worker.js"), rule = /if \(!\(v2 \? (\/.*?\/) : \/\^\[a-z0-9\]\{4\}\$\/\)\.test\(f\[4\]\)\) return false;/.exec(W)[1];
+  assert.ok(new Function("return " + rule)().test(atob(OLD_CROP_CODE.replace(/-/g, "+").replace(/_/g, "/")).split("|")[4]), "the worker's rule takes it");
+});
+test("an old link with a crop opens without it; the tool's link and the order link carry no crop", () => {
+  for (const q of ["?place=Ames%2C+IA&year=2012&style=r1&crop=corn&plant=2012-05-01&harvest=2012-10-20&plants=1&ghost=1&frost=1",
+    "?place=Ames%2C+IA&year=2012&crop=soy&plant=2012-05-01&harvest=2012-10-20&plants=1&ghost=1"]) {
+    const s = RP.fromParams(q);
+    assert.equal(s.place, "Ames, IA"); assert.equal(s.year, 2012);
+    for (const k of ["crop", "cropPlant", "cropHarvest", "plants", "ghost"]) assert.ok(!(k in s), q + ": no " + k);
+    assert.ok(!/(^|&)(crop|plant|harvest|plants|ghost)=/.test(RP.toParams(s)), "the tool's link: " + RP.toParams(s));
+    assert.ok(!/[?&](crop|plants|ghost)=/.test(RP.designUrl(s)), "the order's design link");
+  }
+  assert.ok(RP.fromParams("?place=Ames%2C+IA&year=2012&style=r1&crop=corn&plant=2012-05-01&harvest=2012-10-20&frost=1").frost, "its other options stay");
+  assert.deepEqual(plain(RP.OPT_FLAGS), SWITCHES, "four switches in the design");
+});
+test("an order paid before Oct 23 with a crop: RP.orderCrop reads it back for Sig's order view only", () => {
+  const want = { crop: "corn", cropPlant: "2012-05-01", cropHarvest: "2012-10-20", plants: true, ghost: true };
+  assert.deepEqual(plain(RP.orderCrop("?d=" + OLD_CROP_CODE)), want, "from the code");
+  assert.deepEqual(plain(RP.orderCrop("?place=Ames%2C+IA&year=2012&crop=corn&plant=2012-05-01&harvest=2012-10-20&plants=1&ghost=1")), want, "from a link");
+  assert.equal(RP.orderCrop("?d=" + RP.encodeCode(RP.normalize(OPT))), null, "a new code has none");
+  assert.equal(RP.orderCrop("?place=Ames%2C+IA&year=2012&crop=corn&plant=2012-10-20&harvest=2012-04-01"), null, "harvest before planting: none");
+  assert.equal(RP.orderCrop("?place=Ames%2C+IA&year=2012&crop=sunflower&plant=2012-05-01&harvest=2012-10-20"), null, "no sunflowers");
+  assert.equal(RP.orderCrop("?place=Ames%2C+IA&year=2012&crop=corn&plant=2013-05-01&harvest=2013-10-20"), null, "days in another year: none");
+  // the page takes it only in the gated maker view and only with oldcrop=1, and never puts it in the design
+  const js = read("components/rain-print.js");
+  assert.match(js, /var ORDER_CROP = MAKER && \/\(\?:\^\|\[\?&\]\)oldcrop=1\(\?:&\|\$\)\/\.test\(root\.location\.search\) \? orderCrop\(root\.location\.search\) : null;/);
+  assert.ok(!/ST\.crop|ST\.plants|ST\.ghost/.test(js), "the design never holds a crop");
+  assert.ok(!/oldcrop/.test(read("scripts/rp_buyer_render.mjs")), "the proof and the files are drawn as the buyer saw them: no oldcrop");
 });
 
 test("the order mail reads the options out of the design link", () => {
@@ -330,7 +387,9 @@ function artInput(style, opts) {
   const s = RP.normalize(Object.assign({ place: "Ames, IA", year: 2025, style, markers: [{ date: "2025-05-01", label: "Planted" }, { date: "2025-07-04", label: "Our wedding" }, { date: "2025-10-20", label: "Harvest done" }] }, opts));
   const td = X.tempDays(T25, 2025), tdN = X.normalTemps(T25.map((r) => [r[0], String(+r[4] - 2), String(+r[5] - 2)]), 2025);
   const found = REC.find({ year: 2025, daily: { data: T25 }, dailyElems: ELEMS }, { kinds: RP.TEMP_KINDS });
-  const crop = RP.cropInput(s, td, s.ghost ? tdN : null);
+  // a crop only through an order's crop (RP.orderCrop: Sig's order view), handed straight to the art
+  const oc = opts && opts.crop ? Object.assign({ plants: false, ghost: false }, opts) : null;
+  const crop = oc ? RP.cropInput(oc, td, oc.ghost ? tdN : null) : null;
   // 45 full years, 1981 to 2025, the print's own year among them (so the rank note prints)
   const full = Array.from({ length: 45 }, (_, k) => ({ year: 1981 + k, total: 18 + (k * 7) % 25, cum: Array.from({ length: 365 }, (_, i) => (18 + (k * 7) % 25) * (i + 1) / 365) }));
   return { style, year: 2025, place: "Ames, Iowa", name: "The Olson Farm", dedication: "For Dad", days: DAYS, D, showDry: RP.showDry(D), axisLen: 365,
@@ -461,7 +520,7 @@ function serve() {
 }
 const drawn = (page) => page.waitForFunction(() => document.querySelector("#rp-art svg") && !document.getElementById("rp-go").disabled, null, { timeout: 30000 });
 
-test("the page: options from a link draw, the panel follows, and the URL, code, order link and proof carry them", { skip }, async () => {
+test("the page: options from an old link with a crop draw without the crop, the panel follows, and the URL, code, order link and proof carry them", { skip }, async () => {
   const srv = await serve(), base = "http://127.0.0.1:" + srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
@@ -475,37 +534,36 @@ test("the page: options from a link draw, the panel follows, and the URL, code, 
         m1: "2025-05-08 Planted", m2: "2025-10-24 Harvest done", crop: "corn", plant: "2025-05-08", harvest: "2025-10-24", plants: "1", ghost: "1", frost: "1", heat: "1", ribbon: "1" });
       await page.goto(base + "/rain-print.html?" + q);
       await drawn(page);
-      await page.waitForFunction(() => /data-rp="crop"/.test(document.getElementById("rp-art").innerHTML) && /data-rp="ribbon"/.test(document.getElementById("rp-art").innerHTML), null, { timeout: 30000 });
+      await page.waitForFunction(() => /data-rp="ribbon"/.test(document.getElementById("rp-art").innerHTML), null, { timeout: 30000 });
+      await page.waitForTimeout(500);
       const artHtml = await page.$eval("#rp-art", (e) => e.innerHTML);
-      assert.ok(/stroke="#CFCBC4"/.test(artHtml), "the usual-year plants");
+      // the link's crop, plants and usual-year plants (made before Oct 23) are left off; no error
+      assert.ok(!/data-rp="crop"/.test(artHtml) && !/stroke="#CFCBC4"/.test(artHtml), "no crop, no plants, no usual-year plants");
       assert.ok(/data-rp="frost:0"/.test(artHtml), "the frost marks");
       assert.ok(/Hottest day: \d+°F/.test(artHtml), "the hottest day in the foot line");
-      // the panel follows the link
-      assert.equal(await page.$eval("#rp-crop", (e) => e.value), "corn");
-      assert.equal(await page.$eval("#rp-crop-plant", (e) => e.value), "2025-05-08");
-      assert.equal(await page.$eval("#rp-crop-harvest", (e) => e.value), "2025-10-24");
-      for (const id of ["rp-plants", "rp-ghost", "rp-frost", "rp-heat", "rp-ribbon"]) assert.ok(await page.$eval("#" + id, (e) => e.checked), id);
+      // the panel follows the link, and has no crop controls
+      assert.equal(await page.$$eval("#rp-crop, #rp-plants, #rp-ghost, [data-crop], #rp-cropdays, #rp-crop-set", (a) => a.length), 0, "no crop controls");
+      for (const id of ["rp-frost", "rp-heat", "rp-ribbon"]) assert.ok(await page.$eval("#" + id, (e) => e.checked), id);
       // every layer is in view in the Layers card (2026-10-22): no fold to open; hottest and coldest are "included" with the stripes on
-      assert.match(await page.textContent("#rp-lcount"), /^10 in all, 8 on$/, "usual year, month normals, frost, hottest and coldest (included), stripes, crop, plants, usual-year plants; not remarkable days or history");
+      assert.match(await page.textContent("#rp-lcount"), /^7 in all, 5 on$/, "usual year, month normals, frost, hottest and coldest (included), stripes; not remarkable days or history");
       assert.ok(await page.$eval("#rp-heat-chip", (e) => e.classList.contains("rp-inc")), "hottest and coldest: included with the stripes");
-      assert.equal(await page.getAttribute('[data-crop="corn"]', "aria-pressed"), "true");
       assert.match(await page.textContent("#rp-temp-why"), /Temperatures from the same station/);
       // the URL, the code, the order's design link
       await page.waitForTimeout(700);
       const url = new URL(page.url());
-      for (const [k, v] of [["crop", "corn"], ["plant", "2025-05-08"], ["harvest", "2025-10-24"], ["plants", "1"], ["ghost", "1"], ["frost", "1"], ["heat", "1"], ["ribbon", "1"]]) assert.equal(url.searchParams.get(k), v, "URL " + k);
+      for (const [k, v] of [["frost", "1"], ["heat", "1"], ["ribbon", "1"]]) assert.equal(url.searchParams.get(k), v, "URL " + k);
+      for (const k of ["crop", "plant", "harvest", "plants", "ghost"]) assert.equal(url.searchParams.get(k), null, "the URL drops " + k);
       const code = await page.textContent("#rp-code"), d = RP.decodeCode(code);
-      assert.ok(d && d.crop === "corn" && d.plants && d.ghost && d.frost && d.heat && d.ribbon && d.cropPlant === "2025-05-08", "the design code carries every option");
+      assert.ok(d && d.frost && d.heat && d.ribbon && !("crop" in d), "the design code carries every option, no crop");
       const order = new URL(await page.$eval("#ro-design", (e) => e.value));
-      assert.equal(order.searchParams.get("crop"), "corn", "the order's design link");
+      assert.equal(order.searchParams.get("crop"), null, "the order's design link: no crop");
       assert.equal(order.searchParams.get("ribbon"), "1");
       // the proof sheet says them
       await page.click("#rp-zoom");
       await page.waitForSelector("#rp-proof[open]");
       const dts = await page.$$eval("#rp-proof-sum dt", (a) => a.map((x) => x.textContent));
-      assert.ok(dts.includes("Crop") && dts.includes("Temperatures"), dts.join(", "));
+      assert.ok(!dts.includes("Crop") && dts.includes("Temperatures"), dts.join(", "));
       const sum = await page.textContent("#rp-proof-sum");
-      assert.match(sum, /Corn, planted May 8, harvested Oct 24, with plant drawings, against a usual year/);
       assert.match(sum, /frost marks, hottest and coldest day, daily temperature stripes; from the same station/);
       await page.keyboard.press("Escape");
       await page.keyboard.press("Escape");
@@ -534,11 +592,55 @@ test("the page: options from a link draw, the panel follows, and the URL, code, 
       await page.click('label:has(input[name="rp-style"][value="r2"])');
       await page.waitForTimeout(500);
       assert.ok(!/data-rp="hist"/.test(await page.$eval("#rp-art", (e) => e.innerHTML)));
-      assert.ok(/data-rp="crop"/.test(await page.$eval("#rp-art", (e) => e.innerHTML)), "Roots keeps the crop");
+      assert.ok(!/data-rp="crop"/.test(await page.$eval("#rp-art", (e) => e.innerHTML)), "Roots: no crop either");
       assert.ok(await page.$eval("#rp-hist", (e) => e.disabled));
       assert.match(await page.textContent("#rp-hist-why"), /Staircase only/);
       assert.deepEqual(errors, [], "no page errors");
       await c.close();
     }
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("an order paid before Oct 23 with a crop: drawn only in Sig's order view with oldcrop=1, never on the public page", { skip }, async () => {
+  const srv = await serve(), base = "http://127.0.0.1:" + srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const HASH = /var MAKER_HASH = '([0-9a-f]{64})'/.exec(read("components/rain-print.js"))[1];
+  const q = new URLSearchParams({ place: "Chetek, WI", year: "2025", station: "471667 2", style: "r1", cmp: "normal", name: "The Olson Farm",
+    crop: "corn", plant: "2025-05-08", harvest: "2025-10-24", plants: "1", ghost: "1", frost: "1" }).toString();
+  const open = async (extra, maker) => {
+    const c = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: "block" });
+    await c.clock.setFixedTime(new Date("2026-10-23T17:00:00Z"));
+    await mocks(c);
+    if (maker) await c.addInitScript((h) => { try { localStorage.setItem("rp-maker", h); } catch (e) {} }, HASH);
+    const page = await c.newPage(), errors = [];
+    page.on("pageerror", (e) => errors.push(String(e)));
+    await page.goto(base + "/rain-print.html?" + q + extra);
+    await drawn(page);
+    await page.waitForFunction(() => /data-rp="frost:/.test(document.getElementById("rp-art").innerHTML), null, { timeout: 30000 });
+    await page.waitForTimeout(800);
+    return { c, page, errors, art: await page.$eval("#rp-art", (e) => e.innerHTML) };
+  };
+  try {
+    // the public page, even with oldcrop=1 in the link: no crop
+    let o = await open("&oldcrop=1", false);
+    assert.ok(!/data-rp="crop"/.test(o.art), "public page: no crop");
+    assert.deepEqual(o.errors, []);
+    await o.c.close();
+    // Sig's order view without oldcrop=1 (what the proof and the files use): no crop, as the buyer saw it
+    o = await open("&maker=1", true);
+    assert.ok(!/data-rp="crop"/.test(o.art), "order view without oldcrop: no crop");
+    await o.c.close();
+    // Sig's order view with oldcrop=1: the crop as it was bought, kept through the address bar, never in the design code
+    o = await open("&maker=1&oldcrop=1", true);
+    await o.page.waitForFunction(() => /data-rp="crop"/.test(document.getElementById("rp-art").innerHTML), null, { timeout: 30000 });
+    const art = await o.page.$eval("#rp-art", (e) => e.innerHTML);
+    assert.ok(/stroke="#CFCBC4"/.test(art), "the usual-year plants, as ordered");
+    const url = new URL(o.page.url());
+    for (const [k, v] of [["maker", "1"], ["oldcrop", "1"], ["crop", "corn"], ["plant", "2025-05-08"], ["harvest", "2025-10-24"], ["plants", "1"], ["ghost", "1"]]) assert.equal(url.searchParams.get(k), v, "URL " + k);
+    const d = RP.decodeCode(await o.page.textContent("#rp-code"));
+    assert.ok(d && !("crop" in d), "the design code has no crop");
+    assert.equal(await o.page.$$eval("#rp-crop, [data-crop]", (a) => a.length), 0, "no crop controls in the order view either");
+    assert.deepEqual(o.errors, []);
+    await o.c.close();
   } finally { await browser.close(); srv.close(); }
 });

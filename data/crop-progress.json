@@ -1,19 +1,19 @@
 {
-  "updated": "2026-10-21",
-  "report_date": "2026-10-18",
+  "updated": "2026-10-26",
+  "report_date": "2026-10-25",
   "in_season": true,
   "corn": {
     "good_excellent": 56,
-    "report_date": "2026-10-18",
+    "report_date": "2026-10-25",
     "good_excellent_prev_week": 56,
     "good_excellent_prev_year": null,
     "planting_pct": 97,
     "planting_prev_year": 97,
-    "harvest_pct": 44,
-    "harvest_date": "2026-10-18",
+    "harvest_pct": 60,
+    "harvest_date": "2026-10-25",
     "harvest_prev_year": null,
     "mature_pct": 95,
-    "harvest_5yr_avg": 52
+    "harvest_5yr_avg": 66
   },
   "soybeans": {
     "good_excellent": 57,
@@ -22,10 +22,10 @@
     "good_excellent_prev_year": null,
     "planting_pct": 95,
     "planting_prev_year": 93,
-    "harvest_pct": 64,
-    "harvest_date": "2026-10-18",
+    "harvest_pct": 79,
+    "harvest_date": "2026-10-25",
     "harvest_prev_year": null,
-    "harvest_5yr_avg": 65
+    "harvest_5yr_avg": 77
   },
   "winter_wheat": {
     "good_excellent": 26,
@@ -43,39 +43,39 @@
   },
   "progress": {
     "corn_harvested": {
-      "date": "2026-10-18",
-      "pct": 44,
-      "prev_week": 33,
+      "date": "2026-10-25",
+      "pct": 60,
+      "prev_week": 44,
       "prev_year": null,
-      "avg5": 52
+      "avg5": 66
     },
     "soybeans_harvested": {
-      "date": "2026-10-18",
-      "pct": 64,
-      "prev_week": 46,
+      "date": "2026-10-25",
+      "pct": 79,
+      "prev_week": 64,
       "prev_year": null,
-      "avg5": 65
+      "avg5": 77
     },
     "winter_wheat_planted": {
-      "date": "2026-10-18",
-      "pct": 63,
-      "prev_week": 51,
+      "date": "2026-10-25",
+      "pct": 76,
+      "prev_week": 63,
       "prev_year": null,
-      "avg5": 69
+      "avg5": 77
     },
     "winter_wheat_emerged": {
-      "date": "2026-10-18",
-      "pct": 39,
-      "prev_week": 27,
+      "date": "2026-10-25",
+      "pct": 53,
+      "prev_week": 39,
       "prev_year": null,
-      "avg5": 43
+      "avg5": 54
     },
     "cotton_harvested": {
-      "date": "2026-10-18",
-      "pct": 41,
-      "prev_week": 31,
+      "date": "2026-10-25",
+      "pct": 52,
+      "prev_week": 41,
       "prev_year": null,
-      "avg5": 37
+      "avg5": 45
     },
     "rice_harvested": {
       "date": "2026-10-18",
@@ -85,437 +85,386 @@
       "avg5": null
     },
     "peanuts_harvested": {
-      "date": "2026-10-18",
-      "pct": 39,
-      "prev_week": 29,
+      "date": "2026-10-25",
+      "pct": 51,
+      "prev_week": 39,
       "prev_year": null,
-      "avg5": 46
+      "avg5": 59
     },
     "sorghum_harvested": {
-      "date": "2026-10-18",
-      "pct": 46,
-      "prev_week": 40,
+      "date": "2026-10-25",
+      "pct": 56,
+      "prev_week": 46,
       "prev_year": null,
-      "avg5": 58
+      "avg5": 69
     }
   },
   "states": {
     "AL": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 98,
-        "prev_week": 95,
-        "prev_year": null,
-        "avg5": null
-      },
-      "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 69,
-        "prev_week": 58,
-        "prev_year": null,
-        "avg5": 47
-      },
-      "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 17,
-        "prev_week": 10,
-        "prev_year": null,
-        "avg5": 15
-      },
-      "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 2,
-        "prev_week": null,
-        "prev_year": null,
-        "avg5": null
-      },
-      "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 38,
-        "prev_week": 28,
-        "prev_year": null,
-        "avg5": 33
-      },
-      "peanuts_harvested": {
-        "date": "2026-10-18",
-        "pct": 40,
-        "prev_week": 33,
-        "prev_year": null,
-        "avg5": 52
-      }
-    },
-    "AR": {
-      "corn_harvested": {
-        "date": "2026-10-11",
-        "pct": 100,
-        "prev_week": 99,
-        "prev_year": null,
-        "avg5": 98
-      },
-      "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 87,
-        "prev_week": 81,
-        "prev_year": null,
-        "avg5": 69
-      },
-      "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 24,
-        "prev_week": 17,
-        "prev_year": null,
-        "avg5": 33
-      },
-      "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 9,
-        "prev_week": 4,
-        "prev_year": null,
-        "avg5": 14
-      },
-      "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 63,
-        "prev_week": 45,
-        "prev_year": null,
-        "avg5": 53
-      },
-      "rice_harvested": {
-        "date": "2026-10-18",
+        "date": "2026-10-25",
         "pct": 100,
         "prev_week": 98,
         "prev_year": null,
-        "avg5": 93
+        "avg5": null
+      },
+      "soybeans_harvested": {
+        "date": "2026-10-25",
+        "pct": 78,
+        "prev_week": 69,
+        "prev_year": null,
+        "avg5": 60
+      },
+      "winter_wheat_planted": {
+        "date": "2026-10-25",
+        "pct": 26,
+        "prev_week": 17,
+        "prev_year": null,
+        "avg5": 23
+      },
+      "winter_wheat_emerged": {
+        "date": "2026-10-25",
+        "pct": 12,
+        "prev_week": 2,
+        "prev_year": null,
+        "avg5": null
+      },
+      "cotton_harvested": {
+        "date": "2026-10-25",
+        "pct": 47,
+        "prev_week": 38,
+        "prev_year": null,
+        "avg5": 44
       },
       "peanuts_harvested": {
-        "date": "2026-10-18",
-        "pct": 34,
-        "prev_week": 12,
+        "date": "2026-10-25",
+        "pct": 49,
+        "prev_week": 40,
         "prev_year": null,
-        "avg5": 38
+        "avg5": 62
       }
     },
     "CO": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 35,
-        "prev_week": 25,
+        "date": "2026-10-25",
+        "pct": 50,
+        "prev_week": 35,
         "prev_year": null,
-        "avg5": 39
+        "avg5": 51
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 91,
-        "prev_week": 74,
+        "date": "2026-10-25",
+        "pct": 98,
+        "prev_week": 91,
         "prev_year": null,
-        "avg5": 91
+        "avg5": 94
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 54,
-        "prev_week": 40,
+        "date": "2026-10-25",
+        "pct": 68,
+        "prev_week": 54,
         "prev_year": null,
-        "avg5": 60
+        "avg5": 69
       },
       "sorghum_harvested": {
-        "date": "2026-10-18",
-        "pct": 30,
-        "prev_week": 15,
+        "date": "2026-10-25",
+        "pct": 45,
+        "prev_week": 30,
         "prev_year": null,
-        "avg5": 38
+        "avg5": 54
       }
     },
     "DE": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 82,
-        "prev_week": 66,
+        "date": "2026-10-25",
+        "pct": 89,
+        "prev_week": 82,
         "prev_year": null,
         "avg5": null
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 13,
-        "prev_week": 4,
+        "date": "2026-10-25",
+        "pct": 28,
+        "prev_week": 13,
         "prev_year": null,
         "avg5": null
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 36,
-        "prev_week": 24,
+        "date": "2026-10-25",
+        "pct": 50,
+        "prev_week": 36,
         "prev_year": null,
-        "avg5": 30
+        "avg5": 41
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 17,
-        "prev_week": 2,
+        "date": "2026-10-25",
+        "pct": 27,
+        "prev_week": 17,
         "prev_year": null,
-        "avg5": null
+        "avg5": 24
       }
     },
     "IL": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 63,
-        "prev_week": 51,
-        "prev_year": null,
-        "avg5": 58
-      },
-      "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 66,
-        "prev_week": 48,
-        "prev_year": null,
-        "avg5": 62
-      },
-      "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 53,
-        "prev_week": 28,
-        "prev_year": null,
-        "avg5": 51
-      },
-      "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 22,
-        "prev_week": 5,
-        "prev_year": null,
-        "avg5": 25
-      }
-    },
-    "IN": {
-      "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 46,
-        "prev_week": 34,
-        "prev_year": null,
-        "avg5": 46
-      },
-      "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 59,
-        "prev_week": 44,
-        "prev_year": null,
-        "avg5": 59
-      },
-      "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 47,
-        "prev_week": 31,
-        "prev_year": null,
-        "avg5": 49
-      },
-      "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 14,
-        "prev_week": 5,
-        "prev_year": null,
-        "avg5": 21
-      }
-    },
-    "IA": {
-      "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 26,
-        "prev_week": 14,
-        "prev_year": null,
-        "avg5": 50
-      },
-      "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 57,
-        "prev_week": 31,
-        "prev_year": null,
-        "avg5": 74
-      }
-    },
-    "KS": {
-      "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 70,
+        "date": "2026-10-25",
+        "pct": 74,
         "prev_week": 63,
         "prev_year": null,
         "avg5": 73
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 41,
-        "prev_week": 27,
+        "date": "2026-10-25",
+        "pct": 81,
+        "prev_week": 66,
         "prev_year": null,
-        "avg5": 53
+        "avg5": 77
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 60,
-        "prev_week": 44,
+        "date": "2026-10-25",
+        "pct": 70,
+        "prev_week": 53,
         "prev_year": null,
-        "avg5": 69
+        "avg5": 71
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 30,
-        "prev_week": 20,
+        "date": "2026-10-25",
+        "pct": 40,
+        "prev_week": 22,
         "prev_year": null,
-        "avg5": 43
+        "avg5": 41
+      }
+    },
+    "IN": {
+      "corn_harvested": {
+        "date": "2026-10-25",
+        "pct": 61,
+        "prev_week": 46,
+        "prev_year": null,
+        "avg5": 59
+      },
+      "soybeans_harvested": {
+        "date": "2026-10-25",
+        "pct": 75,
+        "prev_week": 59,
+        "prev_year": null,
+        "avg5": 72
+      },
+      "winter_wheat_planted": {
+        "date": "2026-10-25",
+        "pct": 67,
+        "prev_week": 47,
+        "prev_year": null,
+        "avg5": 65
+      },
+      "winter_wheat_emerged": {
+        "date": "2026-10-25",
+        "pct": 27,
+        "prev_week": 14,
+        "prev_year": null,
+        "avg5": 35
+      }
+    },
+    "IA": {
+      "corn_harvested": {
+        "date": "2026-10-25",
+        "pct": 47,
+        "prev_week": 26,
+        "prev_year": null,
+        "avg5": 67
+      },
+      "soybeans_harvested": {
+        "date": "2026-10-25",
+        "pct": 78,
+        "prev_week": 57,
+        "prev_year": null,
+        "avg5": 84
+      }
+    },
+    "KS": {
+      "corn_harvested": {
+        "date": "2026-10-25",
+        "pct": 79,
+        "prev_week": 70,
+        "prev_year": null,
+        "avg5": 81
+      },
+      "soybeans_harvested": {
+        "date": "2026-10-25",
+        "pct": 61,
+        "prev_week": 41,
+        "prev_year": null,
+        "avg5": 67
+      },
+      "winter_wheat_planted": {
+        "date": "2026-10-25",
+        "pct": 80,
+        "prev_week": 60,
+        "prev_year": null,
+        "avg5": 79
+      },
+      "winter_wheat_emerged": {
+        "date": "2026-10-25",
+        "pct": 48,
+        "prev_week": 30,
+        "prev_year": null,
+        "avg5": 56
       },
       "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 12,
-        "prev_week": 9,
+        "date": "2026-10-25",
+        "pct": 21,
+        "prev_week": 12,
         "prev_year": null,
-        "avg5": 21
+        "avg5": 29
       },
       "sorghum_harvested": {
-        "date": "2026-10-18",
-        "pct": 30,
-        "prev_week": 23,
+        "date": "2026-10-25",
+        "pct": 40,
+        "prev_week": 30,
         "prev_year": null,
-        "avg5": 44
+        "avg5": 58
       }
     },
     "KY": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 86,
-        "prev_week": 80,
+        "date": "2026-10-25",
+        "pct": 91,
+        "prev_week": 86,
         "prev_year": null,
-        "avg5": 75
+        "avg5": 82
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 64,
-        "prev_week": 53,
+        "date": "2026-10-25",
+        "pct": 73,
+        "prev_week": 64,
         "prev_year": null,
-        "avg5": 47
+        "avg5": 57
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 28,
-        "prev_week": 22,
+        "date": "2026-10-25",
+        "pct": 45,
+        "prev_week": 28,
         "prev_year": null,
-        "avg5": 30
+        "avg5": 44
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 9,
-        "prev_week": 4,
+        "date": "2026-10-25",
+        "pct": 20,
+        "prev_week": 9,
         "prev_year": null,
         "avg5": null
       }
     },
     "MD": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 69,
-        "prev_week": 59,
+        "date": "2026-10-25",
+        "pct": 79,
+        "prev_week": 69,
         "prev_year": null,
-        "avg5": 71
+        "avg5": 80
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 17,
-        "prev_week": 12,
+        "date": "2026-10-25",
+        "pct": 31,
+        "prev_week": 17,
         "prev_year": null,
         "avg5": null
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 42,
-        "prev_week": 24,
+        "date": "2026-10-25",
+        "pct": 71,
+        "prev_week": 42,
         "prev_year": null,
-        "avg5": 54
+        "avg5": 63
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 11,
-        "prev_week": 5,
+        "date": "2026-10-25",
+        "pct": 44,
+        "prev_week": 11,
         "prev_year": null,
-        "avg5": null
+        "avg5": 34
       }
     },
     "MI": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 13,
-        "prev_week": 4,
+        "date": "2026-10-25",
+        "pct": 28,
+        "prev_week": 13,
         "prev_year": null,
-        "avg5": 31
+        "avg5": 43
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 37,
-        "prev_week": 27,
+        "date": "2026-10-25",
+        "pct": 69,
+        "prev_week": 37,
         "prev_year": null,
-        "avg5": 51
+        "avg5": 62
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 51,
-        "prev_week": 33,
+        "date": "2026-10-25",
+        "pct": 75,
+        "prev_week": 51,
         "prev_year": null,
-        "avg5": 61
+        "avg5": 73
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 34,
-        "prev_week": 17,
+        "date": "2026-10-25",
+        "pct": 61,
+        "prev_week": 34,
         "prev_year": null,
-        "avg5": 41
+        "avg5": 57
       }
     },
     "MN": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 38,
-        "prev_week": 25,
+        "date": "2026-10-25",
+        "pct": 65,
+        "prev_week": 38,
         "prev_year": null,
-        "avg5": 50
+        "avg5": 68
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 82,
-        "prev_week": 68,
+        "date": "2026-10-25",
+        "pct": 93,
+        "prev_week": 82,
         "prev_year": null,
-        "avg5": 81
+        "avg5": 89
       }
     },
     "MO": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 71,
-        "prev_week": 64,
+        "date": "2026-10-25",
+        "pct": 79,
+        "prev_week": 71,
         "prev_year": null,
-        "avg5": 71
+        "avg5": 79
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 49,
-        "prev_week": 36,
+        "date": "2026-10-25",
+        "pct": 65,
+        "prev_week": 49,
         "prev_year": null,
-        "avg5": 45
+        "avg5": 61
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 41,
-        "prev_week": 25,
+        "date": "2026-10-25",
+        "pct": 58,
+        "prev_week": 41,
         "prev_year": null,
-        "avg5": 38
+        "avg5": 54
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 12,
-        "prev_week": 3,
+        "date": "2026-10-25",
+        "pct": 31,
+        "prev_week": 12,
         "prev_year": null,
-        "avg5": 15
+        "avg5": 27
       },
       "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 42,
-        "prev_week": 20,
+        "date": "2026-10-25",
+        "pct": 64,
+        "prev_week": 42,
         "prev_year": null,
-        "avg5": 42
+        "avg5": 60
       },
       "rice_harvested": {
         "date": "2026-10-18",
@@ -527,448 +476,448 @@
     },
     "MT": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 35,
-        "prev_week": 28,
-        "prev_year": null,
-        "avg5": 45
-      },
-      "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 76,
-        "prev_week": 69,
-        "prev_year": null,
-        "avg5": 79
-      },
-      "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 46,
-        "prev_week": 38,
+        "date": "2026-10-25",
+        "pct": 40,
+        "prev_week": 35,
         "prev_year": null,
         "avg5": 57
+      },
+      "winter_wheat_planted": {
+        "date": "2026-10-25",
+        "pct": 90,
+        "prev_week": 76,
+        "prev_year": null,
+        "avg5": 87
+      },
+      "winter_wheat_emerged": {
+        "date": "2026-10-25",
+        "pct": 68,
+        "prev_week": 46,
+        "prev_year": null,
+        "avg5": 67
       }
     },
     "NE": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 37,
-        "prev_week": 27,
+        "date": "2026-10-25",
+        "pct": 55,
+        "prev_week": 37,
         "prev_year": null,
-        "avg5": 48
+        "avg5": 64
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 52,
-        "prev_week": 26,
+        "date": "2026-10-25",
+        "pct": 75,
+        "prev_week": 52,
         "prev_year": null,
-        "avg5": 71
+        "avg5": 82
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 90,
-        "prev_week": 81,
+        "date": "2026-10-25",
+        "pct": 95,
+        "prev_week": 90,
         "prev_year": null,
-        "avg5": 90
+        "avg5": 92
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 72,
-        "prev_week": 48,
+        "date": "2026-10-25",
+        "pct": 80,
+        "prev_week": 72,
         "prev_year": null,
-        "avg5": 73
+        "avg5": 80
       },
       "sorghum_harvested": {
-        "date": "2026-10-18",
-        "pct": 24,
-        "prev_week": 17,
+        "date": "2026-10-25",
+        "pct": 35,
+        "prev_week": 24,
         "prev_year": null,
-        "avg5": 45
+        "avg5": 59
       }
     },
     "NJ": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 40,
-        "prev_week": 20,
+        "date": "2026-10-25",
+        "pct": 52,
+        "prev_week": 40,
         "prev_year": null,
-        "avg5": 45
+        "avg5": 60
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 5,
-        "prev_week": null,
+        "date": "2026-10-25",
+        "pct": 10,
+        "prev_week": 5,
         "prev_year": null,
         "avg5": null
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 35,
-        "prev_week": 26,
+        "date": "2026-10-25",
+        "pct": 40,
+        "prev_week": 35,
         "prev_year": null,
-        "avg5": 37
+        "avg5": 52
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 10,
-        "prev_week": 3,
+        "date": "2026-10-25",
+        "pct": 22,
+        "prev_week": 10,
         "prev_year": null,
         "avg5": null
       }
     },
     "NM": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 37,
-        "prev_week": 27,
+        "date": "2026-10-25",
+        "pct": 39,
+        "prev_week": 37,
         "prev_year": null,
-        "avg5": 16
+        "avg5": 24
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 65,
-        "prev_week": 55,
+        "date": "2026-10-25",
+        "pct": 68,
+        "prev_week": 65,
         "prev_year": null,
         "avg5": null
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 40,
-        "prev_week": 30,
+        "date": "2026-10-25",
+        "pct": 43,
+        "prev_week": 40,
         "prev_year": null,
-        "avg5": 60
+        "avg5": 71
       },
       "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 32,
-        "prev_week": 27,
+        "date": "2026-10-25",
+        "pct": 34,
+        "prev_week": 32,
         "prev_year": null,
         "avg5": null
       }
     },
     "NY": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 15,
-        "prev_week": 1,
+        "date": "2026-10-25",
+        "pct": 21,
+        "prev_week": 15,
         "prev_year": null,
-        "avg5": 18
+        "avg5": 29
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 31,
-        "prev_week": 6,
+        "date": "2026-10-25",
+        "pct": 44,
+        "prev_week": 31,
         "prev_year": null,
-        "avg5": 44
+        "avg5": 58
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 30,
-        "prev_week": 14,
+        "date": "2026-10-25",
+        "pct": 37,
+        "prev_week": 30,
         "prev_year": null,
         "avg5": null
       }
     },
     "NC": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 91,
-        "prev_week": 87,
+        "date": "2026-10-25",
+        "pct": 96,
+        "prev_week": 91,
         "prev_year": null,
-        "avg5": 92
+        "avg5": 94
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 20,
-        "prev_week": 18,
+        "date": "2026-10-25",
+        "pct": 32,
+        "prev_week": 20,
         "prev_year": null,
-        "avg5": 27
+        "avg5": 35
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 16,
-        "prev_week": 8,
+        "date": "2026-10-25",
+        "pct": 24,
+        "prev_week": 16,
         "prev_year": null,
-        "avg5": 18
+        "avg5": 28
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 5,
-        "prev_week": 3,
+        "date": "2026-10-25",
+        "pct": 9,
+        "prev_week": 5,
         "prev_year": null,
-        "avg5": 9
+        "avg5": 15
       },
       "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 16,
-        "prev_week": 13,
+        "date": "2026-10-25",
+        "pct": 23,
+        "prev_week": 16,
         "prev_year": null,
-        "avg5": 21
+        "avg5": 33
       },
       "peanuts_harvested": {
-        "date": "2026-10-18",
-        "pct": 45,
-        "prev_week": 41,
+        "date": "2026-10-25",
+        "pct": 51,
+        "prev_week": 45,
         "prev_year": null,
-        "avg5": 44
+        "avg5": 59
       },
       "sorghum_harvested": {
-        "date": "2026-10-18",
-        "pct": 60,
-        "prev_week": 50,
+        "date": "2026-10-25",
+        "pct": 70,
+        "prev_week": 60,
         "prev_year": null,
-        "avg5": 66
+        "avg5": 74
       }
     },
     "ND": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 42,
-        "prev_week": 23,
+        "date": "2026-10-25",
+        "pct": 58,
+        "prev_week": 42,
         "prev_year": null,
-        "avg5": 36
+        "avg5": 54
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 79,
-        "prev_week": 60,
+        "date": "2026-10-25",
+        "pct": 88,
+        "prev_week": 79,
         "prev_year": null,
-        "avg5": 73
+        "avg5": 85
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 95,
-        "prev_week": 90,
+        "date": "2026-10-25",
+        "pct": 98,
+        "prev_week": 95,
         "prev_year": null,
         "avg5": null
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 81,
-        "prev_week": 73,
+        "date": "2026-10-25",
+        "pct": 82,
+        "prev_week": 81,
         "prev_year": null,
         "avg5": null
       }
     },
     "OH": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 21,
-        "prev_week": 11,
+        "date": "2026-10-25",
+        "pct": 35,
+        "prev_week": 21,
         "prev_year": null,
-        "avg5": 33
+        "avg5": 46
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 48,
-        "prev_week": 30,
+        "date": "2026-10-25",
+        "pct": 69,
+        "prev_week": 48,
         "prev_year": null,
-        "avg5": 59
+        "avg5": 73
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 38,
-        "prev_week": 17,
+        "date": "2026-10-25",
+        "pct": 68,
+        "prev_week": 38,
         "prev_year": null,
-        "avg5": 62
+        "avg5": 77
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 18,
-        "prev_week": 5,
+        "date": "2026-10-25",
+        "pct": 48,
+        "prev_week": 18,
         "prev_year": null,
-        "avg5": 28
+        "avg5": 47
       }
     },
     "OK": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 88,
-        "prev_week": 72,
+        "date": "2026-10-25",
+        "pct": 93,
+        "prev_week": 88,
         "prev_year": null,
-        "avg5": 74
+        "avg5": 83
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 25,
-        "prev_week": 18,
+        "date": "2026-10-25",
+        "pct": 40,
+        "prev_week": 25,
         "prev_year": null,
-        "avg5": 28
+        "avg5": 40
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 37,
-        "prev_week": 28,
+        "date": "2026-10-25",
+        "pct": 51,
+        "prev_week": 37,
         "prev_year": null,
-        "avg5": 59
+        "avg5": 69
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 18,
-        "prev_week": 11,
-        "prev_year": null,
-        "avg5": 36
-      },
-      "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 9,
-        "prev_week": 1,
-        "prev_year": null,
-        "avg5": 18
-      },
-      "peanuts_harvested": {
-        "date": "2026-10-18",
-        "pct": 27,
-        "prev_week": 22,
-        "prev_year": null,
-        "avg5": 29
-      },
-      "sorghum_harvested": {
-        "date": "2026-10-18",
-        "pct": 61,
-        "prev_week": 56,
+        "date": "2026-10-25",
+        "pct": 32,
+        "prev_week": 18,
         "prev_year": null,
         "avg5": 47
+      },
+      "cotton_harvested": {
+        "date": "2026-10-25",
+        "pct": 17,
+        "prev_week": 9,
+        "prev_year": null,
+        "avg5": 27
+      },
+      "peanuts_harvested": {
+        "date": "2026-10-25",
+        "pct": 35,
+        "prev_week": 27,
+        "prev_year": null,
+        "avg5": 45
+      },
+      "sorghum_harvested": {
+        "date": "2026-10-25",
+        "pct": 66,
+        "prev_week": 61,
+        "prev_year": null,
+        "avg5": 56
       }
     },
     "PA": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 15,
-        "prev_week": 14,
+        "date": "2026-10-25",
+        "pct": 35,
+        "prev_week": 15,
         "prev_year": null,
-        "avg5": 27
+        "avg5": 38
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 20,
-        "prev_week": 17,
+        "date": "2026-10-25",
+        "pct": 45,
+        "prev_week": 20,
         "prev_year": null,
-        "avg5": 27
+        "avg5": 42
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 26,
-        "prev_week": 12,
+        "date": "2026-10-25",
+        "pct": 44,
+        "prev_week": 26,
         "prev_year": null,
-        "avg5": 45
+        "avg5": 59
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 7,
-        "prev_week": 5,
+        "date": "2026-10-25",
+        "pct": 23,
+        "prev_week": 7,
         "prev_year": null,
-        "avg5": null
+        "avg5": 30
       }
     },
     "SD": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 29,
-        "prev_week": 15,
+        "date": "2026-10-25",
+        "pct": 44,
+        "prev_week": 29,
         "prev_year": null,
-        "avg5": 47
+        "avg5": 62
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 78,
-        "prev_week": 47,
-        "prev_year": null,
-        "avg5": 77
-      },
-      "winter_wheat_planted": {
-        "date": "2026-10-18",
+        "date": "2026-10-25",
         "pct": 89,
         "prev_week": 78,
         "prev_year": null,
-        "avg5": 89
+        "avg5": 87
+      },
+      "winter_wheat_planted": {
+        "date": "2026-10-25",
+        "pct": 95,
+        "prev_week": 89,
+        "prev_year": null,
+        "avg5": 93
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 64,
-        "prev_week": 43,
+        "date": "2026-10-25",
+        "pct": 76,
+        "prev_week": 64,
         "prev_year": null,
-        "avg5": 55
+        "avg5": 66
       },
       "sorghum_harvested": {
-        "date": "2026-10-18",
-        "pct": 32,
-        "prev_week": 25,
+        "date": "2026-10-25",
+        "pct": 51,
+        "prev_week": 32,
         "prev_year": null,
-        "avg5": 59
+        "avg5": 70
       }
     },
     "TN": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 96,
-        "prev_week": 91,
-        "prev_year": null,
-        "avg5": 85
-      },
-      "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 75,
-        "prev_week": 67,
-        "prev_year": null,
-        "avg5": 51
-      },
-      "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 41,
-        "prev_week": 27,
-        "prev_year": null,
-        "avg5": 36
-      },
-      "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 16,
-        "prev_week": 8,
-        "prev_year": null,
-        "avg5": 18
-      },
-      "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 46,
-        "prev_week": 35,
-        "prev_year": null,
-        "avg5": 35
-      }
-    },
-    "TX": {
-      "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 92,
-        "prev_week": 89,
+        "date": "2026-10-25",
+        "pct": 98,
+        "prev_week": 96,
         "prev_year": null,
         "avg5": 90
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 74,
-        "prev_week": 67,
+        "date": "2026-10-25",
+        "pct": 81,
+        "prev_week": 75,
+        "prev_year": null,
+        "avg5": 62
+      },
+      "winter_wheat_planted": {
+        "date": "2026-10-25",
+        "pct": 49,
+        "prev_week": 41,
+        "prev_year": null,
+        "avg5": 49
+      },
+      "winter_wheat_emerged": {
+        "date": "2026-10-25",
+        "pct": 26,
+        "prev_week": 16,
+        "prev_year": null,
+        "avg5": 26
+      },
+      "cotton_harvested": {
+        "date": "2026-10-25",
+        "pct": 67,
+        "prev_week": 46,
+        "prev_year": null,
+        "avg5": 50
+      }
+    },
+    "TX": {
+      "corn_harvested": {
+        "date": "2026-10-25",
+        "pct": 95,
+        "prev_week": 92,
+        "prev_year": null,
+        "avg5": 93
+      },
+      "soybeans_harvested": {
+        "date": "2026-10-25",
+        "pct": 79,
+        "prev_week": 74,
+        "prev_year": null,
+        "avg5": 78
+      },
+      "winter_wheat_planted": {
+        "date": "2026-10-25",
+        "pct": 70,
+        "prev_week": 64,
         "prev_year": null,
         "avg5": 71
       },
-      "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 64,
-        "prev_week": 54,
-        "prev_year": null,
-        "avg5": 65
-      },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 46,
-        "prev_week": 30,
+        "date": "2026-10-25",
+        "pct": 55,
+        "prev_week": 46,
         "prev_year": null,
-        "avg5": 39
+        "avg5": 47
       },
       "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 46,
-        "prev_week": 38,
+        "date": "2026-10-25",
+        "pct": 55,
+        "prev_week": 46,
         "prev_year": null,
-        "avg5": 39
+        "avg5": 43
       },
       "rice_harvested": {
         "date": "2026-10-18",
@@ -978,214 +927,265 @@
         "avg5": null
       },
       "peanuts_harvested": {
-        "date": "2026-10-18",
-        "pct": 25,
-        "prev_week": 20,
+        "date": "2026-10-25",
+        "pct": 41,
+        "prev_week": 25,
         "prev_year": null,
-        "avg5": 29
+        "avg5": 41
       },
       "sorghum_harvested": {
-        "date": "2026-10-18",
-        "pct": 90,
-        "prev_week": 88,
+        "date": "2026-10-25",
+        "pct": 95,
+        "prev_week": 90,
         "prev_year": null,
-        "avg5": 94
+        "avg5": 97
       }
     },
     "UT": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 21,
-        "prev_week": 16,
+        "date": "2026-10-25",
+        "pct": 30,
+        "prev_week": 21,
         "prev_year": null,
         "avg5": null
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 87,
-        "prev_week": 76,
+        "date": "2026-10-25",
+        "pct": 90,
+        "prev_week": 87,
         "prev_year": null,
         "avg5": null
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 57,
-        "prev_week": 40,
+        "date": "2026-10-25",
+        "pct": 63,
+        "prev_week": 57,
         "prev_year": null,
         "avg5": null
       }
     },
     "VA": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 87,
-        "prev_week": 81,
+        "date": "2026-10-25",
+        "pct": 92,
+        "prev_week": 87,
         "prev_year": null,
         "avg5": null
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 22,
-        "prev_week": 14,
+        "date": "2026-10-25",
+        "pct": 34,
+        "prev_week": 22,
         "prev_year": null,
-        "avg5": 26
+        "avg5": 36
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 41,
-        "prev_week": 33,
+        "date": "2026-10-25",
+        "pct": 50,
+        "prev_week": 41,
         "prev_year": null,
-        "avg5": 46
+        "avg5": 54
       },
       "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 27,
-        "prev_week": 18,
+        "date": "2026-10-25",
+        "pct": 38,
+        "prev_week": 27,
         "prev_year": null,
-        "avg5": 34
+        "avg5": 44
       },
       "peanuts_harvested": {
-        "date": "2026-10-18",
-        "pct": 75,
-        "prev_week": 56,
+        "date": "2026-10-25",
+        "pct": 91,
+        "prev_week": 75,
         "prev_year": null,
-        "avg5": 62
+        "avg5": 75
       }
     },
     "WV": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 21,
-        "prev_week": 16,
+        "date": "2026-10-25",
+        "pct": 30,
+        "prev_week": 21,
         "prev_year": null,
-        "avg5": 21
+        "avg5": 31
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 18,
-        "prev_week": 5,
+        "date": "2026-10-25",
+        "pct": 28,
+        "prev_week": 18,
         "prev_year": null,
-        "avg5": 17
+        "avg5": 26
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 53,
-        "prev_week": 42,
+        "date": "2026-10-25",
+        "pct": 65,
+        "prev_week": 53,
         "prev_year": null,
-        "avg5": 66
+        "avg5": 77
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 16,
-        "prev_week": 12,
+        "date": "2026-10-25",
+        "pct": 27,
+        "prev_week": 16,
         "prev_year": null,
-        "avg5": 34
+        "avg5": 43
       }
     },
     "WI": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 24,
-        "prev_week": 16,
+        "date": "2026-10-25",
+        "pct": 42,
+        "prev_week": 24,
         "prev_year": null,
-        "avg5": 29
+        "avg5": 43
       },
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 72,
-        "prev_week": 54,
+        "date": "2026-10-25",
+        "pct": 87,
+        "prev_week": 72,
         "prev_year": null,
-        "avg5": 63
+        "avg5": 76
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 73,
-        "prev_week": 60,
+        "date": "2026-10-25",
+        "pct": 88,
+        "prev_week": 73,
         "prev_year": null,
         "avg5": null
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 47,
-        "prev_week": 32,
+        "date": "2026-10-25",
+        "pct": 61,
+        "prev_week": 47,
         "prev_year": null,
-        "avg5": 57
+        "avg5": 68
       }
     },
     "WY": {
       "corn_harvested": {
-        "date": "2026-10-18",
-        "pct": 10,
-        "prev_week": 2,
-        "prev_year": null,
-        "avg5": null
-      },
-      "winter_wheat_planted": {
-        "date": "2026-10-11",
-        "pct": 95,
-        "prev_week": 70,
+        "date": "2026-10-25",
+        "pct": 28,
+        "prev_week": 10,
         "prev_year": null,
         "avg5": null
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 85,
-        "prev_week": 60,
+        "date": "2026-10-25",
+        "pct": 95,
+        "prev_week": 85,
         "prev_year": null,
         "avg5": null
       }
     },
-    "GA": {
+    "AR": {
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 51,
-        "prev_week": 44,
+        "date": "2026-10-25",
+        "pct": 91,
+        "prev_week": 87,
         "prev_year": null,
-        "avg5": 37
+        "avg5": 79
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 11,
-        "prev_week": 8,
+        "date": "2026-10-25",
+        "pct": 29,
+        "prev_week": 24,
         "prev_year": null,
-        "avg5": 13
+        "avg5": 45
+      },
+      "winter_wheat_emerged": {
+        "date": "2026-10-25",
+        "pct": 13,
+        "prev_week": 9,
+        "prev_year": null,
+        "avg5": 23
       },
       "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 26,
-        "prev_week": 16,
+        "date": "2026-10-25",
+        "pct": 81,
+        "prev_week": 63,
         "prev_year": null,
-        "avg5": 24
+        "avg5": 70
+      },
+      "rice_harvested": {
+        "date": "2026-10-18",
+        "pct": 100,
+        "prev_week": 98,
+        "prev_year": null,
+        "avg5": 93
       },
       "peanuts_harvested": {
-        "date": "2026-10-18",
-        "pct": 37,
-        "prev_week": 27,
+        "date": "2026-10-25",
+        "pct": 61,
+        "prev_week": 34,
+        "prev_year": null,
+        "avg5": 54
+      }
+    },
+    "GA": {
+      "soybeans_harvested": {
+        "date": "2026-10-25",
+        "pct": 56,
+        "prev_week": 51,
         "prev_year": null,
         "avg5": 46
+      },
+      "winter_wheat_planted": {
+        "date": "2026-10-25",
+        "pct": 15,
+        "prev_week": 11,
+        "prev_year": null,
+        "avg5": 18
+      },
+      "winter_wheat_emerged": {
+        "date": "2026-10-25",
+        "pct": 2,
+        "prev_week": null,
+        "prev_year": null,
+        "avg5": null
+      },
+      "cotton_harvested": {
+        "date": "2026-10-25",
+        "pct": 33,
+        "prev_week": 26,
+        "prev_year": null,
+        "avg5": 34
+      },
+      "peanuts_harvested": {
+        "date": "2026-10-25",
+        "pct": 51,
+        "prev_week": 37,
+        "prev_year": null,
+        "avg5": 59
       }
     },
     "LA": {
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 97,
-        "prev_week": 94,
+        "date": "2026-10-25",
+        "pct": 99,
+        "prev_week": 97,
         "prev_year": null,
-        "avg5": 90
+        "avg5": 94
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 2,
-        "prev_week": 0,
+        "date": "2026-10-25",
+        "pct": 4,
+        "prev_week": 2,
         "prev_year": null,
-        "avg5": 6
+        "avg5": 11
+      },
+      "winter_wheat_emerged": {
+        "date": "2026-10-25",
+        "pct": 0,
+        "prev_week": null,
+        "prev_year": null,
+        "avg5": null
       },
       "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 72,
-        "prev_week": 64,
+        "date": "2026-10-25",
+        "pct": 81,
+        "prev_week": 72,
         "prev_year": null,
-        "avg5": 74
+        "avg5": 84
       },
       "rice_harvested": {
         "date": "2026-10-18",
@@ -1197,186 +1197,186 @@
     },
     "MS": {
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 96,
-        "prev_week": 93,
+        "date": "2026-10-25",
+        "pct": 98,
+        "prev_week": 96,
         "prev_year": null,
-        "avg5": 82
+        "avg5": 89
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 26,
-        "prev_week": 19,
+        "date": "2026-10-25",
+        "pct": 30,
+        "prev_week": 26,
         "prev_year": null,
-        "avg5": 30
+        "avg5": 39
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 10,
-        "prev_week": 5,
+        "date": "2026-10-25",
+        "pct": 15,
+        "prev_week": 10,
         "prev_year": null,
-        "avg5": 18
+        "avg5": 24
       },
       "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 70,
-        "prev_week": 57,
+        "date": "2026-10-25",
+        "pct": 83,
+        "prev_week": 70,
         "prev_year": null,
-        "avg5": 58
+        "avg5": 68
       },
       "rice_harvested": {
-        "date": "2026-10-18",
-        "pct": 99,
-        "prev_week": 98,
+        "date": "2026-10-25",
+        "pct": 100,
+        "prev_week": 99,
         "prev_year": null,
-        "avg5": 95
+        "avg5": 97
       },
       "peanuts_harvested": {
-        "date": "2026-10-18",
-        "pct": 70,
-        "prev_week": 58,
+        "date": "2026-10-25",
+        "pct": 82,
+        "prev_week": 70,
         "prev_year": null,
-        "avg5": 54
+        "avg5": 63
       }
     },
     "SC": {
       "soybeans_harvested": {
-        "date": "2026-10-18",
-        "pct": 20,
-        "prev_week": 17,
+        "date": "2026-10-25",
+        "pct": 26,
+        "prev_week": 20,
         "prev_year": null,
-        "avg5": 19
+        "avg5": 26
       },
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 6,
-        "prev_week": 3,
+        "date": "2026-10-25",
+        "pct": 8,
+        "prev_week": 6,
         "prev_year": null,
-        "avg5": 7
+        "avg5": 12
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 0,
-        "prev_week": null,
+        "date": "2026-10-25",
+        "pct": 2,
+        "prev_week": 0,
         "prev_year": null,
         "avg5": null
       },
       "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 16,
-        "prev_week": 12,
+        "date": "2026-10-25",
+        "pct": 28,
+        "prev_week": 16,
         "prev_year": null,
-        "avg5": 22
+        "avg5": 30
       },
       "peanuts_harvested": {
-        "date": "2026-10-18",
-        "pct": 49,
-        "prev_week": 40,
+        "date": "2026-10-25",
+        "pct": 56,
+        "prev_week": 49,
         "prev_year": null,
-        "avg5": 42
+        "avg5": 55
       }
     },
     "CA": {
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 20,
-        "prev_week": 15,
-        "prev_year": null,
-        "avg5": 18
-      },
-      "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 12,
-        "prev_week": 10,
-        "prev_year": null,
-        "avg5": 4
-      },
-      "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 40,
+        "date": "2026-10-25",
+        "pct": 30,
         "prev_week": 20,
         "prev_year": null,
-        "avg5": 29
+        "avg5": 25
+      },
+      "winter_wheat_emerged": {
+        "date": "2026-10-25",
+        "pct": 15,
+        "prev_week": 12,
+        "prev_year": null,
+        "avg5": 8
+      },
+      "cotton_harvested": {
+        "date": "2026-10-25",
+        "pct": 50,
+        "prev_week": 40,
+        "prev_year": null,
+        "avg5": 42
       },
       "rice_harvested": {
-        "date": "2026-10-18",
-        "pct": 80,
-        "prev_week": 55,
+        "date": "2026-10-25",
+        "pct": 85,
+        "prev_week": 80,
         "prev_year": null,
         "avg5": null
       }
     },
     "ID": {
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 90,
-        "prev_week": 73,
+        "date": "2026-10-25",
+        "pct": 96,
+        "prev_week": 90,
         "prev_year": null,
-        "avg5": 84
+        "avg5": 91
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 56,
-        "prev_week": 37,
+        "date": "2026-10-25",
+        "pct": 66,
+        "prev_week": 56,
         "prev_year": null,
-        "avg5": 48
+        "avg5": 64
       }
     },
     "OR": {
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 81,
-        "prev_week": 64,
+        "date": "2026-10-25",
+        "pct": 90,
+        "prev_week": 81,
         "prev_year": null,
-        "avg5": 66
+        "avg5": 79
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 48,
-        "prev_week": 36,
+        "date": "2026-10-25",
+        "pct": 61,
+        "prev_week": 48,
         "prev_year": null,
-        "avg5": 31
+        "avg5": 44
       }
     },
     "WA": {
       "winter_wheat_planted": {
-        "date": "2026-10-18",
-        "pct": 96,
-        "prev_week": 92,
+        "date": "2026-10-25",
+        "pct": 98,
+        "prev_week": 96,
         "prev_year": null,
-        "avg5": 90
+        "avg5": 95
       },
       "winter_wheat_emerged": {
-        "date": "2026-10-18",
-        "pct": 80,
-        "prev_week": 70,
+        "date": "2026-10-25",
+        "pct": 90,
+        "prev_week": 80,
         "prev_year": null,
-        "avg5": 65
+        "avg5": 74
       }
     },
     "AZ": {
       "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 45,
-        "prev_week": 43,
+        "date": "2026-10-25",
+        "pct": 49,
+        "prev_week": 45,
         "prev_year": null,
-        "avg5": 40
+        "avg5": 44
       }
     },
     "FL": {
       "cotton_harvested": {
-        "date": "2026-10-18",
-        "pct": 13,
-        "prev_week": 8,
+        "date": "2026-10-25",
+        "pct": 18,
+        "prev_week": 13,
         "prev_year": null,
-        "avg5": 20
+        "avg5": 29
       },
       "peanuts_harvested": {
-        "date": "2026-10-18",
-        "pct": 43,
-        "prev_week": 28,
+        "date": "2026-10-25",
+        "pct": 58,
+        "prev_week": 43,
         "prev_year": null,
-        "avg5": 63
+        "avg5": 75
       }
     }
   },

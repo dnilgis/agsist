@@ -15,7 +15,7 @@
  "spread": "minmax",
  "spread_label": "lowest to highest answer",
  "includes": "The prices include charges for machinery, power, fuel, and the operator. They do not include chemicals, seeds, and other materials unless specified; hay baling materials are the one exception. KDA and K-State say the prices should not be regarded as official or established rates.",
- "range_note": "Rows are the report's STATE lines (district tables are in the report). The range is the lowest and highest rate reported. The report's table for hauling round bales by the ton disagrees with its own text (which calls it per hour), so that line is left out.",
+ "range_note": "Rows are the report's STATE lines (district tables are in the report). The range is the lowest and highest rate reported. The report's table for hauling round bales by the ton disagrees with its own text (which calls it per hour), so that line is left out. The report's text gives mowing or swathing forage as $17.74 an acre; its table prints $17.47, the number used here.",
  "rows": [
   {
    "s": "Grain harvesting",
@@ -24,14 +24,16 @@
    "a": 30.91,
    "n": 138,
    "lo": 20.0,
-   "hi": 42.0
+   "hi": 42.0,
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
    "o": "Wheat, extra charge for high yield (above 26 bushels an acre)",
    "u": "bushel",
    "a": 0.303,
-   "n": 132
+   "n": 132,
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -41,7 +43,8 @@
    "n": 52,
    "lo": 22.0,
    "hi": 51.0,
-   "k": "combine-smallgrain"
+   "k": "combine-smallgrain",
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -50,7 +53,8 @@
    "a": 31.98,
    "n": 102,
    "lo": 21.0,
-   "hi": 45.0
+   "hi": 45.0,
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -59,7 +63,8 @@
    "a": 38.62,
    "n": 45,
    "lo": 24.0,
-   "hi": 55.0
+   "hi": 55.0,
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -68,7 +73,8 @@
    "a": 35.27,
    "n": 80,
    "lo": 21.0,
-   "hi": 55.0
+   "hi": 55.0,
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -77,7 +83,8 @@
    "a": 0.468,
    "n": 24,
    "lo": 0.36,
-   "hi": 0.65
+   "hi": 0.65,
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -87,7 +94,8 @@
    "n": 82,
    "lo": 18.0,
    "hi": 58.0,
-   "k": "combine-corn"
+   "k": "combine-corn",
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -96,7 +104,8 @@
    "a": 38.04,
    "n": 63,
    "lo": 25.0,
-   "hi": 57.0
+   "hi": 57.0,
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -106,7 +115,8 @@
    "n": 79,
    "lo": 18.0,
    "hi": 55.0,
-   "k": "combine-soy"
+   "k": "combine-soy",
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -115,7 +125,8 @@
    "a": 39.33,
    "n": 15,
    "lo": 26.0,
-   "hi": 50.0
+   "hi": 50.0,
+   "c": "harvest"
   },
   {
    "s": "Grain harvesting",
@@ -124,21 +135,24 @@
    "a": 32.22,
    "n": 9,
    "lo": 32.0,
-   "hi": 33.0
+   "hi": 33.0,
+   "c": "harvest"
   },
   {
    "s": "Grain hauling",
    "o": "Hauling wheat, field to farm storage or elevator (17 mile limit; $0.051 a bushel a mile beyond)",
    "u": "bushel",
    "a": 0.28,
-   "n": 117
+   "n": 117,
+   "c": "hauling"
   },
   {
    "s": "Grain hauling",
    "o": "Hauling grain sorghum (17 mile limit; $0.048 a bushel a mile beyond)",
    "u": "bushel",
    "a": 0.291,
-   "n": 91
+   "n": 91,
+   "c": "hauling"
   },
   {
    "s": "Grain hauling",
@@ -146,14 +160,16 @@
    "u": "bushel",
    "a": 0.239,
    "n": 117,
-   "k": "haul-grain-bu"
+   "k": "haul-grain-bu",
+   "c": "hauling"
   },
   {
    "s": "Grain hauling",
    "o": "Hauling soybeans (18 mile limit; $0.056 a bushel a mile beyond)",
    "u": "bushel",
    "a": 0.242,
-   "n": 82
+   "n": 82,
+   "c": "hauling"
   },
   {
    "s": "Silage",
@@ -162,7 +178,8 @@
    "a": 14.44,
    "n": 24,
    "lo": 11.5,
-   "hi": 17.0
+   "hi": 17.0,
+   "c": "hay"
   },
   {
    "s": "Silage",
@@ -171,7 +188,8 @@
    "a": 11.62,
    "n": 25,
    "lo": 9.75,
-   "hi": 13.0
+   "hi": 13.0,
+   "c": "hay"
   },
   {
    "s": "Silage",
@@ -180,7 +198,9 @@
    "a": 9.48,
    "n": 21,
    "lo": 6.0,
-   "hi": 11.0
+   "hi": 11.0,
+   "k": "silage-chop-ton",
+   "c": "hay"
   },
   {
    "s": "Silage",
@@ -189,7 +209,8 @@
    "a": 1.93,
    "n": 23,
    "lo": 0.3,
-   "hi": 4.25
+   "hi": 4.25,
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -199,7 +220,8 @@
    "n": 49,
    "lo": 10.0,
    "hi": 25.0,
-   "k": "mow-hay"
+   "k": "mow-hay",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -208,7 +230,8 @@
    "a": 17.47,
    "n": 30,
    "lo": 10.0,
-   "hi": 25.0
+   "hi": 25.0,
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -218,7 +241,8 @@
    "n": 46,
    "lo": 8.0,
    "hi": 25.0,
-   "k": "mow-cond"
+   "k": "mow-cond",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -228,7 +252,8 @@
    "n": 44,
    "lo": 4.0,
    "hi": 18.0,
-   "k": "rake"
+   "k": "rake",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -237,7 +262,8 @@
    "a": 1.85,
    "n": 10,
    "lo": 1.0,
-   "hi": 2.75
+   "hi": 2.75,
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -247,7 +273,8 @@
    "n": 9,
    "lo": 1.0,
    "hi": 5.0,
-   "k": "bale-smallsq"
+   "k": "bale-smallsq",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -257,7 +284,8 @@
    "n": 4,
    "lo": 14.0,
    "hi": 20.0,
-   "k": "bale-round"
+   "k": "bale-round",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -266,7 +294,8 @@
    "a": 16.06,
    "n": 51,
    "lo": 12.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -275,7 +304,8 @@
    "a": 18.5,
    "n": 4,
    "lo": 17.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -285,7 +315,8 @@
    "n": 54,
    "lo": 14.0,
    "hi": 25.0,
-   "k": "bale-round-net"
+   "k": "bale-round-net",
+   "c": "hay"
   },
   {
    "s": "Haying",
@@ -294,7 +325,8 @@
    "a": 5.64,
    "n": 28,
    "lo": 5.0,
-   "hi": 10.0
+   "hi": 10.0,
+   "c": "hay"
   },
   {
    "s": "Land tillage",
@@ -303,7 +335,8 @@
    "a": 18.5,
    "n": 51,
    "lo": 11.0,
-   "hi": 27.0
+   "hi": 27.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -313,7 +346,8 @@
    "n": 36,
    "lo": 13.0,
    "hi": 28.0,
-   "k": "disk-tandem"
+   "k": "disk-tandem",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -323,7 +357,8 @@
    "n": 31,
    "lo": 10.0,
    "hi": 30.0,
-   "k": "chisel"
+   "k": "chisel",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -332,7 +367,8 @@
    "a": 25.41,
    "n": 22,
    "lo": 20.0,
-   "hi": 32.0
+   "hi": 32.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -342,7 +378,8 @@
    "n": 53,
    "lo": 15.0,
    "hi": 42.0,
-   "k": "strip-till"
+   "k": "strip-till",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -351,7 +388,8 @@
    "a": 27.07,
    "n": 22,
    "lo": 12.0,
-   "hi": 34.0
+   "hi": 34.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -361,7 +399,8 @@
    "n": 65,
    "lo": 9.5,
    "hi": 28.0,
-   "k": "vertical-till"
+   "k": "vertical-till",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -371,7 +410,8 @@
    "n": 35,
    "lo": 15.0,
    "hi": 35.0,
-   "k": "subsoil"
+   "k": "subsoil",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -381,7 +421,8 @@
    "n": 38,
    "lo": 11.0,
    "hi": 30.0,
-   "k": "field-cult"
+   "k": "field-cult",
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -390,7 +431,8 @@
    "a": 17.93,
    "n": 34,
    "lo": 10.0,
-   "hi": 25.0
+   "hi": 25.0,
+   "c": "tillage"
   },
   {
    "s": "Land tillage",
@@ -399,7 +441,8 @@
    "a": 16.59,
    "n": 53,
    "lo": 7.25,
-   "hi": 25.0
+   "hi": 25.0,
+   "c": "tillage"
   },
   {
    "s": "Planting, regular till, no fertilizer or chemical",
@@ -409,7 +452,8 @@
    "n": 51,
    "lo": 10.0,
    "hi": 28.0,
-   "k": "drill-smallgrain"
+   "k": "drill-smallgrain",
+   "c": "planting"
   },
   {
    "s": "Planting, regular till, no fertilizer or chemical",
@@ -418,7 +462,8 @@
    "a": 21.27,
    "n": 26,
    "lo": 10.0,
-   "hi": 30.0
+   "hi": 30.0,
+   "c": "planting"
   },
   {
    "s": "Planting, regular till, no fertilizer or chemical",
@@ -428,7 +473,8 @@
    "n": 48,
    "lo": 10.0,
    "hi": 35.0,
-   "k": "plant-row"
+   "k": "plant-row",
+   "c": "planting"
   },
   {
    "s": "Planting, regular till, no fertilizer or chemical",
@@ -437,7 +483,8 @@
    "a": 24.71,
    "n": 35,
    "lo": 16.0,
-   "hi": 35.0
+   "hi": 35.0,
+   "c": "planting"
   },
   {
    "s": "Planting, regular till, no fertilizer or chemical",
@@ -447,7 +494,8 @@
    "n": 18,
    "lo": 16.0,
    "hi": 28.0,
-   "k": "drill-soy"
+   "k": "drill-soy",
+   "c": "planting"
   },
   {
    "s": "Planting, regular till, no fertilizer or chemical",
@@ -456,7 +504,8 @@
    "a": 23.8,
    "n": 10,
    "lo": 18.0,
-   "hi": 35.0
+   "hi": 35.0,
+   "c": "planting"
   },
   {
    "s": "Planting, regular till, with fertilizer",
@@ -465,7 +514,8 @@
    "a": 23.39,
    "n": 49,
    "lo": 10.0,
-   "hi": 33.0
+   "hi": 33.0,
+   "c": "planting"
   },
   {
    "s": "Planting, regular till, with fertilizer",
@@ -474,7 +524,8 @@
    "a": 24.08,
    "n": 36,
    "lo": 15.0,
-   "hi": 34.0
+   "hi": 34.0,
+   "c": "planting"
   },
   {
    "s": "Planting, regular till, with fertilizer",
@@ -484,7 +535,8 @@
    "n": 57,
    "lo": 15.0,
    "hi": 36.0,
-   "k": "plant-row-fert"
+   "k": "plant-row-fert",
+   "c": "planting"
   },
   {
    "s": "Planting, regular till, with fertilizer",
@@ -493,7 +545,8 @@
    "a": 26.65,
    "n": 34,
    "lo": 16.0,
-   "hi": 37.0
+   "hi": 37.0,
+   "c": "planting"
   },
   {
    "s": "Planting, regular till, with fertilizer",
@@ -502,7 +555,8 @@
    "a": 25.11,
    "n": 27,
    "lo": 16.0,
-   "hi": 34.0
+   "hi": 34.0,
+   "c": "planting"
   },
   {
    "s": "Planting, minimum or no-till, no fertilizer or chemical",
@@ -511,7 +565,8 @@
    "a": 21.34,
    "n": 80,
    "lo": 14.0,
-   "hi": 30.0
+   "hi": 30.0,
+   "c": "planting"
   },
   {
    "s": "Planting, minimum or no-till, no fertilizer or chemical",
@@ -520,7 +575,8 @@
    "a": 23.1,
    "n": 49,
    "lo": 16.0,
-   "hi": 30.0
+   "hi": 30.0,
+   "c": "planting"
   },
   {
    "s": "Planting, minimum or no-till, no fertilizer or chemical",
@@ -530,7 +586,8 @@
    "n": 81,
    "lo": 16.0,
    "hi": 35.0,
-   "k": "plant-notill"
+   "k": "plant-notill",
+   "c": "planting"
   },
   {
    "s": "Planting, minimum or no-till, no fertilizer or chemical",
@@ -539,7 +596,8 @@
    "a": 24.56,
    "n": 55,
    "lo": 16.0,
-   "hi": 35.0
+   "hi": 35.0,
+   "c": "planting"
   },
   {
    "s": "Planting, minimum or no-till, no fertilizer or chemical",
@@ -549,7 +607,8 @@
    "n": 27,
    "lo": 16.0,
    "hi": 30.0,
-   "k": "drill-soy-notill"
+   "k": "drill-soy-notill",
+   "c": "planting"
   },
   {
    "s": "Planting, minimum or no-till, with fertilizer",
@@ -558,7 +617,8 @@
    "a": 23.04,
    "n": 83,
    "lo": 13.0,
-   "hi": 36.0
+   "hi": 36.0,
+   "c": "planting"
   },
   {
    "s": "Planting, minimum or no-till, with fertilizer",
@@ -567,7 +627,8 @@
    "a": 23.6,
    "n": 68,
    "lo": 13.0,
-   "hi": 32.0
+   "hi": 32.0,
+   "c": "planting"
   },
   {
    "s": "Planting, minimum or no-till, with fertilizer",
@@ -576,7 +637,8 @@
    "a": 25.18,
    "n": 84,
    "lo": 13.0,
-   "hi": 35.0
+   "hi": 35.0,
+   "c": "planting"
   },
   {
    "s": "Planting, minimum or no-till, with fertilizer",
@@ -585,7 +647,8 @@
    "a": 25.54,
    "n": 47,
    "lo": 13.0,
-   "hi": 36.0
+   "hi": 36.0,
+   "c": "planting"
   },
   {
    "s": "Planting, minimum or no-till, with fertilizer",
@@ -594,7 +657,8 @@
    "a": 24.71,
    "n": 38,
    "lo": 13.0,
-   "hi": 32.0
+   "hi": 32.0,
+   "c": "planting"
   },
   {
    "s": "Planting, other",
@@ -603,7 +667,8 @@
    "a": 21.19,
    "n": 21,
    "lo": 15.0,
-   "hi": 35.0
+   "hi": 35.0,
+   "c": "planting"
   },
   {
    "s": "Planting, other",
@@ -612,7 +677,8 @@
    "a": 21.88,
    "n": 26,
    "lo": 17.0,
-   "hi": 28.5
+   "hi": 28.5,
+   "c": "planting"
   },
   {
    "s": "Planting, other",
@@ -621,7 +687,9 @@
    "a": 20.04,
    "n": 27,
    "lo": 5.0,
-   "hi": 28.0
+   "hi": 28.0,
+   "k": "drill-cover",
+   "c": "planting"
   },
   {
    "s": "Planting, other",
@@ -630,7 +698,8 @@
    "a": 22.51,
    "n": 49,
    "lo": 16.0,
-   "hi": 30.0
+   "hi": 30.0,
+   "c": "planting"
   },
   {
    "s": "Chemical application",
@@ -639,7 +708,8 @@
    "a": 16.93,
    "n": 14,
    "lo": 8.5,
-   "hi": 32.0
+   "hi": 32.0,
+   "c": "tillage"
   },
   {
    "s": "Chemical application",
@@ -648,7 +718,9 @@
    "a": 16.05,
    "n": 19,
    "lo": 7.5,
-   "hi": 30.0
+   "hi": 30.0,
+   "k": "cultivate-row",
+   "c": "tillage"
   },
   {
    "s": "Chemical application",
@@ -658,7 +730,8 @@
    "n": 131,
    "lo": 5.5,
    "hi": 15.0,
-   "k": "fert-dry"
+   "k": "fert-dry",
+   "c": "spray"
   },
   {
    "s": "Chemical application",
@@ -668,7 +741,8 @@
    "n": 137,
    "lo": 3.0,
    "hi": 24.0,
-   "k": "fert-liquid"
+   "k": "fert-liquid",
+   "c": "spray"
   },
   {
    "s": "Chemical application",
@@ -678,7 +752,8 @@
    "n": 82,
    "lo": 6.5,
    "hi": 32.0,
-   "k": "nh3"
+   "k": "nh3",
+   "c": "spray"
   },
   {
    "s": "Chemical application",
@@ -688,7 +763,8 @@
    "n": 44,
    "lo": 7.5,
    "hi": 16.0,
-   "k": "spray-aerial"
+   "k": "spray-aerial",
+   "c": "spray"
   },
   {
    "s": "Chemical application",
@@ -698,7 +774,8 @@
    "n": 196,
    "lo": 5.0,
    "hi": 18.0,
-   "k": "spray-ground"
+   "k": "spray-ground",
+   "c": "spray"
   },
   {
    "s": "Chemical application",
@@ -707,7 +784,8 @@
    "a": 10.23,
    "n": 48,
    "lo": 7.0,
-   "hi": 13.5
+   "hi": 13.5,
+   "c": "spray"
   },
   {
    "s": "Chemical application",
@@ -716,7 +794,8 @@
    "a": 8.74,
    "n": 136,
    "lo": 5.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "spray"
   },
   {
    "s": "Machine rental",
@@ -725,7 +804,8 @@
    "a": 247.5,
    "n": 8,
    "lo": 100.0,
-   "hi": 875.0
+   "hi": 875.0,
+   "c": "harvest"
   },
   {
    "s": "Machine rental",
@@ -734,7 +814,9 @@
    "a": 95.56,
    "n": 9,
    "lo": 80.0,
-   "hi": 120.0
+   "hi": 120.0,
+   "k": "skid-rent",
+   "c": "other"
   },
   {
    "s": "Machine rental",
@@ -743,7 +825,8 @@
    "a": 11.22,
    "n": 9,
    "lo": 8.0,
-   "hi": 20.0
+   "hi": 20.0,
+   "c": "harvest"
   },
   {
    "s": "Machine rental",
@@ -752,7 +835,8 @@
    "a": 17.2,
    "n": 5,
    "lo": 10.0,
-   "hi": 22.0
+   "hi": 22.0,
+   "c": "planting"
   },
   {
    "s": "Machine rental",
@@ -761,7 +845,8 @@
    "a": 203.43,
    "n": 7,
    "lo": 80.0,
-   "hi": 260.0
+   "hi": 260.0,
+   "c": "other"
   },
   {
    "s": "Livestock hauling",
@@ -770,7 +855,9 @@
    "a": 4.88,
    "n": 8,
    "lo": 4.0,
-   "hi": 5.5
+   "hi": 5.5,
+   "k": "haul-cattle-semi",
+   "c": "livestock"
   },
   {
    "s": "Livestock hauling",
@@ -779,7 +866,8 @@
    "a": 5.22,
    "n": 21,
    "lo": 1.6,
-   "hi": 6.0
+   "hi": 6.0,
+   "c": "livestock"
   },
   {
    "s": "Terracing and dozing",
@@ -788,7 +876,8 @@
    "a": 1.85,
    "n": 11,
    "lo": 1.1,
-   "hi": 2.5
+   "hi": 2.5,
+   "c": "other"
   },
   {
    "s": "Terracing and dozing",
@@ -797,7 +886,10 @@
    "a": 202.86,
    "n": 21,
    "lo": 150.0,
-   "hi": 275.0
+   "hi": 275.0,
+   "c": "other"
   }
- ]
+ ],
+ "counts": true,
+ "page": true
 }

@@ -146,7 +146,9 @@ function optionsInput(base, style, o) {
   const marks = [{ date: "2012-05-01", label: "Planted corn" }, { date: "2012-07-04", label: "Our wedding!" }, { date: "2012-10-20", label: "Harvest done" }];
   const s = RP.normalize(Object.assign({ place: "Ames, IA", year: 2012, style, markers: marks }, o));
   const found = REC.find({ year: 2012, daily: { data: rows }, dailyElems: ["pcpn", "avgt", "snow", "maxt", "mint"] }, { kinds: RP.TEMP_KINDS });
-  const crop = RP.cropInput(s, td, s.ghost ? tdN : null);
+  // crops are no longer a design option (Sig, Oct 23); they draw only for an order made before that, through
+  // the order view (ORDER_CROP), which hands cropInput the order's own crop fields, as here
+  const oc = o.crop ? o : null, crop = oc ? RP.cropInput(oc, td, oc.ghost ? tdN : null) : null;
   const cum = []; let c = 0; base.days.forEach((d) => { c += d.v || 0; cum.push(c); });
   const full = Array.from({ length: 40 }, (_, k) => ({ year: 1972 + k, total: +(c * (0.6 + k / 39)).toFixed(2), cum: cum.map((v) => v * (0.6 + k / 39)) })).concat([{ year: 2012, total: +c.toFixed(2), cum }]);
   return Object.assign({}, base, { style, markers: RP.markersOn(marks, 2012, base.D.n), crop, records: RP.withoutTemp(base.records, s),

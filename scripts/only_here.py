@@ -189,7 +189,7 @@ def _stations(repo=REPO):
             ll = stn.get("ll")
             if not ll or c.get("pct") is None or (c.get("missing") or 0) > MAX_MISSING or (c.get("acc") or 0):
                 continue
-            out.append((float(ll[1]), float(ll[0]), st, c))
+            out.append((float(ll[1]), float(ll[0]), st, dict(c, _fips=fips, _fetched=d.get("fetched"))))
     return out
 
 
@@ -199,6 +199,28 @@ def _miles(a, b, c, d):
     dp, dl = p2 - p1, math.radians(d - b)
     h = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
     return 2 * r * math.asin(math.sqrt(h))
+
+
+def _record_words(st, c, repo=REPO, within=3):
+    """' That is the 2nd driest by this date in 54 years on record there.' when the county's station sits
+    within `within` places of its record, from data/rain/context/<st>.json (scripts/fetch_rain_context.py;
+    only a context from the same fetch as the totals, so the rank and the total are the same day's)."""
+    try:
+        with open(os.path.join(repo, "data", "rain", "context", st.lower() + ".json"), encoding="utf-8") as f:
+            x = json.load(f)
+    except (OSError, ValueError):
+        return ""
+    if x.get("fetched") != c.get("_fetched"):
+        return ""
+    r = ((x.get("counties") or {}).get(c.get("_fips")) or {}).get("rank")
+    if not r:
+        return ""
+    for side, k in (("wettest", "wetter"), ("driest", "drier")):
+        place = r[k] + 1
+        if place <= within:
+            nth = "the" if place == 1 else "the %d%s" % (place, {2: "nd", 3: "rd"}.get(place, "th"))
+            return " That is %s %s by this date in %d years on record there (%d on)." % (nth, side, r["n"], r["first"])
+    return ""
 
 
 def rain_line(at, before, repo=REPO):
@@ -218,9 +240,25 @@ def rain_line(at, before, repo=REPO):
     import county_rain as R
     town = R.station_town((c.get("station") or {}).get("raw") or "") or (c.get("station") or {}).get("name")
     text = ("Your rain: %.2f in. this year through %s at the %s station (%s, %d mi from you), %d%% of normal for the date."
-            % (c["total"], _md(c["as_of"]), town, c["name"], round(mi), c["pct"]))
+            % (c["total"], _md(c["as_of"]), town, c["name"], round(mi), c["pct"])) + _record_words(st, c, repo)
     slug = "/rain/%s/%s" % (R.slug(_states().get(st, st)), R.slug(c["name"]))
     return {"text": text, "kind": "rain_vs_normal", "url": slug, "link": "Your county's rain", "n": 1}
+
+
+def records_line(before, repo=REPO):
+    """No ZIP: how many counties are at their wettest or driest year to date on record (scripts/rain_records.py),
+    one-gauge records left off, only days before the issue. Links the list on /rain."""
+    import rain_records as RR
+    rs = [o for o in RR.rows(os.path.join(repo, "data", "rain"), within=1) if not o["one_gauge"] and o["as_of"] < before]
+    wet = sorted((o for o in rs if o["side"] == "wettest"), key=lambda o: o["first"])
+    dry = sorted((o for o in rs if o["side"] == "driest"), key=lambda o: o["first"])
+    if len(rs) < 2:
+        return None
+    text = ("Rain records: %d %s at the wettest year to date in their station's record and %d at the driest."
+            % (len(wet), "county is" if len(wet) == 1 else "counties are", len(dry)))
+    oldest = min(rs, key=lambda o: o["first"])
+    text += " The longest of those records, %s, %s, goes back to %d (%s)." % (oldest["county"], oldest["state"], oldest["first"], oldest["side"])
+    return {"text": text, "kind": "rain_records", "url": "/rain#records", "link": "Every record county", "n": len(rs)}
 
 
 def for_reader(before, z=None, repo=REPO, loc=None):
@@ -244,6 +282,13 @@ def for_reader(before, z=None, repo=REPO, loc=None):
                 out.append(rl)
         except Exception as ex:
             print("only here: rain skipped (%s)" % type(ex).__name__)
+    else:
+        try:
+            rr = records_line(before, repo)
+            if rr:
+                out.append(rr)
+        except Exception as ex:
+            print("only here: rain records skipped (%s)" % type(ex).__name__)
     return out[:2]
 
 
@@ -266,10 +311,32 @@ def _selftest():
         ok(lines, "a line for %s" % z)
         for x in lines:
             ok(re.search(r"\d", x["text"]) and not COUNT_LINE.search(x["text"]) and "—" not in x["text"], "insight, not a count: " + x["text"])
-    one = for_reader("2026-10-21", "50010", loc=locs["50010"])
+    # the rain data moves every day: ask as of its newest day, so the check never ages out (2026-10-24: a fixed
+    # "2026-10-21" failed once every station had reported past it)
+    newest = max(str(c.get("as_of") or "") for _, _, _, c in _stations(REPO))
+    one = for_reader(max(newest, "2026-10-21"), "50010", loc=locs["50010"])
     ok(one and one[0]["st"] == "IA", "the reader's own state")
     ok(any(x["kind"] == "rain_vs_normal" and "% of normal" in x["text"] for x in one), "the reader's own rain")
-    ok(len(for_reader("2026-10-21", None)) == 1, "no ZIP: the basis line only")
+    # near a record: the rank rides on the rain line (2026-10-24); a stale context adds nothing
+    import tempfile
+    with tempfile.TemporaryDirectory() as t:
+        os.makedirs(os.path.join(t, "data", "rain", "context"))
+        json.dump({"state": "IA", "fetched": "f", "counties": {"19055": {"name": "Delaware County", "total": 50.37, "pct": 149,
+                   "as_of": "2026-10-23", "station": {"ll": [-91.45, 42.48], "raw": "MANCHESTER #2", "name": "Manchester #2"}}}},
+                  open(os.path.join(t, "data", "rain", "ia.json"), "w"))
+        ctx = {"state": "IA", "fetched": "f", "counties": {"19055": {"rank": {"n": 49, "first": 1977, "wetter": 0, "drier": 48}}}}
+        json.dump(ctx, open(os.path.join(t, "data", "rain", "context", "ia.json"), "w"))
+        rl = rain_line((42.48, -91.45), "2026-10-24", t)
+        ok(rl and rl["text"].endswith("That is the wettest by this date in 49 years on record there (1977 on)."), "record words: %s" % (rl and rl["text"]))
+        ctx["fetched"] = "old"
+        json.dump(ctx, open(os.path.join(t, "data", "rain", "context", "ia.json"), "w"))
+        rl = rain_line((42.48, -91.45), "2026-10-24", t)
+        ok(rl and "record" not in rl["text"], "a stale context adds nothing")
+    rr = records_line("2026-10-25")
+    ok(rr is None or (rr["kind"] == "rain_records" and re.search(r"\d", rr["text"]) and "—" not in rr["text"]), "records line: %s" % (rr and rr["text"]))
+    # no ZIP: the basis line, then (2026-10-24) the national rain records line when there is one; never the reader's rain
+    nz = for_reader("2026-10-21", None)
+    ok(nz and nz[0]["kind"] != "rain_vs_normal" and [x["kind"] for x in nz[1:]] in ([], ["rain_records"]), "no ZIP: basis, then records: %s" % [x["kind"] for x in nz])
     wi = for_reader("2026-10-21", "54728", loc=locs["54728"])
     ok(wi and wi[0]["st"] != "WI", "a state with too few bids (Wisconsin) falls back to a farm state with a record")
     print("only_here selftest " + ("FAILED" if bad else "ok"))
