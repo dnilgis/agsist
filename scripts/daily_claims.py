@@ -182,7 +182,10 @@ def context(prices, day, quote_strip=None):
     """What the rules read. prices: data/prices.json as loaded. day: the
     issue's date. quote_strip: the issue's own strip, when it has one."""
     quotes = (prices or {}).get("quotes") or {}
-    ctx = {"day": day, "dated": {}, "trades": {}, "settles": {}}
+    pr = (prices or {}).get("planting_ratio") or {}
+    ctx = {"day": day, "dated": {}, "trades": {}, "settles": {},
+           "crop_year": int(pr.get("crop_year") or (day.year + 1 if day.month >= 8 else day.year)),
+           "planting_ratio": pr.get("value")}
     now = datetime(day.year, day.month, day.day, 12, tzinfo=timezone.utc)
     for key, q in quotes.items():
         if not isinstance(q, dict):
@@ -349,11 +352,37 @@ def r_cash_from_futures(sent, ctx):
                 and not _CASH_DATA.search(sent) and not _HEDGED.search(sent))
 
 
+_PLANT = re.compile(r"\b(plant(?:ed|ing|s)?|acres?|acreage|next (?:spring|year|season)|next year's|rotation|"
+                    r"seed(?:ing)? (?:decisions?|orders?)|switch(?:ing)? (?:to|acres))\b", re.I)
+_FAVOR = re.compile(r"\b(favou?r(?:s|ed|ing)?|tilts?|pulls? acres|argues? for|pays? (?:more|better)|"
+                    r"pencils? (?:out|better)|makes? (?:more )?sense|leans? toward|better bet|should plant|plant more)\b", re.I)
+_FAVOR_CROP = re.compile(r"\bfavou?r(?:s|ed|ing)? (?:beans|soybeans|corn|wheat)\b", re.I)
+_RATIO = re.compile(r"\b(\d\.\d{1,2})\b")
+
+
+def _names_next_crop(sent, ctx):
+    y = ctx["crop_year"]
+    yy = r"(?:'|’)?%02d|%d" % (y % 100, y)
+    if re.search(r"\b(?:Nov(?:ember)?|Dec(?:ember)?)\.?\s+(?:%s)\b" % yy, sent, re.I):
+        return True
+    if re.search(r"\b%d (?:crop|contracts?)\b|\bnew-crop %d\b" % (y, y), sent, re.I):
+        return True
+    pr = ctx.get("planting_ratio")
+    return bool(pr and any(abs(float(m.group(1)) - float(pr)) <= 0.02 for m in _RATIO.finditer(sent)))
+
+
+def r_planting_from_nearby(sent, ctx):
+    """A planting or acreage call with no next-year contracts behind it."""
+    call = _FAVOR_CROP.search(sent) or (_PLANT.search(sent) and _FAVOR.search(sent))
+    return bool(call) and not _names_next_crop(sent, ctx)
+
+
 RULES = [
     ("expired-contract", r_expired),
     ("close-before-settle", r_close_before_settle),
     ("future-as-past", r_future_as_past),
     ("cash-from-futures", r_cash_from_futures),
+    ("planting-from-nearby", r_planting_from_nearby),
 ]
 
 
@@ -477,6 +506,15 @@ def _selftest():
     expect("cash-from-futures", "Cash corn bids at 212 elevators averaged $4.12, down 6 cents.", c11, False)
     expect("cash-from-futures", "December corn futures fell 20½ cents.", c11, False)
     expect("cash-from-futures", "Every bushel coming out of the field is being sold into a market that already has plenty.", c11, False)
+
+    # Oct 25: a 2.8 ratio from Nov '26 beans and Dec '26 corn read as next spring's planting call
+    c25 = context({"planting_ratio": {"crop_year": 2027, "value": 2.4697}}, date(2026, 10, 25))
+    expect("planting-from-nearby", "That favors beans when acres are planned for next spring.", c25, True)
+    expect("planting-from-nearby", "Those are this year's crop contracts; for next spring, compare next-crop bids and your costs.", c25, False)
+    expect("planting-from-nearby", "A 2.8 ratio favors soybeans.", c25, True)
+    expect("planting-from-nearby", "Nov '27 beans over Dec '27 corn is 2.47, which leans toward corn acres next spring.", c25, False)
+    expect("planting-from-nearby", "The 2.47 planting ratio favors corn.", c25, False)
+    expect("planting-from-nearby", "Farmers planted 95 million acres of corn this year.", c25, False)
 
     # strip cuts the sentence and keeps the bullets
     b = {"sections": [{"title": "Cattle firm", "body": "- Live cattle gained 0.7% to **$227.52**.\n"
