@@ -84,12 +84,14 @@
     if (s.bldg) note.push('with buildings');
     return '<li><span class="ls-d">' + esc(day(s.when)) + (s.recorded ? '' : ' (deed date)') + '</span> '
       + '<b>' + esc(acres(s.acres)) + '</b> at ' + esc(s.ppa != null ? money(s.ppa) + ' an acre' : 'a price per acre not figured')
-      + ' (' + esc(money(s.price)) + '), ' + esc((s.place ? s.place + ', ' : '') + county + ' County, ' + st)
+      + ' (' + esc(money(s.price)) + ')' + (s.place || county ? ', ' : '') + esc((s.place || '') + (county ? (s.place ? ', ' : '') + county + ' County, ' + st : ''))
       + (far != null ? ', ' + (far < 1 ? 'under a mile' : Math.round(far) + ' mi') : '')
       + (note.length ? ' <span class="ls-note">' + note.join('; ') + '</span>' : '')
       + ' <button type="button" class="ls-nm" data-ls-id="' + esc(s.id) + '" data-ls-f="' + esc(namesFile) + '">Show buyer and seller</button></li>';
   }
-  function srcLine(f) { return 'Source: ' + esc(f.source) + ', read ' + esc(day(f.fetched)) + '. Sales with a price, acres and a whole interest in a normal sale; township or town, not the parcel.'; }
+  var RULE = 'Sales with a price, acres and a whole interest in a normal sale; township or town, not the parcel.';
+  function srcOnly(f) { return esc(f.source) + ', read ' + esc(day(f.fetched)); }
+  function srcLine(f) { return 'Source: ' + srcOnly(f) + '. ' + RULE; }
 
   /* ── Atlas county pages ──────────────────────────────────────── */
   function atlas(sec) {
@@ -105,7 +107,7 @@
       var rows = (c.s || []).slice(0, 3).map(row);
       var href = '/land-sales/' + STATES[st] + '/' + c.slug;
       box.innerHTML = '<div class="ls-feat-l"><h2 id="ls-feat-h">Latest farm sales here</h2>'
-        + (rows.length ? '<ul class="ls-ul">' + rows.map(function (s) { return saleLi(s, c.name, st, f.names_dir + fips + '.json'); }).join('') + '</ul>'
+        + (rows.length ? '<ul class="ls-ul">' + rows.map(function (s) { return saleLi(s, null, st, f.names_dir + fips + '.json'); }).join('') + '</ul>'
           : '<p>No sales of 10 acres or more recorded here in the last 12 months.</p>')
         + '<p><a href="' + href + '">Every recent sale in ' + esc(c.name) + ' County</a> &middot; <a href="/land-sales/">This month&rsquo;s biggest buyers and sales</a></p>'
         + '<p class="ls-fine">' + srcLine(f) + '</p></div><div class="ls-feat-r"></div>';
@@ -191,11 +193,12 @@
       if (!list.length) { el.hidden = true; el.innerHTML = ''; return; }
       list.sort(function (a, b) { return a.s.when < b.s.when ? 1 : a.s.when > b.s.when ? -1 : a.d - b.d; });
       var top = list.slice(0, 6);
+      var used = ok.filter(function (f) { return top.some(function (x) { return x.st === f.state; }); });
       el.hidden = false;
       el.innerHTML = '<h3>Farm sales within ' + NEAR_MI + ' miles</h3><ul class="ls-ul">'
         + top.map(function (x) { return saleLi(x.s, x.c.name, x.st, x.nf, x.d); }).join('') + '</ul>'
         + '<p class="ls-fine">The latest few recorded in each county nearby, newest first; miles to the middle of the township or town. '
-        + ok.map(srcLine).join(' ') + ' <a href="/land-sales/">Sales by county and this month&rsquo;s update</a></p>';
+        + 'Source: ' + used.map(srcOnly).join('; ') + '. ' + RULE + ' <a href="/land-sales/">Sales by county and this month&rsquo;s update</a></p>';
       /* a search link to "Land sales near <town>" lands here (#h-land-sales opens My place) */
       if (location.hash === '#h-land-sales' && !near.jumped) { near.jumped = true; try { el.scrollIntoView({ block: 'start' }); } catch (e) {} }
     });

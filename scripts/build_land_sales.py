@@ -90,7 +90,10 @@ def money(x):
 
 
 def acres(a):
-    return LA.acres_text(a)
+    """Acres as the email writes them, with a thousands comma ("2,280")."""
+    t = LA.acres_text(a)
+    w, _, f = t.partition(".")
+    return format(int(w), ",") + ("." + f if f else "")
 
 
 def day(iso):
