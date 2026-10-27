@@ -701,6 +701,25 @@ jobs:
       #
       # always() runs this even if previous steps failed — that's the point.
       # if: always() so the alert reports generator failures too.
+      # GATE 2h (Sig, Oct 27 2026): a headline that fails its check is fixed on the
+      # spot and checked again until it passes. The writer model rewrites it with the
+      # rule and the board's settles and trades (up to 3 tries, full gate each time);
+      # then a plain headline from the settles, built by code; if even that fails the
+      # job stops here (nothing committed or sent) and Sig gets one email.
+      - name: GATE 2h, a failing headline is rewritten until it passes
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BRIEFING_MODEL: ${{ vars.BRIEFING_MODEL }}
+          OWNER_TO:     ${{ secrets.SIG_TO }}
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
+          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+        run: |
+          ANTHROPIC_API_KEY= python scripts/headline_fix.py --selftest
+          python scripts/headline_fix.py data/daily.json --prices data/prices.json
+
       # ── GATE 2 ── deterministic pre-publish gate. Prose vs locked_prices vs the
       # clean feed: blocks locked-price drift, level contradictions, drama without a
       # real move, calendar errors, fabricated sections. HARD block (no continue-on-error)

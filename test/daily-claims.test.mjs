@@ -131,7 +131,7 @@ test("rebuild_archive_html --text-only selftest", () => {
 
 test("gate flags the Oct 21 headline as it went out, and not the corrected one", () => {
   // the issue's own strip: 5:46 a.m. CT trades, Oct 20 settles as prev. A headline cannot be
-  // cut, so the gate reports it (WARN today) rather than cutting it.
+  // cut; since Oct 27 the gate FAILS it (scripts/headline_fix.py rewrites it before the gate).
   const out = py(["-c", `
 import json, sys, datetime as dt; sys.path.insert(0, "scripts")
 import briefing_gate as bg
@@ -140,7 +140,7 @@ old = {"date": b["date"], "headline": "Corn down 6 straight days to $4.59\\u00bd
 new = {"date": b["date"], "headline": b["headline"], "quote_strip": b["quote_strip"]}
 for x in (old, new):
     ok, iss = bg.run(x, None, today=dt.date(2026, 10, 27), archive_dir=None)
-    print([c for s, c, m in iss if c.startswith("claim:") and m.startswith("headline")])
+    print([s + " " + c for s, c, m in iss if c.startswith("claim:") and m.startswith("headline")])
 `]);
-  assert.match(out, /\['claim:close-before-settle'\]\n\[\]/, out);
+  assert.match(out, /\['FAIL claim:close-before-settle'\]\n\[\]/, out);
 });
