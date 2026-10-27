@@ -1356,6 +1356,43 @@ def sec_today(src, now, rep, snap):
     rep.today = t
 
 
+def sec_insight(src, now, rep):
+    """The weekly re-test engine (scripts/insight_engine.py), the morning after it ran. Counts and
+    test ids only; nothing it finds is published. A test every printable condition holds for except
+    Sig's yes goes in Needs you."""
+    try:
+        doc = json.loads(src.file("private/ledger/tests/latest.json"))
+    except FileNotFoundError:
+        if ct(now).weekday() == 0:
+            rep.add("Re-test engine", ["No summary from the re-test engine yet."])
+        return
+    except Exception as e:                                 # noqa: BLE001
+        rep.add("Re-test engine", ["Summary could not be read (%s)." % why(e)])
+        return
+    try:
+        day = datetime.strptime(str(doc.get("date")), "%Y-%m-%d").date()
+    except ValueError:
+        rep.add("Re-test engine", ["Summary has no run date."])
+        return
+    if (ct(now).date() - day).days not in (0, 1):
+        return
+    c = doc.get("counts") or {}
+    order = ("HOLDS", "PARTLY", "NO", "WAIT", "ERROR")
+    lines = ["Run %s %s %d: %s. %s." % (day.strftime("%a"), day.strftime("%b"), day.day,
+                                        plural(int(doc.get("tests") or 0), "test", "tests"),
+                                        ", ".join("%s %d" % (k, int(c.get(k) or 0)) for k in order))]
+    el = [clean_txt(x, 60) for x in doc.get("eligible") or []]
+    if el:
+        lines.append("Eligible for your review (every printable condition but your yes): %s." % ", ".join(el))
+        rep.red("%s eligible for your review: %s" % (plural(len(el), "re-test", "re-tests"), ", ".join(el)))
+    else:
+        lines.append("Eligible for your review: none.")
+    ch = [x for x in doc.get("changes") or [] if x.get("from")]
+    if ch:
+        lines.append("Verdict changes: %s." % "; ".join("%s %s to %s" % (clean_txt(x.get("id"), 60), x.get("from"), x.get("to")) for x in ch[:10]))
+    rep.add("Re-test engine", lines)
+
+
 def sec_todos(src, now, rep):
     try:
         items = [m.group(2) for m in map(TODO_RE.match, src.file("TODO-SIG.md").splitlines()) if m and m.group(1) == " "]
@@ -1385,7 +1422,7 @@ def make_report(src, now, snap):
             f(src, now, rep)
         except Exception as e:                             # noqa: BLE001
             rep.add(f.__name__, ["Could not be built (%s)." % why(e)])
-    for f, args in ((sec_signups, (snap,)), (sec_signup_sources, (snap,)), (sec_sends, ()), (sec_orders, ()), (sec_rp_orders, ()), (sec_traffic, ()), (sec_todos, ())):
+    for f, args in ((sec_signups, (snap,)), (sec_signup_sources, (snap,)), (sec_sends, ()), (sec_orders, ()), (sec_rp_orders, ()), (sec_traffic, ()), (sec_insight, ()), (sec_todos, ())):
         try:
             f(src, now, rep, *args)
         except Exception as e:                             # noqa: BLE001
@@ -2269,6 +2306,7 @@ def selftest():
     ck("the line has no em dash and no address", "\u2014" not in BACKUP_LINE and "@" not in BACKUP_LINE)
     selftest_sources_sends(ck)
     selftest_lists(ck)
+    selftest_insight(ck)
 
     print()
     if fails:
@@ -2383,6 +2421,36 @@ def selftest_sources_sends(ck):
     r4 = Report()
     sec_signup_sources(Fake(gh, {}, {}, {}), now, r4, {})
     ck("no /count: one line", r4.tables["Signups"]["after"] == ["Where they signed up: could not be read (HTTP 404)."], r4.tables)
+
+
+def selftest_insight(ck):
+    print("\nre-test engine")
+    mon = datetime(2026, 11, 2, 12, 45, tzinfo=UTC)          # Mon Nov 2, 6:45 am CST
+    doc = {"schema": "agsist-insight-latest/1", "date": "2026-11-01", "tests": 14,
+           "counts": {"HOLDS": 0, "PARTLY": 1, "NO": 8, "WAIT": 5, "ERROR": 0}, "eligible": [],
+           "changes": [{"id": "ratings-yield-w33-v1", "from": None, "to": "NO"},
+                       {"id": "barge-change-leads-spread-v1", "from": "NO", "to": "PARTLY"}], "ledger_M": 164}
+    rep = Report()
+    sec_insight(Fake(files={"private/ledger/tests/latest.json": json.dumps(doc)}), mon, rep)
+    body = "\n".join(rep.sections[0][1]) if rep.sections else ""
+    ck("the morning after a run: counts, nothing red",
+       "Run Sun Nov 1: 14 tests. HOLDS 0, PARTLY 1, NO 8, WAIT 5, ERROR 0." in body
+       and "Eligible for your review: none." in body and not rep.needs, body)
+    ck("verdict changes by id, a first verdict is not a change",
+       "Verdict changes: barge-change-leads-spread-v1 NO to PARTLY." in body and "w33" not in body, body)
+    rep = Report()
+    sec_insight(Fake(files={"private/ledger/tests/latest.json": json.dumps(dict(doc, eligible=["a-v1", "b-v1"]))}), mon, rep)
+    ck("eligible tests go in Needs you, by id", rep.needs == ["2 re-tests eligible for your review: a-v1, b-v1"], rep.needs)
+    rep = Report()
+    sec_insight(Fake(files={"private/ledger/tests/latest.json": json.dumps(doc)}), mon + timedelta(days=2), rep)
+    ck("an older run is not repeated on later mornings", rep.sections == [] and rep.needs == [], rep.sections)
+    rep = Report()
+    sec_insight(Fake(files={}), mon, rep)
+    ck("no summary yet: one line on a Monday, nothing red", rep.sections == [("Re-test engine", ["No summary from the re-test engine yet."])]
+       and not rep.needs, rep.sections)
+    rep = Report()
+    sec_insight(Fake(files={}), mon + timedelta(days=1), rep)
+    ck("... and silence on other days", rep.sections == [], rep.sections)
 
 
 def selftest_lists(ck):
