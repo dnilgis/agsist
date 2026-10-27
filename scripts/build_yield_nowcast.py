@@ -77,9 +77,11 @@ class ThinHistory(SystemExit):
     """Too few backtest years at this ratings week. A SystemExit, so any
     caller that does not handle it still fails loud."""
 
-    def __init__(self, crop, years, need, msg):
+    def __init__(self, crop, years, need, msg, kind="years"):
         super().__init__(msg)
-        self.crop, self.years, self.need = crop, years, need
+        # kind "states": too few states still report ratings (harvest ends them);
+        # `years` then holds the state count.
+        self.crop, self.years, self.need, self.kind = crop, years, need, kind
 
 ST_ABBR = {
     'Alabama': 'AL', 'Arkansas': 'AR', 'Colorado': 'CO', 'Connecticut': 'CT',
@@ -251,7 +253,8 @@ def run_crop(crop, cond, fit_states, nass_dir="data/nass"):
     if panel is None:
         panel = build_panel(cond["states"], yrows, arows, fit_states)
     if len(panel) < MIN_STATES:
-        raise SystemExit(f"FATAL {crop}: only {len(panel)} usable states (need {MIN_STATES})")
+        raise ThinHistory(crop, len(panel), MIN_STATES,
+                          f"FATAL {crop}: only {len(panel)} usable states (need {MIN_STATES})", kind="states")
     panel_years = set(p[0] for pairs in panel.values() for p in pairs)
     us_years = sorted(y for y in us if y in panel_years and y < date.today().year)
     if len(us_years) < MIN_YEARS:
@@ -298,7 +301,8 @@ def run_crop(crop, cond, fit_states, nass_dir="data/nass"):
             continue
         est_now[s] = state_estimate(pairs, this_year, float(ge_now))
     if len(est_now) < MIN_STATES:
-        raise SystemExit(f"FATAL {crop}: only {len(est_now)} states have a current rating")
+        raise ThinHistory(crop, len(est_now), MIN_STATES,
+                          f"FATAL {crop}: only {len(est_now)} states have a current rating", kind="states")
     nowcast = aggregate(panel, arows, this_year, est_now) * calibration(panel, arows, us, us_years)
 
     # The PRINTED trend uses every final year before this one, not us_years:
@@ -365,15 +369,24 @@ def held_back_record(prev, we, err, recorded):
         "week_ending": we,
         "iso_week": wk,
         "crop": err.crop,
-        "backtest_years": err.years,
         "need": err.need,
         "last_good_week": last,
         "recorded": recorded,
+    }
+    if getattr(err, "kind", "years") == "states":
+        out["held_back"]["states"] = err.years
+        out["held_back"]["reason"] = (
+            f"No nowcast from the ratings for the week ending {we}: this late in the season only "
+            f"{err.years} states still report {err.crop} condition ratings, and the nowcast needs {err.need}. "
+            f"The figures shown are from the week ending {last}, the last ratings week with enough states.")
+        return out
+    out["held_back"].update({
+        "backtest_years": err.years,
         "reason": (f"No nowcast from the ratings for the week ending {we}: this late in the season "
                    f"only {err.years} past years of {err.crop} ratings can be checked against the final "
                    f"yield, and the error band needs {err.need}. The figures shown are from the week ending {last}, the last ratings "
                    f"week with enough history."),
-    }
+    })
     return out
 
 
@@ -585,6 +598,26 @@ def _selftest():
         os.chdir(cwd)
     chk(raised is not None and raised.need in (MIN_YEARS, MIN_YEARS - 2),
         f"a short-history week raises ThinHistory ({raised})")
+
+    # Oct 27 2026: harvest ends the ratings state by state; 8 of 10 needed states
+    # left is the same late-season case, held back like a short history, not a red job.
+    cond_few = dict(cond_thin, states={k: v for k, v in list(cond_thin["states"].items())[:8]})
+    try:
+        os.chdir(d)
+        run_crop("corn", cond_few, [ST_ABBR[n] for n in st_names[:8]], nass_dir=d)
+        few = None
+    except ThinHistory as e:
+        few = e
+    finally:
+        os.chdir(cwd)
+    chk(few is not None and few.kind == "states" and few.years == 8 and few.need == MIN_STATES,
+        f"too few rating states raises ThinHistory kind=states ({few})")
+    prev_ok = {"crops": {"corn": {"week_ending": "2026-10-04"}}}
+    hb = held_back_record(prev_ok, "2026-10-25", few, "2026-10-27T02:00:00Z") if few else None
+    chk(hb is not None and hb["held_back"]["states"] == 8 and "states still report corn" in hb["held_back"]["reason"]
+        and "backtest_years" not in hb["held_back"] and hb["crops"] == prev_ok["crops"],
+        "late season: the state shortfall is recorded and the last nowcast kept")
+    chk(held_back_record(prev_ok, "2026-06-28", few, "x") is None, "mid-season: the state shortfall still fails loud")
 
     print("SELFTEST " + ("OK" if ok else "FAILED"))
     sys.exit(0 if ok else 1)
