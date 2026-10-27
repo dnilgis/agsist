@@ -1,6 +1,7 @@
-"""One-time: add the signups kept during the Oct 21-22 worker block straight
+"""Add signups kept by the backup form (worker blocked or unreachable) straight
 to their lists, as Sig asked (no confirm email). Reads
-private/pending-signups.jsonl from dnilgis/feedbag (branch private-data),
+private/<PENDING_FILE> (default pending-signups.jsonl, the Oct 21-22 block)
+from dnilgis/feedbag (branch private-data),
 posts each to the worker's own routes, and prints counts only.
 
 Daily and notice records go through /subscribe and /notice, which add at once.
@@ -12,6 +13,9 @@ import base64, hashlib, hmac, json, os, sys, urllib.parse, urllib.request
 UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com)"}
 # The public signup routes take posts only from the site (publicGate checks Origin).
 SITE = {"Origin": "https://agsist.com"}
+
+
+WATCH_KEYS = ("label", "kind", "ewid", "crop", "period", "plabel", "direction", "target_cents", "move_cents")
 
 
 def post(url, body=None):
@@ -34,7 +38,8 @@ def main():
     base = "%s://%s" % (base.scheme, base.netloc)
     secret = os.environ["UNSUB_SECRET"]
     req = urllib.request.Request(
-        "https://api.github.com/repos/dnilgis/feedbag/contents/private/pending-signups.jsonl?ref=private-data",
+        "https://api.github.com/repos/dnilgis/feedbag/contents/private/%s?ref=private-data"
+        % os.environ.get("PENDING_FILE", "pending-signups.jsonl"),
         headers=dict(UA, Authorization="Bearer " + os.environ["PRIVATE_REPO_TOKEN"], Accept="application/vnd.github.raw"))
     rows = [json.loads(l) for l in urllib.request.urlopen(req, timeout=30).read().decode().splitlines() if l.strip()]
     done = {"daily": 0, "notice": 0, "elevator alert": 0}
@@ -56,7 +61,11 @@ def main():
             kind = "notice"
         elif lst == "elevator alert":
             wid = d["wid"].lower()
-            code, txt = post(base + "/elevator-watch-subscribe", {"email": e, "wid": wid, "label": d["label"]})
+            # A cash-target or basis-move alert carries its rule (kind, ewid,
+            # crop, period, target) in details; send it as the page would.
+            body = {k: d[k] for k in WATCH_KEYS if k in d}
+            body.update(email=e, wid=wid)
+            code, txt = post(base + "/elevator-watch-subscribe", body)
             ok = code == 200 and '"ok":true' in txt
             if ok:
                 q = urllib.parse.urlencode({"e": e, "w": wid, "t": hmac16(e + "|ec|" + wid, secret)})
