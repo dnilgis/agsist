@@ -6,6 +6,12 @@
    "date": "2026-10-27",
    "items": [
     {
+     "tag": "improved",
+     "page": "/cash-bids",
+     "name": "Company counts beside state basis: one more kind of match",
+     "text": "When one company lists another business's elevator on its own bid page, the two now count as one company beside the state basis. On Oct 27 that took Wisconsin corn from 20 companies to 19; Kansas, Nebraska and North Dakota did not change."
+    },
+    {
      "tag": "fixed",
      "page": "/",
      "name": "Phones: no more text against the screen edge at the end of a page",
