@@ -3945,6 +3945,16 @@ def render_daily_recent_list(items, n=DAILY_RECENT_N):
     return "\n".join(cards)
 
 
+def render_daily_latest_link(items):
+    """The newest published issue, linked from the line under daily.html's
+    loading skeleton, so a slow or failed load still has a dated issue one tap
+    away (vision panel Oct 25, fix 5)."""
+    if not items:
+        return ""
+    d = items[0][0]
+    return f'<a href="/daily/{d}">Read the latest dated briefing, {_dow_label(d)}</a>.'
+
+
 def _replace_seed(text, tag, body):
     pat = re.compile(r"(<!--SEED:" + re.escape(tag) + r"-->)(.*?)(<!--/SEED:" + re.escape(tag) + r"-->)", re.S)
     if not pat.search(text):
@@ -3953,11 +3963,13 @@ def _replace_seed(text, tag, body):
 
 
 def refresh_archive_link_lists():
-    """Rewrite the SEED:archivelist block in archive.html and SEED:dailyrecent
-    in daily.html. Idempotent; a missing marker is reported, never invented."""
+    """Rewrite the SEED:archivelist block in archive.html, and SEED:dailyrecent
+    and SEED:dailylatest in daily.html. Idempotent; a missing marker is
+    reported, never invented."""
     items = _published_briefings()
     for page, tag, body in ((ARCHIVE_PAGE, "archivelist", render_archive_static_list(items)),
-                            (DAILY_PAGE, "dailyrecent", render_daily_recent_list(items))):
+                            (DAILY_PAGE, "dailyrecent", render_daily_recent_list(items)),
+                            (DAILY_PAGE, "dailylatest", render_daily_latest_link(items))):
         try:
             text = page.read_text(encoding="utf-8")
         except Exception as e:
@@ -3969,7 +3981,7 @@ def refresh_archive_link_lists():
             continue
         if new != text:
             page.write_text(new, encoding="utf-8")
-        print(f"  {page.name}: SEED:{tag} lists {len(items) if tag == 'archivelist' else min(len(items), DAILY_RECENT_N)} briefings")
+        print(f"  {page.name}: SEED:{tag} lists {len(items) if tag == 'archivelist' else 1 if tag == 'dailylatest' else min(len(items), DAILY_RECENT_N)} briefings")
 
 
 def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,

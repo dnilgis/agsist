@@ -1038,9 +1038,9 @@ def hub_page(files, built, recs=None):
   <div class="rc">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <span aria-current="page">Rain by county</span></nav>
     <h1>{f"How much rain did your county get in {yw}?" if done else "How much rain has your county had this year?"}</h1>
-    <p class="rc-answer">{"First, the counties having a record year. Then pick" if recs else "Pick"} your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.</p>
-{records_html(recs)}    <ul class="rc-states">{''.join(rows)}</ul>
-    <h2>How the numbers are counted</h2>
+    <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.{" The counties having a record year are below the states." if recs else ""}</p>
+    <ul class="rc-states">{''.join(rows)}</ul>
+{records_html(recs)}    <h2>How the numbers are counted</h2>
     <ul class="rc-list">
       <li>Each county page uses one weather station inside that county, and only a station that reported at least 90% of the days {"in " + yw if done else "this year"}. Counties without one are listed on the state page with the nearest county that has one.</li>
       <li>A day the station did not report is unknown, not dry. It adds nothing to the total and nothing to the usual year either.</li>
@@ -1607,6 +1607,8 @@ def selftest():
         ok("https://agsist.com/rain</loc>" in sm and "https://agsist.com/rain/iowa/story-county</loc>" in sm, "sitemap URLs are clean")
         hub = want["rain.html"]
         ok("static-nav:header" in hub, "hub carries the static nav")
+        # vision panel Oct 25, fix 4: the state finder comes before the records list
+        ok('class="rc-states"' in hub and ('id="records"' not in hub or hub.index('class="rc-states"') < hub.index('id="records"')), "hub: state finder above the records")
         # a county that leaves the data leaves a pointer to its state page, and comes back cleanly
         gp = os.path.join(site, "rain", "iowa", "gone-county.html")
         os.makedirs(os.path.dirname(gp), exist_ok=True)
