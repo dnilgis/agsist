@@ -52,6 +52,19 @@ jobs:
         run: pip install pypdf==6.20.1
       - name: Selftest
         run: python scripts/fetch_hay_ams.py --selftest
+      - name: TEMP DNS check and ESMIS copies (probe only)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        run: |
+          for h in www.ams.usda.gov mymarketnews.ams.usda.gov marsapi.ams.usda.gov esmis.nal.usda.gov www.usda.gov usda.library.cornell.edu; do
+            getent hosts "$h" >/dev/null && echo "DNS ok: $h" || echo "DNS FAIL: $h"
+          done
+          mkdir -p data/hay-ams-raw/esmis
+          for u in https://esmis.nal.usda.gov/sites/default/release-files/ft84bb300/xk81mg59r/2227pm96c/AMS_3729.PDF https://esmis.nal.usda.gov/sites/default/release-files/kw52j807h/4x51j820j/76537q43x/AMS_2244.PDF; do
+            f=data/hay-ams-raw/esmis/$(basename "$u" .PDF)-esmis.pdf
+            curl -sS -m 60 -L -o "$f" -w "$u HTTP %{http_code} %{size_download}\n" "$u" || true
+            [ -s "$f" ] && head -c 5 "$f" | grep -q '%PDF' && pdftotext -layout "$f" "${f%.pdf}.txt" && head -40 "${f%.pdf}.txt" || rm -f "$f"
+          done
+          getent hosts www.ams.usda.gov >/dev/null || { echo "::error::www.ams.usda.gov does not resolve from the runner; probe skipped"; exit 1; }
       - name: Probe (raw source capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         env:
