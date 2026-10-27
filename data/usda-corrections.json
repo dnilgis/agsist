@@ -1,0 +1,43 @@
+{
+ "_note": "Corrections USDA itself published to a report AGSIST already uses, keyed by report + release date + place. Maintained by hand. What USDA printed stays printed everywhere on the site; the corrected figure is shown beside it with the notice date and source, and anything graded against the printed figure is graded against the corrected one too (scripts/usda_corrections.py; its --check fails the build when a file or page carries a corrected figure without the correction). Only figures USDA published go in here. A figure USDA says changed but did not print a corrected value for is listed under not_on_file and never computed.",
+ "corrections": [
+  {
+   "id": "nass-crop-production-2026-09-11-corn-yield",
+   "agency": "USDA NASS",
+   "report": "crop_production",
+   "report_name": "Crop Production",
+   "release": "2026-09-11",
+   "crop": "corn",
+   "metric": "yield",
+   "unit": "bu/acre",
+   "values": {
+    "US": {"printed": 178.5, "corrected": 178.8},
+    "KS": {"printed": 121, "corrected": 118},
+    "NE": {"printed": 177, "corrected": 182}
+   },
+   "notice_date": "2026-10-23",
+   "notice_dates": ["2026-10-23", "2026-10-24"],
+   "sources": [
+    "https://www.nass.usda.gov/Newsroom/Notices/2026/10-23-2026.php",
+    "https://www.nass.usda.gov/Newsroom/Notices/2026/10-24-2026.php"
+   ],
+   "original_source": "https://esmis.nal.usda.gov/sites/default/release-files/796056/crop0926.pdf",
+   "cause": "Incorrect acreage weights were used to combine irrigated and non-irrigated objective yield observations in Kansas and Nebraska.",
+   "not_on_file": [
+    "September plant populations and ear counts for Kansas and Nebraska",
+    "September 10-state objective yield averages",
+    "Corrected September state and U.S. production forecasts (NASS says they changed; the corrected totals are not on file here and are not computed from the rounded yields)"
+   ],
+   "later_report": {"release": "2026-10-09", "status": "unchanged", "note": "NASS says the October 9 forecasts were reviewed, validated and did not change."},
+   "carried_in": [
+    {"report": "wasde", "release": "2026-09-11", "geo": "US", "reissued": null,
+     "note": "The September 11 WASDE printed the same 178.5 national yield. Whether USDA reissued that WASDE is not known (usda.gov does not answer our readers), so the WASDE print is left as printed."}
+   ],
+   "verified": {
+    "status": "read_by_hand",
+    "on": "2026-10-27",
+    "how": "Notice text read by hand on 2026-10-27 and filed in the private notes. Our build machines could not open nass.usda.gov or ESMIS from this session; copies are requested on the references branch (ids nass-notice-2026-10-23, nass-notice-2026-10-24, nass-crop0926)."
+   }
+  }
+ ]
+}
