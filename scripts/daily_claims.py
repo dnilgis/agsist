@@ -293,9 +293,46 @@ def r_close_before_settle(sent, ctx):
     return False
 
 
+_MON_IDX = {m[:3]: i + 1 for i, m in enumerate(MONTHS)}
+_KNOWN_CLOSE = re.compile(r"^\)?,?\s*(?:\$\s?[\d.,]+[¼½¾]?\*{0,2}\s+(?:close|settle|settlement|finish)"
+                          r"|(?:close|settle|settlement|finish)\s+(?:of|at|was)\s+\$)", re.I)
+_PAST_VERB = re.compile(r"\b(closed|settled|finished|came in|showed|rose|fell|gained|lost|was|were)\b", re.I)
+_IFFY = re.compile(r"\b(if|would|could|should|may|might|will|watch|whether|expected|due)\b", re.I)
+
+
+def _date_of(mon, dd, day):
+    m = _MON_IDX.get(mon.lower()[:3])
+    try:
+        d = date(day.year, m, int(dd))
+    except (TypeError, ValueError):
+        return None
+    if (d - day).days > 183:
+        d = d.replace(year=d.year - 1)
+    elif (day - d).days > 183:
+        d = d.replace(year=d.year + 1)
+    return d
+
+
+def r_future_as_past(sent, ctx):
+    """A date after the issue with a known close or a result attached."""
+    for m in DATE_RE.finditer(sent):
+        d = _date_of(m.group(1), m.group(2), ctx["day"])
+        if d is None or d <= ctx["day"]:
+            continue
+        before, after = sent[max(0, m.start() - 4):m.start()], sent[m.end():m.end() + 40]
+        possessive = bool(re.search(r"'s\s*\(?\s*$", before)) or after.startswith("'s")
+        if possessive and _KNOWN_CLOSE.search(after.lstrip("'s")):
+            return True
+        pv = _PAST_VERB.search(after[:30])
+        if pv and not _IFFY.search(sent[:m.end() + pv.start()]):
+            return True
+    return False
+
+
 RULES = [
     ("expired-contract", r_expired),
     ("close-before-settle", r_close_before_settle),
+    ("future-as-past", r_future_as_past),
 ]
 
 
@@ -395,6 +432,18 @@ def _selftest():
     expect("close-before-settle", "Corn settled Wednesday at $4.63¼, up 1¼ cents.", c22, False)
     expect("close-before-settle", "A close above $4.70 would turn the chart.", c22, False)
     expect("close-before-settle", "Corn is at $4.64, close to Wednesday's settle.", c22, False)
+
+    # Oct 18 (a Sunday): Friday was Oct 16; Oct 23 was five days out
+    c18 = context({}, date(2026, 10, 18))
+    expect("future-as-past", "Cash cattle firm above Friday's (Oct 23) $227.55 close supports the rally; steady or lower fades it.", c18, True)
+    expect("future-as-past", "October live cattle futures settled at $227.55 on Friday, Oct 16. A firmer cash cattle trade "
+           "this week supports the rally; steady or lower cash fades it.", c18, False)
+    expect("future-as-past", "Watch Friday's (Oct 23) close for a break of $230.", c18, False)
+    expect("future-as-past", "Cattle on Feed, Friday, Oct 23, 2 p.m. CT.", c18, False)
+    expect("future-as-past", "A close above $230 on Friday, Oct 23 would extend the rally.", c18, False)
+    expect("future-as-past", "Placements on Oct 23 came in 4% below a year ago.", c18, True)
+    expect("future-as-past", "Corn settled Oct 16 at $4.74¼.", c18, False)
+    expect("future-as-past", "Dec 31 is the deadline.", context({}, date(2026, 1, 5)), False)
 
     # strip cuts the sentence and keeps the bullets
     b = {"sections": [{"title": "Cattle firm", "body": "- Live cattle gained 0.7% to **$227.52**.\n"
