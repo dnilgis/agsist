@@ -56,18 +56,18 @@ TABLES = [
      re.compile(r"Wheat\s+by\s+Class|^\s*Note:|Totals\s+may\s+not\s+add|^\s*1/", re.I)),
     ("corn", "Corn", "U.S. Feed Grain and Corn Supply and Use",
      re.compile(r"U\.\s?S\.\s+Feed\s+Grains?\s+(and|&)\s+Corn\s+Supply\s+(and|&)\s+Use", re.I),
-     re.compile(r"^\s*CORN\s*$"),
+     re.compile(r"^\s*CORN(?=\s|$)"),
      re.compile(r"^\s*Note:|Totals\s+may\s+not\s+add|^\s*SORGHUM\b|^\s*1/", re.I)),
     ("soybeans", "Soybeans", "U.S. Soybeans and Products Supply and Use",
      re.compile(r"U\.\s?S\.\s+Soybeans\s+(and|&)\s+Products\s+Supply\s+(and|&)\s+Use", re.I),
-     re.compile(r"^\s*SOYBEANS\s*$"),
+     re.compile(r"^\s*SOYBEANS(?=\s|$)"),
      re.compile(r"^\s*SOYBEAN\s+(OIL|MEAL)\b|^\s*Note:|^\s*1/", re.I)),
 ]
 YEAR_RE = re.compile(r"(\d{4})/(\d{2})(?:\s*(E\s?st(?:imated|imate)?\.?|Proj(?:ected|ection|ections)?\.?|Prel(?:iminary)?\.?))?", re.I)
 MONTH_RE = re.compile(r"\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(?:[a-z]*)\.?(?=\s|$)")
 VALUE_RE = re.compile(r"^(?:-?\d{1,3}(?:,\d{3})+(?:\.\d+)?|-?\d+(?:\.\d+)?|-?\.\d+|\d[\d,.]*-\d[\d,.]*|NA|N/A|--)$")
 NUM_RE = re.compile(r"^-?(?:\d{1,3}(?:,\d{3})+|\d+)?(?:\.\d+)?$")
-UNIT_RE = re.compile(r"^(million\s+|thousand\s+)?(acres|bushels|metric\s+tons|hectares|pounds|short\s+tons|tons)$", re.I)
+UNIT_RE = re.compile(r"^(million\s+|thousand\s+)?(acres|bushels(?:/acre)?|metric\s+tons|hectares|pounds|short\s+tons|tons)$", re.I)
 DATE_RE = re.compile(r"\b(" + "|".join(m.capitalize() for m in MONTH_NAMES) + r")\s+(\d{1,2}),\s+(\d{4})\b")
 WASDE_RE = re.compile(r"\bWASDE\s*-\s*(\d{1,4})\b")
 FOOT_RE = re.compile(r"(\s+\d{1,2}/)+\s*$|\s*\*+\s*$")
@@ -84,9 +84,17 @@ CANON = {
     "ethanol & by-products": "Ethanol & by-products", "ethanol and by-products": "Ethanol & by-products",
     "yield per harvested acre": "Yield per Harvested Acre", "yield per harvested": "Yield per Harvested Acre",
     "yield": "Yield per Harvested Acre",
+    "ending stocks, total": "Ending Stocks", "total ending stocks": "Ending Stocks",
 }
+# A label printed over two lines in the 1995-2011 text: "Area" over "Planted", "Yield per harvested" over
+# "acre" (soybeans: "Yield per harv." over "unit"). (first line, second line) -> the name today prints.
+STITCH = {("area", "planted"): "Area Planted", ("area", "harvested"): "Area Harvested",
+          ("yield per harvested", "acre"): "Yield per Harvested Acre",
+          ("yield per harv", "unit"): "Yield per Harvested Acre"}
+FOOTREF_RE = re.compile(r"(?<=\s)\d{1,2}/(?=\s|$)")
 CHECK = {"beg": ["Beginning Stocks"], "prod": ["Production"], "imp": ["Imports"], "sup": ["Supply, Total"],
-         "dom": ["Domestic, Total"], "exp": ["Exports"], "use": ["Use, Total"], "end": ["Ending Stocks"]}
+         "dom": ["Domestic, Total"], "exp": ["Exports"], "use": ["Use, Total"], "end": ["Ending Stocks"],
+         "crush": ["Crushings"], "seed": ["Seed"], "res": ["Residual"]}
 
 
 def clean(line):
@@ -115,6 +123,7 @@ def canon_label(label):
 
 def canon_unit(text):
     t = re.sub(r"\s+", " ", text.strip()).lower()
+    t = re.sub(r"^bushels/acre$", "bushels", t)          # the 1995-2011 soybean yield unit; today's "Bushels"
     return " ".join(w.capitalize() for w in t.split(" "))
 
 
@@ -123,7 +132,13 @@ def tokens(line):
 
 
 def data_row(line):
-    """'Production    14,892   16,964' -> ('Production', ['14,892', '16,964']) or None."""
+    """'Production    14,892   16,964' -> ('Production', ['14,892', '16,964']) or None.
+    A footnote mark among the figures ('Residual  70  2 3/  82', 2008) is blanked, never read as a figure.
+    On a price line a range printed with spaces ('10.50 -12.00', '5.95 - 6.25') is one figure: a price is
+    never negative, so the dash can only be the range. Elsewhere a minus sign stays a minus sign."""
+    line = FOOTREF_RE.sub(lambda m: " " * len(m.group(0)), line)
+    if re.search(r"price", line, re.I):
+        line = re.sub(r"(?<=\d)\s*-\s*(?=\d)", "-", line)
     toks = tokens(line)
     vals = []
     while toks and VALUE_RE.match(toks[-1][0]):
@@ -225,6 +240,36 @@ def find_tables(lines):
     return out
 
 
+def anchor_line(st):
+    """'SOYBEANS  Million acres' or 'CORN   August   September' (after the crop name: nothing, a unit, or
+    only month names) -> (unit or None, [(month, centre)]); any other line that starts with the name -> None."""
+    m = re.match(r"\s*[A-Z]+", st)
+    rest = st[m.end():] if m else ""
+    if not rest.strip():
+        return None, []
+    if UNIT_RE.match(rest.strip()):
+        return canon_unit(rest), []
+    ms = []
+    for t, a, b in tokens(rest):
+        mm = MONTH_RE.fullmatch(t)
+        if not mm:
+            return None
+        ms.append((MONTHS.index(mm.group(1).lower()) + 1, m.end() + (a + b) / 2))
+    return None, ms
+
+
+def label_only(st):
+    """A line with a label and no figures ('Area', 'Yield per harvested   Bushels') -> (label, unit or None)."""
+    m = re.match(r"^([A-Za-z][A-Za-z ,.&()/-]*?)(?:\s{2,}(\S.*))?$", st)
+    if not m:
+        return None
+    if m.group(2):
+        if not UNIT_RE.match(m.group(2).strip()):
+            return None
+        return m.group(1).strip(), canon_unit(m.group(2))
+    return m.group(1).strip(), None
+
+
 def balance(vals):
     """vals {label: number} for one column -> (checks passed, failures [str])."""
     def g(k):
@@ -237,6 +282,7 @@ def balance(vals):
     def tol(ref):
         return max(2.0, abs(ref or 0) * 0.002)
     beg, prod, imp, sup, dom, exp, use, end = (g(k) for k in ("beg", "prod", "imp", "sup", "dom", "exp", "use", "end"))
+    crush, seed, res = g("crush"), g("seed"), g("res")
     if None not in (beg, prod, imp, sup):
         if abs(beg + prod + imp - sup) <= tol(sup):
             ok += 1
@@ -247,6 +293,11 @@ def balance(vals):
             ok += 1
         else:
             bad.append(f"use {use} vs {dom}+{exp}")
+    if None not in (crush, exp, seed, res, use):            # soybeans print no domestic total: check the use lines
+        if abs(crush + exp + seed + res - use) <= tol(use):
+            ok += 1
+        else:
+            bad.append(f"use {use} vs {crush}+{exp}+{seed}+{res}")
     if None not in (sup, use, end):
         if abs(sup - use - end) <= tol(sup):
             ok += 1
@@ -269,6 +320,7 @@ def read_table(lines, crop, rel_date, scan=False):
     hdr_open = False
     active = anchor is None
     cells = []
+    pending = prev = None
     rel_m = int(rel_date[5:7])
     cols = None
     for raw in lines:
@@ -292,7 +344,21 @@ def read_table(lines, crop, rel_date, scan=False):
             hdr_open, cols = True, None
             continue
         hdr_open = False
-        if anchor is not None and anchor.match(st):
+        if anchor is not None and not active and anchor.match(st):
+            a = anchor_line(st)
+            if a is None:
+                continue
+            a_unit, a_months = a
+            if a_months:
+                # 2011-2015 PDFs print the months again beside CORN. The header's own months are tied to
+                # their market years by position; the ones beside the crop name only have to agree.
+                if not months:
+                    months = a_months
+                elif [mo for mo, _ in sorted(months, key=lambda x: x[1])] != [mo for mo, _ in a_months]:
+                    stats["refused"] = "months_beside_the_crop_name_differ_from_the_header"
+                    return [], stats
+            if a_unit:
+                unit = a_unit
             active = True
             continue
         if not active:
@@ -304,7 +370,14 @@ def read_table(lines, crop, rel_date, scan=False):
             continue
         row = data_row(ln)
         if not row:
+            lab = label_only(st)
+            if lab is not None:
+                lab_text, lab_unit = lab
+                pending = lab_text
+                if lab_unit:
+                    unit = lab_unit
             continue
+        prev, pending = pending, None
         if cols is None:
             if not years:
                 stats["refused"] = "no_header"
@@ -323,6 +396,8 @@ def read_table(lines, crop, rel_date, scan=False):
             stats["rows_bad_count"] += 1
             continue
         name, u = canon_label(label)
+        if prev is not None:
+            name = STITCH.get((prev.lower().rstrip(". "), canon_label(label)[0].lower()), name)
         for ci, v in enumerate(vals):
             cells.append((name, u or unit, ci, v))
     if cols is None:
