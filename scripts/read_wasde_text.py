@@ -89,12 +89,13 @@ CANON = {
     "yield": "Yield per Harvested Acre", "yield per harv. acre": "Yield per Harvested Acre",
     "ending stocks, total": "Ending Stocks", "total ending stocks": "Ending Stocks",
 }
+CANON_TIGHT = {re.sub(r"[\s.]", "", k): v for k, v in CANON.items()}
 # A label printed over two lines in the 1995-2011 text: "Area" over "Planted", "Yield per harvested" over
 # "acre" (soybeans: "Yield per harv." over "unit"). (first line, second line) -> the name today prints.
 STITCH = {("area", "planted"): "Area Planted", ("area", "harvested"): "Area Harvested",
           ("yield per harvested", "acre"): "Yield per Harvested Acre",
           ("yield per harv", "unit"): "Yield per Harvested Acre"}
-FOOTREF_RE = re.compile(r"(?<=\s)\d{1,2}/(?=\s|$)")
+FOOTREF_RE = re.compile(r"(?<=\s)_?\d{1,2}/(?=\s|$)")
 CHECK = {"beg": ["Beginning Stocks"], "prod": ["Production"], "imp": ["Imports"], "sup": ["Supply, Total"],
          "dom": ["Domestic, Total"], "exp": ["Exports"], "use": ["Use, Total"], "end": ["Ending Stocks"],
          "crush": ["Crushings"], "seed": ["Seed"], "res": ["Residual"]}
@@ -113,10 +114,13 @@ def canon_label(label):
     s = FOOT_RE.sub("", re.sub(r"\s+", " ", label)).strip().rstrip(".:").strip()
     s = re.sub(r"\s*\d/$", "", s).strip()
     low = s.lower()
-    if "farm price" in low:
+    tight = re.sub(r"[\s.]", "", low)                    # the 2016-2026 TXT squeezes words: "Avg.FarmPrice"
+    if "farmprice" in tight or ("price" in tight and "$/bu" in tight):
         return "Avg. Farm Price ($/bu)", "$/bu"
     if low in CANON:
         return CANON[low], None
+    if tight in CANON_TIGHT:
+        return CANON_TIGHT[tight], None
     words = s.split(" ")
     out = []
     for i, w in enumerate(words):
@@ -140,6 +144,7 @@ def data_row(line):
     On a price line a range printed with spaces ('10.50 -12.00', '5.95 - 6.25') is one figure: a price is
     never negative, so the dash can only be the range. Elsewhere a minus sign stays a minus sign."""
     line = FOOTREF_RE.sub(lambda m: " " * len(m.group(0)), line)
+    line = re.sub(r"(?<=\d)\s*\*+(?=\s|$)", lambda m: " " * len(m.group(0)), line)   # "95.3*", "86.1**", "74.8 *": footnote stars
     if re.search(r"price", line, re.I):
         line = re.sub(r"(?<=\d)\s*-\s*(?=\d)", "-", line)
     toks = tokens(line)
@@ -373,13 +378,13 @@ def read_table(lines, crop, rel_date, scan=False, no_anchor=False):
                 unit = a_unit
             active = True
             continue
+        if UNIT_RE.match(st):                         # a unit printed just above CORN counts for it (2016 on)
+            unit = canon_unit(st)
+            continue
         if not active:
             continue
         if active and anchor is not None and re.fullmatch(r"[A-Z][A-Z &]+", st) and not anchor.match(st):
             break                                     # the next block (SORGHUM, SOYBEAN OIL ...)
-        if UNIT_RE.match(st):
-            unit = canon_unit(st)
-            continue
         row = data_row(ln)
         if not row:
             lab = label_only(st)
@@ -580,6 +585,76 @@ def selftest():
     ex = excerpt(rd("wasde-2026-10-09.txt"))
     ck("the raw excerpt keeps the cover and the tables", "WASDE - 676" in ex and "U.S. Feed Grain and Corn" in ex
        and len(ex) < len(rd("wasde-2026-10-09.txt")))
+
+    # 5. real USDA text from the Oct 27, 2026 ESMIS run, one cut per layout the first run could not read
+    #    (test/fixtures/wasde-esmis/real-*.txt; the figures are USDA's, as printed)
+    def real(n, date):
+        rows, rep = read_report(rd(n), date, "x")
+        return rows, rep
+
+    def unit_of(rows, crop, line):
+        c = {"corn": "Corn", "soybeans": "Soybeans", "wheat": "Wheat"}[crop]
+        return sorted({r[11] for r in rows if r[5] == c and r[4] == line})
+    rows, rep = real("real-1995-01-12-soybeans.txt", "1995-01-12")
+    ck("1995 TXT soybeans: 'SOYBEANS : Million acres' opens the block, December and January read",
+       pick(rows, "soybeans", "1994/95", "Ending Stocks") == [("480", "12"), ("510", "1")]
+       and pick(rows, "soybeans", "1994/95", "Production", 1) == [("2,558", "1")], rep["tables"]["soybeans"])
+    ck("1995 TXT soybeans: 'Area' over 'Planted', 'Yield per harv.' over 'unit' read as today's lines",
+       pick(rows, "soybeans", "1994/95", "Area Planted", 1) == [("61.9", "1")]
+       and pick(rows, "soybeans", "1994/95", "Yield per Harvested Acre", 1) == [("41.9", "1")]
+       and unit_of(rows, "soybeans", "Yield per Harvested Acre") == ["Bushels"]
+       and unit_of(rows, "soybeans", "Area Planted") == ["Million Acres"]
+       and not {"Planted", "Unit", "Harvested"} & {r[4] for r in rows}, sorted({r[4] for r in rows}))
+    ck("1995 TXT soybeans: a price range broken over two lines is left out, never half read",
+       not pick(rows, "soybeans", "1994/95", "Avg. Farm Price ($/bu)"))
+    bad = rd("real-1995-01-12-soybeans.txt").replace("Crushings             :   1,279      1,272         1,355         1,360",
+                                                      "Crushings             :   1,279      1,272         1,355         1,960")
+    rows, rep = read_report(bad, "1995-01-12", "x")
+    ck("soybeans: crush + exports + seed + residual must equal total use, else the column is withheld",
+       rep["tables"]["soybeans"]["columns_withheld"] == 1 and not pick(rows, "soybeans", "1994/95", "Production", 1)
+       and pick(rows, "soybeans", "1994/95", "Production", 12) == [("2,523", "12")], rep["tables"]["soybeans"])
+    rows, rep = real("real-1996-04-11-soybeans.txt", "1996-04-11")
+    ck("April 1996 soybeans print no SOYBEANS line: read from the title",
+       pick(rows, "soybeans", "1995/96", "Ending Stocks") == [("200", "3"), ("190", "4")], rep["tables"]["soybeans"])
+    rows, rep = real("real-2008-05-09-corn-soybeans.txt", "2008-05-09")
+    ck("2008 TXT soybeans: 'SOYBEANS:' line, starred figures, a footnote among the figures",
+       pick(rows, "soybeans", "2008/09", "Ending Stocks", 5) == [("185", "5")]
+       and pick(rows, "soybeans", "2008/09", "Area Planted", 5) == [("74.8", "5")]
+       and pick(rows, "soybeans", "2007/08", "Residual") == [("2", "5")], rep["tables"]["soybeans"])
+    ck("2008 TXT: a price range printed with a space is one figure",
+       pick(rows, "soybeans", "2008/09", "Avg. Farm Price ($/bu)") == [("10.50-12.00", "5")]
+       and pick(rows, "corn", "2007/08", "Avg. Farm Price ($/bu)") == [("4.10-4.40", "5")])
+    ck("2008 TXT corn: 'Ending stocks, total' is Ending Stocks, so the ending check runs",
+       pick(rows, "corn", "2008/09", "Ending Stocks", 5) and "Ending Stocks, Total" not in {r[4] for r in rows}
+       and pick(rows, "corn", "2008/09", "Area Harvested", 5), sorted({r[4] for r in rows if r[5] == "Corn"}))
+    ck("a minus sign outside a price line stays a minus sign", data_row("Feed and Residual     50      5     -4") ==
+       ("Feed and Residual", ["50", "5", "-4"]), data_row("Feed and Residual     50      5     -4"))
+    rows, rep = real("real-2012-05-10-corn.txt", "2012-05-10")
+    ck("2011-2015 PDF corn: CORN printed beside its months, the year header mirrored below feed grains",
+       pick(rows, "corn", "2012/13", "Ending Stocks") == [("NA", "4"), ("1,881", "5")]
+       and pick(rows, "corn", "2011/12", "Avg. Farm Price ($/bu)") == [("5.95-6.25", "5")]
+       and pick(rows, "corn", "2012/13", "Yield per Harvested Acre", 5) == [("166.0", "5")]
+       and not any("Metric" in r[11] for r in rows if r[5] == "Corn"), rep["tables"]["corn"])
+    moved = rd("real-2012-05-10-corn.txt").replace("April                      May", "April                      June")
+    rows, rep = read_report(moved, "2012-05-10", "x")
+    ck("months beside CORN that differ from the header refuse the table",
+       rep["tables"]["corn"]["refused"] == "months_beside_the_crop_name_differ_from_the_header" and not rows, rep["tables"]["corn"])
+    rows, rep = real("real-2013-04-10-corn.txt", "2013-04-10")
+    ck("April 2013 corn: header month printed 'arM', months beside CORN tie to the twice-printed year",
+       pick(rows, "corn", "2012/13", "Ending Stocks") == [("632", "3"), ("757", "4")], rep["tables"]["corn"])
+    rows, rep = real("real-2013-03-08-wheat.txt", "2013-03-08")
+    ck("March 2013 wheat: 'bFe' read as Feb, not a market year printed twice",
+       pick(rows, "wheat", "2012/13", "Ending Stocks") == [("691", "2"), ("716", "3")], rep["tables"]["wheat"])
+    rows, rep = real("real-2024-07-12-soybeans.txt", "2024-07-12")
+    ck("2016-2026 TXT: '86.1**' read, 'Avg.FarmPrice' is the farm price in $/bu",
+       pick(rows, "soybeans", "2024/25", "Area Planted", 7) == [("86.1", "7")]
+       and pick(rows, "soybeans", "2024/25", "Avg. Farm Price ($/bu)", 7) == [("11.10", "7")]
+       and unit_of(rows, "soybeans", "Avg. Farm Price ($/bu)") == ["$/bu"], sorted({(r[4], r[11]) for r in rows}))
+    rows, rep = real("real-2007-11-09-prose.txt", "2007-11-09")
+    ck("prose that names a table ('The U.S. wheat supply and use projections') is not the table",
+       rep["tables"]["wheat"]["refused"] == "not_found" and not rows, (rep["tables"]["wheat"], rows[:2]))
+    lines = ["  U.S. Wheat Supply and Use 1/", "x", "\fnext page", "y"]
+    ck("a page break ends a table", find_tables(lines)["wheat"] == [(1, 2)], find_tables(lines))
     print(f"read_wasde_text selftest: {len(fails)} failure(s)")
     return 1 if fails else 0
 
