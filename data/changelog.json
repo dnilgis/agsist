@@ -7,6 +7,12 @@
    "items": [
     {
      "tag": "improved",
+     "page": "/hay-prices",
+     "name": "Hay prices are ready for hay auctions next to the state reports",
+     "text": "A state with more than one USDA hay report shows up once in the state list, each hay auction is listed by its own name, and an auction shows the day of the sale apart from the day USDA published the report. Hay auction reports from Pipestone MN, Rock Valley and Union IA, Corsica SD and Golden City MO are lined up and show once their first report has been read and checked."
+    },
+    {
+     "tag": "improved",
      "page": "/daily",
      "name": "A Daily headline that fails its fact check is fixed before it goes out",
      "text": "When the headline states something the prices do not back up, such as a run of lower settles counted to an early morning trade, it is written again and checked again. If it still fails, the headline gives the latest settles with their dates instead. If even that cannot be checked, the Daily waits rather than going out wrong."
