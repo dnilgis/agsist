@@ -1,10 +1,10 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-10-26T22:26:15Z",
+ "generated": "2026-10-27T00:36:35Z",
  "note": "bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they are in (scripts/build_cash_bid_pages.py state_counts). coverage: boards read on the latest full coverage pass out of every elevator tracked (copied from data/elevator-coverage-counts.json). Different questions: a board can be read and have no current bid.",
  "bids": {
-  "elevators": 2050,
-  "towns": 1625
+  "elevators": 2042,
+  "towns": 1617
  },
  "states": {
   "AL": {
@@ -36,12 +36,12 @@
    "towns": 1
   },
   "IL": {
-   "elevators": 252,
-   "towns": 184
+   "elevators": 241,
+   "towns": 175
   },
   "IN": {
-   "elevators": 72,
-   "towns": 57
+   "elevators": 73,
+   "towns": 58
   },
   "KS": {
    "elevators": 261,
@@ -60,12 +60,12 @@
    "towns": 17
   },
   "MN": {
-   "elevators": 160,
+   "elevators": 161,
    "towns": 134
   },
   "MO": {
-   "elevators": 31,
-   "towns": 30
+   "elevators": 30,
+   "towns": 29
   },
   "MT": {
    "elevators": 9,
@@ -84,7 +84,7 @@
    "towns": 2
   },
   "OH": {
-   "elevators": 80,
+   "elevators": 81,
    "towns": 71
   },
   "OK": {
@@ -108,8 +108,8 @@
    "towns": 97
   },
   "TN": {
-   "elevators": 3,
-   "towns": 3
+   "elevators": 4,
+   "towns": 4
   },
   "TX": {
    "elevators": 18,
