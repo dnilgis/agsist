@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-27-land-sales-pages",
+   "date": "2026-10-27",
+   "title": "Farm sales by county, and a monthly update",
+   "line": "Recorded farm sales for every Illinois and Wisconsin county, and each month the biggest buyers, the biggest sales, unusual prices and the best value per acre. Buyer and seller show only when you tap.",
+   "link": "/land-sales/"
+  },
+  {
    "id": "2026-10-27-land-sales-email",
    "date": "2026-10-27",
    "title": "New farm sales near you, once a month",
