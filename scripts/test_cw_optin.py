@@ -49,7 +49,7 @@ def check(cond, msg):
 
 
 SEC, LID, LID2 = "sec", "abcdefghjkmnpqrs", "0123456789abcdef"
-os.environ["LIST_URL"], os.environ["UNSUB_SECRET"] = "https://agsist-api.dnilgis.workers.dev", SEC
+os.environ["LIST_URL"], os.environ["UNSUB_SECRET"] = "https://subs.example.test", SEC
 
 # ── the signed link ──
 SD.LINK_IDS.clear()
@@ -66,7 +66,7 @@ check(SD.county_ask_url("made-up-a@example.com") is None, "no secret: no link")
 os.environ["UNSUB_SECRET"] = SEC
 os.environ["LIST_URL"] = ""
 check(SD.county_ask_url("made-up-a@example.com") is None, "no worker: no link")
-os.environ["LIST_URL"] = "https://agsist-api.dnilgis.workers.dev"
+os.environ["LIST_URL"] = "https://subs.example.test"
 
 SUBS = [{"email": "made-up-a@example.com", "zip": "54728"}, {"email": "made-up-b@example.com", "zip": None, "cw": True},
         {"email": "made-up-nolid@example.com", "zip": "54728"}]
