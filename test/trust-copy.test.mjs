@@ -57,3 +57,31 @@ test("What's Priced In has one grading definition and no empty-state text beside
   assert.ok(!/No report data yet/.test(visible), "No report data yet is in the page text");
   assert.match(h, /if\(d\.sample\)\{var ws=document\.getElementById\('wp-sample'\);ws\.textContent='No report data yet/);
 });
+
+/* 3. Privacy. The summary must not promise more than the details: coordinates, ZIPs and
+   towns go to outside services, and a signup is stored on the server with what it watches
+   (a hail alert keeps the pinned spot). And each alert type says how often it can mail,
+   as the worker and senders behave: the futures price alert and the elevator cash alert
+   fire once (workers/subs-worker.js price-watch-mark fired, kind cash one-shot); the basis
+   watch (kind move) and the ZIP crossing (ewid "ab"+ZIP+miles, re-armed by
+   scripts/send_zip_alert.py) can repeat. Before, one row said "An alert fires once". */
+test("privacy summary matches the details, and each alert type has its own row", () => {
+  const P = read("privacy.html");
+  const sum = P.match(/<div class="tldr">([\s\S]*?)<\/div>/)[1];
+  assert.ok(!/stays in your browser|stays on your device|never leaves/i.test(sum), "the summary says location stays in the browser");
+  assert.match(sum, /send the place you ask about \(your browser&rsquo;s location, a ZIP code or a town\) to the outside services/);
+  assert.match(sum, /stored on AGSIST&rsquo;s server with what you asked to watch \(for a hail alert, the spot you pinned\)/);
+  assert.ok(!/<strong>Price alerts<\/strong>: [^<]*An alert fires once/.test(P), "one row for every alert type again");
+  for (const [name, how] of [["Futures price alert", /It fires once/], ["Elevator cash alert", /It fires once/],
+    ["Elevator basis watch", /each new posting that changes the posted basis/], ["Nearby price crossing", /so it can repeat/],
+    ["Hail alerts", /so it can repeat/]]) {
+    const row = P.match(new RegExp("<li><strong>" + name + "</strong>[^\\n]*</li>"));
+    assert.ok(row, name + " has no row");
+    assert.match(row[0], how, name);
+  }
+  // the behavior the rows describe
+  const W = read("workers/subs-worker.js");
+  assert.match(W, /one-shot: the sender already mailed the hit, so the alert never re-arms/);
+  assert.match(W, /a ZIP-wide alert \(ewid "ab" \+ ZIP \+ miles\) re-arms/);
+  assert.match(read("scripts/send_zip_alert.py"), /a ZIP alert re-arms; it is never removed by a send/);
+});
