@@ -4,6 +4,7 @@ Moved out of the `var CV` comment in components/loader.js on 2026-10-27 (fx/shel
 downloading it on every page. CV is appended as ?v= to header.html, footer.html and analytics.html; bump it
 for any menu or footer change. Newest first. Add a line here with each bump.
 
+- v100 2026-10-27: fx/smallfixes. styles.css?v=27 (phone side gutter for the Made by line and the Next block); no menu or footer change
 - v99 2026-10-27: fx/promo2 (redo of fx/promo, #57). signup-ask.js?v=19: the See this morning's email link beside the ZIP box on Daily page asks, the rain gauge waitlist in One more? after a rain-year notice or a hail alert (and after a monthly county rain signup), no bar on Fast Facts
 - v98 2026-10-27: fx/shelldiet. Shell diet: comments out of loader.js, styles.css, header.html and footer.html; this history moved here; signup-ask.js loads on the first scroll, tap or key, or when the page is idle, except on pages that show their own ask (those load it at once, as before).
 - v97 2026-10-27: fx/fsbackup (past fx/landsales 96, which ships first). Field Scout backup and restore: new field-scout files reach returning readers

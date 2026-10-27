@@ -1,0 +1,69 @@
+name: Bid change ledger (dispatch only)
+
+# The bid change-time ledger (god's-eye panel build 1; Sig, Oct 27 2026: "yes to all"):
+# when each elevator bid changed, at poll resolution, rebuilt from the git history of
+# dnilgis/bids. Output to the PRIVATE repo only (dnilgis/feedbag): the ledger and its
+# state on private-data (private/ledger/bid-changes/), the rebuilt Aug 20 to Oct 16
+# daily bid snapshots on raw (bids-daily/). Zero bytes on main or Pages.
+# scripts/bid_change_ledger.py has the why; scripts/bid_change_ledger.sh the steps.
+#
+# DISPATCH ONLY: no schedule, ever (test/bid-change-ledger.test.mjs). This run is the
+# backfill: from the first bids commit (or where the saved state stopped) up to last
+# midnight Central. Dispatch again until the job summary says "caught up". After that
+# the nightly days ride the morning report job (morning-report.yml, job change-ledger).
+#   gh workflow run bid-change-ledger.yml -R dnilgis/agsist --ref main -f snapshots=true -f max_minutes=300
+
+on:
+  workflow_dispatch:
+    inputs:
+      snapshots:
+        description: "Rebuild the Aug 20 to Oct 16 daily bid snapshots while walking those days"
+        type: boolean
+        default: true
+      max_minutes:
+        description: "Stop starting new days after this many minutes; what is done is saved"
+        type: string
+        default: "300"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bid-change-ledger
+  cancel-in-progress: false
+
+jobs:
+  ledger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            /scripts/
+            /data/ids/
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftests (no network)
+        run: |
+          python3 scripts/bid_change_ledger.py --selftest
+          python3 scripts/bid_snapshots.py --selftest
+      - name: Walk the bids history
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          SNAPSHOTS: ${{ inputs.snapshots && '1' || '' }}
+          MAX_MINUTES: ${{ inputs.max_minutes }}
+          RAW_SOFT: '1'
+        run: |
+          case "$MAX_MINUTES" in ''|*[!0-9]*) echo "::error::max_minutes is a number"; exit 1;; esac
+          bash scripts/bid_change_ledger.sh

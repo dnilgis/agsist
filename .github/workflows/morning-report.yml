@@ -183,3 +183,48 @@ jobs:
         with:
           path: .morning-report
           key: morning-report-counts-${{ github.run_id }}
+
+  # Oct 27 (Sig, god's-eye panel "yes to all"): yesterday's bid changes, rebuilt from the
+  # dnilgis/bids git history, to the private-data branch (scripts/bid_change_ledger.sh;
+  # private/ledger/bid-changes/<year>/<day>.json.gz). Rides this job's once-a-morning gate:
+  # no schedule of its own. Its own job, beside the email and not after it, so it can never
+  # hold up or fail the report. Does nothing until bid-change-ledger.yml has run the backfill.
+  change-ledger:
+    needs: gate
+    if: needs.gate.outputs.go == '1' && inputs.dry_run != true
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    continue-on-error: true
+    concurrency:
+      group: bid-change-ledger
+      cancel-in-progress: false
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: main
+          sparse-checkout: |
+            /scripts/
+            /data/ids/
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Yesterday's bid changes to the private-data branch
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          NIGHTLY: '1'
+          MAX_MINUTES: '30'
+          RAW_SOFT: '1'
+        run: |
+          python3 scripts/bid_change_ledger.py --selftest > /dev/null || { echo "::warning::bid change ledger selftest failed; not run"; exit 0; }
+          bash scripts/bid_change_ledger.sh || echo "::warning::bid change ledger did not finish; the next morning carries on from the saved state"

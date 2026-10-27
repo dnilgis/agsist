@@ -200,7 +200,7 @@ test("where the ask shows, and how it loads", () => {
   const L = read("components/loader.js");
   assert.match(L, /s\.src = '\/components\/land-alert\.js\?v=2';/);
   assert.match(L, /document\.querySelector\('\[data-land-alert\],section\[data-atlas-sales="county"\]'\)/);
-  assert.match(L, /var CV = '99';/);
+  assert.match(L, /var CV = '100';/);   // 100: fx/smallfixes (styles.css?v=27); 99: fx/promo2
   assert.ok(Number(/var CACHE_VERSION = (\d+);/.exec(read("sw.js"))[1]) >= 264);
 });
 
