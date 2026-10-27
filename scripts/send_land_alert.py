@@ -122,6 +122,12 @@ def scout_url(r):
     return "%s/field-scout?at=%.3f,%.3f&fips=%s" % (SITE, lat, lon, r["fips"])
 
 
+def update_url(year, m0, repo):
+    """The month's land sales update page (scripts/build_land_sales.py) when it is in this checkout, else None."""
+    p = "land-sales/%04d-%02d" % (year, m0 + 1)
+    return SITE + "/" + p if (Path(repo) / (p + ".html")).is_file() else None
+
+
 def sale_line(r, mark=True):
     """One sale in words: date, acres, $/acre, price, where, how far. Nothing else.
     mark: say "(deed date)" on a row listed by its deed date (an email that mixes the two)."""
@@ -193,6 +199,9 @@ def compose(zip5, radius, year, m0, land, zips, today, repo, need_fresh=True):
     for r in rep["rows"]:
         cn[(r["st"], r["county"])] = cn.get((r["st"], r["county"]), 0) + 1
     top = max(cn, key=lambda k: (cn[k], -min(x["mi"] for x in rep["rows"] if (x["st"], x["county"]) == k)))
+    up = update_url(year, m0, repo)
+    if up:
+        blocks.append(("link", ("The whole month across Illinois and Wisconsin: the biggest buyers, the biggest sales, unusual prices and the best value per acre: ", tag(up))))
     blocks.append(("link", ("Every recorded sale around a field, on a map, with a free comparable sales report: ", tag(scout_url(near)))))
     blocks.append(("link", ("%s County's sale prices and land record in the Farmland Atlas: " % top[1], tag(atlas_url(top[0], top[1], repo)))))
     reads = "; ".join("%s, read %s" % (LA.SOURCES[s], LA.long_day(rep["read"][s])) for s in sorted(rep["read"]) if s in LA.SOURCES)
@@ -565,6 +574,13 @@ def selftest():
     ck("subject: radius, ZIP, month and the count", m["Subject"] == "Farm sales within 25 miles of 54001, September: 2 recorded", m["Subject"])
     ck("the sales, nearest first: date, acres, $/acre, price, where, miles",
        "Sep 10: 80 acres at $5,000 an acre ($400,000), Near town, Testing County, WI, 7 miles\nSep 3: 40 acres at $7,500 an acre ($300,000, with buildings), Mid town, Testing County, WI, 14 miles" in txt, txt[:900])
+    ck("no monthly update page in the checkout: no link to one", "land-sales/2026-09" not in txt)
+    os.makedirs(os.path.join(tmp, "land-sales"), exist_ok=True)
+    open(os.path.join(tmp, "land-sales", "2026-09.html"), "w").write("x")
+    t2 = render("a@example.com", "https://w.dev", "sec", email_links.SAMPLE_LID, compose("54001", 25, 2026, 8, land, zips, today, tmp)[0],
+                "news@agsist.com").get_body(("plain",)).get_content()
+    ck("the month's update page linked once it is built", "the biggest buyers, the biggest sales, unusual prices and the best value per acre: https://agsist.com/land-sales/2026-09?" in t2, t2[-1400:])
+    os.remove(os.path.join(tmp, "land-sales", "2026-09.html"))
     ck("the 26-mile sale and July's are not in it", "150 acres" not in txt and "Jul" not in txt.split("Sig\n")[0])
     ck("the HTML table has the same two rows and its headings", htm.count("<tr>") == 3 and "Recorded</th>" in htm and "Miles</th>" in htm)
     ck("no names, parcel numbers, legal descriptions or document numbers, anywhere",
