@@ -377,12 +377,28 @@ def r_planting_from_nearby(sent, ctx):
     return bool(call) and not _names_next_crop(sent, ctx)
 
 
+_CAUSE = re.compile(r"\b(because|due to|driven by|thanks to|follows?|tends? to follow)\b(?![-\u2011])", re.I)
+_CITED = re.compile(r"\b(says?|said|reports?|reported|according to|told|wrote|noted|estimated?s?|"
+                    r"cited|per (?:the )?[A-Z][\w&.-]+)\b|\]\(https?://", re.I)
+
+
+def r_cause_without_source(sent, ctx):
+    """'Because', 'follows', 'driven by' with nobody named as saying so."""
+    m = _CAUSE.search(sent)
+    if not m:
+        return False
+    if m.group(1).lower().startswith("follow") and re.match(r"\s+(?:through|up|along)\b", sent[m.end():]):
+        return False
+    return not _CITED.search(sent)
+
+
 RULES = [
     ("expired-contract", r_expired),
     ("close-before-settle", r_close_before_settle),
     ("future-as-past", r_future_as_past),
     ("cash-from-futures", r_cash_from_futures),
     ("planting-from-nearby", r_planting_from_nearby),
+    ("cause-without-source", r_cause_without_source),
 ]
 
 
@@ -515,6 +531,16 @@ def _selftest():
     expect("planting-from-nearby", "Nov '27 beans over Dec '27 corn is 2.47, which leans toward corn acres next spring.", c25, False)
     expect("planting-from-nearby", "The 2.47 planting ratio favors corn.", c25, False)
     expect("planting-from-nearby", "Farmers planted 95 million acres of corn this year.", c25, False)
+
+    # Oct 25: crude up 3.8%, natural gas down 5.6%, and a cost claim nobody backed
+    expect("cause-without-source", "Diesel and fertilizer costs follow crude, so higher oil matters for next season's input bills.", c25, True)
+    expect("cause-without-source", "This issue did not check diesel or fertilizer prices, and crude's move alone does not show "
+           "where input bills go.", c25, False)
+    expect("cause-without-source", "Both markets are flat because USDA's record crop numbers are already priced in.", c25, True)
+    expect("cause-without-source", "Goldman Sachs says freight rates gained to $20 a barrel because of the Hormuz shipping crisis.", c25, False)
+    expect("cause-without-source", "Corn fell 4 cents driven by harvest pressure, Reuters reported.", c25, False)
+    expect("cause-without-source", "Watch feeder cash trade for follow-through above $340.50.", c25, False)
+    expect("cause-without-source", "WTI crude gained 3.8% to $103.27.", c25, False)
 
     # strip cuts the sentence and keeps the bullets
     b = {"sections": [{"title": "Cattle firm", "body": "- Live cattle gained 0.7% to **$227.52**.\n"
