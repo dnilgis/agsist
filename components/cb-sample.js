@@ -41,7 +41,7 @@
         asOf = c.asOf;
         var main = c.cash != null ? '$' + c.cash.toFixed(2) : c.basis;
         return '<td class="cbs-n"><b>' + esc(main) + '</b><span class="cbs-m">' + (c.cash != null ? esc(c.basis) + ' ' : '') +
-          esc(c.fut + c.label) + ' &middot; ' + c.n + ' loc.' + (typeof c.companies === 'number' ? ', ' + c.companies + ' co.' : '') + '</span></td>';
+          esc(c.fut + c.label) + '<br><span style="white-space:nowrap">' + c.n + ' loc.' + (typeof c.companies === 'number' ? ', ' + c.companies + ' co.' : '') + '</span></span></td>';
       }).join('');
       rows += '<tr><th scope="row"><a href="' + esc(bs.states[st].path || '/cash-bids') + '">' + esc(bs.states[st].name) + '</a></th>' + tds + '</tr>';
     });

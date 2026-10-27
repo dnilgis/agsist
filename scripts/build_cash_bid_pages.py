@@ -2602,8 +2602,10 @@ def basis_states_doc(summaries, ctx, elevators):
 def _cell(c):
     if not c or "median" not in c:
         return '<td class="n"><span class="mut">too few</span></td>'
-    return (f'<td class="n">{money_basis(c["median"])}<br><span class="mut">vs {esc(c["label"])} &middot; '
-            f'{loc_co(c)}</span></td>')
+    # each count kept whole on its line: "203 locations," then "23 companies" at phone width, one line at 1280
+    cnt = "".join(f'<span style="white-space:nowrap">{x}</span> ' for x in loc_co(c).replace(", ", ",\0").split("\0"))
+    return (f'<td class="n">{money_basis(c["median"])}<br><span class="mut">vs {esc(c["label"])}<br>'
+            f'{cnt.strip()}</span></td>')
 
 
 def hub_rank_html(doc):
