@@ -2966,6 +2966,13 @@
   var GIFT_MSG_MAX = 240, GIFT_TO_MAX = 80;
   function fill(t) { return String(t || '').replace(/\{year\}/g, String(CURRENT_YEAR)).replace(/\{next\}/g, String(CURRENT_YEAR + 1)); }
   function giftMode() { return !!ST.year && yearMode(ST.year, TODAY) === 'gift'; }
+  /* WHEN IT COMES FOLLOWS THE YEAR IN THE BOX, AT ONCE (2026-10-27, page review Oct 24: with 2026 picked
+     and the town lookup still loading, the page said "2026 (ships January 2027)" beside "it should arrive
+     by about Monday, Nov 9" and the Christmas lines for a past year). Every delivery line reads this, not
+     giftMode() && canOrder(): drawing, a failed lookup or a blocked station changes whether you can order,
+     never when the year you picked ships. */
+  function pickedYear() { var y = parseInt(($('rp-year') || {}).value, 10); return y || ST.year || 0; }
+  function giftYear() { var y = pickedYear(); return !!y && yearMode(y, TODAY) === 'gift'; }
   function canOrder() { return !SAMPLE && !BLOCKED && !DRAWING && (!!DATA || !!NOART); }
   var ORDER_NOTE = '';
   function syncGift() {
@@ -2979,7 +2986,7 @@
     $('rp-gift-fields').hidden = false;
     $('rp-gift-cardnote').textContent = 'Want a gift card for under the tree? Fill in the boxes above, then order. Within minutes of paying, a card to print comes by email, with a code they use to see their print.';
     // the digital file's card (2026-10-14, Sig: no proof step for the file; he redoes it free on request)
-    $('rp-dig-when').textContent = on ? 'A proof by email in January, once the full year is in, the full file once you approve it'
+    $('rp-dig-when').textContent = giftYear() ? 'A proof by email in January, once the full year is in, the full file once you approve it'
       : SETTLE && canOrder() ? 'A proof by email once the full year is in, the full file once you approve it' : 'A proof by email within 1 business day of paying, the full file once you approve it';
     if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
     $('ro-order-note').textContent = GIFT && GIFT.usable ? 'Your gift card covers this print, so there\u2019s nothing to pay. Check the design below, then send it.'
@@ -2996,7 +3003,7 @@
   var CUTOFF_KEY = { print12x18: 'print_christmas_cutoff', framed12x18: 'framed_christmas_cutoff' };
   var SUB_BASE = { framed12x18: 'Black frame, white mat, real glass.', print12x18: '13 x 19 paper, ships flat.' };
   function syncCutoffs() {
-    var gift = giftMode() && canOrder(), settle = SETTLE && canOrder();
+    var gift = giftYear(), settle = !gift && SETTLE && canOrder();
     PRODUCTS.forEach(function (id) {
       var el = $('rp-sub-' + id);
       if (!el) return;
@@ -3023,7 +3030,7 @@
     if (typeof GIFT !== 'undefined' && GIFT && (GIFT.usable || GIFT.prepaid)) { top.hidden = true; why.hidden = true; return; }
     // one product past its date and the other not: say which (2026-10-14, panel 3)
     var lateMail = ' Too late for the mail? The digital file comes by email in 1 business day, or give the gift card now and the print after Christmas.';
-    var gift = giftMode() && canOrder(), ly = CURRENT_YEAR - 1;
+    var gift = giftYear(), ly = CURRENT_YEAR - 1;
     /* "Last year, by Christmas" beside "This year, in January" (2026-10-19, board B: a county link opened this
        year's print and nobody said last year still comes by Christmas). While a cutoff is ahead the first screen
        names both; a drawn design of this year gets one tap to last year. After the cutoffs, the words as before. */
@@ -3035,7 +3042,7 @@
       : gift ? 'For Christmas: ' + thisYr.charAt(0).toLowerCase() + thisYr.slice(1) + ' Last year (' + ly + ') comes by Christmas if you order it ' + by + '.'
       : 'For Christmas: last year (' + ly + '), or any past year, comes by Christmas if you order it ' + by + '. ' + thisYr;
     top.hidden = false;
-    if (!late && gift && ST.place && !(GIFT && GIFT.lock)) {
+    if (!late && gift && canOrder() && ST.place && !(GIFT && GIFT.lock)) {
       $('rp-xmas-last').textContent = 'Make it ' + ly + ', by Christmas';
       $('rp-xmas-alt').hidden = false;
     }
@@ -3043,7 +3050,7 @@
       why.textContent = 'The Christmas dates allow ' + (J.proof_business_days === 1 ? 'a business day' : J.proof_business_days + ' business days') + ' for the proof, ' +
         (J.approve_business_days === 1 ? 'one' : J.approve_business_days) + ' for you to OK it, ' + J.ship_business_days + ' to ship and the time in the mail, to arrive by Dec 24.';
       // this year's gift ships in January: the Christmas dates aren't about it
-      why.hidden = late || (giftMode() && canOrder()) || PICK === 'digital';
+      why.hidden = late || giftYear() || PICK === 'digital';
     }
   }
   // "<b>Cameron, WI (2 mi NE of Cameron)</b>, 3.1 mi from Chetek (NOAA co-op station 471667)"
@@ -3867,8 +3874,9 @@
     $('rp-from').textContent = FROM_WORDS[PICK === 'digital' ? 'file' : 'print'];
     /* when it comes: the Christmas order-by date while it holds, else the arrival date; this year's gift says
        January, and a year NOAA hasn't finished waits. In the Christmas window the arrival date goes lower. */
-    var arr = buyLine(OJ().j, PICK, TODAY, { gift: januaryGift(), settle: SETTLE && canOrder(), used: !!(GIFT && GIFT.usable), year: ST.year });
-    var est = arr && !januaryGift() && arr.indexOf('Order by') === 0 ? arriveText(OJ().j, PICK, TODAY) : '';
+    var gy = giftYear();
+    var arr = buyLine(OJ().j, PICK, TODAY, { gift: gy, settle: !gy && SETTLE && canOrder(), used: !!(GIFT && GIFT.usable), year: pickedYear() });
+    var est = arr && !gy && arr.indexOf('Order by') === 0 ? arriveText(OJ().j, PICK, TODAY) : '';
     $('rp-arrive-est').textContent = est;
     $('rp-arrive-est').hidden = !est;
     // the prices at the top and the shipping line follow the country (Canada: data/rain-print.json canada)
@@ -4532,7 +4540,7 @@
      Christmas date on each card holds only if the proof is OK'd the day it
      comes; this says what happens when it isn't. */
   function payWhen(id, today) {
-    if (januaryGift()) return 'Arrives in January, once the year is done. A gift card for under the tree comes by email within minutes.';
+    if (giftYear()) return 'Arrives in January, once the year is done. A gift card for under the tree comes by email within minutes.';
     var J = OJ().j || {}, hol = holidaysFor(J, today), next = addBizDays(today, 1, hol);
     var by = next === isoMinusDays(today, -1) ? 'tomorrow' : 'by ' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(next + 'T12:00:00Z').getUTCDay()];
     if (id === 'digital') return 'Watch for an email from Sig with your proof. Approve it there and the full file follows. Check spam if it\u2019s not there ' + (by === 'tomorrow' ? 'by tomorrow' : by) + '.';
@@ -4617,7 +4625,7 @@
   // when it comes, in words, for the review sheet
   function whenWords(id) {
     var file = id === 'digital', J = OJ().j || {};
-    if (giftMode() && canOrder()) return 'This one is made in January, once the full year is in, and I send the proof then. Within minutes of paying, a gift card to print comes by email.';
+    if (giftYear()) return 'This one is made in January, once the full year is in, and I send the proof then. Within minutes of paying, a gift card to print comes by email.';
     if (SETTLE) return 'NOAA doesn\u2019t have all of ' + ST.year + ' in yet. I make this one once the full year is in, and send the proof then; ' + (file ? 'the full file comes once you approve it.' : 'nothing prints until you approve it.');
     if (file) return 'A PDF, a PNG and a JPG by email within minutes of your OK on the proof.';
     return 'Shipping included. A proof by email within 1 business day; it ships within ' + (J.ship_business_days || 3) + ' business days of your OK. ' + cutoffNote(TODAY, J[CUTOFF_KEY[id]]);
@@ -5374,6 +5382,7 @@
   var noop = function () {};
   $('rp-year').addEventListener('change', function () {
     syncDayLists(); syncDates(); syncYearNote();
+    syncCutoffs(); syncPick();
     if (GIFT && GIFT.lock) return;
     if ($('rp-place').value.trim()) run({ type: 'submit', preventDefault: noop, auto: true }); else syncPending();
   });
