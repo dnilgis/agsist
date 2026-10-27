@@ -534,7 +534,7 @@
       save();
       try { d.dispatchEvent(new CustomEvent('arcplc:render')); } catch (e) {}
     }
-    var VW = { plc: 'Pick PLC', arc: 'Pick ARC-CO', lean_plc: 'Leans PLC', lean_arc: 'Leans ARC-CO', close: 'Close, either one', none: 'Neither expected to pay',
+    var VW = { plc: 'PLC expected to pay more', arc: 'ARC-CO expected to pay more', lean_plc: 'Leans PLC', lean_arc: 'Leans ARC-CO', close: 'Close, either one', none: 'Neither expected to pay',
       withheld: 'Not enough history to say', noprice: 'No ' + 2027 + ' price yet' };
     var VC = { plc: 'plc', arc: 'arc', lean_plc: 'lean-plc', lean_arc: 'lean-arc', close: 'close', none: 'neither' };
     function vcls(v) { return 'ap-w-' + (VC[v] || 'withheld'); }
@@ -580,7 +580,12 @@
         if (sc.nousd && v.borrowed) v.nousd = true;
         why = sc.why || '';
         if (Y === year) cur = { v: v, cr: cr, cy: cy, sc: sc };
-        h += '<div class="ap-verdict ' + vcls(v.verdict) + (Y === year ? ' ap-cur' : '') + '"><p>' + vline(Y, v) + '</p></div>';
+        /* the assumptions go beside the answer, not only at the foot of the block (trust panel, Oct 25) */
+        var asm = (v.n && (v.verdict === 'plc' || v.verdict === 'arc' || v.verdict.indexOf('lean_') === 0)) ?
+          '<p class="ap-small ap-assume">On these assumptions: prices centered at ' + pm(sc.center) + ' (' + sc.center_label + '), ' +
+          (sc.fix ? (yTyped ? 'the county yield you typed' : 'a normal county crop') : 'past yields as listed under Scenarios') +
+          ', and a PLC yield of ' + c.py + ' ' + U() + '. Change one and the answer can change.</p>' : '';
+        h += '<div class="ap-verdict ' + vcls(v.verdict) + (Y === year ? ' ap-cur' : '') + '"><p>' + vline(Y, v) + '</p>' + asm + '</div>';
       });
       if (cur && cur.v.n) {
         var v = cur.v, cr = cur.cr, cy = cur.cy, sc = cur.sc;
@@ -604,7 +609,7 @@
         h += '<p class="ap-small">Scenarios: ' + sc.center_label + ', ' + pm(sc.center) + ', moved by ' + how + ', ' +
           v.rows[0].t + ' to ' + v.rows[v.rows.length - 1].t + ' (' + v.n + ' years), paired with ' + ysrc + '.' +
           (sc.alt != null ? ' Futures-based start for comparison: ' + pm(sc.alt) + ' (' + esc(sc.alt_contract || '') + ' October average ' + (/^\d{4}-\d\d-\d\d/.test(sc.alt_date || '') ? 'through ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+sc.alt_date.slice(5, 7) - 1] + ' ' + (+sc.alt_date.slice(8, 10)) : 'so far') + ', ' + sc.alt_days + ' of ' + sc.alt_of + ' days, &times; ' + sc.oct_mean.toFixed(3) + ').' : '') +
-          ' Pick: the gap is more than ' + (v.t ? v.t.toFixed(2) : '') + ' times its standard error, at least ' + money(MIN_GAP) + ', and the leader paid more in at least ' + MIN_WINS +
+          ' Expected to pay more: the gap is more than ' + (v.t ? v.t.toFixed(2) : '') + ' times its standard error, at least ' + money(MIN_GAP) + ', and the leader paid more in at least ' + MIN_WINS +
           ' years. Leans: at least ' + money(LEAN_GAP) + ' and one standard error, leader ahead in at least ' + MIN_WINS + ' years. SCO can now go with either program, so it is no reason to pick PLC. <a href="/arc-plc#method">Method and back-test</a>.</p>';
       }
       return h + '</div>';
