@@ -26,7 +26,7 @@ WHAT IS IN IT, top to bottom, about two phone screens:
               are not in that file and never reach here). No workings.
   Print of the day   scripts/print_of_day.py + render_print_of_day.mjs. No
               picture, no slot; the email never waits on it.
-  I never knew that  scripts/daily_fact.py, sourced every time.
+  I didn’t know that  scripts/daily_fact.py, sourced every time.
   The board   one row per contract (Corn and Corn, Dec fold to one row when
               they are the same quote), stamped honestly: "Last trade 5:46
               a.m. CT, change from Tuesday's settle".
@@ -740,10 +740,10 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
             b.append('<tr><td class="mute" style="padding:3px 0 0;font-family:%s;font-size:13px;line-height:1.45;color:%s">%s</td></tr>' % (SANS, MUTE, e(xl)))
     elif offer:
         b.append(_row(_a(offer[1], offer[0], camp, "rainprint", cls="link"), pad="14px 0 0", size=14))
-    # I never knew that
+    # I didn’t know that
     if fact:
         b.append(_rule())
-        b.append(_label("I never knew that", pad=14))
+        b.append(_label("I didn’t know that", pad=14))
         b.append(_row(e(fact["text"]), pad="2px 0 0"))
         src = (_a(fact["url"], fact["source"], None, None, cls="mute link", color=MUTE) if fact.get("url")
                else e(fact["source"] + ("; " + fact["file"] if fact.get("file") else "")))
