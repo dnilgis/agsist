@@ -519,7 +519,7 @@
       wrap.innerHTML = '<p class="fs-bk-empty">No saved fields on this device. <button type="button" class="fs-bk-link" id="fs-restore-btn">Restore from a backup</button></p>'+bk;
     } else {
       var nag = arr.length>=3 && Date.now()-Math.max(bkAt, lsNum('agsist-fs-backup-nag'))>30*DAY;
-      bk = (nag ? '<p class="fs-bk-remind" id="fs-bk-remind">Your '+arr.length+' fields, notes and photos live only on this device'+(bkAt?' (last backup '+new Date(bkAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})+')':'')+'. A backup file keeps them if the phone is cleared or lost. <button type="button" class="fs-bk-link" id="fs-bk-later">Not now</button></p>' : '')+
+      bk = (nag ? '<p class="fs-bk-remind" id="fs-bk-remind">Your '+arr.length+' fields, notes and photos live only in this browser'+(bkAt?' (last backup '+new Date(bkAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})+')':'')+'. A backup file keeps them safe if it is cleared or the phone is lost. <button type="button" class="fs-bk-link" id="fs-bk-later">Not now</button></p>' : '')+
         '<div class="fs-bk-row"><button type="button" class="fs-save-btn" id="fs-backup">Back up all my fields</button><button type="button" class="fs-save-btn" id="fs-restore-btn">Restore from a backup</button>'+
         '<small class="fs-bk-meta">'+(bkAt ? 'Last backup '+new Date(bkAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'No backup yet')+'. Saved to this device as one file; nothing is sent to us.</small></div>'+bk;
     }

@@ -154,7 +154,7 @@ async function pick(pg, name, text) {
 async function shot(pg, name) {
   if (!SHOTS) return;
   mkdirSync(SHOTS, { recursive: true });
-  await pg.locator("#fs-saved").scrollIntoViewIfNeeded();
+  await pg.locator((await pg.locator("#fs-restore").count()) ? "#fs-restore" : "#fs-saved").scrollIntoViewIfNeeded();
   await pg.screenshot({ path: join(SHOTS, name + ".png") });
 }
 
@@ -168,7 +168,7 @@ for (const width of [390, 1280]) {
 
       // three fields and no backup: a quiet reminder
       await pg.waitForSelector("#fs-bk-remind", { timeout: 5000 });
-      assert.match(await pg.textContent("#fs-bk-remind"), /Your 3 fields, notes and photos live only on this device/);
+      assert.match(await pg.textContent("#fs-bk-remind"), /Your 3 fields, notes and photos live only in this browser/);
       assert.match(await pg.textContent(".fs-bk-meta"), /No backup yet/);
       await shot(pg, `${width}-1-reminder`);
 
@@ -184,6 +184,20 @@ for (const width of [390, 1280]) {
       assert.deepEqual(b.snaps, { [FIELDS[2].id]: SNAP });
       await pg.waitForFunction(() => !document.getElementById("fs-bk-remind"), null, { timeout: 5000 });
       assert.match(await pg.textContent(".fs-bk-meta"), /Last backup/);
+
+      // the reminder: only with 3 or more fields, only when the last backup (or "Not now") is over 30 days old
+      const DAY = 864e5, has = () => pg.locator("#fs-bk-remind").count();
+      await reloadWith(pg, FIELDS, { "agsist-fs-backup-at": String(Date.now() - 10 * DAY) });
+      assert.equal(await has(), 0);
+      await reloadWith(pg, FIELDS, { "agsist-fs-backup-at": String(Date.now() - 31 * DAY) });
+      assert.match(await pg.textContent("#fs-bk-remind"), /last backup/);
+      await pg.click("#fs-bk-later");
+      assert.equal(await has(), 0, "Not now hides it");
+      await pg.reload(); await pg.waitForSelector("#fs-backup");
+      assert.equal(await has(), 0, "and it stays hidden for 30 days");
+      await reloadWith(pg, FIELDS.slice(0, 2));
+      await pg.waitForSelector("#fs-backup");
+      assert.equal(await has(), 0, "two fields: no reminder");
 
       // a cleared phone: nothing saved, the restore is still there
       await reloadWith(pg, null);
@@ -244,6 +258,19 @@ for (const width of [390, 1280]) {
       assert.equal(after[3].name, "Lease 40");
       assert.deepEqual(after[3].pts, [[42.2, -93.5], [42.2, -93.49], [42.193, -93.49], [42.193, -93.5]]);
       assert.ok(after[3].acres > 150 && after[3].acres < 165, "acres from the outline (about 825 m by 778 m, 158 ac): " + after[3].acres);
+
+      // storage full: a backup bigger than this browser holds restores nothing, says so, and works without photos
+      const fat = "data:image/jpeg;base64," + "A".repeat(100000);
+      const big = Array.from({ length: 10 }, (_, i) => ({ id: 1762000000000 + i, name: "Big " + (i + 1), pts: ring(41 + i / 50, -95), acres: 158.7, notes: "", photos: Array.from({ length: 6 }, (_, k) => ({ id: "b" + i + k, dataUrl: fat, addedAt: 1 })) }));
+      const before = await stored(pg);
+      await pick(pg, "big.json", backupText(big));
+      await pg.click("#fs-restore [data-fsr=go]");
+      await pg.waitForFunction(() => /storage is full, so nothing was restored/.test((document.getElementById("fs-restore-msg") || {}).textContent || ""), null, { timeout: 5000 });
+      assert.deepEqual(await stored(pg), before, "a failed restore leaves the saved fields as they were");
+      await pg.uncheck("#fsr-photos");
+      await pg.click("#fs-restore [data-fsr=go]");
+      await pg.waitForFunction(() => /Restored: 10 fields added/.test(document.getElementById("fs-restore").textContent), null, { timeout: 5000 });
+      assert.equal((await stored(pg)).length, 14);
 
       // no sideways scroll on a phone
       assert.ok(await pg.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), "no horizontal scroll");
