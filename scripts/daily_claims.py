@@ -259,8 +259,43 @@ def r_expired(sent, ctx):
     return False
 
 
+CLOSE_WORD = re.compile(r"\b(clos(?:e|es|ed|ing)|settle(?:s|d|ment)?|finish(?:ed|es)?)\b(?!\s+(?:to|by|enough|call|watch|look)\b)", re.I)
+_NOW_WORDS = re.compile(r"\b(overnight|this morning|so far|early trade|trading at|is at|are at|sits at|as of)\b", re.I)
+_NOW_CLOSE = re.compile(r"\b(higher|lower|up|down|firmer|weaker)\s+close\b|\bclos(?:e|ed|ing)\s+(higher|lower|up|down)\b", re.I)
+
+
+_PAST_DAY = re.compile(r"\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday|yesterday|last week|the week|prior|previous)('s)?\b", re.I)
+
+
+def _names_past_session(sent, w):
+    """'Wednesday's settle', 'the prior close', 'a higher close Wednesday'."""
+    before, after = sent[max(0, w.start() - 22):w.start()], sent[w.end():w.end() + 14]
+    return bool(_PAST_DAY.search(before) or _PAST_DAY.match(after.strip()))
+
+
+def r_close_before_settle(sent, ctx):
+    """'Close' or 'settle' tied to a price that is a trade, not a settlement."""
+    words = [w for w in CLOSE_WORD.finditer(sent)]
+    if not words:
+        return False
+    prices = _prices_with_family(sent)
+    for w in words:
+        past = _names_past_session(sent, w)
+        if prices:
+            px, fam, grain, pos = min(prices, key=lambda p: abs(p[3] - w.start()))
+            if past and abs(pos - w.start()) > 25:
+                continue      # "close to Wednesday's settle": the settle has no price here
+            trades, settles = ctx["trades"].get(fam) or set(), ctx["settles"].get(fam) or set()
+            if any(_near(px, t, grain) for t in trades) and not any(_near(px, v, grain) for v in settles):
+                return True
+        elif not past and _NOW_WORDS.search(sent) and _NOW_CLOSE.search(sent):
+            return True
+    return False
+
+
 RULES = [
     ("expired-contract", r_expired),
+    ("close-before-settle", r_close_before_settle),
 ]
 
 
@@ -346,6 +381,20 @@ def _selftest():
            "settled at $66.925 on Oct 16, up 35 cents.", c16, False)
     expect("expired-contract", "Lean hogs are at $66.575, with December now the front month.", c16, False)
     expect("expired-contract", "Live cattle gained 0.7% to $227.52 on cash hopes.", c16, False)
+
+    # Oct 22: the strip read 6:00 AM CT, last trades; Wednesday's settle $4.63¼
+    c22 = context({"quotes": {"corn-dec": {"close": 464.0, "close_kind": "last", "last": 464.0, "settled": False,
+                                           "settles": {"2026-10-19": 467.0, "2026-10-20": 462.0, "2026-10-21": 463.25}}}},
+                  date(2026, 10, 22),
+                  {"quotes": [{"key": "corn-dec", "last": 4.64, "prev": 4.6325, "kind": "last"}]})
+    expect("close-before-settle", "Dec corn is at **$4.64** overnight, up ¾ cent, the first higher close after a streak of lower ones.", c22, True)
+    expect("close-before-settle", "Dec corn traded at **$4.64** overnight, ¾ cent above Wednesday's $4.63¼ settle.", c22, False)
+    expect("close-before-settle", "Corn closed at $4.64 overnight.", c22, True)
+    expect("close-before-settle", "Corn is up overnight after a higher close Wednesday.", c22, False)
+    expect("close-before-settle", "Corn is up overnight, the first higher close in a week.", c22, True)
+    expect("close-before-settle", "Corn settled Wednesday at $4.63¼, up 1¼ cents.", c22, False)
+    expect("close-before-settle", "A close above $4.70 would turn the chart.", c22, False)
+    expect("close-before-settle", "Corn is at $4.64, close to Wednesday's settle.", c22, False)
 
     # strip cuts the sentence and keeps the bullets
     b = {"sections": [{"title": "Cattle firm", "body": "- Live cattle gained 0.7% to **$227.52**.\n"
