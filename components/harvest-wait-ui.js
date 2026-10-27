@@ -18,6 +18,8 @@
  */
 (function () {
   'use strict';
+  /* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
+  function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   var H = window.AgHarvestWait, S = window.AgShrink, NET = window.AGSIST_BIDS_NET;
   if (!H) return;
   var KEY = 'agsist-harvest-wait', ZKEY = 'agsist_user_zip', MAXD = 14;
@@ -104,7 +106,7 @@
     if (d) {
       setBid(d.bid, 'state', 'State estimate, not a posted bid: ' + esc(d.label) + ' futures ' + money(d.futures) +
         (d.futuresDate ? ' (settle ' + esc(mdy(d.futuresDate)) + ')' : '') + ' ' + (d.basis < 0 ? 'less' : 'plus') + ' the ' + esc(d.stateName) +
-        ' median corn basis of ' + Math.round(Math.abs(d.basis) * 100) + '¢ across ' + d.n + ' elevators' + (d.asOf ? ', ' + esc(mdy(d.asOf)) : '') + '. Your ZIP gets the nearest real bid.');
+        ' median corn basis of ' + Math.round(Math.abs(d.basis) * 100) + '¢ across ' + locCo(d.n, d.companies) + (d.asOf ? ', ' + esc(mdy(d.asOf)) : '') + '. Your ZIP gets the nearest real bid.');
     } else {
       setBid(null, '', (st.snap ? 'No elevator near ' + esc(st.zip) + ' posts a corn bid right now. ' : '') + 'Type your bid to see the break-even loss.');
     }

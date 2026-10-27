@@ -13,6 +13,8 @@
  */
 (function () {
   'use strict';
+  /* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
+  function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   var L = window.AgCombineLoss, SH = window.AgShrink, NET = window.AGSIST_BIDS_NET;
   if (!L) return;
   var KEY = 'agsist-combine-loss', ZKEY = 'agsist_user_zip';
@@ -109,7 +111,7 @@
     if (d) {
       setBid(d.bid, 'state', 'State estimate, not a posted bid: ' + esc(d.label) + ' futures ' + money(d.futures) +
         (d.futuresDate ? ' (settle ' + esc(mdy(d.futuresDate)) + ')' : '') + ' ' + (d.basis < 0 ? 'less' : 'plus') + ' the ' + esc(d.stateName) +
-        ' median basis of ' + cents(Math.abs(d.basis)) + ' across ' + d.n + ' elevators' + (d.asOf ? ', ' + esc(mdy(d.asOf)) : '') + '. Your ZIP gets the nearest real bid.');
+        ' median basis of ' + cents(Math.abs(d.basis)) + ' across ' + locCo(d.n, d.companies) + (d.asOf ? ', ' + esc(mdy(d.asOf)) : '') + '. Your ZIP gets the nearest real bid.');
     } else {
       var why = st.snap ? 'No elevator near ' + esc(st.zip) + ' posts a ' + esc(word) + ' bid right now. ' : '';
       if (stc && st.basis) why += 'No ' + esc(word) + ' basis median for that state. ';

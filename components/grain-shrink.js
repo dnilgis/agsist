@@ -220,7 +220,7 @@
     if (!fq) return null;
     return {
       bid: r(fq.close + best.c.median, 4), futures: fq.close, futuresDate: fq.date, settled: fq.settled, futuresRead: fq.read, contract: best.c.contract,
-      label: best.c.label || best.c.contract, basis: best.c.median, n: best.c.n, state: st, stateName: s.name || st,
+      label: best.c.label || best.c.contract, basis: best.c.median, n: best.c.n, companies: best.c.companies, state: st, stateName: s.name || st,
       cls: best.k, asOf: basis.generated || null
     };
   }

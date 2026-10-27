@@ -18,6 +18,8 @@
  */
 (function () {
   'use strict';
+  /* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
+  function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   var S = window.AgShrink, NET = window.AGSIST_BIDS_NET;
   if (!S) return;
   var KEY = 'agsist-shrink', ZKEY = 'agsist_user_zip';
@@ -165,7 +167,7 @@
     if (d) {
       setBid(d.bid, 'state', 'State estimate, not a posted bid: ' + esc(d.label) + ' futures ' + money(d.futures) +
         ' (' + esc(S.futuresWhen({ settled: d.settled, date: d.futuresDate, read: d.futuresRead })) + ') ' + (d.basis < 0 ? 'less' : 'plus') + ' the ' + esc(d.stateName) + ' median basis of ' +
-        cents(Math.abs(d.basis)) + ' across ' + d.n + ' elevators' + (d.cls.indexOf('wheat_') === 0 ? ' (' + d.cls.slice(6).toUpperCase() + ' wheat)' : '') +
+        cents(Math.abs(d.basis)) + ' across ' + locCo(d.n, d.companies) + (d.cls.indexOf('wheat_') === 0 ? ' (' + d.cls.slice(6).toUpperCase() + ' wheat)' : '') +
         (d.asOf ? ', ' + esc(mdy(d.asOf)) : '') + '. Your ZIP gets the nearest real bid.');
     } else {
       var why = st.snap ? 'No elevator near ' + esc(st.zip) + ' posts a ' + esc(word) + ' bid right now. ' : '';

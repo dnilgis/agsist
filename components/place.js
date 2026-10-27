@@ -19,6 +19,8 @@
   else root.AgPlace = factory();
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
+  /* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
+  function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
 
   var MIN_RANK_N = 5;          // fewer counties than this with a figure: no rank
   var BAND = 0.1;              // top or bottom tenth of the state stands out
@@ -438,7 +440,7 @@
   function stateBasis(file, st, crop) {
     var s = file && file.states && file.states[st], c = s && s.crops && s.crops[crop];
     if (!c || typeof c.median !== 'number') return { status: 'none', why: 'fewer than ' + ((file && file.min_n) || 3) + ' ' + (STATES[st] || st) + ' elevators with a fresh ' + crop + ' bid' };
-    return { status: 'ok', median: c.median, n: c.n, label: c.label, contract: c.contract, wow: c.wow, asOf: file.generated };
+    return { status: 'ok', median: c.median, n: c.n, companies: c.companies, label: c.label, contract: c.contract, wow: c.wow, asOf: file.generated };
   }
 
   /* Best and nearest bid per crop from a bids snapshot ({ bids: [...] } rows with cashPrice, distance, lat/lon).
@@ -891,10 +893,10 @@
     function words(m) { return cents(m * 100) + ' ' + (m < 0 ? 'under' : 'over') + ' ' + lab; }
     if (local && local.n >= 3 && local.median != null) {
       return { label: label, value: words(local.median), date: isoDay(local.when) || (ok ? isoDay(b.asOf) : ''),
-        ctx: 'Middle of ' + local.n + ' bids within ' + BID_MILES + ' mi of ' + (from || 'here') + '.' + (ok ? ' ' + STATES[st] + ': ' + words(b.median) + ', middle of ' + b.n + ' bids.' : '') + usda,
+        ctx: 'Middle of ' + local.n + ' bids within ' + BID_MILES + ' mi of ' + (from || 'here') + '.' + (ok ? ' ' + STATES[st] + ': ' + words(b.median) + ', middle of ' + locCo(b.n, b.companies) + '.' : '') + usda,
         src: ['Basis', href], paper: 'Posted elevator bids' + (usda ? '; USDA AgTransport' : '') };
     }
-    return { label: label + ', ' + (STATES[st] || st), value: words(b.median), date: isoDay(b.asOf), ctx: 'Middle of ' + b.n + ' ' + STATES[st] + ' bids.' + usda, src: ['Basis', href], paper: 'Posted elevator bids' + (usda ? '; USDA AgTransport' : '') };
+    return { label: label + ', ' + (STATES[st] || st), value: words(b.median), date: isoDay(b.asOf), ctx: 'Middle of ' + STATES[st] + ' bids: ' + locCo(b.n, b.companies) + '.' + usda, src: ['Basis', href], paper: 'Posted elevator bids' + (usda ? '; USDA AgTransport' : '') };
   }
   function factRain(r, href) {
     if (!r || r.status !== 'ok') return na('Rain since Jan 1', r && r.why ? r.why : 'no county rain record');

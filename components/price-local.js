@@ -25,6 +25,8 @@
    and this script (defer). Tests: test/price-local.test.mjs */
 (function (root) {
   'use strict';
+  /* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
+  function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' }, DAY = 864e5, TZ = 'America/Chicago';
   var NAMES = {};
@@ -319,7 +321,7 @@
       if (v > 0) { cash = v; on = q.close_kind === 'settle' ? 'the ' + isoDay(q.settle_date || q.close_date, now) + ' settle' : 'the latest delayed trade'; }
     }
     return { crop: ok[1], name: s.name, fut: fut, label: r.label || r.contract, contract: r.contract, median: r.median,
-      basis: basisWords(r.median), n: r.n, cash: cash, on: on, asOf: asOf ? MON[asOf.m - 1] + ' ' + asOf.d : '' };
+      basis: basisWords(r.median), n: r.n, companies: r.companies, cash: cash, on: on, asOf: asOf ? MON[asOf.m - 1] + ' ' + asOf.d : '' };
   }
   /* -> [{html}] for one state and the crops asked; pure, the tests call it */
   function lines(bs, prices, st, crops, now) {
@@ -329,7 +331,7 @@
       if (!c) return;
       var cash = c.cash != null ? ', about <b>$' + c.cash.toFixed(2) + '</b> cash on ' + c.on : '';
       out.push('<b>' + esc(c.name) + ' ' + c.crop + ':</b> median basis <b>' + c.basis + '</b> ' + esc(c.fut + c.label) + ' futures' + cash +
-        '. <span class="pl-s">' + c.n + ' elevators, ' + c.asOf + '.</span>');
+        '. <span class="pl-s">' + locCo(c.n, c.companies) + ', ' + c.asOf + '.</span>');
     });
     return out;
   }
