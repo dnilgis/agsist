@@ -52,8 +52,8 @@
        alert opt-ins and its signup band call subscribe() from here.
 
    Your county this week (2026-10-27, Sig: inside the existing Daily, no new list):
-   every Daily ask's ZIP row carries one more box, "Thursdays, add what changed in
-   my county", never pre-ticked. Ticked, the signup sends cw:true (worker v5.56)
+   every Daily ask's ZIP row gains one more box once the reader starts on the email
+   box, "Thursdays, add what changed in my county", never pre-ticked. Ticked, the signup sends cw:true (worker v5.56)
    and needs a ZIP; unticked, nothing is sent and a stored choice is left alone.
 
    Contract (SIGNUP.md, worker v5.4): POST /subscribe {email, source, reports,
@@ -417,7 +417,6 @@
         + '<input class="sa-zin" id="' + zid + '" type="text" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Optional">'
         /* the sample (2026-10-23): this morning's issue, beside the ZIP box so it costs no height */
         + (!topic && variant === 'page' ? '<a class="sa-see" href="/daily" data-sa-sample>See this morning\u2019s email</a>' : '')
-        + (!topic ? '<label class="sa-optin sa-cw" for="' + cid + '"><input type="checkbox" id="' + cid + '"> ' + CW_LABEL + '</label>' : '')
         + '</div>')
       + '<p class="sa-m" id="' + mid + '" role="status" aria-live="polite"></p>'
       + (note ? '<p class="sa-n">' + esc(note) + '</p>' : '')
@@ -425,7 +424,18 @@
     el.hidden = false;
     seen(el, askId);
     var form = el.querySelector('form'), input = el.querySelector('.sa-in'), btn = el.querySelector('.sa-b'), msg = el.querySelector('.sa-m');
-    var zrow = el.querySelector('.sa-z'), zin = el.querySelector('.sa-zin'), dbox = el.querySelector('.sa-d input'), cbox = el.querySelector('.sa-cw input');
+    var zrow = el.querySelector('.sa-z'), zin = el.querySelector('.sa-zin'), dbox = el.querySelector('.sa-d input'), cbox = null;
+    /* the county box joins the ZIP row once the reader starts on the email box (a Daily ask only), so a
+       page that is only being read carries no extra box; it always starts empty */
+    function addCw() {
+      if (topic || cbox || !zrow) return;
+      var lb = document.createElement('label');
+      lb.className = 'sa-optin sa-cw'; lb.setAttribute('for', cid);
+      lb.innerHTML = '<input type="checkbox" id="' + cid + '"> ' + CW_LABEL;
+      zrow.appendChild(lb);
+      cbox = lb.querySelector('input');
+      if (barEl && barEl.contains(el)) placeBar();
+    }
     var zipTouched = false;
     function fillZip() { if (zin && !zipTouched) zin.value = zipStart(el); }
     function showZip(on) {
@@ -438,7 +448,7 @@
       zin.addEventListener('input', function () { zipTouched = true; zin.removeAttribute('aria-invalid'); zin.value = zin.value.replace(/\D/g, '').slice(0, 5); });
     }
     /* the page's own ZIP box may have been filled since the ask was drawn */
-    input.addEventListener('focus', function () { if (zrow && zrow.hidden && !topic) showZip(true); else fillZip(); });
+    input.addEventListener('focus', function () { if (zrow && zrow.hidden && !topic) showZip(true); else fillZip(); addCw(); });
     if (dbox) dbox.addEventListener('change', function () { showZip(dbox.checked); });
     var sample = el.querySelector('[data-sa-sample]');
     if (sample) sample.addEventListener('click', function () { track('daily_sample_click', { ask_id: askId }); });

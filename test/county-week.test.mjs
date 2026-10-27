@@ -217,7 +217,8 @@ print(json.dumps([a[0].get("cw"), "cw" in a[1], "cw" in a[2], b.get("cw"), "cw" 
 
 test("the tick sits inside the Daily ask, never pre-ticked, and no notice ask carries it", () => {
   const sa = read("components/signup-ask.js");
-  assert.match(sa, /\(!topic \? '<label class="sa-optin sa-cw" for="' \+ cid \+ '"><input type="checkbox" id="' \+ cid \+ '"> ' \+ CW_LABEL \+ '<\/label>' : ''\)/);
+  assert.match(sa, /if \(topic \|\| cbox \|\| !zrow\) return;/, "a notice ask never gets it");
+  assert.match(sa, /lb\.innerHTML = '<input type="checkbox" id="' \+ cid \+ '"> ' \+ CW_LABEL;/);
   assert.doesNotMatch(sa, /sa-cw[^\n]*checked/);
   assert.match(sa, /if \(o\.cw === true\) body\.cw = true;/);
   assert.match(read("components/loader.js"), /signup-ask\.js\?v=20/);
@@ -280,13 +281,15 @@ test("in a browser: the tick starts empty, sends cw only when ticked, needs a ZI
           return r.abort();
         });
         await pg.goto(`http://127.0.0.1:${port}/ask-test`, { waitUntil: "load" });
+        await pg.waitForSelector(".sa-in");
+        assert.equal(await pg.locator('input[type="checkbox"]').count(), 0, "no box until the reader starts on the email");
+        await pg.fill(".sa-in", "reader@example.com");
         const box = pg.locator(".sa-cw input");
         await box.waitFor();
         assert.equal(await box.isChecked(), false, "never pre-ticked");
         assert.match(await pg.textContent(".sa-cw"), /^ ?Thursdays, add what changed in my county: drought, nearby corn bids, land sales$/);
         const lb = await pg.locator(".sa-cw").boundingBox();
         assert.ok(lb.height >= 44, "a 44 px tap target: " + lb.height);
-        await pg.fill(".sa-in", "reader@example.com");
         await pg.fill(".sa-zin", tick === "nozip" ? "" : "62565");
         if (tick) await box.check();
         await pg.click(".sa-b");
