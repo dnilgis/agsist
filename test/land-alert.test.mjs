@@ -167,6 +167,25 @@ test("the ask: email, ZIP, 10/25/50 with 25 picked, the topic, One more? with th
   assert.ok(A.okZip("54728") && !A.okZip("00000") && !A.okZip("5472"));
 });
 
+test("signups on (Sig, Oct 27): the reader is told when the first email is due, and the send gate stays", () => {
+  const js = read("components/land-alert.js");
+  assert.match(js, /Signups on: Sig approved Oct 27, 2026/);
+  assert.match(read(".github/workflows/land-alert.yml"), /Signups on \(Sig approved Oct 27, 2026/);
+  const ctx = { window: {}, document: { readyState: "loading", addEventListener() {}, querySelector() { return null; }, querySelectorAll() { return []; } }, location: { search: "", pathname: "/" }, setTimeout() {}, Date };
+  vm.runInNewContext(js, ctx);
+  const A = ctx.window.AgLandAlert;
+  const at = (iso) => { const f = A.firstSend(new Date(iso)); return f.month + " " + f.y + " / " + f.covers; };
+  assert.equal(at("2026-10-27T18:00:00Z"), "November 2026 / October", "a signup today: November 3, October's sales");
+  assert.equal(at("2026-11-03T15:46:00Z"), "November 2026 / October", "just before the send on the 3rd");
+  assert.equal(at("2026-11-03T15:47:00Z"), "December 2026 / November", "at or after the send: next month");
+  assert.equal(at("2026-12-20T00:00:00Z"), "January 2027 / December", "the year turns");
+  assert.equal(at("2027-01-01T00:00:00Z"), "January 2027 / December");
+  const t = A.doneText(25, "54728", new Date("2026-10-27T18:00:00Z"));
+  assert.equal(t, "Done. The first email is due November 3, with the farm sales recorded in October within 25 miles of 54728. After that, the 3rd of each month. A month with no sales sends nothing.");
+  assert.ok(!DASH.test(t), "no em dashes");
+  assert.match(js, /esc\(q \? q \+ ' ' \+ doneText\(miles, zip\)/, "a queued signup is told the date too");
+});
+
 test("where the ask shows, and how it loads", () => {
   assert.match(read("field-scout.html"), /<div data-land-alert data-follow="#fl-comps" data-source="page:field-scout" hidden><\/div>/);
   assert.match(read("field-scout-land.js"), /id="fl-comps"/, "Field Scout still draws Sold land nearby where the ask follows it");

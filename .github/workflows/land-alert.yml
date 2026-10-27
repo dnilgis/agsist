@@ -6,7 +6,9 @@ name: Monthly land sale email
 # scripts/land_alert.py). Sig approved the list, the sender and this schedule on Oct 23, 2026.
 # Illinois and Wisconsin only; Indiana is held (see scripts/land_alert.py).
 #
-# THE LIST GETS NOTHING UNTIL SIG TURNS IT ON: the scheduled run sends only when the repo
+# Signups on (Sig approved Oct 27, 2026: "Turn on land sale email alert signups"). The ask tells a
+# reader the first email is due the next 3rd.
+# THE LIST GETS NOTHING UNTIL THE SEND GATE IS ON: the scheduled run sends only when the repo
 # variable LANDSALES_MONTHLY_LIVE is 1, and so does a manual "send" (the script refuses a send
 # without it too). Until then a scheduled run is a dry run: counts and samples in the log.
 # The route is the Daily's SMTP_* and FROM_ADDR secrets (Sig, Oct 23: until Plan A sending is

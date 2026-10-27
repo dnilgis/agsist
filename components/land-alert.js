@@ -1,4 +1,7 @@
 /* The monthly land sale email ask (Sig, Oct 23, 2026: new list, sender and schedule approved).
+   Signups on: Sig approved Oct 27, 2026 ("Turn on land sale email alert signups"). The ask has no
+   switch of its own; it shows wherever a host is. The list gets mail only once the repo variable
+   LANDSALES_MONTHLY_LIVE is 1 (.github/workflows/land-alert.yml).
 
    "Email me new farm sales near me, once a month": an email, a ZIP and a radius (10, 25 or 50
    miles, 25 picked). It posts the worker's /notice with topic landsales:<ZIP>:<miles>
@@ -37,6 +40,19 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function S() { return window.AgsistSignup || null; }
   function topicOf(zip, mi) { return 'landsales:' + zip + ':' + mi; }
+  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  /* The first email: the next send (the 3rd, 15:47 UTC; a signup after that waits for the next
+     month), with the month before it. */
+  function firstSend(now) {
+    var d = now || new Date(), y = d.getUTCFullYear(), m = d.getUTCMonth();
+    if (d.getTime() >= Date.UTC(y, m, 3, 15, 47)) { m += 1; if (m > 11) { m = 0; y += 1; } }
+    return { month: MONTHS[m], covers: MONTHS[(m + 11) % 12], y: y, m: m };
+  }
+  function doneText(miles, zip, now) {
+    var f = firstSend(now);
+    return 'Done. The first email is due ' + f.month + ' 3, with the farm sales recorded in ' + f.covers
+      + ' within ' + miles + ' miles of ' + zip + '. After that, the 3rd of each month. A month with no sales sends nothing.';
+  }
   function okZip(z) { return /^\d{5}$/.test(z) && z !== '00000'; }
   function startZip(el) {
     var z = el.getAttribute('data-zip') || '';
@@ -119,8 +135,7 @@
       post({ email: email, source: source, topic: topic, daily: false, askId: 'landsales' }).then(function (res) {
         if (!res || !res.ok) { btn.disabled = false; btn.textContent = 'Email me'; msg.textContent = errText(res); return; }
         var q = res.data && res.data.queued === true ? String(res.data.message || "Got it. You'll be added within a day.") : '';
-        el.innerHTML = '<p class="la-ok" tabindex="-1">' + esc(q || ('Done. On the 3rd of each month you get the farm sales recorded within '
-          + miles + ' miles of ' + zip + ' the month before. A month with none sends nothing.')) + '</p>';
+        el.innerHTML = '<p class="la-ok" tabindex="-1">' + esc(q ? q + ' ' + doneText(miles, zip).replace(/^Done\. /, '') : doneText(miles, zip)) + '</p>';
         var ok = el.querySelector('.la-ok'); if (ok && ok.focus) ok.focus();
         if (S() && S().oneMore) S().oneMore(el, { gave: 'notice', topic: topic, email: email, zip: zip });
       });
@@ -171,7 +186,7 @@
     setTimeout(function () { mo.disconnect(); }, 3600e3);
   }
 
-  window.AgLandAlert = { scan: scan, topicOf: topicOf, okZip: okZip, NEAR: NEAR, MILES: MILES, DEF: DEF };
+  window.AgLandAlert = { scan: scan, topicOf: topicOf, firstSend: firstSend, doneText: doneText, okZip: okZip, NEAR: NEAR, MILES: MILES, DEF: DEF };
   function ready() { scan(); watch(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready); else ready();
 })();
