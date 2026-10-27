@@ -1,0 +1,43 @@
+name: agtalk-probe
+# One-off, dispatch-only: read AgTalk robots.txt and terms before any reader is built.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch robots.txt and terms pages
+        env:
+          UA: "AGSIST-research/1.0 (+https://agsist.com)"
+        run: |
+          set +e
+          base=https://talk.newagtalk.com
+          fetch() {
+            echo "=================== $1"
+            curl -sS -L -A "$UA" -o page.out -w "HTTP %{http_code} final=%{url_effective}\n" "$1"
+            sleep 6
+          }
+          fetch "$base/robots.txt"; cat page.out; echo
+          fetch "$base/"
+          echo "--- links on home page:"
+          grep -oiE 'href="[^"]+"' page.out | sort -u | head -200
+          echo "--- terms-like links:"
+          links=$(grep -oiE 'href="[^"]+"' page.out | sed -E 's/href="([^"]+)"/\1/I' | grep -iE 'term|rule|privacy|policy|faq|legal|guideline|about|tos|disclaim|copyright|conduct' | sort -u)
+          echo "$links"
+          for l in $links /terms.asp /rules.asp /privacy.asp /forums/terms.asp; do
+            case "$l" in http*) u="$l";; /*) u="$base$l";; *) u="$base/$l";; esac
+            fetch "$u"
+            python3 - <<'PY'
+          import re,html
+          t=open('page.out','rb').read().decode('utf-8','replace')
+          t=re.sub(r'(?is)<(script|style).*?</\1>',' ',t)
+          t=re.sub(r'(?s)<[^>]+>',' ',t)
+          t=re.sub(r'\s+',' ',html.unescape(t))
+          print(t[:20000])
+          PY
+          done
+          echo "=================== home page visible text"
+          curl -sS -L -A "$UA" "$base/" | python3 -c "import re,sys,html;t=sys.stdin.read();t=re.sub(r'(?is)<(script|style).*?</\1>',' ',t);t=re.sub(r'(?s)<[^>]+>',' ',t);print(re.sub(r'\s+',' ',html.unescape(t))[:8000])"
