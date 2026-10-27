@@ -90,6 +90,63 @@ import list_source        # noqa: E402  (the worker, or the private copy when it
 
 REPO = Path(__file__).resolve().parent.parent
 ARCHIVE = REPO / "data" / "daily-archive"
+# The issue as it went out (2026-10-27). The archive JSON and page are redrawn
+# by later runs the same day (the Oct 16 page was regenerated at 5:27 p.m. CT
+# with afternoon trades), so the morning email's version was kept nowhere. The
+# first send of a day writes data/daily-sent/<day>.json once and never again;
+# daily.yml commits it after the send step.
+SENT = REPO / "data" / "daily-sent"
+
+
+def keep_sent_copy(day, b, from_name, from_addr, reply_to):
+    """From here on, setting the day flag also keeps the sent copy. The
+    subject is the issue's own (it does not change by reader), read from a
+    message built for a made-up address. Any failure here sends as before."""
+    subject = None
+    try:
+        LINK_IDS.setdefault("reader@example.com", email_links.SAMPLE_LID)
+        subject = str(build_email(day, b, "reader@example.com", from_name, from_addr, reply_to)["Subject"])
+    except Exception as ex:
+        print("sent copy: subject not read (" + type(ex).__name__ + ")")
+    finally:
+        if LINK_IDS.get("reader@example.com") == email_links.SAMPLE_LID:
+            LINK_IDS.pop("reader@example.com", None)
+    real_flag = globals()["flag"]
+
+    def flag_and_keep(d, set_it=False):
+        out = real_flag(d, set_it=set_it)
+        if set_it:
+            save_sent_copy(d, b, subject, daily_format())
+        return out
+    globals()["flag"] = flag_and_keep
+
+
+def save_sent_copy(day, b, subject, fmt, sent_dir=None):
+    """Keep the briefing exactly as it was emailed, with its subject. Written
+    once per day (the morning send); a later run of the same day leaves it as
+    is. No reader's address, ZIP, count or link: the issue only. Never fails
+    the send. Returns the path written, or None."""
+    d = Path(sent_dir) if sent_dir else SENT
+    path = d / (day + ".json")
+    try:
+        if path.exists():
+            print("sent copy for " + day + " already kept; left as is")
+            return None
+        d.mkdir(parents=True, exist_ok=True)
+        from datetime import datetime, timezone
+        rec = {"date": day, "sent_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+               "format": fmt, "subject": subject,
+               "note": "The Daily as emailed. The page at /daily/" + day + " may have been updated later the same day.",
+               "briefing": b}
+        tmp = path.with_suffix(".tmp")
+        with open(tmp, "w", encoding="utf-8") as fh:
+            json.dump(rec, fh, indent=2, ensure_ascii=False)
+        os.replace(tmp, path)
+        print("sent copy kept: data/daily-sent/" + day + ".json")
+        return path
+    except Exception as ex:
+        print("::warning::sent copy not kept (" + type(ex).__name__ + ")")
+        return None
 # The teaser lands on the HOMEPAGE briefing, not /daily. ?d=1 tells the page the
 # reader came from the email and explicitly asked for the briefing, so a "hide
 # until tomorrow" dismissal from earlier today must not collapse it on arrival.
@@ -636,6 +693,11 @@ def main():
     elif not list_source.claim("briefed:" + day):
         # backup mode: the day flag goes into the private repo before the first mail
         return 1
+    else:
+        # The issue as it went out is kept when the day is flagged sent, which
+        # the loop below does on the first delivered mail (save_sent_copy).
+        # Sig's test copy sets no flag, so it keeps nothing.
+        keep_sent_copy(day, b, from_name, from_addr, reply_to)
 
     sent, failed = 0, []
     ctx = ssl.create_default_context()
