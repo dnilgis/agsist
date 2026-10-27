@@ -77,6 +77,8 @@ LEDGER_DIR = "private/ledger/tests"
 BID_LEDGER_DIR = "private/ledger/bid-changes"
 SHUFFLES, SHUFFLES_NEAR, NEAR_P = 1000, 5000, 0.01
 BOOT = 1000
+CHECK_PAIRS = []           # selftest only: compare the matrix counts with a pair-by-pair count
+BLOCK_WEEKS = 8            # weekly placebo: shuffle 8-week blocks, not single weeks (autocorrelation)
 WEEKDAY_RUN = 6            # Sunday (Python weekday), Central time
 CATCH_UP_DAYS = 9          # a missed Sunday runs on the next morning once the last run is this old
 VERDICTS = ("HOLDS", "PARTLY", "NO", "WAIT", "ERROR")
@@ -161,6 +163,8 @@ def check_registry(reg):
             for side in ("x", "y"):
                 if (s.get(side) or {}).get("series") not in series:
                     out.append("%s: %s series unknown" % (sid, side))
+            if s.get("benchmark_model", "own_past") not in ("persistence", "own_past", "fit_mean"):
+                out.append("%s: benchmark_model is persistence, own_past or fit_mean" % sid)
             fy, hy = set(s["fit"]["years"]), set(s["holdout"]["years"])
             if fy & hy:
                 out.append("%s: fit and holdout years overlap" % sid)
@@ -261,6 +265,25 @@ def ols(xs, ys):
         return None
     b = sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / sxx
     return my - b * mx, b
+
+
+def ols2(z, x, y):
+    """y = a + g z + b x by least squares, or None."""
+    n = len(y)
+    if n < 5:
+        return None
+    mz, mx, my = sum(z) / n, sum(x) / n, sum(y) / n
+    szz = sum((v - mz) ** 2 for v in z)
+    sxx = sum((v - mx) ** 2 for v in x)
+    szx = sum((u - mz) * (v - mx) for u, v in zip(z, x))
+    szy = sum((u - mz) * (v - my) for u, v in zip(z, y))
+    sxy = sum((u - mx) * (v - my) for u, v in zip(x, y))
+    det = szz * sxx - szx * szx
+    if abs(det) < 1e-12:
+        return None
+    g = (szy * sxx - sxy * szx) / det
+    b = (sxy * szz - szy * szx) / det
+    return my - g * mz - b * mx, g, b
 
 
 def mae(pairs):
@@ -521,7 +544,11 @@ def weekly_rows(spec, inputs, reg):
             end = fri + dt.timedelta(days=7 * int(ys["weeks"]))
             if end not in yby:
                 continue
-            y, bench = yby[end] - yby[fri], None
+            y = yby[end] - yby[fri]
+            j = bisect.bisect_right(ydates, fri - dt.timedelta(days=ylag)) - 1
+            bench = None                             # the target's own last known change (own_past)
+            if j >= 1 and (fri - ydates[j]).days <= 14 and (ydates[j] - ydates[j - 1]).days <= 10:
+                bench = yser[ydates[j]] - yser[ydates[j - 1]]
         else:
             raise ValueError("y op %s" % ys["op"])
         rows.append((fri, end, x, y, bench))
@@ -540,29 +567,52 @@ def run_weekly(spec, inputs, reg, today):
         missing = sorted(hy - set(have))
         why = ("holdout years not on hand: %s" % span(missing)) if missing else "holdout has %d weeks" % len(hold)
         return wait(why + " (needs %d)" % int(spec.get("min_holdout_n", 50)), n=len(hold))
-    fitted = ols([r[2] for r in fit], [r[3] for r in fit])
-    if not fitted:
-        return wait("the fit has no spread in x", n=len(fit))
-    a, b = fitted
-    if spec["y"]["op"] == "level":
-        bench = [r[4] for r in hold]
+    bm = spec.get("benchmark_model") or ("persistence" if spec["y"]["op"] == "level" else "own_past")
+    if bm == "own_past":
+        fit = [r for r in fit if r[4] is not None]
+        hold = [r for r in hold if r[4] is not None]
+        if len(fit) < 30 or len(hold) < int(spec.get("min_holdout_n", 50)):
+            return wait("too few weeks with the target's own last change known", n=len(hold))
+        fb = ols([r[4] for r in fit], [r[3] for r in fit])
+        fm = ols2([r[4] for r in fit], [r[2] for r in fit], [r[3] for r in fit])
+        if not fb or not fm:
+            return wait("the fit has no spread in x", n=len(fit))
+        c0, phi = fb
+        a, g, b = fm                         # model: a + g * own last change + b * x
+        bench = [c0 + phi * r[4] for r in hold]
+        zs = [r[4] for r in hold]
     else:
-        m = sum(r[3] for r in fit) / len(fit)
-        bench = [m] * len(hold)
+        fitted = ols([r[2] for r in fit], [r[3] for r in fit])
+        if not fitted:
+            return wait("the fit has no spread in x", n=len(fit))
+        a, b = fitted
+        g, zs = 0.0, [0.0] * len(hold)
+        if bm == "persistence":
+            bench = [r[4] for r in hold]
+        else:
+            m = sum(r[3] for r in fit) / len(fit)
+            bench = [m] * len(hold)
     ys = [r[3] for r in hold]
     xs = [r[2] for r in hold]
+
+    def pred(i, xv):
+        return a + g * zs[i] + b * xv[i]
 
     def gain_of(xv, rows_idx=None):
         idx = range(len(ys)) if rows_idx is None else rows_idx
         mb = sum(abs(ys[i] - bench[i]) for i in idx)
-        mm = sum(abs(ys[i] - (a + b * xv[i])) for i in idx)
+        mm = sum(abs(ys[i] - pred(i, xv)) for i in idx)
         return (mb - mm) / len(idx)
 
     gain = gain_of(xs)
-    mae_m = mae([(y, a + b * x) for x, y in zip(xs, ys)])
+    mae_m = mae([(ys[i], pred(i, xs)) for i in range(len(ys))])
     mae_b = mae(list(zip(ys, bench)))
-    hb = ols(xs, ys)
-    slope_h = hb[1] if hb else None
+    if bm == "own_past":                     # x's own slope in the holdout, with the target's past held
+        hb = ols2(zs, xs, ys)
+        slope_h = hb[2] if hb else None
+    else:
+        hb = ols(xs, ys)
+        slope_h = hb[1] if hb else None
     rng = random.Random(seed_for(spec, "boot"))
     by_year = {}
     for i, r in enumerate(hold):
@@ -571,10 +621,14 @@ def run_weekly(spec, inputs, reg, today):
     per_season = {str(y): r6(gain_of(xs, idx)) for y, idx in sorted(by_year.items())}
     prng = random.Random(seed_for(spec, "placebo"))
 
+    blk = int(spec.get("placebo_block_weeks", BLOCK_WEEKS))
+    chunks = [list(range(i, min(i + blk, len(xs)))) for i in range(0, len(xs), blk)]
+
     def shuffle(rng_):
-        v = xs[:]
-        rng_.shuffle(v)
-        return v
+        # whole blocks of weeks move together, so x keeps its own week-to-week pattern
+        order = chunks[:]
+        rng_.shuffle(order)
+        return [xs[i] for c_ in order for i in c_]
     p, nshuf = placebo(gain_of, shuffle, gain, prng)
     sign_ok = slope_h is not None and (slope_h > 0) == (spec["expected_sign"] > 0) and slope_h != 0
     ok2, good, closed = seasons_ok(per_season)
@@ -582,11 +636,11 @@ def run_weekly(spec, inputs, reg, today):
         "status": "scored", "n": len(hold), "n_detail": {"fit_weeks": len(fit), "holdout_weeks": len(hold),
                                                           "holdout_years": span(sorted(by_year))},
         "estimate": r6(gain), "range": [r6(lo), r6(hi)], "unit": "cents gained per week over the benchmark (MAE)",
-        "slope": {"fit": r6(b), "holdout": r6(slope_h)},
-        "holdout": {"mae_model": r6(mae_m), "mae_benchmark": r6(mae_b),
+        "slope": {"fit": r6(b), "holdout": r6(slope_h), "own_past_fit": r6(g) if bm == "own_past" else None},
+        "holdout": {"mae_model": r6(mae_m), "mae_benchmark": r6(mae_b), "benchmark_model": bm,
                     "skill": r6(1 - mae_m / mae_b) if mae_b else None, "benchmark": spec["benchmark"],
                     "pass": bool(lo is not None and lo > 0 and sign_ok)},
-        "placebo": {"p": r6(p), "shuffles": nshuf},
+        "placebo": {"p": r6(p), "shuffles": nshuf, "block_weeks": blk},
         "seasons": {"pass": ok2, "good": good, "closed": closed, "by_season": per_season},
         "sign": 1 if gain > 0 else -1, "sign_ok": sign_ok,
         "data": {"weeks_from": str(rows[0][0]) if rows else None, "weeks_to": str(rows[-1][0]) if rows else None},
@@ -750,9 +804,27 @@ def run_contagion(spec, inputs, reg, today):
     ne, nr = np.nonzero(near)
     ce, cr = np.nonzero(ctrl)
 
+    An, Ac = near.astype(np.float32), ctrl.astype(np.float32)
+
     def day_sums(Dm, Fm, cols):
-        out = []
+        """Per trading day: (valid pairs, same-way follows, opposite follows) for near and control.
+        A pair-day is valid when e moved one way on t and r did not move on t."""
         Dc, Fc = Dm[:, cols], Fm[:, cols]
+        P, N, V = (Dc == 1).astype(np.float32), (Dc == -1).astype(np.float32), (Dc == 0)
+        Qp, Qn = (V & (Fc == 1)).astype(np.float32), (V & (Fc == -1)).astype(np.float32)
+        V = V.astype(np.float32)
+        out = []
+        for A in (An, Ac):
+            AV, AQp, AQn = A @ V, A @ Qp, A @ Qn
+            out.append(((P * AV + N * AV).sum(0).round().astype(np.int64),
+                        (P * AQp + N * AQn).sum(0).round().astype(np.int64),
+                        (P * AQn + N * AQp).sum(0).round().astype(np.int64)))
+        return out
+
+    def day_sums_pairs(Dm, Fm, cols):
+        """The same counts pair by pair (the selftest checks the two agree)."""
+        Dc, Fc = Dm[:, cols], Fm[:, cols]
+        out = []
         for e_, r_ in ((ne, nr), (ce, cr)):
             E, R, FR = Dc[e_], Dc[r_], Fc[r_]
             valid = ((E == 1) | (E == -1)) & (R == 0)
@@ -788,6 +860,9 @@ def run_contagion(spec, inputs, reg, today):
             season_of[int(i)] = w["season"]
     sums = day_sums(D, F, hcols)
     obs = net_of(sums)
+    if CHECK_PAIRS:
+        alt = day_sums_pairs(D, F, hcols)
+        CHECK_PAIRS.append(all(np.array_equal(a, b) for x_, y_ in zip(sums, alt) for a, b in zip(x_, y_)))
     E = D[:, hcols]
     has_near = near.any(1)
     events = int((((E == 1) | (E == -1)) & has_near[:, None]).sum())
@@ -1204,7 +1279,10 @@ def selftest():
           "holdout": {"windows": [{"season": "s1", "from": "2026-10-12", "to": "2026-11-30"}]}, "min_events": 100,
           "benchmark": "control", "placebo": "shuffle", "bootstrap": "day", "else_explains": [], "sig_yes": None}
     later = dt.date(2026, 12, 10)
+    CHECK_PAIRS.append("on")
     cr = run_contagion(cs, FakeC(0.25, 5, wk), reg, later)
+    ck("the matrix pair counts equal a pair-by-pair count", CHECK_PAIRS[-1] is True, CHECK_PAIRS)
+    CHECK_PAIRS.clear()
     ck("planted contagion is found: net above zero, range above zero, p small", cr["status"] == "scored"
        and cr["estimate"] > 0 and cr["holdout"]["pass"] and cr["placebo"]["p"] < 0.01, (cr.get("estimate"), cr.get("range"), cr.get("placebo")))
     ck("... one season is not two", not cr["seasons"]["pass"] and cr["seasons"]["closed"] == 1, cr.get("seasons"))
