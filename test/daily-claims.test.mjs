@@ -30,6 +30,8 @@ const FIXED = [
   ["2026-10-15", "Hogs are nearly flat at $75.55, just below Wednesday's $75.60."],
   ["2026-10-15", "The pullback follows word that the administration may ease sanctions on tankers moving Russian, Iranian and Venezuelan oil, adding supply to a tight tanker market."],
   ["2026-10-26", "A bushel of beans is worth about 16 cents less than it was at Friday's close."],
+  ["2026-10-21", "Corn closed Tuesday at $4.59½, its sixth lower close in a row, and soybeans at $12.45 made it seven."],
+  ["2026-10-21", "A corn bushel is worth about 15 cents less than a week ago."],
 ];
 const esc = (s) => s.replace(/"/g, "&quot;");
 
@@ -61,7 +63,7 @@ sys.path.insert(0, "scripts")
 import daily_claims as dc
 from datetime import date
 bad = []
-for d in ("2026-10-10", "2026-10-11", "2026-10-15", "2026-10-16", "2026-10-18", "2026-10-22", "2026-10-25", "2026-10-26"):
+for d in ("2026-10-10", "2026-10-11", "2026-10-15", "2026-10-16", "2026-10-18", "2026-10-21", "2026-10-22", "2026-10-25", "2026-10-26"):
     b = json.load(open(f"data/daily-archive/{d}.json"))
     ctx = dc.context({"planting_ratio": {"crop_year": 2027, "value": 2.47}}, dc.issue_date(b), b.get("quote_strip"))
     bad += [(d,) + h for h in dc.lint(b, ctx)]
