@@ -1,11 +1,13 @@
 /* components/wasde-history.js: "How this estimate moved" on /whats-priced-in.
    Every U.S. corn, soybean and wheat balance sheet line, for one market year,
-   as each monthly WASDE printed it (USDA's historical WASDE report data, 2010 on).
+   as each monthly WASDE printed it (read from USDA's own reports in the ESMIS archive, 1973 on).
    The page holds one hidden <details id="how-moved"> and this script (defer).
    It asks for the small index (data/wasde-history/index.json) once the page has
    loaded and shows the section only when the history is there; the crop file
    loads when a reader opens it. A missing index keeps the section hidden; a crop
-   file that does not load says so in the section. Share link: ?wh=corn~2026/27~<line>.
+   file that does not load says so in the section. Market years before 2000/01 sit in one
+   file a decade (corn-1990s.json), listed in the crop file's "parts" and loaded only when a
+   reader picks one of those years. Share link: ?wh=corn~2026/27~<line>.
    Writes nothing, sends nothing about the reader. Tests: test/wasde-archive.test.mjs. */
 (function (root) {
   'use strict';
@@ -63,6 +65,21 @@
         (a.value ? ' (' + (d > 0 ? '+' : '-') + Math.abs(d / a.value * 100).toFixed(1) + '%)' : '')) +
       ', changed in ' + moved + ' of ' + (pts.length - 1) + ' later reports.';
     return s;
+  }
+
+  /* The decade file that holds market year `my`, when the crop file does not: {name, years} or null. */
+  function partFor(doc, my) {
+    if (!doc || (doc.years && doc.years[my])) return null;
+    var ps = doc.parts || [];
+    for (var i = 0; i < ps.length; i++) {
+      if (/^[a-z]+-\d{3}0s\.json$/.test(ps[i].name || '') && (ps[i].years || []).indexOf(my) >= 0) return ps[i];
+    }
+    return null;
+  }
+  function allYears(doc) {
+    var ys = Object.keys(doc.years || {});
+    (doc.parts || []).forEach(function (p) { (p.years || []).forEach(function (y) { if (ys.indexOf(y) < 0) ys.push(y); }); });
+    return ys.sort().reverse();
   }
 
   function parseShare(q) {
@@ -135,8 +152,9 @@
 
     function fillYears(doc, want) {
       selY.textContent = '';
-      Object.keys(doc.years).sort().reverse().forEach(function (y) { var o = el('option', null, y); o.value = y; selY.appendChild(o); });
-      if (want && doc.years[want]) selY.value = want;
+      var ys = allYears(doc);
+      ys.forEach(function (y) { var o = el('option', null, y); o.value = y; selY.appendChild(o); });
+      if (want && ys.indexOf(want) >= 0) selY.value = want;
     }
     function fillLines(doc, want) {
       var y = doc.years[selY.value] || { s: {} };
@@ -152,13 +170,30 @@
       }
     }
 
+    /* The year's decade file, when the crop file does not hold it; then the lines and the table. */
+    function showYear(doc, line) {
+      var p = partFor(doc, selY.value);
+      var ready = Promise.resolve();
+      if (p) {
+        out.textContent = 'Loading the older reports.';
+        ready = fetchJSON(BASE + p.name).then(function (part) {
+          if (!part || !part.years) throw new Error('bad file');
+          Object.keys(part.years).forEach(function (y) { if (!doc.years[y]) doc.years[y] = part.years[y]; });
+        });
+      }
+      return ready.then(function () { fillLines(doc, line); draw(); }).catch(function () {
+        out.textContent = 'The older reports did not load just now. Pick the year again to try again.';
+      });
+    }
+
     function loadCrop(c, want) {
-      if (cache[c]) { fillYears(cache[c], want && want.my); fillLines(cache[c], want && want.line); draw(); return Promise.resolve(); }
+      if (cache[c]) { fillYears(cache[c], want && want.my); return showYear(cache[c], want && want.line); }
       out.textContent = 'Loading the report history.';
       return fetchJSON(BASE + c + '.json').then(function (doc) {
         if (!doc || !doc.years || !doc.series) throw new Error('bad file');
         cache[c] = doc;
-        fillYears(doc, want && want.my); fillLines(doc, want && want.line); draw();
+        fillYears(doc, want && want.my);
+        return showYear(doc, want && want.line);
       }).catch(function () {
         out.textContent = 'The report history did not load just now. Close and reopen this section to try again.';
         delete cache[c];
@@ -166,7 +201,7 @@
     }
 
     selC.addEventListener('change', function () { selL.value = ''; loadCrop(selC.value); });
-    selY.addEventListener('change', function () { fillLines(cache[selC.value]); draw(); });
+    selY.addEventListener('change', function () { showYear(cache[selC.value]); });
     selL.addEventListener('change', draw);
     if (share && crops.indexOf(share.crop) >= 0) selC.value = share.crop;
     loadCrop(selC.value, share);
@@ -190,7 +225,7 @@
     }).catch(function () { /* no history published yet: the section stays hidden */ });
   }
 
-  root.agsistWasdeHistory = { path: path, summary: summary, parseShare: parseShare, fmtNum: fmtNum, fmtDate: fmtDate, fmtChange: fmtChange, init: init };
+  root.agsistWasdeHistory = { path: path, summary: summary, parseShare: parseShare, partFor: partFor, allYears: allYears, fmtNum: fmtNum, fmtDate: fmtDate, fmtChange: fmtChange, init: init };
   if (typeof document !== 'undefined') {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { init(document, root); });
     else init(document, root);
