@@ -10,6 +10,12 @@
      "page": "/cash-bids/",
      "name": "Soybean bids match the elevator's own board to the cent",
      "text": "Some elevator boards round their soybean price down, or only up from three quarters of a cent, and one posts half cents. We rounded every price to the nearest cent, so some soybean bids read a cent high. Each bid now follows the board's own rounding."
+    },
+    {
+     "tag": "fixed",
+     "page": "/cash-bids/wisconsin/cadott",
+     "name": "Cadott Grain's phone number corrected",
+     "text": "The Cadott page listed an Iowa area code. It now gives Cadott Grain's grain line, 715-289-4366, from the elevator's own site."
     }
    ]
   },
