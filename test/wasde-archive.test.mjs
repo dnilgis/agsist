@@ -106,11 +106,11 @@ test('wasde-watch: the archive update is one soft step in the existing job, no n
   const gate = body.indexOf('--update-due');
   assert.ok(gate > 0 && gate < body.indexOf('pull_raw.sh'), 'the gate runs before any network');
   assert.match(body, /if \[ "\$rc" -eq 3 \]; then exit 0; fi/);
-  assert.match(body, /if ! bash scripts\/pull_raw\.sh history\/wasde; then/);
-  assert.doesNotMatch(body.slice(0, body.indexOf('pull_raw.sh')), /RAW_SOFT/, 'never runs on without the saved manifest');
+  assert.match(body, /if ! RAW_SOFT= bash scripts\/pull_raw\.sh history\/wasde; then/, 'never runs on without the saved manifest');
+  assert.match(a, /RAW_SOFT: '1'/, 'the save is soft, as every publishing job saves');
   assert.match(body, /--esmis --pages 2\n/);
   assert.match(body, /--esmis-files --newest 3\n/);
-  assert.match(body, /RAW_SOFT=1 bash scripts\/push_raw\.sh "wasde archive update" history\/wasde/);
+  assert.match(body, /\n\s+bash scripts\/push_raw\.sh "wasde archive update" history\/wasde\n/);
   assert.match(body, /python3 scripts\/build_wasde_history\.py/);
   const steps = [...y.matchAll(/^      - name: (.+)$/gm)].map((m) => m[1]);
   assert.ok(steps.indexOf('Update the WASDE archive from ESMIS') > steps.indexOf("Rebuild the page's data")

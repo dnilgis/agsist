@@ -208,6 +208,7 @@ jobs:
         timeout-minutes: 8
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
         run: |
           rc=0; python3 scripts/backfill_wasde.py --update-due || rc=$?
           if [ "$rc" -eq 3 ]; then exit 0; fi
@@ -215,13 +216,14 @@ jobs:
           python3 scripts/read_wasde_text.py --selftest > /dev/null
           python3 scripts/backfill_wasde.py --selftest > /dev/null
           python3 scripts/build_wasde_history.py --selftest > /dev/null
-          # Not RAW_SOFT: a run without the saved manifest would push a fresh one over it.
-          if ! bash scripts/pull_raw.sh history/wasde; then
+          # The save is soft (RAW_SOFT above); the read is not: a run without the saved
+          # manifest would push a fresh one over it.
+          if ! RAW_SOFT= bash scripts/pull_raw.sh history/wasde; then
             echo "::warning::WASDE archive: the saved archive could not be read; the next run tries again"; exit 0
           fi
           python3 scripts/backfill_wasde.py --esmis --pages 2
           python3 scripts/backfill_wasde.py --esmis-files --newest 3
-          RAW_SOFT=1 bash scripts/push_raw.sh "wasde archive update" history/wasde
+          bash scripts/push_raw.sh "wasde archive update" history/wasde
           python3 scripts/build_wasde_history.py | tee -a "$GITHUB_STEP_SUMMARY"
           if [ -n "$(git status --porcelain -- data/wasde-history)" ]; then echo "new=1" >> "$GITHUB_OUTPUT"; fi
 
