@@ -572,7 +572,11 @@ def probe(root, scan=None):
                     listing[t] = slug
                     save_text(rd, slug, raw, text)
                     print("scan %s: %s" % (slug, t))
-    FD.atomic_write(rd / "listing.json", {"urls": cfg.get("listing_urls"), "reports": listing})
+    # a probe that reached nothing (DNS down, Oct 27 2026) never wipes the saved listing: new titles are added
+    old = (FD.read_json(rd / "listing.json") or {}).get("reports") or {}
+    if listing or not old:
+        FD.atomic_write(rd / "listing.json", {"urls": cfg.get("listing_urls"), "reports": dict(old, **listing)})
+    listing = dict(old, **listing)
     for t, s in sorted(listing.items()):
         print("  listed: %s -> %s" % (s, t))
     for src in cfg["reports"]:

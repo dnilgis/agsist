@@ -65,6 +65,10 @@ jobs:
           MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
         run: |
           mkdir -p data/hay-ams-raw/mars
+          getent hosts marsapi.ams.usda.gov www.ams.usda.gov mymarketnews.ams.usda.gov || echo "DNS: no answer"
+          [ -n "$MARS_API_KEY" ] && echo "MARS key: set" || echo "MARS key: EMPTY in this repo"
+          curl -sS -m 60 -o data/hay-ams-raw/mars/viewreport-bls-ap.html -w "viewReport/bls-ap HTTP %{http_code}\n" https://mymarketnews.ams.usda.gov/viewReport/bls-ap || true
+          grep -o -i '<title>[^<]*' data/hay-ams-raw/mars/viewreport-bls-ap.html | head -2 || true
           B=https://marsapi.ams.usda.gov/services/v1.2/reports
           curl -sS -m 120 -u "$MARS_API_KEY:" "$B" -o data/hay-ams-raw/mars/reports.json || true
           for s in bls-ap 2246 3729 2243 2244 2245 3723; do
@@ -75,7 +79,7 @@ jobs:
           try:
               d = json.load(open("data/hay-ams-raw/mars/reports.json"))
           except Exception as e:
-              print("reports list not JSON:", e, open("data/hay-ams-raw/mars/reports.json", "rb").read(200)); d = []
+              print("reports list not read:", e); d = []
           rows = d if isinstance(d, list) else d.get("results") or []
           print("MARS reports listed:", len(rows))
           want = {"2246","3729","2243","2244","2245","3723","1215","2046","1917","2713","1860","2167","2039","1703","1825","2528"}
