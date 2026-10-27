@@ -146,6 +146,14 @@
         var wrap = el('div', 'wh-scroll'); wrap.appendChild(t); out.appendChild(wrap);
         var gaps = (index.months_with_no_report_on_file || []).filter(function (m) { return m >= pts[0].date.slice(0, 7) && m <= pts[pts.length - 1].date.slice(0, 7); });
         if (gaps.length) out.appendChild(el('p', 'wh-note', 'No report on file for ' + gaps.map(function (m) { return MON[+m.slice(5) - 1] + ' ' + m.slice(0, 4); }).join(', ') + '.'));
+        /* USDA corrected a figure a report carried (data/usda-corrections.json via the builder):
+           the table keeps what the WASDE printed; the dated note goes under it. */
+        var rn = doc.report_notes || {};
+        pts.forEach(function (p) {
+          (rn[p.date] || []).forEach(function (x) {
+            if ((!x.market_year || x.market_year === my) && (!x.line || x.line === s.line)) out.appendChild(el('p', 'wh-note', fmtDate(p.date) + ': ' + x.note));
+          });
+        });
       }
       setShare(selC.value, my, s.line || '');
     }

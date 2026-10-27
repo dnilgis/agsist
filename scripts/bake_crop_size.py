@@ -207,7 +207,14 @@ def record(d, today):
                     "font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d"
                     + (";opacity:.85" if dim else "") + '">'
                     + f'<span style="color:#e6ebe9">{esc(c["wasde"])} {crop} <b style="color:{col}">{arrow}</b>'
-                    + f' <span style="color:#8a948f">{lock}</span></span><span>{right}</span></div>')
+                    + f' <span style="color:#8a948f">{lock}</span></span><span>{right}</span>'
+                    # USDA CORRECTED THE FIGURE THIS ROW USED (nowcast_direction.apply_corrections):
+                    # the printed numbers above stay; the dated correction and the grade
+                    # against it sit under them, in words.
+                    + (f'<span style="flex-basis:100%;color:var(--gold)">'
+                       f'{esc((c.get("nass_correction") or {}).get("note"))}</span>'
+                       if (c.get("nass_correction") or {}).get("note") else "")
+                    + '</div>')
     return ('<div id="cyn-record" style="background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px;margin-top:12px">'
             '<div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:7px">'
             'On the record: direction vs USDA&rsquo;s next print</div>'
@@ -268,6 +275,12 @@ def selftest():
        "the locked call shows model, ratings week and lock date")
     ck("3 of 6</b> correct" in r and "CORRECT" in r, "the record and the grade")
     ck(record({"calls": []}, "2026-10-10") == "", "no calls, no box")
+    dd["calls"][0]["nass_correction"] = {"id": "x", "note": "USDA correction, Oct 23, 2026: NASS corrected its "
+                                         "September 11 Crop Production corn yield to 178.8 bu/acre, from 178.5 as "
+                                         "first printed. Against 178.8: USDA 178.8 to 181.2, up; the call still grades correct."}
+    r2 = record(dd, "2026-10-27")
+    ck("USDA 178.5 &rarr; 181.2" in r2 and "USDA correction, Oct 23, 2026" in r2 and "still grades correct" in r2,
+       "a corrected USDA figure: the printed numbers stay and the dated correction shows under them")
     c = cell("Corn", {"nowcast": 180.6, "band80": 6.9, "trend": 188.7, "trend_window": "2010-2025", "mae": 4.2,
                       "trend_mae": 5.5, "skill_pct": 24, "backtest_years": 12, "states": 18,
                       "band_method": "expanding-window", "backtest_window": "2011-2024"})

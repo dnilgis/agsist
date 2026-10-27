@@ -18,6 +18,12 @@
      "text": "The Cushing page listed an Oklahoma area code. It now gives 715-648-5215, the number on the co-op's own bid page. Two Wisconsin numbers we could not confirm as the local line, Prairie du Chien and Arcadia, are no longer shown."
     },
     {
+     "tag": "fixed",
+     "page": "/whats-priced-in",
+     "name": "USDA's corrected September corn yield shown beside the original",
+     "text": "USDA corrected its September 11 corn yield to 178.8 bushels an acre from 178.5 (Kansas 118 from 121, Nebraska 182 from 177). Pages that show or grade September's number now show both, dated, with USDA's notice linked. No grade changed: our model's September call is still a miss and its October call still a hit, and the trade's September guess is still in line."
+    },
+    {
      "tag": "improved",
      "page": "/daily",
      "name": "A Daily headline that fails its fact check is fixed before it goes out",

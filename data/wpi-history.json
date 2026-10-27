@@ -151,6 +151,7 @@
       "metric": "2026/27 corn yield",
       "expected": 178.1,
       "actual": 178.5,
+      "nass_correction": {"id": "nass-crop-production-2026-09-11-corn-yield", "printed": 178.5, "corrected": 178.8, "notice_date": "2026-10-23", "source": "https://www.nass.usda.gov/Newsroom/Notices/2026/10-24-2026.php"},
       "unit": "bu/acre",
       "reaction": ""
     },

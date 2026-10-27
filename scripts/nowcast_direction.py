@@ -83,7 +83,9 @@ def _ledger():
         "note": ("Directional record of the AGSIST yield nowcast against USDA's next "
                  "WASDE print. Locked from the live model before each report, graded by "
                  "arithmetic after it, never edited. 'agree' means the model saw no "
-                 "revision coming (gap inside call_eps). Misses stay."),
+                 "revision coming (gap inside call_eps). Misses stay. When USDA later "
+                 "corrects a figure a row used, the correction and the grade against it "
+                 "go beside the row (nass_correction), never over it."),
         "call_eps": CALL_EPS, "rev_eps": REV_EPS,
         "calls": [],
     }
@@ -255,7 +257,56 @@ def grade(today=None, croptour_path=CROPTOUR, ledger=None):
     return led, n
 
 
+def apply_corrections(led, corrections=None):
+    """USDA CORRECTED A NUMBER A CALL WAS GRADED ON (NASS, Oct 23, 2026: the
+    September 11 corn yield is 178.8, not the 178.5 first printed). The row is
+    never edited: what USDA printed, the call and its grade stay as they were.
+    Beside them goes `nass_correction`: the corrected before/after, the grade
+    the same subtraction gives against them, and whether it changed. For a row
+    LOCKED against the printed figure it also says what the call would have
+    been against the corrected one; that is a counterfactual (the correction
+    came later), never a re-lock. Idempotent. Returns the rows it changed."""
+    import usda_corrections as UC
+    cs = UC.load() if corrections is None else corrections
+    n = 0
+    for c in led["calls"]:
+        crop = c.get("crop")
+        b_rel = c.get("usda_before_as_of") or UC.label_release(c.get("usda_before_label"), c.get("wasde"), crop,
+                                                                corrections=cs)
+        cb = UC.for_value(c.get("usda_before"), b_rel, crop, corrections=cs) if b_rel else None
+        ca = UC.for_value(c.get("usda_after"), c.get("wasde"), crop, corrections=cs)
+        if not (cb or ca):
+            continue
+        cv = cb or ca
+        before = float(cb["corrected"]) if cb else c.get("usda_before")
+        after = float(ca["corrected"]) if ca else c.get("usda_after")
+        e = {"id": cv["id"], "notice_date": cv["notice_date"], "source": cv["source"],
+             "fields": [k for k, x in (("usda_before", cb), ("usda_after", ca)) if x],
+             "usda_before": before, "usda_after": after}
+        tail = ""
+        if cb and c.get("model") is not None and crop in CALL_EPS:
+            e["call_on_corrected"] = _direction(c["model"], before, CALL_EPS[crop])
+            e["call_changed"] = e["call_on_corrected"] != c.get("call")
+        if c.get("outcome") is not None and before is not None and after is not None:
+            rev = after - before
+            actual = "unchanged" if abs(rev) <= REV_EPS else ("up" if rev > 0 else "down")
+            call = c.get("call")
+            ok = (call == "agree" and actual == "unchanged") or call == actual
+            e["actual"] = actual
+            e["outcome"] = "correct" if ok else "incorrect"
+            e["changed"] = e["outcome"] != c["outcome"]
+            tail = ("Against %s: USDA %s to %s, %s; the call %s %s." % (
+                cv["corrected"], before, after, actual,
+                "would grade" if e["changed"] else "still grades", e["outcome"]))
+        e["note"] = UC.note(cv, tail)
+        if c.get("nass_correction") != e:
+            c["nass_correction"] = e
+            n += 1
+    return n
+
+
 def save(led):
+    apply_corrections(led)
     led["updated"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
     g = [c for c in led["calls"] if c["outcome"] is not None]
     # A CALL COMPUTED ON A CORRUPTED INPUT SERIES IS STILL A CALL. It stays in
@@ -277,7 +328,12 @@ def save(led):
                      "reports": len(reports),
                      "pending": sum(1 for c in led["calls"] if c["outcome"] is None and _live(c)),
                      "on_defective_input": len(flagged),
-                     "superseded": sum(1 for c in led["calls"] if not _live(c))}
+                     "superseded": sum(1 for c in led["calls"] if not _live(c)),
+                     # graded rows whose USDA figure NASS later corrected, and how many
+                     # of those the same subtraction grades differently (kept beside)
+                     "on_corrected_usda": sum(1 for c in g if c.get("nass_correction")),
+                     "changed_by_correction": sum(1 for c in g
+                                                  if (c.get("nass_correction") or {}).get("changed"))}
     LEDGER.write_text(json.dumps(led, indent=1, ensure_ascii=False))
     print(f"[nowcast-dir] ledger: {led['record']}")
 
@@ -404,6 +460,44 @@ def selftest():
               and all(c["outcome"] == "correct" for c in led7["calls"]), str(led7["calls"]))
         (td / "wasde.json").unlink()
 
+    # (d) NASS CORRECTED SEPTEMBER (Oct 23, 2026): 178.5 -> 178.8. The real rows.
+    sep = {"wasde": "2026-09-11", "crop": "corn", "model": 182.6, "usda_before": 180.7,
+           "usda_before_label": "USDA, August WASDE", "call": "up", "locked_on": "2026-08-18",
+           "usda_after": 178.5, "actual": "down", "outcome": "incorrect", "graded_on": "2026-10-06",
+           "usda_after_label": "USDA, September WASDE"}
+    octr = {"wasde": "2026-10-09", "crop": "corn", "model": 182.6, "usda_before": 178.5,
+            "usda_before_label": "USDA, September WASDE", "usda_before_as_of": "2026-09-11", "call": "up",
+            "locked_on": "2026-10-06", "usda_after": 181.2, "actual": "up", "outcome": "correct"}
+    soy = {"wasde": "2026-09-11", "crop": "soybeans", "model": 54.1, "usda_before": 52.7, "call": "up",
+           "usda_after": 52.8, "actual": "up", "outcome": "correct"}
+    led8 = {"calls": [dict(sep), dict(octr), dict(soy)]}
+    n = apply_corrections(led8)
+    s8, o8, b8 = led8["calls"]
+    check("(d) both corn rows on September's print carry the correction; soybeans none",
+          n == 2 and "nass_correction" not in b8, str(led8))
+    check("(d) what USDA printed and the grade stay as they were",
+          s8["usda_after"] == 178.5 and s8["outcome"] == "incorrect" and o8["usda_before"] == 178.5
+          and o8["outcome"] == "correct")
+    check("(d) Sep: 180.7 -> 178.8 is still down, still incorrect",
+          s8["nass_correction"]["usda_after"] == 178.8 and s8["nass_correction"]["outcome"] == "incorrect"
+          and s8["nass_correction"]["changed"] is False, str(s8["nass_correction"]))
+    check("(d) Oct: 178.8 -> 181.2 is still up, still correct; 182.6 vs 178.8 is still an up call",
+          o8["nass_correction"]["usda_before"] == 178.8 and o8["nass_correction"]["outcome"] == "correct"
+          and o8["nass_correction"]["call_on_corrected"] == "up" and o8["nass_correction"]["call_changed"] is False,
+          str(o8["nass_correction"]))
+    check("(d) the note is dated and sourced", s8["nass_correction"]["note"].startswith("USDA correction, Oct 23, 2026:")
+          and "nass.usda.gov" in s8["nass_correction"]["source"])
+    check("(d) idempotent", apply_corrections(led8) == 0)
+    # a correction that WOULD flip a grade says so (hand-built table)
+    flip = [{"id": "t", "report_name": "Crop Production", "release": "2026-09-11", "crop": "corn",
+             "metric": "yield", "unit": "bu/acre", "values": {"US": {"printed": 178.5, "corrected": 181.0}},
+             "notice_date": "2026-10-23", "sources": ["u"]}]
+    led9 = {"calls": [dict(sep)]}
+    apply_corrections(led9, flip)
+    check("(d) a correction that flips a grade is flagged changed, original kept",
+          led9["calls"][0]["nass_correction"]["changed"] is True and led9["calls"][0]["outcome"] == "incorrect"
+          and "would grade correct" in led9["calls"][0]["nass_correction"]["note"])
+
     print(f"\nnowcast-direction selftest: {P} passed, {F} failed")
     return 1 if F else 0
 
@@ -422,6 +516,7 @@ def main():
         led, n = grade(ledger=led); changed += n
     if a.lock:
         led, n = lock(ledger=led); changed += n
+    changed += apply_corrections(led)
     if changed or not LEDGER.exists():
         save(led)
     else:

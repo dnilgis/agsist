@@ -194,8 +194,11 @@ def build(rows):
             y["f"] = [[int(k), v] for k, v in sorted(y["f"].items(), key=lambda kv: int(kv[0]))]
         docs[crop] = {"crop": crop, "label": label, "source": source, "note": note,
                       "reports": [[d, n] for d, n in reps],
-                      "series": [{"line": a, "unit": u} for a, u in series],
-                      "years": dict(sorted(years.items()))}
+                      "series": [{"line": a, "unit": u} for a, u in series]}
+        rn = report_notes(docs[crop])
+        if rn:
+            docs[crop]["report_notes"] = rn
+        docs[crop]["years"] = dict(sorted(years.items()))
     alld = sorted({d for c in reports.values() for d in c})
     have = {d[:7] for d in alld}
     missing = []
@@ -213,6 +216,84 @@ def build(rows):
                            "market_years": [min(d["years"]), max(d["years"])] if d["years"] else None,
                            "lines": len(d["series"])} for c, d in docs.items()}}
     return docs, index
+
+
+METRIC_LINE = {"yield": "Yield per Harvested Acre"}
+
+
+def report_notes(doc, corrections=None):
+    """USDA corrections to a figure a WASDE carried, by report date (data/usda-corrections.json).
+    The WASDE figure stays as printed: a note goes beside the report, never a new number in the
+    series. NASS corrected the Sep 11, 2026 Crop Production corn yield on Oct 23, 2026; whether the
+    September WASDE itself was reissued is not known, so its 178.5 stays."""
+    import usda_corrections as UC
+    cs = UC.load() if corrections is None else corrections
+    have = {d for d, _ in doc.get("reports") or []}
+    out = {}
+    for c in cs:
+        if c.get("crop") != doc.get("crop"):
+            continue
+        for ci in c.get("carried_in") or []:
+            if ci.get("report") != "wasde" or ci.get("release") not in have:
+                continue
+            cv = UC.view(c, ci.get("geo") or "US")
+            if not cv:
+                continue
+            y = int(ci["release"][:4])
+            if ci.get("reissued") is True:
+                tail = "USDA reissued this WASDE with the corrected figure."
+            elif ci.get("reissued") is False:
+                tail = "USDA did not reissue this WASDE; its figure is left as printed."
+            else:
+                tail = "This WASDE figure is left as printed; whether USDA reissued the WASDE is not known."
+            out.setdefault(ci["release"], []).append({
+                "id": c["id"], "market_year": "%d/%02d" % (y, (y + 1) % 100),
+                "line": METRIC_LINE.get(c.get("metric")), "printed": cv["printed"], "corrected": cv["corrected"],
+                "notice_date": cv["notice_date"], "source": cv["source"], "reissued": ci.get("reissued"),
+                "note": "USDA correction, %s: NASS corrected the %s %s %s %s behind this report to %s %s, from %s. %s"
+                        % (UC.short_date(cv["notice_date"]), UC.long_day(cv["release"]), cv["report"], cv["crop"],
+                           cv["metric"], cv["corrected"], cv["unit"], cv["printed"], tail)})
+    return dict(sorted(out.items()))
+
+
+def refresh_notes(out):
+    """Put the report notes on the files already written, without the raw rows: the notes come
+    from the corrections table, not from the reports. Same key order and bytes as a full build.
+    Returns the number of files changed."""
+    ip = os.path.join(out, "index.json")
+    with open(ip, encoding="utf-8") as f:
+        index = json.load(f)
+    changed = 0
+    for c in CROPS:
+        p = os.path.join(out, f"{c}.json")
+        if not os.path.exists(p):
+            continue
+        with open(p, encoding="utf-8") as f:
+            doc = json.load(f)
+        base = {k: v for k, v in doc.items() if k not in ("report_notes", "years", "parts")}
+        rn = report_notes(doc)
+        if rn:
+            base["report_notes"] = rn
+        base["years"] = doc.get("years", {})
+        if "parts" in doc:
+            base["parts"] = doc["parts"]
+        t = dump(base)
+        with open(p, encoding="utf-8") as f:
+            old = f.read()
+        if t != old:
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(t)
+            changed += 1
+        if c in (index.get("crops") or {}):
+            index["crops"][c]["bytes"] = len(t.encode())
+    t = json.dumps(index, indent=1, ensure_ascii=False) + "\n"
+    with open(ip, encoding="utf-8") as f:
+        if f.read() != t:
+            changed += 1
+            with open(ip, "w", encoding="utf-8") as g:
+                g.write(t)
+    print(f"wasde history: report notes refreshed, {changed} file(s) changed")
+    return changed
 
 
 def ending_stock_reports(doc):
@@ -393,6 +474,17 @@ def selftest():
             ck("a foreign file is refused", False)
         except ValueError:
             ck("a foreign file is refused", True)
+    # NASS corrected the Sep 11, 2026 corn yield the September WASDE carried: a note, not a number
+    rn = corn.get("report_notes") or {}
+    ck("a NASS correction to a figure this WASDE carried is a note beside the report",
+       [(x["id"], x["market_year"], x["line"], x["printed"], x["corrected"]) for x in rn.get("2026-09-11", [])]
+       == [("nass-crop-production-2026-09-11-corn-yield", "2026/27", "Yield per Harvested Acre", 178.5, 178.8)]
+       and "left as printed" in rn["2026-09-11"][0]["note"] and "soybeans" not in json.dumps(docs["soybeans"].get("report_notes", {})), rn)
+    with tempfile.TemporaryDirectory() as d:
+        write(*build(rows), d, 1)
+        before = {f: open(os.path.join(d, f), "rb").read() for f in os.listdir(d)}
+        ck("refreshing the notes on a full build's files changes nothing", refresh_notes(d) == 0
+           and before == {f: open(os.path.join(d, f), "rb").read() for f in os.listdir(d)})
     selftest_esmis(ck, rows)
     _ = (csv, io)
     print(f"build_wasde_history selftest: {len(fails)} failure(s)")
@@ -468,9 +560,13 @@ def main():
     ap.add_argument("--src", default=SRC)
     ap.add_argument("--out", default=OUT)
     ap.add_argument("--min-reports", type=int, default=100)
+    ap.add_argument("--notes-only", action="store_true")
     a = ap.parse_args()
     if a.selftest:
         return selftest()
+    if a.notes_only:
+        refresh_notes(a.out)
+        return 0
     rows = load(a.src)
     if not rows:
         print(f"wasde history: no extract files in {a.src}; nothing written")
