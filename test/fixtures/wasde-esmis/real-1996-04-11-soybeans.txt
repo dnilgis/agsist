@@ -1,0 +1,33 @@
+WASDE-313 - April 11, 1996
+    U.S. Soybeans and Products Supply and Use (Domestic Measure) 1/
+============================================================================
+                     :           :          :     1995/96 Projections
+       Item          :   1993/94 : 1994/95  :===============================
+                     :           :          :        March  :   April
+============================================================================
+                     :              Million acres
+Area                 :
+  Planted            :    60.1        61.7            62.6         62.6
+  Harvested          :    57.3        60.9            61.6         61.6
+                     :
+                     :               Bushels/acre
+Yield per harv.      :
+  unit               :    32.6        41.4            34.9         34.9
+                     :
+                     :              Million bushels
+                     :
+Beginning stocks     :     292         209             335          335
+Production           :   1,871       2,517           2,152        2,152
+Imports              :       6           5               5            5
+  Supply, total      :   2,170       2,731           2,492        2,492
+Crushings            :   1,276       1,405           1,370        1,360
+Exports              :     589         838             810          825
+Seed                 :      67          72              68           70
+Residual             :      29          81              44           47
+  Use, total         :   1,961       2,396           2,292        2,302
+Ending stocks        :     209         335             200          190
+Avg. price ($/bu) 2/ :    6.40        5.48       6.60 -      6.60 -
+                     :                                7.00         7.00
+                     :
+                     :              Million pounds
+
