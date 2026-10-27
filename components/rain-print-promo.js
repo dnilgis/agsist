@@ -8,6 +8,7 @@
      <p class="rp-promo" data-rain-print-promo="see" hidden></p>      "See a year of rain here as a print" (promote)
      <p class="rp-promo" data-rain-print-promo="gauge" hidden></p>    the rain gauge hook (gauge_hook)
      <p class="rp-promo" data-rain-print-promo="auto" hidden></p>     "see" or the gauge hook, by date (gauge_window)
+     <p class="rp-promo" data-rain-print-promo="land" hidden></p>     the landlord and tenant gift line (promote + window; the rent pages)
 
    Switches, in data/rain-print.json:
      "promote": true                     on since launch (2026-10-13); false hides all but "gauge"
@@ -29,7 +30,10 @@
    date; then, through Dec 24 and only while the gift flow is in the data
    (gift_card_title), "give this year's print"; otherwise year-round wording.
    The Christmas card links /gifts-for-farmers (Rain Print first, then other
-   gift ideas); the other two link /rain-print.
+   gift ideas); the other two link /rain-print. While the Christmas wording
+   runs (through the framed order-by date), the card moves up to the page's
+   empty [data-rp-card-early] marker, right under the homepage prices (Sig,
+   Oct 23); after that date it stays where the page put it.
    xmasLine() is the order-by sentence on /gifts-for-farmers, from the two
    Christmas cutoffs in data/rain-print.json: Oct 1 through Dec 25 of the
    cutoff's year only, a plain date, never a countdown.
@@ -78,6 +82,7 @@
     if (!isOn(cfg, today)) return '';
     if (mode === 'briefing') return typeof cfg.briefing_line === 'string' ? cfg.briefing_line.trim() : '';
     var by = ISO.test(cfg.framed_christmas_cutoff || '') ? cfg.framed_christmas_cutoff : cfg.promote_until;
+    if (mode === 'land') return 'For the landlord or the tenant: a year of rain on the home farm or the rented ground, printed for the wall. Order framed by ' + shortDate(by) + '.';
     return "A year of your farm's rain, as a gift. Order framed by " + shortDate(by) + '.';
   }
   // The homepage card: {angle, title, text, price} or null.
@@ -166,6 +171,10 @@
           '<span class="rp-card-i"><img src="/img/rain-print-thumb.jpg" width="360" height="240" alt="An example Rain Print from Ames, Iowa, a dry year: rain stepping up across the months, well under a usual year" loading="lazy" decoding="async"></span>' +
           '<span class="rp-card-b"><span class="rp-card-t">' + esc(c.title) + '</span><span class="rp-card-x">' + esc(c.text) + '</span>' +
           '<span class="rp-card-p">' + (c.price ? esc(c.price) + ' ' : '') + '<b>' + esc(c.cta) + ' &rarr;</b></span></span></a>';
+        if (c.angle === 'christmas') {
+          var early = doc.querySelector('[data-rp-card-early]');
+          if (early && early.parentNode) early.parentNode.insertBefore(el, early);
+        }
         el.hidden = false;
         track(el.firstChild, 'rain_print_promo_click');
         continue;

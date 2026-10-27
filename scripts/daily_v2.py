@@ -30,7 +30,11 @@ WHAT IS IN IT, top to bottom, about two phone screens:
   The board   one row per contract (Corn and Corn, Dec fold to one row when
               they are the same quote), stamped honestly: "Last trade 5:46
               a.m. CT, change from Tuesday's settle".
-  What to watch, the full-issue button, forward line, footer.
+  Forward     "Forward to a neighbor" right under Today (Sig, Oct 23: the ask
+              people see, not one under the footer).
+  What to watch, the full-issue button, footer.
+  Print of the day carries the Christmas order-by dates from
+  data/rain-print.json (xmas_line), Oct 1 through the framed cutoff only.
 Section bodies stay on the web page.
 
 THE NUMBER CHECK THAT BLOCKS (check()). A wrong number in the subject, the
@@ -512,6 +516,36 @@ def shared_host(u):
     return any(h == s or h.endswith("." + s) for s in SHARED_HOSTS)
 
 
+MON3 = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+def xmas_line(today=None, cfg=None):
+    """The Christmas order-by sentence for the Print of the day block, or "".
+
+    From data/rain-print.json (the same two cutoffs /rain-print and
+    /gifts-for-farmers print, never typed here): shown from Oct 1 of the
+    cutoffs' year through framed_christmas_cutoff (Dec 9 in 2026), and gone the
+    day after. A date that cannot be read means no line. Never a countdown."""
+    if cfg is None:
+        try:
+            with open(BE.RAIN_PRINT_JSON, encoding="utf-8") as f:
+                cfg = json.load(f)
+        except Exception:
+            return ""
+    pc, fc = str((cfg or {}).get("print_christmas_cutoff") or ""), str((cfg or {}).get("framed_christmas_cutoff") or "")
+    try:
+        p, fr = date.fromisoformat(pc), date.fromisoformat(fc)
+    except ValueError:
+        return ""
+    t = today if isinstance(today, date) else BE._chicago_today(today)
+    if p.year != fr.year or t < date(fr.year, 10, 1) or t > fr:
+        return ""
+    md = lambda d: "%s %d" % (MON3[d.month - 1], d.day)
+    if p >= fr:
+        return "For Christmas delivery, order a framed print by %s, a print by %s." % (md(fr), md(p))
+    return "For Christmas delivery, order a print by %s, a framed print by %s." % (md(p), md(fr))
+
+
 def _a(url, text, camp=None, content=None, cls="link", color=GOLD):
     u = BE.utm(url, content, camp) if content else url
     return '<a class="%s" href="%s" style="color:%s">%s</a>' % (cls, BE._href(e(u) if "&amp;" not in u else u), color, e(text))
@@ -621,6 +655,9 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
         tail = (" " + _a(x["url"], x.get("link") or "More", camp, "today-" + x["kind"])) if x.get("url") else ""
         b.append(_row('<span class="gold" style="color:%s">&bull;</span>&nbsp;&nbsp;%s%s' % (GOLD, e(x["text"]), tail),
                       pad="4px 0 0", size=16))
+    if forward_url:
+        b.append('<tr><td class="mute" style="padding:10px 0 0;font-family:%s;font-size:14px;line-height:1.5;color:%s">Forward to a neighbor. '
+                 'Or send them the free sign-up link: %s</td></tr>' % (SANS, MUTE, _a(forward_url, forward_url.split("://", 1)[-1], camp, "forward")))
     # the reader's own bids
     if isinstance(local, dict) and local.get("head"):
         det = ""   # the delivery and basis detail stays on the web page
@@ -650,6 +687,9 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
         if offer and isinstance(rain, dict) and rain.get("zip"):
             own = " &middot; " + _a(offer[1], "Yours near %s" % (rain.get("town") or "you"), camp, "rainprint")
         b.append(_row('<strong>%s</strong>%s' % (_a(make, "Make yours →", None), own), pad="6px 0 0", size=15))
+        xl = xmas_line(today)
+        if xl:
+            b.append('<tr><td class="mute" style="padding:3px 0 0;font-family:%s;font-size:13px;line-height:1.45;color:%s">%s</td></tr>' % (SANS, MUTE, e(xl)))
     elif offer:
         b.append(_row(_a(offer[1], offer[0], camp, "rainprint", cls="link"), pad="14px 0 0", size=14))
     # I never knew that
@@ -687,9 +727,6 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
     if isinstance(local, dict) and local.get("ask_url"):
         b.append('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:14px;line-height:1.5;color:%s">%s to get your top bid at the top of this email.</td></tr>'
                  % (SANS, MUTE, _a(local["ask_url"], "Add your ZIP", camp, "zip")))
-    if forward_url:
-        b.append('<tr><td class="mute" style="padding:10px 0 0;font-family:%s;font-size:14px;line-height:1.5;color:%s">Forward to a neighbor. '
-                 'Or send them the free sign-up link: %s</td></tr>' % (SANS, MUTE, _a(forward_url, forward_url.split("://", 1)[-1], camp, "forward")))
     foot = 'AGSIST &middot; free US farm markets &middot; %s' % _a("https://agsist.com/", "agsist.com", camp, "footer", cls="mute link", color=MUTE)
     add = BE.elevators_add_url(elevators)
     if add:
@@ -719,6 +756,8 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
     L = ["AGSIST DAILY, " + (BE.strip_md(daily.get("date")) or iso), "", "TODAY"]
     for x in items:
         L.append("- " + x["text"] + ((" " + BE.utm(x["url"], "today-" + x["kind"], camp)) if x.get("url") else ""))
+    if forward_url:
+        L += ["", "Forward to a neighbor. Or send them the free sign-up link: " + BE.utm(forward_url, "forward", camp)]
     if isinstance(local, dict) and local.get("head"):
         L += ["", local["head"]] + (["  " + local["note"]] if local.get("note") else [])
     if isinstance(elevators, dict):
@@ -729,6 +768,8 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
         L += ["", "PRINT OF THE DAY", pod["why"], "Make yours: " + BE.utm(SITE + pod["make_url"], "print-make", camp)]
         if offer and isinstance(rain, dict) and rain.get("zip"):
             L.append("Yours near %s: %s" % (rain.get("town") or "you", BE.utm(offer[1], "rainprint", camp)))
+        if xmas_line(today):
+            L.append(xmas_line(today))
     elif offer:
         L += ["", offer[0] + " " + BE.utm(offer[1], "rainprint", camp)]
     if fact:
@@ -749,8 +790,6 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
     L += ["", "The full issue and charts: " + BE.utm(BE._unamp(site_href), "button", camp)]
     if isinstance(local, dict) and local.get("ask_url"):
         L += ["", "Add your ZIP to get your top bid at the top of this email: " + BE.utm(local["ask_url"], "zip", camp)]
-    if forward_url:
-        L += ["", "Forward to a neighbor. Or send them the free sign-up link: " + BE.utm(forward_url, "forward", camp)]
     L += ["", "AGSIST, free US farm markets, agsist.com"]
     if BE.elevators_add_url(elevators):
         L.append(BE.ELEVATOR_ADD_WORDS + ": " + BE.elevators_add_url(elevators))
@@ -863,6 +902,10 @@ def _selftest():
     ok(clip("USDA to pay farmers $8 billion for harvest fuel aid; diesel at a record") == "USDA to pay farmers $8 billion for harvest fuel aid", "clip at a clause")
     ok(len(clip("A" * 80)) <= SUBJECT_HARD, "hard cap")
     ok(shared_host("https://agsist-subs.dnilgis.workers.dev/u?k=1") and shared_host("https://agsist-api.dnilgis.workers.dev/u?k=1") and not shared_host("https://agsist.com/e?k=1"), "shared hosts")
+    cf = {"print_christmas_cutoff": "2026-12-10", "framed_christmas_cutoff": "2026-12-09"}
+    ok(xmas_line(date(2026, 10, 23), cf) == "For Christmas delivery, order a framed print by Dec 9, a print by Dec 10.", "xmas line in the window")
+    ok(xmas_line(date(2026, 12, 9), cf) and not xmas_line(date(2026, 12, 10), cf) and not xmas_line(date(2026, 9, 30), cf), "xmas line through Dec 9 only")
+    ok(not xmas_line(date(2026, 10, 23), {"print_christmas_cutoff": "x", "framed_christmas_cutoff": "2026-12-09"}), "no line on a bad date")
     print("daily_v2 selftest " + ("FAILED" if fails else "ok"))
     return 1 if fails else 0
 
