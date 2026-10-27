@@ -269,6 +269,15 @@ def settle(ledger, folded, live, eid, today, record=True):
     return eid
 
 
+def note_moved(ledger, rid, key):
+    """A key that held retired id rid now holds its survivor: written on the retirement (keys), once, so a later
+    build can tell which of a survivor's keys were the retired board's own (scripts/build_basis_join.py stitches
+    their basis histories on this, never on a name)."""
+    r = (ledger.get("retired") or {}).get(rid)
+    if r is not None and key not in (r.get("keys") or []):
+        r["keys"] = sorted(set(r.get("keys") or []) | {key})
+
+
 def place_str(fac, branch, city, st):
     return "|".join(clean(x) for x in (fac, branch or "", city, st))
 
@@ -427,6 +436,8 @@ def assign(anchors, keys, ledger, today, folded=None):
             for k in ks:
                 held[k] = now
                 rules["retired" if now != (tgt or old) else "kept"] += 1
+                if now != (tgt or old):
+                    note_moved(ledger, tgt or old, k)
                 e = fresh[k][0]
                 if e and e != now and fresh[k][1] == "elevId":
                     rules["elevId_differs"] += 1     # the ledger's id wins (rule 1); counted, never moved
@@ -480,6 +491,7 @@ def assign(anchors, keys, ledger, today, folded=None):
     for k, v in list(ledger["keys"].items()):
         if k not in held and isinstance(v, str) and v in ledger.get("retired", {}):
             ledger["keys"][k] = settle(ledger, folded, live, v, today)
+            note_moved(ledger, v, k)
     # a key held by a bids-repo id from an earlier build is settled; only open ones are listed
     ambiguous = [a for a in ambiguous if held[a["key"]] in ledger["minted"]]
     out = defaultdict(list)
@@ -763,7 +775,8 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
     ledger["note"] = ("Which id each key holds. A key keeps its id; ids are never renumbered or reused. minted: AGSIST ids "
                       "(a + 5 digits) with the key that first held each; into: merged into a bids-repo elevId. events: every "
                       "merge and split. retired: bids-repo ids the bids repo folded into another row (into), never used again; "
-                      "their keys hold the survivor. Rules: scripts/build_ids.py.")
+                      "their keys hold the survivor; keys: the keys that held it when it was retired (the Oct 27 2026 retirements "
+                      "filled from this ledger as it stood before them, commit 3dd4c29b39d). Rules: scripts/build_ids.py.")
     ledger["retired"] = dict(sorted((ledger.get("retired") or {}).items()))
     write_json(lpath, {k: ledger[k] for k in ("schema", "note", "next", "minted", "retired", "events", "keys")})
     write_json(os.path.join(out_dir, "ambiguous.json"),
@@ -933,6 +946,8 @@ def selftest():
            and led["retired"].get("e8921vvzs3", {}).get("into") == "e7pqw0z5m3"
            and led["keys"]["basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|ROGGEN"] == "e7pqw0z5m3")
         ck("the retirement is one event, written once", sum(1 for e in led["events"] if e.get("retire") == "e8921vvzs3") == 1)
+        ck("the retirement records the keys that held the retired id",
+           led["retired"]["e8921vvzs3"].get("keys") == ["basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|ROGGEN"])
         d7 = build(root, bdir, sch, out, "2026-10-28", do_parcels=False, log=lambda *_: None)
         led7 = read_json(os.path.join(out, "elevator-ids.json"))
         ck("a rerun keeps the retirement and adds no event", led7["retired"] == led["retired"]
