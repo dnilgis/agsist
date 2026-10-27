@@ -16,6 +16,7 @@ Usage:
     python scripts/rebuild_archive_html.py --stamp-only  # only the line under the quote strip
     python scripts/rebuild_archive_html.py --byline-only # only the byline (reply address)
     python scripts/rebuild_archive_html.py --text-only 2026-10-16  # only what an archive JSON edit changed
+    python scripts/rebuild_archive_html.py --text-only --base=HEAD~1 2026-10-16  # JSON already committed
 
 --byline-only does the same for the one <div class="dv3-byline"> line (the
 reply address under each issue, changed 2026-10-22 to sig@agsist.com).
@@ -78,37 +79,51 @@ def swap_stamp(old_html: str, new_html: str, rx=STAMP_RE):
     return old_html.replace(a[0], b[0], 1)
 
 
-def patch_text(published: str, old_render: str, new_render: str, ctx: int = 60):
+_TOKEN_RE = re.compile(r"<[^>]*>|[^<\s]+|\s+")
+
+
+def patch_text(published: str, old_render: str, new_render: str, ctx: int = 12):
     """published with every span where new_render differs from old_render
-    applied. Each change is placed by its old text plus up to ctx characters of
-    rendered text on each side, which must occur exactly once in published.
-    None when any change cannot be placed that way."""
+    applied. Renders are compared as tags, words and spaces. Each change is
+    placed by its old text plus rendered text on each side (up to ctx tokens a
+    side, fewer when the template around it has moved on), and that anchor must
+    occur exactly once in published. None when any change cannot be placed."""
     import difflib
-    sm = difflib.SequenceMatcher(None, old_render, new_render, autojunk=False)
-    ops = [op for op in sm.get_opcodes() if op[0] != "equal"]
-    # merge changes closer than ctx so one anchor covers both
+    ot, nt = _TOKEN_RE.findall(old_render), _TOKEN_RE.findall(new_render)
+    sm = difflib.SequenceMatcher(None, ot, nt, autojunk=False)
     groups = []
-    for tag, i1, i2, j1, j2 in ops:
-        if groups and i1 - groups[-1][1] < ctx:
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        if tag == "equal":
+            continue
+        if groups and i1 - groups[-1][1] <= 4:  # a few shared words apart: one change
             groups[-1] = [groups[-1][0], i2, groups[-1][2], j2]
         else:
             groups.append([i1, i2, j1, j2])
     out = published
     for i1, i2, j1, j2 in groups:
-        a, b = max(0, i1 - ctx), min(len(old_render), i2 + ctx)
-        old_seg = old_render[a:b]
-        new_seg = old_render[a:i1] + new_render[j1:j2] + old_render[i2:b]
-        if out.count(old_seg) != 1:
+        old_mid, new_mid = "".join(ot[i1:i2]), "".join(nt[j1:j2])
+        placed = False
+        for kl, kr in sorted(((l, r) for l in range(ctx + 1) for r in range(ctx + 1) if l + r >= 2),
+                             key=lambda lr: -(lr[0] + lr[1])):
+            left, right = "".join(ot[max(0, i1 - kl):i1]), "".join(ot[i2:i2 + kr])
+            anchor = left + old_mid + right
+            # a pure insert needs real text on both sides to know where it goes
+            if not old_mid and (not left.strip() or not right.strip()):
+                continue
+            if out.count(anchor) == 1:
+                out = out.replace(anchor, left + new_mid + right, 1)
+                placed = True
+                break
+        if not placed:
             return None
-        out = out.replace(old_seg, new_seg, 1)
     return out
 
 
-def _committed_json(json_path: Path):
+def _committed_json(json_path: Path, base: str = "HEAD"):
     import subprocess
     rel = json_path.resolve().relative_to(REPO_ROOT)
     try:
-        raw = subprocess.run(["git", "-C", str(REPO_ROOT), "show", f"HEAD:{rel.as_posix()}"],
+        raw = subprocess.run(["git", "-C", str(REPO_ROOT), "show", f"{base}:{rel.as_posix()}"],
                              capture_output=True, text=True, check=True).stdout
         return json.loads(raw)
     except (subprocess.CalledProcessError, json.JSONDecodeError):
@@ -116,7 +131,8 @@ def _committed_json(json_path: Path):
 
 
 def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False,
-                byline_only: bool = False, text_only: bool = False) -> bool:
+                byline_only: bool = False, text_only: bool = False,
+                base: str = "HEAD") -> bool:
     json_path = ARCHIVE_JSON_DIR / f"{date_iso}.json"
     html_path = ARCHIVE_HTML_DIR / f"{date_iso}.html"
 
@@ -144,7 +160,7 @@ def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False,
     html = generate_archive_html(briefing, date_iso, prev_d, next_d,
                                  og_require_file=True)
     if text_only:
-        old_json = _committed_json(json_path)
+        old_json = _committed_json(json_path, base)
         if old_json is None or not html_path.exists():
             print(f"  [skip] {date_iso}: no committed JSON or no published page")
             return False
@@ -204,6 +220,8 @@ def main():
     stamp_only = "--stamp-only" in sys.argv
     byline_only = "--byline-only" in sys.argv
     text_only = "--text-only" in sys.argv
+    # --base=<ref>: the commit whose JSON the published page was made from (default HEAD)
+    base = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--base=")), "HEAD")
     explicit_dates = [a for a in sys.argv[1:] if not a.startswith("-")]
 
     if explicit_dates:
@@ -223,7 +241,7 @@ def main():
     ok = 0
     for date_iso in targets:
         if rebuild_one(date_iso, dry_run=dry_run, stamp_only=stamp_only, byline_only=byline_only,
-                       text_only=text_only):
+                       text_only=text_only, base=base):
             ok += 1
 
     print(f"=== Done: {ok}/{len(targets)} {'would be rebuilt' if dry_run else 'rebuilt'} ===")
