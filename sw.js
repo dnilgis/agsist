@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 267;  // v267 2026-10-27: fx/fsbackup (past fx/landsales 266, which ships first). Field Scout backup and restore (field-scout-backup.js, field-scout.js, field-scout-extras.js, field-scout.css), loader CV 97.
+var CACHE_VERSION = 268;  // v268 2026-10-27: fx/shelldiet. Shell diet: comments out of loader.js, styles.css, states.css, states.js, sponsor-metrics.js, header.html and footer.html (code unchanged, so no ?v= moves for them); signup-ask.js loads on the first scroll, tap or key or when the page is idle, except on pages with their own ask; loader CV 98.
+// v267 2026-10-27: fx/fsbackup (past fx/landsales 266, which ships first). Field Scout backup and restore (field-scout-backup.js, field-scout.js, field-scout-extras.js, field-scout.css), loader CV 97.
 // v266 2026-10-27: fx/landsales (past main 265, fx/batch-oct27). Farm sale pages (/land-sales/), components/land-sales.js?v=1 and land-sales.css?v=1, land-alert.js?v=2, loader CV 96.
 // v265 2026-10-27: fx/batch-oct27 (past 264 on main, fx/landalert). Daily claim guards (#88), trust wording on price delay, grading, privacy, ARC/PLC and cash bids (#89; arc-plc.js and arc-plc-math.js v15, cash-bids.js v13, home-yield.js v10, lrp.js v5), accuracy fixes: soybean board rounding, Cadott phone, Rain Print delivery follows the picked year, USDA calendar gaps (#90; rain-print.js v84, rain-county-print.js v40, here.js v26), Send to AGSIST on the elevator desk (#91; paste-bids.js v2).
 // v264 2026-10-27: fx/landalert (renumbered past main's 263 at the Oct 27 merge; was 252). The monthly land sale email ask (components/land-alert.js?v=1, loaded by loader.js on Field Scout, the comp report, Fast Facts and the Atlas county pages; loader CV 95).

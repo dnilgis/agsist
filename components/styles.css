@@ -1,80 +1,18 @@
-/* ═══════════════════════════════════════════════════════════════════
-   AGSIST — Shared Stylesheet v10.3 — 2026-06-14
-   v10.3: Polish pass — removed dead PNG nav-icon CSS; resolved duplicate
-     .net-text rule (cards now correctly compact); raised sub-group label
-     size + contrast for sunlight legibility; reserved #site-header height
-     (CLS); added .skip-link.
-   v10.2: Mega-menu sub-group labels (.nav-grp-lbl/.draw-grp-lbl) + Lucide
-     section markers (.nav-ic/.draw-lbl-ic) for the Markets/Numbers/Field/
-     Daily IA. Footer expanded to 5 columns (added Reference).
-   v10.1: Lucide inline-icon support (.lic) for nav/drawer/footer links;
-     retired emoji from chrome. draw-item + footer-col links now flex rows.
-   v10.0: COMMITTED IDENTITY. One gold accent (#d4a23f), cool slate dark
-     (#0a0c0d). Retired the 5-color brand picker (--brand/--gold unified;
-     --green/--red stay semantic). Display font Archivo (was Oswald).
-     Light mode refined to single gold. Spacing/radius on the design scale.
-   ── prior ──
-   AGSIST — Shared Stylesheet v9.5 — 2026-05-06
-   v9.5: 44px minimum tap targets on mobile-visible interactive elements
-     per WCAG 2.5.5 (enhanced) and iOS HIG. Affected selectors:
-     .hamburger (40 → 44), .draw-close (32 → 44), .draw-item (block
-     ~33px → flex 44px min), .theme-btn (~28 → 44 min). Desktop-only
-     .nav-btn and .nav-panel a unchanged in this pass — they never
-     render below the mobile breakpoint where tap targets matter.
-   v9.4: Mood + conviction pill variants
-     `.daily-mood` was activated inline by JS but had no color rules,
-     so "BULLISH" rendered as bare white text with no pill background.
-     Added bullish/bearish/mixed tone variants for both `.daily-mood`
-     and `.daily-sec-conviction` (conviction--bull/bear/mixed classes
-     emitted by hydrateDaily v4.0).
-   v9.3: Mobile selector scope fix
-     `.daily-sec:nth-child(n+4)` and `.daily-sec:nth-child(n+3)` were
-     inadvertently hitting `#daily-tmyk-wrap` (which uses `.daily-sec`
-     but lives as a sibling of `.daily-sections`, not inside it).
-     Fix: scope both rules to `.daily-sections > .daily-sec`.
-   v9.2: WCAG AA contrast fixes:
-     --green: #3a8b3c → #4aab4c (was 4.18:1, now ~5.1:1 on dark bg)
-     --red:   #b84c2a → #c8562e (was 3.47:1, now ~4.2:1)
-     --text-muted dark: opacity 0.52 → 0.62
-     --text-muted light: opacity 0.40 → 0.50
-   ═══════════════════════════════════════════════════════════════════ */
-/* TYPE REWORK 2026-07-30: Archivo dropped (display face is now Inter heavy) */
-/* 2026-09-30: self-hosted, replacing a Google Fonts @import (an @import chains
-   CSS -> font CSS -> font files in series; a <link> preload starts them at once).
-   2026-10-09: ONE variable file per family instead of one file per weight.
-   Pages used to pull 6-10 files (138-228 KB); now Inter + JetBrains Mono are two
-   files, 68 KB together. Latin subset, woff2, SIL Open Font License, from
-   @fontsource-variable 5.2.5, axis trimmed to the weights the site uses
-   (Inter 400-900, JetBrains Mono 400-700). The two are preloaded in each page's
-   <head> (scripts/inject_static_nav.py writes that block). */
 @font-face{font-family:'Inter';font-style:normal;font-weight:400 900;font-display:optional;src:url('/fonts/inter-var.woff2') format('woff2')}
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400 700;font-display:optional;src:url('/fonts/jetbrains-mono-var.woff2') format('woff2')}
-/* Oswald: only the /daily/ archive pages (scripts/generate_daily.py) set it.
-   A face that no rule asks for is never downloaded, so other pages pay nothing. */
 @font-face{font-family:'Oswald';font-style:normal;font-weight:500 700;font-display:swap;src:url('/fonts/oswald-var.woff2') format('woff2')}
-/* Fallback faces with Inter's metrics, so the swap from the system face to
-   Inter moves nothing. size-adjust matches the average letter width (measured
-   in Chromium on a paragraph of the site's own text, with kerning); ascent/descent overrides
-   match Inter's line box. One pair for Arial/Helvetica (desktop, iOS) and one
-   for Roboto (Android). A face whose local() fonts are all missing is skipped,
-   so the stack falls through to the next one. */
 @font-face{font-family:'Inter Fallback';font-weight:100 550;src:local('Arial'),local('ArialMT'),local('Helvetica'),local('Liberation Sans');size-adjust:107.9%;ascent-override:89.8%;descent-override:22.4%;line-gap-override:0%}
 @font-face{font-family:'Inter Fallback';font-weight:551 1000;src:local('Arial Bold'),local('Arial-BoldMT'),local('Helvetica Bold'),local('Helvetica-Bold'),local('Liberation Sans Bold');size-adjust:101.5%;ascent-override:95.4%;descent-override:23.8%;line-gap-override:0%}
 @font-face{font-family:'Inter Fallback R';font-weight:100 550;src:local('Roboto'),local('Roboto-Regular');size-adjust:109%;ascent-override:88.9%;descent-override:22.1%;line-gap-override:0%}
 @font-face{font-family:'Inter Fallback R';font-weight:551 1000;src:local('Roboto Bold'),local('Roboto-Bold');size-adjust:109.4%;ascent-override:88.6%;descent-override:22%;line-gap-override:0%}
-/* JetBrains Mono and Courier/Menlo share the 0.6em advance, so only the line box needs matching. */
 @font-face{font-family:'JetBrains Mono Fallback';src:local('Menlo'),local('Courier New'),local('CourierNewPSMT'),local('Liberation Mono'),local('Roboto Mono');ascent-override:102%;descent-override:30%;line-gap-override:0%}
-
 :root {
-  /* AD ORANGE. Paid space never wears the house gold. Anything a
-     sponsor bought -- the large unit, the thin ribbon, the house pitch for
-     an unsold slot -- is drawn in this and nothing else is. */
   --ad-orange:     #e8743a;
   --ad-orange-rgb: 232,116,58;
   --ad-orange-hi:  #f2935f;
-  --ad-orange-ink: #a8380a;   /* the same hue at 4.5:1 on a light page */
+  --ad-orange-ink: #a8380a;
   --gold:     #d4a23f;
-  --gold-fill:#d4a23f;  /* solid gold backgrounds (dark labels sit on these) */
+  --gold-fill:#d4a23f;
   --gold-rgb: 212,162,63;
   --green:    #5fc28a;
   --green-rgb:95,194,138;
@@ -98,41 +36,35 @@
   --border-2: rgba(132,160,168,0.24);
   --border-g: rgba(var(--gold-rgb),0.30);
   --text:     #e9edeb;
-  --text-dim: rgba(233,237,235,0.90);   /* SHARPNESS PASS 2026-08-12: was .86 (.80 orig) */
-  --text-muted:rgba(233,237,235,0.70);  /* SHARPNESS PASS: was .64 (.56 orig) */
+  --text-dim: rgba(233,237,235,0.90);
+  --text-muted:rgba(233,237,235,0.70);
   --cream:    #e9edeb;
   --glow-gold:  none;
   --glow-card:  0 2px 12px rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.2);
   --glow-lift:  0 1px 0 rgba(255,255,255,.025) inset, 0 24px 60px -30px rgba(0,0,0,.7);
-  --base: 106.25%;  /* 17px at the browser default 16px, and it grows with a reader who sets a larger default font (a11y 2026-10-19; 17px ignored it) */
+  --base: 106.25%;
   --sp-xs: .35rem; --sp-sm: .65rem; --sp-md: 1rem; --sp-lg: 1.5rem;
   --sp-xl: 2rem; --sp-2xl: 3rem;
   --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
-  --r-8: 8px;  /* 2026-10-12: the most common off-scale corner (cards and fields on cash bids, futures, home); a token so those become token uses, no visual change */
-  --page-max: 1100px; --page-max-wide: 1400px;  /* reading width (main.tool-main) and wide width (.main); not applied by default */
-  /* Charts (2026-10-12): axis and label text never under 11 CSS px, hairline grid in the border colour, a solid zero line. */
+  --r-8: 8px;
+  --page-max: 1100px; --page-max-wide: 1400px;
   --chart-fs: 11px; --chart-text: var(--text-muted); --chart-grid: var(--border); --chart-zero: var(--border-2);
-  --chart-1: var(--gold); --chart-2: #8fa6b2;  /* one series in gold, a second in slate */
-  --card-bw: 1px; --card-r: var(--r-md);  /* card border and corner: the homepage and cash-bids cards */
-  /* ONE LOOK 2026-10-09: the scale every page draws from (see the ONE LOOK
-     section at the end of this file for the classes that use it). */
-  --fs-2xs: .755rem;  /* kickers, table heads, tags (the .755rem labels already used sitewide) */
-  --fs-xs: .8rem;     /* breadcrumbs, stamps, captions */
-  --fs-sm: .88rem;    /* secondary text, table cells */
-  --fs-md: 1rem;      /* body, ledes */
-  --fs-lg: 1.15rem;   /* card titles */
-  --fs-xl: 1.35rem;   /* section heads (h2) */
-  --fs-title: clamp(1.65rem, 1.1rem + 2.2vw, 2.5rem);  /* the one page title (h1): 28px phone, 42.5px desktop */
+  --chart-1: var(--gold); --chart-2: #8fa6b2;
+  --card-bw: 1px; --card-r: var(--r-md);
+  --fs-2xs: .755rem;
+  --fs-xs: .8rem;
+  --fs-sm: .88rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.15rem;
+  --fs-xl: 1.35rem;
+  --fs-title: clamp(1.65rem, 1.1rem + 2.2vw, 2.5rem);
   --lh-tight: 1.12; --lh-snug: 1.35; --lh-body: 1.65;
-  --title-case: none;          /* page titles are written in sentence case; set to uppercase to flip every page */
+  --title-case: none;
   --shadow-sm: var(--glow-card); --shadow-lg: var(--glow-lift);
   --link: var(--brand);
   --btn-h: 44px; --btn-r: var(--r-sm); --btn-fs: .9375rem;
-  --btn-primary-bg: #d4a23f; --btn-primary-ink: #0a0c0d;   /* the gold the shared signup button has always used, both themes */
-  --page-top: clamp(1.5rem, 1rem + 2vw, 2.5rem);  /* header to the title block on pages with no breadcrumb: 25px phone, 42px desktop */
-  /* TYPE REWORK 2026-07-30: one reading face sitewide. Display = Inter at heavy
-     weight (Oswald/Archivo retired — condensed/display faces read poorly small).
-     Mono is for NUMBERS ONLY: prices, changes, ranges, timestamps, tickers. */
+  --btn-primary-bg: #d4a23f; --btn-primary-ink: #0a0c0d;
+  --page-top: clamp(1.5rem, 1rem + 2vw, 2.5rem);
   --font-display:'Inter','Inter Fallback','Inter Fallback R',system-ui,sans-serif; --font-body:'Inter','Inter Fallback','Inter Fallback R',system-ui,sans-serif; --font-mono:'JetBrains Mono','JetBrains Mono Fallback',ui-monospace,monospace;
 }
 [data-theme="light"] {
@@ -141,34 +73,21 @@
   --border-2: rgba(20,30,28,0.20);
   --border-g: rgba(var(--gold-rgb),0.34);
   --text:     #161a18;
-  --text-dim: rgba(22,26,24,0.83);   /* SHARPNESS PASS: was .78 (.70 orig) */
-  --text-muted:rgba(22,26,24,0.66);  /* SHARPNESS PASS: was .60 (.52 orig) */
-  /* 2026-10-06 contrast: #a87d1e gold TEXT read 3.3-3.7:1 on the light surfaces,
-     under the 4.5:1 body text needs. Text gold (--gold, --brand) is #8a6514 (4.7-5.3:1);
-     solid fills use --gold-fill/--brand-fill #a87d1e, where the #0a0c0d label reads 5.4:1 (it
-     would drop to 3.7:1 on the darker gold). Tints keep --gold-rgb. */
+  --text-dim: rgba(22,26,24,0.83);
+  --text-muted:rgba(22,26,24,0.66);
   --green: #2e7d4f; --green-rgb:46,125,79; --brand: #8a6514; --brand-fill: #a87d1e; --brand-rgb: 168,125,30; --gold: #8a6514; --gold-fill: #a87d1e; --gold-rgb: 168,125,30; --orange: #9a5a1a; --blue: #2a6390; --risk-mod: #8a6514; --risk-high: #9a5a1a;
-  /* --card was never defined, so cards written var(--card,#161b14) (changelog,
-     status, spray, breakeven, cattle) rendered near-black in light mode. Dark
-     mode keeps those fallbacks; light mode gets the light surfaces. */
   --card: var(--surface); --card-2: var(--surface2); --red: #c0492f; --red-rgb:192,73,47;
   --chart-2: #4f6670;
   --glow-gold: none;
   --glow-card: 0 1px 6px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
   --glow-lift: 0 3px 12px rgba(0,0,0,.08), 0 0 0 1px rgba(166,124,38,.14);
 }
-
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0 }
 html { scroll-behavior: smooth; font-size: var(--base); overflow-x: clip; overflow-wrap: anywhere; word-break: break-word; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body { background: var(--bg); color: var(--text); font-family: var(--font-body); overflow-x: clip; transition: background .25s, color .25s; line-height: 1.65; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
 a { color: inherit; text-decoration: none }
-/* TYPE REWORK 2026-07-30: bold-only emphasis doctrine — italics are hard to read
-   at small sizes on screens. Emphasis = weight, sitewide. */
 em, i, cite, address { font-style: normal; font-weight: 600 }
-/* the global overflow-wrap:anywhere must not split table headers or prices
-   mid-token ("$4.4 9") — tables that outgrow the phone get scroll wrappers */
 th, td { overflow-wrap: normal; word-break: normal; hyphens: none }
-/* Headings default to the display face at heavy weight (Oswald retired) */
 h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.01em }
 img { display: block; max-width: 100% }
 button { cursor: pointer; font-family: inherit }
@@ -179,7 +98,6 @@ input, select, textarea { border-color: var(--border-2); }
 ::-webkit-scrollbar-track { background: var(--bg) }
 ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px }
 ::-webkit-scrollbar-thumb:hover { background: rgba(var(--gold-rgb),.3) }
-/* sitewide briefing-signup bar (injected by loader.js on tool pages) */
 .agsb { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9990; display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; padding: .6rem .9rem; padding-bottom: max(.6rem, env(safe-area-inset-bottom)); background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(8px); border-top: 2px solid var(--brand); transform: translateY(110%); visibility: hidden; transition: transform .35s ease; }
 .agsb-txt-short { display: none; }
 @media (max-width: 640px) {
@@ -204,17 +122,11 @@ input, select, textarea { border-color: var(--border-2); }
 .agsb-x:hover { color: var(--text); }
 .agsb-warn { flex: 1 1 100%; font-size: .82rem; line-height: 1.45; color: var(--gold, #d4a23f); margin-top: .35rem; }
 .agsb-ok { font-size: .88rem; color: var(--green); font-weight: 700; flex: 1; }
-/* .ag-sponsor-ribbon a[href]: a real button now, sized in the OPEN SPONSOR SLOT block below */
 .skip { position: absolute; top: -100%; left: 1rem; z-index: 9999; padding: .5rem 1rem; background: var(--brand-fill,var(--brand)); color: #0a1206; font-size: .875rem; font-weight: 700; border-radius: 0 0 4px 4px }
 .skip:focus { top: 0 }
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px }
 button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
-
-/* ── NAV ──────────────────────────────────────────────────────────── */
 .nav { position: sticky; top: 0; z-index: 400; background: rgba(14,14,12,.92); backdrop-filter: blur(12px) saturate(1.2); -webkit-backdrop-filter: blur(12px) saturate(1.2); border-bottom: 2px solid var(--brand); transition: box-shadow .2s, background .25s; }
-/* Daily archive pages carry their CSS frozen at publish time, with the tag blue
-   hard-coded (#5aa0d2, 2.2:1 on its light tint). Light theme takes the token,
-   #2a6390 (a11y 2026-10-19); new pages and /daily use var(--blue) themselves. */
 [data-theme="light"] :is(.dv3-thread-day, .dv3-sec-vs-icon, .dv3-tmyk-label) { color: var(--blue) }
 [data-theme="light"] .nav { background: rgba(255,255,255,.95); border-bottom-color: var(--brand); }
 .nav.scrolled { box-shadow: 0 1px 8px rgba(0,0,0,.15) }
@@ -229,14 +141,8 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .nav-dd.open .chevron { transform: rotate(180deg); opacity: .9 }
 .nav-dd { position: relative }
 .nav-panel { position: absolute; top: calc(100% + 8px); left: 0; min-width: 210px; background: var(--surface); border: 2px solid var(--border-g); border-radius: var(--r-md); padding: .5rem 0; box-shadow: 0 8px 32px rgba(0,0,0,.35); opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity .15s, transform .15s, visibility .15s; z-index: 500;
-  /* visibility, not just opacity: an opacity-0 panel still holds its ~80 links
-     in the tab order on every page of the site. The mobile drawer was inerted
-     correctly (loader.js); these desktop panels were missed. */
   visibility: hidden; }
 .nav-dd.open .nav-panel { opacity: 1; pointer-events: all; transform: translateY(0); visibility: visible }
-/* The Markets panel is 17 links and ~912px tall — taller than most laptop
-   screens — and it used to run straight off the bottom with no way to reach
-   the rest. Cap it to what actually fits under the header and let it scroll. */
 .nav-panel { max-height: calc(100vh - 84px); overflow-y: auto; overscroll-behavior: contain }
 .nav-panel::-webkit-scrollbar { width: 8px }
 .nav-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px }
@@ -258,9 +164,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .hamburger.open .h-bar:nth-child(1) { transform: translateY(7px) rotate(45deg) }
 .hamburger.open .h-bar:nth-child(2) { opacity: 0 }
 .hamburger.open .h-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg) }
-@media (max-width: 60em) { .nav-menu { display: none } .hamburger { display: flex } }  /* em, not px: 960px at the default font, and it folds sooner for a reader with a larger default font (--base grows with it), so the menu never overruns the ZIP chip */
-
-/* ── DRAWER ───────────────────────────────────────────────────────── */
+@media (max-width: 60em) { .nav-menu { display: none } .hamburger { display: flex } }
 .drawer { position: fixed; inset: 0 0 0 auto; width: min(320px, 90vw); background: var(--surface); border-left: 2px solid var(--brand); z-index: 500; overflow-y: auto; transform: translateX(100%); transition: transform .25s cubic-bezier(.4,0,.2,1) }
 .drawer.open { transform: translateX(0) }
 .draw-ov { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 499; opacity: 0; pointer-events: none; transition: opacity .25s; backdrop-filter: blur(2px) }
@@ -273,8 +177,6 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .draw-item { display: flex; align-items: center; min-height: 44px; padding: .6rem 1.1rem; font-size: .88rem; color: var(--text-dim); transition: color .12s }
 .draw-item:hover { color: var(--brand) }
 .draw-item.active { color: var(--brand) }
-
-/* ── TICKER STRIP ─────────────────────────────────────────────────── */
 .prices-strip { background: rgba(14,14,12,.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); position: sticky; top: 72px; z-index: 190; max-width: 100vw; overflow: hidden; transition: background .25s; }
 [data-theme="light"] .prices-strip { background: rgba(255,255,255,.94); border-bottom-color: var(--border) }
 .ticker-outer { display: flex; align-items: stretch; height: 44px; max-width: 100%; overflow: hidden }
@@ -298,8 +200,6 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .t-chg { font-family: var(--font-mono); font-size:0.77rem; font-weight: 700; }
 .t-chg.up { color: var(--green) } .t-chg.dn { color: var(--red) } .t-chg.nc { color: var(--text-muted) }
 .t-sep { color: var(--text-muted); opacity: .3; font-size:0.75rem; padding: 0 .15rem; flex-shrink: 0; user-select: none }
-
-/* ── DAILY HERO ───────────────────────────────────────────────────── */
 .daily-hero { position: relative; background: var(--bg2); border-bottom: 2px solid var(--border); transition: all .35s cubic-bezier(.4,0,.2,1); }
 .daily-hero.dismissed { overflow: hidden }
 .daily-full { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .5s cubic-bezier(.4,0,.2,1), opacity .3s; }
@@ -319,11 +219,6 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .daily-left { min-width: 0; overflow: hidden }
 .daily-eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-family: var(--font-mono); font-size:0.77rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); margin-bottom: .9rem; padding: .3rem .75rem; background: rgba(var(--brand-rgb),.06); border: 1px solid rgba(var(--brand-rgb),.18); border-radius: 3px; }
 .daily-eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand-fill,var(--brand)); animation: blink 2s ease-in-out infinite }
-/* min-height reserves the line this fills with. The element ships empty and is
-   populated by setText('daily-date', ...) after load; with no reserved height
-   the greeting, headline, subheadline, lead and takeaway below it all dropped
-   32px the moment it filled -- the whole of the home page's 0.333 layout shift.
-   22px is the settled height at both 1440 and 390. */
 .daily-date { font-family: var(--font-mono); font-size: .8rem; color: var(--text-muted); letter-spacing: .08em; margin-bottom: .6rem; text-transform: uppercase; min-height: 22px; }
 .daily-greeting { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; color: var(--text-dim); margin-bottom: .75rem; letter-spacing: .03em }
 .daily-headline { font-family: var(--font-display); font-size: clamp(2.4rem, 4.5vw, 3.6rem); font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: 1rem; letter-spacing: -.01em; text-transform: uppercase; }
@@ -362,15 +257,12 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .btn-ghost:hover { border-color: var(--brand); color: var(--brand) }
 .btn-dismiss { display: inline-flex; align-items: center; gap: .4rem; padding: .8rem 1.2rem; background: none; border: 1px solid var(--border); border-radius: var(--r-sm); font-size: .85rem; font-weight: 600; color: var(--text-muted); transition: border-color .15s, color .15s; }
 .btn-dismiss:hover { border-color: var(--border-g); color: var(--text-dim) }
-
-/* ── MAIN, CARDS, PRICE CARDS ─────────────────────────────────────── */
 .main { max-width: 1400px; margin: 0 auto; padding: var(--sp-xl) var(--sp-lg); min-width: 0; overflow-x: clip; overflow-wrap: anywhere; }
 .sec-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; gap: .5rem }
 .sec-title { display: flex; align-items: center; gap: .6rem; font-family: var(--font-mono); font-size:0.78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); margin: 0; }
 .sec-title img { height: 24px; width: 24px; object-fit: contain; border-radius: 3px; background: #f5f1e8; padding: 2px }
 .sec-all { font-size: .8rem; color: var(--text-muted); transition: color .15s; white-space: nowrap; flex-shrink: 0 }
 .sec-all:hover { color: var(--brand) }
-/* Homepage H1: kept in the DOM for SEO + screen readers, visually hidden per design */
 .home-h1 { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: var(--sp-md, 1rem); margin-bottom: var(--sp-lg); }
 .dash-grid > .fade-up { display: flex; flex-direction: column; min-width: 0 }
@@ -384,7 +276,6 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .price-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: .7rem; margin-bottom: .7rem; }
 .price-cards-grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: .7rem; margin-bottom: .5rem; }
 .pc { background: var(--surface); border: var(--card-bw) solid var(--border); border-radius: var(--card-r); padding: 1.1rem 1.2rem; transition: border-color .2s; cursor: default; position: relative; overflow: hidden; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
-/* price-card hover glow — restored from legacy root stylesheet so /components/ is a complete superset */
 .pc::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 200px 100px at 50% 0%, rgba(230,176,66,.04) 0%, transparent 70%); opacity: 0; transition: opacity .25s; pointer-events: none; }
 .pc:hover::before { opacity: 1 }
 .pc--highlight::before { opacity: .5 }
@@ -397,15 +288,9 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .pc-contract { font-family: var(--font-mono); font-size:0.755rem; color: var(--text-muted); background: var(--surface2); padding: .15rem .45rem; border-radius: 3px; white-space: nowrap; flex-shrink: 0; }
 .pc-price { font-family: var(--font-mono); font-size: 2.4rem; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: .35rem; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pc-change { display: flex; align-items: center; gap: .5rem; margin-bottom: .1rem; flex-wrap: wrap; min-height: 1.3em; }
-/* 2026-10-01: this was white-space:nowrap inside an overflow:hidden parent, so
-   a long real change string ("▼ -20 3/4¢ (-4.0%)") got its trailing digits
-   silently cut off rather than shown in full -- caught by measuring rendered
-   scrollWidth against clientWidth, not by reading the CSS. Letting the pill
-   wrap keeps every digit visible instead of hiding real data. */
 .pc-chg-val { font-family: var(--font-body); font-size: .98rem; font-weight: 800; letter-spacing: .01em; white-space: normal; padding: .08rem .45rem; border-radius: 6px; }
 .pc-chg-val.up { color: #8ceeb2; background: rgba(var(--green-rgb),.14); border: 1px solid rgba(var(--green-rgb),.3); }
 .pc-chg-val.dn { color: #ffa198; background: rgba(224,104,95,.14); border: 1px solid rgba(224,104,95,.32); }
-/* light theme: the pastel chip text above reads ~1.8:1 on the tinted light chips */
 html[data-theme="light"] .pc-chg-val.up { color: #1e6b3a }
 html[data-theme="light"] .pc-chg-val.dn { color: #b42318 }
 .pc-chg-val.nc { color: var(--text-muted); padding: .08rem 0; }
@@ -416,8 +301,6 @@ html[data-theme="light"] .pc-chg-val.dn { color: #b42318 }
 .pc-range-fill { display: none }
 .pc-range-dot { position: absolute; top: 50%; width: 11px; height: 11px; border-radius: 50%; background: var(--text); border: 2px solid var(--bg); transform: translate(-50%, -50%); transition: left .6s cubic-bezier(.4,0,.2,1); box-shadow: 0 1px 4px rgba(0,0,0,.4); }
 .pc-sm .pc-price { font-size: 1.9rem }
-
-/* ── WEATHER ──────────────────────────────────────────────────────── */
 .wx-hero { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border) }
 .wx-icon { font-size: 3.4rem; line-height: 1; flex-shrink: 0 }
 .wx-temp { font-family: var(--font-display); font-size: 3.1rem; font-weight: 700; color: var(--text); line-height: 1 }
@@ -427,7 +310,6 @@ html[data-theme="light"] .pc-chg-val.dn { color: #b42318 }
 .wstat { background: var(--surface2); border-radius: var(--r-sm); padding: .75rem .9rem; border: 1px solid var(--border) }
 .wstat-lbl { font-family: var(--font-mono); font-size:0.765rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: .2rem; }
 .wstat-val { font-family: var(--font-mono); font-size: 1.25rem; font-weight: 700; color: var(--text); line-height: 1.1 }
-/* 'What this means today' synthesized summary banner */
 .wx-today { display: none; gap: .6rem; align-items: flex-start; margin: 0 0 1rem; padding: .75rem .9rem; background: linear-gradient(135deg, rgba(var(--gold-rgb),.11), rgba(var(--gold-rgb),.03)); border: 1px solid rgba(var(--gold-rgb),.28); border-left: 3px solid var(--gold); border-radius: var(--r-sm); }
 .wx-today.loaded { display: flex; }
 .wx-today-icon { font-size: 1.2rem; line-height: 1.4; flex-shrink: 0; }
@@ -437,8 +319,6 @@ html[data-theme="light"] .pc-chg-val.dn { color: #b42318 }
 .spray-badge.caution { background: rgba(var(--gold-rgb),.08); color: var(--gold); border: 1px solid rgba(var(--gold-rgb),.22) }
 .spray-badge.good { background: rgba(74,171,76,.08); color: var(--green); border: 1px solid rgba(74,171,76,.22) }
 .spray-badge.poor { background: rgba(200,86,46,.08); color: var(--red); border: 1px solid rgba(200,86,46,.22) }
-
-/* ── TOOL WIDGETS ─────────────────────────────────────────────────── */
 .tool-list { display: flex; flex-direction: column; gap: .55rem }
 .tool-btn { display: flex; align-items: center; justify-content: space-between; padding: .55rem .9rem; background: var(--surface2); border: 2px solid var(--border); border-radius: var(--r-md); font-size: .88rem; color: var(--text-dim); transition: border-color .2s, color .15s, background .15s; min-width: 0; }
 .tool-btn:hover { border-color: var(--brand); color: var(--text); background: var(--surface3) }
@@ -463,8 +343,6 @@ html[data-theme="light"] .pc-chg-val.dn { color: #b42318 }
 .tool-widget--urea .tool-widget-bottom { display: flex; align-items: baseline; gap: .55rem; flex-wrap: wrap; }
 @media (max-width: 520px) { .tool-widget-inner { padding: .6rem .75rem; gap: .25rem .5rem } .tool-widget-icon { font-size: 1.2rem } .tool-widget-status { font-size: .8rem } .tool-widget-detail { font-size:0.763rem } .tool-widget-score { font-size: 1.3rem } .tool-widget-badge { font-size:0.75rem } .tool-widget-rec { font-size:0.77rem; line-height: 1.45 } .tool-widget-top { gap: .45rem } }
 @media (max-width: 380px) { .tool-widget-inner { padding: .5rem .6rem } .tool-widget-icon { font-size: 1.05rem } .tool-widget-status { font-size:0.785rem } .tool-widget-detail { font-size:0.75rem } .tool-widget-score { font-size: 1.15rem } .tool-widget-badge { font-size:0.74rem; padding: .12rem .32rem } .tool-widget-rec { font-size:0.76rem } .tool-widget-arr { font-size:0.78rem } .tool-widget-top { gap: .35rem } }
-
-/* ── RADAR, DROUGHT, CALENDAR, MARKETS ─────────────────────── */
 .radar-section { margin-bottom: var(--sp-xl) }
 .radar-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 1.25rem; align-items: stretch; min-height: 420px }
 .radar-card { background: var(--surface); border: var(--card-bw) solid var(--border); border-radius: var(--card-r); overflow: hidden; display: flex; flex-direction: column; min-height: 380px }
@@ -494,8 +372,6 @@ html[data-theme="light"] .pc-chg-val.dn { color: #b42318 }
 .cal-time { font-family: var(--font-mono); font-size:0.78rem; color: var(--text-muted); }
 @media (max-width: 520px) { .cal-strip { gap: .45rem; margin-bottom: 1.25rem } .cal-card { min-width: 140px; padding: .5rem .65rem; border-radius: var(--r-sm) } .cal-today-badge { font-size:0.737rem; padding: .08rem .3rem; margin-bottom: .2rem } .cal-date { font-size:0.755rem; margin-bottom: .15rem } .cal-name { font-size:0.787rem; margin-bottom: .1rem } .cal-time { font-size:0.755rem; line-height: 1.3 } }
 .market-card { transition: border-color .2s } .market-card:hover { border-color: var(--border-g) }
-
-/* ── SIGNUP ───────────────────────────────────────────────────────── */
 .signup { position: relative; overflow: hidden; margin-bottom: var(--sp-xl); background: var(--surface); border: 2px solid var(--brand); border-radius: var(--r-md); padding: var(--sp-2xl) var(--sp-xl); }
 .signup::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 700px 320px at 50% -50%, rgba(var(--brand-rgb),.04) 0%, transparent 70%); pointer-events: none }
 .signup-inner { max-width: 680px; margin: 0 auto; text-align: center; position: relative; z-index: 1 }
@@ -529,8 +405,6 @@ html[data-theme="light"] .pc-chg-val.dn { color: #b42318 }
 .signup--slim .scs-text { font-size:0.795rem; color: var(--text-muted); flex: 1; min-width: 0 }
 .signup--slim a { font-size:0.795rem; color: var(--brand); white-space: nowrap; font-weight: 700 } .signup--slim a:hover { text-decoration: underline }
 .signup--hidden { display: none !important; }
-
-/* ── FOOTER ───────────────────────────────────────────────────────── */
 .footer { background: var(--surface); border-top: 2px solid var(--brand); padding: 1.25rem 0 0; transition: background .25s }
 .footer-inner { max-width: 1400px; margin: 0 auto; padding: 0 var(--sp-lg) }
 .footer-top { display: flex; justify-content: space-between; align-items: center; padding-bottom: .75rem; border-bottom: 1px solid var(--border); margin-bottom: .75rem; flex-wrap: wrap; gap: .6rem }
@@ -559,8 +433,6 @@ html[data-theme="light"] .pc-chg-val.dn { color: #b42318 }
 .footer-legal { display: flex; align-items: center; gap: .4rem; font-size:0.78rem; color: var(--text-muted); flex-wrap: wrap; }
 .footer-legal a { color: var(--text-muted); transition: color .15s } .footer-legal a:hover { color: var(--text-dim) }
 .footer-sep { opacity: .3 } .footer-disc { font-size:0.8rem; color: var(--text-muted) }
-
-/* ── UTILITIES ────────────────────────────────────────────────────── */
 .fade-up { opacity: 0; transform: translateY(20px); transition: opacity .5s cubic-bezier(.4,0,.2,1), transform .5s cubic-bezier(.4,0,.2,1) }
 .fade-up.vis { opacity: 1; transform: translateY(0) }
 .noscript-banner { background: var(--brand-fill,var(--brand)); color: #0a1206; text-align: center; padding: .75rem 1rem; font-size: .88rem; font-weight: 600 }
@@ -571,8 +443,6 @@ html[data-theme="light"] .pc-chg-val.dn { color: #b42318 }
 .ws-toast.show { opacity: 1; transform: translateY(0) }
 .section { padding: 2rem 0 } .section-inner { max-width: 1400px; margin: 0 auto; padding: 0 var(--sp-lg) }
 .breadcrumb { font-size: .8rem; color: var(--text-dim); margin-bottom: 12px } .breadcrumb a { color: var(--brand); font-weight: 600 } .breadcrumb a:hover { text-decoration: underline }
-
-/* ── REDUCED MOTION ───────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .ticker-track { animation: none !important; overflow-x: auto; -webkit-overflow-scrolling: touch }
   .ticker-track-wrap::before, .ticker-track-wrap::after { display: none }
@@ -582,13 +452,8 @@ html[data-theme="light"] .pc-chg-val.dn { color: #b42318 }
   .daily-full { transition: none !important }
 }
 @media (hover: none) { .pc:hover { border-color: var(--border) } .market-card:hover { border-color: var(--border) } }
-
 #bids-zip:focus, #wx-zip:focus, #compact-email:focus { border-color: var(--brand) !important }
-
-/* Visually hidden, still read by screen readers (table captions, live regions) */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0 }
-
-/* ── SHARED TOOL / CALCULATOR UI ─────────────────────────────────── */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start }
 .panel { background: var(--surface); border: var(--card-bw) solid var(--border); border-radius: var(--card-r); overflow: hidden }
 .panel-head { background: var(--bg); padding: 12px 16px; border-bottom: 2px solid var(--border) }
@@ -605,8 +470,6 @@ html[data-theme="light"] .pc-chg-val.dn { color: #b42318 }
 .result-value.highlight { font-size: 1.3rem; color: var(--gold) }
 .result-value.positive { color: var(--green) } .result-value.negative { color: var(--red) }
 main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 16px }
-
-/* ── RESPONSIVE ───────────────────────────────────────────────────── */
 @media (max-width: 1100px) {
   .daily-grid { grid-template-columns: 1fr !important }
   .hero-sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem }
@@ -675,16 +538,9 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
   .price-cards-grid-2 { grid-template-columns: repeat(2, 1fr); gap: .45rem }
   .pc { padding: .45rem .6rem } .pc-head { margin-bottom: .4rem } .pc-name { font-size:0.78rem }
   .pc-contract { font-size:0.745rem; padding: .1rem .3rem;
-    /* The contract label can gain a suffix when the front month and the
-       new-crop contract are the same one. nowrap + flex-shrink:0 ran it
-       off the right edge of the card instead of wrapping it. */
     white-space: normal; flex-shrink: 1 } .pc-price { font-size: 1.5rem }
   .pc-sm .pc-price { font-size: 1.25rem } .pc-chg-val { font-size: .85rem } .pc-prev { font-size:0.75rem }
   .pc-range-labels { font-size:0.737rem; gap:.4rem; flex-wrap:nowrap }
-  /* At 390px the three-part row ran out of width and wrapped mid-number:
-     "$10.4 52-Wk $13.3 / 8 Range 6" on the bean card, and "$4.2552-Wk
-     Range$5.50" with no gap at all on corn. The caption is the part that
-     can go -- the two figures sit either end of a range bar. */
   .pc-range-labels > span { white-space: nowrap }
   .pc-range-labels > span:nth-child(2) { display: none }
   .pc-range-dot { width: 9px; height: 9px } .pc-section-lbl { font-size:0.75rem }
@@ -705,8 +561,6 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
   .teaser-preview { font-size:1rem } .daily-teaser { padding: .4rem .75rem }
   .pc-sm .pc-price { font-size: 1.05rem; } .pc-chg-val { font-size:0.785rem; } .pc-prev { font-size:0.725rem; min-height: .8em; }
 }
-
-/* ── DAILY BRIEFING v3 — Overnight Surprises, Conviction, Actions ── */
 .daily-surprise-banner { display: none; align-items: center; gap: .65rem; padding: .65rem 1.1rem; margin-bottom: 1rem; background: linear-gradient(135deg, rgba(var(--gold-rgb),.06) 0%, rgba(var(--gold-rgb),.02) 100%); border: 2px solid rgba(var(--gold-rgb),.25); border-radius: var(--r-md); animation: surprise-glow 3s ease-in-out infinite alternate; }
 @keyframes surprise-glow { 0% { border-color: rgba(var(--gold-rgb),.25); box-shadow: none } 100% { border-color: rgba(var(--gold-rgb),.40); box-shadow: 0 0 12px rgba(var(--gold-rgb),.08) } }
 .surprise-icon { font-size: 1.3rem; flex-shrink: 0; animation: surprise-pulse 2s ease-in-out infinite; }
@@ -737,171 +591,70 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
   .daily-sec-action { display: none }
   .daily-sec-bottomline { font-size:0.755rem; padding: .3rem .4rem }
 }
-
-/* ── v9.4: Mood + conviction pill variants ───────────────────────── */
-/* `.daily-mood` is activated inline by hydrateDaily JS (display:inline-block).
-   Without these rules, the mood label rendered as bare unstyled text.
-   These variants give it a pill background matching the tone. */
 .daily-mood { color: var(--text-dim); background: var(--surface2); border: 1px solid var(--border); }
 .daily-mood.bullish { color: var(--green); background: rgba(74,171,76,.08); border-color: rgba(74,171,76,.22); }
 .daily-mood.bearish { color: var(--red); background: rgba(200,86,46,.08); border-color: rgba(200,86,46,.22); }
 .daily-mood.mixed,
 .daily-mood.neutral,
 .daily-mood.cautious { color: var(--gold); background: rgba(var(--gold-rgb),.08); border-color: rgba(var(--gold-rgb),.22); }
-
-/* `.daily-sec-conviction` — class names emitted by hydrateDaily v4.0.
-   Without these, all conviction pills used the default `.daily-sec-conviction`
-   styling (no background, no color differentiation between high/medium/low). */
 .daily-sec-conviction.conviction--bull { color: var(--green); background: rgba(74,171,76,.08); border: 1px solid rgba(74,171,76,.22); }
 .daily-sec-conviction.conviction--bear { color: var(--red); background: rgba(200,86,46,.08); border: 1px solid rgba(200,86,46,.22); }
 .daily-sec-conviction.conviction--mixed { color: var(--gold); background: rgba(var(--gold-rgb),.08); border: 1px solid rgba(var(--gold-rgb),.22); }
-
-/* ================================================================
-   PREMIUM POLISH PACK — pure CSS · no JS · reduced-motion safe
-   ================================================================ */
-
-/* 1) Direction-aware price cards: the border quietly takes on the day's
-      color (green up / red down), derived from your tokens via color-mix. */
 .pc:has(.pc-chg-val.up) { border-color: color-mix(in srgb, var(--green) 32%, var(--border)); animation: pcFlashUp .9s ease-out; }
 .pc:has(.pc-chg-val.dn) { border-color: color-mix(in srgb, var(--red) 34%, var(--border)); animation: pcFlashDn .9s ease-out; }
-/* one-shot tile flash — fires automatically when geo.js swaps .nc -> .up/.dn (initial load, and any future re-poll) */
 @keyframes pcFlashUp { from { background-color: color-mix(in srgb, var(--green) 20%, var(--surface)); } }
 @keyframes pcFlashDn { from { background-color: color-mix(in srgb, var(--red) 20%, var(--surface)); } }
 @media (prefers-reduced-motion: reduce) {
   .pc:has(.pc-chg-val.up), .pc:has(.pc-chg-val.dn) { animation: none; }
 }
-
-/* 2) Typographic finish — balanced headlines, pretty body wrap (kills orphans/ragged lines). */
 .daily-headline, .sec-title, .pc-name, .home-h1, .faq-item summary { text-wrap: balance; }
 p, .faq-a, .pc-prev, .wx-today-text, .daily-sec-bottomline { text-wrap: pretty; }
-
-/* 3) Tactile horizontal scroll on the forecast strips. */
 .wx-7day-strip, .wx-hourly-strip { scroll-snap-type: x proximity; scroll-padding-left: .25rem; }
 .wx-7day-cell, .wx-hourly-cell { scroll-snap-align: start; }
-
-/* 4) On-brand text selection + visible focus rings. */
 ::selection { background: var(--gold-fill,var(--gold)); color: #0a1a0a; }
 a:focus-visible, button:focus-visible, [role="button"]:focus-visible,
 input:focus-visible, select:focus-visible, textarea:focus-visible,
 summary:focus-visible, .pc:focus-visible {
   outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px;
 }
-
-/* 5) Native form controls (checkboxes, radios, range) inherit the brand green. */
 :root { accent-color: var(--brand); }
-
-
-/* ══ BRAND ACCENT — committed single identity (2026-06-14) ══════════
-   One gold accent. The 5-color brand picker is retired; --brand and --gold
-   are unified to a single gold. --green (up) / --red (down) stay semantic
-   and never theme. ══════════════════════════════ */
-
-/* ══ LUCIDE INLINE ICONS (.lic) — nav, drawer, footer link glyphs ══════
-   One outline library, currentColor so each icon inherits its link's color
-   and follows hover (gold). Sized a touch above cap height; sits as a flex
-   item so the existing link gap handles spacing. ════════════════════════ */
 .lic{width:17px;height:17px;flex:0 0 auto;opacity:.82;transition:opacity .12s}
 .nav-panel a:hover .lic,.draw-item:hover .lic,.footer-col a:hover .lic{opacity:1}
 .draw-item{gap:.65rem}
 .footer-col a{display:flex;align-items:center;gap:.5rem}
 .draw-close .lic{width:20px;height:20px;opacity:.9}
-
-/* Theme toggle icon — moon in dark, sun in light; pure CSS, no JS textContent. */
 .theme-ic{width:16px;height:16px;flex:0 0 auto}
 .theme-ic.moon{display:inline-block}
 .theme-ic.sun{display:none}
 [data-theme="light"] .theme-ic.moon{display:none}
 [data-theme="light"] .theme-ic.sun{display:inline-block}
-
-/* ══ MEGA-MENU GROUPING — sub-section labels inside dropdowns/drawer ══
-   The "a team organised this" cue: quiet mono eyebrows that cluster links
-   into named groups. Sized + contrasted for sunlight legibility. */
 .nav-grp-lbl{font-family:var(--font-mono);font-size:0.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);padding:.55rem 1.1rem .2rem}
 .nav-panel > .nav-grp-lbl:first-child{padding-top:.15rem}
 .draw-grp-lbl{font-family:var(--font-mono);font-size:0.755rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);padding:.5rem 1.1rem .1rem}
-
-/* Reserve nav height so injected chrome doesn't shift the page on load (CLS). */
-/* The header placeholder, and the static crawlable nav that eight pages put
-   inside it. loader.js REPLACES this div with the live nav, which is 74px.
-   Left to wrap, the fallback renders 245px at desktop widths, so those eight
-   pages lurched 171px upward the moment the header landed -- measured CLS 0.356
-   on the home page, in Google's "poor" band and a Core Web Vitals drag.
-
-   The links are not removed: non-JS crawlers still read them, and they stay
-   reachable by horizontal scroll if the header fetch fails. They are simply
-   held to the height of the thing that replaces them, so nothing moves.
-
-   The !important is deliberate and narrow. The fallback's layout lives in
-   inline style attributes duplicated across those eight files, and an inline
-   style outranks a stylesheet rule. One overriding rule beats eight hand-edits
-   that would drift apart -- the single-definition rule applied to CSS. */
 #site-header{min-height:74px}
-/* the live nav is 62px tall at 520px and under (.nav-inner 60px + 2px border).
-   The static crawlable nav inside the placeholder can stand taller: 69px on
-   the homepage, and 67.5px on every static-nav page for a reader with a 20px
-   default font. The page then jumped when the live nav landed. Hold the
-   placeholder to the live nav's height; the links still scroll sideways
-   (test/cls-header-phone.test.mjs). */
 @media (max-width:520px){#site-header{min-height:62px;height:62px;overflow:hidden}}
-/* A page ask (<div data-signup-ask>, drawn by components/signup-ask.js after
-   first paint) used to arrive as a 100-140px box and shove everything under it
-   down (CLS 0.07 to 0.09 on /cash-bids and the town pages). Hold its space from
-   the start. The heights are the drawn box: label on its own line above field
-   and button, then one row from 900px. Readers already signed up never get the
-   box; the page's head script marks them (html.sa-subbed) before first paint. */
 [data-signup-ask]:not([data-sa-ready]):not([data-variant]){display:block;box-sizing:border-box;min-height:122px;margin:14px 0}
 @media (min-width:520px){[data-signup-ask]:not([data-sa-ready]):not([data-variant]){min-height:101px}}
 @media (min-width:900px){[data-signup-ask]:not([data-sa-ready]):not([data-variant]){min-height:73px}}
 html.sa-subbed [data-signup-ask]:not([data-sa-done]){display:none}
 #site-header>header>div{flex-wrap:nowrap!important;align-items:center!important;min-width:0}
-/* Without this the wordmark is the shrinkable flex item next to a very wide
-   nav, and "AGSIST" wraps one letter per line into a 177px column. */
 #site-header>header>div>a{flex:0 0 auto;white-space:nowrap}
 #site-header>header nav{min-width:0}
 #site-header>header nav{line-height:1.4!important;white-space:nowrap;
   overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
 #site-header>header nav br{display:none}
 #site-header>header nav::-webkit-scrollbar{display:none}
-
-/* Skip-link — keyboard users jump past the nav to main content. */
 .skip-link{position:absolute;left:-9999px;top:0;z-index:1000;background:var(--brand-fill,var(--brand));color:#0a0c0d;font-family:var(--font-mono);font-size:.8rem;font-weight:700;padding:.6rem 1rem;border-radius:0 0 var(--r-sm) 0;text-decoration:none}
 .skip-link:focus{left:0}
-/* Lucide section markers on the dropdown buttons + drawer labels */
 .nav-ic{width:18px;height:18px;flex:0 0 auto;opacity:.78;transition:opacity .15s}
 .nav-btn:hover .nav-ic,.nav-dd.open > .nav-btn .nav-ic{opacity:1}
 .draw-lbl{display:flex;align-items:center}
 .draw-lbl-ic{width:15px;height:15px;flex:0 0 auto;margin-right:.4rem;opacity:.9}
 @media (max-width: 60em){ .nav-ic{display:none} }
-
-/* ── Numerals ─────────────────────────────────────────────────────────────
-   Measured 2026-08-16: not one element on the site used tabular figures, and
-   the corn/soybean/wheat price tables set their numbers in Inter, ranged left.
-   A price column in a proportional face with a ragged right edge is the
-   loudest "this is not a finance product" signal there is, and it is one line
-   of CSS.
-
-   tabular-nums forces every digit to the same advance width, so a column of
-   prices lines up on the decimal and figures stop twitching when a value
-   updates in session. Inter and JetBrains Mono both ship the feature.
-
-   Applied to tables generally (digits only -- prose is untouched) and .num is
-   the explicit opt-in for a numeric column, emitted by px_table() in
-   seed_static.py. Right alignment is deliberate: numbers are read from the
-   decimal point, not the left edge.
-
-   The .seed-tbl selectors are not redundant. Each price page carries an inline
-   `.seed-tbl-wrap td,.seed-tbl-wrap th{text-align:left}` in its own <style>,
-   which has the same specificity as a bare `td.num` and sits later in the
-   cascade, so the bare rule loses. Matching on the table's class outranks it. */
 table{font-variant-numeric:tabular-nums}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;
   font-feature-settings:"tnum" 1,"lnum" 1}
 .seed-tbl td.num,.seed-tbl th.num{text-align:right}
-
-/* ── Reduced motion ───────────────────────────────────────────────────────
-   Honoured on 16 of 61 pages before this. One shared rule beats 45 more
-   copies. Durations are collapsed rather than zeroed so that transitionend
-   and animationend listeners still fire and nothing hangs waiting on them. */
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{
     animation-duration:.01ms!important;
@@ -909,33 +662,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;
     transition-duration:.01ms!important;
     scroll-behavior:auto!important}
 }
-
-
-/* ── SHARED COMPONENTS ─────────────────────────────────────────────────────
-   Everything below had been copied into individual pages one at a time and had
-   drifted. Measured 2026-09-12: 876 KB of inline <style> across 60 pages
-   against 74 KB in this file. The sponsor ribbon alone was declared on 32 pages
-   in 3 versions. A component declared once cannot disagree with itself.
-   Values are carried over EXACTLY, so consolidating moves no pixels -- proved by
-   screenshotting all 64 pages before and after. Tokenising them is a separate,
-   visible step. Rules inside a page's @media block were left where they are.
-   ─────────────────────────────────────────────────────────────────────── */
-
-/* 2026-10-11 (Sig, "tone it down"): AN UNSOLD SLOT SHOWS NOTHING. Every
-   tool page still ships its ribbon markup, because the ribbon is where the
-   slot id lives (scripts/stamp_rates.py reads the pages to build
-   data/sponsor-slots.json, which /sponsor-apply offers). It stays hidden
-   until components/loader.js fillPageRibbons() finds the page sold in
-   data/page-sponsors.json and marks it ag-sponsor-ribbon--sold. The
-   homepage strip (.idx1-sponsor) is only ever filled by a paid sponsor and
-   is shown or hidden by its own wrapper. */
 aside.ag-sponsor-ribbon:not(.ag-sponsor-ribbon--sold):not(.idx1-sponsor){display:none!important}
-/* Sponsor ribbon — was declared on 32 pages in 3 versions. Pages that hide it keep their own override; only the shared definition moved. */
-/* OPEN SPONSOR SLOT (2026-10-07: "make the sponsor slots catch your eye").
-   One design for all 79 ribbons. The pulsing OPEN pill, the price chip
-   (written from data/rate-card.json by scripts/stamp_rates.py) and a real
-   button. #0d1117 on --ad-orange is 6.4:1; the price and body text use the
-   theme's own text colours. Printed pages drop the ribbon (per-page rule). */
 .ag-sponsor-ribbon{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .75rem;font-size:.86rem;line-height:1.5;padding:.75rem .9rem .75rem 1rem;margin:1.1rem 0;border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.55);border-left:5px solid var(--ad-orange,#e8743a);border-radius:10px;background:linear-gradient(100deg,rgba(var(--ad-orange-rgb,232,116,58),.17),rgba(var(--ad-orange-rgb,232,116,58),.05) 55%,rgba(var(--ad-orange-rgb,232,116,58),.10));box-shadow:0 2px 14px rgba(var(--ad-orange-rgb,232,116,58),.14);color:var(--text-dim)}
 .ag-sponsor-ribbon .ag-sponsor-tag{display:inline-flex;align-items:center;gap:.4rem;font-family: var(--font-mono);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#0d1117;background:var(--ad-orange,#e8743a);border-radius:999px;padding:.22rem .65rem .22rem .5rem;white-space:nowrap}
 .ag-sponsor-ribbon .ag-sponsor-price{font-family: var(--font-mono);font-size:.8rem;font-weight:800;color:var(--text);background:var(--surface,rgba(255,255,255,.04));border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.6);border-radius:6px;padding:.18rem .55rem;white-space:nowrap}
@@ -943,9 +670,6 @@ aside.ag-sponsor-ribbon:not(.ag-sponsor-ribbon--sold):not(.idx1-sponsor){display
 .ag-sponsor-ribbon a[href]:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(var(--ad-orange-rgb,232,116,58),.45)}
 @media(max-width:600px){.ag-sponsor-ribbon a[href]{margin-left:0;width:100%;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.ag-sponsor-ribbon a[href]{transition:none}}
-/* A SOLD slot (components/loader.js fillPageRibbons): the sponsor's own ad.
-   Calmer than the open one -- no pulse, no price, the theme surface -- but
-   still labelled in ad orange, because paid space is always ad orange. */
 .ag-sponsor-ribbon--sold{background:var(--surface,transparent);box-shadow:none;border-color:var(--border);border-left-color:var(--ad-orange,#e8743a);color:var(--text-dim)}
 .ag-sponsor-ribbon--sold .ag-sponsor-tag{background:transparent;color:var(--ad-orange-ink,#a8380a);border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.6);padding:.15rem .55rem}
 html:not([data-theme="light"]) .ag-sponsor-ribbon--sold .ag-sponsor-tag{color:var(--ad-orange,#e8743a)}
@@ -955,25 +679,11 @@ html:not([data-theme="light"]) .ag-sponsor-ribbon--sold .ag-sponsor-tag{color:va
 .ag-sponsor-ribbon--sold .ag-sponsor-copy b{color:var(--text)}
 .ag-sponsor-ribbon--sold a[href]{background:transparent;color:var(--ad-orange-ink,#a8380a)!important;border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.6)}
 html:not([data-theme="light"]) .ag-sponsor-ribbon--sold a[href]{color:var(--ad-orange,#e8743a)!important}
-
-
-/* Inline icon sprite — was on 14 pages, identical every time. */
 .ic{width:1em;height:1em;display:inline-block;vertical-align:-0.14em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-
-/* Tap-target boilerplate — was repeated on 27 pages. */
 button,a,[role="button"]{touch-action:manipulation;}
-
-/* Horizontal-overflow guard — was on 14 pages. */
 html { overflow-x: hidden; overflow-x: clip; width: 100%; }
 body { overflow-x: hidden; overflow-x: clip; width: 100%; }
-
-/* Scrollable table wrapper — was on 5 pages. */
 .tblscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}
-/* .tblscroll table{margin:0;min-width:520px} stays on the pages: it ties on
-   specificity with page rules like table.rs-t, and from an earlier sheet a tie
-   goes the other way. Consolidating it moved the storage-crunch table 10px. */
-
-/* Grower Pulse vote panel — 24 rules, byte-identical on all 5 pages carrying it. */
 .vp-ver{background:#101415;border:1px solid #1a1f20;border-radius:14px;padding:20px 24px;margin:14px 0;display:flex;gap:24px;flex-wrap:wrap;align-items:center}
 .vp-ver select{background:#0a0c0d;border:1px solid #2a3133;color:#e6ebe9;border-radius:8px;padding:8px 12px;font-family: var(--font-mono);font-size:.95rem}
 .vp-big{font-family: var(--font-mono);font-size:4rem;font-weight:800;line-height:1}
@@ -990,8 +700,6 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 .vp-tge{font-family: var(--font-mono);font-size:.98rem;font-weight:700;margin-top:2px;color:#e6ebe9}
 .vp-leg{display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:0.785rem;color:#8a948f;flex-wrap:wrap}
 .vp-leg span b{display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px}
-
-/* Author block — was on 3 pages. */
 .author-block{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.03) 100%);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:14px;display:flex;align-items:flex-start;gap:12px}
 .author-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green) 0%,#5dbf61 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-family: var(--font-mono);font-size:1.1rem;font-weight:700;flex-shrink:0;border:2px solid rgba(255,255,255,.1)}
 .author-text{flex:1;min-width:0}
@@ -1000,8 +708,6 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 .author-meta{font-size:0.765rem;color:var(--text-dim);line-height:1.5}
 .author-meta a{color:var(--gold);text-decoration:none}
 .author-meta a:hover{text-decoration:underline}
-
-/* Futures price header — was on 3 pages. Their mobile @media overrides stay on the pages. */
 .ph{background:linear-gradient(135deg,var(--surface) 0%,rgba(230,176,66,.05) 100%);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin-bottom:8px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
 .ph-info h1{font-size:1.3rem;font-weight:800;letter-spacing:-.01em;color:var(--text);margin:0 0 3px 0}
 .ph-exch{font-size:0.775rem;color:var(--text-dim)}
@@ -1010,28 +716,11 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 .ph-unit{font-size:0.78rem;color:var(--text-dim)}
 .ph-chg{font-size:.88rem;font-weight:700;margin-top:2px}
 .ph-chg.roll,.roll{color:var(--gold,#d4a23f)}
-
-
-/* ── LOADING STATES ────────────────────────────────────────────────────────
-   Measured 2026-09-13: 258 elements across 20 pages sit as a bare em-dash
-   until JavaScript fills them -- 72 on fast-facts, 36 on markets, 30 on the
-   corn page. A reader on a slow connection, or one whose fetch fails, gets a
-   screen of dashes and no way to tell which. A skeleton says "a number is
-   coming"; a dash after the skeleton says "there isn't one". Those are
-   different facts and the page should not use one glyph for both.
-
-   Applied by loader.js, not by markup, so it covers pages written later too.
-   Everything settles within SK_TIMEOUT (6s) whatever happens, so a value that
-   never arrives falls back to the dash rather than shimmering forever.
-   ──────────────────────────────────────────────────────────────────────── */
 .sk{
   color:transparent!important;
   -webkit-text-fill-color:transparent!important;
   border-radius:4px;
   min-width:3.2ch;
-  /* A full-width bar reads as a broken layout; a bar roughly the width of the
-     number that is coming reads as the number that is coming. max-width only
-     shrinks, so small inline placeholders are untouched. */
   max-width:min(12ch, 72%);
   display:inline-block;
   background-image:linear-gradient(90deg,
@@ -1044,78 +733,29 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 }
 .sk *{visibility:hidden}
 @keyframes sk-sweep{from{background-position:180% 0}to{background-position:-80% 0}}
-
-/* A value that arrived and then changed. The eye should catch the one number
-   that moved without the page doing a somersault about it. */
 .sk-in{animation:sk-in .28s ease-out}
 @keyframes sk-in{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
 .sk-up{animation:sk-up 1s ease-out}
 .sk-dn{animation:sk-dn 1s ease-out}
 @keyframes sk-up{0%{background-color:rgba(var(--green-rgb),.22)}100%{background-color:transparent}}
 @keyframes sk-dn{0%{background-color:rgba(var(--red-rgb),.22)}100%{background-color:transparent}}
-
-/* Reduced motion: the global rule at the top of this file collapses every
-   duration, which would leave the skeleton as a flat bar and kill the flash.
-   Give both a still, legible form instead of a broken one. */
 @media (prefers-reduced-motion: reduce){
   .sk{background-image:none;background-color:rgba(132,160,168,.13)}
   .sk-up,.sk-dn{outline:1px solid rgba(132,160,168,.35);outline-offset:1px}
 }
-
-
-/* ── PULSE, AND THE DOT THAT USES IT ───────────────────────────────────────
-   Measured 2026-09-13: `@keyframes pulse` was defined on 9 pages in 4 different
-   ways (fade to .3, to .4, to 0.3, and to .5 with a scale) -- one name, four
-   behaviours. Worse, FOUR pages animate with `pulse` and no sheet anywhere
-   defined it for them, so the animation silently did nothing: the homepage's
-   sponsor "available" indicator, its teaser dot and PWA arrow, the sponsor
-   page's own eyebrow dot, and the cattle page's session dot. They were inert.
-
-   The fade-to-.3 form is the one most pages used, so it is the one kept. The
-   spray/urea variant also scaled to .8; that difference is gone on purpose --
-   a dot named "pulse" should not pulse differently depending which page it is on.
-   ──────────────────────────────────────────────────────────────────────── */
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* Live indicator dot -- was 6 shapes across 7 pages: 6px and 7px, green and
-   gold, 2s and 1.8s, and one of them called .live-dot-sm. */
 .live-dot,.live-dot-sm{display:inline-block;width:6px;height:6px;border-radius:50%;
   background:var(--green);animation:pulse 2s infinite;flex-shrink:0}
-
-/* fixG 2026-09-26 accessibility pass */
-/* the hidden attribute must beat component display rules (.ib-out, .tool-widget, .rma-est, .cal-cd-wpi, .ff-strip) */
 [hidden]{display:none!important}
-/* one skip link: header.html supplies it; loader.js drops the per-page duplicate */
-/* links inside running text are underlined, so colour is not the only cue */
 :is(main,.main) :is(p,li,dd) a:not([class]):not(:has(svg)),:is(main,.main) :is(p,li,dd) a[class=""]:not(:has(svg)){text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 a[href^="mailto:"]:not([class]):not(:has(svg)),a[href^="tel:"]:not([class]):not(:has(svg)),.lt-note a{text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
-/* tap targets: footer links 32px (WCAG 2.2 AA asks 24px; 44px is AAA and kept for primary controls) */
 .footer-col a{padding:.38rem 0;min-height:32px}
 .draw-item{min-height:44px}
-/* heat-map tiles: dark ink only on the fills where it passes 4.5:1 (#a8823c 5.53, #2f9963 5.47); light ink elsewhere */
 .vp-tile[style*="#a8823c"] .vp-tst,.vp-tile[style*="#a8823c"] .vp-tge,.vp-tile[style*="#2f9963"] .vp-tst,.vp-tile[style*="#2f9963"] .vp-tge{color:#0a0c0d}
 .vp-tile.dim{opacity:1}
 .vp-tile.dim .vp-tst{color:#8a948f}
-/* white text on --green is 2.19:1 in the dark theme; use dark ink there (light theme --green #2e7d4f keeps white) */
 :root:not([data-theme="light"]) :is(.signup-form button,#signup-btn,.sp-support-cta:hover){color:#06110b!important}
 :root:not([data-theme="light"]) :is(.dv3-subscribe-btn,.dv3-modal-submit):not(:hover){color:#06110b!important}
-
-/* Phone tap targets, 2026-10-09. On a phone (600px and under) each of these
-   gets a hit area of at least 40x40 CSS px where the layout has room for it.
-   What you see does not change: a transparent ::after is the hit area, and a
-   tap on an element's own ::after counts as a tap on the element.
-   - Links and buttons in data tables: a 40x40 box (or the link, if bigger)
-     centred on the link. Rows of a stacked table that has links are 40px tall,
-     so two links one above the other never share a pixel. A plain link that wraps
-     onto two lines is made one box (inline-block) so the hit area covers both
-     lines. Card-style tables (.bs-t, .tariff-table) keep their row height;
-     their links sit on lines with no other link above or below.
-   - Leaflet zoom buttons: +5px each side; + reaches 10px up and - 10px down,
-     so the two never overlap (the control has 12px of margin there).
-   - State tile maps: 12 columns on a 390px phone leave a 30px pitch, so a
-     tile's hit area fills its half of the 3px gap and stops there; 40px would
-     need a bigger map or tiles that overlap. The desktop map places tiles
-     with left/top, so inset:auto keeps those off once the tile is relative. */
 @media (max-width:600px){
   :is(.rs-t,.yl-t,.fa-table,.ap .tw table,.he-wrap table):has(td :is(a[href],button)) tbody tr{height:40px}
   :is(.rs-t,.yl-t,.bs-t,.fa-table,.ap .tw table,.he-wrap table,.tariff-table) td :is(a[href],button){position:relative}
@@ -1128,13 +768,6 @@ a[href^="mailto:"]:not([class]):not(:has(svg)),a[href^="tel:"]:not([class]):not(
   :is(.vp-grid>.vp-tile,.cd-grid>.cd-tile)[data-st],.rh-grid>a.rh-tile{position:relative;inset:auto}
   :is(.vp-grid>.vp-tile,.cd-grid>.cd-tile)[data-st]::after,.rh-grid>a.rh-tile::after{content:"";position:absolute;inset:-1.5px}
 }
-
-/* ── Page to page (2026-10-09) ─────────────────────────────────────────
-   The page color sits on <html> too, so nothing white shows between pages
-   or past the end of a short page in dark mode. The theme itself is set in
-   <head> before this sheet paints (agsist-theme-early). Links within the
-   site cross-fade quickly; the top nav keeps still. No motion for readers
-   who ask for less. */
 html { background: var(--bg); }
 @view-transition { navigation: auto; }
 .nav { view-transition-name: agsist-nav; }
@@ -1144,63 +777,28 @@ html { background: var(--bg); }
   @view-transition { navigation: none; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
-
-/* ── ONE LOOK (2026-10-09) ────────────────────────────────────────────────
-   Measured on all 61 top-level pages at 1280px: the page title (h1) came in
-   15 sizes from 15px to 54px, in gold or ink, upper or sentence case, 700 or
-   800; kickers in two faces and five sizes; ledes from 0.82rem to 1.1rem;
-   table heads in three looks; prices in proportional figures on some pages.
-   The rules below make those one thing, using the tokens on :root.
-
-   They are written against :is(#main, .page-head) -- every page's <main
-   id="main">, or the hero of the four pages whose hero sits above <main> -- so
-   that they outrank the per-page hero rules (.xx-hero h1 is 0,1,1; :is() takes
-   its strongest argument, so this is 1,0,1 either way) with no !important.
-   Only type and colour are shared; each page keeps its own margins, widths and
-   layout, so no block moves to a new place. */
-
-/* Every digit the same width, so prices line up in columns and stop
-   twitching when a value updates. Inter and JetBrains Mono both carry tnum. */
 body { font-variant-numeric: tabular-nums }
-/* Prose keeps proportional figures: Inter's tnum widens the hyphen and the 1,
-   so "co-op", "W-9" and "11 miles" looked spaced. Tables keep tnum (rule above).
-   Element selectors stay at (0,0,1), so a .num or .price class still wins. */
 :is(p, figcaption, summary, blockquote), .rc-list li, .rp li { font-variant-numeric: normal; }
-
-/* The page title. Not page titles, so left alone: a calculator panel's label
-   (breakeven, grain bin), the field-scout map prompt, the hidden homepage h1. */
 :is(#main, .page-head) h1:not(.panel-head h1, .fs-invite-h, .home-h1, .sr-only) {
   font-family: var(--font-display); font-size: var(--fs-title); font-weight: 800;
   line-height: var(--lh-tight); letter-spacing: -.015em; text-transform: var(--title-case);
   color: var(--text); text-wrap: balance;
 }
-/* A word picked out in gold inside a title was on seven pages and not the rest. */
 :is(#main, .page-head) h1:not(.panel-head h1, .fs-invite-h) > :is(span, em, b, strong) { color: inherit; font-weight: inherit }
-/* The line above the title ("USDA NASS · weekly") and the paragraph under it. */
 :is(#main, .page-head) .page-kicker {
   font-family: var(--font-mono); font-size: var(--fs-2xs); font-weight: 700;
   letter-spacing: .14em; text-transform: uppercase; color: var(--gold); line-height: 1.5;
 }
 :is(#main, .page-head) .page-lede { font-size: var(--fs-md); line-height: 1.6; color: var(--text-dim); max-width: 46rem }
-
-/* Breadcrumbs: seven class names across the site, one look. html raises the
-   specificity above the page's own single-class rule. */
 html :is(.breadcrumb, .bc, .hm-bc, .fs-bc, .pb-bc, .cal-bc, .qs-bc) {
   font-family: var(--font-body); font-size: var(--fs-xs); color: var(--text-dim); line-height: 1.5; letter-spacing: 0;
 }
 html :is(.breadcrumb, .bc, .hm-bc, .fs-bc, .pb-bc, .cal-bc, .qs-bc) a { color: var(--link); font-weight: 600 }
-
-/* Table heads: the cash-bids table head (mono, small caps-style, muted). */
 #main thead th {
   font-family: var(--font-mono); font-size: var(--fs-2xs); font-weight: 700;
   letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted);
 }
-
-/* Links inside running text: gold and underlined on every page. */
 #main p a:not([class]) { color: var(--link); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px }
-
-/* Buttons. .btn-primary is the shared signup button (components/signup-ask.js
-   .sa-b), the one primary action on the homepage and cash bids. */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
   min-height: var(--btn-h); padding: .5rem 1rem; border: 2px solid transparent; border-radius: var(--btn-r);
@@ -1211,28 +809,13 @@ html :is(.breadcrumb, .bc, .hm-bc, .fs-bc, .pb-bc, .cal-bc, .qs-bc) a { color: v
 .btn-primary:hover { filter: brightness(.94) }
 .btn-secondary { background: transparent; color: var(--text); border-color: var(--border-2) }
 .btn-secondary:hover { border-color: var(--brand); color: var(--brand) }
-/* Toggle chips (filters, crop pickers): .is-on / .active / aria-pressed is the selected one. */
 .chip {
   display: inline-flex; align-items: center; justify-content: center; min-height: var(--btn-h); padding: .35rem .85rem;
   border: 1px solid var(--border-2); border-radius: var(--r-sm); background: var(--surface);
   font-family: var(--font-body); font-size: var(--fs-sm); font-weight: 600; color: var(--text-dim); cursor: pointer;
 }
 .chip:is(.is-on, .active, [aria-pressed="true"]) { background: var(--brand-fill); border-color: var(--brand-fill); color: #0a0c0d }
-/* The page-level chips that predate .chip (cash bids .cb-filt, USDA calendar
-   .cal-filter, yield .ye-tab, hail map .hm-rchip, homepage .tip-b) share only
-   the hit area here; each keeps its own look until its page moves to .chip. */
 :is(.cb-filt, .cal-filter, .ye-tab, .hm-rchip, .tip-b) { min-height: var(--btn-h) }
-
-/* Section heads (2026-10-12). Measured: h2 came in 13 looks on 16 pages.
-   The bare rule is :where() (0,0,1), so it only reaches an h2 that no page
-   rule sizes; every page's own h2 rule still wins. It sets the size only:
-   measured on the ten busiest pages, a shared line-height moved 40+ heads
-   that inherit the body's 1.65. A page adopts the shared
-   look by adding a class:
-     .sec-h      the section head: Inter 700 at --fs-xl, sentence case, ink
-     .sec-label  the small mono kicker for label-style heads ("RESULTS")
-   Those two are written against :is(#main, .page-head) like ONE LOOK above,
-   so the class beats the page's single-class rule with no !important. */
 :where(#main, .page-head) h2 { font-size: var(--fs-xl) }
 :is(#main, .page-head) .sec-h, .sec-h {
   font-family: var(--font-display); font-size: var(--fs-xl); font-weight: 700;
@@ -1242,11 +825,6 @@ html :is(.breadcrumb, .bc, .hm-bc, .fs-bc, .pb-bc, .cal-bc, .qs-bc) a { color: v
   font-family: var(--font-mono); font-size: var(--fs-2xs); font-weight: 700; line-height: 1.5;
   letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted);
 }
-
-/* Form field: a label over a 44px input, select or textarea. 16px text so
-   iOS does not zoom; the focus ring is the sitewide :focus-visible one.
-     <label class="field"><span>Yield (bu/ac)</span><input ...></label>
-   or put .field on the control itself. */
 .field { display: flex; flex-direction: column; gap: .3rem; min-width: 0 }
 .field > :is(span, label, .field-label) { font-size: var(--fs-xs); font-weight: 600; color: var(--text-dim); line-height: 1.4 }
 .field :is(input, select, textarea), :is(input, select, textarea).field {
@@ -1257,11 +835,6 @@ html :is(.breadcrumb, .bc, .hm-bc, .fs-bc, .pb-bc, .cal-bc, .qs-bc) a { color: v
 }
 .field :is(input, select, textarea):focus, :is(input, select, textarea).field:focus { border-color: var(--brand) }
 .field :is(input, select, textarea):focus-visible, :is(input, select, textarea).field:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px }
-
-/* Method note: how a number is built, its sources, who reviewed it. Quiet:
-   small muted text under a hairline, so it reads as a footnote to the card.
-     <div class="method-note"><b>Method</b> ... · <b>Sources</b> ... ·
-       Reviewed by Sigurd Lindquist, CCA</div> */
 .method-note {
   margin-top: 1rem; padding-top: .7rem; border-top: 1px solid var(--border);
   font-family: var(--font-body); font-size: var(--fs-xs); line-height: 1.6; color: var(--text-muted);
@@ -1270,8 +843,6 @@ html :is(.breadcrumb, .bc, .hm-bc, .fs-bc, .pb-bc, .cal-bc, .qs-bc) a { color: v
 .method-note p + p { margin-top: .4rem }
 .method-note :is(b, strong) { color: var(--text-dim); font-weight: 600 }
 .method-note a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px }
-
-/* Data table and numbers, for new markup. */
 .tbl { width: 100%; border-collapse: collapse }
 .tbl th, .tbl td { padding: .5rem .65rem; text-align: left; border-bottom: 1px solid var(--border) }
 .tbl thead th { border-bottom: 2px solid var(--border); white-space: nowrap }

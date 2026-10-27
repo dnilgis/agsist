@@ -1,7 +1,4 @@
-<!-- 2026-10-01 r7-design: crop icons removed (5) -->
-<!-- AGSIST Footer — injected by loader.js into #site-footer -->
 <style>
-  /* ── Ad Space showcase (Supporter tier) — replaces Farmers First Network ── */
   .footer-adspace{--ad:#e8743a;--ad-rgb:232,116,58;border-top:1px solid var(--border);margin-top:1.25rem;padding-top:1.25rem;}
   .adspace-head{display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap;margin-bottom:.85rem;}
   .adspace-lbl{font-size:0.82rem;font-weight:600;color:var(--text-muted);}
@@ -9,10 +6,6 @@
   .adspace-sub strong{color:var(--text);font-weight:600;}
   .adspace-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(168px,100%),1fr));gap:.6rem;}
   .ad-slot{display:flex;flex-direction:column;justify-content:space-between;gap:.5rem;min-height:96px;padding:.8rem .85rem;border-radius:8px;text-decoration:none;}
-  /* 2026-10-11 (Sig, "tone it down"): no open slot. This strip is hidden
-     until data/supporters.json has an active supporter; components/loader.js
-     renderSupporters() then fills it and shows it. The one way in when
-     nothing is sold is the quiet Advertise link in the bottom row. */
   .footer-adspace[hidden]{display:none!important;}
   .ad-slot-tag{align-self:flex-start;font-family:'JetBrains Mono',monospace;font-size:0.735rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ad);border:1px solid rgba(var(--ad-rgb),.45);border-radius:3px;padding:.1rem .4rem;}
   .ad-slot-pitch{font-size:.92rem;font-weight:700;color:var(--text);line-height:1.25;}
@@ -26,17 +19,6 @@
   @media (max-width:560px){
     .adspace-row{grid-template-columns:repeat(auto-fit,minmax(min(140px,100%),1fr));}
   }
-  /* 2026-10-08: link columns are <details>. Wide screens: open, and the
-     heading looks and sits exactly as the old <h2> did (loader.js keeps them
-     open and stops a click folding them). Phones (700px and under): loader.js
-     closes them, so the footer is five tap rows, not about 60 links in one
-     column. Every link stays in the HTML either way. */
-  /* css/home.css (under 900px) makes .footer-col a flex column and its links
-     inline-flex; a flex <details> does not stack them, so the column is a
-     block and each link a full row, which is how they rendered before. */
-  /* 2026-10-18: the column name is a span, not an <h2>: a heading inside
-     <summary> is read out oddly, and on wide screens it looked like a button.
-     Same look as the old .footer-col h2 in styles.css. */
   .footer-col .footer-h{display:block;line-height:1.65;font-family:var(--font-mono);font-size:0.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);margin-bottom:.45rem;}
   footer details.footer-col{display:block;}
   footer details.footer-col > a{display:flex!important;}
@@ -60,11 +42,7 @@
     .footer .footer-legal{justify-content:center;row-gap:0;}
   }
   @media (prefers-reduced-motion:reduce){footer details.footer-col > summary::after{transition:none;}}
-  /* 2026-10-18 footer v2 (Sig: "footer seems strained"): one grid, the header's max width and left edge.
-     Band: logo + one-line tagline in columns 1-3; columns 4-6 hold the daily email box, then the daily
-     links and the Rain Print line (alone and level with the logo when the box is hidden for a subscriber).
-     Then Prices | Livestock | Field | Money & Land | Work with us | About on the same six columns.
-     Last, one small line and the legal links. Spacing steps: .5 / 1 / 1.5 / 2 rem. */
+  /* 2026-10-18 footer */
   footer.footer{padding:2rem 0 0}
   footer.footer .footer-band,footer.footer .footer-cols{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));column-gap:1.5rem}
   footer.footer .footer-band{align-items:start;row-gap:1rem;padding:0 0 1.5rem;margin:0;border-bottom:1px solid var(--border)}
@@ -76,7 +54,6 @@
   .footer-band-side{grid-column:4 / span 3;min-width:0;display:flex;flex-direction:column;gap:.5rem}
   .footer-band-ask:has(> [data-signup-ask][hidden]){display:none}
   .footer-band-ask .sa-ask{margin:0}
-  /* the box sits in half the grid: question on its own line, then email + button */
   .footer-band-ask .sa-f{grid-template-columns:minmax(0,1fr) auto}
   .footer-band-ask .sa-l{grid-column:1 / -1}
   .footer-band-ask .sa-in{grid-column:1}
@@ -96,8 +73,6 @@
   .footer-small a{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px}
   .footer-small a:hover{color:var(--brand)}
   footer.footer .footer-legal{gap:.5rem}
-  /* Advertise (Oct 22): in the data line itself, so it adds no row; the padding makes a 44 px tap target
-     without making the line taller (inline padding does not move the line box). */
   .footer-small a.footer-adv{display:inline;padding:15px 0;margin-left:.35rem;font-weight:600;white-space:nowrap}
   @media (max-width:1100px){
     footer.footer .footer-cols{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -120,10 +95,11 @@
   <div class="footer-inner">
     <div class="footer-band">
       <div class="footer-brand">
-        <style>/* self-contained theme swap: footer can render without header.html (fallback path) */
+        <style>
         .ftlg-l{display:none}
         [data-theme="light"] .ftlg-l{display:inline-block}
-        [data-theme="light"] .ftlg-d{display:none}</style>
+        [data-theme="light"] .ftlg-d{display:none}
+</style>
         <span class="footer-logo"><img class="ftlg-d" src="/img/logo-agsist-ondark.svg" alt="AGSIST" width="317" height="148"><img class="ftlg-l" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="317" height="148"></span>
         <p class="footer-tagline">Free agricultural prices, tools &amp; news. Built in Chetek, Wisconsin.</p>
       </div>
@@ -231,7 +207,6 @@
       <div class="adspace-head">
         <span class="adspace-lbl">Advertise on AGSIST</span>
       </div>
-      <!-- loader.js fills this with active supporters and unhides the strip -->
       <div class="adspace-row" id="adspace-row"></div>
     </div>
     <div class="footer-bottom">
