@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-27-company-count-bid-page",
+   "date": "2026-10-27",
+   "title": "State basis: company counts match one more way",
+   "line": "When a company lists another business's elevator on its own bid page, the two count as one company beside the state basis. Wisconsin corn went from 20 companies to 19.",
+   "link": "/cash-bids/wisconsin/"
+  },
+  {
    "id": "2026-10-27-fast-facts-rain-print",
    "date": "2026-10-27",
    "title": "Fast Facts: make the county's Rain Print your own",
