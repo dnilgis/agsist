@@ -154,14 +154,14 @@
     if (el.getAttribute('data-ls-done')) return;
     el.setAttribute('data-ls-done', '1');
     get('/data/land-sales/latest.json').then(function (L) {
-      if (!L) return;   /* the card stays hidden */
+      if (!L) return;   /* the card keeps its plain words and its link to /land-sales/ */
       var big = (L.top || [])[0];
       var v = el.querySelector('.land-v'), s = el.querySelector('.land-s'), k = el.querySelector('.land-k');
       if (k) k.textContent = 'Farm sales, ' + L.label;
-      if (v) v.textContent = L.n.toLocaleString('en-US') + ' recorded in ' + (L.states || []).join(', ').replace(/, ([A-Z]{2})$/, ' and $1') + (big ? '; largest ' + acres(big.acres) + ', ' + big.county + ' Co.' : '');
+      /* same one line as the words it replaces, so the card does not change height (no layout shift) */
+      if (v) v.textContent = L.n.toLocaleString('en-US') + ' recorded in ' + (L.states || []).join(', ').replace(/, ([A-Z]{2})$/, ' and $1');
       if (s) s.textContent = 'Biggest buyers and unusual prices →';
       if (L.url) el.setAttribute('href', L.url);
-      el.hidden = false;
     });
   }
 

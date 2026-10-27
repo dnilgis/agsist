@@ -350,7 +350,11 @@ def head(title, desc, url, ld, early):
             '<meta name="robots" content="index, follow, max-snippet:-1">\n<link rel="canonical" href="%s">\n'
             '<meta property="og:type" content="article">\n<meta property="og:site_name" content="AGSIST">\n'
             '<meta property="og:title" content="%s">\n<meta property="og:description" content="%s">\n<meta property="og:url" content="%s">\n'
-            '<meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">\n'
+            '<meta property="og:image" content="https://agsist.com/img/og/farmland-atlas.jpg">\n'
+            '<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n'
+            '<meta property="og:image:alt" content="AGSIST Farmland Atlas: land values, rent and farm sales by county">\n'
+            '<meta name="twitter:card" content="summary_large_image">\n'
+            '<meta name="twitter:image" content="https://agsist.com/img/og/farmland-atlas.jpg">\n'
             "%s\n%s\n</head>\n<body>\n<a href=\"#main\" class=\"skip\">Skip to content</a>\n<div id=\"site-header\"></div>\n"
             '<main id="main" class="main ls" tabindex="-1">\n'
             % (e(title), e(desc), url, e(title.replace(" | AGSIST", "")), e(desc), url, early, ldh))

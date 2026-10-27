@@ -224,7 +224,8 @@ test("where the sales show: Atlas county pages, IL and WI rent pages, homepage, 
   assert.match(loader, /section\[data-atlas-sales="county"\]/);
   assert.match(loader, /rent\\\/\(illinois\|wisconsin\|indiana\)/);
   assert.match(loader, /farmland-atlas\\\/indiana/, "Indiana's Atlas county pages load it too");
-  assert.match(read("index.html"), /<a class="land-cell" id="land-sales" href="\/land-sales\/" data-land-sales="home"[^>]* hidden>/, "the homepage card waits for its data");
+  // the card holds its space from the first paint (no hidden-then-shown jump; CLS) and works with no data
+  assert.match(read("index.html"), /<a class="land-cell" id="land-sales" href="\/land-sales\/" data-land-sales="home" data-track="land"><span class="land-k">Farm sales<\/span><span class="land-v">[^<]+<\/span>/);
   assert.match(read("fast-facts.html"), /<div class="ls-near" id="h-land-sales" data-land-sales="near" hidden><\/div>/, "Fast Facts host (an h- hash opens My place)");
   const s = read("components/search.js");
   assert.match(s, /'Land sales near here: '/);
