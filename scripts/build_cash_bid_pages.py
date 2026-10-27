@@ -2223,8 +2223,10 @@ def state_basis_rows(merged, index):
     rows = SB.fresh_rows(merged, index)
     SB.flag_futures_disagreement(rows)
     out = SB.nearby(rows)
+    sites = {s_["id"]: s_.get("website") for s_ in index.get("sources") or [] if s_.get("id")}
     for r in out:        # printed words only; keys stay as the board gave them
         r["operator"] = display_name(r.get("operator"))
+        r["site"] = sites.get(r["source"]) or ""      # the company count joins boards on it (BM.companies_behind)
         if r.get("city"):
             r["city"] = clean_place(r["city"])
     return out
