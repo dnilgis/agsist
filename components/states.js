@@ -1,31 +1,6 @@
-/* components/states.js: loading, empty, error and stale states (window.AgStates).
-   Styles in components/states.css. loader.js puts both on every page; a page
-   that calls AgStates from its own script loads this file itself with defer.
-
-   AgStates.skeleton(el, shape)   gray blocks shaped like the content.
-       shape: a number (that many text lines), or {lines:n}, {rows:n, h:px},
-       {cards:n, h:px}, {fill:true} (fills a reserved box), {num:true} (one
-       number inside a sentence). The element keeps the height the page gave it.
-   AgStates.error(el, {msg, retry, inline})
-       "Prices didn't load." plus a button that runs retry(). No retry, no button.
-   AgStates.empty(el, msg)        a plain sentence where data would be.
-   AgStates.done(el)              clears the busy flag after the page renders.
-   AgStates.load(el, {url | get, render, shape, msg, timeout})
-       skeleton, fetch, render(data); on failure the error box, and its retry
-       starts over. Returns the promise.
-   AgStates.ago(iso)              "12 min ago", "3 hours ago", "2 days ago".
-   AgStates.stale(el, iso, {maxHours, what})
-       when the feed is older than maxHours, writes "<what> is 2 days old" into
-       el and returns true. Fresh: leaves el alone and returns false.
-   window.AgStatesQ.push(fn)
-       runs fn once this file has loaded (at once if it already has). A page
-       that fails before then writes its plain text first and queues fn.
-
-   Honest by construction: nothing here makes up a number or hides one. */
 (function () {
   'use strict';
   if (window.AgStates) return;
-
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -33,7 +8,6 @@
   }
   function el$(el) { return typeof el === 'string' ? document.getElementById(el) || document.querySelector(el) : el; }
   function coarse() { try { return window.matchMedia('(pointer:coarse)').matches; } catch (e) { return false; } }
-
   function shapeHtml(shape) {
     if (shape == null) shape = 3;
     if (typeof shape === 'number') shape = { lines: shape };
@@ -54,15 +28,12 @@
     for (i = 0; i < n; i++) h += '<span class="st-sk st-line ' + (i < n - 1 ? w[i % w.length] : '') + '" aria-hidden="true"></span>';
     return h;
   }
-
   function skeleton(el, shape) {
     el = el$(el); if (!el) return;
     el.setAttribute('aria-busy', 'true');
     el.innerHTML = shapeHtml(shape);
   }
-
   function done(el) { el = el$(el); if (el) el.removeAttribute('aria-busy'); }
-
   function error(el, o) {
     el = el$(el); if (!el) return;
     o = o || {};
@@ -79,7 +50,6 @@
       try { o.retry(); } catch (e) { b.disabled = false; b.textContent = 'Try again'; }
     });
   }
-
   function empty(el, msg, o) {
     el = el$(el); if (!el) return;
     o = o || {};
@@ -87,7 +57,6 @@
     el.innerHTML = o.inline ? '<span class="st-inline">' + esc(msg) + '</span>'
                             : '<div class="st-msg' + (o.fill ? ' st-msg--fill' : '') + '"><p>' + esc(msg) + '</p></div>';
   }
-
   function fetchJSON(url, o) {
     o = o || {};
     var ctl = typeof AbortController === 'function' ? new AbortController() : null;
@@ -96,7 +65,6 @@
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function (d) { clearTimeout(t); return d; }, function (e) { clearTimeout(t); throw e; });
   }
-
   function load(el, o) {
     el = el$(el); if (!el) return Promise.resolve();
     skeleton(el, o.shape);
@@ -107,7 +75,6 @@
         if (o.onError) try { o.onError(e); } catch (x) {}
       });
   }
-
   function ago(iso) {
     var t = new Date(iso).getTime();
     if (!isFinite(t)) return '';
@@ -134,13 +101,7 @@
     if (el) el.innerHTML = '<span class="st-stale">' + esc((o.what || 'This feed') + ' is ' + age(iso) + ' old') + '</span>';
     return true;
   }
-
   window.AgStates = { skeleton: skeleton, shape: shapeHtml, done: done, error: error, empty: empty, load: load, fetchJSON: fetchJSON, ago: ago, age: age, stale: stale };
-
-  /* A page's own script can fail a fetch before this deferred file has run
-     (an offline phone fails at once). It then writes its plain fallback and
-     queues the same step: (window.AgStatesQ = window.AgStatesQ || []).push(fn).
-     Here the queue runs, and anything pushed later runs at once. */
   var q = window.AgStatesQ;
   window.AgStatesQ = { push: function (f) { try { f(); } catch (e) {} } };
   if (q && q.length) for (var i = 0; i < q.length; i++) { try { q[i](); } catch (e) {} }
