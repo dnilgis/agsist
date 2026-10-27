@@ -237,6 +237,10 @@ def report(root):
         r["ok"] = not bad
         if bad:
             fails.append(r["name"] + ": " + "; ".join(bad))
+    if root == ROOT:
+        # a data set that vanished (a state's land file, a renamed folder) must not pass by not being there
+        names = {r["name"] for r in rows}
+        fails += [f"{n}: not read (no such data set this run)" for n in FLOORS if n not in names]
     return rows, fails
 
 
