@@ -14,8 +14,8 @@
     {
      "tag": "fixed",
      "page": "/daily",
-     "name": "Four more Daily lines corrected the same way",
-     "text": "The Oct 10, 15 and 26 issues had lines of the same kinds: a cash value read from futures (Oct 10 and 26), an expired hog contract quoted as current and a reason for crude's drop with no source (Oct 15). Each is fixed where it stood, with the old wording kept in a dated note on the page."
+     "name": "Six more Daily lines corrected the same way",
+     "text": "The Oct 10, 15, 21 and 26 issues had lines of the same kinds: a cash value read from futures (Oct 10, 21 and 26), an expired hog contract quoted as current and a reason for crude's drop with no source (Oct 15), and early trades called the day before's closes (Oct 21). Each is fixed where it stood, with the old wording kept in a dated note on the page."
     },
     {
      "tag": "improved",
