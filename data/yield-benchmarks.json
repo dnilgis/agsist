@@ -9,6 +9,7 @@
       "usda_current": 178.5,
       "usda_current_label": "USDA, September WASDE",
       "usda_current_as_of": "2026-09-11",
+      "nass_correction": {"id": "nass-crop-production-2026-09-11-corn-yield", "printed": 178.5, "corrected": 178.8, "notice_date": "2026-10-23", "source": "https://www.nass.usda.gov/Newsroom/Notices/2026/10-24-2026.php", "note": "USDA correction, Oct 23, 2026: NASS corrected its September 11 Crop Production corn yield to 178.8 bu/acre, from 178.5 as first printed. The figure here is as USDA printed it."},
       "final": null,
       "final_source": null
     },

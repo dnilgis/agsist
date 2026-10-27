@@ -44,7 +44,7 @@
     },
     "growing_season_2026": {
       "status": "active",
-      "updated": "2026-10-20",
+      "updated": "2026-10-27",
       "source": "https://www.nass.usda.gov/Newsroom/Executive_Briefings/2026/10-09-2026.pdf",
       "source_date": "2026-10-09",
       "sources_also": [
@@ -56,7 +56,8 @@
         "Soybean yield 53.1 bu/acre, up from 52.8 in September; production 4.562 billion bushels on 85.9 million harvested acres (86.9 million planted).",
         "2026/27 ending stocks: corn 1.849 billion bushels (1.567 in September), soybeans 315 million (310), wheat 740 million (717).",
         "Season-average farm price: corn $4.70 (down from $4.80), soybeans $12.00 (unchanged), wheat $6.30 (down from $6.40).",
-        "These are USDA's current numbers until the next Crop Production and WASDE on Nov 10, 2026. August's 180.7/52.7 and September's 178.5/52.8 yields are superseded and must never be quoted as current."
+        "These are USDA's current numbers until the next Crop Production and WASDE on Nov 10, 2026. August's 180.7/52.7 and September's 178.5/52.8 yields are superseded and must never be quoted as current.",
+      "USDA correction, Oct 23-24, 2026 (NASS notices, https://www.nass.usda.gov/Newsroom/Notices/2026/10-24-2026.php): NASS corrected its September 11 Crop Production corn yields. U.S. 178.8 bu/acre (first printed 178.5), Kansas 118 (121), Nebraska 182 (177). Cause: wrong acreage weights combining irrigated and non-irrigated field samples in Kansas and Nebraska. NASS says the October 9 forecasts were reviewed and did not change. Corrected September production totals are not on file: do not compute or quote them. If September's corn yield comes up, give both: 178.5 as printed, 178.8 as corrected."
       ]
     },
     "cattle_mexico_screwworm": {
