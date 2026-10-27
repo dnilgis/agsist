@@ -324,7 +324,7 @@ test("a saved state opens on its median basis for the picked contract, labeled, 
     await pg.waitForFunction(() => document.getElementById("basis").value !== "0");
     assert.equal(await pg.inputValue("#basis"), e.median.toFixed(2));
     const tag = await txt(pg, "#src-basis");
-    assert.match(tag, new RegExp(`^Iowa median corn basis, ${e.n} elevators, Dec '26 delivery, as of [A-Z][a-z]{2} \\d+, \\d{4}\\. Basis by state$`), tag);
+    assert.match(tag, new RegExp(`^Iowa median corn basis, ${e.companies != null ? `${e.n} locations, ${e.companies} companies` : `${e.n} elevators`}, Dec '26 delivery, as of [A-Z][a-z]{2} \\d+, \\d{4}\\. Basis by state$`), tag);
     assert.equal(await pg.$eval("#src-basis a", (a) => a.getAttribute("href")), "/basis");
     /* futures needed = cash break-even - basis */
     const be = Number((await txt(pg, "#ans-be")).slice(1));
