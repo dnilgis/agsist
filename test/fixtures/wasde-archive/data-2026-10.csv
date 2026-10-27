@@ -1,0 +1,14 @@
+WasdeNumber,ReportDate,ReportTitle,Attribute,ReliabilityProjection,Commodity,Region,MarketYear,ProjEstFlag,AnnualQuarterFlag,Value,Unit,ReleaseDate,ReleaseTime,ForecastYear,ForecastMonth
+676,October 2026,U.S. Feed Grains and Corn Supply and Use,Ending Stocks,,Corn,United States,2026/27,Proj.,Annual,1800,Million Bushels,2026-10-09,12:00:00 PM,2026,10
+676,October 2026,U.S. Feed Grains and Corn Supply and Use,Ending Stocks,,Corn,United States,2026/27,Proj.,Annual,1500,Million Bushels,2026-10-09,12:00:00 PM,2026,9
+676,October 2026,U.S. Feed Grains and Corn Supply and Use,Production,,Corn,United States,2026/27,Proj.,Annual,16000,Million Bushels,2026-10-09,12:00:00 PM,2026,10
+676,October 2026,U.S. Feed Grains and Corn Supply and Use,Production,,Corn,United States,2026/27,Proj.,Annual,16001,Million Bushels,2026-10-09,12:00:00 PM,2026,10
+676,October 2026,U.S. Feed Grains and Corn Supply and Use,Yield per Harvested Acre,,Corn,United States,2026/27,Proj.,Annual,181.0,Bushels,2026-10-09,12:00:00 PM,2026,10
+676,October 2026,U.S. Feed Grains and Corn Supply and Use,Feed and Residual,,Corn,United States,2026/27,Proj.,Sep-Nov,2100,Million Bushels,2026-10-09,12:00:00 PM,2026,10
+676,October 2026,U.S. Feed Grains and Corn Supply and Use,Avg. Farm Price,,Corn,United States,2026/27,Proj.,Annual,n/a,$/bu,2026-10-09,12:00:00 PM,2026,10
+676,October 2026,World Corn Supply and Use,Ending Stocks,,Corn,United States,2026/27,Proj.,Annual,47,Million Metric Tons,2026-10-09,12:00:00 PM,2026,10
+676,October 2026,U.S. Soybeans and Products Supply and Use (Domestic Measure),Ending Stocks,,Soybeans,United States,2026/27,Proj.,Annual,310,Million Bushels,2026-10-09,12:00:00 PM,2026,10
+676,October 2026,U.S. Soybeans and Products Supply and Use (Domestic Measure),Ending Stocks,,Soybean Meal,United States,2026/27,Proj.,Annual,400,Thousand Short Tons,2026-10-09,12:00:00 PM,2026,10
+676,October 2026,U.S. Wheat Supply and Use,Ending Stocks,,Wheat,United States,2026/27,Proj.,Annual,740,Million Bushels,2026-10-09,12:00:00 PM,2026,10
+676,October 2026,U.S. Wheat by Class: Supply and Use,Ending Stocks,,Hard Red Winter,United States,2026/27,Proj.,Annual,300,Million Bushels,2026-10-09,12:00:00 PM,2026,10
+676,October 2026,U.S. Wheat by Class: Supply and Use,Ending Stocks,,All Wheat,United States,2026/27,Proj.,Annual,741,Million Bushels,2026-10-09,12:00:00 PM,2026,10

@@ -1,0 +1,13 @@
+WasdeNumber,ReportDate,ReportTitle,Attribute,ReliabilityProjection,Commodity,Region,MarketYear,ProjEstFlag,AnnualQuarterFlag,Value,Unit,ReleaseDate,ReleaseTime,ForecastYear,ForecastMonth
+481,April 2010,U.S. Feed Grains and Corn Supply and Use,Ending Stocks,,Corn,United States,2009/10,Proj.,Annual,1900,Million Bushels,4/9/2010,12:00:00 PM,2010,4
+481,April 2010,U.S. Feed Grains and Corn Supply and Use,Production,,Corn,United States,2009/10,Proj.,Annual,13100,Million Bushels,4/9/2010,12:00:00 PM,2010,4
+481,April 2010,U.S. Feed Grains and Corn Supply and Use,Ending Stocks,,Corn,United States,2008/09,Est.,Annual,1670,Million Bushels,4/9/2010,12:00:00 PM,2010,4
+481,April 2010,U.S. Feed Grains and Corn Supply and Use,Ending Stocks,,Sorghum,United States,2009/10,Proj.,Annual,40,Million Bushels,4/9/2010,12:00:00 PM,2010,4
+481,April 2010,U.S. Soybeans and Products Supply and Use (Domestic Measure),Ending Stocks,,Soybeans,United States,2009/10,Proj.,Annual,190,Million Bushels,4/9/2010,12:00:00 PM,2010,4
+481,April 2010,U.S. Wheat Supply and Use,Ending Stocks,,Wheat,United States,2009/10,Proj.,Annual,950,Million Bushels,4/9/2010,12:00:00 PM,2010,4
+482,May 2010,U.S. Feed Grains and Corn Supply and Use,Ending Stocks,,Corn,United States,2009/10,Est.,Annual,1880,Million Bushels,5/11/2010,12:00:00 PM,2010,5
+482,May 2010,U.S. Feed Grains and Corn Supply and Use,Ending Stocks,,Corn,United States,2010/11,Proj.,Annual,1600,Million Bushels,5/11/2010,12:00:00 PM,2010,5
+482,May 2010,U.S. Feed Grains and Corn Supply and Use,Production,,Corn,United States,2009/10,Est.,Annual,13110,Million Bushels,5/11/2010,12:00:00 PM,2010,5
+482,May 2010,U.S. Soybeans and Products Supply and Use (Domestic Measure),Ending Stocks,,Soybeans,United States,2010/11,Proj.,Annual,360,Million Bushels,5/11/2010,12:00:00 PM,2010,5
+482,May 2010,U.S. Wheat Supply and Use,Ending Stocks,,Wheat,United States,2010/11,Proj.,Annual,1000,Million Bushels,5/11/2010,12:00:00 PM,2010,5
+482,May 2010,U.S. Wheat Supply and Use,Ending Stocks,,Wheat,Canada,2010/11,Proj.,Annual,7,Million Metric Tons,5/11/2010,12:00:00 PM,2010,5
