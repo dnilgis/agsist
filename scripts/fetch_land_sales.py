@@ -544,8 +544,10 @@ def build(st, recs, gaz, now, prior=None, months=None):
         by.setdefault(c["fips"], []).append(r)
     names = any(r.get("grantor") for r in recs)
     ac1 = any(r.get("ac1") for r in recs)
-    # Wisconsin rows keep their filed date, so a later newest-only run can tell the latest filing of a return
-    rec = st == "WI" and any(r.get("rec") for r in recs)
+    # Wisconsin rows keep their filed date, so a later newest-only run can tell the latest filing of a return.
+    # Illinois rows keep it too (2026-10-23): the monthly land sale email lists sales by the month they
+    # were recorded (scripts/land_alert.py), and Field Scout shows it as "Recorded (filed)".
+    rec = st in ("WI", "IL") and any(r.get("rec") for r in recs)
     cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt"] + (["grantor", "grantee"] if names else []) + (["ac1"] if ac1 else []) + (["rec"] if rec else [])
     index, total, files = [], 0, []
     for fips, rs in sorted(by.items()):
@@ -1938,6 +1940,12 @@ def selftest():
         _, _, derived = held("WI", none_dir)
         os.rmdir(none_dir)
         ck("merge: no files on disk means nothing held", derived == set())
+        build("IL", [dict(r) for r in il], {}, "2026-10-23T00:00:00Z")
+        ixl = json.load(open(os.path.join(OUT, "il", "index.json")))
+        fl = [json.load(open(os.path.join(OUT, "il", c["fips"] + ".json"))) for c in ixl["counties"]]
+        recs_il = sorted((r[-1] or "") for f in fl for r in f["rows"])
+        ck("IL build keeps the recorded date (the land sale email lists sales by it); a declaration without one stays blank",
+           bool(fl) and all(f["cols"][-1] == "rec" for f in fl) and recs_il == ["", "2026-10-09", "2026-10-09"])
     finally:
         import shutil
         shutil.rmtree(OUT, ignore_errors=True)
