@@ -108,6 +108,34 @@ REAL = {
     ]},
 }
 
+# PARENTS (Oct 27, fx/bidkeys): data/ids/board-parents.json gives a board a parent only from evidence on
+# the board itself (scripts/board_parents.py). Wisconsin corn, Dec '26 headline, network snapshot of
+# 2026-10-27T18:07:59Z: Landmark Services Cooperative's Burlington board is listed on ALCIVIA's own cash bid
+# page (alciviacoop.agricharts.com), so it is ALCIVIA's: 66 locations, 20 companies before, 19 with parents.
+# Kansas, Nebraska and North Dakota have no board-page parent; their CHS boards were one CHS already.
+WI_PARENTS = {"n": 66, "before": 20, "companies": 19, "boards": [
+    ("ALCIVIA", "alciviacoop.agricharts.com", 14, ""),
+    ("Burnett Dairy Cooperative", "burnettdairy.com", 1, ""),
+    ("Country Visions Cooperative", "countryvisionscoop.com", 8, ""),
+    ("Cushing Cooperative Society", "cushingcoop.com", 1, ""),
+    ("Duffy Grain, Inc.", "duffygrain.com", 1, ""),
+    ("Dummer's Grain Service", "dummersgrain.com", 1, ""),
+    ("Eastland Feed & Grain, Inc", "efgi.net", 4, ""),
+    ("Innovative Ag Services", "innovativeag.com", 2, ""),
+    ("Landmark Services Cooperative", "landmark.coop", 1, "ALCIVIA"),
+    ("Medford Cooperative", "medfordcoop.com", 1, ""),
+    ("Meyer Brothers Grain", "meyerbrothersgrain.com", 1, ""),
+    ("Nutrition Service Co. LLC", "nutritionservice.com", 5, ""),
+    ("Premier Cooperative", "premiercooperative.com", 4, ""),
+    ("Reddy Feed and Grain", "reddyagservice.com", 1, ""),
+    ("See-Mor Grain", "seemorgrain.com", 1, ""),
+    ("United Cooperative", "unitedcooperative.com", 16, ""),
+    ("United Wisconsin Grain Producers", "uwgp.com", 1, ""),
+    ("Walsh Grain Farms, Inc.", "walshgrain.com", 1, ""),
+    ("Wheaton Grain", "wheatongrain.com", 1, ""),
+    ("Wolf River Grain", "wolfrivergrain.com", 1, ""),
+]}
+
 fails, passes = [], 0
 
 
@@ -142,6 +170,31 @@ check(len({o for o, _, _ in ne["boards"]}) - ne["companies"] == 2, "NE: one shar
 # ND: every CHS name is one company
 nd_chs = [o for o, _, _ in REAL["ND"]["boards"] if o.startswith("CHS")]
 check(len(nd_chs) == 6 and BM.companies_behind([{"operator": o, "site": ""} for o in nd_chs]) == 1, "ND: six CHS names, one CHS")
+# parents: WI folds Landmark into ALCIVIA; without the parent column the count is as before
+wi = [{"operator": o, "site": f"https://www.{st_}/", **({"parent": p} if p else {})}
+      for o, st_, k, p in WI_PARENTS["boards"] for _ in range(k)]
+check(len(wi) == WI_PARENTS["n"], f"WI: fixture has {len(wi)} locations")
+check(BM.companies_behind(wi) == WI_PARENTS["companies"], f"WI with parents: {BM.companies_behind(wi)} companies, expected 19")
+check(BM.companies_behind([{k: v for k, v in r.items() if k != "parent"} for r in wi]) == WI_PARENTS["before"],
+      "WI without parents: 20 companies, as before")
+for st in ("KS", "NE", "ND"):     # the CHS-brand parent changes nothing: CHS was one company already
+    rp = [dict(r, parent="CHS Inc.") if r["operator"].startswith("CHS") else r for r in rows(st)]
+    check(BM.companies_behind(rp) == REAL[st]["companies"], f"{st}: the CHS parent changes the count")
+check(BM.companies_behind([{"operator": "Pro Cooperative", "site": "", "dest": "AGP"}, {"operator": "AGP", "site": ""}]) == 2,
+      "a destination buyer never joins the co-op that delivers to it")
+# the cash bid build attaches the parent from data/ids/board-parents.json by board id, and nothing without it
+import build_cash_bid_pages as _CB  # noqa: E402
+_CB.BOARD_PARENTS = {"alciviacoop-burlington": {"parent": "ALCIVIA", "pv": "board-page:alciviacoop.agricharts.com"}}
+_rows = [{"source": "alciviacoop-burlington", "operator": "Landmark Services Cooperative"}, {"source": "x", "operator": "Y"}]
+_orig = (_CB.SB.fresh_rows, _CB.SB.flag_futures_disagreement, _CB.SB.nearby)
+_CB.SB.fresh_rows, _CB.SB.flag_futures_disagreement, _CB.SB.nearby = (lambda m, i: _rows), (lambda r: None), (lambda r: r)
+try:
+    _got = _CB.state_basis_rows({}, {"sources": []})
+finally:
+    _CB.SB.fresh_rows, _CB.SB.flag_futures_disagreement, _CB.SB.nearby = _orig
+    _CB.BOARD_PARENTS = None
+check(_got[0].get("parent") == "ALCIVIA" and "parent" not in _got[1], f"state_basis_rows attaches the parent by board id: {_got}")
+
 # a stat carries it to data/basis-states.json
 st = BM.state_basis([dict(r, source=f"s{i}", group="corn", crop="corn", commodity="Corn", period="2026-10",
                           contract=("ZC", 11, 2026), basis=-0.35, cash=4.2, priced=i, city="T", fut_off=False)

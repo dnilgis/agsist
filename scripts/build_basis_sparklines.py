@@ -117,7 +117,7 @@ def build():
             d = json.load(f)
         date = d["date"]
         for row in d["changes"]:
-            state, facility, city, commodity, symbol, dm, frm, to = row
+            state, facility, city, commodity, symbol, dm, frm, to = row[:8]   # a ninth column (idx) since Oct 27
             k = key_for(state, facility, city, commodity, symbol, dm)
             by_state.setdefault(state, {}).setdefault(k, [])
             pts = by_state[state][k]

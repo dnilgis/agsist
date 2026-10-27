@@ -60,7 +60,14 @@ FLOORS = {
     "land sale points WI":     (0.99, None),      # 406 of 408
     "cattle barn points":      (0.97, None),      # 88 of 88
     "elevator points":         (0.98, None),      # 3,382 of 3,414 with a point
-    "bids places to ids":      (0.75, None),      # 197 of 248; elevators.json dates from Oct 18
+    # Raised Oct 27 (fx/bidkeys): build_ids now runs on every bids pass and retires folded ids, and every
+    # network row carries its board's elevId. Real run: 248 of 248 places by key, 248 of 248 by elevId
+    # (was 199 of 251, 79.3%, on an elevators.json from Oct 18). Room below 1.0 for a pass whose ids
+    # step fails soft and leaves the last elevators.json in place.
+    "bids places to ids":      (0.95, None),      # 248 of 248
+    # "bids places carry elevId": (0.95, None),   # 248 of 248 on the new writer. Floor added in the follow-up
+    #   change, once the bids run on main writes elevId (data/bids.json is rewritten every 15 minutes, so it
+    #   cannot ride this change). The row is still printed every run.
     "basis keys to ids":       (0.998, None),     # 3,556 of 3,559
 }
 
@@ -204,6 +211,27 @@ def id_sets(root, spine):
                      for b in (read(p).get("bids") or [])}) if os.path.exists(p) else []
     hit = sum(1 for x in places if x in bids_keys)
     out.append(dict(name="bids places to ids", keys=len(places), direct=hit, folded=0, lossy=0, outside=0, missed=len(places) - hit))
+    # the board id the bids feed gives each network row (fetch_bids.board_keys), followed through the ledger's
+    # retirements, must be a record in elevators.json: an id, not a spelling
+    ids = {e.get("id") for e in el}
+    led_p = os.path.join(root, "data", "ids", "elevator-ids.json")
+    retired = (read(led_p).get("retired") or {}) if os.path.exists(led_p) else {}
+
+    def live_id(e):
+        seen = set()
+        while e in retired and e not in seen:
+            seen.add(e)
+            e = retired[e].get("into")
+        return e
+    by_place = {}
+    for b in (read(p).get("bids") or []) if os.path.exists(p) else []:
+        k = place_str(b.get("facility"), b.get("branch"), b.get("city"), (b.get("state") or "").upper())
+        by_place.setdefault(k, set())
+        if b.get("elevId"):
+            by_place[k].add(live_id(b["elevId"]))
+    hit = sum(1 for v in by_place.values() if v & ids)
+    out.append(dict(name="bids places carry elevId", keys=len(by_place), direct=hit, folded=0, lossy=0, outside=0,
+                    missed=len(by_place) - hit))
     keys = []
     for p in files(root, "data/basis/*.json", r"^([A-Z]{2}|\?\?)\.json$"):
         d = read(p)
@@ -289,7 +317,9 @@ def selftest():
         put("data/ids/elevators.json", {"counts": {"facilities": 3, "with_point": 2}, "elevators": [
             {"id": "e1", "fips": "29186", "sources": {"bids": ["COOP|||MO"], "basis": ["MO|COOP|TOWN"]}},
             {"id": "e2", "fips": None, "sources": {}}, {"id": "e3", "fips": None, "sources": {}}]})
-        put("data/bids.json", {"bids": [{"facility": "COOP", "city": "", "state": "MO"}, {"facility": "OTHER", "city": "X", "state": "MO"}]})
+        put("data/bids.json", {"bids": [{"facility": "COOP", "city": "", "state": "MO", "elevId": "eold000001"},
+                                        {"facility": "OTHER", "city": "X", "state": "MO", "elevId": "enobody001"}]})
+        put("data/ids/elevator-ids.json", {"retired": {"eold000001": {"into": "e1", "rule": "phone"}}})
         put("data/basis/MO.json", {"state": "MO", "f": ["COOP|TOWN", "GONE|TOWN"]})
         rows, fails = report(d)
         by = {r["name"]: r for r in rows}
@@ -305,6 +335,9 @@ def selftest():
         ck((ls["keys"], ls["direct"], ls["missed"], ls["no_point"]) == (2, 1, 1, 1),
            f"a sale point outside its filed county is a miss; no point is counted apart: {ls}")
         ck(by["bids places to ids"]["direct"] == 1 and by["basis keys to ids"]["missed"] == 1, "id joins by exact key")
+        ev = by["bids places carry elevId"]
+        ck((ev["keys"], ev["direct"], ev["missed"]) == (2, 1, 1),
+           f"a row's elevId joins through a retirement; an id no record holds is a miss: {ev}")
         ev = by["elevator points"]
         ck((ev["keys"], ev["direct"], ev["no_point"]) == (2, 1, 1), f"elevator points use the file's own counts: {ev}")
         ck(any(f.startswith("rma planting dates") and "no keys" in f for f in fails), "a data set that reads nothing fails")

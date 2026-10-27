@@ -5,6 +5,7 @@ Writes, under data/ids/:
   elevators.json     one record per physical facility, with every key and spelling it was seen under
   elevator-ids.json  the id ledger: which key holds which id, AGSIST-minted ids, merges and splits
   ambiguous.json     keys that matched more than one facility; listed, never guessed
+  board-parents.json parent company and destination buyer per bids board, from evidence (board_parents.py)
   parcel-rules.json  the parcel key rule per state, in words, and the repeat-sale counts
   parcel-key-fixtures.json  pid -> key pairs from this file; test/ids.test.mjs checks parcel-key.js agrees
 
@@ -176,9 +177,14 @@ def read_json(path):
 def bids_repo_doc(bids_dir, rel):
     if bids_dir:
         return read_json(os.path.join(bids_dir, rel))
-    req = urllib.request.Request(NETWORK_BASE.rstrip("/") + "/" + rel, headers={"User-Agent": "agsist-ids (+agsist.com)"})
+    req = urllib.request.Request(NETWORK_BASE.rstrip("/") + "/" + rel,
+                                 headers={"User-Agent": "agsist-ids (+agsist.com)", "Accept-Encoding": "gzip"})
     with urllib.request.urlopen(req, timeout=180) as r:
-        return json.loads(r.read().decode("utf-8"))
+        raw = r.read()
+        if (r.headers.get("Content-Encoding") or "").lower() == "gzip":
+            import gzip
+            raw = gzip.decompress(raw)
+        return json.loads(raw.decode("utf-8"))
 
 
 def load_schedules(path):
@@ -226,6 +232,43 @@ def anchors_from_bids_repo(directory, mindex):
     return out
 
 
+def folded_ids(directory):
+    """{retired elevId: (surviving elevId, rule)} from the bids repo's own folds (mergedFrom). A bids-repo
+    id that a later bids run folded into another row is gone from its directory; every key that held it
+    moves to the survivor, and the retirement is written to the ledger (settle()). Only folds whose
+    survivor is a live row count; a chain (a into b, b into c) is followed by settle()."""
+    rows = directory.get("elevators") or []
+    live = {r.get("elevId") for r in rows if r.get("elevId")}
+    out = {}
+    for r in rows:
+        for m in r.get("mergedFrom") or []:
+            old = (m or {}).get("elevId") if isinstance(m, dict) else None
+            if old and old not in live and r.get("elevId"):
+                out[old] = (r["elevId"], (m.get("rule") or "fold"))
+    return out
+
+
+def settle(ledger, folded, live, eid, today, record=True):
+    """The id a held bids-repo id stands for today: itself while it is live; its survivor when the bids
+    repo folded it. Each retirement is recorded once (ledger retired + an event); an id is never reused."""
+    retired = ledger.setdefault("retired", {})
+    seen = set()
+    while isinstance(eid, str) and eid not in live and eid not in seen:
+        seen.add(eid)
+        if eid in folded:
+            new, rule = folded[eid]
+        elif eid in retired:
+            new, rule = retired[eid]["into"], retired[eid].get("rule") or "fold"
+        else:
+            break
+        if record and eid not in retired:
+            retired[eid] = {"into": new, "on": today, "rule": rule}
+            ledger["events"].append({"on": today, "retire": eid, "into": new,
+                                     "why": f"folded into {new} by the bids repo (mergedFrom, rule {rule})"})
+        eid = new
+    return eid
+
+
 def place_str(fac, branch, city, st):
     return "|".join(clean(x) for x in (fac, branch or "", city, st))
 
@@ -243,7 +286,8 @@ def secondary_keys(root, schedules):
         seen.add(k)
         keys.append((k, {"src": "bids", "operator": clean(b.get("facility")), "location": clean(b.get("branch")),
                          "city": clean(b.get("city")), "st": st, "pt": pt(b.get("lat"), b.get("lon")),
-                         "place": place_str(b.get("facility"), b.get("branch"), b.get("city"), st)}))
+                         "place": place_str(b.get("facility"), b.get("branch"), b.get("city"), st),
+                         "elevId": clean(b.get("elevId")) or None}))
     for f in sorted(glob.glob(os.path.join(root, "data", "basis", "*.json"))):
         if not re.match(r"^[A-Z]{2}\.json$", os.path.basename(f)):
             continue
@@ -275,7 +319,8 @@ def secondary_keys(root, schedules):
 
 # ------------------------------------------------------------------ matching
 class Index:
-    def __init__(self, anchors):
+    def __init__(self, anchors, alias=None):
+        self.alias = alias or {}         # retired bids-repo id -> its live survivor
         self.place = defaultdict(set)    # place string -> eids
         self.known = defaultdict(set)    # directory "known:" id -> eids
         self.op = defaultdict(set)       # (st, op key) -> eids
@@ -301,6 +346,10 @@ class Index:
         """-> (eid or None, rule, candidates). Strongest evidence first; a step with 2+ stops."""
         st = info["st"]
         steps = []
+        if info.get("elevId"):
+            # the bids feed's own id for the board this row came from (fetch_bids.py network_rows)
+            e = self.alias.get(info["elevId"], info["elevId"])
+            steps.append(("elevId", {e} if e in self.anchors else set()))
         if info.get("place"):
             steps.append(("exact", self.place.get(info["place"], set())))
         if info.get("known"):
@@ -334,8 +383,9 @@ def load_ledger(path):
         d.setdefault("keys", {})
         d.setdefault("minted", {})
         d.setdefault("events", [])
+        d.setdefault("retired", {})
         return d
-    return {"schema": "agsist-elevator-ids/1", "next": 1, "keys": {}, "minted": {}, "events": []}
+    return {"schema": "agsist-elevator-ids/1", "next": 1, "keys": {}, "minted": {}, "retired": {}, "events": []}
 
 
 def mint(ledger, first_key, today):
@@ -347,10 +397,13 @@ def mint(ledger, first_key, today):
             return aid
 
 
-def assign(anchors, keys, ledger, today):
-    """-> ({id: [key...]}, ambiguous [...], rules Counter). Updates the ledger in place."""
-    idx = Index(anchors)
+def assign(anchors, keys, ledger, today, folded=None):
+    """-> ({id: [key...]}, ambiguous [...], rules Counter). Updates the ledger in place.
+    folded: folded_ids(directory); a key held by a retired bids-repo id moves to its survivor."""
+    folded = folded or {}
     live = set(anchors)
+    alias = {old: settle(ledger, folded, live, old, today, record=False) for old in folded}
+    idx = Index(anchors, {k: v for k, v in alias.items() if v in live})
     held = {}            # key -> id
     ambiguous = []
     rules = Counter()
@@ -370,9 +423,13 @@ def assign(anchors, keys, ledger, today):
         minted = old in ledger["minted"]
         if not minted or ledger["minted"][old].get("into"):
             tgt = ledger["minted"].get(old, {}).get("into") if minted else None
+            now = settle(ledger, folded, live, tgt or old, today)
             for k in ks:
-                held[k] = tgt or old
-                rules["kept"] += 1
+                held[k] = now
+                rules["retired" if now != (tgt or old) else "kept"] += 1
+                e = fresh[k][0]
+                if e and e != now and fresh[k][1] == "elevId":
+                    rules["elevId_differs"] += 1     # the ledger's id wins (rule 1); counted, never moved
             continue
         moves = {k: fresh[k][0] for k in ks if fresh[k][0]}
         if moves and len(set(moves.values())) == 1 and len(moves) == len(ks):
@@ -419,6 +476,10 @@ def assign(anchors, keys, ledger, today):
             held[k] = group_id[g]
     for k, v in held.items():
         ledger["keys"][k] = v
+    # keys not seen this run still point at a live id: a retired one moves to its survivor too
+    for k, v in list(ledger["keys"].items()):
+        if k not in held and isinstance(v, str) and v in ledger.get("retired", {}):
+            ledger["keys"][k] = settle(ledger, folded, live, v, today)
     # a key held by a bids-repo id from an earlier build is settled; only open ones are listed
     ambiguous = [a for a in ambiguous if held[a["key"]] in ledger["minted"]]
     out = defaultdict(list)
@@ -668,7 +729,7 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
     os.makedirs(out_dir, exist_ok=True)
     lpath = os.path.join(out_dir, "elevator-ids.json")
     ledger = load_ledger(lpath)
-    groups, ambiguous, rules = assign(anchors, keys, ledger, today)
+    groups, ambiguous, rules = assign(anchors, keys, ledger, today, folded_ids(directory))
     counties = Counties(os.path.join(root, "data", "atlas", "counties.geo.json"))
     recs = build_records(anchors, keys, sched, groups, counties, ambiguous)
     kinds = Counter()
@@ -686,6 +747,8 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
               "agsist_ids": sum(1 for r in recs if re.fullmatch(r"a\d{5}", r["id"])),
               "bids_repo_ids": sum(1 for r in recs if not re.fullmatch(r"a\d{5}", r["id"])),
               "fips_differs_from_bids_repo": sum(1 for r in recs if r.get("fips_bids_repo")),
+              "retired_ids": len(ledger.get("retired") or {}),
+              "stale_ids": sum(1 for r in recs if not re.fullmatch(r"a\d{5}", r["id"]) and r["id"] not in anchors),
               "by_source": dict(sorted(kinds.items())), "keys_by_rule": dict(sorted(rules.items()))}
     doc = {"schema": "agsist-elevators/1", "generated": today,
            "note": "One record per physical facility. id: the bids repo's permanent elevId when the facility is one of its "
@@ -699,11 +762,26 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
     ledger["keys"] = dict(sorted(ledger["keys"].items()))
     ledger["note"] = ("Which id each key holds. A key keeps its id; ids are never renumbered or reused. minted: AGSIST ids "
                       "(a + 5 digits) with the key that first held each; into: merged into a bids-repo elevId. events: every "
-                      "merge and split. Rules: scripts/build_ids.py.")
-    write_json(lpath, {k: ledger[k] for k in ("schema", "note", "next", "minted", "events", "keys")})
+                      "merge and split. retired: bids-repo ids the bids repo folded into another row (into), never used again; "
+                      "their keys hold the survivor. Rules: scripts/build_ids.py.")
+    ledger["retired"] = dict(sorted((ledger.get("retired") or {}).items()))
+    write_json(lpath, {k: ledger[k] for k in ("schema", "note", "next", "minted", "retired", "events", "keys")})
     write_json(os.path.join(out_dir, "ambiguous.json"),
                {"note": "Keys that matched more than one facility at the strongest step that matched at all. Each has its own "
                         "record; fix by hand with a ledger line, never by guessing.", "keys": ambiguous})
+    # parent company and destination per board (scripts/board_parents.py); the bids repo's board index
+    # holds each board's page URL. Unreadable: the last file stays, said so, the ids are unaffected.
+    try:
+        index = bids_repo_doc(bids_dir, "data/index.json")
+    except Exception as e:      # noqa: BLE001  (a missing or unreadable index must not cost the ids)
+        index = None
+        log(f"[ids] board parents not rebuilt: data/index.json not readable ({type(e).__name__})")
+    if index:
+        import board_parents
+        bp = board_parents.build(directory, index, today)
+        write_json(os.path.join(out_dir, "board-parents.json"), bp)
+        log(f"[ids] board parents: {bp['counts']['with_parent']} of {bp['counts']['live_boards']} live boards with a "
+            f"parent {bp['counts']['parent_by_rule']}, {bp['counts']['with_dest']} with a destination")
     if do_parcels:
         prules, fixtures = parcel_outputs(root)
         write_json(os.path.join(out_dir, "parcel-rules.json"), prules)
@@ -715,7 +793,8 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
         f"{counts['matched_2plus_sources']}, ambiguous {counts['ambiguous_keys']}")
     log(f"[ids] ids: bids repo {counts['bids_repo_ids']}, AGSIST {counts['agsist_ids']}; with schedules "
         f"{counts['with_schedules']}; fips differs from bids repo {counts['fips_differs_from_bids_repo']}")
-    log(f"[ids] keys by rule {counts['keys_by_rule']}")
+    log(f"[ids] keys by rule {counts['keys_by_rule']}; retired bids-repo ids {counts['retired_ids']}, "
+        f"stale ids left {counts['stale_ids']}")
     if do_parcels:
         for st, c in counts["repeat_sales"].items():
             log(f"[ids] {st} parcels sold 2+ times {c['parcels_sold_2plus']} of {c['parcels']} "
@@ -829,6 +908,47 @@ def selftest():
         d4 = build(root, bdir, sch, out, "2026-10-21", do_parcels=False, log=lambda *_: None)
         new = [r["id"] for r in d4["elevators"] if "WI|NEW YARD|CUMBERLAND" in r["sources"].get("basis", [])]
         ck("new key gets the next id, never a used one", len(new) == 1 and new[0] != aid and new[0] not in ids1)
+        # REAL CASE (Oct 27): the bids repo folded known:Roggen Farmers Elevator Association (e8921vvzs3) into its
+        # live Roggen board (e7pqw0z5m3) by phone. 141 AGSIST keys still held folded ids like this one.
+        directory["elevators"].append({"id": "known:Roggen Farmers Elevator Association|Roggen Elevator - Main Office|Roggen|CO",
+                                       "elevId": "e8921vvzs3", "operator": "Roggen Farmers Elevator Association",
+                                       "location": "Roggen Elevator - Main Office", "state": "CO", "status": "known",
+                                       "lat": 40.0878, "lon": -104.282})
+        json.dump(directory, open(os.path.join(bdir, "data", "directory.json"), "w"))
+        json.dump({"state": "CO", "f": ["ROGGEN FARMERS ELEVATOR ASSOCIATION|ROGGEN"]}, open(os.path.join(root, "data", "basis", "CO.json"), "w"))
+        d5 = build(root, bdir, sch, out, "2026-10-22", do_parcels=False, log=lambda *_: None)
+        ck("a key matches the bids-repo row it names", any(r["id"] == "e8921vvzs3" for r in d5["elevators"]))
+        directory["elevators"] = [r for r in directory["elevators"] if r["elevId"] != "e8921vvzs3"] + [
+            {"id": "roggenfarmerselev-roggenelevatormainoffice", "elevId": "e7pqw0z5m3",
+             "operator": "Roggen Farmers Elevator Association", "location": "Roggen Elevator - Main Office", "state": "CO",
+             "status": "read", "lat": 40.0878, "lon": -104.282, "fips": "08123",
+             "mergedFrom": [{"id": "known:Roggen Farmers Elevator Association|Roggen Elevator - Main Office|Roggen|CO",
+                             "elevId": "e8921vvzs3", "rule": "phone", "why": "dup-merge: phone (0 m, town/town)"}]}]
+        json.dump(directory, open(os.path.join(bdir, "data", "directory.json"), "w"))
+        d6 = build(root, bdir, sch, out, "2026-10-27", do_parcels=False, log=lambda *_: None)
+        led = read_json(os.path.join(out, "elevator-ids.json"))
+        by6 = {r["id"]: r for r in d6["elevators"]}
+        ck("a folded bids-repo id is retired into its survivor and its key moves there",
+           "e8921vvzs3" not in by6 and "CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|ROGGEN" in by6["e7pqw0z5m3"]["sources"]["basis"]
+           and led["retired"].get("e8921vvzs3", {}).get("into") == "e7pqw0z5m3"
+           and led["keys"]["basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|ROGGEN"] == "e7pqw0z5m3")
+        ck("the retirement is one event, written once", sum(1 for e in led["events"] if e.get("retire") == "e8921vvzs3") == 1)
+        d7 = build(root, bdir, sch, out, "2026-10-28", do_parcels=False, log=lambda *_: None)
+        led7 = read_json(os.path.join(out, "elevator-ids.json"))
+        ck("a rerun keeps the retirement and adds no event", led7["retired"] == led["retired"]
+           and len(led7["events"]) == len(led["events"]) and d7["counts"]["stale_ids"] == 0)
+        # a bids.json row that carries its board's elevId joins on it, even when its place string names no row
+        json.dump({"bids": [{"facility": "Coop X", "branch": "", "city": "Chetek", "state": "WI", "lat": 45.3141, "lon": -91.651},
+                            {"facility": "Coop X Grain", "branch": "", "city": "Chetek East", "state": "WI",
+                             "elevId": "e000000002"},
+                            {"facility": "Roggen Farmers Elevator", "branch": "", "city": "Roggen", "state": "CO",
+                             "elevId": "e8921vvzs3"}]},
+                  open(os.path.join(root, "data", "bids.json"), "w"))
+        d8 = build(root, bdir, sch, out, "2026-10-29", do_parcels=False, log=lambda *_: None)
+        by8 = {r["id"]: r for r in d8["elevators"]}
+        ck("a row's own elevId is the strongest match", "Coop X Grain||Chetek East|WI" in by8["e000000002"]["sources"].get("bids", []))
+        ck("a row naming a retired id joins its survivor",
+           "Roggen Farmers Elevator||Roggen|CO" in by8["e7pqw0z5m3"]["sources"].get("bids", []))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     print(f"FAILS={len(fails)}")

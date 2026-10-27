@@ -90,6 +90,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import build_state_basis_pages as SB  # noqa: E402  (helpers + the network reader, one copy)
 import basis_method as BM  # noqa: E402  (the one state-basis method)
+import board_parents as _board_parents  # noqa: E402  (evidence-only parent per board, for the company count)
 import pricefmt  # noqa: E402  (cash as posted: twin of components/util.js AG.px.cash)
 import storesell  # noqa: E402  (the site's one store-or-sell calculation, twin of components/storesell.js)
 from elevator_names import clean_place, display_name  # noqa: E402  (page-title names fixed, twin of cb-rank.js)
@@ -2216,6 +2217,10 @@ TABLE_JS = ('<script src="/components/util.js?v=18" defer></script>\n'
             '<script src="/components/state-bids.js?v=2" defer></script>\n')
 
 
+BOARD_PARENTS_PATH = os.path.join("data", "ids", "board-parents.json")
+BOARD_PARENTS = None          # a test sets {board id: entry}; None reads BOARD_PARENTS_PATH (missing: no parents)
+
+
 def state_basis_rows(merged, index):
     """The state-basis inputs, gated exactly as the basis pages always were:
     fresh network bids, misread boards flagged, one bid per elevator and crop
@@ -2224,9 +2229,13 @@ def state_basis_rows(merged, index):
     SB.flag_futures_disagreement(rows)
     out = SB.nearby(rows)
     sites = {s_["id"]: s_.get("website") for s_ in index.get("sources") or [] if s_.get("id")}
+    parents = BOARD_PARENTS if BOARD_PARENTS is not None else _board_parents.load(BOARD_PARENTS_PATH)
     for r in out:        # printed words only; keys stay as the board gave them
         r["operator"] = display_name(r.get("operator"))
         r["site"] = sites.get(r["source"]) or ""      # the company count joins boards on it (BM.companies_behind)
+        bp = parents.get(r["source"]) or {}
+        if bp.get("parent"):
+            r["parent"] = bp["parent"]                 # evidence-only parent (scripts/board_parents.py); joins companies
         if r.get("city"):
             r["city"] = clean_place(r["city"])
     return out
@@ -2248,8 +2257,8 @@ def loc_co(st, bold=False):
 
 
 # one line wherever the company count first shows on a page (the god's-eye panel's skeptic: say how firms are matched)
-CO_RULE = ("Companies: boards that share a name or a website count as one, and CHS counts once; a firm owned by "
-           "another under a different name may still count apart.")
+CO_RULE = ("Companies: boards that share a name, a website or one firm's own bid page count as one, and CHS counts "
+           "once; a firm owned by another may still count apart.")
 
 
 def basis_stat(g, st, prev_gen):

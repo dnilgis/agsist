@@ -1,0 +1,1266 @@
+{
+ "schema": "agsist-board-parents/1",
+ "generated": "2026-10-27",
+ "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence. Rules: scripts/board_parents.py.",
+ "counts": {
+  "live_boards": 2150,
+  "with_parent": 130,
+  "with_dest": 117,
+  "parent_by_rule": {
+   "board-page": 1,
+   "chs-brand": 129
+  },
+  "dest_by_brand": {
+   "ADM": 26,
+   "AGP": 28,
+   "Big River": 4,
+   "Bunge": 4,
+   "CGB": 9,
+   "Cargill": 16,
+   "Green Plains": 3,
+   "Ingredion": 1,
+   "Marquis": 5,
+   "POET": 11,
+   "Valero": 4,
+   "Viserion": 6
+  },
+  "board_pages_with_other_firms": 1
+ },
+ "boards": {
+  "agtegra-agpaberdeen": {
+   "elevId": "e3zc92fsa6",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "agtegra-agpdawson": {
+   "elevId": "e8w3055b00",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "agtegra-agpwest": {
+   "elevId": "e9ftsqe30c",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "alciviacoop-burlington": {
+   "elevId": "etykedhvfk",
+   "parent": "ALCIVIA",
+   "pv": "board-page:alciviacoop.agricharts.com"
+  },
+  "archercoopgrain-directshipagpsheldon": {
+   "elevId": "erxv00cfb4",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "atkinsongrain-bigriver": {
+   "elevId": "etdfatymxy",
+   "dest": "Big River",
+   "dv": "location"
+  },
+  "balkgrain-adm": {
+   "elevId": "e7fnj8a7m3",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "balkgrain-cgbmtcarroll": {
+   "elevId": "edsr084ks3",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "balkgrain-viseriongrain": {
+   "elevId": "e30jm2y0nd",
+   "dest": "Viserion",
+   "dv": "location"
+  },
+  "cedarcountycoop-admclinton": {
+   "elevId": "eym4ymyfs4",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "cedarcountycoop-cargillcr": {
+   "elevId": "eavzhpjmg7",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "chs-texoma-frederick": {
+   "elevId": "ej6cyj834z",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chs-texoma-hinton": {
+   "elevId": "e5gwfjsa59",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chs-texoma-kingfisher": {
+   "elevId": "e5f5ry83qn",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chs-texoma-okarche": {
+   "elevId": "exqf57q6nm",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsag-absoluteenergy": {
+   "elevId": "e3704ztyzk",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsag-fairmont": {
+   "elevId": "ej5703cv24",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsag-kasson": {
+   "elevId": "e8t3a0vh09",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsag-mankato": {
+   "elevId": "erk5qqma2w",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsag-ostrander": {
+   "elevId": "ez1tmay9bf",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsag-savage": {
+   "elevId": "e9afwyjazr",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsag-winona": {
+   "elevId": "er3a6bgdh9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsag-wykoff": {
+   "elevId": "e806y84kf7",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-ada": {
+   "elevId": "e72fx9vevc",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-beltrami": {
+   "elevId": "ejkpgv78dr",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-callaway": {
+   "elevId": "e76ftnv376",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-crookstonterminal": {
+   "elevId": "e25kv76jt3",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-erskine": {
+   "elevId": "et1bm7qz3y",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-greenbush": {
+   "elevId": "e42r8brc7d",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-grygla": {
+   "elevId": "e454qsjjzz",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-hazel": {
+   "elevId": "e1vw62ky3q",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-mahnomen": {
+   "elevId": "esv1phzjyx",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-oklee": {
+   "elevId": "ekv7zc10x4",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-roseau": {
+   "elevId": "e0y0dcvywh",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-ulen": {
+   "elevId": "eq6zz1bk9m",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-warren": {
+   "elevId": "e7ep3aead0",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbigsky-havre": {
+   "elevId": "et5avn2z1b",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbigsky-kershaw": {
+   "elevId": "e04aamdm43",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbigsky-shelby": {
+   "elevId": "e18n6wq65w",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-brandon": {
+   "elevId": "e9611kmgx2",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-canton": {
+   "elevId": "eqbn9er4j9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-elkton": {
+   "elevId": "ed55bzy6k5",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-luverne": {
+   "elevId": "e0p9ew21mh",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-magnolia": {
+   "elevId": "eb06f4xdfr",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-marshall": {
+   "elevId": "ec2607y9k3",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-pipestone": {
+   "elevId": "e5vt2mweqy",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-ruthton": {
+   "elevId": "e9hrv5f8t9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-tracy": {
+   "elevId": "e55tneze7g",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-worthingaggrain": {
+   "elevId": "eq462ykmqh",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdakotaplainsag-clairecity": {
+   "elevId": "ez9azszs44",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdakotaplainsag-edgeley": {
+   "elevId": "e92b3gfqp1",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdakotaplainsag-galchutt": {
+   "elevId": "e4x5y1gaeh",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdakotaplainsag-gwinner": {
+   "elevId": "esjefqvmhg",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdakotaplainsag-harwood": {
+   "elevId": "e8e0gwk58k",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdakotaplainsag-kindredterminal": {
+   "elevId": "ekx909698z",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdakotaplainsag-mooreton": {
+   "elevId": "e33rk07vkz",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdevilslake-hannaford": {
+   "elevId": "esbj1ph0v4",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdrayton-cavalier": {
+   "elevId": "epa9k4kbtc",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdrayton-drayton": {
+   "elevId": "egsv7kw65c",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdrayton-glasston": {
+   "elevId": "e8bh5jwyg0",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdrayton-kennedy": {
+   "elevId": "exmg57td7z",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdrayton-manvel": {
+   "elevId": "ec34b2ptz0",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsfarmersalliance-mitchell": {
+   "elevId": "epj7as59b3",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsfarmersalliance-wagner": {
+   "elevId": "e0kxw7sga4",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsfarmerselevator-glendive": {
+   "elevId": "eckd74z6ks",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsfarmerselevator-macon": {
+   "elevId": "e06fn31718",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-chokio": {
+   "elevId": "ergmssm8vv",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-fergusfallssouth8dumpfee": {
+   "elevId": "ejw79vf5wj",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-french": {
+   "elevId": "e5fbz2ghk9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-glenwood": {
+   "elevId": "emxbjwckxv",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-herman": {
+   "elevId": "eq3apvczgp",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-longprairie": {
+   "elevId": "e439yp4b42",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-lowry": {
+   "elevId": "e3m77b918d",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-morris": {
+   "elevId": "eaz2es8agf",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-underwood13dumpfee": {
+   "elevId": "em1z28m5ne",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-wilmot": {
+   "elevId": "evw4mhj4km",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-akron": {
+   "elevId": "evdr7en3h1",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-amherst": {
+   "elevId": "e1ab47v7dj",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-brule": {
+   "elevId": "e24jjqke3d",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-brush": {
+   "elevId": "ezkangj84w",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-byers": {
+   "elevId": "eq6kcw9tbf",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-fleming": {
+   "elevId": "ekfgs372nq",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-haxtun": {
+   "elevId": "ekgzh6ta5t",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-holyoke": {
+   "elevId": "eppbkcfd01",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-holyokeshuttle": {
+   "elevId": "enen7k77yz",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-hyde": {
+   "elevId": "ewms1cyfjf",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-idalia": {
+   "elevId": "er665q1zk5",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-idaliawest": {
+   "elevId": "erfvwzws2r",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-julesburg": {
+   "elevId": "exjrv2p36n",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-merrittbunker": {
+   "elevId": "ek60bc4gkj",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-newhaven": {
+   "elevId": "eydq1sjn3h",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-otis": {
+   "elevId": "ewwvkxfwkj",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-stateline": {
+   "elevId": "efj42jw2z9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-yuma": {
+   "elevId": "eyk2anbaxr",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-yumashuttle": {
+   "elevId": "e44nd7xnqd",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsholdrege-alma": {
+   "elevId": "e7mwcb8zsz",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsholdrege-bertrand": {
+   "elevId": "efamj44eqj",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsholdrege-elmcreek": {
+   "elevId": "eggjf6wc4s",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsholdrege-holdregeshuttle": {
+   "elevId": "eg1y3n2vx9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsholdrege-holdregewest": {
+   "elevId": "erddqm149k",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsholdrege-loomis": {
+   "elevId": "e1mqv5payj",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsholdrege-overton": {
+   "elevId": "ex4zg1j6yc",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsholdrege-smithfield": {
+   "elevId": "e2zzeywtyh",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsillinois-annawan": {
+   "elevId": "ejvw8akx83",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsillinois-carrolltonwhitehal": {
+   "elevId": "ev5jffjyax",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsillinois-davenport": {
+   "elevId": "es9p1vse66",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsillinois-lowder": {
+   "elevId": "eszv3k3vmb",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsillinois-morris": {
+   "elevId": "ej5r94np7a",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsillinois-newark": {
+   "elevId": "epekprmc9g",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsillinois-rochelle": {
+   "elevId": "e3bvqgkqsq",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsillinois-seneca": {
+   "elevId": "eec2jchx67",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsillinois-shipman": {
+   "elevId": "e2c8d9p9s2",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsillinois-steward": {
+   "elevId": "e5tdnjsnhz",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-ashley": {
+   "elevId": "e41zb1vf15",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-blunt": {
+   "elevId": "e8a6cj4rw9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-dupree": {
+   "elevId": "er0rpbq0hh",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-fairfax": {
+   "elevId": "ensmxhsnk3",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-gettysburg": {
+   "elevId": "ep60fxjsw6",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-isabel": {
+   "elevId": "e9kbeq5mrp",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-onida": {
+   "elevId": "edqmpmqmk7",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-philip": {
+   "elevId": "e63nyxk8kt",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-pierre": {
+   "elevId": "ejmgasz6xt",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-selby": {
+   "elevId": "e5e8t4f70y",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-strasburg": {
+   "elevId": "enyzafcd2h",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-winner": {
+   "elevId": "e1tx9wjye8",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chssouthcentral-napoleon": {
+   "elevId": "e2ecnf3cdd",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chssouthcentral-sterling": {
+   "elevId": "ernytrhb1d",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chssouthwestgrain-newsalem": {
+   "elevId": "etzaek5vf9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chssunbasingrowers-bruceelevator": {
+   "elevId": "evx7be37f8",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chssunbasingrowers-connellelevator": {
+   "elevId": "eyf1kvtb59",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chssunbasingrowers-kennewicklomo": {
+   "elevId": "etrc2sfqgy",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chssunbasingrowers-quincyelevator": {
+   "elevId": "eacz7ct3cg",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chssunbasingrowers-wheelerelevatorml": {
+   "elevId": "e0xdw63jsm",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-cheyennewells": {
+   "elevId": "ecza11m4k4",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-kanco": {
+   "elevId": "enh36pe1vm",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-selkirk": {
+   "elevId": "et4vjtndjg",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-sharonsprings": {
+   "elevId": "edq0997yx2",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-tribune": {
+   "elevId": "e9eyt6bb9x",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-wallace": {
+   "elevId": "esmztkahhe",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-weskan": {
+   "elevId": "eev8k4xsz2",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "countrypartnerscooperative-agpdavidcity": {
+   "elevId": "ex2c36pry4",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "countrypartnerscooperative-agphastings": {
+   "elevId": "eex5kgz70p",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "cvacoop365-admcolumbus": {
+   "elevId": "ejtjhb7qmd",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "cvacoop365-admfremont": {
+   "elevId": "ekz4vr8164",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "cvacoop365-admlincoln": {
+   "elevId": "ehexg1ag19",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "cvacoop365-agpdavidcity": {
+   "elevId": "e8wzw056ez",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "cvacoop365-agphastings": {
+   "elevId": "e81s1eq1kq",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "cvacoop365-agpsergeantbluff": {
+   "elevId": "e2dg9nyj06",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "cvacoop365-bungecouncilbluffs": {
+   "elevId": "ebnp6gk2jk",
+   "dest": "Bunge",
+   "dv": "location"
+  },
+  "cvacoop365-cargillalbion": {
+   "elevId": "e15mgbs2z5",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "cvacoop365-cargillblair": {
+   "elevId": "etd6raa3jg",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "cvacoop365-cargillsiouxcity": {
+   "elevId": "enp9j6a638",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "cvacoop365-greenplainscentralcity": {
+   "elevId": "en3dz2yq6g",
+   "dest": "Green Plains",
+   "dv": "location"
+  },
+  "cvacoop365-greenplainsyork": {
+   "elevId": "eerke3kk8y",
+   "dest": "Green Plains",
+   "dv": "location"
+  },
+  "dunkertoncoop-admcedarrapidscorn": {
+   "elevId": "e261bv72y7",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "dunkertoncoop-cargillcedarrapidssoybeans": {
+   "elevId": "e7ph7v3fqt",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "dunkertoncoop-cargillstarchcorn": {
+   "elevId": "e6zdsmnr7b",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "efgi-admclintonterminal": {
+   "elevId": "ejyspxhyhg",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "efgi-admmendota": {
+   "elevId": "e3d08ww7sm",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "efgi-admprocessorclinton": {
+   "elevId": "efe3p53z2a",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "efgi-bigriverdyersville": {
+   "elevId": "e10mg1g1w7",
+   "dest": "Big River",
+   "dv": "location"
+  },
+  "efgi-bungeshullsburg": {
+   "elevId": "ekb0dz309y",
+   "dest": "Bunge",
+   "dv": "location"
+  },
+  "efgi-bungewarren": {
+   "elevId": "eraaqtf0fq",
+   "dest": "Bunge",
+   "dv": "location"
+  },
+  "efgi-cargillcedarrapids": {
+   "elevId": "e3wvzbn5y3",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "efgi-cgbalbany": {
+   "elevId": "en60em56n7",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "efgi-cgbillinoisriver": {
+   "elevId": "e7jd9h6x4b",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "efgi-cgbmtcarroll": {
+   "elevId": "ef27648qv5",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "efgi-marquishennepin": {
+   "elevId": "edeswgvfcg",
+   "dest": "Marquis",
+   "dv": "location"
+  },
+  "efgi-viserionsavanna": {
+   "elevId": "ej9jh4gdb1",
+   "dest": "Viserion",
+   "dv": "location"
+  },
+  "farmerscoopelevator-admmarshall": {
+   "elevId": "ewbdx8z23w",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "farmerscoopelevator-agpdawson": {
+   "elevId": "e2qvfpfwdh",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "farmerscooperative-admlincoln": {
+   "elevId": "edb03ytxwb",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "farmerscooperative-agpdavidcity": {
+   "elevId": "ebbb1axj14",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "farmerscooperative-agphastings": {
+   "elevId": "e6jj2wjrkv",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "farmerscooperative-agpstjo": {
+   "elevId": "ed9cmnj2vn",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "farmerscooperative-bungeemporia": {
+   "elevId": "ej6psryg26",
+   "dest": "Bunge",
+   "dv": "location"
+  },
+  "farmerscooperative-greenplainsyork": {
+   "elevId": "e3ma049fmc",
+   "dest": "Green Plains",
+   "dv": "location"
+  },
+  "farmerswin-agpmasoncity": {
+   "elevId": "e8jam8a9cw",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "farmerswin-poetfairbank": {
+   "elevId": "ez7yaq8md0",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "farmerswin-poetshellrock": {
+   "elevId": "ek6gke6bgx",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "farmerswin-valero": {
+   "elevId": "ebsf77fnha",
+   "dest": "Valero",
+   "dv": "location"
+  },
+  "farmerswin-viserion": {
+   "elevId": "ey734h2jkj",
+   "dest": "Viserion",
+   "dv": "location"
+  },
+  "fsgrain-admclintoncorn": {
+   "elevId": "ekz8tqgy53",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "fsgrain-admmorris": {
+   "elevId": "e3ej6cs9hz",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "fsgrain-admnortherncrossing": {
+   "elevId": "ecm7acw3qj",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "fsgrain-admottawa": {
+   "elevId": "ezqh7mnh0v",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "fsgrain-cgbalbany": {
+   "elevId": "e9xs287xs7",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "fsgrain-cgbhennepin": {
+   "elevId": "e11v66p39b",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "fsgrain-marquis": {
+   "elevId": "eww8kvctrk",
+   "dest": "Marquis",
+   "dv": "location"
+  },
+  "fsgrain-viserionsavanna": {
+   "elevId": "eq4pgrxk46",
+   "dest": "Viserion",
+   "dv": "location"
+  },
+  "fullcircleag-agpaberdeen": {
+   "elevId": "ebn7vhdmrb",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "hovenequity-agpdirectship": {
+   "elevId": "e5x4qs87tx",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "innovativeag-admclint": {
+   "elevId": "e8sr5vk66t",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "innovativeag-admcr": {
+   "elevId": "e4ycsntf4k",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "innovativeag-agpeagle": {
+   "elevId": "e4q853gs8j",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "innovativeag-agpmason": {
+   "elevId": "e49yjwzwvv",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "innovativeag-bigriver": {
+   "elevId": "eyty9ww9kr",
+   "dest": "Big River",
+   "dv": "location"
+  },
+  "innovativeag-cargillcr": {
+   "elevId": "edjnjd3gx5",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "innovativeag-cargillif": {
+   "elevId": "epdpaqe1wa",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "innovativeag-cgbclay": {
+   "elevId": "esrgeggxpx",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "innovativeag-poetfbk": {
+   "elevId": "eyp1m2cfrh",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "innovativeag-poetif": {
+   "elevId": "e5tej6jg1t",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "innovativeag-poetjewel": {
+   "elevId": "ebcc2fef9a",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "innovativeag-poetsr": {
+   "elevId": "e9p55ffjrh",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "innovativeag-valero": {
+   "elevId": "enz2da1fzv",
+   "dest": "Valero",
+   "dv": "location"
+  },
+  "innovativeag-viserion": {
+   "elevId": "ec1etj4w76",
+   "dest": "Viserion",
+   "dv": "location"
+  },
+  "jamesvalleygrain-agpaberdeensd": {
+   "elevId": "ex6cpvw8za",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "lesyoungfarms-cargillon": {
+   "elevId": "e3gc84e8mw",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "linncoop-adm": {
+   "elevId": "ey0be7c0b4",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "linncoop-cargillbeans": {
+   "elevId": "etstdfjqnw",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "linncoop-cargillstarch": {
+   "elevId": "ed0wc4zq8e",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "linncoop-ingredion": {
+   "elevId": "edwt7p1qfc",
+   "dest": "Ingredion",
+   "dv": "location"
+  },
+  "midiowa-admcedarrapids": {
+   "elevId": "e8r6epcwxx",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "midiowa-admdsm": {
+   "elevId": "ed8t81yfds",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "midiowa-cargillcedarrapids": {
+   "elevId": "eh3h1rt6vs",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "midiowa-cargilliafalls": {
+   "elevId": "ebsda0a9n2",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "midiowa-cargillstarch": {
+   "elevId": "ee0f5cb22n",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "midiowa-poetfb": {
+   "elevId": "e62xehfm81",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "midiowa-poetiafalls": {
+   "elevId": "exmrbmcrn2",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "midiowa-poetsr": {
+   "elevId": "exkn7rhbek",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "newvision-admmankato": {
+   "elevId": "ep824x6ehs",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "newvision-agpsheldon": {
+   "elevId": "ewjframhqh",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "newvision-poetashton": {
+   "elevId": "e5anxv6rn6",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "nexus-agpeaglegroveia": {
+   "elevId": "e3yxz3j8hg",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "nexus-agpmanningia": {
+   "elevId": "emr4kpq80q",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "nexus-agpmasoncityia": {
+   "elevId": "exe7f4q1hd",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "nexus-cargilliowafallsia": {
+   "elevId": "efdggq02m7",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "nexus-poetfairbankia": {
+   "elevId": "ekr2jj8was",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "nexus-valerocharlescityia": {
+   "elevId": "ev4rkxwapd",
+   "dest": "Valero",
+   "dv": "location"
+  },
+  "premiercooperative-valerocc": {
+   "elevId": "ehysxd2cqp",
+   "dest": "Valero",
+   "dv": "location"
+  },
+  "premiercooperative-viserionmcgregor": {
+   "elevId": "e67nm42geg",
+   "dest": "Viserion",
+   "dv": "location"
+  },
+  "procooperative-agpeaglegrove": {
+   "elevId": "ezah1nyyw4",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "procooperative-agpemmetsburg": {
+   "elevId": "e9szq11v3x",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "rivervalleycoop-admclinton": {
+   "elevId": "e2z63q24mt",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "rivervalleycoop-admclintongrain": {
+   "elevId": "e1kq5xbrmq",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "rivervalleycoop-admcrevecoeur": {
+   "elevId": "e6paazzke9",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "rivervalleycoop-bigriverdyersville": {
+   "elevId": "ernfzav5bw",
+   "dest": "Big River",
+   "dv": "location"
+  },
+  "rivervalleycoop-cgbhennepin": {
+   "elevId": "e8qwdx4r8v",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "rivervalleycoop-marquisenergy": {
+   "elevId": "em86kw2svr",
+   "dest": "Marquis",
+   "dv": "location"
+  },
+  "seatonvilleelevator-marquis": {
+   "elevId": "efaz6et1h4",
+   "dest": "Marquis",
+   "dv": "location"
+  },
+  "tamabentoncoop-dsadm": {
+   "elevId": "ehttvjy7g2",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "tettensgrain-admclinton": {
+   "elevId": "eb1ye7qd7n",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "tettensgrain-cgbhennepin": {
+   "elevId": "etakxatpva",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "tettensgrain-marquisgrain": {
+   "elevId": "eggxhcvtx3",
+   "dest": "Marquis",
+   "dv": "location"
+  },
+  "wdcoop-agpdlvdaberdeensd": {
+   "elevId": "egfb42xy87",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "westcon-dlvdagpaberdeen": {
+   "elevId": "evn8e9pngn",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "westcon-dlvdagpdawson": {
+   "elevId": "e654ga83d4",
+   "dest": "AGP",
+   "dv": "location"
+  }
+ }
+}

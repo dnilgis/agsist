@@ -51,6 +51,7 @@ Usage:
     python3 scripts/build_basis_history.py --backfill-from-git     # once
     python3 scripts/build_basis_history.py                         # each run
     python3 scripts/build_basis_history.py --check                 # CI-safe
+    python3 scripts/build_basis_history.py --selftest
 """
 import argparse
 import json
@@ -114,6 +115,25 @@ def day_rows(bids):
         if k in out:
             continue
         out[k] = c
+    return out
+
+
+def day_ids(bids):
+    """{(FACILITY, CITY, STATE): [elevId, fips, fipsSure]} from the rows' own board keys
+    (fetch_bids.board_keys, 2026-10-27). A basis key is facility and town, not board: when
+    two boards of different ids share one key that day, the key gets no id (never a guess)."""
+    out, bad = {}, set()
+    for b in bids or []:
+        e = b.get("elevId")
+        if not e:
+            continue
+        k = (_norm(b.get("facility")), _norm(b.get("city")), _norm(b.get("state")))
+        v = [e, b.get("fips") or None, b["fipsSure"] if isinstance(b.get("fipsSure"), bool) else None]
+        if k in out and out[k][0] != e:
+            bad.add(k)
+        out.setdefault(k, v)
+    for k in bad:
+        out.pop(k, None)
     return out
 
 
@@ -265,7 +285,7 @@ def write_shards(state, out_dir, generated):
     return index
 
 
-def write_changes(changed, out_dir, date):
+def write_changes(changed, out_dir, date, ids=None):
     """The day's movements. Appended to, never overwritten.
 
     This first REFUSED to touch an existing file for the day, which sounds like
@@ -276,10 +296,16 @@ def write_changes(changed, out_dir, date):
     log cheerfully said "0 moved". A change already on file is skipped by its
     own identity; a new one is added.
     """
+    # THE BOARD'S ID, COUNTY AND fipsSure (2026-10-27). A ninth column, `idx`, points into the
+    # file's own `ids` table ([elevId, fips, fipsSure], one entry per board that moved), so a
+    # change is joined on the permanent id, not on spelling. A table and an index, not three
+    # columns: a board moves about three rows a day, and the table holds it once. A row from
+    # before this, or a key no single board holds, has no idx (8 columns, or null).
     p = os.path.join(out_dir, "changes-%s.json" % date)
     doc = {"date": date, "units": "integer cents per bushel",
            "columns": ["state", "facility", "city", "commodity", "symbol",
-                       "deliveryMonth", "from", "to"],
+                       "deliveryMonth", "from", "to", "idx"],
+           "idCols": ["elevId", "fips", "fipsSure"], "ids": [],
            "changes": []}
     if os.path.exists(p):
         try:
@@ -287,17 +313,32 @@ def write_changes(changed, out_dir, date):
                 prior = json.load(f)
             if isinstance(prior.get("changes"), list):
                 doc["changes"] = prior["changes"]
+            if isinstance(prior.get("ids"), list):
+                doc["ids"] = prior["ids"]
         except (OSError, json.JSONDecodeError):
             pass                       # a corrupt day is rebuilt, not trusted
     seen = {tuple(r[:6]) for r in doc["changes"]}
+    id_ix = {tuple(v): i for i, v in enumerate(doc["ids"])}
     added = 0
     for (k, old_v, new_v) in sorted(changed, key=lambda x: (x[0][2], x[0][0], x[0][5])):
         row = [k[2], k[0], k[1], k[3].lower(), k[4], k[5], old_v, new_v]
         if tuple(row[:6]) in seen:
             continue
+        v = (ids or {}).get((k[0], k[1], k[2]))
+        if v:
+            t = tuple(v)
+            if t not in id_ix:
+                id_ix[t] = len(doc["ids"])
+                doc["ids"].append(list(v))
+            row.append(id_ix[t])
+        elif ids is not None:
+            row.append(None)
         seen.add(tuple(row[:6]))
         doc["changes"].append(row)
         added += 1
+    if not doc["ids"]:
+        del doc["ids"], doc["idCols"]
+        doc["columns"] = doc["columns"][:8]
     doc["changes"].sort(key=lambda r: (r[0], r[1], r[5]))
     os.makedirs(out_dir, exist_ok=True)
     with open(p, "w") as f:
@@ -352,7 +393,56 @@ def backfill(out_dir):
 
 
 # -------------------------------------------------------------------- main --
+def selftest():
+    """python3 scripts/build_basis_history.py --selftest"""
+    import tempfile
+    fails = []
+
+    def ck(name, ok):
+        print(("ok   " if ok else "FAIL ") + name)
+        if not ok:
+            fails.append(name)
+    # Real rows (feed of 2026-10-27T18:07:59Z): Abbyville KS (street point, county sure) and the
+    # Assumption Coop board at Assumption IL (ZIP-centroid point near a county line).
+    ab = {"facility": "Abbyville Farmers Co-op Grain Co.", "city": "Abbyville", "state": "KS", "category": "wheat",
+          "symbol": "December 2026", "deliveryMonth": "01 Sep 2026 to 30 Nov 2026", "basis": -0.60,
+          "elevId": "epb8e8r7nr", "fips": "20155", "fipsSure": True}
+    asm = {"facility": "Assumption Coop", "city": "Assumption", "state": "IL", "category": "corn", "symbol": "ZCZ26",
+           "deliveryMonth": "10/01/2026", "basis": -0.30, "elevId": "e4sn84jb9v", "fips": "17021", "fipsSure": False}
+    two = [dict(asm, elevId="e000000001", city="Twin"), dict(asm, elevId="e000000002", city="Twin", symbol="ZCH27")]
+    ids = day_ids([ab, dict(ab, category="corn"), asm] + two)
+    ck("a key carries its board's id, county and fipsSure",
+       ids.get(("ABBYVILLE FARMERS CO-OP GRAIN CO.", "ABBYVILLE", "KS")) == ["epb8e8r7nr", "20155", True])
+    ck("fipsSure false is kept", ids.get(("ASSUMPTION COOP", "ASSUMPTION", "IL")) == ["e4sn84jb9v", "17021", False])
+    ck("two boards on one key: no id, never a guess", ("ASSUMPTION COOP", "TWIN", "IL") not in ids)
+    with tempfile.TemporaryDirectory() as d:
+        state = {}
+        apply_day(state, day_rows([ab, dict(ab, category="corn"), asm] + two), "2026-10-26")
+        moved = [dict(ab, basis=-0.55), dict(asm, basis=-0.28), dict(two[0], basis=-0.10), dict(ab, category="corn", basis=-0.4)]
+        ch = apply_day(state, day_rows(moved[:3]), "2026-10-27")
+        p, n = write_changes(ch, d, "2026-10-27", day_ids(moved + [two[1]]))
+        doc = json.load(open(p))
+        by = {r[1]: r for r in doc["changes"]}
+        ck("each change points at its board in the file's id table",
+           n == 3 and doc["columns"][8] == "idx" and doc["ids"][by["ABBYVILLE FARMERS CO-OP GRAIN CO."][8]] == ["epb8e8r7nr", "20155", True])
+        twin = [r for r in doc["changes"] if r[2] == "TWIN"]
+        ck("a key no single board holds has a null idx", len(twin) == 1 and twin[0][8] is None)
+        ch2 = apply_day(state, day_rows([moved[3]]), "2026-10-27")
+        write_changes(ch2, d, "2026-10-27", day_ids([moved[3]]))
+        doc2 = json.load(open(p))
+        ck("a second run that day adds its rows and reuses the board's table entry",
+           len(doc2["changes"]) == 4 and len(doc2["ids"]) == len(doc["ids"])
+           and all(doc2["ids"][r[8]][0] == "epb8e8r7nr" for r in doc2["changes"] if r[1].startswith("ABBYVILLE")))
+        p3, _ = write_changes(ch, d, "2026-10-28", None)
+        ck("a run without ids writes the old eight columns", json.load(open(p3))["columns"][-1] == "to"
+           and "ids" not in json.load(open(p3)))
+    print(f"FAILS={len(fails)}")
+    return 1 if fails else 0
+
+
 def main():
+    if "--selftest" in sys.argv[1:]:
+        return selftest()
     ap = argparse.ArgumentParser()
     ap.add_argument("--full", default=FULL_PATH)
     ap.add_argument("--out", default=OUT_DIR)
@@ -397,7 +487,7 @@ def main():
             print("[basis-history] --check: %d keys, %d would change today."
                   % (len(state), len(changed)))
             return 0
-        p, n = write_changes(changed, a.out, today)
+        p, n = write_changes(changed, a.out, today, day_ids(doc.get("bids")))
         print("[basis-history] %d rows in, %d moved -> %s" % (len(rows), n, p))
 
     if a.check:

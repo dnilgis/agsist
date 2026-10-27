@@ -107,6 +107,7 @@ NOT_READER_FACING = (
     "data/wasde-pdf/", "data/site-inventory.json", "data/rain-print-examples/",
     "data/elevator-directory.json",
     "data/ids/geo-crosswalk.json",   # read by scripts/join_report.py and builds only (Oct 27)
+    "data/ids/board-parents.json",   # read by scripts/build_cash_bid_pages.py only (Oct 27, fx/bidkeys)
 )
 
 

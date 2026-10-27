@@ -789,6 +789,7 @@
     "API jobs (one-time)",
     "Bid change ledger (dispatch only)",
     "cash-bid-pages",
+    "Fetch Grain Bids",
     "Morning report",
     "Rebuild Feed Manifest"
    ],
@@ -1222,6 +1223,7 @@
    "written_by": [],
    "touched_by": [
     "Bid change ledger (dispatch only)",
+    "Fetch Grain Bids",
     "Morning report",
     "Rebuild Feed Manifest"
    ],
@@ -1290,6 +1292,7 @@
    "written_by": [],
    "touched_by": [
     "Generate Daily Briefing",
+    "Fetch Grain Bids",
     "Rebuild Feed Manifest"
    ],
    "cadence": "published by dnilgis/bids, refreshed with the boards",
