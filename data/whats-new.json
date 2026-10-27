@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-27-field-scout-backup",
+   "date": "2026-10-27",
+   "title": "Field Scout: back up your saved fields",
+   "line": "Save every field, with its notes and photos, to one file and restore it on a cleared or new phone. GeoJSON and KML outlines restore too. Nothing is sent to us.",
+   "link": "/field-scout"
+  },
+  {
    "id": "2026-10-27-land-sales-pages",
    "date": "2026-10-27",
    "title": "Farm sales by county, and a monthly update",
