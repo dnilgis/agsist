@@ -22,6 +22,7 @@
   var LS_ZIP = 'agsist_user_zip';
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var SALES_JS = '/components/atlas-sales.js?v=c3fa7673';
+  var CM_JS = '/components/changemap.js?v=1';
   var S = { seq: 0, where: null, prof: null, county: null, pct: null, sales: {}, depth: null, print: { parts: P.PRINT_PARTS.slice(), more: false, rain: false }, started: false, facts: {}, user: false };
   var memo = {};
 
@@ -271,6 +272,7 @@
       render();
       writeUrl();
       loadCards(fips);
+      changeMap(fips);
       if ($('h-more') && $('h-more').open) loadDepth();
       /* a lookup the reader started: say where it landed and move focus there */
       say(S.user ? 'Showing ' + prof.name + ', ' + prof.stName + '.' : '');
@@ -397,6 +399,19 @@
     usda('f-usda');
     fert('f-fert', st);
     daily('f-daily');
+  }
+  /* What changed here this week, with the state map (components/changemap.js), loaded only once a
+     place is open. Its files are fetched by state; the reader's point stays in this browser. */
+  function changeMap(fips) {
+    var box = $('h-cm'), p = S.prof, w = S.where || {};
+    if (!box || !p) return;
+    box.hidden = true; box.innerHTML = '';
+    var top = $('cm-top'); if (top) top.innerHTML = '';
+    function mine() { return S.prof && S.prof.fips === fips; }
+    loadScript(CM_JS, function () { return !!window.AgChangeMap; }).then(function (ok) {
+      if (!ok || !mine()) return;
+      window.AgChangeMap.draw(box, { fips: fips, st: p.st, stName: p.stName, name: p.name, lat: +w.lat, lng: +w.lng, net: window.AGSIST_BIDS_NET, mine: mine });
+    });
   }
   function loadSales(fips, st, href, mine) {
     /* no sales file for the state: no row and no fetch */
