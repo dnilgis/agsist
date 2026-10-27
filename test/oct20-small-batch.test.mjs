@@ -66,7 +66,10 @@ test("cattle: the ratio's percentile comes from the repo's own weekly closes", (
   assert.equal(r.n, f.length + 1);
   assert.match(r.text, new RegExp(`at the ${want}(st|nd|rd|th) percentile of ${f.length + 1} weekly readings`));
   // histories that do not cover the same weeks: no read
-  assert.equal(ctx.ratioRead({ feeders: st.feeders, cattle: { ...st.cattle, hist_from: "2021-10-25" } }, 343.625, 227.55), null);
+  // a start week one week off the feeders' own (a fixed date went stale on 2026-10-26, when the 5-year window reached it)
+  const off = new Date(Date.parse(st.feeders.hist_from + "T00:00:00Z") - 7 * 864e5).toISOString().slice(0, 10);
+  assert.notEqual(off, st.feeders.hist_from);
+  assert.equal(ctx.ratioRead({ feeders: st.feeders, cattle: { ...st.cattle, hist_from: off } }, 343.625, 227.55), null);
   assert.equal(ctx.ratioRead({ feeders: st.feeders, cattle: { ...st.cattle, hist: c.slice(1) } }, 343.625, 227.55), null);
   assert.equal(ctx.ratioRead(null, 343.625, 227.55), null);
 });
