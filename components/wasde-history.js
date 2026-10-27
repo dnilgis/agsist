@@ -190,7 +190,7 @@
     }).catch(function () { /* no history published yet: the section stays hidden */ });
   }
 
-  root.agsistWasdeHistory = { path: path, summary: summary, parseShare: parseShare, fmtNum: fmtNum, fmtDate: fmtDate, fmtChange: fmtChange };
+  root.agsistWasdeHistory = { path: path, summary: summary, parseShare: parseShare, fmtNum: fmtNum, fmtDate: fmtDate, fmtChange: fmtChange, init: init };
   if (typeof document !== 'undefined') {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { init(document, root); });
     else init(document, root);

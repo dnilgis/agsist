@@ -51,6 +51,9 @@ NOTE = ("Each figure as that month's WASDE printed it, for the U.S. supply and u
 ORDER = ["area planted", "area harvested", "yield", "beginning stocks", "production", "imports", "supply",
          "feed", "food", "ethanol", "seed", "crush", "domestic", "exports", "use, total", "total use", "ending stocks",
          "farm price", "price"]
+# The site loads one crop file when a reader opens the section (BUILD-RULES: bulky history on demand).
+# Expected about 70 KB a crop; past this the build refuses and says so rather than ship a heavy file.
+MAX_FILE_BYTES = 400_000
 VER_RE = re.compile(r"-v(\d+)$", re.I)
 MY_RE = re.compile(r"^\d{4}/\d{2}$")
 
@@ -212,6 +215,10 @@ def write(docs, index, out, min_reports):
     if thin:
         print(f"wasde history: not written; too few reports with ending stocks {thin} (need {min_reports} each)")
         return 2
+    heavy = {c: len(dump(d).encode()) for c, d in docs.items() if len(dump(d).encode()) > MAX_FILE_BYTES}
+    if heavy:
+        print(f"wasde history: not written; files over {MAX_FILE_BYTES} bytes {heavy}")
+        return 3
     os.makedirs(out, exist_ok=True)
     sizes = {}
     for c, d in docs.items():
@@ -277,6 +284,12 @@ def selftest():
        and index["through"] == "2026-10-09", index["months_with_no_report_on_file"][:3])
     with tempfile.TemporaryDirectory() as d:
         ck("too little history writes nothing", write(*build(rows), d, 5) == 2 and not os.listdir(d))
+        global MAX_FILE_BYTES
+        keep, MAX_FILE_BYTES = MAX_FILE_BYTES, 500
+        try:
+            ck("a file over the size cap writes nothing", write(*build(rows), d, 1) == 3 and not os.listdir(d))
+        finally:
+            MAX_FILE_BYTES = keep
         ck("enough history writes four files", write(docs, index, d, 1) == 0 and sorted(os.listdir(d)) ==
            ["corn.json", "index.json", "soybeans.json", "wheat.json"])
         with open(os.path.join(d, "corn.json"), encoding="utf-8") as f:
