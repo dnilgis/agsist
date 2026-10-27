@@ -49,17 +49,20 @@ MONTH_NAMES = ["january", "february", "march", "april", "may", "june", "july", "
 HEAD = ["wasde", "report_date", "release_date", "title", "attribute", "commodity", "region", "market_year",
         "proj_est", "annual_quarter", "value", "unit", "forecast_year", "forecast_month", "file"]
 
+# A title is the whole line: the 2006, 2007 and 2014 text opens with prose ("The U.S. wheat supply and use
+# projections are mostly unchanged ...") that once passed for the title and gave a junk row.
+TITLE_END = r"\s*(\(Domestic\s+Measure\))?\s*(\d{1,2}/)?\s*$"
 TABLES = [
     # crop, commodity, title printed, title regex, anchor line (None = from the title), stop
     ("wheat", "Wheat", "U.S. Wheat Supply and Use",
-     re.compile(r"U\.\s?S\.\s+(All\s+)?Wheat\s+Supply\s+(and|&)\s+Use", re.I), None,
+     re.compile(r"^\s*U\.\s?S\.\s+(All\s+)?Wheat\s+Supply\s+(and|&)\s+Use" + TITLE_END, re.I), None,
      re.compile(r"Wheat\s+by\s+Class|^\s*Note:|Totals\s+may\s+not\s+add|^\s*1/", re.I)),
     ("corn", "Corn", "U.S. Feed Grain and Corn Supply and Use",
-     re.compile(r"U\.\s?S\.\s+Feed\s+Grains?\s+(and|&)\s+Corn\s+Supply\s+(and|&)\s+Use", re.I),
+     re.compile(r"^\s*U\.\s?S\.\s+Feed\s+Grains?\s+(and|&)\s+Corn\s+Supply\s+(and|&)\s+Use" + TITLE_END, re.I),
      re.compile(r"^\s*CORN(?=\s|$)"),
      re.compile(r"^\s*Note:|Totals\s+may\s+not\s+add|^\s*SORGHUM\b|^\s*1/", re.I)),
     ("soybeans", "Soybeans", "U.S. Soybeans and Products Supply and Use",
-     re.compile(r"U\.\s?S\.\s+Soybeans\s+(and|&)\s+Products\s+Supply\s+(and|&)\s+Use", re.I),
+     re.compile(r"^\s*U\.\s?S\.\s+Soybeans\s+(and|&)\s+Products\s+Supply\s+(and|&)\s+Use" + TITLE_END, re.I),
      re.compile(r"^\s*SOYBEANS(?=\s|$)"),
      re.compile(r"^\s*SOYBEAN\s+(OIL|MEAL)\b|^\s*Note:|^\s*1/", re.I)),
 ]
@@ -83,7 +86,7 @@ CANON = {
     "food, seed and industrial": "Food, Seed & Industrial",
     "ethanol & by-products": "Ethanol & by-products", "ethanol and by-products": "Ethanol & by-products",
     "yield per harvested acre": "Yield per Harvested Acre", "yield per harvested": "Yield per Harvested Acre",
-    "yield": "Yield per Harvested Acre",
+    "yield": "Yield per Harvested Acre", "yield per harv. acre": "Yield per Harvested Acre",
     "ending stocks, total": "Ending Stocks", "total ending stocks": "Ending Stocks",
 }
 # A label printed over two lines in the 1995-2011 text: "Area" over "Planted", "Yield per harvested" over
@@ -181,6 +184,8 @@ def header_line(line):
     ms, fl = [], []
     for t, a, b in tokens(rest):
         m = MONTH_RE.fullmatch(t)
+        if not m and re.fullmatch(r"[a-z][A-Z][a-z]", t):
+            m = MONTH_RE.fullmatch(t[1:] + t[0])     # "bFe", "arM": a month printed with its last letter first (2013 PDFs)
         if m:
             ms.append((MONTHS.index(m.group(1).lower()) + 1, (a + b) / 2))
         elif FLAG_RE.match(t):
@@ -311,10 +316,11 @@ def num(s):
     return float(s) if NUM_RE.match(s) and re.search(r"\d", s) else None
 
 
-def read_table(lines, crop, rel_date, scan=False):
-    """One table's lines -> ([(label, unit, col, value_text)], stats)."""
+def read_table(lines, crop, rel_date, scan=False, no_anchor=False):
+    """One table's lines -> ([(label, unit, col, value_text)], stats).
+    no_anchor: read from the title (April 1996 soybeans print no SOYBEANS line; the table opens with them)."""
     spec = next(t for t in TABLES if t[0] == crop)
-    anchor = spec[4]
+    anchor = None if no_anchor else spec[4]
     stats = {"rows_read": 0, "rows_bad_count": 0, "columns_withheld": 0, "refused": None}
     years, months, unit = [], [], ""
     hdr_open = False
@@ -353,7 +359,13 @@ def read_table(lines, crop, rel_date, scan=False):
                 # 2011-2015 PDFs print the months again beside CORN. The header's own months are tied to
                 # their market years by position; the ones beside the crop name only have to agree.
                 if not months:
-                    months = a_months
+                    # the header's own month line can be unreadable (mirrored "arM", Apr 2013); the same
+                    # market year printed once per month then takes the months in order, else by position
+                    reps = [y for y in years if sum(1 for z in years if z["my"] == y["my"]) == len(a_months)]
+                    if len(a_months) > 1 and len(reps) == len(a_months):
+                        months = [(mo, (y["a"] + y["b"]) / 2) for (mo, _), y in zip(a_months, reps)]
+                    else:
+                        months = a_months
                 elif [mo for mo, _ in sorted(months, key=lambda x: x[1])] != [mo for mo, _ in a_months]:
                     stats["refused"] = "months_beside_the_crop_name_differ_from_the_header"
                     return [], stats
@@ -397,7 +409,11 @@ def read_table(lines, crop, rel_date, scan=False):
             continue
         name, u = canon_label(label)
         if prev is not None:
-            name = STITCH.get((prev.lower().rstrip(". "), canon_label(label)[0].lower()), name)
+            stitched = STITCH.get((prev.lower().rstrip(". "), name.lower()))
+            if stitched:
+                name = stitched
+                if stitched.startswith("Area "):
+                    pending = prev                    # "Area" heads both Planted and Harvested
         for ci, v in enumerate(vals):
             cells.append((name, u or unit, ci, v))
     if cols is None:
@@ -440,8 +456,9 @@ def read_report(text, rel_date, file_label, scan=False):
         return [], rep
     rep["date"] = rel_date
     lines = text.replace("\r\n", "\n").split("\n")
-    # keep page breaks visible to find_tables: a form feed starts its own line
-    lines = [ln for chunk in lines for ln in (chunk.split("\f") if "\f" in chunk else [chunk])]
+    # keep page breaks visible to find_tables: a form feed starts its own line and stays on it (a table
+    # ends at its page; before Oct 28 the split dropped the form feed and a table ran on into the next page)
+    lines = [ln for chunk in lines for ln in (re.split(r"(?=\f)", chunk) if "\f" in chunk else [chunk])]
     found = find_tables(lines)
     rows = []
     y, m = int(rel_date[:4]), int(rel_date[5:7])
@@ -452,6 +469,10 @@ def read_report(text, rel_date, file_label, scan=False):
             continue
         for a, b in found[crop]:
             cells, st = read_table(lines[a:b], crop, rel_date, scan=scan)
+            if (not cells and crop == "soybeans" and st.get("refused") == "no_rows"
+                    and not any(TABLES[2][4].match(clean(ln).strip()) for ln in lines[a:b])):
+                # the soybean block comes first in its table, so with no SOYBEANS line it starts at the title
+                cells, st = read_table(lines[a:b], crop, rel_date, scan=scan, no_anchor=True)
             if cells:
                 break
         st["rows"] = len(cells)
@@ -473,7 +494,7 @@ def excerpt(text, max_lines=140):
     keep = lines[:12]
     for spans in find_tables(lines).values():
         for a, b in spans[:3]:
-            keep += ["", "-----"] + lines[max(0, a - 1):min(b, a + max_lines)]
+            keep += ["", "\f-----"] + lines[max(0, a - 1):min(b, a + max_lines)]   # read again, a span ends here
     return "\n".join(keep) + "\n"
 
 
