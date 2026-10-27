@@ -16,6 +16,12 @@
      "page": "/cash-bids/wisconsin/cadott",
      "name": "Cadott Grain's phone number corrected",
      "text": "The Cadott page listed an Iowa area code. It now gives Cadott Grain's grain line, 715-289-4366, from the elevator's own site."
+    },
+    {
+     "tag": "fixed",
+     "page": "/rain-print",
+     "name": "Rain Print says when this year's print ships as soon as you pick the year",
+     "text": "Picking this year showed a past year's arrival date and Christmas lines while the town was still loading, or after it failed. Every delivery line now follows the year you picked: this year's print ships in January."
     }
    ]
   },
