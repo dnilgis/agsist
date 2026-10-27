@@ -99,6 +99,36 @@ def change_words(cur, crop):
     return "%s %.1f from %s's %s" % ("up" if d > 0 else "down", abs(d), mon, p)
 
 
+def prev_correction(cur, crop, corrections=None):
+    """USDA's own correction to LAST month's figure, when the PDF's prev column
+    is the figure NASS later corrected (Sep 2026 corn: printed 178.5, corrected
+    178.8 on Oct 23). -> usda_corrections.view() or None."""
+    p = (cur or {}).get("prev", {}).get(crop)
+    if p is None or not (cur or {}).get("as_of"):
+        return None
+    import usda_dates
+    import usda_corrections
+    pw = usda_dates.prior_wasde(date.fromisoformat(cur["as_of"]))
+    if pw is None:
+        return None
+    return usda_corrections.for_value(float(p), pw.isoformat(), "corn" if crop == "corn" else crop,
+                                      corrections=corrections)
+
+
+def correction_words(cur, crop, corrections=None):
+    """'NASS corrected September to 178.8 on Oct 23, 2026, so up 2.4 from the
+    corrected figure' or ''. The printed change stays first; this goes beside it."""
+    cv = prev_correction(cur, crop, corrections)
+    if cv is None or cur.get(crop) is None:
+        return ""
+    import usda_corrections
+    d = round(cur[crop] - float(cv["corrected"]), 1)
+    mon = usda_corrections.MONTHS[int(cv["release"][5:7]) - 1]
+    move = "unchanged from" if d == 0 else "%s %.1f from" % ("up" if d > 0 else "down", abs(d))
+    return "NASS corrected %s to %s on %s, so %s the corrected figure" % (
+        mon, cv["corrected"], usda_corrections.short_date(cv["notice_date"]), move)
+
+
 _READ = object()   # "read the repo's file"; None means "there is no USDA figure"
 
 
@@ -116,10 +146,18 @@ def apply_to_tour(tour, cur=_READ):
         b["soy_yield"] = cur["soybeans"]
     b["label"] = cur["label"]
     b["as_of"] = cur["as_of"]
+    # the figure moved to a newer release: a correction tagged on the old one
+    # no longer describes it; the prior month's correction rides along instead
+    b.pop("nass_correction", None)
     bits = ["corn %s bu/acre" % cur["corn"]]
     cw = change_words(cur, "corn")
     if cw:
-        bits[0] += " (%s)" % cw
+        cx = correction_words(cur, "corn")
+        bits[0] += " (%s)" % (cw + ("; " + cx if cx else ""))
+        pc = prev_correction(cur, "corn")
+        if pc:
+            import usda_corrections
+            b["prev_nass_correction"] = usda_corrections.tag(pc)
     if cur.get("soybeans") is not None:
         sb = "soybeans %s" % cur["soybeans"]
         sw = change_words(cur, "soybeans")
@@ -192,6 +230,17 @@ def _selftest():
     ck(apply_to_bench(bench, cur) and bench["crops"]["corn"]["usda_current"] == 181.2
        and bench["crops"]["soybeans"]["usda_current_label"] == "USDA, October WASDE"
        and bench["usda_source"].endswith("wasde1026.pdf"), "the panel's USDA row moves too")
+    # NASS CORRECTED SEPTEMBER'S 178.5 TO 178.8 (Oct 23, 2026). The change from
+    # the PDF's prev column stays as printed; the corrected one goes beside it.
+    ck(correction_words(cur, "corn") == "NASS corrected September to 178.8 on Oct 23, 2026, so up 2.4 from the corrected figure",
+       correction_words(cur, "corn"))
+    ck(correction_words(cur, "soybeans") == "", "soybeans were not corrected")
+    t2 = {"benchmarks": {"usda": {"corn": 178.5, "soy_yield": 52.8, "as_of": "2026-09-11",
+                                  "nass_correction": {"id": "nass-crop-production-2026-09-11-corn-yield"}}}}
+    apply_to_tour(t2, cur)
+    u2 = t2["benchmarks"]["usda"]
+    ck("up 2.7 from September's 178.5; NASS corrected September to 178.8 on Oct 23, 2026, so up 2.4 from the corrected figure"
+       in u2["note"] and "nass_correction" not in u2 and u2["prev_nass_correction"]["corrected"] == 178.8, str(u2))
     print()
     print("usda_current: " + ("all passed" if not fails else "%d FAILED" % len(fails)))
     return 1 if fails else 0
