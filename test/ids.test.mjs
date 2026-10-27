@@ -67,6 +67,25 @@ test("AGSIST ids: each minted once, below next, a merged id never comes back", (
   for (const r of EL.elevators) if (r.id.startsWith("a")) assert.ok(LED.minted[r.id], `${r.id} not in the ledger`);
 });
 
+test("retired bids-repo ids: never a record, never held by a key, recorded once with their survivor", () => {
+  // Oct 27: 141 ids in this file had been folded away in the bids repo since Oct 18 (all in its mergedFrom).
+  // Real case: known:Farmers Cooperative Elevator Company|Halstead (e049c48vt9), folded by phone into
+  // CoMark's Halstead West board (egz19x9jv6); the basis key FARMERS COOPERATIVE ELEVATOR... held the old id.
+  const R = LED.retired || {};
+  const recIds = new Set(EL.elevators.map((r) => r.id));
+  assert.ok(Object.keys(R).length >= 141, `retired ${Object.keys(R).length}`);
+  assert.equal(R.e049c48vt9 && R.e049c48vt9.into, "egz19x9jv6");
+  assert.ok(recIds.has("egz19x9jv6"));
+  const held = new Set(Object.values(LED.keys));
+  for (const [old, r] of Object.entries(R)) {
+    assert.ok(!recIds.has(old), `${old} is retired but still has a record`);
+    assert.ok(!held.has(old), `${old} is retired but a key still holds it`);
+    assert.ok(r.into && r.on && r.rule, old);
+    assert.equal(LED.events.filter((e) => e.retire === old).length, 1, `${old}: one retirement event`);
+  }
+  assert.equal(EL.counts.stale_ids, 0);
+});
+
 test("alias lookups: the basis history's spellings find one facility", () => {
   const a = lookup("ALLIED COOPERATIVE, WI", "ADAMS", "WI");
   const b = lookup("ALLIED COOPERATIVE", "ADAMS", "WI");

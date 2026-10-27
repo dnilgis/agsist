@@ -194,6 +194,28 @@ jobs:
           BARCHART_TOTAL_LOCATIONS: ${{ github.event.inputs.total_locations }}
         run: python scripts/fetch_bids.py
 
+      # THE IDS, EVERY RUN (2026-10-27, god's-eye panel build 1). data/ids/elevators.json was
+      # last built Oct 18, and by Oct 27 141 of its bids-repo ids had been folded away in the
+      # bids repo and 52 of 251 bids.json places had no id. Rebuilt here on every run, from
+      # the bids.json just written and the bids repo's directory: folded ids are retired into
+      # their survivor (recorded in elevator-ids.json, never reused). Parcels are left alone
+      # (they change with the land files, not the bids). A failure keeps the last ids and
+      # never costs the bids.
+      - name: Rebuild the elevator ids
+        continue-on-error: true
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          s="$RUNNER_TEMP/schedules.json"
+          GH_TOKEN="$PRIVATE_REPO_TOKEN" gh api -H "Accept: application/vnd.github.raw" \
+            "repos/dnilgis/feedbag/contents/apijobs/schedules-2026-10/schedules/schedules.json?ref=raw" > "$s" \
+            || { echo "::warning::ids: schedules not readable; the last ids stay"; exit 0; }
+          python scripts/build_ids.py --no-parcels --schedules "$s" \
+            || { echo "::warning::ids not rebuilt this run; the last ids stay (the bids update is unaffected)"; exit 0; }
+          # the id-to-basis-history join is a pure function of elevators.json: rebuilt with it
+          python scripts/build_basis_join.py || echo "::warning::basis join not rebuilt this run"
+          python scripts/join_report.py | tail -4 || true
+
       # Same job, while bids-full.json is still on disk. This step failing is
       # a real failure: it means the full file was not written.
       # THE DIRECTORY, TAKEN WHILE WE STILL HAVE THE FEED.
@@ -287,6 +309,9 @@ jobs:
           # bids-full.json is gitignored. Adding it explicitly here would put
           # 6 MB into every commit, which is the whole thing this avoids.
           git add data/bids.json data/basis data/basis-sparklines data/elevator-directory.json
+          # the ids rebuilt above (no parcel files: those are built with the land data)
+          git add data/ids/elevators.json data/ids/elevator-ids.json data/ids/ambiguous.json data/ids/board-parents.json 2>/dev/null || true
+          [ -d data/ids/basis-join ] && git add -A data/ids/basis-join || true
           # The homepage counts line (scripts/fetch_bids.py STATS_PATH), same run as bids.json.
           [ -f data/bids-stats.json ] && git add data/bids-stats.json || true
           # WAVE1-A: the day-change record and the contacts shards.

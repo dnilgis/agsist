@@ -2,11 +2,19 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+<<<<<<< HEAD
    "id": "2026-10-27-your-county-this-week",
    "date": "2026-10-27",
    "title": "Your county this week, Thursdays in the Daily",
    "line": "Sign up for the Daily with your ZIP, tick the county box, and Thursday's email adds what changed in your county: drought, nearby corn bids, basis, land sales.",
    "link": "/daily"
+=======
+   "id": "2026-10-27-company-count-bid-page",
+   "date": "2026-10-27",
+   "title": "State basis: company counts match one more way",
+   "line": "An elevator listed on another company's own bid page now counts with that company beside the state basis. Wisconsin shows one company fewer.",
+   "link": "/cash-bids/wisconsin/"
+>>>>>>> origin/main
   },
   {
    "id": "2026-10-27-fast-facts-what-changed",
