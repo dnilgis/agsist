@@ -11,8 +11,9 @@ Rules:
   - only facilities that are a bids-repo row (sources.bids_repo) and hold exactly ONE basis key
     (not filtered by today's history files, so the join changes only when the ids do; a key with
     no history today simply finds nothing)
-  - a facility with two or more basis keys is listed under "multi" with its count and left out:
-    which history is its own is not ours to guess
+  - a facility with two or more basis keys joins the one key its own live bid rows (sources.bids) write
+    today, when exactly one is that (Oct 27: retiring folded ids put two spellings on one id); else it is
+    listed under "multi" with its count and left out: which history is its own is not ours to guess
   - nothing else is read; the output is a pure function of elevators.json
 
 Output: one small file per state (a phone reads only its own), data/ids/basis-join/<ST>.json =
@@ -30,6 +31,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "ids", "basis-join")
 
 
+def _norm(x):
+    return " ".join(str(x or "").strip().upper().split())
+
+
 def build(elevators, facs):
     k, multi = {}, {}
     n_repo = n_basis = 0
@@ -43,13 +48,22 @@ def build(elevators, facs):
             continue
         n_basis += 1
         st = keys[0].split("|", 1)[0]
+        if len(keys) > 1:
+            # THE BOARD'S OWN CURRENT KEY (Oct 27). Two keys on one id are usually one facility under two
+            # spellings over time (a fold, a renamed board). The key its own live rows write today
+            # (sources.bids, upper-cased as build_basis_history.key_of does) is its history; if exactly
+            # one key is that, it is the join. Otherwise unsure: multi, left out, as before.
+            cur = {f"{st}|{_norm(p.split('|')[0])}|{_norm(p.split('|')[2])}" for p in (src.get("bids") or []) if p.count("|") == 3}
+            own = [x for x in keys if x in cur]
+            if len(own) == 1:
+                keys = own
         if len(keys) == 1:
             k.setdefault(st, {})[e["id"]] = keys[0]
         else:
             multi.setdefault(st, {})[e["id"]] = len(keys)
     src = "data/ids/elevators.json generated " + str(elevators.get("generated") or "")
-    rule = ("elevId -> its one basis-history key (ST|FACILITY|CITY in data/basis/<ST>.json); ids with two or more keys "
-            "are in multi and left out. scripts/build_basis_join.py")
+    rule = ("elevId -> its one basis-history key (ST|FACILITY|CITY in data/basis/<ST>.json); an id with two or more keys "
+            "joins the one its own live bid rows write today, else it is in multi and left out. scripts/build_basis_join.py")
     files = {}
     for st in sorted(set(k) | set(multi)):
         files[st + ".json"] = {"schema": "agsist-basis-join/1", "state": st, "from": src, "rule": rule,
@@ -72,8 +86,22 @@ def selftest():
         {"id": "e3", "sources": {"bids_repo": ["z"], "basis": ["WI|GONE|RICE LAKE"]}},
         {"id": "a00001", "sources": {"basis": ["WI|COOP Y|CAMERON"]}},
         {"id": "e4", "sources": {"bids_repo": ["w"]}},
+        # real (Oct 27): CoMark's Halstead West board holds the folded registry spelling too
+        {"id": "egz19x9jv6", "sources": {"bids_repo": ["ceagrain-halsteadwest"], "bids": ["CoMark Equity Alliance LLC||HALSTEAD WEST|KS"],
+                                         "basis": ["KS|COMARK EQUITY ALLIANCE LLC|HALSTEAD", "KS|COMARK EQUITY ALLIANCE LLC|HALSTEAD WEST",
+                                                   "KS|FARMERS COOPERATIVE ELEVATOR COMPANY|HALSTEAD"]}},
+        # two keys, neither written by its own rows today: unsure
+        {"id": "e5", "sources": {"bids_repo": ["v"], "bids": ["Nexus Cooperative||Elsewhere|IA"],
+                                 "basis": ["IA|NEXUS COOPERATIVE|HARLAN", "IA|NEXUS COOPERATIVE|HARLAN, IA"]}},
     ]}
-    facs = {"WI": {"COOP X|CHETEK", "OLD MILL|BARRON", "OLD MILL INC|BARRON", "COOP Y|CAMERON"}}
+    facs = {"WI": {"COOP X|CHETEK", "OLD MILL|BARRON", "OLD MILL INC|BARRON", "COOP Y|CAMERON"},
+            "KS": {"COMARK EQUITY ALLIANCE LLC|HALSTEAD", "COMARK EQUITY ALLIANCE LLC|HALSTEAD WEST",
+                   "FARMERS COOPERATIVE ELEVATOR COMPANY|HALSTEAD"}}
+    d0 = build(el, facs)
+    assert d0["KS.json"]["k"] == {"egz19x9jv6": "KS|COMARK EQUITY ALLIANCE LLC|HALSTEAD WEST"}, d0["KS.json"]
+    assert build(el, None)["IA.json"]["multi"] == {"e5": 2}
+    el["elevators"] = el["elevators"][:5]
+    facs.pop("KS")
     d = build(el, facs)
     assert sorted(d) == ["WI.json", "index.json"], sorted(d)
     assert d["WI.json"]["k"] == {"e1": "WI|COOP X|CHETEK"}, d
