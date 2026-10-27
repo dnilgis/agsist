@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-27-fast-facts-what-changed",
+   "date": "2026-10-27",
+   "title": "Fast Facts: what changed this week, on a map",
+   "line": "Your place now opens with what changed this week (drought, top corn bid near you, county basis, new farm sales) and a state drought map.",
+   "link": "/fast-facts"
+  },
+  {
    "id": "2026-10-27-fast-facts-rain-print",
    "date": "2026-10-27",
    "title": "Fast Facts: make the county's Rain Print your own",
