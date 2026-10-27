@@ -22,7 +22,7 @@
   if (window.AgLandSales) { window.AgLandSales.scan(); return; }
   var STATES = { IL: 'illinois', WI: 'wisconsin', IN: 'indiana' };
   var NAMES = { IL: 'Illinois', WI: 'Wisconsin', IN: 'Indiana' };
-  var EMAIL = { IL: 1, WI: 1 };   /* the monthly land sale email covers these; no ask beside Indiana-only sales */
+  var EMAIL = { IL: 1, WI: 1, IN: 1 };   /* the monthly land sale email covers these (Indiana since Oct 27) */
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var NEAR_MI = 25;
   var REMOVE_TO = 'sig@agsist.com';

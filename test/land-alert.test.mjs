@@ -7,7 +7,7 @@
  *   - the gate: nothing reaches the list without LANDSALES_MONTHLY_LIVE=1, in the workflow
  *     and in the script (the route is the Daily's until Plan A: Sig, Oct 23);
  *   - the unsubscribe: front door, link id, UNSUB_SECRET hmac, topic=landsales, no ZIP;
- *   - an empty month sends nothing; the radius math; Illinois and Wisconsin only;
+ *   - an empty month sends nothing; the radius math; Illinois, Wisconsin and Indiana (Oct 27);
  *   - the ask on Field Scout, the comp report, Fast Facts and the Atlas county pages.
  *
  *   node --test test/land-alert.test.mjs
@@ -33,7 +33,7 @@ test("the selftests: the radius, the list, the gate, the route, the stop link th
   assert.match(la, /OK: 0 failure\(s\)/);
   for (const name of ["one degree of latitude is 69.1 miles", "the 26-mile sale is outside 25 and inside 50", "10 miles keeps only the 7-mile sale",
     "a row carries no name, parcel, legal or document", "an empty month is an answer with no rows, not a skip",
-    "median by hand: 16 sales, $5,650; the year before 12 sales, $5,350; up 5.6%", "Indiana is not a state this email reads"]) {
+    "median by hand: 16 sales, $5,650; the year before 12 sales, $5,350; up 5.6%", "Indiana is a state this email reads (Sig, Oct 27)"]) {
     assert.ok(la.includes("ok   " + name), "land_alert selftest ran: " + name);
   }
   const out = py(["scripts/send_land_alert.py", "--selftest"]);
@@ -47,16 +47,16 @@ test("the selftests: the radius, the list, the gate, the route, the stop link th
   }
 });
 
-test("no names in the email, on the real county files: Chetek 54728 and Charleston, IL 61920", () => {
+test("no names in the email, on the real county files: Chetek 54728, Charleston, IL 61920 and Tipton, IN 46072", () => {
   // the ZIP centroids from the bids repo's ZIP table, written in so the test needs no network
   const code = `
 import json, re, sys
 sys.path.insert(0, "scripts")
 import send_land_alert as S, land_alert as LA, email_links
-zips = S.Zips(data={"54728": (45.317, -91.6542, "Chetek, WI"), "61920": (39.4869, -88.1761, "Charleston, IL")})
+zips = S.Zips(data={"54728": (45.317, -91.6542, "Chetek, WI"), "61920": (39.4869, -88.1761, "Charleston, IL"), "46072": (40.2853, -86.0688, "Tipton, IN")})
 land = LA.Land()
 out = {}
-for z in ("54728", "61920"):
+for z in ("54728", "61920", "46072"):
     names, places = set(), set()
     for st, c in land.counties_near(zips.coord(z), 25):
         f = land.file(st, c["fips"]) or {}
@@ -82,12 +82,13 @@ for z in ("54728", "61920"):
         continue
     m = S.render("reader@example.com", "https://w.dev", "sec", email_links.SAMPLE_LID, parts, "news@agsist.com")
     body = (str(m["Subject"]) + m.get_body(("plain",)).get_content() + m.get_body(("html",)).get_content()).upper()
-    out[z] = {"n": len(names), "hits": sorted(x for x in names if re.search(r"(?<![A-Z0-9])" + re.escape(x) + r"(?![A-Z0-9])", body))[:5], "rows": len(parts[2][[k for k, v in parts[2]].index("sales")][1]),
+    out[z] = {"indiana": any(r["st"] == "IN" for r in parts[2][[k for k, v in parts[2]].index("sales")][1]), "in_note": LA.IN_NOTE.upper() in body, "n": len(names), "hits": sorted(x for x in names if re.search(r"(?<![A-Z0-9])" + re.escape(x) + r"(?![A-Z0-9])", body))[:5], "rows": len(parts[2][[k for k, v in parts[2]].index("sales")][1]),
               "zip_in_link": [u for u in email_links.hrefs(m.get_body(("html",)).get_content()) if z in u]}
 print(json.dumps(out))
 `;
   const r = JSON.parse(py(["-c", code]));
-  for (const z of ["54728", "61920"]) {
+  assert.ok(r["46072"].indiana && r["46072"].in_note, "Tipton, IN gets Indiana sales and is told what Indiana's records carry: " + JSON.stringify(r["46072"]));
+  for (const z of ["54728", "61920", "46072"]) {
     assert.ok(r[z].rows >= 1, z + ": September 2026 has sales to list (" + JSON.stringify(r[z]) + ")");
     assert.ok(r[z].n > 100, z + ": the county files nearby were read with their names (" + r[z].n + ")");
     assert.deepEqual(r[z].hits, [], z + ": a buyer, seller, parcel, legal or document string reached the email");
@@ -139,11 +140,13 @@ test("the unsubscribe link: front door, link id, UNSUB_SECRET hmac, topic=landsa
   assert.match(w, /\* v5\.55 \(2026-10-23\): MONTHLY LAND SALE EMAIL/);
 });
 
-test("Illinois and Wisconsin only; Indiana held and said so", () => {
+test("Illinois, Wisconsin and Indiana (Sig, Oct 27: \"Yes turn on Indiana\"); Indiana's records said plainly", () => {
   const la = read("scripts/land_alert.py");
-  assert.match(la, /^STATES = \("IL", "WI"\)/m);
-  assert.match(la, /Indiana is held/);
-  assert.ok(!/"IN"/.test(la.replace(/"IN" not in STATES/, "")), "no Indiana in the module");
+  assert.match(la, /^STATES = \("IL", "WI", "IN"\)/m);
+  assert.match(la, /IN_NOTE = \("Indiana sales carry the sale date from the state's sales disclosure form, not a recording date, and the town is "/);
+  const js = read("components/land-alert.js");
+  assert.match(js, /Illinois, Wisconsin and Indiana\./, "the ask names the three states");
+  assert.match(js, /Indiana sales carry the sale date and the parcel/, "the thank-you says what Indiana's records carry");
   assert.match(read("scripts/fetch_land_sales.py"), /rec = st in \("WI", "IL"\) and any\(r\.get\("rec"\) for r in recs\)/, "Illinois keeps the recorded date");
 });
 
@@ -161,7 +164,8 @@ test("the ask: email, ZIP, 10/25/50 with 25 picked, the topic, One more? with th
   const ctx = { window: {}, document: { readyState: "loading", addEventListener() {}, querySelector() { return null; }, querySelectorAll() { return []; } }, location: { search: "", pathname: "/" }, setTimeout() {} };
   vm.runInNewContext(js, ctx);
   const A = ctx.window.AgLandAlert;
-  for (const z of ["54728", "61920", "60601", "53201", "50010", "55401", "46201", "63101", "40202", "49503"]) assert.ok(A.NEAR.test(z), z + " is near");
+  for (const z of ["54728", "61920", "60601", "53201", "50010", "55401", "46201", "46072", "47906", "63101", "40202", "49503", "45801", "43001"]) assert.ok(A.NEAR.test(z), z + " is near");
+  assert.match(A.doneText(25, "46072", new Date("2026-10-27T18:00:00Z")), /A month with no sales sends nothing\. Indiana sales carry the sale date and the parcel/);
   for (const z of ["75001", "90210", "10001", "83301", "68508", "58102"]) assert.ok(!A.NEAR.test(z), z + " is not near");
   assert.equal(A.topicOf("54728", 25), "landsales:54728:25");
   assert.ok(A.okZip("54728") && !A.okZip("00000") && !A.okZip("5472"));
@@ -194,7 +198,7 @@ test("where the ask shows, and how it loads", () => {
   assert.match(read("farmland-atlas/wisconsin/barron-county.html"), /<section class="as" data-atlas-sales="county" data-st="WI"/, "the Atlas county block the ask follows");
   assert.match(read("components/land-alert.js"), /section\[data-atlas-sales="county"\]/);
   const L = read("components/loader.js");
-  assert.match(L, /s\.src = '\/components\/land-alert\.js\?v=1';/);
+  assert.match(L, /s\.src = '\/components\/land-alert\.js\?v=2';/);
   assert.match(L, /document\.querySelector\('\[data-land-alert\],section\[data-atlas-sales="county"\]'\)/);
   assert.match(L, /var CV = '96';/);
   assert.ok(Number(/var CACHE_VERSION = (\d+);/.exec(read("sw.js"))[1]) >= 264);

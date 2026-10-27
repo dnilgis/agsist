@@ -169,10 +169,10 @@ test("the coverage table: every state, honest statuses, the live count matches t
     assert.equal(cov.states.find((s) => s.st === st).status, "nondisclosure", st + " is listed as not public record");
   for (const st of ["illinois", "wisconsin", "indiana"]) assert.ok(fs.readdirSync(path.join(ROOT, "land-sales", st)).length > 70, "pages for " + st);
   assert.match(read("land-sales/index.html"), /Sales reported for 3 states: Illinois, Indiana and Wisconsin\./);
-  // Indiana's records differ from IL and WI: the pages say what they carry, and no email ask sits beside Indiana-only sales
+  // Indiana's records differ from IL and WI: the pages say what they carry; the email covers Indiana too (Oct 27), so the ask shows
   const inPage = read("land-sales/indiana/adams-county.html");
   assert.match(inPage, /Indiana&#x27;s sales disclosure forms carry the sale date, not a recording date, and the town is the parcel&#x27;s mailing town/);
-  assert.ok(!/data-land-alert/.test(inPage), "the monthly email is IL and WI only: no ask on an Indiana county page");
+  assert.match(inPage, /data-land-alert/, "the monthly email covers Indiana: the ask on an Indiana county page");
   assert.match(read("land-sales/illinois/adams-county.html"), /data-land-alert/);
 });
 

@@ -1168,7 +1168,7 @@
     if (window.AgLandAlert || document.querySelector('script[src^="/components/land-alert.js"]')) return;
     if (!document.querySelector('[data-land-alert],section[data-atlas-sales="county"]')) return;
     var s = document.createElement('script');
-    s.src = '/components/land-alert.js?v=1';
+    s.src = '/components/land-alert.js?v=2'; // v2 2026-10-27: Indiana in the ask and the thank-you
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }

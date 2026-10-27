@@ -29,8 +29,8 @@ WORDS: "unusual price", with plain possible reasons (family sale, part interest,
 included); never "questionable" or any word that accuses anyone.
 
 STATES: Illinois, Wisconsin and Indiana (Sig, Oct 27: "Yes turn on Indiana"; it was held to Field Scout
-and the comp report since Oct 18). The monthly land sale email (land_alert.STATES) is still IL and WI, so
-the email ask is not put beside Indiana-only sales. Indiana's records differ and the pages say so
+and the comp report since Oct 18), the monthly land sale email included (land_alert.STATES); the email
+ask shows beside any state the email covers. Indiana's records differ and the pages say so
 (IN_NOTE): the date is the sale date on the disclosure form (no recording date), and the place is the
 parcel's postal town, placed at its ZIP's middle, not a township. data/land-sales/coverage.json is the
 per-state source table, kept by hand; this script only draws it and counts the states with sales.
