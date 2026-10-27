@@ -587,6 +587,7 @@
       })
       .catch(function () { });
   }
+  // ── Sponsor measurement
   function loadSponsorMetrics() {
     if (window.__sponsorMetrics) return;
     window.__sponsorMetrics = true;
