@@ -76,6 +76,8 @@ REGISTRY = os.path.join(HERE, "insight_registry.json")
 LEDGER_DIR = "private/ledger/tests"
 BID_LEDGER_DIR = "private/ledger/bid-changes"
 SHUFFLES, SHUFFLES_NEAR, NEAR_P = 1000, 5000, 0.01
+SHUFFLES_LINE = 20000      # when p is within 10x the ledger-wide line
+LINE = [None]              # alpha / M for this run (set by run())
 BOOT = 1000
 CHECK_PAIRS = []           # selftest only: compare the matrix counts with a pair-by-pair count
 BLOCK_WEEKS = 8            # weekly placebo: shuffle 8-week blocks, not single weeks (autocorrelation)
@@ -218,13 +220,18 @@ def perm_p(obs, null, greater=True):
 
 
 def placebo(stat_of, shuffle, obs, rng, n=None, n_near=None, near=NEAR_P):
-    """stat_of(shuffled) for n shuffles; more (to n_near in all) when p comes out under `near`."""
+    """stat_of(shuffled) for n shuffles; to n_near in all when p comes out under `near`; to
+    SHUFFLES_LINE when p is within 10 times the ledger-wide line (LINE), so a verdict at the line
+    never rests on one or two shuffles."""
     n = SHUFFLES if n is None else n
     n_near = SHUFFLES_NEAR if n_near is None else n_near
     null = [stat_of(shuffle(rng)) for _ in range(n)]
     p = perm_p(obs, null)
     if p < near and n_near > n:
         null += [stat_of(shuffle(rng)) for _ in range(n_near - n)]
+        p = perm_p(obs, null)
+    if LINE[0] and p < 10 * LINE[0] and SHUFFLES_LINE > len(null):
+        null += [stat_of(shuffle(rng)) for _ in range(SHUFFLES_LINE - len(null))]
         p = perm_p(obs, null)
     return p, len(null)
 
@@ -1054,6 +1061,7 @@ def run(args):
     for r in earlier:
         previous.setdefault(r["id"], []).append(r)
     M = ledger_size(reg, previous.keys())
+    LINE[0] = float(reg.get("alpha", 0.05)) / M
     inputs = Inputs(root=args.root, raw=args.raw, bid_ledger=args.bid_ledger)
     cores = {}
     for s in reg["specs"]:
@@ -1135,6 +1143,18 @@ def selftest():
        bonferroni(0.0002, 164) <= 0.05 < bonferroni(0.0004, 164))
     ck("permutation p counts the real one: 0 of 999 as high -> 0.001", abs(perm_p(5, [0] * 999) - 0.001) < 1e-12)
     ck("5,000 shuffles can reach the ledger line (1/5001 < 0.05/164)", 1 / 5001 < 0.05 / 164 < 1 / 1001)
+    LINE[0] = 0.05 / 164
+    cnt = [0]
+
+    def st_(v):
+        cnt[0] += 1
+        return v
+    pz, nz = placebo(st_, lambda r_: r_.random() * 0.5, 1.0, random.Random(1))
+    ck("a real statistic above every shuffle: 1,000, then 5,000, then 20,000 near the line",
+       nz == SHUFFLES_LINE and cnt[0] == SHUFFLES_LINE and abs(pz - 1 / (SHUFFLES_LINE + 1)) < 1e-15, (pz, nz))
+    pf, nf = placebo(st_, lambda r_: r_.random(), 0.5, random.Random(1))
+    ck("an ordinary p stops at 1,000", nf == SHUFFLES and 0.4 < pf < 0.6, (pf, nf))
+    LINE[0] = None
 
     print("placebo on synthetic weekly data")
     reg = {"schema": REGISTRY_SCHEMA, "alpha": 0.05, "ledger_prior": {"count": 150},
