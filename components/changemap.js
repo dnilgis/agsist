@@ -59,7 +59,11 @@
   }
   function cents(x) { return Math.round(Math.abs(x) * 100); }
   function basisWords(b) { var c = cents(b); return c === 0 ? 'even' : c + ' ' + (b < 0 ? 'under' : 'over'); }
-  function money(x) { return '$' + x.toFixed(2); }
+  /* boards quote in eighths of a cent: 4.5525 is $4.55\u00bc, never rounded to $4.55 */
+  var EIGHTHS = { 0: '', 0.125: '\u215b', 0.25: '\u00bc', 0.375: '\u215c', 0.5: '\u00bd', 0.625: '\u215d', 0.75: '\u00be', 0.875: '\u215e' };
+  function split(x) { var c = Math.abs(x) * 100, w = Math.floor(c + 1e-9), f = Math.round((c - w) * 8) / 8; if (f === 1) { w++; f = 0; } return [w, f]; }
+  function money(x) { var p = split(x); return '$' + (p[0] / 100).toFixed(2) + EIGHTHS[p[1]]; }
+  function centWords(x) { var p = split(x), n = (p[0] || !p[1] ? String(p[0]) : '') + EIGHTHS[p[1]]; return n + (p[0] === 1 && !p[1] ? ' cent' : ' cents'); }
   function no(why) { return { status: 'withheld', why: why }; }
   function bidFilter() {
     try { if (typeof module === 'object' && module.exports) return require('./bid-filter.js'); } catch (e) { /* unfiltered */ }
@@ -117,7 +121,7 @@
     if (d.dir === 'held') return { status: 'held', label: 'Drought', short: 'drought at ' + (d.now < 0 ? 'no category over half the county' : 'D' + d.now), date: md(d.valid) + ' map', src: d.source, d: d };
     var up = d.dir === 'worse';
     return { status: 'changed', label: 'Drought', d: d,
-      lead: 'drought ' + (up ? 'got worse' : 'eased') + ' (' + (d.was < 0 ? 'none' : 'D' + d.was) + ' to ' + (d.now < 0 ? 'none' : 'D' + d.now) + ')',
+      lead: 'drought ' + (up ? 'worse' : 'eased') + ' (' + (d.was < 0 ? 'none' : 'D' + d.was) + ' to ' + (d.now < 0 ? 'none' : 'D' + d.now) + ')',
       text: (up ? 'Worse this week: ' : 'Eased this week: ') + catWords(d.now) + ', from ' + catWords(d.was) + ' a week earlier. Category = the worst one covering at least half the county.',
       date: span, src: d.source };
   }
@@ -150,7 +154,7 @@
       if (BF && !BF.canSetBest({ commodity: n.commodity || 'Corn', crop: 'corn', cashPrice: n.cash })) return;
       var d = miles(lat, lng, p.lat, p.lon);
       if (d > radius) return;
-      out.push({ key: fnv(p.place + '|corn|' + n.period), st: String(p.state || '').toUpperCase(), period: n.period, cash: n.cash,
+      out.push({ key: fnv(p.place + '|corn|' + n.period), site: String(p.operator || '').trim().toLowerCase() + '|' + p.lat.toFixed(3) + '|' + p.lon.toFixed(3), st: String(p.state || '').toUpperCase(), period: n.period, cash: n.cash,
         basis: typeof n.basis === 'number' ? n.basis : null, mi: d, lat: p.lat, lon: p.lon, fips: p.fips || null, co: String(p.operator || '').trim().toLowerCase() });
     });
     return out;
@@ -164,6 +168,9 @@
     var period = Object.keys(by).sort(function (a, b) { return by[b].length - by[a].length || (a < b ? -1 : 1); })[0];
     var grp = by[period];
     var best = grp.reduce(function (m, r) { return !m || r.cash > m.cash || (r.cash === m.cash && r.mi < m.mi) ? r : m; }, null);
+    /* every place tied for the top now; one board filed under several towns at one pin is one site */
+    var nowSites = {};
+    grp.forEach(function (r) { if (r.cash === best.cash) nowSites[r.site] = 1; });
     var hist = {}, missing = false;
     grp.forEach(function (r) {
       var f = prev && prev[r.st];
@@ -180,12 +187,12 @@
       var e = (hist[r.key] || []).filter(function (x) { return x && x[0] === day && typeof x[1] === 'number'; })[0];
       if (e) then.push({ r: r, cash: e[1] });
     });
-    var mine = then.filter(function (t) { return t.r.key === best.key; })[0];
+    var mine = then.filter(function (t) { return nowSites[t.r.site]; })[0];
     if (!mine) return no('the top place now posted no ' + periodWords(period) + ' corn price on ' + md(day));
     if (then.length < 2) return no('fewer than two places posted ' + periodWords(period) + ' corn on ' + md(day));
     var topThen = then.reduce(function (m, t) { return t.cash > m ? t.cash : m; }, -Infinity);
     var leaders = then.filter(function (t) { return t.cash === topThen; });
-    var same = leaders.some(function (t) { return t.r.key === best.key; });
+    var same = leaders.some(function (t) { return nowSites[t.r.site]; });
     var lead = leaders.reduce(function (m, t) { return !m || t.r.mi < m.r.mi ? t : m; }, null);
     return { status: 'ok', same: same, period: period, n: grp.length, nThen: then.length, day: day, when: index.generated || null,
       now: { cash: best.cash, mi: Math.round(best.mi) }, then: { cash: topThen, mi: Math.round(lead.r.mi) }, rows: rows };
@@ -193,11 +200,11 @@
   function bidLine(b) {
     if (b.status !== 'ok') return b;
     var pw = periodWords(b.period), src = 'Posted elevator bids', date = md(b.day) + ' and ' + md(b.when);
-    var move = b.now.cash === b.then.cash ? 'the same price' : (b.now.cash > b.then.cash ? 'up ' : 'down ') + cents(b.now.cash - b.then.cash) + ' cents';
+    var move = b.now.cash === b.then.cash ? 'the same price' : (b.now.cash > b.then.cash ? 'up ' : 'down ') + centWords(b.now.cash - b.then.cash);
     if (b.same) return { status: 'held', label: 'Top corn bid', short: 'the top posted corn bid within ' + RING_MI + ' mi (' + pw + ') is at the same place as on ' + md(b.day) + ', ' + money(b.now.cash) + ', ' + move,
       date: date, src: src, b: b };
     return { status: 'changed', label: 'Top corn bid', b: b,
-      lead: 'the top posted corn bid within ' + RING_MI + ' mi is at a different place than on ' + md(b.day),
+      lead: 'top corn bid within ' + RING_MI + ' mi now at a different place than ' + md(b.day),
       text: 'For ' + pw + ': ' + money(b.now.cash) + ', ' + b.now.mi + ' mi away, now; on ' + md(b.day) + ' the top was ' + money(b.then.cash) + ', ' + b.then.mi + ' mi away. ' + b.nThen + ' of ' + b.n + ' places posted on both days.',
       date: date, src: src };
   }
@@ -260,7 +267,7 @@
     var date = 'records through ' + md(s.through) + (s.fetched ? ', read ' + md(s.fetched) : '');
     if (s.n === 0) return { status: 'held', label: 'Land sales', short: 'no new ' + what + ' dated in ' + s.month, date: date, src: s.source, s: s };
     var count = (s.exact ? s.n : 'at least ' + s.n) + ' ' + what;
-    return { status: 'changed', label: 'Land sales', s: s, lead: count + ' dated in ' + s.month,
+    return { status: 'changed', label: 'Land sales', s: s, lead: (s.exact ? s.n : 'at least ' + s.n) + ' recorded farm sale' + (s.n === 1 && s.exact ? '' : 's') + ' dated in ' + s.month,
       text: count + ' in ' + county + ' dated in ' + s.month + '. Counts only; the sales list is on the county land page.', date: date, src: s.source };
   }
 
@@ -326,17 +333,18 @@
     if (me) h += '<path d="' + pathOf(P, me[4]) + '" class="cm-meo"/>';
     if (opts.lat != null && isFinite(opts.lat)) h += '<path d="' + ring(P, opts.lat, opts.lng, RING_MI) + '" class="cm-ring"/>';
     (opts.pts || []).forEach(function (q) { var x = P.p(q.lon, q.lat); h += '<circle cx="' + x[0].toFixed(1) + '" cy="' + x[1].toFixed(1) + '" r="7" class="cm-pt"/>'; });
-    if (opts.lat != null && isFinite(opts.lat)) { var y = P.p(opts.lng, opts.lat); h += '<circle cx="' + y[0].toFixed(1) + '" cy="' + y[1].toFixed(1) + '" r="13" class="cm-you"/>'; }
+    if (opts.lat != null && isFinite(opts.lat)) { var y = P.p(opts.lng, opts.lat); h += '<circle cx="' + y[0].toFixed(1) + '" cy="' + y[1].toFixed(1) + '" r="18" class="cm-you"/>'; }
     return '<svg class="cm-svg" viewBox="0 0 ' + P.W + ' ' + P.H + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="' + esc(opts.label || '') + '">' + h + '</svg>';
   }
 
   /* ── drawing into the page ───────────────────────────────────────── */
   var CSS = '.cm{margin:0 0 1rem;border:1px solid var(--border);border-top:0;border-radius:0 0 10px 10px;background:var(--surface);overflow:clip}' +
-    '.cm-top{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.6rem 0 0;padding:.55rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px 10px 0 0;font-weight:700;font-size:.95rem;color:var(--text)}' +
+    '.cm-top{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.4rem 0 0;padding:.45rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px 10px 0 0;font-weight:700;font-size:.95rem;color:var(--text)}' +
     '.cm-top:empty{display:none}' +
     '.cm-top span+span::before{content:"\\00b7";margin-right:.4rem;color:var(--text-muted)}' +
-    '.cm-lead{margin:.6rem .75rem .2rem;font-size:1.05rem;line-height:1.4;color:var(--text)}' +
-    '.cm-grid{display:grid;grid-template-columns:1fr;gap:.4rem;padding:0 .75rem .7rem}' +
+    '#h-cm .cm-lead{grid-area:lead;margin:0;font-size:.95rem;font-weight:600;line-height:1.4;color:var(--text)}' +
+    '.cm-grid{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"lead" "map" "side";gap:.35rem;padding:.45rem .75rem .7rem}' +
+    '.cm-map{grid-area:map}.cm-side{grid-area:side}' +
     '.cm-map{margin:0}.cm-svg{display:block;width:100%;height:240px}' +
     '.cm-svg path{stroke:var(--bg);stroke-width:1.2;vector-effect:non-scaling-stroke}' +
     '.cm-held{fill:rgba(132,160,168,.30)}.cm-none{fill:rgba(132,160,168,.10)}' +
@@ -344,16 +352,17 @@
     '.cm-svg path.cm-meo{fill:none;stroke:var(--text);stroke-width:2.4}' +
     '.cm-svg path.cm-ring{fill:none;stroke:var(--gold);stroke-width:1.6;stroke-dasharray:5 4}' +
     '.cm-pt{fill:var(--surface);stroke:var(--text);stroke-width:1;vector-effect:non-scaling-stroke}' +
-    '.cm-you{fill:var(--gold);stroke:var(--bg);stroke-width:2;vector-effect:non-scaling-stroke}' +
+    '.cm-you{fill:var(--gold);stroke:var(--text);stroke-width:2;vector-effect:non-scaling-stroke}' +
     '.cm-key{display:flex;flex-wrap:wrap;gap:.25rem .8rem;margin:.35rem 0 0;padding:0;list-style:none;font-size:.82rem;color:var(--text-dim)}' +
     '.cm-key i{display:inline-block;width:.8rem;height:.8rem;border-radius:2px;margin-right:.3rem;vertical-align:-.1rem}' +
+    '.cm-key .cm-worse{background:var(--red)}.cm-key .cm-better{background:var(--blue)}.cm-key .cm-held{background:rgba(132,160,168,.30)}.cm-key .cm-none{background:rgba(132,160,168,.10);border:1px solid var(--border)}' +
     '.cm-key .k-pt,.cm-key .k-you{border-radius:50%}.cm-key .k-pt{background:var(--surface);border:1px solid var(--text)}.cm-key .k-you{background:var(--gold)}' +
     '.cm-key .k-ring{background:none;border:1.5px dashed var(--gold);border-radius:50%}' +
-    '.cm-cap,.cm-tap{margin:.3rem 0 0;font-size:.85rem;color:var(--text-dim)}.cm-tap{min-height:1.2em}' +
+    '.cm-cap,.cm-tap{margin:.3rem 0 0;font-size:.85rem;color:var(--text-dim)}.cm-tap:empty{display:none}' +
     '.cm-lines{margin:0;padding:0;list-style:none}.cm-lines li{padding:.45rem 0;border-top:1px solid var(--border);font-size:.92rem;line-height:1.45;color:var(--text)}' +
     '.cm-lines li:first-child{border-top:0}.cm-lines b{margin-right:.3rem}' +
     '.cm-d{display:block;font-size:.8rem;color:var(--text-muted)}.cm-off{color:var(--text-dim)}' +
-    '@media (min-width:900px){.cm-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:1.2rem;align-items:start}.cm-svg{height:420px}}' +
+    '@media (min-width:900px){.cm-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);grid-template-areas:"map lead" "map side";grid-template-rows:auto 1fr;gap:.5rem 1.2rem;align-items:start}#h-cm .cm-lead{font-size:1.1rem}.cm-svg{height:420px}}' +
     '@media print{.cm{display:none}}';
   function style() {
     if (typeof document === 'undefined' || document.getElementById('cm-css')) return;
@@ -373,6 +382,19 @@
   function centralDay(now) {
     try { return (now || new Date()).toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }); } catch (e) { return (now || new Date()).toISOString().slice(0, 10); }
   }
+  /* sticky under the site's own sticky bars (the menu, and the price strip where a page has one) */
+  function pinBelowNav(el) {
+    function set() {
+      var y = 0;
+      Array.prototype.forEach.call(document.querySelectorAll('.nav, .prices-strip'), function (n) {
+        var cs = getComputedStyle(n);
+        if (cs.position === 'sticky' || cs.position === 'fixed') y = Math.max(y, Math.round((parseFloat(cs.top) || 0) + n.getBoundingClientRect().height));
+      });
+      el.style.top = y + 'px';
+    }
+    set();
+    if (!el.getAttribute('data-pin')) { el.setAttribute('data-pin', '1'); window.addEventListener('resize', set); }
+  }
   function shortName(n) { return String(n || '').replace(/ County$/, ' Co.'); }
   function getJSON(u, ms) {
     return new Promise(function (ok) {
@@ -390,8 +412,9 @@
     /* the one-line header sits beside the box, not in it, so it stays in view down the whole place */
     var top = typeof document !== 'undefined' && document.getElementById('cm-top');
     if (!top && box.parentNode) { top = document.createElement('div'); top.id = 'cm-top'; top.className = 'cm-top'; box.parentNode.insertBefore(top, box); }
+    if (top) pinBelowNav(top);
     if (top) top.innerHTML = '<span>' + esc(shortName(ctx.name)) + ', ' + esc(ctx.st) + '</span><span>corn</span><span>' + esc(md(today)) + '</span>';
-    box.innerHTML = '<p class="cm-lead" aria-live="polite">Reading what changed here&hellip;</p><div class="cm-grid"><figure class="cm-map"></figure><div class="cm-side"></div></div>';
+    box.innerHTML = '<div class="cm-grid"><p class="cm-lead" aria-live="polite">Reading what changed here&hellip;</p><figure class="cm-map"></figure><div class="cm-side"></div></div>';
     box.hidden = false;
     var net = ctx.net, idxP = net && net.index ? net.index() : Promise.resolve(null);
     var geoP = getJSON('/data/arc-plc/geo/' + ctx.st + '.json', 20000), drP = getJSON('/data/drought/county-week.json');
