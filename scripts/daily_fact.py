@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-daily_fact.py -- "I never knew that" in the Daily (Sig, Oct 22 2026): one fact
+daily_fact.py -- "I didn’t know that" (was "I never knew that"; Sig, Oct 27) in the Daily (Sig, Oct 22 2026): one fact
 a day that makes a reader stop. Never invented, never unsourced.
 
 Two kinds, rotating by the day of the year:
