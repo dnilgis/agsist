@@ -518,10 +518,10 @@ def coverage_html(cov, d):
          '<div class="ls-map" role="img" aria-label="Map of states by whether their farm sales are on this site">']
     for r in rows:
         if r.get("tile"):
-            h.append('<span class="ls-s ls-%s" style="grid-column:%d;grid-row:%d" title="%s">%s</span>'
+            h.append('<span class="ls-s ls-st-%s" style="grid-column:%d;grid-row:%d" title="%s">%s</span>'
                      % (e(r["status"]), r["tile"][0], r["tile"][1], e(r["name"] + ": " + cov["labels"].get(r["status"], r["status"])), e(r["st"])))
     h.append("</div>")
-    h.append('<p class="ls-key">' + " ".join('<span class="ls-k ls-%s"></span> %s' % (k, e(v)) for k, v in cov["labels"].items()) + "</p>")
+    h.append('<p class="ls-key">' + " ".join('<span class="ls-k ls-st-%s"></span> %s' % (k, e(v)) for k, v in cov["labels"].items()) + "</p>")
     h.append('<details class="ls-src"><summary>The source table, state by state</summary><div class="ls-tw"><table class="ls-t"><thead><tr>'
              '<th scope="col">State</th><th scope="col">On this site</th><th scope="col">Source</th><th scope="col">Names in the source</th>'
              '<th scope="col">How often</th><th scope="col">Terms</th></tr></thead><tbody>')
