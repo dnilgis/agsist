@@ -38,7 +38,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import history_lib as H  # noqa: E402
-from backfill_wasde import EXTRACT_HEAD, LANDING, iso_date  # noqa: E402
+from backfill_wasde import ESMIS, EXTRACT_HEAD, LANDING, iso_date  # noqa: E402
 
 SRC = os.path.join(H.ROOT, "history", "wasde", "us-grains")
 OUT = os.path.join(H.ROOT, "data", "wasde-history")
@@ -48,6 +48,16 @@ SOURCE = {"name": "USDA World Agricultural Outlook Board, WASDE report data as p
 NOTE = ("Each figure as that month's WASDE printed it, for the U.S. supply and use tables. USDA notes these keep "
         "estimates as published and leave out later revisions to the underlying series; the reports themselves "
         "are the official record.")
+# Since Oct 27 the archive reads the reports themselves from USDA's ESMIS archive (usda.gov's data
+# page refuses the runners). The credit follows the rows actually used.
+SOURCE_ESMIS = {"name": "USDA World Agricultural Outlook Board, monthly WASDE reports (USDA ESMIS archive)",
+                "url": ESMIS}
+NOTE_ESMIS = ("Each figure as that month's WASDE printed it, read from the U.S. supply and use tables of the report "
+              "itself. A column that does not add up on its own balance sheet is left out, never corrected.")
+# Market years before this go to one file a decade (corn-1990s.json ...), loaded only when a reader
+# picks one of those years, so the file that opens first stays small (BUILD-RULES: history on demand).
+PART_BEFORE = "2000/01"
+MAX_WITHHELD_LISTED = 300
 ORDER = ["area planted", "area harvested", "yield", "beginning stocks", "production", "imports", "supply",
          "feed", "food", "ethanol", "seed", "crush", "domestic", "exports", "use, total", "total use", "ending stocks",
          "farm price", "price"]
@@ -117,8 +127,9 @@ def build(rows):
         best[k] = max(best.get(k, (0, "")), (version(r["file"]), r["file"]))
     cells, flags, reports = {}, {}, {}
     for r in rows:
-        if (version(r["file"]), r["file"]) != best[r["wasde"].strip()]:
-            drop("replaced_by_reissue")
+        b = best[r["wasde"].strip()]
+        if (version(r["file"]), r["file"]) != b:
+            drop("replaced_by_reissue" if version(r["file"]) < b[0] else "other_copy_of_the_same_report")
             continue
         crop, why = crop_of(r["commodity"], r["title"])
         if not crop:
@@ -152,6 +163,12 @@ def build(rows):
         cells.setdefault((crop, my, attr, unit, d), set()).add(v)
         f = (r["proj_est"] or "").strip()
         flags.setdefault((crop, my, d), set()).add(f)
+    used = {best[k][1] for k in best}
+    esmis = any(f.startswith("esmis-") for f in used)
+    csvs = any(not f.startswith("esmis-") for f in used)
+    source = SOURCE_ESMIS if esmis else SOURCE
+    note = NOTE_ESMIS if esmis else NOTE
+    sources = ([SOURCE_ESMIS] if esmis else []) + ([SOURCE] if csvs else [])
     withheld = []
     docs = {}
     for crop, label in CROPS.items():
@@ -175,7 +192,7 @@ def build(rows):
             for pts in y["s"].values():
                 pts.sort()
             y["f"] = [[int(k), v] for k, v in sorted(y["f"].items(), key=lambda kv: int(kv[0]))]
-        docs[crop] = {"crop": crop, "label": label, "source": SOURCE, "note": NOTE,
+        docs[crop] = {"crop": crop, "label": label, "source": source, "note": note,
                       "reports": [[d, n] for d, n in reps],
                       "series": [{"line": a, "unit": u} for a, u in series],
                       "years": dict(sorted(years.items()))}
@@ -188,9 +205,10 @@ def build(rows):
             if f"{y:04d}-{m:02d}" not in have:
                 missing.append(f"{y:04d}-{m:02d}")
             y, m = (y + 1, 1) if m == 12 else (y, m + 1)
-    index = {"source": SOURCE, "note": NOTE, "first": alld[0] if alld else None, "through": alld[-1] if alld else None,
+    index = {"source": source, "sources": sources, "note": note, "first": alld[0] if alld else None, "through": alld[-1] if alld else None,
              "reports": len(alld), "months_with_no_report_on_file": missing,
-             "withheld": withheld, "left_out": dict(sorted(dropped.items())),
+             "withheld_count": len(withheld), "withheld": withheld[:MAX_WITHHELD_LISTED],
+             "left_out": dict(sorted(dropped.items())),
              "crops": {c: {"file": f"/data/wasde-history/{c}.json", "label": d["label"], "reports": len(d["reports"]),
                            "market_years": [min(d["years"]), max(d["years"])] if d["years"] else None,
                            "lines": len(d["series"])} for c, d in docs.items()}}
@@ -210,27 +228,88 @@ def dump(obj):
     return json.dumps(obj, separators=(",", ":"), ensure_ascii=False, sort_keys=False) + "\n"
 
 
+def split(doc):
+    """-> (the crop file, {name: part}): market years before PART_BEFORE go to one file a decade.
+    Report numbers in a part point into the crop file's own report list."""
+    main = {k: v for k, v in doc.items() if k != "years"}
+    main["years"], parts = {}, {}
+    for my, y in doc["years"].items():
+        if my < PART_BEFORE:
+            dec = my[:3] + "0s"
+            name = f"{doc['crop']}-{dec}.json"
+            parts.setdefault(name, {"crop": doc["crop"], "label": doc["label"], "part": dec, "years": {}})["years"][my] = y
+        else:
+            main["years"][my] = y
+    main["parts"] = [{"name": n, "years": sorted(p["years"])} for n, p in sorted(parts.items())]
+    return main, parts
+
+
+def esmis_summary(src):
+    """What the ESMIS reader did, from its manifest beside the extract folder (none -> None)."""
+    base = os.path.join(os.path.dirname(os.path.abspath(src)), "esmis")
+    try:
+        with open(os.path.join(base, "manifest.json"), encoding="utf-8") as f:
+            ch = json.load(f).get("chunks") or {}
+    except (OSError, ValueError):
+        return None
+    out = {"reports_tried": len(ch), "read": 0, "status": {}, "file_type": {}, "scans": 0, "columns_withheld": 0,
+           "tables_refused": {}, "not_complete": sorted(k[6:] for k, c in ch.items() if not c.get("complete"))[:100]}
+    for c in ch.values():
+        st = c.get("status") or ("error" if c.get("error") else "?")
+        out["status"][st] = out["status"].get(st, 0) + 1
+        out["read"] += 1 if st == "read" else 0
+        if c.get("ext"):
+            out["file_type"][c["ext"]] = out["file_type"].get(c["ext"], 0) + 1
+        out["scans"] += 1 if c.get("scan") else 0
+        out["columns_withheld"] += int(c.get("columns_withheld") or 0)
+        for t in (c.get("tables") or {}).values():
+            if isinstance(t, str):
+                out["tables_refused"][t] = out["tables_refused"].get(t, 0) + 1
+    try:
+        with open(os.path.join(base, "index.json"), encoding="utf-8") as f:
+            ix = json.load(f)
+        out["listing"] = {"releases": ix.get("count"), "with_files": ix.get("with_files"),
+                          "unlisted": len(ix.get("unlisted") or {}),
+                          "unplaced": len((ix.get("placement") or {}).get("unplaced") or [])}
+    except (OSError, ValueError):
+        pass
+    for k in ("status", "file_type", "tables_refused"):
+        out[k] = dict(sorted(out[k].items()))
+    return out
+
+
 def write(docs, index, out, min_reports):
     thin = {c: ending_stock_reports(d) for c, d in docs.items() if ending_stock_reports(d) < min_reports}
     if thin:
         print(f"wasde history: not written; too few reports with ending stocks {thin} (need {min_reports} each)")
         return 2
-    heavy = {c: len(dump(d).encode()) for c, d in docs.items() if len(dump(d).encode()) > MAX_FILE_BYTES}
+    files = {}
+    for c, d in docs.items():
+        main, parts = split(d)
+        files[f"{c}.json"] = dump(main)
+        for n, p in parts.items():
+            files[n] = dump(p)
+    heavy = {n: len(t.encode()) for n, t in files.items() if len(t.encode()) > MAX_FILE_BYTES}
     if heavy:
         print(f"wasde history: not written; files over {MAX_FILE_BYTES} bytes {heavy}")
         return 3
     os.makedirs(out, exist_ok=True)
+    for n in os.listdir(out):                      # a decade file this build did not write is stale
+        if n.endswith(".json") and n != "index.json" and n not in files:
+            os.remove(os.path.join(out, n))
     sizes = {}
-    for c, d in docs.items():
-        s = dump(d)
-        with open(os.path.join(out, f"{c}.json"), "w", encoding="utf-8") as f:
-            f.write(s)
-        sizes[c] = len(s.encode())
-        index["crops"][c]["bytes"] = sizes[c]
+    for n, t in sorted(files.items()):
+        with open(os.path.join(out, n), "w", encoding="utf-8") as f:
+            f.write(t)
+        sizes[n] = len(t.encode())
+    for c in docs:
+        index["crops"][c]["bytes"] = sizes[f"{c}.json"]
+        index["crops"][c]["parts"] = [{"name": n, "bytes": sizes[n]} for n in sorted(sizes) if n.startswith(c + "-")]
     with open(os.path.join(out, "index.json"), "w", encoding="utf-8") as f:
         f.write(json.dumps(index, indent=1, ensure_ascii=False) + "\n")
     print(f"wasde history: {index['reports']} reports, {index['first']} to {index['through']}; "
-          f"bytes {sizes}; withheld {len(index['withheld'])}; left out {index['left_out']}")
+          f"bytes {sizes}; withheld {index['withheld_count']}; left out {index['left_out']}; "
+          f"months with no report on file {len(index['months_with_no_report_on_file'])}")
     return 0
 
 
@@ -314,9 +393,73 @@ def selftest():
             ck("a foreign file is refused", False)
         except ValueError:
             ck("a foreign file is refused", True)
+    selftest_esmis(ck, rows)
     _ = (csv, io)
     print(f"build_wasde_history selftest: {len(fails)} failure(s)")
     return 1 if fails else 0
+
+
+def selftest_esmis(ck, csv_rows):
+    """Rows read from report text (scripts/read_wasde_text.py) through the same build."""
+    import tempfile
+    import read_wasde_text as T
+    from backfill_wasde import is_usda
+    rows = []
+    for fn, d, label in [("wasde-2026-10-09.txt", "2026-10-09", "esmis-2026-10-09"), ("old-layout.txt", "1996-05-10", "esmis-1996-05-10")]:
+        with open(os.path.join(T.FIX, fn), encoding="utf-8") as f:
+            ex, rep = T.read_report(f.read(), d, label)
+        rows += [dict(zip(EXTRACT_HEAD, r)) for r in ex]
+    docs, index = build(rows)
+    corn = docs["corn"]
+    si = {(x["line"], x["unit"]): i for i, x in enumerate(corn["series"])}
+    dates = [d for d, _ in corn["reports"]]
+    es = corn["years"]["2026/27"]["s"][str(si[("Ending Stocks", "Million Bushels")])]
+    ck("esmis: October's corn ending stocks 1,849, September's column left out as last month's",
+       [(dates[i], v) for i, v in es] == [("2026-10-09", 1849)] and index["left_out"].get("last_months_column", 0) >= 20, (es, index["left_out"]))
+    ck("esmis: a price range is left out and counted, never averaged",
+       "2.90-3.30" not in json.dumps(corn) and index["left_out"].get("not_a_number", 0) >= 2, index["left_out"])
+    ck("esmis: the credit names the archive actually read", index["source"]["url"] == ESMIS and is_usda(index["source"]["url"])
+       and corn["source"]["url"] == ESMIS and index["sources"] == [SOURCE_ESMIS] and "balance sheet" in corn["note"], index["source"])
+    ck("esmis: reports from both eras, WASDE numbers kept", corn["reports"][-1] == ["2026-10-09", "676"]
+       and corn["reports"][0] == ["1996-05-10", "312"], corn["reports"])
+    # the same report from the CSV and from the report file: one copy kept, never both
+    both = rows + [r for r in csv_rows if r["wasde"] == "676"]
+    d2, i2 = build(both)
+    ck("esmis: one report from two files keeps one copy and counts the other",
+       i2["left_out"].get("other_copy_of_the_same_report", 0) == 176
+       and not any(16034 in w["values"] for w in i2["withheld"]) and len(i2["sources"]) == 2, (i2["left_out"], i2["withheld"][:2]))
+    with tempfile.TemporaryDirectory() as d:
+        with open(os.path.join(d, "corn-1970s.json"), "w") as f:
+            f.write("{}")
+        ck("esmis: written with the old market years in decade files", write(docs, index, d, 1) == 0
+           and sorted(os.listdir(d)) == ["corn-1990s.json", "corn.json", "index.json", "soybeans.json", "wheat-1990s.json", "wheat.json"],
+           sorted(os.listdir(d)))
+        with open(os.path.join(d, "corn.json"), encoding="utf-8") as f:
+            main = json.load(f)
+        with open(os.path.join(d, "corn-1990s.json"), encoding="utf-8") as f:
+            part = json.load(f)
+        with open(os.path.join(d, "index.json"), encoding="utf-8") as f:
+            ix = json.load(f)
+        ck("esmis: the crop file lists its decade files, the part holds those years only",
+           main["parts"] == [{"name": "corn-1990s.json", "years": ["1994/95", "1995/96", "1996/97"]}]
+           and sorted(part["years"]) == ["1994/95", "1995/96", "1996/97"] and "1994/95" not in main["years"]
+           and part["years"]["1996/97"]["s"][str(si[("Ending Stocks", "Million Bushels")])] == [[0, 650]], (main.get("parts"), part.get("years", {}).keys()))
+        ck("esmis: index carries the decade files' bytes", ix["crops"]["corn"]["parts"][0]["name"] == "corn-1990s.json"
+           and ix["crops"]["corn"]["parts"][0]["bytes"] > 0 and ix["crops"]["soybeans"]["parts"] == [], ix["crops"])
+        src = os.path.join(d, "raw", "us-grains")
+        os.makedirs(os.path.join(d, "raw", "esmis"))
+        os.makedirs(src)
+        with open(os.path.join(d, "raw", "esmis", "manifest.json"), "w") as f:
+            json.dump({"chunks": {"esmis-2026-10-09": {"complete": True, "status": "read", "ext": "txt", "columns_withheld": 0,
+                                                       "tables": {"corn": 60}},
+                                  "esmis-1973-09-17": {"complete": True, "status": "no_text_layer", "ext": "pdf", "scan": True},
+                                  "esmis-1980-01-10": {"complete": True, "status": "read", "ext": "pdf", "scan": True,
+                                                       "columns_withheld": 2, "tables": {"soybeans": "not_found"}},
+                                  "esmis-2026-09-11": {"complete": False, "error": "HTTP 404"}}}, f)
+        sm = esmis_summary(src)
+        ck("esmis: the reader's counts go to the index", sm["read"] == 2 and sm["status"] == {"error": 1, "no_text_layer": 1, "read": 2}
+           and sm["file_type"] == {"pdf": 2, "txt": 1} and sm["scans"] == 2 and sm["columns_withheld"] == 2
+           and sm["tables_refused"] == {"not_found": 1} and sm["not_complete"] == ["2026-09-11"], sm)
 
 
 def main():
@@ -333,6 +476,9 @@ def main():
         print(f"wasde history: no extract files in {a.src}; nothing written")
         return 2
     docs, index = build(rows)
+    es = esmis_summary(a.src)
+    if es:
+        index["esmis"] = es
     return write(docs, index, a.out, a.min_reports)
 
 

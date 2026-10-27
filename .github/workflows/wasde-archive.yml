@@ -11,20 +11,34 @@ name: WASDE archive (dispatch only)
 #               (data/wasde-history/, about 0.2 MB in all).
 #   mode esmis  the NAL ESMIS listing, every release from Sep 17, 1973: release
 #               dates and file links to history/wasde/esmis/index.json on raw.
-#               Inventory only; the pre-2010 PDFs are the next step.
+#               Rebuilt whole each time (listing reader 2: files placed by their
+#               own name and folder; reader 1's index was one release off).
+#   mode files  each release's own report file from ESMIS (the TXT, else the
+#               PDF's text), its U.S. corn, soybean and wheat tables read and
+#               balance-checked into history/wasde/us-grains/esmis-*.csv.gz on
+#               raw. Brief 09 (Oct 27): usda.gov's data page answers these
+#               runners with HTTP 403, so csv mode cannot run; this is the route.
+#               publish=false (the default) builds the site files into the run's
+#               temp folder and prints their counts only, so the first real build
+#               is checked before the section shows; publish=true commits them.
+#
+# After that, wasde-watch.yml keeps the archive current after each report (a step
+# in that job, no new schedule; Sig, Oct 27: "Wasde should auto update").
 #
 # Resumable: the saved manifest says which files are done; dispatch again until
 # the summary says every file is complete. usda.gov is not reachable from the
 # build sandbox, so this runs here.
-#   gh workflow run wasde-archive.yml -R dnilgis/agsist --ref main -f mode=csv
+#   gh workflow run wasde-archive.yml -R dnilgis/agsist --ref main -f mode=esmis
+#   gh workflow run wasde-archive.yml -R dnilgis/agsist --ref main -f mode=files
+#   gh workflow run wasde-archive.yml -R dnilgis/agsist --ref main -f mode=files -f publish=true
 
 on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "csv (2010 on, builds the site files) or esmis (1973 on, inventory)"
+        description: "esmis (the listing, 1973 on), files (each report read from ESMIS), csv (usda.gov data, 2010 on; 403 from runners)"
         type: choice
-        options: [csv, esmis]
+        options: [csv, esmis, files]
         required: true
         default: csv
       from:
@@ -39,6 +53,10 @@ on:
         description: "Stop starting new files after this many minutes"
         type: string
         default: "120"
+      publish:
+        description: "files/csv: commit data/wasde-history (off: build and print the counts only)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -53,6 +71,7 @@ jobs:
     timeout-minutes: 180
     env:
       MODE: ${{ inputs.mode }}
+      PUBLISH: ${{ inputs.publish }}
     steps:
       - uses: actions/checkout@v4
       - name: Engine checkout
@@ -63,9 +82,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      # The PDF-only reports (1973 to 1994, 2011 to 2016) are read through their text.
+      - name: Install pdftotext
+        if: ${{ inputs.mode == 'files' }}
+        timeout-minutes: 5
+        uses: ./.github/actions/pdftotext
       - name: Selftests (no network)
         run: |
           python3 scripts/history_lib.py --selftest
+          python3 scripts/read_wasde_text.py --selftest
           python3 scripts/backfill_wasde.py --selftest
           python3 scripts/build_wasde_history.py --selftest
       # What is already saved. A path that is not on raw yet is a first run; a branch
@@ -101,6 +126,10 @@ jobs:
           if [ -n "$MAXMIN" ]; then args+=(--max-minutes "$MAXMIN"); fi
           if [ "$MODE" = "esmis" ]; then
             python3 scripts/backfill_wasde.py --esmis "${args[@]}"
+          elif [ "$MODE" = "files" ]; then
+            if [ -n "$FROM" ]; then args+=(--from "$FROM"); fi
+            if [ -n "$TO" ]; then args+=(--to "$TO"); fi
+            python3 scripts/backfill_wasde.py --esmis-files "${args[@]}"
           else
             if [ -n "$FROM" ]; then args+=(--from "$FROM"); fi
             if [ -n "$TO" ]; then args+=(--to "$TO"); fi
@@ -116,11 +145,16 @@ jobs:
         run: |
           [ -d history/wasde ] || { echo "nothing written"; exit 0; }
           bash scripts/push_raw.sh "wasde archive $MODE" history/wasde
+      # Unpublished, the build goes to the run's temp folder: the counts are read in the
+      # summary below and nothing reaches main or the page.
       - name: Build the site files
-        if: ${{ inputs.mode == 'csv' }}
-        run: python3 scripts/build_wasde_history.py
+        if: ${{ inputs.mode != 'esmis' }}
+        run: |
+          if [ "$PUBLISH" = "true" ]; then out=data/wasde-history; else out="$RUNNER_TEMP/wasde-history"; fi
+          echo "WH_OUT=$out" >> "$GITHUB_ENV"
+          python3 scripts/build_wasde_history.py --out "$out"
       - name: Commit the site files
-        if: ${{ inputs.mode == 'csv' }}
+        if: ${{ inputs.mode != 'esmis' && inputs.publish }}
         run: |
           set -e
           git config user.name "AGSIST Bot"
@@ -150,15 +184,33 @@ jobs:
               print("No CSV manifest.")
           try:
               e = json.load(open("history/wasde/esmis/index.json"))
-              print(f"\nESMIS: {e['count']} releases listed, {e['first']} to {e['last']}.")
+              pl = e.get("placement") or {}
+              print(f"\nESMIS: {e['count']} releases listed, {e['first']} to {e['last']}; {e.get('with_files')} with files; "
+                    f"placed by name {pl.get('by_name')}, by position {pl.get('by_position')} ({pl.get('direction')}); "
+                    f"unplaced {len(pl.get('unplaced') or [])}; not on the listing {len(e.get('unlisted') or {})}.")
           except OSError:
               pass
           try:
-              ix = json.load(open("data/wasde-history/index.json"))
+              m = json.load(open("history/wasde/esmis/manifest.json"))
+              st = {}
+              for c in m["chunks"].values():
+                  k = c.get("status") or ("error" if c.get("error") else "?")
+                  st[k] = st.get(k, 0) + 1
+              print(f"\nESMIS reports read: {st}; columns withheld on the balance check: "
+                    f"{sum(int(c.get('columns_withheld') or 0) for c in m['chunks'].values())}.")
+          except OSError:
+              pass
+          try:
+              import os
+              ix = json.load(open(os.path.join(os.environ.get("WH_OUT") or "data/wasde-history", "index.json")))
               sizes = ", ".join("%s %s" % (c, v.get("bytes")) for c, v in ix["crops"].items())
               gaps = ", ".join(ix["months_with_no_report_on_file"]) or "none"
-              print(f"\nSite files: {ix['reports']} reports, {ix['first']} to {ix['through']}; withheld {len(ix['withheld'])}; "
-                    f"no report on file: {gaps}; bytes {sizes}.")
+              print(f"\nSite files ({'published' if os.environ.get('PUBLISH') == 'true' else 'NOT published, counts only'}): "
+                    f"{ix['reports']} reports, {ix['first']} to {ix['through']}; withheld {ix.get('withheld_count', len(ix['withheld']))}; "
+                    f"left out {ix.get('left_out')}; no report on file ({len(ix['months_with_no_report_on_file'])}): {gaps}; bytes {sizes}.")
+              for c, v in ix["crops"].items():
+                  print(f"\n{c}: {v.get('reports')} reports, market years {v.get('market_years')}, {v.get('lines')} lines, "
+                        f"decade files {[(p['name'], p['bytes']) for p in v.get('parts') or []]}")
           except (OSError, KeyError):
               pass
           EOF
