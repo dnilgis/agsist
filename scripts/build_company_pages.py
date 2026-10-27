@@ -72,6 +72,14 @@ CSS_EXTRA = (".cbc-t td{white-space:nowrap}.cbc-t td.l{white-space:normal;min-wi
              ".cbc-t .asof,.cbc-t .asof-t,.cbc-t .asof-note{white-space:normal;font-size:.7rem}}")
 
 
+
+def with_extra_css(h):
+    """The company tables' own rules, in a <style> right after the shared
+    cash-bid-town.css link (the same cascade order as when both were one block)."""
+    assert CB.CSS_LINK in h, "CB.head() changed shape; update with_extra_css()"
+    return h.replace(CB.CSS_LINK, CB.CSS_LINK + "\n  <style>" + CSS_EXTRA + "\n  </style>", 1)
+
+
 def short_name(name):
     """'NEW Cooperative, Inc.' -> 'NEW Cooperative'; 'AgMark LLC.' -> 'AgMark'."""
     s = (name or "").strip().rstrip(",").strip()
@@ -450,7 +458,7 @@ def build_page(co, ctx):
   <p class="cbt-sub">{links}</p>
 """
     h = CB.head(title, desc, path, jsonld, indexable)
-    h = h.replace("  </style>", CSS_EXTRA + "\n  </style>", 1)
+    h = with_extra_css(h)
     if box:
         sheet = '  <link rel="stylesheet" href="/components/asof.css?v=1">\n'
         assert sheet in h, "CB.head() changed shape; update build_page()"
@@ -494,7 +502,7 @@ def build_index(metas, ctx):
   <p class="cbt-sub"><a href="/cash-bids">Bids near your ZIP</a> &middot; <a href="/basis">Basis by state</a></p>
 """
     h = CB.head(title, desc, path, jsonld, bool(metas))
-    h = h.replace("  </style>", CSS_EXTRA + "\n  </style>", 1)
+    h = with_extra_css(h)
     return h + body + CB.page_end(ftr), {"path": path, "indexable": bool(metas),
                                          "latest": max((m["latest"] for m in metas if m["latest"]), default=None)}
 

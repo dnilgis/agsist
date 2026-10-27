@@ -15,11 +15,16 @@ Usage:
     python scripts/rebuild_archive_html.py 2026-04-20  # one date
     python scripts/rebuild_archive_html.py --stamp-only  # only the line under the quote strip
     python scripts/rebuild_archive_html.py --byline-only # only the byline (reply address)
+    python scripts/rebuild_archive_html.py --guard-only  # only the inline Google Analytics guard script
     python scripts/rebuild_archive_html.py --text-only 2026-10-16  # only what an archive JSON edit changed
     python scripts/rebuild_archive_html.py --text-only --base=HEAD~1 2026-10-16  # JSON already committed
 
 --byline-only does the same for the one <div class="dv3-byline"> line (the
 reply address under each issue, changed 2026-10-22 to sig@agsist.com).
+
+--guard-only does the same for the one inline <script>/* agsist-ga-guard
+... */</script> in the head (2026-10-27: its long comment became a pointer to
+components/ga-gate.js; the code is the same, the page keeps every other byte).
 
 --stamp-only renders each page as above but writes back only the
 <div class="dv3-quote-asof"> line, so a published page keeps every other
@@ -68,6 +73,7 @@ def _no_em_dashes(obj):
 
 STAMP_RE = re.compile(r'<div class="dv3-quote-asof">[^<]*</div>')
 BYLINE_RE = re.compile(r'<div class="dv3-byline">(?:(?!</?div)[\s\S])*</div>')
+GUARD_RE = re.compile(r'<script>/\* agsist-ga-guard [^<]*</script>')
 
 
 def swap_stamp(old_html: str, new_html: str, rx=STAMP_RE):
@@ -132,7 +138,7 @@ def _committed_json(json_path: Path, base: str = "HEAD"):
 
 def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False,
                 byline_only: bool = False, text_only: bool = False,
-                base: str = "HEAD") -> bool:
+                base: str = "HEAD", guard_only: bool = False) -> bool:
     json_path = ARCHIVE_JSON_DIR / f"{date_iso}.json"
     html_path = ARCHIVE_HTML_DIR / f"{date_iso}.html"
 
@@ -177,8 +183,9 @@ def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False,
         html_path.write_text(out)
         print(f"  [ok]   {date_iso}  changed text written into the published page")
         return True
-    if stamp_only or byline_only:
-        rx, what = (STAMP_RE, "stamp") if stamp_only else (BYLINE_RE, "byline")
+    if stamp_only or byline_only or guard_only:
+        rx, what = ((STAMP_RE, "stamp") if stamp_only else (BYLINE_RE, "byline") if byline_only
+                    else (GUARD_RE, "ga guard"))
         if not html_path.exists():
             print(f"  [skip] {date_iso} — no published page")
             return False
@@ -209,6 +216,11 @@ def selftest() -> int:
     assert patch_text(old + old, old, new) is None
     assert patch_text('<div class="a">other text</div>', old, new) is None
     assert patch_text(pub, old, old) == pub
+    # --guard-only: only the guard script moves, every other byte stays
+    g_old = '<head><script>/* agsist-ga-guard 2026-10-20b: long words */(function(){})();</script><p>kept</p>'
+    g_new = '<head><script>/* agsist-ga-guard 2026-10-20b: short */(function(){})();</script><p>new</p>'
+    assert swap_stamp(g_old, g_new, GUARD_RE) == g_new.replace("<p>new</p>", "<p>kept</p>")
+    assert swap_stamp(g_old + g_old, g_new, GUARD_RE) is None
     print("rebuild_archive_html selftest: ok")
     return 0
 
@@ -219,6 +231,7 @@ def main():
     dry_run = "--dry-run" in sys.argv
     stamp_only = "--stamp-only" in sys.argv
     byline_only = "--byline-only" in sys.argv
+    guard_only = "--guard-only" in sys.argv
     text_only = "--text-only" in sys.argv
     # --base=<ref>: the commit whose JSON the published page was made from (default HEAD)
     base = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--base=")), "HEAD")
@@ -241,7 +254,7 @@ def main():
     ok = 0
     for date_iso in targets:
         if rebuild_one(date_iso, dry_run=dry_run, stamp_only=stamp_only, byline_only=byline_only,
-                       text_only=text_only, base=base):
+                       text_only=text_only, base=base, guard_only=guard_only):
             ok += 1
 
     print(f"=== Done: {ok}/{len(targets)} {'would be rebuilt' if dry_run else 'rebuilt'} ===")

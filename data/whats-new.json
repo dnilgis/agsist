@@ -9,6 +9,13 @@
    "link": "/field-scout"
   },
   {
+   "id": "2026-10-27-lighter-bid-pages",
+   "date": "2026-10-27",
+   "title": "Cash bid pages load lighter",
+   "line": "Town, state and company bid pages share one style file now, so each town page you open after the first is about a fifth smaller. They look the same.",
+   "link": "/cash-bids"
+  },
+  {
    "id": "2026-10-27-land-sales-pages",
    "date": "2026-10-27",
    "title": "Farm sales by county, and a monthly update",

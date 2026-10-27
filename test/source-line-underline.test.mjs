@@ -49,9 +49,20 @@ function decls(css, sel) {
   return out;
 }
 
+// The page's CSS in cascade order: inline <style> blocks and the site's own
+// stylesheets it links (the cash-bid pages moved their rules to
+// components/cash-bid-town.css on 2026-10-27, so a linked rule counts too).
+function pageCss(f) {
+  const out = [];
+  for (const m of R(f).matchAll(/<style[^>]*>([\s\S]*?)<\/style>|<link rel="stylesheet" href="\/([^"?]+\.css)(?:\?[^"]*)?">/g)) {
+    out.push(m[1] !== undefined ? m[1] : R(m[2]).replace(/\/\*[\s\S]*?\*\//g, ""));
+  }
+  return out.join("\n");
+}
+
 test("links in source and note lines are underlined, and no later rule takes it off", () => {
   for (const [f, sel] of RULES) {
-    const css = [...R(f).matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map((m) => m[1]).join("\n");
+    const css = pageCss(f);
     const d = decls(css, sel);
     assert.ok(d.length, `${f}: no rule for ${sel}`);
     assert.ok(d.some((x) => /text-decoration:\s*underline/.test(x)), `${f}: ${sel} is not underlined`);
@@ -60,8 +71,9 @@ test("links in source and note lines are underlined, and no later rule takes it 
 });
 
 test("the builders write the underline, so the next bids and rent runs keep it", () => {
-  const cb = R("scripts/build_cash_bid_pages.py");
+  const cb = R("components/cash-bid-town.css");
   assert.match(cb, new RegExp(esc(".cbt-sub a,.cbt-note a{text-decoration:underline")));
+  assert.match(R("scripts/build_cash_bid_pages.py"), new RegExp(esc('href="/components/cash-bid-town.css?v=')));
   assert.match(R("scripts/build_state_rent_pages.py"), new RegExp(esc(".rs-links a{{color:var(--gold);text-decoration:underline")));
 });
 
