@@ -19,7 +19,8 @@ operator   the directory's `company`, else its `facility`. Written as the
            one copy of that rule.
 phone      as written, only when it is ten digits after an optional leading 1
            and not one digit repeated (the directory carries 9999999999 for
-           "none"). Otherwise empty.
+           "none"). Otherwise empty. A number in data/phone-corrections.json
+           (checked on the buyer's own site) replaces it, or withholds it.
 type       the directory's own `facility_type`, only from the list the page
            knows how to word. Nothing is inferred from a name: "Farmers Co-op"
            is not tagged a co-op, because no field says it is.
@@ -34,6 +35,10 @@ import glob
 import json
 import os
 import re
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import phone_corrections  # noqa: E402  (checked numbers: data/phone-corrections.json)
 
 REPO = os.environ.get("AGSIST_REPO", ".")
 SRC = os.path.join(REPO, "data/elevator-directory.json")
@@ -61,7 +66,9 @@ def shards_from(directory):
         town = str(e.get("city") or "").strip()
         if not op or not town:
             continue
-        phone = clean_phone(e.get("phone"))
+        # a number checked on the buyer's own site replaces the filed one; an
+        # unconfirmed one is withheld (data/phone-corrections.json, 2026-10-27)
+        phone = clean_phone(phone_corrections.for_directory(st, town, op, e.get("phone")))
         ftype = e.get("facility_type") if e.get("facility_type") in TYPES else ""
         if not phone and not ftype:
             continue
@@ -119,6 +126,13 @@ def selftest():
     assert s["WI"] == [["Badger Grain", "Wheeler", "715-555-0142", ""]], "Direct Ship is not a buyer type"
     assert s["AL"] == [["Agrex Inc", "Montgomery", "(334) 262-6051", ""]], "duplicates fold"
     assert "AB" in s, "a two-letter province passes; the page only ever asks for the state an elevator is in"
+    c = shards_from({"elevators": [
+        {"company": "Cushing Cooperative", "city": "Cushing", "state": "WI", "phone": "(918) 225-6559", "facility_type": "Country Elevator"},
+        {"facility": "Innovative Ag Services", "city": "Prairie Du Chien", "state": "WI", "phone": "319-465-6896"},
+        {"company": "Pilgrims Gold N Plump", "city": "Arcadia", "state": "WI", "phone": "320-202-7451", "facility_type": "Feed Mill"},
+    ]})
+    assert c["WI"] == [["Cushing Cooperative", "Cushing", "715-648-5215", "Country Elevator"],
+                       ["Pilgrims Gold N Plump", "Arcadia", "", "Feed Mill"]], c
     print("build_elevator_contacts selftest: ok")
 
 
