@@ -85,3 +85,30 @@ test("privacy summary matches the details, and each alert type has its own row",
   assert.match(W, /a ZIP-wide alert \(ewid "ab" \+ ZIP \+ miles\) re-arms/);
   assert.match(read("scripts/send_zip_alert.py"), /a ZIP alert re-arms; it is never removed by a send/);
 });
+
+/* 4. ARC/PLC printed "Pick PLC" / "Pick ARC-CO", a recommendation that travels farther
+   than its assumptions. The answer is the program expected to pay more on the stated
+   assumptions, and the calculator puts those assumptions beside it. */
+test("ARC/PLC says which program is expected to pay more, with the assumptions beside it", () => {
+  const PICK = /Pick (PLC|ARC-CO)/;
+  for (const f of ["arc-plc.html", "components/arc-plc.js", "components/arc-plc-math.js"]) {
+    assert.ok(!PICK.test(read(f)), f + " still says Pick");
+  }
+  // the build's word tables (its selftest labels may keep the old shorthand; they are not printed)
+  const py = read("scripts/build_arc_plc.py");
+  for (const tbl of ["VWORD", "TIER_HEAD", "SHORT"]) {
+    const m = py.match(new RegExp("^" + tbl + " = \\{[^}]*\\}", "m"));
+    assert.ok(m, tbl);
+    assert.ok(!PICK.test(m[0]), tbl + " still says Pick");
+  }
+  assert.ok(!/return f"Pick /.test(py), "verdict_line still says Pick");
+  for (const st of ["iowa", "texas"]) {
+    for (const f of readdirSync(join(ROOT, "arc-plc", st)).slice(0, 40)) assert.ok(!PICK.test(read(`arc-plc/${st}/${f}`)), f);
+  }
+  const js = read("components/arc-plc.js");
+  assert.match(js, /plc: 'PLC expected to pay more', arc: 'ARC-CO expected to pay more'/);
+  assert.match(js, /<p class="ap-small ap-assume">On these assumptions: prices centered at /);
+  assert.match(read("components/arc-plc-math.js"), /plc: 'PLC expected to pay more', arc: 'ARC-CO expected to pay more'/);
+  assert.match(read("scripts/build_arc_plc.py"), /VWORD = \{"plc": "PLC expected to pay more", "arc": "ARC-CO expected to pay more"/);
+});
+

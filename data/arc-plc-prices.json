@@ -3,19 +3,19 @@
  "harvest": {
   "corn": {
    "contract": "Dec '26",
-   "price": 4.89,
-   "days": 13,
+   "price": 4.81,
+   "days": 18,
    "of": 22,
    "status": "running",
-   "updated": "2026-10-19"
+   "updated": "2026-10-26"
   },
   "soybeans": {
    "contract": "Nov '26",
-   "price": 12.81,
-   "days": 13,
+   "price": 12.72,
+   "days": 18,
    "of": 22,
    "status": "running",
-   "updated": "2026-10-19"
+   "updated": "2026-10-26"
   }
  },
  "futures": {
