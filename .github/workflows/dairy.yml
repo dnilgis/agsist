@@ -101,6 +101,16 @@ jobs:
       - name: Fetch the mailbox price into data/dairy-mailbox.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_mailbox.py
+      # FSA's own DMC monthly margins (prices and updates page; the Internet
+      # Archive copy, cited with its snapshot date, when FSA does not answer the
+      # runner) and the fact sheet's premium rates (scripts/fetch_dmc.py). Only
+      # months whose milk minus feed is FSA's margin and whose all-milk matches
+      # the NASS month just read are kept. Keep-last-good.
+      - name: Fetch DMC margins into data/dairy-dmc.json
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        timeout-minutes: 15
+        continue-on-error: true
+        run: python scripts/fetch_dmc.py
       # Upper Midwest Federal Order 30 from the market administrator's own
       # releases (scripts/fetch_order30.py): PPD, statistical uniform price,
       # Class I, advanced prices, SCC rate. Keep-last-good.
@@ -136,7 +146,7 @@ jobs:
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/dairy-data.json data/dairy-history.json data/dairy-mailbox.json data/dairy-miss.json data/dairy-order30.json"
+          FILES="data/dairy-data.json data/dairy-history.json data/dairy-mailbox.json data/dairy-miss.json data/dairy-order30.json data/dairy-dmc.json"
           rm -rf /tmp/dairy && mkdir -p /tmp/dairy
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/dairy/ || true
