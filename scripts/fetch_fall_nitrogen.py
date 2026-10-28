@@ -79,6 +79,8 @@ USCRN = "https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01/"
 AWDB = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/"
 IEM = "https://mesonet.agron.iastate.edu/"
 KSM = "https://mesonet.k-state.edu/rest/"
+WCN = "https://api.wisconet.wisc.edu/"
+WCN_SITE = "https://wisconet.wisc.edu/"
 
 
 class Refuse(Exception):
@@ -880,6 +882,32 @@ def probe():
             save("ksmeso-data-sample.csv", KSM + "stationdata/?" + urllib.parse.urlencode(q))
     except Exception as e:  # noqa: BLE001
         summ["ksmeso_error"] = str(e)
+    # Wisconet (Oct 28, Sig: add it; CC BY 4.0). The API's own schema, the
+    # station list and one station's recent measures, so the reader is
+    # written against what the service really sends.
+    save("wisconet-openapi.json", WCN + "openapi.json")
+    save("wisconet-api-page.html.txt", WCN_SITE + "data/api")
+    save("wisconet-terms.html.txt", WCN_SITE + "about/data-use")
+    wst = save("wisconet-stations.json", WCN + "api/v1/stations/")
+    try:
+        sl = json.loads(wst or "[]")
+        sl = sl.get("stations", sl) if isinstance(sl, dict) else sl
+        summ["wisconet_stations"] = len(sl)
+        if sl:
+            first = sl[0]
+            sid = first.get("station_id") or first.get("id") if isinstance(first, dict) else None
+            summ["wisconet_station_keys"] = sorted(first) if isinstance(first, dict) else str(type(first))
+            if sid:
+                end = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+                beg = end - (DAYS + 2) * 86400
+                save("wisconet-measures-sample.json", WCN + "api/v1/stations/%s/measures?%s" % (
+                    urllib.parse.quote(str(sid)), urllib.parse.urlencode({"start_time": beg, "end_time": end})))
+                save("wisconet-measures-daily-sample.json", WCN + "api/v1/stations/%s/measures?%s" % (
+                    urllib.parse.quote(str(sid)), urllib.parse.urlencode({"start_time": beg, "end_time": end, "frequency": "daily"})))
+                save("wisconet-station-fields.json", WCN + "api/v1/stations/%s/fields" % urllib.parse.quote(str(sid)))
+                save("wisconet-station.json", WCN + "api/v1/stations/%s" % urllib.parse.quote(str(sid)))
+    except Exception as e:  # noqa: BLE001
+        summ["wisconet_error"] = str(e)
     # What would parse right now, network by network.
     for net, fn in NETWORKS:
         try:
