@@ -22,7 +22,7 @@ on:
     paths:
       - 'data/yield-benchmarks.json'
       - 'scripts/build_yield_benchmarks.py'
-      - 'conditions-yield.html'
+      - 'conditions.html'
       - 'scripts/bake_crop_size.py'
   # Daily, off the hour. The nowcast lands Tuesdays 03:18 UTC, so this picks up
   # a fresh model number the same morning and every other day is a no-op that
@@ -109,7 +109,7 @@ jobs:
         run: |
           python scripts/build_yield_benchmarks.py
           # the page's title and description name the forecasts in this file
-          python scripts/bake_seo.py --page conditions-yield.html
+          python scripts/bake_seo.py --page conditions.html
           # and the forecast table, model and record are baked into the page
           python scripts/bake_crop_size.py
 
@@ -119,13 +119,13 @@ jobs:
         continue-on-error: true
         run: |
           pip install --quiet pillow==12.3.0
-          python3 scripts/build_share_images.py --only conditions-yield,crop-tour
+          python3 scripts/build_share_images.py --only crop-tour
 
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/yield-panel.json conditions-yield.html crop-tour.html img/og/conditions-yield.jpg img/og/crop-tour.jpg
+          git add data/yield-panel.json conditions.html crop-tour.html img/og/crop-tour.jpg
           if git diff --cached --quiet; then echo "panel unchanged"; exit 0; fi
           git commit -m "data: yield benchmark panel [skip ci]"
           for i in 1 2 3; do
