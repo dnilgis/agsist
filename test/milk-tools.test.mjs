@@ -101,8 +101,14 @@ test('your area: a ZIP names the area; split or unreported states ask for the pi
 });
 
 test('the page: no hand-typed DMC, cost or pool figures, no Class IV futures promise', () => {
+  // Hand-typed means outside the baked regions: a SEED block is written from the data files
+  // (the Order 30 table's Sep 2025 mover is a real $9.34, FSA's Aug 2026 margin is too).
+  const typed = page.replace(/<!--SEED:[a-z0-9]+-->[\s\S]*?<!--\/SEED-->/g, '');
   for (const bad of ['9.34', '10.46', '57%', '21%', '42,966', '1,736', '$1 to $2', '&minus;$1 to $2', 'ERS avg herd',
     'Class III and IV futures', 'enrollment already closed']) {
+    assert.ok(!typed.includes(bad), bad);
+  }
+  for (const bad of ['57%', '21%', '42,966', '1,736', 'ERS avg herd', 'Class III and IV futures', 'enrollment already closed']) {
     assert.ok(!page.includes(bad), bad);
   }
   for (const tag of ['milkarea', 'milkdmcpaid', 'milkdmcmargin', 'milkcostfaq', 'milkdmccard']) {
