@@ -2488,6 +2488,10 @@
     {"id": "fr-2026-17842-fr", "kind": "html",
      "url": "https://www.federalregister.gov/documents/2026/08/31/2026-17842/further-ensuring-affordable-beef-for-the-american-consumer",
      "title": "Federal Register 2026-17842 (federalregister.gov copy)",
-     "why": "AI answer blocks (data/ai-answers.json): Argentina beef block; second host for fr-2026-17842"}
+     "why": "AI answer blocks (data/ai-answers.json): Argentina beef block; second host for fr-2026-17842"},
+    {"id": "ne-psc-capacity-2026-10-28", "kind": "pdf",
+     "url": "https://psc.nebraska.gov/sites/default/files/doc/2026-10-28%20Location%20Capacity%20Report.pdf",
+     "title": "Nebraska Public Service Commission, Location Capacity Report, Oct 28, 2026 (licensed grain warehouse locations and bushels)",
+     "why": "Licensed storage per elevator location on Nebraska cash-bid town pages and the state total (scripts/fetch_ne_capacity.py)"}
 ]
 }

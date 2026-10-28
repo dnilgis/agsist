@@ -6,6 +6,18 @@
    "date": "2026-10-28",
    "items": [
     {
+     "tag": "new",
+     "page": "/cash-bids/nebraska/",
+     "name": "Licensed storage on Nebraska elevator pages",
+     "text": "Nebraska town pages now show how many bushels a matched elevator is licensed to store, from the Nebraska Public Service Commission's report of Oct 28, 2026, and the state page shows the statewide total. Only elevators we could match one to one get the line."
+    },
+    {
+     "tag": "improved",
+     "page": "/milk-prices",
+     "name": "DMC margins through August 2026",
+     "text": "The Dairy Margin Coverage table and the margin line now run through August 2026 (August: $9.34/cwt), from FSA's own 2026 table, instead of stopping at April."
+    },
+    {
      "tag": "improved",
      "page": "/rain",
      "name": "County rain pages open with the Rain Print",
