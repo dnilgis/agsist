@@ -60,7 +60,7 @@ ADV_URL = SITE + "ClassPrice/{y}/AdvancePrice--{m:02d}-{yy:02d}.pdf"
 PPD_INDEX = SITE + "PPD.html"
 MONTHS = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST",
           "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"]
-NUM = r"\$?\s*(\(?-?\s*\d{1,3}\.\d{2,5}\)?)"
+NUM = r"(\(?\$?\s*\(?-?\s*\d{1,3}\.\d{2,5}\)?)"   # $0.58, $(0.42), ($0.47) (Oct 2024), -0.42
 CENTRAL_SUM = "https://www.fmmacentral.com/PDFdata/sum{y}.pdf"   # every order's monthly prices, one year a file
 STARTS = ([CENTRAL_SUM.format(y=y) for y in (2024, 2025, 2026)]
           + [PPD_URL.format(y=y, m=m, yy=y % 100) for y, m in ((2024, 10), (2025, 3))]
@@ -198,6 +198,43 @@ def parse_ppd(text):
     return r, ""
 
 
+CENTRAL_HEAD = ("January", "February", "March", "April", "May", "June", "July", "August", "September",
+                "October", "November", "December", "Average*")
+
+
+def parse_central(text):
+    """{month_key: {"ppd", "uniform"}} for Upper Midwest (#30) from the Central
+    Order's yearly all-order summary (fmmacentral.com sum<year>.pdf, -layout
+    text). Each value is put in the column whose heading it sits under, so a part
+    year's weighted average is never read as a month."""
+    t = text or ""
+    y = re.search(r"\b(20\d\d) Federal Milk (?:Marketing )?Order Statistics", t)   # 2024 drops "Marketing"
+    hl = next((ln for ln in t.splitlines() if re.search(r"\bJanuary\s+February\s+March\b", ln)), None)
+    blk = re.search(r"^\s*Upper Midwest \(#30\)\s*$(.*?)(?=^[^\n]*\(#\d+\)\s*$|^\s*FMO Totals|\Z)", t, re.M | re.S)
+    if not (y and hl and blk):
+        return {}
+    cols = []
+    for h in CENTRAL_HEAD:
+        i = hl.find(h)
+        if i < 0:
+            return {}
+        cols.append((i + len(h) / 2.0, h))
+
+    def row(label):
+        ln = next((x for x in blk.group(1).splitlines() if x.strip().startswith(label)), None)
+        out = {}
+        if ln is None:
+            return out
+        for m in re.finditer(r"\(?-?\$\s*\d+\.\d{2}\)?", ln):     # ($0.56) in 2025, -$0.24 in 2024
+            c = (m.start() + m.end()) / 2.0
+            h = min(cols, key=lambda x: abs(x[0] - c))[1]
+            if h != "Average*":
+                out[CENTRAL_HEAD.index(h) + 1] = num(m.group(0))
+        return out
+    u, p = row("Statistical Uniform Price"), row("Producer Price Differential")
+    return {"%s-%02d" % (y.group(1), m): {"uniform": u[m], "ppd": p[m]} for m in sorted(p) if m in u}
+
+
 def check_class1(r):
     """'' when the Class I row adds up, else why."""
     if not all(isinstance(r.get(k), float) for k in ("class1", "class1_skim", "class1_bf", "class1_diff", "mover")):
@@ -301,7 +338,11 @@ def build(get_page, get_pdf, now, old_hist=None):
     if nxt:
         out["next_class1"] = nxt
     hist, hwhy = ppd_history(mk, old_hist, get_pdf)
-    out["ppd_history"] = hist
+    central = {}
+    for y in sorted({r["month_key"][:4] for r in hist}):
+        t, _e = get_pdf(CENTRAL_SUM.format(y=y))
+        central.update(parse_central(t) if t else {})
+    out["ppd_history"] = mark_central(hist, central)
     if hwhy:
         out["ppd_history_why"] = hwhy
     out["read"] = now.strftime("%Y-%m-%d")
@@ -309,7 +350,7 @@ def build(get_page, get_pdf, now, old_hist=None):
 
 
 HIST_MONTHS = 24       # the PPD history on the page: the 24 months up to the latest
-HIST_KEYS = ("month_key", "ppd", "uniform", "class3", "released_ppd")
+HIST_KEYS = ("month_key", "ppd", "uniform", "class3", "released_ppd", "central")
 
 
 def ppd_history(latest_mk, old_rows, get_pdf, n=HIST_MONTHS):
@@ -333,6 +374,17 @@ def ppd_history(latest_mk, old_rows, get_pdf, n=HIST_MONTHS):
             continue
         rows.append({x: r[x] for x in HIST_KEYS if r.get(x) is not None})
     return rows, why
+
+
+def mark_central(rows, central):
+    """Each history month gets central = agree (the Central Order's yearly summary
+    prints the same PPD and statistical uniform price) or differ; a month the
+    summary does not hold keeps what it had."""
+    for r in rows:
+        c = central.get(r["month_key"])
+        if c:
+            r["central"] = "agree" if abs(c["ppd"] - r["ppd"]) < 0.005 and abs(c["uniform"] - r["uniform"]) < 0.005 else "differ"
+    return rows
 
 
 def run(root=ROOT, now=None, get_page=None, get_pdf=None):
@@ -449,6 +501,22 @@ def selftest():
     hr2, hw2 = ppd_history("2026-09", [], lambda u: ({_url(CLASS_URL, "2026-09"): cls,
                                                       _url(PPD_URL, "2026-09"): ppd.replace("16.62", "16.72")}.get(u), "404"), n=1)
     ck("...a month whose uniform is not Class III plus PPD is left out", hr2 == [] and "2026-09" in hw2, hw2)
+
+    fxr = lambda n: (fx / n).read_text()
+    r24, w24 = month_record("2024-10", fxr("o30-class-2024-10.txt"), fxr("o30-ppd-2024-10.txt"))
+    ck("Oct 2024 releases: PPD ($0.47) negative, uniform 22.38 = Class III 22.85 - 0.47",
+       r24 and r24["ppd"] == -0.47 and r24["uniform"] == 22.38 and r24["class3"] == 22.85, w24)
+    c24, c25, c26 = (parse_central(fxr("central-sum%d-o30.txt" % y)) for y in (2024, 2025, 2026))
+    ck("Central Order yearly summaries: 12, 12 and 9 months for Order 30", (len(c24), len(c25), len(c26)) == (12, 12, 9),
+       (len(c24), len(c25), len(c26)))
+    ck("...Oct 2024 -$0.47 (2024 prints a minus), Nov 2025 ($0.56) (2025 prints parentheses), Sep 2026 $0.58",
+       c24["2024-10"] == {"uniform": 22.38, "ppd": -0.47} and c25["2025-11"] == {"uniform": 16.62, "ppd": -0.56}
+       and c26["2026-09"] == {"uniform": 16.62, "ppd": 0.58}, (c24.get("2024-10"), c25.get("2025-11"), c26.get("2026-09")))
+    ck("...a part year's weighted average is not read as October", "2026-10" not in c26)
+    mk_ = mark_central([dict(r24), dict(month_record("2026-09", cls, ppd)[0])], dict(c24, **c26))
+    ck("the market administrator's own releases agree with the summary, month by month",
+       [r["central"] for r in mk_] == ["agree", "agree"], mk_)
+    ck("...a summary that differs is marked so", mark_central([dict(r24, ppd=-0.37)], c24)[0]["central"] == "differ")
 
     # the whole build with fake fetches; the year-ago month missing is said, not filled
     import tempfile

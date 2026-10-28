@@ -1,0 +1,17 @@
+# fmmacentral.com/PDFdata/sum2026.pdf (pdftotext -layout), read by the dairy probe on 2026-10-28: the title and month lines and the Upper Midwest block, unchanged.
+                                                                                      2026 Federal Milk Marketing Order Statistics
+                                                                                                                                                                                                                                            Weighted
+                                             January             February               March                 April            May            June             July          August        September       October   November   December    Average*
+   Northeast (#1)
+
+Upper Midwest (#30)
+     Class I Price (Diff. - $3.20)             $19.55               $17.90               $18.67              $21.86            $23.35          $25.38          $24.53          $21.96          $20.24                                          $21.49
+       Statistical Uniform Price               $15.05               $15.52               $16.66              $17.43            $17.61          $16.85          $16.40          $17.24          $16.62                                          $16.74
+     Producer Price Differential               $0.46                $0.58                $0.50               $0.61             $0.69           $0.87           $0.88           $0.60           $0.58                                           $0.66
+             Producer Receipts             1,444,531,341        1,548,533,700        2,232,773,861       2,495,465,253     2,669,244,361   2,664,794,903   2,712,908,363   2,761,457,901   2,591,928,872                                   2,346,848,728
+               Class I Utilization             12.25%               9.98%                7.46%               6.51%             5.92%           5.75%           5.80%           5.66%           6.39%                                           6.87%
+              Class II Utilization             14.04%               4.34%                1.46%               1.10%             1.08%           0.90%           1.01%           1.14%           0.99%                                           2.21%
+             Class III Utilization             60.56%               83.84%               89.80%              91.54%            92.15%         92.81%          92.49%          92.11%          91.61%                                          89.12%
+             Class IV Utilization              13.15%                1.84%                1.28%               0.84%             0.85%          0.54%           0.70%           1.09%           1.01%                                           1.80%
+                                              100.00%              100.00%              100.00%             100.00%           100.00%         100.00%         100.00%         100.00%         100.00%                                         100.00%
+
