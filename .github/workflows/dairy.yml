@@ -139,7 +139,11 @@ jobs:
         continue-on-error: true
         run: pip install --quiet pillow==12.3.0
 
+      # A probe run fetches nothing into data/, so it commits nothing: copying its
+      # checkout's files back over the branch tip only put older data back
+      # (Oct 28: a probe run reverted data/dairy-order30.json to a failed read).
       - name: Commit if changed (race-tolerant)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         env:
           PROBE: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: |
