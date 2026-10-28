@@ -137,7 +137,8 @@
   function okComp(c) { return c && pos(c.butterfat) && fin(c.protein) && pos(c.other_solids); }
   function readInputs(get) {
     var n = function (id) { var v = parseFloat(get(id)); return isFinite(v) ? v : null; };
-    return { cwt: n('ck-cwt'), fat: n('ck-fat'), pro: n('ck-pro'), os: n('ck-os'), ded: n('ck-ded'), cost: n('ck-cost') };
+    return { cwt: n('ck-cwt'), fat: n('ck-fat'), pro: n('ck-pro'), os: n('ck-os'), ded: n('ck-ded'), cost: n('ck-cost'),
+      order: String(get('ck-order') || '') === '30' ? '30' : '' };
   }
   function bad(t) {
     if (t.fat == null || t.pro == null || t.os == null) return 'Type your butterfat, protein and other solids tests to see what your milk is worth at them.';
@@ -156,8 +157,25 @@
     return '<div class="dp-example-line tot"><span>Against your cost of ' + cwt(t.cost) + '/cwt</span><span class="v ' + c + '">' + sg(g) + '/cwt' +
       (t.cwt ? ', ' + money(g * t.cwt) + ' on ' + String(Math.round(t.cwt)).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' cwt' : '') + '</span></div>';
   }
-  /* d: dairy-data.json; hist: dairy-history.json; rows: settled futures rows; ok: the class month on the page is current */
-  function checkHtml(t, d, hist, rows, ok) {
+  /* The reader's order's producer price differential for the class month, from data/dairy-order30.json
+     (the Upper Midwest market administrator's release). Only the same month as the component prices,
+     never an older one: a PPD swings by dollars from month to month. */
+  function ppdFor(o30, mk) {
+    var L = o30 && o30.latest, M = (o30 && o30.months) || {};
+    var r = (L && L.month_key === mk) ? L : M[mk];
+    return r && fin(r.ppd) && r.month_key === mk ? r : null;
+  }
+  function ppdLines(t, o30, ci, net) {
+    if (t.order !== '30') return '';
+    var mk = Math.floor(ci / 12) + '-' + ('0' + (ci % 12 + 1)).slice(-2), r = ppdFor(o30, mk);
+    if (!r) return '<p class="dp-example-note">Order 30&rsquo;s producer price differential for ' + ilong(ci) +
+      ' is not held here yet (the market administrator posts it about the middle of the next month), so it is left out.</p>';
+    return line('Plus Order 30 PPD, ' + ilong(ci) + ' (Upper Midwest market administrator)', sg(r.ppd)) +
+      line('<strong>With the PPD</strong>', '<strong>' + cwt(net + r.ppd) + '/cwt</strong>', 'tot');
+  }
+  /* d: dairy-data.json; hist: dairy-history.json; rows: settled futures rows; ok: the class month on the page is current;
+     o30: dairy-order30.json (optional) */
+  function checkHtml(t, d, hist, rows, ok, o30) {
     var why = bad(t);
     if (why) return '<p class="dp-note-src">' + why + '</p>';
     var ci = kidx(d && d.class_month_key), c = d && d.components;
@@ -169,7 +187,9 @@
       line('Other solids ' + t.os.toFixed(2) + ' lb &times; $' + c.other_solids.toFixed(4), cwt(v.os)) +
       line('<strong>Federal minimum value at your tests</strong>', '<strong>' + cwt(v.val) + '/cwt</strong>', 'tot');
     if (t.ded != null) h += line('Minus your hauling and deductions', MINUS + cwt(ded)) + line('Left before PPD and premiums', cwt(net) + '/cwt');
-    h += gapLine(net, t);
+    var pr = t.order === '30' ? ppdFor(o30, Math.floor(ci / 12) + '-' + ('0' + (ci % 12 + 1)).slice(-2)) : null;
+    h += ppdLines(t, o30, ci, net);
+    h += gapLine(pr ? net + pr.ppd : net, t);
     h += '<p class="dp-example-note">USDA AMS component prices announced for ' + m + '. Before the producer price differential, quality and volume premiums and co-op payments; orders that pay on components price milk this way. This is the value of your milk at test, not your check.</p></div>';
     /* the next two futures months not yet announced, as a range over the component prices held */
     var ms = [];
@@ -189,7 +209,8 @@
       });
       h += '<p class="dp-example-note"><strong>Market prices plus your inputs, not your check, not a forecast.</strong> Class III futures as the table above shows them, ' +
         'plus your tests valued at the component prices of ' + (ms.length > 1 ? 'the last ' + ms.length + ' announced months (the range)' : m) +
-        (t.ded != null ? ', minus your deductions' : '') + '. The month is announced early the next month and can land well away from the futures.</p></div>';
+        (t.ded != null ? ', minus your deductions' : '') + '. The month is announced early the next month and can land well away from the futures.' +
+        (t.order === '30' ? ' These lines leave out the PPD: an order&rsquo;s PPD is not known until the month is pooled.' : '') + '</p></div>';
     } else {
       h += '<p class="dp-note-src">No current Class III futures in the price file, so no futures months are shown.</p>';
     }
@@ -197,7 +218,7 @@
   }
 
   var api = { zipState: zipState, readState: readState, areaForState: areaForState, areaHtml: areaHtml, askHtml: askHtml,
-    testValue: testValue, adj: adj, checkHtml: checkHtml, readInputs: readInputs, STD: STD, BY_STATE: BY_STATE, SPLIT: SPLIT };
+    testValue: testValue, adj: adj, checkHtml: checkHtml, ppdFor: ppdFor, readInputs: readInputs, STD: STD, BY_STATE: BY_STATE, SPLIT: SPLIT };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgMilkTools = api;
   var doc = root.document;
@@ -206,7 +227,7 @@
   function ls() { try { return root.localStorage; } catch (e) { return null; } }
   function lget(k) { var s = ls(); try { return s ? s.getItem(k) : null; } catch (e) { return null; } }
   function lset(k, v) { var s = ls(); try { if (s) { if (v == null) s.removeItem(k); else s.setItem(k, v); } } catch (e) {} }
-  var mb = null, hist = null, data = null, baked = null;
+  var mb = null, hist = null, data = null, baked = null, o30 = null;
   function getJSON(u) { return fetch(u, { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
 
   function renderArea() {
@@ -230,12 +251,12 @@
     if (!out || !data) return;
     var t = readInputs(function (id) { var e = doc.getElementById(id); return e ? e.value : ''; });
     var ci = kidx(data.d && data.d.class_month_key);
-    out.innerHTML = checkHtml(t, data.d, hist, data.rows, data.c3 != null && isFinite(data.classIdx) && data.classIdx === ci);
+    out.innerHTML = checkHtml(t, data.d, hist, data.rows, data.c3 != null && isFinite(data.classIdx) && data.classIdx === ci, o30);
   }
   function restore() {
     var saved = null;
     try { saved = JSON.parse(lget(CHECK_KEY) || 'null'); } catch (e) { saved = null; }
-    if (saved && typeof saved === 'object') ['ck-cwt', 'ck-fat', 'ck-pro', 'ck-os', 'ck-ded', 'ck-cost'].forEach(function (id) {
+    if (saved && typeof saved === 'object') ['ck-cwt', 'ck-fat', 'ck-pro', 'ck-os', 'ck-ded', 'ck-cost', 'ck-order'].forEach(function (id) {
       var e = doc.getElementById(id); if (e && saved[id] != null && saved[id] !== '') e.value = saved[id];
     });
     var a = lget(AREA_KEY), sel = doc.getElementById('dp-area-sel');
@@ -249,7 +270,7 @@
       f.addEventListener('submit', function (e) { e.preventDefault(); });
       f.addEventListener('input', function () {
         var o = {};
-        ['ck-cwt', 'ck-fat', 'ck-pro', 'ck-os', 'ck-ded', 'ck-cost'].forEach(function (id) { var e = doc.getElementById(id); if (e) o[id] = e.value; });
+        ['ck-cwt', 'ck-fat', 'ck-pro', 'ck-os', 'ck-ded', 'ck-cost', 'ck-order'].forEach(function (id) { var e = doc.getElementById(id); if (e) o[id] = e.value; });
         lset(CHECK_KEY, JSON.stringify(o));
         renderCheck();
       });
@@ -258,8 +279,8 @@
   function start() {
     data = root.agsistMilk || null;
     if (!data) return;
-    Promise.all([getJSON('/data/dairy-mailbox.json'), getJSON('/data/dairy-history.json')]).then(function (r) {
-      mb = r[0]; hist = r[1];
+    Promise.all([getJSON('/data/dairy-mailbox.json'), getJSON('/data/dairy-history.json'), getJSON('/data/dairy-order30.json')]).then(function (r) {
+      mb = r[0]; hist = r[1]; o30 = r[2];
       renderArea(); renderCheck();
     });
   }

@@ -2060,6 +2060,7 @@
    "written_by": [
     "Cattle cash prices",
     "Generate Daily Briefing",
+    "Dairy prices",
     "Fertilizer co-op posted prices",
     "Fetch Prices"
    ],
@@ -2094,6 +2095,11 @@
     "41 11 * * *",
     "23 13 * * *",
     "0 20 * * 5",
+    "37 15 1-9 * *",
+    "37 21 1-9 * *",
+    "37 15 28-31 * *",
+    "11 14 * * 2",
+    "23 16 15-27 * *",
     "41 13 * * 1-5",
     "11 * * * *"
    ],

@@ -1,0 +1,192 @@
+Utilization
+Percentage
+Product
+Pounds
+Component
+Pounds Rate Value
+Class I Differential Value 4,889,934.06$           
+Product 6.4% 165,549,810
+Skim Milk 161,898,929 $12.16 19,686,909.76
+Butterfat 3,650,881 1.5164 5,536,195.94
+Class II Product 1.0% 25,701,018
+Nonfat Solids 1,956,708 1.3828 2,705,735.80
+Butterfat 4,855,216 1.4832 7,201,256.39
+Class III Product 91.6% 2,374,489,361
+Protein 78,373,610 2.6619 208,622,712.48
+Other Solids 138,239,230 0.4147 57,327,808.68
+Butterfat 92,578,048 1.4762 136,663,714.49
+Class IV Product 1.0% 26,188,683
+Nonfat Solids 1,630,234 1.5343 2,501,268.02
+Butterfat 8,930,118 1.4762 13,182,640.18
+SCC Adjustment (Class II, III, and IV) 2,990,893.68
+Total Producer Milk 2,591,928,872 461,309,069.48 $       
+Add: Overage 19,455.84
+Inventory Reclassified (10,167.31)
+Other Source § .60(h) thru .60(k) 160,320.22
+Subtract: Transportation Credit  7,514.52
+Assembly Credit   132,396.52
+Producer Milk Protein 226,708,728.48
+Producer Milk Other Solids 62,357,607.11
+Producer Milk Butterfat 162,403,055.04
+Producer Milk SCC Adjustment 3,198,461.85
+Total Milk and Value 2,591,928,872 6,670,914.71 $           
+Add: Location Adjustment -- Pr oducer and Unregulated Supply Plant Milk 8,339,649.95
+One-Half Unobligated Balance Producer Settlement Fund 1,193,429.48
+Total Value 0.625171 16,203,994.14$         
+Subtract: Producer Settlement Fund Reserve 0.045171 1,170,806.68
+Producer Price Differential   (Dollars Per Cwt.--Base Zone) $0.58 15,033,187.46$         
+         United States
+         Department of
+         Agriculture
+600 East Diehl Road, Suite 100
+Naperville, IL 60563-4896
+Telephone:  (630) 810-9999
+Fax:  (630) 810-1788
+COMPUTATION OF PRODUCER PRICE DIFFERENTIAL
+UPPER MIDWEST MARKETING AREA
+Federal Order No. 30
+Agricultural Marketing Service
+Dairy Programs
+Home Page:
+www.fmma30.com
+4600 American Parkway, Suite 101
+Madison, WI 53718-8334
+Telephone:  (608) 242-1822
+Fax:  (608) 467-4300
+1600 West 82nd Street, Suite 200
+Minneapolis, MN  55431-1420
+Telephone:  (952) 831-5292
+Fax:  (952) 831-8249
+FOR SEPTEMBER 2026
+Location 
+Adjustment
+PPD at 
+Location
+(Per cwt.)
+Base Zone (Cook County, IL) $ 0.00 $ 0.58
+Other Zones $ 0.10 $ 0.68
+-0.10 0.48
+-0.30 0.28
+-0.40 0.18
+Protein Price (Per pound) $ 2.6619
+Other Solids Price (Per pound) 0.4147
+Butterfat Price (Per pound) 1.4762
+Somatic Cell Adjustment Rate (Per cwt. per 1,000 SCC) 0.00078
+Class I ESL Adjustment (Per cwt.) 0.81
+Statistical Uniform Price (Per cwt.) 16.62
+Utilization Skim Milk Butterfat
+Class I 6.4% 161,898,929 3,650,881
+Class II 1.0% 20,845,802 4,855,216
+Class III 91.6% 2,281,911,313 92,578,048
+Class IV 1.0% 17,258,565 8,930,118
+Total 100.0% 2,481,914,609 110,014,263
+Butterfat Other Solids
+Total 110,014,263 150,367,994 235,536,005
+Percentage 4.24% 5.80% 9.09%
+MINIMUM PRODUCER PAY PRICES FOR SEPTEMBER 2026
+Producer Price Differential
+Producer Milk
+Product Pounds
+2,591,928,872
+165,549,810
+25,701,018
+2,374,489,361
+26,188,683
+Components in Producer Milk
+Protein Nonfat Solids
+In accordance with Federal civil rights law and U.S. Department of Agriculture (USDA) civil rights regulations and policies, the USDA, its Agencies,
+offices, and employees, and institutions participating in or administering USDA programs are prohibited from discriminating based on race, color,
+national origin, religion, sex, disability, age, marital status, family/parental status, income derived from a public assistance program, politi cal beliefs, or
+reprisal or retaliation for prior civil rights activity, in any program or activity conducted or funded by USDA (not all bases apply to all programs).
+Remedies and complaint filing deadlines vary by program or incident. 
+ 
+Persons with disabilities who require alternative means of communication for program information (e.g., Braille, large print, audiotape, America nS i g n
+Language, etc.) should contact the responsible Agency or USDA's TARGET Center at (202) 720-2600 (voice and TTY) or contact USDA through the
+Federal Relay Service at 711.  Additionally, program information may be made available in languages other than English. 
+ 
+To file a program discrimination complaint, complete the USDA Program Discrimination Complaint Form, AD-3027, found online at  How to File a
+Program Discrimination Complaint  and at any USDA office or write a letter addressed to USDA and provide in the letter all of the information requested
+in the form. To request a copy of the complaint form, call (866) 632-9992. Submit your completed form or letter to USDA by: (1) mail: U.S. Department
+of Agriculture, Office of the Assistant Secretary for Civil Rights, 1400 Independence Avenue, SW, Washington, D.C. 20250-9410; (2) fax: (202) 690-
+7442; or (3) email: program.intake@usda.gov. 
+ 
+USDA is an equal opportunity provider, employer, and lender. 
+85,168,011
+3.29%
+October 12, 2026 Victor J. Halverson, Market Administrator Upper Midwest Marketing Area - September 2026
+Distributing Plants State County Rate Supply Plants - (continued) State County Rate
+§1030.7(a) or .7(b)* or .7(e) $ §1030.7(c) $
+DF-Pleasant View Dairy Corp. IN Lake 3.30 Eau Galle Cheese Factory** WI Pepin 2.80
+East Side Jersey Dairy - Woodbury MN Washington 2.90 Ellsworth Cooperative Creamery** WI Pierce 2.80
+Hoffmann Oberweis Dairy IL Kane 3.20 FarmFirst Dairy** WI Washington 2.90
+Kemps - Cedarburg WI Ozaukee 3.10 First District Association** MN Meeker 2.80
+Kemps - Fargo ND Cass 2.80 Foremost Farms USA - Appleton** WI Outagamie 2.90
+Kemps - Minneapolis MN Hennepin 2.90 Grande Cheese - Rubicon** WI Dodge 2.90
+Kwik Trip WI La Crosse 2.90 Grassland Dairy Products (Fairground)** WI Clark 2.80
+Lamers Dairy WI Outagamie 2.90 Grassland Dairy Products (Main St)** WI Clark 2.80
+Prairie Farms Dairy - Rockford IL Winnebago 3.10 Klondike Cheese** WI Green 2.90
+Schreiber Foods - Beloit* WI Rock 2.90 LaGrander’s Hillside Dairy** WI Clark 2.80
+St. Paul Beverage Solutions - Saint Paul MN Ramsey 2.90 Land O’Lakes - Kiel** WI Calumet 2.90
+Land O’Lakes - Melrose** MN Stearns 2.80
+Lynn Dairy** WI Clark 2.80
+Supply Plants State County Rate Mullins Cheese - Marshfield** WI Marathon 2.90
+§1030.7(c) $ Mullins Cheese - Mosinee** WI Marathon 2.90
+Nasonville Dairy** WI Wood 2.90
+Arla Foods Production** WI Brown 2.90 NFO - Fond du Lac WI Fond du Lac 2.90
+Associated Milk Producers - Jim Falls** WI Chippewa 2.80 Plainview Milk Products - Plainview** MN Wabasha 2.80
+Associated Milk Producers - Paynesville** MN Stearns 2.80 Prairie Farms Dairy - Faribault** MN Rice 2.80
+BelGioioso Cheese - Pulaski** WI Brown 2.90 Rolling Hills Dairy Producers WI Green 2.90
+Bongards' Creameries - Perham** MN Otter Tail 2.80 Saputo Cheese USA - Waupun** WI Fond du Lac 2.90
+Brewster Cheese** IL Jo Daviess 3.10 Sartori Company - Plymouth** WI Sheboygan 2.90
+Burnett Dairy - Wilson** WI St. Croix 2.80 Scenic Central Milk - Muscoda WI Grant 2.90
+Cedar Valley Cheese** WI Ozaukee 3.10 V&V Supremo Foods** WI LaFayette 2.90
+Cooperative Regions of Organic WI Vernon 2.90 Zimmerman Cheese** WI LaFayette 2.90
+  Producer Pools
+Dairy Farmers of America - Fond du Lac WI Fond du Lac 2.90
+Dairy State Cheese** WI Wood 2.90
+Decatur Dairy** WI Green 2.90
+** Portion of plant is designated as a nonpool plant, per §1030.7(h)(7).
+Complete name and address information is available from the Market Administrator's office.Upper Midwest Marketing Area - September 2026
+Partially Regulated Distributing Plants State County Rate Cooperative Associations Acting as Handlers
+§1030.8(c) $ §1030.9(c) or §1000.18*
+Aurora Organic Dairy - Columbia MO Boone 3.40 Associated Milk Producers
+C.F. Burger Creamery - Detroit MI Wayne 3.30 Bongards' Creameries
+Fairlife - Goodyear AZ Maricopa 2.60 Burnett Dairy
+Farmers' All Natural Creamery IA Washington 2.90 Dairy Farmers of America
+Gossner Foods - Logan UT Cache 2.20 Ellsworth Cooperative Creamery
+Horizon Organic Dairy - Salt Lake City UT Salt Lake 2.20 First District Association
+Ida Milk - Burley ID Cassia 1.70 Foremost Farms USA
+KanPak LLC - Arkansas City KS Cowley 2.90 Great Lakes Milk Producers
+Saputo Cheese USA - Murray KY Calloway 4.20 Land O’Lakes
+Saputo Cheese USA - White Bear Lake MN Ramsey 2.90 NFO
+WhiteWave Foods - Mt. Crawford VA Rockingham 4.30 Plainview Milk Products
+Prairie Farms Dairy
+Select Milk Producers
+Producer-Handlers State County Rate
+§1030.10 $
+Autumnwood Farm MN Washington 2.90
+Concept Processing MN Stearns 2.80
+DeBacker Family Dairy MI Menominee 2.80
+Sassy Cow Creamery WI Columbia 2.90
+Weber’s Farm Store WI Wood 2.90
+Exempt Plants State County Rate
+§1030.8(e) $
+Amo Creamery MN Jackson 2.80
+Clover Meadows Family Farm WI Marathon 2.90
+Cow Valley Creamery IL McHenry 3.10
+Cows and Co. Creamery ND Foster 2.40
+Crystal Ball Farms WI Polk 2.80
+Farm Stapels WI Sheboygan 2.90
+Farmer Boy Creamery WI Clark 2.80
+Kappers' Big Red Barn MN Fillmore 2.80
+Ludwig Dairy Products IL Lee 3.20
+Murphy's Microdairy MN Aitkin 2.80
+Oxheart Farm WI Pierce 2.80
+Redhead Creamery MN Stearns 2.80
+Silo View Creamery WI Racine 3.10
+Ten Finns Creamery MN Wadena 2.80
+Tetzner's Dairy WI Bayfield 2.80
+Two Guernsey Girls Creamery WI Outagamie 2.90
+University of Wisconsin WI Dane 2.90
+Waupun Dairy WI Dodge 2.90
+Complete name and address information is available from the Market Administrator's office.
