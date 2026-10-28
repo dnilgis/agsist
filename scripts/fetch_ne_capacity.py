@@ -314,7 +314,7 @@ def fmt_date(iso):
 def storage_line_html(row, doc, esc):
     """'Licensed storage: 6,855,106 bushels (Nebraska PSC, report of Oct 28, 2026)', the source linked."""
     s = doc["source"]
-    return (f'<p class="cbt-sub cbt-cap">Licensed storage: {row["bu"]:,} bushels '
+    return (f'<p class="cbt-sub cbt-cap" style="margin:8px 0 0">Licensed storage: {row["bu"]:,} bushels '
             f'(<a href="{esc(s["url"])}" rel="noopener">{esc(s["short"])}</a>, report of {fmt_date(s["as_of"])})</p>')
 
 
@@ -325,10 +325,10 @@ def state_note_html(doc, st, esc):
     s, t = doc["source"], doc["totals"]
     ne, ks = t["by_state"]["NE"], t["by_state"]["KS"]
     ks_txt = (f" The same report lists {ks['locations']} more location{'s' if ks['locations'] != 1 else ''} in "
-              f"Kansas under Nebraska licences ({ks['bushels']:,} bushels), {t['locations']} locations and "
+              f"Kansas under Nebraska licenses ({ks['bushels']:,} bushels), {t['locations']} locations and "
               f"{t['bushels']:,} bushels in all." if ks["locations"] else "")
     return (f'<div class="cbt-note" id="licensed-storage"><b>Licensed grain storage.</b> {ne["locations"]} grain '
-            f'warehouse locations in Nebraska hold a state licence for {ne["bushels"]:,} bushels '
+            f'warehouse locations in Nebraska hold a state license for {ne["bushels"]:,} bushels '
             f'(<a href="{esc(s["url"])}" rel="noopener">{esc(s["short"])}</a>, report of {fmt_date(s["as_of"])}).'
             f'{ks_txt} Warehouses licensed federally instead are not on the state&rsquo;s list. Where we read a '
             f'licensed location&rsquo;s bids, its town page shows its licensed bushels.</div>')
