@@ -161,6 +161,10 @@ test("the request form in a browser: prefill, checks, the post, escaping, the fa
       const posts = [];
       let answer = { status: 200, body: { ok: true } };
       await p.route("https://agsist-api.dnilgis.workers.dev/**", async (r) => {
+        /* Oct 28: the state-targeted sponsor asks GET /where once per session (components/geo-sponsor.js).
+           That read is not a listing post; it answers "no US state" and is not counted. */
+        if (r.request().method() !== "POST")
+          return r.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: '{"ok":false}' });
         posts.push(JSON.parse(r.request().postData() || "{}"));
         await r.fulfill({ status: answer.status, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify(answer.body) });
       });

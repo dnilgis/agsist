@@ -560,14 +560,24 @@
     rib.innerHTML = '<a class="ag-open-slot" href="' + BASE + '/sponsor-apply?tier=page&amp;slot=' + encodeURIComponent(id) +
       '" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'open_slot\'})">Sponsor this page</a>';
   }
+  var GEO_SKIP = /^\/(rain-print|rp-gift|rain-gauge|gifts-for-farmers|birth-year-weather-gift|wedding-year-weather-gift|farm-anniversary-gifts|farmer-retirement-gifts)(?:[.\/-]|$)/;
+  function geoSponsor(noSponsor, rib) {
+    if (noSponsor || window.__geoSponsor || GEO_SKIP.test(location.pathname)) return;
+    window.__geoSponsor = true;
+    var s = document.createElement('script');
+    s.src = BASE + '/components/geo-sponsor.js?v=1';
+    s.async = true;
+    s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
+    document.head.appendChild(s);
+  }
   function fillPageRibbons(noSponsor) {
     var rib = document.querySelector('aside.ag-sponsor-ribbon');
-    if (!rib) return;
+    if (!rib) return geoSponsor(noSponsor, null);
     var id = rib.getAttribute('data-slot') || '';
     if (!/^[a-z0-9-]+$/.test(id)) {
       var a = rib.querySelector('a[href*="slot="]');
       var m = a && /[?&]slot=([a-z0-9-]+)/.exec(a.getAttribute('href') || '');
-      if (!m) return;
+      if (!m) return geoSponsor(noSponsor, null);
       id = m[1];
     }
     fetch(BASE + '/data/page-sponsors.json', { cache: 'no-cache' })
@@ -578,6 +588,9 @@
         try { today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date()); }
         catch (e) { today = new Date().toISOString().slice(0, 10); }
         if (!noSponsor && (!sp || sp.active === false)) openSlotLine(rib, id);
+        var sold = !!sp && sp.active !== false && !!sp.company && /^https?:\/\//.test(sp.url || '') &&
+            /^\d{4}-\d{2}-\d{2}$/.test(sp.start || '') && sp.start <= today;
+        if (!sold) geoSponsor(noSponsor, rib);
         if (!sp || sp.active === false || !sp.company || !/^https?:\/\//.test(sp.url || '') ||
             !/^\d{4}-\d{2}-\d{2}$/.test(sp.start || '') || sp.start > today) return;
         rib.classList.add('ag-sponsor-ribbon--sold');
@@ -585,7 +598,7 @@
         rib.setAttribute('aria-label', 'Sponsored: ' + sp.company);
         rib.innerHTML = ribbonInner(sp, id, true);
       })
-      .catch(function () { });
+      .catch(function () { geoSponsor(noSponsor, rib); });
   }
   // ── Sponsor measurement
   function loadSponsorMetrics() {
