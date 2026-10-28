@@ -218,3 +218,22 @@ print(R.dry_run_mark("2026-10-29", d))
   // a heartbeat carries send_email=true, so a price-loop run never marks the day
   assert.match(read(".github/workflows/prices.yml"), /send_email=true/);
 });
+
+test("review: a day flag that could not be set reads as not set, so the send sets it again after the list", () => {
+  const out = py(["-c", `
+import os, sys
+sys.path.insert(0, "scripts")
+import send_daily as S, list_source as L
+os.environ.update({"LIST_URL": "https://subs.invalid", "LIST_TOKEN": "t"})
+def boom(k):
+    raise L.Unavailable("worker down and the private repo not saved")
+L.flag_set = boom
+print("set", S.flag("2026-10-28", set_it=True))
+L.flag_is_set = boom
+print("read", S.flag("2026-10-28"))
+`]);
+  assert.equal(out.status, 0, out.stderr);
+  assert.match(out.stdout, /^set False$/m, "a failed set is not 'flagged'");
+  assert.match(out.stdout, /^read True$/m, "a failed read still fails closed (already sent)");
+  assert.match(read("scripts/send_daily.py"), /flagged = flag\(day, set_it=True\) is True/);
+});
