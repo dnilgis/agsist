@@ -57,6 +57,9 @@ jobs:
         run: |
           python scripts/fetch_dairy.py --selftest
           python scripts/fetch_mailbox.py --selftest
+          python scripts/dairy_probe.py --selftest
+          python scripts/fetch_dmc.py --selftest
+          python scripts/fetch_order30.py --selftest
       - name: Probe (raw source capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         env:
@@ -64,6 +67,8 @@ jobs:
         run: |
           python scripts/fetch_dairy.py --probe
           python scripts/fetch_mailbox.py --probe
+          python scripts/fetch_dmc.py --probe || echo "::warning::DMC probe failed"
+          python scripts/fetch_order30.py --probe || echo "::warning::Order 30 probe failed"
       # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
       # Runs even when the probe step failed part way, so what it did capture is kept.
       - name: Save the probe's raw files to the raw branch
