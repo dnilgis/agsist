@@ -10,10 +10,12 @@ name: Implied futures shadow test
 # data/implied-futures/<Central date>.jsonl. Why each kind of board is in or out
 # is at the top of the script.
 #
-# CLOCK. No new cron (STANDING-DECISIONS Oct 21: a new schedule is Sig's OK
-# first; test/history-collect.test.mjs). It rides "Fetch Grain Bids"
-# (cron-job.org, every 15 minutes) and ONLY when the repository variable
-# IMPLIED_FUTURES_LIVE is 1. Until then it runs by hand:
+# CLOCK. Sig, Oct 28 2026 (STANDING-DECISIONS): yes, it may run on its own during the
+# CBOT day session (every 30 min 8:30-13:20 CT plus once after the close) for a week
+# or two. No cron of its own: it rides "Fetch Grain Bids" (cron-job.org, every 15
+# minutes), listed in test/history-collect.test.mjs APPROVED with that citation.
+# OFF SWITCH: set the repository variable IMPLIED_FUTURES_LIVE to 0 and the chained
+# runs stop starting a runner (any other value, or none, runs). By hand any time:
 #   gh workflow run implied-futures.yml -R dnilgis/agsist --ref main
 #   gh workflow run implied-futures.yml -R dnilgis/agsist --ref main -f replay=2026-10-28   (rebuild a past day from git history)
 #   gh workflow run implied-futures.yml -R dnilgis/agsist --ref main -f summary=true        (print the summary only)
@@ -51,10 +53,10 @@ concurrency:
 
 jobs:
   tick:
-    # No runner for a Fetch Grain Bids run unless the test is switched on and the
-    # run started 13:00-19:59 UTC on a weekday-ish hour (the session either side of the clock change).
+    # No runner for a Fetch Grain Bids run when the off switch is set (IMPLIED_FUTURES_LIVE=0)
+    # or outside 13:00-19:59 UTC (the day session either side of the clock change).
     if: >-
-      github.event_name == 'workflow_dispatch' || (vars.IMPLIED_FUTURES_LIVE == '1' && (
+      github.event_name == 'workflow_dispatch' || (vars.IMPLIED_FUTURES_LIVE != '0' && (
         contains(github.event.workflow_run.created_at, 'T13:') ||
         contains(github.event.workflow_run.created_at, 'T14:') ||
         contains(github.event.workflow_run.created_at, 'T15:') ||
