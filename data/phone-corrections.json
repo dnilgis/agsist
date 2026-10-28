@@ -1,0 +1,38 @@
+{
+ "note": "Phone numbers checked against the buyer's own site. A row with a phone replaces the number our sources file for that elevator; a row with phone null withholds it (no number is printed) because nothing confirms it is the local line. Read by scripts/phone_corrections.py for the elevator contacts and the cash-bid town pages. Add a row only with the page it was read from and the date.",
+ "rows": [
+  {
+   "state": "WI",
+   "town": "Cushing",
+   "operator": "Cushing Cooperative",
+   "source_ids": ["cushingcoop-cushingcoop"],
+   "phone": "715-648-5215",
+   "was": "918-225-6559",
+   "source": "https://cushingcoop.com/",
+   "read": "2026-10-27",
+   "why": "The co-op's own cash-bid page says to call 715-648-5215 for bid help. 918 is Oklahoma, which has its own Cushing."
+  },
+  {
+   "state": "WI",
+   "town": "Prairie Du Chien",
+   "operator": "Innovative Ag Services",
+   "source_ids": ["innovativeag-bungepdc"],
+   "phone": null,
+   "was": "319-465-6896",
+   "source": "https://www.innovativeag.com/locations",
+   "read": "2026-10-27",
+   "why": "Not confirmed as a Prairie du Chien number. The company's locations page lists no Prairie du Chien site and gives only its Monticello, Iowa administration office. Withheld until the local grain line is confirmed."
+  },
+  {
+   "state": "WI",
+   "town": "Arcadia",
+   "operator": "Pilgrims Gold N Plump",
+   "source_ids": ["gnpcograin-arcadia"],
+   "phone": null,
+   "was": "320-202-7451",
+   "source": "https://jobs.jobvite.com/pilgrims/job/oJDNAfwt",
+   "read": "2026-10-27",
+   "why": "Not confirmed. Pilgrim's confirms grain receiving at its Arcadia feed mill but publishes no receiving phone; 320 is central Minnesota, where the company is based. Withheld until the Arcadia number is confirmed."
+  }
+ ]
+}

@@ -448,6 +448,10 @@ def history_el(h):
                 gap_line += f'<div class="wp-hr-gap">{esc(r["ungraded_why"])}</div>'
             elif r.get("source_date_unknown"):
                 gap_line += '<div class="wp-hr-gap">Trade survey source date unknown.</div>'
+            # USDA CORRECTED THE PRINT LATER: the figure above is as printed; the
+            # dated correction and the grade against it, from the builder.
+            if (r.get("nass_correction") or {}).get("note"):
+                gap_line += f'<div class="wp-hr-gap wp-hr-corr">{esc(r["nass_correction"]["note"])}</div>'
             src_link = (f' <a href="{esc(r["reaction_source"])}" rel="nofollow noopener" target="_blank">Source</a>'
                         if r.get("reaction_source") else "")
             reaction = (f'<div class="wp-hr-reaction">{esc(r["reaction"])}{src_link}</div>' if r.get("reaction")

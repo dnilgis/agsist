@@ -254,7 +254,7 @@ def fetch(release, now=None, opener=None):
     sys.path.insert(0, str(HERE))
     import usda_dates
     now = now or datetime.now(timezone.utc)
-    if release not in usda_dates.WASDE_2026:
+    if release not in usda_dates.WASDE_DATES:
         return None, "%s is not a WASDE date in scripts/usda_dates.py" % release
     if release > now.date():
         return None, "%s has not happened" % release
@@ -391,7 +391,7 @@ def main(argv):
         import usda_dates
         # Same default as fetch_wasde.py: today if it is a WASDE day, else the last one.
         rel = (date.fromisoformat(argv[argv.index("--date") + 1]) if "--date" in argv
-               else (now.date() if now.date() in usda_dates.WASDE_2026
+               else (now.date() if now.date() in usda_dates.WASDE_DATES
                      else usda_dates.prior_wasde(now.date()) or now.date()))
         path, why = fetch(rel, now)
         print("read_wasde_pdf --fetch %s: %s" % (rel, why))

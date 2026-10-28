@@ -520,8 +520,9 @@ def card_usda_calendar():
     if not w:
         return title_card("usda-calendar")
     days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    rest = [d for d in sorted(usda_dates.WASDE_2026) if d > w][:3]
-    rows = [("WASDE", md(d), None) for d in rest]
+    rest = [d for d in sorted(usda_dates.WASDE_DATES) if d > w][:3]
+    # a date in the next year carries its year: the card is titled for w.year
+    rows = [("WASDE", md(d) if d.year == w.year else f"{md(d)}, {d.year}", None) for d in rest]
     return a_card("usda-calendar", "USDA calendar", f"WASDE dates for {w.year}",
                   f"The next WASDE report is {days[w.weekday()]}, {mdy(w)}, at noon Eastern.",
                   big=md(w), unit=f"Next WASDE, {days[w.weekday()]}, noon Eastern",
