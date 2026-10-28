@@ -3,12 +3,12 @@
  "generated": "2026-10-28",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence. Rules: scripts/board_parents.py.",
  "counts": {
-  "live_boards": 2137,
-  "with_parent": 120,
+  "live_boards": 2144,
+  "with_parent": 130,
   "with_dest": 112,
   "parent_by_rule": {
    "board-page": 1,
-   "chs-brand": 119
+   "chs-brand": 129
   },
   "dest_by_brand": {
    "ADM": 26,
@@ -354,6 +354,56 @@
   },
   "chsfarmerselevator-macon": {
    "elevId": "e06fn31718",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-chokio": {
+   "elevId": "ergmssm8vv",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-fergusfallssouth8dumpfee": {
+   "elevId": "ejw79vf5wj",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-french": {
+   "elevId": "e5fbz2ghk9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-glenwood": {
+   "elevId": "emxbjwckxv",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-herman": {
+   "elevId": "eq3apvczgp",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-longprairie": {
+   "elevId": "e439yp4b42",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-lowry": {
+   "elevId": "e3m77b918d",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-morris": {
+   "elevId": "eaz2es8agf",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-underwood13dumpfee": {
+   "elevId": "em1z28m5ne",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsherman-wilmot": {
+   "elevId": "evw4mhj4km",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
