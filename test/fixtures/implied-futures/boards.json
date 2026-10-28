@@ -1,0 +1,1995 @@
+{
+ "note": "Real board files from dnilgis/bids ec703730b163 (data/<id>.json and sources/<id>.json, contacts removed) and the grain quotes from agsist data/prices.json, read Oct 28 2026. scripts/implied_futures.py --selftest reads it.",
+ "tick": "2026-10-28T17:45:00Z",
+ "fresh_board": "adm-abileneks",
+ "prices": {
+  "fetched": "2026-10-28T17:46:33Z",
+  "quotes": {
+   "corn-dec": {
+    "ticker": "ZCZ26.CBT",
+    "close": 451.75,
+    "close_time": "2026-10-28T17:46:10Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "beans-nov": {
+    "ticker": "ZSX26.CBT",
+    "close": 1228.5,
+    "close_time": "2026-10-28T17:46:11Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "corn-dec26": {
+    "ticker": "ZCZ26.CBT",
+    "close": 451.75,
+    "close_time": "2026-10-28T17:46:15Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "corn-mar27": {
+    "ticker": "ZCH27.CBT",
+    "close": 465.0,
+    "close_time": "2026-10-28T17:46:15Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "corn-may27": {
+    "ticker": "ZCK27.CBT",
+    "close": 473.0,
+    "close_time": "2026-10-28T17:46:15Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "corn-jul27": {
+    "ticker": "ZCN27.CBT",
+    "close": 479.0,
+    "close_time": "2026-10-28T17:46:15Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "corn-sep27": {
+    "ticker": "ZCU27.CBT",
+    "close": 475.75,
+    "close_time": "2026-10-28T17:46:16Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "corn-dec27": {
+    "ticker": "ZCZ27.CBT",
+    "close": 490.0,
+    "close_time": "2026-10-28T17:46:16Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "corn-dec28": {
+    "ticker": "ZCZ28.CBT",
+    "close": 494.0,
+    "close_time": "2026-10-28T17:46:16Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "beans-nov26": {
+    "ticker": "ZSX26.CBT",
+    "close": 1228.5,
+    "close_time": "2026-10-28T17:46:17Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "beans-jan27": {
+    "ticker": "ZSF27.CBT",
+    "close": 1242.25,
+    "close_time": "2026-10-28T17:46:17Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "beans-mar27": {
+    "ticker": "ZSH27.CBT",
+    "close": 1250.25,
+    "close_time": "2026-10-28T17:46:17Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "beans-may27": {
+    "ticker": "ZSK27.CBT",
+    "close": 1258.5,
+    "close_time": "2026-10-28T17:46:17Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "beans-jul27": {
+    "ticker": "ZSN27.CBT",
+    "close": 1265.0,
+    "close_time": "2026-10-28T17:46:18Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "beans-aug27": {
+    "ticker": "ZSQ27.CBT",
+    "close": 1249.5,
+    "close_time": "2026-10-28T17:46:18Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "beans-sep27": {
+    "ticker": "ZSU27.CBT",
+    "close": 1217.75,
+    "close_time": "2026-10-28T17:46:18Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "beans-nov27": {
+    "ticker": "ZSX27.CBT",
+    "close": 1210.25,
+    "close_time": "2026-10-28T17:46:18Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "beans-nov28": {
+    "ticker": "ZSX28.CBT",
+    "close": 1180.25,
+    "close_time": "2026-10-28T17:46:19Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "wheat-dec26": {
+    "ticker": "ZWZ26.CBT",
+    "close": 600.25,
+    "close_time": "2026-10-28T17:46:19Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "wheat-mar27": {
+    "ticker": "ZWH27.CBT",
+    "close": 614.0,
+    "close_time": "2026-10-28T17:46:19Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "wheat-may27": {
+    "ticker": "ZWK27.CBT",
+    "close": 621.0,
+    "close_time": "2026-10-28T17:46:20Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "wheat-jul27": {
+    "ticker": "ZWN27.CBT",
+    "close": 626.0,
+    "close_time": "2026-10-28T17:46:20Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "wheat-sep27": {
+    "ticker": "ZWU27.CBT",
+    "close": 636.5,
+    "close_time": "2026-10-28T17:46:20Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "wheat-dec27": {
+    "ticker": "ZWZ27.CBT",
+    "close": 652.75,
+    "close_time": "2026-10-28T17:46:20Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "kcwheat-dec26": {
+    "ticker": "KEZ26.CBT",
+    "close": 643.75,
+    "close_time": "2026-10-28T17:46:21Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "kcwheat-mar27": {
+    "ticker": "KEH27.CBT",
+    "close": 653.75,
+    "close_time": "2026-10-28T17:46:21Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "kcwheat-may27": {
+    "ticker": "KEK27.CBT",
+    "close": 658.75,
+    "close_time": "2026-10-28T17:46:21Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "corn-nearby": {
+    "ticker": "ZCZ26.CBT",
+    "close": 451.75,
+    "close_time": "2026-10-28T17:46:15Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "beans-nearby": {
+    "ticker": "ZSX26.CBT",
+    "close": 1228.5,
+    "close_time": "2026-10-28T17:46:17Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "wheat-nearby": {
+    "ticker": "ZWZ26.CBT",
+    "close": 600.25,
+    "close_time": "2026-10-28T17:46:19Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   },
+   "kcwheat-nearby": {
+    "ticker": "KEZ26.CBT",
+    "close": 643.75,
+    "close_time": "2026-10-28T17:46:21Z",
+    "close_kind": "last",
+    "close_date": "2026-10-28"
+   }
+  }
+ },
+ "boards": [
+  {
+   "id": "agtegra-hecla",
+   "data": {
+    "schema": "agricharts-cashgrid/1",
+    "currency": "USD",
+    "currencyVia": "declared",
+    "source": {
+     "name": "Agtegra",
+     "location": "Hecla",
+     "locationId": "3135",
+     "zip": "57449",
+     "lat": 45.8725,
+     "lon": -98.1918,
+     "url": "https://agtegra.agricharts.com/markets/cashgrid.php",
+     "note": "Their publicly posted cash board, read from the mobile page their own site serves. Cash and basis are their own commercial numbers. This platform publishes no futures price at all, so none is republished; the futures quote is used only to check that the two columns were read correctly."
+    },
+    "checkedAt": "2026-10-28T17:40:34.366Z",
+    "pricedAt": "2026-10-28T17:40:34.366Z",
+    "status": "ok",
+    "count": 8,
+    "otherLocationsOnPage": [
+     "Bowdle (50053)",
+     "Hague (50056)",
+     "Java (50047)",
+     "Lebanon (50061)",
+     "Leola (50048)",
+     "McLaughlin (22657)",
+     "Pollock (50055)",
+     "Alpena (3124)",
+     "Andover (3111)",
+     "Bristol (3112)",
+     "Craven (50046)",
+     "Cresbard (3118)",
+     "Faulkton (50069)",
+     "Grebner (3109)",
+     "Herreid (50054)",
+     "Highmore (3126)",
+     "Huron (3129)",
+     "Kennebec (3127)",
+     "Mellette (3117)",
+     "Northville (50049)",
+     "Redfield Elevator (3122)",
+     "Redfield Energy (3121)",
+     "Roscoe (3116)",
+     "Sun Terminal (50045)",
+     "Tulare (3132)",
+     "Warner (50057)",
+     "West Terminal (3110)",
+     "Willow Lake (3134)",
+     "Wolsey (3123)",
+     "Yale (3130)",
+     "AGP Aberdeen (57201)",
+     "AGP Dawson (57202)",
+     "AGP West (83636)",
+     "Mansfield (3120)"
+    ],
+    "bids": [
+     {
+      "seq": 0,
+      "commodity": "Corn",
+      "delivery": "10/01/2026",
+      "futuresMonth": "ZCZ26",
+      "cash": 3.62,
+      "basisDollars": -0.9,
+      "basisCents": -90,
+      "futuresPriceCents": 452.5
+     },
+     {
+      "seq": 1,
+      "commodity": "Corn",
+      "delivery": "11/01/2026",
+      "futuresMonth": "ZCZ26",
+      "cash": 3.62,
+      "basisDollars": -0.9,
+      "basisCents": -90,
+      "futuresPriceCents": 452.5
+     },
+     {
+      "seq": 2,
+      "commodity": "Corn",
+      "delivery": "12/01/2026",
+      "futuresMonth": "ZCZ26",
+      "cash": 3.67,
+      "basisDollars": -0.85,
+      "basisCents": -85,
+      "futuresPriceCents": 452.5
+     },
+     {
+      "seq": 3,
+      "commodity": "Corn",
+      "delivery": "01/01/2027",
+      "futuresMonth": "ZCH27",
+      "cash": 3.81,
+      "basisDollars": -0.85,
+      "basisCents": -85,
+      "futuresPriceCents": 465.75
+     },
+     {
+      "seq": 4,
+      "commodity": "Corn",
+      "delivery": "02/01/2027",
+      "futuresMonth": "ZCH27",
+      "cash": 3.86,
+      "basisDollars": -0.8,
+      "basisCents": -80,
+      "futuresPriceCents": 465.75
+     },
+     {
+      "seq": 5,
+      "commodity": "Corn",
+      "delivery": "03/01/2027",
+      "futuresMonth": "ZCH27",
+      "cash": 3.91,
+      "basisDollars": -0.75,
+      "basisCents": -75,
+      "futuresPriceCents": 465.75
+     },
+     {
+      "seq": 6,
+      "commodity": "Corn",
+      "delivery": "04/01/2027",
+      "futuresMonth": "ZCK27",
+      "cash": 3.93,
+      "basisDollars": -0.8,
+      "basisCents": -80,
+      "futuresPriceCents": 473.5
+     },
+     {
+      "seq": 7,
+      "commodity": "Corn",
+      "delivery": "05/01/2027",
+      "futuresMonth": "ZCK27",
+      "cash": 3.93,
+      "basisDollars": -0.8,
+      "basisCents": -80,
+      "futuresPriceCents": 473.5
+     }
+    ]
+   },
+   "manifest": {
+    "id": "agtegra-hecla",
+    "operator": "Agtegra",
+    "location": "Hecla",
+    "state": "SD",
+    "country": "US",
+    "currency": "USD",
+    "countryVia": "state",
+    "platform": "agricharts-cashgrid",
+    "url": "https://agtegra.agricharts.com/markets/cashgrid.php",
+    "locationId": "3135",
+    "identityAlternative": "agricharts-cashgrid:contract-named+heading-agrees",
+    "bands": {
+     "corn": [
+      2,
+      12
+     ],
+     "soybean": [
+      6,
+      32
+     ],
+     "wheat": [
+      3,
+      20
+     ]
+    },
+    "cadence": "grain-day",
+    "provenance": "scraped",
+    "enabled": true,
+    "cashRounding": "round-cent-either",
+    "note": "WRITTEN BY scripts/agricharts-sweep.mjs (run 33825545840) from their own cashgrid board at https://agtegra.agricharts.com/markets/cashgrid.php. locationId 3135 is the l= parameter on this location's own chart links, which every row of every AgriCharts board carries; it is NOT the section heading, which is a display name and can be re-typed. At the time of writing this location showed 8 row(s) in Corn.\n\nidentityAlternative: this board publishes a BASIS and the NAME of the CBOT contract it is against \u2014 writeBidCell(-34, ..., quotes['ZCZ26']) \u2014 and the browser adds them up. We do the same arithmetic from the same quote pages, which means cash - basis = futures is true by construction here and would be checking our own subtraction against itself. lib/board.mjs refuses such a source unless it names what it publishes on instead AND every row carries that stamp. The checks that CAN fail all passed before this file was written: the named contract is one our quote pages price, its root agrees with the board's own commodity heading, and every delivery code appears in its own table's column headers.\n\nCompany, branch, town, state, ZIP and phone are copied verbatim from data/known-elevators.json. Website is the site the sweep was pointed at. COORDINATE filled 45.8725,-98.1918 from geocodes/places.json on 2026-08-29, keyed on this source's own id and resolved from \"Hecla\" via zip-centroid. It is the CENTROID OF THE TOWN's ZIPs, which can be miles from the yard. EVIDENCE, NOT A FACT: check it against the operator's own published address before anything depends on the distance.",
+    "publicNote": "Their publicly posted cash board, read from the mobile page their own site serves. Cash and basis are their own commercial numbers. This platform publishes no futures price at all, so none is republished; the futures quote is used only to check that the two columns were read correctly.",
+    "address": null,
+    "zip": "57449",
+    "lat": 45.8725,
+    "lon": -98.1918,
+    "website": "https://agtegra.com/",
+    "inMerge": true,
+    "_pending": "cashRounding is round-cent-either: rounded to the nearest cent with the tie-break not established. Measured across 6,228 rows on 45 captured boards, signedCents was -0.5, -0.25, +0.25 and +0.5 and nothing else -- both ends occur, so the interval is closed. lat/lon is null: this ZIP has no coordinate in geocodes/zip-candidates.json. `sync known` rebuilds geocodes/places.json from the manifests' ZIPs and `geocode fill` with the write box on then writes it back here.",
+    "latPrecision": "town"
+   }
+  },
+  {
+   "id": "agplusinc-churubusco",
+   "data": {
+    "schema": "agricharts/1",
+    "currency": "USD",
+    "currencyVia": "declared",
+    "source": {
+     "name": "Ag Plus, Inc",
+     "location": "Churubusco",
+     "locationId": "20014",
+     "zip": null,
+     "lat": 41.229,
+     "lon": -85.3244,
+     "url": "https://mobile.agplusinc.com/cash/prices.php",
+     "note": "Their publicly posted cash board, read from the mobile page their own site serves. Cash and basis are their own commercial numbers. This platform publishes no futures price at all, so none is republished; the futures quote is used only to check that the two columns were read correctly."
+    },
+    "checkedAt": "2026-10-28T13:40:30.653Z",
+    "pricedAt": "2026-10-28T13:40:30.653Z",
+    "status": "ok",
+    "count": 6,
+    "otherLocationsOnPage": [
+     "Edgerton (31645)",
+     "Garrett (85821)",
+     "Monroeville (31646)",
+     "Raber (20016)",
+     "South Whitley (20013)"
+    ],
+    "bids": [
+     {
+      "seq": 0,
+      "commodity": "Corn",
+      "delivery": "10/18/2026",
+      "futuresMonth": null,
+      "cash": 4.25,
+      "basisDollars": -0.26,
+      "basisCents": -26,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 1,
+      "commodity": "Corn",
+      "delivery": "01/01/2027",
+      "futuresMonth": null,
+      "cash": 4.39,
+      "basisDollars": -0.25,
+      "basisCents": -25,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 2,
+      "commodity": "Beans",
+      "delivery": "09/05/2026",
+      "futuresMonth": null,
+      "cash": 11.95,
+      "basisDollars": -0.35,
+      "basisCents": -35,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 3,
+      "commodity": "Beans",
+      "delivery": "01/01/2027",
+      "futuresMonth": null,
+      "cash": 12.18,
+      "basisDollars": -0.25,
+      "basisCents": -25,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 4,
+      "commodity": "Wheat",
+      "delivery": "10/01/2026",
+      "futuresMonth": null,
+      "cash": 5.74,
+      "basisDollars": -0.37,
+      "basisCents": -37,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 5,
+      "commodity": "Wheat",
+      "delivery": "07/01/2027",
+      "futuresMonth": null,
+      "cash": 6.03,
+      "basisDollars": -0.3,
+      "basisCents": -30,
+      "futuresPriceCents": null
+     }
+    ]
+   },
+   "manifest": {
+    "id": "agplusinc-churubusco",
+    "operator": "Ag Plus, Inc",
+    "location": "Churubusco",
+    "state": "IN",
+    "country": "US",
+    "currency": "USD",
+    "countryVia": "state",
+    "platform": "agricharts",
+    "url": "https://mobile.agplusinc.com/cash/prices.php",
+    "locationId": "20014",
+    "identityAlternative": "agricharts:board-agrees+quotes-agree",
+    "bands": {
+     "corn": [
+      2,
+      12
+     ],
+     "soybean": [
+      6,
+      32
+     ],
+     "wheat": [
+      3,
+      20
+     ]
+    },
+    "cadence": "grain-day",
+    "provenance": "scraped",
+    "enabled": true,
+    "note": "WRITTEN BY scripts/agricharts-sweep.mjs (run 33997564782) from their own mobile board at https://mobile.agplusinc.com/cash/prices.php. locationId 20014 is the l= parameter on this location's own chart links, which every row of every AgriCharts board carries; it is NOT the section heading, which is a display name and can be re-typed. At the time of writing this location showed 6 row(s) in Corn, Beans, Wheat.\n\nidentityAlternative: this board publishes cash, basis and a futures CHANGE and no futures price, so cash - basis = futures can never run on it. lib/board.mjs refuses such a source unless it names what it publishes on instead AND every row carries that stamp from the adapter. The board was read and both of the adapter's checks passed before this file was written: every location on it implies the same futures for one commodity and one delivery code, and every row sits within 5c of a real quoted CBOT contract. futuresPriceCents publishes as null, because there is no quote to republish.\n\nCompany, branch, town, state, ZIP and phone are copied verbatim from data/known-elevators.json. Website is the \"Visit Our Main Website\" link on their own mobile board.",
+    "publicNote": "Their publicly posted cash board, read from the mobile page their own site serves. Cash and basis are their own commercial numbers. This platform publishes no futures price at all, so none is republished; the futures quote is used only to check that the two columns were read correctly.",
+    "address": null,
+    "zip": null,
+    "lat": 41.229,
+    "lon": -85.3244,
+    "latPrecision": "town",
+    "website": "https://www.agplusinc.com/",
+    "inMerge": true,
+    "_pending": "cashRounding is NOT set and must not be guessed; it is measured from a real board against real futures. lat/lon was NOT derived here: it is the coordinate geocodes/places.json already holds for Churubusco, IN, at town precision via zip-centroid. This location came from a sibling list on a board this repository already reads, and it has no ZIP in data/known-elevators.json -- which is why the coordinate is carried in rather than looked up."
+   }
+  },
+  {
+   "id": "cedarcountycoop-admclinton",
+   "data": {
+    "schema": "stonehedge/1",
+    "currency": "USD",
+    "currencyVia": "province",
+    "source": {
+     "name": "Cedar County Coop",
+     "location": "ADM - Clinton",
+     "locationId": "EY7L9PXR46A9VGFQ8X1X",
+     "zip": "52732",
+     "lat": 41.8517,
+     "lon": -90.2078,
+     "url": "https://stonehedge.stonex.com/component/bids?key=%3Credacted%3E&cols=name%2Ccash%2Cbasis%2Cmonth&hideRows=true",
+     "note": "Their publicly posted cash board, read from the widget their own website embeds. Cash and basis are their own commercial numbers. This board prints no futures price, so none is republished; the CBOT quote is used only to check that the two columns were read correctly."
+    },
+    "checkedAt": "2026-10-28T17:40:34.366Z",
+    "pricedAt": "2026-10-28T17:40:34.366Z",
+    "status": "ok",
+    "count": 13,
+    "otherLocationsOnPage": [
+     "ADM Cedar Rapids (EZLQM9I993Z4KZ1GWCVV)",
+     "CHS (DRCP7Y39ONO85KJ8FXGS)",
+     "Cargill - CR (SK0DYG3LMAPH0073XH07)",
+     "GPC (R3EWN95BYJZUH5YNWAR2)",
+     "T/WB - From Storage (J12HICKBIHNVDBDTIU1M)",
+     "Tipton (1J3D1NLS3CHM61P98VLA)",
+     "West Branch (8OFBOQBM8DC9YO2XYIJH)",
+     "Cargill - Musc (FD1N5VPL0ZXS744SW1AC)"
+    ],
+    "bids": [
+     {
+      "seq": 0,
+      "commodity": "Corn",
+      "delivery": "LH October Corn",
+      "futuresMonth": "ZCZ26",
+      "cash": 4.35,
+      "basisDollars": -0.17,
+      "basisCents": -17,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 1,
+      "commodity": "Corn",
+      "delivery": "November Corn - FH",
+      "futuresMonth": "ZCZ26",
+      "cash": 4.36,
+      "basisDollars": -0.16,
+      "basisCents": -16,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 2,
+      "commodity": "Corn",
+      "delivery": "November Corn - LH",
+      "futuresMonth": "ZCZ26",
+      "cash": 4.4,
+      "basisDollars": -0.12,
+      "basisCents": -12,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 3,
+      "commodity": "Corn",
+      "delivery": "December Corn - FH",
+      "futuresMonth": "ZCZ26",
+      "cash": 4.41,
+      "basisDollars": -0.11,
+      "basisCents": -11,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 4,
+      "commodity": "Corn",
+      "delivery": "December Corn - LH",
+      "futuresMonth": "ZCZ26",
+      "cash": 4.45,
+      "basisDollars": -0.07,
+      "basisCents": -7,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 5,
+      "commodity": "Corn",
+      "delivery": "January 27 Corn",
+      "futuresMonth": "ZCH27",
+      "cash": 4.4525,
+      "basisDollars": -0.2,
+      "basisCents": -20,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 6,
+      "commodity": "Corn",
+      "delivery": "February 27",
+      "futuresMonth": "ZCH27",
+      "cash": 4.4725,
+      "basisDollars": -0.18,
+      "basisCents": -18,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 7,
+      "commodity": "Corn",
+      "delivery": "March 27",
+      "futuresMonth": "ZCH27",
+      "cash": 4.5025,
+      "basisDollars": -0.15,
+      "basisCents": -15,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 8,
+      "commodity": "Corn",
+      "delivery": "April 27",
+      "futuresMonth": "ZCK27",
+      "cash": 4.585,
+      "basisDollars": -0.15,
+      "basisCents": -15,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 9,
+      "commodity": "Corn",
+      "delivery": "May 27",
+      "futuresMonth": "ZCK27",
+      "cash": 4.605,
+      "basisDollars": -0.13,
+      "basisCents": -13,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 10,
+      "commodity": "Corn",
+      "delivery": "June 27",
+      "futuresMonth": "ZCN27",
+      "cash": 4.665,
+      "basisDollars": -0.13,
+      "basisCents": -13,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 11,
+      "commodity": "Corn",
+      "delivery": "July 27",
+      "futuresMonth": "ZCN27",
+      "cash": 4.665,
+      "basisDollars": -0.13,
+      "basisCents": -13,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 12,
+      "commodity": "Corn",
+      "delivery": "October 27",
+      "futuresMonth": "ZCZ27",
+      "cash": 4.5825,
+      "basisDollars": -0.32,
+      "basisCents": -32,
+      "futuresPriceCents": null
+     }
+    ]
+   },
+   "manifest": {
+    "id": "cedarcountycoop-admclinton",
+    "operator": "Cedar County Coop",
+    "location": "ADM - Clinton",
+    "state": "IA",
+    "platform": "stonehedge",
+    "url": "https://stonehedge.stonex.com/component/bids",
+    "browserPage": "https://cedarcountycoop.com/",
+    "locationId": "EY7L9PXR46A9VGFQ8X1X",
+    "identityAlternative": "stonehedge:contract-named+quotes-agree",
+    "bands": {
+     "corn": [
+      2,
+      12
+     ],
+     "soybean": [
+      6,
+      32
+     ],
+     "wheat": [
+      3,
+      20
+     ]
+    },
+    "cadence": "grain-day",
+    "provenance": "scraped",
+    "enabled": true,
+    "note": "GENERATED by scripts/stonehedge-manifests.mjs from fixtures/stonehedge-cedarcountycoop-component-rendered.html, the widget's own rendered document captured 2026-09-26 (data/gaps/stonehedge-probe.json). PROOF THE LOCATION IS ON THE BOARD: the document names \"ADM - Clinton\" in its own location list as id EY7L9PXR46A9VGFQ8X1X and carries 14 real bid row(s) under it. IDENTITY: the board's label is the branch of a Barchart roster row for Cedar County Coop: Clinton, IA 52732. Coordinate is the roster's own for Clinton, IA (town precision, not the yard). The board prints the contract MONTH and no price, so it publishes on identityAlternative \"stonehedge:contract-named+quotes-agree\", which the adapter stamps only after the shared CBOT quote check passes on the whole board.",
+    "publicNote": "Their publicly posted cash board, read from the widget their own website embeds. Cash and basis are their own commercial numbers. This board prints no futures price, so none is republished; the CBOT quote is used only to check that the two columns were read correctly.",
+    "address": null,
+    "zip": "52732",
+    "lat": 41.8517,
+    "lon": -90.2078,
+    "latPrecision": "town",
+    "website": "https://cedarcountycoop.com/",
+    "inMerge": true
+   }
+  },
+  {
+   "id": "landus-adair",
+   "data": {
+    "schema": "landus/1",
+    "currency": "USD",
+    "currencyVia": "province",
+    "source": {
+     "name": "Landus Cooperative",
+     "location": "Adair",
+     "locationId": "109",
+     "zip": null,
+     "lat": 41.5173,
+     "lon": -94.6556,
+     "url": "https://www.landus.ag/api/cash-bids?location=109",
+     "note": "Their publicly posted cash board, read from the feed their own website reads. Cash and basis are their own commercial numbers. Their board names the futures contract and prints no price, so no futures price is republished; the CBOT quote is used only to check that the two columns were read correctly."
+    },
+    "checkedAt": "2026-10-28T16:10:34.062Z",
+    "pricedAt": "2026-10-28T16:10:34.062Z",
+    "status": "ok",
+    "count": 12,
+    "otherLocationsOnPage": [],
+    "bids": [
+     {
+      "seq": 0,
+      "commodity": "Corn",
+      "delivery": "Oct 2026",
+      "futuresMonth": "ZCZ26",
+      "cash": 4.16,
+      "basisDollars": -0.35,
+      "basisCents": -35,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 1,
+      "commodity": "Corn",
+      "delivery": "Dec 2026",
+      "futuresMonth": "ZCZ26",
+      "cash": 4.16,
+      "basisDollars": -0.35,
+      "basisCents": -35,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 2,
+      "commodity": "Corn",
+      "delivery": "Jan 2027",
+      "futuresMonth": "ZCH27",
+      "cash": 4.24,
+      "basisDollars": -0.4,
+      "basisCents": -40,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 3,
+      "commodity": "Corn",
+      "delivery": "Mar 2027",
+      "futuresMonth": "ZCH27",
+      "cash": 4.24,
+      "basisDollars": -0.4,
+      "basisCents": -40,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 4,
+      "commodity": "Corn",
+      "delivery": "Jul 2027",
+      "futuresMonth": "ZCN27",
+      "cash": 4.44,
+      "basisDollars": -0.35,
+      "basisCents": -35,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 5,
+      "commodity": "Corn",
+      "delivery": "Oct 2027",
+      "futuresMonth": "ZCZ27",
+      "cash": 4.5,
+      "basisDollars": -0.4,
+      "basisCents": -40,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 6,
+      "commodity": "Soybeans",
+      "delivery": "Oct 2026",
+      "futuresMonth": "ZSX26",
+      "cash": 11.41,
+      "basisDollars": -0.9,
+      "basisCents": -90,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 7,
+      "commodity": "Soybeans",
+      "delivery": "Dec 2026",
+      "futuresMonth": "ZSF27",
+      "cash": 11.74,
+      "basisDollars": -0.7,
+      "basisCents": -70,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 8,
+      "commodity": "Soybeans",
+      "delivery": "Jan 2027",
+      "futuresMonth": "ZSF27",
+      "cash": 11.79,
+      "basisDollars": -0.65,
+      "basisCents": -65,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 9,
+      "commodity": "Soybeans",
+      "delivery": "Mar 2027",
+      "futuresMonth": "ZSH27",
+      "cash": 11.87,
+      "basisDollars": -0.65,
+      "basisCents": -65,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 10,
+      "commodity": "Soybeans",
+      "delivery": "Jul 2027",
+      "futuresMonth": "ZSN27",
+      "cash": 12.07,
+      "basisDollars": -0.6,
+      "basisCents": -60,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 11,
+      "commodity": "Soybeans",
+      "delivery": "Oct 2027",
+      "futuresMonth": "ZSX27",
+      "cash": 11.37,
+      "basisDollars": -0.75,
+      "basisCents": -75,
+      "futuresPriceCents": null
+     }
+    ]
+   },
+   "manifest": {
+    "id": "landus-adair",
+    "operator": "Landus Cooperative",
+    "location": "Adair",
+    "state": "IA",
+    "platform": "landus",
+    "url": "https://www.landus.ag/api/cash-bids?location=109",
+    "locationId": "109",
+    "identityAlternative": "landus:contract-named+quotes-agree",
+    "bands": {
+     "corn": [
+      2,
+      12
+     ],
+     "soybean": [
+      6,
+      32
+     ],
+     "wheat": [
+      3,
+      20
+     ]
+    },
+    "cadence": "grain-day",
+    "provenance": "scraped",
+    "browserPage": "https://www.landus.ag/businesses/grain/grain-bids",
+    "enabled": true,
+    "note": "GENERATED by scripts/own-board-manifests.mjs from fixtures/landus-locations-2026-10-02.json, Landus's own location list (www.landus.ag/api/locations, captured 2026-10-02): \"Adair\", IA, location number 109. Bids: https://www.landus.ag/api/cash-bids?location=109. PLACE: matches 1 row(s) for Landus (registry (registry-wcmd)) at Adair, IA. Coordinate is the ZIP-table centroid of Adair, IA (geocodes/places.json, from scripts/build_geocodes.py; town precision, which can be miles from the yard). The roster has none for it. IDENTITY: the board names its basis month and prints no futures price, so it publishes on identityAlternative \"landus:contract-named+quotes-agree\": each row's cash - basis must land within 5c of the CBOT quote for the contract it names, from the shared quote pages. TRANSPORT: read by loading https://www.landus.ag/businesses/grain/grain-bids in a browser and fetching this location's /api/cash-bids from inside the page, the request their own location picker makes; a plain server request is refused (HTTP 429 to all 100 attempts of the first poll, 2026-10-02). Five Landus locations are asked a pass, least recently asked first.",
+    "publicNote": "Their publicly posted cash board, read from the feed their own website reads. Cash and basis are their own commercial numbers. Their board names the futures contract and prints no price, so no futures price is republished; the CBOT quote is used only to check that the two columns were read correctly.",
+    "address": null,
+    "zip": null,
+    "lat": 41.5173,
+    "lon": -94.6556,
+    "latPrecision": "town",
+    "website": "https://www.landus.ag/",
+    "inMerge": true
+   }
+  },
+  {
+   "id": "heartlandcoop-alleman",
+   "data": {
+    "schema": "heartland/1",
+    "currency": "USD",
+    "currencyVia": "declared",
+    "source": {
+     "name": "Heartland Co-op",
+     "location": "Alleman",
+     "locationId": "ALLEMAN",
+     "zip": "50007",
+     "lat": 41.8159,
+     "lon": -93.6063,
+     "url": "https://myaccount.heartlandcoop.com/bids.htm",
+     "note": "Heartland Co-op's own closing board, the same page their members read. Cash and basis are their commercial numbers, posted as of the close of open outcry at 1:15 PM. The futures contract is carried only so a consumer can re-check cash minus basis; no futures price is republished from here."
+    },
+    "checkedAt": "2026-10-28T17:40:34.366Z",
+    "pricedAt": "2026-10-27T21:20:32.323Z",
+    "status": "ok",
+    "count": 10,
+    "otherLocationsOnPage": [
+     "AVON (AVON)",
+     "BOONEVILLE (BOONEVILLE)",
+     "BROOKLYN (BROOKLYN)",
+     "CAMBRIDGE (CAMBRIDGE)",
+     "COLO (COLO)",
+     "CONROY (CONROY)",
+     "COUNCIL BLUFFS (COUNCIL BLUFFS)",
+     "DALLAS CENTER (DALLAS CENTER)",
+     "DEXTER (DEXTER)",
+     "EARLHAM (EARLHAM)",
+     "EARLHAM FEED MILL (EARLHAM FEED MILL)",
+     "ELBERON (ELBERON)",
+     "FAIRFIELD (FAIRFIELD)",
+     "GRUNDY CENTER (GRUNDY CENTER)",
+     "GUERNSEY (GUERNSEY)",
+     "HENDERSON (HENDERSON)",
+     "INDIANOLA (INDIANOLA)",
+     "JEWELL (JEWELL)",
+     "KELLOGG (KELLOGG)",
+     "LINCOLN (LINCOLN)",
+     "LUTHER (LUTHER)",
+     "MADRID (MADRID)",
+     "MALCOM (MALCOM)",
+     "MARENGO (MARENGO)",
+     "MELBOURNE (MELBOURNE)",
+     "MILLERTON (MILLERTON)",
+     "MINBURN (MINBURN)",
+     "MINGO (MINGO)",
+     "MITCHELLVILLE (MITCHELLVILLE)",
+     "MO VALLEY (MO VALLEY)",
+     "MODALE (MODALE)",
+     "MONDAMIN (MONDAMIN)",
+     "MONROE (MONROE)",
+     "MONTEZUMA (MONTEZUMA)",
+     "NEWTON (NEWTON)",
+     "PICKERING (PICKERING)",
+     "PRAIRIE CITY (PRAIRIE CITY)",
+     "RANDALL (RANDALL)",
+     "RANDOLPH (RANDOLPH)",
+     "REDFIELD (REDFIELD)",
+     "REINBECK (REINBECK)",
+     "RIVER SIOUX (RIVER SIOUX)",
+     "SLATER (SLATER)",
+     "STANHOPE (STANHOPE)",
+     "TRAER (TRAER)",
+     "VICTOR (VICTOR)",
+     "VOORHIES (VOORHIES)",
+     "WASHBURN (WASHBURN)",
+     "WAUKEE (WAUKEE)",
+     "WEVER (WEVER)",
+     "WINTERSET (WINTERSET)",
+     "WOODBINE (WOODBINE)",
+     "WOODWARD (WOODWARD)",
+     "ADM (ADM)",
+     "CARGILL - BLAIR (CARGILL - BLAIR)",
+     "CARGILL - CEDAR RAPIDS (CARGILL - CEDAR RAPIDS)",
+     "CARGILL - EDDYVILLE (CARGILL - EDDYVILLE)",
+     "GREEN PLAINS - SHENANDOAH (GREEN PLAINS - SHENANDOAH)",
+     "INGREDION - PENFORD (INGREDION - PENFORD)",
+     "LINCOLN WAY (LINCOLN WAY)",
+     "LOUIS DRYFUS - GRAND JUNCTION (LOUIS DRYFUS - GRAND JUNCTION)",
+     "POET - IOWA FALLS (POET - IOWA FALLS)",
+     "POET - JEWELL (POET - JEWELL)",
+     "POET - MENLO (POET - MENLO)",
+     "ROQUETTE (ROQUETTE)",
+     "SIRE - COUNCIL BLUFFS (SIRE - COUNCIL BLUFFS)",
+     "VERBIO (VERBIO)",
+     "AGP - EAGLE GROVE (AGP - EAGLE GROVE)",
+     "AGP - MANNING (AGP - MANNING)",
+     "AGP - ST JOE (AGP - ST JOE)",
+     "BUNGE - COUNCIL BLUFFS (BUNGE - COUNCIL BLUFFS)",
+     "CARGILL - IOWA FALLS (CARGILL - IOWA FALLS)",
+     "SHELL ROCK SOY PROCESSING (SHELL ROCK SOY PROCESSING)"
+    ],
+    "bids": [
+     {
+      "seq": 0,
+      "commodity": "CORN",
+      "delivery": "Oct-Nov 26",
+      "futuresMonth": "ZCZ26",
+      "cash": 4.1,
+      "basisDollars": -0.38,
+      "basisCents": -38,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 1,
+      "commodity": "CORN",
+      "delivery": "Dec 26",
+      "futuresMonth": "ZCZ26",
+      "cash": 4.13,
+      "basisDollars": -0.35,
+      "basisCents": -35,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 2,
+      "commodity": "CORN",
+      "delivery": "Jan 27",
+      "futuresMonth": "ZCH27",
+      "cash": 4.22,
+      "basisDollars": -0.4,
+      "basisCents": -40,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 3,
+      "commodity": "CORN",
+      "delivery": "Mar 27",
+      "futuresMonth": "ZCH27",
+      "cash": 4.27,
+      "basisDollars": -0.35,
+      "basisCents": -35,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 4,
+      "commodity": "CORN",
+      "delivery": "Oct-Nov 27",
+      "futuresMonth": "ZCZ27",
+      "cash": 4.4,
+      "basisDollars": -0.5,
+      "basisCents": -50,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 5,
+      "commodity": "SOYBEANS",
+      "delivery": "Oct-Nov 26",
+      "futuresMonth": "ZSX26",
+      "cash": 11.57,
+      "basisDollars": -0.72,
+      "basisCents": -72,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 6,
+      "commodity": "SOYBEANS",
+      "delivery": "Dec 26",
+      "futuresMonth": "ZSF27",
+      "cash": 11.63,
+      "basisDollars": -0.8,
+      "basisCents": -80,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 7,
+      "commodity": "SOYBEANS",
+      "delivery": "Jan 27",
+      "futuresMonth": "ZSF27",
+      "cash": 11.68,
+      "basisDollars": -0.75,
+      "basisCents": -75,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 8,
+      "commodity": "SOYBEANS",
+      "delivery": "Mar 27",
+      "futuresMonth": "ZSH27",
+      "cash": 11.86,
+      "basisDollars": -0.65,
+      "basisCents": -65,
+      "futuresPriceCents": null
+     },
+     {
+      "seq": 9,
+      "commodity": "SOYBEANS",
+      "delivery": "Oct-Nov 27",
+      "futuresMonth": "ZSX27",
+      "cash": 11.32,
+      "basisDollars": -0.8,
+      "basisCents": -80,
+      "futuresPriceCents": null
+     }
+    ]
+   },
+   "manifest": {
+    "id": "heartlandcoop-alleman",
+    "operator": "Heartland Co-op",
+    "location": "Alleman",
+    "labelInFeed": "ALLEMAN",
+    "state": "IA",
+    "country": "US",
+    "currency": "USD",
+    "countryVia": "state",
+    "platform": "heartland",
+    "url": "https://myaccount.heartlandcoop.com/bids.htm",
+    "locationId": "ALLEMAN",
+    "bands": {
+     "corn": [
+      2,
+      12
+     ],
+     "soybean": [
+      6,
+      32
+     ]
+    },
+    "identityAlternative": "heartland:columns-agree+quote-in-range",
+    "cadence": "grain-day",
+    "provenance": "scraped",
+    "enabled": true,
+    "note": "HEARTLAND CO-OP PUBLISHES ITS WHOLE BOARD ON ONE PAGE, AND THIS IS ONE LOCATION ON IT. The page is https://myaccount.heartlandcoop.com/bids.htm, read on 2026-09-14 by scripts/probe.mjs (run 94223494234) with raw=400000. It answered 200, text/html, 50,890 bytes, Apache, and carries four tables -- CORN, PROCESSOR CORN, SOYBEANS, PROCESSOR SOYBEANS -- 129 body rows against five delivery columns each, dated 9/11/26 and headed \"Prices are as of close of open outcry @ 1:15 PM\". \n\nlocationId IS THE BOARD'S OWN dest-name STRING, VERBATIM AND IN ITS OWN CASE. filterLocation() in lib/parse.mjs compares by exact string equality with no trim and no case fold; anything else here would match zero rows and refuse the source.\n\nHOW THIS PLACE WAS PLACED: data/known-elevators.json, which is the Barchart facility roster: this branch is filed there as \"ALLEMAN\" in Alleman, IA 50007. THAT IS THE WHOLE POINT OF THIS SOURCE -- the roster row it replaces. COORDINATE 41.8159,-93.6063 is the centroid of ZIP 50007 from data/zips, which is the TOWN and can be miles from the yard.\n\nWHY identityAlternative. This board prints cash and basis and no futures price, so cash - basis = futures cannot run on it. lib/adapters/heartland.mjs checks two other things instead -- every cell in a column must imply the same futures price to the cent, and that price must sit within 300c of the contract the column heading names -- and stamps every row only after both pass on the whole board. See that file's header.\n\nbands are the DEFAULT_BANDS values from lib/board.mjs for the two grains this board posts. They are sanity floors, not a claim about what this location trades.",
+    "publicNote": "Heartland Co-op's own closing board, the same page their members read. Cash and basis are their commercial numbers, posted as of the close of open outcry at 1:15 PM. The futures contract is carried only so a consumer can re-check cash minus basis; no futures price is republished from here.",
+    "address": null,
+    "zip": "50007",
+    "lat": 41.8159,
+    "lon": -93.6063,
+    "website": "https://www.heartlandcoop.com/",
+    "inMerge": true,
+    "_pending": "cashRounding is NOT set and is not measured here, because on this platform it cannot fire: explainedByRounding() in lib/board.mjs only ever runs on rows that carry a quoted future, and these rows carry none by design. If this board ever starts printing a futures column, that is the day to measure it.",
+    "latPrecision": "town"
+   }
+  },
+  {
+   "id": "addisgrain-oromedonte",
+   "data": {
+    "schema": "graindesk/1",
+    "currency": "CAD",
+    "currencyVia": "declared",
+    "source": {
+     "name": "Addis Grain",
+     "location": "Addis Grain Ltd.",
+     "locationId": "Addis Grain Ltd.",
+     "zip": "L0L 2",
+     "lat": 44.448294,
+     "lon": -79.591492,
+     "url": "https://marketplace.graindiscovery.com/api/public-sites/addisGrain/cash-bids",
+     "note": "Their publicly posted cash board, read from the same feed their own website reads. Cash and basis are their own commercial numbers. The futures quote is carried only so a consumer can re-check cash minus basis; it is not redistributed as a price feed."
+    },
+    "checkedAt": "2026-10-28T17:40:34.366Z",
+    "pricedAt": "2026-10-28T17:40:34.366Z",
+    "status": "ok",
+    "count": 9,
+    "otherLocationsOnPage": [],
+    "bids": [
+     {
+      "seq": 0,
+      "commodity": "Wheat SRW",
+      "delivery": "01 Sep 2026 to 30 Nov 2026",
+      "futuresMonth": "December 2026",
+      "cash": 7.265,
+      "basisDollars": 1.25,
+      "basisCents": 125,
+      "futuresPriceCents": 601.5
+     },
+     {
+      "seq": 1,
+      "commodity": "Wheat SRW",
+      "delivery": "16 Jul 2027 to 01 Sep 2027",
+      "futuresMonth": "July 2027",
+      "cash": 7.625,
+      "basisDollars": 1.35,
+      "basisCents": 135,
+      "futuresPriceCents": 627.5
+     },
+     {
+      "seq": 2,
+      "commodity": "Wheat SRW",
+      "delivery": "01 Jul 2028 to 31 Aug 2028",
+      "futuresMonth": "July 2028",
+      "cash": 7.785,
+      "basisDollars": 1.2,
+      "basisCents": 120,
+      "futuresPriceCents": 658.5
+     },
+     {
+      "seq": 3,
+      "commodity": "Wheat HRW",
+      "delivery": "Protein-In (01 Jul 2027 to 31 Aug 2027)",
+      "futuresMonth": "July 2027",
+      "cash": 8.775,
+      "basisDollars": 2.5,
+      "basisCents": 250,
+      "futuresPriceCents": 627.5
+     },
+     {
+      "seq": 4,
+      "commodity": "Wheat HRW",
+      "delivery": "Protein-In (01 Jul 2028 to 31 Aug 2028)",
+      "futuresMonth": "July 2028",
+      "cash": 8.285,
+      "basisDollars": 1.7,
+      "basisCents": 170,
+      "futuresPriceCents": 658.5
+     },
+     {
+      "seq": 5,
+      "commodity": "Soybeans Crush (RR)",
+      "delivery": "25 Sep 2026 to 31 Oct 2026",
+      "futuresMonth": "November 2026",
+      "cash": 15.94,
+      "basisDollars": 3.65,
+      "basisCents": 365,
+      "futuresPriceCents": 1229
+     },
+     {
+      "seq": 6,
+      "commodity": "Soybeans Crush (RR)",
+      "delivery": "15 Sep 2027 to 31 Oct 2027",
+      "futuresMonth": "November 2027",
+      "cash": 15.6625,
+      "basisDollars": 3.55,
+      "basisCents": 355,
+      "futuresPriceCents": 1211.25
+     },
+     {
+      "seq": 7,
+      "commodity": "Corn Yellow",
+      "delivery": "16 Oct 2026 to 01 Dec 2026",
+      "futuresMonth": "December 2026",
+      "cash": 5.8225,
+      "basisDollars": 1.3,
+      "basisCents": 130,
+      "futuresPriceCents": 452.25
+     },
+     {
+      "seq": 8,
+      "commodity": "Corn Yellow",
+      "delivery": "15 Oct 2027 to 15 Dec 2027",
+      "futuresMonth": "December 2027",
+      "cash": 6.005,
+      "basisDollars": 1.1,
+      "basisCents": 110,
+      "futuresPriceCents": 490.5
+     }
+    ]
+   },
+   "manifest": {
+    "id": "addisgrain-oromedonte",
+    "operator": "Addis Grain",
+    "location": "Addis Grain Ltd.",
+    "state": "ON",
+    "country": "CA",
+    "currency": "CAD",
+    "countryVia": "state",
+    "platform": "graindesk",
+    "url": "https://marketplace.graindiscovery.com/api/public-sites/addisGrain/cash-bids",
+    "locationId": "Addis Grain Ltd.",
+    "bands": {
+     "corn": [
+      2,
+      12
+     ],
+     "soybean": [
+      6,
+      32
+     ],
+     "wheat": [
+      3,
+      20
+     ]
+    },
+    "cadence": "grain-day",
+    "provenance": "scraped",
+    "enabled": true,
+    "note": "BUILT FROM THE SHARDED SWEEP (run 33219871278) AND PROVEN BY THE GRAIN DESK SWEEP, run 90042308698, 2026-08-29 00:03 UTC. discover.mjs watched https://addisgrain.com/ call this endpoint; the gd sweep then read the board itself: 13 offer(s) across 1 destination(s) [Addis Grain Ltd.], commodities Wheat SRW, Wheat HRW, Wheat HRS, Soybeans Crush (RR), Corn Yellow. locationId IS THE DESTINATION STRING VERBATIM, as the payload spells it. lib/adapters/graindesk.mjs sets every row's locationId to o.destination, and filterLocation() in lib/parse.mjs compares by exact string equality with no trim and no case fold. A null here would match zero rows and refuse the source. Operator, town, state, street, coordinate and phone are copied verbatim from data/known-elevators.json.",
+    "publicNote": "Their publicly posted cash board, read from the same feed their own website reads. Cash and basis are their own commercial numbers. The futures quote is carried only so a consumer can re-check cash minus basis; it is not redistributed as a price feed.",
+    "address": "274 Line 3 South",
+    "zip": "L0L 2",
+    "lat": 44.448294,
+    "lon": -79.591492,
+    "website": "https://addisgrain.com/",
+    "inMerge": true,
+    "_pending": "2026-09-06: ENABLED. The hold was \"the currency is not established\", and it was the right hold: this board carries its own futures quote, so cash minus basis reconciles internally whatever the money, and CAD per bushel corn lands inside the [2, 12] band. Nothing in the schema could say which currency it was, so nothing did.\n\nThat is now expressible. lib/currency.mjs resolves a board's currency from the payload where the feed states one, from this manifest where it does not, and from the province as a last resort; merge_bids.mjs withholds any row whose currency it cannot establish, and every published row carries `currency`, `country` and `currencyVia`. This source resolves CAD via `declared`, and a consumer that wants only measured currencies can filter it out on that field.\n\nWHAT IS STILL NOT MEASURED, AND IT IS THE SAME THING THE OLD NOTE SAID: nobody has read one row of this board against a known quote. `declared` is evidence, not a fact, and it is labelled as evidence all the way to the consumer. The board itself has never been read by this repository -- it was found by the sweep and skeletoned, never polled.\n\ncashRounding is STILL NOT SET and still must not be guessed. Expect the first live poll to refuse if this board floors or rounds to the cent. THAT REFUSAL IS THE MEASUREMENT and is the reason to enable this now rather than later: a source held disabled forever produces no evidence about itself."
+   }
+  },
+  {
+   "id": "adm-abileneks",
+   "data": {
+    "schema": "gradable/1",
+    "currency": "USD",
+    "currencyVia": "payload",
+    "source": {
+     "name": "ADM",
+     "location": "Abilene",
+     "locationId": "371713182",
+     "zip": "67410",
+     "lat": 38.9171142578125,
+     "lon": -97.21178436279297,
+     "url": "https://adm.gradable.com/api/commodities/v2/merchandising/instruments/market/371713182?offer_type=public",
+     "note": "Their publicly posted cash board, read from the feed their own market page asks for. Cash and basis are their own commercial numbers. The futures quote is carried only so a consumer can re-check cash minus basis; it is not redistributed as a price feed."
+    },
+    "checkedAt": "2026-10-28T17:40:34.366Z",
+    "pricedAt": "2026-10-28T17:40:34.366Z",
+    "status": "ok",
+    "count": 2,
+    "otherLocationsOnPage": [],
+    "bids": [
+     {
+      "seq": 0,
+      "commodity": "Wheat (Hard Red Winter)",
+      "delivery": "HRW  Oct'26 (2026-12)",
+      "futuresMonth": "KEZ6",
+      "cash": 6.0525,
+      "basisDollars": -0.4,
+      "basisCents": -40,
+      "futuresPriceCents": 645.25
+     },
+     {
+      "seq": 1,
+      "commodity": "Wheat (Hard Red Winter)",
+      "delivery": "HRW June/July'27 (2027-07)",
+      "futuresMonth": "KEN7",
+      "cash": 6.295,
+      "basisDollars": -0.35,
+      "basisCents": -35,
+      "futuresPriceCents": 664.5
+     }
+    ]
+   },
+   "manifest": {
+    "id": "adm-abileneks",
+    "operator": "ADM",
+    "location": "Abilene",
+    "state": "KS",
+    "platform": "gradable",
+    "url": "https://adm.gradable.com/api/commodities/v2/merchandising/instruments/market/371713182?offer_type=public",
+    "browserPage": "https://adm.gradable.com/market/Abilene--KS",
+    "locationId": "371713182",
+    "bands": {
+     "red winter": [
+      3,
+      20
+     ]
+    },
+    "cadence": "grain-day",
+    "provenance": "scraped",
+    "enabled": true,
+    "country": "US",
+    "lat": 38.9171142578125,
+    "lon": -97.21178436279297,
+    "zip": "67410",
+    "address": "210 NE 3rd St",
+    "website": "https://adm.gradable.com/market/Abilene--KS",
+    "inMerge": true,
+    "note": "BUILT FROM ADM'S OWN BOOTSTRAP, the. market id, display name, address, state, zip and the coordinate are copied verbatim from that payload and nothing was looked up or derived. The coordinate is their geocoder's, recorded under geocodes[\"Google/Address\"]. THEIR PAYLOAD DECLARES NO ROUNDING \u2014 commodity_settings is empty on this market \u2014 so cashRounding is null and no value has been assumed. It has to be counted from this market's own board before this file can publish anything. CURRENCY IS USD, FROM their board's own rows. BANDS AND ROUNDING COME FROM A BOARD READ, not from this payload: 2 row(s) over 1 of their commodity codes, 2 of them testable against cash - basis = futures, and the residuals were zero on every one \u2014 so no cashRounding is declared and the identity guard stays exact. Every crop their board posted has a band.\n\nSAME AS KNOWN (2026-10-02): Sig confirmed in the Same Yard Review page that the Barchart roster row(s) ADM Grain|Abilene, KS|Abilene|KS (ADM Grain, same town and state) are this elevator, so build_directory.mjs does not draw them as a second, grey pin. Phones were checked and do not disagree.",
+    "publicNote": "Their publicly posted cash board, read from the feed their own market page asks for. Cash and basis are their own commercial numbers. The futures quote is carried only so a consumer can re-check cash minus basis; it is not redistributed as a price feed.",
+    "cashRoundingCents": 0,
+    "currency": "USD",
+    "sameAsKnown": [
+     "ADM Grain|Abilene, KS|Abilene|KS"
+    ]
+   }
+  },
+  {
+   "id": "aglandfs-alto",
+   "data": {
+    "schema": "dtn-cs/1",
+    "currency": "USD",
+    "currencyVia": "payload",
+    "source": {
+     "name": "Ag-Land FS",
+     "location": "Alto",
+     "locationId": "4205",
+     "zip": "61554",
+     "lat": 40.5674,
+     "lon": -89.6243,
+     "url": "https://api.dtn.com/markets/sites/e0030901/cash-bids?apikey=%3Credacted%3E&units=us",
+     "note": "Their publicly posted cash board, read from the feed their own website reads. Cash and basis are their own commercial numbers. The futures quote is carried only so a consumer can re-check cash minus basis; it is not redistributed as a price feed."
+    },
+    "checkedAt": "2026-10-28T17:40:34.366Z",
+    "pricedAt": "2026-10-28T17:40:34.366Z",
+    "status": "ok",
+    "count": 3,
+    "otherLocationsOnPage": [
+     "Dunlap (25310)",
+     "Elmwood (4199)",
+     "Green  Valley (4196)",
+     "Monica (25311)",
+     "Williamsfield (4210)",
+     "BioUrja (4206)",
+     "ICP (4213)",
+     "ADM  Havana (4215)",
+     "Big River Resources (21056)",
+     "ADM Lacon (23395)",
+     "ADM C.C. (23396)",
+     "CHS Hav (Lakeside G) (25970)"
+    ],
+    "bids": [
+     {
+      "seq": 0,
+      "commodity": "Corn",
+      "delivery": "Oct 2026 (Z)",
+      "futuresMonth": "@C6Z",
+      "cash": 4.65,
+      "basisDollars": 0.13,
+      "basisCents": 13,
+      "futuresPriceCents": 452.25
+     },
+     {
+      "seq": 1,
+      "commodity": "Corn",
+      "delivery": "Nov 2026 (Z)",
+      "futuresMonth": "@C6Z",
+      "cash": 4.55,
+      "basisDollars": 0.03,
+      "basisCents": 3,
+      "futuresPriceCents": 452.25
+     },
+     {
+      "seq": 2,
+      "commodity": "Corn",
+      "delivery": "Dec 2026 (Z)",
+      "futuresMonth": "@C6Z",
+      "cash": 4.59,
+      "basisDollars": 0.07,
+      "basisCents": 7,
+      "futuresPriceCents": 452.25
+     }
+    ]
+   },
+   "manifest": {
+    "id": "aglandfs-alto",
+    "operator": "Ag-Land FS",
+    "location": "Alto",
+    "state": "IL",
+    "country": "US",
+    "currency": "USD",
+    "countryVia": "state",
+    "platform": "dtn-cs",
+    "url": "https://api.dtn.com/markets/sites/e0030901/cash-bids?units=us",
+    "browserPage": "https://fscooperatives.com/aglandfs/agriculture/cash-bids",
+    "locationId": "4205",
+    "siteId": "e0030901",
+    "bands": {
+     "corn": [
+      2,
+      12
+     ]
+    },
+    "cadence": "grain-day",
+    "provenance": "scraped",
+    "enabled": true,
+    "note": "DTN Content Services cash-bids-table-widget. Read from ONE call to https://api.dtn.com/markets/sites/e0030901/cash-bids?units=us \u2014 the site id e0030901 carries this location and its neighbours together, so every one of them is a source file and none of them is new code. IT IS READ THROUGH A BROWSER AND NOT BY A FETCH: DTN answered a server-side probe with \"The api key is valid, but it is valid to be used within a browser only\", so their gateway scopes these widget keys to browser use. poll.mjs loads https://fscooperatives.com/aglandfs/agriculture/cash-bids in a real Chromium and reads the response their own widget asks for, which means we hold no key at all \u2014 theirs is public in their page, as it must be for the widget to work. THE LOCATION KEY IS THE NUMERIC location.id (4205) AND NOT THE NAME: a display name is exactly the thing a vendor re-cases, and some of these names are companies rather than towns. cashRounding is DELIBERATELY ABSENT. One run said floor-cent (3 testable rows, margin 3) and there is no second run to agree with it. A mode is a property of how they compute their board, so it needs the same answer on a different day's prices. Left off, the identity guard stays exact and a board that does not reconcile refuses loudly instead of publishing under a mode nobody established. COORDINATES ARE NULL AND THAT IS DELIBERATE: the feed carries no coordinate, and a town centroid is a different place from a yard \u2014 measured at 1.4 miles on babgrain-auburn. Geocode the street address before relying on a map pin. Built by scripts/dtn-build.mjs from a dtn-probe log; 3 row(s) for this location. Supplied by Sig on 2026-08-25 from the operator's own location directory. Ag-Land FS's own grain terminal page lists Elmwood, Green Valley, Williamsfield and Monica-Dunlap and does not name Alto, which is why it was held back rather than guessed. ROUNDING MEASURED 2026-08-26, not guessed: every failing row on this board sits a POSITIVE fraction of a cent from the arithmetic (residuals 0 and +0.75c only, never negative), which is cash truncated to the cent in the buyer's favour. That is the DTN Content Services signature already measured 25 of 25 at Ag Partners and already declared on this operator's sibling locations. floor-cent is DIRECTIONAL and BOUNDED, so it is strictly stronger than the cashRoundingCents tolerance it replaces: a board reading a cent HIGH still refuses, and so does every column shift, which moves things by tens of cents.\n\nLOCATED (2026-10-09): \"Alto\" on Ag-Land FS's board is read as the Alto Ingredients plant at Pekin, IL, by name match: data/known-elevators.json (and geocodes/places.json known[\"3096\"]) has the Barchart row for Alto Ingredients, Inc. at Pekin, IL 61554 (1300 South Second Street), and two other operators' Barchart rows name the same delivery point there -- Western Grain Marketing - FS, branch \"ALTO/ICP Pekin\", Pekin, IL 61554, and (in agsist data/elevator-directory.json) River Valley Cooperative, branch \"ALTO ICP\", Pekin, IL 61554. No other \"Alto\" in Illinois appears in any repository table, the board quotes corn only (an ethanol plant buys corn), and Ag-Land FS's licensed yards in data/registries.json (Bartonville, Canton, Dunlap, Elmwood, Green Valley, Monica, Williamsfield) are in the Peoria/Tazewell area around Pekin. Only the ZIP is set: Alto runs more than one plant in Pekin, so neither a street nor a coordinate is taken. This is a delivered bid at a buyer's plant, not an Ag-Land FS yard. COORDINATE filled 40.5674,-89.6243 from geocodes/places.json on 2026-10-18, keyed on this source's own id and resolved from \"61554 (Pekin)\" via zip-code. It is the CENTROID OF THE TOWN's ZIPs, which can be miles from the yard. EVIDENCE, NOT A FACT: check it against the operator's own published address before anything depends on the distance.",
+    "publicNote": "Their publicly posted cash board, read from the feed their own website reads. Cash and basis are their own commercial numbers. The futures quote is carried only so a consumer can re-check cash minus basis; it is not redistributed as a price feed.",
+    "zip": "61554",
+    "lat": 40.5674,
+    "lon": -89.6243,
+    "website": "https://fscooperatives.com/aglandfs/",
+    "inMerge": true,
+    "cashRounding": "floor-cent",
+    "latPrecision": "town"
+   }
+  },
+  {
+   "id": "chs-texoma-frederick",
+   "data": {
+    "schema": "bushel/1",
+    "currency": "USD",
+    "currencyVia": "payload",
+    "source": {
+     "name": "CHS Texoma (Oklahoma/Texas)",
+     "location": "Frederick",
+     "locationId": "4b83c408-7651-41ea-93c2-46d48cfc5531",
+     "zip": "73542",
+     "lat": 34.4012,
+     "lon": -99.0119,
+     "url": "https://api.bushelpowered.com/api/markets/aggregator/bids/v1/GetBidsList",
+     "note": "Their publicly posted cash board, read from the feed their own website reads. Cash and basis are their own commercial numbers. The futures quote is carried only so a consumer can re-check cash minus basis; it is not redistributed as a price feed."
+    },
+    "checkedAt": "2026-10-28T17:40:34.366Z",
+    "pricedAt": "2026-10-28T17:40:34.366Z",
+    "status": "ok",
+    "count": 3,
+    "otherLocationsOnPage": [
+     "County Line (35c220c5-71d8-449b-9332-45ec0da5bd03)",
+     "Davidson (67958b4c-ba16-40fe-b777-f29b6a5e1cff)",
+     "Hennessey (a86aee29-7413-4f54-b64c-f1786584839a)",
+     "Hinton (5dfe644d-d55b-4075-9ef4-6ed071a91cc9)",
+     "Kingfisher (02b3f54a-7a70-4d90-b68a-a95777e6fdf1)",
+     "Okarche (8f76971d-1f7e-48ec-b6a8-e859369314d4)",
+     "Omega (af6e5147-9b29-43eb-bde4-1d5c0671f255)"
+    ],
+    "bids": [
+     {
+      "seq": 0,
+      "commodity": "Corn",
+      "delivery": "DEC 2026",
+      "futuresMonth": "ZCZ26",
+      "cash": 4.52,
+      "basisDollars": 0,
+      "basisCents": 0,
+      "futuresPriceCents": 452.25
+     },
+     {
+      "seq": 1,
+      "commodity": "Wheat, HRW",
+      "delivery": "DEC 2026",
+      "futuresMonth": "KEZ26",
+      "cash": 5.74,
+      "basisDollars": -0.7,
+      "basisCents": -70,
+      "futuresPriceCents": 644.75
+     },
+     {
+      "seq": 2,
+      "commodity": "Wheat, HRW",
+      "delivery": "JUL 2027",
+      "futuresMonth": "KEN27",
+      "cash": 6.09,
+      "basisDollars": -0.55,
+      "basisCents": -55,
+      "futuresPriceCents": 664
+     }
+    ]
+   },
+   "manifest": {
+    "id": "chs-texoma-frederick",
+    "operator": "CHS Texoma (Oklahoma/Texas)",
+    "location": "Frederick",
+    "state": "OK",
+    "country": "US",
+    "currency": "USD",
+    "countryVia": "state",
+    "platform": "bushel",
+    "url": "https://api.bushelpowered.com/api/markets/aggregator/bids/v1/GetBidsList",
+    "browserPage": "https://www.chs-texoma.com/grain/cash-bids/",
+    "locationId": "4b83c408-7651-41ea-93c2-46d48cfc5531",
+    "labelInFeed": "Frederick",
+    "bands": {
+     "corn": [
+      2,
+      12
+     ],
+     "milo": [
+      2,
+      14
+     ],
+     "soybeans": [
+      6,
+      25
+     ],
+     "wheat": [
+      3,
+      20
+     ]
+    },
+    "cadence": "grain-day",
+    "provenance": "scraped",
+    "enabled": true,
+    "cashRounding": "floor-cent",
+    "note": "BUILT OFFLINE 2026-09-26 from committed evidence, on the shape of chs-texoma-hinton. BUSHEL'S PAYLOAD CARRIES NO STATE AND NO ADDRESS, so state, ZIP and phone are the roster's. bands are the repo's default per-commodity values, not measured on this location.\n\nPROOF THE LOCATION IS ON THE BOARD: data/chs-texoma-kingfisher.json and data/chs-texoma-hinton.json (committed poll captures, checked 2026-09-26) list \"Frederick (4b83c408-7651-41ea-93c2-46d48cfc5531)\" in otherLocationsOnPage, built from rows the bushel adapter parsed off this board. No Bushel payload for this location is committed, so its rows and residuals were NOT seen; cashRounding floor-cent is the board-level mode both enabled CHS Texoma sources on this board declare.\n\nROSTER IDENTITY: Barchart roster row 1919: CHS Western Oklahama (Barchart's spelling), Frederick OK 73542, 21757 County Road EW 185, phone 580-335-2107, website chswesternok.com. The covered roster rows Hinton and Kingfisher of the same roster operator are already read by the chs-texoma-* sources, so the roster name and CHS Texoma are one business in this repo's own matching. Coordinate is geocodes/places.json registry bucket OK|chsinc|frederick (town, zip-centroid).\n\nEVIDENCE, NOT A FACT: check the town against the operator's own published address before anything depends on the distance.",
+    "publicNote": "Their publicly posted cash board, read from the feed their own website reads. Cash and basis are their own commercial numbers. The futures quote is carried only so a consumer can re-check cash minus basis; it is not redistributed as a price feed.",
+    "address": null,
+    "zip": "73542",
+    "lat": 34.4012,
+    "lon": -99.0119,
+    "latPrecision": "town",
+    "website": "https://www.chs-texoma.com/grain/cash-bids/",
+    "inMerge": true
+   }
+  },
+  {
+   "id": "adellcoop-adell",
+   "data": {
+    "schema": "cashbidssingle/1",
+    "currency": "USD",
+    "currencyVia": "province",
+    "source": {
+     "name": "Adell Cooperative",
+     "location": "Adell",
+     "locationId": "2451",
+     "zip": "53001",
+     "lat": 43.6151,
+     "lon": -88.0254,
+     "url": "https://adellcoop.com/",
+     "note": "Their publicly posted cash board."
+    },
+    "checkedAt": "2026-10-28T17:40:34.366Z",
+    "pricedAt": "2026-10-28T17:40:34.366Z",
+    "status": "ok",
+    "count": 7,
+    "otherLocationsOnPage": [],
+    "bids": [
+     {
+      "seq": 0,
+      "commodity": "Corn",
+      "delivery": "Prompt",
+      "futuresMonth": "Dec 26",
+      "cash": 3.92,
+      "basisDollars": -0.6,
+      "basisCents": -60,
+      "futuresPriceCents": 452.25
+     },
+     {
+      "seq": 1,
+      "commodity": "Corn",
+      "delivery": "27 New Crop",
+      "futuresMonth": "Dec 27",
+      "cash": 4.4,
+      "basisDollars": -0.5,
+      "basisCents": -50,
+      "futuresPriceCents": 490.5
+     },
+     {
+      "seq": 2,
+      "commodity": "Soybeans",
+      "delivery": "Prompt",
+      "futuresMonth": "Jan 27 Soybeans",
+      "cash": 11.33,
+      "basisDollars": -1.1,
+      "basisCents": -110,
+      "futuresPriceCents": 1242.75
+     },
+     {
+      "seq": 3,
+      "commodity": "Soybeans",
+      "delivery": "27 New Crop",
+      "futuresMonth": "Nov 27 Soybeans",
+      "cash": 11.16,
+      "basisDollars": -0.95,
+      "basisCents": -95,
+      "futuresPriceCents": 1211.25
+     },
+     {
+      "seq": 4,
+      "commodity": "Wheat",
+      "delivery": "Storage",
+      "futuresMonth": "Dec 26 Wheat",
+      "cash": 4.96,
+      "basisDollars": -1.05,
+      "basisCents": -105,
+      "futuresPriceCents": 601.5
+     },
+     {
+      "seq": 5,
+      "commodity": "Wheat",
+      "delivery": "27 New Crop",
+      "futuresMonth": "Jul 27 Wheat",
+      "cash": 5.22,
+      "basisDollars": -1.05,
+      "basisCents": -105,
+      "futuresPriceCents": 627.25
+     },
+     {
+      "seq": 6,
+      "commodity": "Oats",
+      "delivery": "Storage",
+      "futuresMonth": null,
+      "cash": 3.25,
+      "basisDollars": null,
+      "basisCents": null,
+      "futuresPriceCents": null
+     }
+    ]
+   },
+   "manifest": {
+    "id": "adellcoop-adell",
+    "operator": "Adell Cooperative",
+    "location": "Adell",
+    "state": "WI",
+    "platform": "cashbidssingle",
+    "url": "https://adellcoop.com/",
+    "futuresUnits": "dollars",
+    "locationId": "2451",
+    "bands": {
+     "corn": [
+      2,
+      12
+     ],
+     "soybean": [
+      6,
+      32
+     ],
+     "wheat": [
+      3,
+      20
+     ]
+    },
+    "cashRounding": "round-cent-both",
+    "cadence": "grain-day",
+    "provenance": "scraped",
+    "enabled": true,
+    "note": "WRITTEN BY scripts/board-sweep.mjs (run 36257124645) from the board page discover recorded for this operator: https://adellcoop.com/. The platform is cashbidssingle, which this repository already reads elsewhere; nothing about the parsing is new here. At the time of writing this location showed 9 row(s) in Corn, Soybeans, Wheat, Oats.\n\nTHE OPERATOR NAME was read from the board's own title.\n\nHOW THIS PLACE WAS PLACED: a place decided by hand in geocodes/board-places.json: The board page's own footer prints 606 Tower Ave, Adell WI 53001. Whether the co-op has other yards is not known; this board is the operator's only one captured..\n\nEVIDENCE, NOT A FACT: check the town against the operator's own published address before anything depends on the distance. COORDINATE filled 43.6151,-88.0254 from geocodes/places.json on 2026-10-02, keyed on this source's own id and resolved from \"Adell\" via zip-centroid. It is the CENTROID OF THE TOWN's ZIPs, which can be miles from the yard. EVIDENCE, NOT A FACT: check it against the operator's own published address before anything depends on the distance.",
+    "publicNote": "Their publicly posted cash board.",
+    "address": null,
+    "zip": "53001",
+    "lat": 43.6151,
+    "lon": -88.0254,
+    "website": "https://adellcoop.com/",
+    "inMerge": true,
+    "_pending": "cashRounding is NOT set and must not be guessed; it is measured from a real board against real futures. lat/lon is the centroid of the town's ZIP and can be miles from the yard.\n\nTHE RESIDUALS THIS RUN MEASURED, once the futures column is read as dollars: -0.25c x1, 0c x3, +0.25c x3, +0.5c x1. That is the evidence for cashRounding and it is NOT a declaration -- the modes differ at their boundaries and this many rows cannot tell them apart.",
+    "latPrecision": "town"
+   }
+  },
+  {
+   "id": "agvalley-atlanta",
+   "data": {
+    "schema": "stonehedge/1",
+    "currency": "USD",
+    "currencyVia": "province",
+    "source": {
+     "name": "Ag Valley Co-op",
+     "location": "Atlanta",
+     "locationId": "ALP74TQG6DRPXDLCUCHS",
+     "zip": "68923",
+     "lat": null,
+     "lon": null,
+     "url": "https://stonehedge.stonex.com/component/bids?key=%3Credacted%3E&cols=date%2Ccash%2Cbasis%2Cprice%2Cchange%2Cmonth",
+     "note": "Their publicly posted cash board, read from the widget their own website embeds. Cash and basis are their own commercial numbers. The futures price is theirs too and is carried only so a consumer can re-check cash minus basis."
+    },
+    "checkedAt": "2026-10-28T17:40:34.366Z",
+    "pricedAt": "2026-10-28T17:40:34.366Z",
+    "status": "ok",
+    "count": 3,
+    "otherLocationsOnPage": [
+     "Bartley (WTTG1J0PND9I8LAS5V13)",
+     "Big Springs (76W97ZORZTXS42GAR6B3)",
+     "Edison (ZR6B7WM3D1PECWZ28LL9)",
+     "Eustis (79EKWV77VMT8HWBJF44W)",
+     "Hershey (T3E0L7Y04LOSOVL67C5K)",
+     "Holbrook (O0MWRTEH3TXHKG5MIDC0)",
+     "Jennings (MVQF0LM1M3TN7VLHX0FC)",
+     "Logan (W7L6N71R93QMR3I247DI)",
+     "Maywood (H4ETD7KKPZLBJRM9UZV9)",
+     "North Platte (H7O1HXISZIKA2XGHXS2D)",
+     "Norton (G64VOC0KMH6NE4VXG8HZ)",
+     "Orleans (77R6DLAATNFT23V1323Q)",
+     "Wilsonville (QB0PEZJHQL5BW98RDYH7)",
+     "AGP (YE3ZADE68Y0VZE9NUSLO)"
+    ],
+    "bids": [
+     {
+      "seq": 0,
+      "commodity": "Corn",
+      "delivery": "01 Oct 2026 to 31 Oct 2026",
+      "futuresMonth": "ZCZ26",
+      "cash": 4.27,
+      "basisDollars": -0.25,
+      "basisCents": -25,
+      "futuresPriceCents": 452
+     },
+     {
+      "seq": 1,
+      "commodity": "Corn",
+      "delivery": "01 Nov 2026 to 30 Nov 2026",
+      "futuresMonth": "ZCZ26",
+      "cash": 4.27,
+      "basisDollars": -0.25,
+      "basisCents": -25,
+      "futuresPriceCents": 452
+     },
+     {
+      "seq": 2,
+      "commodity": "Corn",
+      "delivery": "01 Oct 2027 to 31 Oct 2027",
+      "futuresMonth": "ZCZ27",
+      "cash": 4.5,
+      "basisDollars": -0.4,
+      "basisCents": -40,
+      "futuresPriceCents": 490.25
+     }
+    ]
+   },
+   "manifest": {
+    "id": "agvalley-atlanta",
+    "operator": "Ag Valley Co-op",
+    "location": "Atlanta",
+    "state": "NE",
+    "platform": "stonehedge",
+    "url": "https://stonehedge.stonex.com/component/bids",
+    "browserPage": "https://agvalley.com/cash-bids/",
+    "locationId": "ALP74TQG6DRPXDLCUCHS",
+    "bands": {
+     "corn": [
+      2,
+      12
+     ],
+     "soybean": [
+      6,
+      32
+     ],
+     "wheat": [
+      3,
+      20
+     ]
+    },
+    "cadence": "grain-day",
+    "provenance": "scraped",
+    "enabled": true,
+    "cashRounding": "round-cent-both",
+    "note": "GENERATED by scripts/stonehedge-manifests.mjs from fixtures/stonehedge-agvalley-component-rendered.html, the widget's own rendered document captured 2026-09-26 (data/gaps/stonehedge-probe.json). PROOF THE LOCATION IS ON THE BOARD: the document names \"Atlanta\" in its own location list as id ALP74TQG6DRPXDLCUCHS and carries 3 real bid row(s) under it. IDENTITY: the board's label is the only town Ag Valley Co-op has in the roster and known-elevators: Atlanta, NE 68923. NO COORDINATE: the roster has no coordinate for this town. lat and lon are null on purpose, so it is read and published and kept off the distance map. The board prints a futures PRICE, so board.mjs's cash - basis = futures runs on every row; cashRounding round-cent-both was measured across 1,208 priced rows on four boards (residuals -0.5 to +0.75 cents).",
+    "publicNote": "Their publicly posted cash board, read from the widget their own website embeds. Cash and basis are their own commercial numbers. The futures price is theirs too and is carried only so a consumer can re-check cash minus basis.",
+    "address": null,
+    "zip": "68923",
+    "lat": null,
+    "lon": null,
+    "website": "https://agvalley.com/",
+    "inMerge": true
+   }
+  },
+  {
+   "id": "abbyvillecoop-abbyville",
+   "data": {
+    "schema": "graindesk/1",
+    "currency": "USD",
+    "currencyVia": "declared",
+    "source": {
+     "name": "Abbyville Farmers Co-op Grain Co.",
+     "location": "Abbyville",
+     "locationId": "Abbyville",
+     "zip": "67510",
+     "lat": 37.972843,
+     "lon": -98.201697,
+     "url": "https://marketplace.graindiscovery.com/api/public-sites/abbyvillecoop/cash-bids",
+     "note": "Their publicly posted cash board, read from the same feed their own website reads. Cash and basis are their own commercial numbers. The futures quote is carried only so a consumer can re-check cash minus basis; it is not redistributed as a price feed."
+    },
+    "checkedAt": "2026-10-28T17:40:34.366Z",
+    "pricedAt": "2026-10-28T17:40:34.366Z",
+    "status": "ok",
+    "count": 8,
+    "otherLocationsOnPage": [],
+    "bids": [
+     {
+      "seq": 0,
+      "commodity": "Wheat, HRW",
+      "delivery": "01 Sep 2026 to 30 Nov 2026",
+      "futuresMonth": "December 2026",
+      "cash": 5.855,
+      "basisDollars": -0.6,
+      "basisCents": -60,
+      "futuresPriceCents": 645.5
+     },
+     {
+      "seq": 1,
+      "commodity": "Wheat, HRW",
+      "delivery": "01 Jun 2027 to 31 Jul 2027",
+      "futuresMonth": "July 2027",
+      "cash": 6.145,
+      "basisDollars": -0.5,
+      "basisCents": -50,
+      "futuresPriceCents": 664.5
+     },
+     {
+      "seq": 2,
+      "commodity": "Soybeans",
+      "delivery": "12 Sep 2026 to 30 Nov 2026",
+      "futuresMonth": "November 2026",
+      "cash": 11.74,
+      "basisDollars": -0.55,
+      "basisCents": -55,
+      "futuresPriceCents": 1229
+     },
+     {
+      "seq": 3,
+      "commodity": "Soybeans",
+      "delivery": "01 Oct 2027 to 30 Nov 2027",
+      "futuresMonth": "November 2027",
+      "cash": 11.3125,
+      "basisDollars": -0.8,
+      "basisCents": -80,
+      "futuresPriceCents": 1211.25
+     },
+     {
+      "seq": 4,
+      "commodity": "Milo",
+      "delivery": "12 Sep 2026 to 30 Nov 2026",
+      "futuresMonth": "December 2026",
+      "cash": 3.9225,
+      "basisDollars": -0.6,
+      "basisCents": -60,
+      "futuresPriceCents": 452.25
+     },
+     {
+      "seq": 5,
+      "commodity": "Milo",
+      "delivery": "01 Sep 2027 to 30 Nov 2027",
+      "futuresMonth": "December 2027",
+      "cash": 4.105,
+      "basisDollars": -0.8,
+      "basisCents": -80,
+      "futuresPriceCents": 490.5
+     },
+     {
+      "seq": 6,
+      "commodity": "Corn",
+      "delivery": "22 Aug 2026 to 30 Nov 2026",
+      "futuresMonth": "December 2026",
+      "cash": 4.2725,
+      "basisDollars": -0.25,
+      "basisCents": -25,
+      "futuresPriceCents": 452.25
+     },
+     {
+      "seq": 7,
+      "commodity": "Corn",
+      "delivery": "01 Sep 2027 to 30 Nov 2027",
+      "futuresMonth": "December 2027",
+      "cash": 4.405,
+      "basisDollars": -0.5,
+      "basisCents": -50,
+      "futuresPriceCents": 490.5
+     }
+    ]
+   },
+   "manifest": {
+    "id": "abbyvillecoop-abbyville",
+    "operator": "Abbyville Farmers Co-op Grain Co.",
+    "location": "Abbyville",
+    "state": "KS",
+    "country": "US",
+    "currency": "USD",
+    "countryVia": "state",
+    "platform": "graindesk",
+    "url": "https://marketplace.graindiscovery.com/api/public-sites/abbyvillecoop/cash-bids",
+    "locationId": "Abbyville",
+    "bands": {
+     "corn": [
+      2,
+      12
+     ],
+     "soybean": [
+      6,
+      32
+     ],
+     "wheat": [
+      3,
+      20
+     ]
+    },
+    "cadence": "grain-day",
+    "provenance": "scraped",
+    "enabled": true,
+    "note": "BUILT FROM THE SHARDED SWEEP (run 33219871278) AND PROVEN BY THE GRAIN DESK SWEEP, run 90042308698, 2026-08-29 00:03 UTC. discover.mjs watched https://abbyvillecoop.com/ call this endpoint; the gd sweep then read the board itself: 8 offer(s) across 1 destination(s) [Abbyville], commodities Wheat, HRW, Soybeans, Milo, Corn. locationId IS THE DESTINATION STRING VERBATIM, as the payload spells it. lib/adapters/graindesk.mjs sets every row's locationId to o.destination, and filterLocation() in lib/parse.mjs compares by exact string equality with no trim and no case fold. A null here would match zero rows and refuse the source. Operator, town, state, street, coordinate and phone are copied verbatim from data/known-elevators.json.",
+    "publicNote": "Their publicly posted cash board, read from the same feed their own website reads. Cash and basis are their own commercial numbers. The futures quote is carried only so a consumer can re-check cash minus basis; it is not redistributed as a price feed.",
+    "address": "301 N Ricksecker St",
+    "zip": "67510",
+    "lat": 37.972843,
+    "lon": -98.201697,
+    "website": "https://abbyvillecoop.com/",
+    "inMerge": true,
+    "_pending": "cashRounding is NOT set and must not be guessed. It is measured from a real board against real futures, the way sources/chsfarmersalliance-mitchell.json records. Expect the first live poll to refuse if this board floors or rounds to the cent; that refusal IS the measurement.\n\nbands are the DEFAULT_BANDS values for corn, soybean and wheat, copied from lib/board.mjs. They are sanity floors, not a claim about what this elevator trades. Anything else on their board falls through to DEFAULT_BANDS by substring."
+   }
+  }
+ ],
+ "expect_exclusion": {
+  "agtegra-hecla": "cash computed by us from basis and our quote",
+  "agplusinc-churubusco": "no futures column; kept only when it agrees with our quote",
+  "cedarcountycoop-admclinton": "no futures column; kept only when it agrees with our quote",
+  "landus-adair": "no futures column; kept only when it agrees with our quote",
+  "heartlandcoop-alleman": "no futures column; kept only when it agrees with our quote",
+  "addisgrain-oromedonte": "not priced in US dollars",
+  "adm-abileneks": null,
+  "aglandfs-alto": null,
+  "chs-texoma-frederick": null,
+  "adellcoop-adell": null,
+  "agvalley-atlanta": null,
+  "abbyvillecoop-abbyville": null
+ }
+}
