@@ -292,12 +292,19 @@ def _holds(doc):
         return False
 
 
-def by_source(doc):
+def by_source(doc, elevators=None):
     """{bids source id: location row} for joined rows whose facility holds that board. A board id that
-    two rows would claim is left out."""
+    two rows would claim is left out. elevators (data/ids/elevators.json records, when given): the
+    boards each id holds TODAY, so a board the ids later moved to another facility loses the line
+    (an id no longer there: no line)."""
+    now = None
+    if elevators is not None:
+        now = {e["id"]: sorted((e.get("sources") or {}).get("bids_repo") or []) for e in elevators}
     out, dup = {}, set()
     for r in (doc or {}).get("locations") or []:
-        for s in r.get("src") or []:
+        if not r.get("id"):
+            continue
+        for s in (r.get("src") or []) if now is None else now.get(r["id"], []):
             if s in out:
                 dup.add(s)
             out[s] = r
@@ -498,6 +505,12 @@ def selftest():
     ok(doc["join"]["joined"] == 5 and doc["join"]["of"] == 10, f"join count {doc['join']}")
     bs = by_source(doc)
     ok(bs["fcd-dorchester"]["bu"] == 6855106, "board lookup")
+    moved = [dict(e, sources={"bids_repo": ["fcd-dorchester-new"]}) if e["id"] == "e5" else e for e in els
+             if e["id"] != "e1"]
+    bs2 = by_source(doc, moved)
+    ok("fcd-dorchester" not in bs2 and bs2["fcd-dorchester-new"]["lic"] == "279",
+       "the boards an id holds today, not the ones it held at the join")
+    ok("agvalley-maywood" not in bs2, "an id that left the ids file: no line")
     # one facility claimed by two rows: neither joins
     els2 = [fac("x1", "Frontier Cooperative", "Tecumseh", src=["s"])]
     two = SAMPLE.replace("153 Tecumseh North      Johnson", "153 Tecumseh            Johnson")
@@ -516,7 +529,7 @@ def selftest():
     ok(load("/nonexistent") is None, "no file: the pages print nothing")
     bad = dict(doc, totals=dict(doc["totals"], bushels=doc["totals"]["bushels"] + 1))
     ok(not _holds(bad), "a file whose rows do not add up is not used")
-    ok("—" not in line + note, "no em dash in copy")
+    ok(chr(0x2014) not in line + note, "no em dash in copy")
 
     for f in fails:
         print("FAIL", f)

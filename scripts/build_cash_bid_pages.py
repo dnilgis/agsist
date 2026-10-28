@@ -77,6 +77,7 @@ Usage:
 import argparse
 from html import unescape as html_unescape
 import datetime as dt
+import inspect
 import json
 import math
 import os
@@ -3094,7 +3095,12 @@ def attach_storage(towns, ctx, root="."):
     ctx["storage_note"], ctx["storage_shown"] = {}, 0
     if not doc:
         return
-    by_src = NECAP.by_source(doc)
+    try:
+        with open(os.path.join(root, "data", "ids", "elevators.json"), encoding="utf-8") as f:
+            els = json.load(f)["elevators"]
+    except (OSError, ValueError, KeyError):
+        els = None   # the boards each id held at the join
+    by_src = NECAP.by_source(doc, els)
     places = Counter()
     for t in towns.values():
         for bd in t["boards"].values():
@@ -3857,6 +3863,7 @@ def selftest():
     _selftest_restricted()
     _selftest_pasted()
     _selftest_off_feed()
+    _selftest_storage()
     # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
     for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
                   (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
@@ -4003,6 +4010,42 @@ def _selftest_delivery_year():
     assert bd["why"]["delivery_year_did_not_check_out"] == 1
     assert checked_period({"period": "2026-10", "periodVia": "month-inferred-year"}, None) == "2026-10", \
         "no futures month: nothing to check against"
+
+
+def _selftest_storage():
+    """Licensed storage (fx/necap): a board gets its location's licensed bushels only through the join,
+    only when it posts at one place, only on its own state's page; the Nebraska state page carries the
+    report's totals; no file, nothing printed. Rows are the PSC's own (Oct 28, 2026 report)."""
+    import tempfile
+    import fetch_ne_capacity as NECAP
+
+    def fac(i, name, city, fips, src):
+        return {"id": i, "name": name, "company": name, "city": city, "st": "NE", "fips": fips, "aliases": [],
+                "sources": {"bids_repo": src}}
+
+    els = [fac("e5", "Farmers Cooperative Dorchester", "Dorchester", "31151", ["fcd-dorchester"]),
+           fac("e2", "Frontier Cooperative", "Tecumseh", "31097", ["frontier-multi"]),
+           fac("e1", "Ag Valley Co-op", "Maywood", "31063", ["agvalley-maywood"])]
+    doc = NECAP.build(NECAP.SAMPLE, els, NECAP.counties())
+    with tempfile.TemporaryDirectory() as root:
+        ctx = {}
+        towns = {("NE", "dorchester"): {"state": "NE", "boards": {"a": {"source": "fcd-dorchester"}}},
+                 ("NE", "tecumseh"): {"state": "NE", "boards": {"b": {"source": "frontier-multi"}}},
+                 ("NE", "elk-creek"): {"state": "NE", "boards": {"c": {"source": "frontier-multi"}}},
+                 ("KS", "maywood"): {"state": "KS", "boards": {"d": {"source": "agvalley-maywood"}}}}
+        attach_storage(towns, ctx, root)
+        assert ctx["storage_shown"] == 0 and ctx["storage_note"] == {}, "no file: nothing printed"
+        os.makedirs(os.path.join(root, "data", "licensed-storage"))
+        NECAP.write(doc, root)
+        attach_storage(towns, ctx, root)
+        got = {k: bd.get("storage_html") for t in towns.values() for k, bd in t["boards"].items()}
+        assert got["a"] and "6,855,106 bushels" in got["a"] and "Nebraska PSC" in got["a"], got["a"]
+        assert got["b"] is None and got["c"] is None, "a board posting at two places gets no one place's number"
+        assert got["d"] is None, "a Nebraska location's number never lands on another state's page"
+        assert ctx["storage_shown"] == 1
+        assert "TOTAL" not in ctx["storage_note"]["NE"] and "34,323,109 bushels in all" in ctx["storage_note"]["NE"]
+        assert 'bd.get("storage_html")' in inspect.getsource(board_section), "board_section prints the line"
+        assert 'ctx.get("storage_note", {}).get(st)' in inspect.getsource(build_state_index), "the state page prints it"
 
 
 def _selftest_place():
