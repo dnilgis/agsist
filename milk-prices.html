@@ -548,7 +548,7 @@ h='<div class="dp-area-skel" aria-hidden="true" data-area="'+e(area)+'"><p class
 (sc?'<p class="dp-area-line">'+e(N[sc])+' all-milk price, September 2026: $88.88, −$8.88 vs a year earlier (US $88.88, −$8.88). Before hauling, USDA NASS.</p>':'')+
 '<p class="dp-area-line">Class III futures, Sep 2026: $88.88 (CME settle Sep 28). A market price, not your check.</p>'+
 '<p class="dp-note-src">Mailbox price is net pay after hauling and co-op deductions, as USDA AMS reports it for the area. Source: AMS mailbox report.</p></div>';
-o.insertAdjacentHTML('beforeend',h);o.setAttribute('aria-busy','true');sec.classList.add('dp-area-wait');
+sel.value=area;o.insertAdjacentHTML('beforeend',h);o.setAttribute('aria-busy','true');sec.classList.add('dp-area-wait');
 setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.removeChild(k);sec.classList.remove('dp-area-wait');o.removeAttribute('aria-busy');}},10000);
 })(document,localStorage);}catch(_){}</script>
   </section>
