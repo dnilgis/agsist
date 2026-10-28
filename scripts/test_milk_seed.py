@@ -201,17 +201,33 @@ def main():
     ck("...and the margin line prints the NASS milk side only",
        "DMC margin: not shown." in S.milk_dmc_margin({}, SEP, "2026-10-28")
        and "August 2026, <strong>$19.80/cwt</strong>" in S.milk_dmc_margin({}, SEP, "2026-10-28"))
-    DM = {"source": "FSA DMC page", "read": "2026-11-02",
-          "margins": {"2025-07": {"all_milk": 21.0, "feed": 10.0, "margin": 11.0},
+    DM = {"source_url": "https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates",
+          "via": "archive", "snapshot": "2026-10-20",
+          "archive_url": "https://web.archive.org/web/20261020000000/https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates",
+          "read": "2026-11-02",
+          "margins": {"2018-12": {"all_milk": 17.0, "feed": 9.0, "margin": 8.0},
+                      "2025-07": {"all_milk": 21.0, "feed": 10.0, "margin": 11.0},
                       "2025-08": {"all_milk": 20.9, "feed": 12.4, "margin": 8.5},
                       "2026-08": {"all_milk": 19.8, "feed": 10.46, "margin": 9.34}},
-          "premium_tier1": {"9.50": 0.15}}
+          "withheld": {"count": 2, "months": ["2026-06", "2026-07"], "why": "not on FSA's page as read"},
+          "premiums": {"year": 2027, "tier1_lb": 6000000, "source_url": "https://www.fsa.usda.gov/x.pdf",
+                       "tier1": {"9.50": 0.15, "8.00": 0.1}, "tier2": {"9.50": None, "8.00": 1.813}}}
     tb = S.milk_dmc_paid(DM, SEP)
-    ck("FSA rows that check out: a table by level, partial years labeled", "2025, Jul to Aug" in tb and "2026, Aug<" in tb, tb[:300])
-    ck("...$9.50 in 2025 pays (0 + 1.00) / 2 = $0.50, premium beside it",
-       '<tr><th scope="row">$9.50</th><td class="num">$0.50</td><td class="num">$0.16</td><td class="num">$0.1500</td></tr>' in tb, tb)
+    ck("FSA rows that check out: a table by level, partial years labeled, MPP 2018 left out",
+       "Paid 2025, Jul to Aug" in tb and "Paid 2026, Aug<" in tb and "2018" not in tb, tb[:300])
+    ck("...$9.50 in 2025 pays (0 + 1.00) / 2 = $0.50, Tier 1 and Tier 2 premium beside it",
+       '<tr><th scope="row">$9.50</th><td class="num">$0.1500</td><td class="num">not offered</td>'
+       '<td class="num">$0.50</td><td class="num">$0.16</td></tr>' in tb, tb)
+    ck("...$8.00: Tier 2 rate printed", '<tr><th scope="row">$8.00</th><td class="num">$0.1000</td><td class="num">$1.8130</td>' in tb)
     ck("...a level with no premium read says so", "not loaded" in tb)
     ck("...no level picked out", not any(w in tb.lower() for w in ("best", "recommend", "should")))
+    ck("...says before premium and the months left out, with why", "before premium" in tb
+       and "2 months from 2019 on (Jun 2026, Jul 2026) are left out: not on FSA" in tb, tb[-900:])
+    ck("...cites FSA and the archive copy with its snapshot date",
+       'href="https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates"' in tb
+       and "Internet Archive copy</a> of 2026-10-20" in tb)
+    ck("...names the 2019 hay blend and the 2020 revision", "50/50 blend" in tb and "from 2020 on" in tb)
+    ck("...Tier 1 named at 6 million lb", "the first 6 million lb a year" in tb)
     ck("...the margin line shows FSA's newest month", "DMC margin, August 2026: $9.34/cwt" in S.milk_dmc_margin(DM, SEP, "2026-10-28"))
     bad = copy.deepcopy(DM)
     bad["margins"]["2026-08"]["margin"] = 9.0
@@ -255,6 +271,29 @@ def main():
     ck("depooling line: Sep 2026 Class IV $2.90 over III", "Depooling watch, Sep 2026:" in h and "$2.90/cwt over Class III" in h)
     ck("...not said when IV is within $1.00", S.milk_depool(dict(SEP, class4=SEP["class3"] + 0.99), "2026-10-28") == "")
     ck("...not said for a stale class month", S.milk_depool(SEP, "2027-02-01") == "")
+    hist = []
+    for i in range(24):
+        y, m = divmod(2024 * 12 + 9 + i, 12)
+        k = "%d-%02d" % (y, m + 1)
+        hist.append({"month_key": k, "ppd": round(0.1 + i / 100, 2), "uniform": round(17.0 + 0.1 + i / 100, 2), "class3": 17.0,
+                     "central": "agree" if (k[:4] != "2024" and m % 3 == 0) or k in ("2024-10", "2024-11") else None})
+    oh = dict(o, ppd_history=hist, ppd_history_why={})
+    hh = S.milk_o30_hist(oh)
+    ck("PPD history: years with 3+ months matched to the central summary print, by month",
+       'id="dp-o30-hist"' in hh and '<th scope="col" class="num">2025</th><th scope="col" class="num">2026</th>' in hh
+       and "Jan 2025 to Sep 2026" in hh, hh[:400])
+    ck("...2024 (2 months matched) is held out and counted", ">2024<" not in hh and "3 months in the window are left out" in hh, hh[-700:])
+    ck("...Jan 2025 PPD +$0.13 in its cell", '<tr><th scope="row">Jan</th><td class="num">+$0.13</td><td class="num">+$0.25</td></tr>' in hh, hh)
+    bad = [dict(r) for r in hist]
+    bad[5]["central"] = "differ"
+    ck("...a month that differs from the central summary holds out its whole year",
+       ">2025<" not in S.milk_o30_hist(dict(o, ppd_history=bad)))
+    bad2 = [dict(r) for r in hist]
+    bad2[-1]["uniform"] = 99.0
+    ck("...a row whose uniform is not Class III plus PPD is not printed", "Sep 2026" not in S.milk_o30_hist(dict(o, ppd_history=bad2)))
+    ck("...no depooled pounds inferred", "pooled pounds" not in hh.lower() and "not published by order and month" in hh)
+    ck("no history: nothing", S.milk_o30_hist(o) == "")
+    ck("the panel carries the history", 'id="dp-o30-hist"' in S.milk_o30_seed(oh, SEP, "2026-10-28"))
     ck("no em dash in the Order 30 copy", "\u2014" not in h + h2 + h3)
 
     print("the published miss (data/dairy-miss.json)")

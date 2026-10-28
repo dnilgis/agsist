@@ -2481,7 +2481,9 @@ def milk_dmc_paid(dmc, d):
     wn = wh.get("count") if isinstance(wh.get("count"), int) and wh.get("count") > 0 else 0
     held = ""
     if wn:
-        held = (f" {wn} month{'s' if wn != 1 else ''} from 2019 on {'are' if wn != 1 else 'is'} left out: "
+        ms = [_ishort(_mkey(k)) for k in (wh.get("months") or []) if _mkey(k) is not None]
+        named = f" ({', '.join(ms)})" if ms and len(ms) <= 6 else ""
+        held = (f" {wn} month{'s' if wn != 1 else ''} from 2019 on{named} {'are' if wn != 1 else 'is'} left out: "
                 f"{_e(wh.get('why') or 'not confirmed on FSA&rsquo;s own page')}.")
     t1 = pr.get("tier1_lb")
     t1w = f"the first {t1 // 1000000} million lb a year" if isinstance(t1, int) and t1 >= 1000000 and t1 % 1000000 == 0 else "the first pounds a year, up to FSA&rsquo;s Tier 1 cap"
