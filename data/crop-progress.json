@@ -1,11 +1,11 @@
 {
   "updated": "2026-10-27",
-  "report_date": null,
+  "report_date": "2026-10-25",
   "in_season": true,
   "corn": {
-    "good_excellent": null,
-    "report_date": null,
-    "good_excellent_prev_week": null,
+    "good_excellent": 56,
+    "report_date": "2026-10-25",
+    "good_excellent_prev_week": 56,
     "good_excellent_prev_year": null,
     "planting_pct": 97,
     "planting_prev_year": 97,
@@ -13,7 +13,8 @@
     "harvest_date": "2026-10-25",
     "harvest_prev_year": null,
     "mature_pct": 95,
-    "harvest_5yr_avg": 66
+    "harvest_5yr_avg": 66,
+    "condition_held_from": "2026-10-25"
   },
   "soybeans": {
     "good_excellent": 57,

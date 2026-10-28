@@ -53,6 +53,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from report_bands import surprise as band_surprise  # noqa: E402
 from report_bands import band_for, IN_LINE_PCT_YIELD  # noqa: E402
 from report_bands import range_context, consensus_lock, ConsensusLockError  # noqa: E402
+import usda_corrections as UC  # noqa: E402
 
 EST_PATH = "data/analyst-estimates.json"
 OUT_PATH = "data/analyst-scorecard.json"
@@ -201,6 +202,50 @@ def merge_locked_model_calls(reports, path=NOWCAST_PATH):
     return merged, refused
 
 
+def correction_for_metric(met, rdate, label, ests, judged, consensus, roster):
+    """The scored metric re-scored against USDA's corrected figure, or None.
+    Same rules as score(): err, beat the trade, closest of who filed, star."""
+    crop, metric = UC.crop_metric(label)
+    if not crop:
+        return None
+    cv = UC.for_value(met.get("actual"), rdate, crop, metric)
+    if not cv:
+        return None
+    k = float(cv["corrected"])
+    best = min((abs(e["value"] - k) for e in judged), default=None)
+    out = UC.tag(cv)
+    rows, errs, changed = [], {}, []
+    for e in ests:
+        err = abs(e["value"] - k)
+        ep = err / abs(k) * 100
+        errs[id(e)] = ep
+        beat = (consensus is not None) and (abs(consensus - k) - err) > 1e-9 * abs(k)
+        closest = (best is not None) and not e.get("derived") and abs(err - best) < 1e-9 and len(judged) >= 2
+        info = roster.get(e.get("id"), {"analyst": e.get("id")})
+        rows.append({"analyst": info["analyst"], "err_pct": round(ep, 2), "beat": beat,
+                     "closest": closest, "star": bool(closest and beat)})
+        a0 = met.get("actual")
+        beat0 = (consensus is not None) and (abs(consensus - a0) - abs(e["value"] - a0)) > 1e-9 * abs(a0)
+        best0 = min((abs(j["value"] - a0) for j in judged), default=None)
+        close0 = (best0 is not None) and not e.get("derived") and abs(abs(e["value"] - a0) - best0) < 1e-9 \
+            and len(judged) >= 2
+        if (beat, closest) != (beat0, close0):
+            changed.append(info["analyst"])
+    s0 = _surprise(consensus, met.get("actual"), label, *_range_of(met), direction=met.get("direction") or "supply")
+    s1 = _surprise(consensus, k, label, *_range_of(met), direction=met.get("direction") or "supply")
+    rows.sort(key=lambda x: x["err_pct"])
+    out.update({"surprise": s1, "consensus_err_pct": (None if consensus is None
+                                                       else round(abs(consensus - k) / abs(k) * 100, 2)),
+                "results": rows, "changed": bool(changed) or s1 != s0, "changed_for": changed})
+    tail = ("Against %s the trade missed by %.2f%%%s; %s." % (
+        cv["corrected"], out["consensus_err_pct"], "" if s1 == s0 else ", now " + s1,
+        "no forecaster's beat-the-trade or closest call changes" if not changed
+        else "the call changes for " + ", ".join(changed))) if consensus is not None else ""
+    out["note"] = UC.note(cv, tail)
+    out["_err"] = errs
+    return out
+
+
 def build_upcoming(reports, roster, today):
     future = sorted((r for r in reports if (r.get("date") or "") >= today),
                     key=lambda r: r["date"])
@@ -323,6 +368,23 @@ def score(data, roster, today):
                 if star:
                     a["wins"] += 1
             results.sort(key=lambda x: x["err_pct"])
+            # USDA CORRECTED THIS PRINT LATER (NASS, Oct 23, 2026: Sep corn yield
+            # 178.5 -> 178.8). Every call stays scored against what USDA printed;
+            # the same arithmetic against the corrected figure goes beside it, and
+            # the corrected errors feed a second average, never the first.
+            corr = correction_for_metric(met, r.get("date"), label, ests, judged, consensus, roster)
+            for e in ests:
+                a = agg[(e.get("id"), cls)]
+                a.setdefault("err_sum_c", 0.0)
+                a.setdefault("corr_n", 0)
+                if corr:
+                    a["err_sum_c"] += corr["_err"][id(e)]
+                    a["corr_n"] += 1
+                else:
+                    v = e["value"]
+                    a["err_sum_c"] += abs(v - actual) / abs(actual) * 100
+            if corr:
+                corr.pop("_err")
             rep_metrics.append({"label": label,
                                 "unit": met.get("unit", ""), "consensus": consensus,
                                 "actual": actual,
@@ -350,7 +412,8 @@ def score(data, roster, today):
                                 # one estimate and a metric with eight are not
                                 # the same evidence and used to look identical.
                                 "n_estimates": len(ests),
-                                "results": results})
+                                "results": results,
+                                **({"nass_correction": corr} if corr else {})})
         if any_scored:
             scored_reports.append({"report": r.get("report", ""), "date": r.get("date", ""),
                                    "metrics": rep_metrics})
@@ -386,6 +449,10 @@ def score(data, roster, today):
                "derived_n": a["derived_n"],
                "metric_class": cls,
                "class_label": CLASS_LABELS.get(cls, cls),
+               # THE SAME AVERAGE WITH USDA'S LATER CORRECTIONS (only when one
+               # touched this forecaster's calls; the ranking stays on the print).
+               **({"mape_on_corrected": round(a["err_sum_c"] / a["n"], 2),
+                   "calls_on_corrected": a["corr_n"]} if a.get("corr_n") else {}),
                "qualified": a["n"] >= MIN_N,
                "needs": max(0, MIN_N - a["n"])}
         c = classes.setdefault(cls, {"key": cls, "label": CLASS_LABELS.get(cls, cls),
@@ -674,6 +741,24 @@ def _selftest():
     good = row["derived_n"] == 1 and row["n"] == 1
     ok &= good
     print(("  ok    " if good else "  FAIL  ") + "a derived midpoint is counted on the board row")
+
+    # NASS CORRECTED SEPTEMBER'S CORN YIELD (Oct 23, 2026): the real metric.
+    # Trade 178.1, AGSIST 182.6, Pro Farmer 173.2; printed 178.5, corrected 178.8.
+    data6 = {"reports": [{"report": "September WASDE", "date": "2026-09-11", "metrics": [
+        {"label": "2026/27 corn yield", "consensus": 178.1, "consensus_range": [173.2, 182.9], "actual": 178.5,
+         "estimates": [{"id": "sud", "value": 182.6}, {"id": "pf", "value": 173.2}]}]}]}
+    c6, r6 = score(data6, dict(roster, pf={"analyst": "Pro Farmer", "firm": "Pro Farmer"}), "2026-10-27")
+    m6 = r6[0]["metrics"][0]
+    nc = m6.get("nass_correction") or {}
+    good = (m6["actual"] == 178.5 and m6["consensus_err_pct"] == 0.22 and m6["results"][0]["err_pct"] == 2.3
+            and nc.get("corrected") == 178.8 and nc.get("consensus_err_pct") == 0.39
+            and [x["err_pct"] for x in nc["results"]] == [2.13, 3.13] and nc["changed"] is False
+            and nc["results"][0]["closest"] and not nc["results"][0]["beat"]
+            and "no forecaster's beat-the-trade or closest call changes" in nc["note"])
+    row6 = (c6[0]["leaderboard"] + c6[0]["building"])
+    good &= any(x.get("mape_on_corrected") == 2.13 and x["mape"] == 2.3 for x in row6)
+    ok &= good
+    print(("  ok    " if good else "  FAIL  ") + "a corrected print: scored as printed, re-scored beside it, no call changes" + ("" if good else " " + str(nc)))
 
     print()
     print("analyst-scorecard: " + ("all passed" if ok else "FAILURES ABOVE"))

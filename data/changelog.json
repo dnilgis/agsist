@@ -6,6 +6,12 @@
    "date": "2026-10-27",
    "items": [
     {
+     "tag": "fixed",
+     "page": "/whats-priced-in",
+     "name": "USDA's corrected September corn yield shown beside the original",
+     "text": "USDA corrected its September 11 corn yield to 178.8 bushels an acre from 178.5 (Kansas 118 from 121, Nebraska 182 from 177). Pages that show or grade September's number now show both, dated, with USDA's notice linked. No grade changed: our model's September call is still a miss and its October call still a hit, and the trade's September guess is still in line."
+    },
+    {
      "tag": "improved",
      "page": "/hay-prices",
      "name": "Hay prices are ready for hay auctions next to the state reports",

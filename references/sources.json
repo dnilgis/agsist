@@ -2288,6 +2288,18 @@
     {"id": "nass-county-list", "kind": "html",
      "url": "https://www.nass.usda.gov/Data_and_Statistics/County_Data_Files/Frequently_Asked_Questions/county_list.txt",
      "title": "USDA NASS county and district codes (county_list.txt)",
-     "why": "data/ids/geo-crosswalk.json: the NASS Agricultural Statistics District of every county (scripts/build_geo_crosswalk.py reads this copy)"}
+     "why": "data/ids/geo-crosswalk.json: the NASS Agricultural Statistics District of every county (scripts/build_geo_crosswalk.py reads this copy)"},
+    {"id": "nass-notice-2026-10-23", "kind": "html",
+     "url": "https://www.nass.usda.gov/Newsroom/Notices/2026/10-23-2026.php",
+     "title": "USDA NASS notice, Oct 23, 2026: correction to the September 11 Crop Production corn forecasts",
+     "why": "data/usda-corrections.json: confirm the notice text behind the September 2026 corn yield correction (read by hand only so far)"},
+    {"id": "nass-notice-2026-10-24", "kind": "html",
+     "url": "https://www.nass.usda.gov/Newsroom/Notices/2026/10-24-2026.php",
+     "title": "USDA NASS notice, Oct 24, 2026: explanation of the September corn correction (KS 118, NE 182, US 178.8)",
+     "why": "data/usda-corrections.json: confirm the corrected values 118 / 182 / 178.8 and the cause"},
+    {"id": "nass-crop0926", "kind": "pdf",
+     "url": "https://esmis.nal.usda.gov/sites/default/release-files/796056/crop0926.pdf",
+     "title": "USDA NASS Crop Production, September 11, 2026 (as posted on ESMIS)",
+     "why": "data/usda-corrections.json: the printed September values (US 178.5, KS 121, NE 177), and whether the posted copy now carries the correction"}
 ]
 }

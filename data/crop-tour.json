@@ -142,6 +142,7 @@
       "soy_yield": 52.8,
       "label": "USDA, September WASDE",
       "as_of": "2026-09-11",
+      "nass_correction": {"id": "nass-crop-production-2026-09-11-corn-yield", "printed": 178.5, "corrected": 178.8, "notice_date": "2026-10-23", "source": "https://www.nass.usda.gov/Newsroom/Notices/2026/10-24-2026.php", "note": "USDA correction, Oct 23, 2026: NASS corrected its September 11 Crop Production corn yield to 178.8 bu/acre, from 178.5 as first printed. The figure here is as USDA printed it."},
       "note": "USDA's September 11 WASDE: corn 178.5 bu/acre (down 2.2 from August's 180.7), soybeans 52.8 (up 0.1 from 52.7). The tour's scouts were checking against August's 180.7; September is the number in force now.",
       "short": "USDA's September 2026 estimate.",
       "source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/09/11/usda-lowers-corn-yield-2-2-bpa-soy ; https://www.fertilizerdaily.com/20260914-usda-wasde-september-2026-corn-yield-cut-soybean-production/"
