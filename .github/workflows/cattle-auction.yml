@@ -57,6 +57,7 @@ jobs:
       - name: Selftest
         run: |
           python scripts/fetch_cattle_auction.py --selftest
+          python scripts/fetch_cull_cows.py --selftest
           python scripts/build_feeder_index.py --selftest
       - name: Probe (raw source capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
@@ -76,7 +77,9 @@ jobs:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_SOFT: '1'
         run: bash scripts/push_raw.sh "cattle-auction probe" data/cattle-auction-raw
-      - name: Fetch and write data/cattle-auction.json
+      # The same run writes data/cull-cows.json (scripts/fetch_cull_cows.py): slaughter cow and bull
+      # prices from the slaughter part of these reports and the slaughter_reports numbers in the sources.
+      - name: Fetch and write data/cattle-auction.json and data/cull-cows.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_cattle_auction.py
       # AGSIST weekly feeder prices by region and weight, and RMA's feeder steer
@@ -93,7 +96,7 @@ jobs:
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/cattle-auction.json data/cattle-auction-raw/listing.json data/feeder-index.json"
+          FILES="data/cattle-auction.json data/cull-cows.json data/cattle-auction-raw/listing.json data/feeder-index.json"
           rm -rf /tmp/ca && mkdir -p /tmp/ca
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/ca/ || true

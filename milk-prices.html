@@ -814,6 +814,13 @@ setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.
     <details class="dp-states" id="dp-herds-tbl"><summary>The numbers, with the net change each year</summary><div class="dp-tbl-wrap dp-tbl-scroll" id="dp-herds-tbl-in"><p class="dp-note-src">Loads with the chart.</p></div></details>
   </section>
 
+  <!-- CULL COWS (components/cull-cows.js, data/cull-cows.json) -->
+  <section class="dp-sec" aria-labelledby="dp-cull" id="dp-cull-sec">
+    <h2 class="dp-sec-label" id="dp-cull"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg> Cull cows this week</h2>
+    <p class="dp-sec-intro">The cull cow check is part of what the herd brings in. These are slaughter cow prices at the sale barns USDA reports, each barn with its own sale day. USDA does not report the Wisconsin or Minnesota barns, so the numbers come from the states it does.</p>
+    <div class="cc" data-cull-cows="dairy"><div data-cc="body"><p class="dp-sec-intro">Cull cow prices from USDA sale barn reports load here. The full list is on <a href="/cattle-auction-prices#cull-cows" style="color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px">sale barn prices</a>.</p></div></div>
+  </section>
+
   <!-- 5. WHAT YOU CAN DO -->
   <section class="dp-sec" aria-labelledby="dp-do">
     <h2 class="dp-sec-label" id="dp-do"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg> What you can actually do about it</h2>
@@ -1542,6 +1549,7 @@ setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.
 </script>
   <script src="/components/milk-tools.js?v=3" defer></script>
   <script src="/components/milk-herds.js?v=1" defer></script>
+  <script src="/components/cull-cows.js?v=1" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>
