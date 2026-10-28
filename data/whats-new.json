@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-28-farm-credit",
+   "date": "2026-10-28",
+   "title": "Farm loan repayment by Fed district",
+   "line": "Each Farmland Atlas state page now shows what ag bankers in its Fed district reported for 2026 Q2: loan repayment and renewals or extensions against a year earlier, with a chart since 2010.",
+   "link": "/farmland-atlas/states/#farm-credit"
+   },
+  {
    "id": "2026-10-28-cull-cows",
    "date": "2026-10-28",
    "title": "Cull cow prices from the sale barns",

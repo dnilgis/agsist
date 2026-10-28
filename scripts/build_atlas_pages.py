@@ -2549,7 +2549,7 @@ def state_page(W, st):
 {('<p class="read"><b>Cash rent:</b> every published ' + esc(stn) + ' county rate side by side, with history back to ' + str(rent_first_year(W, st)) + ', irrigated and pasture shown apart: ' + rent_link + '.</p>') if rent_link and rent_first_year(W, st) else ''}
 <div class="act">{rent_link}{('<a href="/arc-plc/' + slugify(stn) + '">' + esc(stn) + ' ARC or PLC by county</a>') if os.path.exists(os.path.join(W.root, "arc-plc", slugify(stn) + ".html")) else ''}<a href="/farmland-atlas#s={esc(st)}">Open {esc(stn)} on the map</a><a href="/{OUT}/data/{st.lower()}.csv" download>Download {esc(st)} CSV</a></div>
 <h2>{esc(stn)} at a glance</h2>
-{facts}{sales_state(W, st)}{FCV.state_section(getattr(W, 'fcredit', None) or {}, st, stn)}
+{facts}{sales_state(W, st)}{FCV.state_section(W.fcredit, st, stn)}
 <h2>Map: every county is a link</h2>
 <div class="mp"><label for="mm">Color by</label><select id="mm"><option value="r">Dry cash rent</option><option value="v">Land and buildings</option><option value="y">Corn yield</option><option value="c">Claims per $100 of coverage</option><option value="d">Drought weeks</option></select></div>
 {smap}
@@ -2637,7 +2637,7 @@ def hub_page(W):
 <h2>By state</h2>
 <div class="grid">{links}</div>
 <div class="act"><a href="/{OUT}/data">Download every county (CSV)</a><a href="/farmland-atlas">The map</a><a href="/{OUT}/compare">Compare counties</a></div>
-{FCV.hub_section(getattr(W, 'fcredit', None) or {})}
+{FCV.hub_section(W.fcredit)}
 </main>
 <script>
 (function(){{

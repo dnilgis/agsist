@@ -1,0 +1,86 @@
+name: Farm credit by Fed district
+
+# Rebuilds data/farm-credit/districts.json (loan repayment and renewals or
+# extensions by Federal Reserve district, from the district surveys of ag
+# bankers as the Kansas City Fed compiles them) from a dated folder of the
+# original files on the private raw branch. The Farmland Atlas pages rebuild
+# after this run (farmland-atlas-pages.yml listens for it).
+#
+# BY HAND ONLY. The surveys come out quarterly. A schedule needs Sig's OK first
+# (STANDING-DECISIONS, Oct 21); until then:
+#   1. save the new files byte for byte to the raw branch under
+#      history/fed-ag-credit/<YYYY-MM-DD>/ (kc-fed/ table, the Chicago .xls and
+#      the Dallas aglending.xlsx, as in 2026-10-28), with SHA256SUMS;
+#   2. run this workflow with that folder.
+# The run refuses to write anything when a check fails (scripts/build_farm_credit.py).
+on:
+  workflow_dispatch:
+    inputs:
+      folder:
+        description: "Raw branch folder, e.g. history/fed-ag-credit/2026-10-28"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: farm-credit
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      IN_FOLDER: ${{ inputs.folder }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check the input
+        run: |
+          printf '%s\n' "$IN_FOLDER" | grep -Eq '^history/fed-ag-credit/[0-9]{4}-[0-9]{2}-[0-9]{2}$' \
+            || { echo "::error::folder must look like history/fed-ag-credit/2026-10-28"; exit 1; }
+
+      - name: Install the spreadsheet readers
+        run: pip install --quiet openpyxl==3.1.5 xlrd==2.0.1
+
+      - name: Selftest
+        run: |
+          python scripts/build_farm_credit.py --selftest
+          python scripts/farm_credit_view.py --selftest
+
+      - name: Pull the original files
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: bash scripts/pull_raw.sh "$IN_FOLDER"
+
+      - name: Build
+        run: |
+          python scripts/build_farm_credit.py --raw "$IN_FOLDER"
+          python scripts/build_farm_credit.py --check
+
+      - name: Commit if changed
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add data/farm-credit/districts.json
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: farm credit by Fed district, ${IN_FOLDER##*/}"
+          for i in 1 2 3 4; do
+            git rebase --abort 2>/dev/null || true
+            if git pull --rebase --autostash origin main && git push; then exit 0; fi
+            sleep $((30 * i))
+          done
+          echo "::error::push failed after 4 attempts"; exit 1
