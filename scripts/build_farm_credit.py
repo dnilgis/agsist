@@ -141,36 +141,6 @@ def agree(kc, own):
     return abs(kc - own) <= 0.5 * 10 ** -d + 1e-9
 
 
-def state_words(st, stn, ds):
-    """The line a state page leads with. '' for a state wholly in one district."""
-    if len(ds) < 2:
-        return ""
-    nm = [DISTRICTS[d]["name"] if d in DISTRICTS else NO_SURVEY[d] for d in ds]
-    line = "Parts of %s are in the %s and %s Fed districts." % (stn, ", ".join(nm[:-1]), nm[-1])
-    return line
-
-
-def verdict(name, repay, renew):
-    """A plain sentence from which side of 100 each reading sits. None when one is missing."""
-    if repay is None or renew is None:
-        return None
-    if repay < 100 and renew > 100:
-        lead = "Tighter for borrowers than a year earlier"
-    elif repay > 100 and renew < 100:
-        lead = "Easier for borrowers than a year earlier"
-    elif repay == 100 and renew == 100:
-        lead = "About the same as a year earlier"
-    else:
-        lead = "Mixed: the two readings point different ways"
-    r = ("more %s bankers said loan repayment was lower than said higher" % name if repay < 100 else
-         "more %s bankers said loan repayment was higher than said lower" % name if repay > 100 else
-         "%s bankers were evenly split on loan repayment" % name)
-    n = ("more said renewals or extensions were up than said down" if renew > 100 else
-         "more said renewals or extensions were down than said up" if renew < 100 else
-         "they were evenly split on renewals or extensions")
-    return "%s: %s, and %s." % (lead, r, n)
-
-
 def read_kc(path):
     import openpyxl
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
@@ -388,14 +358,6 @@ def selftest():
     check("rounding agrees", agree(111, 110.96) and agree(97.6, 97.65) and agree(96.15, 96.15) and agree(94.1, 94.12))
     check("a real disagreement does not", not agree(82, 64) and not agree(105.7, 115.68) and not agree(89, 86.72))
     check("missing both agrees, one missing does not", agree(None, None) and not agree(73, None))
-    check("split wording", state_words("IL", "Illinois", ["CHI", "STL"]) == "Parts of Illinois are in the Chicago and St. Louis Fed districts."
-          and state_words("KY", "Kentucky", ["STL", "CLE"]) == "Parts of Kentucky are in the St. Louis and Cleveland Fed districts."
-          and state_words("IA", "Iowa", ["CHI"]) == "")
-    v = verdict("Chicago", 73, 124)
-    check("verdict tighter", v == "Tighter for borrowers than a year earlier: more Chicago bankers said loan repayment was lower than said higher, and more said renewals or extensions were up than said down.")
-    check("verdict easier", verdict("X", 110, 90).startswith("Easier"))
-    check("verdict mixed", verdict("X", 90, 95).startswith("Mixed"))
-    check("verdict needs both", verdict("X", None, 120) is None)
     check("no em dash in the copy", all("—" not in s for s in [HOW, KC_PANEL] + list(WORDS.values())))
     check("every state and DC mapped once", len(STATE_DISTRICTS) == 51)
     # a tiny table run through assemble: a disagreement withholds the point, latest kept
