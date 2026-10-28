@@ -70,3 +70,15 @@ test("stale answers are listed by the daily site check", () => {
   const src = read("scripts/daily_site_check.py");
   assert.ok(src.includes("build_ai_answers"));
 });
+
+test("cattle futures page shows its three answers open, not inside a fold (Sig, Oct 28)", () => {
+  const html = read("cattle-futures-prices.html");
+  for (const id of ["cattle-markets", "beef-supply", "argentina-beef"]) {
+    const at = html.indexOf(`<!-- ai-answer:${id} -->`);
+    assert.ok(at > 0, id);
+    const before = html.slice(0, at);
+    const open = (before.match(/<details\b/g) || []).length - (before.match(/<\/details>/g) || []).length;
+    assert.equal(open, 0, `${id} sits inside a <details>`);
+    assert.ok(!doc.answers.find((a) => a.id === id).fold, `${id} is not folded`);
+  }
+});
