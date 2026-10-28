@@ -1,4 +1,9 @@
 name: Generate Daily Briefing
+# The run's title carries a dispatch's inputs, because the API does not return
+# them: the gate reads it to tell a manual dry run (send_email=false) from the
+# price loop's heartbeat, and the block alert's cap counts today's blocked runs
+# (scripts/daily_retry.py, 2026-10-28).
+run-name: ${{ github.event_name == 'workflow_dispatch' && format('Generate Daily Briefing (manual, send_email={0}, heartbeat={1}, test_to_sig={2})', inputs.send_email, inputs.heartbeat, inputs.test_to_sig) || 'Generate Daily Briefing' }}
 
 # One briefing at a time, ever: a scheduled run overlapping a manual dispatch
 # could double-generate and DOUBLE-EMAIL the list. Queue, never cancel — a
@@ -269,6 +274,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read      # today's runs: did a manual dry run publish today (scripts/daily_retry.py retry)
     outputs:
       skip: ${{ steps.g.outputs.skip }}
     steps:
@@ -288,6 +294,7 @@ jobs:
           LIST_URL:           ${{ secrets.LIST_URL }}
           LIST_TOKEN:         ${{ secrets.LIST_TOKEN }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          GH_TOKEN:           ${{ github.token }}
         run: |
           # THE GATE WAITS NOW. IT USED TO DECIDE ONCE AND EXIT.
           #
@@ -442,13 +449,19 @@ jobs:
                 say "SKIPPING: $DAY was published by a manual run without send_email, deliberately not sent"
                 decide 1; exit 0
               fi
-              python3 scripts/daily_retry.py flag "$DAY"; rc=$?
+              # retry: a manual dry run today (its mark not pushed) = 3, the
+              # day flag set = 1, either one unreadable = 2, clear = 0
+              python3 scripts/daily_retry.py retry "$DAY"; rc=$?
+              if [ "$rc" = "3" ]; then
+                say "SKIPPING: a manual run without send_email published $DAY today, deliberately not sent"
+                decide 1; exit 0
+              fi
               if [ "$rc" = "1" ]; then
                 say "SKIPPING: $DAY went to the list (the day flag is set); only its sent copy is missing"
                 decide 1; exit 0
               fi
               if [ "$rc" != "0" ]; then
-                say "SKIPPING: $DAY is published, not marked sent, and the day flag cannot be read; never risk a second send"
+                say "SKIPPING: $DAY is published, not marked sent, and the day flag or today's runs cannot be read; never risk a second send"
                 decide 1; exit 0
               fi
               say "RETRYING: $DAY is published but never went to the list; writing it again"
@@ -488,6 +501,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      actions: read      # the block alert's cap counts today's blocked runs (scripts/daily_retry.py)
 
     steps:
       - name: Checkout
@@ -767,6 +781,7 @@ jobs:
           SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
           SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
           FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+          GH_TOKEN:     ${{ github.token }}       # its hold alert is under the block alert's cap
         run: |
           ANTHROPIC_API_KEY= python scripts/headline_fix.py --selftest
           python scripts/headline_fix.py data/daily.json --prices data/prices.json
@@ -906,9 +921,12 @@ jobs:
       # A BLOCK TELLS SIG WHICH CHECK AND THAT THE NEXT RUN TRIES AGAIN
       # (2026-10-28). Any check above that stops a run meant for the list
       # leaves nothing published, so the next scheduled run (or price-loop
-      # heartbeat) before 2 p.m. CT writes the issue again from scratch. One
-      # email per blocked run, naming the step. GATE 2h mails its own (with the
-      # rewrites it tried), so it is not mailed twice. Never fails the run.
+      # heartbeat) before 2 p.m. CT writes the issue again from scratch. The
+      # email names the step. GATE 2h mails its own (with the
+      # rewrites it tried), so it is not mailed twice. The cap (both senders):
+      # the first block of the day, then only a different check at least 2 h
+      # after the last alert, 3 a day at most, counted from today's runs of
+      # this workflow (GitHub API, the job token). Never fails the run.
       - name: Tell Sig which check held the Daily
         if: ${{ failure() && steps.commit.outcome != 'success' && (github.event_name == 'schedule' || inputs.send_email == true) }}
         continue-on-error: true
@@ -928,6 +946,7 @@ jobs:
           SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
           SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
           FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+          GH_TOKEN:     ${{ github.token }}
         run: python scripts/daily_retry.py alert
 
       # Email the finished briefing as a clean, reforwardable copy. Runs only after

@@ -121,7 +121,7 @@ print(json.dumps(sent))
   assert.match(body, /The next scheduled run tries again on its own/);
   assert.match(body, /until 2 p\.m\. CT/);
   assert.match(b[0], /held by the fact check against the source data \(GATE 2f\)$/);
-  assert.match(b[1].join("\n"), /no scheduled run tries again today[\s\S]*send_email ticked/);
+  assert.match(b[1].join("\n"), /No scheduled run can start again before 2 p\.m\. CT, so nothing tries again today[\s\S]*send_email ticked/);
   assert.deepEqual(c, [null, null], "GATE 2h mails its own alert; not twice");
   assert.match(d, /held by a check; the next run tries again/);
   assert.equal(e.length, 1);
@@ -236,4 +236,101 @@ print("read", S.flag("2026-10-28"))
   assert.match(out.stdout, /^set False$/m, "a failed set is not 'flagged'");
   assert.match(out.stdout, /^read True$/m, "a failed read still fails closed (already sent)");
   assert.match(read("scripts/send_daily.py"), /flagged = flag\(day, set_it=True\) is True/);
+});
+
+// Today's runs of daily.yml as the API returns them (the fields read), Oct 28:
+// 5:46 and 6:01 CT held by GATE 2f, then later blocks.
+const FAKE = `
+import json
+def run(i, z, concl, title="Generate Daily Briefing", event="schedule", failed=None, alert=True):
+    steps = [{"name": "GATE 1 — feed pre-flight (repair ZC=F roll contamination; block on unrepairable feed)", "conclusion": "success"}]
+    if failed:
+        steps.append({"name": failed, "conclusion": "failure"})
+    steps.append({"name": "Tell Sig which check held the Daily", "conclusion": "success" if alert else "skipped"})
+    return {"id": i, "created_at": "2026-10-28T%sZ" % z, "conclusion": concl, "display_title": title, "event": event,
+            "_jobs": {"jobs": [{"name": "generate", "steps": steps}]}}
+def fetcher(runs, fail=False):
+    def f(path):
+        if fail:
+            raise R.NoHistory("the runs could not be read (HTTPError)")
+        if path.startswith("/actions/workflows/daily.yml/runs"):
+            return {"workflow_runs": [{k: v for k, v in r.items() if k != "_jobs"} for r in runs]}
+        rid = int(path.split("/")[3])
+        return next(r["_jobs"] for r in runs if r["id"] == rid)
+    return f
+`;
+
+test("review: block alerts are capped: first of the day, then a changed check 2 h apart, 3 a day", () => {
+  const out = py(["-c", `
+import sys
+sys.path.insert(0, "scripts")
+import daily_retry as R
+from datetime import datetime
+from zoneinfo import ZoneInfo
+${FAKE}
+CT = ZoneInfo("America/Chicago")
+F2 = "GATE 2f, fact check against the source data"
+V = "GATE 2v, the email's number check before publishing"
+at = lambda h, m: datetime(2026, 10, 28, h, m, tzinfo=CT)
+print("first", R.capped("g2f", at(5, 46), fetcher([])))
+print("second-same", R.capped("g2f", at(6, 1), fetcher([run(1, "10:46:00", "failure", failed=F2)])))
+past = [run(1, "10:46:00", "failure", failed=F2), run(2, "11:01:00", "failure", failed=F2)]
+print("changed-soon", R.capped("g2v", at(6, 16), fetcher(past)))
+print("changed-2h", R.capped("g2v", at(7, 47), fetcher(past)))
+many = past + [run(3, "12:47:00", "failure", failed=V), run(4, "14:50:00", "failure", failed=F2)]
+print("fourth", R.capped("g2v", at(12, 0), fetcher(many)))
+dry = [run(5, "10:46:00", "failure", failed=F2, alert=False)]
+print("dry-not-counted", R.capped("g2f", at(6, 1), fetcher(dry)))
+print("no-history", R.capped("g2f", at(6, 1), fetcher([], fail=True)))
+print("wording", R.can_retry(at(13, 20)), R.can_retry(at(13, 50)))
+s, l = R.alert_lines("2026-10-28", ["g2v"], datetime(2026, 10, 28, 13, 50))
+print("late-subject", s)
+`]);
+  assert.equal(out.status, 0, out.stderr);
+  const o = out.stdout;
+  assert.match(o, /^first True$/m);
+  assert.match(o, /^second-same False$/m, "the 6:01 block by the same check does not mail again");
+  assert.match(o, /^changed-soon False$/m, "a changed check inside 2 h of the last alert does not mail");
+  assert.match(o, /^changed-2h True$/m);
+  assert.match(o, /^fourth False$/m, "never more than 3 a day");
+  assert.match(o, /3 mailed/);
+  assert.match(o, /^dry-not-counted True$/m, "a run not meant for the list did not mail, so it does not count");
+  assert.match(o, /^no-history True$/m, "history unreadable: mail rather than stay silent");
+  assert.match(o, /^wording True False$/m, "13:50: no run can start before 14:00");
+  assert.match(o, /^late-subject AGSIST Daily 2026-10-28 held by the email's number check on the subject, headline and lead \(GATE 2v\)$/m);
+  assert.match(read("scripts/headline_fix.py"), /if daily_retry\.capped\("g2h"\):/, "GATE 2h's own alert is under the same cap");
+  for (const st of ["Tell Sig which check held the Daily", "GATE 2h, a failing headline is rewritten until it passes"])
+    assert.match(step(st), /GH_TOKEN:\s+\$\{\{ github\.token \}\}/, st);
+  const gen = wf.slice(wf.indexOf("\n  generate:\n"));
+  assert.match(gen.slice(0, 400), /permissions:\n\s+contents: write\n\s+actions: read/);
+});
+
+test("review: a manual dry run today stops the retry even when its mark was not pushed", () => {
+  const out = py(["-c", `
+import sys
+sys.path.insert(0, "scripts")
+import daily_retry as R
+${FAKE}
+R.flag_state = lambda d: print("flag asked") or 0
+dry = run(1, "13:10:00", "success", title="Generate Daily Briefing (manual, send_email=false, heartbeat=false, test_to_sig=false)", event="workflow_dispatch")
+beat = run(2, "13:40:00", "success", title="Generate Daily Briefing (manual, send_email=true, heartbeat=true, test_to_sig=false)", event="workflow_dispatch")
+failed_dry = dict(dry, conclusion="failure")
+print("dry", R.retry_state("2026-10-28", fetcher([beat, dry])))
+print("beat", R.retry_state("2026-10-28", fetcher([beat])))
+print("failed-dry", R.retry_state("2026-10-28", fetcher([failed_dry])))
+print("yesterday", R.retry_state("2026-10-28", fetcher([dict(dry, created_at="2026-10-28T04:30:00Z")])))
+print("unreadable", R.retry_state("2026-10-28", fetcher([], fail=True)))
+`]);
+  assert.equal(out.status, 0, out.stderr);
+  const o = out.stdout;
+  assert.match(o, /^dry 3$/m);
+  assert.match(o, /^flag asked\nbeat 0$/m, "a heartbeat is not a dry run");
+  assert.match(o, /^flag asked\nfailed-dry 0$/m, "a dry run that published nothing does not count");
+  assert.match(o, /^flag asked\nyesterday 0$/m, "11:30 p.m. CT on Oct 27 is yesterday");
+  assert.match(o, /^unreadable 2$/m, "runs unreadable: cannot tell, the gate skips");
+  assert.match(wf, /^run-name: .*format\('Generate Daily Briefing \(manual, send_email=\{0\}, heartbeat=\{1\}, test_to_sig=\{2\}\)', inputs\.send_email, inputs\.heartbeat, inputs\.test_to_sig\)/m);
+  const gate = wf.slice(wf.indexOf("\n  gate:\n"), wf.indexOf("\n  generate:\n"));
+  assert.match(gate, /actions: read/);
+  assert.match(gate, /GH_TOKEN:\s+\$\{\{ github\.token \}\}/);
+  assert.match(gate, /python3 scripts\/daily_retry\.py retry "\$DAY"; rc=\$\?\n\s+(#.*\n\s+)*if \[ "\$rc" = "3" \]/);
 });

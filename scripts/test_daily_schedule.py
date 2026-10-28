@@ -290,7 +290,7 @@ def main():
     print("\npublished means published AND sent (2026-10-28)")
     # Oct 28: the 6:16 run published, the send refused, every later run skipped
     skip, _, out = simulate(gate, start="06:46", published=True, sent=False, flag_rc=0)
-    check(skip == "0" and "STUB day flag asked: scripts/daily_retry.py flag 2026-08-31" in out,
+    check(skip == "0" and "STUB day flag asked: scripts/daily_retry.py retry 2026-08-31" in out,
           "a published issue that never went out is written again in the morning, after asking the day flag", out)
     skip, _, out = simulate(gate, event="workflow_dispatch", heartbeat=True, start="06:46",
                             published=True, sent=False, flag_rc=0)
@@ -301,6 +301,8 @@ def main():
     check(skip == "1", "and not when the day flag cannot be read: never risk a second send", out)
     skip, _, out = simulate(gate, start="06:46", published=True, sent=False, dry_run=True, flag_rc=0)
     check(skip == "1", "a manual run without send_email publishes on purpose; the morning does not mail it", out)
+    skip, _, out = simulate(gate, start="06:46", published=True, sent=False, dry_run=False, flag_rc=3)
+    check(skip == "1", "…and when that run's mark was not pushed, today's runs still show the dry run", out)
     skip, _, out = simulate(gate, start="14:05", dow=3, published=True, sent=False, flag_rc=0)
     check(skip == "1", "past the 14:00 morning window an unsent issue is left alone", out)
     skip, _, out = simulate(gate, start="06:46", published=True, sent=True, flag_rc=0)

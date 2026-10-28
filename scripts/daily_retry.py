@@ -112,6 +112,162 @@ def flag_state(day):
     return 1 if sent else 0
 
 
+# ── today's runs of daily.yml, from the GitHub API (job token, read only) ──
+#
+# Two questions need them, and no file in the repo can answer either:
+#   - did a manual run without send_email publish today? (its dry-run mark may
+#     not have been pushed; the gate must not mail that day behind it)
+#   - how many block alerts went out today, and for which check? (the cap)
+# The run's title carries its inputs (daily.yml run-name), because the API
+# does not return a dispatch's inputs.
+
+CT = "America/Chicago"
+ALERT_STEP = "Tell Sig which check held the Daily"
+# daily.yml step names -> check ids (the alert names a check by these)
+STEP_IDS = (("GATE 1", "g1"), ("Generate daily briefing", "gen"), ("GATE 2f", "g2f"), ("GATE 2h", "g2h"),
+            ("GATE 2v", "g2v"), ("GATE 2 ", "g2"), ("Validate schema", "schema"), ("Commit and push", "commit"))
+MAX_ALERTS = 3          # a day
+ALERT_GAP_H = 2         # hours between two alerts, and only when the check changed
+NEXT_RUN_MIN = 30       # the price loop's heartbeat comes about every half hour
+
+
+class NoHistory(Exception):
+    """The runs could not be read."""
+
+
+def gh_fetch(path):
+    import urllib.request
+    tok = (os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN") or "").strip()
+    repo = (os.environ.get("GITHUB_REPOSITORY") or "").strip()
+    if not (tok and repo):
+        raise NoHistory("no GH_TOKEN or GITHUB_REPOSITORY here")
+    url = "%s/repos/%s%s" % ((os.environ.get("GITHUB_API_URL") or "https://api.github.com").rstrip("/"), repo, path)
+    req = urllib.request.Request(url, headers={"Authorization": "Bearer " + tok, "Accept": "application/vnd.github+json",
+                                               "X-GitHub-Api-Version": "2022-11-28"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.loads(r.read().decode("utf-8"))
+    except Exception as ex:                                  # noqa: BLE001
+        raise NoHistory("the runs could not be read (%s)" % type(ex).__name__)
+
+
+def _ct_day(stamp):
+    from zoneinfo import ZoneInfo
+    t = datetime.fromisoformat(str(stamp).replace("Z", "+00:00"))
+    return t.astimezone(ZoneInfo(CT))
+
+
+def runs_today(day, fetch=gh_fetch):
+    """daily.yml runs created on the Central day `day`, oldest first."""
+    from zoneinfo import ZoneInfo
+    from datetime import timezone
+    start = datetime.fromisoformat(day).replace(tzinfo=ZoneInfo(CT)).astimezone(timezone.utc)
+    out = []
+    for page in (1, 2, 3):
+        d = fetch("/actions/workflows/daily.yml/runs?per_page=100&page=%d&created=%%3E%%3D%s"
+                  % (page, start.strftime("%Y-%m-%dT%H:%M:%SZ")))
+        rows = (d or {}).get("workflow_runs") or []
+        out += [r for r in rows if _ct_day(r.get("created_at")).date().isoformat() == day]
+        if len(rows) < 100:
+            break
+    return sorted(out, key=lambda r: r.get("created_at") or "")
+
+
+def is_dry_run(run):
+    """A manual run without send_email (not the price loop's heartbeat, not Sig's test copy)."""
+    t = str(run.get("display_title") or run.get("name") or "")
+    return (run.get("event") == "workflow_dispatch" and "send_email=false" in t and "heartbeat=false" in t
+            and "test_to_sig=false" in t)
+
+
+def dry_run_today(day, fetch=gh_fetch):
+    """True when a manual run without send_email finished today (it published
+    the issue on purpose). Raises NoHistory when the runs cannot be read."""
+    return any(is_dry_run(r) and r.get("conclusion") == "success" for r in runs_today(day, fetch))
+
+
+def retry_state(day, fetch=gh_fetch):
+    """For the gate, about a published issue with no sent copy and no dry-run
+    mark: 0 write it again, 1 it went out, 2 cannot tell, 3 a manual dry run
+    published it today (its mark was not pushed). Anything unclear skips."""
+    try:
+        if dry_run_today(day, fetch):
+            print("runs today: a manual run without send_email published %s; it is deliberately not sent" % day)
+            return 3
+    except NoHistory as ex:
+        print("runs today: %s; cannot tell whether a dry run published %s" % (ex, day))
+        return 2
+    return flag_state(day)
+
+
+def step_check(name):
+    for prefix, k in STEP_IDS:
+        if str(name).startswith(prefix):
+            return k
+    return "unknown"
+
+
+def past_blocks(day, fetch=gh_fetch, this_run=None):
+    """[(created_at, check)] for today's earlier runs that were meant for the
+    list and were held before publishing: their alert step ran."""
+    out = []
+    for r in runs_today(day, fetch):
+        if str(r.get("id")) == str(this_run) or r.get("conclusion") != "failure":
+            continue
+        jobs = (fetch("/actions/runs/%s/jobs?per_page=50" % r["id"]) or {}).get("jobs") or []
+        for j in jobs:
+            steps = j.get("steps") or []
+            if not any(st.get("name") == ALERT_STEP and st.get("conclusion") in ("success", "failure") for st in steps):
+                continue
+            bad = next((st.get("name") for st in steps if st.get("conclusion") == "failure"), None)
+            out.append((r.get("created_at"), step_check(bad) if bad else "unknown"))
+    return out
+
+
+def may_mail(check, now, past):
+    """The cap (2026-10-28 review): the first block of the day mails; after
+    that only a different check, at least ALERT_GAP_H hours after the last
+    alert; never more than MAX_ALERTS a day. `past` is today's earlier blocks,
+    replayed through the same rule to know which of them mailed."""
+    sent = []
+
+    def ok(c, t):
+        if len(sent) >= MAX_ALERTS:
+            return False
+        if not sent:
+            return True
+        lc, lt = sent[-1]
+        return c != lc and (t - lt).total_seconds() >= ALERT_GAP_H * 3600
+    for stamp, c in past:
+        t = _ct_day(stamp)
+        if ok(c, t):
+            sent.append((c, t))
+    return ok(check, now), len(sent)
+
+
+def capped(check, now=None, fetch=gh_fetch):
+    """True when this block may mail Sig. History unreadable: mail (an alert
+    too many beats a block nobody hears about)."""
+    from zoneinfo import ZoneInfo
+    now = now or datetime.now(ZoneInfo(CT))
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=ZoneInfo(CT))
+    try:
+        past = past_blocks(now.date().isoformat(), fetch, os.environ.get("GITHUB_RUN_ID"))
+    except NoHistory as ex:
+        print("block alert: %s; mailing without the cap" % ex)
+        return True
+    allowed, n = may_mail(check, now, past)
+    print("block alert: %d earlier block(s) today, %d mailed; this one %s"
+          % (len(past), n, "mails" if allowed else "does not (same check, under %dh, or %d already)" % (ALERT_GAP_H, MAX_ALERTS)))
+    return allowed
+
+
+def can_retry(now):
+    """A run can still start inside the morning window."""
+    return now.hour * 60 + now.minute + NEXT_RUN_MIN < RETRY_UNTIL_HOUR * 60
+
+
 # ── alert: one email to Sig, naming the check ──────────────────────────────
 
 def alert_lines(day, failed, now, run_url=""):
@@ -123,33 +279,37 @@ def alert_lines(day, failed, now, run_url=""):
     which = " and ".join(names) if keys != ["unknown"] else "a check before publishing (see the run log)"
     lines = ["The AGSIST Daily for %s was held by %s." % (day, which), "",
              "Nothing was published and nothing went to the list. The day is not marked sent.", ""]
-    if now.hour < RETRY_UNTIL_HOUR:
+    if can_retry(now):
         lines += ["The next scheduled run tries again on its own: it writes today's issue from scratch and runs every "
                   "check again, and if it passes it goes to the list. Runs keep trying until 2 p.m. CT. "
-                  "You do not need to do anything."]
+                  "You do not need to do anything.",
+                  "You get at most %d of these a day: the first, then only when a different check holds it, "
+                  "%d hours apart or more." % (MAX_ALERTS, ALERT_GAP_H)]
     else:
-        lines += ["It is past 2 p.m. CT, so no scheduled run tries again today. Tomorrow's run is not affected.",
+        lines += ["No scheduled run can start again before 2 p.m. CT, so nothing tries again today. "
+                  "Tomorrow's run is not affected.",
                   "To send today's issue anyway: GitHub, dnilgis/agsist, Actions, Generate Daily Briefing, Run workflow "
                   "on main with send_email ticked."]
     if run_url:
         lines += ["", "The run, with the check's own log: " + run_url]
     subject = "AGSIST Daily %s held by %s" % (day, names[0] if keys != ["unknown"] else "a check")
-    if now.hour < RETRY_UNTIL_HOUR:
+    if can_retry(now):
         subject += "; the next run tries again"
     return subject, lines
 
 
-def alert(failed=None, now=None, mail=None):
+def alert(failed=None, now=None, mail=None, fetch=gh_fetch):
     failed = failed if failed is not None else (os.environ.get("FAILED") or "").split()
     now = now or datetime.now()
     day = now.date().isoformat()
-    if not failed:
-        failed = ["unknown"]
+    failed = [k for k in failed if k] or ["unknown"]
     subject, lines = alert_lines(day, failed, now)
     if not subject:
-        print("block alert: the blocking step mailed Sig itself; nothing more to send")
+        print("block alert: the blocking step mailed Sig itself (under the same cap); nothing more to send")
         return 0
     print("block alert: %s" % subject)
+    if not capped(failed[0], now, fetch):
+        return 0
     if mail is None:
         import log_safe
         mail = log_safe.owner_mail
@@ -185,6 +345,8 @@ def main(argv):
         return prepublish(rest[0] if rest else None)
     if cmd == "flag" and rest:
         return flag_state(rest[0])
+    if cmd == "retry" and rest:
+        return retry_state(rest[0])
     if cmd == "alert":
         return alert()
     if cmd == "dry-run-mark" and rest:
