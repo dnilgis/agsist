@@ -59,7 +59,7 @@ jobs:
           mode: ${{ vars.ENGINE_MODE }}
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Install deps
         run: pip install yfinance==1.7.0
       - name: Build price-stats.json
