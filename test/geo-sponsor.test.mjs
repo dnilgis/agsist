@@ -239,7 +239,7 @@ const ad = (pg) => pg.evaluate(() => {
 async function shot(pg, file) {
   if (!SHOTS) return;
   mkdirSync(SHOTS, { recursive: true });
-  await pg.addStyleTag({ content: "#site-header,header.site-header,.tk-bar,.ticker,[class*=ticker]{visibility:hidden!important}" });
+  await pg.addStyleTag({ content: "#site-header,header,.tk-bar,.ticker,[class*=ticker],[class*=tick-]{visibility:hidden!important}" });
   await pg.evaluate(() => window.scrollTo(0, document.querySelector(".geo-spon").getBoundingClientRect().top + scrollY - 200));
   await pg.waitForTimeout(800);
   const b = await pg.evaluate(() => { const r = document.querySelector(".geo-spon").getBoundingClientRect(); return { y: r.top + scrollY, h: r.height }; });
