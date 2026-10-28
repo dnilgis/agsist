@@ -477,6 +477,12 @@ def _apply_mark(recs, route, b, now_ms):
             if re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", mo) and (not cur.get("mo") or mo > str(cur.get("mo"))):
                 cur["mo"] = mo
             cur["sent"] = now_ms
+        elif t == "milk-month":
+            # subs worker v5.58: milk price day keeps the class month mailed the same way
+            mo = str(b.get("month") or "")
+            if re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", mo) and (not cur.get("mo") or mo > str(cur.get("mo"))):
+                cur["mo"] = mo
+            cur["sent"] = now_ms
         else:
             cur["sent"] = now_ms
         return

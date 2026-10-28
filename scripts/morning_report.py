@@ -672,8 +672,10 @@ SENDS = (
     ("rain-monthly.yml", "send_rain_month.py", "Monthly county rain", "email"),
     # 2026-10-23: the monthly land sale email (subs worker v5.55), its "email" job
     ("land-alert.yml", "send_land_alert.py", "Monthly land sales", "email"),
+    # 2026-10-28: milk price day (subs worker v5.58), the dairy workflow's "build" job
+    ("dairy.yml", "send_milk_month.py", "Milk price day", "build"),
 )
-NOTICE_KINDS = {"rent": "rent", "arcplc": "ARC/PLC", "prf": "PRF", "rainyear": "rain year", "rain-month": "monthly rain", "landsales": "land sales", "rain-gauge": "rain gauge"}
+NOTICE_KINDS = {"rent": "rent", "arcplc": "ARC/PLC", "prf": "PRF", "rainyear": "rain year", "rain-month": "monthly rain", "landsales": "land sales", "rain-gauge": "rain gauge", "milk-month": "milk price day"}
 # 2026-10-21: the two standing lists on /notice (subs worker v5.44), each its
 # own row in the Signups table, from /count lists {n, by_source, unsubs}.
 SIGNUP_LISTS = (("reports", "WASDE summary"), ("cot", "Funds this week"))

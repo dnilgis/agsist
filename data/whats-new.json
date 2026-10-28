@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-28-milk-order30",
+   "date": "2026-10-28",
+   "title": "Milk prices: the Upper Midwest order, and how close the futures came",
+   "line": "Order 30's PPD for two years, what DMC would have paid since 2019 at FSA's margins, your order's PPD in the check reader, and the futures miss each month.",
+   "link": "/milk-prices"
+  },
+  {
    "id": "2026-10-28-milk-your-area",
    "date": "2026-10-28",
    "title": "Milk prices: your area first, and read your own check",

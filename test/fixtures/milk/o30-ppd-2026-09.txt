@@ -1,0 +1,96 @@
+                 United States                   UPPER MIDWEST MARKETING AREA                                      600 East Diehl Road, Suite 100
+                 Department of                                                                                         Naperville, IL 60563-4896
+                                                         Federal Order No. 30                                         Telephone: (630) 810-9999
+                 Agriculture
+                                                                                                                             Fax: (630) 810-1788
+                                                          Agricultural Marketing Service
+            nd
+1600 West 82 Street, Suite 200                                   Dairy Programs                                 4600 American Parkway, Suite 101
+Minneapolis, MN 55431-1420                                                                                              Madison, WI 53718-8334
+Telephone: (952) 831-5292                                                                                             Telephone: (608) 242-1822
+                                                                 Home Page:
+                                                                                                                            Fax: (608) 467-4300
+Fax: (952) 831-8249                                            www.fmma30.com
+
+
+
+                                 COMPUTATION OF PRODUCER PRICE DIFFERENTIAL
+                                                     FOR SEPTEMBER 2026
+                                              Utilization         Product         Component
+                                             Percentage           Pounds           Pounds          Rate                Value
+        Class I        Differential Value                                                                   $          4,889,934.06
+                       Product                    6.4%           165,549,810
+                       Skim Milk                                                   161,898,929   $12.16              19,686,909.76
+                       Butterfat                                                     3,650,881     1.5164             5,536,195.94
+        Class II       Product                    1.0%            25,701,018
+                       Nonfat Solids                                                 1,956,708     1.3828              2,705,735.80
+                       Butterfat                                                     4,855,216     1.4832              7,201,256.39
+        Class III      Product                    91.6%        2,374,489,361
+                       Protein                                                      78,373,610     2.6619           208,622,712.48
+                       Other Solids                                                138,239,230     0.4147            57,327,808.68
+                       Butterfat                                                    92,578,048     1.4762           136,663,714.49
+        Class IV  Product                         1.0%            26,188,683
+                  Nonfat Solids                                                      1,630,234     1.5343             2,501,268.02
+                  Butterfat                                                          8,930,118     1.4762            13,182,640.18
+        SCC Adjustment (Class II, III, and IV)                                                                        2,990,893.68
+        Total Producer Milk                                    2,591,928,872                                $       461,309,069.48
+
+        Add:           Overage                                                                                            19,455.84
+                       Inventory Reclassified                                                                            (10,167.31)
+                       Other Source § .60(h) thru .60(k)                                                                 160,320.22
+
+        Subtract:      Transportation Credit                                                                              7,514.52
+                       Assembly Credit                                                                                  132,396.52
+                       Producer Milk Protein                                                                        226,708,728.48
+                       Producer Milk Other Solids                                                                    62,357,607.11
+                       Producer Milk Butterfat                                                                      162,403,055.04
+                       Producer Milk SCC Adjustment                                                                   3,198,461.85
+
+        Total Milk and Value                                   2,591,928,872                                $          6,670,914.71
+        Add:           Location Adjustment -- Producer and Unregulated Supply Plant Milk                               8,339,649.95
+                       One-Half Unobligated Balance Producer Settlement Fund                                           1,193,429.48
+
+        Total Value                                                                              0.625171   $        16,203,994.14
+        Subtract:      Producer Settlement Fund Reserve                                          0.045171              1,170,806.68
+
+        Producer Price Differential (Dollars Per Cwt.--Base Zone)                                 $0.58     $        15,033,187.46
+                   MINIMUM PRODUCER PAY PRICES FOR SEPTEMBER 2026
+
+                                                        Producer Price Differential
+                                                                           Location                            PPD at
+                                                                          Adjustment                          Location
+                                                                                                              (Per cwt.)
+
+                           Base Zone (Cook County, IL)                      $ 0.00                            $ 0.58
+
+                                 Other Zones                                $ 0.10                            $ 0.68
+                                                                              -0.10                             0.48
+                                                                              -0.30                             0.28
+                                                                              -0.40                             0.18
+
+     Protein Price                                                                          (Per pound)                                   $ 2.6619
+     Other Solids Price                                                                     (Per pound)                                     0.4147
+     Butterfat Price                                                                        (Per pound)                                       1.4762
+     Somatic Cell Adjustment Rate                                                           (Per cwt. per 1,000 SCC)                          0.00078
+     Class I ESL Adjustment                                                                 (Per cwt.)                                        0.81
+     Statistical Uniform Price                                                              (Per cwt.)                                      16.62
+
+
+                                                                                      Producer Milk
+                                               Utilization               Product Pounds                      Skim Milk                     Butterfat
+
+  Class I                                          6.4%                      165,549,810                    161,898,929                    3,650,881
+  Class II                                         1.0%                       25,701,018                     20,845,802                    4,855,216
+  Class III                                       91.6%                    2,374,489,361                  2,281,911,313                   92,578,048
+  Class IV                                         1.0%                       26,188,683                     17,258,565                    8,930,118
+  Total                                         100.0%                     2,591,928,872                  2,481,914,609                  110,014,263
+
+
+                                                                        Components in Producer Milk
+                                               Butterfat                       Protein                     Other Solids                 Nonfat Solids
+
+  Total                                       110,014,263                      85,168,011                    150,367,994                 235,536,005
+  Percentage                                          4.24%                           3.29%                          5.80%                       9.09%
+
+
+  October 12, 2026                                                                           Victor J. Halverson, Market Administrator
