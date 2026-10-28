@@ -76,7 +76,7 @@ test("cattle futures page shows its three answers open, not inside a fold (Sig, 
   for (const id of ["cattle-markets", "beef-supply", "argentina-beef"]) {
     const at = html.indexOf(`<!-- ai-answer:${id} -->`);
     assert.ok(at > 0, id);
-    const before = html.slice(0, at);
+    const before = html.slice(0, at).replace(/<!--[\s\S]*?-->/g, "").replace(/<(script|style)\b[\s\S]*?<\/\1>/g, "");
     const open = (before.match(/<details\b/g) || []).length - (before.match(/<\/details>/g) || []).length;
     assert.equal(open, 0, `${id} sits inside a <details>`);
     assert.ok(!doc.answers.find((a) => a.id === id).fold, `${id} is not folded`);
