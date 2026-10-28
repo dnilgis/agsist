@@ -9,7 +9,7 @@
      "tag": "improved",
      "page": "/rain",
      "name": "County rain pages open with the Rain Print",
-     "text": "Each county rain page now shows the year as a Rain Print right under the numbers, with Staircase, Roots, Up close and Watch it draw, in place of the plain running-total chart. The plain chart stays for anyone whose browser does not draw the print."
+     "text": "Each county rain page now shows the year as a Rain Print in the Roots style right under the numbers (Staircase, Up close and Watch it draw are a tap away), in place of the plain running-total chart. The plain chart stays for anyone whose browser does not draw the print."
     }
    ]
   },

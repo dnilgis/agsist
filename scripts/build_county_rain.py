@@ -407,9 +407,10 @@ def print_figure(c, year, noun, ready, has_us, svg="", cap=""):
             + ((" The dashed line is the usual year: NOAA&rsquo;s " + ("1991 to 2020" if period == "1991-2020" else "30-year")
                 + f" normals for this {noun}, added up over the days it reported, with each month&rsquo;s usual under its total; "
                 "inside a month the line is drawn straight.") if mn else ""))
+    # Roots opens first on county pages (Sig, Oct 28 2026); rain-county-print.js draws the pressed style
     styles = ('<div class="rc-print-styles" role="group" aria-label="Print style" hidden>'
-              '<button type="button" data-style="r1" aria-pressed="true">Staircase</button>'
-              '<button type="button" data-style="r2" aria-pressed="false">Roots</button>'
+              '<button type="button" data-style="r1" aria-pressed="false">Staircase</button>'
+              '<button type="button" data-style="r2" aria-pressed="true">Roots</button>'
               '<button type="button" class="rc-zoom" aria-pressed="false">Up close</button>'
               '<button type="button" class="rc-watch" aria-label="Watch this year draw itself, and make a video of it">Watch it draw</button></div>')
     return (f'<figure class="rc-chart rc-print rc-print-top" id="rc-print" data-st="{st.lower()}" data-fips="{fips}" data-year="{year}" '
@@ -1376,8 +1377,9 @@ def selftest():
         pf = story.split('id="rc-print"')[1].split("</figure>")[0]
         ok('class="rc-us"' not in story.split('id="rc-print"')[0] and 'class="rc-us"' in pf.split('<div class="rc-print-art">')[1]
            and pf.startswith(' data-st="ia"') and ' hidden' not in pf.split(">")[0] and 'class="rc-print-styles"' in pf
-           and story.count('aria-labelledby="rc-ct"') == 1 and '<span class="rc-cap-chart">' in pf,
-           "the print figure is shown up top, its picker in it, and the plain chart is only inside its art box")
+           and story.count('aria-labelledby="rc-ct"') == 1 and '<span class="rc-cap-chart">' in pf
+           and 'data-style="r2" aria-pressed="true">Roots' in pf and 'data-style="r1" aria-pressed="false">Staircase' in pf,
+           "the print figure is shown up top, its picker in it (Roots pressed), and the plain chart is only inside its art box")
         ok(story.index('class="rc-figs"') < story.index('id="rc-print"') < story.index('class="rc-sell"')
            < story.index("<h2>Month by month</h2>") < story.index("so far in Story County</h2>")
            < story.index("<h2>The station") < story.index("<h2>Questions</h2>")

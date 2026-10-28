@@ -6,6 +6,7 @@
  *   - The plain running-total chart is no longer a chart of its own there: it ships inside the print's art box
  *     (title and caption kept) as the fallback for readers without scripts, search engines and a print that
  *     cannot be drawn. Drawing the print replaces it.
+ *   - It opens in the Roots style (Sig, Oct 28); Staircase and Up close stay as choices.
  *   - Drawing moves nothing: the print's box, picker row and caption are held from the first paint
  *     (rain-county.css), at 390 and 1280. A print that cannot be drawn keeps the chart and lets the room go.
  *
@@ -57,6 +58,9 @@ test("county pages: the Rain Print is the first chart, the plain chart lives ins
       `${p}: the plain chart, with its title, is inside the print's art box`);
     assert.ok(body.includes('<span class="rc-cap-chart">Inches of rain added up day by day') && body.includes('<span class="rc-cap-print" hidden>'),
       `${p}: both captions ship; the print's waits hidden`);
+    assert.ok(body.includes('<button type="button" data-style="r2" aria-pressed="true">Roots</button>')
+      && body.includes('<button type="button" data-style="r1" aria-pressed="false">Staircase</button>') && body.includes('class="rc-zoom"'),
+      `${p}: Roots opens first (Sig, Oct 28); Staircase and Up close stay as choices`);
     assert.ok(body.includes('class="rc-watch"'), `${p}: the picker row ships whole, Watch it draw included, so it is held at full height`);
     assert.ok(main.slice(main.indexOf("</figure>", fig) + 9).trimStart().startsWith('<div class="rc-sell">'), `${p}: the sell block follows the print`);
     assert.equal((main.match(/class="rc-sell"/g) || []).length, 1, `${p}: one sell block`);
@@ -130,12 +134,15 @@ test("browser: the print draws in the chart's place at 390 and 1280 without movi
           capChart: document.querySelector(".rc-cap-chart").hidden, capPrint: document.querySelector(".rc-cap-print").hidden,
           first: document.querySelector("#main svg").closest("figure").id,
           picker: getComputedStyle(document.querySelector(".rc-print-styles")).visibility,
+          roots: document.querySelector('.rc-print-styles [data-style="r2"]').getAttribute("aria-pressed"),
+          stair: document.querySelector('.rc-print-styles [data-style="r1"]').getAttribute("aria-pressed"),
         }));
         assert.equal(s.fallback, false, `${at}: the plain chart is gone once the print draws`);
         assert.equal(s.capChart, true, `${at}: the plain chart's caption is hidden`);
         assert.equal(s.capPrint, false, `${at}: the print's caption shows`);
         assert.equal(s.first, "rc-print", `${at}: the first drawing in the page is the Rain Print`);
         assert.equal(s.picker, "visible", `${at}: the style picker shows`);
+        assert.deepEqual([s.roots, s.stair], ["true", "false"], `${at}: the print draws in Roots first`);
         await ctx.close();
       }
     }

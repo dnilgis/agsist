@@ -160,7 +160,10 @@
         if (days.length !== +D.days || Math.abs(d.total - +D.total) > 0.011) return false;
         if (d.missing > MISS_BLOCK || days.length < MIN_DAYS) return false;
         state = { RP: RP, days: days, d: d, preview: days.length < (isLeap(year) ? 366 : 365), ov: usualOf(days, D.mn, D.usual) };
-        draw('r1');
+        /* the style the page ships pressed opens first: Roots on county pages (Sig, Oct 28 2026),
+           Staircase where a figure presses it (/here) or presses none */
+        var pre = fig.querySelector('.rc-print-styles [data-style][aria-pressed="true"]');
+        draw(pre && pre.getAttribute('data-style') === 'r2' ? 'r2' : 'r1');
         fig.classList.add('rc-print-on');
         fig.hidden = false;   // a figure shipped hidden (Oct 20 to 27 county pages) shows; since Oct 28 the county one ships shown, the chart in it
         var cap = fig.querySelector('.rc-cap-print'), old = fig.querySelector('.rc-cap-chart');
