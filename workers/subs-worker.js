@@ -5,6 +5,28 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.59 (2026-10-28): SIG'S DESK (desk.html, Sig Oct 28: "a singular place for
+ *   all things agsist"). Two routes, Bearer LIST_TOKEN only (a ?token= in the
+ *   address is refused), CORS for agsist.com as the other desks:
+ *     GET  /desk         counts the worker already holds, in one answer: the
+ *          Daily (total, joined in 7 days and 24 h, unsubscribes, where they
+ *          signed up), notice sign-ups summed by topic family (rent, prf,
+ *          landsales, rain-gauge...: never a topic with its ZIP, grid or
+ *          county), the alert and watch lists, the Daily's briefed:<day>
+ *          flags for yesterday, today and tomorrow (UTC), Rain Print orders on
+ *          record (the same pass as /rp-order/list: counts, paid, revenue,
+ *          waiting on a proof answer), gift cards by status, listing requests
+ *          and sponsor applications by status, form counts, and the ledger.
+ *          No address, name, town, ZIP, message or design ever goes in it.
+ *          Each part fails on its own as {error}.
+ *     GET  /desk/ledger  the sponsor payment ledger, {rows: [{slug, period,
+ *          amount, paid_on, at}]}. POST {action: "mark", slug, period
+ *          "YYYY-MM", amount (dollars), paid_on "YYYY-MM-DD"} keeps one row
+ *          under led:<slug>:<period> (marking again replaces it); POST
+ *          {action: "unmark", slug, period} removes it. It is the only record
+ *          of who paid: it lives here, never in the public repo, and is in
+ *          the monthly /export like every other key. 400 rows at most.
+ *   Every other route answers exactly as before. No new binding or secret.
  * v5.58 (2026-10-28): MILK PRICE DAY (Sig, Oct 28: dairy board build 5, the
  *   list, the sender and the switch). /notice takes one more topic, milk-month,
  *   asked on /milk-prices: one email when USDA announces the month's Class
@@ -2339,6 +2361,135 @@ async function unsubCounts(env) {
   return out;
 }
 
+// ---------- v5.59: GET /desk and the sponsor payment ledger (desk.html) ----------
+// One read for Sig's desk: counts the worker already holds, bundled so the
+// page never receives a reader's address, name, town, ZIP or message. Every
+// part is read on its own and a part that fails says why in its own place
+// ({error}); the rest still answers. Notice topics are summed by family (the
+// part before the first ":"), so a landsales:<ZIP>:<miles> or prf:<grid>
+// topic never reaches the page with its place in it.
+const DESK_WEEK_MS = 7 * 864e5;
+const LED_SLUG_RE = /^[a-z0-9][a-z0-9-]{0,39}$/;
+const LED_PERIOD_RE = /^(\d{4})-(0[1-9]|1[0-2])$/;
+const LED_DAY_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+const LED_MAX = 400;
+function ledDay(v) {
+  const s = String(v == null ? "" : v).trim(), m = LED_DAY_RE.exec(s);
+  if (!m || +m[1] < 2026 || +m[1] > new Date().getUTCFullYear() + 1) return null;
+  return new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).toISOString().slice(0, 10) === s ? s : null;
+}
+function ledPeriod(v) {
+  const s = String(v == null ? "" : v).trim(), m = LED_PERIOD_RE.exec(s);
+  return m && +m[1] >= 2026 && +m[1] <= new Date().getUTCFullYear() + 1 ? s : null;
+}
+async function ledgerAll(env) {
+  const out = [];
+  for (const k of await listKeys(env, "led:")) {
+    let r = null;
+    try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+    if (r && typeof r === "object" && LED_SLUG_RE.test(r.slug || "") && ledPeriod(r.period))
+      out.push({ slug: r.slug, period: r.period, amount: Number(r.amount) || 0, paid_on: r.paid_on || null, at: r.at || null });
+  }
+  out.sort((a, b) => (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : a.period < b.period ? 1 : a.period > b.period ? -1 : 0));
+  return out;
+}
+async function deskPart(fn) {
+  try { return await fn(); } catch (e) { return { error: String((e && e.message) || "error").slice(0, 120) }; }
+}
+async function deskBundle(env) {
+  const now = Date.now(), week = now - DESK_WEEK_MS;
+  const daily = await deskPart(async () => {
+    const subs = await subAll(env), by = {};
+    let n7 = 0, n24 = 0, noTs = 0;
+    for (const r of subs) {
+      const s = r.src || "(none)";
+      by[s] = (by[s] || 0) + 1;
+      if (!Number.isFinite(r.ts)) noTs++;
+      else { if (r.ts >= week) n7++; if (r.ts >= now - 864e5) n24++; }
+    }
+    return { n: subs.length, new_7d: n7, new_24h: n24, no_join_time: noTs, by_source: by, unsubs: (await unsubCounts(env)).daily };
+  });
+  const notices = await deskPart(async () => {
+    const keys = await listKeys(env, "note:"), fam = {}, fam7 = {};
+    for (const k of keys) {
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      const seen = new Set();
+      for (const [t, v] of Object.entries((r && r.t) || {})) {
+        const f = String(t).split(":")[0];
+        if (seen.has(f)) continue;           // one address counts once per family
+        seen.add(f);
+        fam[f] = (fam[f] || 0) + 1;
+        if (v && Number.isFinite(v.ts) && v.ts >= week) fam7[f] = (fam7[f] || 0) + 1;
+      }
+    }
+    return { addresses: keys.length, by_family: fam, new_7d_by_family: fam7 };
+  });
+  const lists = await deskPart(async () => ({
+    alerts: (await listKeys(env, "alert:")).length, ewatch: (await listKeys(env, "ewatch:")).length,
+    pwatch: (await listKeys(env, "pwatch:")).length, watch: (await listKeys(env, "watch:")).length }));
+  const briefed = await deskPart(async () => {
+    const out = {};
+    for (const d of [-1, 0, 1]) {
+      const day = new Date(now + d * 864e5).toISOString().slice(0, 10);
+      out[day] = (await env.SUBS.get("flag:briefed:" + day)) !== null;
+    }
+    return out;
+  });
+  const orders = await deskPart(async () => {
+    const d = await rpoList(env, 120), o = { days: 120, stripe: d.stripe, pressed: 0, paid: 0, paid_7d: 0, gifts_paid: 0,
+      revenue: 0, revenue_7d: 0, by_product: {}, waiting_approval: 0, overdue: 0 };
+    for (const r of d.orders || []) {
+      o.pressed++;
+      if (r.status !== "paid") continue;
+      const amt = Number(r.paid && r.paid.amount) || 0, at = Date.parse(r.paid && r.paid.at) || r.ts || 0;
+      o.paid++; o.revenue += amt;
+      if (at >= week) { o.paid_7d++; o.revenue_7d += amt; }
+      if (r.gift) o.gifts_paid++;
+      const p = String(r.product || "other");
+      o.by_product[p] = (o.by_product[p] || 0) + 1;
+      if (!r.approved) { if (r.approval_overdue) o.overdue++; else o.waiting_approval++; }
+    }
+    o.revenue = Math.round(o.revenue * 100) / 100; o.revenue_7d = Math.round(o.revenue_7d * 100) / 100;
+    return o;
+  });
+  const gifts = await deskPart(async () => {
+    const g = { issued: 0, redeemed: 0, void: 0, total: 0 };
+    for (const k of await listKeys(env, "rpg:")) {
+      if (!RPG_KEY_RE.test(k)) continue;
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (!r) continue;
+      g.total++;
+      if (r.status in g) g[r.status]++;
+    }
+    return g;
+  });
+  const requests = await deskPart(async () => {
+    const q = { pending: 0, created: 0, dismissed: 0 };
+    for (const k of await listKeys(env, "form:elevator-listing:")) {
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (!r) continue;
+      const s = EL_REQ_STATUS.includes(r.status) ? r.status : "pending";
+      q[s]++;
+    }
+    return q;
+  });
+  const sponsor_apps = await deskPart(async () => {
+    const by = {};
+    for (const k of await listKeys(env, "sapp:")) {
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (r) by[String(r.status || "pending")] = (by[String(r.status || "pending")] || 0) + 1;
+    }
+    return { by_status: by };
+  });
+  const ledger = await deskPart(async () => ({ rows: await ledgerAll(env) }));
+  return { ok: true, at: new Date(now).toISOString(), daily, notices, lists, briefed, orders, gifts, requests, sponsor_apps, ledger,
+    forms: await deskPart(() => formCounts(env)) };
+}
+
 // ---------- v5.45: GET /count-area, reader counts by area (counts only) ----------
 const AREA_PREFIX = { daily: "sub:", alerts: "alert:", watch: "watch:", ewatch: "ewatch:", pwatch: "pwatch:",
   notices: "note:", rp_designs: "rps:", rp_orders: "rpo:" };
@@ -4298,6 +4449,35 @@ async function handle(req, env) {
       const limit = Number.isFinite(lim) ? Math.min(AREA_LIMIT, Math.max(1, Math.floor(lim))) : AREA_LIMIT;
       const out = await areaPage(env, part, String(url.searchParams.get("cursor") || ""), limit);
       return json(Object.assign({ ok: true, part }, out), 200, ns);
+    }
+    // v5.59: Sig's desk (desk.html). Bearer only; a ?token= in the address is refused outright.
+    if (path === "/desk" || path === "/desk/ledger") {
+      const ns = Object.assign({ "Cache-Control": "no-store" }, ac);
+      if (!sig || url.searchParams.has("token")) return json({ ok: false }, 403, ns);
+      if (path === "/desk") {
+        if (req.method !== "GET") return json({ ok: false, error: "GET only" }, 405, ns);
+        return json(await deskBundle(env), 200, ns);
+      }
+      if (req.method === "GET") return json({ ok: true, rows: await ledgerAll(env) }, 200, ns);
+      if (req.method !== "POST") return json({ ok: false, error: "GET or POST" }, 405, ns);
+      let b = {};
+      try { b = await req.json(); } catch (e) { return json({ ok: false, error: "bad json" }, 400, ns); }
+      const slug = String((b && b.slug) || "").trim().toLowerCase(), period = ledPeriod(b && b.period);
+      if (!LED_SLUG_RE.test(slug)) return json({ ok: false, error: "slug: lowercase letters, digits and dashes" }, 400, ns);
+      if (!period) return json({ ok: false, error: "period: YYYY-MM" }, 400, ns);
+      const key = "led:" + slug + ":" + period;
+      if (b.action === "unmark") {
+        await env.SUBS.delete(key);
+        return json({ ok: true, unmarked: { slug, period }, rows: await ledgerAll(env) }, 200, ns);
+      }
+      if (b.action !== "mark") return json({ ok: false, error: "action: mark or unmark" }, 400, ns);
+      const amount = Number(b.amount), paid_on = ledDay(b.paid_on);
+      if (!Number.isFinite(amount) || amount < 0 || amount > 100000) return json({ ok: false, error: "amount: 0 to 100000 dollars" }, 400, ns);
+      if (!paid_on) return json({ ok: false, error: "paid_on: YYYY-MM-DD" }, 400, ns);
+      if ((await listKeys(env, "led:")).length >= LED_MAX && (await env.SUBS.get(key)) === null) return json({ ok: false, error: "ledger full" }, 409, ns);
+      const rec = { slug, period, amount: Math.round(amount * 100) / 100, paid_on, at: new Date().toISOString() };
+      await env.SUBS.put(key, JSON.stringify(rec));
+      return json({ ok: true, marked: rec, rows: await ledgerAll(env) }, 200, ns);
     }
     if (path === "/rp-gift/issue" && req.method === "POST") {
       if (!sig) return json({ ok: false }, 403, ac);
