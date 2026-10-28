@@ -144,12 +144,14 @@ test('Your area fills without moving anything, at 390 and 1280, light and dark, 
       });
       await ctx.addInitScript(([s, t]) => {
         try { localStorage.setItem('agsist-theme', t); for (const k of Object.keys(s)) localStorage.setItem(k, s[k]); } catch (e) {}
-        window.__cls = 0; window.__shifts = [];
+        window.__cls = 0; window.__late = 0; window.__shifts = []; window.__t0 = Infinity;
+        // the card fills after the page's data lands (the agsist-milk event); shifts from then on are the card's
+        document.addEventListener('agsist-milk', () => { window.__t0 = performance.now(); });
         new PerformanceObserver((l) => {
           for (const e of l.getEntries()) {
             if (e.hadRecentInput) continue;
-            window.__cls += e.value;
-            window.__shifts.push(e.value.toFixed(4) + ' ' + (e.sources || []).map((s) => (s.node && (s.node.id || s.node.nodeName)) || '?').join(','));
+            window.__cls += e.value; if (e.startTime >= window.__t0) window.__late += e.value;
+            window.__shifts.push(e.value.toFixed(4) + ' ' + (e.sources || []).map((s) => { const n = s.node, pe = n && n.parentElement; return n ? (pe ? (pe.id || pe.className) + '>' : '') + (n.id || n.nodeName) + ' "' + String(n.textContent || '').slice(0, 30) + '" ' + [s.previousRect.x, s.previousRect.y, s.previousRect.width, s.previousRect.height].map(Math.round).join('/') + '->' + [s.currentRect.x, s.currentRect.y, s.currentRect.width, s.currentRect.height].map(Math.round).join('/') + ' at ' + Math.round(e.startTime) + 'ms' : '?'; }).join(','));
           }
         }).observe({ type: 'layout-shift', buffered: true });
       }, [store, theme]);
@@ -161,10 +163,14 @@ test('Your area fills without moving anything, at 390 and 1280, light and dark, 
       if (area) await pg.waitForFunction(() => document.querySelector('#dp-area-out > .dp-area-big'), null, { timeout: 20000 });
       else await pg.waitForFunction(() => window.agsistMilk, null, { timeout: 20000 });
       await pg.waitForTimeout(400);
-      const r = await pg.evaluate(() => ({ cls: window.__cls, shifts: window.__shifts, skel: !!document.querySelector('.dp-area-skel'),
+      const r = await pg.evaluate(() => ({ cls: window.__cls, late: window.__late, t0: window.__t0, shifts: window.__shifts, skel: !!document.querySelector('.dp-area-skel'),
         wait: document.getElementById('dp-area').classList.contains('dp-area-wait'), busy: document.getElementById('dp-area-out').getAttribute('aria-busy'),
         text: document.getElementById('dp-area-out').innerText, sw: document.documentElement.scrollWidth }));
-      assert.equal(r.cls, 0, `${tag}: layout shift ${r.cls} (${r.shifts.join(' | ')})`);
+      assert.ok(isFinite(r.t0), `${tag}: the page's data landed`);
+      assert.equal(r.late, 0, `${tag}: layout shift while Your area filled ${r.late} (${r.shifts.join(' | ')})`);
+      // the whole load: under a busy machine Chrome can log a speck (under 0.0001) at first paint, above the card
+      // (the page kicker, a heading icon) before the card has data; main measured 0.0075 to 0.048 from the card
+      assert.ok(r.cls < 0.001, `${tag}: layout shift ${r.cls} (${r.shifts.join(' | ')})`);
       assert.equal(r.skel, false, `${tag}: the bars are gone`);
       assert.equal(r.wait, false, tag);
       assert.equal(r.busy, null, tag);
