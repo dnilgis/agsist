@@ -1,4 +1,4 @@
-/* /pod-counts, the 2026-10-15 head-to-head fix: a visible byline beside the
+/* Pod counts (the crop tour section #pod-counts; its own page, /pod-counts, until Oct 22, 2026), the 2026-10-15 head-to-head fix: a visible byline beside the
  * working-paper date, and the same person as the Article's author in the
  * JSON-LD (it named only the site).
  *
@@ -8,7 +8,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const HTML = readFileSync(new URL("../pod-counts.html", import.meta.url), "utf8");
+const HTML = readFileSync(new URL("../crop-tour.html", import.meta.url), "utf8");
 
 test("the byline is visible next to the working-paper date", () => {
   const stamp = /<div class="pc-stamp">([\s\S]*?)<\/div>/.exec(HTML);

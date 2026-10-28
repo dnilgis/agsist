@@ -78,6 +78,10 @@ test("every hail log page has og title, description, url and an image that exist
   }
   assert.ok(n > 100, "storm days checked: " + n);
   const gen = readFileSync(ROOT + "scripts/generate_hail_events.py", "utf8");
-  assert.equal((gen.match(/og:description/g) || []).length, 2, "the generator writes og:description on both page kinds");
-  assert.match(gen, /og:title\\" content=\\"US Hail Storm Log/, "the log's og:title");
+  // Oct 22, 2026: the log moved onto /hail-map#history (hail/index.html is a forward page), so the
+  // generator writes one page kind, the storm day; the map page carries the tags for the log.
+  assert.equal((gen.match(/og:description/g) || []).length, 1, "the generator writes og:description on the storm day pages");
+  const hm = readFileSync(ROOT + "hail-map.html", "utf8");
+  for (const t of ["og:title", "og:description", "og:url"]) assert.ok(meta(hm, "property", t), "hail-map.html: " + t);
+  imageOk(hm, "hail-map");
 });

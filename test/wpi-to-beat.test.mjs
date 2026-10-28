@@ -10,7 +10,8 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const PAGE = readFileSync(join(ROOT, "whats-priced-in.html"), "utf8");
+// What's priced in: baked HTML on /usda-calendar, renderers in components/priced-in.js (Oct 22, 2026)
+const PAGE = readFileSync(join(ROOT, "usda-calendar.html"), "utf8") + readFileSync(join(ROOT, "components/priced-in.js"), "utf8");
 const UTIL = readFileSync(join(ROOT, "components/util.js"), "utf8");
 const D = JSON.parse(readFileSync(join(ROOT, "data/whats-priced-in.json"), "utf8"));
 const W = JSON.parse(readFileSync(join(ROOT, "data/wasde.json"), "utf8"));

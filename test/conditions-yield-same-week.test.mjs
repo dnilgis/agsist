@@ -1,4 +1,4 @@
-/* /conditions-yield: the research sentence and the state map read the same week.
+/* /conditions#crop-size (was /conditions-yield): the research sentence and the state map read the same week.
  *
  * Oct 17, 2026 (audit N12): the baked sentence said week 40 ratings explain 36%
  * for Iowa while the map, reading week 41 from the same fit.json, said "no fit
@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
-const html = readFileSync(ROOT + "conditions-yield.html", "utf8");
+const html = readFileSync(ROOT + "conditions.html", "utf8");   // the crop size research is a section of /conditions since Oct 22, 2026
 const fit = JSON.parse(readFileSync(ROOT + "data/cond-yield/fit.json", "utf8"));
 
 function verdicts(j) {

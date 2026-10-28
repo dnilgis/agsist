@@ -1,7 +1,7 @@
 // TWO RENDERERS, ONE STRIP, COMPARED BYTE FOR BYTE.
 //
 // "Every number on this report" is drawn twice: numbersEl() in
-// whats-priced-in.html for the live page, and numbers_el() in
+// components/priced-in.js for the live page (whats-priced-in.html until Oct 22, 2026), and numbers_el() in
 // scripts/prerender_wpi_scorecard.py for the baked copy a crawler and a
 // pre-hydration reader see. This repo has been burned by that shape before --
 // days_until() was corrected in the JS and not in the port, and for one morning
@@ -41,7 +41,8 @@ function liftFrom(file, name) {
   assert.notEqual(end, -1, name + "() has unbalanced braces");
   return src.slice(start, end);
 }
-const liftFromPage = (name) => liftFrom("whats-priced-in.html", name);
+// What's priced in is a section of /usda-calendar since Oct 22, 2026; its renderers ship in components/priced-in.js
+const liftFromPage = (name) => liftFrom("components/priced-in.js", name);
 const liftFromUtil = (name) => liftFrom("components/util.js", name);
 
 // util.js is executed as shipped, not lifted, so this exercises the real file
@@ -178,10 +179,11 @@ const GLOBALS = new Set([
 for (const n of utilProvides()) GLOBALS.add(n);
 
 test("the renderers call nothing that lives in the other script block", () => {
-  const src = readFileSync(join(ROOT, "whats-priced-in.html"), "utf8");
+  // one file, two sealed blocks (each its own IIFE, as the two <script> blocks were on the old page)
+  const src = readFileSync(join(ROOT, "components/priced-in.js"), "utf8");
   const at = src.indexOf("function numbersEl(");
   assert.notEqual(at, -1);
-  const raw = src.slice(src.lastIndexOf("<script>", at), src.indexOf("</script>", at));
+  const raw = src.slice(src.lastIndexOf("\n(function(){", at), src.indexOf("\n})();", at));
   // Comments and string literals are not code. Without this, a CSS
   // `color:var(--wp-mut)` inside a template reads as a call to var(), and a
   // comment naming days_until() reads as a call to it.

@@ -317,7 +317,7 @@
      site-wide (components/util.js AG.px.basis): −91¢, +4¢, even. */
   function fmt$(v){ return AG.px.basis(Math.round(v*100)); }
   function spark(hist, avg5, dom){
-    // v4: the bar IS the "vs normal" column — thick diverging bar with its
+    // v4: the bar IS the "vs normal" column: a thick diverging bar with its
     // own value printed at the tip. Center tick = this region's 5-yr
     // same-week normal. Shared $/bu scale across rows.
     if(!hist||!hist.length) return '';
