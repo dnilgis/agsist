@@ -4425,6 +4425,272 @@
    }
   },
   {
+   "name": "Shipshewana Livestock Auction",
+   "town": "Shipshewana",
+   "state": "IN",
+   "lat": 41.66,
+   "lon": -85.59,
+   "id": "shipshewana-in",
+   "sales": [
+    {
+     "date": "2026-10-22",
+     "receipts": 1669,
+     "classes": {
+      "heifers|1": {
+       "400": {
+        "head": 4,
+        "avg_wt": 458,
+        "cwt": 205.0,
+        "per_head": 938.9,
+        "lo": 205.0,
+        "hi": 205.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 0
+    }
+   ],
+   "slug": "1970",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1970",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Springville Feeder Cattle Auction",
+   "town": "Springville",
+   "state": "IN",
+   "lat": 38.95,
+   "lon": -86.61,
+   "id": "springville-in",
+   "sales": [
+    {
+     "date": "2026-10-02",
+     "receipts": 1014,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 22,
+        "avg_wt": 353,
+        "cwt": 423.26,
+        "per_head": 1494.68,
+        "lo": 417.0,
+        "hi": 427.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 54,
+        "avg_wt": 463,
+        "cwt": 422.1,
+        "per_head": 1953.75,
+        "lo": 413.0,
+        "hi": 426.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 351,
+        "avg_wt": 538,
+        "cwt": 393.55,
+        "per_head": 2118.32,
+        "lo": 373.0,
+        "hi": 432.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 95,
+        "avg_wt": 642,
+        "cwt": 356.83,
+        "per_head": 2292.26,
+        "lo": 342.0,
+        "hi": 373.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 47,
+        "avg_wt": 732,
+        "cwt": 346.15,
+        "per_head": 2533.82,
+        "lo": 341.0,
+        "hi": 352.5,
+        "rows": 1
+       },
+       "800": {
+        "head": 35,
+        "avg_wt": 842,
+        "cwt": 313.65,
+        "per_head": 2640.31,
+        "lo": 295.0,
+        "hi": 331.0,
+        "rows": 2
+       }
+      },
+      "steers|1-2": {
+       "600": {
+        "head": 14,
+        "avg_wt": 656,
+        "cwt": 333.0,
+        "per_head": 2184.48,
+        "lo": 333.0,
+        "hi": 333.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 12,
+        "avg_wt": 748,
+        "cwt": 328.0,
+        "per_head": 2453.44,
+        "lo": 328.0,
+        "hi": 328.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 26,
+        "avg_wt": 344,
+        "cwt": 442.57,
+        "per_head": 1522.44,
+        "lo": 432.0,
+        "hi": 455.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 112,
+        "avg_wt": 448,
+        "cwt": 395.02,
+        "per_head": 1769.94,
+        "lo": 380.0,
+        "hi": 412.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 106,
+        "avg_wt": 544,
+        "cwt": 362.04,
+        "per_head": 1969.25,
+        "lo": 334.0,
+        "hi": 391.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 34,
+        "avg_wt": 642,
+        "cwt": 303.97,
+        "per_head": 1951.31,
+        "lo": 284.0,
+        "hi": 316.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 9,
+        "avg_wt": 355,
+        "cwt": 329.0,
+        "per_head": 1167.95,
+        "lo": 329.0,
+        "hi": 329.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 32,
+        "avg_wt": 473,
+        "cwt": 361.38,
+        "per_head": 1709.33,
+        "lo": 350.0,
+        "hi": 371.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 64,
+        "avg_wt": 548,
+        "cwt": 335.72,
+        "per_head": 1838.18,
+        "lo": 322.0,
+        "hi": 342.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 4,
+        "avg_wt": 886,
+        "cwt": 190.0,
+        "per_head": 1683.4,
+        "lo": 190.0,
+        "hi": 190.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 0
+    }
+   ],
+   "slug": "1968",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1968",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Topeka Livestock Auction",
+   "town": "Topeka",
+   "state": "IN",
+   "lat": 41.56,
+   "lon": -85.53,
+   "id": "topeka-in",
+   "sales": [
+    {
+     "date": "2026-10-20",
+     "receipts": 577,
+     "classes": {
+      "steers|1": {
+       "400": {
+        "head": 1,
+        "avg_wt": 445,
+        "cwt": 245.0,
+        "per_head": 1090.25,
+        "lo": 245.0,
+        "hi": 245.0,
+        "rows": 1
+       },
+       "600": {
+        "head": 3,
+        "avg_wt": 631,
+        "cwt": 265.0,
+        "per_head": 1672.15,
+        "lo": 265.0,
+        "hi": 265.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "600": {
+        "head": 2,
+        "avg_wt": 680,
+        "cwt": 265.0,
+        "per_head": 1802.0,
+        "lo": 265.0,
+        "hi": 265.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 0
+    }
+   ],
+   "slug": "3415",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3415",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
    "name": "Winter Livestock",
    "town": "Dodge City",
    "state": "KS",
@@ -5423,6 +5689,1159 @@
   },
   {
    "name": "Blue Grass Stockyards",
+   "town": "Albany",
+   "state": "KY",
+   "lat": 36.69,
+   "lon": -85.14,
+   "id": "albany-ky",
+   "sales": [
+    {
+     "date": "2026-10-21",
+     "receipts": 675,
+     "classes": {
+      "steers|1-2": {
+       "300": {
+        "head": 5,
+        "avg_wt": 371,
+        "cwt": 552.11,
+        "per_head": 2048.33,
+        "lo": 547.5,
+        "hi": 555.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 5,
+        "avg_wt": 452,
+        "cwt": 442.0,
+        "per_head": 1996.97,
+        "lo": 410.0,
+        "hi": 470.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 11,
+        "avg_wt": 564,
+        "cwt": 393.19,
+        "per_head": 2217.57,
+        "lo": 380.0,
+        "hi": 407.5,
+        "rows": 2
+       },
+       "600": {
+        "head": 35,
+        "avg_wt": 665,
+        "cwt": 354.66,
+        "per_head": 2357.05,
+        "lo": 340.0,
+        "hi": 380.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 20,
+        "avg_wt": 732,
+        "cwt": 346.09,
+        "per_head": 2533.38,
+        "lo": 335.0,
+        "hi": 352.5,
+        "rows": 1
+       },
+       "800": {
+        "head": 7,
+        "avg_wt": 859,
+        "cwt": 322.82,
+        "per_head": 2773.91,
+        "lo": 321.0,
+        "hi": 327.5,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 8,
+        "avg_wt": 357,
+        "cwt": 422.29,
+        "per_head": 1507.59,
+        "lo": 417.5,
+        "hi": 425.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 32,
+        "avg_wt": 448,
+        "cwt": 394.96,
+        "per_head": 1769.41,
+        "lo": 382.5,
+        "hi": 427.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 48,
+        "avg_wt": 518,
+        "cwt": 362.17,
+        "per_head": 1875.11,
+        "lo": 350.0,
+        "hi": 375.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 18,
+        "avg_wt": 644,
+        "cwt": 330.23,
+        "per_head": 2125.79,
+        "lo": 317.5,
+        "hi": 337.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 4,
+        "avg_wt": 714,
+        "cwt": 286.12,
+        "per_head": 2042.9,
+        "lo": 277.5,
+        "hi": 290.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 1,
+        "avg_wt": 865,
+        "cwt": 287.5,
+        "per_head": 2486.88,
+        "lo": 287.5,
+        "hi": 287.5,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 95
+    }
+   ],
+   "slug": "2189",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2189",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Cattleman's Livestock",
+   "town": "Bowling Green",
+   "state": "KY",
+   "lat": 37.02,
+   "lon": -86.45,
+   "id": "bowling-green-ky-cattlemans",
+   "sales": [
+    {
+     "date": "2026-10-26",
+     "receipts": 315,
+     "classes": {
+      "steers|1-2": {
+       "300": {
+        "head": 1,
+        "avg_wt": 340,
+        "cwt": 500.0,
+        "per_head": 1700.0,
+        "lo": 500.0,
+        "hi": 500.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 3,
+        "avg_wt": 485,
+        "cwt": 432.5,
+        "per_head": 2097.62,
+        "lo": 432.5,
+        "hi": 432.5,
+        "rows": 1
+       },
+       "500": {
+        "head": 11,
+        "avg_wt": 564,
+        "cwt": 392.22,
+        "per_head": 2212.5,
+        "lo": 387.0,
+        "hi": 407.5,
+        "rows": 2
+       },
+       "600": {
+        "head": 10,
+        "avg_wt": 624,
+        "cwt": 373.89,
+        "per_head": 2333.43,
+        "lo": 347.5,
+        "hi": 377.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 13,
+        "avg_wt": 702,
+        "cwt": 346.5,
+        "per_head": 2432.43,
+        "lo": 346.5,
+        "hi": 346.5,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 3,
+        "avg_wt": 350,
+        "cwt": 450.0,
+        "per_head": 1575.0,
+        "lo": 450.0,
+        "hi": 450.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 21,
+        "avg_wt": 443,
+        "cwt": 401.28,
+        "per_head": 1777.1,
+        "lo": 377.5,
+        "hi": 422.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 11,
+        "avg_wt": 542,
+        "cwt": 358.69,
+        "per_head": 1945.75,
+        "lo": 331.0,
+        "hi": 376.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 9,
+        "avg_wt": 625,
+        "cwt": 309.43,
+        "per_head": 1932.91,
+        "lo": 305.0,
+        "hi": 315.0,
+        "rows": 2
+       }
+      }
+     },
+     "noted_head": 0
+    }
+   ],
+   "slug": "2213",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2213",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "United Producers Inc.",
+   "town": "Bowling Green",
+   "state": "KY",
+   "lat": 37.02,
+   "lon": -86.45,
+   "id": "bowling-green-ky-united",
+   "sales": [
+    {
+     "date": "2026-10-27",
+     "receipts": 158,
+     "classes": {
+      "steers|1-2": {
+       "300": {
+        "head": 1,
+        "avg_wt": 330,
+        "cwt": 445.0,
+        "per_head": 1468.5,
+        "lo": 445.0,
+        "hi": 445.0,
+        "rows": 1
+       },
+       "600": {
+        "head": 1,
+        "avg_wt": 600,
+        "cwt": 355.0,
+        "per_head": 2130.0,
+        "lo": 355.0,
+        "hi": 355.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 1,
+        "avg_wt": 720,
+        "cwt": 320.0,
+        "per_head": 2304.0,
+        "lo": 320.0,
+        "hi": 320.0,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 5,
+        "avg_wt": 348,
+        "cwt": 380.0,
+        "per_head": 1322.4,
+        "lo": 380.0,
+        "hi": 380.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 4,
+        "avg_wt": 445,
+        "cwt": 370.0,
+        "per_head": 1646.5,
+        "lo": 370.0,
+        "hi": 370.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 9,
+        "avg_wt": 544,
+        "cwt": 302.53,
+        "per_head": 1645.43,
+        "lo": 272.5,
+        "hi": 342.5,
+        "rows": 2
+       },
+       "600": {
+        "head": 5,
+        "avg_wt": 650,
+        "cwt": 275.96,
+        "per_head": 1793.2,
+        "lo": 275.0,
+        "hi": 280.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 2,
+        "avg_wt": 705,
+        "cwt": 255.0,
+        "per_head": 1797.75,
+        "lo": 255.0,
+        "hi": 255.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 0
+    }
+   ],
+   "slug": "2188",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2188",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Blue Grass Stockyards",
+   "town": "Campbellsville",
+   "state": "KY",
+   "lat": 37.35,
+   "lon": -85.35,
+   "id": "campbellsville-ky",
+   "sales": [
+    {
+     "date": "2026-10-24",
+     "receipts": 237,
+     "classes": {
+      "steers|1-2": {
+       "400": {
+        "head": 2,
+        "avg_wt": 445,
+        "cwt": 462.5,
+        "per_head": 2058.12,
+        "lo": 462.5,
+        "hi": 462.5,
+        "rows": 1
+       },
+       "500": {
+        "head": 4,
+        "avg_wt": 548,
+        "cwt": 390.67,
+        "per_head": 2140.85,
+        "lo": 380.0,
+        "hi": 403.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 3,
+        "avg_wt": 602,
+        "cwt": 376.27,
+        "per_head": 2265.15,
+        "lo": 355.0,
+        "hi": 387.0,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 3,
+        "avg_wt": 333,
+        "cwt": 445.1,
+        "per_head": 1483.66,
+        "lo": 435.0,
+        "hi": 455.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 3,
+        "avg_wt": 449,
+        "cwt": 406.31,
+        "per_head": 1822.96,
+        "lo": 380.0,
+        "hi": 430.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 6,
+        "avg_wt": 541,
+        "cwt": 338.76,
+        "per_head": 1834.39,
+        "lo": 325.0,
+        "hi": 353.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 4,
+        "avg_wt": 646,
+        "cwt": 325.29,
+        "per_head": 2101.36,
+        "lo": 319.0,
+        "hi": 331.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 5,
+        "avg_wt": 763,
+        "cwt": 288.37,
+        "per_head": 2201.38,
+        "lo": 277.5,
+        "hi": 291.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 1,
+        "avg_wt": 805,
+        "cwt": 290.0,
+        "per_head": 2334.5,
+        "lo": 290.0,
+        "hi": 290.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 0
+    }
+   ],
+   "slug": "2192",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2192",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Farmers Stockyards",
+   "town": "Flemingsburg",
+   "state": "KY",
+   "lat": 38.43,
+   "lon": -83.71,
+   "id": "flemingsburg-ky",
+   "sales": [
+    {
+     "date": "2026-10-28",
+     "receipts": 291,
+     "classes": {
+      "steers|1-2": {
+       "300": {
+        "head": 1,
+        "avg_wt": 335,
+        "cwt": 440.0,
+        "per_head": 1474.0,
+        "lo": 440.0,
+        "hi": 440.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 8,
+        "avg_wt": 457,
+        "cwt": 450.03,
+        "per_head": 2055.52,
+        "lo": 437.5,
+        "hi": 462.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 6,
+        "avg_wt": 572,
+        "cwt": 373.84,
+        "per_head": 2137.12,
+        "lo": 367.5,
+        "hi": 377.5,
+        "rows": 2
+       },
+       "600": {
+        "head": 6,
+        "avg_wt": 662,
+        "cwt": 346.82,
+        "per_head": 2297.08,
+        "lo": 340.0,
+        "hi": 350.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 2,
+        "avg_wt": 730,
+        "cwt": 324.0,
+        "per_head": 2365.2,
+        "lo": 324.0,
+        "hi": 324.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 5,
+        "avg_wt": 807,
+        "cwt": 315.59,
+        "per_head": 2546.81,
+        "lo": 314.0,
+        "hi": 318.0,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 8,
+        "avg_wt": 364,
+        "cwt": 380.2,
+        "per_head": 1382.03,
+        "lo": 360.0,
+        "hi": 395.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 17,
+        "avg_wt": 448,
+        "cwt": 368.14,
+        "per_head": 1649.29,
+        "lo": 350.0,
+        "hi": 377.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 9,
+        "avg_wt": 536,
+        "cwt": 334.83,
+        "per_head": 1794.7,
+        "lo": 327.5,
+        "hi": 345.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 5,
+        "avg_wt": 646,
+        "cwt": 327.01,
+        "per_head": 2111.83,
+        "lo": 310.0,
+        "hi": 335.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 1,
+        "avg_wt": 775,
+        "cwt": 290.0,
+        "per_head": 2247.5,
+        "lo": 290.0,
+        "hi": 290.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 1,
+        "avg_wt": 850,
+        "cwt": 317.5,
+        "per_head": 2698.75,
+        "lo": 317.5,
+        "hi": 317.5,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 44
+    }
+   ],
+   "slug": "2195",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2195",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Farmers Regional Livestock Market",
+   "town": "Glasgow",
+   "state": "KY",
+   "lat": 36.99,
+   "lon": -85.92,
+   "id": "glasgow-ky",
+   "sales": [
+    {
+     "date": "2026-10-26",
+     "receipts": 925,
+     "classes": {
+      "steers|1-2": {
+       "400": {
+        "head": 3,
+        "avg_wt": 441,
+        "cwt": 435.0,
+        "per_head": 1918.35,
+        "lo": 435.0,
+        "hi": 435.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 16,
+        "avg_wt": 559,
+        "cwt": 371.45,
+        "per_head": 2075.48,
+        "lo": 360.0,
+        "hi": 392.5,
+        "rows": 2
+       },
+       "600": {
+        "head": 6,
+        "avg_wt": 645,
+        "cwt": 337.92,
+        "per_head": 2179.58,
+        "lo": 327.5,
+        "hi": 340.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 4,
+        "avg_wt": 766,
+        "cwt": 325.0,
+        "per_head": 2488.69,
+        "lo": 325.0,
+        "hi": 325.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 10,
+        "avg_wt": 384,
+        "cwt": 424.0,
+        "per_head": 1628.16,
+        "lo": 424.0,
+        "hi": 424.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 61,
+        "avg_wt": 453,
+        "cwt": 369.72,
+        "per_head": 1675.26,
+        "lo": 353.0,
+        "hi": 380.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 62,
+        "avg_wt": 560,
+        "cwt": 345.85,
+        "per_head": 1935.99,
+        "lo": 321.0,
+        "hi": 360.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 26,
+        "avg_wt": 638,
+        "cwt": 311.86,
+        "per_head": 1990.87,
+        "lo": 302.5,
+        "hi": 316.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 10,
+        "avg_wt": 779,
+        "cwt": 293.66,
+        "per_head": 2287.61,
+        "lo": 286.0,
+        "hi": 301.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 2,
+        "avg_wt": 852,
+        "cwt": 264.18,
+        "per_head": 2252.16,
+        "lo": 261.0,
+        "hi": 267.5,
+        "rows": 2
+       }
+      }
+     },
+     "noted_head": 1
+    }
+   ],
+   "slug": "2198",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2198",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "KY-TN Livestock Market",
+   "town": "Guthrie",
+   "state": "KY",
+   "lat": 36.71,
+   "lon": -87.15,
+   "id": "guthrie-ky",
+   "sales": [
+    {
+     "date": "2026-10-22",
+     "receipts": 695,
+     "classes": {
+      "steers|1-2": {
+       "300": {
+        "head": 2,
+        "avg_wt": 362,
+        "cwt": 500.0,
+        "per_head": 1810.0,
+        "lo": 500.0,
+        "hi": 500.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 5,
+        "avg_wt": 451,
+        "cwt": 435.91,
+        "per_head": 1965.1,
+        "lo": 425.0,
+        "hi": 455.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 29,
+        "avg_wt": 537,
+        "cwt": 403.43,
+        "per_head": 2168.06,
+        "lo": 390.0,
+        "hi": 408.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 30,
+        "avg_wt": 622,
+        "cwt": 368.33,
+        "per_head": 2291.01,
+        "lo": 368.0,
+        "hi": 370.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 28,
+        "avg_wt": 713,
+        "cwt": 331.18,
+        "per_head": 2361.55,
+        "lo": 320.0,
+        "hi": 334.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 7,
+        "avg_wt": 814,
+        "cwt": 314.97,
+        "per_head": 2563.86,
+        "lo": 310.0,
+        "hi": 317.0,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 2,
+        "avg_wt": 360,
+        "cwt": 440.0,
+        "per_head": 1584.0,
+        "lo": 440.0,
+        "hi": 440.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 29,
+        "avg_wt": 469,
+        "cwt": 400.02,
+        "per_head": 1874.84,
+        "lo": 397.5,
+        "hi": 412.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 42,
+        "avg_wt": 549,
+        "cwt": 352.22,
+        "per_head": 1934.26,
+        "lo": 321.0,
+        "hi": 360.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 29,
+        "avg_wt": 662,
+        "cwt": 302.65,
+        "per_head": 2002.07,
+        "lo": 293.0,
+        "hi": 330.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 4,
+        "avg_wt": 740,
+        "cwt": 292.38,
+        "per_head": 2163.6,
+        "lo": 285.0,
+        "hi": 300.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 3,
+        "avg_wt": 828,
+        "cwt": 285.0,
+        "per_head": 2359.8,
+        "lo": 285.0,
+        "hi": 285.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 28
+    }
+   ],
+   "slug": "2206",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2206",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "United Producers Inc.",
+   "town": "Harned",
+   "state": "KY",
+   "lat": 37.8,
+   "lon": -86.41,
+   "id": "harned-ky",
+   "sales": [
+    {
+     "date": "2026-10-26",
+     "receipts": 846,
+     "classes": {
+      "steers|1-2": {
+       "300": {
+        "head": 9,
+        "avg_wt": 353,
+        "cwt": 462.42,
+        "per_head": 1632.36,
+        "lo": 435.0,
+        "hi": 500.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 14,
+        "avg_wt": 427,
+        "cwt": 449.58,
+        "per_head": 1920.69,
+        "lo": 439.0,
+        "hi": 455.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 30,
+        "avg_wt": 540,
+        "cwt": 420.03,
+        "per_head": 2270.28,
+        "lo": 400.0,
+        "hi": 436.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 34,
+        "avg_wt": 633,
+        "cwt": 379.84,
+        "per_head": 2403.96,
+        "lo": 364.0,
+        "hi": 385.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 3,
+        "avg_wt": 757,
+        "cwt": 341.11,
+        "per_head": 2582.19,
+        "lo": 335.0,
+        "hi": 352.5,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 12,
+        "avg_wt": 356,
+        "cwt": 383.81,
+        "per_head": 1367.65,
+        "lo": 365.0,
+        "hi": 390.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 11,
+        "avg_wt": 455,
+        "cwt": 374.14,
+        "per_head": 1700.66,
+        "lo": 360.0,
+        "hi": 385.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 24,
+        "avg_wt": 555,
+        "cwt": 352.81,
+        "per_head": 1957.06,
+        "lo": 339.0,
+        "hi": 365.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 8,
+        "avg_wt": 619,
+        "cwt": 321.11,
+        "per_head": 1987.67,
+        "lo": 312.0,
+        "hi": 335.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 2,
+        "avg_wt": 723,
+        "cwt": 326.34,
+        "per_head": 2359.44,
+        "lo": 322.5,
+        "hi": 330.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 40
+    }
+   ],
+   "slug": "2207",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2207",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Christian Co. Livestock",
+   "town": "Hopkinsville",
+   "state": "KY",
+   "lat": 36.86,
+   "lon": -87.49,
+   "id": "hopkinsville-ky",
+   "sales": [
+    {
+     "date": "2026-10-21",
+     "receipts": 28,
+     "classes": {
+      "steers|1-2": {
+       "500": {
+        "head": 1,
+        "avg_wt": 530,
+        "cwt": 382.5,
+        "per_head": 2027.25,
+        "lo": 382.5,
+        "hi": 382.5,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 2,
+        "avg_wt": 370,
+        "cwt": 402.5,
+        "per_head": 1489.25,
+        "lo": 402.5,
+        "hi": 402.5,
+        "rows": 1
+       },
+       "400": {
+        "head": 2,
+        "avg_wt": 480,
+        "cwt": 370.0,
+        "per_head": 1776.0,
+        "lo": 370.0,
+        "hi": 370.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 1,
+        "avg_wt": 550,
+        "cwt": 340.0,
+        "per_head": 1870.0,
+        "lo": 340.0,
+        "hi": 340.0,
+        "rows": 1
+       },
+       "600": {
+        "head": 3,
+        "avg_wt": 653,
+        "cwt": 320.0,
+        "per_head": 2089.6,
+        "lo": 320.0,
+        "hi": 320.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 1,
+        "avg_wt": 705,
+        "cwt": 305.0,
+        "per_head": 2150.25,
+        "lo": 305.0,
+        "hi": 305.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 0
+    }
+   ],
+   "slug": "2200",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2200",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Livingston Co. Livestock Market",
+   "town": "Ledbetter",
+   "state": "KY",
+   "lat": 37.06,
+   "lon": -88.47,
+   "id": "ledbetter-ky",
+   "sales": [
+    {
+     "date": "2026-10-20",
+     "receipts": 355,
+     "classes": {
+      "steers|1-2": {
+       "300": {
+        "head": 2,
+        "avg_wt": 393,
+        "cwt": 437.52,
+        "per_head": 1719.45,
+        "lo": 435.0,
+        "hi": 440.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 10,
+        "avg_wt": 447,
+        "cwt": 423.14,
+        "per_head": 1891.44,
+        "lo": 400.0,
+        "hi": 445.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 10,
+        "avg_wt": 552,
+        "cwt": 365.4,
+        "per_head": 2018.47,
+        "lo": 352.5,
+        "hi": 390.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 31,
+        "avg_wt": 639,
+        "cwt": 346.25,
+        "per_head": 2212.67,
+        "lo": 330.0,
+        "hi": 357.5,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 1,
+        "avg_wt": 370,
+        "cwt": 415.0,
+        "per_head": 1535.5,
+        "lo": 415.0,
+        "hi": 415.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 16,
+        "avg_wt": 470,
+        "cwt": 368.35,
+        "per_head": 1731.24,
+        "lo": 350.0,
+        "hi": 425.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 13,
+        "avg_wt": 540,
+        "cwt": 331.57,
+        "per_head": 1791.23,
+        "lo": 320.0,
+        "hi": 345.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 7,
+        "avg_wt": 629,
+        "cwt": 313.97,
+        "per_head": 1975.35,
+        "lo": 305.0,
+        "hi": 322.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 8,
+        "avg_wt": 741,
+        "cwt": 307.34,
+        "per_head": 2277.79,
+        "lo": 285.0,
+        "hi": 317.5,
+        "rows": 2
+       }
+      }
+     },
+     "noted_head": 31
+    }
+   ],
+   "slug": "2196",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2196",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Blue Grass Stockyards",
    "town": "Lexington",
    "state": "KY",
    "lat": 38.04,
@@ -5668,6 +7087,351 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2128"
   },
   {
+   "name": "Bluegrass Stockyard",
+   "town": "Mt. Sterling",
+   "state": "KY",
+   "lat": 38.05,
+   "lon": -83.94,
+   "id": "mount-sterling-ky",
+   "sales": [
+    {
+     "date": "2026-10-21",
+     "receipts": 630,
+     "classes": {
+      "steers|1-2": {
+       "300": {
+        "head": 3,
+        "avg_wt": 387,
+        "cwt": 443.36,
+        "per_head": 1715.8,
+        "lo": 440.0,
+        "hi": 450.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 18,
+        "avg_wt": 477,
+        "cwt": 424.47,
+        "per_head": 2023.28,
+        "lo": 410.0,
+        "hi": 428.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 18,
+        "avg_wt": 541,
+        "cwt": 390.03,
+        "per_head": 2108.74,
+        "lo": 365.0,
+        "hi": 405.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 8,
+        "avg_wt": 648,
+        "cwt": 355.36,
+        "per_head": 2300.98,
+        "lo": 336.0,
+        "hi": 380.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 8,
+        "avg_wt": 744,
+        "cwt": 331.19,
+        "per_head": 2463.2,
+        "lo": 311.0,
+        "hi": 338.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 14,
+        "avg_wt": 357,
+        "cwt": 412.88,
+        "per_head": 1475.15,
+        "lo": 397.0,
+        "hi": 430.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 17,
+        "avg_wt": 472,
+        "cwt": 366.08,
+        "per_head": 1728.97,
+        "lo": 346.0,
+        "hi": 410.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 16,
+        "avg_wt": 558,
+        "cwt": 332.94,
+        "per_head": 1856.15,
+        "lo": 319.0,
+        "hi": 347.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 8,
+        "avg_wt": 663,
+        "cwt": 310.45,
+        "per_head": 2058.28,
+        "lo": 292.5,
+        "hi": 319.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 2,
+        "avg_wt": 740,
+        "cwt": 310.0,
+        "per_head": 2294.0,
+        "lo": 310.0,
+        "hi": 310.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 139
+    }
+   ],
+   "slug": "2202",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2202",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Kentuckiana Livestock Market",
+   "town": "Owensboro",
+   "state": "KY",
+   "lat": 37.75,
+   "lon": -87.16,
+   "id": "owensboro-ky",
+   "sales": [
+    {
+     "date": "2026-10-26",
+     "receipts": 228,
+     "classes": {
+      "steers|1-2": {
+       "400": {
+        "head": 3,
+        "avg_wt": 410,
+        "cwt": 481.17,
+        "per_head": 1972.8,
+        "lo": 467.0,
+        "hi": 488.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 10,
+        "avg_wt": 563,
+        "cwt": 378.59,
+        "per_head": 2129.95,
+        "lo": 375.0,
+        "hi": 415.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 4,
+        "avg_wt": 643,
+        "cwt": 347.87,
+        "per_head": 2235.96,
+        "lo": 330.0,
+        "hi": 366.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 7,
+        "avg_wt": 719,
+        "cwt": 332.73,
+        "per_head": 2393.74,
+        "lo": 316.0,
+        "hi": 340.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 2,
+        "avg_wt": 355,
+        "cwt": 416.87,
+        "per_head": 1479.9,
+        "lo": 402.0,
+        "hi": 435.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 11,
+        "avg_wt": 443,
+        "cwt": 408.21,
+        "per_head": 1806.53,
+        "lo": 400.0,
+        "hi": 419.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 21,
+        "avg_wt": 556,
+        "cwt": 351.77,
+        "per_head": 1955.84,
+        "lo": 330.0,
+        "hi": 372.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 5,
+        "avg_wt": 658,
+        "cwt": 321.0,
+        "per_head": 2112.18,
+        "lo": 321.0,
+        "hi": 321.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 1,
+        "avg_wt": 715,
+        "cwt": 300.0,
+        "per_head": 2145.0,
+        "lo": 300.0,
+        "hi": 300.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 0
+    }
+   ],
+   "slug": "2201",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2201",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "United Producers Inc.",
+   "town": "Owenton",
+   "state": "KY",
+   "lat": 38.5,
+   "lon": -84.81,
+   "id": "owenton-ky",
+   "sales": [
+    {
+     "date": "2026-10-21",
+     "receipts": 428,
+     "classes": {
+      "steers|1-2": {
+       "400": {
+        "head": 8,
+        "avg_wt": 462,
+        "cwt": 433.03,
+        "per_head": 1999.51,
+        "lo": 425.0,
+        "hi": 445.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 3,
+        "avg_wt": 583,
+        "cwt": 369.14,
+        "per_head": 2152.09,
+        "lo": 357.0,
+        "hi": 375.0,
+        "rows": 1
+       },
+       "600": {
+        "head": 6,
+        "avg_wt": 624,
+        "cwt": 338.01,
+        "per_head": 2110.29,
+        "lo": 325.0,
+        "hi": 350.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 5,
+        "avg_wt": 747,
+        "cwt": 321.0,
+        "per_head": 2397.87,
+        "lo": 321.0,
+        "hi": 321.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 4,
+        "avg_wt": 860,
+        "cwt": 336.5,
+        "per_head": 2893.9,
+        "lo": 336.5,
+        "hi": 336.5,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 7,
+        "avg_wt": 369,
+        "cwt": 366.27,
+        "per_head": 1349.96,
+        "lo": 350.0,
+        "hi": 380.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 13,
+        "avg_wt": 460,
+        "cwt": 352.06,
+        "per_head": 1618.38,
+        "lo": 330.0,
+        "hi": 370.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 13,
+        "avg_wt": 534,
+        "cwt": 335.33,
+        "per_head": 1791.94,
+        "lo": 325.0,
+        "hi": 342.5,
+        "rows": 2
+       },
+       "600": {
+        "head": 14,
+        "avg_wt": 673,
+        "cwt": 314.72,
+        "per_head": 2118.07,
+        "lo": 310.0,
+        "hi": 322.5,
+        "rows": 1
+       },
+       "700": {
+        "head": 5,
+        "avg_wt": 715,
+        "cwt": 317.0,
+        "per_head": 2266.55,
+        "lo": 317.0,
+        "hi": 317.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 146
+    }
+   ],
+   "slug": "2203",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2203",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
    "name": "Paris Stockyards",
    "town": "Paris",
    "state": "KY",
@@ -5893,6 +7657,1155 @@
     "ok": true,
     "note": "",
     "checked": "2026-10-28T06:56:12Z"
+   }
+  },
+  {
+   "name": "Blue Grass Stockyards",
+   "town": "Richmond",
+   "state": "KY",
+   "lat": 37.75,
+   "lon": -84.3,
+   "id": "richmond-ky",
+   "sales": [
+    {
+     "date": "2026-10-23",
+     "receipts": 701,
+     "classes": {
+      "steers|1-2": {
+       "400": {
+        "head": 4,
+        "avg_wt": 431,
+        "cwt": 457.22,
+        "per_head": 1971.75,
+        "lo": 450.0,
+        "hi": 460.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 9,
+        "avg_wt": 553,
+        "cwt": 401.79,
+        "per_head": 2221.91,
+        "lo": 392.5,
+        "hi": 420.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 6,
+        "avg_wt": 635,
+        "cwt": 361.7,
+        "per_head": 2296.8,
+        "lo": 350.0,
+        "hi": 367.5,
+        "rows": 1
+       },
+       "700": {
+        "head": 3,
+        "avg_wt": 726,
+        "cwt": 335.87,
+        "per_head": 2439.51,
+        "lo": 335.0,
+        "hi": 337.5,
+        "rows": 2
+       },
+       "800": {
+        "head": 3,
+        "avg_wt": 855,
+        "cwt": 332.0,
+        "per_head": 2838.6,
+        "lo": 332.0,
+        "hi": 332.0,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 3,
+        "avg_wt": 325,
+        "cwt": 439.53,
+        "per_head": 1428.47,
+        "lo": 427.5,
+        "hi": 445.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 10,
+        "avg_wt": 443,
+        "cwt": 367.76,
+        "per_head": 1628.42,
+        "lo": 365.0,
+        "hi": 385.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 17,
+        "avg_wt": 545,
+        "cwt": 325.2,
+        "per_head": 1771.4,
+        "lo": 312.5,
+        "hi": 337.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 1,
+        "avg_wt": 760,
+        "cwt": 280.0,
+        "per_head": 2128.0,
+        "lo": 280.0,
+        "hi": 280.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 6,
+        "avg_wt": 847,
+        "cwt": 301.88,
+        "per_head": 2556.94,
+        "lo": 275.0,
+        "hi": 310.0,
+        "rows": 2
+       }
+      }
+     },
+     "noted_head": 198
+    }
+   ],
+   "slug": "2210",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2210",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Russell Co. Stockyard",
+   "town": "Russell Springs",
+   "state": "KY",
+   "lat": 37.06,
+   "lon": -85.04,
+   "id": "russell-springs-ky",
+   "sales": [
+    {
+     "date": "2026-10-21",
+     "receipts": 612,
+     "classes": {
+      "steers|1-2": {
+       "300": {
+        "head": 4,
+        "avg_wt": 369,
+        "cwt": 520.15,
+        "per_head": 1919.35,
+        "lo": 515.0,
+        "hi": 535.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 10,
+        "avg_wt": 453,
+        "cwt": 486.65,
+        "per_head": 2206.47,
+        "lo": 465.0,
+        "hi": 492.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 15,
+        "avg_wt": 534,
+        "cwt": 401.29,
+        "per_head": 2141.84,
+        "lo": 394.0,
+        "hi": 405.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 12,
+        "avg_wt": 648,
+        "cwt": 370.4,
+        "per_head": 2402.05,
+        "lo": 355.0,
+        "hi": 380.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 8,
+        "avg_wt": 734,
+        "cwt": 342.87,
+        "per_head": 2516.69,
+        "lo": 336.0,
+        "hi": 347.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 3,
+        "avg_wt": 848,
+        "cwt": 333.28,
+        "per_head": 2827.33,
+        "lo": 320.0,
+        "hi": 340.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 9,
+        "avg_wt": 370,
+        "cwt": 400.48,
+        "per_head": 1480.0,
+        "lo": 382.0,
+        "hi": 442.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 13,
+        "avg_wt": 467,
+        "cwt": 374.26,
+        "per_head": 1747.21,
+        "lo": 370.0,
+        "hi": 385.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 13,
+        "avg_wt": 542,
+        "cwt": 346.8,
+        "per_head": 1878.07,
+        "lo": 322.0,
+        "hi": 365.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 16,
+        "avg_wt": 635,
+        "cwt": 315.7,
+        "per_head": 2005.91,
+        "lo": 305.0,
+        "hi": 322.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 2,
+        "avg_wt": 747,
+        "cwt": 300.0,
+        "per_head": 2241.0,
+        "lo": 300.0,
+        "hi": 300.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 125
+    }
+   ],
+   "slug": "2208",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2208",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Farmers Regional Livestock Auction of Glasgow",
+   "town": "Smiths Grove",
+   "state": "KY",
+   "lat": 37.06,
+   "lon": -86.19,
+   "id": "smiths-grove-ky",
+   "sales": [
+    {
+     "date": "2026-10-27",
+     "receipts": 658,
+     "classes": {
+      "heifers|1-2": {
+       "500": {
+        "head": 1,
+        "avg_wt": 515,
+        "cwt": 290.0,
+        "per_head": 1493.5,
+        "lo": 290.0,
+        "hi": 290.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 1,
+        "avg_wt": 720,
+        "cwt": 260.0,
+        "per_head": 1872.0,
+        "lo": 260.0,
+        "hi": 260.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 0
+    }
+   ],
+   "slug": "2199",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2199",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Lake Cumberland Livestock",
+   "town": "Somerset",
+   "state": "KY",
+   "lat": 37.1,
+   "lon": -84.54,
+   "id": "somerset-ky",
+   "sales": [
+    {
+     "date": "2026-10-24",
+     "receipts": 938,
+     "classes": {
+      "steers|1-2": {
+       "300": {
+        "head": 4,
+        "avg_wt": 336,
+        "cwt": 481.17,
+        "per_head": 1619.12,
+        "lo": 450.0,
+        "hi": 500.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 5,
+        "avg_wt": 466,
+        "cwt": 419.5,
+        "per_head": 1955.7,
+        "lo": 410.0,
+        "hi": 440.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 19,
+        "avg_wt": 578,
+        "cwt": 363.5,
+        "per_head": 2101.78,
+        "lo": 350.0,
+        "hi": 375.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 4,
+        "avg_wt": 684,
+        "cwt": 343.33,
+        "per_head": 2348.38,
+        "lo": 337.5,
+        "hi": 358.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 2,
+        "avg_wt": 723,
+        "cwt": 346.13,
+        "per_head": 2502.52,
+        "lo": 342.5,
+        "hi": 350.0,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 12,
+        "avg_wt": 356,
+        "cwt": 399.73,
+        "per_head": 1421.7,
+        "lo": 392.5,
+        "hi": 412.5,
+        "rows": 2
+       },
+       "400": {
+        "head": 20,
+        "avg_wt": 463,
+        "cwt": 363.21,
+        "per_head": 1680.95,
+        "lo": 350.0,
+        "hi": 375.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 29,
+        "avg_wt": 547,
+        "cwt": 336.98,
+        "per_head": 1844.32,
+        "lo": 320.0,
+        "hi": 345.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 5,
+        "avg_wt": 629,
+        "cwt": 318.62,
+        "per_head": 2003.5,
+        "lo": 310.0,
+        "hi": 324.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 9,
+        "avg_wt": 745,
+        "cwt": 304.79,
+        "per_head": 2272.04,
+        "lo": 290.0,
+        "hi": 315.0,
+        "rows": 2
+       }
+      }
+     },
+     "noted_head": 380
+    }
+   ],
+   "slug": "2194",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2194",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Washington Co. Cattle Sale",
+   "town": "Springfield",
+   "state": "KY",
+   "lat": 37.73,
+   "lon": -85.21,
+   "id": "springfield-ky",
+   "sales": [
+    {
+     "date": "2026-10-20",
+     "receipts": 1036,
+     "classes": {
+      "steers|1-2": {
+       "300": {
+        "head": 12,
+        "avg_wt": 369,
+        "cwt": 528.89,
+        "per_head": 1951.16,
+        "lo": 510.0,
+        "hi": 535.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 23,
+        "avg_wt": 442,
+        "cwt": 457.07,
+        "per_head": 2019.67,
+        "lo": 445.0,
+        "hi": 465.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 28,
+        "avg_wt": 541,
+        "cwt": 388.45,
+        "per_head": 2099.73,
+        "lo": 371.0,
+        "hi": 400.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 28,
+        "avg_wt": 656,
+        "cwt": 352.49,
+        "per_head": 2311.57,
+        "lo": 342.5,
+        "hi": 368.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 27,
+        "avg_wt": 750,
+        "cwt": 335.79,
+        "per_head": 2517.46,
+        "lo": 326.0,
+        "hi": 342.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 3,
+        "avg_wt": 831,
+        "cwt": 321.03,
+        "per_head": 2668.87,
+        "lo": 304.0,
+        "hi": 330.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 7,
+        "avg_wt": 358,
+        "cwt": 439.32,
+        "per_head": 1571.5,
+        "lo": 432.5,
+        "hi": 447.5,
+        "rows": 2
+       },
+       "400": {
+        "head": 33,
+        "avg_wt": 453,
+        "cwt": 376.31,
+        "per_head": 1704.36,
+        "lo": 362.5,
+        "hi": 400.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 61,
+        "avg_wt": 544,
+        "cwt": 353.63,
+        "per_head": 1925.23,
+        "lo": 344.0,
+        "hi": 361.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 46,
+        "avg_wt": 641,
+        "cwt": 325.9,
+        "per_head": 2090.14,
+        "lo": 318.0,
+        "hi": 339.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 6,
+        "avg_wt": 738,
+        "cwt": 307.49,
+        "per_head": 2269.26,
+        "lo": 300.0,
+        "hi": 318.0,
+        "rows": 2
+       }
+      }
+     },
+     "noted_head": 335
+    }
+   ],
+   "slug": "2209",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2209",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Blue Grass South Stockyards",
+   "town": "Stanford",
+   "state": "KY",
+   "lat": 37.52,
+   "lon": -84.69,
+   "id": "stanford-ky",
+   "sales": [
+    {
+     "date": "2026-10-26",
+     "receipts": 296,
+     "classes": {
+      "steers|1-2": {
+       "400": {
+        "head": 3,
+        "avg_wt": 466,
+        "cwt": 450.0,
+        "per_head": 2097.0,
+        "lo": 450.0,
+        "hi": 450.0,
+        "rows": 1
+       },
+       "600": {
+        "head": 5,
+        "avg_wt": 681,
+        "cwt": 337.46,
+        "per_head": 2298.1,
+        "lo": 325.0,
+        "hi": 342.5,
+        "rows": 1
+       },
+       "700": {
+        "head": 2,
+        "avg_wt": 732,
+        "cwt": 321.21,
+        "per_head": 2352.88,
+        "lo": 320.0,
+        "hi": 322.5,
+        "rows": 2
+       },
+       "800": {
+        "head": 5,
+        "avg_wt": 874,
+        "cwt": 303.73,
+        "per_head": 2653.34,
+        "lo": 302.5,
+        "hi": 304.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 1,
+        "avg_wt": 380,
+        "cwt": 390.0,
+        "per_head": 1482.0,
+        "lo": 390.0,
+        "hi": 390.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 7,
+        "avg_wt": 466,
+        "cwt": 370.27,
+        "per_head": 1724.41,
+        "lo": 362.5,
+        "hi": 372.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 12,
+        "avg_wt": 582,
+        "cwt": 345.12,
+        "per_head": 2008.6,
+        "lo": 337.5,
+        "hi": 347.5,
+        "rows": 1
+       },
+       "600": {
+        "head": 11,
+        "avg_wt": 626,
+        "cwt": 321.34,
+        "per_head": 2011.59,
+        "lo": 312.5,
+        "hi": 337.5,
+        "rows": 1
+       },
+       "700": {
+        "head": 8,
+        "avg_wt": 746,
+        "cwt": 277.16,
+        "per_head": 2068.62,
+        "lo": 260.0,
+        "hi": 287.5,
+        "rows": 2
+       },
+       "800": {
+        "head": 8,
+        "avg_wt": 835,
+        "cwt": 274.31,
+        "per_head": 2289.77,
+        "lo": 257.5,
+        "hi": 280.0,
+        "rows": 2
+       }
+      }
+     },
+     "noted_head": 54
+    }
+   ],
+   "slug": "2190",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2190",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Mid-Kentucky Livestock Market",
+   "town": "Upton",
+   "state": "KY",
+   "lat": 37.46,
+   "lon": -85.91,
+   "id": "upton-ky",
+   "sales": [
+    {
+     "date": "2026-10-28",
+     "receipts": 1045,
+     "classes": {
+      "steers|1-2": {
+       "400": {
+        "head": 13,
+        "avg_wt": 458,
+        "cwt": 429.34,
+        "per_head": 1967.05,
+        "lo": 420.0,
+        "hi": 446.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 17,
+        "avg_wt": 531,
+        "cwt": 375.23,
+        "per_head": 1991.13,
+        "lo": 367.0,
+        "hi": 380.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 15,
+        "avg_wt": 661,
+        "cwt": 384.0,
+        "per_head": 2538.24,
+        "lo": 384.0,
+        "hi": 384.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 14,
+        "avg_wt": 767,
+        "cwt": 340.0,
+        "per_head": 2607.8,
+        "lo": 340.0,
+        "hi": 340.0,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 8,
+        "avg_wt": 339,
+        "cwt": 377.0,
+        "per_head": 1278.03,
+        "lo": 377.0,
+        "hi": 377.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 46,
+        "avg_wt": 442,
+        "cwt": 387.35,
+        "per_head": 1710.15,
+        "lo": 370.0,
+        "hi": 405.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 76,
+        "avg_wt": 531,
+        "cwt": 348.29,
+        "per_head": 1850.0,
+        "lo": 340.0,
+        "hi": 357.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 41,
+        "avg_wt": 654,
+        "cwt": 321.46,
+        "per_head": 2103.65,
+        "lo": 320.0,
+        "hi": 323.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 14,
+        "avg_wt": 713,
+        "cwt": 305.0,
+        "per_head": 2174.65,
+        "lo": 305.0,
+        "hi": 305.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 187
+    }
+   ],
+   "slug": "2211",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2211",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Eastern MO Commission Company",
+   "town": "Bowling Green",
+   "state": "MO",
+   "lat": 39.33,
+   "lon": -91.2,
+   "id": "bowling-green-mo",
+   "sales": [
+    {
+     "date": "2026-10-23",
+     "receipts": 1138,
+     "classes": {
+      "steers|1": {
+       "400": {
+        "head": 9,
+        "avg_wt": 481,
+        "cwt": 481.28,
+        "per_head": 2314.96,
+        "lo": 472.5,
+        "hi": 497.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 42,
+        "avg_wt": 545,
+        "cwt": 435.26,
+        "per_head": 2373.61,
+        "lo": 407.5,
+        "hi": 462.5,
+        "rows": 2
+       },
+       "600": {
+        "head": 55,
+        "avg_wt": 637,
+        "cwt": 382.02,
+        "per_head": 2432.34,
+        "lo": 375.0,
+        "hi": 392.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 80,
+        "avg_wt": 754,
+        "cwt": 368.94,
+        "per_head": 2780.68,
+        "lo": 350.0,
+        "hi": 391.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 43,
+        "avg_wt": 844,
+        "cwt": 336.43,
+        "per_head": 2838.37,
+        "lo": 320.0,
+        "hi": 345.0,
+        "rows": 2
+       }
+      },
+      "steers|1-2": {
+       "400": {
+        "head": 8,
+        "avg_wt": 494,
+        "cwt": 460.37,
+        "per_head": 2274.23,
+        "lo": 452.5,
+        "hi": 465.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 7,
+        "avg_wt": 568,
+        "cwt": 401.21,
+        "per_head": 2278.31,
+        "lo": 385.0,
+        "hi": 425.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 11,
+        "avg_wt": 658,
+        "cwt": 351.49,
+        "per_head": 2311.83,
+        "lo": 339.0,
+        "hi": 365.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 6,
+        "avg_wt": 756,
+        "cwt": 342.95,
+        "per_head": 2594.42,
+        "lo": 341.0,
+        "hi": 345.0,
+        "rows": 2
+       }
+      },
+      "heifers|1": {
+       "400": {
+        "head": 18,
+        "avg_wt": 475,
+        "cwt": 418.34,
+        "per_head": 1987.12,
+        "lo": 405.0,
+        "hi": 422.5,
+        "rows": 1
+       },
+       "500": {
+        "head": 50,
+        "avg_wt": 539,
+        "cwt": 400.13,
+        "per_head": 2156.15,
+        "lo": 382.5,
+        "hi": 412.5,
+        "rows": 2
+       },
+       "600": {
+        "head": 84,
+        "avg_wt": 634,
+        "cwt": 361.85,
+        "per_head": 2294.7,
+        "lo": 340.0,
+        "hi": 380.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 112,
+        "avg_wt": 773,
+        "cwt": 313.16,
+        "per_head": 2420.73,
+        "lo": 306.5,
+        "hi": 325.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 37,
+        "avg_wt": 858,
+        "cwt": 300.02,
+        "per_head": 2573.64,
+        "lo": 294.0,
+        "hi": 313.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 3,
+        "avg_wt": 385,
+        "cwt": 400.0,
+        "per_head": 1540.0,
+        "lo": 400.0,
+        "hi": 400.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 15,
+        "avg_wt": 468,
+        "cwt": 397.12,
+        "per_head": 1857.19,
+        "lo": 385.0,
+        "hi": 410.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 3,
+        "avg_wt": 580,
+        "cwt": 355.0,
+        "per_head": 2059.0,
+        "lo": 355.0,
+        "hi": 355.0,
+        "rows": 1
+       },
+       "600": {
+        "head": 23,
+        "avg_wt": 640,
+        "cwt": 335.43,
+        "per_head": 2147.07,
+        "lo": 327.5,
+        "hi": 345.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 14,
+        "avg_wt": 742,
+        "cwt": 316.07,
+        "per_head": 2345.24,
+        "lo": 315.0,
+        "hi": 316.5,
+        "rows": 1
+       },
+       "800": {
+        "head": 6,
+        "avg_wt": 812,
+        "cwt": 300.0,
+        "per_head": 2436.0,
+        "lo": 300.0,
+        "hi": 300.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 18
+    }
+   ],
+   "slug": "1810",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1810",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "MO-Kan Livestock Market",
+   "town": "Butler",
+   "state": "MO",
+   "lat": 38.27,
+   "lon": -94.31,
+   "id": "butler-mo",
+   "sales": [
+    {
+     "date": "2026-10-22",
+     "receipts": 876,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 4,
+        "avg_wt": 368,
+        "cwt": 520.0,
+        "per_head": 1913.6,
+        "lo": 520.0,
+        "hi": 520.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 20,
+        "avg_wt": 469,
+        "cwt": 428.12,
+        "per_head": 2007.88,
+        "lo": 423.0,
+        "hi": 445.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 35,
+        "avg_wt": 548,
+        "cwt": 412.7,
+        "per_head": 2260.07,
+        "lo": 399.0,
+        "hi": 424.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 28,
+        "avg_wt": 637,
+        "cwt": 377.03,
+        "per_head": 2401.93,
+        "lo": 361.0,
+        "hi": 398.0,
+        "rows": 2
+       }
+      },
+      "steers|1-2": {
+       "300": {
+        "head": 14,
+        "avg_wt": 360,
+        "cwt": 503.17,
+        "per_head": 1811.4,
+        "lo": 420.0,
+        "hi": 595.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 46,
+        "avg_wt": 463,
+        "cwt": 407.52,
+        "per_head": 1886.11,
+        "lo": 398.0,
+        "hi": 420.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 33,
+        "avg_wt": 537,
+        "cwt": 387.97,
+        "per_head": 2084.1,
+        "lo": 368.0,
+        "hi": 401.0,
+        "rows": 2
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 2,
+        "avg_wt": 360,
+        "cwt": 520.0,
+        "per_head": 1872.0,
+        "lo": 520.0,
+        "hi": 520.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 26,
+        "avg_wt": 437,
+        "cwt": 423.97,
+        "per_head": 1854.71,
+        "lo": 396.0,
+        "hi": 445.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 38,
+        "avg_wt": 530,
+        "cwt": 401.84,
+        "per_head": 2131.64,
+        "lo": 375.0,
+        "hi": 414.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 11,
+        "avg_wt": 624,
+        "cwt": 372.91,
+        "per_head": 2326.96,
+        "lo": 360.0,
+        "hi": 377.5,
+        "rows": 1
+       },
+       "700": {
+        "head": 4,
+        "avg_wt": 712,
+        "cwt": 326.0,
+        "per_head": 2321.12,
+        "lo": 326.0,
+        "hi": 326.0,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 6,
+        "avg_wt": 379,
+        "cwt": 418.01,
+        "per_head": 1585.65,
+        "lo": 412.0,
+        "hi": 432.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 15,
+        "avg_wt": 467,
+        "cwt": 369.43,
+        "per_head": 1726.72,
+        "lo": 346.0,
+        "hi": 434.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 9,
+        "avg_wt": 538,
+        "cwt": 355.35,
+        "per_head": 1910.61,
+        "lo": 354.0,
+        "hi": 356.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 2,
+        "avg_wt": 617,
+        "cwt": 325.0,
+        "per_head": 2005.25,
+        "lo": 325.0,
+        "hi": 325.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 108
+    }
+   ],
+   "slug": "1811",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1811",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
    }
   },
   {
@@ -6312,6 +9225,552 @@
    }
   },
   {
+   "name": "Interstate Regional Stockyards",
+   "town": "Cuba",
+   "state": "MO",
+   "lat": 38.09,
+   "lon": -91.41,
+   "id": "cuba-mo",
+   "sales": [
+    {
+     "date": "2026-10-28",
+     "receipts": 576,
+     "classes": {
+      "steers|1": {
+       "400": {
+        "head": 5,
+        "avg_wt": 463,
+        "cwt": 483.76,
+        "per_head": 2239.81,
+        "lo": 470.0,
+        "hi": 505.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 44,
+        "avg_wt": 562,
+        "cwt": 418.65,
+        "per_head": 2350.89,
+        "lo": 403.0,
+        "hi": 460.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 35,
+        "avg_wt": 651,
+        "cwt": 376.03,
+        "per_head": 2449.23,
+        "lo": 360.0,
+        "hi": 390.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 11,
+        "avg_wt": 724,
+        "cwt": 339.1,
+        "per_head": 2455.08,
+        "lo": 330.0,
+        "hi": 353.0,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "400": {
+        "head": 33,
+        "avg_wt": 464,
+        "cwt": 446.31,
+        "per_head": 2070.9,
+        "lo": 435.0,
+        "hi": 475.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 12,
+        "avg_wt": 539,
+        "cwt": 410.83,
+        "per_head": 2214.4,
+        "lo": 395.0,
+        "hi": 425.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 4,
+        "avg_wt": 630,
+        "cwt": 375.0,
+        "per_head": 2362.5,
+        "lo": 375.0,
+        "hi": 375.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "400": {
+        "head": 28,
+        "avg_wt": 454,
+        "cwt": 404.99,
+        "per_head": 1839.8,
+        "lo": 385.0,
+        "hi": 432.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 25,
+        "avg_wt": 553,
+        "cwt": 370.91,
+        "per_head": 2052.89,
+        "lo": 338.0,
+        "hi": 381.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 28,
+        "avg_wt": 637,
+        "cwt": 335.23,
+        "per_head": 2134.93,
+        "lo": 315.0,
+        "hi": 344.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "400": {
+        "head": 17,
+        "avg_wt": 437,
+        "cwt": 404.13,
+        "per_head": 1766.06,
+        "lo": 375.0,
+        "hi": 420.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 8,
+        "avg_wt": 543,
+        "cwt": 340.49,
+        "per_head": 1848.88,
+        "lo": 330.0,
+        "hi": 352.5,
+        "rows": 2
+       }
+      }
+     },
+     "noted_head": 10
+    }
+   ],
+   "slug": "1814",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1814",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Four State Stockyards",
+   "town": "Exeter",
+   "state": "MO",
+   "lat": 36.68,
+   "lon": -93.97,
+   "id": "exeter-mo",
+   "sales": [
+    {
+     "date": "2026-10-27",
+     "receipts": 1196,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 10,
+        "avg_wt": 326,
+        "cwt": 524.32,
+        "per_head": 1709.28,
+        "lo": 522.0,
+        "hi": 530.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 20,
+        "avg_wt": 441,
+        "cwt": 503.26,
+        "per_head": 2219.38,
+        "lo": 480.0,
+        "hi": 511.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 66,
+        "avg_wt": 563,
+        "cwt": 415.41,
+        "per_head": 2337.38,
+        "lo": 397.0,
+        "hi": 441.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 32,
+        "avg_wt": 647,
+        "cwt": 378.46,
+        "per_head": 2450.3,
+        "lo": 377.0,
+        "hi": 387.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 13,
+        "avg_wt": 736,
+        "cwt": 385.0,
+        "per_head": 2833.6,
+        "lo": 385.0,
+        "hi": 385.0,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "300": {
+        "head": 14,
+        "avg_wt": 395,
+        "cwt": 471.61,
+        "per_head": 1862.86,
+        "lo": 452.0,
+        "hi": 477.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 16,
+        "avg_wt": 438,
+        "cwt": 436.56,
+        "per_head": 1909.93,
+        "lo": 422.0,
+        "hi": 457.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 48,
+        "avg_wt": 559,
+        "cwt": 374.61,
+        "per_head": 2094.83,
+        "lo": 358.0,
+        "hi": 400.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 49,
+        "avg_wt": 644,
+        "cwt": 358.21,
+        "per_head": 2305.77,
+        "lo": 350.0,
+        "hi": 367.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 25,
+        "avg_wt": 723,
+        "cwt": 345.95,
+        "per_head": 2500.11,
+        "lo": 320.0,
+        "hi": 353.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 65,
+        "avg_wt": 842,
+        "cwt": 334.76,
+        "per_head": 2818.61,
+        "lo": 330.0,
+        "hi": 335.0,
+        "rows": 2
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 3,
+        "avg_wt": 353,
+        "cwt": 490.0,
+        "per_head": 1729.7,
+        "lo": 490.0,
+        "hi": 490.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 10,
+        "avg_wt": 418,
+        "cwt": 409.02,
+        "per_head": 1709.7,
+        "lo": 407.0,
+        "hi": 411.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 35,
+        "avg_wt": 553,
+        "cwt": 369.39,
+        "per_head": 2042.62,
+        "lo": 359.0,
+        "hi": 384.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 34,
+        "avg_wt": 631,
+        "cwt": 352.78,
+        "per_head": 2226.26,
+        "lo": 345.0,
+        "hi": 375.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 16,
+        "avg_wt": 730,
+        "cwt": 337.47,
+        "per_head": 2462.87,
+        "lo": 335.0,
+        "hi": 339.5,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 19,
+        "avg_wt": 339,
+        "cwt": 427.8,
+        "per_head": 1449.58,
+        "lo": 380.0,
+        "hi": 450.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 56,
+        "avg_wt": 463,
+        "cwt": 366.09,
+        "per_head": 1696.38,
+        "lo": 352.0,
+        "hi": 402.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 27,
+        "avg_wt": 557,
+        "cwt": 348.34,
+        "per_head": 1940.27,
+        "lo": 341.0,
+        "hi": 353.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 32,
+        "avg_wt": 635,
+        "cwt": 334.2,
+        "per_head": 2120.72,
+        "lo": 322.0,
+        "hi": 346.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 13,
+        "avg_wt": 707,
+        "cwt": 326.05,
+        "per_head": 2305.17,
+        "lo": 313.0,
+        "hi": 330.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 27
+    }
+   ],
+   "slug": "3916",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3916",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Farmington Regional Stockyards",
+   "town": "Farmington",
+   "state": "MO",
+   "lat": 37.78,
+   "lon": -90.41,
+   "id": "farmington-mo",
+   "sales": [
+    {
+     "date": "2026-10-21",
+     "receipts": 592,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 7,
+        "avg_wt": 368,
+        "cwt": 490.76,
+        "per_head": 1805.29,
+        "lo": 465.0,
+        "hi": 515.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 55,
+        "avg_wt": 458,
+        "cwt": 431.47,
+        "per_head": 1976.37,
+        "lo": 390.0,
+        "hi": 460.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 38,
+        "avg_wt": 539,
+        "cwt": 414.32,
+        "per_head": 2232.33,
+        "lo": 380.0,
+        "hi": 445.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 48,
+        "avg_wt": 639,
+        "cwt": 372.85,
+        "per_head": 2381.89,
+        "lo": 340.0,
+        "hi": 395.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 2,
+        "avg_wt": 718,
+        "cwt": 345.0,
+        "per_head": 2477.1,
+        "lo": 345.0,
+        "hi": 345.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 6,
+        "avg_wt": 820,
+        "cwt": 321.08,
+        "per_head": 2632.86,
+        "lo": 300.0,
+        "hi": 330.0,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "400": {
+        "head": 5,
+        "avg_wt": 450,
+        "cwt": 364.79,
+        "per_head": 1643.03,
+        "lo": 340.0,
+        "hi": 385.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 24,
+        "avg_wt": 555,
+        "cwt": 356.68,
+        "per_head": 1980.33,
+        "lo": 335.0,
+        "hi": 390.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 5,
+        "avg_wt": 654,
+        "cwt": 318.04,
+        "per_head": 2080.64,
+        "lo": 300.0,
+        "hi": 335.0,
+        "rows": 2
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 17,
+        "avg_wt": 364,
+        "cwt": 440.16,
+        "per_head": 1600.38,
+        "lo": 400.0,
+        "hi": 480.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 29,
+        "avg_wt": 446,
+        "cwt": 399.53,
+        "per_head": 1781.49,
+        "lo": 375.0,
+        "hi": 460.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 28,
+        "avg_wt": 530,
+        "cwt": 374.14,
+        "per_head": 1981.05,
+        "lo": 345.0,
+        "hi": 410.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 49,
+        "avg_wt": 651,
+        "cwt": 346.08,
+        "per_head": 2251.76,
+        "lo": 330.0,
+        "hi": 382.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 7,
+        "avg_wt": 783,
+        "cwt": 310.44,
+        "per_head": 2430.29,
+        "lo": 305.0,
+        "hi": 325.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "400": {
+        "head": 9,
+        "avg_wt": 488,
+        "cwt": 341.17,
+        "per_head": 1664.91,
+        "lo": 300.0,
+        "hi": 360.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 4,
+        "avg_wt": 531,
+        "cwt": 330.11,
+        "per_head": 1752.88,
+        "lo": 315.0,
+        "hi": 360.0,
+        "rows": 1
+       },
+       "600": {
+        "head": 3,
+        "avg_wt": 628,
+        "cwt": 308.29,
+        "per_head": 1936.06,
+        "lo": 300.0,
+        "hi": 325.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 32
+    }
+   ],
+   "slug": "1812",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1812",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
    "name": "Green City Livestock Auction",
    "town": "Green City",
    "state": "MO",
@@ -6461,6 +9920,782 @@
    }
   },
   {
+   "name": "SEMO Livestock Sales",
+   "town": "Jackson",
+   "state": "MO",
+   "lat": 37.39,
+   "lon": -89.65,
+   "id": "jackson-mo",
+   "sales": [
+    {
+     "date": "2026-10-27",
+     "receipts": 368,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 10,
+        "avg_wt": 341,
+        "cwt": 478.16,
+        "per_head": 1632.43,
+        "lo": 450.0,
+        "hi": 500.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 18,
+        "avg_wt": 454,
+        "cwt": 414.82,
+        "per_head": 1881.67,
+        "lo": 402.0,
+        "hi": 425.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 8,
+        "avg_wt": 683,
+        "cwt": 347.64,
+        "per_head": 2374.38,
+        "lo": 330.0,
+        "hi": 365.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 3,
+        "avg_wt": 742,
+        "cwt": 340.0,
+        "per_head": 2522.8,
+        "lo": 340.0,
+        "hi": 340.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 4,
+        "avg_wt": 814,
+        "cwt": 307.75,
+        "per_head": 2505.09,
+        "lo": 307.0,
+        "hi": 310.0,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "300": {
+        "head": 3,
+        "avg_wt": 398,
+        "cwt": 415.0,
+        "per_head": 1651.7,
+        "lo": 415.0,
+        "hi": 415.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 5,
+        "avg_wt": 433,
+        "cwt": 379.17,
+        "per_head": 1641.81,
+        "lo": 375.0,
+        "hi": 382.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 2,
+        "avg_wt": 530,
+        "cwt": 362.0,
+        "per_head": 1918.6,
+        "lo": 362.0,
+        "hi": 362.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 12,
+        "avg_wt": 343,
+        "cwt": 447.04,
+        "per_head": 1534.85,
+        "lo": 432.0,
+        "hi": 457.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 11,
+        "avg_wt": 445,
+        "cwt": 375.08,
+        "per_head": 1670.8,
+        "lo": 362.0,
+        "hi": 392.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 22,
+        "avg_wt": 552,
+        "cwt": 345.84,
+        "per_head": 1908.41,
+        "lo": 325.0,
+        "hi": 367.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 6,
+        "avg_wt": 621,
+        "cwt": 334.12,
+        "per_head": 2074.89,
+        "lo": 300.0,
+        "hi": 355.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 3,
+        "avg_wt": 758,
+        "cwt": 290.0,
+        "per_head": 2198.2,
+        "lo": 290.0,
+        "hi": 290.0,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 6,
+        "avg_wt": 362,
+        "cwt": 370.63,
+        "per_head": 1341.68,
+        "lo": 350.0,
+        "hi": 375.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 7,
+        "avg_wt": 475,
+        "cwt": 352.15,
+        "per_head": 1672.71,
+        "lo": 310.0,
+        "hi": 365.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 2,
+        "avg_wt": 595,
+        "cwt": 322.5,
+        "per_head": 1918.88,
+        "lo": 320.0,
+        "hi": 325.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 2
+    }
+   ],
+   "slug": "3484",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3484",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Callaway Livestock Center",
+   "town": "Kingdom City",
+   "state": "MO",
+   "lat": 38.96,
+   "lon": -91.95,
+   "id": "kingdom-city-mo",
+   "sales": [
+    {
+     "date": "2026-10-26",
+     "receipts": 1884,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 7,
+        "avg_wt": 354,
+        "cwt": 600.0,
+        "per_head": 2124.0,
+        "lo": 600.0,
+        "hi": 600.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 126,
+        "avg_wt": 463,
+        "cwt": 485.82,
+        "per_head": 2249.18,
+        "lo": 460.0,
+        "hi": 512.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 103,
+        "avg_wt": 553,
+        "cwt": 430.2,
+        "per_head": 2377.33,
+        "lo": 408.0,
+        "hi": 454.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 69,
+        "avg_wt": 635,
+        "cwt": 404.67,
+        "per_head": 2569.46,
+        "lo": 391.0,
+        "hi": 415.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 108,
+        "avg_wt": 718,
+        "cwt": 388.89,
+        "per_head": 2790.64,
+        "lo": 366.0,
+        "hi": 395.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 4,
+        "avg_wt": 808,
+        "cwt": 346.0,
+        "per_head": 2795.68,
+        "lo": 346.0,
+        "hi": 346.0,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "300": {
+        "head": 12,
+        "avg_wt": 344,
+        "cwt": 555.6,
+        "per_head": 1911.26,
+        "lo": 532.0,
+        "hi": 565.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 26,
+        "avg_wt": 493,
+        "cwt": 453.7,
+        "per_head": 2236.74,
+        "lo": 440.0,
+        "hi": 458.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 19,
+        "avg_wt": 559,
+        "cwt": 397.07,
+        "per_head": 2220.64,
+        "lo": 390.0,
+        "hi": 405.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 17,
+        "avg_wt": 640,
+        "cwt": 372.71,
+        "per_head": 2384.26,
+        "lo": 354.0,
+        "hi": 387.0,
+        "rows": 2
+       }
+      },
+      "heifers|1": {
+       "400": {
+        "head": 79,
+        "avg_wt": 462,
+        "cwt": 413.46,
+        "per_head": 1908.79,
+        "lo": 395.0,
+        "hi": 428.75,
+        "rows": 2
+       },
+       "500": {
+        "head": 170,
+        "avg_wt": 561,
+        "cwt": 387.26,
+        "per_head": 2171.76,
+        "lo": 366.5,
+        "hi": 403.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 148,
+        "avg_wt": 662,
+        "cwt": 363.39,
+        "per_head": 2404.27,
+        "lo": 359.0,
+        "hi": 364.75,
+        "rows": 2
+       },
+       "700": {
+        "head": 78,
+        "avg_wt": 701,
+        "cwt": 343.12,
+        "per_head": 2405.27,
+        "lo": 340.0,
+        "hi": 343.25,
+        "rows": 1
+       },
+       "800": {
+        "head": 30,
+        "avg_wt": 802,
+        "cwt": 320.5,
+        "per_head": 2570.41,
+        "lo": 320.5,
+        "hi": 320.5,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 28,
+        "avg_wt": 380,
+        "cwt": 439.45,
+        "per_head": 1671.33,
+        "lo": 426.0,
+        "hi": 495.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 63,
+        "avg_wt": 467,
+        "cwt": 380.66,
+        "per_head": 1777.69,
+        "lo": 352.5,
+        "hi": 404.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 24,
+        "avg_wt": 542,
+        "cwt": 359.35,
+        "per_head": 1948.9,
+        "lo": 349.0,
+        "hi": 367.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 21,
+        "avg_wt": 643,
+        "cwt": 350.56,
+        "per_head": 2255.61,
+        "lo": 330.0,
+        "hi": 355.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 5,
+        "avg_wt": 879,
+        "cwt": 270.0,
+        "per_head": 2373.3,
+        "lo": 270.0,
+        "hi": 270.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 95
+    }
+   ],
+   "slug": "1819",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1819",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Kingsville Livestock Auction",
+   "town": "Kingsville",
+   "state": "MO",
+   "lat": 38.82,
+   "lon": -94.05,
+   "id": "kingsville-mo",
+   "sales": [
+    {
+     "date": "2026-10-27",
+     "receipts": 1126,
+     "classes": {
+      "steers|1": {
+       "400": {
+        "head": 25,
+        "avg_wt": 469,
+        "cwt": 481.21,
+        "per_head": 2256.3,
+        "lo": 470.0,
+        "hi": 515.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 117,
+        "avg_wt": 555,
+        "cwt": 435.06,
+        "per_head": 2416.05,
+        "lo": 411.0,
+        "hi": 465.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 89,
+        "avg_wt": 639,
+        "cwt": 399.98,
+        "per_head": 2554.15,
+        "lo": 380.0,
+        "hi": 410.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 32,
+        "avg_wt": 719,
+        "cwt": 398.73,
+        "per_head": 2865.84,
+        "lo": 372.0,
+        "hi": 407.5,
+        "rows": 2
+       }
+      },
+      "steers|1-2": {
+       "300": {
+        "head": 4,
+        "avg_wt": 380,
+        "cwt": 565.0,
+        "per_head": 2147.0,
+        "lo": 565.0,
+        "hi": 565.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 20,
+        "avg_wt": 443,
+        "cwt": 480.17,
+        "per_head": 2129.09,
+        "lo": 462.5,
+        "hi": 500.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 24,
+        "avg_wt": 550,
+        "cwt": 414.08,
+        "per_head": 2276.06,
+        "lo": 390.0,
+        "hi": 430.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 23,
+        "avg_wt": 621,
+        "cwt": 381.78,
+        "per_head": 2370.85,
+        "lo": 375.0,
+        "hi": 397.5,
+        "rows": 1
+       },
+       "700": {
+        "head": 6,
+        "avg_wt": 709,
+        "cwt": 360.0,
+        "per_head": 2552.4,
+        "lo": 360.0,
+        "hi": 360.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 3,
+        "avg_wt": 832,
+        "cwt": 345.0,
+        "per_head": 2870.4,
+        "lo": 345.0,
+        "hi": 345.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 4,
+        "avg_wt": 385,
+        "cwt": 465.0,
+        "per_head": 1790.25,
+        "lo": 465.0,
+        "hi": 465.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 36,
+        "avg_wt": 450,
+        "cwt": 412.65,
+        "per_head": 1858.52,
+        "lo": 385.0,
+        "hi": 427.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 79,
+        "avg_wt": 550,
+        "cwt": 388.1,
+        "per_head": 2134.35,
+        "lo": 359.0,
+        "hi": 410.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 13,
+        "avg_wt": 626,
+        "cwt": 373.92,
+        "per_head": 2341.6,
+        "lo": 350.0,
+        "hi": 386.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 9,
+        "avg_wt": 747,
+        "cwt": 337.5,
+        "per_head": 2521.12,
+        "lo": 337.5,
+        "hi": 337.5,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 5,
+        "avg_wt": 375,
+        "cwt": 470.0,
+        "per_head": 1762.5,
+        "lo": 470.0,
+        "hi": 470.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 48,
+        "avg_wt": 457,
+        "cwt": 403.23,
+        "per_head": 1842.76,
+        "lo": 375.0,
+        "hi": 435.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 30,
+        "avg_wt": 554,
+        "cwt": 360.16,
+        "per_head": 1995.26,
+        "lo": 345.0,
+        "hi": 370.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 14,
+        "avg_wt": 635,
+        "cwt": 354.28,
+        "per_head": 2249.7,
+        "lo": 347.5,
+        "hi": 357.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 4,
+        "avg_wt": 749,
+        "cwt": 308.0,
+        "per_head": 2306.92,
+        "lo": 308.0,
+        "hi": 308.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 34
+    }
+   ],
+   "slug": "1815",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1815",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "Lolli Brothers Livestock Market",
+   "town": "Macon",
+   "state": "MO",
+   "lat": 39.75,
+   "lon": -92.46,
+   "id": "macon-mo",
+   "sales": [
+    {
+     "date": "2026-10-28",
+     "receipts": 1105,
+     "classes": {
+      "steers|1": {
+       "400": {
+        "head": 3,
+        "avg_wt": 481,
+        "cwt": 478.0,
+        "per_head": 2299.18,
+        "lo": 478.0,
+        "hi": 478.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 35,
+        "avg_wt": 528,
+        "cwt": 446.69,
+        "per_head": 2356.73,
+        "lo": 406.0,
+        "hi": 467.5,
+        "rows": 2
+       },
+       "600": {
+        "head": 49,
+        "avg_wt": 609,
+        "cwt": 411.5,
+        "per_head": 2506.04,
+        "lo": 402.5,
+        "hi": 424.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 65,
+        "avg_wt": 872,
+        "cwt": 350.25,
+        "per_head": 3054.18,
+        "lo": 350.25,
+        "hi": 350.25,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "500": {
+        "head": 9,
+        "avg_wt": 556,
+        "cwt": 397.6,
+        "per_head": 2209.33,
+        "lo": 390.0,
+        "hi": 414.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 6,
+        "avg_wt": 632,
+        "cwt": 363.32,
+        "per_head": 2296.18,
+        "lo": 360.5,
+        "hi": 366.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 9,
+        "avg_wt": 722,
+        "cwt": 353.33,
+        "per_head": 2551.04,
+        "lo": 345.0,
+        "hi": 363.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "400": {
+        "head": 13,
+        "avg_wt": 468,
+        "cwt": 423.81,
+        "per_head": 1982.13,
+        "lo": 423.5,
+        "hi": 425.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 30,
+        "avg_wt": 557,
+        "cwt": 384.74,
+        "per_head": 2143.02,
+        "lo": 378.0,
+        "hi": 390.5,
+        "rows": 2
+       },
+       "600": {
+        "head": 12,
+        "avg_wt": 619,
+        "cwt": 374.4,
+        "per_head": 2317.54,
+        "lo": 370.0,
+        "hi": 380.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 229,
+        "avg_wt": 726,
+        "cwt": 357.26,
+        "per_head": 2594.16,
+        "lo": 344.0,
+        "hi": 365.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 3,
+        "avg_wt": 382,
+        "cwt": 427.0,
+        "per_head": 1631.14,
+        "lo": 427.0,
+        "hi": 427.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 9,
+        "avg_wt": 466,
+        "cwt": 394.53,
+        "per_head": 1837.22,
+        "lo": 393.5,
+        "hi": 397.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 16,
+        "avg_wt": 586,
+        "cwt": 352.69,
+        "per_head": 2065.69,
+        "lo": 347.0,
+        "hi": 370.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 17,
+        "avg_wt": 659,
+        "cwt": 336.2,
+        "per_head": 2216.16,
+        "lo": 325.0,
+        "hi": 352.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 11,
+        "avg_wt": 719,
+        "cwt": 336.59,
+        "per_head": 2420.08,
+        "lo": 322.0,
+        "hi": 342.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 25
+    }
+   ],
+   "slug": "1813",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1813",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
    "name": "New Cambria Livestock Market",
    "town": "New Cambria",
    "state": "MO",
@@ -6589,6 +10824,340 @@
     "ok": true,
     "note": "",
     "checked": "2026-10-28T06:56:12Z"
+   }
+  },
+  {
+   "name": "Wheeler Livestock Auction",
+   "town": "Osceola",
+   "state": "MO",
+   "lat": 38.03,
+   "lon": -93.75,
+   "id": "osceola-mo",
+   "sales": [
+    {
+     "date": "2026-10-22",
+     "receipts": 1242,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 7,
+        "avg_wt": 357,
+        "cwt": 545.0,
+        "per_head": 1945.65,
+        "lo": 545.0,
+        "hi": 545.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 39,
+        "avg_wt": 436,
+        "cwt": 518.86,
+        "per_head": 2260.77,
+        "lo": 455.0,
+        "hi": 547.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 53,
+        "avg_wt": 549,
+        "cwt": 430.56,
+        "per_head": 2363.34,
+        "lo": 400.0,
+        "hi": 460.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 34,
+        "avg_wt": 622,
+        "cwt": 389.18,
+        "per_head": 2419.56,
+        "lo": 363.0,
+        "hi": 405.0,
+        "rows": 2
+       }
+      },
+      "steers|1-2": {
+       "300": {
+        "head": 5,
+        "avg_wt": 334,
+        "cwt": 507.25,
+        "per_head": 1694.2,
+        "lo": 490.0,
+        "hi": 520.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 39,
+        "avg_wt": 450,
+        "cwt": 429.35,
+        "per_head": 1930.51,
+        "lo": 390.0,
+        "hi": 460.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 21,
+        "avg_wt": 550,
+        "cwt": 374.81,
+        "per_head": 2060.19,
+        "lo": 365.0,
+        "hi": 405.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 24,
+        "avg_wt": 637,
+        "cwt": 368.66,
+        "per_head": 2348.36,
+        "lo": 360.0,
+        "hi": 377.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 3,
+        "avg_wt": 348,
+        "cwt": 485.0,
+        "per_head": 1687.8,
+        "lo": 485.0,
+        "hi": 485.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 38,
+        "avg_wt": 443,
+        "cwt": 431.43,
+        "per_head": 1910.78,
+        "lo": 416.0,
+        "hi": 450.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 32,
+        "avg_wt": 530,
+        "cwt": 388.76,
+        "per_head": 2060.07,
+        "lo": 371.0,
+        "hi": 398.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 58,
+        "avg_wt": 618,
+        "cwt": 383.95,
+        "per_head": 2374.25,
+        "lo": 353.0,
+        "hi": 391.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 6,
+        "avg_wt": 372,
+        "cwt": 417.6,
+        "per_head": 1553.47,
+        "lo": 410.0,
+        "hi": 425.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 52,
+        "avg_wt": 454,
+        "cwt": 378.02,
+        "per_head": 1718.09,
+        "lo": 360.0,
+        "hi": 407.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 37,
+        "avg_wt": 530,
+        "cwt": 354.63,
+        "per_head": 1878.37,
+        "lo": 340.0,
+        "hi": 372.5,
+        "rows": 2
+       },
+       "600": {
+        "head": 30,
+        "avg_wt": 610,
+        "cwt": 337.94,
+        "per_head": 2061.43,
+        "lo": 335.0,
+        "hi": 340.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 41,
+        "avg_wt": 809,
+        "cwt": 310.75,
+        "per_head": 2513.97,
+        "lo": 310.75,
+        "hi": 310.75,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 72
+    }
+   ],
+   "slug": "3917",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3917",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
+   "name": "F and T Livestock Market",
+   "town": "Palmyra",
+   "state": "MO",
+   "lat": 39.79,
+   "lon": -91.54,
+   "id": "palmyra-mo",
+   "sales": [
+    {
+     "date": "2026-10-28",
+     "receipts": 658,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 10,
+        "avg_wt": 333,
+        "cwt": 516.6,
+        "per_head": 1720.28,
+        "lo": 515.0,
+        "hi": 517.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 17,
+        "avg_wt": 598,
+        "cwt": 406.06,
+        "per_head": 2428.24,
+        "lo": 387.5,
+        "hi": 410.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 3,
+        "avg_wt": 701,
+        "cwt": 362.5,
+        "per_head": 2541.12,
+        "lo": 362.5,
+        "hi": 362.5,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "500": {
+        "head": 7,
+        "avg_wt": 510,
+        "cwt": 436.0,
+        "per_head": 2223.6,
+        "lo": 436.0,
+        "hi": 436.0,
+        "rows": 1
+       },
+       "600": {
+        "head": 17,
+        "avg_wt": 682,
+        "cwt": 380.25,
+        "per_head": 2593.53,
+        "lo": 370.0,
+        "hi": 381.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 19,
+        "avg_wt": 773,
+        "cwt": 341.61,
+        "per_head": 2639.76,
+        "lo": 339.5,
+        "hi": 350.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 9,
+        "avg_wt": 823,
+        "cwt": 330.79,
+        "per_head": 2722.4,
+        "lo": 328.0,
+        "hi": 333.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 6,
+        "avg_wt": 395,
+        "cwt": 420.0,
+        "per_head": 1659.0,
+        "lo": 420.0,
+        "hi": 420.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 12,
+        "avg_wt": 442,
+        "cwt": 412.22,
+        "per_head": 1823.72,
+        "lo": 377.5,
+        "hi": 440.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 16,
+        "avg_wt": 559,
+        "cwt": 379.4,
+        "per_head": 2119.67,
+        "lo": 371.0,
+        "hi": 383.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "600": {
+        "head": 57,
+        "avg_wt": 657,
+        "cwt": 361.5,
+        "per_head": 2375.06,
+        "lo": 361.5,
+        "hi": 361.5,
+        "rows": 1
+       },
+       "700": {
+        "head": 28,
+        "avg_wt": 771,
+        "cwt": 332.0,
+        "per_head": 2559.72,
+        "lo": 332.0,
+        "hi": 332.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 81,
+        "avg_wt": 854,
+        "cwt": 324.21,
+        "per_head": 2769.14,
+        "lo": 321.5,
+        "hi": 334.5,
+        "rows": 2
+       }
+      }
+     },
+     "noted_head": 185
+    }
+   ],
+   "slug": "1816",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1816",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
    }
   },
   {
@@ -7388,6 +11957,137 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1255"
   },
   {
+   "name": "Tina Livestock Market",
+   "town": "Tina",
+   "state": "MO",
+   "lat": 39.55,
+   "lon": -93.46,
+   "id": "tina-mo",
+   "sales": [
+    {
+     "date": "2026-10-26",
+     "receipts": 671,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 7,
+        "avg_wt": 397,
+        "cwt": 517.5,
+        "per_head": 2054.47,
+        "lo": 517.5,
+        "hi": 517.5,
+        "rows": 1
+       },
+       "400": {
+        "head": 27,
+        "avg_wt": 463,
+        "cwt": 483.28,
+        "per_head": 2237.59,
+        "lo": 477.0,
+        "hi": 500.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 13,
+        "avg_wt": 559,
+        "cwt": 418.39,
+        "per_head": 2338.8,
+        "lo": 410.0,
+        "hi": 425.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 9,
+        "avg_wt": 709,
+        "cwt": 367.75,
+        "per_head": 2607.35,
+        "lo": 360.0,
+        "hi": 370.0,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "400": {
+        "head": 10,
+        "avg_wt": 469,
+        "cwt": 447.02,
+        "per_head": 2096.52,
+        "lo": 422.5,
+        "hi": 465.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 10,
+        "avg_wt": 527,
+        "cwt": 407.86,
+        "per_head": 2149.44,
+        "lo": 405.0,
+        "hi": 411.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 10,
+        "avg_wt": 681,
+        "cwt": 354.5,
+        "per_head": 2414.14,
+        "lo": 354.5,
+        "hi": 354.5,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "400": {
+        "head": 18,
+        "avg_wt": 421,
+        "cwt": 433.43,
+        "per_head": 1824.74,
+        "lo": 430.0,
+        "hi": 437.5,
+        "rows": 1
+       },
+       "500": {
+        "head": 30,
+        "avg_wt": 518,
+        "cwt": 396.5,
+        "per_head": 2053.87,
+        "lo": 377.5,
+        "hi": 406.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 17,
+        "avg_wt": 865,
+        "cwt": 300.5,
+        "per_head": 2599.33,
+        "lo": 300.5,
+        "hi": 300.5,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "600": {
+        "head": 21,
+        "avg_wt": 626,
+        "cwt": 343.55,
+        "per_head": 2150.62,
+        "lo": 341.0,
+        "hi": 347.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 59
+    }
+   ],
+   "slug": "3635",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3635",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
+  },
+  {
    "name": "Unionville Livestock Market",
    "town": "Unionville",
    "state": "MO",
@@ -8167,6 +12867,227 @@
    ],
    "slug": "1249",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1249"
+  },
+  {
+   "name": "Windsor Livestock Auction",
+   "town": "Windsor",
+   "state": "MO",
+   "lat": 38.53,
+   "lon": -93.53,
+   "id": "windsor-mo",
+   "sales": [
+    {
+     "date": "2026-10-21",
+     "receipts": 892,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 21,
+        "avg_wt": 346,
+        "cwt": 605.0,
+        "per_head": 2093.3,
+        "lo": 605.0,
+        "hi": 605.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 75,
+        "avg_wt": 444,
+        "cwt": 536.8,
+        "per_head": 2383.84,
+        "lo": 440.0,
+        "hi": 560.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 28,
+        "avg_wt": 556,
+        "cwt": 421.53,
+        "per_head": 2345.06,
+        "lo": 412.5,
+        "hi": 427.5,
+        "rows": 2
+       },
+       "600": {
+        "head": 6,
+        "avg_wt": 625,
+        "cwt": 387.5,
+        "per_head": 2421.88,
+        "lo": 385.0,
+        "hi": 392.5,
+        "rows": 1
+       },
+       "700": {
+        "head": 13,
+        "avg_wt": 728,
+        "cwt": 372.1,
+        "per_head": 2708.89,
+        "lo": 369.0,
+        "hi": 373.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 7,
+        "avg_wt": 828,
+        "cwt": 353.78,
+        "per_head": 2929.3,
+        "lo": 351.0,
+        "hi": 357.5,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "400": {
+        "head": 17,
+        "avg_wt": 476,
+        "cwt": 444.63,
+        "per_head": 2115.65,
+        "lo": 410.0,
+        "hi": 487.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 21,
+        "avg_wt": 571,
+        "cwt": 385.47,
+        "per_head": 2200.51,
+        "lo": 370.0,
+        "hi": 405.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 14,
+        "avg_wt": 637,
+        "cwt": 361.3,
+        "per_head": 2300.99,
+        "lo": 347.5,
+        "hi": 370.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 4,
+        "avg_wt": 795,
+        "cwt": 343.0,
+        "per_head": 2726.85,
+        "lo": 343.0,
+        "hi": 343.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 2,
+        "avg_wt": 380,
+        "cwt": 449.0,
+        "per_head": 1706.2,
+        "lo": 449.0,
+        "hi": 449.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 39,
+        "avg_wt": 455,
+        "cwt": 434.11,
+        "per_head": 1976.97,
+        "lo": 407.5,
+        "hi": 460.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 35,
+        "avg_wt": 540,
+        "cwt": 384.74,
+        "per_head": 2078.71,
+        "lo": 362.5,
+        "hi": 412.5,
+        "rows": 2
+       },
+       "600": {
+        "head": 17,
+        "avg_wt": 635,
+        "cwt": 363.0,
+        "per_head": 2305.92,
+        "lo": 355.0,
+        "hi": 375.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 5,
+        "avg_wt": 723,
+        "cwt": 336.0,
+        "per_head": 2429.28,
+        "lo": 336.0,
+        "hi": 336.0,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 6,
+        "avg_wt": 377,
+        "cwt": 430.38,
+        "per_head": 1621.1,
+        "lo": 420.0,
+        "hi": 435.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 11,
+        "avg_wt": 480,
+        "cwt": 380.3,
+        "per_head": 1825.44,
+        "lo": 372.5,
+        "hi": 388.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 12,
+        "avg_wt": 574,
+        "cwt": 339.15,
+        "per_head": 1946.14,
+        "lo": 326.0,
+        "hi": 355.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 22,
+        "avg_wt": 661,
+        "cwt": 338.79,
+        "per_head": 2238.46,
+        "lo": 334.0,
+        "hi": 348.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 6,
+        "avg_wt": 731,
+        "cwt": 323.23,
+        "per_head": 2363.92,
+        "lo": 300.0,
+        "hi": 336.0,
+        "rows": 2
+       },
+       "800": {
+        "head": 3,
+        "avg_wt": 863,
+        "cwt": 288.0,
+        "per_head": 2485.44,
+        "lo": 288.0,
+        "hi": 288.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 12
+    }
+   ],
+   "slug": "1622",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1622",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
+   }
   },
   {
    "name": "Billings Livestock Commission",
@@ -10446,6 +15367,89 @@
    "id": "gordon-ne",
    "sales": [
     {
+     "date": "2026-10-27",
+     "receipts": 892,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 9,
+        "avg_wt": 392,
+        "cwt": 535.0,
+        "per_head": 2097.2,
+        "lo": 535.0,
+        "hi": 535.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 124,
+        "avg_wt": 480,
+        "cwt": 504.82,
+        "per_head": 2421.63,
+        "lo": 494.0,
+        "hi": 540.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 287,
+        "avg_wt": 572,
+        "cwt": 434.45,
+        "per_head": 2485.11,
+        "lo": 404.0,
+        "hi": 490.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 96,
+        "avg_wt": 638,
+        "cwt": 397.88,
+        "per_head": 2540.3,
+        "lo": 377.0,
+        "hi": 410.0,
+        "rows": 2
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 5,
+        "avg_wt": 389,
+        "cwt": 504.0,
+        "per_head": 1960.56,
+        "lo": 504.0,
+        "hi": 504.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 52,
+        "avg_wt": 457,
+        "cwt": 461.66,
+        "per_head": 2110.16,
+        "lo": 425.0,
+        "hi": 497.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 105,
+        "avg_wt": 538,
+        "cwt": 401.76,
+        "per_head": 2161.3,
+        "lo": 381.0,
+        "hi": 420.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 30,
+        "avg_wt": 630,
+        "cwt": 364.81,
+        "per_head": 2298.3,
+        "lo": 356.0,
+        "hi": 374.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 9
+    },
+    {
      "date": "2024-11-02",
      "receipts": 1656,
      "classes": {
@@ -10567,12 +15571,12 @@
      "noted_head": 0
     }
    ],
-   "slug": "3801",
-   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3801",
+   "slug": "1858",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1858",
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-28T06:56:12Z"
+    "checked": "2026-10-28T13:50:47Z"
    }
   },
   {
@@ -18198,6 +23202,236 @@
     "ok": true,
     "note": "",
     "checked": "2026-10-28T06:56:12Z"
+   }
+  },
+  {
+   "name": "St. Onge Livestock Auction",
+   "town": "St. Onge",
+   "state": "SD",
+   "lat": 44.55,
+   "lon": -103.72,
+   "id": "st-onge-sd",
+   "sales": [
+    {
+     "date": "2026-10-24",
+     "receipts": 7030,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 175,
+        "avg_wt": 364,
+        "cwt": 653.27,
+        "per_head": 2377.35,
+        "lo": 625.0,
+        "hi": 715.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 565,
+        "avg_wt": 450,
+        "cwt": 546.16,
+        "per_head": 2460.15,
+        "lo": 497.5,
+        "hi": 609.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 1128,
+        "avg_wt": 548,
+        "cwt": 462.34,
+        "per_head": 2535.69,
+        "lo": 421.0,
+        "hi": 512.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 409,
+        "avg_wt": 626,
+        "cwt": 425.99,
+        "per_head": 2667.56,
+        "lo": 389.0,
+        "hi": 455.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 22,
+        "avg_wt": 712,
+        "cwt": 366.79,
+        "per_head": 2611.54,
+        "lo": 362.5,
+        "hi": 370.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 59,
+        "avg_wt": 863,
+        "cwt": 342.08,
+        "per_head": 2952.15,
+        "lo": 328.0,
+        "hi": 348.0,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "300": {
+        "head": 32,
+        "avg_wt": 366,
+        "cwt": 562.31,
+        "per_head": 2057.02,
+        "lo": 420.0,
+        "hi": 615.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 102,
+        "avg_wt": 451,
+        "cwt": 501.72,
+        "per_head": 2262.77,
+        "lo": 455.0,
+        "hi": 542.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 290,
+        "avg_wt": 542,
+        "cwt": 437.38,
+        "per_head": 2371.54,
+        "lo": 386.0,
+        "hi": 455.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 39,
+        "avg_wt": 650,
+        "cwt": 390.74,
+        "per_head": 2541.13,
+        "lo": 350.0,
+        "hi": 401.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 5,
+        "avg_wt": 730,
+        "cwt": 337.0,
+        "per_head": 2460.1,
+        "lo": 337.0,
+        "hi": 337.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 11,
+        "avg_wt": 844,
+        "cwt": 347.5,
+        "per_head": 2932.9,
+        "lo": 347.5,
+        "hi": 347.5,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 255,
+        "avg_wt": 376,
+        "cwt": 544.27,
+        "per_head": 2045.16,
+        "lo": 527.0,
+        "hi": 575.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 846,
+        "avg_wt": 446,
+        "cwt": 471.63,
+        "per_head": 2103.95,
+        "lo": 422.5,
+        "hi": 510.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 996,
+        "avg_wt": 535,
+        "cwt": 425.45,
+        "per_head": 2277.57,
+        "lo": 397.5,
+        "hi": 441.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 152,
+        "avg_wt": 608,
+        "cwt": 405.09,
+        "per_head": 2462.95,
+        "lo": 375.0,
+        "hi": 417.5,
+        "rows": 1
+       },
+       "700": {
+        "head": 8,
+        "avg_wt": 756,
+        "cwt": 342.5,
+        "per_head": 2589.3,
+        "lo": 342.5,
+        "hi": 342.5,
+        "rows": 1
+       },
+       "800": {
+        "head": 75,
+        "avg_wt": 876,
+        "cwt": 341.64,
+        "per_head": 2992.77,
+        "lo": 314.0,
+        "hi": 346.0,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 49,
+        "avg_wt": 356,
+        "cwt": 454.04,
+        "per_head": 1617.58,
+        "lo": 350.0,
+        "hi": 520.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 121,
+        "avg_wt": 439,
+        "cwt": 436.43,
+        "per_head": 1915.08,
+        "lo": 392.5,
+        "hi": 460.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 106,
+        "avg_wt": 578,
+        "cwt": 375.93,
+        "per_head": 2174.63,
+        "lo": 355.0,
+        "hi": 387.5,
+        "rows": 2
+       },
+       "700": {
+        "head": 28,
+        "avg_wt": 794,
+        "cwt": 337.25,
+        "per_head": 2677.76,
+        "lo": 337.0,
+        "hi": 338.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 72
+    }
+   ],
+   "slug": "2019",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2019",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-28T13:50:47Z"
    }
   },
   {
