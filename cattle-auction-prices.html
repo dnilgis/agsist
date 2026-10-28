@@ -180,6 +180,12 @@
       <section class="fx" data-feeder="table" id="feeder-weekly" hidden aria-label="AGSIST feeder cattle prices, by region and weight"></section>
       <section class="fx" data-feeder="rma" data-compact="1" hidden aria-label="RMA feeder steer value"></section>
 
+      <!-- Cull cows: components/cull-cows.js reads data/cull-cows.json -->
+      <section class="sb-box cc" id="cull-cows" data-cull-cows="cattle" aria-labelledby="cc-h">
+        <h2 id="cc-h">Cull cows this week</h2>
+        <div data-cc="body"><p class="src">Slaughter cow and bull prices from USDA sale barn reports load here, each barn with its own sale day.</p></div>
+      </section>
+
       <h2>How to read it</h2>
       <ul>
         <li><b>Weekly lag.</b> Most barns sell once a week, so the newest price can be up to a week old, and older after a holiday or a sale that was called off. Each barn shows its own sale date.</li>
@@ -288,6 +294,7 @@
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/cattle-auction.js?v=6" defer></script>
   <script src="/components/feeder-index.js?v=2" defer></script>
+  <script src="/components/cull-cows.js?v=1" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

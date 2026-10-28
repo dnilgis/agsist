@@ -241,6 +241,29 @@ def parse_rows(block):
     return rows, None
 
 
+def table_block(j, head_end, start, end, row_re=ROW_RE):
+    """(block, None) or (None, reason): one table's text in j, from just after its heading
+    (head_end; rows start at `start`, past the column header) to `end` (the next heading).
+    The market comment and USDA's notes are cut out; a table that goes on after them is
+    followed only across a page break (PB). Shared by the feeder tables here and the
+    slaughter cow tables in fetch_cull_cows.py, with each reader's own row pattern."""
+    parts, pos, scan = [], head_end, start
+    while True:
+        c = comment_at(j, scan, end)
+        if c is None:
+            parts.append(j[pos:end])
+            break
+        nxt = row_re.search(j, c, end)
+        if not nxt:
+            parts.append(j[pos:c])
+            break
+        if PB not in j[c:nxt.start()]:
+            return None, "a row after the market note: %r" % nxt.group(0).strip()[:60]
+        parts.append(j[pos:c])
+        pos = scan = nxt.start()
+    return " ".join(parts).replace(PB, " "), None
+
+
 def parse_report(text):
     """({"date", "receipts", "title", "tables": {"steers|1": [rows]...}}, None) or (None, reason)."""
     if not text or not text.strip():
@@ -267,21 +290,9 @@ def parse_report(text):
         # 2026: 2 heifer rows on page 1, 7 on page 2). The notes are skipped only up to
         # a page break that the table goes on after; a row after a note with no page
         # break between is a table we cannot follow, and is refused, never half-read.
-        parts, pos, scan = [], m.end(), start
-        while True:
-            c = comment_at(j, scan, end)
-            if c is None:
-                parts.append(j[pos:end])
-                break
-            nxt = ROW_RE.search(j, c, end)
-            if not nxt:
-                parts.append(j[pos:c])
-                break
-            if PB not in j[c:nxt.start()]:
-                return None, "%s table: a row after the market note: %r" % (key, nxt.group(0).strip()[:60])
-            parts.append(j[pos:c])
-            pos = scan = nxt.start()
-        block = " ".join(parts).replace(PB, " ")
+        block, why = table_block(j, m.end(), start, end)
+        if block is None:
+            return None, "%s table: %s" % (key, why)
         rows, why = parse_rows(block)
         if rows is None:
             return None, "%s table: %s" % (key, why)
@@ -436,8 +447,9 @@ def best_sale(src, slugs, getter):
     return None, slugs[0], "; ".join(whys)
 
 
-def run(root, got=None, now=None, own_got=None):
-    """got = {slug: (raw, text, err)} in tests; own_got = a stand-in for own_fetch."""
+def run(root, got=None, now=None, own_got=None, fetcher=None):
+    """got = {slug: (raw, text, err)} in tests; own_got = a stand-in for own_fetch;
+    fetcher = a stand-in for fetch (main passes a caching one the cull cow reader reuses)."""
     root = Path(root)
     now = now or datetime.datetime.now(datetime.timezone.utc)
     now_iso = now.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -449,7 +461,7 @@ def run(root, got=None, now=None, own_got=None):
     barns, states = [], []
     for group, out, prev in (("barns", barns, old), ("state_reports", states, olds)):
         for src in cfg.get(group) or []:
-            getter = (lambda s: got.get(s)) if got is not None else fetch
+            getter = (lambda s: got.get(s)) if got is not None else (fetcher or fetch)
             sale, slug, why = best_sale(src, slugs_for(src, listing), getter)
             out.append(merge_barn(prev.get(src["id"]), src, sale, why, now_iso, slug))
     has = any(b.get("sales") for b in barns + states)
@@ -1439,15 +1451,29 @@ def main(argv):
     if "--probe" in argv:
         spec = argv[argv.index("--scan") + 1] if "--scan" in argv and argv.index("--scan") + 1 < len(argv) else None
         return probe(ROOT, spec)
-    doc = run(ROOT)
+    # Each report is fetched once per run: the cull cow reader (fetch_cull_cows.py, data/cull-cows.json)
+    # reads the slaughter part of the same feeder reports, plus the slaughter-only reports.
+    cache = {}
+
+    def cached(slug):
+        if slug not in cache:
+            cache[slug] = fetch(slug)
+        return cache[slug]
+
+    doc = run(ROOT, fetcher=cached)
     if not doc:
         print("::warning::no barn parsed; data/cattle-auction.json not written")
-        return 0
-    for b in doc["barns"] + doc["states"] + doc["own"]:
-        s = b.get("status") or {}
-        print("[cattle-auction] %s ok=%s %s" % (b["id"], s.get("ok"), s.get("note", "")))
-        if not s.get("ok") and s.get("note") != "needs first read":
-            print("::warning::%s not refreshed: %s" % (b["id"], s.get("note", "")))
+    else:
+        for b in doc["barns"] + doc["states"] + doc["own"]:
+            s = b.get("status") or {}
+            print("[cattle-auction] %s ok=%s %s" % (b["id"], s.get("ok"), s.get("note", "")))
+            if not s.get("ok") and s.get("note") != "needs first read":
+                print("::warning::%s not refreshed: %s" % (b["id"], s.get("note", "")))
+    try:
+        import fetch_cull_cows as CC  # noqa: WPS433  imports this module; only the normal run needs it
+        CC.report(CC.run(ROOT, getter=cached))
+    except Exception as e:  # noqa: BLE001  the feeder prices never wait on the cull cow line
+        print("::warning::cull cows not written: %s: %s" % (type(e).__name__, e))
     return 0
 
 
