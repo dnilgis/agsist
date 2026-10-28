@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-27T23:59:15Z",
+ "updated": "2026-10-28T23:32:48Z",
  "rules": {
   "version": "bot-v1.1",
   "registered": "2026-10-03",
@@ -62,8 +62,8 @@
     "graded_on": null,
     "entry_final": true,
     "mark": {
-     "date": "2026-10-27",
-     "close": 450.0
+     "date": "2026-10-28",
+     "close": 451.25
     }
    },
    {
@@ -87,8 +87,8 @@
     "note": "Entry set to the settled 2026-10-26 close 1252.5 (read 1253.5 that evening).",
     "entry_final": true,
     "mark": {
-     "date": "2026-10-27",
-     "close": 1243.25
+     "date": "2026-10-28",
+     "close": 1237.0
     }
    },
    {
@@ -112,8 +112,8 @@
     "note": "Entry set to the settled 2026-10-26 close 616.0 (read 615.5 that evening).",
     "entry_final": true,
     "mark": {
-     "date": "2026-10-27",
-     "close": 611.0
+     "date": "2026-10-28",
+     "close": 599.5
     }
    },
    {
@@ -137,8 +137,8 @@
     "note": "Entry set to the settled 2026-10-26 close 659.0 (read 658.5 that evening).",
     "entry_final": true,
     "mark": {
-     "date": "2026-10-27",
-     "close": 650.25
+     "date": "2026-10-28",
+     "close": 643.75
     }
    }
   ]
@@ -479,8 +479,8 @@
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 496.5, a bar that already held evening trades. 497.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 497.25 (read 497.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-26",
-    "close": 455.0
+    "date": "2026-10-28",
+    "close": 451.25
    }
   },
   {
@@ -504,8 +504,8 @@
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 1279.25, a bar that already held evening trades. 1281.0 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 1280.75 (read 1281.0 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-26",
-    "close": 1241.25
+    "date": "2026-10-28",
+    "close": 1223.25
    }
   },
   {
@@ -529,8 +529,8 @@
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 690.5, a bar that already held evening trades. 691.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 692.25 (read 691.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-26",
-    "close": 616.0
+    "date": "2026-10-28",
+    "close": 599.5
    }
   },
   {
@@ -554,8 +554,8 @@
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 740.0, a bar that already held evening trades. 742.25 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT.",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-26",
-    "close": 659.0
+    "date": "2026-10-28",
+    "close": 643.75
    }
   },
   {
@@ -579,8 +579,8 @@
    "note": "Entry set to the settled 2026-10-19 close 467.0 (read 466.75 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-26",
-    "close": 455.0
+    "date": "2026-10-28",
+    "close": 451.25
    }
   },
   {
@@ -604,8 +604,8 @@
    "note": "Entry set to the settled 2026-10-19 close 1268.75 (read 1268.25 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-26",
-    "close": 1252.5
+    "date": "2026-10-28",
+    "close": 1237.0
    }
   },
   {
@@ -629,8 +629,8 @@
    "note": "Entry set to the settled 2026-10-19 close 655.25 (read 656.0 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-26",
-    "close": 616.0
+    "date": "2026-10-28",
+    "close": 599.5
    }
   },
   {
@@ -653,8 +653,8 @@
    "graded_on": null,
    "entry_final": true,
    "mark": {
-    "date": "2026-10-26",
-    "close": 659.0
+    "date": "2026-10-28",
+    "close": 643.75
    }
   },
   {
@@ -677,8 +677,8 @@
    "graded_on": null,
    "entry_final": true,
    "mark": {
-    "date": "2026-10-27",
-    "close": 450.0
+    "date": "2026-10-28",
+    "close": 451.25
    }
   },
   {
@@ -702,8 +702,8 @@
    "note": "Entry set to the settled 2026-10-26 close 1252.5 (read 1253.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-27",
-    "close": 1243.25
+    "date": "2026-10-28",
+    "close": 1237.0
    }
   },
   {
@@ -727,8 +727,8 @@
    "note": "Entry set to the settled 2026-10-26 close 616.0 (read 615.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-27",
-    "close": 611.0
+    "date": "2026-10-28",
+    "close": 599.5
    }
   },
   {
@@ -752,8 +752,8 @@
    "note": "Entry set to the settled 2026-10-26 close 659.0 (read 658.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-10-27",
-    "close": 650.25
+    "date": "2026-10-28",
+    "close": 643.75
    }
   }
  ],
@@ -789,7 +789,7 @@
   "after_holiday": null
  },
  "backtest": {
-  "computed": "2026-10-27T23:59:15Z",
+  "computed": "2026-10-28T23:32:48Z",
   "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
   "source_built": "rebuild 2006–2026",
   "cutoff": "2026-10-02",
