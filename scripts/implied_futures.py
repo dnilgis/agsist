@@ -529,8 +529,11 @@ def replay(day, bids_git, prices_git, out_dir, prices_ref="origin/main", bids_re
         t += timedelta(minutes=30)
     ticks.append(d.replace(hour=13, minute=37))
     written = 0
+    now = datetime.now(UTC)
     for t in ticks:
         tu = t.astimezone(UTC)
+        if tu > now:
+            break
         bsha = _commit_at(bids_git, bids_ref, "data", tu)
         psha = _commit_at(prices_git, prices_ref, "data/prices.json", tu)
         if not bsha or not psha:
