@@ -97,6 +97,14 @@
       "url": "https://www.ncei.noaa.gov/products/land-based-station/us-climate-normals",
       "checked": "2026-10-16",
       "quote": "NCEI generates the official U.S. normals every 10 years ... The 1991–2020 U.S. Climate Normals are the latest in a series of decadal normals first produced in the 1950s."
+    },
+    {
+      "id": "ch12-latest",
+      "fact": "Family farmers and fishermen filed 361 Chapter 12 bankruptcy cases in the 12 months to Sep 30, 2026. Chapter 12 is the bankruptcy chapter written for them. A filing is a case opened, not a farm sold or closed.",
+      "source": "U.S. Courts, Table F-2, 12 months to Sep 30, 2026",
+      "url": "https://www.uscourts.gov/sites/default/files/document/bf_f2_0930.2026.pdf",
+      "checked": "2026-10-28",
+      "quote": "Other Chapters includes cases filed under chapters 9 (3), 12 (361) and 15 (259) as well as Section 304 (0)."
     }
   ]
 }
