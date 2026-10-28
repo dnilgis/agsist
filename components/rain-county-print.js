@@ -160,9 +160,12 @@
         if (days.length !== +D.days || Math.abs(d.total - +D.total) > 0.011) return false;
         if (d.missing > MISS_BLOCK || days.length < MIN_DAYS) return false;
         state = { RP: RP, days: days, d: d, preview: days.length < (isLeap(year) ? 366 : 365), ov: usualOf(days, D.mn, D.usual) };
-        draw('r1');
+        /* the style the page ships pressed opens first: Roots on county pages (Sig, Oct 28 2026),
+           Staircase where a figure presses it (/here) or presses none */
+        var pre = fig.querySelector('.rc-print-styles [data-style][aria-pressed="true"]');
+        draw(pre && pre.getAttribute('data-style') === 'r2' ? 'r2' : 'r1');
         fig.classList.add('rc-print-on');
-        fig.hidden = false;   // county pages ship the print as a hidden shell after the farm content
+        fig.hidden = false;   // a figure shipped hidden (Oct 20 to 27 county pages) shows; since Oct 28 the county one ships shown, the chart in it
         var cap = fig.querySelector('.rc-cap-print'), old = fig.querySelector('.rc-cap-chart');
         if (cap) cap.hidden = false;
         if (old) old.hidden = true;
@@ -171,11 +174,18 @@
           tg.hidden = false;
           /* Watch it draw: the same print, drawing itself day by day, and a video of it
              (components/rain-print-draw.js). No hail or wind here: the page has no town point. */
-          if (!tg.querySelector('.rc-watch')) {
-            var wb = doc.createElement('button');
+          /* the county page ships this button in its (held, invisible) picker row so the row is its
+             full height from the first paint (Oct 28: the print moved up under the figures); /here
+             gets it made here, as before. Bound once either way. */
+          var wb = tg.querySelector('.rc-watch');
+          if (!wb) {
+            wb = doc.createElement('button');
             wb.type = 'button'; wb.className = 'rc-watch'; wb.textContent = 'Watch it draw';
             wb.setAttribute('aria-label', 'Watch this year draw itself, and make a video of it');
             tg.appendChild(wb);
+          }
+          if (!wb.getAttribute('data-bound')) {
+            wb.setAttribute('data-bound', '1');
             wb.addEventListener('click', function () {
               script(DRAW, function () { return !!root.AgRainDraw; }).then(function () {
                 var box = fig.querySelector('.rc-print-art');
@@ -201,7 +211,10 @@
       }).catch(function () { return false; /* the plain chart stays */ });
     }
     return new Promise(function (done) {
-      function run() { go().then(done, function () { done(false); }); }
+      /* not drawn (no days file, a mismatch, a failure): the plain chart stays, and on the county page the
+         room held for the print, its picker and its caption is let go (rain-county.css .rc-print-off) */
+      function off() { fig.classList.add('rc-print-off'); return false; }
+      function run() { go().then(function (ok) { done(ok || off()); }, function () { done(off()); }); }
       if ('IntersectionObserver' in root) {
         var io = new root.IntersectionObserver(function (es) {
           if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); run(); }

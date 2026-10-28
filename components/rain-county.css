@@ -96,3 +96,18 @@
 .rc-sell .rc-fine { margin: .5rem 0 0; }
 /* the second year button (last year by Christmas, this year in January): an outline that reads as a button */
 .rc-sell .btn-secondary { border-color: var(--text-muted); }
+/* The county page's print up top, in the plain chart's place (Sig, Oct 28 2026). The plain chart ships inside
+   .rc-print-art as the no-JS fallback; the script replaces it with the print. While scripts run, the print's
+   box (3:2, the art's 1800 x 1200), its picker row and the longer of the two captions are held from the first
+   paint, so drawing the print moves nothing below it (the !important beats styles.css's [hidden] rule). Without scripts nothing is held: the chart shows as is; when the print cannot be drawn the script lets the room go
+   (.rc-print-off). */
+.rc-print-top .rc-print-styles { margin-top: .4rem; }
+.rc-print-top .rc-print-art { box-sizing: content-box; border: 1px solid transparent; border-radius: 4px; }
+.rc-print-top figcaption { display: grid; }
+.rc-print-top figcaption > span { grid-area: 1 / 1; }
+@media (scripting: enabled) {
+  .rc-print-top:not(.rc-print-off) .rc-print-styles[hidden] { display: flex !important; visibility: hidden; }   /* over styles.css [hidden] */
+  .rc-print-top:not(.rc-print-on):not(.rc-print-off) .rc-print-art { aspect-ratio: 3 / 2; display: flex; align-items: center; }
+  .rc-print-top:not(.rc-print-on):not(.rc-print-off) .rc-print-art svg { flex: 1 1 auto; }
+  .rc-print-top:not(.rc-print-off) figcaption > span[hidden] { display: block !important; visibility: hidden; }
+}
