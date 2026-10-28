@@ -146,6 +146,9 @@ CURATED = {
     # PRF state sponsors (components/prf-sponsor.js): Sig edits it when a state
     # sells or renews; each entry lapses on its own "through" date.
     "data/prf-sponsors.json",
+    # Farm bill program dates and rules (DMC signup window and the rest): edited by
+    # hand from USDA notices; seed_static.py reads it for /milk-prices (Oct 28).
+    "data/farm-bill.json",
     # What's new list (Oct 18): Sig or a session adds a line when something
     # ships; scripts/build_whats_new.py bakes it into index.html and /changelog.
     "data/whats-new.json",
