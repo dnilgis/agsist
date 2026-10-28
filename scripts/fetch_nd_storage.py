@@ -440,9 +440,15 @@ def selftest():
     refused(SAMPLE.replace("Hatton (3261)", "             "), "a warehouse licence without its location")
     refused(SAMPLE.replace("$424,462.83   2,172,000 bu", "$424,462.83"), "a warehouse and no capacity")
     refused(SAMPLE.replace("$345,062.64", "$345,062.64   9,000 bu"), "a capacity and no warehouse")
-    refused(SAMPLE.replace("Thompson (1170)", "Thompson (39)  ").replace("Grain Warehouse License (1170)",
-                                                                         "Grain Warehouse License (39)  "),
-            "one licence at two locations")
+    refused(SAMPLE.replace("Buxton (1169)", "Buxton (923) ").replace("Grain Warehouse License (1169)",
+                                                                    "Grain Warehouse License (923) "),
+            "one licence twice within one entity")
+    # the same licence under two entities (the Jun 2024 list prints 14 such): kept, flagged, each with its own
+    twice, _ = parse(SAMPLE.replace("Thompson (1170)", "Thompson (39)  ").replace("Grain Warehouse License (1170)",
+                                                                               "Grain Warehouse License (39)  "))
+    ok(sorted((r["name"][:8], r["lic_twice"]) for r in twice if r["lic"] == "39")
+       == [("Thompson", True), ("Valley U", True)] and not any(r["lic_twice"] for r in rows),
+       "a licence printed under two entities is flagged on both")
     refused(SAMPLE.rstrip() + "\n                                           Grain Warehouse License (7)        Oakes (7)\n",
             "lines after the last entity")
     refused(SAMPLE.replace("Entity (Entity Number)", "Something else"), "not this list")
