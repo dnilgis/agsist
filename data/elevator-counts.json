@@ -1,10 +1,10 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-10-28T17:06:41Z",
+ "generated": "2026-10-28T19:36:38Z",
  "note": "bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they are in (scripts/build_cash_bid_pages.py state_counts). coverage: boards read on the latest full coverage pass out of every elevator tracked (copied from data/elevator-coverage-counts.json). Different questions: a board can be read and have no current bid.",
  "bids": {
-  "elevators": 2085,
-  "towns": 1654
+  "elevators": 2093,
+  "towns": 1664
  },
  "states": {
   "AL": {
@@ -36,16 +36,16 @@
    "towns": 1
   },
   "IL": {
-   "elevators": 238,
-   "towns": 173
+   "elevators": 240,
+   "towns": 174
   },
   "IN": {
    "elevators": 79,
-   "towns": 61
+   "towns": 62
   },
   "KS": {
-   "elevators": 256,
-   "towns": 184
+   "elevators": 257,
+   "towns": 185
   },
   "KY": {
    "elevators": 11,
@@ -60,8 +60,8 @@
    "towns": 25
   },
   "MN": {
-   "elevators": 152,
-   "towns": 128
+   "elevators": 161,
+   "towns": 135
   },
   "MO": {
    "elevators": 41,
@@ -76,16 +76,16 @@
    "towns": 56
   },
   "NE": {
-   "elevators": 260,
-   "towns": 199
+   "elevators": 255,
+   "towns": 198
   },
   "NY": {
    "elevators": 2,
    "towns": 2
   },
   "OH": {
-   "elevators": 87,
-   "towns": 77
+   "elevators": 86,
+   "towns": 76
   },
   "OK": {
    "elevators": 81,
@@ -104,8 +104,8 @@
    "towns": 3
   },
   "SD": {
-   "elevators": 110,
-   "towns": 93
+   "elevators": 111,
+   "towns": 94
   },
   "TN": {
    "elevators": 4,
@@ -120,8 +120,8 @@
    "towns": 8
   },
   "WI": {
-   "elevators": 103,
-   "towns": 93
+   "elevators": 104,
+   "towns": 94
   },
   "WY": {
    "elevators": 3,
@@ -129,10 +129,10 @@
   }
  },
  "coverage": {
-  "generated": "2026-10-27T18:12:39.784Z",
-  "read": 2052,
-  "quiet": 229,
-  "known": 5909,
-  "elevators": 8190
+  "generated": "2026-10-28T18:28:07.567Z",
+  "read": 2079,
+  "quiet": 250,
+  "known": 5873,
+  "elevators": 8202
  }
 }

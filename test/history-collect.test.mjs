@@ -126,9 +126,24 @@ test('no workflow gained a schedule: every cron line is already on origin/main',
   //   Oct 23 2026: "County rain pages rebuild daily (was Mondays)": county-rain.yml every day at the old time.
   //   Oct 23 2026: the monthly land-sale alert email, "new list, sender and monthly schedule approved", on the 3rd.
   //   Oct 27 2026: Sig, "Turn on land sale email alert signups": the same land-alert.yml schedule, signups on.
-  const APPROVED = { 'rain-monthly.yml': ['41 14 2 * *'], 'county-rain.yml': ['23 13 * * *'], 'stats-ingest.yml': ['47 12 * * *'], 'land-alert.yml': ['47 15 3 * *'] };  // stats-ingest: Sig, Oct 23 2026
+  //   Oct 28 2026: Sig, yes: the implied-futures shadow test "may run on its own during CBOT day session (every 30 min
+  //     8:30-13:20 CT + once after close) for a week or two". No cron line: implied-futures.yml rides Fetch Grain Bids
+  //     (pinned in the test below), so its entry lists none.
+  const APPROVED = { 'rain-monthly.yml': ['41 14 2 * *'], 'county-rain.yml': ['23 13 * * *'], 'stats-ingest.yml': ['47 12 * * *'], 'land-alert.yml': ['47 15 3 * *'], 'implied-futures.yml': [] };  // stats-ingest: Sig, Oct 23 2026
   const left = added.filter((a) => !Object.entries(APPROVED).some(([f, cs]) => cs.some((c) => a === `${f}: cron '${c}' (new workflow)` || a === `${f}: cron '${c}'`)));
   assert.deepEqual(left, [], 'a new schedule is Sig\'s decision: list it in the report, do not add it');
+});
+
+test('implied futures (Sig, Oct 28 2026): no cron, rides Fetch Grain Bids in session hours, off switch, private output only', () => {
+  const y = read(`${WF}/implied-futures.yml`);
+  assert.deepEqual(crons(y), [], 'no schedule of its own');
+  assert.match(y, /workflow_run:\s*\n\s*workflows: \["Fetch Grain Bids"\]/, 'clocked by Fetch Grain Bids');
+  assert.match(y, /vars\.IMPLIED_FUTURES_LIVE != '0'/, 'IMPLIED_FUTURES_LIVE=0 stops the chained runs');
+  const hours = [...y.matchAll(/created_at, 'T(\d\d):'\)/g)].map((m) => +m[1]);
+  assert.deepEqual(hours, [13, 14, 15, 16, 17, 18, 19], 'runners start only around the CBOT day session');
+  assert.match(y, /^permissions:\n\s+contents: read$/m, 'cannot write to this repository');
+  assert.match(y, /bash scripts\/push_raw\.sh "implied futures" data\/implied-futures/, 'saves to the private raw branch');
+  assert.doesNotMatch(noComments(y), /git push|git commit/, 'no other write');
 });
 
 // ---------------------------------------------------------------- the ongoing pieces ride existing jobs

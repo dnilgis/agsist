@@ -77,3 +77,5 @@ build/shots/
 
 # scripts/dev/verify.sh writes its last test run here for the Stop hook (Oct 22); per checkout, never committed
 /.verify/
+# implied futures shadow test: ticks live on the private raw branch only (implied-futures.yml)
+/data/implied-futures/

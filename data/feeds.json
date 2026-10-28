@@ -2114,6 +2114,7 @@
     "Generate Daily Briefing",
     "Dairy prices",
     "Fertilizer co-op posted prices",
+    "Implied futures shadow test",
     "Fetch Prices"
    ],
    "touched_by": [
@@ -2128,6 +2129,7 @@
     "Dairy prices",
     "Fertilizer co-op posted prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Implied futures shadow test",
     "Morning report",
     "Build Price Stats (5-year percentile)",
     "Fetch Prices",
