@@ -280,10 +280,15 @@ def mpp_block(text):
     last = max(keep)
     why = []
     if any(m > last for m in miss):
-        why.append("FSA's MPP table as read ends at %s" % last)
+        why.append("FSA's MPP table as read ends at %s %s" % (MPP_MONTHS[int(last[5:]) - 1], last[:4]))
     if any(m < last for m in miss):
         why.append("not in FSA's table as read, or its feed cost or margin did not check out")
-    out = {"months": keep, "note": note, "withheld": {"count": len(miss), "months": miss, "why": "; ".join(why)} if miss else {"count": 0}}
+    flat = re.sub(r"\s+", " ", (text or "").replace("\u2010", "-"))
+    out = {"months": keep, "note": note,
+           # FSA's own column head for the hay in MPP's feed cost, and its two-month pay periods
+           "hay": "Alfalfa Hay" if re.search(r"\bAlfalfa Hay\b", flat) and not re.search(r"(?i)premium alfalfa", flat) else "",
+           "pay_periods": bool(re.search(r"Payment periods", flat) and re.search("01 [-\u2013] January/February", flat)),
+           "withheld": {"count": len(miss), "months": miss, "why": "; ".join(why)} if miss else {"count": 0}}
     return out
 
 
@@ -496,7 +501,9 @@ def selftest():
     ck("...MPP years only (2014 to 2018): 55 months, Aug to Dec 2018 withheld as past the table's end",
        len(mb["months"]) == 55 and min(mb["months"]) == "2014-01" and max(mb["months"]) == "2018-07"
        and mb["withheld"]["months"] == ["2018-08", "2018-09", "2018-10", "2018-11", "2018-12"]
-       and "ends at 2018-07" in mb["withheld"]["why"], mb["withheld"])
+       and "ends at July 2018" in mb["withheld"]["why"], mb["withheld"])
+    ck("...FSA's hay column is plain alfalfa hay, and MPP paid on two-month periods",
+       mb["hay"] == "Alfalfa Hay" and mb["pay_periods"] is True, (mb["hay"], mb["pay_periods"]))
     ck("...nothing read, nothing kept", mpp_block("") == {})
     ck("hay notes: the 2019 blend and the Dec 2021 revision back to Jan 2020, from FSA's own words",
        set(hn) == {"blend", "revision"} and "50 percent hay blend" in hn["blend"]["text"], hn)

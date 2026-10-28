@@ -479,6 +479,7 @@
  },
  "mpp": {
   "archive_url": "https://web.archive.org/web/20240614163858/https://www.fsa.usda.gov/Assets/USDA-FSA-Public/usdafiles/MPP-Dairy/MPP-Dairy.pdf",
+  "hay": "Alfalfa Hay",
   "months": {
    "2014-01": {
     "all_milk": 23.5,
@@ -922,6 +923,7 @@
    }
   },
   "note": "At a milk margin (all-milk price minus feed cost) of less than $8.00 per cwt, payments are possible depending on the level of coverage chosen by the dairy operation.",
+  "pay_periods": true,
   "read": "2026-10-28",
   "snapshot": "2024-06-14",
   "source": "USDA Farm Service Agency, Margin Protection Program (MPP) calculations",
@@ -936,7 +938,7 @@
     "2018-11",
     "2018-12"
    ],
-   "why": "FSA's MPP table as read ends at 2018-07"
+   "why": "FSA's MPP table as read ends at July 2018"
   }
  },
  "premiums": {

@@ -2544,6 +2544,107 @@ def _dmc_hay(dmc, years):
     return out + "."
 
 
+# --- MPP-Dairy years, from data/dairy-dmc.json mpp ---------------------------
+# 2026-10-28 (fx/dairy3). MPP-Dairy (2014-2018) margins from FSA's own MPP
+# calculations table, apart from DMC: a different program, so no payment is
+# worked out and nothing is set beside the DMC table as if one. The months FSA's
+# table does not have are named.
+def milk_mpp_seed(dmc):
+    m = (dmc or {}).get("mpp") if isinstance(dmc, dict) else None
+    rows = (m or {}).get("months") if isinstance(m, dict) else None
+    if not isinstance(rows, dict) or not rows:
+        return ""
+    for k, r in rows.items():
+        if _mkey(k) is None or not isinstance(r, dict) or not (_pos(r.get("all_milk")) and _pos(r.get("feed")) and _fin(r.get("margin"))) \
+                or abs(r["all_milk"] - r["feed"] - r["margin"]) > 1e-5 or not ("2014" <= k[:4] <= "2018"):
+            return ""
+    years = sorted({k[:4] for k in rows})
+    th = "".join(f'<th scope="col" class="num">{y}</th>' for y in years)
+    body = []
+    for mo in range(12):
+        cells = []
+        for y in years:
+            r = rows.get(f"{y}-{mo + 1:02d}")
+            cells.append(f'<td class="num">{_cwt(r["margin"])}</td>' if r else '<td class="num">-</td>')
+        body.append(f'<tr><th scope="row">{MON3[mo]}</th>{"".join(cells)}</tr>')
+    lo_k = min(rows, key=lambda k: rows[k]["margin"])
+    lo, hi = min(rows), max(rows)
+    wh = m.get("withheld") if isinstance(m.get("withheld"), dict) else {}
+    held = ""
+    if isinstance(wh.get("count"), int) and wh["count"] > 0:
+        ms = [_ishort(_mkey(k)) for k in (wh.get("months") or []) if _mkey(k) is not None]
+        span = f"{ms[0]} to {ms[-1]}" if len(ms) > 1 else (ms[0] if ms else "")
+        held = f" {span} {'are' if wh['count'] != 1 else 'is'} left out: {_e(wh.get('why') or 'not in FSA&rsquo;s table as read')}."
+    hay = (" Its feed cost priced plain alfalfa hay (FSA&rsquo;s column: &ldquo;Alfalfa Hay&rdquo;); DMC&rsquo;s prices premium alfalfa (a 50 percent hay blend in 2019)."
+           if m.get("hay") == "Alfalfa Hay" else "")
+    pay = (" Through 2017 MPP paid on the margin of two-month pay periods (January and February, March and April, and so on), "
+           "as FSA&rsquo;s table sets them out." if m.get("pay_periods") else "")
+    note = (f" FSA&rsquo;s own note: &ldquo;{_e(m['note'])}&rdquo; DMC&rsquo;s levels go to $9.50."
+            if isinstance(m.get("note"), str) and "$8.00" in m["note"] else "")
+    rd = _e(m.get("read") or "")
+    return ('<details class="dp-states" id="dp-mpp"><summary>Before DMC: MPP-Dairy margins, '
+            f'{_ishort(_mkey(lo))} to {_ishort(_mkey(hi))} (a different program)</summary>'
+            '<div class="dp-tbl-wrap dp-tbl-scroll"><table class="dp-tbl"><caption class="dp-sr">MPP-Dairy monthly milk margin above feed cost, '
+            f'dollars per cwt, by month and year</caption><thead><tr><th scope="col">MPP margin</th>{th}</tr></thead>'
+            f'<tbody>{"".join(body)}</tbody></table></div>'
+            '<p class="dp-note-src">MPP-Dairy, the Margin Protection Program, ran 2014 to 2018, before DMC. It was a different '
+            f'program, so these margins are not on the same footing as the DMC table above and no MPP payment is worked out here.{hay}{pay}{note} '
+            f'Lowest month here: {_ishort(_mkey(lo_k))}, {_cwt(rows[lo_k]["margin"])}. FSA prints each margin to the millionth of a dollar; '
+            f'shown here to the cent.{held} Source: {_cite(m, "FSA, MPP calculations")}{", read " + rd if rd else ""}.</p></details>')
+
+
+# --- Licensed dairy herds, from data/dairy-herds.json -------------------------
+# 2026-10-28 (fx/dairy3). The page bakes the headline numbers; the chart and
+# its table load the file only when the reader comes to them (page budget).
+MILK_HERDS_DATA = "data/dairy-herds.json"
+HERDS_CAVEAT = ("A drop is net licences, not the exact number of farms that quit: a herd that sells, merges or changes "
+                "hands can leave the list while another joins it.")
+
+
+def _n(v):
+    return f"{v:,}"
+
+
+def _chg(v):
+    return ("+" if v > 0 else "&minus;" if v < 0 else "") + f"{abs(v):,}"
+
+
+def milk_herds_seed(h):
+    """The section's lead line and source line, or a plain withheld line."""
+    us = (h or {}).get("us") if isinstance(h, dict) else None
+    if not isinstance(us, dict) or len(us) < 2 or not all(isinstance(v, int) and v > 0 for v in us.values()):
+        return ('<p class="dp-note-src" id="dp-herds-lead">Licensed dairy herds: not loaded here yet. I print them only '
+                'from NASS&rsquo;s own numbers.</p>')
+    ys = sorted(us)
+    y1, y0, yf = ys[-1], ys[-2], ys[0]
+    lead = (f'<strong>{_n(us[y1])} licensed dairy herds in the US in {y1}</strong>, {_chg(us[y1] - us[y0])} from {y0} '
+            f'and {_chg(us[y1] - us[yf])} since {yf} ({_n(us[yf])}).')
+    wm = ((h.get("wi_monthly") or {}).get("months") or {}) if isinstance(h.get("wi_monthly"), dict) else {}
+    if wm:
+        k = max(wm)
+        ka = f"{int(k[:4]) - 1}{k[4:]}"
+        i = _mkey(k)
+        lead += (f' Wisconsin, {MONL[i % 12]} 1, {i // 12}: {_n(wm[k])}'
+                 + (f', {_chg(wm[k] - wm[ka])} from a year earlier.' if ka in wm else '.'))
+    ld = h.get("loaded") or ""
+    rel = ""
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", ld):
+        i = _mkey(ld[:7])
+        rel = f", newest year released {MON3[i % 12]} {int(ld[8:])}, {i // 12}"
+    note = f" {_e(h['us_note'])}." if h.get("us_note") else ""
+    src = ('Source: <a href="https://quickstats.nass.usda.gov/" rel="noopener">USDA NASS</a>, licensed dairy herds, the yearly '
+           f'average of farms licensed to sell milk (Milk Production report{rel}), as NASS has the years now.{note}')
+    if wm:
+        src += (' Wisconsin by month: <a href="https://www.nass.usda.gov/Statistics_by_State/Wisconsin/Publications/Dairy/" '
+                'rel="noopener">USDA NASS Wisconsin</a>, herds on the state&rsquo;s Dairy Producer License list on the first of each month.')
+    rd = _e(h.get("read") or "")
+    if rd:
+        src += f" Read {rd}."
+    return (f'<p class="dp-sec-intro" id="dp-herds-lead">{lead}</p>'
+            f'<p class="dp-note-src" id="dp-herds-caveat">{HERDS_CAVEAT}</p>'
+            f'<p class="dp-note-src" id="dp-herds-src">{src}</p>')
+
+
 def milk_dmc_margin(dmc, d, today):
     """The DMC margin line: FSA's newest published margin when the file holds
     one that checks out, else the milk side we hold and why the margin is not
@@ -3016,6 +3117,8 @@ def seed_milk(today):
     dmc = _load_json(MILK_DMC_DATA) or {}
     seeds["milkdmcpaid"] = milk_dmc_paid(dmc, d)
     seeds["milkdmcmargin"] = milk_dmc_margin(dmc, d, today)
+    seeds["milkmpp"] = milk_mpp_seed(dmc)
+    seeds["milkherds"] = milk_herds_seed(_load_json(MILK_HERDS_DATA))
     seeds["milkmiss"] = milk_miss_seed(_load_json(MILK_MISS_DATA), today)
     seeds["milko30"] = milk_o30_seed(_load_json(MILK_O30_DATA), d, today)
     area = milk_area_seed(_load_json(MILK_MB_DATA), today)
