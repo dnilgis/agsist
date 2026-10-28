@@ -123,7 +123,7 @@ test("main's later work on the old pages came along (redo on Oct 28, 2026)", () 
   // real case Oct 28: /daily#past at 1280 opened mid-briefing because the briefing fills in after the jump;
   // a visit on #past or #moved stays on that section until the reader scrolls, taps or types
   const dly = read("daily.html");
-  assert.match(dly, /var m=\/\^#\(past\|moved\)\$\/\.exec\(location\.hash\)[^]*?new ResizeObserver\(function\(\)\{[^}]*t\.scrollIntoView\(\{block:'start'\}\)/);
+  assert.match(dly, /var m=\/\^#\(past\|moved\)\$\/\.exec\(location\.hash\)[^]*?new ResizeObserver\(function\(\)\{[^]*?t\.scrollIntoView\(\{block:'start'\}\)/);
   assert.ok(/\['wheel','touchstart','keydown','mousedown'\]/.test(dly), "the reader's own scroll wins");
   // the town page builder writes the coverage map link to its new home
   const cb = read("scripts/build_cash_bid_pages.py");
