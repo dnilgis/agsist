@@ -49,13 +49,15 @@ test("no page calls the futures live or puts the delay at 15 minutes", () => {
    "No report data yet" box sat in the page text (hidden by CSS) beside the results; it is
    written only when the data really is a sample. */
 test("What's Priced In has one grading definition and no empty-state text beside results", () => {
-  const h = read("whats-priced-in.html");
+  // What's priced in is a section of /usda-calendar since the Oct 22 merges (scripts/moved_pages.py); its script is components/priced-in.js
+  const h = read("usda-calendar.html"), pj = read("components/priced-in.js");
+  assert.ok(!/edges of the trade range|ends of the trade range/.test(pj), "a second, range-edge definition in the script");
   assert.ok(!/edges of the trade range|ends of the trade range/.test(h), "a second, range-edge definition of the thresholds");
   assert.match(h, /surprise thresholds<\/b> on the report card are the trade average minus and plus that same band/);
   assert.match(h, /<div class="wp-sample" id="wp-sample"><\/div>/, "the sample box is empty in the page text");
   const visible = h.replace(/<script[\s\S]*?<\/script>/g, "");
   assert.ok(!/No report data yet/.test(visible), "No report data yet is in the page text");
-  assert.match(h, /if\(d\.sample\)\{var ws=document\.getElementById\('wp-sample'\);ws\.textContent='No report data yet/);
+  assert.match(pj, /if\(d\.sample\)\{var ws=document\.getElementById\('wp-sample'\);ws\.textContent='No report data yet/);
 });
 
 /* 3. Privacy. The summary must not promise more than the details: coordinates, ZIPs and
