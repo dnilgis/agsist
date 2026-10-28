@@ -269,6 +269,14 @@
   },
   "dairy": {
    "label": "Dairy",
+   "signup": {
+    "what": "2027 Dairy Margin Coverage signup",
+    "year": 2027,
+    "open": "2026-10-05",
+    "close": "2026-12-18",
+    "src": "fsa_dmc",
+    "_note": "Read by scripts/seed_static.py for the /milk-prices DMC card and countdown. Keep these dates and the signup line below saying the same thing (test/milk-dmc.test.mjs)."
+   },
    "lines": [
     {
      "t": "<b>Dairy Margin Coverage runs through 2031.</b> The 2025 law renewed it, raised Tier 1 to 6 million pounds and offers 25% off premiums if you lock in through 2031.",
@@ -288,7 +296,8 @@
     },
     {
      "t": "<b>Jan 1, 2027 is your date.</b> Milk is first to fall back to permanent law if nothing passes. CRS put the parity support price at 252% of the market price in July 2025. Both bills fix it; neither is law.",
-     "src": "crs75"
+     "src": "crs75",
+     "until": "2027-01-01"
     }
    ],
    "tools": [

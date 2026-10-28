@@ -2300,6 +2300,93 @@ def milk_mailbox_seeds(mb, today):
             "milkmbfaq": faq}
 
 
+# --- DMC signup, from data/farm-bill.json -------------------------------------
+# 2026-10-28 (dairy board, item 1): the page said "2026 enrollment already
+# closed (Feb 26)" while the 2027 signup ran Oct 5 to Dec 18, 2026. The window
+# now comes from farm-bill.json (byOperation.dairy.signup), the same file the
+# /farm-bill page reads, and the words follow the run date: opens, open with
+# days to go, or closed. The page script recounts the days from the data-
+# attributes, so a day-old bake never shows yesterday's count.
+MILK_FB_DATA = "data/farm-bill.json"
+DMC_WKDAY = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+
+def _dmc_date(s):
+    try:
+        return datetime.strptime(str(s or ""), "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
+def _dmc_md(dt, year=True):
+    return f"{MON3[dt.month - 1]} {dt.day}" + (f", {dt.year}" if year else "")
+
+
+def milk_dmc_state(fb, today):
+    """{open, close, year, src, link, phase, days} for the DMC signup in the
+    farm-bill file, or None when the file does not carry a usable window."""
+    op = ((fb or {}).get("byOperation") or {}).get("dairy") or {}
+    su = op.get("signup") if isinstance(op.get("signup"), dict) else None
+    if not su:
+        return None
+    o, c = _dmc_date(su.get("open")), _dmc_date(su.get("close"))
+    t = _dmc_date(today)
+    yr = su.get("year")
+    if not (o and c and t and o <= c and isinstance(yr, int)):
+        return None
+    srcs = ((fb or {}).get("byOperation") or {}).get("_sources") or {}
+    phase = "before" if t < o else "after" if t > c else "open"
+    return {"open": o, "close": c, "year": yr, "src": srcs.get(su.get("src"), ""),
+            "phase": phase, "days": (c - t).days}
+
+
+def milk_dmc_words(st):
+    """The one status sentence, the page script's dmcWords() word for word."""
+    o, c, yr = st["open"], st["close"], st["year"]
+    if st["phase"] == "before":
+        return f"{yr} DMC signup opens {DMC_WKDAY[o.weekday()]}, {_dmc_md(o)}, and runs to {_dmc_md(c)}."
+    if st["phase"] == "after":
+        return f"The {yr} DMC signup closed {_dmc_md(c)}."
+    n = st["days"]
+    left = ("Today is the last day." if n == 0 else "1 day left." if n == 1 else f"{n} days left.")
+    return f"{yr} DMC signup is open now, to {DMC_WKDAY[c.weekday()]}, {_dmc_md(c)}, at your FSA office. {left}"
+
+
+def milk_dmc_seeds(fb, today):
+    st = milk_dmc_state(fb, today)
+    if not st:
+        return {}
+    words = milk_dmc_words(st)
+    src = f' <span class="dp-dmc-src">Source: {st["src"]}.</span>' if st["src"] else ""
+    attrs = (f' data-open="{st["open"].isoformat()}" data-close="{st["close"].isoformat()}"'
+             f' data-year="{st["year"]}"')
+    lever = (f'<span class="dp-dmc-now" id="dp-dmc-lever"{attrs}>{words}</span>'
+             + (" Farms that took the one-time "
+                "lock-in through 2031 at the 2026 signup keep that coverage at a 25% premium discount."
+                if st["phase"] != "after" else ""))
+    card = (f'<p class="dp-dmc-line"><strong id="dp-dmc-words"{attrs}>{words}</strong>{src}</p>')
+    # the other dairy lines /farm-bill carries (forward pricing paused, Jan 1),
+    # word for word with their sources; a line with "until" drops on that date
+    op = fb["byOperation"]["dairy"]
+    srcs = fb["byOperation"].get("_sources") or {}
+    t = _dmc_date(today)
+    more = []
+    for ln in op.get("lines") or []:
+        if not isinstance(ln, dict) or not ln.get("t") or "DMC signup" in ln["t"]:
+            continue
+        u = _dmc_date(ln.get("until"))
+        if u and t >= u:
+            continue
+        s = srcs.get(ln.get("src"), "")
+        tail = f' <span class="dp-dmc-src">({s})</span>' if s else ""
+        more.append(f'<li>{ln["t"]}{tail}</li>')
+    if more:
+        card += '\n    <ul class="dp-dmc-fb">' + "".join(more) + "</ul>"
+    faq = (f"{words} DMC pays when the national all-milk price minus a national feed cost falls below the level "
+           "you elect. It does not see your own feed, labor or hauling.")
+    return {"milkdmc": lever, "milkdmccard": card, "milkdmcfaq": faq}
+
+
 # What each starred AMS reporting area covers (MMPR-0626 footnote, page 3).
 MILK_MB_GROUPS = {
     "New England States": "CT, ME, MA, NH, RI, VT",
@@ -2524,6 +2611,7 @@ def seed_milk(today):
     seeds, key = milk_seeds(d, today)
     js = seeds.pop("__js", None)
     seeds.update(milk_mailbox_seeds(_load_json(MILK_MB_DATA), today))
+    seeds.update(milk_dmc_seeds(_load_json(MILK_FB_DATA), today))
 
     def extra(t):
         if key:
