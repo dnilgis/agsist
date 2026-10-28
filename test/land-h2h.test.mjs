@@ -210,10 +210,10 @@ test("storage: at 390 px the table fits with no sideways scroll", { skip }, asyn
  *   - the card says AFIDA counts 10+ year leases (wind among them) and that
  *     the filings do not split owned from leased; Iowa says most is leases
  */
-const FL = read("foreign-land.html");
+const FL = read("components/atlas-foreign.js");   // the foreign-held fold on /farmland-atlas since Oct 23, 2026
 const verdicts = (() => {
   const a = FL.indexOf("  var LEASE_NOTE");
-  const b = FL.indexOf("  fetch('/data/afida/county.json'");
+  const b = FL.indexOf("  window.AgForeignStates");
   assert.ok(a > 0 && b > a, "LEASE_NOTE and buildVerdicts found");
   const A2F = { IA: "Iowa", TX: "Texas", ND: "North Dakota", ME: "Maine", WI: "Wisconsin" };
   return new Function("__A2F", FL.slice(a, b) + "; return buildVerdicts;")(A2F);
@@ -243,8 +243,8 @@ test("foreign-land: the label follows the last five years in a made-up state", (
   assert.match(plain(verdicts(c({ 2010: 100, 2018: 400, 2020: 200, 2024: 200 })).WI.sent), /down 50% from its 2018 peak/);
 });
 
-test("foreign-land: a visible byline", () => {
-  assert.match(FL, BYLINE);
+test("foreign-land: a visible byline on the page that carries it", () => {
+  assert.match(read("farmland-atlas.html"), BYLINE);
 });
 
 /* ---------------- /harvest-price-tracker#presell ----------------

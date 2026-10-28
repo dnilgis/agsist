@@ -4,6 +4,7 @@ Moved out of the `var CV` comment in components/loader.js on 2026-10-27 (fx/shel
 downloading it on every page. CV is appended as ?v= to header.html, footer.html and analytics.html; bump it
 for any menu or footer change. Newest first. Add a line here with each bump.
 
+- v102 2026-10-28: fx/merges2 (Sig approved Oct 22 and 23). Ten pages merged into the page a reader already uses; the menu and footer stop listing them
 - v101 2026-10-27: fx/changemap. Fast Facts What changed this week map (components/changemap.js?v=1, here.js?v=28); no menu or footer change
 - v100 2026-10-27: fx/smallfixes. styles.css?v=27 (phone side gutter for the Made by line and the Next block); no menu or footer change
 - v99 2026-10-27: fx/promo2 (redo of fx/promo, #57). signup-ask.js?v=19: the See this morning's email link beside the ZIP box on Daily page asks, the rain gauge waitlist in One more? after a rain-year notice or a hail alert (and after a monthly county rain signup), no bar on Fast Facts

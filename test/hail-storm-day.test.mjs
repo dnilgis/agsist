@@ -87,7 +87,8 @@ test("published day pages carry a day-rule line that matches the manifest", () =
     if (/http-equiv="refresh"/.test(page)) {
       // a day that no longer qualifies under 12Z days: a noindex stub to the storm day that holds its reports
       assert.match(page, /<meta name="robots" content="noindex,follow">/, f);
-      assert.match(page, /content="0; url=\/hail\/(\d{4}-\d{2}-\d{2})?"/, f);
+      // (since the Oct 22 merges the storm log is /hail-map#history, so a stub with no storm day goes there, not to the /hail/ forward page)
+      assert.match(page, /content="0; url=(\/hail\/\d{4}-\d{2}-\d{2}|\/hail-map#history)"/, f);
       continue;
     }
     const spc = (man.day_rules || {})[f.slice(0, 4)] === "spc-12z";

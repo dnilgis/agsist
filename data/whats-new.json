@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-28-merges",
+   "date": "2026-10-28",
+   "title": "Fewer pages, each one fuller",
+   "line": "Ten pages joined the ones you already use, from crop size and what's priced in to the storm log, bids by state and past briefings. Old links still work.",
+   "link": "/usda-calendar#priced-in"
+  },
+  {
    "id": "2026-10-28-daily-retry",
    "date": "2026-10-28",
    "title": "The Daily tries again when a check holds it",
@@ -216,7 +223,7 @@
    "date": "2026-10-18",
    "title": "Bids by state",
    "line": "Every state with cash bids on one page, with the towns and elevators in each.",
-   "link": "/cash-bids/states"
+   "link": "/basis#states"
   },
   {
    "id": "2026-10-18-elevators",

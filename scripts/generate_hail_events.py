@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 generate_hail_events.py — one static page per significant hail day, plus a
-storm-log hub, plus their sitemap block. The morning-after query surface:
+storm log on the hail map (#history; its own page, /hail/, until Oct 22, 2026), plus
+their sitemap block. The morning-after query surface:
 "hail june 11 2026", "where did it hail yesterday", "june 11 hail map".
 
 A day qualifies if it has a MESH swath file (data/hail/mesh/DATE.json) OR at
@@ -20,7 +21,7 @@ v2 — 2026-10-06  The day's figures are baked into the static HTML (these pages
   assigned by point-in-polygon of the report's coordinates against
   data/atlas/counties.geo.json (the archived events carry no county, town or
   time). Days with fewer than THIN_REPORTS reports get noindex,follow and are
-  left out of the sitemap block, but stay linked from the hub.
+  left out of the sitemap block, but stay linked from the storm log.
   Days on or after the yearly events vintage (manifest "generated") are read
   from recent.json, the daily 30-day layer, so the newest pages do not claim
   zero reports for days the monthly events file has not reached yet.
@@ -564,7 +565,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         "\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"itemListElement\":["
         "{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://agsist.com/\"},"
         "{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Hail Map\",\"item\":\"https://agsist.com/hail-map\"},"
-        "{\"@type\":\"ListItem\",\"position\":3,\"name\":\"Storm Log\",\"item\":\"https://agsist.com/hail/\"},"
+        "{\"@type\":\"ListItem\",\"position\":3,\"name\":\"Storm Log\",\"item\":\"https://agsist.com/hail-map#history\"},"
         "{\"@type\":\"ListItem\",\"position\":4,\"name\":" + json.dumps(nd) + ",\"item\":\"" + canonical + "\"}]}},"
         "{\"@type\":\"FAQPage\",\"mainEntity\":[" + faq_ld + "]}]}"
         "</script>\n<style>\n"
@@ -590,7 +591,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         ".he-src{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-dim,#8a948f);margin-top:1.2rem;line-height:1.7}\n"
         ":where(.method-note){font-size:.85rem;color:var(--text-dim,#8a948f)}\n"
         "</style>\n</head>\n<body>\n<div id=\"site-header\"></div>\n<main id=\"main\">\n<div class=\"he-wrap\">\n"
-        "<nav class=\"he-bc\" aria-label=\"Breadcrumb\"><a href=\"/\">AGSIST</a> › <a href=\"/hail-map\">Hail Map</a> › <a href=\"/hail/\">Storm Log</a> › " + esc(nd) + "</nav>\n"
+        "<nav class=\"he-bc\" aria-label=\"Breadcrumb\"><a href=\"/\">AGSIST</a> › <a href=\"/hail-map\">Hail Map</a> › <a href=\"/hail-map#history\">Storm Log</a> › " + esc(nd) + "</nav>\n"
         "<h1>Hail on " + esc(nd) + ": where it hit</h1>\n"
         + lead +
         "<div class=\"he-stats\">"
@@ -626,7 +627,7 @@ def recent_strip_html(dates_meta, k=RECENT_STRIP):
         items.append("<li><a href=\"/hail/" + d + "\"><b>" + esc(_short(d)) + "</b> "
                      + (f"{n:,} report" + ("" if n == 1 else "s") if n else "radar swath") + "</a></li>")
     return ("<nav class=\"hm-days\" aria-labelledby=\"hm-days-h\"><h2 id=\"hm-days-h\" class=\"hm-days-h\">Recent storm days</h2>"
-            "<ul>" + "".join(items) + "</ul><a class=\"hm-days-all\" href=\"/hail/\">Every storm day &rarr;</a></nav>")
+            "<ul>" + "".join(items) + "</ul><a class=\"hm-days-all\" href=\"#history\">Every storm day &rarr;</a></nav>")
 
 
 def storm_days_doc(dates_meta, day_idx):
@@ -668,59 +669,31 @@ def season_recap_html(dates_meta):
             "Most US hail falls April through July. A new storm day gets its page the morning after.</p>\n")
 
 
-def hub_html(dates_meta, today):
+def history_html(dates_meta):
+    """The storm log on the hail map (#history): one line on the newest year, then every
+    storm day by year, each year folded, the newest open. It was its own page, /hail/,
+    until Oct 22, 2026; that address forwards here now. Every storm-day page is linked
+    from here, so none is left without a link from the site."""
+    if not dates_meta:
+        return "<p>No storm days logged yet.</p>"
     years = []
-    rows = []
     for d, m in dates_meta:
         if d[:4] not in years:
             years.append(d[:4])
-            rows.append("<tr class=\"yr\" id=\"y" + d[:4] + "\"><th colspan=\"4\" scope=\"rowgroup\">" + d[:4] + "</th></tr>")
-        n = m.get("n") if m else 0
-        rows.append(
+    out = [season_recap_html(dates_meta)]
+    for i, y in enumerate(years):
+        days = [(d, m) for d, m in dates_meta if d[:4] == y]
+        rows = "".join(
             "<tr><td><a href=\"/hail/" + d + "\">" + esc(_hub_date(d)) + "</a></td>"
-            "<td class=\"num\">" + (f"{n:,}" if n else "0") + "</td>"
-            "<td class=\"num\">" + (f"{m['max']:.2f}\u2033" if m and m.get("max") else "-") + "</td>"
-            "<td class=\"rec\">" + (("Radar + reports" if n else "Radar only") if m.get("swath") else "Reports only") + "</td></tr>")
-    rows = "".join(rows)
-    jump = ("<nav class=\"he-years\" aria-label=\"Jump to year\">" +
-            "".join("<a href=\"#y" + y + "\">" + y + "</a>" for y in years) + "</nav>\n") if len(years) > 1 else ""
-    return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n"
-        "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
-        "<title>US Hail Storm Log: Every Significant Hail Day, Mapped | AGSIST</title>\n"
-        "<meta name=\"description\" content=\"A running log of every significant US hail day: report counts, largest stones, and radar swath maps, one page per storm.\">\n"
-        "<link rel=\"canonical\" href=\"https://agsist.com/hail/\">\n"
-        "<meta property=\"og:title\" content=\"US Hail Storm Log: every significant hail day, mapped | AGSIST\">\n"
-        "<meta property=\"og:description\" content=\"A running log of every significant US hail day: report counts, largest stones, and radar swath maps, one page per storm.\">\n"
-        "<meta property=\"og:url\" content=\"https://agsist.com/hail/\">\n"
-        "<meta property=\"og:type\" content=\"website\">\n"
-        "<meta property=\"og:image\" content=\"https://agsist.com/img/og/hail-map.jpg\">\n"
-        "<meta property=\"og:image:width\" content=\"1200\">\n<meta property=\"og:image:height\" content=\"630\">\n"
-        "<meta property=\"og:image:alt\" content=\"AGSIST hail map: radar-detected hail swaths and ground reports\">\n"
-        "<meta name=\"twitter:card\" content=\"summary_large_image\">\n"
-        "<meta name=\"twitter:image\" content=\"https://agsist.com/img/og/hail-map.jpg\">\n"
-        "<link rel=\"icon\" href=\"/img/favicon.ico\" sizes=\"32x32\">\n"
-        "<link rel=\"icon\" type=\"image/svg+xml\" href=\"/img/icon.svg\">\n"
-        "<link rel=\"stylesheet\" href=\"" + asset_url("/components/styles.css") + "\">\n"
-        "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"CollectionPage\","
-        "\"name\":\"US Hail Storm Log\",\"url\":\"https://agsist.com/hail/\",\"dateModified\":\"" + today + "\"}"
-        "</script>\n<style>.he-wrap{max-width:820px;margin:0 auto;padding:1.2rem .9rem 3rem}"
-        "h1{font-size:clamp(1.4rem,4vw,2rem)}table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:1rem}"
-        "th,td{border-bottom:1px solid var(--border,rgba(132,160,168,.12));padding:.5rem .55rem;text-align:left}"
-        "th{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim,#8a948f)}"
-        "td.num,th.num{text-align:right;font-family:'JetBrains Mono',monospace}"
-        "td a{color:var(--brand,#d4a23f);text-decoration:none;display:inline-block;min-height:40px;line-height:40px;white-space:nowrap}"
-        "td{padding-top:0;padding-bottom:0;height:44px}td.rec{font-size:.8rem;line-height:1.3;color:var(--text-dim,#8a948f)}"
-        "tr.yr th{font-size:.8rem;color:var(--text,#e6ebe9);padding-top:1.2rem;letter-spacing:.12em}"
-        ".he-years{display:flex;flex-wrap:wrap;gap:.4rem;margin:.8rem 0 0}"
-        ".he-years a{font-family:'JetBrains Mono',monospace;font-size:.8rem;min-height:40px;line-height:40px;padding:0 .9rem;border:1px solid var(--border,rgba(132,160,168,.25));border-radius:999px;color:var(--text,#e6ebe9);text-decoration:none}"
-        ".he-recap{line-height:1.7;border-left:3px solid var(--brand,#d4a23f);padding-left:.8rem}.he-recap a{color:var(--brand,#d4a23f)}</style>\n</head>\n<body>\n"
-        "<div id=\"site-header\"></div>\n<main id=\"main\">\n<div class=\"he-wrap\">\n"
-        "<h1>US Hail Storm Log</h1>\n"
-        "<p>One page per significant hail day: report counts, largest stones, and the radar swath map where there is one. Newest first. To check one address, <a href=\"/hail-map\" style=\"color:var(--brand,#d4a23f)\">the hail map's search</a> pulls its full history.</p>\n"
-        + season_recap_html(dates_meta) + jump +
-        "<table><thead><tr><th>Storm day</th><th class=\"num\">Reports</th><th class=\"num\">Largest</th><th>Record</th></tr></thead><tbody>"
-        + rows + "</tbody></table>\n"
-        "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"" + asset_url("/components/loader.js") + "\" defer></script>\n<script src=\"/components/next-links.js?v=3\" defer></script>\n</body>\n</html>\n")
+            "<td class=\"num\">" + (f"{(m.get('n') or 0):,}" if m.get("n") else "0") + "</td>"
+            "<td class=\"num\">" + (f"{m['max']:.2f}\u2033" if m.get("max") else "-") + "</td>"
+            "<td class=\"rec\">" + (("Radar + reports" if m.get("n") else "Radar only") if m.get("swath") else "Reports only") + "</td></tr>"
+            for d, m in days)
+        out.append("<details class=\"he-yr\" id=\"y" + y + "\"" + (" open" if i == 0 else "") + "><summary>" + y + " <span>"
+                   + f"{len(days)} storm day" + ("" if len(days) == 1 else "s") + "</span></summary>"
+                   "<div class=\"he-tw\"><table><thead><tr><th>Storm day</th><th class=\"num\">Reports</th><th class=\"num\">Largest</th><th>Record</th></tr></thead><tbody>"
+                   + rows + "</tbody></table></div></details>\n")
+    return "".join(out)
 
 
 def main():
@@ -766,7 +739,7 @@ def main():
     # A day page left over from an older grouping (UTC days before Oct 17,
     # 2026) whose day no longer qualifies: its reports now sit on a neighbor
     # storm day. Keep the address working with a short moved stub to that day
-    # (or the hub), never a stale page that says the old rule.
+    # (or the storm log on the hail map), never a stale page that says the old rule.
     qset = set(qualifying)
     stubbed = 0
     for fn in sorted(os.listdir(OUT_DIR)):
@@ -776,7 +749,7 @@ def main():
         d = mday.group(1)
         dd = datetime.strptime(d, "%Y-%m-%d").date()
         near = [x.isoformat() for x in (dd - timedelta(days=1), dd + timedelta(days=1)) if x.isoformat() in qset]
-        dest = f"/hail/{near[0]}" if near else "/hail/"
+        dest = f"/hail/{near[0]}" if near else "/hail-map#history"
         stub = moved_stub(d, dest)
         path = os.path.join(OUT_DIR, fn)
         if open(path, encoding="utf-8").read() != stub:
@@ -784,13 +757,6 @@ def main():
             stubbed += 1
     if stubbed:
         print(f"storm pages: {stubbed} old day pages now point to their storm day")
-    hp = os.path.join(OUT_DIR, "index.html")
-    hprev = open(hp).read() if os.path.exists(hp) else None
-    hold = re.search(r'"dateModified":"(\d{4}-\d{2}-\d{2})"', hprev or "")
-    hub_mod = hold.group(1) if hold and hub_html(meta, hold.group(1)) == hprev else today
-    hub = hub_html(meta, hub_mod)
-    if hprev != hub:
-        open(hp, "w", encoding="utf-8").write(hub)
     doc = storm_days_doc(meta, day_idx)
     body = json.dumps(doc, separators=(",", ":"))
     if (open(DAYS_JSON).read() if os.path.exists(DAYS_JSON) else None) != body:
@@ -798,26 +764,27 @@ def main():
             fh.write(body)
     try:
         mp = open(MAP_PAGE, encoding="utf-8").read()
-        pat = re.compile(r"(<!--SEED:stormdays-->)(.*?)(<!--/SEED:stormdays-->)", re.S)
-        if pat.search(mp):
-            mp2 = pat.sub(lambda m: m.group(1) + recent_strip_html(meta) + m.group(3), mp, count=1)
-            if mp2 != mp:
-                open(MAP_PAGE, "w", encoding="utf-8").write(mp2)
-        else:
-            print("hail-map.html: SEED:stormdays markers missing, strip not refreshed")
+        mp2 = mp
+        for tag, body in (("stormdays", recent_strip_html(meta)), ("hailhistory", history_html(meta))):
+            pat = re.compile(r"(<!--SEED:" + tag + r"-->)(.*?)(<!--/SEED:" + tag + r"-->)", re.S)
+            if pat.search(mp2):
+                mp2 = pat.sub(lambda m: m.group(1) + body + m.group(3), mp2, count=1)
+            else:
+                print("hail-map.html: SEED:" + tag + " markers missing, not refreshed")
+        if mp2 != mp:
+            open(MAP_PAGE, "w", encoding="utf-8").write(mp2)
     except OSError as e:
         print("hail-map.html:", e)
     print(f"storm pages: {made} written/updated of {len(qualifying)} qualifying days · "
-          f"{len(qualifying) - len(indexable)} thin (<{THIN_REPORTS} reports) noindexed · hub updated")
+          f"{len(qualifying) - len(indexable)} thin (<{THIN_REPORTS} reports) noindexed · storm log on the hail map updated")
 
-    # sitemap block — thin days are noindex, so they stay out of it (still linked from the hub)
+    # sitemap block: thin days are noindex, so they stay out of it (still linked from the storm log)
     try:
         sm = open(SITEMAP, encoding="utf-8").read()
     except FileNotFoundError:
         print("sitemap.xml missing — skipped")
         return
-    block = (MARK_A + "\n  <url><loc>https://agsist.com/hail/</loc><lastmod>" + hub_mod +
-             "</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>" +
+    block = (MARK_A +
              "".join("\n  <url><loc>https://agsist.com/hail/" + d +
                      "</loc><lastmod>" + modified.get(d, d) +
                      "</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>"
@@ -828,7 +795,7 @@ def main():
         new = sm.replace("</urlset>", "  " + block + "\n</urlset>")
     if new != sm:
         open(SITEMAP, "w", encoding="utf-8").write(new)
-        print(f"sitemap: {len(indexable)+1} storm-log URLs")
+        print(f"sitemap: {len(indexable)} storm-day URLs")
 
 
 def selftest():

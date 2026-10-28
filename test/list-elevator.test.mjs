@@ -113,10 +113,12 @@ test("the page: indexable, in the sitemap, structured data, and linked from the 
   assert.ok(h.includes("I run AGSIST"), "Sig's own voice");
   assert.ok(!/—/.test(h.replace(/<script[\s\S]*?<\/script>/g, "")), "no em dashes in the copy");
   assert.ok(read("sitemap.xml").includes("<loc>https://agsist.com/list-your-elevator</loc>"));
-  const el = read("elevators.html");
+  // the coverage map and the fix-your-listing form live on this page since Oct 22, 2026 (/elevators forwards here)
+  const el = read("components/coverage-map.js");
   assert.ok(el.includes("a[2] === 'known' ? claimLink(a, p.s)") && el.includes("Is this yours? Post your bids free"), "grey pins link to the form");
   assert.ok(el.includes("href=\"/list-your-elevator?' + esc(q) + '\""), "the pin's link is escaped");
-  assert.ok(el.includes('<a href="/list-your-elevator">'));
+  assert.ok(h.includes('<section class="le-sec" id="coverage"') && h.includes('<section class="cl le-sec" id="claim"'), "map and fix-your-listing on the page");
+  assert.ok(h.includes('href="#le-ask"') && h.includes('href="#claim"'), "the first screen points at both forms");
   assert.ok(read("cash-bids.html").includes('Run an elevator? <a href="/list-your-elevator"'));
   assert.match(read("elev-admin.html"), /noindex, nofollow/);
 });

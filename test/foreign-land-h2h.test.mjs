@@ -1,12 +1,12 @@
-/* /foreign-land, Oct 16, 2026 head-to-head fixes:
+/* Foreign-held farmland (the Farmland Atlas fold #foreign; its own page, /foreign-land, until Oct 23, 2026).
+ * Oct 16, 2026 head-to-head fixes, carried into the Atlas:
  *   - the China number in the hero, the visible FAQ and the JSON-LD:
  *     247,659 / 47,241,820 = 0.524%, printed as 0.5%
  *   - a "who is behind it" line beside the headline from our own sums:
  *     codes 998 + 999 = 1,382,633 + 1,546,303 = 2,928,936 acres, / 47,241,820 = 6.2%
  *     The owned vs lease split is withheld until scripts/process_afida.py has sorted the
  *     interest column (the page shows it only when 99% of acres sort)
- *   - the map libraries are self-hosted and pinned (Leaflet 1.9.4, topojson-client 3.1.0,
- *     us-atlas 3.0.1); no outside host is needed to draw it
+ *   - the county map is the Atlas map's own layer; the fold's file loads from this site only
  *
  *   node --test test/foreign-land-h2h.test.mjs
  */
@@ -24,18 +24,21 @@ const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
-const HTML = readFileSync(ROOT + "foreign-land.html", "utf8");
+const ATLAS = readFileSync(ROOT + "farmland-atlas.html", "utf8");
+const JS = readFileSync(ROOT + "components/atlas-foreign.js", "utf8");
+const HTML = ATLAS + JS;
 const NAT = JSON.parse(readFileSync(ROOT + "data/afida/national.json", "utf8"));
 
 test("China: 247,659 acres, 0.5%, in the hero, the FAQ and the JSON-LD", () => {
   const tot = NAT.total_by_year[String(NAT.latest_year)];
   assert.equal(NAT.by_country.CHINA, 247659);
   assert.equal((100 * 247659 / tot).toFixed(1), "0.5");
-  const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">\s*(\{"@context": "https:\/\/schema.org", "@type": "FAQPage"[\s\S]*?)<\/script>/)[1]);
+  const ld = [...ATLAS.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]))
+    .flatMap((d) => d["@graph"] || [d]).find((n) => n["@type"] === "FAQPage");
   const q = ld.mainEntity.find((x) => /China/.test(x.name));
   assert.match(q.acceptedAnswer.text, /247,659 acres/);
   assert.match(q.acceptedAnswer.text, /0\.5%/);
-  assert.equal((HTML.match(/Not much: 247,659 acres at the end of 2024/g) || []).length, 2, "visible FAQ and JSON-LD say the same");
+  assert.equal((ATLAS.match(/Not much: 247,659 acres at the end of 2024/g) || []).length, 2, "visible FAQ and JSON-LD say the same");
   assert.match(HTML, /<b>China:<\/b> 247,659 acres, 0\.5% of foreign-held acres \(USDA AFIDA, Dec 31, 2024\)/);
   assert.equal(NAT.by_country["HONG KONG"], 144090);
 });
@@ -69,17 +72,15 @@ print(json.dumps([p.interest_col(['State', 'Type of Interest']), p.interest_col(
   assert.equal(nosplit, null, "a file with no interest column gives no split");
 });
 
-test("the map loads only pinned, self-hosted files", () => {
+test("the fold loads only this site's files, and only when opened", () => {
   assert.doesNotMatch(HTML, /cdn\.jsdelivr\.net|cdnjs\.cloudflare\.com|unpkg\.com/);
-  for (const f of ["vendor/leaflet-1.9.4/leaflet.js", "vendor/leaflet-1.9.4/leaflet.css",
-    "vendor/topojson-client-3.1.0/topojson-client.min.js", "vendor/us-atlas-3.0.1/counties-10m.json"]) {
-    assert.ok(existsSync(ROOT + f), f);
-    assert.ok(HTML.includes("/" + f), `page loads /${f}`);
-  }
-  assert.doesNotMatch(HTML, /—/, "no em dashes");
+  assert.match(ATLAS, /s\.src='\/components\/atlas-foreign\.js\?v=\d+'/);
+  assert.match(ATLAS, /<details class="fa-fold" id="fa-foreign"><summary>Foreign-held farmland, 2010 to 2024<\/summary>/);
+  assert.ok(existsSync(ROOT + "foreign-land.html") && /noindex,follow/.test(readFileSync(ROOT + "foreign-land.html", "utf8")), "the old address forwards");
+  assert.doesNotMatch(JS, /—/, "no em dashes");
 });
 
-test("in Chromium with every outside host blocked, the county map draws", { skip }, async () => {
+test("in Chromium with every outside host blocked, the fold draws the national picture and the county picked on the map", { skip }, async () => {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml", ".png": "image/png" };
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
@@ -98,11 +99,11 @@ test("in Chromium with every outside host blocked, the county map draws", { skip
     const errors = [];
     pg.on("pageerror", (e) => errors.push(String(e)));
     await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
-    await pg.goto(`http://127.0.0.1:${port}/foreign-land`);
-    await pg.waitForFunction(() => document.querySelectorAll("#fl-map path").length > 1000 || /unavailable/i.test(document.getElementById("fl-map").textContent), null, { timeout: 30000 });
-    const n = await pg.$$eval("#fl-map path", (a) => a.length);
-    assert.ok(n > 3000, `county paths drawn: ${n}`);
-    assert.doesNotMatch(await pg.textContent("#fl-map"), /unavailable/i);
+    await pg.goto(`http://127.0.0.1:${port}/farmland-atlas#19153&foreign`);
+    await pg.waitForFunction(() => document.querySelectorAll("#fl-nat-chart circle").length > 5 && /Polk County/.test(document.getElementById("fl-dt-name").textContent), null, { timeout: 30000 });
+    assert.match(await pg.textContent("#fl-top-countries"), /Canada/);
+    assert.ok(await pg.$$eval(".vp-tile[data-st]", (a) => a.length) > 40, "every state on the picker");
+    assert.ok(await pg.isVisible("#fl-detail"), "the county's own record shows");
     assert.deepEqual(errors, []);
     await ctx.close();
   } finally { await browser.close(); srv.close(); }

@@ -42,6 +42,7 @@ test("every built cash-bid page links it once, at the end of the head, with no i
   for (const rel of pages("cash-bids")) {
     const h = fs.readFileSync(path.join(ROOT, rel), "utf8");
     if (h.includes('name="agsist-pointer"')) continue; // a moved town's pointer page has no site chrome
+    if (rel === "cash-bids/states.html" && h.includes("<title>Moved | AGSIST</title>")) continue; // forward page to /basis#states (scripts/moved_pages.py)
     built++;
     const head = h.slice(0, h.indexOf("</head>"));
     if (head.split(LINK[1]).length - 1 !== 1) bad.push(`${rel}: not one link to the current cash-bid-town.css`);

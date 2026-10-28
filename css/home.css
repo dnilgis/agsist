@@ -1279,7 +1279,7 @@ html[data-theme="light"] #cot-rows .r7-dn{color:#9a3620}
    light page's deepest background, measured; #a87d1e was 3.4:1). */
 html[data-theme="light"] .teaser-action{color:#86600f!important;border-color:#86600f!important}
 /* 2. Boxes to hairlines. Cash Bids is the only box. */
-.crop-week-badge,.export-mkt-yr,.sig-tag,#f-whats-priced a[href="/whats-priced-in"],a[href="/whats-priced-in"][style*="border-radius:5px"]{border:0!important;padding:0!important;background:none!important;color:var(--text-muted)!important}
+.crop-week-badge,.export-mkt-yr,.sig-tag,#f-whats-priced a[href="/usda-calendar#priced-in"],a[href="/usda-calendar#priced-in"][style*="border-radius:5px"]{border:0!important;padding:0!important;background:none!important;color:var(--text-muted)!important}
 .cal-card,.radar-card,.spray-day{background:none!important;border:0!important;border-top:1px solid var(--hair)!important;border-radius:0!important;box-shadow:none!important}
 .spray-day{padding-left:0!important;padding-right:0!important}
 .wx-7day-cell{background:none!important;border-radius:0!important;border-top:1px solid var(--hair)!important}
@@ -1314,7 +1314,7 @@ details>summary{cursor:pointer}
 details>summary:hover{color:var(--text)}
 .m-fold>summary:hover .sec-title{text-decoration:underline;text-underline-offset:3px}
 @media(max-width:900px){
-#bids-list-area>a,main a[href="/contact"],.land-links a,a[href="/whats-priced-in"]:not(.wr-c),.tip-b,.signup-disc a,#f1>.bidnet-note,.main a[href^="tel:"],.main a[href^="mailto:"],.main a[href="/privacy"],.signup-disc a{min-height:44px!important;display:inline-flex!important;align-items:center}
+#bids-list-area>a,main a[href="/contact"],.land-links a,a[href="/usda-calendar#priced-in"]:not(.wr-c),.tip-b,.signup-disc a,#f1>.bidnet-note,.main a[href^="tel:"],.main a[href^="mailto:"],.main a[href="/privacy"],.signup-disc a{min-height:44px!important;display:inline-flex!important;align-items:center}
 .idx1-extras-field input{min-height:44px!important;font-size:1rem!important}
 .ticker-track .t-link{min-height:44px;display:inline-flex!important;align-items:center}
 .crop-full-link,.export-full-link,.cot-full-link,.ratio-link,.wx-chart-toggle,.wx-hourly-toggle,.faq-a a{display:inline-flex!important;align-items:center;min-height:44px}
