@@ -404,9 +404,10 @@ def print_figure(c, year, noun, ready, has_us, svg="", cap=""):
     pcap = (f"Every day of {year}{'' if done else ' so far'} at this {noun}, drawn by Rain Print. "
             + (snow_trace_words(snow, traces) or f"This {noun} keeps no snowfall record, so snow is counted as water, not drawn. ")
             + "A gap is a day with no report." + ("" if done else " The empty months are still to come.")
-            + ((" The dashed line is the usual year: NOAA&rsquo;s " + ("1991 to 2020" if period == "1991-2020" else "30-year")
-                + f" normals for this {noun}, added up over the days it reported, with each month&rsquo;s usual under its total; "
-                "inside a month the line is drawn straight.") if mn else ""))
+            # one caption for both styles: Roots opens first (Oct 28) and draws no usual line, only the month figures
+            + ((" Usual is NOAA&rsquo;s " + ("1991 to 2020" if period == "1991-2020" else "30-year")
+                + f" normals for this {noun}, added up over the days it reported: the gray number under each month&rsquo;s total, "
+                "and on Staircase the dashed line, drawn straight inside a month.") if mn else ""))
     # Roots opens first on county pages (Sig, Oct 28 2026); rain-county-print.js draws the pressed style
     styles = ('<div class="rc-print-styles" role="group" aria-label="Print style" hidden>'
               '<button type="button" data-style="r1" aria-pressed="false">Staircase</button>'
