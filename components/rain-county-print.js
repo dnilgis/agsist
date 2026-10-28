@@ -208,7 +208,10 @@
       }).catch(function () { return false; /* the plain chart stays */ });
     }
     return new Promise(function (done) {
-      function run() { go().then(done, function () { done(false); }); }
+      /* not drawn (no days file, a mismatch, a failure): the plain chart stays, and on the county page the
+         room held for the print, its picker and its caption is let go (rain-county.css .rc-print-off) */
+      function off() { fig.classList.add('rc-print-off'); return false; }
+      function run() { go().then(function (ok) { done(ok || off()); }, function () { done(off()); }); }
       if ('IntersectionObserver' in root) {
         var io = new root.IntersectionObserver(function (es) {
           if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); run(); }
@@ -222,7 +225,5 @@
   }
 
   var own = doc && doc.getElementById('rc-print');
-  // not drawn (no days file, a mismatch, a failure): the plain chart stays, and the room held for the
-  // print, its picker and its caption is let go (rain-county.css .rc-print-off)
-  if (own) mount(own).then(function (ok) { if (!ok) own.classList.add('rc-print-off'); });
+  if (own) mount(own);
 })(typeof window !== 'undefined' ? window : this);
