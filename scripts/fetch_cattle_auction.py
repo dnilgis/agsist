@@ -131,7 +131,11 @@ def sale_date(text):
 
 
 def receipts(text):
-    m = re.search(r"\b(?:total\s+)?receipts:?\s+(\d{1,3}(?:,\d{3})*|\d+)\b", joined(text), re.I)
+    """The sale's total head. "Total Receipts" first: pypdf can put a Special Note's
+    "Video Receipts: 343 Head" ahead of it (Albany 2189, Oct 21 2026: total 675)."""
+    j = joined(text)
+    n = r":?\s+(\d{1,3}(?:,\d{3})*|\d+)\b"
+    m = re.search(r"\btotal\s+receipts" + n, j, re.I) or re.search(r"(?<!video )\breceipts" + n, j, re.I)
     return int(m.group(1).replace(",", "")) if m else None
 
 
@@ -154,8 +158,32 @@ HEAD_RE = re.compile(
 # quotes prices; a table ends where it starts.
 # Any run of six or more words is prose (row notes are at most three words:
 # "Thin Fleshed", "Certified Prgms"), so "Throughout the week ..." ends it too.
-COMMENT_RE = re.compile(r"\*\*|\bcompared\s+to\b|\bsource:|\bsupply\s+included\b|\bthe\s+largest\s+lot\b|"
-                        r"\b[A-Za-z][A-Za-z'.]*(?:[ ,;]+[A-Za-z][A-Za-z'.]*){5,}", re.I)
+# USDA's own notes end a table too: "Special Note: Baby Calf: 875.00-1000.00 Beef",
+# "Special Note: Groups of 20 or more: ... 250.50", "Special Note: Internet/Video Market
+# Report- ...", "Please Note: The above USDA LPGMN price report ...". pypdf puts the
+# Special Note right after the last row of the table above it (Kentucky 2190, 2191,
+# 2194, 2201, 2209, Oct 2026), and its prices (baby calves, video lots) are not rows.
+TRAILER = r"\b(?:special|please)\s+note\b|\bnote\s*:"
+MARK_RE = re.compile(r"\*\*|\bcompared\s+to\b|\bsource:|\bsupply\s+included\b|\bthe\s+largest\s+lot\b|" + TRAILER, re.I)
+PROSE_RE = re.compile(r"\b[A-Za-z][A-Za-z'.]*(?:[ ,;]+[A-Za-z][A-Za-z'.]*){5,}", re.I)
+
+
+def comment_at(j, pos, end):
+    """Where the market comment or a note starts in j[pos:end], or None. A run of prose
+    that starts with a row's note and runs into a marker ("380.00 Fleshy Compared to
+    last week, ...", Callaway 1819 as pypdf reads it) starts at the marker, so the note
+    stays with its row; plain prose ("Sale made up of packages ...") starts at its first
+    word, so it never becomes a note."""
+    mk = MARK_RE.search(j, pos, end)
+    pr = PROSE_RE.search(j, pos, end)
+    if not pr:
+        return mk.start() if mk else None
+    if mk and (mk.start() < pr.start() or
+               (mk.start() < pr.end() and len(j[pr.start():mk.start()].split()) <= 3)):
+        return mk.start()
+    return pr.start()
+
+
 COLHEAD_ALL_RE = re.compile(r"\bhead\s+wt\s+range\s+avg\s+wt\s+price\s+range\s+avg\s+price(?:\s+dressing)?", re.I)
 # A table that runs onto the next PDF page repeats the footer, the report title,
 # the date and sometimes the column header mid-table (Missouri 1821, Texas 1955,
@@ -164,12 +192,15 @@ COLHEAD_ALL_RE = re.compile(r"\bhead\s+wt\s+range\s+avg\s+wt\s+price\s+range\s+a
 PAGEBREAK_RE = re.compile(
     r"\bsource:\s*usda\s+ams(?:(?!\(\s*per\b).){0,1200}?\bpage\s+\d+\s+of\s+\d+(?:(?!\(\s*per\b).){0,600}?"
     r"(?=\s+head\s+wt\s+range|\s+\d{1,4}\s+\d{3,4}(?:-\d{3,4})?\s+\d{3,4}\s+\d{2,4}\.\d{2})", re.I)
+PB = "\x00"   # where PAGEBREAK_RE took out a page's footer and header
 # the column header under each table heading (and repeated after page breaks)
 COLHEAD_RE = re.compile(r"\s*head\s+wt\s+range\s+avg\s+wt\s+price\s+range\s+avg\s+price(?:\s+dressing)?", re.I)
 INT = r"(\d{1,3}(?:,\d{3})*|\d+)"
 WT = r"(\d{3,4})"
 PX = r"(\d{2,4}\.\d{2})"
-STOP = r"(?:feeder|slaughter|bred|stock|replacement|cows?|holstein|dairy|pairs|bulls?|source|head|wt|avg|price|range|agricultural|livestock|usda|page)\b"
+# words that start the next thing, never a row note ("Please Note" after the last row
+# made Gordon 1858's one heifer 1-2 row a noted row before Oct 28)
+STOP = r"(?:feeder|slaughter|bred|stock|replacement|cows?|holstein|dairy|pairs|bulls?|source|head|wt|avg|price|range|agricultural|livestock|usda|page|special|please|note|compared)\b"
 ROW_RE = re.compile(
     r"(?<![\d.])" + INT + r"\s+" + WT + r"(?:\s*-\s*" + WT + r")?\s+" + WT + r"\s+" + PX +
     r"(?:\s*-\s*" + PX + r")?\s+" + PX + r"(?![\d.])"
@@ -217,7 +248,8 @@ def parse_report(text):
     date = sale_date(text)
     if not date:
         return None, "no sale date in the first lines"
-    j = PAGEBREAK_RE.sub(" ", joined(text))
+    # a page break inside a table leaves a mark, so a table can be read on past it
+    j = PAGEBREAK_RE.sub(" %s " % PB, joined(text))
     j = COLHEAD_ALL_RE.sub(" ", j)
     heads = [m.start() for m in HEAD_RE.finditer(j)]
     tables = {}
@@ -229,11 +261,28 @@ def parse_report(text):
         if col:
             start = col.end()
         # prose only counts inside this table's own text, so a row note next to
-        # the next heading ("Fleshy STEERS - Medium and Large 1-2") is not prose
-        c = COMMENT_RE.search(j[start:end])
-        if c:
-            end = start + c.start()
-        rows, why = parse_rows(j[m.end():end])
+        # the next heading ("Fleshy STEERS - Medium and Large 1-2") is not prose.
+        # pypdf puts a page's notes, market comment and receipts after that page's
+        # last row, and the table goes on after the page break (Owensboro 2201, Oct 26
+        # 2026: 2 heifer rows on page 1, 7 on page 2). The notes are skipped only up to
+        # a page break that the table goes on after; a row after a note with no page
+        # break between is a table we cannot follow, and is refused, never half-read.
+        parts, pos, scan = [], m.end(), start
+        while True:
+            c = comment_at(j, scan, end)
+            if c is None:
+                parts.append(j[pos:end])
+                break
+            nxt = ROW_RE.search(j, c, end)
+            if not nxt:
+                parts.append(j[pos:c])
+                break
+            if PB not in j[c:nxt.start()]:
+                return None, "%s table: a row after the market note: %r" % (key, nxt.group(0).strip()[:60])
+            parts.append(j[pos:c])
+            pos = scan = nxt.start()
+        block = " ".join(parts).replace(PB, " ")
+        rows, why = parse_rows(block)
         if rows is None:
             return None, "%s table: %s" % (key, why)
         tables.setdefault(key, []).extend(rows)
@@ -1010,8 +1059,17 @@ def selftest():
     ck("real Joplin 1245 parses", jp is not None, why)
     if jp:
         n = {k: len(v) for k, v in jp["tables"].items()}
-        ck("real Joplin: 16 steer 1, 7 steer 1-2, 12 heifer 1, 12 heifer 1-2 rows (10 after a page break)",
-           n == {"steers|1": 16, "steers|1-2": 7, "heifers|1": 12, "heifers|1-2": 12}, n)
+        # steers 1-2: 7 rows on page 1, then page 1's comment and receipts, then 8 more
+        # on page 2 (723-1047 lb). Before Oct 28 the comment ended the table there and
+        # the 700 and 800 lb classes were dropped without a word (this check said 7).
+        ck("real Joplin: 16 steer 1, 15 steer 1-2 (8 after the page 1 comment), 12 heifer 1, 12 heifer 1-2 rows",
+           n == {"steers|1": 16, "steers|1-2": 15, "heifers|1": 12, "heifers|1-2": 12}, n)
+        c7 = summarize(jp)["classes"]["steers|1-2"]
+        # 700: 90 hd x 7.41 x 339.90 + 16 hd x 7.89 x 330.25 = 268370.07 over 793.14 cwt
+        # 800: 143 hd x 8.20 x 322.27 + 232 hd x 8.90 x 314.82 = 1027934.14 over 3237.40 cwt
+        ck("real Joplin: page 2 steers 1-2, 700 lb 338.36 on 106 head, 800 lb 317.52 on 375 head",
+           (c7.get("700", {}).get("cwt"), c7.get("700", {}).get("head"), c7.get("800", {}).get("cwt"),
+            c7.get("800", {}).get("head")) == (338.36, 106, 317.52, 375), c7)
         c5 = summarize(jp)["classes"]["steers|1"]["500"]
         # 118 hd x 5.14 cwt x 413.97 + 43 hd x 5.74 cwt x 415.61 = 353661.90 over 853.34 cwt
         ck("real Joplin: 500 lb steers 414.44 on 161 head, $2196.66 a head",
@@ -1021,6 +1079,11 @@ def selftest():
     tx, why = parse_report((fx / "ams_1955-real.txt").read_text())
     ck("real Texas 1955: heifer 1-2 table read past a page break with no repeated header",
        tx is not None and len(tx["tables"].get("heifers|1-2", [])) == 11, why or (tx and len(tx["tables"].get("heifers|1-2", []))))
+    # steers 1 runs onto page 2 after page 1's receipts: 90 hd x 8.16 x 336.12 + 111 hd x 8.83 x 318.38
+    # = 558900.32 over 1714.53 cwt (dropped before Oct 28)
+    c8 = tx and summarize(tx)["classes"]["steers|1"].get("800")
+    ck("real Texas 1955: 800 lb steers M&L 1 from page 2, 325.98 on 201 head",
+       c8 and (c8["cwt"], c8["head"]) == (325.98, 201), c8)
 
     # Real AMS reports from USDA's own PDFs downloaded Oct 28, 2026 (text from
     # FD.pdf_to_text). Each class worked by hand from the report's rows.
@@ -1059,6 +1122,79 @@ def selftest():
     ck("real Glasgow 2229: 700 lb steers M&L 1-2 334.92 on 29 head; the beef-on-dairy steer is not in it",
        p and (c["cwt"], c["head"], c["lo"]) == (334.92, 29, 330.0)
        and all(r["price"] != 292.5 for r in p["tables"]["steers|1-2"]), w or c)
+    p, w, s = real("1858")
+    c = s and s["classes"].get("heifers|1-2", {}).get("400")
+    ck("real Gordon 1858: the heifer 1-2 row before 'Please Note:' is a plain row (9 hd 498 lb 412.50), not a noted one",
+       c and (c["cwt"], c["head"]) == (412.5, 9) and s["noted_head"] == 0, c or (s and s["noted_head"]))
+
+    # Kentucky reports, Oct 2026. The run on the runner reads pypdf text (no pdftotext
+    # there), where a "Special Note:" follows the last row of a table and the table goes
+    # on after page 1's comment and receipts. Before Oct 28 these were refused ("a price
+    # after the last readable row"). Each is read from both texts, which must agree, and
+    # one class per barn is worked by hand from the report's rows.
+    def ky(n, date):
+        out = []
+        for form in ("", "-pypdf"):
+            pk, wk = parse_report((fx / ("ams_%s-%s%s.txt" % (n, date, form))).read_text())
+            out.append((pk, wk, summarize(pk) if pk else None))
+        return out
+
+    def same(a, b):
+        return a[2] is not None and b[2] is not None and a[2] == b[2] and a[0]["receipts"] == b[0]["receipts"]
+
+    for n, date, key, cls, want, why_ in (
+            # 7 hd x 5.10 x 372.00 + 14 hd x 5.79 x 342.86 = 41072.63 over 116.76 cwt
+            ("2201", "2026-10-26", "heifers|1-2", "500", (351.77, 21, 1955.84),
+             "Owensboro 2201 Oct 26: 500 lb heifers M&L 1-2 351.77 on 21 head (2 rows on page 1, 7 on page 2)"),
+            # 4 hd x 5.34 x 359.92 + 15 hd x 5.90 x 364.36 = 39933.75 over 109.86 cwt; Value Added rows out
+            ("2194", "2026-10-24", "steers|1-2", "500", (363.5, 19, 2101.78),
+             "Somerset 2194 Oct 24: 500 lb steers M&L 1-2 363.50 on 19 head"),
+            # 19 hd x 4.30 x 386.13 + 14 hd x 4.84 x 364.48 = 56243.99 over 149.46 cwt; Fancy row out
+            ("2209", "2026-10-20", "heifers|1-2", "400", (376.31, 33, 1704.36),
+             "Springfield 2209 Oct 20: 400 lb heifers M&L 1-2 376.31 on 33 head"),
+            # 12 hd x 5.82 x 345.12; the 509 lb Value Added row out
+            ("2190", "2026-10-26", "heifers|1-2", "500", (345.12, 12, 2008.6),
+             "Stanford 2190 Oct 26: 500 lb heifers M&L 1-2 345.12 on 12 head"),
+            # 23 hd x 7.25 x 336.58 + 9 hd x 7.62 x 331.01 = 78825.38 over 235.33 cwt; 731 lb Value Added out
+            ("2191", "2026-10-22", "steers|1-2", "700", (334.96, 32, 2463.29),
+             "Stanford 2191 Oct 22: 700 lb steers M&L 1-2 334.96 on 32 head")):
+        lay, pyp = ky(n, date)
+        c = pyp[2] and pyp[2]["classes"].get(key, {}).get(cls)
+        ck("real " + why_, c is not None and (c["cwt"], c["head"], c["per_head"]) == want, pyp[1] or c)
+        ck("real %s: pypdf and -layout texts read the same" % n, same(lay, pyp), lay[1] or pyp[1])
+    lay, pyp = ky("2201", "2026-10-26")
+    ck("real Owensboro 2201: heifer 1-2 table is all 9 rows; the Holstein group in the Special Note is not a row",
+       pyp[0] and len(pyp[0]["tables"]["heifers|1-2"]) == 9
+       and all(r["price"] != 250.5 for k in pyp[0]["tables"] for r in pyp[0]["tables"][k]), pyp[1])
+    # baby calves (Special Note prices) are never a feeder row in any class
+    for n, date, px in (("2194", "2026-10-24", (875.0, 1000.0)), ("2190", "2026-10-26", (500.0,)),
+                        ("2191", "2026-10-22", (825.0,))):
+        for form in ky(n, date):
+            ck("real %s: the baby calf price %s is never read as a feeder row" % (n, px),
+               form[0] is not None and not any(r["price"] in px or r["plo"] in px
+                                               for rows in form[0]["tables"].values() for r in rows), form[1])
+    lay, pyp = ky("2194", "2026-10-24")
+    ck("real Somerset 2194: the row before 'Special Note' keeps its own note only ('Value Added')",
+       pyp[0] and [r["note"] for r in pyp[0]["tables"]["steers|1-2"] if r["wt"] == 664] == ["Value Added"], pyp[1])
+    # the guards still hold with a note after the table
+    k2201 = (fx / "ams_2201-2026-10-26-pypdf.txt").read_text()
+    bad = k2201.replace("300.00 \nHEIFERS - Medium and Large 2", "300.00 \n4\n4l9\n419.00\nHEIFERS - Medium and Large 2", 1)
+    pb, wb = parse_report(bad)
+    ck("an unreadable price row after the last row still refuses the report ('a price after the last readable row')",
+       bad != k2201 and pb is None and "a price after the last readable row" in (wb or ""), wb)
+    bad = k2201.replace("435.00 \nSpecial Note:", "435.00 \n4\n4l9\n419.00\nSpecial Note:", 1)
+    pb, wb = parse_report(bad)
+    ck("an unreadable price row just before a Special Note refuses the report, never skipped with the note",
+       bad != k2201 and pb is None and "not part of a readable row" in (wb or ""), wb)
+    bad = re.sub(r"Page 1 of 4", "", k2201, count=1)
+    bad = bad.replace("mymarketnews.ams.usda.gov/viewReport/2201", "", 1)
+    pb, wb = parse_report(bad.replace("Source:", "", 1))
+    ck("rows after a note with no page break between are refused, never read as half a table",
+       pb is None and "a row after the market note" in (wb or ""), wb)
+    ck("receipts: Total Receipts wins over a Special Note's Video Receipts (Albany 2189 as pypdf reads it)",
+       receipts("Special Note: Video loads\nVideo Receipts:\n343\n Head\nAUCTION\nTotal Receipts:\n675\n904") == 675
+       and receipts("Receipts: 1,204") == 1204)
+
     p, w, s = real("1825")   # OKC West, El Reno OK, slaughter and replacement only
     ck("real OKC West 1825 slaughter/replacement report: no feeder table, refused", p is None and "no feeder" in (w or ""), w)
     p, w, s = real("1797")   # Joplin slaughter/replacement: OPEN HEIFERS - Medium and Large 1 (Per Cwt / Actual Wt)

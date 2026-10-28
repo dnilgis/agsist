@@ -7,6 +7,13 @@
    "title": "The Daily tries again when a check holds it",
    "line": "A Daily draft that fails a number check is never posted. The next run writes it again and checks it again, so it goes out a little late rather than wrong.",
    "link": "/daily"
+   },
+   {
+   "id": "2026-10-28-sale-barns-notes",
+   "date": "2026-10-28",
+   "title": "Sale barn prices: four Kentucky barns back, and weights past page one",
+   "line": "Owensboro, Somerset, Springfield and Stanford in Kentucky read again. About 20 barns now show the weight classes USDA prints after page one.",
+   "link": "/cattle-auction-prices"
   },
   {
    "id": "2026-10-28-sale-barns-125",

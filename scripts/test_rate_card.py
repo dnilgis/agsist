@@ -118,6 +118,19 @@ def main():
               "rate-card supporter slots == supporters.json cap",
               "%s vs %s" % (sup.get("slots"), s.get("cap")))
 
+
+    print("\na free test quotes no price the card does not, and says it is free (Oct 28, 2026)")
+    conf = json.loads((ROOT / "data" / "sponsors.json").read_text())
+    ids_ = {t["id"] for t in tiers}
+    portal = (ROOT / "sponsor-report.html").read_text()
+    for sp_ in conf.get("sponsors", []):
+        b_ = sp_.get("billing") or {}
+        if b_.get("free_test") is True:
+            check(b_.get("tier") in ids_, "%s: the greyed plan is a tier on the card" % sp_["slug"], b_.get("tier"))
+            check(not any(k in b_ for k in ("price", "price_month", "rate", "discount")),
+                  "%s: no price is typed into a free deal" % sp_["slug"], b_)
+    check("Free test: no charge" in portal and "d.freeTest" in portal, "the portal labels a free test in plain words")
+    check(re.search(r"\$\s*0\b|\bfree forever\b", portal, re.I) is None, "the portal never prints a $0 price the card does not have")
     print()
     if FAILED:
         print("FAILED (%d): %s" % (len(FAILED), "; ".join(FAILED)))

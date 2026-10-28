@@ -1,0 +1,26 @@
+{
+ "_": "STATE-TARGETED SPONSORS. Read by components/geo-sponsor.js (loaded by components/loader.js). An entry draws only when active is true and headline, body and an https url are filled in. It shows on pages about one of its states, and to readers whose visit Cloudflare places in one of its states (the worker's GET /where, asked once per browser session; only the 2-letter state is kept, in this browser's sessionStorage, and it never goes into any count or log). start and end are optional YYYY-MM-DD days in Central time; null means no limit. Never on Rain Print, gift card or rain gauge pages. A page with a sold page sponsor shows that one instead. Preview: add ?geo-preview=CA to any page (draws even an inactive entry, counts nothing).",
+ "sponsors": [
+  {
+   "id": "rootlot",
+   "name": "Root Lot",
+   "states": [
+    "CA",
+    "NV",
+    "TX"
+   ],
+   "active": true,
+   "start": null,
+   "end": null,
+   "headline": "Put Your Root Down",
+   "body": "Trees and plants shipped direct from the grower.",
+   "facts": [],
+   "cta_text": "Root Down Now",
+   "url": "https://rootlot.com/shop",
+   "phone": null,
+   "logo": null,
+   "utm_campaign": "geo-test",
+   "_note": "Oct 28 (Sig): an experiment, not a sold slot. States CA, NV, TX (Oregon dropped). Copy picked by Sig Oct 28; no logo file yet, so the ad draws text only. Sig said start Oct 28: on from the day this merged. Sig switches active back to false to end it; start and end stay null (no limit). The owner OK'd logo use."
+  }
+ ]
+}
