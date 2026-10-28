@@ -20,7 +20,7 @@ const MOVED = JSON.parse(execFileSync("python3", ["-c",
   "import sys,json;sys.path.insert(0,'scripts');import moved_pages as m;print(json.dumps({k:list(v) for k,v in m.MOVED.items()}))"],
   { cwd: ROOT, encoding: "utf8" }));
 
-test("the table: nine merges, each into a page that exists", () => {
+test("the table: ten merges, each into a page that exists", () => {
   assert.deepEqual(Object.keys(MOVED).sort(), ["/archive", "/cash-bids/states", "/conditions-yield", "/elevators",
     "/foreign-land", "/hail/", "/news", "/pod-counts", "/scorecard", "/whats-priced-in"].sort());
   for (const [old, [to, anchor, file]] of Object.entries(MOVED)) {
@@ -63,8 +63,9 @@ test("nothing links to an old address: chrome, sitemaps, llms.txt, search, Next 
       if (n.startsWith(".") || n === "node_modules" || n === "data" || n === "test") continue;
       const p = d ? d + "/" + n : n;
       if (statSync(path.join(ROOT, p)).isDirectory()) {
-        // Past daily issues and the town pages are rebuilt by their own jobs; the forward pages carry them meanwhile.
-        if (p === "daily" || p === "cash-bids") continue;
+        // The town pages are rebuilt by their own job (its builder already writes the new homes, test below);
+        // past Daily issues are repointed by rebuild_archive_html.py --links-only and are checked here.
+        if (p === "cash-bids") continue;
         walk(p); continue;
       }
       if (!/\.html$/.test(n) || stubs.has(p)) continue;
@@ -81,7 +82,7 @@ test("the menu and footer name the merged pages by what they hold now", () => {
   assert.match(h, /USDA calendar and what&rsquo;s priced in/);
   assert.match(h, /Crop progress and size/);
   assert.ok(h.includes('href="/daily#past"') && f.includes('href="/daily#past"'), "Past briefings in the menu and footer");
-  assert.match(read("components/loader.js"), /var CV = '86';/);
+  assert.match(read("components/loader.js"), /var CV = '102';/);   // 102: fx/merges2 (the redo of fx/merges, which was 86)
 });
 
 test("the sections carry what the old pages had", () => {
@@ -105,4 +106,27 @@ test("the sections carry what the old pages had", () => {
   for (const h of ["conditions.html", "usda-calendar.html", "crop-tour.html", "daily.html", "list-your-elevator.html", "farmland-atlas.html"])
     for (const b of read(h).match(/<script type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/g) || [])
       JSON.parse(b.replace(/<\/?script[^>]*>/g, ""));
+});
+
+test("main's later work on the old pages came along (redo on Oct 28, 2026)", () => {
+  // What's priced in gained the WASDE month-by-month fold and USDA correction notes after Oct 23 (#87, #97).
+  const u = read("usda-calendar.html"), j = read("components/priced-in.js");
+  assert.match(u, /<details class="fold" id="how-moved" hidden>[\s\S]*?data-wh-body[\s\S]*?<\/details>\s*<script src="\/components\/wasde-history\.js\?v=\d+" defer><\/script>/);
+  assert.ok(u.indexOf('id="how-moved"') > u.indexOf('id="priced-in"') && u.indexOf('id="how-moved"') < u.indexOf('id="scorecard"'), "inside the priced-in section");
+  assert.equal((j.match(/nass_correction&&\w\.nass_correction\.note/g) || []).length, 2, "both correction notes in priced-in.js");
+  assert.match(j, /ws\.textContent='No report data yet\. This page fills in after the next USDA report\.'/);
+  // the Bids by state page explained how its counts are made; the section on /basis keeps it
+  assert.match(read("basis.html"), /<!--\/SEED-->\s*<p class="bs-seed"><b>How these counts are made\.<\/b> An elevator counts when its board was read successfully in the last 6 hours and it posted a price within 72 hours/);
+  // the town page builder writes the coverage map link to its new home
+  const cb = read("scripts/build_cash_bid_pages.py");
+  assert.ok(cb.includes('href="/list-your-elevator#coverage">coverage map</a>') && !cb.includes('href="/elevators'), "town pages builder");
+});
+
+test("past Daily issues: All briefings and the breadcrumb go to the Daily page (real case: /daily/2026-10-20)", () => {
+  const p = read("daily/2026-10-20.html");
+  assert.ok(p.includes('<a class="dv3-archnav-a dv3-archnav-all" href="/daily#past">All briefings</a>'));
+  assert.match(p, /"position": 2,\s*"name": "Daily briefing",\s*"item": "https:\/\/agsist\.com\/daily"/);
+  assert.ok(!p.includes("agsist.com/archive") && !p.includes('href="/archive"'));
+  assert.match(execFileSync("python3", ["scripts/rebuild_archive_html.py", "--selftest"], { cwd: ROOT, encoding: "utf8" }), /ok/);
+  assert.ok(read("scripts/generate_daily.py").includes('href="/daily#past">All briefings</a>'), "new issues are written the same way");
 });

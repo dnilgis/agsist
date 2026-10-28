@@ -216,11 +216,12 @@ def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False,
 LINK_RE = re.compile(r'(href=")((?:https://agsist\.com)?/[^"]*)(")')
 CRUMB_OLD = '"name": "Daily briefing archive", "item": "https://agsist.com/archive"'
 CRUMB_NEW = '"name": "Daily briefing", "item": "https://agsist.com/daily"'
+CRUMB_RE = re.compile(r'("name":\s*)"Daily briefing archive"(,\s*"item":\s*)"https://agsist\.com/archive"')
 
 
 def repoint_links(page: str) -> str:
     """--links-only: links to merged pages go to their new home; nothing else changes."""
-    page = page.replace(CRUMB_OLD, CRUMB_NEW)
+    page = CRUMB_RE.sub(r'\1"Daily briefing"\2"https://agsist.com/daily"', page)
     return LINK_RE.sub(lambda m: m.group(1) + repoint(m.group(2)) + m.group(3), page)
 
 
@@ -246,6 +247,9 @@ def selftest() -> int:
     assert 'href="/daily#past">All briefings' in lo and 'href="/usda-calendar#scorecard"' in lo, lo
     assert 'href="/daily/2026-10-01"' in lo and CRUMB_NEW in lo and "/archive" not in lo, lo
     assert repoint_links(lo) == lo
+    ml = '"position": 2,\n      "name": "Daily briefing archive",\n      "item": "https://agsist.com/archive"\n'
+    assert repoint_links(ml) == '"position": 2,\n      "name": "Daily briefing",\n      "item": "https://agsist.com/daily"\n'
+
     old = '<div class="a">Hogs sat flat at $75.55.</div><p>same</p><aside></aside><nav>x</nav>'
     new = '<div class="a">December hogs settled at $66.925.</div><p>same</p><aside>Correction</aside><nav>x</nav>'
     pub = '<style>new css</style>' + old + '<script>v=2</script>'
