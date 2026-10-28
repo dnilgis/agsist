@@ -1,76 +1,8 @@
 {
- "_note": "Written by scripts/fetch_order30.py from the market administrator's own PPD and class releases; every month checked (Class I identity, skim = mover + differential, uniform = Class III + PPD). Never typed by hand.",
- "latest": {
-  "adv_butterfat": 1.5164,
-  "adv_class3_skim": 11.76,
-  "adv_class4_skim": 12.16,
-  "base_zone": "Cook County, IL",
-  "class1": 20.24,
-  "class1_bf": 1.5484,
-  "class1_diff": 3.2,
-  "class1_skim": 15.36,
-  "class3": 16.04,
-  "class4": 18.94,
-  "month_key": "2026-09",
-  "mover": 12.16,
-  "mover_higher_of": true,
-  "ppd": 0.58,
-  "released_ppd": "2026-10-12",
-  "scc": 0.00078,
-  "uniform": 16.62
- },
- "next_class1": [
-  {
-   "adv_butterfat": 1.5024,
-   "adv_class3_skim": 11.18,
-   "adv_class4_skim": 14.12,
-   "class1": 22.08,
-   "class1_bf": 1.5344,
-   "class1_diff": 3.2,
-   "class1_skim": 17.32,
-   "month_key": "2026-10",
-   "mover": 14.12,
-   "mover_higher_of": true,
-   "released": "2026-09-23"
-  },
-  {
-   "adv_butterfat": 1.373,
-   "adv_class3_skim": 10.38,
-   "adv_class4_skim": 16.03,
-   "class1": 23.47,
-   "class1_bf": 1.405,
-   "class1_diff": 3.2,
-   "class1_skim": 19.23,
-   "month_key": "2026-11",
-   "mover": 16.03,
-   "mover_higher_of": true,
-   "released": "2026-10-21"
-  }
- ],
- "read": "2026-10-28",
- "source": "Upper Midwest Market Administrator (Federal Order 30)",
- "source_url": "https://www.fmma30.com/",
  "status": {
-  "at": "2026-10-28T03:11:00Z",
-  "ok": true
+  "at": "2026-10-28T02:40:19Z",
+  "ok": false,
+  "why": "2026-09: class release: no month or no Class I row"
  },
- "year_ago": {
-  "adv_butterfat": 2.7669,
-  "adv_class3_skim": 7.54,
-  "adv_class4_skim": 9.34,
-  "base_zone": "Cook County, IL",
-  "class1": 21.9,
-  "class1_bf": 2.7989,
-  "class1_diff": 3.2,
-  "class1_skim": 12.54,
-  "class3": 17.59,
-  "class4": 16.17,
-  "month_key": "2025-09",
-  "mover": 9.34,
-  "mover_higher_of": true,
-  "ppd": 0.35,
-  "released_ppd": "2025-10-11",
-  "scc": 0.0009,
-  "uniform": 17.94
- }
+ "why": "2026-09: class release: no month or no Class I row"
 }
