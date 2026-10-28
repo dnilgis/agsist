@@ -1,0 +1,155 @@
+name: Implied futures shadow test
+
+# SHADOW TEST, PRIVATE OUTPUT ONLY (Sig, Oct 28 2026: "a synthetic futures price
+# built from cash and basis? Yes for grains, IF it holds up"). Nothing here
+# reaches a page or main. Every half hour of the CBOT day session, and once
+# after the close, scripts/implied_futures.py takes the elevator boards in
+# dnilgis/bids that publish their own cash, basis and futures column, works out
+# cash - basis per contract, and saves the median, spread and board count beside
+# the quote the site shows (data/prices.json) to the private repo's raw branch:
+# data/implied-futures/<Central date>.jsonl. Why each kind of board is in or out
+# is at the top of the script.
+#
+# CLOCK. Sig, Oct 28 2026 (STANDING-DECISIONS): yes, it may run on its own during the
+# CBOT day session (every 30 min 8:30-13:20 CT plus once after the close) for a week
+# or two. No cron of its own: it rides "Fetch Grain Bids" (cron-job.org, every 15
+# minutes), listed in test/history-collect.test.mjs APPROVED with that citation.
+# OFF SWITCH: set the repository variable IMPLIED_FUTURES_LIVE to 0 and the chained
+# runs stop starting a runner (any other value, or none, runs). By hand any time:
+#   gh workflow run implied-futures.yml -R dnilgis/agsist --ref main
+#   gh workflow run implied-futures.yml -R dnilgis/agsist --ref main -f replay=2026-10-28   (rebuild a past day from git history)
+#   gh workflow run implied-futures.yml -R dnilgis/agsist --ref main -f summary=true        (print the summary only)
+# The script itself keeps one tick per half hour (8:30 to 13:20 Central) and one
+# after the close, from the day's file it pulls first; outside those it exits.
+#
+# Read the results: RAW_REMOTE=<feedbag clone> bash scripts/pull_raw.sh data/implied-futures
+# then python3 scripts/implied_futures.py --summary data/implied-futures
+
+on:
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Take a tick now even outside the session hours (saved like any other)"
+        type: boolean
+        default: false
+      replay:
+        description: "Rebuild this Central day (YYYY-MM-DD) from the bids and prices git history instead"
+        type: string
+        default: ""
+      summary:
+        description: "Only print the summary of everything saved so far"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: implied-futures
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    # No runner for a Fetch Grain Bids run when the off switch is set (IMPLIED_FUTURES_LIVE=0)
+    # or outside 13:00-19:59 UTC (the day session either side of the clock change).
+    if: >-
+      github.event_name == 'workflow_dispatch' || (vars.IMPLIED_FUTURES_LIVE != '0' && (
+        contains(github.event.workflow_run.created_at, 'T13:') ||
+        contains(github.event.workflow_run.created_at, 'T14:') ||
+        contains(github.event.workflow_run.created_at, 'T15:') ||
+        contains(github.event.workflow_run.created_at, 'T16:') ||
+        contains(github.event.workflow_run.created_at, 'T17:') ||
+        contains(github.event.workflow_run.created_at, 'T18:') ||
+        contains(github.event.workflow_run.created_at, 'T19:')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            /scripts/
+            /test/fixtures/implied-futures/
+            /data/prices.json
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest (real board rows, no network)
+        run: python3 scripts/implied_futures.py --selftest
+      - name: The boards (dnilgis/bids, public)
+        if: ${{ !inputs.summary }}
+        env:
+          REPLAY: ${{ inputs.replay }}
+        run: |
+          set -e
+          if [ -n "$REPLAY" ]; then
+            case "$REPLAY" in [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;; *) echo "::error::replay is a date, YYYY-MM-DD"; exit 1;; esac
+            SINCE=$(date -u -d "$REPLAY -1 day" +%Y-%m-%d)
+            # Every board file as committed through that day, and every data/prices.json the site served.
+            git clone -q --no-checkout --shallow-since="$SINCE" https://github.com/dnilgis/bids.git /tmp/bids
+            git clone -q --filter=blob:none --no-checkout --shallow-since="$SINCE" https://github.com/dnilgis/agsist.git /tmp/agsist
+          else
+            git clone -q --depth 1 --filter=blob:none --sparse https://github.com/dnilgis/bids.git /tmp/bids
+            git -C /tmp/bids sparse-checkout set data sources
+          fi
+      # Today's file first, so the new tick is appended to it and a half hour already done is skipped.
+      # A failed fetch stops the job: saving after it would replace the day's file with one tick.
+      - name: Today's saved ticks (private raw branch)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          REPLAY: ${{ inputs.replay }}
+          SUMMARY: ${{ inputs.summary && '1' || '' }}
+        run: |
+          set -u
+          . scripts/private_remote.sh
+          ok=0
+          for i in 1 2 3; do
+            if out=$(git fetch -q --depth 1 "$REMOTE" raw 2>&1); then ok=1; break; fi
+            echo "::warning::git fetch raw failed: $(printf '%s' "$out" | tail -3 | tr '\n' ' ' | hide)"
+            sleep $((10 * i))
+          done
+          [ "$ok" = 1 ] || { echo "::error::could not read the raw branch on $WHERE; not ticking, so nothing saved is overwritten"; exit 1; }
+          mkdir -p data/implied-futures
+          if [ -n "$SUMMARY" ]; then
+            if git cat-file -e FETCH_HEAD:data/implied-futures 2>/dev/null; then git archive FETCH_HEAD -- data/implied-futures | tar -x; fi
+          else
+            DAY=${REPLAY:-$(TZ=America/Chicago date +%Y-%m-%d)}
+            F="data/implied-futures/$DAY.jsonl"
+            if [ -n "$REPLAY" ]; then echo "replay: $F is rebuilt whole"
+            elif git cat-file -e "FETCH_HEAD:$F" 2>/dev/null; then git show "FETCH_HEAD:$F" > "$F"; echo "raw: $(wc -l < "$F") line(s) already saved today"
+            else echo "raw: nothing saved yet today"; fi
+          fi
+      - name: Tick
+        if: ${{ !inputs.summary }}
+        env:
+          FORCE: ${{ inputs.force && '--force' || '' }}
+          REPLAY: ${{ inputs.replay }}
+        run: |
+          set -e
+          if [ -n "$REPLAY" ]; then
+            python3 scripts/implied_futures.py --replay "$REPLAY" --bids-git /tmp/bids --bids-ref origin/HEAD \
+              --prices-git /tmp/agsist --prices-ref origin/HEAD --out data/implied-futures
+          else
+            python3 scripts/implied_futures.py --tick --bids /tmp/bids --prices data/prices.json --out data/implied-futures $FORCE
+          fi
+      - name: Save to the private raw branch
+        if: ${{ !inputs.summary }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: bash scripts/push_raw.sh "implied futures" data/implied-futures
+      - name: Summary so far
+        if: ${{ inputs.summary }}
+        run: |
+          python3 scripts/implied_futures.py --summary data/implied-futures | tee -a "$GITHUB_STEP_SUMMARY"

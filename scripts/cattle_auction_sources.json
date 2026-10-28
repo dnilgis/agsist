@@ -179,7 +179,7 @@
     {"number": "1893", "title": "Farmers and Ranchers Livestock Commission Co. Replacement Cattle Special - Salina, KS", "barn": "salina-ks"},
     {"number": "2046", "title": "Greenville Livestock Cattle Auction - Greenville, IL", "barn": "greenville-il"},
     {"number": "2129", "title": "Blue Grass Stockyards Lexington - Replacement Livestock Sale - Lexington, KY", "barn": "lexington-ky"},
-    {"number": "2528", "title": "Kalona Livestock Slaughter Cattle Auction - Kalona, IA", "barn": "kalona-ia"},
+    {"number": "2528", "title": "Kalona Livestock Slaughter Cattle Auction - Kalona, IA", "barn": "kalona-ia", "match": "kalona livestock|kalona, ia"},
     {"number": "3648", "title": "Tina Livestock Market Replacement Cattle Special - Tina, MO", "barn": "tina-mo"},
     {"number": "3795", "title": "Beaver Livestock Auction Slaughter/Replacement Cattle - Beaver, OK", "barn": "beaver-ok"}
   ],

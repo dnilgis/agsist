@@ -123,7 +123,7 @@ test("the sheet and the map panel carry the same rules", () => {
   const hub = read("farmland-atlas.html");
   assert.match(hub, /old_\(R\.irr\)\?tile\('fa-t-rent','Cash rent, irrigated', null/);
   assert.match(hub, /old_\(rv\)\?tile\('fa-t-rent','Cash rent, non-irrigated', null/);
-  assert.match(read(".github/workflows/farmland-atlas-pages.yml"), /workflows: \["farmland-atlas", "Land data \(parcel services \+ transfers\)"\]/);
+  assert.match(read(".github/workflows/farmland-atlas-pages.yml"), /workflows: \["farmland-atlas", "Land data \(parcel services \+ transfers\)"(, "[^"]+")*\]/);  // later runs may follow (Chapter 12, Oct 28)
   assert.match(read(".github/workflows/land-data.yml"), /^name: Land data \(parcel services \+ transfers\)$/m);
 });
 

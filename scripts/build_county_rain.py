@@ -56,7 +56,7 @@ import county_stories as CS  # noqa: E402
 
 ROOT = R.ROOT
 MAX_KB = 25
-CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=6">'
+CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=7">'
 ORIGIN = "https://agsist.com"
 M3, ML = R.MONTHS, R.MONTHS_LONG
 
@@ -154,7 +154,7 @@ def last_year_words(c, L, year):
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
 RP_SNOW_MISS_OK = R.SNOW_MISS_OK  # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
-PRINT_JS = '<script src="/components/rain-county-print.js?v=40" defer></script>'
+PRINT_JS = '<script src="/components/rain-county-print.js?v=41" defer></script>'
 
 
 def rp_prices():
@@ -371,15 +371,22 @@ def chart(c, year, county, noun="station", ready=None):
     cap = (f"Inches of rain added up day by day from Jan 1{', solid line' if has_us else ''}"
            + (f", against the usual year at this {noun} (dashed), counted on the same days" if has_us else "")
            + f". Days with no report add nothing to {'either line' if has_us else 'the line'}.")
-    plain = f'<figure class="rc-chart">{"".join(out)}<figcaption>{cap}</figcaption></figure>'
-    return plain, print_figure(c, year, noun, ready, has_us)
+    svg = "".join(out)
+    if ready:
+        # the print takes the chart's place; the chart is only its no-JS fallback, inside it
+        return "", print_figure(c, year, noun, ready, has_us, svg, cap)
+    return f'<figure class="rc-chart">{svg}<figcaption>{cap}</figcaption></figure>', ""
 
 
-def print_figure(c, year, noun, ready, has_us):
-    """The county's year as a Rain Print, with its style picker: a hidden shell that
-    components/rain-county-print.js fills and shows. It sits after the farm content,
-    beside the one line that sells it (panel Oct 20, Sig's after-main-content rule);
-    until then the picker sat at the top of the page, over the plain chart."""
+def print_figure(c, year, noun, ready, has_us, svg="", cap=""):
+    """The county's year as a Rain Print, with its style picker, right under the figures
+    (Sig, Oct 28 2026: "move our Rain Print chart up in place of that generic chart").
+    The plain running-total chart ships inside the print's art box as its fallback: a reader
+    without scripts, a search engine, or a page whose print cannot be drawn keeps that chart;
+    components/rain-county-print.js draws the print over it (replacing it) and swaps the
+    captions. rain-county.css reserves the print's box (3:2), its picker row and the longer
+    caption while scripts run, so the swap moves nothing (CLS). Before Oct 28 the print was a
+    hidden shell after the farm content (panel Oct 20) and the chart sat up top on its own."""
     if not ready:
         return ""
     st, fips, place, gauge, done, snow = ready[:6]
@@ -397,19 +404,22 @@ def print_figure(c, year, noun, ready, has_us):
     pcap = (f"Every day of {year}{'' if done else ' so far'} at this {noun}, drawn by Rain Print. "
             + (snow_trace_words(snow, traces) or f"This {noun} keeps no snowfall record, so snow is counted as water, not drawn. ")
             + "A gap is a day with no report." + ("" if done else " The empty months are still to come.")
-            + ((" The dashed line is the usual year: NOAA&rsquo;s " + ("1991 to 2020" if period == "1991-2020" else "30-year")
-                + f" normals for this {noun}, added up over the days it reported, with each month&rsquo;s usual under its total; "
-                "inside a month the line is drawn straight.") if mn else ""))
+            # one caption for both styles: Roots opens first (Oct 28) and draws no usual line, only the month figures
+            + ((" Usual is NOAA&rsquo;s " + ("1991 to 2020" if period == "1991-2020" else "30-year")
+                + f" normals for this {noun}, added up over the days it reported: the gray number under each month&rsquo;s total, "
+                "and on Staircase the dashed line, drawn straight inside a month.") if mn else ""))
+    # Roots opens first on county pages (Sig, Oct 28 2026); rain-county-print.js draws the pressed style
     styles = ('<div class="rc-print-styles" role="group" aria-label="Print style" hidden>'
-              '<button type="button" data-style="r1" aria-pressed="true">Staircase</button>'
-              '<button type="button" data-style="r2" aria-pressed="false">Roots</button>'
-              '<button type="button" class="rc-zoom" aria-pressed="false">Up close</button></div>')
-    return (f'<figure class="rc-chart rc-print" id="rc-print" data-st="{st.lower()}" data-fips="{fips}" data-year="{year}" hidden '
+              '<button type="button" data-style="r1" aria-pressed="false">Staircase</button>'
+              '<button type="button" data-style="r2" aria-pressed="true">Roots</button>'
+              '<button type="button" class="rc-zoom" aria-pressed="false">Up close</button>'
+              '<button type="button" class="rc-watch" aria-label="Watch this year draw itself, and make a video of it">Watch it draw</button></div>')
+    return (f'<figure class="rc-chart rc-print rc-print-top" id="rc-print" data-st="{st.lower()}" data-fips="{fips}" data-year="{year}" '
             f'data-days="{c["days"]}" data-total="{c["total"]:.2f}" data-place="{e(place)}" data-gauge="{e(gauge)}"'
             + (f' data-mn="{mn}" data-usual="{c["usual"]:.2f}" data-norm="{"1991-2020" if period == "1991-2020" else "30"}"' if mn else "")
             + '>'
-            f'{styles}<div class="rc-print-art"></div>'
-            f'<figcaption><span class="rc-cap-print" hidden>{pcap}</span></figcaption></figure>')
+            f'{styles}<div class="rc-print-art">{svg}</div>'
+            f'<figcaption><span class="rc-cap-chart">{cap}</span><span class="rc-cap-print" hidden>{pcap}</span></figcaption></figure>')
 
 
 # ---------------------------------------------------------------- county page
@@ -839,13 +849,12 @@ def county_page(ctx):
     <p class="rc-answer">{ans.replace(inches_word(c['total']), '<b>' + inches_word(c['total']) + '</b>', 1)}</p>{gap_note(c, ctx.get("ctx"), noun)}
     {story_top}<dl class="rc-figs">{figs_html}</dl>{story_below}
     {radar_line(st, name, stw)}
-    {plain_chart}
+    {plain_chart}{(print_fig + chr(10) + "    " + sell) if print_fig else ""}
     <h2>Month by month</h2>
     {table}
     {(month_ask(name, fips) or year_ask(name, year, fips)) if not done else ''}
     {('<h2>' + str(year) + (' in' if done else ' so far in') + ' ' + e(name) + '</h2>' + facts_html) if facts_html else ''}
-    {print_fig}
-    {sell}
+    {"" if print_fig else sell}
     <h2>The station, and what usual means</h2>
     <p>{station_p}</p>
     <p>{usual_p}</p>
@@ -1363,19 +1372,21 @@ def selftest():
         ok('id="rc-print"' in story and 'data-st="ia" data-fips="19169" data-year="2026"' in story and PRINT_JS in story,
            "Story County's days are in the daily file: the page carries the Rain Print placeholder and its script")
         ok(f'data-days="{c["days"]}" data-total="{c["total"]:.2f}"' in story, "the print is checked against the page's own days and total")
-        # 2026-10-20 (panel A, Sig's after-main-content rule): the plain chart stays at the top for
-        # every reader; the print and its style picker are a hidden shell after the farm content
+        # 2026-10-28 (Sig, on Barron County: "move our Rain Print chart up in place of that generic chart"):
+        # the print is the page's chart, right under the figures; the plain chart ships only inside its art
+        # box, the no-JS fallback the script draws over. (Oct 20 to 27 it was a hidden shell after the farm content.)
         pf = story.split('id="rc-print"')[1].split("</figure>")[0]
-        ok('class="rc-us"' in story.split('id="rc-print"')[0] and 'class="rc-us"' not in pf and pf.startswith(' data-st="ia"')
-           and ' hidden ' in pf.split(">")[0] and 'class="rc-print-styles"' in pf,
-           "the plain chart is up top; the print figure, hidden until drawn, carries the style picker")
-        # 2026-10-23 promo audit: the print and its offer come up above the method text (it sat
-        # five phone screens down, under "Why this station"), still after the answer and the farm numbers
-        ok(story.index("<h2>Month by month</h2>") < story.index("so far in Story County</h2>") < story.index('id="rc-print"')
-           < story.index('class="rc-sell"') < story.index("<h2>The station") < story.index("<h2>Questions</h2>")
-           and story.index('data-signup-ask=') < story.index('id="rc-print"')
-           and story.index("<h2>Month by month</h2>") < story.index('class="rc-print-styles"'),
-           "the print and its picker come after the farm content (month table, the year so far) and before the station method")
+        ok('class="rc-us"' not in story.split('id="rc-print"')[0] and 'class="rc-us"' in pf.split('<div class="rc-print-art">')[1]
+           and pf.startswith(' data-st="ia"') and ' hidden' not in pf.split(">")[0] and 'class="rc-print-styles"' in pf
+           and story.count('aria-labelledby="rc-ct"') == 1 and '<span class="rc-cap-chart">' in pf
+           and 'data-style="r2" aria-pressed="true">Roots' in pf and 'data-style="r1" aria-pressed="false">Staircase' in pf,
+           "the print figure is shown up top, its picker in it (Roots pressed), and the plain chart is only inside its art box")
+        ok(story.index('class="rc-figs"') < story.index('id="rc-print"') < story.index('class="rc-sell"')
+           < story.index("<h2>Month by month</h2>") < story.index("so far in Story County</h2>")
+           < story.index("<h2>The station") < story.index("<h2>Questions</h2>")
+           and story.index('id="rc-print"') < story.index('data-signup-ask=')
+           and min(i for i in (story.find("<svg"), story.find("<figure")) if i >= 0) == story.rindex("<figure", 0, story.index('id="rc-print"')),
+           "the print and its sell line come right under the figures, before the month table; no chart comes before it")
         pr = rp_prices()
         ok(pr and f"This is Story County&rsquo;s 2026 so far, drawn as a Rain Print. Put your name and dates on it: framed ${pr[0]}, print ${pr[1]}." in story,
            "the cross-sell line under the print names the county and the prices from data/rain-print.json")
