@@ -2496,6 +2496,14 @@
     {"id": "ne-psc-capacity-2026-10-28", "kind": "pdf",
      "url": "https://psc.nebraska.gov/sites/default/files/doc/2026-10-28%20Location%20Capacity%20Report.pdf",
      "title": "Nebraska Public Service Commission, Location Capacity Report, Oct 28, 2026 (licensed grain warehouse locations and bushels)",
-     "why": "Licensed storage per elevator location on Nebraska cash-bid town pages and the state total (scripts/fetch_ne_capacity.py)"}
+     "why": "Licensed storage per elevator location on Nebraska cash-bid town pages and the state total (scripts/fetch_ne_capacity.py)"},
+    {"id": "aphis-nws-arizona-2026-10", "kind": "html",
+     "url": "https://direct.aphis.usda.gov/news/agency-announcements/usda-confirms-new-world-screwworm-arizona",
+     "title": "APHIS Oct 28, 2026: USDA confirms New World screwworm in Arizona (direct host)",
+     "why": "AI answer blocks (data/ai-answers.json): screwworm block (Arizona detection)"},
+    {"id": "aphis-mexico-cattle-import", "kind": "html",
+     "url": "https://www.aphis.usda.gov/live-animal-import/cattle-bison-germplasm/mexico",
+     "title": "APHIS: importing cattle and bison from Mexico (port status)",
+     "why": "AI answer blocks (data/ai-answers.json): screwworm block (border ports reopened to Mexican cattle)"}
 ]
 }
