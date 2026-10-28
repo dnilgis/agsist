@@ -284,7 +284,7 @@ def regional(barns, today):
             continue
         r = boner_average(s)
         if r:
-            vals.append((r["cwt"], b["id"], b.get("state"), s["date"], r["head"]))
+            vals.append((r["cwt"], b["id"], b.get("state"), s["date"], r["head"], r["per_head"], r["avg_wt"]))
     out = {"class": "boner", "dressing": "Average", "window_days": WINDOW_DAYS, "from": lo, "to": hi,
            "barns": len(vals), "min_barns": MIN_BARNS}
     if len(vals) < MIN_BARNS:
@@ -293,6 +293,9 @@ def regional(barns, today):
         return out
     cw = [v[0] for v in vals]
     out.update({"median_cwt": round(statistics.median(cw), 2), "low_cwt": min(cw), "high_cwt": max(cw),
+                # each its own middle over the same barns (not the $/head of the middle-price barn)
+                "median_per_head": round(statistics.median(v[5] for v in vals), 2),
+                "median_wt": round(statistics.median(v[6] for v in vals)),
                 "head": sum(v[4] for v in vals), "states": sorted({v[2] for v in vals if v[2]}),
                 "first_sale": min(v[3] for v in vals), "last_sale": max(v[3] for v in vals),
                 "barn_ids": sorted(v[1] for v in vals)})
@@ -482,15 +485,17 @@ def selftest():
                "lo": 105.0, "hi": 130.0, "rows": 2}], pr)
 
     # regional line: middle of barns in the window, withheld under 3
-    def bn(i, st, d, c):
+    def bn(i, st, d, c, wt=1200):
         return {"id": i, "state": st, "sales": [{"date": d, "classes": {"boner": [
-            {"dressing": "Average", "cwt": c, "head": 10}]}}]}
+            {"dressing": "Average", "cwt": c, "head": 10, "avg_wt": wt, "per_head": round(c * wt / 100, 2)}]}}]}
     today = datetime.date(2026, 10, 28)
     bs = [bn("a", "MO", "2026-10-21", 131.38), bn("b", "OK", "2026-10-26", 140.0), bn("c", "IA", "2026-10-22", 130.42),
           bn("old", "KY", "2026-10-14", 99.0)]   # Oct 14 is 15 days back: out
     r = regional(bs, today)
     ck("regional: middle of 3 barns 131.38, Oct 15 to Oct 28, the Oct 14 sale out",
        (r.get("median_cwt"), r["barns"], r["from"], r["to"]) == (131.38, 3, "2026-10-15", "2026-10-28"), r)
+    ck("regional: middle $/head 1576.56 (131.38 x 12) and weight 1200, their own middles",
+       (r.get("median_per_head"), r.get("median_wt")) == (1576.56, 1200), r)
     bs.append(bn("d", "KY", "2026-10-15", 120.0))
     r = regional(bs, today)
     ck("regional: 4 barns, middle (130.42 + 131.38) / 2 = 130.90", (r.get("median_cwt"), r["barns"]) == (130.9, 4), r)
