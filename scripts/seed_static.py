@@ -2568,7 +2568,62 @@ def milk_o30_seed(o30, d, today):
             f'{", read " + rd if rd else ""}. Prices at the order&rsquo;s base zone; your plant&rsquo;s zone adds or takes a little.{note} The PPD is what the order adds to (or takes from) the component value of your milk, '
             "before hauling and co-op deductions. A dash: not in the release read for that month."
             + ("" if yh else f" {_ishort(li - 12)} is not shown: its releases were not read or did not check out.")
-            + "</p>" + dep)
+            + "</p>" + milk_o30_hist(o) + dep)
+
+
+# 2026-10-28 (dairy page part 2): Order 30 PPD, the last 24 months, by month and
+# year. Each month comes from the market administrator's own class and PPD
+# releases and passed uniform = Class III + PPD (scripts/fetch_order30.py
+# ppd_history). A year prints only when at least 3 of its months were also
+# found, the same, in the Central Order's yearly all-order summary
+# (fmmacentral.com sum<year>.pdf) and none differed there; the rest of that
+# year's months are named as withheld. Depooled pounds are not published by
+# order and month, so nothing here infers them.
+O30_HIST_MIN_CENTRAL = 3
+
+
+def milk_o30_hist(o30):
+    o = o30 if isinstance(o30, dict) else {}
+    rows = [r for r in (o.get("ppd_history") or []) if isinstance(r, dict) and _mkey(r.get("month_key")) is not None
+            and _fin(r.get("ppd")) and _fin(r.get("uniform")) and _fin(r.get("class3"))
+            and abs(r["class3"] + r["ppd"] - r["uniform"]) <= 0.006]
+    by_year = {}
+    for r in rows:
+        by_year.setdefault(r["month_key"][:4], []).append(r)
+    ok_years = sorted(y for y, rs in by_year.items()
+                      if sum(1 for r in rs if r.get("central") == "agree") >= O30_HIST_MIN_CENTRAL
+                      and not any(r.get("central") == "differ" for r in rs))
+    shown = {r["month_key"]: r["ppd"] for r in rows if r["month_key"][:4] in ok_years}
+    if not shown:
+        return ""
+    held_out = len(rows) - len(shown)
+    keys = sorted(shown)
+    th = "".join(f'<th scope="col" class="num">{y}</th>' for y in ok_years)
+    body = []
+    for m in range(1, 13):
+        cells = []
+        for y in ok_years:
+            v = shown.get(f"{y}-{m:02d}")
+            cells.append(f'<td class="num">{_sg(v, 2) if v is not None else ""}</td>')
+        if any(c != '<td class="num"></td>' for c in cells):
+            body.append(f'<tr><th scope="row">{MON3[m - 1]}</th>{"".join(cells)}</tr>')
+    first, last = _ishort(_mkey(keys[0])), _ishort(_mkey(keys[-1]))
+    n_c = sum(1 for r in rows if r["month_key"] in shown and r.get("central") == "agree")
+    miss = len([k for k in (o.get("ppd_history_why") or {})])
+    more = ""
+    if held_out or miss:
+        more = (f" {held_out + miss} month{'s' if held_out + miss != 1 else ''} in the window "
+                f"{'are' if held_out + miss != 1 else 'is'} left out: "
+                "its releases did not read or did not check out, or its year could not be matched to the summary.")
+    return ('<details class="dp-states" id="dp-o30-hist"><summary>Order 30 PPD by month, '
+            f'{first} to {last}</summary><div class="dp-tbl-wrap"><table class="dp-tbl" id="dp-o30-hist-tbl">'
+            '<caption class="dp-sr">Order 30 producer price differential, dollars per hundredweight, by month and year</caption>'
+            f'<thead><tr><th scope="col">PPD, $/cwt</th>{th}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
+            f'<p class="dp-note-src">Source: {O30_LINK}, each month&rsquo;s producer price differential release, at the base zone, '
+            "checked so the statistical uniform price equals that month&rsquo;s Class III plus the PPD. "
+            f"{n_c} of these months were also checked against the Central Order&rsquo;s yearly summary of all orders "
+            '(<a href="https://www.fmmacentral.com/" rel="noopener">fmmacentral.com</a>) and matched.' + more +
+            " How much milk was left out of the pool is not published by order and month, so I do not show it.</p></details>")
 
 
 # --- the published miss of Read my check, from data/dairy-miss.json -----------

@@ -44,6 +44,7 @@ AVAIL = "https://archive.org/wayback/available?url="
 
 
 VIA = {}   # url -> {"via": "live"} or {"via": "archive", "archive_url", "snapshot"}: what answered, for the citation
+LIVE = {"down": False}   # after one live timeout the rest of the run goes straight to the archive
 
 
 def _snap_date(ts):
@@ -59,13 +60,15 @@ def get_fsa(u, direct=None, archive=None, avail=None):
     which one answered."""
     from fetch_dairy import http_get
     import json as _j
-    direct = direct or (lambda x: http_get(x, tries=2, timeout=45))
-    archive = archive or (lambda x: http_get(x, tries=2, timeout=90))
-    avail = avail or (lambda x: http_get(AVAIL + x, tries=2, timeout=60))
-    body, err = direct(u)
+    direct = direct or (lambda x: http_get(x, tries=1, timeout=40))
+    archive = archive or (lambda x: http_get(x, tries=2, timeout=60))
+    avail = avail or (lambda x: http_get(AVAIL + x, tries=2, timeout=40))
+    body, err = (None, "FSA timed out earlier in this run") if LIVE["down"] else direct(u)
     if body is not None:
         VIA[u] = {"via": "live"}
         return body, None
+    if "timed out" in (err or "").lower() or "timeout" in (err or "").lower():
+        LIVE["down"] = True
     err2 = "no snapshot"
     try:
         a, e = avail(u)
@@ -119,6 +122,11 @@ def selftest():
     b, e = get_fsa(u, direct=lambda x: (None, "timeout"), archive=lambda x: (b"x", None),
                    avail=lambda x: (b'{"archived_snapshots":{}}', None))
     ck("no snapshot means no page, not a guess", b is None and "archive" in e)
+    tried = []
+    b, e = get_fsa(u + "/x", direct=lambda x: (tried.append(x), (b"<html>", None))[1], archive=lambda x: (None, "404"),
+                   avail=lambda x: (b"{}", None))
+    ck("after a live timeout, the rest of the run skips the live site", tried == [] and LIVE["down"])
+    LIVE["down"] = False
     print("fetch_dmc selftest: %s" % ("PASS" if not fails else "FAIL (%d)" % len(fails)))
     return 1 if fails else 0
 
