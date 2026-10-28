@@ -2491,11 +2491,12 @@ def milk_dmc_margin(dmc, d, today):
 # typed here. The depooling line is our own arithmetic on the announced Class III
 # and Class IV prices (data/dairy-data.json), said plainly, never a forecast.
 MILK_O30_DATA = "data/dairy-order30.json"
-O30_ROWS = (("class1", "Class I price, at the order&rsquo;s base zone", "$/cwt"),
-            ("adv_class3", "Advanced Class III price", "$/cwt"),
-            ("adv_class4", "Advanced Class IV price", "$/cwt"),
+O30_ROWS = (("class1", "Class I price, 3.5% butterfat, base zone", "$/cwt"),
+            ("mover", "Class I skim mover", "$/cwt"),
+            ("adv_class3_skim", "Advanced Class III skim", "$/cwt"),
+            ("adv_class4_skim", "Advanced Class IV skim", "$/cwt"),
             ("uniform", "Statistical uniform price", "$/cwt"),
-            ("ppd", "Producer price differential (PPD)", "$/cwt"),
+            ("ppd", "Producer price differential (PPD), base zone", "$/cwt"),
             ("scc", "Somatic cell adjustment rate, per 1,000 SCC", "$/cwt"))
 O30_LINK = '<a href="https://www.fmma30.com/" rel="noopener">Upper Midwest Market Administrator</a>'
 DEPOOL_GAP = 1.00     # $/cwt Class IV over Class III before the line is said
@@ -2550,15 +2551,24 @@ def milk_o30_seed(o30, d, today):
         body.append(f'<tr><th scope="row">{name}</th><td class="num">{_o30_cell(L, k)}</td>'
                     + (f'<td class="num">{_o30_cell(Y, k)}</td>' if yh else "") + "</tr>")
     rd = _e(o.get("read") or "")
-    miss = [name for k, name, _u in O30_ROWS if not _fin((L or {}).get(k))]
-    note = (" A dash: " + ", ".join(miss).replace("&rsquo;", "&rsquo;") + " not in the release read for that month." if miss else "")
+    zone = _e((L or {}).get("base_zone") or "")
+    hi = (L or {}).get("mover_higher_of") is True
+    nx = [r for r in (o.get("next_class1") or []) if isinstance(r, dict) and _mkey(r.get("month_key")) is not None and _pos(r.get("class1"))]
+    nxt = ""
+    if nx:
+        nxt = ('<p class="dp-note-src" id="dp-o30-next">Class I ahead, announced in advance: '
+               + "; ".join(f"{_ishort(_mkey(r['month_key']))} {_cwt(r['class1'])}/cwt" for r in nx) + ".</p>")
+    note = (f" Base zone: {zone}." if zone else "") + (
+        " The Class I skim mover is the higher of the two advanced skim prices beside it." if hi else
+        " The Class I skim mover is not the higher of the two advanced skim prices this month; it is printed as released.")
     return ('<div class="dp-tbl-wrap"><table class="dp-tbl" id="dp-o30-tbl"><caption class="dp-sr">Federal Order 30 monthly prices, '
             f'dollars per hundredweight</caption><thead><tr><th scope="col">Order 30</th>{th}</tr></thead><tbody>'
-            + "".join(body) + "</tbody></table></div>"
-            f'<p class="dp-note-src" id="dp-o30-src">Source: {O30_LINK}, monthly price and pool releases'
-            f'{", read " + rd if rd else ""}. Class I, the advanced prices and the PPD are the order&rsquo;s own announced figures, '
-            "before hauling and co-op deductions; the PPD is what this order adds to (or takes from) component value in your check."
-            f"{note}</p>" + dep)
+            + "".join(body) + "</tbody></table></div>" + nxt +
+            f'<p class="dp-note-src" id="dp-o30-src">Source: {O30_LINK}, monthly class price and producer price differential releases'
+            f'{", read " + rd if rd else ""}.{note} The PPD is what the order adds to (or takes from) the component value of your milk, '
+            "before hauling and co-op deductions. A dash: not in the release read for that month."
+            + ("" if yh else f" {_ishort(li - 12)} is not shown: its releases were not read or did not check out.")
+            + "</p>" + dep)
 
 
 # --- the published miss of Read my check, from data/dairy-miss.json -----------
