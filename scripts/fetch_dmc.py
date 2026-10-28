@@ -597,6 +597,57 @@ def selftest():
         rec2 = run(d, now=datetime.datetime(2026, 10, 29, tzinfo=datetime.timezone.utc), get=lambda u: (None, "timeout"))
         ck("...a failed read keeps the last good file and says why",
            len(rec2["margins"]) == 88 and rec2["status"]["ok"] is False and "timeout" in rec2["status"]["why"], rec2.get("status"))
+    # months read off Sig's Oct 28 screen capture of FSA's live page (2026 Rates table)
+    cap = {"2026-05": (4.48, 247.00, 338.72, 21.30, 10.68, 10.62), "2026-06": (4.28, 239.00, 319.68, 21.10, 10.22, 10.88),
+           "2026-07": (4.26, 242.00, 337.96, 20.30, 10.37, 9.93), "2026-08": (4.45, 243.00, 320.30, 19.80, 10.46, 9.34)}
+    shot = {"read": "2026-10-28", "via": "screenshot", "source_url": MARGINS_URL,
+            "months": {k: dict(zip(("corn", "hay", "sbm", "all_milk", "feed", "margin"), v)) for k, v in cap.items()}}
+    ck("capture: each feed cost is FSA's formula on its own corn, hay and meal, milk minus feed the margin",
+       all(shot_ok(r) for r in shot["months"].values()))
+    ck("...a typo in the capture (corn 4.84 for 4.48) fails the formula",
+       not shot_ok(dict(shot["months"]["2026-05"], corn=4.84)))
+    ck("...a typo in the margin fails", not shot_ok(dict(shot["months"]["2026-08"], margin=9.43)))
+    mp, ks = merge_shot(real, shot, "2026-06-10")
+    ck("an Apr 2026 archive read plus the capture: 92 months to Aug 2026, nothing withheld",
+       len(mp) == 92 and max(mp) == "2026-08" and confirm(mp, {"month_key": "2026-08", "value": 19.8})[1] == {"count": 0}
+       and mp["2026-08"] == {"all_milk": 19.8, "feed": 10.46, "margin": 9.34} and sorted(ks["months"]) == sorted(cap), len(mp))
+    old_may = dict(real, **{"2026-05": {"all_milk": 21.2, "feed": 10.68, "margin": 10.52}})
+    mp, ks = merge_shot(old_may, shot, "2026-06-10")
+    ck("...an older read (archive of Jun 10) never overwrites the newer capture",
+       mp["2026-05"]["margin"] == 10.62 and "2026-05" in ks["months"], mp["2026-05"])
+    mp, ks = merge_shot(old_may, shot, "2026-11-02")
+    ck("...a read at least as new wins its month, and that month leaves the capture block",
+       mp["2026-05"]["margin"] == 10.52 and "2026-05" not in ks["months"] and len(ks["months"]) == 3)
+    every = dict(real, **{k: {"all_milk": v[3], "feed": v[4], "margin": v[5]} for k, v in cap.items()})
+    ck("...a read as new with all four months drops the block",
+       merge_shot(every, shot, "2026-10-28") == (dict(sorted(every.items())), None))
+    ck("...no capture, nothing added", merge_shot(real, None, "2026-06-10") == (dict(real), None))
+    bad = {"read": "2026-10-28", "months": {"2026-05": dict(shot["months"]["2026-05"], feed=10.86)}}
+    ck("...a captured month that fails the check is not used", merge_shot(real, bad, "2026-06-10") == (dict(real), None))
+    with tempfile.TemporaryDirectory() as d:
+        (Path(d) / "data").mkdir()
+        (Path(d) / "data" / "dairy-data.json").write_text(json.dumps({"all_milk": {"month_key": "2026-08", "value": 19.8}}))
+        (Path(d) / "data" / "dairy-dmc.json").write_text(json.dumps({"screenshot": shot}))
+        rec = run(d, now=datetime.datetime(2026, 10, 29, tzinfo=datetime.timezone.utc), get=fget, pdf_text=texts.get)
+        ck("run: the archive copy of Jun 10 ends at April, the Oct 28 capture's four months stay, none withheld",
+           len(rec["margins"]) == 92 and rec["withheld"] == {"count": 0} and rec["margins"]["2026-07"]["margin"] == 9.93
+           and sorted(rec["screenshot"]["months"]) == sorted(cap) and rec["snapshot"] == "2026-06-10", rec.get("withheld"))
+        rec2 = run(d, now=datetime.datetime(2026, 10, 30, tzinfo=datetime.timezone.utc), get=lambda u: (None, "timeout"))
+        ck("...a failed read keeps them", len(rec2["margins"]) == 92 and rec2["screenshot"] == rec["screenshot"])
+        e = '<td style="text-align:center;">&nbsp;</td>'
+        newer = fx.replace("<tr><td>May</td>" + e * 6, "<tr><td>May</td>" + "".join(
+            "<td>%s</td>" % x for x in ("4.48", "247.00", "338.72", "21.40", "10.68", "10.72")), 1)
+        ck("...(the test page has May filled in the 2026 table)", parse_margins(newer).get("2026-05", {}).get("margin") == 10.72)
+
+        def lget(u):
+            if u == MARGINS_URL:
+                VIA[u] = {"via": "live"}
+                return newer.encode(), None
+            return fget(u)
+        rec3 = run(d, now=datetime.datetime(2026, 11, 2, tzinfo=datetime.timezone.utc), get=lget, pdf_text=texts.get)
+        ck("...a live read on Nov 2 that has May wins May; June to Aug stay from the capture",
+           rec3["margins"]["2026-05"]["margin"] == 10.72 and sorted(rec3["screenshot"]["months"]) == ["2026-06", "2026-07", "2026-08"]
+           and len(rec3["margins"]) == 92, (rec3["margins"].get("2026-05"), sorted(rec3.get("screenshot", {}).get("months", {}))))
     VIA.clear()
     LIVE["down"] = False
     ck("probe keeps DMC files", _keep("https://www.fsa.usda.gov/x/DMC-Margin-2026.xlsx"))

@@ -2441,6 +2441,31 @@ def _cite(blk, name):
     return t
 
 
+def _dmc_shot(dmc, rows):
+    """The months in rows that came from the screen capture of FSA's live page
+    (data/dairy-dmc.json screenshot: FSA's page, a read date, and the same
+    all-milk, feed and margin as the margins row), sorted; [] otherwise."""
+    sh = dmc.get("screenshot") if isinstance(dmc, dict) and isinstance(dmc.get("screenshot"), dict) else {}
+    ms = sh.get("months") if isinstance(sh.get("months"), dict) else {}
+    if not (str(sh.get("source_url") or "").startswith("https://www.fsa.usda.gov/")
+            and re.fullmatch(r"\d{4}-\d{2}-\d{2}", sh.get("read") or "")):
+        return []
+    m = dmc.get("margins") or {}
+    return sorted(k for k, r in ms.items() if k in rows and isinstance(r, dict) and isinstance(m.get(k), dict)
+                  and all(r.get(f) == m[k].get(f) for f in ("all_milk", "feed", "margin")))
+
+
+def _dmc_shot_words(dmc, ks):
+    """' May 2026 to Aug 2026: the same FSA page, read <date> from a screen capture of the live page.' or ''."""
+    if not ks:
+        return ""
+    i0, i1 = _mkey(ks[0]), _mkey(ks[-1])
+    span = _ishort(i0) if len(ks) == 1 else (f"{_ishort(i0)} to {_ishort(i1)}" if i1 - i0 + 1 == len(ks)
+                                              else ", ".join(_ishort(_mkey(k)) for k in ks))
+    return (f" {span}: the same FSA page, read {_e(dmc['screenshot']['read'])} from a screen capture of FSA&rsquo;s "
+            "live page, which had newer months than the archive copy.")
+
+
 def _prem_cell(tier, lv):
     """A Tier premium for a level: the rate, 'n/a' for a level FSA lists as not offered, or '-' (not read)."""
     if not isinstance(tier, dict) or f"{lv:.2f}" not in tier:
@@ -2519,7 +2544,8 @@ def milk_dmc_paid(dmc, d):
             ' DMC itself pays on the average margin of two consecutive months; this table uses each month alone, so a real payment can differ.' +
             ' No level is a pick for your farm, and past margins are not next year&rsquo;s.</p>'
             f'<p class="dp-note-src">These are the margins as FSA publishes them now.{_dmc_hay(dmc, years)}{held} '
-            f'Margins: {_cite(dmc, "FSA, DMC prices and updates")}{", read " + rd if rd else ""}.{prem_src}</p></details>')
+            f'Margins: {_cite(dmc, "FSA, DMC prices and updates")}{", read " + rd if rd else ""}.'
+            f'{_dmc_shot_words(dmc, _dmc_shot(dmc, rows))}{prem_src}</p></details>')
 
 
 def _dmc_hay(dmc, years):
@@ -2655,8 +2681,10 @@ def milk_dmc_margin(dmc, d, today):
         r = dmc["margins"][k]
         i = _mkey(k)
         src = _e(dmc.get("source") or "FSA")
+        cap = (f" (read {_e(dmc['screenshot']['read'])} from a screen capture of FSA&rsquo;s live page)"
+               if k in _dmc_shot(dmc, rows) else "")
         return (f'<p class="dp-dmc-m"><strong>DMC margin, {_ilong(i)}: {_cwt(r["margin"])}/cwt</strong> '
-                f'({_cwt(r["all_milk"])} all-milk minus {_cwt(r["feed"])} feed), as {src} published it.</p>')
+                f'({_cwt(r["all_milk"])} all-milk minus {_cwt(r["feed"])} feed), as {src} published it{cap}.</p>')
     a = (d or {}).get("all_milk") or {}
     am = milk_allmilk_ok(a, today) if _pos(a.get("value")) else None
     milk = ""
