@@ -171,11 +171,18 @@
           tg.hidden = false;
           /* Watch it draw: the same print, drawing itself day by day, and a video of it
              (components/rain-print-draw.js). No hail or wind here: the page has no town point. */
-          if (!tg.querySelector('.rc-watch')) {
-            var wb = doc.createElement('button');
+          /* the county page ships this button in its (held, invisible) picker row so the row is its
+             full height from the first paint (Oct 28: the print moved up under the figures); /here
+             gets it made here, as before. Bound once either way. */
+          var wb = tg.querySelector('.rc-watch');
+          if (!wb) {
+            wb = doc.createElement('button');
             wb.type = 'button'; wb.className = 'rc-watch'; wb.textContent = 'Watch it draw';
             wb.setAttribute('aria-label', 'Watch this year draw itself, and make a video of it');
             tg.appendChild(wb);
+          }
+          if (!wb.getAttribute('data-bound')) {
+            wb.setAttribute('data-bound', '1');
             wb.addEventListener('click', function () {
               script(DRAW, function () { return !!root.AgRainDraw; }).then(function () {
                 var box = fig.querySelector('.rc-print-art');
