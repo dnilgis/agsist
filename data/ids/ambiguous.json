@@ -780,14 +780,6 @@
    ]
   },
   {
-   "key": "basis:KS|COMARK EQUITY ALLIANCE LLC|MT. HOPE",
-   "rule": "name+town",
-   "candidates": [
-    "eef2vr1k62",
-    "epkmkqtb4e"
-   ]
-  },
-  {
    "key": "basis:KS|COMARK EQUITY ALLIANCE LLC|WELLINGTON",
    "rule": "name+town",
    "candidates": [
