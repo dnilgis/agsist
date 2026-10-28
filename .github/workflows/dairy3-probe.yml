@@ -40,5 +40,5 @@ jobs:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_SOFT: '1'
         run: |
-          mkdir -p data/dairy-raw/dairy3 && cp -r out/. data/dairy-raw/dairy3/
-          bash scripts/push_raw.sh "dairy3 probe: FSA DMC and MPP archive copies, NASS licensed herds" data/dairy-raw/dairy3
+          mkdir -p data/dairy-raw/dairy3/run3 && cp -r out/. data/dairy-raw/dairy3/run3/
+          bash scripts/push_raw.sh "dairy3 probe run 3: archive copies of FSA mpp_prices.pdf" data/dairy-raw/dairy3/run3
