@@ -17,6 +17,9 @@ import dairy_probe  # noqa: E402
 ROOT = Path(__file__).resolve().parent.parent
 RAW = "data/dairy-raw/dmc"
 STARTS = [
+    # FSA's monthly margins live here (linked "Program Updates and Prices" from the
+    # DMC page, read from the archive copy on the Oct 28 probe)
+    "https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates",
     "https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program",
     "https://www.fsa.usda.gov/dairy",
     "https://www.fsa.usda.gov/news-events/news/09-30-2026/usda-announces-2027-dairy-margin-coverage-enrollment",
@@ -32,9 +35,10 @@ def _keep(u):
 
 
 WAYBACK = "https://web.archive.org/web/2026id_/"
+AVAIL = "https://archive.org/wayback/available?url="
 
 
-def get_fsa(u, direct=None, archive=None):
+def get_fsa(u, direct=None, archive=None, avail=True):
     """FSA live first; the Oct 28 probe timed out on every fsa.usda.gov page from
     the runner, so then the Internet Archive's newest 2026 copy of the same URL
     (the original bytes, id_). The probe index says which one answered."""
@@ -45,6 +49,20 @@ def get_fsa(u, direct=None, archive=None):
     if body is not None:
         return body, None
     body, err2 = archive(u)
+    if body is None and avail:
+        # the newest snapshot the Internet Archive says it has, by its own timestamp
+        try:
+            import json as _j
+            from fetch_dairy import http_get as _g
+            a, _e = _g(AVAIL + u, tries=2, timeout=60)
+            snap = (_j.loads(a or b"{}").get("archived_snapshots") or {}).get("closest") or {}
+            ts = snap.get("timestamp")
+            if ts:
+                body, err3 = _g("https://web.archive.org/web/%sid_/%s" % (ts, u), tries=2, timeout=90)
+                if body is not None:
+                    return body, None
+        except Exception as ex:  # noqa: BLE001
+            err2 = "%s; %s" % (err2, type(ex).__name__)
     return (body, None) if body is not None else (None, "%s; archive: %s" % (err, err2))
 
 
@@ -69,7 +87,7 @@ def selftest():
        and not _follow("https://www.fsa.usda.gov/resources/programs/arc-plc"))
     seen = []
     b, e = get_fsa("https://www.fsa.usda.gov/dairy", direct=lambda u: (None, "timeout"),
-                   archive=lambda u: (seen.append(u) or b"<html>", None))
+                   archive=lambda u: (seen.append(u) or b"<html>", None), avail=False)
     ck("a timed-out FSA page is read from the archive copy of the same URL", b == b"<html>" and seen == ["https://www.fsa.usda.gov/dairy"])
     print("fetch_dmc selftest: %s" % ("PASS" if not fails else "FAIL (%d)" % len(fails)))
     return 1 if fails else 0
