@@ -783,7 +783,7 @@
    "path": "data/directory.json",
    "pages": [
     "desk.html",
-    "elev-admin.html"
+    "desk/elevators.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -1275,7 +1275,7 @@
   {
    "path": "data/index.json",
    "pages": [
-    "elev-today.html"
+    "desk/today.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -1292,7 +1292,7 @@
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
-   "why_quiet": "Every board the bid network reads, with its last read and why it failed. Sig's Today list (elev-today.html) and the morning email build the day's hand-paste list from it. Unreachable means the Today list says so and shows the other items; nothing on the public site reads it."
+   "why_quiet": "Every board the bid network reads, with its last read and why it failed. Sig's Today list (desk/today.html, a tab of /desk) and the morning email build the day's hand-paste list from it. Unreachable means the Today list says so and shows the other items; nothing on the public site reads it."
   },
   {
    "path": "data/land/index.json",

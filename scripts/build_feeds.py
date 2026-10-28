@@ -211,7 +211,7 @@ EXTERNAL = {
     "data/index.json": (
         "published by dnilgis/bids, every reader pass",
         "Every board the bid network reads, with its last read and why it failed. "
-        "Sig's Today list (elev-today.html) and the morning email build the "
+        "Sig's Today list (desk/today.html, a tab of /desk) and the morning email build the "
         "day's hand-paste list from it. Unreachable means the Today list says "
         "so and shows the other items; nothing on the public site reads it."),
 }
@@ -387,7 +387,7 @@ def main():
 
     # ── which pages fetch which feed ─────────────────────────────────────────
     readers = defaultdict(set)
-    for p in sorted(glob.glob("*.html")) + sorted(glob.glob("components/*.html")):
+    for p in sorted(glob.glob("*.html")) + sorted(glob.glob("components/*.html")) + sorted(glob.glob("desk/*.html")):   # desk/: the admin tabs of /desk (Oct 28)
         text = read(p)
         # A page also reads what its own page scripts fetch. 2026-10-11: the
         # homepage moved three big inline scripts to components/home-*.js, and
