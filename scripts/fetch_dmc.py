@@ -31,9 +31,26 @@ def _keep(u):
     return bool(re.search(r"\.(pdf|xlsx?|csv)(\?|$)", u, re.I)) and bool(re.search(r"dmc|margin|dairy|premium", u, re.I))
 
 
+WAYBACK = "https://web.archive.org/web/2026id_/"
+
+
+def get_fsa(u, direct=None, archive=None):
+    """FSA live first; the Oct 28 probe timed out on every fsa.usda.gov page from
+    the runner, so then the Internet Archive's newest 2026 copy of the same URL
+    (the original bytes, id_). The probe index says which one answered."""
+    from fetch_dairy import http_get
+    direct = direct or (lambda x: http_get(x, tries=2, timeout=45))
+    archive = archive or (lambda x: http_get(WAYBACK + x, tries=2, timeout=60))
+    body, err = direct(u)
+    if body is not None:
+        return body, None
+    body, err2 = archive(u)
+    return (body, None) if body is not None else (None, "%s; archive: %s" % (err, err2))
+
+
 def probe(root):
     print("FSA DMC probe")
-    ix = dairy_probe.crawl(Path(root) / RAW, STARTS, ["fsa.usda.gov"], _follow, _keep, depth=2, max_files=30)
+    ix = dairy_probe.crawl(Path(root) / RAW, STARTS, ["fsa.usda.gov"], _follow, _keep, depth=2, max_files=25, get=get_fsa)
     print("  %d urls, %d saved" % (len(ix), sum(1 for r in ix if r.get("file"))))
     return 0
 
@@ -50,6 +67,10 @@ def selftest():
     ck("probe skips unrelated files", not _keep("https://www.fsa.usda.gov/x/loan-rates.pdf"))
     ck("probe follows DMC pages only", _follow("https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program/x")
        and not _follow("https://www.fsa.usda.gov/resources/programs/arc-plc"))
+    seen = []
+    b, e = get_fsa("https://www.fsa.usda.gov/dairy", direct=lambda u: (None, "timeout"),
+                   archive=lambda u: (seen.append(u) or b"<html>", None))
+    ck("a timed-out FSA page is read from the archive copy of the same URL", b == b"<html>" and seen == ["https://www.fsa.usda.gov/dairy"])
     print("fetch_dmc selftest: %s" % ("PASS" if not fails else "FAIL (%d)" % len(fails)))
     return 1 if fails else 0
 
