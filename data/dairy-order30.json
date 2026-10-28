@@ -47,11 +47,205 @@
    "released": "2026-10-21"
   }
  ],
+ "ppd_history": [
+  {
+   "central": "agree",
+   "class3": 22.85,
+   "month_key": "2024-10",
+   "ppd": -0.47,
+   "released_ppd": "2024-11-11",
+   "uniform": 22.38
+  },
+  {
+   "central": "agree",
+   "class3": 19.95,
+   "month_key": "2024-11",
+   "ppd": 0.38,
+   "released_ppd": "2024-12-11",
+   "uniform": 20.33
+  },
+  {
+   "central": "agree",
+   "class3": 18.62,
+   "month_key": "2024-12",
+   "ppd": 0.36,
+   "released_ppd": "2025-01-11",
+   "uniform": 18.98
+  },
+  {
+   "central": "agree",
+   "class3": 20.34,
+   "month_key": "2025-01",
+   "ppd": 0.13,
+   "released_ppd": "2025-02-12",
+   "uniform": 20.47
+  },
+  {
+   "central": "agree",
+   "class3": 20.18,
+   "month_key": "2025-02",
+   "ppd": 0.13,
+   "released_ppd": "2025-03-12",
+   "uniform": 20.31
+  },
+  {
+   "central": "agree",
+   "class3": 18.62,
+   "month_key": "2025-03",
+   "ppd": 0.2,
+   "released_ppd": "2025-04-11",
+   "uniform": 18.82
+  },
+  {
+   "central": "agree",
+   "class3": 17.48,
+   "month_key": "2025-04",
+   "ppd": 0.27,
+   "released_ppd": "2025-05-12",
+   "uniform": 17.75
+  },
+  {
+   "central": "agree",
+   "class3": 18.57,
+   "month_key": "2025-05",
+   "ppd": 0.07,
+   "released_ppd": "2025-06-11",
+   "uniform": 18.64
+  },
+  {
+   "central": "agree",
+   "class3": 18.82,
+   "month_key": "2025-06",
+   "ppd": 0.28,
+   "released_ppd": "2025-07-11",
+   "uniform": 19.1
+  },
+  {
+   "central": "agree",
+   "class3": 17.32,
+   "month_key": "2025-07",
+   "ppd": 0.63,
+   "released_ppd": "2025-08-12",
+   "uniform": 17.95
+  },
+  {
+   "central": "agree",
+   "class3": 17.24,
+   "month_key": "2025-08",
+   "ppd": 0.58,
+   "released_ppd": "2025-09-11",
+   "uniform": 17.82
+  },
+  {
+   "central": "agree",
+   "class3": 17.59,
+   "month_key": "2025-09",
+   "ppd": 0.35,
+   "released_ppd": "2025-10-11",
+   "uniform": 17.94
+  },
+  {
+   "central": "agree",
+   "class3": 16.91,
+   "month_key": "2025-10",
+   "ppd": 0.14,
+   "released_ppd": "2025-11-12",
+   "uniform": 17.05
+  },
+  {
+   "central": "agree",
+   "class3": 17.18,
+   "month_key": "2025-11",
+   "ppd": -0.56,
+   "released_ppd": "2025-12-11",
+   "uniform": 16.62
+  },
+  {
+   "central": "agree",
+   "class3": 15.86,
+   "month_key": "2025-12",
+   "ppd": 0.35,
+   "released_ppd": "2026-01-12",
+   "uniform": 16.21
+  },
+  {
+   "central": "agree",
+   "class3": 14.59,
+   "month_key": "2026-01",
+   "ppd": 0.46,
+   "released_ppd": "2026-02-11",
+   "uniform": 15.05
+  },
+  {
+   "central": "agree",
+   "class3": 14.94,
+   "month_key": "2026-02",
+   "ppd": 0.58,
+   "released_ppd": "2026-03-11",
+   "uniform": 15.52
+  },
+  {
+   "central": "agree",
+   "class3": 16.16,
+   "month_key": "2026-03",
+   "ppd": 0.5,
+   "released_ppd": "2026-04-11",
+   "uniform": 16.66
+  },
+  {
+   "central": "agree",
+   "class3": 16.82,
+   "month_key": "2026-04",
+   "ppd": 0.61,
+   "released_ppd": "2026-05-12",
+   "uniform": 17.43
+  },
+  {
+   "central": "agree",
+   "class3": 16.92,
+   "month_key": "2026-05",
+   "ppd": 0.69,
+   "released_ppd": "2026-06-11",
+   "uniform": 17.61
+  },
+  {
+   "central": "agree",
+   "class3": 15.98,
+   "month_key": "2026-06",
+   "ppd": 0.87,
+   "released_ppd": "2026-07-11",
+   "uniform": 16.85
+  },
+  {
+   "central": "agree",
+   "class3": 15.52,
+   "month_key": "2026-07",
+   "ppd": 0.88,
+   "released_ppd": "2026-08-12",
+   "uniform": 16.4
+  },
+  {
+   "central": "agree",
+   "class3": 16.64,
+   "month_key": "2026-08",
+   "ppd": 0.6,
+   "released_ppd": "2026-09-11",
+   "uniform": 17.24
+  },
+  {
+   "central": "agree",
+   "class3": 16.04,
+   "month_key": "2026-09",
+   "ppd": 0.58,
+   "released_ppd": "2026-10-12",
+   "uniform": 16.62
+  }
+ ],
  "read": "2026-10-28",
  "source": "Upper Midwest Market Administrator (Federal Order 30)",
  "source_url": "https://www.fmma30.com/",
  "status": {
-  "at": "2026-10-28T03:11:00Z",
+  "at": "2026-10-28T04:34:45Z",
   "ok": true
  },
  "year_ago": {
