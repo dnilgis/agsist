@@ -80,9 +80,9 @@ AFTER_CLOSE_UNTIL = (15, 0)  # the one after-close tick lands between the close 
 ROOTS = {
     "ZC": ("corn", "corn", re.compile(r"\bcorn\b|\byc\b", re.I)),
     "ZS": ("soybeans", "beans", re.compile(r"soy|\bbeans?\b|\bysb\b", re.I)),
-    "ZW": ("chicago-wheat", "wheat", re.compile(r"wheat|\bsrw\b|\bsww\b|\bswh\b", re.I)),
-    "KE": ("kc-wheat", "kcwheat", re.compile(r"wheat|\bhrw\b|\bhrww\b|\bhww\b|hard red winter", re.I)),
-    "MW": ("spring-wheat", "springwheat", re.compile(r"wheat|\bhrs\b|\bdns\b|\bdnsw\b|northern spring", re.I)),
+    "ZW": ("chicago-wheat", "wheat", re.compile(r"wheat|\bwht\b|\bsrw\b|\bsww\b|\bswh\b", re.I)),
+    "KE": ("kc-wheat", "kcwheat", re.compile(r"wheat|\bwht\b|\bhrw\b|\bhrww\b|\bhww\b|hard red winter", re.I)),
+    "MW": ("spring-wheat", "springwheat", re.compile(r"wheat|\bwht\b|\bhrs\b|\bdns\b|\bdnsw\b|northern spring", re.I)),
 }
 # Out whatever the contract: other units (the bids reader appends "(cwt)" or "(unit unstated)"), flat-priced
 # and specialty grains, products, and grains that only borrow a contract.
@@ -143,7 +143,9 @@ def contract_of(futures_month, commodity):
                     root = "MW"
                 elif re.search(r"\bhrw|\bhww|\bhrww|winter", c):
                     root = "KE"
-                elif "wheat" in c:
+                elif re.search(r"\bsrw\b|soft red", c):
+                    root = "ZW"
+                elif "wheat" in c or "wht" in c:
                     return None, "wheat class not named"
                 elif ROOTS["ZC"][2].search(c):
                     root = "ZC"
@@ -563,7 +565,7 @@ def selftest():
         ("Jan 27 Soybeans", "Soybeans", ("ZS", "F", 2027)),
         ("Dec 26 KCBT Red Wheat", "Hrww", ("KE", "Z", 2026)),
         ("Mar 27 MIAX Spring Wheat", "Spring Wheat", ("MW", "H", 2027)),
-        ("March 2027", "Corn", ("ZC", "H", 2027)), ("December 2026", "Wheat, HRS 14%", ("MW", "Z", 2026)),
+        ("March 2027", "Corn", ("ZC", "H", 2027)), ("July 2027", "Wheat, SRW", ("ZW", "N", 2027)), ("December 2026", "Wheat, HRS 14%", ("MW", "Z", 2026)),
     ]
     for fm, com, want in cases:
         got, why = contract_of(fm, com)
