@@ -1,7 +1,18 @@
 {
- "updated": "2026-10-27",
+ "updated": "2026-10-28",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-28",
+   "items": [
+    {
+     "tag": "improved",
+     "page": "/rain",
+     "name": "County rain pages open with the Rain Print",
+     "text": "Each county rain page now shows the year as a Rain Print right under the numbers, with Staircase, Roots, Up close and Watch it draw, in place of the plain running-total chart. The plain chart stays for anyone whose browser does not draw the print."
+    }
+   ]
+  },
   {
    "date": "2026-10-27",
    "items": [
