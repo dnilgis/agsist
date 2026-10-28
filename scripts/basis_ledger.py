@@ -96,6 +96,7 @@ USAGE
 """
 import argparse
 import datetime as dt
+import functools
 import gzip
 import hashlib
 import io
@@ -178,6 +179,7 @@ MONTHS = {m: c for m, c in zip(
     ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], "FGHJKMNQUVXZ")}
 
 
+@functools.lru_cache(maxsize=None)
 def norm_contract(sym, crop):
     """A canonical contract ('ZCZ26') from the forms boards post, or None when it is
     not clear (a month name for wheat without its exchange, a basis-contract code, a
@@ -336,8 +338,17 @@ class View:
         return c[key]
 
 
+_BACK = {}
+
+
 def tdays_back(d, n):
     """The n trading days ending d, oldest first (d included when it is a trading day)."""
+    if (d, n) not in _BACK:
+        _BACK[(d, n)] = tuple(_tdays_back(d, n))
+    return list(_BACK[(d, n)])
+
+
+def _tdays_back(d, n):
     out, x = [], dt.date.fromisoformat(d)
     if not CC.is_trading_day(x):
         x = CC.prior_trading_day(x)
