@@ -2483,6 +2483,59 @@ def milk_dmc_margin(dmc, d, today):
             '<a href="https://www.fsa.usda.gov/dairy" rel="noopener">Dairy Margin Coverage page</a>.</p>')
 
 
+# --- the published miss of Read my check, from data/dairy-miss.json -----------
+# 2026-10-28 (dairy board, build 3; BUILD-RULES rule 1). What the check reader
+# said for each Class III month at the standard tests (the futures settle of the
+# last session before the month began, scripts/milk_miss.py) beside what USDA
+# announced. The log only grows and is never backfilled; until a month is
+# graded the page says when the first one will be.
+MILK_MISS_DATA = "data/dairy-miss.json"
+
+
+def _sess(d):
+    m = re.match(r"^(\d{4})-(\d{2})-(\d{2})$", str(d or ""))
+    return f"{MON3[int(m.group(2)) - 1]} {int(m.group(3))}" if m else ""
+
+
+def milk_miss_seed(log, today):
+    rows = (log or {}).get("months") if isinstance(log, dict) else None
+    rows = rows if isinstance(rows, dict) else {}
+    graded = [(k, r) for k, r in sorted(rows.items()) if _mkey(k) is not None and isinstance(r, dict)
+              and _fin(r.get("said")) and _fin(r.get("actual")) and _fin(r.get("miss"))]
+    started = _e(str((log or {}).get("started") or "") if isinstance(log, dict) else "")
+    head = ('<h3 class="dp-sub dp-sub-tight" id="dp-miss-h">How close the futures came</h3>'
+            '<p class="dp-note-src">Each month I keep what this reader showed at the standard tests (3.5% butterfat, 3.18% '
+            'protein and 5.79% other solids, the Class III standard, where your tests add nothing): the Class III futures settle of the last '
+            'session before the month began. When USDA announces the month I print the miss beside it. '
+            + (f"Started {_e(_sess(started) + ', ' + started[:4]) if started else ''}; " if started else "")
+            + "nothing before that is filled in.</p>")
+    if not graded:
+        nxt = None
+        t = _mkey(str(today)[:7]) or 0
+        for k, r in sorted(rows.items()):
+            i = _mkey(k)
+            if i is not None and isinstance(r, dict) and ("said" in r or i > t) and "actual" not in r:
+                nxt = i
+                break
+        when = (f" The first month it can grade is {_ilong(nxt)}: its price is recorded as {MONL[nxt % 12]} begins, and "
+                f"USDA announces it about the start of {MONL[(nxt + 1) % 12]}." if nxt is not None else "")
+        return f'<div id="dp-miss">{head}<p class="dp-note-src" id="dp-miss-none">No month graded yet.{when}</p></div>'
+    body = []
+    for k, r in graded[-12:][::-1]:
+        i = _mkey(k)
+        mc = "dp-pos" if r["miss"] > 0 else "dp-neg" if r["miss"] < 0 else "dp-flat"
+        body.append(f'<tr><th scope="row">{_ishort(i)}</th><td class="num">{_cwt(r["said"])} <span class="dp-mb-grp">({_e(_sess(r.get("said_session")))})</span></td>'
+                    f'<td class="num">{_cwt(r["actual"])}</td><td class="num {mc}">{_sg(r["miss"], 2)}</td></tr>')
+    n = len(graded)
+    avg = sum(abs(r["miss"]) for _, r in graded) / n
+    return (f'<div id="dp-miss">{head}<div class="dp-tbl-wrap"><table class="dp-tbl"><caption class="dp-sr">Class III futures at the start of '
+            'each month against the announced price</caption><thead><tr><th scope="col">Month</th><th scope="col" class="num">Futures as it began</th>'
+            '<th scope="col" class="num">USDA announced</th><th scope="col" class="num">Miss</th></tr></thead><tbody>'
+            + "".join(body) + '</tbody></table></div>'
+            f'<p class="dp-note-src">{n} month{"s" if n != 1 else ""} graded, and a few months say little about the next one. '
+            f'Average miss, either way: {_cwt(avg)}/cwt. Futures: CME settles. Announced: USDA AMS.</p></div>')
+
+
 # --- your area first, from data/dairy-mailbox.json ----------------------------
 # 2026-10-28 (dairy board, build 2). The no-JS and crawler copy of the area card:
 # before a reader picks an area (or a saved ZIP names one), the areas that fell
@@ -2735,6 +2788,7 @@ def seed_milk(today):
     dmc = _load_json(MILK_DMC_DATA) or {}
     seeds["milkdmcpaid"] = milk_dmc_paid(dmc, d)
     seeds["milkdmcmargin"] = milk_dmc_margin(dmc, d, today)
+    seeds["milkmiss"] = milk_miss_seed(_load_json(MILK_MISS_DATA), today)
     area = milk_area_seed(_load_json(MILK_MB_DATA), today)
     if area:
         seeds["milkarea"] = area
