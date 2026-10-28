@@ -49,6 +49,8 @@ def save(name, u, timeout=60):
     p.write_bytes(b)
     if b[:5] == b"%PDF-":
         subprocess.run(["pdftotext", "-layout", str(p), str(p) + ".txt"], timeout=120)
+        if len(b) > 1500000:
+            p.unlink()   # the text is enough on the raw branch
     return b
 
 
@@ -56,11 +58,31 @@ FSA = "https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program
 MPP = "https://www.fsa.usda.gov/sites/default/files/documents/mpp-prices.pdf"
 FACTS = "https://www.fsa.usda.gov/sites/default/files/2026-01/FSA_DMC_012026.pdf"
 
-# 1. FSA live
-save("fsa-live.html", FSA, 90)
-save("mpp-live.pdf", MPP, 90)
+# 0. run 2: where the archive holds FSA's MPP margins (old program pages and files)
+for nm, pre in (("mpp-assets", "fsa.usda.gov/Assets/USDA-FSA-Public/usdafiles/"),
+                ("mpp-progs", "fsa.usda.gov/programs-and-services/"),
+                ("mpp-docs", "fsa.usda.gov/sites/default/files/documents/")):
+    q = "https://web.archive.org/cdx/search/cdx?" + urllib.parse.urlencode(
+        {"url": pre, "matchType": "prefix", "output": "json", "filter": ["statuscode:200", "original:(?i).*(mpp|margin.protection|margin-protection|dmc).*"],
+         "collapse": "urlkey", "limit": "400"}, doseq=True)
+    b = save("cdx-%s.json" % nm, q, 180)
+    try:
+        rows = json.loads(b or b"[]")[1:]
+    except ValueError:
+        rows = []
+    for x in rows:
+        print("  ", x[1], x[2], flush=True)
+    for x in rows:
+        if re.search(r"(?i)mpp.*(margin|price)|margin.*mpp|mpp_?prices|mpp-prices", x[2]):
+            ext = "pdf" if re.search(r"(?i)\.pdf", x[2]) else "html"
+            save("arch-%s-%s.%s" % (nm, x[1], ext), "https://web.archive.org/web/%sid_/%s" % (x[1], x[2]), 90)
+if os.environ.get("RUN2"):
+    pass
 
-# 2. archive: the snapshot list of the margins page, the MPP pdf and the fact sheet; the newest three of each
+# 2. archive (FSA live timed out on run 1, so not tried again)
+if False:
+    pass
+# archive: the snapshot list of the margins page, the MPP pdf and the fact sheet; the newest three of each
 for nm, u in (("fsa", FSA), ("mpp", MPP), ("facts", FACTS)):
     q = "https://web.archive.org/cdx/search/cdx?" + urllib.parse.urlencode(
         {"url": u, "output": "json", "filter": "statuscode:200", "from": "2015"})

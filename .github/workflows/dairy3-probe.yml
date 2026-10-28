@@ -10,6 +10,9 @@ on:
 permissions:
   contents: read
 
+# run 2: the artifact cannot be read from where the work is done, so the files go
+# to the raw branch (never deployed) like the dairy probe's
+
 jobs:
   probe:
     runs-on: ubuntu-latest
@@ -31,9 +34,11 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python3 .github/dairy3-probe/probe.py
-      - uses: actions/upload-artifact@v4
+      - name: Save to the raw branch
         if: ${{ !cancelled() }}
-        with:
-          name: dairy3-probe
-          path: out/
-          retention-days: 5
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: |
+          mkdir -p data/dairy-raw/dairy3 && cp -r out/. data/dairy-raw/dairy3/
+          bash scripts/push_raw.sh "dairy3 probe: FSA DMC and MPP archive copies, NASS licensed herds" data/dairy-raw/dairy3
