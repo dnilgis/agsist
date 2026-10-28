@@ -60,7 +60,7 @@ button.quiet,.btn.quiet{background:none;color:var(--accent)}
 .tile.good .v{color:var(--ok)}
 .tile.cantv .v{font-size:.95rem;color:var(--amber)}
 .cards{display:grid;grid-template-columns:minmax(0,1fr);gap:0 12px}
-@media(min-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-flow:row dense}.card.wide{grid-column:1/-1}}
 .card .acts{display:flex;gap:6px;flex-wrap:wrap}
 .card .acts a{font-size:.85rem;font-weight:600;min-height:44px;display:inline-flex;align-items:center}
 .cant{color:var(--amber);font-weight:600}
@@ -247,7 +247,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
   /* ---------- the cards: ONE LIST. A new card is one entry. ---------- */
   var CARDS = [
     { id: 'today', title: 'Today', needs: ['sent', 'runs', 'worker'], acts: [['https://github.com/dnilgis/agsist/actions', 'Actions'], ['/daily', 'The Daily']], tiles: todayTiles, body: todayBody },
-    { id: 'ads', title: 'Ads and sponsors', needs: ['sponsors', 'worker'], acts: [['/sponsor-kit', 'Sponsor kit']], tiles: adsTiles, body: adsBody },
+    { id: 'ads', title: 'Ads and sponsors', wide: true, needs: ['sponsors', 'worker'], acts: [['/sponsor-kit', 'Sponsor kit']], tiles: adsTiles, body: adsBody },
     { id: 'signups', title: 'Signups', needs: ['worker'], private: true, acts: [], tiles: signupTiles, body: signupBody },
     { id: 'boards', title: 'Elevator boards', needs: ['dir', 'ids', 'worker'], acts: [['/elev-admin.html', 'Elevator desk'], ['/elev-today.html', 'Today list']], tiles: boardTiles, body: boardBody },
     { id: 'money', title: 'Money in', needs: ['worker', 'sponsors'], private: true, acts: [['/rp-gift-admin.html', 'Gift card desk'], ['https://dashboard.stripe.com/payments', 'Stripe']], tiles: moneyTiles, body: moneyBody },
@@ -440,7 +440,8 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
       return '<tr><td>' + esc(x.slug) + '</td><td>' + esc(x.period) + '</td><td class="n">' + esc(money(x.amount)) + '</td><td>' + esc(day(x.paid_on)) +
         '</td><td><button type="button" class="quiet" data-unmark="' + esc(x.slug) + '|' + esc(x.period) + '">Mark unpaid</button></td></tr>';
     }).join('') + '</tbody></table></div>' : '<p>Nothing marked paid yet.</p>';
-    var opts = rows.filter(function (r) { return !r.free; }).map(function (r) { return '<option value="' + esc(r.slug) + '">' + esc(r.name) + '</option>'; }).join('');
+    var rank = { live: 0, soon: 1, off: 2, ended: 3 };
+    var opts = rows.filter(function (r) { return !r.free; }).sort(function (a, b) { return rank[a.st[0]] - rank[b.st[0]]; }).map(function (r) { return '<option value="' + esc(r.slug) + '">' + esc(r.name) + '</option>'; }).join('');
     h += '<form id="mark" novalidate><div class="row4">' +
       '<div><label for="m-slug">Sponsor</label><select id="m-slug">' + opts + '<option value="">Other (type below)</option></select></div>' +
       '<div><label for="m-period">For month</label><input id="m-period" value="' + esc(thisMonth(D)) + '" placeholder="2026-11" inputmode="numeric"></div>' +
@@ -477,8 +478,9 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
       var t = '<div class="tw"><table><thead><tr><th>List</th><th class="n">Addresses</th><th class="n">New this week</th></tr></thead><tbody>' +
         keys.map(function (k) { return '<tr><td>' + esc(FAMILY[k] || k) + '</td><td class="n">' + num(fam[k]) + '</td><td class="n">' + num(f7[k] || 0) + '</td></tr>'; }).join('');
       var l = part(D, 'lists');
-      if (l.d) t += LISTS.map(function (x) { return '<tr><td>' + esc(x[1]) + '</td><td class="n">' + num(l.d[x[0]] || 0) + '</td><td class="n">' + cant('no join time kept') + '</td></tr>'; }).join('');
-      t += '</tbody></table></div><p>' + num(n.addresses) + ' addresses are on at least one notice or list.</p>';
+      if (l.d) t += LISTS.map(function (x) { return '<tr><td>' + esc(x[1]) + '</td><td class="n">' + num(l.d[x[0]] || 0) + '</td><td class="n"><span class="cant">can\u2019t read</span></td></tr>'; }).join('');
+      t += '</tbody></table></div><p>' + num(n.addresses) + ' addresses are on at least one notice or list.' +
+        (l.d ? ' New this week for the alert and watch lists: ' + cant('those lists keep no join time') + '.' : '') + '</p>';
       if (!l.d) t += '<p>Alert and watch lists: ' + cant(l.why || 'not sent') + '</p>';
       return t;
     });
@@ -649,7 +651,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
       var body;
       if (c.private && !hasTok) body = '<p>' + need() + '</p>';
       else { try { body = c.body(D); } catch (e) { body = '<p>' + cant('this card failed to draw (' + (e && e.message || 'error') + ')') + '</p>'; } }
-      h += '<div class="card" id="c-' + c.id + '"><div class="top"><h2>' + esc(c.title) + '</h2><div class="acts">' +
+      h += '<div class="card' + (c.wide ? ' wide' : '') + '" id="c-' + c.id + '"><div class="top"><h2>' + esc(c.title) + '</h2><div class="acts">' +
         c.acts.map(function (a) { return '<a href="' + esc(a[0]) + '">' + esc(a[1]) + '</a>'; }).join('') + '</div></div>' + body + '</div>';
     });
     $('desk').innerHTML = h + '</div>';

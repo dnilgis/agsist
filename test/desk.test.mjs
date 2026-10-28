@@ -333,7 +333,7 @@ test("in a browser at 390 and 1280: every card, no sideways scroll, no layout sh
       assert.match(ads, /Apex Insurance Group.*Ended Oct 8, 2026/s);
       const sig = await p.textContent("#c-signups");
       for (const s of ["Sitewide bar90", "Town pages20", "Homepage12", "Page asks40", "Imported or added by hand20", "All Daily readers182",
-        "Rain gauge waiting list214", "Monthly land sales62", "County cash rent notice90", "Milk price day10", "Hail alerts4"]) assert.ok(sig.includes(s), s);
+        "Rain gauge waiting list214", "Monthly land sales62", "County cash rent notice90", "Milk price day10", "Hail alerts4can\u2019t read", "those lists keep no join time"]) assert.ok(sig.includes(s), s);
       assert.doesNotMatch(sig, /landsales:|prf:|\d{5}/, "no topic with its place, no ZIP");
       const boards = await p.textContent("#c-boards");
       assert.match(boards, /New this week: 2 elevators added, 1 of them with a board we read/);
@@ -349,6 +349,7 @@ test("in a browser at 390 and 1280: every card, no sideways scroll, no layout sh
       if (process.env.DESK_SHOTS) { fs.mkdirSync(process.env.DESK_SHOTS, { recursive: true }); await p.screenshot({ path: path.join(process.env.DESK_SHOTS, `desk-${width}.png`), fullPage: true }); }
 
       /* mark Barn Co paid */
+      assert.deepEqual(await p.$$eval("#m-slug option", (o) => o.map((x) => x.value)), ["barnco", "apex", ""], "live paid sponsors first, free tests left out");
       await p.selectOption("#m-slug", "barnco");
       await p.fill("#m-amt", "29");
       await p.click('#mark button[type="submit"]');
