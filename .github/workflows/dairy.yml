@@ -58,11 +58,12 @@ jobs:
           python-version: "3.12"
       - name: Install pypdf (fallback if pdftotext is missing)
         run: pip install pypdf==6.20.1
-      # The Order 30 releases read only as pdftotext -layout text (scripts/fetch_order30.py
-      # refuses pypdf's scrambled column order); the Oct 28 probe found no pdftotext on the runner.
-      - name: Install pdftotext
+      # The Order 30 releases read only as -layout text (scripts/fetch_order30.py
+      # refuses pypdf's scrambled column order); the Oct 28 probe found none on the runner.
+      - name: pdftotext
+        timeout-minutes: 5
         continue-on-error: true
-        run: sudo apt-get update -q && sudo apt-get install -y -q poppler-utils && pdftotext -v
+        uses: ./.github/actions/pdftotext
       - name: Selftest
         run: |
           python scripts/fetch_dairy.py --selftest
