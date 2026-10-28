@@ -9,7 +9,7 @@
     "NV",
     "TX"
    ],
-   "active": false,
+   "active": true,
    "start": null,
    "end": null,
    "headline": "Put Your Root Down",
@@ -20,7 +20,7 @@
    "phone": null,
    "logo": null,
    "utm_campaign": "geo-test",
-   "_note": "Oct 28 (Sig): an experiment, not a sold slot. States CA, NV, TX (Oregon dropped). Copy set by Sig Oct 28; no logo file yet, so the ad draws text only. Sig flips active by hand to start and back to end; start and end stay null (no limit). The owner OK'd logo use."
+   "_note": "Oct 28 (Sig): an experiment, not a sold slot. States CA, NV, TX (Oregon dropped). Copy picked by Sig Oct 28; no logo file yet, so the ad draws text only. Sig said start Oct 28: on from the day this merged. Sig switches active back to false to end it; start and end stay null (no limit). The owner OK'd logo use."
   }
  ]
 }

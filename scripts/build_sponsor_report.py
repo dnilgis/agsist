@@ -600,6 +600,17 @@ def main():
         slug, token = s["slug"], s["token"]
         pages = s.get("pages")          # None = every page
         start = s.get("start")
+        # A STATE-TARGETED AD SWITCHED ON BY HAND (Oct 28, 2026: Sig said start
+        # for RootLot; it goes live the day the change merges). Nobody types the
+        # day it first ran, so 'count_from' (the day Sig said start; nothing of
+        # it could run before) is where GA4 is asked from, and the portal's
+        # "live since" is the FIRST DAY WITH DATA, found below. Until a day has
+        # data the counts are 0, never blank and never another ad's.
+        count_from = None
+        if not start and s.get("geo") and s.get("count_from"):
+            ge = geo_entry(s["geo"])
+            if ge and ge.get("active") is True:
+                count_from = start = s["count_from"]
 
         # ══════════════════════════════════════════════════════════════════
         #  NO START DATE MEANS NO NUMBERS, NOT A DEFAULT WINDOW
@@ -675,13 +686,18 @@ def main():
             return {"days": n, "viewable": v, "clicks": c,
                     "ctr": round(100.0 * c / v, 2) if v else None}
 
+        live_since = None
+        if count_from:
+            live_since = next((x["d"] for x in series if x["v"] or x["c"]), None)
         payload = {
             "schema": "agsist-sponsor-report/1",
             "sponsor": s.get("name", slug),
             "slug": slug,
             "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "through": end.isoformat(),
-            "start": start,
+            "start": live_since if count_from else start,
+            "countFrom": count_from,
+            "liveSince": live_since if count_from else start,
             "pages": pages,
             "definitionChanged": DEFINITION_CHANGED,
             "totals": {
@@ -712,7 +728,7 @@ def main():
             else:
                 reg = run_region(VIEWABLE_EVENTS, start, end.isoformat())
                 regc = run_region(CLICK_EVENTS, start, end.isoformat())
-                payload["regionAds"] = region_ads(s, reg, regc, tv, tc, start, end.isoformat())
+                payload["regionAds"] = region_ads(s, reg, regc, tv, tc, payload["liveSince"] or start, end.isoformat())
         f = OUTDIR / ("%s-%s.json" % (slug, token))
         f.write_text(json.dumps(payload, indent=1) + "\n", encoding="utf-8")
         written.append("%s: %d viewable, %d clicks through %s" % (slug, tv, tc, end))

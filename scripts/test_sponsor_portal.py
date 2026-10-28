@@ -309,12 +309,25 @@ def main():
               "%s: the daily sponsor file is not read as its ad" % sp_["slug"])
         # the ad that runs is the ad that was approved, and the counter has its start
         if e.get("active") is True:
-            ap = (sp_.get("approved") or {}).get("proof")
-            check(ap == blk["proof_code"], "%s: a live geo ad carries an approval for its current proof code" % sp_["slug"],
-                  "approved %r, current %r" % (ap, blk["proof_code"]))
-            check(bool(sp_.get("start")), "%s: a live geo ad has its start date in data/sponsors.json (same commit as active)" % sp_["slug"])
+            # A paid ad runs only on an approval for its current words. A free
+            # test whose copy Sig picked himself (RootLot, Oct 28) does not wait
+            # on one; its approve button still works and is still recorded.
+            if not (sp_.get("billing") or {}).get("free_test"):
+                ap = (sp_.get("approved") or {}).get("proof")
+                check(ap == blk["proof_code"], "%s: a live paid geo ad carries an approval for its current proof code" % sp_["slug"],
+                      "approved %r, current %r" % (ap, blk["proof_code"]))
+            cf = sp_.get("count_from")
+            check(bool(sp_.get("start")) or bool(cf and re.match(r"^\d{4}-\d{2}-\d{2}$", cf)),
+                  "%s: a live geo ad has a start date or a count_from day, so its counts have a floor" % sp_["slug"], (sp_.get("start"), cf))
+            check(not (cf and sp_.get("start")), "%s: start and count_from are not both set" % sp_["slug"])
         else:
             check(sp_.get("start") is None, "%s: the ad is off, so the counter has not started" % sp_["slug"])
+    # a geo ad switched on by hand: "live since" is the first day with data, never count_from itself
+    B_ = (ROOT / "scripts" / "build_sponsor_report.py").read_text()
+    check('live_since = next((x["d"] for x in series if x["v"] or x["c"]), None)' in B_,
+          "live since is the first day with data")
+    check('"start": live_since if count_from else start' in B_, "count_from is a floor for the query, never shown as the start")
+    check("Live since " in html and "no full day counted yet" in html, "the portal says live since <date>, or that no full day is counted yet")
     # the same link string as components/geo-sponsor.js withUtm()
     for u, want in (("https://r.example", "https://r.example?"), ("https://r.example/a?b=1", "https://r.example/a?b=1&"),
                     ("https://r.example/a?", "https://r.example/a?"), ("https://r.example/a?b=1&", "https://r.example/a?b=1&")):

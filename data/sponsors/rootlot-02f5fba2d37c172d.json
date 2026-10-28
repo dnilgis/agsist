@@ -16,7 +16,7 @@
  "series": [],
  "byPage": [],
  "creative": {
-  "live": false,
+  "live": true,
   "proof_code": "1486daac",
   "fields": {
    "advertiser": "RootLot",
@@ -131,5 +131,5 @@
   "geo_readers"
  ],
  "licensedStates": null,
- "creativeRefreshed": "2026-10-28T15:02:23+00:00"
+ "creativeRefreshed": "2026-10-28T15:06:47+00:00"
 }

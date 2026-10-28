@@ -31,12 +31,12 @@ const DATA = (o = {}) => ({ sponsors: [Object.assign({}, ENTRY, o)] });
 // the pages draw the shipped RootLot entry, switched on (what readers will see once Sig says start)
 const LIVE = (o = {}) => ({ sponsors: [Object.assign({}, JSON.parse(read("data/geo-sponsors.json")).sponsors.find((x) => x.id === "rootlot"), { active: true }, o)] });
 
-test("the shipped RootLot entry: CA, NV, TX, off, no dates, Sig's copy, no logo, phone or facts", () => {
+test("the shipped RootLot entry: CA, NV, TX, on (Sig said start Oct 28), no dates, Sig's copy, no logo, phone or facts", () => {
   const d = JSON.parse(read("data/geo-sponsors.json"));
   const e = d.sponsors.find((x) => x.id === "rootlot");
   assert.ok(e, "RootLot entry present");
   assert.deepEqual(e.states, ["CA", "NV", "TX"]);
-  assert.equal(e.active, false);
+  assert.equal(e.active, true, "Sig said start, Oct 28");
   assert.equal(e.start, null); assert.equal(e.end, null);
   assert.equal(e.headline, "Put Your Root Down");
   assert.equal(e.body, "Trees and plants shipped direct from the grower.");
@@ -46,10 +46,15 @@ test("the shipped RootLot entry: CA, NV, TX, off, no dates, Sig's copy, no logo,
   assert.equal(e.logo, null); assert.equal(e.phone, null);
   assert.equal(e.utm_campaign, "geo-test");
   assert.doesNotMatch(JSON.stringify(e), /@|\u2014/, "no email, no em dash");
-  for (const st of ["CA", "NV", "TX", "OR", "IA"]) assert.equal(G.choose(d, st, "2026-10-28", false), null, st + ": off until Sig switches it on");
+  for (const st of ["CA", "NV", "TX"]) assert.equal(G.choose(d, st, "2026-10-28", false), e, st + ": live");
+  for (const st of ["OR", "IA"]) assert.equal(G.choose(d, st, "2026-10-28", false), null, st + ": not one of its states");
   for (const st of ["CA", "NV", "TX"]) assert.equal(G.choose(d, st, "2026-10-28", true), e, st + ": the preview shows it");
   for (const st of ["OR", "IA"]) assert.equal(G.choose(d, st, "2026-10-28", true), null, st);
-  assert.equal(G.anyLive(d, "2026-10-28"), false, "no live entry, so no page asks /where");
+  assert.equal(G.anyLive(d, "2026-10-28"), true);
+  // the same entry switched off draws nothing anywhere, and makes no page ask /where
+  const off = { sponsors: [Object.assign({}, e, { active: false })] };
+  for (const st of ["CA", "NV", "TX"]) assert.equal(G.choose(off, st, "2026-10-28", false), null, st + ": off draws nothing");
+  assert.equal(G.anyLive(off, "2026-10-28"), false, "no live entry, so no page asks /where");
   // switched on with null dates it runs any day
   const on = { sponsors: [Object.assign({}, e, { active: true })] };
   for (const day of ["2026-10-28", "2027-06-01", "2030-01-01"]) assert.equal(G.choose(on, "TX", day), on.sponsors[0]);
@@ -276,8 +281,9 @@ test("browser: a CA county rain page draws the ad with no lookup, below the fold
       console.log(`# CLS ${CA_COUNTY} @${w}: total ${c.total.toFixed(4)}, after the ad ${c.afterAd}`);
       await shot(pg, `ca-county-${w}.png`);
       // the shift check is not blind: the same box put at the top of the page is caught
-      await pg.evaluate(() => window.scrollTo(0, 0));
-      await pg.waitForTimeout(300);
+      // (scroll anchoring off, or Chrome hides a shift above the reader's spot by scrolling with it)
+      await pg.evaluate(() => { for (const el of [document.documentElement, document.body]) el.style.overflowAnchor = "none"; window.scrollTo(0, 0); });
+      await pg.waitForTimeout(600);
       await pg.evaluate(() => { const b = document.createElement("div"); b.className = "geo-spon"; b.style.height = "300px"; const m = document.querySelector("main .rc"); m.insertBefore(b, m.firstChild); });
       const caught = await pg.waitForFunction(() => window.__cls.filter((e) => e.byAd).reduce((s, e) => s + e.v, 0) > 0.05, null, { timeout: 4000 }).then(() => true, () => false);
       assert.ok(caught, w + ": a box above the fold would have counted " + JSON.stringify((await cls(pg)).late));
@@ -355,12 +361,18 @@ test("browser: /where IA, a failed and a hung /where, and an other-state page dr
   });
 });
 
-test("browser: the shipped (inactive) file draws nothing and makes no lookup, even on a CA page", { skip, timeout: 120000 }, async () => {
+test("browser: an inactive entry draws nothing and makes no lookup, even on a CA page; the shipped file draws", { skip, timeout: 120000 }, async () => {
   await browserRun(async (browser, port) => {
     for (const path of [CA_COUNTY, "/"]) {
-      const { ctx, pg, log } = await open(browser, port, path, { data: "real", where: { ok: true, region_code: "CA", city: "Fresno", lat: 36, lon: -119 } });
+      const { ctx, pg, log } = await open(browser, port, path, { data: LIVE({ active: false }), where: { ok: true, region_code: "CA", city: "Fresno", lat: 36, lon: -119 } });
       assert.equal(await ad(pg), null, path);
       assert.equal(log.where, 0, path + ": no live entry, no lookup");
+      await ctx.close();
+    }
+    for (const path of [CA_COUNTY, "/"]) {
+      const { ctx, pg } = await open(browser, port, path, { data: "real", where: { ok: true, region_code: "TX", city: "Austin", lat: 30, lon: -97 } });
+      await drawn(pg);
+      assert.ok(await ad(pg), path + ": the shipped entry is live");
       await ctx.close();
     }
     const { ctx, pg } = await open(browser, port, CA_COUNTY, { data: LIVE({ start: "2099-01-01" }) });
@@ -398,9 +410,9 @@ test("browser: excluded pages never load the component, even with a preview flag
   });
 });
 
-test("browser: ?geo-preview=TX shows the shipped inactive entry with copy, counts nothing, asks nothing", { skip, timeout: 120000 }, async () => {
+test("browser: ?geo-preview=TX shows an inactive entry with copy, counts nothing, asks nothing", { skip, timeout: 120000 }, async () => {
   await browserRun(async (browser, port) => {
-    const { ctx, pg, log } = await open(browser, port, "/?geo-preview=TX", { data: "real" });
+    const { ctx, pg, log } = await open(browser, port, "/?geo-preview=TX", { data: LIVE({ active: false }) });
     await drawn(pg);
     const a = await ad(pg);
     assert.ok(a, "preview drawn");
@@ -409,13 +421,13 @@ test("browser: ?geo-preview=TX shows the shipped inactive entry with copy, count
     assert.equal(log.where, 0);
     await shot(pg, "home-preview-390.png");
     await ctx.close();
-    const n = await open(browser, port, "/?geo-preview=OR", { data: "real" });
+    const n = await open(browser, port, "/?geo-preview=OR", { data: LIVE({ active: false }) });
     assert.equal(await ad(n.pg), null, "a preview for a state with no entry draws nothing");
     await n.ctx.close();
   });
 });
 
-test("browser: RootLot's portal: free test muted under its label, ad counts 0 and not started, its states, no errors", { skip, timeout: 120000 }, async () => {
+test("browser: RootLot's portal: free test muted under its label, live with counts 0 until a full day, its states, no errors", { skip, timeout: 120000 }, async () => {
   const conf = JSON.parse(read("data/sponsors.json"));
   const rl = conf.sponsors.find((s) => s.slug === "rootlot");
   assert.ok(rl && /^[0-9a-f]{16}$/.test(rl.token));
@@ -435,9 +447,11 @@ test("browser: RootLot's portal: free test muted under its label, ad counts 0 an
       assert.match(t, /Put Your Root Down/);
       assert.ok(await pg.$("#billing.cp-free .cp-bill.cp-muted"), w + ": billing kept, muted");
       assert.equal(await pg.evaluate(() => [...document.querySelectorAll("#results .cp-kpi-n")].slice(0, 2).map((e) => e.textContent).join(",")), "0,0");
-      assert.match(await pg.textContent("#results"), /not started/);
+      // live since Oct 28, no full day counted yet in the shipped file: zeros, said so, never blank
+      assert.match(await pg.textContent("#results"), /no full day/);
+      assert.match(t, /Live/);
       const reg = await pg.textContent("#states");
-      for (const n of ["California", "Nevada", "Texas", "Everywhere else", "not started", "Readers in your states"]) assert.ok(reg.includes(n), w + ": " + n);
+      for (const n of ["California", "Nevada", "Texas", "Everywhere else", "no full day counted yet", "Readers in your states"]) assert.ok(reg.includes(n), w + ": " + n);
       const aud = JSON.parse(read("data/audience.json"));
       const towns = ((aud.servers || {}).towns || []).filter((x) => ["California", "Nevada", "Texas"].includes(x.region));
       if (towns.length) for (const x of towns) assert.ok(reg.includes(x.city + ", " + x.region), "server town named: " + x.city);

@@ -765,6 +765,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       st = { ok: true, h: 'Live' + (s.dayN > 0 ? ' · day ' + s.dayN : ''),
              p: (s.inTrial ? 'Free period: ' + s.trialLeft + ' day' + (s.trialLeft === 1 ? '' : 's') + ' left, through ' + esc(fmt(s.trialEnd, true)) + '. ' : '') +
                 'Results update every morning, through the end of yesterday.' };
+    } else if (s.live && d.geo) {
+      st = { ok: true, h: 'Live', p: 'Your ad is running. The counts below read 0 until the first full day of data, then fill in every morning, through the end of yesterday.' };
     } else if (s.live) {
       st = { ok: true, h: 'Live', p: 'The start date is being recorded. Your counter begins with it.' };
     } else if (s.approved) {
@@ -817,16 +819,18 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   function results(d, s) {
     var t = d.totals || {};
     var h = '<section class="cp-sec" id="results"><div class="cp-h2"><h2>Results</h2><span class="cp-eyebrow">' +
-      (d.pending ? 'Counting starts with your first ad' : 'Through ' + esc(fmt(d.through, true)) + ' · from GA4') + '</span></div>';
+      (d.pending ? (d.geo && s.live ? 'Live · no full day counted yet' : 'Counting starts with your first ad')
+        : (d.geo ? (d.liveSince ? 'Live since ' + esc(fmt(d.liveSince, true)) + ' · ' : 'Live · no full day counted yet · ') : '') + 'Through ' + esc(fmt(d.through, true)) + ' · from GA4') + '</span></div>';
     if (d.pending) {
       /* A state-targeted sponsor (Sig, Oct 28): before the ad runs its counts read 0 and "not started", never blank. */
       h += '<div class="cp-kpis">' + (d.geo
-        ? kpi('0', 'Viewable impressions', 'not started', true) + kpi('0', 'Clicks', 'not started', true)
+        ? kpi('0', 'Viewable impressions', s.live ? 'live, no full day yet' : 'not started', true) + kpi('0', 'Clicks', s.live ? 'live, no full day yet' : 'not started', true)
         : kpi('-', 'Viewable impressions', 'MRC standard', true) + kpi('-', 'Clicks', 'button + phone', true)) +
         kpi('-', 'Click-through rate', 'clicks ÷ viewable', true) +
         kpi('0', 'Days live', s.start ? 'from ' + esc(fmt(s.start)) : 'starts on day one', true) + '</div>';
       h += '<div class="cp-wait" style="margin-top:.7rem">' +
-        '<div><b>No numbers until your ad runs.</b><span>The alternative is showing you site traffic that was not yours. This page fills in on its own from the first morning.</span></div>' +
+        (d.geo && s.live ? '<div><b>Live, counting.</b><span>Every count reads 0 until the first full day of data. This page fills in on its own from that morning, and says the day it started.</span></div>'
+          : '<div><b>No numbers until your ad runs.</b><span>The alternative is showing you site traffic that was not yours. This page fills in on its own from the first morning.</span></div>') +
         '<div><b>Every morning, through yesterday.</b><span>GA4 keeps adjusting today for hours, so a number here never changes after you have seen it.</span></div>' +
         '<div><b>Check us against your own analytics.</b><span>Every placement sends visitors with its own tagged link, listed below, so each click shows up on your side too.</span></div></div>';
       return h + '</section>';
@@ -1541,7 +1545,9 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var h = '<div class="cp-h2"><h2>Your states</h2><span class="cp-eyebrow">' + esc(names) + '</span></div>';
     /* the ad, by state */
     var rows = ra.rows || [], el = ra.elsewhere || {};
-    var adNote = ra.withheld ? 'withheld' : (ra.pending || d.pending) ? 'not started' : (ra.start && ra.through ? esc(span(ra.start, ra.through)) : '');
+    var on = !!(d.creative && d.creative.live);
+    var adNote = ra.withheld ? 'withheld' : (ra.pending || d.pending) ? (on ? 'live · no full day counted yet' : 'not started')
+      : (ra.start && ra.through ? 'live since ' + esc(span(ra.start, ra.through)) : (on ? 'live · no full day counted yet' : ''));
     var t = '<table class="cp-t cp-reg-t"><thead><tr><th>Where the reader was</th><th class="n">Viewable impressions</th><th class="n">Clicks</th></tr></thead><tbody>';
     if (ra.withheld) t += '<tr><td colspan="3">' + esc(d.withheld || 'Withheld for now.') + '</td></tr>';
     else {
@@ -1552,7 +1558,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       t += '<tr><td>Everywhere else</td><td class="n">' + num(el.viewable || 0) + '</td><td class="n">' + num(el.clicks || 0) + '</td></tr>';
     }
     t += '</tbody></table>';
-    if (ra.pending || d.pending) t += '<p class="cp-note">Not started: your ad has not run yet, so every count is 0. They fill in from the first morning after it goes live.</p>';
+    if ((ra.pending || d.pending || !ra.start) && on && !ra.withheld) t += '<p class="cp-note">Your ad is live. Every count reads 0 until the first full day of data, then fills in each morning, through yesterday.</p>';
+    else if (ra.pending || d.pending) t += '<p class="cp-note">Not started: your ad has not run yet, so every count is 0. They fill in from the first morning after it goes live.</p>';
     else if (!ra.withheld) t += '<p class="cp-note">Everywhere else is readers on a page about your states who were somewhere else, plus visits GA4 could not place.</p>';
     h += card('Your ad, by state', adNote, t);
 

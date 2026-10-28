@@ -30,6 +30,7 @@
    "name": "RootLot",
    "active": true,
    "start": null,
+   "count_from": "2026-10-28",
    "pages": null,
    "token": "02f5fba2d37c172d",
    "approved": null,
@@ -54,5 +55,5 @@
  "billingNote": "'billing' is the deal as agreed, typed here, never inferred. The price comes from data/rate-card.json by tier, so the portal cannot quote a rate the sales page does not. The schedule on the portal (free weeks, first billed week, rate-lock end) is computed from these numbers and 'start'.",
  "contactNote": "No contact or invoice address goes in this file, or in any file in this repo: the site publishes every file here, so a name, phone or email typed here is public. Who to call and where invoices go live with Sig, in his own email, never in the repo. build_sponsor_report.py writes neither to a portal.",
  "licensedNote": "'licensed_states' is the list of states the sponsor can write business in, as two-letter codes (\"WI\", \"MN\", ...), typed from the sponsor's own list. null means nobody has sent one yet, and the portal says it is waiting for it. The audience section marks these states on the map and totals the readers inside them.",
- "geoNote": "A state-targeted sponsor (Oct 28, 2026, RootLot) has 'geo': its id in data/geo-sponsors.json, where its ad lives, and 'regions': the states the ad is aimed at. Its portal is the same page. billing.free_test true marks a free test: the portal shows every part about money muted under 'Free test: no charge'. 'active' here means the portal is built; the ad itself runs only while its geo-sponsors.json entry is active. Set 'start' here the day that entry is switched on, same commit, and record the approval first, as for any sponsor (scripts/test_sponsor_portal.py)."
+ "geoNote": "A state-targeted sponsor (Oct 28, 2026, RootLot) has 'geo': its id in data/geo-sponsors.json, where its ad lives, and 'regions': the states the ad is aimed at. Its portal is the same page. billing.free_test true marks a free test: the portal shows every part about money muted under 'Free test: no charge'. 'active' here means the portal is built; the ad itself runs only while its geo-sponsors.json entry is active. A geo ad switched on by hand carries 'count_from', the day Sig said start (nothing of it could run before): GA4 is asked from that day and the portal shows 'live since' the first day with data, 0 until then. 'start' stays null for it; it is never guessed. A paid geo ad also needs its approval on record before it is switched on; a free test whose copy Sig picked himself does not (scripts/test_sponsor_portal.py)."
 }
