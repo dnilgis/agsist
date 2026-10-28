@@ -10,6 +10,12 @@
      "page": "/rain",
      "name": "County rain pages open with the Rain Print",
      "text": "Each county rain page now shows the year as a Rain Print in the Roots style right under the numbers (Staircase, Up close and Watch it draw are a tap away), in place of the plain running-total chart. The plain chart stays for anyone whose browser does not draw the print."
+    },
+    {
+     "tag": "fixed",
+     "page": "/milk-prices",
+     "name": "Milk prices: Your area no longer jumps the page",
+     "text": "With a saved place, the Your area card used to start short and grow when your area's mailbox price came in, pushing the page down as you read. It now holds its space from the first moment, and the picker shows your area right away."
     }
    ]
   },
