@@ -471,8 +471,14 @@ def _apply_mark(recs, route, b, now_ms):
                 cur["iv"] = iv
             if b.get("quiet") is not True:
                 cur["sent"] = now_ms
-        elif t.startswith("rain-month:") or t.startswith("landsales:") or t == "milk-month":
-            # subs worker v5.54 (rain-month), v5.55 (landsales), v5.58 (milk-month): the month the email was for; it never moves back
+        elif t.startswith("rain-month:") or t.startswith("landsales:"):
+            # subs worker v5.54 (rain-month) and v5.55 (landsales): the month the email was for; it never moves back
+            mo = str(b.get("month") or "")
+            if re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", mo) and (not cur.get("mo") or mo > str(cur.get("mo"))):
+                cur["mo"] = mo
+            cur["sent"] = now_ms
+        elif t == "milk-month":
+            # subs worker v5.58: milk price day keeps the class month mailed the same way
             mo = str(b.get("month") or "")
             if re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", mo) and (not cur.get("mo") or mo > str(cur.get("mo"))):
                 cur["mo"] = mo

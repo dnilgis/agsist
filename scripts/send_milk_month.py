@@ -459,7 +459,9 @@ def selftest():
     ck("components to four places", "protein $2.6619/lb" in txt)
     ck("the miss line, from the log", "settled at $16.30 (CME, Aug 31). The announced price came in $0.26 below that." in txt, txt)
     ck("an Order 30 line for another month is left out", "Federal Order 30" not in txt)
-    ck("no address in any link", "a@example.com" not in re.sub(r"^To: .*$", "", str(msg), flags=re.M).split("\n\n", 1)[-1])
+    htm = msg.get_body(("html",)).get_content()
+    ck("no @ in any link, no address in a text link",
+       not [x for x in email_links.hrefs(htm) if "@" in x or "%40" in x.lower()] and not email_links.bad_links(txt))
     ck("stop link is the milk-month list", "topic=milk-month" in txt)
     ck("no em dash", "—" not in txt and "—" not in str(msg["Subject"]))
 
