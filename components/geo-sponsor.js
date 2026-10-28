@@ -1,4 +1,4 @@
-/* STATE-TARGETED SPONSOR (Sig, Oct 28, 2026; first use RootLot in CA, OR, NV).
+/* STATE-TARGETED SPONSOR (Sig, Oct 28, 2026; first use RootLot in CA, NV, TX).
  *
  * components/loader.js loads this file once its page sponsor check is done
  * and the page has no sold page sponsor; it never loads it where the page
@@ -173,7 +173,7 @@
       if (!where) return;
       var box = doc.createElement('div');
       box.className = 'geo-spon';
-      box.style.cssText = 'margin:1.5rem 0';
+      box.style.cssText = 'margin:1.5rem 0;max-width:760px';
       box.innerHTML = html;
       if (where.mode === 'before') where.el.parentNode.insertBefore(box, where.el); else where.el.appendChild(box);
       if (where.el === rib) rib.hidden = true;

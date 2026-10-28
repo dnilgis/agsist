@@ -4,19 +4,23 @@
   {
    "id": "rootlot",
    "name": "RootLot",
-   "states": ["CA", "OR", "NV"],
+   "states": [
+    "CA",
+    "NV",
+    "TX"
+   ],
    "active": false,
    "start": null,
    "end": null,
-   "headline": null,
-   "body": null,
-   "facts": null,
-   "cta_text": null,
-   "url": null,
+   "headline": "Trees Direct From the Grower",
+   "body": "Browse trees and plants shipped directly from the grower.",
+   "facts": [],
+   "cta_text": "Browse Plants",
+   "url": "https://rootlot.com/shop",
    "phone": null,
    "logo": null,
    "utm_campaign": "geo-test",
-   "_note": "Oct 28 (Sig): an experiment, not a sold slot. Copy, link and logo come from the ChatGPT answer to notes/chatgpt/prompts/2026-10-28-rootlot.md; Sig approves them, then flips active by hand to start and back to end. The owner OK'd logo use."
+   "_note": "Oct 28 (Sig): an experiment, not a sold slot. States CA, NV, TX (Oregon dropped). Copy set by Sig Oct 28; no logo file yet, so the ad draws text only. Sig flips active by hand to start and back to end; start and end stay null (no limit). The owner OK'd logo use."
   }
  ]
 }
