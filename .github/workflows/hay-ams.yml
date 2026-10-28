@@ -52,57 +52,12 @@ jobs:
         run: pip install pypdf==6.20.1
       - name: Selftest
         run: python scripts/fetch_hay_ams.py --selftest
-      - name: TEMP DNS check and ESMIS copies (probe only)
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
-        run: |
-          for h in www.ams.usda.gov mymarketnews.ams.usda.gov marsapi.ams.usda.gov esmis.nal.usda.gov www.usda.gov usda.library.cornell.edu; do
-            getent hosts "$h" >/dev/null && echo "DNS ok: $h" || echo "DNS FAIL: $h"
-          done
-          mkdir -p data/hay-ams-raw/esmis
-          for u in https://esmis.nal.usda.gov/sites/default/release-files/ft84bb300/xk81mg59r/2227pm96c/AMS_3729.PDF https://esmis.nal.usda.gov/sites/default/release-files/kw52j807h/4x51j820j/76537q43x/AMS_2244.PDF; do
-            f=data/hay-ams-raw/esmis/$(basename "$u" .PDF)-esmis.pdf
-            curl -sS -m 60 -L -o "$f" -w "$u HTTP %{http_code} %{size_download}\n" "$u" || true
-            [ -s "$f" ] && head -c 5 "$f" | grep -q '%PDF' && pdftotext -layout "$f" "${f%.pdf}.txt" && head -40 "${f%.pdf}.txt" || rm -f "$f"
-          done
-          getent hosts www.ams.usda.gov >/dev/null || { echo "::error::www.ams.usda.gov does not resolve from the runner; probe skipped"; exit 1; }
       - name: Probe (raw source capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         env:
           SCAN: ${{ inputs.scan }}
         run: |
           if [ -n "$SCAN" ]; then python scripts/fetch_hay_ams.py --probe --scan "$SCAN"; else python scripts/fetch_hay_ams.py --probe; fi
-      - name: TEMP MARS report list (probe only)
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
-        continue-on-error: true
-        env:
-          MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
-        run: |
-          mkdir -p data/hay-ams-raw/mars
-          getent hosts marsapi.ams.usda.gov www.ams.usda.gov mymarketnews.ams.usda.gov || echo "DNS: no answer"
-          [ -n "$MARS_API_KEY" ] && echo "MARS key: set" || echo "MARS key: EMPTY in this repo"
-          curl -sS -m 60 -o data/hay-ams-raw/mars/viewreport-bls-ap.html -w "viewReport/bls-ap HTTP %{http_code}\n" https://mymarketnews.ams.usda.gov/viewReport/bls-ap || true
-          grep -o -i '<title>[^<]*' data/hay-ams-raw/mars/viewreport-bls-ap.html | head -2 || true
-          B=https://marsapi.ams.usda.gov/services/v1.2/reports
-          curl -sS -m 120 -u "$MARS_API_KEY:" "$B" -o data/hay-ams-raw/mars/reports.json || true
-          for s in bls-ap 2246 3729 2243 2244 2245 3723; do
-            curl -sS -m 120 -u "$MARS_API_KEY:" "$B/$s?lastReports=1" -o "data/hay-ams-raw/mars/report-$s.json" || true
-          done
-          python3 - <<'EOF'
-          import json, glob
-          try:
-              d = json.load(open("data/hay-ams-raw/mars/reports.json"))
-          except Exception as e:
-              print("reports list not read:", e); d = []
-          rows = d if isinstance(d, list) else d.get("results") or []
-          print("MARS reports listed:", len(rows))
-          want = {"2246","3729","2243","2244","2245","3723","1215","2046","1917","2713","1860","2167","2039","1703","1825","2528"}
-          for r in rows:
-              blob = json.dumps(r).lower()
-              if str(r.get("slug_id")) in want or "bls" in blob or "retail" in (r.get("report_title") or "").lower():
-                  print("LIST", json.dumps(r)[:600])
-          for f in sorted(glob.glob("data/hay-ams-raw/mars/report-*.json")):
-              print("FILE", f, open(f, "rb").read(1500).decode("utf-8", "replace").replace("\n", " "))
-          EOF
       # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
       # Runs even when the probe step failed part way, so what it did capture is kept. The listing stays on main too: the normal run reads it.
       - name: Save the probe's raw files to the raw branch
