@@ -67,6 +67,11 @@ FLOORS = {
     "bids places to ids":      (0.95, None),      # 248 of 248
     "bids places carry elevId": (0.95, None),     # 253 of 253 on the bids run of Oct 27 21:08 UTC (new writer)
     "basis keys to ids":       (0.998, None),     # 3,556 of 3,559
+    # Added Oct 27 (fx/basisstitch): ids with basis history that join one history (direct: one key, or the
+    # key their live rows write; folded: their own key with the keys of the boards folded into them stitched
+    # on, per the ids ledger). Real run: 2,489 of 2,734 (91.0%; 2,396 before the stitch). Room for a bids
+    # pass that retires a few more ids.
+    "ids to basis history":    (0.90, None),      # 2,489 of 2,734 (123 stitched)
 }
 
 
@@ -237,6 +242,12 @@ def id_sets(root, spine):
         keys += [f"{st}|{fk}" for fk in d.get("f") or []]
     hit = sum(1 for k in keys if k in basis_keys)
     out.append(dict(name="basis keys to ids", keys=len(keys), direct=hit, folded=0, lossy=0, outside=0, missed=len(keys) - hit))
+    # the other way: ids that hold history and join one (scripts/build_basis_join.py; stitched = through the ledger)
+    p = os.path.join(root, "data", "ids", "basis-join", "index.json")
+    if os.path.exists(p):
+        c = read(p).get("counts") or {}
+        wh, jn, sn = c.get("with_history") or 0, c.get("joined") or 0, c.get("stitched") or 0
+        out.append(dict(name="ids to basis history", keys=wh, direct=jn - sn, folded=sn, lossy=0, outside=0, missed=wh - jn))
     return out
 
 
@@ -319,7 +330,12 @@ def selftest():
                                         {"facility": "OTHER", "city": "X", "state": "MO", "elevId": "enobody001"}]})
         put("data/ids/elevator-ids.json", {"retired": {"eold000001": {"into": "e1", "rule": "phone"}}})
         put("data/basis/MO.json", {"state": "MO", "f": ["COOP|TOWN", "GONE|TOWN"]})
+        # the Oct 27 counts: 2,396 joined by one key, 93 of the 151 new multi rejoin by the stitch
+        put("data/ids/basis-join/index.json", {"counts": {"with_history": 2734, "joined": 2489, "stitched": 123, "multi": 245}})
         rows, fails = report(d)
+        ib = {r["name"]: r for r in rows}["ids to basis history"]
+        ck((ib["keys"], ib["direct"], ib["folded"], ib["missed"]) == (2734, 2366, 123, 245) and not any(f.startswith("ids to basis") for f in fails),
+           f"ids to basis history: the stitched ids count as folded: {ib}")
         by = {r["name"]: r for r in rows}
         a = by["arc-plc counties"]
         ck((a["keys"], a["direct"], a["folded"], a["lossy"], a["rate"]) == (3, 1, 2, 1, 1.0),
