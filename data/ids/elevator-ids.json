@@ -1681,7 +1681,8 @@
   },
   "a00401": {
    "first": "basis:OH|THE ANDERSONS|MAUMEE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ekw0aj6bxb"
   },
   "a00402": {
    "first": "basis:OH|THE ANDERSONS|TOLEDO",
@@ -4845,6 +4846,12 @@
    "retire": "evhnnwahq9",
    "into": "ejvw0yf3yr",
    "why": "folded into ejvw0yf3yr by the bids repo (mergedFrom, rule retired)"
+  },
+  {
+   "on": "2026-10-28",
+   "merge": "a00401",
+   "into": "ekw0aj6bxb",
+   "why": "every key now matches that bids-repo row"
   }
  ],
  "keys": {
@@ -7878,7 +7885,7 @@
   "basis:OH|SUNRISE COOPERATIVE|NEW WASHINGTON": "ejvb88n39p",
   "basis:OH|SUNRISE COOPERATIVE|SOUTH CHARLESTON": "ekctad9ye6",
   "basis:OH|SUNRISE COOPERATIVE|UNIOPOLIS": "eb5h8hmez0",
-  "basis:OH|THE ANDERSONS|MAUMEE": "a00401",
+  "basis:OH|THE ANDERSONS|MAUMEE": "ekw0aj6bxb",
   "basis:OH|THE ANDERSONS|METAMORA": "e0rfjpm6p4",
   "basis:OH|THE ANDERSONS|TOLEDO": "a00402",
   "basis:OH|THE FARMERS ELEVATOR GRAIN & SUPPLY ASSN.|FARMERS ELEVATOR": "esa5vzhgft",
@@ -8521,6 +8528,7 @@
   "bids:CHS Dakota Plains Ag||Kindred Terminal|ND": "ekx909698z",
   "bids:CHS River Terminals & Processing Plants||Absolute Energy|IA": "e3704ztyzk",
   "bids:CHS River Terminals & Processing Plants||Fairmont|MN": "ej5703cv24",
+  "bids:CHS River Terminals & Processing Plants||Mankato|MN": "erk5qqma2w",
   "bids:CHS River Terminals & Processing Plants||Savage|MN": "e9afwyjazr",
   "bids:CHS River Terminals & Processing Plants||Winona|MN": "er3a6bgdh9",
   "bids:CHS South Central (North Dakota)||Sterling|ND": "ernytrhb1d",
@@ -8749,6 +8757,11 @@
   "bids:Tama Benton Cooperative||DS-CRG-CR|IA": "ecp080r65b",
   "bids:Tama Benton Cooperative||DS-PEN|IA": "ehk5f6tqkk",
   "bids:Tama Benton Cooperative||DS-SHELLROCK|IA": "ef9cqn0nbg",
+  "bids:The Andersons||Albion|MI": "ervd0hkmkt",
+  "bids:The Andersons||Hemlock|MI": "enhd82fsbx",
+  "bids:The Andersons||Maumee|OH": "ekw0aj6bxb",
+  "bids:The Andersons||Oakley|MI": "eefcmf1tnb",
+  "bids:The Andersons||Oakville|IN": "e3j6w5hdj1",
   "bids:The Equity||Horace|IL": "ec96b6301z",
   "bids:The Equity||Westfield|IL": "e75hbgmwxm",
   "bids:Total Grain Marketing||Arcola|IL": "e7m2vbgas4",
