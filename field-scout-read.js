@@ -1986,7 +1986,7 @@ window.__fsRead = function (FSX) {
           var share = denom ? Math.round(ac/denom*100) : null;
           var tops=(arec.top||[]).slice(0,2).filter(function(x){ return !/NO PREDOMINANT/i.test(x[0]); });
           var chips=tops.map(function(x){ return '<span class="fs-cchip">'+esc(String(x[0]).replace(/\b\w+/g,function(w){return w.charAt(0)+w.slice(1).toLowerCase();}))+' '+Math.round(x[1]).toLocaleString('en-US')+'</span>'; }).join('');
-          html+='<p class="fs-cline">Foreign owners hold <strong>'+Math.round(ac).toLocaleString('en-US')+' ac</strong> in this county'+(share!=null?' ('+share+'% of farmland)':'')+' as of '+aly+'. '+chips+' <a class="fs-act-link" href="/foreign-land" target="_blank" rel="noopener">Who owns the ground &rarr;</a></p>';
+          html+='<p class="fs-cline">Foreign owners hold <strong>'+Math.round(ac).toLocaleString('en-US')+' ac</strong> in this county'+(share!=null?' ('+share+'% of farmland)':'')+' as of '+aly+'. '+chips+' <a class="fs-act-link" href="/farmland-atlas#foreign" target="_blank" rel="noopener">Who owns the ground &rarr;</a></p>';
           FSX.FIELD.county.afida={ acres:ac, year:aly, share:share };
         }
       }
@@ -2016,7 +2016,7 @@ window.__fsRead = function (FSX) {
       var fr=f&&f.crops&&f.crops[cropKey]&&f.crops[cropKey].states&&f.crops[cropKey].states[abbr];
       var r2 = fr&&wk!=null&&fr.weeks&&fr.weeks[wk] ? fr.weeks[wk].r2 : null;
       if(r2!=null){
-        html+='<p class="fs-cline">From the record: this week’s ratings historically explain <strong>~'+Math.round(r2*100)+'% of final yield</strong>, '+(r2<0.35?'the crop is still being made':'ratings are starting to mean something')+'. <a class="fs-act-link" href="/conditions-yield" target="_blank" rel="noopener">What ratings are worth &rarr;</a></p>';
+        html+='<p class="fs-cline">From the record: this week’s ratings historically explain <strong>~'+Math.round(r2*100)+'% of final yield</strong>, '+(r2<0.35?'the crop is still being made':'ratings are starting to mean something')+'. <a class="fs-act-link" href="/conditions#crop-size" target="_blank" rel="noopener">What ratings are worth &rarr;</a></p>';
       }
       html+=csrc('USDA NASS weekly crop condition · week of '+esc(cc.week_ending||'')+' · state-level, ranked against the same week 2000–present');
       FSX.FIELD.county.cond={ ge:srow.ge, pctile:srow.pctile, week:cc.week_ending, r2:r2, crop:cropWord };

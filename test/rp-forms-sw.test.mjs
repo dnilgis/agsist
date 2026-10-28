@@ -72,7 +72,7 @@ test("form-post.js: a refusal the worker means still reaches the page", async ()
 });
 
 test("form-post.js ?v is bumped together on every page that loads it", () => {
-  const pages = ["elevators.html", "list-your-elevator.html", "sponsor-report.html", "farmland-atlas.html", "prf-sponsor.html"];
+  const pages = ["list-your-elevator.html", "sponsor-report.html", "farmland-atlas.html", "prf-sponsor.html"];   // the claim form joined list-your-elevator (Oct 22, 2026)
   const vs = pages.map((p) => (read(p).match(/\/components\/form-post\.js\?v=(\d+)"/) || [])[1]);
   for (let i = 0; i < pages.length; i++) assert.ok(vs[i], pages[i] + " loads form-post.js with a ?v");
   assert.ok(vs.every((v) => Number(v) >= 3), "the 12 second timeout reaches readers past cached copies: " + vs.join(","));
@@ -174,7 +174,7 @@ test("form-post.js: every other caller's kind keeps the Formspree fallback", asy
   const only = Object.keys(formPost(async () => ({})).post.WORKER_ONLY);
   assert.deepEqual(only, ["rain-print-business"], "only the list-carrying kind is worker-only");
   // every kind a page posts through form-post.js: only rain-print-business carries a customer list
-  const callers = ["components/prf-sponsor-page.js", "components/list-elevator.js", "components/rp-business.js", "components/rain-print.js", "elevators.html", "sponsor-report.html"];
+  const callers = ["components/prf-sponsor-page.js", "components/list-elevator.js", "components/rp-business.js", "components/rain-print.js", "components/elevator-claim.js", "sponsor-report.html"];
   const posted = new Set();
   for (const c of callers) for (const m of read(c).matchAll(/send\('([a-z-]+)'/g)) posted.add(m[1]);
   assert.ok(posted.has("rain-print-business") && posted.has("rain-print-order"), [...posted].join(","));

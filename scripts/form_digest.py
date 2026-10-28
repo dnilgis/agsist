@@ -3,7 +3,7 @@
 Site forms digest (2026-10-11): emails Sig what came in through the site's
 own forms (the first three used to go to Formspree).
 
-  elevators.html      claim your board               kind claim
+  list-your-elevator  fix your listing (claim)       kind claim (was elevators.html until Oct 22, 2026)
   sponsor-report.html approval and requests box      kind sponsor-feedback
   farmland-atlas.html Parcel Report waitlist         kind atlas-feedback
   rain-print.html     Rain Print order request       kind rain-print-order (worker v5.9;

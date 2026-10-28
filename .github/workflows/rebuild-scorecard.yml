@@ -65,14 +65,14 @@ jobs:
       - name: Rebuild the scorecard
         run: python scripts/build_scorecard.py
 
-      - name: Bake the numbers into scorecard.html
+      - name: Bake the numbers into usda-calendar.html
         run: python scripts/prerender_wpi_scorecard.py
 
       - name: Commit and push
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/scorecard.json scorecard.html whats-priced-in.html || true
+          git add data/scorecard.json usda-calendar.html || true
           git diff --staged --quiet || git commit -m "Rebuild call scorecard — session-aware grading"
           git pull --rebase origin main
           git push

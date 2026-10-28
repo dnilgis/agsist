@@ -99,7 +99,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '101';
+  var CV = '102';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);

@@ -249,7 +249,7 @@
       "verdict_text": "No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying down."
     },
     "source": "data/predictions.json",
-    "url": "/scorecard"
+    "url": "/usda-calendar#scorecard"
   },
   "chart_series": {
     "corn": [

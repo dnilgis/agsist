@@ -152,4 +152,4 @@ jobs:
       - name: Tell the crawlers
         if: steps.build.outputs.added != '0' && steps.commit.outputs.pushed == '1'
         continue-on-error: true          # a search engine being down is not our outage
-        run: python scripts/indexnow_submit.py --urls https://agsist.com/news https://agsist.com/news.xml
+        run: python scripts/indexnow_submit.py --urls https://agsist.com/daily https://agsist.com/news.xml

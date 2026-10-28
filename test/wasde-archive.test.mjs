@@ -141,11 +141,12 @@ test('the site files have a size cap, and any published copy is under it', () =>
 
 // ---------------------------------------------------------------- the page
 test('whats-priced-in: the section is hidden until history exists, credits USDA, loads its script deferred', () => {
-  const h = read('whats-priced-in.html');
+  // What's priced in is a section of /usda-calendar since the Oct 22 merges (scripts/moved_pages.py)
+  const h = read('usda-calendar.html');
   const at = h.indexOf('<details class="fold" id="how-moved" hidden>');
   assert.ok(at > 0, 'hidden by default');
   const sec = h.slice(at, h.indexOf('</details>', at));
-  assert.match(sec, /<h2>How this estimate moved<\/h2>/);
+  assert.match(sec, /<h3 class="wp-h">How this estimate moved<\/h3>/, 'a heading of its own (h3 inside the section)');
   assert.match(sec, /Source: <a href="https:\/\/esmis\.nal\.usda\.gov\/publication\/world-agricultural-supply-and-demand-estimates"[^>]*>USDA World Agricultural Outlook Board, monthly WASDE reports<\/a> \(USDA ESMIS archive\)/,
     'the credit names the archive the figures are read from');
   assert.match(sec, /data-wh-body/);

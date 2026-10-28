@@ -20,7 +20,7 @@ test("status.html is the redirect stub to the homepage", () => {
   assert.match(s, /<link rel="canonical" href="https:\/\/agsist\.com\/">/);
   assert.match(s, /<meta http-equiv="refresh" content="0; url=\/">/);
   assert.match(s, /location\.replace\("\/"\)/);
-  assert.match(read("scripts/inject_static_nav.py"), /"\/here", "\/status"\)/, "on the nav check's retired list");
+  assert.match(read("scripts/inject_static_nav.py"), /"\/here", "\/status"[,)]/, "on the nav check's retired list");
 });
 
 test("nothing links to /status: chrome, sitemap, llms.txt, search, Next blocks, every page", () => {

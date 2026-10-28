@@ -27,7 +27,8 @@ const DASH = /[–—]|&mdash;|&ndash;/;
 const asksIn = (h) => h.match(/<div data-signup-ask[^>]*><\/div>/g) || [];
 const attr = (a, n) => ((new RegExp(` ${n}="([^"]*)"`)).exec(a) || [])[1];
 
-const WASDE_PAGES = ["usda-calendar", "whats-priced-in", "usda-quick-stats", "crop-tour"];
+// whats-priced-in.html is a forward page to /usda-calendar#priced-in since Oct 22, 2026; its ask lives on the calendar.
+const WASDE_PAGES = ["usda-calendar", "usda-quick-stats", "crop-tour"];
 const COT_PAGES = ["cot", "corn-futures-prices", "soybean-futures-prices", "wheat-futures-prices", "cattle-futures-prices", "cattle-auction-prices"];
 const PAGES = [...WASDE_PAGES.map((p) => [p, "reports", "report:wasde:" + p]), ...COT_PAGES.map((p) => [p, "cot", "cot-weekly:" + p])];
 

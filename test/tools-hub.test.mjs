@@ -95,7 +95,7 @@ test("card text matches the pages it links", () => {
 
 test("Pod counts and Rain by county are in the page body", () => {
   const body = html.slice(html.indexOf('<main'), html.indexOf('<div id="site-footer">'));
-  assert.ok(body.includes('href="/pod-counts"'), "pod counts");
+  assert.ok(body.includes('href="/crop-tour#pod-counts"'), "pod counts");
   assert.ok(body.includes('href="/rain"'), "rain by county");
 });
 
@@ -254,5 +254,5 @@ test("Everything else folds on phones, opens for a matching filter, and counts i
   assert.match(src, /if\(key\|\|words\.length\)\{if\(!more\.hidden\)fold\.open=true;\}else fold\.open=foldDefault;/);
   assert.match(src, /fold\.hidden=more\.hidden/);
   // Pod counts and Rain by county stay in the page body, inside the fold
-  assert.ok(m[1].includes('href="/pod-counts"') && m[1].includes('href="/rain"'));
+  assert.ok(m[1].includes('href="/crop-tour#pod-counts"') && m[1].includes('href="/rain"'));
 });

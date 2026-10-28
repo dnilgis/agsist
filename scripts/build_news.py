@@ -50,6 +50,7 @@ except Exception:                                 # pragma: no cover
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import pricefmt  # noqa: E402  grain price text, the twin of components/util.js AG.px
+from moved_pages import repoint  # noqa: E402  pages merged Oct 22, 2026: links go to the new home
 OUT = os.path.join(ROOT, "data", "news.json")
 KEEP = 200
 
@@ -134,7 +135,7 @@ def item(id_, kind, headline, detail, sig, url, source, ts=None):
     day_only = bool(ts) and len(ts) == 10
     return {
         "id": id_, "kind": kind, "headline": headline, "detail": detail,
-        "significance": sig, "url": url, "source": source,
+        "significance": sig, "url": repoint(url), "source": source,
         "day_only": day_only,
         "ts": (ts + "T12:00:00+00:00") if day_only
               else (ts or datetime.now(timezone.utc).replace(microsecond=0).isoformat()),
@@ -201,7 +202,7 @@ def wasde(out, state, held):
             f"{WASDE_PREFIX}{date}:inline", "usda",
             f"{rpt} printed in line with the trade",
             f"All {n} graded figures landed close to the trade average.{tail}",
-            "notable", "/whats-priced-in", "USDA, graded against the pre-report survey", iso_day(date)))
+            "notable", "/usda-calendar#priced-in", "USDA, graded against the pre-report survey", iso_day(date)))
         return
     if b.get("metric") and b.get("expected") is not None and b.get("actual") is not None:
         unit = (" " + b["unit"]) if b.get("unit") else ""
@@ -212,7 +213,7 @@ def wasde(out, state, held):
             f"Trade looked for {b['expected']}{unit}; USDA printed {b['actual']}{unit}"
             + (f", {b['gap_pct']:+.1f}% versus the survey average{ctx}." if b.get("gap_pct") is not None else ".")
             + f" {inl} of {n} graded figures in line.{tail}",
-            "high", "/whats-priced-in", "USDA, graded against the pre-report survey", iso_day(date)))
+            "high", "/usda-calendar#priced-in", "USDA, graded against the pre-report survey", iso_day(date)))
 
 
 def cot_published(rd):
@@ -737,7 +738,7 @@ def rss(data, limit=40):
            '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
            "  <channel>",
            "    <title>AGSIST Wire: What Just Moved</title>",
-           f"    <link>{SITE}/news</link>",
+           f"    <link>{SITE}/daily</link>",
            "    <description>Dated grain and livestock market events the moment they are "
            "measurable: USDA report surprises, one-year positioning extremes, 52-week highs "
            "and lows, crop rating swings. Measured, not aggregated.</description>",
@@ -746,7 +747,7 @@ def rss(data, limit=40):
            f'    <atom:link href="{SITE}/news.xml" rel="self" type="application/rss+xml"/>']
     for i in items:
         pub = _rfc822(i.get("ts") or "")
-        link = f"{SITE}{i.get('url') or '/news'}"
+        link = f"{SITE}{repoint(i.get('url') or '/daily#moved')}"
         out += ["    <item>",
                 f"      <title>{_x(i.get('headline'))}</title>",
                 f"      <link>{link}</link>",
@@ -1148,6 +1149,12 @@ if __name__ == "__main__":
     if held:
         print(f"::notice title=wire withheld {len(held)}::"
               + "; ".join(held))
+    # Lines kept from earlier runs that still link to a page merged on Oct 22, 2026 are
+    # pointed at its new home, once; that rewrite is a change worth writing.
+    for _i in data.get("items") or []:
+        if isinstance(_i, dict) and repoint(_i.get("url")) != _i.get("url"):
+            _i["url"] = repoint(_i.get("url"))
+            changed = True
     if not changed:
         print(f"news.json: {data['count']} items, nothing new — files left alone")
         raise SystemExit(0)

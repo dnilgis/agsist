@@ -299,20 +299,20 @@ jobs:
           git config user.email "bot@agsist.com"
           # Same shape as cot.yml: our regenerated files are authoritative, so
           # snapshot them, hard-sync to the remote, lay ours back on top.
-          for f in data/cot.json data/cot-history.json data/cot-deep.json data/cot-analysis.json cot.html data/whats-priced-in.json whats-priced-in.html; do
+          for f in data/cot.json data/cot-history.json data/cot-deep.json data/cot-analysis.json cot.html data/whats-priced-in.json usda-calendar.html; do
             mkdir -p "/tmp/keep/$(dirname "$f")"; cp "$f" "/tmp/keep/$f" 2>/dev/null || true
           done
           for i in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            for f in data/cot.json data/cot-history.json data/cot-deep.json data/cot-analysis.json cot.html data/whats-priced-in.json whats-priced-in.html; do
+            for f in data/cot.json data/cot-history.json data/cot-deep.json data/cot-analysis.json cot.html data/whats-priced-in.json usda-calendar.html; do
               [ -f "/tmp/keep/$f" ] && cp "/tmp/keep/$f" "$f"
             done
             git add data/cot.json data/cot-history.json cot.html
             # The report card's positioning line, refreshed above. Guarded the
             # same way: on a run where that step failed these are unchanged,
             # and an unchanged path is not an error.
-            git add data/whats-priced-in.json whats-priced-in.html 2>/dev/null || true
+            git add data/whats-priced-in.json usda-calendar.html 2>/dev/null || true
             # These two do not exist until the deep rebuild has been run once.
             # Unguarded, `git add` on a missing path exits 128 and the commit
             # never happens -- which would mean the first release after this

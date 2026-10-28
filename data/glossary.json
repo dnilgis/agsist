@@ -153,7 +153,7 @@
    "long": "Ending stocks (carryout) are what is left after a year's use and exports. USDA updates its estimate every month in the WASDE. More left over usually weighs on price; less usually supports it.",
    "see": [
     {
-     "href": "/whats-priced-in",
+     "href": "/usda-calendar#priced-in",
      "text": "What's priced in"
     }
    ],
@@ -174,7 +174,7 @@
    "long": "Before a USDA report, news services survey analysts and publish the average guess. Prices tend to react to how far the report lands from that guess, not to the number itself.",
    "see": [
     {
-     "href": "/whats-priced-in",
+     "href": "/usda-calendar#priced-in",
      "text": "What's priced in"
     }
    ]
@@ -398,7 +398,7 @@
    "long": "A nowcast estimates the final number before the final report is out, from the data available so far. On AGSIST each nowcast is labeled as our own estimate, with its method on the page.",
    "see": [
     {
-     "href": "/conditions-yield",
+     "href": "/conditions#crop-size",
      "text": "2026 crop size forecasts"
     }
    ]

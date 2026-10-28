@@ -20,7 +20,7 @@ const RULES = [
   ["gdu-calculator.html", ".gdu-source a"],
   ["fast-facts.html", ".ff-source a"], ["fast-facts.html", ".ff-src-list a"], ["fast-facts.html", ".ff-ans-note a"], ["fast-facts.html", ".ff-meta a"],
   ["usda-calendar.html", ".cal-foot a"],
-  ["crop-tour.html", ".ct-note a"], ["pod-counts.html", ".ct-note a"],
+  ["crop-tour.html", ".ct-note a"],   // pod counts is a section of crop-tour.html since Oct 22, 2026
   ["changelog.html", ".cl-note a"],
   ["breakeven.html", ".yr-note a"], ["breakeven.html", ".ln-src a"], ["breakeven.html", ".be-budget-note a"],
   ["comp-report.html", ".cr-held a"], ["field-report.html", ".frp-err a"],
@@ -30,8 +30,9 @@ const RULES = [
   ["fertilizer.html", ".fert-source a"],
   ["planting-date.html", ".pd-source a"],
   ["tariffs.html", ".tariff-source a"], ["tariffs.html", ".tt-meta a"], ["tariffs.html", ".cn-src a"], ["tariffs.html", ".tariff-wi-mn a"],
-  ["whats-priced-in.html", ".wp-nums .src a"], ["whats-priced-in.html", ".wp-res-foot a"], ["whats-priced-in.html", ".wp-last a"],
-  ["whats-priced-in.html", ".wp-farmbox a"], ["whats-priced-in.html", ".as-legend a"],
+  // What's priced in is a section of the USDA calendar since Oct 22, 2026
+  ["usda-calendar.html", ".wp-nums .src a"], ["usda-calendar.html", ".wp-res-foot a"], ["usda-calendar.html", ".wp-last a"],
+  ["usda-calendar.html", ".wp-farmbox a"], ["usda-calendar.html", ".as-legend a"],
   ["yield-estimator.html", ".ye-source a"],
   ["milk-prices.html", ".dp-sources a"],
   ["cash-bids/iowa/adair.html", ".cbt-note a"], ["cash-bids/iowa/adair.html", ".cbt-sub a"],

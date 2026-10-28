@@ -184,7 +184,7 @@ def moved_html(crop, wasde, wpi, harvest, progress, today):
         src.append("NASS Crop Progress" + ("; 5-yr avg is AGSIST's arithmetic on the NASS weeks" if "5-yr avg" in t else ""))
     return ('<p class="moved-line" id="moved-line"><b>Latest from USDA:</b> ' + H.escape(t, quote=False)
             + ' <span class="ml-src">Sources: ' + H.escape(", ".join(src), quote=False)
-            + '. <a href="/whats-priced-in">Report track record</a></span></p>')
+            + '. <a href="/usda-calendar#track-record">Report track record</a></span></p>')
 
 
 def load(path):

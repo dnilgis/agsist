@@ -34,7 +34,7 @@ AGSIST Cash Bid Index, October 1 to 15, 2026, partial month, counted from the el
 - [Cash Bids by Elevator Company](https://agsist.com/cash-bids/company/): every elevator company with 3 or more network locations, today's bids at all its locations on one page
 - [Bids and Basis by State](https://agsist.com/cash-bids/iowa/): each state's best bids, median corn and soybean basis with the number of elevators behind it, and every elevator's bid, at /cash-bids/<state>/
 - [Cash Bids by Town](https://agsist.com/cash-bids/iowa/des-moines): each town's nearest-delivery corn and soybean bid and basis, the elevator and the date it posted, at /cash-bids/<state>/<town>
-- [Basis by State and vs Normal](https://agsist.com/basis): your state's median corn and soybean basis, USDA regions against their own 5-year same-week normal, barge rates, and this fall's grain vs bin space
+- [Bids and Basis by State](https://agsist.com/basis): your state's median corn and soybean basis, every state with a current bid and how many elevators and towns have one, USDA regions against their own 5-year same-week normal, barge rates, and this fall's grain vs bin space
 - [Grain on the Move](https://agsist.com/grain-transport): weekly barge rates, BNSF and UP shuttle railcar bids, grain tons through Lock 27, grain car orders past due and Gulf vs PNW ocean freight, each against its 5-year normal, and how basis has moved with freight in river and rail regions
 - [Corn Futures](https://agsist.com/corn-futures-prices): CBOT corn with 52-week and 5-year context
 - [Soybean Futures](https://agsist.com/soybean-futures-prices): CBOT soybeans with 52-week and 5-year context
@@ -42,31 +42,25 @@ AGSIST Cash Bid Index, October 1 to 15, 2026, partial month, counted from the el
 - [Cattle Futures](https://agsist.com/cattle-futures-prices): live and feeder cattle, the feeder/live ratio and a cost-of-gain break-even
 - [Milk Prices](https://agsist.com/milk-prices): Class III and IV, cheese and butter, and the component formula behind the milk check
 - [Markets](https://agsist.com/markets): grains, livestock, milk, energy and metals in one view
-- [For Elevators](https://agsist.com/elevators): the map of every elevator AGSIST tracks, and how an elevator claims its board
-- [List Your Elevator](https://agsist.com/list-your-elevator): how an elevator not on AGSIST yet asks to be added, and the ways to send its bids: a bid sheet, the posting page, or a link to its own board
+- [List Your Elevator](https://agsist.com/list-your-elevator): how an elevator posts its own bids free (a bid sheet, the posting page, or a link to its own board), how a listed elevator fixes its name, town or phone, and the map of every elevator AGSIST tracks
 
 ## What will USDA say, and what moves the price?
 
-- [USDA Report Calendar](https://agsist.com/usda-calendar): every USDA report date
-- [What's Priced In](https://agsist.com/whats-priced-in): trade expectations before each USDA report, and how each report graded against them
+- [USDA Report Calendar](https://agsist.com/usda-calendar): every USDA report date; what the trade expects before each big report and how each one graded against it; and the prediction bot scorecard, a fixed rule calling corn, soybeans, Chicago and KC wheat higher or lower about four weeks out, every call graded by code, the backtest kept apart from the live record
 - [USDA Crop Data by State](https://agsist.com/usda-quick-stats): yields, acres, production and prices by state for corn, soybeans and wheat, from USDA NASS
 - [Yield by Year, by State](https://agsist.com/yield/iowa): each state's corn and soybean yield by year since 2010, at /yield/<state>
 - [Fund Positioning (COT)](https://agsist.com/cot): weekly CFTC managed-money positioning for 11 ag markets, and whether positioning has predicted price
-- [Prediction Bot Scorecard](https://agsist.com/scorecard): a fixed statistical rule calls whether corn, soybeans, Chicago and KC wheat close higher or lower about four weeks out, one call per crop for each weekly CFTC report, every call graded by code against Yahoo Finance daily closes, with the backtest kept apart from the live record
 - [Tariff Tracker](https://agsist.com/tariffs): current tariff rates on US corn, soybean, wheat and pork exports
 
 ## How big is this crop?
 
-- [2026 Crop Size: Every Forecast](https://agsist.com/conditions-yield): every US corn and soybean yield forecast side by side: USDA, the Pro Farmer tour, private estimates and AGSIST's ratings model
-- [Pro Farmer Crop Tour](https://agsist.com/crop-tour): the tour's state results and national estimate, set against USDA's, with the tour's record since 2015
-- [Crop Conditions Ranked](https://agsist.com/conditions): each state's good-to-excellent share ranked against the same week of every year USDA rated it
-- [Do Pod Counts Predict Soybean Yield?](https://agsist.com/pod-counts): what 28 state-years of crop tour pod counts actually predict
+- [Pro Farmer Crop Tour](https://agsist.com/crop-tour): the tour's state results and national estimate, set against USDA's, with the tour's record since 2015, and what 28 state-years of its soybean pod counts actually predict
+- [Crop Conditions and Crop Size](https://agsist.com/conditions): each state's good-to-excellent share and harvest pace ranked against the same week of every year USDA rated it, and every 2026 corn and soybean yield forecast side by side: USDA, the Pro Farmer tour, private estimates and AGSIST's ratings model
 - [Yield Estimator](https://agsist.com/yield-estimator): corn ear counts and soybean pod counts turned into bushels per acre
 
 ## What's happening in my fields?
 
-- [Hail Map](https://agsist.com/hail-map): did it hail at your place: NWS hail reports, radar-estimated swaths, warnings, free hail alerts, and county rankings
-- [Hail Storm Log](https://agsist.com/hail/): one page per significant US hail day, at /hail/YYYY-MM-DD
+- [Hail Map](https://agsist.com/hail-map): did it hail at your place: NWS hail reports, radar-estimated swaths, warnings, free hail alerts, county rankings, and the storm log, one page per significant US hail day at /hail/YYYY-MM-DD
 - [Hail by State](https://agsist.com/hail-map/iowa): each state's hail counties, peak months and storm days, at /hail-map/<state>
 - [Spray Conditions](https://agsist.com/spray): can I spray today, by the hour, plus a tank-mix calculator
 - [Urea Volatilization Risk](https://agsist.com/urea): nitrogen loss risk for surface-applied urea in the days ahead
@@ -112,7 +106,7 @@ AGSIST Cash Bid Index, October 1 to 15, 2026, partial month, counted from the el
 
 - [Custom Farm Rates by State](https://agsist.com/custom-rates): what hired combining, planting, spraying, tillage, hauling and baling cost, as each state's university or state survey published it (average, range, unit, survey year, link): Iowa, Kansas, Nebraska, North Dakota, Wisconsin, Indiana, Ohio, Missouri, Oklahoma; one page per state at /custom-rates/<state>
 - [Cash Rent by State](https://agsist.com/rent/): USDA county cash rent for every published state, one page per state at /rent/<state>
-- [Farmland Atlas](https://agsist.com/farmland-atlas): every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>
+- [Farmland Atlas](https://agsist.com/farmland-atlas): every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>, and foreign-held farmland by state, county and holder country from USDA AFIDA filings since 2010
 - [Illinois Farmland Sale Index](https://agsist.com/farmland-index): what Illinois farm ground sold for each quarter since 2018, from the state's PTAX-203 sale declarations: arm's-length bare-land sales of 20+ acres, county mix and tract size held fixed, 2018 = 100, with 90% ranges, the latest quarter marked provisional, USDA NASS cropland value as a separate line, county medians by year, price-to-rent multiples and buyer-type shares; no names
 - [Farmland Sales by County](https://agsist.com/land-sales/): recorded farm sales in every Illinois, Wisconsin and Indiana county from the state transfer and sales disclosure records (date, township, acres, price, price per acre), one page per county at /land-sales/<state>/<county>, a monthly update at /land-sales/<YYYY-MM> (biggest buyers, biggest sales, unusual prices against the county's usual, best value per acre) and a table of where each state's sales come from; no names in the pages
 - [Compare Counties](https://agsist.com/farmland-atlas/compare): up to three counties side by side
@@ -126,13 +120,10 @@ AGSIST Cash Bid Index, October 1 to 15, 2026, partial month, counted from the el
 - [LRP Record and Tests](https://agsist.com/lrp/record): the 95-100% coverage record per $100 of coverage on every RMA sales day since July 2013; 36 walk-forward tests of lower coverage levels and a best-so-far rule under one Holm family, none kept; each test year by year; the method, gaps and subsidy table
 - [Farm Bill](https://agsist.com/farm-bill): what the 2026 farm bill fight changes for a farm, where it stands, and where the money goes
 - [Cash Farm Lease](https://agsist.com/cash-lease): a fillable, printable plain-English cash lease with state termination notes
-- [Foreign-Owned Farmland](https://agsist.com/foreign-land): USDA AFIDA disclosures mapped by county
 
 ## Every morning
 
-- [AGSIST Daily](https://agsist.com/daily): today's morning briefing
-- [Briefing Archive](https://agsist.com/archive): every past briefing, by month, at /daily/YYYY-MM-DD
-- [The Wire](https://agsist.com/news): dated market events the moment they are measurable: USDA surprises, positioning extremes, 52-week highs and lows
+- [AGSIST Daily](https://agsist.com/daily): today's morning briefing; what just moved: dated market events the moment they are measurable (USDA surprises, positioning extremes, 52-week highs and lows); and every past briefing, by month with a search, each at /daily/YYYY-MM-DD
 - [AGSIST Homepage](https://agsist.com/): today's prices, the briefing, local bids, weather and the farm and trade odds board
 
 ## About this site
