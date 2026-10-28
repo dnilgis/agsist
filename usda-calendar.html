@@ -29,7 +29,7 @@
   <meta property="og:title"        content="WASDE &amp; USDA Report Dates 2026: Next WASDE Nov 10 | AGSIST">
   <meta property="og:description"  content="Next USDA crop report: WASDE and Crop Production, Tuesday, Nov 10, 2026, at noon ET (11 a.m. CT). Crop Progress Mondays 4 p.m. ET. Every date on one calendar.">
   <meta property="og:url"          content="https://agsist.com/usda-calendar">
-  <meta property="og:image"        content="https://agsist.com/img/og/usda-calendar.jpg?v=1f767c98">
+  <meta property="og:image"        content="https://agsist.com/img/og/usda-calendar.jpg?v=f5ee8e39">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt"    content="The next WASDE report is Tuesday, Nov 10, 2026, at noon Eastern.">
@@ -38,7 +38,7 @@
   <meta name="twitter:creator"     content="@agsist">
   <meta name="twitter:title"       content="WASDE &amp; USDA Report Dates 2026: Next WASDE Nov 10 | AGSIST">
   <meta name="twitter:description" content="Next USDA crop report: WASDE and Crop Production, Tuesday, Nov 10, 2026, at noon ET (11 a.m. CT). Crop Progress Mondays 4 p.m. ET. Every date on one calendar.">
-  <meta name="twitter:image"       content="https://agsist.com/img/og/usda-calendar.jpg?v=1f767c98">
+  <meta name="twitter:image"       content="https://agsist.com/img/og/usda-calendar.jpg?v=f5ee8e39">
 
   <script type="application/ld+json">
   {
@@ -258,7 +258,7 @@
         <div class="cal-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> USDA REPORT SCHEDULE</div>
         <h1 class="cal-h1">USDA Report <span>Calendar</span></h1>
         <p class="cal-sub page-lede">Every USDA report date and release time, and which ones tend to move corn and soybeans. Brazil and Canada crop reports are listed too.</p>
-        <p class="cal-next-wasde"><!--BAKE:next-wasde--><strong>Next WASDE: Tuesday, Nov 10, 2026, at noon ET (11 a.m. CT).</strong> 2026 WASDE dates: Jan 12, Feb 10, Mar 10, Apr 9, May 12, Jun 11, Jul 10, Aug 12, Sep 11, Oct 9, Nov 10, Dec 10.<!--/BAKE--> WASDE is USDA&rsquo;s monthly world supply and demand estimate, the report that most often moves grain prices.</p>
+        <p class="cal-next-wasde"><!--BAKE:next-wasde--><strong>Next WASDE: Tuesday, Nov 10, 2026, at noon ET (11 a.m. CT).</strong> 2026 WASDE dates: Jan 12, Feb 10, Mar 10, Apr 9, May 12, Jun 11, Jul 10, Aug 12, Sep 11, Oct 9, Nov 10, Dec 10. 2027 WASDE dates: Jan 12, Feb 10, Mar 10, Apr 9, May 12, Jun 11, Jul 9, Aug 12, Sep 10, Oct 8, Nov 10, Dec 10.<!--/BAKE--> WASDE is USDA&rsquo;s monthly world supply and demand estimate, the report that most often moves grain prices.</p>
         <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.4rem 0 0">Dates: USDA NASS, WASDE and ESMIS release calendars, linked at the bottom.</p>
       </div>
       <div class="cal-countdown" aria-live="polite">
@@ -472,6 +472,22 @@
     /* NASS 2026 Agricultural Statistics Board calendar (PDF, fetched 2026-10-16): Crop Production
        on Thu Dec 10, a noon Principal Federal Economic Indicator release, beside the WASDE. */
     {date:'2026-12-10',name:'Crop Production',type:'supply',time:'12:00 PM ET',desc:'December crop production update (cotton and other late crops), NASS'},
+    /* 2027 WASDE dates, read 2026-10-27 from USDA's WASDE page
+       (usda.gov/about-usda/general-information/staff-offices/office-chief-economist/commodity-markets/wasde-report),
+       all at 12:00 p.m. ET; the same twelve were read there on 2026-10-24. Same table as
+       scripts/usda_dates.py WASDE_2027. The other 2027 NASS reports are not posted yet and are not guessed. */
+    {date:'2027-01-12',name:'WASDE',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2027-02-10',name:'WASDE',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2027-03-10',name:'WASDE',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2027-04-09',name:'WASDE',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2027-05-12',name:'WASDE',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2027-06-11',name:'WASDE',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2027-07-09',name:'WASDE',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2027-08-12',name:'WASDE',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2027-09-10',name:'WASDE',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2027-10-08',name:'WASDE',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2027-11-10',name:'WASDE',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2027-12-10',name:'WASDE',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
     /* Added 2026-10-27: 2026 releases that were missing (outside check of Oct 24). Every date is from
        NASS's own 2026 Agricultural Statistics Board Calendar (PDF, nass.usda.gov/Publications/Calendar/2026/,
        copy fetched 2026-10-16), each on the weekday its column says. Jan 12 lists Crop Production and the
@@ -700,13 +716,21 @@
 
     const tagLabels={wasde:'WASDE',croprog:'Crop Progress',plantings:'Plantings',stocks:'Grain Stocks',census:'Census',supply:'Crop Production',outlook:'Outlook',export:'Export Sales',intl:'International',fsa:'FSA Signup',livestock:'Livestock'};
     const JAN_KEY='2027-01', JAN_PENDING=!REPORTS.some(r=>r.date.slice(0,7)===JAN_KEY)&&['all','wasde','supply','stocks'].indexOf(activeFilter)>=0;
+    /* 2026-10-27: the 2027 WASDE dates are posted, the 2027 NASS dates are not. January then shows its
+       WASDE row and says the Crop Production summary and Grain Stocks dates are still to come. */
+    const JAN_NASS_PENDING=!REPORTS.some(r=>r.date.slice(0,7)===JAN_KEY&&(r.type==='supply'||r.type==='stocks'))&&['all','supply','stocks'].indexOf(activeFilter)>=0;
     let html='';
     /* JANUARY 2027 IS NOT POSTED YET (checked 2026-10-15). Say so in its place
        rather than jump from December to March, and never guess the dates. */
     const monthKeys=Object.keys(groups);
-    if(JAN_PENDING&&monthKeys.indexOf(JAN_KEY)<0)monthKeys.push(JAN_KEY);
+    const JAN_NASS_NOTE='<p class="cal-jan-note" id="cal-jan-note">USDA NASS has not posted its 2027 report dates yet. The Crop Production annual summary and the Dec 1 Grain Stocks also come out in January; their dates go here once NASS posts them.</p>';
+    if((JAN_PENDING||JAN_NASS_PENDING)&&monthKeys.indexOf(JAN_KEY)<0)monthKeys.push(JAN_KEY);
     monthKeys.sort().forEach(key=>{
       const[yr,mo]=key.split('-').map(Number);
+      if(key===JAN_KEY&&!groups[key]&&!JAN_PENDING){
+        html+=`<div class="cal-month" data-month="${key}"><div class="cal-month-head"><span class="cal-mname">${MONTHS[mo-1]} ${yr}</span><span class="cal-mcount">DATES NOT POSTED</span></div>`+JAN_NASS_NOTE+'</div>';
+        return;
+      }
       if(key===JAN_KEY&&!groups[key]){
         html+=`<div class="cal-month" data-month="${key}"><div class="cal-month-head"><span class="cal-mname">${MONTHS[mo-1]} ${yr}</span><span class="cal-mcount">DATES NOT POSTED</span></div>`
           +'<p class="cal-jan-note" id="cal-jan-note">USDA has not posted its 2027 report dates yet. January is usually the biggest report day of the winter: the January WASDE, the annual Crop Production summary and the Dec 1 Grain Stocks. The dates go here once USDA posts them.</p></div>';
@@ -751,6 +775,7 @@
   </div>
 </div>`;
       });
+      if(key===JAN_KEY&&JAN_NASS_PENDING)html+=JAN_NASS_NOTE;
       html+='</div>';
     });
     if(!html){html='<div class="cal-empty">No upcoming '+(activeFilter==='all'?'reports':((tagLabels[activeFilter]||activeFilter)+' reports'))+'. <button type="button" class="cal-empty-btn" onclick="document.getElementById(\'toggle-past\').click()">Show past reports</button></div>';}

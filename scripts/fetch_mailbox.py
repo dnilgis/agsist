@@ -139,6 +139,12 @@ def parse(text, today):
         for fld, base in (("prev_month_change", last), ("year_ago_change", yago)):
             if out[fld] is not None and abs((value - base) - out[fld]) > 0.011:
                 return None, "%s %+.2f disagrees with the table (%.2f vs %.2f)" % (fld, out[fld], value, base)
+        # 2026-10-28 (dairy board B1): the same row prints last month and a year
+        # ago as figures; keep them, so history grows by three points a report
+        # instead of one (compose adds them only where history has no figure).
+        if RANGE[0] <= last <= RANGE[1] and RANGE[0] <= yago <= RANGE[1]:
+            out["table_prev"] = {"month_key": ikey(prev), "value": last}
+            out["table_year_ago"] = {"month_key": ikey(kidx(key) - 12), "value": yago}
     return out, None
 
 
@@ -237,6 +243,13 @@ def compose(existing, parsed, err, now_iso, areas=None):
             doc["status"] = {"ok": False, "note": note, "checked": now_iso}
             return (doc if existing else None), bool(existing), note
     hist[parsed["month_key"]] = parsed["value"]
+    # last month and a year ago, as the report's own table prints them; a month
+    # history already holds is never rewritten
+    for fld in ("table_prev", "table_year_ago"):
+        tp = parsed.get(fld)
+        if isinstance(tp, dict) and isinstance(tp.get("value"), (int, float)) and tp.get("month_key") \
+                and tp["month_key"] not in hist:
+            hist[tp["month_key"]] = tp["value"]
     doc.update({k: parsed[k] for k in ("month", "month_key", "value", "prev_month_change", "year_ago_change")})
     doc["history"] = dict(sorted(hist.items()))
     doc["source"] = "USDA AMS Mailbox Milk Price Report (MMN 3357)"
@@ -335,7 +348,9 @@ def selftest():
     r, why = parse(real, datetime.date(2026, 10, 15))
     ck("real report: June 2026 $20.18, down $0.25 from May, down $0.37 from June 2025",
        r == {"month": "June 2026", "month_key": "2026-06", "value": 20.18,
-             "prev_month_change": -0.25, "year_ago_change": -0.37}, r or why)
+             "prev_month_change": -0.25, "year_ago_change": -0.37,
+             "table_prev": {"month_key": "2026-05", "value": 20.43},
+             "table_year_ago": {"month_key": "2025-06", "value": 20.55}}, r or why)
     ck("real report: the table's month and its All Federal Order Areas row agree",
        parse(real.replace("All Federal Order Areas *\n20.55\n20.43\n20.18", "All Federal Order Areas *\n20.55\n20.43\n20.28"),
              datetime.date(2026, 10, 15))[0] is None)
@@ -364,9 +379,14 @@ def selftest():
     ck("a newer month without readable areas drops the old month's areas", "areas" not in doc2)
     held_mar = {"month": "March 2026", "month_key": "2026-03", "value": 18.84, "history": {"2026-03": 18.84}}
     doc, wrote, note = compose(held_mar, r, None, "2026-10-15T16:23:00Z")
-    ck("real report over the held March figure: June written, only the newest month added to history",
+    ck("real report over the held March figure: June written, with May and June 2025 from the report's own table",
        wrote and doc["month_key"] == "2026-06" and doc["value"] == 20.18
-       and doc["history"] == {"2026-03": 18.84, "2026-06": 20.18} and doc["status"]["ok"], doc)
+       and doc["history"] == {"2025-06": 20.55, "2026-03": 18.84, "2026-05": 20.43, "2026-06": 20.18}
+       and doc["status"]["ok"], doc)
+    held_may = {"month_key": "2026-05", "value": 20.40, "history": {"2026-05": 20.40}}
+    docm, _, _ = compose(held_may, dict(r, prev_month_change=None), None, "2026-10-15T16:23:00Z")
+    ck("a month history already holds is not rewritten from the table", docm["history"]["2026-05"] == 20.40, docm)
+    ck("the table months stay out of the doc itself", "table_prev" not in doc and "table_year_ago" not in doc, doc)
 
     today = datetime.date(2026, 6, 1)
     p, why = parse(FEB, today)

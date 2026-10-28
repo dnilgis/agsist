@@ -2232,7 +2232,7 @@ def milk_seeds(d, today):
                     f"{'up ' if e2 > 0 else 'down '}{_cwt(abs(e2))} from a year earlier" if e2 else "unchanged from a year earlier")
             seeds["milkvam"] = (f'<li><span class="n">{MON3[aidx % 12]}</span>'
                                 f'<span id="dp-v-jul">{s}. It is paid before hauling.</span></li>')
-            seeds["milkexample"] = milk_example(v, alab)
+            seeds["milkcostfaq"] = milk_cost_faq(v, alab, a.get("year_ago"))
     if cs and am_cell is None:
         am_cell = ('<div class="dp-cell"><span class="dp-cell-name">All-milk price</span>'
                    '<span class="dp-cell-val" id="am-val">-</span><span class="dp-cell-chg dp-flat" id="am-chg"></span>'
@@ -2298,6 +2298,217 @@ def milk_mailbox_seeds(mb, today):
     return {"milkmbli": f'<li><span class="n">{sh}</span><span id="dp-v-mb">{li_txt}</span></li>',
             "milkmbcell": cell, "milkmbrow": row, "milkmbareas": milk_mailbox_areas(mb, idx, behind),
             "milkmbfaq": faq}
+
+
+# --- DMC signup, from data/farm-bill.json -------------------------------------
+# 2026-10-28 (dairy board, item 1): the page said "2026 enrollment already
+# closed (Feb 26)" while the 2027 signup ran Oct 5 to Dec 18, 2026. The window
+# now comes from farm-bill.json (byOperation.dairy.signup), the same file the
+# /farm-bill page reads, and the words follow the run date: opens, open with
+# days to go, or closed. The page script recounts the days from the data-
+# attributes, so a day-old bake never shows yesterday's count.
+MILK_FB_DATA = "data/farm-bill.json"
+DMC_WKDAY = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+
+def _dmc_date(s):
+    try:
+        return datetime.strptime(str(s or ""), "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
+def _dmc_md(dt, year=True):
+    return f"{MON3[dt.month - 1]} {dt.day}" + (f", {dt.year}" if year else "")
+
+
+def milk_dmc_state(fb, today):
+    """{open, close, year, src, link, phase, days} for the DMC signup in the
+    farm-bill file, or None when the file does not carry a usable window."""
+    op = ((fb or {}).get("byOperation") or {}).get("dairy") or {}
+    su = op.get("signup") if isinstance(op.get("signup"), dict) else None
+    if not su:
+        return None
+    o, c = _dmc_date(su.get("open")), _dmc_date(su.get("close"))
+    t = _dmc_date(today)
+    yr = su.get("year")
+    if not (o and c and t and o <= c and isinstance(yr, int)):
+        return None
+    srcs = ((fb or {}).get("byOperation") or {}).get("_sources") or {}
+    phase = "before" if t < o else "after" if t > c else "open"
+    return {"open": o, "close": c, "year": yr, "src": srcs.get(su.get("src"), ""),
+            "phase": phase, "days": (c - t).days}
+
+
+def milk_dmc_words(st):
+    """The one status sentence, the page script's dmcWords() word for word."""
+    o, c, yr = st["open"], st["close"], st["year"]
+    if st["phase"] == "before":
+        return f"{yr} DMC signup opens {DMC_WKDAY[o.weekday()]}, {_dmc_md(o)}, and runs to {_dmc_md(c)}."
+    if st["phase"] == "after":
+        return f"The {yr} DMC signup closed {_dmc_md(c)}."
+    n = st["days"]
+    left = ("Today is the last day." if n == 0 else "1 day left." if n == 1 else f"{n} days left.")
+    return f"{yr} DMC signup is open now, to {DMC_WKDAY[c.weekday()]}, {_dmc_md(c)}, at your FSA office. {left}"
+
+
+def milk_dmc_seeds(fb, today):
+    st = milk_dmc_state(fb, today)
+    if not st:
+        return {}
+    words = milk_dmc_words(st)
+    src = f' <span class="dp-dmc-src">Source: {st["src"]}.</span>' if st["src"] else ""
+    attrs = (f' data-open="{st["open"].isoformat()}" data-close="{st["close"].isoformat()}"'
+             f' data-year="{st["year"]}"')
+    lever = (f'<span class="dp-dmc-now" id="dp-dmc-lever"{attrs}>{words}</span>'
+             + (" Farms that took the one-time "
+                "lock-in through 2031 at the 2026 signup keep that coverage at a 25% premium discount."
+                if st["phase"] != "after" else ""))
+    card = (f'<p class="dp-dmc-line"><strong id="dp-dmc-words"{attrs}>{words}</strong>{src}</p>')
+    # the other dairy lines /farm-bill carries (forward pricing paused, Jan 1),
+    # word for word with their sources; a line with "until" drops on that date
+    op = fb["byOperation"]["dairy"]
+    srcs = fb["byOperation"].get("_sources") or {}
+    t = _dmc_date(today)
+    more = []
+    for ln in op.get("lines") or []:
+        if not isinstance(ln, dict) or not ln.get("t") or "DMC signup" in ln["t"]:
+            continue
+        u = _dmc_date(ln.get("until"))
+        if u and t >= u:
+            continue
+        s = srcs.get(ln.get("src"), "")
+        tail = f' <span class="dp-dmc-src">({s})</span>' if s else ""
+        more.append(f'<li>{ln["t"]}{tail}</li>')
+    if more:
+        card += '\n    <ul class="dp-dmc-fb">' + "".join(more) + "</ul>"
+    faq = (f"{words} DMC pays when the national all-milk price minus a national feed cost falls below the level "
+           "you elect. It does not see your own feed, labor or hauling.")
+    return {"milkdmc": lever, "milkdmccard": card, "milkdmcfaq": faq}
+
+
+# --- DMC "would have paid", from data/dairy-dmc.json --------------------------
+# 2026-10-28 (dairy board, build 1). What DMC would have paid at FSA's own
+# published monthly margins, 2024 to 2026, by coverage level, before premium,
+# premium beside it, no level picked out. The margins are FSA's, checked into
+# data/dairy-dmc.json by hand from FSA (references fsa-dmc-program); nothing
+# here computes a feed cost. A row whose milk minus feed is not its margin, or
+# whose all-milk price disagrees with the NASS month we hold, withholds the
+# whole table: a struggling farmer takes this number to the lender.
+MILK_DMC_DATA = "data/dairy-dmc.json"
+DMC_LEVELS = [4.0 + 0.5 * i for i in range(12)]           # $4.00 to $9.50
+DMC_WITHHELD = ("What DMC would have paid at past margins: not shown yet. I only print it from FSA's own published "
+                "monthly margins and premium rates, checked against the USDA milk prices held here, and those are not "
+                "loaded yet. I will not guess them. FSA publishes each month's margin on its "
+                '<a href="https://www.fsa.usda.gov/dairy" rel="noopener">Dairy Margin Coverage page</a>.')
+
+
+def milk_dmc_rows(dmc, d):
+    """({month_key: margin}, reason) from the file, or ({}, why) when it cannot be used."""
+    rows = (dmc or {}).get("margins") if isinstance(dmc, dict) else None
+    if not isinstance(rows, dict) or not rows:
+        return {}, "no FSA margins in the file"
+    out = {}
+    for k, r in rows.items():
+        if _mkey(k) is None or not isinstance(r, dict):
+            return {}, f"bad row {k}"
+        am, fd, mg = r.get("all_milk"), r.get("feed"), r.get("margin")
+        if not (_pos(am) and _pos(fd) and _fin(mg)) or abs(am - fd - mg) > 0.006:
+            return {}, f"{k}: milk minus feed is not the margin"
+        out[k] = mg
+    a = (d or {}).get("all_milk") or {}
+    k = a.get("month_key")
+    if k in rows and _pos(a.get("value")) and abs(rows[k]["all_milk"] - a["value"]) > 0.005:
+        return {}, f"{k}: FSA all-milk {rows[k]['all_milk']} is not the NASS {a['value']} held"
+    return dict(sorted(out.items())), ""
+
+
+def milk_dmc_paid(dmc, d):
+    """The table html, or the withheld paragraph."""
+    rows, why = milk_dmc_rows(dmc, d)
+    years = sorted({k[:4] for k in rows if k[:4] in ("2024", "2025", "2026")})
+    if not years:
+        return f'<p class="dp-dmc-paid-none" data-why="{_e(why or "no 2024 to 2026 months")}">{DMC_WITHHELD}</p>'
+    prem = (dmc.get("premium_tier1") or {}) if isinstance(dmc.get("premium_tier1"), dict) else {}
+    heads = []
+    for y in years:
+        ms = sorted(int(k[5:]) for k in rows if k[:4] == y)
+        lab = (y if len(ms) == 12 else f"{y}, {MON3[ms[0] - 1]}" if len(ms) == 1
+               else f"{y}, {MON3[ms[0] - 1]} to {MON3[ms[-1] - 1]}")
+        heads.append((y, lab, len(ms)))
+    th = "".join(f'<th scope="col" class="num">{lab}</th>' for _, lab, _ in heads)
+    body = []
+    for lv in DMC_LEVELS:
+        cells = []
+        for y, _, n in heads:
+            pay = sum(max(0.0, lv - m) for k, m in rows.items() if k[:4] == y) / n
+            cells.append(f'<td class="num">{_cwt(pay)}</td>')
+        pr = prem.get(f"{lv:.2f}")
+        cells.append(f'<td class="num">{_money4(pr) if _fin(pr) and pr >= 0 else "not loaded"}</td>')
+        body.append(f'<tr><th scope="row">{_cwt(lv)}</th>{"".join(cells)}</tr>')
+    src = _e(dmc.get("source") or "FSA")
+    rd = _e(dmc.get("read") or "")
+    return ('<details class="dp-states" id="dp-dmc-paid"><summary>What DMC would have paid at these published margins, '
+            f'{years[0]} to {years[-1]}, before premium</summary><div class="dp-tbl-wrap"><table class="dp-tbl">'
+            '<caption class="dp-sr">Average DMC payment per cwt covered, Tier 1, by coverage level and year</caption>'
+            f'<thead><tr><th scope="col">Coverage level</th>{th}<th scope="col" class="num">Premium, $/cwt</th></tr></thead>'
+            f'<tbody>{"".join(body)}</tbody></table></div>'
+            '<p class="dp-note-src">Would have paid at these published prices, before premium: the average monthly '
+            'payment per cwt covered, Tier 1 (the first 6 million lb a year), over the months shown. Premium is the '
+            f'rate for 2027 coverage. No level is a pick for your farm, and past margins are not 2027 margins. Margins: {src}'
+            f'{", read " + rd if rd else ""}.</p></details>')
+
+
+def milk_dmc_margin(dmc, d, today):
+    """The DMC margin line: FSA's newest published margin when the file holds
+    one that checks out, else the milk side we hold and why the margin is not
+    printed. Until 2026-10-28 "$9.34" and "$10.46" were typed in four places."""
+    rows, _ = milk_dmc_rows(dmc, d)
+    if rows:
+        k = max(rows)
+        r = dmc["margins"][k]
+        i = _mkey(k)
+        src = _e(dmc.get("source") or "FSA")
+        return (f'<p class="dp-dmc-m"><strong>DMC margin, {_ilong(i)}: {_cwt(r["margin"])}/cwt</strong> '
+                f'({_cwt(r["all_milk"])} all-milk minus {_cwt(r["feed"])} feed), as {src} published it.</p>')
+    a = (d or {}).get("all_milk") or {}
+    am = milk_allmilk_ok(a, today) if _pos(a.get("value")) else None
+    milk = ""
+    if am and not am[1]:
+        milk = (f" The milk side is held here: USDA NASS all-milk for {_e(a.get('month') or _ilong(am[0]))}, "
+                f"<strong>{_cwt(a['value'])}/cwt</strong>.")
+    return ('<p class="dp-dmc-m"><strong>DMC margin: not shown.</strong>' + milk +
+            " The feed side, as FSA prices it from corn, premium alfalfa hay and soybean meal, is not held here, "
+            "so I do not print a margin. FSA posts each month&rsquo;s margin on its "
+            '<a href="https://www.fsa.usda.gov/dairy" rel="noopener">Dairy Margin Coverage page</a>.</p>')
+
+
+# --- your area first, from data/dairy-mailbox.json ----------------------------
+# 2026-10-28 (dairy board, build 2). The no-JS and crawler copy of the area card:
+# before a reader picks an area (or a saved ZIP names one), the areas that fell
+# and rose most from a year earlier, so Wisconsin and Minnesota sit on the first
+# screen and not in a closed table near the bottom. components/milk-tools.js
+# replaces it with the reader's own area.
+def milk_area_seed(mb, today):
+    ar = (mb or {}).get("areas") if isinstance(mb, dict) else None
+    idx = _mkey((mb or {}).get("month_key")) if isinstance(mb, dict) else None
+    now_idx, _ = _milk_now(today)
+    if not isinstance(ar, dict) or idx is None or ar.get("month_key") != mb.get("month_key") or now_idx - idx >= 5:
+        return None
+    rows = [r for r in ar.get("rows") or [] if _pos(r.get("value")) and _pos(r.get("year_ago"))]
+    if len(rows) < 6:
+        return None
+    ch = sorted(((float(_fixed(r["value"] - r["year_ago"], 2)), r["area"]) for r in rows))
+    yl = f"{MON3[idx % 12]} {idx // 12 - 1}"
+    fmt = lambda xs: ", ".join(f"{a} {_sg(x, 2)}" for x, a in xs)
+    down = [c for c in ch[:3] if c[0] < 0]
+    up = [c for c in reversed(ch[-2:]) if c[0] > 0]
+    s = f"Mailbox price, {_ilong(idx)}, against {yl}: "
+    s += (f"fell most in {fmt(down)}" if down else "") + ("; " if down and up else "") + (f"rose most in {fmt(up)}" if up else "")
+    allv = ar.get("all")
+    s += f". All federal order areas: {_cwt(allv)}" + (f" ({_sg(mb['year_ago_change'], 2)})" if _fin(mb.get("year_ago_change")) else "") + "."
+    return (f'<p class="dp-area-sum" id="dp-area-sum">{s}</p>'
+            f'<p class="dp-note-src">Pick your area for its own price first. Source: {MILK_MB_LINK}.</p>')
 
 
 # What each starred AMS reporting area covers (MMPR-0626 footnote, page 3).
@@ -2429,28 +2640,24 @@ def milk_fall(cheese, whey, fat, c3, month, math=None):
     }
 
 
-MILK_EX_CWT, MILK_EX_COST = 2170, 19
 
 
-def milk_example(v, alab):
-    """One farm, one month: 2,170 cwt at the all-milk price against ERS's ~$19."""
-    gross = _jr(MILK_EX_CWT * v, 0)
-    cost = MILK_EX_CWT * MILK_EX_COST
-    left = gross - cost
-    lc = "pos" if left >= 0 else "neg"
-    ls = ("" if left >= 0 else "&minus;") + "$" + _commas(abs(left))
-    return (f'<div class="dp-example-line"><span>Ships ~217,000 lb/mo (2,170 cwt) at the {alab} all-milk price</span>'
-            f'<span class="v">{_cwt(v)}/cwt</span></div>\n'
-            f'      <div class="dp-example-line"><span>Gross milk check, before hauling</span><span class="v">${_commas(gross)}</span></div>\n'
-            f'      <div class="dp-example-line"><span>Est. cost to produce at ~$19/cwt (ERS avg herd)</span>'
-            f'<span class="v neg">&minus;${_commas(cost)}</span></div>\n'
-            f'      <div class="dp-example-line tot"><span>Left for the mortgage, family, and reinvestment</span>'
-            f'<span class="v {lc}">{ls}</span></div>\n'
-            f"      <p class=\"dp-example-note\">Illustrative, using USDA NASS's {alab} all-milk price (before hauling and "
-            "co-op deductions) and ERS's average cost of production. The mailbox price itself isn't published in real "
-            "time (see above), so the true net figure, after hauling and PPD, sits lower than this. Beef and cull-cow "
-            "income and each farm's own cost structure move the real number, which is exactly why the only cost that "
-            "matters is your own.</p>")   # no /breakeven link: it is a grain-per-acre tool (panel Oct 20, C3)
+def milk_cost_faq(v, alab, yago):
+    """The cost-of-production FAQ answer, dated. 2026-10-28 (dairy board, Sig's
+    decision 1 as recommended): no national cost figure and no "left for the
+    mortgage" line built off one; the answer points at the reader's own cost
+    and the calculator above. Until then a 100-cow box set the August all-milk
+    price against an uncited ~$19 ERS cost and printed $1,736 left over."""
+    yr = ""
+    if _pos(yago):
+        x = float(_fixed(v - yago, 2))
+        yr = (", unchanged from a year earlier" if x == 0 else
+              f", {'up' if x > 0 else 'down'} ${_fixed(abs(x), 2)} from a year earlier")
+    return (f"USDA NASS put the US all-milk price at {_cwt(v)} per hundredweight in {alab}{yr}, before hauling. "
+            "Whether that clears the cost of making milk depends on your own cost, so this page prints no national "
+            "cost figure: put your own tests, deductions and cost in the check reader above. The federal Dairy Margin "
+            "Coverage margin only weighs milk against a national feed cost and leaves out labor, fuel, interest and "
+            "other overhead, so it can read fine while a farm loses money.")
 
 
 def milk_states(f, today):
@@ -2524,6 +2731,13 @@ def seed_milk(today):
     seeds, key = milk_seeds(d, today)
     js = seeds.pop("__js", None)
     seeds.update(milk_mailbox_seeds(_load_json(MILK_MB_DATA), today))
+    seeds.update(milk_dmc_seeds(_load_json(MILK_FB_DATA), today))
+    dmc = _load_json(MILK_DMC_DATA) or {}
+    seeds["milkdmcpaid"] = milk_dmc_paid(dmc, d)
+    seeds["milkdmcmargin"] = milk_dmc_margin(dmc, d, today)
+    area = milk_area_seed(_load_json(MILK_MB_DATA), today)
+    if area:
+        seeds["milkarea"] = area
 
     def extra(t):
         if key:

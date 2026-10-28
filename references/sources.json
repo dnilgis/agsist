@@ -2300,6 +2300,14 @@
     {"id": "nass-crop0926", "kind": "pdf",
      "url": "https://esmis.nal.usda.gov/sites/default/release-files/796056/crop0926.pdf",
      "title": "USDA NASS Crop Production, September 11, 2026 (as posted on ESMIS)",
-     "why": "data/usda-corrections.json: the printed September values (US 178.5, KS 121, NE 177), and whether the posted copy now carries the correction"}
+     "why": "data/usda-corrections.json: the printed September values (US 178.5, KS 121, NE 177), and whether the posted copy now carries the correction"},
+    {"id": "fsa-dmc-2027-release", "kind": "html",
+     "url": "https://www.fsa.usda.gov/news-events/news/09-30-2026/usda-announces-2027-dairy-margin-coverage-enrollment",
+     "title": "FSA news release, Sep 30, 2026: 2027 Dairy Margin Coverage enrollment",
+     "why": "/milk-prices DMC card and data/farm-bill.json dairy.signup: the Oct 5 to Dec 18, 2026 window, coverage levels and 2027 premium rates"},
+    {"id": "fsa-dmc-program", "kind": "html",
+     "url": "https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program",
+     "title": "FSA Dairy Margin Coverage program page (monthly margins, feed cost, premiums)",
+     "why": "/milk-prices DMC card: FSA's published monthly margins 2024 to 2026 for data/dairy-dmc.json; the would-have-paid table stays withheld until they are read from FSA"}
 ]
 }

@@ -24,12 +24,13 @@ const digits = (p) => { const d = String(p ?? "").replace(/\D/g, ""); return d.l
 const WI_CODES = new Set(["262", "274", "353", "414", "534", "608", "715", "920"]);
 const TOLL_FREE = new Set(["800", "833", "844", "855", "866", "877", "888"]);
 
-/* Out-of-state area codes still on Wisconsin rows, unverified (Oct 27 2026). */
-const SUSPECTS = {
-  "Cushing Cooperative|Cushing": "918 is Oklahoma, where there is also a Cushing; may be the wrong co-op on a WI row",
-  "Innovative Ag Services|Prairie Du Chien": "319 is eastern Iowa, where the company is based; may be a head office line",
-  "Pilgrims Gold N Plump|Arcadia": "320 is central Minnesota, where the company is based; may be a head office line",
-};
+/* Out-of-state area codes still on Wisconsin rows, unverified. Oct 27 2026:
+ * none left. Cushing Cooperative's own cash-bid page gives 715-648-5215 (the
+ * 918 number was Oklahoma); the Innovative Ag Services Prairie du Chien (319)
+ * and Pilgrim's Arcadia (320) numbers could not be confirmed as the local line
+ * and are withheld. All three are in data/phone-corrections.json with the page
+ * each was read from. */
+const SUSPECTS = {};
 
 test("Cadott Grain carries its own grain line everywhere a reader sees it", () => {
   const wi = json("data/elevator-contacts/WI.json");
@@ -57,4 +58,25 @@ test("every other out-of-state area code on a Wisconsin row is named, with why",
   assert.deepEqual(Object.keys(found).sort(), Object.keys(SUSPECTS).sort(),
     `out-of-state area codes on WI rows: ${JSON.stringify(found)}. Check the company's own site, ` +
     `fix the verified ones in data/elevator-directory.json, and name the rest here.`);
+});
+
+test("Cushing Cooperative carries the number on its own bid page; the two unconfirmed numbers are withheld", () => {
+  const fix = json("data/phone-corrections.json").rows;
+  const by = Object.fromEntries(fix.map((r) => [r.town, r]));
+  assert.equal(by["Cushing"].phone, "715-648-5215");
+  assert.equal(by["Cushing"].source, "https://cushingcoop.com/");
+  assert.equal(by["Prairie Du Chien"].phone, null);
+  assert.equal(by["Arcadia"].phone, null);
+  for (const r of fix) {
+    assert.match(r.source, /^https:\/\//, "every correction names the page it was read from");
+    assert.match(r.read, /^\d{4}-\d\d-\d\d$/, "and the date");
+    assert.ok(r.why && !/\u2014/.test(r.why), "and why, with no em dash");
+  }
+  const wi = json("data/elevator-contacts/WI.json").rows;
+  const row = (op, town) => wi.filter((r) => r[0] === op && r[1] === town);
+  assert.deepEqual(row("Cushing Cooperative", "Cushing").map((r) => r[2]), ["715-648-5215"]);
+  assert.ok(row("Innovative Ag Services", "Prairie Du Chien").every((r) => r[2] === ""), "no Prairie du Chien phone");
+  assert.ok(row("Pilgrims Gold N Plump", "Arcadia").every((r) => r[2] === ""), "no Arcadia phone");
+  const flat = JSON.stringify(wi);
+  assert.doesNotMatch(flat, /225-6559|465-6896|202-7451/);
 });

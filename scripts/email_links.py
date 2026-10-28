@@ -76,7 +76,7 @@ SHARED_RE = re.compile(r"[a-z0-9.-]*\.workers\.dev\b", re.I)
 
 FRONT = "https://agsist.com/e"
 # The routes the front-door page knows (e.html ROUTES; the worker's /fd/ list).
-FRONT_ROUTES = {"unsubscribe", "alert-unsubscribe", "notice-unsubscribe", "daily-elev",
+FRONT_ROUTES = {"unsubscribe", "alert-unsubscribe", "notice-unsubscribe", "daily-elev", "daily-cw",
                 "watch-confirm", "watch-unsubscribe", "elevator-watch-confirm", "elevator-watch-unsubscribe",
                 "price-watch-confirm", "price-watch-unsubscribe", "rp-remind/stop",
                 "sponsor-confirm", "sponsor-decide", "logo"}

@@ -122,6 +122,11 @@ SPECIALTY = re.compile(r"white|organic|non[\s-]?gmo|nongmo|high oleic|\bip\b|foo
 
 
 # ---------------------------------------------------------------- helpers
+def ld_json(obj):
+    """JSON-LD for a <script> block; "</" escaped. Kept out of the f-string so Python 3.11 (fetch_bids.yml) parses this file."""
+    return json.dumps(obj, indent=1, ensure_ascii=False).replace("</", "<\\/")
+
+
 def esc(s):
     return html.escape(str(s), quote=True)
 
@@ -691,7 +696,7 @@ def head(title, desc, path, jsonld, indexable):
   <meta name="twitter:description" content="{esc(desc)}">
   <meta name="twitter:image" content="{SITE}/img/og/agsist.jpg">
   <script type="application/ld+json">
-{json.dumps(jsonld, indent=1, ensure_ascii=False).replace("</", "<\\/")}
+{ld_json(jsonld)}
   </script>
   <style>{CSS}  </style>
 </head>"""

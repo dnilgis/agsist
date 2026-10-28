@@ -305,6 +305,18 @@ class Sources:
         return BA.promo_section(BA.GA4(self.ga4_prop, BetaAnalyticsDataClient(credentials=c)),
                                 BA.f_readers(towns), BA.ranges(now.date()))
 
+    def cw_arms(self, towns, now):
+        """Your county this week: Daily link visits by holdout arm (utm_term), build_audience.cw_arms_section()."""
+        if not (self.ga4_prop and self.ga4_cred):
+            raise LookupError("GA4 not set up for this job")
+        import build_audience as BA
+        from google.analytics.data_v1beta import BetaAnalyticsDataClient
+        from google.oauth2 import service_account
+        c = service_account.Credentials.from_service_account_info(
+            json.loads(self.ga4_cred), scopes=["https://www.googleapis.com/auth/analytics.readonly"])
+        return BA.cw_arms_section(BA.GA4(self.ga4_prop, BetaAnalyticsDataClient(credentials=c)),
+                                  BA.f_readers(towns), now.date())
+
 
 # ───────────────────────────── sections ─────────────────────────────
 
@@ -855,6 +867,29 @@ def send_counts(src, wf, script, now, logs, job=None):
     return {"runs": runs, "sent": sent, "failed": failed}
 
 
+# Your county this week (Oct 27 2026): the arm counts send_daily.py prints on a Thursday (counts only).
+CW_ARM_RE = re.compile(r"your county this week arms: (\d+) ticked, (\d+) in the block arm, (\d+) in the holdout arm "
+                       r"\((\d+)%, (holding out today|not holding out today)\); (\d+) got a block, (\d+) held out who would have had one")
+
+
+def cw_send_line(texts):
+    """One line from the latest real Daily send's arm counts in `texts` (job logs), or None."""
+    last = None
+    for text in texts or []:
+        for cmd, lines in _step_sections(text):
+            if "send_daily.py" not in cmd or "--selftest" in cmd or "--dry-run" in cmd:
+                continue
+            for ln in lines:
+                m = CW_ARM_RE.search(ln)
+                if m:
+                    last = [int(x) if x.isdigit() else x for x in m.groups()]
+    if not last:
+        return None
+    tk, blk, hold, pct, today, got, held = last
+    return ("Your county this week, in the Daily: %d ticked; block arm %d, holdout arm %d (%d%%, %s); "
+            "%d got a block, %d held out who would have had one." % (tk, blk, hold, pct, today.replace(" today", ""), got, held))
+
+
 def sec_sends(src, now, rep):
     """Yesterday's email sends in one short block, counts only."""
     lines, logs = [], {}
@@ -868,6 +903,10 @@ def sec_sends(src, now, rep):
             lines.append("%s: none sent in the last 24 h." % label)
         else:
             lines.append("%s: %s sent%s." % (label, num(n["sent"]), ", %s failed" % num(n["failed"]) if n["failed"] else ""))
+        if wf == "daily.yml":
+            cl = cw_send_line(logs.get(wf))
+            if cl:
+                lines.append(cl)
     try:
         rows = src.worker("notice-list")
         ms = int(now.timestamp() * 1000)
@@ -1187,6 +1226,27 @@ def promo_lines(pc):
     return out
 
 
+def cw_traffic_lines(pc, arms):
+    """Your county this week: its tagged link's share of the Daily's link sessions (7 days), and
+    Daily link visits by holdout arm since the test began. Counts with their n; no share is
+    worked out for the arms (GA4 counts browsers, the arms count readers)."""
+    out = []
+    w7 = ((pc or {}).get("windows") or {}).get("7d") or {}
+    dl = (w7.get("email") or {}).get("daily") or []
+    if dl:
+        tot = sum(x.get("sessions", 0) for x in dl)
+        cw = sum(x.get("sessions", 0) for x in dl if x.get("content") == "countyweek")
+        out.append("Your county this week link (utm_content countyweek), 7 days to %s: %s of %s Daily link sessions (GA4)."
+                   % (short_day(w7.get("end", "")), num(cw), num(tot)))
+    if isinstance(arms, dict) and isinstance(arms.get("arms"), dict):
+        a, h = arms["arms"].get("cw-block") or {}, arms["arms"].get("cw-hold") or {}
+        out.append("Your county this week arms, Daily link visits %s to %s: block arm %s people in %s sessions; holdout arm %s "
+                   "people in %s sessions (GA4 utm_term; people are browsers, so set them beside the arm sizes in the send line)."
+                   % (short_day(arms.get("start", "")), short_day(arms.get("end", "")), num(a.get("users", 0)), num(a.get("sessions", 0)),
+                      num(h.get("users", 0)), num(h.get("sessions", 0))))
+    return out
+
+
 def sec_traffic(src, now, rep):
     lines = []
     try:
@@ -1220,10 +1280,20 @@ def sec_traffic(src, now, rep):
             lines.append(fn_line)
         else:
             # Same GA4 and the same rule: never in a dry run, never in a file.
+            pc = None
             try:
-                lines.extend(promo_lines(src.promo_counts(((a.get("servers") or {}).get("towns") or []), now)))
+                pc = src.promo_counts(((a.get("servers") or {}).get("towns") or []), now)
+                lines.extend(promo_lines(pc))
             except Exception as e:                     # noqa: BLE001
                 lines.append("Promo clicks and email sessions: %s." % (str(e) if isinstance(e, LookupError) else "could not be read (%s)" % why(e)))
+            # Your county this week (Oct 27 2026): same GA4, same rule, only when GA4 answers
+            if pc is not None:
+                arms = None
+                try:
+                    arms = src.cw_arms(((a.get("servers") or {}).get("towns") or []), now)
+                except Exception as e:                 # noqa: BLE001
+                    lines.append("Your county this week arms: could not be read (%s)." % why(e))
+                lines.extend(cw_traffic_lines(pc, arms))
         if not lines:
             lines.append("data/audience.json has no traffic numbers.")
     except Exception as e:                                 # noqa: BLE001
@@ -1740,6 +1810,12 @@ class Fake(Sources):
             raise LookupError("GA4 not set up for this job")
         return self.funnel
 
+    def cw_arms(self, towns, now):
+        self.asked.append(("ga4-cw", tuple(t.get("city") for t in towns)))
+        if "ga4-cw" in self.broken:
+            raise urllib.error.HTTPError("https://analyticsdata.googleapis.com/x", 500, "no", {}, None)
+        return getattr(self, "arms", None)
+
     def promo_counts(self, towns, now):
         self.asked.append(("ga4-promo", tuple(t.get("city") for t in towns)))
         if "ga4-promo" in self.broken:
@@ -2242,6 +2318,41 @@ def selftest():
        "Promo clicks and email sessions: could not be read (HTTP 500)." in tl and "1,240 draws" in str(tl), tl)
     tl = traffic(Fake(files={"data/audience.json": json.dumps(aud)}))
     ck("no GA4: only the funnel's one line, not a second", "Promo clicks" not in str(tl), tl)
+
+    # Your county this week (Oct 27 2026): the arm counts from the send log, the tagged link's share and the arms in GA4
+    PCW = json.loads(json.dumps(PC))
+    PCW["windows"]["7d"]["email"]["daily"].append({"content": "countyweek", "sessions": 3})
+    ARMS = {"start": "2026-10-29", "end": "2026-11-03", "arms": {"cw-block": {"users": 7, "sessions": 9}, "cw-hold": {"users": 1, "sessions": 1}}}
+    cl = cw_traffic_lines(PCW, ARMS)
+    ck("county week: tagged link sessions against all the Daily's link sessions", cl[0] ==
+       "Your county this week link (utm_content countyweek), 7 days to Oct 17: 3 of 9 Daily link sessions (GA4).", cl)
+    ck("county week: Daily link visits by arm, counts only", cl[1].startswith(
+       "Your county this week arms, Daily link visits Oct 29 to Nov 3: block arm 7 people in 9 sessions; holdout arm 1 people in 1 sessions"), cl)
+    ck("county week: no GA4 rows, no lines", cw_traffic_lines(None, None) == [] and cw_traffic_lines({}, {"arms": None}) == [])
+    f = Fake(files={"data/audience.json": json.dumps(aud)})
+    f.funnel, f.promo, f.arms = FN, PCW, ARMS
+    tl = traffic(f)
+    ck("the email asks GA4 for the arms with the server towns and prints both county week lines",
+       ("ga4-cw", ("Ashburn",)) in f.asked and cl[0] in tl and cl[1] in tl, (f.asked, tl))
+    f = Fake(files={"data/audience.json": json.dumps(aud)})
+    f.dry, f.promo, f.arms = True, PCW, ARMS
+    tl = traffic(f)
+    ck("a dry run never asks GA4 for the arms", not any(k == "ga4-cw" for k, _ in f.asked) and "arms" not in str(tl), tl)
+    f = Fake(files={"data/audience.json": json.dumps(aud)}, broken={"ga4-cw"})
+    f.funnel, f.promo = FN, PCW
+    tl = traffic(f)
+    ck("the arms failing: one line, the promo lines still print",
+       "Your county this week arms: could not be read (HTTP 500)." in tl and pl[0] in tl, tl)
+    LOG = ("##[group]Run python3 scripts/send_daily.py --selftest\nyour county this week arms: 99 ticked, 80 in the block arm, 19 in the holdout arm "
+           "(20%, holding out today); 50 got a block, 9 held out who would have had one\n"
+           "##[group]Run python3 scripts/send_daily.py\nyour county this week: 12 ticked (1 with no ZIP), 9 ZIP(s) read once each, 6 reader(s) get a block, "
+           "2 with no change (no block), 1 not placed\nyour county this week arms: 12 ticked, 10 in the block arm, 2 in the holdout arm "
+           "(20%, holding out today); 6 got a block, 1 held out who would have had one\nsent 170/170\n")
+    ck("county week send line: the real send step only, counts only", cw_send_line([LOG]) ==
+       "Your county this week, in the Daily: 12 ticked; block arm 10, holdout arm 2 (20%, holding out); 6 got a block, "
+       "1 held out who would have had one.", cw_send_line([LOG]))
+    ck("county week send line: none on a day without one", cw_send_line(["##[group]Run python3 scripts/send_daily.py\nsent 3/3\n"]) is None
+       and cw_send_line(None) is None)
 
     print("\ntoday, from the real bids index of Oct 20 15:40 UTC (test/fixtures)")
     import gzip

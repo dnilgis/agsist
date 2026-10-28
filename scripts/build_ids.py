@@ -248,6 +248,27 @@ def folded_ids(directory):
     return out
 
 
+def hold_retired(anchors, ledger):
+    """An id is never reused. When a bids-repo id the ledger already retired shows up again on a live
+    directory row (Oct 28: a new farcoop-halstead manifest came back as e049c48vt9, folded by phone into
+    CoMark's Halstead West board egz19x9jv6), its rows and places join the survivor's anchor and the old
+    id gets no record. -> {retired id: survivor} for the ids that came back."""
+    retired = ledger.get("retired") or {}
+    back = {}
+    for old in [e for e in anchors if e in retired]:
+        new, seen = retired[old].get("into"), {old}
+        while new in retired and new not in seen:
+            seen.add(new)
+            new = retired[new].get("into")
+        if new not in anchors:
+            continue
+        a = anchors.pop(old)
+        anchors[new]["rows"] += a["rows"]
+        anchors[new]["places"] += a["places"]
+        back[old] = new
+    return back
+
+
 def settle(ledger, folded, live, eid, today, record=True):
     """The id a held bids-repo id stands for today: itself while it is live; its survivor when the bids
     repo folded it. Each retirement is recorded once (ledger retired + an event); an id is never reused."""
@@ -267,6 +288,15 @@ def settle(ledger, folded, live, eid, today, record=True):
                                      "why": f"folded into {new} by the bids repo (mergedFrom, rule {rule})"})
         eid = new
     return eid
+
+
+def note_moved(ledger, rid, key):
+    """A key that held retired id rid now holds its survivor: written on the retirement (keys), once, so a later
+    build can tell which of a survivor's keys were the retired board's own (scripts/build_basis_join.py stitches
+    their basis histories on this, never on a name)."""
+    r = (ledger.get("retired") or {}).get(rid)
+    if r is not None and key not in (r.get("keys") or []):
+        r["keys"] = sorted(set(r.get("keys") or []) | {key})
 
 
 def place_str(fac, branch, city, st):
@@ -427,6 +457,8 @@ def assign(anchors, keys, ledger, today, folded=None):
             for k in ks:
                 held[k] = now
                 rules["retired" if now != (tgt or old) else "kept"] += 1
+                if now != (tgt or old):
+                    note_moved(ledger, tgt or old, k)
                 e = fresh[k][0]
                 if e and e != now and fresh[k][1] == "elevId":
                     rules["elevId_differs"] += 1     # the ledger's id wins (rule 1); counted, never moved
@@ -480,6 +512,7 @@ def assign(anchors, keys, ledger, today, folded=None):
     for k, v in list(ledger["keys"].items()):
         if k not in held and isinstance(v, str) and v in ledger.get("retired", {}):
             ledger["keys"][k] = settle(ledger, folded, live, v, today)
+            note_moved(ledger, v, k)
     # a key held by a bids-repo id from an earlier build is settled; only open ones are listed
     ambiguous = [a for a in ambiguous if held[a["key"]] in ledger["minted"]]
     out = defaultdict(list)
@@ -729,6 +762,9 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
     os.makedirs(out_dir, exist_ok=True)
     lpath = os.path.join(out_dir, "elevator-ids.json")
     ledger = load_ledger(lpath)
+    back = hold_retired(anchors, ledger)
+    if back:
+        log(f"[ids] retired ids back in the bids repo, kept on their survivor: {back}")
     groups, ambiguous, rules = assign(anchors, keys, ledger, today, folded_ids(directory))
     counties = Counties(os.path.join(root, "data", "atlas", "counties.geo.json"))
     recs = build_records(anchors, keys, sched, groups, counties, ambiguous)
@@ -763,7 +799,8 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
     ledger["note"] = ("Which id each key holds. A key keeps its id; ids are never renumbered or reused. minted: AGSIST ids "
                       "(a + 5 digits) with the key that first held each; into: merged into a bids-repo elevId. events: every "
                       "merge and split. retired: bids-repo ids the bids repo folded into another row (into), never used again; "
-                      "their keys hold the survivor. Rules: scripts/build_ids.py.")
+                      "their keys hold the survivor; keys: the keys that held it when it was retired (the Oct 27 2026 retirements "
+                      "filled from this ledger as it stood before them, commit 3dd4c29b39d). Rules: scripts/build_ids.py.")
     ledger["retired"] = dict(sorted((ledger.get("retired") or {}).items()))
     write_json(lpath, {k: ledger[k] for k in ("schema", "note", "next", "minted", "retired", "events", "keys")})
     write_json(os.path.join(out_dir, "ambiguous.json"),
@@ -933,6 +970,8 @@ def selftest():
            and led["retired"].get("e8921vvzs3", {}).get("into") == "e7pqw0z5m3"
            and led["keys"]["basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|ROGGEN"] == "e7pqw0z5m3")
         ck("the retirement is one event, written once", sum(1 for e in led["events"] if e.get("retire") == "e8921vvzs3") == 1)
+        ck("the retirement records the keys that held the retired id",
+           led["retired"]["e8921vvzs3"].get("keys") == ["basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|ROGGEN"])
         d7 = build(root, bdir, sch, out, "2026-10-28", do_parcels=False, log=lambda *_: None)
         led7 = read_json(os.path.join(out, "elevator-ids.json"))
         ck("a rerun keeps the retirement and adds no event", led7["retired"] == led["retired"]
@@ -949,6 +988,20 @@ def selftest():
         ck("a row's own elevId is the strongest match", "Coop X Grain||Chetek East|WI" in by8["e000000002"]["sources"].get("bids", []))
         ck("a row naming a retired id joins its survivor",
            "Roggen Farmers Elevator||Roggen|CO" in by8["e7pqw0z5m3"]["sources"].get("bids", []))
+        # REAL CASE (Oct 28): a new bids manifest (farcoop-halstead) came back with e049c48vt9, an id the bids repo had
+        # folded by phone into CoMark's Halstead West board. A retired id that reappears stays on its survivor.
+        directory["elevators"].append({"id": "roggenfarmers-roggen", "elevId": "e8921vvzs3",
+                                       "operator": "Roggen Farmers Elevator Association", "location": "Roggen",
+                                       "state": "CO", "status": "read", "lat": 40.0878, "lon": -104.282})
+        json.dump(directory, open(os.path.join(bdir, "data", "directory.json"), "w"))
+        msgs = []
+        d9 = build(root, bdir, sch, out, "2026-10-30", do_parcels=False, log=msgs.append)
+        led9 = read_json(os.path.join(out, "elevator-ids.json"))
+        by9 = {r["id"]: r for r in d9["elevators"]}
+        ck("a retired id back on a live row gets no record; its key stays on the survivor",
+           "e8921vvzs3" not in by9 and led9["keys"]["basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|ROGGEN"] == "e7pqw0z5m3"
+           and led9["retired"]["e8921vvzs3"]["into"] == "e7pqw0z5m3" and d9["counts"]["stale_ids"] == 0)
+        ck("and the run says so", any("e8921vvzs3" in str(m) for m in msgs))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     print(f"FAILS={len(fails)}")

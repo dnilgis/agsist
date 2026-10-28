@@ -366,6 +366,36 @@ DESCRIPTION:Last day to sign 2026 ARC or PLC at your FSA office. Changing y
 URL:https://agsist.com/arc-plc
 END:VEVENT
 BEGIN:VEVENT
+UID:2027-01-12-wasde-report@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20270112T170000Z
+DTEND:20270112T180000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-02-10-wasde-report@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20270210T170000Z
+DTEND:20270210T180000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-03-10-wasde-report@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20270310T170000Z
+DTEND:20270310T180000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
 UID:2027-03-15-arc-plc-2027-signup-deadline@agsist.com
 DTSTAMP:20261027T120000Z
 DTSTART;VALUE=DATE:20270315
@@ -375,5 +405,95 @@ DESCRIPTION:Last day to sign 2027 ARC or PLC at your FSA office.\nCompare A
  w.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enroll
  ment-key-price-revenue-safety-net
 URL:https://agsist.com/arc-plc
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-04-09-wasde-report@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20270409T160000Z
+DTEND:20270409T170000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-05-12-wasde-report@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20270512T160000Z
+DTEND:20270512T170000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-06-11-wasde-report@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20270611T160000Z
+DTEND:20270611T170000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-07-09-wasde-report@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20270709T160000Z
+DTEND:20270709T170000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-08-12-wasde-report@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20270812T160000Z
+DTEND:20270812T170000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-09-10-wasde-report@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20270910T160000Z
+DTEND:20270910T170000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-10-08-wasde-report@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20271008T160000Z
+DTEND:20271008T170000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-11-10-wasde-report@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20271110T170000Z
+DTEND:20271110T180000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-12-10-wasde-report@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20271210T170000Z
+DTEND:20271210T180000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
 END:VEVENT
 END:VCALENDAR

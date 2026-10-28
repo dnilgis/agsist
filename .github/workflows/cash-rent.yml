@@ -33,7 +33,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
       # Runs offline, needs no key. If the parsing rules are broken there is no
       # point spending an hour hammering a public API to find out.

@@ -1920,7 +1920,7 @@ def get_usda_release_today():
     # Monthly: WASDE — single-definition table in usda_dates.py (shared with
     # briefing_gate's fabricated-release check; see 2026-08-11 incident).
     import usda_dates
-    if today.date() in usda_dates.WASDE_2026:
+    if today.date() in usda_dates.WASDE_DATES:
         releases.append("USDA WASDE (World Ag Supply/Demand Estimates), 11:00 AM CT")
 
     # Quarterly stocks, Prospective Plantings, Acreage: the same table the

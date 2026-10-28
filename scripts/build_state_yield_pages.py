@@ -82,6 +82,11 @@ MONTH_ABBR = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oc
 
 
 # ---------------------------------------------------------------- helpers
+def ld_json(obj):
+    """JSON-LD for a <script> block; "</" escaped. Kept out of the f-string so Python 3.11 (fetch_bids.yml) parses this file."""
+    return json.dumps(obj, indent=1, ensure_ascii=False).replace("</", "<\\/")
+
+
 def esc(s):
     return html.escape("" if s is None else str(s), quote=True)
 
@@ -299,7 +304,7 @@ def head(title, desc, path, jsonld, indexable, fonts):
   <meta name="twitter:description" content="{esc(desc)}">
   <meta name="twitter:image" content="{SITE}/img/og/yield.jpg">
   <script type="application/ld+json">
-{json.dumps(jsonld, indent=1, ensure_ascii=False).replace("</", "<\\/")}
+{ld_json(jsonld)}
   </script>
   <style>{CSS}  </style>
 </head>"""

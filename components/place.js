@@ -796,8 +796,9 @@
     return out;
   }
   /* Its own recent history, from data/basis/<ST>.json (the /cash-bids "from -42c" line), joined
-     on the permanent id: data/ids/basis-join.json gives the one history key an elevId holds
-     (an id with two or more keys is left out there, never guessed). Mirrors cb-myelev.js
+     on the permanent id: data/ids/basis-join/<ST>.json gives the one history key an elevId holds, or
+     for a stitched id its own key and the keys of the boards folded into it (an id with two or more keys
+     of its own is left out there, never guessed). Mirrors cb-myelev.js
      basisFact(). HIST_DAYS: a row first seen fewer days ago than this says only that. */
   var HIST_DAYS = 28;
   function basisRowKey(fac, city, st, cat, sym, month) {
@@ -814,9 +815,64 @@
     });
     return m;
   }
+  /* Stitched ids (Oct 27): basis-join "s" gives [own key, folded key...] for an id whose other keys the ids
+     ledger says were boards the bids repo folded into it. The own key's row is matched on the exact delivery,
+     a folded name's on the same crop, contract and delivery month (basisMonth). Mirrors
+     scripts/build_basis_join.py month_of, stitch and series: no common day, the two replayed in date order;
+     common days with the folded name older, unchanged over them and showing the survivor's number, its first
+     day carried over; any other common days, the survivor's row as it is. */
+  var MON_N = { JAN: 1, FEB: 2, MAR: 3, APR: 4, MAY: 5, JUN: 6, JUL: 7, AUG: 8, SEP: 9, OCT: 10, NOV: 11, DEC: 12, SEPT: 9,
+    JANUARY: 1, FEBRUARY: 2, MARCH: 3, APRIL: 4, JUNE: 6, JULY: 7, AUGUST: 8, SEPTEMBER: 9, OCTOBER: 10, NOVEMBER: 11, DECEMBER: 12 };
+  function basisMonth(delivery) {
+    var d = String(delivery == null ? '' : delivery).trim().toUpperCase().replace(/\s+/g, ' '), m, p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+    if ((m = /^([A-Z]{3,9})[ -]?(\d{2}|\d{4})$/.exec(d)) && MON_N.hasOwnProperty(m[1])) return (m[2].length === 4 ? m[2] : '20' + m[2]) + '-' + p2(MON_N[m[1]]);
+    if ((m = /^(\d{2})\/01\/(\d{4})$/.exec(d)) && +m[1] >= 1 && +m[1] <= 12) return m[2] + '-' + m[1];
+    if ((m = /^01 ([A-Z]{3}) (\d{4}) TO \d{2} ([A-Z]{3}) (\d{4})$/.exec(d)) && MON_N.hasOwnProperty(m[1]) && m[1] === m[3] && m[2] === m[4]) return m[2] + '-' + p2(MON_N[m[1]]);
+    return null;
+  }
+  function basisStitch(s, r) {
+    if (!r) return { row: s, how: 'one' };
+    if (!s) return { row: r, how: 'retired_only' };
+    if (!(s.first && s.last && r.first && r.last)) return { row: s, how: 'overlap_unknown' };
+    var a = r.first < s.first ? r : s, b = a === r ? s : r, row;
+    if (a.last < b.first) {
+      if (b.prev != null) row = { cur: b.cur, prev: b.prev, since: b.since };
+      else if (b.cur !== a.cur) row = { cur: b.cur, prev: a.cur, since: b.first };
+      else row = { cur: b.cur, prev: a.prev == null ? null : a.prev, since: a.since == null ? null : a.since };
+      row.first = a.first; row.last = b.last;
+      return { row: row, how: 'joined' };
+    }
+    if (b === r || r.first === s.first) return { row: s, how: 'survivor_first' };
+    if (!(r.since && r.since < s.first)) return { row: s, how: 'overlap_unknown' };
+    var same = s.prev == null ? s.cur === r.cur : s.since > r.last && s.prev === r.cur;
+    if (!same) return { row: s, how: 'overlap_disagree' };
+    row = { cur: s.cur, prev: s.prev, since: s.since, first: r.first, last: s.last };
+    if (s.prev == null) { row.prev = r.prev == null ? null : r.prev; row.since = r.since; }
+    return { row: row, how: 'overlap_agree' };
+  }
+  function basisSeries(map, keys, crop, futuresMonth, delivery) {
+    var n = function (v) { return String(v == null ? '' : v).trim().toUpperCase().replace(/\s+/g, ' '); };
+    var parts = function (key) { var k = String(key).split('|'); return [k[1], k.slice(2).join('|'), k[0]]; };
+    var p0 = parts(keys[0]), acc = map[basisRowKey(p0[0], p0[1], p0[2], crop, futuresMonth, delivery)] || null, hows = [];
+    var dl = n(delivery), mo = basisMonth(dl);
+    keys.slice(1).forEach(function (key) {
+      var p = parts(key), pre = [n(p[0]), n(p[1]), n(p[2]), n(crop), n(futuresMonth)].join('|') + '|', cand = [];
+      Object.keys(map).forEach(function (rk) {
+        if (rk.indexOf(pre) !== 0) return;
+        var d2 = rk.slice(pre.length);
+        if (d2 === dl || (mo && basisMonth(d2) === mo)) cand.push(map[rk]);
+      });
+      if (cand.length !== 1) { hows.push(cand.length ? 'two_match' : 'no_match'); return; }
+      var st = basisStitch(acc, cand[0]);
+      acc = st.row; hows.push(st.how);
+    });
+    return { row: acc, hows: hows };
+  }
   function basisHistory(map, joinKey, crop, futuresMonth, delivery, live, today) {
-    if (!map || !joinKey) return { status: 'none', why: 'no basis history joined to this elevator’s id' };
-    var k = String(joinKey).split('|'), h = map[basisRowKey(k[1], k.slice(2).join('|'), k[0], crop, futuresMonth, delivery)];
+    if (!map || !joinKey || (Array.isArray(joinKey) && !joinKey.length)) return { status: 'none', why: 'no basis history joined to this elevator’s id' };
+    var k = String(Array.isArray(joinKey) ? joinKey[0] : joinKey).split('|');
+    var h = Array.isArray(joinKey) && joinKey.length > 1 ? basisSeries(map, joinKey, crop, futuresMonth, delivery).row
+      : map[basisRowKey(k[1], k.slice(2).join('|'), k[0], crop, futuresMonth, delivery)];
     if (!h) return { status: 'none', why: 'no basis history for this contract and delivery' };
     var sane = function (c) { return c != null && Math.abs(c) <= 300; };
     if (live == null || !sane(live) || !sane(h.cur)) return { status: 'none', why: 'basis outside the range we narrate' };
@@ -1078,7 +1134,7 @@
     factDaily: factDaily, fertSrc: fertSrc, srcName: srcName, centsFrac: centsFrac, deliveryWords: deliveryWords, stateLinks: stateLinks, NO_PAGE: NO_PAGE,
     rainFigure: rainFigure, rainChart: rainChart, rankSoFar: rankSoFar, rankWordsRain: rankWordsRain, windowTotals: windowTotals, RANK_MIN: RANK_MIN,
     ownPast: ownPast, unusualHere: unusualHere, ownWords: ownWords, OWN_MIN: OWN_MIN, OWN_MAX: OWN_MAX,
-    basisNeighbors: basisNeighbors, basisHistMap: basisHistMap, basisHistory: basisHistory, median: median, EL: { NEAR: EL_NEAR, NB: EL_NB, NB_MIN: EL_NB_MIN, EACH: EL_EACH, HIST_DAYS: HIST_DAYS },
+    basisNeighbors: basisNeighbors, basisHistMap: basisHistMap, basisHistory: basisHistory, basisMonth: basisMonth, basisStitch: basisStitch, basisSeries: basisSeries, median: median, EL: { NEAR: EL_NEAR, NB: EL_NB, NB_MIN: EL_NB_MIN, EACH: EL_EACH, HIST_DAYS: HIST_DAYS },
     milesFrom: milesFrom,
     SECTIONS: SECTIONS, PRINT_PARTS: PRINT_PARTS, STATES: STATES, FIPS_ST: FIPS_ST, MIN_RANK_N: MIN_RANK_N,
     deeper: deeper, parsePrint: parsePrint, printParam: printParam, printCode: printCode, printFromCode: printFromCode, qrLink: qrLink, parseQuery: parseQuery, parsePoint: parsePoint, classify: classify,

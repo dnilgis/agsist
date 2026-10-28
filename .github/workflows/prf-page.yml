@@ -54,7 +54,7 @@ jobs:
           node-version: "20"
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - name: Arithmetic, wiring, helpers
         run: |
           node --test test/prf-math.test.mjs test/prf-check.test.mjs test/prf-page.test.mjs test/prf-outlook.test.mjs test/prf-sponsor.test.mjs
